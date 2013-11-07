@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Configure the United plugin -->
+<!-- Note: You should disable the config server.iControl.xml while using this plugin -->
+<united-config>
+
+	<!-- Enable the whole plugin -->
+	<enabled>false</enabled>
+
+	<!-- Configure the server order (Random or as defined in the xml) -->
+	<random_order>false</random_order>
+
+	<!-- Define the mode that should be running on all the server -->
+	<!-- Rounds (1), TimeAttack (2), Team (3), Laps (4), Cup (5), Stunts (6) -->
+	<mode>2</mode>
+
+	<!-- Whether game server should be hidden from the browser -->
+	<hide_game_server>false</hide_game_server>
+
+	<!-- Set lobby status for lobby server -->
+	<set_lobby_status>true</set_lobby_status>
+
+	<!-- Define the game server -->
+	<gameserver>
+
+		<!-- Define the join/spec password for game server -->
+		<password>a</password>
+
+		<!-- Template -->
+		<!-- <server> -->
+		<!-- <host>ip</host> -->
+		<!-- <port>5000</port> -->
+		<!-- <login>SuperAdmin</login> -->
+		<!-- <pass>SuperAdmin</pass> -->
+		<!-- </server> -->
+
+		<!-- Canyon -->
+		<server>
+			<host>144.76.158.111</host>
+			<port>21013</port>
+			<login>SuperAdmin</login>
+			<pass>dtcfvgubhnjomkjnbhv</pass>
+		</server>
+
+		<!-- Stadium -->
+		<server>
+			<host>144.76.158.111</host>
+			<port>21033</port>
+			<login>SuperAdmin</login>
+			<pass>dtcfvgubhnjomkjnbhv</pass>
+		</server>
+
+		<!-- Valley -->
+		<server>
+			<host>144.76.158.111</host>
+			<port>21053</port>
+			<login>SuperAdmin</login>
+			<pass>dtcfvgubhnjomkjnbhv</pass>
+		</server>
+
+	</gameserver>
+
+	<!-- Define lobbies -->
+	<lobbies>
+
+		<!-- Define the join/spec password for lobbies -->
+		<password>a</password>
+
+		<!-- Template -->
+		<!-- <server> -->
+		<!-- <host>ip</host> -->
+		<!-- <port>5000</port> -->
+		<!-- <login>SuperAdmin</login> -->
+		<!-- <pass>SuperAdmin</pass> -->
+		<!-- </server> -->
+
+		<!-- Canyon -->
+		<server>
+			<host>144.76.158.111</host>
+			<port>21023</port>
+			<login>SuperAdmin</login>
+			<pass>dtcfvgubhnjomkjnbhv</pass>
+		</server>
+
+		<!-- Stadium -->
+		<server>
+			<host>144.76.158.111</host>
+			<port>21043</port>
+			<login>SuperAdmin</login>
+			<pass>dtcfvgubhnjomkjnbhv</pass>
+		</server>
+
+		<!-- Valley -->
+		<server>
+			<host>144.76.158.111</host>
+			<port>21063</port>
+			<login>SuperAdmin</login>
+			<pass>dtcfvgubhnjomkjnbhv</pass>
+		</server>
+
+	</lobbies>
+
+	<!-- Configure widgets -->
+	<widgets>
+		<enabled>true</enabled>
+
+		<!-- Favorite widget -->
+		<addfavorite>
+			<enabled>true</enabled>
+			<pos_x>76</pos_x>
+			<pos_y>85.5</pos_y>
+			<width>10</width>
+			<height>10</height>
+			<!-- Enable add_all to let players add all game and lobby server to favorite with 1 click -->
+			<add_all>true</add_all>
+		</addfavorite>
+
+	</widgets>
+
+</united-config>

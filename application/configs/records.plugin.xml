@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Configure the records plugin -->
+<records-config>
+
+	<!-- Enable/Disable the whole plugin -->
+	<enabled>true</enabled>
+
+	<!-- Configure local records -->
+	<local_records>
+		<enabled>true</enabled>
+
+		<!-- Define how many records per map are saved -->
+		<count>200</count>
+
+		<!-- Define the widget -->
+		<widget>
+			<enabled>true</enabled>
+			<pos_x>-139</pos_x>
+			<pos_y>65</pos_y>
+			<title>Local Records</title>
+			<width>40</width>
+			<lines>25</lines>
+			<line_height>4</line_height>
+		</widget>
+
+	</local_records>
+
+	<!-- Configure dedimania records -->
+	<dedimania_records>
+		<enabled>true</enabled>
+
+		<!-- Define your dedimania account (http://dedimania.net/tm2stats/?do=register) -->
+		<account>
+			<login>steff_test</login>
+			<code>468a0a185c</code>
+		</account>
+		<account>
+			<login>nsa_dev</login>
+			<code>3c20cbc737</code>
+		</account>
+		<account>
+			<login>united_canyon</login>
+			<code>703d080ddd</code>
+		</account>
+		<account>
+			<login>united_stadium</login>
+			<code>067b0d0017</code>
+		</account>
+		<account>
+			<login>united_valley</login>
+			<code>37ed993fe1</code>
+		</account>
+
+		<!-- Define the widget -->
+		<widget>
+			<enabled>true</enabled>
+			<pos_x>139</pos_x>
+			<pos_y>60</pos_y>
+			<title>Dedimania</title>
+			<width>40</width>
+			<lines>20</lines>
+			<line_height>4</line_height>
+		</widget>
+
+	</dedimania_records>
+
+</records-config>

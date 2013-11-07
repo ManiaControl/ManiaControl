@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Configure your maniaplanet server -->
+<server-config>
+
+	<!-- Enable to use only one static server (default behavior) -->
+	<enable>true</enable>
+
+	<!-- Server connection details (Make sure that the firewall and the server config are properly configured!) -->
+	<host>144.76.158.111</host>
+	<host>localhost</host>
+	<port>21003</port>
+
+	<!-- XmlRpc login details -->
+	<login>SuperAdmin</login>
+	<pass>dtcfvgubhnjomkjnbhv</pass>
+
+</server-config>

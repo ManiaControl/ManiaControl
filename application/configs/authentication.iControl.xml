@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Configure authentication for players -->
+<authentication-config>
+
+	<!-- SuperAdmins with full access -->
+	<superadmin>
+		<!-- <login>login1</login> <login>login2</login> -->
+		<login>steeffeen</login>
+	</superadmin>
+
+	<!-- Admins with almost full access -->
+	<admin>
+		<!-- <login>login1</login> <login>login2</login> -->
+		<login>gorby</login>
+		<login>canyondrive</login>
+	</admin>
+
+	<!-- Operators with only moderating access -->
+	<operator>
+		<!-- <login>login1</login> <login>login2</login> -->
+		<login>eyebo</login>
+		<login>jojo95183</login>
+		<login>xanashea</login>
+		<login>ardid</login>
+		<login>gugli</login>
+		<login>phil13hebert</login>
+		<login>xcaliber</login>
+		<login>eole</login>
+		<login>fix</login>
+		<login>kremsy</login>
+		<login>papychampy</login>
+		<login>titishu</login>
+		<login>wurstigewurst</login>
+	</operator>
+
+</authentication-config>
