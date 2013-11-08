@@ -41,5 +41,3 @@ INFORMATION:
 - If you notice problems with other version please let me know
 
 - Please report bugs by writing a mail to mail@steeffeen.com
-
-test
