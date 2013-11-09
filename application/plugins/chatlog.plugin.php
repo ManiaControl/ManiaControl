@@ -7,7 +7,7 @@ namespace ManiaControl;
  *
  * @author steeffeen
  */
-class Plugin_Chatlog {
+class Plugin_Chatlog extends Plugin{
 	/**
 	 * Constants
 	 */
@@ -37,7 +37,7 @@ class Plugin_Chatlog {
 		// Load settings
 		$this->loadSettings();
 		
-		// Register for callbacks
+		// Register for callbacksc
 		$this->iControl->callbacks->registerCallbackHandler(Callbacks::CB_MP_PLAYERCHAT, $this, 'handlePlayerChatCallback');
 		
 		error_log('Chatlog Pugin v' . self::VERSION . ' ready!');

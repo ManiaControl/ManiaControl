@@ -36,7 +36,7 @@ class Database {
 		
 		// Load config
 		$this->config = Tools::loadConfig('database.ManiaControl.xml');
-		$this->iControl->checkConfig($this->config, array("host", "user"), 'database.ManiaControl.xml');
+		$this->mControl->checkConfig($this->config, array("host", "user"), 'database.ManiaControl.xml');
 		
 		// Get mysql server information
 		$host = $this->config->xpath('host');
@@ -73,8 +73,8 @@ class Database {
 		$this->initTables();
 		
 		// Register for callbacks
-		$this->iControl->callbacks->registerCallbackHandler(Callbacks::CB_IC_5_SECOND, $this, 'handle5Second');
-		$this->iControl->callbacks->registerCallbackHandler(Callbacks::CB_IC_BEGINMAP, $this, 'handleBeginMap');
+		$this->mControl->callbacks->registerCallbackHandler(Callbacks::CB_IC_5_SECOND, $this, 'handle5Second');
+		$this->mControl->callbacks->registerCallbackHandler(Callbacks::CB_IC_BEGINMAP, $this, 'handleBeginMap');
 	}
 
 	/**
@@ -227,7 +227,7 @@ class Database {
 	 */
 	public function handle5Second($callback = null) {
 		// Save current players in database
-		$players = $this->iControl->server->getPlayers();
+		$players = $this->mControl->server->getPlayers();
 		if ($players) {
 			$query = "";
 			foreach ($players as $player) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace mControl;
+namespace ManiaControl;
 
 /**
  * Class plugin parent class for all plugins
@@ -30,14 +30,6 @@ namespace mControl;
        $this->updateUrl = '';
     }
 
-     /*
-    public function __construct($mControl, $name, $version, $author, $updateUrl = ''){
-       $this->mControl = $mControl;
-       $this->name = $name;
-       $this->version = $version;
-       $this->author = $author; 
-       $this->updateUrl = $updateUrl;
-    }*/
     
 	/**
 	 * Reserves manialinks on the ManialinkIdHandler

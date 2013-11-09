@@ -1,6 +1,6 @@
 <?php
 
-namespace mControl;
+namespace ManiaControl;
 
 /**
  * Class handles plugins
