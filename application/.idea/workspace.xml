@@ -53,7 +53,7 @@
       <file leaf-file-name="manialinkIdHandler.php" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/core/manialinkIdHandler.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="21" column="7" selection-start="313" selection-end="313" vertical-scroll-proportion="0.47536618" vertical-offset="0" max-vertical-offset="751">
+            <state line="2" column="23" selection-start="30" selection-end="30" vertical-scroll-proportion="0.04527297" vertical-offset="0" max-vertical-offset="751">
               <folding />
             </state>
           </provider>
@@ -173,7 +173,8 @@
   <component name="PropertiesComponent">
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="WebServerToolWindowFactoryState" value="true" />
-    <property name="options.lastSelected" value="vcs.Subversion" />
+    <property name="options.lastSelected" value="reference.settings.ide.settings.uml" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/.." />
     <property name="options.searchVisible" value="true" />
     <property name="options.splitter.details.proportions" value="0.2" />
   </component>
@@ -319,7 +320,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/core/manialinkIdHandler.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="7" selection-start="313" selection-end="313" vertical-scroll-proportion="0.47536618" vertical-offset="0" max-vertical-offset="751">
+        <state line="2" column="23" selection-start="30" selection-end="30" vertical-scroll-proportion="0.04527297" vertical-offset="0" max-vertical-offset="751">
           <folding />
         </state>
       </provider>
