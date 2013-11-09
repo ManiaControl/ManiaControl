@@ -140,6 +140,16 @@ class Tools {
 		return $format;
 	}
 
+    /**
+     * Formats the given time (seconds) to hh:mm:ss
+     *
+     * @param int $time
+     * @return string
+     */
+    public static function formatTimeH($seconds) {
+        return gmdate("H:i:s", $seconds);
+    }
+
 	/**
 	 * Convert given data to real boolean
 	 *

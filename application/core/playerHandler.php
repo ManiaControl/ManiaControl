@@ -24,6 +24,7 @@ class playerHandler {
         $this->mc = $mc;
         $this->playerList = array();
         $this->mc->callbacks->registerCallbackHandler(Callbacks::CB_MP_PLAYERCONNECT, $this, 'playerConnect');
+        $this->mc->callbacks->registerCallbackHandler(Callbacks::CB_MP_PLAYERDISCONNECT, $this, 'playerDisconnect');
     }
 
 
@@ -41,6 +42,7 @@ class playerHandler {
      * @param $player
      */
     public function playerConnect($player){
+        //TODO: Welcome Message?, on mc restart not all players listed, no relay support yet
         $this->mc->client->query('GetDetailedPlayerInfo', $player[0]);
         $this->addPlayer(new Player($this->mc->client->getResponse()));
         $player = $this->playerList[$player[0]];
@@ -48,17 +50,55 @@ class playerHandler {
             $this->mc->chat->sendChat('$ff0New Player: '. $player->nickname . '$z $ff0Nation:$fff ' . $player->nation . ' $ff0Ladder: $fff' . $player->ladderrank);
         }
      }
+
+    /**
+     * Handles a playerDisconnect
+     * @param $player
+     */
+    public function playerDisconnect($player){
+        $player = $this->removePlayer($player[0]);
+        $played = TOOLS::formatTime(time() - $player->created);
+        $this->mc->chat->sendChat($player->nickname . '$z $ff0has left the game. Played:$fff ' . $played);
+    }
+
+
+    /**
+     * Gets a Player from the Playerlist
+     * @param $login
+     * @return null
+     */
+    public function getPlayer($login){
+        if (isset($this->playerList[$login]))
+            return $this->playerList[$login];
+        else
+            return null;
+    }
+
     /**
      * Adds a player to the PlayerList
      * @param Player $player
      * @return bool
      */
-    public function addPlayer(Player $player){
+    private function addPlayer(Player $player){
         if($player != null){
             $this->playerList[$player->login] = $player;
             return true;
         }else{
             return false;
         }
+    }
+    /**
+     * Removes a Player from the PlayerList
+     * @param $login
+     * @return Player $player
+     */
+    private function removePlayer($login){
+        if(isset($this->playerList[$login])){
+            $player = $this->playerList[$login];
+            unset($this->playerList[$login]);
+        } else {
+            $player = null;
+        }
+        return $player;
     }
 } 
