@@ -17,15 +17,15 @@ class Authentication {
 	/**
 	 * Private properties
 	 */
-	private $mControl = null;
+	private $mc = null;
 
 	private $config = null;
 
 	/**
 	 * Construct authentication manager
 	 */
-	public function __construct($mControl) {
-		$this->mControl = $mControl;
+	public function __construct($mc) {
+		$this->mc = $mc;
 		
 		// Load config
 		$this->config = Tools::loadConfig('authentication.ManiaControl.xml');
@@ -94,8 +94,8 @@ class Authentication {
 	 * @param string $login        	
 	 */
 	public function sendNotAllowed($login) {
-		if (!$this->iControl->chat->sendError('You do not have the required rights to perform this command!', $login)) {
-			trigger_error("Couldn't send forbidden message to login '" . $login . "'. " . $this->iControl->getClientErrorText());
+		if (!$this->mc->chat->sendError('You do not have the required rights to perform this command!', $login)) {
+			trigger_error("Couldn't send forbidden message to login '" . $login . "'. " . $this->mc->getClientErrorText());
 		}
 	}
 }

@@ -12,7 +12,7 @@ class Chat {
 	/**
 	 * Private properties
 	 */
-	private $mControl = null;
+	private $mc = null;
 
 	private $config = null;
 
@@ -21,8 +21,8 @@ class Chat {
 	/**
 	 * Construct ManiaControl chat
 	 */
-	public function __construct($mControl) {
-		$this->mControl = $mControl;
+	public function __construct($mc) {
+		$this->mc = $mc;
 		
 		// Load config
 		$this->config = Tools::loadConfig('chat.ManiaControl.xml');
@@ -36,12 +36,12 @@ class Chat {
 	 * @param bool $prefix        	
 	 */
 	public function sendChat($message, $login = null, $prefix = false) {
-		if (!$this->iControl->client) return false;
+		if (!$this->mc->client) return false;
 		if ($login === null) {
-			return $this->iControl->client->query('ChatSendServerMessage', ($prefix ? $this->prefix : '') . $message);
+			return $this->mc->client->query('ChatSendServerMessage', ($prefix ? $this->prefix : '') . $message);
 		}
 		else {
-			return $this->iControl->client->query('ChatSendServerMessageToLogin', ($prefix ? $this->prefix : '') . $message, $login);
+			return $this->mc->client->query('ChatSendServerMessageToLogin', ($prefix ? $this->prefix : '') . $message, $login);
 		}
 	}
 

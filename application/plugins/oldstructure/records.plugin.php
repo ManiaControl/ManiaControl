@@ -37,7 +37,7 @@ class Plugin_Records {
 	/**
 	 * Private properties
 	 */
-	private $mControl = null;
+	private $mc = null;
 
 	private $settings = null;
 
@@ -58,8 +58,8 @@ class Plugin_Records {
 	/**
 	 * Constuct plugin
 	 */
-	public function __construct($mControl) {
-		$this->mControl = $mControl;
+	public function __construct($mc) {
+		$this->mc = $mc;
 		
 		// Load config
 		$this->config = Tools::loadConfig('records.plugin.xml');
@@ -74,17 +74,17 @@ class Plugin_Records {
 		$this->initTables();
 		
 		// Register for callbacks
-		$this->iControl->callbacks->registerCallbackHandler(Callbacks::CB_IC_ONINIT, $this, 'handleOnInit');
-		$this->iControl->callbacks->registerCallbackHandler(Callbacks::CB_IC_1_SECOND, $this, 'handle1Second');
-		$this->iControl->callbacks->registerCallbackHandler(Callbacks::CB_IC_1_MINUTE, $this, 'handle1Minute');
-		$this->iControl->callbacks->registerCallbackHandler(Callbacks::CB_IC_3_MINUTE, $this, 'handle3Minute');
-		$this->iControl->callbacks->registerCallbackHandler(Callbacks::CB_IC_BEGINMAP, $this, 'handleMapBegin');
-		$this->iControl->callbacks->registerCallbackHandler(Callbacks::CB_IC_CLIENTUPDATED, $this, 'handleClientUpdated');
-		$this->iControl->callbacks->registerCallbackHandler(Callbacks::CB_IC_ENDMAP, $this, 'handleMapEnd');
-		$this->iControl->callbacks->registerCallbackHandler(Callbacks::CB_MP_PLAYERCONNECT, $this, 'handlePlayerConnect');
-		$this->iControl->callbacks->registerCallbackHandler(Callbacks::CB_MP_PLAYERDISCONNECT, $this, 'handlePlayerDisconnect');
-		$this->iControl->callbacks->registerCallbackHandler(Callbacks::CB_TM_PLAYERFINISH, $this, 'handlePlayerFinish');
-		$this->iControl->callbacks->registerCallbackHandler(Callbacks::CB_TM_PLAYERCHECKPOINT, $this, 'handlePlayerCheckpoint');
+		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_IC_ONINIT, $this, 'handleOnInit');
+		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_IC_1_SECOND, $this, 'handle1Second');
+		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_IC_1_MINUTE, $this, 'handle1Minute');
+		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_IC_3_MINUTE, $this, 'handle3Minute');
+		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_IC_BEGINMAP, $this, 'handleMapBegin');
+		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_IC_CLIENTUPDATED, $this, 'handleClientUpdated');
+		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_IC_ENDMAP, $this, 'handleMapEnd');
+		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_MP_PLAYERCONNECT, $this, 'handlePlayerConnect');
+		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_MP_PLAYERDISCONNECT, $this, 'handlePlayerDisconnect');
+		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_TM_PLAYERFINISH, $this, 'handlePlayerFinish');
+		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_TM_PLAYERCHECKPOINT, $this, 'handlePlayerCheckpoint');
 		
 		error_log('Records Pugin v' . self::VERSION . ' ready!');
 	}
@@ -93,7 +93,7 @@ class Plugin_Records {
 	 * Init needed database tables
 	 */
 	private function initTables() {
-		$database = $this->iControl->database;
+		$database = $this->mc->database;
 		
 		// Records table
 		$query = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_RECORDS . "` (
@@ -227,7 +227,7 @@ class Plugin_Records {
 		if ($init || !array_key_exists('serverData', $this->dedimaniaData) || !is_array($this->dedimaniaData['serverData'])) {
 			$serverData = array();
 			$serverData['Game'] = 'TM2';
-			$serverInfo = $this->iControl->server->getInfo(true);
+			$serverInfo = $this->mc->server->getInfo(true);
 			
 			// Get dedimania account data
 			$accounts = $this->config->xpath('dedimania_records/account');
@@ -250,9 +250,9 @@ class Plugin_Records {
 			
 			// Complete seesion data
 			$serverData['Path'] = $serverInfo['Path'];
-			$systemInfo = $this->iControl->server->getSystemInfo();
+			$systemInfo = $this->mc->server->getSystemInfo();
 			$serverData['Packmask'] = substr($systemInfo['TitleId'], 2);
-			$serverVersion = $this->iControl->server->getVersion();
+			$serverVersion = $this->mc->server->getVersion();
 			$serverData['ServerVersion'] = $serverVersion['Version'];
 			$serverData['ServerBuild'] = $serverVersion['Build'];
 			$serverData['Tool'] = 'ManiaControl';
@@ -352,7 +352,7 @@ class Plugin_Records {
 		if ($this->settings->local_records_enabled) $this->sendManialink($this->manialinks[self::MLID_LOCAL], $login);
 		
 		if ($this->settings->dedimania_enabled && $this->dedimaniaData['context']) {
-			$player = $this->iControl->server->getPlayer($login, true);
+			$player = $this->mc->server->getPlayer($login, true);
 			if ($player) {
 				// Send dedimania request
 				$data = array($this->dedimaniaData['sessionId'], $player['Login'], $player['NickName'], $player['Path'], 
@@ -435,7 +435,7 @@ class Plugin_Records {
 	 * Build map info struct for dedimania requests
 	 */
 	private function getMapInfo() {
-		$map = $this->iControl->server->getMap();
+		$map = $this->mc->server->getMap();
 		if (!$map) return null;
 		$mapInfo = array();
 		$mapInfo['UId'] = $map['UId'];
@@ -528,12 +528,12 @@ class Plugin_Records {
 	 * Build server info struct for callbacks
 	 */
 	private function getSrvInfo() {
-		$server = $this->iControl->server->getOptions();
+		$server = $this->mc->server->getOptions();
 		if (!$server) return null;
 		$client = null;
 		$players = null;
 		$spectators = null;
-		$this->iControl->server->getPlayers($client, $players, $spectators);
+		$this->mc->server->getPlayers($client, $players, $spectators);
 		if (!is_array($players) || !is_array($spectators)) return null;
 		return array('SrvName' => $server['Name'], 'Comment' => $server['Comment'], 'Private' => (strlen($server['Password']) > 0), 
 			'NumPlayers' => count($players), 'MaxPlayers' => $server['CurrentMaxPlayers'], 'NumSpecs' => count($spectators), 
@@ -547,7 +547,7 @@ class Plugin_Records {
 		$client = null;
 		$players;
 		$spectators;
-		$allPlayers = $this->iControl->server->getPlayers($client, $players, $spectators);
+		$allPlayers = $this->mc->server->getPlayers($client, $players, $spectators);
 		if (!is_array($players) || !is_array($spectators)) return null;
 		$playerInfo = array();
 		foreach ($allPlayers as $player) {
@@ -560,9 +560,9 @@ class Plugin_Records {
 	 * Get dedi string representation of the current game mode
 	 */
 	private function getGameModeString() {
-		$gameMode = $this->iControl->server->getGameMode();
+		$gameMode = $this->mc->server->getGameMode();
 		if ($gameMode === null) {
-			trigger_error("Couldn't retrieve game mode. " . $this->iControl->getClientErrorText());
+			trigger_error("Couldn't retrieve game mode. " . $this->mc->getClientErrorText());
 			return null;
 		}
 		switch ($gameMode) {
@@ -585,7 +585,7 @@ class Plugin_Records {
 	 * Build votes info struct for callbacks
 	 */
 	private function getVotesInfo() {
-		$map = $this->iControl->server->getMap();
+		$map = $this->mc->server->getMap();
 		if (!$map) return null;
 		$gameMode = $this->getGameModeString();
 		if (!$gameMode) return null;
@@ -646,14 +646,14 @@ class Plugin_Records {
 		
 		$login = $data[1];
 		$time = $data[2];
-		$newMap = $this->iControl->server->getMap();
+		$newMap = $this->mc->server->getMap();
 		if (!$newMap) return;
 		if (!$this->mapInfo || $this->mapInfo['UId'] !== $newMap['UId']) {
 			$this->mapInfo = $this->getMapInfo();
 		}
 		$map = $newMap;
 		
-		$player = $this->iControl->server->getPlayer($login);
+		$player = $this->mc->server->getPlayer($login);
 		
 		if ($this->settings->local_records_enabled) {
 			// Get old record of the player
@@ -668,13 +668,13 @@ class Plugin_Records {
 					// Same time
 					$message = '$<' . $player['NickName'] . '$> equalized her/his $<$o' . $oldRecord['rank'] . '.$> Local Record: ' .
 							 Tools::formatTime($oldRecord['time']);
-					$this->iControl->chat->sendInformation($message);
+					$this->mc->chat->sendInformation($message);
 					$save = false;
 				}
 			}
 			if ($save) {
 				// Save time
-				$database = $this->iControl->database;
+				$database = $this->mc->database;
 				$query = "INSERT INTO `" . self::TABLE_RECORDS . "` (
 					`mapUId`,
 					`Login`,
@@ -701,7 +701,7 @@ class Plugin_Records {
 					}
 					$message = '$<' . $player['NickName'] . '$> ' . $improvement . ' $<$o' . $newRecord['rank'] . '.$> Local Record: ' .
 							 Tools::formatTime($newRecord['time']);
-					$this->iControl->chat->sendInformation($message);
+					$this->mc->chat->sendInformation($message);
 					$this->updateManialinks[self::MLID_LOCAL] = true;
 				}
 			}
@@ -745,7 +745,7 @@ class Plugin_Records {
 					}
 					$message = '$<' . $player['NickName'] . '$> ' . $improvement . ' $<$o' . $newRecord['Rank'] .
 							 '.$> Dedimania Record: ' . Tools::formatTime($newRecord['Best']);
-					$this->iControl->chat->sendInformation($message);
+					$this->mc->chat->sendInformation($message);
 					$this->updateManialinks[self::MLID_DEDI] = true;
 				}
 			}
@@ -859,21 +859,21 @@ class Plugin_Records {
 		if (!$record || !$this->settings->dedimania_enabled) return;
 		
 		// Set validation replay
-		$validationReplay = $this->iControl->server->getValidationReplay($record['Login']);
+		$validationReplay = $this->mc->server->getValidationReplay($record['Login']);
 		if ($validationReplay) $record['VReplay'] = $validationReplay;
 		
 		// Set ghost replay
 		if ($record['Rank'] <= 1) {
-			$dataDirectory = $this->iControl->server->getDataDirectory();
+			$dataDirectory = $this->mc->server->getDataDirectory();
 			if (!isset($this->dedimaniaData['directoryAccessChecked'])) {
-				$access = $this->iControl->server->checkAccess($dataDirectory);
+				$access = $this->mc->server->checkAccess($dataDirectory);
 				if (!$access) {
 					trigger_error("No access to the servers data directory. Can't retrieve ghost replays.");
 				}
 				$this->dedimaniaData['directoryAccessChecked'] = $access;
 			}
 			if ($this->dedimaniaData['directoryAccessChecked']) {
-				$ghostReplay = $this->iControl->server->getGhostReplay($record['Login']);
+				$ghostReplay = $this->mc->server->getGhostReplay($record['Login']);
 				if ($ghostReplay) $record['Top1GReplay'] = $ghostReplay;
 			}
 		}
@@ -939,15 +939,15 @@ class Plugin_Records {
 	 * Send manialink to clients
 	 */
 	private function sendManialink($manialink, $login = null) {
-		if (!$manialink || !$this->iControl->client) return;
+		if (!$manialink || !$this->mc->client) return;
 		if (!$login) {
-			if (!$this->iControl->client->query('SendDisplayManialinkPage', $manialink->asXML(), 0, false)) {
-				trigger_error("Couldn't send manialink to players. " . $this->iControl->getClientErrorText());
+			if (!$this->mc->client->query('SendDisplayManialinkPage', $manialink->asXML(), 0, false)) {
+				trigger_error("Couldn't send manialink to players. " . $this->mc->getClientErrorText());
 			}
 		}
 		else {
-			if (!$this->iControl->client->query('SendDisplayManialinkPageToLogin', $login, $manialink->asXML(), 0, false)) {
-				trigger_error("Couldn't send manialink to player '" . $login . "'. " . $this->iControl->getClientErrorText());
+			if (!$this->mc->client->query('SendDisplayManialinkPageToLogin', $login, $manialink->asXML(), 0, false)) {
+				trigger_error("Couldn't send manialink to player '" . $login . "'. " . $this->mc->getClientErrorText());
 			}
 		}
 	}
@@ -967,7 +967,7 @@ class Plugin_Records {
 	 * Update local records manialink
 	 */
 	private function buildLocalManialink() {
-		$map = $this->iControl->server->getMap();
+		$map = $this->mc->server->getMap();
 		if (!$map) {
 			return null;
 		}
@@ -1146,12 +1146,12 @@ class Plugin_Records {
 	private function getLocalRecords($mapUId, $limit = -1) {
 		$query = "SELECT * FROM (
 				SELECT recs.*, @rank := @rank + 1 as `rank` FROM `" . self::TABLE_RECORDS . "` recs, (SELECT @rank := 0) ra
-				WHERE recs.`mapUId` = '" . $this->iControl->database->escape($mapUId) . "'
+				WHERE recs.`mapUId` = '" . $this->mc->database->escape($mapUId) . "'
 				ORDER BY recs.`time` ASC
 				" . ($limit > 0 ? "LIMIT " . $limit : "") . ") records
 			LEFT JOIN `" . Database::TABLE_PLAYERS . "` players
 			ON records.`Login` = players.`Login`;";
-		return $this->iControl->database->query($query);
+		return $this->mc->database->query($query);
 	}
 
 	/**
@@ -1163,7 +1163,7 @@ class Plugin_Records {
 	 */
 	private function getLocalRecord($mapUId, $login) {
 		if (!$mapUId || !$login) return null;
-		$database = $this->iControl->database;
+		$database = $this->mc->database;
 		$query = "SELECT records.* FROM (
 			SELECT recs.*, @rank := @rank + 1 as `rank` FROM `" . self::TABLE_RECORDS . "` `recs`, (SELECT @rank := 0) r
 			WHERE recs.`mapUid` = '" . $database->escape($mapUId) . "'

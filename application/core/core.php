@@ -13,6 +13,8 @@ require_once __DIR__ . '/database.php';
 require_once __DIR__ . '/server.php';
 require_once __DIR__ . '/stats.php';
 require_once __DIR__ . '/tools.php';
+require_once __DIR__ . '/pluginHandler.php';
+require_once __DIR__ . '/manialinkIdHandler.php';
 list($endiantest) = array_values(unpack('L1L', pack('V', 1)));
 if ($endiantest == 1) {
 	require_once __DIR__ . '/PhpRemote/GbxRemote.inc.php';
@@ -164,7 +166,7 @@ class ManiaControl {
 		
 		// Load plugins
 		//$this->loadPlugins();
-		$this->pluginhandler->loadPlugins();
+		$this->pluginHandler->loadPlugins();
 
 		// Connect to server
 		$this->connect();
@@ -191,12 +193,12 @@ class ManiaControl {
 			$this->callbacks->handleCallbacks();
 			
 			// Loop plugins
-			foreach ($this->plugins as $plugin) {
+			/*foreach ($this->plugins as $plugin) {
 				if (!method_exists($plugin, 'loop')) {
 					continue;
 				}
 				$plugin->loop();
-			}
+			}*/
 			
 			// Yield for next tick
 			$loopEnd = microtime(true);

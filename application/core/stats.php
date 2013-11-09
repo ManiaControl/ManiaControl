@@ -17,15 +17,15 @@ class Stats {
 	/**
 	 * Private properties
 	 */
-	private $mControl = null;
+	private $mc = null;
 
 	private $config = null;
 
 	/**
 	 * Constuct stats manager
 	 */
-	public function __construct($mControl) {
-		$this->mControl = $mControl;
+	public function __construct($mc) {
+		$this->mc = $mc;
 		
 		// Load config
 		$this->config = Tools::loadConfig('stats.ManiaControl.xml');
@@ -35,11 +35,11 @@ class Stats {
 		$this->initTables();
 		
 		// Register for needed callbacks
-		$this->iControl->callbacks->registerCallbackHandler(Callbacks::CB_MP_ENDMAP, $this, 'handleEndMap');
-		$this->iControl->callbacks->registerCallbackHandler(Callbacks::CB_MP_PLAYERCHAT, $this, 'handlePlayerChat');
-		$this->iControl->callbacks->registerCallbackHandler(Callbacks::CB_MP_PLAYERCONNECT, $this, 'handlePlayerConnect');
-		$this->iControl->callbacks->registerCallbackHandler(Callbacks::CB_MP_PLAYERDISCONNECT, $this, 'handlePlayerDisconnect');
-		$this->iControl->callbacks->registerCallbackHandler(Callbacks::CB_TM_PLAYERFINISH, $this, 'handlePlayerFinish');
+		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_MP_ENDMAP, $this, 'handleEndMap');
+		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_MP_PLAYERCHAT, $this, 'handlePlayerChat');
+		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_MP_PLAYERCONNECT, $this, 'handlePlayerConnect');
+		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_MP_PLAYERDISCONNECT, $this, 'handlePlayerDisconnect');
+		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_TM_PLAYERFINISH, $this, 'handlePlayerFinish');
 	}
 
 	/**
@@ -78,7 +78,7 @@ class Stats {
 		) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Tracks player stats' AUTO_INCREMENT=1;";
 		
 		// Perform queries
-		if (!$this->iControl->database->multiQuery($query)) {
+		if (!$this->mc->database->multiQuery($query)) {
 			trigger_error("Creating stats tables failed.");
 		}
 	}
@@ -120,7 +120,7 @@ class Stats {
 		}
 		
 		// Perform query
-		if (!$this->iControl->database->multiQuery($multiquery)) {
+		if (!$this->mc->database->multiQuery($multiquery)) {
 			trigger_error("Perform queries on end map failed.");
 		}
 	}
@@ -139,7 +139,7 @@ class Stats {
 			`Login`,
 			`chatCount`
 			) VALUES (
-			'" . $this->iControl->database->escape($login) . "',
+			'" . $this->mc->database->escape($login) . "',
 			1
 			) ON DUPLICATE KEY UPDATE
 			`chatCount` = `chatCount` + VALUES(`chatCount`)
@@ -147,7 +147,7 @@ class Stats {
 		}
 		
 		// Perform query
-		if (!$this->iControl->database->multiQuery($multiquery)) {
+		if (!$this->mc->database->multiQuery($multiquery)) {
 			trigger_error("Perform queries on player chat failed.");
 		}
 	}
@@ -174,7 +174,7 @@ class Stats {
 		
 		// Track server max players
 		if ($this->settings->track_server_max_players) {
-			$players = $this->iControl->server->getPlayers();
+			$players = $this->mc->server->getPlayers();
 			$multiquery .= "INSERT INTO `" . self::TABLE_STATS_SERVER . "` (
 			`day`,
 			`maxPlayerCount`
@@ -193,7 +193,7 @@ class Stats {
 			`lastJoin`,
 			`connectCount`
 			) VALUES (
-			'" . $this->iControl->database->escape($login) . "',
+			'" . $this->mc->database->escape($login) . "',
 			NOW(),
 			1
 			) ON DUPLICATE KEY UPDATE
@@ -203,7 +203,7 @@ class Stats {
 		}
 		
 		// Perform query
-		if (!$this->iControl->database->multiQuery($multiquery)) {
+		if (!$this->mc->database->multiQuery($multiquery)) {
 			trigger_error("Perform queries on player connect failed.");
 		}
 	}
@@ -218,9 +218,9 @@ class Stats {
 		// Track player playtime
 		if ($this->settings->track_player_playtime) {
 			$query = "SELECT `lastJoin` FROM `" . self::TABLE_STATS_PLAYERS . "`
-			WHERE `Login` = '" . $this->iControl->database->escape($login) . "'
+			WHERE `Login` = '" . $this->mc->database->escape($login) . "'
 			;";
-			$result = $this->iControl->database->query($query);
+			$result = $this->mc->database->query($query);
 			if (!$result) {
 				// Error
 				trigger_error("Error selecting player join time from '" . $login . "'.");
@@ -230,12 +230,12 @@ class Stats {
 				while ($row = $result->fetch_object()) {
 					if (!property_exists($row, 'lastJoin')) continue;
 					$lastJoin = strtotime($row->lastJoin);
-					$lastJoin = ($lastJoin > $this->iControl->startTime ? $lastJoin : $this->iControl->startTime);
+					$lastJoin = ($lastJoin > $this->mc->startTime ? $lastJoin : $this->mc->startTime);
 					$multiquery .= "INSERT INTO `" . self::TABLE_STATS_PLAYERS . "` (
 					`Login`,
 					`playTime`
 					) VALUES (
-					'" . $this->iControl->database->escape($login) . "',
+					'" . $this->mc->database->escape($login) . "',
 					TIMESTAMPDIFF(SECOND, '" . Tools::timeToTimestamp($lastJoin) . "', NOW())
 					) ON DUPLICATE KEY UPDATE
 					`playTime` = `playTime` + VALUES(`playTime`)
@@ -246,7 +246,7 @@ class Stats {
 		}
 		
 		// Perform query
-		if (!$this->iControl->database->multiQuery($multiquery)) {
+		if (!$this->mc->database->multiQuery($multiquery)) {
 			trigger_error("Perform queries on player connect failed.");
 		}
 	}
@@ -280,7 +280,7 @@ class Stats {
 			`Login`,
 			`finishCount`
 			) VALUES (
-			'" . $this->iControl->database->escape($login) . "',
+			'" . $this->mc->database->escape($login) . "',
 			1
 			) ON DUPLICATE KEY UPDATE
 			`finishCount` = `finishCount` + VALUES(`finishCount`)
@@ -288,7 +288,7 @@ class Stats {
 		}
 		
 		// Perform query
-		if (!$this->iControl->database->multiQuery($multiquery)) {
+		if (!$this->mc->database->multiQuery($multiquery)) {
 			trigger_error("Perform queries on player finish failed.");
 		}
 	}

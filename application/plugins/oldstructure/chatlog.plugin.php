@@ -16,7 +16,7 @@ class Plugin_Chatlog extends Plugin{
 	/**
 	 * Private properties
 	 */
-	private $mControl = null;
+	private $mc = null;
 
 	private $config = null;
 
@@ -25,8 +25,8 @@ class Plugin_Chatlog extends Plugin{
 	/**
 	 * Constuct chatlog plugin
 	 */
-	public function __construct($mControl) {
-		$this->mControl = $mControl;
+	public function __construct($mc) {
+		$this->mc = $mc;
 		
 		// Load config
 		$this->config = Tools::loadConfig('chatlog.plugin.xml');
@@ -38,7 +38,7 @@ class Plugin_Chatlog extends Plugin{
 		$this->loadSettings();
 		
 		// Register for callbacksc
-		$this->iControl->callbacks->registerCallbackHandler(Callbacks::CB_MP_PLAYERCHAT, $this, 'handlePlayerChatCallback');
+		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_MP_PLAYERCHAT, $this, 'handlePlayerChatCallback');
 		
 		error_log('Chatlog Pugin v' . self::VERSION . ' ready!');
 	}

@@ -19,13 +19,15 @@ namespace ManiaControl;
     private $author;
     private $updateUrl;
     private $name;
+    private $description;
     private $active;
 
-    public function __construct($mc, $name, $version = 0, $author = '', $updateUrl = ''){
+    public function __construct($mc, $name, $version = 0, $author = '', $description = '', $updateUrl = ''){
        $this->mc = $mc;
        $this->name = $name;
        $this->version = $version;
        $this->author = $author;
+       $this->description = $description;
        $this->updateUrl = $updateUrl;
 
        $this->mc->pluginHandler->registerPlugin($this);
@@ -131,5 +133,22 @@ namespace ManiaControl;
      {
          return $this->name;
      }
+
+     /**
+      * @param string $description
+      */
+     public function setDescription($description)
+     {
+         $this->description = $description;
+     }
+
+     /**
+      * @return string
+      */
+     public function getDescription()
+     {
+         return $this->description;
+     }
+
  }
 ?>

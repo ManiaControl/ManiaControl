@@ -4,7 +4,7 @@ namespace ManiaControl;
 
 define('ManiaControlDir', __DIR__);
 
-require_once __DIR__ . '/core/core.ManiaControl.php';
+require_once __DIR__ . '/core/core.php';
 
 // Set process settings
 ini_set('memory_limit', '128M');

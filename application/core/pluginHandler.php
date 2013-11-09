@@ -18,7 +18,7 @@ namespace ManiaControl;
      private $plugins;
 
      public function __construct($mc){
-         $this->mControl = $mc;
+         $this->mc = $mc;
          $this->plugins = array();
      }
 

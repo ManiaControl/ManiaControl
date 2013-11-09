@@ -18,7 +18,7 @@ class Plugin_Karma {
 	/**
 	 * Private properties
 	 */
-	private $mControl = null;
+	private $mc = null;
 
 	private $config = null;
 
@@ -27,10 +27,10 @@ class Plugin_Karma {
 	/**
 	 * Construct plugin
 	 *
-	 * @param object $mControl        	
+	 * @param object $mc        	
 	 */
-	public function __construct($mControl) {
-		$this->mControl = $mControl;
+	public function __construct($mc) {
+		$this->mc = $mc;
 		
 		// Load config
 		$this->config = Tools::loadConfig('karma.plugin.xml');
@@ -40,10 +40,10 @@ class Plugin_Karma {
 		$this->initDatabase();
 		
 		// Register for callbacks
-		$this->iControl->callbacks->registerCallbackHandler(Callbacks::CB_IC_ONINIT, $this, 'handleOnInitCallback');
-		$this->iControl->callbacks->registerCallbackHandler(Callbacks::CB_IC_BEGINMAP, $this, 'handleBeginMapCallback');
-		$this->iControl->callbacks->registerCallbackHandler(Callbacks::CB_MP_PLAYERCONNECT, $this, 'handlePlayerConnectCallback');
-		$this->iControl->callbacks->registerCallbackHandler(Callbacks::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 
+		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_IC_ONINIT, $this, 'handleOnInitCallback');
+		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_IC_BEGINMAP, $this, 'handleBeginMapCallback');
+		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_MP_PLAYERCONNECT, $this, 'handlePlayerConnectCallback');
+		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 
 				'handleManialinkPageAnswerCallback');
 		
 		error_log('Karma Pugin v' . self::VERSION . ' ready!');
@@ -57,7 +57,7 @@ class Plugin_Karma {
 			$this->sendManialinkRequested = -1;
 			
 			// Send manialink to all players
-			$players = $this->iControl->server->getPlayers();
+			$players = $this->mc->server->getPlayers();
 			foreach ($players as $player) {
 				$login = $player['Login'];
 				$manialink = $this->buildManialink($login);
@@ -66,7 +66,7 @@ class Plugin_Karma {
 					$this->sendManialinkRequested = time() + 5;
 					continue;
 				}
-				Tools::sendManialinkPage($this->iControl->client, $manialink->asXml(), $login);
+				Tools::sendManialinkPage($this->mc->client, $manialink->asXml(), $login);
 			}
 		}
 	}
@@ -100,7 +100,7 @@ class Plugin_Karma {
 		$login = $callback[1][0];
 		$manialink = $this->buildManialink($login);
 		if (!$manialink) return;
-		Tools::sendManialinkPage($this->iControl->client, $manialink->asXml(), $login);
+		Tools::sendManialinkPage($this->mc->client, $manialink->asXml(), $login);
 	}
 
 	/**
@@ -116,9 +116,9 @@ class Plugin_Karma {
 			PRIMARY KEY (`index`),
 			UNIQUE KEY `player_map_vote` (`mapIndex`, `playerIndex`)
 			) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Save players map votes' AUTO_INCREMENT=1;";
-		$result = $this->iControl->database->query($query);
-		if ($this->iControl->database->mysqli->error) {
-			trigger_error('MySQL Error on creating karma table. ' . $this->iControl->database->mysqli->error, E_USER_ERROR);
+		$result = $this->mc->database->query($query);
+		if ($this->mc->database->mysqli->error) {
+			trigger_error('MySQL Error on creating karma table. ' . $this->mc->database->mysqli->error, E_USER_ERROR);
 		}
 	}
 
@@ -158,9 +158,9 @@ class Plugin_Karma {
 		
 		// Save vote
 		$login = $callback[1][1];
-		$playerIndex = $this->iControl->database->getPlayerIndex($login);
-		$map = $this->iControl->server->getMap();
-		$mapIndex = $this->iControl->database->getMapIndex($map['UId']);
+		$playerIndex = $this->mc->database->getPlayerIndex($login);
+		$map = $this->mc->server->getMap();
+		$mapIndex = $this->mc->database->getMapIndex($map['UId']);
 		$query = "INSERT INTO `" . self::TABLE_KARMA . "` (
 			`mapIndex`,
 			`playerIndex`,
@@ -171,11 +171,11 @@ class Plugin_Karma {
 			" . $vote . "
 			) ON DUPLICATE KEY UPDATE
 			`vote` = VALUES(`vote`);";
-		$result = $this->iControl->database->query($query);
+		$result = $this->mc->database->query($query);
 		if (!$result) return;
 		
 		// Send success message
-		$this->iControl->chat->sendSuccess('Vote successfully updated!', $login);
+		$this->mc->chat->sendSuccess('Vote successfully updated!', $login);
 		
 		// Send updated manialink
 		$this->sendManialinkRequested = time() + 1;
@@ -190,14 +190,14 @@ class Plugin_Karma {
 		$pos_x = (float) $this->config->pos_x;
 		$pos_y = (float) $this->config->pos_y;
 		
-		$mysqli = $this->iControl->database->mysqli;
+		$mysqli = $this->mc->database->mysqli;
 		
 		// Get indezes
-		$playerIndex = $this->iControl->database->getPlayerIndex($login);
+		$playerIndex = $this->mc->database->getPlayerIndex($login);
 		if ($playerIndex === null) return null;
-		$map = $this->iControl->server->getMap();
+		$map = $this->mc->server->getMap();
 		if (!$map) return null;
-		$mapIndex = $this->iControl->database->getMapIndex($map['UId']);
+		$mapIndex = $this->mc->database->getMapIndex($map['UId']);
 		if ($mapIndex === null) return null;
 		
 		// Get votings

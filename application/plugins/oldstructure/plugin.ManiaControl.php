@@ -14,15 +14,15 @@ abstract class Plugin_Name {
 	/**
 	 * Private properties
 	 */
-	private $mControl = null;
+	private $mc = null;
 
 	/**
 	 * Construct plugin
 	 *
-	 * @param object $mControl        	
+	 * @param object $mc        	
 	 */
-	public function __construct($mControl) {
-		$this->mControl = $mControl;
+	public function __construct($mc) {
+		$this->mc = $mc;
 		
 		error_log('Pugin v' . self::VERSION . ' ready!');
 	}

@@ -23,7 +23,7 @@ class Plugin_United {
 	/**
 	 * Private properties
 	 */
-	private $mControl = null;
+	private $mc = null;
 
 	private $config = null;
 
@@ -46,8 +46,8 @@ class Plugin_United {
 	/**
 	 * Constuct plugin
 	 */
-	public function __construct($mControl) {
-		$this->mControl = $mControl;
+	public function __construct($mc) {
+		$this->mc = $mc;
 		
 		// Load config
 		$this->config = Tools::loadConfig('united.plugin.xml');
@@ -60,14 +60,14 @@ class Plugin_United {
 		$this->loadClients();
 		
 		// Register for callbacks
-		$this->iControl->callbacks->registerCallbackHandler(Callbacks::CB_IC_ONINIT, $this, 'handleOnInitCallback');
-		$this->iControl->callbacks->registerCallbackHandler(Callbacks::CB_IC_5_SECOND, $this, 'handle5Seconds');
-		$this->iControl->callbacks->registerCallbackHandler(Callbacks::CB_MP_PLAYERCONNECT, $this, 'handlePlayerConnect');
-		$this->iControl->callbacks->registerCallbackHandler(Callbacks::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 
+		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_IC_ONINIT, $this, 'handleOnInitCallback');
+		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_IC_5_SECOND, $this, 'handle5Seconds');
+		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_MP_PLAYERCONNECT, $this, 'handlePlayerConnect');
+		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 
 				'handleManialinkPageAnswer');
 		
 		// Register for commands
-		$this->iControl->commands->registerCommandHandler('nextserver', $this, 'handleNextServerCommand');
+		$this->mc->commands->registerCommandHandler('nextserver', $this, 'handleNextServerCommand');
 		
 		if ($this->settings->widgets_enabled) {
 			// Build addfavorite manialink
@@ -88,9 +88,9 @@ class Plugin_United {
 			
 			if (Tools::toBool($this->config->widgets->addfavorite->enabled)) {
 				// Send favorite widget
-				if (!$this->iControl->client->query('SendDisplayManialinkPage', $this->manialinks[self::ML_ADDFAVORITE]->asXml(), 0, 
+				if (!$this->mc->client->query('SendDisplayManialinkPage', $this->manialinks[self::ML_ADDFAVORITE]->asXml(), 0, 
 						false)) {
-					trigger_error("Couldn't send favorite widget! " . $this->iControl->getClientErrorText());
+					trigger_error("Couldn't send favorite widget! " . $this->mc->getClientErrorText());
 				}
 			}
 		}
@@ -106,7 +106,7 @@ class Plugin_United {
 		$this->settings->enabled = Tools::toBool($this->config->enabled);
 		
 		// Timeout
-		$timeout = $this->iControl->server->config->xpath('timeout');
+		$timeout = $this->mc->server->config->xpath('timeout');
 		if ($timeout) {
 			$this->settings->timeout = (int) $timeout[0];
 		}
@@ -169,7 +169,7 @@ class Plugin_United {
 			$client->readCB();
 			$callbacks = $client->getCBResponses();
 			if (!is_array($callbacks) || $client->isError()) {
-				trigger_error("Error reading server callbacks! " . $this->iControl->getClientErrorText($client));
+				trigger_error("Error reading server callbacks! " . $this->mc->getClientErrorText($client));
 			}
 			else {
 				if ($client == $currentServer) {
@@ -189,7 +189,7 @@ class Plugin_United {
 					$this->lastStatusCheck = time();
 					
 					if (!$client->query('CheckEndMatchCondition')) {
-						trigger_error("Couldn't get game server status. " . $this->iControl->getClientErrorText($client));
+						trigger_error("Couldn't get game server status. " . $this->mc->getClientErrorText($client));
 					}
 					else {
 						$response = $client->getResponse();
@@ -241,7 +241,7 @@ class Plugin_United {
 	 */
 	public function handle5Seconds($callback = null) {
 		// Update lobby infos
-		$players = $this->iControl->server->getPlayers();
+		$players = $this->mc->server->getPlayers();
 		if (is_array($players)) {
 			$playerCount = count($players);
 			$playerLevel = 0.;
@@ -253,7 +253,7 @@ class Plugin_United {
 			}
 			foreach ($this->lobbies as $lobby) {
 				if (!$lobby->query('SetLobbyInfo', true, $playerCount, 255, $playerLevel)) {
-					trigger_error("Couldn't update lobby info. " . $this->iControl->getClientErrorText($lobby));
+					trigger_error("Couldn't update lobby info. " . $this->mc->getClientErrorText($lobby));
 				}
 			}
 		}
@@ -263,14 +263,14 @@ class Plugin_United {
 		$joinLink = $this->getJoinLink();
 		foreach ($clients as $client) {
 			if ($client == $this->gameServer[$this->currentClientIndex]) continue;
-			$players = $this->iControl->server->getPlayers($client);
+			$players = $this->mc->server->getPlayers($client);
 			if (!is_array($players)) continue;
 			foreach ($players as $player) {
 				$login = $player['Login'];
 				if (!$client->query('SendOpenLinkToLogin', $login, $joinLink, 1)) {
 					trigger_error(
 							"Couldn't redirect player '" . $login . "' to active game server. " .
-									 $this->iControl->getClientErrorText($client));
+									 $this->mc->getClientErrorText($client));
 				}
 			}
 		}
@@ -291,28 +291,28 @@ class Plugin_United {
 					if ($add_all) {
 						// Add all server
 						foreach ($this->gameServer as $serverClient) {
-							array_push($serverLogins, $this->iControl->server->getLogin($serverClient));
+							array_push($serverLogins, $this->mc->server->getLogin($serverClient));
 						}
 						foreach ($this->lobbies as $serverClient) {
-							array_push($serverLogins, $this->iControl->server->getLogin($serverClient));
+							array_push($serverLogins, $this->mc->server->getLogin($serverClient));
 						}
 					}
 					else {
 						// Add only current server
-						array_push($serverLogins, $this->iControl->server->getLogin());
+						array_push($serverLogins, $this->mc->server->getLogin());
 					}
 					
 					// Build manialink url
-					$manialink = 'iControl?favorite';
+					$manialink = 'mc?favorite';
 					foreach ($serverLogins as $serverLogin) {
 						$manialink .= '&' . $serverLogin;
 					}
 					
 					// Send url to player
-					if (!$this->iControl->client->query('SendOpenLinkToLogin', $login, $manialink, 1)) {
+					if (!$this->mc->client->query('SendOpenLinkToLogin', $login, $manialink, 1)) {
 						trigger_error(
 								"Couldn't open manialink to add server to favorite for '" . $login . "'! " .
-										 $this->iControl->getClientErrorText());
+										 $this->mc->getClientErrorText());
 					}
 					break;
 				}
@@ -345,39 +345,39 @@ class Plugin_United {
 		
 		// Restart map on next game server
 		if (!$newClient->query('RestartMap')) {
-			trigger_error("Couldn't restart map on next game server. " . $this->iControl->getClientErrorText($newClient));
+			trigger_error("Couldn't restart map on next game server. " . $this->mc->getClientErrorText($newClient));
 		}
 		
 		if ($simulateMapEnd) {
 			// Simulate EndMap on old client
-			$this->iControl->callbacks->triggerCallback(Callbacks::CB_IC_ENDMAP, array(Callbacks::CB_IC_ENDMAP));
+			$this->mc->callbacks->triggerCallback(Callbacks::CB_IC_ENDMAP, array(Callbacks::CB_IC_ENDMAP));
 		}
 		
 		// Transfer players to next server
 		$joinLink = $this->getJoinLink($newClient);
 		if (!$oldClient->query('GetPlayerList', 255, 0)) {
-			trigger_error("Couldn't get player list. " . $this->iControl->getClientErrorText($oldClient));
+			trigger_error("Couldn't get player list. " . $this->mc->getClientErrorText($oldClient));
 		}
 		else {
 			$playerList = $oldClient->getResponse();
 			foreach ($playerList as $player) {
 				$login = $player['Login'];
 				if (!$oldClient->query('SendOpenLinkToLogin', $login, $joinLink, 1)) {
-					trigger_error("Couldn't redirect player to next game server. " . $this->iControl->getClientErrorText($oldClient));
+					trigger_error("Couldn't redirect player to next game server. " . $this->mc->getClientErrorText($oldClient));
 				}
 			}
 			
-			$this->iControl->client = $newClient;
+			$this->mc->client = $newClient;
 		}
 		
 		// Trigger client updated callback
-		$this->iControl->callbacks->triggerCallback(Callbacks::CB_IC_CLIENTUPDATED, "Plugin_United.SwitchedServer");
+		$this->mc->callbacks->triggerCallback(Callbacks::CB_IC_CLIENTUPDATED, "Plugin_United.SwitchedServer");
 		
 		if ($simulateMapEnd) {
 			// Simulate BeginMap on new client
-			$map = $this->iControl->server->getMap();
+			$map = $this->mc->server->getMap();
 			if ($map) {
-				$this->iControl->callbacks->triggerCallback(Callbacks::CB_IC_BEGINMAP, array(Callbacks::CB_IC_BEGINMAP, array($map)));
+				$this->mc->callbacks->triggerCallback(Callbacks::CB_IC_BEGINMAP, array(Callbacks::CB_IC_BEGINMAP, array($map)));
 			}
 		}
 	}
@@ -391,9 +391,9 @@ class Plugin_United {
 		if (!$command) return;
 		$login = $command[1][1];
 		
-		if (!$this->iControl->authentication->checkRight($login, 'operator')) {
+		if (!$this->mc->authentication->checkRight($login, 'operator')) {
 			// Not allowed
-			$this->iControl->authentication->sendNotAllowed($login);
+			$this->mc->authentication->sendNotAllowed($login);
 			return;
 		}
 		
@@ -401,7 +401,7 @@ class Plugin_United {
 		$this->switchServerRequested = time() + 3;
 		
 		// Send chat message
-		$this->iControl->chat->sendInformation("Switching to next server in 3 seconds...");
+		$this->mc->chat->sendInformation("Switching to next server in 3 seconds...");
 	}
 
 	/**
@@ -418,7 +418,7 @@ class Plugin_United {
 		$joinLink = $this->getJoinLink($gameserver, !$data[1]);
 		if (!$client->query('SendOpenLinkToLogin', $login, $joinLink, 1)) {
 			trigger_error(
-					"United Plugin: Couldn't redirect player to current game server. " . $this->iControl->getClientErrorText($client));
+					"United Plugin: Couldn't redirect player to current game server. " . $this->mc->getClientErrorText($client));
 		}
 	}
 
@@ -473,7 +473,7 @@ class Plugin_United {
 			}
 			
 			// Wait for server to be ready
-			if (!$this->iControl->server->waitForStatus($client, 4)) {
+			if (!$this->mc->server->waitForStatus($client, 4)) {
 				trigger_error("Server couldn't get ready!", E_USER_ERROR);
 			}
 			
@@ -481,7 +481,7 @@ class Plugin_United {
 			if (!$client->query('SetApiVersion', ManiaControl::API_VERSION)) {
 				trigger_error(
 						"Couldn't set API version '" . ManiaControl::API_VERSION . "'! This might cause problems. " .
-								 $this->iControl->getClientErrorText($client));
+								 $this->mc->getClientErrorText($client));
 			}
 			
 			// Set server settings
@@ -489,30 +489,30 @@ class Plugin_United {
 			$hideServer = ($isGameServer && $this->settings->hide_game_server ? 1 : 0);
 			// Passwords
 			if (!$client->query('SetServerPassword', $password)) {
-				trigger_error("Couldn't set server join password. " . $this->iControl->getClientErrorText($client));
+				trigger_error("Couldn't set server join password. " . $this->mc->getClientErrorText($client));
 			}
 			if (!$client->query('SetServerPasswordForSpectator', $password)) {
-				trigger_error("Couldn't set server spec password. " . $this->iControl->getClientErrorText($client));
+				trigger_error("Couldn't set server spec password. " . $this->mc->getClientErrorText($client));
 			}
 			// Show/Hide server
 			if (!$client->query('SetHideServer', $hideServer)) {
 				trigger_error(
 						"Couldn't set server '" . ($hideServer == 0 ? 'shown' : 'hidden') . "'. " .
-								 $this->iControl->getClientErrorText($client));
+								 $this->mc->getClientErrorText($client));
 			}
 			
 			// Enable service announces
 			if (!$client->query("DisableServiceAnnounces", false)) {
-				trigger_error("Couldn't enable service announces. " . $this->iControl->getClientErrorText($client));
+				trigger_error("Couldn't enable service announces. " . $this->mc->getClientErrorText($client));
 			}
 			
 			// Set game mode
 			if (!$client->query('SetGameMode', $this->settings->gamemode)) {
 				trigger_error(
-						"Couldn't set game mode (" . $this->settings->gamemode . "). " . $this->iControl->getClientErrorText($client));
+						"Couldn't set game mode (" . $this->settings->gamemode . "). " . $this->mc->getClientErrorText($client));
 			}
 			else if (!$client->query('RestartMap')) {
-				trigger_error("Couldn't restart map to change game mode. " . $this->iControl->getClientErrorText($client));
+				trigger_error("Couldn't restart map to change game mode. " . $this->mc->getClientErrorText($client));
 			}
 			
 			// Save client
@@ -520,7 +520,7 @@ class Plugin_United {
 			if ($isGameServer) {
 				array_push($this->gameServer, $client);
 				if (count($this->gameServer) === 1) {
-					$this->iControl->client = $client;
+					$this->mc->client = $client;
 				}
 			}
 			else {
@@ -543,9 +543,9 @@ class Plugin_United {
 			
 			if (Tools::toBool($this->config->widgets->addfavorite->enabled)) {
 				// Send favorite widget
-				if (!$this->iControl->client->query('SendDisplayManialinkPageToLogin', $login, 
+				if (!$this->mc->client->query('SendDisplayManialinkPageToLogin', $login, 
 						$this->manialinks[self::ML_ADDFAVORITE]->asXml(), 0, false)) {
-					trigger_error("Couldn't send favorite widget to player '" . $login . "'! " . $this->iControl->getClientErrorText());
+					trigger_error("Couldn't send favorite widget to player '" . $login . "'! " . $this->mc->getClientErrorText());
 				}
 			}
 		}
@@ -559,14 +559,14 @@ class Plugin_United {
 			$client = $this->gameServer[$this->currentClientIndex];
 		}
 		if (!$client->query('GetSystemInfo')) {
-			trigger_error("Couldn't fetch server system info. " . $this->iControl->getClientErrorText($client));
+			trigger_error("Couldn't fetch server system info. " . $this->mc->getClientErrorText($client));
 			return null;
 		}
 		else {
 			$systemInfo = $client->getResponse();
 			$password = '';
 			if (!$client->query('GetServerPassword')) {
-				trigger_error("Couldn't get server password. " . $this->iControl->getClientErrorText($client));
+				trigger_error("Couldn't get server password. " . $this->mc->getClientErrorText($client));
 			}
 			else {
 				$password = $client->getResponse();

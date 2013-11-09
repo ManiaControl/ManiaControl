@@ -22,7 +22,7 @@ class Database {
 	/**
 	 * Private properties
 	 */
-	private $mControl = null;
+	private $mc = null;
 
 	private $config = null;
 
@@ -31,12 +31,12 @@ class Database {
 	/**
 	 * Construct database connection
 	 */
-	public function __construct($mControl) {
-		$this->mControl = $mControl;
+	public function __construct($mc) {
+		$this->mc = $mc;
 		
 		// Load config
 		$this->config = Tools::loadConfig('database.ManiaControl.xml');
-		$this->mControl->checkConfig($this->config, array("host", "user"), 'database.ManiaControl.xml');
+		$this->mc->checkConfig($this->config, array("host", "user"), 'database.ManiaControl.xml');
 		
 		// Get mysql server information
 		$host = $this->config->xpath('host');
@@ -73,8 +73,8 @@ class Database {
 		$this->initTables();
 		
 		// Register for callbacks
-		$this->mControl->callbacks->registerCallbackHandler(Callbacks::CB_IC_5_SECOND, $this, 'handle5Second');
-		$this->mControl->callbacks->registerCallbackHandler(Callbacks::CB_IC_BEGINMAP, $this, 'handleBeginMap');
+		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_IC_5_SECOND, $this, 'handle5Second');
+		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_IC_BEGINMAP, $this, 'handleBeginMap');
 	}
 
 	/**
@@ -227,7 +227,7 @@ class Database {
 	 */
 	public function handle5Second($callback = null) {
 		// Save current players in database
-		$players = $this->mControl->server->getPlayers();
+		$players = $this->mc->server->getPlayers();
 		if ($players) {
 			$query = "";
 			foreach ($players as $player) {

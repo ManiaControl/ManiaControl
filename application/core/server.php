@@ -22,20 +22,20 @@ class Server {
 	/**
 	 * Private properties
 	 */
-	private $mControl = null;
+	private $mc = null;
 
 	/**
 	 * Construct server
 	 */
-	public function __construct($mControl) {
-		$this->mControl = $mControl;
+	public function __construct($mc) {
+		$this->mc = $mc;
 		
 		// Load config
 		$this->config = Tools::loadConfig('server.ManiaControl.xml');
-		$this->iControl->checkConfig($this->config, array('host', 'port', 'login', 'pass'), 'server');
+		$this->mc->checkConfig($this->config, array('host', 'port', 'login', 'pass'), 'server');
 		
 		// Register for callbacks
-		$this->iControl->callbacks->registerCallbackHandler(Callbacks::CB_IC_1_SECOND, $this, 'eachSecond');
+		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_IC_1_SECOND, $this, 'eachSecond');
 	}
 
 	/**
@@ -52,11 +52,11 @@ class Server {
 	 * @return string
 	 */
 	public function getDataDirectory() {
-		if (!$this->iControl->client->query('GameDataDirectory')) {
-			trigger_error("Couldn't get data directory. " . $this->iControl->getClientErrorText());
+		if (!$this->mc->client->query('GameDataDirectory')) {
+			trigger_error("Couldn't get data directory. " . $this->mc->getClientErrorText());
 			return null;
 		}
-		return $this->iControl->client->getResponse();
+		return $this->mc->client->getResponse();
 	}
 
 	/**
@@ -87,54 +87,54 @@ class Server {
 	public function getInfo($detailed = false) {
 		if ($detailed) {
 			$login = $this->getLogin();
-			if (!$this->iControl->client->query('GetDetailedPlayerInfo', $login)) {
-				trigger_error("Couldn't fetch detailed server player info. " . $this->iControl->getClientErrorText());
+			if (!$this->mc->client->query('GetDetailedPlayerInfo', $login)) {
+				trigger_error("Couldn't fetch detailed server player info. " . $this->mc->getClientErrorText());
 				return null;
 			}
 		}
 		else {
-			if (!$this->iControl->client->query('GetMainServerPlayerInfo')) {
-				trigger_error("Couldn't fetch server player info. " . $this->iControl->getClientErrorText());
+			if (!$this->mc->client->query('GetMainServerPlayerInfo')) {
+				trigger_error("Couldn't fetch server player info. " . $this->mc->getClientErrorText());
 				return null;
 			}
 		}
-		return $this->iControl->client->getResponse();
+		return $this->mc->client->getResponse();
 	}
 
 	/**
 	 * Get server options
 	 */
 	public function getOptions() {
-		if (!$this->iControl->client->query('GetServerOptions')) {
-			trigger_error("Couldn't fetch server options. " . $this->iControl->getClientErrorText());
+		if (!$this->mc->client->query('GetServerOptions')) {
+			trigger_error("Couldn't fetch server options. " . $this->mc->getClientErrorText());
 			return null;
 		}
-		return $this->iControl->client->getResponse();
+		return $this->mc->client->getResponse();
 	}
 
 	/**
 	 * Fetch server name
 	 */
 	public function getName() {
-		if (!$this->iControl->client->query('GetServerName')) {
-			trigger_error("Couldn't fetch server name. " . $this->iControl->getClientErrorText());
+		if (!$this->mc->client->query('GetServerName')) {
+			trigger_error("Couldn't fetch server name. " . $this->mc->getClientErrorText());
 			return null;
 		}
-		return $this->iControl->client->getResponse();
+		return $this->mc->client->getResponse();
 	}
 
 	/**
 	 * Fetch server version
 	 */
 	public function getVersion($forceRefresh = false) {
-		if (isset($this->iControl->client->version) && !$forceRefresh) return $this->iControl->client->version;
-		if (!$this->iControl->client->query('GetVersion')) {
-			trigger_error("Couldn't fetch server version. " . $this->iControl->getClientErrorText());
+		if (isset($this->mc->client->version) && !$forceRefresh) return $this->mc->client->version;
+		if (!$this->mc->client->query('GetVersion')) {
+			trigger_error("Couldn't fetch server version. " . $this->mc->getClientErrorText());
 			return null;
 		}
 		else {
-			$this->iControl->client->version = $this->iControl->client->getResponse();
-			return $this->iControl->client->version;
+			$this->mc->client->version = $this->mc->client->getResponse();
+			return $this->mc->client->version;
 		}
 	}
 
@@ -142,11 +142,11 @@ class Server {
 	 * Fetch server system info
 	 */
 	public function getSystemInfo($forceRefresh = false, &$client = null) {
-		if (!$this->iControl->client && !$client) return null;
-		if (!$client) $client = $this->iControl->client;
+		if (!$this->mc->client && !$client) return null;
+		if (!$client) $client = $this->mc->client;
 		if (isset($client->systemInfo) && !$forceRefresh) return $client->systemInfo;
 		if (!$client->query('GetSystemInfo')) {
-			trigger_error("Couldn't fetch server system info. " . $this->iControl->getClientErrorText($client));
+			trigger_error("Couldn't fetch server system info. " . $this->mc->getClientErrorText($client));
 			return null;
 		}
 		else {
@@ -159,14 +159,14 @@ class Server {
 	 * Fetch network status
 	 */
 	public function getNetworkStats($forceRefresh = false) {
-		if (isset($this->iControl->client->networkStats) && !$forceRefresh) return $this->iControl->client->networkStats;
-		if (!$this->iControl->client->query('GetNetworkStats')) {
-			trigger_error("Couldn't fetch network stats. " . $this->iControl->getClientErrorText());
+		if (isset($this->mc->client->networkStats) && !$forceRefresh) return $this->mc->client->networkStats;
+		if (!$this->mc->client->query('GetNetworkStats')) {
+			trigger_error("Couldn't fetch network stats. " . $this->mc->getClientErrorText());
 			return null;
 		}
 		else {
-			$this->iControl->client->networkStats = $this->iControl->client->getResponse();
-			return $this->iControl->client->networkStats;
+			$this->mc->client->networkStats = $this->mc->client->getResponse();
+			return $this->mc->client->networkStats;
 		}
 	}
 
@@ -182,11 +182,11 @@ class Server {
 			$gameMode = $parseValue;
 		}
 		else {
-			if (!$this->iControl->client->query('GetGameMode')) {
-				trigger_error("Couldn't fetch current game mode. " . $this->iControl->getClientErrorText());
+			if (!$this->mc->client->query('GetGameMode')) {
+				trigger_error("Couldn't fetch current game mode. " . $this->mc->getClientErrorText());
 				return null;
 			}
-			$gameMode = $this->iControl->client->getResponse();
+			$gameMode = $this->mc->client->getResponse();
 		}
 		if ($stringValue) {
 			switch ($gameMode) {
@@ -236,19 +236,19 @@ class Server {
 	public function getPlayer($login, $detailed = false) {
 		if (!$login) return null;
 		$command = ($detailed ? 'GetDetailedPlayerInfo' : 'GetPlayerInfo');
-		if (!$this->iControl->client->query($command, $login)) {
-			trigger_error("Couldn't player info for '" . $login . "'. " . $this->iControl->getClientErrorText());
+		if (!$this->mc->client->query($command, $login)) {
+			trigger_error("Couldn't player info for '" . $login . "'. " . $this->mc->getClientErrorText());
 			return null;
 		}
-		return $this->iControl->client->getResponse();
+		return $this->mc->client->getResponse();
 	}
 
 	/**
 	 * Fetch all players
 	 */
 	public function getPlayers(&$client = null, &$purePlayers = null, &$pureSpectators = null) {
-		if (!$this->iControl->client && !$client) return null;
-		if (!$client) $client = $this->iControl->client;
+		if (!$this->mc->client && !$client) return null;
+		if (!$client) $client = $this->mc->client;
 		$fetchLength = 30;
 		$offset = 0;
 		$players = array();
@@ -257,7 +257,7 @@ class Server {
 		$tries = 0;
 		while ($tries < 10) {
 			if (!$client->query('GetPlayerList', $fetchLength, $offset)) {
-				trigger_error("Couldn't get player list. " . $this->iControl->getClientErrorText($client));
+				trigger_error("Couldn't get player list. " . $this->mc->getClientErrorText($client));
 				$tries++;
 			}
 			else {
@@ -297,11 +297,11 @@ class Server {
 	 */
 	public function getValidationReplay($login) {
 		if (!$login) return null;
-		if (!$this->iControl->client->query('GetValidationReplay', $login)) {
-			trigger_error("Couldn't get validation replay of '" . $login . "'. " . $this->iControl->getClientErrorText());
+		if (!$this->mc->client->query('GetValidationReplay', $login)) {
+			trigger_error("Couldn't get validation replay of '" . $login . "'. " . $this->mc->getClientErrorText());
 			return null;
 		}
-		return $this->iControl->client->getResponse();
+		return $this->mc->client->getResponse();
 	}
 
 	public function getGhostReplay($login) {
@@ -317,8 +317,8 @@ class Server {
 		$fileName = 'Ghost.' . $login . '.' . $gameMode . '.' . $time . '.' . $map['UId'] . '.Replay.Gbx';
 		
 		// Save ghost replay
-		if (!$this->iControl->client->query('SaveBestGhostsReplay', $login, self::GHOSTREPLAYDIR . $fileName)) {
-			trigger_error("Couldn't save ghost replay. " . $this->iControl->getClientErrorText());
+		if (!$this->mc->client->query('SaveBestGhostsReplay', $login, self::GHOSTREPLAYDIR . $fileName)) {
+			trigger_error("Couldn't save ghost replay. " . $this->mc->getClientErrorText());
 			return null;
 		}
 		
@@ -335,12 +335,12 @@ class Server {
 	 * Fetch current map
 	 */
 	public function getMap() {
-		if (!$this->iControl->client) return null;
-		if (!$this->iControl->client->query('GetCurrentMapInfo')) {
-			trigger_error("Couldn't fetch map info. " . $this->iControl->getClientErrorText());
+		if (!$this->mc->client) return null;
+		if (!$this->mc->client->query('GetCurrentMapInfo')) {
+			trigger_error("Couldn't fetch map info. " . $this->mc->getClientErrorText());
 			return null;
 		}
-		return $this->iControl->client->getResponse();
+		return $this->mc->client->getResponse();
 	}
 
 	/**
@@ -353,7 +353,7 @@ class Server {
 		if ($response['Code'] === 4) return true;
 		// Server not yet in given status -> Wait for it...
 		$waitBegin = time();
-		$timeoutTags = $this->iControl->config->xpath('timeout');
+		$timeoutTags = $this->mc->config->xpath('timeout');
 		$maxWaitTime = (!empty($timeoutTags) ? (int) $timeoutTags[0] : 20);
 		$lastStatus = $response['Name'];
 		error_log("Waiting for server to reach status " . $statusCode . "...");
@@ -370,7 +370,7 @@ class Server {
 				// It took too long to reach the status
 				trigger_error(
 						"Server couldn't reach status " . $statusCode . " after " . $maxWaitTime . " seconds! " .
-								 $this->iControl->getClientErrorText());
+								 $this->mc->getClientErrorText());
 				return false;
 			}
 		}

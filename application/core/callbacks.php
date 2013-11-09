@@ -49,7 +49,7 @@ class Callbacks {
 	/**
 	 * Private properties
 	 */
-	private $mControl = null;
+	private $mc = null;
 
 	private $callbackHandlers = array();
 
@@ -64,8 +64,8 @@ class Callbacks {
 	/**
 	 * Construct callbacks handler
 	 */
-	public function __construct($mControl) {
-		$this->mControl = $mControl;
+	public function __construct($mc) {
+		$this->mc = $mc;
 		
 		// Init values
 		$this->last1Second = time();
@@ -82,7 +82,7 @@ class Callbacks {
 		$this->triggerCallback(self::CB_IC_ONINIT, array(self::CB_IC_ONINIT));
 		
 		// Simulate begin map
-		$map = $this->iControl->server->getMap();
+		$map = $this->mc->server->getMap();
 		if ($map) {
 			$this->triggerCallback(self::CB_IC_BEGINMAP, array(self::CB_IC_BEGINMAP, array($map)));
 		}
@@ -122,12 +122,12 @@ class Callbacks {
 		}
 		
 		// Get server callbacks
-		if (!$this->iControl->client) return;
-		$this->iControl->client->resetError();
-		$this->iControl->client->readCB();
-		$callbacks = $this->iControl->client->getCBResponses();
-		if (!is_array($callbacks) || $this->iControl->client->isError()) {
-			trigger_error("Error reading server callbacks. " . $this->iControl->getClientErrorText());
+		if (!$this->mc->client) return;
+		$this->mc->client->resetError();
+		$this->mc->client->readCB();
+		$callbacks = $this->mc->client->getCBResponses();
+		if (!is_array($callbacks) || $this->mc->client->isError()) {
+			trigger_error("Error reading server callbacks. " . $this->mc->getClientErrorText());
 			return;
 		}
 		

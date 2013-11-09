@@ -17,15 +17,15 @@ class Plugin_Obstacle extends Plugin {
 	/**
 	 * Private properties
 	 */
-	private $mControl = null;
+	private $mc = null;
 
 	private $config = null;
 
 	/**
 	 * Constuct obstacle plugin
 	 */
-	public function __construct($mControl) {
-		$this->mControl = $mControl;
+	public function __construct($mc) {
+		$this->mc = $mc;
 		
 		// Load config
 		$this->config = Tools::loadConfig('obstacle.plugin.xml');
@@ -34,7 +34,7 @@ class Plugin_Obstacle extends Plugin {
 		if (!Tools::toBool($this->config->enabled)) return;
 		
 		// Register for jump command
-		$this->iControl->commands->registerCommandHandler('jumpto', $this, 'command_jumpto');
+		$this->mc->commands->registerCommandHandler('jumpto', $this, 'command_jumpto');
 		
 		error_log('Obstacle Pugin v' . self::VERSION . ' ready!');
 	}
@@ -45,16 +45,16 @@ class Plugin_Obstacle extends Plugin {
 	public function command_jumpto($chat) {
 		$login = $chat[1][1];
 		$rightLevel = (string) $this->config->jumps_rightlevel;
-		if (!$this->iControl->authentication->checkRight($login, $rightLevel)) {
+		if (!$this->mc->authentication->checkRight($login, $rightLevel)) {
 			// Not allowed
-			$this->iControl->authentication->sendNotAllowed($login);
+			$this->mc->authentication->sendNotAllowed($login);
 		}
 		else {
 			// Send jump callback
 			$params = explode(' ', $chat[1][2], 2);
 			$param = $login . ";" . $params[1] . ";";
-			if (!$this->iControl->client->query('TriggerModeScriptEvent', self::CB_JUMPTO, $param)) {
-				trigger_error("Couldn't send jump callback for '" . $login . "'. " . $this->iControl->getClientErrorText());
+			if (!$this->mc->client->query('TriggerModeScriptEvent', self::CB_JUMPTO, $param)) {
+				trigger_error("Couldn't send jump callback for '" . $login . "'. " . $this->mc->getClientErrorText());
 			}
 		}
 	}
