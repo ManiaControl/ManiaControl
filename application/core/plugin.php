@@ -22,15 +22,14 @@ namespace ManiaControl;
 
 
 
-    public function __construct($mControl, $name){
+    public function __construct($mControl, $name, $version = 0, $author = '', $updateUrl = ''){
        $this->mControl = $mControl;
        $this->name = $name;
-       $this->version = 0;
-       $this->author = '';
-       $this->updateUrl = '';
+       $this->version = $version;
+       $this->author = $author;
+       $this->updateUrl = $updateUrl;
     }
 
-    
 	/**
 	 * Reserves manialinks on the ManialinkIdHandler
 	 *
