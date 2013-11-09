@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Core configuration for mControl -->
+<core-config>
+
+	<!-- Connection timeout -->
+	<timeout>20</timeout>
+
+	<!-- Define the file name for automatically saving the match settings after each map (relative from /Maps/MatchSettings/) -->
+	<!-- (leave empty for not saving) -->
+	<autosave_matchsettings>tracklist.txt</autosave_matchsettings>
+
+	<!-- Directory for downloaded maps (relative from /Maps/) -->
+	<maps_dir>mx</maps_dir>
+
+</core-config>

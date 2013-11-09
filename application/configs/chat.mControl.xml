@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Configure how mControl sends chat message -->
+<chat-config>
+
+	<!-- Set which codes should be used to compose chat messages -->
+	<messages>
+		<information>$fff</information>
+		<success>$0f0</success>
+		<error>$f00</error>
+	</messages>
+
+</chat-config>

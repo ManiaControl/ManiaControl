@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Enable/Disable chat commands -->
+<!-- Authentication levels: superadmin, admin, operator, all, none -->
+<!-- 'Operator' means that you have to be at least Operator to perform the command -->
+<!-- 'None' means that nobody is able to use the command (disabled) -->
+<commands-config>
+
+	<!-- SuperAdmin commands -->
+	<superadmin>
+		<shutdown />
+		<shutdownserver />
+		<networkstats />
+		<systeminfo />
+		<pay />
+	</superadmin>
+
+	<!-- Admin commands -->
+	<admin>
+		<getplanets />
+		<setservername />
+		<getservername />
+	</admin>
+
+	<!-- Operator commands -->
+	<operator>
+		<kick />
+		<nextmap />
+		<addmap />
+		<removemap />
+		<startwarmup />
+		<stopwarmup />
+	</operator>
+
+	<!-- Everybody commands -->
+	<all>
+		<help />
+		<donate />
+	</all>
+
+	<!-- Nobody commands -->
+	<none>
+	</none>
+
+</commands-config>
