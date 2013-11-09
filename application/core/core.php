@@ -184,7 +184,11 @@ class ManiaControl {
 		if (!$this->chat->sendInformation('ManiaControl v' . self::VERSION . ' successfully started!')) {
 			trigger_error("Couldn't announce ManiaControl. " . $this->getClientErrorText());
 		}
-		
+
+        //get PlayerList
+        $this->client->query('GetPlayerList', 300, 0, 2);
+        $this->playerHandler->addPlayerList($this->client->getResponse());
+
 		// OnInit
 		$this->callbacks->onInit();
 		
@@ -307,10 +311,6 @@ class ManiaControl {
 				}
 			}
 		}
-
-        $this->client->query('GetPlayerList', 300, 0, 2);
-        $this->playerHandler->addPlayerList($this->client->getResponse());
-
 	}
 
 	/**

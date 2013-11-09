@@ -38,10 +38,10 @@ class Chat {
 	public function sendChat($message, $login = null, $prefix = false) {
 		if (!$this->mc->client) return false;
 		if ($login === null) {
-			return $this->mc->client->query('ChatSendServerMessage', ($prefix ? $this->prefix : '') . $message);
+			return $this->mc->client->query('ChatSendServerMessage', '$z' . ($prefix ? $this->prefix : '') . $message . '$z');
 		}
 		else {
-			return $this->mc->client->query('ChatSendServerMessageToLogin', ($prefix ? $this->prefix : '') . $message, $login);
+			return $this->mc->client->query('ChatSendServerMessageToLogin', '$z' . ($prefix ? $this->prefix : '') . $message . '$z', $login);
 		}
 	}
 

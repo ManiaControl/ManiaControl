@@ -37,15 +37,17 @@ class playerHandler {
         }
     }
     /**
-     * Handels a playerConnect
+     * Handles a playerConnect
      * @param $player
      */
     public function playerConnect($player){
-        error_log("test");
         $this->mc->client->query('GetDetailedPlayerInfo', $player[0]);
         $this->addPlayer(new Player($this->mc->client->getResponse()));
-        $this->mc->chat->sendChat("test");
-    }
+        $player = $this->playerList[$player[0]];
+        if($player->pid != 0){ //Player 0 = server
+            $this->mc->chat->sendChat('$ff0New Player: '. $player->nickname . '$z $ff0Nation:$fff ' . $player->nation . ' $ff0Ladder: $fff' . $player->ladderrank);
+        }
+     }
     /**
      * Adds a player to the PlayerList
      * @param Player $player
@@ -53,7 +55,7 @@ class playerHandler {
      */
     public function addPlayer(Player $player){
         if($player != null){
-            $this->playerList[$player->getLogin()] = $player;
+            $this->playerList[$player->login] = $player;
             return true;
         }else{
             return false;

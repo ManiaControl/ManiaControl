@@ -26,7 +26,7 @@
       <file leaf-file-name="player.php" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/core/player.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="26" column="23" selection-start="417" selection-end="417" vertical-scroll-proportion="-17.0" vertical-offset="0" max-vertical-offset="11577">
+            <state line="83" column="27" selection-start="2805" selection-end="2805" vertical-scroll-proportion="-4.6578946" vertical-offset="1057" max-vertical-offset="1853">
               <folding>
                 <element signature="e#6#85#0" expanded="true" />
               </folding>
@@ -34,19 +34,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="playerHandler.php" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="playerHandler.php" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/core/playerHandler.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="28" column="0" selection-start="507" selection-end="507" vertical-scroll-proportion="-15.038462" vertical-offset="0" max-vertical-offset="1054">
+            <state line="46" column="50" selection-start="1102" selection-end="1102" vertical-scroll-proportion="0.53782505" vertical-offset="242" max-vertical-offset="1088">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="chat.php" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="chat.php" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/core/chat.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="31" column="45" selection-start="452" selection-end="452" vertical-scroll-proportion="0.536643" vertical-offset="73" max-vertical-offset="1547">
+            <state line="47" column="7" selection-start="976" selection-end="976" vertical-scroll-proportion="-9.653846" vertical-offset="548" max-vertical-offset="1547">
               <folding />
             </state>
           </provider>
@@ -64,7 +64,7 @@
       <file leaf-file-name="core.php" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/core/core.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="38" column="16" selection-start="982" selection-end="982" vertical-scroll-proportion="-8.5" vertical-offset="0" max-vertical-offset="6817">
+            <state line="187" column="24" selection-start="4232" selection-end="4232" vertical-scroll-proportion="-5.5" vertical-offset="2761" max-vertical-offset="6817">
               <folding />
             </state>
           </provider>
@@ -100,11 +100,11 @@
         <option value="$PROJECT_DIR$/ManiaControl.php" />
         <option value="$PROJECT_DIR$/core/commands.php" />
         <option value="$PROJECT_DIR$/core/stats.php" />
-        <option value="$PROJECT_DIR$/core/chat.php" />
         <option value="$PROJECT_DIR$/core/callbacks.php" />
-        <option value="$PROJECT_DIR$/core/player.php" />
-        <option value="$PROJECT_DIR$/core/playerHandler.php" />
+        <option value="$PROJECT_DIR$/core/chat.php" />
         <option value="$PROJECT_DIR$/core/core.php" />
+        <option value="$PROJECT_DIR$/core/playerHandler.php" />
+        <option value="$PROJECT_DIR$/core/player.php" />
       </list>
     </option>
   </component>
@@ -350,13 +350,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/configs/database.ManiaControl.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="777">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/core/authentication.php">
       <provider selected="true" editor-type-id="text-editor">
         <state line="96" column="74" selection-start="2314" selection-end="2321" vertical-scroll-proportion="-6.3157897" vertical-offset="1152" max-vertical-offset="1853">
@@ -420,13 +413,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/core/database.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="0" selection-start="264" selection-end="296" vertical-scroll-proportion="-13.730769" vertical-offset="0" max-vertical-offset="6919">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/plugins/oldstructure/chatlog.plugin.php">
       <provider selected="true" editor-type-id="text-editor">
         <state line="40" column="118" selection-start="631" selection-end="741" vertical-scroll-proportion="-20.26923" vertical-offset="153" max-vertical-offset="1547">
@@ -434,9 +420,37 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/core/PhpRemote/GbxRemote.bem.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-0.66312057" vertical-offset="561" max-vertical-offset="15266">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/core.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="187" column="24" selection-start="4232" selection-end="4232" vertical-scroll-proportion="-5.5" vertical-offset="2761" max-vertical-offset="6817">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/chat.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="47" column="7" selection-start="976" selection-end="976" vertical-scroll-proportion="-9.653846" vertical-offset="548" max-vertical-offset="1547">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/database.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="21" column="0" selection-start="264" selection-end="296" vertical-scroll-proportion="-13.730769" vertical-offset="0" max-vertical-offset="6919">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/core/player.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="26" column="23" selection-start="417" selection-end="417" vertical-scroll-proportion="-17.0" vertical-offset="0" max-vertical-offset="11577">
+        <state line="83" column="27" selection-start="2805" selection-end="2805" vertical-scroll-proportion="-4.6578946" vertical-offset="1057" max-vertical-offset="1853">
           <folding>
             <element signature="e#6#85#0" expanded="true" />
           </folding>
@@ -445,21 +459,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/core/playerHandler.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="0" selection-start="507" selection-end="507" vertical-scroll-proportion="-15.038462" vertical-offset="0" max-vertical-offset="1054">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/core.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="38" column="16" selection-start="982" selection-end="982" vertical-scroll-proportion="-8.5" vertical-offset="0" max-vertical-offset="6817">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/chat.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="31" column="45" selection-start="452" selection-end="452" vertical-scroll-proportion="0.536643" vertical-offset="73" max-vertical-offset="1547">
+        <state line="46" column="50" selection-start="1102" selection-end="1102" vertical-scroll-proportion="0.53782505" vertical-offset="242" max-vertical-offset="1088">
           <folding />
         </state>
       </provider>
