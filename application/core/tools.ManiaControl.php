@@ -1,6 +1,6 @@
 <?php
 
-namespace mControl;
+namespace ManiaControl;
 
 /**
  * Class for basic tools
@@ -90,7 +90,7 @@ class Tools {
 		$query = 'GET ' . $urlData['path'] . ' HTTP/1.0' . PHP_EOL;
 		$query .= 'Host: ' . $urlData['host'] . PHP_EOL;
 		$query .= 'Content-Type: UTF-8' . PHP_EOL;
-		$query .= 'User-Agent: mControl v' . mControl::VERSION . PHP_EOL;
+		$query .= 'User-Agent: ManiaControl v' . ManiaControl::VERSION . PHP_EOL;
 		$query .= PHP_EOL;
 		
 		fwrite($fsock, $query);
@@ -205,7 +205,7 @@ class Tools {
 	 */
 	public static function loadConfig($fileName) {
 		// Load config file from configs folder
-		$fileLocation = mControl . '/configs/' . $fileName;
+		$fileLocation = ManiaControlDir . '/configs/' . $fileName;
 		if (!file_exists($fileLocation)) {
 			trigger_error("Config file doesn't exist! (" . $fileName . ")", E_USER_ERROR);
 		}

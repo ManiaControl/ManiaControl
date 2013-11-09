@@ -1,6 +1,6 @@
 <?php
 
-namespace mControl;
+namespace ManiaControl;
 
 /**
  * Stats class
@@ -28,7 +28,7 @@ class Stats {
 		$this->mControl = $mControl;
 		
 		// Load config
-		$this->config = Tools::loadConfig('stats.mControl.xml');
+		$this->config = Tools::loadConfig('stats.ManiaControl.xml');
 		$this->loadSettings();
 		
 		// Init database tables

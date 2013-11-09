@@ -1,6 +1,6 @@
 <?php
 
-namespace mControl;
+namespace ManiaControl;
 
 // TODO: Jump message "now playing stadium"
 // TODO: put inactive server in idle (keeping same map)
@@ -9,7 +9,7 @@ namespace mControl;
 // TODO: max players setting
 
 /**
- * mControl United Plugin
+ * ManiaControl United Plugin
  *
  * @author steeffeen
  */
@@ -78,7 +78,7 @@ class Plugin_United {
 	}
 
 	/**
-	 * Handle mControl OnInit callback
+	 * Handle ManiaControl OnInit callback
 	 *
 	 * @param array $callback        	
 	 */
@@ -303,7 +303,7 @@ class Plugin_United {
 					}
 					
 					// Build manialink url
-					$manialink = 'mControl?favorite';
+					$manialink = 'iControl?favorite';
 					foreach ($serverLogins as $serverLogin) {
 						$manialink .= '&' . $serverLogin;
 					}
@@ -478,9 +478,9 @@ class Plugin_United {
 			}
 			
 			// Set api version
-			if (!$client->query('SetApiVersion', mControl::API_VERSION)) {
+			if (!$client->query('SetApiVersion', ManiaControl::API_VERSION)) {
 				trigger_error(
-						"Couldn't set API version '" . mControl::API_VERSION . "'! This might cause problems. " .
+						"Couldn't set API version '" . ManiaControl::API_VERSION . "'! This might cause problems. " .
 								 $this->iControl->getClientErrorText($client));
 			}
 			

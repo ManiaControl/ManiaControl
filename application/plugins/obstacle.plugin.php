@@ -1,9 +1,9 @@
 <?php
 
-namespace mControl;
+namespace ManiaControl;
 
 /**
- * mControl Obstacle Plugin
+ * ManiaControl Obstacle Plugin
  *
  * @author steeffeen
  */

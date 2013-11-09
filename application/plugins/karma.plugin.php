@@ -1,9 +1,9 @@
 <?php
 
-namespace mControl;
+namespace ManiaControl;
 
 /**
- * mControl Karma Plugin
+ * ManiaControl Karma Plugin
  *
  * @author : steeffeen
  */
@@ -72,7 +72,7 @@ class Plugin_Karma {
 	}
 
 	/**
-	 * Handle OnInit mControl callback
+	 * Handle OnInit ManiaControl callback
 	 *
 	 * @param array $callback        	
 	 */
@@ -82,7 +82,7 @@ class Plugin_Karma {
 	}
 
 	/**
-	 * Handle mControl BeginMap callback
+	 * Handle ManiaControl BeginMap callback
 	 *
 	 * @param array $callback        	
 	 */

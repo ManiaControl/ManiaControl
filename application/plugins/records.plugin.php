@@ -1,6 +1,6 @@
 <?php
 
-namespace mControl;
+namespace ManiaControl;
 
 // TODO: show mix of best and next records (depending on own one)
 // TODO: enable keep-alive
@@ -11,7 +11,7 @@ namespace mControl;
 // TODO: threaded requests
 
 /**
- * mControl Records Plugin
+ * ManiaControl Records Plugin
  *
  * @author steeffeen
  */
@@ -123,7 +123,7 @@ class Plugin_Records {
 	}
 
 	/**
-	 * Handle mControl init
+	 * Handle ManiaControl init
 	 */
 	public function handleOnInit($callback = null) {
 		// Let manialinks update
@@ -255,8 +255,8 @@ class Plugin_Records {
 			$serverVersion = $this->iControl->server->getVersion();
 			$serverData['ServerVersion'] = $serverVersion['Version'];
 			$serverData['ServerBuild'] = $serverVersion['Build'];
-			$serverData['Tool'] = 'mControl';
-			$serverData['Version'] = mControl::VERSION;
+			$serverData['Tool'] = 'ManiaControl';
+			$serverData['Version'] = ManiaControl::VERSION;
 			$this->dedimaniaData['serverData'] = $serverData;
 		}
 		
@@ -267,7 +267,7 @@ class Plugin_Records {
 			$header .= 'Accept-Encoding: gzip;' . PHP_EOL;
 			$header .= 'Content-Type: text/xml; charset=utf-8;' . PHP_EOL;
 			$header .= 'Keep-Alive: 300;' . PHP_EOL;
-			$header .= 'User-Agent: mControl v' . mControl::VERSION . ';' . PHP_EOL;
+			$header .= 'User-Agent: ManiaControl v' . ManiaControl::VERSION . ';' . PHP_EOL;
 			$this->dedimaniaData['header'] = $header;
 		}
 		

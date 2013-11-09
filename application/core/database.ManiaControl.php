@@ -1,6 +1,6 @@
 <?php
 
-namespace mControl;
+namespace ManiaControl;
 
 /**
  * Class for database connection
@@ -35,8 +35,8 @@ class Database {
 		$this->mControl = $mControl;
 		
 		// Load config
-		$this->config = Tools::loadConfig('database.mControl.xml');
-		$this->iControl->checkConfig($this->config, array("host", "user"), 'database.mControl.xml');
+		$this->config = Tools::loadConfig('database.ManiaControl.xml');
+		$this->iControl->checkConfig($this->config, array("host", "user"), 'database.ManiaControl.xml');
 		
 		// Get mysql server information
 		$host = $this->config->xpath('host');

@@ -1,18 +1,18 @@
 <?php
 
-namespace mControl;
+namespace ManiaControl;
 
 /**
  * Needed includes
  */
-require_once __DIR__ . '/authentication.mControl.php';
-require_once __DIR__ . '/callbacks.mControl.php';
-require_once __DIR__ . '/chat.mControl.php';
-require_once __DIR__ . '/commands.mControl.php';
-require_once __DIR__ . '/database.mControl.php';
-require_once __DIR__ . '/server.mControl.php';
-require_once __DIR__ . '/stats.mControl.php';
-require_once __DIR__ . '/tools.mControl.php';
+require_once __DIR__ . '/authentication.ManiaControl.php';
+require_once __DIR__ . '/callbacks.ManiaControl.php';
+require_once __DIR__ . '/chat.ManiaControl.php';
+require_once __DIR__ . '/commands.ManiaControl.php';
+require_once __DIR__ . '/database.ManiaControl.php';
+require_once __DIR__ . '/server.ManiaControl.php';
+require_once __DIR__ . '/stats.ManiaControl.php';
+require_once __DIR__ . '/tools.ManiaControl.php';
 list($endiantest) = array_values(unpack('L1L', pack('V', 1)));
 if ($endiantest == 1) {
 	require_once __DIR__ . '/PhpRemote/GbxRemote.inc.php';
@@ -22,11 +22,11 @@ else {
 }
 
 /**
- * mControl Server Controller for ManiaPlanet Server
+ * ManiaControl Server Controller for ManiaPlanet Server
  *
  * @author steeffeen
  */
-class mControl {
+class ManiaControl {
 	/**
 	 * Constants
 	 */
@@ -67,11 +67,11 @@ class mControl {
 	private $shutdownRequested = false;
 
 	/**
-	 * Construct mControl
+	 * Construct ManiaControl
 	 */
 	public function __construct() {
 		// Load core
-		$this->config = Tools::loadConfig('core.mControl.xml');
+		$this->config = Tools::loadConfig('core.ManiaControl.xml');
 		$this->startTime = time();
 		
 		// Load chat tool
@@ -113,14 +113,14 @@ class mControl {
 	}
 
 	/**
-	 * Quit mControl and log the given message
+	 * Quit ManiaControl and log the given message
 	 */
 	public function quit($message = false) {
 		if ($this->shutdownRequested) return;
 		
 		if ($this->client) {
 			// Announce quit
-			$this->chat->sendInformation('mControl shutting down.');
+			$this->chat->sendInformation('ManiaControl shutting down.');
 			
 			// Hide manialinks
 			$this->client->query('SendHideManialinkPage');
@@ -134,15 +134,15 @@ class mControl {
 		// Shutdown
 		if ($this->client) $this->client->Terminate();
 		
-		error_log("Quitting mControl!");
+		error_log("Quitting ManiaControl!");
 		exit();
 	}
 
 	/**
-	 * Run mControl
+	 * Run ManiaControl
 	 */
 	public function run($debug = false) {
-		error_log('Starting mControl v' . self::VERSION . '!');
+		error_log('Starting ManiaControl v' . self::VERSION . '!');
 		$this->debug = (bool) $debug;
 		
 		// Load plugins
@@ -154,9 +154,9 @@ class mControl {
 		// Loading finished
 		error_log("Loading completed!");
 		
-		// Announce mControl
-		if (!$this->chat->sendInformation('mControl v' . self::VERSION . ' successfully started!')) {
-			trigger_error("Couldn't announce mControl. " . $this->iControl->getClientErrorText());
+		// Announce ManiaControl
+		if (!$this->chat->sendInformation('ManiaControl v' . self::VERSION . ' successfully started!')) {
+			trigger_error("Couldn't announce ManiaControl. " . $this->iControl->getClientErrorText());
 		}
 		
 		// OnInit
@@ -284,10 +284,10 @@ class mControl {
 	}
 
 	/**
-	 * Load mControl plugins
+	 * Load ManiaControl plugins
 	 */
 	private function loadPlugins() {
-		$pluginsConfig = Tools::loadConfig('plugins.mControl.xml');
+		$pluginsConfig = Tools::loadConfig('plugins.ManiaControl.xml');
 		if (!$pluginsConfig || !isset($pluginsConfig->plugin)) {
 			trigger_error('Invalid plugins config.');
 			return;
@@ -296,7 +296,7 @@ class mControl {
 		// Load plugin classes
 		$classes = get_declared_classes();
 		foreach ($pluginsConfig->xpath('plugin') as $plugin) {
-			$fileName = mControl . '/plugins/' . $plugin;
+			$fileName = ManiaControlDir . '/plugins/' . $plugin;
 			if (!file_exists($fileName)) {
 				trigger_error("Couldn't load plugin '" . $plugin . "'! File doesn't exist. (/plugins/" . $plugin . ")");
 			}

@@ -1,6 +1,6 @@
 <?php
 
-namespace mControl;
+namespace ManiaControl;
 
 /**
  * Class for handling chat commands
@@ -31,7 +31,7 @@ class Commands {
 		$this->mControl = $mControl;
 		
 		// Load config
-		$this->config = Tools::loadConfig('commands.mControl.xml');
+		$this->config = Tools::loadConfig('commands.ManiaControl.xml');
 		
 		// Register for callbacks
 		$this->iControl->callbacks->registerCallbackHandler(Callbacks::CB_IC_5_SECOND, $this, 'each5Seconds');
@@ -148,7 +148,7 @@ class Commands {
 	}
 
 	/**
-	 * Send mControl version
+	 * Send ManiaControl version
 	 */
 	private function command_version($chat) {
 		$login = $chat[1][1];
@@ -157,7 +157,7 @@ class Commands {
 			$this->iControl->authentication->sendNotAllowed($login);
 			return;
 		}
-		if (!$this->iControl->chat->sendInformation('This server is using mControl v' . mControl::VERSION . '!', $login)) {
+		if (!$this->iControl->chat->sendInformation('This server is using ManiaControl v' . ManiaControl::VERSION . '!', $login)) {
 			trigger_error("Couldn't send version to '" . $login . "'. " . $this->iControl->getClientErrorText());
 		}
 	}
@@ -345,7 +345,7 @@ class Commands {
 			$this->iControl->authentication->sendNotAllowed($login);
 			return;
 		}
-		$this->iControl->quit("mControl shutdown requested by '" . $login . "'");
+		$this->iControl->quit("ManiaControl shutdown requested by '" . $login . "'");
 	}
 
 	/**
@@ -504,24 +504,24 @@ class Commands {
 			// TODO: show usage
 			return;
 		}
-		// Check if mControl can even write to the maps dir
+		// Check if ManiaControl can even write to the maps dir
 		if (!$this->iControl->client->query('GetMapsDirectory')) {
 			trigger_error("Couldn't get map directory. " . $this->iControl->getClientErrorText());
-			$this->iControl->chat->sendError("mControl couldn't retrieve the maps directory.", $login);
+			$this->iControl->chat->sendError("ManiaControl couldn't retrieve the maps directory.", $login);
 			return;
 		}
 		else {
 			$mapDir = $this->iControl->client->getResponse();
 			if (!is_dir($mapDir)) {
-				trigger_error("mControl doesn't have have access to the maps directory in '" . $mapDir . "'.");
-				$this->iControl->chat->sendError("mControl doesn't have access to the maps directory.", $login);
+				trigger_error("ManiaControl doesn't have have access to the maps directory in '" . $mapDir . "'.");
+				$this->iControl->chat->sendError("ManiaControl doesn't have access to the maps directory.", $login);
 				return;
 			}
 			$dlDir = (string) $this->iControl->config->maps_dir;
 			// Create mx directory if necessary
 			if (!is_dir($mapDir . $dlDir) && !mkdir($mapDir . $dlDir)) {
-				trigger_error("mControl doesn't have to rights to save maps in'" . $mapDir . $dlDir, "'.");
-				$this->iControl->chat->sendError("mControl doesn't have to rights to save maps.", $login);
+				trigger_error("ManiaControl doesn't have to rights to save maps in'" . $mapDir . $dlDir, "'.");
+				$this->iControl->chat->sendError("ManiaControl doesn't have to rights to save maps.", $login);
 				return;
 			}
 			$mapDir .= $dlDir . '/';

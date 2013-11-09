@@ -1,6 +1,6 @@
 <?php
 
-namespace mControl;
+namespace ManiaControl;
 
 /**
  * Class for chat methods
@@ -16,16 +16,16 @@ class Chat {
 
 	private $config = null;
 
-	private $prefix = 'mControl>';
+	private $prefix = 'ManiaControl>';
 
 	/**
-	 * Construct mControl chat
+	 * Construct ManiaControl chat
 	 */
 	public function __construct($mControl) {
 		$this->mControl = $mControl;
 		
 		// Load config
-		$this->config = Tools::loadConfig('chat.mControl.xml');
+		$this->config = Tools::loadConfig('chat.ManiaControl.xml');
 	}
 
 	/**

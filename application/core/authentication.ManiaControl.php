@@ -1,6 +1,6 @@
 <?php
 
-namespace mControl;
+namespace ManiaControl;
 
 /**
  * Class handling authentication levels
@@ -28,7 +28,7 @@ class Authentication {
 		$this->mControl = $mControl;
 		
 		// Load config
-		$this->config = Tools::loadConfig('authentication.mControl.xml');
+		$this->config = Tools::loadConfig('authentication.ManiaControl.xml');
 	}
 
 	/**

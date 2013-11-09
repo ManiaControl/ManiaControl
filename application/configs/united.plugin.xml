@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Configure the United plugin -->
-<!-- Note: You should disable the config server.mControl.xml while using this plugin -->
+<!-- Note: You should disable the config server.ManiaControl.xml while using this plugin -->
 <united-config>
 
 	<!-- Enable the whole plugin -->

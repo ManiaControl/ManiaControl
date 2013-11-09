@@ -1,6 +1,6 @@
 <?php
 
-namespace mControl;
+namespace ManiaControl;
 
 /**
  * Class for handling server callbacks
@@ -11,15 +11,15 @@ class Callbacks {
 	/**
 	 * Constants
 	 */
-	// mControl callbacks
-	const CB_IC_1_SECOND = 'mControl.1Second';
-	const CB_IC_5_SECOND = 'mControl.5Second';
-	const CB_IC_1_MINUTE = 'mControl.1Minute';
-	const CB_IC_3_MINUTE = 'mControl.3Minute';
-	const CB_IC_ONINIT = 'mControl.OnInit';
-	const CB_IC_CLIENTUPDATED = 'mControl.ClientUpdated';
-	const CB_IC_BEGINMAP = 'mControl.BeginMap';
-	const CB_IC_ENDMAP = 'mControl.EndMap';
+	// ManiaControl callbacks
+	const CB_IC_1_SECOND = 'ManiaControl.1Second';
+	const CB_IC_5_SECOND = 'ManiaControl.5Second';
+	const CB_IC_1_MINUTE = 'ManiaControl.1Minute';
+	const CB_IC_3_MINUTE = 'ManiaControl.3Minute';
+	const CB_IC_ONINIT = 'ManiaControl.OnInit';
+	const CB_IC_CLIENTUPDATED = 'ManiaControl.ClientUpdated';
+	const CB_IC_BEGINMAP = 'ManiaControl.BeginMap';
+	const CB_IC_ENDMAP = 'ManiaControl.EndMap';
 	// ManiaPlanet callbacks
 	const CB_MP_SERVERSTART = 'ManiaPlanet.ServerStart';
 	const CB_MP_SERVERSTOP = 'ManiaPlanet.ServerStop';
@@ -92,7 +92,7 @@ class Callbacks {
 	 * Handles the given array of callbacks
 	 */
 	public function handleCallbacks() {
-		// Perform mControl callbacks
+		// Perform ManiaControl callbacks
 		if ($this->last1Second <= time() - 1) {
 			$this->last1Second = time();
 			

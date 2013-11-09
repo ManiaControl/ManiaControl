@@ -1,6 +1,6 @@
 <?php
 
-namespace mControl;
+namespace ManiaControl;
 
 /**
  * Class providing information and commands for the connected maniaplanet server
@@ -31,7 +31,7 @@ class Server {
 		$this->mControl = $mControl;
 		
 		// Load config
-		$this->config = Tools::loadConfig('server.mControl.xml');
+		$this->config = Tools::loadConfig('server.ManiaControl.xml');
 		$this->iControl->checkConfig($this->config, array('host', 'port', 'login', 'pass'), 'server');
 		
 		// Register for callbacks
@@ -60,7 +60,7 @@ class Server {
 	}
 
 	/**
-	 * Checks if mControl has access to the given directory (server data directory if no param)
+	 * Checks if ManiaControl has access to the given directory (server data directory if no param)
 	 *
 	 * @param string $directory        	
 	 * @return bool

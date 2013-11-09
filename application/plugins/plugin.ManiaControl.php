@@ -1,9 +1,9 @@
 <?php
 
-namespace mControl;
+namespace ManiaControl;
 
 /**
- * Abstract mControl plugin class
+ * Abstract ManiaControl plugin class
  */
 abstract class Plugin_Name {
 	/**

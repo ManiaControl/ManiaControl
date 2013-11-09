@@ -1,9 +1,9 @@
 <?php
 
-namespace mControl;
+namespace ManiaControl;
 
 /**
- * mControl Chatlog Plugin
+ * ManiaControl Chatlog Plugin
  *
  * @author steeffeen
  */
@@ -51,7 +51,7 @@ class Plugin_Chatlog {
 		
 		// File name
 		$fileName = (string) $this->config->filename;
-		$this->settings->fileName = mControl . '/' . $fileName;
+		$this->settings->fileName = ManiaControlDir . '/' . $fileName;
 		
 		// log_server_messages
 		$log_server_messages = $this->config->xpath('log_server_messages');
@@ -77,7 +77,7 @@ class Plugin_Chatlog {
 	 * @param string $login        	
 	 */
 	private function logText($text, $login = null) {
-		$message = date(mControl::DATE) . '>> ' . ($login ? $login . ': ' : '') . $text . PHP_EOL;
+		$message = date(ManiaControl::DATE) . '>> ' . ($login ? $login . ': ' : '') . $text . PHP_EOL;
 		file_put_contents($this->settings->fileName, $message, FILE_APPEND);
 	}
 }

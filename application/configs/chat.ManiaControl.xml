@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Configure how mControl sends chat message -->
+<!-- Configure how ManiaControl sends chat message -->
 <chat-config>
 
 	<!-- Set which codes should be used to compose chat messages -->
