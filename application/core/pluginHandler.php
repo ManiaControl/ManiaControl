@@ -25,5 +25,9 @@ namespace ManiaControl;
      public function registerPlugin($plugin){
         array_push($this->plugins, $plugin);
      }
+
+     public function loadPlugins(){
+
+     }
  }
 ?>
