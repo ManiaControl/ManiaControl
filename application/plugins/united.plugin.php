@@ -1,6 +1,6 @@
 <?php
 
-namespace iControl;
+namespace mControl;
 
 // TODO: Jump message "now playing stadium"
 // TODO: put inactive server in idle (keeping same map)
@@ -9,7 +9,7 @@ namespace iControl;
 // TODO: max players setting
 
 /**
- * iControl United Plugin
+ * mControl United Plugin
  *
  * @author steeffeen
  */
@@ -23,7 +23,7 @@ class Plugin_United {
 	/**
 	 * Private properties
 	 */
-	private $iControl = null;
+	private $mControl = null;
 
 	private $config = null;
 
@@ -46,8 +46,8 @@ class Plugin_United {
 	/**
 	 * Constuct plugin
 	 */
-	public function __construct($iControl) {
-		$this->iControl = $iControl;
+	public function __construct($mControl) {
+		$this->mControl = $mControl;
 		
 		// Load config
 		$this->config = Tools::loadConfig('united.plugin.xml');
@@ -78,7 +78,7 @@ class Plugin_United {
 	}
 
 	/**
-	 * Handle iControl OnInit callback
+	 * Handle mControl OnInit callback
 	 *
 	 * @param array $callback        	
 	 */
@@ -303,7 +303,7 @@ class Plugin_United {
 					}
 					
 					// Build manialink url
-					$manialink = 'icontrol?favorite';
+					$manialink = 'mControl?favorite';
 					foreach ($serverLogins as $serverLogin) {
 						$manialink .= '&' . $serverLogin;
 					}
@@ -478,9 +478,9 @@ class Plugin_United {
 			}
 			
 			// Set api version
-			if (!$client->query('SetApiVersion', iControl::API_VERSION)) {
+			if (!$client->query('SetApiVersion', mControl::API_VERSION)) {
 				trigger_error(
-						"Couldn't set API version '" . iControl::API_VERSION . "'! This might cause problems. " .
+						"Couldn't set API version '" . mControl::API_VERSION . "'! This might cause problems. " .
 								 $this->iControl->getClientErrorText($client));
 			}
 			

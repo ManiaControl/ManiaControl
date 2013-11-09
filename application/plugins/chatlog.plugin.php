@@ -1,9 +1,9 @@
 <?php
 
-namespace iControl;
+namespace mControl;
 
 /**
- * iControl Chatlog Plugin
+ * mControl Chatlog Plugin
  *
  * @author steeffeen
  */
@@ -16,7 +16,7 @@ class Plugin_Chatlog {
 	/**
 	 * Private properties
 	 */
-	private $iControl = null;
+	private $mControl = null;
 
 	private $config = null;
 
@@ -25,8 +25,8 @@ class Plugin_Chatlog {
 	/**
 	 * Constuct chatlog plugin
 	 */
-	public function __construct($iControl) {
-		$this->iControl = $iControl;
+	public function __construct($mControl) {
+		$this->mControl = $mControl;
 		
 		// Load config
 		$this->config = Tools::loadConfig('chatlog.plugin.xml');
@@ -51,7 +51,7 @@ class Plugin_Chatlog {
 		
 		// File name
 		$fileName = (string) $this->config->filename;
-		$this->settings->fileName = ICONTROL . '/' . $fileName;
+		$this->settings->fileName = mControl . '/' . $fileName;
 		
 		// log_server_messages
 		$log_server_messages = $this->config->xpath('log_server_messages');
@@ -77,7 +77,7 @@ class Plugin_Chatlog {
 	 * @param string $login        	
 	 */
 	private function logText($text, $login = null) {
-		$message = date(iControl::DATE) . '>> ' . ($login ? $login . ': ' : '') . $text . PHP_EOL;
+		$message = date(mControl::DATE) . '>> ' . ($login ? $login . ': ' : '') . $text . PHP_EOL;
 		file_put_contents($this->settings->fileName, $message, FILE_APPEND);
 	}
 }

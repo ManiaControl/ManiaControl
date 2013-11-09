@@ -1,9 +1,9 @@
 <?php
 
-namespace iControl;
+namespace mControl;
 
 /**
- * iControl Karma Plugin
+ * mControl Karma Plugin
  *
  * @author : steeffeen
  */
@@ -18,7 +18,7 @@ class Plugin_Karma {
 	/**
 	 * Private properties
 	 */
-	private $iControl = null;
+	private $mControl = null;
 
 	private $config = null;
 
@@ -27,10 +27,10 @@ class Plugin_Karma {
 	/**
 	 * Construct plugin
 	 *
-	 * @param object $iControl        	
+	 * @param object $mControl        	
 	 */
-	public function __construct($iControl) {
-		$this->iControl = $iControl;
+	public function __construct($mControl) {
+		$this->mControl = $mControl;
 		
 		// Load config
 		$this->config = Tools::loadConfig('karma.plugin.xml');
@@ -72,7 +72,7 @@ class Plugin_Karma {
 	}
 
 	/**
-	 * Handle OnInit iControl callback
+	 * Handle OnInit mControl callback
 	 *
 	 * @param array $callback        	
 	 */
@@ -82,7 +82,7 @@ class Plugin_Karma {
 	}
 
 	/**
-	 * Handle iControl BeginMap callback
+	 * Handle mControl BeginMap callback
 	 *
 	 * @param array $callback        	
 	 */

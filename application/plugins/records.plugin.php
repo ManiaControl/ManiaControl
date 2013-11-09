@@ -1,6 +1,6 @@
 <?php
 
-namespace iControl;
+namespace mControl;
 
 // TODO: show mix of best and next records (depending on own one)
 // TODO: enable keep-alive
@@ -11,7 +11,7 @@ namespace iControl;
 // TODO: threaded requests
 
 /**
- * iControl Records Plugin
+ * mControl Records Plugin
  *
  * @author steeffeen
  */
@@ -37,7 +37,7 @@ class Plugin_Records {
 	/**
 	 * Private properties
 	 */
-	private $iControl = null;
+	private $mControl = null;
 
 	private $settings = null;
 
@@ -58,8 +58,8 @@ class Plugin_Records {
 	/**
 	 * Constuct plugin
 	 */
-	public function __construct($iControl) {
-		$this->iControl = $iControl;
+	public function __construct($mControl) {
+		$this->mControl = $mControl;
 		
 		// Load config
 		$this->config = Tools::loadConfig('records.plugin.xml');
@@ -123,7 +123,7 @@ class Plugin_Records {
 	}
 
 	/**
-	 * Handle iControl init
+	 * Handle mControl init
 	 */
 	public function handleOnInit($callback = null) {
 		// Let manialinks update
@@ -255,8 +255,8 @@ class Plugin_Records {
 			$serverVersion = $this->iControl->server->getVersion();
 			$serverData['ServerVersion'] = $serverVersion['Version'];
 			$serverData['ServerBuild'] = $serverVersion['Build'];
-			$serverData['Tool'] = 'iControl';
-			$serverData['Version'] = iControl::VERSION;
+			$serverData['Tool'] = 'mControl';
+			$serverData['Version'] = mControl::VERSION;
 			$this->dedimaniaData['serverData'] = $serverData;
 		}
 		
@@ -267,7 +267,7 @@ class Plugin_Records {
 			$header .= 'Accept-Encoding: gzip;' . PHP_EOL;
 			$header .= 'Content-Type: text/xml; charset=utf-8;' . PHP_EOL;
 			$header .= 'Keep-Alive: 300;' . PHP_EOL;
-			$header .= 'User-Agent: iControl v' . iControl::VERSION . ';' . PHP_EOL;
+			$header .= 'User-Agent: mControl v' . mControl::VERSION . ';' . PHP_EOL;
 			$this->dedimaniaData['header'] = $header;
 		}
 		

@@ -1,9 +1,9 @@
 <?php
 
-namespace iControl;
+namespace mControl;
 
 /**
- * iControl Obstacle Plugin
+ * mControl Obstacle Plugin
  *
  * @author steeffeen
  */
@@ -17,15 +17,15 @@ class Plugin_Obstacle extends Plugin {
 	/**
 	 * Private properties
 	 */
-	private $iControl = null;
+	private $mControl = null;
 
 	private $config = null;
 
 	/**
 	 * Constuct obstacle plugin
 	 */
-	public function __construct($iControl) {
-		$this->iControl = $iControl;
+	public function __construct($mControl) {
+		$this->mControl = $mControl;
 		
 		// Load config
 		$this->config = Tools::loadConfig('obstacle.plugin.xml');
