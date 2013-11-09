@@ -23,10 +23,57 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="core.php" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="player.php" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/core/player.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="26" column="23" selection-start="417" selection-end="417" vertical-scroll-proportion="-17.0" vertical-offset="0" max-vertical-offset="11577">
+              <folding>
+                <element signature="e#6#85#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="playerHandler.php" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/core/playerHandler.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="28" column="0" selection-start="507" selection-end="507" vertical-scroll-proportion="-15.038462" vertical-offset="0" max-vertical-offset="1054">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="chat.php" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/core/chat.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="31" column="45" selection-start="452" selection-end="452" vertical-scroll-proportion="0.536643" vertical-offset="73" max-vertical-offset="1547">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="database.php" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/core/database.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="21" column="0" selection-start="264" selection-end="296" vertical-scroll-proportion="-13.730769" vertical-offset="0" max-vertical-offset="6919">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="core.php" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/core/core.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="117" column="33" selection-start="2501" selection-end="2501" vertical-scroll-proportion="0.6572104" vertical-offset="1433" max-vertical-offset="6647">
+            <state line="38" column="16" selection-start="982" selection-end="982" vertical-scroll-proportion="-8.5" vertical-offset="0" max-vertical-offset="6817">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="chatlog.plugin.php" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/plugins/oldstructure/chatlog.plugin.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="40" column="118" selection-start="631" selection-end="741" vertical-scroll-proportion="-20.26923" vertical-offset="153" max-vertical-offset="1547">
               <folding />
             </state>
           </provider>
@@ -55,14 +102,16 @@
         <option value="$PROJECT_DIR$/core/stats.php" />
         <option value="$PROJECT_DIR$/core/chat.php" />
         <option value="$PROJECT_DIR$/core/callbacks.php" />
+        <option value="$PROJECT_DIR$/core/player.php" />
+        <option value="$PROJECT_DIR$/core/playerHandler.php" />
         <option value="$PROJECT_DIR$/core/core.php" />
       </list>
     </option>
   </component>
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
   <component name="ProjectFrameBounds">
-    <option name="x" value="618" />
-    <option name="y" value="35" />
+    <option name="x" value="376" />
+    <option name="y" value="13" />
     <option name="width" value="1936" />
     <option name="height" value="1056" />
   </component>
@@ -107,6 +156,24 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="application" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="application" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="application" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="plugins" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="oldstructure" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -224,7 +291,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="618" y="35" width="1936" height="1056" extended-state="0" />
+    <frame x="376" y="13" width="1936" height="1056" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -283,25 +350,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/ManiaControl.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="777" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/configs/core.ManiaControl.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="777">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/configs/plugins.ManiaControl.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="0" selection-start="363" selection-end="363" vertical-scroll-proportion="0.24066924" vertical-offset="0" max-vertical-offset="777">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/configs/database.ManiaControl.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="777">
@@ -319,13 +367,6 @@
     <entry file="file://$PROJECT_DIR$/core/manialinkIdHandler.php">
       <provider selected="true" editor-type-id="text-editor">
         <state line="19" column="5" selection-start="306" selection-end="306" vertical-scroll-proportion="-12.423077" vertical-offset="0" max-vertical-offset="748">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/database.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="68" column="14" selection-start="1719" selection-end="1721" vertical-scroll-proportion="1.4407989" vertical-offset="146" max-vertical-offset="6919">
           <folding />
         </state>
       </provider>
@@ -365,13 +406,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/core/chat.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="31" column="45" selection-start="452" selection-end="452" vertical-scroll-proportion="-15.5" vertical-offset="124" max-vertical-offset="1547">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/core/callbacks.php">
       <provider selected="true" editor-type-id="text-editor">
         <state line="42" column="16" selection-start="0" selection-end="5670" vertical-scroll-proportion="0.24113475" vertical-offset="510" max-vertical-offset="3349">
@@ -386,9 +420,46 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/core/database.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="21" column="0" selection-start="264" selection-end="296" vertical-scroll-proportion="-13.730769" vertical-offset="0" max-vertical-offset="6919">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/plugins/oldstructure/chatlog.plugin.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="40" column="118" selection-start="631" selection-end="741" vertical-scroll-proportion="-20.26923" vertical-offset="153" max-vertical-offset="1547">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/player.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="26" column="23" selection-start="417" selection-end="417" vertical-scroll-proportion="-17.0" vertical-offset="0" max-vertical-offset="11577">
+          <folding>
+            <element signature="e#6#85#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/playerHandler.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="28" column="0" selection-start="507" selection-end="507" vertical-scroll-proportion="-15.038462" vertical-offset="0" max-vertical-offset="1054">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/core/core.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="117" column="33" selection-start="2501" selection-end="2501" vertical-scroll-proportion="0.6572104" vertical-offset="1433" max-vertical-offset="6647">
+        <state line="38" column="16" selection-start="982" selection-end="982" vertical-scroll-proportion="-8.5" vertical-offset="0" max-vertical-offset="6817">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/chat.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="31" column="45" selection-start="452" selection-end="452" vertical-scroll-proportion="0.536643" vertical-offset="73" max-vertical-offset="1547">
           <folding />
         </state>
       </provider>

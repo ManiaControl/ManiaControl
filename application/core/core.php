@@ -14,6 +14,9 @@ require_once __DIR__ . '/server.php';
 require_once __DIR__ . '/stats.php';
 require_once __DIR__ . '/tools.php';
 require_once __DIR__ . '/pluginHandler.php';
+require_once __DIR__ . '/plugin.php';
+require_once __DIR__ . '/playerHandler.php';
+require_once __DIR__ . '/player.php';
 require_once __DIR__ . '/manialinkIdHandler.php';
 list($endiantest) = array_values(unpack('L1L', pack('V', 1)));
 if ($endiantest == 1) {
@@ -72,7 +75,7 @@ class ManiaControl {
 	/**
 	 * Private properties
 	 */
-	private $plugins = array();
+	//private $plugins = array();
 
 	private $shutdownRequested = false;
 
@@ -99,6 +102,9 @@ class ManiaControl {
 		// Load authentication
 		$this->authentication = new Authentication($this);
 
+        // Load playerHandler
+        $this->playerHandler = new PlayerHandler($this);
+
         // Load manialinkidHandler
         $this->manialinkIdHandler = new ManialinkIdHandler();
 
@@ -115,7 +121,7 @@ class ManiaControl {
 		$this->callbacks->registerCallbackHandler(Callbacks::CB_MP_ENDMAP, $this, 'handleEndMap');
 
         // Set ManiaControl version
-        $this->version = VERSION;
+        $this->version = self::VERSION;
 	}
 
 	/**
@@ -301,6 +307,10 @@ class ManiaControl {
 				}
 			}
 		}
+
+        $this->client->query('GetPlayerList', 300, 0, 2);
+        $this->playerHandler->addPlayerList($this->client->getResponse());
+
 	}
 
 	/**
