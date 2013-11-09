@@ -14,20 +14,21 @@ namespace ManiaControl;
 	/**
   	 * Private properties
   	 */
-  	private $mControl;
+  	private $mc;
     private $version;
     private $author;
     private $updateUrl;
     private $name;
+    private $active;
 
-
-
-    public function __construct($mControl, $name, $version = 0, $author = '', $updateUrl = ''){
-       $this->mControl = $mControl;
+    public function __construct($mc, $name, $version = 0, $author = '', $updateUrl = ''){
+       $this->mc = $mc;
        $this->name = $name;
        $this->version = $version;
        $this->author = $author;
        $this->updateUrl = $updateUrl;
+
+       $this->mc->pluginHandler->registerPlugin($this);
     }
 
 	/**
@@ -37,12 +38,36 @@ namespace ManiaControl;
 	 * @return array with manialink Ids     	      	
 	 */
     public function reserveManialinkIds($count){
-       return $this->mControl->manialinkIdHandler->reserveManialikIds($count);
+       return $this->mc->manialinkIdHandler->reserveManialikIds($count);
     }
- 
+
     public function checkUpdate(){
     
     }
+
+     /**
+      * Enables the Plugin
+      */
+     public function enablePlugin()
+     {
+         $this->active = true;
+     }
+
+     /**
+      * Disable the Plugin
+      */
+     public function disablePlugin()
+     {
+         $this->active = true;
+     }
+
+     /**
+      * @return mixed
+      */
+     public function isActive()
+     {
+         return $this->active;
+     }
 
      /**
       * @param mixed $author
