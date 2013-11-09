@@ -60,7 +60,7 @@ namespace ManiaControl;
       */
      public function disablePlugin()
      {
-         $this->active = true;
+         $this->active = false;
      }
 
      /**

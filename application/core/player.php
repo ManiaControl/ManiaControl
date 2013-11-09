@@ -35,10 +35,13 @@ class Player {
     public $ladderscore;
     public $created;
 
+    public $rightLevel;
+
 
     //TODO: usefull construct player without rpc info?
     //TODO: isBot properti
     //TODO: add all attributes like, allies, clublink ... just make vardump on rpc infos
+    //TODO: READ ADDITIONAL INFOS FROM DATABASE
     public function __construct($rpc_infos = null){
 
         if ($rpc_infos) {
@@ -98,6 +101,10 @@ class Player {
             $this->ladderscore = 0;
             $this->created = 0;
         }
+
+
+        //rightlevels, 0 = user, 1 = operator, 2 = admin, 3 = superadmin, 4 = headadmin (from config)
+        $this->rightLevel = 0;
     }
 }
 

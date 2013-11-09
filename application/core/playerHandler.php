@@ -14,11 +14,17 @@ namespace ManiaControl;
  * @package ManiaControl
  */
 class playerHandler {
+
     /**
      * Private properties
      */
     private $playerList;
     private $mc;
+
+    /**
+     * Public properties
+     */
+    public $rightLevels = array(0 => 'Player', 1 => 'Operator', 2 => 'Admin', 3 => 'MasterAdmin', 4 => 'MasterAdmin');
 
     public function __construct(ManiaControl $mc){
         $this->mc = $mc;
@@ -29,7 +35,7 @@ class playerHandler {
 
 
     /**
-     * initializes a Whole Playerlist
+     * initializes a Whole PlayerList
      * @param $players
      */
     public function addPlayerList($players){
@@ -43,11 +49,14 @@ class playerHandler {
      */
     public function playerConnect($player){
         //TODO: Welcome Message?, on mc restart not all players listed, no relay support yet
+        //TODO: Add Rights
+        //TODO: Database
         $this->mc->client->query('GetDetailedPlayerInfo', $player[0]);
         $this->addPlayer(new Player($this->mc->client->getResponse()));
         $player = $this->playerList[$player[0]];
         if($player->pid != 0){ //Player 0 = server
-            $this->mc->chat->sendChat('$ff0New Player: '. $player->nickname . '$z $ff0Nation:$fff ' . $player->nation . ' $ff0Ladder: $fff' . $player->ladderrank);
+            $string = array(0 => 'New Player', 1 => 'Operator', 2 => 'Admin', 3 => 'MasterAdmin', 4 => 'MasterAdmin');
+            $this->mc->chat->sendChat('$ff0'.$string[$player->rightLevel].': '. $player->nickname . '$z $ff0Nation:$fff ' . $player->nation . ' $ff0Ladder: $fff' . $player->ladderrank);
         }
      }
 

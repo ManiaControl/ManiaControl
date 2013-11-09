@@ -227,6 +227,7 @@ class Server {
 		return $gameMode;
 	}
 
+    //TODO: remove getPlayer / getPlayers -> methods now in playerHandler handeld, but should be improved more
 	/**
 	 * Fetch player info
 	 *
