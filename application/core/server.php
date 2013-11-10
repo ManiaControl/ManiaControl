@@ -34,7 +34,7 @@ class Server {
 		$this->config = FileUtil::loadConfig('server.xml');
 		
 		// Register for callbacks
-		$this->maniaConnect->callbacks->registerCallbackHandler(Callbacks::CB_maniaConnect_1_SECOND, $this, 'eachSecond');
+		$this->maniaConnect->callbacks->registerCallbackHandler(Callbacks::CB_MC_1_SECOND, $this, 'eachSecond');
 	}
 
 	/**
