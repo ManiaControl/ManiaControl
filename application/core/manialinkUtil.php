@@ -1,9 +1,11 @@
 <?php
 
+namespace ManiaControl;
+
 /**
  * Manialink utility class
  *
- * @author Steff
+ * @author steeffeen & kremsy
  */
 class ManialinkUtil {
 

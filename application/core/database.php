@@ -3,9 +3,9 @@
 namespace ManiaControl;
 
 /**
- * Class for database connection
+ * Database connection class
  *
- * @author steeffeen
+ * @author steeffeen & kremsy
  */
 class Database {
 	/**
@@ -36,19 +36,26 @@ class Database {
 		
 		// Get mysql server information
 		$host = $this->config->xpath('host');
-		if (!$host) trigger_error("Invalid database configuration (host).", E_USER_ERROR);
-		$host = (string) $host[0];
-		
 		$port = $this->config->xpath('port');
-		if (!$port) trigger_error("Invalid database configuration (port).", E_USER_ERROR);
-		$port = (int) $port[0];
-		
 		$user = $this->config->xpath('user');
-		if (!$user) trigger_error("Invalid database configuration (user).", E_USER_ERROR);
-		$user = (string) $user[0];
-		
 		$pass = $this->config->xpath('pass');
-		if (!$pass) trigger_error("Invalid database configuration (pass).", E_USER_ERROR);
+		
+		if (!$host) {
+			trigger_error("Invalid database configuration (host).", E_USER_ERROR);
+		}
+		if (!$port) {
+			trigger_error("Invalid database configuration (port).", E_USER_ERROR);
+		}
+		if (!$user) {
+			trigger_error("Invalid database configuration (user).", E_USER_ERROR);
+		}
+		if (!$pass) {
+			trigger_error("Invalid database configuration (pass).", E_USER_ERROR);
+		}
+		
+		$host = (string) $host[0];
+		$port = (int) $port[0];
+		$user = (string) $user[0];
 		$pass = (string) $pass[0];
 		
 		// Open database connection
@@ -76,7 +83,10 @@ class Database {
 	 */
 	private function initDatabase() {
 		$dbname = $this->config->xpath('database');
-		if (!$dbname) trigger_error("Invalid database configuration (database).", E_USER_ERROR);
+		if (!$dbname) {
+			trigger_error("Invalid database configuration (database).", E_USER_ERROR);
+			return false;
+		}
 		$dbname = (string) $dbname[0];
 		
 		// Try to connect

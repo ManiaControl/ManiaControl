@@ -1,5 +1,7 @@
 <?php
 
+namespace ManiaControl;
+
 /**
  * Class offering methods to format times
  *

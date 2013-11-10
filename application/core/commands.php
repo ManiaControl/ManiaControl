@@ -5,7 +5,7 @@ namespace ManiaControl;
 /**
  * Class for handling chat commands
  *
- * @author steeffeen
+ * @author steeffeen & kremsy
  */
 class Commands {
 	
