@@ -4,6 +4,7 @@ namespace ManiaControl;
 
 /**
  * Needed includes
+ * 
  * @author steeffeen & kremsy
  */
 require_once __DIR__ . '/authentication.php';
@@ -13,7 +14,9 @@ require_once __DIR__ . '/commands.php';
 require_once __DIR__ . '/database.php';
 require_once __DIR__ . '/fileUtil.php';
 require_once __DIR__ . '/manialinkIdHandler.php';
+require_once __DIR__ . '/player.php';
 require_once __DIR__ . '/playerHandler.php';
+require_once __DIR__ . '/plugin.php';
 require_once __DIR__ . '/pluginHandler.php';
 require_once __DIR__ . '/server.php';
 require_once __DIR__ . '/settingManager.php';
@@ -96,8 +99,8 @@ class ManiaControl {
 
 	/**
 	 * Quit ManiaControl and log the given message
-	 * 
-	 * @param string $message
+	 *
+	 * @param string $message        	
 	 */
 	public function quit($message = false) {
 		if ($this->client) {

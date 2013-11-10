@@ -2,8 +2,6 @@
 
 namespace ManiaControl;
 
-require_once __DIR__ . '/player.php';
-
 /**
  * Class managing players
  *
@@ -37,7 +35,7 @@ class PlayerHandler {
 	}
 
 	/**
-	 * Initialize all necessary tables
+	 * Initialize necessary database tables
 	 *
 	 * @return bool
 	 */

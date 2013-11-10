@@ -2,8 +2,6 @@
 
 namespace ManiaControl;
 
-require_once __DIR__ . '/plugin.php';
-
 /**
  * Class handling plugins
  *
