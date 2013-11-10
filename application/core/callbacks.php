@@ -79,7 +79,7 @@ class Callbacks {
 		$this->triggerCallback(self::CB_MC_ONINIT, array(self::CB_MC_ONINIT));
 		
 		// Simulate begin map
-		$map = $this->maniaControl->server->getMap();
+		$map = $this->maniaControl->server->getCurrentMap();
 		if ($map) {
 			$this->triggerCallback(self::CB_MC_BEGINMAP, array(self::CB_MC_BEGINMAP, array($map)));
 		}

@@ -12,11 +12,15 @@ class ManialinkUtil {
 	/**
 	 * Send the given manialink to players
 	 *
+	 * @param \IXR_ClientMulticall_Gbx $client        	
 	 * @param string $manialink        	
 	 * @param array $logins        	
+	 * @param int $timeout        	
+	 * @param bool $hideOnClick        	
 	 * @return bool
 	 */
-	public static function sendManialinkPage($client, $manialinkText, $logins = null, $timeout = 0, $hideOnClick = false) {
+	public static function sendManialinkPage(\IXR_ClientMulticall_Gbx $client, $manialinkText, array $logins = null, $timeout = 0, 
+			$hideOnClick = false) {
 		if (!$client || !$manialinkText) {
 			return false;
 		}
@@ -44,7 +48,7 @@ class ManialinkUtil {
 	 *
 	 * @param string $name        	
 	 * @param string $id        	
-	 * @return SimpleXMLElement
+	 * @return \SimpleXMLElement
 	 */
 	public static function newManialinkXml($id = null) {
 		$xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><manialink/>');
@@ -58,7 +62,7 @@ class ManialinkUtil {
 	/**
 	 * Add alignment attributes to an xml element
 	 *
-	 * @param SimpleXMLElement $xml        	
+	 * @param \SimpleXMLElement $xml        	
 	 * @param string $halign        	
 	 * @param string $valign        	
 	 */
@@ -74,7 +78,7 @@ class ManialinkUtil {
 	/**
 	 * Add translate attribute to an xml element
 	 *
-	 * @param SimpleXMLElement $xml        	
+	 * @param \SimpleXMLElement $xml        	
 	 * @param bool $translate        	
 	 */
 	public static function addTranslate(\SimpleXMLElement $xml, $translate = true) {

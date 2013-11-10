@@ -96,6 +96,8 @@ class ManiaControl {
 
 	/**
 	 * Quit ManiaControl and log the given message
+	 * 
+	 * @param string $message
 	 */
 	public function quit($message = false) {
 		if ($this->client) {
