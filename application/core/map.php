@@ -22,7 +22,7 @@ class map {
     public $nbchecks = 0;
     public $score = 0;
     public $starttime = 0;
-    public $maptype = ''; 
+    public $maptype = '';
     public $mapstyle = '';
     public $titleuid = 0;
   //  public $gbx; //needed? would be the whole gbx object

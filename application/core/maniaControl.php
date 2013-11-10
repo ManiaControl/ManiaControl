@@ -19,6 +19,8 @@ require_once __DIR__ . '/settingManager.php';
 require_once __DIR__ . '/settingConfigurator.php';
 require_once __DIR__ . '/mapHandler.php';
 require_once __DIR__ . '/GbxDataFetcher/gbxdatafetcher.inc.php';
+require_once __DIR__ . '/ManiaExchange/mxinfofetcher.inc.php';
+require_once __DIR__ . '/ManiaExchange/mxinfosearcher.inc.php';
 
 list($endiantest) = array_values(unpack('L1L', pack('V', 1)));
 if ($endiantest == 1) {
