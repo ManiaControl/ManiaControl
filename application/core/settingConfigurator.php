@@ -11,11 +11,11 @@ class settingConfigurator {
     public function __construct(ManiaControl $maniaControl){
         $this->maniaControl = $maniaControl;
         $this->maniaControl->callbacks->registerCallbackHandler(Callbacks::CB_MC_ONINIT, $this, 'onInit');
-
+        $this->maniaControl->manialinkIdHandler->reserveManiaLinkIds(100);
     }
 
-    private function onInit(){
-
-        $this->maniaControl->chat->sendChat("test");
+    public function onInit(array $callback){
+       // $this->maniaControl->manialinkUtil->
+       // $this->maniaControl->chat->sendChat("test");
     }
 } 
