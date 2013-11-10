@@ -10,12 +10,11 @@ namespace ManiaControl;
 
 class mapHandler {
 
-    /**
+   /**
      * Private properties
      */
     private $maniaControl = null;
     private $mapList = array();
-
 
     /**
      * Construct map  handler
@@ -53,6 +52,8 @@ class mapHandler {
      * @param array $callback
      */
     public function onInit(){
+
+
         $this->maniaControl->client->query('GetMapList', 300, 0);
         $mapList = $this->maniaControl->client->getResponse();
         foreach ($mapList as $map) {

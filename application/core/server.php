@@ -22,19 +22,19 @@ class Server {
 	/**
 	 * Private properties
 	 */
-	private $mc = null;
+	private $maniaConnect = null;
 
 	/**
 	 * Construct server
 	 */
-	public function __construct($mc) {
-		$this->mc = $mc;
+	public function __construct($maniaConnect) {
+		$this->maniaConnect = $maniaConnect;
 		
 		// Load config
 		$this->config = FileUtil::loadConfig('server.xml');
 		
 		// Register for callbacks
-		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_MC_1_SECOND, $this, 'eachSecond');
+		$this->maniaConnect->callbacks->registerCallbackHandler(Callbacks::CB_maniaConnect_1_SECOND, $this, 'eachSecond');
 	}
 
 	/**
@@ -51,11 +51,11 @@ class Server {
 	 * @return string
 	 */
 	public function getDataDirectory() {
-		if (!$this->mc->client->query('GameDataDirectory')) {
-			trigger_error("Couldn't get data directory. " . $this->mc->getClientErrorText());
+		if (!$this->maniaConnect->client->query('GameDataDirectory')) {
+			trigger_error("Couldn't get data directory. " . $this->maniaConnect->getClientErrorText());
 			return null;
 		}
-		return $this->mc->client->getResponse();
+		return $this->maniaConnect->client->getResponse();
 	}
 
 	/**
@@ -86,54 +86,54 @@ class Server {
 	public function getInfo($detailed = false) {
 		if ($detailed) {
 			$login = $this->getLogin();
-			if (!$this->mc->client->query('GetDetailedPlayerInfo', $login)) {
-				trigger_error("Couldn't fetch detailed server player info. " . $this->mc->getClientErrorText());
+			if (!$this->maniaConnect->client->query('GetDetailedPlayerInfo', $login)) {
+				trigger_error("Couldn't fetch detailed server player info. " . $this->maniaConnect->getClientErrorText());
 				return null;
 			}
 		}
 		else {
-			if (!$this->mc->client->query('GetMainServerPlayerInfo')) {
-				trigger_error("Couldn't fetch server player info. " . $this->mc->getClientErrorText());
+			if (!$this->maniaConnect->client->query('GetMainServerPlayerInfo')) {
+				trigger_error("Couldn't fetch server player info. " . $this->maniaConnect->getClientErrorText());
 				return null;
 			}
 		}
-		return $this->mc->client->getResponse();
+		return $this->maniaConnect->client->getResponse();
 	}
 
 	/**
 	 * Get server options
 	 */
 	public function getOptions() {
-		if (!$this->mc->client->query('GetServerOptions')) {
-			trigger_error("Couldn't fetch server options. " . $this->mc->getClientErrorText());
+		if (!$this->maniaConnect->client->query('GetServerOptions')) {
+			trigger_error("Couldn't fetch server options. " . $this->maniaConnect->getClientErrorText());
 			return null;
 		}
-		return $this->mc->client->getResponse();
+		return $this->maniaConnect->client->getResponse();
 	}
 
 	/**
 	 * Fetch server name
 	 */
 	public function getName() {
-		if (!$this->mc->client->query('GetServerName')) {
-			trigger_error("Couldn't fetch server name. " . $this->mc->getClientErrorText());
+		if (!$this->maniaConnect->client->query('GetServerName')) {
+			trigger_error("Couldn't fetch server name. " . $this->maniaConnect->getClientErrorText());
 			return null;
 		}
-		return $this->mc->client->getResponse();
+		return $this->maniaConnect->client->getResponse();
 	}
 
 	/**
 	 * Fetch server version
 	 */
 	public function getVersion($forceRefresh = false) {
-		if (isset($this->mc->client->version) && !$forceRefresh) return $this->mc->client->version;
-		if (!$this->mc->client->query('GetVersion')) {
-			trigger_error("Couldn't fetch server version. " . $this->mc->getClientErrorText());
+		if (isset($this->maniaConnect->client->version) && !$forceRefresh) return $this->maniaConnect->client->version;
+		if (!$this->maniaConnect->client->query('GetVersion')) {
+			trigger_error("Couldn't fetch server version. " . $this->maniaConnect->getClientErrorText());
 			return null;
 		}
 		else {
-			$this->mc->client->version = $this->mc->client->getResponse();
-			return $this->mc->client->version;
+			$this->maniaConnect->client->version = $this->maniaConnect->client->getResponse();
+			return $this->maniaConnect->client->version;
 		}
 	}
 
@@ -141,11 +141,11 @@ class Server {
 	 * Fetch server system info
 	 */
 	public function getSystemInfo($forceRefresh = false, &$client = null) {
-		if (!$this->mc->client && !$client) return null;
-		if (!$client) $client = $this->mc->client;
+		if (!$this->maniaConnect->client && !$client) return null;
+		if (!$client) $client = $this->maniaConnect->client;
 		if (isset($client->systemInfo) && !$forceRefresh) return $client->systemInfo;
 		if (!$client->query('GetSystemInfo')) {
-			trigger_error("Couldn't fetch server system info. " . $this->mc->getClientErrorText($client));
+			trigger_error("Couldn't fetch server system info. " . $this->maniaConnect->getClientErrorText($client));
 			return null;
 		}
 		else {
@@ -158,14 +158,14 @@ class Server {
 	 * Fetch network status
 	 */
 	public function getNetworkStats($forceRefresh = false) {
-		if (isset($this->mc->client->networkStats) && !$forceRefresh) return $this->mc->client->networkStats;
-		if (!$this->mc->client->query('GetNetworkStats')) {
-			trigger_error("Couldn't fetch network stats. " . $this->mc->getClientErrorText());
+		if (isset($this->maniaConnect->client->networkStats) && !$forceRefresh) return $this->maniaConnect->client->networkStats;
+		if (!$this->maniaConnect->client->query('GetNetworkStats')) {
+			trigger_error("Couldn't fetch network stats. " . $this->maniaConnect->getClientErrorText());
 			return null;
 		}
 		else {
-			$this->mc->client->networkStats = $this->mc->client->getResponse();
-			return $this->mc->client->networkStats;
+			$this->maniaConnect->client->networkStats = $this->maniaConnect->client->getResponse();
+			return $this->maniaConnect->client->networkStats;
 		}
 	}
 
@@ -181,11 +181,11 @@ class Server {
 			$gameMode = $parseValue;
 		}
 		else {
-			if (!$this->mc->client->query('GetGameMode')) {
-				trigger_error("Couldn't fetch current game mode. " . $this->mc->getClientErrorText());
+			if (!$this->maniaConnect->client->query('GetGameMode')) {
+				trigger_error("Couldn't fetch current game mode. " . $this->maniaConnect->getClientErrorText());
 				return null;
 			}
-			$gameMode = $this->mc->client->getResponse();
+			$gameMode = $this->maniaConnect->client->getResponse();
 		}
 		if ($stringValue) {
 			switch ($gameMode) {
@@ -236,19 +236,19 @@ class Server {
 	public function getPlayer($login, $detailed = false) {
 		if (!$login) return null;
 		$command = ($detailed ? 'GetDetailedPlayerInfo' : 'GetPlayerInfo');
-		if (!$this->mc->client->query($command, $login)) {
-			trigger_error("Couldn't player info for '" . $login . "'. " . $this->mc->getClientErrorText());
+		if (!$this->maniaConnect->client->query($command, $login)) {
+			trigger_error("Couldn't player info for '" . $login . "'. " . $this->maniaConnect->getClientErrorText());
 			return null;
 		}
-		return $this->mc->client->getResponse();
+		return $this->maniaConnect->client->getResponse();
 	}
 
 	/**
 	 * Fetch all players
 	 */
 	public function getPlayers(&$client = null, &$purePlayers = null, &$pureSpectators = null) {
-		if (!$this->mc->client && !$client) return null;
-		if (!$client) $client = $this->mc->client;
+		if (!$this->maniaConnect->client && !$client) return null;
+		if (!$client) $client = $this->maniaConnect->client;
 		$fetchLength = 30;
 		$offset = 0;
 		$players = array();
@@ -257,7 +257,7 @@ class Server {
 		$tries = 0;
 		while ($tries < 10) {
 			if (!$client->query('GetPlayerList', $fetchLength, $offset)) {
-				trigger_error("Couldn't get player list. " . $this->mc->getClientErrorText($client));
+				trigger_error("Couldn't get player list. " . $this->maniaConnect->getClientErrorText($client));
 				$tries++;
 			}
 			else {
@@ -297,11 +297,11 @@ class Server {
 	 */
 	public function getValidationReplay($login) {
 		if (!$login) return null;
-		if (!$this->mc->client->query('GetValidationReplay', $login)) {
-			trigger_error("Couldn't get validation replay of '" . $login . "'. " . $this->mc->getClientErrorText());
+		if (!$this->maniaConnect->client->query('GetValidationReplay', $login)) {
+			trigger_error("Couldn't get validation replay of '" . $login . "'. " . $this->maniaConnect->getClientErrorText());
 			return null;
 		}
-		return $this->mc->client->getResponse();
+		return $this->maniaConnect->client->getResponse();
 	}
 
 	public function getGhostReplay($login) {
@@ -317,8 +317,8 @@ class Server {
 		$fileName = 'Ghost.' . $login . '.' . $gameMode . '.' . $time . '.' . $map['UId'] . '.Replay.Gbx';
 		
 		// Save ghost replay
-		if (!$this->mc->client->query('SaveBestGhostsReplay', $login, self::GHOSTREPLAYDIR . $fileName)) {
-			trigger_error("Couldn't save ghost replay. " . $this->mc->getClientErrorText());
+		if (!$this->maniaConnect->client->query('SaveBestGhostsReplay', $login, self::GHOSTREPLAYDIR . $fileName)) {
+			trigger_error("Couldn't save ghost replay. " . $this->maniaConnect->getClientErrorText());
 			return null;
 		}
 		
@@ -331,16 +331,17 @@ class Server {
 		return $ghostReplay;
 	}
 
+    //TODO: remove getMap
 	/**
 	 * Fetch current map
 	 */
 	public function getMap() {
-		if (!$this->mc->client) return null;
-		if (!$this->mc->client->query('GetCurrentMapInfo')) {
-			trigger_error("Couldn't fetch map info. " . $this->mc->getClientErrorText());
+		if (!$this->maniaConnect->client) return null;
+		if (!$this->maniaConnect->client->query('GetCurrentMapInfo')) {
+			trigger_error("Couldn't fetch map info. " . $this->maniaConnect->getClientErrorText());
 			return null;
 		}
-		return $this->mc->client->getResponse();
+		return $this->maniaConnect->client->getResponse();
 	}
 
 	/**
@@ -369,7 +370,7 @@ class Server {
 				// It took too long to reach the status
 				trigger_error(
 						"Server couldn't reach status " . $statusCode . " after " . $maxWaitTime . " seconds! " .
-								 $this->mc->getClientErrorText());
+								 $this->maniaConnect->getClientErrorText());
 				return false;
 			}
 		}

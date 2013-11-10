@@ -64,16 +64,16 @@ class map {
             $this->name = 'undefined';
         }
 
-        $mapFetcher = new \GBXChallMapFetcher(true);
+      /*  $mapFetcher = new \GBXChallMapFetcher(true);
         try{
-           $mapFetcher->processFile($this->server->mapdir . $this->filename);
+           $mapFetcher->processFile($this->mc->server->mapdir . $this->filename);
         }    catch (Exception $e){
             trigger_error($e->getMessage(), E_USER_WARNING);
         }
         $this->authorNick = $mapFetcher->authorNick;
         $this->authorEInfo = $mapFetcher->authorEInfo;
         $this->authorZone = $mapFetcher->authorZone;
-
+    */
         $this->mx = new \MXInfoFetcher('SM', $this->uid, false); //SM -> change to gameerkennung
     }
 } 
