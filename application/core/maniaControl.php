@@ -4,6 +4,7 @@ namespace ManiaControl;
 
 /**
  * Needed includes
+ * @author steeffeen & kremsy
  */
 require_once __DIR__ . '/authentication.php';
 require_once __DIR__ . '/callbacks.php';

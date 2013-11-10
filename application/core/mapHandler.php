@@ -1,9 +1,8 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Lukas
- * Date: 10.11.13
- * Time: 16:46
+ * Handler for maps
+ *
+ * @author kremsy & steeffeen
  */
 
 namespace ManiaControl;
@@ -22,6 +21,11 @@ class mapHandler {
      * Construct map  handler
      * @param ManiaControl $maniaControl
      */
+
+    //TODO: database init
+    //TODO: erasemap from server
+    //TODO: implement of a method which are called by xlist command and results maplists from maniaexcahnge (or extra class for it)
+    //TODO: admin add from maniaexchange, would handle it here
     public function __construct(ManiaControl $maniaControl) {
         $this->maniaControl = $maniaControl;
 
@@ -41,6 +45,7 @@ class mapHandler {
 
 
     }
+
 
     /**
      * Handle OnInit callback
