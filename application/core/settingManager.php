@@ -12,11 +12,17 @@ class SettingManager {
 	 * Constants
 	 */
 	const TABLE_SETTINGS = 'mc_settings';
+	const TYPE_STRING = 'string';
+	const TYPE_INT = 'int';
+	const TYPE_REAL = 'real';
+	const TYPE_BOOL = 'bool';
+	const TYPE_ARRAY = 'array';
 	
 	/**
 	 * Private properties
 	 */
 	private $maniaControl = null;
+	private $arrayDelimiter = ';;';
 
 	/**
 	 * Construct setting manager
@@ -36,13 +42,19 @@ class SettingManager {
 	 */
 	private function initTables() {
 		$mysqli = $this->maniaControl->database->mysqli;
+		$defaultType = "'" . self::TYPE_STRING . "'";
+		$typeSet = $defaultType;
+		$typeSet .= ",'" . self::TYPE_INT . "'";
+		$typeSet .= ",'" . self::TYPE_REAL . "'";
+		$typeSet .= ",'" . self::TYPE_BOOL . "'";
+		$typeSet .= ",'" . self::TYPE_ARRAY . "'";
 		$settingTableQuery = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_SETTINGS . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
 				`class` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
 				`setting` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-				`type` set('string','int','real','bool') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'string',
-				`value` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-				`default` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+				`type` set({$typeSet}) COLLATE utf8_unicode_ci NOT NULL DEFAULT '{$defaultType}',
+				`value` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+				`default` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
 				`changed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 				PRIMARY KEY (`index`),
 				UNIQUE KEY `settingId` (`class`,`setting`)
@@ -69,16 +81,19 @@ class SettingManager {
 	 */
 	private function getType($param) {
 		if (is_int($param)) {
-			return 'int';
+			return self::TYPE_INT;
 		}
 		if (is_real($param)) {
-			return 'real';
+			return self::TYPE_REAL;
 		}
 		if (is_bool($param)) {
-			return 'bool';
+			return self::TYPE_BOOL;
 		}
 		if (is_string($param)) {
-			return 'string';
+			return self::TYPE_STRING;
+		}
+		if (is_array($param)) {
+			return self::TYPE_ARRAY;
 		}
 		trigger_error('Unsupported setting type. ' . print_r($param, true));
 		return null;
@@ -92,20 +107,40 @@ class SettingManager {
 	 * @return mixed
 	 */
 	private function castSetting($type, $value) {
-		$type = strtolower($type);
-		if ($type === 'int') {
+		if ($type === self::TYPE_INT) {
 			return (int) $value;
 		}
-		if ($type === 'real') {
+		if ($type === self::TYPE_REAL) {
 			return (real) $value;
 		}
-		if ($type === 'bool') {
+		if ($type === self::TYPE_BOOL) {
 			return (bool) $value;
 		}
-		if ($type === 'string') {
+		if ($type === self::TYPE_STRING) {
 			return (string) $value;
 		}
+		if ($type === self::TYPE_ARRAY) {
+			return explode($this->arrayDelimiter, $value);
+		}
 		trigger_error('Unsupported setting type. ' . print_r($param, true));
+		return $value;
+	}
+
+	/**
+	 * Format a setting for saving it to the database
+	 *
+	 * @param mixed $value        	
+	 * @param string $type        	
+	 * @return mixed
+	 */
+	private function formatSetting($value, $type = null) {
+		if ($type === null) {
+			$type = $this->getType($value);
+		}
+		
+		if ($type === self::TYPE_ARRAY) {
+			return implode($this->arrayDelimiter, $value);
+		}
 		return $value;
 	}
 
@@ -126,6 +161,7 @@ class SettingManager {
 			$className = get_class($object);
 		}
 		$type = $this->getType($default);
+		$default = $this->formatSetting($default, $type);
 		$mysqli = $this->maniaControl->database->mysqli;
 		$settingQuery = "INSERT INTO `" . self::TABLE_SETTINGS . "` (
 				`class`,
@@ -192,6 +228,40 @@ class SettingManager {
 		$settingStatement->close();
 		$setting = $this->castSetting($type, $value);
 		return $setting;
+	}
+
+	/**
+	 * Set a setting for the given object
+	 *
+	 * @param object $object        	
+	 * @param string $settingName        	
+	 * @param mixed $value        	
+	 * @return bool
+	 */
+	public function setSetting($object, $settingName, $value) {
+		$className = $object;
+		if (is_object($object)) {
+			$className = get_class($object);
+		}
+		$mysqli = $this->maniaControl->database->mysqli;
+		$settingQuery = "UPDATE `" . self::TABLE_SETTINGS . "`
+				SET `value` = ?
+				WHERE `class` = ?
+				AND `setting` = ?;";
+		$settingStatement = $mysqli->prepare($settingQuery);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error);
+			return false;
+		}
+		$value = $this->formatSetting($value);
+		$settingStatement->bind_param('sss', $value, $className, $settingName);
+		$settingStatement->execute();
+		if ($settingStatement->error) {
+			trigger_error($settingStatement->error);
+			return false;
+		}
+		$settingStatement->close();
+		return true;
 	}
 }
 
