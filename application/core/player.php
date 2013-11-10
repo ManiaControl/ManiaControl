@@ -5,7 +5,7 @@ namespace ManiaControl;
 /**
  * Class representing players
  *
- * @author Kremsy & Steff
+ * @author kremsy & steeffeen
  */
 class Player {
 	/**
@@ -15,66 +15,92 @@ class Player {
 	public $pid = -1;
 	public $login = '';
 	public $nickname = '';
-	public $isFakePlayer = false;
-	public $teamName = '';
-	public $ip = '';
-	public $ipFull = '';
-	public $clientVersion = '';
-	public $zone = '';
-	public $continent = '';
-	public $nation = '';
-	public $isSpectator = false;
-	public $isOfficial = false;
+	public $path = '';
+	public $joinCount = 0;
+	public $totalPlayed = 0;
 	public $language = '';
 	public $avatar = '';
-	public $teamId; // TODO: default value
-	public $unlocked; // TODO: default value
+	public $allies = array();
+	public $clubLink = '';
+	public $teamId = -1;
+	public $isSpectator = false;
+	public $isOfficial = false;
+	public $isReferee = false;
+	public $ladderScore = -1.;
 	public $ladderRank = -1;
-	public $ladderScore = -1;
-	public $created = -1;
-	public $rightLevel = 0;
-	
-	// TODO: usefull construct player without rpc info?
-	// TODO: check isFakePlayer (probably server itself also "fakeplayer")
-	// TODO: add all attributes like, allies, clublink ... just make vardump on rpc infos
-	// TODO: READ ADDITIONAL INFOS FROM DATABASE
+	public $joinTime = -1;
+
 	/**
-	 * Construct a player
+	 * Construct a player from XmlRpc data
 	 *
 	 * @param array $rpcInfos        	
 	 */
-	public function __construct($rpcInfos) {
-		$this->created = time();
+	public function __construct(array $rpcInfos) {
 		if (!$rpcInfos) {
 			return;
 		}
 		
-		$this->login = $rpcInfos['Login'];
-		$this->isFakePlayer = (stripos($this->login, '*') !== false);
-		$this->nickname = $rpcInfos['NickName'];
 		$this->pid = $rpcInfos['PlayerId'];
-		$this->teamId = $rpcInfos['TeamId'];
-		$this->ipFull = $rpcInfos['IPAddress'];
-		$this->ip = preg_replace('/:\d+/', '', $this->ipFull);
-		$this->isSpectator = $rpcInfos['IsSpectator'];
-		$this->isOfficial = $rpcInfos['IsInOfficialMode'];
-		$this->teamName = $rpcInfos['LadderStats']['TeamName'];
-		$this->zone = substr($rpcInfos['Path'], 6);
-		$zones = explode('|', $rpcInfos['Path']);
-		if (isset($zones[1])) {
-			if (isset($zones[2])) {
-				$this->continent = $zones[1];
-				$this->nation = $zones[2];
-			}
-			else {
-				$this->nation = $zones[1];
-			}
-		}
-		$this->ladderRank = $rpcInfos['LadderStats']['PlayerRankings'][0]['Ranking'];
-		$this->ladderScore = round($rpcInfos['LadderStats']['PlayerRankings'][0]['Score'], 2);
-		$this->clientVersion = $rpcInfos['ClientVersion'];
+		$this->login = $rpcInfos['Login'];
+		$this->nickname = $rpcInfos['NickName'];
+		$this->path = $rpcInfos['Path'];
 		$this->language = $rpcInfos['Language'];
 		$this->avatar = $rpcInfos['Avatar']['FileName'];
+		
+		$this->allies = $rpcInfos['Allies'];
+		$this->clubLink = $rpcInfos['ClubLink'];
+		$this->teamId = $rpcInfos['TeamId'];
+		$this->isSpectator = $rpcInfos['IsSpectator'];
+		$this->isOfficial = $rpcInfos['IsInOfficialMode'];
+		$this->isReferee = $rpcInfos['IsReferee'];
+		$this->ladderScore = $rpcInfos['LadderStats']['PlayerRankings'][0]['Score'];
+		$this->ladderRank = $rpcInfos['LadderStats']['PlayerRankings'][0]['Ranking'];
+		
+		$this->joinTime = time();
+	}
+
+	/**
+	 * Check if player is not a real player
+	 *
+	 * @return bool
+	 */
+	public function isFakePlayer() {
+		return ($this->pid <= 0);
+	}
+
+	/**
+	 * Get country
+	 *
+	 * @return string
+	 */
+	public function getCountry() {
+		$pathParts = explode('|', $this->path);
+		if (isset($pathParts[2])) {
+			return $pathParts[2];
+		}
+		if (isset($pathParts[1])) {
+			return $pathParts[1];
+		}
+		if (isset($pathParts[0])) {
+			return $pathParts[0];
+		}
+		return $this->path;
+	}
+
+	/**
+	 * Get continent
+	 *
+	 * @return string
+	 */
+	public function getContinent() {
+		$pathParts = explode('|', $this->path);
+		if (isset($pathParts[1])) {
+			return $pathParts[1];
+		}
+		if (isset($pathParts[0])) {
+			return $pathParts[0];
+		}
+		return $this->path;
 	}
 }
 

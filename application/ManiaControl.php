@@ -13,10 +13,13 @@ if (function_exists('date_default_timezone_get') && function_exists('date_defaul
 // Error handling
 ini_set('log_errors', 1);
 ini_set('error_reporting', -1);
-ini_set('error_log', 'ManiaControl_' . getmypid() . '.log');
+if (!is_dir('logs')) {
+	mkdir('logs');
+}
+ini_set('error_log', 'logs/ManiaControl_' . getmypid() . '.log');
 
 // Load ManiaControl class
-require_once __DIR__ . '/core/maniaControlClass.php';
+require_once __DIR__ . '/core/maniaControl.php';
 
 // Start ManiaControl
 error_log('Loading ManiaControl v' . ManiaControl::VERSION . '...');
