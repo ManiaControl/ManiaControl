@@ -26,7 +26,7 @@ class map {
     public $mapstyle = '';
     public $titleuid = 0;
   //  public $gbx; //needed? would be the whole gbx object
-    public $mx; //format?
+    public $mx = null;
     public $authorNick = '';
     public $authorZone = '';
     public $authorEInfo; //format?
@@ -62,13 +62,14 @@ class map {
         $mapFetcher = new \GBXChallMapFetcher(true);
         try{
            $mapFetcher->processFile($this->server->mapdir . $this->filename);
-        }    catch (Exception $e)
-        {
+        }    catch (Exception $e){
             trigger_error($e->getMessage(), E_USER_WARNING);
         }
 
         $this->authorNick = $mapFetcher->authorNick;
         $this->authorEInfo = $mapFetcher->authorEInfo;
         $this->authorZone = $mapFetcher->authorZone;
+
+        $this->mx = new \MXInfoFetcher('SM', $this->uid, false); //SM -> change to gameerkennung
     }
 } 
