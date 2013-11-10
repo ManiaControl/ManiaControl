@@ -187,7 +187,8 @@ class SettingManager {
 				@value := ?,
 				@value
 				) ON DUPLICATE KEY UPDATE
-				`index` = LAST_INSERT_ID(`index`);";
+				`type` = VALUE(`type`),
+				`default` = VALUE(`default`);";
 		$settingStatement = $mysqli->prepare($settingQuery);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error);
