@@ -105,6 +105,7 @@ class PlayerHandler {
 		}
         //TODO: remove $w, $l and stuff out of nick
         //TODO: postfix playerConnect callBack as soon as needed
+		//Todo: Better style colours of the message or anything else
 	}
 
 	/**
