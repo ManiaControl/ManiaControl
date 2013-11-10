@@ -17,19 +17,19 @@ class TestPlugin extends Plugin {
 
     //abstract Methods from ParentClass (do not change them!)
 	public function getAuthor() {
-		return SELF::AUTHOR;
+		return self::AUTHOR;
 	}
 
 	public function getName() {
-		return SELF::NAME;
+		return self::NAME;
 	}
 
 	public function getVersion() {
-		return SELF::VERSION;
+		return self::VERSION;
 	}
 
 	public function getDescription() {
-		return SELF::DESCRIPTION;
+		return self::DESCRIPTION;
 	}
 }
 
