@@ -10,11 +10,12 @@ require_once __DIR__ . '/callbacks.php';
 require_once __DIR__ . '/chat.php';
 require_once __DIR__ . '/commands.php';
 require_once __DIR__ . '/database.php';
-require_once __DIR__ . '/server.php';
-require_once __DIR__ . '/tools.php';
-require_once __DIR__ . '/pluginHandler.php';
-require_once __DIR__ . '/playerHandler.php';
 require_once __DIR__ . '/manialinkIdHandler.php';
+require_once __DIR__ . '/playerHandler.php';
+require_once __DIR__ . '/pluginHandler.php';
+require_once __DIR__ . '/server.php';
+require_once __DIR__ . '/settingManager.php';
+require_once __DIR__ . '/tools.php';
 list($endiantest) = array_values(unpack('L1L', pack('V', 1)));
 if ($endiantest == 1) {
 	require_once __DIR__ . '/PhpRemote/GbxRemote.inc.php';
@@ -41,13 +42,14 @@ class ManiaControl {
 	 */
 	public $authentication = null;
 	public $callbacks = null;
-	public $client = null;
 	public $chat = null;
+	public $client = null;
 	public $commands = null;
 	public $database = null;
-	public $server = null;
 	public $manialinkIdHandler = null;
 	public $pluginHandler = null;
+	public $server = null;
+	public $settingManager = null;
 	
 	/**
 	 * Private properties
@@ -60,9 +62,10 @@ class ManiaControl {
 	 */
 	public function __construct() {
 		$this->config = Tools::loadConfig('core.xml');
+		$this->database = new Database($this);
+		$this->settingManager = new SettingManager($this);
 		$this->chat = new Chat($this);
 		$this->callbacks = new Callbacks($this);
-		$this->database = new Database($this);
 		$this->server = new Server($this);
 		$this->authentication = new Authentication($this);
 		$this->playerHandler = new PlayerHandler($this);

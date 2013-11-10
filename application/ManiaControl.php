@@ -1,6 +1,6 @@
 <?php
-
 use ManiaControl\ManiaControl;
+
 // Define base dir
 define('ManiaControlDir', __DIR__);
 
@@ -16,7 +16,7 @@ ini_set('error_reporting', -1);
 ini_set('error_log', 'ManiaControl_' . getmypid() . '.log');
 
 // Load ManiaControl class
-require_once __DIR__ . '/core/maniaControl.php';
+require_once __DIR__ . '/core/maniaControlClass.php';
 
 // Start ManiaControl
 error_log('Loading ManiaControl v' . ManiaControl::VERSION . '...');
