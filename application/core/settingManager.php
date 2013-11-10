@@ -74,6 +74,23 @@ class SettingManager {
 	}
 
 	/**
+	 * Get class name from param
+	 *
+	 * @param mixed $object        	
+	 * @return string
+	 */
+	private function getClassName($object) {
+		if (is_object($object)) {
+			return get_class($object);
+		}
+		if (is_string($object)) {
+			return $object;
+		}
+		trigger_error('Invalid class param. ' . $object);
+		return (string) $object;
+	}
+
+	/**
 	 * Get type for given parameter
 	 *
 	 * @param mixed $param        	
@@ -137,7 +154,6 @@ class SettingManager {
 		if ($type === null) {
 			$type = $this->getType($value);
 		}
-		
 		if ($type === self::TYPE_ARRAY) {
 			return implode($this->arrayDelimiter, $value);
 		}
@@ -156,10 +172,7 @@ class SettingManager {
 		if ($default === null || is_object($default)) {
 			return false;
 		}
-		$className = $object;
-		if (is_object($object)) {
-			$className = get_class($object);
-		}
+		$className = $this->getClassName($object);
 		$type = $this->getType($default);
 		$default = $this->formatSetting($default, $type);
 		$mysqli = $this->maniaControl->database->mysqli;
@@ -198,10 +211,7 @@ class SettingManager {
 	 * @return mixed
 	 */
 	public function getSetting($object, $settingName, $default = null) {
-		$className = $object;
-		if (is_object($object)) {
-			$className = get_class($object);
-		}
+		$className = $this->getClassName($object);
 		$mysqli = $this->maniaControl->database->mysqli;
 		$settingQuery = "SELECT `type`, `value` FROM `" . self::TABLE_SETTINGS . "`
 				WHERE `class` = ?
@@ -239,10 +249,7 @@ class SettingManager {
 	 * @return bool
 	 */
 	public function setSetting($object, $settingName, $value) {
-		$className = $object;
-		if (is_object($object)) {
-			$className = get_class($object);
-		}
+		$className = $this->getClassName($object);
 		$mysqli = $this->maniaControl->database->mysqli;
 		$settingQuery = "UPDATE `" . self::TABLE_SETTINGS . "`
 				SET `value` = ?
@@ -255,6 +262,35 @@ class SettingManager {
 		}
 		$value = $this->formatSetting($value);
 		$settingStatement->bind_param('sss', $value, $className, $settingName);
+		$settingStatement->execute();
+		if ($settingStatement->error) {
+			trigger_error($settingStatement->error);
+			return false;
+		}
+		$settingStatement->close();
+		return true;
+	}
+
+	/**
+	 * Reset a setting to its default value
+	 *
+	 * @param object $object        	
+	 * @param string $settingname        	
+	 * @return bool
+	 */
+	public function resetSetting($object, $settingname) {
+		$className = $this->getClassName($object);
+		$mysqli = $this->maniaControl->database->mysqli;
+		$settingQuery = "UPDATE `" . self::TABLE_SETTINGS . "`
+				SET `value` = `default`
+				WHERE `class` = ?
+				AND `setting` = ?;";
+		$settingStatement = $mysqli->prepare($settingQuery);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error);
+			return false;
+		}
+		$settingStatement->bind_param('ss', $className, $settingName);
 		$settingStatement->execute();
 		if ($settingStatement->error) {
 			trigger_error($settingStatement->error);
