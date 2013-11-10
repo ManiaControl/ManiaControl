@@ -52,7 +52,7 @@ class SettingManager {
 				`index` int(11) NOT NULL AUTO_INCREMENT,
 				`class` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
 				`setting` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-				`type` set({$typeSet}) COLLATE utf8_unicode_ci NOT NULL DEFAULT '{$defaultType}',
+				`type` set({$typeSet}) COLLATE utf8_unicode_ci NOT NULL DEFAULT {$defaultType},
 				`value` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
 				`default` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
 				`changed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
