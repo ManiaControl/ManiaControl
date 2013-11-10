@@ -73,6 +73,9 @@ class PlayerHandler {
 	 * @param array $callback        	
 	 */
 	public function onInit(array $callback) {
+	    //register settings
+		$this->maniaControl->settingManager->initSetting($this, "Leave Join Messages",true);
+
 		$this->maniaControl->client->query('GetPlayerList', 300, 0, 2);
 		$playerList = $this->maniaControl->client->getResponse();
 		foreach ($playerList as $player) {
@@ -95,6 +98,13 @@ class PlayerHandler {
 		$playerInfo = $this->maniaControl->client->getResponse();
 		$player = new Player($playerInfo);
 		$this->addPlayer($player);
+
+		if($this->maniaControl->settingManager->getSetting($this,"Leave Join Messages")){
+			$string = array(0 => 'New Player', 1 => '$0f0Operator', 2 => '$0f0Admin', 3 => '$0f0MasterAdmin', 4 => '$0f0MasterAdmin');
+			$this->maniaControl->chat->sendChat('$ff0'.$string[$player->authLevel].': '. $player->nickname . '$z $ff0Nation:$fff ' . $player->getCountry() . ' $ff0Ladder: $fff' . $player->ladderRank);
+		}
+        //TODO: remove $w, $l and stuff out of nick
+        //TODO: postfix playerConnect callBack as soon as needed
 	}
 
 	/**
@@ -105,6 +115,11 @@ class PlayerHandler {
 	public function playerDisconnect(array $callback) {
 		$login = $callback[1][0];
 		$player = $this->removePlayer($login);
+
+		if($this->maniaControl->settingManager->getSetting($this,"Leave Join Messages")){
+			$played = timeFormatter::formatTime(time() - $player->joinTime);
+			$this->maniaControl->chat->sendChat($player->nickname . '$z $ff0has left the game. Played:$fff ' . $played);
+		}
 	}
 
 	/**
