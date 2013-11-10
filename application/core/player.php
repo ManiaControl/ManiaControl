@@ -16,6 +16,7 @@ class Player {
 	public $login = '';
 	public $nickname = '';
 	public $path = '';
+	public $authLevel = 0;
 	public $joinCount = 0;
 	public $totalPlayed = 0;
 	public $language = '';
@@ -64,6 +65,7 @@ class Player {
 	 *
 	 * @return bool
 	 */
+	// TODO: check for bot players
 	public function isFakePlayer() {
 		return ($this->pid <= 0);
 	}

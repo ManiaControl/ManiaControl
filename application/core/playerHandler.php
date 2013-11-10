@@ -16,11 +16,6 @@ class PlayerHandler {
 	const TABLE_PLAYERS = 'mc_players';
 	
 	/**
-	 * Public properties
-	 */
-	public $rightLevels = array(0 => 'Player', 1 => 'Operator', 2 => 'Admin', 3 => 'MasterAdmin', 4 => 'Owner');
-	
-	/**
 	 * Private properties
 	 */
 	private $maniaControl = null;
@@ -53,6 +48,8 @@ class PlayerHandler {
 				`login` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
 				`nickname` varchar(150) COLLATE utf8_unicode_ci NOT NULL,
 				`path` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+				`authLevel` int(11) NOT NULL DEFAULT '0',
+				`joinCount` int(11) NOT NULL DEFAULT '0',
 				`totalPlayed` int(11) NOT NULL DEFAULT '0' COMMENT 'Seconds',
 				`changed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 				PRIMARY KEY (`index`),
@@ -201,7 +198,7 @@ class PlayerHandler {
 		$playerStatement->close();
 		
 		// Fill up properties
-		$playerQuery = "SELECT `joinCount`, `totalPlayed` FROM `" . self::TABLE_PLAYERS . "`
+		$playerQuery = "SELECT `authLevel`, `joinCount`, `totalPlayed` FROM `" . self::TABLE_PLAYERS . "`
 				WHERE `index` = ?;";
 		$playerStatement = $mysqli->prepare($playerQuery);
 		if ($mysqli->error) {
@@ -216,7 +213,7 @@ class PlayerHandler {
 			return false;
 		}
 		$playerStatement->store_result();
-		$playerStatement->bind_result($player->joinCount, $player->totalPlayed);
+		$playerStatement->bind_result($player->authLevel, $player->joinCount, $player->totalPlayed);
 		$playerStatement->fetch();
 		$playerStatement->free_result();
 		$playerStatement->close();

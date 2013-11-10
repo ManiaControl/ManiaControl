@@ -2,35 +2,12 @@
 <!-- Configure authentication for players -->
 <authentication-config>
 
-	<!-- SuperAdmins with full access -->
-	<superadmin>
-		<!-- <login>login1</login> <login>login2</login> -->
+	<!-- SuperAdmins that can't be removed ingame -->
+	<xsuperadmins>
 		<login>steeffeen</login>
 		<login>kremsy</login>
-	</superadmin>
+	</xsuperadmins>
 
-	<!-- Admins with almost full access -->
-	<admin>
-		<!-- <login>login1</login> <login>login2</login> -->
-		<login>gorby</login>
-		<login>canyondrive</login>
-	</admin>
-
-	<!-- Operators with only moderating access -->
-	<operator>
-		<!-- <login>login1</login> <login>login2</login> -->
-		<login>eyebo</login>
-		<login>jojo95183</login>
-		<login>xanashea</login>
-		<login>ardid</login>
-		<login>gugli</login>
-		<login>phil13hebert</login>
-		<login>xcaliber</login>
-		<login>eole</login>
-		<login>fix</login>
-		<login>papychampy</login>
-		<login>titishu</login>
-		<login>wurstigewurst</login>
-	</operator>
+	<!-- You can add other admins and operators ingame -->
 
 </authentication-config>

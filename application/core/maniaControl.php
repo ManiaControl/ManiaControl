@@ -72,8 +72,8 @@ class ManiaControl {
 		$this->chat = new Chat($this);
 		$this->callbacks = new Callbacks($this);
 		$this->server = new Server($this);
-		$this->authentication = new Authentication($this);
 		$this->playerHandler = new PlayerHandler($this);
+		$this->authentication = new Authentication($this);
 		$this->manialinkIdHandler = new ManialinkIdHandler();
 		$this->commands = new Commands($this);
 		$this->pluginHandler = new PluginHandler($this);

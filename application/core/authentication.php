@@ -5,98 +5,148 @@ namespace ManiaControl;
 /**
  * Class handling authentication levels
  *
- * @author steeffeen
+ * @author steeffeen & kremsy
  */
 class Authentication {
-
 	/**
 	 * Constants
 	 */
-	public $RIGHTS_LEVELS = array(-1 => 'none', 0 => 'superadmin', 1 => 'admin', 2 => 'operator', 3 => 'all');
-
+	const AUTH_LEVEL_PLAYER = 0;
+	const AUTH_LEVEL_OPERATOR = 1;
+	const AUTH_LEVEL_ADMIN = 2;
+	const AUTH_LEVEL_SUPERADMIN = 3;
+	const AUTH_LEVEL_XSUPERADMIN = 4;
+	
 	/**
 	 * Private properties
 	 */
-	private $mc = null;
-
-	private $config = null;
+	private $maniaControl = null;
 
 	/**
 	 * Construct authentication manager
+	 *
+	 * @param ManiaControl $maniaControl        	
 	 */
-	public function __construct($mc) {
-		$this->mc = $mc;
+	public function __construct(ManiaControl $maniaControl) {
+		$this->maniaControl = $maniaControl;
+		$this->loadConfig();
+	}
+
+	/**
+	 * Load config and initialize strong superadmins
+	 *
+	 * @return bool
+	 */
+	private function loadConfig() {
+		$config = FileUtil::loadConfig('authentication.xml');
+		$mysqli = $this->maniaControl->database->mysqli;
 		
-		// Load config
-		$this->config = FileUtil::loadConfig('authentication.xml');
-	}
-
-	/**
-	 * Check if the player has enough rights
-	 *
-	 * @param string $login        	
-	 * @param string $defaultRight        	
-	 * @param string $neededRight        	
-	 * @return bool
-	 */
-	public function checkRight($login, $neededRight) {
-		$right = $this->getRights($login);
-		return $this->compareRights($right, $neededRight);
-	}
-
-	/**
-	 * Compare if the rights are enough
-	 *
-	 * @param string $hasRight        	
-	 * @param string $neededRight        	
-	 * @return bool
-	 */
-	public function compareRights($hasRight, $neededRight) {
-		if (!in_array($hasRight, $this->RIGHTS_LEVELS) || !in_array($neededRight, $this->RIGHTS_LEVELS)) {
+		// Remove all XSuperadmins
+		$adminQuery = "UPDATE `" . PlayerHandler::TABLE_PLAYERS . "`
+				SET `authLevel` = ?
+				WHERE `authLevel` = ?;";
+		$adminStatement = $mysqli->prepare($adminQuery);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error, E_USER_ERROR);
 			return false;
 		}
-		$hasLevel = array_search($hasRight, $this->RIGHTS_LEVELS);
-		$neededLevel = array_search($neededRight, $this->RIGHTS_LEVELS);
-		if ($hasLevel > $neededLevel) {
+		$adminLevel = self::AUTH_LEVEL_SUPERADMIN;
+		$xAdminLevel = self::AUTH_LEVEL_XSUPERADMIN;
+		$adminStatement->bind_param('ii', $adminLevel, $xAdminLevel);
+		$adminStatement->execute();
+		if ($adminStatement->error) {
+			trigger_error($adminStatement->error);
+		}
+		$adminStatement->close();
+		
+		// Set XSuperAdmins
+		$xAdmins = $config->xsuperadmins->xpath('login');
+		$adminQuery = "INSERT INTO `" . PlayerHandler::TABLE_PLAYERS . "` (
+				`login`,
+				`authLevel`
+				) VALUES (
+				?, ?
+				) ON DUPLICATE KEY UPDATE
+				`authLevel` = VALUES(`authLevel`);";
+		$adminStatement = $mysqli->prepare($adminQuery);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error, E_USER_ERROR);
 			return false;
 		}
-		else {
-			return true;
-		}
-	}
-
-	/**
-	 * Get rights of the given login
-	 *
-	 * @param string $login        	
-	 * @param string $defaultRights        	
-	 * @return string
-	 */
-	public function getRights($login, $defaultRight = 'all') {
-		$groups = $this->config->xpath('//login[text()="' . $login . '"]/..');
-		if (empty($groups)) return $defaultRight;
-		$right = $defaultRight;
-		$rightLevel = array_search($right, $this->RIGHTS_LEVELS);
-		foreach ($groups as $group) {
-			$level = array_search($group->getName(), $this->RIGHTS_LEVELS);
-			if ($level === false) continue;
-			if ($level < $rightLevel || $rightLevel === false) {
-				$right = $group->getName();
-				$rightLevel = $level;
+		$adminStatement->bind_param('si', $login, $xAdminLevel);
+		$success = true;
+		foreach ($xAdmins as $xAdmin) {
+			$login = (string) $xAdmin;
+			$adminStatement->execute();
+			if ($adminStatement->error) {
+				trigger_error($adminStatement->error);
+				$success = false;
 			}
 		}
-		return $right;
+		$adminStatement->close();
+		return $success;
+	}
+
+	/**
+	 * Grant the auth level to the player
+	 *
+	 * @param Player $player        	
+	 * @param int $authLevel        	
+	 * @return bool
+	 */
+	public function grantAuthLevel(Player $player, $authLevel) {
+		if (!$player || $authLevel  >= self::AUTH_LEVEL_XSUPERADMIN) {
+			return false;
+		}
+		$mysqli = $this->maniaControl->database->mysqli;
+		$authQuery = "INSERT INTO `" . PlayerHandler::TABLE_PLAYERS . "` (
+				`login`,
+				`authLevel`
+				) VALUES (
+				?, ?
+				) ON DUPLICATE KEY UPDATE
+				`authLevel` = VALUES(`authLevel`);";
+		$authStatement = $mysqli->prepare($authQuery);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error, E_USER_ERROR);
+			return false;
+		}
+		$authStatement->bind_param('si', $player->login, $authLevel);
+		$authStatement->execute();
+		if ($authStatement->error) {
+			trigger_error($authStatement->error);
+			$authStatement->close();
+			return false;
+		}
+		$authStatement->close();
+		return $success;
 	}
 
 	/**
 	 * Sends an error message to the login
 	 *
 	 * @param string $login        	
+	 * @return bool
 	 */
-	public function sendNotAllowed($login) {
-		if (!$this->mc->chat->sendError('You do not have the required rights to perform this command!', $login)) {
-			trigger_error("Couldn't send forbidden message to login '" . $login . "'. " . $this->mc->getClientErrorText());
+	public function sendNotAllowed(Player $player) {
+		if (!$player) {
+			return false;
 		}
+		return $this->maniaControl->chat->sendError('You do not have the required rights to perform this command!', $player->login);
+	}
+
+	/**
+	 * Check if the player has enough rights
+	 *
+	 * @param Player $login        	
+	 * @param int $neededAuthLevel        	
+	 * @return bool
+	 */
+	public static function checkRight(Player $player, $neededAuthLevel) {
+		if (!$player) {
+			return false;
+		}
+		return ($player->authLevel >= $neededAuthLevel);
 	}
 }
 
