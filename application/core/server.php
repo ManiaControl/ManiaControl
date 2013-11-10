@@ -353,8 +353,7 @@ class Server {
 		if ($response['Code'] === 4) return true;
 		// Server not yet in given status -> Wait for it...
 		$waitBegin = time();
-		$timeoutTags = $this->mc->config->xpath('timeout');
-		$maxWaitTime = (!empty($timeoutTags) ? (int) $timeoutTags[0] : 20);
+		$maxWaitTime = 20;
 		$lastStatus = $response['Name'];
 		error_log("Waiting for server to reach status " . $statusCode . "...");
 		error_log("Current Status: " . $lastStatus);

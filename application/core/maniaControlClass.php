@@ -55,13 +55,11 @@ class ManiaControl {
 	 * Private properties
 	 */
 	private $shutdownRequested = false;
-	private $config = null;
 
 	/**
 	 * Construct ManiaControl
 	 */
 	public function __construct() {
-		$this->config = FileUtil::loadConfig('core.xml');
 		$this->database = new Database($this);
 		$this->settingManager = new SettingManager($this);
 		$this->chat = new Chat($this);
@@ -169,14 +167,11 @@ class ManiaControl {
 		$port = $this->server->config->xpath('port');
 		if (!$host) trigger_error("Invalid server configuration (port).", E_USER_ERROR);
 		$port = (string) $port[0];
-		$timeout = $this->config->xpath('timeout');
-		if (!$timeout) trigger_error("Invalid core configuration (timeout).", E_USER_ERROR);
-		$timeout = (int) $timeout[0];
 		
 		error_log("Connecting to server at {$host}:{$port}...");
 		
 		// Connect
-		if (!$this->client->InitWithIp($host, $port, $timeout)) {
+		if (!$this->client->InitWithIp($host, $port, 20)) {
 			trigger_error("Couldn't connect to server! " . $this->getClientErrorText(), E_USER_ERROR);
 		}
 		

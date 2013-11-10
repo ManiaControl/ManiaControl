@@ -68,7 +68,7 @@ class Chat {
 	 * @return bool
 	 */
 	public function sendInformation($message, $login = null, $prefix = false) {
-		$format = $this->maniaControl->settingManager->getSetting($this, 'ErrorFormat', '$fff');
+		$format = $this->maniaControl->settingManager->getSetting($this, 'InformationFormat', '$fff');
 		return $this->sendChat($format . $message, $login);
 	}
 
@@ -81,7 +81,7 @@ class Chat {
 	 * @return bool
 	 */
 	public function sendSuccess($message, $login = null, $prefix = false) {
-		$format = $this->maniaControl->settingManager->getSetting($this, 'ErrorFormat', '$0f0');
+		$format = $this->maniaControl->settingManager->getSetting($this, 'SuccessFormat', '$0f0');
 		return $this->sendChat($format . $message, $login);
 	}
 
