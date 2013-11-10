@@ -28,7 +28,7 @@ class Authentication {
 		$this->mc = $mc;
 		
 		// Load config
-		$this->config = Tools::loadConfig('authentication.xml');
+		$this->config = FileUtil::loadConfig('authentication.xml');
 	}
 
 	/**

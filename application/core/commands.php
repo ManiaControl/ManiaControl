@@ -31,7 +31,7 @@ class Commands {
 		$this->mc = $mc;
 		
 		// Load config
-		$this->config = Tools::loadConfig('commands.xml');
+		$this->config = FileUtil::loadConfig('commands.xml');
 		
 		// Register for callbacks
 		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_MC_5_SECOND, $this, 'each5Seconds');
@@ -531,7 +531,7 @@ class Commands {
 				$title = strtolower(substr($serverInfo['TitleId'], 0, 2));
 				// Check if map exists
 				$url = 'http://' . $title . '.mania-exchange.com/api/tracks/get_track_info/id/' . $params[1] . '?format=json';
-				$mapInfo = Tools::loadFile($url);
+				$mapInfo = FileUtil::loadFile($url);
 				if (!$mapInfo || strlen($mapInfo) <= 0) {
 					// Invalid id
 					$this->mc->chat->sendError('Invalid MX-Id!', $login);
@@ -539,7 +539,7 @@ class Commands {
 				}
 				$mapInfo = json_decode($mapInfo, true);
 				$url = 'http://' . $title . '.mania-exchange.com/tracks/download/' . $params[1];
-				$file = Tools::loadFile($url);
+				$file = FileUtil::loadFile($url);
 				if (!$file) {
 					// Download error
 					$this->mc->chat->sendError('Download failed!', $login);

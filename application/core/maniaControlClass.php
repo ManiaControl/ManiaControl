@@ -10,12 +10,12 @@ require_once __DIR__ . '/callbacks.php';
 require_once __DIR__ . '/chat.php';
 require_once __DIR__ . '/commands.php';
 require_once __DIR__ . '/database.php';
+require_once __DIR__ . '/fileUtil.php';
 require_once __DIR__ . '/manialinkIdHandler.php';
 require_once __DIR__ . '/playerHandler.php';
 require_once __DIR__ . '/pluginHandler.php';
 require_once __DIR__ . '/server.php';
 require_once __DIR__ . '/settingManager.php';
-require_once __DIR__ . '/tools.php';
 list($endiantest) = array_values(unpack('L1L', pack('V', 1)));
 if ($endiantest == 1) {
 	require_once __DIR__ . '/PhpRemote/GbxRemote.inc.php';
@@ -61,7 +61,7 @@ class ManiaControl {
 	 * Construct ManiaControl
 	 */
 	public function __construct() {
-		$this->config = Tools::loadConfig('core.xml');
+		$this->config = FileUtil::loadConfig('core.xml');
 		$this->database = new Database($this);
 		$this->settingManager = new SettingManager($this);
 		$this->chat = new Chat($this);
@@ -160,10 +160,6 @@ class ManiaControl {
 	 * Connect to ManiaPlanet server
 	 */
 	private function connect() {
-		$enable = $this->server->config->xpath('enable');
-		$enable = Tools::toBool($enable[0]);
-		if (!$enable) return;
-		
 		// Load remote client
 		$this->client = new \IXR_ClientMulticall_Gbx();
 		

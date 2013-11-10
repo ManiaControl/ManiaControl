@@ -32,7 +32,7 @@ class Database {
 		$this->maniaControl = $maniaControl;
 		
 		// Load config
-		$this->config = Tools::loadConfig('database.xml');
+		$this->config = FileUtil::loadConfig('database.xml');
 		
 		// Get mysql server information
 		$host = $this->config->xpath('host');

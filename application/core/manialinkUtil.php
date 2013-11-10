@@ -8,6 +8,36 @@
 class ManialinkUtil {
 
 	/**
+	 * Send the given manialink to players
+	 *
+	 * @param string $manialink        	
+	 * @param array $logins        	
+	 * @return bool
+	 */
+	public static function sendManialinkPage($client, $manialinkText, $logins = null, $timeout = 0, $hideOnClick = false) {
+		if (!$client || !$manialinkText) {
+			return false;
+		}
+		if (!$logins) {
+			return $client->query('SendDisplayManialinkPage', $manialinkText, $timeout, $hideOnClick);
+		}
+		if (is_string($logins)) {
+			return $client->query('SendDisplayManialinkPageToLogin', $logins, $manialinkText, $timeout, $hideOnClick);
+		}
+		if (is_array($logins)) {
+			$success = true;
+			foreach ($logins as $login) {
+				$subSuccess = $client->query('SendDisplayManialinkPageToLogin', $login, $manialinkText, $timeout, $hideOnClick);
+				if (!$subSuccess) {
+					$success = false;
+				}
+			}
+			return $success;
+		}
+		return false;
+	}
+
+	/**
 	 * Build new simple xml element
 	 *
 	 * @param string $name        	
