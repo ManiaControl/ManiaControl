@@ -18,6 +18,9 @@ require_once __DIR__ . '/server.php';
 require_once __DIR__ . '/settingManager.php';
 require_once __DIR__ . '/settingConfigurator.php';
 require_once __DIR__ . '/mapHandler.php';
+
+require_once __DIR__ . '/GbxDataFetcher/gbxdatafetcher.inc.php';
+
 list($endiantest) = array_values(unpack('L1L', pack('V', 1)));
 if ($endiantest == 1) {
     require_once __DIR__ . '/PhpRemote/GbxRemote.inc.php';

@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Lukas
- * Date: 10.11.13
- * Time: 16:46
- */
 
 namespace ManiaControl;
 
@@ -65,6 +59,30 @@ class map {
             $this->name = 'undefined';
         }
 
+        /*
+         * aseco trash:
+         *     // obtain map's GBX data, MX info & records
 
+    $map_item->mx = findMXdata($map_item->uid, true);
+
+    // titleuid (is not in the GetMapInfos method..)
+    $map_item->titleuid = $map_item->gbx->titleUid;
+
+    // author Informations from the GBXBaseFetcher
+    $map_item->authorNick = $map_item->gbx->authorNick;
+    $map_item->authorZone = $map_item->gbx->authorZone;
+    $map_item->authorEInfo = $map_item->gbx->authorEInfo;
+         *
+         */
+        $mapFetcher = new \GBXChallMapFetcher(true);
+        try{
+           $mapFetcher->processFile($this->server->mapdir . $this->filename);
+        }    catch (Exception $e)
+        {
+            trigger_error($e->getMessage(), E_USER_WARNING);
+        }
+        $this->authorNick = $mapFetcher->authorNick;
+        $this->authorEInfo = $mapFetcher->authorEInfo;
+        $this->authorZone = $mapFetcher->authorZone;
     }
 } 
