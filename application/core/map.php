@@ -2,13 +2,17 @@
 
 namespace ManiaControl;
 
+/**
+ * Map Object
+ *
+ * @author kremsy & steeffeen
+ */
 
 class map {
     public $id = 0;
     public $name = '';
     public $uid = 0;
     public $filename = '';
-    public $author = '';
     public $environment = '';
     public $mood = '';
     public $bronzetime; //format?
@@ -27,6 +31,7 @@ class map {
     public $titleuid = 0;
   //  public $gbx; //needed? would be the whole gbx object
     public $mx = null;
+    public $authorLogin = '';
     public $authorNick = '';
     public $authorZone = '';
     public $authorEInfo; //format?
@@ -39,7 +44,7 @@ class map {
             $this->name = stripNewlines($rpc_infos['Name']);
             $this->uid = $rpc_infos['UId'];
             $this->filename = $rpc_infos['FileName'];
-            $this->author = $rpc_infos['Author'];
+            $this->authorLogin = $rpc_infos['Author'];
             $this->environment = $rpc_infos['Environnement'];
             $this->mood = $rpc_infos['Mood'];
             $this->bronzetime = $rpc_infos['BronzeTime'];
@@ -65,7 +70,6 @@ class map {
         }    catch (Exception $e){
             trigger_error($e->getMessage(), E_USER_WARNING);
         }
-
         $this->authorNick = $mapFetcher->authorNick;
         $this->authorEInfo = $mapFetcher->authorEInfo;
         $this->authorZone = $mapFetcher->authorZone;
