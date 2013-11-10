@@ -6,6 +6,7 @@
 	<superadmin>
 		<!-- <login>login1</login> <login>login2</login> -->
 		<login>steeffeen</login>
+		<login>kremsy</login>
 	</superadmin>
 
 	<!-- Admins with almost full access -->
@@ -27,7 +28,6 @@
 		<login>xcaliber</login>
 		<login>eole</login>
 		<login>fix</login>
-		<login>kremsy</login>
 		<login>papychampy</login>
 		<login>titishu</login>
 		<login>wurstigewurst</login>

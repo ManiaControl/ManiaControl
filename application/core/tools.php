@@ -28,52 +28,6 @@ class Tools {
 	}
 
 	/**
-	 * Check if the given data describes a player
-	 *
-	 * @param array $player        	
-	 * @return bool
-	 */
-	public static function isPlayer($player) {
-		if (!$player || !is_array($player)) return false;
-		if (!array_key_exists('PlayerId', $player) || !is_int($player['PlayerId']) || $player['PlayerId'] <= 0) return false;
-		return true;
-	}
-
-	/**
-	 * Convert the given time int to mysql timestamp
-	 *
-	 * @param int $time        	
-	 * @return string
-	 */
-	public static function timeToTimestamp($time) {
-		return date("Y-m-d H:i:s", $time);
-	}
-
-	/**
-	 * Add alignment attributes to an xml element
-	 *
-	 * @param simple_xml_element $xml        	
-	 * @param string $halign        	
-	 * @param string $valign        	
-	 */
-	public static function addAlignment($xml, $halign = 'center', $valign = 'center2') {
-		if (!is_object($xml) || !method_exists($xml, 'addAttribute')) return;
-		if (!property_exists($xml, 'halign')) $xml->addAttribute('halign', $halign);
-		if (!property_exists($xml, 'valign')) $xml->addAttribute('valign', $valign);
-	}
-
-	/**
-	 * Add translate attribute to an xml element
-	 *
-	 * @param simple_xml_element $xml        	
-	 * @param bool $translate        	
-	 */
-	public static function addTranslate($xml, $translate = true) {
-		if (!is_object($xml) || !method_exists($xml, 'addAttribute')) return;
-		if (!property_exists($xml, 'translate')) $xml->addAttribute('translate', ($translate ? 1 : 0));
-	}
-
-	/**
 	 * Load a remote file
 	 *
 	 * @param string $url        	
@@ -120,37 +74,6 @@ class Tools {
 	}
 
 	/**
-	 * Formats the given time (milliseconds)
-	 *
-	 * @param int $time        	
-	 * @return string
-	 */
-	public static function formatTime($time) {
-		if (!is_int($time)) $time = (int) $time;
-		$milliseconds = $time % 1000;
-		$seconds = floor($time / 1000);
-		$minutes = floor($seconds / 60);
-		$hours = floor($minutes / 60);
-		$minutes -= $hours * 60;
-		$seconds -= $hours * 60 + $minutes * 60;
-		$format = ($hours > 0 ? $hours . ':' : '');
-		$format .= ($hours > 0 && $minutes < 10 ? '0' : '') . $minutes . ':';
-		$format .= ($seconds < 10 ? '0' : '') . $seconds . ':';
-		$format .= ($milliseconds < 100 ? '0' : '') . ($milliseconds < 10 ? '0' : '') . $milliseconds;
-		return $format;
-	}
-
-	/**
-	 * Formats the given time (seconds) to hh:mm:ss
-	 *
-	 * @param int $time        	
-	 * @return string
-	 */
-	public static function formatTimeH($seconds) {
-		return gmdate("H:i:s", $seconds);
-	}
-
-	/**
 	 * Convert given data to real boolean
 	 *
 	 * @param
@@ -181,30 +104,6 @@ class Tools {
 		else {
 			return (bool) $var;
 		}
-	}
-
-	/**
-	 * Converts the given boolean to an int representation
-	 *
-	 * @param bool $bool        	
-	 * @return int
-	 */
-	public static function boolToInt($bool) {
-		return ($bool ? 1 : 0);
-	}
-
-	/**
-	 * Build new simple xml element
-	 *
-	 * @param string $name        	
-	 * @param string $id        	
-	 * @return \SimpleXMLElement
-	 */
-	public static function newManialinkXml($id = null) {
-		$xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><manialink/>');
-		$xml->addAttribute('version', '1');
-		if ($id) $xml->addAttribute('id', $id);
-		return $xml;
 	}
 
 	/**

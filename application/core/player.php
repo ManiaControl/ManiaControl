@@ -35,6 +35,7 @@ class Player {
 	public $rightLevel = 0;
 	
 	// TODO: usefull construct player without rpc info?
+	// TODO: check isFakePlayer (probably server itself also "fakeplayer")
 	// TODO: add all attributes like, allies, clublink ... just make vardump on rpc infos
 	// TODO: READ ADDITIONAL INFOS FROM DATABASE
 	/**
