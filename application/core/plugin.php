@@ -39,7 +39,7 @@ abstract class Plugin {
 	 *
 	 * @return float
 	 */
-	public abstract function getVersion() {
+	public function getVersion() {
 		return $this->version;
 	}
 
@@ -48,7 +48,7 @@ abstract class Plugin {
 	 *
 	 * @return string
 	 */
-	public abstract function getName() {
+	public function getName() {
 		return $this->name;
 	}
 
@@ -57,7 +57,7 @@ abstract class Plugin {
 	 *
 	 * @return string
 	 */
-	public abstract function getDescription() {
+	public function getDescription() {
 		return $this->description;
 	}
 }
