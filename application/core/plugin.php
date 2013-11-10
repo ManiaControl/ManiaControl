@@ -30,28 +30,36 @@ abstract class Plugin {
 	 *
 	 * @return string
 	 */
-	public abstract function getAuthor();
+	public function getAuthor() {
+		return $this->author;
+	}
 
 	/**
 	 * Get plugin version
 	 *
 	 * @return float
 	 */
-	public abstract function getVersion();
+	public abstract function getVersion() {
+		return $this->version;
+	}
 
 	/**
 	 * Get plugin name
 	 *
 	 * @return string
 	 */
-	public abstract function getName();
+	public abstract function getName() {
+		return $this->name;
+	}
 
 	/**
 	 * Get plugin description
 	 *
 	 * @return string
 	 */
-	public abstract function getDescription();
+	public abstract function getDescription() {
+		return $this->description;
+	}
 }
 
 ?>
