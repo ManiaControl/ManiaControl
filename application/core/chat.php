@@ -25,7 +25,7 @@ class Chat {
 		$this->mc = $mc;
 		
 		// Load config
-		$this->config = Tools::loadConfig('chat.ManiaControl.xml');
+		$this->config = Tools::loadConfig('chat.xml');
 	}
 
 	/**
@@ -41,7 +41,8 @@ class Chat {
 			return $this->mc->client->query('ChatSendServerMessage', '$z' . ($prefix ? $this->prefix : '') . $message . '$z');
 		}
 		else {
-			return $this->mc->client->query('ChatSendServerMessageToLogin', '$z' . ($prefix ? $this->prefix : '') . $message . '$z', $login);
+			return $this->mc->client->query('ChatSendServerMessageToLogin', '$z' . ($prefix ? $this->prefix : '') . $message . '$z', 
+					$login);
 		}
 	}
 

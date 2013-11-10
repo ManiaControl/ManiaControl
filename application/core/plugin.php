@@ -3,152 +3,55 @@
 namespace ManiaControl;
 
 /**
- * Class plugin parent class for all plugins
+ * Plugin parent class
  *
  * @author Lukas Kremsmayr and steeffeen
  */
-
-
- class Plugin {
-
+abstract class Plugin {
+	
 	/**
-  	 * Private properties
-  	 */
-  	private $mc;
-    private $version;
-    private $author;
-    private $updateUrl;
-    private $name;
-    private $description;
-    private $active;
-
-    public function __construct($mc, $name, $version = 0, $author = '', $description = '', $updateUrl = ''){
-       $this->mc = $mc;
-       $this->name = $name;
-       $this->version = $version;
-       $this->author = $author;
-       $this->description = $description;
-       $this->updateUrl = $updateUrl;
-
-       $this->mc->pluginHandler->registerPlugin($this);
-    }
-
-	/**
-	 * Reserves manialinks on the ManialinkIdHandler
-	 *
-	 * @param int $count   
-	 * @return array with manialink Ids     	      	
+	 * Private properties
 	 */
-    public function reserveManialinkIds($count){
-       return $this->mc->manialinkIdHandler->reserveManialikIds($count);
-    }
+	protected $maniaControl;
+	protected $name;
+	protected $version;
+	protected $author;
+	protected $description;
 
-    public function checkUpdate(){
-    
-    }
+	/**
+	 * Create plugin instance
+	 *
+	 * @param ManiaControl $maniaControl        	
+	 */
+	public abstract function __construct(ManiaControl $maniaControl);
 
-     /**
-      * Enables the Plugin
-      */
-     public function enablePlugin()
-     {
-         $this->active = true;
-     }
+	/**
+	 * Get plugin author
+	 *
+	 * @return string
+	 */
+	public abstract function getAuthor();
 
-     /**
-      * Disable the Plugin
-      */
-     public function disablePlugin()
-     {
-         $this->active = false;
-     }
+	/**
+	 * Get plugin version
+	 *
+	 * @return float
+	 */
+	public abstract function getVersion();
 
-     /**
-      * @return mixed
-      */
-     public function isActive()
-     {
-         return $this->active;
-     }
+	/**
+	 * Get plugin name
+	 *
+	 * @return string
+	 */
+	public abstract function getName();
 
-     /**
-      * @param mixed $author
-      */
-     public function setAuthor($author)
-     {
-         $this->author = $author;
-     }
+	/**
+	 * Get plugin description
+	 *
+	 * @return string
+	 */
+	public abstract function getDescription();
+}
 
-     /**
-      * @return mixed
-      */
-     public function getAuthor()
-     {
-         return $this->author;
-     }
-
-     /**
-      * @param mixed $updateUrl
-      */
-     public function setUpdateUrl($updateUrl)
-     {
-         $this->updateUrl = $updateUrl;
-     }
-
-     /**
-      * @return mixed
-      */
-     public function getUpdateUrl()
-     {
-         return $this->updateUrl;
-     }
-
-     /**
-      * @param mixed $version
-      */
-     public function setVersion($version)
-     {
-         $this->version = $version;
-     }
-
-     /**
-      * @return mixed
-      */
-     public function getVersion()
-     {
-         return $this->version;
-     }
-     /**
-      * @param mixed $name
-      */
-     public function setName($name)
-     {
-         $this->name = $name;
-     }
-
-     /**
-      * @return mixed
-      */
-     public function getName()
-     {
-         return $this->name;
-     }
-
-     /**
-      * @param string $description
-      */
-     public function setDescription($description)
-     {
-         $this->description = $description;
-     }
-
-     /**
-      * @return string
-      */
-     public function getDescription()
-     {
-         return $this->description;
-     }
-
- }
 ?>

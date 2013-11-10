@@ -11,12 +11,9 @@ require_once __DIR__ . '/chat.php';
 require_once __DIR__ . '/commands.php';
 require_once __DIR__ . '/database.php';
 require_once __DIR__ . '/server.php';
-require_once __DIR__ . '/stats.php';
 require_once __DIR__ . '/tools.php';
 require_once __DIR__ . '/pluginHandler.php';
-require_once __DIR__ . '/plugin.php';
 require_once __DIR__ . '/playerHandler.php';
-require_once __DIR__ . '/player.php';
 require_once __DIR__ . '/manialinkIdHandler.php';
 list($endiantest) = array_values(unpack('L1L', pack('V', 1)));
 if ($endiantest == 1) {
@@ -38,90 +35,40 @@ class ManiaControl {
 	const VERSION = '0.1';
 	const API_VERSION = '2013-04-16';
 	const DATE = 'd-m-y h:i:sa T';
-
-    /**
-     * Private properties
-     */
-    private $version = 0;
-
+	
 	/**
 	 * Public properties
 	 */
 	public $authentication = null;
-
 	public $callbacks = null;
-
 	public $client = null;
-
 	public $chat = null;
-
-	public $config = null;
-
 	public $commands = null;
-
 	public $database = null;
-
-	public $debug = false;
-
 	public $server = null;
-
-	public $startTime = -1;
-
-	public $stats = null;
-
-    public $manialinkIdHandler = null;
-    public $pluginHandler = null;
-
+	public $manialinkIdHandler = null;
+	public $pluginHandler = null;
+	
 	/**
 	 * Private properties
 	 */
-	//private $plugins = array();
-
 	private $shutdownRequested = false;
+	private $config = null;
 
 	/**
 	 * Construct ManiaControl
 	 */
 	public function __construct() {
-		// Load core
-		$this->config = Tools::loadConfig('core.ManiaControl.xml');
-		$this->startTime = time();
-		
-		// Load chat tool
+		$this->config = Tools::loadConfig('core.xml');
 		$this->chat = new Chat($this);
-		
-		// Load callbacks handler
 		$this->callbacks = new Callbacks($this);
-		
-		// Load database
 		$this->database = new Database($this);
-		
-		// Load server
 		$this->server = new Server($this);
-		
-		// Load authentication
 		$this->authentication = new Authentication($this);
-
-        // Load playerHandler
-        $this->playerHandler = new PlayerHandler($this);
-
-        // Load manialinkidHandler
-        $this->manialinkIdHandler = new ManialinkIdHandler();
-
-        // Load pluginHandler
-        $this->pluginHandler = new PluginHandler($this);
-
-		// Load commands handler
+		$this->playerHandler = new PlayerHandler($this);
+		$this->manialinkIdHandler = new ManialinkIdHandler();
 		$this->commands = new Commands($this);
-		
-		// Load stats manager
-		$this->stats = new Stats($this);
-
-		// Register for core callbacks
-		$this->callbacks->registerCallbackHandler(Callbacks::CB_MP_ENDMAP, $this, 'handleEndMap');
-
-        // Set ManiaControl version
-        $this->version = self::VERSION;
+		$this->pluginHandler = new PluginHandler($this);
 	}
 
 	/**
@@ -141,8 +88,6 @@ class ManiaControl {
 	 * Quit ManiaControl and log the given message
 	 */
 	public function quit($message = false) {
-		if ($this->shutdownRequested) return;
-		
 		if ($this->client) {
 			// Announce quit
 			$this->chat->sendInformation('ManiaControl shutting down.');
@@ -157,7 +102,9 @@ class ManiaControl {
 		}
 		
 		// Shutdown
-		if ($this->client) $this->client->Terminate();
+		if ($this->client) {
+			$this->client->Terminate();
+		}
 		
 		error_log("Quitting ManiaControl!");
 		exit();
@@ -166,14 +113,12 @@ class ManiaControl {
 	/**
 	 * Run ManiaControl
 	 */
-	public function run($debug = false) {
+	public function run() {
 		error_log('Starting ManiaControl v' . self::VERSION . '!');
-		$this->debug = (bool) $debug;
 		
 		// Load plugins
-		//$this->loadPlugins();
 		$this->pluginHandler->loadPlugins();
-
+		
 		// Connect to server
 		$this->connect();
 		
@@ -181,14 +126,8 @@ class ManiaControl {
 		error_log("Loading completed!");
 		
 		// Announce ManiaControl
-		if (!$this->chat->sendInformation('ManiaControl v' . self::VERSION . ' successfully started!')) {
-			trigger_error("Couldn't announce ManiaControl. " . $this->getClientErrorText());
-		}
-
-        //get PlayerList
-        $this->client->query('GetPlayerList', 300, 0, 2);
-        $this->playerHandler->addPlayerList($this->client->getResponse());
-
+		$this->chat->sendInformation('ManiaControl v' . self::VERSION . ' successfully started!');
+		
 		// OnInit
 		$this->callbacks->onInit();
 		
@@ -201,14 +140,6 @@ class ManiaControl {
 			
 			// Handle server callbacks
 			$this->callbacks->handleCallbacks();
-			
-			// Loop plugins
-			/*foreach ($this->plugins as $plugin) {
-				if (!method_exists($plugin, 'loop')) {
-					continue;
-				}
-				$plugin->loop();
-			}*/
 			
 			// Yield for next tick
 			$loopEnd = microtime(true);
@@ -243,13 +174,11 @@ class ManiaControl {
 		if (!$timeout) trigger_error("Invalid core configuration (timeout).", E_USER_ERROR);
 		$timeout = (int) $timeout[0];
 		
-		error_log("Connecting to server at " . $host . ":" . $port . "...");
+		error_log("Connecting to server at {$host}:{$port}...");
 		
 		// Connect
 		if (!$this->client->InitWithIp($host, $port, $timeout)) {
-			trigger_error(
-					"Couldn't connect to server! " . $this->client->getErrorMessage() . "(" . $this->client->getErrorCode() . ")", 
-					E_USER_ERROR);
+			trigger_error("Couldn't connect to server! " . $this->getClientErrorText(), E_USER_ERROR);
 		}
 		
 		$login = $this->server->config->xpath('login');
@@ -261,15 +190,12 @@ class ManiaControl {
 		
 		// Authenticate
 		if (!$this->client->query('Authenticate', $login, $pass)) {
-			trigger_error(
-					"Couldn't authenticate on server with user '" . $login . "'! " . $this->client->getErrorMessage() . "(" .
-							 $this->client->getErrorCode() . ")", E_USER_ERROR);
+			trigger_error("Couldn't authenticate on server with user '{$login}'! " . $this->getClientErrorText(), E_USER_ERROR);
 		}
 		
 		// Enable callback system
 		if (!$this->client->query('EnableCallbacks', true)) {
-			trigger_error("Couldn't enable callbacks! " . $this->client->getErrorMessage() . "(" . $this->client->getErrorCode() . ")", 
-					E_USER_ERROR);
+			trigger_error("Couldn't enable callbacks! " . $this->getClientErrorText(), E_USER_ERROR);
 		}
 		
 		// Wait for server to be ready
@@ -280,17 +206,11 @@ class ManiaControl {
 		// Set api version
 		if (!$this->client->query('SetApiVersion', self::API_VERSION)) {
 			trigger_error(
-					"Couldn't set API version '" . self::API_VERSION . "'! This might cause problems. " .
-							 $this->getClientErrorText());
+					"Couldn't set API version '" . self::API_VERSION . "'! This might cause problems. " . $this->getClientErrorText());
 		}
 		
 		// Connect finished
 		error_log("Server connection succesfully established!");
-		
-		// Enable service announces
-		if (!$this->client->query("DisableServiceAnnounces", false)) {
-			trigger_error("Couldn't enable service announces. " . $this->getClientErrorText());
-		}
 		
 		// Enable script callbacks if needed
 		if ($this->server->getGameMode() === 0) {
@@ -302,8 +222,7 @@ class ManiaControl {
 				if (array_key_exists('S_UseScriptCallbacks', $scriptSettings)) {
 					$scriptSettings['S_UseScriptCallbacks'] = true;
 					if (!$this->client->query('SetModeScriptSettings', $scriptSettings)) {
-						trigger_error(
-								"Couldn't set mode script settings to enable script callbacks. " . $this->getClientErrorText());
+						trigger_error("Couldn't set mode script settings to enable script callbacks. " . $this->getClientErrorText());
 					}
 					else {
 						error_log("Script callbacks successfully enabled.");
@@ -312,84 +231,6 @@ class ManiaControl {
 			}
 		}
 	}
-
-	/**
-	 * Load ManiaControl plugins
-	 */
-	//private function loadPlugins() {
-	/*	$pluginsConfig = Tools::loadConfig('plugins.ManiaControl.xml');
-		if (!$pluginsConfig || !isset($pluginsConfig->plugin)) {
-			trigger_error('Invalid plugins config.');
-			return;
-		}
-		
-		// Load plugin classes
-		$classes = get_declared_classes();
-		foreach ($pluginsConfig->xpath('plugin') as $plugin) {
-			$fileName = ManiaControlDir . '/plugins/' . $plugin;
-			if (!file_exists($fileName)) {
-				trigger_error("Couldn't load plugin '" . $plugin . "'! File doesn't exist. (/plugins/" . $plugin . ")");
-			}
-			else {
-				require_once $fileName;
-				error_log("Loading plugin: " . $plugin);
-			}
-		}
-		$plugins = array_diff(get_declared_classes(), $classes);
-		
-		// Create plugins
-		foreach ($plugins as $plugin) {
-			$nameIndex = stripos($plugin, 'plugin');
-			if ($nameIndex === false) continue;
-			array_push($this->plugins, new $plugin($this));
-		}*/
-	//}
-
-	/**
-	 * Handle EndMap callback
-	 */
-	public function handleEndMap($callback) {
-		// Autosave match settings
-		$autosaveMatchsettings = $this->config->xpath('autosave_matchsettings');
-		if ($autosaveMatchsettings) {
-			$autosaveMatchsettings = (string) $autosaveMatchsettings[0];
-			if ($autosaveMatchsettings) {
-				if (!$this->client->query('SaveMatchSettings', 'MatchSettings/' . $autosaveMatchsettings)) {
-					trigger_error("Couldn't autosave match settings. " . $this->getClientErrorText());
-				}
-			}
-		}
-	}
-
-	/**
-	 * Check config settings
-	 */
-	public function checkConfig($config, $settings, $name = 'Config XML') {
-		if (!is_array($settings)) $settings = array($settings);
-		foreach ($settings as $setting) {
-			$settingTags = $config->xpath('//' . $setting);
-			if (empty($settingTags)) {
-				trigger_error("Missing property '" . $setting . "' in config '" . $name . "'!", E_USER_ERROR);
-			}
-		}
-	}
-
-    /**
-     * @param mixed $version
-     */
-    public function setVersion($version)
-    {
-        $this->version = $version;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getVersion()
-    {
-        return $this->version;
-    }
-
 }
 
 ?>

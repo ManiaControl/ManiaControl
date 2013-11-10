@@ -31,11 +31,10 @@ class Server {
 		$this->mc = $mc;
 		
 		// Load config
-		$this->config = Tools::loadConfig('server.ManiaControl.xml');
-		$this->mc->checkConfig($this->config, array('host', 'port', 'login', 'pass'), 'server');
+		$this->config = Tools::loadConfig('server.xml');
 		
 		// Register for callbacks
-		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_IC_1_SECOND, $this, 'eachSecond');
+		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_MC_1_SECOND, $this, 'eachSecond');
 	}
 
 	/**
@@ -226,8 +225,8 @@ class Server {
 		}
 		return $gameMode;
 	}
-
-    //TODO: remove getPlayer / getPlayers -> methods now in playerHandler handeld, but should be improved more
+	
+	// TODO: remove getPlayer / getPlayers -> methods now in playerHandler handeld, but should be improved more
 	/**
 	 * Fetch player info
 	 *

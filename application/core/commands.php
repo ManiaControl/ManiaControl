@@ -31,10 +31,10 @@ class Commands {
 		$this->mc = $mc;
 		
 		// Load config
-		$this->config = Tools::loadConfig('commands.ManiaControl.xml');
+		$this->config = Tools::loadConfig('commands.xml');
 		
 		// Register for callbacks
-		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_IC_5_SECOND, $this, 'each5Seconds');
+		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_MC_5_SECOND, $this, 'each5Seconds');
 		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_MP_BILLUPDATED, $this, 'handleBillUpdated');
 		$this->mc->callbacks->registerCallbackHandler(Callbacks::CB_MP_PLAYERCHAT, $this, 'handleChatCallback');
 		
@@ -345,7 +345,7 @@ class Commands {
 			$this->mc->authentication->sendNotAllowed($login);
 			return;
 		}
-		$this->mc->quit("ManiaControl shutdown requested by '" . $login . "'");
+		$this->mc->quit("ManiaControl shutdown requested by '{$login}'");
 	}
 
 	/**

@@ -7,10 +7,10 @@
 	<port>3306</port>
 
 	<!-- MySQL User -->
-	<user>steff</user>
+	<user>maniacontrol</user>
 	<pass>kjhgvhbjnfih2394ugnjk</pass>
 
 	<!-- Database Name -->
-	<database>steff_united</database>
+	<database>maniacontrol_dev</database>
 
 </database-config>
