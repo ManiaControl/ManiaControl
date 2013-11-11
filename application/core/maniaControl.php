@@ -21,6 +21,7 @@ require_once __DIR__ . '/pluginHandler.php';
 require_once __DIR__ . '/server.php';
 require_once __DIR__ . '/settingManager.php';
 require_once __DIR__ . '/settingConfigurator.php';
+require_once __DIR__ . '/map.php';
 require_once __DIR__ . '/mapHandler.php';
 require_once __DIR__ . '/GbxDataFetcher/gbxdatafetcher.inc.php';
 require_once __DIR__ . '/ManiaExchange/mxinfofetcher.inc.php';
@@ -76,8 +77,9 @@ class ManiaControl {
 		$this->chat = new Chat($this);
 		$this->callbacks = new Callbacks($this);
 		$this->server = new Server($this);
-		$this->playerHandler = new PlayerHandler($this);
 		$this->authentication = new Authentication($this);
+		$this->playerHandler = new PlayerHandler($this);
+		$this->mapHandler = new MapHandler($this);
 		$this->manialinkIdHandler = new ManialinkIdHandler();
 		$this->commands = new Commands($this);
 		$this->pluginHandler = new PluginHandler($this);

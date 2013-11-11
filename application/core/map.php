@@ -8,72 +8,72 @@ namespace ManiaControl;
  * @author kremsy & steeffeen
  */
 
-class map {
+class Map {
+	/**
+	 * Private properties
+	 */
+	private $maniaControl = 0;
+
+	/**
+	 * Public properties
+	 */
+	public $mapFetcher = null;
+
     public $id = 0;
     public $name = '';
     public $uid = 0;
-    public $filename = '';
+    public $fileName = '';
     public $environment = '';
-    public $mood = '';
-    public $bronzetime; //format?
-    public $silvertime; //format?
-    public $goldtime;   //format?
-    public $authortime; //format?
-    public $copperprice = 0;
-    public $laprace = 0;
-    public $forcedlaps = 0;
-    public $nblaps = 0;
-    public $nbchecks = 0;
-    public $score = 0;
-    public $starttime = 0;
-    public $maptype = '';
-    public $mapstyle = '';
-    public $titleuid = 0;
-  //  public $gbx; //needed? would be the whole gbx object
+    public $goldTime;   //format?
+    public $copperPrice = 0;
+    public $mapType = '';
+    public $mapStyle = '';
+
     public $mx = null;
     public $authorLogin = '';
     public $authorNick = '';
     public $authorZone = '';
-    public $authorEInfo; //format?
+    public $authorEInfo = '';
+	public $comment = '';
+	public $titleUid = '';
 
-    //Todo: check RPC infos
+	public $starttime = 0;
+
     // instantiates the map with an RPC response
-    public function __construct($rpc_infos = null) {
-        $this->id = 0;
+    public function __construct(ManiaControl $maniaControl, $rpc_infos = null) {
+        $this->maniaControl = $maniaControl;
+
         if ($rpc_infos) {
-            $this->name = stripNewlines($rpc_infos['Name']);
+            $this->name = $rpc_infos['Name']; //in aseco stripped new lines on name
             $this->uid = $rpc_infos['UId'];
-            $this->filename = $rpc_infos['FileName'];
+            $this->fileName = $rpc_infos['FileName'];
             $this->authorLogin = $rpc_infos['Author'];
             $this->environment = $rpc_infos['Environnement'];
-            $this->mood = $rpc_infos['Mood'];
-            $this->bronzetime = $rpc_infos['BronzeTime'];
-            $this->silvertime = $rpc_infos['SilverTime'];
-            $this->goldtime = $rpc_infos['GoldTime'];
-            $this->authortime = $rpc_infos['AuthorTime'];
-            $this->copperprice = $rpc_infos['CopperPrice'];
-            $this->laprace = $rpc_infos['LapRace'];
-            $this->forcedlaps = 0;
-            $this->nblaps = $rpc_infos['NbLaps'];
-            $this->nbchecks = $rpc_infos['NbCheckpoints'];
-            $this->maptype = $rpc_infos['MapType'];
-            $this->mapstyle = $rpc_infos['MapStyle'];
+            $this->goldTime = $rpc_infos['GoldTime'];
+            $this->copperPrice = $rpc_infos['CopperPrice'];
+            $this->mapType = $rpc_infos['MapType'];
+            $this->mapStyle = $rpc_infos['MapStyle'];
 
-            $this->starttime = time();
+			$this->mapFetcher = new \GBXChallMapFetcher(true);
+
+			try{
+				$this->mapFetcher->processFile($this->maniaControl->server->getMapsDirectory() . $this->fileName);
+			}    catch (Exception $e){
+				trigger_error($e->getMessage(), E_USER_WARNING);
+			}
+			$this->authorNick = $this->mapFetcher->authorNick;
+			$this->authorEInfo = $this->mapFetcher->authorEInfo;
+			$this->authorZone = $this->mapFetcher->authorZone;
+			$this->comment = $this->mapFetcher->comment;
+			//additional properties anyway in the mapfetcher object
+
+			//TODO: change to SM to gameerkennung
+			//TODO: define timeout if mx is down
+			$this->mx = new \MXInfoFetcher('SM', $this->uid, false); //SM -> change to gameerkennung
         } else {
             $this->name = 'undefined';
         }
 
-      /*  $mapFetcher = new \GBXChallMapFetcher(true);
-        try{
-           $mapFetcher->processFile($this->mc->server->mapdir . $this->filename);
-        }    catch (Exception $e){
-            trigger_error($e->getMessage(), E_USER_WARNING);
-        }
-        $this->authorNick = $mapFetcher->authorNick;
-        $this->authorEInfo = $mapFetcher->authorEInfo;
-        $this->authorZone = $mapFetcher->authorZone;
-    */
-        $this->mx = new \MXInfoFetcher('SM', $this->uid, false); //SM -> change to gameerkennung
+		$this->starttime = time();
     }
 } 

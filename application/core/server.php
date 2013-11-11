@@ -59,7 +59,7 @@ class Server {
 		if (!$dataDirectory) {
 			return null;
 		}
-		return $dataDirectory . 'UserData/Maps/';
+		return $dataDirectory . 'Maps/';
 	}
 
 	/**

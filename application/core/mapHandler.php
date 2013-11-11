@@ -57,6 +57,7 @@ class mapHandler {
         $this->maniaControl->client->query('GetMapList', 300, 0);
         $mapList = $this->maniaControl->client->getResponse();
         foreach ($mapList as $map) {
+			$map = new Map($this->maniaControl, $map);
             $this->addMap($map);
         }
     }

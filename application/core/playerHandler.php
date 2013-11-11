@@ -118,7 +118,7 @@ class PlayerHandler {
 		$player = $this->removePlayer($login);
 
 		if($this->maniaControl->settingManager->getSetting($this,"Leave Join Messages")){
-			$played = timeFormatter::formatTime(time() - $player->joinTime);
+			$played = TimeFormatter::formatTime(time() - $player->joinTime);
 			$this->maniaControl->chat->sendChat($player->nickname . '$z $ff0has left the game. Played:$fff ' . $played);
 		}
 	}
