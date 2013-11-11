@@ -41,7 +41,7 @@ class mapHandler {
      * @return bool
      */
     private function initTables() {
-
+		//TODO: Initialize database table
 
     }
 
@@ -52,8 +52,6 @@ class mapHandler {
      * @param array $callback
      */
     public function onInit(){
-
-
         $this->maniaControl->client->query('GetMapList', 300, 0);
         $mapList = $this->maniaControl->client->getResponse();
         foreach ($mapList as $map) {
@@ -69,6 +67,7 @@ class mapHandler {
      * @return bool
      */
     private function addMap(Map $map) {
+		//TODO: ADD Maps to database
         if (!$map) {
             return false;
         }
