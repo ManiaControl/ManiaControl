@@ -3,11 +3,11 @@
 namespace ManiaControl;
 
 /**
- * Class offering methods to format times
+ * Class offering methods to format texts and values
  *
- * @author Steff
+ * @author steeffeen & kremsy
  */
-class TimeFormatter {
+abstract class Formatter {
 
 	/**
 	 * Formats the given time (milliseconds)
@@ -50,6 +50,39 @@ class TimeFormatter {
 	 */
 	public static function formatTimestamp($time) {
 		return date("Y-m-d H:i:s", $time);
+	}
+
+	/**
+	 * Strip $codes from the string
+	 *
+	 * @param string $string        	
+	 * @return string
+	 */
+	public static function stripCodes($string) {
+		$string = preg_replace('/(?<!\$)((?:\$\$)*)\$[^$0-9a-hlp]/iu', '$1', $string);
+		$string = self::stripLinks($string);
+		$string = self::stripColors($string);
+		return $string;
+	}
+
+	/**
+	 * Remove link codes from the string
+	 *
+	 * @param string $string        	
+	 * @return string
+	 */
+	public static function stripLinks($string) {
+		return preg_replace('/(?<!\$)((?:\$\$)*)\$[hlp](?:\[.*?\])?(.*?)(?:\$[hlp]|(\$z)|$)/iu', '$1$2$3', $string);
+	}
+
+	/**
+	 * Remove colors from the string
+	 *
+	 * @param string $string        	
+	 * @return string
+	 */
+	static function stripColors($string) {
+		return preg_replace('/(?<!\$)((?:\$\$)*)\$(?:g|[0-9a-f][^\$]{0,2})/iu', '$1', $string);
 	}
 }
 
