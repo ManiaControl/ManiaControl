@@ -88,6 +88,7 @@ class PluginManager {
 		$pluginStatement->execute();
 		if ($pluginStatement->error) {
 			trigger_error($pluginStatement->error);
+			$pluginStatement->close();
 			return false;
 		}
 		$pluginStatement->close();

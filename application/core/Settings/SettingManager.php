@@ -275,6 +275,7 @@ class SettingManager {
 		$settingStatement->execute();
 		if ($settingStatement->error) {
 			trigger_error($settingStatement->error);
+			$settingStatement->close();
 			return false;
 		}
 		$settingStatement->close();

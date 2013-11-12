@@ -267,19 +267,6 @@ class Server {
 	}
 
 	/**
-	 * Fetch current map
-	 *
-	 * @return array
-	 */
-	public function getCurrentMap() {
-		if (!$this->maniaControl->client->query('GetCurrentMapInfo')) {
-			trigger_error("Couldn't fetch map info. " . $this->maniaControl->getClientErrorText());
-			return null;
-		}
-		return $this->maniaControl->client->getResponse();
-	}
-
-	/**
 	 * Waits for the server to have the given status
 	 *
 	 * @param int $statusCode        	

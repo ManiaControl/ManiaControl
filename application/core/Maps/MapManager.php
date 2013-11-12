@@ -3,10 +3,13 @@
 namespace ManiaControl\Maps;
 
 require_once __DIR__ . '/Map.php';
+require_once __DIR__ . '/MapCommands.php';
 
 use ManiaControl\ManiaControl;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+
+// TODO: xlist command
 
 /**
  * Manager for maps
@@ -14,11 +17,16 @@ use ManiaControl\Callbacks\CallbackManager;
  * @author kremsy & steeffeen
  */
 class MapManager implements CallbackListener {
+	/**
+	 * Constants
+	 */
+	const TABLE_MAPS = 'mc_maps';
 	
 	/**
 	 * Private properties
 	 */
 	private $maniaControl = null;
+	private $mapCommands = null;
 	private $mapList = array();
 
 	/**
@@ -26,15 +34,10 @@ class MapManager implements CallbackListener {
 	 *
 	 * @param \ManiaControl\ManiaControl $maniaControl        	
 	 */
-	
-	// TODO: database init
-	// TODO: erasemap from server
-	// TODO: implement of a method which are called by xlist command and results maplists from maniaexcahnge (or extra class for it)
-	// TODO: admin add from maniaexchange, would handle it here
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
-		
 		$this->initTables();
+		$this->mapCommands = new MapCommands($maniaControl);
 		
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_BEGINMAP, $this, 'handleBeginMap');
 	}
@@ -45,7 +48,65 @@ class MapManager implements CallbackListener {
 	 * @return bool
 	 */
 	private function initTables() {
-		// TODO: Initialize database table
+		$mysqli = $this->maniaControl->database->mysqli;
+		$mapsTableQuery = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_MAPS . "` (
+				`index` int(11) NOT NULL AUTO_INCREMENT,
+				`uid` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+				`name` varchar(150) COLLATE utf8_unicode_ci NOT NULL,
+				`authorLogin` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+				`fileName` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+				`environment` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+				`mapType` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+				`changed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+				PRIMARY KEY (`index`),
+				UNIQUE KEY `uid` (`uid`)
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Map data' AUTO_INCREMENT=1;";
+		$mapsTableStatement = $mysqli->prepare($mapsTableQuery);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error, E_USER_ERROR);
+			return false;
+		}
+		$mapsTableStatement->execute();
+		if ($mapsTableStatement->error) {
+			trigger_error($mapsTableStatement->error, E_USER_ERROR);
+			return false;
+		}
+		$mapsTableStatement->close();
+		return true;
+	}
+
+	/**
+	 * Save map to the database
+	 *
+	 * @param \ManiaControl\Maps\Map $map        	
+	 * @return boolean
+	 */
+	private function saveMap(Map $map) {
+		$mysqli = $this->maniaControl->database->mysqli;
+		$mapQuery = "INSERT INTO `" . self::TABLE_MAPS . "` (
+				`uid`,
+				`name`,
+				`authorLogin`,
+				`fileName`,
+				`environment`,
+				`mapType`
+				) VALUES (
+				?, ?, ?, ?, ?, ?
+				) ON DUPLICATE KEY UPDATE
+				`index` = LAST_INSERT_ID(`index`);";
+		$mapStatement = $mysqli->prepare($mapQuery);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error);
+			return false;
+		}
+		$mapStatement->bind_param('ssssss', $map->uid, $map->name, $map->authorLogin, $map->fileName, $map->environment, $map->mapType);
+		$mapStatement->execute();
+		if ($mapStatement->error) {
+			trigger_error($mapStatement->error);
+			$mapStatement->close();
+			return false;
+		}
+		$mapStatement->close();
 		return true;
 	}
 
@@ -56,12 +117,24 @@ class MapManager implements CallbackListener {
 	 * @return bool
 	 */
 	private function addMap(Map $map) {
-		if (!$map) {
-			return false;
-		}
-		// TODO: Save map in database
+		$this->saveMap($map);
 		$this->mapList[$map->uid] = $map;
 		return true;
+	}
+
+	/**
+	 * Fetch current map
+	 *
+	 * @return \ManiaControl\Maps\Map
+	 */
+	public function getCurrentMap() {
+		if (!$this->maniaControl->client->query('GetCurrentMapInfo')) {
+			trigger_error("Couldn't fetch map info. " . $this->maniaControl->getClientErrorText());
+			return null;
+		}
+		$rpcMap = $this->maniaControl->client->getResponse();
+		$map = new Map($this->maniaControl, $rpcMap);
+		return $map;
 	}
 
 	/**
@@ -70,8 +143,10 @@ class MapManager implements CallbackListener {
 	 * @param array $callback        	
 	 */
 	public function handleBeginMap(array $callback) {
-		$rpcMap = $this->maniaControl->server->getCurrentMap();
-		$map = new Map($this->maniaControl, $rpcMap);
+		$map = $this->getCurrentMap();
+		if (!$map) {
+			return;
+		}
 		$this->addMap($map);
 	}
 } 

@@ -145,7 +145,6 @@ class CallbackManager {
 					}
 				default:
 					{
-						var_dump($callback);
 						$this->triggerCallback($callbackName, $callback);
 						break;
 					}
@@ -175,7 +174,6 @@ class CallbackManager {
 				}
 			default:
 				{
-					var_dump($callback);
 					break;
 				}
 		}

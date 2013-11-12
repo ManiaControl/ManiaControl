@@ -81,8 +81,8 @@ class ManiaControl {
 		$this->server = new Server($this);
 		$this->authentication = new Authentication($this);
 		$this->playerManager = new PlayerManager($this);
-		$this->mapManager = new MapManager($this);
 		$this->commandManager = new CommandManager($this);
+		$this->mapManager = new MapManager($this);
 		$this->pluginManager = new PluginManager($this);
 	}
 
