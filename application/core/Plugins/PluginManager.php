@@ -25,7 +25,7 @@ class PluginManager {
 	private $pluginClasses = array();
 
 	/**
-	 * Construct plugin handler
+	 * Construct plugin manager
 	 *
 	 * @param \ManiaControl\ManiaControl $maniaControl        	
 	 */
@@ -121,6 +121,7 @@ class PluginManager {
 		if ($pluginStatement->num_rows <= 0) {
 			$pluginStatement->free_result();
 			$pluginStatement->close();
+			$this->savePluginStatus($className, false);
 			return false;
 		}
 		$pluginStatement->bind_result($activeInt);
@@ -149,7 +150,7 @@ class PluginManager {
 			$classesAfter = get_declared_classes();
 			$newClasses = array_diff($classesAfter, $classesBefore);
 			foreach ($newClasses as $className) {
-				if (!is_subclass_of($className, 'ManiaControl\Plugin')) {
+				if (!is_subclass_of($className, Plugin::getClass())) {
 					continue;
 				}
 				array_push($this->pluginClasses, $className);

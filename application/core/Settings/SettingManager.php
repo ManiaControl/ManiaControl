@@ -164,6 +164,9 @@ class SettingManager {
 		if ($type === self::TYPE_ARRAY) {
 			return implode($this->arrayDelimiter, $value);
 		}
+		if ($type === self::TYPE_BOOL) {
+			return ($value ? 1 : 0);
+		}
 		return $value;
 	}
 

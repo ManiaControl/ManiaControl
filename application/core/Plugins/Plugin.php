@@ -28,6 +28,15 @@ abstract class Plugin {
 	public abstract function __construct(ManiaControl $maniaControl);
 
 	/**
+	 * Get class name as string
+	 * 
+	 * @return string
+	 */
+	public static function getClass() {
+		return __CLASS__;
+	}
+
+	/**
 	 * Get plugin author
 	 *
 	 * @return string

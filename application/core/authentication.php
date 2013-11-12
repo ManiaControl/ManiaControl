@@ -3,6 +3,7 @@
 namespace ManiaControl;
 
 use ManiaControl\Players\Player;
+use ManiaControl\Players\PlayerManager;
 
 /**
  * Class handling authentication levels
@@ -101,7 +102,7 @@ class Authentication {
 			return false;
 		}
 		$mysqli = $this->maniaControl->database->mysqli;
-		$authQuery = "INSERT INTO `" . PlayerHandler::TABLE_PLAYERS . "` (
+		$authQuery = "INSERT INTO `" . PlayerManager::TABLE_PLAYERS . "` (
 				`login`,
 				`authLevel`
 				) VALUES (

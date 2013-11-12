@@ -15,6 +15,7 @@ require_once __DIR__ . '/Chat.php';
 require_once __DIR__ . '/Commands/CommandManager.php';
 require_once __DIR__ . '/Database.php';
 require_once __DIR__ . '/FileUtil.php';
+require_once __DIR__ . '/Formatter.php';
 require_once __DIR__ . '/Manialinks/ManialinkIdHandler.php';
 require_once __DIR__ . '/Manialinks/ManialinkUtil.php';
 require_once __DIR__ . '/Maps/Map.php';

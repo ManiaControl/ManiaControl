@@ -35,21 +35,21 @@ abstract class Formatter {
 	/**
 	 * Formats the given time (seconds) to hh:mm:ss
 	 *
-	 * @param int $time        	
+	 * @param int $seconds        	
 	 * @return string
 	 */
-	public static function formatTimeH($time) {
+	public static function formatTimeH($seconds) {
 		return gmdate("H:i:s", $seconds);
 	}
 
 	/**
 	 * Convert the given time (seconds) to mysql timestamp
 	 *
-	 * @param int $time        	
+	 * @param int $seconds        	
 	 * @return string
 	 */
-	public static function formatTimestamp($time) {
-		return date("Y-m-d H:i:s", $time);
+	public static function formatTimestamp($seconds) {
+		return date("Y-m-d H:i:s", $seconds);
 	}
 
 	/**

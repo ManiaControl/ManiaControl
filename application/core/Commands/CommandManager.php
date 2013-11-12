@@ -23,12 +23,11 @@ class CommandManager implements CallbackListener, CommandListener {
 	 */
 	private $maniaControl = null;
 	private $commandListeners = array();
-	private $openBills = array();
 	private $serverShutdownTime = -1;
 	private $serverShutdownEmpty = false;
 
 	/**
-	 * Construct commands handler
+	 * Construct commands manager
 	 *
 	 * @param \ManiaControl\ManiaControl $maniaControl        	
 	 */
@@ -36,12 +35,10 @@ class CommandManager implements CallbackListener, CommandListener {
 		$this->maniaControl = $maniaControl;
 		
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_5_SECOND, $this, 'each5Seconds');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_BILLUPDATED, $this, 'handleBillUpdated');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCHAT, $this, 'handleChatCallback');
 		
 		// Register basic commands
-		$commands = array('help', 'version', 'shutdown', 'shutdownserver', 'systeminfo', 'setservername', 'getplanets', 'donate', 
-			'pay', 'kick');
+		$commands = array('version', 'shutdown', 'shutdownserver', 'systeminfo', 'setservername', 'kick');
 		foreach ($commands as $command) {
 			$this->registerCommandListener($command, $this, 'command_' . $command);
 		}
@@ -90,52 +87,12 @@ class CommandManager implements CallbackListener, CommandListener {
 		$command = explode(" ", substr($callback[1][2], 1));
 		$command = strtolower($command[0]);
 		if (!array_key_exists($command, $this->commandListeners) || !is_array($this->commandListeners[$command])) {
-			// No command handler registered
+			// No command listener registered
 			return true;
 		}
-		// Inform command handlers
+		// Inform command listeners
 		foreach ($this->commandListeners[$command] as $listener) {
 			call_user_func(array($listener[0], $listener[1]), $callback, $player);
-		}
-		return true;
-	}
-
-	/**
-	 * Handle bill updated callback
-	 *
-	 * @param array $callback        	
-	 * @return bool
-	 */
-	public function handleBillUpdated(array $callback) {
-		$bill = $callback[1];
-		if (!array_key_exists($bill[0], $this->openBills)) {
-			return false;
-		}
-		$login = $this->openBills[$bill[0]];
-		switch ($bill[1]) {
-			case 4:
-				{
-					// Payed
-					$message = 'Success! Thanks.';
-					$this->maniaControl->chat->sendSuccess($message, $login);
-					unset($this->openBills[$bill[0]]);
-					break;
-				}
-			case 5:
-				{
-					// Refused
-					$message = 'Transaction cancelled.';
-					$this->maniaControl->chat->sendError($message, $login);
-					unset($this->openBills[$bill[0]]);
-					break;
-				}
-			case 6:
-				{
-					// Error
-					$this->maniaControl->chat->sendError($bill[2], $login);
-					unset($this->openBills[$bill[0]]);
-					break;
-				}
 		}
 		return true;
 	}
@@ -150,138 +107,6 @@ class CommandManager implements CallbackListener, CommandListener {
 		$login = $chat[1][1];
 		$message = 'This server is using ManiaControl v' . ManiaControl::VERSION . '!';
 		return $this->maniaControl->chat->sendInformation($message, $login);
-	}
-
-	/**
-	 * Send help list
-	 *
-	 * @param array $chat        	
-	 * @return bool
-	 */
-	private function command_help(array $chat) {
-		$login = $chat[1][1];
-		// TODO: improve help command
-		// TODO: enable help for specific commands
-		$list = 'Available commands: ';
-		$commands = array_keys($this->commandHandlers);
-		$count = count($commands);
-		for ($index = 0; $index < $count; $index++) {
-			if (!$this->maniaControl->authentication->checkRight($login, $this->getRightsLevel($commands[$index], 'superadmin'))) {
-				unset($commands[$index]);
-			}
-		}
-		$count = count($commands);
-		$index = 0;
-		foreach ($commands as $command) {
-			$list .= $command;
-			if ($index < $count - 1) {
-				$list .= ', ';
-			}
-			$index++;
-		}
-		return $this->maniaControl->chat->sendInformation($list, $login);
-	}
-
-	/**
-	 * Handle getplanets command
-	 *
-	 * @param array $chat        	
-	 * @param Player $player        	
-	 * @return bool
-	 */
-	private function command_getplanets(array $chat, Player $player) {
-		if (!$this->maniaControl->authentication->checkRight($player, Authentication::AUTH_LEVEL_ADMIN)) {
-			$this->maniaControl->authentication->sendNotAllowed($player);
-			return false;
-		}
-		if (!$this->maniaControl->client->query('GetServerPlanets')) {
-			trigger_error("Couldn't retrieve server planets. " . $this->maniaControl->getClientErrorText());
-			return false;
-		}
-		$planets = $this->maniaControl->client->getResponse();
-		$message = "This Server has {$planets} Planets!";
-		return $this->maniaControl->chat->sendInformation($message, $player->login);
-	}
-
-	/**
-	 * Handle donate command
-	 *
-	 * @param array $chat        	
-	 * @param Player $player        	
-	 * @return bool
-	 */
-	private function command_donate(array $chat, Player $player) {
-		$params = explode(' ', $chat[1][2]);
-		if (count($params) < 2) {
-			// TODO: send usage information
-			return false;
-		}
-		$amount = (int) $params[1];
-		if (!$amount || $amount <= 0) {
-			// TODO: send usage information
-			return false;
-		}
-		if (count($params) >= 3) {
-			$receiver = $params[2];
-			$receiverPlayer = $this->maniaControl->playerHandler->getPlayer($receiver);
-			$receiverName = ($receiverPlayer ? $receiverPlayer['NickName'] : $receiver);
-		}
-		else {
-			$receiver = '';
-			$receiverName = $this->maniaControl->server->getName();
-		}
-		$message = 'Donate ' . $amount . ' Planets to $<' . $receiverName . '$>?';
-		if (!$this->maniaControl->client->query('SendBill', $pl, $amount, $message, $receiver)) {
-			trigger_error(
-					"Couldn't create donation of {$amount} planets from '{$player->login}' for '{$receiver}'. " .
-							 $this->maniaControl->getClientErrorText());
-			$this->maniaControl->chat->sendError("Creating donation failed.", $player->login);
-			return false;
-		}
-		$bill = $this->maniaControl->client->getResponse();
-		$this->openBills[$bill] = $player->login;
-		return true;
-	}
-
-	/**
-	 * Handle pay command
-	 *
-	 * @param array $chat        	
-	 * @param Player $player        	
-	 * @return bool
-	 */
-	private function command_pay(array $chat, Player $player) {
-		if (!$this->maniaControl->authentication->checkRight($player, Authentication::AUTH_LEVEL_SUPERADMIN)) {
-			$this->maniaControl->authentication->sendNotAllowed($player);
-			return false;
-		}
-		$params = explode(' ', $chat[1][2]);
-		if (count($params) < 2) {
-			// TODO: send usage information
-			return false;
-		}
-		$amount = (int) $params[1];
-		if (!$amount || $amount <= 0) {
-			// TODO: send usage information
-			return false;
-		}
-		if (count($params) >= 3) {
-			$receiver = $params[2];
-		}
-		else {
-			$receiver = $player->login;
-		}
-		$message = 'Payout from $<' . $this->maniaControl->server->getName() . '$>.';
-		if (!$this->maniaControl->client->query('Pay', $receiver, $amount, $message)) {
-			trigger_error(
-					"Couldn't create payout of {$amount} planets by '{$player->login}' for '{$receiver}'. " .
-							 $this->maniaControl->getClientErrorText());
-			$this->maniaControl->chat->sendError("Creating payout failed.", $player->login);
-			return false;
-		}
-		$bill = $this->maniaControl->client->getResponse();
-		$this->openBills[$bill] = $player->login;
-		return true;
 	}
 
 	/**
@@ -375,7 +200,7 @@ class CommandManager implements CallbackListener, CommandListener {
 			return false;
 		}
 		$target = $params[1];
-		$target = $this->maniaControl->playerHandler->getPlayer($target);
+		$target = $this->maniaControl->playerManager->getPlayer($target);
 		if (!$target) {
 			$this->maniaControl->chat->sendError("Invalid player login.", $player->login);
 			return false;

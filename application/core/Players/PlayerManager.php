@@ -4,6 +4,7 @@ namespace ManiaControl\Players;
 
 require_once __DIR__ . '/Player.php';
 
+use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
@@ -18,7 +19,7 @@ class PlayerManager implements CallbackListener {
 	 * Constants
 	 */
 	const TABLE_PLAYERS = 'mc_players';
-	const SETTING_LEAVE_JOIN_MESSAGES = 'EnableLeaveJoinMessages';
+	const SETTING_JOIN_LEAVE_MESSAGES = 'Enable Join & Leave Messages';
 	
 	/**
 	 * Private properties
@@ -27,7 +28,7 @@ class PlayerManager implements CallbackListener {
 	private $playerList = array();
 
 	/**
-	 * Construct player handler
+	 * Construct player manager
 	 *
 	 * @param \ManiaControl\ManiaControl $maniaControl        	
 	 */
@@ -82,8 +83,9 @@ class PlayerManager implements CallbackListener {
 	 */
 	public function onInit(array $callback) {
 		// register settings
-		$this->maniaControl->settingManager->initSetting($this, "Leave Join Messages", true);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES, false);
 		
+		// Add all players
 		$this->maniaControl->client->query('GetPlayerList', 300, 0, 2);
 		$playerList = $this->maniaControl->client->getResponse();
 		foreach ($playerList as $playerItem) {
@@ -109,7 +111,7 @@ class PlayerManager implements CallbackListener {
 		$player = new Player($playerInfo);
 		$this->addPlayer($player);
 		
-		if (!$this->maniaControl->settingManager->getSetting($this, self::SETTING_LEAVE_JOIN_MESSAGES)) {
+		if (!$this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES)) {
 			return;
 		}
 		$string = array(0 => 'New Player', 1 => '$0f0Operator', 2 => '$0f0Admin', 3 => '$0f0MasterAdmin', 4 => '$0f0MasterAdmin');
@@ -131,10 +133,11 @@ class PlayerManager implements CallbackListener {
 		$login = $callback[1][0];
 		$player = $this->removePlayer($login);
 		
-		if ($this->maniaControl->settingManager->getSetting($this, "Leave Join Messages")) {
-			$played = TimeFormatter::formatTime(time() - $player->joinTime);
-			$this->maniaControl->chat->sendChat($player->nickname . '$z $ff0has left the game. Played:$fff ' . $played);
+		if (!$this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES)) {
+			return;
 		}
+		$played = Formatter::formatTimeH(time() - $player->joinTime);
+		$this->maniaControl->chat->sendChat('$<'.$player->nickname . '$> $ff0has left the game. Played:$fff ' . $played);
 	}
 
 	/**
