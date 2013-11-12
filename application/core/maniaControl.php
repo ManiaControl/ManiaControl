@@ -2,31 +2,30 @@
 
 namespace ManiaControl;
 
-/**
- * Needed includes
- * 
- * @author steeffeen & kremsy
- */
-require_once __DIR__ . '/authentication.php';
-require_once __DIR__ . '/callbacks.php';
-require_once __DIR__ . '/chat.php';
-require_once __DIR__ . '/commands.php';
-require_once __DIR__ . '/database.php';
-require_once __DIR__ . '/fileUtil.php';
-require_once __DIR__ . '/manialinkIdHandler.php';
-require_once __DIR__ . '/player.php';
-require_once __DIR__ . '/playerHandler.php';
-require_once __DIR__ . '/plugin.php';
-require_once __DIR__ . '/pluginHandler.php';
-require_once __DIR__ . '/server.php';
-require_once __DIR__ . '/settingManager.php';
-require_once __DIR__ . '/settingConfigurator.php';
-require_once __DIR__ . '/map.php';
-require_once __DIR__ . '/mapHandler.php';
+use ManiaControl\Players\PlayerManager;
+use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Commands\CommandManager;
+use ManiaControl\Manialinks\ManialinkIdHandler;
+use ManiaControl\Maps\MapManager;
+use ManiaControl\Plugins\PluginManager;
+
+require_once __DIR__ . '/Authentication.php';
+require_once __DIR__ . '/Callbacks/CallbackManager.php';
+require_once __DIR__ . '/Chat.php';
+require_once __DIR__ . '/Commands/CommandManager.php';
+require_once __DIR__ . '/Database.php';
+require_once __DIR__ . '/FileUtil.php';
+require_once __DIR__ . '/Manialinks/ManialinkIdHandler.php';
+require_once __DIR__ . '/Manialinks/ManialinkUtil.php';
+require_once __DIR__ . '/Maps/Map.php';
+require_once __DIR__ . '/Maps/MapManager.php';
+require_once __DIR__ . '/Players/PlayerManager.php';
+require_once __DIR__ . '/Plugins/PluginManager.php';
+require_once __DIR__ . '/Server.php';
+require_once __DIR__ . '/Settings/SettingManager.php';
 require_once __DIR__ . '/GbxDataFetcher/gbxdatafetcher.inc.php';
 require_once __DIR__ . '/ManiaExchange/mxinfofetcher.inc.php';
 require_once __DIR__ . '/ManiaExchange/mxinfosearcher.inc.php';
-
 list($endiantest) = array_values(unpack('L1L', pack('V', 1)));
 if ($endiantest == 1) {
 	require_once __DIR__ . '/PhpRemote/GbxRemote.inc.php';
@@ -38,7 +37,7 @@ else {
 /**
  * ManiaControl Server Controller for ManiaPlanet Server
  *
- * @author steeffeen and Lukas
+ * @author steeffeen & kremsy
  */
 class ManiaControl {
 	/**
@@ -52,17 +51,19 @@ class ManiaControl {
 	 * Public properties
 	 */
 	public $authentication = null;
-	public $callbacks = null;
+	public $callbackManager = null;
 	public $chat = null;
 	public $client = null;
-	public $commands = null;
+	public $commandManager = null;
 	public $database = null;
 	public $manialinkIdHandler = null;
-	public $playerHandler = null;
-	public $pluginHandler = null;
+	public $mapManager = null;
+	public $playerManager = null;
+	public $pluginManager = null;
 	public $server = null;
 	public $settingConfigurator = null;
 	public $settingManager = null;
+	
 	/**
 	 * Private properties
 	 */
@@ -73,17 +74,16 @@ class ManiaControl {
 	 */
 	public function __construct() {
 		$this->database = new Database($this);
+		$this->callbackManager = new CallbackManager($this);
+		$this->manialinkIdHandler = new ManialinkIdHandler();
 		$this->settingManager = new SettingManager($this);
 		$this->chat = new Chat($this);
-		$this->callbacks = new Callbacks($this);
 		$this->server = new Server($this);
 		$this->authentication = new Authentication($this);
-		$this->playerHandler = new PlayerHandler($this);
-		$this->mapHandler = new MapHandler($this);
-		$this->manialinkIdHandler = new ManialinkIdHandler();
-		$this->commands = new Commands($this);
-		$this->pluginHandler = new PluginHandler($this);
-		$this->settingConfigurator = new SettingConfigurator($this);
+		$this->playerManager = new PlayerManager($this);
+		$this->mapManager = new MapManager($this);
+		$this->commandManager = new CommandManager($this);
+		$this->pluginManager = new PluginManager($this);
 	}
 
 	/**
@@ -134,7 +134,7 @@ class ManiaControl {
 		error_log('Starting ManiaControl v' . self::VERSION . '!');
 		
 		// Load plugins
-		$this->pluginHandler->loadPlugins();
+		$this->pluginManager->loadPlugins();
 		
 		// Connect to server
 		$this->connect();
@@ -146,7 +146,7 @@ class ManiaControl {
 		$this->chat->sendInformation('ManiaControl v' . self::VERSION . ' successfully started!');
 		
 		// OnInit
-		$this->callbacks->onInit();
+		$this->callbackManager->triggerCallback(CallbackManager::CB_MC_ONINIT, array(CallbackManager::CB_MC_ONINIT));
 		
 		// Main loop
 		while (!$this->shutdownRequested) {
@@ -155,8 +155,8 @@ class ManiaControl {
 			// Disable script timeout
 			set_time_limit(30);
 			
-			// Handle server callbacks
-			$this->callbacks->handleCallbacks();
+			// Manager callbacks
+			$this->callbackManager->manageCallbacks();
 			
 			// Yield for next tick
 			$loopEnd = microtime(true);

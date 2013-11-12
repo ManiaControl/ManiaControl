@@ -1,7 +1,12 @@
 <?php
+use ManiaControl\ManiaControl;
+use ManiaControl\Plugins\Plugin;
 
-namespace ManiaControl;
-
+/**
+ * Basic test plugin
+ *
+ * @author steeffeen
+ */
 class TestPlugin extends Plugin {
 
 	public function __construct(ManiaControl $maniaControl) {

@@ -1,13 +1,17 @@
 <?php
 
-namespace ManiaControl;
+namespace ManiaControl\Plugins;
+
+require_once __DIR__ . '/Plugin.php';
+
+use ManiaControl\ManiaControl;
 
 /**
- * Class handling plugins
+ * Class managing plugins
  *
- * @author Lukas Kremsmayr and steeffeen
+ * @author steeffeen & kremsy
  */
-class PluginHandler {
+class PluginManager {
 	/**
 	 * Constants
 	 */
@@ -23,7 +27,7 @@ class PluginHandler {
 	/**
 	 * Construct plugin handler
 	 *
-	 * @param ManiaControl $maniaControl        	
+	 * @param \ManiaControl\ManiaControl $maniaControl        	
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;

@@ -1,6 +1,14 @@
 <?php
 
-namespace ManiaControl;
+namespace ManiaControl\Commands;
+
+require_once __DIR__ . '/CommandListener.php';
+
+use ManiaControl\Authentication;
+use ManiaControl\ManiaControl;
+use ManiaControl\Callbacks\CallbackListener;
+use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Players\Player;
 
 /**
  * Class for handling chat commands
@@ -8,56 +16,57 @@ namespace ManiaControl;
  * @author steeffeen & kremsy
  */
 // TODO: settings for command auth levels
-class Commands {
+class CommandManager implements CallbackListener, CommandListener {
 	
 	/**
 	 * Private properties
 	 */
 	private $maniaControl = null;
-	private $commandHandlers = array();
+	private $commandListeners = array();
 	private $openBills = array();
 	private $serverShutdownTime = -1;
 	private $serverShutdownEmpty = false;
 
 	/**
 	 * Construct commands handler
+	 *
+	 * @param \ManiaControl\ManiaControl $maniaControl        	
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		
-		// Register for callbacks
-		$this->maniaControl->callbacks->registerCallbackHandler(Callbacks::CB_MC_5_SECOND, $this, 'each5Seconds');
-		$this->maniaControl->callbacks->registerCallbackHandler(Callbacks::CB_MP_BILLUPDATED, $this, 'handleBillUpdated');
-		$this->maniaControl->callbacks->registerCallbackHandler(Callbacks::CB_MP_PLAYERCHAT, $this, 'handleChatCallback');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_5_SECOND, $this, 'each5Seconds');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_BILLUPDATED, $this, 'handleBillUpdated');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCHAT, $this, 'handleChatCallback');
 		
 		// Register basic commands
 		$commands = array('help', 'version', 'shutdown', 'shutdownserver', 'systeminfo', 'setservername', 'getplanets', 'donate', 
 			'pay', 'kick', 'nextmap', 'restartmap', 'addmap', 'removemap');
 		foreach ($commands as $command) {
-			$this->registerCommandHandler($command, $this, 'command_' . $command);
+			$this->registerCommandListener($command, $this, 'command_' . $command);
 		}
 	}
 
 	/**
-	 * Register a command handler
+	 * Register a command listener
 	 *
 	 * @param string $commandName        	
-	 * @param object $handler        	
+	 * @param CommandListener $listener        	
 	 * @param string $method        	
 	 * @return bool
 	 */
-	public function registerCommandHandler($commandName, $handler, $method) {
+	public function registerCommandListener($commandName, CommandListener $listener, $method) {
 		$command = strtolower($commandName);
-		if (!is_object($handler) || !method_exists($handler, $method)) {
-			trigger_error("Given handler can't handle command '{$command}' (no method '{$method}')!");
+		if (!method_exists($listener, $method)) {
+			trigger_error("Given listener can't handle command '{$command}' (no method '{$method}')!");
 			return false;
 		}
-		if (!array_key_exists($command, $this->commandHandlers) || !is_array($this->commandHandlers[$command])) {
-			// Init handlers array
-			$this->commandHandlers[$command] = array();
+		if (!array_key_exists($command, $this->commandListeners) || !is_array($this->commandListeners[$command])) {
+			// Init listeners array
+			$this->commandListeners[$command] = array();
 		}
-		// Register command handler
-		array_push($this->commandHandlers[$command], array($handler, $method));
+		// Register command listener
+		array_push($this->commandListeners[$command], array($listener, $method));
 		return true;
 	}
 
@@ -68,26 +77,25 @@ class Commands {
 	 * @return bool
 	 */
 	public function handleChatCallback(array $callback) {
-		$chat = $callback[1];
 		// Check for command
-		if (!$chat[3]) {
+		if (!$callback[1][3]) {
 			return false;
 		}
 		// Check for valid player
-		$player = $this->maniaControl->playerHandler->getPlayer($login);
+		$player = $this->maniaControl->playerManager->getPlayer($callback[1][1]);
 		if (!$player) {
 			return false;
 		}
 		// Handle command
-		$command = explode(" ", substr($chat[2], 1));
+		$command = explode(" ", substr($callback[1][2], 1));
 		$command = strtolower($command[0]);
-		if (!array_key_exists($command, $this->commandHandlers) || !is_array($this->commandHandlers[$command])) {
+		if (!array_key_exists($command, $this->commandListeners) || !is_array($this->commandListeners[$command])) {
 			// No command handler registered
 			return true;
 		}
 		// Inform command handlers
-		foreach ($this->commandHandlers[$command] as $handler) {
-			call_user_func(array($handler[0], $handler[1]), $callback, $player);
+		foreach ($this->commandListeners[$command] as $listener) {
+			call_user_func(array($listener[0], $listener[1]), $callback, $player);
 		}
 		return true;
 	}
@@ -502,7 +510,7 @@ class Commands {
 	 * Handle nextmap command
 	 *
 	 * @param array $chat        	
-	 * @param Player $player        	
+	 * @param \ManiaControl\Players\Player $player        	
 	 * @return bool
 	 */
 	private function command_nextmap(array $chat, Player $player) {

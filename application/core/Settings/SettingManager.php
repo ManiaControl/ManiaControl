@@ -2,6 +2,10 @@
 
 namespace ManiaControl;
 
+require_once __DIR__ . '/SettingConfigurator.php';
+
+use ManiaControl\Settings\SettingConfigurator;
+
 /**
  * Class managing settings and configurations
  *
@@ -22,6 +26,7 @@ class SettingManager {
 	 * Private properties
 	 */
 	private $maniaControl = null;
+	private $configurator = null;
 	private $arrayDelimiter = ';;';
 
 	/**
@@ -33,6 +38,8 @@ class SettingManager {
 		$this->maniaControl = $maniaControl;
 		
 		$this->initTables();
+		
+		$this->configurator = new SettingConfigurator($maniaControl);
 	}
 
 	/**
@@ -187,8 +194,8 @@ class SettingManager {
 				@value := ?,
 				@value
 				) ON DUPLICATE KEY UPDATE
-				`type` = VALUE(`type`),
-				`default` = VALUE(`default`);";
+				`type` = VALUES(`type`),
+				`default` = VALUES(`default`);";
 		$settingStatement = $mysqli->prepare($settingQuery);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error);

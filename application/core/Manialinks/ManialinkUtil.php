@@ -1,6 +1,6 @@
 <?php
 
-namespace ManiaControl;
+namespace ManiaControl\Manialinks;
 
 /**
  * Manialink utility class

@@ -1,6 +1,6 @@
 <?php
 
-namespace ManiaControl;
+namespace ManiaControl\Manialinks;
 
 /**
  * Handler for manialink ids
@@ -27,4 +27,5 @@ class ManialinkIdHandler {
 		return $mlIds;
 	}
 }
+
 ?>

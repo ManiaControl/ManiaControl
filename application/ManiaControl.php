@@ -19,7 +19,7 @@ if (!is_dir('logs')) {
 ini_set('error_log', 'logs/ManiaControl_' . getmypid() . '.log');
 
 // Load ManiaControl class
-require_once __DIR__ . '/core/maniaControl.php';
+require_once __DIR__ . '/core/ManiaControl.php';
 
 // Start ManiaControl
 error_log('Loading ManiaControl v' . ManiaControl::VERSION . '...');

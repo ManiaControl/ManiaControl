@@ -1,27 +1,29 @@
 <?php
 
-namespace ManiaControl;
+namespace ManiaControl\Plugins;
+
+use ManiaControl\ManiaControl;
 
 /**
  * Plugin parent class
  *
- * @author Lukas Kremsmayr and steeffeen
+ * @author steeffeen & kremsy
  */
 abstract class Plugin {
 	
 	/**
 	 * Private properties
 	 */
-	protected $maniaControl;
-	protected $name;
-	protected $version;
-	protected $author;
-	protected $description;
+	protected $maniaControl = null;
+	protected $name = 'undefined';
+	protected $version = 'undefined';
+	protected $author = 'undefined';
+	protected $description = 'undefined';
 
 	/**
-	 * Create plugin instance
+	 * Create a new plugin
 	 *
-	 * @param ManiaControl $maniaControl        	
+	 * @param \ManiaControl\ManiaControl $maniaControl        	
 	 */
 	public abstract function __construct(ManiaControl $maniaControl);
 

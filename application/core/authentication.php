@@ -2,6 +2,8 @@
 
 namespace ManiaControl;
 
+use ManiaControl\Players\Player;
+
 /**
  * Class handling authentication levels
  *
@@ -42,7 +44,7 @@ class Authentication {
 		$mysqli = $this->maniaControl->database->mysqli;
 		
 		// Remove all XSuperadmins
-		$adminQuery = "UPDATE `" . PlayerHandler::TABLE_PLAYERS . "`
+		$adminQuery = "UPDATE `" . Players\PlayerManager::TABLE_PLAYERS . "`
 				SET `authLevel` = ?
 				WHERE `authLevel` = ?;";
 		$adminStatement = $mysqli->prepare($adminQuery);
@@ -61,7 +63,7 @@ class Authentication {
 		
 		// Set XSuperAdmins
 		$xAdmins = $config->xsuperadmins->xpath('login');
-		$adminQuery = "INSERT INTO `" . PlayerHandler::TABLE_PLAYERS . "` (
+		$adminQuery = "INSERT INTO `" . Players\PlayerManager::TABLE_PLAYERS . "` (
 				`login`,
 				`authLevel`
 				) VALUES (
@@ -138,7 +140,7 @@ class Authentication {
 	/**
 	 * Check if the player has enough rights
 	 *
-	 * @param Player $login        	
+	 * @param \ManiaControl\Players\Player $login        	
 	 * @param int $neededAuthLevel        	
 	 * @return bool
 	 */

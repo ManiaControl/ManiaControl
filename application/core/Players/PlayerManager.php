@@ -1,17 +1,24 @@
 <?php
 
-namespace ManiaControl;
+namespace ManiaControl\Players;
+
+require_once __DIR__ . '/Player.php';
+
+use ManiaControl\ManiaControl;
+use ManiaControl\Callbacks\CallbackListener;
+use ManiaControl\Callbacks\CallbackManager;
 
 /**
  * Class managing players
  *
  * @author kremsy & steeffeen
  */
-class PlayerHandler {
+class PlayerManager implements CallbackListener {
 	/**
 	 * Constants
 	 */
 	const TABLE_PLAYERS = 'mc_players';
+	const SETTING_LEAVE_JOIN_MESSAGES = 'EnableLeaveJoinMessages';
 	
 	/**
 	 * Private properties
@@ -22,16 +29,17 @@ class PlayerHandler {
 	/**
 	 * Construct player handler
 	 *
-	 * @param ManiaControl $maniaControl        	
+	 * @param \ManiaControl\ManiaControl $maniaControl        	
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		
 		$this->initTables();
 		
-		$this->maniaControl->callbacks->registerCallbackHandler(Callbacks::CB_MC_ONINIT, $this, 'onInit');
-		$this->maniaControl->callbacks->registerCallbackHandler(Callbacks::CB_MP_PLAYERCONNECT, $this, 'playerConnect');
-		$this->maniaControl->callbacks->registerCallbackHandler(Callbacks::CB_MP_PLAYERDISCONNECT, $this, 'playerDisconnect');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'onInit');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCONNECT, $this, 'playerConnect');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERDISCONNECT, $this, 
+				'playerDisconnect');
 	}
 
 	/**
@@ -73,17 +81,19 @@ class PlayerHandler {
 	 * @param array $callback        	
 	 */
 	public function onInit(array $callback) {
-	    //register settings
-		$this->maniaControl->settingManager->initSetting($this, "Leave Join Messages",true);
-
+		// register settings
+		$this->maniaControl->settingManager->initSetting($this, "Leave Join Messages", true);
+		
 		$this->maniaControl->client->query('GetPlayerList', 300, 0, 2);
 		$playerList = $this->maniaControl->client->getResponse();
-		foreach ($playerList as $player) {
-			if ($player['PlayerId'] <= 0) {
+		foreach ($playerList as $playerItem) {
+			if ($playerItem['PlayerId'] <= 0) {
 				continue;
 			}
-			$callback = array(Callbacks::CB_MP_PLAYERCONNECT, array($player['Login']));
-			$this->playerConnect($callback);
+			$this->maniaControl->client->query('GetDetailedPlayerInfo', $playerItem['Login']);
+			$playerInfo = $this->maniaControl->client->getResponse();
+			$player = new Player($playerInfo);
+			$this->addPlayer($player);
 		}
 	}
 
@@ -98,14 +108,18 @@ class PlayerHandler {
 		$playerInfo = $this->maniaControl->client->getResponse();
 		$player = new Player($playerInfo);
 		$this->addPlayer($player);
-
-		if($this->maniaControl->settingManager->getSetting($this,"Leave Join Messages")){
-			$string = array(0 => 'New Player', 1 => '$0f0Operator', 2 => '$0f0Admin', 3 => '$0f0MasterAdmin', 4 => '$0f0MasterAdmin');
-			$this->maniaControl->chat->sendChat('$ff0'.$string[$player->authLevel].': '. $player->nickname . '$z $ff0Nation:$fff ' . $player->getCountry() . ' $ff0Ladder: $fff' . $player->ladderRank);
+		
+		if (!$this->maniaControl->settingManager->getSetting($this, self::SETTING_LEAVE_JOIN_MESSAGES)) {
+			return;
 		}
-        //TODO: remove $w, $l and stuff out of nick
-        //TODO: postfix playerConnect callBack as soon as needed
-		//Todo: Better style colours of the message or anything else
+		$string = array(0 => 'New Player', 1 => '$0f0Operator', 2 => '$0f0Admin', 3 => '$0f0MasterAdmin', 4 => '$0f0MasterAdmin');
+		$this->maniaControl->chat->sendChat(
+				'$ff0' . $string[$player->authLevel] . ': ' . $player->nickname . '$z $ff0Nation:$fff ' . $player->getCountry() .
+						 ' $ff0Ladder: $fff' . $player->ladderRank);
+		
+		// TODO: remove $w, $l and stuff out of nick
+		// TODO: postfix playerConnect callBack as soon as needed
+		// TODO: Better style colours of the message or anything else
 	}
 
 	/**
@@ -116,8 +130,8 @@ class PlayerHandler {
 	public function playerDisconnect(array $callback) {
 		$login = $callback[1][0];
 		$player = $this->removePlayer($login);
-
-		if($this->maniaControl->settingManager->getSetting($this,"Leave Join Messages")){
+		
+		if ($this->maniaControl->settingManager->getSetting($this, "Leave Join Messages")) {
 			$played = TimeFormatter::formatTime(time() - $player->joinTime);
 			$this->maniaControl->chat->sendChat($player->nickname . '$z $ff0has left the game. Played:$fff ' . $played);
 		}
@@ -264,4 +278,4 @@ class PlayerHandler {
 		$playedStatement->close();
 		return true;
 	}
-} 
+}
