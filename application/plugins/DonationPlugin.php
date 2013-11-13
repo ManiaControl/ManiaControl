@@ -1,6 +1,6 @@
 <?php
-use ManiaControl\Authentication;
 use ManiaControl\ManiaControl;
+use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Commands\CommandListener;
@@ -38,8 +38,8 @@ class DonationPlugin extends Plugin implements CallbackListener, CommandListener
 		$this->description = 'DonationPlugin commands like /donate, /pay and /getplanets and a donation widget.';
 		
 		$this->maniaControl->commandManager->registerCommandListener('donate', $this, 'command_Donate');
-		$this->maniaControl->commandManager->registerCommandListener('pay', $this, 'command_Pay');
-		$this->maniaControl->commandManager->registerCommandListener('getplanets', $this, 'command_GetPlanets');
+		$this->maniaControl->commandManager->registerCommandListener('/pay', $this, 'command_Pay');
+		$this->maniaControl->commandManager->registerCommandListener('/getplanets', $this, 'command_GetPlanets');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_BILLUPDATED, $this, 'handleBillUpdated');
 	}
 
@@ -85,15 +85,15 @@ class DonationPlugin extends Plugin implements CallbackListener, CommandListener
 	}
 
 	/**
-	 * Handle /pay command
+	 * Handle //pay command
 	 *
 	 * @param array $chatCallback        	
 	 * @param Player $player        	
 	 * @return bool
 	 */
 	public function command_Pay(array $chatCallback, Player $player) {
-		if (!$this->maniaControl->authentication->checkRight($player, Authentication::AUTH_LEVEL_SUPERADMIN)) {
-			$this->maniaControl->authentication->sendNotAllowed($player);
+		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return false;
 		}
 		$text = $chatCallback[1][2];
@@ -127,15 +127,15 @@ class DonationPlugin extends Plugin implements CallbackListener, CommandListener
 	}
 
 	/**
-	 * Handle /getplanets command
+	 * Handle //getplanets command
 	 *
 	 * @param array $chat        	
 	 * @param Player $player        	
 	 * @return bool
 	 */
 	public function command_GetPlanets(array $chatCallback, Player $player) {
-		if (!$this->maniaControl->authentication->checkRight($player, Authentication::AUTH_LEVEL_ADMIN)) {
-			$this->maniaControl->authentication->sendNotAllowed($player);
+		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return false;
 		}
 		if (!$this->maniaControl->client->query('GetServerPlanets')) {
@@ -220,8 +220,8 @@ class DonationPlugin extends Plugin implements CallbackListener, CommandListener
 	 * @return boolean
 	 */
 	private function sendDonateUsageExample(Player $player) {
-		$colorCode = '$f80';
-		return $this->maniaControl->chat->sendChat("{$colorCode}Usage Example: '/donate 100'", $player->login);
+		$message = "Usage Example: '/donate 100'";
+		return $this->maniaControl->chat->sendChat($message, $player->login);
 	}
 
 	/**
@@ -231,8 +231,8 @@ class DonationPlugin extends Plugin implements CallbackListener, CommandListener
 	 * @return boolean
 	 */
 	private function sendPayUsageExample(Player $player) {
-		$colorCode = '$f80';
-		return $this->maniaControl->chat->sendChat("{$colorCode}Usage Example: '/pay 100 login'", $player->login);
+		$message = "Usage Example: '/pay 100 login'";
+		return $this->maniaControl->chat->sendChat($message, $player->login);
 	}
 }
 

@@ -4,8 +4,8 @@ namespace ManiaControl\Commands;
 
 require_once __DIR__ . '/CommandListener.php';
 
-use ManiaControl\Authentication;
 use ManiaControl\ManiaControl;
+use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Players\Player;
@@ -117,8 +117,8 @@ class CommandManager implements CallbackListener, CommandListener {
 	 * @return bool
 	 */
 	private function command_systeminfo(array $chat, Player $player) {
-		if (!$this->maniaControl->authentication->checkRight($player, Authentication::AUTH_LEVEL_SUPERADMIN)) {
-			$this->maniaControl->authentication->sendNotAllowed($player);
+		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return false;
 		}
 		$systemInfo = $this->maniaControl->server->getSystemInfo();
@@ -135,8 +135,8 @@ class CommandManager implements CallbackListener, CommandListener {
 	 * @return bool
 	 */
 	private function command_shutdown(array $chat, Player $player) {
-		if (!$this->maniaControl->authentication->checkRight($player, Authentication::AUTH_LEVEL_SUPERADMIN)) {
-			$this->maniaControl->authentication->sendNotAllowed($player);
+		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return false;
 		}
 		return $this->maniaControl->quit("ManiaControl shutdown requested by '{$player->login}'");
@@ -150,8 +150,8 @@ class CommandManager implements CallbackListener, CommandListener {
 	 * @return bool
 	 */
 	private function command_shutdownserver(array $chat, Player $player) {
-		if (!$this->maniaControl->authentication->checkRight($player, Authentication::AUTH_LEVEL_SUPERADMIN)) {
-			$this->maniaControl->authentication->sendNotAllowed($player);
+		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return false;
 		}
 		// Check for delayed shutdown
@@ -190,8 +190,8 @@ class CommandManager implements CallbackListener, CommandListener {
 	 * @return bool
 	 */
 	private function command_kick(array $chat, Player $player) {
-		if (!$this->maniaControl->authentication->checkRight($player, Authentication::AUTH_LEVEL_OPERATOR)) {
-			$this->maniaControl->authentication->sendNotAllowed($player);
+		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return false;
 		}
 		$params = explode(' ', $chat[1][2], 3);
@@ -220,8 +220,8 @@ class CommandManager implements CallbackListener, CommandListener {
 	 * @return bool
 	 */
 	private function command_setservername(array $chat, Player $player) {
-		if (!$this->maniaControl->authentication->checkRight($player, Authentication::AUTH_LEVEL_ADMIN)) {
-			$this->maniaControl->authentication->sendNotAllowed($player);
+		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return false;
 		}
 		$params = explode(' ', $chat[1][2], 2);

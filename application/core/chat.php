@@ -97,6 +97,19 @@ class Chat {
 		$format = $this->maniaControl->settingManager->getSetting($this, 'ErrorFormat', '$f00');
 		return $this->sendChat($format . $message, $login);
 	}
+
+	/**
+	 * Send an usage info message to the given login
+	 *
+	 * @param string $message        	
+	 * @param string $login        	
+	 * @param string|bool $prefix        	
+	 * @return bool
+	 */
+	public function sendUsageInfo($message, $login = null, $prefix = false) {
+		$format = $this->maniaControl->settingManager->getSetting($this, 'UsageInfoFormat', '$f80');
+		return $this->sendChat($format . $message, $login);
+	}
 }
 
 ?>

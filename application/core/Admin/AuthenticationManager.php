@@ -1,16 +1,19 @@
 <?php
 
-namespace ManiaControl;
+namespace ManiaControl\Admin;
 
+use ManiaControl\FileUtil;
+use ManiaControl\ManiaControl;
+use ManiaControl\Commands\CommandListener;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 
 /**
- * Class handling authentication levels
+ * Class managing authentication levels
  *
  * @author steeffeen & kremsy
  */
-class Authentication {
+class AuthenticationManager implements CommandListener {
 	/**
 	 * Constants
 	 */
@@ -28,11 +31,13 @@ class Authentication {
 	/**
 	 * Construct authentication manager
 	 *
-	 * @param ManiaControl $maniaControl        	
+	 * @param \ManiaControl\ManiaControl $maniaControl        	
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		$this->loadConfig();
+		
+		$this->maniaControl->commandManager->registerCommandListener('/addadmin', $this, 'command_AddAdmin');
 	}
 
 	/**
@@ -45,7 +50,7 @@ class Authentication {
 		$mysqli = $this->maniaControl->database->mysqli;
 		
 		// Remove all XSuperadmins
-		$adminQuery = "UPDATE `" . Players\PlayerManager::TABLE_PLAYERS . "`
+		$adminQuery = "UPDATE `" . PlayerManager::TABLE_PLAYERS . "`
 				SET `authLevel` = ?
 				WHERE `authLevel` = ?;";
 		$adminStatement = $mysqli->prepare($adminQuery);
@@ -64,7 +69,7 @@ class Authentication {
 		
 		// Set XSuperAdmins
 		$xAdmins = $config->xsuperadmins->xpath('login');
-		$adminQuery = "INSERT INTO `" . Players\PlayerManager::TABLE_PLAYERS . "` (
+		$adminQuery = "INSERT INTO `" . PlayerManager::TABLE_PLAYERS . "` (
 				`login`,
 				`authLevel`
 				) VALUES (
@@ -98,7 +103,7 @@ class Authentication {
 	 * @return bool
 	 */
 	public function grantAuthLevel(Player $player, $authLevel) {
-		if (!$player || $authLevel  >= self::AUTH_LEVEL_XSUPERADMIN) {
+		if (!$player || !is_int($authLevel) || $authLevel  >= self::AUTH_LEVEL_XSUPERADMIN) {
 			return false;
 		}
 		$mysqli = $this->maniaControl->database->mysqli;
@@ -136,6 +141,40 @@ class Authentication {
 			return false;
 		}
 		return $this->maniaControl->chat->sendError('You do not have the required rights to perform this command!', $player->login);
+	}
+
+	/**
+	 * Handle //addadmin command
+	 *
+	 * @param array $chatCallback        	
+	 * @param
+	 *        	\ManiaControl\Players\Player
+	 * @return boolean
+	 */
+	public function command_AddAdmin(array $chatCallback, Player $player) {
+		var_dump($chatCallback);
+		if (!$this->checkRight($player, self::AUTH_LEVEL_SUPERADMIN)) {
+			$this->sendNotAllowed($player);
+			return false;
+		}
+		$text = $chatCallback[1][2];
+		$commandParts = explode(' ', $text);
+		if (!array_key_exists(1, $commandParts)) {
+			$this->sendAddAdminUsageInfo($player);
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Send usage example for //addadmin command
+	 *
+	 * @param Player $player        	
+	 * @return bool
+	 */
+	private function sendAddAdminUsageInfo(Player $player) {
+		$message = "Usage Example: '//addadmin login'";
+		return $this->maniaControl->chat->sendUsageInfo($message);
 	}
 
 	/**

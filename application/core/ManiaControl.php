@@ -2,17 +2,18 @@
 
 namespace ManiaControl;
 
-use ManiaControl\Players\PlayerManager;
+use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Commands\CommandManager;
 use ManiaControl\Manialinks\ManialinkIdHandler;
 use ManiaControl\Maps\MapManager;
+use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\PluginManager;
 
-require_once __DIR__ . '/Authentication.php';
 require_once __DIR__ . '/Callbacks/CallbackManager.php';
-require_once __DIR__ . '/Chat.php';
 require_once __DIR__ . '/Commands/CommandManager.php';
+require_once __DIR__ . '/Admin/AuthenticationManager.php';
+require_once __DIR__ . '/Chat.php';
 require_once __DIR__ . '/Database.php';
 require_once __DIR__ . '/FileUtil.php';
 require_once __DIR__ . '/Formatter.php';
@@ -51,7 +52,7 @@ class ManiaControl {
 	/**
 	 * Public properties
 	 */
-	public $authentication = null;
+	public $authenticationManager = null;
 	public $callbackManager = null;
 	public $chat = null;
 	public $client = null;
@@ -80,9 +81,9 @@ class ManiaControl {
 		$this->settingManager = new SettingManager($this);
 		$this->chat = new Chat($this);
 		$this->server = new Server($this);
-		$this->authentication = new Authentication($this);
-		$this->playerManager = new PlayerManager($this);
 		$this->commandManager = new CommandManager($this);
+		$this->authenticationManager = new AuthenticationManager($this);
+		$this->playerManager = new PlayerManager($this);
 		$this->mapManager = new MapManager($this);
 		$this->pluginManager = new PluginManager($this);
 	}

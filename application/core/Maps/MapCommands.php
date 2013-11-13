@@ -2,8 +2,8 @@
 
 namespace ManiaControl\Maps;
 
-use ManiaControl\Authentication;
 use ManiaControl\ManiaControl;
+use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\Players\Player;
 
@@ -26,10 +26,10 @@ class MapCommands implements CommandListener {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		
-		$this->maniaControl->commandManager->registerCommandListener('nextmap', $this, 'command_NextMap');
-		$this->maniaControl->commandManager->registerCommandListener('restartmap', $this, 'command_RestartMap');
-		$this->maniaControl->commandManager->registerCommandListener('addmap', $this, 'command_AddMap');
-		$this->maniaControl->commandManager->registerCommandListener('removemap', $this, 'command_RemoveMap');
+		$this->maniaControl->commandManager->registerCommandListener('/nextmap', $this, 'command_NextMap');
+		$this->maniaControl->commandManager->registerCommandListener('/restartmap', $this, 'command_RestartMap');
+		$this->maniaControl->commandManager->registerCommandListener('/addmap', $this, 'command_AddMap');
+		$this->maniaControl->commandManager->registerCommandListener('/removemap', $this, 'command_RemoveMap');
 	}
 
 	/**
@@ -40,8 +40,8 @@ class MapCommands implements CommandListener {
 	 * @return bool
 	 */
 	public function command_RemoveMap(array $chat, Player $player) {
-		if (!$this->maniaControl->authentication->checkRight($player, Authentication::AUTH_LEVEL_OPERATOR)) {
-			$this->maniaControl->authentication->sendNotAllowed($player);
+		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return false;
 		}
 		// Get map name
@@ -69,10 +69,11 @@ class MapCommands implements CommandListener {
 	 * @return bool
 	 */
 	public function command_AddMap(array $chat, Player $player) {
-		if (!$this->maniaControl->authentication->checkRight($player, Authentication::AUTH_LEVEL_OPERATOR)) {
-			$this->maniaControl->authentication->sendNotAllowed($player);
+		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return false;
 		}
+		// TODO: mx fetcher nutzen?
 		$params = explode(' ', $chat[1][2], 2);
 		if (count($params) < 2) {
 			// TODO: show usage
@@ -158,8 +159,8 @@ class MapCommands implements CommandListener {
 	 * @return bool
 	 */
 	public function command_NextMap(array $chat, Player $player) {
-		if (!$this->maniaControl->authentication->checkRight($player, Authentication::AUTH_LEVEL_OPERATOR)) {
-			$this->maniaControl->authentication->sendNotAllowed($player);
+		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return false;
 		}
 		return $this->maniaControl->client->query('NextMap');
@@ -173,8 +174,8 @@ class MapCommands implements CommandListener {
 	 * @return bool
 	 */
 	public function command_RestartMap(array $chat, Player $player) {
-		if (!$this->maniaControl->authentication->checkRight($player, Authentication::AUTH_LEVEL_OPERATOR)) {
-			$this->maniaControl->authentication->sendNotAllowed($player);
+		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return false;
 		}
 		return $this->maniaControl->client->query('RestartMap');
