@@ -76,7 +76,7 @@ class MapCommands implements CommandListener {
 		// TODO: mx fetcher nutzen?
 		$params = explode(' ', $chat[1][2], 2);
 		if (count($params) < 2) {
-			// TODO: show usage
+			$this->maniaControl->chat->sendUsageInfo('Usage example: //addmap 1234', $player->login);
 			return false;
 		}
 		// Check if ManiaControl can even write to the maps dir

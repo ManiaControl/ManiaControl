@@ -20,11 +20,11 @@ class ManialinkIdHandler {
 	 * @return array with manialink Ids
 	 */
 	public function reserveManiaLinkIds($count) {
-		$mlIds = array();
+		$manialinkIds = array();
 		for ($i = 0; $i < $count; $i++) {
-			array_push($mlIds, ++$this->maniaLinkIdCount);
+			array_push($manialinkIds, $this->maniaLinkIdCount++);
 		}
-		return $mlIds;
+		return $manialinkIds;
 	}
 }
 

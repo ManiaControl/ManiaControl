@@ -9,6 +9,7 @@ use ManiaControl\Manialinks\ManialinkIdHandler;
 use ManiaControl\Maps\MapManager;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\PluginManager;
+use ManiaControl\Server\Server;
 
 require_once __DIR__ . '/Callbacks/CallbackManager.php';
 require_once __DIR__ . '/Commands/CommandManager.php';
@@ -23,7 +24,7 @@ require_once __DIR__ . '/Maps/Map.php';
 require_once __DIR__ . '/Maps/MapManager.php';
 require_once __DIR__ . '/Players/PlayerManager.php';
 require_once __DIR__ . '/Plugins/PluginManager.php';
-require_once __DIR__ . '/Server.php';
+require_once __DIR__ . '/Server/Server.php';
 require_once __DIR__ . '/Settings/SettingManager.php';
 require_once __DIR__ . '/GbxDataFetcher/gbxdatafetcher.inc.php';
 require_once __DIR__ . '/ManiaExchange/mxinfofetcher.inc.php';
@@ -63,7 +64,6 @@ class ManiaControl {
 	public $playerManager = null;
 	public $pluginManager = null;
 	public $server = null;
-	public $settingConfigurator = null;
 	public $settingManager = null;
 	
 	/**
@@ -80,8 +80,8 @@ class ManiaControl {
 		$this->manialinkIdHandler = new ManialinkIdHandler();
 		$this->settingManager = new SettingManager($this);
 		$this->chat = new Chat($this);
-		$this->server = new Server($this);
 		$this->commandManager = new CommandManager($this);
+		$this->server = new Server($this);
 		$this->authenticationManager = new AuthenticationManager($this);
 		$this->playerManager = new PlayerManager($this);
 		$this->mapManager = new MapManager($this);

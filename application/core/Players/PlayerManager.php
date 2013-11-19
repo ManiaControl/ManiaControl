@@ -114,14 +114,12 @@ class PlayerManager implements CallbackListener {
 		if (!$this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES)) {
 			return;
 		}
+		// TODO: improve styling?
 		$string = array(0 => 'New Player', 1 => '$0f0Operator', 2 => '$0f0Admin', 3 => '$0f0MasterAdmin', 4 => '$0f0MasterAdmin');
+		$nickname = Formatter::stripCodes($player->nickname);
 		$this->maniaControl->chat->sendChat(
-				'$ff0' . $string[$player->authLevel] . ': ' . $player->nickname . '$z $ff0Nation:$fff ' . $player->getCountry() .
+				'$ff0' . $string[$player->authLevel] . ': ' . $nickname . '$z $ff0Nation:$fff ' . $player->getCountry() .
 						 ' $ff0Ladder: $fff' . $player->ladderRank);
-		
-		// TODO: remove $w, $l and stuff out of nick
-		// TODO: postfix playerConnect callBack as soon as needed
-		// TODO: Better style colours of the message or anything else
 	}
 
 	/**
@@ -137,7 +135,7 @@ class PlayerManager implements CallbackListener {
 			return;
 		}
 		$played = Formatter::formatTimeH(time() - $player->joinTime);
-		$this->maniaControl->chat->sendChat('$<'.$player->nickname . '$> $ff0has left the game. Played:$fff ' . $played);
+		$this->maniaControl->chat->sendChat('$<' . $player->nickname . '$> $ff0has left the game. Played:$fff ' . $played);
 	}
 
 	/**

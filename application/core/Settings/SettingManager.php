@@ -36,9 +36,7 @@ class SettingManager {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
-		
 		$this->initTables();
-		
 		$this->configurator = new SettingConfigurator($maniaControl);
 	}
 

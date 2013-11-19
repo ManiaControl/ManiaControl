@@ -1,6 +1,11 @@
 <?php
 
-namespace ManiaControl;
+namespace ManiaControl\Server;
+
+use ManiaControl\FileUtil;
+use ManiaControl\ManiaControl;
+
+require_once __DIR__ . '/ServerCommands.php';
 
 /**
  * Class providing information and commands for the connected maniaplanet server
@@ -8,11 +13,6 @@ namespace ManiaControl;
  * @author steeffeen & kremsy
  */
 class Server {
-	/**
-	 * Constants
-	 */
-	const VALIDATIONREPLAYDIR = 'ValidationReplays/';
-	const GHOSTREPLAYDIR = 'GhostReplays/';
 	
 	/**
 	 * Public properties
@@ -23,6 +23,7 @@ class Server {
 	 * Private properties
 	 */
 	private $maniaControl = null;
+	private $serverCommands = null;
 
 	/**
 	 * Construct server
@@ -34,6 +35,8 @@ class Server {
 		
 		// Load config
 		$this->config = FileUtil::loadConfig('server.xml');
+		
+		$this->serverCommands = new ServerCommands($maniaControl);
 	}
 
 	/**
@@ -249,16 +252,16 @@ class Server {
 		$map = $this->getMap();
 		$gameMode = $this->getGameMode();
 		$time = time();
-		$fileName = "Ghost.{$login}.{$gameMode}.{$time}.{$map['UId']}.Replay.Gbx";
+		$fileName = "GhostReplays/Ghost.{$login}.{$gameMode}.{$time}.{$map['UId']}.Replay.Gbx";
 		
 		// Save ghost replay
-		if (!$this->maniaControl->client->query('SaveBestGhostsReplay', $player->login, self::GHOSTREPLAYDIR . $fileName)) {
+		if (!$this->maniaControl->client->query('SaveBestGhostsReplay', $player->login, $fileName)) {
 			trigger_error("Couldn't save ghost replay. " . $this->maniaControl->getClientErrorText());
 			return null;
 		}
 		
 		// Load replay file
-		$ghostReplay = file_get_contents($dataDir . 'Replays/' . self::GHOSTREPLAYDIR . $fileName);
+		$ghostReplay = file_get_contents($dataDir . 'Replays/' . $fileName);
 		if (!$ghostReplay) {
 			trigger_error("Couldn't retrieve saved ghost replay.");
 			return null;
