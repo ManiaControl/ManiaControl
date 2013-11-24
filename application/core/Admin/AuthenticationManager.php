@@ -190,6 +190,51 @@ class AuthenticationManager implements CommandListener {
 		}
 		return ($player->authLevel >= $neededAuthLevel);
 	}
+
+	/**
+	 * Get Name of the Authentication Level from Level Int
+	 *
+	 * @param int $authLevelInt        	
+	 * @return string
+	 */
+	public static function getAuthLevelName($authLevelInt) {
+		if ($authLevelInt == self::AUTH_LEVEL_MASTERADMIN) {
+			return 'MasterAdmin';
+		}
+		if ($authLevelInt == self::AUTH_LEVEL_SUPERADMIN) {
+			return 'SuperAdmin';
+		}
+		if ($authLevelInt == self::AUTH_LEVEL_ADMIN) {
+			return 'Admin';
+		}
+		if ($authLevelInt == self::AUTH_LEVEL_OPERATOR) {
+			return 'Operator';
+		}
+		return 'Player';
+	}
+
+	/**
+	 * Get Authentication Level Int from Level Name
+	 *
+	 * @param string $authLevelName        	
+	 * @return int
+	 */
+	public static function getAuthLevel($authLevelName) {
+		$authLevelName = strtolower($authLevelName);
+		if ($authLevelName == 'MasterAdmin') {
+			return self::AUTH_LEVEL_MASTERADMIN;
+		}
+		if ($authLevelName == 'SuperAdmin') {
+			return self::AUTH_LEVEL_SUPERADMIN;
+		}
+		if ($authLevelName == 'Admin') {
+			return self::AUTH_LEVEL_ADMIN;
+		}
+		if ($authLevelName == 'Operator') {
+			return self::AUTH_LEVEL_OPERATOR;
+		}
+		return self::AUTH_LEVEL_PLAYER;
+	}
 }
 
 ?>
