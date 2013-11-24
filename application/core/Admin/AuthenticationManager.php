@@ -21,7 +21,7 @@ class AuthenticationManager implements CommandListener {
 	const AUTH_LEVEL_OPERATOR = 1;
 	const AUTH_LEVEL_ADMIN = 2;
 	const AUTH_LEVEL_SUPERADMIN = 3;
-	const AUTH_LEVEL_XSUPERADMIN = 4;
+	const AUTH_LEVEL_MASTERADMIN = 4;
 	
 	/**
 	 * Private properties
@@ -49,7 +49,7 @@ class AuthenticationManager implements CommandListener {
 		$config = FileUtil::loadConfig('authentication.xml');
 		$mysqli = $this->maniaControl->database->mysqli;
 		
-		// Remove all XSuperadmins
+		// Remove all MasterAdmins
 		$adminQuery = "UPDATE `" . PlayerManager::TABLE_PLAYERS . "`
 				SET `authLevel` = ?
 				WHERE `authLevel` = ?;";
@@ -59,7 +59,7 @@ class AuthenticationManager implements CommandListener {
 			return false;
 		}
 		$adminLevel = self::AUTH_LEVEL_SUPERADMIN;
-		$xAdminLevel = self::AUTH_LEVEL_XSUPERADMIN;
+		$xAdminLevel = self::AUTH_LEVEL_MASTERADMIN;
 		$adminStatement->bind_param('ii', $adminLevel, $xAdminLevel);
 		$adminStatement->execute();
 		if ($adminStatement->error) {
@@ -67,8 +67,8 @@ class AuthenticationManager implements CommandListener {
 		}
 		$adminStatement->close();
 		
-		// Set XSuperAdmins
-		$xAdmins = $config->xsuperadmins->xpath('login');
+		// Set MasterAdmins
+		$xAdmins = $config->masteradmins->xpath('login');
 		$adminQuery = "INSERT INTO `" . PlayerManager::TABLE_PLAYERS . "` (
 				`login`,
 				`authLevel`
@@ -103,7 +103,7 @@ class AuthenticationManager implements CommandListener {
 	 * @return bool
 	 */
 	public function grantAuthLevel(Player $player, $authLevel) {
-		if (!$player || !is_int($authLevel) || $authLevel  >= self::AUTH_LEVEL_XSUPERADMIN) {
+		if (!$player || !is_int($authLevel) || $authLevel  >= self::AUTH_LEVEL_MASTERADMIN) {
 			return false;
 		}
 		$mysqli = $this->maniaControl->database->mysqli;

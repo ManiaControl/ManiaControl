@@ -4,9 +4,11 @@ namespace ManiaControl;
 
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Commands\CommandListener;
 use ManiaControl\Commands\CommandManager;
 use ManiaControl\Manialinks\ManialinkIdHandler;
 use ManiaControl\Maps\MapManager;
+use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\PluginManager;
 use ManiaControl\Server\Server;
@@ -42,7 +44,7 @@ else {
  *
  * @author steeffeen & kremsy
  */
-class ManiaControl {
+class ManiaControl implements CommandListener {
 	/**
 	 * Constants
 	 */
@@ -86,6 +88,8 @@ class ManiaControl {
 		$this->playerManager = new PlayerManager($this);
 		$this->mapManager = new MapManager($this);
 		$this->pluginManager = new PluginManager($this);
+		
+		$this->commandManager->registerCommandListener('version', $this, 'command_Version');
 	}
 
 	/**
@@ -99,6 +103,17 @@ class ManiaControl {
 			return $client->getErrorMessage() . ' (' . $client->getErrorCode() . ')';
 		}
 		return $this->client->getErrorMessage() . ' (' . $this->client->getErrorCode() . ')';
+	}
+
+	/**
+	 * Send ManiaControl version
+	 *
+	 * @param array $chat        	
+	 * @return bool
+	 */
+	public function command_Version(array $chat, Player $player) {
+		$message = 'This server is using ManiaControl v' . ManiaControl::VERSION . '!';
+		return $this->chat->sendInformation($message, $player->login);
 	}
 
 	/**
@@ -211,7 +226,7 @@ class ManiaControl {
 		}
 		
 		// Wait for server to be ready
-		if (!$this->server->waitForStatus($this->client, 4)) {
+		if (!$this->server->waitForStatus(4)) {
 			trigger_error("Server couldn't get ready!", E_USER_ERROR);
 		}
 		

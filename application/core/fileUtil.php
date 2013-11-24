@@ -64,12 +64,13 @@ class FileUtil {
 	 * @return \SimpleXMLElement
 	 */
 	public static function loadConfig($fileName) {
-		if (!$fileName) {
-			return null;
-		}
 		$fileLocation = ManiaControlDir . '/configs/' . $fileName;
 		if (!file_exists($fileLocation)) {
 			trigger_error("Config file doesn't exist! ({$fileName})");
+			return null;
+		}
+		if (!is_readable($fileLocation)) {
+			trigger_error("Config file isn't readable! ({$fileName})");
 			return null;
 		}
 		return simplexml_load_file($fileLocation);

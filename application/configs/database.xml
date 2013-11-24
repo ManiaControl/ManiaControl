@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Configure the mysql database used by ManiaControl -->
+<!-- Configure the MySQL Database used by ManiaControl -->
 <database-config>
 
 	<!-- MySQL Server -->

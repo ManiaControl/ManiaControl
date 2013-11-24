@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Configure authentication for players -->
+<!-- Configure Server Administrators -->
 <authentication-config>
 
-	<!-- SuperAdmins that can't be removed ingame -->
-	<xsuperadmins>
+	<!-- MasterAdmins that can't be removed ingame -->
+	<masteradmins>
 		<login>steeffeen</login>
 		<login>kremsy</login>
-	</xsuperadmins>
+	</masteradmins>
 
 	<!-- You can add other admins and operators ingame -->
 

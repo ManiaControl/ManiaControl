@@ -32,12 +32,15 @@ class ServerCommands implements CallbackListener, CommandListener {
 		
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_5_SECOND, $this, 'each5Seconds');
 		
-		$this->maniaControl->commandManager->registerCommandListener('version', $this, 'command_Version');
-		$this->maniaControl->commandManager->registerCommandListener('/setservername', $this, 'command_SetServerName');
 		$this->maniaControl->commandManager->registerCommandListener('/kick', $this, 'command_Kick');
-		$this->maniaControl->commandManager->registerCommandListener('/systeminfo', $this, 'command_SystemInfo');
+		$this->maniaControl->commandManager->registerCommandListener('/setpwd', $this, 'command_SetPwd');
+		$this->maniaControl->commandManager->registerCommandListener('/setservername', $this, 'command_SetServerName');
+		$this->maniaControl->commandManager->registerCommandListener('/setmaxplayers', $this, 'command_SetMaxPlayers');
+		$this->maniaControl->commandManager->registerCommandListener('/setmaxspectators', $this, 'command_SetMaxSpectators');
+		$this->maniaControl->commandManager->registerCommandListener('/setspecpwd', $this, 'command_SetSpecPwd');
 		$this->maniaControl->commandManager->registerCommandListener('/shutdown', $this, 'command_Shutdown');
 		$this->maniaControl->commandManager->registerCommandListener('/shutdownserver', $this, 'command_ShutdownServer');
+		$this->maniaControl->commandManager->registerCommandListener('/systeminfo', $this, 'command_SystemInfo');
 	}
 
 	/**
@@ -64,19 +67,7 @@ class ServerCommands implements CallbackListener, CommandListener {
 	}
 
 	/**
-	 * Send ManiaControl version
-	 *
-	 * @param array $chat        	
-	 * @return bool
-	 */
-	public function command_Version(array $chat) {
-		$login = $chat[1][1];
-		$message = 'This server is using ManiaControl v' . ManiaControl::VERSION . '!';
-		return $this->maniaControl->chat->sendInformation($message, $login);
-	}
-
-	/**
-	 * Handle systeminfo command
+	 * Handle //systeminfo command
 	 *
 	 * @param array $chat        	
 	 * @param Player $player        	
@@ -94,7 +85,7 @@ class ServerCommands implements CallbackListener, CommandListener {
 	}
 
 	/**
-	 * Handle shutdown command
+	 * Handle //shutdown command
 	 *
 	 * @param array $chat        	
 	 * @param Player $player        	
@@ -109,7 +100,7 @@ class ServerCommands implements CallbackListener, CommandListener {
 	}
 
 	/**
-	 * Handle server shutdown command
+	 * Handle //shutdownserver command
 	 *
 	 * @param array $chat        	
 	 * @param Player $player        	
@@ -149,7 +140,7 @@ class ServerCommands implements CallbackListener, CommandListener {
 	}
 
 	/**
-	 * Handle kick command
+	 * Handle //kick command
 	 *
 	 * @param array $chat        	
 	 * @param Player $player        	
@@ -161,7 +152,7 @@ class ServerCommands implements CallbackListener, CommandListener {
 			return false;
 		}
 		$params = explode(' ', $chat[1][2], 3);
-		if (count($params) < 2) {
+		if (!isset($params[1])) {
 			$this->maniaControl->chat->sendUsageInfo('Usage example: //kick login', $player->login);
 			return false;
 		}
@@ -179,7 +170,7 @@ class ServerCommands implements CallbackListener, CommandListener {
 	}
 
 	/**
-	 * Handle setservername command
+	 * Handle //setservername command
 	 *
 	 * @param array $chat        	
 	 * @param Player $player        	
@@ -197,12 +188,136 @@ class ServerCommands implements CallbackListener, CommandListener {
 		}
 		$serverName = $params[1];
 		if (!$this->maniaControl->client->query('SetServerName', $serverName)) {
-			trigger_error("Couldn't set server name. " . $this->maniaControl->getClientErrorText());
-			$this->maniaControl->chat->sendError("Error setting server name!", $player->login);
+			$this->maniaControl->chat->sendError('Error occured: ' . $this->maniaControl->getClientErrorText(), $player->login);
 			return false;
 		}
-		$serverName = $this->maniaControl->server->getName();
-		$this->maniaControl->chat->sendInformation("New Name: " . $serverName, $player->login);
+		$this->maniaControl->chat->sendSuccess("Server name changed to: '{$serverName}'!", $player->login);
+		return true;
+	}
+
+	/**
+	 * Handle //setpwd command
+	 *
+	 * @param array $chatCallback        	
+	 * @param Player $player        	
+	 * @return bool
+	 */
+	public function command_SetPwd(array $chatCallback, Player $player) {
+		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+			return false;
+		}
+		$messageParts = explode(' ', $chatCallback[1][2], 2);
+		$password = '';
+		$successMessage = 'Password removed!';
+		if (isset($messageParts[1])) {
+			$password = $messageParts[1];
+			$successMessage = "Password changed to: '{$password}'!";
+		}
+		$success = $this->maniaControl->client->query('SetServerPassword', $password);
+		if (!$success) {
+			$this->maniaControl->chat->sendError('Error occured: ' . $this->maniaControl->getClientErrorText(), $player->login);
+			return false;
+		}
+		$this->maniaControl->chat->sendSuccess($successMessage, $player->login);
+		return true;
+	}
+
+	/**
+	 * Handle //setspecpwd command
+	 *
+	 * @param array $chatCallback        	
+	 * @param Player $player        	
+	 * @return bool
+	 */
+	public function command_SetSpecPwd(array $chatCallback, Player $player) {
+		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+			return false;
+		}
+		$messageParts = explode(' ', $chatCallback[1][2], 2);
+		$password = '';
+		$successMessage = 'Spectator password removed!';
+		if (isset($messageParts[1])) {
+			$password = $messageParts[1];
+			$successMessage = "Spectator password changed to: '{$password}'!";
+		}
+		$success = $this->maniaControl->client->query('SetServerPasswordForSpectator', $password);
+		if (!$success) {
+			$this->maniaControl->chat->sendError('Error occured: ' . $this->maniaControl->getClientErrorText(), $player->login);
+			return false;
+		}
+		$this->maniaControl->chat->sendSuccess($successMessage, $player->login);
+		return true;
+	}
+
+	/**
+	 * Handle //setmaxplayers command
+	 *
+	 * @param array $chatCallback        	
+	 * @param Player $player        	
+	 * @return bool
+	 */
+	public function command_SetMaxPlayers(array $chatCallback, Player $player) {
+		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+			return false;
+		}
+		$messageParts = explode(' ', $chatCallback[1][2], 2);
+		if (!isset($messageParts[1])) {
+			$this->maniaControl->chat->sendUsageInfo('Usage example: //setmaxplayers 16', $player->login);
+			return false;
+		}
+		$amount = $messageParts[1];
+		if (!is_numeric($amount)) {
+			$this->maniaControl->chat->sendUsageInfo('Usage example: //setmaxplayers 16', $player->login);
+			return false;
+		}
+		$amount = (int) $amount;
+		if ($amount < 0) {
+			$amount = 0;
+		}
+		$success = $this->maniaControl->client->query('SetMaxPlayers', $amount);
+		if (!$success) {
+			$this->maniaControl->chat->sendError('Error occured: ' . $this->maniaControl->getClientErrorText(), $player->login);
+			return false;
+		}
+		$this->maniaControl->chat->sendSuccess("Changed max players to: {$amount}", $player->login);
+		return true;
+	}
+
+	/**
+	 * Handle //setmaxspectators command
+	 *
+	 * @param array $chatCallback        	
+	 * @param Player $player        	
+	 * @return bool
+	 */
+	public function command_SetMaxSpectators(array $chatCallback, Player $player) {
+		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+			return false;
+		}
+		$messageParts = explode(' ', $chatCallback[1][2], 2);
+		if (!isset($messageParts[1])) {
+			$this->maniaControl->chat->sendUsageInfo('Usage example: //setmaxspectators 16', $player->login);
+			return false;
+		}
+		$amount = $messageParts[1];
+		if (!is_numeric($amount)) {
+			$this->maniaControl->chat->sendUsageInfo('Usage example: //setmaxspectators 16', $player->login);
+			return false;
+		}
+		$amount = (int) $amount;
+		if ($amount < 0) {
+			$amount = 0;
+		}
+		$success = $this->maniaControl->client->query('SetMaxSpectators', $amount);
+		if (!$success) {
+			$this->maniaControl->chat->sendError('Error occured: ' . $this->maniaControl->getClientErrorText(), $player->login);
+			return false;
+		}
+		$this->maniaControl->chat->sendSuccess("Changed max spectators to: {$amount}", $player->login);
 		return true;
 	}
 
