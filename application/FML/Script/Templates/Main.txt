@@ -1,0 +1,27 @@
+
+main() {
+	+++OnInit+++
+	while (True) {
+		yield;
+		foreach (Event in PendingEvents) {
+			switch (Event.Type) {
+				case CMlEvent::Type::EntrySubmit: {
+					+++EntrySubmit+++
+				}
+				case CMlEvent::Type::KeyPress: {
+					+++KeyPress+++
+				}
+				case CMlEvent::Type::MouseClick: {
+					+++MouseClick+++
+				}
+				case CMlEvent::Type::MouseOut: {
+					+++MouseOut+++
+				}
+				case CMlEvent::Type::MouseOver: {
+					+++MouseOver+++
+				}
+			}
+		}
+		+++Loop+++
+	}
+}

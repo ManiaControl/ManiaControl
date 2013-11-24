@@ -1,0 +1,6 @@
+if (C_FML_TooltipIds.existskey(Event.ControlId)) {
+	declare TooltipControl <=> Page.GetFirstChild(C_FML_TooltipIds[Event.ControlId]);
+	if (TooltipControl != Null) {
+		TooltipControl.Hide();
+	}
+}
