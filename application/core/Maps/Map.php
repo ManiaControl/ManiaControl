@@ -14,8 +14,7 @@ class Map {
 	/**
 	 * Public properties
 	 */
-	public $mapFetcher = null;
-	public $id = 0;
+	public $index = -1;
 	public $name = 'undefined';
 	public $uid = '';
 	public $fileName = '';
@@ -32,6 +31,7 @@ class Map {
 	public $comment = '';
 	public $titleUid = '';
 	public $startTime = 0;
+	public $mapFetcher = null;
 	
 	/**
 	 * Private properties

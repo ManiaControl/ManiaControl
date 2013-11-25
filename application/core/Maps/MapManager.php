@@ -36,9 +36,14 @@ class MapManager implements CallbackListener {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
+		
+		// Init database tables
 		$this->initTables();
+		
+		// Create map commands instance
 		$this->mapCommands = new MapCommands($maniaControl);
 		
+		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_BEGINMAP, $this, 'handleBeginMap');
 	}
 
@@ -49,7 +54,7 @@ class MapManager implements CallbackListener {
 	 */
 	private function initTables() {
 		$mysqli = $this->maniaControl->database->mysqli;
-		$mapsTableQuery = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_MAPS . "` (
+		$query = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_MAPS . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
 				`uid` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
 				`name` varchar(150) COLLATE utf8_unicode_ci NOT NULL,
@@ -61,18 +66,12 @@ class MapManager implements CallbackListener {
 				PRIMARY KEY (`index`),
 				UNIQUE KEY `uid` (`uid`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Map data' AUTO_INCREMENT=1;";
-		$mapsTableStatement = $mysqli->prepare($mapsTableQuery);
+		$result = $mysqli->query($query);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error, E_USER_ERROR);
 			return false;
 		}
-		$mapsTableStatement->execute();
-		if ($mapsTableStatement->error) {
-			trigger_error($mapsTableStatement->error, E_USER_ERROR);
-			return false;
-		}
-		$mapsTableStatement->close();
-		return true;
+		return $result;
 	}
 
 	/**
@@ -81,7 +80,7 @@ class MapManager implements CallbackListener {
 	 * @param \ManiaControl\Maps\Map $map        	
 	 * @return boolean
 	 */
-	private function saveMap(Map $map) {
+	private function saveMap(Map &$map) {
 		$mysqli = $this->maniaControl->database->mysqli;
 		$mapQuery = "INSERT INTO `" . self::TABLE_MAPS . "` (
 				`uid`,
@@ -106,6 +105,7 @@ class MapManager implements CallbackListener {
 			$mapStatement->close();
 			return false;
 		}
+		$map->index = $mapStatement->insert_id;
 		$mapStatement->close();
 		return true;
 	}
@@ -134,6 +134,7 @@ class MapManager implements CallbackListener {
 		}
 		$rpcMap = $this->maniaControl->client->getResponse();
 		$map = new Map($this->maniaControl, $rpcMap);
+		$this->addMap($map);
 		return $map;
 	}
 

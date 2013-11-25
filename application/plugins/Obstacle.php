@@ -1,6 +1,7 @@
 <?php
 use ManiaControl\ManiaControl;
 use ManiaControl\Admin\AuthenticationManager;
+use ManiaControl\Commands\CommandListener;
 use ManiaControl\Players\Player;
 use ManiaControl\Plugins\Plugin;
 
@@ -9,7 +10,7 @@ use ManiaControl\Plugins\Plugin;
  *
  * @author steeffeen
  */
-class ObstaclePlugin extends Plugin {
+class ObstaclePlugin extends Plugin implements CommandListener {
 	/**
 	 * Constants
 	 */

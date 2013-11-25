@@ -9,12 +9,6 @@ namespace ManiaControl;
  */
 class Database {
 	/**
-	 * Constants
-	 */
-	const TABLE_PLAYERS = 'mc_players';
-	const TABLE_MAPS = 'mc_maps';
-	
-	/**
 	 * Public properties
 	 */
 	public $mysqli = null;
