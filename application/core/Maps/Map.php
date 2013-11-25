@@ -23,6 +23,7 @@ class Map {
 	public $copperPrice = 0;
 	public $mapType = '';
 	public $mapStyle = '';
+	public $nbCheckpoints = -1;
 	public $mx = null;
 	public $authorLogin = '';
 	public $authorNick = '';
@@ -60,6 +61,7 @@ class Map {
 		$this->copperPrice = $rpc_infos['CopperPrice'];
 		$this->mapType = $rpc_infos['MapType'];
 		$this->mapStyle = $rpc_infos['MapStyle'];
+		$this->nbCheckpoints = $rpc_infos['NbCheckpoints'];
 		
 		$mapsDirectory = $this->maniaControl->server->getMapsDirectory();
 		if ($this->maniaControl->server->checkAccess($mapsDirectory)) {

@@ -53,6 +53,7 @@ class CallbackManager {
 	 */
 	private $maniaControl = null;
 	private $callbackListeners = array();
+	private $scriptCallbackListener = array();
 	private $last1Second = -1;
 	private $last5Second = -1;
 	private $last1Minute = -1;
@@ -93,6 +94,28 @@ class CallbackManager {
 	}
 
 	/**
+	 * Register a new script callback listener
+	 *
+	 * @param string $callbackName        	
+	 * @param CallbackListener $listener        	
+	 * @param string $method        	
+	 * @return bool
+	 */
+	public function registerScriptCallbackListener($callbackName, CallbackListener $listener, $method) {
+		if (!method_exists($listener, $method)) {
+			trigger_error(
+					"Given listener (" . get_class($listener) .
+							 ") can't handle script callback '{$callbackName}' (no method '{$method}')!");
+			return false;
+		}
+		if (!array_key_exists($callbackName, $this->scriptCallbackListener)) {
+			$this->scriptCallbackListener[$callbackName] = array();
+		}
+		array_push($this->scriptCallbackListener[$callbackName], array($listener, $method));
+		return true;
+	}
+
+	/**
 	 * Trigger a specific callback
 	 *
 	 * @param string $callbackName        	
@@ -103,6 +126,21 @@ class CallbackManager {
 			return;
 		}
 		foreach ($this->callbackListeners[$callbackName] as $listener) {
+			call_user_func(array($listener[0], $listener[1]), $callback);
+		}
+	}
+
+	/**
+	 * Trigger a specific script callback
+	 *
+	 * @param string $callbackName        	
+	 * @param array $callback        	
+	 */
+	public function triggerScriptCallback($callbackName, array $callback) {
+		if (!array_key_exists($callbackName, $this->scriptCallbackListener)) {
+			return;
+		}
+		foreach ($this->scriptCallbackListener[$callbackName] as $listener) {
 			call_user_func(array($listener[0], $listener[1]), $callback);
 		}
 	}
@@ -141,6 +179,7 @@ class CallbackManager {
 				case self::CB_MP_MODESCRIPTCALLBACK:
 					{
 						$this->handleScriptCallback($callback);
+						$this->triggerCallback(self::CB_MP_MODESCRIPTCALLBACK, $callback);
 						break;
 					}
 				default:
@@ -158,22 +197,24 @@ class CallbackManager {
 	 * @param array $callback        	
 	 */
 	private function handleScriptCallback(array $callback) {
-		$scriptCallbackName = $callback[1][0];
+		$scriptCallbackData = $callback[1];
+		$scriptCallbackName = $scriptCallbackData[0];
 		switch ($scriptCallbackName) {
 			case 'EndMap':
 				{
-					$this->triggerCallback(self::CB_MP_MODESCRIPTCALLBACK, $callback);
+					$this->triggerScriptCallback($scriptCallbackName, $scriptCallbackData);
 					$this->triggerCallback(self::CB_MC_ENDMAP, $callback);
 					break;
 				}
 			case 'LibXmlRpc_EndMap':
 				{
-					$this->triggerCallback(self::CB_MP_MODESCRIPTCALLBACK, $callback);
+					$this->triggerScriptCallback($scriptCallbackName, $scriptCallbackData);
 					$this->triggerCallback(self::CB_MC_ENDMAP, $callback);
 					break;
 				}
 			default:
 				{
+					$this->triggerScriptCallback($scriptCallbackName, $scriptCallbackData);
 					break;
 				}
 		}

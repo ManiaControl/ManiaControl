@@ -2,7 +2,7 @@
 
 namespace ManiaControl\Manialinks;
 
-require_once __DIR__ . '/../../FML/autoload.php';
+require_once __DIR__ . '/../FML/autoload.php';
 
 /**
  * Manialink utility class
