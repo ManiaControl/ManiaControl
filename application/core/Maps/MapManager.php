@@ -44,6 +44,7 @@ class MapManager implements CallbackListener {
 		$this->mapCommands = new MapCommands($maniaControl);
 		
 		// Register for callbacks
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_BEGINMAP, $this, 'handleBeginMap');
 	}
 
@@ -136,6 +137,19 @@ class MapManager implements CallbackListener {
 		$map = new Map($this->maniaControl, $rpcMap);
 		$this->addMap($map);
 		return $map;
+	}
+
+	/**
+	 * Handle OnInit callback
+	 *
+	 * @param array $callback        	
+	 */
+	public function handleOnInit(array $callback) {
+		$map = $this->getCurrentMap();
+		if (!$map) {
+			return;
+		}
+		$this->addMap($map);
 	}
 
 	/**

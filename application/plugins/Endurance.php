@@ -9,7 +9,7 @@ use ManiaControl\Plugins\Plugin;
  *
  * @author steeffeen
  */
-class Endurance_Plugin extends Plugin implements CallbackListener {
+class EndurancePlugin extends Plugin implements CallbackListener {
 	/**
 	 * Constants
 	 */

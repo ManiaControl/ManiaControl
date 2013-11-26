@@ -84,8 +84,8 @@ class ManiaControl implements CommandListener {
 		$this->chat = new Chat($this);
 		$this->commandManager = new CommandManager($this);
 		$this->server = new Server($this);
-		$this->authenticationManager = new AuthenticationManager($this);
 		$this->playerManager = new PlayerManager($this);
+		$this->authenticationManager = new AuthenticationManager($this);
 		$this->mapManager = new MapManager($this);
 		$this->pluginManager = new PluginManager($this);
 		
