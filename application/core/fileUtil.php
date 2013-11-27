@@ -7,7 +7,7 @@ namespace ManiaControl;
  *
  * @author steeffeen & kremsy
  */
-class FileUtil {
+abstract class FileUtil {
 
 	/**
 	 * Load a remote file
@@ -74,6 +74,16 @@ class FileUtil {
 			return null;
 		}
 		return simplexml_load_file($fileLocation);
+	}
+
+	/**
+	 * Return file name cleared from special characters
+	 *
+	 * @param string $fileName        	
+	 * @return string
+	 */
+	public static function getClearedFileName($fileName) {
+		return str_replace(array('\\', '/', ':', '*', '?', '"', '<', '>', '|'), '_', $fileName);
 	}
 }
 

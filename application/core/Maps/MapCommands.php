@@ -5,6 +5,7 @@ namespace ManiaControl\Maps;
 use ManiaControl\ManiaControl;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Commands\CommandListener;
+use ManiaControl\FileUtil;
 use ManiaControl\Players\Player;
 
 /**
@@ -44,15 +45,14 @@ class MapCommands implements CommandListener {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return false;
 		}
-		// Get map name
-		$map = $this->maniaControl->server->getMap();
+		// Get map
+		$map = $this->maniaControl->mapManager->getCurrentMap();
 		if (!$map) {
 			$this->maniaControl->chat->sendError("Couldn't remove map.", $player->login);
 			return false;
 		}
-		$mapName = $map['FileName'];
 		// Remove map
-		if (!$this->maniaControl->client->query('RemoveMap', $mapName)) {
+		if (!$this->maniaControl->client->query('RemoveMap', $map->fileName)) {
 			trigger_error("Couldn't remove current map. " . $this->maniaControl->getClientErrorText());
 			$this->maniaControl->chat->sendError("Couldn't remove map.", $player->login);
 			return false;
@@ -64,17 +64,17 @@ class MapCommands implements CommandListener {
 	/**
 	 * Handle addmap command
 	 *
-	 * @param array $chat        	
+	 * @param array $chatCallback        	
 	 * @param \ManiaControl\Players\Player $player        	
 	 * @return bool
 	 */
-	public function command_AddMap(array $chat, Player $player) {
+	public function command_AddMap(array $chatCallback, Player $player) {
 		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return false;
 		}
 		// TODO: mx fetcher nutzen?
-		$params = explode(' ', $chat[1][2], 2);
+		$params = explode(' ', $chatCallback[1][2], 2);
 		if (count($params) < 2) {
 			$this->maniaControl->chat->sendUsageInfo('Usage example: //addmap 1234', $player->login);
 			return false;
@@ -91,7 +91,7 @@ class MapCommands implements CommandListener {
 			$this->maniaControl->chat->sendError("ManiaControl doesn't have access to the maps directory.", $player->login);
 			return false;
 		}
-		$downloadDirectory = $this->maniaControl->settingManager->getSetting($this, 'MapDownloadDirectory', 'mx');
+		$downloadDirectory = $this->maniaControl->settingManager->getSetting($this, 'MapDownloadDirectory', 'MX');
 		// Create download directory if necessary
 		if (!is_dir($mapDir . $downloadDirectory) && !mkdir($mapDir . $downloadDirectory)) {
 			trigger_error("ManiaControl doesn't have to rights to save maps in '{$mapDir}{$downloadDirectory}'.");
@@ -122,15 +122,17 @@ class MapCommands implements CommandListener {
 				return false;
 			}
 			// Save map
-			$fileName = $mapDir . $mapInfo['TrackID'] . '_' . $mapInfo['Name'] . '.Map.Gbx';
-			if (!file_put_contents($fileName, $file)) {
+			$fileName = $mapInfo['TrackID'] . '_' . $mapInfo['Name'] . '.Map.Gbx';
+			$fileName = FileUtil::getClearedFileName($fileName);
+			if (!file_put_contents($mapDir . $fileName, $file)) {
 				// Save error
 				$this->maniaControl->chat->sendError('Saving map failed!', $player->login);
 				return false;
 			}
 			// Check for valid map
-			if (!$this->maniaControl->client->query('CheckMapForCurrentServerParams', $fileName)) {
-				trigger_error("Couldn't check if map is valid. " . $this->maniaControl->getClientErrorText());
+			$mapFileName = $downloadDirectory . '/' . $fileName;
+			if (!$this->maniaControl->client->query('CheckMapForCurrentServerParams', $mapFileName)) {
+				trigger_error("Couldn't check if map is valid ('{$mapFileName}'). " . $this->maniaControl->getClientErrorText());
 				$this->maniaControl->chat->sendError('Error checking map!', $player->login);
 				return false;
 			}
@@ -141,7 +143,7 @@ class MapCommands implements CommandListener {
 				return false;
 			}
 			// Add map to map list
-			if (!$this->maniaControl->client->query('InsertMap', $fileName)) {
+			if (!$this->maniaControl->client->query('InsertMap', $mapFileName)) {
 				$this->maniaControl->chat->sendError("Couldn't add map to match settings!", $player->login);
 				return false;
 			}
