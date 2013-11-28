@@ -182,6 +182,12 @@ class CallbackManager {
 						$this->triggerCallback(self::CB_MP_MODESCRIPTCALLBACK, $callback);
 						break;
 					}
+				case self::CB_MP_MODESCRIPTCALLBACKARRAY:
+					{
+						$this->handleScriptCallback($callback);
+						$this->triggerCallback(self::CB_MP_MODESCRIPTCALLBACKARRAY, $callback);
+						break;
+					}
 				default:
 					{
 						$this->triggerCallback($callbackName, $callback);
