@@ -185,9 +185,6 @@ class AuthenticationManager implements CommandListener {
 	 * @return bool
 	 */
 	public static function checkRight(Player $player, $neededAuthLevel) {
-		if (!$player) {
-			return false;
-		}
 		return ($player->authLevel >= $neededAuthLevel);
 	}
 

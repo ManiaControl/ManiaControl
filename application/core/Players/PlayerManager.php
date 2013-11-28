@@ -18,6 +18,8 @@ class PlayerManager implements CallbackListener {
 	/**
 	 * Constants
 	 */
+	const CB_PLAYERJOINED = 'PlayerManagerCallback.PlayerJoined';
+	const CB_ONINIT = 'PlayerManagerCallback.OnInit';
 	const TABLE_PLAYERS = 'mc_players';
 	const SETTING_JOIN_LEAVE_MESSAGES = 'Enable Join & Leave Messages';
 	
@@ -34,9 +36,12 @@ class PlayerManager implements CallbackListener {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
-		
 		$this->initTables();
 		
+		// Init settings
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES, false);
+		
+		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'onInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCONNECT, $this, 'playerConnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERDISCONNECT, $this, 
@@ -82,9 +87,6 @@ class PlayerManager implements CallbackListener {
 	 * @param array $callback        	
 	 */
 	public function onInit(array $callback) {
-		// register settings
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES, false);
-		
 		// Add all players
 		$this->maniaControl->client->query('GetPlayerList', 300, 0, 2);
 		$playerList = $this->maniaControl->client->getResponse();
@@ -97,6 +99,9 @@ class PlayerManager implements CallbackListener {
 			$player = new Player($playerInfo);
 			$this->addPlayer($player);
 		}
+		
+		// Trigger own callback
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_ONINIT, array(self::CB_ONINIT));
 	}
 
 	/**
@@ -111,15 +116,17 @@ class PlayerManager implements CallbackListener {
 		$player = new Player($playerInfo);
 		$this->addPlayer($player);
 		
-		if (!$this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES)) {
-			return;
+		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES)) {
+			// TODO: improve styling?
+			$string = array(0 => 'New Player', 1 => '$0f0Operator', 2 => '$0f0Admin', 3 => '$0f0MasterAdmin', 4 => '$0f0MasterAdmin');
+			$nickname = Formatter::stripCodes($player->nickname);
+			$this->maniaControl->chat->sendChat(
+					'$ff0' . $string[$player->authLevel] . ': ' . $nickname . '$z $ff0Nation:$fff ' . $player->getCountry() .
+							 ' $ff0Ladder: $fff' . $player->ladderRank);
 		}
-		// TODO: improve styling?
-		$string = array(0 => 'New Player', 1 => '$0f0Operator', 2 => '$0f0Admin', 3 => '$0f0MasterAdmin', 4 => '$0f0MasterAdmin');
-		$nickname = Formatter::stripCodes($player->nickname);
-		$this->maniaControl->chat->sendChat(
-				'$ff0' . $string[$player->authLevel] . ': ' . $nickname . '$z $ff0Nation:$fff ' . $player->getCountry() .
-						 ' $ff0Ladder: $fff' . $player->ladderRank);
+		
+		// Trigger own callback
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERJOINED, array(self::CB_PLAYERJOINED, $player));
 	}
 
 	/**

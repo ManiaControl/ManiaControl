@@ -2,10 +2,6 @@
 
 namespace ManiaControl;
 
-require_once __DIR__ . '/SettingConfigurator.php';
-
-use ManiaControl\Settings\SettingConfigurator;
-
 /**
  * Class managing settings and configurations
  *
@@ -37,7 +33,6 @@ class SettingManager {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		$this->initTables();
-		$this->configurator = new SettingConfigurator($maniaControl);
 	}
 
 	/**

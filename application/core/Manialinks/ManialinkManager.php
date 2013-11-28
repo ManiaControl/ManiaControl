@@ -6,7 +6,7 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 
-require_once __DIR__ . '/ManialinkPageAnswerListener.php';
+require_once __DIR__ . '/StyleManager.php';
 require_once __DIR__ . '/../FML/autoload.php';
 
 /**
@@ -16,10 +16,15 @@ require_once __DIR__ . '/../FML/autoload.php';
  */
 class ManialinkManager implements CallbackListener {
 	/**
+	 * Public properties
+	 */
+	public $styleManager = null;
+	/**
 	 * Private properties
 	 */
 	private $maniaControl = null;
 	private $pageAnswerListeners = array();
+	private $maniaLinkIdCount = 0;
 
 	/**
 	 * Create a new manialink manager
@@ -28,6 +33,9 @@ class ManialinkManager implements CallbackListener {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
+		$this->styleManager = new StyleManager($maniaControl);
+		
+		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 
 				'handleManialinkPageAnswer');
 	}
@@ -35,23 +43,37 @@ class ManialinkManager implements CallbackListener {
 	/**
 	 * Register a new manialink page answer listener
 	 *
-	 * @param string $manialinkId        	
+	 * @param string $actionId        	
 	 * @param ManialinkPageAnswerListener $listener        	
 	 * @param string $method        	
 	 * @return bool
 	 */
-	public function registerManialinkPageAnswerListener($manialinkId, ManialinkPageAnswerListener $listener, $method) {
+	public function registerManialinkPageAnswerListener($actionId, ManialinkPageAnswerListener $listener, $method) {
 		if (!method_exists($listener, $method)) {
-			trigger_error("Given listener for manialinkId '{$manialinkId}' doesn't have callback method '{$method}'.");
+			trigger_error("Given listener for actionId '{$actionId}' doesn't have callback method '{$method}'!");
 			return false;
 		}
-		if (!array_key_exists($manialinkId, $this->pageAnswerListeners) || !is_array($this->pageAnswerListeners[$manialinkId])) {
+		if (!array_key_exists($actionId, $this->pageAnswerListeners) || !is_array($this->pageAnswerListeners[$actionId])) {
 			// Init listeners array
-			$this->pageAnswerListeners[$manialinkId] = array();
+			$this->pageAnswerListeners[$actionId] = array();
 		}
 		// Register page answer listener
-		array_push($this->pageAnswerListeners[$manialinkId], array($listener, $method));
+		array_push($this->pageAnswerListeners[$actionId], array($listener, $method));
 		return true;
+	}
+
+	/**
+	 * Reserve manialink ids
+	 *
+	 * @param int $count        	
+	 * @return array
+	 */
+	public function reserveManiaLinkIds($count) {
+		$manialinkIds = array();
+		for ($i = 0; $i < $count; $i++) {
+			array_push($manialinkIds, $this->maniaLinkIdCount++);
+		}
+		return $manialinkIds;
 	}
 
 	/**
@@ -60,7 +82,17 @@ class ManialinkManager implements CallbackListener {
 	 * @param array $callback        	
 	 */
 	public function handleManialinkPageAnswer(array $callback) {
-		var_dump($callback);
+		$actionId = $callback[1][2];
+		$login = $callback[1][1];
+		$player = $this->maniaControl->playerManager->getPlayer($login);
+		if (!array_key_exists($actionId, $this->pageAnswerListeners) || !is_array($this->pageAnswerListeners[$actionId])) {
+			// No page answer listener registered
+			return;
+		}
+		// Inform page answer listeners
+		foreach ($this->pageAnswerListeners[$actionId] as $listener) {
+			call_user_func(array($listener[0], $listener[1]), $callback, $player);
+		}
 	}
 
 	/**

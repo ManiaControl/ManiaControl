@@ -27,6 +27,12 @@ class LocalRecordsPlugin extends Plugin implements CallbackListener {
 	const VERSION = '1.0';
 	const MLID_RECORDS = 'ml_local_records';
 	const TABLE_RECORDS = 'mc_localrecords';
+	const SETTING_WIDGET_TITLE = 'Widget Title';
+	const SETTING_WIDGET_POSX = 'Widget Position: X';
+	const SETTING_WIDGET_POSY = 'Widget Position: Y';
+	const SETTING_WIDGET_WIDTH = 'Widget Width';
+	const SETTING_WIDGET_LINESCOUNT = 'Widget Displayed Lines Count';
+	const SETTING_WIDGET_LINEHEIGHT = 'Widget Line Height';
 	
 	/**
 	 * Private properties
@@ -38,9 +44,15 @@ class LocalRecordsPlugin extends Plugin implements CallbackListener {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
-		
-		// Init tables
 		$this->initTables();
+		
+		// Init settings
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_TITLE, 'Local Records');
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSX, -139.);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSY, 65.);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_WIDTH, 40.);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_LINESCOUNT, 25);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_LINEHEIGHT, 4.);
 		
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
@@ -66,8 +78,9 @@ class LocalRecordsPlugin extends Plugin implements CallbackListener {
 				PRIMARY KEY (`index`),
 				UNIQUE KEY `player_map_record` (`mapIndex`,`playerIndex`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;";
-		if (!$mysqli->query($query)) {
-			trigger_error("Couldn't create records table. " . $mysqli->error, E_USER_ERROR);
+		$mysqli->query($query);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error, E_USER_ERROR);
 		}
 	}
 
@@ -77,7 +90,6 @@ class LocalRecordsPlugin extends Plugin implements CallbackListener {
 	 * @param array $callback        	
 	 */
 	public function handleOnInit(array $callback) {
-		// Let manialinks update
 		$this->updateManialink = true;
 	}
 
@@ -87,12 +99,10 @@ class LocalRecordsPlugin extends Plugin implements CallbackListener {
 	 * @param array $callback        	
 	 */
 	public function handle1Second(array $callback) {
-		// Send records manialinks if needed
-		if ($this->updateManialink) {
-			$manialink = $this->buildLocalManialink();
-			$this->sendManialink($manialink);
-			$this->updateManialink = false;
-		}
+		if (!$this->updateManialink) return;
+		$this->updateManialink = false;
+		$manialink = $this->buildManialink();
+		$this->sendManialink($manialink);
 	}
 
 	/**
@@ -217,18 +227,21 @@ class LocalRecordsPlugin extends Plugin implements CallbackListener {
 	 *
 	 * @return string
 	 */
-	private function buildLocalManialink() {
+	private function buildManialink() {
 		$map = $this->maniaControl->mapManager->getCurrentMap();
 		if (!$map) {
 			return null;
 		}
 		
-		$pos_x = $this->maniaControl->settingManager->getSetting($this, 'Widget_PosX', -139.);
-		$pos_y = $this->maniaControl->settingManager->getSetting($this, 'Widget_PosY', 65.);
-		$title = $this->maniaControl->settingManager->getSetting($this, 'Widget_Title', 'Local Records');
-		$width = $this->maniaControl->settingManager->getSetting($this, 'Widget_Width', 40.);
-		$lines = $this->maniaControl->settingManager->getSetting($this, 'Widget_LinesCount', 25);
-		$line_height = $this->maniaControl->settingManager->getSetting($this, 'Widget_LineHeight', 4.);
+		$title = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_TITLE);
+		$pos_x = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_POSX);
+		$pos_y = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_POSY);
+		$width = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_WIDTH);
+		$lines = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_LINESCOUNT);
+		$lineHeight = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_LINEHEIGHT);
+		$labelStyle = $this->maniaControl->manialinkManager->styleManager->getDefaultLabelStyle();
+		$quadStyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
+		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
 		
 		$records = $this->getLocalRecords($map);
 		if (!is_array($records)) {
@@ -244,21 +257,21 @@ class LocalRecordsPlugin extends Plugin implements CallbackListener {
 		$backgroundQuad = new Quad();
 		$frame->add($backgroundQuad);
 		$backgroundQuad->setVAlign(Control::TOP);
-		$backgroundQuad->setSize($width * 1.05, 7. + $lines * $line_height);
-		$backgroundQuad->setStyles('Bgs1InRace', 'BgTitleShadow');
+		$backgroundQuad->setSize($width * 1.05, 7. + $lines * $lineHeight);
+		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 		
 		$titleLabel = new Label();
 		$frame->add($titleLabel);
-		// TODO: set translateable
-		$titleLabel->setPosition(0, $line_height * -0.9);
+		$titleLabel->setPosition(0, $lineHeight * -0.9);
 		$titleLabel->setWidth($width);
-		$titleLabel->setStyle(Label_Text::STYLE_TextTitle1);
+		$titleLabel->setStyle($labelStyle);
 		$titleLabel->setTextSize(2);
 		$titleLabel->setText($title);
+		$titleLabel->setTranslate(true);
 		
 		// Times
 		foreach ($records as $index => $record) {
-			$y = -8. - $index * $line_height;
+			$y = -8. - $index * $lineHeight;
 			
 			$recordFrame = new Frame();
 			$frame->add($recordFrame);
@@ -266,14 +279,14 @@ class LocalRecordsPlugin extends Plugin implements CallbackListener {
 			
 			$backgroundQuad = new Quad();
 			$recordFrame->add($backgroundQuad);
-			$backgroundQuad->setSize($width, $line_height);
-			$backgroundQuad->setStyles('Bgs1InRace', 'BgTitleGlow');
+			$backgroundQuad->setSize($width, $lineHeight);
+			$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 			
 			$rankLabel = new Label();
 			$recordFrame->add($rankLabel);
 			$rankLabel->setHAlign(Control::LEFT);
 			$rankLabel->setPosition($width * -0.47);
-			$rankLabel->setSize($width * 0.06, $line_height);
+			$rankLabel->setSize($width * 0.06, $lineHeight);
 			$rankLabel->setTextSize(1);
 			$rankLabel->setTextPrefix('$o');
 			$rankLabel->setText($record->rank);
@@ -282,7 +295,7 @@ class LocalRecordsPlugin extends Plugin implements CallbackListener {
 			$recordFrame->add($nameLabel);
 			$nameLabel->setHAlign(Control::LEFT);
 			$nameLabel->setPosition($width * -0.4);
-			$nameLabel->setSize($width * 0.6, $line_height);
+			$nameLabel->setSize($width * 0.6, $lineHeight);
 			$nameLabel->setTextSize(1);
 			$nameLabel->setText($record->nickname);
 			
@@ -290,7 +303,7 @@ class LocalRecordsPlugin extends Plugin implements CallbackListener {
 			$recordFrame->add($timeLabel);
 			$timeLabel->setHAlign(Control::RIGHT);
 			$timeLabel->setPosition($width * 0.47);
-			$timeLabel->setSize($width * 0.25, $line_height);
+			$timeLabel->setSize($width * 0.25, $lineHeight);
 			$timeLabel->setTextSize(1);
 			$timeLabel->setText(Formatter::formatTime($record->time));
 		}

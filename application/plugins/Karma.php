@@ -372,11 +372,14 @@ class KarmaPlugin extends Plugin implements CallbackListener {
 	private function buildManialink($forceBuild = false) {
 		if (is_object($this->manialink) && !$forceBuild) return;
 		
-		$title = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_TITLE, 'Map-Karma');
+		$title = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_TITLE);
 		$pos_x = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_POSX);
 		$pos_y = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_POSY);
 		$width = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_WIDTH);
 		$height = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_HEIGHT);
+		$labelStyle = $this->maniaControl->manialinkManager->styleManager->getDefaultLabelStyle();
+		$quadStyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
+		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
 		
 		$manialink = new ManiaLink(self::MLID_KARMA);
 		
@@ -388,13 +391,13 @@ class KarmaPlugin extends Plugin implements CallbackListener {
 		$frame->add($backgroundQuad);
 		$backgroundQuad->setY($height * 0.15);
 		$backgroundQuad->setSize($width, $height);
-		$backgroundQuad->setStyles('Bgs1InRace', 'BgTitleShadow');
+		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 		
 		$titleLabel = new Label();
 		$frame->add($titleLabel);
 		$titleLabel->setY($height * 0.36);
 		$titleLabel->setWidth($width * 0.85);
-		$titleLabel->setStyle('TextTitle1');
+		$titleLabel->setStyle($labelStyle);
 		$titleLabel->setTranslate(true);
 		$titleLabel->setTextSize(1);
 		$titleLabel->setText($title);

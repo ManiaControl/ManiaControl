@@ -2,26 +2,34 @@
 
 namespace ManiaControl;
 
+use ManiaControl\Admin\AdminMenu;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\Commands\CommandManager;
-use ManiaControl\Manialinks\ManialinkIdHandler;
+use ManiaControl\Configurators\Configurator;
+use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Maps\MapManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\PluginManager;
 use ManiaControl\Server\Server;
-use ManiaControl\Manialinks\ManialinkManager;
 
-require_once __DIR__ . '/Callbacks/CallbackManager.php';
-require_once __DIR__ . '/Commands/CommandManager.php';
+require_once __DIR__ . '/Callbacks/CallbackListener.php';
+require_once __DIR__ . '/Commands/CommandListener.php';
+require_once __DIR__ . '/Manialinks/ManialinkPageAnswerListener.php';
+require_once __DIR__ . '/Admin/AdminMenu.php';
 require_once __DIR__ . '/Admin/AuthenticationManager.php';
+require_once __DIR__ . '/Callbacks/CallbackManager.php';
 require_once __DIR__ . '/Chat.php';
+require_once __DIR__ . '/ColorUtil.php';
+require_once __DIR__ . '/Commands/CommandManager.php';
+require_once __DIR__ . '/Configurators/Configurator.php';
 require_once __DIR__ . '/Database.php';
 require_once __DIR__ . '/FileUtil.php';
 require_once __DIR__ . '/Formatter.php';
-require_once __DIR__ . '/Manialinks/ManialinkIdHandler.php';
+require_once __DIR__ . '/ManiaExchange/mxinfofetcher.inc.php';
+require_once __DIR__ . '/ManiaExchange/mxinfosearcher.inc.php';
 require_once __DIR__ . '/Manialinks/ManialinkManager.php';
 require_once __DIR__ . '/Maps/Map.php';
 require_once __DIR__ . '/Maps/MapManager.php';
@@ -30,9 +38,6 @@ require_once __DIR__ . '/Plugins/PluginManager.php';
 require_once __DIR__ . '/Server/Server.php';
 require_once __DIR__ . '/Settings/SettingManager.php';
 require_once __DIR__ . '/GbxDataFetcher/gbxdatafetcher.inc.php';
-require_once __DIR__ . '/ManiaExchange/mxinfofetcher.inc.php';
-require_once __DIR__ . '/ManiaExchange/mxinfosearcher.inc.php';
-require_once __DIR__ . '/ColorUtil.php';
 list($endiantest) = array_values(unpack('L1L', pack('V', 1)));
 if ($endiantest == 1) {
 	require_once __DIR__ . '/PhpRemote/GbxRemote.inc.php';
@@ -57,9 +62,11 @@ class ManiaControl implements CommandListener {
 	/**
 	 * Public properties
 	 */
+	public $adminMenu = null;
 	public $authenticationManager = null;
 	public $callbackManager = null;
 	public $chat = null;
+	public $configurator = null;
 	public $client = null;
 	public $commandManager = null;
 	public $database = null;
@@ -81,8 +88,9 @@ class ManiaControl implements CommandListener {
 	public function __construct() {
 		$this->database = new Database($this);
 		$this->callbackManager = new CallbackManager($this);
-		$this->manialinkManager = new ManialinkManager($this);
 		$this->settingManager = new SettingManager($this);
+		$this->manialinkManager = new ManialinkManager($this);
+		$this->adminMenu = new AdminMenu($this);
 		$this->chat = new Chat($this);
 		$this->commandManager = new CommandManager($this);
 		$this->server = new Server($this);
@@ -90,6 +98,7 @@ class ManiaControl implements CommandListener {
 		$this->authenticationManager = new AuthenticationManager($this);
 		$this->mapManager = new MapManager($this);
 		$this->pluginManager = new PluginManager($this);
+		$this->configurator = new Configurator($this);
 		
 		$this->commandManager->registerCommandListener('version', $this, 'command_Version');
 	}

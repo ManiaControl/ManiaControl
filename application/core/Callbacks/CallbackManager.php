@@ -2,8 +2,6 @@
 
 namespace ManiaControl\Callbacks;
 
-require_once __DIR__ . '/CallbackListener.php';
-
 use ManiaControl\ManiaControl;
 
 /**

@@ -2,8 +2,6 @@
 
 namespace ManiaControl\Commands;
 
-require_once __DIR__ . '/CommandListener.php';
-
 use ManiaControl\ManiaControl;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
@@ -60,30 +58,28 @@ class CommandManager implements CallbackListener {
 	 * Handle chat callback
 	 *
 	 * @param array $callback        	
-	 * @return bool
 	 */
 	public function handleChatCallback(array $callback) {
 		// Check for command
 		if (!$callback[1][3]) {
-			return false;
+			return;
 		}
 		// Check for valid player
 		$player = $this->maniaControl->playerManager->getPlayer($callback[1][1]);
 		if (!$player) {
-			return false;
+			return;
 		}
 		// Handle command
 		$command = explode(" ", substr($callback[1][2], 1));
 		$command = strtolower($command[0]);
 		if (!array_key_exists($command, $this->commandListeners) || !is_array($this->commandListeners[$command])) {
 			// No command listener registered
-			return true;
+			return;
 		}
 		// Inform command listeners
 		foreach ($this->commandListeners[$command] as $listener) {
 			call_user_func(array($listener[0], $listener[1]), $callback, $player);
 		}
-		return true;
 	}
 }
 
