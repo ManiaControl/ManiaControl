@@ -306,6 +306,28 @@ class SettingManager {
 		$settingStatement->close();
 		return true;
 	}
+
+	/**
+	 * Get all settings
+	 * 
+	 * @return array
+	 */
+	public function getSettings() {
+		$mysqli = $this->maniaControl->database->mysqli;
+		$query = "SELECT * FROM `" . self::TABLE_SETTINGS . "`
+				ORDER BY `class` ASC, `setting` ASC;";
+		$result = $mysqli->query($query);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error);
+			return null;
+		}
+		$settings = array();
+		while ($setting = $result->fetch_object()) {
+			array_push($settings, $setting);
+		}
+		$result->free();
+		return $settings;
+	}
 }
 
 ?>

@@ -17,7 +17,6 @@ class CallbackManager {
 	const CB_MC_1_SECOND = 'ManiaControl.1Second';
 	const CB_MC_5_SECOND = 'ManiaControl.5Second';
 	const CB_MC_1_MINUTE = 'ManiaControl.1Minute';
-	const CB_MC_3_MINUTE = 'ManiaControl.3Minute';
 	const CB_MC_ONINIT = 'ManiaControl.OnInit';
 	const CB_MC_CLIENTUPDATED = 'ManiaControl.ClientUpdated';
 	const CB_MC_BEGINMAP = 'ManiaControl.BeginMap';
@@ -55,7 +54,6 @@ class CallbackManager {
 	private $last1Second = -1;
 	private $last5Second = -1;
 	private $last1Minute = -1;
-	private $last3Minute = -1;
 
 	/**
 	 * Construct callbacks manager
@@ -248,13 +246,6 @@ class CallbackManager {
 		}
 		$this->last1Minute = time();
 		$this->triggerCallback(self::CB_MC_1_MINUTE, array(self::CB_MC_1_MINUTE));
-		
-		// 3 minute
-		if ($this->last3Minute > time() - 180) {
-			return;
-		}
-		$this->last3Minute = time();
-		$this->triggerCallback(self::CB_MC_3_MINUTE, array(self::CB_MC_3_MINUTE));
 	}
 }
 

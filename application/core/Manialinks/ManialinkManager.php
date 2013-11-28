@@ -5,6 +5,7 @@ namespace ManiaControl\Manialinks;
 use ManiaControl\ManiaControl;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Players\Player;
 
 require_once __DIR__ . '/StyleManager.php';
 require_once __DIR__ . '/../FML/autoload.php';
@@ -124,6 +125,26 @@ class ManialinkManager implements CallbackListener {
 			return $success;
 		}
 		return false;
+	}
+
+	/**
+	 * Enable the alt menu for the player
+	 *
+	 * @param Player $player        	
+	 * @return bool
+	 */
+	public function enableAltMenu(Player $player) {
+		return $this->maniaControl->client->query('TriggerModeScriptEvent', 'LibXmlRpc_EnableAltMenu', $player->login);
+	}
+
+	/**
+	 * Disable the alt menu for the player
+	 *
+	 * @param Player $player        	
+	 * @return bool
+	 */
+	public function disableAltMenu(Player $player) {
+		return $this->maniaControl->client->query('TriggerModeScriptEvent', 'LibXmlRpc_DisableAltMenu', $player->login);
 	}
 }
 
