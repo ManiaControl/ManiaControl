@@ -1,0 +1,4 @@
+/*********************************
+*  FancyManiaLinks by steeffeen	 *
+*    http://fml.steeffeen.com	 *
+*********************************/

@@ -5,6 +5,7 @@ namespace FML\Script;
 use FML\Controls\Control;
 use FML\Script\Sections\Constants;
 use FML\Script\Sections\Labels;
+use FML\Types\Scriptable;
 
 /**
  * ScriptFeature class offering tooltip behaviors
@@ -25,13 +26,17 @@ class Tooltips implements Constants, Labels, ScriptFeature {
 	/**
 	 * Add a tooltip behavior showing the tooltipControl while hovering over the hoverControl
 	 *
-	 * @param Control $hoverControl        	
+	 * @param Scriptable $hoverControl        	
 	 * @param Control $tooltipControl        	
 	 * @return \FML\Script\Tooltips
 	 */
-	public function add(Control $hoverControl, Control $tooltipControl) {
-		$hoverControl->assignId();
+	public function add(Scriptable $hoverControl, Control $tooltipControl) {
+		if ($hoverControl instanceof Control) {
+			$hoverControl->assignId();
+		}
+		$hoverControl->setScriptEvents(true);
 		$tooltipControl->assignId();
+		$tooltipControl->setVisible(false);
 		$this->tooltips[$hoverControl->getId()] = $tooltipControl->getId();
 		return $this;
 	}
@@ -42,11 +47,13 @@ class Tooltips implements Constants, Labels, ScriptFeature {
 	 */
 	public function getConstants() {
 		$constant = '[';
+		$index = 0;
 		foreach ($this->tooltips as $hoverId => $tooltipId) {
 			$constant .= '"' . $hoverId . '" => "' . $tooltipId . '"';
 			if ($index < count($this->tooltips) - 1) {
 				$constant .= ',';
 			}
+			$index++;
 		}
 		$constant .= ']';
 		$constants = array();

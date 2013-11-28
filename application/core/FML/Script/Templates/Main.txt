@@ -1,3 +1,4 @@
+Void Dummy() {}
 
 main() {
 	+++OnInit+++

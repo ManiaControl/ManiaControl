@@ -62,12 +62,25 @@ class Script {
 	 */
 	private function buildScriptText() {
 		$scriptText = "";
+		$scriptText = $this->addHeaderPart($scriptText);
 		$scriptText = $this->addIncludesPart($scriptText);
 		$scriptText = $this->addConstantsPart($scriptText);
+		$scriptText = $this->addGlobalsPart($scriptText);
 		$scriptText = $this->addLabelsPart($scriptText);
 		$scriptText = $this->addFunctionsPart($scriptText);
 		$scriptText = $this->addMainPart($scriptText);
 		return $scriptText;
+	}
+
+	/**
+	 * Add the header comment to the script
+	 * 
+	 * @param script $scriptText        	
+	 * @return string
+	 */
+	private function addHeaderPart($scriptText) {
+		$headerPart = file_get_contents(__DIR__ . '/Templates/Header.txt');
+		return $scriptText . $headerPart;
 	}
 
 	/**

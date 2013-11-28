@@ -1,0 +1,27 @@
+foreach (PageIds in C_FML_PageIds) {
+	if (!PageIds.existskey(Event.ControlId)) continue;
+	
+	declare Action = TextLib::ToInteger(PageIds[Event.ControlId][0]);
+	declare PagesId = PageIds["__FML__Pages__Id__"][0];
+	declare PagesIds = PageIds["__FML__Pages__Ids__"];
+	
+	if (!G_FML_PageIndexes.existskey(PagesId)) {
+		G_FML_PageIndexes[PagesId] = 0;
+	}
+	G_FML_PageIndexes[PagesId] += Action;
+	if (G_FML_PageIndexes[PagesId] < 0) {
+		G_FML_PageIndexes[PagesId] = 0;
+	} else if (G_FML_PageIndexes[PagesId] >= PagesIds.count) {
+		G_FML_PageIndexes[PagesId] = PagesIds.count - 1;
+	}
+	
+	foreach (PageIndex => PageId in PagesIds) {
+		declare Control <=> Page.GetFirstChild(PageId);
+		if (Control == Null) continue;
+		Control.Visible = (PageIndex == G_FML_PageIndexes[PagesId]);
+	}
+	
+	declare Label_Counter <=> (Page.GetFirstChild(PagesId) as CMlLabel);
+	if (Label_Counter == Null) continue;
+	Label_Counter.Value = (G_FML_PageIndexes[PagesId]+1)^"/"^PagesIds.count;
+}

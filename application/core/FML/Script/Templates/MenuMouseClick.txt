@@ -1,0 +1,12 @@
+foreach (MenuIds in C_FML_MenuIds) {
+	if (!MenuIds.existskey(Event.ControlId)) continue;
+	
+	declare MenuId = MenuIds[Event.ControlId][0];
+	declare SubMenuIds = MenuIds["__FML__Sub__Menus__"];
+	
+	foreach (SubMenuId in SubMenuIds) {
+		declare SubMenu <=> Page.GetFirstChild(SubMenuId);
+		if (SubMenu == Null) continue;
+		SubMenu.Visible = (SubMenu.ControlId == MenuId);
+	}
+}
