@@ -2,6 +2,7 @@
 
 namespace FML\Controls;
 
+use FML\Types\Actionable;
 use FML\Types\Linkable;
 use FML\Types\NewLineable;
 use FML\Types\Scriptable;
@@ -13,7 +14,7 @@ use FML\Types\TextFormatable;
  *
  * @author steeffeen
  */
-class Label extends Control implements Linkable, NewLineable, Scriptable, Styleable, TextFormatable {
+class Label extends Control implements Actionable, Linkable, NewLineable, Scriptable, Styleable, TextFormatable {
 	/**
 	 * Protected properties
 	 */
@@ -22,6 +23,7 @@ class Label extends Control implements Linkable, NewLineable, Scriptable, Stylea
 	protected $textEmboss = 0;
 	protected $translate = 0;
 	protected $maxLines = 0;
+	protected $action = '';
 	protected $url = '';
 	protected $manialink = '';
 	protected $autoNewLine = 0;
@@ -78,7 +80,7 @@ class Label extends Control implements Linkable, NewLineable, Scriptable, Stylea
 
 	/**
 	 * Set translate
-	 * 
+	 *
 	 * @param bool $translate        	
 	 * @return \FML\Controls\Label
 	 */
@@ -95,6 +97,16 @@ class Label extends Control implements Linkable, NewLineable, Scriptable, Stylea
 	 */
 	public function setMaxLines($maxLines) {
 		$this->maxLines = $maxLines;
+		return $this;
+	}
+
+	/**
+	 *
+	 * @see \FML\Types\Actionable::setAction()
+	 * @return \FML\Controls\Label
+	 */
+	public function setAction($action) {
+		$this->action = $action;
 		return $this;
 	}
 
@@ -208,6 +220,9 @@ class Label extends Control implements Linkable, NewLineable, Scriptable, Stylea
 		}
 		if ($this->maxLines) {
 			$xml->setAttribute('maxlines', $this->maxLines);
+		}
+		if ($this->action) {
+			$xml->setAttribute('action', $this->action);
 		}
 		if ($this->url) {
 			$xml->setAttribute('url', $this->url);

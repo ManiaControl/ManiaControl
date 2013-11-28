@@ -251,7 +251,7 @@ class LocalRecordsPlugin extends Plugin implements CallbackListener {
 		$frame->add($titleLabel);
 		// TODO: set translateable
 		$titleLabel->setPosition(0, $line_height * -0.9);
-		$titleLabel->setSize($width);
+		$titleLabel->setWidth($width);
 		$titleLabel->setStyle(Label_Text::STYLE_TextTitle1);
 		$titleLabel->setTextSize(2);
 		$titleLabel->setText($title);

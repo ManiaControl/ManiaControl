@@ -83,7 +83,7 @@ abstract class Control implements Renderable {
 	/**
 	 * Set x position
 	 *
-	 * @param real $x        	
+	 * @param float $x        	
 	 * @return \FML\Controls\Control
 	 */
 	public function setX($x) {
@@ -94,7 +94,7 @@ abstract class Control implements Renderable {
 	/**
 	 * Set y position
 	 *
-	 * @param real $y        	
+	 * @param float $y        	
 	 * @return \FML\Controls\Control
 	 */
 	public function setY($y) {
@@ -105,7 +105,7 @@ abstract class Control implements Renderable {
 	/**
 	 * Set z position
 	 *
-	 * @param real $z        	
+	 * @param float $z        	
 	 * @return \FML\Controls\Control
 	 */
 	public function setZ($z) {
@@ -116,9 +116,9 @@ abstract class Control implements Renderable {
 	/**
 	 * Set position
 	 *
-	 * @param real $x        	
-	 * @param real $y        	
-	 * @param real $z        	
+	 * @param float $x        	
+	 * @param float $y        	
+	 * @param float $z        	
 	 * @return \FML\Controls\Control
 	 */
 	public function setPosition($x, $y, $z = null) {
@@ -133,7 +133,7 @@ abstract class Control implements Renderable {
 	/**
 	 * Set width
 	 *
-	 * @param real $width        	
+	 * @param float $width        	
 	 * @return \FML\Controls\Control
 	 */
 	public function setWidth($width) {
@@ -144,7 +144,7 @@ abstract class Control implements Renderable {
 	/**
 	 * Set height
 	 *
-	 * @param real $height        	
+	 * @param float $height        	
 	 * @return \FML\Controls\Control
 	 */
 	public function setHeight($height) {
@@ -155,8 +155,8 @@ abstract class Control implements Renderable {
 	/**
 	 * Set size
 	 *
-	 * @param real $width        	
-	 * @param real $height        	
+	 * @param float $width        	
+	 * @param float $height        	
 	 * @return \FML\Controls\Control
 	 */
 	public function setSize($width, $height) {
@@ -203,7 +203,7 @@ abstract class Control implements Renderable {
 	/**
 	 * Set scale
 	 *
-	 * @param real $scale        	
+	 * @param float $scale        	
 	 * @return \FML\Controls\Control
 	 */
 	public function setScale($scale) {

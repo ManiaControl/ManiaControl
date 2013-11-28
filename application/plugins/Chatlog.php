@@ -15,7 +15,9 @@ class ChatlogPlugin extends Plugin implements CallbackListener {
 	 * Constants
 	 */
 	const VERSION = '1.0';
+	const SETTING_FOLDERNAME = 'Log-Folder Name';
 	const SETTING_FILENAME = 'Log-File Name';
+	const SETTING_USEPID = 'Use Process-Id for File Name';
 	const SETTING_LOGSERVERMESSAGES = 'Log Server Messages';
 	
 	/**
@@ -36,13 +38,35 @@ class ChatlogPlugin extends Plugin implements CallbackListener {
 		$this->description = 'Plugin logging the chat messages of the server.';
 		
 		// Init settings
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_FILENAME, 'chat.log');
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_FOLDERNAME, 'logs');
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_FILENAME, 'ChatLog.log');
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_USEPID, false);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_LOGSERVERMESSAGES, true);
 		
 		// Get settings
+		$folderName = $this->maniaControl->settingManager->getSetting($this, self::SETTING_FOLDERNAME);
+		$folderName = FileUtil::getClearedFileName($folderName);
+		$folderDir = ManiaControlDir . '/' . $folderName;
+		if (!is_dir($folderDir)) {
+			$success = mkdir($folderDir);
+			if (!$success) {
+				trigger_error("Couldn't create chat log folder '{$folderName}'.");
+			}
+		}
 		$fileName = $this->maniaControl->settingManager->getSetting($this, self::SETTING_FILENAME);
 		$fileName = FileUtil::getClearedFileName($fileName);
-		$this->fileName = ManiaControlDir . '/' . $fileName;
+		$usePId = $this->maniaControl->settingManager->getSetting($this, self::SETTING_USEPID);
+		if ($usePId) {
+			$dotIndex = strripos($fileName, '.');
+			$pIdPart = '_' . getmypid();
+			if ($dotIndex !== false && $dotIndex >= 0) {
+				$fileName = substr($fileName, 0, $dotIndex) . $pIdPart . substr($fileName, $dotIndex);
+			}
+			else {
+				$fileName .= $pIdPart;
+			}
+		}
+		$this->fileName = $folderDir . '/' . $fileName;
 		$this->logServerMessages = $this->maniaControl->settingManager->getSetting($this, self::SETTING_LOGSERVERMESSAGES);
 		
 		// Register for callbacks

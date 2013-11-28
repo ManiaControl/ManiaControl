@@ -2,6 +2,7 @@
 
 namespace FML\Controls;
 
+use FML\Types\Actionable;
 use FML\Types\BgColorable;
 use FML\Types\Linkable;
 use FML\Types\Scriptable;
@@ -13,7 +14,7 @@ use FML\Types\SubStyleable;
  *
  * @author steeffeen
  */
-class Quad extends Control implements BgColorable, Linkable, Scriptable, Styleable, SubStyleable {
+class Quad extends Control implements Actionable, BgColorable, Linkable, Scriptable, Styleable, SubStyleable {
 	/**
 	 * Protected properties
 	 */
@@ -21,6 +22,7 @@ class Quad extends Control implements BgColorable, Linkable, Scriptable, Styleab
 	protected $imageFocus = '';
 	protected $colorize = '';
 	protected $modulizeColor = '';
+	protected $action = '';
 	protected $bgColor = '';
 	protected $url = '';
 	protected $manialink = '';
@@ -80,6 +82,16 @@ class Quad extends Control implements BgColorable, Linkable, Scriptable, Styleab
 	 */
 	public function setModulizeColor($modulizeColor) {
 		$this->modulizeColor = $modulizeColor;
+		return $this;
+	}
+
+	/**
+	 *
+	 * @see \FML\Types\Actionable::setAction()
+	 * @return \FML\Controls\Quad
+	 */
+	public function setAction($action) {
+		$this->action = $action;
 		return $this;
 	}
 
@@ -171,6 +183,9 @@ class Quad extends Control implements BgColorable, Linkable, Scriptable, Styleab
 		}
 		if ($this->modulizeColor) {
 			$xml->setAttribute('modulizecolor', $this->modulizeColor);
+		}
+		if ($this->action) {
+			$xml->setAttribute('action', $this->action);
 		}
 		if ($this->bgColor) {
 			$xml->setAttribute('bgcolor', $this->bgColor);

@@ -26,8 +26,6 @@ class SettingConfigurator implements CallbackListener {
 		$this->maniaControl = $maniaControl;
 		
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'onInit');
-		
-		$this->maniaControl->manialinkIdHandler->reserveManiaLinkIds(100);
 	}
 
 	/**

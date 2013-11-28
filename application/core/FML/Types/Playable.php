@@ -48,7 +48,7 @@ interface Playable {
 	/**
 	 * Set volume
 	 *
-	 * @param real $volume        	
+	 * @param float $volume        	
 	 */
 	public function setVolume($volume);
 }

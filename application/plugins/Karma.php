@@ -121,7 +121,7 @@ class KarmaPlugin extends Plugin implements CallbackListener {
 			
 			// Send manialink
 			$manialinkText = $this->manialink->render()->saveXML();
-			ManialinkUtil::sendManialinkPage($this->maniaControl->client, $manialinkText, $login);
+			$this->maniaControl->manialinkManager->sendManialink($manialinkText, $login);
 		}
 	}
 

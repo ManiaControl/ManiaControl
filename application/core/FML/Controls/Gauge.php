@@ -36,7 +36,7 @@ class Gauge extends Control implements Styleable {
 	/**
 	 * Set ratio
 	 *
-	 * @param real $ratio        	
+	 * @param float $ratio        	
 	 * @return \FML\Controls\Gauge
 	 */
 	public function setRatio($ratio) {
@@ -47,7 +47,7 @@ class Gauge extends Control implements Styleable {
 	/**
 	 * Set grading
 	 *
-	 * @param real $grading        	
+	 * @param float $grading        	
 	 * @return \FML\Controls\Gauge
 	 */
 	public function setGrading($grading) {
@@ -69,7 +69,7 @@ class Gauge extends Control implements Styleable {
 	/**
 	 * Set rotation
 	 *
-	 * @param real $rotation        	
+	 * @param float $rotation        	
 	 * @return \FML\Controls\Gauge
 	 */
 	public function setRotation($rotation) {
