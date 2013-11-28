@@ -1,0 +1,82 @@
+<?php
+use ManiaControl\FileUtil;
+use ManiaControl\ManiaControl;
+use ManiaControl\Callbacks\CallbackListener;
+use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Plugins\Plugin;
+
+/**
+ * ManiaControl Chatlog Plugin
+ *
+ * @author steeffeen
+ */
+class ChatlogPlugin extends Plugin implements CallbackListener {
+	/**
+	 * Constants
+	 */
+	const VERSION = '1.0';
+	const SETTING_FILENAME = 'Log-File Name';
+	const SETTING_LOGSERVERMESSAGES = 'Log Server Messages';
+	
+	/**
+	 * Private properties
+	 */
+	private $fileName = null;
+	private $logServerMessages = true;
+
+	/**
+	 * Constuct chatlog plugin
+	 */
+	public function __construct(ManiaControl $maniaControl) {
+		$this->maniaControl = $maniaControl;
+		
+		$this->name = 'Chatlog Plugin';
+		$this->version = self::VERSION;
+		$this->author = 'steeffeen';
+		$this->description = 'Plugin logging the chat messages of the server.';
+		
+		// Init settings
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_FILENAME, 'chat.log');
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_LOGSERVERMESSAGES, true);
+		
+		// Get settings
+		$fileName = $this->maniaControl->settingManager->getSetting($this, self::SETTING_FILENAME);
+		$fileName = FileUtil::getClearedFileName($fileName);
+		$this->fileName = ManiaControlDir . '/' . $fileName;
+		$this->logServerMessages = $this->maniaControl->settingManager->getSetting($this, self::SETTING_LOGSERVERMESSAGES);
+		
+		// Register for callbacks
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCHAT, $this, 
+				'handlePlayerChatCallback');
+	}
+
+	/**
+	 * Handle PlayerChat callback
+	 *
+	 * @param array $chatCallback        	
+	 */
+	public function handlePlayerChatCallback(array $chatCallback) {
+		$data = $chatCallback[1];
+		if ($data[0] <= 0 && !$this->logServerMessages) {
+			// Skip server message
+			return;
+		}
+		$this->logText($data[2], $data[1]);
+	}
+
+	/**
+	 * Log the given message
+	 *
+	 * @param string $message        	
+	 * @param string $login        	
+	 */
+	private function logText($text, $login = null) {
+		if (!$login) {
+			$login = '';
+		}
+		$message = date(ManiaControl::DATE) . " >> {$login}: {$text}" . PHP_EOL;
+		file_put_contents($this->fileName, $message, FILE_APPEND);
+	}
+}
+
+?>
