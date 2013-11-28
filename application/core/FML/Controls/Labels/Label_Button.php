@@ -24,7 +24,6 @@ class Label_Button extends Label {
 	const STYLE_CardButtonSmall = 'CardButtonSmall';
 	const STYLE_CardButtonSmallL = 'CardButtonSmallL';
 	const STYLE_CardButtonSmallS = 'CardButtonSmallS';
-	const STYLE_CardButtonSmallS = 'CardButtonSmallS';
 	const STYLE_CardButtonSmallWide = 'CardButtonSmallWide';
 	const STYLE_CardButtonSmallXL = 'CardButtonSmallXL';
 	const STYLE_CardButtonSmallXS = 'CardButtonSmallXS';

@@ -80,7 +80,7 @@ class ServerCommands implements CallbackListener, CommandListener {
 		}
 		$systemInfo = $this->maniaControl->server->getSystemInfo();
 		$message = 'SystemInfo: ip=' . $systemInfo['PublishedIp'] . ', port=' . $systemInfo['Port'] . ', p2pPort=' .
-				 $systemInfo['P2PPort'] . ', title=' . $systemInfo['TitleId'] . ', login=' . $systemInfo['ServerLogin'] . ', ';
+				 $systemInfo['P2PPort'] . ', title=' . $systemInfo['TitleId'] . ', login=' . $systemInfo['ServerLogin'] . '.';
 		return $this->maniaControl->chat->sendInformation($message, $player->login);
 	}
 
