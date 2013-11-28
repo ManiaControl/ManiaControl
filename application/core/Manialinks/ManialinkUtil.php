@@ -9,19 +9,19 @@ require_once __DIR__ . '/../FML/autoload.php';
  *
  * @author steeffeen & kremsy
  */
-class ManialinkUtil {
+abstract class ManialinkUtil {
 
 	/**
 	 * Send the given manialink to players
 	 *
 	 * @param \IXR_ClientMulticall_Gbx $client        	
 	 * @param string $manialink        	
-	 * @param array $logins        	
+	 * @param mixed $logins        	
 	 * @param int $timeout        	
 	 * @param bool $hideOnClick        	
 	 * @return bool
 	 */
-	public static function sendManialinkPage(\IXR_ClientMulticall_Gbx $client, $manialinkText, array $logins = null, $timeout = 0, 
+	public static function sendManialinkPage(\IXR_ClientMulticall_Gbx $client, $manialinkText, $logins = null, $timeout = 0, 
 			$hideOnClick = false) {
 		if (!$client || !$manialinkText) {
 			return false;

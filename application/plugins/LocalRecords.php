@@ -171,6 +171,8 @@ class LocalRecordsPlugin extends Plugin implements CallbackListener {
 		$this->updateManialink = true;
 		
 		// Announce record
+		// TODO: setting für nur-zum-spieler senden
+		// TODO: setting für nur-besten-x-announcen
 		$newRecord = $this->getLocalRecord($map, $player);
 		if (!$oldRecord || $newRecord->rank < $oldRecord->rank) {
 			$improvement = 'gained the';

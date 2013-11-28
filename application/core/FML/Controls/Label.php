@@ -20,6 +20,7 @@ class Label extends Control implements Linkable, NewLineable, Scriptable, Stylea
 	protected $text = '';
 	protected $textPrefix = '';
 	protected $textEmboss = 0;
+	protected $translate = 0;
 	protected $maxLines = 0;
 	protected $url = '';
 	protected $manialink = '';
@@ -72,6 +73,17 @@ class Label extends Control implements Linkable, NewLineable, Scriptable, Stylea
 	 */
 	public function setTextEmboss($textEmboss) {
 		$this->textEmboss = ($textEmboss ? 1 : 0);
+		return $this;
+	}
+
+	/**
+	 * Set translate
+	 * 
+	 * @param bool $translate        	
+	 * @return \FML\Controls\Label
+	 */
+	public function setTranslate($translate) {
+		$this->translate = ($translate ? 1 : 0);
 		return $this;
 	}
 
@@ -190,6 +202,9 @@ class Label extends Control implements Linkable, NewLineable, Scriptable, Stylea
 		}
 		if ($this->textEmboss) {
 			$xml->setAttribute('textemboss', $this->textEmboss);
+		}
+		if ($this->translate) {
+			$xml->setAttribute('translate', $this->translate);
 		}
 		if ($this->maxLines) {
 			$xml->setAttribute('maxlines', $this->maxLines);

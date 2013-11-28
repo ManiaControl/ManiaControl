@@ -139,6 +139,15 @@ class PlayerManager implements CallbackListener {
 	}
 
 	/**
+	 * Get the complete PlayerList
+	 *
+	 * @return array
+	 */
+	public function getPlayers() {
+		return $this->playerList;
+	}
+
+	/**
 	 * Get a Player from the PlayerList
 	 *
 	 * @param string $login        	

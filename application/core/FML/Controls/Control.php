@@ -121,16 +121,34 @@ abstract class Control implements Renderable {
 	 * @param real $z        	
 	 * @return \FML\Controls\Control
 	 */
-	public function setPosition($x = null, $y = null, $z = null) {
-		if ($x !== null) {
-			$this->setX($x);
-		}
-		if ($y !== null) {
-			$this->setY($y);
-		}
+	public function setPosition($x, $y, $z = null) {
+		$this->setX($x);
+		$this->setY($y);
 		if ($z !== null) {
 			$this->setZ($z);
 		}
+		return $this;
+	}
+
+	/**
+	 * Set width
+	 *
+	 * @param real $width        	
+	 * @return \FML\Controls\Control
+	 */
+	public function setWidth($width) {
+		$this->width = $width;
+		return $this;
+	}
+
+	/**
+	 * Set height
+	 *
+	 * @param real $height        	
+	 * @return \FML\Controls\Control
+	 */
+	public function setHeight($height) {
+		$this->height = $height;
 		return $this;
 	}
 
@@ -141,13 +159,9 @@ abstract class Control implements Renderable {
 	 * @param real $height        	
 	 * @return \FML\Controls\Control
 	 */
-	public function setSize($width = null, $height = null) {
-		if ($width !== null) {
-			$this->width = $width;
-		}
-		if ($height !== null) {
-			$this->height = $height;
-		}
+	public function setSize($width, $height) {
+		$this->setWidth($width);
+		$this->setHeight($height);
 		return $this;
 	}
 

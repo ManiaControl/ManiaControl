@@ -31,6 +31,7 @@ require_once __DIR__ . '/Settings/SettingManager.php';
 require_once __DIR__ . '/GbxDataFetcher/gbxdatafetcher.inc.php';
 require_once __DIR__ . '/ManiaExchange/mxinfofetcher.inc.php';
 require_once __DIR__ . '/ManiaExchange/mxinfosearcher.inc.php';
+require_once __DIR__ . '/ColorUtil.php';
 list($endiantest) = array_values(unpack('L1L', pack('V', 1)));
 if ($endiantest == 1) {
 	require_once __DIR__ . '/PhpRemote/GbxRemote.inc.php';

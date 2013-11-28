@@ -133,7 +133,7 @@ class SettingManager {
 			return (int) $value;
 		}
 		if ($type === self::TYPE_REAL) {
-			return (real) $value;
+			return (float) $value;
 		}
 		if ($type === self::TYPE_BOOL) {
 			return (bool) $value;
