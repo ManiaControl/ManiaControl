@@ -10,11 +10,11 @@ use ManiaControl\Plugins\Plugin;
  *
  * @author steeffeen
  */
-class ChatlogPlugin extends Plugin implements CallbackListener {
+class ChatlogPlugin implements CallbackListener, Plugin {
 	/**
 	 * Constants
 	 */
-	const VERSION = '1.0';
+	const VERSION = 1.0;
 	const SETTING_FOLDERNAME = 'Log-Folder Name';
 	const SETTING_FILENAME = 'Log-File Name';
 	const SETTING_USEPID = 'Use Process-Id for File Name';
@@ -28,15 +28,11 @@ class ChatlogPlugin extends Plugin implements CallbackListener {
 
 	/**
 	 * Constuct chatlog plugin
+	 *
+	 * @param ManiaControl $maniaControl        	
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
-		
-		// Plugin details
-		self::$name = 'Chatlog Plugin';
-		self::$version = self::VERSION;
-		self::$author = 'steeffeen';
-		self::$description = 'Plugin logging the chat messages of the server.';
 		
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_FOLDERNAME, 'logs');
@@ -73,6 +69,38 @@ class ChatlogPlugin extends Plugin implements CallbackListener {
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCHAT, $this, 
 				'handlePlayerChatCallback');
+	}
+
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::getName()
+	 */
+	public static function getName() {
+		return 'Chatlog Plugin';
+	}
+
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::getVersion()
+	 */
+	public static function getVersion() {
+		return self::VERSION;
+	}
+
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::getAuthor()
+	 */
+	public static function getAuthor() {
+		return 'steeffeen';
+	}
+
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::getDescription()
+	 */
+	public static function getDescription() {
+		return 'Plugin logging the chat messages of the server.';
 	}
 
 	/**

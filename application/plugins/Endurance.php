@@ -9,11 +9,11 @@ use ManiaControl\Plugins\Plugin;
  *
  * @author steeffeen
  */
-class EndurancePlugin extends Plugin implements CallbackListener {
+class EndurancePlugin implements CallbackListener, Plugin {
 	/**
 	 * Constants
 	 */
-	const VERSION = '1.0';
+	const VERSION = 1.0;
 	const CB_CHECKPOINT = 'Endurance.Checkpoint';
 	
 	/**
@@ -30,16 +30,42 @@ class EndurancePlugin extends Plugin implements CallbackListener {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		
-		// Plugin information
-		self::$name = 'Endurance Plugin';
-		self::$version = self::VERSION;
-		self::$author = 'steeffeen';
-		self::$description = "Plugin enabling Support for the TM Game Mode 'Endurance' by TGYoshi.";
-		
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'callback_OnInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_BEGINMAP, $this, 'callback_BeginMap');
 		$this->maniaControl->callbackManager->registerScriptCallbackListener(self::CB_CHECKPOINT, $this, 'callback_Checkpoint');
+	}
+
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::getName()
+	 */
+	public static function getName() {
+		return 'Endurance Plugin';
+	}
+
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::getVersion()
+	 */
+	public static function getVersion() {
+		return self::VERSION;
+	}
+
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::getAuthor()
+	 */
+	public static function getAuthor() {
+		return 'steeffeen';
+	}
+
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::getDescription()
+	 */
+	public static function getDescription() {
+		return "Plugin enabling Support for the TM Game Mode 'Endurance' by TGYoshi.";
 	}
 
 	/**

@@ -5,39 +5,50 @@ namespace ManiaControl\Plugins;
 use ManiaControl\ManiaControl;
 
 /**
- * Plugin parent class
+ * Interface for ManiaControl Plugins
  *
  * @author steeffeen & kremsy
  */
-abstract class Plugin {
+interface Plugin {
 	/**
-	 * Plugin Metadata
+	 * Constants
 	 */
-	public static $name = 'undefined';
-	public static $version = 'undefined';
-	public static $author = 'undefined';
-	public static $description = 'undefined';
-	
-	/**
-	 * Protected properties
-	 */
-	protected $maniaControl = null;
+	const PLUGIN_INTERFACE = __CLASS__;
 
 	/**
 	 * Create a new plugin
 	 *
 	 * @param \ManiaControl\ManiaControl $maniaControl        	
 	 */
-	public abstract function __construct(ManiaControl $maniaControl);
+	public function __construct(ManiaControl $maniaControl);
 
 	/**
-	 * Get class name as string
+	 * Get Plugin Name
 	 *
 	 * @return string
 	 */
-	public static final function getClass() {
-		return __CLASS__;
-	}
+	public static function getName();
+
+	/**
+	 * Get Plugin Version
+	 *
+	 * @return float
+	 */
+	public static function getVersion();
+
+	/**
+	 * Get Plugin Author
+	 *
+	 * @return string
+	 */
+	public static function getAuthor();
+
+	/**
+	 * Get Plugin Description
+	 *
+	 * @return string
+	 */
+	public static function getDescription();
 }
 
 ?>

@@ -4,19 +4,19 @@ use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Commands\CommandListener;
-use ManiaControl\Plugins\Plugin;
 use ManiaControl\Players\Player;
+use ManiaControl\Plugins\Plugin;
 
 /**
  * Donation plugin
  *
  * @author steeffeen
  */
-class DonationPlugin extends Plugin implements CallbackListener, CommandListener {
+class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	/**
 	 * Constants
 	 */
-	const VERSION = '1.0';
+	const VERSION = 1.0;
 	const SETTING_ANNOUNCE_SERVERDONATION = 'Enable Server-Donation Announcements';
 	
 	/**
@@ -32,12 +32,6 @@ class DonationPlugin extends Plugin implements CallbackListener, CommandListener
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		
-		// Plugin details
-		self::$author = 'steeffeen';
-		self::$name = 'Donation Plugin';
-		self::$version = self::VERSION;
-		self::$description = 'DonationPlugin commands like /donate, /pay and /getplanets and a donation widget.';
-		
 		// Register for commands
 		$this->maniaControl->commandManager->registerCommandListener('donate', $this, 'command_Donate');
 		$this->maniaControl->commandManager->registerCommandListener('/pay', $this, 'command_Pay');
@@ -45,6 +39,38 @@ class DonationPlugin extends Plugin implements CallbackListener, CommandListener
 		
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_BILLUPDATED, $this, 'handleBillUpdated');
+	}
+
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::getName()
+	 */
+	public static function getName() {
+		return 'Donation Plugin';
+	}
+
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::getVersion()
+	 */
+	public static function getVersion() {
+		return self::VERSION;
+	}
+
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::getAuthor()
+	 */
+	public static function getAuthor() {
+		return 'steeffeen';
+	}
+
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::getDescription()
+	 */
+	public static function getDescription() {
+		return 'DonationPlugin commands like /donate, /pay and /getplanets and a donation widget.';
 	}
 
 	/**

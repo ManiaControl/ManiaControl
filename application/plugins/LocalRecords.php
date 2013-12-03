@@ -20,11 +20,11 @@ use FML\Controls\Labels\Label_Text;
  *
  * @author steeffeen
  */
-class LocalRecordsPlugin extends Plugin implements CallbackListener {
+class LocalRecordsPlugin implements CallbackListener, Plugin {
 	/**
 	 * Constants
 	 */
-	const VERSION = '1.0';
+	const VERSION = 1.0;
 	const MLID_RECORDS = 'ml_local_records';
 	const TABLE_RECORDS = 'mc_localrecords';
 	const SETTING_WIDGET_TITLE = 'Widget Title';
@@ -82,6 +82,38 @@ class LocalRecordsPlugin extends Plugin implements CallbackListener {
 		if ($mysqli->error) {
 			trigger_error($mysqli->error, E_USER_ERROR);
 		}
+	}
+
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::getName()
+	 */
+	public static function getName() {
+		return 'Local Records Plugin';
+	}
+
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::getVersion()
+	 */
+	public static function getVersion() {
+		return self::VERSION;
+	}
+
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::getAuthor()
+	 */
+	public static function getAuthor() {
+		return 'steeffeen';
+	}
+
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::getDescription()
+	 */
+	public static function getDescription() {
+		return 'Plugin offering tracking of local records and manialinks to display them.';
 	}
 
 	/**

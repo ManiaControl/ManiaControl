@@ -12,11 +12,11 @@ use ManiaControl\Plugins\Plugin;
  *
  * @author steeffeen
  */
-class ObstaclePlugin extends Plugin implements CallbackListener, CommandListener {
+class ObstaclePlugin implements CallbackListener, CommandListener, Plugin {
 	/**
 	 * Constants
 	 */
-	const VERSION = '1.0';
+	const VERSION = 1.0;
 	const CB_JUMPTO = 'Obstacle.JumpTo';
 	const SCB_ONFINISH = 'OnFinish';
 	const SCB_ONCHECKPOINT = 'OnCheckpoint';
@@ -27,12 +27,6 @@ class ObstaclePlugin extends Plugin implements CallbackListener, CommandListener
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
-		
-		// Plugin details
-		self::$name = 'Obstacle Plugin';
-		self::$version = self::VERSION;
-		self::$author = 'steeffeen';
-		self::$description = 'Plugin offering various Commands for the ShootMania Obstacle Game Mode.';
 		
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_JUMPTOAUTHLEVEL, 
@@ -47,6 +41,38 @@ class ObstaclePlugin extends Plugin implements CallbackListener, CommandListener
 	}
 
 	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::getName()
+	 */
+	public static function getName() {
+		return 'Obstacle Plugin';
+	}
+
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::getVersion()
+	 */
+	public static function getVersion() {
+		return self::VERSION;
+	}
+
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::getAuthor()
+	 */
+	public static function getAuthor() {
+		return 'steeffeen';
+	}
+
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::getDescription()
+	 */
+	public static function getDescription() {
+		return 'Plugin offering various Commands for the ShootMania Obstacle Game Mode.';
+	}
+
+	/**
 	 * Handle JumpTo command
 	 *
 	 * @param array $chatCallback        	
@@ -56,7 +82,7 @@ class ObstaclePlugin extends Plugin implements CallbackListener, CommandListener
 		$authLevel = $this->maniaControl->settingManager->getSetting($this, self::SETTING_JUMPTOAUTHLEVEL);
 		if (!$this->maniaControl->authenticationManager->checkRight($player, $authLevel)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
-			return false;
+			return;
 		}
 		// Send jump callback
 		$params = explode(' ', $chatCallback[1][2], 2);
@@ -64,7 +90,6 @@ class ObstaclePlugin extends Plugin implements CallbackListener, CommandListener
 		if (!$this->maniaControl->client->query('TriggerModeScriptEvent', self::CB_JUMPTO, $param)) {
 			trigger_error("Couldn't send jump callback for '{$player->login}'. " . $this->maniaControl->getClientErrorText());
 		}
-		return true;
 	}
 
 	/**
@@ -91,6 +116,8 @@ class ObstaclePlugin extends Plugin implements CallbackListener, CommandListener
 	 * @param array $callback        	
 	 */
 	public function callback_OnCheckpoint(array $callback) {
+		// TODO: check back with trackmania callback format
+		return;
 		$data = json_decode($callback[1]);
 		$player = $this->maniaControl->playerManager->getPlayer($data->Player->Login);
 		if (!$player) {

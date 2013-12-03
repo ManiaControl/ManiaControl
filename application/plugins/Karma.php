@@ -19,11 +19,11 @@ use FML\Controls\Gauge;
  *
  * @author steeffeen
  */
-class KarmaPlugin extends Plugin implements CallbackListener {
+class KarmaPlugin implements CallbackListener, Plugin {
 	/**
 	 * Constants
 	 */
-	const VERSION = '1.0';
+	const VERSION = 1.0;
 	const MLID_KARMA = 'KarmaPlugin.MLID';
 	const TABLE_KARMA = 'mc_karma';
 	const SETTING_AVAILABLE_VOTES = 'Available Votes (X-Y: Comma separated)';
@@ -32,6 +32,14 @@ class KarmaPlugin extends Plugin implements CallbackListener {
 	const SETTING_WIDGET_POSY = 'Widget-Position: Y';
 	const SETTING_WIDGET_WIDTH = 'Widget-Size: Width';
 	const SETTING_WIDGET_HEIGHT = 'Widget-Size: Height';
+	
+	/**
+	 * Plugin metadata
+	 */
+	public static $name = 'Karma Plugin';
+	public static $author = 'steeffeen';
+	public static $version = '1.0';
+	public static $description = 'Plugin offering Karma Voting for Maps.';
 	
 	/**
 	 * Private properties
@@ -46,12 +54,6 @@ class KarmaPlugin extends Plugin implements CallbackListener {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
-		
-		// Plugin details
-		self::$name = 'Karma Plugin';
-		self::$author = 'steeffeen';
-		self::$version = self::VERSION;
-		self::$description = 'Plugin offering Karma Voting for Maps.';
 		
 		// Init database
 		$this->initTables();
@@ -71,6 +73,38 @@ class KarmaPlugin extends Plugin implements CallbackListener {
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCONNECT, $this, 
 				'handlePlayerConnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCHAT, $this, 'handlePlayerChat');
+	}
+
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::getName()
+	 */
+	public static function getName() {
+		return 'Karma Plugin';
+	}
+
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::getVersion()
+	 */
+	public static function getVersion() {
+		return self::VERSION;
+	}
+
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::getAuthor()
+	 */
+	public static function getAuthor() {
+		return 'steeffeen';
+	}
+
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::getDescription()
+	 */
+	public static function getDescription() {
+		return 'Plugin offering Karma Voting for Maps.';
 	}
 
 	/**

@@ -150,7 +150,7 @@ class PluginManager {
 			$classesAfter = get_declared_classes();
 			$newClasses = array_diff($classesAfter, $classesBefore);
 			foreach ($newClasses as $className) {
-				if (!is_subclass_of($className, Plugin::getClass())) {
+				if (!in_array(Plugin::PLUGIN_INTERFACE, class_implements($className))) {
 					continue;
 				}
 				array_push($this->pluginClasses, $className);
