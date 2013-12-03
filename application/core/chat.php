@@ -8,6 +8,14 @@ namespace ManiaControl;
  * @author steeffeen & kremsy
  */
 class Chat {
+	/**
+	 * Constants
+	 */
+	const SETTING_PREFIX = 'Messages Prefix';
+	const SETTING_FORMAT_INFORMATION = 'Information Format';
+	const SETTING_FORMAT_SUCCESS = 'Success Format';
+	const SETTING_FORMAT_ERROR = 'Error Format';
+	const SETTING_FORMAT_USAGEINFO = 'UsageInfo Format';
 	
 	/**
 	 * Private properties
@@ -21,6 +29,13 @@ class Chat {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
+		
+		// Init settings
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_PREFIX, 'MC» ');
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_FORMAT_INFORMATION, '$fff');
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_FORMAT_SUCCESS, '$0f0');
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_FORMAT_ERROR, '$f00');
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_FORMAT_USAGEINFO, '$f80');
 	}
 
 	/**
@@ -34,7 +49,7 @@ class Chat {
 			return $prefix;
 		}
 		if ($prefix === true) {
-			return $this->maniaControl->settingManager->getSetting($this, 'DefaultPrefix', 'ManiaControl>');
+			return $this->maniaControl->settingManager->getSetting($this, self::SETTING_PREFIX);
 		}
 		return '';
 	}
@@ -47,12 +62,12 @@ class Chat {
 	 * @param string|bool $prefix        	
 	 * @return bool
 	 */
-	public function sendChat($message, $login = null, $prefix = false) {
+	public function sendChat($message, $login = null, $prefix = true) {
 		if (!$this->maniaControl->client) {
 			return false;
 		}
 		$client = $this->maniaControl->client;
-		$chatMessage = '$z' . $this->getPrefix($prefix) . $message . '$z';
+		$chatMessage = '$z$<' . $this->getPrefix($prefix) . $message . '$>$z';
 		if ($login === null) {
 			return $client->query('ChatSendServerMessage', $chatMessage);
 		}
@@ -67,8 +82,8 @@ class Chat {
 	 * @param string|bool $prefix        	
 	 * @return bool
 	 */
-	public function sendInformation($message, $login = null, $prefix = false) {
-		$format = $this->maniaControl->settingManager->getSetting($this, 'InformationFormat', '$fff');
+	public function sendInformation($message, $login = null, $prefix = true) {
+		$format = $this->maniaControl->settingManager->getSetting($this, self::SETTING_FORMAT_INFORMATION);
 		return $this->sendChat($format . $message, $login);
 	}
 
@@ -80,8 +95,8 @@ class Chat {
 	 * @param string|bool $prefix        	
 	 * @return bool
 	 */
-	public function sendSuccess($message, $login = null, $prefix = false) {
-		$format = $this->maniaControl->settingManager->getSetting($this, 'SuccessFormat', '$0f0');
+	public function sendSuccess($message, $login = null, $prefix = true) {
+		$format = $this->maniaControl->settingManager->getSetting($this, self::SETTING_FORMAT_SUCCESS);
 		return $this->sendChat($format . $message, $login);
 	}
 
@@ -93,8 +108,8 @@ class Chat {
 	 * @param string|bool $prefix        	
 	 * @return bool
 	 */
-	public function sendError($message, $login = null, $prefix = false) {
-		$format = $this->maniaControl->settingManager->getSetting($this, 'ErrorFormat', '$f00');
+	public function sendError($message, $login = null, $prefix = true) {
+		$format = $this->maniaControl->settingManager->getSetting($this, self::SETTING_FORMAT_ERROR);
 		return $this->sendChat($format . $message, $login);
 	}
 
@@ -107,7 +122,7 @@ class Chat {
 	 * @return bool
 	 */
 	public function sendUsageInfo($message, $login = null, $prefix = false) {
-		$format = $this->maniaControl->settingManager->getSetting($this, 'UsageInfoFormat', '$f80');
+		$format = $this->maniaControl->settingManager->getSetting($this, self::SETTING_FORMAT_USAGEINFO);
 		return $this->sendChat($format . $message, $login);
 	}
 }
