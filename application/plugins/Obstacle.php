@@ -29,10 +29,10 @@ class ObstaclePlugin extends Plugin implements CallbackListener, CommandListener
 		$this->maniaControl = $maniaControl;
 		
 		// Plugin details
-		$this->name = 'Obstacle Plugin';
-		$this->version = self::VERSION;
-		$this->author = 'steeffeen';
-		$this->description = 'Plugin offering various Commands for the ShootMania Obstacle Game Mode.';
+		self::$name = 'Obstacle Plugin';
+		self::$version = self::VERSION;
+		self::$author = 'steeffeen';
+		self::$description = 'Plugin offering various Commands for the ShootMania Obstacle Game Mode.';
 		
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_JUMPTOAUTHLEVEL, 

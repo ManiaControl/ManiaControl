@@ -32,14 +32,18 @@ class DonationPlugin extends Plugin implements CallbackListener, CommandListener
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		
-		$this->author = 'steeffeen';
-		$this->name = 'Donation Plugin';
-		$this->version = self::VERSION;
-		$this->description = 'DonationPlugin commands like /donate, /pay and /getplanets and a donation widget.';
+		// Plugin details
+		self::$author = 'steeffeen';
+		self::$name = 'Donation Plugin';
+		self::$version = self::VERSION;
+		self::$description = 'DonationPlugin commands like /donate, /pay and /getplanets and a donation widget.';
 		
+		// Register for commands
 		$this->maniaControl->commandManager->registerCommandListener('donate', $this, 'command_Donate');
 		$this->maniaControl->commandManager->registerCommandListener('/pay', $this, 'command_Pay');
 		$this->maniaControl->commandManager->registerCommandListener('/getplanets', $this, 'command_GetPlanets');
+		
+		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_BILLUPDATED, $this, 'handleBillUpdated');
 	}
 

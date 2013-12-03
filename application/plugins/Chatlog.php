@@ -32,10 +32,11 @@ class ChatlogPlugin extends Plugin implements CallbackListener {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		
-		$this->name = 'Chatlog Plugin';
-		$this->version = self::VERSION;
-		$this->author = 'steeffeen';
-		$this->description = 'Plugin logging the chat messages of the server.';
+		// Plugin details
+		self::$name = 'Chatlog Plugin';
+		self::$version = self::VERSION;
+		self::$author = 'steeffeen';
+		self::$description = 'Plugin logging the chat messages of the server.';
 		
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_FOLDERNAME, 'logs');

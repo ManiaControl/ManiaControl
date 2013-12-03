@@ -31,10 +31,10 @@ class EndurancePlugin extends Plugin implements CallbackListener {
 		$this->maniaControl = $maniaControl;
 		
 		// Plugin information
-		$this->name = 'Endurance Plugin';
-		$this->version = self::VERSION;
-		$this->author = 'steeffeen';
-		$this->description = "Plugin enabling Support for the TM Game Mode 'Endurance' by TGYoshi.";
+		self::$name = 'Endurance Plugin';
+		self::$version = self::VERSION;
+		self::$author = 'steeffeen';
+		self::$description = "Plugin enabling Support for the TM Game Mode 'Endurance' by TGYoshi.";
 		
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'callback_OnInit');

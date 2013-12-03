@@ -47,10 +47,11 @@ class KarmaPlugin extends Plugin implements CallbackListener {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		
-		$this->name = 'Karma Plugin';
-		$this->author = 'steeffeen';
-		$this->version = self::VERSION;
-		$this->description = 'Plugin offering Karma Voting for Maps.';
+		// Plugin details
+		self::$name = 'Karma Plugin';
+		self::$author = 'steeffeen';
+		self::$version = self::VERSION;
+		self::$description = 'Plugin offering Karma Voting for Maps.';
 		
 		// Init database
 		$this->initTables();
