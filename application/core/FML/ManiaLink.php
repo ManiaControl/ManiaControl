@@ -2,8 +2,6 @@
 
 namespace FML;
 
-require_once __DIR__ . '/autoload.php';
-
 use FML\Types\Container;
 use FML\Types\Renderable;
 use FML\Script\Script;
@@ -129,8 +127,10 @@ class ManiaLink implements Container {
 	 *        	If the xml should be echoed and the content-type header should be set
 	 * @return \DOMDocument
 	 */
-	public function render($echo = false) {
-		$domDocument = new \DOMDocument('1.0', $this->encoding);
+	public function render($echo = false, $domDocument = null) {
+		if (!$domDocument) {
+			$domDocument = new \DOMDocument('1.0', $this->encoding);
+		}
 		$manialink = $domDocument->createElement($this->tagName);
 		$domDocument->appendChild($manialink);
 		if ($this->id) {
