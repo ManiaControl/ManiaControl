@@ -18,6 +18,8 @@ use FML\Script\Menus;
 use FML\Script\Pages;
 use FML\Script\Script;
 use FML\Script\Tooltips;
+use FML\Controls\Quads\Quad_Icons64x64_1;
+use FML\ManiaLinks;
 
 require_once __DIR__ . '/ConfiguratorMenu.php';
 require_once __DIR__ . '/ScriptSettings.php';
@@ -172,7 +174,10 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 		$subMenuWidth = $menuWidth - $menuListWidth;
 		$subMenuHeight = $menuHeight;
 		
+		$manialinks = new ManiaLinks();
+		
 		$manialink = new ManiaLink(self::MLID_MENU);
+		$manialinks->add($manialink);
 		
 		$frame = new Frame();
 		$manialink->add($frame);
@@ -231,6 +236,14 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 		}
 		$menus->add($menuRelationships);
 		
+		// Add Close Quad (X)
+		$closeQuad = new Quad_Icons64x64_1();
+		$frame->add($closeQuad);
+		$closeQuad->setPosition($menuWidth * 0.484, $menuHeight * 0.47, 3);
+		$closeQuad->setSize(6, 6);
+		$closeQuad->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_QuitRace);
+		$closeQuad->setAction(self::ACTION_TOGGLEMENU);
+		
 		// Add close button
 		$closeButton = new Label();
 		$frame->add($closeButton);
@@ -253,7 +266,7 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 		$saveButton->setText('Save');
 		$saveButton->setAction(self::ACTION_SAVECONFIG);
 		
-		$this->manialink = $manialink;
+		$this->manialink = $manialinks;
 	}
 
 	/**

@@ -80,20 +80,20 @@ class ScriptSettings implements ConfiguratorMenu {
 		// Pagers
 		$pagerPrev = new Quad_Icons64x64_1();
 		$frame->add($pagerPrev);
-		$pagerPrev->setPosition($width * 0.39, $height * -0.44);
+		$pagerPrev->setPosition($width * 0.39, $height * -0.44, 2);
 		$pagerPrev->setSize($pagerSize, $pagerSize);
 		$pagerPrev->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowPrev);
 		
 		$pagerNext = new Quad_Icons64x64_1();
 		$frame->add($pagerNext);
-		$pagerNext->setPosition($width * 0.45, $height * -0.44);
+		$pagerNext->setPosition($width * 0.45, $height * -0.44, 2);
 		$pagerNext->setSize($pagerSize, $pagerSize);
 		$pagerNext->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowNext);
 		
 		$pageCountLabel = new Label();
 		$frame->add($pageCountLabel);
 		$pageCountLabel->setHAlign(Control::RIGHT);
-		$pageCountLabel->setPosition($width * 0.35, $height * -0.44);
+		$pageCountLabel->setPosition($width * 0.35, $height * -0.44, 1);
 		$pageCountLabel->setStyle('TextTitle1');
 		$pageCountLabel->setTextSize(2);
 		

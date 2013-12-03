@@ -56,10 +56,11 @@ class ManiaLinks {
 	 */
 	public function render($echo = false) {
 		$domDocument = new \DOMDocument('1.0', $this->encoding);
-		$manialink = $domDocument->createElement($this->tagName);
-		$domDocument->appendChild($manialink);
+		$manialinks = $domDocument->createElement($this->tagName);
+		$domDocument->appendChild($manialinks);
 		foreach ($this->children as $child) {
-			$child->render(false, $domDocument);
+			$childXml = $child->render(false, $domDocument);
+			$manialinks->appendChild($childXml);
 		}
 		if ($echo) {
 			header('Content-Type: application/xml');

@@ -97,8 +97,8 @@ class ManiaControl implements CommandListener {
 		$this->playerManager = new PlayerManager($this);
 		$this->authenticationManager = new AuthenticationManager($this);
 		$this->mapManager = new MapManager($this);
-		$this->pluginManager = new PluginManager($this);
 		$this->configurator = new Configurator($this);
+		$this->pluginManager = new PluginManager($this);
 		
 		$this->commandManager->registerCommandListener('version', $this, 'command_Version');
 	}

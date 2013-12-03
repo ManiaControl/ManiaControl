@@ -128,11 +128,17 @@ class ManiaLink implements Container {
 	 * @return \DOMDocument
 	 */
 	public function render($echo = false, $domDocument = null) {
-		if (!$domDocument) {
+		$isChild = false;
+		if ($domDocument) {
+			$isChild = true;
+		}
+		if (!$isChild) {
 			$domDocument = new \DOMDocument('1.0', $this->encoding);
 		}
 		$manialink = $domDocument->createElement($this->tagName);
-		$domDocument->appendChild($manialink);
+		if (!$isChild) {
+			$domDocument->appendChild($manialink);
+		}
 		if ($this->id) {
 			$manialink->setAttribute('id', $this->id);
 		}
@@ -156,6 +162,9 @@ class ManiaLink implements Container {
 		if ($this->script) {
 			$scriptXml = $this->script->render($domDocument);
 			$manialink->appendChild($scriptXml);
+		}
+		if ($isChild) {
+			return $manialink;
 		}
 		if ($echo) {
 			header('Content-Type: application/xml');

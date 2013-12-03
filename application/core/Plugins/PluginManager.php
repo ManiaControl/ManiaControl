@@ -3,6 +3,7 @@
 namespace ManiaControl\Plugins;
 
 require_once __DIR__ . '/Plugin.php';
+require_once __DIR__ . '/PluginMenu.php';
 
 use ManiaControl\ManiaControl;
 
@@ -21,6 +22,7 @@ class PluginManager {
 	 * Private properties
 	 */
 	private $maniaControl = null;
+	private $pluginMenu = null;
 	private $activePlugins = array();
 	private $pluginClasses = array();
 
@@ -32,6 +34,9 @@ class PluginManager {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		$this->initTables();
+		
+		$this->pluginMenu = new PluginMenu($maniaControl);
+		$this->maniaControl->configurator->addMenu($this->pluginMenu);
 	}
 
 	/**
