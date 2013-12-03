@@ -1,6 +1,8 @@
 <?php
 use ManiaControl\ManiaControl;
 use ManiaControl\Admin\AuthenticationManager;
+use ManiaControl\Callbacks\CallbackListener;
+use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\Players\Player;
 use ManiaControl\Plugins\Plugin;
@@ -10,12 +12,15 @@ use ManiaControl\Plugins\Plugin;
  *
  * @author steeffeen
  */
-class ObstaclePlugin extends Plugin implements CommandListener {
+class ObstaclePlugin extends Plugin implements CallbackListener, CommandListener {
 	/**
 	 * Constants
 	 */
-	const CB_JUMPTO = 'Obstacle.JumpTo';
 	const VERSION = '1.0';
+	const CB_JUMPTO = 'Obstacle.JumpTo';
+	const SCB_ONFINISH = 'OnFinish';
+	const SCB_ONCHECKPOINT = 'OnCheckpoint';
+	const SETTING_JUMPTOAUTHLEVEL = 'Authentication level for JumpTo commands';
 
 	/**
 	 * Create new obstacle plugin
@@ -29,8 +34,16 @@ class ObstaclePlugin extends Plugin implements CommandListener {
 		$this->author = 'steeffeen';
 		$this->description = 'Plugin offering various Commands for the ShootMania Obstacle Game Mode.';
 		
-		// Register for jump command
+		// Init settings
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_JUMPTOAUTHLEVEL, 
+				AuthenticationManager::AUTH_LEVEL_OPERATOR);
+		
+		// Register for commands
 		$this->maniaControl->commandManager->registerCommandListener('jumpto', $this, 'command_JumpTo');
+		
+		// Register for callbacks
+		$this->maniaControl->callbackManager->registerScriptCallbackListener(self::SCB_ONFINISH, $this, 'callback_OnFinish');
+		$this->maniaControl->callbackManager->registerScriptCallbackListener(self::SCB_ONCHECKPOINT, $this, 'callback_OnCheckpoint');
 	}
 
 	/**
@@ -40,8 +53,8 @@ class ObstaclePlugin extends Plugin implements CommandListener {
 	 * @return bool
 	 */
 	public function command_JumpTo(array $chatCallback, Player $player) {
-		// $rightLevel =
-		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)) {
+		$authLevel = $this->maniaControl->settingManager->getSetting($this, self::SETTING_JUMPTOAUTHLEVEL);
+		if (!$this->maniaControl->authenticationManager->checkRight($player, $authLevel)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return false;
 		}
@@ -52,6 +65,42 @@ class ObstaclePlugin extends Plugin implements CommandListener {
 			trigger_error("Couldn't send jump callback for '{$player->login}'. " . $this->maniaControl->getClientErrorText());
 		}
 		return true;
+	}
+
+	/**
+	 * Handle OnFinish script callback
+	 *
+	 * @param array $callback        	
+	 */
+	public function callback_OnFinish(array $callback) {
+		$data = json_decode($callback[1]);
+		$player = $this->maniaControl->playerManager->getPlayer($data->Player->Login);
+		if (!$player) {
+			return;
+		}
+		$time = $data->Run->Time;
+		// Trigger trackmania player finish callback
+		$finishCallback = array($player->pid, $player->login, $time);
+		$finishCallback = array(CallbackManager::CB_TM_PLAYERFINISH, $finishCallback);
+		$this->maniaControl->callbackManager->triggerCallback(CallbackManager::CB_TM_PLAYERFINISH, $finishCallback);
+	}
+
+	/**
+	 * Handle OnCheckpoint script callback
+	 *
+	 * @param array $callback        	
+	 */
+	public function callback_OnCheckpoint(array $callback) {
+		$data = json_decode($callback[1]);
+		$player = $this->maniaControl->playerManager->getPlayer($data->Player->Login);
+		if (!$player) {
+			return;
+		}
+		$time = $data->Run->Time;
+		// Trigger trackmania player finish callback
+		$finishCallback = array($player->pid, $player->login, $time);
+		$finishCallback = array(CallbackManager::CB_TM_PLAYERCHECKPOINT, $finishCallback);
+		$this->maniaControl->callbackManager->triggerCallback(CallbackManager::CB_TM_PLAYERCHECKPOINT, $finishCallback);
 	}
 }
 
