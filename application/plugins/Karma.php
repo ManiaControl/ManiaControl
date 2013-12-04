@@ -130,27 +130,29 @@ class KarmaPlugin implements CallbackListener, Plugin {
 		// Build karma manialink
 		$this->buildManialink();
 		
+		// Update karma gauge & label
 		$karmaGauge = $this->manialink->karmaGauge;
+		$karmaLabel = $this->manialink->karmaLabel;
 		if (is_numeric($karma)) {
 			$karma = floatval($karma);
 			$karmaGauge->setRatio($karma + 0.15 - $karma * 0.15);
 			$karmaColor = ColorUtil::floatToStatusColor($karma);
 			$karmaGauge->setColor($karmaColor . '9');
+			$karmaLabel->setText('  ' . round($karma * 100.) . '% (' . $votes['count'] . ')');
 		}
 		else {
+			$karma = 0.;
 			$karmaGauge->setRatio(0.);
 			$karmaGauge->setColor('00fb');
+			$karmaLabel->setText('-');
 		}
-		
-		$width = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_WIDTH);
-		$height = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_HEIGHT);
 		
 		// Loop players
 		foreach ($players as $login => $player) {
 			// Get player vote
 			$vote = $this->getPlayerVote($player, $map);
 			
-			// Adjust manialink for vote
+			// Adjust manialink for player's vote
 			$votesFrame = $this->manialink->votesFrame;
 			$votesFrame->removeChildren();
 			
@@ -392,9 +394,12 @@ class KarmaPlugin implements CallbackListener, Plugin {
 			return false;
 		}
 		$votes = array();
+		$count = 0;
 		while ($vote = $result->fetch_object()) {
 			$votes[$vote->vote] = $vote;
+			$count += $vote->count;
 		}
+		$votes['count'] = $count;
 		$result->free();
 		return $votes;
 	}
@@ -442,6 +447,14 @@ class KarmaPlugin implements CallbackListener, Plugin {
 		$karmaGauge->setSize($width * 0.95, $height * 0.92);
 		$karmaGauge->setDrawBg(false);
 		$manialink->karmaGauge = $karmaGauge;
+		
+		$karmaLabel = new Label();
+		$frame->add($karmaLabel);
+		$karmaLabel->setPosition(0, -0.4, 1);
+		$karmaLabel->setSize($width * 0.9, $height * 0.9);
+		$karmaLabel->setStyle($labelStyle);
+		$karmaLabel->setTextSize(1);
+		$manialink->karmaLabel = $karmaLabel;
 		
 		$votesFrame = new Frame();
 		$frame->add($votesFrame);
