@@ -3,6 +3,7 @@
 namespace ManiaControl\Players;
 
 require_once __DIR__ . '/Player.php';
+require_once __DIR__ . '/PlayerCommands.php';
 
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
@@ -27,6 +28,7 @@ class PlayerManager implements CallbackListener {
 	 * Private properties
 	 */
 	private $maniaControl = null;
+	private $playerCommands = null;
 	private $playerList = array();
 
 	/**
@@ -37,6 +39,8 @@ class PlayerManager implements CallbackListener {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		$this->initTables();
+		
+		$this->playerCommands = new PlayerCommands($maniaControl);
 		
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES, false);
