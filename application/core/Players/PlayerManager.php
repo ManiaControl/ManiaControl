@@ -43,7 +43,7 @@ class PlayerManager implements CallbackListener {
 		$this->playerCommands = new PlayerCommands($maniaControl);
 		
 		// Init settings
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES, false);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES, true);
 		
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'onInit');
@@ -121,12 +121,12 @@ class PlayerManager implements CallbackListener {
 		$this->addPlayer($player);
 		
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES)) {
-			// TODO: improve styling?
 			$string = array(0 => 'New Player', 1 => '$0f0Operator', 2 => '$0f0Admin', 3 => '$0f0MasterAdmin', 4 => '$0f0MasterAdmin');
-			$nickname = Formatter::stripCodes($player->nickname);
+			$nickname = Formatter::stripCodes($player->nickname); //TODO strip codes without colour codes like in serverviewer
 			$this->maniaControl->chat->sendChat(
-					'$ff0' . $string[$player->authLevel] . ': ' . $nickname . '$z $ff0Nation:$fff ' . $player->getCountry() .
+					'$ff0' . $string[$player->authLevel] . ': $fff' . $nickname . '$z $ff0Nation:$fff ' . $player->getCountry() .
 							 ' $ff0Ladder: $fff' . $player->ladderRank);
+			$this->maniaControl->chat->sendInformation('This server uses ManiaControl v' . ManiaControl::VERSION,$player->login);
 		}
 		
 		// Trigger own callback

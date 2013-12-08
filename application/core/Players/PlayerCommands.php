@@ -8,7 +8,7 @@ use ManiaControl\Commands\CommandListener;
 use ManiaControl\Players\Player;
 
 /**
- * Class offering various commands related to players
+ * Class offering various admin commands related to players
  *
  * @author steeffeen & kremsy
  */
