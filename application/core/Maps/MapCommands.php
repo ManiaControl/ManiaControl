@@ -27,10 +27,10 @@ class MapCommands implements CommandListener {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		
-		$this->maniaControl->commandManager->registerCommandListener('/nextmap', $this, 'command_NextMap');
-		$this->maniaControl->commandManager->registerCommandListener('/restartmap', $this, 'command_RestartMap');
-		$this->maniaControl->commandManager->registerCommandListener('/addmap', $this, 'command_AddMap');
-		$this->maniaControl->commandManager->registerCommandListener('/removemap', $this, 'command_RemoveMap');
+		$this->maniaControl->commandManager->registerCommandListener('nextmap', $this, 'command_NextMap',true);
+		$this->maniaControl->commandManager->registerCommandListener('restartmap', $this, 'command_RestartMap',true);
+		$this->maniaControl->commandManager->registerCommandListener('addmap', $this, 'command_AddMap',true);
+		$this->maniaControl->commandManager->registerCommandListener('removemap', $this, 'command_RemoveMap',true);
 	}
 
 	/**
