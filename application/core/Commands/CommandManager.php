@@ -78,15 +78,16 @@ class CommandManager implements CallbackListener {
 			return;
 		}
 		// Handle command
-		$command = explode(" ", substr($callback[1][2], 1));
-		$command = strtolower($command[0]);
+		$commandArray = explode(" ", substr($callback[1][2], 1));
+		$command = strtolower($commandArray[0]);
 
 		if(substr($command,0,1) == "/" || $command == "admin"){ //admin command
 			$commandListeners = $this->adminCommandListeners;
 			if($command == "admin"){
-				//TODO make /admin working
+				$command = strtolower($commandArray[1]);
+			}else{
+				$command = substr($command, 1); //remove /
 			}
-			$command = substr($command, 1);
 		}else{ //user command
 			$commandListeners = $this->commandListeners;
 		}

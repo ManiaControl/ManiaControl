@@ -34,20 +34,20 @@ class ServerCommands implements CallbackListener, CommandListener {
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_5_SECOND, $this, 'each5Seconds');
 		
 		// Register for commands
-		$this->maniaControl->commandManager->registerCommandListener('/setpwd', $this, 'command_SetPwd');
-		$this->maniaControl->commandManager->registerCommandListener('/setservername', $this, 'command_SetServerName');
-		$this->maniaControl->commandManager->registerCommandListener('/setmaxplayers', $this, 'command_SetMaxPlayers');
-		$this->maniaControl->commandManager->registerCommandListener('/setmaxspectators', $this, 'command_SetMaxSpectators');
-		$this->maniaControl->commandManager->registerCommandListener('/setspecpwd', $this, 'command_SetSpecPwd');
-		$this->maniaControl->commandManager->registerCommandListener('/shutdown', $this, 'command_Shutdown');
-		$this->maniaControl->commandManager->registerCommandListener('/shutdownserver', $this, 'command_ShutdownServer');
-		$this->maniaControl->commandManager->registerCommandListener('/systeminfo', $this, 'command_SystemInfo');
-		$this->maniaControl->commandManager->registerCommandListener('/hideserver', $this, 'command_HideServer');
-		$this->maniaControl->commandManager->registerCommandListener('/showserver', $this, 'command_ShowServer');
-		$this->maniaControl->commandManager->registerCommandListener('/enablemapdownload', $this, 'command_EnableMapDownload');
-		$this->maniaControl->commandManager->registerCommandListener('/disablemapdownload', $this, 'command_DisableMapDownload');
-		$this->maniaControl->commandManager->registerCommandListener('/enablehorns', $this, 'command_EnableHorns');
-		$this->maniaControl->commandManager->registerCommandListener('/disablehorns', $this, 'command_DisableHorns');
+		$this->maniaControl->commandManager->registerCommandListener('setpwd', $this, 'command_SetPwd',true);
+		$this->maniaControl->commandManager->registerCommandListener('setservername', $this, 'command_SetServerName',true);
+		$this->maniaControl->commandManager->registerCommandListener('setmaxplayers', $this, 'command_SetMaxPlayers',true);
+		$this->maniaControl->commandManager->registerCommandListener('setmaxspectators', $this, 'command_SetMaxSpectators',true);
+		$this->maniaControl->commandManager->registerCommandListener('setspecpwd', $this, 'command_SetSpecPwd',true);
+		$this->maniaControl->commandManager->registerCommandListener('shutdown', $this, 'command_Shutdown',true);
+		$this->maniaControl->commandManager->registerCommandListener('shutdownserver', $this, 'command_ShutdownServer',true);
+		$this->maniaControl->commandManager->registerCommandListener('systeminfo', $this, 'command_SystemInfo',true);
+		$this->maniaControl->commandManager->registerCommandListener('hideserver', $this, 'command_HideServer',true);
+		$this->maniaControl->commandManager->registerCommandListener('showserver', $this, 'command_ShowServer',true);
+		$this->maniaControl->commandManager->registerCommandListener('enablemapdownload', $this, 'command_EnableMapDownload',true);
+		$this->maniaControl->commandManager->registerCommandListener('disablemapdownload', $this, 'command_DisableMapDownload',true);
+		$this->maniaControl->commandManager->registerCommandListener('enablehorns', $this, 'command_EnableHorns',true);
+		$this->maniaControl->commandManager->registerCommandListener('disablehorns', $this, 'command_DisableHorns',true);
 	}
 
 	/**
