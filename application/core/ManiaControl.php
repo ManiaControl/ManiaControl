@@ -157,7 +157,6 @@ class ManiaControl implements CommandListener {
 
 	/**
 	 * Run ManiaControl
-	 * test
 	 */
 	public function run() {
 		error_log('Starting ManiaControl v' . self::VERSION . '!');
