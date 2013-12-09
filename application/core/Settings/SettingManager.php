@@ -22,7 +22,6 @@ class SettingManager {
 	 * Private properties
 	 */
 	private $maniaControl = null;
-	private $configurator = null;
 	private $arrayDelimiter = ';;';
 
 	/**

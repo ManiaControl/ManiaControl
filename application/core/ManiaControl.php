@@ -129,7 +129,7 @@ class ManiaControl implements CommandListener {
 
 	/**
 	 * Quit ManiaControl and log the given message
-	 *
+	 *test
 	 * @param string $message        	
 	 */
 	public function quit($message = false) {
