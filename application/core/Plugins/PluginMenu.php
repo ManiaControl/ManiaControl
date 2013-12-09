@@ -74,15 +74,15 @@ class PluginMenu implements ConfiguratorMenu {
 			$settingFrame->setY($y);
 
 			//TODO: Red or Green quad to see if the plugin is aktiv (not working yet)
-			$aktivQuad = new Quad();
-			$settingFrame->add($aktivQuad);
-			if($aktiv)
-				$aktivQuad->setStyles("Icons64x64_1", "LvlGreen");
+			$activeQuad = new Quad();
+			$settingFrame->add($active);
+			if($active)
+				$activeQuad->setStyles("Icons64x64_1", "LvlGreen");
 			else
-				$aktivQuad->setStyles("Icons64x64_1", "LvlRed");
-			$aktivQuad->setHeight(5);
-			$aktivQuad->setWidth(5);
-			$aktivQuad->setX($width * -0.455);
+				$activeQuad->setStyles("Icons64x64_1", "LvlRed");
+			$activeQuad->setHeight(5);
+			$activeQuad->setWidth(5);
+			$activeQuad->setX($width * -0.455);
 			//TODO handle z position automatically in fml pls
 
 			$nameLabel = new Label();
