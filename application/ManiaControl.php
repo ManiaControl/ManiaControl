@@ -22,7 +22,7 @@ ini_set('error_log', 'logs/ManiaControl_' . getmypid() . '.log');
 require_once __DIR__ . '/core/ManiaControl.php';
 
 // Start ManiaControl
-error_log('Loading ManiaControl v' . ManiaControl::VERSION . '...');
+serror_log('Loading ManiaControl v' . ManiaControl::VERSION . '...');
 
 $maniaControl = new ManiaControl();
 $maniaControl->run();
