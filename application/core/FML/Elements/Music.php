@@ -37,5 +37,3 @@ class Music implements Renderable {
 		return $xml;
 	}
 }
-
-?>

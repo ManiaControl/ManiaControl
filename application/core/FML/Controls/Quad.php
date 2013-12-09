@@ -208,5 +208,3 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 		return $xml;
 	}
 }
-
-?>

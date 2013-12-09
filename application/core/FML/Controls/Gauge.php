@@ -158,5 +158,3 @@ class Gauge extends Control implements Styleable {
 		return $xml;
 	}
 }
-
-?>

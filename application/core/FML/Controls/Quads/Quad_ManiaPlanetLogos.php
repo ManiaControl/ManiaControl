@@ -30,5 +30,3 @@ class Quad_ManiaPlanetLogos extends Quad {
 		$this->setStyle(self::STYLE);
 	}
 }
-
-?>

@@ -38,5 +38,3 @@ class SimpleScript implements Renderable {
 		return $xml;
 	}
 }
-
-?>

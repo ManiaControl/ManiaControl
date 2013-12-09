@@ -16,5 +16,3 @@ interface BgColorable {
 	 */
 	public function setBgColor($bgColor);
 }
-
-?>

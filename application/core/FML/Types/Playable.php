@@ -8,14 +8,6 @@ namespace FML\Types;
  * @author steeffeen
  */
 interface Playable {
-	/**
-	 * Protected properties
-	 */
-	protected $data = '';
-	protected $play = 0;
-	protected $looping = 0;
-	protected $music = 1;
-	protected $volume = 1.;
 
 	/**
 	 * Set data
@@ -52,5 +44,3 @@ interface Playable {
 	 */
 	public function setVolume($volume);
 }
-
-?>

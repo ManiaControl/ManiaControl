@@ -32,5 +32,3 @@ class Label_Button extends Label {
 	const STYLE_CardMain_Quit = 'CardMain_Quit';
 	const STYLE_CardMain_Tool = 'CardMain_Tool';
 }
-
-?>

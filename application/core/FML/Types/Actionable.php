@@ -16,4 +16,3 @@ interface Actionable {
 	 */
 	public function setAction($action);
 }
-?>

@@ -62,5 +62,3 @@ class Frame3d extends Frame implements Scriptable {
 		return $xml;
 	}
 }
-
-?>

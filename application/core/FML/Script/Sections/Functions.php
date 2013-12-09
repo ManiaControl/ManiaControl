@@ -16,5 +16,3 @@ interface Functions {
 	 */
 	public function getFunctions();
 }
-
-?>

@@ -3,7 +3,7 @@
 namespace FML\Types;
 
 /**
- * Interface for elements with autonewline attribute
+ * Interface for elements with AutoNewLine attribute
  *
  * @author steeffeen
  */
@@ -16,5 +16,3 @@ interface NewLineable {
 	 */
 	public function setAutoNewLine($autoNewLine);
 }
-
-?>

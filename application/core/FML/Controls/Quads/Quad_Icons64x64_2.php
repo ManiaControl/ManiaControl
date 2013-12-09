@@ -14,6 +14,19 @@ class Quad_Icons64x64_2 extends Quad {
 	 * Constants
 	 */
 	const STYLE = 'Icons64x64_2';
+    const SUBSTYLE_ArrowElimination = 'ArrowElimination';
+    const SUBSTYLE_ArrowHit = 'ArrowHit';
+    const SUBSTYLE_Disconnected = 'Disconnected';
+    const SUBSTYLE_DisconnectedLight = 'DisconnectedLight';
+    const SUBSTYLE_LaserElimination = 'LaserElimination';
+    const SUBSTYLE_LaserHit = 'LaserHit';
+    const SUBSTYLE_NucleusElimination = 'NucleusElimination';
+    const SUBSTYLE_NucleusHit = 'NucleusHit';
+    const SUBSTYLE_RocketElimination = 'RocketElimination';
+    const SUBSTYLE_RocketHit = 'RocketHit';
+    const SUBSTYLE_ServerNotice = 'ServerNotice';
+    const SUBSTYLE_UnknownElimination = 'UnknownElimination';
+    const SUBSTYLE_UnknownHit = 'UnknownHit';
 
 	/**
 	 * Construct Icons64x64_2 quad
@@ -21,9 +34,5 @@ class Quad_Icons64x64_2 extends Quad {
 	public function __construct() {
 		parent::__construct();
 		$this->setStyle(self::STYLE);
-		array("ArrowElimination", "ArrowHit", "Disconnected", "DisconnectedLight", "LaserElimination", "LaserHit", 
-			"NucleusElimination", "NucleusHit", "RocketElimination", "RocketHit", "ServerNotice", "UnknownElimination", "UnknownHit");
 	}
 }
-
-?>

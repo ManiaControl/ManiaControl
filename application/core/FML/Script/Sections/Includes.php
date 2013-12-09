@@ -16,5 +16,3 @@ interface Includes {
 	 */
 	public function getIncludes();
 }
-
-?>

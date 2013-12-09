@@ -14,7 +14,7 @@ class FileEntry extends Entry {
 	protected $folder = '';
 
 	/**
-	 * Construct a new fileentry control
+	 * Construct a new FileEntry control
 	 *
 	 * @param string $id        	
 	 */
@@ -44,5 +44,3 @@ class FileEntry extends Entry {
 		return $xml;
 	}
 }
-
-?>

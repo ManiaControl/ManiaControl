@@ -28,5 +28,3 @@ class Audio extends Control implements Playable, Scriptable {
 		return $xml;
 	}
 }
-
-?>

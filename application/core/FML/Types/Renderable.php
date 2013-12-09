@@ -17,5 +17,3 @@ interface Renderable {
 	 */
 	public function render(\DOMDocument $domDocument);
 }
-
-?>

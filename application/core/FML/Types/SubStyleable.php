@@ -3,26 +3,24 @@
 namespace FML\Types;
 
 /**
- * Interface for elements with substyle attribute
+ * Interface for elements with SubStyle attribute
  *
  * @author steeffeen
  */
 interface SubStyleable {
 
 	/**
-	 * Set substyle
+	 * Set SubStyle
 	 *
 	 * @param string $subStyle        	
 	 */
 	public function setSubStyle($subStyle);
 
 	/**
-	 * Set style and substyle
+	 * Set Style and SubStyle
 	 * 
 	 * @param string $style        	
 	 * @param string $subStyle        	
 	 */
 	public function setStyles($style, $subStyle);
 }
-
-?>

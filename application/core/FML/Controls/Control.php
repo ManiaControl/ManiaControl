@@ -190,11 +190,11 @@ abstract class Control implements Renderable {
 	/**
 	 * Set horizontal and vertical alignment
 	 *
-	 * @param string $halign        	
+	 * @param string $hAlign
 	 * @param string $vAlign        	
 	 * @return \FML\Controls\Control
 	 */
-	public function setAlign($halign, $vAlign) {
+	public function setAlign($hAlign, $vAlign) {
 		$this->setHAlign($hAlign);
 		$this->setVAlign($vAlign);
 		return $this;
@@ -272,5 +272,3 @@ abstract class Control implements Renderable {
 		return $xml;
 	}
 }
-
-?>

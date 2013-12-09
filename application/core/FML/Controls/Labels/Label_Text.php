@@ -89,5 +89,3 @@ class Label_Text extends Label {
 	const STYLE_UiDriving_BgCard = 'UiDriving_BgCard';
 	const STYLE_UiDriving_BgCenter = 'UiDriving_BgCenter';
 }
-
-?>

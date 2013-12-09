@@ -68,5 +68,3 @@ class Frame extends Control implements Container {
 		return __CLASS__;
 	}
 }
-
-?>

@@ -14,6 +14,10 @@ class Quad_TitleLogos extends Quad {
 	 * Constants
 	 */
 	const STYLE = 'TitleLogos';
+    const SUBSTYLE_Author = 'Author';
+    const SUBSTYLE_Collection = 'Collection';
+    const SUBSTYLE_Icon = 'Icon';
+    const SUBSTYLE_Title = 'Title';
 
 	/**
 	 * Construct TitleLogos quad
@@ -21,8 +25,5 @@ class Quad_TitleLogos extends Quad {
 	public function __construct() {
 		parent::__construct();
 		$this->setStyle(self::STYLE);
-		array("Author", "Collection", "Icon", "Title");
 	}
 }
-
-?>

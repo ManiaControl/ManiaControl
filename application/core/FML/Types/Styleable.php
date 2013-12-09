@@ -16,5 +16,3 @@ interface Styleable {
 	 */
 	public function setStyle($style);
 }
-
-?>

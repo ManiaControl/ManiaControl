@@ -26,5 +26,3 @@ class Video extends Control implements Playable, Scriptable {
 		return $xml;
 	}
 }
-
-?>

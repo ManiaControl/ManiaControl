@@ -14,6 +14,15 @@ class Quad_Hud3dEchelons extends Quad {
 	 * Constants
 	 */
 	const STYLE = 'Hud3dEchelons';
+    const SUBSTYLE_EchelonBronze1 = 'EchelonBronze1';
+    const SUBSTYLE_EchelonBronze2 = 'EchelonBronze2';
+    const SUBSTYLE_EchelonBronze3 = 'EchelonBronze3';
+    const SUBSTYLE_EchelonGold1 = 'EchelonGold1';
+    const SUBSTYLE_EchelonGold2 = 'EchelonGold2';
+    const SUBSTYLE_EchelonGold3 = 'EchelonGold3';
+    const SUBSTYLE_EchelonSilver1 = 'EchelonSilver1';
+    const SUBSTYLE_EchelonSilver2 = 'EchelonSilver2';
+    const SUBSTYLE_EchelonSilver3 = 'EchelonSilver3';
 
 	/**
 	 * Construct Hud3dEchelons quad
@@ -21,9 +30,5 @@ class Quad_Hud3dEchelons extends Quad {
 	public function __construct() {
 		parent::__construct();
 		$this->setStyle(self::STYLE);
-		array("EchelonBronze1", "EchelonBronze2", "EchelonBronze3", "EchelonGold1", "EchelonGold2", "EchelonGold3", "EchelonSilver1", 
-			"EchelonSilver2", "EchelonSilver3");
 	}
 }
-
-?>

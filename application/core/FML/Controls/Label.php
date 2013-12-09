@@ -254,5 +254,3 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 		return $xml;
 	}
 }
-
-?>

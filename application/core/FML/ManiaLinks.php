@@ -3,7 +3,7 @@
 namespace FML;
 
 /**
- * Class holding several manialinks at once
+ * Class holding several Manialinks at once
  *
  * @author steeffeen
  */
@@ -69,5 +69,3 @@ class ManiaLinks {
 		return $domDocument;
 	}
 }
-
-?>

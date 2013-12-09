@@ -27,5 +27,3 @@ class Quad_321Go extends Quad {
 		$this->setStyle(self::STYLE);
 	}
 }
-
-?>

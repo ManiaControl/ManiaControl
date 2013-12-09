@@ -108,5 +108,3 @@ class Quad_Icons64x64_1 extends Quad {
 		$this->setStyle(self::STYLE);
 	}
 }
-
-?>

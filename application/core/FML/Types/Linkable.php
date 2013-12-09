@@ -23,5 +23,3 @@ interface Linkable {
 	 */
 	public function setManialink($manialink);
 }
-
-?>

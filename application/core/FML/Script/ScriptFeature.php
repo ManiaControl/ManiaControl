@@ -9,5 +9,3 @@ namespace FML\Script;
  */
 interface ScriptFeature {
 }
-
-?>

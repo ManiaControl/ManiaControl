@@ -29,5 +29,3 @@ class Quad_EnergyBar extends Quad {
 		$this->setStyle(self::STYLE);
 	}
 }
-
-?>

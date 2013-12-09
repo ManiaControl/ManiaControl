@@ -29,5 +29,3 @@ class Quad_ManiaplanetSystem extends Quad {
 		$this->setStyle(self::STYLE);
 	}
 }
-
-?>

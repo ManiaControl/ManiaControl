@@ -21,5 +21,3 @@ interface Container {
 	 */
 	public function removeChildren();
 }
-
-?>

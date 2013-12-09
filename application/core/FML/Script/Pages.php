@@ -140,5 +140,3 @@ class Pages implements Constants, Globals, Includes, Labels, ScriptFeature {
 		return $labels;
 	}
 }
-
-?>

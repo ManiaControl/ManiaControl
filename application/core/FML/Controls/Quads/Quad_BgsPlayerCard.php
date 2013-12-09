@@ -37,5 +37,3 @@ class Quad_BgsPlayerCard extends Quad {
 		$this->setStyle(self::STYLE);
 	}
 }
-
-?>

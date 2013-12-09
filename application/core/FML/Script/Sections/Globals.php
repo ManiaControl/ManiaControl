@@ -16,5 +16,3 @@ interface Globals {
 	 */
 	public function getGlobals();
 }
-
-?>

@@ -114,7 +114,7 @@ class Entry extends Control implements NewLineable, Scriptable, Styleable, TextF
 	 * @return \FML\Controls\Entry
 	 */
 	public function setAreaColor($areaColor) {
-		$this->areaColor = $areaFocusColor;
+		$this->areaColor = $areaColor;
 		return $this;
 	}
 
@@ -164,5 +164,3 @@ class Entry extends Control implements NewLineable, Scriptable, Styleable, TextF
 		return $xml;
 	}
 }
-
-?>

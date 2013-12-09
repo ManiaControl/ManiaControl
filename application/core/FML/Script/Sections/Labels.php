@@ -26,5 +26,3 @@ interface Labels {
 	 */
 	public function getLabels();
 }
-
-?>

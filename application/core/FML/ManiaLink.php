@@ -110,7 +110,7 @@ class ManiaLink implements Container {
 	}
 
 	/**
-	 * Set the script object of the manalink
+	 * Set the script object of the Manialink
 	 *
 	 * @param Script $script        	
 	 * @return \FML\ManiaLink
@@ -125,6 +125,7 @@ class ManiaLink implements Container {
 	 *
 	 * @param bool $echo
 	 *        	If the xml should be echoed and the content-type header should be set
+     * @param \DOMDocument $domDocument
 	 * @return \DOMDocument
 	 */
 	public function render($echo = false, $domDocument = null) {
@@ -160,7 +161,7 @@ class ManiaLink implements Container {
 			$manialink->appendChild($childXml);
 		}
 		if ($this->script) {
-			$scriptXml = $this->script->render($domDocument);
+            $scriptXml = $this->script->render($domDocument);
 			$manialink->appendChild($scriptXml);
 		}
 		if ($isChild) {
@@ -173,5 +174,3 @@ class ManiaLink implements Container {
 		return $domDocument;
 	}
 }
-
-?>

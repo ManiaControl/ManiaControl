@@ -30,9 +30,8 @@ class Menus implements Constants, Labels, ScriptFeature {
 	 * @return \FML\Script\Menus
 	 */
 	public function add(array $menuRelationships) {
-		$menuIndex = count($this->menus);
 		$menus = array();
-		$submenus = array();
+		$subMenus = array();
 		foreach ($menuRelationships as $relationship) {
 			$menuItemControl = $relationship[0];
 			$subMenuControl = $relationship[1];
@@ -41,7 +40,7 @@ class Menus implements Constants, Labels, ScriptFeature {
 				trigger_error('No Scriptable instance given as menu item.', E_USER_ERROR);
 			}
 			if (!($subMenuControl instanceof Control)) {
-				trigger_error('No Control instance given as submenu.', E_USER_ERROR);
+				trigger_error('No Control instance given as sub menu.', E_USER_ERROR);
 			}
 			
 			$menuItemControl->assignId();
@@ -49,9 +48,9 @@ class Menus implements Constants, Labels, ScriptFeature {
 			$subMenuControl->assignId();
 			
 			array_push($menus, array($menuItemControl->getId(), $subMenuControl->getId()));
-			array_push($submenus, $subMenuControl->getId());
+			array_push($subMenus, $subMenuControl->getId());
 		}
-		array_push($this->menus, array($menus, $submenus));
+		array_push($this->menus, array($menus, $subMenus));
 		return $this;
 	}
 
@@ -99,5 +98,3 @@ class Menus implements Constants, Labels, ScriptFeature {
 		return $labels;
 	}
 }
-
-?>

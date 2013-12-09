@@ -50,5 +50,3 @@ class Quad_BgRaceScore2 extends Quad {
 		$this->setStyle(self::STYLE);
 	}
 }
-
-?>

@@ -3,7 +3,7 @@
 namespace FML\Types;
 
 /**
- * Interface for elements with formatable text
+ * Interface for elements with Formatable text
  *
  * @author steeffeen
  */
@@ -37,5 +37,3 @@ interface TextFormatable {
 	 */
 	public function setAreaFocusColor($areaFocusColor);
 }
-
-?>

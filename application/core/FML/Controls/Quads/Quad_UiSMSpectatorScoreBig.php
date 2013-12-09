@@ -44,5 +44,3 @@ class Quad_UiSMSpectatorScoreBig extends Quad {
 		$this->setStyle(self::STYLE);
 	}
 }
-
-?>

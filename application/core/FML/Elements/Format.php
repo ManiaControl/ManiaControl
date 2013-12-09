@@ -22,5 +22,3 @@ class Format implements BgColorable, Renderable, Styleable, TextFormatable {
 		return $xml;
 	}
 }
-
-?>

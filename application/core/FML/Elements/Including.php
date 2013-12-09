@@ -33,5 +33,3 @@ class Including implements Renderable {
 		return $xml;
 	}
 }
-
-?>

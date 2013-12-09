@@ -74,5 +74,3 @@ class Tooltips implements Constants, Labels, ScriptFeature {
 		return $labels;
 	}
 }
-
-?>

@@ -26,5 +26,3 @@ class Quad_Emblems extends Quad {
 		$this->setStyle(self::STYLE);
 	}
 }
-
-?>

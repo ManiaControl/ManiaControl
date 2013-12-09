@@ -14,5 +14,3 @@ interface Constants {
 	 */
 	public function getConstants();
 }
-
-?>
