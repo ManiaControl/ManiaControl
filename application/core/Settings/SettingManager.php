@@ -1,5 +1,5 @@
 <?php
-//test
+
 namespace ManiaControl;
 
 /**
