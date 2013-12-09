@@ -75,7 +75,7 @@ class ScriptSettings implements ConfiguratorMenu {
 		$pagerSize = 9.;
 		$settingHeight = 5.;
 		$labelTextSize = 2;
-		$pageMaxCount = 15;
+		$pageMaxCount = 13;
 		
 		// Pagers
 		$pagerPrev = new Quad_Icons64x64_1();
@@ -107,18 +107,34 @@ class ScriptSettings implements ConfiguratorMenu {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
 				array_push($pageFrames, $pageFrame);
-				$y = $height * 0.43;
+				$y = $height * 0.41;
 			}
 			
+			$settingFrame = new Frame();
+			$pageFrame->add($settingFrame);
+			$settingFrame->setY($y);
+			
 			$nameLabel = new Label();
-			$pageFrame->add($nameLabel);
+			$settingFrame->add($nameLabel);
 			$nameLabel->setHAlign(Control::LEFT);
-			$nameLabel->setPosition($width * -0.46, $y);
+			$nameLabel->setX($width * -0.46);
 			$nameLabel->setSize($width * 0.4, $settingHeight);
 			$nameLabel->setStyle($labelStyleSetting);
 			$nameLabel->setTextSize($labelTextSize);
 			$nameLabel->setText($settingName);
 			
+			$entry = new Entry();
+			$settingFrame->add($entry);
+			$entry->setHAlign(Control::RIGHT);
+			$entry->setX($width * 0.44);
+			$entry->setSize($width * 0.43, $settingHeight);
+			$entry->setName(self::NAME_PREFIX . $settingName);
+			$settingValue = $scriptSettings[$settingName];
+			if ($settingValue === false) {
+				$settingValue = 0;
+			}
+			$entry->setDefault($settingValue);
+
 			$decriptionLabel = new Label();
 			$pageFrame->add($decriptionLabel);
 			$decriptionLabel->setHAlign(Control::LEFT);
@@ -129,18 +145,6 @@ class ScriptSettings implements ConfiguratorMenu {
 			$decriptionLabel->setTextPrefix('Desc: ');
 			$decriptionLabel->setText($scriptParam['Desc']);
 			$tooltips->add($nameLabel, $decriptionLabel);
-			
-			$entry = new Entry();
-			$pageFrame->add($entry);
-			$entry->setHAlign(Control::RIGHT);
-			$entry->setPosition($width * 0.46, $y);
-			$entry->setSize($width * 0.45, $settingHeight);
-			$entry->setName(self::NAME_PREFIX . $settingName);
-			$settingValue = $scriptSettings[$settingName];
-			if ($settingValue === false) {
-				$settingValue = 0;
-			}
-			$entry->setDefault($settingValue);
 			
 			$y -= $settingHeight;
 			if ($index % $pageMaxCount == $pageMaxCount - 1) {

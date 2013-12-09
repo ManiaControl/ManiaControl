@@ -63,9 +63,9 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 		
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_POSX, 0.);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_POSY, 0.);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_POSY, 3.);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_WIDTH, 170.);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_HEIGHT, 90.);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_HEIGHT, 81.);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_STYLE, Quad_BgRaceScore2::STYLE);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_SUBSTYLE, 
 				Quad_BgRaceScore2::SUBSTYLE_HandleSelectable);
@@ -239,7 +239,7 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 		// Add Close Quad (X)
 		$closeQuad = new Quad_Icons64x64_1();
 		$frame->add($closeQuad);
-		$closeQuad->setPosition($menuWidth * 0.484, $menuHeight * 0.47, 3);
+		$closeQuad->setPosition($menuWidth * 0.483, $menuHeight * 0.467, 3);
 		$closeQuad->setSize(6, 6);
 		$closeQuad->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_QuitRace);
 		$closeQuad->setAction(self::ACTION_TOGGLEMENU);
