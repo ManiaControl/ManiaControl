@@ -199,14 +199,14 @@ class SettingManager {
 			return false;
 		}
 		$settingStatement->bind_param('ssss', $className, $settingName, $type, $default);
-		$settingStatement->execute();
+		$success = $settingStatement->execute();
 		if ($settingStatement->error) {
 			trigger_error($settingStatement->error);
 			$settingStatement->close();
 			return false;
 		}
 		$settingStatement->close();
-		return true;
+		return $success;
 	}
 
 	/**
@@ -269,14 +269,14 @@ class SettingManager {
 		}
 		$value = $this->formatSetting($value);
 		$settingStatement->bind_param('sss', $value, $className, $settingName);
-		$settingStatement->execute();
+		$success = $settingStatement->execute();
 		if ($settingStatement->error) {
 			trigger_error($settingStatement->error);
 			$settingStatement->close();
 			return false;
 		}
 		$settingStatement->close();
-		return true;
+		return $success;
 	}
 
 	/**
@@ -286,7 +286,7 @@ class SettingManager {
 	 * @param string $settingname        	
 	 * @return bool
 	 */
-	public function resetSetting($object, $settingname) {
+	public function resetSetting($object, $settingName) {
 		$className = $this->getClassName($object);
 		$mysqli = $this->maniaControl->database->mysqli;
 		$settingQuery = "UPDATE `" . self::TABLE_SETTINGS . "`
@@ -299,13 +299,43 @@ class SettingManager {
 			return false;
 		}
 		$settingStatement->bind_param('ss', $className, $settingName);
-		$settingStatement->execute();
+		$success = $settingStatement->execute();
 		if ($settingStatement->error) {
 			trigger_error($settingStatement->error);
+			$settingStatement->close();
 			return false;
 		}
 		$settingStatement->close();
-		return true;
+		return $success;
+	}
+
+	/**
+	 * Delete a setting from the database
+	 *
+	 * @param object $object        	
+	 * @param string $settingname        	
+	 * @return bool
+	 */
+	public function deleteSetting($object, $settingName) {
+		$className = $this->getClassName($object);
+		$mysqli = $this->maniaControl->database->mysqli;
+		$settingQuery = "DELETE FROM `" . self::TABLE_SETTINGS . "`
+				WHERE `class` = ?
+				AND `setting` = ?;";
+		$settingStatement = $mysqli->prepare($settingQuery);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error);
+			return false;
+		}
+		$settingStatement->bind_param('ss', $className, $settingName);
+		$success = $settingStatement->execute();
+		if ($settingStatement->error) {
+			trigger_error($settingStatement->error);
+			$settingStatement->close();
+			return false;
+		}
+		$settingStatement->close();
+		return $success;
 	}
 
 	/**
