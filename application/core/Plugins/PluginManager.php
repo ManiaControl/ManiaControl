@@ -26,6 +26,7 @@ class PluginManager {
 	private $activePlugins = array();
 	private $pluginClasses = array();
 
+
 	/**
 	 * Construct plugin manager
 	 *
@@ -74,7 +75,7 @@ class PluginManager {
 	 * @param bool $active        	
 	 * @return bool
 	 */
-	private function savePluginStatus($className, $active) {
+	public function savePluginStatus($className, $active) {
 		$mysqli = $this->maniaControl->database->mysqli;
 		$pluginStatusQuery = "INSERT INTO `" . self::TABLE_PLUGINS . "` (
 				`className`,
@@ -106,7 +107,7 @@ class PluginManager {
 	 * @param string $className        	
 	 * @return bool
 	 */
-	private function getPluginStatus($className) {
+	public function getPluginStatus($className) {
 		$mysqli = $this->maniaControl->database->mysqli;
 		$pluginStatusQuery = "SELECT `active` FROM `" . self::TABLE_PLUGINS . "`
 				WHERE `className` = ?;";
@@ -167,6 +168,22 @@ class PluginManager {
 				array_push($this->activePlugins, $plugin);
 			}
 		}
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getPluginClasses()
+	{
+		return $this->pluginClasses;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getActivePlugins()
+	{
+		return $this->activePlugins;
 	}
 }
 

@@ -53,7 +53,7 @@ class ScriptSettings implements ConfiguratorMenu {
 	public function getTitle() {
 		return $this->maniaControl->settingManager->getSetting($this, self::SETTING_TITLE);
 	}
-
+	//TODO: boolean values not as entry
 	/**
 	 *
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getMenu()
