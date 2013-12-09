@@ -4,7 +4,7 @@ namespace ManiaControl;
 
 /**
  * Class managing settings and configurations
- *t
+ *
  * @author steeffeen & kremsy
  */
 class SettingManager {
@@ -22,7 +22,6 @@ class SettingManager {
 	 * Private properties
 	 */
 	private $maniaControl = null;
-	private $configurator = null;
 	private $arrayDelimiter = ';;';
 
 	/**
