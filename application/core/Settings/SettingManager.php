@@ -139,7 +139,7 @@ class SettingManager {
 		if ($type === self::TYPE_ARRAY) {
 			return explode($this->arrayDelimiter, $value);
 		}
-		trigger_error('Unsupported setting type. ' . print_r($param, true));
+		trigger_error('Unsupported setting type. ' . print_r($type, true));
 		return $value;
 	}
 
