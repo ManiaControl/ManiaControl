@@ -115,7 +115,7 @@ class CallbackManager {
 	 * Trigger a specific callback
 	 *
 	 * @param string $callbackName        	
-	 * @param array $data        	
+	 * @param array $callback
 	 */
 	public function triggerCallback($callbackName, array $callback) {
 		if (!array_key_exists($callbackName, $this->callbackListeners)) {
@@ -159,7 +159,7 @@ class CallbackManager {
 		}
 		
 		// Handle callbacks
-		foreach ($callbacks as $index => $callback) {
+		foreach ($callbacks as $callback) {
 			$callbackName = $callback[0];
 			switch ($callbackName) {
 				case 'ManiaPlanet.BeginMap':

@@ -260,7 +260,7 @@ class GBXBaseFetcher
 	// XML parser functions
 	private function startTag($parser, $name, $attribs)
 	{
-		foreach ($attribs as $key => &$val)
+		foreach ($attribs as &$val)
 			$val = utf8_decode($val);
 		//echo 'startTag: ' . $name . "\n"; print_r($attribs);
 		array_push($this->_parsestack, $name);

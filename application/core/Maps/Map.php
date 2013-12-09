@@ -52,7 +52,7 @@ class Map {
 		if (!$rpc_infos) {
 			return;
 		}
-		$this->name = $rpc_infos['Name']; // in aseco stripped new lines on name
+		$this->name = $rpc_infos['Name'];
 		$this->uid = $rpc_infos['UId'];
 		$this->fileName = $rpc_infos['FileName'];
 		$this->authorLogin = $rpc_infos['Author'];
@@ -69,7 +69,7 @@ class Map {
 			try {
 				$this->mapFetcher->processFile($mapsDirectory . $this->fileName);
 			}
-			catch (Exception $e) {
+			catch (\Exception $e) {
 				trigger_error($e->getMessage(), E_USER_WARNING);
 			}
 			$this->authorNick = $this->mapFetcher->authorNick;

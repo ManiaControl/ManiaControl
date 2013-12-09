@@ -133,9 +133,9 @@ class AuthenticationManager {
 	}
 
 	/**
-	 * Sends an error message to the login
+	 * Sends an error message to the player
 	 *
-	 * @param string $login        	
+	 * @param Player $player
 	 * @return bool
 	 */
 	public function sendNotAllowed(Player $player) {
@@ -148,7 +148,7 @@ class AuthenticationManager {
 	/**
 	 * Check if the player has enough rights
 	 *
-	 * @param \ManiaControl\Players\Player $login        	
+	 * @param Player $player
 	 * @param int $neededAuthLevel        	
 	 * @return bool
 	 */

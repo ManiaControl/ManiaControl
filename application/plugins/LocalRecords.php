@@ -1,5 +1,4 @@
 <?php
-use ManiaControl\Database;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Callbacks\CallbackListener;
@@ -13,7 +12,6 @@ use FML\Controls\Control;
 use FML\Controls\Frame;
 use FML\Controls\Label;
 use FML\Controls\Quad;
-use FML\Controls\Labels\Label_Text;
 
 /**
  * ManiaControl Local Records Plugin
@@ -214,7 +212,7 @@ class LocalRecordsPlugin implements CallbackListener, Plugin {
 				{$time}
 				) ON DUPLICATE KEY UPDATE
 				`time` = VALUES(`time`);";
-		$result = $mysqli->query($query);
+		$mysqli->query($query);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error);
 			return;
@@ -222,8 +220,8 @@ class LocalRecordsPlugin implements CallbackListener, Plugin {
 		$this->updateManialink = true;
 		
 		// Announce record
-		// TODO: setting für nur-zum-spieler senden
-		// TODO: setting für nur-besten-x-announcen
+		// TODO: setting to send notification only to the player
+		// TODO: setting to send notifications only for x best records
 		$newRecord = $this->getLocalRecord($map, $player);
 		if (!$oldRecord || $newRecord->rank < $oldRecord->rank) {
 			$improvement = 'gained the';
@@ -257,7 +255,7 @@ class LocalRecordsPlugin implements CallbackListener, Plugin {
 	/**
 	 * Handle ClientUpdated callback
 	 *
-	 * @param array $data        	
+	 * @param array $callback
 	 */
 	public function handleClientUpdated(array $callback) {
 		$this->updateManialink = true;

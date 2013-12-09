@@ -5,7 +5,6 @@ namespace ManiaControl\Players;
 use ManiaControl\ManiaControl;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Commands\CommandListener;
-use ManiaControl\Players\Player;
 
 /**
  * Class offering various admin commands related to players
@@ -51,7 +50,7 @@ class PlayerCommands implements CommandListener {
 		}
 		$success = $this->maniaControl->client->query('AutoTeamBalance');
 		if (!$success) {
-			$this->maniaControl->chat->sendError('Error occured: ' . $this->maniaControl->getClientErrorText(), $player->login);
+			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
 			return;
 		}
 		$this->maniaControl->chat->sendInformation('$<' . $player->nickname . '$> balanced Teams!');
@@ -85,7 +84,7 @@ class PlayerCommands implements CommandListener {
 		}
 		$success = $this->maniaControl->client->query('Kick', $target->login, $message);
 		if (!$success) {
-			$this->maniaControl->chat->sendError('Error occured: ' . $this->maniaControl->getClientErrorText(), $player->login);
+			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
 			return;
 		}
 		$this->maniaControl->chat->sendInformation('$<' . $player->nickname . '$> kicked $<' . $target->nickname . '$>!');
@@ -119,7 +118,7 @@ class PlayerCommands implements CommandListener {
 		}
 		$success = $this->maniaControl->client->query('ForceSpectator', $target->login, $type);
 		if (!$success) {
-			$this->maniaControl->chat->sendError('Error occured: ' . $this->maniaControl->getClientErrorText(), $player->login);
+			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
 			return;
 		}
 		if ($type != 1) {
@@ -156,7 +155,7 @@ class PlayerCommands implements CommandListener {
 		}
 		$success = $this->maniaControl->client->query('ForceSpectator', $target->login, 2);
 		if (!$success) {
-			$this->maniaControl->chat->sendError('Error occured: ' . $this->maniaControl->getClientErrorText(), $player->login);
+			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
 			return;
 		}
 		if ($type != 1) {
@@ -188,7 +187,7 @@ class PlayerCommands implements CommandListener {
 			}
 		}
 		if (!$success) {
-			$this->maniaControl->chat->sendError('Error occured: ' . $this->maniaControl->getClientErrorText(), $player->login);
+			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
 			return;
 		}
 		$this->maniaControl->chat->sendSuccess('Fake players connected!', $player->login);
@@ -207,7 +206,7 @@ class PlayerCommands implements CommandListener {
 		}
 		$success = $this->maniaControl->client->query('DisconnectFakePlayer', '*');
 		if (!$success) {
-			$this->maniaControl->chat->sendError('Error occured: ' . $this->maniaControl->getClientErrorText(), $player->login);
+			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
 			return;
 		}
 		$this->maniaControl->chat->sendSuccess('Fake players disconnected!', $player->login);

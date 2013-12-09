@@ -122,7 +122,7 @@ class PlayerManager implements CallbackListener {
 		
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES)) {
 			$string = array(0 => 'New Player', 1 => '$0f0Operator', 2 => '$0f0Admin', 3 => '$0f0MasterAdmin', 4 => '$0f0MasterAdmin');
-			$nickname = Formatter::stripCodes($player->nickname); //TODO strip codes without colour codes like in serverviewer
+			$nickname = Formatter::stripCodes($player->nickname); // TODO: strip codes without colour codes like in serverviewer
 			$this->maniaControl->chat->sendChat(
 					'$ff0' . $string[$player->authLevel] . ': $fff' . $nickname . '$z $ff0Nation:$fff ' . $player->getCountry() .
 							 ' $ff0Ladder: $fff' . $player->ladderRank);

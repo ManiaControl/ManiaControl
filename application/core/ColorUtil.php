@@ -3,7 +3,7 @@
 namespace ManiaControl;
 
 /**
- * Utitlity class offering methods to convert and use ManiaPlanet colors
+ * Utility class offering methods to convert and use ManiaPlanet colors
  *
  * @author steeffeen
  */
@@ -45,7 +45,7 @@ abstract class ColorUtil {
 			$value = 1.;
 		}
 		$value *= 15.;
-		$value = round($value);
+		$value = (int) round($value);
 		if ($value < 10) {
 			return (string) $value;
 		}

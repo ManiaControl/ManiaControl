@@ -73,7 +73,7 @@ class MapCommands implements CommandListener {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return false;
 		}
-		// TODO: mx fetcher nutzen?
+		// TODO: user mx fetcher
 		$params = explode(' ', $chatCallback[1][2], 2);
 		if (count($params) < 2) {
 			$this->maniaControl->chat->sendUsageInfo('Usage example: //addmap 1234', $player->login);
@@ -138,7 +138,7 @@ class MapCommands implements CommandListener {
 			}
 			$response = $this->maniaControl->client->getResponse();
 			if (!$response) {
-				// Inalid map type
+				// Invalid map type
 				$this->maniaControl->chat->sendError("Invalid map type.", $player->login);
 				return false;
 			}

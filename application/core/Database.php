@@ -76,15 +76,15 @@ class Database {
 	 * @return bool
 	 */
 	private function initDatabase() {
-		$dbname = $this->config->xpath('database');
-		if (!$dbname) {
+		$dbName = $this->config->xpath('database');
+		if (!$dbName) {
 			trigger_error("Invalid database configuration (database).", E_USER_ERROR);
 			return false;
 		}
-		$dbname = (string) $dbname[0];
+        $dbName = (string) $dbName[0];
 		
 		// Try to connect
-		$result = $this->mysqli->select_db($dbname);
+		$result = $this->mysqli->select_db($dbName);
 		if ($result) {
 			return true;
 		}
@@ -96,7 +96,7 @@ class Database {
 			trigger_error($this->mysqli->error, E_USER_ERROR);
 			return false;
 		}
-		$databaseStatement->bind_param('s', $dbname);
+		$databaseStatement->bind_param('s', $dbName);
 		$databaseStatement->execute();
 		if ($databaseStatement->error) {
 			trigger_error($databaseStatement->error, E_USER_ERROR);
@@ -105,9 +105,9 @@ class Database {
 		$databaseStatement->close();
 		
 		// Connect to new database
-		$this->mysqli->select_db($dbname);
+		$this->mysqli->select_db($dbName);
 		if ($this->mysqli->error) {
-			trigger_error("Couldn't select database '{$dbname}'. " . $this->mysqli->error, E_USER_ERROR);
+			trigger_error("Couldn't select database '{$dbName}'. " . $this->mysqli->error, E_USER_ERROR);
 			return false;
 		}
 		return true;

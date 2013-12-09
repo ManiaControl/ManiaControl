@@ -22,7 +22,7 @@ SETUP:
 			Enter your mysql server information.
 
 	2.3	Open the file 'configs/authentication.xml'.
-			Add the player logins of administrators.
+			Add the Player Logins of Administrators.
 
 3.	Run the tool via the shell script 'ManiaControl.sh' (UNIX) or the batch file 'ManiaControl.bat' (Windows)
 

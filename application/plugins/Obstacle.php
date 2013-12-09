@@ -84,7 +84,8 @@ class ObstaclePlugin implements CallbackListener, CommandListener, Plugin {
 	/**
 	 * Handle JumpTo command
 	 *
-	 * @param array $chatCallback        	
+	 * @param array $chatCallback
+     * @param Player $player
 	 * @return bool
 	 */
 	public function command_JumpTo(array $chatCallback, Player $player) {
@@ -133,7 +134,7 @@ class ObstaclePlugin implements CallbackListener, CommandListener, Plugin {
 			return;
 		}
 		$time = $data->Run->Time;
-		// Trigger trackmania player finish callback
+		// Trigger Trackmania player finish callback
 		$finishCallback = array($player->pid, $player->login, $time);
 		$finishCallback = array(CallbackManager::CB_TM_PLAYERCHECKPOINT, $finishCallback);
 		$this->maniaControl->callbackManager->triggerCallback(CallbackManager::CB_TM_PLAYERCHECKPOINT, $finishCallback);

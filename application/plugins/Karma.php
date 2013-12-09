@@ -3,12 +3,10 @@ use ManiaControl\ColorUtil;
 use ManiaControl\ManiaControl;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
-use ManiaControl\Manialinks\ManialinkUtil;
 use ManiaControl\Maps\Map;
 use ManiaControl\Players\Player;
 use ManiaControl\Plugins\Plugin;
 use FML\ManiaLink;
-use FML\Controls\Control;
 use FML\Controls\Frame;
 use FML\Controls\Label;
 use FML\Controls\Quad;
@@ -226,7 +224,7 @@ class KarmaPlugin implements CallbackListener, Plugin {
 		$vote -= substr_count($message, '-');
 		$success = $this->handleVote($player, $vote);
 		if (!$success) {
-			$this->maniaControl->chat->sendError('Error occured.', $player->login);
+			$this->maniaControl->chat->sendError('Error occurred.', $player->login);
 			return;
 		}
 		$this->maniaControl->chat->sendSuccess('Vote updated!', $player->login);
@@ -296,7 +294,7 @@ class KarmaPlugin implements CallbackListener, Plugin {
 				PRIMARY KEY (`index`),
 				UNIQUE KEY `player_map_vote` (`mapIndex`, `playerIndex`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Save players map votes' AUTO_INCREMENT=1;";
-		$result = $mysqli->query($query);
+		$mysqli->query($query);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error, E_USER_ERROR);
 		}
@@ -361,7 +359,8 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	/**
 	 * Get the current karma of the map
 	 *
-	 * @param Map $map        	
+	 * @param Map $map
+     * @return float | bool
 	 */
 	private function getMapKarma(Map $map) {
 		$mysqli = $this->maniaControl->database->mysqli;
@@ -387,9 +386,10 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	}
 
 	/**
-	 * Get the current votings for the map
+	 * Get the current Votes for the Map
 	 *
-	 * @param Map $map        	
+	 * @param Map $map
+     * @return array
 	 */
 	private function getMapVotes(Map $map) {
 		$mysqli = $this->maniaControl->database->mysqli;

@@ -119,7 +119,8 @@ class ManiaControl implements CommandListener {
 	/**
 	 * Send ManiaControl version
 	 *
-	 * @param array $chat        	
+	 * @param array $chat
+     * @param Player $player
 	 * @return bool
 	 */
 	public function command_Version(array $chat, Player $player) {
@@ -129,10 +130,10 @@ class ManiaControl implements CommandListener {
 
 	/**
 	 * Quit ManiaControl and log the given message
-	 *test
+	 *
 	 * @param string $message        	
 	 */
-	public function quit($message = false) {
+	public function quit($message = '') {
 		if ($this->client) {
 			// Announce quit
 			$this->chat->sendInformation('ManiaControl shutting down.');
@@ -248,7 +249,7 @@ class ManiaControl implements CommandListener {
 		}
 		
 		// Connect finished
-		error_log("Server connection succesfully established!");
+		error_log("Server connection successfully established!");
 		
 		// Enable script callbacks if needed
 		if ($this->server->getGameMode() === 0) {

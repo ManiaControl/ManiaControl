@@ -4,6 +4,7 @@ namespace ManiaControl\Server;
 
 use ManiaControl\FileUtil;
 use ManiaControl\ManiaControl;
+use ManiaControl\Players\Player;
 
 require_once __DIR__ . '/ServerCommands.php';
 
@@ -159,7 +160,7 @@ class Server {
 	 */
 	public function getSystemInfo() {
 		if (!$this->maniaControl->client->query('GetSystemInfo')) {
-			trigger_error("Couldn't fetch server system info. " . $this->maniaControl->getClientErrorText($client));
+			trigger_error("Couldn't fetch server system info. " . $this->maniaControl->getClientErrorText($this->maniaControl->client));
 			return null;
 		}
 		return $this->maniaControl->client->getResponse();
@@ -252,7 +253,7 @@ class Server {
 		$map = $this->getMap();
 		$gameMode = $this->getGameMode();
 		$time = time();
-		$fileName = "GhostReplays/Ghost.{$login}.{$gameMode}.{$time}.{$map['UId']}.Replay.Gbx";
+		$fileName = "GhostReplays/Ghost.{$player->login}.{$gameMode}.{$time}.{$map['UId']}.Replay.Gbx";
 		
 		// Save ghost replay
 		if (!$this->maniaControl->client->query('SaveBestGhostsReplay', $player->login, $fileName)) {

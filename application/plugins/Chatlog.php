@@ -28,7 +28,7 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 	private $logServerMessages = true;
 
 	/**
-	 * Constuct chatlog plugin
+	 * Construct chatlog plugin
 	 *
 	 * @param ManiaControl $maniaControl        	
 	 */
@@ -129,7 +129,7 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 	/**
 	 * Log the given message
 	 *
-	 * @param string $message        	
+	 * @param string $text
 	 * @param string $login        	
 	 */
 	private function logText($text, $login = null) {

@@ -4,7 +4,6 @@ namespace ManiaControl\Admin;
 
 use ManiaControl\ManiaControl;
 use ManiaControl\Callbacks\CallbackListener;
-use ManiaControl\Callbacks\CallbackManager;
 use FML\ManiaLink;
 use FML\Controls\Control;
 use FML\Controls\Frame;
@@ -136,7 +135,7 @@ class AdminMenu implements CallbackListener {
 		
 		// Add items
 		$x = 0.5 * $itemSize * $itemMarginFactorX;
-		foreach ($this->menuItems as $itemOrder => $menuItems) {
+		foreach ($this->menuItems as $menuItems) {
 			foreach ($menuItems as $menuItem) {
 				$menuItem->setSize($itemSize, $itemSize);
 				$itemsFrame->add($menuItem);

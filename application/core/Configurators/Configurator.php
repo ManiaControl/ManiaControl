@@ -8,7 +8,6 @@ use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 use FML\ManiaLink;
-use FML\Controls\Control;
 use FML\Controls\Frame;
 use FML\Controls\Label;
 use FML\Controls\Labels\Label_Text;

@@ -3,10 +3,8 @@
 namespace ManiaControl\Commands;
 
 use ManiaControl\ManiaControl;
-use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
-use ManiaControl\Players\Player;
 
 /**
  * Class for handling chat commands

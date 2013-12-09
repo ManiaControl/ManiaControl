@@ -8,7 +8,6 @@ use FML\Controls\Label;
 use FML\Script\Pages;
 use FML\Script\Tooltips;
 use FML\Controls\Control;
-use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Entry;
@@ -99,6 +98,7 @@ class ScriptSettings implements ConfiguratorMenu {
 		
 		// Setting pages
 		$pageFrames = array();
+        $y = 0.;
 		foreach ($scriptParams as $index => $scriptParam) {
 			$settingName = $scriptParam['Name'];
 			if (!isset($scriptSettings[$settingName])) continue;
@@ -135,16 +135,16 @@ class ScriptSettings implements ConfiguratorMenu {
 			}
 			$entry->setDefault($settingValue);
 
-			$decriptionLabel = new Label();
-			$pageFrame->add($decriptionLabel);
-			$decriptionLabel->setHAlign(Control::LEFT);
-			$decriptionLabel->setPosition($width * -0.45, $height * -0.44);
-			$decriptionLabel->setSize($width * 0.7, $settingHeight);
-			$decriptionLabel->setStyle($labelStyleDescription);
-			$decriptionLabel->setTranslate(true);
-			$decriptionLabel->setTextPrefix('Desc: ');
-			$decriptionLabel->setText($scriptParam['Desc']);
-			$tooltips->add($nameLabel, $decriptionLabel);
+			$descriptionLabel = new Label();
+			$pageFrame->add($descriptionLabel);
+			$descriptionLabel->setHAlign(Control::LEFT);
+			$descriptionLabel->setPosition($width * -0.45, $height * -0.44);
+			$descriptionLabel->setSize($width * 0.7, $settingHeight);
+			$descriptionLabel->setStyle($labelStyleDescription);
+			$descriptionLabel->setTranslate(true);
+			$descriptionLabel->setTextPrefix('Desc: ');
+			$descriptionLabel->setText($scriptParam['Desc']);
+			$tooltips->add($nameLabel, $descriptionLabel);
 			
 			$y -= $settingHeight;
 			if ($index % $pageMaxCount == $pageMaxCount - 1) {

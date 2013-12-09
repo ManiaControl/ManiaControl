@@ -6,6 +6,11 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\Players\Player;
 
+/**
+ * Class offering commands to grant authorizations to players
+ *
+ * @author steeffeen & kremsy
+ */
 class AuthCommands implements CommandListener {
 	/**
 	 * Private properties
@@ -50,7 +55,7 @@ class AuthCommands implements CommandListener {
 		}
 		$success = $this->maniaControl->authenticationManager->grantAuthLevel($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
 		if (!$success) {
-			$this->maniaControl->chat->sendError('Error occured.', $player->login);
+			$this->maniaControl->chat->sendError('Error occurred.', $player->login);
 			return;
 		}
 		$message = '$<' . $player->nickname . '$> added $<' . $target->nickname . '$> as SuperAdmin!';
@@ -81,7 +86,7 @@ class AuthCommands implements CommandListener {
 		}
 		$success = $this->maniaControl->authenticationManager->grantAuthLevel($player, AuthenticationManager::AUTH_LEVEL_ADMIN);
 		if (!$success) {
-			$this->maniaControl->chat->sendError('Error occured.', $player->login);
+			$this->maniaControl->chat->sendError('Error occurred.', $player->login);
 			return;
 		}
 		$message = '$<' . $player->nickname . '$> added $<' . $target->nickname . '$> as Admin!';
@@ -112,7 +117,7 @@ class AuthCommands implements CommandListener {
 		}
 		$success = $this->maniaControl->authenticationManager->grantAuthLevel($player, AuthenticationManager::AUTH_LEVEL_OPERATOR);
 		if (!$success) {
-			$this->maniaControl->chat->sendError('Error occured.', $player->login);
+			$this->maniaControl->chat->sendError('Error occurred.', $player->login);
 			return;
 		}
 		$message = '$<' . $player->nickname . '$> added $<' . $target->nickname . '$> as Operator!';
@@ -127,7 +132,7 @@ class AuthCommands implements CommandListener {
 	 */
 	private function sendAddSuperAdminUsageInfo(Player $player) {
 		$message = "Usage Example: '//addsuperadmin login'";
-		return $this->maniaControl->chat->sendUsageInfo($message);
+		return $this->maniaControl->chat->sendUsageInfo($message, $player->login);
 	}
 
 	/**
@@ -138,7 +143,7 @@ class AuthCommands implements CommandListener {
 	 */
 	private function sendAddAdminUsageInfo(Player $player) {
 		$message = "Usage Example: '//addadmin login'";
-		return $this->maniaControl->chat->sendUsageInfo($message);
+		return $this->maniaControl->chat->sendUsageInfo($message, $player->login);
 	}
 
 	/**
@@ -149,7 +154,7 @@ class AuthCommands implements CommandListener {
 	 */
 	private function sendAddOperatorUsageInfo(Player $player) {
 		$message = "Usage Example: '//addop login'";
-		return $this->maniaControl->chat->sendUsageInfo($message);
+		return $this->maniaControl->chat->sendUsageInfo($message, $player->login);
 	}
 }
 

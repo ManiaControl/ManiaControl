@@ -161,7 +161,7 @@ class ServerCommands implements CallbackListener, CommandListener {
 		}
 		$serverName = $params[1];
 		if (!$this->maniaControl->client->query('SetServerName', $serverName)) {
-			$this->maniaControl->chat->sendError('Error occured: ' . $this->maniaControl->getClientErrorText(), $player->login);
+			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
 			return;
 		}
 		$this->maniaControl->chat->sendSuccess("Server name changed to: '{$serverName}'!", $player->login);
@@ -187,7 +187,7 @@ class ServerCommands implements CallbackListener, CommandListener {
 		}
 		$success = $this->maniaControl->client->query('SetServerPassword', $password);
 		if (!$success) {
-			$this->maniaControl->chat->sendError('Error occured: ' . $this->maniaControl->getClientErrorText(), $player->login);
+			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
 			return;
 		}
 		$this->maniaControl->chat->sendSuccess($successMessage, $player->login);
@@ -213,7 +213,7 @@ class ServerCommands implements CallbackListener, CommandListener {
 		}
 		$success = $this->maniaControl->client->query('SetServerPasswordForSpectator', $password);
 		if (!$success) {
-			$this->maniaControl->chat->sendError('Error occured: ' . $this->maniaControl->getClientErrorText(), $player->login);
+			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
 			return;
 		}
 		$this->maniaControl->chat->sendSuccess($successMessage, $player->login);
@@ -246,7 +246,7 @@ class ServerCommands implements CallbackListener, CommandListener {
 		}
 		$success = $this->maniaControl->client->query('SetMaxPlayers', $amount);
 		if (!$success) {
-			$this->maniaControl->chat->sendError('Error occured: ' . $this->maniaControl->getClientErrorText(), $player->login);
+			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
 			return;
 		}
 		$this->maniaControl->chat->sendSuccess("Changed max players to: {$amount}", $player->login);
@@ -279,7 +279,7 @@ class ServerCommands implements CallbackListener, CommandListener {
 		}
 		$success = $this->maniaControl->client->query('SetMaxSpectators', $amount);
 		if (!$success) {
-			$this->maniaControl->chat->sendError('Error occured: ' . $this->maniaControl->getClientErrorText(), $player->login);
+			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
 			return;
 		}
 		$this->maniaControl->chat->sendSuccess("Changed max spectators to: {$amount}", $player->login);
@@ -298,7 +298,7 @@ class ServerCommands implements CallbackListener, CommandListener {
 		}
 		$success = $this->maniaControl->client->query('SetHideServer', 1);
 		if (!$success) {
-			$this->maniaControl->chat->sendError('Error occured: ' . $this->maniaControl->getClientErrorText(), $player->login);
+			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
 			return;
 		}
 		$this->maniaControl->chat->sendSuccess('Server is now hidden!', $player->login);
@@ -317,7 +317,7 @@ class ServerCommands implements CallbackListener, CommandListener {
 		}
 		$success = $this->maniaControl->client->query('SetHideServer', 0);
 		if (!$success) {
-			$this->maniaControl->chat->sendError('Error occured: ' . $this->maniaControl->getClientErrorText(), $player->login);
+			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
 			return;
 		}
 		$this->maniaControl->chat->sendSuccess('Server is now visible!', $player->login);
@@ -336,7 +336,7 @@ class ServerCommands implements CallbackListener, CommandListener {
 		}
 		$success = $this->maniaControl->client->query('AllowMapDownload', true);
 		if (!$success) {
-			$this->maniaControl->chat->sendError('Error occured: ' . $this->maniaControl->getClientErrorText(), $player->login);
+			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
 			return;
 		}
 		$this->maniaControl->chat->sendSuccess('Map Download is now enabled!', $player->login);
@@ -355,7 +355,7 @@ class ServerCommands implements CallbackListener, CommandListener {
 		}
 		$success = $this->maniaControl->client->query('AllowMapDownload', false);
 		if (!$success) {
-			$this->maniaControl->chat->sendError('Error occured: ' . $this->maniaControl->getClientErrorText(), $player->login);
+			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
 			return;
 		}
 		$this->maniaControl->chat->sendSuccess('Map Download is now disabled!', $player->login);
@@ -374,7 +374,7 @@ class ServerCommands implements CallbackListener, CommandListener {
 		}
 		$success = $this->maniaControl->client->query('DisableHorns', false);
 		if (!$success) {
-			$this->maniaControl->chat->sendError('Error occured: ' . $this->maniaControl->getClientErrorText(), $player->login);
+			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
 			return;
 		}
 		$this->maniaControl->chat->sendSuccess('Horns enabled!', $player->login);
@@ -393,7 +393,7 @@ class ServerCommands implements CallbackListener, CommandListener {
 		}
 		$success = $this->maniaControl->client->query('DisableHorns', true);
 		if (!$success) {
-			$this->maniaControl->chat->sendError('Error occured: ' . $this->maniaControl->getClientErrorText(), $player->login);
+			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
 			return;
 		}
 		$this->maniaControl->chat->sendSuccess('Horns disabled!', $player->login);

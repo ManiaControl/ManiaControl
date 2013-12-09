@@ -282,7 +282,7 @@ class SettingManager {
 	 * Reset a setting to its default value
 	 *
 	 * @param object $object        	
-	 * @param string $settingname        	
+	 * @param string $settingName
 	 * @return bool
 	 */
 	public function resetSetting($object, $settingName) {
@@ -312,7 +312,7 @@ class SettingManager {
 	 * Delete a setting from the database
 	 *
 	 * @param object $object        	
-	 * @param string $settingname        	
+	 * @param string $settingName
 	 * @return bool
 	 */
 	public function deleteSetting($object, $settingName) {

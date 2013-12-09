@@ -168,7 +168,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	/**
 	 * Handle //getplanets command
 	 *
-	 * @param array $chat        	
+	 * @param array $chatCallback
 	 * @param Player $player        	
 	 * @return bool
 	 */
