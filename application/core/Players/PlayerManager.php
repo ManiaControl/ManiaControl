@@ -128,7 +128,9 @@ class PlayerManager implements CallbackListener {
 							 ' $ff0Ladder: $fff' . $player->ladderRank);
 			$this->maniaControl->chat->sendInformation('This server uses ManiaControl v' . ManiaControl::VERSION,$player->login);
 		}
-		
+
+		$this->maniaControl->log('Player joined: ' . $player->login . " / " . $player->nickname . " Nation: " . $player->getCountry() . " IP: " .$player->ipAddress);
+
 		// Trigger own callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERJOINED, array(self::CB_PLAYERJOINED, $player));
 	}
@@ -141,12 +143,13 @@ class PlayerManager implements CallbackListener {
 	public function playerDisconnect(array $callback) {
 		$login = $callback[1][0];
 		$player = $this->removePlayer($login);
-		
-		if (!$this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES)) {
-			return;
-		}
+
 		$played = Formatter::formatTimeH(time() - $player->joinTime);
-		$this->maniaControl->chat->sendChat('$<' . $player->nickname . '$> $ff0has left the game. Played:$fff ' . $played);
+		$this->maniaControl->log("Player left: " . $player->login . " / " . $player->nickname . " Playtime: " . $played);
+
+		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES)) {
+			$this->maniaControl->chat->sendChat('$<' . $player->nickname . '$> $ff0has left the game. Played:$fff ' . $played);
+		}
 	}
 
 	/**

@@ -30,7 +30,7 @@ class Player {
 	public $ladderScore = -1.;
 	public $ladderRank = -1;
 	public $joinTime = -1;
-
+	public $ipAddress = '';
 	/**
 	 * Construct a player from XmlRpc data
 	 *
@@ -40,7 +40,6 @@ class Player {
 		if (!$rpcInfos) {
 			return;
 		}
-		
 		$this->pid = $rpcInfos['PlayerId'];
 		$this->login = $rpcInfos['Login'];
 		$this->nickname = $rpcInfos['NickName'];
@@ -56,7 +55,9 @@ class Player {
 		$this->isReferee = $rpcInfos['IsReferee'];
 		$this->ladderScore = $rpcInfos['LadderStats']['PlayerRankings'][0]['Score'];
 		$this->ladderRank = $rpcInfos['LadderStats']['PlayerRankings'][0]['Ranking'];
-		
+
+		$this->ipAddress = $rpcInfos['IPAddress'];
+
 		$this->joinTime = time();
 	}
 
