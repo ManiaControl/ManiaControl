@@ -75,7 +75,7 @@ class PluginMenu implements ConfiguratorMenu {
 
 			//TODO: Red or Green quad to see if the plugin is aktiv (not working yet)
 			$activeQuad = new Quad();
-			$settingFrame->add($active);
+			$settingFrame->add($activeQuad);
 			if($active)
 				$activeQuad->setStyles("Icons64x64_1", "LvlGreen");
 			else
