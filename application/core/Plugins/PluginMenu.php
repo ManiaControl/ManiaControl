@@ -2,9 +2,7 @@
 
 namespace ManiaControl\Plugins;
 
-use FML\Controls\Labels\Label_Button;
 use FML\Controls\Quad;
-use FML\Controls\Quads\Quad_Icons64x64_1;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Configurators\ConfiguratorMenu;
@@ -76,12 +74,16 @@ class PluginMenu implements ConfiguratorMenu {
 			$settingFrame->setY($y);
 
 			//TODO: Red or Green quad to see if the plugin is aktiv (not working yet)
-			$aktivQuad = new Quad_Icons64x64_1();
+			$aktivQuad = new Quad();
 			$settingFrame->add($aktivQuad);
-			$aktivQuad->setStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowRed);
-			$aktivQuad->setHeight(10);
-			$aktivQuad->setWidth(10);
-			$aktivQuad->setX($width * 0.2);
+			if($aktiv)
+				$aktivQuad->setStyles("Icons64x64_1", "LvlGreen");
+			else
+				$aktivQuad->setStyles("Icons64x64_1", "LvlRed");
+			$aktivQuad->setHeight(5);
+			$aktivQuad->setWidth(5);
+			$aktivQuad->setX($width * -0.455);
+			//TODO handle z position automatically in fml pls
 
 			$nameLabel = new Label();
 			$settingFrame->add($nameLabel);
@@ -105,12 +107,12 @@ class PluginMenu implements ConfiguratorMenu {
 			$tooltips->add($nameLabel, $descriptionLabel);
 
 			//TODO set aktive button
-			$aktivButton = new Quad();
-			$aktivButton->setBgColor("Red");
+			/*$aktivButton = new Quad();
+			$aktivButton->setBgColor("F00");
 			$aktivButton->setHeight(10);
 			$aktivButton->setWidth(10);
 			$aktivButton->setX($width * 0.2);
-			$settingFrame->add($aktivButton);
+			$settingFrame->add($aktivButton);*/
 			//$aktivButton = new Labels\Label_Button();
 
 
