@@ -4,7 +4,7 @@ namespace ManiaControl;
 
 /**
  * Class managing settings and configurations
- *
+ *t
  * @author steeffeen & kremsy
  */
 class SettingManager {
