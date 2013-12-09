@@ -86,6 +86,8 @@ class ManiaControl implements CommandListener {
 	 * Construct ManiaControl
 	 */
 	public function __construct() {
+		logMessage('Loading ManiaControl v' . self::VERSION . '...');
+		
 		$this->database = new Database($this);
 		$this->callbackManager = new CallbackManager($this);
 		$this->settingManager = new SettingManager($this);
@@ -119,8 +121,8 @@ class ManiaControl implements CommandListener {
 	/**
 	 * Send ManiaControl version
 	 *
-	 * @param array $chat
-     * @param Player $player
+	 * @param array $chat        	
+	 * @param Player $player        	
 	 * @return bool
 	 */
 	public function command_Version(array $chat, Player $player) {
@@ -134,6 +136,9 @@ class ManiaControl implements CommandListener {
 	 * @param string $message        	
 	 */
 	public function quit($message = '') {
+		// OnShutdown callback
+		$this->callbackManager->triggerCallback(CallbackManager::CB_MC_ONSHUTDOWN, array(CallbackManager::CB_MC_ONSHUTDOWN));
+		
 		if ($this->client) {
 			// Announce quit
 			$this->chat->sendInformation('ManiaControl shutting down.');
@@ -144,7 +149,7 @@ class ManiaControl implements CommandListener {
 		
 		// Log quit reason
 		if ($message) {
-			error_log($message);
+			logMessage($message);
 		}
 		
 		// Shutdown
@@ -152,7 +157,7 @@ class ManiaControl implements CommandListener {
 			$this->client->Terminate();
 		}
 		
-		error_log("Quitting ManiaControl!");
+		logMessage('Quitting ManiaControl!');
 		exit();
 	}
 
@@ -160,7 +165,7 @@ class ManiaControl implements CommandListener {
 	 * Run ManiaControl
 	 */
 	public function run() {
-		error_log('Starting ManiaControl v' . self::VERSION . '!');
+		logMessage('Starting ManiaControl v' . self::VERSION . '!');
 		
 		// Load plugins
 		$this->pluginManager->loadPlugins();
@@ -168,13 +173,16 @@ class ManiaControl implements CommandListener {
 		// Connect to server
 		$this->connect();
 		
+		// Register shutdown handler
+		register_shutdown_function(array($this, 'quit'));
+		
 		// Loading finished
-		error_log("Loading completed!");
+		logMessage('Loading completed!');
 		
 		// Announce ManiaControl
 		$this->chat->sendInformation('ManiaControl v' . self::VERSION . ' successfully started!');
 		
-		// OnInit
+		// OnInit callback
 		$this->callbackManager->triggerCallback(CallbackManager::CB_MC_ONINIT, array(CallbackManager::CB_MC_ONINIT));
 		
 		// Main loop
@@ -196,7 +204,7 @@ class ManiaControl implements CommandListener {
 		}
 		
 		// Shutdown
-		$this->client->Terminate();
+		$this->quit();
 	}
 
 	/**
@@ -213,7 +221,7 @@ class ManiaControl implements CommandListener {
 		if (!$host) trigger_error("Invalid server configuration (port).", E_USER_ERROR);
 		$port = (string) $port[0];
 		
-		error_log("Connecting to server at {$host}:{$port}...");
+		logMessage("Connecting to server at {$host}:{$port}...");
 		
 		// Connect
 		if (!$this->client->InitWithIp($host, $port, 20)) {
@@ -249,26 +257,22 @@ class ManiaControl implements CommandListener {
 		}
 		
 		// Connect finished
-		error_log("Server connection successfully established!");
+		logMessage("Server connection successfully established!");
 		
 		// Enable script callbacks if needed
-		if ($this->server->getGameMode() === 0) {
-			if (!$this->client->query('GetModeScriptSettings')) {
-				trigger_error("Couldn't get mode script settings. " . $this->getClientErrorText());
-			}
-			else {
-				$scriptSettings = $this->client->getResponse();
-				if (array_key_exists('S_UseScriptCallbacks', $scriptSettings)) {
-					$scriptSettings['S_UseScriptCallbacks'] = true;
-					if (!$this->client->query('SetModeScriptSettings', $scriptSettings)) {
-						trigger_error("Couldn't set mode script settings to enable script callbacks. " . $this->getClientErrorText());
-					}
-					else {
-						error_log("Script callbacks successfully enabled.");
-					}
-				}
-			}
+		if ($this->server->getGameMode() != 0) return;
+		if (!$this->client->query('GetModeScriptSettings')) {
+			trigger_error("Couldn't get mode script settings. " . $this->getClientErrorText());
+			return;
 		}
+		$scriptSettings = $this->client->getResponse();
+		if (!array_key_exists('S_UseScriptCallbacks', $scriptSettings)) return;
+		$scriptSettings['S_UseScriptCallbacks'] = true;
+		if (!$this->client->query('SetModeScriptSettings', $scriptSettings)) {
+			trigger_error("Couldn't set mode script settings to enable script callbacks. " . $this->getClientErrorText());
+			return;
+		}
+		logMessage('Script callbacks successfully enabled.');
 	}
 }
 

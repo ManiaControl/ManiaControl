@@ -287,14 +287,14 @@ class Server {
 		$waitBegin = time();
 		$maxWaitTime = 20;
 		$lastStatus = $response['Name'];
-		error_log("Waiting for server to reach status {$statusCode}...");
-		error_log("Current Status: {$lastStatus}");
+		logMessage("Waiting for server to reach status {$statusCode}...");
+		logMessage("Current Status: {$lastStatus}");
 		while ($response['Code'] !== 4) {
 			sleep(1);
 			$this->maniaControl->client->query('GetStatus');
 			$response = $this->maniaControl->client->getResponse();
 			if ($lastStatus !== $response['Name']) {
-				error_log("New Status: " . $response['Name']);
+				logMessage("New Status: " . $response['Name']);
 				$lastStatus = $response['Name'];
 			}
 			if (time() - $maxWaitTime > $waitBegin) {

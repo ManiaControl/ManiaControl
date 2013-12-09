@@ -18,6 +18,7 @@ class CallbackManager {
 	const CB_MC_5_SECOND = 'ManiaControl.5Second';
 	const CB_MC_1_MINUTE = 'ManiaControl.1Minute';
 	const CB_MC_ONINIT = 'ManiaControl.OnInit';
+	const CB_MC_ONSHUTDOWN = 'ManiaControl.OnShutdown';
 	const CB_MC_CLIENTUPDATED = 'ManiaControl.ClientUpdated';
 	const CB_MC_BEGINMAP = 'ManiaControl.BeginMap';
 	const CB_MC_ENDMAP = 'ManiaControl.EndMap';
