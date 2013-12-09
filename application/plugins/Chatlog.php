@@ -140,5 +140,3 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 		file_put_contents($this->fileName, $message, FILE_APPEND);
 	}
 }
-
-?>

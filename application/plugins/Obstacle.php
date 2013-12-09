@@ -139,5 +139,3 @@ class ObstaclePlugin implements CallbackListener, CommandListener, Plugin {
 		$this->maniaControl->callbackManager->triggerCallback(CallbackManager::CB_TM_PLAYERCHECKPOINT, $finishCallback);
 	}
 }
-
-?>

@@ -852,4 +852,4 @@ class IXR_ClientMulticall_Gbx extends IXR_Client_Gbx {
 		return $result;
 	}
 }
-?>
+

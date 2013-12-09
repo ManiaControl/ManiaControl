@@ -274,5 +274,3 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		return $this->maniaControl->chat->sendChat($message, $player->login);
 	}
 }
-
-?>

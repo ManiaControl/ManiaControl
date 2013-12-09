@@ -407,4 +407,3 @@ class LocalRecordsPlugin implements CallbackListener, Plugin {
 	}
 }
 
-?>

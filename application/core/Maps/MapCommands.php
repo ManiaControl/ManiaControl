@@ -151,6 +151,7 @@ class MapCommands implements CommandListener {
 			return true;
 		}
 		// TODO: add local map by filename
+        return false;
 	}
 
 	/**

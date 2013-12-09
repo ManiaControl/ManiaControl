@@ -472,5 +472,3 @@ class KarmaPlugin implements CallbackListener, Plugin {
 		$this->manialink = $manialink;
 	}
 }
-
-?>

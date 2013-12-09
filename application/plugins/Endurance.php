@@ -125,5 +125,3 @@ class EndurancePlugin implements CallbackListener, Plugin {
 		$this->maniaControl->callbackManager->triggerCallback(CallbackManager::CB_TM_PLAYERFINISH, $finishCallback);
 	}
 }
-
-?>

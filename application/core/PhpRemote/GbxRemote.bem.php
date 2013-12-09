@@ -889,4 +889,3 @@ function big_endian_unpack($format, $data) {
 	}
 	return $ar;
 }
-?>
