@@ -26,15 +26,15 @@ class PlayerCommands implements CommandListener {
 		$this->maniaControl = $maniaControl;
 		
 		// Register for commands
-		$this->maniaControl->commandManager->registerCommandListener('/teambalance', $this, 'command_TeamBalance');
-		$this->maniaControl->commandManager->registerCommandListener('/autoteambalance', $this, 'command_TeamBalance');
-		$this->maniaControl->commandManager->registerCommandListener('/kick', $this, 'command_Kick');
-		$this->maniaControl->commandManager->registerCommandListener('/forcespec', $this, 'command_ForceSpectator');
-		$this->maniaControl->commandManager->registerCommandListener('/forcespectator', $this, 'command_ForceSpectator');
-		$this->maniaControl->commandManager->registerCommandListener('/forceplay', $this, 'command_ForcePlayer');
-		$this->maniaControl->commandManager->registerCommandListener('/forceplayer', $this, 'command_ForcePlayer');
-		$this->maniaControl->commandManager->registerCommandListener('/addfakeplayers', $this, 'command_AddFakePlayers');
-		$this->maniaControl->commandManager->registerCommandListener('/removefakeplayers', $this, 'command_RemoveFakePlayers');
+		$this->maniaControl->commandManager->registerCommandListener('teambalance', $this, 'command_TeamBalance',true);
+		$this->maniaControl->commandManager->registerCommandListener('autoteambalance', $this, 'command_TeamBalance',true);
+		$this->maniaControl->commandManager->registerCommandListener('kick', $this, 'command_Kick',true);
+		$this->maniaControl->commandManager->registerCommandListener('forcespec', $this, 'command_ForceSpectator',true);
+		$this->maniaControl->commandManager->registerCommandListener('forcespectator', $this, 'command_ForceSpectator',true);
+		$this->maniaControl->commandManager->registerCommandListener('forceplay', $this, 'command_ForcePlayer',true);
+		$this->maniaControl->commandManager->registerCommandListener('forceplayer', $this, 'command_ForcePlayer',true);
+		$this->maniaControl->commandManager->registerCommandListener('addbots', $this, 'command_AddFakePlayers',true);
+		$this->maniaControl->commandManager->registerCommandListener('removebots', $this, 'command_RemoveFakePlayers',true);
 	}
 
 	/**
