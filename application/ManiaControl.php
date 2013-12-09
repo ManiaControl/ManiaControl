@@ -37,7 +37,7 @@ if (LOG_WRITE_CURRENT_FILE) {
 // Log function
 function logMessage($message) {
 	$message .= PHP_EOL;
-	file_put_contents(LOG_CURRENT_FILE, $message, FILE_APPEND);
+	if (defined('LOG_CURRENT_FILE')) file_put_contents(LOG_CURRENT_FILE, $message, FILE_APPEND);
 	file_put_contents(LOG_FILE, $message, FILE_APPEND);
 	echo $message;
 }
