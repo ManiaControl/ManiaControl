@@ -191,6 +191,7 @@ class SettingManager {
 				@value
 				) ON DUPLICATE KEY UPDATE
 				`type` = VALUES(`type`),
+				`value` = IF(`default` = VALUES(`default`), `value`, VALUES(`default`)), 
 				`default` = VALUES(`default`);";
 		$settingStatement = $mysqli->prepare($settingQuery);
 		if ($mysqli->error) {
