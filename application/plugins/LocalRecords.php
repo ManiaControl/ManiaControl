@@ -24,7 +24,8 @@ class LocalRecordsPlugin implements CallbackListener, Plugin {
 	/**
 	 * Constants
 	 */
-	const VERSION = 1.0;
+	const ID = 6;
+	const VERSION = 0.1;
 	const MLID_RECORDS = 'ml_local_records';
 	const TABLE_RECORDS = 'mc_localrecords';
 	const SETTING_WIDGET_TITLE = 'Widget Title';
@@ -82,6 +83,14 @@ class LocalRecordsPlugin implements CallbackListener, Plugin {
 		if ($mysqli->error) {
 			trigger_error($mysqli->error, E_USER_ERROR);
 		}
+	}
+
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::getId()
+	 */
+	public static function getId() {
+		return self::ID;
 	}
 
 	/**

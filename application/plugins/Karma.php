@@ -23,7 +23,8 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	/**
 	 * Constants
 	 */
-	const VERSION = 1.0;
+	const ID = 5;
+	const VERSION = 0.1;
 	const MLID_KARMA = 'KarmaPlugin.MLID';
 	const TABLE_KARMA = 'mc_karma';
 	const SETTING_AVAILABLE_VOTES = 'Available Votes (X-Y: Comma separated)';
@@ -75,6 +76,14 @@ class KarmaPlugin implements CallbackListener, Plugin {
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCHAT, $this, 'handlePlayerChat');
 	}
 
+
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::getId()
+	 */
+	public static function getId() {
+		return self::ID;
+	}
 	/**
 	 *
 	 * @see \ManiaControl\Plugins\Plugin::getName()

@@ -16,7 +16,8 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	/**
 	 * Constants
 	 */
-	const VERSION = 1.0;
+	const ID = 3;
+	const VERSION = 0.1;
 	const SETTING_ANNOUNCE_SERVERDONATION = 'Enable Server-Donation Announcements';
 	
 	/**
@@ -43,10 +44,18 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 
 	/**
 	 *
+	 * @see \ManiaControl\Plugins\Plugin::getId()
+	 */
+	public static function getId() {
+		return self::ID;
+	}
+
+	/**
+	 *
 	 * @see \ManiaControl\Plugins\Plugin::getName()
 	 */
 	public static function getName() {
-		return 'Donation Plugin';
+		return 'Donations Plugin';
 	}
 
 	/**
@@ -70,7 +79,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 * @see \ManiaControl\Plugins\Plugin::getDescription()
 	 */
 	public static function getDescription() {
-		return 'DonationPlugin commands like /donate, /pay and /getplanets and a donation widget.';
+		return 'Plugin offering commands like /donate, /pay and /getplanets and a donation widget.';
 	}
 
 	/**

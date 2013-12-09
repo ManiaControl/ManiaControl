@@ -16,7 +16,8 @@ class ObstaclePlugin implements CallbackListener, CommandListener, Plugin {
 	/**
 	 * Constants
 	 */
-	const VERSION = 1.0;
+	const ID = 7;
+	const VERSION = 0.1;
 	const CB_JUMPTO = 'Obstacle.JumpTo';
 	const SCB_ONFINISH = 'OnFinish';
 	const SCB_ONCHECKPOINT = 'OnCheckpoint';
@@ -40,6 +41,14 @@ class ObstaclePlugin implements CallbackListener, CommandListener, Plugin {
 		$this->maniaControl->callbackManager->registerScriptCallbackListener(self::SCB_ONCHECKPOINT, $this, 'callback_OnCheckpoint');
 	}
 
+
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::getId()
+	 */
+	public static function getId() {
+		return self::ID;
+	}
 	/**
 	 *
 	 * @see \ManiaControl\Plugins\Plugin::getName()
@@ -69,7 +78,7 @@ class ObstaclePlugin implements CallbackListener, CommandListener, Plugin {
 	 * @see \ManiaControl\Plugins\Plugin::getDescription()
 	 */
 	public static function getDescription() {
-		return 'Plugin offering various Commands for the ShootMania Obstacle Game Mode.';
+		return "Plugin offering various Commands for the ShootMania 'Obstacle' Game Mode by steeffeen.";
 	}
 
 	/**

@@ -13,7 +13,8 @@ class EndurancePlugin implements CallbackListener, Plugin {
 	/**
 	 * Constants
 	 */
-	const VERSION = 1.0;
+	const ID = 4;
+	const VERSION = 0.1;
 	const CB_CHECKPOINT = 'Endurance.Checkpoint';
 	
 	/**
@@ -36,6 +37,14 @@ class EndurancePlugin implements CallbackListener, Plugin {
 		$this->maniaControl->callbackManager->registerScriptCallbackListener(self::CB_CHECKPOINT, $this, 'callback_Checkpoint');
 	}
 
+
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::getId()
+	 */
+	public static function getId() {
+		return self::ID;
+	}
 	/**
 	 *
 	 * @see \ManiaControl\Plugins\Plugin::getName()

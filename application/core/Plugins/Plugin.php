@@ -23,6 +23,13 @@ interface Plugin {
 	public function __construct(ManiaControl $maniaControl);
 
 	/**
+	 * Get plugin id
+	 *
+	 * @return int
+	 */
+	public static function getId();
+
+	/**
 	 * Get Plugin Name
 	 *
 	 * @return string

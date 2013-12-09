@@ -14,7 +14,8 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 	/**
 	 * Constants
 	 */
-	const VERSION = 1.0;
+	const ID = 1;
+	const VERSION = 0.1;
 	const SETTING_FOLDERNAME = 'Log-Folder Name';
 	const SETTING_FILENAME = 'Log-File Name';
 	const SETTING_USEPID = 'Use Process-Id for File Name';
@@ -69,6 +70,14 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCHAT, $this, 
 				'handlePlayerChatCallback');
+	}
+
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::getId()
+	 */
+	public static function getId() {
+		return self::ID;
 	}
 
 	/**
