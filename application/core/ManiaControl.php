@@ -106,6 +106,15 @@ class ManiaControl implements CommandListener {
 	}
 
 	/**
+	 * Print a message to console and log
+	 * 
+	 * @param string $message        	
+	 */
+	public function log($message) {
+		logMessage($message);
+	}
+
+	/**
 	 * Return message composed of client error message and error code
 	 *
 	 * @param object $client        	
