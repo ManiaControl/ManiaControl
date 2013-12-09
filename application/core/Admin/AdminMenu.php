@@ -41,8 +41,8 @@ class AdminMenu implements CallbackListener {
 		$this->maniaControl = $maniaControl;
 		
 		// Init settings
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_POSX, 130.);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_POSY, -70.);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_POSX, 155.);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_POSY, -60.);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_ITEMSIZE, 6.);
 		
 		// Register for callbacks
@@ -53,10 +53,10 @@ class AdminMenu implements CallbackListener {
 	/**
 	 * Add a new menu item
 	 *
-	 * @param Control $control        	
-	 * @param float $order        	
+	 * @param Control $control
+	 * @param int     $order
 	 */
-	public function addMenuItem(Control $control, $order = 0.) {
+	public function addMenuItem(Control $control, $order = 0) {
 		if (!isset($this->menuItems[$order])) {
 			$this->menuItems[$order] = array();
 		}
