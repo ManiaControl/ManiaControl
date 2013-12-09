@@ -2,6 +2,7 @@
 
 namespace ManiaControl\Plugins;
 
+use FML\Controls\Labels\Label_Button;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use ManiaControl\ManiaControl;
@@ -104,6 +105,15 @@ class PluginMenu implements ConfiguratorMenu {
 			$tooltips->add($nameLabel, $descriptionLabel);
 
 			//TODO set aktive button
+			$aktivButton = new Quad();
+			$aktivButton->setBgColor("Red");
+			$aktivButton->setHeight(10);
+			$aktivButton->setWidth(10);
+			$aktivButton->setX($width * 0.2);
+			$settingFrame->add($aktivButton);
+			//$aktivButton = new Labels\Label_Button();
+
+
 			$y -= $entryHeight;
 		//	if ($index % $pageMaxCount == $pageMaxCount - 1) {
 			//	unset($pageFrame);
