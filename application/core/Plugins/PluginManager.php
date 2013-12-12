@@ -26,7 +26,6 @@ class PluginManager {
 	private $activePlugins = array();
 	private $pluginClasses = array();
 
-
 	/**
 	 * Construct plugin manager
 	 *
@@ -139,6 +138,40 @@ class PluginManager {
 	}
 
 	/**
+	 * Activate and start the plugin with the given name
+	 *
+	 * @param string $pluginClass        	
+	 * @return bool
+	 */
+	public function activatePlugin($pluginClass) {
+		if (!in_array($pluginClass, $this->pluginClasses)) {
+			return false;
+		}
+		if (isset($this->activePlugins[$pluginClass])) {
+			return false;
+		}
+		$this->savePluginStatus($pluginClass, true);
+		return true;
+	}
+
+	/**
+	 * Deactivate the plugin with the given name
+	 *
+	 * @param string $pluginClass        	
+	 * @return bool
+	 */
+	public function deactivatePlugin($pluginClass) {
+		if (!in_array($pluginClass, $this->pluginClasses)) {
+			return false;
+		}
+		if (!isset($this->activePlugins[$pluginClass])) {
+			return false;
+		}
+		$this->savePluginStatus($pluginClass, false);
+		return true;
+	}
+
+	/**
 	 * Load complete plugins directory and start all configured plugins
 	 */
 	public function loadPlugins() {
@@ -165,24 +198,26 @@ class PluginManager {
 					continue;
 				}
 				$plugin = new $className($this->maniaControl);
-				array_push($this->activePlugins, $plugin);
+				$this->activePlugins[$className] = $plugin;
 			}
 		}
 	}
 
 	/**
+	 * Get all declared plugin class names
+	 *
 	 * @return array
 	 */
-	public function getPluginClasses()
-	{
+	public function getPluginClasses() {
 		return $this->pluginClasses;
 	}
 
 	/**
+	 * Get all active plugins
+	 *
 	 * @return array
 	 */
-	public function getActivePlugins()
-	{
+	public function getActivePlugins() {
 		return $this->activePlugins;
 	}
 }

@@ -18,14 +18,12 @@ use ManiaControl\Players\Player;
  *
  * @author steeffeen & kremsy
  */
+// TODO: boolean script settings not as entries
 class ScriptSettings implements ConfiguratorMenu {
 	/**
 	 * Constants
 	 */
-	const NAME_PREFIX = 'Script.';
-	const SETTING_TITLE = 'Menu Title';
-	const SETTING_STYLE_SETTING = 'Setting Label Style';
-	const SETTING_STYLE_DESCRIPTION = 'Description Label Style';
+	const ACTION_PREFIX_SETTING = 'ScriptSetting.';
 	
 	/**
 	 * Private properties
@@ -39,11 +37,6 @@ class ScriptSettings implements ConfiguratorMenu {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
-		
-		// Init settings
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_TITLE, 'Script Settings');
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_STYLE_SETTING, Label_Text::STYLE_TextStaticSmall);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_STYLE_DESCRIPTION, Label_Text::STYLE_TextTips);
 	}
 
 	/**
@@ -51,9 +44,9 @@ class ScriptSettings implements ConfiguratorMenu {
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getTitle()
 	 */
 	public function getTitle() {
-		return $this->maniaControl->settingManager->getSetting($this, self::SETTING_TITLE);
+		return 'Script Settings';
 	}
-	//TODO: boolean values not as entry
+
 	/**
 	 *
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getMenu()
@@ -69,8 +62,6 @@ class ScriptSettings implements ConfiguratorMenu {
 		$scriptSettings = $this->maniaControl->client->getResponse();
 		
 		// Config
-		$labelStyleSetting = $this->maniaControl->settingManager->getSetting($this, self::SETTING_STYLE_SETTING);
-		$labelStyleDescription = $this->maniaControl->settingManager->getSetting($this, self::SETTING_STYLE_DESCRIPTION);
 		$pagerSize = 9.;
 		$settingHeight = 5.;
 		$labelTextSize = 2;
@@ -98,7 +89,7 @@ class ScriptSettings implements ConfiguratorMenu {
 		
 		// Setting pages
 		$pageFrames = array();
-        $y = 0.;
+		$y = 0.;
 		foreach ($scriptParams as $index => $scriptParam) {
 			$settingName = $scriptParam['Name'];
 			if (!isset($scriptSettings[$settingName])) continue;
@@ -114,12 +105,12 @@ class ScriptSettings implements ConfiguratorMenu {
 			$pageFrame->add($settingFrame);
 			$settingFrame->setY($y);
 			
-			$nameLabel = new Label();
+			$nameLabel = new Label_Text();
 			$settingFrame->add($nameLabel);
 			$nameLabel->setHAlign(Control::LEFT);
 			$nameLabel->setX($width * -0.46);
 			$nameLabel->setSize($width * 0.4, $settingHeight);
-			$nameLabel->setStyle($labelStyleSetting);
+			$nameLabel->setStyle($nameLabel::STYLE_TextCardSmall);
 			$nameLabel->setTextSize($labelTextSize);
 			$nameLabel->setText($settingName);
 			
@@ -127,20 +118,19 @@ class ScriptSettings implements ConfiguratorMenu {
 			$settingFrame->add($entry);
 			$entry->setHAlign(Control::RIGHT);
 			$entry->setX($width * 0.44);
-			$entry->setSize($width * 0.43, $settingHeight);
-			$entry->setName(self::NAME_PREFIX . $settingName);
+			$entry->setSize($width * 0.4, $settingHeight);
+			$entry->setName(self::ACTION_PREFIX_SETTING . $settingName);
 			$settingValue = $scriptSettings[$settingName];
 			if ($settingValue === false) {
 				$settingValue = 0;
 			}
 			$entry->setDefault($settingValue);
-
+			
 			$descriptionLabel = new Label();
 			$pageFrame->add($descriptionLabel);
 			$descriptionLabel->setHAlign(Control::LEFT);
 			$descriptionLabel->setPosition($width * -0.45, $height * -0.44);
 			$descriptionLabel->setSize($width * 0.7, $settingHeight);
-			$descriptionLabel->setStyle($labelStyleDescription);
 			$descriptionLabel->setTranslate(true);
 			$descriptionLabel->setTextPrefix('Desc: ');
 			$descriptionLabel->setText($scriptParam['Desc']);
@@ -164,13 +154,15 @@ class ScriptSettings implements ConfiguratorMenu {
 	public function saveConfigData(array $configData, Player $player) {
 		$this->maniaControl->client->query('GetModeScriptSettings');
 		$scriptSettings = $this->maniaControl->client->getResponse();
-// 		var_dump($configData);
-// 		var_dump($scriptSettings);
-		$prefixLength = strlen(self::NAME_PREFIX);
+		// var_dump($configData);
+		// var_dump($scriptSettings);
+		$prefixLength = strlen(self::ACTION_PREFIX_SETTING);
 		foreach ($configData[3] as $dataName => $dataValue) {
-			if (substr($dataName, 0, $prefixLength) != self::NAME_PREFIX) continue;
+			if (substr($dataName, 0, $prefixLength) != self::ACTION_PREFIX_SETTING) continue;
 			
 			$settingName = substr($dataName, $prefixLength);
+			
+			// TODO: apply new script settings
 		}
 	}
 }

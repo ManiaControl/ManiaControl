@@ -215,7 +215,7 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 		
 		$menuRelationships = array();
 		$menuItemY = $menuHeight * 0.42;
-		foreach ($this->menus as $menu) {
+		foreach ($this->menus as $index => $menu) {
 			// Add title
 			$menuItemLabel = new Label();
 			$menuItemsFrame->add($menuItemLabel);
@@ -226,6 +226,9 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 			
 			// Add menu
 			$menuControl = $menu->getMenu($subMenuWidth, $subMenuHeight, $pages, $tooltips);
+			if ($index > 0) {
+				$menuControl->setVisible(false);
+			}
 			$menusFrame->add($menuControl);
 			
 			// Add menu relationship

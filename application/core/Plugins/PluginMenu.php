@@ -12,13 +12,23 @@ use FML\Controls\Frame;
 use FML\Controls\Label;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Control;
+use FML\Controls\Quads\Quad_Icons64x64_1;
+use FML\Controls\Labels\Label_Button;
+use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Callbacks\CallbackListener;
 
 /**
  * Configurator for enabling and disabling plugins
  *
  * @author steeffeen
  */
-class PluginMenu implements ConfiguratorMenu {
+class PluginMenu implements CallbackListener, ConfiguratorMenu {
+	/**
+	 * Constants
+	 */
+	const ACTION_PREFIX_ENABLEPLUGIN = 'PluginMenu.Enable.';
+	const ACTION_PREFIX_DISABLEPLUGIN = 'PluginMenu.Disable.';
+	
 	/**
 	 * Private properties
 	 */
@@ -31,6 +41,9 @@ class PluginMenu implements ConfiguratorMenu {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
+		
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 
+				'handleManialinkPageAnswer');
 	}
 
 	/**
@@ -38,7 +51,7 @@ class PluginMenu implements ConfiguratorMenu {
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getTitle()
 	 */
 	public function getTitle() {
-		return "Plugins";
+		return 'Plugins';
 	}
 
 	/**
@@ -47,83 +60,110 @@ class PluginMenu implements ConfiguratorMenu {
 	 */
 	public function getMenu($width, $height, Pages $pages, Tooltips $tooltips) {
 		$frame = new Frame();
-
+		
 		$pluginClasses = $this->maniaControl->pluginManager->getPluginClasses();
-		//$labelStyleSetting = $this->maniaControl->settingManager->getSetting($this, self::SETTING_STYLE_SETTING);
-		$labelStyleSetting = Label_Text::STYLE_TextStaticSmall;
-	//	$pagerSize = 9.;
+		
+		// Config
+		$pagerSize = 9.;
 		$entryHeight = 5.;
 		$labelTextSize = 2;
-	//	$pageMaxCount = 13;
+		$pageMaxCount = 10;
+		
+		// Pagers
+		$pagerPrev = new Quad_Icons64x64_1();
+		$frame->add($pagerPrev);
+		$pagerPrev->setPosition($width * 0.39, $height * -0.44, 2);
+		$pagerPrev->setSize($pagerSize, $pagerSize);
+		$pagerPrev->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowPrev);
+		
+		$pagerNext = new Quad_Icons64x64_1();
+		$frame->add($pagerNext);
+		$pagerNext->setPosition($width * 0.45, $height * -0.44, 2);
+		$pagerNext->setSize($pagerSize, $pagerSize);
+		$pagerNext->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowNext);
+		
+		$pageCountLabel = new Label_Text();
+		$frame->add($pageCountLabel);
+		$pageCountLabel->setHAlign(Control::RIGHT);
+		$pageCountLabel->setPosition($width * 0.35, $height * -0.44, 1);
+		$pageCountLabel->setStyle($pageCountLabel::STYLE_TextTitle1);
+		$pageCountLabel->setTextSize(2);
+		
+		// Plugin pages
 		$pageFrames = array();
 		$y = 0.;
-		foreach ($pluginClasses as $pluginClass) {
+		foreach ($pluginClasses as $index => $pluginClass) {
 			if (!isset($pageFrame)) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
 				array_push($pageFrames, $pageFrame);
 				$y = $height * 0.41;
 			}
-
-			//check if plugin is aktiv
+			
 			$active = $this->maniaControl->pluginManager->getPluginStatus($pluginClass);
-
-
-			$settingFrame = new Frame();
-			$pageFrame->add($settingFrame);
-			$settingFrame->setY($y);
-
-			//TODO: Red or Green quad to see if the plugin is aktiv (not working yet)
-			$activeQuad = new Quad();
-			$settingFrame->add($activeQuad);
-			if($active)
-				$activeQuad->setStyles("Icons64x64_1", "LvlGreen");
-			else
-				$activeQuad->setStyles("Icons64x64_1", "LvlRed");
-			$activeQuad->setHeight(5);
-			$activeQuad->setWidth(5);
-			$activeQuad->setX($width * -0.455);
-			//TODO handle z position automatically in fml pls
-
-			$nameLabel = new Label();
-			$settingFrame->add($nameLabel);
+			
+			$pluginFrame = new Frame();
+			$pageFrame->add($pluginFrame);
+			$pluginFrame->setY($y);
+			
+			$activeQuad = new Quad_Icons64x64_1();
+			$pluginFrame->add($activeQuad);
+			$activeQuad->setPosition($width * -0.45, -0.1, 1);
+			$activeQuad->setSize($entryHeight * 0.9, $entryHeight * 0.9);
+			if ($active) {
+				$activeQuad->setSubStyle($activeQuad::SUBSTYLE_LvlGreen);
+			}
+			else {
+				$activeQuad->setSubStyle($activeQuad::SUBSTYLE_LvlRed);
+			}
+			
+			$nameLabel = new Label_Text();
+			$pluginFrame->add($nameLabel);
 			$nameLabel->setHAlign(Control::LEFT);
 			$nameLabel->setX($width * -0.4);
-			$nameLabel->setSize($width * 0.4, $entryHeight);
-			$nameLabel->setStyle($labelStyleSetting);
+			$nameLabel->setSize($width * 0.5, $entryHeight);
+			$nameLabel->setStyle($nameLabel::STYLE_TextCardSmall);
 			$nameLabel->setTextSize($labelTextSize);
-			$nameLabel->setText($pluginClass);
-
-			//TODO description
+			$nameLabel->setText($pluginClass::getName());
+			
 			$descriptionLabel = new Label();
 			$pageFrame->add($descriptionLabel);
-			$descriptionLabel->setHAlign(Control::LEFT);
-			$descriptionLabel->setPosition($width * -0.45, $height * -0.44);
-			//$descriptionLabel->setSize($width * 0.7, $settingHeight);
-			//$descriptionLabel->setStyle($labelStyleDescription);
+			$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
+			$descriptionLabel->setPosition($width * -0.45, $height * -0.22);
+			$descriptionLabel->setSize($width * 0.7, $entryHeight);
+			$descriptionLabel->setTextSize(2);
 			$descriptionLabel->setTranslate(true);
-			$descriptionLabel->setTextPrefix('Desc: ');
-			//$descriptionLabel->setText($scriptParam['Desc']);
+			$descriptionLabel->setVisible(false);
+			$descriptionLabel->setAutoNewLine(true);
+			$descriptionLabel->setMaxLines(5);
+			$description = "Author: {$pluginClass::getAuthor()}\nVersion: {$pluginClass::getVersion()}\nDesc: {$pluginClass::getDescription()}";
+			$descriptionLabel->setText($description);
 			$tooltips->add($nameLabel, $descriptionLabel);
-
-			//TODO set aktive button
-			/*$aktivButton = new Quad();
-			$aktivButton->setBgColor("F00");
-			$aktivButton->setHeight(10);
-			$aktivButton->setWidth(10);
-			$aktivButton->setX($width * 0.2);
-			$settingFrame->add($aktivButton);*/
-			//$aktivButton = new Labels\Label_Button();
-
-
+			
+			$statusChangeButton = new Label_Button();
+			$pluginFrame->add($statusChangeButton);
+			$statusChangeButton->setHAlign(Control::RIGHT);
+			$statusChangeButton->setX($width * 0.45);
+			$statusChangeButton->setStyle($statusChangeButton::STYLE_CardButtonSmall);
+			if ($active) {
+				$statusChangeButton->setTextPrefix('$f00');
+				$statusChangeButton->setText('Deactivate');
+				$statusChangeButton->setAction(self::ACTION_PREFIX_DISABLEPLUGIN . $pluginClass);
+			}
+			else {
+				$statusChangeButton->setTextPrefix('a');
+				$statusChangeButton->setText('Activate');
+				$statusChangeButton->setAction(self::ACTION_PREFIX_ENABLEPLUGIN . $pluginClass);
+			}
+			
 			$y -= $entryHeight;
-		//	if ($index % $pageMaxCount == $pageMaxCount - 1) {
-			//	unset($pageFrame);
-			//}
+			if ($index % $pageMaxCount == $pageMaxCount - 1) {
+				unset($pageFrame);
+			}
 		}
-		//TODO multiple pages
-		//$pages->add(array(-1 => $pagerPrev, 1 => $pagerNext), $pageFrames, $pageCountLabel);
-
+		
+		$pages->add(array(-1 => $pagerPrev, 1 => $pagerNext), $pageFrames, $pageCountLabel);
+		
 		return $frame;
 	}
 
@@ -132,6 +172,32 @@ class PluginMenu implements ConfiguratorMenu {
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
 	 */
 	public function saveConfigData(array $configData, Player $player) {
+	}
+
+	/**
+	 * Handle PlayerManialinkPageAnswer callback
+	 *
+	 * @param array $callback        	
+	 */
+	public function handleManialinkPageAnswer(array $callback) {
+		$actionId = $callback[1][2];
+		$enable = (strpos($actionId, self::ACTION_PREFIX_ENABLEPLUGIN) === 0);
+		$disable = (strpos($actionId, self::ACTION_PREFIX_DISABLEPLUGIN) === 0);
+		if (!$enable && !$disable) {
+			return;
+		}
+		$login = $callback[1][1];
+		$player = $this->maniaControl->playerManager->getPlayer($login);
+		if (!$player) {
+			return;
+		}
+		if ($enable) {
+			$pluginClass = substr($actionId, strlen(self::ACTION_PREFIX_ENABLEPLUGIN));
+		}
+		else {
+			$pluginClass = substr($actionId, strlen(self::ACTION_PREFIX_DISABLEPLUGIN));
+		}
+		var_dump($pluginClass);
 	}
 }
 
