@@ -86,7 +86,8 @@ class AuthenticationManager {
 		$adminStatement->bind_param('si', $login, $xAdminLevel);
 		$success = true;
 		foreach ($xAdmins as $xAdmin) {
-			$login = (string) $xAdmin;
+            /** @noinspection PhpUnusedLocalVariableInspection */
+            $login = (string) $xAdmin;
 			$adminStatement->execute();
 			if ($adminStatement->error) {
 				trigger_error($adminStatement->error);
