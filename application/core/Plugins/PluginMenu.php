@@ -193,11 +193,16 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 		}
 		if ($enable) {
 			$pluginClass = substr($actionId, strlen(self::ACTION_PREFIX_ENABLEPLUGIN));
+			$this->maniaControl->pluginManager->activatePlugin($pluginClass);
+			$this->maniaControl->log("Admin XY activated plugin " . $pluginClass);
 		}
 		else {
 			$pluginClass = substr($actionId, strlen(self::ACTION_PREFIX_DISABLEPLUGIN));
+			$this->maniaControl->pluginManager->deactivatePlugin($pluginClass); //TODO support from manager
+			$this->maniaControl->log("Admin XY deactivated plugin " . $pluginClass); //Todo adminname
 		}
 		var_dump($pluginClass);
+
 	}
 }
 
