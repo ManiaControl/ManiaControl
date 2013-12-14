@@ -8,17 +8,17 @@ use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 use FML\ManiaLink;
+use FML\ManiaLinks;
 use FML\Controls\Frame;
 use FML\Controls\Label;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_BgRaceScore2;
+use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Script\Menus;
 use FML\Script\Pages;
 use FML\Script\Script;
 use FML\Script\Tooltips;
-use FML\Controls\Quads\Quad_Icons64x64_1;
-use FML\ManiaLinks;
 
 require_once __DIR__ . '/ConfiguratorMenu.php';
 require_once __DIR__ . '/ScriptSettings.php';
@@ -134,7 +134,7 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 	 *
 	 * @param Player $player        	
 	 */
-	private function showMenu(Player $player) {
+	public function showMenu(Player $player) {
 		$this->buildManialink();
 		$manialinkText = $this->manialink->render()->saveXML();
 		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
@@ -147,7 +147,7 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 	 *
 	 * @param Player $player        	
 	 */
-	private function hideMenu(Player $player) {
+	public function hideMenu(Player $player) {
 		$emptyManialink = new ManiaLink(self::MLID_MENU);
 		$manialinkText = $emptyManialink->render()->saveXML();
 		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
@@ -222,7 +222,7 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 			$menuItemLabel->setY($menuItemY);
 			$menuItemLabel->setSize($menuListWidth * 0.9, $menuItemHeight * 0.9);
 			$menuItemLabel->setStyle(Label_Text::STYLE_TextCardRaceRank);
-			$menuItemLabel->setText($menu->getTitle());
+			$menuItemLabel->setText('$z' . $menu->getTitle() . '$z');
 			
 			// Add menu
 			$menuControl = $menu->getMenu($subMenuWidth, $subMenuHeight, $pages, $tooltips);
@@ -254,7 +254,7 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 		$closeButton->setStyle(Label_Text::STYLE_TextButtonNavBack);
 		$closeButton->setTextPrefix('$999');
 		$closeButton->setTranslate(true);
-		$closeButton->setText('Close');
+		$closeButton->setText('$zClose$z');
 		$closeButton->setAction(self::ACTION_TOGGLEMENU);
 		
 		// Add save button
@@ -265,7 +265,7 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 		$saveButton->setStyle(Label_Text::STYLE_TextButtonNavBack);
 		$saveButton->setTextPrefix('$0f5');
 		$saveButton->setTranslate(true);
-		$saveButton->setText('Save');
+		$saveButton->setText('$zSave$z');
 		$saveButton->setAction(self::ACTION_SAVECONFIG);
 		
 		$this->manialink = $manialinks;
