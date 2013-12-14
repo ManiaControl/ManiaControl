@@ -97,13 +97,18 @@ class Pages implements Constants, Globals, Includes, Labels, ScriptFeature {
 			}
 			$constant .= '"__FML__Pages__Id__" => ["' . $page[2] . '"], ';
 			$constant .= '"__FML__Pages__Ids__" => [';
-			$subIndex = 0;
-			foreach ($page[1] as $pageId) {
-				$constant .= '"' . $pageId . '"';
-				if ($subIndex < count($page[1]) - 1) {
-					$constant .= ', ';
+			if (count($page[1]) <= 0) {
+				$constant .= '""';
+			}
+			else {
+				$subIndex = 0;
+				foreach ($page[1] as $pageId) {
+					$constant .= '"' . $pageId . '"';
+					if ($subIndex < count($page[1]) - 1) {
+						$constant .= ', ';
+					}
+					$subIndex++;
 				}
-				$subIndex++;
 			}
 			$constant .= ']]';
 			if ($index < count($this->pages) - 1) {

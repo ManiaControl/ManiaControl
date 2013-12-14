@@ -47,13 +47,18 @@ class Tooltips implements Constants, Labels, ScriptFeature {
 	 */
 	public function getConstants() {
 		$constant = '[';
-		$index = 0;
-		foreach ($this->tooltips as $hoverId => $tooltipId) {
-			$constant .= '"' . $hoverId . '" => "' . $tooltipId . '"';
-			if ($index < count($this->tooltips) - 1) {
-				$constant .= ',';
+		if (count($this->tooltips) <= 0) {
+			$constant .= '"" => ""';
+		}
+		else {
+			$index = 0;
+			foreach ($this->tooltips as $hoverId => $tooltipId) {
+				$constant .= '"' . $hoverId . '" => "' . $tooltipId . '"';
+				if ($index < count($this->tooltips) - 1) {
+					$constant .= ',';
+				}
+				$index++;
 			}
-			$index++;
 		}
 		$constant .= ']';
 		$constants = array();
