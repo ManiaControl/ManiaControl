@@ -113,10 +113,48 @@ class CallbackManager {
 	}
 
 	/**
+	 * Remove a Callback Listener
+	 *
+	 * @param CallbackListener $listener        	
+	 * @return bool
+	 */
+	public function unregisterCallbackListener(CallbackListener $listener) {
+		$removed = false;
+		foreach ($this->callbackListeners as &$listeners) {
+			foreach ($listeners as $key => &$listenerCallback) {
+				if ($listenerCallback[0] == $listener) {
+					unset($listeners[$key]);
+					$removed = true;
+				}
+			}
+		}
+		return $removed;
+	}
+
+	/**
+	 * Remove a Script Callback Listener
+	 *
+	 * @param CallbackListener $listener        	
+	 * @return bool
+	 */
+	public function unregisterScriptCallbackListener(CallbackListener $listener) {
+		$removed = false;
+		foreach ($this->scriptCallbackListener as &$listeners) {
+			foreach ($listeners as $key => &$listenerCallback) {
+				if ($listenerCallback[0] == $listener) {
+					unset($listeners[$key]);
+					$removed = true;
+				}
+			}
+		}
+		return $removed;
+	}
+
+	/**
 	 * Trigger a specific callback
 	 *
 	 * @param string $callbackName        	
-	 * @param array $callback
+	 * @param array $callback        	
 	 */
 	public function triggerCallback($callbackName, array $callback) {
 		if (!array_key_exists($callbackName, $this->callbackListeners)) {
@@ -249,5 +287,3 @@ class CallbackManager {
 		$this->triggerCallback(self::CB_MC_1_MINUTE, array(self::CB_MC_1_MINUTE));
 	}
 }
-
-?>
