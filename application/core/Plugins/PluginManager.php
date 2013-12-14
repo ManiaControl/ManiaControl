@@ -6,9 +6,11 @@ require_once __DIR__ . '/Plugin.php';
 require_once __DIR__ . '/PluginMenu.php';
 
 use ManiaControl\ManiaControl;
+use ManiaControl\Callbacks\CallbackListener;
+use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 
 /**
- * Class managing plugins
+ * Class managing Plugins
  *
  * @author steeffeen & kremsy
  */
@@ -51,7 +53,8 @@ class PluginManager {
 				`className` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
 				`active` tinyint(1) NOT NULL DEFAULT '0',
 				`changed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-				PRIMARY KEY (`index`)
+				PRIMARY KEY (`index`),
+				UNIQUE KEY `className` (`className`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='ManiaControl plugin status' AUTO_INCREMENT=1;";
 		$tableStatement = $mysqli->prepare($pluginsTableQuery);
 		if ($mysqli->error) {
@@ -68,13 +71,164 @@ class PluginManager {
 	}
 
 	/**
+	 * Check if the plugin is running
+	 *
+	 * @param string $pluginClass        	
+	 * @return bool
+	 */
+	public function isPluginActive($pluginClass) {
+		if (is_object($pluginClass)) {
+			$pluginClass = get_class($pluginClass);
+		}
+		return isset($this->activePlugins[$pluginClass]);
+	}
+
+	/**
+	 * Check if the given class implements the plugin interface
+	 *
+	 * @param string $pluginClass        	
+	 * @return bool
+	 */
+	public function isPluginClass($pluginClass) {
+		if (is_object($pluginClass)) {
+			$pluginClass = get_class($pluginClass);
+		}
+		if (!in_array(Plugin::PLUGIN_INTERFACE, class_implements($pluginClass))) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Add the class to array of loaded plugin classes
+	 *
+	 * @param string $pluginClass        	
+	 * @return bool
+	 */
+	public function addPluginClass($pluginClass) {
+		if (is_object($pluginClass)) {
+			$pluginClass = get_class($pluginClass);
+		}
+		if (in_array($pluginClass, $this->pluginClasses)) {
+			return false;
+		}
+		if (!$this->isPluginClass($pluginClass)) {
+			return false;
+		}
+		array_push($this->pluginClasses, $pluginClass);
+		return true;
+	}
+
+	/**
+	 * Activate and start the plugin with the given name
+	 *
+	 * @param string $pluginClass        	
+	 * @return bool
+	 */
+	public function activatePlugin($pluginClass) {
+		if (!is_string($pluginClass)) {
+			return false;
+		}
+		if (!$this->isPluginClass($pluginClass)) {
+			return false;
+		}
+		if ($this->isPluginActive($pluginClass)) {
+			return false;
+		}
+		$plugin = new $pluginClass();
+		$plugin->load($this->maniaControl);
+		$this->activePlugins[$pluginClass] = $plugin;
+		$this->savePluginStatus($pluginClass, true);
+		return true;
+	}
+
+	/**
+	 * Deactivate the plugin with the given class
+	 *
+	 * @param string $pluginClass        	
+	 * @return bool
+	 */
+	public function deactivatePlugin($pluginClass) {
+		if (is_object($pluginClass)) {
+			$pluginClass = get_class($pluginClass);
+		}
+		if (!$this->isPluginActive($pluginClass)) {
+			return false;
+		}
+		$plugin = $this->activePlugins[$pluginClass];
+		unset($this->activePlugins[$pluginClass]);
+		$plugin->unload();
+		$interfaces = class_implements($pluginClass);
+		if (in_array(CallbackListener::CALLBACKLISTENER_INTERFACE, $interfaces)) {
+			$this->maniaControl->callbackManager->unregisterCallbackListener($plugin);
+			$this->maniaControl->callbackManager->unregisterScriptCallbackListener($plugin);
+		}
+		if (in_array(ManialinkPageAnswerListener::MANIALINKPAGEANSWERLISTENER_INTERFACE, $interfaces)) {
+			$this->maniaControl->manialinkManager->unregisterManialinkPageAnswerListener($plugin);
+		}
+		$this->savePluginStatus($pluginClass, false);
+		return true;
+	}
+
+	/**
+	 * Load complete plugins directory and start all configured plugins
+	 */
+	public function loadPlugins() {
+		$pluginsDirectory = ManiaControlDir . '/plugins/';
+		$pluginFiles = scandir($pluginsDirectory, 0);
+		foreach ($pluginFiles as $pluginFile) {
+			if (stripos($pluginFile, '.') === 0) {
+				continue;
+			}
+			$classesBefore = get_declared_classes();
+			$success = include_once $pluginsDirectory . $pluginFile;
+			if (!$success) {
+				continue;
+			}
+			$classesAfter = get_declared_classes();
+			$newClasses = array_diff($classesAfter, $classesBefore);
+			foreach ($newClasses as $className) {
+				if (!$this->isPluginClass($className)) {
+					continue;
+				}
+				$this->addPluginClass($className);
+				if ($this->isPluginActive($className)) {
+					continue;
+				}
+				if (!$this->getSavedPluginStatus($className)) {
+					continue;
+				}
+				$this->activatePlugin($className);
+			}
+		}
+	}
+
+	/**
+	 * Get all declared plugin class names
+	 *
+	 * @return array
+	 */
+	public function getPluginClasses() {
+		return $this->pluginClasses;
+	}
+
+	/**
+	 * Get all active plugins
+	 *
+	 * @return array
+	 */
+	public function getActivePlugins() {
+		return $this->activePlugins;
+	}
+
+	/**
 	 * Save plugin status in database
 	 *
 	 * @param string $className        	
 	 * @param bool $active        	
 	 * @return bool
 	 */
-	public function savePluginStatus($className, $active) {
+	private function savePluginStatus($className, $active) {
 		$mysqli = $this->maniaControl->database->mysqli;
 		$pluginStatusQuery = "INSERT INTO `" . self::TABLE_PLUGINS . "` (
 				`className`,
@@ -106,7 +260,7 @@ class PluginManager {
 	 * @param string $className        	
 	 * @return bool
 	 */
-	public function getPluginStatus($className) {
+	private function getSavedPluginStatus($className) {
 		$mysqli = $this->maniaControl->database->mysqli;
 		$pluginStatusQuery = "SELECT `active` FROM `" . self::TABLE_PLUGINS . "`
 				WHERE `className` = ?;";
@@ -135,90 +289,6 @@ class PluginManager {
 		$pluginStatement->free_result();
 		$pluginStatement->close();
 		return $active;
-	}
-
-	/**
-	 * Activate and start the plugin with the given name
-	 *
-	 * @param string $pluginClass        	
-	 * @return bool
-	 */
-	public function activatePlugin($pluginClass) {
-		if (!in_array($pluginClass, $this->pluginClasses)) {
-			return false;
-		}
-		if (isset($this->activePlugins[$pluginClass])) {
-			return false;
-		}
-		$this->savePluginStatus($pluginClass, true);
-		return true;
-	}
-
-	/**
-	 * Deactivate the plugin with the given name
-	 *
-	 * @param string $pluginClass        	
-	 * @return bool
-	 */
-	public function deactivatePlugin($pluginClass) {
-		if (!in_array($pluginClass, $this->pluginClasses)) {
-			return false;
-		}
-		if (!isset($this->activePlugins[$pluginClass])) {
-			return false;
-		}
-		$this->savePluginStatus($pluginClass, false);
-		return true;
-	}
-
-	/**
-	 * Load complete plugins directory and start all configured plugins
-	 */
-	public function loadPlugins() {
-		$pluginsDirectory = ManiaControlDir . '/plugins/';
-		$pluginFiles = scandir($pluginsDirectory, 0);
-		foreach ($pluginFiles as $pluginFile) {
-			if (stripos($pluginFile, '.') === 0) {
-				continue;
-			}
-			$classesBefore = get_declared_classes();
-			$success = include_once $pluginsDirectory . $pluginFile;
-			if (!$success) {
-				continue;
-			}
-			$classesAfter = get_declared_classes();
-			$newClasses = array_diff($classesAfter, $classesBefore);
-			foreach ($newClasses as $className) {
-				if (!in_array(Plugin::PLUGIN_INTERFACE, class_implements($className))) {
-					continue;
-				}
-				array_push($this->pluginClasses, $className);
-				$active = $this->getPluginStatus($className);
-				if (!$active) {
-					continue;
-				}
-				$plugin = new $className($this->maniaControl);
-				$this->activePlugins[$className] = $plugin;
-			}
-		}
-	}
-
-	/**
-	 * Get all declared plugin class names
-	 *
-	 * @return array
-	 */
-	public function getPluginClasses() {
-		return $this->pluginClasses;
-	}
-
-	/**
-	 * Get all active plugins
-	 *
-	 * @return array
-	 */
-	public function getActivePlugins() {
-		return $this->activePlugins;
 	}
 }
 

@@ -2,7 +2,6 @@
 
 namespace ManiaControl\Plugins;
 
-use FML\Controls\Quad;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Configurators\ConfiguratorMenu;
@@ -100,7 +99,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 				$y = $height * 0.41;
 			}
 			
-			$active = $this->maniaControl->pluginManager->getPluginStatus($pluginClass);
+			$active = $this->maniaControl->pluginManager->isPluginActive($pluginClass);
 			
 			$pluginFrame = new Frame();
 			$pageFrame->add($pluginFrame);
@@ -193,11 +192,26 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 		}
 		if ($enable) {
 			$pluginClass = substr($actionId, strlen(self::ACTION_PREFIX_ENABLEPLUGIN));
+			$activated = $this->maniaControl->pluginManager->activatePlugin($pluginClass);
+			if ($activated) {
+				$this->maniaControl->chat->sendSuccess($pluginClass::getName() . ' activated!', $player->login);
+				$this->maniaControl->configurator->showMenu($player);
+			}
+			else {
+				$this->maniaControl->chat->sendError('Error activating ' . $pluginClass::getName() . '!', $player->login);
+			}
 		}
 		else {
 			$pluginClass = substr($actionId, strlen(self::ACTION_PREFIX_DISABLEPLUGIN));
+			$deactivated = $this->maniaControl->pluginManager->deactivatePlugin($pluginClass);
+			if ($deactivated) {
+				$this->maniaControl->chat->sendSuccess($pluginClass::getName() . ' deactivated!', $player->login);
+				$this->maniaControl->configurator->showMenu($player);
+			}
+			else {
+				$this->maniaControl->chat->sendError('Error deactivating ' . $pluginClass::getName() . '!', $player->login);
+			}
 		}
-		var_dump($pluginClass);
 	}
 }
 
