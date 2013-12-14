@@ -34,7 +34,11 @@ if (LOG_WRITE_CURRENT_FILE) {
 	define('LOG_CURRENT_FILE', $currentLogFileName);
 }
 
-// Log function
+/**
+ * Log and echo the given text
+ *
+ * @param string $message
+ */
 function logMessage($message) {
 	$message .= PHP_EOL;
 	if (defined('LOG_CURRENT_FILE')) file_put_contents(LOG_CURRENT_FILE, $message, FILE_APPEND);
@@ -42,7 +46,11 @@ function logMessage($message) {
 	echo $message;
 }
 
-// Error level parse function
+/**
+ * Get the prefix for the given error level
+ * @param int $errorLevel
+ * @return string
+ */
 function getErrorTag($errorLevel) {
 	if ($errorLevel == E_NOTICE) {
 		return '[PHP NOTICE]';
