@@ -138,7 +138,7 @@ class MapList implements ManialinkPageAnswerListener {
 		//$nameLabel->setSize($width * 0.5, 2);
 		$nameLabel->setStyle($nameLabel::STYLE_TextCardSmall);
 		$nameLabel->setTextSize(1.5);
-		$nameLabel->setText($map->name);
+		$nameLabel->setText('$fff'.$map->name);
 
 		//TODO action detailed map info
 		$x +=50;
