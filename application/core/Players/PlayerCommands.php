@@ -2,6 +2,7 @@
 
 namespace ManiaControl\Players;
 
+use FML\Controls\Quad;
 use ManiaControl\ManiaControl;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Commands\CommandListener;
@@ -25,7 +26,7 @@ class PlayerCommands implements CommandListener {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		
-		// Register for commands
+		// Register for admin commands
 		$this->maniaControl->commandManager->registerCommandListener('teambalance', $this, 'command_TeamBalance',true);
 		$this->maniaControl->commandManager->registerCommandListener('autoteambalance', $this, 'command_TeamBalance',true);
 		$this->maniaControl->commandManager->registerCommandListener('kick', $this, 'command_Kick',true);

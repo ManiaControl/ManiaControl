@@ -142,6 +142,7 @@ class PlayerManager implements CallbackListener {
 	 */
 	public function playerDisconnect(array $callback) {
 		$login = $callback[1][0];
+		//TODO check for fakeplayers
 		$player = $this->removePlayer($login);
 
 		$played = Formatter::formatTimeH(time() - $player->joinTime);
