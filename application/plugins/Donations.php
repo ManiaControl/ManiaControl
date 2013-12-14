@@ -23,23 +23,35 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	/**
 	 * Private properties
 	 */
+	private $maniaControl = null;
 	private $openBills = array();
 
 	/**
-	 * Construct donation plugin
 	 *
-	 * @param \ManiaControl\ManiaControl $maniaControl        	
+	 * @see \ManiaControl\Plugins\Plugin::load()
 	 */
-	public function __construct(ManiaControl $maniaControl) {
+	public function load(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		
 		// Register for commands
 		$this->maniaControl->commandManager->registerCommandListener('donate', $this, 'command_Donate');
-		$this->maniaControl->commandManager->registerCommandListener('/pay', $this, 'command_Pay');
-		$this->maniaControl->commandManager->registerCommandListener('/getplanets', $this, 'command_GetPlanets');
+		$this->maniaControl->commandManager->registerCommandListener('pay', $this, 'command_Pay', true);
+		$this->maniaControl->commandManager->registerCommandListener('getplanets', $this, 'command_GetPlanets', true);
 		
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_BILLUPDATED, $this, 'handleBillUpdated');
+		
+		return true;
+	}
+
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::unload()
+	 */
+	public function unload() {
+		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
+		$this->maniaControl->commandManager->unregisterCommandListener($this);
+		unset($this->maniaControl);
 	}
 
 	/**
@@ -168,7 +180,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	/**
 	 * Handle //getplanets command
 	 *
-	 * @param array $chatCallback
+	 * @param array $chatCallback        	
 	 * @param Player $player        	
 	 * @return bool
 	 */

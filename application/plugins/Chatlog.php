@@ -24,15 +24,15 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 	/**
 	 * Private properties
 	 */
+	private $maniaControl = null;
 	private $fileName = null;
 	private $logServerMessages = true;
 
 	/**
-	 * Construct chatlog plugin
 	 *
-	 * @param ManiaControl $maniaControl        	
+	 * @see \ManiaControl\Plugins\Plugin::load()
 	 */
-	public function __construct(ManiaControl $maniaControl) {
+	public function load(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		
 		// Init settings
@@ -70,6 +70,17 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCHAT, $this, 
 				'handlePlayerChatCallback');
+		
+		return true;
+	}
+
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::unload()
+	 */
+	public function unload() {
+		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
+		unset($this->maniaControl);
 	}
 
 	/**
@@ -129,7 +140,7 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 	/**
 	 * Log the given message
 	 *
-	 * @param string $text
+	 * @param string $text        	
 	 * @param string $login        	
 	 */
 	private function logText($text, $login = null) {

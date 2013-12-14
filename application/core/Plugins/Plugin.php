@@ -16,11 +16,17 @@ interface Plugin {
 	const PLUGIN_INTERFACE = __CLASS__;
 
 	/**
-	 * Create a new plugin
+	 * Load the plugin
 	 *
 	 * @param \ManiaControl\ManiaControl $maniaControl        	
+	 * @return bool
 	 */
-	public function __construct(ManiaControl $maniaControl);
+	public function load(ManiaControl $maniaControl);
+
+	/**
+	 * Unload the plugin and its resources
+	 */
+	public function unload();
 
 	/**
 	 * Get plugin id

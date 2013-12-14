@@ -33,25 +33,17 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	const SETTING_WIDGET_HEIGHT = 'Widget-Size: Height';
 	
 	/**
-	 * Plugin metadata
-	 */
-	public static $name = 'Karma Plugin';
-	public static $author = 'steeffeen';
-	public static $version = '1.0';
-	public static $description = 'Plugin offering Karma Voting for Maps.';
-	
-	/**
 	 * Private properties
 	 */
+	private $maniaControl = null;
 	private $updateManialink = false;
 	private $manialink = null;
 
 	/**
-	 * Create new karma plugin instance
-	 *
-	 * @param ManiaControl $maniaControl        	
+	 * 
+	 * @see \ManiaControl\Plugins\Plugin::load()
 	 */
-	public function __construct(ManiaControl $maniaControl) {
+	public function load(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		
 		// Init database
@@ -72,8 +64,18 @@ class KarmaPlugin implements CallbackListener, Plugin {
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCONNECT, $this, 
 				'handlePlayerConnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCHAT, $this, 'handlePlayerChat');
+		
+		return true;
 	}
 
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::unload()
+	 */
+	public function unload() {
+		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
+		unset($this->maniaControl);
+	}
 
 	/**
 	 *
@@ -82,6 +84,7 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	public static function getId() {
 		return self::ID;
 	}
+
 	/**
 	 *
 	 * @see \ManiaControl\Plugins\Plugin::getName()
@@ -359,8 +362,8 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	/**
 	 * Get the current karma of the map
 	 *
-	 * @param Map $map
-     * @return float | bool
+	 * @param Map $map        	
+	 * @return float | bool
 	 */
 	private function getMapKarma(Map $map) {
 		$mysqli = $this->maniaControl->database->mysqli;
@@ -388,8 +391,8 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	/**
 	 * Get the current Votes for the Map
 	 *
-	 * @param Map $map
-     * @return array
+	 * @param Map $map        	
+	 * @return array
 	 */
 	private function getMapVotes(Map $map) {
 		$mysqli = $this->maniaControl->database->mysqli;

@@ -20,23 +20,34 @@ class EndurancePlugin implements CallbackListener, Plugin {
 	/**
 	 * Private properties
 	 */
+	private $maniaControl = null;
 	private $currentMap = null;
 	private $playerLapTimes = array();
 
 	/**
-	 * Create a new endurance plugin instance
 	 *
-	 * @param ManiaControl $maniaControl        	
+	 * @see \ManiaControl\Plugins\Plugin::load()
 	 */
-	public function __construct(ManiaControl $maniaControl) {
+	public function load(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'callback_OnInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_BEGINMAP, $this, 'callback_BeginMap');
 		$this->maniaControl->callbackManager->registerScriptCallbackListener(self::CB_CHECKPOINT, $this, 'callback_Checkpoint');
+		
+		return true;
 	}
 
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::unload()
+	 */
+	public function unload() {
+		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
+		$this->maniaControl->callbackManager->unregisterScriptCallbackListener($this);
+		unset($this->maniaControl);
+	}
 
 	/**
 	 *
@@ -45,6 +56,7 @@ class EndurancePlugin implements CallbackListener, Plugin {
 	public static function getId() {
 		return self::ID;
 	}
+
 	/**
 	 *
 	 * @see \ManiaControl\Plugins\Plugin::getName()

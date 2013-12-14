@@ -36,12 +36,14 @@ class LocalRecordsPlugin implements CallbackListener, Plugin {
 	/**
 	 * Private properties
 	 */
+	private $maniaControl = null;
 	private $updateManialink = false;
 
 	/**
-	 * Create new local records plugin
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::load()
 	 */
-	public function __construct(ManiaControl $maniaControl) {
+	public function load(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		$this->initTables();
 		
@@ -61,6 +63,17 @@ class LocalRecordsPlugin implements CallbackListener, Plugin {
 				'handleClientUpdated');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_TM_PLAYERFINISH, $this, 
 				'handlePlayerFinish');
+		
+		return true;
+	}
+
+	/**
+	 *
+	 * @see \ManiaControl\Plugins\Plugin::unload()
+	 */
+	public function unload() {
+		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
+		unset($this->maniaControl);
 	}
 
 	/**
@@ -255,7 +268,7 @@ class LocalRecordsPlugin implements CallbackListener, Plugin {
 	/**
 	 * Handle ClientUpdated callback
 	 *
-	 * @param array $callback
+	 * @param array $callback        	
 	 */
 	public function handleClientUpdated(array $callback) {
 		$this->updateManialink = true;
