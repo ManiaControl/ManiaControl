@@ -7,6 +7,7 @@ use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\FileUtil;
 use ManiaControl\Players\Player;
+use ManiaControl\Players\PlayerManager;
 
 /**
  * Class offering commands to manage maps
@@ -31,6 +32,9 @@ class MapCommands implements CommandListener {
 		$this->maniaControl->commandManager->registerCommandListener('restartmap', $this, 'command_RestartMap',true);
 		$this->maniaControl->commandManager->registerCommandListener('addmap', $this, 'command_AddMap',true);
 		$this->maniaControl->commandManager->registerCommandListener('removemap', $this, 'command_RemoveMap',true);
+
+		// Register for player commands
+		$this->maniaControl->commandManager->registerCommandListener('list', $this, 'command_list');
 	}
 
 	/**
@@ -182,6 +186,13 @@ class MapCommands implements CommandListener {
 			return false;
 		}
 		return $this->maniaControl->client->query('RestartMap');
+	}
+
+	public function command_list(array $chatCallback, Player $player){
+	//	var_dump($chatCallback);
+
+		$mapList = new MapList($this->maniaControl);
+		$mapList->showMapList($player);
 	}
 }
 

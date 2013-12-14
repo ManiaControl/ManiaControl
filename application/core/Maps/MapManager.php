@@ -149,7 +149,18 @@ class MapManager implements CallbackListener {
 		if (!$map) {
 			return;
 		}
-		$this->addMap($map);
+		$this->addMap($map); //TODO needed?
+		//var_dump($map);
+		//add Maplist on Init once
+		if(!$this->maniaControl->client->query('GetMapList', 100,0)){ //fetch 100 maps, first map is always current map
+			trigger_error("Couldn't fetch mapList. " . $this->maniaControl->getClientErrorText());
+			return null;
+		}
+		$mapList = $this->maniaControl->client->getResponse();
+		foreach($mapList as $rpcMap){
+			$map = new Map($this->maniaControl, $rpcMap);
+			$this->addMap($map);
+		}
 	}
 
 	/**
@@ -163,5 +174,16 @@ class MapManager implements CallbackListener {
 			return;
 		}
 		$this->addMap($map);
+
+		//TODO restrucutre, make current as first
 	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getMapList(){
+		return  $this->mapList;
+	}
+
 } 

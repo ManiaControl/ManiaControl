@@ -99,7 +99,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 				array_push($pageFrames, $pageFrame);
 				$y = $height * 0.41;
 			}
-			
+
 			$active = $this->maniaControl->pluginManager->getPluginStatus($pluginClass);
 			
 			$pluginFrame = new Frame();
