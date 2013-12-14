@@ -8,6 +8,10 @@ namespace ManiaControl\Manialinks;
  * @author steeffeen & kremsy
  */
 interface ManialinkPageAnswerListener {
+	/**
+	 * Constants
+	 */
+	const MANIALINKPAGEANSWERLISTENER_INTERFACE = __CLASS__;
 }
 
 ?>
