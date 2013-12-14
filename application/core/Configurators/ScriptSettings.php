@@ -56,6 +56,13 @@ class ScriptSettings implements ConfiguratorMenu {
 		
 		$this->maniaControl->client->query('GetModeScriptInfo');
 		$scriptInfo = $this->maniaControl->client->getResponse();
+		if (isset($scriptInfo['faultCode'])) {
+			// Not in script mode
+			$label = new Label();
+			$frame->add($label);
+			$label->setText($scriptInfo['faultString']);
+			return $frame;
+		}
 		$scriptParams = $scriptInfo['ParamDescs'];
 		
 		$this->maniaControl->client->query('GetModeScriptSettings');
