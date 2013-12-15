@@ -9,9 +9,7 @@ use ManiaControl\FileUtil;
 use ManiaControl\ManiaControl;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
-use ManiaControl\Players\Player;
 
-// TODO: xlist command
 
 /**
  * Manager for maps
@@ -30,6 +28,8 @@ class MapManager implements CallbackListener {
 	private $maniaControl = null;
 	private $mapCommands = null;
 	private $mapList = array();
+	private $mapListUids = array();
+	private $currentMap = null;
 
 	/**
 	 * Construct map manager
@@ -119,19 +119,47 @@ class MapManager implements CallbackListener {
 	 * @param \ManiaControl\Maps\Map $map        	
 	 * @return bool
 	 */
-	private function addMap(Map $map) {
+	private function addMap(Map $map) { //TODO needed?
 		$this->saveMap($map);
-		$this->mapList[$map->uid] = $map;
+		$this->mapListUids[$map->uid] = $map;
+		$this->mapList[] = $map;
 		return true;
 	}
 
+	/**
+	 * Updates the full Map list, needed on Init, addMap and on ShuffleMaps
+	 * @return null
+	 */
+	private function updateFullMapList(){
+		if(!$this->maniaControl->client->query('GetMapList', 100,0)){ //fetch 100 Maps
+			trigger_error("Couldn't fetch mapList. " . $this->maniaControl->getClientErrorText());
+			return null;
+		}
+
+		$tempList = array();
+
+		$mapList = $this->maniaControl->client->getResponse();
+		foreach($mapList as $rpcMap){
+			if(array_key_exists($rpcMap["UId"], $this->mapListUids)){ //Map already exists, only update index
+				$tempList[] = $this->mapListUids[$rpcMap["UId"]];
+			}else{ //Insert Map Object
+				$map = new Map($this->maniaControl, $rpcMap);
+				$this->saveMap($map);
+				$tempList[] = $map;
+				$this->mapListUids[$map->uid] = $map;
+			}
+		}
+
+		//restore Sorted Maplist
+		$this->mapList = $tempList;
+	}
 
 	/**
 	 * Fetch current map
 	 *
 	 * @return \ManiaControl\Maps\Map
 	 */
-	public function getCurrentMap() {
+	private function fetchCurrentMapInfo() {
 		if (!$this->maniaControl->client->query('GetCurrentMapInfo')) {
 			trigger_error("Couldn't fetch map info. " . $this->maniaControl->getClientErrorText());
 			return null;
@@ -148,23 +176,18 @@ class MapManager implements CallbackListener {
 	 * @param array $callback        	
 	 */
 	public function handleOnInit(array $callback) {
-		$map = $this->getCurrentMap();
-		if (!$map) {
-			return;
-		}
-		$this->addMap($map); //TODO needed?
-		//var_dump($map);
-		//add Maplist on Init once
-		if(!$this->maniaControl->client->query('GetMapList', 100,0)){ //fetch 100 maps, first map is always current map
-			trigger_error("Couldn't fetch mapList. " . $this->maniaControl->getClientErrorText());
-			return null;
-		}
-		$mapList = $this->maniaControl->client->getResponse();
-		foreach($mapList as $rpcMap){
-			$map = new Map($this->maniaControl, $rpcMap);
-			$this->addMap($map);
-		}
+		$this->updateFullMapList();
+		$this->currentMap = $this->fetchCurrentMapInfo();
 	}
+
+	/**
+	 * @return null
+	 */
+	public function getCurrentMap(){
+		return $this->currentMap;
+	}
+
+
 
 	/**
 	 * Handle BeginMap callback
@@ -172,15 +195,13 @@ class MapManager implements CallbackListener {
 	 * @param array $callback        	
 	 */
 	public function handleBeginMap(array $callback) {
-		$map = $this->getCurrentMap();
-		if (!$map) {
-			return;
+		if(array_key_exists($callback[1][0]["UId"], $this->mapListUids)){ //Map already exists, only update index
+			$this->currentMap = $this->mapListUids[$rpcMap["UId"]];
+		}else{ //can this ever happen?
+			$this->currentMap = $this->fetchCurrentMapInfo();
 		}
-		$this->addMap($map);
-
-
-		//TODO restrucutre, make current as first
 	}
+
 
 
 	/**
@@ -266,7 +287,8 @@ class MapManager implements CallbackListener {
 				return;
 			}
 			$this->maniaControl->chat->sendSuccess('Map $<' . $mapInfo['Name'] . '$> added!');
-			return;
+
+			$this->updateFullMapList();
 		}
 		// TODO: add local map by filename
 	}

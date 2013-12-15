@@ -13,6 +13,7 @@ use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Script\Script;
 use FML\Script\Tooltips;
+use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Manialinks\ManialinkManager;
@@ -72,11 +73,10 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 */
 	public function showManiaExchangeList(array $chatCallback, Player $player){
 		$params = explode(' ', $chatCallback[1][2]);
-		//$commandCount = count(explode(' ', $chatCallback[1][2]));
-		//var_dump($chatCallback[1][2]);
-		//echo $commandCount;
 
-		$section = 'SM'; //TODO get from mc
+		$serverInfo = $this->maniaControl->server->getSystemInfo();
+		$title = strtoupper(substr($serverInfo['TitleId'], 0, 2));
+
 		$mapName = '';
 		$author = '';
 		$environment = ''; //TODO also get actual environment
@@ -102,7 +102,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		}
 
 		// search for matching maps
-		$maps = new MXInfoSearcher($section, $mapName, $author, $environment, $recent);
+		$maps = new MXInfoSearcher($title, $mapName, $author, $environment, $recent);
 
 		//check if there are any results
 		if(!$maps->valid()){
@@ -143,27 +143,27 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$this->maniaControl->manialinkManager->labelLine($mapFrame,$array);
 			$mapFrame->setY($y);
 
-			//TODO only for admins:
-			//Add-Map-Button
-			$addQuad = new Quad_Icons64x64_1();
-			$mapFrame->add($addQuad);
-			$addQuad->setX($x + 15);
-			$addQuad->setZ(-0.1);
-			$addQuad->setSubStyle($addQuad::SUBSTYLE_Add);
-			$addQuad->setSize(4,4);
-			$addQuad->setAction(self::ACTION_ADD_MAP . "." .$map->id);
+			if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)){ //todoSET as setting who can add maps
+				//Add-Map-Button
+				$addQuad = new Quad_Icons64x64_1();
+				$mapFrame->add($addQuad);
+				$addQuad->setX($x + 15);
+				$addQuad->setZ(-0.1);
+				$addQuad->setSubStyle($addQuad::SUBSTYLE_Add);
+				$addQuad->setSize(4,4);
+				$addQuad->setAction(self::ACTION_ADD_MAP . "." .$map->id);
 
-			//Description Label
-			$descriptionLabel = new Label();
-			$frame->add($descriptionLabel);
-			$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
-			$descriptionLabel->setPosition($x + 10, -$this->height / 2 + 5);
-			$descriptionLabel->setSize($this->width * 0.7, 4);
-			$descriptionLabel->setTextSize(2);
-			$descriptionLabel->setVisible(false);
-			$descriptionLabel->setText("Add-Map: {$map->name}");
-			$tooltips->add($addQuad, $descriptionLabel);
-
+				//Description Label
+				$descriptionLabel = new Label();
+				$frame->add($descriptionLabel);
+				$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
+				$descriptionLabel->setPosition($x + 10, -$this->height / 2 + 5);
+				$descriptionLabel->setSize($this->width * 0.7, 4);
+				$descriptionLabel->setTextSize(2);
+				$descriptionLabel->setVisible(false);
+				$descriptionLabel->setText("Add-Map: {$map->name}");
+				$tooltips->add($addQuad, $descriptionLabel);
+			}
 
 			$y -= 4;
 			$i++;
@@ -252,11 +252,20 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 * @param Frame $frame
 	 */
 	private function displayMap($id, Map $map, Frame $frame){
-		$frame->setZ(-0.01);
+		$frame->setZ(0.1);
 
 		//set starting x-value
 		$x = -$this->width / 2;
 
+		if($this->maniaControl->mapManager->getCurrentMap() == $map){
+			echo "test";
+			$currentQuad = new Quad_Icons64x64_1();
+			$frame->add($currentQuad);
+			$currentQuad->setX($x + 3.5);
+			$currentQuad->setZ(0.2);
+			$currentQuad->setSize(4, 4);
+			$currentQuad->setSubStyle($currentQuad::SUBSTYLE_ArrowBlue);
+		}
 
 		$mxId = '';
 		if(isset($map->mx->id))
