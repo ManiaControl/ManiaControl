@@ -11,6 +11,10 @@ use FML\Controls\Control;
 use FML\Controls\Label;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quads\Quad_Icons64x64_1;
+use FML\Script\Script;
+use FML\Script\Tooltips;
+use ManiaControl\Callbacks\CallbackListener;
+use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Maps\Map;
@@ -22,9 +26,13 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use MXInfoSearcher;
 
-class MapList implements ManialinkPageAnswerListener {
+class MapList implements ManialinkPageAnswerListener, CallbackListener {
+
 	const ACTION_CLOSEWIDGET = 'MapList.CloseWidget';
+	const ACTION_ADD_MAP = 'MapList.AddMap';
 	const MAX_MAPS_PER_PAGE = 15;
+
+
 	/**
 	 * Private properties
 	 */
@@ -45,6 +53,8 @@ class MapList implements ManialinkPageAnswerListener {
 
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_CLOSEWIDGET , $this,
 			'closeWidget');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this,
+			'handleManialinkPageAnswer');
 
 		//settings
 		$this->width = 150;
@@ -106,6 +116,13 @@ class MapList implements ManialinkPageAnswerListener {
 		$frame = $this->buildMainFrame();
 		$maniaLink->add($frame);
 
+		// Create script and features
+		$script = new Script();
+		$maniaLink->setScript($script);
+
+		$tooltips = new Tooltips();
+		$script->addFeature($tooltips);
+
 		//Start offsets
 		$x = -$this->width / 2;
 		$y = $this->height / 2;
@@ -114,7 +131,7 @@ class MapList implements ManialinkPageAnswerListener {
 		$headFrame = new Frame();
 		$frame->add($headFrame);
 		$headFrame->setY($y - 3);
-		$array = array("Id" => $x + 5, "MapName" => $x + 15, "MapAuthor" => $x + 70, "MapMood" => $x + 90, "MapType" => $x + 105);
+		$array = array("Id" => $x + 5, "Name" => $x + 17, "Author" => $x + 70, "Mood" => $x + 90, "Type" => $x + 105);
 		$this->maniaControl->manialinkManager->labelLine($headFrame,$array);
 
 		$i = 0;
@@ -122,11 +139,33 @@ class MapList implements ManialinkPageAnswerListener {
 		foreach($maps as $map){
 			$mapFrame = new Frame();
 			$frame->add($mapFrame);
-			$array = array($map->id => $x + 5, $map->name => $x + 15, $map->author => $x + 70, $map->mood => $x + 90, $map->maptype => $x + 105);
+			$array = array($map->id => $x + 5, $map->name => $x + 17, $map->author => $x + 70, $map->mood => $x + 90, $map->maptype => $x + 105);
 			$this->maniaControl->manialinkManager->labelLine($mapFrame,$array);
 			$mapFrame->setY($y);
-			$y -= 4;
 
+			//TODO only for admins:
+			//Add-Map-Button
+			$addQuad = new Quad_Icons64x64_1();
+			$mapFrame->add($addQuad);
+			$addQuad->setX($x + 15);
+			$addQuad->setZ(-0.1);
+			$addQuad->setSubStyle($addQuad::SUBSTYLE_Add);
+			$addQuad->setSize(4,4);
+			$addQuad->setAction(self::ACTION_ADD_MAP . "." .$map->id);
+
+			//Description Label
+			$descriptionLabel = new Label();
+			$frame->add($descriptionLabel);
+			$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
+			$descriptionLabel->setPosition($x + 10, -$this->height / 2 + 5);
+			$descriptionLabel->setSize($this->width * 0.7, 4);
+			$descriptionLabel->setTextSize(2);
+			$descriptionLabel->setVisible(false);
+			$descriptionLabel->setText("Add-Map: {$map->name}");
+			$tooltips->add($addQuad, $descriptionLabel);
+
+
+			$y -= 4;
 			$i++;
 			if($i == self::MAX_MAPS_PER_PAGE)
 				break;
@@ -187,7 +226,6 @@ class MapList implements ManialinkPageAnswerListener {
 		//Get Maplist
 		$mapList = $this->maniaControl->mapManager->getMapList();
 
-		$mapList = array_slice($mapList, 0, self::MAX_MAPS_PER_PAGE);
 		//TODO add pages
 
 		$id = 1;
@@ -227,63 +265,11 @@ class MapList implements ManialinkPageAnswerListener {
 		//Display Maps
 		$array = array($id => $x + 5, $mxId => $x + 10, $map->name => $x + 20, $map->authorNick => $x + 70);
 		$this->maniaControl->manialinkManager->labelLine($frame,$array);
-
-
-/*
 		//TODO detailed mx info page with link to mx
-		$x +=5;
-		$idLabel = new Label_Text();
-		$frame->add($idLabel);
-		$idLabel->setHAlign(Control::LEFT);
-		$idLabel->setX($x);
-		//	$mxIdLabel->setSize($width * 0.5, 2);
-		$idLabel->setStyle($idLabel::STYLE_TextCardSmall);
-		$idLabel->setTextSize(1.5);
-		$idLabel->setText($id);
-		$idLabel->setTextColor('FFF');
-
-		//TODO detailed mx info page with link to mx
-		$x +=5;
-		$mxIdLabel = new Label_Text();
-		$frame->add($mxIdLabel);
-		$mxIdLabel->setHAlign(Control::LEFT);
-		$mxIdLabel->setX($x);
-		//	$mxIdLabel->setSize($width * 0.5, 2);
-		$mxIdLabel->setStyle($mxIdLabel::STYLE_TextCardSmall);
-		$mxIdLabel->setTextSize(1.5);
-		if(isset($map->mx->id))
-			$mxIdLabel->setText($map->mx->id);
-		else
-			$mxIdLabel->setText("-");
-		$mxIdLabel->setTextColor('FFF');
-
 		//TODO action detailed map info
-		$x +=10;
-		$nameLabel = new Label_Text();
-		$frame->add($nameLabel);
-		$nameLabel->setHAlign(Control::LEFT);
-		$nameLabel->setX($x);
-		//$nameLabel->setSize($width * 0.5, 2);
-		$nameLabel->setStyle($nameLabel::STYLE_TextCardSmall);
-		$nameLabel->setTextSize(1.5);
-		$nameLabel->setText('$fff'.$map->name);
-
 		//TODO action detailed map info
-		$x +=50;
-		$authorLabel = new Label_Text();
-		$frame->add($authorLabel);
-		$authorLabel->setHAlign(Control::LEFT);
-		$authorLabel->setX($x);
-		//$nameLabel->setSize($width * 0.5, 2);
-		$authorLabel->setStyle($authorLabel::STYLE_TextCardSmall);
-		$authorLabel->setTextSize(1.5);
-		$authorLabel->setText($map->authorNick);
-		$authorLabel->setTextColor('FFF');
-
-
 		//TODO later add buttons for jukebox, admin control buttons (remove map, change to map)
 		//TODO side switch
-		//var_dump($map);*/
 	}
 
 
@@ -296,4 +282,17 @@ class MapList implements ManialinkPageAnswerListener {
 		$this->maniaControl->manialinkManager->closeWidget($player);
 	}
 
+	/**
+	 * @param array $callback
+	 */
+	public function handleManialinkPageAnswer(array $callback){
+		$actionId = $callback[1][2];
+		$addMap = (strpos($actionId, self::ACTION_ADD_MAP) === 0);
+		if(!$addMap)
+			return;
+
+		$actionArray = explode(".", $actionId);
+		var_dump($actionArray);
+		$this->maniaControl->mapManager->addMapFromMx($actionArray[2],$callback[1][1]);
+	}
 } 

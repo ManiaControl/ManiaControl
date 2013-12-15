@@ -5,9 +5,11 @@ namespace ManiaControl\Maps;
 require_once __DIR__ . '/Map.php';
 require_once __DIR__ . '/MapCommands.php';
 
+use ManiaControl\FileUtil;
 use ManiaControl\ManiaControl;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Players\Player;
 
 // TODO: xlist command
 
@@ -123,6 +125,7 @@ class MapManager implements CallbackListener {
 		return true;
 	}
 
+
 	/**
 	 * Fetch current map
 	 *
@@ -187,4 +190,84 @@ class MapManager implements CallbackListener {
 		return  $this->mapList;
 	}
 
+	/**
+	 * Adds a Map from Mania Exchange
+	 * @param        $mapId
+	 * @param 		$login
+	 */
+	public function addMapFromMx($mapId, $login){
+		// Check if ManiaControl can even write to the maps dir
+		if (!$this->maniaControl->client->query('GetMapsDirectory')) {
+			trigger_error("Couldn't get map directory. " . $this->maniaControl->getClientErrorText());
+			$this->maniaControl->chat->sendError("ManiaControl couldn't retrieve the maps directory.", $login);
+			return;
+		}
+
+		$mapDir = $this->maniaControl->client->getResponse();
+		if (!is_dir($mapDir)) {
+			trigger_error("ManiaControl doesn't have have access to the maps directory in '{$mapDir}'.");
+			$this->maniaControl->chat->sendError("ManiaControl doesn't have access to the maps directory.", $login);
+			return;
+		}
+		$downloadDirectory = $this->maniaControl->settingManager->getSetting($this, 'MapDownloadDirectory', 'MX');
+		// Create download directory if necessary
+		if (!is_dir($mapDir . $downloadDirectory) && !mkdir($mapDir . $downloadDirectory)) {
+			trigger_error("ManiaControl doesn't have to rights to save maps in '{$mapDir}{$downloadDirectory}'.");
+			$this->maniaControl->chat->sendError("ManiaControl doesn't have the rights to save maps.", $login);
+			return;
+		}
+		$mapDir .= $downloadDirectory . '/';
+
+		// Download the map
+		if (is_numeric($mapId)) {
+			// Load from MX
+			$serverInfo = $this->maniaControl->server->getSystemInfo();
+			$title = strtolower(substr($serverInfo['TitleId'], 0, 2));
+			// Check if map exists
+			$url = "http://{$title}.mania-exchange.com/api/tracks/get_track_info/id/{$mapId}?format=json";
+			$mapInfo = FileUtil::loadFile($url);
+			if (!$mapInfo || strlen($mapInfo) <= 0) {
+				// Invalid id
+				$this->maniaControl->chat->sendError('Invalid MX-Id!', $login);
+				return;
+			}
+			$mapInfo = json_decode($mapInfo, true);
+			$url = "http://{$title}.mania-exchange.com/tracks/download/{$mapId}";
+			$file = FileUtil::loadFile($url);
+			if (!$file) {
+				// Download error
+				$this->maniaControl->chat->sendError('Download failed!', $login);
+				return;
+			}
+			// Save map
+			$fileName = $mapInfo['TrackID'] . '_' . $mapInfo['Name'] . '.Map.Gbx';
+			$fileName = FileUtil::getClearedFileName($fileName);
+			if (!file_put_contents($mapDir . $fileName, $file)) {
+				// Save error
+				$this->maniaControl->chat->sendError('Saving map failed!', $login);
+				return;
+			}
+			// Check for valid map
+			$mapFileName = $downloadDirectory . '/' . $fileName;
+			if (!$this->maniaControl->client->query('CheckMapForCurrentServerParams', $mapFileName)) {
+				trigger_error("Couldn't check if map is valid ('{$mapFileName}'). " . $this->maniaControl->getClientErrorText());
+				$this->maniaControl->chat->sendError('Error checking map!', $login);
+				return;
+			}
+			$response = $this->maniaControl->client->getResponse();
+			if (!$response) {
+				// Invalid map type
+				$this->maniaControl->chat->sendError("Invalid map type.", $login);
+				return;
+			}
+			// Add map to map list
+			if (!$this->maniaControl->client->query('InsertMap', $mapFileName)) {
+				$this->maniaControl->chat->sendError("Couldn't add map to match settings!", $login);
+				return;
+			}
+			$this->maniaControl->chat->sendSuccess('Map $<' . $mapInfo['Name'] . '$> added!');
+			return;
+		}
+		// TODO: add local map by filename
+	}
 } 
