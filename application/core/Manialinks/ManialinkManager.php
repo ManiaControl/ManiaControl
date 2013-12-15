@@ -196,6 +196,7 @@ class ManialinkManager implements CallbackListener {
 	 * @param Frame $frame
 	 * @param array $labelStrings
 	 * @param array $properties
+	 * @return array Returns the frames (to add special Properties later)
 	 */
 	public function labelLine(Frame $frame, array $labelStrings, array $properties = array()){
 		//TODO overwrite standard properties with properties from array
@@ -206,6 +207,7 @@ class ManialinkManager implements CallbackListener {
 		$textSize = 1.5;
 		$textColor = 'FFF';
 
+		$frames = array();
 		foreach($labelStrings as $text => $x){
 			$label = new Label_Text();
 			$frame->add($label);
@@ -215,6 +217,9 @@ class ManialinkManager implements CallbackListener {
 			$label->setTextSize($textSize);
 			$label->setText($text);
 			$label->setTextColor($textColor);
+
+			$frames[] = $frame; //add Frame to the frames array
 		}
+		return $frames;
 	}
 }

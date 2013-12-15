@@ -24,7 +24,7 @@ use MXInfoSearcher;
 
 class MapList implements ManialinkPageAnswerListener {
 	const ACTION_CLOSEWIDGET = 'MapList.CloseWidget';
-
+	const MAX_MAPS_PER_PAGE = 15;
 	/**
 	 * Private properties
 	 */
@@ -55,6 +55,11 @@ class MapList implements ManialinkPageAnswerListener {
 	}
 
 
+	/**
+	 * Displays the Mania Exchange List
+	 * @param array  $chatCallback
+	 * @param Player $player
+	 */
 	public function showManiaExchangeList(array $chatCallback, Player $player){
 		$params = explode(' ', $chatCallback[1][2]);
 		//$commandCount = count(explode(' ', $chatCallback[1][2]));
@@ -99,7 +104,36 @@ class MapList implements ManialinkPageAnswerListener {
 
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$frame = $this->buildMainFrame();
+		$maniaLink->add($frame);
 
+		//Start offsets
+		$x = -$this->width / 2;
+		$y = $this->height / 2;
+
+		//Headline
+		$headFrame = new Frame();
+		$frame->add($headFrame);
+		$headFrame->setY($y - 3);
+		$array = array("Id" => $x + 5, "MapName" => $x + 15, "MapAuthor" => $x + 70, "MapMood" => $x + 90, "MapType" => $x + 105);
+		$this->maniaControl->manialinkManager->labelLine($headFrame,$array);
+
+		$i = 0;
+		$y -= 10;
+		foreach($maps as $map){
+			$mapFrame = new Frame();
+			$frame->add($mapFrame);
+			$array = array($map->id => $x + 5, $map->name => $x + 15, $map->author => $x + 70, $map->mood => $x + 90, $map->maptype => $x + 105);
+			$this->maniaControl->manialinkManager->labelLine($mapFrame,$array);
+			$mapFrame->setY($y);
+			$y -= 4;
+
+			$i++;
+			if($i == self::MAX_MAPS_PER_PAGE)
+				break;
+		}
+
+		//TODO add MX info screen
+		//TODO add download Map button
 
 		//render and display xml
 		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player);
@@ -153,6 +187,9 @@ class MapList implements ManialinkPageAnswerListener {
 		//Get Maplist
 		$mapList = $this->maniaControl->mapManager->getMapList();
 
+		$mapList = array_slice($mapList, 0, self::MAX_MAPS_PER_PAGE);
+		//TODO add pages
+
 		$id = 1;
 		$y = $this->height / 2 - 10;
 		foreach($mapList as $map){
@@ -162,12 +199,20 @@ class MapList implements ManialinkPageAnswerListener {
 			$mapFrame->setY($y);
 			$y -= 4;
 			$id++;
+			if($id == self::MAX_MAPS_PER_PAGE - 1)
+				break;
 		}
 
 		//render and display xml
 		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player);
 	}
 
+	/**
+	 * Displays a single Map in the Maplist
+	 * @param       $id
+	 * @param Map   $map
+	 * @param Frame $frame
+	 */
 	private function displayMap($id, Map $map, Frame $frame){
 		$frame->setZ(-0.01);
 
