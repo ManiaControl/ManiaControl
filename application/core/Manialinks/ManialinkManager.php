@@ -199,7 +199,7 @@ class ManialinkManager implements CallbackListener {
 	 */
 	public function labelLine(Frame $frame, array $labelStrings, array $properties = array()){
 		//TODO overwrite standard properties with properties from array
-		
+
 		//define standard properties
 		$hAlign = Control::LEFT;
 		$style = Label_Text::STYLE_TextCardSmall;
