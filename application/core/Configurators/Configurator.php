@@ -5,6 +5,7 @@ namespace ManiaControl\Configurators;
 use ManiaControl\ManiaControl;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 use FML\ManiaLink;
@@ -32,7 +33,6 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 	/**
 	 * Constants
 	 */
-	const MLID_MENU = 'Configurator.Menu.MLID';
 	const ACTION_TOGGLEMENU = 'Configurator.ToggleMenuAction';
 	const ACTION_SAVECONFIG = 'Configurator.SaveConfigAction';
 	const SETTING_MENU_POSX = 'Menu Widget Position: X';
@@ -148,7 +148,7 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 	 * @param Player $player        	
 	 */
 	public function hideMenu(Player $player) {
-		$emptyManialink = new ManiaLink(self::MLID_MENU);
+		$emptyManialink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$manialinkText = $emptyManialink->render()->saveXML();
 		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
 		$this->maniaControl->manialinkManager->enableAltMenu($player);
@@ -175,7 +175,7 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 		
 		$manialinks = new ManiaLinks();
 		
-		$manialink = new ManiaLink(self::MLID_MENU);
+		$manialink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$manialinks->add($manialink);
 		
 		$frame = new Frame();
