@@ -27,13 +27,15 @@ class MapCommands implements CommandListener {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
-		
+
+		// Register for admin chat commands
 		$this->maniaControl->commandManager->registerCommandListener('nextmap', $this, 'command_NextMap', true);
 		$this->maniaControl->commandManager->registerCommandListener('restartmap', $this, 'command_RestartMap', true);
 		$this->maniaControl->commandManager->registerCommandListener('addmap', $this, 'command_AddMap', true);
 		$this->maniaControl->commandManager->registerCommandListener('removemap', $this, 'command_RemoveMap', true);
 		
-		// Register for chat commands
+		// Register for player chat commands
+		$this->maniaControl->commandManager->registerCommandListener('xlist', $this, 'command_xList');
 		$this->maniaControl->commandManager->registerCommandListener('list', $this, 'command_List');
 		$this->maniaControl->commandManager->registerCommandListener('maps', $this, 'command_List');
 	}
@@ -190,8 +192,17 @@ class MapCommands implements CommandListener {
 	 * @param Player $player        	
 	 */
 	public function command_List(array $chatCallback, Player $player) {
-		// var_dump($chatCallback);
 		$mapList = new MapList($this->maniaControl);
 		$mapList->showMapList($player);
+	}
+
+	/**
+	 * Handle ManiaExchange list command
+	 * @param array  $chatCallback
+	 * @param Player $player
+	 */
+	public function command_xList(array $chatCallback, Player $player) {
+		$mapList = new MapList($this->maniaControl);
+		$mapList->showManiaExchangeList($chatCallback, $player);
 	}
 }

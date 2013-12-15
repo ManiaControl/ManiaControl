@@ -175,6 +175,7 @@ class MapManager implements CallbackListener {
 		}
 		$this->addMap($map);
 
+
 		//TODO restrucutre, make current as first
 	}
 

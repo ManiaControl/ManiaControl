@@ -2,6 +2,7 @@
 
 namespace ManiaControl\Manialinks;
 
+use FML\ManiaLink;
 use ManiaControl\ManiaControl;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
@@ -16,6 +17,8 @@ require_once __DIR__ . '/../FML/autoload.php';
  * @author steeffeen & kremsy
  */
 class ManialinkManager implements CallbackListener {
+
+	const MAIN_MLID = 'Main.ManiaLinkId';
 	/**
 	 * Public properties
 	 */
@@ -160,4 +163,30 @@ class ManialinkManager implements CallbackListener {
 	public function disableAltMenu(Player $player) {
 		return $this->maniaControl->client->query('TriggerModeScriptEvent', 'LibXmlRpc_DisableAltMenu', $player->login);
 	}
+
+	/**
+	 * Displays a ManiaLink Widget to a certain Player
+	 * @param String $maniaLink
+	 * @param Player $player
+	 */
+	public function displayWidget($maniaLink, Player $player) {
+		//render and display xml
+		$maniaLinkText = $maniaLink->render()->saveXML();
+		$this->maniaControl->manialinkManager->sendManialink($maniaLinkText, $player->login);
+		$this->maniaControl->manialinkManager->disableAltMenu($player);
+	}
+
+	/**
+	 * Closes the Manialink Widget and enables the Alt Menu
+	 * @param Player $player
+	 */
+	public function closeWidget(Player $player) {
+		$emptyManialink = new ManiaLink(self::MAIN_MLID);
+		$manialinkText = $emptyManialink->render()->saveXML();
+		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
+		$this->maniaControl->manialinkManager->enableAltMenu($player);
+		//unset($this->playersMenuShown[$player->login]);
+	}
+
+
 }
