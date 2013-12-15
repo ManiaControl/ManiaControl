@@ -2,6 +2,9 @@
 
 namespace ManiaControl\Manialinks;
 
+use FML\Controls\Control;
+use FML\Controls\Frame;
+use FML\Controls\Labels\Label_Text;
 use FML\ManiaLink;
 use ManiaControl\ManiaControl;
 use ManiaControl\Callbacks\CallbackListener;
@@ -188,5 +191,30 @@ class ManialinkManager implements CallbackListener {
 		//unset($this->playersMenuShown[$player->login]);
 	}
 
+	/**
+	 * Adds a line of labels
+	 * @param Frame $frame
+	 * @param array $labelStrings
+	 * @param array $properties
+	 */
+	public function labelLine(Frame $frame, array $labelStrings, array $properties = array()){
+		//TODO overwrite standard properties with properties from array
+		
+		//define standard properties
+		$hAlign = Control::LEFT;
+		$style = Label_Text::STYLE_TextCardSmall;
+		$textSize = 1.5;
+		$textColor = 'FFF';
 
+		foreach($labelStrings as $text => $x){
+			$label = new Label_Text();
+			$frame->add($label);
+			$label->setHAlign($hAlign);
+			$label->setX($x);
+			$label->setStyle($style);
+			$label->setTextSize($textSize);
+			$label->setText($text);
+			$label->setTextColor($textColor);
+		}
+	}
 }

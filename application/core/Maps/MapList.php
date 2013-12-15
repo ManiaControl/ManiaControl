@@ -141,7 +141,16 @@ class MapList implements ManialinkPageAnswerListener {
 		$frame = $this->buildMainFrame();
 		$maniaLink->add($frame);
 
-		//TODO headline
+
+		//Headline
+		$headFrame = new Frame();
+		$frame->add($headFrame);
+		$headFrame->setY($this->height / 2 - 3);
+		$x = -$this->width / 2;
+		$array = array("Id" => $x + 5, "Mx ID" => $x + 10, "MapName" => $x + 20, "Author" => $x + 70);
+		$this->maniaControl->manialinkManager->labelLine($headFrame,$array);
+
+		//Get Maplist
 		$mapList = $this->maniaControl->mapManager->getMapList();
 
 		$id = 1;
@@ -160,11 +169,22 @@ class MapList implements ManialinkPageAnswerListener {
 	}
 
 	private function displayMap($id, Map $map, Frame $frame){
-
 		$frame->setZ(-0.01);
 
+		//set starting x-value
 		$x = -$this->width / 2;
 
+
+		$mxId = '';
+		if(isset($map->mx->id))
+			$mxId = $map->mx->id;
+
+		//Display Maps
+		$array = array($id => $x + 5, $mxId => $x + 10, $map->name => $x + 20, $map->authorNick => $x + 70);
+		$this->maniaControl->manialinkManager->labelLine($frame,$array);
+
+
+/*
 		//TODO detailed mx info page with link to mx
 		$x +=5;
 		$idLabel = new Label_Text();
@@ -218,7 +238,7 @@ class MapList implements ManialinkPageAnswerListener {
 
 		//TODO later add buttons for jukebox, admin control buttons (remove map, change to map)
 		//TODO side switch
-		//var_dump($map);
+		//var_dump($map);*/
 	}
 
 
