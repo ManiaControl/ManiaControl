@@ -13,5 +13,3 @@ interface ManialinkPageAnswerListener {
 	 */
 	const MANIALINKPAGEANSWERLISTENER_INTERFACE = __CLASS__;
 }
-
-?>

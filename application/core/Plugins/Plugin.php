@@ -63,5 +63,3 @@ interface Plugin {
 	 */
 	public static function getDescription();
 }
-
-?>

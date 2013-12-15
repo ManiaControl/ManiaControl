@@ -126,5 +126,3 @@ class Chat {
 		return $this->sendChat($format . $message, $login);
 	}
 }
-
-?>

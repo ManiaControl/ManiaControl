@@ -157,5 +157,3 @@ class AuthCommands implements CommandListener {
 		return $this->maniaControl->chat->sendUsageInfo($message, $player->login);
 	}
 }
-
-?>

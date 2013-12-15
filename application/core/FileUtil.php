@@ -86,5 +86,3 @@ abstract class FileUtil {
 		return str_replace(array('\\', '/', ':', '*', '?', '"', '<', '>', '|'), '_', $fileName);
 	}
 }
-
-?>

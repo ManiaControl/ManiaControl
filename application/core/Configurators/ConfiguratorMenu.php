@@ -39,5 +39,3 @@ interface ConfiguratorMenu {
 	 */
 	public function saveConfigData(array $configData, Player $player);
 }
-
-?>

@@ -281,5 +281,3 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 		$this->maniaControl->adminMenu->addMenuItem($itemQuad, 5);
 	}
 }
-
-?>

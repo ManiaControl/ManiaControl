@@ -202,5 +202,3 @@ class AuthenticationManager {
 		return self::AUTH_LEVEL_PLAYER;
 	}
 }
-
-?>

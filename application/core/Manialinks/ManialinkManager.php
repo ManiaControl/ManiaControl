@@ -161,5 +161,3 @@ class ManialinkManager implements CallbackListener {
 		return $this->maniaControl->client->query('TriggerModeScriptEvent', 'LibXmlRpc_DisableAltMenu', $player->login);
 	}
 }
-
-?>

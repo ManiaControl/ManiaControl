@@ -308,5 +308,3 @@ class Server {
 		return true;
 	}
 }
-
-?>

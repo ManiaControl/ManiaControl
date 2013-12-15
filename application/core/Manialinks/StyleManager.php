@@ -63,5 +63,3 @@ class StyleManager {
 		return $this->maniaControl->settingManager->getSetting($this, self::SETTING_QUAD_DEFAULT_SUBSTYLE);
 	}
 }
-
-?>

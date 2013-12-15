@@ -414,5 +414,3 @@ class ServerCommands implements CallbackListener, CommandListener {
 		return true;
 	}
 }
-
-?>

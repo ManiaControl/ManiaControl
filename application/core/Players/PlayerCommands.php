@@ -213,5 +213,3 @@ class PlayerCommands implements CommandListener {
 		$this->maniaControl->chat->sendSuccess('Fake players disconnected!', $player->login);
 	}
 }
-
-?>

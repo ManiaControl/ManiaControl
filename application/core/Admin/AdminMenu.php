@@ -147,5 +147,3 @@ class AdminMenu implements CallbackListener {
 		$this->manialink = $manialink;
 	}
 }
-
-?>

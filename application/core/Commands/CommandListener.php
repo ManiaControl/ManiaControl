@@ -9,5 +9,3 @@ namespace ManiaControl\Commands;
  */
 interface CommandListener {
 }
-
-?>

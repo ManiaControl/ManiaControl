@@ -85,5 +85,3 @@ abstract class Formatter {
 		return preg_replace('/(?<!\$)((?:\$\$)*)\$(?:g|[0-9a-f][^\$]{0,2})/iu', '$1', $string);
 	}
 }
-
-?>

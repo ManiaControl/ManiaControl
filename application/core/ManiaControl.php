@@ -285,5 +285,3 @@ class ManiaControl implements CommandListener {
 		logMessage('Script callbacks successfully enabled.');
 	}
 }
-
-?>

@@ -214,5 +214,3 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 		}
 	}
 }
-
-?>

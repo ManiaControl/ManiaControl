@@ -291,5 +291,3 @@ class PluginManager {
 		return $active;
 	}
 }
-
-?>

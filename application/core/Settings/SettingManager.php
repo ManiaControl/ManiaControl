@@ -359,5 +359,3 @@ class SettingManager {
 		return $settings;
 	}
 }
-
-?>

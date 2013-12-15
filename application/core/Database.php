@@ -148,5 +148,3 @@ class Database {
 		return true;
 	}
 }
-
-?>

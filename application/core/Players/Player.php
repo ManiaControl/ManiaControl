@@ -106,5 +106,3 @@ class Player {
 		return $this->path;
 	}
 }
-
-?>

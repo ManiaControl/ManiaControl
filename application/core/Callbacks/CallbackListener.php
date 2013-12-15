@@ -13,5 +13,3 @@ interface CallbackListener {
 	 */
 	const CALLBACKLISTENER_INTERFACE = __CLASS__;
 }
-
-?>
