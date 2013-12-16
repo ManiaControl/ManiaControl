@@ -61,10 +61,12 @@ class Map {
 		$this->copperPrice = $rpc_infos['CopperPrice'];
 		$this->mapType = $rpc_infos['MapType'];
 		$this->mapStyle = $rpc_infos['MapStyle'];
-		//$this->nbCheckpoints = $rpc_infos['NbCheckpoints']; //TODO check if key exists, only for trackmania
-
-		$this->authorNick = $this->authorLogin; //initialize (if nick from map cant get readen)
-
+		if (isset($rpc_infos['NbCheckpoints'])) {
+			$this->nbCheckpoints = $rpc_infos['NbCheckpoints'];
+		}
+		
+		$this->authorNick = $this->authorLogin;
+		
 		$mapsDirectory = $this->maniaControl->server->getMapsDirectory();
 		if ($this->maniaControl->server->checkAccess($mapsDirectory)) {
 			$this->mapFetcher = new \GBXChallMapFetcher(true);
@@ -74,13 +76,13 @@ class Map {
 			catch (\Exception $e) {
 				trigger_error($e->getMessage(), E_USER_WARNING);
 			}
-
+			
 			$this->authorNick = $this->mapFetcher->authorNick;
 			$this->authorEInfo = $this->mapFetcher->authorEInfo;
 			$this->authorZone = $this->mapFetcher->authorZone;
 			$this->comment = $this->mapFetcher->comment;
 		}
-
+		
 		// TODO: define timeout if mx is down
 		$serverInfo = $this->maniaControl->server->getSystemInfo();
 		$title = strtoupper(substr($serverInfo['TitleId'], 0, 2));
