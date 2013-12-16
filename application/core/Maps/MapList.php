@@ -75,6 +75,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 * @param Player $player
 	 */
 	public function showManiaExchangeList(array $chatCallback, Player $player){
+		$this->maniaControl->manialinkManager->closeWidget($player);
+
 		$params = explode(' ', $chatCallback[1][2]);
 
 		$serverInfo = $this->maniaControl->server->getSystemInfo();
@@ -212,6 +214,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 * @param Player $player
 	 */
 	public function showMapList(Player $player){
+		$this->maniaControl->manialinkManager->closeWidget($player);
 
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$frame = $this->buildMainFrame();
@@ -288,7 +291,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			}
 			$y -= 4;
 			$id++;
-			if($id == self::MAX_MAPS_PER_PAGE - 1)
+			if($id == self::MAX_MAPS_PER_PAGE + 1)
 				break;
 		}
 
@@ -317,7 +320,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$currentQuad->setSubStyle($currentQuad::SUBSTYLE_ArrowBlue);
 		}
 
-		$mxId = '';
+		$mxId = '-';
 		if(isset($map->mx->id))
 			$mxId = $map->mx->id;
 
@@ -359,7 +362,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$player = $this->maniaControl->playerManager->getPlayer($callback[1][1]);
 
 		if($addMap){ //TODO log and chat message
-			$this->maniaControl->mapManager->addMapFromMx($actionArray[2],$callback[1][1]); //TODO bestätigung
+			$this->maniaControl->mapManager->addMapFromMx(intval($actionArray[2]),$callback[1][1]); //TODO bestätigung
 		}else if($eraseMap){ //TODO log and chat message
 			$this->maniaControl->mapManager->eraseMap(intval($actionArray[2]), $actionArray[3]); //TODO bestätigung
 			$this->showMapList($player);

@@ -48,6 +48,7 @@ class MapManager implements CallbackListener {
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_BEGINMAP, $this, 'handleBeginMap');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_MAPLISTMODIFIED, $this, 'mapListModified');
 	}
 
 	/**
@@ -220,7 +221,13 @@ class MapManager implements CallbackListener {
 		}
 	}
 
-
+	/**
+	 * MapList modified by other controller or web panels
+	 * @param array $callback
+	 */
+	public function mapListModified(array $callback){
+		$this->updateFullMapList();
+	}
 
 	/**
 	 * @return array
@@ -262,8 +269,9 @@ class MapManager implements CallbackListener {
 			// Load from MX
 			$serverInfo = $this->maniaControl->server->getSystemInfo();
 			$title = strtolower(substr($serverInfo['TitleId'], 0, 2));
+
 			// Check if map exists
-			$url = "http://{$title}.mania-exchange.com/api/tracks/get_track_info/id/{$mapId}?format=json";
+			$url = "http://api.mania-exchange.com/{$title}/maps/{$mapId}?format=json";
 			$mapInfo = FileUtil::loadFile($url);
 			if (!$mapInfo || strlen($mapInfo) <= 0) {
 				// Invalid id
@@ -300,7 +308,7 @@ class MapManager implements CallbackListener {
 				return;
 			}
 			// Add map to map list
-			if (!$this->maniaControl->client->query('InsertMap', $mapFileName)) {
+			if (!$this->maniaControl->client->query('InsertMap', $mapFileName)) { //TODO irgentein bug?
 				$this->maniaControl->chat->sendError("Couldn't add map to match settings!", $login);
 				return;
 			}
