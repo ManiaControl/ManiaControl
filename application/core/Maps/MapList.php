@@ -32,6 +32,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 	const ACTION_CLOSEWIDGET = 'MapList.CloseWidget';
 	const ACTION_ADD_MAP = 'MapList.AddMap';
+	const ACTION_ERASE_MAP = 'MapList.EraseMap';
+	const ACTION_SWITCH_MAP = 'MapList.SwitchMap';
 	const MAX_MAPS_PER_PAGE = 15;
 
 
@@ -243,45 +245,49 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$this->displayMap($id, $map, $mapFrame, $tooltips);
 			$mapFrame->setY($y);
 
-			//erase map quad
-			$eraseQuad = new Quad_UIConstruction_Buttons();
-			$mapFrame->add($eraseQuad);
-			$eraseQuad->setX($this->width/2 - 5);
-			$eraseQuad->setZ(0.2);
-			$eraseQuad->setSize(4,4);
-			$eraseQuad->setSubStyle($eraseQuad::SUBSTYLE_Erase);
-			//TODO bestätigung?
+			if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)){ //todoSET as setting who can add maps
+				//erase map quad
+				$eraseQuad = new Quad_UIConstruction_Buttons();
+				$mapFrame->add($eraseQuad);
+				$eraseQuad->setX($this->width/2 - 5);
+				$eraseQuad->setZ(0.2);
+				$eraseQuad->setSize(4,4);
+				$eraseQuad->setSubStyle($eraseQuad::SUBSTYLE_Erase);
+				$eraseQuad->setAction(self::ACTION_ERASE_MAP . "." .($id-1));
+				//TODO bestätigung?
 
-			//switch to map quad
-			$switchToQuad = new Quad_Icons64x64_1();
-			$mapFrame->add($switchToQuad);
-			$switchToQuad->setX($this->width/2 - 10);
-			$switchToQuad->setZ(0.2);
-			$switchToQuad->setSize(4, 4);
-			$switchToQuad->setSubStyle($switchToQuad::SUBSTYLE_ArrowFastNext);
-			//TODO bestätigung?
+				//Description Label
+				$descriptionLabel = new Label();
+				$frame->add($descriptionLabel);
+				$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
+				$descriptionLabel->setPosition($x + 10, -$this->height / 2 + 5);
+				$descriptionLabel->setSize($this->width * 0.7, 4);
+				$descriptionLabel->setTextSize(2);
+				$descriptionLabel->setVisible(false);
+				$descriptionLabel->setText("Remove Map: {$map->name}");
+				$tooltips->add($eraseQuad, $descriptionLabel);
+			}
+			if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)){ //todoSET as setting who can add maps
+				//switch to map quad
+				$switchToQuad = new Quad_Icons64x64_1();
+				$mapFrame->add($switchToQuad);
+				$switchToQuad->setX($this->width/2 - 10);
+				$switchToQuad->setZ(0.2);
+				$switchToQuad->setSize(4, 4);
+				$switchToQuad->setSubStyle($switchToQuad::SUBSTYLE_ArrowFastNext);
+				$switchToQuad->setAction(self::ACTION_SWITCH_MAP . "." .($id-1));
+				//TODO bestätigung?
 
-			//Description Label
-			$descriptionLabel = new Label();
-			$frame->add($descriptionLabel);
-			$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
-			$descriptionLabel->setPosition($x + 10, -$this->height / 2 + 5);
-			$descriptionLabel->setSize($this->width * 0.7, 4);
-			$descriptionLabel->setTextSize(2);
-			$descriptionLabel->setVisible(false);
-			$descriptionLabel->setText("Remove Map: {$map->name}");
-			$tooltips->add($eraseQuad, $descriptionLabel);
-
-			$descriptionLabel = new Label();
-			$frame->add($descriptionLabel);
-			$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
-			$descriptionLabel->setPosition($x + 10, -$this->height / 2 + 5);
-			$descriptionLabel->setSize($this->width * 0.7, 4);
-			$descriptionLabel->setTextSize(2);
-			$descriptionLabel->setVisible(false);
-			$descriptionLabel->setText("Switch Directly to Map: {$map->name}");
-			$tooltips->add($switchToQuad, $descriptionLabel);
-
+				$descriptionLabel = new Label();
+				$frame->add($descriptionLabel);
+				$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
+				$descriptionLabel->setPosition($x + 10, -$this->height / 2 + 5);
+				$descriptionLabel->setSize($this->width * 0.7, 4);
+				$descriptionLabel->setTextSize(2);
+				$descriptionLabel->setVisible(false);
+				$descriptionLabel->setText("Switch Directly to Map: {$map->name}");
+				$tooltips->add($switchToQuad, $descriptionLabel);
+			}
 			$y -= 4;
 			$id++;
 			if($id == self::MAX_MAPS_PER_PAGE - 1)
@@ -344,11 +350,21 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	public function handleManialinkPageAnswer(array $callback){
 		$actionId = $callback[1][2];
 		$addMap = (strpos($actionId, self::ACTION_ADD_MAP) === 0);
-		if(!$addMap)
+		$eraseMap = (strpos($actionId, self::ACTION_ERASE_MAP) === 0);
+		$switchMap = (strpos($actionId, self::ACTION_SWITCH_MAP) === 0);
+
+		if(!$addMap && !$eraseMap && !$switchMap)
 			return;
 
 		$actionArray = explode(".", $actionId);
-		var_dump($actionArray);
-		$this->maniaControl->mapManager->addMapFromMx($actionArray[2],$callback[1][1]);
+
+		if($addMap){ //TODO log and chat message
+			$this->maniaControl->mapManager->addMapFromMx($actionArray[2],$callback[1][1]);
+		}else if($eraseMap){
+
+		}else if($switchMap){ //TODO log and chat message
+			$this->maniaControl->client->query('JumpToMapIndex', intval($actionArray[2]));
+		}
+
 	}
 } 
