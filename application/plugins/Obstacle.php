@@ -144,17 +144,16 @@ class ObstaclePlugin implements CallbackListener, CommandListener, Plugin {
 	 * @param array $callback        	
 	 */
 	public function callback_OnCheckpoint(array $callback) {
-		// TODO: check back with trackmania callback format
-		return;
 		$data = json_decode($callback[1]);
 		$player = $this->maniaControl->playerManager->getPlayer($data->Player->Login);
 		if (!$player) {
 			return;
 		}
 		$time = $data->Run->Time;
-		// Trigger Trackmania player finish callback
-		$finishCallback = array($player->pid, $player->login, $time);
-		$finishCallback = array(CallbackManager::CB_TM_PLAYERCHECKPOINT, $finishCallback);
-		$this->maniaControl->callbackManager->triggerCallback(CallbackManager::CB_TM_PLAYERCHECKPOINT, $finishCallback);
+		// Trigger Trackmania player checkpoint callback
+		// TODO: Checkpoint index (5th element)
+		$checkpointCallback = array($player->pid, $player->login, $time, 0, 0);
+		$checkpointCallback = array(CallbackManager::CB_TM_PLAYERCHECKPOINT, $checkpointCallback);
+		$this->maniaControl->callbackManager->triggerCallback(CallbackManager::CB_TM_PLAYERCHECKPOINT, $checkpointCallback);
 	}
 }
