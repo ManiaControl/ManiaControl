@@ -75,8 +75,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 * @param Player $player
 	 */
 	public function showManiaExchangeList(array $chatCallback, Player $player){
-		$this->maniaControl->manialinkManager->closeWidget($player);
-
 		$params = explode(' ', $chatCallback[1][2]);
 
 		$serverInfo = $this->maniaControl->server->getSystemInfo();
@@ -214,8 +212,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 * @param Player $player
 	 */
 	public function showMapList(Player $player){
-		$this->maniaControl->manialinkManager->closeWidget($player);
-
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$frame = $this->buildMainFrame();
 		$maniaLink->add($frame);

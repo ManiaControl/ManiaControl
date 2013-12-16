@@ -19,6 +19,7 @@ class MapCommands implements CommandListener {
 	 * Private properties
 	 */
 	private $maniaControl = null;
+	private $mapList = null;
 
 	/**
 	 * Create MapCommands instance
@@ -38,6 +39,8 @@ class MapCommands implements CommandListener {
 		$this->maniaControl->commandManager->registerCommandListener('xlist', $this, 'command_xList');
 		$this->maniaControl->commandManager->registerCommandListener('list', $this, 'command_List');
 		$this->maniaControl->commandManager->registerCommandListener('maps', $this, 'command_List');
+
+		$this->mapList = new MapList($this->maniaControl);
 	}
 
 	/**
@@ -123,8 +126,7 @@ class MapCommands implements CommandListener {
 	 * @param Player $player        	
 	 */
 	public function command_List(array $chatCallback, Player $player) {
-		$mapList = new MapList($this->maniaControl);
-		$mapList->showMapList($player);
+		$this->mapList->showMapList($player);
 	}
 
 	/**
@@ -133,7 +135,6 @@ class MapCommands implements CommandListener {
 	 * @param Player $player
 	 */
 	public function command_xList(array $chatCallback, Player $player) {
-		$mapList = new MapList($this->maniaControl);
-		$mapList->showManiaExchangeList($chatCallback, $player);
+		$this->mapList->showManiaExchangeList($chatCallback, $player);
 	}
 }
