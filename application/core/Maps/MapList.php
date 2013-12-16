@@ -11,6 +11,7 @@ use FML\Controls\Control;
 use FML\Controls\Label;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quads\Quad_Icons64x64_1;
+use FML\Controls\Quads\Quad_UIConstruction_Buttons;
 use FML\Script\Script;
 use FML\Script\Tooltips;
 use ManiaControl\Admin\AuthenticationManager;
@@ -214,6 +215,12 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$frame = $this->buildMainFrame();
 		$maniaLink->add($frame);
 
+		// Create script and features
+		$script = new Script();
+		$maniaLink->setScript($script);
+
+		$tooltips = new Tooltips();
+		$script->addFeature($tooltips);
 
 		//Headline
 		$headFrame = new Frame();
@@ -233,8 +240,48 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		foreach($mapList as $map){
 			$mapFrame = new Frame();
 			$frame->add($mapFrame);
-			$this->displayMap($id, $map, $mapFrame);
+			$this->displayMap($id, $map, $mapFrame, $tooltips);
 			$mapFrame->setY($y);
+
+			//erase map quad
+			$eraseQuad = new Quad_UIConstruction_Buttons();
+			$mapFrame->add($eraseQuad);
+			$eraseQuad->setX($this->width/2 - 5);
+			$eraseQuad->setZ(0.2);
+			$eraseQuad->setSize(4,4);
+			$eraseQuad->setSubStyle($eraseQuad::SUBSTYLE_Erase);
+			//TODO bestätigung?
+
+			//switch to map quad
+			$switchToQuad = new Quad_Icons64x64_1();
+			$mapFrame->add($switchToQuad);
+			$switchToQuad->setX($this->width/2 - 10);
+			$switchToQuad->setZ(0.2);
+			$switchToQuad->setSize(4, 4);
+			$switchToQuad->setSubStyle($switchToQuad::SUBSTYLE_ArrowFastNext);
+			//TODO bestätigung?
+
+			//Description Label
+			$descriptionLabel = new Label();
+			$frame->add($descriptionLabel);
+			$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
+			$descriptionLabel->setPosition($x + 10, -$this->height / 2 + 5);
+			$descriptionLabel->setSize($this->width * 0.7, 4);
+			$descriptionLabel->setTextSize(2);
+			$descriptionLabel->setVisible(false);
+			$descriptionLabel->setText("Remove Map: {$map->name}");
+			$tooltips->add($eraseQuad, $descriptionLabel);
+
+			$descriptionLabel = new Label();
+			$frame->add($descriptionLabel);
+			$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
+			$descriptionLabel->setPosition($x + 10, -$this->height / 2 + 5);
+			$descriptionLabel->setSize($this->width * 0.7, 4);
+			$descriptionLabel->setTextSize(2);
+			$descriptionLabel->setVisible(false);
+			$descriptionLabel->setText("Switch Directly to Map: {$map->name}");
+			$tooltips->add($switchToQuad, $descriptionLabel);
+
 			$y -= 4;
 			$id++;
 			if($id == self::MAX_MAPS_PER_PAGE - 1)
@@ -251,14 +298,13 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 * @param Map   $map
 	 * @param Frame $frame
 	 */
-	private function displayMap($id, Map $map, Frame $frame){
+	private function displayMap($id, Map $map, Frame $frame, Tooltips $tooltips){
 		$frame->setZ(0.1);
 
 		//set starting x-value
 		$x = -$this->width / 2;
 
-		if($this->maniaControl->mapManager->getCurrentMap() == $map){
-			echo "test";
+		if($this->maniaControl->mapManager->getCurrentMap() === $map){
 			$currentQuad = new Quad_Icons64x64_1();
 			$frame->add($currentQuad);
 			$currentQuad->setX($x + 3.5);
@@ -274,11 +320,12 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		//Display Maps
 		$array = array($id => $x + 5, $mxId => $x + 10, $map->name => $x + 20, $map->authorNick => $x + 70);
 		$this->maniaControl->manialinkManager->labelLine($frame,$array);
-		//TODO detailed mx info page with link to mx
-		//TODO action detailed map info
+		//TODO detailed mx info page with link to mxo
 		//TODO action detailed map info
 		//TODO later add buttons for jukebox, admin control buttons (remove map, change to map)
 		//TODO side switch
+
+
 	}
 
 

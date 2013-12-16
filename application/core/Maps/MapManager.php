@@ -165,9 +165,12 @@ class MapManager implements CallbackListener {
 			return null;
 		}
 		$rpcMap = $this->maniaControl->client->getResponse();
-		$map = new Map($this->maniaControl, $rpcMap);
-		$this->addMap($map);
-		return $map;
+		if(!array_key_exists($rpcMap["UId"], $this->mapListUids)){
+			$map = new Map($this->maniaControl, $rpcMap);
+			$this->addMap($map);
+			return $map;
+		}
+		return $this->mapListUids[$rpcMap["UId"]];
 	}
 
 	/**
@@ -196,7 +199,7 @@ class MapManager implements CallbackListener {
 	 */
 	public function handleBeginMap(array $callback) {
 		if(array_key_exists($callback[1][0]["UId"], $this->mapListUids)){ //Map already exists, only update index
-			$this->currentMap = $this->mapListUids[$rpcMap["UId"]];
+			$this->currentMap = $this->mapListUids[$callback[1][0]["UId"]];
 		}else{ //can this ever happen?
 			$this->currentMap = $this->fetchCurrentMapInfo();
 		}
