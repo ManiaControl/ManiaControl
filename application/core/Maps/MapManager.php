@@ -126,6 +126,21 @@ class MapManager implements CallbackListener {
 		return true;
 	}
 
+
+	/**
+	 * Erases a Map
+	 * @param $id
+	 * @param $uid
+	 */
+	public function eraseMap($id, $uid) {
+		$map = $this->mapListUids[$uid];
+		$this->maniaControl->client->query('RemoveMap', $map->fileName);
+		$this->maniaControl->chat->sendSuccess('Map $<' . $map->name . '$> removed!'); //TODO specified message, who done it?
+		$this->maniaControl->log('Map $<' . $map->name . '$> removed!');
+		unset($this->mapListUids[$uid]);
+		unset($this->mapList[$id]);
+	}
+
 	/**
 	 * Updates the full Map list, needed on Init, addMap and on ShuffleMaps
 	 * @return null

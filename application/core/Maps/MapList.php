@@ -253,8 +253,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$eraseQuad->setZ(0.2);
 				$eraseQuad->setSize(4,4);
 				$eraseQuad->setSubStyle($eraseQuad::SUBSTYLE_Erase);
-				$eraseQuad->setAction(self::ACTION_ERASE_MAP . "." .($id-1));
-				//TODO bestätigung?
+				$eraseQuad->setAction(self::ACTION_ERASE_MAP . "." .($id-1) . "." . $map->uid);
 
 				//Description Label
 				$descriptionLabel = new Label();
@@ -276,7 +275,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$switchToQuad->setSize(4, 4);
 				$switchToQuad->setSubStyle($switchToQuad::SUBSTYLE_ArrowFastNext);
 				$switchToQuad->setAction(self::ACTION_SWITCH_MAP . "." .($id-1));
-				//TODO bestätigung?
 
 				$descriptionLabel = new Label();
 				$frame->add($descriptionLabel);
@@ -358,12 +356,19 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 		$actionArray = explode(".", $actionId);
 
-		if($addMap){ //TODO log and chat message
-			$this->maniaControl->mapManager->addMapFromMx($actionArray[2],$callback[1][1]);
-		}else if($eraseMap){
+		$player = $this->maniaControl->playerManager->getPlayer($callback[1][1]);
 
+		if($addMap){ //TODO log and chat message
+			$this->maniaControl->mapManager->addMapFromMx($actionArray[2],$callback[1][1]); //TODO bestätigung
+		}else if($eraseMap){ //TODO log and chat message
+			$this->maniaControl->mapManager->eraseMap(intval($actionArray[2]), $actionArray[3]); //TODO bestätigung
+			$this->showMapList($player);
 		}else if($switchMap){ //TODO log and chat message
-			$this->maniaControl->client->query('JumpToMapIndex', intval($actionArray[2]));
+			$this->maniaControl->client->query('JumpToMapIndex', intval($actionArray[2])); //TODO bestätigung
+			$mapList = $this->maniaControl->mapManager->getMapList();
+
+			$this->maniaControl->chat->sendSuccess('Map switched to $z$<' . $mapList[$actionArray[2]]->name . '$>!'); //TODO specified message, who done it?
+			$this->maniaControl->log('Skipped to $z$<' . $mapList[$actionArray[2]]->name . '$>!');
 		}
 
 	}
