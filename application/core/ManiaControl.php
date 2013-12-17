@@ -28,6 +28,7 @@ require_once __DIR__ . '/Configurators/Configurator.php';
 require_once __DIR__ . '/Database.php';
 require_once __DIR__ . '/FileUtil.php';
 require_once __DIR__ . '/Formatter.php';
+require_once __DIR__ . '/GbxDataFetcher/gbxdatafetcher.inc.php';
 require_once __DIR__ . '/ManiaExchange/mxinfofetcher.inc.php';
 require_once __DIR__ . '/ManiaExchange/mxinfosearcher.inc.php';
 require_once __DIR__ . '/Manialinks/ManialinkManager.php';
@@ -38,7 +39,7 @@ require_once __DIR__ . '/Players/PlayerManager.php';
 require_once __DIR__ . '/Plugins/PluginManager.php';
 require_once __DIR__ . '/Server/Server.php';
 require_once __DIR__ . '/Settings/SettingManager.php';
-require_once __DIR__ . '/GbxDataFetcher/gbxdatafetcher.inc.php';
+require_once __DIR__ . '/UpdateManager.php';
 list($endiantest) = array_values(unpack('L1L', pack('V', 1)));
 if ($endiantest == 1) {
 	require_once __DIR__ . '/PhpRemote/GbxRemote.inc.php';
@@ -77,6 +78,7 @@ class ManiaControl implements CommandListener {
 	public $pluginManager = null;
 	public $server = null;
 	public $settingManager = null;
+	public $updateManager = null;
 	
 	/**
 	 * Private properties
@@ -89,6 +91,7 @@ class ManiaControl implements CommandListener {
 	public function __construct() {
 		logMessage('Loading ManiaControl v' . self::VERSION . '...');
 		
+		// Load ManiaControl Modules
 		$this->database = new Database($this);
 		$this->callbackManager = new CallbackManager($this);
 		$this->settingManager = new SettingManager($this);
@@ -102,7 +105,9 @@ class ManiaControl implements CommandListener {
 		$this->mapManager = new MapManager($this);
 		$this->configurator = new Configurator($this);
 		$this->pluginManager = new PluginManager($this);
+		$this->updateManager = new UpdateManager($this);
 		
+		// Register for commands
 		$this->commandManager->registerCommandListener('version', $this, 'command_Version');
 	}
 
