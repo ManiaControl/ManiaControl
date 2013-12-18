@@ -30,6 +30,9 @@ use MXInfoSearcher;
 
 class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
+	/**
+	 * Constants
+	 */
 	const ACTION_CLOSEWIDGET = 'MapList.CloseWidget';
 	const ACTION_ADD_MAP = 'MapList.AddMap';
 	const ACTION_ERASE_MAP = 'MapList.EraseMap';
@@ -134,7 +137,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$headFrame = new Frame();
 		$frame->add($headFrame);
 		$headFrame->setY($y - 3);
-		$array = array("Id" => $x + 5, "Name" => $x + 17, "Author" => $x + 70, "Mood" => $x + 90, "Type" => $x + 105);
+		$array = array("Id" => $x + 5, "Name" => $x + 17, "Author" => $x + 65, "Mood" => $x + 100, "Type" => $x + 115);
 		$this->maniaControl->manialinkManager->labelLine($headFrame,$array);
 
 		$i = 0;
@@ -142,7 +145,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		foreach($maps as $map){
 			$mapFrame = new Frame();
 			$frame->add($mapFrame);
-			$array = array($map->id => $x + 5, $map->name => $x + 17, $map->author => $x + 70, $map->mood => $x + 90, $map->maptype => $x + 105);
+			$array = array($map->id => $x + 5, $map->name => $x + 17, $map->author => $x + 65, $map->mood => $x + 100, $map->maptype => $x + 115);
 			$this->maniaControl->manialinkManager->labelLine($mapFrame,$array);
 			$mapFrame->setY($y);
 

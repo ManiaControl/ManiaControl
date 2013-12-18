@@ -17,7 +17,7 @@ class PlayerCommands implements CommandListener {
 	 * Private properties
 	 */
 	private $maniaControl = null;
-
+	private $playerList = null;
 	/**
 	 * Create a new server commands instance
 	 *
@@ -34,8 +34,17 @@ class PlayerCommands implements CommandListener {
 		$this->maniaControl->commandManager->registerCommandListener('forcespectator', $this, 'command_ForceSpectator',true);
 		$this->maniaControl->commandManager->registerCommandListener('forceplay', $this, 'command_ForcePlayer',true);
 		$this->maniaControl->commandManager->registerCommandListener('forceplayer', $this, 'command_ForcePlayer',true);
+		$this->maniaControl->commandManager->registerCommandListener('addbot', $this, 'command_AddFakePlayers',true);
+		$this->maniaControl->commandManager->registerCommandListener('removebot', $this, 'command_RemoveFakePlayers',true);
 		$this->maniaControl->commandManager->registerCommandListener('addbots', $this, 'command_AddFakePlayers',true);
 		$this->maniaControl->commandManager->registerCommandListener('removebots', $this, 'command_RemoveFakePlayers',true);
+
+		// Register for player chat commands
+		$this->maniaControl->commandManager->registerCommandListener('player', $this, 'command_playerList');
+		$this->maniaControl->commandManager->registerCommandListener('players', $this, 'command_playerList');
+
+		$this->playerList = new PlayerList($this->maniaControl);
+
 	}
 
 	/**
@@ -211,5 +220,14 @@ class PlayerCommands implements CommandListener {
 			return;
 		}
 		$this->maniaControl->chat->sendSuccess('Fake players disconnected!', $player->login);
+	}
+
+	/**
+	 * Handle Player list command
+	 * @param array  $chatCallback
+	 * @param Player $player
+	 */
+	public function command_playerList(array $chatCallback, Player $player) {
+		$this->playerList->showPlayerList($player);
 	}
 }

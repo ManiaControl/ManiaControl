@@ -71,6 +71,20 @@ class Player {
 		return ($this->pid <= 0);
 	}
 
+
+	/**
+	 * Get province
+	 *
+	 * @return string
+	 */
+	public function getProvince() {
+		$pathParts = explode('|', $this->path);
+		if (isset($pathParts[3])) {
+			return $pathParts[3];
+		}
+		return "";
+	}
+
 	/**
 	 * Get country
 	 *

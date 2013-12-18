@@ -44,7 +44,7 @@ class MapManager implements CallbackListener {
 		
 		// Create map commands instance
 		$this->mapCommands = new MapCommands($maniaControl);
-		
+
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_BEGINMAP, $this, 'handleBeginMap');
