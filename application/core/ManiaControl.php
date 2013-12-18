@@ -57,7 +57,7 @@ class ManiaControl implements CommandListener {
 	/**
 	 * Constants
 	 */
-	const VERSION = '0.1';
+	const VERSION = '0.01';
 	const API_VERSION = '2013-04-16';
 	const DATE = 'd-m-y h:i:sa T';
 	
