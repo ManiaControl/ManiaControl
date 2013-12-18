@@ -4,10 +4,12 @@ namespace ManiaControl\Players;
 
 
 use FML\Controls\Frame;
+use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_BgRaceScore2;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\ManiaLink;
+use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
@@ -83,7 +85,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$frame->add($headFrame);
 		$headFrame->setY($y - 3);
 		//$array = array("Id" => $x + 5, "Nickname" => $x + 10,  "Login" => $x + 40, "Ladder" => $x + 60,"Zone" => $x + 85);
-		$array = array("Id" => $x + 5, "Nickname" => $x + 10,  "Login" => $x + 50, "Zone" => $x + 75);
+		$array = array("Id" => $x + 5, "Nickname" => $x + 18,  "Login" => $x + 60, "Home" => $x + 85);
 		$this->maniaControl->manialinkManager->labelLine($headFrame,$array);
 
 		//get PlayerList
@@ -97,19 +99,36 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			$playerFrame = new Frame();
 			$frame->add($playerFrame);
 			//$array = array($i => $x + 5, $listPlayer->nickname => $x + 10,  $listPlayer->login => $x + 50, $listPlayer->ladderRank => $x + 60, $listPlayer->ladderScore => $x + 70, $path => $x + 85);
-			$array = array($i => $x + 5, $listPlayer->nickname => $x + 10,  $listPlayer->login => $x + 50, $path => $x + 75);
+			$array = array($i => $x + 5, $listPlayer->nickname => $x + 18,  $listPlayer->login => $x + 60, $path => $x + 85);
 			$this->maniaControl->manialinkManager->labelLine($playerFrame,$array);
 			$playerFrame->setY($y);
 
-			//Add-Map-Button
-		/*	$addQuad = new Quad_Icons64x64_1();
-			$mapFrame->add($addQuad);
-			$addQuad->setX($x + 15);
-			$addQuad->setZ(-0.1);
-			$addQuad->setSubStyle($addQuad::SUBSTYLE_Add);
-			$addQuad->setSize(4,4);
-			$addQuad->setAction(self::ACTION_ADD_MAP . "." .$map->id);
-*/
+			if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)){
+				$rightQuad = new Quad_BgRaceScore2();
+				$playerFrame->add($rightQuad);
+				$rightQuad->setX($x + 13);
+				$rightQuad->setZ(-0.1);
+				$rightQuad->setSubStyle($rightQuad::SUBSTYLE_CupFinisher);
+				$rightQuad->setSize(7,4);
+
+				$rightLabel = new Label_Text();
+				$playerFrame->add($rightLabel);
+				$rightLabel->setX($x + 13.3);
+				$rightLabel->setTextSize(0.8);
+
+				echo $this->maniaControl->authenticationManager->getAuthLevel($listPlayer->login);
+				switch($listPlayer->authLevel){
+					case authenticationManager::AUTH_LEVEL_MASTERADMIN:	$rightLabel->setText("MA");
+																		break;
+					case authenticationManager::AUTH_LEVEL_SUPERADMIN:  $rightLabel->setText("SA");
+																		break;
+					case authenticationManager::AUTH_LEVEL_ADMIN:		$rightLabel->setText("AD");
+																		break;
+					case authenticationManager::AUTH_LEVEL_OPERATOR:	$rightLabel->setText("OP");
+				}
+
+				$rightLabel->setTextColor("f00");
+			}
 			$i++;
 			$y -= 4;
 		}
