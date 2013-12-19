@@ -21,6 +21,7 @@ class PlayerManager implements CallbackListener {
 	 */
 	const CB_PLAYERJOINED = 'PlayerManagerCallback.PlayerJoined';
 	const CB_ONINIT = 'PlayerManagerCallback.OnInit';
+	const CB_PLAYERINFOCHANGED = 'PlayerManagerCallback.PlayerInfoChanged';
 	const TABLE_PLAYERS = 'mc_players';
 	const SETTING_JOIN_LEAVE_MESSAGES = 'Enable Join & Leave Messages';
 	
@@ -48,8 +49,8 @@ class PlayerManager implements CallbackListener {
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'onInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCONNECT, $this, 'playerConnect');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERDISCONNECT, $this, 
-				'playerDisconnect');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERDISCONNECT, $this, 'playerDisconnect');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERINFOCHANGED, $this, 'playerInfoChanged');
 	}
 
 	/**
@@ -151,6 +152,21 @@ class PlayerManager implements CallbackListener {
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES)) {
 			$this->maniaControl->chat->sendChat('$<' . $player->nickname . '$> $ff0has left the game. Played:$fff ' . $played);
 		}
+	}
+
+	/**
+	 * Update PlayerInfo
+	 * @param array $callback
+	 */
+	public function playerInfoChanged(array $callback){
+		//TODO update other info
+		//TODO something on playerjoin not working here
+		$player = $this->getPlayer($callback[1][0]['Login']);
+		$player->teamId = $callback[1][0]["TeamId"];
+		//var_dump($callback);
+
+		// Trigger own callback
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERINFOCHANGED, array(self::CB_PLAYERINFOCHANGED));
 	}
 
 	/**

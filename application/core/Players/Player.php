@@ -61,6 +61,10 @@ class Player {
 		$this->joinTime = time();
 	}
 
+
+
+
+
 	/**
 	 * Check if player is not a real player
 	 *
