@@ -131,7 +131,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			$playerFrame->setY($y);
 
 			//Team Emblem
-			if($listPlayer->teamId != -1){ //Show Players Team
+			if($listPlayer->teamId >= 0){ //Player is in a Team
 				$redQuad = new Quad_Emblems(); //TODO rename quads
 				$playerFrame->add($redQuad);
 				$redQuad->setX($x + 10);
@@ -141,9 +141,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				switch($listPlayer->teamId){
 					case 0: $redQuad->setSubStyle($redQuad::SUBSTYLE_1); break;
 					case 1: $redQuad->setSubStyle($redQuad::SUBSTYLE_2); break;
-					//case 2: $redQuad->setSubStyle($redQuad::SUBSTYLE_2); break;
 				}
-			}else{ //player is in spec
+			}else if($listPlayer->isSpectator){ //Player is in Spectator Mode
 				$neutralQuad = new Quad_BgRaceScore2();
 				$playerFrame->add($neutralQuad);
 				$neutralQuad->setX($x + 10);

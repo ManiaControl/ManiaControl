@@ -159,11 +159,11 @@ class PlayerManager implements CallbackListener {
 	 * @param array $callback
 	 */
 	public function playerInfoChanged(array $callback){
-		//TODO update other info
-		//TODO something on playerjoin not working here
+		//TODO something on playerjoin not working here (maybe because it get called before player join
 		$player = $this->getPlayer($callback[1][0]['Login']);
 		$player->teamId = $callback[1][0]["TeamId"];
-		//var_dump($callback);
+		$player->isSpectator = $callback[1][0]["SpectatorStatus"];
+		$player->ladderRank = $callback[1][0]["LadderRanking"];
 
 		// Trigger own callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERINFOCHANGED, array(self::CB_PLAYERINFOCHANGED));
