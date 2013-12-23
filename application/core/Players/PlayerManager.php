@@ -5,6 +5,7 @@ namespace ManiaControl\Players;
 require_once __DIR__ . '/Player.php';
 require_once __DIR__ . '/PlayerCommands.php';
 
+use FML\Controls\Quad;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Callbacks\CallbackListener;
@@ -24,7 +25,7 @@ class PlayerManager implements CallbackListener {
 	const CB_PLAYERINFOCHANGED = 'PlayerManagerCallback.PlayerInfoChanged';
 	const TABLE_PLAYERS = 'mc_players';
 	const SETTING_JOIN_LEAVE_MESSAGES = 'Enable Join & Leave Messages';
-	
+
 	/**
 	 * Private properties
 	 */
@@ -32,6 +33,7 @@ class PlayerManager implements CallbackListener {
 	private $playerCommands = null;
 	private $playerList = array();
 
+	public $playerActions = null;
 	/**
 	 * Construct player manager
 	 *
@@ -42,7 +44,9 @@ class PlayerManager implements CallbackListener {
 		$this->initTables();
 		
 		$this->playerCommands = new PlayerCommands($maniaControl);
-		
+
+		$this->playerActions = new PlayerActions($maniaControl);
+
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES, true);
 		
@@ -51,6 +55,7 @@ class PlayerManager implements CallbackListener {
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCONNECT, $this, 'playerConnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERDISCONNECT, $this, 'playerDisconnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERINFOCHANGED, $this, 'playerInfoChanged');
+
 	}
 
 	/**
@@ -104,7 +109,7 @@ class PlayerManager implements CallbackListener {
 			$player = new Player($playerInfo);
 			$this->addPlayer($player);
 		}
-		
+
 		// Trigger own callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_ONINIT, array(self::CB_ONINIT));
 	}

@@ -36,6 +36,7 @@ require_once __DIR__ . '/Maps/Map.php';
 require_once __DIR__ . '/Maps/MapManager.php';
 require_once __DIR__ . '/Maps/MapList.php';
 require_once __DIR__ . '/Players/PlayerManager.php';
+require_once __DIR__ . '/Players/PlayerActions.php';
 require_once __DIR__ . '/Plugins/PluginManager.php';
 require_once __DIR__ . '/Players/PlayerList.php';
 require_once __DIR__ . '/Server/Server.php';

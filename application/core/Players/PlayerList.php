@@ -477,7 +477,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$label->setY($y);
 		$label->setStyle($style);
 		$label->setTextSize($textSize);
-		$label->setText("Add Operator");
+		$label->setText("Add Moderator");
 		$label->setTextColor($textColor);
 
 		//render and display xml
@@ -511,28 +511,42 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 	 */
 	public function handleManialinkPageAnswer(array $callback){
 		$actionId = $callback[1][2];
-		$forceBlue = (strpos($actionId, self::ACTION_FORCE_BLUE) === 0);
-		$forceRed = (strpos($actionId, self::ACTION_FORCE_RED) === 0);
-		$forceSpec = (strpos($actionId, self::ACTION_FORCE_SPEC) === 0);
-		$playerAdvanced = (strpos($actionId, self::ACTION_PLAYER_ADV) === 0);
-
-		if(!$forceBlue && !$forceRed && !$forceSpec && !$playerAdvanced)
-			return;
-
 		$actionArray = explode(".", $actionId);
 
-		//TODO maybe with ids isntead of logins, lower network traffic
-		if($forceBlue){
-			$this->maniaControl->client->query('ForcePlayerTeam', $actionArray[2], 0); //TODO bestätigung
-		}else if($forceRed){
-			$this->maniaControl->client->query('ForcePlayerTeam', $actionArray[2], 1); //TODO bestätigung
-		}else if($forceSpec){
-			$this->maniaControl->client->query('ForceSpectator', $actionArray[2], 3); //TODO bestätigung
-		}else if($playerAdvanced){
-			$player = $this->maniaControl->playerManager->getPlayer($callback[1][1]);
-			$this->advancedPlayerWidget($callback, $player, $actionArray[2]);
-
+		//TODO maybe with ids instead of logins, lower network traffic
+		switch($actionArray[0].".".$actionArray[1]){
+			case self::ACTION_FORCE_BLUE:
+				$this->maniaControl->playerManager->playerActions->forcePlayerToTeam($callback[1][1],$actionArray[2],playerActions::BLUE_TEAM);
+				break;
+			case self::ACTION_FORCE_RED:
+				$this->maniaControl->playerManager->playerActions->forcePlayerToTeam($callback[1][1],$actionArray[2],playerActions::RED_TEAM);
+				break;
+			case self::ACTION_FORCE_SPEC:
+				$this->maniaControl->playerManager->playerActions->forcePlayerToSpectator($callback[1][1],$actionArray[2],playerActions::SPECTATOR_BUT_KEEP_SELECTABLE);
+				break;
+			case self::ACTION_WARN_PLAYER:
+				$this->maniaControl->playerManager->playerActions->warnPlayer($callback[1][1],$actionArray[2]);
+				break;
+			case self::ACTION_KICK_PLAYER:
+				$this->maniaControl->playerManager->playerActions->kickPlayer($callback[1][1],$actionArray[2]);
+				break;
+			case self::ACTION_BAN_PLAYER:
+				$this->maniaControl->playerManager->playerActions->banPlayer($callback[1][1],$actionArray[2]);
+				break;
+			case self::ACTION_PLAYER_ADV:
+				$player = $this->maniaControl->playerManager->getPlayer($callback[1][1]);
+				$this->advancedPlayerWidget($callback, $player, $actionArray[2]);
+				break;
 		}
+
+
+		/*
+		$addMaster = (strpos($actionId, self::ACTION_ADD_AS_MASTER) === 0);
+		$addAdmin = (strpos($actionId, self::ACTION_ADD_AS_ADMIN) === 0);
+		$addModerator = (strpos($actionId, self::ACTION_ADD_AS_MOD) === 0);
+		*/
+
+
 
 	}
 
