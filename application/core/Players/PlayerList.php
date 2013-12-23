@@ -6,9 +6,12 @@ namespace ManiaControl\Players;
 use FML\Controls\Control;
 use FML\Controls\Frame;
 use FML\Controls\Label;
+use FML\Controls\Labels\Label_Button;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_BgRaceScore2;
+use FML\Controls\Quads\Quad_Bgs1;
+use FML\Controls\Quads\Quad_BgsPlayerCard;
 use FML\Controls\Quads\Quad_Emblems;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Controls\Quads\Quad_Icons64x64_2;
@@ -32,6 +35,16 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 	const ACTION_FORCE_RED = 'PlayerList.ForceRed';
 	const ACTION_FORCE_BLUE = 'PlayerList.ForceBlue';
 	const ACTION_FORCE_SPEC = 'PlayerList.ForceSpec';
+
+	const ACTION_PLAYER_ADV = 'PlayerList.PlayerAdvancedActions';
+	const ACTION_CLOSE_PLAYER_ADV = 'PlayerList.ClosePlayerAdvWidget';
+	const ACTION_WARN_PLAYER = ' PlayerList.WarnPlayer';
+	const ACTION_KICK_PLAYER = ' PlayerList.KickPlayer';
+	const ACTION_BAN_PLAYER = ' PlayerList.BanPlayer';
+	const ACTION_ADD_AS_MASTER = ' PlayerList.PlayerAddAsMaster';
+	const ACTION_ADD_AS_ADMIN = ' PlayerList.PlayerAddAsAdmin';
+	const ACTION_ADD_AS_MOD  = ' PlayerList.PlayerAddAsModerator';
+
 	/**
 	 * Private properties
 	 */
@@ -50,9 +63,10 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_CLOSEWIDGET , $this,
 			'closeWidget');
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_CLOSE_PLAYER_ADV , $this,
+			'closePlayerAdvancedWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this,
 			'handleManialinkPageAnswer');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERINFOCHANGED, $this, 'playerInfoChanged');
@@ -184,7 +198,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			$descriptionLabel->setSize($this->width * 0.7, 4);
 			$descriptionLabel->setTextSize(2);
 			$descriptionLabel->setVisible(false);
-			$descriptionLabel->setText($this->maniaControl->authenticationManager->getAuthLevelName($listPlayer->authLevel));
+			$descriptionLabel->setText($this->maniaControl->authenticationManager->getAuthLevelName($listPlayer->authLevel) .  " " . $listPlayer->nickname);
 			$tooltips->add($rightQuad, $descriptionLabel);
 
 			switch($listPlayer->authLevel){
@@ -206,7 +220,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$playerQuad->setZ(0.1);
 				$playerQuad->setSubStyle($playerQuad::SUBSTYLE_Buddy);
 				$playerQuad->setSize(3.8,3.8);
-				//$playerQuad->setAction(self::ACTION_FORCE_BLUE . "." .$listPlayer->login);
+				$playerQuad->setAction(self::ACTION_PLAYER_ADV . "." .$listPlayer->login);
 				//TODO special player thing
 
 
@@ -276,8 +290,200 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 
 		//render and display xml
 		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player);
+
+		return $maniaLink;
 	}
 
+
+	/**
+	 * Extra window with special actions on players like warn,kick, ban, authorization levels...
+	 * @param array  $callback
+	 * @param Player $caller
+	 * @param        $login
+	 */
+	public function advancedPlayerWidget(array $callback, Player $caller, $login){
+		$maniaLink = $this->showPlayerList($caller);
+
+		//todo all configurable or as constants
+		$x = $this->width / 2 + 2.5;
+		$width = 35;
+		$height = $this->height * 0.6;
+		$hAlign = Control::LEFT;
+		$style = Label_Text::STYLE_TextCardSmall;
+		$textSize = 1.5;
+		$textColor = 'FFF';
+
+		//mainframe
+		$frame = new Frame();
+		$maniaLink->add($frame);
+		$frame->setSize($width,$height);
+		$frame->setPosition($x + $width / 2, 0);
+
+
+		// Add Close Quad (X)
+		$closeQuad = new Quad_Icons64x64_1();
+		$frame->add($closeQuad);
+		$closeQuad->setPosition($width * 0.4, $height * 0.43, 3);
+		$closeQuad->setSize(6, 6);
+		$closeQuad->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_QuitRace);
+		$closeQuad->setAction(self::ACTION_CLOSE_PLAYER_ADV );
+
+		//Background Quad
+		$backgroundQuad = new Quad();
+		$frame->add($backgroundQuad);
+		$backgroundQuad->setSize($width,$height);
+		$backgroundQuad->setStyles($this->quadStyle, $this->quadSubstyle);
+		$backgroundQuad->setZ(0.1);
+
+		//Show headline
+		$label = new Label_Text();
+		$frame->add($label);
+		$label->setHAlign($hAlign);
+		$label->setX(-$width / 2 + 5);
+		$label->setY($height / 2 - 5);
+		$label->setStyle($style);
+		$label->setTextSize($textSize);
+		$label->setText("Advanced Actions");
+		$label->setTextColor($textColor);
+
+		$player = $this->maniaControl->playerManager->getPlayer($login);
+
+		//Show Nickname
+		$label = new Label_Text();
+		$frame->add($label);
+		$label->setHAlign($hAlign);
+		$label->setX(0);
+		$label->setAlign(Control::CENTER,Control::CENTER);
+		$label->setY($height / 2 - 8);
+		$label->setStyle($style);
+		$label->setTextSize($textSize);
+		$label->setText($player->nickname);
+		$label->setTextColor($textColor);
+
+		$y = $height / 2 - 14;
+		//Show Warn
+		$quad = new Quad_BgsPlayerCard();
+		$frame->add($quad);
+		$quad->setX(0);
+		$quad->setY($y);
+		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCard);
+		$quad->setSize($width - 10,5);
+		$quad->setAction(self::ACTION_WARN_PLAYER . "." .$login);
+
+		$label = new Label_Button();
+		$frame->add($label);
+		$label->setX(0);
+		$label->setAlign(Control::CENTER,Control::CENTER);
+		$label->setY($y);
+		$label->setStyle($style);
+		$label->setTextSize($textSize);
+		$label->setText("Warn");
+		$label->setTextColor($textColor);
+
+		$y -= 5;
+		//Show Kick
+		$quad = new Quad_BgsPlayerCard();
+		$frame->add($quad);
+		$quad->setX(0);
+		$quad->setY($y);
+		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCard);
+		$quad->setSize($width - 10,5);
+		$quad->setAction(self::ACTION_KICK_PLAYER . "." .$login);
+
+		$label = new Label_Button();
+		$frame->add($label);
+		$label->setAlign(Control::CENTER,Control::CENTER);
+		$label->setX(0);
+		$label->setY($y);
+		$label->setStyle($style);
+		$label->setTextSize($textSize);
+		$label->setText("Kick");
+		$label->setTextColor($textColor);
+
+		$y -= 5;
+		//Show Ban
+		$quad = new Quad_BgsPlayerCard();
+		$frame->add($quad);
+		$quad->setX(0);
+		$quad->setY($y);
+		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCard);
+		$quad->setSize($width - 10,5);
+		$quad->setAction(self::ACTION_BAN_PLAYER . "." .$login);
+
+		$label = new Label_Button();
+		$frame->add($label);
+		$label->setAlign(Control::CENTER,Control::CENTER);
+		$label->setX(0);
+		$label->setY($y);
+		$label->setStyle($style);
+		$label->setTextSize($textSize);
+		$label->setText("Ban");
+		$label->setTextColor($textColor);
+
+		$y -= 10;
+		//Show Add as Master-Admin
+		$quad = new Quad_BgsPlayerCard();
+		$frame->add($quad);
+		$quad->setX(0);
+		$quad->setY($y);
+		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCard);
+		$quad->setSize($width - 10,5);
+		$quad->setAction(self::ACTION_ADD_AS_MASTER . "." .$login);
+
+		$label = new Label_Button();
+		$frame->add($label);
+		$label->setAlign(Control::CENTER,Control::CENTER);
+		$label->setX(0);
+		$label->setY($y);
+		$label->setStyle($style);
+		$label->setTextSize($textSize);
+		$label->setText("Add MasterAdmin");
+		$label->setTextColor($textColor);
+
+		$y -= 5;
+		//Show Add as Admin
+		$quad = new Quad_BgsPlayerCard();
+		$frame->add($quad);
+		$quad->setX(0);
+		$quad->setY($y);
+		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCard);
+		$quad->setSize($width - 10,5);
+		$quad->setAction(self::ACTION_ADD_AS_ADMIN . "." .$login);
+
+		$label = new Label_Button();
+		$frame->add($label);
+		$label->setAlign(Control::CENTER,Control::CENTER);
+		$label->setX(0);
+		$label->setY($y);
+		$label->setStyle($style);
+		$label->setTextSize($textSize);
+		$label->setText("Add Admin");
+		$label->setTextColor($textColor);
+
+		$y -= 5;
+		//Show Add as Moderator
+		$quad = new Quad_BgsPlayerCard();
+		$frame->add($quad);
+		$quad->setX(0);
+		$quad->setY($y);
+		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCard);
+		$quad->setSize($width - 10,5);
+		$quad->setAction(self::ACTION_ADD_AS_MOD . "." .$login);
+
+		$label = new Label_Button();
+		$frame->add($label);
+		$label->setAlign(Control::CENTER,Control::CENTER);
+		$label->setX(0);
+		$label->setY($y);
+		$label->setStyle($style);
+		$label->setTextSize($textSize);
+		$label->setText("Add Operator");
+		$label->setTextColor($textColor);
+
+		//render and display xml
+		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $caller);
+
+	}
 	/**
 	 * Closes the widget
 	 * @param array  $callback
@@ -290,6 +496,17 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 
 
 	/**
+	 * Closes the player advanced widget widget
+	 * @param array  $callback
+	 * @param Player $player
+	 */
+	public function closePlayerAdvancedWidget(array $callback, Player $player) {
+		$this->showPlayerList($player); //overwrite the manialink
+	}
+
+
+
+	/**
 	 * @param array $callback
 	 */
 	public function handleManialinkPageAnswer(array $callback){
@@ -297,8 +514,9 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$forceBlue = (strpos($actionId, self::ACTION_FORCE_BLUE) === 0);
 		$forceRed = (strpos($actionId, self::ACTION_FORCE_RED) === 0);
 		$forceSpec = (strpos($actionId, self::ACTION_FORCE_SPEC) === 0);
+		$playerAdvanced = (strpos($actionId, self::ACTION_PLAYER_ADV) === 0);
 
-		if(!$forceBlue && !$forceRed && !$forceSpec)
+		if(!$forceBlue && !$forceRed && !$forceSpec && !$playerAdvanced)
 			return;
 
 		$actionArray = explode(".", $actionId);
@@ -310,6 +528,10 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			$this->maniaControl->client->query('ForcePlayerTeam', $actionArray[2], 1); //TODO bestätigung
 		}else if($forceSpec){
 			$this->maniaControl->client->query('ForceSpectator', $actionArray[2], 3); //TODO bestätigung
+		}else if($playerAdvanced){
+			$player = $this->maniaControl->playerManager->getPlayer($callback[1][1]);
+			$this->advancedPlayerWidget($callback, $player, $actionArray[2]);
+
 		}
 
 	}
