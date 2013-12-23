@@ -176,8 +176,10 @@ class PlayerManager implements CallbackListener {
 	 * @param array $callback
 	 */
 	public function playerInfoChanged(array $callback){
-		//TODO something on playerjoin not working here (maybe because it get called before player join
 		$player = $this->getPlayer($callback[1][0]['Login']);
+		if($player == null)
+			return;
+
 		$player->teamId = $callback[1][0]["TeamId"];
 		$player->isSpectator = $callback[1][0]["SpectatorStatus"];
 		$player->ladderRank = $callback[1][0]["LadderRanking"];

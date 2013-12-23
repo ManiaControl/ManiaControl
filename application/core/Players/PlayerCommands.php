@@ -92,12 +92,8 @@ class PlayerCommands implements CommandListener {
 		if (isset($params[2])) {
 			$message = $params[2];
 		}
-		$success = $this->maniaControl->client->query('Kick', $target->login, $message);
-		if (!$success) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
-			return;
-		}
-		$this->maniaControl->chat->sendInformation('$<' . $player->nickname . '$> kicked $<' . $target->nickname . '$>!');
+
+		$this->maniaControl->playerManager->playerActions->kickPlayer($player->login, $target, $message);
 	}
 
 	/**

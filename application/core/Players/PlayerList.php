@@ -38,12 +38,12 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 
 	const ACTION_PLAYER_ADV = 'PlayerList.PlayerAdvancedActions';
 	const ACTION_CLOSE_PLAYER_ADV = 'PlayerList.ClosePlayerAdvWidget';
-	const ACTION_WARN_PLAYER = ' PlayerList.WarnPlayer';
-	const ACTION_KICK_PLAYER = ' PlayerList.KickPlayer';
-	const ACTION_BAN_PLAYER = ' PlayerList.BanPlayer';
-	const ACTION_ADD_AS_MASTER = ' PlayerList.PlayerAddAsMaster';
-	const ACTION_ADD_AS_ADMIN = ' PlayerList.PlayerAddAsAdmin';
-	const ACTION_ADD_AS_MOD  = ' PlayerList.PlayerAddAsModerator';
+	const ACTION_WARN_PLAYER = 'PlayerList.WarnPlayer';
+	const ACTION_KICK_PLAYER = 'PlayerList.KickPlayer';
+	const ACTION_BAN_PLAYER = 'PlayerList.BanPlayer';
+	const ACTION_ADD_AS_MASTER = 'PlayerList.PlayerAddAsMaster';
+	const ACTION_ADD_AS_ADMIN = 'PlayerList.PlayerAddAsAdmin';
+	const ACTION_ADD_AS_MOD  = 'PlayerList.PlayerAddAsModerator';
 
 	/**
 	 * Private properties
