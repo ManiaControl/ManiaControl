@@ -71,7 +71,7 @@ class Player {
 	 * @return bool
 	 */
 	// TODO: check for bot players
-	public function isFakePlayer() {
+	public function isFakePlayer() { //TODO Bot have also positive pids, so this is useless, just stringmatch *fake
 		return ($this->pid <= 0);
 	}
 
@@ -86,7 +86,7 @@ class Player {
 		if (isset($pathParts[3])) {
 			return $pathParts[3];
 		}
-		return "";
+		return $this->getCountry();
 	}
 
 	/**

@@ -294,6 +294,9 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				break;
 		}
 
+		//TODO pages
+
+
 		//render and display xml
 		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player);
 	}
@@ -328,7 +331,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$this->maniaControl->manialinkManager->labelLine($frame,$array);
 		//TODO detailed mx info page with link to mxo
 		//TODO action detailed map info
-		//TODO later add buttons for jukebox, admin control buttons (remove map, change to map)
 		//TODO side switch
 
 
@@ -341,6 +343,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 * @param Player $player
 	 */
 	public function closeWidget(array $callback, Player $player) {
+		//TODO update player things
 		$this->maniaControl->manialinkManager->closeWidget($player);
 	}
 

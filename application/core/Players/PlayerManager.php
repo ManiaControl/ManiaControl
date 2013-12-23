@@ -119,18 +119,25 @@ class PlayerManager implements CallbackListener {
 		$this->maniaControl->client->query('GetDetailedPlayerInfo', $login);
 		$playerInfo = $this->maniaControl->client->getResponse();
 		$player = new Player($playerInfo);
+
+		var_dump($player);
+		//if($player->isFakePlayer())
+			//return;
+
 		$this->addPlayer($player);
 		
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES)) {
-			$string = array(0 => 'New Player', 1 => '$0f0Operator', 2 => '$0f0Admin', 3 => '$0f0MasterAdmin', 4 => '$0f0MasterAdmin');
-			$nickname = Formatter::stripCodes($player->nickname); // TODO: strip codes without colour codes like in serverviewer
+			$string = array(0 => '$0f0Player', 1 => '$0f0Moderator', 2 => '$0f0Admin', 3 => '$0f0MasterAdmin', 4 => '$0f0MasterAdmin');
+			//$nickname = Formatter::stripCodes($player->nickname); // TODO: strip codes without colour codes like in serverviewer
+
+			//TODO standart notification colour from settings or something
+
 			$this->maniaControl->chat->sendChat(
-					'$ff0' . $string[$player->authLevel] . ': $fff' . $nickname . '$z $ff0Nation:$fff ' . $player->getCountry() .
-							 ' $ff0Ladder: $fff' . $player->ladderRank);
+					'$s$0f0' . $string[$player->authLevel] . ' $fff' . $player->nickname . '$z$s$0f0 Nation:$fff ' . $player->getCountry() . ' $z$s$0f0joined');
 			$this->maniaControl->chat->sendInformation('This server uses ManiaControl v' . ManiaControl::VERSION,$player->login);
 		}
 
-		$this->maniaControl->log('Player joined: ' . $player->login . " / " . $player->nickname . " Nation: " . $player->getCountry() . " IP: " .$player->ipAddress);
+		$this->maniaControl->log('Player joined: ' . $player->login . " / " . $player->nickname . " Nation:" . $player->getCountry() . " IP: " .$player->ipAddress);
 
 		// Trigger own callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERJOINED, array(self::CB_PLAYERJOINED, $player));
@@ -143,14 +150,19 @@ class PlayerManager implements CallbackListener {
 	 */
 	public function playerDisconnect(array $callback) {
 		$login = $callback[1][0];
-		//TODO check for fakeplayers
 		$player = $this->removePlayer($login);
+
+		//if($player->isFakePlayer())
+			//return;
 
 		$played = Formatter::formatTimeH(time() - $player->joinTime);
 		$this->maniaControl->log("Player left: " . $player->login . " / " . $player->nickname . " Playtime: " . $played);
 
+
+
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES)) {
-			$this->maniaControl->chat->sendChat('$<' . $player->nickname . '$> $ff0has left the game. Played:$fff ' . $played);
+			//$this->maniaControl->chat->sendChat('$<' . $player->nickname . '$> $ff0left the game. Played:$fff ' . $played);
+			$this->maniaControl->chat->sendChat('$<' . $player->nickname . '$> $s$0f0has left the game');
 		}
 	}
 

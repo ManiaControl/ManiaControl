@@ -159,6 +159,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			$countryQuad->setX($x + 88);
 			$countryQuad->setSize(4,4);
 			$countryQuad->setZ(-0.1);
+			//TODO mousover show locations in descript bar
+
 
 			//Level Quad
 			$rightQuad = new Quad_BgRaceScore2();
@@ -205,6 +207,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$playerQuad->setSubStyle($playerQuad::SUBSTYLE_Buddy);
 				$playerQuad->setSize(3.8,3.8);
 				//$playerQuad->setAction(self::ACTION_FORCE_BLUE . "." .$listPlayer->login);
+				//TODO special player thing
+
 
 				$redQuad = new Quad_Emblems();
 				$playerFrame->add($redQuad);
