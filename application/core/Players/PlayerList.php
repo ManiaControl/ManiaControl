@@ -69,8 +69,9 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			'closePlayerAdvancedWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this,
 			'handleManialinkPageAnswer');
-		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERINFOCHANGED, $this, 'playerInfoChanged');
-
+		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERINFOCHANGED, $this, 'updateWidget');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCONNECT, $this, 'updateWidget');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERDISCONNECT, $this, 'updateWidget');
 		//settings
 		$this->width = 150;
 		$this->height = 80;
@@ -551,10 +552,10 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 	}
 
 	/**
-	 * Reopen the widget on PlayerInfoChanged
+	 * Reopen the widget on PlayerInfoChanged / Player Connect and Disconnect
 	 * @param array $callback
 	 */
-	public function playerInfoChanged(array $callback){
+	public function updateWidget(array $callback){
 		foreach($this->playersListShown as $login => $shown){
 			if($shown == true){
 				$player = $this->maniaControl->playerManager->getPlayer($login);
