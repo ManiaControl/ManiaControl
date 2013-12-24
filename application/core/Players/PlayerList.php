@@ -561,7 +561,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		foreach($this->playersListShown as $login => $shown){
 			if($shown == true){
 				$player = $this->maniaControl->playerManager->getPlayer($login);
-				$this->showPlayerList($player);
+				if($player != null)
+					$this->showPlayerList($player);
 			}
 		}
 	}
