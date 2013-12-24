@@ -18,6 +18,7 @@ use FML\Script\Tooltips;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
@@ -135,6 +136,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$i = 1;
 		$y -= 10;
 		foreach($players as $listPlayer){
+
 			//$path = substr($listPlayer->path, 6);
 			//$path = $listPlayer->getCountry() . " - " . $listPlayer->getProvince();
 			$path = $listPlayer->getProvince();

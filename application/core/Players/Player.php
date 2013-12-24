@@ -1,6 +1,7 @@
 <?php
 
 namespace ManiaControl\Players;
+use ManiaControl\Formatter;
 
 /**
  * Class representing players
@@ -42,7 +43,7 @@ class Player {
 		}
 		$this->pid = $rpcInfos['PlayerId'];
 		$this->login = $rpcInfos['Login'];
-		$this->nickname = $rpcInfos['NickName'];
+		$this->nickname = Formatter::stripCodesWithoutColors($rpcInfos['NickName']);
 		$this->path = $rpcInfos['Path'];
 		$this->language = $rpcInfos['Language'];
 		$this->avatar = $rpcInfos['Avatar']['FileName'];

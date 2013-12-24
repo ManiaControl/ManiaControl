@@ -53,6 +53,15 @@ abstract class Formatter {
 	}
 
 	/**
+	 *  Strip all codes except colors from the string
+	 */
+	public static function stripCodesWithoutColors($string) {
+		$string = preg_replace('/(?<!\$)((?:\$\$)*)\$[^$0-9a-hlp]/iu', '$1', $string);
+		$string = self::stripLinks($string);
+		return $string;
+	}
+
+	/**
 	 * Strip $codes from the string
 	 *
 	 * @param string $string        	
@@ -61,7 +70,7 @@ abstract class Formatter {
 	public static function stripCodes($string) {
 		$string = preg_replace('/(?<!\$)((?:\$\$)*)\$[^$0-9a-hlp]/iu', '$1', $string);
 		$string = self::stripLinks($string);
-		$string = self::stripColors($string);
+		//$string = self::stripColors($string);
 		return $string;
 	}
 
