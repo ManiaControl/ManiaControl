@@ -27,6 +27,8 @@ class ManialinkManager implements ManialinkPageAnswerListener,CallbackListener {
 	 */
 	const MAIN_MLID = 'Main.ManiaLinkId';
 	const ACTION_CLOSEWIDGET = 'ManiaLinkManager.CloseWidget';
+	const CB_MAIN_WINDOW_CLOSED =  'ManialinkManagerCallback.MainWindowClosed';
+
 	/**
 	 * Public properties
 	 */
@@ -183,7 +185,7 @@ class ManialinkManager implements ManialinkPageAnswerListener,CallbackListener {
 		//render and display xml
 		$maniaLinkText = $maniaLink->render()->saveXML();
 		$this->maniaControl->manialinkManager->sendManialink($maniaLinkText, $player->login);
-		$this->maniaControl->manialinkManager->disableAltMenu($player);
+		$this->disableAltMenu($player);
 	}
 
 
@@ -204,8 +206,10 @@ class ManialinkManager implements ManialinkPageAnswerListener,CallbackListener {
 		$emptyManialink = new ManiaLink(self::MAIN_MLID);
 		$manialinkText = $emptyManialink->render()->saveXML();
 		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
-		$this->maniaControl->manialinkManager->enableAltMenu($player);
-		//unset($this->playersMenuShown[$player->login]);
+		$this->enableAltMenu($player);
+
+		// Trigger callback
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_MAIN_WINDOW_CLOSED, array(self::CB_MAIN_WINDOW_CLOSED, $player));
 	}
 
 	/**

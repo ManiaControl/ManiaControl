@@ -2,7 +2,6 @@
 
 namespace ManiaControl\Players;
 
-
 use FML\Controls\Control;
 use FML\Controls\Frame;
 use FML\Controls\Label;
@@ -10,12 +9,9 @@ use FML\Controls\Labels\Label_Button;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_BgRaceScore2;
-use FML\Controls\Quads\Quad_Bgs1;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
 use FML\Controls\Quads\Quad_Emblems;
 use FML\Controls\Quads\Quad_Icons64x64_1;
-use FML\Controls\Quads\Quad_Icons64x64_2;
-use FML\Controls\Quads\Quad_UIConstruction_Buttons;
 use FML\ManiaLink;
 use FML\Script\Script;
 use FML\Script\Tooltips;
@@ -31,7 +27,6 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 	/**
 	 * Constants
 	 */
-	const ACTION_CLOSEWIDGET = 'PlayerList.CloseWidget';
 	const ACTION_FORCE_RED = 'PlayerList.ForceRed';
 	const ACTION_FORCE_BLUE = 'PlayerList.ForceBlue';
 	const ACTION_FORCE_SPEC = 'PlayerList.ForceSpec';
@@ -63,7 +58,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_CLOSEWIDGET , $this,
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(ManialinkManager::CB_MAIN_WINDOW_CLOSED, $this,
 			'closeWidget');
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_CLOSE_PLAYER_ADV , $this,
 			'closePlayerAdvancedWidget');
@@ -111,7 +106,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$closeQuad->setPosition($this->width * 0.483, $this->height * 0.467, 3);
 		$closeQuad->setSize(6, 6);
 		$closeQuad->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_QuitRace);
-		$closeQuad->setAction(self::ACTION_CLOSEWIDGET );
+		$closeQuad->setAction(ManialinkManager::ACTION_CLOSEWIDGET);
 
 		//Start offsets
 		$x = -$this->width / 2;
@@ -492,7 +487,6 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 	 */
 	public function closeWidget(array $callback, Player $player) {
 		$this->playersListShown[$player->login] = false; //TODO unset
-		$this->maniaControl->manialinkManager->closeWidget($player);
 	}
 
 
@@ -503,6 +497,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 	 */
 	public function closePlayerAdvancedWidget(array $callback, Player $player) {
 		$this->showPlayerList($player); //overwrite the manialink
+		//TODO remove double rendering
 	}
 
 

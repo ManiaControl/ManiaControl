@@ -162,7 +162,6 @@ class PlayerManager implements CallbackListener {
 
 
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES)) {
-			//$this->maniaControl->chat->sendChat('$<' . $player->nickname . '$> $ff0left the game. Played:$fff ' . $played);
 			$this->maniaControl->chat->sendChat('$<' . $player->nickname . '$> $s$0f0has left the game');
 		}
 	}
