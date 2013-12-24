@@ -15,6 +15,11 @@ use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 
+/**
+ * PlayerActions Class
+ *
+ * @author steeffeen & kremsy
+ */
 class PlayerActions {
 	/**
 	 * Constants

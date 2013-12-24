@@ -1,15 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Lukas
- * Date: 14.12.13
- * Time: 19:42
- */
 
 namespace ManiaControl\Maps;
 use FML\Controls\Control;
 use FML\Controls\Label;
-use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Controls\Quads\Quad_UIConstruction_Buttons;
 use FML\Script\Script;
@@ -19,7 +12,6 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
-use ManiaControl\Maps\Map;
 use FML\Controls\Frame;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_BgRaceScore2;
@@ -28,12 +20,17 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use MXInfoSearcher;
 
+/**
+ * MapList Widget Class
+ *
+ * @author steeffeen & kremsy
+ */
+
 class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 	/**
 	 * Constants
 	 */
-	const ACTION_CLOSEWIDGET = 'MapList.CloseWidget';
 	const ACTION_ADD_MAP = 'MapList.AddMap';
 	const ACTION_ERASE_MAP = 'MapList.EraseMap';
 	const ACTION_SWITCH_MAP = 'MapList.SwitchMap';
@@ -58,7 +55,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$this->maniaControl = $maniaControl;
 
 
-		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_CLOSEWIDGET , $this,
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(ManialinkManager::CB_MAIN_WINDOW_CLOSED, $this,
 			'closeWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this,
 			'handleManialinkPageAnswer');
@@ -206,7 +203,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$closeQuad->setPosition($this->width * 0.483, $this->height * 0.467, 3);
 		$closeQuad->setSize(6, 6);
 		$closeQuad->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_QuitRace);
-		$closeQuad->setAction(self::ACTION_CLOSEWIDGET );
+		$closeQuad->setAction(ManialinkManager::ACTION_CLOSEWIDGET);
 
 		return $frame;
 	}
@@ -344,7 +341,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 */
 	public function closeWidget(array $callback, Player $player) {
 		//TODO update player things
-		$this->maniaControl->manialinkManager->closeWidget($player);
 	}
 
 	/**

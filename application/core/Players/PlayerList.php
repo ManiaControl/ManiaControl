@@ -22,6 +22,11 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 
+/**
+ * PlayerList Widget Class
+ *
+ * @author steeffeen & kremsy
+ */
 class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 
 	/**
