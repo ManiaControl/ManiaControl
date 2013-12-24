@@ -10,6 +10,7 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Players\Player;
+use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 
 require_once __DIR__ . '/StyleManager.php';
 require_once __DIR__ . '/../FML/autoload.php';
@@ -19,9 +20,13 @@ require_once __DIR__ . '/../FML/autoload.php';
  *
  * @author steeffeen & kremsy
  */
-class ManialinkManager implements CallbackListener {
+class ManialinkManager implements ManialinkPageAnswerListener,CallbackListener {
 
+	/*
+	 * Constants
+	 */
 	const MAIN_MLID = 'Main.ManiaLinkId';
+	const ACTION_CLOSEWIDGET = 'ManiaLinkManager.CloseWidget';
 	/**
 	 * Public properties
 	 */
@@ -43,6 +48,8 @@ class ManialinkManager implements CallbackListener {
 		$this->styleManager = new StyleManager($maniaControl);
 		
 		// Register for callbacks
+		$this->registerManialinkPageAnswerListener(self::ACTION_CLOSEWIDGET , $this,
+			'closeWidgetCallback');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 
 				'handleManialinkPageAnswer');
 	}
@@ -177,6 +184,16 @@ class ManialinkManager implements CallbackListener {
 		$maniaLinkText = $maniaLink->render()->saveXML();
 		$this->maniaControl->manialinkManager->sendManialink($maniaLinkText, $player->login);
 		$this->maniaControl->manialinkManager->disableAltMenu($player);
+	}
+
+
+	/**
+	 * Closes a widget via the callback
+	 * @param array  $callback
+	 * @param Player $player
+	 */
+	public function closeWidgetCallback(array $callback, Player $player) {
+		$this->closeWidget($player);
 	}
 
 	/**

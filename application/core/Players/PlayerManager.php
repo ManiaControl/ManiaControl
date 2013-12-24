@@ -125,10 +125,6 @@ class PlayerManager implements CallbackListener {
 		$playerInfo = $this->maniaControl->client->getResponse();
 		$player = new Player($playerInfo);
 
-		var_dump($player);
-		//if($player->isFakePlayer())
-			//return;
-
 		$this->addPlayer($player);
 		
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES)) {
