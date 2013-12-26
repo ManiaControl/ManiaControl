@@ -133,7 +133,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		//Headline
 		$headFrame = new Frame();
 		$frame->add($headFrame);
-		$headFrame->setY($y - 3);
+		$headFrame->setY($y - 5);
 		$array = array("Id" => $x + 5, "Name" => $x + 17, "Author" => $x + 65, "Mood" => $x + 100, "Type" => $x + 115);
 		$this->maniaControl->manialinkManager->labelLine($headFrame,$array);
 
@@ -226,7 +226,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		//Headline
 		$headFrame = new Frame();
 		$frame->add($headFrame);
-		$headFrame->setY($this->height / 2 - 3);
+		$headFrame->setY($this->height / 2 - 5);
 		$x = -$this->width / 2;
 		$array = array("Id" => $x + 5, "Mx ID" => $x + 10, "MapName" => $x + 20, "Author" => $x + 70);
 		$this->maniaControl->manialinkManager->labelLine($headFrame,$array);

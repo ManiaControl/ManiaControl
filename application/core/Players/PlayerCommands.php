@@ -224,6 +224,7 @@ class PlayerCommands implements CommandListener {
 	 * @param Player $player
 	 */
 	public function command_playerList(array $chatCallback, Player $player) {
-		$this->playerList->showPlayerList($player);
+			$this->playerList->addPlayerToShownList($player, PlayerList::SHOWN_MAIN_WINDOW);
+			$this->playerList->showPlayerList($player);
 	}
 }

@@ -47,6 +47,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 	const ACTION_ADD_AS_MOD  = 'PlayerList.PlayerAddAsModerator';
 	const ACTION_REVOKE_RIGHTS = 'PlayerList.RevokeRights';
 
+	const SHOWN_MAIN_WINDOW = -1;
 	/**
 	 * Private properties
 	 */
@@ -83,9 +84,11 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 
 	}
 
-	public function showPlayerList(Player $player){
-		$this->playersListShown[$player->login] = true;
+	public function addPlayerToShownList(Player $player, $showStatus = self::SHOWN_MAIN_WINDOW){
+		$this->playersListShown[$player->login] = $showStatus;
+	}
 
+	public function showPlayerList(Player $player){
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 
 
@@ -293,6 +296,12 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			$y -= 4;
 		}
 
+		//show advanced window
+		if($this->playersListShown[$player->login] != self::SHOWN_MAIN_WINDOW){
+			$frame = $this->showAdvancedPlayerWidget($player, $this->playersListShown[$player->login], $maniaLink);
+			$maniaLink->add($frame);
+		}
+
 
 		//render and display xml
 		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player);
@@ -300,15 +309,26 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		return $maniaLink;
 	}
 
-
 	/**
-	 * Extra window with special actions on players like warn,kick, ban, authorization levels...
-	 * @param array  $callback
+	 * Displays the Advanced Player Window
 	 * @param Player $caller
 	 * @param        $login
 	 */
-	public function advancedPlayerWidget(array $callback, Player $caller, $login){
-		$maniaLink = $this->showPlayerList($caller);
+	public function advancedPlayerWidget(Player $caller, $login){
+		$this->playersListShown[$caller->login] = $login; //Show a certain player
+		$this->showPlayerList($caller); //reoppen playerlist
+	}
+
+
+	/**
+	 * Extra window with special actions on players like warn,kick, ban, authorization levels...
+	 * @param Player $player
+	 * @param        $login
+	 * @param        $maniaLink
+	 * @return Frame
+	 */
+	public function showAdvancedPlayerWidget(Player $player, $login, $maniaLink){
+		//$maniaLink = $this->showPlayerList($caller);
 
 		//todo all configurable or as constants
 		$x = $this->width / 2 + 2.5;
@@ -322,7 +342,6 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 
 		//mainframe
 		$frame = new Frame();
-		$maniaLink->add($frame);
 		$frame->setSize($width,$height);
 		$frame->setPosition($x + $width / 2, 0);
 
@@ -372,7 +391,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$frame->add($quad);
 		$quad->setX(0);
 		$quad->setY($y);
-		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCard);
+		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
 		$quad->setSize($quadWidth, 5);
 		$quad->setAction(self::ACTION_WARN_PLAYER . "." .$login);
 
@@ -392,7 +411,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$frame->add($quad);
 		$quad->setX(0);
 		$quad->setY($y);
-		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCard);
+		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
 		$quad->setSize($quadWidth, 5);
 		$quad->setAction(self::ACTION_KICK_PLAYER . "." .$login);
 
@@ -412,7 +431,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$frame->add($quad);
 		$quad->setX(0);
 		$quad->setY($y);
-		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCard);
+		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
 		$quad->setSize($quadWidth, 5);
 		$quad->setAction(self::ACTION_BAN_PLAYER . "." .$login);
 
@@ -432,7 +451,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$frame->add($quad);
 		$quad->setX(0);
 		$quad->setY($y);
-		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCard);
+		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
 		$quad->setSize($quadWidth, 5);
 		$quad->setAction(self::ACTION_ADD_AS_MASTER . "." .$login);
 
@@ -454,7 +473,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$frame->add($quad);
 		$quad->setX(0);
 		$quad->setY($y);
-		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCard);
+		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
 		$quad->setSize($quadWidth, 5);
 		$quad->setAction(self::ACTION_ADD_AS_ADMIN . "." .$login);
 
@@ -474,7 +493,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$frame->add($quad);
 		$quad->setX(0);
 		$quad->setY($y);
-		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCard);
+		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
 		$quad->setSize($quadWidth, 5);
 		$quad->setAction(self::ACTION_ADD_AS_MOD . "." .$login);
 
@@ -496,7 +515,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			$frame->add($quad);
 			$quad->setX(0);
 			$quad->setY($y);
-			$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCard);
+			$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
 			$quad->setSize($quadWidth, 5);
 			$quad->setAction(self::ACTION_REVOKE_RIGHTS . "." .$login);
 
@@ -512,8 +531,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		}
 
 		//render and display xml
-		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $caller);
-
+		//$this->maniaControl->manialinkManager->displayWidget($maniaLink, $caller);
+		return $frame;
 	}
 	/**
 	 * Closes the widget
@@ -532,7 +551,6 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 	 */
 	public function closePlayerAdvancedWidget(array $callback, Player $player) {
 		$this->showPlayerList($player); //overwrite the manialink
-		//TODO remove double rendering
 	}
 
 
@@ -566,7 +584,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				break;
 			case self::ACTION_PLAYER_ADV:
 				$player = $this->maniaControl->playerManager->getPlayer($callback[1][1]);
-				$this->advancedPlayerWidget($callback, $player, $actionArray[2]);
+				$this->advancedPlayerWidget($player, $actionArray[2]);
 				break;
 			case self::ACTION_ADD_AS_MASTER:
 				$this->maniaControl->playerManager->playerActions->grandAuthLevel($callback[1][1], $actionArray[2], AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
