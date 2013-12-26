@@ -607,7 +607,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 	 */
 	public function updateWidget(array $callback){
 		foreach($this->playersListShown as $login => $shown){
-			if($shown == true){
+			if($shown){
 				$player = $this->maniaControl->playerManager->getPlayer($login);
 				if($player != null)
 					$this->showPlayerList($player);
