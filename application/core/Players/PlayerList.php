@@ -45,6 +45,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 	const ACTION_ADD_AS_MASTER = 'PlayerList.PlayerAddAsMaster';
 	const ACTION_ADD_AS_ADMIN = 'PlayerList.PlayerAddAsAdmin';
 	const ACTION_ADD_AS_MOD  = 'PlayerList.PlayerAddAsModerator';
+	const ACTION_REVOKE_RIGHTS = 'PlayerList.RevokeRights';
 
 	/**
 	 * Private properties
@@ -310,18 +311,18 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		//todo all configurable or as constants
 		$x = $this->width / 2 + 2.5;
 		$width = 35;
-		$height = $this->height * 0.6;
+		$height = $this->height * 0.7;
 		$hAlign = Control::LEFT;
 		$style = Label_Text::STYLE_TextCardSmall;
 		$textSize = 1.5;
 		$textColor = 'FFF';
+		$quadWidth = $width - 7;
 
 		//mainframe
 		$frame = new Frame();
 		$maniaLink->add($frame);
 		$frame->setSize($width,$height);
 		$frame->setPosition($x + $width / 2, 0);
-
 
 		// Add Close Quad (X)
 		$closeQuad = new Quad_Icons64x64_1();
@@ -370,7 +371,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$quad->setX(0);
 		$quad->setY($y);
 		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCard);
-		$quad->setSize($width - 10,5);
+		$quad->setSize($quadWidth, 5);
 		$quad->setAction(self::ACTION_WARN_PLAYER . "." .$login);
 
 		$label = new Label_Button();
@@ -390,7 +391,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$quad->setX(0);
 		$quad->setY($y);
 		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCard);
-		$quad->setSize($width - 10,5);
+		$quad->setSize($quadWidth, 5);
 		$quad->setAction(self::ACTION_KICK_PLAYER . "." .$login);
 
 		$label = new Label_Button();
@@ -410,7 +411,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$quad->setX(0);
 		$quad->setY($y);
 		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCard);
-		$quad->setSize($width - 10,5);
+		$quad->setSize($quadWidth, 5);
 		$quad->setAction(self::ACTION_BAN_PLAYER . "." .$login);
 
 		$label = new Label_Button();
@@ -430,7 +431,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$quad->setX(0);
 		$quad->setY($y);
 		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCard);
-		$quad->setSize($width - 10,5);
+		$quad->setSize($quadWidth, 5);
 		$quad->setAction(self::ACTION_ADD_AS_MASTER . "." .$login);
 
 		$label = new Label_Button();
@@ -440,7 +441,9 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$label->setY($y);
 		$label->setStyle($style);
 		$label->setTextSize($textSize);
+
 		$label->setText("Add MasterAdmin");
+
 		$label->setTextColor($textColor);
 
 		$y -= 5;
@@ -450,7 +453,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$quad->setX(0);
 		$quad->setY($y);
 		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCard);
-		$quad->setSize($width - 10,5);
+		$quad->setSize($quadWidth, 5);
 		$quad->setAction(self::ACTION_ADD_AS_ADMIN . "." .$login);
 
 		$label = new Label_Button();
@@ -470,7 +473,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$quad->setX(0);
 		$quad->setY($y);
 		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCard);
-		$quad->setSize($width - 10,5);
+		$quad->setSize($quadWidth, 5);
 		$quad->setAction(self::ACTION_ADD_AS_MOD . "." .$login);
 
 		$label = new Label_Button();
@@ -482,6 +485,29 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$label->setTextSize($textSize);
 		$label->setText("Add Moderator");
 		$label->setTextColor($textColor);
+
+
+		if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)){
+			$y -= 5;
+			//Revoke Rights
+			$quad = new Quad_BgsPlayerCard();
+			$frame->add($quad);
+			$quad->setX(0);
+			$quad->setY($y);
+			$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCard);
+			$quad->setSize($quadWidth, 5);
+			$quad->setAction(self::ACTION_REVOKE_RIGHTS . "." .$login);
+
+			$label = new Label_Button();
+			$frame->add($label);
+			$label->setAlign(Control::CENTER,Control::CENTER);
+			$label->setX(0);
+			$label->setY($y);
+			$label->setStyle($style);
+			$label->setTextSize($textSize);
+			$label->setText("Revoke Rights");
+			$label->setTextColor($textColor);
+		}
 
 		//render and display xml
 		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $caller);
@@ -540,17 +566,19 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$player = $this->maniaControl->playerManager->getPlayer($callback[1][1]);
 				$this->advancedPlayerWidget($callback, $player, $actionArray[2]);
 				break;
+			case self::ACTION_ADD_AS_MASTER:
+				$this->maniaControl->playerManager->playerActions->grandAuthLevel($callback[1][1], $actionArray[2], AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
+				break;
+			case self::ACTION_ADD_AS_ADMIN:
+				$this->maniaControl->playerManager->playerActions->grandAuthLevel($callback[1][1], $actionArray[2], AuthenticationManager::AUTH_LEVEL_ADMIN);
+				break;
+			case self::ACTION_ADD_AS_MOD:
+				$this->maniaControl->playerManager->playerActions->grandAuthLevel($callback[1][1], $actionArray[2], AuthenticationManager::AUTH_LEVEL_OPERATOR);
+				break;
+			case self::ACTION_REVOKE_RIGHTS:
+				$this->maniaControl->playerManager->playerActions->revokeAuthLevel($callback[1][1], $actionArray[2]);
+				break;
 		}
-
-
-		/*
-		$addMaster = (strpos($actionId, self::ACTION_ADD_AS_MASTER) === 0);
-		$addAdmin = (strpos($actionId, self::ACTION_ADD_AS_ADMIN) === 0);
-		$addModerator = (strpos($actionId, self::ACTION_ADD_AS_MOD) === 0);
-		*/
-
-
-
 	}
 
 	/**
@@ -563,6 +591,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$player = $this->maniaControl->playerManager->getPlayer($login);
 				if($player != null)
 					$this->showPlayerList($player);
+				else
+					unset($this->playersListShown[$login]);
 			}
 		}
 	}

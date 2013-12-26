@@ -225,4 +225,63 @@ class PlayerActions {
 		// log console message
 		$this->maniaControl->log($title .' ' . Formatter::stripCodes($admin->nickname) . ' banned player '. Formatter::stripCodes($target->nickname));
 	}
+
+	/**
+	 * Grands Player an authorization level
+	 * @param $adminLogin
+	 * @param $targetLogin
+	 * @param $authLevel
+	 */
+	public function grandAuthLevel($adminLogin, $targetLogin, $authLevel){
+		$admin = $this->maniaControl->playerManager->getPlayer($adminLogin);
+		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
+		$title = $this->maniaControl->authenticationManager->getAuthLevelName($admin->authLevel);
+		//TODO check for bot
+		if($this->maniaControl->authenticationManager->checkRight($target,$authLevel)){
+			$this->maniaControl->chat->sendError('This admin is already ' . $this->maniaControl->authenticationManager->getAuthLevelName($target->authLevel), $admin->login);
+			return;
+		}
+
+		$success = $this->maniaControl->authenticationManager->grantAuthLevel($target, $authLevel);
+
+		if (!$success) {
+			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $admin->login);
+			return;
+		}
+
+		$authLevelName = $this->maniaControl->authenticationManager->getAuthLevelName($authLevel);
+
+		$this->maniaControl->chat->sendInformation($title . ' $<' . $admin->nickname . '$> added $<' . $target->nickname . '$> as $< ' . $authLevelName. '$>!');
+
+		// log console message
+		$this->maniaControl->log($title .' ' . Formatter::stripCodes($admin->nickname) . ' added player '. Formatter::stripCodes($target->nickname) . ' as ' . $authLevelName);
+	}
+
+	/**
+	 * Revokes all rights from a Admin
+	 * @param $adminLogin
+	 * @param $targetLogin
+	 */
+	public function revokeAuthLevel($adminLogin, $targetLogin){
+		$admin = $this->maniaControl->playerManager->getPlayer($adminLogin);
+		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
+		$title = $this->maniaControl->authenticationManager->getAuthLevelName($admin->authLevel);
+
+		if($this->maniaControl->authenticationManager->checkRight($target,AuthenticationManager::AUTH_LEVEL_MASTERADMIN)){
+			$this->maniaControl->chat->sendError('MasterAdmins can\'t be removed ', $admin->login);
+			return;
+		}
+
+		$success = $this->maniaControl->authenticationManager->grantAuthLevel($target, AuthenticationManager::AUTH_LEVEL_PLAYER);
+
+		if (!$success) {
+			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $admin->login);
+			return;
+		}
+
+		$this->maniaControl->chat->sendInformation($title . ' $<' . $admin->nickname . '$> revokes $<' . $target->nickname . '$> rights!');
+
+		// log console message
+		$this->maniaControl->log($title .' ' . Formatter::stripCodes($admin->nickname) . ' revokes '. Formatter::stripCodes($target->nickname) . ' rights');
+	}
 } 
