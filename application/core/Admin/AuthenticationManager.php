@@ -23,7 +23,8 @@ class AuthenticationManager {
 	const AUTH_LEVEL_ADMIN = 2;
 	const AUTH_LEVEL_SUPERADMIN = 3;
 	const AUTH_LEVEL_MASTERADMIN = 4;
-	
+
+	const CB_AUTH_LEVEL_CHANGED =  'AuthenticationManager.AuthLevelChanged';
 	/**
 	 * Private properties
 	 */
@@ -130,6 +131,13 @@ class AuthenticationManager {
 			return false;
 		}
 		$authStatement->close();
+
+		if($success){
+			// Trigger callback
+			$player->authLevel = $authLevel;
+			$this->maniaControl->callbackManager->triggerCallback(self::CB_AUTH_LEVEL_CHANGED, array(self::CB_AUTH_LEVEL_CHANGED, $player));
+		}
+
 		return $success;
 	}
 
