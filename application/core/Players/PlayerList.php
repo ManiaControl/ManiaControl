@@ -550,6 +550,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 	 * @param Player $player
 	 */
 	public function closePlayerAdvancedWidget(array $callback, Player $player) {
+		$this->playersListShown[$player->login] = self::SHOWN_MAIN_WINDOW;
 		$this->showPlayerList($player); //overwrite the manialink
 	}
 
