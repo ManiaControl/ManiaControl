@@ -213,7 +213,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				case authenticationManager::AUTH_LEVEL_MASTERADMIN:
 				case authenticationManager::AUTH_LEVEL_SUPERADMIN:  $rightLabel->setText("MA"); break;
 				case authenticationManager::AUTH_LEVEL_ADMIN:		$rightLabel->setText("AD"); break;
-				case authenticationManager::AUTH_LEVEL_OPERATOR:	$rightLabel->setText("OP");
+				case authenticationManager::AUTH_LEVEL_OPERATOR:	$rightLabel->setText("MOD");
 			}
 
 			$rightLabel->setTextColor("fff");

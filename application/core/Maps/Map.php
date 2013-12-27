@@ -83,7 +83,7 @@ class Map {
 			$this->comment = $this->mapFetcher->comment;
 		}
 		
-		// TODO: define timeout if mx is down
+		// TODO: define timeout if mx is down,todo fetch all map infos at once (maybe way faster)
 		$serverInfo = $this->maniaControl->server->getSystemInfo();
 		$title = strtoupper(substr($serverInfo['TitleId'], 0, 2));
 		$this->mx = new \MXInfoFetcher($title, $this->uid, false);

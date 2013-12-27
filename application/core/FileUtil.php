@@ -12,9 +12,10 @@ abstract class FileUtil {
 	 * Load a remote file
 	 *
 	 * @param string $url
+	 * @param string $contentType
 	 * @return string || null
 	 */
-	public static function loadFile($url) {
+	public static function loadFile($url, $contentType = 'UTF-8') {
 		if (!$url) {
 			return null;
 		}
@@ -26,7 +27,7 @@ abstract class FileUtil {
 
 		$query = 'GET ' . $urlData['path'] . ' HTTP/1.0' . PHP_EOL;
 		$query .= 'Host: ' . $urlData['host'] . PHP_EOL;
-		$query .= 'Content-Type: UTF-8' . PHP_EOL;
+		$query .= 'Content-Type: ' . $contentType . PHP_EOL;
 		$query .= 'User-Agent: ManiaControl v' . ManiaControl::VERSION . PHP_EOL;
 		$query .= PHP_EOL;
 

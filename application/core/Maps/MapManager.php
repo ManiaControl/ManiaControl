@@ -9,6 +9,7 @@ use ManiaControl\FileUtil;
 use ManiaControl\ManiaControl;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use MXInfoFetcher;
 
 
 /**
@@ -21,7 +22,7 @@ class MapManager implements CallbackListener {
 	 * Constants
 	 */
 	const TABLE_MAPS = 'mc_maps';
-	
+
 	/**
 	 * Private properties
 	 */
@@ -34,14 +35,14 @@ class MapManager implements CallbackListener {
 	/**
 	 * Construct map manager
 	 *
-	 * @param \ManiaControl\ManiaControl $maniaControl        	
+	 * @param \ManiaControl\ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
-		
+
 		// Init database tables
 		$this->initTables();
-		
+
 		// Create map commands instance
 		$this->mapCommands = new MapCommands($maniaControl);
 
@@ -81,7 +82,7 @@ class MapManager implements CallbackListener {
 	/**
 	 * Save map to the database
 	 *
-	 * @param \ManiaControl\Maps\Map $map        	
+	 * @param \ManiaControl\Maps\Map $map
 	 * @return boolean
 	 */
 	private function saveMap(Map &$map) {
@@ -117,7 +118,7 @@ class MapManager implements CallbackListener {
 	/**
 	 * Add a map to the MapList
 	 *
-	 * @param \ManiaControl\Maps\Map $map        	
+	 * @param \ManiaControl\Maps\Map $map
 	 * @return bool
 	 */
 	private function addMap(Map $map) { //TODO needed?
@@ -192,7 +193,7 @@ class MapManager implements CallbackListener {
 	/**
 	 * Handle OnInit callback
 	 *
-	 * @param array $callback        	
+	 * @param array $callback
 	 */
 	public function handleOnInit(array $callback) {
 		$this->updateFullMapList();
@@ -211,7 +212,7 @@ class MapManager implements CallbackListener {
 	/**
 	 * Handle BeginMap callback
 	 *
-	 * @param array $callback        	
+	 * @param array $callback
 	 */
 	public function handleBeginMap(array $callback) {
 		if(array_key_exists($callback[1][0]["UId"], $this->mapListUids)){ //Map already exists, only update index
@@ -272,13 +273,18 @@ class MapManager implements CallbackListener {
 
 			// Check if map exists
 			$url = "http://api.mania-exchange.com/{$title}/maps/{$mapId}?format=json";
-			$mapInfo = FileUtil::loadFile($url);
+
+			$mapInfo = FileUtil::loadFile($url, "application/json");
+
 			if (!$mapInfo || strlen($mapInfo) <= 0) {
 				// Invalid id
 				$this->maniaControl->chat->sendError('Invalid MX-Id!', $login);
 				return;
 			}
+
 			$mapInfo = json_decode($mapInfo, true);
+			$mapInfo = $mapInfo[0];
+
 			$url = "http://{$title}.mania-exchange.com/tracks/download/{$mapId}";
 			$file = FileUtil::loadFile($url);
 			if (!$file) {
@@ -287,7 +293,7 @@ class MapManager implements CallbackListener {
 				return;
 			}
 			// Save map
-			$fileName = $mapInfo['TrackID'] . '_' . $mapInfo['Name'] . '.Map.Gbx';
+			$fileName = $mapId . '_' . $mapInfo['Name'] . '.Map.Gbx';
 			$fileName = FileUtil::getClearedFileName($fileName);
 			if (!file_put_contents($mapDir . $fileName, $file)) {
 				// Save error
@@ -296,6 +302,7 @@ class MapManager implements CallbackListener {
 			}
 			// Check for valid map
 			$mapFileName = $downloadDirectory . '/' . $fileName;
+
 			if (!$this->maniaControl->client->query('CheckMapForCurrentServerParams', $mapFileName)) {
 				trigger_error("Couldn't check if map is valid ('{$mapFileName}'). " . $this->maniaControl->getClientErrorText());
 				$this->maniaControl->chat->sendError('Error checking map!', $login);
