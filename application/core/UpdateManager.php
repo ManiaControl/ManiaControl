@@ -22,6 +22,9 @@ class UpdateManager implements CallbackListener, CommandListener {
 	const SETTING_UPDATECHECK_INTERVAL = 'Core Update Check Interval (Hours)';
 	const SETTING_UPDATECHECK_CHANNEL = 'Core Update Channel (release, beta, alpha)';
 	const URL_WEBSERVICE = 'http://ws.maniacontrol.com/';
+	const CHANNEL_RELEASE = 'release';
+	const CHANNEL_BETA = 'beta';
+	const CHANNEL_ALPHA = 'alpha';
 	
 	/**
 	 * Private Properties
@@ -41,7 +44,7 @@ class UpdateManager implements CallbackListener, CommandListener {
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_ENABLEUPDATECHECK, true);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_UPDATECHECK_INTERVAL, 24.);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_UPDATECHECK_CHANNEL, 'alpha');
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_UPDATECHECK_CHANNEL, self::CHANNEL_ALPHA);
 		
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_1_MINUTE, $this, 'handle1Minute');
@@ -144,11 +147,7 @@ class UpdateManager implements CallbackListener, CommandListener {
 	 * @return mixed
 	 */
 	private function checkCoreUpdate() {
-		$updateChannel = $this->maniaControl->settingManager->getSetting($this, self::SETTING_UPDATECHECK_CHANNEL);
-		$updateChannel = strtolower($updateChannel);
-		if (!in_array($updateChannel, array('release', 'beta', 'alpha'))) {
-			$updateChannel = 'release';
-		}
+		$updateChannel = $this->getCurrentUpdateChannelSetting();
 		$url = self::URL_WEBSERVICE . 'versions?current=1&channel=' . $updateChannel;
 		$dataJson = file_get_contents($url);
 		$versions = json_decode($dataJson);
@@ -160,5 +159,54 @@ class UpdateManager implements CallbackListener, CommandListener {
 			return false;
 		}
 		return $updateData;
+	}
+
+	/**
+	 * Perform a Core Update
+	 *
+	 * @param object $updateData        	
+	 * @return bool
+	 */
+	private function performCoreUpdate($updateData = null) {
+		if (!$updateData) {
+			$updateData = $this->checkCoreUpdate();
+			if (!$updateData) {
+				return false;
+			}
+		}
+		$updateFileContent = file_get_contents($updateData->url);
+		$tempDir = ManiaControlDir . '/temp/';
+		if (!is_dir($tempDir)) {
+			mkdir($tempDir);
+		}
+		$updateFileName = $tempDir . basename($updateData->url);
+		$bytes = file_put_contents($updateFileName, $updateFileContent);
+		if (!$bytes || $bytes <= 0) {
+			trigger_error("Couldn't save Update Zip.");
+			return false;
+		}
+		$zip = new \ZipArchive();
+		$result = $zip->open($updateFileName);
+		if ($result !== true) {
+			trigger_error("Couldn't open Update Zip. ({$result})");
+			return false;
+		}
+		$zip->extractTo(ManiaControlDir . '/test/');
+		$zip->close();
+		return true;
+	}
+
+	/**
+	 * Retrieve the Update Channel Setting
+	 *
+	 * @return string
+	 */
+	private function getCurrentUpdateChannelSetting() {
+		$updateChannel = $this->maniaControl->settingManager->getSetting($this, self::SETTING_UPDATECHECK_CHANNEL);
+		$updateChannel = strtolower($updateChannel);
+		if (!in_array($updateChannel, array(self::CHANNEL_RELEASE, self::CHANNEL_BETA, self::CHANNEL_ALPHA))) {
+			$updateChannel = self::CHANNEL_RELEASE;
+		}
+		return $updateChannel;
 	}
 }
