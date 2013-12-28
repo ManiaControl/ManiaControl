@@ -3,6 +3,7 @@
 namespace ManiaControl\Maps;
 use FML\Controls\Control;
 use FML\Controls\Label;
+use FML\Controls\Quads\Quad_Icons128x128_1;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Controls\Quads\Quad_UIConstruction_Buttons;
 use FML\Script\Script;
@@ -252,14 +253,24 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$mapFrame->setY($y);
 
 			//Juke-Map-Button
-			$jukeQuad = new Quad_UIConstruction_Buttons();
+			$jukeQuad = new Quad_Icons128x128_1();
 			$mapFrame->add($jukeQuad);
 			$jukeQuad->setX($this->width/2 - 15);
 			$jukeQuad->setZ(0.2);
 			$jukeQuad->setSize(4,4);
-			$jukeQuad->setSubStyle($jukeQuad::SUBSTYLE_Erase);
+			$jukeQuad->setSubStyle($jukeQuad::SUBSTYLE_Load);
 			$jukeQuad->setAction(self::ACTION_JUKE_MAP . "." . $map->uid);
-			//TODO description and jukebox button, change quad style
+
+			//Description Label
+			$descriptionLabel = new Label();
+			$frame->add($descriptionLabel);
+			$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
+			$descriptionLabel->setPosition($x + 10, -$this->height / 2 + 5);
+			$descriptionLabel->setSize($this->width * 0.7, 4);
+			$descriptionLabel->setTextSize(2);
+			$descriptionLabel->setVisible(false);
+			$descriptionLabel->setText("Add Map to Jukebox: {$map->name}");
+			$tooltips->add($jukeQuad, $descriptionLabel);
 
 			if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)){ //TODO SET as setting who can add maps
 				//erase map quad

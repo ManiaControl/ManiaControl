@@ -120,7 +120,7 @@ class Jukebox implements CallbackListener {
 
 	}
 
-	
+
 	public function printAllMaps(){
 		foreach($this->jukedMaps as $map){
 			$map = $map[1];
