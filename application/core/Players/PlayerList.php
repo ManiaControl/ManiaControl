@@ -76,6 +76,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCONNECT, $this, 'updateWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERDISCONNECT, $this, 'updateWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(AuthenticationManager::CB_AUTH_LEVEL_CHANGED, $this, 'updateWidget');
+
 		//settings
 		$this->width = 150;
 		$this->height = 80;
@@ -181,8 +182,17 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			$countryQuad->setX($x + 88);
 			$countryQuad->setSize(4,4);
 			$countryQuad->setZ(-0.1);
-			//TODO mousover show locations in descript bar
 
+			//Nation Description Label
+			$descriptionLabel = new Label();
+			$frame->add($descriptionLabel);
+			$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
+			$descriptionLabel->setPosition($x + 10, -$this->height / 2 + 5);
+			$descriptionLabel->setSize($this->width * 0.7, 4);
+			$descriptionLabel->setTextSize(2);
+			$descriptionLabel->setVisible(false);
+			$descriptionLabel->setText($listPlayer->nickname . " from " . $listPlayer->path);
+			$tooltips->add($countryQuad, $descriptionLabel);
 
 			//Level Quad
 			$rightQuad = new Quad_BgRaceScore2();
@@ -313,8 +323,6 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 
 		//render and display xml
 		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player);
-
-		return $maniaLink;
 	}
 
 	/**
@@ -324,7 +332,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 	 */
 	public function advancedPlayerWidget(Player $caller, $login){
 		$this->playersListShown[$caller->login] = $login; //Show a certain player
-		$this->showPlayerList($caller); //reoppen playerlist
+		$this->showPlayerList($caller); //reopen playerlist
 	}
 
 
@@ -534,8 +542,6 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			$label->setTextColor($textColor);
 		}
 
-		//render and display xml
-		//$this->maniaControl->manialinkManager->displayWidget($maniaLink, $caller);
 		return $frame;
 	}
 	/**
