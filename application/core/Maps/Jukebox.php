@@ -120,6 +120,20 @@ class Jukebox implements CallbackListener {
 
 	}
 
+	/**
+	 * Returns a list with the indexes of the juked maps
+	 * @return array
+	 */
+	public function getJukeBoxRanking(){
+		$i = 1;
+		$jukedMaps = array();
+		foreach($this->jukedMaps as $map){
+			$map = $map[1];
+			$jukedMaps[$map->uid] = $i;
+			$i++;
+		}
+		return $jukedMaps;
+	}
 
 	public function printAllMaps(){
 		foreach($this->jukedMaps as $map){

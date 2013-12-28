@@ -3,6 +3,7 @@
 namespace ManiaControl\Maps;
 use FML\Controls\Control;
 use FML\Controls\Label;
+use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quads\Quad_Icons128x128_1;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Controls\Quads\Quad_UIConstruction_Buttons;
@@ -63,6 +64,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this,
 			'handleManialinkPageAnswer');
 
+		$this->maniaControl->callbackManager->registerCallbackListener(Jukebox::CB_JUKEBOX_CHANGED, $this, 'updateWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_MAPLIST_UPDATED, $this, 'updateWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_BEGINMAP, $this, 'updateWidget'); //TODO not working yet
 
@@ -244,6 +246,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 		//TODO add pages
 
+		$jukedMaps = $this->maniaControl->mapManager->jukebox->getJukeBoxRanking();
+
 		$id = 1;
 		$y = $this->height / 2 - 10;
 		foreach($mapList as $map){
@@ -251,6 +255,21 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$frame->add($mapFrame);
 			$this->displayMap($id, $map, $mapFrame, $tooltips);
 			$mapFrame->setY($y);
+
+
+			//Juke-Map-Label
+			if(isset($jukedMaps[$map->uid])){
+				echo "yes";
+				var_dump($jukedMaps[$map->uid]);
+				$jukeLabel = new Label_Text();
+				$mapFrame->add($jukeLabel);
+				$jukeLabel->setX($this->width/2 - 25);
+				$jukeLabel->setAlign(Control::CENTER,Control::CENTER);
+				$jukeLabel->setZ(0.2);
+				$jukeLabel->setTextSize(1.5);
+				$jukeLabel->setText($jukedMaps[$map->uid]);
+				$jukeLabel->setTextColor("FFF");
+			}
 
 			//Juke-Map-Button
 			$jukeQuad = new Quad_Icons128x128_1();
