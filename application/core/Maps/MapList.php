@@ -34,6 +34,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	const ACTION_ADD_MAP = 'MapList.AddMap';
 	const ACTION_ERASE_MAP = 'MapList.EraseMap';
 	const ACTION_SWITCH_MAP = 'MapList.SwitchMap';
+	const ACTION_JUKE_MAP = 'MapList.JukeMap';
 	const MAX_MAPS_PER_PAGE = 15;
 
 
@@ -173,7 +174,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		}
 
 		//TODO add MX info screen
-		//TODO add download Map button
 
 		//render and display xml
 		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player);
@@ -242,7 +242,17 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$this->displayMap($id, $map, $mapFrame, $tooltips);
 			$mapFrame->setY($y);
 
-			if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)){ //todoSET as setting who can add maps
+			//Juke-Map-Button
+			$jukeQuad = new Quad_UIConstruction_Buttons();
+			$mapFrame->add($jukeQuad);
+			$jukeQuad->setX($this->width/2 - 15);
+			$jukeQuad->setZ(0.2);
+			$jukeQuad->setSize(4,4);
+			$jukeQuad->setSubStyle($jukeQuad::SUBSTYLE_Erase);
+			$jukeQuad->setAction(self::ACTION_JUKE_MAP . "." . $map->uid);
+			//TODO description and jukebox button
+
+			if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)){ //TODO SET as setting who can add maps
 				//erase map quad
 				$eraseQuad = new Quad_UIConstruction_Buttons();
 				$mapFrame->add($eraseQuad);
@@ -263,7 +273,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$descriptionLabel->setText("Remove Map: {$map->name}");
 				$tooltips->add($eraseQuad, $descriptionLabel);
 			}
-			if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)){ //todoSET as setting who can add maps
+			if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)){ //TODO SET as setting who can add maps
 				//switch to map quad
 				$switchToQuad = new Quad_Icons64x64_1();
 				$mapFrame->add($switchToQuad);
@@ -349,8 +359,9 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$addMap = (strpos($actionId, self::ACTION_ADD_MAP) === 0);
 		$eraseMap = (strpos($actionId, self::ACTION_ERASE_MAP) === 0);
 		$switchMap = (strpos($actionId, self::ACTION_SWITCH_MAP) === 0);
+		$jukeMap = (strpos($actionId, self::ACTION_JUKE_MAP) === 0);
 
-		if(!$addMap && !$eraseMap && !$switchMap)
+		if(!$addMap && !$eraseMap && !$switchMap && !$jukeMap)
 			return;
 
 		$actionArray = explode(".", $actionId);
@@ -368,6 +379,9 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 			$this->maniaControl->chat->sendSuccess('Map switched to $z$<' . $mapList[$actionArray[2]]->name . '$>!'); //TODO specified message, who done it?
 			$this->maniaControl->log('Skipped to $z$<' . $mapList[$actionArray[2]]->name . '$>!');
+		}else if($jukeMap){
+			$this->maniaControl->mapManager->jukebox->addMapToJukebox($callback[1][1], $actionArray[2]);
+
 		}
 
 	}

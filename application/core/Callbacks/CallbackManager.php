@@ -55,7 +55,7 @@ class CallbackManager {
 	private $last1Second = -1;
 	private $last5Second = -1;
 	private $last1Minute = -1;
-
+	private $mapEnded = false;
 	/**
 	 * Construct callbacks manager
 	 *
@@ -204,11 +204,15 @@ class CallbackManager {
 				case 'ManiaPlanet.BeginMap':
 					{
 						$this->triggerCallback(self::CB_MC_BEGINMAP, $callback);
+						$this->mapEnded = false;
 						break;
 					}
 				case 'ManiaPlanet.EndMap':
 					{
-						$this->triggerCallback(self::CB_MC_ENDMAP, $callback);
+						if(!$this->mapEnded){
+							$this->triggerCallback(self::CB_MC_ENDMAP, $callback);
+							$this->mapEnded = true;
+						}
 						break;
 					}
 				case self::CB_MP_MODESCRIPTCALLBACK:
@@ -244,13 +248,19 @@ class CallbackManager {
 			case 'EndMap':
 				{
 					$this->triggerScriptCallback($scriptCallbackName, $scriptCallbackData);
-					$this->triggerCallback(self::CB_MC_ENDMAP, $callback);
+					if(!$this->mapEnded){
+						$this->triggerCallback(self::CB_MC_ENDMAP, $callback);
+						$this->mapEnded = true;
+					}
 					break;
 				}
 			case 'LibXmlRpc_EndMap':
 				{
 					$this->triggerScriptCallback($scriptCallbackName, $scriptCallbackData);
-					$this->triggerCallback(self::CB_MC_ENDMAP, $callback);
+					if(!$this->mapEnded){
+						$this->triggerCallback(self::CB_MC_ENDMAP, $callback);
+						$this->mapEnded = true;
+					}
 					break;
 				}
 			default:
