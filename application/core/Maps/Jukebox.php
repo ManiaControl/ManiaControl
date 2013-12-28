@@ -79,16 +79,16 @@ class Jukebox implements CallbackListener {
 	}
 
 	public function endMap(){
-		var_dump("endmap");
 
 		//TODO setting admin no skip
 		//TODO setting skip map if requester left
+
 		//Skip Map if requester has left
 		for($i = 0; $i < count($this->jukedMaps); $i++){
 			$jukedMap = reset($this->jukedMaps);
 
 			//found player, so play this map
-			if($this->maniaControl->playerManager->getPlayer($jukedMap[0]) == null){
+			if($this->maniaControl->playerManager->getPlayer($jukedMap[0]) != null){
 				break;
 			}
 
@@ -104,18 +104,23 @@ class Jukebox implements CallbackListener {
 		$nextMap = array_shift($this->jukedMaps);
 
 		//Check if Jukebox is empty
-		if(!isset($nextMap))
+		if($nextMap == null)
 			return;
 
 		$nextMap = $nextMap[1];
-		//var_dump($nextMap);
-		var_dump($nextMap->name);
-		$this->printAllMaps();
 
 		//Set pointer back to last map
-		end($this->jukedMaps);
+		//end($this->jukedMaps);
+
+		$success = $this->maniaControl->client->query('ChooseNextMap', $nextMap->fileName);
+		if (!$success) {
+			trigger_error('[' . $this->maniaControl->client->getErrorCode() . '] ChooseNextMap - ' . $this->maniaControl->client->getErrorCode(), E_USER_WARNING);
+			return;
+		}
+
 	}
 
+	
 	public function printAllMaps(){
 		foreach($this->jukedMaps as $map){
 			$map = $map[1];

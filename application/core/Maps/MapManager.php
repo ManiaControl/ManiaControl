@@ -23,7 +23,7 @@ class MapManager implements CallbackListener {
 	 * Constants
 	 */
 	const TABLE_MAPS = 'mc_maps';
-
+	const CB_MAPLIST_UPDATED = 'MapManager.MapListUpdated';
 	/**
 	 * Private properties
 	 */
@@ -177,6 +177,9 @@ class MapManager implements CallbackListener {
 
 		//restore Sorted Maplist
 		$this->mapList = $tempList;
+
+		// Trigger own callback
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_MAPLIST_UPDATED, array(self::CB_MAPLIST_UPDATED));
 	}
 
 	/**

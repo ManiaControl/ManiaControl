@@ -46,7 +46,7 @@ class Map {
 	 * @param array $rpc_infos        	
 	 */
 	public function __construct(ManiaControl $maniaControl, $rpc_infos = null) {
-	//	$this->maniaControl = $maniaControl;
+		$this->maniaControl = $maniaControl;
 		$this->startTime = time();
 		
 		if (!$rpc_infos) {
@@ -67,7 +67,7 @@ class Map {
 		
 		$this->authorNick = $this->authorLogin;
 		
-		/*$mapsDirectory = $this->maniaControl->server->getMapsDirectory();
+		$mapsDirectory = $this->maniaControl->server->getMapsDirectory();
 		if ($this->maniaControl->server->checkAccess($mapsDirectory)) {
 			$this->mapFetcher = new \GBXChallMapFetcher(true);
 			try {
@@ -86,6 +86,6 @@ class Map {
 		// TODO: define timeout if mx is down,todo fetch all map infos at once (maybe way faster)
 		$serverInfo = $this->maniaControl->server->getSystemInfo();
 		$title = strtoupper(substr($serverInfo['TitleId'], 0, 2));
-		$this->mx = new \MXInfoFetcher($title, $this->uid, false);*/
+		$this->mx = new \MXInfoFetcher($title, $this->uid, false);
 	}
 } 

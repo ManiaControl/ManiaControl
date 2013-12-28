@@ -36,12 +36,14 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	const ACTION_SWITCH_MAP = 'MapList.SwitchMap';
 	const ACTION_JUKE_MAP = 'MapList.JukeMap';
 	const MAX_MAPS_PER_PAGE = 15;
-
+	const SHOW_MX_LIST = 1;
+	const SHOW_MAP_LIST = 2;
 
 	/**
 	 * Private properties
 	 */
 	private $maniaControl = null;
+	private $mapListShown = array();
 	private $width;
 	private $height;
 	private $quadStyle;
@@ -60,6 +62,9 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this,
 			'handleManialinkPageAnswer');
 
+		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_MAPLIST_UPDATED, $this, 'updateWidget');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_BEGINMAP, $this, 'updateWidget'); //TODO not working yet
+
 		//settings
 		$this->width = 150;
 		$this->height = 80;
@@ -74,6 +79,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 * @param Player $player
 	 */
 	public function showManiaExchangeList(array $chatCallback, Player $player){
+		$this->mapListShown[$player->login] = self::SHOW_MX_LIST;
+
 		$params = explode(' ', $chatCallback[1][2]);
 
 		$serverInfo = $this->maniaControl->server->getSystemInfo();
@@ -210,6 +217,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 * @param Player $player
 	 */
 	public function showMapList(Player $player){
+		$this->mapListShown[$player->login] = self::SHOW_MAP_LIST;
+
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$frame = $this->buildMainFrame();
 		$maniaLink->add($frame);
@@ -250,7 +259,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$jukeQuad->setSize(4,4);
 			$jukeQuad->setSubStyle($jukeQuad::SUBSTYLE_Erase);
 			$jukeQuad->setAction(self::ACTION_JUKE_MAP . "." . $map->uid);
-			//TODO description and jukebox button
+			//TODO description and jukebox button, change quad style
 
 			if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)){ //TODO SET as setting who can add maps
 				//erase map quad
@@ -348,7 +357,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 * @param Player $player
 	 */
 	public function closeWidget(array $callback, Player $player) {
-		//TODO update player things
+		unset($this->mapListShown[$player->login]);
 	}
 
 	/**
@@ -384,5 +393,26 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 		}
 
+	}
+
+	/**
+	 * Reopen the widget on Map Begin, MapListChanged
+	 * @param array $callback
+	 */
+	public function updateWidget(array $callback){
+		foreach($this->mapListShown as $login => $shown){
+			if($shown){
+				$player = $this->maniaControl->playerManager->getPlayer($login);
+				if($player != null){
+					if($shown == self::SHOW_MX_LIST){
+						//TODO
+					}else if($shown == self::SHOW_MAP_LIST){
+						$this->showMapList($player);
+					}
+				}else{
+					unset($this->mapListShown[$login]);
+				}
+			}
+		}
 	}
 } 
