@@ -257,30 +257,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$mapFrame->setY($y);
 
 
-			//Juke-Map-Label
-			if(isset($jukedMaps[$map->uid])){
-				echo "yes";
-				var_dump($jukedMaps[$map->uid]);
-				$jukeLabel = new Label_Text();
-				$mapFrame->add($jukeLabel);
-				$jukeLabel->setX($this->width/2 - 25);
-				$jukeLabel->setAlign(Control::CENTER,Control::CENTER);
-				$jukeLabel->setZ(0.2);
-				$jukeLabel->setTextSize(1.5);
-				$jukeLabel->setText($jukedMaps[$map->uid]);
-				$jukeLabel->setTextColor("FFF");
-			}
-
-			//Juke-Map-Button
-			$jukeQuad = new Quad_Icons128x128_1();
-			$mapFrame->add($jukeQuad);
-			$jukeQuad->setX($this->width/2 - 15);
-			$jukeQuad->setZ(0.2);
-			$jukeQuad->setSize(4,4);
-			$jukeQuad->setSubStyle($jukeQuad::SUBSTYLE_Load);
-			$jukeQuad->setAction(self::ACTION_JUKE_MAP . "." . $map->uid);
-
-			//Description Label
+			//Jukebox Description Label
 			$descriptionLabel = new Label();
 			$frame->add($descriptionLabel);
 			$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
@@ -288,8 +265,33 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$descriptionLabel->setSize($this->width * 0.7, 4);
 			$descriptionLabel->setTextSize(2);
 			$descriptionLabel->setVisible(false);
-			$descriptionLabel->setText("Add Map to Jukebox: {$map->name}");
-			$tooltips->add($jukeQuad, $descriptionLabel);
+
+			//Juke-Map-Label
+			if(isset($jukedMaps[$map->uid])){
+				$jukeLabel = new Label_Text();
+				$mapFrame->add($jukeLabel);
+				$jukeLabel->setX($this->width/2 - 15);
+				$jukeLabel->setAlign(Control::CENTER,Control::CENTER);
+				$jukeLabel->setZ(0.2);
+				$jukeLabel->setTextSize(1.5);
+				$jukeLabel->setText($jukedMaps[$map->uid]);
+				$jukeLabel->setTextColor("FFF");
+
+				$descriptionLabel->setText("{$map->name} \$zis on Jukebox Position: {$jukedMaps[$map->uid]}");
+				$tooltips->add($jukeLabel, $descriptionLabel);
+			}else{
+				//Juke-Map-Button
+				$jukeQuad = new Quad_Icons128x128_1();
+				$mapFrame->add($jukeQuad);
+				$jukeQuad->setX($this->width/2 - 15);
+				$jukeQuad->setZ(0.2);
+				$jukeQuad->setSize(4,4);
+				$jukeQuad->setSubStyle($jukeQuad::SUBSTYLE_Load);
+				$jukeQuad->setAction(self::ACTION_JUKE_MAP . "." . $map->uid);
+
+				$descriptionLabel->setText("Add Map to Jukebox: {$map->name}");
+				$tooltips->add($jukeQuad, $descriptionLabel);
+			}
 
 			if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)){ //TODO SET as setting who can add maps
 				//erase map quad
