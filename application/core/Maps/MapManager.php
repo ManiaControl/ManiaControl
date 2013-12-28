@@ -9,6 +9,7 @@ use ManiaControl\FileUtil;
 use ManiaControl\ManiaControl;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Players\PlayerList;
 use MXInfoFetcher;
 
 
@@ -33,6 +34,11 @@ class MapManager implements CallbackListener {
 	private $currentMap = null;
 
 	/**
+	 * Public Properties
+	 */
+	public $jukebox = null;
+
+	/**
 	 * Construct map manager
 	 *
 	 * @param \ManiaControl\ManiaControl $maniaControl
@@ -45,11 +51,13 @@ class MapManager implements CallbackListener {
 
 		// Create map commands instance
 		$this->mapCommands = new MapCommands($maniaControl);
+		$this->jukebox = new Jukebox($this->maniaControl);
 
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_BEGINMAP, $this, 'handleBeginMap');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_MAPLISTMODIFIED, $this, 'mapListModified');
+
 	}
 
 	/**
@@ -201,12 +209,20 @@ class MapManager implements CallbackListener {
 	}
 
 	/**
-	 * @return null
+	 * @return currentMap
 	 */
 	public function getCurrentMap(){
 		return $this->currentMap;
 	}
 
+	/**
+	 * Returns map By UID
+	 * @param $uid
+	 * @return mixed
+	 */
+	public function getMapByUid($uid){
+		return $this->mapListUids[$uid];
+	}
 
 
 	/**

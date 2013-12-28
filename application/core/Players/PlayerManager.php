@@ -33,7 +33,11 @@ class PlayerManager implements CallbackListener {
 	private $playerCommands = null;
 	private $playerList = array();
 
+	/**
+	 * Public properties
+	 */
 	public $playerActions = null;
+
 	/**
 	 * Construct player manager
 	 *
@@ -44,7 +48,6 @@ class PlayerManager implements CallbackListener {
 		$this->initTables();
 		
 		$this->playerCommands = new PlayerCommands($maniaControl);
-
 		$this->playerActions = new PlayerActions($maniaControl);
 
 		// Init settings

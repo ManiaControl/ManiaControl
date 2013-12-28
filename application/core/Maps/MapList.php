@@ -54,7 +54,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(ManialinkManager::CB_MAIN_WINDOW_CLOSED, $this,
 			'closeWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this,
@@ -65,7 +64,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$this->height = 80;
 		$this->quadStyle = Quad_BgRaceScore2::STYLE; //TODO add default menu style to style manager
 		$this->quadSubstyle = Quad_BgRaceScore2::SUBSTYLE_HandleSelectable;
-
 	}
 
 
