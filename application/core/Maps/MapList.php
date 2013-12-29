@@ -175,6 +175,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$descriptionLabel->setVisible(false);
 				$descriptionLabel->setText("Add-Map: {$map->name}");
 				$tooltips->add($addQuad, $descriptionLabel);
+
 			}
 
 			$y -= 4;
@@ -334,6 +335,12 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$descriptionLabel->setText("Switch Directly to Map: {$map->name}");
 				$tooltips->add($switchToQuad, $descriptionLabel);
 			}
+
+			/*$descriptionLabel2 = clone $descriptionLabel;
+			$descriptionLabel2->setText("test1");
+			$tooltips->add($eraseQuad, $descriptionLabel2); */
+
+
 			$y -= 4;
 			$id++;
 			if($id == self::MAX_MAPS_PER_PAGE + 1)

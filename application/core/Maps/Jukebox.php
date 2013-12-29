@@ -3,20 +3,25 @@
 namespace ManiaControl\Maps;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Commands\CommandListener;
+use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
+use ManiaControl\Players\Player;
 
 /**
  * Jukebox Class
  *
  * @author steeffeen & kremsy
  */
-class Jukebox implements CallbackListener {
+class Jukebox implements CallbackListener, CommandListener {
 	/**
 	 * Constants
 	 */
 	const CB_JUKEBOX_CHANGED =  'Jukebox.JukeBoxChanged';
 	const SETTING_SKIP_MAP_ON_LEAVE = 'Skip Map when the requester leaves';
 	const SETTING_SKIP_JUKED_ADMIN = 'Skip Map when admin leaves';
+
+	const ADMIN_COMMAND_CLEAR_JUKEBOX = 'clearjukebox';
 
 	/**
 	 * Private properties
@@ -38,6 +43,27 @@ class Jukebox implements CallbackListener {
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SKIP_MAP_ON_LEAVE, true);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SKIP_JUKED_ADMIN, false);
+
+		//Register Admin Commands
+		$this->maniaControl->commandManager->registerCommandListener(self::ADMIN_COMMAND_CLEAR_JUKEBOX, $this, 'command_ClearJukebox', true);
+	}
+
+	/**
+	 * Clears the jukebox via admin command clearjukebox
+	 * @param array  $chat
+	 * @param Player $player
+	 */
+	public function command_ClearJukebox(array $chat, Player $admin){
+		$title = $this->maniaControl->authenticationManager->getAuthLevelName($admin->authLevel);
+
+		//Destroy jukebox list
+		$this->jukedMaps = array();
+
+		$this->maniaControl->chat->sendInformation($title . ' $<' . $admin->nickname . '$> cleared the Jukebox!');
+		$this->maniaControl->log($title .' ' . Formatter::stripCodes($admin->nickname) . ' cleared the Jukebox');
+
+		// Trigger callback
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_JUKEBOX_CHANGED, array('clear'));
 	}
 
 	/**
@@ -46,6 +72,7 @@ class Jukebox implements CallbackListener {
 	 * @param $uid
 	 */
 	public function addMapToJukebox($login, $uid){
+		$player = $this->maniaControl->playerManager->getPlayer($login);
 
 		//Check if the map is already juked
 		if(array_key_exists($uid, $this->jukedMaps)){
@@ -55,10 +82,11 @@ class Jukebox implements CallbackListener {
 
 		//TODO recently maps not able to add to jukebox setting, and management
 
+		$map = $this->maniaControl->mapManager->getMapByUid($uid);
 
-		$this->jukedMaps[$uid] = array($login, $this->maniaControl->mapManager->getMapByUid($uid));
+		$this->jukedMaps[$uid] = array($player, $map);
 
-		//TODO Message
+		$this->maniaControl->chat->sendInformation('$<' . $player->nickname . '$> added $<' . $map->name . '$> to the Jukebox!');
 
 		// Trigger callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_JUKEBOX_CHANGED, array('add', $this->jukedMaps[$uid]));
@@ -71,10 +99,7 @@ class Jukebox implements CallbackListener {
 	 * @param $uid
 	 */
 	public function removeFromJukebox($login, $uid){
-		//unset($this->jukedMapsUid[$uid]);
 		unset($this->jukedMaps[$uid]);
-
-
 	}
 
 	public function beginMap(){
@@ -90,18 +115,21 @@ class Jukebox implements CallbackListener {
 	public function endMap(array $callback){
 
 		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_SKIP_MAP_ON_LEAVE) == TRUE){
+
 			//Skip Map if requester has left
-			for($i = 0; $i < count($this->jukedMaps); $i++){
-				$jukedMap = reset($this->jukedMaps);
+			foreach($this->jukedMaps as $jukedMap){
+				$player = $jukedMap[0];
 
 				//found player, so play this map
-				if($this->maniaControl->playerManager->getPlayer($jukedMap[0]) != null){
+				if($this->maniaControl->playerManager->getPlayer($player->login) != null){
 					break;
 				}
 
-
 				if($this->maniaControl->settingManager->getSetting($this, self::SETTING_SKIP_JUKED_ADMIN) == FALSE){
-					//TODO check in database if a the juker of the map is admin, and if he is, just break
+					//Check if the juker is a admin
+					if($player->authLevel > 0){
+						break;
+					}
 				}
 
 				// Trigger callback
@@ -110,9 +138,10 @@ class Jukebox implements CallbackListener {
 				//Player not found, so remove the map from the jukebox
 				array_shift($this->jukedMaps);
 
-				//TODO Message, report skip
+				$this->maniaControl->chat->sendInformation('Juked Map skipped because $<' . $player->nickname . '$> left!');
 			}
 		}
+
 		$nextMap = array_shift($this->jukedMaps);
 
 		//Check if Jukebox is empty
