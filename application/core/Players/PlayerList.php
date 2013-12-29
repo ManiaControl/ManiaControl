@@ -171,25 +171,28 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			}
 
 
-			//Nation Quad
-			$countryQuad = new Quad();
-			$playerFrame->add($countryQuad);
-			$countryCode = Formatter::mapCountry($listPlayer->getCountry());
-			$countryQuad->setImage("file://Skins/Avatars/Flags/{$countryCode}.dds");
-			$countryQuad->setX($x + 88);
-			$countryQuad->setSize(4,4);
-			$countryQuad->setZ(-0.1);
+			//Display country quad only on normal players
+			if(!$listPlayer->isFakePlayer()){
+				//Nation Quad
+				$countryQuad = new Quad();
+				$playerFrame->add($countryQuad);
+				$countryCode = Formatter::mapCountry($listPlayer->getCountry());
+				$countryQuad->setImage("file://Skins/Avatars/Flags/{$countryCode}.dds");
+				$countryQuad->setX($x + 88);
+				$countryQuad->setSize(4,4);
+				$countryQuad->setZ(-0.1);
 
-			//Nation Description Label
-			$descriptionLabel = new Label();
-			$frame->add($descriptionLabel);
-			$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
-			$descriptionLabel->setPosition($x + 10, -$this->height / 2 + 5);
-			$descriptionLabel->setSize($this->width * 0.7, 4);
-			$descriptionLabel->setTextSize(2);
-			$descriptionLabel->setVisible(false);
-			$descriptionLabel->setText($listPlayer->nickname . " from " . $listPlayer->path);
-			$tooltips->add($countryQuad, $descriptionLabel);
+				//Nation Description Label
+				$descriptionLabel = new Label();
+				$frame->add($descriptionLabel);
+				$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
+				$descriptionLabel->setPosition($x + 10, -$this->height / 2 + 5);
+				$descriptionLabel->setSize($this->width * 0.7, 4);
+				$descriptionLabel->setTextSize(2);
+				$descriptionLabel->setVisible(false);
+				$descriptionLabel->setText($listPlayer->nickname . " from " . $listPlayer->path);
+				$tooltips->add($countryQuad, $descriptionLabel);
+			}
 
 			//Level Quad
 			$rightQuad = new Quad_BgRaceScore2();
