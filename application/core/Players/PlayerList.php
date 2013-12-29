@@ -78,10 +78,10 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$this->maniaControl->callbackManager->registerCallbackListener(AuthenticationManager::CB_AUTH_LEVEL_CHANGED, $this, 'updateWidget');
 
 		//settings
-		$this->width = 150;
-		$this->height = 80;
-		$this->quadStyle = Quad_BgRaceScore2::STYLE; //TODO add default menu style to style manager
-		$this->quadSubstyle = Quad_BgRaceScore2::SUBSTYLE_HandleSelectable;
+		$this->width = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
+		$this->height = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
+		$this->quadStyle = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowStyle();
+		$this->quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowSubStyle();
 
 	}
 
