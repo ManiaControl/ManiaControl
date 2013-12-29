@@ -37,7 +37,6 @@ class Jukebox implements CallbackListener, CommandListener {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_BEGINMAP, $this,'beginMap');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ENDMAP, $this,'endMap');
 
 		// Init settings
@@ -76,7 +75,7 @@ class Jukebox implements CallbackListener, CommandListener {
 
 		//Check if the map is already juked
 		if(array_key_exists($uid, $this->jukedMaps)){
-			//TODO message map already juked
+			$this->maniaControl->chat->sendError('Map is already in the Jukebox', $login);
 			return;
 		}
 
@@ -100,11 +99,6 @@ class Jukebox implements CallbackListener, CommandListener {
 	 */
 	public function removeFromJukebox($login, $uid){
 		unset($this->jukedMaps[$uid]);
-	}
-
-	public function beginMap(){
-
-
 	}
 
 
