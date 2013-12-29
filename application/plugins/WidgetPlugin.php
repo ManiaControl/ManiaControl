@@ -68,7 +68,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_CLOCK_WIDGET_POSX, 160 - 5);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_CLOCK_WIDGET_POSY, 90 - 11);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_CLOCK_WIDGET_WIDTH, 10);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_CLOCK_WIDGET_HEIGHT, 5.);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_CLOCK_WIDGET_HEIGHT, 5.5);
 
 		return true;
 	}
@@ -112,7 +112,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$label->setX(0);
 		$label->setAlign(Control::CENTER,Control::TOP);
 		$label->setZ(0.2);
-		$label->setTextSize(1.3);
+		$label->setTextSize(1);
 		$label->setText($localTime);
 		$label->setTextColor("FFF");
 
