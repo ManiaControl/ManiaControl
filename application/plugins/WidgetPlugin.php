@@ -25,6 +25,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	const MLID_MAPWIDGET = 'WidgetPlugin.MapWidget';
 
 	//MapWidget Properties
+	const SETTING_MAP_WIDGET_ACTIVATED = 'Map Widget Activated';
 	const SETTING_MAP_WIDGET_POSX = 'Map-Widget-Position: X';
 	const SETTING_MAP_WIDGET_POSY = 'Map-Widget-Position: Y';
 	const SETTING_MAP_WIDGET_WIDTH = 'Map-Widget-Size: Width';
@@ -49,6 +50,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'handlePlayerConnect');
 
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED, true);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAP_WIDGET_POSX, 160 - 20);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAP_WIDGET_POSY, 90 - 4.5);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAP_WIDGET_WIDTH, 40);
@@ -92,13 +94,6 @@ class WidgetPlugin implements CallbackListener, Plugin {
 
 		$maniaLink = new ManiaLink(self::MLID_MAPWIDGET);
 
-		// Create script and features
-		/*$script = new Script();
-		$maniaLink->setScript($script);
-
-		$tooltips = new Tooltips();
-		$script->addFeature($tooltips); */
-
 		//mainframe
 		$frame = new Frame();
 		$maniaLink->add($frame);
@@ -115,7 +110,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 
 		$label = new Label_Text();
 		$frame->add($label);
-		$label->setY(1.3);
+		$label->setY(1.5);
 		$label->setX(0);
 		$label->setAlign(Control::CENTER,Control::CENTER);
 		$label->setZ(0.2);
@@ -126,11 +121,12 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$label = new Label_Text();
 		$frame->add($label);
 		$label->setX(0);
-		$label->setY(-1.3);
+		$label->setY(-1.4);
 
 		$label->setAlign(Control::CENTER,Control::CENTER);
 		$label->setZ(0.2);
 		$label->setTextSize(1);
+		$label->setScale(0.8);
 		$label->setText($map->authorLogin);
 		$label->setTextColor("FFF");
 
@@ -147,7 +143,10 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	 * @param array $callback
 	 */
 	public function handleOnInit(array $callback) {
-		$this->displayMapWidget();
+		//Display Map Widget
+		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED)){
+			$this->displayMapWidget();
+		}
 	}
 
 	/**
@@ -156,12 +155,11 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	 * @param array $callback
 	 */
 	public function handlePlayerConnect(array $callback) {
-//		$login = $callback[1][0];
-//		$player = $this->maniaControl->playerManager->getPlayer($login);
-	//	if (!$player) {
-		//	return;
-		//}
-	//	$this->queryManialinkUpdateFor($player);
+		$player = $callback[1];
+		//Display Map Widget
+		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED)){
+			$this->displayMapWidget($player->login);
+		}
 	}
 
 
