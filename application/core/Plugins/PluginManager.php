@@ -204,6 +204,19 @@ class PluginManager {
 	}
 
 	/**
+	 * Returns an Plugin if it is aktivated
+	 * @param $pluginClass
+	 * @return null
+	 */
+	public function getPlugin($pluginClass) {
+		if($this->isPluginActive($pluginClass)){
+			return $this->activePlugins[$pluginClass];
+		}
+		return null;
+	}
+
+
+	/**
 	 * Get all declared plugin class names
 	 *
 	 * @return array

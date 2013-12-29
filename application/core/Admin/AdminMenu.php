@@ -46,7 +46,7 @@ class AdminMenu implements CallbackListener, ManialinkPageAnswerListener { //TOD
 		$this->maniaControl = $maniaControl;
 		
 		// Init settings
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_POSX, 155.);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_POSX, 156.);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_POSY, -60.);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_ITEMSIZE, 6.);
 		

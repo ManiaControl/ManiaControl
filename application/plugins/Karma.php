@@ -365,7 +365,7 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	 * @param Map $map        	
 	 * @return float | bool
 	 */
-	private function getMapKarma(Map $map) {
+	public function getMapKarma(Map $map) {
 		$mysqli = $this->maniaControl->database->mysqli;
 		$query = "SELECT AVG(`vote`) AS `karma` FROM `" . self::TABLE_KARMA . "`
 				WHERE `mapIndex` = {$map->index}
@@ -394,7 +394,7 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	 * @param Map $map        	
 	 * @return array
 	 */
-	private function getMapVotes(Map $map) {
+	public function getMapVotes(Map $map) {
 		$mysqli = $this->maniaControl->database->mysqli;
 		$query = "SELECT `vote`, COUNT(`vote`) AS `count` FROM `" . self::TABLE_KARMA . "`
 				WHERE `mapIndex` = {$map->index}

@@ -2,6 +2,7 @@
 
 namespace ManiaControl\Maps;
 use FML\Controls\Control;
+use FML\Controls\Gauge;
 use FML\Controls\Label;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quads\Quad_Icons128x128_1;
@@ -12,6 +13,7 @@ use FML\Script\Tooltips;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\ColorUtil;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use FML\Controls\Frame;
@@ -41,6 +43,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	const SHOW_MX_LIST = 1;
 	const SHOW_MAP_LIST = 2;
 
+	const DEFAULT_KARMA_PLUGIN = 'KarmaPlugin';
 	/**
 	 * Private properties
 	 */
@@ -64,9 +67,11 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this,
 			'handleManialinkPageAnswer');
 
+		//Update Widget actions
 		$this->maniaControl->callbackManager->registerCallbackListener(Jukebox::CB_JUKEBOX_CHANGED, $this, 'updateWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_MAPLIST_UPDATED, $this, 'updateWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_BEGINMAP, $this, 'updateWidget'); //TODO not working yet
+		//TODO update on Karma Update
 
 		//settings
 		$this->width = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
@@ -129,6 +134,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				trigger_error($maps->error, E_USER_WARNING);
 			return;
 		}
+
 
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$frame = $this->buildMainFrame();
@@ -246,7 +252,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$frame->add($headFrame);
 		$headFrame->setY($this->height / 2 - 5);
 		$x = -$this->width / 2;
-		$array = array("Id" => $x + 5, "Mx ID" => $x + 10, "MapName" => $x + 20, "Author" => $x + 70);
+		$array = array("Id" => $x + 5, "Mx ID" => $x + 10, "MapName" => $x + 20, "Author" => $x + 73, "Karma" => $x + 105, "Actions" => $this->width / 2 - 15);
 		$this->maniaControl->manialinkManager->labelLine($headFrame,$array);
 
 		//Get Maplist
@@ -255,6 +261,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		//TODO add pages
 
 		$jukedMaps = $this->maniaControl->mapManager->jukebox->getJukeBoxRanking();
+		$karmaPlugin = $this->maniaControl->pluginManager->getPlugin(self::DEFAULT_KARMA_PLUGIN);
 
 		$id = 1;
 		$y = $this->height / 2 - 10;
@@ -343,10 +350,32 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$tooltips->add($switchToQuad, $descriptionLabel);
 			}
 
-			/*$descriptionLabel2 = clone $descriptionLabel;
-			$descriptionLabel2->setText("test1");
-			$tooltips->add($eraseQuad, $descriptionLabel2); */
 
+			//Display Karma bar
+			if($karmaPlugin != null){
+				$karma = $karmaPlugin->getMapKarma($map);
+				$votes = $karmaPlugin->getMapVotes($map);
+				if(is_numeric($karma)){
+					$karmaGauge = new Gauge();
+					$mapFrame->add($karmaGauge);
+					$karmaGauge->setX($x + 110);
+					$karmaGauge->setSize(20, 9);
+					$karmaGauge->setDrawBg(false);
+					$karma = floatval($karma);
+					$karmaGauge->setRatio($karma + 0.15 - $karma * 0.15);
+					$karmaColor = ColorUtil::floatToStatusColor($karma);
+					$karmaGauge->setColor($karmaColor . '9');
+
+					$karmaLabel = new Label();
+					$mapFrame->add($karmaLabel);
+					$karmaLabel->setX($x + 110);
+					$karmaLabel->setSize(20 * 0.9, 5);
+					$karmaLabel->setTextSize(0.9);
+					$karmaLabel->setTextColor("000");
+					$karmaLabel->setAlign(Control::CENTER, Control::CENTER);
+					$karmaLabel->setText('  ' . round($karma * 100.) . '% (' . $votes['count'] . ')');
+				}
+			}
 
 			$y -= 4;
 			$id++;
@@ -387,13 +416,11 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$mxId = $map->mx->id;
 
 		//Display Maps
-		$array = array($id => $x + 5, $mxId => $x + 10, $map->name => $x + 20, $map->authorNick => $x + 70);
+		$array = array($id => $x + 5, $mxId => $x + 10, $map->name => $x + 20, $map->authorNick => $x + 73);
 		$this->maniaControl->manialinkManager->labelLine($frame,$array);
 		//TODO detailed mx info page with link to mxo
 		//TODO action detailed map info
 		//TODO side switch
-
-
 	}
 
 
