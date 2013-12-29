@@ -199,6 +199,7 @@ class CallbackManager {
 		
 		// Handle callbacks
 		foreach ($callbacks as $callback) {
+
 			$callbackName = $callback[0];
 			switch ($callbackName) {
 				case 'ManiaPlanet.BeginMap':

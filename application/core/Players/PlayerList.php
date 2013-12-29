@@ -66,8 +66,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(ManialinkManager::CB_MAIN_WINDOW_CLOSED, $this, 'closeWidget');
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_CLOSE_PLAYER_ADV , $this, 'closePlayerAdvancedWidget');
+		$this->maniaControl->callbackManager->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_CLOSED, $this, 'closeWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 
 		//Update Widget Events
@@ -544,13 +544,14 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 
 		return $frame;
 	}
+
 	/**
 	 * Closes the widget
 	 * @param array  $callback
-	 * @param Player $player
 	 */
-	public function closeWidget(array $callback, Player $player) {
-		$this->playersListShown[$player->login] = false;
+	public function closeWidget(array $callback) {
+		$player = $callback[1];
+		unset($this->playersListShown[$player->login]);
 	}
 
 

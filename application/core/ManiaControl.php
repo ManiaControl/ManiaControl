@@ -14,7 +14,6 @@ use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\PluginManager;
 use ManiaControl\Server\Server;
-
 require_once __DIR__ . '/Callbacks/CallbackListener.php';
 require_once __DIR__ . '/Commands/CommandListener.php';
 require_once __DIR__ . '/Manialinks/ManialinkPageAnswerListener.php';

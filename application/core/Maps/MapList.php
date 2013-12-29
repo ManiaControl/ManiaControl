@@ -62,10 +62,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(ManialinkManager::CB_MAIN_WINDOW_CLOSED, $this,
-			'closeWidget');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this,
-			'handleManialinkPageAnswer');
+		$this->maniaControl->callbackManager->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_CLOSED, $this,'closeWidget');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this,'handleManialinkPageAnswer');
 
 		//Update Widget actions
 		$this->maniaControl->callbackManager->registerCallbackListener(Jukebox::CB_JUKEBOX_CHANGED, $this, 'updateWidget');
@@ -427,9 +425,9 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	/**
 	 * Closes the widget
 	 * @param array  $callback
-	 * @param Player $player
 	 */
-	public function closeWidget(array $callback, Player $player) {
+	public function closeWidget(array $callback) {
+		$player = $callback[1];
 		unset($this->mapListShown[$player->login]);
 	}
 
