@@ -15,6 +15,8 @@ class Jukebox implements CallbackListener {
 	 * Constants
 	 */
 	const CB_JUKEBOX_CHANGED =  'Jukebox.JukeBoxChanged';
+	const SETTING_SKIP_MAP_ON_LEAVE = 'Skip Map when the requester leaves';
+	const SETTING_SKIP_JUKED_ADMIN = 'Skip Map when admin leaves';
 
 	/**
 	 * Private properties
@@ -33,6 +35,9 @@ class Jukebox implements CallbackListener {
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_BEGINMAP, $this,'beginMap');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ENDMAP, $this,'endMap');
 
+		// Init settings
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SKIP_MAP_ON_LEAVE, true);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SKIP_JUKED_ADMIN, false);
 	}
 
 	/**
@@ -50,7 +55,7 @@ class Jukebox implements CallbackListener {
 
 		//TODO recently maps not able to add to jukebox setting, and management
 
-		//$this->jukedMapsUid[$uid] = array($login, $this->maniaControl->mapManager->getMapByUid($uid));
+
 		$this->jukedMaps[$uid] = array($login, $this->maniaControl->mapManager->getMapByUid($uid));
 
 		//TODO Message
@@ -58,7 +63,6 @@ class Jukebox implements CallbackListener {
 		// Trigger callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_JUKEBOX_CHANGED, array('add', $this->jukedMaps[$uid]));
 
-		$this->printAllMaps();
 	}
 
 	/**
@@ -78,29 +82,37 @@ class Jukebox implements CallbackListener {
 
 	}
 
-	public function endMap(){
 
-		//TODO setting admin no skip
-		//TODO setting skip map if requester left
+	/**
+	 * Called on endmap
+	 * @param array $callback
+	 */
+	public function endMap(array $callback){
 
-		//Skip Map if requester has left
-		for($i = 0; $i < count($this->jukedMaps); $i++){
-			$jukedMap = reset($this->jukedMaps);
+		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_SKIP_MAP_ON_LEAVE) == TRUE){
+			//Skip Map if requester has left
+			for($i = 0; $i < count($this->jukedMaps); $i++){
+				$jukedMap = reset($this->jukedMaps);
 
-			//found player, so play this map
-			if($this->maniaControl->playerManager->getPlayer($jukedMap[0]) != null){
-				break;
+				//found player, so play this map
+				if($this->maniaControl->playerManager->getPlayer($jukedMap[0]) != null){
+					break;
+				}
+
+
+				if($this->maniaControl->settingManager->getSetting($this, self::SETTING_SKIP_JUKED_ADMIN) == FALSE){
+					//TODO check in database if a the juker of the map is admin, and if he is, just break
+				}
+
+				// Trigger callback
+				$this->maniaControl->callbackManager->triggerCallback(self::CB_JUKEBOX_CHANGED, array('skip', $jukedMap[0]));
+
+				//Player not found, so remove the map from the jukebox
+				array_shift($this->jukedMaps);
+
+				//TODO Message, report skip
 			}
-
-			// Trigger callback
-			$this->maniaControl->callbackManager->triggerCallback(self::CB_JUKEBOX_CHANGED, array('skip', $jukedMap[0]));
-
-			//Player not found, so remove the map from the jukebox
-			array_shift($this->jukedMaps);
-
-			//TODO Message, report skip
 		}
-
 		$nextMap = array_shift($this->jukedMaps);
 
 		//Check if Jukebox is empty
@@ -109,8 +121,6 @@ class Jukebox implements CallbackListener {
 
 		$nextMap = $nextMap[1];
 
-		//Set pointer back to last map
-		//end($this->jukedMaps);
 
 		$success = $this->maniaControl->client->query('ChooseNextMap', $nextMap->fileName);
 		if (!$success) {
@@ -135,6 +145,9 @@ class Jukebox implements CallbackListener {
 		return $jukedMaps;
 	}
 
+	/**
+	 * Dummy Function for testing
+	 */
 	public function printAllMaps(){
 		foreach($this->jukedMaps as $map){
 			$map = $map[1];
