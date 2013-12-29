@@ -52,10 +52,10 @@ class KarmaPlugin implements CallbackListener, Plugin {
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_AVAILABLE_VOTES, '-2,2');
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_TITLE, 'Map-Karma');
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSX, 90.);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSY, 82.);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSX, 160 - 27.5);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSY, 90 - 10 - 6);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_WIDTH, 25.);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_HEIGHT, 13.);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_HEIGHT, 12.);
 		
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
@@ -452,6 +452,7 @@ class KarmaPlugin implements CallbackListener, Plugin {
 		$titleLabel->setStyle($labelStyle);
 		$titleLabel->setTranslate(true);
 		$titleLabel->setTextSize(1);
+		$titleLabel->setScale(0.90);
 		$titleLabel->setText($title);
 		
 		$karmaGauge = new Gauge();

@@ -23,13 +23,22 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	const PLUGIN_NAME = 'WidgetPlugin';
 	const PLUGIN_AUTHOR = 'kremsy';
 	const MLID_MAPWIDGET = 'WidgetPlugin.MapWidget';
+	const MLID_CLOCKWIDGET = 'WidgetPlugin.ClockWidget';
 
 	//MapWidget Properties
-	const SETTING_MAP_WIDGET_ACTIVATED = 'Map Widget Activated';
+	const SETTING_MAP_WIDGET_ACTIVATED = 'Map-Widget Activated';
 	const SETTING_MAP_WIDGET_POSX = 'Map-Widget-Position: X';
 	const SETTING_MAP_WIDGET_POSY = 'Map-Widget-Position: Y';
 	const SETTING_MAP_WIDGET_WIDTH = 'Map-Widget-Size: Width';
 	const SETTING_MAP_WIDGET_HEIGHT = 'Map-Widget-Size: Height';
+
+	//ClockWidget Properties
+	const SETTING_CLOCK_WIDGET_ACTIVATED = 'Clock-Widget Activated';
+	const SETTING_CLOCK_WIDGET_POSX = 'Clock-Widget-Position: X';
+	const SETTING_CLOCK_WIDGET_POSY = 'Clock-Widget-Position: Y';
+	const SETTING_CLOCK_WIDGET_WIDTH = 'Clock-Widget-Size: Width';
+	const SETTING_CLOCK_WIDGET_HEIGHT = 'Clock-Widget-Size: Height';
+
 	/**
 	 * Private properties
 	 */
@@ -43,12 +52,11 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	 */
 	public function load(ManiaControl $maniaControl){
 		$this->maniaControl = $maniaControl;
-		// TODO: Implement load() method.
-
 
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'handlePlayerConnect');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_1_MINUTE, $this, 'handleEveryMinute');
 
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED, true);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAP_WIDGET_POSX, 160 - 20);
@@ -56,7 +64,11 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAP_WIDGET_WIDTH, 40);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAP_WIDGET_HEIGHT, 9.);
 
-
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_CLOCK_WIDGET_ACTIVATED, true);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_CLOCK_WIDGET_POSX, 160 - 5);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_CLOCK_WIDGET_POSY, 90 - 11);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_CLOCK_WIDGET_WIDTH, 10);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_CLOCK_WIDGET_HEIGHT, 5.);
 
 		return true;
 	}
@@ -68,6 +80,48 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
 		unset($this->maniaControl);
 	}
+
+
+	public function displayClockWidget($login = false){
+		$pos_x = $this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_POSX);
+		$pos_y = $this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_POSY);
+		$width = $this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_WIDTH);
+		$height = $this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_HEIGHT);
+		$quadStyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
+		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
+
+		$maniaLink = new ManiaLink(self::MLID_CLOCKWIDGET);
+
+		//mainframe
+		$frame = new Frame();
+		$maniaLink->add($frame);
+		$frame->setSize($width,$height);
+		$frame->setPosition($pos_x, $pos_y);
+
+		//Background Quad
+		$backgroundQuad = new Quad();
+		$frame->add($backgroundQuad);
+		$backgroundQuad->setSize($width,$height);
+		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
+
+		$localTime = date("H:i", time());
+
+		$label = new Label_Text();
+		$frame->add($label);
+		$label->setY(1.5);
+		$label->setX(0);
+		$label->setAlign(Control::CENTER,Control::TOP);
+		$label->setZ(0.2);
+		$label->setTextSize(1.3);
+		$label->setText($localTime);
+		$label->setTextColor("FFF");
+
+		//Send manialink
+		$manialinkText = $maniaLink->render()->saveXML();
+		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $login);
+
+	}
+
 
 
 	/**
@@ -147,6 +201,9 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED)){
 			$this->displayMapWidget();
 		}
+		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_ACTIVATED)){
+			$this->displayClockWidget();
+		}
 	}
 
 	/**
@@ -160,8 +217,21 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED)){
 			$this->displayMapWidget($player->login);
 		}
+		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_ACTIVATED)){
+			$this->displayClockWidget();
+		}
 	}
 
+
+	/**
+	 * Aktualize the clock widget every minute
+	 * @param array $callback
+	 */
+	public function handleEveryMinute(array $callback) {
+		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_ACTIVATED)){
+			$this->displayClockWidget();
+		}
+	}
 
 	/**
 	 * Get plugin id
