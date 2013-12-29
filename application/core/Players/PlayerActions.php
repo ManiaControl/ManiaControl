@@ -192,7 +192,10 @@ class PlayerActions {
 		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
 		$title = $this->maniaControl->authenticationManager->getAuthLevelName($admin->authLevel);
 
-		$success = $this->maniaControl->client->query('Kick', $target->login, $message); //TODO bestätigung
+		if($target->isFakePlayer())
+			$success = $this->maniaControl->client->query('DisconnectFakePlayer', $target->login);
+		else
+			$success = $this->maniaControl->client->query('Kick', $target->login, $message); //TODO bestätigung
 		if (!$success) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $admin->login);
 			return;

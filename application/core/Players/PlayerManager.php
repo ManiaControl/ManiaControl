@@ -21,6 +21,7 @@ class PlayerManager implements CallbackListener {
 	 * Constants
 	 */
 	const CB_PLAYERJOINED = 'PlayerManagerCallback.PlayerJoined';
+	const CB_PLAYERDISCONNECTED = 'PlayerManagerCallback.PlayerDisconnected';
 	const CB_ONINIT = 'PlayerManagerCallback.OnInit';
 	const CB_PLAYERINFOCHANGED = 'PlayerManagerCallback.PlayerInfoChanged';
 	const TABLE_PLAYERS = 'mc_players';
@@ -155,6 +156,9 @@ class PlayerManager implements CallbackListener {
 	public function playerDisconnect(array $callback) {
 		$login = $callback[1][0];
 		$player = $this->removePlayer($login);
+
+		// Trigger own callback
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERDISCONNECTED, array(self::CB_PLAYERDISCONNECTED, $player));
 
 		if($player->isFakePlayer())
 			return;

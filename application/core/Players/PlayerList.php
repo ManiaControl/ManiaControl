@@ -66,15 +66,14 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(ManialinkManager::CB_MAIN_WINDOW_CLOSED, $this,
-			'closeWidget');
-		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_CLOSE_PLAYER_ADV , $this,
-			'closePlayerAdvancedWidget');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this,
-			'handleManialinkPageAnswer');
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(ManialinkManager::CB_MAIN_WINDOW_CLOSED, $this, 'closeWidget');
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_CLOSE_PLAYER_ADV , $this, 'closePlayerAdvancedWidget');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
+
+		//Update Widget Events
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERINFOCHANGED, $this, 'updateWidget');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCONNECT, $this, 'updateWidget');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERDISCONNECT, $this, 'updateWidget');
+		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECTED, $this, 'updateWidget');
+		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'updateWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(AuthenticationManager::CB_AUTH_LEVEL_CHANGED, $this, 'updateWidget');
 
 		//settings
@@ -142,8 +141,6 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$y -= 10;
 		foreach($players as $listPlayer){
 
-			//$path = substr($listPlayer->path, 6);
-			//$path = $listPlayer->getCountry() . " - " . $listPlayer->getProvince();
 			$path = $listPlayer->getProvince();
 			$playerFrame = new Frame();
 			$frame->add($playerFrame);
@@ -316,7 +313,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		}
 
 		//show advanced window
-		if($this->playersListShown[$player->login] != self::SHOWN_MAIN_WINDOW){
+		if($this->playersListShown[$player->login] != false && $this->playersListShown[$player->login] != self::SHOWN_MAIN_WINDOW){
 			$frame = $this->showAdvancedPlayerWidget($this->playersListShown[$player->login]);
 			$maniaLink->add($frame);
 		}
@@ -342,6 +339,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 	 * @return Frame
 	 */
 	public function showAdvancedPlayerWidget($login){
+		$player = $this->maniaControl->playerManager->getPlayer($login);
+
 		//todo all configurable or as constants
 		$x = $this->width / 2 + 2.5;
 		$width = 35;
@@ -382,8 +381,6 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$label->setTextSize($textSize);
 		$label->setText("Advanced Actions");
 		$label->setTextColor($textColor);
-
-		$player = $this->maniaControl->playerManager->getPlayer($login);
 
 		//Show Nickname
 		$label = new Label_Text();
@@ -619,11 +616,17 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 	public function updateWidget(array $callback){
 		foreach($this->playersListShown as $login => $shown){
 			if($shown){
+				//Check if Shown player still exists
+				if($this->maniaControl->playerManager->getPlayer($shown) == null){
+					$this->playersListShown[$login] = false;
+				}
 				$player = $this->maniaControl->playerManager->getPlayer($login);
-				if($player != null)
+				if($player != null){
 					$this->showPlayerList($player);
-				else
+				}else{
+					//if player with the open widget disconnected remove him from the shownlist
 					unset($this->playersListShown[$login]);
+				}
 			}
 		}
 	}
