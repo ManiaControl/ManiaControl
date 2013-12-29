@@ -117,8 +117,8 @@ class PlayerActions {
 
 		$width = 80;
 		$height = 50;
-		$quadStyle = Quad_BgRaceScore2::STYLE; //TODO add default menu style to style manager
-		$quadSubstyle = Quad_BgRaceScore2::SUBSTYLE_HandleSelectable;
+		$quadStyle = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowStyle();
+		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowSubStyle();
 
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 
