@@ -160,7 +160,7 @@ class PlayerManager implements CallbackListener {
 		// Trigger own callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERDISCONNECTED, array(self::CB_PLAYERDISCONNECTED, $player));
 
-		if($player->isFakePlayer())
+		if($player == null || $player->isFakePlayer())
 			return;
 
 		$played = Formatter::formatTimeH(time() - $player->joinTime);

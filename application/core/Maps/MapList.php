@@ -73,6 +73,12 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$this->height = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
 		$this->quadStyle = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowStyle();
 		$this->quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowSubStyle();
+
+		/** @var just a test $itemQuad
+		$itemQuad = new Quad();
+		$itemQuad->setStyles('Icons128x32_1', Quad_Icons128x128_1::SUBSTYLE_Create);
+		$itemQuad->setAction(self::ACTION_ADD_MAP);
+		$this->maniaControl->adminMenu->addMenuItem($itemQuad, 4);*/
 	}
 
 
@@ -221,6 +227,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 * @param Player $player
 	 */
 	public function showMapList(Player $player){
+
 		$this->mapListShown[$player->login] = self::SHOW_MAP_LIST;
 
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);

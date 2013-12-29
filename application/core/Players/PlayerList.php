@@ -567,6 +567,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 
 
 	/**
+	 * Called on ManialinkPageAnswer
 	 * @param array $callback
 	 */
 	public function handleManialinkPageAnswer(array $callback){
