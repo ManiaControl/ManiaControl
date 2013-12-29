@@ -141,7 +141,7 @@ class PlayerManager implements CallbackListener {
 			$this->maniaControl->chat->sendInformation('This server uses ManiaControl v' . ManiaControl::VERSION,$player->login);
 		}
 
-		$this->maniaControl->log('Player joined: ' . $player->login . " / " . $player->nickname . " Nation:" . $player->getCountry() . " IP: " .$player->ipAddress);
+		$this->maniaControl->log('Player joined: ' . $player->login . " / " . Formatter::stripCodes($player->nickname) . " Nation:" . $player->getCountry() . " IP: " .$player->ipAddress);
 
 		// Trigger own callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERJOINED, array(self::CB_PLAYERJOINED, $player));
@@ -160,7 +160,7 @@ class PlayerManager implements CallbackListener {
 			//return;
 
 		$played = Formatter::formatTimeH(time() - $player->joinTime);
-		$this->maniaControl->log("Player left: " . $player->login . " / " . $player->nickname . " Playtime: " . $played);
+		$this->maniaControl->log("Player left: " . $player->login . " / " . Formatter::stripCodes($player->nickname) . " Playtime: " . $played);
 
 
 
