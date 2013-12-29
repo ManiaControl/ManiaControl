@@ -59,10 +59,8 @@ class Player {
 		$this->ipAddress = $rpcInfos['IPAddress'];
 
 		$this->joinTime = time();
+
 	}
-
-
-
 
 
 	/**
@@ -70,9 +68,8 @@ class Player {
 	 *
 	 * @return bool
 	 */
-	// TODO: check for bot players
-	public function isFakePlayer() { //TODO Bot have also positive pids, so this is useless, just stringmatch *fake
-		return ($this->pid <= 0);
+	public function isFakePlayer() {
+		return ($this->pid <= 0 || $this->path == "");
 	}
 
 

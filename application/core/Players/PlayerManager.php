@@ -129,8 +129,8 @@ class PlayerManager implements CallbackListener {
 		$player = new Player($playerInfo);
 
 		$this->addPlayer($player);
-		
-		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES)) {
+
+		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES) && !$player->isFakePlayer()) {
 			$string = array(0 => '$0f0Player', 1 => '$0f0Moderator', 2 => '$0f0Admin', 3 => '$0f0MasterAdmin', 4 => '$0f0MasterAdmin');
 			//$nickname = Formatter::stripCodes($player->nickname); // TODO: strip codes without colour codes like in serverviewer
 
@@ -156,8 +156,8 @@ class PlayerManager implements CallbackListener {
 		$login = $callback[1][0];
 		$player = $this->removePlayer($login);
 
-		//if($player->isFakePlayer())
-			//return;
+		if($player->isFakePlayer())
+			return;
 
 		$played = Formatter::formatTimeH(time() - $player->joinTime);
 		$this->maniaControl->log("Player left: " . $player->login . " / " . Formatter::stripCodes($player->nickname) . " Playtime: " . $played);
