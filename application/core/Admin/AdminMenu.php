@@ -18,7 +18,7 @@ use ManiaControl\Players\PlayerManager;
  *
  * @author steeffeen & kremsy
  */
-class AdminMenu implements CallbackListener, ManialinkPageAnswerListener {
+class AdminMenu implements CallbackListener, ManialinkPageAnswerListener { //TODO rename class, its not only an admin menu
 	/**
 	 * Constants
 	 */
@@ -28,6 +28,7 @@ class AdminMenu implements CallbackListener, ManialinkPageAnswerListener {
 	const SETTING_MENU_ITEMSIZE = 'Menu Item Size';
 
 	const ACTION_OPEN_ADMIN_MEN = 'AdminMenu.OpenAdminMenu';
+	const ACTION_OPEN_PLAYER_MEN = 'AdminMenu.OpenPlayerMenu';
 
 	/**
 	 * Private properties
@@ -133,9 +134,31 @@ class AdminMenu implements CallbackListener, ManialinkPageAnswerListener {
 
 		$manialink = new ManiaLink(self::MLID_MENU);
 
+		//Player Menu Icon Frame
 		$frame = new Frame();
 		$manialink->add($frame);
 		$frame->setPosition($posX, $posY);
+
+		$backgroundQuad = new Quad();
+		$frame->add($backgroundQuad);
+		$backgroundQuad->setSize($itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
+		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
+
+
+		$iconFrame = new Frame();
+		$frame->add($iconFrame);
+
+		$iconFrame->setSize($itemSize, $itemSize);
+		$itemQuad = new Quad_Icons128x128_1();
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Options);
+		$itemQuad->setSize($itemSize, $itemSize);
+		$iconFrame->add($itemQuad);
+		$itemQuad->setAction(self::ACTION_OPEN_ADMIN_MEN);
+
+		//Admin Menu Icon Frame
+		$frame = new Frame();
+		$manialink->add($frame);
+		$frame->setPosition($posX, $posY - $itemSize * $itemMarginFactorY);
 
 		$backgroundQuad = new Quad();
 		$frame->add($backgroundQuad);
@@ -147,10 +170,10 @@ class AdminMenu implements CallbackListener, ManialinkPageAnswerListener {
 
 		$iconFrame->setSize($itemSize, $itemSize);
 		$itemQuad = new Quad_Icons128x128_1();
-		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Options);
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Custom);
 		$itemQuad->setSize($itemSize, $itemSize);
 		$iconFrame->add($itemQuad);
-		$itemQuad->setAction(self::ACTION_OPEN_ADMIN_MEN);
+		$itemQuad->setAction(self::ACTION_OPEN_PLAYER_MEN);
 
 		$this->manialink = $manialink;
 
