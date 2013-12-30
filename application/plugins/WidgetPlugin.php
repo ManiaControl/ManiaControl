@@ -171,7 +171,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 
 		//Check if the Next Map is a juked Map
 		$jukedMap = $this->maniaControl->mapManager->jukebox->getNextMap();
-		
+
 		$requester = null;
 		//if the nextmap is not a juked map, get it from map info
 		if($jukedMap == null){
