@@ -10,6 +10,7 @@ use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Controls\Quads\Quad_UIConstruction_Buttons;
 use FML\Script\Script;
 use FML\Script\Tooltips;
+use KarmaPlugin;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
@@ -259,15 +260,39 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		//TODO add pages
 
 		$jukedMaps = $this->maniaControl->mapManager->jukebox->getJukeBoxRanking();
+		/** @var  KarmaPlugin $karmaPlugin */
 		$karmaPlugin = $this->maniaControl->pluginManager->getPlugin(self::DEFAULT_KARMA_PLUGIN);
 
 		$id = 1;
 		$y = $this->height / 2 - 10;
+		/** @var  Map $map */
 		foreach($mapList as $map){
+
+			//Map Frame
 			$mapFrame = new Frame();
 			$frame->add($mapFrame);
-			$this->displayMap($id, $map, $mapFrame, $tooltips);
+			$mapFrame->setZ(0.1);
 			$mapFrame->setY($y);
+
+			if($this->maniaControl->mapManager->getCurrentMap() === $map){
+				$currentQuad = new Quad_Icons64x64_1();
+				$frame->add($currentQuad);
+				$currentQuad->setX($x + 3.5);
+				$currentQuad->setZ(0.2);
+				$currentQuad->setSize(4, 4);
+				$currentQuad->setSubStyle($currentQuad::SUBSTYLE_ArrowBlue);
+			}
+
+			$mxId = '-';
+			if(isset($map->mx->id))
+				$mxId = $map->mx->id;
+
+			//Display Maps
+			$array = array($id => $x + 5, $mxId => $x + 10, $map->name => $x + 20, $map->authorNick => $x + 73);
+			$this->maniaControl->manialinkManager->labelLine($mapFrame,$array);
+			//TODO detailed mx info page with link to mxo
+			//TODO action detailed map info
+			//TODO side switch
 
 
 			//Jukebox Description Label
@@ -348,7 +373,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$tooltips->add($switchToQuad, $descriptionLabel);
 			}
 
-
 			//Display Karma bar
 			if($karmaPlugin != null){
 				$karma = $karmaPlugin->getMapKarma($map);
@@ -386,39 +410,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 		//render and display xml
 		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player);
-	}
-
-	/**
-	 * Displays a single Map in the Maplist
-	 * @param       $id
-	 * @param Map   $map
-	 * @param Frame $frame
-	 */
-	private function displayMap($id, Map $map, Frame $frame, Tooltips $tooltips){
-		$frame->setZ(0.1);
-
-		//set starting x-value
-		$x = -$this->width / 2;
-
-		if($this->maniaControl->mapManager->getCurrentMap() === $map){
-			$currentQuad = new Quad_Icons64x64_1();
-			$frame->add($currentQuad);
-			$currentQuad->setX($x + 3.5);
-			$currentQuad->setZ(0.2);
-			$currentQuad->setSize(4, 4);
-			$currentQuad->setSubStyle($currentQuad::SUBSTYLE_ArrowBlue);
-		}
-
-		$mxId = '-';
-		if(isset($map->mx->id))
-			$mxId = $map->mx->id;
-
-		//Display Maps
-		$array = array($id => $x + 5, $mxId => $x + 10, $map->name => $x + 20, $map->authorNick => $x + 73);
-		$this->maniaControl->manialinkManager->labelLine($frame,$array);
-		//TODO detailed mx info page with link to mxo
-		//TODO action detailed map info
-		//TODO side switch
 	}
 
 
