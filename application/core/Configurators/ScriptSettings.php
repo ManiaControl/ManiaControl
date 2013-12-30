@@ -161,15 +161,25 @@ class ScriptSettings implements ConfiguratorMenu {
 	public function saveConfigData(array $configData, Player $player) {
 		$this->maniaControl->client->query('GetModeScriptSettings');
 		$scriptSettings = $this->maniaControl->client->getResponse();
-		// var_dump($configData);
-		// var_dump($scriptSettings);
+
+		$newSettings = array();
+
 		$prefixLength = strlen(self::ACTION_PREFIX_SETTING);
-		foreach ($configData[3] as $dataName => $dataValue) {
-			if (substr($dataName, 0, $prefixLength) != self::ACTION_PREFIX_SETTING) continue;
-			
-			$settingName = substr($dataName, $prefixLength);
-			
-			// TODO: apply new script settings
+		foreach ($configData[3] as $settings) {
+			if (substr($settings['Name'], 0, $prefixLength) != self::ACTION_PREFIX_SETTING) continue;
+
+			$settingName = substr($settings['Name'], $prefixLength);
+
+			foreach($scriptSettings as $key => $value){
+				if($key == $settingName){
+					//Setting found, cast type, break the inner loop
+					settype($settings["Value"], gettype($value));
+					break;
+				}
+			}
+			$newSettings[$settingName] = $settings["Value"];
 		}
+
+		$this->maniaControl->client->query('SetModeScriptSettings', $newSettings);
 	}
 }
