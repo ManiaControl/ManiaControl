@@ -42,6 +42,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	public function load(ManiaControl $maniaControl){
 		$this->maniaControl = $maniaControl;
 
+		$this->maniaControl->commandManager->registerCommandListener('me', $this, 'chat_me');
 		$this->maniaControl->commandManager->registerCommandListener('hi', $this, 'chat_hi');
 		$this->maniaControl->commandManager->registerCommandListener('bye', $this, 'chat_bye');
 		$this->maniaControl->commandManager->registerCommandListener('bb', $this, 'chat_bye');
@@ -74,6 +75,18 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		unset($this->maniaControl);
 	}
 
+
+	/**
+	 * Builds a chat message starting with the player's nickname, can used to express emotions
+	 * @param array  $chat
+	 * @param Player $player
+	 */
+	public function chat_me(array $chat, Player $player){
+		$message = substr($chat[1][2],3);
+
+		$msg = '$<'  . $player->nickname . '$>$s$i$fa0 ' . $message;
+		$this->maniaControl->chat->sendChat($msg, null, false);
+	}
 
 	/**
 	 * Hello Message
