@@ -26,6 +26,7 @@ class ObstaclePlugin implements CallbackListener, CommandListener, Plugin {
 	/**
 	 * Private Properties
 	 */
+	/** @var maniaControl $maniaControl  */
 	private $maniaControl = null;
 
 	/**

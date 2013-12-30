@@ -140,6 +140,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$i = 1;
 		$y -= 10;
 		foreach($players as $listPlayer){
+			/** @var Player $listPlayer */
 
 			$path = $listPlayer->getProvince();
 			$playerFrame = new Frame();

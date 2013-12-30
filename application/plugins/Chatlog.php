@@ -24,6 +24,7 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 	/**
 	 * Private properties
 	 */
+	/** @var maniaControl $maniaControl  */
 	private $maniaControl = null;
 	private $fileName = null;
 	private $logServerMessages = true;

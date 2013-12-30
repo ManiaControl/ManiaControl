@@ -36,6 +36,7 @@ class LocalRecordsPlugin implements CallbackListener, Plugin {
 	/**
 	 * Private properties
 	 */
+	/** @var maniaControl $maniaControl  */
 	private $maniaControl = null;
 	private $updateManialink = false;
 

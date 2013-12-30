@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Lukas
- * Date: 30.12.13
- * Time: 11:41
- */
 
 namespace ManiaControl\Plugins;
 
@@ -31,6 +25,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	/**
 	 * Private properties
 	 */
+	/** @var maniaControl $maniaControl  */
 	private $maniaControl = null;
 
 	/**

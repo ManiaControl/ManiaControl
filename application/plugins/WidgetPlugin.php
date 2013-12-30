@@ -54,7 +54,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	/**
 	 * Private Properties
 	 */
-	/** @var maniaControl */
+	/** @var maniaControl $maniaControl  */
 	private $maniaControl = null;
 
 	/**

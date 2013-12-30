@@ -23,6 +23,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	/**
 	 * Private properties
 	 */
+	/** @var maniaControl $maniaControl  */
 	private $maniaControl = null;
 	private $openBills = array();
 

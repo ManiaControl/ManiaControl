@@ -20,6 +20,7 @@ class EndurancePlugin implements CallbackListener, Plugin {
 	/**
 	 * Private properties
 	 */
+	/** @var maniaControl $maniaControl  */
 	private $maniaControl = null;
 	private $currentMap = null;
 	private $playerLapTimes = array();
