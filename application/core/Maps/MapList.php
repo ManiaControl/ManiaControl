@@ -461,7 +461,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$this->maniaControl->log('Skipped to $z$<' . $mapList[$actionArray[2]]->name . '$>!');
 		}else if($jukeMap){
 			$this->maniaControl->mapManager->jukebox->addMapToJukebox($callback[1][1], $actionArray[2]);
-
 		}
 
 	}

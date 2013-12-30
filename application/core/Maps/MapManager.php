@@ -341,6 +341,9 @@ class MapManager implements CallbackListener {
 			$this->maniaControl->chat->sendSuccess('Map $<' . $mapInfo['Name'] . '$> added!');
 
 			$this->updateFullMapList();
+
+			//Juke requested Map
+			$this->maniaControl->mapManager->jukebox->addMapToJukebox($login, $mapId);
 		}
 		// TODO: add local map by filename
 	}
