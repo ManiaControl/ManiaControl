@@ -2,17 +2,18 @@
 
 namespace ManiaControl\Manialinks;
 
-use FML\Controls\Control;
-use FML\Controls\Frame;
-use FML\Controls\Labels\Label_Text;
-use FML\ManiaLink;
 use ManiaControl\ManiaControl;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
-use ManiaControl\Players\Player;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
+use ManiaControl\Players\Player;
+use FML\ManiaLink;
+use FML\Controls\Control;
+use FML\Controls\Frame;
+use FML\Controls\Labels\Label_Text;
 
 require_once __DIR__ . '/StyleManager.php';
+require_once __DIR__ . '/CustomUIManager.php';
 require_once __DIR__ . '/../FML/autoload.php';
 
 /**
@@ -20,19 +21,21 @@ require_once __DIR__ . '/../FML/autoload.php';
  *
  * @author steeffeen & kremsy
  */
-class ManialinkManager implements ManialinkPageAnswerListener,CallbackListener {
-
-	/*
+class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener {
+	
+	/**
 	 * Constants
 	 */
 	const MAIN_MLID = 'Main.ManiaLinkId';
 	const ACTION_CLOSEWIDGET = 'ManiaLinkManager.CloseWidget';
-	const CB_MAIN_WINDOW_CLOSED =  'ManialinkManagerCallback.MainWindowClosed';
-
+	const CB_MAIN_WINDOW_CLOSED = 'ManialinkManagerCallback.MainWindowClosed';
+	
 	/**
 	 * Public properties
 	 */
 	public $styleManager = null;
+	public $customUIManager = null;
+	
 	/**
 	 * Private properties
 	 */
@@ -48,10 +51,10 @@ class ManialinkManager implements ManialinkPageAnswerListener,CallbackListener {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		$this->styleManager = new StyleManager($maniaControl);
+		$this->customUIManager = new CustomUIManager($maniaControl);
 		
 		// Register for callbacks
-		$this->registerManialinkPageAnswerListener(self::ACTION_CLOSEWIDGET , $this,
-			'closeWidgetCallback');
+		$this->registerManialinkPageAnswerListener(self::ACTION_CLOSEWIDGET, $this, 'closeWidgetCallback');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 
 				'handleManialinkPageAnswer');
 	}
@@ -80,7 +83,7 @@ class ManialinkManager implements ManialinkPageAnswerListener,CallbackListener {
 
 	/**
 	 * Remove a Manialink Page Answer Listener
-	 * 
+	 *
 	 * @param ManialinkPageAnswerListener $listener        	
 	 * @return bool
 	 */
@@ -178,21 +181,22 @@ class ManialinkManager implements ManialinkPageAnswerListener,CallbackListener {
 
 	/**
 	 * Displays a ManiaLink Widget to a certain Player
-	 * @param String $maniaLink
-	 * @param Player $player
+	 *
+	 * @param String $maniaLink        	
+	 * @param Player $player        	
 	 */
 	public function displayWidget($maniaLink, Player $player) {
-		//render and display xml
+		// render and display xml
 		$maniaLinkText = $maniaLink->render()->saveXML();
 		$this->maniaControl->manialinkManager->sendManialink($maniaLinkText, $player->login);
 		$this->disableAltMenu($player);
 	}
 
-
 	/**
 	 * Closes a widget via the callback
-	 * @param array  $callback
-	 * @param Player $player
+	 *
+	 * @param array $callback        	
+	 * @param Player $player        	
 	 */
 	public function closeWidgetCallback(array $callback, Player $player) {
 		$this->closeWidget($player);
@@ -200,36 +204,38 @@ class ManialinkManager implements ManialinkPageAnswerListener,CallbackListener {
 
 	/**
 	 * Closes the Manialink Widget and enables the Alt Menu
-	 * @param Player $player
+	 *
+	 * @param Player $player        	
 	 */
 	public function closeWidget(Player $player) {
 		$emptyManialink = new ManiaLink(self::MAIN_MLID);
 		$manialinkText = $emptyManialink->render()->saveXML();
 		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
 		$this->enableAltMenu($player);
-
+		
 		// Trigger callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_MAIN_WINDOW_CLOSED, array(self::CB_MAIN_WINDOW_CLOSED, $player));
 	}
 
 	/**
 	 * Adds a line of labels
-	 * @param Frame $frame
-	 * @param array $labelStrings
-	 * @param array $properties
+	 *
+	 * @param Frame $frame        	
+	 * @param array $labelStrings        	
+	 * @param array $properties        	
 	 * @return array Returns the frames (to add special Properties later)
 	 */
-	public function labelLine(Frame $frame, array $labelStrings, array $properties = array()){
-		//TODO overwrite standard properties with properties from array
-
-		//define standard properties
+	public function labelLine(Frame $frame, array $labelStrings, array $properties = array()) {
+		// TODO overwrite standard properties with properties from array
+		
+		// define standard properties
 		$hAlign = Control::LEFT;
 		$style = Label_Text::STYLE_TextCardSmall;
 		$textSize = 1.5;
 		$textColor = 'FFF';
-
+		
 		$frames = array();
-		foreach($labelStrings as $text => $x){
+		foreach ($labelStrings as $text => $x) {
 			$label = new Label_Text();
 			$frame->add($label);
 			$label->setHAlign($hAlign);
@@ -238,8 +244,8 @@ class ManialinkManager implements ManialinkPageAnswerListener,CallbackListener {
 			$label->setTextSize($textSize);
 			$label->setText($text);
 			$label->setTextColor($textColor);
-
-			$frames[] = $frame; //add Frame to the frames array
+			
+			$frames[] = $frame; // add Frame to the frames array
 		}
 		return $frames;
 	}

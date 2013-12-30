@@ -2,6 +2,8 @@
 
 namespace FML\Elements;
 
+use FML\Types\Renderable;
+
 /**
  * Class representing the Custom_UI
  *
@@ -119,7 +121,7 @@ class CustomUI implements Renderable {
 		foreach ($settings as $setting => $value) {
 			if ($value === null) continue;
 			$xmlElement = $domDocument->createElement($setting);
-			$xmlElement->setAttribute('visible', ($value ? 1 : 0));
+			$xmlElement->setAttribute('visible', ($value ? 'true' : 'false'));
 			$xml->appendChild($xmlElement);
 		}
 		return $xml;
