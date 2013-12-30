@@ -622,7 +622,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		foreach($this->playersListShown as $login => $shown){
 			if($shown){
 				//Check if Shown player still exists
-				if($this->maniaControl->playerManager->getPlayer($shown) == null){
+				if($shown != self::SHOWN_MAIN_WINDOW && $this->maniaControl->playerManager->getPlayer($shown) == null){
 					$this->playersListShown[$login] = false;
 				}
 				$player = $this->maniaControl->playerManager->getPlayer($login);
