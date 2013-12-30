@@ -50,7 +50,15 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	const SETTING_NEXTMAP_WIDGET_POSY = 'Nextmap-Widget-Position: Y';
 	const SETTING_NEXTMAP_WIDGET_WIDTH = 'Nextmap-Widget-Size: Width';
 	const SETTING_NEXTMAP_WIDGET_HEIGHT = 'Nextmap-Widget-Size: Height';
-	
+
+	// ServerInfoWidget Properties
+	const MLID_SERVERINFOWIDGET = 'WidgetPlugin.ServerInfoWidget';
+	const SETTING_SERVERINFO_WIDGET_ACTIVATED = 'ServerInfo-Widget Activated';
+	const SETTING_SERVERINFO_WIDGET_POSX = 'ServerInfo-Widget-Position: X';
+	const SETTING_SERVERINFO_WIDGET_POSY = 'ServerInfo-Widget-Position: Y';
+	const SETTING_SERVERINFO_WIDGET_WIDTH = 'ServerInfo-Widget-Size: Width';
+	const SETTING_SERVERINFO_WIDGET_HEIGHT = 'ServerInfo-Widget-Size: Height';
+
 	/**
 	 * Private Properties
 	 */
@@ -81,7 +89,13 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAP_WIDGET_POSY, 90 - 4.5);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAP_WIDGET_WIDTH, 40);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAP_WIDGET_HEIGHT, 9.);
-		
+
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SERVERINFO_WIDGET_ACTIVATED, true);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SERVERINFO_WIDGET_POSX, -160 + 20);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SERVERINFO_WIDGET_POSY, 90 - 4.5);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SERVERINFO_WIDGET_WIDTH, 40);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SERVERINFO_WIDGET_HEIGHT, 9.);
+
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_NEXTMAP_WIDGET_ACTIVATED, true);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_NEXTMAP_WIDGET_POSX, 160 - 20);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_NEXTMAP_WIDGET_POSY, 90 - 25.5);
@@ -105,6 +119,10 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		unset($this->maniaControl);
 	}
 
+	/**
+	 * Displays the Clock Widget
+	 * @param bool $login
+	 */
 	public function displayClockWidget($login = false) {
 		$pos_x = $this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_POSX);
 		$pos_y = $this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_POSY);
@@ -248,6 +266,51 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	 *
 	 * @param String $login
 	 */
+	public function displayServerInfoWidget($login = false) {
+		$pos_x = $this->maniaControl->settingManager->getSetting($this, self::SETTING_SERVERINFO_WIDGET_POSX);
+		$pos_y = $this->maniaControl->settingManager->getSetting($this, self::SETTING_SERVERINFO_WIDGET_POSY);
+		$width = $this->maniaControl->settingManager->getSetting($this, self::SETTING_SERVERINFO_WIDGET_WIDTH);
+		$height = $this->maniaControl->settingManager->getSetting($this, self::SETTING_SERVERINFO_WIDGET_HEIGHT);
+		$quadStyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
+		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
+
+		$maniaLink = new ManiaLink(self::MLID_SERVERINFOWIDGET);
+
+		// mainframe
+		$frame = new Frame();
+		$maniaLink->add($frame);
+		$frame->setSize($width, $height);
+		$frame->setPosition($pos_x, $pos_y);
+
+		// Background Quad
+		$backgroundQuad = new Quad();
+		$frame->add($backgroundQuad);
+		$backgroundQuad->setSize($width, $height);
+		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
+#
+
+		$serverName= $this->maniaControl->server->getName();
+
+		$label = new Label_Text();
+		$frame->add($label);
+		$label->setY(1.5);
+		$label->setX(0);
+		$label->setAlign(Control::CENTER, Control::CENTER);
+		$label->setZ(0.2);
+		$label->setTextSize(1.3);
+		$label->setText($serverName);
+		$label->setTextColor("FFF");
+
+		// Send manialink
+		$manialinkText = $maniaLink->render()->saveXML();
+		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $login);
+	}
+
+	/**
+	 * Displays the Map Widget
+	 *
+	 * @param String $login
+	 */
 	public function displayMapWidget($login = false) {
 		$pos_x = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_POSX);
 		$pos_y = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_POSY);
@@ -324,6 +387,9 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_ACTIVATED)) {
 			$this->displayClockWidget();
 		}
+		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_SERVERINFO_WIDGET_ACTIVATED)) {
+			$this->displayServerInfoWidget();
+		}
 	}
 
 	/**
@@ -363,7 +429,10 @@ class WidgetPlugin implements CallbackListener, Plugin {
 			$this->displayMapWidget($player->login);
 		}
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_ACTIVATED)) {
-			$this->displayClockWidget();
+			$this->displayClockWidget($player->login);
+		}
+		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_SERVERINFO_WIDGET_ACTIVATED)) {
+			$this->displayServerInfoWidget($player->login);
 		}
 	}
 
