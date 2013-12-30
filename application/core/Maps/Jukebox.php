@@ -72,7 +72,7 @@ class Jukebox implements CallbackListener, CommandListener {
 	 * @param $login
 	 * @param $uid
 	 */
-	public function addMapToJukebox($login, $uid){
+	public function addMapToJukebox($login, $uid){ //TODO if from MX other message
 		$player = $this->maniaControl->playerManager->getPlayer($login);
 
 		//Check if the map is already juked

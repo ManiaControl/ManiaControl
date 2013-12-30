@@ -1,6 +1,5 @@
 <?php
 
-
 use FML\Controls\Control;
 use FML\Controls\Frame;
 use FML\Controls\Labels\Label_Text;
@@ -15,6 +14,12 @@ use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
 use ManiaControl\Callbacks\CallbackManager;
 
+
+/**
+ * ManiaControl Widget Plugin
+ *
+ * @author kremsy
+ */
 class WidgetPlugin implements CallbackListener, Plugin {
 	/**
 	 * Constants
