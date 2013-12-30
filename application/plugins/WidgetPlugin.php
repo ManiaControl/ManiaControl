@@ -1,8 +1,11 @@
 <?php
 use FML\Controls\Control;
 use FML\Controls\Frame;
+use FML\Controls\Labels\Label_Button;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;
+use FML\Controls\Quads\Quad_Bgs1;
+use FML\Controls\Quads\Quad_Bgs1InRace;
 use FML\Controls\Quads\Quad_Icons128x128_1;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\ManiaLink;
@@ -310,7 +313,6 @@ class WidgetPlugin implements CallbackListener, Plugin {
 				$playerCount++;
 		}
 
-
 		//Player Quad / Label
 		$label = new Label_Text();
 		$frame->add($label);
@@ -353,7 +355,6 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$quad->setPosition(3.5, -1.6, 0.2);
 		$quad->setSize(3.3,2.5);
 		$quad->setHAlign(Control::CENTER);
-
 
 
 		// Send manialink
@@ -411,6 +412,16 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$label->setScale(0.8);
 		$label->setText($map->authorLogin);
 		$label->setTextColor("FFF");
+
+		if(isset($map->mx->pageurl)){
+			$quad = new Quad;
+			$frame->add($quad);
+			$quad->setImage("http://wiki.maniaplanet.com/pool/images/b/bf/ManiaExchange_logo.png"); //TODO include image into maniacontrol
+			$quad->setPosition(-$width / 2 + 4, -1.5, -0.5);
+			$quad->setSize(4,4);
+			$quad->setHAlign(Control::CENTER);
+			$quad->setUrl($map->mx->pageurl);
+		}
 
 		// Send manialink
 		$manialinkText = $maniaLink->render()->saveXML();

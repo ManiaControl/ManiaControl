@@ -91,12 +91,13 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	public function chat_hi(array $chat, Player $player){
 		$command = explode(" ", $chat[1][2]);
 
+
 		if(isset($command[1])){
-			$msg = '$g[$<'  . $player->nickname . '$>$s] $ff0$iHello $<' . $this->getTarget($command[1]) . '$>!';
+			$msg = '$g[$<'  . $player->nickname . '$>$s] $ff0$iHello $z$<' . $this->getTarget($command[1]) . '$>$i!';
 		}else{
 			$msg = '$g[$<'  . $player->nickname . '$>$s] $ff0$iHello All!';
 		}
-
+		//TODO why not italic?
 		$this->maniaControl->chat->sendChat($msg, null, false);
 	}
 
@@ -109,7 +110,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		$command = explode(" ", $chat[1][2]);
 
 		if(isset($command[1])){
-			$msg = '$g[$<'  . $player->nickname . '$>$s] $ff0$iBye $<' . $this->getTarget($command[1]) . '$>!';
+			$msg = '$g[$<'  . $player->nickname . '$>$s] $ff0$iBye $z$<' . $this->getTarget($command[1]) . '$>$i!';
 		}else{
 			$msg = '$g[$<'  . $player->nickname . '$>$s] $ff0$iI have to go... Bye All!';
 		}
@@ -127,7 +128,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		$command = explode(" ", $chat[1][2]);
 
 		if(isset($command[1])){
-			$msg = '$g[$<'  . $player->nickname . '$>$s] $ff0$iThanks $<' . $this->getTarget($command[1]) . '$>!';
+			$msg = '$g[$<'  . $player->nickname . '$>$s] $ff0$iThanks $z$<' . $this->getTarget($command[1]) . '$>$i!';
 		}else{
 			$msg = '$g[$<'  . $player->nickname . '$>$s] $ff0$iThanks All!';
 		}
@@ -144,7 +145,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		$command = explode(" ", $chat[1][2]);
 
 		if(isset($command[1])){
-			$msg = '$g[$<'  . $player->nickname . '$>$s] $ff0$iGood Game $<' . $this->getTarget($command[1]) . '$>!';
+			$msg = '$g[$<'  . $player->nickname . '$>$s] $ff0$iGood Game $z$<' . $this->getTarget($command[1]) . '$>$i!';
 		}else{
 			$msg = '$g[$<'  . $player->nickname . '$>$s] $ff0$iGood Game All!';
 		}
@@ -161,7 +162,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		$command = explode(" ", $chat[1][2]);
 
 		if(isset($command[1])){
-			$msg = '$g[$<'  . $player->nickname . '$>$s] $ff0$iGood Luck $<' . $this->getTarget($command[1]) . '$>!';
+			$msg = '$g[$<'  . $player->nickname . '$>$s] $ff0$iGood Luck $z$<' . $this->getTarget($command[1]) . '$>$i!';
 		}else{
 			$msg = '$g[$<'  . $player->nickname . '$>$s] $ff0$iGood Luck All!';
 		}
@@ -178,7 +179,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		$command = explode(" ", $chat[1][2]);
 
 		if(isset($command[1])){
-			$msg = '$g[$<'  . $player->nickname . '$>$s] $ff0$iHave Fun $<' . $this->getTarget($command[1]) . '$>!';
+			$msg = '$g[$<'  . $player->nickname . '$>$s] $ff0$iHave Fun $z$<' . $this->getTarget($command[1]) . '$>$i!';
 		}else{
 			$msg = '$g[$<'  . $player->nickname . '$>$s] $ff0$iHave Fun All!';
 		}
@@ -195,7 +196,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		$command = explode(" ", $chat[1][2]);
 
 		if(isset($command[1])){
-			$msg = '$g[$<'  . $player->nickname . '$>$s] $ff0$iGood Luck and Have Fun $<' . $this->getTarget($command[1]) . '$>!';
+			$msg = '$g[$<'  . $player->nickname . '$>$s] $ff0$iGood Luck and Have Fun $z$<' . $this->getTarget($command[1]) . '$>$i!';
 		}else{
 			$msg = '$g[$<'  . $player->nickname . '$>$s] $ff0$iGood Luck and Have Fun All!';
 		}
@@ -212,7 +213,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		$command = explode(" ", $chat[1][2]);
 
 		if(isset($command[1])){
-			$msg = '$g[$<'  . $player->nickname . '$>$s] $ff0$iNice Shot $<' . $this->getTarget($command[1]) . '$>!';
+			$msg = '$g[$<'  . $player->nickname . '$>$s] $ff0$iNice Shot $z$<' . $this->getTarget($command[1]) . '$>$i!';
 		}else{
 			$msg = '$g[$<'  . $player->nickname . '$>$s] $ff0$iNice Shot!';
 		}
@@ -229,7 +230,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		$command = explode(" ", $chat[1][2]);
 
 		if(isset($command[1])){
-			$msg = '$g[$<'  . $player->nickname . '$>$s] $ff0$iNice One $<' . $this->getTarget($command[1]) . '$>!';
+			$msg = '$g[$<'  . $player->nickname . '$>$s] $ff0$iNice One $z$<' . $this->getTarget($command[1]) . '$>$i!';
 		}else{
 			$msg = '$g[$<'  . $player->nickname . '$>$s] $ff0$iNice One!';
 		}

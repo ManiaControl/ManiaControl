@@ -88,5 +88,6 @@ class Map {
 		$serverInfo = $this->maniaControl->server->getSystemInfo();
 		$title = strtoupper(substr($serverInfo['TitleId'], 0, 2));
 		$this->mx = new \MXInfoFetcher($title, $this->uid, false);
+
 	}
 } 
