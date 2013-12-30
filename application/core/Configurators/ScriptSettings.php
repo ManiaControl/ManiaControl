@@ -2,6 +2,7 @@
 
 namespace ManiaControl\Configurators;
 
+use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use FML\Controls\Frame;
 use FML\Controls\Label;
@@ -161,25 +162,46 @@ class ScriptSettings implements ConfiguratorMenu {
 	public function saveConfigData(array $configData, Player $player) {
 		$this->maniaControl->client->query('GetModeScriptSettings');
 		$scriptSettings = $this->maniaControl->client->getResponse();
-
-		$newSettings = array();
-
 		$prefixLength = strlen(self::ACTION_PREFIX_SETTING);
-		foreach ($configData[3] as $settings) {
-			if (substr($settings['Name'], 0, $prefixLength) != self::ACTION_PREFIX_SETTING) continue;
 
-			$settingName = substr($settings['Name'], $prefixLength);
+		$chatMessage = '';
+		$newSettings = array();
+		foreach ($configData[3] as $setting) {
+			if (substr($setting['Name'], 0, $prefixLength) != self::ACTION_PREFIX_SETTING) continue;
+
+			$settingName = substr($setting['Name'], $prefixLength);
 
 			foreach($scriptSettings as $key => $value){
 				if($key == $settingName){
+					//Check if something has been changed
+					if($setting["Value"] != $value){
+						$chatMessage .= '$FFF'.$settingName.'$z$s$FF0 to $FFF' . $setting["Value"].', ';
+					}
 					//Setting found, cast type, break the inner loop
-					settype($settings["Value"], gettype($value));
+					settype($setting["Value"], gettype($value));
 					break;
 				}
 			}
-			$newSettings[$settingName] = $settings["Value"];
+			$newSettings[$settingName] = $setting["Value"];
 		}
 
-		$this->maniaControl->client->query('SetModeScriptSettings', $newSettings);
+		$success = $this->maniaControl->client->query('SetModeScriptSettings', $newSettings);
+		if (!$success) {
+			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
+			return;
+		}
+
+
+		$chatMessage = substr($chatMessage, 0, strlen($chatMessage)-2);
+		$chatMessage = str_replace("S_","",$chatMessage);
+
+		$title = $this->maniaControl->authenticationManager->getAuthLevelName($player->authLevel);
+
+		if($chatMessage != ''){
+			$this->maniaControl->chat->sendInformation('$ff0' . $title . ' $<' . $player->nickname . '$> set Scriptsettings $<' . $chatMessage . '$>!');
+		}
+
+		// log console message
+		$this->maniaControl->log(Formatter::stripCodes($title . ' ' . $player->nickname . ' set Scriptsettings ' . $chatMessage . '!'));
 	}
 }
