@@ -251,7 +251,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$frame->add($headFrame);
 		$headFrame->setY($this->height / 2 - 5);
 		$x = -$this->width / 2;
-		$array = array("Id" => $x + 5, "Mx ID" => $x + 10, "MapName" => $x + 20, "Author" => $x + 73, "Karma" => $x + 105, "Actions" => $this->width / 2 - 15);
+		$array = array("Id" => $x + 5, "Mx ID" => $x + 10, "MapName" => $x + 20, "Author" => $x + 68, "Karma" => $x + 115, "Actions" => $this->width / 2 - 15);
 		$this->maniaControl->manialinkManager->labelLine($headFrame,$array);
 
 		//Get Maplist
@@ -288,7 +288,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$mxId = $map->mx->id;
 
 			//Display Maps
-			$array = array($id => $x + 5, $mxId => $x + 10, $map->name => $x + 20, $map->authorNick => $x + 73);
+			$array = array($id => $x + 5, $mxId => $x + 10, $map->name => $x + 20, $map->authorNick => $x + 68);
 			$this->maniaControl->manialinkManager->labelLine($mapFrame,$array);
 			//TODO detailed mx info page with link to mxo
 			//TODO action detailed map info
@@ -380,7 +380,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				if(is_numeric($karma)){
 					$karmaGauge = new Gauge();
 					$mapFrame->add($karmaGauge);
-					$karmaGauge->setX($x + 110);
+					$karmaGauge->setX($x + 120);
 					$karmaGauge->setSize(20, 9);
 					$karmaGauge->setDrawBg(false);
 					$karma = floatval($karma);
@@ -390,7 +390,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 					$karmaLabel = new Label();
 					$mapFrame->add($karmaLabel);
-					$karmaLabel->setX($x + 110);
+					$karmaLabel->setX($x + 120);
 					$karmaLabel->setSize(20 * 0.9, 5);
 					$karmaLabel->setTextSize(0.9);
 					$karmaLabel->setTextColor("000");

@@ -3,6 +3,8 @@ use FML\Controls\Control;
 use FML\Controls\Frame;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;
+use FML\Controls\Quads\Quad_Icons128x128_1;
+use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\ManiaLink;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\ManiaControl;
@@ -262,7 +264,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	}
 
 	/**
-	 * Displays the Map Widget
+	 * Displays the Server Info Widget
 	 *
 	 * @param String $login
 	 */
@@ -289,17 +291,70 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 #
 
+		$this->maniaControl->client->query('GetMaxPlayers');
+		$maxPlayers = $this->maniaControl->client->getResponse();
+
+		$this->maniaControl->client->query('GetMaxSpectators');
+		$maxSpectators = $this->maniaControl->client->getResponse();
+
 		$serverName= $this->maniaControl->server->getName();
 
+		$players = $this->maniaControl->playerManager->getPlayers();
+		$playerCount = 0;
+		$spectatorCount = 0;
+		/** @var Player $player */
+		foreach($players as $player){
+			if($player->isSpectator)
+				$spectatorCount++;
+			else
+				$playerCount++;
+		}
+
+
+		//Player Quad / Label
 		$label = new Label_Text();
 		$frame->add($label);
-		$label->setY(1.5);
-		$label->setX(0);
+		$label->setPosition(0, 1.5, 0.2);
 		$label->setAlign(Control::CENTER, Control::CENTER);
-		$label->setZ(0.2);
 		$label->setTextSize(1.3);
 		$label->setText($serverName);
 		$label->setTextColor("FFF");
+
+		$label = new Label_Text();
+		$frame->add($label);
+		$label->setPosition(-3.9, -1.5, 0.2);
+		$label->setAlign(Control::CENTER, Control::CENTER);
+		$label->setTextSize(1);
+		$label->setScale(0.8);
+		$label->setText($playerCount . " / " . $maxPlayers['NextValue']);
+		$label->setTextColor("FFF");
+
+
+		$quad = new Quad_Icons128x128_1();
+		$frame->add($quad);
+		$quad->setSubStyle($quad::SUBSTYLE_Multiplayer);
+		$quad->setPosition(-8, -1.6, 0.2);
+		$quad->setSize(2.5, 2.5);
+		$quad->setHAlign(Control::CENTER);
+
+		//Spectator Quad / Label
+		$label = new Label_Text();
+		$frame->add($label);
+		$label->setPosition(8.5, -1.5, 0.2);
+		$label->setAlign(Control::CENTER, Control::CENTER);
+		$label->setTextSize(1);
+		$label->setScale(0.8);
+		$label->setText($spectatorCount . " / " . $maxSpectators['NextValue']);
+		$label->setTextColor("FFF");
+
+		$quad = new Quad_Icons64x64_1();
+		$frame->add($quad);
+		$quad->setSubStyle($quad::SUBSTYLE_Camera);
+		$quad->setPosition(3.5, -1.6, 0.2);
+		$quad->setSize(3.3,2.5);
+		$quad->setHAlign(Control::CENTER);
+
+
 
 		// Send manialink
 		$manialinkText = $maniaLink->render()->saveXML();

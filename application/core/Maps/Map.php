@@ -2,6 +2,7 @@
 
 namespace ManiaControl\Maps;
 
+use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 
 /**
@@ -77,7 +78,7 @@ class Map {
 				trigger_error($e->getMessage(), E_USER_WARNING);
 			}
 			
-			$this->authorNick = $this->mapFetcher->authorNick;
+			$this->authorNick = FORMATTER::stripDirtyCodes($this->mapFetcher->authorNick);
 			$this->authorEInfo = $this->mapFetcher->authorEInfo;
 			$this->authorZone = $this->mapFetcher->authorZone;
 			$this->comment = $this->mapFetcher->comment;

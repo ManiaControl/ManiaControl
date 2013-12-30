@@ -134,7 +134,6 @@ class ScriptSettings implements ConfiguratorMenu,CallbackListener {
 			$settingValue = $scriptSettings[$settingName];
 
 			$substyle = '';
-			$action = '';
 			if($settingValue === false){
 				$substyle = Quad_Icons64x64_1::SUBSTYLE_LvlRed;
 			}else if($settingValue === true){
@@ -168,8 +167,9 @@ class ScriptSettings implements ConfiguratorMenu,CallbackListener {
 			$descriptionLabel->setHAlign(Control::LEFT);
 			$descriptionLabel->setPosition($width * -0.45, $height * -0.44);
 			$descriptionLabel->setSize($width * 0.7, $settingHeight);
+			$descriptionLabel->setTextSize($labelTextSize);
 			$descriptionLabel->setTranslate(true);
-			$descriptionLabel->setTextPrefix('Desc: ');
+			//$descriptionLabel->setTextPrefix('Desc: ');
 			$descriptionLabel->setText($scriptParam['Desc']);
 			$tooltips->add($nameLabel, $descriptionLabel);
 			
