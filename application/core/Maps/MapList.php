@@ -276,7 +276,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 			if($this->maniaControl->mapManager->getCurrentMap() === $map){
 				$currentQuad = new Quad_Icons64x64_1();
-				$frame->add($currentQuad);
+				$mapFrame->add($currentQuad);
 				$currentQuad->setX($x + 3.5);
 				$currentQuad->setZ(0.2);
 				$currentQuad->setSize(4, 4);
