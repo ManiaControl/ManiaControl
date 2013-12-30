@@ -239,9 +239,16 @@ class PlayerActions {
 		$admin = $this->maniaControl->playerManager->getPlayer($adminLogin);
 		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
 		$title = $this->maniaControl->authenticationManager->getAuthLevelName($admin->authLevel);
-		//TODO check for bot
+
 		if($this->maniaControl->authenticationManager->checkRight($target,$authLevel)){
 			$this->maniaControl->chat->sendError('This admin is already ' . $this->maniaControl->authenticationManager->getAuthLevelName($target->authLevel), $admin->login);
+			return;
+		}
+
+		$authLevelName = $this->maniaControl->authenticationManager->getAuthLevelName($authLevel);
+
+		if($this->maniaControl->authenticationManager->checkRight($admin,$authLevel) <= $this->maniaControl->authenticationManager->checkRight($target,$authLevel)){
+			$this->maniaControl->chat->sendError('You don\'t have the permission to add a ' . $authLevelName . '!', $admin->login);
 			return;
 		}
 
@@ -251,8 +258,6 @@ class PlayerActions {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $admin->login);
 			return;
 		}
-
-		$authLevelName = $this->maniaControl->authenticationManager->getAuthLevelName($authLevel);
 
 		$this->maniaControl->chat->sendInformation($title . ' $<' . $admin->nickname . '$> added $<' . $target->nickname . '$> as $< ' . $authLevelName. '$>!');
 
