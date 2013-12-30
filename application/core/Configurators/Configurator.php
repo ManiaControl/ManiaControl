@@ -72,13 +72,16 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 		// Register for page answers
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_TOGGLEMENU, $this, 
 				'handleToggleMenuAction');
+
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_SAVECONFIG, $this, 
 				'handleSaveConfigAction');
 		
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERDISCONNECT, $this, 
 				'handlePlayerDisconnect');
-		
+
+		$this->maniaControl->callbackManager->registerCallbackListener(ScriptSettings::CB_SCRIPTSETTINGS_CHANGED, $this, 'reopenMenu');
+
 		// Create script settings
 		$this->scriptSettings = new ScriptSettings($maniaControl);
 		$this->addMenu($this->scriptSettings);
@@ -93,6 +96,18 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 		array_push($this->menus, $menu);
 	}
 
+	/**
+	 * Reopens the Menu
+	 * @param array $callback
+	 */
+	public function reopenMenu(array $callback){
+		foreach($this->playersMenuShown as $login => $shown){
+			if($shown == true){
+				$player = $this->maniaControl->playerManager->getPlayer($login);
+				$this->showMenu($player);
+			}
+		}
+	}
 	/**
 	 * Handle toggle menu action
 	 *

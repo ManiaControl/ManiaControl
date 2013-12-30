@@ -2,6 +2,8 @@
 
 namespace ManiaControl\Configurators;
 
+use ManiaControl\Callbacks\CallbackListener;
+use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use FML\Controls\Frame;
@@ -19,13 +21,15 @@ use ManiaControl\Players\Player;
  *
  * @author steeffeen & kremsy
  */
-// TODO: boolean script settings not as entries
-class ScriptSettings implements ConfiguratorMenu {
+class ScriptSettings implements ConfiguratorMenu,CallbackListener {
 	/**
 	 * Constants
 	 */
 	const ACTION_PREFIX_SETTING = 'ScriptSetting.';
-	
+	const ACTION_SETTING_BOOL = 'ScriptSetting.ActionBoolSetting';
+
+	const CB_SCRIPTSETTINGS_CHANGED =  'ScriptSettings.SettingsChanged';
+
 	/**
 	 * Private properties
 	 */
@@ -38,6 +42,8 @@ class ScriptSettings implements ConfiguratorMenu {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
+
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 	}
 
 	/**
@@ -100,15 +106,17 @@ class ScriptSettings implements ConfiguratorMenu {
 		$y = 0.;
 		foreach ($scriptParams as $index => $scriptParam) {
 			$settingName = $scriptParam['Name'];
+
 			if (!isset($scriptSettings[$settingName])) continue;
-			
+
 			if (!isset($pageFrame)) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
 				array_push($pageFrames, $pageFrame);
 				$y = $height * 0.41;
 			}
-			
+
+
 			$settingFrame = new Frame();
 			$pageFrame->add($settingFrame);
 			$settingFrame->setY($y);
@@ -121,18 +129,39 @@ class ScriptSettings implements ConfiguratorMenu {
 			$nameLabel->setStyle($nameLabel::STYLE_TextCardSmall);
 			$nameLabel->setTextSize($labelTextSize);
 			$nameLabel->setText($settingName);
-			
-			$entry = new Entry();
-			$settingFrame->add($entry);
-			$entry->setHAlign(Control::RIGHT);
-			$entry->setX($width * 0.44);
-			$entry->setSize($width * 0.4, $settingHeight);
-			$entry->setName(self::ACTION_PREFIX_SETTING . $settingName);
+
+
 			$settingValue = $scriptSettings[$settingName];
-			if ($settingValue === false) {
-				$settingValue = 0;
+
+			$substyle = '';
+			$action = '';
+			if($settingValue === false){
+				$substyle = Quad_Icons64x64_1::SUBSTYLE_LvlRed;
+			}else if($settingValue === true){
+				$substyle = Quad_Icons64x64_1::SUBSTYLE_LvlGreen;
 			}
-			$entry->setDefault($settingValue);
+
+			if($substyle != ''){
+				$quad = new Quad_Icons64x64_1();
+				$settingFrame->add($quad);
+				$quad->setX($width / 2 * 0.545);
+				$quad->setZ(-0.01);
+				$quad->setSubStyle($substyle);
+				$quad->setSize(4, 4);
+				$quad->setHAlign(Control::CENTER);
+				$quad->setAction(self::ACTION_SETTING_BOOL . "." . $settingName);
+			}else{
+				$entry = new Entry();
+				$settingFrame->add($entry);
+				$entry->setStyle(Label_Text::STYLE_TextValueSmall);
+				$entry->setHAlign(Control::CENTER);
+				$entry->setX($width /2 * 0.55);
+				$entry->setTextSize(1);
+				$entry->setSize($width * 0.3, $settingHeight * 0.9);
+				$entry->setName(self::ACTION_PREFIX_SETTING . $settingName);
+				$entry->setDefault($settingValue);
+			}
+
 			
 			$descriptionLabel = new Label();
 			$pageFrame->add($descriptionLabel);
@@ -203,5 +232,59 @@ class ScriptSettings implements ConfiguratorMenu {
 
 		// log console message
 		$this->maniaControl->log(Formatter::stripCodes($title . ' ' . $player->nickname . ' set Scriptsettings ' . $chatMessage . '!'));
+
+		// Trigger own callback
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_SCRIPTSETTINGS_CHANGED, array(self::CB_SCRIPTSETTINGS_CHANGED));
+	}
+
+	/**
+	 * Called on ManialinkPageAnswer
+	 * @param array $callback
+	 */
+	public function handleManialinkPageAnswer(array $callback){
+		$actionId = $callback[1][2];
+		$boolSetting = (strpos($actionId, self::ACTION_SETTING_BOOL) === 0);
+
+		if(!$boolSetting)
+			return;
+
+		$actionArray = explode(".", $actionId);
+
+		$player = $this->maniaControl->playerManager->getPlayer($callback[1][1]);
+		$this->setCheckboxSetting($player, $actionArray[2]);
+	}
+
+	/**
+	 * Toogle a boolean value setting
+	 * @param Player $player
+	 * @param        $setting
+	 */
+	public function setCheckboxSetting(Player $player, $setting){
+		$this->maniaControl->client->query('GetModeScriptSettings');
+		$scriptSettings = $this->maniaControl->client->getResponse();
+
+		$newSetting = array();
+		foreach($scriptSettings as $key => $value){
+			if($key == $setting){ //Setting found
+				$newSetting[$key] = $value == true ? false : true;  //toggle setting
+				break;
+			}
+		}
+
+		$success = $this->maniaControl->client->query('SetModeScriptSettings', $newSetting);
+		if (!$success) {
+			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
+			return;
+		}
+
+		$valString = ($newSetting[$setting]) ? 'true' : 'false';
+		$chatMessage = '$FFF'.$setting.'$z$s$FF0 to $FFF' . $valString;
+		$chatMessage = str_replace("S_","",$chatMessage);
+
+		$title = $this->maniaControl->authenticationManager->getAuthLevelName($player->authLevel);
+		$this->maniaControl->chat->sendInformation('$ff0' . $title . ' $<' . $player->nickname . '$> set Scriptsetting $<' . $chatMessage . '$>!');
+
+		// Trigger own callback
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_SCRIPTSETTINGS_CHANGED, array(self::CB_SCRIPTSETTINGS_CHANGED));
 	}
 }
