@@ -284,6 +284,9 @@ class ScriptSettings implements ConfiguratorMenu,CallbackListener {
 		$title = $this->maniaControl->authenticationManager->getAuthLevelName($player->authLevel);
 		$this->maniaControl->chat->sendInformation('$ff0' . $title . ' $<' . $player->nickname . '$> set Scriptsetting $<' . $chatMessage . '$>!');
 
+		// log console message
+		$this->maniaControl->log(Formatter::stripCodes($title . ' ' . $player->nickname . ' set Scriptsettings ' . $chatMessage . '!'));
+		
 		// Trigger own callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_SCRIPTSETTINGS_CHANGED, array(self::CB_SCRIPTSETTINGS_CHANGED));
 	}
