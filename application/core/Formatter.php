@@ -3,14 +3,14 @@
 namespace ManiaControl;
 
 /**
- * Class offering methods to format texts and values
+ * Class offering Methods to format Texts and Values
  *
  * @author steeffeen & kremsy
  */
 abstract class Formatter {
 
 	/**
-	 * Formats the given time (milliseconds)
+	 * Formats the given Time (Milliseconds)
 	 *
 	 * @param int $time        	
 	 * @return string
@@ -33,7 +33,7 @@ abstract class Formatter {
 	}
 
 	/**
-	 * Formats the given time (seconds) to hh:mm:ss
+	 * Formats the given Time (Seconds) to hh:mm:ss
 	 *
 	 * @param int $seconds        	
 	 * @return string
@@ -43,7 +43,7 @@ abstract class Formatter {
 	}
 
 	/**
-	 * Convert the given time (seconds) to mysql timestamp
+	 * Convert the given Time (Seconds) to MySQL Timestamp
 	 *
 	 * @param int $seconds        	
 	 * @return string
@@ -53,29 +53,33 @@ abstract class Formatter {
 	}
 
 	/**
-	 *  Strip all codes except colors from the string
+	 * Remove possibly dangerous Codes
+	 * (Dangerous Codes are Links and Formats that might screw up the following Styling)
+	 *
+	 * @param string $string        	
+	 * @return string
 	 */
-	public static function stripCodesWithoutColors($string) { //Todo don't remove $i, $s
-		$string = preg_replace('/(?<!\$)((?:\$\$)*)\$[^$0-9a-hlp]/iu', '$1', $string);
+	public static function stripDirtyCodes($string) {
 		$string = self::stripLinks($string);
+		$string = preg_replace('/(?<!\$)((?:\$\$)*)\$[ow<>]/iu', '$1', $string);
 		return $string;
 	}
 
 	/**
-	 * Strip $codes from the string
+	 * Remove all Codes from the String
 	 *
 	 * @param string $string        	
 	 * @return string
 	 */
 	public static function stripCodes($string) {
-		$string = preg_replace('/(?<!\$)((?:\$\$)*)\$[^$0-9a-hlp]/iu', '$1', $string);
 		$string = self::stripLinks($string);
 		$string = self::stripColors($string);
+		$string = preg_replace('/(?<!\$)((?:\$\$)*)\$[^$0-9a-hlp]/iu', '$1', $string);
 		return $string;
 	}
 
 	/**
-	 * Remove link codes from the string
+	 * Remove Links from the String
 	 *
 	 * @param string $string        	
 	 * @return string
@@ -85,219 +89,67 @@ abstract class Formatter {
 	}
 
 	/**
-	 * Remove colors from the string
+	 * Remove Colors from the String
 	 *
 	 * @param string $string        	
 	 * @return string
 	 */
-	static function stripColors($string) {
+	public static function stripColors($string) {
 		return preg_replace('/(?<!\$)((?:\$\$)*)\$(?:g|[0-9a-f][^\$]{0,2})/iu', '$1', $string);
 	}
 
 	/**
-	 * Map country names to 3-letter Nation abbreviations
+	 * Map Country Names to 3-letter Nation Abbreviations
 	 * Created by Xymph
 	 * Based on http://en.wikipedia.org/wiki/List_of_IOC_country_codes
 	 * See also http://en.wikipedia.org/wiki/Comparison_of_IOC,_FIFA,_and_ISO_3166_country_codes
+	 *
+	 * @param string $country        	
+	 * @return string
 	 */
-	static function mapCountry($country) {
-
-		$nations = array(
-			'Afghanistan' => 'AFG',
-			'Albania' => 'ALB',
-			'Algeria' => 'ALG',
-			'Andorra' => 'AND',
-			'Angola' => 'ANG',
-			'Argentina' => 'ARG',
-			'Armenia' => 'ARM',
-			'Aruba' => 'ARU',
-			'Australia' => 'AUS',
-			'Austria' => 'AUT',
-			'Azerbaijan' => 'AZE',
-			'Bahamas' => 'BAH',
-			'Bahrain' => 'BRN',
-			'Bangladesh' => 'BAN',
-			'Barbados' => 'BAR',
-			'Belarus' => 'BLR',
-			'Belgium' => 'BEL',
-			'Belize' => 'BIZ',
-			'Benin' => 'BEN',
-			'Bermuda' => 'BER',
-			'Bhutan' => 'BHU',
-			'Bolivia' => 'BOL',
-			'Bosnia&Herzegovina' => 'BIH',
-			'Botswana' => 'BOT',
-			'Brazil' => 'BRA',
-			'Brunei' => 'BRU',
-			'Bulgaria' => 'BUL',
-			'Burkina Faso' => 'BUR',
-			'Burundi' => 'BDI',
-			'Cambodia' => 'CAM',
-			'Cameroon' => 'CAR',  // actually CMR
-			'Canada' => 'CAN',
-			'Cape Verde' => 'CPV',
-			'Central African Republic' => 'CAF',
-			'Chad' => 'CHA',
-			'Chile' => 'CHI',
-			'China' => 'CHN',
-			'Chinese Taipei' => 'TPE',
-			'Colombia' => 'COL',
-			'Congo' => 'CGO',
-			'Costa Rica' => 'CRC',
-			'Croatia' => 'CRO',
-			'Cuba' => 'CUB',
-			'Cyprus' => 'CYP',
-			'Czech Republic' => 'CZE',
-			'Czech republic' => 'CZE',
-			'DR Congo' => 'COD',
-			'Denmark' => 'DEN',
-			'Djibouti' => 'DJI',
-			'Dominica' => 'DMA',
-			'Dominican Republic' => 'DOM',
-			'Ecuador' => 'ECU',
-			'Egypt' => 'EGY',
-			'El Salvador' => 'ESA',
-			'Eritrea' => 'ERI',
-			'Estonia' => 'EST',
-			'Ethiopia' => 'ETH',
-			'Fiji' => 'FIJ',
-			'Finland' => 'FIN',
-			'France' => 'FRA',
-			'Gabon' => 'GAB',
-			'Gambia' => 'GAM',
-			'Georgia' => 'GEO',
-			'Germany' => 'GER',
-			'Ghana' => 'GHA',
-			'Greece' => 'GRE',
-			'Grenada' => 'GRN',
-			'Guam' => 'GUM',
-			'Guatemala' => 'GUA',
-			'Guinea' => 'GUI',
-			'Guinea-Bissau' => 'GBS',
-			'Guyana' => 'GUY',
-			'Haiti' => 'HAI',
-			'Honduras' => 'HON',
-			'Hong Kong' => 'HKG',
-			'Hungary' => 'HUN',
-			'Iceland' => 'ISL',
-			'India' => 'IND',
-			'Indonesia' => 'INA',
-			'Iran' => 'IRI',
-			'Iraq' => 'IRQ',
-			'Ireland' => 'IRL',
-			'Israel' => 'ISR',
-			'Italy' => 'ITA',
-			'Ivory Coast' => 'CIV',
-			'Jamaica' => 'JAM',
-			'Japan' => 'JPN',
-			'Jordan' => 'JOR',
-			'Kazakhstan' => 'KAZ',
-			'Kenya' => 'KEN',
-			'Kiribati' => 'KIR',
-			'Korea' => 'KOR',
-			'Kuwait' => 'KUW',
-			'Kyrgyzstan' => 'KGZ',
-			'Laos' => 'LAO',
-			'Latvia' => 'LAT',
-			'Lebanon' => 'LIB',
-			'Lesotho' => 'LES',
-			'Liberia' => 'LBR',
-			'Libya' => 'LBA',
-			'Liechtenstein' => 'LIE',
-			'Lithuania' => 'LTU',
-			'Luxembourg' => 'LUX',
-			'Macedonia' => 'MKD',
-			'Malawi' => 'MAW',
-			'Malaysia' => 'MAS',
-			'Mali' => 'MLI',
-			'Malta' => 'MLT',
-			'Mauritania' => 'MTN',
-			'Mauritius' => 'MRI',
-			'Mexico' => 'MEX',
-			'Moldova' => 'MDA',
-			'Monaco' => 'MON',
-			'Mongolia' => 'MGL',
-			'Montenegro' => 'MNE',
-			'Morocco' => 'MAR',
-			'Mozambique' => 'MOZ',
-			'Myanmar' => 'MYA',
-			'Namibia' => 'NAM',
-			'Nauru' => 'NRU',
-			'Nepal' => 'NEP',
-			'Netherlands' => 'NED',
-			'New Zealand' => 'NZL',
-			'Nicaragua' => 'NCA',
-			'Niger' => 'NIG',
-			'Nigeria' => 'NGR',
-			'Norway' => 'NOR',
-			'Oman' => 'OMA',
-			'Other Countries' => 'OTH',
-			'Pakistan' => 'PAK',
-			'Palau' => 'PLW',
-			'Palestine' => 'PLE',
-			'Panama' => 'PAN',
-			'Paraguay' => 'PAR',
-			'Peru' => 'PER',
-			'Philippines' => 'PHI',
-			'Poland' => 'POL',
-			'Portugal' => 'POR',
-			'Puerto Rico' => 'PUR',
-			'Qatar' => 'QAT',
-			'Romania' => 'ROM',  // actually ROU
-			'Russia' => 'RUS',
-			'Rwanda' => 'RWA',
-			'Samoa' => 'SAM',
-			'San Marino' => 'SMR',
-			'Saudi Arabia' => 'KSA',
-			'Senegal' => 'SEN',
-			'Serbia' => 'SCG',  // actually SRB
-			'Sierra Leone' => 'SLE',
-			'Singapore' => 'SIN',
-			'Slovakia' => 'SVK',
-			'Slovenia' => 'SLO',
-			'Somalia' => 'SOM',
-			'South Africa' => 'RSA',
-			'Spain' => 'ESP',
-			'Sri Lanka' => 'SRI',
-			'Sudan' => 'SUD',
-			'Suriname' => 'SUR',
-			'Swaziland' => 'SWZ',
-			'Sweden' => 'SWE',
-			'Switzerland' => 'SUI',
-			'Syria' => 'SYR',
-			'Taiwan' => 'TWN',
-			'Tajikistan' => 'TJK',
-			'Tanzania' => 'TAN',
-			'Thailand' => 'THA',
-			'Togo' => 'TOG',
-			'Tonga' => 'TGA',
-			'Trinidad and Tobago' => 'TRI',
-			'Tunisia' => 'TUN',
-			'Turkey' => 'TUR',
-			'Turkmenistan' => 'TKM',
-			'Tuvalu' => 'TUV',
-			'Uganda' => 'UGA',
-			'Ukraine' => 'UKR',
-			'United Arab Emirates' => 'UAE',
-			'United Kingdom' => 'GBR',
-			'United States of America' => 'USA',
-			'Uruguay' => 'URU',
-			'Uzbekistan' => 'UZB',
-			'Vanuatu' => 'VAN',
-			'Venezuela' => 'VEN',
-			'Vietnam' => 'VIE',
-			'Yemen' => 'YEM',
-			'Zambia' => 'ZAM',
-			'Zimbabwe' => 'ZIM',
-		);
-
+	public static function mapCountry($country) {
+		$nations = array('Afghanistan' => 'AFG', 'Albania' => 'ALB', 'Algeria' => 'ALG', 'Andorra' => 'AND', 'Angola' => 'ANG', 
+			'Argentina' => 'ARG', 'Armenia' => 'ARM', 'Aruba' => 'ARU', 'Australia' => 'AUS', 'Austria' => 'AUT', 'Azerbaijan' => 'AZE', 
+			'Bahamas' => 'BAH', 'Bahrain' => 'BRN', 'Bangladesh' => 'BAN', 'Barbados' => 'BAR', 'Belarus' => 'BLR', 'Belgium' => 'BEL', 
+			'Belize' => 'BIZ', 'Benin' => 'BEN', 'Bermuda' => 'BER', 'Bhutan' => 'BHU', 'Bolivia' => 'BOL', 
+			'Bosnia&Herzegovina' => 'BIH', 'Botswana' => 'BOT', 'Brazil' => 'BRA', 'Brunei' => 'BRU', 'Bulgaria' => 'BUL', 
+			'Burkina Faso' => 'BUR', 'Burundi' => 'BDI', 'Cambodia' => 'CAM', 'Cameroon' => 'CAR', 			// actually CMR
+			'Canada' => 'CAN', 'Cape Verde' => 'CPV', 'Central African Republic' => 'CAF', 'Chad' => 'CHA', 'Chile' => 'CHI', 
+			'China' => 'CHN', 'Chinese Taipei' => 'TPE', 'Colombia' => 'COL', 'Congo' => 'CGO', 'Costa Rica' => 'CRC', 
+			'Croatia' => 'CRO', 'Cuba' => 'CUB', 'Cyprus' => 'CYP', 'Czech Republic' => 'CZE', 'Czech republic' => 'CZE', 
+			'DR Congo' => 'COD', 'Denmark' => 'DEN', 'Djibouti' => 'DJI', 'Dominica' => 'DMA', 'Dominican Republic' => 'DOM', 
+			'Ecuador' => 'ECU', 'Egypt' => 'EGY', 'El Salvador' => 'ESA', 'Eritrea' => 'ERI', 'Estonia' => 'EST', 'Ethiopia' => 'ETH', 
+			'Fiji' => 'FIJ', 'Finland' => 'FIN', 'France' => 'FRA', 'Gabon' => 'GAB', 'Gambia' => 'GAM', 'Georgia' => 'GEO', 
+			'Germany' => 'GER', 'Ghana' => 'GHA', 'Greece' => 'GRE', 'Grenada' => 'GRN', 'Guam' => 'GUM', 'Guatemala' => 'GUA', 
+			'Guinea' => 'GUI', 'Guinea-Bissau' => 'GBS', 'Guyana' => 'GUY', 'Haiti' => 'HAI', 'Honduras' => 'HON', 'Hong Kong' => 'HKG', 
+			'Hungary' => 'HUN', 'Iceland' => 'ISL', 'India' => 'IND', 'Indonesia' => 'INA', 'Iran' => 'IRI', 'Iraq' => 'IRQ', 
+			'Ireland' => 'IRL', 'Israel' => 'ISR', 'Italy' => 'ITA', 'Ivory Coast' => 'CIV', 'Jamaica' => 'JAM', 'Japan' => 'JPN', 
+			'Jordan' => 'JOR', 'Kazakhstan' => 'KAZ', 'Kenya' => 'KEN', 'Kiribati' => 'KIR', 'Korea' => 'KOR', 'Kuwait' => 'KUW', 
+			'Kyrgyzstan' => 'KGZ', 'Laos' => 'LAO', 'Latvia' => 'LAT', 'Lebanon' => 'LIB', 'Lesotho' => 'LES', 'Liberia' => 'LBR', 
+			'Libya' => 'LBA', 'Liechtenstein' => 'LIE', 'Lithuania' => 'LTU', 'Luxembourg' => 'LUX', 'Macedonia' => 'MKD', 
+			'Malawi' => 'MAW', 'Malaysia' => 'MAS', 'Mali' => 'MLI', 'Malta' => 'MLT', 'Mauritania' => 'MTN', 'Mauritius' => 'MRI', 
+			'Mexico' => 'MEX', 'Moldova' => 'MDA', 'Monaco' => 'MON', 'Mongolia' => 'MGL', 'Montenegro' => 'MNE', 'Morocco' => 'MAR', 
+			'Mozambique' => 'MOZ', 'Myanmar' => 'MYA', 'Namibia' => 'NAM', 'Nauru' => 'NRU', 'Nepal' => 'NEP', 'Netherlands' => 'NED', 
+			'New Zealand' => 'NZL', 'Nicaragua' => 'NCA', 'Niger' => 'NIG', 'Nigeria' => 'NGR', 'Norway' => 'NOR', 'Oman' => 'OMA', 
+			'Other Countries' => 'OTH', 'Pakistan' => 'PAK', 'Palau' => 'PLW', 'Palestine' => 'PLE', 'Panama' => 'PAN', 
+			'Paraguay' => 'PAR', 'Peru' => 'PER', 'Philippines' => 'PHI', 'Poland' => 'POL', 'Portugal' => 'POR', 
+			'Puerto Rico' => 'PUR', 'Qatar' => 'QAT', 'Romania' => 'ROM', 			// actually ROU
+			'Russia' => 'RUS', 'Rwanda' => 'RWA', 'Samoa' => 'SAM', 'San Marino' => 'SMR', 'Saudi Arabia' => 'KSA', 'Senegal' => 'SEN', 
+			'Serbia' => 'SCG', 			// actually SRB
+			'Sierra Leone' => 'SLE', 'Singapore' => 'SIN', 'Slovakia' => 'SVK', 'Slovenia' => 'SLO', 'Somalia' => 'SOM', 
+			'South Africa' => 'RSA', 'Spain' => 'ESP', 'Sri Lanka' => 'SRI', 'Sudan' => 'SUD', 'Suriname' => 'SUR', 
+			'Swaziland' => 'SWZ', 'Sweden' => 'SWE', 'Switzerland' => 'SUI', 'Syria' => 'SYR', 'Taiwan' => 'TWN', 'Tajikistan' => 'TJK', 
+			'Tanzania' => 'TAN', 'Thailand' => 'THA', 'Togo' => 'TOG', 'Tonga' => 'TGA', 'Trinidad and Tobago' => 'TRI', 
+			'Tunisia' => 'TUN', 'Turkey' => 'TUR', 'Turkmenistan' => 'TKM', 'Tuvalu' => 'TUV', 'Uganda' => 'UGA', 'Ukraine' => 'UKR', 
+			'United Arab Emirates' => 'UAE', 'United Kingdom' => 'GBR', 'United States of America' => 'USA', 'Uruguay' => 'URU', 
+			'Uzbekistan' => 'UZB', 'Vanuatu' => 'VAN', 'Venezuela' => 'VEN', 'Vietnam' => 'VIE', 'Yemen' => 'YEM', 'Zambia' => 'ZAM', 
+			'Zimbabwe' => 'ZIM');
 		if (array_key_exists($country, $nations)) {
-			$nation = $nations[$country];
-		} else {
-			$nation = 'OTH';
-			if ($country != '')
-				trigger_error('Could not map country: ' . $country, E_USER_WARNING);
+			return $nations[$country];
 		}
-		return $nation;
+		if ($country) {
+			trigger_error("Couldn't map Country: '{$country}'!");
+		}
+		return 'OTH';
 	}
 }

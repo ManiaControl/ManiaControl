@@ -43,7 +43,7 @@ class Player {
 		}
 		$this->pid = $rpcInfos['PlayerId'];
 		$this->login = $rpcInfos['Login'];
-		$this->nickname = Formatter::stripCodesWithoutColors($rpcInfos['NickName']); //TODO don't remove $s, $i
+		$this->nickname = Formatter::stripDirtyCodes($rpcInfos['NickName']);
 		$this->path = $rpcInfos['Path'];
 		$this->language = $rpcInfos['Language'];
 		$this->avatar = $rpcInfos['Avatar']['FileName'];
