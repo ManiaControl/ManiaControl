@@ -10,6 +10,7 @@ use FML\Script\Script;
 use FML\Script\Tooltips;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\ManiaControl;
+use ManiaControl\Maps\Jukebox;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
 use ManiaControl\Callbacks\CallbackManager;
@@ -22,10 +23,10 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	const PLUGIN_VERSION = 0.1;
 	const PLUGIN_NAME = 'WidgetPlugin';
 	const PLUGIN_AUTHOR = 'kremsy';
-	const MLID_MAPWIDGET = 'WidgetPlugin.MapWidget';
-	const MLID_CLOCKWIDGET = 'WidgetPlugin.ClockWidget';
+
 
 	//MapWidget Properties
+	const MLID_MAPWIDGET = 'WidgetPlugin.MapWidget';
 	const SETTING_MAP_WIDGET_ACTIVATED = 'Map-Widget Activated';
 	const SETTING_MAP_WIDGET_POSX = 'Map-Widget-Position: X';
 	const SETTING_MAP_WIDGET_POSY = 'Map-Widget-Position: Y';
@@ -33,11 +34,21 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	const SETTING_MAP_WIDGET_HEIGHT = 'Map-Widget-Size: Height';
 
 	//ClockWidget Properties
+	const MLID_CLOCKWIDGET = 'WidgetPlugin.ClockWidget';
 	const SETTING_CLOCK_WIDGET_ACTIVATED = 'Clock-Widget Activated';
 	const SETTING_CLOCK_WIDGET_POSX = 'Clock-Widget-Position: X';
 	const SETTING_CLOCK_WIDGET_POSY = 'Clock-Widget-Position: Y';
 	const SETTING_CLOCK_WIDGET_WIDTH = 'Clock-Widget-Size: Width';
 	const SETTING_CLOCK_WIDGET_HEIGHT = 'Clock-Widget-Size: Height';
+
+	//NextMapWidget Properties
+	const MLID_NEXTMAPWIDGET = 'WidgetPlugin.NextMapWidget';
+	const SETTING_NEXTMAP_WIDGET_ACTIVATED = 'Nextmap-Widget Activated';
+	const SETTING_NEXTMAP_WIDGET_POSX = 'Nextmap-Widget-Position: X';
+	const SETTING_NEXTMAP_WIDGET_POSY = 'Nextmap-Widget-Position: Y';
+	const SETTING_NEXTMAP_WIDGET_WIDTH = 'Nextmap-Widget-Size: Width';
+	const SETTING_NEXTMAP_WIDGET_HEIGHT = 'Nextmap-Widget-Size: Height';
+
 
 	/**
 	 * Private properties
@@ -55,6 +66,8 @@ class WidgetPlugin implements CallbackListener, Plugin {
 
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_BEGINMAP, $this, 'handleOnBeginMap');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ENDMAP, $this, 'handleOnEndMap');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'handlePlayerConnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_1_MINUTE, $this, 'handleEveryMinute');
 
@@ -63,6 +76,12 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAP_WIDGET_POSY, 90 - 4.5);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAP_WIDGET_WIDTH, 40);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAP_WIDGET_HEIGHT, 9.);
+
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_NEXTMAP_WIDGET_ACTIVATED, true);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_NEXTMAP_WIDGET_POSX, 160 - 20);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_NEXTMAP_WIDGET_POSY, 90 - 25.5);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_NEXTMAP_WIDGET_WIDTH, 40);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_NEXTMAP_WIDGET_HEIGHT, 12.);
 
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_CLOCK_WIDGET_ACTIVATED, true);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_CLOCK_WIDGET_POSX, 160 - 5);
@@ -123,6 +142,104 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	}
 
 
+	/**
+	 * Displays the Next Map (Only at the end of the Map)
+	 * @param bool $login
+	 */
+	public function displayNextMapWidget($login = false){
+		$pos_x = $this->maniaControl->settingManager->getSetting($this, self::SETTING_NEXTMAP_WIDGET_POSX);
+		$pos_y = $this->maniaControl->settingManager->getSetting($this, self::SETTING_NEXTMAP_WIDGET_POSY);
+		$width = $this->maniaControl->settingManager->getSetting($this, self::SETTING_NEXTMAP_WIDGET_WIDTH);
+		$height = $this->maniaControl->settingManager->getSetting($this, self::SETTING_NEXTMAP_WIDGET_HEIGHT);
+		$quadStyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
+		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
+		$labelStyle = $this->maniaControl->manialinkManager->styleManager->getDefaultLabelStyle();
+
+		$maniaLink = new ManiaLink(self::MLID_NEXTMAPWIDGET);
+
+		//mainframe
+		$frame = new Frame();
+		$maniaLink->add($frame);
+		$frame->setSize($width,$height);
+		$frame->setPosition($pos_x, $pos_y);
+
+		//Background Quad
+		$backgroundQuad = new Quad();
+		$frame->add($backgroundQuad);
+		$backgroundQuad->setSize($width,$height);
+		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
+
+		//Check if the Next Map is a juked Map
+		$jukedMap = $this->maniaControl->mapManager->jukebox->getNextMap();
+		
+		$requester = null;
+		//if the nextmap is not a juked map, get it from map info
+		if($jukedMap == null){
+			$this->maniaControl->client->query("GetNextMapInfo");
+			$map = $this->maniaControl->client->getResponse();
+			$name = $map['Name'];
+			$author = $map['Author'];
+		}else{
+			$requester = $jukedMap[0];
+			$map = $jukedMap[1];
+			$name = $map->name;
+			$author = $map->authorLogin;
+		}
+
+		$label = new Label_Text();
+		$frame->add($label);
+		$label->setY($height / 2 - 2.3);
+		$label->setX(0);
+		$label->setAlign(Control::CENTER,Control::CENTER);
+		$label->setZ(0.2);
+		$label->setTextSize(1);
+		$label->setText("Next Map");
+		$label->setTextColor("FFF");
+		$label->setStyle($labelStyle);
+
+		$label = new Label_Text();
+		$frame->add($label);
+		$label->setY($height / 2 - 5.5);
+		$label->setX(0);
+		$label->setAlign(Control::CENTER,Control::CENTER);
+		$label->setZ(0.2);
+		$label->setTextSize(1.3);
+		$label->setText($name);
+		$label->setTextColor("FFF");
+
+		$label = new Label_Text();
+		$frame->add($label);
+		$label->setX(0);
+		$label->setY(-$height/2 + 4);
+
+		$label->setAlign(Control::CENTER,Control::CENTER);
+		$label->setZ(0.2);
+		$label->setTextSize(1);
+		$label->setScale(0.8);
+		$label->setText($author);
+		$label->setTextColor("FFF");
+
+
+		if($requester != null){
+			$label = new Label_Text();
+			$frame->add($label);
+			$label->setX(0);
+			$label->setY(-$height/2 + 2);
+			$label->setAlign(Control::CENTER,Control::CENTER);
+			$label->setZ(0.2);
+			$label->setTextSize(1);
+			$label->setScale(0.7);
+			$label->setText($author);
+			$label->setTextColor("F80");
+			$label->setText("Requested by " . $requester->nickname);
+		}
+
+		//Send manialink
+		$manialinkText = $maniaLink->render()->saveXML();
+		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $login);
+
+
+	}
 
 	/**
 	 * Displays the Map Widget
@@ -190,6 +307,15 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $login);
 	}
 
+	/**
+	 * Closes a Widget
+	 * @param $widgetId
+	 */
+	public function closeWidget($widgetId){
+		$emptyManialink = new ManiaLink($widgetId);
+		$manialinkText = $emptyManialink->render()->saveXML();
+		$this->maniaControl->manialinkManager->sendManialink($manialinkText);
+	}
 
 	/**
 	 * Handle ManiaControl OnInit callback
@@ -203,6 +329,32 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		}
 		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_ACTIVATED)){
 			$this->displayClockWidget();
+		}
+	}
+
+
+	/**
+	 * Handle on Begin Map
+	 *
+	 * @param array $callback
+	 */
+	public function handleOnBeginMap(array $callback) {
+		//Display Map Widget
+		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED)){
+			$this->displayMapWidget();
+		}
+		$this->closeWidget(self::MLID_NEXTMAPWIDGET);
+	}
+
+	/**
+	 * Handle on End Map
+	 *
+	 * @param array $callback
+	 */
+	public function handleOnEndMap(array $callback) {
+		//Display Map Widget
+		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_NEXTMAP_WIDGET_ACTIVATED)){
+			$this->displayNextMapWidget();
 		}
 	}
 

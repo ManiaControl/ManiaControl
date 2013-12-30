@@ -18,6 +18,7 @@ class Jukebox implements CallbackListener, CommandListener {
 	 * Constants
 	 */
 	const CB_JUKEBOX_CHANGED =  'Jukebox.JukeBoxChanged';
+
 	const SETTING_SKIP_MAP_ON_LEAVE = 'Skip Map when the requester leaves';
 	const SETTING_SKIP_JUKED_ADMIN = 'Skip Map when admin leaves';
 
@@ -28,6 +29,7 @@ class Jukebox implements CallbackListener, CommandListener {
 	 */
 	private $maniaControl = null;
 	private $jukedMaps = array();
+	private $nextMap = null;
 
 	/**
 	 * Create a new server jukebox
@@ -107,7 +109,7 @@ class Jukebox implements CallbackListener, CommandListener {
 	 * @param array $callback
 	 */
 	public function endMap(array $callback){
-
+		$this->nextMap = null;
 		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_SKIP_MAP_ON_LEAVE) == TRUE){
 
 			//Skip Map if requester has left
@@ -136,23 +138,28 @@ class Jukebox implements CallbackListener, CommandListener {
 			}
 		}
 
-		$nextMap = array_shift($this->jukedMaps);
+		$this->nextMap = array_shift($this->jukedMaps);
 
 		//Check if Jukebox is empty
-		if($nextMap == null)
+		if($this->nextMap == null)
 			return;
+		$map = $this->nextMap[1];
 
-		$nextMap = $nextMap[1];
 
-
-		$success = $this->maniaControl->client->query('ChooseNextMap', $nextMap->fileName);
+		$success = $this->maniaControl->client->query('ChooseNextMap', $map->fileName);
 		if (!$success) {
 			trigger_error('[' . $this->maniaControl->client->getErrorCode() . '] ChooseNextMap - ' . $this->maniaControl->client->getErrorCode(), E_USER_WARNING);
 			return;
 		}
-
 	}
 
+	/**
+	 * Returns the next Map if the next map is a juked map or null if it's not
+	 * @return null
+	 */
+	public function getNextMap(){
+		return $this->nextMap;
+	}
 	/**
 	 * Returns a list with the indexes of the juked maps
 	 * @return array
