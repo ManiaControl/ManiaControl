@@ -2,6 +2,7 @@
 
 namespace ManiaControl;
 
+use IXR_Client_Gbx;
 use ManiaControl\Admin\AdminMenu;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackManager;
@@ -71,6 +72,7 @@ class ManiaControl implements CommandListener {
 	public $callbackManager = null;
 	public $chat = null;
 	public $configurator = null;
+	/** @var IXR_Client_Gbx */
 	public $client = null;
 	public $commandManager = null;
 	public $database = null;

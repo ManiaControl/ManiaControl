@@ -212,7 +212,7 @@ class MapManager implements CallbackListener {
 	}
 
 	/**
-	 * @return currentMap
+	 * @return Map currentMap
 	 */
 	public function getCurrentMap(){
 		return $this->currentMap;

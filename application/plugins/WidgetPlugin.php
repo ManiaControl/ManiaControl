@@ -4,14 +4,13 @@ use FML\Controls\Frame;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;
 use FML\ManiaLink;
-use FML\Script\Script;
-use FML\Script\Tooltips;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\ManiaControl;
-use ManiaControl\Maps\Jukebox;
+use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
 use ManiaControl\Callbacks\CallbackManager;
+
 
 /**
  * ManiaControl Widget Plugin
@@ -55,6 +54,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	/**
 	 * Private Properties
 	 */
+	/** @var maniaControl */
 	private $maniaControl = null;
 
 	/**
@@ -159,7 +159,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$labelStyle = $this->maniaControl->manialinkManager->styleManager->getDefaultLabelStyle();
 		
 		$maniaLink = new ManiaLink(self::MLID_NEXTMAPWIDGET);
-		
+
 		// mainframe
 		$frame = new Frame();
 		$maniaLink->add($frame);
@@ -174,7 +174,8 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		
 		// Check if the Next Map is a juked Map
 		$jukedMap = $this->maniaControl->mapManager->jukebox->getNextMap();
-		
+
+		/** @var Player $requester */
 		$requester = null;
 		// if the nextmap is not a juked map, get it from map info
 		if ($jukedMap == null) {
@@ -189,7 +190,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 			$name = $map->name;
 			$author = $map->authorLogin;
 		}
-		
+
 		$label = new Label_Text();
 		$frame->add($label);
 		$label->setY($height / 2 - 2.3);
@@ -245,8 +246,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	/**
 	 * Displays the Map Widget
 	 *
-	 * @param
-	 *        	$login
+	 * @param String $login
 	 */
 	public function displayMapWidget($login = false) {
 		$pos_x = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_POSX);
@@ -269,7 +269,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$frame->add($backgroundQuad);
 		$backgroundQuad->setSize($width, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-		
+
 		$map = $this->maniaControl->mapManager->getCurrentMap();
 		
 		$label = new Label_Text();
@@ -293,7 +293,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$label->setScale(0.8);
 		$label->setText($map->authorLogin);
 		$label->setTextColor("FFF");
-		
+
 		// Send manialink
 		$manialinkText = $maniaLink->render()->saveXML();
 		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $login);
