@@ -404,7 +404,7 @@ if (Event.Control.HasClass(\"" . self::CLASS_PAGER . "\")) {
 	 */
 	private function getProfileLabels() {
 		$profileScript = "
-if (Event.Control.HasClass(\"" . self::CLASS_PROFILE . "\") {
+if (Event.Control.HasClass(\"" . self::CLASS_PROFILE . "\")) {
 	declare Login = LocalUser.Login;
 	foreach (ControlClass in Event.Control.ControlClasses) {
 		declare ClassParts = TextLib::Split(\"-\", ControlClass);
@@ -426,7 +426,7 @@ if (Event.Control.HasClass(\"" . self::CLASS_PROFILE . "\") {
 	 */
 	private function getMapInfoLabels() {
 		$mapInfoScript = "
-if (Event.Control.HasClass(\"" . self::CLASS_MAPINFO . "\") {
+if (Event.Control.HasClass(\"" . self::CLASS_MAPINFO . "\")) {
 	ShowCurChallengeCard();
 }";
 		$mapInfoLabels = Builder::getLabelImplementationBlock(self::LABEL_MOUSECLICK, $mapInfoScript);

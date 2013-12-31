@@ -137,6 +137,7 @@ class CustomUI {
 			$domDocument = new \DOMDocument('1.0', $this->encoding);
 		}
 		$xmlElement = $domDocument->createElement($this->tagName);
+		$domDocument->appendChild($xmlElement);
 		$settings = $this->getSettings();
 		foreach ($settings as $setting => $value) {
 			if ($value === null) continue;
