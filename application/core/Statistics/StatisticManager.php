@@ -1,11 +1,14 @@
 <?php
 use ManiaControl\ManiaControl;
+use ManiaControl\Players\Player;
 
 /**
  * Statistic Manager Class
  *
  * @author steeffeen & kremsy
  */
+//TODO db reference between player index and statsitics playerId
+//TODO db reference between metadata statId and statistics statId
 class StatisticManager {
 	/**
 	 * Constants
@@ -104,16 +107,20 @@ class StatisticManager {
 	 * Inserts a Stat into the database
 	 *
 	 * @param        $statName
-	 * @param        $playerId
+	 * @param Player $player
 	 * @param string $serverLogin
 	 * @param        $value , value to Add
 	 * @param string $statType
 	 */
-	public function insertStat($statName, $playerId, $serverLogin, $value, $statType = self::STAT_TYPE_INT) {
+	public function insertStat($statName, Player $player, $serverLogin, $value, $statType = self::STAT_TYPE_INT) {
 		$statId = $this->getStatId($statName);
 
 		if($statId == null) {
-			return -1;
+			return false;
+		}
+
+		if($player->isFakePlayer()) {
+			return true;
 		}
 
 		$query = "INSERT INTO `" . self::TABLE_STATISTICS . "` (
@@ -126,13 +133,12 @@ class StatisticManager {
 				) ON DUPLICATE KEY UPDATE
 				`value` = `value` + VALUES(`value`);";
 
-		var_dump($query);
 		$statement = $this->mysqli->prepare($query);
 		if($this->mysqli->error) {
 			trigger_error($this->mysqli->error);
 			return false;
 		}
-		$statement->bind_param('siii', $serverLogin, $playerId, $statId, $value);
+		$statement->bind_param('siii', $serverLogin, $player->index, $statId, $value);
 		$statement->execute();
 		if($statement->error) {
 			trigger_error($statement->error);
@@ -141,17 +147,19 @@ class StatisticManager {
 		}
 
 		$statement->close();
+		return true;
 	}
 
 	/**
 	 * Increments a Statistic by one
 	 *
-	 * @param $statName
-	 * @param $playerId
-	 * @param $serverLogin
+	 * @param        $statName
+	 * @param Player $playerId
+	 * @param        $serverLogin
+	 * @return bool
 	 */
-	public function incrementStat($statName, $playerId, $serverLogin) {
-		$this->insertStat($statName, $playerId, $serverLogin, 1);
+	public function incrementStat($statName, Player $player, $serverLogin) {
+		return $this->insertStat($statName, $player, $serverLogin, 1);
 	}
 
 	/**
