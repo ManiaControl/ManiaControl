@@ -160,7 +160,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			// $array = array($i => $x + 5, $listPlayer->nickname => $x + 10, $listPlayer->login => $x + 50, $listPlayer->ladderRank =>
 			// $x + 60, $listPlayer->ladderScore => $x + 70, $path => $x + 85);
 			$array = array($i => $x + 5, $listPlayer->nickname => $x + 18, $listPlayer->login => $x + 60, $path => $x + 91);
-			//$properties = array('profile' => $listPlayer->login, 'script' => $script);
+			// $properties = array('profile' => $listPlayer->login, 'script' => $script);
 			$this->maniaControl->manialinkManager->labelLine($playerFrame, $array);
 			$playerFrame->setY($y);
 			
@@ -238,8 +238,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			$descriptionLabel->setText(
 					$this->maniaControl->authenticationManager->getAuthLevelName($listPlayer->authLevel) . " " . $listPlayer->nickname);
 			$script->addTooltip($rightQuad, $descriptionLabel);
-
-
+			
 			// Player Profile Quad
 			$playerQuad = new Quad_UIConstruction_Buttons();
 			$playerFrame->add($playerQuad);
@@ -247,8 +246,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			$playerQuad->setZ(20);
 			$playerQuad->setSubStyle($playerQuad::SUBSTYLE_Author);
 			$playerQuad->setSize(3.8, 3.8);
-			$script->addProfileButton($playerQuad,$listPlayer->login);
-
+			$script->addProfileButton($playerQuad, $listPlayer->login);
+			
 			// Description Label
 			$descriptionLabel = new Label();
 			$frame->add($descriptionLabel);
@@ -259,7 +258,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			$descriptionLabel->setVisible(false);
 			$descriptionLabel->setText("View Player profile of " . $listPlayer->nickname);
 			$script->addTooltip($playerQuad, $descriptionLabel);
-
+			
 			switch ($listPlayer->authLevel) {
 				case authenticationManager::AUTH_LEVEL_MASTERADMIN:
 					$rightLabel->setText("MA");
@@ -277,8 +276,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			$rightLabel->setTextColor("fff");
 			
 			if ($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)) {
-
-
+				
 				// Further Player actions Quad
 				$playerQuad = new Quad_Icons64x64_1();
 				$playerFrame->add($playerQuad);
@@ -287,7 +285,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$playerQuad->setSubStyle($playerQuad::SUBSTYLE_Buddy);
 				$playerQuad->setSize(3.8, 3.8);
 				$playerQuad->setAction(self::ACTION_PLAYER_ADV . "." . $listPlayer->login);
-
+				
 				// Further Player actions Mousover Description
 				$descriptionLabel = new Label();
 				$frame->add($descriptionLabel);
@@ -380,6 +378,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 	 * @param $login
 	 */
 	public function advancedPlayerWidget(Player $caller, $login) {
+		if (!$caller) return;
 		$this->playersListShown[$caller->login] = $login; // Show a certain player
 		$this->showPlayerList($caller); // reopen playerlist
 	}
@@ -622,48 +621,53 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 	public function handleManialinkPageAnswer(array $callback) {
 		$actionId = $callback[1][2];
 		$actionArray = explode(".", $actionId);
+		if (count($actionArray) <= 2) {
+			return;
+		}
+		$action = $actionArray[0] . "." . $actionArray[1];
+		$adminLogin = $callback[1][1];
+		$targetLogin = $actionArray[2];
 		
-		// TODO maybe with ids instead of logins, lower network traffic
-		switch ($actionArray[0] . "." . $actionArray[1]) {
+		switch ($action) {
 			case self::ACTION_FORCE_BLUE:
-				$this->maniaControl->playerManager->playerActions->forcePlayerToTeam($callback[1][1], $actionArray[2], 
-						playerActions::BLUE_TEAM);
+				$this->maniaControl->playerManager->playerActions->forcePlayerToTeam($adminLogin, $targetLogin, 
+						PlayerActions::BLUE_TEAM);
 				break;
 			case self::ACTION_FORCE_RED:
-				$this->maniaControl->playerManager->playerActions->forcePlayerToTeam($callback[1][1], $actionArray[2], 
-						playerActions::RED_TEAM);
+				$this->maniaControl->playerManager->playerActions->forcePlayerToTeam($adminLogin, $targetLogin, 
+						PlayerActions::RED_TEAM);
 				break;
 			case self::ACTION_FORCE_SPEC:
-				$this->maniaControl->playerManager->playerActions->forcePlayerToSpectator($callback[1][1], $actionArray[2], 
-						playerActions::SPECTATOR_BUT_KEEP_SELECTABLE);
+				$this->maniaControl->playerManager->playerActions->forcePlayerToSpectator($adminLogin, $targetLogin, 
+						PlayerActions::SPECTATOR_BUT_KEEP_SELECTABLE);
 				break;
 			case self::ACTION_WARN_PLAYER:
-				$this->maniaControl->playerManager->playerActions->warnPlayer($callback[1][1], $actionArray[2]);
+				$this->maniaControl->playerManager->playerActions->warnPlayer($adminLogin, $targetLogin);
 				break;
 			case self::ACTION_KICK_PLAYER:
-				$this->maniaControl->playerManager->playerActions->kickPlayer($callback[1][1], $actionArray[2]);
+				$this->maniaControl->playerManager->playerActions->kickPlayer($adminLogin, $targetLogin);
 				break;
 			case self::ACTION_BAN_PLAYER:
-				$this->maniaControl->playerManager->playerActions->banPlayer($callback[1][1], $actionArray[2]);
+				$this->maniaControl->playerManager->playerActions->banPlayer($adminLogin, $targetLogin);
 				break;
 			case self::ACTION_PLAYER_ADV:
-				$player = $this->maniaControl->playerManager->getPlayer($callback[1][1]);
-				$this->advancedPlayerWidget($player, $actionArray[2]);
+				$admin = $this->maniaControl->playerManager->getPlayer($adminLogin);
+				$this->advancedPlayerWidget($admin, $targetLogin);
 				break;
 			case self::ACTION_ADD_AS_MASTER:
-				$this->maniaControl->playerManager->playerActions->grandAuthLevel($callback[1][1], $actionArray[2], 
+				$this->maniaControl->playerManager->playerActions->grandAuthLevel($adminLogin, $targetLogin, 
 						AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
 				break;
 			case self::ACTION_ADD_AS_ADMIN:
-				$this->maniaControl->playerManager->playerActions->grandAuthLevel($callback[1][1], $actionArray[2], 
+				$this->maniaControl->playerManager->playerActions->grandAuthLevel($adminLogin, $targetLogin, 
 						AuthenticationManager::AUTH_LEVEL_ADMIN);
 				break;
 			case self::ACTION_ADD_AS_MOD:
-				$this->maniaControl->playerManager->playerActions->grandAuthLevel($callback[1][1], $actionArray[2], 
+				$this->maniaControl->playerManager->playerActions->grandAuthLevel($adminLogin, $targetLogin, 
 						AuthenticationManager::AUTH_LEVEL_OPERATOR);
 				break;
 			case self::ACTION_REVOKE_RIGHTS:
-				$this->maniaControl->playerManager->playerActions->revokeAuthLevel($callback[1][1], $actionArray[2]);
+				$this->maniaControl->playerManager->playerActions->revokeAuthLevel($adminLogin, $targetLogin);
 				break;
 		}
 	}
