@@ -146,9 +146,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$script = new Script();
 		$maniaLink->setScript($script);
 
-		$tooltips = new Tooltips();
-		$script->addFeature($tooltips);
-
 		//Start offsets
 		$x = -$this->width / 2;
 		$y = $this->height / 2;
@@ -188,7 +185,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$descriptionLabel->setTextSize(2);
 				$descriptionLabel->setVisible(false);
 				$descriptionLabel->setText("Add-Map: {$map->name}");
-				$tooltips->add($addQuad, $descriptionLabel);
+				$script->addTooltip($addQuad, $descriptionLabel);
 
 			}
 
@@ -338,6 +335,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$jukeQuad->setAction(self::ACTION_JUKE_MAP . "." . $map->uid);
 				$jukeQuad->setText("+");
 				$jukeQuad->setTextColor("09F");
+
+
 				$descriptionLabel->setText("Add Map to Jukebox: {$map->name}");
 				$script->addTooltip($jukeQuad, $descriptionLabel);
 			}
