@@ -38,7 +38,7 @@ class ObstaclePlugin implements CallbackListener, CommandListener, Plugin {
 		
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_JUMPTOAUTHLEVEL, 
-				AuthenticationManager::AUTH_LEVEL_OPERATOR);
+				AuthenticationManager::AUTH_LEVEL_MODERATOR);
 		
 		// Register for commands
 		$this->maniaControl->commandManager->registerCommandListener('jumpto', $this, 'command_JumpTo');

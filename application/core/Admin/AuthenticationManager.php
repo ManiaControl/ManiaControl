@@ -19,12 +19,11 @@ class AuthenticationManager {
 	 * Constants
 	 */
 	const AUTH_LEVEL_PLAYER = 0;
-	const AUTH_LEVEL_OPERATOR = 1;
+	const AUTH_LEVEL_MODERATOR = 1;
 	const AUTH_LEVEL_ADMIN = 2;
 	const AUTH_LEVEL_SUPERADMIN = 3;
 	const AUTH_LEVEL_MASTERADMIN = 4;
-
-	const CB_AUTH_LEVEL_CHANGED =  'AuthenticationManager.AuthLevelChanged';
+	const CB_AUTH_LEVEL_CHANGED = 'AuthenticationManager.AuthLevelChanged';
 	/**
 	 * Private properties
 	 */
@@ -34,7 +33,7 @@ class AuthenticationManager {
 	/**
 	 * Construct authentication manager
 	 *
-	 * @param \ManiaControl\ManiaControl $maniaControl        	
+	 * @param \ManiaControl\ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
@@ -87,8 +86,10 @@ class AuthenticationManager {
 		$adminStatement->bind_param('si', $login, $xAdminLevel);
 		$success = true;
 		foreach ($xAdmins as $xAdmin) {
-            /** @noinspection PhpUnusedLocalVariableInspection */
-            $login = (string) $xAdmin;
+			/**
+			 * @noinspection PhpUnusedLocalVariableInspection
+			 */
+			$login = (string) $xAdmin;
 			$adminStatement->execute();
 			if ($adminStatement->error) {
 				trigger_error($adminStatement->error);
@@ -102,8 +103,8 @@ class AuthenticationManager {
 	/**
 	 * Grant the auth level to the player
 	 *
-	 * @param Player $player        	
-	 * @param int $authLevel        	
+	 * @param Player $player
+	 * @param int $authLevel
 	 * @return bool
 	 */
 	public function grantAuthLevel(Player $player, $authLevel) {
@@ -131,13 +132,14 @@ class AuthenticationManager {
 			return false;
 		}
 		$authStatement->close();
-
-		if($success){
+		
+		if ($success) {
 			// Trigger callback
 			$player->authLevel = $authLevel;
-			$this->maniaControl->callbackManager->triggerCallback(self::CB_AUTH_LEVEL_CHANGED, array(self::CB_AUTH_LEVEL_CHANGED, $player));
+			$this->maniaControl->callbackManager->triggerCallback(self::CB_AUTH_LEVEL_CHANGED, 
+					array(self::CB_AUTH_LEVEL_CHANGED, $player));
 		}
-
+		
 		return $success;
 	}
 
@@ -158,7 +160,7 @@ class AuthenticationManager {
 	 * Check if the player has enough rights
 	 *
 	 * @param Player $player
-	 * @param int $neededAuthLevel        	
+	 * @param int $neededAuthLevel
 	 * @return bool
 	 */
 	public static function checkRight(Player $player, $neededAuthLevel) {
@@ -168,7 +170,7 @@ class AuthenticationManager {
 	/**
 	 * Get Name of the Authentication Level from Level Int
 	 *
-	 * @param int $authLevelInt        	
+	 * @param int $authLevelInt
 	 * @return string
 	 */
 	public static function getAuthLevelName($authLevelInt) {
@@ -181,16 +183,38 @@ class AuthenticationManager {
 		if ($authLevelInt == self::AUTH_LEVEL_ADMIN) {
 			return 'Admin';
 		}
-		if ($authLevelInt == self::AUTH_LEVEL_OPERATOR) {
-			return 'Operator';
+		if ($authLevelInt == self::AUTH_LEVEL_MODERATOR) {
+			return 'Moderator';
 		}
 		return 'Player';
 	}
 
 	/**
+	 * Get the Abbreviation of the Authentication Level from Level Int
+	 *
+	 * @param int $authLevelInt
+	 * @return string
+	 */
+	public static function getAuthLevelAbbreviation($authLevelInt) {
+		if ($authLevelInt == self::AUTH_LEVEL_MASTERADMIN) {
+			return 'MA';
+		}
+		if ($authLevelInt == self::AUTH_LEVEL_SUPERADMIN) {
+			return 'SA';
+		}
+		if ($authLevelInt == self::AUTH_LEVEL_ADMIN) {
+			return 'AD';
+		}
+		if ($authLevelInt == self::AUTH_LEVEL_MODERATOR) {
+			return 'MOD';
+		}
+		return 'PL';
+	}
+
+	/**
 	 * Get Authentication Level Int from Level Name
 	 *
-	 * @param string $authLevelName        	
+	 * @param string $authLevelName
 	 * @return int
 	 */
 	public static function getAuthLevel($authLevelName) {
@@ -204,8 +228,8 @@ class AuthenticationManager {
 		if ($authLevelName == 'Admin') {
 			return self::AUTH_LEVEL_ADMIN;
 		}
-		if ($authLevelName == 'Operator') {
-			return self::AUTH_LEVEL_OPERATOR;
+		if ($authLevelName == 'Moderator') {
+			return self::AUTH_LEVEL_MODERATOR;
 		}
 		return self::AUTH_LEVEL_PLAYER;
 	}

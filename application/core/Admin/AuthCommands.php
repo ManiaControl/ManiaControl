@@ -28,7 +28,7 @@ class AuthCommands implements CommandListener {
 		// Register for commands
 		$this->maniaControl->commandManager->registerCommandListener('addsuperadmin', $this, 'command_AddSuperAdmin',true);
 		$this->maniaControl->commandManager->registerCommandListener('addadmin', $this, 'command_AddAdmin',true);
-		$this->maniaControl->commandManager->registerCommandListener('addop', $this, 'command_AddOperator',true);
+		$this->maniaControl->commandManager->registerCommandListener('addmod', $this, 'command_AddModerator',true);
 	}
 
 	/**
@@ -94,12 +94,12 @@ class AuthCommands implements CommandListener {
 	}
 
 	/**
-	 * Handle //addop command
+	 * Handle //addmod command
 	 *
 	 * @param array $chatCallback        	
 	 * @param Player $player        	
 	 */
-	public function command_AddOperator(array $chatCallback, Player $player) {
+	public function command_AddModerator(array $chatCallback, Player $player) {
 		if (!AuthenticationManager::checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
@@ -107,7 +107,7 @@ class AuthCommands implements CommandListener {
 		$text = $chatCallback[1][2];
 		$commandParts = explode(' ', $text);
 		if (!array_key_exists(1, $commandParts)) {
-			$this->sendAddOperatorUsageInfo($player);
+			$this->sendAddModeratorUsageInfo($player);
 			return;
 		}
 		$target = $this->maniaControl->playerManager->getPlayer($commandParts[1]);
@@ -115,12 +115,12 @@ class AuthCommands implements CommandListener {
 			$this->maniaControl->chat->sendError("Player '{$commandParts[1]}' not found!", $player->login);
 			return;
 		}
-		$success = $this->maniaControl->authenticationManager->grantAuthLevel($player, AuthenticationManager::AUTH_LEVEL_OPERATOR);
+		$success = $this->maniaControl->authenticationManager->grantAuthLevel($player, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 		if (!$success) {
 			$this->maniaControl->chat->sendError('Error occurred.', $player->login);
 			return;
 		}
-		$message = '$<' . $player->nickname . '$> added $<' . $target->nickname . '$> as Operator!';
+		$message = '$<' . $player->nickname . '$> added $<' . $target->nickname . '$> as Moderator!';
 		$this->maniaControl->chat->sendSuccess($message);
 	}
 
@@ -152,8 +152,8 @@ class AuthCommands implements CommandListener {
 	 * @param Player $player        	
 	 * @return bool
 	 */
-	private function sendAddOperatorUsageInfo(Player $player) {
-		$message = "Usage Example: '//addop login'";
+	private function sendAddModeratorUsageInfo(Player $player) {
+		$message = "Usage Example: '//addmod login'";
 		return $this->maniaControl->chat->sendUsageInfo($message, $player->login);
 	}
 }

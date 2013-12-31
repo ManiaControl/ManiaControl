@@ -54,7 +54,7 @@ class PlayerCommands implements CommandListener {
 	 * @param Player $player        	
 	 */
 	public function command_TeamBalance(array $chatCallback, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)) {
+		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
@@ -73,7 +73,7 @@ class PlayerCommands implements CommandListener {
 	 * @param Player $player        	
 	 */
 	public function command_Kick(array $chat, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)) {
+		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
@@ -103,7 +103,7 @@ class PlayerCommands implements CommandListener {
 	 * @param Player $player        	
 	 */
 	public function command_ForceSpectator(array $chat, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)) {
+		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
@@ -140,7 +140,7 @@ class PlayerCommands implements CommandListener {
 	 * @param Player $player        	
 	 */
 	public function command_ForcePlayer(array $chat, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)) {
+		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}

@@ -126,7 +126,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$frame->add($headFrame);
 		$headFrame->setY($y - 5);
 		// $array = array("Id" => $x + 5, "Nickname" => $x + 10, "Login" => $x + 40, "Ladder" => $x + 60,"Zone" => $x + 85);
-		if ($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)) {
+		if ($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
 			$array = array("Id" => $x + 5, "Nickname" => $x + 18, "Login" => $x + 60, "Location" => $x + 91, "Actions" => $x + 135);
 		}
 		else {
@@ -270,13 +270,13 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				case authenticationManager::AUTH_LEVEL_ADMIN:
 					$rightLabel->setText("AD");
 					break;
-				case authenticationManager::AUTH_LEVEL_OPERATOR:
+				case authenticationManager::AUTH_LEVEL_MODERATOR:
 					$rightLabel->setText("MOD");
 			}
 			
 			$rightLabel->setTextColor("fff");
 			
-			if ($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)) {
+			if ($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
 				// Further Player actions Quad
 				$playerQuad = new Quad_Icons64x64_1();
 				$playerFrame->add($playerQuad);
@@ -567,7 +567,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$label->setText("Set Moderator");
 		$label->setTextColor($textColor);
 		
-		if ($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)) {
+		if ($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
 			$y -= 5;
 			// Revoke Rights
 			$quad = new Quad_BgsPlayerCard();
@@ -664,7 +664,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				break;
 			case self::ACTION_ADD_AS_MOD:
 				$this->maniaControl->playerManager->playerActions->grandAuthLevel($adminLogin, $targetLogin, 
-						AuthenticationManager::AUTH_LEVEL_OPERATOR);
+						AuthenticationManager::AUTH_LEVEL_MODERATOR);
 				break;
 			case self::ACTION_REVOKE_RIGHTS:
 				$this->maniaControl->playerManager->playerActions->revokeAuthLevel($adminLogin, $targetLogin);

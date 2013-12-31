@@ -368,7 +368,7 @@ class ServerCommands implements CallbackListener, CommandListener {
 	 * @param Player $player        	
 	 */
 	public function command_EnableHorns(array $chatCallback, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)) {
+		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
@@ -387,7 +387,7 @@ class ServerCommands implements CallbackListener, CommandListener {
 	 * @param Player $player        	
 	 */
 	public function command_DisableHorns(array $chatCallback, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)) {
+		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}

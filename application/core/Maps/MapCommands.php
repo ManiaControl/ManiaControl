@@ -50,7 +50,7 @@ class MapCommands implements CommandListener {
 	 * @param \ManiaControl\Players\Player $player        	
 	 */
 	public function command_RemoveMap(array $chat, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)) {
+		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
@@ -76,7 +76,7 @@ class MapCommands implements CommandListener {
 	 * @param \ManiaControl\Players\Player $player        	
 	 */
 	public function command_AddMap(array $chatCallback, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)) {
+		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
@@ -98,7 +98,7 @@ class MapCommands implements CommandListener {
 	 * @param \ManiaControl\Players\Player $player        	
 	 */
 	public function command_NextMap(array $chat, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)) {
+		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
@@ -112,7 +112,7 @@ class MapCommands implements CommandListener {
 	 * @param \ManiaControl\Players\Player $player        	
 	 */
 	public function command_RestartMap(array $chat, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)) {
+		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}

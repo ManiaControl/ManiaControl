@@ -358,7 +358,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$descriptionLabel->setText("Remove Map: {$map->name}");
 				$script->addTooltip($eraseQuad, $descriptionLabel);
 			}
-			if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)){ //TODO SET as setting who can add maps
+			if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)){ //TODO SET as setting who can add maps
 				//switch to map quad
 				//$switchToQuad = new Quad_Icons64x64_1(); //TODO change name to label
 				$switchToQuad = new Label_Button();
