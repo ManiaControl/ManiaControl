@@ -175,10 +175,10 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				
 				switch ($listPlayer->teamId) {
 					case 0:
-						$teamQuad->setSubStyle($redQuad::SUBSTYLE_1);
+						$teamQuad->setSubStyle($teamQuad::SUBSTYLE_1);
 						break;
 					case 1:
-						$teamQuad->setSubStyle($redQuad::SUBSTYLE_2);
+						$teamQuad->setSubStyle($teamQuad::SUBSTYLE_2);
 						break;
 				}
 			}
@@ -188,7 +188,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$playerFrame->add($specQuad);
 				$specQuad->setX($x + 10);
 				$specQuad->setZ(0.1);
-				$specQuad->setSubStyle($neutralQuad::SUBSTYLE_Spectator);
+				$specQuad->setSubStyle($specQuad::SUBSTYLE_Spectator);
 				$specQuad->setSize(3.8, 3.8);
 			}
 			
