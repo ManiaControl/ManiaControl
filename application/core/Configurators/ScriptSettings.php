@@ -18,7 +18,7 @@ use FML\Controls\Entry;
 use ManiaControl\Players\Player;
 
 /**
- * Class offering a configurator for current script settings
+ * Class offering a Configurator for Script Settings
  *
  * @author steeffeen & kremsy
  */
@@ -27,16 +27,16 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 * Constants
 	 */
 	const ACTION_PREFIX_SETTING = 'ScriptSetting.';
-	const ACTION_SETTING_BOOL = 'ScriptSetting.ActionBoolSetting';
-	const CB_SCRIPTSETTINGS_CHANGED = 'ScriptSettings.SettingsChanged';
+	const ACTION_SETTING_BOOL = 'ScriptSetting.ActionBoolSetting.';
+	const CB_SCRIPTSETTING_CHANGED = 'ScriptSettings.SettingChanged';
 	
 	/**
-	 * Private properties
+	 * Private Properties
 	 */
 	private $maniaControl = null;
 
 	/**
-	 * Create a new script settings instance
+	 * Create a new Script Settings Instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */
@@ -60,7 +60,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 *
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getMenu()
 	 */
-	public function getMenu($width, $height, $pages, Script $script) {
+	public function getMenu($width, $height, Script $script) {
 		$frame = new Frame();
 		
 		$this->maniaControl->client->query('GetModeScriptInfo');
@@ -158,7 +158,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 				$quad->setSubStyle($substyle);
 				$quad->setSize(4, 4);
 				$quad->setHAlign(Control::CENTER);
-				$quad->setAction(self::ACTION_SETTING_BOOL . "." . $settingName);
+				$quad->setAction(self::ACTION_SETTING_BOOL . $settingName);
 			}
 			else {
 				$entry = new Entry();
@@ -185,7 +185,6 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			
 			$y -= $settingHeight;
 			if ($index % $pageMaxCount == $pageMaxCount - 1) {
-				$script->addPage($pageFrame, $index, "test"); // TODO not working
 				unset($pageFrame);
 			}
 		}
@@ -200,107 +199,111 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	public function saveConfigData(array $configData, Player $player) {
 		$this->maniaControl->client->query('GetModeScriptSettings');
 		$scriptSettings = $this->maniaControl->client->getResponse();
+		
 		$prefixLength = strlen(self::ACTION_PREFIX_SETTING);
 		
-		$chatMessage = '';
 		$newSettings = array();
 		foreach ($configData[3] as $setting) {
 			if (substr($setting['Name'], 0, $prefixLength) != self::ACTION_PREFIX_SETTING) continue;
 			
 			$settingName = substr($setting['Name'], $prefixLength);
-			
-			foreach ($scriptSettings as $key => $value) {
-				if ($key == $settingName) {
-					// Check if something has been changed
-					if ($setting["Value"] != $value) {
-						$chatMessage .= '$FFF' . $settingName . '$z$s$FF0 to $FFF' . $setting["Value"] . ', ';
-					}
-					// Setting found, cast type, break the inner loop
-					settype($setting["Value"], gettype($value));
-					break;
-				}
+			if (!isset($scriptSettings[$settingName])) {
+				var_dump('no setting ' . $settingName);
+				continue;
 			}
-			$newSettings[$settingName] = $setting["Value"];
+			
+			if ($setting['Value'] == $scriptSettings[$settingName]) {
+				// Not changed
+				continue;
+			}
+			
+			$newSettings[$settingName] = $setting['Value'];
+			settype($newSettings[$settingName], gettype($scriptSettings[$settingName]));
 		}
 		
-		// Nothing has been changed
-		if ($chatMessage = '') {
-			return;
-		}
-		
-		$success = $this->maniaControl->client->query('SetModeScriptSettings', $newSettings);
-		if (!$success) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
-			return;
-		}
-		
-		$chatMessage = substr($chatMessage, 0, strlen($chatMessage) - 2);
-		$chatMessage = str_replace("S_", "", $chatMessage);
-		
-		$title = $this->maniaControl->authenticationManager->getAuthLevelName($player->authLevel);
-		
-		$this->maniaControl->chat->sendInformation(
-				'$ff0' . $title . ' $<' . $player->nickname . '$> set Scriptsettings $<' . $chatMessage . '$>!');
-		
-		// log console message
-		$this->maniaControl->log(Formatter::stripCodes($title . ' ' . $player->nickname . ' set Scriptsettings ' . $chatMessage . '!'));
-		
-		// Trigger own callback
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_SCRIPTSETTINGS_CHANGED, array(self::CB_SCRIPTSETTINGS_CHANGED));
+		$this->applyNewScriptSettings($newSettings, $player);
 	}
 
 	/**
-	 * Called on ManialinkPageAnswer
+	 * Handle ManialinkPageAnswer Callback
 	 *
 	 * @param array $callback
 	 */
 	public function handleManialinkPageAnswer(array $callback) {
 		$actionId = $callback[1][2];
 		$boolSetting = (strpos($actionId, self::ACTION_SETTING_BOOL) === 0);
-		
 		if (!$boolSetting) return;
 		
 		$actionArray = explode(".", $actionId);
+		$setting = $actionArray[2];
 		
-		$player = $this->maniaControl->playerManager->getPlayer($callback[1][1]);
-		$this->setCheckboxSetting($player, $actionArray[2]);
+		$login = $callback[1][1];
+		$player = $this->maniaControl->playerManager->getPlayer($login);
+		
+		$this->toggleBooleanSetting($setting, $player);
 	}
 
 	/**
-	 * Toogle a boolean value setting
+	 * Toogle a Boolean Setting
 	 *
 	 * @param Player $player
 	 * @param $setting
 	 */
-	public function setCheckboxSetting(Player $player, $setting) {
+	public function toggleBooleanSetting($setting, Player $player) {
 		$this->maniaControl->client->query('GetModeScriptSettings');
 		$scriptSettings = $this->maniaControl->client->getResponse();
 		
-		$newSetting = array();
-		foreach ($scriptSettings as $key => $value) {
-			if ($key == $setting) { // Setting found
-				$newSetting[$key] = $value == true ? false : true; // toggle setting
-				break;
-			}
+		if (!isset($scriptSettings[$setting])) {
+			var_dump('no setting ' . $setting);
+			return;
 		}
 		
-		$success = $this->maniaControl->client->query('SetModeScriptSettings', $newSetting);
+		$newSettings = array();
+		$newSettings[$setting] = ($scriptSettings[$setting] ? false : true);
+		
+		$this->applyNewScriptSettings($newSettings, $player);
+	}
+
+	/**
+	 * Apply the Array of new Script Settings
+	 *
+	 * @param array $newSettings
+	 * @param Player $player
+	 */
+	private function applyNewScriptSettings(array $newSettings, Player $player) {
+		if (!$newSettings) return;
+		$success = $this->maniaControl->client->query('SetModeScriptSettings', $newSettings);
 		if (!$success) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
 			return;
 		}
 		
-		$valString = ($newSetting[$setting]) ? 'true' : 'false';
-		$chatMessage = '$FFF' . preg_replace('/^S_/', '', $setting) . '$z$s$FF0 to $FFF' . $valString;
-		
-		$title = $this->maniaControl->authenticationManager->getAuthLevelName($player->authLevel);
-		$this->maniaControl->chat->sendInformation(
-				'$ff0' . $title . ' $<' . $player->nickname . '$> set ScriptSetting $<' . $chatMessage . '$>!');
-		
-		// log console message
-		$this->maniaControl->log(Formatter::stripCodes($title . ' ' . $player->nickname . ' set Scriptsetting ' . $chatMessage . '!'));
-		
-		// Trigger own callback
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_SCRIPTSETTINGS_CHANGED, array(self::CB_SCRIPTSETTINGS_CHANGED));
+		// Notifications
+		foreach ($newSettings as $setting => $value) {
+			$title = $this->maniaControl->authenticationManager->getAuthLevelName($player->authLevel);
+			$chatMessage = '$ff0' . $title . ' $<' . $player->nickname . '$> set ScriptSetting ';
+			$chatMessage .= '$<' . '$fff' . preg_replace('/^S_/', '', $setting) . '$z$s$ff0 to $fff' . $this->parseSettingValue($value) .
+					 '$>!';
+			
+			$this->maniaControl->chat->sendInformation($chatMessage);
+			$this->maniaControl->log(Formatter::stripCodes($chatMessage));
+			
+			// Trigger own callback
+			$this->maniaControl->callbackManager->triggerCallback(self::CB_SCRIPTSETTING_CHANGED, 
+					array(self::CB_SCRIPTSETTING_CHANGED, $setting, $value));
+		}
+	}
+
+	/**
+	 * Parse the Setting Value to a String Representation
+	 *
+	 * @param mixed $value
+	 * @return string
+	 */
+	private function parseSettingValue($value) {
+		if (is_bool($value)) {
+			return ($value ? 'True' : 'False');
+		}
+		return (string) $value;
 	}
 }

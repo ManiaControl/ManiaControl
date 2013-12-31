@@ -8,36 +8,34 @@ use FML\Script\Tooltips;
 use ManiaControl\Players\Player;
 
 /**
- * Interface for configurator menus
+ * Interface for Configurator Menus
  *
  * @author steeffeen & kremsy
  */
 interface ConfiguratorMenu {
 
 	/**
-	 * Get the menu title
+	 * Get the Menu Title
 	 *
 	 * @return string
 	 */
 	public function getTitle();
 
 	/**
-	 * Get the configurator menu
+	 * Get the Configurator Menu Frame
 	 *
-	 * @param float              $width
-	 * @param float              $height
-	 * @param               $pages temp removed
-	 * @param \FML\Script\Script $script
-	 * @internal param \FML\Script\Tooltips $tooltips
-	 * @return \FML\Controls\Control
+	 * @param float $width
+	 * @param float $height
+	 * @param Script $script
+	 * @return \FML\Controls\Frame
 	 */
-	public function getMenu($width, $height, $pages, Script $script);
+	public function getMenu($width, $height, Script $script);
 
 	/**
-	 * Save the config data
-	 * 
-	 * @param array $configData        	
-	 * @param Player $player        	
+	 * Save the Config Data
+	 *
+	 * @param array $configData
+	 * @param Player $player
 	 */
 	public function saveConfigData(array $configData, Player $player);
 }

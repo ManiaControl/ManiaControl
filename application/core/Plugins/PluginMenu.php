@@ -37,7 +37,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 	/**
 	 * Create a new plugin menu instance
 	 *
-	 * @param ManiaControl $maniaControl        	
+	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
@@ -58,7 +58,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 	 *
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getMenu()
 	 */
-	public function getMenu($width, $height, $pages, Script $script) {
+	public function getMenu($width, $height, Script $script) {
 		$frame = new Frame();
 		
 		$pluginClasses = $this->maniaControl->pluginManager->getPluginClasses();
@@ -162,10 +162,10 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 				unset($pageFrame);
 			}
 		}
-
-	//	$script->addPager($pageFrames, 1 , $pageCountLabel);
-	//	$script->addPage(array(-1 => $pagerPrev, 1 => $pagerNext), $pageFrames, $pageCountLabel);
-		//$pages->add(array(-1 => $pagerPrev, 1 => $pagerNext), $pageFrames, $pageCountLabel);
+		
+		// $script->addPager($pageFrames, 1 , $pageCountLabel);
+		// $script->addPage(array(-1 => $pagerPrev, 1 => $pagerNext), $pageFrames, $pageCountLabel);
+		// $pages->add(array(-1 => $pagerPrev, 1 => $pagerNext), $pageFrames, $pageCountLabel);
 		
 		return $frame;
 	}
@@ -180,7 +180,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 	/**
 	 * Handle PlayerManialinkPageAnswer callback
 	 *
-	 * @param array $callback        	
+	 * @param array $callback
 	 */
 	public function handleManialinkPageAnswer(array $callback) {
 		$actionId = $callback[1][2];

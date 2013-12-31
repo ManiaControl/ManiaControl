@@ -79,7 +79,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERDISCONNECT, $this, 
 				'handlePlayerDisconnect');
-		$this->maniaControl->callbackManager->registerCallbackListener(ScriptSettings::CB_SCRIPTSETTINGS_CHANGED, $this, 'reopenMenu');
+		$this->maniaControl->callbackManager->registerCallbackListener(ScriptSettings::CB_SCRIPTSETTING_CHANGED, $this, 'reopenMenu');
 		
 		// Create script settings
 		$this->scriptSettings = new ScriptSettings($maniaControl);
@@ -242,14 +242,6 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$script = new Script();
 		$manialink->setScript($script);
 		
-		$pages = null;
-		/*
-		 * $pages = new Pages(); $script->addFeature($pages); $tooltips = new Tooltips(); $script->addFeature($tooltips); $menus = new
-		 * Menus(); $script->addFeature($menus);
-		 */
-		
-		// $script->addPager()
-		
 		$menuRelationships = array();
 		$menuItemY = $menuHeight * 0.42;
 		foreach ($this->menus as $index => $menu) {
@@ -262,19 +254,15 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 			// $menuItemLabel->setText('$z' . $menu->getTitle() . '$z');
 			
 			// Add menu
-			$menuControl = $menu->getMenu($subMenuWidth, $subMenuHeight, $pages, $script);
+			$menuControl = $menu->getMenu($subMenuWidth, $subMenuHeight, $script);
 			if ($index > 0) {
 				$menuControl->setVisible(false);
 			}
 			$menusFrame->add($menuControl);
-			
-			// Add menu relationship
-			// array_push($menuRelationships, array($menuItemLabel, $menuControl));
 			$script->addMenu($menuItemLabel, $menuControl);
+			
 			$menuItemY -= $menuItemHeight * 1.1;
 		}
-		
-		// $menus->add($menuRelationships);
 		
 		// Add Close Quad (X)
 		$closeQuad = new Quad_Icons64x64_1();
