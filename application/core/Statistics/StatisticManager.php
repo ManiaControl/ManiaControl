@@ -1,6 +1,9 @@
 <?php
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
+use ManiaControl\Statistics\StatisticCollector;
+
+require_once __DIR__ . '/StatisticCollector.php';
 
 /**
  * Statistic Manager Class
@@ -19,6 +22,11 @@ class StatisticManager {
 	const STAT_TYPE_INT = '0';
 
 	/**
+	 * Public Properties
+	 */
+	public $statisticCollector = null;
+
+	/**
 	 * Private Properties
 	 */
 	private $maniaControl = null;
@@ -34,6 +42,8 @@ class StatisticManager {
 		$this->maniaControl = $maniaControl;
 		$this->mysqli       = $this->maniaControl->database->mysqli;
 		$this->initTables();
+
+		$this->statisticCollector = new StatisticCollector($maniaControl);
 
 		//Store Stats MetaData
 		$this->storeStatMetaData();
