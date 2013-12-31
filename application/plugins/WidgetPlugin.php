@@ -19,8 +19,7 @@ use ManiaControl\Plugins\Plugin;
  *
  * @author kremsy
  */
-class WidgetPlugin implements CallbackListener, Plugin
-{
+class WidgetPlugin implements CallbackListener, Plugin {
 
 	/**
 	 * Constants
@@ -71,13 +70,57 @@ class WidgetPlugin implements CallbackListener, Plugin
 	private $maniaControl = null;
 
 	/**
+	 * Get plugin id
+	 *
+	 * @return int
+	 */
+	public static function getId() {
+		return self::PLUGIN_ID;
+	}
+
+	/**
+	 * Get Plugin Name
+	 *
+	 * @return string
+	 */
+	public static function getName() {
+		return self::PLUGIN_NAME;
+	}
+
+	/**
+	 * Get Plugin Version
+	 *
+	 * @return float,,
+	 */
+	public static function getVersion() {
+		return self::PLUGIN_VERSION;
+	}
+
+	/**
+	 * Get Plugin Author
+	 *
+	 * @return string
+	 */
+	public static function getAuthor() {
+		return self::PLUGIN_AUTHOR;
+	}
+
+	/**
+	 * Get Plugin Description
+	 *
+	 * @return string
+	 */
+	public static function getDescription() {
+		return null;
+	}
+
+	/**
 	 * Load the plugin
 	 *
 	 * @param ManiaControl $maniaControl
 	 * @return bool
 	 */
-	public function load(ManiaControl $maniaControl)
-	{
+	public function load(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
 		// Set CustomUI Setting
@@ -120,10 +163,97 @@ class WidgetPlugin implements CallbackListener, Plugin
 	/**
 	 * Unload the plugin and its resources
 	 */
-	public function unload()
-	{
+	public function unload() {
 		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
 		unset($this->maniaControl);
+	}
+
+	/**
+	 * Handle ManiaControl OnInit callback
+	 *
+	 * @param array $callback
+	 */
+	public function handleOnInit(array $callback) {
+		// Display Map Widget
+		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED)) {
+			$this->displayMapWidget();
+		}
+		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_ACTIVATED)) {
+			$this->displayClockWidget();
+		}
+		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_SERVERINFO_WIDGET_ACTIVATED)) {
+			$this->displayServerInfoWidget();
+		}
+	}
+
+	/**
+	 * Displays the Map Widget
+	 *
+	 * @param String $login
+	 */
+	public function displayMapWidget($login = false) {
+		$pos_x = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_POSX);
+		$pos_y = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_POSY);
+		$width = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_WIDTH);
+		$height = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_HEIGHT);
+		$quadStyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
+		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
+
+		$maniaLink = new ManiaLink(self::MLID_MAPWIDGET);
+		$script = new Script();
+		$maniaLink->setScript($script);
+
+		// mainframe
+		$frame = new Frame();
+		$maniaLink->add($frame);
+		$frame->setSize($width, $height);
+		$frame->setPosition($pos_x, $pos_y);
+
+		// Background Quad
+		$backgroundQuad = new Quad();
+		$frame->add($backgroundQuad);
+		$backgroundQuad->setSize($width, $height);
+		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
+		$script->addMapInfoButton($backgroundQuad);
+
+		$map = $this->maniaControl->mapManager->getCurrentMap();
+
+		$label = new Label_Text();
+		$frame->add($label);
+		$label->setY(1.5);
+		$label->setX(0);
+		$label->setAlign(Control::CENTER, Control::CENTER);
+		$label->setZ(0.2);
+		$label->setTextSize(1.3);
+		$label->setText($map->name);
+		$label->setTextColor("FFF");
+
+		$label = new Label_Text();
+		$frame->add($label);
+		$label->setX(0);
+		$label->setY(-1.4);
+
+		$label->setAlign(Control::CENTER, Control::CENTER);
+		$label->setZ(0.2);
+		$label->setTextSize(1);
+		$label->setScale(0.8);
+		$label->setText($map->authorLogin);
+		$label->setTextColor("FFF");
+
+		if(isset($map->mx->pageurl)) {
+			$quad = new Quad();
+			$frame->add($quad);
+			$quad->setImage("http://wiki.maniaplanet.com/pool/images/b/bf/ManiaExchange_logo.png"); // TODO include image into
+			// maniacontrol
+			$quad->setPosition(-$width / 2 + 4, -1.5, -0.5);
+			$quad->setSize(4, 4);
+			$quad->setHAlign(Control::CENTER);
+			$quad->setUrl($map->mx->pageurl);
+		}
+
+		// Send manialink
+		$manialinkText = $maniaLink->render()->saveXML();
+		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $login);
 	}
 
 	/**
@@ -131,8 +261,7 @@ class WidgetPlugin implements CallbackListener, Plugin
 	 *
 	 * @param bool $login
 	 */
-	public function displayClockWidget($login = false)
-	{
+	public function displayClockWidget($login = false) {
 		$pos_x = $this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_POSX);
 		$pos_y = $this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_POSY);
 		$width = $this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_WIDTH);
@@ -172,113 +301,11 @@ class WidgetPlugin implements CallbackListener, Plugin
 	}
 
 	/**
-	 * Displays the Next Map (Only at the end of the Map)
-	 *
-	 * @param bool $login
-	 */
-	public function displayNextMapWidget($login = false)
-	{
-		$pos_x = $this->maniaControl->settingManager->getSetting($this, self::SETTING_NEXTMAP_WIDGET_POSX);
-		$pos_y = $this->maniaControl->settingManager->getSetting($this, self::SETTING_NEXTMAP_WIDGET_POSY);
-		$width = $this->maniaControl->settingManager->getSetting($this, self::SETTING_NEXTMAP_WIDGET_WIDTH);
-		$height = $this->maniaControl->settingManager->getSetting($this, self::SETTING_NEXTMAP_WIDGET_HEIGHT);
-		$quadStyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
-		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
-		$labelStyle = $this->maniaControl->manialinkManager->styleManager->getDefaultLabelStyle();
-
-		$maniaLink = new ManiaLink(self::MLID_NEXTMAPWIDGET);
-
-		// mainframe
-		$frame = new Frame();
-		$maniaLink->add($frame);
-		$frame->setSize($width, $height);
-		$frame->setPosition($pos_x, $pos_y);
-
-		// Background Quad
-		$backgroundQuad = new Quad();
-		$frame->add($backgroundQuad);
-		$backgroundQuad->setSize($width, $height);
-		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-
-		// Check if the Next Map is a queued Map
-		$queuedMap = $this->maniaControl->mapManager->mapQueue->getNextMap();
-
-		/**
-		 * @var Player $requester
-		 */
-		$requester = null;
-		// if the nextmap is not a queued map, get it from map info
-		if ($queuedMap == null) {
-			$this->maniaControl->client->query("GetNextMapInfo");
-			$map = $this->maniaControl->client->getResponse();
-			$name = $map['Name'];
-			$author = $map['Author'];
-		} else {
-			$requester = $queuedMap[0];
-			$map = $queuedMap[1];
-			$name = $map->name;
-			$author = $map->authorLogin;
-		}
-
-		$label = new Label_Text();
-		$frame->add($label);
-		$label->setY($height / 2 - 2.3);
-		$label->setX(0);
-		$label->setAlign(Control::CENTER, Control::CENTER);
-		$label->setZ(0.2);
-		$label->setTextSize(1);
-		$label->setText("Next Map");
-		$label->setTextColor("FFF");
-		$label->setStyle($labelStyle);
-
-		$label = new Label_Text();
-		$frame->add($label);
-		$label->setY($height / 2 - 5.5);
-		$label->setX(0);
-		$label->setAlign(Control::CENTER, Control::CENTER);
-		$label->setZ(0.2);
-		$label->setTextSize(1.3);
-		$label->setText($name);
-		$label->setTextColor("FFF");
-
-		$label = new Label_Text();
-		$frame->add($label);
-		$label->setX(0);
-		$label->setY(-$height / 2 + 4);
-
-		$label->setAlign(Control::CENTER, Control::CENTER);
-		$label->setZ(0.2);
-		$label->setTextSize(1);
-		$label->setScale(0.8);
-		$label->setText($author);
-		$label->setTextColor("FFF");
-
-		if ($requester != null) {
-			$label = new Label_Text();
-			$frame->add($label);
-			$label->setX(0);
-			$label->setY(-$height / 2 + 2);
-			$label->setAlign(Control::CENTER, Control::CENTER);
-			$label->setZ(0.2);
-			$label->setTextSize(1);
-			$label->setScale(0.7);
-			$label->setText($author);
-			$label->setTextColor("F80");
-			$label->setText("Requested by " . $requester->nickname);
-		}
-
-		// Send manialink
-		$manialinkText = $maniaLink->render()->saveXML();
-		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $login);
-	}
-
-	/**
 	 * Displays the Server Info Widget
 	 *
 	 * @param String $login
 	 */
-	public function displayServerInfoWidget($login = false)
-	{
+	public function displayServerInfoWidget($login = false) {
 		$pos_x = $this->maniaControl->settingManager->getSetting($this, self::SETTING_SERVERINFO_WIDGET_POSX);
 		$pos_y = $this->maniaControl->settingManager->getSetting($this, self::SETTING_SERVERINFO_WIDGET_POSY);
 		$width = $this->maniaControl->settingManager->getSetting($this, self::SETTING_SERVERINFO_WIDGET_WIDTH);
@@ -315,10 +342,11 @@ class WidgetPlugin implements CallbackListener, Plugin
 		 * @var Player $player
 		 */
 		foreach ($players as $player) {
-			if ($player->isSpectator)
+			if($player->isSpectator) {
 				$spectatorCount++;
-			else
+			} else {
 				$playerCount++;
+			}
 		}
 
 
@@ -381,22 +409,56 @@ class WidgetPlugin implements CallbackListener, Plugin
 	}
 
 	/**
-	 * Displays the Map Widget
+	 * Handle on Begin Map
 	 *
-	 * @param String $login
+	 * @param array $callback
 	 */
-	public function displayMapWidget($login = false)
-	{
-		$pos_x = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_POSX);
-		$pos_y = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_POSY);
-		$width = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_WIDTH);
-		$height = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_HEIGHT);
+	public function handleOnBeginMap(array $callback) {
+		// Display Map Widget
+		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED)) {
+			$this->displayMapWidget();
+		}
+		$this->closeWidget(self::MLID_NEXTMAPWIDGET);
+	}
+
+	/**
+	 * Closes a Widget
+	 *
+	 * @param $widgetId
+	 */
+	public function closeWidget($widgetId) {
+		$emptyManialink = new ManiaLink($widgetId);
+		$manialinkText = $emptyManialink->render()->saveXML();
+		$this->maniaControl->manialinkManager->sendManialink($manialinkText);
+	}
+
+	/**
+	 * Handle on End Map
+	 *
+	 * @param array $callback
+	 */
+	public function handleOnEndMap(array $callback) {
+		// Display Map Widget
+		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_NEXTMAP_WIDGET_ACTIVATED)) {
+			$this->displayNextMapWidget();
+		}
+	}
+
+	/**
+	 * Displays the Next Map (Only at the end of the Map)
+	 *
+	 * @param bool $login
+	 */
+	public function displayNextMapWidget($login = false) {
+		$pos_x = $this->maniaControl->settingManager->getSetting($this, self::SETTING_NEXTMAP_WIDGET_POSX);
+		$pos_y = $this->maniaControl->settingManager->getSetting($this, self::SETTING_NEXTMAP_WIDGET_POSY);
+		$width = $this->maniaControl->settingManager->getSetting($this, self::SETTING_NEXTMAP_WIDGET_WIDTH);
+		$height = $this->maniaControl->settingManager->getSetting($this, self::SETTING_NEXTMAP_WIDGET_HEIGHT);
 		$quadStyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
 		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
+		$labelStyle = $this->maniaControl->manialinkManager->styleManager->getDefaultLabelStyle();
 
-		$maniaLink = new ManiaLink(self::MLID_MAPWIDGET);
-		$script = new Script();
-		$maniaLink->setScript($script);
+		$maniaLink = new ManiaLink(self::MLID_NEXTMAPWIDGET);
 
 		// mainframe
 		$frame = new Frame();
@@ -409,41 +471,72 @@ class WidgetPlugin implements CallbackListener, Plugin
 		$frame->add($backgroundQuad);
 		$backgroundQuad->setSize($width, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-		$script->addMapInfoButton($backgroundQuad);
 
-		$map = $this->maniaControl->mapManager->getCurrentMap();
+		// Check if the Next Map is a queued Map
+		$queuedMap = $this->maniaControl->mapManager->mapQueue->getNextMap();
+
+		/**
+		 * @var Player $requester
+		 */
+		$requester = null;
+		// if the nextmap is not a queued map, get it from map info
+		if($queuedMap == null) {
+			$this->maniaControl->client->query("GetNextMapInfo");
+			$map = $this->maniaControl->client->getResponse();
+			$name = $map['Name'];
+			$author = $map['Author'];
+		} else {
+			$requester = $queuedMap[0];
+			$map = $queuedMap[1];
+			$name = $map->name;
+			$author = $map->authorLogin;
+		}
 
 		$label = new Label_Text();
 		$frame->add($label);
-		$label->setY(1.5);
+		$label->setY($height / 2 - 2.3);
+		$label->setX(0);
+		$label->setAlign(Control::CENTER, Control::CENTER);
+		$label->setZ(0.2);
+		$label->setTextSize(1);
+		$label->setText("Next Map");
+		$label->setTextColor("FFF");
+		$label->setStyle($labelStyle);
+
+		$label = new Label_Text();
+		$frame->add($label);
+		$label->setY($height / 2 - 5.5);
 		$label->setX(0);
 		$label->setAlign(Control::CENTER, Control::CENTER);
 		$label->setZ(0.2);
 		$label->setTextSize(1.3);
-		$label->setText($map->name);
+		$label->setText($name);
 		$label->setTextColor("FFF");
 
 		$label = new Label_Text();
 		$frame->add($label);
 		$label->setX(0);
-		$label->setY(-1.4);
+		$label->setY(-$height / 2 + 4);
 
 		$label->setAlign(Control::CENTER, Control::CENTER);
 		$label->setZ(0.2);
 		$label->setTextSize(1);
 		$label->setScale(0.8);
-		$label->setText($map->authorLogin);
+		$label->setText($author);
 		$label->setTextColor("FFF");
 
-		if (isset($map->mx->pageurl)) {
-			$quad = new Quad();
-			$frame->add($quad);
-			$quad->setImage("http://wiki.maniaplanet.com/pool/images/b/bf/ManiaExchange_logo.png"); // TODO include image into
-			// maniacontrol
-			$quad->setPosition(-$width / 2 + 4, -1.5, -0.5);
-			$quad->setSize(4, 4);
-			$quad->setHAlign(Control::CENTER);
-			$quad->setUrl($map->mx->pageurl);
+		if($requester != null) {
+			$label = new Label_Text();
+			$frame->add($label);
+			$label->setX(0);
+			$label->setY(-$height / 2 + 2);
+			$label->setAlign(Control::CENTER, Control::CENTER);
+			$label->setZ(0.2);
+			$label->setTextSize(1);
+			$label->setScale(0.7);
+			$label->setText($author);
+			$label->setTextColor("F80");
+			$label->setText("Requested by " . $requester->nickname);
 		}
 
 		// Send manialink
@@ -452,79 +545,20 @@ class WidgetPlugin implements CallbackListener, Plugin
 	}
 
 	/**
-	 * Closes a Widget
-	 *
-	 * @param $widgetId
-	 */
-	public function closeWidget($widgetId)
-	{
-		$emptyManialink = new ManiaLink($widgetId);
-		$manialinkText = $emptyManialink->render()->saveXML();
-		$this->maniaControl->manialinkManager->sendManialink($manialinkText);
-	}
-
-	/**
-	 * Handle ManiaControl OnInit callback
-	 *
-	 * @param array $callback
-	 */
-	public function handleOnInit(array $callback)
-	{
-		// Display Map Widget
-		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED)) {
-			$this->displayMapWidget();
-		}
-		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_ACTIVATED)) {
-			$this->displayClockWidget();
-		}
-		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_SERVERINFO_WIDGET_ACTIVATED)) {
-			$this->displayServerInfoWidget();
-		}
-	}
-
-	/**
-	 * Handle on Begin Map
-	 *
-	 * @param array $callback
-	 */
-	public function handleOnBeginMap(array $callback)
-	{
-		// Display Map Widget
-		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED)) {
-			$this->displayMapWidget();
-		}
-		$this->closeWidget(self::MLID_NEXTMAPWIDGET);
-	}
-
-	/**
-	 * Handle on End Map
-	 *
-	 * @param array $callback
-	 */
-	public function handleOnEndMap(array $callback)
-	{
-		// Display Map Widget
-		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_NEXTMAP_WIDGET_ACTIVATED)) {
-			$this->displayNextMapWidget();
-		}
-	}
-
-	/**
 	 * Handle PlayerConnect callback
 	 *
 	 * @param array $callback
 	 */
-	public function handlePlayerConnect(array $callback)
-	{
+	public function handlePlayerConnect(array $callback) {
 		$player = $callback[1];
 		// Display Map Widget
-		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED)) {
+		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED)) {
 			$this->displayMapWidget($player->login);
 		}
-		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_ACTIVATED)) {
+		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_ACTIVATED)) {
 			$this->displayClockWidget($player->login);
 		}
-		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_SERVERINFO_WIDGET_ACTIVATED)) {
+		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_SERVERINFO_WIDGET_ACTIVATED)) {
 			$this->displayServerInfoWidget($player->login);
 		}
 	}
@@ -534,60 +568,9 @@ class WidgetPlugin implements CallbackListener, Plugin
 	 *
 	 * @param array $callback
 	 */
-	public function handleEveryMinute(array $callback)
-	{
-		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_ACTIVATED)) {
+	public function handleEveryMinute(array $callback) {
+		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_ACTIVATED)) {
 			$this->displayClockWidget();
 		}
-	}
-
-	/**
-	 * Get plugin id
-	 *
-	 * @return int
-	 */
-	public static function getId()
-	{
-		return self::PLUGIN_ID;
-	}
-
-	/**
-	 * Get Plugin Name
-	 *
-	 * @return string
-	 */
-	public static function getName()
-	{
-		return self::PLUGIN_NAME;
-	}
-
-	/**
-	 * Get Plugin Version
-	 *
-	 * @return float,,
-	 */
-	public static function getVersion()
-	{
-		return self::PLUGIN_VERSION;
-	}
-
-	/**
-	 * Get Plugin Author
-	 *
-	 * @return string
-	 */
-	public static function getAuthor()
-	{
-		return self::PLUGIN_AUTHOR;
-	}
-
-	/**
-	 * Get Plugin Description
-	 *
-	 * @return string
-	 */
-	public static function getDescription()
-	{
-		return null;
 	}
 }
