@@ -2,14 +2,12 @@
 
 namespace ManiaControl\Manialinks;
 
-
 use FML\CustomUI;
 use ManiaControl\ManiaControl;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
-
 
 /**
  * Class managing the Custom UI Settings
@@ -58,11 +56,7 @@ class CustomUIManager implements CallbackListener {
 	 * @param Player $player        	
 	 */
 	private function updateManialink(Player $player = null) {
-		// TODO: improve rendering after FML update
-		$domDocument = new \DOMDocument();
-		$element = $this->customUI->render($domDocument);
-		$domDocument->appendChild($element);
-		$manialinkText = $domDocument->saveXML();
+		$manialinkText = $this->customUI->render()->saveXML();
 		if ($player) {
 			$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
 			return;
