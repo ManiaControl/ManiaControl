@@ -119,7 +119,8 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	 *
 	 * @param array $callback
 	 */
-	public function handlePlayerJoined(array $callback, Player $player) {
+	public function handlePlayerJoined(array $callback) {
+		$player = $callback[1];
 		$manialinkText = $this->buildMenuIconsManialink()->render()->saveXML();
 		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
 	}
