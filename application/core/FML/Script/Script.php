@@ -391,7 +391,7 @@ if (Event.Control.HasClass(\"" . self::CLASS_PAGER . "\")) {
 	foreach (PageControl in Page.GetClassChildren_Result) {
 		if (!PageControl.HasClass(PagesId)) continue;
 		declare PageLabel <=> (PageControl as CMlLabel);
-		PageLabel.Value = (FML_PageNumber[PagesId]+1)^\"/\"^(FML_MaxPageNumber[PagesId]+1);
+		PageLabel.Value = FML_PageNumber[PagesId]^\"/\"^FML_MaxPageNumber[PagesId];
 	}
 }";
 		$pagesLabels = Builder::getLabelImplementationBlock(self::LABEL_MOUSECLICK, $pagesScript);
