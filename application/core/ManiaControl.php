@@ -14,6 +14,7 @@ use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\PluginManager;
 use ManiaControl\Server\Server;
+use StatisticManager;
 
 require_once __DIR__ . '/Callbacks/CallbackListener.php';
 require_once __DIR__ . '/Commands/CommandListener.php';
@@ -32,6 +33,7 @@ require_once __DIR__ . '/GbxDataFetcher/gbxdatafetcher.inc.php';
 require_once __DIR__ . '/ManiaExchange/mxinfofetcher.inc.php';
 require_once __DIR__ . '/ManiaExchange/mxinfosearcher.inc.php';
 require_once __DIR__ . '/Manialinks/ManialinkManager.php';
+require_once __DIR__ .  '/Statistics/StatisticManager.php';
 require_once __DIR__ . '/Maps/Map.php';
 require_once __DIR__ . '/Maps/MapManager.php';
 require_once __DIR__ . '/Maps/MapList.php';
@@ -85,8 +87,9 @@ class ManiaControl implements CommandListener {
 	public $pluginManager = null;
 	public $server = null;
 	public $settingManager = null;
+	public $statisticManager = null;
 	public $updateManager = null;
-	
+
 	/**
 	 * Private properties
 	 */
@@ -102,6 +105,7 @@ class ManiaControl implements CommandListener {
 		$this->database = new Database($this);
 		$this->callbackManager = new CallbackManager($this);
 		$this->settingManager = new SettingManager($this);
+		$this->statisticManager = new StatisticManager($this);
 		$this->manialinkManager = new ManialinkManager($this);
 		$this->actionsMenu = new ActionsMenu($this);
 		$this->chat = new Chat($this);
@@ -113,7 +117,7 @@ class ManiaControl implements CommandListener {
 		$this->configurator = new Configurator($this);
 		$this->pluginManager = new PluginManager($this);
 		$this->updateManager = new UpdateManager($this);
-		
+
 		// Register for commands
 		$this->commandManager->registerCommandListener('version', $this, 'command_Version');
 	}
