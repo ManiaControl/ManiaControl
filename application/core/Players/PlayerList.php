@@ -165,32 +165,33 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			$playerFrame->setY($y);
 			
 			// Team Emblem
-			if ($listPlayer->teamId >= 0) { // Player is in a Team
-				$redQuad = new Quad_Emblems(); // TODO rename quads
-				$playerFrame->add($redQuad);
-				$redQuad->setX($x + 10);
-				$redQuad->setZ(0.1);
-				$redQuad->setSize(3.8, 3.8);
+			if ($listPlayer->teamId >= 0) {
+				// Player is in a Team
+				$teamQuad = new Quad_Emblems();
+				$playerFrame->add($teamQuad);
+				$teamQuad->setX($x + 10);
+				$teamQuad->setZ(0.1);
+				$teamQuad->setSize(3.8, 3.8);
 				
 				switch ($listPlayer->teamId) {
 					case 0:
-						$redQuad->setSubStyle($redQuad::SUBSTYLE_1);
+						$teamQuad->setSubStyle($redQuad::SUBSTYLE_1);
 						break;
 					case 1:
-						$redQuad->setSubStyle($redQuad::SUBSTYLE_2);
+						$teamQuad->setSubStyle($redQuad::SUBSTYLE_2);
 						break;
 				}
 			}
-			else if ($listPlayer->isSpectator) { // Player is in Spectator Mode
-				$neutralQuad = new Quad_BgRaceScore2();
-				$playerFrame->add($neutralQuad);
-				$neutralQuad->setX($x + 10);
-				$neutralQuad->setZ(0.1);
-				$neutralQuad->setSubStyle($neutralQuad::SUBSTYLE_Spectator);
-				$neutralQuad->setSize(3.8, 3.8);
+			else if ($listPlayer->isSpectator) {
+				// Player is in Spectator Mode
+				$specQuad = new Quad_BgRaceScore2();
+				$playerFrame->add($specQuad);
+				$specQuad->setX($x + 10);
+				$specQuad->setZ(0.1);
+				$specQuad->setSubStyle($neutralQuad::SUBSTYLE_Spectator);
+				$specQuad->setSize(3.8, 3.8);
 			}
 			
-			// Display country quad only on normal players
 			if (!$listPlayer->isFakePlayer()) {
 				// Nation Quad
 				$countryQuad = new Quad();
@@ -276,7 +277,6 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			$rightLabel->setTextColor("fff");
 			
 			if ($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)) {
-				
 				// Further Player actions Quad
 				$playerQuad = new Quad_Icons64x64_1();
 				$playerFrame->add($playerQuad);
