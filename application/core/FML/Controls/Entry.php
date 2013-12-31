@@ -14,7 +14,7 @@ use FML\Types\TextFormatable;
  */
 class Entry extends Control implements NewLineable, Scriptable, Styleable, TextFormatable {
 	/**
-	 * Protected properties
+	 * Protected Properties
 	 */
 	protected $name = '';
 	protected $default = null;
@@ -27,7 +27,7 @@ class Entry extends Control implements NewLineable, Scriptable, Styleable, TextF
 	protected $areaFocusColor = '';
 
 	/**
-	 * Construct a new entry control
+	 * Construct a new Entry Control
 	 *
 	 * @param string $id        	
 	 */
@@ -37,9 +37,10 @@ class Entry extends Control implements NewLineable, Scriptable, Styleable, TextF
 	}
 
 	/**
-	 * Set name
+	 * Set Entry Name
 	 *
-	 * @param string $name        	
+	 * @param string $name
+	 *        	Entry Name
 	 * @return \FML\Controls\Entry
 	 */
 	public function setName($name) {
@@ -48,9 +49,10 @@ class Entry extends Control implements NewLineable, Scriptable, Styleable, TextF
 	}
 
 	/**
-	 * Set default
+	 * Set Default Value
 	 *
-	 * @param string $default        	
+	 * @param string $default
+	 *        	Default Value
 	 * @return \FML\Controls\Entry
 	 */
 	public function setDefault($default) {

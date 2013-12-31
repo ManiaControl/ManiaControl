@@ -37,10 +37,11 @@ class Quad_UiSMSpectatorScoreBig extends Quad {
 	CONST SUBSTYLE_UIRange2Bg = 'UIRange2Bg';
 
 	/**
-	 * Construct UiSMSpectatorScoreBig quad
+	 *
+	 * @see \FML\Controls\Quad
 	 */
-	public function __construct() {
-		parent::__construct();
+	public function __construct($id = null) {
+		parent::__construct($id);
 		$this->setStyle(self::STYLE);
 	}
 }

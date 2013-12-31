@@ -101,10 +101,11 @@ class Quad_Icons64x64_1 extends Quad {
 	const SUBSTYLE_YellowLow = 'YellowLow';
 
 	/**
-	 * Construct Icons64x64_1 quad
+	 *
+	 * @see \FML\Controls\Quad
 	 */
-	public function __construct() {
-		parent::__construct();
+	public function __construct($id = null) {
+		parent::__construct($id);
 		$this->setStyle(self::STYLE);
 	}
 }

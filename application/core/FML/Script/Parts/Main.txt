@@ -1,7 +1,8 @@
 Void Dummy() {}
-
 main() {
+	declare FML_ScriptStart = Now;
 	+++OnInit+++
+	declare FML_LoopCounter = 0;
 	while (True) {
 		yield;
 		foreach (Event in PendingEvents) {
@@ -24,5 +25,6 @@ main() {
 			}
 		}
 		+++Loop+++
+		FML_LoopCounter += 1;
 	}
 }

@@ -9,15 +9,16 @@ namespace FML\Elements;
  */
 class Music implements Renderable {
 	/**
-	 * Protected properties
+	 * Protected Properties
 	 */
 	protected $data = '';
 	protected $tagName = 'music';
 
 	/**
-	 * Set data
+	 * Set Data Url
 	 *
-	 * @param string $data        	
+	 * @param string $data
+	 *        	Media Url
 	 * @return \FML\Elements\Music
 	 */
 	public function setData($data) {

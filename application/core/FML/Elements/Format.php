@@ -9,7 +9,7 @@ namespace FML\Elements;
  */
 class Format implements BgColorable, Renderable, Styleable, TextFormatable {
 	/**
-	 * Protected properties
+	 * Protected Properties
 	 */
 	protected $tagName = 'format';
 

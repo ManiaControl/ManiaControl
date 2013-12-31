@@ -9,16 +9,17 @@ namespace FML;
  */
 class ManiaLinks {
 	/**
-	 * Protected properties
+	 * Protected Properties
 	 */
 	protected $encoding = 'utf-8';
 	protected $tagName = 'manialinks';
 	protected $children = array();
 
 	/**
-	 * Set xml encoding
+	 * Set XML Encoding
 	 *
-	 * @param string $encoding        	
+	 * @param string $encoding
+	 *        	XML Encoding
 	 * @return \FML\ManiaLinks
 	 */
 	public function setXmlEncoding($encoding) {
@@ -27,18 +28,21 @@ class ManiaLinks {
 	}
 
 	/**
-	 * Add a child manialink
+	 * Add a Child Manialink
 	 *
-	 * @param ManiaLink $child        	
+	 * @param ManiaLink $child
+	 *        	Child Manialink
 	 * @return \FML\ManiaLinks
 	 */
 	public function add(ManiaLink $child) {
-		array_push($this->children, $child);
+		if (!in_array($child, $this->children)) {
+			array_push($this->children, $child);
+		}
 		return $this;
 	}
 
 	/**
-	 * Remove all child manialinks
+	 * Remove all Child Manialinks
 	 *
 	 * @return \FML\ManiaLinks
 	 */
@@ -48,7 +52,7 @@ class ManiaLinks {
 	}
 
 	/**
-	 * Render the xml document
+	 * Render the XML Document
 	 *
 	 * @param bool $echo
 	 *        	If the xml should be echoed and the content-type header should be set

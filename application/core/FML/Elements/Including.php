@@ -9,15 +9,16 @@ namespace FML\Elements;
  */
 class Including implements Renderable {
 	/**
-	 * Protected properties
+	 * Protected Properties
 	 */
 	protected $url = '';
 	protected $tagName = 'include';
 
 	/**
-	 * Set url
+	 * Set Url
 	 *
-	 * @param string $url        	
+	 * @param string $url
+	 *        	Include Url
 	 */
 	public function setUrl($url) {
 		$this->url = $url;
@@ -29,7 +30,9 @@ class Including implements Renderable {
 	 */
 	public function render(\DOMDocument $domDocument) {
 		$xml = $domDocument->createElement($this->tagName);
-		$xml->setAttribute('url', $this->url);
+		if ($this->url) {
+			$xml->setAttribute('url', $this->url);
+		}
 		return $xml;
 	}
 }

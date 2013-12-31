@@ -16,7 +16,7 @@ use FML\Types\SubStyleable;
  */
 class Quad extends Control implements Actionable, BgColorable, Linkable, Scriptable, Styleable, SubStyleable {
 	/**
-	 * Protected properties
+	 * Protected Properties
 	 */
 	protected $image = '';
 	protected $imageFocus = '';
@@ -31,9 +31,10 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	protected $subStyle = '';
 
 	/**
-	 * Construct a new quad control
+	 * Construct a new Quad Control
 	 *
-	 * @param string $id        	
+	 * @param string $id
+	 *        	Control Id
 	 */
 	public function __construct($id = null) {
 		parent::__construct($id);
@@ -42,9 +43,10 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	}
 
 	/**
-	 * Set image
+	 * Set Image Url
 	 *
-	 * @param string $image        	
+	 * @param string $image
+	 *        	Image Url
 	 * @return \FML\Controls\Quad
 	 */
 	public function setImage($image) {
@@ -53,9 +55,10 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	}
 
 	/**
-	 * Set focus image
+	 * Set Focus Image Url
 	 *
-	 * @param string $imageFocus        	
+	 * @param string $imageFocus
+	 *        	Focus Image Url
 	 * @return \FML\Controls\Quad
 	 */
 	public function setImageFocus($imageFocus) {
@@ -64,9 +67,10 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	}
 
 	/**
-	 * Set colorize
+	 * Set Colorization
 	 *
-	 * @param string $colorize        	
+	 * @param string $colorize
+	 *        	Colorize Value
 	 * @return \FML\Controls\Quad
 	 */
 	public function setColorize($colorize) {
@@ -75,9 +79,10 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	}
 
 	/**
-	 * Set modulize color
+	 * Set Modulization
 	 *
-	 * @param string $modulizeColor        	
+	 * @param string $modulizeColor
+	 *        	Modulize Value
 	 * @return \FML\Controls\Quad
 	 */
 	public function setModulizeColor($modulizeColor) {

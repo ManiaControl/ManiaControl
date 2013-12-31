@@ -10,14 +10,15 @@ namespace FML\Types;
 interface Container {
 
 	/**
-	 * Add a new child
+	 * Add a new Child
 	 *
-	 * @param Renderable $child        	
+	 * @param Renderable $child
+	 *        	The child to add
 	 */
 	public function add(Renderable $child);
 
 	/**
-	 * Remove all children
+	 * Remove all Children
 	 */
 	public function removeChildren();
 }

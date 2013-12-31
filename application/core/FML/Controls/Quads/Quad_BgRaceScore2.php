@@ -43,10 +43,11 @@ class Quad_BgRaceScore2 extends Quad {
 	const SUBSTYLE_Warmup = 'Warmup';
 
 	/**
-	 * Construct BgRaceScore2 quad
+	 *
+	 * @see \FML\Controls\Quad
 	 */
-	public function __construct() {
-		parent::__construct();
+	public function __construct($id = null) {
+		parent::__construct($id);
 		$this->setStyle(self::STYLE);
 	}
 }

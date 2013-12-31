@@ -11,13 +11,13 @@ use FML\Types\Renderable;
  */
 class SimpleScript implements Renderable {
 	/**
-	 * Protected properties
+	 * Protected Properties
 	 */
 	protected $tagName = 'script';
 	protected $text = '';
 
 	/**
-	 * Set script text
+	 * Set Script Text
 	 *
 	 * @param string $text        	
 	 * @return \FML\Script\Script

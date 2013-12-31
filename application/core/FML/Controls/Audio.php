@@ -3,16 +3,17 @@
 namespace FML\Controls;
 
 /**
- * Class representing audio (CMlMediaPlayer)
+ * Class representing Audio (CMlMediaPlayer)
  *
  * @author steeffeen
  */
 class Audio extends Control implements Playable, Scriptable {
 
 	/**
-	 * Construct a new audio control
+	 * Construct a new Audio Control
 	 *
-	 * @param string $id        	
+	 * @param string $id
+	 *        	Control Id
 	 */
 	public function __construct($id = null) {
 		parent::__construct($id);

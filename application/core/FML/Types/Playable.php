@@ -10,37 +10,42 @@ namespace FML\Types;
 interface Playable {
 
 	/**
-	 * Set data
+	 * Set Data
 	 *
-	 * @param string $data        	
+	 * @param string $data
+	 *        	Media Url
 	 */
 	public function setData($data);
 
 	/**
-	 * Set play
+	 * Set Play
 	 *
-	 * @param bool $play        	
+	 * @param bool $play
+	 *        	If the Control should start playing automatically
 	 */
 	public function setPlay($play);
 
 	/**
-	 * Set looping
+	 * Set Looping
 	 *
-	 * @param bool $looping        	
+	 * @param bool $looping
+	 *        	If the Control should playback looping
 	 */
 	public function setLooping($looping);
 
 	/**
-	 * Set music
+	 * Set Music
 	 *
-	 * @param bool $music        	
+	 * @param bool $music
+	 *        	If the Control is Background Music
 	 */
 	public function setMusic($music);
 
 	/**
-	 * Set volume
+	 * Set Volume
 	 *
-	 * @param float $volume        	
+	 * @param float $volume
+	 *        	Control Volume
 	 */
 	public function setVolume($volume);
 }

@@ -10,7 +10,10 @@ namespace FML\Controls;
 class Video extends Control implements Playable, Scriptable {
 
 	/**
-	 * Construct a new video control
+	 * Construct a new Video Control
+	 *
+	 * @param string $id
+	 *        	Control Id
 	 */
 	public function __construct($id = null) {
 		parent::__construct($id);

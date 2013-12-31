@@ -10,9 +10,10 @@ namespace FML\Types;
 interface NewLineable {
 
 	/**
-	 * Set auto new line
+	 * Set Auto New Line
 	 *
-	 * @param bool $autoNewLine        	
+	 * @param bool $autoNewLine
+	 *        	If the Control should insert New Lines automatically
 	 */
 	public function setAutoNewLine($autoNewLine);
 }

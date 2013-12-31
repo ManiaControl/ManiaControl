@@ -10,9 +10,10 @@ namespace FML\Types;
 interface Scriptable {
 
 	/**
-	 * Set scriptevents
+	 * Set ScriptEvents
 	 *
 	 * @param bool $scriptEvents
+	 *        	If Script Events should be enabled
 	 */
 	public function setScriptEvents($scriptEvents);
 }

@@ -11,7 +11,7 @@ use FML\Types\Styleable;
  */
 class Gauge extends Control implements Styleable {
 	/**
-	 * Protected properties
+	 * Protected Properties
 	 */
 	protected $ratio = 1.;
 	protected $grading = 1.;
@@ -24,9 +24,10 @@ class Gauge extends Control implements Styleable {
 	protected $style = '';
 
 	/**
-	 * Construct a new gauge control
+	 * Construct a new Gauge Control
 	 *
-	 * @param string $id        	
+	 * @param string $id
+	 *        	Control Id
 	 */
 	public function __construct($id = null) {
 		parent::__construct($id);
@@ -34,9 +35,10 @@ class Gauge extends Control implements Styleable {
 	}
 
 	/**
-	 * Set ratio
+	 * Set Ratio
 	 *
-	 * @param float $ratio        	
+	 * @param float $ratio
+	 *        	Ratio Value
 	 * @return \FML\Controls\Gauge
 	 */
 	public function setRatio($ratio) {
@@ -45,9 +47,10 @@ class Gauge extends Control implements Styleable {
 	}
 
 	/**
-	 * Set grading
+	 * Set Grading
 	 *
-	 * @param float $grading        	
+	 * @param float $grading
+	 *        	Grading Value
 	 * @return \FML\Controls\Gauge
 	 */
 	public function setGrading($grading) {
@@ -56,9 +59,10 @@ class Gauge extends Control implements Styleable {
 	}
 
 	/**
-	 * Set color
+	 * Set Color
 	 *
-	 * @param string $color        	
+	 * @param string $color
+	 *        	Gauge Color
 	 * @return \FML\Controls\Gauge
 	 */
 	public function setColor($color) {
@@ -67,9 +71,10 @@ class Gauge extends Control implements Styleable {
 	}
 
 	/**
-	 * Set rotation
+	 * Set Rotation
 	 *
-	 * @param float $rotation        	
+	 * @param float $rotation
+	 *        	Gauge Rotation
 	 * @return \FML\Controls\Gauge
 	 */
 	public function setRotation($rotation) {
@@ -78,9 +83,10 @@ class Gauge extends Control implements Styleable {
 	}
 
 	/**
-	 * Set centered
+	 * Set Centered
 	 *
-	 * @param bool $centered        	
+	 * @param bool $centered
+	 *        	If Gauge is centered
 	 * @return \FML\Controls\Gauge
 	 */
 	public function setCentered($centered) {
@@ -89,9 +95,10 @@ class Gauge extends Control implements Styleable {
 	}
 
 	/**
-	 * Set clan
+	 * Set Clan
 	 *
-	 * @param int $clan        	
+	 * @param int $clan
+	 *        	Clan number
 	 * @return \FML\Controls\Gauge
 	 */
 	public function setClan($clan) {
@@ -100,9 +107,10 @@ class Gauge extends Control implements Styleable {
 	}
 
 	/**
-	 * Set draw background
+	 * Set Draw Background
 	 *
-	 * @param bool $drawBg        	
+	 * @param bool $drawBg
+	 *        	If Gauge Background should be drawn
 	 * @return \FML\Controls\Gauge
 	 */
 	public function setDrawBg($drawBg) {
@@ -111,9 +119,10 @@ class Gauge extends Control implements Styleable {
 	}
 
 	/**
-	 * Set draw block background
+	 * Set Draw Block Background
 	 *
-	 * @param bool $drawBlockBg        	
+	 * @param bool $drawBlockBg
+	 *        	If Gauge Block Background should be drawn
 	 * @return \FML\Controls\Gauge
 	 */
 	public function setDrawBlockBg($drawBlockBg) {
@@ -124,6 +133,7 @@ class Gauge extends Control implements Styleable {
 	/**
 	 *
 	 * @see \FML\Types\Styleable::setStyle()
+	 * @return \FML\Controls\Gauge
 	 */
 	public function setStyle($style) {
 		$this->style = $style;

@@ -7,13 +7,13 @@ use FML\Types\Renderable;
 use FML\Script\Script;
 
 /**
- * Class representing a manialink
+ * Class representing a Manialink
  *
  * @author steeffeen
  */
 class ManiaLink implements Container {
 	/**
-	 * Protected properties
+	 * Protected Properties
 	 */
 	protected $encoding = 'utf-8';
 	protected $tagName = 'manialink';
@@ -26,7 +26,10 @@ class ManiaLink implements Container {
 	protected $script = null;
 
 	/**
-	 * Construct a new manialink
+	 * Construct a new Manialink
+	 *
+	 * @param string $id
+	 *        	Manialink Id
 	 */
 	public function __construct($id = null) {
 		if ($id !== null) {
@@ -35,9 +38,10 @@ class ManiaLink implements Container {
 	}
 
 	/**
-	 * Set xml encoding
+	 * Set XML Encoding
 	 *
-	 * @param string $encoding        	
+	 * @param string $encoding
+	 *        	XML Encoding
 	 * @return \FML\ManiaLink
 	 */
 	public function setXmlEncoding($encoding) {
@@ -46,9 +50,10 @@ class ManiaLink implements Container {
 	}
 
 	/**
-	 * Set id
+	 * Set Manialink Id
 	 *
-	 * @param string $id        	
+	 * @param string $id
+	 *        	Manialink Id
 	 * @return \FML\ManiaLink
 	 */
 	public function setId($id) {
@@ -57,9 +62,10 @@ class ManiaLink implements Container {
 	}
 
 	/**
-	 * Set background
+	 * Set Background
 	 *
-	 * @param string $background        	
+	 * @param string $background
+	 *        	Background Value
 	 * @return \FML\ManiaLink
 	 */
 	public function setBackground($background) {
@@ -68,9 +74,10 @@ class ManiaLink implements Container {
 	}
 
 	/**
-	 * Set navigable3d
+	 * Set Navigable3d
 	 *
-	 * @param bool $navigable3d        	
+	 * @param bool $navigable3d
+	 *        	If the manialink is 3d navigable
 	 * @return \FML\ManiaLink
 	 */
 	public function setNavigable3d($navigable3d) {
@@ -79,9 +86,10 @@ class ManiaLink implements Container {
 	}
 
 	/**
-	 * Set timeout
+	 * Set Timeout
 	 *
-	 * @param int $timeout        	
+	 * @param int $timeout
+	 *        	Timeout Duration
 	 * @return \FML\ManiaLink
 	 */
 	public function setTimeout($timeout) {
@@ -121,11 +129,11 @@ class ManiaLink implements Container {
 	}
 
 	/**
-	 * Render the xml document
+	 * Render the XML Document
 	 *
 	 * @param bool $echo
 	 *        	If the xml should be echoed and the content-type header should be set
-     * @param \DOMDocument $domDocument
+	 * @param \DOMDocument $domDocument        	
 	 * @return \DOMDocument
 	 */
 	public function render($echo = false, $domDocument = null) {
@@ -161,7 +169,7 @@ class ManiaLink implements Container {
 			$manialink->appendChild($childXml);
 		}
 		if ($this->script) {
-            $scriptXml = $this->script->render($domDocument);
+			$scriptXml = $this->script->render($domDocument);
 			$manialink->appendChild($scriptXml);
 		}
 		if ($isChild) {
@@ -172,5 +180,16 @@ class ManiaLink implements Container {
 			echo $domDocument->saveXML();
 		}
 		return $domDocument;
+	}
+
+	/**
+	 * Get String Representation
+	 *
+	 * @return string
+	 */
+	public function __toString() {
+		$domDocument = $this->render();
+		$xmlText = $domDocument->saveXML();
+		return $xmlText;
 	}
 }

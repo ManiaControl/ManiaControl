@@ -10,16 +10,18 @@ namespace FML\Types;
 interface Linkable {
 
 	/**
-	 * Set url
+	 * Set Url
 	 *
-	 * @param string $url        	
+	 * @param string $url
+	 *        	Link Url
 	 */
 	public function setUrl($url);
 
 	/**
-	 * Set manialink
+	 * Set Manialink
 	 *
-	 * @param string $manialink        	
+	 * @param string $manialink
+	 *        	Manialink Name
 	 */
 	public function setManialink($manialink);
 }

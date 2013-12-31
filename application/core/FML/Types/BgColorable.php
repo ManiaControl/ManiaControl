@@ -4,15 +4,16 @@ namespace FML\Types;
 
 /**
  * Interface for elements with background color attribute
- * 
+ *
  * @author steeffeen
  */
 interface BgColorable {
 
 	/**
-	 * Set background color
+	 * Set Background Color
 	 *
-	 * @param string $bgColor        	
+	 * @param string $bgColor
+	 *        	Background Color
 	 */
 	public function setBgColor($bgColor);
 }

@@ -21,7 +21,7 @@ abstract class Control implements Renderable {
 	const LEFT = 'left';
 	
 	/**
-	 * Protected properties
+	 * Protected Properties
 	 */
 	protected $tagName = 'control';
 	protected $id = '';
@@ -37,9 +37,9 @@ abstract class Control implements Renderable {
 	protected $classes = array();
 
 	/**
-	 * Construct a new control
+	 * Construct a new Control
 	 *
-	 * @param string $id        	
+	 * @param string $id Control Id
 	 */
 	public function __construct($id = null) {
 		if ($id !== null) {
@@ -48,7 +48,7 @@ abstract class Control implements Renderable {
 	}
 
 	/**
-	 * Get control id
+	 * Get Control Id
 	 *
 	 * @return string
 	 */
@@ -57,9 +57,9 @@ abstract class Control implements Renderable {
 	}
 
 	/**
-	 * Set control id
+	 * Set Control Id
 	 *
-	 * @param string $id        	
+	 * @param string $id Control Id
 	 * @return \FML\Controls\Control
 	 */
 	public function setId($id) {
@@ -68,22 +68,35 @@ abstract class Control implements Renderable {
 	}
 
 	/**
-	 * Assign an unique id if necessary
+	 * Check Id for dangerous Characters and assign an unique Id if necessary
 	 *
 	 * @return \FML\Controls\Control
 	 */
-	public function assignId() {
-		if ($this->getId()) {
+	public function checkId() {
+		if (!$this->getId()) {
+			$this->setId(uniqid());
 			return $this;
 		}
-		$this->setId(uniqid());
+		$dangerousCharacters = array(' ', '	', '.', '|', '-', PHP_EOL);
+		$idCharacters = str_split($this->getId());
+		$danger = false;
+		foreach ($idCharacters as $character) {
+			if (!in_array($character, $dangerousCharacters)) continue;
+			$danger = true;
+			break;
+		}
+		if ($danger) {
+			trigger_error("Please don't use special Characters in Ids, they might cause Problems! (I stripped them for You.)");
+			$id = str_ireplace($dangerousCharacters, '', $this->getId());
+			$this->setId($id);
+		}
 		return $this;
 	}
 
 	/**
-	 * Set x position
+	 * Set X Position
 	 *
-	 * @param float $x        	
+	 * @param float $x Horizontal Position
 	 * @return \FML\Controls\Control
 	 */
 	public function setX($x) {
@@ -92,9 +105,9 @@ abstract class Control implements Renderable {
 	}
 
 	/**
-	 * Set y position
+	 * Set Y Position
 	 *
-	 * @param float $y        	
+	 * @param float $y Vertical Position
 	 * @return \FML\Controls\Control
 	 */
 	public function setY($y) {
@@ -103,9 +116,9 @@ abstract class Control implements Renderable {
 	}
 
 	/**
-	 * Set z position
+	 * Set Z Position
 	 *
-	 * @param float $z        	
+	 * @param float $z Depth
 	 * @return \FML\Controls\Control
 	 */
 	public function setZ($z) {
@@ -114,11 +127,11 @@ abstract class Control implements Renderable {
 	}
 
 	/**
-	 * Set position
+	 * Set Control Position
 	 *
-	 * @param float $x        	
-	 * @param float $y        	
-	 * @param float $z        	
+	 * @param float $x Horizontal Position
+	 * @param float $y Vertical Position
+	 * @param float $z Depth
 	 * @return \FML\Controls\Control
 	 */
 	public function setPosition($x, $y, $z = null) {
@@ -131,9 +144,9 @@ abstract class Control implements Renderable {
 	}
 
 	/**
-	 * Set width
+	 * Set Control Width
 	 *
-	 * @param float $width        	
+	 * @param float $width Control Width
 	 * @return \FML\Controls\Control
 	 */
 	public function setWidth($width) {
@@ -142,9 +155,9 @@ abstract class Control implements Renderable {
 	}
 
 	/**
-	 * Set height
+	 * Set Control Height
 	 *
-	 * @param float $height        	
+	 * @param float $height Control Height
 	 * @return \FML\Controls\Control
 	 */
 	public function setHeight($height) {
@@ -153,10 +166,10 @@ abstract class Control implements Renderable {
 	}
 
 	/**
-	 * Set size
+	 * Set Control Size
 	 *
-	 * @param float $width        	
-	 * @param float $height        	
+	 * @param float $width Control Width
+	 * @param float $height Control Height
 	 * @return \FML\Controls\Control
 	 */
 	public function setSize($width, $height) {
@@ -166,9 +179,9 @@ abstract class Control implements Renderable {
 	}
 
 	/**
-	 * Set horizontal alignment
+	 * Set Horizontal Alignment
 	 *
-	 * @param string $hAlign        	
+	 * @param string $hAlign Horizontal Alignment
 	 * @return \FML\Controls\Control
 	 */
 	public function setHAlign($hAlign) {
@@ -177,9 +190,9 @@ abstract class Control implements Renderable {
 	}
 
 	/**
-	 * Set vertical alignment
+	 * Set Vertical Alignment
 	 *
-	 * @param string $vAlign        	
+	 * @param string $vAlign Vertical Alignment
 	 * @return \FML\Controls\Control
 	 */
 	public function setVAlign($vAlign) {
@@ -188,10 +201,10 @@ abstract class Control implements Renderable {
 	}
 
 	/**
-	 * Set horizontal and vertical alignment
+	 * Set Horizontal and Vertical Alignment
 	 *
-	 * @param string $hAlign
-	 * @param string $vAlign        	
+	 * @param string $hAlign Horizontal Alignment
+	 * @param string $vAlign Vertical Alignment
 	 * @return \FML\Controls\Control
 	 */
 	public function setAlign($hAlign, $vAlign) {
@@ -201,9 +214,9 @@ abstract class Control implements Renderable {
 	}
 
 	/**
-	 * Set scale
+	 * Set Control Scale
 	 *
-	 * @param float $scale        	
+	 * @param float $scale Control Scale
 	 * @return \FML\Controls\Control
 	 */
 	public function setScale($scale) {
@@ -212,9 +225,9 @@ abstract class Control implements Renderable {
 	}
 
 	/**
-	 * Set visible
+	 * Set Visibility
 	 *
-	 * @param bool $visible        	
+	 * @param bool $visible If Control should be visible
 	 * @return \FML\Controls\Control
 	 */
 	public function setVisible($visible) {
@@ -223,13 +236,15 @@ abstract class Control implements Renderable {
 	}
 
 	/**
-	 * Add class name
+	 * Add new Class Name
 	 *
-	 * @param string $class        	
+	 * @param string $class Class Name
 	 * @return \FML\Controls\Control
 	 */
 	public function addClass($class) {
-		array_push($this->classes, $class);
+		if (!in_array($class, $this->classes)) {
+			array_push($this->classes, $class);
+		}
 		return $this;
 	}
 
@@ -248,13 +263,11 @@ abstract class Control implements Renderable {
 		if ($this->width >= 0. || $this->height >= 0.) {
 			$xml->setAttribute('sizen', "{$this->width} {$this->height}");
 		}
-		if (get_class($this) !== Frame::getClass()) {
-			if ($this->hAlign) {
-				$xml->setAttribute('halign', $this->hAlign);
-			}
-			if ($this->vAlign) {
-				$xml->setAttribute('valign', $this->vAlign);
-			}
+		if ($this->hAlign) {
+			$xml->setAttribute('halign', $this->hAlign);
+		}
+		if ($this->vAlign) {
+			$xml->setAttribute('valign', $this->vAlign);
 		}
 		if ($this->scale !== 1.) {
 			$xml->setAttribute('scale', $this->scale);

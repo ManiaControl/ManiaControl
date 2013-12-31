@@ -19,10 +19,11 @@ class Quad_Emblems extends Quad {
 	const SUBSTYLE_2 = '#2';
 
 	/**
-	 * Construct Emblems quad
+	 *
+	 * @see \FML\Controls\Quad
 	 */
-	public function __construct() {
-		parent::__construct();
+	public function __construct($id = null) {
+		parent::__construct($id);
 		$this->setStyle(self::STYLE);
 	}
 }

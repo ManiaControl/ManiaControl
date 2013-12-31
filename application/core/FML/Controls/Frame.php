@@ -12,14 +12,15 @@ use FML\Types\Renderable;
  */
 class Frame extends Control implements Container {
 	/**
-	 * Protected properties
+	 * Protected Properties
 	 */
 	protected $children = array();
 
 	/**
-	 * Construct a new frame control
+	 * Construct a new Frame Control
 	 *
-	 * @param string $id        	
+	 * @param string $id
+	 *        	Control Id
 	 */
 	public function __construct($id = null) {
 		parent::__construct($id);
@@ -57,14 +58,5 @@ class Frame extends Control implements Container {
 			$xml->appendChild($childXml);
 		}
 		return $xml;
-	}
-
-	/**
-	 * Return class name
-	 * 
-	 * @return string
-	 */
-	public static function getClass() {
-		return __CLASS__;
 	}
 }

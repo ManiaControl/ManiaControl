@@ -16,7 +16,7 @@ use FML\Types\TextFormatable;
  */
 class Label extends Control implements Actionable, Linkable, NewLineable, Scriptable, Styleable, TextFormatable {
 	/**
-	 * Protected properties
+	 * Protected Properties
 	 */
 	protected $text = '';
 	protected $textPrefix = '';
@@ -35,9 +35,10 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	protected $areaFocusColor = '';
 
 	/**
-	 * Construct label control
+	 * Construct a new Label Control
 	 *
-	 * @param string $id        	
+	 * @param string $id
+	 *        	Control Id
 	 */
 	public function __construct($id = null) {
 		parent::__construct($id);
@@ -46,9 +47,10 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	}
 
 	/**
-	 * Set text
+	 * Set Text
 	 *
-	 * @param string $text        	
+	 * @param string $text
+	 *        	Text Value
 	 * @return \FML\Controls\Label
 	 */
 	public function setText($text) {
@@ -57,9 +59,10 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	}
 
 	/**
-	 * Set text prefix
+	 * Set Text Prefix
 	 *
-	 * @param string $textPrefix        	
+	 * @param string $textPrefix
+	 *        	Text Pefix
 	 * @return \FML\Controls\Label
 	 */
 	public function setTextPrefix($textPrefix) {
@@ -68,9 +71,10 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	}
 
 	/**
-	 * Set text emboss
+	 * Set Text Emboss
 	 *
-	 * @param bool $textEmboss        	
+	 * @param bool $textEmboss
+	 *        	If Text should be embossed
 	 * @return \FML\Controls\Label
 	 */
 	public function setTextEmboss($textEmboss) {
@@ -79,9 +83,10 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	}
 
 	/**
-	 * Set translate
+	 * Set Translate
 	 *
-	 * @param bool $translate        	
+	 * @param bool $translate
+	 *        	If Text should be translated
 	 * @return \FML\Controls\Label
 	 */
 	public function setTranslate($translate) {
@@ -90,9 +95,10 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	}
 
 	/**
-	 * Set max lines
+	 * Set Max Lines Count
 	 *
-	 * @param int $maxLines        	
+	 * @param int $maxLines
+	 *        	Max Lines Count
 	 * @return \FML\Controls\Label
 	 */
 	public function setMaxLines($maxLines) {
