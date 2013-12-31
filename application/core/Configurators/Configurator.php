@@ -20,6 +20,7 @@ use FML\Script\Menus;
 use FML\Script\Pages;
 use FML\Script\Script;
 use FML\Script\Tooltips;
+use ManiaControl\Commands\CommandListener;
 
 require_once __DIR__ . '/ConfiguratorMenu.php';
 require_once __DIR__ . '/ScriptSettings.php';
@@ -29,7 +30,7 @@ require_once __DIR__ . '/ScriptSettings.php';
  *
  * @author steeffeen & kremsy
  */
-class Configurator implements CallbackListener, ManialinkPageAnswerListener {
+class Configurator implements CallbackListener, CommandListener, ManialinkPageAnswerListener {
 	/**
 	 * Constants
 	 */
@@ -58,7 +59,7 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
-		$this->addAdminMenuItem();
+		$this->addActionsMenuItem();
 		
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_POSX, 0.);
@@ -72,19 +73,29 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 		// Register for page answers
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_TOGGLEMENU, $this, 
 				'handleToggleMenuAction');
-		
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_SAVECONFIG, $this, 
 				'handleSaveConfigAction');
 		
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERDISCONNECT, $this, 
 				'handlePlayerDisconnect');
-		
 		$this->maniaControl->callbackManager->registerCallbackListener(ScriptSettings::CB_SCRIPTSETTINGS_CHANGED, $this, 'reopenMenu');
 		
 		// Create script settings
 		$this->scriptSettings = new ScriptSettings($maniaControl);
 		$this->addMenu($this->scriptSettings);
+		
+		// Register for commands
+		$this->maniaControl->commandManager->registerCommandListener('config', $this, 'handleConfigCommand', true);
+	}
+
+	/**
+	 * Handle Config Admin Aommand
+	 *
+	 * @param array $callback
+	 */
+	public function handleConfigCommand(array $callback, Player $player) {
+		$this->showMenu($player);
 	}
 
 	/**
@@ -117,11 +128,7 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 	 * @param Player $player
 	 */
 	public function handleToggleMenuAction(array $callback, Player $player) {
-		if (isset($this->playersMenuShown[$player->login])) {
-			$this->hideMenu($player);
-			return;
-		}
-		$this->showMenu($player);
+		$this->toggleMenu($player);
 	}
 
 	/**
@@ -147,7 +154,7 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 	}
 
 	/**
-	 * Show the menu to the player
+	 * Show the Menu to the Player
 	 *
 	 * @param Player $player
 	 */
@@ -160,7 +167,7 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 	}
 
 	/**
-	 * Hide the menu for the player
+	 * Hide the Menu for the Player
 	 *
 	 * @param Player $player
 	 */
@@ -170,6 +177,20 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
 		$this->maniaControl->manialinkManager->enableAltMenu($player);
 		unset($this->playersMenuShown[$player->login]);
+	}
+
+	/**
+	 * Toggle the Menu for the Player
+	 *
+	 * @param Player $player
+	 */
+	public function toggleMenu(Player $player) {
+		if (isset($this->playersMenuShown[$player->login])) {
+			$this->hideMenu($player);
+		}
+		else {
+			$this->showMenu($player);
+		}
 	}
 
 	/**
@@ -289,9 +310,9 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 	}
 
 	/**
-	 * Add menu item to the admin menu
+	 * Add Menu Item to the Actions Menu
 	 */
-	private function addAdminMenuItem() {
+	private function addActionsMenuItem() {
 		$itemQuad = new Quad();
 		$itemQuad->setStyles('Icons128x32_1', 'Settings');
 		$itemQuad->setAction(self::ACTION_TOGGLEMENU);

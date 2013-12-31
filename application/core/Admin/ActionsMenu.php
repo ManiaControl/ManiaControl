@@ -12,6 +12,7 @@ use FML\Controls\Quad;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
+use FML\Controls\Quads\Quad_Icons64x64_1;
 
 /**
  * Class managing Actions Menus
@@ -33,7 +34,6 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	 * Private Properties
 	 */
 	private $maniaControl = null;
-	private $manialink = null;
 	private $adminMenuItems = array();
 	private $playerMenuItems = array();
 
@@ -107,25 +107,20 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	 * @param array $callback
 	 */
 	public function handleOnInit(array $callback) {
-		$this->buildIcons();
-		$manialinkText = $this->manialink->render()->saveXML();
+		$manialinkText = $this->buildMenuIconsManialink()->render()->saveXML();
 		$players = $this->maniaControl->playerManager->getPlayers();
 		foreach ($players as $player) {
-			if (!$this->checkPlayerRight($player)) continue;
 			$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
 		}
 	}
 
 	/**
-	 * Handle PlayerConnect callback
+	 * Handle PlayerJoined callback
 	 *
 	 * @param array $callback
 	 */
-	public function handlePlayerJoined(array $callback) {
-		$player = $callback[1];
-		if (!$player || !$this->checkPlayerRight($player)) return;
-		$this->buildIcons();
-		$manialinkText = $this->manialink->render()->saveXML();
+	public function handlePlayerJoined(array $callback, Player $player) {
+		$manialinkText = $this->buildMenuIconsManialink()->render()->saveXML();
 		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
 	}
 
@@ -135,9 +130,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	 * @param array $callback
 	 */
 	public function openAdminMenu(array $callback, Player $player) {
-		$this->buildManialink(true);
-		$manialinkText = $this->manialink->render()->saveXML();
-		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
+		$this->maniaControl->configurator->toggleMenu($player);
 	}
 
 	/**
@@ -146,29 +139,9 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	 * @param array $callback
 	 */
 	public function openPlayerMenu(array $callback, Player $player) {
-		$this->buildManialink(true);
-		$manialinkText = $this->manialink->render()->saveXML();
-		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
 	}
 
-	/**
-	 * Check if the player has access to the admin menu
-	 *
-	 * @param Player $player
-	 * @return bool
-	 */
-	private function checkPlayerRight(Player $player) {
-		return AuthenticationManager::checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR);
-	}
-
-	/**
-	 * Build the icons
-	 *
-	 * @param bool $forceBuild
-	 */
-	private function buildIcons($forceBuild = false) {
-		if (is_object($this->manialink) && !$forceBuild) return;
-		
+	private function buildMenuIconsManialink() {
 		$posX = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_POSX);
 		$posY = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_POSY);
 		$itemSize = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_ITEMSIZE);
@@ -193,11 +166,11 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		$frame->add($iconFrame);
 		
 		$iconFrame->setSize($itemSize, $itemSize);
-		$itemQuad = new Quad_Icons128x128_1();
-		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Options);
+		$itemQuad = new Quad_Icons64x64_1();
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_IconPlayers);
 		$itemQuad->setSize($itemSize, $itemSize);
 		$iconFrame->add($itemQuad);
-		$itemQuad->setAction(self::ACTION_OPEN_ADMIN_MENU);
+		$itemQuad->setAction(self::ACTION_OPEN_PLAYER_MENU);
 		
 		// Admin Menu Icon Frame
 		$frame = new Frame();
@@ -213,23 +186,16 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		$frame->add($iconFrame);
 		
 		$iconFrame->setSize($itemSize, $itemSize);
-		$itemQuad = new Quad_Icons128x128_1();
-		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Custom);
+		$itemQuad = new Quad_Icons64x64_1();
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_IconServers);
 		$itemQuad->setSize($itemSize, $itemSize);
 		$iconFrame->add($itemQuad);
-		$itemQuad->setAction(self::ACTION_OPEN_PLAYER_MENU);
+		$itemQuad->setAction(self::ACTION_OPEN_ADMIN_MENU);
 		
-		$this->manialink = $manialink;
+		return $manialink;
 	}
 
-	/**
-	 * Build the menu manialink if necessary
-	 *
-	 * @param bool $forceBuild
-	 */
-	private function buildManialink($forceBuild = false) {
-		if (is_object($this->manialink) && !$forceBuild) return;
-		
+	private function buildMenuIconsManialink2() {
 		$posX = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_POSX);
 		$posY = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_POSY);
 		$itemSize = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_ITEMSIZE);
