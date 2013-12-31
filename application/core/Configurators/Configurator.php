@@ -251,7 +251,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 			$menuItemLabel->setY($menuItemY);
 			$menuItemLabel->setSize($menuListWidth * 0.9, $menuItemHeight * 0.9);
 			$menuItemLabel->setStyle(Label_Text::STYLE_TextCardRaceRank);
-			// $menuItemLabel->setText('$z' . $menu->getTitle() . '$z');
+			$menuItemLabel->setText('$z' . $menu->getTitle() . '$z');
 			
 			// Add menu
 			$menuControl = $menu->getMenu($subMenuWidth, $subMenuHeight, $script);
