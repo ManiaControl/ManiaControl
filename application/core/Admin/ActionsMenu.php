@@ -153,30 +153,10 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		
 		$manialink = new ManiaLink(self::MLID_MENU);
 		
-		// Player Menu Icon Frame
-		$frame = new Frame();
-		$manialink->add($frame);
-		$frame->setPosition($posX, $posY);
-		
-		$backgroundQuad = new Quad();
-		$frame->add($backgroundQuad);
-		$backgroundQuad->setSize($itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
-		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-		
-		$iconFrame = new Frame();
-		$frame->add($iconFrame);
-		
-		$iconFrame->setSize($itemSize, $itemSize);
-		$itemQuad = new Quad_Icons64x64_1();
-		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_IconPlayers);
-		$itemQuad->setSize($itemSize, $itemSize);
-		$iconFrame->add($itemQuad);
-		$itemQuad->setAction(self::ACTION_OPEN_PLAYER_MENU);
-		
 		// Admin Menu Icon Frame
 		$frame = new Frame();
 		$manialink->add($frame);
-		$frame->setPosition($posX, $posY - $itemSize * $itemMarginFactorY);
+		$frame->setPosition($posX, $posY);
 		
 		$backgroundQuad = new Quad();
 		$frame->add($backgroundQuad);
@@ -192,6 +172,26 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		$itemQuad->setSize($itemSize, $itemSize);
 		$iconFrame->add($itemQuad);
 		$itemQuad->setAction(self::ACTION_OPEN_ADMIN_MENU);
+		
+		// Player Menu Icon Frame
+		$frame = new Frame();
+		$manialink->add($frame);
+		$frame->setPosition($posX, $posY - $itemSize * $itemMarginFactorY);
+		
+		$backgroundQuad = new Quad();
+		$frame->add($backgroundQuad);
+		$backgroundQuad->setSize($itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
+		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
+		
+		$iconFrame = new Frame();
+		$frame->add($iconFrame);
+		
+		$iconFrame->setSize($itemSize, $itemSize);
+		$itemQuad = new Quad_Icons64x64_1();
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_IconPlayers);
+		$itemQuad->setSize($itemSize, $itemSize);
+		$iconFrame->add($itemQuad);
+		$itemQuad->setAction(self::ACTION_OPEN_PLAYER_MENU);
 		
 		return $manialink;
 	}
