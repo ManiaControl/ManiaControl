@@ -31,7 +31,7 @@ class PluginManager {
 	/**
 	 * Construct plugin manager
 	 *
-	 * @param \ManiaControl\ManiaControl $maniaControl        	
+	 * @param \ManiaControl\ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
@@ -73,7 +73,7 @@ class PluginManager {
 	/**
 	 * Check if the plugin is running
 	 *
-	 * @param string $pluginClass        	
+	 * @param string $pluginClass
 	 * @return bool
 	 */
 	public function isPluginActive($pluginClass) {
@@ -86,7 +86,7 @@ class PluginManager {
 	/**
 	 * Check if the given class implements the plugin interface
 	 *
-	 * @param string $pluginClass        	
+	 * @param string $pluginClass
 	 * @return bool
 	 */
 	public function isPluginClass($pluginClass) {
@@ -102,7 +102,7 @@ class PluginManager {
 	/**
 	 * Add the class to array of loaded plugin classes
 	 *
-	 * @param string $pluginClass        	
+	 * @param string $pluginClass
 	 * @return bool
 	 */
 	public function addPluginClass($pluginClass) {
@@ -122,7 +122,7 @@ class PluginManager {
 	/**
 	 * Activate and start the plugin with the given name
 	 *
-	 * @param string $pluginClass        	
+	 * @param string $pluginClass
 	 * @return bool
 	 */
 	public function activatePlugin($pluginClass) {
@@ -145,7 +145,7 @@ class PluginManager {
 	/**
 	 * Deactivate the plugin with the given class
 	 *
-	 * @param string $pluginClass        	
+	 * @param string $pluginClass
 	 * @return bool
 	 */
 	public function deactivatePlugin($pluginClass) {
@@ -204,17 +204,17 @@ class PluginManager {
 	}
 
 	/**
-	 * Returns an Plugin if it is aktivated
-	 * @param $pluginClass
-	 * @return null
+	 * Returns an Plugin if it is activated
+	 *
+	 * @param string $pluginClass
+	 * @return Plugin
 	 */
 	public function getPlugin($pluginClass) {
-		if($this->isPluginActive($pluginClass)){
+		if ($this->isPluginActive($pluginClass)) {
 			return $this->activePlugins[$pluginClass];
 		}
 		return null;
 	}
-
 
 	/**
 	 * Get all declared plugin class names
@@ -237,8 +237,8 @@ class PluginManager {
 	/**
 	 * Save plugin status in database
 	 *
-	 * @param string $className        	
-	 * @param bool $active        	
+	 * @param string $className
+	 * @param bool $active
 	 * @return bool
 	 */
 	private function savePluginStatus($className, $active) {
@@ -270,7 +270,7 @@ class PluginManager {
 	/**
 	 * Get plugin status from database
 	 *
-	 * @param string $className        	
+	 * @param string $className
 	 * @return bool
 	 */
 	private function getSavedPluginStatus($className) {
