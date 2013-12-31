@@ -33,6 +33,7 @@ class LocalRecordsPlugin implements CallbackListener, Plugin {
 	const SETTING_WIDGET_LINESCOUNT = 'Widget Displayed Lines Count';
 	const SETTING_WIDGET_LINEHEIGHT = 'Widget Line Height';
 	const SETTING_NOTIFY_ONLY_DRIVER = 'Notify only the Driver on New Records';
+	const SETTING_NOTIFY_BEST_RECORDS = 'Notify Publicly only for the X Best Records';
 	
 	/**
 	 * Private properties
@@ -60,6 +61,7 @@ class LocalRecordsPlugin implements CallbackListener, Plugin {
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_LINESCOUNT, 25);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_LINEHEIGHT, 4.);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_NOTIFY_ONLY_DRIVER, false);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_NOTIFY_BEST_RECORDS, -1);
 		
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
@@ -241,7 +243,8 @@ class LocalRecordsPlugin implements CallbackListener, Plugin {
 		// Announce record
 		$newRecord = $this->getLocalRecord($map, $player);
 		$notifyOnlyDriver = $this->maniaControl->settingManager->getSetting($this, self::SETTING_NOTIFY_ONLY_DRIVER);
-		if ($notifyOnlyDriver) {
+		$notifyOnlyBestRecords = $this->maniaControl->settingManager->getSetting($this, self::SETTING_NOTIFY_BEST_RECORDS);
+		if ($notifyOnlyDriver || $notifyOnlyBestRecords > 0 && $newRecord->rank > $notifyOnlyBestRecords) {
 			if (!$oldRecord || $newRecord->rank < $oldRecord->rank) {
 				$improvement = 'gained the';
 			}
@@ -263,7 +266,6 @@ class LocalRecordsPlugin implements CallbackListener, Plugin {
 					 Formatter::formatTime($newRecord->time);
 			$this->maniaControl->chat->sendInformation($message);
 		}
-		// TODO: setting to send notifications only for x best records
 	}
 
 	/**
