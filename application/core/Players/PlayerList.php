@@ -11,7 +11,9 @@ use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_BgRaceScore2;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
 use FML\Controls\Quads\Quad_Emblems;
+use FML\Controls\Quads\Quad_Icons128x128_1;
 use FML\Controls\Quads\Quad_Icons64x64_1;
+use FML\Controls\Quads\Quad_UIConstruction_Buttons;
 use FML\ManiaLink;
 use FML\Script\Script;
 use FML\Script\Tooltips;
@@ -158,8 +160,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			// $array = array($i => $x + 5, $listPlayer->nickname => $x + 10, $listPlayer->login => $x + 50, $listPlayer->ladderRank =>
 			// $x + 60, $listPlayer->ladderScore => $x + 70, $path => $x + 85);
 			$array = array($i => $x + 5, $listPlayer->nickname => $x + 18, $listPlayer->login => $x + 60, $path => $x + 91);
-			$properties = array('profile' => $listPlayer->login, 'script' => $script);
-			$this->maniaControl->manialinkManager->labelLine($playerFrame, $array, $properties);
+			//$properties = array('profile' => $listPlayer->login, 'script' => $script);
+			$this->maniaControl->manialinkManager->labelLine($playerFrame, $array);
 			$playerFrame->setY($y);
 			
 			// Team Emblem
@@ -236,7 +238,28 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			$descriptionLabel->setText(
 					$this->maniaControl->authenticationManager->getAuthLevelName($listPlayer->authLevel) . " " . $listPlayer->nickname);
 			$script->addTooltip($rightQuad, $descriptionLabel);
-			
+
+
+			// Player Profile Quad
+			$playerQuad = new Quad_UIConstruction_Buttons();
+			$playerFrame->add($playerQuad);
+			$playerQuad->setX($x + 58);
+			$playerQuad->setZ(20);
+			$playerQuad->setSubStyle($playerQuad::SUBSTYLE_Author);
+			$playerQuad->setSize(3.8, 3.8);
+			$script->addProfileButton($playerQuad,$listPlayer->login);
+
+			// Description Label
+			$descriptionLabel = new Label();
+			$frame->add($descriptionLabel);
+			$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
+			$descriptionLabel->setPosition($x + 10, -$this->height / 2 + 5);
+			$descriptionLabel->setSize($this->width * 0.7, 4);
+			$descriptionLabel->setTextSize(2);
+			$descriptionLabel->setVisible(false);
+			$descriptionLabel->setText("View Player profile of " . $listPlayer->nickname);
+			$script->addTooltip($playerQuad, $descriptionLabel);
+
 			switch ($listPlayer->authLevel) {
 				case authenticationManager::AUTH_LEVEL_MASTERADMIN:
 					$rightLabel->setText("MA");
@@ -254,7 +277,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			$rightLabel->setTextColor("fff");
 			
 			if ($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)) {
-				
+
+
 				// Further Player actions Quad
 				$playerQuad = new Quad_Icons64x64_1();
 				$playerFrame->add($playerQuad);
@@ -263,7 +287,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$playerQuad->setSubStyle($playerQuad::SUBSTYLE_Buddy);
 				$playerQuad->setSize(3.8, 3.8);
 				$playerQuad->setAction(self::ACTION_PLAYER_ADV . "." . $listPlayer->login);
-				
+
 				// Further Player actions Mousover Description
 				$descriptionLabel = new Label();
 				$frame->add($descriptionLabel);
@@ -274,7 +298,6 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$descriptionLabel->setVisible(false);
 				$descriptionLabel->setText("Advanced Player Actions on " . $listPlayer->nickname);
 				$script->addTooltip($playerQuad, $descriptionLabel);
-				// $script->addProfileButton($playerQuad, $listPlayer->login);
 				
 				// Force to Red-Team Quad
 				$redQuad = new Quad_Emblems();
