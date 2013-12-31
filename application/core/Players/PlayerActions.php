@@ -229,7 +229,7 @@ class PlayerActions {
 		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
 		$title = $this->maniaControl->authenticationManager->getAuthLevelName($admin->authLevel);
 		
-		$success = $this->maniaControl->client->query('Ban', $target->login, $message); // TODO bestätigung
+		$success = $this->maniaControl->client->query('Ban', $target->login, $message);
 		
 		if (!$success) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $admin->login);
