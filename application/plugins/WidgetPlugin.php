@@ -351,15 +351,14 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$quad->setHAlign(Control::CENTER);
 		
 		// Favorite quad
-		$quad = new Quad_Icons64x64_1();
 		$quad = new Quad_Icons128x128_1();
 		$frame->add($quad);
-		// $quad->setSubStyle($quad::SUBSTYLE_StateFavourite);
 		$quad->setSubStyle($quad::SUBSTYLE_ServersFavorites);
 		$quad->setPosition($width / 2 - 4, -1.5, -0.5);
 		$quad->setSize(4, 4);
 		$quad->setHAlign(Control::CENTER);
-		// $TODO add server to favorite
+		$serverLogin = $this->maniaControl->server->getLogin();
+		$quad->setManialink('mcontrol?favorite&' . $serverLogin);
 		
 		// Send manialink
 		$manialinkText = $maniaLink->render()->saveXML();
