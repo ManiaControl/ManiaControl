@@ -338,8 +338,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$jukeQuad->setAction(self::ACTION_JUKE_MAP . "." . $map->uid);
 				$jukeQuad->setText("+");
 				$jukeQuad->setTextColor("09F");
-
-
 				$descriptionLabel->setText("Add Map to Jukebox: {$map->name}");
 				$script->addTooltip($jukeQuad, $descriptionLabel);
 			}

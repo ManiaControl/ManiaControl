@@ -94,7 +94,10 @@ class ScriptSettings implements ConfiguratorMenu,CallbackListener {
 		$pagerNext->setPosition($width * 0.45, $height * -0.44, 2);
 		$pagerNext->setSize($pagerSize, $pagerSize);
 		$pagerNext->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowNext);
-		
+
+		$script->addPager($pagerPrev, -1);
+		$script->addPager($pagerNext, 1);
+
 		$pageCountLabel = new Label();
 		$frame->add($pageCountLabel);
 		$pageCountLabel->setHAlign(Control::RIGHT);
@@ -176,9 +179,8 @@ class ScriptSettings implements ConfiguratorMenu,CallbackListener {
 			
 			$y -= $settingHeight;
 			if ($index % $pageMaxCount == $pageMaxCount - 1) {
-				unset($pageFrame);
-			}else{
 				$script->addPage($pageFrame, $index, "test"); //TODO not working
+				unset($pageFrame);
 			}
 		}
 		

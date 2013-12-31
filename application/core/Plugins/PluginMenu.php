@@ -158,9 +158,8 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 			
 			$y -= $entryHeight;
 			if ($index % $pageMaxCount == $pageMaxCount - 1) {
-				unset($pageFrame);
-			}else{
 				$script->addPage($pageFrame, 1, "test");
+				unset($pageFrame);
 			}
 		}
 

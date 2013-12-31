@@ -258,6 +258,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$descriptionLabel->setVisible(false);
 				$descriptionLabel->setText("Advanced Player Actions on " . $listPlayer->nickname);
 				$script->addTooltip($playerQuad, $descriptionLabel);
+			//	$script->addProfileButton($playerQuad, $listPlayer->login);
 
 				//Force to Red-Team Quad
 				$redQuad = new Quad_Emblems();
