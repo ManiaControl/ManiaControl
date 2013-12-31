@@ -218,16 +218,20 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 		// Create script and features
 		$script = new Script();
 		$manialink->setScript($script);
-		
-		$pages = new Pages();
+
+		$pages = null;
+		/*$pages = new Pages();
 		$script->addFeature($pages);
 		
 		$tooltips = new Tooltips();
 		$script->addFeature($tooltips);
-		
+
 		$menus = new Menus();
-		$script->addFeature($menus);
-		
+		$script->addFeature($menus);*/
+
+		//$script->addPager()
+
+
 		$menuRelationships = array();
 		$menuItemY = $menuHeight * 0.42;
 		foreach ($this->menus as $index => $menu) {
@@ -237,21 +241,22 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 			$menuItemLabel->setY($menuItemY);
 			$menuItemLabel->setSize($menuListWidth * 0.9, $menuItemHeight * 0.9);
 			$menuItemLabel->setStyle(Label_Text::STYLE_TextCardRaceRank);
-			$menuItemLabel->setText('$z' . $menu->getTitle() . '$z');
+			//$menuItemLabel->setText('$z' . $menu->getTitle() . '$z');
 			
 			// Add menu
-			$menuControl = $menu->getMenu($subMenuWidth, $subMenuHeight, $pages, $tooltips);
+			$menuControl = $menu->getMenu($subMenuWidth, $subMenuHeight, $pages, $script);
 			if ($index > 0) {
 				$menuControl->setVisible(false);
 			}
 			$menusFrame->add($menuControl);
 			
 			// Add menu relationship
-			array_push($menuRelationships, array($menuItemLabel, $menuControl));
-			
+			//array_push($menuRelationships, array($menuItemLabel, $menuControl));
+			$script->addMenu($menuItemLabel, $menuControl);
 			$menuItemY -= $menuItemHeight * 1.1;
 		}
-		$menus->add($menuRelationships);
+
+		//$menus->add($menuRelationships);
 		
 		// Add Close Quad (X)
 		$closeQuad = new Quad_Icons64x64_1();

@@ -2,6 +2,7 @@
 
 namespace ManiaControl\Plugins;
 
+use FML\Script\Script;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Configurators\ConfiguratorMenu;
@@ -57,7 +58,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 	 *
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getMenu()
 	 */
-	public function getMenu($width, $height, Pages $pages, Tooltips $tooltips) {
+	public function getMenu($width, $height, $pages, Script $script) {
 		$frame = new Frame();
 		
 		$pluginClasses = $this->maniaControl->pluginManager->getPluginClasses();
@@ -137,7 +138,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 			$descriptionLabel->setMaxLines(5);
 			$description = "Author: {$pluginClass::getAuthor()}\nVersion: {$pluginClass::getVersion()}\nDesc: {$pluginClass::getDescription()}";
 			$descriptionLabel->setText($description);
-			$tooltips->add($nameLabel, $descriptionLabel);
+			$script->addTooltip($nameLabel, $descriptionLabel);
 			
 			$statusChangeButton = new Label_Button();
 			$pluginFrame->add($statusChangeButton);
@@ -158,10 +159,14 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 			$y -= $entryHeight;
 			if ($index % $pageMaxCount == $pageMaxCount - 1) {
 				unset($pageFrame);
+			}else{
+				$script->addPage($pageFrame, 1, "test");
 			}
 		}
-		
-		$pages->add(array(-1 => $pagerPrev, 1 => $pagerNext), $pageFrames, $pageCountLabel);
+
+	//	$script->addPager($pageFrames, 1 , $pageCountLabel);
+	//	$script->addPage(array(-1 => $pagerPrev, 1 => $pagerNext), $pageFrames, $pageCountLabel);
+		//$pages->add(array(-1 => $pagerPrev, 1 => $pagerNext), $pageFrames, $pageCountLabel);
 		
 		return $frame;
 	}

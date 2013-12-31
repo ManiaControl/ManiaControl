@@ -246,10 +246,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$script = new Script();
 		$maniaLink->setScript($script);
 
-		//$script->addTooltip($script::CLASS_TOOLTIPS);
-		//$tooltips = new Tooltips();
-		//$script->addFeature($tooltips);
-
 		//Headline
 		$headFrame = new Frame();
 		$frame->add($headFrame);
@@ -345,7 +341,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 
 				$descriptionLabel->setText("Add Map to Jukebox: {$map->name}");
-				//$tooltips->add($jukeQuad, $descriptionLabel);
+				$script->addTooltip($jukeQuad, $descriptionLabel);
 			}
 
 			if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)){ //TODO SET as setting who can add maps
@@ -371,7 +367,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$descriptionLabel->setTextSize(2);
 				$descriptionLabel->setVisible(false);
 				$descriptionLabel->setText("Remove Map: {$map->name}");
-				//$tooltips->add($eraseQuad, $descriptionLabel);
+				$script->addTooltip($eraseQuad, $descriptionLabel);
 			}
 			if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)){ //TODO SET as setting who can add maps
 				//switch to map quad
@@ -395,7 +391,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$descriptionLabel->setTextSize(2);
 				$descriptionLabel->setVisible(false);
 				$descriptionLabel->setText("Switch Directly to Map: {$map->name}");
-				//$tooltips->add($switchToQuad, $descriptionLabel);
+				$script->addTooltip($switchToQuad, $descriptionLabel);
 			}
 
 			//Display Karma bar

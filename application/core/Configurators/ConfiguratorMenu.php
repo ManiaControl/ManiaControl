@@ -3,6 +3,7 @@
 namespace ManiaControl\Configurators;
 
 use FML\Script\Pages;
+use FML\Script\Script;
 use FML\Script\Tooltips;
 use ManiaControl\Players\Player;
 
@@ -23,13 +24,14 @@ interface ConfiguratorMenu {
 	/**
 	 * Get the configurator menu
 	 *
-	 * @param float $width        	
-	 * @param float $height        	
-	 * @param Pages $pages        	
-	 * @param Tooltips $tooltips        	
+	 * @param float              $width
+	 * @param float              $height
+	 * @param               $pages temp removed
+	 * @param \FML\Script\Script $script
+	 * @internal param \FML\Script\Tooltips $tooltips
 	 * @return \FML\Controls\Control
 	 */
-	public function getMenu($width, $height, Pages $pages, Tooltips $tooltips);
+	public function getMenu($width, $height, $pages, Script $script);
 
 	/**
 	 * Save the config data

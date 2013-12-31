@@ -2,6 +2,7 @@
 
 namespace ManiaControl\Configurators;
 
+use FML\Script\Script;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Formatter;
@@ -58,7 +59,7 @@ class ScriptSettings implements ConfiguratorMenu,CallbackListener {
 	 *
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getMenu()
 	 */
-	public function getMenu($width, $height, Pages $pages, Tooltips $tooltips) {
+	public function getMenu($width, $height, $pages, Script $script) {
 		$frame = new Frame();
 		
 		$this->maniaControl->client->query('GetModeScriptInfo');
@@ -171,15 +172,17 @@ class ScriptSettings implements ConfiguratorMenu,CallbackListener {
 			$descriptionLabel->setTranslate(true);
 			//$descriptionLabel->setTextPrefix('Desc: ');
 			$descriptionLabel->setText($scriptParam['Desc']);
-			$tooltips->add($nameLabel, $descriptionLabel);
+			$script->addTooltip($nameLabel, $descriptionLabel);
 			
 			$y -= $settingHeight;
 			if ($index % $pageMaxCount == $pageMaxCount - 1) {
 				unset($pageFrame);
+			}else{
+				$script->addPage($pageFrame, $index, "test"); //TODO not working
 			}
 		}
 		
-		$pages->add(array(-1 => $pagerPrev, 1 => $pagerNext), $pageFrames, $pageCountLabel);
+		//$pages->add(array(-1 => $pagerPrev, 1 => $pagerNext), $pageFrames, $pageCountLabel);
 		
 		return $frame;
 	}

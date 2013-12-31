@@ -95,9 +95,6 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$script = new Script();
 		$maniaLink->setScript($script);
 
-		//$tooltips = new Tooltips();
-		//$script->addFeature($tooltips);
-
 		//mainframe
 		$frame = new Frame();
 		$maniaLink->add($frame);
@@ -202,7 +199,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$descriptionLabel->setTextSize(2);
 				$descriptionLabel->setVisible(false);
 				$descriptionLabel->setText($listPlayer->nickname . " from " . $listPlayer->path);
-				//$tooltips->add($countryQuad, $descriptionLabel);
+				$script->addTooltip($countryQuad, $descriptionLabel);
 			}
 
 			//Level Quad
@@ -228,7 +225,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			$descriptionLabel->setTextSize(2);
 			$descriptionLabel->setVisible(false);
 			$descriptionLabel->setText($this->maniaControl->authenticationManager->getAuthLevelName($listPlayer->authLevel) .  " " . $listPlayer->nickname);
-			//$tooltips->add($rightQuad, $descriptionLabel);
+			$script->addTooltip($rightQuad, $descriptionLabel);
 
 			switch($listPlayer->authLevel){
 				case authenticationManager::AUTH_LEVEL_MASTERADMIN: $rightLabel->setText("MA"); break;
@@ -260,7 +257,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$descriptionLabel->setTextSize(2);
 				$descriptionLabel->setVisible(false);
 				$descriptionLabel->setText("Advanced Player Actions on " . $listPlayer->nickname);
-				//$tooltips->add($playerQuad, $descriptionLabel);
+				$script->addTooltip($playerQuad, $descriptionLabel);
 
 				//Force to Red-Team Quad
 				$redQuad = new Quad_Emblems();
@@ -280,7 +277,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$descriptionLabel->setTextSize(2);
 				$descriptionLabel->setVisible(false);
 				$descriptionLabel->setText("Force " . $listPlayer->nickname . '$z to Red Team!');
-				//$tooltips->add($redQuad, $descriptionLabel);
+				$script->addTooltip($redQuad, $descriptionLabel);
 
 				//Force to Blue-Team Quad
 				$blueQuad = new Quad_Emblems();
@@ -300,7 +297,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$descriptionLabel->setTextSize(2);
 				$descriptionLabel->setVisible(false);
 				$descriptionLabel->setText("Force " . $listPlayer->nickname . '$z to Blue Team!');
-				//$tooltips->add($blueQuad, $descriptionLabel);
+				$script->addTooltip($blueQuad, $descriptionLabel);
 
 				//Force to Spectator Quad
 				$spectatorQuad = new Quad_BgRaceScore2();
@@ -320,7 +317,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$descriptionLabel->setTextSize(2);
 				$descriptionLabel->setVisible(false);
 				$descriptionLabel->setText("Force " . $listPlayer->nickname . '$z to Spectator!');
-				//$tooltips->add($spectatorQuad, $descriptionLabel);
+				$script->addTooltip($spectatorQuad, $descriptionLabel);
 			}
 			$i++;
 			$y -= 4;
