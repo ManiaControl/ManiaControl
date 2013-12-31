@@ -100,7 +100,6 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		else {
 			$msg = '$g[$<' . $player->nickname . '$>$s] $ff0$iHello All!';
 		}
-		// TODO why not italic?
 		$this->maniaControl->chat->sendChat($msg, null, false);
 	}
 
