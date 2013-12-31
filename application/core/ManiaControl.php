@@ -35,7 +35,7 @@ require_once __DIR__ . '/Manialinks/ManialinkManager.php';
 require_once __DIR__ . '/Maps/Map.php';
 require_once __DIR__ . '/Maps/MapManager.php';
 require_once __DIR__ . '/Maps/MapList.php';
-require_once __DIR__ . '/Maps/Jukebox.php';
+require_once __DIR__ . '/Maps/MapQueue.php';
 require_once __DIR__ . '/Players/PlayerManager.php';
 require_once __DIR__ . '/Players/PlayerActions.php';
 require_once __DIR__ . '/Plugins/PluginManager.php';

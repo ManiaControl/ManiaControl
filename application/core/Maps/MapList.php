@@ -71,7 +71,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this,'handleManialinkPageAnswer');
 
 		//Update Widget actions
-		$this->maniaControl->callbackManager->registerCallbackListener(Jukebox::CB_JUKEBOX_CHANGED, $this, 'updateWidget');
+		$this->maniaControl->callbackManager->registerCallbackListener(MapQueue::CB_MAPQUEUE_CHANGED, $this, 'updateWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_MAPLIST_UPDATED, $this, 'updateWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_BEGINMAP, $this, 'updateWidget'); //TODO not working yet
 		//TODO update on Karma Update
@@ -257,7 +257,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 		//TODO add pages
 
-		$jukedMaps = $this->maniaControl->mapManager->jukebox->getJukeBoxRanking();
+		$jukedMaps = $this->maniaControl->mapManager->mapQueue->getQueuedMapsRanking();
 		/** @var  KarmaPlugin $karmaPlugin */
 		$karmaPlugin = $this->maniaControl->pluginManager->getPlugin(self::DEFAULT_KARMA_PLUGIN);
 

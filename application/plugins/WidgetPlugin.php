@@ -198,23 +198,23 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$backgroundQuad->setSize($width, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 		
-		// Check if the Next Map is a juked Map
-		$jukedMap = $this->maniaControl->mapManager->jukebox->getNextMap();
+		// Check if the Next Map is a queued Map
+		$queuedMap = $this->maniaControl->mapManager->mapQueue->getNextMap();
 		
 		/**
 		 * @var Player $requester
 		 */
 		$requester = null;
-		// if the nextmap is not a juked map, get it from map info
-		if ($jukedMap == null) {
+		// if the nextmap is not a queued map, get it from map info
+		if ($queuedMap == null) {
 			$this->maniaControl->client->query("GetNextMapInfo");
 			$map = $this->maniaControl->client->getResponse();
 			$name = $map['Name'];
 			$author = $map['Author'];
 		}
 		else {
-			$requester = $jukedMap[0];
-			$map = $jukedMap[1];
+			$requester = $queuedMap[0];
+			$map = $queuedMap[1];
 			$name = $map->name;
 			$author = $map->authorLogin;
 		}

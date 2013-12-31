@@ -36,7 +36,7 @@ class MapManager implements CallbackListener {
 	/**
 	 * Public Properties
 	 */
-	public $jukebox = null;
+	public $mapQueue = null;
 
 	/**
 	 * Construct map manager
@@ -51,7 +51,7 @@ class MapManager implements CallbackListener {
 
 		// Create map commands instance
 		$this->mapCommands = new MapCommands($maniaControl);
-		$this->jukebox = new Jukebox($this->maniaControl);
+		$this->mapQueue = new MapQueue($this->maniaControl);
 
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
@@ -342,8 +342,8 @@ class MapManager implements CallbackListener {
 
 			$this->updateFullMapList();
 
-			//Juke requested Map
-			$this->maniaControl->mapManager->jukebox->addMapToJukebox($login, $mapInfo['MapUID']);
+			//Queue requested Map
+			$this->maniaControl->mapManager->mapQueue->addMapToMapQueue($login, $mapInfo['MapUID']);
 		}
 		// TODO: add local map by filename
 	}

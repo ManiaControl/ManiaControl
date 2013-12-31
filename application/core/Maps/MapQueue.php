@@ -9,7 +9,7 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 
 /**
- * Jukebox Class
+ * MapQueue Class
  *
  * @author steeffeen & kremsy
  */
@@ -46,8 +46,8 @@ class MapQueue implements CallbackListener, CommandListener {
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SKIP_MAPQUEUE_ADMIN, false);
 
 		//Register Admin Commands
-		$this->maniaControl->commandManager->registerCommandListener(self::ADMIN_COMMAND_CLEAR_JUKEBOX, $this, 'command_ClearJukebox', true);
-		$this->maniaControl->commandManager->registerCommandListener(self::ADMIN_COMMAND_CLEAR_MAPQUEUE, $this, 'command_ClearJukebox', true);
+		$this->maniaControl->commandManager->registerCommandListener(self::ADMIN_COMMAND_CLEAR_JUKEBOX, $this, 'command_ClearMapQueue', true);
+		$this->maniaControl->commandManager->registerCommandListener(self::ADMIN_COMMAND_CLEAR_MAPQUEUE, $this, 'command_ClearMapQueue', true);
 	}
 
 	/**
@@ -55,7 +55,7 @@ class MapQueue implements CallbackListener, CommandListener {
 	 * @param array  $chat
 	 * @param Player $player
 	 */
-	public function command_ClearQueuedMaps(array $chat, Player $admin){
+	public function command_ClearMapQueue(array $chat, Player $admin){
 		$title = $this->maniaControl->authenticationManager->getAuthLevelName($admin->authLevel);
 
 		//Destroy jukebox list
@@ -155,14 +155,14 @@ class MapQueue implements CallbackListener, CommandListener {
 	}
 
 	/**
-	 * Returns the next Map if the next map is a juked map or null if it's not
+	 * Returns the next Map if the next map is a queuedmap or null if it's not
 	 * @return null
 	 */
 	public function getNextMap(){
 		return $this->nextMap;
 	}
 	/**
-	 * Returns a list with the indexes of the juked maps
+	 * Returns a list with the indexes of the queued maps
 	 * @return array
 	 */
 	public function getQueuedMapsRanking(){
