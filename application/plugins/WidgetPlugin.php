@@ -15,7 +15,7 @@ use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
 use ManiaControl\Callbacks\CallbackManager;
-
+use FML\Script\Script;
 
 /**
  * ManiaControl Widget Plugin
@@ -55,7 +55,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	const SETTING_NEXTMAP_WIDGET_POSY = 'Nextmap-Widget-Position: Y';
 	const SETTING_NEXTMAP_WIDGET_WIDTH = 'Nextmap-Widget-Size: Width';
 	const SETTING_NEXTMAP_WIDGET_HEIGHT = 'Nextmap-Widget-Size: Height';
-
+	
 	// ServerInfoWidget Properties
 	const MLID_SERVERINFOWIDGET = 'WidgetPlugin.ServerInfoWidget';
 	const SETTING_SERVERINFO_WIDGET_ACTIVATED = 'ServerInfo-Widget Activated';
@@ -63,17 +63,19 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	const SETTING_SERVERINFO_WIDGET_POSY = 'ServerInfo-Widget-Position: Y';
 	const SETTING_SERVERINFO_WIDGET_WIDTH = 'ServerInfo-Widget-Size: Width';
 	const SETTING_SERVERINFO_WIDGET_HEIGHT = 'ServerInfo-Widget-Size: Height';
-
+	
 	/**
 	 * Private Properties
 	 */
-	/** @var maniaControl $maniaControl  */
+	/**
+	 * @var maniaControl $maniaControl
+	 */
 	private $maniaControl = null;
 
 	/**
 	 * Load the plugin
 	 *
-	 * @param ManiaControl $maniaControl        	
+	 * @param ManiaControl $maniaControl
 	 * @return bool
 	 */
 	public function load(ManiaControl $maniaControl) {
@@ -81,7 +83,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		
 		// Set CustomUI Setting
 		$this->maniaControl->manialinkManager->customUIManager->setChallengeInfoVisible(false);
-
+		
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_BEGINMAP, $this, 'handleOnBeginMap');
@@ -94,13 +96,13 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAP_WIDGET_POSY, 90 - 4.5);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAP_WIDGET_WIDTH, 40);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAP_WIDGET_HEIGHT, 9.);
-
+		
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SERVERINFO_WIDGET_ACTIVATED, true);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SERVERINFO_WIDGET_POSX, -160 + 17.5);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SERVERINFO_WIDGET_POSY, 90 - 4.5);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SERVERINFO_WIDGET_WIDTH, 35);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SERVERINFO_WIDGET_HEIGHT, 9.);
-
+		
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_NEXTMAP_WIDGET_ACTIVATED, true);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_NEXTMAP_WIDGET_POSX, 160 - 20);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_NEXTMAP_WIDGET_POSY, 90 - 25.5);
@@ -126,6 +128,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 
 	/**
 	 * Displays the Clock Widget
+	 * 
 	 * @param bool $login
 	 */
 	public function displayClockWidget($login = false) {
@@ -170,7 +173,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	/**
 	 * Displays the Next Map (Only at the end of the Map)
 	 *
-	 * @param bool $login        	
+	 * @param bool $login
 	 */
 	public function displayNextMapWidget($login = false) {
 		$pos_x = $this->maniaControl->settingManager->getSetting($this, self::SETTING_NEXTMAP_WIDGET_POSX);
@@ -182,7 +185,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$labelStyle = $this->maniaControl->manialinkManager->styleManager->getDefaultLabelStyle();
 		
 		$maniaLink = new ManiaLink(self::MLID_NEXTMAPWIDGET);
-
+		
 		// mainframe
 		$frame = new Frame();
 		$maniaLink->add($frame);
@@ -197,8 +200,10 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		
 		// Check if the Next Map is a juked Map
 		$jukedMap = $this->maniaControl->mapManager->jukebox->getNextMap();
-
-		/** @var Player $requester */
+		
+		/**
+		 * @var Player $requester
+		 */
 		$requester = null;
 		// if the nextmap is not a juked map, get it from map info
 		if ($jukedMap == null) {
@@ -213,7 +218,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 			$name = $map->name;
 			$author = $map->authorLogin;
 		}
-
+		
 		$label = new Label_Text();
 		$frame->add($label);
 		$label->setY($height / 2 - 2.3);
@@ -278,42 +283,43 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$height = $this->maniaControl->settingManager->getSetting($this, self::SETTING_SERVERINFO_WIDGET_HEIGHT);
 		$quadStyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
 		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
-
+		
 		$maniaLink = new ManiaLink(self::MLID_SERVERINFOWIDGET);
-
+		
 		// mainframe
 		$frame = new Frame();
 		$maniaLink->add($frame);
 		$frame->setSize($width, $height);
 		$frame->setPosition($pos_x, $pos_y);
-
-
+		
 		// Background Quad
 		$backgroundQuad = new Quad();
 		$frame->add($backgroundQuad);
 		$backgroundQuad->setSize($width, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-
+		
 		$this->maniaControl->client->query('GetMaxPlayers');
 		$maxPlayers = $this->maniaControl->client->getResponse();
-
+		
 		$this->maniaControl->client->query('GetMaxSpectators');
 		$maxSpectators = $this->maniaControl->client->getResponse();
-
-		$serverName= $this->maniaControl->server->getName();
-
+		
+		$serverName = $this->maniaControl->server->getName();
+		
 		$players = $this->maniaControl->playerManager->getPlayers();
 		$playerCount = 0;
 		$spectatorCount = 0;
-		/** @var Player $player */
-		foreach($players as $player){
-			if($player->isSpectator)
+		/**
+		 * @var Player $player
+		 */
+		foreach ($players as $player) {
+			if ($player->isSpectator)
 				$spectatorCount++;
 			else
 				$playerCount++;
 		}
-
-		//Player Quad / Label
+		
+		// Player Quad / Label
 		$label = new Label_Text();
 		$frame->add($label);
 		$label->setPosition(0, 1.5, 0.2);
@@ -321,7 +327,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$label->setTextSize(1.3);
 		$label->setText($serverName);
 		$label->setTextColor("FFF");
-
+		
 		$label = new Label_Text();
 		$frame->add($label);
 		$label->setPosition(-3.9, -1.5, 0.2);
@@ -330,16 +336,15 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$label->setScale(0.8);
 		$label->setText($playerCount . " / " . $maxPlayers['NextValue']);
 		$label->setTextColor("FFF");
-
-
+		
 		$quad = new Quad_Icons128x128_1();
 		$frame->add($quad);
 		$quad->setSubStyle($quad::SUBSTYLE_Multiplayer);
 		$quad->setPosition(-8, -1.6, 0.2);
 		$quad->setSize(2.5, 2.5);
 		$quad->setHAlign(Control::CENTER);
-
-		//Spectator Quad / Label
+		
+		// Spectator Quad / Label
 		$label = new Label_Text();
 		$frame->add($label);
 		$label->setPosition(8.5, -1.5, 0.2);
@@ -348,25 +353,25 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$label->setScale(0.8);
 		$label->setText($spectatorCount . " / " . $maxSpectators['NextValue']);
 		$label->setTextColor("FFF");
-
+		
 		$quad = new Quad_Icons64x64_1();
 		$frame->add($quad);
 		$quad->setSubStyle($quad::SUBSTYLE_Camera);
 		$quad->setPosition(3.5, -1.6, 0.2);
-		$quad->setSize(3.3,2.5);
+		$quad->setSize(3.3, 2.5);
 		$quad->setHAlign(Control::CENTER);
-
-		//Favorite quad
-		//$quad = new Quad_Icons64x64_1();
+		
+		// Favorite quad
+		// $quad = new Quad_Icons64x64_1();
 		$quad = new Quad_Icons128x128_1();
 		$frame->add($quad);
-		//$quad->setSubStyle($quad::SUBSTYLE_StateFavourite);
+		// $quad->setSubStyle($quad::SUBSTYLE_StateFavourite);
 		$quad->setSubStyle($quad::SUBSTYLE_ServersFavorites);
 		$quad->setPosition($width / 2 - 4, -1.5, -0.5);
-		$quad->setSize(4,4);
+		$quad->setSize(4, 4);
 		$quad->setHAlign(Control::CENTER);
-		//$TODO add server to favorite
-
+		// $TODO add server to favorite
+		
 		// Send manialink
 		$manialinkText = $maniaLink->render()->saveXML();
 		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $login);
@@ -386,6 +391,8 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
 		
 		$maniaLink = new ManiaLink(self::MLID_MAPWIDGET);
+		$script = new Script();
+		$maniaLink->setScript($script);
 		
 		// mainframe
 		$frame = new Frame();
@@ -398,7 +405,8 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$frame->add($backgroundQuad);
 		$backgroundQuad->setSize($width, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-
+		$script->addMapInfoButton($backgroundQuad);
+		
 		$map = $this->maniaControl->mapManager->getCurrentMap();
 		
 		$label = new Label_Text();
@@ -422,17 +430,18 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$label->setScale(0.8);
 		$label->setText($map->authorLogin);
 		$label->setTextColor("FFF");
-
-		if(isset($map->mx->pageurl)){
-			$quad = new Quad;
+		
+		if (isset($map->mx->pageurl)) {
+			$quad = new Quad();
 			$frame->add($quad);
-			$quad->setImage("http://wiki.maniaplanet.com/pool/images/b/bf/ManiaExchange_logo.png"); //TODO include image into maniacontrol
+			$quad->setImage("http://wiki.maniaplanet.com/pool/images/b/bf/ManiaExchange_logo.png"); // TODO include image into
+			                                                                                        // maniacontrol
 			$quad->setPosition(-$width / 2 + 4, -1.5, -0.5);
-			$quad->setSize(4,4);
+			$quad->setSize(4, 4);
 			$quad->setHAlign(Control::CENTER);
 			$quad->setUrl($map->mx->pageurl);
 		}
-
+		
 		// Send manialink
 		$manialinkText = $maniaLink->render()->saveXML();
 		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $login);
@@ -441,8 +450,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	/**
 	 * Closes a Widget
 	 *
-	 * @param
-	 *        	$widgetId
+	 * @param $widgetId
 	 */
 	public function closeWidget($widgetId) {
 		$emptyManialink = new ManiaLink($widgetId);
@@ -453,7 +461,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	/**
 	 * Handle ManiaControl OnInit callback
 	 *
-	 * @param array $callback        	
+	 * @param array $callback
 	 */
 	public function handleOnInit(array $callback) {
 		// Display Map Widget
@@ -471,7 +479,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	/**
 	 * Handle on Begin Map
 	 *
-	 * @param array $callback        	
+	 * @param array $callback
 	 */
 	public function handleOnBeginMap(array $callback) {
 		// Display Map Widget
@@ -484,7 +492,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	/**
 	 * Handle on End Map
 	 *
-	 * @param array $callback        	
+	 * @param array $callback
 	 */
 	public function handleOnEndMap(array $callback) {
 		// Display Map Widget
@@ -496,7 +504,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	/**
 	 * Handle PlayerConnect callback
 	 *
-	 * @param array $callback        	
+	 * @param array $callback
 	 */
 	public function handlePlayerConnect(array $callback) {
 		$player = $callback[1];
@@ -515,7 +523,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	/**
 	 * Aktualize the clock widget every minute
 	 *
-	 * @param array $callback        	
+	 * @param array $callback
 	 */
 	public function handleEveryMinute(array $callback) {
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_ACTIVATED)) {
