@@ -2,15 +2,14 @@
 
 namespace ManiaControl\Manialinks;
 
+
+use FML\CustomUI;
 use ManiaControl\ManiaControl;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
-use FML\ManiaLink;
-use FML\Elements\CustomUI;
-use FML\Controls\Quad;
-use FML\ManiaLinks;
+
 
 /**
  * Class managing the Custom UI Settings

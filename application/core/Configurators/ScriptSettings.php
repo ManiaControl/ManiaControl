@@ -214,6 +214,11 @@ class ScriptSettings implements ConfiguratorMenu,CallbackListener {
 			$newSettings[$settingName] = $setting["Value"];
 		}
 
+		//Nothing has been changed
+		if($chatMessage = ''){
+			return;
+		}
+
 		$success = $this->maniaControl->client->query('SetModeScriptSettings', $newSettings);
 		if (!$success) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
@@ -226,9 +231,7 @@ class ScriptSettings implements ConfiguratorMenu,CallbackListener {
 
 		$title = $this->maniaControl->authenticationManager->getAuthLevelName($player->authLevel);
 
-		if($chatMessage != ''){
-			$this->maniaControl->chat->sendInformation('$ff0' . $title . ' $<' . $player->nickname . '$> set Scriptsettings $<' . $chatMessage . '$>!');
-		}
+		$this->maniaControl->chat->sendInformation('$ff0' . $title . ' $<' . $player->nickname . '$> set Scriptsettings $<' . $chatMessage . '$>!');
 
 		// log console message
 		$this->maniaControl->log(Formatter::stripCodes($title . ' ' . $player->nickname . ' set Scriptsettings ' . $chatMessage . '!'));

@@ -170,7 +170,7 @@ class Script {
 		$profileControl->setScriptEvents(true);
 		$profileControl->addClass(self::CLASS_PROFILE);
 		if ($playerLogin) {
-			$profilControl->addClass(self::CLASS_PROFILE . '-' . $playerLogin);
+			$profileControl->addClass(self::CLASS_PROFILE . '-' . $playerLogin);
 		}
 		$this->profile = true;
 		return $this;

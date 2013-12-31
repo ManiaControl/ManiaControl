@@ -246,8 +246,9 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$script = new Script();
 		$maniaLink->setScript($script);
 
-		$tooltips = new Tooltips();
-		$script->addFeature($tooltips);
+		//$script->addTooltip($script::CLASS_TOOLTIPS);
+		//$tooltips = new Tooltips();
+		//$script->addFeature($tooltips);
 
 		//Headline
 		$headFrame = new Frame();
@@ -328,7 +329,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$jukeLabel->setTextColor("FFF");
 
 				$descriptionLabel->setText("{$map->name} \$zis on Jukebox Position: {$jukedMaps[$map->uid]}");
-				$tooltips->add($jukeLabel, $descriptionLabel);
+				//$tooltips->add($jukeLabel, $descriptionLabel);
 			}else{
 				//Juke-Map-Button
 				//$jukeQuad = new Quad_Icons128x128_1();
@@ -344,7 +345,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 
 				$descriptionLabel->setText("Add Map to Jukebox: {$map->name}");
-				$tooltips->add($jukeQuad, $descriptionLabel);
+				//$tooltips->add($jukeQuad, $descriptionLabel);
 			}
 
 			if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)){ //TODO SET as setting who can add maps
@@ -370,7 +371,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$descriptionLabel->setTextSize(2);
 				$descriptionLabel->setVisible(false);
 				$descriptionLabel->setText("Remove Map: {$map->name}");
-				$tooltips->add($eraseQuad, $descriptionLabel);
+				//$tooltips->add($eraseQuad, $descriptionLabel);
 			}
 			if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)){ //TODO SET as setting who can add maps
 				//switch to map quad
@@ -394,7 +395,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$descriptionLabel->setTextSize(2);
 				$descriptionLabel->setVisible(false);
 				$descriptionLabel->setText("Switch Directly to Map: {$map->name}");
-				$tooltips->add($switchToQuad, $descriptionLabel);
+				//$tooltips->add($switchToQuad, $descriptionLabel);
 			}
 
 			//Display Karma bar
