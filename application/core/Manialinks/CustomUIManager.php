@@ -25,14 +25,13 @@ class CustomUIManager implements CallbackListener {
 	 * Private Properties
 	 */
 	private $maniaControl = null;
-	private $manialinks = null;
 	private $customUI = null;
 	private $updateManialink = false;
 
 	/**
 	 * Create a Custom UI Manager
 	 *
-	 * @param ManiaControl $maniaControl        	
+	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
@@ -53,7 +52,7 @@ class CustomUIManager implements CallbackListener {
 	/**
 	 * Update the CustomUI Manialink
 	 *
-	 * @param Player $player        	
+	 * @param Player $player
 	 */
 	private function updateManialink(Player $player = null) {
 		$manialinkText = $this->customUI->render()->saveXML();
@@ -67,7 +66,7 @@ class CustomUIManager implements CallbackListener {
 	/**
 	 * Handle 1Second Callback
 	 *
-	 * @param array $callback        	
+	 * @param array $callback
 	 */
 	public function handle1Second(array $callback) {
 		if (!$this->updateManialink) return;
@@ -78,7 +77,7 @@ class CustomUIManager implements CallbackListener {
 	/**
 	 * Handle PlayerJoined Callback
 	 *
-	 * @param array $callback        	
+	 * @param array $callback
 	 */
 	public function handlePlayerJoined(array $callback) {
 		$player = $callback[1];
@@ -88,7 +87,7 @@ class CustomUIManager implements CallbackListener {
 	/**
 	 * Set Showing of Notices
 	 *
-	 * @param bool $visible        	
+	 * @param bool $visible
 	 */
 	public function setNoticeVisible($visible) {
 		$this->customUI->setNoticeVisible($visible);
@@ -98,7 +97,7 @@ class CustomUIManager implements CallbackListener {
 	/**
 	 * Set Showing of the Challenge Info
 	 *
-	 * @param bool $visible        	
+	 * @param bool $visible
 	 */
 	public function setChallengeInfoVisible($visible) {
 		$this->customUI->setChallengeInfoVisible($visible);
@@ -108,7 +107,7 @@ class CustomUIManager implements CallbackListener {
 	/**
 	 * Set Showing of the Net Infos
 	 *
-	 * @param bool $visible        	
+	 * @param bool $visible
 	 */
 	public function setNetInfosVisible($visible) {
 		$this->customUI->setNetInfosVisible($visible);
@@ -118,7 +117,7 @@ class CustomUIManager implements CallbackListener {
 	/**
 	 * Set Showing of the Chat
 	 *
-	 * @param bool $visible        	
+	 * @param bool $visible
 	 */
 	public function setChatVisible($visible) {
 		$this->customUI->setChatVisible($visible);
@@ -128,7 +127,7 @@ class CustomUIManager implements CallbackListener {
 	/**
 	 * Set Showing of the Checkpoint List
 	 *
-	 * @param bool $visible        	
+	 * @param bool $visible
 	 */
 	public function setCheckpointListVisible($visible) {
 		$this->customUI->setCheckpointListVisible($visible);
@@ -138,7 +137,7 @@ class CustomUIManager implements CallbackListener {
 	/**
 	 * Set Showing of Round Scores
 	 *
-	 * @param bool $visible        	
+	 * @param bool $visible
 	 */
 	public function setRoundScoresVisible($visible) {
 		$this->customUI->setRoundScoresVisible($visible);
@@ -148,7 +147,7 @@ class CustomUIManager implements CallbackListener {
 	/**
 	 * Set Showing of the Scoretable
 	 *
-	 * @param bool $visible        	
+	 * @param bool $visible
 	 */
 	public function setScoretableVisible($visible) {
 		$this->customUI->setScoretableVisible($visible);
@@ -158,7 +157,7 @@ class CustomUIManager implements CallbackListener {
 	/**
 	 * Set Global Showing
 	 *
-	 * @param bool $visible        	
+	 * @param bool $visible
 	 */
 	public function setGlobalVisible($visible) {
 		$this->customUI->setGlobalVisible($visible);
