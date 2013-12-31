@@ -36,7 +36,7 @@ class UpdateManager implements CallbackListener, CommandListener {
 	/**
 	 * Create a new Updater
 	 *
-	 * @param ManiaControl $maniaControl        	
+	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
@@ -57,16 +57,18 @@ class UpdateManager implements CallbackListener, CommandListener {
 	/**
 	 * Handle ManiaControl 1Minute callback
 	 *
-	 * @param array $callback        	
+	 * @param array $callback
 	 */
 	public function handle1Minute(array $callback) {
 		$updateCheckEnabled = $this->maniaControl->settingManager->getSetting($this, self::SETTING_ENABLEUPDATECHECK);
 		if (!$updateCheckEnabled) {
+			// Automatic update check disabled
 			if ($this->coreUpdateData) {
 				$this->coreUpdateData = null;
 			}
 			return;
 		}
+		// Only check once per hour
 		$updateInterval = $this->maniaControl->settingManager->getSetting($this, self::SETTING_UPDATECHECK_INTERVAL);
 		if ($this->lastUpdateCheck > time() - $updateInterval * 3600.) {
 			return;
@@ -74,6 +76,7 @@ class UpdateManager implements CallbackListener, CommandListener {
 		$this->lastUpdateCheck = time();
 		$updateData = $this->checkCoreUpdate();
 		if (!$updateData) {
+			// No update available
 			return;
 		}
 		$this->maniaControl->log('New ManiaControl Version ' . $updateData->version . ' available!');
@@ -83,16 +86,15 @@ class UpdateManager implements CallbackListener, CommandListener {
 	/**
 	 * Handle ManiaControl PlayerJoined callback
 	 *
-	 * @param array $callback        	
+	 * @param array $callback
 	 */
 	public function handlePlayerJoined(array $callback) {
 		if (!$this->coreUpdateData) {
 			return;
 		}
+		// Announce available update
 		$player = $callback[1];
-		if (!AuthenticationManager::checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)) {
-			return;
-		}
+		if (!AuthenticationManager::checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)) return;
 		$this->maniaControl->chat->sendInformation('New ManiaControl Version ' . $this->coreUpdateData->version . ' available!', 
 				$player->login);
 	}
@@ -100,8 +102,8 @@ class UpdateManager implements CallbackListener, CommandListener {
 	/**
 	 * Handle //checkupdate command
 	 *
-	 * @param array $chatCallback        	
-	 * @param Player $player        	
+	 * @param array $chatCallback
+	 * @param Player $player
 	 */
 	public function handle_CheckUpdate(array $chatCallback, Player $player) {
 		if (!AuthenticationManager::checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)) {
@@ -119,7 +121,7 @@ class UpdateManager implements CallbackListener, CommandListener {
 	/**
 	 * Check given Plugin Class for Update
 	 *
-	 * @param string $pluginClass        	
+	 * @param string $pluginClass
 	 * @return mixed
 	 */
 	public function checkPluginUpdate($pluginClass) {
@@ -164,7 +166,7 @@ class UpdateManager implements CallbackListener, CommandListener {
 	/**
 	 * Perform a Core Update
 	 *
-	 * @param object $updateData        	
+	 * @param object $updateData
 	 * @return bool
 	 */
 	private function performCoreUpdate($updateData = null) {
