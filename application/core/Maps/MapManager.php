@@ -9,7 +9,6 @@ use ManiaControl\FileUtil;
 use ManiaControl\ManiaControl;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
-use ManiaControl\Players\PlayerList;
 use MXInfoFetcher;
 
 
