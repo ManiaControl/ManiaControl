@@ -35,13 +35,16 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	/**
 	 * Private properties
 	 */
-	/** @var maniaControl $maniaControl  */
+	/**
+	 *
+	 * @var maniaControl $maniaControl
+	 */
 	private $maniaControl = null;
 	private $updateManialink = false;
 	private $manialink = null;
 
 	/**
-	 * 
+	 *
 	 * @see \ManiaControl\Plugins\Plugin::load()
 	 */
 	public function load(ManiaControl $maniaControl) {
@@ -121,7 +124,7 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	/**
 	 * Handle ManiaControl 1 Second callback
 	 *
-	 * @param array $callback        	
+	 * @param array $callback
 	 */
 	public function handle1Second(array $callback) {
 		if (!$this->updateManialink) return;
@@ -176,7 +179,7 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	/**
 	 * Handle ManiaControl OnInit callback
 	 *
-	 * @param array $callback        	
+	 * @param array $callback
 	 */
 	public function handleOnInit(array $callback) {
 		$this->updateManialink = true;
@@ -185,7 +188,7 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	/**
 	 * Handle BeginMap ManiaControl callback
 	 *
-	 * @param array $callback        	
+	 * @param array $callback
 	 */
 	public function handleBeginMap(array $callback) {
 		$this->updateManialink = true;
@@ -194,7 +197,7 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	/**
 	 * Handle PlayerConnect callback
 	 *
-	 * @param array $callback        	
+	 * @param array $callback
 	 */
 	public function handlePlayerConnect(array $callback) {
 		$login = $callback[1][0];
@@ -208,7 +211,7 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	/**
 	 * Handle PlayerChat callback
 	 *
-	 * @param array $chatCallback        	
+	 * @param array $chatCallback
 	 */
 	public function handlePlayerChat(array $chatCallback) {
 		$login = $chatCallback[1][1];
@@ -220,8 +223,7 @@ class KarmaPlugin implements CallbackListener, Plugin {
 		if ($chatCallback[1][3]) {
 			$message = substr($message, 1);
 		}
-		$firstChar = substr($message, 0, 1);
-		if ($firstChar !== '+' && $firstChar !== '-') {
+		if (preg_match('/[^+-]/', $message)) {
 			return;
 		}
 		$vote = substr_count($message, '+');
@@ -237,8 +239,8 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	/**
 	 * Handle a vote done by a player
 	 *
-	 * @param Player $player        	
-	 * @param int $vote        	
+	 * @param Player $player
+	 * @param int $vote
 	 * @return bool
 	 */
 	private function handleVote(Player $player, $vote) {
@@ -272,7 +274,7 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	/**
 	 * Query the player to update the manialink
 	 *
-	 * @param Player $player        	
+	 * @param Player $player
 	 */
 	private function queryManialinkUpdateFor(Player $player) {
 		if ($this->updateManialink === true) {
@@ -307,9 +309,9 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	/**
 	 * Save the vote of the player for the map
 	 *
-	 * @param Player $player        	
-	 * @param Map $map        	
-	 * @param float $vote        	
+	 * @param Player $player
+	 * @param Map $map
+	 * @param float $vote
 	 * @return bool
 	 */
 	private function savePlayerVote(Player $player, Map $map, $vote) {
@@ -335,8 +337,8 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	/**
 	 * Get the current vote of the player for the map
 	 *
-	 * @param Player $player        	
-	 * @param Map $map        	
+	 * @param Player $player
+	 * @param Map $map
 	 * @return int
 	 */
 	private function getPlayerVote(Player $player, Map $map) {
@@ -363,7 +365,7 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	/**
 	 * Get the current karma of the map
 	 *
-	 * @param Map $map        	
+	 * @param Map $map
 	 * @return float | bool
 	 */
 	public function getMapKarma(Map $map) {
@@ -392,7 +394,7 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	/**
 	 * Get the current Votes for the Map
 	 *
-	 * @param Map $map        	
+	 * @param Map $map
 	 * @return array
 	 */
 	public function getMapVotes(Map $map) {
@@ -420,7 +422,7 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	/**
 	 * Build karma voting manialink if necessary
 	 *
-	 * @param bool $forceBuild        	
+	 * @param bool $forceBuild
 	 */
 	private function buildManialink($forceBuild = false) {
 		if (is_object($this->manialink) && !$forceBuild) return;
