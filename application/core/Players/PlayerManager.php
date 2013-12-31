@@ -26,14 +26,14 @@ class PlayerManager implements CallbackListener {
 	const CB_PLAYERINFOCHANGED = 'PlayerManagerCallback.PlayerInfoChanged';
 	const TABLE_PLAYERS = 'mc_players';
 	const SETTING_JOIN_LEAVE_MESSAGES = 'Enable Join & Leave Messages';
-
+	
 	/**
 	 * Private properties
 	 */
 	private $maniaControl = null;
 	private $playerCommands = null;
 	private $playerList = array();
-
+	
 	/**
 	 * Public properties
 	 */
@@ -42,7 +42,7 @@ class PlayerManager implements CallbackListener {
 	/**
 	 * Construct player manager
 	 *
-	 * @param \ManiaControl\ManiaControl $maniaControl        	
+	 * @param \ManiaControl\ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
@@ -50,16 +50,17 @@ class PlayerManager implements CallbackListener {
 		
 		$this->playerCommands = new PlayerCommands($maniaControl);
 		$this->playerActions = new PlayerActions($maniaControl);
-
+		
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES, true);
 		
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'onInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCONNECT, $this, 'playerConnect');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERDISCONNECT, $this, 'playerDisconnect');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERINFOCHANGED, $this, 'playerInfoChanged');
-
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERDISCONNECT, $this, 
+				'playerDisconnect');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERINFOCHANGED, $this, 
+				'playerInfoChanged');
 	}
 
 	/**
@@ -98,7 +99,7 @@ class PlayerManager implements CallbackListener {
 	/**
 	 * Handle OnInit callback
 	 *
-	 * @param array $callback        	
+	 * @param array $callback
 	 */
 	public function onInit(array $callback) {
 		// Add all players
@@ -113,7 +114,7 @@ class PlayerManager implements CallbackListener {
 			$player = new Player($playerInfo);
 			$this->addPlayer($player);
 		}
-
+		
 		// Trigger own callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_ONINIT, array(self::CB_ONINIT));
 	}
@@ -121,53 +122,50 @@ class PlayerManager implements CallbackListener {
 	/**
 	 * Handle playerConnect callback
 	 *
-	 * @param array $callback        	
+	 * @param array $callback
 	 */
 	public function playerConnect(array $callback) {
 		$login = $callback[1][0];
 		$this->maniaControl->client->query('GetDetailedPlayerInfo', $login);
 		$playerInfo = $this->maniaControl->client->getResponse();
 		$player = new Player($playerInfo);
-
+		
 		$this->addPlayer($player);
-
+		
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES) && !$player->isFakePlayer()) {
 			$string = array(0 => '$0f0Player', 1 => '$0f0Moderator', 2 => '$0f0Admin', 3 => '$0f0MasterAdmin', 4 => '$0f0MasterAdmin');
-			//$nickname = Formatter::stripCodes($player->nickname); // TODO: strip codes without colour codes like in serverviewer
-
-			//TODO standart notification colour from settings or something
-
-			$this->maniaControl->chat->sendChat(
-					'$s$0f0' . $string[$player->authLevel] . ' $fff' . $player->nickname . '$z$s$0f0 Nation:$fff ' . $player->getCountry() . ' $z$s$0f0joined');
-			$this->maniaControl->chat->sendInformation('This server uses ManiaControl v' . ManiaControl::VERSION,$player->login);
+			$chatMessage = '$s$0f0' . $string[$player->authLevel] . ' $fff' . $player->nickname . '$z$s$0f0 Nation:$fff ' .
+					 $player->getCountry() . ' $z$s$0f0joined!';
+			$this->maniaControl->chat->sendChat($chatMessage);
+			$this->maniaControl->chat->sendInformation('This server uses ManiaControl v' . ManiaControl::VERSION . '!', $player->login);
 		}
-
-		$this->maniaControl->log('Player joined: ' . $player->login . " / " . Formatter::stripCodes($player->nickname) . " Nation:" . $player->getCountry() . " IP: " .$player->ipAddress);
-
-		// Trigger own callback
+		
+		$logMessage = "Player joined: {$player->login} / " . Formatter::stripCodes($player->nickname) . " Nation: " .
+				 $player->getCountry() . " IP: {$player->ipAddress}";
+		$this->maniaControl->log($logMessage);
+		
+		// Trigger own PlayerJoined callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERJOINED, array(self::CB_PLAYERJOINED, $player));
 	}
 
 	/**
 	 * Handle playerDisconnect callback
 	 *
-	 * @param array $callback        	
+	 * @param array $callback
 	 */
 	public function playerDisconnect(array $callback) {
 		$login = $callback[1][0];
 		$player = $this->removePlayer($login);
-
+		
 		// Trigger own callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERDISCONNECTED, array(self::CB_PLAYERDISCONNECTED, $player));
-
-		if($player == null || $player->isFakePlayer())
-			return;
-
+		
+		if ($player == null || $player->isFakePlayer()) return;
+		
 		$played = Formatter::formatTimeH(time() - $player->joinTime);
-		$this->maniaControl->log("Player left: " . $player->login . " / " . Formatter::stripCodes($player->nickname) . " Playtime: " . $played);
-
-
-
+		$this->maniaControl->log(
+				"Player left: " . $player->login . " / " . Formatter::stripCodes($player->nickname) . " Playtime: " . $played);
+		
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES)) {
 			$this->maniaControl->chat->sendChat('$<' . $player->nickname . '$> $s$0f0has left the game');
 		}
@@ -175,17 +173,17 @@ class PlayerManager implements CallbackListener {
 
 	/**
 	 * Update PlayerInfo
+	 *
 	 * @param array $callback
 	 */
-	public function playerInfoChanged(array $callback){
+	public function playerInfoChanged(array $callback) {
 		$player = $this->getPlayer($callback[1][0]['Login']);
-		if($player == null)
-			return;
-
+		if ($player == null) return;
+		
 		$player->teamId = $callback[1][0]["TeamId"];
 		$player->isSpectator = $callback[1][0]["SpectatorStatus"];
 		$player->ladderRank = $callback[1][0]["LadderRanking"];
-
+		
 		// Trigger own callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERINFOCHANGED, array(self::CB_PLAYERINFOCHANGED));
 	}
@@ -202,7 +200,7 @@ class PlayerManager implements CallbackListener {
 	/**
 	 * Get a Player from the PlayerList
 	 *
-	 * @param string $login        	
+	 * @param string $login
 	 * @return Player
 	 */
 	public function getPlayer($login) {
@@ -215,7 +213,7 @@ class PlayerManager implements CallbackListener {
 	/**
 	 * Add a player to the PlayerList
 	 *
-	 * @param Player $player        	
+	 * @param Player $player
 	 * @return bool
 	 */
 	private function addPlayer(Player $player) {
@@ -230,8 +228,8 @@ class PlayerManager implements CallbackListener {
 	/**
 	 * Remove a Player from the PlayerList
 	 *
-	 * @param string $login        	
-	 * @param bool $savePlayedTime        	
+	 * @param string $login
+	 * @param bool $savePlayedTime
 	 * @return Player $player
 	 */
 	private function removePlayer($login, $savePlayedTime = true) {
@@ -249,8 +247,8 @@ class PlayerManager implements CallbackListener {
 	/**
 	 * Save player in database and fill up object properties
 	 *
-	 * @param Player $player        	
-	 * @param int $joinCount        	
+	 * @param Player $player
+	 * @param int $joinCount
 	 * @return bool
 	 */
 	private function savePlayer(Player &$player, $joinCount = 1) {
@@ -314,7 +312,7 @@ class PlayerManager implements CallbackListener {
 	/**
 	 * Update total played time of the player
 	 *
-	 * @param Player $player        	
+	 * @param Player $player
 	 * @return bool
 	 */
 	private function updatePlayedTime(Player $player) {
