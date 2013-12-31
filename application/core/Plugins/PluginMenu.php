@@ -16,6 +16,7 @@ use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Controls\Labels\Label_Button;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\CallbackListener;
+use ManiaControl\Formatter;
 
 /**
  * Configurator for enabling and disabling plugins
@@ -59,6 +60,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getMenu()
 	 */
 	public function getMenu($width, $height, Script $script) {
+		$pagesId = 'PluginPages';
 		$frame = new Frame();
 		
 		$pluginClasses = $this->maniaControl->pluginManager->getPluginClasses();
@@ -82,12 +84,17 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 		$pagerNext->setSize($pagerSize, $pagerSize);
 		$pagerNext->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowNext);
 		
+		$script->addPager($pagerPrev, -1, $pagesId);
+		$script->addPager($pagerNext, 1, $pagesId);
+		
 		$pageCountLabel = new Label_Text();
 		$frame->add($pageCountLabel);
 		$pageCountLabel->setHAlign(Control::RIGHT);
 		$pageCountLabel->setPosition($width * 0.35, $height * -0.44, 1);
 		$pageCountLabel->setStyle($pageCountLabel::STYLE_TextTitle1);
 		$pageCountLabel->setTextSize(2);
+		
+		$script->addPageLabel($pageCountLabel, $pagesId);
 		
 		// Plugin pages
 		$pageFrames = array();
@@ -96,7 +103,11 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 			if (!isset($pageFrame)) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
+				if (!empty($pageFrames)) {
+					$pageFrame->setVisible(false);
+				}
 				array_push($pageFrames, $pageFrame);
+				$script->addPage($pageFrame, count($pageFrames), $pagesId);
 				$y = $height * 0.41;
 			}
 			
@@ -158,14 +169,9 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 			
 			$y -= $entryHeight;
 			if ($index % $pageMaxCount == $pageMaxCount - 1) {
-				$script->addPage($pageFrame, 1, "test");
 				unset($pageFrame);
 			}
 		}
-		
-		// $script->addPager($pageFrames, 1 , $pageCountLabel);
-		// $script->addPage(array(-1 => $pagerPrev, 1 => $pagerNext), $pageFrames, $pageCountLabel);
-		// $pages->add(array(-1 => $pagerPrev, 1 => $pagerNext), $pageFrames, $pageCountLabel);
 		
 		return $frame;
 	}
@@ -200,6 +206,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 			if ($activated) {
 				$this->maniaControl->chat->sendSuccess($pluginClass::getName() . ' activated!', $player->login);
 				$this->maniaControl->configurator->showMenu($player);
+				$this->maniaControl->log(Formatter::stripCodes("{$player->login} activated '{$pluginClass}'!"));
 			}
 			else {
 				$this->maniaControl->chat->sendError('Error activating ' . $pluginClass::getName() . '!', $player->login);
@@ -211,6 +218,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 			if ($deactivated) {
 				$this->maniaControl->chat->sendSuccess($pluginClass::getName() . ' deactivated!', $player->login);
 				$this->maniaControl->configurator->showMenu($player);
+				$this->maniaControl->log(Formatter::stripCodes("{$player->login} deactivated '{$pluginClass}'!"));
 			}
 			else {
 				$this->maniaControl->chat->sendError('Error deactivating ' . $pluginClass::getName() . '!', $player->login);

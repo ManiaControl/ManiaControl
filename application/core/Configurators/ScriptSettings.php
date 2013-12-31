@@ -61,6 +61,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getMenu()
 	 */
 	public function getMenu($width, $height, Script $script) {
+		$pagesId = 'ScriptSettingsPages';
 		$frame = new Frame();
 		
 		$this->maniaControl->client->query('GetModeScriptInfo');
@@ -96,8 +97,8 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		$pagerNext->setSize($pagerSize, $pagerSize);
 		$pagerNext->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowNext);
 		
-		$script->addPager($pagerPrev, -1);
-		$script->addPager($pagerNext, 1);
+		$script->addPager($pagerPrev, -1, $pagesId);
+		$script->addPager($pagerNext, 1, $pagesId);
 		
 		$pageCountLabel = new Label();
 		$frame->add($pageCountLabel);
@@ -106,7 +107,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		$pageCountLabel->setStyle('TextTitle1');
 		$pageCountLabel->setTextSize(2);
 		
-		$script->addPageLabel($pageCountLabel);
+		$script->addPageLabel($pageCountLabel, $pagesId);
 		
 		// Setting pages
 		$pageFrames = array();
@@ -124,7 +125,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 				}
 				array_push($pageFrames, $pageFrame);
 				$y = $height * 0.41;
-				$script->addPage($pageFrame, count($pageFrames));
+				$script->addPage($pageFrame, count($pageFrames), $pagesId);
 			}
 			
 			$settingFrame = new Frame();
@@ -282,8 +283,8 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		foreach ($newSettings as $setting => $value) {
 			$title = $this->maniaControl->authenticationManager->getAuthLevelName($player->authLevel);
 			$chatMessage = '$ff0' . $title . ' $<' . $player->nickname . '$> set ScriptSetting ';
-			$chatMessage .= '$<' . '$fff' . preg_replace('/^S_/', '', $setting) . '$z$s$ff0 to $fff' . $this->parseSettingValue($value) .
-					 '$>!';
+			$chatMessage .= '$<' . '$fff' . preg_replace('/^S_/', '', $setting) . '$z$s$ff0 ';
+			$chatMessage .= 'to $fff' . $this->parseSettingValue($value) . '$>!';
 			
 			$this->maniaControl->chat->sendInformation($chatMessage);
 			$this->maniaControl->log(Formatter::stripCodes($chatMessage));
