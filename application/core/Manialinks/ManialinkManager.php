@@ -46,7 +46,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	/**
 	 * Create a new manialink manager
 	 *
-	 * @param ManiaControl $maniaControl        	
+	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
@@ -62,9 +62,9 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	/**
 	 * Register a new manialink page answer listener
 	 *
-	 * @param string $actionId        	
-	 * @param ManialinkPageAnswerListener $listener        	
-	 * @param string $method        	
+	 * @param string $actionId
+	 * @param ManialinkPageAnswerListener $listener
+	 * @param string $method
 	 * @return bool
 	 */
 	public function registerManialinkPageAnswerListener($actionId, ManialinkPageAnswerListener $listener, $method) {
@@ -84,7 +84,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	/**
 	 * Remove a Manialink Page Answer Listener
 	 *
-	 * @param ManialinkPageAnswerListener $listener        	
+	 * @param ManialinkPageAnswerListener $listener
 	 * @return bool
 	 */
 	public function unregisterManialinkPageAnswerListener(ManialinkPageAnswerListener $listener) {
@@ -98,7 +98,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	/**
 	 * Reserve manialink ids
 	 *
-	 * @param int $count        	
+	 * @param int $count
 	 * @return array
 	 */
 	public function reserveManiaLinkIds($count) {
@@ -112,7 +112,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	/**
 	 * Handle ManialinkPageAnswer callback
 	 *
-	 * @param array $callback        	
+	 * @param array $callback
 	 */
 	public function handleManialinkPageAnswer(array $callback) {
 		$actionId = $callback[1][2];
@@ -131,10 +131,10 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	/**
 	 * Send the given manialink to players
 	 *
-	 * @param string $manialinkText        	
-	 * @param mixed $logins        	
-	 * @param int $timeout        	
-	 * @param bool $hideOnClick        	
+	 * @param string $manialinkText
+	 * @param mixed $logins
+	 * @param int $timeout
+	 * @param bool $hideOnClick
 	 * @return bool
 	 */
 	public function sendManialink($manialinkText, $logins = null, $timeout = 0, $hideOnClick = false) {
@@ -162,7 +162,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	/**
 	 * Enable the alt menu for the player
 	 *
-	 * @param Player $player        	
+	 * @param Player $player
 	 * @return bool
 	 */
 	public function enableAltMenu(Player $player) {
@@ -172,7 +172,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	/**
 	 * Disable the alt menu for the player
 	 *
-	 * @param Player $player        	
+	 * @param Player $player
 	 * @return bool
 	 */
 	public function disableAltMenu(Player $player) {
@@ -182,8 +182,8 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	/**
 	 * Displays a ManiaLink Widget to a certain Player
 	 *
-	 * @param String $maniaLink        	
-	 * @param Player $player        	
+	 * @param String $maniaLink
+	 * @param Player $player
 	 */
 	public function displayWidget($maniaLink, Player $player) {
 		// render and display xml
@@ -195,8 +195,8 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	/**
 	 * Closes a widget via the callback
 	 *
-	 * @param array $callback        	
-	 * @param Player $player        	
+	 * @param array $callback
+	 * @param Player $player
 	 */
 	public function closeWidgetCallback(array $callback, Player $player) {
 		$this->closeWidget($player);
@@ -205,7 +205,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	/**
 	 * Closes the Manialink Widget and enables the Alt Menu
 	 *
-	 * @param Player $player        	
+	 * @param Player $player
 	 */
 	public function closeWidget(Player $player) {
 		$emptyManialink = new ManiaLink(self::MAIN_MLID);
@@ -220,9 +220,9 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	/**
 	 * Adds a line of labels
 	 *
-	 * @param Frame $frame        	
-	 * @param array $labelStrings        	
-	 * @param array $properties        	
+	 * @param Frame $frame
+	 * @param array $labelStrings
+	 * @param array $properties
 	 * @return array Returns the frames (to add special Properties later)
 	 */
 	public function labelLine(Frame $frame, array $labelStrings, array $properties = array()) {
@@ -233,6 +233,8 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 		$style = Label_Text::STYLE_TextCardSmall;
 		$textSize = 1.5;
 		$textColor = 'FFF';
+		$profile = (isset($properties['profile']) ? $properties['profile'] : false);
+		$script = (isset($properties['script']) ? $properties['script'] : null);
 		
 		$frames = array();
 		foreach ($labelStrings as $text => $x) {
@@ -244,6 +246,10 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 			$label->setTextSize($textSize);
 			$label->setText($text);
 			$label->setTextColor($textColor);
+			
+			if ($profile) {
+				$script->addProfileButton($label, $profile);
+			}
 			
 			$frames[] = $frame; // add Frame to the frames array
 		}

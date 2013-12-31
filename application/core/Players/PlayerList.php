@@ -29,14 +29,13 @@ use ManiaControl\Manialinks\ManialinkPageAnswerListener;
  * @author steeffeen & kremsy
  */
 class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
-
+	
 	/**
 	 * Constants
 	 */
 	const ACTION_FORCE_RED = 'PlayerList.ForceRed';
 	const ACTION_FORCE_BLUE = 'PlayerList.ForceBlue';
 	const ACTION_FORCE_SPEC = 'PlayerList.ForceSpec';
-
 	const ACTION_PLAYER_ADV = 'PlayerList.PlayerAdvancedActions';
 	const ACTION_CLOSE_PLAYER_ADV = 'PlayerList.ClosePlayerAdvWidget';
 	const ACTION_WARN_PLAYER = 'PlayerList.WarnPlayer';
@@ -44,9 +43,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 	const ACTION_BAN_PLAYER = 'PlayerList.BanPlayer';
 	const ACTION_ADD_AS_MASTER = 'PlayerList.PlayerAddAsMaster';
 	const ACTION_ADD_AS_ADMIN = 'PlayerList.PlayerAddAsAdmin';
-	const ACTION_ADD_AS_MOD  = 'PlayerList.PlayerAddAsModerator';
+	const ACTION_ADD_AS_MOD = 'PlayerList.PlayerAddAsModerator';
 	const ACTION_REVOKE_RIGHTS = 'PlayerList.RevokeRights';
-
 	const SHOWN_MAIN_WINDOW = -1;
 	/**
 	 * Private properties
@@ -65,48 +63,50 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
-
-		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_CLOSE_PLAYER_ADV , $this, 'closePlayerAdvancedWidget');
+		
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_CLOSE_PLAYER_ADV, $this, 
+				'closePlayerAdvancedWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_CLOSED, $this, 'closeWidget');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
-
-		//Update Widget Events
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 
+				'handleManialinkPageAnswer');
+		
+		// Update Widget Events
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERINFOCHANGED, $this, 'updateWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECTED, $this, 'updateWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'updateWidget');
-		$this->maniaControl->callbackManager->registerCallbackListener(AuthenticationManager::CB_AUTH_LEVEL_CHANGED, $this, 'updateWidget');
-
-		//settings
+		$this->maniaControl->callbackManager->registerCallbackListener(AuthenticationManager::CB_AUTH_LEVEL_CHANGED, $this, 
+				'updateWidget');
+		
+		// settings
 		$this->width = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
 		$this->height = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
 		$this->quadStyle = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowStyle();
 		$this->quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowSubStyle();
-
 	}
 
-	public function addPlayerToShownList(Player $player, $showStatus = self::SHOWN_MAIN_WINDOW){
+	public function addPlayerToShownList(Player $player, $showStatus = self::SHOWN_MAIN_WINDOW) {
 		$this->playersListShown[$player->login] = $showStatus;
 	}
 
-	public function showPlayerList(Player $player){
+	public function showPlayerList(Player $player) {
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
-
+		
 		// Create script and features
 		$script = new Script();
 		$maniaLink->setScript($script);
-
-		//mainframe
+		
+		// mainframe
 		$frame = new Frame();
 		$maniaLink->add($frame);
-		$frame->setSize($this->width,$this->height);
+		$frame->setSize($this->width, $this->height);
 		$frame->setPosition(0, 0);
-
-		//Background Quad
+		
+		// Background Quad
 		$backgroundQuad = new Quad();
 		$frame->add($backgroundQuad);
-		$backgroundQuad->setSize($this->width,$this->height);
+		$backgroundQuad->setSize($this->width, $this->height);
 		$backgroundQuad->setStyles($this->quadStyle, $this->quadSubstyle);
-
+		
 		// Add Close Quad (X)
 		$closeQuad = new Quad_Icons64x64_1();
 		$frame->add($closeQuad);
@@ -114,83 +114,92 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$closeQuad->setSize(6, 6);
 		$closeQuad->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_QuitRace);
 		$closeQuad->setAction(ManialinkManager::ACTION_CLOSEWIDGET);
-
-		//Start offsets
+		
+		// Start offsets
 		$x = -$this->width / 2;
 		$y = $this->height / 2;
-
-		//Headline
+		
+		// Headline
 		$headFrame = new Frame();
 		$frame->add($headFrame);
 		$headFrame->setY($y - 5);
-		//$array = array("Id" => $x + 5, "Nickname" => $x + 10,  "Login" => $x + 40, "Ladder" => $x + 60,"Zone" => $x + 85);
-		if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)){
-			$array = array("Id" => $x + 5, "Nickname" => $x + 18,  "Login" => $x + 60, "Location" => $x + 91, "Actions" => $x + 135);
-		}else{
-			$array = array("Id" => $x + 5, "Nickname" => $x + 18,  "Login" => $x + 60, "Location" => $x + 91);
+		// $array = array("Id" => $x + 5, "Nickname" => $x + 10, "Login" => $x + 40, "Ladder" => $x + 60,"Zone" => $x + 85);
+		if ($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)) {
+			$array = array("Id" => $x + 5, "Nickname" => $x + 18, "Login" => $x + 60, "Location" => $x + 91, "Actions" => $x + 135);
 		}
-		$this->maniaControl->manialinkManager->labelLine($headFrame,$array);
-
-		//get PlayerList
+		else {
+			$array = array("Id" => $x + 5, "Nickname" => $x + 18, "Login" => $x + 60, "Location" => $x + 91);
+		}
+		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
+		
+		// get PlayerList
 		$players = $this->maniaControl->playerManager->getPlayers();
-
+		
 		$i = 1;
 		$y -= 10;
-		foreach($players as $listPlayer){
-			/** @var Player $listPlayer */
-
+		foreach ($players as $listPlayer) {
+			/**
+			 *
+			 * @var Player $listPlayer
+			 */
+			
 			$path = $listPlayer->getProvince();
 			$playerFrame = new Frame();
 			$frame->add($playerFrame);
-
-			if($i % 2 != 0){
+			
+			if ($i % 2 != 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
 				$playerFrame->add($lineQuad);
 				$lineQuad->setSize($this->width, 4);
 				$lineQuad->setSubStyle($lineQuad::SUBSTYLE_BgPlayerCardBig);
 				$lineQuad->setZ(0.001);
 			}
-
-
-			//$array = array($i => $x + 5, $listPlayer->nickname => $x + 10,  $listPlayer->login => $x + 50, $listPlayer->ladderRank => $x + 60, $listPlayer->ladderScore => $x + 70, $path => $x + 85);
-			$array = array($i => $x + 5, $listPlayer->nickname => $x + 18,  $listPlayer->login => $x + 60, $path => $x + 91);
-			$this->maniaControl->manialinkManager->labelLine($playerFrame,$array);
+			
+			// $array = array($i => $x + 5, $listPlayer->nickname => $x + 10, $listPlayer->login => $x + 50, $listPlayer->ladderRank =>
+			// $x + 60, $listPlayer->ladderScore => $x + 70, $path => $x + 85);
+			$array = array($i => $x + 5, $listPlayer->nickname => $x + 18, $listPlayer->login => $x + 60, $path => $x + 91);
+			$properties = array('profile' => $listPlayer->login, 'script' => $script);
+			$this->maniaControl->manialinkManager->labelLine($playerFrame, $array, $properties);
 			$playerFrame->setY($y);
-
-			//Team Emblem
-			if($listPlayer->teamId >= 0){ //Player is in a Team
-				$redQuad = new Quad_Emblems(); //TODO rename quads
+			
+			// Team Emblem
+			if ($listPlayer->teamId >= 0) { // Player is in a Team
+				$redQuad = new Quad_Emblems(); // TODO rename quads
 				$playerFrame->add($redQuad);
 				$redQuad->setX($x + 10);
 				$redQuad->setZ(0.1);
-				$redQuad->setSize(3.8,3.8);
-
-				switch($listPlayer->teamId){
-					case 0: $redQuad->setSubStyle($redQuad::SUBSTYLE_1); break;
-					case 1: $redQuad->setSubStyle($redQuad::SUBSTYLE_2); break;
+				$redQuad->setSize(3.8, 3.8);
+				
+				switch ($listPlayer->teamId) {
+					case 0:
+						$redQuad->setSubStyle($redQuad::SUBSTYLE_1);
+						break;
+					case 1:
+						$redQuad->setSubStyle($redQuad::SUBSTYLE_2);
+						break;
 				}
-			}else if($listPlayer->isSpectator){ //Player is in Spectator Mode
+			}
+			else if ($listPlayer->isSpectator) { // Player is in Spectator Mode
 				$neutralQuad = new Quad_BgRaceScore2();
 				$playerFrame->add($neutralQuad);
 				$neutralQuad->setX($x + 10);
 				$neutralQuad->setZ(0.1);
 				$neutralQuad->setSubStyle($neutralQuad::SUBSTYLE_Spectator);
-				$neutralQuad->setSize(3.8,3.8);
+				$neutralQuad->setSize(3.8, 3.8);
 			}
-
-
-			//Display country quad only on normal players
-			if(!$listPlayer->isFakePlayer()){
-				//Nation Quad
+			
+			// Display country quad only on normal players
+			if (!$listPlayer->isFakePlayer()) {
+				// Nation Quad
 				$countryQuad = new Quad();
 				$playerFrame->add($countryQuad);
 				$countryCode = Formatter::mapCountry($listPlayer->getCountry());
 				$countryQuad->setImage("file://Skins/Avatars/Flags/{$countryCode}.dds");
 				$countryQuad->setX($x + 88);
-				$countryQuad->setSize(4,4);
+				$countryQuad->setSize(4, 4);
 				$countryQuad->setZ(-0.1);
-
-				//Nation Description Label
+				
+				// Nation Description Label
 				$descriptionLabel = new Label();
 				$frame->add($descriptionLabel);
 				$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
@@ -201,22 +210,22 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$descriptionLabel->setText($listPlayer->nickname . " from " . $listPlayer->path);
 				$script->addTooltip($countryQuad, $descriptionLabel);
 			}
-
-			//Level Quad
+			
+			// Level Quad
 			$rightQuad = new Quad_BgRaceScore2();
 			$playerFrame->add($rightQuad);
 			$rightQuad->setX($x + 13);
 			$rightQuad->setZ(5);
 			$rightQuad->setSubStyle($rightQuad::SUBSTYLE_CupFinisher);
-			$rightQuad->setSize(7,3.5);
-
+			$rightQuad->setSize(7, 3.5);
+			
 			$rightLabel = new Label_Text();
 			$playerFrame->add($rightLabel);
 			$rightLabel->setX($x + 13.9);
 			$rightLabel->setTextSize(0.8);
 			$rightLabel->setZ(10);
-
-			//Description Label
+			
+			// Description Label
 			$descriptionLabel = new Label();
 			$frame->add($descriptionLabel);
 			$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
@@ -224,31 +233,38 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			$descriptionLabel->setSize($this->width * 0.7, 4);
 			$descriptionLabel->setTextSize(2);
 			$descriptionLabel->setVisible(false);
-			$descriptionLabel->setText($this->maniaControl->authenticationManager->getAuthLevelName($listPlayer->authLevel) .  " " . $listPlayer->nickname);
+			$descriptionLabel->setText(
+					$this->maniaControl->authenticationManager->getAuthLevelName($listPlayer->authLevel) . " " . $listPlayer->nickname);
 			$script->addTooltip($rightQuad, $descriptionLabel);
-
-			switch($listPlayer->authLevel){
-				case authenticationManager::AUTH_LEVEL_MASTERADMIN: $rightLabel->setText("MA"); break;
-				case authenticationManager::AUTH_LEVEL_SUPERADMIN:  $rightLabel->setText("SA"); break;
-				case authenticationManager::AUTH_LEVEL_ADMIN:		$rightLabel->setText("AD"); break;
-				case authenticationManager::AUTH_LEVEL_OPERATOR:	$rightLabel->setText("MOD");
+			
+			switch ($listPlayer->authLevel) {
+				case authenticationManager::AUTH_LEVEL_MASTERADMIN:
+					$rightLabel->setText("MA");
+					break;
+				case authenticationManager::AUTH_LEVEL_SUPERADMIN:
+					$rightLabel->setText("SA");
+					break;
+				case authenticationManager::AUTH_LEVEL_ADMIN:
+					$rightLabel->setText("AD");
+					break;
+				case authenticationManager::AUTH_LEVEL_OPERATOR:
+					$rightLabel->setText("MOD");
 			}
-
+			
 			$rightLabel->setTextColor("fff");
-
-
-			if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)){
-
-				//Further Player actions Quad
+			
+			if ($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)) {
+				
+				// Further Player actions Quad
 				$playerQuad = new Quad_Icons64x64_1();
 				$playerFrame->add($playerQuad);
 				$playerQuad->setX($x + 132);
 				$playerQuad->setZ(0.1);
 				$playerQuad->setSubStyle($playerQuad::SUBSTYLE_Buddy);
-				$playerQuad->setSize(3.8,3.8);
-				$playerQuad->setAction(self::ACTION_PLAYER_ADV . "." .$listPlayer->login);
-
-				//Further Player actions Mousover Description
+				$playerQuad->setSize(3.8, 3.8);
+				$playerQuad->setAction(self::ACTION_PLAYER_ADV . "." . $listPlayer->login);
+				
+				// Further Player actions Mousover Description
 				$descriptionLabel = new Label();
 				$frame->add($descriptionLabel);
 				$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
@@ -258,18 +274,18 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$descriptionLabel->setVisible(false);
 				$descriptionLabel->setText("Advanced Player Actions on " . $listPlayer->nickname);
 				$script->addTooltip($playerQuad, $descriptionLabel);
-			//	$script->addProfileButton($playerQuad, $listPlayer->login);
-
-				//Force to Red-Team Quad
+				// $script->addProfileButton($playerQuad, $listPlayer->login);
+				
+				// Force to Red-Team Quad
 				$redQuad = new Quad_Emblems();
 				$playerFrame->add($redQuad);
 				$redQuad->setX($x + 145);
 				$redQuad->setZ(0.1);
 				$redQuad->setSubStyle($redQuad::SUBSTYLE_2);
-				$redQuad->setSize(3.8,3.8);
-				$redQuad->setAction(self::ACTION_FORCE_RED . "." .$listPlayer->login);
-
-				//Force to Red-Team Description Label
+				$redQuad->setSize(3.8, 3.8);
+				$redQuad->setAction(self::ACTION_FORCE_RED . "." . $listPlayer->login);
+				
+				// Force to Red-Team Description Label
 				$descriptionLabel = new Label();
 				$frame->add($descriptionLabel);
 				$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
@@ -279,17 +295,17 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$descriptionLabel->setVisible(false);
 				$descriptionLabel->setText("Force " . $listPlayer->nickname . '$z to Red Team!');
 				$script->addTooltip($redQuad, $descriptionLabel);
-
-				//Force to Blue-Team Quad
+				
+				// Force to Blue-Team Quad
 				$blueQuad = new Quad_Emblems();
 				$playerFrame->add($blueQuad);
 				$blueQuad->setX($x + 141);
 				$blueQuad->setZ(0.1);
 				$blueQuad->setSubStyle($blueQuad::SUBSTYLE_1);
-				$blueQuad->setSize(3.8,3.8);
-				$blueQuad->setAction(self::ACTION_FORCE_BLUE . "." .$listPlayer->login);
-
-				//Force to Blue-Team Description Label
+				$blueQuad->setSize(3.8, 3.8);
+				$blueQuad->setAction(self::ACTION_FORCE_BLUE . "." . $listPlayer->login);
+				
+				// Force to Blue-Team Description Label
 				$descriptionLabel = new Label();
 				$frame->add($descriptionLabel);
 				$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
@@ -299,17 +315,17 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$descriptionLabel->setVisible(false);
 				$descriptionLabel->setText("Force " . $listPlayer->nickname . '$z to Blue Team!');
 				$script->addTooltip($blueQuad, $descriptionLabel);
-
-				//Force to Spectator Quad
+				
+				// Force to Spectator Quad
 				$spectatorQuad = new Quad_BgRaceScore2();
 				$playerFrame->add($spectatorQuad);
 				$spectatorQuad->setX($x + 137);
 				$spectatorQuad->setZ(0.1);
 				$spectatorQuad->setSubStyle($spectatorQuad::SUBSTYLE_Spectator);
-				$spectatorQuad->setSize(3.8,3.8);
-				$spectatorQuad->setAction(self::ACTION_FORCE_SPEC . "." .$listPlayer->login);
-
-				//Force to Spectator Description Label
+				$spectatorQuad->setSize(3.8, 3.8);
+				$spectatorQuad->setAction(self::ACTION_FORCE_SPEC . "." . $listPlayer->login);
+				
+				// Force to Spectator Description Label
 				$descriptionLabel = new Label();
 				$frame->add($descriptionLabel);
 				$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
@@ -323,37 +339,38 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			$i++;
 			$y -= 4;
 		}
-
-		//show advanced window
-		if($this->playersListShown[$player->login] != false && $this->playersListShown[$player->login] != self::SHOWN_MAIN_WINDOW){
+		
+		// show advanced window
+		if ($this->playersListShown[$player->login] != false && $this->playersListShown[$player->login] != self::SHOWN_MAIN_WINDOW) {
 			$frame = $this->showAdvancedPlayerWidget($this->playersListShown[$player->login]);
 			$maniaLink->add($frame);
 		}
-
-		//render and display xml
+		
+		// render and display xml
 		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player);
 	}
 
 	/**
 	 * Displays the Advanced Player Window
+	 *
 	 * @param Player $caller
-	 * @param        $login
+	 * @param $login
 	 */
-	public function advancedPlayerWidget(Player $caller, $login){
-		$this->playersListShown[$caller->login] = $login; //Show a certain player
-		$this->showPlayerList($caller); //reopen playerlist
+	public function advancedPlayerWidget(Player $caller, $login) {
+		$this->playersListShown[$caller->login] = $login; // Show a certain player
+		$this->showPlayerList($caller); // reopen playerlist
 	}
-
 
 	/**
 	 * Extra window with special actions on players like warn,kick, ban, authorization levels...
-	 * @param        $login
+	 *
+	 * @param $login
 	 * @return Frame
 	 */
-	public function showAdvancedPlayerWidget($login){
+	public function showAdvancedPlayerWidget($login) {
 		$player = $this->maniaControl->playerManager->getPlayer($login);
-
-		//todo all configurable or as constants
+		
+		// todo all configurable or as constants
 		$x = $this->width / 2 + 2.5;
 		$width = 35;
 		$height = $this->height * 0.7;
@@ -362,28 +379,28 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$textSize = 1.5;
 		$textColor = 'FFF';
 		$quadWidth = $width - 7;
-
-		//mainframe
+		
+		// mainframe
 		$frame = new Frame();
-		$frame->setSize($width,$height);
+		$frame->setSize($width, $height);
 		$frame->setPosition($x + $width / 2, 0);
-
+		
 		// Add Close Quad (X)
 		$closeQuad = new Quad_Icons64x64_1();
 		$frame->add($closeQuad);
 		$closeQuad->setPosition($width * 0.4, $height * 0.43, 3);
 		$closeQuad->setSize(6, 6);
 		$closeQuad->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_QuitRace);
-		$closeQuad->setAction(self::ACTION_CLOSE_PLAYER_ADV );
-
-		//Background Quad
+		$closeQuad->setAction(self::ACTION_CLOSE_PLAYER_ADV);
+		
+		// Background Quad
 		$backgroundQuad = new Quad();
 		$frame->add($backgroundQuad);
-		$backgroundQuad->setSize($width,$height);
+		$backgroundQuad->setSize($width, $height);
 		$backgroundQuad->setStyles($this->quadStyle, $this->quadSubstyle);
 		$backgroundQuad->setZ(0.1);
-
-		//Show headline
+		
+		// Show headline
 		$label = new Label_Text();
 		$frame->add($label);
 		$label->setHAlign($hAlign);
@@ -393,230 +410,234 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$label->setTextSize($textSize);
 		$label->setText("Advanced Actions");
 		$label->setTextColor($textColor);
-
-		//Show Nickname
+		
+		// Show Nickname
 		$label = new Label_Text();
 		$frame->add($label);
 		$label->setHAlign($hAlign);
 		$label->setX(0);
-		$label->setAlign(Control::CENTER,Control::CENTER);
+		$label->setAlign(Control::CENTER, Control::CENTER);
 		$label->setY($height / 2 - 8);
 		$label->setStyle($style);
 		$label->setTextSize($textSize);
 		$label->setText($player->nickname);
 		$label->setTextColor($textColor);
-
+		
 		$y = $height / 2 - 14;
-		//Show Warn
+		// Show Warn
 		$quad = new Quad_BgsPlayerCard();
 		$frame->add($quad);
 		$quad->setX(0);
 		$quad->setY($y);
 		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
 		$quad->setSize($quadWidth, 5);
-		$quad->setAction(self::ACTION_WARN_PLAYER . "." .$login);
-
+		$quad->setAction(self::ACTION_WARN_PLAYER . "." . $login);
+		
 		$label = new Label_Button();
 		$frame->add($label);
 		$label->setX(0);
-		$label->setAlign(Control::CENTER,Control::CENTER);
+		$label->setAlign(Control::CENTER, Control::CENTER);
 		$label->setY($y);
 		$label->setStyle($style);
 		$label->setTextSize($textSize);
 		$label->setText("Warn");
 		$label->setTextColor($textColor);
-
+		
 		$y -= 5;
-		//Show Kick
+		// Show Kick
 		$quad = new Quad_BgsPlayerCard();
 		$frame->add($quad);
 		$quad->setX(0);
 		$quad->setY($y);
 		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
 		$quad->setSize($quadWidth, 5);
-		$quad->setAction(self::ACTION_KICK_PLAYER . "." .$login);
-
+		$quad->setAction(self::ACTION_KICK_PLAYER . "." . $login);
+		
 		$label = new Label_Button();
 		$frame->add($label);
-		$label->setAlign(Control::CENTER,Control::CENTER);
+		$label->setAlign(Control::CENTER, Control::CENTER);
 		$label->setX(0);
 		$label->setY($y);
 		$label->setStyle($style);
 		$label->setTextSize($textSize);
 		$label->setText("Kick");
 		$label->setTextColor("F90");
-
+		
 		$y -= 5;
-		//Show Ban
+		// Show Ban
 		$quad = new Quad_BgsPlayerCard();
 		$frame->add($quad);
 		$quad->setX(0);
 		$quad->setY($y);
 		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
 		$quad->setSize($quadWidth, 5);
-		$quad->setAction(self::ACTION_BAN_PLAYER . "." .$login);
-
+		$quad->setAction(self::ACTION_BAN_PLAYER . "." . $login);
+		
 		$label = new Label_Button();
 		$frame->add($label);
-		$label->setAlign(Control::CENTER,Control::CENTER);
+		$label->setAlign(Control::CENTER, Control::CENTER);
 		$label->setX(0);
 		$label->setY($y);
 		$label->setStyle($style);
 		$label->setTextSize($textSize);
 		$label->setText("Ban");
 		$label->setTextColor("700");
-
+		
 		$y -= 10;
-		//Show Add as Master-Admin
+		// Show Add as Master-Admin
 		$quad = new Quad_BgsPlayerCard();
 		$frame->add($quad);
 		$quad->setX(0);
 		$quad->setY($y);
 		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
 		$quad->setSize($quadWidth, 5);
-		$quad->setAction(self::ACTION_ADD_AS_MASTER . "." .$login);
-
+		$quad->setAction(self::ACTION_ADD_AS_MASTER . "." . $login);
+		
 		$label = new Label_Button();
 		$frame->add($label);
-		$label->setAlign(Control::CENTER,Control::CENTER);
+		$label->setAlign(Control::CENTER, Control::CENTER);
 		$label->setX(0);
 		$label->setY($y);
 		$label->setStyle($style);
 		$label->setTextSize($textSize);
-
+		
 		$label->setText("Set SuperAdmin");
-
+		
 		$label->setTextColor($textColor);
-
+		
 		$y -= 5;
-		//Show Add as Admin
+		// Show Add as Admin
 		$quad = new Quad_BgsPlayerCard();
 		$frame->add($quad);
 		$quad->setX(0);
 		$quad->setY($y);
 		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
 		$quad->setSize($quadWidth, 5);
-		$quad->setAction(self::ACTION_ADD_AS_ADMIN . "." .$login);
-
+		$quad->setAction(self::ACTION_ADD_AS_ADMIN . "." . $login);
+		
 		$label = new Label_Button();
 		$frame->add($label);
-		$label->setAlign(Control::CENTER,Control::CENTER);
+		$label->setAlign(Control::CENTER, Control::CENTER);
 		$label->setX(0);
 		$label->setY($y);
 		$label->setStyle($style);
 		$label->setTextSize($textSize);
 		$label->setText("Set Admin");
 		$label->setTextColor($textColor);
-
+		
 		$y -= 5;
-		//Show Add as Moderator
+		// Show Add as Moderator
 		$quad = new Quad_BgsPlayerCard();
 		$frame->add($quad);
 		$quad->setX(0);
 		$quad->setY($y);
 		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
 		$quad->setSize($quadWidth, 5);
-		$quad->setAction(self::ACTION_ADD_AS_MOD . "." .$login);
-
+		$quad->setAction(self::ACTION_ADD_AS_MOD . "." . $login);
+		
 		$label = new Label_Button();
 		$frame->add($label);
-		$label->setAlign(Control::CENTER,Control::CENTER);
+		$label->setAlign(Control::CENTER, Control::CENTER);
 		$label->setX(0);
 		$label->setY($y);
 		$label->setStyle($style);
 		$label->setTextSize($textSize);
 		$label->setText("Set Moderator");
 		$label->setTextColor($textColor);
-
-
-		if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)){
+		
+		if ($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)) {
 			$y -= 5;
-			//Revoke Rights
+			// Revoke Rights
 			$quad = new Quad_BgsPlayerCard();
 			$frame->add($quad);
 			$quad->setX(0);
 			$quad->setY($y);
 			$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
 			$quad->setSize($quadWidth, 5);
-			$quad->setAction(self::ACTION_REVOKE_RIGHTS . "." .$login);
-
+			$quad->setAction(self::ACTION_REVOKE_RIGHTS . "." . $login);
+			
 			$label = new Label_Button();
 			$frame->add($label);
-			$label->setAlign(Control::CENTER,Control::CENTER);
+			$label->setAlign(Control::CENTER, Control::CENTER);
 			$label->setX(0);
 			$label->setY($y);
 			$label->setStyle($style);
 			$label->setTextSize($textSize);
 			$label->setText("Revoke Rights");
 			$label->setTextColor("700");
-
 		}
-
+		
 		return $frame;
 	}
 
 	/**
 	 * Closes the widget
-	 * @param array  $callback
+	 *
+	 * @param array $callback
 	 */
 	public function closeWidget(array $callback) {
 		$player = $callback[1];
 		unset($this->playersListShown[$player->login]);
 	}
 
-
 	/**
 	 * Closes the player advanced widget widget
-	 * @param array  $callback
+	 *
+	 * @param array $callback
 	 * @param Player $player
 	 */
 	public function closePlayerAdvancedWidget(array $callback, Player $player) {
 		$this->playersListShown[$player->login] = self::SHOWN_MAIN_WINDOW;
-		$this->showPlayerList($player); //overwrite the manialink
+		$this->showPlayerList($player); // overwrite the manialink
 	}
-
-
 
 	/**
 	 * Called on ManialinkPageAnswer
+	 *
 	 * @param array $callback
 	 */
-	public function handleManialinkPageAnswer(array $callback){
+	public function handleManialinkPageAnswer(array $callback) {
 		$actionId = $callback[1][2];
 		$actionArray = explode(".", $actionId);
-
-		//TODO maybe with ids instead of logins, lower network traffic
-		switch($actionArray[0].".".$actionArray[1]){
+		
+		// TODO maybe with ids instead of logins, lower network traffic
+		switch ($actionArray[0] . "." . $actionArray[1]) {
 			case self::ACTION_FORCE_BLUE:
-				$this->maniaControl->playerManager->playerActions->forcePlayerToTeam($callback[1][1],$actionArray[2],playerActions::BLUE_TEAM);
+				$this->maniaControl->playerManager->playerActions->forcePlayerToTeam($callback[1][1], $actionArray[2], 
+						playerActions::BLUE_TEAM);
 				break;
 			case self::ACTION_FORCE_RED:
-				$this->maniaControl->playerManager->playerActions->forcePlayerToTeam($callback[1][1],$actionArray[2],playerActions::RED_TEAM);
+				$this->maniaControl->playerManager->playerActions->forcePlayerToTeam($callback[1][1], $actionArray[2], 
+						playerActions::RED_TEAM);
 				break;
 			case self::ACTION_FORCE_SPEC:
-				$this->maniaControl->playerManager->playerActions->forcePlayerToSpectator($callback[1][1],$actionArray[2],playerActions::SPECTATOR_BUT_KEEP_SELECTABLE);
+				$this->maniaControl->playerManager->playerActions->forcePlayerToSpectator($callback[1][1], $actionArray[2], 
+						playerActions::SPECTATOR_BUT_KEEP_SELECTABLE);
 				break;
 			case self::ACTION_WARN_PLAYER:
-				$this->maniaControl->playerManager->playerActions->warnPlayer($callback[1][1],$actionArray[2]);
+				$this->maniaControl->playerManager->playerActions->warnPlayer($callback[1][1], $actionArray[2]);
 				break;
 			case self::ACTION_KICK_PLAYER:
-				$this->maniaControl->playerManager->playerActions->kickPlayer($callback[1][1],$actionArray[2]);
+				$this->maniaControl->playerManager->playerActions->kickPlayer($callback[1][1], $actionArray[2]);
 				break;
 			case self::ACTION_BAN_PLAYER:
-				$this->maniaControl->playerManager->playerActions->banPlayer($callback[1][1],$actionArray[2]);
+				$this->maniaControl->playerManager->playerActions->banPlayer($callback[1][1], $actionArray[2]);
 				break;
 			case self::ACTION_PLAYER_ADV:
 				$player = $this->maniaControl->playerManager->getPlayer($callback[1][1]);
 				$this->advancedPlayerWidget($player, $actionArray[2]);
 				break;
 			case self::ACTION_ADD_AS_MASTER:
-				$this->maniaControl->playerManager->playerActions->grandAuthLevel($callback[1][1], $actionArray[2], AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
+				$this->maniaControl->playerManager->playerActions->grandAuthLevel($callback[1][1], $actionArray[2], 
+						AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
 				break;
 			case self::ACTION_ADD_AS_ADMIN:
-				$this->maniaControl->playerManager->playerActions->grandAuthLevel($callback[1][1], $actionArray[2], AuthenticationManager::AUTH_LEVEL_ADMIN);
+				$this->maniaControl->playerManager->playerActions->grandAuthLevel($callback[1][1], $actionArray[2], 
+						AuthenticationManager::AUTH_LEVEL_ADMIN);
 				break;
 			case self::ACTION_ADD_AS_MOD:
-				$this->maniaControl->playerManager->playerActions->grandAuthLevel($callback[1][1], $actionArray[2], AuthenticationManager::AUTH_LEVEL_OPERATOR);
+				$this->maniaControl->playerManager->playerActions->grandAuthLevel($callback[1][1], $actionArray[2], 
+						AuthenticationManager::AUTH_LEVEL_OPERATOR);
 				break;
 			case self::ACTION_REVOKE_RIGHTS:
 				$this->maniaControl->playerManager->playerActions->revokeAuthLevel($callback[1][1], $actionArray[2]);
@@ -626,20 +647,22 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 
 	/**
 	 * Reopen the widget on PlayerInfoChanged / Player Connect and Disconnect
+	 *
 	 * @param array $callback
 	 */
-	public function updateWidget(array $callback){
-		foreach($this->playersListShown as $login => $shown){
-			if($shown){
-				//Check if Shown player still exists
-				if($shown != self::SHOWN_MAIN_WINDOW && $this->maniaControl->playerManager->getPlayer($shown) == null){
+	public function updateWidget(array $callback) {
+		foreach ($this->playersListShown as $login => $shown) {
+			if ($shown) {
+				// Check if Shown player still exists
+				if ($shown != self::SHOWN_MAIN_WINDOW && $this->maniaControl->playerManager->getPlayer($shown) == null) {
 					$this->playersListShown[$login] = false;
 				}
 				$player = $this->maniaControl->playerManager->getPlayer($login);
-				if($player != null){
+				if ($player != null) {
 					$this->showPlayerList($player);
-				}else{
-					//if player with the open widget disconnected remove him from the shownlist
+				}
+				else {
+					// if player with the open widget disconnected remove him from the shownlist
 					unset($this->playersListShown[$login]);
 				}
 			}
