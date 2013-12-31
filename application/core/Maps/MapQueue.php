@@ -32,7 +32,7 @@ class MapQueue implements CallbackListener, CommandListener {
 	private $nextMap = null;
 
 	/**
-	 * Create a new server jukebox
+	 * Create a new server MapQueue
 	 *
 	 * @param ManiaControl $maniaControl
 	 */
@@ -51,14 +51,14 @@ class MapQueue implements CallbackListener, CommandListener {
 	}
 
 	/**
-	 * Clears the map-queue via admin command clearjukebox
+	 * Clears the map-queue via admin command clearmap queue
 	 * @param array  $chat
 	 * @param Player $player
 	 */
 	public function command_ClearMapQueue(array $chat, Player $admin){
 		$title = $this->maniaControl->authenticationManager->getAuthLevelName($admin->authLevel);
 
-		//Destroy jukebox list
+		//Destroy map - queue list
 		$this->queuedMaps = array();
 
 		$this->maniaControl->chat->sendInformation($title . ' $<' . $admin->nickname . '$> cleared the Queued-Map list!');
@@ -88,7 +88,7 @@ class MapQueue implements CallbackListener, CommandListener {
 
 		$this->queuedMaps[$uid] = array($player, $map);
 
-		$this->maniaControl->chat->sendInformation('$<' . $player->nickname . '$> added $<' . $map->name . '$> to the Map-Queue');
+		$this->maniaControl->chat->sendInformation('$<' . $player->nickname . '$> added $<' . $map->name . '$> to the Map Queue');
 
 		// Trigger callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_MAPQUEUE_CHANGED, array('add', $this->queuedMaps[$uid]));
@@ -123,7 +123,7 @@ class MapQueue implements CallbackListener, CommandListener {
 				}
 
 				if($this->maniaControl->settingManager->getSetting($this, self::SETTING_SKIP_MAPQUEUE_ADMIN) == FALSE){
-					//Check if the juker is a admin
+					//Check if the queuer is a admin
 					if($player->authLevel > 0){
 						break;
 					}
@@ -132,7 +132,7 @@ class MapQueue implements CallbackListener, CommandListener {
 				// Trigger callback
 				$this->maniaControl->callbackManager->triggerCallback(self::CB_MAPQUEUE_CHANGED, array('skip', $queuedMap[0]));
 
-				//Player not found, so remove the map from the jukebox
+				//Player not found, so remove the map from the mapqueue
 				array_shift($this->queuedMaps);
 
 				$this->maniaControl->chat->sendInformation('Requested Map skipped because $<' . $player->nickname . '$> left!');
@@ -141,7 +141,7 @@ class MapQueue implements CallbackListener, CommandListener {
 
 		$this->nextMap = array_shift($this->queuedMaps);
 
-		//Check if Jukebox is empty
+		//Check if Map Queue is empty
 		if($this->nextMap == null)
 			return;
 		$map = $this->nextMap[1];

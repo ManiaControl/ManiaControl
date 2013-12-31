@@ -6,13 +6,9 @@ use FML\Controls\Gauge;
 use FML\Controls\Label;
 use FML\Controls\Labels\Label_Button;
 use FML\Controls\Labels\Label_Text;
-use FML\Controls\Quads\Quad_Bgs1;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
-use FML\Controls\Quads\Quad_Icons128x128_1;
 use FML\Controls\Quads\Quad_Icons64x64_1;
-use FML\Controls\Quads\Quad_UIConstruction_Buttons;
 use FML\Script\Script;
-use FML\Script\Tooltips;
 use KarmaPlugin;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
@@ -23,7 +19,6 @@ use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use FML\Controls\Frame;
 use FML\Controls\Quad;
-use FML\Controls\Quads\Quad_BgRaceScore2;
 use FML\ManiaLink;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
@@ -43,7 +38,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	const ACTION_ADD_MAP = 'MapList.AddMap';
 	const ACTION_ERASE_MAP = 'MapList.EraseMap';
 	const ACTION_SWITCH_MAP = 'MapList.SwitchMap';
-	const ACTION_JUKE_MAP = 'MapList.JukeMap';
+	const ACTION_QUEUED_MAP = 'MapList.QueueMap';
 	const MAX_MAPS_PER_PAGE = 15;
 	const SHOW_MX_LIST = 1;
 	const SHOW_MAP_LIST = 2;
@@ -257,7 +252,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 		//TODO add pages
 
-		$jukedMaps = $this->maniaControl->mapManager->mapQueue->getQueuedMapsRanking();
+		$queuedMaps = $this->maniaControl->mapManager->mapQueue->getQueuedMapsRanking();
 		/** @var  KarmaPlugin $karmaPlugin */
 		$karmaPlugin = $this->maniaControl->pluginManager->getPlugin(self::DEFAULT_KARMA_PLUGIN);
 
@@ -302,7 +297,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			//TODO side switch
 
 
-			//Jukebox Description Label
+			//MapQueue Description Label
 			$descriptionLabel = new Label();
 			$frame->add($descriptionLabel);
 			$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
@@ -311,40 +306,37 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$descriptionLabel->setTextSize(2);
 			$descriptionLabel->setVisible(false);
 
-			//Juke-Map-Label
-			if(isset($jukedMaps[$map->uid])){
-				$jukeLabel = new Label_Text();
-				$mapFrame->add($jukeLabel);
-				$jukeLabel->setX($this->width/2 - 15);
-				$jukeLabel->setAlign(Control::CENTER,Control::CENTER);
-				$jukeLabel->setZ(0.2);
-				$jukeLabel->setTextSize(1.5);
-				$jukeLabel->setText($jukedMaps[$map->uid]);
-				$jukeLabel->setTextColor("FFF");
+			//Map-Queue-Map-Label
+			if(isset($queuedMaps[$map->uid])){
+				$label = new Label_Text();
+				$mapFrame->add($label);
+				$label->setX($this->width/2 - 15);
+				$label->setAlign(Control::CENTER,Control::CENTER);
+				$label->setZ(0.2);
+				$label->setTextSize(1.5);
+				$label->setText($queuedMaps[$map->uid]);
+				$label->setTextColor("FFF");
 
-				$descriptionLabel->setText("{$map->name} \$zis on Jukebox Position: {$jukedMaps[$map->uid]}");
+				$descriptionLabel->setText("{$map->name} \$zis on Map-Queue Position: {$queuedMaps[$map->uid]}");
 				//$tooltips->add($jukeLabel, $descriptionLabel);
 			}else{
-				//Juke-Map-Button
-				//$jukeQuad = new Quad_Icons128x128_1();
-				$jukeQuad = new Label_Button();
-				$mapFrame->add($jukeQuad);
-				$jukeQuad->setX($this->width/2 - 15);
-				$jukeQuad->setZ(0.2);
-				$jukeQuad->setSize(3,3);
-			//	$jukeQuad->setSubStyle($jukeQuad::SUBSTYLE_Load);
-				$jukeQuad->setAction(self::ACTION_JUKE_MAP . "." . $map->uid);
-				$jukeQuad->setText("+");
-				$jukeQuad->setTextColor("09F");
+				//Map-Queue-Map-Button
+				$buttLabel = new Label_Button();
+				$mapFrame->add($buttLabel);
+				$buttLabel->setX($this->width/2 - 15);
+				$buttLabel->setZ(0.2);
+				$buttLabel->setSize(3,3);
+				$buttLabel->setAction(self::ACTION_QUEUED_MAP . "." . $map->uid);
+				$buttLabel->setText("+");
+				$buttLabel->setTextColor("09F");
 
 
-				$descriptionLabel->setText("Add Map to Jukebox: {$map->name}");
-				$script->addTooltip($jukeQuad, $descriptionLabel);
+				$descriptionLabel->setText("Add Map to the Map Queue: {$map->name}");
+				$script->addTooltip($buttLabel, $descriptionLabel);
 			}
 
 			if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)){ //TODO SET as setting who can add maps
 				//erase map quad
-				//$eraseQuad = new Quad_UIConstruction_Buttons();
 				$eraseQuad = new Label_Button(); //TODO change name to label
 				$mapFrame->add($eraseQuad);
 				$eraseQuad->setX($this->width/2 - 5);
@@ -353,7 +345,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$eraseQuad->setTextSize(1);
 				$eraseQuad->setText("x");
 				$eraseQuad->setTextColor("A00");
-				//$eraseQuad->setSubStyle($eraseQuad::SUBSTYLE_Erase);
 				$eraseQuad->setAction(self::ACTION_ERASE_MAP . "." .($id-1) . "." . $map->uid);
 
 				//Description Label
@@ -451,9 +442,9 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$addMap = (strpos($actionId, self::ACTION_ADD_MAP) === 0);
 		$eraseMap = (strpos($actionId, self::ACTION_ERASE_MAP) === 0);
 		$switchMap = (strpos($actionId, self::ACTION_SWITCH_MAP) === 0);
-		$jukeMap = (strpos($actionId, self::ACTION_JUKE_MAP) === 0);
+		$queueMap = (strpos($actionId, self::ACTION_QUEUED_MAP) === 0);
 
-		if(!$addMap && !$eraseMap && !$switchMap && !$jukeMap)
+		if(!$addMap && !$eraseMap && !$switchMap && !$queueMap)
 			return;
 
 		$actionArray = explode(".", $actionId);
@@ -471,8 +462,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 			$this->maniaControl->chat->sendSuccess('Map switched to $z$<' . $mapList[$actionArray[2]]->name . '$>!'); //TODO specified message, who done it?
 			$this->maniaControl->log(Formatter::stripCodes('Skipped to $z$<' . $mapList[$actionArray[2]]->name . '$>!'));
-		}else if($jukeMap){
-			$this->maniaControl->mapManager->jukebox->addMapToJukebox($callback[1][1], $actionArray[2]);
+		}else if($queueMap){
+			$this->maniaControl->mapManager->mapQueue->addMapToMapQueue($callback[1][1], $actionArray[2]);
 		}
 
 	}
