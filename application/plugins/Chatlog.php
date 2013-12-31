@@ -16,6 +16,7 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 	 */
 	const ID = 1;
 	const VERSION = 0.1;
+	const DATE = 'd-m-y h:i:sa T';
 	const SETTING_FOLDERNAME = 'Log-Folder Name';
 	const SETTING_FILENAME = 'Log-File Name';
 	const SETTING_USEPID = 'Use Process-Id for File Name';
@@ -148,7 +149,7 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 		if (!$login) {
 			$login = '';
 		}
-		$message = date(ManiaControl::DATE) . " >> {$login}: {$text}" . PHP_EOL;
+		$message = date(self::DATE) . " >> {$login}: {$text}" . PHP_EOL;
 		file_put_contents($this->fileName, $message, FILE_APPEND);
 	}
 }

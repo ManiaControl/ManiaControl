@@ -64,7 +64,6 @@ class ManiaControl implements CommandListener {
 	 */
 	const VERSION = '0.01';
 	const API_VERSION = '2013-04-16';
-	const DATE = 'd-m-y h:i:sa T';
 	
 	/**
 	 * Public properties
@@ -183,7 +182,7 @@ class ManiaControl implements CommandListener {
 			$this->client->Terminate();
 		}
 		
-		logMessage('Quitting ManiaControl!');
+		$this->log('Quitting ManiaControl!');
 		exit();
 	}
 
@@ -191,7 +190,7 @@ class ManiaControl implements CommandListener {
 	 * Run ManiaControl
 	 */
 	public function run() {
-		logMessage('Starting ManiaControl v' . self::VERSION . '!');
+		$this->log('Starting ManiaControl v' . self::VERSION . '!');
 		
 		// Load plugins
 		$this->pluginManager->loadPlugins();
