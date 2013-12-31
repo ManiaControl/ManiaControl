@@ -280,19 +280,28 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		}
 		
 		// Notifications
+		$title = $this->maniaControl->authenticationManager->getAuthLevelName($player->authLevel);
+		$chatMessage = '$ff0' . $title . ' $<' . $player->nickname . '$> set ScriptSetting ';
+		$settingsCount = count($newSettings);
+		$settingIndex = 0;
 		foreach ($newSettings as $setting => $value) {
-			$title = $this->maniaControl->authenticationManager->getAuthLevelName($player->authLevel);
-			$chatMessage = '$ff0' . $title . ' $<' . $player->nickname . '$> set ScriptSetting ';
 			$chatMessage .= '$<' . '$fff' . preg_replace('/^S_/', '', $setting) . '$z$s$ff0 ';
-			$chatMessage .= 'to $fff' . $this->parseSettingValue($value) . '$>!';
+			$chatMessage .= 'to $fff' . $this->parseSettingValue($value) . '$>';
 			
-			$this->maniaControl->chat->sendInformation($chatMessage);
-			$this->maniaControl->log(Formatter::stripCodes($chatMessage));
+			if ($settingIndex <= $settingsCount - 2) {
+				$chatMessage .= ', ';
+			}
 			
 			// Trigger own callback
 			$this->maniaControl->callbackManager->triggerCallback(self::CB_SCRIPTSETTING_CHANGED, 
 					array(self::CB_SCRIPTSETTING_CHANGED, $setting, $value));
+			
+			$settingIndex++;
 		}
+		
+		$chatMessage .= '!';
+		$this->maniaControl->chat->sendInformation($chatMessage);
+		$this->maniaControl->log(Formatter::stripCodes($chatMessage));
 	}
 
 	/**
