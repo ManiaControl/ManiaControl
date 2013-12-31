@@ -32,11 +32,15 @@ class LocalRecordsPlugin implements CallbackListener, Plugin {
 	const SETTING_WIDGET_WIDTH = 'Widget Width';
 	const SETTING_WIDGET_LINESCOUNT = 'Widget Displayed Lines Count';
 	const SETTING_WIDGET_LINEHEIGHT = 'Widget Line Height';
+	const SETTING_NOTIFY_ONLY_DRIVER = 'Notify only the Driver on New Records';
 	
 	/**
 	 * Private properties
 	 */
-	/** @var maniaControl $maniaControl  */
+	/**
+	 *
+	 * @var maniaControl $maniaControl
+	 */
 	private $maniaControl = null;
 	private $updateManialink = false;
 
@@ -55,6 +59,7 @@ class LocalRecordsPlugin implements CallbackListener, Plugin {
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_WIDTH, 40.);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_LINESCOUNT, 25);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_LINEHEIGHT, 4.);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_NOTIFY_ONLY_DRIVER, false);
 		
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
@@ -140,7 +145,7 @@ class LocalRecordsPlugin implements CallbackListener, Plugin {
 	/**
 	 * Handle ManiaControl init
 	 *
-	 * @param array $callback        	
+	 * @param array $callback
 	 */
 	public function handleOnInit(array $callback) {
 		$this->updateManialink = true;
@@ -149,7 +154,7 @@ class LocalRecordsPlugin implements CallbackListener, Plugin {
 	/**
 	 * Handle 1Second callback
 	 *
-	 * @param array $callback        	
+	 * @param array $callback
 	 */
 	public function handle1Second(array $callback) {
 		if (!$this->updateManialink) return;
@@ -161,7 +166,7 @@ class LocalRecordsPlugin implements CallbackListener, Plugin {
 	/**
 	 * Handle PlayerConnect callback
 	 *
-	 * @param array $callback        	
+	 * @param array $callback
 	 */
 	public function handlePlayerConnect(array $callback) {
 		$this->updateManialink = true;
@@ -170,7 +175,7 @@ class LocalRecordsPlugin implements CallbackListener, Plugin {
 	/**
 	 * Handle BeginMap callback
 	 *
-	 * @param array $callback        	
+	 * @param array $callback
 	 */
 	public function handleMapBegin(array $callback) {
 		$this->updateManialink = true;
@@ -179,7 +184,7 @@ class LocalRecordsPlugin implements CallbackListener, Plugin {
 	/**
 	 * Handle PlayerFinish callback
 	 *
-	 * @param array $callback        	
+	 * @param array $callback
 	 */
 	public function handlePlayerFinish(array $callback) {
 		$data = $callback[1];
@@ -234,25 +239,38 @@ class LocalRecordsPlugin implements CallbackListener, Plugin {
 		$this->updateManialink = true;
 		
 		// Announce record
-		// TODO: setting to send notification only to the player
-		// TODO: setting to send notifications only for x best records
 		$newRecord = $this->getLocalRecord($map, $player);
-		if (!$oldRecord || $newRecord->rank < $oldRecord->rank) {
-			$improvement = 'gained the';
+		$notifyOnlyDriver = $this->maniaControl->settingManager->getSetting($this, self::SETTING_NOTIFY_ONLY_DRIVER);
+		if ($notifyOnlyDriver) {
+			if (!$oldRecord || $newRecord->rank < $oldRecord->rank) {
+				$improvement = 'gained the';
+			}
+			else {
+				$improvement = 'improved Your';
+			}
+			$message = 'You ' . $improvement . ' $<$o' . $newRecord->rank . '.$> Local Record: ' .
+					 Formatter::formatTime($newRecord->time);
+			$this->maniaControl->chat->sendInformation($message, $player->login);
 		}
 		else {
-			$improvement = 'improved her/his';
+			if (!$oldRecord || $newRecord->rank < $oldRecord->rank) {
+				$improvement = 'gained the';
+			}
+			else {
+				$improvement = 'improved the';
+			}
+			$message = '$<' . $player->nickname . '$> ' . $improvement . ' $<$o' . $newRecord->rank . '.$> Local Record: ' .
+					 Formatter::formatTime($newRecord->time);
+			$this->maniaControl->chat->sendInformation($message);
 		}
-		$message = '$<' . $player->nickname . '$> ' . $improvement . ' $<$o' . $newRecord->rank . '.$> Local Record: ' .
-				 Formatter::formatTime($newRecord->time);
-		$this->maniaControl->chat->sendInformation($message);
+		// TODO: setting to send notifications only for x best records
 	}
 
 	/**
 	 * Send manialink to clients
 	 *
-	 * @param string $manialink        	
-	 * @param string $login        	
+	 * @param string $manialink
+	 * @param string $login
 	 */
 	private function sendManialink($manialink, $login = null) {
 		if ($login) {
@@ -269,7 +287,7 @@ class LocalRecordsPlugin implements CallbackListener, Plugin {
 	/**
 	 * Handle ClientUpdated callback
 	 *
-	 * @param array $callback        	
+	 * @param array $callback
 	 */
 	public function handleClientUpdated(array $callback) {
 		$this->updateManialink = true;
@@ -367,8 +385,8 @@ class LocalRecordsPlugin implements CallbackListener, Plugin {
 	/**
 	 * Fetch local records for the given map
 	 *
-	 * @param Map $map        	
-	 * @param int $limit        	
+	 * @param Map $map
+	 * @param int $limit
 	 * @return array
 	 */
 	private function getLocalRecords(Map $map, $limit = -1) {
@@ -397,8 +415,8 @@ class LocalRecordsPlugin implements CallbackListener, Plugin {
 	/**
 	 * Retrieve the local record for the given map and login
 	 *
-	 * @param Map $map        	
-	 * @param Player $player        	
+	 * @param Map $map
+	 * @param Player $player
 	 * @return mixed
 	 */
 	private function getLocalRecord(Map $map, Player $player) {
