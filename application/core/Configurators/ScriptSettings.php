@@ -280,10 +280,10 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		}
 		
 		// Notifications
-		$title = $this->maniaControl->authenticationManager->getAuthLevelName($player->authLevel);
-		$chatMessage = '$ff0' . $title . ' $<' . $player->nickname . '$> set ScriptSetting ';
 		$settingsCount = count($newSettings);
 		$settingIndex = 0;
+		$title = $this->maniaControl->authenticationManager->getAuthLevelName($player->authLevel);
+		$chatMessage = '$ff0' . $title . ' $<' . $player->nickname . '$> set ScriptSetting' . ($settingsCount > 1 ? 's' : '') . ' ';
 		foreach ($newSettings as $setting => $value) {
 			$chatMessage .= '$<' . '$fff' . preg_replace('/^S_/', '', $setting) . '$z$s$ff0 ';
 			$chatMessage .= 'to $fff' . $this->parseSettingValue($value) . '$>';
