@@ -84,7 +84,7 @@ class Server {
 	 *
 	 * @return array
 	 */
-	public function getLogin() {
+	public function getLogin() { //TODO save the info locally
 		$systemInfo = $this->getSystemInfo();
 		if (!$systemInfo) {
 			return null;
