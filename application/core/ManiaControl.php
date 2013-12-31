@@ -3,7 +3,7 @@
 namespace ManiaControl;
 
 use IXR_Client_Gbx;
-use ManiaControl\Admin\AdminMenu;
+use ManiaControl\Admin\ActionsMenu;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Commands\CommandListener;
@@ -15,10 +15,11 @@ use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\PluginManager;
 use ManiaControl\Server\Server;
+
 require_once __DIR__ . '/Callbacks/CallbackListener.php';
 require_once __DIR__ . '/Commands/CommandListener.php';
 require_once __DIR__ . '/Manialinks/ManialinkPageAnswerListener.php';
-require_once __DIR__ . '/Admin/AdminMenu.php';
+require_once __DIR__ . '/Admin/ActionsMenu.php';
 require_once __DIR__ . '/Admin/AuthenticationManager.php';
 require_once __DIR__ . '/Callbacks/CallbackManager.php';
 require_once __DIR__ . '/Chat.php';
@@ -67,12 +68,14 @@ class ManiaControl implements CommandListener {
 	/**
 	 * Public properties
 	 */
-	public $adminMenu = null;
+	public $actionsMenu = null;
 	public $authenticationManager = null;
 	public $callbackManager = null;
 	public $chat = null;
 	public $configurator = null;
-	/** @var IXR_Client_Gbx */
+	/**
+	 * @var IXR_Client_Gbx
+	 */
 	public $client = null;
 	public $commandManager = null;
 	public $database = null;
@@ -100,7 +103,7 @@ class ManiaControl implements CommandListener {
 		$this->callbackManager = new CallbackManager($this);
 		$this->settingManager = new SettingManager($this);
 		$this->manialinkManager = new ManialinkManager($this);
-		$this->adminMenu = new AdminMenu($this);
+		$this->actionsMenu = new ActionsMenu($this);
 		$this->chat = new Chat($this);
 		$this->commandManager = new CommandManager($this);
 		$this->server = new Server($this);
@@ -117,8 +120,8 @@ class ManiaControl implements CommandListener {
 
 	/**
 	 * Print a message to console and log
-	 * 
-	 * @param string $message        	
+	 *
+	 * @param string $message
 	 */
 	public function log($message) {
 		logMessage($message);
@@ -127,7 +130,7 @@ class ManiaControl implements CommandListener {
 	/**
 	 * Return message composed of client error message and error code
 	 *
-	 * @param object $client        	
+	 * @param object $client
 	 * @return string
 	 */
 	public function getClientErrorText($client = null) {
@@ -140,8 +143,8 @@ class ManiaControl implements CommandListener {
 	/**
 	 * Send ManiaControl version
 	 *
-	 * @param array $chat        	
-	 * @param Player $player        	
+	 * @param array $chat
+	 * @param Player $player
 	 * @return bool
 	 */
 	public function command_Version(array $chat, Player $player) {
@@ -152,7 +155,7 @@ class ManiaControl implements CommandListener {
 	/**
 	 * Quit ManiaControl and log the given message
 	 *
-	 * @param string $message        	
+	 * @param string $message
 	 */
 	public function quit($message = '') {
 		// OnShutdown callback

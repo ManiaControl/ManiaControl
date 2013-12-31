@@ -14,30 +14,31 @@ use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 
 /**
- * Class offering and managing the admin menu
+ * Class managing Actions Menus
  *
  * @author steeffeen & kremsy
  */
-class AdminMenu implements CallbackListener, ManialinkPageAnswerListener { // TODO rename class, its not only an admin menu
+class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	/**
 	 * Constants
 	 */
-	const MLID_MENU = 'AdminMenu.MLID';
+	const MLID_MENU = 'ActionsMenu.MLID';
 	const SETTING_MENU_POSX = 'Menu Position: X';
 	const SETTING_MENU_POSY = 'Menu Position: Y';
 	const SETTING_MENU_ITEMSIZE = 'Menu Item Size';
-	const ACTION_OPEN_ADMIN_MEN = 'AdminMenu.OpenAdminMenu';
-	const ACTION_OPEN_PLAYER_MEN = 'AdminMenu.OpenPlayerMenu';
+	const ACTION_OPEN_ADMIN_MENU = 'ActionsMenu.OpenAdminMenu';
+	const ACTION_OPEN_PLAYER_MENU = 'ActionsMenu.OpenPlayerMenu';
 	
 	/**
-	 * Private properties
+	 * Private Properties
 	 */
 	private $maniaControl = null;
 	private $manialink = null;
-	private $menuItems = array();
+	private $adminMenuItems = array();
+	private $playerMenuItems = array();
 
 	/**
-	 * Create a new admin menu
+	 * Create a new Actions Menu
 	 *
 	 * @param ManiaControl $maniaControl
 	 */
@@ -50,22 +51,54 @@ class AdminMenu implements CallbackListener, ManialinkPageAnswerListener { // TO
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_ITEMSIZE, 6.);
 		
 		// Register for callbacks
-		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_OPEN_ADMIN_MEN, $this, 'openAdminMenu');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_ONINIT, $this, 'handleOnInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'handlePlayerJoined');
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_OPEN_ADMIN_MENU, $this, 
+				'openAdminMenu');
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_OPEN_PLAYER_MENU, $this, 
+				'openPlayerMenu');
 	}
 
 	/**
-	 * Add a new menu item
+	 * Add a new Menu Item
+	 *
+	 * @param Control $control
+	 * @param bool $playerAction
+	 * @param int $order
+	 */
+	public function addMenuItem(Control $control, $playerAction = true, $order = 0) {
+		if ($playerAction) {
+			$this->addPlayerMenuItem($control, $order);
+		}
+		else {
+			$this->addAdminMenuItem($control, $order);
+		}
+	}
+
+	/**
+	 * Add a new Player Menu Item
 	 *
 	 * @param Control $control
 	 * @param int $order
 	 */
-	public function addMenuItem(Control $control, $order = 0) {
-		if (!isset($this->menuItems[$order])) {
-			$this->menuItems[$order] = array();
+	public function addPlayerMenuItem(Control $control, $order = 0) {
+		if (!isset($this->playerMenuItems[$order])) {
+			$this->playerMenuItems[$order] = array();
 		}
-		array_push($this->menuItems[$order], $control);
+		array_push($this->playerMenuItems[$order], $control);
+	}
+
+	/**
+	 * Add a new Admin Menu Item
+	 *
+	 * @param Control $control
+	 * @param int $order
+	 */
+	public function addAdminMenuItem(Control $control, $order = 0) {
+		if (!isset($this->adminMenuItems[$order])) {
+			$this->adminMenuItems[$order] = array();
+		}
+		array_push($this->adminMenuItems[$order], $control);
 	}
 
 	/**
@@ -97,11 +130,22 @@ class AdminMenu implements CallbackListener, ManialinkPageAnswerListener { // TO
 	}
 
 	/**
-	 * Called on ManialinkPageAnswer
-	 * 
+	 * Handle OpenAdminMenu Action
+	 *
 	 * @param array $callback
 	 */
 	public function openAdminMenu(array $callback, Player $player) {
+		$this->buildManialink(true);
+		$manialinkText = $this->manialink->render()->saveXML();
+		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
+	}
+
+	/**
+	 * Handle OpenPlayerMenu Action
+	 *
+	 * @param array $callback
+	 */
+	public function openPlayerMenu(array $callback, Player $player) {
 		$this->buildManialink(true);
 		$manialinkText = $this->manialink->render()->saveXML();
 		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
@@ -119,7 +163,7 @@ class AdminMenu implements CallbackListener, ManialinkPageAnswerListener { // TO
 
 	/**
 	 * Build the icons
-	 * 
+	 *
 	 * @param bool $forceBuild
 	 */
 	private function buildIcons($forceBuild = false) {
@@ -153,7 +197,7 @@ class AdminMenu implements CallbackListener, ManialinkPageAnswerListener { // TO
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Options);
 		$itemQuad->setSize($itemSize, $itemSize);
 		$iconFrame->add($itemQuad);
-		$itemQuad->setAction(self::ACTION_OPEN_ADMIN_MEN);
+		$itemQuad->setAction(self::ACTION_OPEN_ADMIN_MENU);
 		
 		// Admin Menu Icon Frame
 		$frame = new Frame();
@@ -173,7 +217,7 @@ class AdminMenu implements CallbackListener, ManialinkPageAnswerListener { // TO
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Custom);
 		$itemQuad->setSize($itemSize, $itemSize);
 		$iconFrame->add($itemQuad);
-		$itemQuad->setAction(self::ACTION_OPEN_PLAYER_MEN);
+		$itemQuad->setAction(self::ACTION_OPEN_PLAYER_MENU);
 		
 		$this->manialink = $manialink;
 	}

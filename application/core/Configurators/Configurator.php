@@ -54,7 +54,7 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 	/**
 	 * Create a new Configurator
 	 *
-	 * @param ManiaControl $maniaControl        	
+	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
@@ -72,16 +72,16 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 		// Register for page answers
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_TOGGLEMENU, $this, 
 				'handleToggleMenuAction');
-
+		
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_SAVECONFIG, $this, 
 				'handleSaveConfigAction');
 		
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERDISCONNECT, $this, 
 				'handlePlayerDisconnect');
-
+		
 		$this->maniaControl->callbackManager->registerCallbackListener(ScriptSettings::CB_SCRIPTSETTINGS_CHANGED, $this, 'reopenMenu');
-
+		
 		// Create script settings
 		$this->scriptSettings = new ScriptSettings($maniaControl);
 		$this->addMenu($this->scriptSettings);
@@ -90,7 +90,7 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 	/**
 	 * Add a configurator menu
 	 *
-	 * @param ConfiguratorMenu $menu        	
+	 * @param ConfiguratorMenu $menu
 	 */
 	public function addMenu(ConfiguratorMenu $menu) {
 		array_push($this->menus, $menu);
@@ -98,21 +98,23 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 
 	/**
 	 * Reopens the Menu
+	 *
 	 * @param array $callback
 	 */
-	public function reopenMenu(array $callback){
-		foreach($this->playersMenuShown as $login => $shown){
-			if($shown == true){
+	public function reopenMenu(array $callback) {
+		foreach ($this->playersMenuShown as $login => $shown) {
+			if ($shown == true) {
 				$player = $this->maniaControl->playerManager->getPlayer($login);
 				$this->showMenu($player);
 			}
 		}
 	}
+
 	/**
 	 * Handle toggle menu action
 	 *
-	 * @param array $callback        	
-	 * @param Player $player        	
+	 * @param array $callback
+	 * @param Player $player
 	 */
 	public function handleToggleMenuAction(array $callback, Player $player) {
 		if (isset($this->playersMenuShown[$player->login])) {
@@ -125,8 +127,8 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 	/**
 	 * Save the config data received from the manialink
 	 *
-	 * @param array $callback        	
-	 * @param Player $player        	
+	 * @param array $callback
+	 * @param Player $player
 	 */
 	public function handleSaveConfigAction(array $callback, Player $player) {
 		foreach ($this->menus as $menu) {
@@ -137,7 +139,7 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 	/**
 	 * Handle PlayerDisconnect callback
 	 *
-	 * @param array $callback        	
+	 * @param array $callback
 	 */
 	public function handlePlayerDisconnect(array $callback) {
 		$login = $callback[1][0];
@@ -147,7 +149,7 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 	/**
 	 * Show the menu to the player
 	 *
-	 * @param Player $player        	
+	 * @param Player $player
 	 */
 	public function showMenu(Player $player) {
 		$this->buildManialink();
@@ -160,7 +162,7 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 	/**
 	 * Hide the menu for the player
 	 *
-	 * @param Player $player        	
+	 * @param Player $player
 	 */
 	public function hideMenu(Player $player) {
 		$emptyManialink = new ManiaLink(ManialinkManager::MAIN_MLID);
@@ -173,7 +175,7 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 	/**
 	 * Build menu manialink if necessary
 	 *
-	 * @param bool $forceBuild        	
+	 * @param bool $forceBuild
 	 */
 	private function buildManialink($forceBuild = false) {
 		$menuPosX = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_POSX);
@@ -218,20 +220,15 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 		// Create script and features
 		$script = new Script();
 		$manialink->setScript($script);
-
-		$pages = null;
-		/*$pages = new Pages();
-		$script->addFeature($pages);
 		
-		$tooltips = new Tooltips();
-		$script->addFeature($tooltips);
-
-		$menus = new Menus();
-		$script->addFeature($menus);*/
-
-		//$script->addPager()
-
-
+		$pages = null;
+		/*
+		 * $pages = new Pages(); $script->addFeature($pages); $tooltips = new Tooltips(); $script->addFeature($tooltips); $menus = new
+		 * Menus(); $script->addFeature($menus);
+		 */
+		
+		// $script->addPager()
+		
 		$menuRelationships = array();
 		$menuItemY = $menuHeight * 0.42;
 		foreach ($this->menus as $index => $menu) {
@@ -241,7 +238,7 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 			$menuItemLabel->setY($menuItemY);
 			$menuItemLabel->setSize($menuListWidth * 0.9, $menuItemHeight * 0.9);
 			$menuItemLabel->setStyle(Label_Text::STYLE_TextCardRaceRank);
-			//$menuItemLabel->setText('$z' . $menu->getTitle() . '$z');
+			// $menuItemLabel->setText('$z' . $menu->getTitle() . '$z');
 			
 			// Add menu
 			$menuControl = $menu->getMenu($subMenuWidth, $subMenuHeight, $pages, $script);
@@ -251,12 +248,12 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 			$menusFrame->add($menuControl);
 			
 			// Add menu relationship
-			//array_push($menuRelationships, array($menuItemLabel, $menuControl));
+			// array_push($menuRelationships, array($menuItemLabel, $menuControl));
 			$script->addMenu($menuItemLabel, $menuControl);
 			$menuItemY -= $menuItemHeight * 1.1;
 		}
-
-		//$menus->add($menuRelationships);
+		
+		// $menus->add($menuRelationships);
 		
 		// Add Close Quad (X)
 		$closeQuad = new Quad_Icons64x64_1();
@@ -298,6 +295,6 @@ class Configurator implements CallbackListener, ManialinkPageAnswerListener {
 		$itemQuad = new Quad();
 		$itemQuad->setStyles('Icons128x32_1', 'Settings');
 		$itemQuad->setAction(self::ACTION_TOGGLEMENU);
-		$this->maniaControl->adminMenu->addMenuItem($itemQuad, 5);
+		$this->maniaControl->actionsMenu->addAdminMenuItem($itemQuad, 10);
 	}
 }
