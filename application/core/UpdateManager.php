@@ -10,7 +10,7 @@ use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 
 /**
- * Class checking for ManiaControl Core and Plugin Updates
+ * Manager checking for ManiaControl Core and Plugin Updates
  *
  * @author steeffeen & kremsy
  */
@@ -132,7 +132,11 @@ class UpdateManager implements CallbackListener, CommandListener {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
-		$updateData = $this->checkCoreUpdate();
+		$updateData = $this->checkCoreUpdate(true);
+		if (!$updateData) {
+			$this->maniaControl->chat->sendError('Update is currently not possible!', $player->login);
+			return;
+		}
 		$this->maniaControl->chat->sendInformation("Starting Update to Version v{$updateData->version}...", $player->login);
 		$performBackup = $this->maniaControl->settingManager->getSetting($this, self::SETTING_PERFORM_BACKUPS);
 		if ($performBackup && !$this->performBackup()) {
@@ -175,16 +179,16 @@ class UpdateManager implements CallbackListener, CommandListener {
 	 *
 	 * @return mixed
 	 */
-	private function checkCoreUpdate() {
+	private function checkCoreUpdate($ignoreVersion = false) {
 		$updateChannel = $this->getCurrentUpdateChannelSetting();
-		$url = self::URL_WEBSERVICE . 'versions?current=1&channel=' . $updateChannel;
+		$url = self::URL_WEBSERVICE . 'versions?update=1&current=1&channel=' . $updateChannel;
 		$dataJson = file_get_contents($url);
 		$versions = json_decode($dataJson);
 		if (!$versions || !isset($versions[0])) {
 			return false;
 		}
 		$updateData = $versions[0];
-		if ($updateData->version <= ManiaControl::VERSION) {
+		if (!$ignoreVersion && $updateData->version <= ManiaControl::VERSION) {
 			return false;
 		}
 		return $updateData;
@@ -275,7 +279,7 @@ class UpdateManager implements CallbackListener, CommandListener {
 			trigger_error("Couldn't open Update Zip. ({$result})");
 			return false;
 		}
-		$zip->extractTo(ManiaControlDir . '/test/');
+		$zip->extractTo(ManiaControlDir);
 		$zip->close();
 		unlink($updateFileName);
 		@rmdir($tempDir);
