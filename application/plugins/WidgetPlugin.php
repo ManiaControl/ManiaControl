@@ -319,7 +319,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 				$playerCount++;
 		}
 		
-		// Player Quad / Label
+
 		$label = new Label_Text();
 		$frame->add($label);
 		$label->setPosition(0, 1.5, 0.2);
@@ -327,11 +327,12 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$label->setTextSize(1.3);
 		$label->setText($serverName);
 		$label->setTextColor("FFF");
-		
+
+		// Player Quad / Label
 		$label = new Label_Text();
 		$frame->add($label);
-		$label->setPosition(-3.9, -1.5, 0.2);
-		$label->setAlign(Control::CENTER, Control::CENTER);
+		$label->setPosition(-$width /2 + 9, -1.5, 0.2);
+		$label->setAlign(Control::LEFT, Control::CENTER);
 		$label->setTextSize(1);
 		$label->setScale(0.8);
 		$label->setText($playerCount . " / " . $maxPlayers['NextValue']);
@@ -340,15 +341,15 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$quad = new Quad_Icons128x128_1();
 		$frame->add($quad);
 		$quad->setSubStyle($quad::SUBSTYLE_Multiplayer);
-		$quad->setPosition(-8, -1.6, 0.2);
+		$quad->setPosition(-$width /2 + 7, -1.6, 0.2);
 		$quad->setSize(2.5, 2.5);
 		$quad->setHAlign(Control::CENTER);
 		
 		// Spectator Quad / Label
 		$label = new Label_Text();
 		$frame->add($label);
-		$label->setPosition(8.5, -1.5, 0.2);
-		$label->setAlign(Control::CENTER, Control::CENTER);
+		$label->setPosition(2, -1.5, 0.2);
+		$label->setAlign(Control::LEFT, Control::CENTER);
 		$label->setTextSize(1);
 		$label->setScale(0.8);
 		$label->setText($spectatorCount . " / " . $maxSpectators['NextValue']);
@@ -357,12 +358,12 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$quad = new Quad_Icons64x64_1();
 		$frame->add($quad);
 		$quad->setSubStyle($quad::SUBSTYLE_Camera);
-		$quad->setPosition(3.5, -1.6, 0.2);
+		$quad->setPosition(0, -1.6, 0.2);
 		$quad->setSize(3.3, 2.5);
 		$quad->setHAlign(Control::CENTER);
 		
 		// Favorite quad
-		// $quad = new Quad_Icons64x64_1();
+		 $quad = new Quad_Icons64x64_1();
 		$quad = new Quad_Icons128x128_1();
 		$frame->add($quad);
 		// $quad->setSubStyle($quad::SUBSTYLE_StateFavourite);
