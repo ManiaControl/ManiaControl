@@ -70,50 +70,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	 */
 	private $maniaControl = null;
 
-	/**
-	 * Get plugin id
-	 *
-	 * @return int
-	 */
-	public static function getId() {
-		return self::PLUGIN_ID;
-	}
 
-	/**
-	 * Get Plugin Name
-	 *
-	 * @return string
-	 */
-	public static function getName() {
-		return self::PLUGIN_NAME;
-	}
-
-	/**
-	 * Get Plugin Version
-	 *
-	 * @return float,,
-	 */
-	public static function getVersion() {
-		return self::PLUGIN_VERSION;
-	}
-
-	/**
-	 * Get Plugin Author
-	 *
-	 * @return string
-	 */
-	public static function getAuthor() {
-		return self::PLUGIN_AUTHOR;
-	}
-
-	/**
-	 * Get Plugin Description
-	 *
-	 * @return string
-	 */
-	public static function getDescription() {
-		return null;
-	}
 
 	/**
 	 * Load the plugin
@@ -575,5 +532,50 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_ACTIVATED)) {
 			$this->displayClockWidget();
 		}
+	}
+
+	/**
+	 * Get plugin id
+	 *
+	 * @return int
+	 */
+	public static function getId() {
+		return self::PLUGIN_ID;
+	}
+
+	/**
+	 * Get Plugin Name
+	 *
+	 * @return string
+	 */
+	public static function getName() {
+		return self::PLUGIN_NAME;
+	}
+
+	/**
+	 * Get Plugin Version
+	 *
+	 * @return float,,
+	 */
+	public static function getVersion() {
+		return self::PLUGIN_VERSION;
+	}
+
+	/**
+	 * Get Plugin Author
+	 *
+	 * @return string
+	 */
+	public static function getAuthor() {
+		return self::PLUGIN_AUTHOR;
+	}
+
+	/**
+	 * Get Plugin Description
+	 *
+	 * @return string
+	 */
+	public static function getDescription() {
+		return null;
 	}
 }
