@@ -20,7 +20,7 @@ class IconManager implements CallbackListener {
 	 * Constants
 	 */
 	const DEFAULT_IMG_URL = "http://images.maniacontrol.com/icons/";
-	const PRELOAD_ML_ID = "IconManager.Preload";
+	const PRELOAD_ML_ID   = "IconManager.Preload";
 
 	/**
 	 * Some Default icons
@@ -49,47 +49,49 @@ class IconManager implements CallbackListener {
 
 	/**
 	 * Adds an Icon
+	 *
 	 * @param string $iconName
 	 * @param string $iconLink
 	 */
-	public function addIcon($iconName, $iconLink = self::DEFAULT_IMG_URL){
-		$this->icons[$iconName] = $iconLink . "/" .  $iconName;
+	public function addIcon($iconName, $iconLink = self::DEFAULT_IMG_URL) {
+		$this->icons[$iconName] = $iconLink . "/" . $iconName;
 	}
 
 	/**
 	 * Gets an Icon by its name
+	 *
 	 * @param $iconName
 	 * @return string
 	 */
-	public function getIcon($iconName){
+	public function getIcon($iconName) {
 		return $this->icons[$iconName];
 	}
 
 	/**
 	 * @param array $callback
 	 */
-	public function handleOnInit(array $callback){
+	public function handleOnInit(array $callback) {
 		$this->preloadIcons();
 	}
 
 	/**
 	 * @param array $callback
 	 */
-	public function handlePlayerConnect(array $callback){
+	public function handlePlayerConnect(array $callback) {
 		$this->preloadIcons($callback[1]);
 	}
 
 	/**
 	 * Preload Icons
 	 */
-	private function preloadIcons($login = false){
+	private function preloadIcons($login = false) {
 		$maniaLink = new ManiaLink(self::PRELOAD_ML_ID);
 
 		$frame = new Frame();
 		$maniaLink->add($frame);
 		$frame->setPosition(500, 500);
 
-		foreach($this->icons as $iconUrl){
+		foreach ($this->icons as $iconUrl) {
 			$iconQuad = new Quad();
 			$iconQuad->setImage($iconUrl);
 			$iconQuad->setSize(10, 10);

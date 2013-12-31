@@ -2,15 +2,14 @@
 
 namespace ManiaControl\Manialinks;
 
-use ManiaControl\ManiaControl;
-use ManiaControl\Callbacks\CallbackListener;
-use ManiaControl\Callbacks\CallbackManager;
-use ManiaControl\Manialinks\ManialinkPageAnswerListener;
-use ManiaControl\Players\Player;
-use FML\ManiaLink;
 use FML\Controls\Control;
 use FML\Controls\Frame;
 use FML\Controls\Labels\Label_Text;
+use FML\ManiaLink;
+use ManiaControl\Callbacks\CallbackListener;
+use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\ManiaControl;
+use ManiaControl\Players\Player;
 
 require_once __DIR__ . '/StyleManager.php';
 require_once __DIR__ . '/IconManager.php';
@@ -23,14 +22,14 @@ require_once __DIR__ . '/../FML/autoload.php';
  * @author steeffeen & kremsy
  */
 class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener {
-	
+
 	/**
 	 * Constants
 	 */
-	const MAIN_MLID = 'Main.ManiaLinkId';
-	const ACTION_CLOSEWIDGET = 'ManiaLinkManager.CloseWidget';
+	const MAIN_MLID             = 'Main.ManiaLinkId';
+	const ACTION_CLOSEWIDGET    = 'ManiaLinkManager.CloseWidget';
 	const CB_MAIN_WINDOW_CLOSED = 'ManialinkManagerCallback.MainWindowClosed';
-	
+
 	/**
 	 * Public properties
 	 */
@@ -43,7 +42,6 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 */
 	private $maniaControl = null;
 	private $pageAnswerListeners = array();
-	private $maniaLinkIdCount = 0;
 
 	/**
 	 * Create a new manialink manager
@@ -51,36 +49,37 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
-		$this->maniaControl = $maniaControl;
-		$this->styleManager = new StyleManager($maniaControl);
+		$this->maniaControl    = $maniaControl;
+		$this->styleManager    = new StyleManager($maniaControl);
 		$this->customUIManager = new CustomUIManager($maniaControl);
-		$this->iconManager = new IconManager($maniaControl);
+		$this->iconManager     = new IconManager($maniaControl);
 
 		// Register for callbacks
 		$this->registerManialinkPageAnswerListener(self::ACTION_CLOSEWIDGET, $this, 'closeWidgetCallback');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 
-				'handleManialinkPageAnswer');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 	}
 
 	/**
 	 * Register a new manialink page answer listener
 	 *
-	 * @param string $actionId
+	 * @param string                      $actionId
 	 * @param ManialinkPageAnswerListener $listener
-	 * @param string $method
+	 * @param string                      $method
 	 * @return bool
 	 */
 	public function registerManialinkPageAnswerListener($actionId, ManialinkPageAnswerListener $listener, $method) {
-		if (!method_exists($listener, $method)) {
+		if(!method_exists($listener, $method)) {
 			trigger_error("Given listener for actionId '{$actionId}' doesn't have callback method '{$method}'!");
+
 			return false;
 		}
-		if (!array_key_exists($actionId, $this->pageAnswerListeners) || !is_array($this->pageAnswerListeners[$actionId])) {
+		if(!array_key_exists($actionId, $this->pageAnswerListeners) || !is_array($this->pageAnswerListeners[$actionId])) {
 			// Init listeners array
 			$this->pageAnswerListeners[$actionId] = array();
 		}
 		// Register page answer listener
 		array_push($this->pageAnswerListeners[$actionId], array($listener, $method));
+
 		return true;
 	}
 
@@ -95,21 +94,8 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 		foreach ($keys as $key) {
 			unset($this->pageAnswerListeners[$key]);
 		}
-		return true;
-	}
 
-	/**
-	 * Reserve manialink ids
-	 *
-	 * @param int $count
-	 * @return array
-	 */
-	public function reserveManiaLinkIds($count) {
-		$manialinkIds = array();
-		for ($i = 0; $i < $count; $i++) {
-			array_push($manialinkIds, $this->maniaLinkIdCount++);
-		}
-		return $manialinkIds;
+		return true;
 	}
 
 	/**
@@ -119,9 +105,9 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 */
 	public function handleManialinkPageAnswer(array $callback) {
 		$actionId = $callback[1][2];
-		$login = $callback[1][1];
-		$player = $this->maniaControl->playerManager->getPlayer($login);
-		if (!array_key_exists($actionId, $this->pageAnswerListeners) || !is_array($this->pageAnswerListeners[$actionId])) {
+		$login    = $callback[1][1];
+		$player   = $this->maniaControl->playerManager->getPlayer($login);
+		if(!array_key_exists($actionId, $this->pageAnswerListeners) || !is_array($this->pageAnswerListeners[$actionId])) {
 			// No page answer listener registered
 			return;
 		}
@@ -135,30 +121,30 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 * Send the given manialink to players
 	 *
 	 * @param string $manialinkText
-	 * @param mixed $logins
-	 * @param int $timeout
-	 * @param bool $hideOnClick
+	 * @param mixed  $logins
+	 * @param int    $timeout
+	 * @param bool   $hideOnClick
 	 * @return bool
 	 */
 	public function sendManialink($manialinkText, $logins = null, $timeout = 0, $hideOnClick = false) {
-		if (!$logins) {
+		if(!$logins) {
 			return $this->maniaControl->client->query('SendDisplayManialinkPage', $manialinkText, $timeout, $hideOnClick);
 		}
-		if (is_string($logins)) {
-			return $this->maniaControl->client->query('SendDisplayManialinkPageToLogin', $logins, $manialinkText, $timeout, 
-					$hideOnClick);
+		if(is_string($logins)) {
+			return $this->maniaControl->client->query('SendDisplayManialinkPageToLogin', $logins, $manialinkText, $timeout, $hideOnClick);
 		}
-		if (is_array($logins)) {
+		if(is_array($logins)) {
 			$success = true;
 			foreach ($logins as $login) {
-				$subSuccess = $this->maniaControl->client->query('SendDisplayManialinkPageToLogin', $login, $manialinkText, $timeout, 
-						$hideOnClick);
-				if (!$subSuccess) {
+				$subSuccess = $this->maniaControl->client->query('SendDisplayManialinkPageToLogin', $login, $manialinkText, $timeout, $hideOnClick);
+				if(!$subSuccess) {
 					$success = false;
 				}
 			}
+
 			return $success;
 		}
+
 		return false;
 	}
 
@@ -198,7 +184,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	/**
 	 * Closes a widget via the callback
 	 *
-	 * @param array $callback
+	 * @param array  $callback
 	 * @param Player $player
 	 */
 	public function closeWidgetCallback(array $callback, Player $player) {
@@ -212,10 +198,10 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 */
 	public function closeWidget(Player $player) {
 		$emptyManialink = new ManiaLink(self::MAIN_MLID);
-		$manialinkText = $emptyManialink->render()->saveXML();
+		$manialinkText  = $emptyManialink->render()->saveXML();
 		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
 		$this->enableAltMenu($player);
-		
+
 		// Trigger callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_MAIN_WINDOW_CLOSED, array(self::CB_MAIN_WINDOW_CLOSED, $player));
 	}
@@ -230,15 +216,15 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 */
 	public function labelLine(Frame $frame, array $labelStrings, array $properties = array()) {
 		// TODO overwrite standard properties with properties from array
-		
+
 		// define standard properties
-		$hAlign = Control::LEFT;
-		$style = Label_Text::STYLE_TextCardSmall;
-		$textSize = 1.5;
+		$hAlign    = Control::LEFT;
+		$style     = Label_Text::STYLE_TextCardSmall;
+		$textSize  = 1.5;
 		$textColor = 'FFF';
-		$profile = (isset($properties['profile']) ? $properties['profile'] : false);
-		$script = (isset($properties['script']) ? $properties['script'] : null);
-		
+		$profile   = (isset($properties['profile']) ? $properties['profile'] : false);
+		$script    = (isset($properties['script']) ? $properties['script'] : null);
+
 		$frames = array();
 		foreach ($labelStrings as $text => $x) {
 			$label = new Label_Text();
@@ -249,13 +235,14 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 			$label->setTextSize($textSize);
 			$label->setText($text);
 			$label->setTextColor($textColor);
-			
-			if ($profile) {
+
+			if($profile) {
 				$script->addProfileButton($label, $profile);
 			}
-			
+
 			$frames[] = $frame; // add Frame to the frames array
 		}
+
 		return $frames;
 	}
 }
