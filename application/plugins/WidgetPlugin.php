@@ -81,7 +81,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		
 		// Set CustomUI Setting
 		$this->maniaControl->manialinkManager->customUIManager->setChallengeInfoVisible(false);
-		
+
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_BEGINMAP, $this, 'handleOnBeginMap');
@@ -96,9 +96,9 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAP_WIDGET_HEIGHT, 9.);
 
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SERVERINFO_WIDGET_ACTIVATED, true);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SERVERINFO_WIDGET_POSX, -160 + 20);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SERVERINFO_WIDGET_POSX, -160 + 17.5);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SERVERINFO_WIDGET_POSY, 90 - 4.5);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SERVERINFO_WIDGET_WIDTH, 40);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SERVERINFO_WIDGET_WIDTH, 35);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SERVERINFO_WIDGET_HEIGHT, 9.);
 
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_NEXTMAP_WIDGET_ACTIVATED, true);
@@ -287,12 +287,12 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$frame->setSize($width, $height);
 		$frame->setPosition($pos_x, $pos_y);
 
+
 		// Background Quad
 		$backgroundQuad = new Quad();
 		$frame->add($backgroundQuad);
 		$backgroundQuad->setSize($width, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-#
 
 		$this->maniaControl->client->query('GetMaxPlayers');
 		$maxPlayers = $this->maniaControl->client->getResponse();
@@ -356,6 +356,16 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$quad->setSize(3.3,2.5);
 		$quad->setHAlign(Control::CENTER);
 
+		//Favorite quad
+		//$quad = new Quad_Icons64x64_1();
+		$quad = new Quad_Icons128x128_1();
+		$frame->add($quad);
+		//$quad->setSubStyle($quad::SUBSTYLE_StateFavourite);
+		$quad->setSubStyle($quad::SUBSTYLE_ServersFavorites);
+		$quad->setPosition($width / 2 - 4, -1.5, -0.5);
+		$quad->setSize(4,4);
+		$quad->setHAlign(Control::CENTER);
+		//$TODO add server to favorite
 
 		// Send manialink
 		$manialinkText = $maniaLink->render()->saveXML();

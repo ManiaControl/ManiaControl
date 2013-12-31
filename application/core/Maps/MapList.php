@@ -4,7 +4,10 @@ namespace ManiaControl\Maps;
 use FML\Controls\Control;
 use FML\Controls\Gauge;
 use FML\Controls\Label;
+use FML\Controls\Labels\Label_Button;
 use FML\Controls\Labels\Label_Text;
+use FML\Controls\Quads\Quad_Bgs1;
+use FML\Controls\Quads\Quad_BgsPlayerCard;
 use FML\Controls\Quads\Quad_Icons128x128_1;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Controls\Quads\Quad_UIConstruction_Buttons;
@@ -267,12 +270,21 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$y = $this->height / 2 - 10;
 		/** @var  Map $map */
 		foreach($mapList as $map){
-
 			//Map Frame
 			$mapFrame = new Frame();
 			$frame->add($mapFrame);
 			$mapFrame->setZ(0.1);
 			$mapFrame->setY($y);
+
+			if($id % 2 != 0){
+				$lineQuad = new Quad_BgsPlayerCard();
+				$mapFrame->add($lineQuad);
+				$lineQuad->setSize($this->width, 4);
+				$lineQuad->setSubStyle($lineQuad::SUBSTYLE_BgPlayerCardBig);
+				$lineQuad->setZ(0.001);
+			}
+
+
 
 			if($this->maniaControl->mapManager->getCurrentMap() === $map){
 				$currentQuad = new Quad_Icons64x64_1();
@@ -319,13 +331,17 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$tooltips->add($jukeLabel, $descriptionLabel);
 			}else{
 				//Juke-Map-Button
-				$jukeQuad = new Quad_Icons128x128_1();
+				//$jukeQuad = new Quad_Icons128x128_1();
+				$jukeQuad = new Label_Button();
 				$mapFrame->add($jukeQuad);
 				$jukeQuad->setX($this->width/2 - 15);
 				$jukeQuad->setZ(0.2);
-				$jukeQuad->setSize(4,4);
-				$jukeQuad->setSubStyle($jukeQuad::SUBSTYLE_Load);
+				$jukeQuad->setSize(3,3);
+			//	$jukeQuad->setSubStyle($jukeQuad::SUBSTYLE_Load);
 				$jukeQuad->setAction(self::ACTION_JUKE_MAP . "." . $map->uid);
+				$jukeQuad->setText("+");
+				$jukeQuad->setTextColor("09F");
+
 
 				$descriptionLabel->setText("Add Map to Jukebox: {$map->name}");
 				$tooltips->add($jukeQuad, $descriptionLabel);
@@ -333,12 +349,16 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 			if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)){ //TODO SET as setting who can add maps
 				//erase map quad
-				$eraseQuad = new Quad_UIConstruction_Buttons();
+				//$eraseQuad = new Quad_UIConstruction_Buttons();
+				$eraseQuad = new Label_Button(); //TODO change name to label
 				$mapFrame->add($eraseQuad);
 				$eraseQuad->setX($this->width/2 - 5);
 				$eraseQuad->setZ(0.2);
-				$eraseQuad->setSize(4,4);
-				$eraseQuad->setSubStyle($eraseQuad::SUBSTYLE_Erase);
+				$eraseQuad->setSize(3,3);
+				$eraseQuad->setTextSize(1);
+				$eraseQuad->setText("x");
+				$eraseQuad->setTextColor("A00");
+				//$eraseQuad->setSubStyle($eraseQuad::SUBSTYLE_Erase);
 				$eraseQuad->setAction(self::ACTION_ERASE_MAP . "." .($id-1) . "." . $map->uid);
 
 				//Description Label
@@ -354,12 +374,16 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			}
 			if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_OPERATOR)){ //TODO SET as setting who can add maps
 				//switch to map quad
-				$switchToQuad = new Quad_Icons64x64_1();
+				//$switchToQuad = new Quad_Icons64x64_1(); //TODO change name to label
+				$switchToQuad = new Label_Button();
 				$mapFrame->add($switchToQuad);
 				$switchToQuad->setX($this->width/2 - 10);
 				$switchToQuad->setZ(0.2);
-				$switchToQuad->setSize(4, 4);
-				$switchToQuad->setSubStyle($switchToQuad::SUBSTYLE_ArrowFastNext);
+				$switchToQuad->setSize(3, 3);
+				//$switchToQuad->setSubStyle($switchToQuad::SUBSTYLE_ArrowFastNext);
+				$switchToQuad->setText("»");
+				$switchToQuad->setTextColor("0F0");
+
 				$switchToQuad->setAction(self::ACTION_SWITCH_MAP . "." .($id-1));
 
 				$descriptionLabel = new Label();
@@ -380,6 +404,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				if(is_numeric($karma)){
 					$karmaGauge = new Gauge();
 					$mapFrame->add($karmaGauge);
+					$karmaGauge->setZ(2);
 					$karmaGauge->setX($x + 120);
 					$karmaGauge->setSize(20, 9);
 					$karmaGauge->setDrawBg(false);
@@ -390,6 +415,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 					$karmaLabel = new Label();
 					$mapFrame->add($karmaLabel);
+					$karmaLabel->setZ(2);
 					$karmaLabel->setX($x + 120);
 					$karmaLabel->setSize(20 * 0.9, 5);
 					$karmaLabel->setTextSize(0.9);

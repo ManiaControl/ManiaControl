@@ -145,6 +145,16 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			$path = $listPlayer->getProvince();
 			$playerFrame = new Frame();
 			$frame->add($playerFrame);
+
+			if($i % 2 != 0){
+				$lineQuad = new Quad_BgsPlayerCard();
+				$playerFrame->add($lineQuad);
+				$lineQuad->setSize($this->width, 4);
+				$lineQuad->setSubStyle($lineQuad::SUBSTYLE_BgPlayerCardBig);
+				$lineQuad->setZ(0.001);
+			}
+
+
 			//$array = array($i => $x + 5, $listPlayer->nickname => $x + 10,  $listPlayer->login => $x + 50, $listPlayer->ladderRank => $x + 60, $listPlayer->ladderScore => $x + 70, $path => $x + 85);
 			$array = array($i => $x + 5, $listPlayer->nickname => $x + 18,  $listPlayer->login => $x + 60, $path => $x + 91);
 			$this->maniaControl->manialinkManager->labelLine($playerFrame,$array);
@@ -199,7 +209,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			$rightQuad = new Quad_BgRaceScore2();
 			$playerFrame->add($rightQuad);
 			$rightQuad->setX($x + 13);
-			$rightQuad->setZ(-0.1);
+			$rightQuad->setZ(5);
 			$rightQuad->setSubStyle($rightQuad::SUBSTYLE_CupFinisher);
 			$rightQuad->setSize(7,3.5);
 
@@ -207,7 +217,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			$playerFrame->add($rightLabel);
 			$rightLabel->setX($x + 13.9);
 			$rightLabel->setTextSize(0.8);
-
+			$rightLabel->setZ(10);
 
 			//Description Label
 			$descriptionLabel = new Label();
@@ -221,8 +231,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			$tooltips->add($rightQuad, $descriptionLabel);
 
 			switch($listPlayer->authLevel){
-				case authenticationManager::AUTH_LEVEL_MASTERADMIN:
-				case authenticationManager::AUTH_LEVEL_SUPERADMIN:  $rightLabel->setText("MA"); break;
+				case authenticationManager::AUTH_LEVEL_MASTERADMIN: $rightLabel->setText("MA"); break;
+				case authenticationManager::AUTH_LEVEL_SUPERADMIN:  $rightLabel->setText("SA"); break;
 				case authenticationManager::AUTH_LEVEL_ADMIN:		$rightLabel->setText("AD"); break;
 				case authenticationManager::AUTH_LEVEL_OPERATOR:	$rightLabel->setText("MOD");
 			}
@@ -436,7 +446,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$label->setStyle($style);
 		$label->setTextSize($textSize);
 		$label->setText("Kick");
-		$label->setTextColor($textColor);
+		$label->setTextColor("F90");
 
 		$y -= 5;
 		//Show Ban
@@ -456,7 +466,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$label->setStyle($style);
 		$label->setTextSize($textSize);
 		$label->setText("Ban");
-		$label->setTextColor($textColor);
+		$label->setTextColor("700");
 
 		$y -= 10;
 		//Show Add as Master-Admin
@@ -476,7 +486,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$label->setStyle($style);
 		$label->setTextSize($textSize);
 
-		$label->setText("Add MasterAdmin");
+		$label->setText("Set SuperAdmin");
 
 		$label->setTextColor($textColor);
 
@@ -497,7 +507,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$label->setY($y);
 		$label->setStyle($style);
 		$label->setTextSize($textSize);
-		$label->setText("Add Admin");
+		$label->setText("Set Admin");
 		$label->setTextColor($textColor);
 
 		$y -= 5;
@@ -517,7 +527,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$label->setY($y);
 		$label->setStyle($style);
 		$label->setTextSize($textSize);
-		$label->setText("Add Moderator");
+		$label->setText("Set Moderator");
 		$label->setTextColor($textColor);
 
 
@@ -540,7 +550,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			$label->setStyle($style);
 			$label->setTextSize($textSize);
 			$label->setText("Revoke Rights");
-			$label->setTextColor($textColor);
+			$label->setTextColor("700");
+
 		}
 
 		return $frame;
