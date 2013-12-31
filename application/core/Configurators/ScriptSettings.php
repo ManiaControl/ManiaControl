@@ -291,12 +291,11 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		}
 		
 		$valString = ($newSetting[$setting]) ? 'true' : 'false';
-		$chatMessage = '$FFF' . $setting . '$z$s$FF0 to $FFF' . $valString;
-		$chatMessage = str_replace("S_", "", $chatMessage);
+		$chatMessage = '$FFF' . preg_replace('/^S_/', '', $setting) . '$z$s$FF0 to $FFF' . $valString;
 		
 		$title = $this->maniaControl->authenticationManager->getAuthLevelName($player->authLevel);
 		$this->maniaControl->chat->sendInformation(
-				'$ff0' . $title . ' $<' . $player->nickname . '$> set Scriptsetting $<' . $chatMessage . '$>!');
+				'$ff0' . $title . ' $<' . $player->nickname . '$> set ScriptSetting $<' . $chatMessage . '$>!');
 		
 		// log console message
 		$this->maniaControl->log(Formatter::stripCodes($title . ' ' . $player->nickname . ' set Scriptsetting ' . $chatMessage . '!'));
