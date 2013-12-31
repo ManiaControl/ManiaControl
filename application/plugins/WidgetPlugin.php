@@ -10,6 +10,7 @@ use FML\Script\Script;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
+use ManiaControl\Manialinks\IconManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
@@ -60,7 +61,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	const SETTING_SERVERINFO_WIDGET_POSY = 'ServerInfo-Widget-Position: Y';
 	const SETTING_SERVERINFO_WIDGET_WIDTH = 'ServerInfo-Widget-Size: Width';
 	const SETTING_SERVERINFO_WIDGET_HEIGHT = 'ServerInfo-Widget-Size: Height';
-	
+
 	/**
 	 * Private Properties
 	 */
@@ -114,7 +115,8 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_CLOCK_WIDGET_POSY, 90 - 11);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_CLOCK_WIDGET_WIDTH, 10);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_CLOCK_WIDGET_HEIGHT, 5.5);
-		
+
+		$this->maniaControl->manialinkManager->iconManager->addIcon(IconManager::MX_ICON);
 		return true;
 	}
 
@@ -201,7 +203,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		if (isset($map->mx->pageurl)) {
 			$quad = new Quad();
 			$frame->add($quad);
-			$quad->setImage("http://images.maniacontrol.com/icons/ManiaExchange.png");
+			$quad->setImage($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON));
 			$quad->setPosition(-$width / 2 + 4, -1.5, -0.5);
 			$quad->setSize(4, 4);
 			$quad->setHAlign(Control::CENTER);

@@ -13,6 +13,7 @@ use FML\Controls\Frame;
 use FML\Controls\Labels\Label_Text;
 
 require_once __DIR__ . '/StyleManager.php';
+require_once __DIR__ . '/IconManager.php';
 require_once __DIR__ . '/CustomUIManager.php';
 require_once __DIR__ . '/../FML/autoload.php';
 
@@ -35,7 +36,8 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 */
 	public $styleManager = null;
 	public $customUIManager = null;
-	
+	public $iconManager = null;
+
 	/**
 	 * Private properties
 	 */
@@ -52,7 +54,8 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 		$this->maniaControl = $maniaControl;
 		$this->styleManager = new StyleManager($maniaControl);
 		$this->customUIManager = new CustomUIManager($maniaControl);
-		
+		$this->iconManager = new IconManager($maniaControl);
+
 		// Register for callbacks
 		$this->registerManialinkPageAnswerListener(self::ACTION_CLOSEWIDGET, $this, 'closeWidgetCallback');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 
