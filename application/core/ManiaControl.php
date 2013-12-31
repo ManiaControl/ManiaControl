@@ -2,7 +2,6 @@
 
 namespace ManiaControl;
 
-use IXR_Client_Gbx;
 use ManiaControl\Admin\ActionsMenu;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackManager;
@@ -74,7 +73,8 @@ class ManiaControl implements CommandListener {
 	public $chat = null;
 	public $configurator = null;
 	/**
-	 * @var IXR_Client_Gbx
+	 *
+	 * @var \IXR_ClientMulticall_Gbx
 	 */
 	public $client = null;
 	public $commandManager = null;
@@ -96,7 +96,7 @@ class ManiaControl implements CommandListener {
 	 * Construct ManiaControl
 	 */
 	public function __construct() {
-		logMessage('Loading ManiaControl v' . self::VERSION . '...');
+		$this->log('Loading ManiaControl v' . self::VERSION . '...');
 		
 		// Load ManiaControl Modules
 		$this->database = new Database($this);
@@ -171,7 +171,7 @@ class ManiaControl implements CommandListener {
 		
 		// Log quit reason
 		if ($message) {
-			logMessage($message);
+			$this->log($message);
 		}
 		
 		// Shutdown
@@ -199,7 +199,7 @@ class ManiaControl implements CommandListener {
 		register_shutdown_function(array($this, 'quit'));
 		
 		// Loading finished
-		logMessage('Loading completed!');
+		$this->log('Loading completed!');
 		
 		// Announce ManiaControl
 		$this->chat->sendInformation('ManiaControl v' . self::VERSION . ' successfully started!');
@@ -243,7 +243,7 @@ class ManiaControl implements CommandListener {
 		if (!$host) trigger_error("Invalid server configuration (port).", E_USER_ERROR);
 		$port = (string) $port[0];
 		
-		logMessage("Connecting to server at {$host}:{$port}...");
+		$this->log("Connecting to server at {$host}:{$port}...");
 		
 		// Connect
 		if (!$this->client->InitWithIp($host, $port, 20)) {
@@ -279,7 +279,10 @@ class ManiaControl implements CommandListener {
 		}
 		
 		// Connect finished
-		logMessage("Server connection successfully established!");
+		$this->log("Server Connection successfully established!");
+		
+		// Hide old widgets
+		$this->client->query('SendHideManialinkPage');
 		
 		// Enable script callbacks if needed
 		if ($this->server->getGameMode() != 0) return;
@@ -294,6 +297,6 @@ class ManiaControl implements CommandListener {
 			trigger_error("Couldn't set mode script settings to enable script callbacks. " . $this->getClientErrorText());
 			return;
 		}
-		logMessage('Script callbacks successfully enabled.');
+		$this->log('Script Callbacks successfully enabled!');
 	}
 }
