@@ -21,6 +21,7 @@ class UpdateManager implements CallbackListener, CommandListener {
 	const SETTING_ENABLEUPDATECHECK = 'Enable Automatic Core Update Check';
 	const SETTING_UPDATECHECK_INTERVAL = 'Core Update Check Interval (Hours)';
 	const SETTING_UPDATECHECK_CHANNEL = 'Core Update Channel (release, beta, alpha)';
+	const SETTING_PERFORM_BACKUPS = 'Perform Backup before Updating';
 	const URL_WEBSERVICE = 'http://ws.maniacontrol.com/';
 	const CHANNEL_RELEASE = 'release';
 	const CHANNEL_BETA = 'beta';
@@ -45,6 +46,7 @@ class UpdateManager implements CallbackListener, CommandListener {
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_ENABLEUPDATECHECK, true);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_UPDATECHECK_INTERVAL, 24.);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_UPDATECHECK_CHANNEL, self::CHANNEL_ALPHA);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_PERFORM_BACKUPS, true);
 		
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_1_MINUTE, $this, 'handle1Minute');
@@ -52,6 +54,7 @@ class UpdateManager implements CallbackListener, CommandListener {
 		
 		// Register for chat commands
 		$this->maniaControl->commandManager->registerCommandListener('checkupdate', $this, 'handle_CheckUpdate', true);
+		$this->maniaControl->commandManager->registerCommandListener('coreupdate', $this, 'handle_CoreUpdate', true);
 	}
 
 	/**
@@ -119,6 +122,30 @@ class UpdateManager implements CallbackListener, CommandListener {
 	}
 
 	/**
+	 * Handle //coreupdate command
+	 *
+	 * @param array $chatCallback
+	 * @param Player $player
+	 */
+	public function handle_CoreUpdate(array $chatCallback, Player $player) {
+		if (!AuthenticationManager::checkRight($player, AuthenticationManager::AUTH_LEVEL_MASTERADMIN)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+			return;
+		}
+		$updateData = $this->checkCoreUpdate();
+		$this->maniaControl->chat->sendInformation("Starting Update to Version v{$updateData->version}...", $player->login);
+		$performBackup = $this->maniaControl->settingManager->getSetting($this, self::SETTING_PERFORM_BACKUPS);
+		if ($performBackup && !$this->performBackup()) {
+			$this->maniaControl->chat->sendError('Creating backup failed.', $player->login);
+		}
+		if (!$this->performCoreUpdate($updateData)) {
+			$this->maniaControl->chat->sendError('Update failed!', $player->login);
+			return;
+		}
+		$this->maniaControl->chat->sendSuccess('Update finished!', $player->login);
+	}
+
+	/**
 	 * Check given Plugin Class for Update
 	 *
 	 * @param string $pluginClass
@@ -164,6 +191,63 @@ class UpdateManager implements CallbackListener, CommandListener {
 	}
 
 	/**
+	 * Perform a Backup of ManiaControl
+	 *
+	 * @return bool
+	 */
+	private function performBackup() {
+		$backupFolder = ManiaControlDir . '/backup/';
+		if (!is_dir($backupFolder)) mkdir($backupFolder);
+		$backupFileName = $backupFolder . 'backup_' . ManiaControl::VERSION . '_' . date('y-m-d') . '.zip';
+		$backupZip = new \ZipArchive();
+		if ($backupZip->open($backupFileName, \ZipArchive::CREATE) !== TRUE) {
+			trigger_error("Couldn't create Backup Zip!");
+			return false;
+		}
+		$excludes = array('.', '..', 'backup', 'logs', 'ManiaControl.log');
+		$pathInfo = pathInfo(ManiaControlDir);
+		$parentPath = $pathInfo['dirname'] . '/';
+		$dirName = $pathInfo['basename'];
+		$backupZip->addEmptyDir($dirName);
+		$this->zipDirectory($backupZip, ManiaControlDir, strlen($parentPath), $excludes);
+		$backupZip->close();
+		return true;
+	}
+
+	/**
+	 * Add a complete Directory to the ZipArchive
+	 *
+	 * @param \ZipArchive $zipArchive
+	 * @param string $folderName
+	 * @param int $prefixLength
+	 * @param array $excludes
+	 * @return bool
+	 */
+	private function zipDirectory(\ZipArchive &$zipArchive, $folderName, $prefixLength, array $excludes = array()) {
+		$folderHandle = opendir($folderName);
+		if (!$folderHandle) {
+			trigger_error("Couldn't open Folder '{$folderName}' for Backup!");
+			return false;
+		}
+		while (false !== ($file = readdir($folderHandle))) {
+			if (in_array($file, $excludes)) continue;
+			$filePath = $folderName . '/' . $file;
+			$localPath = substr($filePath, $prefixLength);
+			if (is_file($filePath)) {
+				$zipArchive->addFile($filePath, $localPath);
+				continue;
+			}
+			if (is_dir($filePath)) {
+				$zipArchive->addEmptyDir($localPath);
+				$this->zipDirectory($zipArchive, $filePath, $prefixLength, $excludes);
+				continue;
+			}
+		}
+		closedir($folderHandle);
+		return true;
+	}
+
+	/**
 	 * Perform a Core Update
 	 *
 	 * @param object $updateData
@@ -178,9 +262,7 @@ class UpdateManager implements CallbackListener, CommandListener {
 		}
 		$updateFileContent = file_get_contents($updateData->url);
 		$tempDir = ManiaControlDir . '/temp/';
-		if (!is_dir($tempDir)) {
-			mkdir($tempDir);
-		}
+		if (!is_dir($tempDir)) mkdir($tempDir);
 		$updateFileName = $tempDir . basename($updateData->url);
 		$bytes = file_put_contents($updateFileName, $updateFileContent);
 		if (!$bytes || $bytes <= 0) {
@@ -195,6 +277,8 @@ class UpdateManager implements CallbackListener, CommandListener {
 		}
 		$zip->extractTo(ManiaControlDir . '/test/');
 		$zip->close();
+		unlink($updateFileName);
+		@rmdir($tempDir);
 		return true;
 	}
 
