@@ -172,6 +172,7 @@ class Script {
 		if ($playerLogin) {
 			$profileControl->addClass(self::CLASS_PROFILE . '-' . $playerLogin);
 		}
+		$this->addInclude('TextLib', 'TextLib');
 		$this->profile = true;
 		return $this;
 	}
