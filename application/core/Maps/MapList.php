@@ -18,6 +18,7 @@ use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ColorUtil;
+use ManiaControl\Formatter;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use FML\Controls\Frame;
@@ -469,7 +470,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$mapList = $this->maniaControl->mapManager->getMapList();
 
 			$this->maniaControl->chat->sendSuccess('Map switched to $z$<' . $mapList[$actionArray[2]]->name . '$>!'); //TODO specified message, who done it?
-			$this->maniaControl->log('Skipped to $z$<' . $mapList[$actionArray[2]]->name . '$>!');
+			$this->maniaControl->log(Formatter::stripCodes('Skipped to $z$<' . $mapList[$actionArray[2]]->name . '$>!'));
 		}else if($jukeMap){
 			$this->maniaControl->mapManager->jukebox->addMapToJukebox($callback[1][1], $actionArray[2]);
 		}

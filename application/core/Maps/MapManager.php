@@ -6,6 +6,7 @@ require_once __DIR__ . '/Map.php';
 require_once __DIR__ . '/MapCommands.php';
 
 use ManiaControl\FileUtil;
+use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
@@ -145,7 +146,7 @@ class MapManager implements CallbackListener {
 		$map = $this->mapListUids[$uid];
 		$this->maniaControl->client->query('RemoveMap', $map->fileName);
 		$this->maniaControl->chat->sendSuccess('Map $<' . $map->name . '$> removed!'); //TODO specified message, who done it?
-		$this->maniaControl->log('Map $<' . $map->name . '$> removed!');
+		$this->maniaControl->log(Formatter::stripCodes('Map $<' . $map->name . '$> removed!'));
 		unset($this->mapListUids[$uid]);
 		unset($this->mapList[$id]);
 	}
@@ -342,7 +343,7 @@ class MapManager implements CallbackListener {
 			$this->updateFullMapList();
 
 			//Juke requested Map
-			$this->maniaControl->mapManager->jukebox->addMapToJukebox($login, $mapId);
+			$this->maniaControl->mapManager->jukebox->addMapToJukebox($login, $mapInfo['MapUID']);
 		}
 		// TODO: add local map by filename
 	}
