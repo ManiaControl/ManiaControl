@@ -122,6 +122,7 @@ class ManiaControl implements CommandListener {
 		// Register for commands
 		$this->commandManager->registerCommandListener('version', $this, 'command_Version');
 		$this->commandManager->registerCommandListener('restart', $this, 'command_Restart', true);
+		$this->commandManager->registerCommandListener('shutdown', $this, 'command_Shutdown', true);
 	}
 
 	/**
@@ -190,8 +191,21 @@ class ManiaControl implements CommandListener {
 			$this->authenticationManager->sendNotAllowed($player);
 			return;
 		}
-		$this->log($player->login . ' requested ManiaControl Restart.');
-		$this->restart();
+		$this->restart("ManiaControl Restart requested by '{$player->login}'!");
+	}
+
+	/**
+	 * Handle //shutdown command
+	 *
+	 * @param array $chat
+	 * @param Player $player
+	 */
+	public function command_Shutdown(array $chat, Player $player) {
+		if (!$this->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)) {
+			$this->authenticationManager->sendNotAllowed($player);
+			return;
+		}
+		$this->quit("ManiaControl Shutdown requested by '{$player->login}'!");
 	}
 
 	/**
@@ -199,27 +213,26 @@ class ManiaControl implements CommandListener {
 	 *
 	 * @param string $message
 	 */
-	public function quit($message = '') {
-		// Log quit reason
-		if ($message) {
-			$this->log($message);
-		}
-		
+	public function quit($message = null) {
+		if ($message) $this->log($message);
+		exit();
+	}
+
+	/**
+	 * Handle PHP Process Shutdown
+	 */
+	public function handleShutdown() {
 		// OnShutdown callback
 		$this->callbackManager->triggerCallback(CallbackManager::CB_MC_ONSHUTDOWN, array(CallbackManager::CB_MC_ONSHUTDOWN));
 		
-		if ($this->client) {
-			// Announce quit
-			$this->chat->sendInformation('ManiaControl shutting down.');
-			
-			// Hide manialinks
-			$this->client->query('SendHideManialinkPage');
-		}
+		// Announce quit
+		$this->chat->sendInformation('ManiaControl shutting down.');
 		
-		// Shutdown
-		if ($this->client) {
-			$this->client->Terminate();
-		}
+		// Hide manialinks
+		$this->client->query('SendHideManialinkPage');
+		
+		// Close connection
+		$this->client->Terminate();
 		
 		$this->log('Quitting ManiaControl!');
 		exit();
@@ -236,7 +249,6 @@ class ManiaControl implements CommandListener {
 		
 		// Announce restart
 		$this->chat->sendInformation('Restarting ManiaControl...');
-		$this->log('Restarting ManiaControl...');
 		if ($message) $this->log($message);
 		
 		// Hide widgets
@@ -244,6 +256,8 @@ class ManiaControl implements CommandListener {
 		
 		// Close connection
 		$this->client->Terminate();
+		
+		$this->log('Restarting ManiaControl!');
 		
 		// Execute start script in background
 		if ($this->getOS(self::OS_UNIX)) {
@@ -271,7 +285,7 @@ class ManiaControl implements CommandListener {
 		$this->connect();
 		
 		// Register shutdown handler
-		register_shutdown_function(array($this, 'quit'));
+		register_shutdown_function(array($this, 'handleShutdown'));
 		
 		// Loading finished
 		$this->log('Loading completed!');

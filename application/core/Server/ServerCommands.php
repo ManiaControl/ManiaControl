@@ -25,7 +25,7 @@ class ServerCommands implements CallbackListener, CommandListener {
 	/**
 	 * Create a new server commands instance
 	 *
-	 * @param ManiaControl $maniaControl        	
+	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
@@ -34,26 +34,25 @@ class ServerCommands implements CallbackListener, CommandListener {
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_5_SECOND, $this, 'each5Seconds');
 		
 		// Register for commands
-		$this->maniaControl->commandManager->registerCommandListener('setpwd', $this, 'command_SetPwd',true);
-		$this->maniaControl->commandManager->registerCommandListener('setservername', $this, 'command_SetServerName',true);
-		$this->maniaControl->commandManager->registerCommandListener('setmaxplayers', $this, 'command_SetMaxPlayers',true);
-		$this->maniaControl->commandManager->registerCommandListener('setmaxspectators', $this, 'command_SetMaxSpectators',true);
-		$this->maniaControl->commandManager->registerCommandListener('setspecpwd', $this, 'command_SetSpecPwd',true);
-		$this->maniaControl->commandManager->registerCommandListener('shutdown', $this, 'command_Shutdown',true);
-		$this->maniaControl->commandManager->registerCommandListener('shutdownserver', $this, 'command_ShutdownServer',true);
-		$this->maniaControl->commandManager->registerCommandListener('systeminfo', $this, 'command_SystemInfo',true);
-		$this->maniaControl->commandManager->registerCommandListener('hideserver', $this, 'command_HideServer',true);
-		$this->maniaControl->commandManager->registerCommandListener('showserver', $this, 'command_ShowServer',true);
-		$this->maniaControl->commandManager->registerCommandListener('enablemapdownload', $this, 'command_EnableMapDownload',true);
-		$this->maniaControl->commandManager->registerCommandListener('disablemapdownload', $this, 'command_DisableMapDownload',true);
-		$this->maniaControl->commandManager->registerCommandListener('enablehorns', $this, 'command_EnableHorns',true);
-		$this->maniaControl->commandManager->registerCommandListener('disablehorns', $this, 'command_DisableHorns',true);
+		$this->maniaControl->commandManager->registerCommandListener('setpwd', $this, 'command_SetPwd', true);
+		$this->maniaControl->commandManager->registerCommandListener('setservername', $this, 'command_SetServerName', true);
+		$this->maniaControl->commandManager->registerCommandListener('setmaxplayers', $this, 'command_SetMaxPlayers', true);
+		$this->maniaControl->commandManager->registerCommandListener('setmaxspectators', $this, 'command_SetMaxSpectators', true);
+		$this->maniaControl->commandManager->registerCommandListener('setspecpwd', $this, 'command_SetSpecPwd', true);
+		$this->maniaControl->commandManager->registerCommandListener('shutdownserver', $this, 'command_ShutdownServer', true);
+		$this->maniaControl->commandManager->registerCommandListener('systeminfo', $this, 'command_SystemInfo', true);
+		$this->maniaControl->commandManager->registerCommandListener('hideserver', $this, 'command_HideServer', true);
+		$this->maniaControl->commandManager->registerCommandListener('showserver', $this, 'command_ShowServer', true);
+		$this->maniaControl->commandManager->registerCommandListener('enablemapdownload', $this, 'command_EnableMapDownload', true);
+		$this->maniaControl->commandManager->registerCommandListener('disablemapdownload', $this, 'command_DisableMapDownload', true);
+		$this->maniaControl->commandManager->registerCommandListener('enablehorns', $this, 'command_EnableHorns', true);
+		$this->maniaControl->commandManager->registerCommandListener('disablehorns', $this, 'command_DisableHorns', true);
 	}
 
 	/**
 	 * Check stuff each 5 seconds
 	 *
-	 * @param array $callback        	
+	 * @param array $callback
 	 * @return bool
 	 */
 	public function each5Seconds(array $callback) {
@@ -76,8 +75,8 @@ class ServerCommands implements CallbackListener, CommandListener {
 	/**
 	 * Handle //systeminfo command
 	 *
-	 * @param array $chat        	
-	 * @param Player $player        	
+	 * @param array $chat
+	 * @param Player $player
 	 */
 	public function command_SystemInfo(array $chat, Player $player) {
 		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)) {
@@ -91,24 +90,10 @@ class ServerCommands implements CallbackListener, CommandListener {
 	}
 
 	/**
-	 * Handle //shutdown command
-	 *
-	 * @param array $chat        	
-	 * @param Player $player        	
-	 */
-	public function command_Shutdown(array $chat, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)) {
-			$this->maniaControl->authenticationManager->sendNotAllowed($player);
-			return;
-		}
-		$this->maniaControl->quit("ManiaControl shutdown requested by '{$player->login}'");
-	}
-
-	/**
 	 * Handle //shutdownserver command
 	 *
-	 * @param array $chat        	
-	 * @param Player $player        	
+	 * @param array $chat
+	 * @param Player $player
 	 */
 	public function command_ShutdownServer(array $chat, Player $player) {
 		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)) {
@@ -146,8 +131,8 @@ class ServerCommands implements CallbackListener, CommandListener {
 	/**
 	 * Handle //setservername command
 	 *
-	 * @param array $chat        	
-	 * @param Player $player        	
+	 * @param array $chat
+	 * @param Player $player
 	 */
 	public function command_SetServerName(array $chat, Player $player) {
 		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
@@ -170,8 +155,8 @@ class ServerCommands implements CallbackListener, CommandListener {
 	/**
 	 * Handle //setpwd command
 	 *
-	 * @param array $chatCallback        	
-	 * @param Player $player        	
+	 * @param array $chatCallback
+	 * @param Player $player
 	 */
 	public function command_SetPwd(array $chatCallback, Player $player) {
 		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
@@ -196,8 +181,8 @@ class ServerCommands implements CallbackListener, CommandListener {
 	/**
 	 * Handle //setspecpwd command
 	 *
-	 * @param array $chatCallback        	
-	 * @param Player $player        	
+	 * @param array $chatCallback
+	 * @param Player $player
 	 */
 	public function command_SetSpecPwd(array $chatCallback, Player $player) {
 		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
@@ -222,8 +207,8 @@ class ServerCommands implements CallbackListener, CommandListener {
 	/**
 	 * Handle //setmaxplayers command
 	 *
-	 * @param array $chatCallback        	
-	 * @param Player $player        	
+	 * @param array $chatCallback
+	 * @param Player $player
 	 */
 	public function command_SetMaxPlayers(array $chatCallback, Player $player) {
 		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
@@ -255,8 +240,8 @@ class ServerCommands implements CallbackListener, CommandListener {
 	/**
 	 * Handle //setmaxspectators command
 	 *
-	 * @param array $chatCallback        	
-	 * @param Player $player        	
+	 * @param array $chatCallback
+	 * @param Player $player
 	 */
 	public function command_SetMaxSpectators(array $chatCallback, Player $player) {
 		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
@@ -288,8 +273,8 @@ class ServerCommands implements CallbackListener, CommandListener {
 	/**
 	 * Handle //hideserver command
 	 *
-	 * @param array $chatCallback        	
-	 * @param Player $player        	
+	 * @param array $chatCallback
+	 * @param Player $player
 	 */
 	public function command_HideServer(array $chatCallback, Player $player) {
 		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
@@ -307,8 +292,8 @@ class ServerCommands implements CallbackListener, CommandListener {
 	/**
 	 * Handle //showserver command
 	 *
-	 * @param array $chatCallback        	
-	 * @param Player $player        	
+	 * @param array $chatCallback
+	 * @param Player $player
 	 */
 	public function command_ShowServer(array $chatCallback, Player $player) {
 		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
@@ -326,8 +311,8 @@ class ServerCommands implements CallbackListener, CommandListener {
 	/**
 	 * Handle //enablemapdownload command
 	 *
-	 * @param array $chatCallback        	
-	 * @param Player $player        	
+	 * @param array $chatCallback
+	 * @param Player $player
 	 */
 	public function command_EnableMapDownload(array $chatCallback, Player $player) {
 		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
@@ -345,8 +330,8 @@ class ServerCommands implements CallbackListener, CommandListener {
 	/**
 	 * Handle //disablemapdownload command
 	 *
-	 * @param array $chatCallback        	
-	 * @param Player $player        	
+	 * @param array $chatCallback
+	 * @param Player $player
 	 */
 	public function command_DisableMapDownload(array $chatCallback, Player $player) {
 		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
@@ -364,8 +349,8 @@ class ServerCommands implements CallbackListener, CommandListener {
 	/**
 	 * Handle //enablehorns command
 	 *
-	 * @param array $chatCallback        	
-	 * @param Player $player        	
+	 * @param array $chatCallback
+	 * @param Player $player
 	 */
 	public function command_EnableHorns(array $chatCallback, Player $player) {
 		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
@@ -383,8 +368,8 @@ class ServerCommands implements CallbackListener, CommandListener {
 	/**
 	 * Handle //disablehorns command
 	 *
-	 * @param array $chatCallback        	
-	 * @param Player $player        	
+	 * @param array $chatCallback
+	 * @param Player $player
 	 */
 	public function command_DisableHorns(array $chatCallback, Player $player) {
 		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
@@ -402,7 +387,7 @@ class ServerCommands implements CallbackListener, CommandListener {
 	/**
 	 * Perform server shutdown
 	 *
-	 * @param string $login        	
+	 * @param string $login
 	 * @return bool
 	 */
 	private function shutdownServer($login = '#') {
