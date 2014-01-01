@@ -14,7 +14,7 @@ use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\PluginManager;
 use ManiaControl\Server\Server;
-use StatisticManager;
+use ManiaControl\Statistics\StatisticManager;
 
 require_once __DIR__ . '/Callbacks/CallbackListener.php';
 require_once __DIR__ . '/Commands/CommandListener.php';
@@ -33,7 +33,7 @@ require_once __DIR__ . '/GbxDataFetcher/gbxdatafetcher.inc.php';
 require_once __DIR__ . '/ManiaExchange/mxinfofetcher.inc.php';
 require_once __DIR__ . '/ManiaExchange/mxinfosearcher.inc.php';
 require_once __DIR__ . '/Manialinks/ManialinkManager.php';
-require_once __DIR__ .  '/Statistics/StatisticManager.php';
+require_once __DIR__ . '/Statistics/StatisticManager.php';
 require_once __DIR__ . '/Maps/Map.php';
 require_once __DIR__ . '/Maps/MapManager.php';
 require_once __DIR__ . '/Maps/MapList.php';
@@ -64,6 +64,8 @@ class ManiaControl implements CommandListener {
 	 */
 	const VERSION = '0.01';
 	const API_VERSION = '2013-04-16';
+	const OS_UNIX = 'Unix';
+	const OS_WIN = 'Windows';
 	
 	/**
 	 * Public properties
@@ -88,7 +90,7 @@ class ManiaControl implements CommandListener {
 	public $settingManager = null;
 	public $statisticManager = null;
 	public $updateManager = null;
-
+	
 	/**
 	 * Private properties
 	 */
@@ -116,9 +118,10 @@ class ManiaControl implements CommandListener {
 		$this->configurator = new Configurator($this);
 		$this->pluginManager = new PluginManager($this);
 		$this->updateManager = new UpdateManager($this);
-
+		
 		// Register for commands
 		$this->commandManager->registerCommandListener('version', $this, 'command_Version');
+		$this->commandManager->registerCommandListener('restart', $this, 'command_Restart', true);
 	}
 
 	/**
@@ -128,6 +131,28 @@ class ManiaControl implements CommandListener {
 	 */
 	public function log($message) {
 		logMessage($message);
+	}
+
+	/**
+	 * Get the Operating System on which ManiaControl is running
+	 *
+	 * @param string $compareOS
+	 * @return string
+	 */
+	public function getOS($compareOS = null) {
+		$windows = defined('PHP_WINDOWS_VERSION_MAJOR');
+		if ($compareOS) {
+			// Return bool whether OS equals $compareOS
+			if ($compareOS == self::OS_WIN) {
+				return $windows;
+			}
+			return !$windows;
+		}
+		// Return OS
+		if ($windows) {
+			return self::OS_WIN;
+		}
+		return self::OS_UNIX;
 	}
 
 	/**
@@ -144,15 +169,29 @@ class ManiaControl implements CommandListener {
 	}
 
 	/**
-	 * Send ManiaControl version
+	 * Handle Version Command
 	 *
-	 * @param array $chat
+	 * @param array $chatCallback
 	 * @param Player $player
-	 * @return bool
 	 */
-	public function command_Version(array $chat, Player $player) {
+	public function command_Version(array $chatCallback, Player $player) {
 		$message = 'This server is using ManiaControl v' . ManiaControl::VERSION . '!';
-		return $this->chat->sendInformation($message, $player->login);
+		$this->chat->sendInformation($message, $player->login);
+	}
+
+	/**
+	 * Handle Restart AdminCommand
+	 *
+	 * @param array $chatCallback
+	 * @param Player $player
+	 */
+	public function command_Restart(array $chatCallback, Player $player) {
+		if (!AuthenticationManager::checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)) {
+			$this->authenticationManager->sendNotAllowed($player);
+			return;
+		}
+		$this->log($player->login . ' requested ManiaControl Restart.');
+		$this->restart();
 	}
 
 	/**
@@ -161,6 +200,11 @@ class ManiaControl implements CommandListener {
 	 * @param string $message
 	 */
 	public function quit($message = '') {
+		// Log quit reason
+		if ($message) {
+			$this->log($message);
+		}
+		
 		// OnShutdown callback
 		$this->callbackManager->triggerCallback(CallbackManager::CB_MC_ONSHUTDOWN, array(CallbackManager::CB_MC_ONSHUTDOWN));
 		
@@ -172,17 +216,45 @@ class ManiaControl implements CommandListener {
 			$this->client->query('SendHideManialinkPage');
 		}
 		
-		// Log quit reason
-		if ($message) {
-			$this->log($message);
-		}
-		
 		// Shutdown
 		if ($this->client) {
 			$this->client->Terminate();
 		}
 		
 		$this->log('Quitting ManiaControl!');
+		exit();
+	}
+
+	/**
+	 * Restart ManiaControl
+	 *
+	 * @param string $message
+	 */
+	public function restart($message = null) {
+		// Shutdown callback
+		$this->callbackManager->triggerCallback(CallbackManager::CB_MC_ONSHUTDOWN, array(CallbackManager::CB_MC_ONSHUTDOWN));
+		
+		// Announce restart
+		$this->chat->sendInformation('Restarting ManiaControl...');
+		$this->log('Restarting ManiaControl...');
+		if ($message) $this->log($message);
+		
+		// Hide widgets
+		$this->client->query('SendHideManialinkPage');
+		
+		// Close connection
+		$this->client->Terminate();
+		
+		// Execute start script in background
+		if ($this->getOS(self::OS_UNIX)) {
+			$command = 'sh ' . escapeshellarg(ManiaControlDir . '/ManiaControl.sh') . ' > /dev/null &';
+			exec($command);
+		}
+		else {
+			$command = 'start /B ' . escapeshellarg(ManiaControlDir . '/ManiaControl.bat');
+			pclose(popen($command, 'r'));
+		}
+		
 		exit();
 	}
 
