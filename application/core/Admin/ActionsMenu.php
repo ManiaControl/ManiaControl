@@ -131,7 +131,9 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	 * @param array $callback
 	 */
 	public function openAdminMenu(array $callback, Player $player) {
-		$this->maniaControl->configurator->toggleMenu($player);
+		if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)){
+			$this->maniaControl->configurator->toggleMenu($player);
+		}
 	}
 
 	/**
@@ -162,7 +164,8 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		$frame->add($backgroundQuad);
 		$backgroundQuad->setSize($itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-		
+
+
 		$iconFrame = new Frame();
 		$frame->add($iconFrame);
 		
