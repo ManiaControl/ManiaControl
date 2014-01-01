@@ -245,23 +245,13 @@ class LocalRecordsPlugin implements CallbackListener, Plugin {
 		$notifyOnlyDriver = $this->maniaControl->settingManager->getSetting($this, self::SETTING_NOTIFY_ONLY_DRIVER);
 		$notifyOnlyBestRecords = $this->maniaControl->settingManager->getSetting($this, self::SETTING_NOTIFY_BEST_RECORDS);
 		if ($notifyOnlyDriver || $notifyOnlyBestRecords > 0 && $newRecord->rank > $notifyOnlyBestRecords) {
-			if (!$oldRecord || $newRecord->rank < $oldRecord->rank) {
-				$improvement = 'gained the';
-			}
-			else {
-				$improvement = 'improved Your';
-			}
+			$improvement = ((!$oldRecord || $newRecord->rank < $oldRecord->rank) ? 'gained the' : 'improved Your');
 			$message = 'You ' . $improvement . ' $<$o' . $newRecord->rank . '.$> Local Record: ' .
 					 Formatter::formatTime($newRecord->time);
 			$this->maniaControl->chat->sendInformation($message, $player->login);
 		}
 		else {
-			if (!$oldRecord || $newRecord->rank < $oldRecord->rank) {
-				$improvement = 'gained the';
-			}
-			else {
-				$improvement = 'improved the';
-			}
+			$improvement = ((!$oldRecord || $newRecord->rank < $oldRecord->rank) ? 'gained the' : 'improved the');
 			$message = '$<' . $player->nickname . '$> ' . $improvement . ' $<$o' . $newRecord->rank . '.$> Local Record: ' .
 					 Formatter::formatTime($newRecord->time);
 			$this->maniaControl->chat->sendInformation($message);
@@ -352,7 +342,7 @@ class LocalRecordsPlugin implements CallbackListener, Plugin {
 			
 			$backgroundQuad = new Quad();
 			$recordFrame->add($backgroundQuad);
-			$backgroundQuad->setSize($width * 1.03, $lineHeight * 1.25);
+			$backgroundQuad->setSize($width * 1.03, $lineHeight * 1.32);
 			$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 			
 			$rankLabel = new Label();
