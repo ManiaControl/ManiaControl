@@ -9,6 +9,7 @@ use FML\ManiaLink;
 use FML\Script\Script;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\IconManager;
 use ManiaControl\Players\Player;
@@ -185,7 +186,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$label->setAlign(Control::CENTER, Control::CENTER);
 		$label->setZ(0.2);
 		$label->setTextSize(1.3);
-		$label->setText($map->name);
+		$label->setText(Formatter::stripDirtyCodes($map->name));
 		$label->setTextColor("FFF");
 		
 		$label = new Label_Text();
