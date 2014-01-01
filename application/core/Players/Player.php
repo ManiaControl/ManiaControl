@@ -1,10 +1,11 @@
 <?php
 
 namespace ManiaControl\Players;
+
 use ManiaControl\Formatter;
 
 /**
- * Class representing players
+ * Player Model Class
  *
  * @author kremsy & steeffeen
  */
@@ -18,8 +19,6 @@ class Player {
 	public $nickname = '';
 	public $path = '';
 	public $authLevel = 0;
-	public $joinCount = 0;
-	public $totalPlayed = 0;
 	public $language = '';
 	public $avatar = '';
 	public $allies = array();
@@ -32,10 +31,11 @@ class Player {
 	public $ladderRank = -1;
 	public $joinTime = -1;
 	public $ipAddress = '';
+
 	/**
 	 * Construct a player from XmlRpc data
 	 *
-	 * @param array $rpcInfos        	
+	 * @param array $rpcInfos
 	 */
 	public function __construct(array $rpcInfos) {
 		if (!$rpcInfos) {
@@ -55,13 +55,11 @@ class Player {
 		$this->isReferee = $rpcInfos['IsReferee'];
 		$this->ladderScore = $rpcInfos['LadderStats']['PlayerRankings'][0]['Score'];
 		$this->ladderRank = $rpcInfos['LadderStats']['PlayerRankings'][0]['Ranking'];
-
+		
 		$this->ipAddress = $rpcInfos['IPAddress'];
-
+		
 		$this->joinTime = time();
-
 	}
-
 
 	/**
 	 * Check if player is not a real player
@@ -71,7 +69,6 @@ class Player {
 	public function isFakePlayer() {
 		return ($this->pid <= 0 || $this->path == "");
 	}
-
 
 	/**
 	 * Get province
