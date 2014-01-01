@@ -95,27 +95,27 @@ class StatisticCollector implements CallbackListener {
 			case 'LibXmlRpc_OnShoot': //TODO
 				break;
 			case 'LibXmlRpc_OnHit':
-				$shooter = $this->maniaControl->playerManager->getPlayer($callback[1][0]);
-				$victim  = $this->maniaControl->playerManager->getPlayer($callback[1][1]);
+				$shooter = $this->maniaControl->playerManager->getPlayer($callback[1][1][0]);
+				$victim  = $this->maniaControl->playerManager->getPlayer($callback[1][1][1]);
 				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_HIT, $shooter, $serverLogin);
 				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_GOT_HIT, $victim, $serverLogin);
 				break;
 			case 'LibXmlRpc_OnNearMiss':
-				$player = $this->maniaControl->playerManager->getPlayer($callback[1][0]);
+				$player = $this->maniaControl->playerManager->getPlayer($callback[1][1][0]);
 				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_NEARMISS, $player, $serverLogin);
 				break;
 			case 'LibXmlRpc_OnCapture':
-				$player = $this->maniaControl->playerManager->getPlayer($callback[1][0]);
+				$player = $this->maniaControl->playerManager->getPlayer($callback[1][1][0]);
 				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_CAPTURE, $player, $serverLogin);
 				break;
 			case 'LibXmlRpc_OnArmorEmpty':
-				$shooter = $this->maniaControl->playerManager->getPlayer($callback[1][0]);
-				$victim  = $this->maniaControl->playerManager->getPlayer($callback[1][1]);
+				$shooter = $this->maniaControl->playerManager->getPlayer($callback[1][1][0]);
+				$victim  = $this->maniaControl->playerManager->getPlayer($callback[1][1][1]);
 				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_KILL, $shooter, $serverLogin);
 				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_DEATH, $victim, $serverLogin);
 				break;
 			case 'LibXmlRpc_OnPlayerRequestRespawn':
-				$player = $this->maniaControl->playerManager->getPlayer($callback[1][0]);
+				$player = $this->maniaControl->playerManager->getPlayer($callback[1][1][0]);
 				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_PLAYER_REQUEST_RESPAWN, $player, $serverLogin);
 				break;
 			case 'OnShoot': //TODO
