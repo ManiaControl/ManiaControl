@@ -1,4 +1,7 @@
 <?php
+
+namespace ManiaControl\Statistics;
+
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Statistics\StatisticCollector;
