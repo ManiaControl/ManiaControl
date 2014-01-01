@@ -39,11 +39,18 @@ class StatisticCollector implements CallbackListener {
 		//Register Callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_MODESCRIPTCALLBACK, $this, 'handleCallbacks');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_MODESCRIPTCALLBACKARRAY, $this, 'handleCallbacks');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'onInit');
 
 		//Initialize Settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_COLLECT_STATS_ENABLED, true);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_COLLECT_STATS_MINPLAYERS, 4);
+	}
 
+	/**
+	 * onInit
+	 * @param array $callback
+	 */
+	public function onInit(array $callback){
 		//Define Stats MetaData
 		$this->maniaControl->statisticManager->defineStatMetaData(self::STAT_ON_SHOOT);
 	}
