@@ -265,6 +265,7 @@ class ManiaControl implements CommandListener {
 			exec($command);
 		}
 		else {
+			// TODO: validate restart on windows
 			$command = 'start /B ' . escapeshellarg(ManiaControlDir . '/ManiaControl.bat');
 			pclose(popen($command, 'r'));
 		}
