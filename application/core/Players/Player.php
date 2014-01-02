@@ -59,6 +59,9 @@ class Player {
 		$this->ipAddress = $rpcInfos['IPAddress'];
 		
 		$this->joinTime = time();
+
+		if($this->nickname == '')
+			$this->nickname = $this->login;
 	}
 
 	/**
