@@ -10,6 +10,7 @@ use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
+use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
 
 /**
