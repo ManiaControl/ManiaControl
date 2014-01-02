@@ -83,7 +83,6 @@ class StatisticCollector implements CallbackListener {
 			$this->onShootArray[$login] = 1;
 		} else {
 			$this->onShootArray[$login]++;
-			var_dump("test2");
 		}
 
 		//Write Shoot Data into database
@@ -93,9 +92,6 @@ class StatisticCollector implements CallbackListener {
 			$this->maniaControl->statisticManager->insertStat(self::STAT_ON_SHOOT, $player, $serverLogin, $this->onShootArray[$login]);
 			$this->onShootArray[$login] = 0;
 		}
-
-	//	var_dump($this->onShootArray);
-		var_dump($this->onShootArray[$login]);
 	}
 
 
