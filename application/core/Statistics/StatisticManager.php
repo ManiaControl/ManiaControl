@@ -126,8 +126,12 @@ class StatisticManager {
 	 * @param string $statType
 	 * @return bool
 	 */
-	public function insertStat($statName, Player $player, $serverLogin = '', $value, $statType = self::STAT_TYPE_INT) {
+	public function insertStat($statName, $player, $serverLogin = '', $value, $statType = self::STAT_TYPE_INT) {
 		$statId = $this->getStatId($statName);
+
+		if($player == null) {
+			return false;
+		}
 
 		if($statId == null) {
 			return false;
@@ -180,7 +184,7 @@ class StatisticManager {
 	 * @internal param \ManiaControl\Players\Player $playerId
 	 * @return bool
 	 */
-	public function incrementStat($statName, Player $player, $serverLogin = '') {
+	public function incrementStat($statName, $player, $serverLogin = '') {
 		return $this->insertStat($statName, $player, $serverLogin, 1);
 	}
 
