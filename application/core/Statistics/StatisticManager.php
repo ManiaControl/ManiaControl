@@ -4,7 +4,6 @@ namespace ManiaControl\Statistics;
 
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
-use ManiaControl\Statistics\StatisticCollector;
 
 require_once __DIR__ . '/StatisticCollector.php';
 
@@ -33,7 +32,6 @@ class StatisticManager {
 	 * Private Properties
 	 */
 	private $maniaControl = null;
-	private $mysqli = null;
 	private $stats = array();
 
 	/**
@@ -43,7 +41,6 @@ class StatisticManager {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
-		$this->mysqli       = $this->maniaControl->database->mysqli;
 		$this->initTables();
 
 		$this->statisticCollector = new StatisticCollector($maniaControl);
@@ -61,6 +58,7 @@ class StatisticManager {
 	 * @return int
 	 */
 	public function getStatisticData($statName, $playerId, $serverLogin = false) {
+		$mysqli = $this->maniaControl->database->mysqli;
 		$statId = $this->getStatId($statName);
 
 		if($statId == null) {
@@ -73,9 +71,9 @@ class StatisticManager {
 			$query = "SELECT value FROM `" . self::TABLE_STATISTICS . "` WHERE `statId` = " . $statId . " AND `playerId` = " . $playerId . " AND `serverLogin` = '" . $serverLogin . "';";
 		}
 
-		$result = $this->mysqli->query($query);
+		$result = $mysqli->query($query);
 		if(!$result) {
-			trigger_error($this->mysqli->error);
+			trigger_error($mysqli->error);
 		}
 
 		$row = $result->fetch_object();
@@ -88,10 +86,12 @@ class StatisticManager {
 	 * Store Stats Meta Data from the Database
 	 */
 	private function storeStatMetaData() {
+		$mysqli = $this->maniaControl->database->mysqli;
+
 		$query  = "SELECT * FROM `" . self::TABLE_STATMETADATA . "`;";
-		$result = $this->mysqli->query($query);
+		$result = $mysqli->query($query);
 		if(!$result) {
-			trigger_error($this->mysqli->error);
+			trigger_error($mysqli->error);
 		}
 
 		while($row = $result->fetch_object()) {
@@ -124,8 +124,9 @@ class StatisticManager {
 	 * @param string $serverLogin
 	 * @param        $value , value to Add
 	 * @param string $statType
+	 * @return bool
 	 */
-	public function insertStat($statName, Player $player, $serverLogin, $value, $statType = self::STAT_TYPE_INT) {
+	public function insertStat($statName, Player $player, $serverLogin = '', $value, $statType = self::STAT_TYPE_INT) {
 		$statId = $this->getStatId($statName);
 
 		if($statId == null) {
@@ -135,6 +136,12 @@ class StatisticManager {
 		if($player->isFakePlayer()) {
 			return true;
 		}
+
+		if($serverLogin == '') {
+			$serverLogin = $this->maniaControl->server->getLogin();
+		}
+
+		$mysqli = $this->maniaControl->database->mysqli;
 
 		$query = "INSERT INTO `" . self::TABLE_STATISTICS . "` (
 					`serverLogin`,
@@ -146,9 +153,9 @@ class StatisticManager {
 				) ON DUPLICATE KEY UPDATE
 				`value` = `value` + VALUES(`value`);";
 
-		$statement = $this->mysqli->prepare($query);
-		if($this->mysqli->error) {
-			trigger_error($this->mysqli->error);
+		$statement = $mysqli->prepare($query);
+		if($mysqli->error) {
+			trigger_error($mysqli->error);
 			return false;
 		}
 		$statement->bind_param('siii', $serverLogin, $player->index, $statId, $value);
@@ -166,12 +173,13 @@ class StatisticManager {
 	/**
 	 * Increments a Statistic by one
 	 *
-	 * @param        $statName
-	 * @param Player $playerId
-	 * @param        $serverLogin
+	 * @param                              $statName
+	 * @param \ManiaControl\Players\Player $player
+	 * @param string                       $serverLogin
+	 * @internal param \ManiaControl\Players\Player $playerId
 	 * @return bool
 	 */
-	public function incrementStat($statName, Player $player, $serverLogin) {
+	public function incrementStat($statName, Player $player, $serverLogin = '') {
 		return $this->insertStat($statName, $player, $serverLogin, 1);
 	}
 
@@ -180,17 +188,19 @@ class StatisticManager {
 	 *
 	 * @param string $statName
 	 * @param string $statDescription
+	 * @return bool
 	 */
 	public function defineStatMetaData($statName, $statDescription = '') {
+		$mysqli    = $this->maniaControl->database->mysqli;
 		$query     = "INSERT IGNORE INTO `" . self::TABLE_STATMETADATA . "` (
 					`name`,
 					`description`
 				) VALUES (
 					?, ?
 				);";
-		$statement = $this->mysqli->prepare($query);
-		if($this->mysqli->error) {
-			trigger_error($this->mysqli->error);
+		$statement = $mysqli->prepare($query);
+		if($mysqli->error) {
+			trigger_error($mysqli->error);
 			return false;
 		}
 		$statement->bind_param('ss', $statName, $statDescription);
@@ -202,6 +212,8 @@ class StatisticManager {
 		}
 
 		$statement->close();
+
+		return true;
 	}
 
 	/**
@@ -210,7 +222,8 @@ class StatisticManager {
 	 * @return bool
 	 */
 	private function initTables() {
-		$query = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_STATMETADATA . "` (
+		$mysqli = $this->maniaControl->database->mysqli;
+		$query  = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_STATMETADATA . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
 				`name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
 				`description` varchar(150) COLLATE utf8_unicode_ci,
@@ -218,9 +231,9 @@ class StatisticManager {
 				UNIQUE KEY `name` (`name`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Statistics Meta Data' AUTO_INCREMENT=1;";
 
-		$statement = $this->mysqli->prepare($query);
-		if($this->mysqli->error) {
-			trigger_error($this->mysqli->error, E_USER_ERROR);
+		$statement = $mysqli->prepare($query);
+		if($mysqli->error) {
+			trigger_error($mysqli->error, E_USER_ERROR);
 
 			return false;
 		}
@@ -242,9 +255,9 @@ class StatisticManager {
 				UNIQUE KEY `unique` (`statId`,`playerId`,`serverLogin`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Statistics' AUTO_INCREMENT=1;";
 
-		$statement = $this->mysqli->prepare($query);
-		if($this->mysqli->error) {
-			trigger_error($this->mysqli->error, E_USER_ERROR);
+		$statement = $mysqli->prepare($query);
+		if($mysqli->error) {
+			trigger_error($mysqli->error, E_USER_ERROR);
 
 			return false;
 		}
@@ -255,5 +268,7 @@ class StatisticManager {
 			return false;
 		}
 		$statement->close();
+
+		return true;
 	}
 } 

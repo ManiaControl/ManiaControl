@@ -400,6 +400,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$script->addTooltip($switchToQuad, $descriptionLabel);
 			}
 
+
 			//Display Karma bar
 			if($karmaPlugin != null) {
 				$karma = $karmaPlugin->getMapKarma($map);
