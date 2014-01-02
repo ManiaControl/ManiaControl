@@ -38,31 +38,33 @@ class Player {
 	 * @param array $rpcInfos
 	 */
 	public function __construct(array $rpcInfos) {
-		if (!$rpcInfos) {
+		if(!$rpcInfos) {
 			return;
 		}
-		$this->pid = $rpcInfos['PlayerId'];
-		$this->login = $rpcInfos['Login'];
-		$this->nickname = Formatter::stripDirtyCodes($rpcInfos['NickName']);
-		$this->path = $rpcInfos['Path'];
-		$this->language = $rpcInfos['Language'];
-		$this->avatar = $rpcInfos['Avatar']['FileName'];
-		$this->allies = $rpcInfos['Allies'];
-		$this->clubLink = $rpcInfos['ClubLink'];
-		$this->teamId = $rpcInfos['TeamId'];
+		$this->pid         = $rpcInfos['PlayerId'];
+		$this->login       = $rpcInfos['Login'];
+		$this->nickname    = Formatter::stripDirtyCodes($rpcInfos['NickName']);
+		$this->path        = $rpcInfos['Path'];
+		$this->language    = $rpcInfos['Language'];
+		$this->avatar      = $rpcInfos['Avatar']['FileName'];
+		$this->allies      = $rpcInfos['Allies'];
+		$this->clubLink    = $rpcInfos['ClubLink'];
+		$this->teamId      = $rpcInfos['TeamId'];
 		$this->isSpectator = $rpcInfos['IsSpectator'];
-		$this->isOfficial = $rpcInfos['IsInOfficialMode'];
-		$this->isReferee = $rpcInfos['IsReferee'];
+		$this->isOfficial  = $rpcInfos['IsInOfficialMode'];
+		$this->isReferee   = $rpcInfos['IsReferee'];
 		$this->ladderScore = $rpcInfos['LadderStats']['PlayerRankings'][0]['Score'];
-		$this->ladderRank = $rpcInfos['LadderStats']['PlayerRankings'][0]['Ranking'];
-		
+		$this->ladderRank  = $rpcInfos['LadderStats']['PlayerRankings'][0]['Ranking'];
+
 		$this->ipAddress = $rpcInfos['IPAddress'];
-		
+
 		$this->joinTime = time();
 
-		if($this->nickname == '')
+		if($this->nickname == '') {
 			$this->nickname = $this->login;
+		}
 	}
+
 
 	/**
 	 * Check if player is not a real player
@@ -80,7 +82,7 @@ class Player {
 	 */
 	public function getProvince() {
 		$pathParts = explode('|', $this->path);
-		if (isset($pathParts[3])) {
+		if(isset($pathParts[3])) {
 			return $pathParts[3];
 		}
 		return $this->getCountry();
@@ -93,13 +95,13 @@ class Player {
 	 */
 	public function getCountry() {
 		$pathParts = explode('|', $this->path);
-		if (isset($pathParts[2])) {
+		if(isset($pathParts[2])) {
 			return $pathParts[2];
 		}
-		if (isset($pathParts[1])) {
+		if(isset($pathParts[1])) {
 			return $pathParts[1];
 		}
-		if (isset($pathParts[0])) {
+		if(isset($pathParts[0])) {
 			return $pathParts[0];
 		}
 		return $this->path;
@@ -112,10 +114,10 @@ class Player {
 	 */
 	public function getContinent() {
 		$pathParts = explode('|', $this->path);
-		if (isset($pathParts[1])) {
+		if(isset($pathParts[1])) {
 			return $pathParts[1];
 		}
-		if (isset($pathParts[0])) {
+		if(isset($pathParts[0])) {
 			return $pathParts[0];
 		}
 		return $this->path;

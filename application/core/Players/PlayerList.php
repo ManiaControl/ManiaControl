@@ -38,6 +38,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 	const ACTION_FORCE_SPEC       = 'PlayerList.ForceSpec';
 	const ACTION_PLAYER_ADV       = 'PlayerList.PlayerAdvancedActions';
 	const ACTION_CLOSE_PLAYER_ADV = 'PlayerList.ClosePlayerAdvWidget';
+	const ACTION_MUTE_PLAYER      = 'PlayerList.MutePlayer';
+	const ACTION_UNMUTE_PLAYER    = 'PlayerList.UnMutePlayer';
 	const ACTION_WARN_PLAYER      = 'PlayerList.WarnPlayer';
 	const ACTION_KICK_PLAYER      = 'PlayerList.KickPlayer';
 	const ACTION_BAN_PLAYER       = 'PlayerList.BanPlayer';
@@ -363,7 +365,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		// todo all configurable or as constants
 		$x         = $this->width / 2 + 2.5;
 		$width     = 35;
-		$height    = $this->height * 0.7;
+		$height    = $this->height * 0.75;
 		$hAlign    = Control::LEFT;
 		$style     = Label_Text::STYLE_TextCardSmall;
 		$textSize  = 1.5;
@@ -413,15 +415,14 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$label->setText($player->nickname);
 		$label->setTextColor($textColor);
 
-		$y = $height / 2 - 14;
-		// Show Warn
+		//Mute Player
+		$y    = $height / 2 - 14;
 		$quad = new Quad_BgsPlayerCard();
 		$frame->add($quad);
 		$quad->setX(0);
 		$quad->setY($y);
 		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
 		$quad->setSize($quadWidth, 5);
-		$quad->setAction(self::ACTION_WARN_PLAYER . "." . $login);
 
 		$label = new Label_Button();
 		$frame->add($label);
@@ -430,6 +431,26 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$label->setY($y);
 		$label->setStyle($style);
 		$label->setTextSize($textSize);
+		$label->setTextColor($textColor);
+
+		if(!$this->maniaControl->playerManager->playerActions->isPlayerMuted($login)) {
+			$label->setText("Mute");
+			$quad->setAction(self::ACTION_MUTE_PLAYER . "." . $login);
+		} else {
+			$label->setText("UnMute");
+			$quad->setAction(self::ACTION_UNMUTE_PLAYER . "." . $login);
+		}
+
+		//Warn Player
+		$y -= 5;
+		$quad = clone $quad;
+		$frame->add($quad);
+		$quad->setY($y);
+		$quad->setAction(self::ACTION_KICK_PLAYER . "." . $login);
+
+		$label = clone $label;
+		$frame->add($label);
+		$label->setY($y);
 		$label->setText("Warn");
 		$label->setTextColor($textColor);
 
@@ -564,6 +585,14 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				break;
 			case self::ACTION_FORCE_SPEC:
 				$this->maniaControl->playerManager->playerActions->forcePlayerToSpectator($adminLogin, $targetLogin, PlayerActions::SPECTATOR_BUT_KEEP_SELECTABLE);
+				break;
+			case self::ACTION_MUTE_PLAYER:
+				$this->maniaControl->playerManager->playerActions->mutePlayer($adminLogin, $targetLogin);
+				$this->showPlayerList($this->maniaControl->playerManager->getPlayer($adminLogin));
+				break;
+			case self::ACTION_UNMUTE_PLAYER:
+				$this->maniaControl->playerManager->playerActions->unMutePlayer($adminLogin, $targetLogin);
+				$this->showPlayerList($this->maniaControl->playerManager->getPlayer($adminLogin));
 				break;
 			case self::ACTION_WARN_PLAYER:
 				$this->maniaControl->playerManager->playerActions->warnPlayer($adminLogin, $targetLogin);
