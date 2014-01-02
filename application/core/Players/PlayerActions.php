@@ -93,7 +93,7 @@ class PlayerActions {
 	 * @param string $targetLogin
 	 * @param int    $spectatorState
 	 */
-	public function forcePlayerToSpectator($adminLogin, $targetLogin, $spectatorState = self::SPECTATOR_BUT_KEEP_SELECTABLE) {
+	public function forcePlayerToSpectator($adminLogin, $targetLogin, $spectatorState = self::SPECTATOR_BUT_KEEP_SELECTABLE, $releaseSlot = true) {
 		// TODO: get used by playercommands
 		$admin  = $this->maniaControl->playerManager->getPlayer($adminLogin);
 		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
@@ -108,6 +108,10 @@ class PlayerActions {
 		$chatMessage = $title . ' $<' . $admin->nickname . '$> forced $<' . $target->nickname . '$> to Spectator!';
 		$this->maniaControl->chat->sendInformation($chatMessage);
 		$this->maniaControl->log(Formatter::stripCodes($chatMessage));
+
+		// free player slot
+		if($releaseSlot)
+			$this->maniaControl->client->query('SpectatorReleasePlayerSlot', $target->login);
 	}
 
 
