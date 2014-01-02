@@ -17,7 +17,7 @@ class PlayerCommands implements CommandListener {
 	 * Private properties
 	 */
 	private $maniaControl = null;
-	private $playerList = null;
+	public $playerList = null;
 	/**
 	 * Create a new server commands instance
 	 *

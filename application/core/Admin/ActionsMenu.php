@@ -139,6 +139,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	 * @param array $callback
 	 */
 	public function openPlayerMenu(array $callback, Player $player) {
+		$this->maniaControl->playerManager->playerCommands->playerList->showPlayerList($player);
 	}
 
 	private function buildMenuIconsManialink() {
