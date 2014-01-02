@@ -57,7 +57,6 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 	private $quadStyle;
 	private $quadSubstyle;
 	private $playersListShown = array();
-
 	/**
 	 * Create a new server commands instance
 	 *
@@ -84,6 +83,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$this->height = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
 		$this->quadStyle = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowStyle();
 		$this->quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowSubStyle();
+
 	}
 
 	public function addPlayerToShownList(Player $player, $showStatus = self::SHOWN_MAIN_WINDOW) {
@@ -116,11 +116,21 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$closeQuad->setSize(6, 6);
 		$closeQuad->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_QuitRace);
 		$closeQuad->setAction(ManialinkManager::ACTION_CLOSEWIDGET);
-		
+
+
 		// Start offsets
 		$x = -$this->width / 2;
 		$y = $this->height / 2;
-		
+
+
+		//Predefine Description Label
+		$preDefinedDescriptionLabel = new Label();
+		$preDefinedDescriptionLabel->setAlign(Control::LEFT, Control::TOP);
+		$preDefinedDescriptionLabel->setPosition($x + 10, -$this->height / 2 + 5);
+		$preDefinedDescriptionLabel->setSize($this->width * 0.7, 4);
+		$preDefinedDescriptionLabel->setTextSize(2);
+		$preDefinedDescriptionLabel->setVisible(false);
+
 		// Headline
 		$headFrame = new Frame();
 		$frame->add($headFrame);
@@ -201,15 +211,9 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$countryQuad->setX($x + 88);
 				$countryQuad->setSize(4, 4);
 				$countryQuad->setZ(-0.1);
-				
-				// Nation Description Label
-				$descriptionLabel = new Label();
+
+				$descriptionLabel = clone $preDefinedDescriptionLabel;
 				$frame->add($descriptionLabel);
-				$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
-				$descriptionLabel->setPosition($x + 10, -$this->height / 2 + 5);
-				$descriptionLabel->setSize($this->width * 0.7, 4);
-				$descriptionLabel->setTextSize(2);
-				$descriptionLabel->setVisible(false);
 				$descriptionLabel->setText($listPlayer->nickname . " from " . $listPlayer->path);
 				$script->addTooltip($countryQuad, $descriptionLabel);
 			}
@@ -227,17 +231,10 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			$rightLabel->setX($x + 13.9);
 			$rightLabel->setTextSize(0.8);
 			$rightLabel->setZ(10);
-			
-			// Description Label
-			$descriptionLabel = new Label();
+
+			$descriptionLabel = clone $preDefinedDescriptionLabel;
 			$frame->add($descriptionLabel);
-			$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
-			$descriptionLabel->setPosition($x + 10, -$this->height / 2 + 5);
-			$descriptionLabel->setSize($this->width * 0.7, 4);
-			$descriptionLabel->setTextSize(2);
-			$descriptionLabel->setVisible(false);
-			$descriptionLabel->setText(
-					$this->maniaControl->authenticationManager->getAuthLevelName($listPlayer->authLevel) . " " . $listPlayer->nickname);
+			$descriptionLabel->setText($this->maniaControl->authenticationManager->getAuthLevelName($listPlayer->authLevel) . " " . $listPlayer->nickname);
 			$script->addTooltip($rightQuad, $descriptionLabel);
 			
 			// Player Profile Quad
@@ -250,13 +247,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			$script->addProfileButton($playerQuad, $listPlayer->login);
 			
 			// Description Label
-			$descriptionLabel = new Label();
+			$descriptionLabel = clone $preDefinedDescriptionLabel;
 			$frame->add($descriptionLabel);
-			$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
-			$descriptionLabel->setPosition($x + 10, -$this->height / 2 + 5);
-			$descriptionLabel->setSize($this->width * 0.7, 4);
-			$descriptionLabel->setTextSize(2);
-			$descriptionLabel->setVisible(false);
 			$descriptionLabel->setText("View Player profile of " . $listPlayer->nickname);
 			$script->addTooltip($playerQuad, $descriptionLabel);
 			
@@ -285,15 +277,9 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$playerQuad->setSubStyle($playerQuad::SUBSTYLE_Buddy);
 				$playerQuad->setSize(3.8, 3.8);
 				$playerQuad->setAction(self::ACTION_PLAYER_ADV . "." . $listPlayer->login);
-				
-				// Further Player actions Mousover Description
-				$descriptionLabel = new Label();
+
+				$descriptionLabel = clone $preDefinedDescriptionLabel;
 				$frame->add($descriptionLabel);
-				$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
-				$descriptionLabel->setPosition($x + 10, -$this->height / 2 + 5);
-				$descriptionLabel->setSize($this->width * 0.7, 4);
-				$descriptionLabel->setTextSize(2);
-				$descriptionLabel->setVisible(false);
 				$descriptionLabel->setText("Advanced Player Actions on " . $listPlayer->nickname);
 				$script->addTooltip($playerQuad, $descriptionLabel);
 				
@@ -307,15 +293,11 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$redQuad->setAction(self::ACTION_FORCE_RED . "." . $listPlayer->login);
 				
 				// Force to Red-Team Description Label
-				$descriptionLabel = new Label();
+				$descriptionLabel = clone $preDefinedDescriptionLabel;;
 				$frame->add($descriptionLabel);
-				$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
-				$descriptionLabel->setPosition($x + 10, -$this->height / 2 + 5);
-				$descriptionLabel->setSize($this->width * 0.7, 4);
-				$descriptionLabel->setTextSize(2);
-				$descriptionLabel->setVisible(false);
 				$descriptionLabel->setText("Force " . $listPlayer->nickname . '$z to Red Team!');
 				$script->addTooltip($redQuad, $descriptionLabel);
+
 				
 				// Force to Blue-Team Quad
 				$blueQuad = new Quad_Emblems();
@@ -327,13 +309,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$blueQuad->setAction(self::ACTION_FORCE_BLUE . "." . $listPlayer->login);
 				
 				// Force to Blue-Team Description Label
-				$descriptionLabel = new Label();
+				$descriptionLabel = clone $preDefinedDescriptionLabel;
 				$frame->add($descriptionLabel);
-				$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
-				$descriptionLabel->setPosition($x + 10, -$this->height / 2 + 5);
-				$descriptionLabel->setSize($this->width * 0.7, 4);
-				$descriptionLabel->setTextSize(2);
-				$descriptionLabel->setVisible(false);
 				$descriptionLabel->setText("Force " . $listPlayer->nickname . '$z to Blue Team!');
 				$script->addTooltip($blueQuad, $descriptionLabel);
 				
@@ -347,13 +324,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$spectatorQuad->setAction(self::ACTION_FORCE_SPEC . "." . $listPlayer->login);
 				
 				// Force to Spectator Description Label
-				$descriptionLabel = new Label();
+				$descriptionLabel = clone $preDefinedDescriptionLabel;
 				$frame->add($descriptionLabel);
-				$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
-				$descriptionLabel->setPosition($x + 10, -$this->height / 2 + 5);
-				$descriptionLabel->setSize($this->width * 0.7, 4);
-				$descriptionLabel->setTextSize(2);
-				$descriptionLabel->setVisible(false);
 				$descriptionLabel->setText("Force " . $listPlayer->nickname . '$z to Spectator!');
 				$script->addTooltip($spectatorQuad, $descriptionLabel);
 			}
