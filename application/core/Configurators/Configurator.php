@@ -24,6 +24,7 @@ use ManiaControl\Commands\CommandListener;
 
 require_once __DIR__ . '/ConfiguratorMenu.php';
 require_once __DIR__ . '/ScriptSettings.php';
+require_once __DIR__ . '/ServerSettings.php';
 
 /**
  * Class managing ingame ManiaControl configuration
@@ -48,6 +49,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	 */
 	private $maniaControl = null;
 	private $scriptSettings = null;
+	private $serverSettings = null;
 	private $menus = array();
 	private $playersMenuShown = array();
 	private $manialink = null;
@@ -80,11 +82,17 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERDISCONNECT, $this, 
 				'handlePlayerDisconnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(ScriptSettings::CB_SCRIPTSETTING_CHANGED, $this, 'reopenMenu');
-		
+		$this->maniaControl->callbackManager->registerCallbackListener(ServerSettings::CB_SERVERSETTING_CHANGED, $this, 'reopenMenu');
+
 		// Create script settings
 		$this->scriptSettings = new ScriptSettings($maniaControl);
 		$this->addMenu($this->scriptSettings);
-		
+
+		// Create server settings
+		$this->serverSettings = new ServerSettings($maniaControl);
+		$this->addMenu($this->serverSettings);
+
+
 		// Register for commands
 		$this->maniaControl->commandManager->registerCommandListener('config', $this, 'handleConfigCommand', true);
 	}
