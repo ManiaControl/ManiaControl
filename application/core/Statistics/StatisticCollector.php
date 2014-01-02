@@ -52,8 +52,8 @@ class StatisticCollector implements CallbackListener {
 
 		//Initialize Settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_COLLECT_STATS_ENABLED, true);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_COLLECT_STATS_MINPLAYERS, 0);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_ON_SHOOT_PRESTORE, 10);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_COLLECT_STATS_MINPLAYERS, 3);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_ON_SHOOT_PRESTORE, 30);
 	}
 
 	/**
