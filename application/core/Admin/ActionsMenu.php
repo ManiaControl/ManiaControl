@@ -221,48 +221,6 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		return $manialink;
 	}
 
-	private function playerMenuManialink(Player $player) {
-
-		$posX         = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_POSX);
-		$posY         = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_POSY);
-		$itemSize     = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_ITEMSIZE);
-		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
-		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
-
-		$itemCount = count($this->playerMenuItems);
-
-		$manialink         = new ManiaLink(self::MLID_MENU);
-		$itemMarginFactorX = 1.3;
-		$itemMarginFactorY = 1.2;
-
-		$frame = new Frame();
-		$manialink->add($frame);
-		$frame->setPosition($posX, $posY);
-
-		$backgroundQuad = new Quad();
-		$frame->add($backgroundQuad);
-		$backgroundQuad->setSize($itemCount * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
-		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-
-		$itemsFrame = new Frame();
-		$frame->add($itemsFrame);
-
-		// Add items
-		$x = 0.5 * $itemSize * $itemMarginFactorX;
-		foreach($this->menuItems as $menuItems) {
-			foreach($menuItems as $menuItem) {
-				$menuItem->setSize($itemSize, $itemSize);
-				$itemsFrame->add($menuItem);
-
-				$x += $itemSize * $itemMarginFactorX;
-			}
-		}
-
-		$maniaLinkText = $manialink->render()->saveXML();
-		$this->maniaControl->manialinkManager->sendManialink($maniaLinkText, $player->login);
-
-	}
-
 	private function buildMenuIconsManialink2() {
 		$posX         = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_POSX);
 		$posY         = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_POSY);

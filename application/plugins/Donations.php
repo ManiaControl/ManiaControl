@@ -1,4 +1,9 @@
 <?php
+use FML\Controls\Frame;
+use FML\Controls\Quad;
+use FML\Controls\Quads\Quad_Icons128x128_1;
+use FML\ManiaLink;
+use FML\Script\Script;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
@@ -10,7 +15,7 @@ use ManiaControl\Plugins\Plugin;
 /**
  * Donation plugin
  *
- * @author steeffeen
+ * @author steeffeen and Lukas
  */
 class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	/**
@@ -20,6 +25,14 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	const VERSION                         = 0.1;
 	const SETTING_ANNOUNCE_SERVERDONATION = 'Enable Server-Donation Announcements';
 	const STAT_PLAYER_DONATIONS           = 'donatedPlanets';
+
+	// DonateWidget Properties
+	const MLID_DONATE_WIDGET              = 'DonationPlugin.DonateWidget';
+	const SETTING_DONATE_WIDGET_ACTIVATED = 'Donate-Widget Activated';
+	const SETTING_DONATE_WIDGET_POSX      = 'Donate-Widget-Position: X';
+	const SETTING_DONATE_WIDGET_POSY      = 'Donate-Widget-Position: Y';
+	const SETTING_DONATE_WIDGET_WIDTH     = 'Donate-Widget-Size: Width';
+	const SETTING_DONATE_WIDGET_HEIGHT    = 'Donate-Widget-Size: Height';
 
 	/**
 	 * Private properties
@@ -42,9 +55,18 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_BILLUPDATED, $this, 'handleBillUpdated');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
+		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'handlePlayerConnect');
 
 		// Define player stats
 		$this->maniaControl->statisticManager->defineStatMetaData(self::STAT_PLAYER_DONATIONS);
+
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_DONATE_WIDGET_ACTIVATED, true);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_DONATE_WIDGET_POSX, 156.);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_DONATE_WIDGET_POSY, -51.4);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_DONATE_WIDGET_WIDTH, 6);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_DONATE_WIDGET_HEIGHT, 6);
+
 		return true;
 	}
 
@@ -96,6 +118,76 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 */
 	public static function getDescription() {
 		return 'Plugin offering commands like /donate, /pay and /getplanets and a donation widget.';
+	}
+
+	/**
+	 * Handle ManiaControl OnInit callback
+	 *
+	 * @param array $callback
+	 */
+	public function handleOnInit(array $callback) {
+		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATE_WIDGET_ACTIVATED)) {
+			$this->displayDonateWidget();
+		}
+	}
+
+	/**
+	 * Handle PlayerConnect callback
+	 *
+	 * @param array $callback
+	 */
+	public function handlePlayerConnect(array $callback) {
+		$player = $callback[1];
+		// Display Map Widget
+		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATE_WIDGET_ACTIVATED)) {
+			$this->displayDonateWidget($player->login);
+		}
+	}
+
+	/**
+	 * Displays the Donate Widget
+	 *
+	 * @param bool $login
+	 */
+	public function displayDonateWidget($login = false) {
+		$posX              = $this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATE_WIDGET_POSX);
+		$posY              = $this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATE_WIDGET_POSY);
+		$width             = $this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATE_WIDGET_WIDTH);
+		$height            = $this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATE_WIDGET_HEIGHT);
+		$quadStyle         = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
+		$quadSubstyle      = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
+		$itemMarginFactorX = 1.3;
+		$itemMarginFactorY = 1.2;
+
+		$itemSize = $width;
+
+		$maniaLink = new ManiaLink(self::MLID_DONATE_WIDGET);
+
+		$script = new Script();
+		$maniaLink->setScript($script);
+
+		//Donate Menu Icon Frame
+		$frame = new Frame();
+		$maniaLink->add($frame);
+		$frame->setPosition($posX, $posY);
+
+		$backgroundQuad = new Quad();
+		$frame->add($backgroundQuad);
+		$backgroundQuad->setSize($width * $itemMarginFactorX, $height * $itemMarginFactorY);
+		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
+
+		$iconFrame = new Frame();
+		$frame->add($iconFrame);
+
+		$iconFrame->setSize($itemSize, $itemSize);
+		$itemQuad = new Quad_Icons128x128_1();
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Coppers);
+		$itemQuad->setSize($itemSize, $itemSize);
+		$iconFrame->add($itemQuad);
+
+		// Send manialink
+		$manialinkText = $maniaLink->render()->saveXML();
+		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $login);
 	}
 
 	/**
@@ -218,7 +310,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 				$amount   = $billData[3];
 				if($donation) {
 					$player = $this->maniaControl->playerManager->getPlayer($login);
-					
+
 					// Donation
 					if(strlen($receiver) > 0) {
 						// To player
