@@ -141,7 +141,23 @@ class StatisticManager {
 			$serverLogin = $this->maniaControl->server->getLogin();
 		}
 
+	//	$statId = (int)$statId;
+	//	var_dump($statId);
+		//var_dump($value);
+		var_dump($serverLogin, $player->index, $statId, $value);
 		$mysqli = $this->maniaControl->database->mysqli;
+
+		$testquery = "INSERT INTO `" . self::TABLE_STATISTICS . "` (
+					`serverLogin`,
+					`playerId`,
+					`statId`,
+					`value`
+				) VALUES (
+				{$serverLogin}, {$player->index}, {$statId}, {$value}
+				) ON DUPLICATE KEY UPDATE
+				`value` = `value` + VALUES(`value`);";
+
+		var_dump($testquery);
 
 		$query = "INSERT INTO `" . self::TABLE_STATISTICS . "` (
 					`serverLogin`,

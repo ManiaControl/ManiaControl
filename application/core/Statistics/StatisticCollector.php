@@ -52,8 +52,8 @@ class StatisticCollector implements CallbackListener {
 
 		//Initialize Settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_COLLECT_STATS_ENABLED, true);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_COLLECT_STATS_MINPLAYERS, 4);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_ON_SHOOT_PRESTORE, 30);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_COLLECT_STATS_MINPLAYERS, 0);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_ON_SHOOT_PRESTORE, 10);
 	}
 
 	/**
@@ -83,15 +83,19 @@ class StatisticCollector implements CallbackListener {
 			$this->onShootArray[$login] = 1;
 		} else {
 			$this->onShootArray[$login]++;
+			var_dump("test2");
 		}
 
 		//Write Shoot Data into database
-		if($this->onShootArray[$login] > self::SETTING_ON_SHOOT_PRESTORE) {
+		if($this->onShootArray[$login] > $this->maniaControl->settingManager->getSetting($this, self::SETTING_ON_SHOOT_PRESTORE)) {
 			$serverLogin = $this->maniaControl->server->getLogin();
 			$player      = $this->maniaControl->playerManager->getPlayer($login);
 			$this->maniaControl->statisticManager->insertStat(self::STAT_ON_SHOOT, $player, $serverLogin, $this->onShootArray[$login]);
 			$this->onShootArray[$login] = 0;
 		}
+
+	//	var_dump($this->onShootArray);
+		var_dump($this->onShootArray[$login]);
 	}
 
 
@@ -167,7 +171,7 @@ class StatisticCollector implements CallbackListener {
 				break;
 			case 'OnShoot':
 				$paramsObject = json_decode($callback[1][1]);
-				$this->handleOnShoot($paramsObject->Event->Player->Login);
+				$this->handleOnShoot($paramsObject->Event->Shooter->Login);
 				break;
 			case 'OnNearMiss':
 				$paramsObject = json_decode($callback[1][1]);
