@@ -10,7 +10,6 @@ namespace ManiaControl\Statistics;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
-use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 
 class StatisticCollector implements CallbackListener {
@@ -19,7 +18,7 @@ class StatisticCollector implements CallbackListener {
 	 */
 	const SETTING_COLLECT_STATS_ENABLED    = 'Collect Stats Enabled';
 	const SETTING_COLLECT_STATS_MINPLAYERS = 'Minimum Playercount for Collecting Stats';
-	const SETTING_ON_SHOOT_PRESTORE = 'Prestore Shoots before insert into Database';
+	const SETTING_ON_SHOOT_PRESTORE        = 'Prestore Shoots before insert into Database';
 	/*
 	 * Statistics
 	 */
@@ -36,6 +35,7 @@ class StatisticCollector implements CallbackListener {
 	 */
 	private $maniaControl = null;
 	private $onShootArray = array();
+
 	/**
 	 * Construct player manager
 	 *
@@ -75,19 +75,20 @@ class StatisticCollector implements CallbackListener {
 
 	/**
 	 * Handle Player Shoots
+	 *
 	 * @param $login
 	 */
-	private function handleOnShoot($login){
-		if(!isset($this->onShootArray[$login])){
+	private function handleOnShoot($login) {
+		if(!isset($this->onShootArray[$login])) {
 			$this->onShootArray[$login] = 1;
-		}else{
+		} else {
 			$this->onShootArray[$login]++;
 		}
 
 		//Write Shoot Data into database
-		if($this->onShootArray[$login] > self::SETTING_ON_SHOOT_PRESTORE){
+		if($this->onShootArray[$login] > self::SETTING_ON_SHOOT_PRESTORE) {
 			$serverLogin = $this->maniaControl->server->getLogin();
-			$player = $this->maniaControl->playerManager->getPlayer($login);
+			$player      = $this->maniaControl->playerManager->getPlayer($login);
 			$this->maniaControl->statisticManager->insertStat(self::STAT_ON_SHOOT, $player, $serverLogin, $this->onShootArray[$login]);
 			$this->onShootArray[$login] = 0;
 		}
@@ -96,18 +97,20 @@ class StatisticCollector implements CallbackListener {
 
 	/**
 	 * Insert OnShoot Statistic when a player leaves
-	 * @param array  $callback
-	 * @param Player $player
+	 *
+	 * @param array $callback
 	 */
-	public function onPlayerDisconnect(array $callback, Player $player) {
+	public function onPlayerDisconnect(array $callback) {
+		$player = $callback[1];
+
 		//Check if Stat Collecting is enabled
 		if(!$this->maniaControl->settingManager->getSetting($this, self::SETTING_COLLECT_STATS_ENABLED)) {
 			return;
 		}
 
 		//Insert Data into Database, and destroy player
-		if(isset($this->onShootArray[$player->login])){
-			if($this->onShootArray[$player->login] > 0){
+		if(isset($this->onShootArray[$player->login])) {
+			if($this->onShootArray[$player->login] > 0) {
 				$serverLogin = $this->maniaControl->server->getLogin();
 				$this->maniaControl->statisticManager->insertStat(self::STAT_ON_SHOOT, $player, $serverLogin, $this->onShootArray[$player->login]);
 			}
