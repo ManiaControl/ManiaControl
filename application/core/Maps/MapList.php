@@ -231,6 +231,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$closeQuad->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_QuitRace);
 		$closeQuad->setAction(ManialinkManager::ACTION_CLOSEWIDGET);
 
+
 		return $frame;
 	}
 
@@ -247,9 +248,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$frame     = $this->buildMainFrame();
 		$maniaLink->add($frame);
 
-
-
-
 		// Create script and features
 		$script = new Script();
 		$maniaLink->setScript($script);
@@ -261,6 +259,14 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$x     = -$this->width / 2;
 		$array = array("Id" => $x + 5, "Mx ID" => $x + 10, "MapName" => $x + 20, "Author" => $x + 68, "Karma" => $x + 115, "Actions" => $this->width / 2 - 15);
 		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
+
+		//Predefine Description Label
+		$preDefinedDescriptionLabel = new Label();
+		$preDefinedDescriptionLabel->setAlign(Control::LEFT, Control::TOP);
+		$preDefinedDescriptionLabel->setPosition($x + 10, -$this->height / 2 + 5);
+		$preDefinedDescriptionLabel->setSize($this->width * 0.7, 4);
+		$preDefinedDescriptionLabel->setTextSize(2);
+		$preDefinedDescriptionLabel->setVisible(false);
 
 		//Get Maplist
 		$mapList = $this->maniaControl->mapManager->getMapList();
@@ -313,13 +319,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 
 			//MapQueue Description Label
-			$descriptionLabel = new Label();
+			$descriptionLabel = clone $preDefinedDescriptionLabel;
 			$frame->add($descriptionLabel);
-			$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
-			$descriptionLabel->setPosition($x + 10, -$this->height / 2 + 5);
-			$descriptionLabel->setSize($this->width * 0.7, 4);
-			$descriptionLabel->setTextSize(2);
-			$descriptionLabel->setVisible(false);
 
 			//Map-Queue-Map-Label
 			if(isset($queuedMaps[$map->uid])) {
@@ -364,13 +365,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$eraseQuad->setAction(self::ACTION_CONFIRM_ERASE_MAP . "." . ($id));
 
 				//Description Label
-				$descriptionLabel = new Label();
+				$descriptionLabel = clone $preDefinedDescriptionLabel;
 				$frame->add($descriptionLabel);
-				$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
-				$descriptionLabel->setPosition($x + 10, -$this->height / 2 + 5);
-				$descriptionLabel->setSize($this->width * 0.7, 4);
-				$descriptionLabel->setTextSize(2);
-				$descriptionLabel->setVisible(false);
 				$descriptionLabel->setText("Remove Map: {$map->name}");
 				$script->addTooltip($eraseQuad, $descriptionLabel);
 			}
@@ -389,13 +385,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 				$switchToQuad->setAction(self::ACTION_CONFIRM_SWITCHTO_MAP . "." . ($id));
 
-				$descriptionLabel = new Label();
+				$descriptionLabel = clone $preDefinedDescriptionLabel;
 				$frame->add($descriptionLabel);
-				$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
-				$descriptionLabel->setPosition($x + 10, -$this->height / 2 + 5);
-				$descriptionLabel->setSize($this->width * 0.7, 4);
-				$descriptionLabel->setTextSize(2);
-				$descriptionLabel->setVisible(false);
 				$descriptionLabel->setText("Switch Directly to Map: {$map->name}");
 				$script->addTooltip($switchToQuad, $descriptionLabel);
 			}
@@ -431,7 +422,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 
 			//Confirm Frame
-			if($id == $confirmMapId && ($confirmAction == self::ACTION_CONFIRM_SWITCHTO_MAP || $confirmAction == self::ACTION_CONFIRM_ERASE_MAP)){
+			if($id == $confirmMapId && ($confirmAction == self::ACTION_CONFIRM_SWITCHTO_MAP || $confirmAction == self::ACTION_CONFIRM_ERASE_MAP)) {
 				$confirmFrame = new Frame();
 				$maniaLink->add($confirmFrame);
 				$confirmFrame->setPosition($this->width / 2 + 6, $y);
@@ -447,7 +438,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				//$quad->setX(0);
 				//$quad->setY($y);
 				$quad->setSubStyle($quad::SUBSTYLE_BgCardSystem);
-				$quad->setSize(11,3.5);
+				$quad->setSize(11, 3.5);
 
 				$label = new Label_Button();
 				$confirmFrame->add($label);
@@ -459,17 +450,17 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 				$buttLabel = new Label_Button();
 				$confirmFrame->add($buttLabel);
-				$buttLabel->setPosition(3.2,0.4,0.2);
+				$buttLabel->setPosition(3.2, 0.4, 0.2);
 				$buttLabel->setSize(3, 3);
-			//	$buttLabel->setTextSize(1);
+				//	$buttLabel->setTextSize(1);
 				$buttLabel->setAlign(Control::CENTER, Control::CENTER);
 
-				if($confirmAction == self::ACTION_CONFIRM_SWITCHTO_MAP){
+				if($confirmAction == self::ACTION_CONFIRM_SWITCHTO_MAP) {
 					$quad->setAction(self::ACTION_SWITCH_MAP . "." . ($id - 1));
 					$buttLabel->setText("»");
 					$buttLabel->setTextColor("0F0");
 					$buttLabel->setTextSize(2);
-				}else{
+				} else {
 					$buttLabel->setTextSize(1);
 					$buttLabel->setText("x");
 					$buttLabel->setTextColor("A00");
