@@ -242,6 +242,9 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 */
 	public function showMapList(Player $player, $confirmAction = null, $confirmMapId = '') {
 
+		//Get Maplist
+		$mapList = $this->maniaControl->mapManager->getMapList();
+
 		$this->mapListShown[$player->login] = self::SHOW_MAP_LIST;
 
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
@@ -251,6 +254,38 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		// Create script and features
 		$script = new Script();
 		$maniaLink->setScript($script);
+
+
+		// Pagers
+
+		// Config
+		$pagerSize = 6.;
+		$pagesId = 'MapListPages';
+
+		if(count($mapList) > self::MAX_MAPS_PER_PAGE){
+			$pagerPrev = new Quad_Icons64x64_1();
+			$frame->add($pagerPrev);
+			$pagerPrev->setPosition($this->width * 0.42, $this->height * -0.44, 2);
+			$pagerPrev->setSize($pagerSize, $pagerSize);
+			$pagerPrev->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowPrev);
+
+			$pagerNext = new Quad_Icons64x64_1();
+			$frame->add($pagerNext);
+			$pagerNext->setPosition($this->width * 0.45, $this->height * -0.44, 2);
+			$pagerNext->setSize($pagerSize, $pagerSize);
+			$pagerNext->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowNext);
+
+			$script->addPager($pagerPrev, -1, $pagesId);
+			$script->addPager($pagerNext, 1, $pagesId);
+
+			$pageCountLabel = new Label();
+			$frame->add($pageCountLabel);
+			$pageCountLabel->setHAlign(Control::RIGHT);
+			$pageCountLabel->setPosition($this->width * 0.40, $this->height * -0.44, 1);
+			$pageCountLabel->setStyle('TextTitle1');
+			$pageCountLabel->setTextSize(1.3);
+			$script->addPageLabel($pageCountLabel, $pagesId);
+		}
 
 		//Headline
 		$headFrame = new Frame();
@@ -268,9 +303,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$preDefinedDescriptionLabel->setTextSize(2);
 		$preDefinedDescriptionLabel->setVisible(false);
 
-		//Get Maplist
-		$mapList = $this->maniaControl->mapManager->getMapList();
-
 		//TODO add pages
 
 		$queuedMaps = $this->maniaControl->mapManager->mapQueue->getQueuedMapsRanking();
@@ -279,11 +311,25 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 		$id = 1;
 		$y  = $this->height / 2 - 10;
+		$pageFrames = array();
 		/** @var  Map $map */
 		foreach($mapList as $map) {
+
+			if (!isset($pageFrame)) {
+				$pageFrame = new Frame();
+				$frame->add($pageFrame);
+				if (!empty($pageFrames)) {
+					$pageFrame->setVisible(false);
+				}
+				array_push($pageFrames, $pageFrame);
+				$y  = $this->height / 2 - 10;
+				$script->addPage($pageFrame, count($pageFrames), $pagesId);
+			}
+
+
 			//Map Frame
 			$mapFrame = new Frame();
-			$frame->add($mapFrame);
+			$pageFrame->add($mapFrame);
 			$mapFrame->setZ(0.1);
 			$mapFrame->setY($y);
 
@@ -315,8 +361,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$this->maniaControl->manialinkManager->labelLine($mapFrame, $array);
 			//TODO detailed mx info page with link to mxo
 			//TODO action detailed map info
-			//TODO side switch
-
 
 			//MapQueue Description Label
 			$descriptionLabel = clone $preDefinedDescriptionLabel;
@@ -332,9 +376,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$label->setTextSize(1.5);
 				$label->setText($queuedMaps[$map->uid]);
 				$label->setTextColor("FFF");
-
 				$descriptionLabel->setText("{$map->name} \$zis on Map-Queue Position: {$queuedMaps[$map->uid]}");
-				//$tooltips->add($jukeLabel, $descriptionLabel);
 			} else {
 				//Map-Queue-Map-Button
 				$buttLabel = new Label_Button();
@@ -345,7 +387,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$buttLabel->setAction(self::ACTION_QUEUED_MAP . "." . $map->uid);
 				$buttLabel->setText("+");
 				$buttLabel->setTextColor("09F");
-
 
 				$descriptionLabel->setText("Add Map to the Map Queue: {$map->name}");
 				$script->addTooltip($buttLabel, $descriptionLabel);
@@ -372,14 +413,12 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			}
 			if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) { //TODO SET as setting who can add maps
 				//switch to map quad
-				//$switchToQuad = new Quad_Icons64x64_1(); //TODO change name to label
 				$switchToQuad = new Label_Button();
 				$mapFrame->add($switchToQuad);
 				$switchToQuad->setX($this->width / 2 - 10);
 				$switchToQuad->setZ(0.2);
 				$switchToQuad->setSize(3, 3);
 				$switchToQuad->setTextSize(2);
-				//$switchToQuad->setSubStyle($switchToQuad::SUBSTYLE_ArrowFastNext);
 				$switchToQuad->setText("»");
 				$switchToQuad->setTextColor("0F0");
 
@@ -435,8 +474,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 				$quad = new Quad_BgsPlayerCard();
 				$confirmFrame->add($quad);
-				//$quad->setX(0);
-				//$quad->setY($y);
 				$quad->setSubStyle($quad::SUBSTYLE_BgCardSystem);
 				$quad->setSize(11, 3.5);
 
@@ -470,15 +507,14 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 
 			$y -= 4;
-			$id++;
-			if($id == self::MAX_MAPS_PER_PAGE + 1) {
-				break;
+
+			if($id % self::MAX_MAPS_PER_PAGE == 0) {
+				unset($pageFrame);
 			}
+
+			$id++;
 		}
-
-		//TODO pages
-
-
+		//TODO page 0 bug?
 		//render and display xml
 		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player);
 	}
