@@ -215,7 +215,6 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		$testf->add($testq);
 
 		$script->addTooltip($itemQuad, $testf);
-		$script->addTooltip($testf, $testf);
 		/** TEST TOOLTIP */
 
 
