@@ -217,6 +217,8 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 				$donation = $billData[0];
 				$amount   = $billData[3];
 				if($donation) {
+					$player = $this->maniaControl->playerManager->getPlayer($login);
+					
 					// Donation
 					if(strlen($receiver) > 0) {
 						// To player
@@ -225,12 +227,11 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 					} else {
 						// To server
 						if($this->maniaControl->settingManager->getSetting($this, self::SETTING_ANNOUNCE_SERVERDONATION, true)) {
-							$message = '$<' . ($player ? $player->nickname : $login) . '$> donated ' . $amount . ' Planets! Thanks.';
+							$message = '$<' . $player->nickname . '$> donated ' . $amount . ' Planets! Thanks.';
 						} else {
 							$message = 'Donation successful! Thanks.';
 						}
 						$this->maniaControl->chat->sendSuccess($message, $login);
-						$player = $this->maniaControl->playerManager->getPlayer($login);
 						$this->maniaControl->statisticManager->insertStat(self::STAT_PLAYER_DONATIONS, $player, $this->maniaControl->server->getLogin(), $amount);
 					}
 				} else {
