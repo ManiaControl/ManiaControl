@@ -272,8 +272,7 @@ class KarmaPlugin implements CallbackListener, Plugin {
 		$voted = $this->getPlayerVote($player, $map);
 		var_dump($voted);
 		if(!$voted){
-			var_dump("test");
-			$this->maniaControl->statisticManager->incrementStat(self::STAT_PLAYER_MAPVOTES, $player, $this->maniaControl->server->getLogin());
+			$this->maniaControl->statisticManager->incrementStat(self::STAT_PLAYER_MAPVOTES, $player, $this->maniaControl->server->getServerId());
 		}
 
 		$success = $this->savePlayerVote($player, $map, $vote);

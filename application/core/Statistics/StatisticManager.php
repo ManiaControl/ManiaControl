@@ -55,19 +55,18 @@ class StatisticManager {
 	 *
 	 * @param      $statName
 	 * @param      $playerId
-	 * @param bool $serverLogin
+	 * @param int  $serverId
 	 * @return int
 	 */
-	public function getStatisticData($statName, $playerId, $serverLogin = false) {
-		$serverId = 0; //Temporary
-		$mysqli   = $this->maniaControl->database->mysqli;
-		$statId   = $this->getStatId($statName);
+	public function getStatisticData($statName, $playerId, $serverId = -1) {
+		$mysqli = $this->maniaControl->database->mysqli;
+		$statId = $this->getStatId($statName);
 
 		if($statId == null) {
 			return -1;
 		}
 
-		if(!$serverLogin) {
+		if($serverId == -1) {
 			$query = "SELECT SUM(value) as value FROM `" . self::TABLE_STATISTICS . "` WHERE `statId` = " . $statId . " AND `playerId` = " . $playerId . ";";
 		} else {
 			$query = "SELECT value FROM `" . self::TABLE_STATISTICS . "` WHERE `statId` = " . $statId . " AND `playerId` = " . $playerId . " AND `serverLogin` = '" . $serverId . "';";
@@ -123,12 +122,13 @@ class StatisticManager {
 	 * Get all statistics of a certain palyer
 	 *
 	 * @param Player $player
+	 * @param  int   $serverId
 	 * @return array
 	 */
-	public function getAllPlayerStats(Player $player) {
+	public function getAllPlayerStats(Player $player, $serverId = -1) {
 		$playerStats = array(); //TODO improve performence
 		foreach($this->stats as $stat) {
-			$value                    = $this->getStatisticData($stat->name, $player->index);
+			$value                    = $this->getStatisticData($stat->name, $player->index, $serverId);
 			$playerStats[$stat->name] = array($stat, $value);
 		}
 
@@ -140,14 +140,14 @@ class StatisticManager {
 	 *
 	 * @param        $statName
 	 * @param Player $player
-	 * @param string $serverLogin
+	 * @param  int   $serverId
 	 * @param        $value , value to Add
 	 * @param string $statType
+	 * @internal param string $serverLogin
 	 * @return bool
 	 */
-	public function insertStat($statName, $player, $serverLogin = '', $value, $statType = self::STAT_TYPE_INT) {
-		$serverId = 0; //Temporary
-		$statId   = $this->getStatId($statName);
+	public function insertStat($statName, $player, $serverId = -1, $value, $statType = self::STAT_TYPE_INT) {
+		$statId = $this->getStatId($statName);
 
 		if($player == null) {
 			return false;
@@ -161,8 +161,8 @@ class StatisticManager {
 			return true;
 		}
 
-		if($serverLogin == '') {
-			$serverLogin = $this->maniaControl->server->getLogin();
+		if($serverId == -1) {
+			$serverId = $this->maniaControl->server->getServerId();
 		}
 
 
@@ -201,12 +201,13 @@ class StatisticManager {
 	 *
 	 * @param                              $statName
 	 * @param \ManiaControl\Players\Player $player
-	 * @param string                       $serverLogin
+	 * @param    int                       $serverId
+	 * @internal param string $serverLogin
 	 * @internal param \ManiaControl\Players\Player $playerId
 	 * @return bool
 	 */
-	public function incrementStat($statName, $player, $serverLogin = '') {
-		return $this->insertStat($statName, $player, $serverLogin, 1);
+	public function incrementStat($statName, $player, $serverId = -1) {
+		return $this->insertStat($statName, $player, $serverId, 1);
 	}
 
 

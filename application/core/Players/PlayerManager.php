@@ -255,7 +255,7 @@ class PlayerManager implements CallbackListener {
 	 * Save player in database and fill up object properties
 	 *
 	 * @param Player $player
-	 * @param int    $joinCount
+	 * @internal param int $joinCount
 	 * @return bool
 	 */
 	private function savePlayer(Player &$player) {
@@ -308,7 +308,7 @@ class PlayerManager implements CallbackListener {
 		$playerStatement->close();
 
 		// Increment the Player Join Count
-		$this->maniaControl->statisticManager->incrementStat(self::STAT_JOIN_COUNT, $player, $this->maniaControl->server->getLogin());
+		$this->maniaControl->statisticManager->incrementStat(self::STAT_JOIN_COUNT, $player, $this->maniaControl->server->getServerId());
 
 		return true;
 	}
@@ -325,6 +325,6 @@ class PlayerManager implements CallbackListener {
 		}
 		$playedTime = time() - $player->joinTime;
 
-		return $this->maniaControl->statisticManager->insertStat(self::STAT_PLAYTIME, $player, $this->maniaControl->server->getLogin(), $playedTime);
+		return $this->maniaControl->statisticManager->insertStat(self::STAT_PLAYTIME, $player, $this->maniaControl->server->getServerId(), $playedTime);
 	}
 }

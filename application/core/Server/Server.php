@@ -51,8 +51,6 @@ class Server implements CallbackListener {
 		$this->serverCommands = new ServerCommands($maniaControl);
 
 		$this->initTables();
-
-		//$this->initServer();
 	}
 
 	/**
@@ -397,5 +395,12 @@ class Server implements CallbackListener {
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getServerId() {
+		return $this->serverId;
 	}
 }
