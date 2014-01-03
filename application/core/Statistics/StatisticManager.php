@@ -183,6 +183,7 @@ class StatisticManager {
 			trigger_error($mysqli->error);
 			return false;
 		}
+
 		$statement->bind_param('iiii', $serverId, $player->index, $statId, $value);
 		$statement->execute();
 		if($statement->error) {

@@ -1,16 +1,16 @@
 <?php
-use ManiaControl\ColorUtil;
-use ManiaControl\ManiaControl;
+use FML\Controls\Frame;
+use FML\Controls\Gauge;
+use FML\Controls\Label;
+use FML\Controls\Quad;
+use FML\ManiaLink;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\ColorUtil;
+use ManiaControl\ManiaControl;
 use ManiaControl\Maps\Map;
 use ManiaControl\Players\Player;
 use ManiaControl\Plugins\Plugin;
-use FML\ManiaLink;
-use FML\Controls\Frame;
-use FML\Controls\Label;
-use FML\Controls\Quad;
-use FML\Controls\Gauge;
 
 /**
  * ManiaControl Karma Plugin
@@ -21,17 +21,19 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	/**
 	 * Constants
 	 */
-	const ID = 5;
-	const VERSION = 0.1;
-	const MLID_KARMA = 'KarmaPlugin.MLID';
-	const TABLE_KARMA = 'mc_karma';
+	const ID                      = 5;
+	const VERSION                 = 0.1;
+	const MLID_KARMA              = 'KarmaPlugin.MLID';
+	const TABLE_KARMA             = 'mc_karma';
 	const SETTING_AVAILABLE_VOTES = 'Available Votes (X-Y: Comma separated)';
-	const SETTING_WIDGET_TITLE = 'Widget-Title';
-	const SETTING_WIDGET_POSX = 'Widget-Position: X';
-	const SETTING_WIDGET_POSY = 'Widget-Position: Y';
-	const SETTING_WIDGET_WIDTH = 'Widget-Size: Width';
-	const SETTING_WIDGET_HEIGHT = 'Widget-Size: Height';
-	
+	const SETTING_WIDGET_TITLE    = 'Widget-Title';
+	const SETTING_WIDGET_POSX     = 'Widget-Position: X';
+	const SETTING_WIDGET_POSY     = 'Widget-Position: Y';
+	const SETTING_WIDGET_WIDTH    = 'Widget-Size: Width';
+	const SETTING_WIDGET_HEIGHT   = 'Widget-Size: Height';
+
+	const STAT_PLAYER_MAPVOTES = 'Voted Maps';
+
 	/**
 	 * Private properties
 	 */
@@ -49,10 +51,10 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	 */
 	public function load(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
-		
+
 		// Init database
 		$this->initTables();
-		
+
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_AVAILABLE_VOTES, '-2,2');
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_TITLE, 'Map-Karma');
@@ -60,15 +62,17 @@ class KarmaPlugin implements CallbackListener, Plugin {
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSY, 90 - 10 - 6);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_WIDTH, 25.);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_HEIGHT, 12.);
-		
+
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_BEGINMAP, $this, 'handleBeginMap');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_1_SECOND, $this, 'handle1Second');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCONNECT, $this, 
-				'handlePlayerConnect');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCONNECT, $this, 'handlePlayerConnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCHAT, $this, 'handlePlayerChat');
-		
+
+		// Define player stats
+		$this->maniaControl->statisticManager->defineStatMetaData(self::STAT_PLAYER_MAPVOTES);
+
 		return true;
 	}
 
@@ -127,49 +131,50 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	 * @param array $callback
 	 */
 	public function handle1Second(array $callback) {
-		if (!$this->updateManialink) return;
-		
+		if(!$this->updateManialink) {
+			return;
+		}
+
 		// Get players
 		$players = $this->updateManialink;
-		if ($players === true) {
+		if($players === true) {
 			$players = $this->maniaControl->playerManager->getPlayers();
 		}
 		$this->updateManialink = false;
-		
+
 		// Get map karma
-		$map = $this->maniaControl->mapManager->getCurrentMap();
+		$map   = $this->maniaControl->mapManager->getCurrentMap();
 		$karma = $this->getMapKarma($map);
 		$votes = $this->getMapVotes($map);
-		
+
 		// Build karma manialink
 		$this->buildManialink();
-		
+
 		// Update karma gauge & label
 		$karmaGauge = $this->manialink->karmaGauge;
 		$karmaLabel = $this->manialink->karmaLabel;
-		if (is_numeric($karma)) {
+		if(is_numeric($karma)) {
 			$karma = floatval($karma);
 			$karmaGauge->setRatio($karma + 0.15 - $karma * 0.15);
 			$karmaColor = ColorUtil::floatToStatusColor($karma);
 			$karmaGauge->setColor($karmaColor . '9');
 			$karmaLabel->setText('  ' . round($karma * 100.) . '% (' . $votes['count'] . ')');
-		}
-		else {
+		} else {
 			$karma = 0.;
 			$karmaGauge->setRatio(0.);
 			$karmaGauge->setColor('00fb');
 			$karmaLabel->setText('-');
 		}
-		
+
 		// Loop players
-		foreach ($players as $login => $player) {
+		foreach($players as $login => $player) {
 			// Get player vote
 			$vote = $this->getPlayerVote($player, $map);
-			
+
 			// Adjust manialink for player's vote
 			$votesFrame = $this->manialink->votesFrame;
 			$votesFrame->removeChildren();
-			
+
 			// Send manialink
 			$manialinkText = $this->manialink->render()->saveXML();
 			$this->maniaControl->manialinkManager->sendManialink($manialinkText, $login);
@@ -200,9 +205,9 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	 * @param array $callback
 	 */
 	public function handlePlayerConnect(array $callback) {
-		$login = $callback[1][0];
+		$login  = $callback[1][0];
 		$player = $this->maniaControl->playerManager->getPlayer($login);
-		if (!$player) {
+		if(!$player) {
 			return;
 		}
 		$this->queryManialinkUpdateFor($player);
@@ -214,22 +219,22 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	 * @param array $chatCallback
 	 */
 	public function handlePlayerChat(array $chatCallback) {
-		$login = $chatCallback[1][1];
+		$login  = $chatCallback[1][1];
 		$player = $this->maniaControl->playerManager->getPlayer($login);
-		if (!$player) {
+		if(!$player) {
 			return;
 		}
 		$message = $chatCallback[1][2];
-		if ($chatCallback[1][3]) {
+		if($chatCallback[1][3]) {
 			$message = substr($message, 1);
 		}
-		if (preg_match('/[^+-]/', $message)) {
+		if(preg_match('/[^+-]/', $message)) {
 			return;
 		}
 		$vote = substr_count($message, '+');
 		$vote -= substr_count($message, '-');
 		$success = $this->handleVote($player, $vote);
-		if (!$success) {
+		if(!$success) {
 			$this->maniaControl->chat->sendError('Error occurred.', $player->login);
 			return;
 		}
@@ -240,31 +245,37 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	 * Handle a vote done by a player
 	 *
 	 * @param Player $player
-	 * @param int $vote
+	 * @param int    $vote
 	 * @return bool
 	 */
 	private function handleVote(Player $player, $vote) {
 		// Check vote
 		$votesSetting = $this->maniaControl->settingManager->getSetting($this, self::SETTING_AVAILABLE_VOTES);
-		$votes = explode(',', $votesSetting);
-		$voteLow = intval($votes[0]);
-		$voteHigh = $voteLow + 2;
-		if (isset($votes[1])) {
+		$votes        = explode(',', $votesSetting);
+		$voteLow      = intval($votes[0]);
+		$voteHigh     = $voteLow + 2;
+		if(isset($votes[1])) {
 			$voteHigh = intval($votes[1]);
 		}
-		if ($vote < $voteLow || $vote > $voteHigh) {
+		if($vote < $voteLow || $vote > $voteHigh) {
 			return false;
 		}
-		
+
 		// Calculate actual voting
 		$vote -= $voteLow;
 		$voteHigh -= $voteLow;
 		$vote /= $voteHigh;
-		
+
 		// Save vote
-		$map = $this->maniaControl->mapManager->getCurrentMap();
+		$map     = $this->maniaControl->mapManager->getCurrentMap();
+
+		$voted = $this->getPlayerVote($player, $map);
+		if(!$voted){
+			$this->maniaControl->statisticManager->incrementStat(self::STAT_PLAYER_MAPVOTES, $player, $this->maniaControl->server->getLogin());
+		}
+
 		$success = $this->savePlayerVote($player, $map, $vote);
-		if (!$success) {
+		if(!$success) {
 			return false;
 		}
 		$this->updateManialink = true;
@@ -277,10 +288,10 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	 * @param Player $player
 	 */
 	private function queryManialinkUpdateFor(Player $player) {
-		if ($this->updateManialink === true) {
+		if($this->updateManialink === true) {
 			return;
 		}
-		if (!is_array($this->updateManialink)) {
+		if(!is_array($this->updateManialink)) {
 			$this->updateManialink = array();
 		}
 		$this->updateManialink[$player->login] = $player;
@@ -291,7 +302,7 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	 */
 	private function initTables() {
 		$mysqli = $this->maniaControl->database->mysqli;
-		$query = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_KARMA . "` (
+		$query  = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_KARMA . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
 				`mapIndex` int(11) NOT NULL,
 				`playerIndex` int(11) NOT NULL,
@@ -301,7 +312,7 @@ class KarmaPlugin implements CallbackListener, Plugin {
 				UNIQUE KEY `player_map_vote` (`mapIndex`, `playerIndex`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Save players map votes' AUTO_INCREMENT=1;";
 		$mysqli->query($query);
-		if ($mysqli->error) {
+		if($mysqli->error) {
 			trigger_error($mysqli->error, E_USER_ERROR);
 		}
 	}
@@ -310,13 +321,13 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	 * Save the vote of the player for the map
 	 *
 	 * @param Player $player
-	 * @param Map $map
-	 * @param float $vote
+	 * @param Map    $map
+	 * @param float  $vote
 	 * @return bool
 	 */
 	private function savePlayerVote(Player $player, Map $map, $vote) {
 		$mysqli = $this->maniaControl->database->mysqli;
-		$query = "INSERT INTO `" . self::TABLE_KARMA . "` (
+		$query  = "INSERT INTO `" . self::TABLE_KARMA . "` (
 				`mapIndex`,
 				`playerIndex`,
 				`vote`
@@ -327,7 +338,7 @@ class KarmaPlugin implements CallbackListener, Plugin {
 				) ON DUPLICATE KEY UPDATE
 				`vote` = VALUES(`vote`);";
 		$result = $mysqli->query($query);
-		if ($mysqli->error) {
+		if($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
 		}
@@ -338,21 +349,21 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	 * Get the current vote of the player for the map
 	 *
 	 * @param Player $player
-	 * @param Map $map
+	 * @param Map    $map
 	 * @return int
 	 */
 	private function getPlayerVote(Player $player, Map $map) {
 		$mysqli = $this->maniaControl->database->mysqli;
-		$query = "SELECT * FROM `" . self::TABLE_KARMA . "`
+		$query  = "SELECT * FROM `" . self::TABLE_KARMA . "`
 				WHERE `playerIndex` = {$player->index}
 				AND `mapIndex` = {$map->index}
 				AND `vote` >= 0;";
 		$result = $mysqli->query($query);
-		if ($mysqli->error) {
+		if($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
 		}
-		if ($result->num_rows <= 0) {
+		if($result->num_rows <= 0) {
 			$result->free();
 			return false;
 		}
@@ -370,22 +381,22 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	 */
 	public function getMapKarma(Map $map) {
 		$mysqli = $this->maniaControl->database->mysqli;
-		$query = "SELECT AVG(`vote`) AS `karma` FROM `" . self::TABLE_KARMA . "`
+		$query  = "SELECT AVG(`vote`) AS `karma` FROM `" . self::TABLE_KARMA . "`
 				WHERE `mapIndex` = {$map->index}
 				AND `vote` >= 0;";
 		$result = $mysqli->query($query);
-		if ($mysqli->error) {
+		if($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
 		}
-		if ($result->num_rows <= 0) {
+		if($result->num_rows <= 0) {
 			$result->free();
 			return false;
 		}
 		$item = $result->fetch_object();
 		$result->free();
 		$karma = $item->karma;
-		if ($karma === null) {
+		if($karma === null) {
 			return false;
 		}
 		return floatval($karma);
@@ -399,18 +410,18 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	 */
 	public function getMapVotes(Map $map) {
 		$mysqli = $this->maniaControl->database->mysqli;
-		$query = "SELECT `vote`, COUNT(`vote`) AS `count` FROM `" . self::TABLE_KARMA . "`
+		$query  = "SELECT `vote`, COUNT(`vote`) AS `count` FROM `" . self::TABLE_KARMA . "`
 				WHERE `mapIndex` = {$map->index}
 				AND `vote` >= 0
 				GROUP BY `vote`;";
 		$result = $mysqli->query($query);
-		if ($mysqli->error) {
+		if($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
 		}
 		$votes = array();
 		$count = 0;
-		while ($vote = $result->fetch_object()) {
+		while($vote = $result->fetch_object()) {
 			$votes[$vote->vote] = $vote;
 			$count += $vote->count;
 		}
@@ -425,29 +436,31 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	 * @param bool $forceBuild
 	 */
 	private function buildManialink($forceBuild = false) {
-		if (is_object($this->manialink) && !$forceBuild) return;
-		
-		$title = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_TITLE);
-		$pos_x = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_POSX);
-		$pos_y = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_POSY);
-		$width = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_WIDTH);
-		$height = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_HEIGHT);
-		$labelStyle = $this->maniaControl->manialinkManager->styleManager->getDefaultLabelStyle();
-		$quadStyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
+		if(is_object($this->manialink) && !$forceBuild) {
+			return;
+		}
+
+		$title        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_TITLE);
+		$pos_x        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_POSX);
+		$pos_y        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_POSY);
+		$width        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_WIDTH);
+		$height       = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_HEIGHT);
+		$labelStyle   = $this->maniaControl->manialinkManager->styleManager->getDefaultLabelStyle();
+		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
 		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
-		
+
 		$manialink = new ManiaLink(self::MLID_KARMA);
-		
+
 		$frame = new Frame();
 		$manialink->add($frame);
 		$frame->setPosition($pos_x, $pos_y);
-		
+
 		$backgroundQuad = new Quad();
 		$frame->add($backgroundQuad);
 		$backgroundQuad->setY($height * 0.15);
 		$backgroundQuad->setSize($width, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-		
+
 		$titleLabel = new Label();
 		$frame->add($titleLabel);
 		$titleLabel->setY($height * 0.36);
@@ -457,13 +470,13 @@ class KarmaPlugin implements CallbackListener, Plugin {
 		$titleLabel->setTextSize(1);
 		$titleLabel->setScale(0.90);
 		$titleLabel->setText($title);
-		
+
 		$karmaGauge = new Gauge();
 		$frame->add($karmaGauge);
 		$karmaGauge->setSize($width * 0.95, $height * 0.92);
 		$karmaGauge->setDrawBg(false);
 		$manialink->karmaGauge = $karmaGauge;
-		
+
 		$karmaLabel = new Label();
 		$frame->add($karmaLabel);
 		$karmaLabel->setPosition(0, -0.4, 1);
@@ -471,11 +484,11 @@ class KarmaPlugin implements CallbackListener, Plugin {
 		$karmaLabel->setStyle($labelStyle);
 		$karmaLabel->setTextSize(1);
 		$manialink->karmaLabel = $karmaLabel;
-		
+
 		$votesFrame = new Frame();
 		$frame->add($votesFrame);
 		$manialink->votesFrame = $votesFrame;
-		
+
 		$this->manialink = $manialink;
 	}
 }
