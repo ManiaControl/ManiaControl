@@ -1,6 +1,7 @@
 <?php
 
 namespace ManiaControl\Players;
+
 use FML\Controls\Control;
 use FML\Controls\Frame;
 use FML\Controls\Labels\Label_Text;
@@ -35,16 +36,6 @@ class PlayerDetailed {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-	/*	$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_CLOSE_PLAYER_ADV, $this, 'closePlayerAdvancedWidget');
-		$this->maniaControl->callbackManager->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_CLOSED, $this, 'closeWidget');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
-
-		// Update Widget Events
-		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERINFOCHANGED, $this, 'updateWidget');
-		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECTED, $this, 'updateWidget');
-		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'updateWidget');
-		$this->maniaControl->callbackManager->registerCallbackListener(AuthenticationManager::CB_AUTH_LEVEL_CHANGED, $this, 'updateWidget'); */
-
 		// settings
 		$this->width        = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
 		$this->height       = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
@@ -55,7 +46,7 @@ class PlayerDetailed {
 
 
 	public function showPlayerDetailed(Player $player, $targetLogin) {
-		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
+		$target    = $this->maniaControl->playerManager->getPlayer($targetLogin);
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 
 		// Create script and features
@@ -150,7 +141,7 @@ class PlayerDetailed {
 		$label->setText("Plays since:");
 
 		//Login
-		$y = $this->height / 2 - 15;
+		$y         = $this->height / 2 - 15;
 		$mainLabel = new Label_Text();
 		$frame->add($mainLabel);
 		$mainLabel->setPosition(-$this->width / 2 + 30, $y);
@@ -191,7 +182,7 @@ class PlayerDetailed {
 		$label = clone $mainLabel;
 		$frame->add($label);
 		$label->setY($y);
-		$label->setText(round($target->ladderScore,2));
+		$label->setText(round($target->ladderScore, 2));
 
 		//Played Since
 		$y -= 5;
@@ -223,7 +214,7 @@ class PlayerDetailed {
 		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player);
 	}
 
-	public function statisticsFrame($player){
+	public function statisticsFrame($player) {
 		$frame = new Frame();
 
 		/*$mainLabel = new Label_Text();
@@ -235,13 +226,13 @@ class PlayerDetailed {
 
 		$playerStats = $this->maniaControl->statisticManager->getAllPlayerStats($player);
 
-		$y = $this->height / 2 - 15;
+		$y  = $this->height / 2 - 15;
 		$id = 1;
-		foreach($playerStats as $stat){
+		foreach($playerStats as $stat) {
 			$statProperties = $stat[0];
-			$value = $stat[1];
+			$value          = $stat[1];
 
-			if($statProperties->type == StatisticManager::STAT_TYPE_TIME){
+			if($statProperties->type == StatisticManager::STAT_TYPE_TIME) {
 				$value = Formatter::formatTimeH($value);
 			}
 
