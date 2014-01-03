@@ -537,7 +537,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 */
 	public function closeWidget(array $callback) {
 		$player = $callback[1];
-		$this->playerCloseWidget($player);
+		unset($this->mapListShown[$player->login]);
 	}
 
 	/**
