@@ -5,6 +5,7 @@ use FML\Controls\Control;
 use FML\Controls\Frame;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;
+use FML\Controls\Quads\Quad_BgsPlayerCard;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\ManiaLink;
 use FML\Script\Script;
@@ -223,12 +224,22 @@ class PlayerDetailed {
 		$playerStats = $this->maniaControl->statisticManager->getAllPlayerStats($player);
 
 		$y = $this->height / 2 - 15;
+		$id = 1;
 		foreach($playerStats as $stat){
 			$statProperties = $stat[0];
 			$value = $stat[1];
 
 			if($statProperties->type == StatisticManager::STAT_TYPE_TIME){
 				$value = Formatter::formatTimeH($value);
+			}
+
+			if($id % 2 != 0) {
+				$lineQuad = new Quad_BgsPlayerCard();
+				$frame->add($lineQuad);
+				$lineQuad->setSize(49, 4);
+				$lineQuad->setSubStyle($lineQuad::SUBSTYLE_BgPlayerCardBig);
+				$lineQuad->setPosition(-$this->width / 2 + 66, $y, 0.001);
+				$lineQuad->setHAlign(Control::LEFT);
 			}
 
 			$label = new Label_Text();
@@ -246,6 +257,7 @@ class PlayerDetailed {
 			$label->setTextSize(1.5);
 
 			$y -= 4;
+			$id++;
 		}
 		return $frame;
 	}
