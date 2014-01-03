@@ -67,7 +67,7 @@ class PlayerManager implements CallbackListener {
 
 		// Define player stats
 		$this->maniaControl->statisticManager->defineStatMetaData(self::STAT_JOIN_COUNT);
-		$this->maniaControl->statisticManager->defineStatMetaData(self::STAT_PLAYTIME, StatisticManager::STAT_TYPE_TIME);
+		$this->maniaControl->statisticManager->defineStatMetaData(self::STAT_SERVERTIME, StatisticManager::STAT_TYPE_TIME);
 	}
 
 	/**
