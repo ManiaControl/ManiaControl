@@ -230,16 +230,11 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			return;
 		}
 
-		$actionArray = explode(".", $actionId);
-		$setting     = $actionArray[2];
-
 		$login  = $callback[1][1];
 		$player = $this->maniaControl->playerManager->getPlayer($login);
 
-
 		//Save all Changes
 		$this->saveConfigData($callback[1], $player);
-		//$this->toggleBooleanSetting($setting, $player);
 	}
 
 
