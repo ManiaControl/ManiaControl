@@ -84,10 +84,22 @@ class PlayerDetailed {
 
 
 		$y = $this->height / 2 - 10;
+
+		//Nation Quad
+		$countryQuad = new Quad();
+		$frame->add($countryQuad);
+		$countryCode = Formatter::mapCountry($target->getCountry());
+		$countryQuad->setImage("file://Skins/Avatars/Flags/{$countryCode}.dds");
+		$countryQuad->setPosition(-$this->width / 2 + 10, $y);
+		$countryQuad->setSize(5, 5);
+		$countryQuad->setZ(-0.1);
+		$countryQuad->setHAlign(Control::LEFT);
+
 		//Nickname
+
 		$label = new Label_Text();
 		$frame->add($label);
-		$label->setPosition(-$this->width / 2 + 10, $y);
+		$label->setPosition(-$this->width / 2 + 15, $y);
 		$label->setText($target->nickname);
 		$label->setHAlign(Control::LEFT);
 

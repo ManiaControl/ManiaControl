@@ -315,7 +315,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$label->setPosition(0, 1.5, 0.2);
 		$label->setAlign(Control::CENTER, Control::CENTER);
 		$label->setTextSize(1.3);
-		$label->setText($serverName);
+		$label->setText(Formatter::stripDirtyCodes($serverName));
 		$label->setTextColor("FFF");
 
 		// Player Quad / Label
