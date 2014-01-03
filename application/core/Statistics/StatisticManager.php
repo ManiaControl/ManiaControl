@@ -58,6 +58,7 @@ class StatisticManager {
 	 * @return int
 	 */
 	public function getStatisticData($statName, $playerId, $serverLogin = false) {
+		$serverId = 0; //Temporary
 		$mysqli = $this->maniaControl->database->mysqli;
 		$statId = $this->getStatId($statName);
 
@@ -68,7 +69,7 @@ class StatisticManager {
 		if(!$serverLogin) {
 			$query = "SELECT SUM(value) as value FROM `" . self::TABLE_STATISTICS . "` WHERE `statId` = " . $statId . " AND `playerId` = " . $playerId . ";";
 		} else {
-			$query = "SELECT value FROM `" . self::TABLE_STATISTICS . "` WHERE `statId` = " . $statId . " AND `playerId` = " . $playerId . " AND `serverLogin` = '" . $serverLogin . "';";
+			$query = "SELECT value FROM `" . self::TABLE_STATISTICS . "` WHERE `statId` = " . $statId . " AND `playerId` = " . $playerId . " AND `serverLogin` = '" . $serverId . "';";
 		}
 
 		$result = $mysqli->query($query);
@@ -116,16 +117,23 @@ class StatisticManager {
 		}
 	}
 
-	public function getAllPlayerStats(Player $player){
-		$playerStats = array(); //TODO improve performant
-		foreach($this->stats as $stat){
-//			$value = $this->getStatisticData($stat['name'], $player->index);
-		//	var_dump($value);
-			//$playerStats[$stat] = $value;
+
+	/**
+	 * Get all statistics of a certain palyer
+	 *
+	 * @param Player $player
+	 * @return array
+	 */
+	public function getAllPlayerStats(Player $player) {
+		$playerStats = array(); //TODO improve performence
+		foreach($this->stats as $stat) {
+			$value                    = $this->getStatisticData($stat->name, $player->index);
+			$playerStats[$stat->name] = array($stat, $value);
 		}
 
 		return $playerStats;
 	}
+
 	/**
 	 * Inserts a Stat into the database
 	 *
@@ -137,6 +145,7 @@ class StatisticManager {
 	 * @return bool
 	 */
 	public function insertStat($statName, $player, $serverLogin = '', $value, $statType = self::STAT_TYPE_INT) {
+		$serverId = 0; //Temporary
 		$statId = $this->getStatId($statName);
 
 		if($player == null) {
@@ -159,7 +168,7 @@ class StatisticManager {
 		$mysqli = $this->maniaControl->database->mysqli;
 
 		$query = "INSERT INTO `" . self::TABLE_STATISTICS . "` (
-					`serverLogin`,
+					`serverId`,
 					`playerId`,
 					`statId`,
 					`value`
@@ -173,7 +182,7 @@ class StatisticManager {
 			trigger_error($mysqli->error);
 			return false;
 		}
-		$statement->bind_param('siii', $serverLogin, $player->index, $statId, $value);
+		$statement->bind_param('iiii', $serverId, $player->index, $statId, $value);
 		$statement->execute();
 		if($statement->error) {
 			trigger_error($statement->error);
@@ -203,22 +212,24 @@ class StatisticManager {
 	 *
 	 * @param string $statName
 	 * @param string $statDescription
+	 * @param string $type
 	 * @return bool
 	 */
-	public function defineStatMetaData($statName, $statDescription = '') {
+	public function defineStatMetaData($statName, $statDescription = '', $type = self::STAT_TYPE_INT) {
 		$mysqli    = $this->maniaControl->database->mysqli;
 		$query     = "INSERT IGNORE INTO `" . self::TABLE_STATMETADATA . "` (
 					`name`,
+					`type`,
 					`description`
 				) VALUES (
-					?, ?
+					?, ?, ?
 				);";
 		$statement = $mysqli->prepare($query);
 		if($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
 		}
-		$statement->bind_param('ss', $statName, $statDescription);
+		$statement->bind_param('sss', $statName, $type, $statDescription);
 		$statement->execute();
 		if($statement->error) {
 			trigger_error($statement->error);
@@ -242,6 +253,7 @@ class StatisticManager {
 		$query  = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_STATMETADATA . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
 				`name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+				`type` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
 				`description` varchar(150) COLLATE utf8_unicode_ci,
 				PRIMARY KEY (`index`),
 				UNIQUE KEY `name` (`name`)
@@ -263,12 +275,12 @@ class StatisticManager {
 
 		$query = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_STATISTICS . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
-				`serverLogin` varchar(50) NOT NULL,
+				`serverId` int(11) NOT NULL,
 				`playerId` int(11) NOT NULL,
 				`statId` int(11) NOT NULL,
 				`value` int(20) COLLATE utf8_unicode_ci NOT NULL,
 				PRIMARY KEY (`index`),
-				UNIQUE KEY `unique` (`statId`,`playerId`,`serverLogin`)
+				UNIQUE KEY `unique` (`statId`,`playerId`,`serverId`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Statistics' AUTO_INCREMENT=1;";
 
 		$statement = $mysqli->prepare($query);

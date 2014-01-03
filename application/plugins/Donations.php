@@ -25,7 +25,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	const ID                              = 3;
 	const VERSION                         = 0.1;
 	const SETTING_ANNOUNCE_SERVERDONATION = 'Enable Server-Donation Announcements';
-	const STAT_PLAYER_DONATIONS           = 'donatedPlanets';
+	const STAT_PLAYER_DONATIONS           = 'Donated Planets';
 
 	// DonateWidget Properties
 	const MLID_DONATE_WIDGET              = 'DonationPlugin.DonateWidget';

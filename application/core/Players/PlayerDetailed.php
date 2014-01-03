@@ -218,8 +218,29 @@ class PlayerDetailed {
 		$mainLabel->setHAlign(Control::LEFT);
 		$mainLabel->setText("Statistics");*/
 
-		var_dump($this->maniaControl->statisticManager->getAllPlayerStats($player));
+		$playerStats = $this->maniaControl->statisticManager->getAllPlayerStats($player);
 
+		$y = $this->height / 2 - 15;
+		foreach($playerStats as $stat){
+			$statProperties = $stat[0];
+			$value = $stat[1];
+
+			$label = new Label_Text();
+			$frame->add($label);
+			$label->setPosition(-$this->width / 2 + 70, $y);
+			$label->setText($statProperties->name);
+			$label->setHAlign(Control::LEFT);
+			$label->setTextSize(1.5);
+
+			$label = new Label_Text();
+			$frame->add($label);
+			$label->setPosition(-$this->width / 2 + 100, $y);
+			$label->setText($value);
+			$label->setHAlign(Control::LEFT);
+			$label->setTextSize(1.5);
+
+			$y -= 4;
+		}
 		return $frame;
 	}
 } 

@@ -22,14 +22,14 @@ class StatisticCollector implements CallbackListener {
 	/*
 	 * Statistics
 	 */
-	const STAT_ON_SHOOT                  = 'onShoot';
-	const STAT_ON_NEARMISS               = 'onNearMiss';
-	const STAT_ON_CAPTURE                = 'onCapture';
-	const STAT_ON_HIT                    = 'onHit';
-	const STAT_ON_GOT_HIT                = 'onGotHit';
-	const STAT_ON_DEATH                  = 'onDeath';
-	const STAT_ON_PLAYER_REQUEST_RESPAWN = 'onPlayerRequestRespawn';
-	const STAT_ON_KILL                   = 'onKill';
+	const STAT_ON_SHOOT                  = 'Shoots';
+	const STAT_ON_NEARMISS               = 'Near Misses';
+	const STAT_ON_CAPTURE                = 'Captures';
+	const STAT_ON_HIT                    = 'Hits';
+	const STAT_ON_GOT_HIT                = 'Got Hits';
+	const STAT_ON_DEATH                  = 'Deaths';
+	const STAT_ON_PLAYER_REQUEST_RESPAWN = 'Respawns';
+	const STAT_ON_KILL                   = 'Kills';
 	/**
 	 * Private Properties
 	 */
@@ -52,7 +52,7 @@ class StatisticCollector implements CallbackListener {
 
 		//Initialize Settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_COLLECT_STATS_ENABLED, true);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_COLLECT_STATS_MINPLAYERS, 3);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_COLLECT_STATS_MINPLAYERS, 1); //TODO TEMP on 1, normally 3 or 4
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_ON_SHOOT_PRESTORE, 30);
 	}
 

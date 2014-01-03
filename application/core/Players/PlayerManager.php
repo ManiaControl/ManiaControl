@@ -26,8 +26,8 @@ class PlayerManager implements CallbackListener {
 	const CB_PLAYERINFOCHANGED        = 'PlayerManagerCallback.PlayerInfoChanged';
 	const TABLE_PLAYERS               = 'mc_players';
 	const SETTING_JOIN_LEAVE_MESSAGES = 'Enable Join & Leave Messages';
-	const STAT_JOIN_COUNT             = 'joinCount';
-	const STAT_PLAYTIME               = 'playTime';
+	const STAT_JOIN_COUNT             = 'Joins';
+	const STAT_PLAYTIME               = 'Playtime';
 
 	/**
 	 * Public Properties
