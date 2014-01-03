@@ -123,12 +123,13 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 
 
 		//Predefine Description Label
-		$preDefinedDescriptionLabel = new Label();
-		$preDefinedDescriptionLabel->setAlign(Control::LEFT, Control::TOP);
-		$preDefinedDescriptionLabel->setPosition($x + 10, -$this->height / 2 + 5);
-		$preDefinedDescriptionLabel->setSize($this->width * 0.7, 4);
-		$preDefinedDescriptionLabel->setTextSize(2);
-		$preDefinedDescriptionLabel->setVisible(false);
+		$descriptionLabel = new Label();
+		$frame->add($descriptionLabel);
+		$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
+		$descriptionLabel->setPosition($x + 10, -$this->height / 2 + 5);
+		$descriptionLabel->setSize($this->width * 0.7, 4);
+		$descriptionLabel->setTextSize(2);
+		$descriptionLabel->setVisible(false);
 
 		// Headline
 		$headFrame = new Frame();
@@ -212,10 +213,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$countryQuad->setSize(4, 4);
 				$countryQuad->setZ(-0.1);
 
-				$descriptionLabel = clone $preDefinedDescriptionLabel;
-				$frame->add($descriptionLabel);
-				$descriptionLabel->setText($listPlayer->nickname . " from " . $listPlayer->path);
-				$script->addTooltip($countryQuad, $descriptionLabel);
+				$script->addTooltip($countryQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $listPlayer->nickname . " from " . $listPlayer->path));
 			}
 
 			// Level Quad
@@ -232,10 +230,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			$rightLabel->setTextSize(0.8);
 			$rightLabel->setZ(10);
 
-			$descriptionLabel = clone $preDefinedDescriptionLabel;
-			$frame->add($descriptionLabel);
-			$descriptionLabel->setText($this->maniaControl->authenticationManager->getAuthLevelName($listPlayer->authLevel) . " " . $listPlayer->nickname);
-			$script->addTooltip($rightQuad, $descriptionLabel);
+			$script->addTooltip($rightLabel, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $this->maniaControl->authenticationManager->getAuthLevelName($listPlayer->authLevel) . " " . $listPlayer->nickname));
 
 			// Player Profile Quad
 			$playerQuad = new Quad_UIConstruction_Buttons();
@@ -247,10 +242,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			$script->addProfileButton($playerQuad, $listPlayer->login);
 
 			// Description Label
-			$descriptionLabel = clone $preDefinedDescriptionLabel;
-			$frame->add($descriptionLabel);
-			$descriptionLabel->setText("View Player profile of " . $listPlayer->nickname);
-			$script->addTooltip($playerQuad, $descriptionLabel);
+			$script->addTooltip($playerQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "View Player profile of " . $listPlayer->nickname));
+
 
 			switch($listPlayer->authLevel) {
 				case authenticationManager::AUTH_LEVEL_MASTERADMIN:
@@ -278,10 +271,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$playerQuad->setSize(3.8, 3.8);
 				$playerQuad->setAction(self::ACTION_PLAYER_ADV . "." . $listPlayer->login);
 
-				$descriptionLabel = clone $preDefinedDescriptionLabel;
-				$frame->add($descriptionLabel);
-				$descriptionLabel->setText("Advanced Player Actions on " . $listPlayer->nickname);
-				$script->addTooltip($playerQuad, $descriptionLabel);
+				// Description Label
+				$script->addTooltip($playerQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Advanced Player Actions on " . $listPlayer->nickname));
 
 				// Force to Red-Team Quad
 				$redQuad = new Quad_Emblems();
@@ -293,11 +284,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$redQuad->setAction(self::ACTION_FORCE_RED . "." . $listPlayer->login);
 
 				// Force to Red-Team Description Label
-				$descriptionLabel = clone $preDefinedDescriptionLabel;;
-				$frame->add($descriptionLabel);
-				$descriptionLabel->setText("Force " . $listPlayer->nickname . '$z to Red Team!');
-				$script->addTooltip($redQuad, $descriptionLabel);
-
+				$script->addTooltip($redQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Force " . $listPlayer->nickname . '$z to Red Team!'));
 
 				// Force to Blue-Team Quad
 				$blueQuad = new Quad_Emblems();
@@ -309,10 +296,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$blueQuad->setAction(self::ACTION_FORCE_BLUE . "." . $listPlayer->login);
 
 				// Force to Blue-Team Description Label
-				$descriptionLabel = clone $preDefinedDescriptionLabel;
-				$frame->add($descriptionLabel);
-				$descriptionLabel->setText("Force " . $listPlayer->nickname . '$z to Blue Team!');
-				$script->addTooltip($blueQuad, $descriptionLabel);
+				$script->addTooltip($blueQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Force " . $listPlayer->nickname . '$z to Blue Team!'));
 
 				// Force to Spectator Quad
 				$spectatorQuad = new Quad_BgRaceScore2();
@@ -324,10 +308,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$spectatorQuad->setAction(self::ACTION_FORCE_SPEC . "." . $listPlayer->login);
 
 				// Force to Spectator Description Label
-				$descriptionLabel = clone $preDefinedDescriptionLabel;
-				$frame->add($descriptionLabel);
-				$descriptionLabel->setText("Force " . $listPlayer->nickname . '$z to Spectator!');
-				$script->addTooltip($spectatorQuad, $descriptionLabel);
+				$script->addTooltip($spectatorQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Force " . $listPlayer->nickname . '$z to Spectator!'));
 			}
 			$i++;
 			$y -= 4;
@@ -580,7 +561,6 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$adminLogin  = $callback[1][1];
 		$targetLogin = $actionArray[2];
 
-		var_dump($action);
 		switch($action) {
 			case self::ACTION_OPEN_PLAYER_DETAILED:
 				$player = $this->maniaControl->playerManager->getPlayer($adminLogin);
