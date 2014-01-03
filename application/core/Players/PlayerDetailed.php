@@ -1,7 +1,9 @@
 <?php
 
 namespace ManiaControl\Players;
+use FML\Controls\Control;
 use FML\Controls\Frame;
+use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\ManiaLink;
@@ -50,7 +52,7 @@ class PlayerDetailed {
 
 
 	public function showPlayerDetailed(Player $player, $targetLogin) {
-		var_dump($player);
+		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 
 		// Create script and features
@@ -76,6 +78,129 @@ class PlayerDetailed {
 		$closeQuad->setSize(6, 6);
 		$closeQuad->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_QuitRace);
 		$closeQuad->setAction(ManialinkManager::ACTION_CLOSEWIDGET);
+
+
+		$y = $this->height / 2 - 10;
+		//Nickname
+		$label = new Label_Text();
+		$frame->add($label);
+		$label->setPosition(-$this->width / 2 + 10, $y);
+		$label->setText($target->nickname);
+		$label->setHAlign(Control::LEFT);
+
+
+		//Define MainLabel (Login)
+		$y -= 5;
+		$mainLabel = new Label_Text();
+		$frame->add($mainLabel);
+		$mainLabel->setPosition(-$this->width / 2 + 10, $y);
+		$mainLabel->setTextSize(1.2);
+		$mainLabel->setHAlign(Control::LEFT);
+		$mainLabel->setText("Login:");
+
+		$y -= 5;
+		$label = clone $mainLabel;
+		$frame->add($label);
+		$label->setY($y);
+		$label->setText("Nation: ");
+
+		$y -= 5;
+		$label = clone $mainLabel;
+		$frame->add($label);
+		$label->setY($y);
+		$label->setText("Province:");
+
+		$y -= 5;
+		$label = clone $mainLabel;
+		$frame->add($label);
+		$label->setY($y);
+		$label->setText("Authorization:");
+
+		$y -= 5;
+		$label = clone $mainLabel;
+		$frame->add($label);
+		$label->setY($y);
+		$label->setText("Ladder Rank:");
+
+		$y -= 5;
+		$label = clone $mainLabel;
+		$frame->add($label);
+		$label->setY($y);
+		$label->setText("Ladder Score:");
+
+		$y -= 5;
+		$label = clone $mainLabel;
+		$frame->add($label);
+		$label->setY($y);
+		$label->setText("Plays since:");
+
+		//Login
+		$y = $this->height / 2 - 15;
+		$mainLabel = new Label_Text();
+		$frame->add($mainLabel);
+		$mainLabel->setPosition(-$this->width / 2 + 30, $y);
+		$mainLabel->setText($target->login);
+		$mainLabel->setTextSize(1.2);
+		$mainLabel->setHAlign(Control::LEFT);
+
+		//Country
+		$y -= 5;
+		$label = clone $mainLabel;
+		$frame->add($label);
+		$label->setY($y);
+		$label->setText($target->getCountry());
+
+		//Province
+		$y -= 5;
+		$label = clone $mainLabel;
+		$frame->add($label);
+		$label->setY($y);
+		$label->setText($target->getProvince());
+
+		//AuthLevel
+		$y -= 5;
+		$label = clone $mainLabel;
+		$frame->add($label);
+		$label->setY($y);
+		$label->setText($this->maniaControl->authenticationManager->getAuthLevelName($target->authLevel));
+
+		//LadderRank
+		$y -= 5;
+		$label = clone $mainLabel;
+		$frame->add($label);
+		$label->setY($y);
+		$label->setText($target->ladderRank);
+
+		//LadderScore
+		$y -= 5;
+		$label = clone $mainLabel;
+		$frame->add($label);
+		$label->setY($y);
+		$label->setText(round($target->ladderScore,2));
+
+		//Played Since
+		$y -= 5;
+		$label = clone $mainLabel;
+		$frame->add($label);
+		$label->setY($y);
+		$label->setText(date("Y-m-d", time() - 3600 * 24 * $target->maniaPlanetPlayDays));
+
+		//Avatar
+		$label = new Label_Text();
+		$frame->add($label);
+		$label->setPosition($this->width / 2 - 10, $this->height / 2 - 10);
+		$label->setText("Avatar");
+		$label->setTextSize(1.3);
+		$label->setHAlign(Control::RIGHT);
+
+		$quad = new Quad();
+		$frame->add($quad);
+		$quad->setImage('file://' . $player->avatar);
+		$quad->setPosition($this->width / 2 - 10, $this->height / 2 - 10);
+		$quad->setAlign(Control::RIGHT, Control::TOP);
+		$quad->setSize(20, 20);
+
+
 
 		// render and display xml
 		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player);
