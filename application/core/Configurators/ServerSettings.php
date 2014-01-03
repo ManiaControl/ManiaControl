@@ -198,19 +198,15 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			$boolSettingName = self::ACTION_PREFIX_SETTING . $actionArray[2];
 		}
 
-		//var_dump($configData[3]);
 		$newSettings = array();
 		foreach($configData[3] as $setting) {
 			if(substr($setting['Name'], 0, $prefixLength) != self::ACTION_PREFIX_SETTING) {
 				continue;
 			}
 
-			//Check if it was a boolbox
-			//	var_dump($setting['Name'], $boolSettingName, "");
+			//Check if it was a boolean button
 			if($setting['Name'] == $boolSettingName) {
 				$setting['Value'] = ($setting['Value'] ? false : true);
-				var_dump($setting['Value']);
-				var_dump("test13");
 			}
 
 			$settingName = substr($setting['Name'], $prefixLength);
@@ -263,7 +259,6 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			return;
 		}
 
-		//var_dump($newSettings);
 		// Notifications
 		$settingsCount = count($newSettings);
 		$settingIndex  = 0;
