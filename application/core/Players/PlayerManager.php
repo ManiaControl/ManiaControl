@@ -4,6 +4,7 @@ namespace ManiaControl\Players;
 
 require_once __DIR__ . '/Player.php';
 require_once __DIR__ . '/PlayerCommands.php';
+require_once __DIR__ . '/PlayerDetailed.php';
 
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
@@ -33,6 +34,7 @@ class PlayerManager implements CallbackListener {
 	 */
 	public $playerActions = null;
 	public $playerCommands = null;
+	public $playerDetailed = null;
 	public $playerList = array();
 
 	/**
@@ -51,6 +53,7 @@ class PlayerManager implements CallbackListener {
 
 		$this->playerCommands = new PlayerCommands($maniaControl);
 		$this->playerActions  = new PlayerActions($maniaControl);
+		$this->playerDetailed  = new PlayerDetailed($maniaControl);
 
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES, true);

@@ -33,21 +33,22 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 	/**
 	 * Constants
 	 */
-	const ACTION_FORCE_RED        = 'PlayerList.ForceRed';
-	const ACTION_FORCE_BLUE       = 'PlayerList.ForceBlue';
-	const ACTION_FORCE_SPEC       = 'PlayerList.ForceSpec';
-	const ACTION_PLAYER_ADV       = 'PlayerList.PlayerAdvancedActions';
-	const ACTION_CLOSE_PLAYER_ADV = 'PlayerList.ClosePlayerAdvWidget';
-	const ACTION_MUTE_PLAYER      = 'PlayerList.MutePlayer';
-	const ACTION_UNMUTE_PLAYER    = 'PlayerList.UnMutePlayer';
-	const ACTION_WARN_PLAYER      = 'PlayerList.WarnPlayer';
-	const ACTION_KICK_PLAYER      = 'PlayerList.KickPlayer';
-	const ACTION_BAN_PLAYER       = 'PlayerList.BanPlayer';
-	const ACTION_ADD_AS_MASTER    = 'PlayerList.PlayerAddAsMaster';
-	const ACTION_ADD_AS_ADMIN     = 'PlayerList.PlayerAddAsAdmin';
-	const ACTION_ADD_AS_MOD       = 'PlayerList.PlayerAddAsModerator';
-	const ACTION_REVOKE_RIGHTS    = 'PlayerList.RevokeRights';
-	const SHOWN_MAIN_WINDOW       = -1;
+	const ACTION_FORCE_RED            = 'PlayerList.ForceRed';
+	const ACTION_FORCE_BLUE           = 'PlayerList.ForceBlue';
+	const ACTION_FORCE_SPEC           = 'PlayerList.ForceSpec';
+	const ACTION_PLAYER_ADV           = 'PlayerList.PlayerAdvancedActions';
+	const ACTION_CLOSE_PLAYER_ADV     = 'PlayerList.ClosePlayerAdvWidget';
+	const ACTION_MUTE_PLAYER          = 'PlayerList.MutePlayer';
+	const ACTION_UNMUTE_PLAYER        = 'PlayerList.UnMutePlayer';
+	const ACTION_WARN_PLAYER          = 'PlayerList.WarnPlayer';
+	const ACTION_KICK_PLAYER          = 'PlayerList.KickPlayer';
+	const ACTION_BAN_PLAYER           = 'PlayerList.BanPlayer';
+	const ACTION_ADD_AS_MASTER        = 'PlayerList.PlayerAddAsMaster';
+	const ACTION_ADD_AS_ADMIN         = 'PlayerList.PlayerAddAsAdmin';
+	const ACTION_ADD_AS_MOD           = 'PlayerList.PlayerAddAsModerator';
+	const ACTION_REVOKE_RIGHTS        = 'PlayerList.RevokeRights';
+	const ACTION_OPEN_PLAYER_DETAILED = 'PlayerList.OpenPlayerDetailed';
+	const SHOWN_MAIN_WINDOW           = -1;
 	/**
 	 * Private properties
 	 */
@@ -59,7 +60,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 	private $playersListShown = array();
 
 	/**
-	 * Create a new server commands instance
+	 * Create a PlayerList instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */
@@ -164,11 +165,14 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$lineQuad->setZ(0.001);
 			}
 
-			// $array = array($i => $x + 5, $listPlayer->nickname => $x + 10, $listPlayer->login => $x + 50, $listPlayer->ladderRank =>
-			// $x + 60, $listPlayer->ladderScore => $x + 70, $path => $x + 85);
 			$array = array($i => $x + 5, $listPlayer->nickname => $x + 18, $listPlayer->login => $x + 60, $path => $x + 91);
-			// $properties = array('profile' => $listPlayer->login, 'script' => $script);
-			$this->maniaControl->manialinkManager->labelLine($playerFrame, $array);
+			$frames = $this->maniaControl->manialinkManager->labelLine($playerFrame, $array);
+
+			/** @var Label $nicknameLabel */
+			$nicknameLabel = $frames[1];
+			$nicknameLabel->setAction(self::ACTION_OPEN_PLAYER_DETAILED . '.' . $listPlayer->login);
+
+
 			$playerFrame->setY($y);
 
 			// Team Emblem
@@ -576,7 +580,12 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$adminLogin  = $callback[1][1];
 		$targetLogin = $actionArray[2];
 
+		var_dump($action);
 		switch($action) {
+			case self::ACTION_OPEN_PLAYER_DETAILED:
+				$player = $this->maniaControl->playerManager->getPlayer($adminLogin);
+				$this->maniaControl->playerManager->playerDetailed->showPlayerDetailed($player, $targetLogin);
+				break;
 			case self::ACTION_FORCE_BLUE:
 				$this->maniaControl->playerManager->playerActions->forcePlayerToTeam($adminLogin, $targetLogin, PlayerActions::BLUE_TEAM);
 				break;

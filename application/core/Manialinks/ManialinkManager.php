@@ -91,7 +91,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 */
 	public function unregisterManialinkPageAnswerListener(ManialinkPageAnswerListener $listener) {
 		$keys = array_keys($this->pageAnswerListeners, $listener);
-		foreach ($keys as $key) {
+		foreach($keys as $key) {
 			unset($this->pageAnswerListeners[$key]);
 		}
 
@@ -112,7 +112,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 			return;
 		}
 		// Inform page answer listeners
-		foreach ($this->pageAnswerListeners[$actionId] as $listener) {
+		foreach($this->pageAnswerListeners[$actionId] as $listener) {
 			call_user_func(array($listener[0], $listener[1]), $callback, $player);
 		}
 	}
@@ -135,7 +135,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 		}
 		if(is_array($logins)) {
 			$success = true;
-			foreach ($logins as $login) {
+			foreach($logins as $login) {
 				$subSuccess = $this->maniaControl->client->query('SendDisplayManialinkPageToLogin', $login, $manialinkText, $timeout, $hideOnClick);
 				if(!$subSuccess) {
 					$success = false;
@@ -212,7 +212,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 * @param Frame $frame
 	 * @param array $labelStrings
 	 * @param array $properties
-	 * @return array Returns the frames (to add special Properties later)
+	 * @return array Returns the labels (to add special Properties later)
 	 */
 	public function labelLine(Frame $frame, array $labelStrings, array $properties = array()) {
 		// TODO overwrite standard properties with properties from array
@@ -225,8 +225,8 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 		$profile   = (isset($properties['profile']) ? $properties['profile'] : false);
 		$script    = (isset($properties['script']) ? $properties['script'] : null);
 
-		$frames = array();
-		foreach ($labelStrings as $text => $x) {
+		$labels = array();
+		foreach($labelStrings as $text => $x) {
 			$label = new Label_Text();
 			$frame->add($label);
 			$label->setHAlign($hAlign);
@@ -240,9 +240,9 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 				$script->addProfileButton($label, $profile);
 			}
 
-			$frames[] = $frame; // add Frame to the frames array
+			$labels[] = $label; // add Label to the labels array
 		}
 
-		return $frames;
+		return $labels;
 	}
 }

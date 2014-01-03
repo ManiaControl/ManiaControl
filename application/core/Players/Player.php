@@ -41,6 +41,7 @@ class Player {
 		if(!$rpcInfos) {
 			return;
 		}
+
 		$this->pid         = $rpcInfos['PlayerId'];
 		$this->login       = $rpcInfos['Login'];
 		$this->nickname    = Formatter::stripDirtyCodes($rpcInfos['NickName']);
