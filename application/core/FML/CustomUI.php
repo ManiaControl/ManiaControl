@@ -26,7 +26,7 @@ class CustomUI {
 	/**
 	 * Set XML Encoding
 	 *
-	 * @param string $encoding        	
+	 * @param string $encoding
 	 * @return \FML\CustomUI
 	 */
 	public function setXMLEncoding($encoding) {
@@ -37,7 +37,7 @@ class CustomUI {
 	/**
 	 * Set Showing of Notices
 	 *
-	 * @param bool $visible        	
+	 * @param bool $visible
 	 * @return \FML\CustomUI
 	 */
 	public function setNoticeVisible($visible) {
@@ -48,7 +48,7 @@ class CustomUI {
 	/**
 	 * Set Showing of the Challenge Info
 	 *
-	 * @param bool $visible        	
+	 * @param bool $visible
 	 * @return \FML\CustomUI
 	 */
 	public function setChallengeInfoVisible($visible) {
@@ -59,7 +59,7 @@ class CustomUI {
 	/**
 	 * Set Showing of the Net Infos
 	 *
-	 * @param bool $visible        	
+	 * @param bool $visible
 	 * @return \FML\CustomUI
 	 */
 	public function setNetInfosVisible($visible) {
@@ -70,7 +70,7 @@ class CustomUI {
 	/**
 	 * Set Showing of the Chat
 	 *
-	 * @param bool $visible        	
+	 * @param bool $visible
 	 * @return \FML\CustomUI
 	 */
 	public function setChatVisible($visible) {
@@ -81,7 +81,7 @@ class CustomUI {
 	/**
 	 * Set Showing of the Checkpoint List
 	 *
-	 * @param bool $visible        	
+	 * @param bool $visible
 	 * @return \FML\CustomUI
 	 */
 	public function setCheckpointListVisible($visible) {
@@ -92,7 +92,7 @@ class CustomUI {
 	/**
 	 * Set Showing of Round Scores
 	 *
-	 * @param bool $visible        	
+	 * @param bool $visible
 	 * @return \FML\CustomUI
 	 */
 	public function setRoundScoresVisible($visible) {
@@ -103,7 +103,7 @@ class CustomUI {
 	/**
 	 * Set Showing of the Scoretable
 	 *
-	 * @param bool $visible        	
+	 * @param bool $visible
 	 * @return \FML\CustomUI
 	 */
 	public function setScoretableVisible($visible) {
@@ -114,7 +114,7 @@ class CustomUI {
 	/**
 	 * Set Global Showing
 	 *
-	 * @param bool $visible        	
+	 * @param bool $visible
 	 * @return \FML\CustomUI
 	 */
 	public function setGlobalVisible($visible) {
@@ -125,7 +125,7 @@ class CustomUI {
 	/**
 	 * Render the XML Document
 	 *
-	 * @param \DOMDocument $domDocument        	
+	 * @param \DOMDocument $domDocument
 	 * @return \DOMDocument
 	 */
 	public function render($domDocument = null) {

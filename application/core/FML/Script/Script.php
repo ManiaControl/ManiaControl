@@ -15,50 +15,84 @@ class Script {
 	/**
 	 * Constants
 	 */
-	const CLASS_TOOLTIPS = "FML_Tooltips";
-	const CLASS_MENU = "FML_Menu";
-	const CLASS_MENUBUTTON = "FML_MenuButton";
-	const CLASS_PAGE = "FML_Page";
-	const CLASS_PAGER = "FML_Pager";
-	const CLASS_PAGELABEL = "FML_PageLabel";
-	const CLASS_PROFILE = "FML_Profile";
-	const CLASS_MAPINFO = "FML_MapInfo";
-	const LABEL_ONINIT = "OnInit";
-	const LABEL_LOOP = "Loop";
-	const LABEL_ENTRYSUBMIT = "EntrySubmit";
-	const LABEL_KEYPRESS = "KeyPress";
-	const LABEL_MOUSECLICK = "MouseClick";
-	const LABEL_MOUSEOUT = "MouseOut";
-	const LABEL_MOUSEOVER = "MouseOver";
+	const CLASS_TOOLTIPS = 'FML_Tooltips';
+	const CLASS_MENU = 'FML_Menu';
+	const CLASS_MENUBUTTON = 'FML_MenuButton';
+	const CLASS_PAGE = 'FML_Page';
+	const CLASS_PAGER = 'FML_Pager';
+	const CLASS_PAGELABEL = 'FML_PageLabel';
+	const CLASS_PROFILE = 'FML_Profile';
+	const CLASS_MAPINFO = 'FML_MapInfo';
+	const OPTION_TOOLTIP_ONCLICK = 'FML_Tooltip_OnClick';
+	const OPTION_TOOLTIP_STAYONCLICK = 'FML_Tooltip_StayOnClick';
+	const OPTION_TOOLTIP_INVERT = 'FML_Tooltip_Invert';
+	const OPTION_TOOLTIP_TEXT = 'FML_Tooltip_Text';
+	const LABEL_ONINIT = 'OnInit';
+	const LABEL_LOOP = 'Loop';
+	const LABEL_ENTRYSUBMIT = 'EntrySubmit';
+	const LABEL_KEYPRESS = 'KeyPress';
+	const LABEL_MOUSECLICK = 'MouseClick';
+	const LABEL_MOUSEOUT = 'MouseOut';
+	const LABEL_MOUSEOVER = 'MouseOver';
+	const CONSTANT_TOOLTIPTEXTS = 'C_FML_TooltipTexts';
+	const FUNCTION_SETTOOLTIPTEXT = 'FML_SetTooltipText';
 	
 	/**
 	 * Protected Properties
 	 */
 	protected $tagName = 'script';
 	protected $includes = array();
+	protected $constants = array();
+	protected $functions = array();
 	protected $tooltips = false;
+	protected $tooltipTexts = array();
 	protected $menus = false;
 	protected $pages = false;
 	protected $profile = false;
 	protected $mapInfo = false;
 
 	/**
-	 * Add an Include to the Script
+	 * Set an Include of the Script
 	 *
-	 * @param string $namespace        	
-	 * @param string $file        	
+	 * @param string $namespace
+	 * @param string $file
 	 * @return \FML\Script\Script
 	 */
-	public function addInclude($namespace, $file) {
+	public function setInclude($namespace, $file) {
 		$this->includes[$namespace] = $file;
+		return $this;
+	}
+
+	/**
+	 * Set a Constant of the Script
+	 *
+	 * @param string $name
+	 * @param string $value
+	 * @return \FML\Script\Script
+	 */
+	public function setConstant($name, $value) {
+		$this->constants[$name] = $value;
+		return $this;
+	}
+
+	/**
+	 * Set a Function of the Script
+	 *
+	 * @param string $name
+	 * @param string $coding
+	 * @return \FML\Script\Script
+	 */
+	public function setFunction($name, $coding) {
+		$this->functions[$name] = $coding;
 		return $this;
 	}
 
 	/**
 	 * Add a Tooltip Behavior
 	 *
-	 * @param Control $hoverControl        	
-	 * @param Control $tooltipControl        	
+	 * @param Control $hoverControl The Control that shows the Tooltip
+	 * @param Control $tooltipControl The Tooltip to display
+	 * @param string $options,... (optional) Unlimited Number of Tooltip Options
 	 * @return \FML\Script\Script
 	 */
 	public function addTooltip(Control $hoverControl, Control $tooltipControl) {
@@ -68,9 +102,30 @@ class Script {
 		}
 		$tooltipControl->checkId();
 		$tooltipControl->setVisible(false);
+		$hoverControl->checkId();
 		$hoverControl->setScriptEvents(true);
 		$hoverControl->addClass(self::CLASS_TOOLTIPS);
 		$hoverControl->addClass($tooltipControl->getId());
+		$options = $this->spliceParameters(func_get_args(), 2);
+		foreach ($options as $option => $value) {
+			if ($option == self::OPTION_TOOLTIP_TEXT) {
+				if (!($tooltipControl instanceof Label)) {
+					trigger_error('Label needed for Tooltip Text Option!');
+					continue;
+				}
+				$hoverId = $hoverControl->getId();
+				$tooltipId = $tooltipControl->getId();
+				if (!isset($this->tooltipTexts[$tooltipId])) {
+					$this->tooltipTexts[$tooltipId] = array();
+				}
+				$this->tooltipTexts[$tooltipId][$hoverId] = $value;
+				continue;
+			}
+			if ($option == self::OPTION_TOOLTIP_INVERT) {
+				$tooltipControl->setVisible(true);
+			}
+			$hoverControl->addClass($option);
+		}
 		$this->tooltips = true;
 		return $this;
 	}
@@ -78,9 +133,9 @@ class Script {
 	/**
 	 * Add a Menu Behavior
 	 *
-	 * @param Control $clickControl        	
-	 * @param Control $menuControl        	
-	 * @param string $menuId        	
+	 * @param Control $clickControl
+	 * @param Control $menuControl
+	 * @param string $menuId
 	 * @return \FML\Script\Script
 	 */
 	public function addMenu(Control $clickControl, Control $menuControl, $menuId = null) {
@@ -95,7 +150,7 @@ class Script {
 		$clickControl->setScriptEvents(true);
 		$clickControl->addClass(self::CLASS_MENUBUTTON);
 		$clickControl->addClass($menuId . '-' . $menuControl->getId());
-		$this->addInclude('TextLib', 'TextLib');
+		$this->setInclude('TextLib', 'TextLib');
 		$this->menus = true;
 		return $this;
 	}
@@ -103,9 +158,9 @@ class Script {
 	/**
 	 * Add a Page for a Paging Behavior
 	 *
-	 * @param Control $pageControl        	
-	 * @param int $pageNumber        	
-	 * @param string $pagesId        	
+	 * @param Control $pageControl
+	 * @param int $pageNumber
+	 * @param string $pagesId
 	 * @return \FML\Script\Script
 	 */
 	public function addPage(Control $pageControl, $pageNumber, $pagesId = null) {
@@ -120,9 +175,9 @@ class Script {
 	/**
 	 * Add a Pager Button for a Paging Behavior
 	 *
-	 * @param Control $pagerControl        	
-	 * @param int $pagingAction        	
-	 * @param string $pagesId        	
+	 * @param Control $pagerControl
+	 * @param int $pagingAction
+	 * @param string $pagesId
 	 * @return \FML\Script\Script
 	 */
 	public function addPager(Control $pagerControl, $pagingAction, $pagesId = null) {
@@ -136,7 +191,7 @@ class Script {
 		$pagerControl->addClass(self::CLASS_PAGER);
 		$pagerControl->addClass(self::CLASS_PAGER . '-I' . $pagesId);
 		$pagerControl->addClass(self::CLASS_PAGER . '-A' . $pagingAction);
-		$this->addInclude('TextLib', 'TextLib');
+		$this->setInclude('TextLib', 'TextLib');
 		$this->pages = true;
 		return $this;
 	}
@@ -144,8 +199,8 @@ class Script {
 	/**
 	 * Add a Label that shows the current Page Number
 	 *
-	 * @param Label $pageLabel        	
-	 * @param string $pagesId        	
+	 * @param Label $pageLabel
+	 * @param string $pagesId
 	 * @return \FML\Script\Script
 	 */
 	public function addPageLabel(Label $pageLabel, $pagesId = null) {
@@ -158,8 +213,8 @@ class Script {
 	/**
 	 * Add a Button Behavior that will open the Built-In Player Profile
 	 *
-	 * @param Control $profileControl        	
-	 * @param string $playerLogin        	
+	 * @param Control $profileControl
+	 * @param string $playerLogin
 	 * @return \FML\Script\Script
 	 */
 	public function addProfileButton(Control $profileControl, $playerLogin) {
@@ -172,7 +227,7 @@ class Script {
 		if ($playerLogin) {
 			$profileControl->addClass(self::CLASS_PROFILE . '-' . $playerLogin);
 		}
-		$this->addInclude('TextLib', 'TextLib');
+		$this->setInclude('TextLib', 'TextLib');
 		$this->profile = true;
 		return $this;
 	}
@@ -180,7 +235,7 @@ class Script {
 	/**
 	 * Add a Button Behavior that will open the Built-In Map Info
 	 *
-	 * @param Control $mapInfoControl        	
+	 * @param Control $mapInfoControl
 	 * @return \FML\Script\Script
 	 */
 	public function addMapInfoButton(Control $mapInfoControl) {
@@ -197,7 +252,7 @@ class Script {
 	/**
 	 * Create the Script XML Tag
 	 *
-	 * @param \DOMDocument $domDocument        	
+	 * @param \DOMDocument $domDocument
 	 * @return \DOMElement
 	 */
 	public function render(\DOMDocument $domDocument) {
@@ -217,21 +272,13 @@ class Script {
 		$scriptText = "";
 		$scriptText .= $this->getHeaderComment();
 		$scriptText .= $this->getIncludes();
-		if ($this->tooltips) {
-			$scriptText .= $this->getTooltipLabels();
-		}
-		if ($this->menus) {
-			$scriptText .= $this->getMenuLabels();
-		}
-		if ($this->pages) {
-			$scriptText .= $this->getPagesLabels();
-		}
-		if ($this->profile) {
-			$scriptText .= $this->getProfileLabels();
-		}
-		if ($this->mapInfo) {
-			$scriptText .= $this->getMapInfoLabels();
-		}
+		$scriptText .= $this->getConstants();
+		$scriptText .= $this->getFunctions();
+		$scriptText .= $this->getTooltipLabels();
+		$scriptText .= $this->getMenuLabels();
+		$scriptText .= $this->getPagesLabels();
+		$scriptText .= $this->getProfileLabels();
+		$scriptText .= $this->getMapInfoLabels();
 		$scriptText .= $this->getMainFunction();
 		return $scriptText;
 	}
@@ -260,29 +307,132 @@ class Script {
 	}
 
 	/**
+	 * Get the Constants
+	 *
+	 * @return string
+	 */
+	private function getConstants() {
+		$this->buildTooltipConstants();
+		$constantsText = PHP_EOL;
+		foreach ($this->constants as $name => $value) {
+			$constantsText .= "#Const {$name} {$value}" . PHP_EOL;
+		}
+		return $constantsText;
+	}
+
+	/**
+	 * Build the Constants needed for tooltips
+	 */
+	private function buildTooltipConstants() {
+		if (!$this->tooltips) return;
+		$constantText = "[";
+		$index = 0;
+		$count = count($this->tooltipTexts);
+		foreach ($this->tooltipTexts as $tooltipId => $tooltipTexts) {
+			$constantText .= "\"{$tooltipId}\" => [";
+			$subIndex = 0;
+			$subCount = count($tooltipTexts);
+			foreach ($tooltipTexts as $hoverId => $text) {
+				$constantText .= "\"{$hoverId}\" => \"{$text}\"";
+				if ($subIndex < $subCount - 1) $constantText .= ", ";
+				$subIndex++;
+			}
+			$constantText .= "]";
+			if ($index < $count - 1) $constantText .= ", ";
+			$index++;
+		}
+		$constantText .= "]";
+		$this->setConstant(self::CONSTANT_TOOLTIPTEXTS, $constantText);
+	}
+
+	/**
+	 * Get the Functions
+	 *
+	 * @return string
+	 */
+	private function getFunctions() {
+		$this->buildTooltipFunctions();
+		$functionsText = PHP_EOL;
+		foreach ($this->functions as $name => $coding) {
+			$functionsText .= $coding;
+		}
+		return $functionsText;
+	}
+
+	/**
+	 * Build the Functions needed for Tooltips
+	 */
+	private function buildTooltipFunctions() {
+		if (!$this->tooltips) return;
+		$setFunctionText = "
+Void " . self::FUNCTION_SETTOOLTIPTEXT . "(CMlControl _TooltipControl, CMlControl _HoverControl) {
+	if (!_TooltipControl.Visible) return;
+	declare TooltipId = _TooltipControl.ControlId;
+	declare HoverId = _HoverControl.ControlId;
+	if (!" . self::CONSTANT_TOOLTIPTEXTS . ".existskey(TooltipId)) return;
+	if (!" . self::CONSTANT_TOOLTIPTEXTS . "[TooltipId].existskey(HoverId)) return;
+	declare Label = (_TooltipControl as CMlLabel);
+	Label.Value = " . self::CONSTANT_TOOLTIPTEXTS . "[TooltipId][HoverId];
+}";
+		$this->setFunction(self::FUNCTION_SETTOOLTIPTEXT, $setFunctionText);
+	}
+
+	/**
 	 * Get the Tooltip Labels
 	 *
 	 * @return string
 	 */
 	private function getTooltipLabels() {
+		if (!$this->tooltips) return "";
 		$mouseOverScript = "
-if (Event.Control.HasClass(\"" . self::CLASS_TOOLTIPS . "\")) {
-	foreach (ControlClass in Event.Control.ControlClasses) {
-		declare TooltipControl <=> Page.GetFirstChild(ControlClass);
-		if (TooltipControl == Null) continue;
-		TooltipControl.Show();
-	}
+if (!Event.Control.HasClass(\"" . self::CLASS_TOOLTIPS . "\")) break;
+if (Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_ONCLICK . "\")) break;
+declare Invert = Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_INVERT . "\");
+foreach (ControlClass in Event.Control.ControlClasses) {
+	declare TooltipControl <=> Page.GetFirstChild(ControlClass);
+	if (TooltipControl == Null) continue;
+	TooltipControl.Visible = !Invert;
+	" . self::FUNCTION_SETTOOLTIPTEXT . "(TooltipControl, Event.Control);
 }";
 		$mouseOutScript = "
-if (Event.Control.HasClass(\"" . self::CLASS_TOOLTIPS . "\")) {
-	foreach (ControlClass in Event.Control.ControlClasses) {
-		declare TooltipControl <=> Page.GetFirstChild(ControlClass);
-		if (TooltipControl == Null) continue;
-		TooltipControl.Hide();
+if (!Event.Control.HasClass(\"" . self::CLASS_TOOLTIPS . "\")) break;
+declare FML_Clicked for Event.Control = False;
+declare StayOnClick = Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_STAYONCLICK . "\");
+if (StayOnClick && FML_Clicked) break;
+declare Invert = Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_INVERT . "\");
+foreach (ControlClass in Event.Control.ControlClasses) {
+	declare TooltipControl <=> Page.GetFirstChild(ControlClass);
+	if (TooltipControl == Null) continue;
+	TooltipControl.Visible = Invert;
+	" . self::FUNCTION_SETTOOLTIPTEXT . "(TooltipControl, Event.Control);
+}";
+		$mouseClickScript = "
+if (!Event.Control.HasClass(\"" . self::CLASS_TOOLTIPS . "\")) break;
+declare Show = False;
+declare OnClick = Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_ONCLICK . "\");
+if (OnClick) {
+	Show = !Event.Control.Visible;
+} else {
+	declare StayOnClick = Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_STAYONCLICK . "\");
+	if (StayOnClick) {
+		declare FML_Clicked for Event.Control = False;
+		FML_Clicked = !FML_Clicked;
+		if (FML_Clicked) break;
+		Show = False;
+	} else {
+		break;
 	}
+}
+declare Invert = Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_INVERT . "\");
+foreach (ControlClass in Event.Control.ControlClasses) {
+	declare TooltipControl <=> Page.GetFirstChild(ControlClass);
+	if (TooltipControl == Null) continue;
+	TooltipControl.Visible = Show && !Invert;
+	" . self::FUNCTION_SETTOOLTIPTEXT . "(TooltipControl, Event.Control);
 }";
 		$tooltipsLabels = Builder::getLabelImplementationBlock(self::LABEL_MOUSEOVER, $mouseOverScript);
 		$tooltipsLabels .= Builder::getLabelImplementationBlock(self::LABEL_MOUSEOUT, $mouseOutScript);
+		$tooltipsLabels .= Builder::getLabelImplementationBlock(self::LABEL_MOUSECLICK, $mouseClickScript);
 		return $tooltipsLabels;
 	}
 
@@ -292,6 +442,7 @@ if (Event.Control.HasClass(\"" . self::CLASS_TOOLTIPS . "\")) {
 	 * @return string
 	 */
 	private function getMenuLabels() {
+		if (!$this->menus) return "";
 		$mouseClickScript = "
 if (Event.Control.HasClass(\"" . self::CLASS_MENUBUTTON . "\")) {
 	declare Text MenuIdClass;
@@ -323,6 +474,7 @@ if (Event.Control.HasClass(\"" . self::CLASS_MENUBUTTON . "\")) {
 	 * @return string
 	 */
 	private function getPagesLabels() {
+		if (!$this->pages) return "";
 		$pagesNumberPrefix = self::CLASS_PAGE . '-P';
 		$pagesNumberPrefixLength = strlen($pagesNumberPrefix);
 		$pagesScript = "
@@ -404,6 +556,7 @@ if (Event.Control.HasClass(\"" . self::CLASS_PAGER . "\")) {
 	 * @return string
 	 */
 	private function getProfileLabels() {
+		if (!$this->profile) return "";
 		$profileScript = "
 if (Event.Control.HasClass(\"" . self::CLASS_PROFILE . "\")) {
 	declare Login = LocalUser.Login;
@@ -426,6 +579,7 @@ if (Event.Control.HasClass(\"" . self::CLASS_PROFILE . "\")) {
 	 * @return string
 	 */
 	private function getMapInfoLabels() {
+		if (!$this->mapInfo) return "";
 		$mapInfoScript = "
 if (Event.Control.HasClass(\"" . self::CLASS_MAPINFO . "\")) {
 	ShowCurChallengeCard();
@@ -442,5 +596,29 @@ if (Event.Control.HasClass(\"" . self::CLASS_MAPINFO . "\")) {
 	private function getMainFunction() {
 		$mainFunction = file_get_contents(__DIR__ . '/Parts/Main.txt');
 		return $mainFunction;
+	}
+
+	/**
+	 * Return the Array of additional optional Parameters
+	 *
+	 * @param array $args
+	 * @param int $offset
+	 * @return array
+	 */
+	private function spliceParameters(array $params, $offset) {
+		$args = array_splice($params, $offset);
+		if (!$args) return $args;
+		$parameters = array();
+		foreach ($args as $arg) {
+			if (is_array($arg)) {
+				foreach ($arg as $key => $value) {
+					$parameters[$key] = $value;
+				}
+			}
+			else {
+				$parameters[$arg] = true;
+			}
+		}
+		return $parameters;
 	}
 }

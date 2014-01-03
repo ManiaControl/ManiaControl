@@ -62,7 +62,7 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	 * Set Text Prefix
 	 *
 	 * @param string $textPrefix
-	 *        	Text Pefix
+	 *        	Text Prefix
 	 * @return \FML\Controls\Label
 	 */
 	public function setTextPrefix($textPrefix) {
