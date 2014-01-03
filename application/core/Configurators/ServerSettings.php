@@ -246,28 +246,6 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		//$this->toggleBooleanSetting($setting, $player);
 	}
 
-	/**
-	 * Toogle a Boolean Setting
-	 *
-	 * @param Player $player
-	 * @param        $setting
-	 */
-	public function toggleBooleanSetting($setting, Player $player) {
-		$this->maniaControl->client->query('GetServerOptions');
-		$serverSettings = $this->maniaControl->client->getResponse();
-
-		if(!isset($serverSettings[$setting])) {
-			var_dump('no setting ' . $setting);
-			return;
-		}
-
-		$newSettings           = array();
-		$newSettings[$setting] = ($serverSettings[$setting] ? false : true);
-
-		var_dump($newSettings);
-		$this->applyNewScriptSettings($newSettings, $player);
-
-	}
 
 	/**
 	 * Apply the Array of new Script Settings
@@ -310,8 +288,6 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		//	$chatMessage .= '!';
 		//	$this->maniaControl->chat->sendInformation($chatMessage);
 		//$this->maniaControl->log(Formatter::stripCodes($chatMessage));
-
-		//TODO reopen menu
 	}
 
 	/**
