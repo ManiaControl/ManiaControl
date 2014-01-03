@@ -19,7 +19,7 @@ use ManiaControl\Plugins\Plugin;
  * @author steeffeen and Lukas
  */
 class DonationPlugin implements CallbackListener, CommandListener, Plugin {
-	/**
+	/**ts
 	 * Constants
 	 */
 	const ID                              = 3;
