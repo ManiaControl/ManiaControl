@@ -42,7 +42,6 @@ class Player {
 		if(!$rpcInfos) {
 			return;
 		}
-		var_dump($rpcInfos);
 
 		$this->pid         = $rpcInfos['PlayerId'];
 		$this->login       = $rpcInfos['Login'];

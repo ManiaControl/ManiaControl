@@ -116,6 +116,16 @@ class StatisticManager {
 		}
 	}
 
+	public function getAllPlayerStats(Player $player){
+		$playerStats = array(); //TODO improve performant
+		foreach($this->stats as $stat){
+//			$value = $this->getStatisticData($stat['name'], $player->index);
+		//	var_dump($value);
+			//$playerStats[$stat] = $value;
+		}
+
+		return $playerStats;
+	}
 	/**
 	 * Inserts a Stat into the database
 	 *
@@ -220,6 +230,7 @@ class StatisticManager {
 
 		return true;
 	}
+
 
 	/**
 	 * Initialize necessary database tables

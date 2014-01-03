@@ -195,14 +195,31 @@ class PlayerDetailed {
 
 		$quad = new Quad();
 		$frame->add($quad);
-		$quad->setImage('file://' . $player->avatar);
+		$quad->setImage('file://' . $target->avatar);
 		$quad->setPosition($this->width / 2 - 10, $this->height / 2 - 10);
 		$quad->setAlign(Control::RIGHT, Control::TOP);
 		$quad->setSize(20, 20);
 
+		//Statistics
+		$frame->add($this->statisticsFrame($target));
 
 
 		// render and display xml
 		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player);
+	}
+
+	public function statisticsFrame($player){
+		$frame = new Frame();
+
+		/*$mainLabel = new Label_Text();
+		$frame->add($mainLabel);
+		$mainLabel->setPosition(-$this->width / 2 + 50, $this->height / 2 - 10);
+		$mainLabel->setTextSize(1.2);
+		$mainLabel->setHAlign(Control::LEFT);
+		$mainLabel->setText("Statistics");*/
+
+		var_dump($this->maniaControl->statisticManager->getAllPlayerStats($player));
+
+		return $frame;
 	}
 } 
