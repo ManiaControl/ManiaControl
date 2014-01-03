@@ -166,7 +166,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$lineQuad->setZ(0.001);
 			}
 
-			$array = array($i => $x + 5, $listPlayer->nickname => $x + 18, $listPlayer->login => $x + 60, $path => $x + 91);
+			$array  = array($i => $x + 5, $listPlayer->nickname => $x + 18, $listPlayer->login => $x + 60, $path => $x + 91);
 			$frames = $this->maniaControl->manialinkManager->labelLine($playerFrame, $array);
 
 			/** @var Label $nicknameLabel */
@@ -565,6 +565,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			case self::ACTION_OPEN_PLAYER_DETAILED:
 				$player = $this->maniaControl->playerManager->getPlayer($adminLogin);
 				$this->maniaControl->playerManager->playerDetailed->showPlayerDetailed($player, $targetLogin);
+				unset($this->playersListShown[$player->login]);
 				break;
 			case self::ACTION_FORCE_BLUE:
 				$this->maniaControl->playerManager->playerActions->forcePlayerToTeam($adminLogin, $targetLogin, PlayerActions::BLUE_TEAM);

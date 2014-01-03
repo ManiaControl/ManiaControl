@@ -22,7 +22,7 @@ class StatisticCollector implements CallbackListener {
 	/*
 	 * Statistics
 	 */
-	const STAT_ON_SHOOT                  = 'Shoots';
+	const STAT_ON_SHOOT                  = 'Shots';
 	const STAT_ON_NEARMISS               = 'Near Misses';
 	const STAT_ON_CAPTURE                = 'Captures';
 	const STAT_ON_HIT                    = 'Hits';
