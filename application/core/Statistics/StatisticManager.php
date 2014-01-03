@@ -21,7 +21,8 @@ class StatisticManager {
 	const TABLE_STATMETADATA = 'mc_statmetadata';
 	const TABLE_STATISTICS   = 'mc_statistics';
 
-	const STAT_TYPE_INT = '0';
+	const STAT_TYPE_INT  = '0';
+	const STAT_TYPE_TIME = '1';
 
 	/**
 	 * Public Properties
@@ -59,8 +60,8 @@ class StatisticManager {
 	 */
 	public function getStatisticData($statName, $playerId, $serverLogin = false) {
 		$serverId = 0; //Temporary
-		$mysqli = $this->maniaControl->database->mysqli;
-		$statId = $this->getStatId($statName);
+		$mysqli   = $this->maniaControl->database->mysqli;
+		$statId   = $this->getStatId($statName);
 
 		if($statId == null) {
 			return -1;
@@ -146,7 +147,7 @@ class StatisticManager {
 	 */
 	public function insertStat($statName, $player, $serverLogin = '', $value, $statType = self::STAT_TYPE_INT) {
 		$serverId = 0; //Temporary
-		$statId = $this->getStatId($statName);
+		$statId   = $this->getStatId($statName);
 
 		if($player == null) {
 			return false;
@@ -207,29 +208,32 @@ class StatisticManager {
 		return $this->insertStat($statName, $player, $serverLogin, 1);
 	}
 
+
 	/**
 	 * Defines a Stat
 	 *
-	 * @param string $statName
-	 * @param string $statDescription
+	 * @param        $statName
 	 * @param string $type
+	 * @param string $statDescription
 	 * @return bool
 	 */
-	public function defineStatMetaData($statName, $statDescription = '', $type = self::STAT_TYPE_INT) {
+	public function defineStatMetaData($statName, $type = self::STAT_TYPE_INT, $statDescription = '') {
 		$mysqli    = $this->maniaControl->database->mysqli;
-		$query     = "INSERT IGNORE INTO `" . self::TABLE_STATMETADATA . "` (
+		$query     = "INSERT INTO `" . self::TABLE_STATMETADATA . "` (
 					`name`,
 					`type`,
 					`description`
 				) VALUES (
 					?, ?, ?
-				);";
+				) ON DUPLICATE KEY UPDATE
+				`type` = VALUES(`type`),
+				`description` = VALUES(`description`);";
 		$statement = $mysqli->prepare($query);
 		if($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
 		}
-		$statement->bind_param('sss', $statName, $type, $statDescription);
+		$statement->bind_param('sis', $statName, $type, $statDescription);
 		$statement->execute();
 		if($statement->error) {
 			trigger_error($statement->error);
@@ -253,7 +257,7 @@ class StatisticManager {
 		$query  = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_STATMETADATA . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
 				`name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-				`type` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+				`type` int(5) NOT NULL,
 				`description` varchar(150) COLLATE utf8_unicode_ci,
 				PRIMARY KEY (`index`),
 				UNIQUE KEY `name` (`name`)

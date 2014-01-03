@@ -10,6 +10,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
+use ManiaControl\Statistics\StatisticManager;
 
 /**
  * Class managing players
@@ -66,7 +67,7 @@ class PlayerManager implements CallbackListener {
 
 		// Define player stats
 		$this->maniaControl->statisticManager->defineStatMetaData(self::STAT_JOIN_COUNT);
-		$this->maniaControl->statisticManager->defineStatMetaData(self::STAT_PLAYTIME);
+		$this->maniaControl->statisticManager->defineStatMetaData(self::STAT_PLAYTIME, StatisticManager::STAT_TYPE_TIME);
 	}
 
 	/**

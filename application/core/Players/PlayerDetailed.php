@@ -8,8 +8,10 @@ use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\ManiaLink;
 use FML\Script\Script;
+use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
+use ManiaControl\Statistics\StatisticManager;
 
 /**
  * Player Detailed Page
@@ -224,6 +226,10 @@ class PlayerDetailed {
 		foreach($playerStats as $stat){
 			$statProperties = $stat[0];
 			$value = $stat[1];
+
+			if($statProperties->type == StatisticManager::STAT_TYPE_TIME){
+				$value = Formatter::formatTimeH($value);
+			}
 
 			$label = new Label_Text();
 			$frame->add($label);

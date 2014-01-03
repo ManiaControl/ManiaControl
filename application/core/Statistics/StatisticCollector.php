@@ -30,6 +30,9 @@ class StatisticCollector implements CallbackListener {
 	const STAT_ON_DEATH                  = 'Deaths';
 	const STAT_ON_PLAYER_REQUEST_RESPAWN = 'Respawns';
 	const STAT_ON_KILL                   = 'Kills';
+
+	const SPECIAL_STAT_KILL_DEATH_RATIO = 'Kill / Death';
+
 	/**
 	 * Private Properties
 	 */
