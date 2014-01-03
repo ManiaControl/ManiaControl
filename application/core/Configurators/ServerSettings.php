@@ -142,6 +142,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 				$substyle = Quad_Icons64x64_1::SUBSTYLE_LvlGreen;
 			}
 
+
 			$entry = new Entry();
 			$settingFrame->add($entry);
 			$entry->setStyle(Label_Text::STYLE_TextValueSmall);
@@ -152,6 +153,14 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			$entry->setName(self::ACTION_PREFIX_SETTING . $name);
 			$entry->setDefault($value);
 
+			if($name == "Comment"){#
+				$entry->setAutoNewLine(true);
+				$entry->setSize($width * 0.48, $settingHeight * 3 + $settingHeight * 0.9);
+				$settingFrame->setY($y - $settingHeight * 1.5);
+				//dummy:
+				$y -= $settingHeight * 3;
+				$id += 3;
+			}
 
 			if($substyle != '') {
 				$quad = new Quad_Icons64x64_1();
