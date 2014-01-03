@@ -28,7 +28,7 @@ class PlayerManager implements CallbackListener {
 	const TABLE_PLAYERS               = 'mc_players';
 	const SETTING_JOIN_LEAVE_MESSAGES = 'Enable Join & Leave Messages';
 	const STAT_JOIN_COUNT             = 'Joins';
-	const STAT_PLAYTIME               = 'Playtime';
+	const STAT_SERVERTIME               = 'Servertime';
 
 	/**
 	 * Public Properties
@@ -325,6 +325,6 @@ class PlayerManager implements CallbackListener {
 		}
 		$playedTime = time() - $player->joinTime;
 
-		return $this->maniaControl->statisticManager->insertStat(self::STAT_PLAYTIME, $player, $this->maniaControl->server->getServerId(), $playedTime);
+		return $this->maniaControl->statisticManager->insertStat(self::STAT_SERVERTIME, $player, $this->maniaControl->server->getServerId(), $playedTime);
 	}
 }

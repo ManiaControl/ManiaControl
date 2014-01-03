@@ -44,7 +44,7 @@ class StatisticCollector implements CallbackListener {
 	 *
 	 * @param \ManiaControl\ManiaControl $maniaControl
 	 */
-	public function __construct(ManiaControl $maniaControl) {
+	public function __construct(ManiaControl $maniaControl) { //TODO Stat player playtime without spec and warmup
 		$this->maniaControl = $maniaControl;
 
 		//Register Callbacks
