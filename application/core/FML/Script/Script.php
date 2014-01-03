@@ -325,23 +325,33 @@ class Script {
 	 */
 	private function buildTooltipConstants() {
 		if (!$this->tooltips) return;
-		$constantText = "[";
+		$constantText = '[';
 		$index = 0;
 		$count = count($this->tooltipTexts);
-		foreach ($this->tooltipTexts as $tooltipId => $tooltipTexts) {
-			$constantText .= "\"{$tooltipId}\" => [";
-			$subIndex = 0;
-			$subCount = count($tooltipTexts);
-			foreach ($tooltipTexts as $hoverId => $text) {
-				$constantText .= "\"{$hoverId}\" => \"{$text}\"";
-				if ($subIndex < $subCount - 1) $constantText .= ", ";
-				$subIndex++;
+		if ($count > 0) {
+			foreach ($this->tooltipTexts as $tooltipId => $tooltipTexts) {
+				$constantText .= '"' . $tooltipId . '"=>[';
+				$subIndex = 0;
+				$subCount = count($tooltipTexts);
+				if ($subCount > 0) {
+					foreach ($tooltipTexts as $hoverId => $text) {
+						$constantText .= '"' . $hoverId . '"=>"' . $text . '"';
+						if ($subIndex < $subCount - 1) $constantText .= ',';
+						$subIndex++;
+					}
+				}
+				else {
+					$constantText .= '""';
+				}
+				$constantText .= ']';
+				if ($index < $count - 1) $constantText .= ',';
+				$index++;
 			}
-			$constantText .= "]";
-			if ($index < $count - 1) $constantText .= ", ";
-			$index++;
 		}
-		$constantText .= "]";
+		else {
+			$constantText .= '""=>[""=>""]';
+		}
+		$constantText .= ']';
 		$this->setConstant(self::CONSTANT_TOOLTIPTEXTS, $constantText);
 	}
 
