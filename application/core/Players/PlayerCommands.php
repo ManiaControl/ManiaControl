@@ -3,16 +3,24 @@
 namespace ManiaControl\Players;
 
 use FML\Controls\Quad;
+use FML\Controls\Quads\Quad_Icons128x128_1;
+use FML\Controls\Quads\Quad_Icons64x64_1;
 use ManiaControl\ManiaControl;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Commands\CommandListener;
+use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 
 /**
  * Class offering various admin commands related to players
  *
  * @author steeffeen & kremsy
  */
-class PlayerCommands implements CommandListener {
+class PlayerCommands implements CommandListener, ManialinkPageAnswerListener {
+	/**
+	 * Constants
+	 */
+	const ACTION_BALANCE_TEAMS = 'PlayerCommands.BalanceTeams';
+
 	/**
 	 * Private properties
 	 */
@@ -27,6 +35,7 @@ class PlayerCommands implements CommandListener {
 		$this->maniaControl = $maniaControl;
 		
 		// Register for admin commands
+		$this->maniaControl->commandManager->registerCommandListener('balance', $this, 'command_TeamBalance',true);
 		$this->maniaControl->commandManager->registerCommandListener('teambalance', $this, 'command_TeamBalance',true);
 		$this->maniaControl->commandManager->registerCommandListener('autoteambalance', $this, 'command_TeamBalance',true);
 		$this->maniaControl->commandManager->registerCommandListener('kick', $this, 'command_Kick',true);
@@ -45,6 +54,12 @@ class PlayerCommands implements CommandListener {
 
 		$this->playerList = new PlayerList($this->maniaControl);
 
+		//Action Balance Teams
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_BALANCE_TEAMS, $this, 'command_TeamBalance');
+		$itemQuad = new Quad_Icons128x128_1();
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ProfileVehicle);
+		$itemQuad->setAction(self::ACTION_BALANCE_TEAMS);
+		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, true, 4);
 	}
 
 	/**

@@ -10,7 +10,6 @@ use FML\Controls\Labels\Label_Button;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
-use FML\Controls\Quads\Quad_Icons128x128_1;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\ManiaLink;
 use FML\Script\Script;
@@ -37,13 +36,14 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	/**
 	 * Constants
 	 */
-	const ACTION_ADD_MAP              = 'MapList.AddMap';
-	const ACTION_ERASE_MAP            = 'MapList.EraseMap';
-	const ACTION_SWITCH_MAP           = 'MapList.SwitchMap';
-	const ACTION_QUEUED_MAP           = 'MapList.QueueMap';
-	const MAX_MAPS_PER_PAGE           = 15;
-	const SHOW_MX_LIST                = 1;
-	const SHOW_MAP_LIST               = 2;
+	const ACTION_ADD_MAP    = 'MapList.AddMap';
+	const ACTION_ERASE_MAP  = 'MapList.EraseMap';
+	const ACTION_SWITCH_MAP = 'MapList.SwitchMap';
+	const ACTION_QUEUED_MAP = 'MapList.QueueMap';
+
+	const MAX_MAPS_PER_PAGE = 15;
+	const SHOW_MX_LIST      = 1;
+	const SHOW_MAP_LIST     = 2;
 
 	const DEFAULT_KARMA_PLUGIN = 'KarmaPlugin';
 	/**
@@ -79,16 +79,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$this->quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowStyle();
 		$this->quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowSubStyle();
 
-		// @var just a test $itemQuad
-		  $itemQuad = new Quad();
-		 $itemQuad->setStyles('Icons128x32_1', Quad_Icons128x128_1::SUBSTYLE_Create);
-		  $itemQuad->setAction(self::ACTION_ADD_MAP);
-		  $this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 4);
-
-		$itemQuad = new Quad();
-		$itemQuad->setStyles('Icons128x32_1', Quad_Icons128x128_1::SUBSTYLE_Challenge);
-		$itemQuad->setAction(self::ACTION_ADD_MAP);
-		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 4);
 	}
 
 

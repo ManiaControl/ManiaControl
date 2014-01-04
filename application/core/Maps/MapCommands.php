@@ -2,10 +2,13 @@
 
 namespace ManiaControl\Maps;
 
+use FML\Controls\Quads\Quad_Icons128x128_1;
+use FML\Controls\Quads\Quad_Icons64x64_1;
 use ManiaControl\ManiaControl;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\FileUtil;
+use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 
@@ -14,7 +17,12 @@ use ManiaControl\Players\PlayerManager;
  *
  * @author steeffeen & kremsy
  */
-class MapCommands implements CommandListener {
+class MapCommands implements CommandListener, ManialinkPageAnswerListener {
+	/**
+	 * Constants
+	 */
+	const ACTION_OPEN_MAPLIST		  = 'MapList.OpenMapList';
+
 	/**
 	 * Private properties
 	 */
@@ -41,6 +49,13 @@ class MapCommands implements CommandListener {
 		$this->maniaControl->commandManager->registerCommandListener('maps', $this, 'command_List');
 
 		$this->mapList = new MapList($this->maniaControl);
+
+		//Action Balance Teams
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_OPEN_MAPLIST, $this, 'command_List');
+		$itemQuad = new Quad_Icons64x64_1();
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Browser);
+		$itemQuad->setAction(self::ACTION_OPEN_MAPLIST);
+		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, true, 4);
 	}
 
 	/**

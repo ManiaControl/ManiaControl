@@ -177,7 +177,37 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_IconServers);
 		$itemQuad->setSize($itemSize, $itemSize);
 		$iconFrame->add($itemQuad);
-		$itemQuad->setAction(self::ACTION_OPEN_ADMIN_MENU);
+
+		//Admin Menu
+		$popoutFrame = new Frame();
+		$manialink->add($popoutFrame);
+		$popoutFrame->setPosition($posX - $itemSize * 0.5, $posY);
+		$popoutFrame->setHAlign(Control::RIGHT);
+		$popoutFrame->setSize(4 * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
+
+		$quad = new Quad();
+		$popoutFrame->add($quad);
+		$quad->setHAlign(Control::RIGHT);
+		$quad->setStyles($quadStyle, $quadSubstyle);
+		$quad->setSize(count($this->adminMenuItems) * $itemSize * $itemMarginFactorX * 1.4, $itemSize * $itemMarginFactorY);
+
+		$popoutFrame->add($quad);
+
+		$script->addTooltip($itemQuad, $popoutFrame, Script::OPTION_TOOLTIP_STAYONCLICK);
+
+		// Add items
+		$x = -1;
+		foreach($this->adminMenuItems as $menuItems) {
+			foreach($menuItems as $menuItem) {
+				/** @var Quad $menuItem */
+				$menuItem->setSize($itemSize, $itemSize);
+				$popoutFrame->add($menuItem);
+				$menuItem->setX($x);
+				$menuItem->setHAlign(Control::RIGHT);
+				$x -= $itemSize * 1.05;
+			}
+		}
+
 
 		// Player Menu Icon Frame
 		$frame = new Frame();
@@ -197,30 +227,29 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_IconPlayers);
 		$itemQuad->setSize($itemSize, $itemSize);
 		$iconFrame->add($itemQuad);
-	//	$itemQuad->setAction(self::ACTION_OPEN_PLAYER_MENU);
 
 
-		/** TEST TOOLTIP */
+		//Player Menu
 		$popoutFrame = new Frame();
 		$manialink->add($popoutFrame);
 		$popoutFrame->setPosition($posX - $itemSize * 0.5, $posY - $itemSize * $itemMarginFactorY);
 		$popoutFrame->setHAlign(Control::RIGHT);
 		$popoutFrame->setSize(4 * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
 
-		$testq = new Quad();
-		$popoutFrame->add($testq);
-		//$testq->setPosition($posX - $itemSize * $itemMarginFactorX, $posY - $itemSize * $itemMarginFactorY);
-		$testq->setHAlign(Control::RIGHT);
-		$testq->setStyles($quadStyle, $quadSubstyle);
-		$testq->setSize(4 * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
+		$quad = new Quad();
+		$popoutFrame->add($quad);
+		$quad->setHAlign(Control::RIGHT);
+		$quad->setStyles($quadStyle, $quadSubstyle);
+		$quad->setSize(count($this->playerMenuItems) * $itemSize * $itemMarginFactorX * 1.4, $itemSize * $itemMarginFactorY);
 
-		$popoutFrame->add($testq);
+
+		$popoutFrame->add($quad);
 
 		$script->addTooltip($itemQuad, $popoutFrame, Script::OPTION_TOOLTIP_STAYONCLICK);
 
 		// Add items
-		$x = 0.05;
-		foreach($this->adminMenuItems as $menuItems) {
+		$x = -1;
+		foreach($this->playerMenuItems as $menuItems) {
 			foreach($menuItems as $menuItem) {
 				/** @var Quad $menuItem */
 				$menuItem->setSize($itemSize, $itemSize);
@@ -231,48 +260,6 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 			}
 		}
 
-		/** TEST TOOLTIP */
-
-
 		return $manialink;
-	}
-
-	private function buildMenuIconsManialink2() {
-		$posX         = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_POSX);
-		$posY         = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_POSY);
-		$itemSize     = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_ITEMSIZE);
-		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
-		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
-
-		$itemCount         = count($this->menuItems);
-		$itemMarginFactorX = 1.3;
-		$itemMarginFactorY = 1.2;
-
-		$manialink = new ManiaLink(self::MLID_MENU);
-
-		$frame = new Frame();
-		$manialink->add($frame);
-		$frame->setPosition($posX, $posY);
-
-		$backgroundQuad = new Quad();
-		$frame->add($backgroundQuad);
-		$backgroundQuad->setSize($itemCount * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
-		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-
-		$itemsFrame = new Frame();
-		$frame->add($itemsFrame);
-
-		// Add items
-		$x = 0.5 * $itemSize * $itemMarginFactorX;
-		foreach($this->menuItems as $menuItems) {
-			foreach($menuItems as $menuItem) {
-				$menuItem->setSize($itemSize, $itemSize);
-				$itemsFrame->add($menuItem);
-
-				$x += $itemSize * $itemMarginFactorX;
-			}
-		}
-
-		$this->manialink = $manialink;
 	}
 }
