@@ -197,26 +197,40 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_IconPlayers);
 		$itemQuad->setSize($itemSize, $itemSize);
 		$iconFrame->add($itemQuad);
-		$itemQuad->setAction(self::ACTION_OPEN_PLAYER_MENU);
+	//	$itemQuad->setAction(self::ACTION_OPEN_PLAYER_MENU);
 
 
 		/** TEST TOOLTIP */
-		$testf = new Frame();
-		$manialink->add($testf);
-		$testf->setPosition($posX - $itemSize * $itemMarginFactorX, $posY - $itemSize * $itemMarginFactorY);
-		//$testf->setHAlign(Control::RIGHT);
-		$testf->setSize(4 * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
+		$popoutFrame = new Frame();
+		$manialink->add($popoutFrame);
+		$popoutFrame->setPosition($posX - $itemSize * 0.5, $posY - $itemSize * $itemMarginFactorY);
+		$popoutFrame->setHAlign(Control::RIGHT);
+		$popoutFrame->setSize(4 * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
 
 		$testq = new Quad();
-		$testf->add($testq);
+		$popoutFrame->add($testq);
 		//$testq->setPosition($posX - $itemSize * $itemMarginFactorX, $posY - $itemSize * $itemMarginFactorY);
-		$testq->setHAlign(Control::CENTER);
+		$testq->setHAlign(Control::RIGHT);
 		$testq->setStyles($quadStyle, $quadSubstyle);
 		$testq->setSize(4 * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
 
-		$testf->add($testq);
+		$popoutFrame->add($testq);
 
-		$script->addTooltip($itemQuad, $testf);
+		$script->addTooltip($itemQuad, $popoutFrame, Script::OPTION_TOOLTIP_STAYONCLICK);
+
+		// Add items
+		$x = 0.05;
+		foreach($this->adminMenuItems as $menuItems) {
+			foreach($menuItems as $menuItem) {
+				/** @var Quad $menuItem */
+				$menuItem->setSize($itemSize, $itemSize);
+				$popoutFrame->add($menuItem);
+				$menuItem->setX($x);
+				$menuItem->setHAlign(Control::RIGHT);
+				$x -= $itemSize * 1.05;
+			}
+		}
+
 		/** TEST TOOLTIP */
 
 
