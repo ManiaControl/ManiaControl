@@ -145,7 +145,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	 * @param Player $player
 	 * @return ManiaLink
 	 */
-	private function buildMenuIconsManialink(Player $player) { //TODO Description Labels, close tooltip on click, adjust size
+	private function buildMenuIconsManialink(Player $player) { //TODO Description Labels, close tooltip on click
 		$posX              = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_POSX);
 		$posY              = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_POSY);
 		$itemSize          = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_ITEMSIZE);
@@ -192,7 +192,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 			$popoutFrame->add($quad);
 			$quad->setHAlign(Control::RIGHT);
 			$quad->setStyles($quadStyle, $quadSubstyle);
-			$quad->setSize(count($this->adminMenuItems) * $itemSize * $itemMarginFactorX * 1.4, $itemSize * $itemMarginFactorY);
+			$quad->setSize(count($this->adminMenuItems) * $itemSize * 1.15 + 2, $itemSize * $itemMarginFactorY);
 
 			$popoutFrame->add($quad);
 
@@ -242,7 +242,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		$popoutFrame->add($quad);
 		$quad->setHAlign(Control::RIGHT);
 		$quad->setStyles($quadStyle, $quadSubstyle);
-		$quad->setSize(count($this->playerMenuItems) * $itemSize * $itemMarginFactorX * 1.4, $itemSize * $itemMarginFactorY);
+		$quad->setSize(count($this->playerMenuItems) * $itemSize * 1.15 + 2, $itemSize * $itemMarginFactorY);
 
 
 		$popoutFrame->add($quad);
