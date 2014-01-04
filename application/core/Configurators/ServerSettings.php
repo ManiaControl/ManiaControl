@@ -27,6 +27,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	const ACTION_PREFIX_SETTING    = 'ServerSettings.';
 	const ACTION_SETTING_BOOL      = 'ServerSettings.ActionBoolSetting.';
 	const CB_SERVERSETTING_CHANGED = 'ServerSettings.SettingChanged';
+	const TABLE_SERVER_SETTINGS    = 'mc_serversettings';
 
 	/**
 	 * Private Properties
@@ -43,6 +44,84 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'onInit');
+		$this->initTables();
+	}
+
+
+	/**
+	 * Initialize necessary database tables
+	 *
+	 * @return bool
+	 */
+	private function initTables() {
+		$mysqli = $this->maniaControl->database->mysqli;
+		$query  = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_SERVER_SETTINGS . "` (
+				`serverId` int(11) NOT NULL AUTO_INCREMENT,
+				`settingName` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+				`settingValue` varchar(500) COLLATE utf8_unicode_ci NOT NULL,
+				UNIQUE KEY `setting` (`serverId`, `settingName`)
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Server Settings' AUTO_INCREMENT=1;";
+
+		$statement = $mysqli->prepare($query);
+		if($mysqli->error) {
+			trigger_error($mysqli->error, E_USER_ERROR);
+
+			return false;
+		}
+		$statement->execute();
+		if($statement->error) {
+			trigger_error($statement->error, E_USER_ERROR);
+
+			return false;
+		}
+		$statement->close();
+
+		return true;
+	}
+
+	/**
+	 * Handle OnInit callback
+	 *
+	 * @param array $callback
+	 */
+	public function onInit(array $callback) {
+		$this->loadSettingsFromDatabase();
+	}
+
+	/**
+	 * Load Settings from Database
+	 * @return bool
+	 */
+	public function loadSettingsFromDatabase() {
+		$this->maniaControl->client->query('GetServerOptions');
+		$serverSettings = $this->maniaControl->client->getResponse();
+
+		$mysqli = $this->maniaControl->database->mysqli;
+
+		$loadedSettings = array();
+
+		$query  = "SELECT * FROM `" . self::TABLE_SERVER_SETTINGS . "`;";
+		$result = $mysqli->query($query);
+		if(!$result) {
+			trigger_error($mysqli->error);
+		}
+
+		while($row = $result->fetch_object()) {
+			$loadedSettings[$row->settingName] = $row->settingValue;
+			settype($loadedSettings[$row->settingName], gettype($serverSettings[$row->settingName]));
+		}
+
+		$result->close();
+
+
+		$success = $this->maniaControl->client->query('SetServerOptions', $loadedSettings);
+		if(!$success) {
+			$this->maniaControl->log('Error occurred: ' . $this->maniaControl->getClientErrorText());
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -153,7 +232,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			$entry->setName(self::ACTION_PREFIX_SETTING . $name);
 			$entry->setDefault($value);
 
-			if($name == "Comment"){#
+			if($name == "Comment") { #
 				$entry->setAutoNewLine(true);
 				$entry->setSize($width * 0.48, $settingHeight * 3 + $settingHeight * 0.9);
 				$settingFrame->setY($y - $settingHeight * 1.5);
@@ -252,16 +331,38 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	 *
 	 * @param array  $newSettings
 	 * @param Player $player
+	 * @return bool
 	 */
 	private function applyNewScriptSettings(array $newSettings, Player $player) {
 		if(!$newSettings) {
-			return;
+			return true;
 		}
 		$success = $this->maniaControl->client->query('SetServerOptions', $newSettings);
 		if(!$success) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
-			return;
+			return false;
 		}
+
+
+		// Save Settings into Database
+		$mysqli = $this->maniaControl->database->mysqli;
+
+		$query     = "INSERT INTO `" . self::TABLE_SERVER_SETTINGS . "` (
+				`serverId`,
+				`settingName`,
+				`settingValue`
+				) VALUES (
+				?, ?, ?
+				) ON DUPLICATE KEY UPDATE
+				`settingValue` = VALUES(`settingValue`);";
+		$statement = $mysqli->prepare($query);
+		if($mysqli->error) {
+			trigger_error($mysqli->error);
+			return false;
+		}
+
+		$serverId = $this->maniaControl->server->getServerId();
+
 
 		// Notifications
 		$settingsCount = count($newSettings);
@@ -270,6 +371,13 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		//$chatMessage = '$ff0' . $title . ' $<' . $player->nickname . '$> set ScriptSetting' . ($settingsCount > 1 ? 's' : '') . ' ';
 		foreach($newSettings as $setting => $value) {
 
+			$statement->bind_param('iss', $serverId, $setting, $value);
+			$statement->execute();
+			if($statement->error) {
+				trigger_error($statement->error);
+				$statement->close();
+				return false;
+			}
 
 			//$chatMessage .= '$<' . '$fff' . preg_replace('/^S_/', '', $setting) . '$z$s$ff0 ';
 			//$chatMessage .= 'to $fff' . $this->parseSettingValue($value) . '$>';
@@ -284,9 +392,13 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			$settingIndex++;
 		}
 
+		$statement->close();
+
 		//	$chatMessage .= '!';
 		//	$this->maniaControl->chat->sendInformation($chatMessage);
 		//$this->maniaControl->log(Formatter::stripCodes($chatMessage));
+
+		return true;
 	}
 
 	/**
