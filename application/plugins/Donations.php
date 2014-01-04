@@ -242,7 +242,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 			$popoutFrame->add($label);
 			$label->setX($x);
 			$label->setHAlign(Control::RIGHT);
-			$label->setText($value . "P");
+			$label->setText('$ff0'.$value . '$700P');
 			$label->setTextSize(1.2);
 			$label->setAction(self::ACTION_DONATE_VALUE . "." . $value);
 
