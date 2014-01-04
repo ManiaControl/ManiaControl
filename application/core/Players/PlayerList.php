@@ -48,6 +48,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 	const ACTION_ADD_AS_MOD           = 'PlayerList.PlayerAddAsModerator';
 	const ACTION_REVOKE_RIGHTS        = 'PlayerList.RevokeRights';
 	const ACTION_OPEN_PLAYER_DETAILED = 'PlayerList.OpenPlayerDetailed';
+	const ACTION_SPECTATE_PLAYER      = 'PlayerList.SpectatePlayer';
 	const SHOWN_MAIN_WINDOW           = -1;
 	/**
 	 * Private properties
@@ -252,8 +253,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			$playerQuad->setSubStyle($playerQuad::SUBSTYLE_Camera);
 			$playerQuad->setSize(3.8, 3.8);
 			$script->addTooltip($playerQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Spectate " . $listPlayer->nickname));
-			$script->addProfileButton($playerQuad, $listPlayer->login); //TODO real action
-
+			$playerQuad->setAction(self::ACTION_SPECTATE_PLAYER);
 
 			// Player Profile Quad
 			$playerQuad = new Quad_UIConstruction_Buttons();
@@ -585,6 +585,10 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$targetLogin = $actionArray[2];
 
 		switch($action) {
+			case self::ACTION_SPECTATE_PLAYER: //TODO not working yet
+				$this->maniaControl->client->query('ForceSpectator', $adminLogin, PlayerActions::SPECTATOR_SPECTATOR);
+				$this->maniaControl->client->query('ForceSpectatorTarget', $adminLogin, $targetLogin, 1);
+				break;
 			case self::ACTION_OPEN_PLAYER_DETAILED:
 				$player = $this->maniaControl->playerManager->getPlayer($adminLogin);
 				$this->maniaControl->playerManager->playerDetailed->showPlayerDetailed($player, $targetLogin);

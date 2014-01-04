@@ -36,7 +36,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	private $maniaControl = null;
 	private $adminMenuItems = array();
 	private $playerMenuItems = array();
-
+	private $initCompleted = false;
 	/**
 	 * Create a new Actions Menu
 	 *
@@ -68,8 +68,10 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		if($playerAction) {
 			$this->addPlayerMenuItem($control, $order, $description);
 		} else {
-			$this->addAdminMenuItem($control, $order,$description);
+			$this->addAdminMenuItem($control, $order, $description);
 		}
+
+		$this->rebuildAndShowMenu();
 	}
 
 	/**
@@ -111,6 +113,21 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		foreach($players as $player) {
 			$manialinkText = $this->buildMenuIconsManialink($player)->render()->saveXML();
 			$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
+		}
+
+		$this->initCompleted = true;
+	}
+
+	/**
+	 * Build and show the menus to everyone (if a menu get made after the init)
+	 */
+	public function rebuildAndShowMenu() {
+		if($this->initCompleted){
+			$players = $this->maniaControl->playerManager->getPlayers();
+			foreach($players as $player) {
+				$manialinkText = $this->buildMenuIconsManialink($player)->render()->saveXML();
+				$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
+			}
 		}
 	}
 

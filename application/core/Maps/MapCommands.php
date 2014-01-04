@@ -2,19 +2,24 @@
 
 namespace ManiaControl\Maps;
 
+use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use ManiaControl\Admin\AuthenticationManager;
+use ManiaControl\Callbacks\CallbackListener;
+use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
+use ManiaControl\Manialinks\IconManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
+use WidgetPlugin;
 
 /**
  * Class offering commands to manage maps
  *
  * @author steeffeen & kremsy
  */
-class MapCommands implements CommandListener, ManialinkPageAnswerListener {
+class MapCommands implements CommandListener, ManialinkPageAnswerListener,CallbackListener {
 	/**
 	 * Constants
 	 */
@@ -50,35 +55,46 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener {
 
 		$this->mapList = new MapList($this->maniaControl);
 
-		//Menu Open xList
+		//Menus Buttons
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_OPEN_XLIST, $this, 'command_xList');
-		$itemQuad = new Quad_Icons64x64_1();
-		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Browser);
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_OPEN_MAPLIST, $this, 'command_List');
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_RESTART_MAP, $this, 'command_RestartMap');
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_SKIP_MAP, $this, 'command_NextMap');
+	}
+
+	/**
+	 * Handle on Init
+	 * @param array $callback
+	 */
+	public function handleOnInit(array $callback){
+		//Menu Open xList
+		$itemQuad = new Quad();
+		$itemQuad->setImage($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON));
+		$itemQuad->setImageFocus($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON_MOVER)); //TODO move the button to the image manager
 		$itemQuad->setAction(self::ACTION_OPEN_XLIST);
 		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, true, 3, 'Open MX List');
 
 		//Menu Open List
-		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_OPEN_MAPLIST, $this, 'command_List');
 		$itemQuad = new Quad_Icons64x64_1();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Browser);
 		$itemQuad->setAction(self::ACTION_OPEN_MAPLIST);
 		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, true, 4,'Open MapList');
 
 		//Menu RestartMap
-		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_RESTART_MAP, $this, 'command_RestartMap');
 		$itemQuad = new Quad_Icons64x64_1();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ArrowFastPrev);
 		$itemQuad->setAction(self::ACTION_RESTART_MAP);
 		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 0, 'Restart Map');
 
 		//Menu NextMap
-		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_SKIP_MAP, $this, 'command_NextMap');
 		$itemQuad = new Quad_Icons64x64_1();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ArrowFastNext);
 		$itemQuad->setAction(self::ACTION_SKIP_MAP);
 		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 1, 'Skip Map');
-	}
 
+
+	}
 	/**
 	 * Handle removemap command
 	 *

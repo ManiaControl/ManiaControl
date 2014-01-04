@@ -5,6 +5,7 @@ namespace ManiaControl\Players;
 use FML\Controls\Quads\Quad_Icons128x128_1;
 use FML\Controls\Quads\Quad_Icons128x32_1;
 use FML\Controls\Quads\Quad_Icons64x64_1;
+use FML\Controls\Quads\Quad_UIConstruction_Buttons;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
@@ -72,10 +73,10 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener {
 		$itemQuad->setAction(self::ACTION_CANCEL_VOTE);
 		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 6);
 
-		//Action Balance Teams
+		//Action Open Playerlist
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_OPEN_PLAYERLIST, $this, 'command_playerList');
-		$itemQuad = new Quad_Icons128x128_1();
-		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Buddies);
+		$itemQuad = new Quad_UIConstruction_Buttons();
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Author);
 		$itemQuad->setAction(self::ACTION_OPEN_PLAYERLIST);
 		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, true, 9);
 	}

@@ -118,6 +118,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_CLOCK_WIDGET_HEIGHT, 5.5);
 
 		$this->maniaControl->manialinkManager->iconManager->addIcon(IconManager::MX_ICON);
+		$this->maniaControl->manialinkManager->iconManager->addIcon(IconManager::MX_ICON_MOVER, "http://www.pictures.esc-clan.net/upload"); //TODO to mc website, icon manager
 		return true;
 	}
 
@@ -204,6 +205,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		if(isset($map->mx->pageurl)) {
 			$quad = new Quad();
 			$frame->add($quad);
+			$quad->setImageFocus($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON_MOVER));
 			$quad->setImage($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON));
 			$quad->setPosition(-$width / 2 + 4, -1.5, -0.5);
 			$quad->setSize(4, 4);

@@ -26,6 +26,7 @@ class IconManager implements CallbackListener {
 	 * Some Default icons
 	 */
 	const MX_ICON = 'ManiaExchange.png';
+	const MX_ICON_MOVER = 'ManiaExchange_logo_press.png';
 
 	/**
 	 * Private Properties
