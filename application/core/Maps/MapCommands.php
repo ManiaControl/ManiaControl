@@ -55,28 +55,28 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener {
 		$itemQuad = new Quad_Icons64x64_1();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Browser);
 		$itemQuad->setAction(self::ACTION_OPEN_XLIST);
-		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, true, 3);
+		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, true, 3, 'Open MX List');
 
 		//Menu Open List
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_OPEN_MAPLIST, $this, 'command_List');
 		$itemQuad = new Quad_Icons64x64_1();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Browser);
 		$itemQuad->setAction(self::ACTION_OPEN_MAPLIST);
-		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, true, 4);
+		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, true, 4,'Open MapList');
 
 		//Menu RestartMap
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_RESTART_MAP, $this, 'command_RestartMap');
 		$itemQuad = new Quad_Icons64x64_1();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ArrowFastPrev);
 		$itemQuad->setAction(self::ACTION_RESTART_MAP);
-		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 0);
+		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 0, 'Restart Map');
 
 		//Menu NextMap
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_SKIP_MAP, $this, 'command_NextMap');
 		$itemQuad = new Quad_Icons64x64_1();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ArrowFastNext);
 		$itemQuad->setAction(self::ACTION_SKIP_MAP);
-		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 1);
+		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 1, 'Skip Map');
 	}
 
 	/**

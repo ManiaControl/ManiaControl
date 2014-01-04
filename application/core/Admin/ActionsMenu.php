@@ -64,11 +64,11 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	 * @param bool    $playerAction
 	 * @param int     $order
 	 */
-	public function addMenuItem(Control $control, $playerAction = true, $order = 0) {
+	public function addMenuItem(Control $control, $playerAction = true, $order = 0, $description = '') {
 		if($playerAction) {
-			$this->addPlayerMenuItem($control, $order);
+			$this->addPlayerMenuItem($control, $order, $description);
 		} else {
-			$this->addAdminMenuItem($control, $order);
+			$this->addAdminMenuItem($control, $order,$description);
 		}
 	}
 
@@ -78,11 +78,12 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	 * @param Control $control
 	 * @param int     $order
 	 */
-	public function addPlayerMenuItem(Control $control, $order = 0) {
+	public function addPlayerMenuItem(Control $control, $order = 0, $description = '') {
 		if(!isset($this->playerMenuItems[$order])) {
 			$this->playerMenuItems[$order] = array();
 		}
 		array_push($this->playerMenuItems[$order], $control);
+		//TODO handle description
 	}
 
 	/**
@@ -91,11 +92,12 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	 * @param Control $control
 	 * @param int     $order
 	 */
-	public function addAdminMenuItem(Control $control, $order = 0) {
+	public function addAdminMenuItem(Control $control, $order = 0, $description = '') {
 		if(!isset($this->adminMenuItems[$order])) {
 			$this->adminMenuItems[$order] = array();
 		}
 		array_push($this->adminMenuItems[$order], $control);
+		//TODO handle description
 	}
 
 	/**

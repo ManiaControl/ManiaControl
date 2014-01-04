@@ -1,6 +1,7 @@
 <?php
 use FML\Controls\Control;
 use FML\Controls\Frame;
+use FML\Controls\Label;
 use FML\Controls\Labels\Label_Button;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_Icons128x128_1;
@@ -235,6 +236,20 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 
 		$script->addTooltip($itemQuad, $popoutFrame, Script::OPTION_TOOLTIP_STAYONCLICK);
 
+		//Description Label
+		$descriptionFrame = new Frame();
+		$maniaLink->add($descriptionFrame);
+		$descriptionFrame->setPosition($posX - 50, $posY - 15);
+		$descriptionFrame->setHAlign(Control::RIGHT);
+
+		$descriptionLabel = new Label();
+		$frame->add($descriptionLabel);
+		$descriptionLabel->setAlign(Control::RIGHT, Control::TOP);
+		$descriptionLabel->setSize(40, 4);
+		$descriptionLabel->setTextSize(2);
+		$descriptionLabel->setVisible(true);
+
+
 		// Add items
 		$x = -2;
 		foreach(array_reverse($valueArray) as $value) {
@@ -245,6 +260,8 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 			$label->setText('$ff0'.$value . '$700P');
 			$label->setTextSize(1.2);
 			$label->setAction(self::ACTION_DONATE_VALUE . "." . $value);
+
+			$script->addTooltip($label, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Donate " . $value . " Planets"));
 
 			$x -= strlen($value) * 2 + 1.7;
 		}
