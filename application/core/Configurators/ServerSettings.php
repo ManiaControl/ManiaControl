@@ -91,6 +91,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 
 	/**
 	 * Load Settings from Database
+	 *
 	 * @return bool
 	 */
 	public function loadSettingsFromDatabase() {

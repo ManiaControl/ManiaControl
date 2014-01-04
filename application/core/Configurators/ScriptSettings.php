@@ -8,9 +8,7 @@ use FML\Controls\Frame;
 use FML\Controls\Label;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quads\Quad_Icons64x64_1;
-use FML\Script\Pages;
 use FML\Script\Script;
-use FML\Script\Tooltips;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Formatter;
@@ -26,9 +24,11 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	/**
 	 * Constants
 	 */
+	const TITLE                    = 'Script Settings';
 	const ACTION_PREFIX_SETTING    = 'ScriptSetting.';
 	const ACTION_SETTING_BOOL      = 'ScriptSetting.ActionBoolSetting.';
 	const CB_SCRIPTSETTING_CHANGED = 'ScriptSettings.SettingChanged';
+	const TABLE_SCRIPT_SETTINGS    = 'mc_scriptsettings';
 
 	/**
 	 * Private Properties
@@ -45,6 +45,81 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'onInit');
+		$this->initTables();
+	}
+
+	private function initTables() {
+		$mysqli = $this->maniaControl->database->mysqli;
+		$query  = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_SCRIPT_SETTINGS . "` (
+				`serverId` int(11) NOT NULL AUTO_INCREMENT,
+				`settingName` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+				`settingValue` varchar(500) COLLATE utf8_unicode_ci NOT NULL,
+				UNIQUE KEY `setting` (`serverId`, `settingName`)
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Script Settings' AUTO_INCREMENT=1;";
+
+		$statement = $mysqli->prepare($query);
+		if($mysqli->error) {
+			trigger_error($mysqli->error, E_USER_ERROR);
+
+			return false;
+		}
+		$statement->execute();
+		if($statement->error) {
+			trigger_error($statement->error, E_USER_ERROR);
+
+			return false;
+		}
+		$statement->close();
+
+		return true;
+	}
+
+	/**
+	 * Handle OnInit callback
+	 *
+	 * @param array $callback
+	 */
+	public function onInit(array $callback) {
+		$this->loadSettingsFromDatabase();
+	}
+
+	/**
+	 * Load Settings from Database
+	 *
+	 * @return bool
+	 */
+	public function loadSettingsFromDatabase() {
+		$this->maniaControl->client->query('GetModeScriptSettings');
+		$scriptSettings = $this->maniaControl->client->getResponse();
+
+		$mysqli = $this->maniaControl->database->mysqli;
+
+		$loadedSettings = array();
+
+		$query  = "SELECT * FROM `" . self::TABLE_SCRIPT_SETTINGS . "`;";
+		$result = $mysqli->query($query);
+		if(!$result) {
+			trigger_error($mysqli->error);
+		}
+
+		while($row = $result->fetch_object()) {
+			$loadedSettings[$row->settingName] = $row->settingValue;
+			settype($loadedSettings[$row->settingName], gettype($scriptSettings[$row->settingName]));
+		}
+
+		$result->close();
+
+		if(count($loadedSettings) == 0) {
+			return true;
+		}
+
+		$success = $this->maniaControl->client->query('SetModeScriptSettings', $loadedSettings);
+		if(!$success) {
+			$this->maniaControl->log('Error occurred: ' . $this->maniaControl->getClientErrorText());
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -52,7 +127,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getTitle()
 	 */
 	public function getTitle() {
-		return 'Script Settings';
+		return self::TITLE;
 	}
 
 	/**
@@ -205,8 +280,9 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 
 		$newSettings = array();
 		foreach($configData[3] as $setting) {
-			if(substr($setting['Name'], 0, $prefixLength) != self::ACTION_PREFIX_SETTING)
+			if(substr($setting['Name'], 0, $prefixLength) != self::ACTION_PREFIX_SETTING) {
 				continue;
+			}
 
 			$settingName = substr($setting['Name'], $prefixLength);
 			if(!isset($scriptSettings[$settingName])) {
@@ -234,8 +310,9 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	public function handleManialinkPageAnswer(array $callback) {
 		$actionId    = $callback[1][2];
 		$boolSetting = (strpos($actionId, self::ACTION_SETTING_BOOL) === 0);
-		if(!$boolSetting)
+		if(!$boolSetting) {
 			return;
+		}
 
 		$actionArray = explode(".", $actionId);
 		$setting     = $actionArray[2];
@@ -277,13 +354,34 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 * @param Player $player
 	 */
 	private function applyNewScriptSettings(array $newSettings, Player $player) {
-		if(!$newSettings)
-			return;
+		if(!$newSettings) {
+			return true;
+		}
 		$success = $this->maniaControl->client->query('SetModeScriptSettings', $newSettings);
 		if(!$success) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
-			return;
+			return false;
 		}
+
+		// Save Settings into Database
+		$mysqli = $this->maniaControl->database->mysqli;
+
+		$query     = "INSERT INTO `" . self::TABLE_SCRIPT_SETTINGS . "` (
+				`serverId`,
+				`settingName`,
+				`settingValue`
+				) VALUES (
+				?, ?, ?
+				) ON DUPLICATE KEY UPDATE
+				`settingValue` = VALUES(`settingValue`);";
+		$statement = $mysqli->prepare($query);
+		if($mysqli->error) {
+			trigger_error($mysqli->error);
+			return false;
+		}
+
+		$serverId = $this->maniaControl->server->getServerId();
+
 
 		// Notifications
 		$settingsCount = count($newSettings);
@@ -298,15 +396,26 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 				$chatMessage .= ', ';
 			}
 
+			//Add To Database
+			$statement->bind_param('iss', $serverId, $setting, $value);
+			$statement->execute();
+			if($statement->error) {
+				trigger_error($statement->error);
+				$statement->close();
+				return false;
+			}
+
 			// Trigger own callback
 			$this->maniaControl->callbackManager->triggerCallback(self::CB_SCRIPTSETTING_CHANGED, array(self::CB_SCRIPTSETTING_CHANGED, $setting, $value));
 
 			$settingIndex++;
 		}
+		$statement->close();
 
 		$chatMessage .= '!';
 		$this->maniaControl->chat->sendInformation($chatMessage);
 		$this->maniaControl->log(Formatter::stripCodes($chatMessage));
+		return true;
 	}
 
 	/**
