@@ -4,6 +4,7 @@ namespace ManiaControl\Players;
 
 use FML\Controls\Control;
 use FML\Controls\Frame;
+use FML\Controls\Labels\Label_Button;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
@@ -209,6 +210,15 @@ class PlayerDetailed {
 		//Statistics
 		$frame->add($this->statisticsFrame($target));
 
+
+		$quad = new Label_Button();
+		$frame->add($quad);
+		$quad->setStyle($quad::STYLE_CardMain_Quit);
+		$quad->setHAlign(Control::LEFT);
+		$quad->setScale(0.75);
+		$quad->setText("Back to Playerlist");
+		$quad->setPosition(-$this->width / 2 + 7, -$this->height / 2 + 7);
+		$quad->setAction(PlayerCommands::ACTION_OPEN_PLAYERLIST);
 
 		// render and display xml
 		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player);

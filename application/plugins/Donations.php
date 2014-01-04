@@ -249,7 +249,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$descriptionLabel->setSize(40, 4);
 		$descriptionLabel->setTextSize(2);
 		$descriptionLabel->setVisible(true);
-		$descriptionLabel->setTextColor("FF0");
+		$descriptionLabel->setTextColor("0F0");
 
 		// Add items
 		$x = -2;
@@ -258,7 +258,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 			$popoutFrame->add($label);
 			$label->setX($x);
 			$label->setHAlign(Control::RIGHT);
-			$label->setText('$ff0'.$value . '$700P');
+			$label->setText('$s$FFF'.$value . '$09FP');
 			$label->setTextSize(1.2);
 			$label->setAction(self::ACTION_DONATE_VALUE . "." . $value);
 			$label->setStyle(Label_Text::STYLE_TextCardSmall);

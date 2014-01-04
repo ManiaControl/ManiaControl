@@ -3,6 +3,7 @@
 namespace ManiaControl\Players;
 
 use FML\Controls\Quads\Quad_Icons128x128_1;
+use FML\Controls\Quads\Quad_Icons128x32_1;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Commands\CommandListener;
@@ -59,8 +60,8 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener {
 
 		//Action Balance Teams
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_BALANCE_TEAMS, $this, 'command_TeamBalance');
-		$itemQuad = new Quad_Icons128x128_1();
-		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ProfileVehicle);
+		$itemQuad = new Quad_Icons128x32_1();
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_RT_Team);
 		$itemQuad->setAction(self::ACTION_BALANCE_TEAMS);
 		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 9);
 

@@ -137,9 +137,9 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$headFrame->setY($y - 5);
 		// $array = array("Id" => $x + 5, "Nickname" => $x + 10, "Login" => $x + 40, "Ladder" => $x + 60,"Zone" => $x + 85);
 		if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
-			$array = array("Id" => $x + 5, "Nickname" => $x + 18, "Login" => $x + 60, "Location" => $x + 91, "Actions" => $x + 135);
+			$array = array("Id" => $x + 5, "Nickname" => $x + 18, "Login" => $x + 70, "Location" => $x + 101, "Actions" => $x + 135);
 		} else {
-			$array = array("Id" => $x + 5, "Nickname" => $x + 18, "Login" => $x + 60, "Location" => $x + 91);
+			$array = array("Id" => $x + 5, "Nickname" => $x + 18, "Login" => $x + 70, "Location" => $x + 101);
 		}
 		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
 
@@ -166,12 +166,12 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$lineQuad->setZ(0.001);
 			}
 
-			$array  = array($i => $x + 5, $listPlayer->nickname => $x + 18, $listPlayer->login => $x + 60, $path => $x + 91);
+			$array  = array($i => $x + 5, $listPlayer->nickname => $x + 18, $listPlayer->login => $x + 70, $path => $x + 101);
 			$frames = $this->maniaControl->manialinkManager->labelLine($playerFrame, $array);
 
 			/** @var Label $nicknameLabel */
-			$nicknameLabel = $frames[1];
-			$nicknameLabel->setAction(self::ACTION_OPEN_PLAYER_DETAILED . '.' . $listPlayer->login);
+			//$nicknameLabel = $frames[1];
+			//$nicknameLabel->setAction(self::ACTION_OPEN_PLAYER_DETAILED . '.' . $listPlayer->login);
 
 
 			$playerFrame->setY($y);
@@ -209,7 +209,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$playerFrame->add($countryQuad);
 				$countryCode = Formatter::mapCountry($listPlayer->getCountry());
 				$countryQuad->setImage("file://Skins/Avatars/Flags/{$countryCode}.dds");
-				$countryQuad->setX($x + 88);
+				$countryQuad->setX($x + 98);
 				$countryQuad->setSize(4, 4);
 				$countryQuad->setZ(-0.1);
 
@@ -232,10 +232,33 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 
 			$script->addTooltip($rightLabel, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $this->maniaControl->authenticationManager->getAuthLevelName($listPlayer->authLevel) . " " . $listPlayer->nickname));
 
+
+			// Player Statistics
+			$playerQuad = new Quad_Icons64x64_1();
+			$playerFrame->add($playerQuad);
+			$playerQuad->setX($x + 61);
+			$playerQuad->setZ(20);
+			$playerQuad->setSubStyle($playerQuad::SUBSTYLE_TrackInfo);
+			$playerQuad->setSize(2.7, 2.7);
+			$playerQuad->setAction(self::ACTION_OPEN_PLAYER_DETAILED . "." . $listPlayer->login);
+			$script->addTooltip($playerQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "View Statistics of " . $listPlayer->nickname));
+
+
+			// Camera Quad
+			$playerQuad = new Quad_UIConstruction_Buttons();
+			$playerFrame->add($playerQuad);
+			$playerQuad->setX($x + 64.5);
+			$playerQuad->setZ(20);
+			$playerQuad->setSubStyle($playerQuad::SUBSTYLE_Camera);
+			$playerQuad->setSize(3.8, 3.8);
+			$script->addTooltip($playerQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Spectate " . $listPlayer->nickname));
+			$script->addProfileButton($playerQuad, $listPlayer->login); //TODO real action
+
+
 			// Player Profile Quad
 			$playerQuad = new Quad_UIConstruction_Buttons();
 			$playerFrame->add($playerQuad);
-			$playerQuad->setX($x + 58);
+			$playerQuad->setX($x + 68);
 			$playerQuad->setZ(20);
 			$playerQuad->setSubStyle($playerQuad::SUBSTYLE_Author);
 			$playerQuad->setSize(3.8, 3.8);
