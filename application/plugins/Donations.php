@@ -239,16 +239,16 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		//Description Label
 		$descriptionFrame = new Frame();
 		$maniaLink->add($descriptionFrame);
-		$descriptionFrame->setPosition($posX - 50, $posY - 15);
+		$descriptionFrame->setPosition($posX - 50, $posY - 5);
 		$descriptionFrame->setHAlign(Control::RIGHT);
 
 		$descriptionLabel = new Label();
-		$frame->add($descriptionLabel);
-		$descriptionLabel->setAlign(Control::RIGHT, Control::TOP);
+		$descriptionFrame->add($descriptionLabel);
+		$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
 		$descriptionLabel->setSize(40, 4);
 		$descriptionLabel->setTextSize(2);
 		$descriptionLabel->setVisible(true);
-
+		$descriptionLabel->setTextColor("FF0");
 
 		// Add items
 		$x = -2;
