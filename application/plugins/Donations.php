@@ -3,6 +3,7 @@ use FML\Controls\Control;
 use FML\Controls\Frame;
 use FML\Controls\Label;
 use FML\Controls\Labels\Label_Button;
+use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_Icons128x128_1;
 use FML\ManiaLink;
@@ -260,7 +261,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 			$label->setText('$ff0'.$value . '$700P');
 			$label->setTextSize(1.2);
 			$label->setAction(self::ACTION_DONATE_VALUE . "." . $value);
-
+			$label->setStyle(Label_Text::STYLE_TextCardSmall);
 			$script->addTooltip($label, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Donate " . $value . " Planets"));
 
 			$x -= strlen($value) * 2 + 1.7;
