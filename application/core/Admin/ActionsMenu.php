@@ -103,10 +103,11 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	 *
 	 * @param array $callback
 	 */
-	public function handleOnInit(array $callback) {
-		$manialinkText = $this->buildMenuIconsManialink()->render()->saveXML();
-		$players       = $this->maniaControl->playerManager->getPlayers();
+	public function handleOnInit(array $callback) { //TODO render only once, but howtodo admin check then?
+		//$manialinkText = $this->buildMenuIconsManialink()->render()->saveXML();
+		$players = $this->maniaControl->playerManager->getPlayers();
 		foreach($players as $player) {
+			$manialinkText = $this->buildMenuIconsManialink($player)->render()->saveXML();
 			$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
 		}
 	}
@@ -118,7 +119,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	 */
 	public function handlePlayerJoined(array $callback) {
 		$player        = $callback[1];
-		$manialinkText = $this->buildMenuIconsManialink()->render()->saveXML();
+		$manialinkText = $this->buildMenuIconsManialink($player)->render()->saveXML();
 		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
 	}
 
@@ -128,9 +129,6 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	 * @param array $callback
 	 */
 	public function openAdminMenu(array $callback, Player $player) {
-		if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
-			$this->maniaControl->configurator->toggleMenu($player);
-		}
 	}
 
 	/**
@@ -139,11 +137,15 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	 * @param array $callback
 	 */
 	public function openPlayerMenu(array $callback, Player $player) {
-		$this->maniaControl->playerManager->playerCommands->playerList->addPlayerToShownList($player);
-		$this->maniaControl->playerManager->playerCommands->playerList->showPlayerList($player);
 	}
 
-	private function buildMenuIconsManialink() {
+	/**
+	 * Builds the Manialink
+	 *
+	 * @param Player $player
+	 * @return ManiaLink
+	 */
+	private function buildMenuIconsManialink(Player $player) { //TODO Description Labels, close tooltip on click, adjust size
 		$posX              = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_POSX);
 		$posY              = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_POSY);
 		$itemSize          = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_ITEMSIZE);
@@ -178,37 +180,37 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		$itemQuad->setSize($itemSize, $itemSize);
 		$iconFrame->add($itemQuad);
 
-		//Admin Menu
-		$popoutFrame = new Frame();
-		$manialink->add($popoutFrame);
-		$popoutFrame->setPosition($posX - $itemSize * 0.5, $posY);
-		$popoutFrame->setHAlign(Control::RIGHT);
-		$popoutFrame->setSize(4 * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
+		if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
+			//Admin Menu
+			$popoutFrame = new Frame();
+			$manialink->add($popoutFrame);
+			$popoutFrame->setPosition($posX - $itemSize * 0.5, $posY);
+			$popoutFrame->setHAlign(Control::RIGHT);
+			$popoutFrame->setSize(4 * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
 
-		$quad = new Quad();
-		$popoutFrame->add($quad);
-		$quad->setHAlign(Control::RIGHT);
-		$quad->setStyles($quadStyle, $quadSubstyle);
-		$quad->setSize(count($this->adminMenuItems) * $itemSize * $itemMarginFactorX * 1.4, $itemSize * $itemMarginFactorY);
+			$quad = new Quad();
+			$popoutFrame->add($quad);
+			$quad->setHAlign(Control::RIGHT);
+			$quad->setStyles($quadStyle, $quadSubstyle);
+			$quad->setSize(count($this->adminMenuItems) * $itemSize * $itemMarginFactorX * 1.4, $itemSize * $itemMarginFactorY);
 
-		$popoutFrame->add($quad);
+			$popoutFrame->add($quad);
 
-		$script->addTooltip($itemQuad, $popoutFrame, Script::OPTION_TOOLTIP_STAYONCLICK);
+			$script->addTooltip($itemQuad, $popoutFrame, Script::OPTION_TOOLTIP_STAYONCLICK);
 
-		// Add items
-		$x = -1;
-		foreach($this->adminMenuItems as $menuItems) {
-			foreach($menuItems as $menuItem) {
-				/** @var Quad $menuItem */
-				$menuItem->setSize($itemSize, $itemSize);
-				$popoutFrame->add($menuItem);
-				$menuItem->setX($x);
-				$menuItem->setHAlign(Control::RIGHT);
-				$x -= $itemSize * 1.05;
+			// Add items
+			$x = -1;
+			foreach(array_reverse($this->adminMenuItems) as $menuItems) {
+				foreach($menuItems as $menuItem) {
+					/** @var Quad $menuItem */
+					$menuItem->setSize($itemSize, $itemSize);
+					$popoutFrame->add($menuItem);
+					$menuItem->setX($x);
+					$menuItem->setHAlign(Control::RIGHT);
+					$x -= $itemSize * 1.05;
+				}
 			}
 		}
-
-
 		// Player Menu Icon Frame
 		$frame = new Frame();
 		$manialink->add($frame);
@@ -249,7 +251,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 
 		// Add items
 		$x = -1;
-		foreach($this->playerMenuItems as $menuItems) {
+		foreach(array_reverse($this->playerMenuItems) as $menuItems) {
 			foreach($menuItems as $menuItem) {
 				/** @var Quad $menuItem */
 				$menuItem->setSize($itemSize, $itemSize);

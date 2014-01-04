@@ -312,6 +312,6 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$itemQuad = new Quad();
 		$itemQuad->setStyles('Icons128x32_1', 'Settings');
 		$itemQuad->setAction(self::ACTION_TOGGLEMENU);
-		$this->maniaControl->actionsMenu->addAdminMenuItem($itemQuad, 10);
+		$this->maniaControl->actionsMenu->addAdminMenuItem($itemQuad, 20);
 	}
 }
