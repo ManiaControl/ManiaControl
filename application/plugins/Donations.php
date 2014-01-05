@@ -191,8 +191,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$itemSize = $width;
 		
 		$maniaLink = new ManiaLink(self::MLID_DONATE_WIDGET);
-		$script = new Script();
-		$maniaLink->setScript($script);
+		$script = $maniaLink->getScript();
 		
 		// Donate Menu Icon Frame
 		$frame = new Frame();
@@ -230,7 +229,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		
 		$popoutFrame->add($quad);
 		
-		$script->addTooltip($itemQuad, $popoutFrame, Script::OPTION_TOOLTIP_ONCLICK);
+		$script->addToggle($itemQuad, $popoutFrame);
 		
 		// Description Label
 		$descriptionFrame = new Frame();

@@ -297,6 +297,12 @@ class Script {
 			return $this;
 		}
 		$toggleControl->checkId();
+		if ($mode == self::CLASS_HIDE) {
+			$toggleControl->setVisible(true);
+		}
+		else {
+			$toggleControl->setVisible(false);
+		}
 		$clickControl->setScriptEvents(true);
 		$clickControl->addClass(self::CLASS_TOGGLE);
 		$clickControl->addClass($mode);
