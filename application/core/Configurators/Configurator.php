@@ -53,7 +53,6 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	private $serverSettings = null;
 	private $menus = array();
 	private $playersMenuShown = array();
-	private $manialink = null;
 
 	/**
 	 * Create a new Configurator
@@ -70,30 +69,25 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_WIDTH, 170.);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_HEIGHT, 81.);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_STYLE, Quad_BgRaceScore2::STYLE);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_SUBSTYLE, 
-				Quad_BgRaceScore2::SUBSTYLE_HandleSelectable);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_SUBSTYLE, Quad_BgRaceScore2::SUBSTYLE_HandleSelectable);
 		
 		// Register for page answers
-		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_TOGGLEMENU, $this, 
-				'handleToggleMenuAction');
-		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_SAVECONFIG, $this, 
-				'handleSaveConfigAction');
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_TOGGLEMENU, $this, 'handleToggleMenuAction');
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_SAVECONFIG, $this, 'handleSaveConfigAction');
 		
 		// Register for callbacks
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERDISCONNECT, $this, 
-				'handlePlayerDisconnect');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERDISCONNECT, $this, 'handlePlayerDisconnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(ScriptSettings::CB_SCRIPTSETTING_CHANGED, $this, 'reopenMenu');
 		$this->maniaControl->callbackManager->registerCallbackListener(ServerSettings::CB_SERVERSETTING_CHANGED, $this, 'reopenMenu');
-
+		
 		// Create script settings
 		$this->scriptSettings = new ScriptSettings($maniaControl);
 		$this->addMenu($this->scriptSettings);
-
+		
 		// Create server settings
 		$this->serverSettings = new ServerSettings($maniaControl);
 		$this->addMenu($this->serverSettings);
-
-
+		
 		// Register for commands
 		$this->maniaControl->commandManager->registerCommandListener('config', $this, 'handleConfigCommand', true);
 	}
@@ -168,8 +162,8 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	 * @param Player $player
 	 */
 	public function showMenu(Player $player) {
-		$this->buildManialink();
-		$manialinkText = $this->manialink->render()->saveXML();
+		$manialink = $this->buildManialink();
+		$manialinkText = $manialink->render()->saveXML();
 		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
 		$this->maniaControl->manialinkManager->disableAltMenu($player);
 		$this->playersMenuShown[$player->login] = true;
@@ -303,7 +297,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$saveButton->setText('$zSave$z');
 		$saveButton->setAction(self::ACTION_SAVECONFIG);
 		
-		$this->manialink = $manialinks;
+		return $manialinks;
 	}
 
 	/**
@@ -313,6 +307,6 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$itemQuad = new Quad_UIConstruction_Buttons();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Tools);
 		$itemQuad->setAction(self::ACTION_TOGGLEMENU);
-		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 20, 'Settings');//TODO index not really working (this should be the last)
+		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 20, 'Settings'); // TODO index not really working (this should be the last)
 	}
 }
