@@ -84,6 +84,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 			$this->playerMenuItems[$order] = array();
 		}
 		array_push($this->playerMenuItems[$order], array($control, $description));
+		krsort($this->playerMenuItems);
 		$this->rebuildAndShowMenu();
 	}
 
@@ -98,6 +99,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 			$this->adminMenuItems[$order] = array();
 		}
 		array_push($this->adminMenuItems[$order], array($control, $description));
+		krsort($this->adminMenuItems);
 		$this->rebuildAndShowMenu();
 	}
 
@@ -107,14 +109,8 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	 * @param array $callback
 	 */
 	public function handleOnInit(array $callback) {
-		// TODO: Render only once
-		$players = $this->maniaControl->playerManager->getPlayers();
-		foreach ($players as $player) {
-			$manialink = $this->buildMenuIconsManialink($player);
-			$manialinkText = $manialink->render()->saveXML();
-			$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
-		}
 		$this->initCompleted = true;
+		$this->rebuildAndShowMenu();
 	}
 
 	/**
@@ -122,9 +118,11 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	 */
 	public function rebuildAndShowMenu() {
 		if (!$this->initCompleted) return;
+		// TODO: Render only once
 		$players = $this->maniaControl->playerManager->getPlayers();
 		foreach ($players as $player) {
-			$manialinkText = $this->buildMenuIconsManialink($player)->render()->saveXML();
+			$manialink = $this->buildMenuIconsManialink($player);
+			$manialinkText = $manialink->render()->saveXML();
 			$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
 		}
 	}
@@ -208,7 +206,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 			
 			// Add items
 			$x = -1;
-			foreach ($this->adminMenuItems as $menuItems) {
+			foreach ($this->adminMenuItems as $order => $menuItems) {
 				foreach ($menuItems as $menuItem) {
 					$menuQuad = $menuItem[0];
 					/**

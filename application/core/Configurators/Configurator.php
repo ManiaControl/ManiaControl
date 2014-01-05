@@ -307,6 +307,6 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$itemQuad = new Quad_UIConstruction_Buttons();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Tools);
 		$itemQuad->setAction(self::ACTION_TOGGLEMENU);
-		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 20, 'Settings'); // TODO index not really working (this should be the last)
+		$this->maniaControl->actionsMenu->addAdminMenuItem($itemQuad,20,'Settings');
 	}
 }
