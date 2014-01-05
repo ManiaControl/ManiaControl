@@ -76,8 +76,8 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERDISCONNECT, $this, 'handlePlayerDisconnect');
-		$this->maniaControl->callbackManager->registerCallbackListener(ScriptSettings::CB_SCRIPTSETTINGS_CHANGED, $this, 'reopenMenu');
-		$this->maniaControl->callbackManager->registerCallbackListener(ServerSettings::CB_SERVERSETTINGS_CHANGED, $this, 'reopenMenu');
+		//$this->maniaControl->callbackManager->registerCallbackListener(ScriptSettings::CB_SCRIPTSETTINGS_CHANGED, $this, 'reopenMenu');
+		//$this->maniaControl->callbackManager->registerCallbackListener(ServerSettings::CB_SERVERSETTINGS_CHANGED, $this, 'reopenMenu');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 
 		// Create server settings
@@ -119,11 +119,11 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	 *
 	 * @param array $callback
 	 */
-	public function reopenMenu(array $callback) {
+	public function reopenMenu($menuId = 0) {
 		foreach($this->playersMenuShown as $login => $shown) {
 			if($shown == true) {
 				$player = $this->maniaControl->playerManager->getPlayer($login);
-				$this->showMenu($player);
+				$this->showMenu($player, $menuId);
 			}
 		}
 	}
@@ -201,6 +201,24 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	}
 
 	/**
+	 * Gets the Menu Id
+	 *
+	 * @param $name
+	 * @return int
+	 */
+	public function getMenuId($name) {
+		$i = 0;
+		foreach($this->menus as $menu) {
+			/** @var  ConfiguratorMenu $menu */
+			if($menu->getTitle() == $name) {
+				return $i;
+			}
+			$i++;
+		}
+		return 0;
+	}
+
+	/**
 	 * Build menu manialink if necessary
 	 *
 	 * @param int $menuIdShown
@@ -248,9 +266,8 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$script = new Script();
 		$manialink->setScript($script);
 
-		$menuRelationships = array();
-		$menuItemY         = $menuHeight * 0.42;
-		$menuId            = 0;
+		$menuItemY = $menuHeight * 0.42;
+		$menuId    = 0;
 		foreach($this->menus as $index => $menu) {
 			/** @var ConfiguratorMenu $menu */
 
