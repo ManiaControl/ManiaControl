@@ -97,10 +97,6 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			trigger_error($mysqli->error);
 			return false;
 		}
-		if ($result->num_rows <= 0) {
-			$result->close();
-			return true;
-		}
 		
 		$this->maniaControl->client->query('GetServerOptions');
 		$serverSettings = $this->maniaControl->client->getResponse();
@@ -111,6 +107,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			settype($loadedSettings[$row->settingName], gettype($serverSettings[$row->settingName]));
 		}
 		$result->close();
+		if (!$loadedSettings) return true;
 		
 		$success = $this->maniaControl->client->query('SetServerOptions', $loadedSettings);
 		if (!$success) {

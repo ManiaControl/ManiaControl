@@ -107,10 +107,6 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			trigger_error($mysqli->error);
 			return false;
 		}
-		if ($result->num_rows <= 0) {
-			$result->close();
-			return true;
-		}
 		
 		$loadedSettings = array();
 		while ($row = $result->fetch_object()) {
@@ -119,6 +115,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			settype($loadedSettings[$row->settingName], gettype($scriptSettings[$row->settingName]));
 		}
 		$result->close();
+		if (!$loadedSettings) return true;
 		
 		$success = $this->maniaControl->client->query('SetModeScriptSettings', $loadedSettings);
 		if (!$success) {
