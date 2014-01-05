@@ -11,28 +11,29 @@ use ManiaControl\Players\Player;
 require_once __DIR__ . '/ServerCommands.php';
 
 /**
- * Class providing information and commands for the connected maniaplanet server
+ * Class providing Information about theconnected ManiaPlanet Server
  *
  * @author steeffeen & kremsy
  */
 class Server implements CallbackListener {
-
+	
 	/**
 	 * Constants
 	 */
 	const TABLE_SERVERS = 'mc_servers';
-
+	
 	/**
-	 * Public properties
+	 * Public Properties
 	 */
 	public $config = null;
-
+	
 	/**
-	 * Private properties
+	 * Private Properties
 	 */
 	private $maniaControl = null;
 	private $serverCommands = null;
-	private $serverId = 0;
+	private $index = null;
+	private $login = null;
 
 	/**
 	 * Construct server
@@ -41,104 +42,80 @@ class Server implements CallbackListener {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
-
+		$this->initTables();
+		
 		// Load config
 		$this->config = FileUtil::loadConfig('server.xml');
-
+		
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'onInit');
-
+		
 		$this->serverCommands = new ServerCommands($maniaControl);
-
-		$this->initTables();
 	}
 
 	/**
-	 * Initialize necessary database tables
+	 * Initialize necessary Database Tables
 	 *
 	 * @return bool
 	 */
 	private function initTables() {
 		$mysqli = $this->maniaControl->database->mysqli;
-		$query  = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_SERVERS . "` (
-				`serverId` int(11) NOT NULL AUTO_INCREMENT,
+		$query = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_SERVERS . "` (
+				`index` int(11) NOT NULL AUTO_INCREMENT,
 				`login` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-				PRIMARY KEY (`serverId`),
+				PRIMARY KEY (`index`),
 				UNIQUE KEY `login` (`login`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Servers' AUTO_INCREMENT=1;";
-
 		$statement = $mysqli->prepare($query);
-		if($mysqli->error) {
+		if ($mysqli->error) {
 			trigger_error($mysqli->error, E_USER_ERROR);
-
 			return false;
 		}
 		$statement->execute();
-		if($statement->error) {
+		if ($statement->error) {
 			trigger_error($statement->error, E_USER_ERROR);
-
 			return false;
 		}
 		$statement->close();
-
 		return true;
 	}
 
 	/**
-	 * Handle OnInit callback
+	 * Handle OnInit Callback
 	 *
 	 * @param array $callback
 	 */
 	public function onInit(array $callback) {
 		$mysqli = $this->maniaControl->database->mysqli;
-
-		$login = $this->getLogin();
-
 		$query = "INSERT IGNORE INTO `" . self::TABLE_SERVERS . "` (
-					`login`
+				`login`
 				) VALUES (
-					?
+				?
 				);";
-
 		$statement = $mysqli->prepare($query);
-		if($mysqli->error) {
+		if ($mysqli->error) {
 			trigger_error($mysqli->error);
-			return false;
+			return;
 		}
+		$login = $this->getLogin();
 		$statement->bind_param('s', $login);
 		$statement->execute();
-		if($statement->error) {
+		if ($statement->error) {
 			trigger_error($statement->error);
 			$statement->close();
-			return false;
+			return;
 		}
-
 		$statement->close();
-
-		$query = "SELECT serverId FROM `" . self::TABLE_SERVERS . "` WHERE `login` = '" . $login . "';";
-
-
-		$result = $mysqli->query($query);
-		if(!$result) {
-			trigger_error($mysqli->error);
-		}
-
-		$row = $result->fetch_object();
-
-		$result->close();
-
-		$this->serverId = $row->serverId;
 		return true;
 	}
 
-
 	/**
-	 * Fetch game data directory
+	 * Fetch Game Data Directory
 	 *
 	 * @return string
 	 */
 	public function getDataDirectory() {
-		if(!$this->maniaControl->client->query('GameDataDirectory')) {
+		if (!$this->maniaControl->client->query('GameDataDirectory')) {
 			trigger_error("Couldn't get data directory. " . $this->maniaControl->getClientErrorText());
 			return null;
 		}
@@ -146,60 +123,80 @@ class Server implements CallbackListener {
 	}
 
 	/**
-	 * Fetch maps directory
+	 * Fetch Maps Directory
 	 *
 	 * @return string
 	 */
 	public function getMapsDirectory() {
 		$dataDirectory = $this->getDataDirectory();
-		if(!$dataDirectory) {
+		if (!$dataDirectory) {
 			return null;
 		}
 		return $dataDirectory . 'Maps/';
 	}
 
 	/**
-	 * Checks if ManiaControl has access to the given directory
+	 * Checks if ManiaControl has Access to the given Directory
 	 *
 	 * @param string $directory
 	 * @return bool
 	 */
 	public function checkAccess($directory) {
-		if(!$directory) {
-			return false;
-		}
+		if (!$directory) return false;
 		return (is_dir($directory) && is_writable($directory));
 	}
 
 	/**
-	 * Fetch server login
+	 * Fetch Server Index
 	 *
-	 * @return array
+	 * @return int
 	 */
-	public function getLogin() { //TODO save the info locally
-		$systemInfo = $this->getSystemInfo();
-		if(!$systemInfo) {
-			return null;
+	public function getIndex() {
+		if ($this->index) return $this->index;
+		$mysqli = $this->maniaControl->database->mysqli;
+		$login = $this->getLogin();
+		$query = "SELECT `index` FROM `" . self::TABLE_SERVERS . "`
+				WHERE `login` = '" . $login . "';";
+		$result = $mysqli->query($query);
+		if (!$result) {
+			trigger_error($mysqli->error);
+			return;
 		}
-		return $systemInfo['ServerLogin'];
+		$row = $result->fetch_object();
+		$result->close();
+		$this->index = $row->index;
+		return $this->index;
 	}
 
 	/**
-	 * Get server info
+	 * Fetch Server Login
+	 *
+	 * @return string
+	 */
+	public function getLogin() {
+		if ($this->login) return $this->login;
+		$systemInfo = $this->getSystemInfo();
+		if (!$systemInfo) return null;
+		$this->login = $systemInfo['ServerLogin'];
+		return $this->login;
+	}
+
+	/**
+	 * Get the Server Info
 	 *
 	 * @param bool $detailed
 	 * @return array
 	 */
 	public function getInfo($detailed = false) {
-		if($detailed) {
+		if ($detailed) {
 			$login = $this->getLogin();
-			if(!$this->maniaControl->client->query('GetDetailedPlayerInfo', $login)) {
+			if (!$this->maniaControl->client->query('GetDetailedPlayerInfo', $login)) {
 				trigger_error("Couldn't fetch detailed server info. " . $this->maniaControl->getClientErrorText());
 				return null;
 			}
 			return $this->maniaControl->client->getResponse();
 		}
-		if(!$this->maniaControl->client->query('GetMainServerPlayerInfo')) {
+		if (!$this->maniaControl->client->query('GetMainServerPlayerInfo')) {
 			trigger_error("Couldn't fetch server info. " . $this->maniaControl->getClientErrorText());
 			return null;
 		}
@@ -207,12 +204,12 @@ class Server implements CallbackListener {
 	}
 
 	/**
-	 * Get server options
+	 * Get Server Options
 	 *
 	 * @return array
 	 */
 	public function getOptions() {
-		if(!$this->maniaControl->client->query('GetServerOptions')) {
+		if (!$this->maniaControl->client->query('GetServerOptions')) {
 			trigger_error("Couldn't fetch server options. " . $this->maniaControl->getClientErrorText());
 			return null;
 		}
@@ -220,12 +217,12 @@ class Server implements CallbackListener {
 	}
 
 	/**
-	 * Fetch server name
+	 * Fetch current Server Name
 	 *
 	 * @return string
 	 */
 	public function getName() {
-		if(!$this->maniaControl->client->query('GetServerName')) {
+		if (!$this->maniaControl->client->query('GetServerName')) {
 			trigger_error("Couldn't fetch server name. " . $this->maniaControl->getClientErrorText());
 			return null;
 		}
@@ -233,12 +230,12 @@ class Server implements CallbackListener {
 	}
 
 	/**
-	 * Fetch server version
+	 * Fetch Server Version
 	 *
 	 * @return string
 	 */
 	public function getVersion() {
-		if(!$this->maniaControl->client->query('GetVersion')) {
+		if (!$this->maniaControl->client->query('GetVersion')) {
 			trigger_error("Couldn't fetch server version. " . $this->maniaControl->getClientErrorText());
 			return null;
 		}
@@ -246,12 +243,12 @@ class Server implements CallbackListener {
 	}
 
 	/**
-	 * Fetch server system info
+	 * Fetch Server System Info
 	 *
 	 * @return array
 	 */
 	public function getSystemInfo() {
-		if(!$this->maniaControl->client->query('GetSystemInfo')) {
+		if (!$this->maniaControl->client->query('GetSystemInfo')) {
 			trigger_error("Couldn't fetch server system info. " . $this->maniaControl->getClientErrorText($this->maniaControl->client));
 			return null;
 		}
@@ -259,55 +256,56 @@ class Server implements CallbackListener {
 	}
 
 	/**
-	 * Fetch current game mode
+	 * Fetch current Game Mode
 	 *
 	 * @param bool $stringValue
-	 * @param int  $parseValue
+	 * @param int $parseValue
 	 * @return int | string
 	 */
 	public function getGameMode($stringValue = false, $parseValue = null) {
-		if(is_int($parseValue)) {
+		if (is_int($parseValue)) {
 			$gameMode = $parseValue;
-		} else {
-			if(!$this->maniaControl->client->query('GetGameMode')) {
+		}
+		else {
+			if (!$this->maniaControl->client->query('GetGameMode')) {
 				trigger_error("Couldn't fetch current game mode. " . $this->maniaControl->getClientErrorText());
 				return null;
 			}
 			$gameMode = $this->maniaControl->client->getResponse();
 		}
-		if($stringValue) {
-			switch($gameMode) {
+		if ($stringValue) {
+			switch ($gameMode) {
 				case 0:
-				{
-					return 'Script';
-				}
+					{
+						return 'Script';
+					}
 				case 1:
-				{
-					return 'Rounds';
-				}
+					{
+						return 'Rounds';
+					}
 				case 2:
-				{
-					return 'TimeAttack';
-				}
+					{
+						return 'TimeAttack';
+					}
 				case 3:
-				{
-					return 'Team';
-				}
+					{
+						return 'Team';
+					}
 				case 4:
-				{
-					return 'Laps';
-				}
+					{
+						return 'Laps';
+					}
 				case 5:
-				{
-					return 'Cup';
-				}
+					{
+						return 'Cup';
+					}
 				case 6:
-				{
-					return 'Stunts';
-				}
+					{
+						return 'Stunts';
+					}
 				default:
 					{
-					return 'Unknown';
+						return 'Unknown';
 					}
 			}
 		}
@@ -315,13 +313,13 @@ class Server implements CallbackListener {
 	}
 
 	/**
-	 * Retrieve validation replay for given player
+	 * Retrieve Validation Replay for the given Player
 	 *
 	 * @param Player $player
 	 * @return string
 	 */
 	public function getValidationReplay(Player $player) {
-		if(!$this->maniaControl->client->query('GetValidationReplay', $player->login)) {
+		if (!$this->maniaControl->client->query('GetValidationReplay', $player->login)) {
 			trigger_error("Couldn't get validation replay of '{$player->login}'. " . $this->maniaControl->getClientErrorText());
 			return null;
 		}
@@ -329,32 +327,30 @@ class Server implements CallbackListener {
 	}
 
 	/**
-	 * Retrieve ghost replay for the given player
+	 * Retrieve Ghost Replay for the given Player
 	 *
 	 * @param Player $player
 	 * @return string
 	 */
 	public function getGhostReplay(Player $player) {
 		$dataDir = $this->getDataDirectory();
-		if(!$this->checkAccess($dataDir)) {
-			return null;
-		}
-
+		if (!$this->checkAccess($dataDir)) return null;
+		
 		// Build file name
-		$map      = $this->getMap();
+		$map = $this->getMap();
 		$gameMode = $this->getGameMode();
-		$time     = time();
+		$time = time();
 		$fileName = "GhostReplays/Ghost.{$player->login}.{$gameMode}.{$time}.{$map['UId']}.Replay.Gbx";
-
+		
 		// Save ghost replay
-		if(!$this->maniaControl->client->query('SaveBestGhostsReplay', $player->login, $fileName)) {
+		if (!$this->maniaControl->client->query('SaveBestGhostsReplay', $player->login, $fileName)) {
 			trigger_error("Couldn't save ghost replay. " . $this->maniaControl->getClientErrorText());
 			return null;
 		}
-
+		
 		// Load replay file
 		$ghostReplay = file_get_contents($dataDir . 'Replays/' . $fileName);
-		if(!$ghostReplay) {
+		if (!$ghostReplay) {
 			trigger_error("Couldn't retrieve saved ghost replay.");
 			return null;
 		}
@@ -362,7 +358,7 @@ class Server implements CallbackListener {
 	}
 
 	/**
-	 * Waits for the server to have the given status
+	 * Wait for the Server to have the given Status
 	 *
 	 * @param int $statusCode
 	 * @return bool
@@ -371,36 +367,29 @@ class Server implements CallbackListener {
 		$this->maniaControl->client->query('GetStatus');
 		$response = $this->maniaControl->client->getResponse();
 		// Check if server has the given status
-		if($response['Code'] === 4) {
+		if ($response['Code'] === 4) {
 			return true;
 		}
 		// Server not yet in given status -> Wait for it...
-		$waitBegin   = time();
+		$waitBegin = time();
 		$maxWaitTime = 20;
-		$lastStatus  = $response['Name'];
+		$lastStatus = $response['Name'];
 		$this->maniaControl->log("Waiting for server to reach status {$statusCode}...");
 		$this->maniaControl->log("Current Status: {$lastStatus}");
-		while($response['Code'] !== 4) {
+		while ($response['Code'] !== 4) {
 			sleep(1);
 			$this->maniaControl->client->query('GetStatus');
 			$response = $this->maniaControl->client->getResponse();
-			if($lastStatus !== $response['Name']) {
+			if ($lastStatus !== $response['Name']) {
 				$this->maniaControl->log("New Status: " . $response['Name']);
 				$lastStatus = $response['Name'];
 			}
-			if(time() - $maxWaitTime > $waitBegin) {
+			if (time() - $maxWaitTime > $waitBegin) {
 				// It took too long to reach the status
 				trigger_error("Server couldn't reach status {$statusCode} after {$maxWaitTime} seconds! " . $this->maniaControl->getClientErrorText());
 				return false;
 			}
 		}
 		return true;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getServerId() {
-		return $this->serverId;
 	}
 }

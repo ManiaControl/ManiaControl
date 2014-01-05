@@ -12,23 +12,22 @@ require_once __DIR__ . '/StatisticCollector.php';
  *
  * @author steeffeen & kremsy
  */
-//TODO db reference between player index and statsitics playerId
-//TODO db reference between metadata statId and statistics statId
+// TODO db reference between player index and statsitics playerId
+// TODO db reference between metadata statId and statistics statId
 class StatisticManager {
 	/**
 	 * Constants
 	 */
 	const TABLE_STATMETADATA = 'mc_statmetadata';
-	const TABLE_STATISTICS   = 'mc_statistics';
-
-	const STAT_TYPE_INT  = '0';
+	const TABLE_STATISTICS = 'mc_statistics';
+	const STAT_TYPE_INT = '0';
 	const STAT_TYPE_TIME = '1';
-
+	
 	/**
 	 * Public Properties
 	 */
 	public $statisticCollector = null;
-
+	
 	/**
 	 * Private Properties
 	 */
@@ -43,42 +42,45 @@ class StatisticManager {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		$this->initTables();
-
+		
 		$this->statisticCollector = new StatisticCollector($maniaControl);
-
-		//Store Stats MetaData
+		
+		// Store Stats MetaData
 		$this->storeStatMetaData();
 	}
 
 	/**
 	 * Get the value of an statistic
 	 *
-	 * @param      $statName
-	 * @param      $playerId
-	 * @param int  $serverId
+	 * @param $statName
+	 * @param $playerId
+	 * @param int $serverIndex
 	 * @return int
 	 */
-	public function getStatisticData($statName, $playerId, $serverId = -1) {
+	public function getStatisticData($statName, $playerId, $serverIndex = -1) {
 		$mysqli = $this->maniaControl->database->mysqli;
 		$statId = $this->getStatId($statName);
-
-		if($statId == null) {
+		
+		if ($statId == null) {
 			return -1;
 		}
-
-		if($serverId == -1) {
-			$query = "SELECT SUM(value) as value FROM `" . self::TABLE_STATISTICS . "` WHERE `statId` = " . $statId . " AND `playerId` = " . $playerId . ";";
-		} else {
-			$query = "SELECT value FROM `" . self::TABLE_STATISTICS . "` WHERE `statId` = " . $statId . " AND `playerId` = " . $playerId . " AND `serverLogin` = '" . $serverId . "';";
+		
+		if ($serverIndex == -1) {
+			$query = "SELECT SUM(value) as value FROM `" . self::TABLE_STATISTICS . "` WHERE `statId` = " . $statId . " AND `playerId` = " . $playerId .
+					 ";";
 		}
-
+		else {
+			$query = "SELECT value FROM `" . self::TABLE_STATISTICS . "` WHERE `statId` = " . $statId . " AND `playerId` = " . $playerId .
+					 " AND `serverIndex` = '" . $serverIndex . "';";
+		}
+		
 		$result = $mysqli->query($query);
-		if(!$result) {
+		if (!$result) {
 			trigger_error($mysqli->error);
 		}
-
+		
 		$row = $result->fetch_object();
-
+		
 		$result->close();
 		return $row->value;
 	}
@@ -88,88 +90,86 @@ class StatisticManager {
 	 */
 	private function storeStatMetaData() {
 		$mysqli = $this->maniaControl->database->mysqli;
-
-		$query  = "SELECT * FROM `" . self::TABLE_STATMETADATA . "`;";
+		
+		$query = "SELECT * FROM `" . self::TABLE_STATMETADATA . "`;";
 		$result = $mysqli->query($query);
-		if(!$result) {
+		if (!$result) {
 			trigger_error($mysqli->error);
 		}
-
-		while($row = $result->fetch_object()) {
+		
+		while ($row = $result->fetch_object()) {
 			$this->stats[$row->name] = $row;
 		}
-
+		
 		$result->close();
 	}
 
 	/**
-	 *    Returns the Stats Id
+	 * Returns the Stats Id
 	 *
 	 * @param $statName
 	 * @return int
 	 */
 	private function getStatId($statName) {
-		if(isset($this->stats[$statName])) {
+		if (isset($this->stats[$statName])) {
 			$stat = $this->stats[$statName];
-			return (int)$stat->index;
-		} else {
+			return (int) $stat->index;
+		}
+		else {
 			return null;
 		}
 	}
-
 
 	/**
 	 * Get all statistics of a certain palyer
 	 *
 	 * @param Player $player
-	 * @param  int   $serverId
+	 * @param int $serverIndex
 	 * @return array
 	 */
-	public function getAllPlayerStats(Player $player, $serverId = -1) {
-		$playerStats = array(); //TODO improve performence
-		foreach($this->stats as $stat) {
-			$value                    = $this->getStatisticData($stat->name, $player->index, $serverId);
+	public function getAllPlayerStats(Player $player, $serverIndex = -1) {
+		$playerStats = array(); // TODO improve performence
+		foreach ($this->stats as $stat) {
+			$value = $this->getStatisticData($stat->name, $player->index, $serverIndex);
 			$playerStats[$stat->name] = array($stat, $value);
 		}
-
+		
 		return $playerStats;
 	}
 
 	/**
 	 * Inserts a Stat into the database
 	 *
-	 * @param        $statName
+	 * @param string $statName
 	 * @param Player $player
-	 * @param  int   $serverId
-	 * @param        $value , value to Add
+	 * @param int $serverIndex
+	 * @param mixed $value , value to Add
 	 * @param string $statType
-	 * @internal param string $serverLogin
 	 * @return bool
 	 */
-	public function insertStat($statName, $player, $serverId = -1, $value, $statType = self::STAT_TYPE_INT) {
+	public function insertStat($statName, $player, $serverIndex = -1, $value, $statType = self::STAT_TYPE_INT) {
 		$statId = $this->getStatId($statName);
-
-		if($player == null) {
+		
+		if ($player == null) {
 			return false;
 		}
-
-		if($statId == null) {
+		
+		if ($statId == null) {
 			return false;
 		}
-
-		if($player->isFakePlayer()) {
+		
+		if ($player->isFakePlayer()) {
 			return true;
 		}
-
-		if($serverId == -1) {
-			$serverId = $this->maniaControl->server->getServerId();
+		
+		if ($serverIndex == -1) {
+			$serverIndex = $this->maniaControl->server->getIndex();
 		}
-
-
+		
 		$mysqli = $this->maniaControl->database->mysqli;
-
+		
 		$query = "INSERT INTO `" . self::TABLE_STATISTICS . "` (
-					`serverId`,
+					`serverIndex`,
 					`playerId`,
 					`statId`,
 					`value`
@@ -177,21 +177,21 @@ class StatisticManager {
 				?, ?, ?, ?
 				) ON DUPLICATE KEY UPDATE
 				`value` = `value` + VALUES(`value`);";
-
+		
 		$statement = $mysqli->prepare($query);
-		if($mysqli->error) {
+		if ($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
 		}
-
-		$statement->bind_param('iiii', $serverId, $player->index, $statId, $value);
+		
+		$statement->bind_param('iiii', $serverIndex, $player->index, $statId, $value);
 		$statement->execute();
-		if($statement->error) {
+		if ($statement->error) {
 			trigger_error($statement->error);
 			$statement->close();
 			return false;
 		}
-
+		
 		$statement->close();
 		return true;
 	}
@@ -199,29 +199,26 @@ class StatisticManager {
 	/**
 	 * Increments a Statistic by one
 	 *
-	 * @param                              $statName
-	 * @param \ManiaControl\Players\Player $player
-	 * @param    int                       $serverId
-	 * @internal param string $serverLogin
-	 * @internal param \ManiaControl\Players\Player $playerId
+	 * @param string $statName
+	 * @param Player $player
+	 * @param int $serverIndex
 	 * @return bool
 	 */
-	public function incrementStat($statName, $player, $serverId = -1) {
-		return $this->insertStat($statName, $player, $serverId, 1);
+	public function incrementStat($statName, Player $player, $serverIndex = -1) {
+		return $this->insertStat($statName, $player, $serverIndex, 1);
 	}
-
 
 	/**
 	 * Defines a Stat
 	 *
-	 * @param        $statName
+	 * @param $statName
 	 * @param string $type
 	 * @param string $statDescription
 	 * @return bool
 	 */
 	public function defineStatMetaData($statName, $type = self::STAT_TYPE_INT, $statDescription = '') {
-		$mysqli    = $this->maniaControl->database->mysqli;
-		$query     = "INSERT INTO `" . self::TABLE_STATMETADATA . "` (
+		$mysqli = $this->maniaControl->database->mysqli;
+		$query = "INSERT INTO `" . self::TABLE_STATMETADATA . "` (
 					`name`,
 					`type`,
 					`description`
@@ -231,23 +228,22 @@ class StatisticManager {
 				`type` = VALUES(`type`),
 				`description` = VALUES(`description`);";
 		$statement = $mysqli->prepare($query);
-		if($mysqli->error) {
+		if ($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
 		}
 		$statement->bind_param('sis', $statName, $type, $statDescription);
 		$statement->execute();
-		if($statement->error) {
+		if ($statement->error) {
 			trigger_error($statement->error);
 			$statement->close();
 			return false;
 		}
-
+		
 		$statement->close();
-
+		
 		return true;
 	}
-
 
 	/**
 	 * Initialize necessary database tables
@@ -256,7 +252,7 @@ class StatisticManager {
 	 */
 	private function initTables() {
 		$mysqli = $this->maniaControl->database->mysqli;
-		$query  = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_STATMETADATA . "` (
+		$query = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_STATMETADATA . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
 				`name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
 				`type` int(5) NOT NULL,
@@ -264,45 +260,45 @@ class StatisticManager {
 				PRIMARY KEY (`index`),
 				UNIQUE KEY `name` (`name`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Statistics Meta Data' AUTO_INCREMENT=1;";
-
+		
 		$statement = $mysqli->prepare($query);
-		if($mysqli->error) {
+		if ($mysqli->error) {
 			trigger_error($mysqli->error, E_USER_ERROR);
-
+			
 			return false;
 		}
 		$statement->execute();
-		if($statement->error) {
+		if ($statement->error) {
 			trigger_error($statement->error, E_USER_ERROR);
-
+			
 			return false;
 		}
 		$statement->close();
-
+		
 		$query = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_STATISTICS . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
-				`serverId` int(11) NOT NULL,
+				`serverIndex` int(11) NOT NULL,
 				`playerId` int(11) NOT NULL,
 				`statId` int(11) NOT NULL,
 				`value` int(20) COLLATE utf8_unicode_ci NOT NULL,
 				PRIMARY KEY (`index`),
-				UNIQUE KEY `unique` (`statId`,`playerId`,`serverId`)
+				UNIQUE KEY `unique` (`statId`,`playerId`,`serverIndex`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Statistics' AUTO_INCREMENT=1;";
-
+		
 		$statement = $mysqli->prepare($query);
-		if($mysqli->error) {
+		if ($mysqli->error) {
 			trigger_error($mysqli->error, E_USER_ERROR);
-
+			
 			return false;
 		}
 		$statement->execute();
-		if($statement->error) {
+		if ($statement->error) {
 			trigger_error($statement->error, E_USER_ERROR);
-
+			
 			return false;
 		}
 		$statement->close();
-
+		
 		return true;
 	}
 } 

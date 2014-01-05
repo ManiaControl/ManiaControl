@@ -308,7 +308,8 @@ class PlayerManager implements CallbackListener {
 		$playerStatement->close();
 
 		// Increment the Player Join Count
-		$this->maniaControl->statisticManager->incrementStat(self::STAT_JOIN_COUNT, $player, $this->maniaControl->server->getServerId());
+		$serverIndex = $this->maniaControl->server->getIndex();
+		$this->maniaControl->statisticManager->incrementStat(self::STAT_JOIN_COUNT, $player, $serverIndex);
 
 		return true;
 	}
@@ -325,6 +326,7 @@ class PlayerManager implements CallbackListener {
 		}
 		$playedTime = time() - $player->joinTime;
 
-		return $this->maniaControl->statisticManager->insertStat(self::STAT_SERVERTIME, $player, $this->maniaControl->server->getServerId(), $playedTime);
+		$serverIndex = $this->maniaControl->server->getIndex();
+		return $this->maniaControl->statisticManager->insertStat(self::STAT_SERVERTIME, $player, $serverIndex, $playedTime);
 	}
 }

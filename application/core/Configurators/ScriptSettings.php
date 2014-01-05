@@ -57,10 +57,10 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	private function initTables() {
 		$mysqli = $this->maniaControl->database->mysqli;
 		$query = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_SCRIPT_SETTINGS . "` (
-				`serverId` int(11) NOT NULL AUTO_INCREMENT,
+				`serverIndex` int(11) NOT NULL AUTO_INCREMENT,
 				`settingName` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
 				`settingValue` varchar(500) COLLATE utf8_unicode_ci NOT NULL,
-				UNIQUE KEY `setting` (`serverId`, `settingName`)
+				UNIQUE KEY `setting` (`serverIndex`, `settingName`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Script Settings' AUTO_INCREMENT=1;";
 		
 		$statement = $mysqli->prepare($query);
@@ -371,7 +371,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		// Save Settings into Database
 		$mysqli = $this->maniaControl->database->mysqli;
 		$query = "INSERT INTO `" . self::TABLE_SCRIPT_SETTINGS . "` (
-				`serverId`,
+				`serverIndex`,
 				`settingName`,
 				`settingValue`
 				) VALUES (
@@ -384,7 +384,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			return false;
 		}
 		
-		$serverId = $this->maniaControl->server->getServerId();
+		$serverIndex = $this->maniaControl->server->getIndex();
 		
 		// Notifications
 		$settingsCount = count($newSettings);
@@ -400,7 +400,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			}
 			
 			// Add To Database
-			$statement->bind_param('iss', $serverId, $setting, $value);
+			$statement->bind_param('iss', $serverIndex, $setting, $value);
 			$statement->execute();
 			if ($statement->error) {
 				trigger_error($statement->error);

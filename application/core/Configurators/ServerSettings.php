@@ -56,10 +56,10 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	private function initTables() {
 		$mysqli = $this->maniaControl->database->mysqli;
 		$query = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_SERVER_SETTINGS . "` (
-				`serverId` int(11) NOT NULL AUTO_INCREMENT,
+				`serverIndex` int(11) NOT NULL AUTO_INCREMENT,
 				`settingName` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
 				`settingValue` varchar(500) COLLATE utf8_unicode_ci NOT NULL,
-				UNIQUE KEY `setting` (`serverId`, `settingName`)
+				UNIQUE KEY `setting` (`serverIndex`, `settingName`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Server Settings' AUTO_INCREMENT=1;";
 		$statement = $mysqli->prepare($query);
 		if ($mysqli->error) {
@@ -338,7 +338,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		$mysqli = $this->maniaControl->database->mysqli;
 		
 		$query = "INSERT INTO `" . self::TABLE_SERVER_SETTINGS . "` (
-				`serverId`,
+				`serverIndex`,
 				`settingName`,
 				`settingValue`
 				) VALUES (
@@ -351,7 +351,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			return false;
 		}
 		
-		$serverId = $this->maniaControl->server->getServerId();
+		$serverIndex = $this->maniaControl->server->getIndex();
 		
 		// Notifications
 		$settingsCount = count($newSettings);
@@ -360,7 +360,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		// $chatMessage = '$ff0' . $title . ' $<' . $player->nickname . '$> set ScriptSetting' . ($settingsCount > 1 ? 's' : '') . ' ';
 		foreach ($newSettings as $setting => $value) {
 			
-			$statement->bind_param('iss', $serverId, $setting, $value);
+			$statement->bind_param('iss', $serverIndex, $setting, $value);
 			$statement->execute();
 			if ($statement->error) {
 				trigger_error($statement->error);
