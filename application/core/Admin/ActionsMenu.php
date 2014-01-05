@@ -205,7 +205,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 			$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 			$backgroundQuad->setSize(count($this->adminMenuItems) * $itemSize * 1.15 + 2, $itemSize * $itemMarginFactorY);
 			
-			$script->addTooltip($itemQuad, $popoutFrame, Script::OPTION_TOOLTIP_STAYONCLICK);
+			$script->addTooltip($itemQuad, $popoutFrame, Script::OPTION_TOOLTIP_ONCLICK);
 			
 			// Add items
 			$x = -1;
@@ -273,7 +273,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 		$backgroundQuad->setSize(count($this->playerMenuItems) * $itemSize * 1.15 + 2, $itemSize * $itemMarginFactorY);
 		
-		$script->addTooltip($itemQuad, $popoutFrame, Script::OPTION_TOOLTIP_STAYONCLICK);
+		$script->addTooltip($itemQuad, $popoutFrame, Script::OPTION_TOOLTIP_ONCLICK);
 		
 		// Add items
 		$x = -1;

@@ -20,31 +20,34 @@ use ManiaControl\Plugins\Plugin;
 /**
  * Donation plugin
  *
- * @author steeffeen and Lukas
+ * @author steeffeen & kremsy
  */
 class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	/**
 	 * Constants
 	 */
-	const ID                              = 3;
-	const VERSION                         = 0.1;
+	const ID = 3;
+	const VERSION = 0.1;
 	const SETTING_ANNOUNCE_SERVERDONATION = 'Enable Server-Donation Announcements';
-	const STAT_PLAYER_DONATIONS           = 'Donated Planets';
-	const ACTION_DONATE_VALUE             = 'Donate.DonateValue';
-
+	const STAT_PLAYER_DONATIONS = 'Donated Planets';
+	const ACTION_DONATE_VALUE = 'Donate.DonateValue';
+	
 	// DonateWidget Properties
-	const MLID_DONATE_WIDGET              = 'DonationPlugin.DonateWidget';
+	const MLID_DONATE_WIDGET = 'DonationPlugin.DonateWidget';
 	const SETTING_DONATE_WIDGET_ACTIVATED = 'Donate-Widget Activated';
-	const SETTING_DONATE_WIDGET_POSX      = 'Donate-Widget-Position: X';
-	const SETTING_DONATE_WIDGET_POSY      = 'Donate-Widget-Position: Y';
-	const SETTING_DONATE_WIDGET_WIDTH     = 'Donate-Widget-Size: Width';
-	const SETTING_DONATE_WIDGET_HEIGHT    = 'Donate-Widget-Size: Height';
-	const SETTING_DONATION_VALUES         = 'Donation Values';
-
+	const SETTING_DONATE_WIDGET_POSX = 'Donate-Widget-Position: X';
+	const SETTING_DONATE_WIDGET_POSY = 'Donate-Widget-Position: Y';
+	const SETTING_DONATE_WIDGET_WIDTH = 'Donate-Widget-Size: Width';
+	const SETTING_DONATE_WIDGET_HEIGHT = 'Donate-Widget-Size: Height';
+	const SETTING_DONATION_VALUES = 'Donation Values';
+	
 	/**
 	 * Private properties
 	 */
-	/** @var maniaControl $maniaControl */
+	/**
+	 *
+	 * @var maniaControl $maniaControl
+	 */
 	private $maniaControl = null;
 	private $openBills = array();
 
@@ -54,28 +57,29 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 */
 	public function load(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
-
+		
 		// Register for commands
 		$this->maniaControl->commandManager->registerCommandListener('donate', $this, 'command_Donate');
 		$this->maniaControl->commandManager->registerCommandListener('pay', $this, 'command_Pay', true);
 		$this->maniaControl->commandManager->registerCommandListener('getplanets', $this, 'command_GetPlanets', true);
-
+		
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_BILLUPDATED, $this, 'handleBillUpdated');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'handlePlayerConnect');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
-
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 
+				'handleManialinkPageAnswer');
+		
 		// Define player stats
 		$this->maniaControl->statisticManager->defineStatMetaData(self::STAT_PLAYER_DONATIONS);
-
+		
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_DONATE_WIDGET_ACTIVATED, true);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_DONATE_WIDGET_POSX, 156.);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_DONATE_WIDGET_POSY, -51.4);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_DONATE_WIDGET_WIDTH, 6);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_DONATE_WIDGET_HEIGHT, 6);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_DONATION_VALUES, "20,50,100,500,1000,2000");
-
+		
 		return true;
 	}
 
@@ -135,7 +139,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 * @param array $callback
 	 */
 	public function handleOnInit(array $callback) {
-		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATE_WIDGET_ACTIVATED)) {
+		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATE_WIDGET_ACTIVATED)) {
 			$this->displayDonateWidget();
 		}
 	}
@@ -146,20 +150,13 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 * @param array $callback
 	 */
 	public function handleManialinkPageAnswer(array $callback) {
-		$actionId    = $callback[1][2];
+		$actionId = $callback[1][2];
 		$boolSetting = (strpos($actionId, self::ACTION_DONATE_VALUE) === 0);
-		if(!$boolSetting) {
-			return;
-		}
-
+		if (!$boolSetting) return;
 		$login = $callback[1][1];
-
 		$player = $this->maniaControl->playerManager->getPlayer($login);
-
 		$actionArray = explode(".", $callback[1][2]);
-
 		$this->handleDonation($player, intval($actionArray[2]));
-
 	}
 
 	/**
@@ -170,7 +167,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	public function handlePlayerConnect(array $callback) {
 		$player = $callback[1];
 		// Display Map Widget
-		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATE_WIDGET_ACTIVATED)) {
+		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATE_WIDGET_ACTIVATED)) {
 			$this->displayDonateWidget($player->login);
 		}
 	}
@@ -181,68 +178,66 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 * @param bool $login
 	 */
 	public function displayDonateWidget($login = false) {
-		$posX              = $this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATE_WIDGET_POSX);
-		$posY              = $this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATE_WIDGET_POSY);
-		$width             = $this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATE_WIDGET_WIDTH);
-		$height            = $this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATE_WIDGET_HEIGHT);
-		$values            = $this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATION_VALUES);
-		$quadStyle         = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
-		$quadSubstyle      = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
+		$posX = $this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATE_WIDGET_POSX);
+		$posY = $this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATE_WIDGET_POSY);
+		$width = $this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATE_WIDGET_WIDTH);
+		$height = $this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATE_WIDGET_HEIGHT);
+		$values = $this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATION_VALUES);
+		$quadStyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
+		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
 		$itemMarginFactorX = 1.3;
 		$itemMarginFactorY = 1.2;
-
+		
 		$itemSize = $width;
-
+		
 		$maniaLink = new ManiaLink(self::MLID_DONATE_WIDGET);
-
 		$script = new Script();
 		$maniaLink->setScript($script);
-
-		//Donate Menu Icon Frame
+		
+		// Donate Menu Icon Frame
 		$frame = new Frame();
 		$maniaLink->add($frame);
 		$frame->setPosition($posX, $posY);
-
+		
 		$backgroundQuad = new Quad();
 		$frame->add($backgroundQuad);
 		$backgroundQuad->setSize($width * $itemMarginFactorX, $height * $itemMarginFactorY);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-
+		
 		$iconFrame = new Frame();
 		$frame->add($iconFrame);
-
+		
 		$iconFrame->setSize($itemSize, $itemSize);
 		$itemQuad = new Quad_Icons128x128_1();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Coppers);
 		$itemQuad->setSize($itemSize, $itemSize);
 		$iconFrame->add($itemQuad);
-
+		
 		$valueArray = explode(",", $values);
-
-		//Values Menu
+		
+		// Values Menu
 		$popoutFrame = new Frame();
 		$maniaLink->add($popoutFrame);
 		$popoutFrame->setPosition($posX - $itemSize * 0.5, $posY);
 		$popoutFrame->setHAlign(Control::RIGHT);
 		$popoutFrame->setSize(4 * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
-
+		
 		$quad = new Quad();
 		$popoutFrame->add($quad);
 		$quad->setHAlign(Control::RIGHT);
 		$quad->setStyles($quadStyle, $quadSubstyle);
 		$quad->setSize(strlen($values) * 2 + count($valueArray) * 1, $itemSize * $itemMarginFactorY);
-
-
+		
 		$popoutFrame->add($quad);
-
-		$script->addTooltip($itemQuad, $popoutFrame, Script::OPTION_TOOLTIP_STAYONCLICK);
-
-		//Description Label
+		
+		$script->addTooltip($itemQuad, $popoutFrame, Script::OPTION_TOOLTIP_ONCLICK);
+		
+		// Description Label
 		$descriptionFrame = new Frame();
 		$maniaLink->add($descriptionFrame);
 		$descriptionFrame->setPosition($posX - 50, $posY - 5);
 		$descriptionFrame->setHAlign(Control::RIGHT);
-
+		
 		$descriptionLabel = new Label();
 		$descriptionFrame->add($descriptionLabel);
 		$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
@@ -250,24 +245,23 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$descriptionLabel->setTextSize(2);
 		$descriptionLabel->setVisible(true);
 		$descriptionLabel->setTextColor("0F0");
-
+		
 		// Add items
 		$x = -2;
-		foreach(array_reverse($valueArray) as $value) {
+		foreach (array_reverse($valueArray) as $value) {
 			$label = new Label_Button();
 			$popoutFrame->add($label);
 			$label->setX($x);
 			$label->setHAlign(Control::RIGHT);
-			$label->setText('$s$FFF'.$value . '$09FP');
+			$label->setText('$s$FFF' . $value . '$09FP');
 			$label->setTextSize(1.2);
 			$label->setAction(self::ACTION_DONATE_VALUE . "." . $value);
 			$label->setStyle(Label_Text::STYLE_TextCardSmall);
 			$script->addTooltip($label, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Donate " . $value . " Planets"));
-
+			
 			$x -= strlen($value) * 2 + 1.7;
 		}
-
-
+		
 		// Send manialink
 		$manialinkText = $maniaLink->render()->saveXML();
 		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $login);
@@ -276,32 +270,32 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	/**
 	 * Handle /donate command
 	 *
-	 * @param array  $chatCallback
+	 * @param array $chatCallback
 	 * @param Player $player
 	 * @return bool
 	 */
 	public function command_Donate(array $chatCallback, Player $player) {
-		$text   = $chatCallback[1][2];
+		$text = $chatCallback[1][2];
 		$params = explode(' ', $text);
-		if(count($params) < 2) {
+		if (count($params) < 2) {
 			$this->sendDonateUsageExample($player);
 			return false;
 		}
-		$amount = (int)$params[1];
-		if(!$amount || $amount <= 0) {
+		$amount = (int) $params[1];
+		if (!$amount || $amount <= 0) {
 			$this->sendDonateUsageExample($player);
 			return false;
 		}
-		if(count($params) >= 3) {
-			$receiver       = $params[2];
+		if (count($params) >= 3) {
+			$receiver = $params[2];
 			$receiverPlayer = $this->maniaControl->playerManager->getPlayer($receiver);
-			$receiverName   = ($receiverPlayer ? $receiverPlayer['NickName'] : $receiver);
-
-		} else {
-			$receiver     = '';
+			$receiverName = ($receiverPlayer ? $receiverPlayer['NickName'] : $receiver);
+		}
+		else {
+			$receiver = '';
 			$receiverName = $this->maniaControl->server->getName();
 		}
-
+		
 		return $this->handleDonation($player, $amount, $receiver, $receiverName);
 	}
 
@@ -309,60 +303,64 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 * Handles a Player Donate
 	 *
 	 * @param Player $player
-	 * @param        $value
+	 * @param $value
 	 */
 	private function handleDonation(Player $player, $amount, $receiver = '', $receiverName = false) {
-		if(!$receiverName) {
+		if (!$receiverName) {
 			$receiverName = $this->maniaControl->server->getName();
 		}
-
+		
 		$message = 'Donate ' . $amount . ' Planets to $<' . $receiverName . '$>?';
-		if(!$this->maniaControl->client->query('SendBill', $player->login, $amount, $message, $receiver)) {
-			trigger_error("Couldn't create donation of {$amount} planets from '{$player->login}' for '{$receiver}'. " . $this->maniaControl->getClientErrorText());
+		if (!$this->maniaControl->client->query('SendBill', $player->login, $amount, $message, $receiver)) {
+			trigger_error(
+					"Couldn't create donation of {$amount} planets from '{$player->login}' for '{$receiver}'. " .
+							 $this->maniaControl->getClientErrorText());
 			$this->maniaControl->chat->sendError("Creating donation failed.", $player->login);
 			return false;
 		}
-		$bill                   = $this->maniaControl->client->getResponse();
+		$bill = $this->maniaControl->client->getResponse();
 		$this->openBills[$bill] = array(true, $player->login, $receiver, $amount, time());
-
+		
 		return true;
 	}
 
 	/**
 	 * Handle //pay command
 	 *
-	 * @param array  $chatCallback
+	 * @param array $chatCallback
 	 * @param Player $player
 	 * @return bool
 	 */
 	public function command_Pay(array $chatCallback, Player $player) {
-		if(!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)) {
+		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return false;
 		}
-		$text   = $chatCallback[1][2];
+		$text = $chatCallback[1][2];
 		$params = explode(' ', $text);
-		if(count($params) < 2) {
+		if (count($params) < 2) {
 			$this->sendPayUsageExample($player);
 			return false;
 		}
-		$amount = (int)$params[1];
-		if(!$amount || $amount <= 0) {
+		$amount = (int) $params[1];
+		if (!$amount || $amount <= 0) {
 			$this->sendPayUsageExample($player);
 			return false;
 		}
-		if(count($params) >= 3) {
+		if (count($params) >= 3) {
 			$receiver = $params[2];
-		} else {
+		}
+		else {
 			$receiver = $player->login;
 		}
 		$message = 'Payout from $<' . $this->maniaControl->server->getName() . '$>.';
-		if(!$this->maniaControl->client->query('Pay', $receiver, $amount, $message)) {
-			trigger_error("Couldn't create payout of {$amount} planets by '{$player->login}' for '{$receiver}'. " . $this->maniaControl->getClientErrorText());
+		if (!$this->maniaControl->client->query('Pay', $receiver, $amount, $message)) {
+			trigger_error(
+					"Couldn't create payout of {$amount} planets by '{$player->login}' for '{$receiver}'. " . $this->maniaControl->getClientErrorText());
 			$this->maniaControl->chat->sendError("Creating payout failed.", $player->login);
 			return false;
 		}
-		$bill                   = $this->maniaControl->client->getResponse();
+		$bill = $this->maniaControl->client->getResponse();
 		$this->openBills[$bill] = array(false, $player->login, $receiver, $amount, time());
 		return true;
 	}
@@ -370,16 +368,16 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	/**
 	 * Handle //getplanets command
 	 *
-	 * @param array  $chatCallback
+	 * @param array $chatCallback
 	 * @param Player $player
 	 * @return bool
 	 */
 	public function command_GetPlanets(array $chatCallback, Player $player) {
-		if(!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
+		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return false;
 		}
-		if(!$this->maniaControl->client->query('GetServerPlanets')) {
+		if (!$this->maniaControl->client->query('GetServerPlanets')) {
 			trigger_error("Couldn't retrieve server planets. " . $this->maniaControl->getClientErrorText());
 			return false;
 		}
@@ -396,59 +394,63 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 */
 	public function handleBillUpdated(array $callback) {
 		$billId = $callback[1][0];
-		if(!array_key_exists($billId, $this->openBills)) {
+		if (!array_key_exists($billId, $this->openBills)) {
 			return false;
 		}
 		$billData = $this->openBills[$billId];
-		$login    = $billData[1];
+		$login = $billData[1];
 		$receiver = $billData[2];
-		switch($callback[1][1]) {
+		switch ($callback[1][1]) {
 			case 4:
-			{
-				// Payed
-				$donation = $billData[0];
-				$amount   = $billData[3];
-				if($donation) {
-					$player = $this->maniaControl->playerManager->getPlayer($login);
-
-					// Donation
-					if(strlen($receiver) > 0) {
-						// To player
-						$message = "Successfully donated {$amount} to '{$receiver}'!";
-						$this->maniaControl->chat->sendSuccess($message, $login);
-					} else {
-						// To server
-						if($this->maniaControl->settingManager->getSetting($this, self::SETTING_ANNOUNCE_SERVERDONATION, true)) {
-							$message = '$<' . $player->nickname . '$> donated ' . $amount . ' Planets! Thanks.';
-						} else {
-							$message = 'Donation successful! Thanks.';
+				{
+					// Payed
+					$donation = $billData[0];
+					$amount = $billData[3];
+					if ($donation) {
+						$player = $this->maniaControl->playerManager->getPlayer($login);
+						
+						// Donation
+						if (strlen($receiver) > 0) {
+							// To player
+							$message = "Successfully donated {$amount} to '{$receiver}'!";
+							$this->maniaControl->chat->sendSuccess($message, $login);
 						}
-						$this->maniaControl->chat->sendSuccess($message, $login);
-						$this->maniaControl->statisticManager->insertStat(self::STAT_PLAYER_DONATIONS, $player, $this->maniaControl->server->getServerId(), $amount);
+						else {
+							// To server
+							if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_ANNOUNCE_SERVERDONATION, true)) {
+								$message = '$<' . $player->nickname . '$> donated ' . $amount . ' Planets! Thanks.';
+							}
+							else {
+								$message = 'Donation successful! Thanks.';
+							}
+							$this->maniaControl->chat->sendSuccess($message, $login);
+							$this->maniaControl->statisticManager->insertStat(self::STAT_PLAYER_DONATIONS, $player, 
+									$this->maniaControl->server->getServerId(), $amount);
+						}
 					}
-				} else {
-					// Payout
-					$message = "Successfully payed out {$amount} to '{$receiver}'!";
-					$this->maniaControl->chat->sendSuccess($message, $login);
+					else {
+						// Payout
+						$message = "Successfully payed out {$amount} to '{$receiver}'!";
+						$this->maniaControl->chat->sendSuccess($message, $login);
+					}
+					unset($this->openBills[$billId]);
+					break;
 				}
-				unset($this->openBills[$billId]);
-				break;
-			}
 			case 5:
-			{
-				// Refused
-				$message = 'Transaction cancelled.';
-				$this->maniaControl->chat->sendError($message, $login);
-				unset($this->openBills[$billId]);
-				break;
-			}
+				{
+					// Refused
+					$message = 'Transaction cancelled.';
+					$this->maniaControl->chat->sendError($message, $login);
+					unset($this->openBills[$billId]);
+					break;
+				}
 			case 6:
-			{
-				// Error
-				$this->maniaControl->chat->sendError($callback[1][2], $login);
-				unset($this->openBills[$billId]);
-				break;
-			}
+				{
+					// Error
+					$this->maniaControl->chat->sendError($callback[1][2], $login);
+					unset($this->openBills[$billId]);
+					break;
+				}
 		}
 		return true;
 	}
