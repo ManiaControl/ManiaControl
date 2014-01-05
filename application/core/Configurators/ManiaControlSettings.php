@@ -14,16 +14,18 @@ use FML\Controls\Label;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Script\Script;
+use ManiaControl\Callbacks\CallbackListener;
+use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 
-class ManiaControlSettings implements ConfiguratorMenu {
+class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 	/**
 	 * Constants
 	 */
-	const TITLE = 'ManiaControl Settings';
-	const ACTION_PREFIX_SETTING     = 'ManiaControlSettings';
-	const ACTION_SETTING_BOOL       = 'ManiaControlSettings.ActionBoolSetting.';
+	const TITLE                 = 'ManiaControl Settings';
+	const ACTION_PREFIX_SETTING = 'ManiaControlSettings';
+	const ACTION_SETTING_BOOL   = 'ManiaControlSettings.ActionBoolSetting.';
 
 	/**
 	 * Private Properties
@@ -38,6 +40,8 @@ class ManiaControlSettings implements ConfiguratorMenu {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
+		// Register for callbacks
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 	}
 
 	/**
@@ -224,8 +228,8 @@ class ManiaControlSettings implements ConfiguratorMenu {
 
 		foreach($configData[3] as $setting) {
 			$settingName = substr($setting['Name'], $prefixLength + 1);
-			$oldSetting = $maniaControlSettings[$settingName];
-			if($setting['Value'] == $oldSetting->value) {
+			$oldSetting  = $maniaControlSettings[$settingName];
+			if($setting['Value'] == $oldSetting->value || $oldSetting->type = 'bool') {
 				continue;
 			}
 
@@ -236,4 +240,54 @@ class ManiaControlSettings implements ConfiguratorMenu {
 		$menuId = $this->maniaControl->configurator->getMenuId($this->getTitle());
 		$this->maniaControl->configurator->reopenMenu($menuId);
 	}
+
+	/**
+	 * Handle ManialinkPageAnswer Callback
+	 *
+	 * @param array $callback
+	 */
+	public function handleManialinkPageAnswer(array $callback) {
+		$actionId    = $callback[1][2];
+		$boolSetting = (strpos($actionId, self::ACTION_SETTING_BOOL) === 0);
+		if(!$boolSetting) {
+			return;
+		}
+
+		$actionArray = explode(".", $actionId);
+		$setting     = $actionArray[2];
+
+		$login  = $callback[1][1];
+		$player = $this->maniaControl->playerManager->getPlayer($login);
+
+		// Toggle the Boolean Setting
+		$this->toggleBooleanSetting($setting, $player);
+
+		// Save all Changes
+		$this->saveConfigData($callback[1], $player);
+	}
+
+
+	/**
+	 * Toggles a Boolean Value
+	 *
+	 * @param        $setting
+	 * @param Player $player
+	 */
+	public function toggleBooleanSetting($setting, Player $player) {
+		$oldSetting = $this->maniaControl->settingManager->getSettingByIndex($setting);
+
+		if(!isset($oldSetting)) {
+			var_dump('no setting ' . $setting);
+			return;
+		}
+
+		//Toggle value
+		if($oldSetting->value == "1") {
+			$this->maniaControl->settingManager->updateSetting($oldSetting->class, $oldSetting->setting, "0");
+		} else {
+			$this->maniaControl->settingManager->updateSetting($oldSetting->class, $oldSetting->setting, "1");
+		}
+
+	}
+
 }

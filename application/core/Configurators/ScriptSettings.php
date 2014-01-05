@@ -111,14 +111,16 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 
 		$loadedSettings = array();
 		while($row = $result->fetch_object()) {
-			if(!isset($scriptSettings[$row->settingName]))
+			if(!isset($scriptSettings[$row->settingName])) {
 				continue;
+			}
 			$loadedSettings[$row->settingName] = $row->settingValue;
 			settype($loadedSettings[$row->settingName], gettype($scriptSettings[$row->settingName]));
 		}
 		$result->close();
-		if(!$loadedSettings)
+		if(!$loadedSettings) {
 			return true;
+		}
 
 		$success = $this->maniaControl->client->query('SetModeScriptSettings', $loadedSettings);
 		if(!$success) {
@@ -368,8 +370,9 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 * @param        bool
 	 */
 	private function applyNewScriptSettings(array $newSettings, Player $player) {
-		if(!$newSettings)
+		if(!$newSettings) {
 			return true;
+		}
 		$success = $this->maniaControl->client->query('SetModeScriptSettings', $newSettings);
 		if(!$success) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);

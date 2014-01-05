@@ -12,12 +12,12 @@ class SettingManager {
 	 * Constants
 	 */
 	const TABLE_SETTINGS = 'mc_settings';
-	const TYPE_STRING = 'string';
-	const TYPE_INT = 'int';
-	const TYPE_REAL = 'real';
-	const TYPE_BOOL = 'bool';
-	const TYPE_ARRAY = 'array';
-	
+	const TYPE_STRING    = 'string';
+	const TYPE_INT       = 'int';
+	const TYPE_REAL      = 'real';
+	const TYPE_BOOL      = 'bool';
+	const TYPE_ARRAY     = 'array';
+
 	/**
 	 * Private properties
 	 */
@@ -27,7 +27,7 @@ class SettingManager {
 	/**
 	 * Construct setting manager
 	 *
-	 * @param ManiaControl $maniaControl        	
+	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
@@ -40,14 +40,14 @@ class SettingManager {
 	 * @return bool
 	 */
 	private function initTables() {
-		$mysqli = $this->maniaControl->database->mysqli;
+		$mysqli      = $this->maniaControl->database->mysqli;
 		$defaultType = "'" . self::TYPE_STRING . "'";
-		$typeSet = $defaultType;
+		$typeSet     = $defaultType;
 		$typeSet .= ",'" . self::TYPE_INT . "'";
 		$typeSet .= ",'" . self::TYPE_REAL . "'";
 		$typeSet .= ",'" . self::TYPE_BOOL . "'";
 		$typeSet .= ",'" . self::TYPE_ARRAY . "'";
-		$settingTableQuery = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_SETTINGS . "` (
+		$settingTableQuery     = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_SETTINGS . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
 				`class` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
 				`setting` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
@@ -59,12 +59,12 @@ class SettingManager {
 				UNIQUE KEY `settingId` (`class`,`setting`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Settings and Configurations' AUTO_INCREMENT=1;";
 		$settingTableStatement = $mysqli->prepare($settingTableQuery);
-		if ($mysqli->error) {
+		if($mysqli->error) {
 			trigger_error($mysqli->error, E_USER_ERROR);
 			return false;
 		}
 		$settingTableStatement->execute();
-		if ($settingTableStatement->error) {
+		if($settingTableStatement->error) {
 			trigger_error($settingTableStatement->error, E_USER_ERROR);
 			return false;
 		}
@@ -75,40 +75,40 @@ class SettingManager {
 	/**
 	 * Get class name from param
 	 *
-	 * @param mixed $object        	
+	 * @param mixed $object
 	 * @return string
 	 */
 	private function getClassName($object) {
-		if (is_object($object)) {
+		if(is_object($object)) {
 			return get_class($object);
 		}
-		if (is_string($object)) {
+		if(is_string($object)) {
 			return $object;
 		}
 		trigger_error('Invalid class param. ' . $object);
-		return (string) $object;
+		return (string)$object;
 	}
 
 	/**
 	 * Get type for given parameter
 	 *
-	 * @param mixed $param        	
+	 * @param mixed $param
 	 * @return string
 	 */
 	private function getType($param) {
-		if (is_int($param)) {
+		if(is_int($param)) {
 			return self::TYPE_INT;
 		}
-		if (is_real($param)) {
+		if(is_real($param)) {
 			return self::TYPE_REAL;
 		}
-		if (is_bool($param)) {
+		if(is_bool($param)) {
 			return self::TYPE_BOOL;
 		}
-		if (is_string($param)) {
+		if(is_string($param)) {
 			return self::TYPE_STRING;
 		}
-		if (is_array($param)) {
+		if(is_array($param)) {
 			return self::TYPE_ARRAY;
 		}
 		trigger_error('Unsupported setting type. ' . print_r($param, true));
@@ -118,24 +118,24 @@ class SettingManager {
 	/**
 	 * Cast a setting to the given type
 	 *
-	 * @param string $type        	
-	 * @param mixed $value        	
+	 * @param string $type
+	 * @param mixed  $value
 	 * @return mixed
 	 */
 	private function castSetting($type, $value) {
-		if ($type === self::TYPE_INT) {
-			return (int) $value;
+		if($type === self::TYPE_INT) {
+			return (int)$value;
 		}
-		if ($type === self::TYPE_REAL) {
-			return (float) $value;
+		if($type === self::TYPE_REAL) {
+			return (float)$value;
 		}
-		if ($type === self::TYPE_BOOL) {
-			return (bool) $value;
+		if($type === self::TYPE_BOOL) {
+			return (bool)$value;
 		}
-		if ($type === self::TYPE_STRING) {
-			return (string) $value;
+		if($type === self::TYPE_STRING) {
+			return (string)$value;
 		}
-		if ($type === self::TYPE_ARRAY) {
+		if($type === self::TYPE_ARRAY) {
 			return explode($this->arrayDelimiter, $value);
 		}
 		trigger_error('Unsupported setting type. ' . print_r($type, true));
@@ -145,18 +145,18 @@ class SettingManager {
 	/**
 	 * Format a setting for saving it to the database
 	 *
-	 * @param mixed $value        	
-	 * @param string $type        	
+	 * @param mixed  $value
+	 * @param string $type
 	 * @return mixed
 	 */
 	private function formatSetting($value, $type = null) {
-		if ($type === null) {
+		if($type === null) {
 			$type = $this->getType($value);
 		}
-		if ($type === self::TYPE_ARRAY) {
+		if($type === self::TYPE_ARRAY) {
 			return implode($this->arrayDelimiter, $value);
 		}
-		if ($type === self::TYPE_BOOL) {
+		if($type === self::TYPE_BOOL) {
 			return ($value ? 1 : 0);
 		}
 		return $value;
@@ -165,20 +165,20 @@ class SettingManager {
 	/**
 	 * Initialize a setting for given object
 	 *
-	 * @param object $object        	
-	 * @param string $settingName        	
-	 * @param mixed $default        	
+	 * @param object $object
+	 * @param string $settingName
+	 * @param mixed  $default
 	 * @return bool
 	 */
 	public function initSetting($object, $settingName, $default) {
-		if ($default === null || is_object($default)) {
+		if($default === null || is_object($default)) {
 			return false;
 		}
-		$className = $this->getClassName($object);
-		$type = $this->getType($default);
-		$default = $this->formatSetting($default, $type);
-		$mysqli = $this->maniaControl->database->mysqli;
-		$settingQuery = "INSERT INTO `" . self::TABLE_SETTINGS . "` (
+		$className        = $this->getClassName($object);
+		$type             = $this->getType($default);
+		$default          = $this->formatSetting($default, $type);
+		$mysqli           = $this->maniaControl->database->mysqli;
+		$settingQuery     = "INSERT INTO `" . self::TABLE_SETTINGS . "` (
 				`class`,
 				`setting`,
 				`type`,
@@ -193,13 +193,13 @@ class SettingManager {
 				`value` = IF(`default` = VALUES(`default`), `value`, VALUES(`default`)), 
 				`default` = VALUES(`default`);";
 		$settingStatement = $mysqli->prepare($settingQuery);
-		if ($mysqli->error) {
+		if($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
 		}
 		$settingStatement->bind_param('ssss', $className, $settingName, $type, $default);
 		$success = $settingStatement->execute();
-		if ($settingStatement->error) {
+		if($settingStatement->error) {
 			trigger_error($settingStatement->error);
 			$settingStatement->close();
 			return false;
@@ -209,33 +209,57 @@ class SettingManager {
 	}
 
 	/**
-	 * Get setting by name for given object
+	 * Get a Setting by its index
 	 *
-	 * @param object $object        	
-	 * @param string $settingName        	
-	 * @param mixed $default        	
-	 * @return mixed
+	 * @param      $settingIndex
+	 * @param bool $default
+	 * @internal param null $default
+	 * @internal param $className
+	 * @internal param \ManiaControl\gIndex $settin
+	 * @return mixed|null
 	 */
-	public function getSetting($object, $settingName, $default = null) {
-		$className = $this->getClassName($object);
-		$mysqli = $this->maniaControl->database->mysqli;
-		$settingQuery = "SELECT `type`, `value` FROM `" . self::TABLE_SETTINGS . "`
+	public function getSettingByIndex($settingIndex, $default = false) {
+		$mysqli       = $this->maniaControl->database->mysqli;
+		$settingQuery = "SELECT * FROM `" . self::TABLE_SETTINGS . "`
+				WHERE `index` = {$settingIndex};";
+		$result       = $mysqli->query($settingQuery);
+		if(!$result) {
+			trigger_error($mysqli->error);
+			return false;
+		}
+
+		$row = $result->fetch_object();
+		$result->close();
+		return $row;
+	}
+
+
+	/**
+	 * Gets a Setting Via it's class name
+	 *
+	 * @param $className
+	 * @param $settingName
+	 * @param $value
+	 */
+	public function getSettingByClassName($className, $settingName, $default = null) {
+		$mysqli           = $this->maniaControl->database->mysqli;
+		$settingQuery     = "SELECT `type`, `value` FROM `" . self::TABLE_SETTINGS . "`
 				WHERE `class` = ?
 				AND `setting` = ?;";
 		$settingStatement = $mysqli->prepare($settingQuery);
-		if ($mysqli->error) {
+		if($mysqli->error) {
 			trigger_error($mysqli->error);
 			return null;
 		}
 		$settingStatement->bind_param('ss', $className, $settingName);
 		$settingStatement->execute();
-		if ($settingStatement->error) {
+		if($settingStatement->error) {
 			trigger_error($settingStatement->error);
 			return null;
 		}
 		$settingStatement->store_result();
-		if ($settingStatement->num_rows <= 0) {
-			$this->initSetting($object, $settingName, $default);
+		if($settingStatement->num_rows <= 0) {
+			$this->updateSetting($className, $settingName, $default);
 			return $default;
 		}
 		$settingStatement->bind_result($type, $value);
@@ -247,27 +271,41 @@ class SettingManager {
 	}
 
 	/**
+	 * Get setting by name for given object
+	 *
+	 * @param object $object
+	 * @param string $settingName
+	 * @param mixed  $default
+	 * @return mixed
+	 */
+	public function getSetting($object, $settingName, $default = null) {
+		$className = $this->getClassName($object);
+		return $this->getSettingByClassName($className, $settingName, $default);
+	}
+
+	/**
 	 * Updates a Setting
+	 *
 	 * @param $className
 	 * @param $settingName
 	 * @param $value
 	 * @return bool
 	 */
-	public function updateSetting($className, $settingName, $value){
-		$mysqli = $this->maniaControl->database->mysqli;
-		$settingQuery = "UPDATE `" . self::TABLE_SETTINGS . "`
+	public function updateSetting($className, $settingName, $value) {
+		$mysqli           = $this->maniaControl->database->mysqli;
+		$settingQuery     = "UPDATE `" . self::TABLE_SETTINGS . "`
 				SET `value` = ?
 				WHERE `class` = ?
 				AND `setting` = ?;";
 		$settingStatement = $mysqli->prepare($settingQuery);
-		if ($mysqli->error) {
+		if($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
 		}
 		$value = $this->formatSetting($value);
 		$settingStatement->bind_param('sss', $value, $className, $settingName);
 		$success = $settingStatement->execute();
-		if ($settingStatement->error) {
+		if($settingStatement->error) {
 			trigger_error($settingStatement->error);
 			$settingStatement->close();
 			return false;
@@ -279,9 +317,9 @@ class SettingManager {
 	/**
 	 * Set a setting for the given object
 	 *
-	 * @param object $object        	
-	 * @param string $settingName        	
-	 * @param mixed $value        	
+	 * @param object $object
+	 * @param string $settingName
+	 * @param mixed  $value
 	 * @return bool
 	 */
 	public function setSetting($object, $settingName, $value) {
@@ -292,25 +330,25 @@ class SettingManager {
 	/**
 	 * Reset a setting to its default value
 	 *
-	 * @param object $object        	
+	 * @param object $object
 	 * @param string $settingName
 	 * @return bool
 	 */
 	public function resetSetting($object, $settingName) {
-		$className = $this->getClassName($object);
-		$mysqli = $this->maniaControl->database->mysqli;
-		$settingQuery = "UPDATE `" . self::TABLE_SETTINGS . "`
+		$className        = $this->getClassName($object);
+		$mysqli           = $this->maniaControl->database->mysqli;
+		$settingQuery     = "UPDATE `" . self::TABLE_SETTINGS . "`
 				SET `value` = `default`
 				WHERE `class` = ?
 				AND `setting` = ?;";
 		$settingStatement = $mysqli->prepare($settingQuery);
-		if ($mysqli->error) {
+		if($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
 		}
 		$settingStatement->bind_param('ss', $className, $settingName);
 		$success = $settingStatement->execute();
-		if ($settingStatement->error) {
+		if($settingStatement->error) {
 			trigger_error($settingStatement->error);
 			$settingStatement->close();
 			return false;
@@ -322,24 +360,24 @@ class SettingManager {
 	/**
 	 * Delete a setting from the database
 	 *
-	 * @param object $object        	
+	 * @param object $object
 	 * @param string $settingName
 	 * @return bool
 	 */
 	public function deleteSetting($object, $settingName) {
-		$className = $this->getClassName($object);
-		$mysqli = $this->maniaControl->database->mysqli;
-		$settingQuery = "DELETE FROM `" . self::TABLE_SETTINGS . "`
+		$className        = $this->getClassName($object);
+		$mysqli           = $this->maniaControl->database->mysqli;
+		$settingQuery     = "DELETE FROM `" . self::TABLE_SETTINGS . "`
 				WHERE `class` = ?
 				AND `setting` = ?;";
 		$settingStatement = $mysqli->prepare($settingQuery);
-		if ($mysqli->error) {
+		if($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
 		}
 		$settingStatement->bind_param('ss', $className, $settingName);
 		$success = $settingStatement->execute();
-		if ($settingStatement->error) {
+		if($settingStatement->error) {
 			trigger_error($settingStatement->error);
 			$settingStatement->close();
 			return false;
@@ -350,20 +388,20 @@ class SettingManager {
 
 	/**
 	 * Get all settings
-	 * 
+	 *
 	 * @return array
 	 */
 	public function getSettings() {
 		$mysqli = $this->maniaControl->database->mysqli;
-		$query = "SELECT * FROM `" . self::TABLE_SETTINGS . "`
+		$query  = "SELECT * FROM `" . self::TABLE_SETTINGS . "`
 				ORDER BY `class` ASC, `setting` ASC;";
 		$result = $mysqli->query($query);
-		if ($mysqli->error) {
+		if($mysqli->error) {
 			trigger_error($mysqli->error);
 			return null;
 		}
 		$settings = array();
-		while ($setting = $result->fetch_object()) {
+		while($setting = $result->fetch_object()) {
 			$settings[$setting->index] = $setting;
 			//array_push($settings, $setting);
 		}
