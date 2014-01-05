@@ -123,7 +123,7 @@ class ManiaControlSettings implements ConfiguratorMenu{
 			$nameLabel->setText($setting->setting);
 
 
-			var_dump($setting);
+		//	var_dump($setting);
 
 			$y -= $settingHeight;
 			if ($index % $pageMaxCount == $pageMaxCount - 1) {

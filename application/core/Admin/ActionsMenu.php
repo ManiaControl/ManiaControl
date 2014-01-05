@@ -8,6 +8,7 @@ use FML\Controls\Label;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\ManiaLink;
+use FML\Script\EUISound;
 use FML\Script\Script;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\ManiaControl;
@@ -289,7 +290,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 				$menuQuad->setX($x);
 				$menuQuad->setHAlign(Control::RIGHT);
 				$x -= $itemSize * 1.05;
-				
+
 				if ($menuItem[1]) {
 					$description = '$s' . $menuItem[1];
 					$script->addTooltip($menuQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $description));
