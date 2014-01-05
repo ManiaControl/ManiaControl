@@ -260,7 +260,6 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			$descriptionLabel->setSize($width * 0.7, $settingHeight);
 			$descriptionLabel->setTextSize($labelTextSize);
 			$descriptionLabel->setTranslate(true);
-			// $descriptionLabel->setTextPrefix('Desc: ');
 			$descriptionLabel->setText($scriptParam['Desc']);
 			$script->addTooltip($nameLabel, $descriptionLabel);
 
@@ -333,10 +332,11 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		$login  = $callback[1][1];
 		$player = $this->maniaControl->playerManager->getPlayer($login);
 
-		// Save all Changes
-		$this->saveConfigData($callback[1], $player);
 		// Toggle the Boolean Setting
 		$this->toggleBooleanSetting($setting, $player);
+
+		// Save all Changes
+		$this->saveConfigData($callback[1], $player);
 	}
 
 	/**
