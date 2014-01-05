@@ -64,21 +64,21 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener {
 		$itemQuad = new Quad_Icons128x32_1();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_RT_Team);
 		$itemQuad->setAction(self::ACTION_BALANCE_TEAMS);
-		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 9);
+		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 9, 'Balance Teams');
 
 		//Action cancel Vote
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_CANCEL_VOTE, $this, 'command_cancelVote');
 		$itemQuad = new Quad_Icons64x64_1();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ArrowRed);
 		$itemQuad->setAction(self::ACTION_CANCEL_VOTE);
-		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 6);
+		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 6, 'Cancel Vote');
 
 		//Action Open Playerlist
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_OPEN_PLAYERLIST, $this, 'command_playerList');
 		$itemQuad = new Quad_UIConstruction_Buttons();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Author);
 		$itemQuad->setAction(self::ACTION_OPEN_PLAYERLIST);
-		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, true, 9);
+		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, true, 15, 'Open Playerlist');
 	}
 
 	/**

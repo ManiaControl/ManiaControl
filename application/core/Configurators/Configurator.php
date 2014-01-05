@@ -2,6 +2,7 @@
 
 namespace ManiaControl\Configurators;
 
+use FML\Controls\Quads\Quad_UIConstruction_Buttons;
 use ManiaControl\ManiaControl;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
@@ -309,9 +310,9 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	 * Add Menu Item to the Actions Menu
 	 */
 	private function addActionsMenuItem() {
-		$itemQuad = new Quad();
-		$itemQuad->setStyles('Icons128x32_1', 'Settings');
+		$itemQuad = new Quad_UIConstruction_Buttons();
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Tools);
 		$itemQuad->setAction(self::ACTION_TOGGLEMENU);
-		$this->maniaControl->actionsMenu->addAdminMenuItem($itemQuad, 20);
+		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 20, 'Settings');//TODO index not really working (this should be the last)
 	}
 }

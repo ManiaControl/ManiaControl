@@ -4,6 +4,7 @@ namespace ManiaControl\Admin;
 
 use FML\Controls\Control;
 use FML\Controls\Frame;
+use FML\Controls\Label;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\ManiaLink;
@@ -37,6 +38,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	private $adminMenuItems = array();
 	private $playerMenuItems = array();
 	private $initCompleted = false;
+
 	/**
 	 * Create a new Actions Menu
 	 *
@@ -84,7 +86,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		if(!isset($this->playerMenuItems[$order])) {
 			$this->playerMenuItems[$order] = array();
 		}
-		array_push($this->playerMenuItems[$order], $control);
+		array_push($this->playerMenuItems[$order], $control, $description);
 		//TODO handle description
 	}
 
@@ -98,7 +100,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		if(!isset($this->adminMenuItems[$order])) {
 			$this->adminMenuItems[$order] = array();
 		}
-		array_push($this->adminMenuItems[$order], $control);
+		array_push($this->adminMenuItems[$order], $control, $description);
 		//TODO handle description
 	}
 
@@ -122,7 +124,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	 * Build and show the menus to everyone (if a menu get made after the init)
 	 */
 	public function rebuildAndShowMenu() {
-		if($this->initCompleted){
+		if($this->initCompleted) {
 			$players = $this->maniaControl->playerManager->getPlayers();
 			foreach($players as $player) {
 				$manialinkText = $this->buildMenuIconsManialink($player)->render()->saveXML();
@@ -199,6 +201,20 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		$itemQuad->setSize($itemSize, $itemSize);
 		$iconFrame->add($itemQuad);
 
+		//Description Label
+		$descriptionFrame = new Frame();
+		$manialink->add($descriptionFrame);
+		$descriptionFrame->setPosition($posX - count($this->adminMenuItems) * $itemSize * 1.15 - 6, $posY);
+		$descriptionFrame->setAlign(Control::RIGHT, Control::CENTER2);
+
+		$descriptionLabel = new Label();
+		$descriptionFrame->add($descriptionLabel);
+		$descriptionLabel->setAlign(Control::RIGHT, Control::TOP);
+		$descriptionLabel->setSize(40, 4);
+		$descriptionLabel->setTextSize(1.4);
+		$descriptionLabel->setVisible(true);
+		$descriptionLabel->setTextColor("FFF");
+
 		if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
 			//Admin Menu
 			$popoutFrame = new Frame();
@@ -220,16 +236,30 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 			// Add items
 			$x = -1;
 			foreach(array_reverse($this->adminMenuItems) as $menuItems) {
-				foreach($menuItems as $menuItem) {
-					/** @var Quad $menuItem */
-					$menuItem->setSize($itemSize, $itemSize);
-					$popoutFrame->add($menuItem);
-					$menuItem->setX($x);
-					$menuItem->setHAlign(Control::RIGHT);
-					$x -= $itemSize * 1.05;
-				}
+				$menuItem = $menuItems[0];
+				/** @var Quad $menuItem */
+				$menuItem->setSize($itemSize, $itemSize);
+				$popoutFrame->add($menuItem);
+				$menuItem->setX($x);
+				$menuItem->setHAlign(Control::RIGHT);
+				$x -= $itemSize * 1.05;
+
+				$script->addTooltip($menuItem, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => '$s' . $menuItems[1]));
 			}
 		}
+
+		// Player Menu Descrition Frame / LabelLabel
+		$descriptionFrame = new Frame(); //TODO not working yet
+		$manialink->add($descriptionFrame);
+
+		$descriptionFrame->setPosition($posX - count($this->playerMenuItems) * $itemSize * 1.15 - 6, $posY - $itemSize * $itemMarginFactorY);
+		$descriptionFrame->setAlign(Control::RIGHT, Control::CENTER2);
+
+		$descriptionLabel = clone $descriptionLabel;
+		$descriptionFrame->add($descriptionLabel);
+
+
+
 		// Player Menu Icon Frame
 		$frame = new Frame();
 		$manialink->add($frame);
@@ -271,14 +301,15 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		// Add items
 		$x = -1;
 		foreach(array_reverse($this->playerMenuItems) as $menuItems) {
-			foreach($menuItems as $menuItem) {
-				/** @var Quad $menuItem */
-				$menuItem->setSize($itemSize, $itemSize);
-				$popoutFrame->add($menuItem);
-				$menuItem->setX($x);
-				$menuItem->setHAlign(Control::RIGHT);
-				$x -= $itemSize * 1.05;
-			}
+			$menuItem = $menuItems[0];
+			/** @var Quad $menuItem */
+			$menuItem->setSize($itemSize, $itemSize);
+			$popoutFrame->add($menuItem);
+			$menuItem->setX($x);
+			$menuItem->setHAlign(Control::RIGHT);
+			$x -= $itemSize * 1.05;
+
+			$script->addTooltip($menuItem, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => '$s' . $menuItems[1]));
 		}
 
 		return $manialink;

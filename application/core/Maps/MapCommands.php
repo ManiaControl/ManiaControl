@@ -4,6 +4,7 @@ namespace ManiaControl\Maps;
 
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_Icons64x64_1;
+use FML\Controls\Quads\Quad_UIConstruction_Buttons;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
@@ -73,17 +74,17 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener,Callba
 		$itemQuad->setImage($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON));
 		$itemQuad->setImageFocus($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON_MOVER)); //TODO move the button to the image manager
 		$itemQuad->setAction(self::ACTION_OPEN_XLIST);
-		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, true, 3, 'Open MX List');
+		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, true, 5, 'Open MX List');
 
 		//Menu Open List
 		$itemQuad = new Quad_Icons64x64_1();
-		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Browser);
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ToolRoot);
 		$itemQuad->setAction(self::ACTION_OPEN_MAPLIST);
-		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, true, 4,'Open MapList');
+		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, true, 10,'Open MapList');
 
 		//Menu RestartMap
-		$itemQuad = new Quad_Icons64x64_1();
-		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ArrowFastPrev);
+		$itemQuad = new Quad_UIConstruction_Buttons();
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Reload);
 		$itemQuad->setAction(self::ACTION_RESTART_MAP);
 		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 0, 'Restart Map');
 
@@ -92,7 +93,6 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener,Callba
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ArrowFastNext);
 		$itemQuad->setAction(self::ACTION_SKIP_MAP);
 		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 1, 'Skip Map');
-
 
 	}
 	/**
