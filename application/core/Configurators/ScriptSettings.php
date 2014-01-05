@@ -99,7 +99,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			trigger_error($mysqli->error);
 			return false;
 		}
-		if ($result->num_rows) {
+		if ($result->num_rows <= 0) {
 			$result->close();
 			return true;
 		}
