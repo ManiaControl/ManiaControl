@@ -24,7 +24,9 @@ class Script {
 	const CLASS_PROFILE = 'FML_Profile';
 	const CLASS_MAPINFO = 'FML_MapInfo';
 	const CLASS_SOUND = 'FML_Sound';
-	const OPTION_TOOLTIP_ONCLICK = 'FML_Tooltip_OnClick';
+	const CLASS_TOGGLE = 'FML_Toggle';
+	const CLASS_SHOW = 'FML_Show';
+	const CLASS_HIDE = 'FML_Hide';
 	const OPTION_TOOLTIP_STAYONCLICK = 'FML_Tooltip_StayOnClick';
 	const OPTION_TOOLTIP_INVERT = 'FML_Tooltip_Invert';
 	const OPTION_TOOLTIP_TEXT = 'FML_Tooltip_Text';
@@ -37,6 +39,7 @@ class Script {
 	const LABEL_MOUSEOVER = 'MouseOver';
 	const CONSTANT_TOOLTIPTEXTS = 'C_FML_TooltipTexts';
 	const FUNCTION_SETTOOLTIPTEXT = 'FML_SetTooltipText';
+	const FUNCTION_TOGGLE = 'FML_Toggle';
 	
 	/**
 	 * Protected Properties
@@ -52,6 +55,7 @@ class Script {
 	protected $profile = false;
 	protected $mapInfo = false;
 	protected $sounds = array();
+	protected $toggles = false;
 
 	/**
 	 * Set an Include of the Script
@@ -255,11 +259,13 @@ class Script {
 	 * Add a Sound Playing for the Control
 	 *
 	 * @param Control $control
-	 * @param UISound $sound
+	 * @param string $soundName
+	 * @param int $soundVariant
+	 * @param float $soundVolume
 	 * @param string $eventLabel
 	 * @return \FML\Script\Script
 	 */
-	public function addSound(Control $control, UISound $sound, $eventLabel = self::LABEL_MOUSECLICK) {
+	public function addSound(Control $control, $soundName, $soundVariant = 0, $soundVolume = 1., $eventLabel = self::LABEL_MOUSECLICK) {
 		if (!($control instanceof Scriptable)) {
 			trigger_error('Scriptable Control needed as ClickControl for Sounds!');
 			return $this;
@@ -268,10 +274,34 @@ class Script {
 		$control->checkId();
 		$control->addClass(self::CLASS_SOUND);
 		$soundData = array();
-		$soundData['sound'] = $sound;
-		$soundData['id'] = $control->getId();
-		$soundData['label'] = $eventLabel;
+		$soundData['soundName'] = $soundName;
+		$soundData['soundVariant'] = $soundVariant;
+		$soundData['soundVolume'] = $soundVolume;
+		$soundData['controlId'] = $control->getId();
+		$soundData['eventLabel'] = $eventLabel;
 		array_push($this->sounds, $soundData);
+		return $this;
+	}
+
+	/**
+	 * Add a Toggling Behavior
+	 *
+	 * @param Control $clickControl
+	 * @param Control $toggleControl
+	 * @param string $mode
+	 * @return \FML\Script\Script
+	 */
+	public function addToggle(Control $clickControl, Control $toggleControl, $mode = self::CLASS_TOGGLE) {
+		if (!($clickControl instanceof Scriptable)) {
+			trigger_error('Scriptable Control needed as ClickControl for Toggles!');
+			return $this;
+		}
+		$toggleControl->checkId();
+		$clickControl->setScriptEvents(true);
+		$clickControl->addClass(self::CLASS_TOGGLE);
+		$clickControl->addClass($mode);
+		$clickControl->addClass($toggleControl->getId());
+		$this->toggles = true;
 		return $this;
 	}
 
@@ -306,6 +336,7 @@ class Script {
 		$scriptText .= $this->getProfileLabels();
 		$scriptText .= $this->getMapInfoLabels();
 		$scriptText .= $this->getSoundLabels();
+		$scriptText .= $this->getToggleLabels();
 		$scriptText .= $this->getMainFunction();
 		return $scriptText;
 	}
@@ -423,29 +454,25 @@ Void " . self::FUNCTION_SETTOOLTIPTEXT . "(CMlControl _TooltipControl, CMlContro
 		if (!$this->tooltips) return "";
 		$mouseOverScript = "
 if (Event.Control.HasClass(\"" . self::CLASS_TOOLTIPS . "\")) {
-	if (!Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_ONCLICK . "\")) {
-		declare Invert = Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_INVERT . "\");
-		foreach (ControlClass in Event.Control.ControlClasses) {
-			declare TooltipControl <=> Page.GetFirstChild(ControlClass);
-			if (TooltipControl == Null) continue;
-			TooltipControl.Visible = !Invert;
-			" . self::FUNCTION_SETTOOLTIPTEXT . "(TooltipControl, Event.Control);
-		}
+	declare Invert = Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_INVERT . "\");
+	foreach (ControlClass in Event.Control.ControlClasses) {
+		declare TooltipControl <=> Page.GetFirstChild(ControlClass);
+		if (TooltipControl == Null) continue;
+		TooltipControl.Visible = !Invert;
+		" . self::FUNCTION_SETTOOLTIPTEXT . "(TooltipControl, Event.Control);
 	}
 }";
 		$mouseOutScript = "
 if (Event.Control.HasClass(\"" . self::CLASS_TOOLTIPS . "\")) {
-	if (!Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_ONCLICK . "\")) {
-		declare FML_Clicked for Event.Control = False;
-		declare StayOnClick = Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_STAYONCLICK . "\");
-		if (!StayOnClick || !FML_Clicked) {
-			declare Invert = Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_INVERT . "\");
-			foreach (ControlClass in Event.Control.ControlClasses) {
-				declare TooltipControl <=> Page.GetFirstChild(ControlClass);
-				if (TooltipControl == Null) continue;
-				TooltipControl.Visible = Invert;
-				" . self::FUNCTION_SETTOOLTIPTEXT . "(TooltipControl, Event.Control);
-			}
+	declare FML_Clicked for Event.Control = False;
+	declare StayOnClick = Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_STAYONCLICK . "\");
+	if (!StayOnClick || !FML_Clicked) {
+		declare Invert = Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_INVERT . "\");
+		foreach (ControlClass in Event.Control.ControlClasses) {
+			declare TooltipControl <=> Page.GetFirstChild(ControlClass);
+			if (TooltipControl == Null) continue;
+			TooltipControl.Visible = Invert;
+			" . self::FUNCTION_SETTOOLTIPTEXT . "(TooltipControl, Event.Control);
 		}
 	}
 }";
@@ -453,27 +480,23 @@ if (Event.Control.HasClass(\"" . self::CLASS_TOOLTIPS . "\")) {
 if (Event.Control.HasClass(\"" . self::CLASS_TOOLTIPS . "\")) {
 	declare Handle = True;
 	declare Show = False;
-	declare OnClick = Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_ONCLICK . "\");
-	if (!OnClick) {
-		declare StayOnClick = Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_STAYONCLICK . "\");
-		if (StayOnClick) {
-			declare FML_Clicked for Event.Control = False;
-			FML_Clicked = !FML_Clicked;
-			if (FML_Clicked) {
-				Handle = False;
-			} else {
-				Show = False;
-			}
-		} else {
+	declare StayOnClick = Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_STAYONCLICK . "\");
+	if (StayOnClick) {
+		declare FML_Clicked for Event.Control = False;
+		FML_Clicked = !FML_Clicked;
+		if (FML_Clicked) {
 			Handle = False;
+		} else {
+			Show = False;
 		}
+	} else {
+		Handle = False;
 	}
 	if (Handle) {
 		declare Invert = Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_INVERT . "\");
 		foreach (ControlClass in Event.Control.ControlClasses) {
 			declare TooltipControl <=> Page.GetFirstChild(ControlClass);
 			if (TooltipControl == Null) continue;
-			if (OnClick) Show = !TooltipControl.Visible;
 			TooltipControl.Visible = Show && !Invert;
 			" . self::FUNCTION_SETTOOLTIPTEXT . "(TooltipControl, Event.Control);
 		}
@@ -638,18 +661,15 @@ if (Event.Control.HasClass(\"" . self::CLASS_MAPINFO . "\")) {
 		if (!$this->sounds) return '';
 		$labelScripts = array();
 		foreach ($this->sounds as $soundData) {
-			$controlId = $soundData['id'];
-			$label = $soundData['label'];
-			$sound = $soundData['sound'];
-			$volume = Builder::getReal($sound->volume);
+			$volume = Builder::getReal($soundData['soundVolume']);
 			$labelScript = "
-		case \"{$controlId}\": {
-			PlayUiSound(CMlScriptIngame::EUISound::{$sound->name}, {$sound->variant}, {$volume});
+		case \"{$soundData['controlId']}\": {
+			PlayUiSound(CMlScriptIngame::EUISound::{$soundData['soundName']}, {$soundData['soundVariant']}, {$volume});
 		}";
-			if (!isset($labelScripts[$label])) {
-				$labelScripts[$label] = '';
+			if (!isset($labelScripts[$soundData['eventLabel']])) {
+				$labelScripts[$soundData['eventLabel']] = '';
 			}
-			$labelScripts[$label] .= $labelScript;
+			$labelScripts[$soundData['eventLabel']] .= $labelScript;
 		}
 		
 		$soundScript = '';
@@ -663,6 +683,37 @@ if (Event.Control.HasClass(\"" . self::CLASS_SOUND . "\")) {
 			$soundScript .= Builder::getLabelImplementationBlock($label, $labelScript);
 		}
 		return $soundScript;
+	}
+
+	/**
+	 * Get the Toggle Labels
+	 *
+	 * @return string
+	 */
+	private function getToggleLabels() {
+		if (!$this->toggles) return '';
+		$toggleScript = "
+if (Event.Control.HasClass(\"" . self::CLASS_TOGGLE . "\")) {
+	declare HasShow = Event.Control.HasClass(\"" . self::CLASS_SHOW . "\");
+	declare HasHide = Event.Control.HasClass(\"" . self::CLASS_HIDE . "\");
+	declare Toggle = True;
+	declare Show = True;
+	if (HasShow || HasHide) {
+		Toggle = False;
+		Show = HasShow;
+	}
+	foreach (ControlClass in Event.Control.ControlClasses) {
+		declare ToggleControl <=> Page.GetFirstChild(ControlClass);
+		if (ToggleControl == Null) continue;
+		if (Toggle) {
+			ToggleControl.Visible = !ToggleControl.Visible;
+		} else {
+			ToggleControl.Visible = Show;
+		}
+	}
+}";
+		$toggleScript = Builder::getLabelImplementationBlock(self::LABEL_MOUSECLICK, $toggleScript);
+		return $toggleScript;
 	}
 
 	/**

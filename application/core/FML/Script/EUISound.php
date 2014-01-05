@@ -7,7 +7,7 @@ namespace FML\Script;
  *
  * @author steeffeen
  */
-class UISound {
+abstract class EUISound {
 	/**
 	 * Constants
 	 */
@@ -40,24 +40,4 @@ class UISound {
 	const SOUND_TimeOut = 'TimeOut';
 	const SOUND_VictoryPoint = 'VictoryPoint';
 	const SOUND_Warning = 'Warning';
-	
-	/**
-	 * Public Properties
-	 */
-	public $name = self::SOUND_Default;
-	public $variant = 0;
-	public $volume = 1.;
-
-	/**
-	 * Create a new EUISound Instance
-	 *
-	 * @param string $name
-	 * @param int $variant
-	 * @param real $volume
-	 */
-	public function __construct($name = self::SOUND_Default, $variant = 0, $volume = 1.) {
-		$this->name = $name;
-		$this->variant = $variant;
-		$this->volume = $volume;
-	}
 }
