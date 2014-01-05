@@ -79,8 +79,8 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERDISCONNECT, $this, 'handlePlayerDisconnect');
-		$this->maniaControl->callbackManager->registerCallbackListener(ScriptSettings::CB_SCRIPTSETTING_CHANGED, $this, 'reopenMenu');
-		$this->maniaControl->callbackManager->registerCallbackListener(ServerSettings::CB_SERVERSETTING_CHANGED, $this, 'reopenMenu');
+		$this->maniaControl->callbackManager->registerCallbackListener(ScriptSettings::CB_SCRIPTSETTINGS_CHANGED, $this, 'reopenMenu');
+		$this->maniaControl->callbackManager->registerCallbackListener(ServerSettings::CB_SERVERSETTINGS_CHANGED, $this, 'reopenMenu');
 
 		// Create server settings
 		$this->serverSettings = new ServerSettings($maniaControl);
