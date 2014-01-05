@@ -116,9 +116,6 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_CLOCK_WIDGET_POSY, 90 - 11);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_CLOCK_WIDGET_WIDTH, 10);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_CLOCK_WIDGET_HEIGHT, 5.5);
-
-		$this->maniaControl->manialinkManager->iconManager->addIcon(IconManager::MX_ICON);
-		$this->maniaControl->manialinkManager->iconManager->addIcon(IconManager::MX_ICON_MOVER, "http://www.pictures.esc-clan.net/upload"); //TODO to mc website, icon manager
 		return true;
 	}
 
