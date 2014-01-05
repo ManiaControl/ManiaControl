@@ -92,6 +92,14 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 * @return bool
 	 */
 	public function loadSettingsFromDatabase() {
+		$this->maniaControl->client->query('GetModeScriptSettings');
+		$scriptSettings = $this->maniaControl->client->getResponse();
+		if (isset($scriptSettings['faultString'])) {
+			if ($scriptSettings['faultString'] == 'Not in script mode.') return false;
+			trigger_error('Error occured: ' . $scriptSettings['faultString']);
+			return false;
+		}
+		
 		$mysqli = $this->maniaControl->database->mysqli;
 		$query = "SELECT * FROM `" . self::TABLE_SCRIPT_SETTINGS . "`;";
 		$result = $mysqli->query($query);
@@ -104,8 +112,6 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			return true;
 		}
 		
-		$this->maniaControl->client->query('GetModeScriptSettings');
-		$scriptSettings = $this->maniaControl->client->getResponse();
 		$loadedSettings = array();
 		while ($row = $result->fetch_object()) {
 			if (!isset($scriptSettings[$row->settingName])) continue;
