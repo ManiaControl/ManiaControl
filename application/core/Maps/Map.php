@@ -20,8 +20,8 @@ class Map {
 	public $uid = '';
 	public $fileName = '';
 	public $environment = '';
-	public $goldTime; // TODO: format?
-	public $copperPrice = 0;
+	public $goldTime = -1;
+	public $copperPrice = -1;
 	public $mapType = '';
 	public $mapStyle = '';
 	public $nbCheckpoints = -1;
@@ -32,7 +32,7 @@ class Map {
 	public $authorEInfo = '';
 	public $comment = '';
 	public $titleUid = '';
-	public $startTime = 0;
+	public $startTime = -1;
 	public $mapFetcher = null;
 	
 	/**
@@ -43,16 +43,14 @@ class Map {
 	/**
 	 * Create a new map object from rpc data
 	 *
-	 * @param \ManiaControl\ManiaControl $maniaControl        	
-	 * @param array $rpc_infos        	
+	 * @param \ManiaControl\ManiaControl $maniaControl
+	 * @param array $rpc_infos
 	 */
 	public function __construct(ManiaControl $maniaControl, $rpc_infos = null) {
 		$this->maniaControl = $maniaControl;
 		$this->startTime = time();
 		
-		if (!$rpc_infos) {
-			return;
-		}
+		if (!$rpc_infos) return;
 		$this->name = $rpc_infos['Name'];
 		$this->uid = $rpc_infos['UId'];
 		$this->fileName = $rpc_infos['FileName'];
@@ -77,7 +75,6 @@ class Map {
 			catch (\Exception $e) {
 				trigger_error($e->getMessage(), E_USER_WARNING);
 			}
-			
 			$this->authorNick = FORMATTER::stripDirtyCodes($this->mapFetcher->authorNick);
 			$this->authorEInfo = $this->mapFetcher->authorEInfo;
 			$this->authorZone = $this->mapFetcher->authorZone;
@@ -88,6 +85,5 @@ class Map {
 		$serverInfo = $this->maniaControl->server->getSystemInfo();
 		$title = strtoupper(substr($serverInfo['TitleId'], 0, 2));
 		$this->mx = new \MXInfoFetcher($title, $this->uid, false);
-
 	}
 } 
