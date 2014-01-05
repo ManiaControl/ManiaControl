@@ -396,51 +396,60 @@ Void " . self::FUNCTION_SETTOOLTIPTEXT . "(CMlControl _TooltipControl, CMlContro
 		if (!$this->tooltips) return "";
 		$mouseOverScript = "
 if (Event.Control.HasClass(\"" . self::CLASS_TOOLTIPS . "\")) {
-	if (Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_ONCLICK . "\")) break;
-	declare Invert = Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_INVERT . "\");
-	foreach (ControlClass in Event.Control.ControlClasses) {
-		declare TooltipControl <=> Page.GetFirstChild(ControlClass);
-		if (TooltipControl == Null) continue;
-		TooltipControl.Visible = !Invert;
-		" . self::FUNCTION_SETTOOLTIPTEXT . "(TooltipControl, Event.Control);
+	if (!Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_ONCLICK . "\")) {
+		declare Invert = Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_INVERT . "\");
+		foreach (ControlClass in Event.Control.ControlClasses) {
+			declare TooltipControl <=> Page.GetFirstChild(ControlClass);
+			if (TooltipControl == Null) continue;
+			TooltipControl.Visible = !Invert;
+			" . self::FUNCTION_SETTOOLTIPTEXT . "(TooltipControl, Event.Control);
+		}
 	}
 }";
 		$mouseOutScript = "
 if (Event.Control.HasClass(\"" . self::CLASS_TOOLTIPS . "\")) {
-	declare FML_Clicked for Event.Control = False;
-	declare StayOnClick = Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_STAYONCLICK . "\");
-	if (StayOnClick && FML_Clicked) break;
-	declare Invert = Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_INVERT . "\");
-	foreach (ControlClass in Event.Control.ControlClasses) {
-		declare TooltipControl <=> Page.GetFirstChild(ControlClass);
-		if (TooltipControl == Null) continue;
-		TooltipControl.Visible = Invert;
-		" . self::FUNCTION_SETTOOLTIPTEXT . "(TooltipControl, Event.Control);
+	if (!Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_ONCLICK . "\")) {
+		declare FML_Clicked for Event.Control = False;
+		declare StayOnClick = Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_STAYONCLICK . "\");
+		if (!StayOnClick || !FML_Clicked) {
+			declare Invert = Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_INVERT . "\");
+			foreach (ControlClass in Event.Control.ControlClasses) {
+				declare TooltipControl <=> Page.GetFirstChild(ControlClass);
+				if (TooltipControl == Null) continue;
+				TooltipControl.Visible = Invert;
+				" . self::FUNCTION_SETTOOLTIPTEXT . "(TooltipControl, Event.Control);
+			}
+		}
 	}
 }";
 		$mouseClickScript = "
 if (Event.Control.HasClass(\"" . self::CLASS_TOOLTIPS . "\")) {
+	declare Handle = True;
 	declare Show = False;
 	declare OnClick = Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_ONCLICK . "\");
-	if (OnClick) {
-		Show = !Event.Control.Visible;
-	} else {
+	if (!OnClick) {
 		declare StayOnClick = Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_STAYONCLICK . "\");
 		if (StayOnClick) {
 			declare FML_Clicked for Event.Control = False;
 			FML_Clicked = !FML_Clicked;
-			if (FML_Clicked) break;
-			Show = False;
+			if (FML_Clicked) {
+				Handle = False;
+			} else {
+				Show = False;
+			}
 		} else {
-			break;
+			Handle = False;
 		}
 	}
-	declare Invert = Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_INVERT . "\");
-	foreach (ControlClass in Event.Control.ControlClasses) {
-		declare TooltipControl <=> Page.GetFirstChild(ControlClass);
-		if (TooltipControl == Null) continue;
-		TooltipControl.Visible = Show && !Invert;
-		" . self::FUNCTION_SETTOOLTIPTEXT . "(TooltipControl, Event.Control);
+	if (Handle) {
+		declare Invert = Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_INVERT . "\");
+		foreach (ControlClass in Event.Control.ControlClasses) {
+			declare TooltipControl <=> Page.GetFirstChild(ControlClass);
+			if (TooltipControl == Null) continue;
+			if (OnClick) Show = !TooltipControl.Visible;
+			TooltipControl.Visible = Show && !Invert;
+			" . self::FUNCTION_SETTOOLTIPTEXT . "(TooltipControl, Event.Control);
+		}
 	}
 }";
 		$tooltipsLabels = Builder::getLabelImplementationBlock(self::LABEL_MOUSEOVER, $mouseOverScript);
