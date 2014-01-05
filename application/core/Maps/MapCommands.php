@@ -5,6 +5,8 @@ namespace ManiaControl\Maps;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Controls\Quads\Quad_UIConstruction_Buttons;
+use FML\ManiaLink;
+use FML\Script\EUISound;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
@@ -73,13 +75,13 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		$itemQuad->setImageFocus($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON_MOVER));
 		$itemQuad->setAction(self::ACTION_OPEN_XLIST);
 		$this->maniaControl->actionsMenu->addPlayerMenuItem($itemQuad, 5, 'Open MX List');
-		
+
 		// Menu Open List
 		$itemQuad = new Quad_Icons64x64_1();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ToolRoot);
 		$itemQuad->setAction(self::ACTION_OPEN_MAPLIST);
 		$this->maniaControl->actionsMenu->addPlayerMenuItem($itemQuad, 10, 'Open MapList');
-		
+
 		// Menu RestartMap
 		$itemQuad = new Quad_UIConstruction_Buttons();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Reload);

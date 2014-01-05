@@ -417,7 +417,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$switchToQuad->setText("»");
 				$switchToQuad->setTextColor("0F0");
 
-				//$switchToQuad->setAction(self::ACTION_CONFIRM_SWITCHTO_MAP . "." . ($id));
 				$confirmFrame = $this->buildConfirmFrame($maniaLink, $y, $id);
 				$script->addToggle($switchToQuad, $confirmFrame);
 
