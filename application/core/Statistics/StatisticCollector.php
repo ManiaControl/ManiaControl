@@ -155,8 +155,13 @@ class StatisticCollector implements CallbackListener {
 				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_NEARMISS, $player);
 				break;
 			case 'LibXmlRpc_OnCapture':
-				$player = $this->maniaControl->playerManager->getPlayer($callback[1][1][0]);
-				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_CAPTURE, $player);
+				$logins = $callback[1][1][0];
+				$logins = explode(';', $logins);
+				foreach ($logins as $login) {
+					$player = $this->maniaControl->playerManager->getPlayer($login);
+					if (!$player) continue;
+					$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_CAPTURE, $player);
+				}
 				break;
 			case 'LibXmlRpc_OnArmorEmpty':
 				$shooter = $this->maniaControl->playerManager->getPlayer($callback[1][1][0]);
@@ -185,8 +190,8 @@ class StatisticCollector implements CallbackListener {
 			case 'OnHit':
 				$paramsObject = json_decode($callback[1][1]);
 				$shooter      = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Shooter->Login);
-				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_HIT, $shooter);
 				$victim = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Victim->Login);
+				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_HIT, $shooter);
 				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_GOT_HIT, $victim);
 				break;
 			case 'OnArmorEmpty':

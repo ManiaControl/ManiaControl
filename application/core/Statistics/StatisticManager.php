@@ -77,6 +77,7 @@ class StatisticManager {
 		$result = $mysqli->query($query);
 		if (!$result) {
 			trigger_error($mysqli->error);
+			return null;
 		}
 		
 		$row = $result->fetch_object();
@@ -95,17 +96,17 @@ class StatisticManager {
 		$result = $mysqli->query($query);
 		if (!$result) {
 			trigger_error($mysqli->error);
+			return;
 		}
 		
 		while ($row = $result->fetch_object()) {
 			$this->stats[$row->name] = $row;
 		}
-		
 		$result->close();
 	}
 
 	/**
-	 * Returns the Stats Id
+	 * Return the Stat Id
 	 *
 	 * @param $statName
 	 * @return int
@@ -115,9 +116,7 @@ class StatisticManager {
 			$stat = $this->stats[$statName];
 			return (int) $stat->index;
 		}
-		else {
-			return null;
-		}
+		return null;
 	}
 
 	/**
@@ -128,7 +127,8 @@ class StatisticManager {
 	 * @return array
 	 */
 	public function getAllPlayerStats(Player $player, $serverIndex = -1) {
-		$playerStats = array(); // TODO improve performence
+		// TODO improve performance
+		$playerStats = array();
 		foreach ($this->stats as $stat) {
 			$value = $this->getStatisticData($stat->name, $player->index, $serverIndex);
 			$playerStats[$stat->name] = array($stat, $value);
@@ -147,43 +147,31 @@ class StatisticManager {
 	 * @param string $statType
 	 * @return bool
 	 */
-	public function insertStat($statName, $player, $serverIndex = -1, $value, $statType = self::STAT_TYPE_INT) {
+	public function insertStat($statName, Player $player, $serverIndex = -1, $value, $statType = self::STAT_TYPE_INT) {
+		if (!$player) return false;
+		if ($player->isFakePlayer()) return true;
 		$statId = $this->getStatId($statName);
-		
-		if ($player == null) {
-			return false;
-		}
-		
-		if ($statId == null) {
-			return false;
-		}
-		
-		if ($player->isFakePlayer()) {
-			return true;
-		}
+		if (!$statId) return false;
 		
 		if ($serverIndex == -1) {
 			$serverIndex = $this->maniaControl->server->getIndex();
 		}
 		
 		$mysqli = $this->maniaControl->database->mysqli;
-		
 		$query = "INSERT INTO `" . self::TABLE_STATISTICS . "` (
-					`serverIndex`,
-					`playerId`,
-					`statId`,
-					`value`
+				`serverIndex`,
+				`playerId`,
+				`statId`,
+				`value`
 				) VALUES (
 				?, ?, ?, ?
 				) ON DUPLICATE KEY UPDATE
 				`value` = `value` + VALUES(`value`);";
-		
 		$statement = $mysqli->prepare($query);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
 		}
-		
 		$statement->bind_param('iiii', $serverIndex, $player->index, $statId, $value);
 		$statement->execute();
 		if ($statement->error) {
@@ -191,7 +179,6 @@ class StatisticManager {
 			$statement->close();
 			return false;
 		}
-		
 		$statement->close();
 		return true;
 	}
@@ -219,11 +206,11 @@ class StatisticManager {
 	public function defineStatMetaData($statName, $type = self::STAT_TYPE_INT, $statDescription = '') {
 		$mysqli = $this->maniaControl->database->mysqli;
 		$query = "INSERT INTO `" . self::TABLE_STATMETADATA . "` (
-					`name`,
-					`type`,
-					`description`
+				`name`,
+				`type`,
+				`description`
 				) VALUES (
-					?, ?, ?
+				?, ?, ?
 				) ON DUPLICATE KEY UPDATE
 				`type` = VALUES(`type`),
 				`description` = VALUES(`description`);";
@@ -239,9 +226,7 @@ class StatisticManager {
 			$statement->close();
 			return false;
 		}
-		
 		$statement->close();
-		
 		return true;
 	}
 
@@ -260,17 +245,14 @@ class StatisticManager {
 				PRIMARY KEY (`index`),
 				UNIQUE KEY `name` (`name`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Statistics Meta Data' AUTO_INCREMENT=1;";
-		
 		$statement = $mysqli->prepare($query);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error, E_USER_ERROR);
-			
 			return false;
 		}
 		$statement->execute();
 		if ($statement->error) {
 			trigger_error($statement->error, E_USER_ERROR);
-			
 			return false;
 		}
 		$statement->close();
@@ -284,21 +266,17 @@ class StatisticManager {
 				PRIMARY KEY (`index`),
 				UNIQUE KEY `unique` (`statId`,`playerId`,`serverIndex`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Statistics' AUTO_INCREMENT=1;";
-		
 		$statement = $mysqli->prepare($query);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error, E_USER_ERROR);
-			
 			return false;
 		}
 		$statement->execute();
 		if ($statement->error) {
 			trigger_error($statement->error, E_USER_ERROR);
-			
 			return false;
 		}
 		$statement->close();
-		
 		return true;
 	}
-} 
+}
