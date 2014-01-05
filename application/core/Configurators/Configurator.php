@@ -324,15 +324,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$actionArray = explode(".", $callback[1][2]);
 
 		$player = $this->maniaControl->playerManager->getPlayer($login);
-		$id     = 0;
-		foreach($this->menus as $menu) {
-
-			if($id == intval($actionArray[2])) {
-				$this->showMenu($player, $id);
-			}
-			$id++;
-		}
-
+		$this->showMenu($player, intval($actionArray[2]));
 	}
 
 	/**
