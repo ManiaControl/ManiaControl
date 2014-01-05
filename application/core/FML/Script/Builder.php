@@ -20,4 +20,17 @@ abstract class Builder {
 		$labelText = PHP_EOL . "***{$labelName}***" . PHP_EOL . "***{$implementationCode}***" . PHP_EOL;
 		return $labelText;
 	}
+
+	/**
+	 * Get the Real String-Representation of the given Value
+	 *
+	 * @param float $value
+	 * @return string
+	 */
+	public static function getReal($value) {
+		$value = (float) $value;
+		$stringVal = (string) $value;
+		if (!fmod($value, 1)) $stringVal .= '.';
+		return $stringVal;
+	}
 }

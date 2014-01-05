@@ -28,8 +28,7 @@ class ManiaLink implements Container {
 	/**
 	 * Construct a new Manialink
 	 *
-	 * @param string $id
-	 *        	Manialink Id
+	 * @param string $id Manialink Id
 	 */
 	public function __construct($id = null) {
 		if ($id !== null) {
@@ -40,8 +39,7 @@ class ManiaLink implements Container {
 	/**
 	 * Set XML Encoding
 	 *
-	 * @param string $encoding
-	 *        	XML Encoding
+	 * @param string $encoding XML Encoding
 	 * @return \FML\ManiaLink
 	 */
 	public function setXmlEncoding($encoding) {
@@ -52,8 +50,7 @@ class ManiaLink implements Container {
 	/**
 	 * Set Manialink Id
 	 *
-	 * @param string $id
-	 *        	Manialink Id
+	 * @param string $id Manialink Id
 	 * @return \FML\ManiaLink
 	 */
 	public function setId($id) {
@@ -64,8 +61,7 @@ class ManiaLink implements Container {
 	/**
 	 * Set Background
 	 *
-	 * @param string $background
-	 *        	Background Value
+	 * @param string $background Background Value
 	 * @return \FML\ManiaLink
 	 */
 	public function setBackground($background) {
@@ -76,8 +72,7 @@ class ManiaLink implements Container {
 	/**
 	 * Set Navigable3d
 	 *
-	 * @param bool $navigable3d
-	 *        	If the manialink is 3d navigable
+	 * @param bool $navigable3d If the manialink is 3d navigable
 	 * @return \FML\ManiaLink
 	 */
 	public function setNavigable3d($navigable3d) {
@@ -88,8 +83,7 @@ class ManiaLink implements Container {
 	/**
 	 * Set Timeout
 	 *
-	 * @param int $timeout
-	 *        	Timeout Duration
+	 * @param int $timeout Timeout Duration
 	 * @return \FML\ManiaLink
 	 */
 	public function setTimeout($timeout) {
@@ -118,9 +112,9 @@ class ManiaLink implements Container {
 	}
 
 	/**
-	 * Set the script object of the Manialink
+	 * Set the Script of the ManiaLink
 	 *
-	 * @param Script $script        	
+	 * @param Script $script
 	 * @return \FML\ManiaLink
 	 */
 	public function setScript(Script $script) {
@@ -129,11 +123,23 @@ class ManiaLink implements Container {
 	}
 
 	/**
+	 * Get the current Script of the ManiaLink
+	 *
+	 * @param string $createIfEmpty
+	 * @return \FML\Script\Script
+	 */
+	public function getScript($createIfEmpty = true) {
+		if (!$this->script && $createIfEmpty) {
+			$this->script = new Script();
+		}
+		return $this->script;
+	}
+
+	/**
 	 * Render the XML Document
 	 *
-	 * @param bool $echo
-	 *        	If the xml should be echoed and the content-type header should be set
-	 * @param \DOMDocument $domDocument        	
+	 * @param bool $echo If the xml should be echoed and the content-type header should be set
+	 * @param \DOMDocument $domDocument
 	 * @return \DOMDocument
 	 */
 	public function render($echo = false, $domDocument = null) {

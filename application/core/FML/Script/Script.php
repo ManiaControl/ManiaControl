@@ -23,6 +23,7 @@ class Script {
 	const CLASS_PAGELABEL = 'FML_PageLabel';
 	const CLASS_PROFILE = 'FML_Profile';
 	const CLASS_MAPINFO = 'FML_MapInfo';
+	const CLASS_SOUND = 'FML_Sound';
 	const OPTION_TOOLTIP_ONCLICK = 'FML_Tooltip_OnClick';
 	const OPTION_TOOLTIP_STAYONCLICK = 'FML_Tooltip_StayOnClick';
 	const OPTION_TOOLTIP_INVERT = 'FML_Tooltip_Invert';
@@ -50,6 +51,7 @@ class Script {
 	protected $pages = false;
 	protected $profile = false;
 	protected $mapInfo = false;
+	protected $sounds = array();
 
 	/**
 	 * Set an Include of the Script
@@ -250,6 +252,30 @@ class Script {
 	}
 
 	/**
+	 * Add a Sound Playing for the Control
+	 *
+	 * @param Control $control
+	 * @param UISound $sound
+	 * @param string $eventLabel
+	 * @return \FML\Script\Script
+	 */
+	public function addSound(Control $control, UISound $sound, $eventLabel = self::LABEL_MOUSECLICK) {
+		if (!($control instanceof Scriptable)) {
+			trigger_error('Scriptable Control needed as ClickControl for Sounds!');
+			return $this;
+		}
+		$control->setScriptEvents(true);
+		$control->checkId();
+		$control->addClass(self::CLASS_SOUND);
+		$soundData = array();
+		$soundData['sound'] = $sound;
+		$soundData['id'] = $control->getId();
+		$soundData['label'] = $eventLabel;
+		array_push($this->sounds, $soundData);
+		return $this;
+	}
+
+	/**
 	 * Create the Script XML Tag
 	 *
 	 * @param \DOMDocument $domDocument
@@ -279,6 +305,7 @@ class Script {
 		$scriptText .= $this->getPagesLabels();
 		$scriptText .= $this->getProfileLabels();
 		$scriptText .= $this->getMapInfoLabels();
+		$scriptText .= $this->getSoundLabels();
 		$scriptText .= $this->getMainFunction();
 		return $scriptText;
 	}
@@ -330,13 +357,13 @@ class Script {
 		$count = count($this->tooltipTexts);
 		if ($count > 0) {
 			foreach ($this->tooltipTexts as $tooltipId => $tooltipTexts) {
-				$constantText .= '"' . $tooltipId . '"=>[';
+				$constantText .= '"' . $tooltipId . '" => [';
 				$subIndex = 0;
 				$subCount = count($tooltipTexts);
 				if ($subCount > 0) {
 					foreach ($tooltipTexts as $hoverId => $text) {
-						$constantText .= '"' . $hoverId . '"=>"' . $text . '"';
-						if ($subIndex < $subCount - 1) $constantText .= ',';
+						$constantText .= '"' . $hoverId . '" => "' . $text . '"';
+						if ($subIndex < $subCount - 1) $constantText .= ', ';
 						$subIndex++;
 					}
 				}
@@ -344,12 +371,12 @@ class Script {
 					$constantText .= '""';
 				}
 				$constantText .= ']';
-				if ($index < $count - 1) $constantText .= ',';
+				if ($index < $count - 1) $constantText .= ', ';
 				$index++;
 			}
 		}
 		else {
-			$constantText .= '""=>[""=>""]';
+			$constantText .= '"" => ["" => ""]';
 		}
 		$constantText .= ']';
 		$this->setConstant(self::CONSTANT_TOOLTIPTEXTS, $constantText);
@@ -600,6 +627,42 @@ if (Event.Control.HasClass(\"" . self::CLASS_MAPINFO . "\")) {
 }";
 		$mapInfoLabels = Builder::getLabelImplementationBlock(self::LABEL_MOUSECLICK, $mapInfoScript);
 		return $mapInfoLabels;
+	}
+
+	/**
+	 * Get the Sound Labels
+	 *
+	 * @return string
+	 */
+	private function getSoundLabels() {
+		if (!$this->sounds) return '';
+		$labelScripts = array();
+		foreach ($this->sounds as $soundData) {
+			$controlId = $soundData['id'];
+			$label = $soundData['label'];
+			$sound = $soundData['sound'];
+			$volume = Builder::getReal($sound->volume);
+			$labelScript = "
+		case \"{$controlId}\": {
+			PlayUiSound(CMlScriptIngame::EUISound::{$sound->name}, {$sound->variant}, {$volume});
+		}";
+			if (!isset($labelScripts[$label])) {
+				$labelScripts[$label] = '';
+			}
+			$labelScripts[$label] .= $labelScript;
+		}
+		
+		$soundScript = '';
+		foreach ($labelScripts as $label => $scriptPart) {
+			$labelScript = "
+if (Event.Control.HasClass(\"" . self::CLASS_SOUND . "\")) {
+	switch (Event.Control.ControlId) {
+		{$scriptPart}
+	}
+}";
+			$soundScript .= Builder::getLabelImplementationBlock($label, $labelScript);
+		}
+		return $soundScript;
 	}
 
 	/**
