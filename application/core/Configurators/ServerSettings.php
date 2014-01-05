@@ -112,7 +112,6 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		}
 		$result->close();
 		
-		var_dump($loadedSettings);
 		$success = $this->maniaControl->client->query('SetServerOptions', $loadedSettings);
 		if (!$success) {
 			trigger_error('Error occurred: ' . $this->maniaControl->getClientErrorText());
