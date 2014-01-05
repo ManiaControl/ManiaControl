@@ -27,6 +27,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	const ACTION_PREFIX_SETTING = 'ScriptSetting.';
 	const ACTION_SETTING_BOOL = 'ScriptSetting.ActionBoolSetting.';
 	const CB_SCRIPTSETTING_CHANGED = 'ScriptSettings.SettingChanged';
+	const CB_SCRIPTSETTINGS_CHANGED = 'ScriptSettings.SettingsChanged';
 	const TABLE_SCRIPT_SETTINGS = 'mc_scriptsettings';
 	
 	/**
@@ -356,6 +357,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 *
 	 * @param array $newSettings
 	 * @param Player $player
+	 * @param bool
 	 */
 	private function applyNewScriptSettings(array $newSettings, Player $player) {
 		if (!$newSettings) return true;
@@ -413,9 +415,11 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		}
 		$statement->close();
 		
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_SCRIPTSETTINGS_CHANGED, array(self::CB_SCRIPTSETTINGS_CHANGED));
+		
 		$chatMessage .= '!';
 		$this->maniaControl->chat->sendInformation($chatMessage);
-		$this->maniaControl->log(Formatter::stripCodes($chatMessage));
+		$this->maniaControl->log($chatMessage, true);
 		return true;
 	}
 

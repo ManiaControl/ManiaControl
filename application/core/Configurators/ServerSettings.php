@@ -26,6 +26,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	const ACTION_PREFIX_SETTING = 'ServerSettings.';
 	const ACTION_SETTING_BOOL = 'ServerSettings.ActionBoolSetting.';
 	const CB_SERVERSETTING_CHANGED = 'ServerSettings.SettingChanged';
+	const CB_SERVERSETTINGS_CHANGED = 'ServerSettings.SettingsChanged';
 	const TABLE_SERVER_SETTINGS = 'mc_serversettings';
 	
 	/**
@@ -102,7 +103,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		$serverSettings = $this->maniaControl->client->getResponse();
 		$loadedSettings = array();
 		while ($row = $result->fetch_object()) {
-			if (!$serverSettings[$row->settingName]) continue;
+			if (!isset($serverSettings[$row->settingName])) continue;
 			$loadedSettings[$row->settingName] = $row->settingValue;
 			settype($loadedSettings[$row->settingName], gettype($serverSettings[$row->settingName]));
 		}
@@ -303,9 +304,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	public function handleManialinkPageAnswer(array $callback) {
 		$actionId = $callback[1][2];
 		$boolSetting = (strpos($actionId, self::ACTION_SETTING_BOOL) === 0);
-		if (!$boolSetting) {
-			return;
-		}
+		if (!$boolSetting) return;
 		
 		$login = $callback[1][1];
 		$player = $this->maniaControl->playerManager->getPlayer($login);
@@ -322,9 +321,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	 * @return bool
 	 */
 	private function applyNewScriptSettings(array $newSettings, Player $player) {
-		if (!$newSettings) {
-			return true;
-		}
+		if (!$newSettings) return true;
 		$success = $this->maniaControl->client->query('SetServerOptions', $newSettings);
 		if (!$success) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
@@ -355,8 +352,8 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		$settingIndex = 0;
 		$title = $this->maniaControl->authenticationManager->getAuthLevelName($player->authLevel);
 		// $chatMessage = '$ff0' . $title . ' $<' . $player->nickname . '$> set ScriptSetting' . ($settingsCount > 1 ? 's' : '') . ' ';
+		
 		foreach ($newSettings as $setting => $value) {
-			
 			$statement->bind_param('iss', $serverIndex, $setting, $value);
 			$statement->execute();
 			if ($statement->error) {
@@ -380,6 +377,8 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		}
 		
 		$statement->close();
+		
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_SERVERSETTINGS_CHANGED, array(self::CB_SERVERSETTINGS_CHANGED));
 		
 		// $chatMessage .= '!';
 		// $this->maniaControl->chat->sendInformation($chatMessage);
