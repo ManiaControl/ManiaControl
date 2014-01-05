@@ -85,4 +85,15 @@ class ManiaLinks {
 		}
 		return $domDocument;
 	}
+
+	/**
+	 * Get String Representation
+	 *
+	 * @return string
+	 */
+	public function __toString() {
+		$domDocument = $this->render();
+		$xmlText = $domDocument->saveXML();
+		return $xmlText;
+	}
 }
