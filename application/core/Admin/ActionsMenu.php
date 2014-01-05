@@ -63,6 +63,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	 * @param Control $control
 	 * @param bool $playerAction
 	 * @param int $order
+	 * @param string $description
 	 */
 	public function addMenuItem(Control $control, $playerAction = true, $order = 0, $description = null) {
 		if ($playerAction) {
@@ -78,6 +79,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	 *
 	 * @param Control $control
 	 * @param int $order
+	 * @param string $description
 	 */
 	public function addPlayerMenuItem(Control $control, $order = 0, $description = null) {
 		if (!isset($this->playerMenuItems[$order])) {
@@ -93,6 +95,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	 *
 	 * @param Control $control
 	 * @param int $order
+	 * @param string $description
 	 */
 	public function addAdminMenuItem(Control $control, $order = 0, $description = null) {
 		if (!isset($this->adminMenuItems[$order])) {
