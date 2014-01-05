@@ -130,7 +130,10 @@ class ManiaControl implements CommandListener {
 	 *
 	 * @param string $message
 	 */
-	public function log($message) {
+	public function log($message, $stripCodes = false) {
+		if ($stripCodes) {
+			$message = Formatter::stripCodes($message);
+		}
 		logMessage($message);
 	}
 
@@ -364,8 +367,7 @@ class ManiaControl implements CommandListener {
 		
 		// Set api version
 		if (!$this->client->query('SetApiVersion', self::API_VERSION)) {
-			trigger_error(
-					"Couldn't set API version '" . self::API_VERSION . "'! This might cause problems. " . $this->getClientErrorText());
+			trigger_error("Couldn't set API version '" . self::API_VERSION . "'! This might cause problems. " . $this->getClientErrorText());
 		}
 		
 		// Connect finished
