@@ -127,6 +127,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 * @return bool
 	 */
 	public function sendManialink($manialinkText, $logins = null, $timeout = 0, $hideOnClick = false) {
+		$manialinkText = (string) $manialinkText;
 		if(!$logins) {
 			return $this->maniaControl->client->query('SendDisplayManialinkPage', $manialinkText, $timeout, $hideOnClick);
 		}
@@ -171,13 +172,12 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	/**
 	 * Displays a ManiaLink Widget to a certain Player
 	 *
-	 * @param String $maniaLink
+	 * @param mixed $maniaLink
 	 * @param Player $player
 	 */
 	public function displayWidget($maniaLink, Player $player) {
 		// render and display xml
-		$maniaLinkText = $maniaLink->render()->saveXML();
-		$this->maniaControl->manialinkManager->sendManialink($maniaLinkText, $player->login);
+		$this->maniaControl->manialinkManager->sendManialink($maniaLink, $player->login);
 		$this->disableAltMenu($player);
 	}
 
