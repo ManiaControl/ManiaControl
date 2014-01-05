@@ -247,15 +247,13 @@ class SettingManager {
 	}
 
 	/**
-	 * Set a setting for the given object
-	 *
-	 * @param object $object        	
-	 * @param string $settingName        	
-	 * @param mixed $value        	
+	 * Updates a Setting
+	 * @param $className
+	 * @param $settingName
+	 * @param $value
 	 * @return bool
 	 */
-	public function setSetting($object, $settingName, $value) {
-		$className = $this->getClassName($object);
+	public function updateSetting($className, $settingName, $value){
 		$mysqli = $this->maniaControl->database->mysqli;
 		$settingQuery = "UPDATE `" . self::TABLE_SETTINGS . "`
 				SET `value` = ?
@@ -276,6 +274,19 @@ class SettingManager {
 		}
 		$settingStatement->close();
 		return $success;
+	}
+
+	/**
+	 * Set a setting for the given object
+	 *
+	 * @param object $object        	
+	 * @param string $settingName        	
+	 * @param mixed $value        	
+	 * @return bool
+	 */
+	public function setSetting($object, $settingName, $value) {
+		$className = $this->getClassName($object);
+		$this->updateSetting($className, $settingName, $value);
 	}
 
 	/**
@@ -353,7 +364,8 @@ class SettingManager {
 		}
 		$settings = array();
 		while ($setting = $result->fetch_object()) {
-			array_push($settings, $setting);
+			$settings[$setting->index] = $setting;
+			//array_push($settings, $setting);
 		}
 		$result->free();
 		return $settings;

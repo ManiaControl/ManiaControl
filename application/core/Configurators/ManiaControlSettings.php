@@ -8,6 +8,7 @@ namespace ManiaControl\Configurators;
 
 
 use FML\Controls\Control;
+use FML\Controls\Entry;
 use FML\Controls\Frame;
 use FML\Controls\Label;
 use FML\Controls\Labels\Label_Text;
@@ -16,11 +17,13 @@ use FML\Script\Script;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 
-class ManiaControlSettings implements ConfiguratorMenu{
+class ManiaControlSettings implements ConfiguratorMenu {
 	/**
 	 * Constants
 	 */
 	const TITLE = 'ManiaControl Settings';
+	const ACTION_PREFIX_SETTING     = 'ManiaControlSettings';
+	const ACTION_SETTING_BOOL       = 'ManiaControlSettings.ActionBoolSetting.';
 
 	/**
 	 * Private Properties
@@ -56,13 +59,13 @@ class ManiaControlSettings implements ConfiguratorMenu{
 	 */
 	public function getMenu($width, $height, Script $script) {
 		$pagesId = 'ManiaControlSettingsPages';
-		$frame = new Frame();
+		$frame   = new Frame();
 
 		// Config
-		$pagerSize = 9.;
+		$pagerSize     = 9.;
 		$settingHeight = 5.;
 		$labelTextSize = 2;
-		$pageMaxCount = 13;
+		$pageMaxCount  = 13;
 
 		//Pagers
 		$pagerPrev = new Quad_Icons64x64_1();
@@ -94,14 +97,15 @@ class ManiaControlSettings implements ConfiguratorMenu{
 		$settings = $this->maniaControl->settingManager->getSettings();
 
 		$pageFrames = array();
-		$y = 0;
-		$index = 1;
-		foreach($settings as $setting){
+		$y          = 0;
+		$index      = 1;
+		$prevClass  = '';
+		foreach($settings as $id => $setting) {
 
-			if (!isset($pageFrame)) {
+			if(!isset($pageFrame)) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
-				if (!empty($pageFrames)) {
+				if(!empty($pageFrames)) {
 					$pageFrame->setVisible(false);
 				}
 				array_push($pageFrames, $pageFrame);
@@ -113,20 +117,86 @@ class ManiaControlSettings implements ConfiguratorMenu{
 			$pageFrame->add($settingFrame);
 			$settingFrame->setY($y);
 
+			//Headline Label
+			if($prevClass != $setting->class) {
+				$headLabel = new Label_Text();
+				$settingFrame->add($headLabel);
+				$headLabel->setHAlign(Control::LEFT);
+				$headLabel->setX($width * -0.46);
+				$headLabel->setSize($width * 0.6, $settingHeight);
+				$headLabel->setStyle($headLabel::STYLE_TextCardSmall);
+				$headLabel->setTextSize($labelTextSize);
+				$headLabel->setText($setting->class);
+				$headLabel->setTextColor("F00");
+
+				$y -= $settingHeight;
+
+
+				if($index % $pageMaxCount == $pageMaxCount - 1) {
+					$pageFrame = new Frame();
+					$frame->add($pageFrame);
+					if(!empty($pageFrames)) {
+						$pageFrame->setVisible(false);
+					}
+					array_push($pageFrames, $pageFrame);
+					$y = $height * 0.41;
+					$script->addPage($pageFrame, count($pageFrames), $pagesId);
+				}
+
+				$index++;
+
+				$settingFrame = new Frame();
+				$pageFrame->add($settingFrame);
+				$settingFrame->setY($y);
+			} //Headline Label finished
+
 			$nameLabel = new Label_Text();
 			$settingFrame->add($nameLabel);
 			$nameLabel->setHAlign(Control::LEFT);
 			$nameLabel->setX($width * -0.46);
-			$nameLabel->setSize($width * 0.4, $settingHeight);
+			$nameLabel->setSize($width * 0.6, $settingHeight);
 			$nameLabel->setStyle($nameLabel::STYLE_TextCardSmall);
 			$nameLabel->setTextSize($labelTextSize);
 			$nameLabel->setText($setting->setting);
+			$nameLabel->setTextColor("FFF");
+
+			$substyle = '';
 
 
-		//	var_dump($setting);
+			$entry = new Entry();
+			$settingFrame->add($entry);
+			$entry->setStyle(Label_Text::STYLE_TextValueSmall);
+			$entry->setHAlign(Control::CENTER);
+			$entry->setX($width / 2 * 0.65);
+			$entry->setTextSize(1);
+			$entry->setSize($width * 0.3, $settingHeight * 0.9);
+			$entry->setName(self::ACTION_PREFIX_SETTING . '.' . $setting->index);
+			$entry->setDefault($setting->value);
+
+
+			if($setting->type == "bool") {
+				if($setting->value == "0") {
+					$substyle = Quad_Icons64x64_1::SUBSTYLE_LvlRed;
+				} else if($setting->value == "1") {
+					$substyle = Quad_Icons64x64_1::SUBSTYLE_LvlGreen;
+				}
+
+				$quad = new Quad_Icons64x64_1();
+				$settingFrame->add($quad);
+				$quad->setX($width / 2 * 0.6);
+				$quad->setZ(-0.01);
+				$quad->setSubStyle($substyle);
+				$quad->setSize(4, 4);
+				$quad->setHAlign(Control::CENTER2);
+				$quad->setAction(self::ACTION_SETTING_BOOL . $setting->index);
+				$entry->setVisible(false);
+			}
+
+
+			$prevClass = $setting->class;
 
 			$y -= $settingHeight;
-			if ($index % $pageMaxCount == $pageMaxCount - 1) {
+			if($index % $pageMaxCount == $pageMaxCount - 1) {
 				unset($pageFrame);
 			}
 
@@ -143,6 +213,27 @@ class ManiaControlSettings implements ConfiguratorMenu{
 	 * @param Player $player
 	 */
 	public function saveConfigData(array $configData, Player $player) {
-		// TODO: Implement saveConfigData() method.
+		$prefix = explode(".", $configData[3][0]['Name']);
+		if($prefix[0] != self::ACTION_PREFIX_SETTING) {
+			return;
+		}
+
+		$maniaControlSettings = $this->maniaControl->settingManager->getSettings();
+
+		$prefixLength = strlen(self::ACTION_PREFIX_SETTING);
+
+		foreach($configData[3] as $setting) {
+			$settingName = substr($setting['Name'], $prefixLength + 1);
+			$oldSetting = $maniaControlSettings[$settingName];
+			if($setting['Value'] == $oldSetting->value) {
+				continue;
+			}
+
+			$this->maniaControl->settingManager->updateSetting($oldSetting->class, $oldSetting->setting, $setting['Value']);
+		}
+
+		//Reopen the Menu
+		$menuId = $this->maniaControl->configurator->getMenuId($this->getTitle());
+		$this->maniaControl->configurator->reopenMenu($menuId);
 	}
 }

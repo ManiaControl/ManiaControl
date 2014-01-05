@@ -206,8 +206,6 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			$nameLabel->setText($name);
 			$nameLabel->setTextColor("FFF");
 
-			// $settingValue = $scriptSettings[$name];
-
 			$substyle = '';
 			if($value === false) {
 				$substyle = Quad_Icons64x64_1::SUBSTYLE_LvlRed;
