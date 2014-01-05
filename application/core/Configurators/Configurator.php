@@ -91,7 +91,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$this->addMenu($this->scriptSettings);
 
 		// Create Mania Control Settings
-		$this->maniaControlSettings = new ServerSettings($maniaControl);
+		$this->maniaControlSettings = new ManiaControlSettings($maniaControl);
 		$this->addMenu($this->maniaControlSettings);
 
 		// Register for commands
