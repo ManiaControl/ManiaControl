@@ -214,7 +214,7 @@ class PlayerManager implements CallbackListener {
 	 * Get a Player by Login
 	 *
 	 * @param string $login
-	 * @return Player
+	 * @return \ManiaControl\Players\Player
 	 */
 	public function getPlayer($login) {
 		if (!isset($this->players[$login])) {

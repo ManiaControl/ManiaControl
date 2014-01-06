@@ -149,7 +149,6 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	 * @return ManiaLink
 	 */
 	private function buildMenuIconsManialink(Player $player) {
-		// TODO: close popoutframe on click
 		$posX = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_POSX);
 		$posY = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_POSY);
 		$itemSize = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_ITEMSIZE);
