@@ -397,7 +397,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$eraseLabel->setTextColor('a00');
 				
 				$confirmFrame = $this->buildConfirmFrame($maniaLink, $y, $id, $map->uid);
-				$script->addToggle($eraseLabel, $confirmFrame);
+				//$script->addToggle($eraseLabel, $confirmFrame); //TODO
+				$script->addTooltip($eraseLabel, $confirmFrame, Script::OPTION_TOOLTIP_STAYONCLICK);
 				
 				// Description Label
 				$descriptionLabel = clone $preDefinedDescriptionLabel;
@@ -419,7 +420,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$switchLabel->setTextColor('0f0');
 				
 				$confirmFrame = $this->buildConfirmFrame($maniaLink, $y, $id);
-				$script->addToggle($switchLabel, $confirmFrame);
+				$script->addTooltip($switchLabel, $confirmFrame, Script::OPTION_TOOLTIP_STAYONCLICK); //TODO
+				//$script->addToggle($switchLabel, $confirmFrame);
 				
 				$descriptionLabel = clone $preDefinedDescriptionLabel;
 				$frame->add($descriptionLabel);
