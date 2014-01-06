@@ -74,6 +74,7 @@ class ManiaControl implements CommandListener {
 	public $authenticationManager = null;
 	public $callbackManager = null;
 	public $chat = null;
+	public $config = null;
 	public $configurator = null;
 	/**
 	 *
@@ -101,6 +102,9 @@ class ManiaControl implements CommandListener {
 	 */
 	public function __construct() {
 		$this->log('Loading ManiaControl v' . self::VERSION . '...');
+		
+		// Load config
+		$this->config = FileUtil::loadConfig('server.xml');
 		
 		// Load ManiaControl Modules
 		$this->database = new Database($this);
@@ -329,10 +333,10 @@ class ManiaControl implements CommandListener {
 		// Load remote client
 		$this->client = new \IXR_ClientMulticall_Gbx();
 		
-		$host = $this->server->config->xpath('host');
+		$host = $this->config->server->xpath('host');
 		if (!$host) trigger_error("Invalid server configuration (host).", E_USER_ERROR);
 		$host = (string) $host[0];
-		$port = $this->server->config->xpath('port');
+		$port = $this->config->server->xpath('port');
 		if (!$host) trigger_error("Invalid server configuration (port).", E_USER_ERROR);
 		$port = (string) $port[0];
 		
@@ -343,10 +347,10 @@ class ManiaControl implements CommandListener {
 			trigger_error("Couldn't connect to server! " . $this->getClientErrorText(), E_USER_ERROR);
 		}
 		
-		$login = $this->server->config->xpath('login');
+		$login = $this->config->server->xpath('login');
 		if (!$login) trigger_error("Invalid server configuration (login).", E_USER_ERROR);
 		$login = (string) $login[0];
-		$pass = $this->server->config->xpath('pass');
+		$pass = $this->config->server->xpath('pass');
 		if (!$pass) trigger_error("Invalid server configuration (password).", E_USER_ERROR);
 		$pass = (string) $pass[0];
 		

@@ -23,11 +23,6 @@ class Server implements CallbackListener {
 	const TABLE_SERVERS = 'mc_servers';
 	
 	/**
-	 * Public Properties
-	 */
-	public $config = null;
-	
-	/**
 	 * Private Properties
 	 */
 	private $maniaControl = null;
@@ -43,9 +38,6 @@ class Server implements CallbackListener {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		$this->initTables();
-		
-		// Load config
-		$this->config = FileUtil::loadConfig('server.xml');
 		
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'onInit');

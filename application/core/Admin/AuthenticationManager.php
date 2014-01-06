@@ -48,7 +48,6 @@ class AuthenticationManager {
 	 * @return bool
 	 */
 	private function loadConfig() {
-		$config = FileUtil::loadConfig('authentication.xml');
 		$mysqli = $this->maniaControl->database->mysqli;
 		
 		// Remove all MasterAdmins
@@ -61,8 +60,8 @@ class AuthenticationManager {
 			return false;
 		}
 		$adminLevel = self::AUTH_LEVEL_SUPERADMIN;
-		$xAdminLevel = self::AUTH_LEVEL_MASTERADMIN;
-		$adminStatement->bind_param('ii', $adminLevel, $xAdminLevel);
+		$masterAdminLevel = self::AUTH_LEVEL_MASTERADMIN;
+		$adminStatement->bind_param('ii', $adminLevel, $masterAdminLevel);
 		$adminStatement->execute();
 		if ($adminStatement->error) {
 			trigger_error($adminStatement->error);
@@ -70,7 +69,7 @@ class AuthenticationManager {
 		$adminStatement->close();
 		
 		// Set MasterAdmins
-		$xAdmins = $config->masteradmins->xpath('login');
+		$masterAdmins = $this->maniaControl->config->masteradmins->xpath('login');
 		$adminQuery = "INSERT INTO `" . PlayerManager::TABLE_PLAYERS . "` (
 				`login`,
 				`authLevel`
@@ -83,13 +82,10 @@ class AuthenticationManager {
 			trigger_error($mysqli->error, E_USER_ERROR);
 			return false;
 		}
-		$adminStatement->bind_param('si', $login, $xAdminLevel);
+		$adminStatement->bind_param('si', $login, $masterAdminLevel);
 		$success = true;
-		foreach ($xAdmins as $xAdmin) {
-			/**
-			 * @noinspection PhpUnusedLocalVariableInspection
-			 */
-			$login = (string) $xAdmin;
+		foreach ($masterAdmins as $masterAdmin) {
+			$login = (string) $masterAdmin;
 			$adminStatement->execute();
 			if ($adminStatement->error) {
 				trigger_error($adminStatement->error);

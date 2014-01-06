@@ -17,7 +17,6 @@ class Database {
 	 * Private properties
 	 */
 	private $maniaControl = null;
-	private $config = null;
 
 	/**
 	 * Construct database connection
@@ -25,27 +24,16 @@ class Database {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		
-		// Load config
-		$this->config = FileUtil::loadConfig('database.xml');
-		
 		// Get mysql server information
-		$host = $this->config->xpath('host');
-		$port = $this->config->xpath('port');
-		$user = $this->config->xpath('user');
-		$pass = $this->config->xpath('pass');
+		$host = $this->maniaControl->config->database->xpath('host');
+		$port = $this->maniaControl->config->database->xpath('port');
+		$user = $this->maniaControl->config->database->xpath('user');
+		$pass = $this->maniaControl->config->database->xpath('pass');
 		
-		if (!$host) {
-			trigger_error("Invalid database configuration (host).", E_USER_ERROR);
-		}
-		if (!$port) {
-			trigger_error("Invalid database configuration (port).", E_USER_ERROR);
-		}
-		if (!$user) {
-			trigger_error("Invalid database configuration (user).", E_USER_ERROR);
-		}
-		if (!$pass) {
-			trigger_error("Invalid database configuration (pass).", E_USER_ERROR);
-		}
+		if (!$host) trigger_error("Invalid database configuration (host).", E_USER_ERROR);
+		if (!$port) trigger_error("Invalid database configuration (port).", E_USER_ERROR);
+		if (!$user) trigger_error("Invalid database configuration (user).", E_USER_ERROR);
+		if (!$pass) trigger_error("Invalid database configuration (pass).", E_USER_ERROR);
 		
 		$host = (string) $host[0];
 		$port = (int) $port[0];
@@ -76,18 +64,16 @@ class Database {
 	 * @return bool
 	 */
 	private function initDatabase() {
-		$dbName = $this->config->xpath('database');
+		$dbName = $this->maniaControl->config->database->xpath('db_name');
 		if (!$dbName) {
 			trigger_error("Invalid database configuration (database).", E_USER_ERROR);
 			return false;
 		}
-        $dbName = (string) $dbName[0];
+		$dbName = (string) $dbName[0];
 		
 		// Try to connect
 		$result = $this->mysqli->select_db($dbName);
-		if ($result) {
-			return true;
-		}
+		if ($result) return true;
 		
 		// Create database
 		$databaseQuery = "CREATE DATABASE ?;";
