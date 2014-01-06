@@ -297,8 +297,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$preDefinedDescriptionLabel->setTextSize(2);
 		$preDefinedDescriptionLabel->setVisible(false);
 
-		//TODO add pages
-
 		$queuedMaps = $this->maniaControl->mapManager->mapQueue->getQueuedMapsRanking();
 		/** @var  KarmaPlugin $karmaPlugin */
 		$karmaPlugin = $this->maniaControl->pluginManager->getPlugin(self::DEFAULT_KARMA_PLUGIN);
@@ -386,27 +384,29 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$script->addTooltip($buttLabel, $descriptionLabel);
 			}
 
-			if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) { //TODO SET as setting who can add maps
+			if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
+				//TODO SET as setting who can add maps
 				//erase map quad
-				$eraseQuad = new Label_Button(); //TODO change name to label
-				$mapFrame->add($eraseQuad);
-				$eraseQuad->setX($this->width / 2 - 5);
-				$eraseQuad->setZ(0.2);
-				$eraseQuad->setSize(3, 3);
-				$eraseQuad->setTextSize(1);
-				$eraseQuad->setText("x");
-				$eraseQuad->setTextColor("A00");
+				$eraseLabel = new Label_Button();
+				$mapFrame->add($eraseLabel);
+				$eraseLabel->setX($this->width / 2 - 5);
+				$eraseLabel->setZ(0.2);
+				$eraseLabel->setSize(3, 3);
+				$eraseLabel->setTextSize(1);
+				$eraseLabel->setText("x");
+				$eraseLabel->setTextColor("A00");
 
 				$confirmFrame = $this->buildConfirmFrame($maniaLink, $y, $id, $map->uid);
-				$script->addToggle($eraseQuad, $confirmFrame);
+				$script->addToggle($eraseLabel, $confirmFrame);
 
 				//Description Label
 				$descriptionLabel = clone $preDefinedDescriptionLabel;
 				$frame->add($descriptionLabel);
 				$descriptionLabel->setText("Remove Map: {$map->name}");
-				$script->addTooltip($eraseQuad, $descriptionLabel);
+				$script->addTooltip($eraseLabel, $descriptionLabel);
 			}
-			if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) { //TODO SET as setting who can add maps
+			if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
+				//TODO SET as setting who can add maps
 				//switch to map quad
 				$switchToQuad = new Label_Button();
 				$mapFrame->add($switchToQuad);

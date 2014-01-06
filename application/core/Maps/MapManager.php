@@ -125,7 +125,7 @@ class MapManager implements CallbackListener {
 	/**
 	 * Add a map to the MapList
 	 *
-	 * @param \ManiaControl\Maps\Map $map
+	 * @param Map $map
 	 * @return bool
 	 */
 	private function addMap(Map $map) { // TODO needed?
