@@ -22,8 +22,8 @@ class PlayerActions {
 	/**
 	 * Constants
 	 */
-	const BLUE_TEAM = 0;
-	const RED_TEAM = 1;
+	const TEAM_BLUE = 0;
+	const TEAM_RED = 1;
 	const SPECTATOR_USER_SELECTABLE = 0;
 	const SPECTATOR_SPECTATOR = 1;
 	const SPECTATOR_PLAYER = 2;
@@ -44,6 +44,33 @@ class PlayerActions {
 	}
 
 	/**
+	 * Force a Player to Play
+	 *
+	 * @param string $adminLogin
+	 * @param string $targetLogin
+	 * @param int $type
+	 */
+	public function forcePlayerToPlay($adminLogin, $targetLogin, $type = 2) {
+		$admin = $this->maniaControl->playerManager->getPlayer($adminLogin);
+		if (!$this->maniaControl->authenticationManager->checkRight($admin, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($admin);
+			return;
+		}
+		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
+		if (!$target) return;
+		
+		$success = $this->maniaControl->client->query('ForceSpectator', $target->login, ($type != 1 ? 0 : 2));
+		if (!$success) {
+			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $admin->login);
+			return;
+		}
+		
+		// Announce force
+		$chatMessage = '$<' . $admin->nickname . '$> forced $<' . $target->nickname . '$> to Play!';
+		$this->maniaControl->chat->sendInformation($chatMessage);
+	}
+
+	/**
 	 * Force a Player to a certain Team
 	 *
 	 * @param string $adminLogin
@@ -51,10 +78,13 @@ class PlayerActions {
 	 * @param int $teamId
 	 */
 	public function forcePlayerToTeam($adminLogin, $targetLogin, $teamId) {
-		// TODO: get used by playercommands
 		$admin = $this->maniaControl->playerManager->getPlayer($adminLogin);
+		if (!$this->maniaControl->authenticationManager->checkRight($admin, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($admin);
+			return;
+		}
 		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
-		if (!$admin || !$target) return;
+		if (!$target) return;
 		
 		if ($target->isSpectator) {
 			$success = $this->maniaControl->client->query('ForceSpectator', $target->login, self::SPECTATOR_PLAYER);
@@ -72,10 +102,10 @@ class PlayerActions {
 		
 		$chatMessage = false;
 		$title = $this->maniaControl->authenticationManager->getAuthLevelName($admin->authLevel);
-		if ($teamId == self::BLUE_TEAM) {
+		if ($teamId == self::TEAM_BLUE) {
 			$chatMessage = $title . ' $<' . $admin->nickname . '$> forced $<' . $target->nickname . '$> into the Blue-Team!';
 		}
-		else if ($teamId == self::RED_TEAM) {
+		else if ($teamId == self::TEAM_RED) {
 			$chatMessage = $title . ' $<' . $admin->nickname . '$> forced $<' . $target->nickname . '$> into the Red-Team!';
 		}
 		if (!$chatMessage) return;
@@ -92,7 +122,6 @@ class PlayerActions {
 	 * @param bool $releaseSlot
 	 */
 	public function forcePlayerToSpectator($adminLogin, $targetLogin, $spectatorState = self::SPECTATOR_BUT_KEEP_SELECTABLE, $releaseSlot = true) {
-		// TODO: get used by playercommands
 		$admin = $this->maniaControl->playerManager->getPlayer($adminLogin);
 		if (!$this->maniaControl->authenticationManager->checkRight($admin, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($admin);

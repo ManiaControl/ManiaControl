@@ -44,8 +44,9 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener {
 		$this->maniaControl->commandManager->registerCommandListener('kick', $this, 'command_Kick', true);
 		$this->maniaControl->commandManager->registerCommandListener('forcespec', $this, 'command_ForceSpectator', true);
 		$this->maniaControl->commandManager->registerCommandListener('forcespectator', $this, 'command_ForceSpectator', true);
-		$this->maniaControl->commandManager->registerCommandListener('forceplay', $this, 'command_ForcePlayer', true);
-		$this->maniaControl->commandManager->registerCommandListener('forceplayer', $this, 'command_ForcePlayer', true);
+		$this->maniaControl->commandManager->registerCommandListener('forceplay', $this, 'command_ForcePlay', true);
+		$this->maniaControl->commandManager->registerCommandListener('forceblue', $this, 'command_ForceBlue', true);
+		$this->maniaControl->commandManager->registerCommandListener('forcered', $this, 'command_ForceRed', true);
 		$this->maniaControl->commandManager->registerCommandListener('addbot', $this, 'command_AddFakePlayers', true);
 		$this->maniaControl->commandManager->registerCommandListener('removebot', $this, 'command_RemoveFakePlayers', true);
 		$this->maniaControl->commandManager->registerCommandListener('addbots', $this, 'command_AddFakePlayers', true);
@@ -192,35 +193,65 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener {
 	 * @param array $chat
 	 * @param Player $player
 	 */
-	public function command_ForcePlayer(array $chat, Player $player) {
+	public function command_ForcePlay(array $chat, Player $player) {
 		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
 		$params = explode(' ', $chat[1][2]);
 		if (!isset($params[1])) {
-			$this->maniaControl->chat->sendUsageInfo('Usage example: //forceplay login', $player->login);
+			$this->maniaControl->chat->sendUsageInfo("No Login given! Example: '//forceplay login'", $player->login);
 			return;
 		}
-		$target = $params[1];
-		$target = $this->maniaControl->playerManager->getPlayer($target);
-		if (!$target) {
-			$this->maniaControl->chat->sendError("Invalid player login.", $player->login);
-			return;
-		}
+		$targetLogin = $params[1];
+		
 		$type = 2;
 		if (isset($params[2]) && is_numeric($params[2])) {
 			$type = intval($params[2]);
 		}
-		$success = $this->maniaControl->client->query('ForceSpectator', $target->login, 2);
-		if (!$success) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
+		$this->maniaControl->playerManager->playerActions->forcePlayerToPlay($player->login, $targetLogin, $type);
+	}
+
+	/**
+	 * Handle //forceblue command
+	 *
+	 * @param array $chat
+	 * @param Player $player
+	 */
+	public function command_ForceBlue(array $chat, Player $player) {
+		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
-		if ($type != 1) {
-			$this->maniaControl->client->query('ForceSpectator', $target->login, 0);
+		$params = explode(' ', $chat[1][2]);
+		if (!isset($params[1])) {
+			$this->maniaControl->chat->sendUsageInfo("No Login given! Example: '//forceblue login'", $player->login);
+			return;
 		}
-		$this->maniaControl->chat->sendInformation('$<' . $player->nickname . '$> forced $<' . $target->nickname . '$> to player!');
+		$targetLogin = $params[1];
+		
+		$this->maniaControl->playerManager->playerActions->forcePlayerToTeam($player->login, $targetLogin, PlayerActions::TEAM_BLUE);
+	}
+
+	/**
+	 * Handle //forcered command
+	 *
+	 * @param array $chat
+	 * @param Player $player
+	 */
+	public function command_ForceRed(array $chat, Player $player) {
+		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+			return;
+		}
+		$params = explode(' ', $chat[1][2]);
+		if (!isset($params[1])) {
+			$this->maniaControl->chat->sendUsageInfo("No Login given! Example: '//forcered login'", $player->login);
+			return;
+		}
+		$targetLogin = $params[1];
+		
+		$this->maniaControl->playerManager->playerActions->forcePlayerToTeam($player->login, $targetLogin, PlayerActions::TEAM_RED);
 	}
 
 	/**
