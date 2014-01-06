@@ -41,6 +41,15 @@ class CommandManager implements CallbackListener {
 	 * @return bool
 	 */
 	public function registerCommandListener($commandName, CommandListener $listener, $method, $adminCommand = false) {
+		if (is_array($commandName)) {
+			$success = true;
+			foreach ($commandName as $command) {
+				if (!$this->registerCommandListener($command, $listener, $method, $adminCommand)) {
+					$success = false;
+				}
+			}
+			return $success;
+		}
 		$command = strtolower($commandName);
 		if (!method_exists($listener, $method)) {
 			trigger_error("Given listener can't handle command '{$command}' (no method '{$method}')!");
