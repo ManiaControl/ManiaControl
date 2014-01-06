@@ -10,7 +10,7 @@ use ManiaControl\Players\PlayerManager;
 require_once __DIR__ . '/AuthCommands.php';
 
 /**
- * Class managing authentication levels
+ * Class managing Authentication Levels
  *
  * @author steeffeen & kremsy
  */
@@ -24,11 +24,16 @@ class AuthenticationManager {
 	const AUTH_LEVEL_SUPERADMIN = 3;
 	const AUTH_LEVEL_MASTERADMIN = 4;
 	const CB_AUTH_LEVEL_CHANGED = 'AuthenticationManager.AuthLevelChanged';
+	
 	/**
-	 * Private properties
+	 * Public Properties
+	 */
+	public $authCommands = null;
+	
+	/**
+	 * Private Properties
 	 */
 	private $maniaControl = null;
-	private $authCommands = null;
 
 	/**
 	 * Construct authentication manager
@@ -37,17 +42,17 @@ class AuthenticationManager {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
-		$this->loadConfig();
+		$this->updateMasterAdmins();
 		
 		$this->authCommands = new AuthCommands($maniaControl);
 	}
 
 	/**
-	 * Load config and initialize strong superadmins
+	 * Set MasterAdmins
 	 *
 	 * @return bool
 	 */
-	private function loadConfig() {
+	private function updateMasterAdmins() {
 		$mysqli = $this->maniaControl->database->mysqli;
 		
 		// Remove all MasterAdmins
@@ -97,16 +102,17 @@ class AuthenticationManager {
 	}
 
 	/**
-	 * Grant the auth level to the player
+	 * Grant the Auth Level to the Player
 	 *
 	 * @param Player $player
 	 * @param int $authLevel
 	 * @return bool
 	 */
-	public function grantAuthLevel(Player $player, $authLevel) {
-		if (!$player || !is_int($authLevel) || $authLevel >= self::AUTH_LEVEL_MASTERADMIN) {
-			return false;
-		}
+	public function grantAuthLevel(Player &$player, $authLevel) {
+		if (!$player || !is_numeric($authLevel)) return false;
+		$authLevel = (int) $authLevel;
+		if ($authLevel >= self::AUTH_LEVEL_MASTERADMIN) return false;
+		
 		$mysqli = $this->maniaControl->database->mysqli;
 		$authQuery = "INSERT INTO `" . PlayerManager::TABLE_PLAYERS . "` (
 				`login`,
@@ -121,7 +127,7 @@ class AuthenticationManager {
 			return false;
 		}
 		$authStatement->bind_param('si', $player->login, $authLevel);
-		$success = $authStatement->execute();
+		$authStatement->execute();
 		if ($authStatement->error) {
 			trigger_error($authStatement->error);
 			$authStatement->close();
@@ -129,31 +135,25 @@ class AuthenticationManager {
 		}
 		$authStatement->close();
 		
-		if ($success) {
-			// Trigger callback
-			$player->authLevel = $authLevel;
-			$this->maniaControl->callbackManager->triggerCallback(self::CB_AUTH_LEVEL_CHANGED, 
-					array(self::CB_AUTH_LEVEL_CHANGED, $player));
-		}
+		$player->authLevel = $authLevel;
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_AUTH_LEVEL_CHANGED, array(self::CB_AUTH_LEVEL_CHANGED, $player));
 		
-		return $success;
+		return true;
 	}
 
 	/**
-	 * Sends an error message to the player
+	 * Send an Error Message to the Player
 	 *
 	 * @param Player $player
 	 * @return bool
 	 */
 	public function sendNotAllowed(Player $player) {
-		if (!$player) {
-			return false;
-		}
+		if (!$player) return false;
 		return $this->maniaControl->chat->sendError('You do not have the required Rights to perform this Command!', $player->login);
 	}
 
 	/**
-	 * Check if the player has enough rights
+	 * Check if the Player has enough Rights
 	 *
 	 * @param Player $player
 	 * @param int $neededAuthLevel
