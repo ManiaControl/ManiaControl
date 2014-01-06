@@ -23,6 +23,7 @@ class MapManager implements CallbackListener {
 	 */
 	const TABLE_MAPS = 'mc_maps';
 	const CB_MAPLIST_UPDATED = 'MapManager.MapListUpdated';
+	const CB_KARMA_UPDATED = 'MapManager.KarmaUpdated';
 	
 	/**
 	 * Private Properties

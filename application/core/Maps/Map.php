@@ -6,14 +6,13 @@ use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 
 /**
- * Map class
+ * Map Class
  *
  * @author kremsy & steeffeen
  */
 class Map {
-	
 	/**
-	 * Public properties
+	 * Public Properties
 	 */
 	public $index = -1;
 	public $name = 'undefined';
@@ -33,15 +32,14 @@ class Map {
 	public $comment = '';
 	public $titleUid = '';
 	public $startTime = -1;
-	public $mapFetcher = null;
 	
 	/**
-	 * Private properties
+	 * Private Properties
 	 */
 	private $maniaControl = null;
 
 	/**
-	 * Create a new map object from rpc data
+	 * Create a new Map Object from Rpc Data
 	 *
 	 * @param \ManiaControl\ManiaControl $maniaControl
 	 * @param array $rpc_infos
@@ -68,17 +66,17 @@ class Map {
 		
 		$mapsDirectory = $this->maniaControl->server->getMapsDirectory();
 		if ($this->maniaControl->server->checkAccess($mapsDirectory)) {
-			$this->mapFetcher = new \GBXChallMapFetcher(true);
+			$mapFetcher = new \GBXChallMapFetcher(true);
 			try {
-				$this->mapFetcher->processFile($mapsDirectory . $this->fileName);
+				$mapFetcher->processFile($mapsDirectory . $this->fileName);
+				$this->authorNick = FORMATTER::stripDirtyCodes($mapFetcher->authorNick);
+				$this->authorEInfo = $mapFetcher->authorEInfo;
+				$this->authorZone = $mapFetcher->authorZone;
+				$this->comment = $mapFetcher->comment;
 			}
 			catch (\Exception $e) {
-				trigger_error($e->getMessage(), E_USER_WARNING);
+				trigger_error($e->getMessage());
 			}
-			$this->authorNick = FORMATTER::stripDirtyCodes($this->mapFetcher->authorNick);
-			$this->authorEInfo = $this->mapFetcher->authorEInfo;
-			$this->authorZone = $this->mapFetcher->authorZone;
-			$this->comment = $this->mapFetcher->comment;
 		}
 		
 		// TODO: define timeout if mx is down,todo fetch all map infos at once (maybe way faster)
