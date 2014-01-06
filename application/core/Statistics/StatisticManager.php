@@ -154,7 +154,7 @@ class StatisticManager {
 		if (!$statId) return false;
 		
 		if ($serverIndex == -1) {
-			$serverIndex = $this->maniaControl->server->getIndex();
+			$serverIndex = $this->maniaControl->server->index;
 		}
 		
 		$mysqli = $this->maniaControl->database->mysqli;

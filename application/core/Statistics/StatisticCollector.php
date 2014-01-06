@@ -90,9 +90,8 @@ class StatisticCollector implements CallbackListener {
 
 		//Write Shoot Data into database
 		if($this->onShootArray[$login] > $this->maniaControl->settingManager->getSetting($this, self::SETTING_ON_SHOOT_PRESTORE)) {
-			$serverIndex = $this->maniaControl->server->getIndex();
 			$player      = $this->maniaControl->playerManager->getPlayer($login);
-			$this->maniaControl->statisticManager->insertStat(self::STAT_ON_SHOOT, $player, $serverIndex, $this->onShootArray[$login]);
+			$this->maniaControl->statisticManager->insertStat(self::STAT_ON_SHOOT, $player, $this->maniaControl->server->index, $this->onShootArray[$login]);
 			$this->onShootArray[$login] = 0;
 		}
 	}
@@ -114,8 +113,7 @@ class StatisticCollector implements CallbackListener {
 		//Insert Data into Database, and destroy player
 		if(isset($this->onShootArray[$player->login])) {
 			if($this->onShootArray[$player->login] > 0) {
-				$serverIndex = $this->maniaControl->server->getIndex();
-				$this->maniaControl->statisticManager->insertStat(self::STAT_ON_SHOOT, $player, $serverIndex, $this->onShootArray[$player->login]);
+				$this->maniaControl->statisticManager->insertStat(self::STAT_ON_SHOOT, $player, $this->maniaControl->server->index, $this->onShootArray[$player->login]);
 			}
 			unset($this->onShootArray[$player->login]);
 		}

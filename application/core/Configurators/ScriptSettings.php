@@ -395,8 +395,6 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			return false;
 		}
 
-		$serverIndex = $this->maniaControl->server->getIndex();
-
 		// Notifications
 		$settingsCount = count($newSettings);
 		$settingIndex  = 0;
@@ -411,7 +409,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			}
 
 			// Add To Database
-			$statement->bind_param('iss', $serverIndex, $setting, $value);
+			$statement->bind_param('iss', $this->maniaControl->server->index, $setting, $value);
 			$statement->execute();
 			if($statement->error) {
 				trigger_error($statement->error);

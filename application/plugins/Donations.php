@@ -423,8 +423,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 								$message = 'Donation successful! Thanks.';
 							}
 							$this->maniaControl->chat->sendSuccess($message, $login);
-							$serverIndex = $this->maniaControl->server->getIndex();
-							$this->maniaControl->statisticManager->insertStat(self::STAT_PLAYER_DONATIONS, $player, $serverIndex, $amount);
+							$this->maniaControl->statisticManager->insertStat(self::STAT_PLAYER_DONATIONS, $player, $this->maniaControl->server->index, $amount);
 						}
 					}
 					else {

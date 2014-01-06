@@ -58,7 +58,7 @@ class ServerCommands implements CallbackListener, CommandListener {
 	public function each5Seconds(array $callback) {
 		// Empty shutdown
 		if ($this->serverShutdownEmpty) {
-			$players = $this->maniaControl->server->getPlayers();
+			$players = $this->maniaControl->playerManager->getPlayers();
 			if (count($players) <= 0) {
 				$this->shutdownServer('empty');
 			}

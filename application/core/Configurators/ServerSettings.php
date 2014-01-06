@@ -351,8 +351,6 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			return false;
 		}
 
-		$serverIndex = $this->maniaControl->server->getIndex();
-
 		// Notifications
 		$settingsCount = count($newSettings);
 		$settingIndex  = 0;
@@ -360,7 +358,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		// $chatMessage = '$ff0' . $title . ' $<' . $player->nickname . '$> set ScriptSetting' . ($settingsCount > 1 ? 's' : '') . ' ';
 
 		foreach($newSettings as $setting => $value) {
-			$statement->bind_param('iss', $serverIndex, $setting, $value);
+			$statement->bind_param('iss', $this->maniaControl->server->index, $setting, $value);
 			$statement->execute();
 			if($statement->error) {
 				trigger_error($statement->error);
