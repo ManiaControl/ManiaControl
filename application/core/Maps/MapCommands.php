@@ -15,7 +15,6 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\IconManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
-use WidgetPlugin;
 
 /**
  * Class offering commands to manage maps
@@ -32,10 +31,9 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	const ACTION_SKIP_MAP = 'MapList.NextMap';
 	
 	/**
-	 * Private properties
+	 * Private Properties
 	 */
 	private $maniaControl = null;
-	private $mapList = null;
 
 	/**
 	 * Create MapCommands instance
@@ -45,7 +43,6 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		$this->initActionsMenuButtons();
-		$this->mapList = new MapList($this->maniaControl);
 		
 		// Register for admin chat commands
 		$this->maniaControl->commandManager->registerCommandListener('nextmap', $this, 'command_NextMap', true);
@@ -54,9 +51,8 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		$this->maniaControl->commandManager->registerCommandListener('removemap', $this, 'command_RemoveMap', true);
 		
 		// Register for player chat commands
-		$this->maniaControl->commandManager->registerCommandListener('xlist', $this, 'command_xList');
-		$this->maniaControl->commandManager->registerCommandListener('list', $this, 'command_List');
-		$this->maniaControl->commandManager->registerCommandListener('maps', $this, 'command_List');
+		$this->maniaControl->commandManager->registerCommandListener(array('maps', 'list'), $this, 'command_List');
+		$this->maniaControl->commandManager->registerCommandListener(array('xmaps', 'xlist'), $this, 'command_xList');
 		
 		// Menu Buttons
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_OPEN_XLIST, $this, 'command_xList');
@@ -75,13 +71,13 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		$itemQuad->setImageFocus($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON_MOVER));
 		$itemQuad->setAction(self::ACTION_OPEN_XLIST);
 		$this->maniaControl->actionsMenu->addPlayerMenuItem($itemQuad, 5, 'Open MX List');
-
+		
 		// Menu Open List
 		$itemQuad = new Quad_Icons64x64_1();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ToolRoot);
 		$itemQuad->setAction(self::ACTION_OPEN_MAPLIST);
 		$this->maniaControl->actionsMenu->addPlayerMenuItem($itemQuad, 10, 'Open MapList');
-
+		
 		// Menu RestartMap
 		$itemQuad = new Quad_UIConstruction_Buttons();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Reload);
@@ -132,7 +128,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
-		// TODO: user mx fetcher
+		// TODO: Use MX fetcher
 		$params = explode(' ', $chatCallback[1][2], 2);
 		if (count($params) < 2) {
 			$this->maniaControl->chat->sendUsageInfo('Usage example: //addmap 1234', $player->login);
@@ -144,7 +140,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	}
 
 	/**
-	 * Handle nextmap command
+	 * Handle /nextmap Command
 	 *
 	 * @param array $chat
 	 * @param \ManiaControl\Players\Player $player
@@ -172,13 +168,13 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	}
 
 	/**
-	 * Handle list maps command
+	 * Handle /maps command
 	 *
 	 * @param array $chatCallback
 	 * @param Player $player
 	 */
 	public function command_List(array $chatCallback, Player $player) {
-		$this->mapList->showMapList($player);
+		$this->maniaControl->mapManager->mapList->showMapList($player);
 	}
 
 	/**
@@ -188,6 +184,6 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	 * @param Player $player
 	 */
 	public function command_xList(array $chatCallback, Player $player) {
-		$this->mapList->showManiaExchangeList($chatCallback, $player);
+		$this->maniaControl->mapManager->mapList->showManiaExchangeList($chatCallback, $player);
 	}
 }

@@ -62,7 +62,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 
 				'handleManialinkPageAnswer');
 		$this->maniaControl->callbackManager->registerCallbackListener(MapQueue::CB_MAPQUEUE_CHANGED, $this, 'updateWidget');
-		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_MAPLIST_UPDATED, $this, 'updateWidget');
+		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_MAPS_UPDATED, $this, 'updateWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_KARMA_UPDATED, $this, 'updateWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_BEGINMAP, $this, 'updateWidget');
 		// TODO not working yet
@@ -232,7 +232,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$height = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
 		
 		// Get Maplist
-		$mapList = $this->maniaControl->mapManager->getMapList();
+		$mapList = $this->maniaControl->mapManager->getMaps();
 		
 		$this->mapListShown[$player->login] = self::SHOW_MAP_LIST;
 		
