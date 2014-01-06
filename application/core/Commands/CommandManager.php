@@ -7,36 +7,37 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 
 /**
- * Class for handling chat commands
+ * Class for handling Chat Commands
  *
  * @author steeffeen & kremsy
  */
 class CommandManager implements CallbackListener {
-	
 	/**
-	 * Private properties
+	 * Private Properties
 	 */
 	private $maniaControl = null;
 	private $commandListeners = array();
 	private $adminCommandListeners = array();
 
 	/**
-	 * Construct commands manager
+	 * Construct a new Commands Manager
 	 *
-	 * @param \ManiaControl\ManiaControl $maniaControl        	
+	 * @param \ManiaControl\ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
+		
+		// Register for callback
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCHAT, $this, 'handleChatCallback');
 	}
 
 	/**
 	 * Register a command listener
 	 *
-	 * @param string $commandName        	
-	 * @param CommandListener $listener        	
-	 * @param string $method        	
-	 * @param bool $adminCommand        	
+	 * @param string $commandName
+	 * @param CommandListener $listener
+	 * @param string $method
+	 * @param bool $adminCommand
 	 * @return bool
 	 */
 	public function registerCommandListener($commandName, CommandListener $listener, $method, $adminCommand = false) {
@@ -66,8 +67,8 @@ class CommandManager implements CallbackListener {
 
 	/**
 	 * Remove a Command Listener
-	 * 
-	 * @param CommandListener $listener        	
+	 *
+	 * @param CommandListener $listener
 	 * @return bool
 	 */
 	public function unregisterCommandListener(CommandListener $listener) {
@@ -92,34 +93,45 @@ class CommandManager implements CallbackListener {
 	}
 
 	/**
-	 * Handle chat callback
+	 * Handle Chat Callback
 	 *
-	 * @param array $callback        	
+	 * @param array $callback
 	 */
 	public function handleChatCallback(array $callback) {
 		// Check for command
-		if (!$callback[1][3]) {
-			return;
-		}
-		// Check for valid player
-		$player = $this->maniaControl->playerManager->getPlayer($callback[1][1]);
-		if (!$player) {
-			return;
-		}
-		// Handle command
-		$commandArray = explode(" ", substr($callback[1][2], 1));
-		$command = strtolower($commandArray[0]);
+		if (!$callback[1][3]) return;
 		
-		if (substr($command, 0, 1) == "/" || $command == "admin") { // admin command
+		// Check for valid player
+		$login = $callback[1][1];
+		$player = $this->maniaControl->playerManager->getPlayer($login);
+		if (!$player) return;
+		
+		// Parse command
+		$message = $callback[1][2];
+		$commandArray = explode(' ', $message);
+		$command = ltrim(strtolower($commandArray[0]), '/');
+		if (!$command) return;
+		
+		if (substr($message, 0, 2) == '//' || $command == 'admin') {
+			// Admin command
 			$commandListeners = $this->adminCommandListeners;
-			if ($command == "admin") {
-				$command = strtolower($commandArray[1]);
+			
+			if ($command == 'admin') {
+				// Strip 'admin' keyword
+				$command = $commandArray[1];
+				unset($commandArray[1]);
 			}
-			else {
-				$command = substr($command, 1); // remove /
+			unset($commandArray[0]);
+			
+			// Compose uniformed message
+			$message = '//' . $command;
+			foreach ($commandArray as $commandPart) {
+				$message .= ' ' . $commandPart;
 			}
+			$callback[1][2] = $message;
 		}
-		else { // user command
+		else {
+			// User command
 			$commandListeners = $this->commandListeners;
 		}
 		
