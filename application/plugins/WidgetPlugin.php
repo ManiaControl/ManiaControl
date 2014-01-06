@@ -313,10 +313,11 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$frame->add($label);
 		$label->setPosition(0, 1.5, 0.2);
 		$label->setAlign(Control::CENTER, Control::CENTER);
+		$label->setSize($width - 5, $height);
 		$label->setTextSize(1.3);
 		$label->setText(Formatter::stripDirtyCodes($serverName));
 		$label->setTextColor("FFF");
-
+		//$label->setAutoNewLine(true);
 		// Player Quad / Label
 		$label = new Label_Text();
 		$frame->add($label);
@@ -352,11 +353,11 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$quad->setHAlign(Control::CENTER);
 
 		// Favorite quad
-		$quad = new Quad_Icons128x128_1();
+		$quad = new Quad_Icons64x64_1();
 		$frame->add($quad);
-		$quad->setSubStyle($quad::SUBSTYLE_ServersFavorites);
+		$quad->setSubStyle($quad::SUBSTYLE_StateFavourite);
 		$quad->setPosition($width / 2 - 4, -1.5, -0.5);
-		$quad->setSize(4, 4);
+		$quad->setSize(3, 3);
 		$quad->setHAlign(Control::CENTER);
 		$quad->setManialink('mcontrol?favorite&' . $this->maniaControl->server->login);
 
