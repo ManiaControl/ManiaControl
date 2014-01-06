@@ -308,8 +308,7 @@ class PlayerManager implements CallbackListener {
 		$playerStatement->close();
 
 		// Increment the Player Join Count
-		$serverIndex = $this->maniaControl->server->getIndex();
-		$this->maniaControl->statisticManager->incrementStat(self::STAT_JOIN_COUNT, $player, $serverIndex);
+		$this->maniaControl->statisticManager->incrementStat(self::STAT_JOIN_COUNT, $player, $this->maniaControl->server->index);
 
 		return true;
 	}

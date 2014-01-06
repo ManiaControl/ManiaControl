@@ -23,15 +23,23 @@ class Server implements CallbackListener {
 	const TABLE_SERVERS = 'mc_servers';
 	
 	/**
+	 * Public Properties
+	 */
+	public $index = -1;
+	public $ip = null;
+	public $port = -1;
+	public $p2pPort = -1;
+	public $login = null;
+	public $titleId = null;
+	public $serverCommands = null;
+	
+	/**
 	 * Private Properties
 	 */
 	private $maniaControl = null;
-	private $serverCommands = null;
-	private $index = null;
-	private $login = null;
 
 	/**
-	 * Construct server
+	 * Construct a new Server
 	 *
 	 * @param ManiaControl $maniaControl
 	 */
@@ -39,10 +47,46 @@ class Server implements CallbackListener {
 		$this->maniaControl = $maniaControl;
 		$this->initTables();
 		
+		$this->serverCommands = new ServerCommands($maniaControl);
+		
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'onInit');
+	}
+
+	/**
+	 * Refetch the Server Properties
+	 */
+	private function updateProperties() {
+		// System info
+		$systemInfo = $this->getSystemInfo();
+		$this->ip = $systemInfo['PublishedIp'];
+		$this->port = $systemInfo['Port'];
+		$this->p2pPort = $systemInfo['P2PPort'];
+		$this->login = $systemInfo['ServerLogin'];
+		$this->titleId = $systemInfo['TitleId'];
 		
-		$this->serverCommands = new ServerCommands($maniaControl);
+		// Database index
+		$mysqli = $this->maniaControl->database->mysqli;
+		$query = "INSERT INTO `" . self::TABLE_SERVERS . "` (
+				`login`
+				) VALUES (
+				?
+				) ON DUPLICATE KEY UPDATE
+				`index` = LAST_INSERT_ID(`index`);";
+		$statement = $mysqli->prepare($query);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error);
+			return;
+		}
+		$statement->bind_param('s', $this->login);
+		$statement->execute();
+		if ($statement->error) {
+			trigger_error($statement->error);
+			$statement->close();
+			return;
+		}
+		$this->index = $statement->insert_id;
+		$statement->close();
 	}
 
 	/**
@@ -78,27 +122,7 @@ class Server implements CallbackListener {
 	 * @param array $callback
 	 */
 	public function onInit(array $callback) {
-		$mysqli = $this->maniaControl->database->mysqli;
-		$query = "INSERT IGNORE INTO `" . self::TABLE_SERVERS . "` (
-				`login`
-				) VALUES (
-				?
-				);";
-		$statement = $mysqli->prepare($query);
-		if ($mysqli->error) {
-			trigger_error($mysqli->error);
-			return;
-		}
-		$login = $this->getLogin();
-		$statement->bind_param('s', $login);
-		$statement->execute();
-		if ($statement->error) {
-			trigger_error($statement->error);
-			$statement->close();
-			return;
-		}
-		$statement->close();
-		return true;
+		$this->updateProperties();
 	}
 
 	/**
@@ -121,10 +145,8 @@ class Server implements CallbackListener {
 	 */
 	public function getMapsDirectory() {
 		$dataDirectory = $this->getDataDirectory();
-		if (!$dataDirectory) {
-			return null;
-		}
-		return $dataDirectory . 'Maps/';
+		if (!$dataDirectory) return null;
+		return "{$dataDirectory}Maps/";
 	}
 
 	/**
@@ -136,41 +158,6 @@ class Server implements CallbackListener {
 	public function checkAccess($directory) {
 		if (!$directory) return false;
 		return (is_dir($directory) && is_writable($directory));
-	}
-
-	/**
-	 * Fetch Server Index
-	 *
-	 * @return int
-	 */
-	public function getIndex() {
-		if ($this->index) return $this->index;
-		$mysqli = $this->maniaControl->database->mysqli;
-		$login = $this->getLogin();
-		$query = "SELECT `index` FROM `" . self::TABLE_SERVERS . "`
-				WHERE `login` = '" . $login . "';";
-		$result = $mysqli->query($query);
-		if (!$result) {
-			trigger_error($mysqli->error);
-			return;
-		}
-		$row = $result->fetch_object();
-		$result->close();
-		$this->index = $row->index;
-		return $this->index;
-	}
-
-	/**
-	 * Fetch Server Login
-	 *
-	 * @return string
-	 */
-	public function getLogin() {
-		if ($this->login) return $this->login;
-		$systemInfo = $this->getSystemInfo();
-		if (!$systemInfo) return null;
-		$this->login = $systemInfo['ServerLogin'];
-		return $this->login;
 	}
 
 	/**
@@ -241,7 +228,7 @@ class Server implements CallbackListener {
 	 */
 	public function getSystemInfo() {
 		if (!$this->maniaControl->client->query('GetSystemInfo')) {
-			trigger_error("Couldn't fetch server system info. " . $this->maniaControl->getClientErrorText($this->maniaControl->client));
+			trigger_error("Couldn't fetch server system info. " . $this->maniaControl->getClientErrorText());
 			return null;
 		}
 		return $this->maniaControl->client->getResponse();
@@ -268,37 +255,21 @@ class Server implements CallbackListener {
 		if ($stringValue) {
 			switch ($gameMode) {
 				case 0:
-					{
-						return 'Script';
-					}
+					return 'Script';
 				case 1:
-					{
-						return 'Rounds';
-					}
+					return 'Rounds';
 				case 2:
-					{
-						return 'TimeAttack';
-					}
+					return 'TimeAttack';
 				case 3:
-					{
-						return 'Team';
-					}
+					return 'Team';
 				case 4:
-					{
-						return 'Laps';
-					}
+					return 'Laps';
 				case 5:
-					{
-						return 'Cup';
-					}
+					return 'Cup';
 				case 6:
-					{
-						return 'Stunts';
-					}
+					return 'Stunts';
 				default:
-					{
-						return 'Unknown';
-					}
+					return 'Unknown';
 			}
 		}
 		return $gameMode;
@@ -341,7 +312,7 @@ class Server implements CallbackListener {
 		}
 		
 		// Load replay file
-		$ghostReplay = file_get_contents($dataDir . 'Replays/' . $fileName);
+		$ghostReplay = file_get_contents("{$dataDir}Replays/{$fileName}");
 		if (!$ghostReplay) {
 			trigger_error("Couldn't retrieve saved ghost replay.");
 			return null;
@@ -359,10 +330,8 @@ class Server implements CallbackListener {
 		$this->maniaControl->client->query('GetStatus');
 		$response = $this->maniaControl->client->getResponse();
 		// Check if server has the given status
-		if ($response['Code'] === 4) {
-			return true;
-		}
-		// Server not yet in given status -> Wait for it...
+		if ($response['Code'] === 4) return true;
+		// Server not yet in given status - Wait for it...
 		$waitBegin = time();
 		$maxWaitTime = 20;
 		$lastStatus = $response['Name'];
@@ -373,7 +342,7 @@ class Server implements CallbackListener {
 			$this->maniaControl->client->query('GetStatus');
 			$response = $this->maniaControl->client->getResponse();
 			if ($lastStatus !== $response['Name']) {
-				$this->maniaControl->log("New Status: " . $response['Name']);
+				$this->maniaControl->log("New Status: {$response['Name']}");
 				$lastStatus = $response['Name'];
 			}
 			if (time() - $maxWaitTime > $waitBegin) {
