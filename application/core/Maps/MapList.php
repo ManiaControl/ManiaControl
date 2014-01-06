@@ -172,7 +172,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$descriptionLabel->setSize($width * 0.7, 4);
 				$descriptionLabel->setTextSize(2);
 				$descriptionLabel->setVisible(false);
-				$descriptionLabel->setText('Add-Map: $<' . $map->name . '$>');
+				$descriptionLabel->setText('Add-Map: $<' . Formatter::stripDirtyCodes($map->name) . '$>');
 				$script->addTooltip($addQuad, $descriptionLabel);
 			}
 			
@@ -348,7 +348,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			}
 			
 			// Display Maps
-			$array = array($id => $x + 5, $mxId => $x + 10, $map->name => $x + 20, $map->authorNick => $x + 68);
+			$array = array($id => $x + 5, $mxId => $x + 10, Formatter::stripDirtyCodes($map->name) => $x + 20, $map->authorNick => $x + 68);
 			$this->maniaControl->manialinkManager->labelLine($mapFrame, $array);
 			// TODO detailed mx info page with link to mxo
 			// TODO action detailed map info
