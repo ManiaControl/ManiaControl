@@ -32,7 +32,7 @@ class Map {
 	public $comment = '';
 	public $titleUid = '';
 	public $startTime = -1;
-	
+
 	/**
 	 * Private Properties
 	 */
@@ -42,46 +42,47 @@ class Map {
 	 * Create a new Map Object from Rpc Data
 	 *
 	 * @param \ManiaControl\ManiaControl $maniaControl
-	 * @param array $rpc_infos
+	 * @param array                      $rpc_infos
 	 */
 	public function __construct(ManiaControl $maniaControl, $rpc_infos = null) {
 		$this->maniaControl = $maniaControl;
-		$this->startTime = time();
-		
-		if (!$rpc_infos) return;
-		$this->name = $rpc_infos['Name'];
-		$this->uid = $rpc_infos['UId'];
-		$this->fileName = $rpc_infos['FileName'];
+		$this->startTime    = time();
+
+		if(!$rpc_infos) {
+			return;
+		}
+		$this->name        = $rpc_infos['Name'];
+		$this->uid         = $rpc_infos['UId'];
+		$this->fileName    = $rpc_infos['FileName'];
 		$this->authorLogin = $rpc_infos['Author'];
 		$this->environment = $rpc_infos['Environnement'];
-		$this->goldTime = $rpc_infos['GoldTime'];
+		$this->goldTime    = $rpc_infos['GoldTime'];
 		$this->copperPrice = $rpc_infos['CopperPrice'];
-		$this->mapType = $rpc_infos['MapType'];
-		$this->mapStyle = $rpc_infos['MapStyle'];
-		if (isset($rpc_infos['NbCheckpoints'])) {
+		$this->mapType     = $rpc_infos['MapType'];
+		$this->mapStyle    = $rpc_infos['MapStyle'];
+		if(isset($rpc_infos['NbCheckpoints'])) {
 			$this->nbCheckpoints = $rpc_infos['NbCheckpoints'];
 		}
-		
+
 		$this->authorNick = $this->authorLogin;
-		
+
 		$mapsDirectory = $this->maniaControl->server->getMapsDirectory();
-		if ($this->maniaControl->server->checkAccess($mapsDirectory)) {
+		if($this->maniaControl->server->checkAccess($mapsDirectory)) {
 			$mapFetcher = new \GBXChallMapFetcher(true);
 			try {
 				$mapFetcher->processFile($mapsDirectory . $this->fileName);
-				$this->authorNick = FORMATTER::stripDirtyCodes($mapFetcher->authorNick);
+				$this->authorNick  = FORMATTER::stripDirtyCodes($mapFetcher->authorNick);
 				$this->authorEInfo = $mapFetcher->authorEInfo;
-				$this->authorZone = $mapFetcher->authorZone;
-				$this->comment = $mapFetcher->comment;
-			}
-			catch (\Exception $e) {
+				$this->authorZone  = $mapFetcher->authorZone;
+				$this->comment     = $mapFetcher->comment;
+			} catch(\Exception $e) {
 				trigger_error($e->getMessage());
 			}
 		}
-		
+
 		// TODO: define timeout if mx is down,todo fetch all map infos at once (maybe way faster)
-		$serverInfo = $this->maniaControl->server->getSystemInfo();
-		$title = strtoupper(substr($serverInfo['TitleId'], 0, 2));
-		$this->mx = new \MXInfoFetcher($title, $this->uid, false);
+		$serverInfo = $this->maniaControl->server->titleId;
+		$title      = strtoupper(substr($serverInfo, 0, 2));
+		$this->mx   = new \MXInfoFetcher($title, $this->uid, false);
 	}
 } 

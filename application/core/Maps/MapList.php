@@ -120,13 +120,12 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$recent = false;
 		}
 
-		$this->maniaControl->mapManager->mxInfoSearcher->getList('');
-
 		// search for matching maps
-		$maps = new MXInfoSearcher($title, $searchString, $author, $environment, $recent);
+		//$maps = new MXInfoSearcher($title, $searchString, $author, $environment, $recent);
+		$maps = $this->maniaControl->mapManager->mxInfoSearcher->getMaps(15);
 
 		// check if there are any results
-		if(!$maps->valid()) {
+		if($maps == null) {
 			$this->maniaControl->chat->sendError('No maps found, or MX is down!', $player->login);
 			if($maps->error != '') {
 				trigger_error($maps->error, E_USER_WARNING);
@@ -158,6 +157,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$i = 0;
 		$y -= 10;
 		foreach($maps as $map) {
+			var_dump($map);
+			return;
 			$mapFrame = new Frame();
 			$frame->add($mapFrame);
 			$array = array($map->id => $x + 5, $map->name => $x + 17, $map->author => $x + 65, $map->mood => $x + 100, $map->maptype => $x + 115);
