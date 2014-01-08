@@ -157,8 +157,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$i = 0;
 		$y -= 10;
 		foreach($maps as $map) {
-			var_dump($map);
-			return;
 			$mapFrame = new Frame();
 			$frame->add($mapFrame);
 			$array = array($map->id => $x + 5, $map->name => $x + 17, $map->author => $x + 65, $map->mood => $x + 100, $map->maptype => $x + 115);

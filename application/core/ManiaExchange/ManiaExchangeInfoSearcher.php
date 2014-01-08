@@ -35,8 +35,8 @@ class ManiaExchangeInfoSearcher {
 
 	public function getMaps($maxMapsReturned = 100, $searchOrder = self::SEARCH_ORDER_UPLOADED_NEWEST, $env = '') {
 		//Get Title Id
-		$titleId = $this->maniaControl->server->titleId;
-		$titlePrefix   = strtolower(substr($titleId, 0, 2));
+		$titleId     = $this->maniaControl->server->titleId;
+		$titlePrefix = strtolower(substr($titleId, 0, 2));
 
 		//Get MapTypes
 		$this->maniaControl->client->query('GetModeScriptInfo');
@@ -44,9 +44,6 @@ class ManiaExchangeInfoSearcher {
 
 		$mapTypes     = $scriptInfos["CompatibleMapTypes"];
 		$mapTypeArray = explode(",", $mapTypes);
-
-		var_dump($mapTypes);
-		var_dump($mapTypeArray);
 
 		// compile search URL
 		$url = 'http://' . $titlePrefix . '.mania-exchange.com/tracksearch?api=on';
@@ -60,13 +57,13 @@ class ManiaExchangeInfoSearcher {
 		}
 
 		$url .= '&priord=' . $searchOrder;
-		$url .= '&limit=' . 1; //TODO
+		$url .= '&limit=' . $maxMapsReturned; //TODO
 		$url .= '&mtype=' . $mapTypeArray[0];
 
 		//	$mapInfo = FileUtil::loadFile($url, "application/json"); //TODO use mp fileutil
 		$mapInfo = $this->get_file($url);
 		var_dump($url);
-		return;
+
 		//TODO errors
 		/*if ($file === false) {
 				$this->error = 'Connection or response error on ' . $url;
@@ -90,16 +87,12 @@ class ManiaExchangeInfoSearcher {
 			return null;
 		}
 
-
 		$maps = array();
-		foreach($mxMapList as $map){
-			var_dump($map);
-			if (!empty($map)) {
-				array_push($maps, new MXInfo($titlePrefix, $map));
+		foreach($mxMapList as $map) {
+			if(!empty($map)) {
+				array_push($maps, new MXMapInfo($titlePrefix, $map));
 			}
 		}
-
-		var_dump($maps);
 		return $maps;
 	}
 
@@ -151,16 +144,9 @@ class ManiaExchangeInfoSearcher {
 
 }
 
-class MXInfo {
+class MXMapInfo {
 
-	public $section, $prefix, $id,
-		$name, $userid, $author, $uploaded, $updated,
-		$type, $maptype, $titlepack, $style, $envir, $mood,
-		$dispcost, $lightmap, $modname,
-		$exever, $exebld, $routes, $length, $unlimiter, $laps, $diffic,
-		$lbrating, $trkvalue, $replaytyp, $replayid, $replaycnt,
-		$acomment, $awards, $comments, $rating, $ratingex, $ratingcnt,
-		$pageurl, $replayurl, $imageurl, $thumburl, $dloadurl;
+	public $prefix, $id, $name, $userid, $author, $uploaded, $updated, $type, $maptype, $titlepack, $style, $envir, $mood, $dispcost, $lightmap, $modname, $exever, $exebld, $routes, $length, $unlimiter, $laps, $diffic, $lbrating, $trkvalue, $replaytyp, $replayid, $replaycnt, $acomment, $awards, $comments, $rating, $ratingex, $ratingcnt, $pageurl, $replayurl, $imageurl, $thumburl, $dloadurl;
 
 	/**
 	 * Returns map object with all available data from MX map data
@@ -169,24 +155,28 @@ class MXInfo {
 	 *        MX URL prefix
 	 * @param Object $map
 	 *        The MX map data from MXInfoSearcher
-	 * @return MXInfo
+	 * @return MXMapInfo
 	 */
-	public function MXInfo($prefix, $mx) {
-		$this->prefix   = $prefix;
-		if ($mx) {
-			if ($this->prefix == 'tm')
+	public function __construct($prefix, $mx) {
+		$this->prefix = $prefix;
+		if($mx) {
+			if($this->prefix == 'tm') {
 				$dir = 'tracks';
-			else // 'sm' || 'qm'
+			} else // 'sm' || 'qm'
+			{
 				$dir = 'maps';
+			}
 
 			//temporary fix
-			if($this->prefix == 'tm' || !property_exists($mx, "MapID"))
+			if($this->prefix == 'tm' || !property_exists($mx, "MapID")) {
 				$this->id = $mx->TrackID;
-			else
+			} else {
 				$this->id = $mx->MapID;
+			}
 			//	$this->id        = ($this->prefix == 'tm') ? $mx->TrackID : $mx->MapID;
 
-			$this->name      = $mx->Name;
+			$this->name = $mx->Name;
+
 			$this->userid    = $mx->UserID;
 			$this->author    = $mx->Username;
 			$this->uploaded  = $mx->UploadedAt;
@@ -219,28 +209,31 @@ class MXInfo {
 			$this->ratingex  = isset($mx->RatingExact) ? $mx->RatingExact : 0.0;
 			$this->ratingcnt = isset($mx->RatingCount) ? $mx->RatingCount : 0;
 
-			if ($this->trkvalue == 0 && $this->lbrating > 0)
+			if($this->trkvalue == 0 && $this->lbrating > 0) {
 				$this->trkvalue = $this->lbrating;
-			elseif ($this->lbrating == 0 && $this->trkvalue > 0)
+			} elseif($this->lbrating == 0 && $this->trkvalue > 0) {
 				$this->lbrating = $this->trkvalue;
+			}
 
-			$search = array(chr(31), '[b]', '[/b]', '[i]', '[/i]', '[u]', '[/u]', '[url]', '[/url]');
-			$replace = array('<br/>', '<b>', '</b>', '<i>', '</i>', '<u>', '</u>', '<i>', '</i>');
-			$this->acomment  = str_ireplace($search, $replace, $this->acomment);
-			$this->acomment  = preg_replace('/\[url=.*\]/', '<i>', $this->acomment);
+			$search         = array(chr(31), '[b]', '[/b]', '[i]', '[/i]', '[u]', '[/u]', '[url]', '[/url]');
+			$replace        = array('<br/>', '<b>', '</b>', '<i>', '</i>', '<u>', '</u>', '<i>', '</i>');
+			$this->acomment = str_ireplace($search, $replace, $this->acomment);
+			$this->acomment = preg_replace('/\[url=.*\]/', '<i>', $this->acomment);
 
-			$this->pageurl   = 'http://' . $this->prefix . '.mania-exchange.com/' . $dir . '/view/' . $this->id;
-			$this->imageurl  = 'http://' . $this->prefix . '.mania-exchange.com/' . $dir . '/screenshot/normal/' . $this->id;
-			$this->thumburl  = 'http://' . $this->prefix . '.mania-exchange.com/' . $dir . '/screenshot/small/' . $this->id;
-			$this->dloadurl  = 'http://' . $this->prefix . '.mania-exchange.com/' . $dir . '/download/' . $this->id;
+			$this->pageurl  = 'http://' . $this->prefix . '.mania-exchange.com/' . $dir . '/view/' . $this->id;
+			$this->imageurl = 'http://' . $this->prefix . '.mania-exchange.com/' . $dir . '/screenshot/normal/' . $this->id;
+			$this->thumburl = 'http://' . $this->prefix . '.mania-exchange.com/' . $dir . '/screenshot/small/' . $this->id;
+			$this->dloadurl = 'http://' . $this->prefix . '.mania-exchange.com/' . $dir . '/download/' . $this->id;
 
-			if ($this->prefix == 'tm' && $this->replayid > 0) {
+			if($this->prefix == 'tm' && $this->replayid > 0) {
 				$this->replayurl = 'http://' . $this->prefix . '.mania-exchange.com/replays/download/' . $this->replayid;
 			} else {
 				$this->replayurl = '';
 			}
+
+			//var_dump($this->pageurl);
 		}
-	}  // MXInfo
-}  // class MXInfo
+	} // MXInfo
+} // class MXInfo
 
 
