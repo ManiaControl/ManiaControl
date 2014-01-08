@@ -23,7 +23,6 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
-use MXInfoSearcher;
 
 /**
  * MapList Widget Class
@@ -78,29 +77,12 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 		$params = explode(' ', $chatCallback[1][2]);
 
-		$titleId = $this->maniaControl->server->titleId;
-		$title   = strtoupper(substr($titleId, 0, 2));
-
 		$searchString = '';
 		$author       = '';
 		$environment  = '';
-		// TODO also get actual environment
-		$recent = false;
-
-		$this->maniaControl->client->query('GetModeScriptInfo');
-		$scriptInfos = $this->maniaControl->client->getResponse();
-
-		//var_dump($scriptInfos);
 		if(count($params) >= 1) {
 			foreach($params as $param) {
 				if($param == '/xlist' || $param == MapCommands::ACTION_OPEN_XLIST) {
-					/*	$mapTypes = str_replace($scriptInfos["CompatibleMapTypes"][0]);
-						$mapTypeArray = explode($mapTypes, ",");
-						$searchString = $mapTypeArray[0];
-						var_dump($mapTypes);
-						var_dump($mapTypeArray);
-						//$searchString = str_replace($mapTypeArray[0], '',)
-						var_dump($searchString);*/
 					continue;
 				}
 				if(strtolower(substr($param, 0, 5)) == 'auth:') {
@@ -113,23 +95,16 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 					} else { // concatenate words in name
 						$searchString .= '%20' . $param;
 					}
-					var_dump("test");
 				}
 			}
-
-			$recent = false;
 		}
 
 		// search for matching maps
-		//$maps = new MXInfoSearcher($title, $searchString, $author, $environment, $recent);
-		$maps = $this->maniaControl->mapManager->mxInfoSearcher->getMaps(15);
+		$maps = $this->maniaControl->mapManager->mxInfoSearcher->getMaps($searchString, $author, $environment, 15);
 
 		// check if there are any results
 		if($maps == null) {
 			$this->maniaControl->chat->sendError('No maps found, or MX is down!', $player->login);
-			if($maps->error != '') {
-				trigger_error($maps->error, E_USER_WARNING);
-			}
 			return;
 		}
 
@@ -156,7 +131,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 		$i = 0;
 		$y -= 10;
-		foreach($maps as $map) {
+		foreach($maps as $map) { //TODO pagers, search entry, click on nickname...
 			$mapFrame = new Frame();
 			$frame->add($mapFrame);
 			$array = array($map->id => $x + 5, $map->name => $x + 17, $map->author => $x + 65, $map->mood => $x + 100, $map->maptype => $x + 115);

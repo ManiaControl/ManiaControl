@@ -3,24 +3,35 @@ namespace ManiaControl\Maps;
 
 use ManiaControl\ManiaControl;
 
+/**
+ * Mania Exchange Info Searcher Class
+ *
+ * @author steeffeen & kremsy
+ */
 class ManiaExchangeInfoSearcher {
 	/**
 	 * Constants
 	 */
-	const SEARCH_ORDER_NONE            = -1;
-	const SEARCH_ORDER_TRACK_NAME      = 0;
-	const SEARCH_ORDER_AUTHOR          = 1;
-	const SEARCH_ORDER_UPLOADED_NEWEST = 2;
-	const SEARCH_ORDER_UPLOADED_OLDEST = 3;
-	const SEARCH_ORDER_UPDATED_NEWEST  = 4;
-	const SEARCH_ORDER_UPDATED_OLDEST  = 5;
-	//TODO finish that list
-	/*
-	 * [19:16] <TGYoshi> 6 => "Activity (Latest) [19:16] <TGYoshi> 7 => "Activity (Oldest) [19:16] <TGYoshi> 8 => "Awards (Most) [19:16] <TGYoshi> 9 => "Awards (Least) [19:16] <TGYoshi> 10 => "Comments (Most) [19:16] <TGYoshi> 11 => "Comments (Least) [19:16] <TGYoshi> 12 => "Difficulty (Easiest) [19:16] <TGYoshi> 13 => "Difficulty (Hardest) [19:16] <TGYoshi> 14 => "Length (Shortest) [19:16] <TGYoshi> 15 => "Length (Longest)
-	 */
+	const SEARCH_ORDER_NONE               = -1;
+	const SEARCH_ORDER_TRACK_NAME         = 0;
+	const SEARCH_ORDER_AUTHOR             = 1;
+	const SEARCH_ORDER_UPLOADED_NEWEST    = 2;
+	const SEARCH_ORDER_UPLOADED_OLDEST    = 3;
+	const SEARCH_ORDER_UPDATED_NEWEST     = 4;
+	const SEARCH_ORDER_UPDATED_OLDEST     = 5;
+	const SEARCH_ORDER_ACTIVITY_LATEST    = 6;
+	const SEARCH_ORDER_ACTIVITY_OLDEST    = 7;
+	const SEARCH_ORDER_AWARDS_MOST        = 8;
+	const SEARCH_ORDER_AWARDS_LEAST       = 9;
+	const SEARCH_ORDER_COMMENTS_MOST      = 10;
+	const SEARCH_ORDER_COMMENTS_LEAST     = 11;
+	const SEARCH_ORDER_DIFFICULTY_EASIEST = 12;
+	const SEARCH_ORDER_DIFFICULTY_HARDEST = 13;
+	const SEARCH_ORDER_LENGHT_SHORTEST    = 14;
+	const SEARCH_ORDER_LENGHT_LONGEST     = 15;
 
 	/**
-	 * Private Properties
+	 * Private Propertieswc
 	 */
 	private $maniaControl = null;
 
@@ -33,7 +44,17 @@ class ManiaExchangeInfoSearcher {
 		$this->maniaControl = $maniaControl;
 	}
 
-	public function getMaps($maxMapsReturned = 100, $searchOrder = self::SEARCH_ORDER_UPLOADED_NEWEST, $env = '') {
+	/**
+	 * Gets a Maplist from Mania Exchange
+	 *
+	 * @param string $name
+	 * @param string $author
+	 * @param string $env
+	 * @param int    $maxMapsReturned
+	 * @param int    $searchOrder
+	 * @return array|null
+	 */
+	public function getMaps($name = '', $author = '', $env = '', $maxMapsReturned = 100, $searchOrder = self::SEARCH_ORDER_UPDATED_NEWEST) {
 		//Get Title Id
 		$titleId     = $this->maniaControl->server->titleId;
 		$titlePrefix = strtolower(substr($titleId, 0, 2));
@@ -47,22 +68,23 @@ class ManiaExchangeInfoSearcher {
 
 		// compile search URL
 		$url = 'http://' . $titlePrefix . '.mania-exchange.com/tracksearch?api=on';
-		/*	if ($name != '')
-				$url .= '&trackname=' . $name;
-			if ($author != '')
-				$url .= '&author=' . $author;*/
 
 		if($env != '') {
 			$url .= '&environments=' . $this->getEnvironment($env);
 		}
+		if($name != '') {
+			$url .= '&trackname=' . $name;
+		}
+		if($author != '') {
+			$url .= '&author=' . $author;
+		}
 
 		$url .= '&priord=' . $searchOrder;
-		$url .= '&limit=' . $maxMapsReturned; //TODO
+		$url .= '&limit=' . $maxMapsReturned;
 		$url .= '&mtype=' . $mapTypeArray[0];
 
 		//	$mapInfo = FileUtil::loadFile($url, "application/json"); //TODO use mp fileutil
 		$mapInfo = $this->get_file($url);
-		var_dump($url);
 
 		//TODO errors
 		/*if ($file === false) {
@@ -173,7 +195,6 @@ class MXMapInfo {
 			} else {
 				$this->id = $mx->MapID;
 			}
-			//	$this->id        = ($this->prefix == 'tm') ? $mx->TrackID : $mx->MapID;
 
 			$this->name = $mx->Name;
 
@@ -230,8 +251,6 @@ class MXMapInfo {
 			} else {
 				$this->replayurl = '';
 			}
-
-			//var_dump($this->pageurl);
 		}
 	} // MXInfo
 } // class MXInfo

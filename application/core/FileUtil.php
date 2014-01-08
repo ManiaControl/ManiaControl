@@ -26,7 +26,7 @@ abstract class FileUtil {
 		$fsock = fsockopen($urlData['host'], $port);
 		stream_set_timeout($fsock, 3);
 		
-		$query = 'GET ' . $urlData['path'] . ' HTTP/1.1' . PHP_EOL;
+		$query = 'GET ' . $urlData['path'] . ' HTTP/1.0' . PHP_EOL;
 		$query .= 'Host: ' . $urlData['host'] . PHP_EOL;
 		$query .= 'Content-Type: ' . $contentType . PHP_EOL;
 		$query .= 'User-Agent: ManiaControl v' . ManiaControl::VERSION . PHP_EOL;
