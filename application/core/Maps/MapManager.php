@@ -2,11 +2,10 @@
 
 namespace ManiaControl\Maps;
 
-use ManiaControl\FileUtil;
-use ManiaControl\Formatter;
-use ManiaControl\ManiaControl;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\FileUtil;
+use ManiaControl\ManiaControl;
 
 require_once __DIR__ . '/Map.php';
 require_once __DIR__ . '/MapCommands.php';
@@ -22,17 +21,17 @@ class MapManager implements CallbackListener {
 	/**
 	 * Constants
 	 */
-	const TABLE_MAPS = 'mc_maps';
-	const CB_MAPS_UPDATED = 'MapManager.MapsUpdated';
+	const TABLE_MAPS       = 'mc_maps';
+	const CB_MAPS_UPDATED  = 'MapManager.MapsUpdated';
 	const CB_KARMA_UPDATED = 'MapManager.KarmaUpdated';
-	
+
 	/**
 	 * Public Properties
 	 */
 	public $mapQueue = null;
 	public $mapCommands = null;
 	public $mapList = null;
-	
+
 	/**
 	 * Private Properties
 	 */
@@ -49,12 +48,12 @@ class MapManager implements CallbackListener {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		$this->initTables();
-		
+
 		// Create map commands instance
-		$this->mapList = new MapList($this->maniaControl);
+		$this->mapList     = new MapList($this->maniaControl);
 		$this->mapCommands = new MapCommands($maniaControl);
-		$this->mapQueue = new MapQueue($this->maniaControl);
-		
+		$this->mapQueue    = new MapQueue($this->maniaControl);
+
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_BEGINMAP, $this, 'handleBeginMap');
@@ -68,7 +67,7 @@ class MapManager implements CallbackListener {
 	 */
 	private function initTables() {
 		$mysqli = $this->maniaControl->database->mysqli;
-		$query = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_MAPS . "` (
+		$query  = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_MAPS . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
 				`uid` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
 				`name` varchar(150) COLLATE utf8_unicode_ci NOT NULL,
@@ -81,7 +80,7 @@ class MapManager implements CallbackListener {
 				UNIQUE KEY `uid` (`uid`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Map data' AUTO_INCREMENT=1;";
 		$result = $mysqli->query($query);
-		if ($mysqli->error) {
+		if($mysqli->error) {
 			trigger_error($mysqli->error, E_USER_ERROR);
 			return false;
 		}
@@ -95,8 +94,8 @@ class MapManager implements CallbackListener {
 	 * @return bool
 	 */
 	private function saveMap(Map &$map) {
-		$mysqli = $this->maniaControl->database->mysqli;
-		$mapQuery = "INSERT INTO `" . self::TABLE_MAPS . "` (
+		$mysqli       = $this->maniaControl->database->mysqli;
+		$mapQuery     = "INSERT INTO `" . self::TABLE_MAPS . "` (
 				`uid`,
 				`name`,
 				`authorLogin`,
@@ -108,13 +107,13 @@ class MapManager implements CallbackListener {
 				) ON DUPLICATE KEY UPDATE
 				`index` = LAST_INSERT_ID(`index`);";
 		$mapStatement = $mysqli->prepare($mapQuery);
-		if ($mysqli->error) {
+		if($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
 		}
 		$mapStatement->bind_param('ssssss', $map->uid, $map->name, $map->authorLogin, $map->fileName, $map->environment, $map->mapType);
 		$mapStatement->execute();
-		if ($mapStatement->error) {
+		if($mapStatement->error) {
 			trigger_error($mapStatement->error);
 			$mapStatement->close();
 			return false;
@@ -127,11 +126,11 @@ class MapManager implements CallbackListener {
 	/**
 	 * Remove a Map
 	 *
-	 * @param int $id
+	 * @param int    $id
 	 * @param string $uid
-	 * @param bool $eraseFile
+	 * @param bool   $eraseFile
 	 */
-	public function removeMap($id, $uid, $eraseFile = false) {
+	public function removeMap($id, $uid, $eraseFile = false) { //TODO erasefile?
 		$map = $this->mapsUids[$uid];
 		$this->maniaControl->client->query('RemoveMap', $map->fileName);
 		$this->maniaControl->chat->sendSuccess('Map $<' . $map->name . '$> removed!');
@@ -145,30 +144,29 @@ class MapManager implements CallbackListener {
 	 * Updates the full Map list, needed on Init, addMap and on ShuffleMaps
 	 */
 	private function updateFullMapList() {
-		if (!$this->maniaControl->client->query('GetMapList', 100, 0)) {
+		if(!$this->maniaControl->client->query('GetMapList', 100, 0)) {
 			trigger_error("Couldn't fetch mapList. " . $this->maniaControl->getClientErrorText());
 			return null;
 		}
-		
+
 		$tempList = array();
-		
+
 		$maps = $this->maniaControl->client->getResponse();
-		foreach ($maps as $rpcMap) {
-			if (array_key_exists($rpcMap["UId"], $this->mapsUids)) {
+		foreach($maps as $rpcMap) {
+			if(array_key_exists($rpcMap["UId"], $this->mapsUids)) {
 				// Map already exists, only update index
 				$tempList[] = $this->mapsUids[$rpcMap["UId"]];
-			}
-			else { // Insert Map Object
+			} else { // Insert Map Object
 				$map = new Map($this->maniaControl, $rpcMap);
 				$this->saveMap($map);
-				$tempList[] = $map;
+				$tempList[]                = $map;
 				$this->mapsUids[$map->uid] = $map;
 			}
 		}
-		
+
 		// restore Sorted Maplist
 		$this->maps = $tempList;
-		
+
 		// Trigger own callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_MAPS_UPDATED, array(self::CB_MAPS_UPDATED));
 	}
@@ -179,20 +177,20 @@ class MapManager implements CallbackListener {
 	 * @return bool
 	 */
 	private function fetchCurrentMap() {
-		if (!$this->maniaControl->client->query('GetCurrentMapInfo')) {
+		if(!$this->maniaControl->client->query('GetCurrentMapInfo')) {
 			trigger_error("Couldn't fetch map info. " . $this->maniaControl->getClientErrorText());
 			return false;
 		}
 		$rpcMap = $this->maniaControl->client->getResponse();
-		if (!array_key_exists($rpcMap["UId"], $this->mapsUids)) {
+		if(!array_key_exists($rpcMap["UId"], $this->mapsUids)) {
 			$this->currentMap = $this->mapsUids[$rpcMap["UId"]];
 			return true;
 		}
 		$map = new Map($this->maniaControl, $rpcMap);
 		$this->saveMap($map);
 		$this->mapsUids[$map->uid] = $map;
-		$this->maps[] = $map;
-		$this->currentMap = $map;
+		$this->maps[]              = $map;
+		$this->currentMap          = $map;
 		return true;
 	}
 
@@ -222,7 +220,7 @@ class MapManager implements CallbackListener {
 	 * @return mixed
 	 */
 	public function getMapByUid($uid) {
-		if (!isset($this->mapsUids[$uid])) {
+		if(!isset($this->mapsUids[$uid])) {
 			return null;
 		}
 		return $this->mapsUids[$uid];
@@ -234,11 +232,10 @@ class MapManager implements CallbackListener {
 	 * @param array $callback
 	 */
 	public function handleBeginMap(array $callback) {
-		if (array_key_exists($callback[1][0]["UId"], $this->mapsUids)) {
+		if(array_key_exists($callback[1][0]["UId"], $this->mapsUids)) {
 			// Map already exists, only update index
 			$this->currentMap = $this->mapsUids[$callback[1][0]["UId"]];
-		}
-		else {
+		} else {
 			// can this ever happen?
 			$this->fetchCurrentMap();
 		}
@@ -269,50 +266,50 @@ class MapManager implements CallbackListener {
 	 */
 	public function addMapFromMx($mapId, $login) {
 		// Check if ManiaControl can even write to the maps dir
-		if (!$this->maniaControl->client->query('GetMapsDirectory')) {
+		if(!$this->maniaControl->client->query('GetMapsDirectory')) {
 			trigger_error("Couldn't get map directory. " . $this->maniaControl->getClientErrorText());
 			$this->maniaControl->chat->sendError("ManiaControl couldn't retrieve the maps directory.", $login);
 			return;
 		}
-		
+
 		$mapDir = $this->maniaControl->client->getResponse();
-		if (!is_dir($mapDir)) {
+		if(!is_dir($mapDir)) {
 			trigger_error("ManiaControl doesn't have have access to the maps directory in '{$mapDir}'.");
 			$this->maniaControl->chat->sendError("ManiaControl doesn't have access to the maps directory.", $login);
 			return;
 		}
 		$downloadDirectory = $this->maniaControl->settingManager->getSetting($this, 'MapDownloadDirectory', 'MX');
 		// Create download directory if necessary
-		if (!is_dir($mapDir . $downloadDirectory) && !mkdir($mapDir . $downloadDirectory)) {
+		if(!is_dir($mapDir . $downloadDirectory) && !mkdir($mapDir . $downloadDirectory)) {
 			trigger_error("ManiaControl doesn't have to rights to save maps in '{$mapDir}{$downloadDirectory}'.");
 			$this->maniaControl->chat->sendError("ManiaControl doesn't have the rights to save maps.", $login);
 			return;
 		}
 		$mapDir .= $downloadDirectory . '/';
-		
+
 		// Download the map
-		if (is_numeric($mapId)) {
+		if(is_numeric($mapId)) {
 			// Load from MX
 			$serverInfo = $this->maniaControl->server->getSystemInfo();
-			$title = strtolower(substr($serverInfo['TitleId'], 0, 2));
-			
+			$title      = strtolower(substr($serverInfo['TitleId'], 0, 2));
+
 			// Check if map exists
 			$url = "http://api.mania-exchange.com/{$title}/maps/{$mapId}?format=json";
-			
+
 			$mapInfo = FileUtil::loadFile($url, "application/json");
-			
-			if (!$mapInfo || strlen($mapInfo) <= 0) {
+
+			if(!$mapInfo || strlen($mapInfo) <= 0) {
 				// Invalid id
 				$this->maniaControl->chat->sendError('Invalid MX-Id!', $login);
 				return;
 			}
-			
+
 			$mapInfo = json_decode($mapInfo, true);
 			$mapInfo = $mapInfo[0];
-			
-			$url = "http://{$title}.mania-exchange.com/tracks/download/{$mapId}";
+
+			$url  = "http://{$title}.mania-exchange.com/tracks/download/{$mapId}";
 			$file = FileUtil::loadFile($url);
-			if (!$file) {
+			if(!$file) {
 				// Download error
 				$this->maniaControl->chat->sendError('Download failed!', $login);
 				return;
@@ -320,35 +317,35 @@ class MapManager implements CallbackListener {
 			// Save map
 			$fileName = $mapId . '_' . $mapInfo['Name'] . '.Map.Gbx';
 			$fileName = FileUtil::getClearedFileName($fileName);
-			if (!file_put_contents($mapDir . $fileName, $file)) {
+			if(!file_put_contents($mapDir . $fileName, $file)) {
 				// Save error
 				$this->maniaControl->chat->sendError('Saving map failed!', $login);
 				return;
 			}
 			// Check for valid map
 			$mapFileName = $downloadDirectory . '/' . $fileName;
-			
-			if (!$this->maniaControl->client->query('CheckMapForCurrentServerParams', $mapFileName)) {
+
+			if(!$this->maniaControl->client->query('CheckMapForCurrentServerParams', $mapFileName)) {
 				trigger_error("Couldn't check if map is valid ('{$mapFileName}'). " . $this->maniaControl->getClientErrorText());
 				$this->maniaControl->chat->sendError('Error checking map!', $login);
 				return;
 			}
 			$response = $this->maniaControl->client->getResponse();
-			if (!$response) {
+			if(!$response) {
 				// Invalid map type
 				$this->maniaControl->chat->sendError("Invalid map type.", $login);
 				return;
 			}
 			// Add map to map list
-			if (!$this->maniaControl->client->query('InsertMap', $mapFileName)) {
+			if(!$this->maniaControl->client->query('InsertMap', $mapFileName)) {
 				// TODO irgendein bug?
 				$this->maniaControl->chat->sendError("Couldn't add map to match settings!", $login);
 				return;
 			}
 			$this->maniaControl->chat->sendSuccess('Map $<' . $mapInfo['Name'] . '$> added!');
-			
+
 			$this->updateFullMapList();
-			
+
 			// Queue requested Map
 			$this->maniaControl->mapManager->mapQueue->addMapToMapQueue($login, $mapInfo['MapUID']);
 		}
