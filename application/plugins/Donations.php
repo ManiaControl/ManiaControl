@@ -418,7 +418,6 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 							$login   = null;
 							$message = '$<' . $player->nickname . '$> donated ' . $amount . ' Planets! Thanks.';
 						} else {
-
 							$message = 'Donation successful! Thanks.';
 						}
 

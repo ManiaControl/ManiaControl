@@ -32,6 +32,7 @@ require_once __DIR__ . '/Formatter.php';
 require_once __DIR__ . '/GbxDataFetcher/gbxdatafetcher.inc.php';
 require_once __DIR__ . '/ManiaExchange/mxinfofetcher.inc.php';
 require_once __DIR__ . '/ManiaExchange/mxinfosearcher.inc.php';
+require_once __DIR__ . '/ManiaExchange/ManiaExchangeInfoSearcher.php';
 require_once __DIR__ . '/Manialinks/ManialinkManager.php';
 require_once __DIR__ . '/Statistics/StatisticManager.php';
 require_once __DIR__ . '/Maps/MapManager.php';

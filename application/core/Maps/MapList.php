@@ -120,6 +120,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$recent = false;
 		}
 
+		$this->maniaControl->mapManager->mxInfoSearcher->getList('');
+
 		// search for matching maps
 		$maps = new MXInfoSearcher($title, $searchString, $author, $environment, $recent);
 
