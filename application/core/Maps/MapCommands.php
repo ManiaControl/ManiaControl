@@ -5,11 +5,8 @@ namespace ManiaControl\Maps;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Controls\Quads\Quad_UIConstruction_Buttons;
-use FML\ManiaLink;
-use FML\Script\EUISound;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
-use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\IconManager;
@@ -25,11 +22,11 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	/**
 	 * Constants
 	 */
-	const ACTION_OPEN_MAPLIST = 'MapList.OpenMapList';
-	const ACTION_OPEN_XLIST = 'MapList.OpenMXList';
-	const ACTION_RESTART_MAP = 'MapList.RestartMap';
-	const ACTION_SKIP_MAP = 'MapList.NextMap';
-	
+	const ACTION_OPEN_MAPLIST = 'MapCommands.OpenMapList';
+	const ACTION_OPEN_XLIST   = 'MapCommands.OpenMXList';
+	const ACTION_RESTART_MAP  = 'MapCommands.RestartMap';
+	const ACTION_SKIP_MAP     = 'MapCommands.NextMap';
+
 	/**
 	 * Private Properties
 	 */
@@ -43,17 +40,17 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		$this->initActionsMenuButtons();
-		
+
 		// Register for admin chat commands
 		$this->maniaControl->commandManager->registerCommandListener('nextmap', $this, 'command_NextMap', true);
 		$this->maniaControl->commandManager->registerCommandListener('restartmap', $this, 'command_RestartMap', true);
 		$this->maniaControl->commandManager->registerCommandListener('addmap', $this, 'command_AddMap', true);
 		$this->maniaControl->commandManager->registerCommandListener('removemap', $this, 'command_RemoveMap', true);
-		
+
 		// Register for player chat commands
 		$this->maniaControl->commandManager->registerCommandListener(array('maps', 'list'), $this, 'command_List');
 		$this->maniaControl->commandManager->registerCommandListener(array('xmaps', 'xlist'), $this, 'command_xList');
-		
+
 		// Menu Buttons
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_OPEN_XLIST, $this, 'command_xList');
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_OPEN_MAPLIST, $this, 'command_List');
@@ -71,19 +68,19 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		$itemQuad->setImageFocus($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON_MOVER));
 		$itemQuad->setAction(self::ACTION_OPEN_XLIST);
 		$this->maniaControl->actionsMenu->addPlayerMenuItem($itemQuad, 5, 'Open MX List');
-		
+
 		// Menu Open List
 		$itemQuad = new Quad_Icons64x64_1();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ToolRoot);
 		$itemQuad->setAction(self::ACTION_OPEN_MAPLIST);
 		$this->maniaControl->actionsMenu->addPlayerMenuItem($itemQuad, 10, 'Open MapList');
-		
+
 		// Menu RestartMap
 		$itemQuad = new Quad_UIConstruction_Buttons();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Reload);
 		$itemQuad->setAction(self::ACTION_RESTART_MAP);
 		$this->maniaControl->actionsMenu->addAdminMenuItem($itemQuad, 0, 'Restart Map');
-		
+
 		// Menu NextMap
 		$itemQuad = new Quad_Icons64x64_1();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ArrowFastNext);
@@ -94,22 +91,22 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	/**
 	 * Handle removemap command
 	 *
-	 * @param array $chat
+	 * @param array                        $chat
 	 * @param \ManiaControl\Players\Player $player
 	 */
 	public function command_RemoveMap(array $chat, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
+		if(!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
 		// Get map
 		$map = $this->maniaControl->mapManager->getCurrentMap();
-		if (!$map) {
+		if(!$map) {
 			$this->maniaControl->chat->sendError("Couldn't remove map.", $player->login);
 			return;
 		}
 		// Remove map
-		if (!$this->maniaControl->client->query('RemoveMap', $map->fileName)) {
+		if(!$this->maniaControl->client->query('RemoveMap', $map->fileName)) {
 			trigger_error("Couldn't remove current map. " . $this->maniaControl->getClientErrorText());
 			$this->maniaControl->chat->sendError("Couldn't remove map.", $player->login);
 			return;
@@ -120,21 +117,21 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	/**
 	 * Handle addmap command
 	 *
-	 * @param array $chatCallback
+	 * @param array                        $chatCallback
 	 * @param \ManiaControl\Players\Player $player
 	 */
 	public function command_AddMap(array $chatCallback, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
+		if(!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
 		// TODO: Use MX fetcher
 		$params = explode(' ', $chatCallback[1][2], 2);
-		if (count($params) < 2) {
+		if(count($params) < 2) {
 			$this->maniaControl->chat->sendUsageInfo('Usage example: //addmap 1234', $player->login);
 			return;
 		}
-		
+
 		// add Map from Mania Exchange
 		$this->maniaControl->mapManager->addMapFromMx($params[1], $player->login);
 	}
@@ -142,11 +139,11 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	/**
 	 * Handle /nextmap Command
 	 *
-	 * @param array $chat
+	 * @param array                        $chat
 	 * @param \ManiaControl\Players\Player $player
 	 */
 	public function command_NextMap(array $chat, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
+		if(!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
@@ -156,11 +153,11 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	/**
 	 * Handle restartmap command
 	 *
-	 * @param array $chat
+	 * @param array                        $chat
 	 * @param \ManiaControl\Players\Player $player
 	 */
 	public function command_RestartMap(array $chat, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
+		if(!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
@@ -170,7 +167,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	/**
 	 * Handle /maps command
 	 *
-	 * @param array $chatCallback
+	 * @param array  $chatCallback
 	 * @param Player $player
 	 */
 	public function command_List(array $chatCallback, Player $player) {
@@ -180,7 +177,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	/**
 	 * Handle ManiaExchange list command
 	 *
-	 * @param array $chatCallback
+	 * @param array  $chatCallback
 	 * @param Player $player
 	 */
 	public function command_xList(array $chatCallback, Player $player) {

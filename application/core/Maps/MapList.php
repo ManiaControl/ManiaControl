@@ -78,18 +78,29 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 		$params = explode(' ', $chatCallback[1][2]);
 
-		$serverInfo = $this->maniaControl->server->getSystemInfo();
-		$title      = strtoupper(substr($serverInfo['TitleId'], 0, 2));
+		$titleId = $this->maniaControl->server->titleId;
+		$title   = strtoupper(substr($titleId, 0, 2));
 
-		$mapName     = '';
-		$author      = '';
-		$environment = '';
+		$searchString = '';
+		$author       = '';
+		$environment  = '';
 		// TODO also get actual environment
-		$recent = true;
+		$recent = false;
 
-		if(count($params) > 1) {
+		$this->maniaControl->client->query('GetModeScriptInfo');
+		$scriptInfos = $this->maniaControl->client->getResponse();
+
+		//var_dump($scriptInfos);
+		if(count($params) >= 1) {
 			foreach($params as $param) {
-				if($param == '/xlist') {
+				if($param == '/xlist' || $param == MapCommands::ACTION_OPEN_XLIST) {
+					/*	$mapTypes = str_replace($scriptInfos["CompatibleMapTypes"][0]);
+						$mapTypeArray = explode($mapTypes, ",");
+						$searchString = $mapTypeArray[0];
+						var_dump($mapTypes);
+						var_dump($mapTypeArray);
+						//$searchString = str_replace($mapTypeArray[0], '',)
+						var_dump($searchString);*/
 					continue;
 				}
 				if(strtolower(substr($param, 0, 5)) == 'auth:') {
@@ -97,11 +108,12 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				} elseif(strtolower(substr($param, 0, 4)) == 'env:') {
 					$environment = substr($param, 4);
 				} else {
-					if($mapName == '') {
-						$mapName = $param;
+					if($searchString == '') {
+						$searchString = $param;
 					} else { // concatenate words in name
-						$mapName .= '%20' . $param;
+						$searchString .= '%20' . $param;
 					}
+					var_dump("test");
 				}
 			}
 
@@ -109,7 +121,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		}
 
 		// search for matching maps
-		$maps = new MXInfoSearcher($title, $mapName, $author, $environment, $recent);
+		$maps = new MXInfoSearcher($title, $searchString, $author, $environment, $recent);
 
 		// check if there are any results
 		if(!$maps->valid()) {
