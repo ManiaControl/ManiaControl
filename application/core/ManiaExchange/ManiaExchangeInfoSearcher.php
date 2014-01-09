@@ -44,6 +44,19 @@ class ManiaExchangeInfoSearcher {
 		$this->maniaControl = $maniaControl;
 	}
 
+
+
+	public function updateMapObjectWithManiaExchangeIds(){
+		$maps = $this->maniaControl->mapManager->getMaps();
+
+		foreach($maps as $map){
+
+		}
+
+
+	}
+
+
 	/**
 	 * Gets a Maplist from Mania Exchange
 	 *

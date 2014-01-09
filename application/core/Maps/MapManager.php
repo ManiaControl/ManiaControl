@@ -79,6 +79,7 @@ class MapManager implements CallbackListener {
 		$mysqli = $this->maniaControl->database->mysqli;
 		$query  = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_MAPS . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
+				`mxid` int(11),
 				`uid` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
 				`name` varchar(150) COLLATE utf8_unicode_ci NOT NULL,
 				`authorLogin` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
@@ -351,7 +352,6 @@ class MapManager implements CallbackListener {
 			}
 			// Add map to map list
 			if(!$this->maniaControl->client->query('InsertMap', $mapFileName)) {
-				// TODO irgendein bug?
 				$this->maniaControl->chat->sendError("Couldn't add map to match settings!", $login);
 				return;
 			}
