@@ -2,11 +2,14 @@
 
 namespace ManiaControl\Server;
 
+use FML\Controls\Quads\Quad_Icons128x32_1;
+use FML\Controls\Quads\Quad_Icons64x64_1;
 use ManiaControl\ManiaControl;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Commands\CommandListener;
+use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 
 /**
@@ -14,7 +17,12 @@ use ManiaControl\Players\Player;
  *
  * @author steeffeen & kremsy
  */
-class ServerCommands implements CallbackListener, CommandListener {
+class ServerCommands implements CallbackListener, CommandListener, ManialinkPageAnswerListener {
+	/**
+	 * Constants
+	 */
+	const ACTION_SET_PAUSE      = 'ServerCommands.SetPause';
+
 	/**
 	 * Private properties
 	 */
@@ -47,6 +55,28 @@ class ServerCommands implements CallbackListener, CommandListener {
 		$this->maniaControl->commandManager->registerCommandListener('disablemapdownload', $this, 'command_DisableMapDownload', true);
 		$this->maniaControl->commandManager->registerCommandListener('enablehorns', $this, 'command_EnableHorns', true);
 		$this->maniaControl->commandManager->registerCommandListener('disablehorns', $this, 'command_DisableHorns', true);
+
+
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_SET_PAUSE, $this, 'setPause');
+
+		//TODO correct class?
+		// Set Pause
+		$itemQuad = new Quad_Icons128x32_1(); //TODO check if mode supports it
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ManiaLinkSwitch);
+		$itemQuad->setAction(self::ACTION_SET_PAUSE);
+		$this->maniaControl->actionsMenu->addAdminMenuItem($itemQuad, 1, 'Pauses the current map.');
+
+	}
+
+	/**
+	 * Breaks the current game
+	 * @param array $callback
+	 */
+	public function setPause(array $callback){
+		$this->maniaControl->client->query('SendModeScriptCommands', array('Command_ForceWarmUp' => True));
+		$success = $this->maniaControl->client->getResponse();
+		if(!$success)
+			$this->maniaControl->chat->sendError("Error while setting the break");
 	}
 
 	/**

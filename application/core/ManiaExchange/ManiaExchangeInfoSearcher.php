@@ -187,10 +187,6 @@ class ManiaExchangeInfoSearcher { //TODO rename to ManiaExchangeManager
 		$this->maniaControl->client->query('GetModeScriptInfo');
 		$scriptInfos = $this->maniaControl->client->getResponse();
 
-	/*
-		$this->maniaControl->client->query('SendModeScriptCommands', array('Command_ForceWarmUp' => True));
-		$test = $this->maniaControl->client->getResponse();  Just a test, and its working!*/
-
 		$mapTypes = $scriptInfos["CompatibleMapTypes"];
 
 		// compile search URL

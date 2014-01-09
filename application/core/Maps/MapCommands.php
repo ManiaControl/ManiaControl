@@ -85,7 +85,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		$itemQuad = new Quad_Icons64x64_1();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ArrowFastNext);
 		$itemQuad->setAction(self::ACTION_SKIP_MAP);
-		$this->maniaControl->actionsMenu->addAdminMenuItem($itemQuad, 1, 'Skip Map');
+		$this->maniaControl->actionsMenu->addAdminMenuItem($itemQuad, 2, 'Skip Map');
 	}
 
 	/**
