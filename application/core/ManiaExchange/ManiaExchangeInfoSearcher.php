@@ -187,6 +187,10 @@ class ManiaExchangeInfoSearcher { //TODO rename to ManiaExchangeManager
 		$this->maniaControl->client->query('GetModeScriptInfo');
 		$scriptInfos = $this->maniaControl->client->getResponse();
 
+	/*
+		$this->maniaControl->client->query('SendModeScriptCommands', array('Command_ForceWarmUp' => True));
+		$test = $this->maniaControl->client->getResponse();  Just a test, and its working!*/
+
 		$mapTypes = $scriptInfos["CompatibleMapTypes"];
 
 		// compile search URL
@@ -196,7 +200,7 @@ class ManiaExchangeInfoSearcher { //TODO rename to ManiaExchangeManager
 			$url .= '&environments=' . $this->getEnvironment($env);
 		}
 		if($name != '') {
-			$url .= '&trackname=' . $name;
+			$url .= '&trackname=' . str_replace(" ", "%20", $name);
 		}
 		if($author != '') {
 			$url .= '&author=' . $author;
