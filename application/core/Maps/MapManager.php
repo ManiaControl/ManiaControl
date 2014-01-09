@@ -213,6 +213,7 @@ class MapManager implements CallbackListener {
 	public function handleOnInit(array $callback) {
 		$this->updateFullMapList();
 		$this->fetchCurrentMap();
+		$this->mxInfoSearcher->fetchManiaExchangeMapInformations();
 	}
 
 	/**

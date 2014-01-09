@@ -24,6 +24,7 @@ class Map {
 	public $mapType = '';
 	public $mapStyle = '';
 	public $nbCheckpoints = -1;
+	/** @var MXMapInfo $mx */
 	public $mx = null;
 	public $authorLogin = '';
 	public $authorNick = '';
@@ -32,6 +33,7 @@ class Map {
 	public $comment = '';
 	public $titleUid = '';
 	public $startTime = -1;
+	public $lastUpdate = 0;
 
 	/**
 	 * Private Properties
@@ -60,6 +62,7 @@ class Map {
 		$this->copperPrice = $rpc_infos['CopperPrice'];
 		$this->mapType     = $rpc_infos['MapType'];
 		$this->mapStyle    = $rpc_infos['MapStyle'];
+
 		if(isset($rpc_infos['NbCheckpoints'])) {
 			$this->nbCheckpoints = $rpc_infos['NbCheckpoints'];
 		}
@@ -79,10 +82,18 @@ class Map {
 				trigger_error($e->getMessage());
 			}
 		}
+	}
 
-		// TODO: define timeout if mx is down,todo fetch all map infos at once (maybe way faster)
-		$serverInfo = $this->maniaControl->server->titleId;
-		$title      = strtoupper(substr($serverInfo, 0, 2));
-		$this->mx   = new \MXInfoFetcher($title, $this->uid, false);
+	/**
+	 * Checks if a map Update is available
+	 *
+	 * @return bool
+	 */
+	public function updateAvailable() {
+		if($this->lastUpdate < $this->mx->updated || $this->uid != $this->mx->uid) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 } 
