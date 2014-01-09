@@ -5,7 +5,7 @@ namespace ManiaControl\Callbacks;
 use ManiaControl\ManiaControl;
 
 /**
- * Class for managing server and controller callbacks
+ * Class for managing Server and ManiaControl Callbacks
  *
  * @author steeffeen & kremsy
  */
@@ -47,7 +47,7 @@ class CallbackManager {
 	const CB_TM_PLAYERINCOHERENCE = 'TrackMania.PlayerIncoherence';
 	
 	/**
-	 * Private properties
+	 * Private Properties
 	 */
 	private $maniaControl = null;
 	private $callbackListeners = array();
@@ -56,31 +56,30 @@ class CallbackManager {
 	private $last5Second = -1;
 	private $last1Minute = -1;
 	private $mapEnded = false;
+
 	/**
-	 * Construct callbacks manager
+	 * Construct a new Callbacks Manager
 	 *
-	 * @param \ManiaControl\ManiaControl $maniaControl        	
+	 * @param \ManiaControl\ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		$this->last1Second = time();
 		$this->last5Second = time();
 		$this->last1Minute = time();
-		$this->last3Minute = time();
 	}
 
 	/**
-	 * Register a new callback listener
+	 * Register a new Callback Listener
 	 *
-	 * @param string $callbackName        	
-	 * @param \ManiaControl\Callbacks\CallbackListener $listener        	
-	 * @param string $method        	
+	 * @param string $callbackName
+	 * @param \ManiaControl\Callbacks\CallbackListener $listener
+	 * @param string $method
 	 * @return bool
 	 */
 	public function registerCallbackListener($callbackName, CallbackListener $listener, $method) {
 		if (!method_exists($listener, $method)) {
-			trigger_error(
-					"Given listener (" . get_class($listener) . ") can't handle callback '{$callbackName}' (no method '{$method}')!");
+			trigger_error("Given listener (" . get_class($listener) . ") can't handle callback '{$callbackName}' (no method '{$method}')!");
 			return false;
 		}
 		if (!array_key_exists($callbackName, $this->callbackListeners)) {
@@ -91,18 +90,16 @@ class CallbackManager {
 	}
 
 	/**
-	 * Register a new script callback listener
+	 * Register a new Script Callback Listener
 	 *
-	 * @param string $callbackName        	
-	 * @param CallbackListener $listener        	
-	 * @param string $method        	
+	 * @param string $callbackName
+	 * @param CallbackListener $listener
+	 * @param string $method
 	 * @return bool
 	 */
 	public function registerScriptCallbackListener($callbackName, CallbackListener $listener, $method) {
 		if (!method_exists($listener, $method)) {
-			trigger_error(
-					"Given listener (" . get_class($listener) .
-							 ") can't handle script callback '{$callbackName}' (no method '{$method}')!");
+			trigger_error("Given listener (" . get_class($listener) . ") can't handle script callback '{$callbackName}' (no method '{$method}')!");
 			return false;
 		}
 		if (!array_key_exists($callbackName, $this->scriptCallbackListener)) {
@@ -115,17 +112,16 @@ class CallbackManager {
 	/**
 	 * Remove a Callback Listener
 	 *
-	 * @param CallbackListener $listener        	
+	 * @param CallbackListener $listener
 	 * @return bool
 	 */
 	public function unregisterCallbackListener(CallbackListener $listener) {
 		$removed = false;
 		foreach ($this->callbackListeners as &$listeners) {
 			foreach ($listeners as $key => &$listenerCallback) {
-				if ($listenerCallback[0] == $listener) {
-					unset($listeners[$key]);
-					$removed = true;
-				}
+				if ($listenerCallback[0] != $listener) continue;
+				unset($listeners[$key]);
+				$removed = true;
 			}
 		}
 		return $removed;
@@ -134,62 +130,56 @@ class CallbackManager {
 	/**
 	 * Remove a Script Callback Listener
 	 *
-	 * @param CallbackListener $listener        	
+	 * @param CallbackListener $listener
 	 * @return bool
 	 */
 	public function unregisterScriptCallbackListener(CallbackListener $listener) {
 		$removed = false;
 		foreach ($this->scriptCallbackListener as &$listeners) {
 			foreach ($listeners as $key => &$listenerCallback) {
-				if ($listenerCallback[0] == $listener) {
-					unset($listeners[$key]);
-					$removed = true;
-				}
+				if ($listenerCallback[0] != $listener) continue;
+				unset($listeners[$key]);
+				$removed = true;
 			}
 		}
 		return $removed;
 	}
 
 	/**
-	 * Trigger a specific callback
+	 * Trigger a specific Callback
 	 *
-	 * @param string $callbackName        	
-	 * @param array $callback        	
+	 * @param string $callbackName
+	 * @param array $callback
 	 */
 	public function triggerCallback($callbackName, array $callback) {
-		if (!array_key_exists($callbackName, $this->callbackListeners)) {
-			return;
-		}
+		if (!array_key_exists($callbackName, $this->callbackListeners)) return;
 		foreach ($this->callbackListeners[$callbackName] as $listener) {
 			call_user_func(array($listener[0], $listener[1]), $callback);
 		}
 	}
 
 	/**
-	 * Trigger a specific script callback
+	 * Trigger a specific Script Callback
 	 *
-	 * @param string $callbackName        	
-	 * @param array $callback        	
+	 * @param string $callbackName
+	 * @param array $callback
 	 */
 	public function triggerScriptCallback($callbackName, array $callback) {
-		if (!array_key_exists($callbackName, $this->scriptCallbackListener)) {
-			return;
-		}
+		if (!array_key_exists($callbackName, $this->scriptCallbackListener)) return;
 		foreach ($this->scriptCallbackListener[$callbackName] as $listener) {
 			call_user_func(array($listener[0], $listener[1]), $callback);
 		}
 	}
 
 	/**
-	 * Trigger internal and manage server callbacks
+	 * Trigger internal Callbacks and manage Server Callbacks
 	 */
 	public function manageCallbacks() {
+		// Timed callbacks
 		$this->manageTimedCallbacks();
 		
-		// Get server callbacks
-		if (!$this->maniaControl->client) {
-			return;
-		}
+		// Server Callbacks
+		if (!$this->maniaControl->client) return;
 		$this->maniaControl->client->readCB();
 		$callbacks = $this->maniaControl->client->getCBResponses();
 		if (!is_array($callbacks)) {
@@ -199,101 +189,78 @@ class CallbackManager {
 		
 		// Handle callbacks
 		foreach ($callbacks as $callback) {
-
 			$callbackName = $callback[0];
 			switch ($callbackName) {
 				case 'ManiaPlanet.BeginMap':
-					{
-						$this->triggerCallback(self::CB_MC_BEGINMAP, $callback);
-						$this->mapEnded = false;
-						break;
-					}
+					$this->triggerCallback(self::CB_MC_BEGINMAP, $callback);
+					$this->mapEnded = false;
+					break;
 				case 'ManiaPlanet.EndMap':
-					{
-						if(!$this->mapEnded){
-							$this->triggerCallback(self::CB_MC_ENDMAP, $callback);
-							$this->mapEnded = true;
-						}
-						break;
+					if (!$this->mapEnded) {
+						$this->triggerCallback(self::CB_MC_ENDMAP, $callback);
+						$this->mapEnded = true;
 					}
+					break;
 				case self::CB_MP_MODESCRIPTCALLBACK:
-					{
-						$this->handleScriptCallback($callback);
-						$this->triggerCallback(self::CB_MP_MODESCRIPTCALLBACK, $callback);
-						break;
-					}
+					$this->handleScriptCallback($callback);
+					$this->triggerCallback(self::CB_MP_MODESCRIPTCALLBACK, $callback);
+					break;
 				case self::CB_MP_MODESCRIPTCALLBACKARRAY:
-					{
-						$this->handleScriptCallback($callback);
-						$this->triggerCallback(self::CB_MP_MODESCRIPTCALLBACKARRAY, $callback);
-						break;
-					}
+					$this->handleScriptCallback($callback);
+					$this->triggerCallback(self::CB_MP_MODESCRIPTCALLBACKARRAY, $callback);
+					break;
 				default:
-					{
-						$this->triggerCallback($callbackName, $callback);
-						break;
-					}
+					$this->triggerCallback($callbackName, $callback);
+					break;
 			}
 		}
 	}
 
 	/**
-	 * Handle the given script callback
+	 * Handle the given Script Callback
 	 *
-	 * @param array $callback        	
+	 * @param array $callback
 	 */
 	private function handleScriptCallback(array $callback) {
 		$scriptCallbackData = $callback[1];
 		$scriptCallbackName = $scriptCallbackData[0];
 		switch ($scriptCallbackName) {
 			case 'EndMap':
-				{
-					$this->triggerScriptCallback($scriptCallbackName, $scriptCallbackData);
-					if(!$this->mapEnded){
-						$this->triggerCallback(self::CB_MC_ENDMAP, $callback);
-						$this->mapEnded = true;
-					}
-					break;
+				$this->triggerScriptCallback($scriptCallbackName, $scriptCallbackData);
+				if (!$this->mapEnded) {
+					$this->triggerCallback(self::CB_MC_ENDMAP, $callback);
+					$this->mapEnded = true;
 				}
+				break;
 			case 'LibXmlRpc_EndMap':
-				{
-					$this->triggerScriptCallback($scriptCallbackName, $scriptCallbackData);
-					if(!$this->mapEnded){
-						$this->triggerCallback(self::CB_MC_ENDMAP, $callback);
-						$this->mapEnded = true;
-					}
-					break;
+				$this->triggerScriptCallback($scriptCallbackName, $scriptCallbackData);
+				if (!$this->mapEnded) {
+					$this->triggerCallback(self::CB_MC_ENDMAP, $callback);
+					$this->mapEnded = true;
 				}
+				break;
 			default:
-				{
-					$this->triggerScriptCallback($scriptCallbackName, $scriptCallbackData);
-					break;
-				}
+				$this->triggerScriptCallback($scriptCallbackName, $scriptCallbackData);
+				break;
 		}
 	}
 
 	/**
-	 * Manage recurring timed callbacks
+	 * Manage recurring timed Callbacks
 	 */
 	private function manageTimedCallbacks() {
 		// 1 second
-		if ($this->last1Second > time() - 1) {
-			return;
-		}
+		if ($this->last1Second > time() - 1) return;
 		$this->last1Second = time();
 		$this->triggerCallback(self::CB_MC_1_SECOND, array(self::CB_MC_1_SECOND));
 		
 		// 5 second
-		if ($this->last5Second > time() - 5) {
-			return;
-		}
+		if ($this->last5Second > time() - 5) return;
 		$this->last5Second = time();
 		$this->triggerCallback(self::CB_MC_5_SECOND, array(self::CB_MC_5_SECOND));
 		
 		// 1 minute
-		if ($this->last1Minute > time() - 60) {
-			return;
-		}
+		if ($this->last1Minute > time() - 60) return;
 		$this->last1Minute = time();
 		$this->triggerCallback(self::CB_MC_1_MINUTE, array(self::CB_MC_1_MINUTE));
 	}
