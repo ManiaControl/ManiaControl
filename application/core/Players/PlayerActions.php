@@ -34,10 +34,10 @@ class PlayerActions {
 	const SETTING_PERMISSION_FORCE_PLAYER_PLAY = 'Force Player to Play';
 	const SETTING_PERMISSION_FORCE_PLAYER_TEAM = 'Force Player to Team';
 	const SETTING_PERMISSION_FORCE_PLAYER_SPEC = 'Force Player to Spec';
-	const SETTING_PERMISSION_MUTE_PLAYER       = 'Mute PLayer';
-	const SETTING_PERMISSION_WARN_PLAYER       = 'Warn PLayer';
-	const SETTING_PERMISSION_KICK_PLAYER       = 'Kick PLayer';
-	const SETTING_PERMISSION_BAN_PLAYER        = 'Ban PLayer';
+	const SETTING_PERMISSION_MUTE_PLAYER       = 'Mute Player';
+	const SETTING_PERMISSION_WARN_PLAYER       = 'Warn Player';
+	const SETTING_PERMISSION_KICK_PLAYER       = 'Kick Player';
+	const SETTING_PERMISSION_BAN_PLAYER        = 'Ban Player';
 
 	/**
 	 * Private Properties
@@ -59,7 +59,7 @@ class PlayerActions {
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_MUTE_PLAYER, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_FORCE_PLAYER_PLAY, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_FORCE_PLAYER_TEAM, AuthenticationManager::AUTH_LEVEL_MODERATOR);
-		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_FORCE_PLAYER_PLAY, AuthenticationManager::AUTH_LEVEL_MODERATOR);
+		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_FORCE_PLAYER_SPEC, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 	}
 
 	/**

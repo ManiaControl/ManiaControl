@@ -68,7 +68,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_MAPS_UPDATED, $this, 'updateWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_KARMA_UPDATED, $this, 'updateWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_BEGINMAP, $this, 'updateWidget');
-		// TODO not working yet
 
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_SEARCH_MAPNAME, $this, 'showManiaExchangeList');
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_SEARCH_AUTHOR, $this, 'showManiaExchangeList');

@@ -360,7 +360,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowStyle();
 		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowSubStyle();
 
-		// TODO: all configurable or as constants
+		//Settings
 		$x         = $width / 2 + 2.5;
 		$width     = 35;
 		$height    = $height * 0.75;
