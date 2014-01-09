@@ -140,7 +140,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		// Pagers
 		// Config
 		$pagerSize = 6.;
-		$pagesId   = 'MapListPages';
+		$pagesId   = 'MxListPages';
 
 		$pagerPrev = new Quad_Icons64x64_1();
 		$frame->add($pagerPrev);
@@ -184,7 +184,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$i = 0;
 		$y -= 10;
 		$pageFrames = array();
-		foreach($maps as $map) { //TODO pagers, order possabilities
+		foreach($maps as $map) { //TODO order possabilities
 			if(!isset($pageFrame)) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
@@ -372,7 +372,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$maniaLink->setScript($script);
 
 		// Pagers
-
 		// Config
 		$pagerSize = 6.;
 		$pagesId   = 'MapListPages';

@@ -2,6 +2,7 @@
 
 namespace ManiaControl\Maps;
 
+use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\FileUtil;
@@ -21,9 +22,11 @@ class MapManager implements CallbackListener {
 	/**
 	 * Constants
 	 */
-	const TABLE_MAPS       = 'mc_maps';
-	const CB_MAPS_UPDATED  = 'MapManager.MapsUpdated';
-	const CB_KARMA_UPDATED = 'MapManager.KarmaUpdated';
+	const TABLE_MAPS                 = 'mc_maps';
+	const CB_MAPS_UPDATED            = 'MapManager.MapsUpdated';
+	const CB_KARMA_UPDATED           = 'MapManager.KarmaUpdated';
+	const SETTING_PERMISSION_ADD_MAP = 'Add Maps';
+	const SETTING_PERMISSION_REMOVE_MAP = 'Remove Maps';
 
 	/**
 	 * Public Properties
@@ -60,6 +63,10 @@ class MapManager implements CallbackListener {
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_BEGINMAP, $this, 'handleBeginMap');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_MAPLISTMODIFIED, $this, 'mapsModified');
+
+		//Define Rights
+		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_ADD_MAP,AuthenticationManager::AUTH_LEVEL_ADMIN);
+		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_REMOVE_MAP,AuthenticationManager::AUTH_LEVEL_ADMIN);
 	}
 
 	/**
