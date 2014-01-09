@@ -79,7 +79,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	 * @param Player $player
 	 */
 	public function chat_me(array $chat, Player $player) {
-		$message = substr($chat[1][2], 3);
+		$message = substr($chat[1][2], 4);
 		
 		$msg = '$<' . $player->nickname . '$>$s$i$fa0 ' . $message;
 		$this->maniaControl->chat->sendChat($msg, null, false);
