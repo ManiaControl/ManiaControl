@@ -21,6 +21,7 @@ use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ColorUtil;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
+use ManiaControl\Manialinks\IconManager;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
@@ -113,7 +114,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		}
 
 		// search for matching maps
-		$maps = $this->maniaControl->mapManager->mxInfoSearcher->getMaps($searchString, $author, $environment, self::MAX_MX_MAPS_PER_PAGE);
+		$maps = $this->maniaControl->mapManager->mxInfoSearcher->getMaps($searchString, $author, $environment);
 
 		// check if there are any results
 		if($maps == null) {
@@ -124,6 +125,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$frame     = $this->buildMainFrame();
 		$maniaLink->add($frame);
+		$frame->setZ(10);
 
 		// Create script and features
 		$script = new Script();
@@ -135,21 +137,79 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$x      = -$width / 2;
 		$y      = $height / 2;
 
+		// Pagers
+		// Config
+		$pagerSize = 6.;
+		$pagesId   = 'MapListPages';
+
+		$pagerPrev = new Quad_Icons64x64_1();
+		$frame->add($pagerPrev);
+		$pagerPrev->setPosition($width * 0.42, $height * -0.44, 2);
+		$pagerPrev->setSize($pagerSize, $pagerSize);
+		$pagerPrev->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowPrev);
+
+		$pagerNext = new Quad_Icons64x64_1();
+		$frame->add($pagerNext);
+		$pagerNext->setPosition($width * 0.45, $height * -0.44, 2);
+		$pagerNext->setSize($pagerSize, $pagerSize);
+		$pagerNext->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowNext);
+
+		$script->addPager($pagerPrev, -1, $pagesId);
+		$script->addPager($pagerNext, 1, $pagesId);
+
+		$pageCountLabel = new Label_Text();
+		$frame->add($pageCountLabel);
+		$pageCountLabel->setHAlign(Control::RIGHT);
+		$pageCountLabel->setPosition($width * 0.40, $height * -0.44, 1);
+		$pageCountLabel->setStyle($pageCountLabel::STYLE_TextTitle1);
+		$pageCountLabel->setTextSize(1.3);
+		$script->addPageLabel($pageCountLabel, $pagesId);
+
+		// Predefine Description Label
+		$descriptionLabel = new Label();
+		$frame->add($descriptionLabel);
+		$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
+		$descriptionLabel->setPosition($x + 10, -$height / 2 + 5);
+		$descriptionLabel->setSize($width * 0.7, 4);
+		$descriptionLabel->setTextSize(2);
+		$descriptionLabel->setVisible(false);
+
 		// Headline
 		$headFrame = new Frame();
 		$frame->add($headFrame);
 		$headFrame->setY($y - 5);
-		$array = array('Id' => $x + 5, 'Name' => $x + 17, 'Author' => $x + 65, 'Type' => $x + 100, 'Mood' => $x + 115, 'Last Update' => $x + 130);
+		$array = array('Mx Id' => $x + 5, 'Name' => $x + 17, 'Author' => $x + 65, 'Type' => $x + 100, 'Mood' => $x + 115, 'Last Update' => $x + 130);
 		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
 
 		$i = 0;
 		$y -= 10;
-		foreach($maps as $map) { //TODO pagers, click on nickname...
+		$pageFrames = array();
+		foreach($maps as $map) { //TODO pagers, order possabilities
+			if(!isset($pageFrame)) {
+				$pageFrame = new Frame();
+				$frame->add($pageFrame);
+				if(!empty($pageFrames)) {
+					$pageFrame->setVisible(false);
+				}
+				array_push($pageFrames, $pageFrame);
+				$y = $height / 2 - 10;
+				$script->addPage($pageFrame, count($pageFrames), $pagesId);
+			}
+
+			// Map Frame
+			$mapFrame = new Frame();
+			$pageFrame->add($mapFrame);
+
+			if($i % 2 == 0) {
+				$lineQuad = new Quad_BgsPlayerCard();
+				$mapFrame->add($lineQuad);
+				$lineQuad->setSize($width, 4);
+				$lineQuad->setSubStyle($lineQuad::SUBSTYLE_BgPlayerCardBig);
+				$lineQuad->setZ(0.001);
+			}
+
 			/** @var MxMapInfo $map */
 			$time = Formatter::time_elapsed_string(strtotime($map->updated));
-
-			$mapFrame = new Frame();
-			$frame->add($mapFrame);
 			$array  = array($map->id => $x + 5, $map->name => $x + 17, $map->author => $x + 65, str_replace("Arena", "", $map->maptype) => $x + 100, $map->mood => $x + 115, $time => $x + 130);
 			$labels = $this->maniaControl->manialinkManager->labelLine($mapFrame, $array);
 			/** @var  Label_Text $authorLabel */
@@ -158,6 +218,32 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 			$mapFrame->setY($y);
 
+
+			$mxQuad = new Quad();
+			$mapFrame->add($mxQuad);
+			$mxQuad->setSize(3, 3);
+			$mxQuad->setImage($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON));
+			$mxQuad->setImageFocus($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON_MOVER));
+			$mxQuad->setX($x + 62);
+			$mxQuad->setUrl($map->pageurl);
+			$mxQuad->setZ(0.01);
+			$script->addTooltip($mxQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "View " . $map->name . " on Mania-Exchange"));
+
+			if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
+				// TODO: SET as setting who can add maps Add-Map-Button
+				$addQuad = new Quad_Icons64x64_1();
+				$mapFrame->add($addQuad);
+				$addQuad->setX($x + 59);
+				$addQuad->setZ(-0.1);
+				$addQuad->setSubStyle($addQuad::SUBSTYLE_Add);
+				$addQuad->setSize(4, 4);
+				$addQuad->setAction(self::ACTION_ADD_MAP . '.' . $map->id);
+				$addQuad->setZ(0.01);
+
+				$script->addTooltip($addQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => 'Add-Map: $<' . $map->name . '$>'));
+			}
+
+			//Award
 			if($map->awards > 0) {
 				$awardQuad = new Quad_Icons64x64_1();
 				$mapFrame->add($awardQuad);
@@ -173,33 +259,10 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$awardLabel->setTextSize(1.3);
 			}
 
-
-			if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
-				// TODO: SET as setting who can add maps Add-Map-Button
-				$addQuad = new Quad_Icons64x64_1();
-				$mapFrame->add($addQuad);
-				$addQuad->setX($x + 15);
-				$addQuad->setZ(-0.1);
-				$addQuad->setSubStyle($addQuad::SUBSTYLE_Add);
-				$addQuad->setSize(4, 4);
-				$addQuad->setAction(self::ACTION_ADD_MAP . '.' . $map->id);
-
-				// Description Label
-				$descriptionLabel = new Label();
-				$frame->add($descriptionLabel);
-				$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
-				$descriptionLabel->setPosition($x + 10, -$height / 2 + 5);
-				$descriptionLabel->setSize($width * 0.7, 4);
-				$descriptionLabel->setTextSize(2);
-				$descriptionLabel->setVisible(false);
-				$descriptionLabel->setText('Add-Map: $<' . Formatter::stripDirtyCodes($map->name) . '$>');
-				$script->addTooltip($addQuad, $descriptionLabel);
-			}
-
 			$y -= 4;
 			$i++;
-			if($i == self::MAX_MX_MAPS_PER_PAGE) {
-				break;
+			if($i % self::MAX_MX_MAPS_PER_PAGE == 0) {
+				unset($pageFrame);
 			}
 		}
 
@@ -237,19 +300,16 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		//Search for Author
 		$label = new Label_Button();
 		$frame->add($label);
-		$label->setPosition(-$width / 2 + 85, -$height / 2 + 10);
+		$label->setPosition(-$width / 2 + 82, -$height / 2 + 10);
 		$label->setText("Author");
 		$label->setTextSize(1.3);
 
 		$quad = new Quad_BgsPlayerCard();
 		$frame->add($quad);
-		$quad->setPosition(-$width / 2 + 85, -$height / 2 + 10, 0.01);
+		$quad->setPosition(-$width / 2 + 82, -$height / 2 + 10, 0.01);
 		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
 		$quad->setSize(18, 5);
 		$quad->setAction(self::ACTION_SEARCH_AUTHOR);
-
-
-		// TODO add MX info screen
 
 		// render and display xml
 		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player);
@@ -305,6 +365,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$frame     = $this->buildMainFrame();
 		$maniaLink->add($frame);
+		$frame->setZ(10);
 
 		// Create script and features
 		$script = new Script();
