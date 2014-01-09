@@ -19,14 +19,14 @@ class IconManager implements CallbackListener {
 	 * Constants
 	 */
 	const DEFAULT_IMG_URL = 'http://images.maniacontrol.com/icons/';
-	const PRELOAD_MLID = 'IconManager.Preload.MLID';
-	
+	const PRELOAD_MLID    = 'IconManager.Preload.MLID';
+
 	/**
 	 * Some Default icons
 	 */
-	const MX_ICON = 'ManiaExchange.png';
+	const MX_ICON       = 'ManiaExchange.png';
 	const MX_ICON_MOVER = 'ManiaExchange_logo_press.png';
-	
+
 	/**
 	 * Private Properties
 	 */
@@ -41,7 +41,7 @@ class IconManager implements CallbackListener {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		$this->addDefaultIcons();
-		
+
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_ONINIT, $this, 'handleOnInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'handlePlayerConnect');
@@ -72,7 +72,7 @@ class IconManager implements CallbackListener {
 	 * @return string
 	 */
 	public function getIcon($iconName) {
-		if (!isset($this->icons[$iconName])) {
+		if(!isset($this->icons[$iconName])) {
 			return null;
 		}
 		return $this->icons[$iconName];
@@ -104,17 +104,17 @@ class IconManager implements CallbackListener {
 	 */
 	private function preloadIcons($login = false) {
 		$maniaLink = new ManiaLink(self::PRELOAD_MLID);
-		$frame = new Frame();
+		$frame     = new Frame();
 		$maniaLink->add($frame);
 		$frame->setPosition(500, 500);
-		
-		foreach ($this->icons as $iconUrl) {
+
+		foreach($this->icons as $iconUrl) {
 			$iconQuad = new Quad();
 			$iconQuad->setImage($iconUrl);
 			$iconQuad->setSize(1, 1);
 			$frame->add($iconQuad);
 		}
-		
+
 		// Send manialink
 		$manialinkText = $maniaLink->render()->saveXML();
 		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $login);

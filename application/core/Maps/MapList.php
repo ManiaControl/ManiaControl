@@ -34,17 +34,18 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	/**
 	 * Constants
 	 */
-	const ACTION_ADD_MAP        = 'MapList.AddMap';
-	const ACTION_SEARCH_MAPNAME = 'MapList.SearchMapName';
-	const ACTION_SEARCH_AUTHOR  = 'MapList.SearchAuthor';
-	const ACTION_ERASE_MAP      = 'MapList.EraseMap';
-	const ACTION_SWITCH_MAP     = 'MapList.SwitchMap';
-	const ACTION_QUEUED_MAP     = 'MapList.QueueMap';
-	const MAX_MAPS_PER_PAGE     = 15;
-	const MAX_MX_MAPS_PER_PAGE  = 14;
-	const SHOW_MX_LIST          = 1;
-	const SHOW_MAP_LIST         = 2;
-	const DEFAULT_KARMA_PLUGIN  = 'KarmaPlugin';
+	const ACTION_ADD_MAP              = 'MapList.AddMap';
+	const ACTION_SEARCH_MAPNAME       = 'MapList.SearchMapName';
+	const ACTION_SEARCH_AUTHOR        = 'MapList.SearchAuthor';
+	const ACTION_GET_MAPS_FROM_AUTHOR = 'MapList.GetMapsFromAuthor';
+	const ACTION_ERASE_MAP            = 'MapList.EraseMap';
+	const ACTION_SWITCH_MAP           = 'MapList.SwitchMap';
+	const ACTION_QUEUED_MAP           = 'MapList.QueueMap';
+	const MAX_MAPS_PER_PAGE           = 15;
+	const MAX_MX_MAPS_PER_PAGE        = 14;
+	const SHOW_MX_LIST                = 1;
+	const SHOW_MAP_LIST               = 2;
+	const DEFAULT_KARMA_PLUGIN        = 'KarmaPlugin';
 
 	/**
 	 * Private Properties
@@ -138,21 +139,40 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$headFrame = new Frame();
 		$frame->add($headFrame);
 		$headFrame->setY($y - 5);
-		$array = array('Id' => $x + 5, 'Name' => $x + 17, 'Author' => $x + 65, 'Type' => $x + 100, 'Mood' => $x + 115, 'Updated' => $x + 130);
+		$array = array('Id' => $x + 5, 'Name' => $x + 17, 'Author' => $x + 65, 'Type' => $x + 100, 'Mood' => $x + 115, 'Last Update' => $x + 130);
 		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
 
 		$i = 0;
 		$y -= 10;
 		foreach($maps as $map) { //TODO pagers, click on nickname...
 			/** @var MxMapInfo $map */
-
 			$time = Formatter::time_elapsed_string(strtotime($map->updated));
 
 			$mapFrame = new Frame();
 			$frame->add($mapFrame);
-			$array = array($map->id => $x + 5, $map->name => $x + 17, $map->author => $x + 65, str_replace("Arena", "", $map->maptype) => $x + 100, $map->mood => $x + 115, $time => $x + 130);
-			$this->maniaControl->manialinkManager->labelLine($mapFrame, $array);
+			$array  = array($map->id => $x + 5, $map->name => $x + 17, $map->author => $x + 65, str_replace("Arena", "", $map->maptype) => $x + 100, $map->mood => $x + 115, $time => $x + 130);
+			$labels = $this->maniaControl->manialinkManager->labelLine($mapFrame, $array);
+			/** @var  Label_Text $authorLabel */
+			$authorLabel = $labels[2];
+			$authorLabel->setAction(self::ACTION_GET_MAPS_FROM_AUTHOR . '.' . $map->author);
+
 			$mapFrame->setY($y);
+
+			if($map->awards > 0) {
+				$awardQuad = new Quad_Icons64x64_1();
+				$mapFrame->add($awardQuad);
+				$awardQuad->setSize(3, 3);
+				$awardQuad->setSubStyle($awardQuad::SUBSTYLE_OfficialRace);
+				$awardQuad->setX($x + 93);
+
+				$awardLabel = new Label_Text();
+				$mapFrame->add($awardLabel);
+				$awardLabel->setX($x + 94.5);
+				$awardLabel->setHAlign(Control::LEFT);
+				$awardLabel->setText($map->awards);
+				$awardLabel->setTextSize(1.3);
+			}
+
 
 			if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
 				// TODO: SET as setting who can add maps Add-Map-Button
@@ -605,6 +625,10 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$mapId  = (int)$actionArray[2];
 
 		switch($action) {
+			case self::ACTION_GET_MAPS_FROM_AUTHOR:
+				$callback[1][2] = 'auth:' . $actionArray[2];
+				$this->showManiaExchangeList($callback, $player);
+				break;
 			case self::ACTION_ADD_MAP:
 				$this->maniaControl->mapManager->addMapFromMx($mapId, $player->login);
 				break;
