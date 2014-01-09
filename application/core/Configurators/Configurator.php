@@ -241,6 +241,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$frame = new Frame();
 		$manialink->add($frame);
 		$frame->setPosition($menuPosX, $menuPosY);
+		$frame->setZ(10);
 
 		$backgroundQuad = new Quad();
 		$frame->add($backgroundQuad);

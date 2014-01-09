@@ -63,8 +63,7 @@ class ManiaExchangeInfoSearcher {
 		$this->maniaControl->client->query('GetModeScriptInfo');
 		$scriptInfos = $this->maniaControl->client->getResponse();
 
-		$mapTypes     = $scriptInfos["CompatibleMapTypes"];
-		$mapTypeArray = explode(",", $mapTypes);
+		$mapTypes = $scriptInfos["CompatibleMapTypes"];
 
 		// compile search URL
 		$url = 'http://' . $titlePrefix . '.mania-exchange.com/tracksearch?api=on';
@@ -81,11 +80,11 @@ class ManiaExchangeInfoSearcher {
 
 		$url .= '&priord=' . $searchOrder;
 		$url .= '&limit=' . $maxMapsReturned;
-		$url .= '&mtype=' . $mapTypeArray[0];
+		$url .= '&mtype=' . $mapTypes;
 
-		//	$mapInfo = FileUtil::loadFile($url, "application/json"); //TODO use mp fileutil
+		//	$mapInfo = FileUtil::loadFile($url, "application/json"); //TODO use mc fileutil
 		$mapInfo = $this->get_file($url);
-
+		
 		//TODO errors
 		/*if ($file === false) {
 				$this->error = 'Connection or response error on ' . $url;

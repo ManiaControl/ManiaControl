@@ -240,13 +240,14 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$script->addTooltip($addQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => 'Add-Map: $<' . $map->name . '$>'));
 			}
 
-			//Award
+			//Award Quad
 			if($map->awards > 0) {
 				$awardQuad = new Quad_Icons64x64_1();
 				$mapFrame->add($awardQuad);
 				$awardQuad->setSize(3, 3);
 				$awardQuad->setSubStyle($awardQuad::SUBSTYLE_OfficialRace);
 				$awardQuad->setX($x + 93);
+				$awardQuad->setZ(0.01);
 
 				$awardLabel = new Label_Text();
 				$mapFrame->add($awardLabel);
