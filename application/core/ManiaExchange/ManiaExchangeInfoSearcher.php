@@ -84,7 +84,7 @@ class ManiaExchangeInfoSearcher {
 
 		//	$mapInfo = FileUtil::loadFile($url, "application/json"); //TODO use mc fileutil
 		$mapInfo = $this->get_file($url);
-		
+
 		//TODO errors
 		/*if ($file === false) {
 				$this->error = 'Connection or response error on ' . $url;
