@@ -3,6 +3,7 @@
 namespace ManiaControl\Maps;
 
 use FML\Controls\Control;
+use FML\Controls\Entry;
 use FML\Controls\Frame;
 use FML\Controls\Gauge;
 use FML\Controls\Label;
@@ -33,14 +34,17 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	/**
 	 * Constants
 	 */
-	const ACTION_ADD_MAP       = 'MapList.AddMap';
-	const ACTION_ERASE_MAP     = 'MapList.EraseMap';
-	const ACTION_SWITCH_MAP    = 'MapList.SwitchMap';
-	const ACTION_QUEUED_MAP    = 'MapList.QueueMap';
-	const MAX_MAPS_PER_PAGE    = 15;
-	const SHOW_MX_LIST         = 1;
-	const SHOW_MAP_LIST        = 2;
-	const DEFAULT_KARMA_PLUGIN = 'KarmaPlugin';
+	const ACTION_ADD_MAP        = 'MapList.AddMap';
+	const ACTION_SEARCH_MAPNAME = 'MapList.SearchMapName';
+	const ACTION_SEARCH_AUTHOR  = 'MapList.SearchAuthor';
+	const ACTION_ERASE_MAP      = 'MapList.EraseMap';
+	const ACTION_SWITCH_MAP     = 'MapList.SwitchMap';
+	const ACTION_QUEUED_MAP     = 'MapList.QueueMap';
+	const MAX_MAPS_PER_PAGE     = 15;
+	const MAX_MX_MAPS_PER_PAGE  = 14;
+	const SHOW_MX_LIST          = 1;
+	const SHOW_MAP_LIST         = 2;
+	const DEFAULT_KARMA_PLUGIN  = 'KarmaPlugin';
 
 	/**
 	 * Private Properties
@@ -64,7 +68,11 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_KARMA_UPDATED, $this, 'updateWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_BEGINMAP, $this, 'updateWidget');
 		// TODO not working yet
+
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_SEARCH_MAPNAME, $this, 'showManiaExchangeList');
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_SEARCH_AUTHOR, $this, 'showManiaExchangeList');
 	}
+
 
 	/**
 	 * Display the Mania Exchange List
@@ -85,9 +93,13 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				if($param == '/xlist' || $param == MapCommands::ACTION_OPEN_XLIST) {
 					continue;
 				}
-				if(strtolower(substr($param, 0, 5)) == 'auth:') {
+				if($param == self::ACTION_SEARCH_MAPNAME) {
+					$searchString = $chatCallback[1][3][0]['Value'];
+				} else if($param == self::ACTION_SEARCH_AUTHOR) {
+					$author = $chatCallback[1][3][0]['Value'];
+				} else if(strtolower(substr($param, 0, 5)) == 'auth:') {
 					$author = substr($param, 5);
-				} elseif(strtolower(substr($param, 0, 4)) == 'env:') {
+				} else if(strtolower(substr($param, 0, 4)) == 'env:') {
 					$environment = substr($param, 4);
 				} else {
 					if($searchString == '') {
@@ -100,7 +112,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		}
 
 		// search for matching maps
-		$maps = $this->maniaControl->mapManager->mxInfoSearcher->getMaps($searchString, $author, $environment, 15);
+		$maps = $this->maniaControl->mapManager->mxInfoSearcher->getMaps($searchString, $author, $environment, self::MAX_MX_MAPS_PER_PAGE);
 
 		// check if there are any results
 		if($maps == null) {
@@ -126,15 +138,19 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$headFrame = new Frame();
 		$frame->add($headFrame);
 		$headFrame->setY($y - 5);
-		$array = array('Id' => $x + 5, 'Name' => $x + 17, 'Author' => $x + 65, 'Mood' => $x + 100, 'Type' => $x + 115);
+		$array = array('Id' => $x + 5, 'Name' => $x + 17, 'Author' => $x + 65, 'Type' => $x + 100, 'Mood' => $x + 115, 'Updated' => $x + 130);
 		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
 
 		$i = 0;
 		$y -= 10;
-		foreach($maps as $map) { //TODO pagers, search entry, click on nickname...
+		foreach($maps as $map) { //TODO pagers, click on nickname...
+			/** @var MxMapInfo $map */
+
+			$time = Formatter::time_elapsed_string(strtotime($map->updated));
+
 			$mapFrame = new Frame();
 			$frame->add($mapFrame);
-			$array = array($map->id => $x + 5, $map->name => $x + 17, $map->author => $x + 65, $map->mood => $x + 100, $map->maptype => $x + 115);
+			$array = array($map->id => $x + 5, $map->name => $x + 17, $map->author => $x + 65, str_replace("Arena", "", $map->maptype) => $x + 100, $map->mood => $x + 115, $time => $x + 130);
 			$this->maniaControl->manialinkManager->labelLine($mapFrame, $array);
 			$mapFrame->setY($y);
 
@@ -162,10 +178,56 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 			$y -= 4;
 			$i++;
-			if($i == self::MAX_MAPS_PER_PAGE) {
+			if($i == self::MAX_MX_MAPS_PER_PAGE) {
 				break;
 			}
 		}
+
+		$label = new Label_Text();
+		$frame->add($label);
+		$label->setPosition(-$width / 2 + 5, -$height / 2 + 10);
+		$label->setHAlign(Control::LEFT);
+		$label->setTextSize(1.3);
+		$label->setText("Search:");
+
+		$entry = new Entry();
+		$frame->add($entry);
+		$entry->setStyle(Label_Text::STYLE_TextValueSmall);
+		$entry->setHAlign(Control::LEFT);
+		$entry->setPosition(-$width / 2 + 15, -$height / 2 + 10);
+		$entry->setTextSize(1);
+		$entry->setSize($width * 0.25, 4);
+		$entry->setName('SearchString');
+
+
+		//Search for Map-Name
+		$label = new Label_Button();
+		$frame->add($label);
+		$label->setPosition(-$width / 2 + 63, -$height / 2 + 10);
+		$label->setText("MapName");
+		$label->setTextSize(1.3);
+
+		$quad = new Quad_BgsPlayerCard();
+		$frame->add($quad);
+		$quad->setPosition(-$width / 2 + 63, -$height / 2 + 10, 0.01);
+		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
+		$quad->setSize(18, 5);
+		$quad->setAction(self::ACTION_SEARCH_MAPNAME);
+
+		//Search for Author
+		$label = new Label_Button();
+		$frame->add($label);
+		$label->setPosition(-$width / 2 + 85, -$height / 2 + 10);
+		$label->setText("Author");
+		$label->setTextSize(1.3);
+
+		$quad = new Quad_BgsPlayerCard();
+		$frame->add($quad);
+		$quad->setPosition(-$width / 2 + 85, -$height / 2 + 10, 0.01);
+		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
+		$quad->setSize(18, 5);
+		$quad->setAction(self::ACTION_SEARCH_AUTHOR);
+
 
 		// TODO add MX info screen
 
