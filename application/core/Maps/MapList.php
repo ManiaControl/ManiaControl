@@ -15,7 +15,6 @@ use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\ManiaLink;
 use FML\Script\Script;
 use KarmaPlugin;
-use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ColorUtil;
@@ -68,7 +67,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$this->maniaControl->callbackManager->registerCallbackListener(MapQueue::CB_MAPQUEUE_CHANGED, $this, 'updateWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_MAPS_UPDATED, $this, 'updateWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_KARMA_UPDATED, $this, 'updateWidget');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_BEGINMAP, $this, 'updateWidget');
+		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_BEGINMAP, $this, 'updateWidget');
 		// TODO not working yet
 
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_SEARCH_MAPNAME, $this, 'showManiaExchangeList');
@@ -209,7 +208,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			}
 
 			/** @var MxMapInfo $map */
-			$time = Formatter::time_elapsed_string(strtotime($map->updated));
+			$time   = Formatter::time_elapsed_string(strtotime($map->updated));
 			$array  = array($map->id => $x + 5, $map->name => $x + 17, $map->author => $x + 65, str_replace("Arena", "", $map->maptype) => $x + 100, $map->mood => $x + 115, $time => $x + 130);
 			$labels = $this->maniaControl->manialinkManager->labelLine($mapFrame, $array);
 			/** @var  Label_Text $authorLabel */
@@ -229,8 +228,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$mxQuad->setZ(0.01);
 			$script->addTooltip($mxQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "View " . $map->name . " on Mania-Exchange"));
 
-			if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
-				// TODO: SET as setting who can add maps Add-Map-Button
+			if($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
 				$addQuad = new Quad_Icons64x64_1();
 				$mapFrame->add($addQuad);
 				$addQuad->setX($x + 59);
@@ -475,8 +473,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			// Display Maps
 			$array = array($id => $x + 5, $mxId => $x + 10, Formatter::stripDirtyCodes($map->name) => $x + 20, $map->authorNick => $x + 68);
 			$this->maniaControl->manialinkManager->labelLine($mapFrame, $array);
-			// TODO detailed mx info page with link to mxo
-			// TODO action detailed map info
+			// TODO action detailed map info including mx info
 
 			// MapQueue Description Label
 			$descriptionLabel = clone $preDefinedDescriptionLabel;
@@ -508,8 +505,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$script->addTooltip($queueLabel, $descriptionLabel);
 			}
 
-			if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
-				// TODO SET as setting who can add maps
+			if($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_REMOVE_MAP)) {
 				// erase map quad
 				$eraseLabel = new Label_Button();
 				$mapFrame->add($eraseLabel);
@@ -531,8 +527,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$script->addTooltip($eraseLabel, $descriptionLabel);
 			}
 
-			if($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
-				// TODO SET as setting who can add maps
+			if($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
 				// Switch to map
 				$switchLabel = new Label_Button();
 				$mapFrame->add($switchLabel);
@@ -630,7 +625,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$confirmFrame->add($buttLabel);
 		$buttLabel->setPosition(3.2, 0.4, 0.2);
 		$buttLabel->setSize(3, 3);
-		// $buttLabel->setTextSize(1);
 		$buttLabel->setAlign(Control::CENTER, Control::CENTER);
 
 		if(!$mapUid) {

@@ -22,10 +22,11 @@ class MapManager implements CallbackListener {
 	/**
 	 * Constants
 	 */
-	const TABLE_MAPS                 = 'mc_maps';
-	const CB_MAPS_UPDATED            = 'MapManager.MapsUpdated';
-	const CB_KARMA_UPDATED           = 'MapManager.KarmaUpdated';
-	const SETTING_PERMISSION_ADD_MAP = 'Add Maps';
+	const TABLE_MAPS                    = 'mc_maps';
+	const CB_BEGINMAP                   = 'MapManager.BeginMap';
+	const CB_MAPS_UPDATED               = 'MapManager.MapsUpdated';
+	const CB_KARMA_UPDATED              = 'MapManager.KarmaUpdated';
+	const SETTING_PERMISSION_ADD_MAP    = 'Add Maps';
 	const SETTING_PERMISSION_REMOVE_MAP = 'Remove Maps';
 
 	/**
@@ -65,8 +66,8 @@ class MapManager implements CallbackListener {
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_MAPLISTMODIFIED, $this, 'mapsModified');
 
 		//Define Rights
-		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_ADD_MAP,AuthenticationManager::AUTH_LEVEL_ADMIN);
-		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_REMOVE_MAP,AuthenticationManager::AUTH_LEVEL_ADMIN);
+		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_ADD_MAP, AuthenticationManager::AUTH_LEVEL_ADMIN);
+		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_REMOVE_MAP, AuthenticationManager::AUTH_LEVEL_ADMIN);
 	}
 
 	/**
@@ -191,7 +192,7 @@ class MapManager implements CallbackListener {
 			return false;
 		}
 		$rpcMap = $this->maniaControl->client->getResponse();
-		if(!array_key_exists($rpcMap["UId"], $this->mapsUids)) {
+		if(array_key_exists($rpcMap["UId"], $this->mapsUids)) {
 			$this->currentMap = $this->mapsUids[$rpcMap["UId"]];
 			return true;
 		}
@@ -248,6 +249,9 @@ class MapManager implements CallbackListener {
 			// can this ever happen?
 			$this->fetchCurrentMap();
 		}
+
+		// Trigger own BeginMap callback
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_BEGINMAP, array(self::CB_BEGINMAP, $this->currentMap));
 	}
 
 	/**
