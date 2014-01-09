@@ -49,8 +49,31 @@ class ManiaExchangeInfoSearcher {
 	public function updateMapObjectWithManiaExchangeIds(){
 		$maps = $this->maniaControl->mapManager->getMaps();
 
-		foreach($maps as $map){
 
+		$mapIds = array();
+		foreach($maps as $map){
+			/** @var Map $map */
+
+			//TODO prepared statement read MX id from maps database
+
+
+
+
+
+		}
+
+
+		//code...
+
+		//fetch mx info
+
+		foreach ($maps as $map){
+			/** @var Map $map */
+			//code...
+
+
+
+			//TODO prepared statment set MX id in maps database
 		}
 
 
