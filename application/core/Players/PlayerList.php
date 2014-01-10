@@ -576,12 +576,9 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$targetLogin = $actionArray[2];
 
 		switch($action) {
-			case self::ACTION_SPECTATE_PLAYER: // TODO not working yet
-				var_dump($adminLogin);
-				$this->maniaControl->client->query('ForceSpectator', $adminLogin, PlayerActions::SPECTATOR_SPECTATOR);
-				var_dump($this->maniaControl->client->getResponse());
+			case self::ACTION_SPECTATE_PLAYER:
+				$this->maniaControl->client->query('ForceSpectator', $adminLogin, PlayerActions::SPECTATOR_BUT_KEEP_SELECTABLE);
 				$this->maniaControl->client->query('ForceSpectatorTarget', $adminLogin, $targetLogin, 1);
-				var_dump($this->maniaControl->client->getResponse());
 				break;
 			case self::ACTION_OPEN_PLAYER_DETAILED:
 				$player = $this->maniaControl->playerManager->getPlayer($adminLogin);
