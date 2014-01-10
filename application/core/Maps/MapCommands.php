@@ -45,7 +45,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		$this->maniaControl->commandManager->registerCommandListener('nextmap', $this, 'command_NextMap', true);
 		$this->maniaControl->commandManager->registerCommandListener('restartmap', $this, 'command_RestartMap', true);
 		$this->maniaControl->commandManager->registerCommandListener('addmap', $this, 'command_AddMap', true);
-		$this->maniaControl->commandManager->registerCommandListener('removemap', $this, 'command_RemoveMap', true);
+		$this->maniaControl->commandManager->registerCommandListener(array('removemap', 'removethis', 'erasemap', 'erasethis'), $this, 'command_RemoveMap', true);
 
 		// Register for player chat commands
 		$this->maniaControl->commandManager->registerCommandListener(array('maps', 'list'), $this, 'command_List');
@@ -105,8 +105,8 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$this->maniaControl->chat->sendError("Couldn't remove map.", $player->login);
 			return;
 		}
-
-		$this->maniaControl->mapManager->removeMap($player, $map);
+		//RemoveMap
+		$this->maniaControl->mapManager->removeMap($player, $map->uid);
 	}
 
 	/**
@@ -120,7 +120,6 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
-		// TODO: Use MX fetcher
 		$params = explode(' ', $chatCallback[1][2], 2);
 		if(count($params) < 2) {
 			$this->maniaControl->chat->sendUsageInfo('Usage example: //addmap 1234', $player->login);

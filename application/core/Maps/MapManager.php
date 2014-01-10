@@ -150,8 +150,9 @@ class MapManager implements CallbackListener {
 			return;
 		}
 
-		$this->maniaControl->chat->sendSuccess('$<' . $admin->nickname . '$> removed $<' . $map->name . '$>');
-		$this->maniaControl->log('$<' . $admin->nickname . '$> removed $<' . $map->name . '$>', true);
+		$message = '$<' . $admin->nickname . '$> removed $<' . $map->name . '$>!';
+		$this->maniaControl->chat->sendSuccess($message);
+		$this->maniaControl->log($message, true);
 		unset($this->maps[$uid]);
 	}
 
@@ -272,7 +273,7 @@ class MapManager implements CallbackListener {
 	 * @return array
 	 */
 	public function getMaps() {
-		return $this->maps;
+		return array_values($this->maps);
 	}
 
 	/**
