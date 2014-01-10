@@ -3,6 +3,7 @@
 namespace ManiaControl\Server;
 
 use FML\Controls\Quads\Quad_Icons128x32_1;
+use FML\Controls\Quads\Quad_Icons64x64_1;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
@@ -20,8 +21,8 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 	/**
 	 * Constants
 	 */
-	const ACTION_SET_PAUSE = 'ServerCommands.SetPause';
-
+	const ACTION_SET_PAUSE   = 'ServerCommands.SetPause';
+	const ACTION_CANCEL_VOTE = 'ServerCommands.CancelVote';
 	/**
 	 * Private properties
 	 */
@@ -55,16 +56,40 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 		$this->maniaControl->commandManager->registerCommandListener('enablehorns', $this, 'command_EnableHorns', true);
 		$this->maniaControl->commandManager->registerCommandListener('disablehorns', $this, 'command_DisableHorns', true);
 
-
+		$this->maniaControl->commandManager->registerCommandListener('cancel', $this, 'command_CancelVote', true);
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_SET_PAUSE, $this, 'setPause');
 
-		//TODO correct class?
 		// Set Pause
 		$itemQuad = new Quad_Icons128x32_1(); //TODO check if mode supports it
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ManiaLinkSwitch);
 		$itemQuad->setAction(self::ACTION_SET_PAUSE);
 		$this->maniaControl->actionsMenu->addAdminMenuItem($itemQuad, 1, 'Pauses the current game.');
 
+		// Action cancel Vote
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_CANCEL_VOTE, $this, 'command_cancelVote');
+		$itemQuad = new Quad_Icons64x64_1();
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ArrowRed);
+		$itemQuad->setAction(self::ACTION_CANCEL_VOTE);
+		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 6, 'Cancel Vote');
+	}
+
+	/**
+	 * Handle //cancelvote command
+	 *
+	 * @param array  $chatCallback
+	 * @param Player $player
+	 */
+	public function command_CancelVote(array $chatCallback, Player $player) {
+		if(!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+			return;
+		}
+		$success = $this->maniaControl->client->query('CancelVote');
+		if(!$success) {
+			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
+			return;
+		}
+		$this->maniaControl->chat->sendInformation('$<' . $player->nickname . '$> canceled the Vote!');
 	}
 
 	/**
