@@ -292,6 +292,7 @@ class PlayerActions {
 			$label->setStyle(Label_Text::STYLE_TextCardMedium);
 			$label->setText($line);
 			$label->setTextColor('ff0');
+			$label->setTextSize(1.3);
 			$y -= 4;
 		}
 

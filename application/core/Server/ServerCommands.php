@@ -63,7 +63,7 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 		$itemQuad = new Quad_Icons128x32_1(); //TODO check if mode supports it
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ManiaLinkSwitch);
 		$itemQuad->setAction(self::ACTION_SET_PAUSE);
-		$this->maniaControl->actionsMenu->addAdminMenuItem($itemQuad, 1, 'Pauses the current game.');
+		$this->maniaControl->actionsMenu->addAdminMenuItem($itemQuad, 1, 'Pauses the current game');
 
 		// Action cancel Vote
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_CANCEL_VOTE, $this, 'command_cancelVote');

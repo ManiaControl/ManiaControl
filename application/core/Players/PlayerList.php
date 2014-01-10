@@ -201,7 +201,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$countryQuad->setImage("file://Skins/Avatars/Flags/{$countryCode}.dds");
 				$countryQuad->setX($x + 98);
 				$countryQuad->setSize(4, 4);
-				$countryQuad->setZ(-0.1);
+				$countryQuad->setZ(1);
 
 				$script->addTooltip($countryQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $listPlayer->nickname . " from " . $listPlayer->path));
 			}
@@ -240,7 +240,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 			$playerQuad->setSubStyle($playerQuad::SUBSTYLE_Camera);
 			$playerQuad->setSize(3.8, 3.8);
 			$script->addTooltip($playerQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Spectate " . $listPlayer->nickname));
-			$playerQuad->setAction(self::ACTION_SPECTATE_PLAYER);
+			$playerQuad->setAction(self::ACTION_SPECTATE_PLAYER . "." . $listPlayer->login);
 
 			// Player Profile Quad
 			$playerQuad = new Quad_UIConstruction_Buttons();
@@ -444,7 +444,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$quad = clone $quad;
 		$frame->add($quad);
 		$quad->setY($y);
-		$quad->setAction(self::ACTION_KICK_PLAYER . "." . $login);
+		$quad->setAction(self::ACTION_WARN_PLAYER . "." . $login);
 
 		$label = clone $label;
 		$frame->add($label);
@@ -577,8 +577,11 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 
 		switch($action) {
 			case self::ACTION_SPECTATE_PLAYER: // TODO not working yet
+				var_dump($adminLogin);
 				$this->maniaControl->client->query('ForceSpectator', $adminLogin, PlayerActions::SPECTATOR_SPECTATOR);
+				var_dump($this->maniaControl->client->getResponse());
 				$this->maniaControl->client->query('ForceSpectatorTarget', $adminLogin, $targetLogin, 1);
+				var_dump($this->maniaControl->client->getResponse());
 				break;
 			case self::ACTION_OPEN_PLAYER_DETAILED:
 				$player = $this->maniaControl->playerManager->getPlayer($adminLogin);
