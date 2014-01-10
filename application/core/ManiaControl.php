@@ -130,10 +130,11 @@ class ManiaControl implements CommandListener {
 	 * @param string $message
 	 */
 	public function log($message, $stripCodes = false) {
+		$date = date("d.M y H:i:s");
 		if($stripCodes) {
 			$message = Formatter::stripCodes($message);
 		}
-		logMessage($message);
+		logMessage($date . ' ' . $message);
 	}
 
 	/**
