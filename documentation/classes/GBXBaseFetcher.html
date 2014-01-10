@@ -1,0 +1,2629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta charset="utf-8"/>
+    <title>API Documentation</title>
+    <meta name="author" content=""/>
+    <meta name="description" content=""/>
+
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/prism.css" rel="stylesheet" media="all"/>
+    <link href="../css/template.css" rel="stylesheet" media="all"/>
+    
+    <!--[if lt IE 9]>
+    <script src="https://html5shim.googlecode.com/svn/trunk/html5.js" type="text/javascript"></script>
+    <![endif]-->
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript"></script>
+    <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <script src="../js/jquery.smooth-scroll.js"></script>
+    <script src="../js/prism.min.js"></script>
+    <!-- TODO: Add http://jscrollpane.kelvinluck.com/ to style the scrollbars for browsers not using webkit-->
+    <script type="text/javascript">
+    function loadExternalCodeSnippets() {
+        Array.prototype.slice.call(document.querySelectorAll('pre[data-src]')).forEach(function (pre) {
+            var src = pre.getAttribute('data-src');
+            var extension = (src.match(/\.(\w+)$/) || [, ''])[1];
+            var language = 'php';
+
+            var code = document.createElement('code');
+            code.className = 'language-' + language;
+
+            pre.textContent = '';
+
+            code.textContent = 'Loading…';
+
+            pre.appendChild(code);
+
+            var xhr = new XMLHttpRequest();
+
+            xhr.open('GET', src, true);
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4) {
+
+                    if (xhr.status < 400 && xhr.responseText) {
+                        code.textContent = xhr.responseText;
+
+                        Prism.highlightElement(code);
+                    }
+                    else if (xhr.status >= 400) {
+                        code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
+                    }
+                    else {
+                        code.textContent = '✖ Error: File does not exist or is empty';
+                    }
+                }
+            };
+
+            xhr.send(null);
+        });
+    }
+
+    $(document).ready(function(){
+        loadExternalCodeSnippets();
+    });
+    $('#source-view').on('shown', function () {
+        loadExternalCodeSnippets();
+    })
+</script>
+
+    <link rel="shortcut icon" href="../images/favicon.ico"/>
+    <link rel="apple-touch-icon" href="../images/apple-touch-icon.png"/>
+    <link rel="apple-touch-icon" sizes="72x72" href="../images/apple-touch-icon-72x72.png"/>
+    <link rel="apple-touch-icon" sizes="114x114" href="../images/apple-touch-icon-114x114.png"/>
+</head>
+<body>
+
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <i class="icon-ellipsis-vertical"></i>
+            </a>
+            <a class="brand" href="../index.html">API Documentation</a>
+
+            <div class="nav-collapse">
+                <ul class="nav pull-right">
+                    <li class="dropdown">
+                        <a href="../index.html" class="dropdown-toggle" data-toggle="dropdown">
+                            API Documentation <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                                                        <li><a href="../namespaces/ManiaControl.html">\ManiaControl</a></li>
+                                                        <li><a href="../namespaces/FML.html">\FML</a></li>
+                                                    </ul>
+                    </li>
+                    <li class="dropdown" id="charts-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Charts <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="../graphs/class.html">
+                                    <i class="icon-list-alt"></i>&#160;Class hierarchy diagram
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown" id="reports-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Reports <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="../reports/errors.html">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">1033</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="../reports/markers.html">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <i class="icon-list-alt"></i>&#160;Markers <span class="label label-info pull-right">29</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--<div class="go_to_top">-->
+    <!--<a href="#___" style="color: inherit">Back to top&#160;&#160;<i class="icon-upload icon-white"></i></a>-->
+    <!--</div>-->
+</div>
+
+<div id="___" class="container-fluid">
+        <section class="row-fluid">
+        <div class="span2 sidebar">
+                                <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-1149917555"></a>
+                                <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
+            </div>
+            <div id="namespace-1149917555" class="accordion-body collapse in">
+                <div class="accordion-inner">
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1877199527"></a>
+                                <a href="../namespaces/ManiaControl.html" style="margin-left: 30px; padding-left: 0">ManiaControl</a>
+            </div>
+            <div id="namespace-1877199527" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1941647552"></a>
+                                <a href="../namespaces/ManiaControl.Admin.html" style="margin-left: 30px; padding-left: 0">Admin</a>
+            </div>
+            <div id="namespace-1941647552" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/ManiaControl.Admin.ActionsMenu.html">ActionsMenu</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Admin.AuthCommands.html">AuthCommands</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Admin.AuthenticationManager.html">AuthenticationManager</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-550707382"></a>
+                                <a href="../namespaces/ManiaControl.Callbacks.html" style="margin-left: 30px; padding-left: 0">Callbacks</a>
+            </div>
+            <div id="namespace-550707382" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                    <li class="interface"><a href="../classes/ManiaControl.Callbacks.CallbackListener.html">CallbackListener</a></li>
+                                                                                                    <li class="class"><a href="../classes/ManiaControl.Callbacks.CallbackManager.html">CallbackManager</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-733267844"></a>
+                                <a href="../namespaces/ManiaControl.Commands.html" style="margin-left: 30px; padding-left: 0">Commands</a>
+            </div>
+            <div id="namespace-733267844" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                    <li class="interface"><a href="../classes/ManiaControl.Commands.CommandListener.html">CommandListener</a></li>
+                                                                                                    <li class="class"><a href="../classes/ManiaControl.Commands.CommandManager.html">CommandManager</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1627297103"></a>
+                                <a href="../namespaces/ManiaControl.Configurators.html" style="margin-left: 30px; padding-left: 0">Configurators</a>
+            </div>
+            <div id="namespace-1627297103" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                    <li class="interface"><a href="../classes/ManiaControl.Configurators.ConfiguratorMenu.html">ConfiguratorMenu</a></li>
+                                                                                                    <li class="class"><a href="../classes/ManiaControl.Configurators.Configurator.html">Configurator</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Configurators.ManiaControlSettings.html">ManiaControlSettings</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Configurators.ScriptSettings.html">ScriptSettings</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Configurators.ServerSettings.html">ServerSettings</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1082384616"></a>
+                                <a href="../namespaces/ManiaControl.Maps.html" style="margin-left: 30px; padding-left: 0">Maps</a>
+            </div>
+            <div id="namespace-1082384616" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/ManiaControl.Maps.ManiaExchangeInfoSearcher.html">ManiaExchangeInfoSearcher</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Maps.MXMapInfo.html">MXMapInfo</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Maps.Map.html">Map</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Maps.MapCommands.html">MapCommands</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Maps.MapList.html">MapList</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Maps.MapManager.html">MapManager</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Maps.MapQueue.html">MapQueue</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1073700915"></a>
+                                <a href="../namespaces/ManiaControl.Manialinks.html" style="margin-left: 30px; padding-left: 0">Manialinks</a>
+            </div>
+            <div id="namespace-1073700915" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                    <li class="interface"><a href="../classes/ManiaControl.Manialinks.ManialinkPageAnswerListener.html">ManialinkPageAnswerListener</a></li>
+                                                                                                    <li class="class"><a href="../classes/ManiaControl.Manialinks.CustomUIManager.html">CustomUIManager</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Manialinks.IconManager.html">IconManager</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Manialinks.ManialinkManager.html">ManialinkManager</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Manialinks.StyleManager.html">StyleManager</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-681670153"></a>
+                                <a href="../namespaces/ManiaControl.Players.html" style="margin-left: 30px; padding-left: 0">Players</a>
+            </div>
+            <div id="namespace-681670153" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/ManiaControl.Players.Player.html">Player</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Players.PlayerActions.html">PlayerActions</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Players.PlayerCommands.html">PlayerCommands</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Players.PlayerDetailed.html">PlayerDetailed</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Players.PlayerList.html">PlayerList</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Players.PlayerManager.html">PlayerManager</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-306044755"></a>
+                                <a href="../namespaces/ManiaControl.Plugins.html" style="margin-left: 30px; padding-left: 0">Plugins</a>
+            </div>
+            <div id="namespace-306044755" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                    <li class="interface"><a href="../classes/ManiaControl.Plugins.Plugin.html">Plugin</a></li>
+                                                                                                    <li class="class"><a href="../classes/ManiaControl.Plugins.PluginManager.html">PluginManager</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Plugins.PluginMenu.html">PluginMenu</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Plugins.ChatMessagePlugin.html">ChatMessagePlugin</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-149468948"></a>
+                                <a href="../namespaces/ManiaControl.Server.html" style="margin-left: 30px; padding-left: 0">Server</a>
+            </div>
+            <div id="namespace-149468948" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/ManiaControl.Server.Server.html">Server</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Server.ServerCommands.html">ServerCommands</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1354611012"></a>
+                                <a href="../namespaces/ManiaControl.Statistics.html" style="margin-left: 30px; padding-left: 0">Statistics</a>
+            </div>
+            <div id="namespace-1354611012" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/ManiaControl.Statistics.StatisticCollector.html">StatisticCollector</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Statistics.StatisticManager.html">StatisticManager</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/ManiaControl.Chat.html">Chat</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.ColorUtil.html">ColorUtil</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Database.html">Database</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.FileUtil.html">FileUtil</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Formatter.html">Formatter</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.ManiaControl.html">ManiaControl</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.SettingManager.html">SettingManager</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.UpdateManager.html">UpdateManager</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1090600178"></a>
+                                <a href="../namespaces/FML.html" style="margin-left: 30px; padding-left: 0">FML</a>
+            </div>
+            <div id="namespace-1090600178" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1070130934"></a>
+                                <a href="../namespaces/FML.Controls.html" style="margin-left: 30px; padding-left: 0">Controls</a>
+            </div>
+            <div id="namespace-1070130934" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1664404710"></a>
+                                <a href="../namespaces/FML.Controls.Labels.html" style="margin-left: 30px; padding-left: 0">Labels</a>
+            </div>
+            <div id="namespace-1664404710" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/FML.Controls.Labels.Label_Button.html">Label_Button</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Labels.Label_Text.html">Label_Text</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-255676127"></a>
+                                <a href="../namespaces/FML.Controls.Quads.html" style="margin-left: 30px; padding-left: 0">Quads</a>
+            </div>
+            <div id="namespace-255676127" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_321Go.html">Quad_321Go</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_BgRaceScore2.html">Quad_BgRaceScore2</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Bgs1.html">Quad_Bgs1</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Bgs1InRace.html">Quad_Bgs1InRace</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_BgsChallengeMedals.html">Quad_BgsChallengeMedals</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_BgsPlayerCard.html">Quad_BgsPlayerCard</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Copilot.html">Quad_Copilot</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Emblems.html">Quad_Emblems</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_EnergyBar.html">Quad_EnergyBar</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Hud3dEchelons.html">Quad_Hud3dEchelons</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Icons128x128_1.html">Quad_Icons128x128_1</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Icons128x128_Blink.html">Quad_Icons128x128_Blink</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Icons128x32_1.html">Quad_Icons128x32_1</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Icons64x64_1.html">Quad_Icons64x64_1</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Icons64x64_2.html">Quad_Icons64x64_2</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_ManiaPlanetLogos.html">Quad_ManiaPlanetLogos</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_ManiaplanetSystem.html">Quad_ManiaplanetSystem</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_MedalsBig.html">Quad_MedalsBig</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_TitleLogos.html">Quad_TitleLogos</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_UIConstruction_Buttons.html">Quad_UIConstruction_Buttons</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_UiSMSpectatorScoreBig.html">Quad_UiSMSpectatorScoreBig</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/FML.Controls.Audio.html">Audio</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Control.html">Control</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Entry.html">Entry</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.FileEntry.html">FileEntry</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Frame.html">Frame</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Frame3d.html">Frame3d</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Gauge.html">Gauge</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Label.html">Label</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quad.html">Quad</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Video.html">Video</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1153262497"></a>
+                                <a href="../namespaces/FML.Elements.html" style="margin-left: 30px; padding-left: 0">Elements</a>
+            </div>
+            <div id="namespace-1153262497" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/FML.Elements.Format.html">Format</a></li>
+                                                    <li class="class"><a href="../classes/FML.Elements.Including.html">Including</a></li>
+                                                    <li class="class"><a href="../classes/FML.Elements.Music.html">Music</a></li>
+                                                    <li class="class"><a href="../classes/FML.Elements.SimpleScript.html">SimpleScript</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-2011686323"></a>
+                                <a href="../namespaces/FML.Script.html" style="margin-left: 30px; padding-left: 0">Script</a>
+            </div>
+            <div id="namespace-2011686323" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/FML.Script.Builder.html">Builder</a></li>
+                                                    <li class="class"><a href="../classes/FML.Script.EUISound.html">EUISound</a></li>
+                                                    <li class="class"><a href="../classes/FML.Script.Script.html">Script</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1543953315"></a>
+                                <a href="../namespaces/FML.Types.html" style="margin-left: 30px; padding-left: 0">Types</a>
+            </div>
+            <div id="namespace-1543953315" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                    <li class="interface"><a href="../classes/FML.Types.Actionable.html">Actionable</a></li>
+                                                    <li class="interface"><a href="../classes/FML.Types.BgColorable.html">BgColorable</a></li>
+                                                    <li class="interface"><a href="../classes/FML.Types.Container.html">Container</a></li>
+                                                    <li class="interface"><a href="../classes/FML.Types.Linkable.html">Linkable</a></li>
+                                                    <li class="interface"><a href="../classes/FML.Types.NewLineable.html">NewLineable</a></li>
+                                                    <li class="interface"><a href="../classes/FML.Types.Playable.html">Playable</a></li>
+                                                    <li class="interface"><a href="../classes/FML.Types.Renderable.html">Renderable</a></li>
+                                                    <li class="interface"><a href="../classes/FML.Types.Scriptable.html">Scriptable</a></li>
+                                                    <li class="interface"><a href="../classes/FML.Types.Styleable.html">Styleable</a></li>
+                                                    <li class="interface"><a href="../classes/FML.Types.SubStyleable.html">SubStyleable</a></li>
+                                                    <li class="interface"><a href="../classes/FML.Types.TextFormatable.html">TextFormatable</a></li>
+                                                                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/FML.CustomUI.html">CustomUI</a></li>
+                                                    <li class="class"><a href="../classes/FML.ManiaLink.html">ManiaLink</a></li>
+                                                    <li class="class"><a href="../classes/FML.ManiaLinks.html">ManiaLinks</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/GBXBaseFetcher.html">GBXBaseFetcher</a></li>
+                                                    <li class="class"><a href="../classes/GBXChallMapFetcher.html">GBXChallMapFetcher</a></li>
+                                                    <li class="class"><a href="../classes/GBXChallengeFetcher.html">GBXChallengeFetcher</a></li>
+                                                    <li class="class"><a href="../classes/GBXReplayFetcher.html">GBXReplayFetcher</a></li>
+                                                    <li class="class"><a href="../classes/GBXPackFetcher.html">GBXPackFetcher</a></li>
+                                                    <li class="class"><a href="../classes/MXInfoFetcher.html">MXInfoFetcher</a></li>
+                                                    <li class="class"><a href="../classes/MXInfoSearcher.html">MXInfoSearcher</a></li>
+                                                    <li class="class"><a href="../classes/MXInfo.html">MXInfo</a></li>
+                                                    <li class="class"><a href="../classes/IXR_Value.html">IXR_Value</a></li>
+                                                    <li class="class"><a href="../classes/IXR_Message.html">IXR_Message</a></li>
+                                                    <li class="class"><a href="../classes/IXR_Request.html">IXR_Request</a></li>
+                                                    <li class="class"><a href="../classes/IXR_Error.html">IXR_Error</a></li>
+                                                    <li class="class"><a href="../classes/IXR_Date.html">IXR_Date</a></li>
+                                                    <li class="class"><a href="../classes/IXR_Base64.html">IXR_Base64</a></li>
+                                                    <li class="class"><a href="../classes/IXR_Client_Gbx.html">IXR_Client_Gbx</a></li>
+                                                    <li class="class"><a href="../classes/IXR_ClientMulticall_Gbx.html">IXR_ClientMulticall_Gbx</a></li>
+                                                    <li class="class"><a href="../classes/IXR_Value.html">IXR_Value</a></li>
+                                                    <li class="class"><a href="../classes/IXR_Message.html">IXR_Message</a></li>
+                                                    <li class="class"><a href="../classes/IXR_Request.html">IXR_Request</a></li>
+                                                    <li class="class"><a href="../classes/IXR_Error.html">IXR_Error</a></li>
+                                                    <li class="class"><a href="../classes/IXR_Date.html">IXR_Date</a></li>
+                                                    <li class="class"><a href="../classes/IXR_Base64.html">IXR_Base64</a></li>
+                                                    <li class="class"><a href="../classes/IXR_Client_Gbx.html">IXR_Client_Gbx</a></li>
+                                                    <li class="class"><a href="../classes/IXR_ClientMulticall_Gbx.html">IXR_ClientMulticall_Gbx</a></li>
+                                                    <li class="class"><a href="../classes/ChatlogPlugin.html">ChatlogPlugin</a></li>
+                                                    <li class="class"><a href="../classes/DonationPlugin.html">DonationPlugin</a></li>
+                                                    <li class="class"><a href="../classes/EndurancePlugin.html">EndurancePlugin</a></li>
+                                                    <li class="class"><a href="../classes/KarmaPlugin.html">KarmaPlugin</a></li>
+                                                    <li class="class"><a href="../classes/LocalRecordsPlugin.html">LocalRecordsPlugin</a></li>
+                                                    <li class="class"><a href="../classes/ObstaclePlugin.html">ObstaclePlugin</a></li>
+                                                    <li class="class"><a href="../classes/WidgetPlugin.html">WidgetPlugin</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        </div>
+    </section>
+    <section class="row-fluid">
+        <div class="span10 offset2">
+            <div class="row-fluid">
+                <div class="span8 content class">
+                    <nav>
+                                                <a href="../namespaces/default.html">\</a> <i class="icon-level-up"></i>
+                                            </nav>
+                    <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal"><i class="icon-code"></i></a>
+
+                    <h1><small>\</small>GBXBaseFetcher</h1>
+                    <p><em></em></p>
+                    
+
+                    <section id="summary">
+                        <h2>Summary</h2>
+                        <section class="row-fluid heading">
+                            <section class="span4">
+                                <a href="#methods">Methods</a>
+                            </section>
+                            <section class="span4">
+                                <a href="#properties">Properties</a>
+                            </section>
+                            <section class="span4">
+                                <a href="#constants">Constants</a>
+                            </section>
+                        </section>
+                        <section class="row-fluid public">
+                            <section class="span4">
+                                                                    <a href="../classes/GBXBaseFetcher.html#method___construct" class="">__construct()</a><br />
+                                                            </section>
+                            <section class="span4">
+                                                                    <a href="../classes/GBXBaseFetcher.html#property_parseXml" class="">$parseXml</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#property_xml" class="">$xml</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#property_xmlParsed" class="">$xmlParsed</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#property_authorVer" class="">$authorVer</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#property_authorLogin" class="">$authorLogin</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#property_authorNick" class="">$authorNick</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#property_authorZone" class="">$authorZone</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#property_authorEInfo" class="">$authorEInfo</a><br />
+                                                            </section>
+                            <section class="span4">
+                                                                    <a href="../classes/GBXBaseFetcher.html#constant_GBX_CHALLENGE_TMF" class="">GBX_CHALLENGE_TMF</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#constant_GBX_AUTOSAVE_TMF" class="">GBX_AUTOSAVE_TMF</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#constant_GBX_CHALLENGE_TM" class="">GBX_CHALLENGE_TM</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#constant_GBX_AUTOSAVE_TM" class="">GBX_AUTOSAVE_TM</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#constant_GBX_REPLAY_TM" class="">GBX_REPLAY_TM</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#constant_MACHINE_ENDIAN_ORDER" class="">MACHINE_ENDIAN_ORDER</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#constant_LITTLE_ENDIAN_ORDER" class="">LITTLE_ENDIAN_ORDER</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#constant_BIG_ENDIAN_ORDER" class="">BIG_ENDIAN_ORDER</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#constant_LOAD_LIMIT" class="">LOAD_LIMIT</a><br />
+                                                            </section>
+                        </section>
+                        <section class="row-fluid protected">
+                            <section class="span4">
+                                                                    <a href="../classes/GBXBaseFetcher.html#method_enableDebug" class="">enableDebug()</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#method_disableDebug" class="">disableDebug()</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#method_debugLog" class="">debugLog()</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#method_setError" class="">setError()</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#method_errorOut" class="">errorOut()</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#method_loadGBXdata" class="">loadGBXdata()</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#method_storeGBXdata" class="">storeGBXdata()</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#method_clearGBXdata" class="">clearGBXdata()</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#method_getGBXptr" class="">getGBXptr()</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#method_setGBXptr" class="">setGBXptr()</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#method_moveGBXptr" class="">moveGBXptr()</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#method_readData" class="">readData()</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#method_readInt8" class="">readInt8()</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#method_readInt16" class="">readInt16()</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#method_readInt32" class="">readInt32()</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#method_readString" class="">readString()</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#method_stripBOM" class="">stripBOM()</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#method_clearLookbacks" class="">clearLookbacks()</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#method_readLookbackString" class="">readLookbackString()</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#method_parseXMLstring" class="">parseXMLstring()</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#method_checkHeader" class="">checkHeader()</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#method_getChunksList" class="">getChunksList()</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#method_initChunk" class="">initChunk()</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#method_getXMLChunk" class="">getXMLChunk()</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#method_getAuthorFields" class="">getAuthorFields()</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#method_getAuthorChunk" class="">getAuthorChunk()</a><br />
+                                                            </section>
+                            <section class="span4">
+                                                                    <em>No protected properties found</em>
+                                                            </section>
+                            <section class="span4">
+                                <em>N/A</em>
+                            </section>
+                        </section>
+                        <section class="row-fluid private">
+                            <section class="span4">
+                                                                    <a href="../classes/GBXBaseFetcher.html#method_startTag" class="">startTag()</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#method_charData" class="">charData()</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#method_endTag" class="">endTag()</a><br />
+                                                            </section>
+                            <section class="span4">
+                                                                    <a href="../classes/GBXBaseFetcher.html#property__gbxdata" class="">$_gbxdata</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#property__gbxlen" class="">$_gbxlen</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#property__gbxptr" class="">$_gbxptr</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#property__debug" class="">$_debug</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#property__error" class="">$_error</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#property__endianess" class="">$_endianess</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#property__lookbacks" class="">$_lookbacks</a><br />
+                                                                    <a href="../classes/GBXBaseFetcher.html#property__parsestack" class="">$_parsestack</a><br />
+                                                            </section>
+                            <section class="span4">
+                                <em>N/A</em>
+                            </section>
+                        </section>
+                    </section>
+                </div>
+                <aside class="span4 detailsbar">
+                                        
+                    
+                    <dl>
+                        <dt>File</dt>
+                            <dd><a href="../files/core.GbxDataFetcher.gbxdatafetcher.inc.php.html"><div class="path-wrapper">core\GbxDataFetcher\gbxdatafetcher.inc.php</div></a></dd>
+                                                <dt>Package</dt>
+                            <dd><div class="namespace-wrapper">\Default</div></dd>
+                                                <dt>Class hierarchy</dt>
+                            <dd class="hierarchy">
+                                                                                                                                                                    <div class="namespace-wrapper">\GBXBaseFetcher</div>
+                            </dd>
+
+                        
+                        
+                        
+                        
+                                                                        </dl>
+                    <h2>Tags</h2>
+                    <table class="table table-condensed">
+                                            <tr>
+                            <th>
+                                class
+                            </th>
+                            <td>
+                                                                    <p>GBXBaseFetcher</p>
+                                                            </td>
+                        </tr>
+                                            <tr>
+                            <th>
+                                brief
+                            </th>
+                            <td>
+                                                                    <p>The base GBX class with all common functionality</p>
+                                                            </td>
+                        </tr>
+                                            <tr>
+                            <th>
+                                todo
+                            </th>
+                            <td>
+                                                            </td>
+                        </tr>
+                                        </table>
+                </aside>
+            </div>
+
+                                    <a id="constants" name="constants"></a>
+            <div class="row-fluid">
+                <div class="span8 content class">
+                    <h2>Constants</h2>
+                </div>
+                <aside class="span4 detailsbar"></aside>
+            </div>
+
+                                <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="constant_GBX_CHALLENGE_TMF" name="constant_GBX_CHALLENGE_TMF" class="anchor"></a>
+            <article id="constant_GBX_CHALLENGE_TMF" class="constant">
+                <h3 class="">GBX_CHALLENGE_TMF</h3>
+                <pre class="signature">GBX_CHALLENGE_TMF</pre>
+                <p><em></em></p>
+                
+            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="constant_GBX_AUTOSAVE_TMF" name="constant_GBX_AUTOSAVE_TMF" class="anchor"></a>
+            <article id="constant_GBX_AUTOSAVE_TMF" class="constant">
+                <h3 class="">GBX_AUTOSAVE_TMF</h3>
+                <pre class="signature">GBX_AUTOSAVE_TMF</pre>
+                <p><em></em></p>
+                
+            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="constant_GBX_CHALLENGE_TM" name="constant_GBX_CHALLENGE_TM" class="anchor"></a>
+            <article id="constant_GBX_CHALLENGE_TM" class="constant">
+                <h3 class="">GBX_CHALLENGE_TM</h3>
+                <pre class="signature">GBX_CHALLENGE_TM</pre>
+                <p><em></em></p>
+                
+            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="constant_GBX_AUTOSAVE_TM" name="constant_GBX_AUTOSAVE_TM" class="anchor"></a>
+            <article id="constant_GBX_AUTOSAVE_TM" class="constant">
+                <h3 class="">GBX_AUTOSAVE_TM</h3>
+                <pre class="signature">GBX_AUTOSAVE_TM</pre>
+                <p><em></em></p>
+                
+            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="constant_GBX_REPLAY_TM" name="constant_GBX_REPLAY_TM" class="anchor"></a>
+            <article id="constant_GBX_REPLAY_TM" class="constant">
+                <h3 class="">GBX_REPLAY_TM</h3>
+                <pre class="signature">GBX_REPLAY_TM</pre>
+                <p><em></em></p>
+                
+            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="constant_MACHINE_ENDIAN_ORDER" name="constant_MACHINE_ENDIAN_ORDER" class="anchor"></a>
+            <article id="constant_MACHINE_ENDIAN_ORDER" class="constant">
+                <h3 class="">MACHINE_ENDIAN_ORDER</h3>
+                <pre class="signature">MACHINE_ENDIAN_ORDER</pre>
+                <p><em></em></p>
+                
+            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="constant_LITTLE_ENDIAN_ORDER" name="constant_LITTLE_ENDIAN_ORDER" class="anchor"></a>
+            <article id="constant_LITTLE_ENDIAN_ORDER" class="constant">
+                <h3 class="">LITTLE_ENDIAN_ORDER</h3>
+                <pre class="signature">LITTLE_ENDIAN_ORDER</pre>
+                <p><em></em></p>
+                
+            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="constant_BIG_ENDIAN_ORDER" name="constant_BIG_ENDIAN_ORDER" class="anchor"></a>
+            <article id="constant_BIG_ENDIAN_ORDER" class="constant">
+                <h3 class="">BIG_ENDIAN_ORDER</h3>
+                <pre class="signature">BIG_ENDIAN_ORDER</pre>
+                <p><em></em></p>
+                
+            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="constant_LOAD_LIMIT" name="constant_LOAD_LIMIT" class="anchor"></a>
+            <article id="constant_LOAD_LIMIT" class="constant">
+                <h3 class="">LOAD_LIMIT</h3>
+                <pre class="signature">LOAD_LIMIT</pre>
+                <p><em></em></p>
+                
+            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                            
+                                    <a id="properties" name="properties"></a>
+            <div class="row-fluid">
+                <div class="span8 content class">
+                    <h2>Properties</h2>
+                </div>
+                <aside class="span4 detailsbar"></aside>
+            </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_parseXml" name="property_parseXml" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$parseXml</h3>
+                <pre class="signature">$parseXml</pre>
+                <p><em></em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_xml" name="property_xml" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$xml</h3>
+                <pre class="signature">$xml</pre>
+                <p><em></em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_xmlParsed" name="property_xmlParsed" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$xmlParsed</h3>
+                <pre class="signature">$xmlParsed</pre>
+                <p><em></em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_authorVer" name="property_authorVer" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$authorVer</h3>
+                <pre class="signature">$authorVer</pre>
+                <p><em></em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_authorLogin" name="property_authorLogin" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$authorLogin</h3>
+                <pre class="signature">$authorLogin</pre>
+                <p><em></em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_authorNick" name="property_authorNick" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$authorNick</h3>
+                <pre class="signature">$authorNick</pre>
+                <p><em></em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_authorZone" name="property_authorZone" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$authorZone</h3>
+                <pre class="signature">$authorZone</pre>
+                <p><em></em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_authorEInfo" name="property_authorEInfo" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$authorEInfo</h3>
+                <pre class="signature">$authorEInfo</pre>
+                <p><em></em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property__gbxdata" name="property__gbxdata" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$_gbxdata</h3>
+                <pre class="signature">$_gbxdata</pre>
+                <p><em></em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property__gbxlen" name="property__gbxlen" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$_gbxlen</h3>
+                <pre class="signature">$_gbxlen</pre>
+                <p><em></em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property__gbxptr" name="property__gbxptr" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$_gbxptr</h3>
+                <pre class="signature">$_gbxptr</pre>
+                <p><em></em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property__debug" name="property__debug" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$_debug</h3>
+                <pre class="signature">$_debug</pre>
+                <p><em></em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property__error" name="property__error" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$_error</h3>
+                <pre class="signature">$_error</pre>
+                <p><em></em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property__endianess" name="property__endianess" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$_endianess</h3>
+                <pre class="signature">$_endianess</pre>
+                <p><em></em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property__lookbacks" name="property__lookbacks" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$_lookbacks</h3>
+                <pre class="signature">$_lookbacks</pre>
+                <p><em></em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property__parsestack" name="property__parsestack" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$_parsestack</h3>
+                <pre class="signature">$_parsestack</pre>
+                <p><em></em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                            
+                                    <a id="methods" name="methods"></a>
+            <div class="row-fluid">
+                <div class="span8 content class"><h2>Methods</h2></div>
+                <aside class="span4 detailsbar"></aside>
+            </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method___construct" name="method___construct" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">__construct()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">__construct()</pre>
+                <p><em></em></p>
+                
+
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_enableDebug" name="method_enableDebug" class="anchor"></a>
+            <article class="method">
+                <h3 class="protected ">enableDebug()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">enableDebug()</pre>
+                <p><em></em></p>
+                
+
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_disableDebug" name="method_disableDebug" class="anchor"></a>
+            <article class="method">
+                <h3 class="protected ">disableDebug()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">disableDebug()</pre>
+                <p><em></em></p>
+                
+
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_debugLog" name="method_debugLog" class="anchor"></a>
+            <article class="method">
+                <h3 class="protected ">debugLog()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">debugLog( <span class="argument">$msg</span>)</pre>
+                <p><em></em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$msg</td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_setError" name="method_setError" class="anchor"></a>
+            <article class="method">
+                <h3 class="protected ">setError()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">setError( <span class="argument">$prefix</span>)</pre>
+                <p><em></em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$prefix</td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_errorOut" name="method_errorOut" class="anchor"></a>
+            <article class="method">
+                <h3 class="protected ">errorOut()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">errorOut( <span class="argument">$msg</span>,  <span class="argument">$code</span>)</pre>
+                <p><em></em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$msg</td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td></td>
+                                <td>$code</td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_loadGBXdata" name="method_loadGBXdata" class="anchor"></a>
+            <article class="method">
+                <h3 class="protected ">loadGBXdata()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">loadGBXdata( <span class="argument">$filename</span>)</pre>
+                <p><em></em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$filename</td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_storeGBXdata" name="method_storeGBXdata" class="anchor"></a>
+            <article class="method">
+                <h3 class="protected ">storeGBXdata()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">storeGBXdata( <span class="argument">$gbxdata</span>)</pre>
+                <p><em></em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$gbxdata</td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_clearGBXdata" name="method_clearGBXdata" class="anchor"></a>
+            <article class="method">
+                <h3 class="protected ">clearGBXdata()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">clearGBXdata()</pre>
+                <p><em></em></p>
+                
+
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getGBXptr" name="method_getGBXptr" class="anchor"></a>
+            <article class="method">
+                <h3 class="protected ">getGBXptr()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getGBXptr()</pre>
+                <p><em></em></p>
+                
+
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_setGBXptr" name="method_setGBXptr" class="anchor"></a>
+            <article class="method">
+                <h3 class="protected ">setGBXptr()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">setGBXptr( <span class="argument">$ptr</span>)</pre>
+                <p><em></em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$ptr</td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_moveGBXptr" name="method_moveGBXptr" class="anchor"></a>
+            <article class="method">
+                <h3 class="protected ">moveGBXptr()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">moveGBXptr( <span class="argument">$len</span>)</pre>
+                <p><em></em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$len</td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_readData" name="method_readData" class="anchor"></a>
+            <article class="method">
+                <h3 class="protected ">readData()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">readData( <span class="argument">$len</span>)</pre>
+                <p><em></em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$len</td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_readInt8" name="method_readInt8" class="anchor"></a>
+            <article class="method">
+                <h3 class="protected ">readInt8()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">readInt8()</pre>
+                <p><em></em></p>
+                
+
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_readInt16" name="method_readInt16" class="anchor"></a>
+            <article class="method">
+                <h3 class="protected ">readInt16()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">readInt16()</pre>
+                <p><em></em></p>
+                
+
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_readInt32" name="method_readInt32" class="anchor"></a>
+            <article class="method">
+                <h3 class="protected ">readInt32()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">readInt32()</pre>
+                <p><em></em></p>
+                
+
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_readString" name="method_readString" class="anchor"></a>
+            <article class="method">
+                <h3 class="protected ">readString()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">readString()</pre>
+                <p><em></em></p>
+                
+
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_stripBOM" name="method_stripBOM" class="anchor"></a>
+            <article class="method">
+                <h3 class="protected ">stripBOM()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">stripBOM( <span class="argument">$str</span>)</pre>
+                <p><em></em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$str</td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_clearLookbacks" name="method_clearLookbacks" class="anchor"></a>
+            <article class="method">
+                <h3 class="protected ">clearLookbacks()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">clearLookbacks()</pre>
+                <p><em></em></p>
+                
+
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_readLookbackString" name="method_readLookbackString" class="anchor"></a>
+            <article class="method">
+                <h3 class="protected ">readLookbackString()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">readLookbackString()</pre>
+                <p><em></em></p>
+                
+
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_parseXMLstring" name="method_parseXMLstring" class="anchor"></a>
+            <article class="method">
+                <h3 class="protected ">parseXMLstring()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">parseXMLstring()</pre>
+                <p><em></em></p>
+                
+
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_checkHeader" name="method_checkHeader" class="anchor"></a>
+            <article class="method">
+                <h3 class="protected ">checkHeader()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">checkHeader(Array <span class="argument">$classes</span>) : \Size</pre>
+                <p><em>Check GBX header, main class ID &amp; header block</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>Array</td>
+                                <td>$classes</td>
+                                <td><p>The main class IDs accepted for this GBX</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    \Size
+                                            &mdash; <p>of GBX header block</p>
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getChunksList" name="method_getChunksList" class="anchor"></a>
+            <article class="method">
+                <h3 class="protected ">getChunksList()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getChunksList(Int <span class="argument">$headerSize</span>, array <span class="argument">$chunks</span>) : \List</pre>
+                <p><em>Get list of chunks from GBX header block</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>Int</td>
+                                <td>$headerSize</td>
+                                <td><p>Size of header block (chunks list &amp; chunks data)</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>array</td>
+                                <td>$chunks</td>
+                                <td><p>List of chunk IDs &amp; names</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    \List
+                                            &mdash; <p>of chunk offsets &amp; sizes</p>
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_initChunk" name="method_initChunk" class="anchor"></a>
+            <article class="method">
+                <h3 class="protected ">initChunk()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">initChunk(int <span class="argument">$offset</span>)</pre>
+                <p><em>Initialize for a new chunk</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>int</td>
+                                <td>$offset</td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getXMLChunk" name="method_getXMLChunk" class="anchor"></a>
+            <article class="method">
+                <h3 class="protected ">getXMLChunk()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getXMLChunk(array <span class="argument">$chunksList</span>)</pre>
+                <p><em>Get XML chunk from GBX header block &amp; optionally parse it</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>array</td>
+                                <td>$chunksList</td>
+                                <td><p>List of chunk offsets &amp; sizes</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getAuthorFields" name="method_getAuthorFields" class="anchor"></a>
+            <article class="method">
+                <h3 class="protected ">getAuthorFields()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getAuthorFields()</pre>
+                <p><em>Get Author fields from GBX header block</em></p>
+                
+
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getAuthorChunk" name="method_getAuthorChunk" class="anchor"></a>
+            <article class="method">
+                <h3 class="protected ">getAuthorChunk()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getAuthorChunk(array <span class="argument">$chunksList</span>)</pre>
+                <p><em>Get Author chunk from GBX header block</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>array</td>
+                                <td>$chunksList</td>
+                                <td><p>List of chunk offsets &amp; sizes</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_startTag" name="method_startTag" class="anchor"></a>
+            <article class="method">
+                <h3 class="private ">startTag()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">startTag( <span class="argument">$parser</span>,  <span class="argument">$name</span>,  <span class="argument">$attribs</span>)</pre>
+                <p><em></em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$parser</td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td></td>
+                                <td>$name</td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td></td>
+                                <td>$attribs</td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_charData" name="method_charData" class="anchor"></a>
+            <article class="method">
+                <h3 class="private ">charData()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">charData( <span class="argument">$parser</span>,  <span class="argument">$data</span>)</pre>
+                <p><em></em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$parser</td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td></td>
+                                <td>$data</td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_endTag" name="method_endTag" class="anchor"></a>
+            <article class="method">
+                <h3 class="private ">endTag()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">endTag( <span class="argument">$parser</span>,  <span class="argument">$name</span>)</pre>
+                <p><em></em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$parser</td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td></td>
+                                <td>$name</td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    </div>
+    </section>
+
+    <div id="source-view" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="source-view-label" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="source-view-label">gbxdatafetcher.inc.php</h3>
+        </div>
+        <div class="modal-body">
+            <pre data-src="../files/core\GbxDataFetcher\gbxdatafetcher.inc.php.txt" class="language-php line-numbers"></pre>
+        </div>
+    </div>
+
+    <footer class="row-fluid">
+        <section class="span10 offset2">
+            <section class="row-fluid">
+                <section class="span10 offset1">
+                    <section class="row-fluid footer-sections">
+                        <section class="span4">
+                                                        <h1><i class="icon-code"></i></h1>
+                            <div>
+                                <ul>
+                                                                            <li><a href="../namespaces/ManiaControl.html">\ManiaControl</a></li>
+                                                                            <li><a href="../namespaces/FML.html">\FML</a></li>
+                                                                    </ul>
+                            </div>
+                        </section>
+                        <section class="span4">
+                                                        <h1><i class="icon-bar-chart"></i></h1>
+                            <div>
+                                <ul>
+                                    <li><a href="../graphs/class.html">Class Hierarchy Diagram</a></li>
+                                </ul>
+                            </div>
+                        </section>
+                        <section class="span4">
+                                                        <h1><i class="icon-pushpin"></i></h1>
+                            <div>
+                                <ul>
+                                    <li><a href="../reports/errors.html">Errors</a></li>
+                                    <li><a href="../reports/markers.html">Markers</a></li>
+                                </ul>
+                            </div>
+                        </section>
+                    </section>
+                </section>
+            </section>
+            <section class="row-fluid">
+                <section class="span10 offset1">
+                    <hr />
+                    Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
+                    on January 10th, 2014 at 22:14.
+                </section>
+            </section>
+        </section>
+    </footer>
+</div>
+
+</body>
+</html>

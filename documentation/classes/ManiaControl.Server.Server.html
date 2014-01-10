@@ -1,0 +1,1642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta charset="utf-8"/>
+    <title>API Documentation</title>
+    <meta name="author" content=""/>
+    <meta name="description" content=""/>
+
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/prism.css" rel="stylesheet" media="all"/>
+    <link href="../css/template.css" rel="stylesheet" media="all"/>
+    
+    <!--[if lt IE 9]>
+    <script src="https://html5shim.googlecode.com/svn/trunk/html5.js" type="text/javascript"></script>
+    <![endif]-->
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript"></script>
+    <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <script src="../js/jquery.smooth-scroll.js"></script>
+    <script src="../js/prism.min.js"></script>
+    <!-- TODO: Add http://jscrollpane.kelvinluck.com/ to style the scrollbars for browsers not using webkit-->
+    <script type="text/javascript">
+    function loadExternalCodeSnippets() {
+        Array.prototype.slice.call(document.querySelectorAll('pre[data-src]')).forEach(function (pre) {
+            var src = pre.getAttribute('data-src');
+            var extension = (src.match(/\.(\w+)$/) || [, ''])[1];
+            var language = 'php';
+
+            var code = document.createElement('code');
+            code.className = 'language-' + language;
+
+            pre.textContent = '';
+
+            code.textContent = 'Loading…';
+
+            pre.appendChild(code);
+
+            var xhr = new XMLHttpRequest();
+
+            xhr.open('GET', src, true);
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4) {
+
+                    if (xhr.status < 400 && xhr.responseText) {
+                        code.textContent = xhr.responseText;
+
+                        Prism.highlightElement(code);
+                    }
+                    else if (xhr.status >= 400) {
+                        code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
+                    }
+                    else {
+                        code.textContent = '✖ Error: File does not exist or is empty';
+                    }
+                }
+            };
+
+            xhr.send(null);
+        });
+    }
+
+    $(document).ready(function(){
+        loadExternalCodeSnippets();
+    });
+    $('#source-view').on('shown', function () {
+        loadExternalCodeSnippets();
+    })
+</script>
+
+    <link rel="shortcut icon" href="../images/favicon.ico"/>
+    <link rel="apple-touch-icon" href="../images/apple-touch-icon.png"/>
+    <link rel="apple-touch-icon" sizes="72x72" href="../images/apple-touch-icon-72x72.png"/>
+    <link rel="apple-touch-icon" sizes="114x114" href="../images/apple-touch-icon-114x114.png"/>
+</head>
+<body>
+
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <i class="icon-ellipsis-vertical"></i>
+            </a>
+            <a class="brand" href="../index.html">API Documentation</a>
+
+            <div class="nav-collapse">
+                <ul class="nav pull-right">
+                    <li class="dropdown">
+                        <a href="../index.html" class="dropdown-toggle" data-toggle="dropdown">
+                            API Documentation <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                                                        <li><a href="../namespaces/ManiaControl.html">\ManiaControl</a></li>
+                                                        <li><a href="../namespaces/FML.html">\FML</a></li>
+                                                    </ul>
+                    </li>
+                    <li class="dropdown" id="charts-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Charts <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="../graphs/class.html">
+                                    <i class="icon-list-alt"></i>&#160;Class hierarchy diagram
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown" id="reports-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Reports <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="../reports/errors.html">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">1033</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="../reports/markers.html">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <i class="icon-list-alt"></i>&#160;Markers <span class="label label-info pull-right">29</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--<div class="go_to_top">-->
+    <!--<a href="#___" style="color: inherit">Back to top&#160;&#160;<i class="icon-upload icon-white"></i></a>-->
+    <!--</div>-->
+</div>
+
+<div id="___" class="container-fluid">
+        <section class="row-fluid">
+        <div class="span2 sidebar">
+                                <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-205860663"></a>
+                                <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
+            </div>
+            <div id="namespace-205860663" class="accordion-body collapse in">
+                <div class="accordion-inner">
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-117239972"></a>
+                                <a href="../namespaces/ManiaControl.html" style="margin-left: 30px; padding-left: 0">ManiaControl</a>
+            </div>
+            <div id="namespace-117239972" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-562778664"></a>
+                                <a href="../namespaces/ManiaControl.Admin.html" style="margin-left: 30px; padding-left: 0">Admin</a>
+            </div>
+            <div id="namespace-562778664" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/ManiaControl.Admin.ActionsMenu.html">ActionsMenu</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Admin.AuthCommands.html">AuthCommands</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Admin.AuthenticationManager.html">AuthenticationManager</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1426309611"></a>
+                                <a href="../namespaces/ManiaControl.Callbacks.html" style="margin-left: 30px; padding-left: 0">Callbacks</a>
+            </div>
+            <div id="namespace-1426309611" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                    <li class="interface"><a href="../classes/ManiaControl.Callbacks.CallbackListener.html">CallbackListener</a></li>
+                                                                                                    <li class="class"><a href="../classes/ManiaControl.Callbacks.CallbackManager.html">CallbackManager</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1418901260"></a>
+                                <a href="../namespaces/ManiaControl.Commands.html" style="margin-left: 30px; padding-left: 0">Commands</a>
+            </div>
+            <div id="namespace-1418901260" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                    <li class="interface"><a href="../classes/ManiaControl.Commands.CommandListener.html">CommandListener</a></li>
+                                                                                                    <li class="class"><a href="../classes/ManiaControl.Commands.CommandManager.html">CommandManager</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1691355880"></a>
+                                <a href="../namespaces/ManiaControl.Configurators.html" style="margin-left: 30px; padding-left: 0">Configurators</a>
+            </div>
+            <div id="namespace-1691355880" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                    <li class="interface"><a href="../classes/ManiaControl.Configurators.ConfiguratorMenu.html">ConfiguratorMenu</a></li>
+                                                                                                    <li class="class"><a href="../classes/ManiaControl.Configurators.Configurator.html">Configurator</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Configurators.ManiaControlSettings.html">ManiaControlSettings</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Configurators.ScriptSettings.html">ScriptSettings</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Configurators.ServerSettings.html">ServerSettings</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-2008384070"></a>
+                                <a href="../namespaces/ManiaControl.Maps.html" style="margin-left: 30px; padding-left: 0">Maps</a>
+            </div>
+            <div id="namespace-2008384070" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/ManiaControl.Maps.ManiaExchangeInfoSearcher.html">ManiaExchangeInfoSearcher</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Maps.MXMapInfo.html">MXMapInfo</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Maps.Map.html">Map</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Maps.MapCommands.html">MapCommands</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Maps.MapList.html">MapList</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Maps.MapManager.html">MapManager</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Maps.MapQueue.html">MapQueue</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-99110813"></a>
+                                <a href="../namespaces/ManiaControl.Manialinks.html" style="margin-left: 30px; padding-left: 0">Manialinks</a>
+            </div>
+            <div id="namespace-99110813" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                    <li class="interface"><a href="../classes/ManiaControl.Manialinks.ManialinkPageAnswerListener.html">ManialinkPageAnswerListener</a></li>
+                                                                                                    <li class="class"><a href="../classes/ManiaControl.Manialinks.CustomUIManager.html">CustomUIManager</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Manialinks.IconManager.html">IconManager</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Manialinks.ManialinkManager.html">ManialinkManager</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Manialinks.StyleManager.html">StyleManager</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-700916688"></a>
+                                <a href="../namespaces/ManiaControl.Players.html" style="margin-left: 30px; padding-left: 0">Players</a>
+            </div>
+            <div id="namespace-700916688" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/ManiaControl.Players.Player.html">Player</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Players.PlayerActions.html">PlayerActions</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Players.PlayerCommands.html">PlayerCommands</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Players.PlayerDetailed.html">PlayerDetailed</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Players.PlayerList.html">PlayerList</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Players.PlayerManager.html">PlayerManager</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-993238179"></a>
+                                <a href="../namespaces/ManiaControl.Plugins.html" style="margin-left: 30px; padding-left: 0">Plugins</a>
+            </div>
+            <div id="namespace-993238179" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                    <li class="interface"><a href="../classes/ManiaControl.Plugins.Plugin.html">Plugin</a></li>
+                                                                                                    <li class="class"><a href="../classes/ManiaControl.Plugins.PluginManager.html">PluginManager</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Plugins.PluginMenu.html">PluginMenu</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Plugins.ChatMessagePlugin.html">ChatMessagePlugin</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1609570477"></a>
+                                <a href="../namespaces/ManiaControl.Server.html" style="margin-left: 30px; padding-left: 0">Server</a>
+            </div>
+            <div id="namespace-1609570477" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/ManiaControl.Server.Server.html">Server</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Server.ServerCommands.html">ServerCommands</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-338901882"></a>
+                                <a href="../namespaces/ManiaControl.Statistics.html" style="margin-left: 30px; padding-left: 0">Statistics</a>
+            </div>
+            <div id="namespace-338901882" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/ManiaControl.Statistics.StatisticCollector.html">StatisticCollector</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Statistics.StatisticManager.html">StatisticManager</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/ManiaControl.Chat.html">Chat</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.ColorUtil.html">ColorUtil</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Database.html">Database</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.FileUtil.html">FileUtil</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.Formatter.html">Formatter</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.ManiaControl.html">ManiaControl</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.SettingManager.html">SettingManager</a></li>
+                                                    <li class="class"><a href="../classes/ManiaControl.UpdateManager.html">UpdateManager</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1787409857"></a>
+                                <a href="../namespaces/FML.html" style="margin-left: 30px; padding-left: 0">FML</a>
+            </div>
+            <div id="namespace-1787409857" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-234370621"></a>
+                                <a href="../namespaces/FML.Controls.html" style="margin-left: 30px; padding-left: 0">Controls</a>
+            </div>
+            <div id="namespace-234370621" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-940176215"></a>
+                                <a href="../namespaces/FML.Controls.Labels.html" style="margin-left: 30px; padding-left: 0">Labels</a>
+            </div>
+            <div id="namespace-940176215" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/FML.Controls.Labels.Label_Button.html">Label_Button</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Labels.Label_Text.html">Label_Text</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-2112701385"></a>
+                                <a href="../namespaces/FML.Controls.Quads.html" style="margin-left: 30px; padding-left: 0">Quads</a>
+            </div>
+            <div id="namespace-2112701385" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_321Go.html">Quad_321Go</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_BgRaceScore2.html">Quad_BgRaceScore2</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Bgs1.html">Quad_Bgs1</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Bgs1InRace.html">Quad_Bgs1InRace</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_BgsChallengeMedals.html">Quad_BgsChallengeMedals</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_BgsPlayerCard.html">Quad_BgsPlayerCard</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Copilot.html">Quad_Copilot</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Emblems.html">Quad_Emblems</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_EnergyBar.html">Quad_EnergyBar</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Hud3dEchelons.html">Quad_Hud3dEchelons</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Icons128x128_1.html">Quad_Icons128x128_1</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Icons128x128_Blink.html">Quad_Icons128x128_Blink</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Icons128x32_1.html">Quad_Icons128x32_1</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Icons64x64_1.html">Quad_Icons64x64_1</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Icons64x64_2.html">Quad_Icons64x64_2</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_ManiaPlanetLogos.html">Quad_ManiaPlanetLogos</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_ManiaplanetSystem.html">Quad_ManiaplanetSystem</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_MedalsBig.html">Quad_MedalsBig</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_TitleLogos.html">Quad_TitleLogos</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_UIConstruction_Buttons.html">Quad_UIConstruction_Buttons</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_UiSMSpectatorScoreBig.html">Quad_UiSMSpectatorScoreBig</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/FML.Controls.Audio.html">Audio</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Control.html">Control</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Entry.html">Entry</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.FileEntry.html">FileEntry</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Frame.html">Frame</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Frame3d.html">Frame3d</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Gauge.html">Gauge</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Label.html">Label</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Quad.html">Quad</a></li>
+                                                    <li class="class"><a href="../classes/FML.Controls.Video.html">Video</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1979377277"></a>
+                                <a href="../namespaces/FML.Elements.html" style="margin-left: 30px; padding-left: 0">Elements</a>
+            </div>
+            <div id="namespace-1979377277" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/FML.Elements.Format.html">Format</a></li>
+                                                    <li class="class"><a href="../classes/FML.Elements.Including.html">Including</a></li>
+                                                    <li class="class"><a href="../classes/FML.Elements.Music.html">Music</a></li>
+                                                    <li class="class"><a href="../classes/FML.Elements.SimpleScript.html">SimpleScript</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1064425228"></a>
+                                <a href="../namespaces/FML.Script.html" style="margin-left: 30px; padding-left: 0">Script</a>
+            </div>
+            <div id="namespace-1064425228" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/FML.Script.Builder.html">Builder</a></li>
+                                                    <li class="class"><a href="../classes/FML.Script.EUISound.html">EUISound</a></li>
+                                                    <li class="class"><a href="../classes/FML.Script.Script.html">Script</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1408774307"></a>
+                                <a href="../namespaces/FML.Types.html" style="margin-left: 30px; padding-left: 0">Types</a>
+            </div>
+            <div id="namespace-1408774307" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                    <li class="interface"><a href="../classes/FML.Types.Actionable.html">Actionable</a></li>
+                                                    <li class="interface"><a href="../classes/FML.Types.BgColorable.html">BgColorable</a></li>
+                                                    <li class="interface"><a href="../classes/FML.Types.Container.html">Container</a></li>
+                                                    <li class="interface"><a href="../classes/FML.Types.Linkable.html">Linkable</a></li>
+                                                    <li class="interface"><a href="../classes/FML.Types.NewLineable.html">NewLineable</a></li>
+                                                    <li class="interface"><a href="../classes/FML.Types.Playable.html">Playable</a></li>
+                                                    <li class="interface"><a href="../classes/FML.Types.Renderable.html">Renderable</a></li>
+                                                    <li class="interface"><a href="../classes/FML.Types.Scriptable.html">Scriptable</a></li>
+                                                    <li class="interface"><a href="../classes/FML.Types.Styleable.html">Styleable</a></li>
+                                                    <li class="interface"><a href="../classes/FML.Types.SubStyleable.html">SubStyleable</a></li>
+                                                    <li class="interface"><a href="../classes/FML.Types.TextFormatable.html">TextFormatable</a></li>
+                                                                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/FML.CustomUI.html">CustomUI</a></li>
+                                                    <li class="class"><a href="../classes/FML.ManiaLink.html">ManiaLink</a></li>
+                                                    <li class="class"><a href="../classes/FML.ManiaLinks.html">ManiaLinks</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/GBXBaseFetcher.html">GBXBaseFetcher</a></li>
+                                                    <li class="class"><a href="../classes/GBXChallMapFetcher.html">GBXChallMapFetcher</a></li>
+                                                    <li class="class"><a href="../classes/GBXChallengeFetcher.html">GBXChallengeFetcher</a></li>
+                                                    <li class="class"><a href="../classes/GBXReplayFetcher.html">GBXReplayFetcher</a></li>
+                                                    <li class="class"><a href="../classes/GBXPackFetcher.html">GBXPackFetcher</a></li>
+                                                    <li class="class"><a href="../classes/MXInfoFetcher.html">MXInfoFetcher</a></li>
+                                                    <li class="class"><a href="../classes/MXInfoSearcher.html">MXInfoSearcher</a></li>
+                                                    <li class="class"><a href="../classes/MXInfo.html">MXInfo</a></li>
+                                                    <li class="class"><a href="../classes/IXR_Value.html">IXR_Value</a></li>
+                                                    <li class="class"><a href="../classes/IXR_Message.html">IXR_Message</a></li>
+                                                    <li class="class"><a href="../classes/IXR_Request.html">IXR_Request</a></li>
+                                                    <li class="class"><a href="../classes/IXR_Error.html">IXR_Error</a></li>
+                                                    <li class="class"><a href="../classes/IXR_Date.html">IXR_Date</a></li>
+                                                    <li class="class"><a href="../classes/IXR_Base64.html">IXR_Base64</a></li>
+                                                    <li class="class"><a href="../classes/IXR_Client_Gbx.html">IXR_Client_Gbx</a></li>
+                                                    <li class="class"><a href="../classes/IXR_ClientMulticall_Gbx.html">IXR_ClientMulticall_Gbx</a></li>
+                                                    <li class="class"><a href="../classes/IXR_Value.html">IXR_Value</a></li>
+                                                    <li class="class"><a href="../classes/IXR_Message.html">IXR_Message</a></li>
+                                                    <li class="class"><a href="../classes/IXR_Request.html">IXR_Request</a></li>
+                                                    <li class="class"><a href="../classes/IXR_Error.html">IXR_Error</a></li>
+                                                    <li class="class"><a href="../classes/IXR_Date.html">IXR_Date</a></li>
+                                                    <li class="class"><a href="../classes/IXR_Base64.html">IXR_Base64</a></li>
+                                                    <li class="class"><a href="../classes/IXR_Client_Gbx.html">IXR_Client_Gbx</a></li>
+                                                    <li class="class"><a href="../classes/IXR_ClientMulticall_Gbx.html">IXR_ClientMulticall_Gbx</a></li>
+                                                    <li class="class"><a href="../classes/ChatlogPlugin.html">ChatlogPlugin</a></li>
+                                                    <li class="class"><a href="../classes/DonationPlugin.html">DonationPlugin</a></li>
+                                                    <li class="class"><a href="../classes/EndurancePlugin.html">EndurancePlugin</a></li>
+                                                    <li class="class"><a href="../classes/KarmaPlugin.html">KarmaPlugin</a></li>
+                                                    <li class="class"><a href="../classes/LocalRecordsPlugin.html">LocalRecordsPlugin</a></li>
+                                                    <li class="class"><a href="../classes/ObstaclePlugin.html">ObstaclePlugin</a></li>
+                                                    <li class="class"><a href="../classes/WidgetPlugin.html">WidgetPlugin</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        </div>
+    </section>
+    <section class="row-fluid">
+        <div class="span10 offset2">
+            <div class="row-fluid">
+                <div class="span8 content class">
+                    <nav>
+                                                <a href="../namespaces/ManiaControl.Server.html">\ManiaControl\Server</a> <i class="icon-level-up"></i>
+                                            </nav>
+                    <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal"><i class="icon-code"></i></a>
+
+                    <h1><small>\ManiaControl\Server</small>Server</h1>
+                    <p><em>Class providing Information about theconnected ManiaPlanet Server</em></p>
+                    
+
+                    <section id="summary">
+                        <h2>Summary</h2>
+                        <section class="row-fluid heading">
+                            <section class="span4">
+                                <a href="#methods">Methods</a>
+                            </section>
+                            <section class="span4">
+                                <a href="#properties">Properties</a>
+                            </section>
+                            <section class="span4">
+                                <a href="#constants">Constants</a>
+                            </section>
+                        </section>
+                        <section class="row-fluid public">
+                            <section class="span4">
+                                                                    <a href="../classes/ManiaControl.Server.Server.html#method___construct" class="">__construct()</a><br />
+                                                                    <a href="../classes/ManiaControl.Server.Server.html#method_onInit" class="">onInit()</a><br />
+                                                                    <a href="../classes/ManiaControl.Server.Server.html#method_getDataDirectory" class="">getDataDirectory()</a><br />
+                                                                    <a href="../classes/ManiaControl.Server.Server.html#method_getMapsDirectory" class="">getMapsDirectory()</a><br />
+                                                                    <a href="../classes/ManiaControl.Server.Server.html#method_checkAccess" class="">checkAccess()</a><br />
+                                                                    <a href="../classes/ManiaControl.Server.Server.html#method_getInfo" class="">getInfo()</a><br />
+                                                                    <a href="../classes/ManiaControl.Server.Server.html#method_getOptions" class="">getOptions()</a><br />
+                                                                    <a href="../classes/ManiaControl.Server.Server.html#method_getName" class="">getName()</a><br />
+                                                                    <a href="../classes/ManiaControl.Server.Server.html#method_getVersion" class="">getVersion()</a><br />
+                                                                    <a href="../classes/ManiaControl.Server.Server.html#method_getSystemInfo" class="">getSystemInfo()</a><br />
+                                                                    <a href="../classes/ManiaControl.Server.Server.html#method_getGameMode" class="">getGameMode()</a><br />
+                                                                    <a href="../classes/ManiaControl.Server.Server.html#method_getValidationReplay" class="">getValidationReplay()</a><br />
+                                                                    <a href="../classes/ManiaControl.Server.Server.html#method_getGhostReplay" class="">getGhostReplay()</a><br />
+                                                                    <a href="../classes/ManiaControl.Server.Server.html#method_waitForStatus" class="">waitForStatus()</a><br />
+                                                            </section>
+                            <section class="span4">
+                                                                    <a href="../classes/ManiaControl.Server.Server.html#property_index" class="">$index</a><br />
+                                                                    <a href="../classes/ManiaControl.Server.Server.html#property_ip" class="">$ip</a><br />
+                                                                    <a href="../classes/ManiaControl.Server.Server.html#property_port" class="">$port</a><br />
+                                                                    <a href="../classes/ManiaControl.Server.Server.html#property_p2pPort" class="">$p2pPort</a><br />
+                                                                    <a href="../classes/ManiaControl.Server.Server.html#property_login" class="">$login</a><br />
+                                                                    <a href="../classes/ManiaControl.Server.Server.html#property_titleId" class="">$titleId</a><br />
+                                                                    <a href="../classes/ManiaControl.Server.Server.html#property_serverCommands" class="">$serverCommands</a><br />
+                                                            </section>
+                            <section class="span4">
+                                                                    <a href="../classes/ManiaControl.Server.Server.html#constant_TABLE_SERVERS" class="">TABLE_SERVERS</a><br />
+                                                            </section>
+                        </section>
+                        <section class="row-fluid protected">
+                            <section class="span4">
+                                                                    <em>No protected methods found</em>
+                                                            </section>
+                            <section class="span4">
+                                                                    <em>No protected properties found</em>
+                                                            </section>
+                            <section class="span4">
+                                <em>N/A</em>
+                            </section>
+                        </section>
+                        <section class="row-fluid private">
+                            <section class="span4">
+                                                                    <a href="../classes/ManiaControl.Server.Server.html#method_updateProperties" class="">updateProperties()</a><br />
+                                                                    <a href="../classes/ManiaControl.Server.Server.html#method_initTables" class="">initTables()</a><br />
+                                                            </section>
+                            <section class="span4">
+                                                                    <a href="../classes/ManiaControl.Server.Server.html#property_maniaControl" class="">$maniaControl</a><br />
+                                                            </section>
+                            <section class="span4">
+                                <em>N/A</em>
+                            </section>
+                        </section>
+                    </section>
+                </div>
+                <aside class="span4 detailsbar">
+                                        
+                    
+                    <dl>
+                        <dt>File</dt>
+                            <dd><a href="../files/core.Server.Server.php.html"><div class="path-wrapper">core\Server\Server.php</div></a></dd>
+                                                <dt>Package</dt>
+                            <dd><div class="namespace-wrapper">\Default</div></dd>
+                                                <dt>Class hierarchy</dt>
+                            <dd class="hierarchy">
+                                                                                                                                                                    <div class="namespace-wrapper">\ManiaControl\Server\Server</div>
+                            </dd>
+
+                        
+                        
+                        
+                        
+                                                                        </dl>
+                    <h2>Tags</h2>
+                    <table class="table table-condensed">
+                                            <tr>
+                            <th>
+                                author
+                            </th>
+                            <td>
+                                                                    <p>steeffeen &amp; kremsy</p>
+                                                            </td>
+                        </tr>
+                                            <tr>
+                            <th>
+                                todo
+                            </th>
+                            <td>
+                                                            </td>
+                        </tr>
+                                        </table>
+                </aside>
+            </div>
+
+                                    <a id="constants" name="constants"></a>
+            <div class="row-fluid">
+                <div class="span8 content class">
+                    <h2>Constants</h2>
+                </div>
+                <aside class="span4 detailsbar"></aside>
+            </div>
+
+                                <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="constant_TABLE_SERVERS" name="constant_TABLE_SERVERS" class="anchor"></a>
+            <article id="constant_TABLE_SERVERS" class="constant">
+                <h3 class="">TABLE_SERVERS</h3>
+                <pre class="signature">TABLE_SERVERS</pre>
+                <p><em>Constants</em></p>
+                
+            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                            
+                                    <a id="properties" name="properties"></a>
+            <div class="row-fluid">
+                <div class="span8 content class">
+                    <h2>Properties</h2>
+                </div>
+                <aside class="span4 detailsbar"></aside>
+            </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_index" name="property_index" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$index</h3>
+                <pre class="signature">$index</pre>
+                <p><em>Public Properties</em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_ip" name="property_ip" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$ip</h3>
+                <pre class="signature">$ip</pre>
+                <p><em></em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_port" name="property_port" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$port</h3>
+                <pre class="signature">$port</pre>
+                <p><em></em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_p2pPort" name="property_p2pPort" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$p2pPort</h3>
+                <pre class="signature">$p2pPort</pre>
+                <p><em></em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_login" name="property_login" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$login</h3>
+                <pre class="signature">$login</pre>
+                <p><em></em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_titleId" name="property_titleId" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$titleId</h3>
+                <pre class="signature">$titleId</pre>
+                <p><em></em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_serverCommands" name="property_serverCommands" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$serverCommands</h3>
+                <pre class="signature">$serverCommands</pre>
+                <p><em></em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_maniaControl" name="property_maniaControl" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$maniaControl</h3>
+                <pre class="signature">$maniaControl</pre>
+                <p><em>Private Properties</em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                            
+                                    <a id="methods" name="methods"></a>
+            <div class="row-fluid">
+                <div class="span8 content class"><h2>Methods</h2></div>
+                <aside class="span4 detailsbar"></aside>
+            </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method___construct" name="method___construct" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">__construct()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">__construct(\ManiaControl\ManiaControl <span class="argument">$maniaControl</span>)</pre>
+                <p><em>Construct a new Server</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td><a href="../classes/ManiaControl.ManiaControl.html">\ManiaControl\ManiaControl</a></td>
+                                <td>$maniaControl</td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_onInit" name="method_onInit" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">onInit()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">onInit(array <span class="argument">$callback</span>)</pre>
+                <p><em>Handle OnInit Callback</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>array</td>
+                                <td>$callback</td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getDataDirectory" name="method_getDataDirectory" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getDataDirectory()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getDataDirectory() : string</pre>
+                <p><em>Fetch Game Data Directory</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getMapsDirectory" name="method_getMapsDirectory" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getMapsDirectory()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getMapsDirectory() : string</pre>
+                <p><em>Fetch Maps Directory</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_checkAccess" name="method_checkAccess" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">checkAccess()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">checkAccess(string <span class="argument">$directory</span>) : bool</pre>
+                <p><em>Checks if ManiaControl has Access to the given Directory</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$directory</td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    bool
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getInfo" name="method_getInfo" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getInfo()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getInfo(bool <span class="argument">$detailed</span>) : array</pre>
+                <p><em>Get the Server Info</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>bool</td>
+                                <td>$detailed</td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    array
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getOptions" name="method_getOptions" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getOptions()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getOptions() : array</pre>
+                <p><em>Get Server Options</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    array
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getName" name="method_getName" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getName()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getName() : string</pre>
+                <p><em>Fetch current Server Name</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getVersion" name="method_getVersion" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getVersion()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getVersion() : string</pre>
+                <p><em>Fetch Server Version</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getSystemInfo" name="method_getSystemInfo" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getSystemInfo()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getSystemInfo() : array</pre>
+                <p><em>Fetch Server System Info</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    array
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getGameMode" name="method_getGameMode" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getGameMode()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getGameMode(bool <span class="argument">$stringValue</span>, int <span class="argument">$parseValue</span>) : int</pre>
+                <p><em>Fetch current Game Mode</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>bool</td>
+                                <td>$stringValue</td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td>int</td>
+                                <td>$parseValue</td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    int
+                                            &mdash; <p>| string</p>
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getValidationReplay" name="method_getValidationReplay" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getValidationReplay()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getValidationReplay(\ManiaControl\Players\Player <span class="argument">$player</span>) : string</pre>
+                <p><em>Retrieve Validation Replay for the given Player</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td><a href="../classes/ManiaControl.Players.Player.html">\ManiaControl\Players\Player</a></td>
+                                <td>$player</td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getGhostReplay" name="method_getGhostReplay" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getGhostReplay()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getGhostReplay(\ManiaControl\Players\Player <span class="argument">$player</span>) : string</pre>
+                <p><em>Retrieve Ghost Replay for the given Player</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td><a href="../classes/ManiaControl.Players.Player.html">\ManiaControl\Players\Player</a></td>
+                                <td>$player</td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_waitForStatus" name="method_waitForStatus" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">waitForStatus()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">waitForStatus(int <span class="argument">$statusCode</span>) : bool</pre>
+                <p><em>Wait for the Server to have the given Status</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>int</td>
+                                <td>$statusCode</td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    bool
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_updateProperties" name="method_updateProperties" class="anchor"></a>
+            <article class="method">
+                <h3 class="private ">updateProperties()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">updateProperties()</pre>
+                <p><em>Refetch the Server Properties</em></p>
+                
+
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_initTables" name="method_initTables" class="anchor"></a>
+            <article class="method">
+                <h3 class="private ">initTables()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">initTables() : bool</pre>
+                <p><em>Initialize necessary Database Tables</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    bool
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    </div>
+    </section>
+
+    <div id="source-view" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="source-view-label" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="source-view-label">Server.php</h3>
+        </div>
+        <div class="modal-body">
+            <pre data-src="../files/core\Server\Server.php.txt" class="language-php line-numbers"></pre>
+        </div>
+    </div>
+
+    <footer class="row-fluid">
+        <section class="span10 offset2">
+            <section class="row-fluid">
+                <section class="span10 offset1">
+                    <section class="row-fluid footer-sections">
+                        <section class="span4">
+                                                        <h1><i class="icon-code"></i></h1>
+                            <div>
+                                <ul>
+                                                                            <li><a href="../namespaces/ManiaControl.html">\ManiaControl</a></li>
+                                                                            <li><a href="../namespaces/FML.html">\FML</a></li>
+                                                                    </ul>
+                            </div>
+                        </section>
+                        <section class="span4">
+                                                        <h1><i class="icon-bar-chart"></i></h1>
+                            <div>
+                                <ul>
+                                    <li><a href="../graphs/class.html">Class Hierarchy Diagram</a></li>
+                                </ul>
+                            </div>
+                        </section>
+                        <section class="span4">
+                                                        <h1><i class="icon-pushpin"></i></h1>
+                            <div>
+                                <ul>
+                                    <li><a href="../reports/errors.html">Errors</a></li>
+                                    <li><a href="../reports/markers.html">Markers</a></li>
+                                </ul>
+                            </div>
+                        </section>
+                    </section>
+                </section>
+            </section>
+            <section class="row-fluid">
+                <section class="span10 offset1">
+                    <hr />
+                    Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
+                    on January 10th, 2014 at 22:14.
+                </section>
+            </section>
+        </section>
+    </footer>
+</div>
+
+</body>
+</html>
