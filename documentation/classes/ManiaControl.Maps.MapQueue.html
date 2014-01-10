@@ -3,1316 +3,749 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
     <meta charset="utf-8"/>
-    <title>API Documentation</title>
+    <title>    API Documentation &raquo; \ManiaControl\Maps\MapQueue
+</title>
     <meta name="author" content=""/>
     <meta name="description" content=""/>
 
-    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
-    <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
-    <link href="../css/prism.css" rel="stylesheet" media="all"/>
-    <link href="../css/template.css" rel="stylesheet" media="all"/>
+            <link href="../css/template.css" rel="stylesheet" media="all"/>
     
-    <!--[if lt IE 9]>
-    <script src="https://html5shim.googlecode.com/svn/trunk/html5.js" type="text/javascript"></script>
-    <![endif]-->
-    <script src="https://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript"></script>
-    <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.min.js" type="text/javascript"></script>
-    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
-    <script src="../js/jquery.smooth-scroll.js"></script>
-    <script src="../js/prism.min.js"></script>
-    <!-- TODO: Add http://jscrollpane.kelvinluck.com/ to style the scrollbars for browsers not using webkit-->
-    <script type="text/javascript">
-    function loadExternalCodeSnippets() {
-        Array.prototype.slice.call(document.querySelectorAll('pre[data-src]')).forEach(function (pre) {
-            var src = pre.getAttribute('data-src');
-            var extension = (src.match(/\.(\w+)$/) || [, ''])[1];
-            var language = 'php';
-
-            var code = document.createElement('code');
-            code.className = 'language-' + language;
-
-            pre.textContent = '';
-
-            code.textContent = 'Loading…';
-
-            pre.appendChild(code);
-
-            var xhr = new XMLHttpRequest();
-
-            xhr.open('GET', src, true);
-
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4) {
-
-                    if (xhr.status < 400 && xhr.responseText) {
-                        code.textContent = xhr.responseText;
-
-                        Prism.highlightElement(code);
-                    }
-                    else if (xhr.status >= 400) {
-                        code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
-                    }
-                    else {
-                        code.textContent = '✖ Error: File does not exist or is empty';
-                    }
-                }
-            };
-
-            xhr.send(null);
-        });
-    }
-
-    $(document).ready(function(){
-        loadExternalCodeSnippets();
-    });
-    $('#source-view').on('shown', function () {
-        loadExternalCodeSnippets();
-    })
-</script>
-
-    <link rel="shortcut icon" href="../images/favicon.ico"/>
-    <link rel="apple-touch-icon" href="../images/apple-touch-icon.png"/>
-    <link rel="apple-touch-icon" sizes="72x72" href="../images/apple-touch-icon-72x72.png"/>
-    <link rel="apple-touch-icon" sizes="114x114" href="../images/apple-touch-icon-114x114.png"/>
-</head>
+            <!--[if lt IE 9]>
+        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js" type="text/javascript"></script>
+        <![endif]-->
+        <script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script>
+        <script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script>
+        <script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script>
+        <script src="../js/bootstrap.js" type="text/javascript"></script>
+        <script src="../js/template.js" type="text/javascript"></script>
+        <script src="../js/prettify/prettify.min.js" type="text/javascript"></script>
+    
+            <link rel="shortcut icon" href="../img/favicon.ico"/>
+        <link rel="apple-touch-icon" href="../img/apple-touch-icon.png"/>
+        <link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png"/>
+        <link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png"/>
+    </head>
 <body>
 
-<div class="navbar navbar-fixed-top">
-    <div class="navbar-inner">
-        <div class="container">
-            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <i class="icon-ellipsis-vertical"></i>
-            </a>
-            <a class="brand" href="../index.html">API Documentation</a>
+        <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span> <span class="icon-bar"></span>
+                    <span class="icon-bar"></span> </a>
+                <a class="brand" href="../index.html">API Documentation</a>
 
-            <div class="nav-collapse">
-                <ul class="nav pull-right">
-                    <li class="dropdown">
-                        <a href="../index.html" class="dropdown-toggle" data-toggle="dropdown">
-                            API Documentation <b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu">
-                                                        <li><a href="../namespaces/ManiaControl.html">\ManiaControl</a></li>
-                                                        <li><a href="../namespaces/FML.html">\FML</a></li>
-                                                    </ul>
-                    </li>
-                    <li class="dropdown" id="charts-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            Charts <b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="../graphs/class.html">
-                                    <i class="icon-list-alt"></i>&#160;Class hierarchy diagram
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="dropdown" id="reports-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            Reports <b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="../reports/errors.html">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">1033</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="../reports/markers.html">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <i class="icon-list-alt"></i>&#160;Markers <span class="label label-info pull-right">29</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <!--<div class="go_to_top">-->
-    <!--<a href="#___" style="color: inherit">Back to top&#160;&#160;<i class="icon-upload icon-white"></i></a>-->
-    <!--</div>-->
-</div>
-
-<div id="___" class="container-fluid">
-        <section class="row-fluid">
-        <div class="span2 sidebar">
-                                <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-1473400103"></a>
-                                <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
-            </div>
-            <div id="namespace-1473400103" class="accordion-body collapse in">
-                <div class="accordion-inner">
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-64393783"></a>
-                                <a href="../namespaces/ManiaControl.html" style="margin-left: 30px; padding-left: 0">ManiaControl</a>
-            </div>
-            <div id="namespace-64393783" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1951227042"></a>
-                                <a href="../namespaces/ManiaControl.Admin.html" style="margin-left: 30px; padding-left: 0">Admin</a>
-            </div>
-            <div id="namespace-1951227042" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Admin.ActionsMenu.html">ActionsMenu</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Admin.AuthCommands.html">AuthCommands</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Admin.AuthenticationManager.html">AuthenticationManager</a></li>
-                                            </ul>
+                <div class="nav-collapse">
+                    <ul class="nav">
+                        <li class="dropdown">
+                            <a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                API Documentation <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                                                    <li><a>Namespaces</a></li>
+                                                                        <li><a href="../namespaces/ManiaControl.html">ManiaControl</a></li>
+                                                                        <li><a href="../namespaces/FML.html">FML</a></li>
+                                                                                                                                </ul>
+                        </li>
+                        <li class="dropdown" id="charts-menu">
+                            <a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                Charts <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="../graph_class.html">
+                                        <i class="icon-list-alt"></i>&#160;Class hierarchy diagram
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown" id="reports-menu">
+                            <a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                Reports <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="../errors.html">
+                                        <i class="icon-list-alt"></i>&#160;Errors
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="../markers.html">
+                                        <i class="icon-list-alt"></i>&#160;Markers
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="../deprecated.html">
+                                        <i class="icon-list-alt"></i>&#160;Deprecated
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-506564656"></a>
-                                <a href="../namespaces/ManiaControl.Callbacks.html" style="margin-left: 30px; padding-left: 0">Callbacks</a>
-            </div>
-            <div id="namespace-506564656" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                    <li class="interface"><a href="../classes/ManiaControl.Callbacks.CallbackListener.html">CallbackListener</a></li>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Callbacks.CallbackManager.html">CallbackManager</a></li>
-                                            </ul>
-                </div>
-            </div>
+        <div class="go_to_top">
+            <a href="#___" style="color: inherit">Back to top&#160;&#160;<i class="icon-upload icon-white"></i></a>
         </div>
     </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1050000397"></a>
-                                <a href="../namespaces/ManiaControl.Commands.html" style="margin-left: 30px; padding-left: 0">Commands</a>
+    
+    <div id="___" class="container">
+        <noscript>
+            <div class="alert alert-warning">
+                Javascript is disabled; several features are only available if Javascript is enabled.
             </div>
-            <div id="namespace-1050000397" class="accordion-body collapse ">
-                <div class="accordion-inner">
+        </noscript>
 
-                    
-                    <ul>
-                                                    <li class="interface"><a href="../classes/ManiaControl.Commands.CommandListener.html">CommandListener</a></li>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Commands.CommandManager.html">CommandManager</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
+        
+            <style>
+        .deprecated h2 {
+            text-decoration: line-through;
+        }
+    </style>
+    <div class="row">
+        <div class="span4">
+                    <div class="btn-group view pull-right" data-toggle="buttons-radio">
+        <button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button>
+        <button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+    </div>
+    <div class="btn-group visibility" data-toggle="buttons-checkbox">
+        <button class="btn public active" title="Show public elements">Public</button>
+        <button class="btn protected" title="Show protected elements">Protected</button>
+        <button class="btn private" title="Show private elements">Private</button>
+        <button class="btn inherited active" title="Show inherited elements">Inherited</button>
     </div>
 
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-73643343"></a>
-                                <a href="../namespaces/ManiaControl.Configurators.html" style="margin-left: 30px; padding-left: 0">Configurators</a>
-            </div>
-            <div id="namespace-73643343" class="accordion-body collapse ">
-                <div class="accordion-inner">
+        <ul class="side-nav nav nav-list">
+        <li class="nav-header">
+            <i class="icon-custom icon-method"></i> Methods
+            <ul>
+                                                                                                    <li class="method public">
+        <a href="#method___construct" title="__construct :: Create a new server MapQueue">
+            <span class="description">Create a new server MapQueue</span><pre>__construct</pre>
+        </a>
+    </li>
 
-                    
-                    <ul>
-                                                    <li class="interface"><a href="../classes/ManiaControl.Configurators.ConfiguratorMenu.html">ConfiguratorMenu</a></li>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Configurators.Configurator.html">Configurator</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Configurators.ManiaControlSettings.html">ManiaControlSettings</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Configurators.ScriptSettings.html">ScriptSettings</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Configurators.ServerSettings.html">ServerSettings</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
+                                                                                                        <li class="method public">
+        <a href="#method_command_ClearMapQueue" title="command_ClearMapQueue :: Clears the map-queue via admin command clearmap queue">
+            <span class="description">Clears the map-queue via admin command clearmap queue</span><pre>command_ClearMapQueue</pre>
+        </a>
+    </li>
 
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1857139090"></a>
-                                <a href="../namespaces/ManiaControl.Maps.html" style="margin-left: 30px; padding-left: 0">Maps</a>
-            </div>
-            <div id="namespace-1857139090" class="accordion-body collapse ">
-                <div class="accordion-inner">
+                                                                                                        <li class="method public">
+        <a href="#method_addMapToMapQueue" title="addMapToMapQueue :: Adds a Map to the map-queue">
+            <span class="description">Adds a Map to the map-queue</span><pre>addMapToMapQueue</pre>
+        </a>
+    </li>
 
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Maps.ManiaExchangeInfoSearcher.html">ManiaExchangeInfoSearcher</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Maps.MXMapInfo.html">MXMapInfo</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Maps.Map.html">Map</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Maps.MapCommands.html">MapCommands</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Maps.MapList.html">MapList</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Maps.MapManager.html">MapManager</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Maps.MapQueue.html">MapQueue</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
+                                                                                                        <li class="method public">
+        <a href="#method_removeFromMapQueue" title="removeFromMapQueue :: Revmoes a Map from the Map queue">
+            <span class="description">Revmoes a Map from the Map queue</span><pre>removeFromMapQueue</pre>
+        </a>
+    </li>
 
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1131881457"></a>
-                                <a href="../namespaces/ManiaControl.Manialinks.html" style="margin-left: 30px; padding-left: 0">Manialinks</a>
-            </div>
-            <div id="namespace-1131881457" class="accordion-body collapse ">
-                <div class="accordion-inner">
+                                                                                                        <li class="method public">
+        <a href="#method_endMap" title="endMap :: Called on endmap">
+            <span class="description">Called on endmap</span><pre>endMap</pre>
+        </a>
+    </li>
 
-                    
-                    <ul>
-                                                    <li class="interface"><a href="../classes/ManiaControl.Manialinks.ManialinkPageAnswerListener.html">ManialinkPageAnswerListener</a></li>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Manialinks.CustomUIManager.html">CustomUIManager</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Manialinks.IconManager.html">IconManager</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Manialinks.ManialinkManager.html">ManialinkManager</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Manialinks.StyleManager.html">StyleManager</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
+                                                                                                        <li class="method public">
+        <a href="#method_getNextMap" title="getNextMap :: Returns the next Map if the next map is a queuedmap or null if it&#039;s not">
+            <span class="description">Returns the next Map if the next map is a queuedmap or null if it&#039;s not</span><pre>getNextMap</pre>
+        </a>
+    </li>
 
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1513711395"></a>
-                                <a href="../namespaces/ManiaControl.Players.html" style="margin-left: 30px; padding-left: 0">Players</a>
-            </div>
-            <div id="namespace-1513711395" class="accordion-body collapse ">
-                <div class="accordion-inner">
+                                                                                                        <li class="method public">
+        <a href="#method_getQueuedMapsRanking" title="getQueuedMapsRanking :: Returns a list with the indexes of the queued maps">
+            <span class="description">Returns a list with the indexes of the queued maps</span><pre>getQueuedMapsRanking</pre>
+        </a>
+    </li>
 
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Players.Player.html">Player</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Players.PlayerActions.html">PlayerActions</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Players.PlayerCommands.html">PlayerCommands</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Players.PlayerDetailed.html">PlayerDetailed</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Players.PlayerList.html">PlayerList</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Players.PlayerManager.html">PlayerManager</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
+                                                                                                        <li class="method public">
+        <a href="#method_printAllMaps" title="printAllMaps :: Dummy Function for testing">
+            <span class="description">Dummy Function for testing</span><pre>printAllMaps</pre>
+        </a>
+    </li>
 
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1946214416"></a>
-                                <a href="../namespaces/ManiaControl.Plugins.html" style="margin-left: 30px; padding-left: 0">Plugins</a>
-            </div>
-            <div id="namespace-1946214416" class="accordion-body collapse ">
-                <div class="accordion-inner">
+                                                </ul>
+        </li>
+        <li class="nav-header protected">» Protected
+            <ul>
+                                                                                                                                                                                                                                                                                                                                            </ul>
+        </li>
+        <li class="nav-header private">» Private
+            <ul>
+                                                                                                                                                                                                                                                                                                                                            </ul>
+        </li>
+        <li class="nav-header">
+            <i class="icon-custom icon-constant"></i> Constants
+            <ul>
+                                <li class="constant ">
+                    <a href="#constant_CB_MAPQUEUE_CHANGED" title="CB_MAPQUEUE_CHANGED :: Constants">
+                        <span class="description">Constants</span><pre>CB_MAPQUEUE_CHANGED</pre>
+                    </a>
+                </li>
+                                <li class="constant ">
+                    <a href="#constant_SETTING_SKIP_MAP_ON_LEAVE" title="SETTING_SKIP_MAP_ON_LEAVE :: ">
+                        <span class="description"></span><pre>SETTING_SKIP_MAP_ON_LEAVE</pre>
+                    </a>
+                </li>
+                                <li class="constant ">
+                    <a href="#constant_SETTING_SKIP_MAPQUEUE_ADMIN" title="SETTING_SKIP_MAPQUEUE_ADMIN :: ">
+                        <span class="description"></span><pre>SETTING_SKIP_MAPQUEUE_ADMIN</pre>
+                    </a>
+                </li>
+                                <li class="constant ">
+                    <a href="#constant_ADMIN_COMMAND_CLEAR_MAPQUEUE" title="ADMIN_COMMAND_CLEAR_MAPQUEUE :: ">
+                        <span class="description"></span><pre>ADMIN_COMMAND_CLEAR_MAPQUEUE</pre>
+                    </a>
+                </li>
+                                <li class="constant ">
+                    <a href="#constant_ADMIN_COMMAND_CLEAR_JUKEBOX" title="ADMIN_COMMAND_CLEAR_JUKEBOX :: ">
+                        <span class="description"></span><pre>ADMIN_COMMAND_CLEAR_JUKEBOX</pre>
+                    </a>
+                </li>
+                            </ul>
+        </li>
+    </ul>
 
-                    
-                    <ul>
-                                                    <li class="interface"><a href="../classes/ManiaControl.Plugins.Plugin.html">Plugin</a></li>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Plugins.PluginManager.html">PluginManager</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Plugins.PluginMenu.html">PluginMenu</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Plugins.ChatMessagePlugin.html">ChatMessagePlugin</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1180156285"></a>
-                                <a href="../namespaces/ManiaControl.Server.html" style="margin-left: 30px; padding-left: 0">Server</a>
-            </div>
-            <div id="namespace-1180156285" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Server.Server.html">Server</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Server.ServerCommands.html">ServerCommands</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1879565588"></a>
-                                <a href="../namespaces/ManiaControl.Statistics.html" style="margin-left: 30px; padding-left: 0">Statistics</a>
-            </div>
-            <div id="namespace-1879565588" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Statistics.StatisticCollector.html">StatisticCollector</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Statistics.StatisticManager.html">StatisticManager</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Chat.html">Chat</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.ColorUtil.html">ColorUtil</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Database.html">Database</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.FileUtil.html">FileUtil</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Formatter.html">Formatter</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.ManiaControl.html">ManiaControl</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.SettingManager.html">SettingManager</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.UpdateManager.html">UpdateManager</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-90470877"></a>
-                                <a href="../namespaces/FML.html" style="margin-left: 30px; padding-left: 0">FML</a>
-            </div>
-            <div id="namespace-90470877" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-2085618887"></a>
-                                <a href="../namespaces/FML.Controls.html" style="margin-left: 30px; padding-left: 0">Controls</a>
-            </div>
-            <div id="namespace-2085618887" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1606818940"></a>
-                                <a href="../namespaces/FML.Controls.Labels.html" style="margin-left: 30px; padding-left: 0">Labels</a>
-            </div>
-            <div id="namespace-1606818940" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/FML.Controls.Labels.Label_Button.html">Label_Button</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Labels.Label_Text.html">Label_Text</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1891646345"></a>
-                                <a href="../namespaces/FML.Controls.Quads.html" style="margin-left: 30px; padding-left: 0">Quads</a>
-            </div>
-            <div id="namespace-1891646345" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_321Go.html">Quad_321Go</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_BgRaceScore2.html">Quad_BgRaceScore2</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Bgs1.html">Quad_Bgs1</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Bgs1InRace.html">Quad_Bgs1InRace</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_BgsChallengeMedals.html">Quad_BgsChallengeMedals</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_BgsPlayerCard.html">Quad_BgsPlayerCard</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Copilot.html">Quad_Copilot</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Emblems.html">Quad_Emblems</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_EnergyBar.html">Quad_EnergyBar</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Hud3dEchelons.html">Quad_Hud3dEchelons</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Icons128x128_1.html">Quad_Icons128x128_1</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Icons128x128_Blink.html">Quad_Icons128x128_Blink</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Icons128x32_1.html">Quad_Icons128x32_1</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Icons64x64_1.html">Quad_Icons64x64_1</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Icons64x64_2.html">Quad_Icons64x64_2</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_ManiaPlanetLogos.html">Quad_ManiaPlanetLogos</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_ManiaplanetSystem.html">Quad_ManiaplanetSystem</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_MedalsBig.html">Quad_MedalsBig</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_TitleLogos.html">Quad_TitleLogos</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_UIConstruction_Buttons.html">Quad_UIConstruction_Buttons</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_UiSMSpectatorScoreBig.html">Quad_UiSMSpectatorScoreBig</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/FML.Controls.Audio.html">Audio</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Control.html">Control</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Entry.html">Entry</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.FileEntry.html">FileEntry</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Frame.html">Frame</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Frame3d.html">Frame3d</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Gauge.html">Gauge</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Label.html">Label</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quad.html">Quad</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Video.html">Video</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1530252926"></a>
-                                <a href="../namespaces/FML.Elements.html" style="margin-left: 30px; padding-left: 0">Elements</a>
-            </div>
-            <div id="namespace-1530252926" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/FML.Elements.Format.html">Format</a></li>
-                                                    <li class="class"><a href="../classes/FML.Elements.Including.html">Including</a></li>
-                                                    <li class="class"><a href="../classes/FML.Elements.Music.html">Music</a></li>
-                                                    <li class="class"><a href="../classes/FML.Elements.SimpleScript.html">SimpleScript</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-886410548"></a>
-                                <a href="../namespaces/FML.Script.html" style="margin-left: 30px; padding-left: 0">Script</a>
-            </div>
-            <div id="namespace-886410548" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/FML.Script.Builder.html">Builder</a></li>
-                                                    <li class="class"><a href="../classes/FML.Script.EUISound.html">EUISound</a></li>
-                                                    <li class="class"><a href="../classes/FML.Script.Script.html">Script</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1132913577"></a>
-                                <a href="../namespaces/FML.Types.html" style="margin-left: 30px; padding-left: 0">Types</a>
-            </div>
-            <div id="namespace-1132913577" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                    <li class="interface"><a href="../classes/FML.Types.Actionable.html">Actionable</a></li>
-                                                    <li class="interface"><a href="../classes/FML.Types.BgColorable.html">BgColorable</a></li>
-                                                    <li class="interface"><a href="../classes/FML.Types.Container.html">Container</a></li>
-                                                    <li class="interface"><a href="../classes/FML.Types.Linkable.html">Linkable</a></li>
-                                                    <li class="interface"><a href="../classes/FML.Types.NewLineable.html">NewLineable</a></li>
-                                                    <li class="interface"><a href="../classes/FML.Types.Playable.html">Playable</a></li>
-                                                    <li class="interface"><a href="../classes/FML.Types.Renderable.html">Renderable</a></li>
-                                                    <li class="interface"><a href="../classes/FML.Types.Scriptable.html">Scriptable</a></li>
-                                                    <li class="interface"><a href="../classes/FML.Types.Styleable.html">Styleable</a></li>
-                                                    <li class="interface"><a href="../classes/FML.Types.SubStyleable.html">SubStyleable</a></li>
-                                                    <li class="interface"><a href="../classes/FML.Types.TextFormatable.html">TextFormatable</a></li>
-                                                                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/FML.CustomUI.html">CustomUI</a></li>
-                                                    <li class="class"><a href="../classes/FML.ManiaLink.html">ManiaLink</a></li>
-                                                    <li class="class"><a href="../classes/FML.ManiaLinks.html">ManiaLinks</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/GBXBaseFetcher.html">GBXBaseFetcher</a></li>
-                                                    <li class="class"><a href="../classes/GBXChallMapFetcher.html">GBXChallMapFetcher</a></li>
-                                                    <li class="class"><a href="../classes/GBXChallengeFetcher.html">GBXChallengeFetcher</a></li>
-                                                    <li class="class"><a href="../classes/GBXReplayFetcher.html">GBXReplayFetcher</a></li>
-                                                    <li class="class"><a href="../classes/GBXPackFetcher.html">GBXPackFetcher</a></li>
-                                                    <li class="class"><a href="../classes/MXInfoFetcher.html">MXInfoFetcher</a></li>
-                                                    <li class="class"><a href="../classes/MXInfoSearcher.html">MXInfoSearcher</a></li>
-                                                    <li class="class"><a href="../classes/MXInfo.html">MXInfo</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Value.html">IXR_Value</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Message.html">IXR_Message</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Request.html">IXR_Request</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Error.html">IXR_Error</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Date.html">IXR_Date</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Base64.html">IXR_Base64</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Client_Gbx.html">IXR_Client_Gbx</a></li>
-                                                    <li class="class"><a href="../classes/IXR_ClientMulticall_Gbx.html">IXR_ClientMulticall_Gbx</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Value.html">IXR_Value</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Message.html">IXR_Message</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Request.html">IXR_Request</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Error.html">IXR_Error</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Date.html">IXR_Date</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Base64.html">IXR_Base64</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Client_Gbx.html">IXR_Client_Gbx</a></li>
-                                                    <li class="class"><a href="../classes/IXR_ClientMulticall_Gbx.html">IXR_ClientMulticall_Gbx</a></li>
-                                                    <li class="class"><a href="../classes/ChatlogPlugin.html">ChatlogPlugin</a></li>
-                                                    <li class="class"><a href="../classes/DonationPlugin.html">DonationPlugin</a></li>
-                                                    <li class="class"><a href="../classes/EndurancePlugin.html">EndurancePlugin</a></li>
-                                                    <li class="class"><a href="../classes/KarmaPlugin.html">KarmaPlugin</a></li>
-                                                    <li class="class"><a href="../classes/LocalRecordsPlugin.html">LocalRecordsPlugin</a></li>
-                                                    <li class="class"><a href="../classes/ObstaclePlugin.html">ObstaclePlugin</a></li>
-                                                    <li class="class"><a href="../classes/WidgetPlugin.html">WidgetPlugin</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
 
         </div>
-    </section>
-    <section class="row-fluid">
-        <div class="span10 offset2">
-            <div class="row-fluid">
-                <div class="span8 content class">
-                    <nav>
-                                                <a href="../namespaces/ManiaControl.Maps.html">\ManiaControl\Maps</a> <i class="icon-level-up"></i>
-                                            </nav>
-                    <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal"><i class="icon-code"></i></a>
 
-                    <h1><small>\ManiaControl\Maps</small>MapQueue</h1>
-                    <p><em>MapQueue Class</em></p>
-                    
-
-                    <section id="summary">
-                        <h2>Summary</h2>
-                        <section class="row-fluid heading">
-                            <section class="span4">
-                                <a href="#methods">Methods</a>
-                            </section>
-                            <section class="span4">
-                                <a href="#properties">Properties</a>
-                            </section>
-                            <section class="span4">
-                                <a href="#constants">Constants</a>
-                            </section>
-                        </section>
-                        <section class="row-fluid public">
-                            <section class="span4">
-                                                                    <a href="../classes/ManiaControl.Maps.MapQueue.html#method___construct" class="">__construct()</a><br />
-                                                                    <a href="../classes/ManiaControl.Maps.MapQueue.html#method_command_ClearMapQueue" class="">command_ClearMapQueue()</a><br />
-                                                                    <a href="../classes/ManiaControl.Maps.MapQueue.html#method_addMapToMapQueue" class="">addMapToMapQueue()</a><br />
-                                                                    <a href="../classes/ManiaControl.Maps.MapQueue.html#method_removeFromMapQueue" class="">removeFromMapQueue()</a><br />
-                                                                    <a href="../classes/ManiaControl.Maps.MapQueue.html#method_endMap" class="">endMap()</a><br />
-                                                                    <a href="../classes/ManiaControl.Maps.MapQueue.html#method_getNextMap" class="">getNextMap()</a><br />
-                                                                    <a href="../classes/ManiaControl.Maps.MapQueue.html#method_getQueuedMapsRanking" class="">getQueuedMapsRanking()</a><br />
-                                                                    <a href="../classes/ManiaControl.Maps.MapQueue.html#method_printAllMaps" class="">printAllMaps()</a><br />
-                                                            </section>
-                            <section class="span4">
-                                                                    <em>No public properties found</em>
-                                                            </section>
-                            <section class="span4">
-                                                                    <a href="../classes/ManiaControl.Maps.MapQueue.html#constant_CB_MAPQUEUE_CHANGED" class="">CB_MAPQUEUE_CHANGED</a><br />
-                                                                    <a href="../classes/ManiaControl.Maps.MapQueue.html#constant_SETTING_SKIP_MAP_ON_LEAVE" class="">SETTING_SKIP_MAP_ON_LEAVE</a><br />
-                                                                    <a href="../classes/ManiaControl.Maps.MapQueue.html#constant_SETTING_SKIP_MAPQUEUE_ADMIN" class="">SETTING_SKIP_MAPQUEUE_ADMIN</a><br />
-                                                                    <a href="../classes/ManiaControl.Maps.MapQueue.html#constant_ADMIN_COMMAND_CLEAR_MAPQUEUE" class="">ADMIN_COMMAND_CLEAR_MAPQUEUE</a><br />
-                                                                    <a href="../classes/ManiaControl.Maps.MapQueue.html#constant_ADMIN_COMMAND_CLEAR_JUKEBOX" class="">ADMIN_COMMAND_CLEAR_JUKEBOX</a><br />
-                                                            </section>
-                        </section>
-                        <section class="row-fluid protected">
-                            <section class="span4">
-                                                                    <em>No protected methods found</em>
-                                                            </section>
-                            <section class="span4">
-                                                                    <em>No protected properties found</em>
-                                                            </section>
-                            <section class="span4">
-                                <em>N/A</em>
-                            </section>
-                        </section>
-                        <section class="row-fluid private">
-                            <section class="span4">
-                                                                    <em>No private methods found</em>
-                                                            </section>
-                            <section class="span4">
-                                                                    <a href="../classes/ManiaControl.Maps.MapQueue.html#property_maniaControl" class="">$maniaControl</a><br />
-                                                                    <a href="../classes/ManiaControl.Maps.MapQueue.html#property_queuedMaps" class="">$queuedMaps</a><br />
-                                                                    <a href="../classes/ManiaControl.Maps.MapQueue.html#property_nextMap" class="">$nextMap</a><br />
-                                                            </section>
-                            <section class="span4">
-                                <em>N/A</em>
-                            </section>
-                        </section>
-                    </section>
-                </div>
-                <aside class="span4 detailsbar">
-                                        
-                    
-                    <dl>
-                        <dt>File</dt>
-                            <dd><a href="../files/core.Maps.MapQueue.php.html"><div class="path-wrapper">core\Maps\MapQueue.php</div></a></dd>
-                                                <dt>Package</dt>
-                            <dd><div class="namespace-wrapper">\Default</div></dd>
-                                                <dt>Class hierarchy</dt>
-                            <dd class="hierarchy">
-                                                                                                                                                                    <div class="namespace-wrapper">\ManiaControl\Maps\MapQueue</div>
-                            </dd>
-
+        <div class="span8">
+            <div class="element class">
+                <h1>MapQueue</h1>
+                <small style="display: block; text-align: right">
+                                                                Implements <a href="../classes/ManiaControl.Callbacks.CallbackListener.html">\ManiaControl\Callbacks\CallbackListener</a>, <a href="../classes/ManiaControl.Commands.CommandListener.html">\ManiaControl\Commands\CommandListener</a>
+                                    </small>
+                <p class="short_description">MapQueue Class</p>
+                <div class="details">
+                    <div class="long_description">
                         
-                        
-                        
-                        
-                                                                        </dl>
-                    <h2>Tags</h2>
-                    <table class="table table-condensed">
-                                            <tr>
-                            <th>
-                                author
-                            </th>
-                            <td>
-                                                                    <p>steeffeen &amp; kremsy</p>
-                                                            </td>
-                        </tr>
-                                            <tr>
-                            <th>
-                                todo
-                            </th>
-                            <td>
-                                                            </td>
-                        </tr>
-                                        </table>
-                </aside>
-            </div>
+                    </div>
+                    <table class="table table-bordered">
+                                                                                    <tr>
+                                    <th>
+                                        author
+                                                                            </th>
+                                    <td>
+                                                                                    
+                                                                                <p>steeffeen &amp; kremsy</p>
+                                    </td>
+                                </tr>
+                                                                                                                                                                                                                                                                                        </table>
 
-                                    <a id="constants" name="constants"></a>
-            <div class="row-fluid">
-                <div class="span8 content class">
-                    <h2>Constants</h2>
-                </div>
-                <aside class="span4 detailsbar"></aside>
-            </div>
+                    <h3><i class="icon-custom icon-method"></i> Methods</h3>
+                                                                <a id="method___construct"></a>
+                        <div class="element clickable method public  method___construct" data-toggle="collapse" data-target=".method___construct .collapse">
+                            <h2>Create a new server MapQueue</h2>
+                            <pre>__construct(\ManiaControl\ManiaControl $maniaControl) </pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
 
-                                <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="constant_CB_MAPQUEUE_CHANGED" name="constant_CB_MAPQUEUE_CHANGED" class="anchor"></a>
-            <article id="constant_CB_MAPQUEUE_CHANGED" class="constant">
-                <h3 class="">CB_MAPQUEUE_CHANGED</h3>
-                <pre class="signature">CB_MAPQUEUE_CHANGED</pre>
-                <p><em>Constants</em></p>
-                
-            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                        <dl>
-                                                                            </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
 
-                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="constant_SETTING_SKIP_MAP_ON_LEAVE" name="constant_SETTING_SKIP_MAP_ON_LEAVE" class="anchor"></a>
-            <article id="constant_SETTING_SKIP_MAP_ON_LEAVE" class="constant">
-                <h3 class="">SETTING_SKIP_MAP_ON_LEAVE</h3>
-                <pre class="signature">SETTING_SKIP_MAP_ON_LEAVE</pre>
-                <p><em></em></p>
-                
-            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                        <dl>
-                                                                            </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
-
-                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="constant_SETTING_SKIP_MAPQUEUE_ADMIN" name="constant_SETTING_SKIP_MAPQUEUE_ADMIN" class="anchor"></a>
-            <article id="constant_SETTING_SKIP_MAPQUEUE_ADMIN" class="constant">
-                <h3 class="">SETTING_SKIP_MAPQUEUE_ADMIN</h3>
-                <pre class="signature">SETTING_SKIP_MAPQUEUE_ADMIN</pre>
-                <p><em></em></p>
-                
-            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                        <dl>
-                                                                            </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
-
-                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="constant_ADMIN_COMMAND_CLEAR_MAPQUEUE" name="constant_ADMIN_COMMAND_CLEAR_MAPQUEUE" class="anchor"></a>
-            <article id="constant_ADMIN_COMMAND_CLEAR_MAPQUEUE" class="constant">
-                <h3 class="">ADMIN_COMMAND_CLEAR_MAPQUEUE</h3>
-                <pre class="signature">ADMIN_COMMAND_CLEAR_MAPQUEUE</pre>
-                <p><em></em></p>
-                
-            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                        <dl>
-                                                                            </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
-
-                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="constant_ADMIN_COMMAND_CLEAR_JUKEBOX" name="constant_ADMIN_COMMAND_CLEAR_JUKEBOX" class="anchor"></a>
-            <article id="constant_ADMIN_COMMAND_CLEAR_JUKEBOX" class="constant">
-                <h3 class="">ADMIN_COMMAND_CLEAR_JUKEBOX</h3>
-                <pre class="signature">ADMIN_COMMAND_CLEAR_JUKEBOX</pre>
-                <p><em></em></p>
-                
-            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                        <dl>
-                                                                            </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
-
-                            
-                                    <a id="properties" name="properties"></a>
-            <div class="row-fluid">
-                <div class="span8 content class">
-                    <h2>Properties</h2>
-                </div>
-                <aside class="span4 detailsbar"></aside>
-            </div>
-
-                                                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="property_maniaControl" name="property_maniaControl" class="anchor"></a>
-            <article class="property">
-                <h3 class="private ">$maniaControl</h3>
-                <pre class="signature">$maniaControl</pre>
-                <p><em>Private properties</em></p>
-                
-
-                            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                        <dl>
-                                                            </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
-
-                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="property_queuedMaps" name="property_queuedMaps" class="anchor"></a>
-            <article class="property">
-                <h3 class="private ">$queuedMaps</h3>
-                <pre class="signature">$queuedMaps</pre>
-                <p><em></em></p>
-                
-
-                            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                        <dl>
-                                                            </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
-
-                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="property_nextMap" name="property_nextMap" class="anchor"></a>
-            <article class="property">
-                <h3 class="private ">$nextMap</h3>
-                <pre class="signature">$nextMap</pre>
-                <p><em></em></p>
-                
-
-                            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                        <dl>
-                                                            </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
-
-                            
-                                    <a id="methods" name="methods"></a>
-            <div class="row-fluid">
-                <div class="span8 content class"><h2>Methods</h2></div>
-                <aside class="span4 detailsbar"></aside>
-            </div>
-
-                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="method___construct" name="method___construct" class="anchor"></a>
-            <article class="method">
-                <h3 class="public ">__construct()</h3>
-                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">__construct(\ManiaControl\ManiaControl <span class="argument">$maniaControl</span>)</pre>
-                <p><em>Create a new server MapQueue</em></p>
-                
-
-                                    <h4>Parameters</h4>
-                    <table class="table table-condensed table-hover">
-                                                    <tr>
-                                <td><a href="../classes/ManiaControl.ManiaControl.html">\ManiaControl\ManiaControl</a></td>
-                                <td>$maniaControl</td>
-                                <td></td>
-                            </tr>
-                                            </table>
-                
-                
-                            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                                                            <dl>
-                                                                            </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
-
-                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="method_command_ClearMapQueue" name="method_command_ClearMapQueue" class="anchor"></a>
-            <article class="method">
-                <h3 class="public ">command_ClearMapQueue()</h3>
-                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">command_ClearMapQueue(array <span class="argument">$chat</span>, \ManiaControl\Players\Player <span class="argument">$admin</span>)</pre>
-                <p><em>Clears the map-queue via admin command clearmap queue</em></p>
-                
-
-                                    <h4>Parameters</h4>
-                    <table class="table table-condensed table-hover">
-                                                    <tr>
-                                <td>array</td>
-                                <td>$chat</td>
-                                <td></td>
-                            </tr>
-                                                    <tr>
-                                <td><a href="../classes/ManiaControl.Players.Player.html">\ManiaControl\Players\Player</a></td>
-                                <td>$admin</td>
-                                <td></td>
-                            </tr>
-                                            </table>
-                
-                
-                            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                                                            <dl>
-                                                                            </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
-
-                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="method_addMapToMapQueue" name="method_addMapToMapQueue" class="anchor"></a>
-            <article class="method">
-                <h3 class="public ">addMapToMapQueue()</h3>
-                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">addMapToMapQueue(mixed <span class="argument">$login</span>, mixed <span class="argument">$uid</span>)</pre>
-                <p><em>Adds a Map to the map-queue</em></p>
-                
-
-                                    <h4>Parameters</h4>
-                    <table class="table table-condensed table-hover">
-                                                    <tr>
-                                <td>mixed</td>
-                                <td>$login</td>
-                                <td></td>
-                            </tr>
-                                                    <tr>
-                                <td>mixed</td>
-                                <td>$uid</td>
-                                <td></td>
-                            </tr>
-                                            </table>
-                
-                
-                            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                                                            <dl>
-                                                                            </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
-
-                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="method_removeFromMapQueue" name="method_removeFromMapQueue" class="anchor"></a>
-            <article class="method">
-                <h3 class="public ">removeFromMapQueue()</h3>
-                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">removeFromMapQueue(mixed <span class="argument">$login</span>, mixed <span class="argument">$uid</span>)</pre>
-                <p><em>Revmoes a Map from the Map queue</em></p>
-                
-
-                                    <h4>Parameters</h4>
-                    <table class="table table-condensed table-hover">
-                                                    <tr>
-                                <td>mixed</td>
-                                <td>$login</td>
-                                <td></td>
-                            </tr>
-                                                    <tr>
-                                <td>mixed</td>
-                                <td>$uid</td>
-                                <td></td>
-                            </tr>
-                                            </table>
-                
-                
-                            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                                                            <dl>
-                                                                            </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
-
-                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="method_endMap" name="method_endMap" class="anchor"></a>
-            <article class="method">
-                <h3 class="public ">endMap()</h3>
-                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">endMap(array <span class="argument">$callback</span>)</pre>
-                <p><em>Called on endmap</em></p>
-                
-
-                                    <h4>Parameters</h4>
-                    <table class="table table-condensed table-hover">
-                                                    <tr>
-                                <td>array</td>
-                                <td>$callback</td>
-                                <td></td>
-                            </tr>
-                                            </table>
-                
-                
-                            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                                                            <dl>
-                                                                            </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
-
-                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="method_getNextMap" name="method_getNextMap" class="anchor"></a>
-            <article class="method">
-                <h3 class="public ">getNextMap()</h3>
-                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">getNextMap() : null</pre>
-                <p><em>Returns the next Map if the next map is a queuedmap or null if it&#039;s not</em></p>
-                
-
-                
-                
-                                    <h4>Returns</h4>
-                    null
-                                                </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                                                            <dl>
-                                                                            </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
-
-                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="method_getQueuedMapsRanking" name="method_getQueuedMapsRanking" class="anchor"></a>
-            <article class="method">
-                <h3 class="public ">getQueuedMapsRanking()</h3>
-                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">getQueuedMapsRanking() : array</pre>
-                <p><em>Returns a list with the indexes of the queued maps</em></p>
-                
-
-                
-                
-                                    <h4>Returns</h4>
-                    array
-                                                </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                                                            <dl>
-                                                                            </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
-
-                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="method_printAllMaps" name="method_printAllMaps" class="anchor"></a>
-            <article class="method">
-                <h3 class="public ">printAllMaps()</h3>
-                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">printAllMaps()</pre>
-                <p><em>Dummy Function for testing</em></p>
-                
-
-                
-                
-                            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                                                            <dl>
-                                                                            </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
-
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$maniaControl</h4>
+                                                <code><a href="../classes/ManiaControl.ManiaControl.html">\ManiaControl\ManiaControl</a></code><p></p>
+                                            </div>
+                                                                            
                                                                     </div>
-    </section>
+                            </div>
+                        </div>
+                                            <a id="method_command_ClearMapQueue"></a>
+                        <div class="element clickable method public  method_command_ClearMapQueue" data-toggle="collapse" data-target=".method_command_ClearMapQueue .collapse">
+                            <h2>Clears the map-queue via admin command clearmap queue</h2>
+                            <pre>command_ClearMapQueue(array $chat, \ManiaControl\Players\Player $admin) </pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
 
-    <div id="source-view" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="source-view-label" aria-hidden="true">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h3 id="source-view-label">MapQueue.php</h3>
-        </div>
-        <div class="modal-body">
-            <pre data-src="../files/core\Maps\MapQueue.php.txt" class="language-php line-numbers"></pre>
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$chat</h4>
+                                                <code>array</code><p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$admin</h4>
+                                                <code><a href="../classes/ManiaControl.Players.Player.html">\ManiaControl\Players\Player</a></code><p></p>
+                                            </div>
+                                                                            
+                                                                    </div>
+                            </div>
+                        </div>
+                                            <a id="method_addMapToMapQueue"></a>
+                        <div class="element clickable method public  method_addMapToMapQueue" data-toggle="collapse" data-target=".method_addMapToMapQueue .collapse">
+                            <h2>Adds a Map to the map-queue</h2>
+                            <pre>addMapToMapQueue(mixed $login, mixed $uid) </pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$login</h4>
+                                                <code>mixed</code><p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$uid</h4>
+                                                <code>mixed</code><p></p>
+                                            </div>
+                                                                            
+                                                                    </div>
+                            </div>
+                        </div>
+                                            <a id="method_removeFromMapQueue"></a>
+                        <div class="element clickable method public  method_removeFromMapQueue" data-toggle="collapse" data-target=".method_removeFromMapQueue .collapse">
+                            <h2>Revmoes a Map from the Map queue</h2>
+                            <pre>removeFromMapQueue(mixed $login, mixed $uid) </pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$login</h4>
+                                                <code>mixed</code><p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$uid</h4>
+                                                <code>mixed</code><p></p>
+                                            </div>
+                                                                            
+                                                                    </div>
+                            </div>
+                        </div>
+                                            <a id="method_endMap"></a>
+                        <div class="element clickable method public  method_endMap" data-toggle="collapse" data-target=".method_endMap .collapse">
+                            <h2>Called on endmap</h2>
+                            <pre>endMap(array $callback) </pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$callback</h4>
+                                                <code>array</code><p></p>
+                                            </div>
+                                                                            
+                                                                    </div>
+                            </div>
+                        </div>
+                                            <a id="method_getNextMap"></a>
+                        <div class="element clickable method public  method_getNextMap" data-toggle="collapse" data-target=".method_getNextMap .collapse">
+                            <h2>Returns the next Map if the next map is a queuedmap or null if it&#039;s not</h2>
+                            <pre>getNextMap() : null</pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                    
+                                                                            <h3>Response</h3>
+                                        <code>null</code><p></p>
+                                                                    </div>
+                            </div>
+                        </div>
+                                            <a id="method_getQueuedMapsRanking"></a>
+                        <div class="element clickable method public  method_getQueuedMapsRanking" data-toggle="collapse" data-target=".method_getQueuedMapsRanking .collapse">
+                            <h2>Returns a list with the indexes of the queued maps</h2>
+                            <pre>getQueuedMapsRanking() : array</pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                    
+                                                                            <h3>Response</h3>
+                                        <code>array</code><p></p>
+                                                                    </div>
+                            </div>
+                        </div>
+                                            <a id="method_printAllMaps"></a>
+                        <div class="element clickable method public  method_printAllMaps" data-toggle="collapse" data-target=".method_printAllMaps .collapse">
+                            <h2>Dummy Function for testing</h2>
+                            <pre>printAllMaps() </pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                    
+                                                                    </div>
+                            </div>
+                        </div>
+                    
+                                            <h3><i class="icon-custom icon-constant"></i> Constants</h3>
+                                                    <a id="constant_CB_MAPQUEUE_CHANGED"> </a>
+                            <div class="element clickable constant  constant_CB_MAPQUEUE_CHANGED" data-toggle="collapse" data-target=".constant_CB_MAPQUEUE_CHANGED .collapse">
+                                <h2>Constants</h2>
+                                <pre>CB_MAPQUEUE_CHANGED</pre>
+                                <div class="labels">
+                                                                    </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+                                    </div>
+                                </div>
+                            </div>
+                                                    <a id="constant_SETTING_SKIP_MAP_ON_LEAVE"> </a>
+                            <div class="element clickable constant  constant_SETTING_SKIP_MAP_ON_LEAVE" data-toggle="collapse" data-target=".constant_SETTING_SKIP_MAP_ON_LEAVE .collapse">
+                                <h2>SETTING_SKIP_MAP_ON_LEAVE</h2>
+                                <pre>SETTING_SKIP_MAP_ON_LEAVE</pre>
+                                <div class="labels">
+                                                                    </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+                                    </div>
+                                </div>
+                            </div>
+                                                    <a id="constant_SETTING_SKIP_MAPQUEUE_ADMIN"> </a>
+                            <div class="element clickable constant  constant_SETTING_SKIP_MAPQUEUE_ADMIN" data-toggle="collapse" data-target=".constant_SETTING_SKIP_MAPQUEUE_ADMIN .collapse">
+                                <h2>SETTING_SKIP_MAPQUEUE_ADMIN</h2>
+                                <pre>SETTING_SKIP_MAPQUEUE_ADMIN</pre>
+                                <div class="labels">
+                                                                    </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+                                    </div>
+                                </div>
+                            </div>
+                                                    <a id="constant_ADMIN_COMMAND_CLEAR_MAPQUEUE"> </a>
+                            <div class="element clickable constant  constant_ADMIN_COMMAND_CLEAR_MAPQUEUE" data-toggle="collapse" data-target=".constant_ADMIN_COMMAND_CLEAR_MAPQUEUE .collapse">
+                                <h2>ADMIN_COMMAND_CLEAR_MAPQUEUE</h2>
+                                <pre>ADMIN_COMMAND_CLEAR_MAPQUEUE</pre>
+                                <div class="labels">
+                                                                    </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+                                    </div>
+                                </div>
+                            </div>
+                                                    <a id="constant_ADMIN_COMMAND_CLEAR_JUKEBOX"> </a>
+                            <div class="element clickable constant  constant_ADMIN_COMMAND_CLEAR_JUKEBOX" data-toggle="collapse" data-target=".constant_ADMIN_COMMAND_CLEAR_JUKEBOX .collapse">
+                                <h2>ADMIN_COMMAND_CLEAR_JUKEBOX</h2>
+                                <pre>ADMIN_COMMAND_CLEAR_JUKEBOX</pre>
+                                <div class="labels">
+                                                                    </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+                                    </div>
+                                </div>
+                            </div>
+                                            
+                                                                <h3><i class="icon-custom icon-property"></i> Properties</h3>
+                                                    <a id="property_maniaControl"> </a>
+                            <div class="element clickable property  private property_maniaControl" data-toggle="collapse" data-target=".property_maniaControl .collapse">
+                                <h2>Private properties</h2>
+                                <pre>maniaControl : </pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property_queuedMaps"> </a>
+                            <div class="element clickable property  private property_queuedMaps" data-toggle="collapse" data-target=".property_queuedMaps .collapse">
+                                <h2>queuedMaps</h2>
+                                <pre>queuedMaps : </pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property_nextMap"> </a>
+                            <div class="element clickable property  private property_nextMap" data-toggle="collapse" data-target=".property_nextMap .collapse">
+                                <h2>nextMap</h2>
+                                <pre>nextMap : </pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                            </div>
+                                </div>
+                            </div>
+                                                            </div>
+            </div>
+            <a id="\ManiaControl\Maps\MapQueue"></a>
+            <ul class="breadcrumb">
+                <li><a href="../index.html"><i class="icon-custom icon-class"></i></a></li>
+                    
+    
+    <li><span class="divider">\</span><a href="../namespaces/ManiaControl.Maps.html">Maps</a></li>
+
+                <li class="active"><span class="divider">\</span><a href="../classes/ManiaControl.Maps.MapQueue.html">MapQueue</a></li>
+            </ul>
         </div>
     </div>
 
-    <footer class="row-fluid">
-        <section class="span10 offset2">
-            <section class="row-fluid">
-                <section class="span10 offset1">
-                    <section class="row-fluid footer-sections">
-                        <section class="span4">
-                                                        <h1><i class="icon-code"></i></h1>
-                            <div>
-                                <ul>
-                                                                            <li><a href="../namespaces/ManiaControl.html">\ManiaControl</a></li>
-                                                                            <li><a href="../namespaces/FML.html">\FML</a></li>
-                                                                    </ul>
-                            </div>
-                        </section>
-                        <section class="span4">
-                                                        <h1><i class="icon-bar-chart"></i></h1>
-                            <div>
-                                <ul>
-                                    <li><a href="../graphs/class.html">Class Hierarchy Diagram</a></li>
-                                </ul>
-                            </div>
-                        </section>
-                        <section class="span4">
-                                                        <h1><i class="icon-pushpin"></i></h1>
-                            <div>
-                                <ul>
-                                    <li><a href="../reports/errors.html">Errors</a></li>
-                                    <li><a href="../reports/markers.html">Markers</a></li>
-                                </ul>
-                            </div>
-                        </section>
-                    </section>
-                </section>
-            </section>
-            <section class="row-fluid">
-                <section class="span10 offset1">
-                    <hr />
-                    Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
-                    on January 10th, 2014 at 22:18.
-                </section>
-            </section>
-        </section>
-    </footer>
-</div>
+    </div>
 
-</body>
+        <footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by
+            <a href="http://glyphicons.com/">Glyphicons</a>.<br/>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and<br/>
+            generated on Fri, 10 Jan 2014 22:39:08 +0100.<br/>
+    </footer>
+    </body>
 </html>

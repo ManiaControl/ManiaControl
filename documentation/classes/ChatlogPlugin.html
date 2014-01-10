@@ -3,1394 +3,923 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
     <meta charset="utf-8"/>
-    <title>API Documentation</title>
+    <title>    API Documentation &raquo; \ChatlogPlugin
+</title>
     <meta name="author" content=""/>
     <meta name="description" content=""/>
 
-    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
-    <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
-    <link href="../css/prism.css" rel="stylesheet" media="all"/>
-    <link href="../css/template.css" rel="stylesheet" media="all"/>
+            <link href="../css/template.css" rel="stylesheet" media="all"/>
     
-    <!--[if lt IE 9]>
-    <script src="https://html5shim.googlecode.com/svn/trunk/html5.js" type="text/javascript"></script>
-    <![endif]-->
-    <script src="https://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript"></script>
-    <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.min.js" type="text/javascript"></script>
-    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
-    <script src="../js/jquery.smooth-scroll.js"></script>
-    <script src="../js/prism.min.js"></script>
-    <!-- TODO: Add http://jscrollpane.kelvinluck.com/ to style the scrollbars for browsers not using webkit-->
-    <script type="text/javascript">
-    function loadExternalCodeSnippets() {
-        Array.prototype.slice.call(document.querySelectorAll('pre[data-src]')).forEach(function (pre) {
-            var src = pre.getAttribute('data-src');
-            var extension = (src.match(/\.(\w+)$/) || [, ''])[1];
-            var language = 'php';
-
-            var code = document.createElement('code');
-            code.className = 'language-' + language;
-
-            pre.textContent = '';
-
-            code.textContent = 'Loading…';
-
-            pre.appendChild(code);
-
-            var xhr = new XMLHttpRequest();
-
-            xhr.open('GET', src, true);
-
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4) {
-
-                    if (xhr.status < 400 && xhr.responseText) {
-                        code.textContent = xhr.responseText;
-
-                        Prism.highlightElement(code);
-                    }
-                    else if (xhr.status >= 400) {
-                        code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
-                    }
-                    else {
-                        code.textContent = '✖ Error: File does not exist or is empty';
-                    }
-                }
-            };
-
-            xhr.send(null);
-        });
-    }
-
-    $(document).ready(function(){
-        loadExternalCodeSnippets();
-    });
-    $('#source-view').on('shown', function () {
-        loadExternalCodeSnippets();
-    })
-</script>
-
-    <link rel="shortcut icon" href="../images/favicon.ico"/>
-    <link rel="apple-touch-icon" href="../images/apple-touch-icon.png"/>
-    <link rel="apple-touch-icon" sizes="72x72" href="../images/apple-touch-icon-72x72.png"/>
-    <link rel="apple-touch-icon" sizes="114x114" href="../images/apple-touch-icon-114x114.png"/>
-</head>
+            <!--[if lt IE 9]>
+        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js" type="text/javascript"></script>
+        <![endif]-->
+        <script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script>
+        <script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script>
+        <script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script>
+        <script src="../js/bootstrap.js" type="text/javascript"></script>
+        <script src="../js/template.js" type="text/javascript"></script>
+        <script src="../js/prettify/prettify.min.js" type="text/javascript"></script>
+    
+            <link rel="shortcut icon" href="../img/favicon.ico"/>
+        <link rel="apple-touch-icon" href="../img/apple-touch-icon.png"/>
+        <link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png"/>
+        <link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png"/>
+    </head>
 <body>
 
-<div class="navbar navbar-fixed-top">
-    <div class="navbar-inner">
-        <div class="container">
-            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <i class="icon-ellipsis-vertical"></i>
-            </a>
-            <a class="brand" href="../index.html">API Documentation</a>
+        <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span> <span class="icon-bar"></span>
+                    <span class="icon-bar"></span> </a>
+                <a class="brand" href="../index.html">API Documentation</a>
 
-            <div class="nav-collapse">
-                <ul class="nav pull-right">
-                    <li class="dropdown">
-                        <a href="../index.html" class="dropdown-toggle" data-toggle="dropdown">
-                            API Documentation <b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu">
-                                                        <li><a href="../namespaces/ManiaControl.html">\ManiaControl</a></li>
-                                                        <li><a href="../namespaces/FML.html">\FML</a></li>
-                                                    </ul>
-                    </li>
-                    <li class="dropdown" id="charts-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            Charts <b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="../graphs/class.html">
-                                    <i class="icon-list-alt"></i>&#160;Class hierarchy diagram
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="dropdown" id="reports-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            Reports <b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="../reports/errors.html">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">1033</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="../reports/markers.html">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <i class="icon-list-alt"></i>&#160;Markers <span class="label label-info pull-right">29</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <!--<div class="go_to_top">-->
-    <!--<a href="#___" style="color: inherit">Back to top&#160;&#160;<i class="icon-upload icon-white"></i></a>-->
-    <!--</div>-->
-</div>
-
-<div id="___" class="container-fluid">
-        <section class="row-fluid">
-        <div class="span2 sidebar">
-                                <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-201899650"></a>
-                                <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
-            </div>
-            <div id="namespace-201899650" class="accordion-body collapse in">
-                <div class="accordion-inner">
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1935047634"></a>
-                                <a href="../namespaces/ManiaControl.html" style="margin-left: 30px; padding-left: 0">ManiaControl</a>
-            </div>
-            <div id="namespace-1935047634" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-2117253644"></a>
-                                <a href="../namespaces/ManiaControl.Admin.html" style="margin-left: 30px; padding-left: 0">Admin</a>
-            </div>
-            <div id="namespace-2117253644" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Admin.ActionsMenu.html">ActionsMenu</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Admin.AuthCommands.html">AuthCommands</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Admin.AuthenticationManager.html">AuthenticationManager</a></li>
-                                            </ul>
+                <div class="nav-collapse">
+                    <ul class="nav">
+                        <li class="dropdown">
+                            <a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                API Documentation <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                                                    <li><a>Namespaces</a></li>
+                                                                        <li><a href="../namespaces/ManiaControl.html">ManiaControl</a></li>
+                                                                        <li><a href="../namespaces/FML.html">FML</a></li>
+                                                                                                                                </ul>
+                        </li>
+                        <li class="dropdown" id="charts-menu">
+                            <a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                Charts <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="../graph_class.html">
+                                        <i class="icon-list-alt"></i>&#160;Class hierarchy diagram
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown" id="reports-menu">
+                            <a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                Reports <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="../errors.html">
+                                        <i class="icon-list-alt"></i>&#160;Errors
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="../markers.html">
+                                        <i class="icon-list-alt"></i>&#160;Markers
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="../deprecated.html">
+                                        <i class="icon-list-alt"></i>&#160;Deprecated
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-684090111"></a>
-                                <a href="../namespaces/ManiaControl.Callbacks.html" style="margin-left: 30px; padding-left: 0">Callbacks</a>
-            </div>
-            <div id="namespace-684090111" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                    <li class="interface"><a href="../classes/ManiaControl.Callbacks.CallbackListener.html">CallbackListener</a></li>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Callbacks.CallbackManager.html">CallbackManager</a></li>
-                                            </ul>
-                </div>
-            </div>
+        <div class="go_to_top">
+            <a href="#___" style="color: inherit">Back to top&#160;&#160;<i class="icon-upload icon-white"></i></a>
         </div>
     </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-194342293"></a>
-                                <a href="../namespaces/ManiaControl.Commands.html" style="margin-left: 30px; padding-left: 0">Commands</a>
+    
+    <div id="___" class="container">
+        <noscript>
+            <div class="alert alert-warning">
+                Javascript is disabled; several features are only available if Javascript is enabled.
             </div>
-            <div id="namespace-194342293" class="accordion-body collapse ">
-                <div class="accordion-inner">
+        </noscript>
 
-                    
-                    <ul>
-                                                    <li class="interface"><a href="../classes/ManiaControl.Commands.CommandListener.html">CommandListener</a></li>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Commands.CommandManager.html">CommandManager</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
+        
+            <style>
+        .deprecated h2 {
+            text-decoration: line-through;
+        }
+    </style>
+    <div class="row">
+        <div class="span4">
+                    <div class="btn-group view pull-right" data-toggle="buttons-radio">
+        <button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button>
+        <button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+    </div>
+    <div class="btn-group visibility" data-toggle="buttons-checkbox">
+        <button class="btn public active" title="Show public elements">Public</button>
+        <button class="btn protected" title="Show protected elements">Protected</button>
+        <button class="btn private" title="Show private elements">Private</button>
+        <button class="btn inherited active" title="Show inherited elements">Inherited</button>
     </div>
 
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-536259254"></a>
-                                <a href="../namespaces/ManiaControl.Configurators.html" style="margin-left: 30px; padding-left: 0">Configurators</a>
-            </div>
-            <div id="namespace-536259254" class="accordion-body collapse ">
-                <div class="accordion-inner">
+        <ul class="side-nav nav nav-list">
+        <li class="nav-header">
+            <i class="icon-custom icon-method"></i> Methods
+            <ul>
+                                                                                                    <li class="method public">
+        <a href="#method_load" title="load :: ">
+            <span class="description"></span><pre>load</pre>
+        </a>
+    </li>
 
-                    
-                    <ul>
-                                                    <li class="interface"><a href="../classes/ManiaControl.Configurators.ConfiguratorMenu.html">ConfiguratorMenu</a></li>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Configurators.Configurator.html">Configurator</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Configurators.ManiaControlSettings.html">ManiaControlSettings</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Configurators.ScriptSettings.html">ScriptSettings</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Configurators.ServerSettings.html">ServerSettings</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
+                                                                                                        <li class="method public">
+        <a href="#method_unload" title="unload :: ">
+            <span class="description"></span><pre>unload</pre>
+        </a>
+    </li>
 
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1147889019"></a>
-                                <a href="../namespaces/ManiaControl.Maps.html" style="margin-left: 30px; padding-left: 0">Maps</a>
-            </div>
-            <div id="namespace-1147889019" class="accordion-body collapse ">
-                <div class="accordion-inner">
+                                                                                                        <li class="method public">
+        <a href="#method_getId" title="getId :: ">
+            <span class="description"></span><pre>getId</pre>
+        </a>
+    </li>
 
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Maps.ManiaExchangeInfoSearcher.html">ManiaExchangeInfoSearcher</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Maps.MXMapInfo.html">MXMapInfo</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Maps.Map.html">Map</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Maps.MapCommands.html">MapCommands</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Maps.MapList.html">MapList</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Maps.MapManager.html">MapManager</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Maps.MapQueue.html">MapQueue</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
+                                                                                                        <li class="method public">
+        <a href="#method_getName" title="getName :: ">
+            <span class="description"></span><pre>getName</pre>
+        </a>
+    </li>
 
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-2091827255"></a>
-                                <a href="../namespaces/ManiaControl.Manialinks.html" style="margin-left: 30px; padding-left: 0">Manialinks</a>
-            </div>
-            <div id="namespace-2091827255" class="accordion-body collapse ">
-                <div class="accordion-inner">
+                                                                                                        <li class="method public">
+        <a href="#method_getVersion" title="getVersion :: ">
+            <span class="description"></span><pre>getVersion</pre>
+        </a>
+    </li>
 
-                    
-                    <ul>
-                                                    <li class="interface"><a href="../classes/ManiaControl.Manialinks.ManialinkPageAnswerListener.html">ManialinkPageAnswerListener</a></li>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Manialinks.CustomUIManager.html">CustomUIManager</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Manialinks.IconManager.html">IconManager</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Manialinks.ManialinkManager.html">ManialinkManager</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Manialinks.StyleManager.html">StyleManager</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
+                                                                                                        <li class="method public">
+        <a href="#method_getAuthor" title="getAuthor :: ">
+            <span class="description"></span><pre>getAuthor</pre>
+        </a>
+    </li>
 
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-2008241054"></a>
-                                <a href="../namespaces/ManiaControl.Players.html" style="margin-left: 30px; padding-left: 0">Players</a>
-            </div>
-            <div id="namespace-2008241054" class="accordion-body collapse ">
-                <div class="accordion-inner">
+                                                                                                        <li class="method public">
+        <a href="#method_getDescription" title="getDescription :: ">
+            <span class="description"></span><pre>getDescription</pre>
+        </a>
+    </li>
 
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Players.Player.html">Player</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Players.PlayerActions.html">PlayerActions</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Players.PlayerCommands.html">PlayerCommands</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Players.PlayerDetailed.html">PlayerDetailed</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Players.PlayerList.html">PlayerList</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Players.PlayerManager.html">PlayerManager</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
+                                                                                                        <li class="method public">
+        <a href="#method_handlePlayerChatCallback" title="handlePlayerChatCallback :: Handle PlayerChat callback">
+            <span class="description">Handle PlayerChat callback</span><pre>handlePlayerChatCallback</pre>
+        </a>
+    </li>
 
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1763925571"></a>
-                                <a href="../namespaces/ManiaControl.Plugins.html" style="margin-left: 30px; padding-left: 0">Plugins</a>
-            </div>
-            <div id="namespace-1763925571" class="accordion-body collapse ">
-                <div class="accordion-inner">
+                                                                                                        </ul>
+        </li>
+        <li class="nav-header protected">» Protected
+            <ul>
+                                                                                                                                                                                                                                                                                                                                                                                </ul>
+        </li>
+        <li class="nav-header private">» Private
+            <ul>
+                                                                                                                                                                                                                                                                                                                                                                            <li class="method private">
+                            <a href="#method_logText" title="logText :: Log the given message">
+                                <span class="description">Log the given message</span><pre>logText</pre>
+                            </a>
+                        </li>
+                                                </ul>
+        </li>
+        <li class="nav-header">
+            <i class="icon-custom icon-constant"></i> Constants
+            <ul>
+                                <li class="constant ">
+                    <a href="#constant_ID" title="ID :: Constants">
+                        <span class="description">Constants</span><pre>ID</pre>
+                    </a>
+                </li>
+                                <li class="constant ">
+                    <a href="#constant_VERSION" title="VERSION :: ">
+                        <span class="description"></span><pre>VERSION</pre>
+                    </a>
+                </li>
+                                <li class="constant ">
+                    <a href="#constant_DATE" title="DATE :: ">
+                        <span class="description"></span><pre>DATE</pre>
+                    </a>
+                </li>
+                                <li class="constant ">
+                    <a href="#constant_SETTING_FOLDERNAME" title="SETTING_FOLDERNAME :: ">
+                        <span class="description"></span><pre>SETTING_FOLDERNAME</pre>
+                    </a>
+                </li>
+                                <li class="constant ">
+                    <a href="#constant_SETTING_FILENAME" title="SETTING_FILENAME :: ">
+                        <span class="description"></span><pre>SETTING_FILENAME</pre>
+                    </a>
+                </li>
+                                <li class="constant ">
+                    <a href="#constant_SETTING_USEPID" title="SETTING_USEPID :: ">
+                        <span class="description"></span><pre>SETTING_USEPID</pre>
+                    </a>
+                </li>
+                                <li class="constant ">
+                    <a href="#constant_SETTING_LOGSERVERMESSAGES" title="SETTING_LOGSERVERMESSAGES :: ">
+                        <span class="description"></span><pre>SETTING_LOGSERVERMESSAGES</pre>
+                    </a>
+                </li>
+                            </ul>
+        </li>
+    </ul>
 
-                    
-                    <ul>
-                                                    <li class="interface"><a href="../classes/ManiaControl.Plugins.Plugin.html">Plugin</a></li>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Plugins.PluginManager.html">PluginManager</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Plugins.PluginMenu.html">PluginMenu</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Plugins.ChatMessagePlugin.html">ChatMessagePlugin</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-55546931"></a>
-                                <a href="../namespaces/ManiaControl.Server.html" style="margin-left: 30px; padding-left: 0">Server</a>
-            </div>
-            <div id="namespace-55546931" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Server.Server.html">Server</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Server.ServerCommands.html">ServerCommands</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-355010820"></a>
-                                <a href="../namespaces/ManiaControl.Statistics.html" style="margin-left: 30px; padding-left: 0">Statistics</a>
-            </div>
-            <div id="namespace-355010820" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Statistics.StatisticCollector.html">StatisticCollector</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Statistics.StatisticManager.html">StatisticManager</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Chat.html">Chat</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.ColorUtil.html">ColorUtil</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Database.html">Database</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.FileUtil.html">FileUtil</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Formatter.html">Formatter</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.ManiaControl.html">ManiaControl</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.SettingManager.html">SettingManager</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.UpdateManager.html">UpdateManager</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-244494689"></a>
-                                <a href="../namespaces/FML.html" style="margin-left: 30px; padding-left: 0">FML</a>
-            </div>
-            <div id="namespace-244494689" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-876768453"></a>
-                                <a href="../namespaces/FML.Controls.html" style="margin-left: 30px; padding-left: 0">Controls</a>
-            </div>
-            <div id="namespace-876768453" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-600854993"></a>
-                                <a href="../namespaces/FML.Controls.Labels.html" style="margin-left: 30px; padding-left: 0">Labels</a>
-            </div>
-            <div id="namespace-600854993" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/FML.Controls.Labels.Label_Button.html">Label_Button</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Labels.Label_Text.html">Label_Text</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-575135578"></a>
-                                <a href="../namespaces/FML.Controls.Quads.html" style="margin-left: 30px; padding-left: 0">Quads</a>
-            </div>
-            <div id="namespace-575135578" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_321Go.html">Quad_321Go</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_BgRaceScore2.html">Quad_BgRaceScore2</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Bgs1.html">Quad_Bgs1</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Bgs1InRace.html">Quad_Bgs1InRace</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_BgsChallengeMedals.html">Quad_BgsChallengeMedals</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_BgsPlayerCard.html">Quad_BgsPlayerCard</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Copilot.html">Quad_Copilot</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Emblems.html">Quad_Emblems</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_EnergyBar.html">Quad_EnergyBar</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Hud3dEchelons.html">Quad_Hud3dEchelons</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Icons128x128_1.html">Quad_Icons128x128_1</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Icons128x128_Blink.html">Quad_Icons128x128_Blink</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Icons128x32_1.html">Quad_Icons128x32_1</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Icons64x64_1.html">Quad_Icons64x64_1</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Icons64x64_2.html">Quad_Icons64x64_2</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_ManiaPlanetLogos.html">Quad_ManiaPlanetLogos</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_ManiaplanetSystem.html">Quad_ManiaplanetSystem</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_MedalsBig.html">Quad_MedalsBig</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_TitleLogos.html">Quad_TitleLogos</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_UIConstruction_Buttons.html">Quad_UIConstruction_Buttons</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_UiSMSpectatorScoreBig.html">Quad_UiSMSpectatorScoreBig</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/FML.Controls.Audio.html">Audio</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Control.html">Control</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Entry.html">Entry</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.FileEntry.html">FileEntry</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Frame.html">Frame</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Frame3d.html">Frame3d</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Gauge.html">Gauge</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Label.html">Label</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quad.html">Quad</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Video.html">Video</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-808340208"></a>
-                                <a href="../namespaces/FML.Elements.html" style="margin-left: 30px; padding-left: 0">Elements</a>
-            </div>
-            <div id="namespace-808340208" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/FML.Elements.Format.html">Format</a></li>
-                                                    <li class="class"><a href="../classes/FML.Elements.Including.html">Including</a></li>
-                                                    <li class="class"><a href="../classes/FML.Elements.Music.html">Music</a></li>
-                                                    <li class="class"><a href="../classes/FML.Elements.SimpleScript.html">SimpleScript</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-851497804"></a>
-                                <a href="../namespaces/FML.Script.html" style="margin-left: 30px; padding-left: 0">Script</a>
-            </div>
-            <div id="namespace-851497804" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/FML.Script.Builder.html">Builder</a></li>
-                                                    <li class="class"><a href="../classes/FML.Script.EUISound.html">EUISound</a></li>
-                                                    <li class="class"><a href="../classes/FML.Script.Script.html">Script</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-287281048"></a>
-                                <a href="../namespaces/FML.Types.html" style="margin-left: 30px; padding-left: 0">Types</a>
-            </div>
-            <div id="namespace-287281048" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                    <li class="interface"><a href="../classes/FML.Types.Actionable.html">Actionable</a></li>
-                                                    <li class="interface"><a href="../classes/FML.Types.BgColorable.html">BgColorable</a></li>
-                                                    <li class="interface"><a href="../classes/FML.Types.Container.html">Container</a></li>
-                                                    <li class="interface"><a href="../classes/FML.Types.Linkable.html">Linkable</a></li>
-                                                    <li class="interface"><a href="../classes/FML.Types.NewLineable.html">NewLineable</a></li>
-                                                    <li class="interface"><a href="../classes/FML.Types.Playable.html">Playable</a></li>
-                                                    <li class="interface"><a href="../classes/FML.Types.Renderable.html">Renderable</a></li>
-                                                    <li class="interface"><a href="../classes/FML.Types.Scriptable.html">Scriptable</a></li>
-                                                    <li class="interface"><a href="../classes/FML.Types.Styleable.html">Styleable</a></li>
-                                                    <li class="interface"><a href="../classes/FML.Types.SubStyleable.html">SubStyleable</a></li>
-                                                    <li class="interface"><a href="../classes/FML.Types.TextFormatable.html">TextFormatable</a></li>
-                                                                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/FML.CustomUI.html">CustomUI</a></li>
-                                                    <li class="class"><a href="../classes/FML.ManiaLink.html">ManiaLink</a></li>
-                                                    <li class="class"><a href="../classes/FML.ManiaLinks.html">ManiaLinks</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/GBXBaseFetcher.html">GBXBaseFetcher</a></li>
-                                                    <li class="class"><a href="../classes/GBXChallMapFetcher.html">GBXChallMapFetcher</a></li>
-                                                    <li class="class"><a href="../classes/GBXChallengeFetcher.html">GBXChallengeFetcher</a></li>
-                                                    <li class="class"><a href="../classes/GBXReplayFetcher.html">GBXReplayFetcher</a></li>
-                                                    <li class="class"><a href="../classes/GBXPackFetcher.html">GBXPackFetcher</a></li>
-                                                    <li class="class"><a href="../classes/MXInfoFetcher.html">MXInfoFetcher</a></li>
-                                                    <li class="class"><a href="../classes/MXInfoSearcher.html">MXInfoSearcher</a></li>
-                                                    <li class="class"><a href="../classes/MXInfo.html">MXInfo</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Value.html">IXR_Value</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Message.html">IXR_Message</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Request.html">IXR_Request</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Error.html">IXR_Error</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Date.html">IXR_Date</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Base64.html">IXR_Base64</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Client_Gbx.html">IXR_Client_Gbx</a></li>
-                                                    <li class="class"><a href="../classes/IXR_ClientMulticall_Gbx.html">IXR_ClientMulticall_Gbx</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Value.html">IXR_Value</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Message.html">IXR_Message</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Request.html">IXR_Request</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Error.html">IXR_Error</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Date.html">IXR_Date</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Base64.html">IXR_Base64</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Client_Gbx.html">IXR_Client_Gbx</a></li>
-                                                    <li class="class"><a href="../classes/IXR_ClientMulticall_Gbx.html">IXR_ClientMulticall_Gbx</a></li>
-                                                    <li class="class"><a href="../classes/ChatlogPlugin.html">ChatlogPlugin</a></li>
-                                                    <li class="class"><a href="../classes/DonationPlugin.html">DonationPlugin</a></li>
-                                                    <li class="class"><a href="../classes/EndurancePlugin.html">EndurancePlugin</a></li>
-                                                    <li class="class"><a href="../classes/KarmaPlugin.html">KarmaPlugin</a></li>
-                                                    <li class="class"><a href="../classes/LocalRecordsPlugin.html">LocalRecordsPlugin</a></li>
-                                                    <li class="class"><a href="../classes/ObstaclePlugin.html">ObstaclePlugin</a></li>
-                                                    <li class="class"><a href="../classes/WidgetPlugin.html">WidgetPlugin</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
 
         </div>
-    </section>
-    <section class="row-fluid">
-        <div class="span10 offset2">
-            <div class="row-fluid">
-                <div class="span8 content class">
-                    <nav>
-                                                <a href="../namespaces/default.html">\</a> <i class="icon-level-up"></i>
-                                            </nav>
-                    <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal"><i class="icon-code"></i></a>
 
-                    <h1><small>\</small>ChatlogPlugin</h1>
-                    <p><em>ManiaControl Chatlog Plugin</em></p>
-                    
-
-                    <section id="summary">
-                        <h2>Summary</h2>
-                        <section class="row-fluid heading">
-                            <section class="span4">
-                                <a href="#methods">Methods</a>
-                            </section>
-                            <section class="span4">
-                                <a href="#properties">Properties</a>
-                            </section>
-                            <section class="span4">
-                                <a href="#constants">Constants</a>
-                            </section>
-                        </section>
-                        <section class="row-fluid public">
-                            <section class="span4">
-                                                                    <a href="../classes/ChatlogPlugin.html#method_load" class="">load()</a><br />
-                                                                    <a href="../classes/ChatlogPlugin.html#method_unload" class="">unload()</a><br />
-                                                                    <a href="../classes/ChatlogPlugin.html#method_getId" class="">getId()</a><br />
-                                                                    <a href="../classes/ChatlogPlugin.html#method_getName" class="">getName()</a><br />
-                                                                    <a href="../classes/ChatlogPlugin.html#method_getVersion" class="">getVersion()</a><br />
-                                                                    <a href="../classes/ChatlogPlugin.html#method_getAuthor" class="">getAuthor()</a><br />
-                                                                    <a href="../classes/ChatlogPlugin.html#method_getDescription" class="">getDescription()</a><br />
-                                                                    <a href="../classes/ChatlogPlugin.html#method_handlePlayerChatCallback" class="">handlePlayerChatCallback()</a><br />
-                                                            </section>
-                            <section class="span4">
-                                                                    <em>No public properties found</em>
-                                                            </section>
-                            <section class="span4">
-                                                                    <a href="../classes/ChatlogPlugin.html#constant_ID" class="">ID</a><br />
-                                                                    <a href="../classes/ChatlogPlugin.html#constant_VERSION" class="">VERSION</a><br />
-                                                                    <a href="../classes/ChatlogPlugin.html#constant_DATE" class="">DATE</a><br />
-                                                                    <a href="../classes/ChatlogPlugin.html#constant_SETTING_FOLDERNAME" class="">SETTING_FOLDERNAME</a><br />
-                                                                    <a href="../classes/ChatlogPlugin.html#constant_SETTING_FILENAME" class="">SETTING_FILENAME</a><br />
-                                                                    <a href="../classes/ChatlogPlugin.html#constant_SETTING_USEPID" class="">SETTING_USEPID</a><br />
-                                                                    <a href="../classes/ChatlogPlugin.html#constant_SETTING_LOGSERVERMESSAGES" class="">SETTING_LOGSERVERMESSAGES</a><br />
-                                                            </section>
-                        </section>
-                        <section class="row-fluid protected">
-                            <section class="span4">
-                                                                    <em>No protected methods found</em>
-                                                            </section>
-                            <section class="span4">
-                                                                    <em>No protected properties found</em>
-                                                            </section>
-                            <section class="span4">
-                                <em>N/A</em>
-                            </section>
-                        </section>
-                        <section class="row-fluid private">
-                            <section class="span4">
-                                                                    <a href="../classes/ChatlogPlugin.html#method_logText" class="">logText()</a><br />
-                                                            </section>
-                            <section class="span4">
-                                                                    <a href="../classes/ChatlogPlugin.html#property_maniaControl" class="">$maniaControl</a><br />
-                                                                    <a href="../classes/ChatlogPlugin.html#property_fileName" class="">$fileName</a><br />
-                                                                    <a href="../classes/ChatlogPlugin.html#property_logServerMessages" class="">$logServerMessages</a><br />
-                                                            </section>
-                            <section class="span4">
-                                <em>N/A</em>
-                            </section>
-                        </section>
-                    </section>
-                </div>
-                <aside class="span4 detailsbar">
-                                        
-                    
-                    <dl>
-                        <dt>File</dt>
-                            <dd><a href="../files/plugins.Chatlog.php.html"><div class="path-wrapper">plugins\Chatlog.php</div></a></dd>
-                                                <dt>Package</dt>
-                            <dd><div class="namespace-wrapper">\Default</div></dd>
-                                                <dt>Class hierarchy</dt>
-                            <dd class="hierarchy">
-                                                                                                                                                                    <div class="namespace-wrapper">\ChatlogPlugin</div>
-                            </dd>
-
+        <div class="span8">
+            <div class="element class">
+                <h1>ChatlogPlugin</h1>
+                <small style="display: block; text-align: right">
+                                                                Implements <a href="../classes/ManiaControl.Callbacks.CallbackListener.html">\ManiaControl\Callbacks\CallbackListener</a>, <a href="../classes/ManiaControl.Plugins.Plugin.html">\ManiaControl\Plugins\Plugin</a>
+                                    </small>
+                <p class="short_description">ManiaControl Chatlog Plugin</p>
+                <div class="details">
+                    <div class="long_description">
                         
-                        
-                        
-                        
-                                                                        </dl>
-                    <h2>Tags</h2>
-                    <table class="table table-condensed">
-                                            <tr>
-                            <th>
-                                author
-                            </th>
-                            <td>
-                                                                    <p>steeffeen</p>
-                                                            </td>
-                        </tr>
-                                            <tr>
-                            <th>
-                                todo
-                            </th>
-                            <td>
-                                                            </td>
-                        </tr>
-                                        </table>
-                </aside>
-            </div>
+                    </div>
+                    <table class="table table-bordered">
+                                                                                    <tr>
+                                    <th>
+                                        author
+                                                                            </th>
+                                    <td>
+                                                                                    
+                                                                                <p>steeffeen</p>
+                                    </td>
+                                </tr>
+                                                                                                                                                                                                                                                                                        </table>
 
-                                    <a id="constants" name="constants"></a>
-            <div class="row-fluid">
-                <div class="span8 content class">
-                    <h2>Constants</h2>
-                </div>
-                <aside class="span4 detailsbar"></aside>
-            </div>
+                    <h3><i class="icon-custom icon-method"></i> Methods</h3>
+                                                                <a id="method_load"></a>
+                        <div class="element clickable method public  method_load" data-toggle="collapse" data-target=".method_load .collapse">
+                            <h2>load</h2>
+                            <pre>load(\ManiaControl\ManiaControl $maniaControl) </pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
 
-                                <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="constant_ID" name="constant_ID" class="anchor"></a>
-            <article id="constant_ID" class="constant">
-                <h3 class="">ID</h3>
-                <pre class="signature">ID</pre>
-                <p><em>Constants</em></p>
-                
-            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                        <dl>
-                                                                            </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    see
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                            <a href="../classes/ManiaControl.Plugins.Plugin.html#method_load">\ManiaControl\Plugins\Plugin::load()</a>
+                                                                                                                
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
 
-                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="constant_VERSION" name="constant_VERSION" class="anchor"></a>
-            <article id="constant_VERSION" class="constant">
-                <h3 class="">VERSION</h3>
-                <pre class="signature">VERSION</pre>
-                <p><em></em></p>
-                
-            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                        <dl>
-                                                                            </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$maniaControl</h4>
+                                                <code><a href="../classes/ManiaControl.ManiaControl.html">\ManiaControl\ManiaControl</a></code><p></p>
+                                            </div>
+                                                                            
+                                                                    </div>
+                            </div>
+                        </div>
+                                            <a id="method_unload"></a>
+                        <div class="element clickable method public  method_unload" data-toggle="collapse" data-target=".method_unload .collapse">
+                            <h2>unload</h2>
+                            <pre>unload() </pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
 
-                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="constant_DATE" name="constant_DATE" class="anchor"></a>
-            <article id="constant_DATE" class="constant">
-                <h3 class="">DATE</h3>
-                <pre class="signature">DATE</pre>
-                <p><em></em></p>
-                
-            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                        <dl>
-                                                                            </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    see
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                            <a href="../classes/ManiaControl.Plugins.Plugin.html#method_unload">\ManiaControl\Plugins\Plugin::unload()</a>
+                                                                                                                
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
 
-                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="constant_SETTING_FOLDERNAME" name="constant_SETTING_FOLDERNAME" class="anchor"></a>
-            <article id="constant_SETTING_FOLDERNAME" class="constant">
-                <h3 class="">SETTING_FOLDERNAME</h3>
-                <pre class="signature">SETTING_FOLDERNAME</pre>
-                <p><em></em></p>
-                
-            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                        <dl>
-                                                                            </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
+                                    
+                                                                    </div>
+                            </div>
+                        </div>
+                                            <a id="method_getId"></a>
+                        <div class="element clickable method public  method_getId" data-toggle="collapse" data-target=".method_getId .collapse">
+                            <h2>getId</h2>
+                            <pre>getId() </pre>
+                            <div class="labels">
+                                                                <span class="label">static</span>                                                                                                                            </div>
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
 
-                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="constant_SETTING_FILENAME" name="constant_SETTING_FILENAME" class="anchor"></a>
-            <article id="constant_SETTING_FILENAME" class="constant">
-                <h3 class="">SETTING_FILENAME</h3>
-                <pre class="signature">SETTING_FILENAME</pre>
-                <p><em></em></p>
-                
-            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                        <dl>
-                                                                            </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    see
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                            <a href="../classes/ManiaControl.Plugins.Plugin.html#method_getId">\ManiaControl\Plugins\Plugin::getId()</a>
+                                                                                                                
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
 
-                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="constant_SETTING_USEPID" name="constant_SETTING_USEPID" class="anchor"></a>
-            <article id="constant_SETTING_USEPID" class="constant">
-                <h3 class="">SETTING_USEPID</h3>
-                <pre class="signature">SETTING_USEPID</pre>
-                <p><em></em></p>
-                
-            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                        <dl>
-                                                                            </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
+                                    
+                                                                    </div>
+                            </div>
+                        </div>
+                                            <a id="method_getName"></a>
+                        <div class="element clickable method public  method_getName" data-toggle="collapse" data-target=".method_getName .collapse">
+                            <h2>getName</h2>
+                            <pre>getName() </pre>
+                            <div class="labels">
+                                                                <span class="label">static</span>                                                                                                                            </div>
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
 
-                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="constant_SETTING_LOGSERVERMESSAGES" name="constant_SETTING_LOGSERVERMESSAGES" class="anchor"></a>
-            <article id="constant_SETTING_LOGSERVERMESSAGES" class="constant">
-                <h3 class="">SETTING_LOGSERVERMESSAGES</h3>
-                <pre class="signature">SETTING_LOGSERVERMESSAGES</pre>
-                <p><em></em></p>
-                
-            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                        <dl>
-                                                                            </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    see
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                            <a href="../classes/ManiaControl.Plugins.Plugin.html#method_getName">\ManiaControl\Plugins\Plugin::getName()</a>
+                                                                                                                
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
 
-                            
-                                    <a id="properties" name="properties"></a>
-            <div class="row-fluid">
-                <div class="span8 content class">
-                    <h2>Properties</h2>
-                </div>
-                <aside class="span4 detailsbar"></aside>
-            </div>
+                                    
+                                                                    </div>
+                            </div>
+                        </div>
+                                            <a id="method_getVersion"></a>
+                        <div class="element clickable method public  method_getVersion" data-toggle="collapse" data-target=".method_getVersion .collapse">
+                            <h2>getVersion</h2>
+                            <pre>getVersion() </pre>
+                            <div class="labels">
+                                                                <span class="label">static</span>                                                                                                                            </div>
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
 
-                                                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="property_maniaControl" name="property_maniaControl" class="anchor"></a>
-            <article class="property">
-                <h3 class="private ">$maniaControl</h3>
-                <pre class="signature">$maniaControl : \maniaControl</pre>
-                <p><em></em></p>
-                
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    see
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                            <a href="../classes/ManiaControl.Plugins.Plugin.html#method_getVersion">\ManiaControl\Plugins\Plugin::getVersion()</a>
+                                                                                                                
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
 
-                                <h4>Type</h4>
-                \maniaControl
-                                            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                        <dl>
-                                                            </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
+                                    
+                                                                    </div>
+                            </div>
+                        </div>
+                                            <a id="method_getAuthor"></a>
+                        <div class="element clickable method public  method_getAuthor" data-toggle="collapse" data-target=".method_getAuthor .collapse">
+                            <h2>getAuthor</h2>
+                            <pre>getAuthor() </pre>
+                            <div class="labels">
+                                                                <span class="label">static</span>                                                                                                                            </div>
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
 
-                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="property_fileName" name="property_fileName" class="anchor"></a>
-            <article class="property">
-                <h3 class="private ">$fileName</h3>
-                <pre class="signature">$fileName</pre>
-                <p><em></em></p>
-                
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    see
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                            <a href="../classes/ManiaControl.Plugins.Plugin.html#method_getAuthor">\ManiaControl\Plugins\Plugin::getAuthor()</a>
+                                                                                                                
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
 
-                            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                        <dl>
-                                                            </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
+                                    
+                                                                    </div>
+                            </div>
+                        </div>
+                                            <a id="method_getDescription"></a>
+                        <div class="element clickable method public  method_getDescription" data-toggle="collapse" data-target=".method_getDescription .collapse">
+                            <h2>getDescription</h2>
+                            <pre>getDescription() </pre>
+                            <div class="labels">
+                                                                <span class="label">static</span>                                                                                                                            </div>
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
 
-                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="property_logServerMessages" name="property_logServerMessages" class="anchor"></a>
-            <article class="property">
-                <h3 class="private ">$logServerMessages</h3>
-                <pre class="signature">$logServerMessages</pre>
-                <p><em></em></p>
-                
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    see
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                            <a href="../classes/ManiaControl.Plugins.Plugin.html#method_getDescription">\ManiaControl\Plugins\Plugin::getDescription()</a>
+                                                                                                                
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
 
-                            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                        <dl>
-                                                            </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
+                                    
+                                                                    </div>
+                            </div>
+                        </div>
+                                            <a id="method_handlePlayerChatCallback"></a>
+                        <div class="element clickable method public  method_handlePlayerChatCallback" data-toggle="collapse" data-target=".method_handlePlayerChatCallback .collapse">
+                            <h2>Handle PlayerChat callback</h2>
+                            <pre>handlePlayerChatCallback(array $chatCallback) </pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
 
-                            
-                                    <a id="methods" name="methods"></a>
-            <div class="row-fluid">
-                <div class="span8 content class"><h2>Methods</h2></div>
-                <aside class="span4 detailsbar"></aside>
-            </div>
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
 
-                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="method_load" name="method_load" class="anchor"></a>
-            <article class="method">
-                <h3 class="public ">load()</h3>
-                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">load(\ManiaControl\ManiaControl <span class="argument">$maniaControl</span>)</pre>
-                <p><em></em></p>
-                
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$chatCallback</h4>
+                                                <code>array</code><p></p>
+                                            </div>
+                                                                            
+                                                                    </div>
+                            </div>
+                        </div>
+                                            <a id="method_logText"></a>
+                        <div class="element clickable method private  method_logText" data-toggle="collapse" data-target=".method_logText .collapse">
+                            <h2>Log the given message</h2>
+                            <pre>logText(string $text, string $login = null) </pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
 
-                                    <h4>Parameters</h4>
-                    <table class="table table-condensed table-hover">
-                                                    <tr>
-                                <td><a href="../classes/ManiaControl.ManiaControl.html">\ManiaControl\ManiaControl</a></td>
-                                <td>$maniaControl</td>
-                                <td></td>
-                            </tr>
-                                            </table>
-                
-                
-                            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                                                            <dl>
-                                                                                            <dt>See also</dt>
-                                                                <dd><a href="../classes/ManiaControl.Plugins.Plugin.html#method_load"><span class="namespace-wrapper"></span></a></dd>
-                                                                </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
 
-                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="method_unload" name="method_unload" class="anchor"></a>
-            <article class="method">
-                <h3 class="public ">unload()</h3>
-                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">unload()</pre>
-                <p><em></em></p>
-                
-
-                
-                
-                            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                                                            <dl>
-                                                                                            <dt>See also</dt>
-                                                                <dd><a href="../classes/ManiaControl.Plugins.Plugin.html#method_unload"><span class="namespace-wrapper"></span></a></dd>
-                                                                </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
-
-                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="method_getId" name="method_getId" class="anchor"></a>
-            <article class="method">
-                <h3 class="public ">getId()</h3>
-                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">getId()</pre>
-                <p><em></em></p>
-                
-
-                
-                
-                            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                            <span class="label label-info">static</span>
-                                                            <dl>
-                                                                                            <dt>See also</dt>
-                                                                <dd><a href="../classes/ManiaControl.Plugins.Plugin.html#method_getId"><span class="namespace-wrapper"></span></a></dd>
-                                                                </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
-
-                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="method_getName" name="method_getName" class="anchor"></a>
-            <article class="method">
-                <h3 class="public ">getName()</h3>
-                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">getName()</pre>
-                <p><em></em></p>
-                
-
-                
-                
-                            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                            <span class="label label-info">static</span>
-                                                            <dl>
-                                                                                            <dt>See also</dt>
-                                                                <dd><a href="../classes/ManiaControl.Plugins.Plugin.html#method_getName"><span class="namespace-wrapper"></span></a></dd>
-                                                                </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
-
-                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="method_getVersion" name="method_getVersion" class="anchor"></a>
-            <article class="method">
-                <h3 class="public ">getVersion()</h3>
-                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">getVersion()</pre>
-                <p><em></em></p>
-                
-
-                
-                
-                            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                            <span class="label label-info">static</span>
-                                                            <dl>
-                                                                                            <dt>See also</dt>
-                                                                <dd><a href="../classes/ManiaControl.Plugins.Plugin.html#method_getVersion"><span class="namespace-wrapper"></span></a></dd>
-                                                                </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
-
-                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="method_getAuthor" name="method_getAuthor" class="anchor"></a>
-            <article class="method">
-                <h3 class="public ">getAuthor()</h3>
-                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">getAuthor()</pre>
-                <p><em></em></p>
-                
-
-                
-                
-                            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                            <span class="label label-info">static</span>
-                                                            <dl>
-                                                                                            <dt>See also</dt>
-                                                                <dd><a href="../classes/ManiaControl.Plugins.Plugin.html#method_getAuthor"><span class="namespace-wrapper"></span></a></dd>
-                                                                </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
-
-                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="method_getDescription" name="method_getDescription" class="anchor"></a>
-            <article class="method">
-                <h3 class="public ">getDescription()</h3>
-                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">getDescription()</pre>
-                <p><em></em></p>
-                
-
-                
-                
-                            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                            <span class="label label-info">static</span>
-                                                            <dl>
-                                                                                            <dt>See also</dt>
-                                                                <dd><a href="../classes/ManiaControl.Plugins.Plugin.html#method_getDescription"><span class="namespace-wrapper"></span></a></dd>
-                                                                </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
-
-                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="method_handlePlayerChatCallback" name="method_handlePlayerChatCallback" class="anchor"></a>
-            <article class="method">
-                <h3 class="public ">handlePlayerChatCallback()</h3>
-                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">handlePlayerChatCallback(array <span class="argument">$chatCallback</span>)</pre>
-                <p><em>Handle PlayerChat callback</em></p>
-                
-
-                                    <h4>Parameters</h4>
-                    <table class="table table-condensed table-hover">
-                                                    <tr>
-                                <td>array</td>
-                                <td>$chatCallback</td>
-                                <td></td>
-                            </tr>
-                                            </table>
-                
-                
-                            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                                                            <dl>
-                                                                            </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
-
-                                                                    <div class="row-fluid">
-        <div class="span8 content class">
-            <a id="method_logText" name="method_logText" class="anchor"></a>
-            <article class="method">
-                <h3 class="private ">logText()</h3>
-                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">logText(string <span class="argument">$text</span>, string <span class="argument">$login</span>)</pre>
-                <p><em>Log the given message</em></p>
-                
-
-                                    <h4>Parameters</h4>
-                    <table class="table table-condensed table-hover">
-                                                    <tr>
-                                <td>string</td>
-                                <td>$text</td>
-                                <td></td>
-                            </tr>
-                                                    <tr>
-                                <td>string</td>
-                                <td>$login</td>
-                                <td></td>
-                            </tr>
-                                            </table>
-                
-                
-                            </article>
-        </div>
-        <aside class="span4 detailsbar">
-            <h1><i class="icon-arrow-down"></i></h1>
-                                                            <dl>
-                                                                            </dl>
-            <h2>Tags</h2>
-            <table class="table table-condensed">
-                                    <tr>
-                        <th>
-                            todo
-                        </th>
-                        <td>
-                                                    </td>
-                    </tr>
-                            </table>
-        </aside>
-    </div>
-
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$text</h4>
+                                                <code>string</code><p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$login</h4>
+                                                <code>string</code><p></p>
+                                            </div>
+                                                                            
+                                                                    </div>
+                            </div>
+                        </div>
+                    
+                                            <h3><i class="icon-custom icon-constant"></i> Constants</h3>
+                                                    <a id="constant_ID"> </a>
+                            <div class="element clickable constant  constant_ID" data-toggle="collapse" data-target=".constant_ID .collapse">
+                                <h2>Constants</h2>
+                                <pre>ID</pre>
+                                <div class="labels">
+                                                                    </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
                                     </div>
-    </section>
+                                </div>
+                            </div>
+                                                    <a id="constant_VERSION"> </a>
+                            <div class="element clickable constant  constant_VERSION" data-toggle="collapse" data-target=".constant_VERSION .collapse">
+                                <h2>VERSION</h2>
+                                <pre>VERSION</pre>
+                                <div class="labels">
+                                                                    </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+                                    </div>
+                                </div>
+                            </div>
+                                                    <a id="constant_DATE"> </a>
+                            <div class="element clickable constant  constant_DATE" data-toggle="collapse" data-target=".constant_DATE .collapse">
+                                <h2>DATE</h2>
+                                <pre>DATE</pre>
+                                <div class="labels">
+                                                                    </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+                                    </div>
+                                </div>
+                            </div>
+                                                    <a id="constant_SETTING_FOLDERNAME"> </a>
+                            <div class="element clickable constant  constant_SETTING_FOLDERNAME" data-toggle="collapse" data-target=".constant_SETTING_FOLDERNAME .collapse">
+                                <h2>SETTING_FOLDERNAME</h2>
+                                <pre>SETTING_FOLDERNAME</pre>
+                                <div class="labels">
+                                                                    </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+                                    </div>
+                                </div>
+                            </div>
+                                                    <a id="constant_SETTING_FILENAME"> </a>
+                            <div class="element clickable constant  constant_SETTING_FILENAME" data-toggle="collapse" data-target=".constant_SETTING_FILENAME .collapse">
+                                <h2>SETTING_FILENAME</h2>
+                                <pre>SETTING_FILENAME</pre>
+                                <div class="labels">
+                                                                    </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+                                    </div>
+                                </div>
+                            </div>
+                                                    <a id="constant_SETTING_USEPID"> </a>
+                            <div class="element clickable constant  constant_SETTING_USEPID" data-toggle="collapse" data-target=".constant_SETTING_USEPID .collapse">
+                                <h2>SETTING_USEPID</h2>
+                                <pre>SETTING_USEPID</pre>
+                                <div class="labels">
+                                                                    </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+                                    </div>
+                                </div>
+                            </div>
+                                                    <a id="constant_SETTING_LOGSERVERMESSAGES"> </a>
+                            <div class="element clickable constant  constant_SETTING_LOGSERVERMESSAGES" data-toggle="collapse" data-target=".constant_SETTING_LOGSERVERMESSAGES .collapse">
+                                <h2>SETTING_LOGSERVERMESSAGES</h2>
+                                <pre>SETTING_LOGSERVERMESSAGES</pre>
+                                <div class="labels">
+                                                                    </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+                                    </div>
+                                </div>
+                            </div>
+                                            
+                                                                <h3><i class="icon-custom icon-property"></i> Properties</h3>
+                                                    <a id="property_maniaControl"> </a>
+                            <div class="element clickable property  private property_maniaControl" data-toggle="collapse" data-target=".property_maniaControl .collapse">
+                                <h2>maniaControl</h2>
+                                <pre>maniaControl : \maniaControl</pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
 
-    <div id="source-view" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="source-view-label" aria-hidden="true">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h3 id="source-view-label">Chatlog.php</h3>
-        </div>
-        <div class="modal-body">
-            <pre data-src="../files/plugins\Chatlog.php.txt" class="language-php line-numbers"></pre>
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code>\maniaControl</code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property_fileName"> </a>
+                            <div class="element clickable property  private property_fileName" data-toggle="collapse" data-target=".property_fileName .collapse">
+                                <h2>fileName</h2>
+                                <pre>fileName : </pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property_logServerMessages"> </a>
+                            <div class="element clickable property  private property_logServerMessages" data-toggle="collapse" data-target=".property_logServerMessages .collapse">
+                                <h2>logServerMessages</h2>
+                                <pre>logServerMessages : </pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                            </div>
+                                </div>
+                            </div>
+                                                            </div>
+            </div>
+            <a id="\ChatlogPlugin"></a>
+            <ul class="breadcrumb">
+                <li><a href="../index.html"><i class="icon-custom icon-class"></i></a></li>
+                    
+    
+    <li><span class="divider">\</span><a href="../namespaces/default.html">\</a></li>
+
+                <li class="active"><span class="divider">\</span><a href="../classes/ChatlogPlugin.html">ChatlogPlugin</a></li>
+            </ul>
         </div>
     </div>
 
-    <footer class="row-fluid">
-        <section class="span10 offset2">
-            <section class="row-fluid">
-                <section class="span10 offset1">
-                    <section class="row-fluid footer-sections">
-                        <section class="span4">
-                                                        <h1><i class="icon-code"></i></h1>
-                            <div>
-                                <ul>
-                                                                            <li><a href="../namespaces/ManiaControl.html">\ManiaControl</a></li>
-                                                                            <li><a href="../namespaces/FML.html">\FML</a></li>
-                                                                    </ul>
-                            </div>
-                        </section>
-                        <section class="span4">
-                                                        <h1><i class="icon-bar-chart"></i></h1>
-                            <div>
-                                <ul>
-                                    <li><a href="../graphs/class.html">Class Hierarchy Diagram</a></li>
-                                </ul>
-                            </div>
-                        </section>
-                        <section class="span4">
-                                                        <h1><i class="icon-pushpin"></i></h1>
-                            <div>
-                                <ul>
-                                    <li><a href="../reports/errors.html">Errors</a></li>
-                                    <li><a href="../reports/markers.html">Markers</a></li>
-                                </ul>
-                            </div>
-                        </section>
-                    </section>
-                </section>
-            </section>
-            <section class="row-fluid">
-                <section class="span10 offset1">
-                    <hr />
-                    Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
-                    on January 10th, 2014 at 22:18.
-                </section>
-            </section>
-        </section>
-    </footer>
-</div>
+    </div>
 
-</body>
+        <footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by
+            <a href="http://glyphicons.com/">Glyphicons</a>.<br/>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and<br/>
+            generated on Fri, 10 Jan 2014 22:39:08 +0100.<br/>
+    </footer>
+    </body>
 </html>

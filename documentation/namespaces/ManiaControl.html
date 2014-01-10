@@ -3,691 +3,787 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
     <meta charset="utf-8"/>
-    <title>API Documentation</title>
+    <title>     &raquo; \ManiaControl
+</title>
     <meta name="author" content=""/>
     <meta name="description" content=""/>
 
-    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
-    <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
-    <link href="../css/prism.css" rel="stylesheet" media="all"/>
-    <link href="../css/template.css" rel="stylesheet" media="all"/>
+            <link href="../css/template.css" rel="stylesheet" media="all"/>
     
-    <!--[if lt IE 9]>
-    <script src="https://html5shim.googlecode.com/svn/trunk/html5.js" type="text/javascript"></script>
-    <![endif]-->
-    <script src="https://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript"></script>
-    <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.min.js" type="text/javascript"></script>
-    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
-    <script src="../js/jquery.smooth-scroll.js"></script>
-    <script src="../js/prism.min.js"></script>
-    <!-- TODO: Add http://jscrollpane.kelvinluck.com/ to style the scrollbars for browsers not using webkit-->
+            <!--[if lt IE 9]>
+        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js" type="text/javascript"></script>
+        <![endif]-->
+        <script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script>
+        <script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script>
+        <script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script>
+        <script src="../js/bootstrap.js" type="text/javascript"></script>
+        <script src="../js/template.js" type="text/javascript"></script>
+        <script src="../js/prettify/prettify.min.js" type="text/javascript"></script>
     
-    <link rel="shortcut icon" href="../images/favicon.ico"/>
-    <link rel="apple-touch-icon" href="../images/apple-touch-icon.png"/>
-    <link rel="apple-touch-icon" sizes="72x72" href="../images/apple-touch-icon-72x72.png"/>
-    <link rel="apple-touch-icon" sizes="114x114" href="../images/apple-touch-icon-114x114.png"/>
-</head>
+            <link rel="shortcut icon" href="../img/favicon.ico"/>
+        <link rel="apple-touch-icon" href="../img/apple-touch-icon.png"/>
+        <link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png"/>
+        <link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png"/>
+    </head>
 <body>
 
-<div class="navbar navbar-fixed-top">
-    <div class="navbar-inner">
-        <div class="container">
-            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <i class="icon-ellipsis-vertical"></i>
-            </a>
-            <a class="brand" href="../index.html">API Documentation</a>
+        <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span> <span class="icon-bar"></span>
+                    <span class="icon-bar"></span> </a>
+                <a class="brand" href="../index.html">API Documentation</a>
 
-            <div class="nav-collapse">
-                <ul class="nav pull-right">
-                    <li class="dropdown">
-                        <a href="../index.html" class="dropdown-toggle" data-toggle="dropdown">
-                            API Documentation <b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu">
-                                                        <li><a href="../namespaces/ManiaControl.html">\ManiaControl</a></li>
-                                                        <li><a href="../namespaces/FML.html">\FML</a></li>
-                                                    </ul>
-                    </li>
-                    <li class="dropdown" id="charts-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            Charts <b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="../graphs/class.html">
-                                    <i class="icon-list-alt"></i>&#160;Class hierarchy diagram
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="dropdown" id="reports-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            Reports <b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="../reports/errors.html">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">1033</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="../reports/markers.html">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <i class="icon-list-alt"></i>&#160;Markers <span class="label label-info pull-right">29</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <!--<div class="go_to_top">-->
-    <!--<a href="#___" style="color: inherit">Back to top&#160;&#160;<i class="icon-upload icon-white"></i></a>-->
-    <!--</div>-->
-</div>
-
-<div id="___" class="container-fluid">
-        <section class="row-fluid">
-        <div class="span2 sidebar">
-                                <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-1891278075"></a>
-                                <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
-            </div>
-            <div id="namespace-1891278075" class="accordion-body collapse in">
-                <div class="accordion-inner">
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-907457129"></a>
-                                <a href="../namespaces/ManiaControl.html" style="margin-left: 30px; padding-left: 0">ManiaControl</a>
-            </div>
-            <div id="namespace-907457129" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1079750364"></a>
-                                <a href="../namespaces/ManiaControl.Admin.html" style="margin-left: 30px; padding-left: 0">Admin</a>
-            </div>
-            <div id="namespace-1079750364" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Admin.ActionsMenu.html">ActionsMenu</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Admin.AuthCommands.html">AuthCommands</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Admin.AuthenticationManager.html">AuthenticationManager</a></li>
-                                            </ul>
+                <div class="nav-collapse">
+                    <ul class="nav">
+                        <li class="dropdown">
+                            <a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                API Documentation <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                                                    <li><a>Namespaces</a></li>
+                                                                        <li><a href="../namespaces/ManiaControl.html">ManiaControl</a></li>
+                                                                        <li><a href="../namespaces/FML.html">FML</a></li>
+                                                                                                                                </ul>
+                        </li>
+                        <li class="dropdown" id="charts-menu">
+                            <a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                Charts <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="../graph_class.html">
+                                        <i class="icon-list-alt"></i>&#160;Class hierarchy diagram
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown" id="reports-menu">
+                            <a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                Reports <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="../errors.html">
+                                        <i class="icon-list-alt"></i>&#160;Errors
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="../markers.html">
+                                        <i class="icon-list-alt"></i>&#160;Markers
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="../deprecated.html">
+                                        <i class="icon-list-alt"></i>&#160;Deprecated
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1021581431"></a>
-                                <a href="../namespaces/ManiaControl.Callbacks.html" style="margin-left: 30px; padding-left: 0">Callbacks</a>
-            </div>
-            <div id="namespace-1021581431" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                    <li class="interface"><a href="../classes/ManiaControl.Callbacks.CallbackListener.html">CallbackListener</a></li>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Callbacks.CallbackManager.html">CallbackManager</a></li>
-                                            </ul>
-                </div>
-            </div>
+        <div class="go_to_top">
+            <a href="#___" style="color: inherit">Back to top&#160;&#160;<i class="icon-upload icon-white"></i></a>
         </div>
     </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-38459457"></a>
-                                <a href="../namespaces/ManiaControl.Commands.html" style="margin-left: 30px; padding-left: 0">Commands</a>
+    
+    <div id="___" class="container">
+        <noscript>
+            <div class="alert alert-warning">
+                Javascript is disabled; several features are only available if Javascript is enabled.
             </div>
-            <div id="namespace-38459457" class="accordion-body collapse ">
-                <div class="accordion-inner">
+        </noscript>
 
-                    
-                    <ul>
-                                                    <li class="interface"><a href="../classes/ManiaControl.Commands.CommandListener.html">CommandListener</a></li>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Commands.CommandManager.html">CommandManager</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1600613813"></a>
-                                <a href="../namespaces/ManiaControl.Configurators.html" style="margin-left: 30px; padding-left: 0">Configurators</a>
-            </div>
-            <div id="namespace-1600613813" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                    <li class="interface"><a href="../classes/ManiaControl.Configurators.ConfiguratorMenu.html">ConfiguratorMenu</a></li>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Configurators.Configurator.html">Configurator</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Configurators.ManiaControlSettings.html">ManiaControlSettings</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Configurators.ScriptSettings.html">ScriptSettings</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Configurators.ServerSettings.html">ServerSettings</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-437925618"></a>
-                                <a href="../namespaces/ManiaControl.Maps.html" style="margin-left: 30px; padding-left: 0">Maps</a>
-            </div>
-            <div id="namespace-437925618" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Maps.ManiaExchangeInfoSearcher.html">ManiaExchangeInfoSearcher</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Maps.MXMapInfo.html">MXMapInfo</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Maps.Map.html">Map</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Maps.MapCommands.html">MapCommands</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Maps.MapList.html">MapList</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Maps.MapManager.html">MapManager</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Maps.MapQueue.html">MapQueue</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-2111247443"></a>
-                                <a href="../namespaces/ManiaControl.Manialinks.html" style="margin-left: 30px; padding-left: 0">Manialinks</a>
-            </div>
-            <div id="namespace-2111247443" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                    <li class="interface"><a href="../classes/ManiaControl.Manialinks.ManialinkPageAnswerListener.html">ManialinkPageAnswerListener</a></li>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Manialinks.CustomUIManager.html">CustomUIManager</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Manialinks.IconManager.html">IconManager</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Manialinks.ManialinkManager.html">ManialinkManager</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Manialinks.StyleManager.html">StyleManager</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1006629258"></a>
-                                <a href="../namespaces/ManiaControl.Players.html" style="margin-left: 30px; padding-left: 0">Players</a>
-            </div>
-            <div id="namespace-1006629258" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Players.Player.html">Player</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Players.PlayerActions.html">PlayerActions</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Players.PlayerCommands.html">PlayerCommands</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Players.PlayerDetailed.html">PlayerDetailed</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Players.PlayerList.html">PlayerList</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Players.PlayerManager.html">PlayerManager</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-45894343"></a>
-                                <a href="../namespaces/ManiaControl.Plugins.html" style="margin-left: 30px; padding-left: 0">Plugins</a>
-            </div>
-            <div id="namespace-45894343" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                    <li class="interface"><a href="../classes/ManiaControl.Plugins.Plugin.html">Plugin</a></li>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Plugins.PluginManager.html">PluginManager</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Plugins.PluginMenu.html">PluginMenu</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Plugins.ChatMessagePlugin.html">ChatMessagePlugin</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1237395555"></a>
-                                <a href="../namespaces/ManiaControl.Server.html" style="margin-left: 30px; padding-left: 0">Server</a>
-            </div>
-            <div id="namespace-1237395555" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Server.Server.html">Server</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Server.ServerCommands.html">ServerCommands</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-68405538"></a>
-                                <a href="../namespaces/ManiaControl.Statistics.html" style="margin-left: 30px; padding-left: 0">Statistics</a>
-            </div>
-            <div id="namespace-68405538" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Statistics.StatisticCollector.html">StatisticCollector</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Statistics.StatisticManager.html">StatisticManager</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/ManiaControl.Chat.html">Chat</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.ColorUtil.html">ColorUtil</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Database.html">Database</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.FileUtil.html">FileUtil</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.Formatter.html">Formatter</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.ManiaControl.html">ManiaControl</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.SettingManager.html">SettingManager</a></li>
-                                                    <li class="class"><a href="../classes/ManiaControl.UpdateManager.html">UpdateManager</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1596013584"></a>
-                                <a href="../namespaces/FML.html" style="margin-left: 30px; padding-left: 0">FML</a>
-            </div>
-            <div id="namespace-1596013584" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1792984186"></a>
-                                <a href="../namespaces/FML.Controls.html" style="margin-left: 30px; padding-left: 0">Controls</a>
-            </div>
-            <div id="namespace-1792984186" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1095106990"></a>
-                                <a href="../namespaces/FML.Controls.Labels.html" style="margin-left: 30px; padding-left: 0">Labels</a>
-            </div>
-            <div id="namespace-1095106990" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/FML.Controls.Labels.Label_Button.html">Label_Button</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Labels.Label_Text.html">Label_Text</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1573677697"></a>
-                                <a href="../namespaces/FML.Controls.Quads.html" style="margin-left: 30px; padding-left: 0">Quads</a>
-            </div>
-            <div id="namespace-1573677697" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_321Go.html">Quad_321Go</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_BgRaceScore2.html">Quad_BgRaceScore2</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Bgs1.html">Quad_Bgs1</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Bgs1InRace.html">Quad_Bgs1InRace</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_BgsChallengeMedals.html">Quad_BgsChallengeMedals</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_BgsPlayerCard.html">Quad_BgsPlayerCard</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Copilot.html">Quad_Copilot</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Emblems.html">Quad_Emblems</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_EnergyBar.html">Quad_EnergyBar</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Hud3dEchelons.html">Quad_Hud3dEchelons</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Icons128x128_1.html">Quad_Icons128x128_1</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Icons128x128_Blink.html">Quad_Icons128x128_Blink</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Icons128x32_1.html">Quad_Icons128x32_1</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Icons64x64_1.html">Quad_Icons64x64_1</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_Icons64x64_2.html">Quad_Icons64x64_2</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_ManiaPlanetLogos.html">Quad_ManiaPlanetLogos</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_ManiaplanetSystem.html">Quad_ManiaplanetSystem</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_MedalsBig.html">Quad_MedalsBig</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_TitleLogos.html">Quad_TitleLogos</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_UIConstruction_Buttons.html">Quad_UIConstruction_Buttons</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quads.Quad_UiSMSpectatorScoreBig.html">Quad_UiSMSpectatorScoreBig</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/FML.Controls.Audio.html">Audio</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Control.html">Control</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Entry.html">Entry</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.FileEntry.html">FileEntry</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Frame.html">Frame</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Frame3d.html">Frame3d</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Gauge.html">Gauge</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Label.html">Label</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Quad.html">Quad</a></li>
-                                                    <li class="class"><a href="../classes/FML.Controls.Video.html">Video</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1420668174"></a>
-                                <a href="../namespaces/FML.Elements.html" style="margin-left: 30px; padding-left: 0">Elements</a>
-            </div>
-            <div id="namespace-1420668174" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/FML.Elements.Format.html">Format</a></li>
-                                                    <li class="class"><a href="../classes/FML.Elements.Including.html">Including</a></li>
-                                                    <li class="class"><a href="../classes/FML.Elements.Music.html">Music</a></li>
-                                                    <li class="class"><a href="../classes/FML.Elements.SimpleScript.html">SimpleScript</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-315672588"></a>
-                                <a href="../namespaces/FML.Script.html" style="margin-left: 30px; padding-left: 0">Script</a>
-            </div>
-            <div id="namespace-315672588" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/FML.Script.Builder.html">Builder</a></li>
-                                                    <li class="class"><a href="../classes/FML.Script.EUISound.html">EUISound</a></li>
-                                                    <li class="class"><a href="../classes/FML.Script.Script.html">Script</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1499053803"></a>
-                                <a href="../namespaces/FML.Types.html" style="margin-left: 30px; padding-left: 0">Types</a>
-            </div>
-            <div id="namespace-1499053803" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                    <li class="interface"><a href="../classes/FML.Types.Actionable.html">Actionable</a></li>
-                                                    <li class="interface"><a href="../classes/FML.Types.BgColorable.html">BgColorable</a></li>
-                                                    <li class="interface"><a href="../classes/FML.Types.Container.html">Container</a></li>
-                                                    <li class="interface"><a href="../classes/FML.Types.Linkable.html">Linkable</a></li>
-                                                    <li class="interface"><a href="../classes/FML.Types.NewLineable.html">NewLineable</a></li>
-                                                    <li class="interface"><a href="../classes/FML.Types.Playable.html">Playable</a></li>
-                                                    <li class="interface"><a href="../classes/FML.Types.Renderable.html">Renderable</a></li>
-                                                    <li class="interface"><a href="../classes/FML.Types.Scriptable.html">Scriptable</a></li>
-                                                    <li class="interface"><a href="../classes/FML.Types.Styleable.html">Styleable</a></li>
-                                                    <li class="interface"><a href="../classes/FML.Types.SubStyleable.html">SubStyleable</a></li>
-                                                    <li class="interface"><a href="../classes/FML.Types.TextFormatable.html">TextFormatable</a></li>
-                                                                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/FML.CustomUI.html">CustomUI</a></li>
-                                                    <li class="class"><a href="../classes/FML.ManiaLink.html">ManiaLink</a></li>
-                                                    <li class="class"><a href="../classes/FML.ManiaLinks.html">ManiaLinks</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/GBXBaseFetcher.html">GBXBaseFetcher</a></li>
-                                                    <li class="class"><a href="../classes/GBXChallMapFetcher.html">GBXChallMapFetcher</a></li>
-                                                    <li class="class"><a href="../classes/GBXChallengeFetcher.html">GBXChallengeFetcher</a></li>
-                                                    <li class="class"><a href="../classes/GBXReplayFetcher.html">GBXReplayFetcher</a></li>
-                                                    <li class="class"><a href="../classes/GBXPackFetcher.html">GBXPackFetcher</a></li>
-                                                    <li class="class"><a href="../classes/MXInfoFetcher.html">MXInfoFetcher</a></li>
-                                                    <li class="class"><a href="../classes/MXInfoSearcher.html">MXInfoSearcher</a></li>
-                                                    <li class="class"><a href="../classes/MXInfo.html">MXInfo</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Value.html">IXR_Value</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Message.html">IXR_Message</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Request.html">IXR_Request</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Error.html">IXR_Error</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Date.html">IXR_Date</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Base64.html">IXR_Base64</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Client_Gbx.html">IXR_Client_Gbx</a></li>
-                                                    <li class="class"><a href="../classes/IXR_ClientMulticall_Gbx.html">IXR_ClientMulticall_Gbx</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Value.html">IXR_Value</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Message.html">IXR_Message</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Request.html">IXR_Request</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Error.html">IXR_Error</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Date.html">IXR_Date</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Base64.html">IXR_Base64</a></li>
-                                                    <li class="class"><a href="../classes/IXR_Client_Gbx.html">IXR_Client_Gbx</a></li>
-                                                    <li class="class"><a href="../classes/IXR_ClientMulticall_Gbx.html">IXR_ClientMulticall_Gbx</a></li>
-                                                    <li class="class"><a href="../classes/ChatlogPlugin.html">ChatlogPlugin</a></li>
-                                                    <li class="class"><a href="../classes/DonationPlugin.html">DonationPlugin</a></li>
-                                                    <li class="class"><a href="../classes/EndurancePlugin.html">EndurancePlugin</a></li>
-                                                    <li class="class"><a href="../classes/KarmaPlugin.html">KarmaPlugin</a></li>
-                                                    <li class="class"><a href="../classes/LocalRecordsPlugin.html">LocalRecordsPlugin</a></li>
-                                                    <li class="class"><a href="../classes/ObstaclePlugin.html">ObstaclePlugin</a></li>
-                                                    <li class="class"><a href="../classes/WidgetPlugin.html">WidgetPlugin</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-        </div>
-    </section>
-    <section class="row-fluid">
-        <div class="span10 offset2">
-            <div class="row-fluid">
-                <div class="span8 content namespace">
-                    <nav>
-                                                <a href="../namespaces/default.html">\</a>
-                                            </nav>
-                    <h1><small>\</small>ManiaControl</h1>
-
-                                        <h2>Namespaces</h2>
-                    <table class="table table-hover">
-                                                    <tr>
-                                <td><a href="../namespaces/ManiaControl.Admin.html">Admin</a></td>
-                            </tr>
-                                                    <tr>
-                                <td><a href="../namespaces/ManiaControl.Callbacks.html">Callbacks</a></td>
-                            </tr>
-                                                    <tr>
-                                <td><a href="../namespaces/ManiaControl.Commands.html">Commands</a></td>
-                            </tr>
-                                                    <tr>
-                                <td><a href="../namespaces/ManiaControl.Configurators.html">Configurators</a></td>
-                            </tr>
-                                                    <tr>
-                                <td><a href="../namespaces/ManiaControl.Maps.html">Maps</a></td>
-                            </tr>
-                                                    <tr>
-                                <td><a href="../namespaces/ManiaControl.Manialinks.html">Manialinks</a></td>
-                            </tr>
-                                                    <tr>
-                                <td><a href="../namespaces/ManiaControl.Players.html">Players</a></td>
-                            </tr>
-                                                    <tr>
-                                <td><a href="../namespaces/ManiaControl.Plugins.html">Plugins</a></td>
-                            </tr>
-                                                    <tr>
-                                <td><a href="../namespaces/ManiaControl.Server.html">Server</a></td>
-                            </tr>
-                                                    <tr>
-                                <td><a href="../namespaces/ManiaControl.Statistics.html">Statistics</a></td>
-                            </tr>
-                                            </table>
-                    
-                    
-                    
-                                        <h2>Classes</h2>
-                    <table class="table table-hover">
-                                            <tr>
-                            <td><a href="../classes/ManiaControl.Chat.html">Chat</a></td>
-                            <td><em>Chat utility class</em></td>
-                        </tr>
-                                            <tr>
-                            <td><a href="../classes/ManiaControl.ColorUtil.html">ColorUtil</a></td>
-                            <td><em>Utility class offering methods to convert and use ManiaPlanet colors</em></td>
-                        </tr>
-                                            <tr>
-                            <td><a href="../classes/ManiaControl.Database.html">Database</a></td>
-                            <td><em>Database connection class</em></td>
-                        </tr>
-                                            <tr>
-                            <td><a href="../classes/ManiaControl.FileUtil.html">FileUtil</a></td>
-                            <td><em>File utility class</em></td>
-                        </tr>
-                                            <tr>
-                            <td><a href="../classes/ManiaControl.Formatter.html">Formatter</a></td>
-                            <td><em>Class offering Methods to format Texts and Values</em></td>
-                        </tr>
-                                            <tr>
-                            <td><a href="../classes/ManiaControl.ManiaControl.html">ManiaControl</a></td>
-                            <td><em>ManiaControl Server Controller for ManiaPlanet Server</em></td>
-                        </tr>
-                                            <tr>
-                            <td><a href="../classes/ManiaControl.SettingManager.html">SettingManager</a></td>
-                            <td><em>Class managing settings and configurations</em></td>
-                        </tr>
-                                            <tr>
-                            <td><a href="../classes/ManiaControl.UpdateManager.html">UpdateManager</a></td>
-                            <td><em>Manager checking for ManiaControl Core and Plugin Updates</em></td>
-                        </tr>
-                                        </table>
-                                    </div>
-
-                <aside class="span4 detailsbar">
-                    <dl>
-                        <dt>Namespace hierarchy</dt>
-                        <dd class="hierarchy">
-                                                                                                                                                                                                                                                                
-                                    <div class="namespace-wrapper"><a href="../namespaces/default.html">\</a></div>
-                                                                                        <div class="namespace-wrapper">\ManiaControl</div>
-                        </dd>
-                    </dl>
-                </aside>
-            </div>
-
+        
             
-            
-        </div>
-    </section>
+    <div class="row">
 
-    <footer class="row-fluid">
-        <section class="span10 offset2">
-            <section class="row-fluid">
-                <section class="span10 offset1">
-                    <section class="row-fluid footer-sections">
-                        <section class="span4">
-                                                        <h1><i class="icon-code"></i></h1>
-                            <div>
-                                <ul>
-                                                                            <li><a href="../namespaces/ManiaControl.html">\ManiaControl</a></li>
-                                                                            <li><a href="../namespaces/FML.html">\FML</a></li>
-                                                                    </ul>
+        <div class="span4">
+            <div class="btn-group view pull-right" data-toggle="buttons-radio">
+                <button class="btn details" title="Show descriptions and method names">
+                    <i class="icon-list"></i></button><button class="btn simple" title="Show only method names">
+                    <i class="icon-align-justify"></i>
+                </button>
+            </div>
+            <ul class="side-nav nav nav-list">
+                <li class="nav-header">
+                    <i class="icon-map-marker"></i> Namespaces
+                </li>
+                    
+        <li>
+        <a href="../namespaces/ManiaControl.Admin.html" title="Admin">
+            <i class="icon-th"></i> Admin
+        </a>
+        <ul class="nav nav-list nav-namespaces">
+                
+    
+        </ul>
+    </li>
+        <li>
+        <a href="../namespaces/ManiaControl.Callbacks.html" title="Callbacks">
+            <i class="icon-th"></i> Callbacks
+        </a>
+        <ul class="nav nav-list nav-namespaces">
+                
+    
+        </ul>
+    </li>
+        <li>
+        <a href="../namespaces/ManiaControl.Commands.html" title="Commands">
+            <i class="icon-th"></i> Commands
+        </a>
+        <ul class="nav nav-list nav-namespaces">
+                
+    
+        </ul>
+    </li>
+        <li>
+        <a href="../namespaces/ManiaControl.Configurators.html" title="Configurators">
+            <i class="icon-th"></i> Configurators
+        </a>
+        <ul class="nav nav-list nav-namespaces">
+                
+    
+        </ul>
+    </li>
+        <li>
+        <a href="../namespaces/ManiaControl.Maps.html" title="Maps">
+            <i class="icon-th"></i> Maps
+        </a>
+        <ul class="nav nav-list nav-namespaces">
+                
+    
+        </ul>
+    </li>
+        <li>
+        <a href="../namespaces/ManiaControl.Manialinks.html" title="Manialinks">
+            <i class="icon-th"></i> Manialinks
+        </a>
+        <ul class="nav nav-list nav-namespaces">
+                
+    
+        </ul>
+    </li>
+        <li>
+        <a href="../namespaces/ManiaControl.Players.html" title="Players">
+            <i class="icon-th"></i> Players
+        </a>
+        <ul class="nav nav-list nav-namespaces">
+                
+    
+        </ul>
+    </li>
+        <li>
+        <a href="../namespaces/ManiaControl.Plugins.html" title="Plugins">
+            <i class="icon-th"></i> Plugins
+        </a>
+        <ul class="nav nav-list nav-namespaces">
+                
+    
+        </ul>
+    </li>
+        <li>
+        <a href="../namespaces/ManiaControl.Server.html" title="Server">
+            <i class="icon-th"></i> Server
+        </a>
+        <ul class="nav nav-list nav-namespaces">
+                
+    
+        </ul>
+    </li>
+        <li>
+        <a href="../namespaces/ManiaControl.Statistics.html" title="Statistics">
+            <i class="icon-th"></i> Statistics
+        </a>
+        <ul class="nav nav-list nav-namespaces">
+                
+    
+        </ul>
+    </li>
+    
+            </ul>
+        </div>
+
+        <div class="span8 namespace-contents">
+                
+    
+        <ul class="breadcrumb">
+            <li><a href="../index.html"><i class="icon-th"></i></a></li>
+                
+    
+    <li>
+        <span class="divider">\</span><a href="../namespaces/ManiaControl.html">ManiaControl</a>
+    </li>
+
+        </ul>
+
+        
+        
+                    <div class="namespace-indent">
+                <h3><i class="icon-custom icon-class"></i> Classes, interfaces and traits</h3>
+                
+                
+                                        <div id="class_Chat" class="element ajax clickable class" data-toggle="collapse" data-target="#class_Chat .collapse">
+        <h1>Chat<a href="../classes/ManiaControl.Chat.html">¶</a></h1>
+        <p class="short_description">Chat utility class</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Chat.html" class="more">« More »</a>    </div>
+
+                                        <div id="class_ColorUtil" class="element ajax clickable class" data-toggle="collapse" data-target="#class_ColorUtil .collapse">
+        <h1>ColorUtil<a href="../classes/ManiaControl.ColorUtil.html">¶</a></h1>
+        <p class="short_description">Utility class offering methods to convert and use ManiaPlanet colors</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.ColorUtil.html" class="more">« More »</a>    </div>
+
+                                        <div id="class_Database" class="element ajax clickable class" data-toggle="collapse" data-target="#class_Database .collapse">
+        <h1>Database<a href="../classes/ManiaControl.Database.html">¶</a></h1>
+        <p class="short_description">Database connection class</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Database.html" class="more">« More »</a>    </div>
+
+                                        <div id="class_FileUtil" class="element ajax clickable class" data-toggle="collapse" data-target="#class_FileUtil .collapse">
+        <h1>FileUtil<a href="../classes/ManiaControl.FileUtil.html">¶</a></h1>
+        <p class="short_description">File utility class</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.FileUtil.html" class="more">« More »</a>    </div>
+
+                                        <div id="class_Formatter" class="element ajax clickable class" data-toggle="collapse" data-target="#class_Formatter .collapse">
+        <h1>Formatter<a href="../classes/ManiaControl.Formatter.html">¶</a></h1>
+        <p class="short_description">Class offering Methods to format Texts and Values</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Formatter.html" class="more">« More »</a>    </div>
+
+                                        <div id="class_ManiaControl" class="element ajax clickable class" data-toggle="collapse" data-target="#class_ManiaControl .collapse">
+        <h1>ManiaControl<a href="../classes/ManiaControl.ManiaControl.html">¶</a></h1>
+        <p class="short_description">ManiaControl Server Controller for ManiaPlanet Server</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.ManiaControl.html" class="more">« More »</a>    </div>
+
+                                        <div id="class_SettingManager" class="element ajax clickable class" data-toggle="collapse" data-target="#class_SettingManager .collapse">
+        <h1>SettingManager<a href="../classes/ManiaControl.SettingManager.html">¶</a></h1>
+        <p class="short_description">Class managing settings and configurations</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.SettingManager.html" class="more">« More »</a>    </div>
+
+                                        <div id="class_UpdateManager" class="element ajax clickable class" data-toggle="collapse" data-target="#class_UpdateManager .collapse">
+        <h1>UpdateManager<a href="../classes/ManiaControl.UpdateManager.html">¶</a></h1>
+        <p class="short_description">Manager checking for ManiaControl Core and Plugin Updates</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.UpdateManager.html" class="more">« More »</a>    </div>
+
                             </div>
-                        </section>
-                        <section class="span4">
-                                                        <h1><i class="icon-bar-chart"></i></h1>
-                            <div>
-                                <ul>
-                                    <li><a href="../graphs/class.html">Class Hierarchy Diagram</a></li>
-                                </ul>
+            
+                
+    
+        <ul class="breadcrumb">
+            <li><a href="../index.html"><i class="icon-th"></i></a></li>
+                
+                
+    
+    <li>
+        <span class="divider">\</span><a href="../namespaces/ManiaControl.html">ManiaControl</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../namespaces/ManiaControl.Admin.html">Admin</a>
+    </li>
+
+        </ul>
+
+        
+        
+                    <div class="namespace-indent">
+                <h3><i class="icon-custom icon-class"></i> Classes, interfaces and traits</h3>
+                
+                
+                                        <div id="class_ActionsMenu" class="element ajax clickable class" data-toggle="collapse" data-target="#class_ActionsMenu .collapse">
+        <h1>ActionsMenu<a href="../classes/ManiaControl.Admin.ActionsMenu.html">¶</a></h1>
+        <p class="short_description">Class managing Actions Menus</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Admin.ActionsMenu.html" class="more">« More »</a>    </div>
+
+                                        <div id="class_AuthCommands" class="element ajax clickable class" data-toggle="collapse" data-target="#class_AuthCommands .collapse">
+        <h1>AuthCommands<a href="../classes/ManiaControl.Admin.AuthCommands.html">¶</a></h1>
+        <p class="short_description">Class offering commands to grant authorizations to players</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Admin.AuthCommands.html" class="more">« More »</a>    </div>
+
+                                        <div id="class_AuthenticationManager" class="element ajax clickable class" data-toggle="collapse" data-target="#class_AuthenticationManager .collapse">
+        <h1>AuthenticationManager<a href="../classes/ManiaControl.Admin.AuthenticationManager.html">¶</a></h1>
+        <p class="short_description">Class managing Authentication Levels</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Admin.AuthenticationManager.html" class="more">« More »</a>    </div>
+
                             </div>
-                        </section>
-                        <section class="span4">
-                                                        <h1><i class="icon-pushpin"></i></h1>
-                            <div>
-                                <ul>
-                                    <li><a href="../reports/errors.html">Errors</a></li>
-                                    <li><a href="../reports/markers.html">Markers</a></li>
-                                </ul>
+            
+    
+                
+    
+        <ul class="breadcrumb">
+            <li><a href="../index.html"><i class="icon-th"></i></a></li>
+                
+                
+    
+    <li>
+        <span class="divider">\</span><a href="../namespaces/ManiaControl.html">ManiaControl</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../namespaces/ManiaControl.Callbacks.html">Callbacks</a>
+    </li>
+
+        </ul>
+
+        
+        
+                    <div class="namespace-indent">
+                <h3><i class="icon-custom icon-class"></i> Classes, interfaces and traits</h3>
+                
+                                        <div id="interface_CallbackListener" class="element ajax clickable interface" data-toggle="collapse" data-target="#interface_CallbackListener .collapse">
+        <h1>CallbackListener<a href="../classes/ManiaControl.Callbacks.CallbackListener.html">¶</a></h1>
+        <p class="short_description">Interface for CallbackListener</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Callbacks.CallbackListener.html" class="more">« More »</a>    </div>
+
+                
+                                        <div id="class_CallbackManager" class="element ajax clickable class" data-toggle="collapse" data-target="#class_CallbackManager .collapse">
+        <h1>CallbackManager<a href="../classes/ManiaControl.Callbacks.CallbackManager.html">¶</a></h1>
+        <p class="short_description">Class for managing Server and ManiaControl Callbacks</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Callbacks.CallbackManager.html" class="more">« More »</a>    </div>
+
                             </div>
-                        </section>
-                    </section>
-                </section>
-            </section>
-            <section class="row-fluid">
-                <section class="span10 offset1">
-                    <hr />
-                    Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
-                    on January 10th, 2014 at 22:18.
-                </section>
-            </section>
-        </section>
+            
+    
+                
+    
+        <ul class="breadcrumb">
+            <li><a href="../index.html"><i class="icon-th"></i></a></li>
+                
+                
+    
+    <li>
+        <span class="divider">\</span><a href="../namespaces/ManiaControl.html">ManiaControl</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../namespaces/ManiaControl.Commands.html">Commands</a>
+    </li>
+
+        </ul>
+
+        
+        
+                    <div class="namespace-indent">
+                <h3><i class="icon-custom icon-class"></i> Classes, interfaces and traits</h3>
+                
+                                        <div id="interface_CommandListener" class="element ajax clickable interface" data-toggle="collapse" data-target="#interface_CommandListener .collapse">
+        <h1>CommandListener<a href="../classes/ManiaControl.Commands.CommandListener.html">¶</a></h1>
+        <p class="short_description">Interface for command listeners</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Commands.CommandListener.html" class="more">« More »</a>    </div>
+
+                
+                                        <div id="class_CommandManager" class="element ajax clickable class" data-toggle="collapse" data-target="#class_CommandManager .collapse">
+        <h1>CommandManager<a href="../classes/ManiaControl.Commands.CommandManager.html">¶</a></h1>
+        <p class="short_description">Class for handling Chat Commands</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Commands.CommandManager.html" class="more">« More »</a>    </div>
+
+                            </div>
+            
+    
+                
+    
+        <ul class="breadcrumb">
+            <li><a href="../index.html"><i class="icon-th"></i></a></li>
+                
+                
+    
+    <li>
+        <span class="divider">\</span><a href="../namespaces/ManiaControl.html">ManiaControl</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../namespaces/ManiaControl.Configurators.html">Configurators</a>
+    </li>
+
+        </ul>
+
+        
+        
+                    <div class="namespace-indent">
+                <h3><i class="icon-custom icon-class"></i> Classes, interfaces and traits</h3>
+                
+                                        <div id="interface_ConfiguratorMenu" class="element ajax clickable interface" data-toggle="collapse" data-target="#interface_ConfiguratorMenu .collapse">
+        <h1>ConfiguratorMenu<a href="../classes/ManiaControl.Configurators.ConfiguratorMenu.html">¶</a></h1>
+        <p class="short_description">Interface for Configurator Menus</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Configurators.ConfiguratorMenu.html" class="more">« More »</a>    </div>
+
+                
+                                        <div id="class_Configurator" class="element ajax clickable class" data-toggle="collapse" data-target="#class_Configurator .collapse">
+        <h1>Configurator<a href="../classes/ManiaControl.Configurators.Configurator.html">¶</a></h1>
+        <p class="short_description">Class managing ingame ManiaControl configuration</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Configurators.Configurator.html" class="more">« More »</a>    </div>
+
+                                        <div id="class_ManiaControlSettings" class="element ajax clickable class" data-toggle="collapse" data-target="#class_ManiaControlSettings .collapse">
+        <h1>ManiaControlSettings<a href="../classes/ManiaControl.Configurators.ManiaControlSettings.html">¶</a></h1>
+        <p class="short_description"></p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Configurators.ManiaControlSettings.html" class="more">« More »</a>    </div>
+
+                                        <div id="class_ScriptSettings" class="element ajax clickable class" data-toggle="collapse" data-target="#class_ScriptSettings .collapse">
+        <h1>ScriptSettings<a href="../classes/ManiaControl.Configurators.ScriptSettings.html">¶</a></h1>
+        <p class="short_description">Class offering a Configurator for Script Settings</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Configurators.ScriptSettings.html" class="more">« More »</a>    </div>
+
+                                        <div id="class_ServerSettings" class="element ajax clickable class" data-toggle="collapse" data-target="#class_ServerSettings .collapse">
+        <h1>ServerSettings<a href="../classes/ManiaControl.Configurators.ServerSettings.html">¶</a></h1>
+        <p class="short_description">Class offering a Configurator for Server Settings</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Configurators.ServerSettings.html" class="more">« More »</a>    </div>
+
+                            </div>
+            
+    
+                
+    
+        <ul class="breadcrumb">
+            <li><a href="../index.html"><i class="icon-th"></i></a></li>
+                
+                
+    
+    <li>
+        <span class="divider">\</span><a href="../namespaces/ManiaControl.html">ManiaControl</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../namespaces/ManiaControl.Maps.html">Maps</a>
+    </li>
+
+        </ul>
+
+        
+        
+                    <div class="namespace-indent">
+                <h3><i class="icon-custom icon-class"></i> Classes, interfaces and traits</h3>
+                
+                
+                                        <div id="class_ManiaExchangeInfoSearcher" class="element ajax clickable class" data-toggle="collapse" data-target="#class_ManiaExchangeInfoSearcher .collapse">
+        <h1>ManiaExchangeInfoSearcher<a href="../classes/ManiaControl.Maps.ManiaExchangeInfoSearcher.html">¶</a></h1>
+        <p class="short_description">Mania Exchange Info Searcher Class</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Maps.ManiaExchangeInfoSearcher.html" class="more">« More »</a>    </div>
+
+                                        <div id="class_MXMapInfo" class="element ajax clickable class" data-toggle="collapse" data-target="#class_MXMapInfo .collapse">
+        <h1>MXMapInfo<a href="../classes/ManiaControl.Maps.MXMapInfo.html">¶</a></h1>
+        <p class="short_description"></p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Maps.MXMapInfo.html" class="more">« More »</a>    </div>
+
+                                        <div id="class_Map" class="element ajax clickable class" data-toggle="collapse" data-target="#class_Map .collapse">
+        <h1>Map<a href="../classes/ManiaControl.Maps.Map.html">¶</a></h1>
+        <p class="short_description">Map Class</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Maps.Map.html" class="more">« More »</a>    </div>
+
+                                        <div id="class_MapCommands" class="element ajax clickable class" data-toggle="collapse" data-target="#class_MapCommands .collapse">
+        <h1>MapCommands<a href="../classes/ManiaControl.Maps.MapCommands.html">¶</a></h1>
+        <p class="short_description">Class offering commands to manage maps</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Maps.MapCommands.html" class="more">« More »</a>    </div>
+
+                                        <div id="class_MapList" class="element ajax clickable class" data-toggle="collapse" data-target="#class_MapList .collapse">
+        <h1>MapList<a href="../classes/ManiaControl.Maps.MapList.html">¶</a></h1>
+        <p class="short_description">MapList Widget Class</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Maps.MapList.html" class="more">« More »</a>    </div>
+
+                                        <div id="class_MapManager" class="element ajax clickable class" data-toggle="collapse" data-target="#class_MapManager .collapse">
+        <h1>MapManager<a href="../classes/ManiaControl.Maps.MapManager.html">¶</a></h1>
+        <p class="short_description">Manager for Maps</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Maps.MapManager.html" class="more">« More »</a>    </div>
+
+                                        <div id="class_MapQueue" class="element ajax clickable class" data-toggle="collapse" data-target="#class_MapQueue .collapse">
+        <h1>MapQueue<a href="../classes/ManiaControl.Maps.MapQueue.html">¶</a></h1>
+        <p class="short_description">MapQueue Class</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Maps.MapQueue.html" class="more">« More »</a>    </div>
+
+                            </div>
+            
+    
+                
+    
+        <ul class="breadcrumb">
+            <li><a href="../index.html"><i class="icon-th"></i></a></li>
+                
+                
+    
+    <li>
+        <span class="divider">\</span><a href="../namespaces/ManiaControl.html">ManiaControl</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../namespaces/ManiaControl.Manialinks.html">Manialinks</a>
+    </li>
+
+        </ul>
+
+        
+        
+                    <div class="namespace-indent">
+                <h3><i class="icon-custom icon-class"></i> Classes, interfaces and traits</h3>
+                
+                                        <div id="interface_ManialinkPageAnswerListener" class="element ajax clickable interface" data-toggle="collapse" data-target="#interface_ManialinkPageAnswerListener .collapse">
+        <h1>ManialinkPageAnswerListener<a href="../classes/ManiaControl.Manialinks.ManialinkPageAnswerListener.html">¶</a></h1>
+        <p class="short_description">Interface for manialink page answer listeners</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Manialinks.ManialinkPageAnswerListener.html" class="more">« More »</a>    </div>
+
+                
+                                        <div id="class_CustomUIManager" class="element ajax clickable class" data-toggle="collapse" data-target="#class_CustomUIManager .collapse">
+        <h1>CustomUIManager<a href="../classes/ManiaControl.Manialinks.CustomUIManager.html">¶</a></h1>
+        <p class="short_description">Class managing the Custom UI Settings</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Manialinks.CustomUIManager.html" class="more">« More »</a>    </div>
+
+                                        <div id="class_IconManager" class="element ajax clickable class" data-toggle="collapse" data-target="#class_IconManager .collapse">
+        <h1>IconManager<a href="../classes/ManiaControl.Manialinks.IconManager.html">¶</a></h1>
+        <p class="short_description">Class managing Icons</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Manialinks.IconManager.html" class="more">« More »</a>    </div>
+
+                                        <div id="class_ManialinkManager" class="element ajax clickable class" data-toggle="collapse" data-target="#class_ManialinkManager .collapse">
+        <h1>ManialinkManager<a href="../classes/ManiaControl.Manialinks.ManialinkManager.html">¶</a></h1>
+        <p class="short_description">Manialink manager class</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Manialinks.ManialinkManager.html" class="more">« More »</a>    </div>
+
+                                        <div id="class_StyleManager" class="element ajax clickable class" data-toggle="collapse" data-target="#class_StyleManager .collapse">
+        <h1>StyleManager<a href="../classes/ManiaControl.Manialinks.StyleManager.html">¶</a></h1>
+        <p class="short_description">Class managing default control styles</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Manialinks.StyleManager.html" class="more">« More »</a>    </div>
+
+                            </div>
+            
+    
+                
+    
+        <ul class="breadcrumb">
+            <li><a href="../index.html"><i class="icon-th"></i></a></li>
+                
+                
+    
+    <li>
+        <span class="divider">\</span><a href="../namespaces/ManiaControl.html">ManiaControl</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../namespaces/ManiaControl.Players.html">Players</a>
+    </li>
+
+        </ul>
+
+        
+        
+                    <div class="namespace-indent">
+                <h3><i class="icon-custom icon-class"></i> Classes, interfaces and traits</h3>
+                
+                
+                                        <div id="class_Player" class="element ajax clickable class" data-toggle="collapse" data-target="#class_Player .collapse">
+        <h1>Player<a href="../classes/ManiaControl.Players.Player.html">¶</a></h1>
+        <p class="short_description">Player Model Class</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Players.Player.html" class="more">« More »</a>    </div>
+
+                                        <div id="class_PlayerActions" class="element ajax clickable class" data-toggle="collapse" data-target="#class_PlayerActions .collapse">
+        <h1>PlayerActions<a href="../classes/ManiaControl.Players.PlayerActions.html">¶</a></h1>
+        <p class="short_description">PlayerActions Class</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Players.PlayerActions.html" class="more">« More »</a>    </div>
+
+                                        <div id="class_PlayerCommands" class="element ajax clickable class" data-toggle="collapse" data-target="#class_PlayerCommands .collapse">
+        <h1>PlayerCommands<a href="../classes/ManiaControl.Players.PlayerCommands.html">¶</a></h1>
+        <p class="short_description">Class offering various Admin Commands related to Players</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Players.PlayerCommands.html" class="more">« More »</a>    </div>
+
+                                        <div id="class_PlayerDetailed" class="element ajax clickable class" data-toggle="collapse" data-target="#class_PlayerDetailed .collapse">
+        <h1>PlayerDetailed<a href="../classes/ManiaControl.Players.PlayerDetailed.html">¶</a></h1>
+        <p class="short_description">Player Detailed Page</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Players.PlayerDetailed.html" class="more">« More »</a>    </div>
+
+                                        <div id="class_PlayerList" class="element ajax clickable class" data-toggle="collapse" data-target="#class_PlayerList .collapse">
+        <h1>PlayerList<a href="../classes/ManiaControl.Players.PlayerList.html">¶</a></h1>
+        <p class="short_description">PlayerList Widget Class</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Players.PlayerList.html" class="more">« More »</a>    </div>
+
+                                        <div id="class_PlayerManager" class="element ajax clickable class" data-toggle="collapse" data-target="#class_PlayerManager .collapse">
+        <h1>PlayerManager<a href="../classes/ManiaControl.Players.PlayerManager.html">¶</a></h1>
+        <p class="short_description">Class managing Players</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Players.PlayerManager.html" class="more">« More »</a>    </div>
+
+                            </div>
+            
+    
+                
+    
+        <ul class="breadcrumb">
+            <li><a href="../index.html"><i class="icon-th"></i></a></li>
+                
+                
+    
+    <li>
+        <span class="divider">\</span><a href="../namespaces/ManiaControl.html">ManiaControl</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../namespaces/ManiaControl.Plugins.html">Plugins</a>
+    </li>
+
+        </ul>
+
+        
+        
+                    <div class="namespace-indent">
+                <h3><i class="icon-custom icon-class"></i> Classes, interfaces and traits</h3>
+                
+                                        <div id="interface_Plugin" class="element ajax clickable interface" data-toggle="collapse" data-target="#interface_Plugin .collapse">
+        <h1>Plugin<a href="../classes/ManiaControl.Plugins.Plugin.html">¶</a></h1>
+        <p class="short_description">Interface for ManiaControl Plugins</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Plugins.Plugin.html" class="more">« More »</a>    </div>
+
+                
+                                        <div id="class_PluginManager" class="element ajax clickable class" data-toggle="collapse" data-target="#class_PluginManager .collapse">
+        <h1>PluginManager<a href="../classes/ManiaControl.Plugins.PluginManager.html">¶</a></h1>
+        <p class="short_description">Class managing Plugins</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Plugins.PluginManager.html" class="more">« More »</a>    </div>
+
+                                        <div id="class_PluginMenu" class="element ajax clickable class" data-toggle="collapse" data-target="#class_PluginMenu .collapse">
+        <h1>PluginMenu<a href="../classes/ManiaControl.Plugins.PluginMenu.html">¶</a></h1>
+        <p class="short_description">Configurator for enabling and disabling plugins</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Plugins.PluginMenu.html" class="more">« More »</a>    </div>
+
+                                        <div id="class_ChatMessagePlugin" class="element ajax clickable class" data-toggle="collapse" data-target="#class_ChatMessagePlugin .collapse">
+        <h1>ChatMessagePlugin<a href="../classes/ManiaControl.Plugins.ChatMessagePlugin.html">¶</a></h1>
+        <p class="short_description">ManiaControl Chat-Message Plugin</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Plugins.ChatMessagePlugin.html" class="more">« More »</a>    </div>
+
+                            </div>
+            
+    
+                
+    
+        <ul class="breadcrumb">
+            <li><a href="../index.html"><i class="icon-th"></i></a></li>
+                
+                
+    
+    <li>
+        <span class="divider">\</span><a href="../namespaces/ManiaControl.html">ManiaControl</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../namespaces/ManiaControl.Server.html">Server</a>
+    </li>
+
+        </ul>
+
+        
+        
+                    <div class="namespace-indent">
+                <h3><i class="icon-custom icon-class"></i> Classes, interfaces and traits</h3>
+                
+                
+                                        <div id="class_Server" class="element ajax clickable class" data-toggle="collapse" data-target="#class_Server .collapse">
+        <h1>Server<a href="../classes/ManiaControl.Server.Server.html">¶</a></h1>
+        <p class="short_description">Class providing Information about theconnected ManiaPlanet Server</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Server.Server.html" class="more">« More »</a>    </div>
+
+                                        <div id="class_ServerCommands" class="element ajax clickable class" data-toggle="collapse" data-target="#class_ServerCommands .collapse">
+        <h1>ServerCommands<a href="../classes/ManiaControl.Server.ServerCommands.html">¶</a></h1>
+        <p class="short_description">Class offering various commands related to the dedicated server</p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Server.ServerCommands.html" class="more">« More »</a>    </div>
+
+                            </div>
+            
+    
+                
+    
+        <ul class="breadcrumb">
+            <li><a href="../index.html"><i class="icon-th"></i></a></li>
+                
+                
+    
+    <li>
+        <span class="divider">\</span><a href="../namespaces/ManiaControl.html">ManiaControl</a>
+    </li>
+
+    
+    <li>
+        <span class="divider">\</span><a href="../namespaces/ManiaControl.Statistics.html">Statistics</a>
+    </li>
+
+        </ul>
+
+        
+        
+                    <div class="namespace-indent">
+                <h3><i class="icon-custom icon-class"></i> Classes, interfaces and traits</h3>
+                
+                
+                                        <div id="class_StatisticCollector" class="element ajax clickable class" data-toggle="collapse" data-target="#class_StatisticCollector .collapse">
+        <h1>StatisticCollector<a href="../classes/ManiaControl.Statistics.StatisticCollector.html">¶</a></h1>
+        <p class="short_description"></p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Statistics.StatisticCollector.html" class="more">« More »</a>    </div>
+
+                                        <div id="class_StatisticManager" class="element ajax clickable class" data-toggle="collapse" data-target="#class_StatisticManager .collapse">
+        <h1>StatisticManager<a href="../classes/ManiaControl.Statistics.StatisticManager.html">¶</a></h1>
+        <p class="short_description"></p>
+        <div class="details collapse"></div>
+        <a href="../classes/ManiaControl.Statistics.StatisticManager.html" class="more">« More »</a>    </div>
+
+                            </div>
+            
+    
+    
+        </div>
+    </div>
+    </div>
+
+        <footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by
+            <a href="http://glyphicons.com/">Glyphicons</a>.<br/>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and<br/>
+            generated on Fri, 10 Jan 2014 22:39:04 +0100.<br/>
     </footer>
-</div>
-
-</body>
+    </body>
 </html>
