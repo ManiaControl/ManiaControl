@@ -7,6 +7,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\FileUtil;
 use ManiaControl\ManiaControl;
+use ManiaControl\Players\Player;
 
 require_once __DIR__ . '/Map.php';
 require_once __DIR__ . '/MapCommands.php';
@@ -42,7 +43,6 @@ class MapManager implements CallbackListener {
 	 */
 	private $maniaControl = null;
 	private $maps = array();
-	private $mapsUids = array();
 	private $currentMap = null;
 
 	/**
@@ -137,18 +137,22 @@ class MapManager implements CallbackListener {
 	/**
 	 * Remove a Map
 	 *
-	 * @param int    $id
 	 * @param string $uid
 	 * @param bool   $eraseFile
 	 */
-	public function removeMap($id, $uid, $eraseFile = false) { //TODO erasefile?
-		$map = $this->mapsUids[$uid];
-		$this->maniaControl->client->query('RemoveMap', $map->fileName);
-		$this->maniaControl->chat->sendSuccess('Map $<' . $map->name . '$> removed!');
-		// TODO specified message, who done it?
-		$this->maniaControl->log('Map $<' . $map->name . '$> removed!', true);
-		unset($this->mapsUids[$uid]);
-		unset($this->maps[$id]);
+	public function removeMap(Player $admin, $uid, $eraseFile = false) { //TODO erasefile?
+		$map = $this->maps[$uid];
+
+		// Remove map
+		if(!$this->maniaControl->client->query('RemoveMap', $map->fileName)) {
+			trigger_error("Couldn't remove current map. " . $this->maniaControl->getClientErrorText());
+			$this->maniaControl->chat->sendError("Couldn't remove map.", $admin);
+			return;
+		}
+
+		$this->maniaControl->chat->sendSuccess('$<' . $admin->nickname . '$> removed $<' . $map->name . '$>');
+		$this->maniaControl->log('$<' . $admin->nickname . '$> removed $<' . $map->name . '$>', true);
+		unset($this->maps[$uid]);
 	}
 
 	/**
@@ -164,14 +168,13 @@ class MapManager implements CallbackListener {
 
 		$maps = $this->maniaControl->client->getResponse();
 		foreach($maps as $rpcMap) {
-			if(array_key_exists($rpcMap["UId"], $this->mapsUids)) {
+			if(array_key_exists($rpcMap["UId"], $this->maps)) {
 				// Map already exists, only update index
-				$tempList[] = $this->mapsUids[$rpcMap["UId"]];
+				$tempList[$rpcMap["UId"]] = $this->maps[$rpcMap["UId"]];
 			} else { // Insert Map Object
 				$map = new Map($this->maniaControl, $rpcMap);
 				$this->saveMap($map);
-				$tempList[]                = $map;
-				$this->mapsUids[$map->uid] = $map;
+				$tempList[$map->uid] = $map;
 			}
 		}
 
@@ -193,15 +196,14 @@ class MapManager implements CallbackListener {
 			return false;
 		}
 		$rpcMap = $this->maniaControl->client->getResponse();
-		if(array_key_exists($rpcMap["UId"], $this->mapsUids)) {
-			$this->currentMap = $this->mapsUids[$rpcMap["UId"]];
+		if(array_key_exists($rpcMap["UId"], $this->maps)) {
+			$this->currentMap = $this->maps[$rpcMap["UId"]];
 			return true;
 		}
 		$map = new Map($this->maniaControl, $rpcMap);
 		$this->saveMap($map);
-		$this->mapsUids[$map->uid] = $map;
-		$this->maps[]              = $map;
-		$this->currentMap          = $map;
+		$this->maps[$map->uid] = $map;
+		$this->currentMap      = $map;
 		return true;
 	}
 
@@ -232,10 +234,10 @@ class MapManager implements CallbackListener {
 	 * @return mixed
 	 */
 	public function getMapByUid($uid) {
-		if(!isset($this->mapsUids[$uid])) {
+		if(!isset($this->maps[$uid])) {
 			return null;
 		}
-		return $this->mapsUids[$uid];
+		return $this->maps[$uid];
 	}
 
 	/**
@@ -244,9 +246,9 @@ class MapManager implements CallbackListener {
 	 * @param array $callback
 	 */
 	public function handleBeginMap(array $callback) {
-		if(array_key_exists($callback[1][0]["UId"], $this->mapsUids)) {
+		if(array_key_exists($callback[1][0]["UId"], $this->maps)) {
 			// Map already exists, only update index
-			$this->currentMap = $this->mapsUids[$callback[1][0]["UId"]];
+			$this->currentMap = $this->maps[$callback[1][0]["UId"]];
 		} else {
 			// can this ever happen?
 			$this->fetchCurrentMap();

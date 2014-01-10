@@ -95,7 +95,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	 * @param \ManiaControl\Players\Player $player
 	 */
 	public function command_RemoveMap(array $chat, Player $player) {
-		if(!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
+		if(!$this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_REMOVE_MAP)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
@@ -105,13 +105,8 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$this->maniaControl->chat->sendError("Couldn't remove map.", $player->login);
 			return;
 		}
-		// Remove map
-		if(!$this->maniaControl->client->query('RemoveMap', $map->fileName)) {
-			trigger_error("Couldn't remove current map. " . $this->maniaControl->getClientErrorText());
-			$this->maniaControl->chat->sendError("Couldn't remove map.", $player->login);
-			return;
-		}
-		$this->maniaControl->chat->sendSuccess('Map removed.', $player->login);
+
+		$this->maniaControl->mapManager->removeMap($player, $map);
 	}
 
 	/**

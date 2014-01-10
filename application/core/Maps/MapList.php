@@ -687,7 +687,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$this->maniaControl->mapManager->addMapFromMx($mapId, $player->login);
 				break;
 			case self::ACTION_ERASE_MAP:
-				$this->maniaControl->mapManager->removeMap($mapId, $actionArray[3]);
+				//actionArray[3] = mapUid
+				$this->maniaControl->mapManager->removeMap($player, $actionArray[3]);
 				$this->showMapList($player);
 				break;
 			case self::ACTION_SWITCH_MAP:
