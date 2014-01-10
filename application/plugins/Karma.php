@@ -231,8 +231,12 @@ class KarmaPlugin implements CallbackListener, Plugin {
 		if(preg_match('/[^+-]/', $message)) {
 			return;
 		}
-		$vote = substr_count($message, '+');
-		$vote -= substr_count($message, '-');
+		$countPositive = substr_count($message, '+');
+		$countNegative = substr_count($message, '-');
+		if ($countPositive <= 0 && $countNegative <= 0) {
+			return;
+		}  
+		$vote = $countPositive - $countNegative;
 		$success = $this->handleVote($player, $vote);
 		if(!$success) {
 			$this->maniaControl->chat->sendError('Error occurred.', $player->login);
