@@ -359,7 +359,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$quad->setPosition($width / 2 - 4, -1.5, -0.5);
 		$quad->setSize(3, 3);
 		$quad->setHAlign(Control::CENTER);
-		$quad->setManialink('mcontrol?favorite&' . $this->maniaControl->server->login);
+		$quad->setManialink('mcontrol?favorite=' . urlencode($this->maniaControl->server->login));
 
 		// Send manialink
 		$manialinkText = $maniaLink->render()->saveXML();
