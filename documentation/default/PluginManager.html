@@ -1,829 +1,479 @@
-<html>
-<head>
-<title>Docs For Class PluginManager</title>
-<link rel="stylesheet" type="text/css" href="../media/style.css">
-</head>
-<body>
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class PluginManager</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name"><img src="../media/images/Class_logo.png"
+														alt=" Class"
+														title=" Class"
+														style="vertical-align: middle"> PluginManager</h2>
 
-<table border="0" cellspacing="0" cellpadding="0" height="48" width="100%">
-  <tr>
-    <td class="header_top">default</td>
-  </tr>
-  <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
-  <tr>
-    <td class="header_menu">
-        
-                                    
-                              		  [ <a href="../classtrees_default.html" class="menu">class tree: default</a> ]
-		  [ <a href="../elementindex_default.html" class="menu">index: default</a> ]
-		  	    [ <a href="../elementindex.html" class="menu">all elements</a> ]
-    </td>
-  </tr>
-  <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
-</table>
-
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
-  <tr valign="top">
-    <td width="200" class="menu">
-      <b>Packages:</b><br />
-              <a href="../li_default.html">default</a><br />
-            <br /><br />
-                        <b>Files:</b><br />
-      	  <div class="package">
-			<a href="../default/_core---FML---Types---Actionable.php.html">		Actionable.php
-		</a><br>
-			<a href="../default/_core---Admin---ActionsMenu.php.html">		ActionsMenu.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Audio.php.html">		Audio.php
-		</a><br>
-			<a href="../default/_core---Admin---AuthCommands.php.html">		AuthCommands.php
-		</a><br>
-			<a href="../default/_core---Admin---AuthenticationManager.php.html">		AuthenticationManager.php
-		</a><br>
-			<a href="../default/_core---FML---autoload.php.html">		autoload.php
-		</a><br>
-			<a href="../default/_core---FML---Types---BgColorable.php.html">		BgColorable.php
-		</a><br>
-			<a href="../default/_core---FML---Script---Builder.php.html">		Builder.php
-		</a><br>
-			<a href="../default/_core---Callbacks---CallbackListener.php.html">		CallbackListener.php
-		</a><br>
-			<a href="../default/_core---Callbacks---CallbackManager.php.html">		CallbackManager.php
-		</a><br>
-			<a href="../default/_core---Chat.php.html">		Chat.php
-		</a><br>
-			<a href="../default/_plugins---Chatlog.php.html">		Chatlog.php
-		</a><br>
-			<a href="../default/_plugins---ChatMessagePlugin.php.html">		ChatMessagePlugin.php
-		</a><br>
-			<a href="../default/_core---ColorUtil.php.html">		ColorUtil.php
-		</a><br>
-			<a href="../default/_core---Commands---CommandListener.php.html">		CommandListener.php
-		</a><br>
-			<a href="../default/_core---Commands---CommandManager.php.html">		CommandManager.php
-		</a><br>
-			<a href="../default/_core---Configurators---Configurator.php.html">		Configurator.php
-		</a><br>
-			<a href="../default/_core---Configurators---ConfiguratorMenu.php.html">		ConfiguratorMenu.php
-		</a><br>
-			<a href="../default/_core---FML---Types---Container.php.html">		Container.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Control.php.html">		Control.php
-		</a><br>
-			<a href="../default/_core---FML---CustomUI.php.html">		CustomUI.php
-		</a><br>
-			<a href="../default/_core---Manialinks---CustomUIManager.php.html">		CustomUIManager.php
-		</a><br>
-			<a href="../default/_core---Database.php.html">		Database.php
-		</a><br>
-			<a href="../default/_plugins---Donations.php.html">		Donations.php
-		</a><br>
-			<a href="../default/_plugins---Endurance.php.html">		Endurance.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Entry.php.html">		Entry.php
-		</a><br>
-			<a href="../default/_core---FML---Script---EUISound.php.html">		EUISound.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---FileEntry.php.html">		FileEntry.php
-		</a><br>
-			<a href="../default/_core---FileUtil.php.html">		FileUtil.php
-		</a><br>
-			<a href="../default/_core---FML---Elements---Format.php.html">		Format.php
-		</a><br>
-			<a href="../default/_core---Formatter.php.html">		Formatter.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Frame.php.html">		Frame.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Frame3d.php.html">		Frame3d.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Gauge.php.html">		Gauge.php
-		</a><br>
-			<a href="../default/_core---GbxDataFetcher---gbxdatafetcher.inc.php.html">		gbxdatafetcher.inc.php
-		</a><br>
-			<a href="../default/_core---PhpRemote---GbxRemote.bem.php.html">		GbxRemote.bem.php
-		</a><br>
-			<a href="../default/_core---PhpRemote---GbxRemote.inc.php.html">		GbxRemote.inc.php
-		</a><br>
-			<a href="../default/_core---Manialinks---IconManager.php.html">		IconManager.php
-		</a><br>
-			<a href="../default/_core---FML---Elements---Including.php.html">		Including.php
-		</a><br>
-			<a href="../default/_plugins---Karma.php.html">		Karma.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Label.php.html">		Label.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Labels---Label_Button.php.html">		Label_Button.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Labels---Label_Text.php.html">		Label_Text.php
-		</a><br>
-			<a href="../default/_core---FML---Types---Linkable.php.html">		Linkable.php
-		</a><br>
-			<a href="../default/_plugins---LocalRecords.php.html">		LocalRecords.php
-		</a><br>
-			<a href="../default/_core---ManiaControl.php.html">		ManiaControl.php
-		</a><br>
-			<a href="../default/_ManiaControl.php.html">		ManiaControl.php
-		</a><br>
-			<a href="../default/_core---Configurators---ManiaControlSettings.php.html">		ManiaControlSettings.php
-		</a><br>
-			<a href="../default/_core---ManiaExchange---ManiaExchangeInfoSearcher.php.html">		ManiaExchangeInfoSearcher.php
-		</a><br>
-			<a href="../default/_core---FML---ManiaLink.php.html">		ManiaLink.php
-		</a><br>
-			<a href="../default/_core---Manialinks---ManialinkManager.php.html">		ManialinkManager.php
-		</a><br>
-			<a href="../default/_core---Manialinks---ManialinkPageAnswerListener.php.html">		ManialinkPageAnswerListener.php
-		</a><br>
-			<a href="../default/_core---FML---ManiaLinks.php.html">		ManiaLinks.php
-		</a><br>
-			<a href="../default/_core---Maps---Map.php.html">		Map.php
-		</a><br>
-			<a href="../default/_core---Maps---MapCommands.php.html">		MapCommands.php
-		</a><br>
-			<a href="../default/_core---Maps---MapList.php.html">		MapList.php
-		</a><br>
-			<a href="../default/_core---Maps---MapManager.php.html">		MapManager.php
-		</a><br>
-			<a href="../default/_core---Maps---MapQueue.php.html">		MapQueue.php
-		</a><br>
-			<a href="../default/_core---FML---Elements---Music.php.html">		Music.php
-		</a><br>
-			<a href="../default/_core---ManiaExchange---mxinfofetcher.inc.php.html">		mxinfofetcher.inc.php
-		</a><br>
-			<a href="../default/_core---ManiaExchange---mxinfosearcher.inc.php.html">		mxinfosearcher.inc.php
-		</a><br>
-			<a href="../default/_core---FML---Types---NewLineable.php.html">		NewLineable.php
-		</a><br>
-			<a href="../default/_plugins---Obstacle.php.html">		Obstacle.php
-		</a><br>
-			<a href="../default/_core---FML---Types---Playable.php.html">		Playable.php
-		</a><br>
-			<a href="../default/_core---Players---Player.php.html">		Player.php
-		</a><br>
-			<a href="../default/_core---Players---PlayerActions.php.html">		PlayerActions.php
-		</a><br>
-			<a href="../default/_core---Players---PlayerCommands.php.html">		PlayerCommands.php
-		</a><br>
-			<a href="../default/_core---Players---PlayerDetailed.php.html">		PlayerDetailed.php
-		</a><br>
-			<a href="../default/_core---Players---PlayerList.php.html">		PlayerList.php
-		</a><br>
-			<a href="../default/_core---Players---PlayerManager.php.html">		PlayerManager.php
-		</a><br>
-			<a href="../default/_core---Plugins---Plugin.php.html">		Plugin.php
-		</a><br>
-			<a href="../default/_core---Plugins---PluginManager.php.html">		PluginManager.php
-		</a><br>
-			<a href="../default/_core---Plugins---PluginMenu.php.html">		PluginMenu.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quad.php.html">		Quad.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_321Go.php.html">		Quad_321Go.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_BgRaceScore2.php.html">		Quad_BgRaceScore2.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_Bgs1.php.html">		Quad_Bgs1.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_Bgs1InRace.php.html">		Quad_Bgs1InRace.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_BgsChallengeMedals.php.html">		Quad_BgsChallengeMedals.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_BgsPlayerCard.php.html">		Quad_BgsPlayerCard.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_Copilot.php.html">		Quad_Copilot.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_Emblems.php.html">		Quad_Emblems.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_EnergyBar.php.html">		Quad_EnergyBar.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_Hud3dEchelons.php.html">		Quad_Hud3dEchelons.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_Icons64x64_1.php.html">		Quad_Icons64x64_1.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_Icons64x64_2.php.html">		Quad_Icons64x64_2.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_Icons128x32_1.php.html">		Quad_Icons128x32_1.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_Icons128x128_1.php.html">		Quad_Icons128x128_1.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_Icons128x128_Blink.php.html">		Quad_Icons128x128_Blink.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_ManiaPlanetLogos.php.html">		Quad_ManiaPlanetLogos.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_ManiaplanetSystem.php.html">		Quad_ManiaplanetSystem.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_MedalsBig.php.html">		Quad_MedalsBig.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_TitleLogos.php.html">		Quad_TitleLogos.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_UIConstruction_Buttons.php.html">		Quad_UIConstruction_Buttons.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_UiSMSpectatorScoreBig.php.html">		Quad_UiSMSpectatorScoreBig.php
-		</a><br>
-			<a href="../default/_core---FML---Types---Renderable.php.html">		Renderable.php
-		</a><br>
-			<a href="../default/_core---FML---Script---Script.php.html">		Script.php
-		</a><br>
-			<a href="../default/_core---FML---Types---Scriptable.php.html">		Scriptable.php
-		</a><br>
-			<a href="../default/_core---Configurators---ScriptSettings.php.html">		ScriptSettings.php
-		</a><br>
-			<a href="../default/_core---Server---Server.php.html">		Server.php
-		</a><br>
-			<a href="../default/_core---Server---ServerCommands.php.html">		ServerCommands.php
-		</a><br>
-			<a href="../default/_core---Configurators---ServerSettings.php.html">		ServerSettings.php
-		</a><br>
-			<a href="../default/_core---Settings---SettingManager.php.html">		SettingManager.php
-		</a><br>
-			<a href="../default/_core---FML---Elements---SimpleScript.php.html">		SimpleScript.php
-		</a><br>
-			<a href="../default/_core---Statistics---StatisticCollector.php.html">		StatisticCollector.php
-		</a><br>
-			<a href="../default/_core---Statistics---StatisticManager.php.html">		StatisticManager.php
-		</a><br>
-			<a href="../default/_core---FML---Types---Styleable.php.html">		Styleable.php
-		</a><br>
-			<a href="../default/_core---Manialinks---StyleManager.php.html">		StyleManager.php
-		</a><br>
-			<a href="../default/_core---FML---Types---SubStyleable.php.html">		SubStyleable.php
-		</a><br>
-			<a href="../default/_core---FML---Types---TextFormatable.php.html">		TextFormatable.php
-		</a><br>
-			<a href="../default/_core---UpdateManager.php.html">		UpdateManager.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Video.php.html">		Video.php
-		</a><br>
-			<a href="../default/_plugins---WidgetPlugin.php.html">		WidgetPlugin.php
-		</a><br>
-	  </div><br />
-      
-            <b>Interfaces:</b><br />
-        <div class="package">
-		    		<a href="../default/Actionable.html">Actionable</a><br />
-	    		<a href="../default/BgColorable.html">BgColorable</a><br />
-	    		<a href="../default/CallbackListener.html">CallbackListener</a><br />
-	    		<a href="../default/CommandListener.html">CommandListener</a><br />
-	    		<a href="../default/ConfiguratorMenu.html">ConfiguratorMenu</a><br />
-	    		<a href="../default/Container.html">Container</a><br />
-	    		<a href="../default/Linkable.html">Linkable</a><br />
-	    		<a href="../default/ManialinkPageAnswerListener.html">ManialinkPageAnswerListener</a><br />
-	    		<a href="../default/NewLineable.html">NewLineable</a><br />
-	    		<a href="../default/Playable.html">Playable</a><br />
-	    		<a href="../default/Plugin.html">Plugin</a><br />
-	    		<a href="../default/Renderable.html">Renderable</a><br />
-	    		<a href="../default/Scriptable.html">Scriptable</a><br />
-	    		<a href="../default/Styleable.html">Styleable</a><br />
-	    		<a href="../default/SubStyleable.html">SubStyleable</a><br />
-	    		<a href="../default/TextFormatable.html">TextFormatable</a><br />
-	  </div>
-      
-            <b>Classes:</b><br />
-        <div class="package">
-		    		<a href="../default/ActionsMenu.html">ActionsMenu</a><br />
-	    		<a href="../default/Audio.html">Audio</a><br />
-	    		<a href="../default/AuthCommands.html">AuthCommands</a><br />
-	    		<a href="../default/AuthenticationManager.html">AuthenticationManager</a><br />
-	    		<a href="../default/Builder.html">Builder</a><br />
-	    		<a href="../default/CallbackManager.html">CallbackManager</a><br />
-	    		<a href="../default/Chat.html">Chat</a><br />
-	    		<a href="../default/ChatlogPlugin.html">ChatlogPlugin</a><br />
-	    		<a href="../default/ChatMessagePlugin.html">ChatMessagePlugin</a><br />
-	    		<a href="../default/ColorUtil.html">ColorUtil</a><br />
-	    		<a href="../default/CommandManager.html">CommandManager</a><br />
-	    		<a href="../default/Configurator.html">Configurator</a><br />
-	    		<a href="../default/Control.html">Control</a><br />
-	    		<a href="../default/CustomUI.html">CustomUI</a><br />
-	    		<a href="../default/CustomUIManager.html">CustomUIManager</a><br />
-	    		<a href="../default/Database.html">Database</a><br />
-	    		<a href="../default/DonationPlugin.html">DonationPlugin</a><br />
-	    		<a href="../default/EndurancePlugin.html">EndurancePlugin</a><br />
-	    		<a href="../default/Entry.html">Entry</a><br />
-	    		<a href="../default/EUISound.html">EUISound</a><br />
-	    		<a href="../default/FileEntry.html">FileEntry</a><br />
-	    		<a href="../default/FileUtil.html">FileUtil</a><br />
-	    		<a href="../default/Format.html">Format</a><br />
-	    		<a href="../default/Formatter.html">Formatter</a><br />
-	    		<a href="../default/Frame.html">Frame</a><br />
-	    		<a href="../default/Frame3d.html">Frame3d</a><br />
-	    		<a href="../default/Gauge.html">Gauge</a><br />
-	    		<a href="../default/GBXBaseFetcher.html">GBXBaseFetcher</a><br />
-	    		<a href="../default/GBXChallengeFetcher.html">GBXChallengeFetcher</a><br />
-	    		<a href="../default/GBXChallMapFetcher.html">GBXChallMapFetcher</a><br />
-	    		<a href="../default/GBXPackFetcher.html">GBXPackFetcher</a><br />
-	    		<a href="../default/GBXReplayFetcher.html">GBXReplayFetcher</a><br />
-	    		<a href="../default/IconManager.html">IconManager</a><br />
-	    		<a href="../default/Including.html">Including</a><br />
-	    		<a href="../default/IXR_Base64.html">IXR_Base64</a><br />
-	    		<a href="../default/IXR_ClientMulticall_Gbx.html">IXR_ClientMulticall_Gbx</a><br />
-	    		<a href="../default/IXR_Client_Gbx.html">IXR_Client_Gbx</a><br />
-	    		<a href="../default/IXR_Date.html">IXR_Date</a><br />
-	    		<a href="../default/IXR_Error.html">IXR_Error</a><br />
-	    		<a href="../default/IXR_Message.html">IXR_Message</a><br />
-	    		<a href="../default/IXR_Request.html">IXR_Request</a><br />
-	    		<a href="../default/IXR_Value.html">IXR_Value</a><br />
-	    		<a href="../default/KarmaPlugin.html">KarmaPlugin</a><br />
-	    		<a href="../default/Label.html">Label</a><br />
-	    		<a href="../default/Label_Button.html">Label_Button</a><br />
-	    		<a href="../default/Label_Text.html">Label_Text</a><br />
-	    		<a href="../default/LocalRecordsPlugin.html">LocalRecordsPlugin</a><br />
-	    		<a href="../default/ManiaControl.html">ManiaControl</a><br />
-	    		<a href="../default/ManiaControlSettings.html">ManiaControlSettings</a><br />
-	    		<a href="../default/ManiaExchangeInfoSearcher.html">ManiaExchangeInfoSearcher</a><br />
-	    		<a href="../default/ManiaLink.html">ManiaLink</a><br />
-	    		<a href="../default/ManialinkManager.html">ManialinkManager</a><br />
-	    		<a href="../default/ManiaLinks.html">ManiaLinks</a><br />
-	    		<a href="../default/Map.html">Map</a><br />
-	    		<a href="../default/MapCommands.html">MapCommands</a><br />
-	    		<a href="../default/MapList.html">MapList</a><br />
-	    		<a href="../default/MapManager.html">MapManager</a><br />
-	    		<a href="../default/MapQueue.html">MapQueue</a><br />
-	    		<a href="../default/Music.html">Music</a><br />
-	    		<a href="../default/MXInfo.html">MXInfo</a><br />
-	    		<a href="../default/MXInfoFetcher.html">MXInfoFetcher</a><br />
-	    		<a href="../default/MXInfoSearcher.html">MXInfoSearcher</a><br />
-	    		<a href="../default/MXMapInfo.html">MXMapInfo</a><br />
-	    		<a href="../default/ObstaclePlugin.html">ObstaclePlugin</a><br />
-	    		<a href="../default/Player.html">Player</a><br />
-	    		<a href="../default/PlayerActions.html">PlayerActions</a><br />
-	    		<a href="../default/PlayerCommands.html">PlayerCommands</a><br />
-	    		<a href="../default/PlayerDetailed.html">PlayerDetailed</a><br />
-	    		<a href="../default/PlayerList.html">PlayerList</a><br />
-	    		<a href="../default/PlayerManager.html">PlayerManager</a><br />
-	    		<a href="../default/PluginManager.html">PluginManager</a><br />
-	    		<a href="../default/PluginMenu.html">PluginMenu</a><br />
-	    		<a href="../default/Quad.html">Quad</a><br />
-	    		<a href="../default/Quad_321Go.html">Quad_321Go</a><br />
-	    		<a href="../default/Quad_BgRaceScore2.html">Quad_BgRaceScore2</a><br />
-	    		<a href="../default/Quad_Bgs1.html">Quad_Bgs1</a><br />
-	    		<a href="../default/Quad_Bgs1InRace.html">Quad_Bgs1InRace</a><br />
-	    		<a href="../default/Quad_BgsChallengeMedals.html">Quad_BgsChallengeMedals</a><br />
-	    		<a href="../default/Quad_BgsPlayerCard.html">Quad_BgsPlayerCard</a><br />
-	    		<a href="../default/Quad_Copilot.html">Quad_Copilot</a><br />
-	    		<a href="../default/Quad_Emblems.html">Quad_Emblems</a><br />
-	    		<a href="../default/Quad_EnergyBar.html">Quad_EnergyBar</a><br />
-	    		<a href="../default/Quad_Hud3dEchelons.html">Quad_Hud3dEchelons</a><br />
-	    		<a href="../default/Quad_Icons64x64_1.html">Quad_Icons64x64_1</a><br />
-	    		<a href="../default/Quad_Icons64x64_2.html">Quad_Icons64x64_2</a><br />
-	    		<a href="../default/Quad_Icons128x32_1.html">Quad_Icons128x32_1</a><br />
-	    		<a href="../default/Quad_Icons128x128_1.html">Quad_Icons128x128_1</a><br />
-	    		<a href="../default/Quad_Icons128x128_Blink.html">Quad_Icons128x128_Blink</a><br />
-	    		<a href="../default/Quad_ManiaPlanetLogos.html">Quad_ManiaPlanetLogos</a><br />
-	    		<a href="../default/Quad_ManiaplanetSystem.html">Quad_ManiaplanetSystem</a><br />
-	    		<a href="../default/Quad_MedalsBig.html">Quad_MedalsBig</a><br />
-	    		<a href="../default/Quad_TitleLogos.html">Quad_TitleLogos</a><br />
-	    		<a href="../default/Quad_UIConstruction_Buttons.html">Quad_UIConstruction_Buttons</a><br />
-	    		<a href="../default/Quad_UiSMSpectatorScoreBig.html">Quad_UiSMSpectatorScoreBig</a><br />
-	    		<a href="../default/Script.html">Script</a><br />
-	    		<a href="../default/ScriptSettings.html">ScriptSettings</a><br />
-	    		<a href="../default/Server.html">Server</a><br />
-	    		<a href="../default/ServerCommands.html">ServerCommands</a><br />
-	    		<a href="../default/ServerSettings.html">ServerSettings</a><br />
-	    		<a href="../default/SettingManager.html">SettingManager</a><br />
-	    		<a href="../default/SimpleScript.html">SimpleScript</a><br />
-	    		<a href="../default/StatisticCollector.html">StatisticCollector</a><br />
-	    		<a href="../default/StatisticManager.html">StatisticManager</a><br />
-	    		<a href="../default/StyleManager.html">StyleManager</a><br />
-	    		<a href="../default/UpdateManager.html">UpdateManager</a><br />
-	    		<a href="../default/Video.html">Video</a><br />
-	    		<a href="../default/WidgetPlugin.html">WidgetPlugin</a><br />
-	  </div>
-                </td>
-    <td>
-      <table cellpadding="10" cellspacing="0" width="100%" border="0"><tr><td valign="top">
-
-<h1>Class: PluginManager</h1>
-Source Location: /core/Plugins/PluginManager.php<br /><br />
-
-
-<table width="100%" border="0">
-<tr><td valign="top">
-
-<h3><a href="#class_details">Class Overview</a></h3>
-<pre></pre><br />
-<div class="description">Class managing Plugins</div><br /><br />
-<h4>Author(s):</h4>
-<ul>
-          <li>steeffeen &amp; kremsy</li>
-      </ul>
-
-
-
-
-    
-
-        
-</td>
-
-
-<td valign="top">
-<h3><a href="#class_consts">Constants</a></h3>
-<ul>
-    <li><a href="../default/PluginManager.html#constTABLE_PLUGINS">TABLE_PLUGINS</a></li>
-  </ul>
-</td>
-
-<td valign="top">
-<h3><a href="#class_methods">Methods</a></h3>
-<ul>
-    <li><a href="../default/PluginManager.html#method__construct">__construct</a></li>
-    <li><a href="../default/PluginManager.html#methodactivatePlugin">activatePlugin</a></li>
-    <li><a href="../default/PluginManager.html#methodaddPluginClass">addPluginClass</a></li>
-    <li><a href="../default/PluginManager.html#methoddeactivatePlugin">deactivatePlugin</a></li>
-    <li><a href="../default/PluginManager.html#methodgetActivePlugins">getActivePlugins</a></li>
-    <li><a href="../default/PluginManager.html#methodgetPlugin">getPlugin</a></li>
-    <li><a href="../default/PluginManager.html#methodgetPluginClasses">getPluginClasses</a></li>
-    <li><a href="../default/PluginManager.html#methodisPluginActive">isPluginActive</a></li>
-    <li><a href="../default/PluginManager.html#methodisPluginClass">isPluginClass</a></li>
-    <li><a href="../default/PluginManager.html#methodloadPlugins">loadPlugins</a></li>
-  </ul>
-</td>
-
-</tr></table>
-<hr />
-
-<table width="100%" border="0"><tr>
-
-
-
-
-
-
-</tr></table>
-<hr />
-
-<a name="class_details"></a>
-<h3>Class Details</h3>
-<div class="tags">
-[line 17]<br />
-Class managing Plugins<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>author:</b>&nbsp;&nbsp;</td><td>steeffeen &amp; kremsy</td>
-  </tr>
-</table>
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+															<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+											<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+						
+			</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Class managing Plugins</p>
+	<ul class="tags">
+				<li><span class="field">author:</span> steeffeen &amp; kremsy</li>
+			</ul>
+		<p class="notes">
+			Located in <a class="field" href="_core---Plugins---PluginManager.php.html">/core/Plugins/PluginManager.php</a> (line <span class="field">17</span>)
+		</p>
+		
+				
+		<pre></pre>
+	
+			</div>
 </div>
-</div><br /><br />
-<div class="top">[ <a href="#top">Top</a> ]</div><br />
 
 
-<hr />
-<a name="class_methods"></a>
-<h3>Class Methods</h3>
-<div class="tags">
+	<a name="sec-const-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Class Constant Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+						<span class="disabled">Constants</span> (<a href="#sec-consts">details</a>)
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<div class="const-summary">
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#TABLE_PLUGINS" title="details" class="const-name">TABLE_PLUGINS</a> = 					<span class="var-type"> 'mc_plugins'</span>
 
-  <hr />
-	<a name="method__construct"></a>
-	<h3>constructor __construct <span class="smalllinenumber">[line 36]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>PluginManager __construct(
-<a href="../default/ManiaControl.html">ManiaControl</a>
-$maniaControl)</code>
-    </td></tr></table>
-    </td></tr></table><br />
+				</div>
+							</div>
+		</div>
+	</div>
+
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+															<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+							
+									<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																																																																																																<div class="method-definition">
+					<img src="../media/images/Constructor.png" alt=" "/>
+											<span class="method-result">PluginManager</span>
+										<a href="#__construct" title="details" class="method-name">__construct</a>
+											(<span class="var-type"><a href="../default/ManiaControl.html">ManiaControl</a></span>&nbsp;<span class="var-name">$maniaControl</span>)
+									</div>
+																<div class="method-definition">
+					<img src="../media/images/Method.png" alt=" "/>
+											<span class="method-result">bool</span>
+										<a href="#activatePlugin" title="details" class="method-name">activatePlugin</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$pluginClass</span>)
+									</div>
+																<div class="method-definition">
+					<img src="../media/images/Method.png" alt=" "/>
+											<span class="method-result">bool</span>
+										<a href="#addPluginClass" title="details" class="method-name">addPluginClass</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$pluginClass</span>)
+									</div>
+																<div class="method-definition">
+					<img src="../media/images/Method.png" alt=" "/>
+											<span class="method-result">bool</span>
+										<a href="#deactivatePlugin" title="details" class="method-name">deactivatePlugin</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$pluginClass</span>)
+									</div>
+																<div class="method-definition">
+					<img src="../media/images/Method.png" alt=" "/>
+											<span class="method-result">array</span>
+										<a href="#getActivePlugins" title="details" class="method-name">getActivePlugins</a>
+										()
+									</div>
+																<div class="method-definition">
+					<img src="../media/images/Method.png" alt=" "/>
+											<span class="method-result"><a href="../default/Plugin.html">Plugin</a></span>
+										<a href="#getPlugin" title="details" class="method-name">getPlugin</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$pluginClass</span>)
+									</div>
+																<div class="method-definition">
+					<img src="../media/images/Method.png" alt=" "/>
+											<span class="method-result">array</span>
+										<a href="#getPluginClasses" title="details" class="method-name">getPluginClasses</a>
+										()
+									</div>
+																<div class="method-definition">
+					<img src="../media/images/Method.png" alt=" "/>
+											<span class="method-result">bool</span>
+										<a href="#isPluginActive" title="details" class="method-name">isPluginActive</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$pluginClass</span>)
+									</div>
+																<div class="method-definition">
+					<img src="../media/images/Method.png" alt=" "/>
+											<span class="method-result">bool</span>
+										<a href="#isPluginClass" title="details" class="method-name">isPluginClass</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$pluginClass</span>)
+									</div>
+																<div class="method-definition">
+					<img src="../media/images/Method.png" alt=" "/>
+											<span class="method-result">void</span>
+										<a href="#loadPlugins" title="details" class="method-name">loadPlugins</a>
+										()
+									</div>
+											</div>
+		</div>
+	</div>		
+
 	
-		Construct plugin manager<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+													<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+<a name="method__construct" id="__construct"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<img src="../media/images/Constructor.png" />
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number">36</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Construct plugin manager</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">PluginManager</span>
+		<span class="method-name">
+			__construct
+		</span>
+					(<span class="var-type"><a href="../default/ManiaControl.html">ManiaControl</a></span>&nbsp;<span class="var-name">$maniaControl</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">\ManiaControl\ManiaControl</span>
+				<span class="var-name">$maniaControl</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodactivatePlugin" id="activatePlugin"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<img src="../media/images/Method.png" />
+		<span class="method-title">activatePlugin</span> (line <span class="line-number">128</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Activate and start the plugin with the given name</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">bool</span>
+		<span class="method-name">
+			activatePlugin
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$pluginClass</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$pluginClass</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodaddPluginClass" id="addPluginClass"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<img src="../media/images/Method.png" />
+		<span class="method-title">addPluginClass</span> (line <span class="line-number">108</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Add the class to array of loaded plugin classes</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">bool</span>
+		<span class="method-name">
+			addPluginClass
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$pluginClass</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$pluginClass</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methoddeactivatePlugin" id="deactivatePlugin"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<img src="../media/images/Method.png" />
+		<span class="method-title">deactivatePlugin</span> (line <span class="line-number">151</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Deactivate the plugin with the given class</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">bool</span>
+		<span class="method-name">
+			deactivatePlugin
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$pluginClass</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$pluginClass</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetActivePlugins" id="getActivePlugins"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<img src="../media/images/Method.png" />
+		<span class="method-title">getActivePlugins</span> (line <span class="line-number">233</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Get all active plugins</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">array</span>
+		<span class="method-name">
+			getActivePlugins
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetPlugin" id="getPlugin"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<img src="../media/images/Method.png" />
+		<span class="method-title">getPlugin</span> (line <span class="line-number">212</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns an Plugin if it is activated</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result"><a href="../default/Plugin.html">Plugin</a></span>
+		<span class="method-name">
+			getPlugin
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$pluginClass</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$pluginClass</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetPluginClasses" id="getPluginClasses"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<img src="../media/images/Method.png" />
+		<span class="method-title">getPluginClasses</span> (line <span class="line-number">224</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Get all declared plugin class names</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">array</span>
+		<span class="method-name">
+			getPluginClasses
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodisPluginActive" id="isPluginActive"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<img src="../media/images/Method.png" />
+		<span class="method-title">isPluginActive</span> (line <span class="line-number">79</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Check if the plugin is running</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">bool</span>
+		<span class="method-name">
+			isPluginActive
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$pluginClass</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$pluginClass</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodisPluginClass" id="isPluginClass"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<img src="../media/images/Method.png" />
+		<span class="method-title">isPluginClass</span> (line <span class="line-number">92</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Check if the given class implements the plugin interface</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">bool</span>
+		<span class="method-name">
+			isPluginClass
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$pluginClass</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$pluginClass</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodloadPlugins" id="loadPlugins"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<img src="../media/images/Method.png" />
+		<span class="method-title">loadPlugins</span> (line <span class="line-number">176</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Load complete plugins directory and start all configured plugins</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			loadPlugins
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+						
+		</div>
+	</div>
+
+	<a name="sec-consts"></a>
+	<div class="info-box">
+		<div class="info-box-title">Class Constants</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+										<a href="#sec-var-summary">Constants</a> (<span class="disabled">details</span>)
+						
+			
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<a name="constTABLE_PLUGINS" id="TABLE_PLUGINS"><!-- --></A>
+<div class="evenrow">
+
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">TABLE_PLUGINS</span>
+			 = <span class="const-default"> 'mc_plugins'</span>
+			(line <span class="line-number">21</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Constants</p>
+	
+	
 </div>
-<br /><br />
-
+						
+		</div>
+	</div>
 	
-        <h4>Parameters:</h4>
-    <div class="tags">
-    <table border="0" cellspacing="0" cellpadding="0">
-          <tr>
-        <td class="type">\ManiaControl\ManiaControl&nbsp;&nbsp;</td>
-        <td><b>$maniaControl</b>&nbsp;&nbsp;</td>
-        <td></td>
-      </tr>
-        </table>
-    </div><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodactivatePlugin"></a>
-	<h3>method activatePlugin <span class="smalllinenumber">[line 128]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>bool activatePlugin(
-string
-$pluginClass)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		Activate and start the plugin with the given name<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-<br /><br />
-
-	
-        <h4>Parameters:</h4>
-    <div class="tags">
-    <table border="0" cellspacing="0" cellpadding="0">
-          <tr>
-        <td class="type">string&nbsp;&nbsp;</td>
-        <td><b>$pluginClass</b>&nbsp;&nbsp;</td>
-        <td></td>
-      </tr>
-        </table>
-    </div><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodaddPluginClass"></a>
-	<h3>method addPluginClass <span class="smalllinenumber">[line 108]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>bool addPluginClass(
-string
-$pluginClass)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		Add the class to array of loaded plugin classes<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-<br /><br />
-
-	
-        <h4>Parameters:</h4>
-    <div class="tags">
-    <table border="0" cellspacing="0" cellpadding="0">
-          <tr>
-        <td class="type">string&nbsp;&nbsp;</td>
-        <td><b>$pluginClass</b>&nbsp;&nbsp;</td>
-        <td></td>
-      </tr>
-        </table>
-    </div><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methoddeactivatePlugin"></a>
-	<h3>method deactivatePlugin <span class="smalllinenumber">[line 151]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>bool deactivatePlugin(
-string
-$pluginClass)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		Deactivate the plugin with the given class<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-<br /><br />
-
-	
-        <h4>Parameters:</h4>
-    <div class="tags">
-    <table border="0" cellspacing="0" cellpadding="0">
-          <tr>
-        <td class="type">string&nbsp;&nbsp;</td>
-        <td><b>$pluginClass</b>&nbsp;&nbsp;</td>
-        <td></td>
-      </tr>
-        </table>
-    </div><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodgetActivePlugins"></a>
-	<h3>method getActivePlugins <span class="smalllinenumber">[line 233]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>array getActivePlugins(
-)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		Get all active plugins<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-<br /><br />
-
-	
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodgetPlugin"></a>
-	<h3>method getPlugin <span class="smalllinenumber">[line 212]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code><a href="../default/Plugin.html">Plugin</a> getPlugin(
-string
-$pluginClass)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		Returns an Plugin if it is activated<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-<br /><br />
-
-	
-        <h4>Parameters:</h4>
-    <div class="tags">
-    <table border="0" cellspacing="0" cellpadding="0">
-          <tr>
-        <td class="type">string&nbsp;&nbsp;</td>
-        <td><b>$pluginClass</b>&nbsp;&nbsp;</td>
-        <td></td>
-      </tr>
-        </table>
-    </div><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodgetPluginClasses"></a>
-	<h3>method getPluginClasses <span class="smalllinenumber">[line 224]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>array getPluginClasses(
-)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		Get all declared plugin class names<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-<br /><br />
-
-	
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodisPluginActive"></a>
-	<h3>method isPluginActive <span class="smalllinenumber">[line 79]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>bool isPluginActive(
-string
-$pluginClass)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		Check if the plugin is running<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-<br /><br />
-
-	
-        <h4>Parameters:</h4>
-    <div class="tags">
-    <table border="0" cellspacing="0" cellpadding="0">
-          <tr>
-        <td class="type">string&nbsp;&nbsp;</td>
-        <td><b>$pluginClass</b>&nbsp;&nbsp;</td>
-        <td></td>
-      </tr>
-        </table>
-    </div><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodisPluginClass"></a>
-	<h3>method isPluginClass <span class="smalllinenumber">[line 92]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>bool isPluginClass(
-string
-$pluginClass)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		Check if the given class implements the plugin interface<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-<br /><br />
-
-	
-        <h4>Parameters:</h4>
-    <div class="tags">
-    <table border="0" cellspacing="0" cellpadding="0">
-          <tr>
-        <td class="type">string&nbsp;&nbsp;</td>
-        <td><b>$pluginClass</b>&nbsp;&nbsp;</td>
-        <td></td>
-      </tr>
-        </table>
-    </div><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodloadPlugins"></a>
-	<h3>method loadPlugins <span class="smalllinenumber">[line 176]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void loadPlugins(
-)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		Load complete plugins directory and start all configured plugins<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-<br /><br />
-
-	
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-</div><br />
-
-<hr />
-<a name="class_consts"></a>
-<h3>Class Constants</h3>
-<div class="tags">
-	<a name="constTABLE_PLUGINS"></a>
-	<p></p>
-	<h4>TABLE_PLUGINS = <span class="value">&nbsp;'mc_plugins'</span></h4>
-	<p>[line 21]</p>
-  Constants<br /><br />
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-</div><br />
-
-        <div class="credit">
-		    <hr />
-		    Documentation generated on Fri, 10 Jan 2014 21:55:52 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.4</a>
-	      </div>
-      </td></tr></table>
-    </td>
-  </tr>
-</table>
-
-</body>
+	<p class="notes" id="credit">
+		Documentation generated on Fri, 10 Jan 2014 22:03:58 +0100 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.4</a>
+	</p>
+	</div></body>
 </html>

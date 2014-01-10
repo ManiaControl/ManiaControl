@@ -1,1037 +1,1023 @@
-<html>
-<head>
-<title>Docs For Class CallbackManager</title>
-<link rel="stylesheet" type="text/css" href="../media/style.css">
-</head>
-<body>
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class CallbackManager</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name"><img src="../media/images/Class_logo.png"
+														alt=" Class"
+														title=" Class"
+														style="vertical-align: middle"> CallbackManager</h2>
 
-<table border="0" cellspacing="0" cellpadding="0" height="48" width="100%">
-  <tr>
-    <td class="header_top">default</td>
-  </tr>
-  <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
-  <tr>
-    <td class="header_menu">
-        
-                                    
-                              		  [ <a href="../classtrees_default.html" class="menu">class tree: default</a> ]
-		  [ <a href="../elementindex_default.html" class="menu">index: default</a> ]
-		  	    [ <a href="../elementindex.html" class="menu">all elements</a> ]
-    </td>
-  </tr>
-  <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
-</table>
-
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
-  <tr valign="top">
-    <td width="200" class="menu">
-      <b>Packages:</b><br />
-              <a href="../li_default.html">default</a><br />
-            <br /><br />
-                        <b>Files:</b><br />
-      	  <div class="package">
-			<a href="../default/_core---FML---Types---Actionable.php.html">		Actionable.php
-		</a><br>
-			<a href="../default/_core---Admin---ActionsMenu.php.html">		ActionsMenu.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Audio.php.html">		Audio.php
-		</a><br>
-			<a href="../default/_core---Admin---AuthCommands.php.html">		AuthCommands.php
-		</a><br>
-			<a href="../default/_core---Admin---AuthenticationManager.php.html">		AuthenticationManager.php
-		</a><br>
-			<a href="../default/_core---FML---autoload.php.html">		autoload.php
-		</a><br>
-			<a href="../default/_core---FML---Types---BgColorable.php.html">		BgColorable.php
-		</a><br>
-			<a href="../default/_core---FML---Script---Builder.php.html">		Builder.php
-		</a><br>
-			<a href="../default/_core---Callbacks---CallbackListener.php.html">		CallbackListener.php
-		</a><br>
-			<a href="../default/_core---Callbacks---CallbackManager.php.html">		CallbackManager.php
-		</a><br>
-			<a href="../default/_core---Chat.php.html">		Chat.php
-		</a><br>
-			<a href="../default/_plugins---Chatlog.php.html">		Chatlog.php
-		</a><br>
-			<a href="../default/_plugins---ChatMessagePlugin.php.html">		ChatMessagePlugin.php
-		</a><br>
-			<a href="../default/_core---ColorUtil.php.html">		ColorUtil.php
-		</a><br>
-			<a href="../default/_core---Commands---CommandListener.php.html">		CommandListener.php
-		</a><br>
-			<a href="../default/_core---Commands---CommandManager.php.html">		CommandManager.php
-		</a><br>
-			<a href="../default/_core---Configurators---Configurator.php.html">		Configurator.php
-		</a><br>
-			<a href="../default/_core---Configurators---ConfiguratorMenu.php.html">		ConfiguratorMenu.php
-		</a><br>
-			<a href="../default/_core---FML---Types---Container.php.html">		Container.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Control.php.html">		Control.php
-		</a><br>
-			<a href="../default/_core---FML---CustomUI.php.html">		CustomUI.php
-		</a><br>
-			<a href="../default/_core---Manialinks---CustomUIManager.php.html">		CustomUIManager.php
-		</a><br>
-			<a href="../default/_core---Database.php.html">		Database.php
-		</a><br>
-			<a href="../default/_plugins---Donations.php.html">		Donations.php
-		</a><br>
-			<a href="../default/_plugins---Endurance.php.html">		Endurance.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Entry.php.html">		Entry.php
-		</a><br>
-			<a href="../default/_core---FML---Script---EUISound.php.html">		EUISound.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---FileEntry.php.html">		FileEntry.php
-		</a><br>
-			<a href="../default/_core---FileUtil.php.html">		FileUtil.php
-		</a><br>
-			<a href="../default/_core---FML---Elements---Format.php.html">		Format.php
-		</a><br>
-			<a href="../default/_core---Formatter.php.html">		Formatter.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Frame.php.html">		Frame.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Frame3d.php.html">		Frame3d.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Gauge.php.html">		Gauge.php
-		</a><br>
-			<a href="../default/_core---GbxDataFetcher---gbxdatafetcher.inc.php.html">		gbxdatafetcher.inc.php
-		</a><br>
-			<a href="../default/_core---PhpRemote---GbxRemote.bem.php.html">		GbxRemote.bem.php
-		</a><br>
-			<a href="../default/_core---PhpRemote---GbxRemote.inc.php.html">		GbxRemote.inc.php
-		</a><br>
-			<a href="../default/_core---Manialinks---IconManager.php.html">		IconManager.php
-		</a><br>
-			<a href="../default/_core---FML---Elements---Including.php.html">		Including.php
-		</a><br>
-			<a href="../default/_plugins---Karma.php.html">		Karma.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Label.php.html">		Label.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Labels---Label_Button.php.html">		Label_Button.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Labels---Label_Text.php.html">		Label_Text.php
-		</a><br>
-			<a href="../default/_core---FML---Types---Linkable.php.html">		Linkable.php
-		</a><br>
-			<a href="../default/_plugins---LocalRecords.php.html">		LocalRecords.php
-		</a><br>
-			<a href="../default/_core---ManiaControl.php.html">		ManiaControl.php
-		</a><br>
-			<a href="../default/_ManiaControl.php.html">		ManiaControl.php
-		</a><br>
-			<a href="../default/_core---Configurators---ManiaControlSettings.php.html">		ManiaControlSettings.php
-		</a><br>
-			<a href="../default/_core---ManiaExchange---ManiaExchangeInfoSearcher.php.html">		ManiaExchangeInfoSearcher.php
-		</a><br>
-			<a href="../default/_core---FML---ManiaLink.php.html">		ManiaLink.php
-		</a><br>
-			<a href="../default/_core---Manialinks---ManialinkManager.php.html">		ManialinkManager.php
-		</a><br>
-			<a href="../default/_core---Manialinks---ManialinkPageAnswerListener.php.html">		ManialinkPageAnswerListener.php
-		</a><br>
-			<a href="../default/_core---FML---ManiaLinks.php.html">		ManiaLinks.php
-		</a><br>
-			<a href="../default/_core---Maps---Map.php.html">		Map.php
-		</a><br>
-			<a href="../default/_core---Maps---MapCommands.php.html">		MapCommands.php
-		</a><br>
-			<a href="../default/_core---Maps---MapList.php.html">		MapList.php
-		</a><br>
-			<a href="../default/_core---Maps---MapManager.php.html">		MapManager.php
-		</a><br>
-			<a href="../default/_core---Maps---MapQueue.php.html">		MapQueue.php
-		</a><br>
-			<a href="../default/_core---FML---Elements---Music.php.html">		Music.php
-		</a><br>
-			<a href="../default/_core---ManiaExchange---mxinfofetcher.inc.php.html">		mxinfofetcher.inc.php
-		</a><br>
-			<a href="../default/_core---ManiaExchange---mxinfosearcher.inc.php.html">		mxinfosearcher.inc.php
-		</a><br>
-			<a href="../default/_core---FML---Types---NewLineable.php.html">		NewLineable.php
-		</a><br>
-			<a href="../default/_plugins---Obstacle.php.html">		Obstacle.php
-		</a><br>
-			<a href="../default/_core---FML---Types---Playable.php.html">		Playable.php
-		</a><br>
-			<a href="../default/_core---Players---Player.php.html">		Player.php
-		</a><br>
-			<a href="../default/_core---Players---PlayerActions.php.html">		PlayerActions.php
-		</a><br>
-			<a href="../default/_core---Players---PlayerCommands.php.html">		PlayerCommands.php
-		</a><br>
-			<a href="../default/_core---Players---PlayerDetailed.php.html">		PlayerDetailed.php
-		</a><br>
-			<a href="../default/_core---Players---PlayerList.php.html">		PlayerList.php
-		</a><br>
-			<a href="../default/_core---Players---PlayerManager.php.html">		PlayerManager.php
-		</a><br>
-			<a href="../default/_core---Plugins---Plugin.php.html">		Plugin.php
-		</a><br>
-			<a href="../default/_core---Plugins---PluginManager.php.html">		PluginManager.php
-		</a><br>
-			<a href="../default/_core---Plugins---PluginMenu.php.html">		PluginMenu.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quad.php.html">		Quad.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_321Go.php.html">		Quad_321Go.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_BgRaceScore2.php.html">		Quad_BgRaceScore2.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_Bgs1.php.html">		Quad_Bgs1.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_Bgs1InRace.php.html">		Quad_Bgs1InRace.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_BgsChallengeMedals.php.html">		Quad_BgsChallengeMedals.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_BgsPlayerCard.php.html">		Quad_BgsPlayerCard.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_Copilot.php.html">		Quad_Copilot.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_Emblems.php.html">		Quad_Emblems.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_EnergyBar.php.html">		Quad_EnergyBar.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_Hud3dEchelons.php.html">		Quad_Hud3dEchelons.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_Icons64x64_1.php.html">		Quad_Icons64x64_1.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_Icons64x64_2.php.html">		Quad_Icons64x64_2.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_Icons128x32_1.php.html">		Quad_Icons128x32_1.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_Icons128x128_1.php.html">		Quad_Icons128x128_1.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_Icons128x128_Blink.php.html">		Quad_Icons128x128_Blink.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_ManiaPlanetLogos.php.html">		Quad_ManiaPlanetLogos.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_ManiaplanetSystem.php.html">		Quad_ManiaplanetSystem.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_MedalsBig.php.html">		Quad_MedalsBig.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_TitleLogos.php.html">		Quad_TitleLogos.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_UIConstruction_Buttons.php.html">		Quad_UIConstruction_Buttons.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Quads---Quad_UiSMSpectatorScoreBig.php.html">		Quad_UiSMSpectatorScoreBig.php
-		</a><br>
-			<a href="../default/_core---FML---Types---Renderable.php.html">		Renderable.php
-		</a><br>
-			<a href="../default/_core---FML---Script---Script.php.html">		Script.php
-		</a><br>
-			<a href="../default/_core---FML---Types---Scriptable.php.html">		Scriptable.php
-		</a><br>
-			<a href="../default/_core---Configurators---ScriptSettings.php.html">		ScriptSettings.php
-		</a><br>
-			<a href="../default/_core---Server---Server.php.html">		Server.php
-		</a><br>
-			<a href="../default/_core---Server---ServerCommands.php.html">		ServerCommands.php
-		</a><br>
-			<a href="../default/_core---Configurators---ServerSettings.php.html">		ServerSettings.php
-		</a><br>
-			<a href="../default/_core---Settings---SettingManager.php.html">		SettingManager.php
-		</a><br>
-			<a href="../default/_core---FML---Elements---SimpleScript.php.html">		SimpleScript.php
-		</a><br>
-			<a href="../default/_core---Statistics---StatisticCollector.php.html">		StatisticCollector.php
-		</a><br>
-			<a href="../default/_core---Statistics---StatisticManager.php.html">		StatisticManager.php
-		</a><br>
-			<a href="../default/_core---FML---Types---Styleable.php.html">		Styleable.php
-		</a><br>
-			<a href="../default/_core---Manialinks---StyleManager.php.html">		StyleManager.php
-		</a><br>
-			<a href="../default/_core---FML---Types---SubStyleable.php.html">		SubStyleable.php
-		</a><br>
-			<a href="../default/_core---FML---Types---TextFormatable.php.html">		TextFormatable.php
-		</a><br>
-			<a href="../default/_core---UpdateManager.php.html">		UpdateManager.php
-		</a><br>
-			<a href="../default/_core---FML---Controls---Video.php.html">		Video.php
-		</a><br>
-			<a href="../default/_plugins---WidgetPlugin.php.html">		WidgetPlugin.php
-		</a><br>
-	  </div><br />
-      
-            <b>Interfaces:</b><br />
-        <div class="package">
-		    		<a href="../default/Actionable.html">Actionable</a><br />
-	    		<a href="../default/BgColorable.html">BgColorable</a><br />
-	    		<a href="../default/CallbackListener.html">CallbackListener</a><br />
-	    		<a href="../default/CommandListener.html">CommandListener</a><br />
-	    		<a href="../default/ConfiguratorMenu.html">ConfiguratorMenu</a><br />
-	    		<a href="../default/Container.html">Container</a><br />
-	    		<a href="../default/Linkable.html">Linkable</a><br />
-	    		<a href="../default/ManialinkPageAnswerListener.html">ManialinkPageAnswerListener</a><br />
-	    		<a href="../default/NewLineable.html">NewLineable</a><br />
-	    		<a href="../default/Playable.html">Playable</a><br />
-	    		<a href="../default/Plugin.html">Plugin</a><br />
-	    		<a href="../default/Renderable.html">Renderable</a><br />
-	    		<a href="../default/Scriptable.html">Scriptable</a><br />
-	    		<a href="../default/Styleable.html">Styleable</a><br />
-	    		<a href="../default/SubStyleable.html">SubStyleable</a><br />
-	    		<a href="../default/TextFormatable.html">TextFormatable</a><br />
-	  </div>
-      
-            <b>Classes:</b><br />
-        <div class="package">
-		    		<a href="../default/ActionsMenu.html">ActionsMenu</a><br />
-	    		<a href="../default/Audio.html">Audio</a><br />
-	    		<a href="../default/AuthCommands.html">AuthCommands</a><br />
-	    		<a href="../default/AuthenticationManager.html">AuthenticationManager</a><br />
-	    		<a href="../default/Builder.html">Builder</a><br />
-	    		<a href="../default/CallbackManager.html">CallbackManager</a><br />
-	    		<a href="../default/Chat.html">Chat</a><br />
-	    		<a href="../default/ChatlogPlugin.html">ChatlogPlugin</a><br />
-	    		<a href="../default/ChatMessagePlugin.html">ChatMessagePlugin</a><br />
-	    		<a href="../default/ColorUtil.html">ColorUtil</a><br />
-	    		<a href="../default/CommandManager.html">CommandManager</a><br />
-	    		<a href="../default/Configurator.html">Configurator</a><br />
-	    		<a href="../default/Control.html">Control</a><br />
-	    		<a href="../default/CustomUI.html">CustomUI</a><br />
-	    		<a href="../default/CustomUIManager.html">CustomUIManager</a><br />
-	    		<a href="../default/Database.html">Database</a><br />
-	    		<a href="../default/DonationPlugin.html">DonationPlugin</a><br />
-	    		<a href="../default/EndurancePlugin.html">EndurancePlugin</a><br />
-	    		<a href="../default/Entry.html">Entry</a><br />
-	    		<a href="../default/EUISound.html">EUISound</a><br />
-	    		<a href="../default/FileEntry.html">FileEntry</a><br />
-	    		<a href="../default/FileUtil.html">FileUtil</a><br />
-	    		<a href="../default/Format.html">Format</a><br />
-	    		<a href="../default/Formatter.html">Formatter</a><br />
-	    		<a href="../default/Frame.html">Frame</a><br />
-	    		<a href="../default/Frame3d.html">Frame3d</a><br />
-	    		<a href="../default/Gauge.html">Gauge</a><br />
-	    		<a href="../default/GBXBaseFetcher.html">GBXBaseFetcher</a><br />
-	    		<a href="../default/GBXChallengeFetcher.html">GBXChallengeFetcher</a><br />
-	    		<a href="../default/GBXChallMapFetcher.html">GBXChallMapFetcher</a><br />
-	    		<a href="../default/GBXPackFetcher.html">GBXPackFetcher</a><br />
-	    		<a href="../default/GBXReplayFetcher.html">GBXReplayFetcher</a><br />
-	    		<a href="../default/IconManager.html">IconManager</a><br />
-	    		<a href="../default/Including.html">Including</a><br />
-	    		<a href="../default/IXR_Base64.html">IXR_Base64</a><br />
-	    		<a href="../default/IXR_ClientMulticall_Gbx.html">IXR_ClientMulticall_Gbx</a><br />
-	    		<a href="../default/IXR_Client_Gbx.html">IXR_Client_Gbx</a><br />
-	    		<a href="../default/IXR_Date.html">IXR_Date</a><br />
-	    		<a href="../default/IXR_Error.html">IXR_Error</a><br />
-	    		<a href="../default/IXR_Message.html">IXR_Message</a><br />
-	    		<a href="../default/IXR_Request.html">IXR_Request</a><br />
-	    		<a href="../default/IXR_Value.html">IXR_Value</a><br />
-	    		<a href="../default/KarmaPlugin.html">KarmaPlugin</a><br />
-	    		<a href="../default/Label.html">Label</a><br />
-	    		<a href="../default/Label_Button.html">Label_Button</a><br />
-	    		<a href="../default/Label_Text.html">Label_Text</a><br />
-	    		<a href="../default/LocalRecordsPlugin.html">LocalRecordsPlugin</a><br />
-	    		<a href="../default/ManiaControl.html">ManiaControl</a><br />
-	    		<a href="../default/ManiaControlSettings.html">ManiaControlSettings</a><br />
-	    		<a href="../default/ManiaExchangeInfoSearcher.html">ManiaExchangeInfoSearcher</a><br />
-	    		<a href="../default/ManiaLink.html">ManiaLink</a><br />
-	    		<a href="../default/ManialinkManager.html">ManialinkManager</a><br />
-	    		<a href="../default/ManiaLinks.html">ManiaLinks</a><br />
-	    		<a href="../default/Map.html">Map</a><br />
-	    		<a href="../default/MapCommands.html">MapCommands</a><br />
-	    		<a href="../default/MapList.html">MapList</a><br />
-	    		<a href="../default/MapManager.html">MapManager</a><br />
-	    		<a href="../default/MapQueue.html">MapQueue</a><br />
-	    		<a href="../default/Music.html">Music</a><br />
-	    		<a href="../default/MXInfo.html">MXInfo</a><br />
-	    		<a href="../default/MXInfoFetcher.html">MXInfoFetcher</a><br />
-	    		<a href="../default/MXInfoSearcher.html">MXInfoSearcher</a><br />
-	    		<a href="../default/MXMapInfo.html">MXMapInfo</a><br />
-	    		<a href="../default/ObstaclePlugin.html">ObstaclePlugin</a><br />
-	    		<a href="../default/Player.html">Player</a><br />
-	    		<a href="../default/PlayerActions.html">PlayerActions</a><br />
-	    		<a href="../default/PlayerCommands.html">PlayerCommands</a><br />
-	    		<a href="../default/PlayerDetailed.html">PlayerDetailed</a><br />
-	    		<a href="../default/PlayerList.html">PlayerList</a><br />
-	    		<a href="../default/PlayerManager.html">PlayerManager</a><br />
-	    		<a href="../default/PluginManager.html">PluginManager</a><br />
-	    		<a href="../default/PluginMenu.html">PluginMenu</a><br />
-	    		<a href="../default/Quad.html">Quad</a><br />
-	    		<a href="../default/Quad_321Go.html">Quad_321Go</a><br />
-	    		<a href="../default/Quad_BgRaceScore2.html">Quad_BgRaceScore2</a><br />
-	    		<a href="../default/Quad_Bgs1.html">Quad_Bgs1</a><br />
-	    		<a href="../default/Quad_Bgs1InRace.html">Quad_Bgs1InRace</a><br />
-	    		<a href="../default/Quad_BgsChallengeMedals.html">Quad_BgsChallengeMedals</a><br />
-	    		<a href="../default/Quad_BgsPlayerCard.html">Quad_BgsPlayerCard</a><br />
-	    		<a href="../default/Quad_Copilot.html">Quad_Copilot</a><br />
-	    		<a href="../default/Quad_Emblems.html">Quad_Emblems</a><br />
-	    		<a href="../default/Quad_EnergyBar.html">Quad_EnergyBar</a><br />
-	    		<a href="../default/Quad_Hud3dEchelons.html">Quad_Hud3dEchelons</a><br />
-	    		<a href="../default/Quad_Icons64x64_1.html">Quad_Icons64x64_1</a><br />
-	    		<a href="../default/Quad_Icons64x64_2.html">Quad_Icons64x64_2</a><br />
-	    		<a href="../default/Quad_Icons128x32_1.html">Quad_Icons128x32_1</a><br />
-	    		<a href="../default/Quad_Icons128x128_1.html">Quad_Icons128x128_1</a><br />
-	    		<a href="../default/Quad_Icons128x128_Blink.html">Quad_Icons128x128_Blink</a><br />
-	    		<a href="../default/Quad_ManiaPlanetLogos.html">Quad_ManiaPlanetLogos</a><br />
-	    		<a href="../default/Quad_ManiaplanetSystem.html">Quad_ManiaplanetSystem</a><br />
-	    		<a href="../default/Quad_MedalsBig.html">Quad_MedalsBig</a><br />
-	    		<a href="../default/Quad_TitleLogos.html">Quad_TitleLogos</a><br />
-	    		<a href="../default/Quad_UIConstruction_Buttons.html">Quad_UIConstruction_Buttons</a><br />
-	    		<a href="../default/Quad_UiSMSpectatorScoreBig.html">Quad_UiSMSpectatorScoreBig</a><br />
-	    		<a href="../default/Script.html">Script</a><br />
-	    		<a href="../default/ScriptSettings.html">ScriptSettings</a><br />
-	    		<a href="../default/Server.html">Server</a><br />
-	    		<a href="../default/ServerCommands.html">ServerCommands</a><br />
-	    		<a href="../default/ServerSettings.html">ServerSettings</a><br />
-	    		<a href="../default/SettingManager.html">SettingManager</a><br />
-	    		<a href="../default/SimpleScript.html">SimpleScript</a><br />
-	    		<a href="../default/StatisticCollector.html">StatisticCollector</a><br />
-	    		<a href="../default/StatisticManager.html">StatisticManager</a><br />
-	    		<a href="../default/StyleManager.html">StyleManager</a><br />
-	    		<a href="../default/UpdateManager.html">UpdateManager</a><br />
-	    		<a href="../default/Video.html">Video</a><br />
-	    		<a href="../default/WidgetPlugin.html">WidgetPlugin</a><br />
-	  </div>
-                </td>
-    <td>
-      <table cellpadding="10" cellspacing="0" width="100%" border="0"><tr><td valign="top">
-
-<h1>Class: CallbackManager</h1>
-Source Location: /core/Callbacks/CallbackManager.php<br /><br />
-
-
-<table width="100%" border="0">
-<tr><td valign="top">
-
-<h3><a href="#class_details">Class Overview</a></h3>
-<pre></pre><br />
-<div class="description">Class for managing Server and ManiaControl Callbacks</div><br /><br />
-<h4>Author(s):</h4>
-<ul>
-          <li>steeffeen &amp; kremsy</li>
-      </ul>
-
-
-
-
-    
-
-        
-</td>
-
-
-<td valign="top">
-<h3><a href="#class_consts">Constants</a></h3>
-<ul>
-    <li><a href="../default/CallbackManager.html#constCB_MC_1_MINUTE">CB_MC_1_MINUTE</a></li>
-    <li><a href="../default/CallbackManager.html#constCB_MC_1_SECOND">CB_MC_1_SECOND</a></li>
-    <li><a href="../default/CallbackManager.html#constCB_MC_5_SECOND">CB_MC_5_SECOND</a></li>
-    <li><a href="../default/CallbackManager.html#constCB_MC_BEGINMAP">CB_MC_BEGINMAP</a></li>
-    <li><a href="../default/CallbackManager.html#constCB_MC_CLIENTUPDATED">CB_MC_CLIENTUPDATED</a></li>
-    <li><a href="../default/CallbackManager.html#constCB_MC_ENDMAP">CB_MC_ENDMAP</a></li>
-    <li><a href="../default/CallbackManager.html#constCB_MC_ONINIT">CB_MC_ONINIT</a></li>
-    <li><a href="../default/CallbackManager.html#constCB_MC_ONSHUTDOWN">CB_MC_ONSHUTDOWN</a></li>
-    <li><a href="../default/CallbackManager.html#constCB_MP_BEGINMATCH">CB_MP_BEGINMATCH</a></li>
-    <li><a href="../default/CallbackManager.html#constCB_MP_BILLUPDATED">CB_MP_BILLUPDATED</a></li>
-    <li><a href="../default/CallbackManager.html#constCB_MP_ECHO">CB_MP_ECHO</a></li>
-    <li><a href="../default/CallbackManager.html#constCB_MP_ENDMATCH">CB_MP_ENDMATCH</a></li>
-    <li><a href="../default/CallbackManager.html#constCB_MP_MAPLISTMODIFIED">CB_MP_MAPLISTMODIFIED</a></li>
-    <li><a href="../default/CallbackManager.html#constCB_MP_MODESCRIPTCALLBACK">CB_MP_MODESCRIPTCALLBACK</a></li>
-    <li><a href="../default/CallbackManager.html#constCB_MP_MODESCRIPTCALLBACKARRAY">CB_MP_MODESCRIPTCALLBACKARRAY</a></li>
-    <li><a href="../default/CallbackManager.html#constCB_MP_PLAYERALLIESCHANGED">CB_MP_PLAYERALLIESCHANGED</a></li>
-    <li><a href="../default/CallbackManager.html#constCB_MP_PLAYERCHAT">CB_MP_PLAYERCHAT</a></li>
-    <li><a href="../default/CallbackManager.html#constCB_MP_PLAYERCONNECT">CB_MP_PLAYERCONNECT</a></li>
-    <li><a href="../default/CallbackManager.html#constCB_MP_PLAYERDISCONNECT">CB_MP_PLAYERDISCONNECT</a></li>
-    <li><a href="../default/CallbackManager.html#constCB_MP_PLAYERINFOCHANGED">CB_MP_PLAYERINFOCHANGED</a></li>
-    <li><a href="../default/CallbackManager.html#constCB_MP_PLAYERMANIALINKPAGEANSWER">CB_MP_PLAYERMANIALINKPAGEANSWER</a></li>
-    <li><a href="../default/CallbackManager.html#constCB_MP_SERVERSTART">CB_MP_SERVERSTART</a></li>
-    <li><a href="../default/CallbackManager.html#constCB_MP_SERVERSTOP">CB_MP_SERVERSTOP</a></li>
-    <li><a href="../default/CallbackManager.html#constCB_MP_STATUSCHANGED">CB_MP_STATUSCHANGED</a></li>
-    <li><a href="../default/CallbackManager.html#constCB_MP_TUNNELDATARECEIVED">CB_MP_TUNNELDATARECEIVED</a></li>
-    <li><a href="../default/CallbackManager.html#constCB_MP_VOTEUPDATED">CB_MP_VOTEUPDATED</a></li>
-    <li><a href="../default/CallbackManager.html#constCB_TM_PLAYERCHECKPOINT">CB_TM_PLAYERCHECKPOINT</a></li>
-    <li><a href="../default/CallbackManager.html#constCB_TM_PLAYERFINISH">CB_TM_PLAYERFINISH</a></li>
-    <li><a href="../default/CallbackManager.html#constCB_TM_PLAYERINCOHERENCE">CB_TM_PLAYERINCOHERENCE</a></li>
-  </ul>
-</td>
-
-<td valign="top">
-<h3><a href="#class_methods">Methods</a></h3>
-<ul>
-    <li><a href="../default/CallbackManager.html#method__construct">__construct</a></li>
-    <li><a href="../default/CallbackManager.html#methodmanageCallbacks">manageCallbacks</a></li>
-    <li><a href="../default/CallbackManager.html#methodregisterCallbackListener">registerCallbackListener</a></li>
-    <li><a href="../default/CallbackManager.html#methodregisterScriptCallbackListener">registerScriptCallbackListener</a></li>
-    <li><a href="../default/CallbackManager.html#methodtriggerCallback">triggerCallback</a></li>
-    <li><a href="../default/CallbackManager.html#methodtriggerScriptCallback">triggerScriptCallback</a></li>
-    <li><a href="../default/CallbackManager.html#methodunregisterCallbackListener">unregisterCallbackListener</a></li>
-    <li><a href="../default/CallbackManager.html#methodunregisterScriptCallbackListener">unregisterScriptCallbackListener</a></li>
-  </ul>
-</td>
-
-</tr></table>
-<hr />
-
-<table width="100%" border="0"><tr>
-
-
-
-
-
-
-</tr></table>
-<hr />
-
-<a name="class_details"></a>
-<h3>Class Details</h3>
-<div class="tags">
-[line 12]<br />
-Class for managing Server and ManiaControl Callbacks<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>author:</b>&nbsp;&nbsp;</td><td>steeffeen &amp; kremsy</td>
-  </tr>
-</table>
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+															<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+											<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+						
+			</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Class for managing Server and ManiaControl Callbacks</p>
+	<ul class="tags">
+				<li><span class="field">author:</span> steeffeen &amp; kremsy</li>
+			</ul>
+		<p class="notes">
+			Located in <a class="field" href="_core---Callbacks---CallbackManager.php.html">/core/Callbacks/CallbackManager.php</a> (line <span class="field">12</span>)
+		</p>
+		
+				
+		<pre></pre>
+	
+			</div>
 </div>
-</div><br /><br />
-<div class="top">[ <a href="#top">Top</a> ]</div><br />
 
 
-<hr />
-<a name="class_methods"></a>
-<h3>Class Methods</h3>
-<div class="tags">
+	<a name="sec-const-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Class Constant Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+						<span class="disabled">Constants</span> (<a href="#sec-consts">details</a>)
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<div class="const-summary">
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#CB_MC_1_MINUTE" title="details" class="const-name">CB_MC_1_MINUTE</a> = 					<span class="var-type"> 'ManiaControl.1Minute'</span>
 
-  <hr />
-	<a name="method__construct"></a>
-	<h3>constructor __construct <span class="smalllinenumber">[line 65]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>CallbackManager __construct(
-<a href="../default/ManiaControl.html">ManiaControl</a>
-$maniaControl)</code>
-    </td></tr></table>
-    </td></tr></table><br />
+				</div>
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#CB_MC_1_SECOND" title="details" class="const-name">CB_MC_1_SECOND</a> = 					<span class="var-type"> 'ManiaControl.1Second'</span>
+
+				</div>
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#CB_MC_5_SECOND" title="details" class="const-name">CB_MC_5_SECOND</a> = 					<span class="var-type"> 'ManiaControl.5Second'</span>
+
+				</div>
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#CB_MC_BEGINMAP" title="details" class="const-name">CB_MC_BEGINMAP</a> = 					<span class="var-type"> 'ManiaControl.BeginMap'</span>
+
+				</div>
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#CB_MC_CLIENTUPDATED" title="details" class="const-name">CB_MC_CLIENTUPDATED</a> = 					<span class="var-type"> 'ManiaControl.ClientUpdated'</span>
+
+				</div>
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#CB_MC_ENDMAP" title="details" class="const-name">CB_MC_ENDMAP</a> = 					<span class="var-type"> 'ManiaControl.EndMap'</span>
+
+				</div>
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#CB_MC_ONINIT" title="details" class="const-name">CB_MC_ONINIT</a> = 					<span class="var-type"> 'ManiaControl.OnInit'</span>
+
+				</div>
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#CB_MC_ONSHUTDOWN" title="details" class="const-name">CB_MC_ONSHUTDOWN</a> = 					<span class="var-type"> 'ManiaControl.OnShutdown'</span>
+
+				</div>
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#CB_MP_BEGINMATCH" title="details" class="const-name">CB_MP_BEGINMATCH</a> = 					<span class="var-type"> 'ManiaPlanet.BeginMatch'</span>
+
+				</div>
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#CB_MP_BILLUPDATED" title="details" class="const-name">CB_MP_BILLUPDATED</a> = 					<span class="var-type"> 'ManiaPlanet.BillUpdated'</span>
+
+				</div>
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#CB_MP_ECHO" title="details" class="const-name">CB_MP_ECHO</a> = 					<span class="var-type"> 'ManiaPlanet.Echo'</span>
+
+				</div>
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#CB_MP_ENDMATCH" title="details" class="const-name">CB_MP_ENDMATCH</a> = 					<span class="var-type"> 'ManiaPlanet.EndMatch'</span>
+
+				</div>
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#CB_MP_MAPLISTMODIFIED" title="details" class="const-name">CB_MP_MAPLISTMODIFIED</a> = 					<span class="var-type"> 'ManiaPlanet.MapListModified'</span>
+
+				</div>
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#CB_MP_MODESCRIPTCALLBACK" title="details" class="const-name">CB_MP_MODESCRIPTCALLBACK</a> = 					<span class="var-type"> 'ManiaPlanet.ModeScriptCallback'</span>
+
+				</div>
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#CB_MP_MODESCRIPTCALLBACKARRAY" title="details" class="const-name">CB_MP_MODESCRIPTCALLBACKARRAY</a> = 					<span class="var-type"> 'ManiaPlanet.ModeScriptCallbackArray'</span>
+
+				</div>
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#CB_MP_PLAYERALLIESCHANGED" title="details" class="const-name">CB_MP_PLAYERALLIESCHANGED</a> = 					<span class="var-type"> 'ManiaPlanet.PlayerAlliesChanged'</span>
+
+				</div>
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#CB_MP_PLAYERCHAT" title="details" class="const-name">CB_MP_PLAYERCHAT</a> = 					<span class="var-type"> 'ManiaPlanet.PlayerChat'</span>
+
+				</div>
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#CB_MP_PLAYERCONNECT" title="details" class="const-name">CB_MP_PLAYERCONNECT</a> = 					<span class="var-type"> 'ManiaPlanet.PlayerConnect'</span>
+
+				</div>
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#CB_MP_PLAYERDISCONNECT" title="details" class="const-name">CB_MP_PLAYERDISCONNECT</a> = 					<span class="var-type"> 'ManiaPlanet.PlayerDisconnect'</span>
+
+				</div>
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#CB_MP_PLAYERINFOCHANGED" title="details" class="const-name">CB_MP_PLAYERINFOCHANGED</a> = 					<span class="var-type"> 'ManiaPlanet.PlayerInfoChanged'</span>
+
+				</div>
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#CB_MP_PLAYERMANIALINKPAGEANSWER" title="details" class="const-name">CB_MP_PLAYERMANIALINKPAGEANSWER</a> = 					<span class="var-type"> 'ManiaPlanet.PlayerManialinkPageAnswer'</span>
+
+				</div>
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#CB_MP_SERVERSTART" title="details" class="const-name">CB_MP_SERVERSTART</a> = 					<span class="var-type"> 'ManiaPlanet.ServerStart'</span>
+
+				</div>
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#CB_MP_SERVERSTOP" title="details" class="const-name">CB_MP_SERVERSTOP</a> = 					<span class="var-type"> 'ManiaPlanet.ServerStop'</span>
+
+				</div>
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#CB_MP_STATUSCHANGED" title="details" class="const-name">CB_MP_STATUSCHANGED</a> = 					<span class="var-type"> 'ManiaPlanet.StatusChanged'</span>
+
+				</div>
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#CB_MP_TUNNELDATARECEIVED" title="details" class="const-name">CB_MP_TUNNELDATARECEIVED</a> = 					<span class="var-type"> 'ManiaPlanet.TunnelDataReceived'</span>
+
+				</div>
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#CB_MP_VOTEUPDATED" title="details" class="const-name">CB_MP_VOTEUPDATED</a> = 					<span class="var-type"> 'ManiaPlanet.VoteUpdated'</span>
+
+				</div>
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#CB_TM_PLAYERCHECKPOINT" title="details" class="const-name">CB_TM_PLAYERCHECKPOINT</a> = 					<span class="var-type"> 'TrackMania.PlayerCheckpoint'</span>
+
+				</div>
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#CB_TM_PLAYERFINISH" title="details" class="const-name">CB_TM_PLAYERFINISH</a> = 					<span class="var-type"> 'TrackMania.PlayerFinish'</span>
+
+				</div>
+								<div class="const-title">
+					<img src="../media/images/Constant.png" alt=" " />
+					<a href="#CB_TM_PLAYERINCOHERENCE" title="details" class="const-name">CB_TM_PLAYERINCOHERENCE</a> = 					<span class="var-type"> 'TrackMania.PlayerIncoherence'</span>
+
+				</div>
+							</div>
+		</div>
+	</div>
+
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+															<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+							
+									<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																																																																																<div class="method-definition">
+					<img src="../media/images/Constructor.png" alt=" "/>
+											<span class="method-result">CallbackManager</span>
+										<a href="#__construct" title="details" class="method-name">__construct</a>
+											(<span class="var-type"><a href="../default/ManiaControl.html">ManiaControl</a></span>&nbsp;<span class="var-name">$maniaControl</span>)
+									</div>
+																<div class="method-definition">
+					<img src="../media/images/Method.png" alt=" "/>
+											<span class="method-result">void</span>
+										<a href="#manageCallbacks" title="details" class="method-name">manageCallbacks</a>
+										()
+									</div>
+																<div class="method-definition">
+					<img src="../media/images/Method.png" alt=" "/>
+											<span class="method-result">bool</span>
+										<a href="#registerCallbackListener" title="details" class="method-name">registerCallbackListener</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$callbackName</span>, <span class="var-type"><a href="../default/CallbackListener.html">CallbackListener</a></span>&nbsp;<span class="var-name">$listener</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$method</span>)
+									</div>
+																<div class="method-definition">
+					<img src="../media/images/Method.png" alt=" "/>
+											<span class="method-result">bool</span>
+										<a href="#registerScriptCallbackListener" title="details" class="method-name">registerScriptCallbackListener</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$callbackName</span>, <span class="var-type"><a href="../default/CallbackListener.html">CallbackListener</a></span>&nbsp;<span class="var-name">$listener</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$method</span>)
+									</div>
+																<div class="method-definition">
+					<img src="../media/images/Method.png" alt=" "/>
+											<span class="method-result">void</span>
+										<a href="#triggerCallback" title="details" class="method-name">triggerCallback</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$callbackName</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$callback</span>)
+									</div>
+																<div class="method-definition">
+					<img src="../media/images/Method.png" alt=" "/>
+											<span class="method-result">void</span>
+										<a href="#triggerScriptCallback" title="details" class="method-name">triggerScriptCallback</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$callbackName</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$callback</span>)
+									</div>
+																<div class="method-definition">
+					<img src="../media/images/Method.png" alt=" "/>
+											<span class="method-result">bool</span>
+										<a href="#unregisterCallbackListener" title="details" class="method-name">unregisterCallbackListener</a>
+											(<span class="var-type"><a href="../default/CallbackListener.html">CallbackListener</a></span>&nbsp;<span class="var-name">$listener</span>)
+									</div>
+																<div class="method-definition">
+					<img src="../media/images/Method.png" alt=" "/>
+											<span class="method-result">bool</span>
+										<a href="#unregisterScriptCallbackListener" title="details" class="method-name">unregisterScriptCallbackListener</a>
+											(<span class="var-type"><a href="../default/CallbackListener.html">CallbackListener</a></span>&nbsp;<span class="var-name">$listener</span>)
+									</div>
+											</div>
+		</div>
+	</div>		
+
 	
-		Construct a new Callbacks Manager<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+													<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+<a name="method__construct" id="__construct"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<img src="../media/images/Constructor.png" />
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number">65</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Construct a new Callbacks Manager</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">CallbackManager</span>
+		<span class="method-name">
+			__construct
+		</span>
+					(<span class="var-type"><a href="../default/ManiaControl.html">ManiaControl</a></span>&nbsp;<span class="var-name">$maniaControl</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">\ManiaControl\ManiaControl</span>
+				<span class="var-name">$maniaControl</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodmanageCallbacks" id="manageCallbacks"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<img src="../media/images/Method.png" />
+		<span class="method-title">manageCallbacks</span> (line <span class="line-number">177</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Trigger internal Callbacks and manage Server Callbacks</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			manageCallbacks
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodregisterCallbackListener" id="registerCallbackListener"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<img src="../media/images/Method.png" />
+		<span class="method-title">registerCallbackListener</span> (line <span class="line-number">80</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Register a new Callback Listener</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">bool</span>
+		<span class="method-name">
+			registerCallbackListener
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$callbackName</span>, <span class="var-type"><a href="../default/CallbackListener.html">CallbackListener</a></span>&nbsp;<span class="var-name">$listener</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$method</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$callbackName</span>			</li>
+					<li>
+				<span class="var-type">\ManiaControl\Callbacks\CallbackListener</span>
+				<span class="var-name">$listener</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$method</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodregisterScriptCallbackListener" id="registerScriptCallbackListener"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<img src="../media/images/Method.png" />
+		<span class="method-title">registerScriptCallbackListener</span> (line <span class="line-number">100</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Register a new Script Callback Listener</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">bool</span>
+		<span class="method-name">
+			registerScriptCallbackListener
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$callbackName</span>, <span class="var-type"><a href="../default/CallbackListener.html">CallbackListener</a></span>&nbsp;<span class="var-name">$listener</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$method</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$callbackName</span>			</li>
+					<li>
+				<span class="var-type"><a href="../default/CallbackListener.html">CallbackListener</a></span>
+				<span class="var-name">$listener</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$method</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodtriggerCallback" id="triggerCallback"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<img src="../media/images/Method.png" />
+		<span class="method-title">triggerCallback</span> (line <span class="line-number">154</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Trigger a specific Callback</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			triggerCallback
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$callbackName</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$callback</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$callbackName</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$callback</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodtriggerScriptCallback" id="triggerScriptCallback"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<img src="../media/images/Method.png" />
+		<span class="method-title">triggerScriptCallback</span> (line <span class="line-number">167</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Trigger a specific Script Callback</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			triggerScriptCallback
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$callbackName</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$callback</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$callbackName</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$callback</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodunregisterCallbackListener" id="unregisterCallbackListener"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<img src="../media/images/Method.png" />
+		<span class="method-title">unregisterCallbackListener</span> (line <span class="line-number">118</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Remove a Callback Listener</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">bool</span>
+		<span class="method-name">
+			unregisterCallbackListener
+		</span>
+					(<span class="var-type"><a href="../default/CallbackListener.html">CallbackListener</a></span>&nbsp;<span class="var-name">$listener</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../default/CallbackListener.html">CallbackListener</a></span>
+				<span class="var-name">$listener</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodunregisterScriptCallbackListener" id="unregisterScriptCallbackListener"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<img src="../media/images/Method.png" />
+		<span class="method-title">unregisterScriptCallbackListener</span> (line <span class="line-number">136</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Remove a Script Callback Listener</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">bool</span>
+		<span class="method-name">
+			unregisterScriptCallbackListener
+		</span>
+					(<span class="var-type"><a href="../default/CallbackListener.html">CallbackListener</a></span>&nbsp;<span class="var-name">$listener</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../default/CallbackListener.html">CallbackListener</a></span>
+				<span class="var-name">$listener</span>			</li>
+				</ul>
+		
+			
+	</div>
+						
+		</div>
+	</div>
+
+	<a name="sec-consts"></a>
+	<div class="info-box">
+		<div class="info-box-title">Class Constants</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+										<a href="#sec-var-summary">Constants</a> (<span class="disabled">details</span>)
+						
+			
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<a name="constCB_MC_1_MINUTE" id="CB_MC_1_MINUTE"><!-- --></A>
+<div class="evenrow">
+
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">CB_MC_1_MINUTE</span>
+			 = <span class="const-default"> 'ManiaControl.1Minute'</span>
+			(line <span class="line-number">19</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
 </div>
-<br /><br />
+<a name="constCB_MC_1_SECOND" id="CB_MC_1_SECOND"><!-- --></A>
+<div class="oddrow">
 
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">CB_MC_1_SECOND</span>
+			 = <span class="const-default"> 'ManiaControl.1Second'</span>
+			(line <span class="line-number">17</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Constants</p>
 	
-        <h4>Parameters:</h4>
-    <div class="tags">
-    <table border="0" cellspacing="0" cellpadding="0">
-          <tr>
-        <td class="type">\ManiaControl\ManiaControl&nbsp;&nbsp;</td>
-        <td><b>$maniaControl</b>&nbsp;&nbsp;</td>
-        <td></td>
-      </tr>
-        </table>
-    </div><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodmanageCallbacks"></a>
-	<h3>method manageCallbacks <span class="smalllinenumber">[line 177]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void manageCallbacks(
-)</code>
-    </td></tr></table>
-    </td></tr></table><br />
 	
-		Trigger internal Callbacks and manage Server Callbacks<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
 </div>
-<br /><br />
+<a name="constCB_MC_5_SECOND" id="CB_MC_5_SECOND"><!-- --></A>
+<div class="evenrow">
 
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">CB_MC_5_SECOND</span>
+			 = <span class="const-default"> 'ManiaControl.5Second'</span>
+			(line <span class="line-number">18</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
 	
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodregisterCallbackListener"></a>
-	<h3>method registerCallbackListener <span class="smalllinenumber">[line 80]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>bool registerCallbackListener(
-string
-$callbackName, <a href="../default/CallbackListener.html">CallbackListener</a>
-$listener, string
-$method)</code>
-    </td></tr></table>
-    </td></tr></table><br />
 	
-		Register a new Callback Listener<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
 </div>
-<br /><br />
+<a name="constCB_MC_BEGINMAP" id="CB_MC_BEGINMAP"><!-- --></A>
+<div class="oddrow">
 
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">CB_MC_BEGINMAP</span>
+			 = <span class="const-default"> 'ManiaControl.BeginMap'</span>
+			(line <span class="line-number">23</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
 	
-        <h4>Parameters:</h4>
-    <div class="tags">
-    <table border="0" cellspacing="0" cellpadding="0">
-          <tr>
-        <td class="type">string&nbsp;&nbsp;</td>
-        <td><b>$callbackName</b>&nbsp;&nbsp;</td>
-        <td></td>
-      </tr>
-          <tr>
-        <td class="type">\ManiaControl\Callbacks\CallbackListener&nbsp;&nbsp;</td>
-        <td><b>$listener</b>&nbsp;&nbsp;</td>
-        <td></td>
-      </tr>
-          <tr>
-        <td class="type">string&nbsp;&nbsp;</td>
-        <td><b>$method</b>&nbsp;&nbsp;</td>
-        <td></td>
-      </tr>
-        </table>
-    </div><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodregisterScriptCallbackListener"></a>
-	<h3>method registerScriptCallbackListener <span class="smalllinenumber">[line 100]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>bool registerScriptCallbackListener(
-string
-$callbackName, <a href="../default/CallbackListener.html">CallbackListener</a>
-$listener, string
-$method)</code>
-    </td></tr></table>
-    </td></tr></table><br />
 	
-		Register a new Script Callback Listener<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
 </div>
-<br /><br />
+<a name="constCB_MC_CLIENTUPDATED" id="CB_MC_CLIENTUPDATED"><!-- --></A>
+<div class="evenrow">
 
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">CB_MC_CLIENTUPDATED</span>
+			 = <span class="const-default"> 'ManiaControl.ClientUpdated'</span>
+			(line <span class="line-number">22</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
 	
-        <h4>Parameters:</h4>
-    <div class="tags">
-    <table border="0" cellspacing="0" cellpadding="0">
-          <tr>
-        <td class="type">string&nbsp;&nbsp;</td>
-        <td><b>$callbackName</b>&nbsp;&nbsp;</td>
-        <td></td>
-      </tr>
-          <tr>
-        <td class="type"><a href="../default/CallbackListener.html">CallbackListener</a>&nbsp;&nbsp;</td>
-        <td><b>$listener</b>&nbsp;&nbsp;</td>
-        <td></td>
-      </tr>
-          <tr>
-        <td class="type">string&nbsp;&nbsp;</td>
-        <td><b>$method</b>&nbsp;&nbsp;</td>
-        <td></td>
-      </tr>
-        </table>
-    </div><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodtriggerCallback"></a>
-	<h3>method triggerCallback <span class="smalllinenumber">[line 154]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void triggerCallback(
-string
-$callbackName, array
-$callback)</code>
-    </td></tr></table>
-    </td></tr></table><br />
 	
-		Trigger a specific Callback<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
 </div>
-<br /><br />
+<a name="constCB_MC_ENDMAP" id="CB_MC_ENDMAP"><!-- --></A>
+<div class="oddrow">
 
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">CB_MC_ENDMAP</span>
+			 = <span class="const-default"> 'ManiaControl.EndMap'</span>
+			(line <span class="line-number">24</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
 	
-        <h4>Parameters:</h4>
-    <div class="tags">
-    <table border="0" cellspacing="0" cellpadding="0">
-          <tr>
-        <td class="type">string&nbsp;&nbsp;</td>
-        <td><b>$callbackName</b>&nbsp;&nbsp;</td>
-        <td></td>
-      </tr>
-          <tr>
-        <td class="type">array&nbsp;&nbsp;</td>
-        <td><b>$callback</b>&nbsp;&nbsp;</td>
-        <td></td>
-      </tr>
-        </table>
-    </div><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodtriggerScriptCallback"></a>
-	<h3>method triggerScriptCallback <span class="smalllinenumber">[line 167]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void triggerScriptCallback(
-string
-$callbackName, array
-$callback)</code>
-    </td></tr></table>
-    </td></tr></table><br />
 	
-		Trigger a specific Script Callback<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
 </div>
-<br /><br />
+<a name="constCB_MC_ONINIT" id="CB_MC_ONINIT"><!-- --></A>
+<div class="evenrow">
 
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">CB_MC_ONINIT</span>
+			 = <span class="const-default"> 'ManiaControl.OnInit'</span>
+			(line <span class="line-number">20</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
 	
-        <h4>Parameters:</h4>
-    <div class="tags">
-    <table border="0" cellspacing="0" cellpadding="0">
-          <tr>
-        <td class="type">string&nbsp;&nbsp;</td>
-        <td><b>$callbackName</b>&nbsp;&nbsp;</td>
-        <td></td>
-      </tr>
-          <tr>
-        <td class="type">array&nbsp;&nbsp;</td>
-        <td><b>$callback</b>&nbsp;&nbsp;</td>
-        <td></td>
-      </tr>
-        </table>
-    </div><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodunregisterCallbackListener"></a>
-	<h3>method unregisterCallbackListener <span class="smalllinenumber">[line 118]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>bool unregisterCallbackListener(
-<a href="../default/CallbackListener.html">CallbackListener</a>
-$listener)</code>
-    </td></tr></table>
-    </td></tr></table><br />
 	
-		Remove a Callback Listener<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
 </div>
-<br /><br />
+<a name="constCB_MC_ONSHUTDOWN" id="CB_MC_ONSHUTDOWN"><!-- --></A>
+<div class="oddrow">
 
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">CB_MC_ONSHUTDOWN</span>
+			 = <span class="const-default"> 'ManiaControl.OnShutdown'</span>
+			(line <span class="line-number">21</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
 	
-        <h4>Parameters:</h4>
-    <div class="tags">
-    <table border="0" cellspacing="0" cellpadding="0">
-          <tr>
-        <td class="type"><a href="../default/CallbackListener.html">CallbackListener</a>&nbsp;&nbsp;</td>
-        <td><b>$listener</b>&nbsp;&nbsp;</td>
-        <td></td>
-      </tr>
-        </table>
-    </div><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodunregisterScriptCallbackListener"></a>
-	<h3>method unregisterScriptCallbackListener <span class="smalllinenumber">[line 136]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>bool unregisterScriptCallbackListener(
-<a href="../default/CallbackListener.html">CallbackListener</a>
-$listener)</code>
-    </td></tr></table>
-    </td></tr></table><br />
 	
-		Remove a Script Callback Listener<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
 </div>
-<br /><br />
+<a name="constCB_MP_BEGINMATCH" id="CB_MP_BEGINMATCH"><!-- --></A>
+<div class="evenrow">
 
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">CB_MP_BEGINMATCH</span>
+			 = <span class="const-default"> 'ManiaPlanet.BeginMatch'</span>
+			(line <span class="line-number">28</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
 	
-        <h4>Parameters:</h4>
-    <div class="tags">
-    <table border="0" cellspacing="0" cellpadding="0">
-          <tr>
-        <td class="type"><a href="../default/CallbackListener.html">CallbackListener</a>&nbsp;&nbsp;</td>
-        <td><b>$listener</b>&nbsp;&nbsp;</td>
-        <td></td>
-      </tr>
-        </table>
-    </div><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-</div><br />
+	
+</div>
+<a name="constCB_MP_BILLUPDATED" id="CB_MP_BILLUPDATED"><!-- --></A>
+<div class="oddrow">
 
-<hr />
-<a name="class_consts"></a>
-<h3>Class Constants</h3>
-<div class="tags">
-	<a name="constCB_MC_1_MINUTE"></a>
-	<p></p>
-	<h4>CB_MC_1_MINUTE = <span class="value">&nbsp;'ManiaControl.1Minute'</span></h4>
-	<p>[line 19]</p>
-  
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="constCB_MC_1_SECOND"></a>
-	<p></p>
-	<h4>CB_MC_1_SECOND = <span class="value">&nbsp;'ManiaControl.1Second'</span></h4>
-	<p>[line 17]</p>
-  Constants<br /><br />
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="constCB_MC_5_SECOND"></a>
-	<p></p>
-	<h4>CB_MC_5_SECOND = <span class="value">&nbsp;'ManiaControl.5Second'</span></h4>
-	<p>[line 18]</p>
-  
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="constCB_MC_BEGINMAP"></a>
-	<p></p>
-	<h4>CB_MC_BEGINMAP = <span class="value">&nbsp;'ManiaControl.BeginMap'</span></h4>
-	<p>[line 23]</p>
-  
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="constCB_MC_CLIENTUPDATED"></a>
-	<p></p>
-	<h4>CB_MC_CLIENTUPDATED = <span class="value">&nbsp;'ManiaControl.ClientUpdated'</span></h4>
-	<p>[line 22]</p>
-  
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="constCB_MC_ENDMAP"></a>
-	<p></p>
-	<h4>CB_MC_ENDMAP = <span class="value">&nbsp;'ManiaControl.EndMap'</span></h4>
-	<p>[line 24]</p>
-  
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="constCB_MC_ONINIT"></a>
-	<p></p>
-	<h4>CB_MC_ONINIT = <span class="value">&nbsp;'ManiaControl.OnInit'</span></h4>
-	<p>[line 20]</p>
-  
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="constCB_MC_ONSHUTDOWN"></a>
-	<p></p>
-	<h4>CB_MC_ONSHUTDOWN = <span class="value">&nbsp;'ManiaControl.OnShutdown'</span></h4>
-	<p>[line 21]</p>
-  
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="constCB_MP_BEGINMATCH"></a>
-	<p></p>
-	<h4>CB_MP_BEGINMATCH = <span class="value">&nbsp;'ManiaPlanet.BeginMatch'</span></h4>
-	<p>[line 28]</p>
-  
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="constCB_MP_BILLUPDATED"></a>
-	<p></p>
-	<h4>CB_MP_BILLUPDATED = <span class="value">&nbsp;'ManiaPlanet.BillUpdated'</span></h4>
-	<p>[line 32]</p>
-  
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="constCB_MP_ECHO"></a>
-	<p></p>
-	<h4>CB_MP_ECHO = <span class="value">&nbsp;'ManiaPlanet.Echo'</span></h4>
-	<p>[line 31]</p>
-  
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="constCB_MP_ENDMATCH"></a>
-	<p></p>
-	<h4>CB_MP_ENDMATCH = <span class="value">&nbsp;'ManiaPlanet.EndMatch'</span></h4>
-	<p>[line 29]</p>
-  
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="constCB_MP_MAPLISTMODIFIED"></a>
-	<p></p>
-	<h4>CB_MP_MAPLISTMODIFIED = <span class="value">&nbsp;'ManiaPlanet.MapListModified'</span></h4>
-	<p>[line 30]</p>
-  
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="constCB_MP_MODESCRIPTCALLBACK"></a>
-	<p></p>
-	<h4>CB_MP_MODESCRIPTCALLBACK = <span class="value">&nbsp;'ManiaPlanet.ModeScriptCallback'</span></h4>
-	<p>[line 41]</p>
-  
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="constCB_MP_MODESCRIPTCALLBACKARRAY"></a>
-	<p></p>
-	<h4>CB_MP_MODESCRIPTCALLBACKARRAY = <span class="value">&nbsp;'ManiaPlanet.ModeScriptCallbackArray'</span></h4>
-	<p>[line 42]</p>
-  
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="constCB_MP_PLAYERALLIESCHANGED"></a>
-	<p></p>
-	<h4>CB_MP_PLAYERALLIESCHANGED = <span class="value">&nbsp;'ManiaPlanet.PlayerAlliesChanged'</span></h4>
-	<p>[line 38]</p>
-  
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="constCB_MP_PLAYERCHAT"></a>
-	<p></p>
-	<h4>CB_MP_PLAYERCHAT = <span class="value">&nbsp;'ManiaPlanet.PlayerChat'</span></h4>
-	<p>[line 33]</p>
-  
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="constCB_MP_PLAYERCONNECT"></a>
-	<p></p>
-	<h4>CB_MP_PLAYERCONNECT = <span class="value">&nbsp;'ManiaPlanet.PlayerConnect'</span></h4>
-	<p>[line 34]</p>
-  
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="constCB_MP_PLAYERDISCONNECT"></a>
-	<p></p>
-	<h4>CB_MP_PLAYERDISCONNECT = <span class="value">&nbsp;'ManiaPlanet.PlayerDisconnect'</span></h4>
-	<p>[line 35]</p>
-  
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="constCB_MP_PLAYERINFOCHANGED"></a>
-	<p></p>
-	<h4>CB_MP_PLAYERINFOCHANGED = <span class="value">&nbsp;'ManiaPlanet.PlayerInfoChanged'</span></h4>
-	<p>[line 37]</p>
-  
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="constCB_MP_PLAYERMANIALINKPAGEANSWER"></a>
-	<p></p>
-	<h4>CB_MP_PLAYERMANIALINKPAGEANSWER = <span class="value">&nbsp;'ManiaPlanet.PlayerManialinkPageAnswer'</span></h4>
-	<p>[line 36]</p>
-  
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="constCB_MP_SERVERSTART"></a>
-	<p></p>
-	<h4>CB_MP_SERVERSTART = <span class="value">&nbsp;'ManiaPlanet.ServerStart'</span></h4>
-	<p>[line 26]</p>
-  
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="constCB_MP_SERVERSTOP"></a>
-	<p></p>
-	<h4>CB_MP_SERVERSTOP = <span class="value">&nbsp;'ManiaPlanet.ServerStop'</span></h4>
-	<p>[line 27]</p>
-  
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="constCB_MP_STATUSCHANGED"></a>
-	<p></p>
-	<h4>CB_MP_STATUSCHANGED = <span class="value">&nbsp;'ManiaPlanet.StatusChanged'</span></h4>
-	<p>[line 40]</p>
-  
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="constCB_MP_TUNNELDATARECEIVED"></a>
-	<p></p>
-	<h4>CB_MP_TUNNELDATARECEIVED = <span class="value">&nbsp;'ManiaPlanet.TunnelDataReceived'</span></h4>
-	<p>[line 43]</p>
-  
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="constCB_MP_VOTEUPDATED"></a>
-	<p></p>
-	<h4>CB_MP_VOTEUPDATED = <span class="value">&nbsp;'ManiaPlanet.VoteUpdated'</span></h4>
-	<p>[line 39]</p>
-  
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="constCB_TM_PLAYERCHECKPOINT"></a>
-	<p></p>
-	<h4>CB_TM_PLAYERCHECKPOINT = <span class="value">&nbsp;'TrackMania.PlayerCheckpoint'</span></h4>
-	<p>[line 45]</p>
-  
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="constCB_TM_PLAYERFINISH"></a>
-	<p></p>
-	<h4>CB_TM_PLAYERFINISH = <span class="value">&nbsp;'TrackMania.PlayerFinish'</span></h4>
-	<p>[line 46]</p>
-  
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="constCB_TM_PLAYERINCOHERENCE"></a>
-	<p></p>
-	<h4>CB_TM_PLAYERINCOHERENCE = <span class="value">&nbsp;'TrackMania.PlayerIncoherence'</span></h4>
-	<p>[line 47]</p>
-  
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-</div><br />
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">CB_MP_BILLUPDATED</span>
+			 = <span class="const-default"> 'ManiaPlanet.BillUpdated'</span>
+			(line <span class="line-number">32</span>)
+		</span>
+	</div>
 
-        <div class="credit">
-		    <hr />
-		    Documentation generated on Fri, 10 Jan 2014 21:55:41 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.4</a>
-	      </div>
-      </td></tr></table>
-    </td>
-  </tr>
-</table>
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constCB_MP_ECHO" id="CB_MP_ECHO"><!-- --></A>
+<div class="evenrow">
 
-</body>
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">CB_MP_ECHO</span>
+			 = <span class="const-default"> 'ManiaPlanet.Echo'</span>
+			(line <span class="line-number">31</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constCB_MP_ENDMATCH" id="CB_MP_ENDMATCH"><!-- --></A>
+<div class="oddrow">
+
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">CB_MP_ENDMATCH</span>
+			 = <span class="const-default"> 'ManiaPlanet.EndMatch'</span>
+			(line <span class="line-number">29</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constCB_MP_MAPLISTMODIFIED" id="CB_MP_MAPLISTMODIFIED"><!-- --></A>
+<div class="evenrow">
+
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">CB_MP_MAPLISTMODIFIED</span>
+			 = <span class="const-default"> 'ManiaPlanet.MapListModified'</span>
+			(line <span class="line-number">30</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constCB_MP_MODESCRIPTCALLBACK" id="CB_MP_MODESCRIPTCALLBACK"><!-- --></A>
+<div class="oddrow">
+
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">CB_MP_MODESCRIPTCALLBACK</span>
+			 = <span class="const-default"> 'ManiaPlanet.ModeScriptCallback'</span>
+			(line <span class="line-number">41</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constCB_MP_MODESCRIPTCALLBACKARRAY" id="CB_MP_MODESCRIPTCALLBACKARRAY"><!-- --></A>
+<div class="evenrow">
+
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">CB_MP_MODESCRIPTCALLBACKARRAY</span>
+			 = <span class="const-default"> 'ManiaPlanet.ModeScriptCallbackArray'</span>
+			(line <span class="line-number">42</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constCB_MP_PLAYERALLIESCHANGED" id="CB_MP_PLAYERALLIESCHANGED"><!-- --></A>
+<div class="oddrow">
+
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">CB_MP_PLAYERALLIESCHANGED</span>
+			 = <span class="const-default"> 'ManiaPlanet.PlayerAlliesChanged'</span>
+			(line <span class="line-number">38</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constCB_MP_PLAYERCHAT" id="CB_MP_PLAYERCHAT"><!-- --></A>
+<div class="evenrow">
+
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">CB_MP_PLAYERCHAT</span>
+			 = <span class="const-default"> 'ManiaPlanet.PlayerChat'</span>
+			(line <span class="line-number">33</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constCB_MP_PLAYERCONNECT" id="CB_MP_PLAYERCONNECT"><!-- --></A>
+<div class="oddrow">
+
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">CB_MP_PLAYERCONNECT</span>
+			 = <span class="const-default"> 'ManiaPlanet.PlayerConnect'</span>
+			(line <span class="line-number">34</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constCB_MP_PLAYERDISCONNECT" id="CB_MP_PLAYERDISCONNECT"><!-- --></A>
+<div class="evenrow">
+
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">CB_MP_PLAYERDISCONNECT</span>
+			 = <span class="const-default"> 'ManiaPlanet.PlayerDisconnect'</span>
+			(line <span class="line-number">35</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constCB_MP_PLAYERINFOCHANGED" id="CB_MP_PLAYERINFOCHANGED"><!-- --></A>
+<div class="oddrow">
+
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">CB_MP_PLAYERINFOCHANGED</span>
+			 = <span class="const-default"> 'ManiaPlanet.PlayerInfoChanged'</span>
+			(line <span class="line-number">37</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constCB_MP_PLAYERMANIALINKPAGEANSWER" id="CB_MP_PLAYERMANIALINKPAGEANSWER"><!-- --></A>
+<div class="evenrow">
+
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">CB_MP_PLAYERMANIALINKPAGEANSWER</span>
+			 = <span class="const-default"> 'ManiaPlanet.PlayerManialinkPageAnswer'</span>
+			(line <span class="line-number">36</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constCB_MP_SERVERSTART" id="CB_MP_SERVERSTART"><!-- --></A>
+<div class="oddrow">
+
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">CB_MP_SERVERSTART</span>
+			 = <span class="const-default"> 'ManiaPlanet.ServerStart'</span>
+			(line <span class="line-number">26</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constCB_MP_SERVERSTOP" id="CB_MP_SERVERSTOP"><!-- --></A>
+<div class="evenrow">
+
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">CB_MP_SERVERSTOP</span>
+			 = <span class="const-default"> 'ManiaPlanet.ServerStop'</span>
+			(line <span class="line-number">27</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constCB_MP_STATUSCHANGED" id="CB_MP_STATUSCHANGED"><!-- --></A>
+<div class="oddrow">
+
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">CB_MP_STATUSCHANGED</span>
+			 = <span class="const-default"> 'ManiaPlanet.StatusChanged'</span>
+			(line <span class="line-number">40</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constCB_MP_TUNNELDATARECEIVED" id="CB_MP_TUNNELDATARECEIVED"><!-- --></A>
+<div class="evenrow">
+
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">CB_MP_TUNNELDATARECEIVED</span>
+			 = <span class="const-default"> 'ManiaPlanet.TunnelDataReceived'</span>
+			(line <span class="line-number">43</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constCB_MP_VOTEUPDATED" id="CB_MP_VOTEUPDATED"><!-- --></A>
+<div class="oddrow">
+
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">CB_MP_VOTEUPDATED</span>
+			 = <span class="const-default"> 'ManiaPlanet.VoteUpdated'</span>
+			(line <span class="line-number">39</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constCB_TM_PLAYERCHECKPOINT" id="CB_TM_PLAYERCHECKPOINT"><!-- --></A>
+<div class="evenrow">
+
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">CB_TM_PLAYERCHECKPOINT</span>
+			 = <span class="const-default"> 'TrackMania.PlayerCheckpoint'</span>
+			(line <span class="line-number">45</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constCB_TM_PLAYERFINISH" id="CB_TM_PLAYERFINISH"><!-- --></A>
+<div class="oddrow">
+
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">CB_TM_PLAYERFINISH</span>
+			 = <span class="const-default"> 'TrackMania.PlayerFinish'</span>
+			(line <span class="line-number">46</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constCB_TM_PLAYERINCOHERENCE" id="CB_TM_PLAYERINCOHERENCE"><!-- --></A>
+<div class="evenrow">
+
+	<div class="const-header">
+		<img src="../media/images/Variable.png" />
+		<span class="const-title">
+			<span class="const-name">CB_TM_PLAYERINCOHERENCE</span>
+			 = <span class="const-default"> 'TrackMania.PlayerIncoherence'</span>
+			(line <span class="line-number">47</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+						
+		</div>
+	</div>
+	
+	<p class="notes" id="credit">
+		Documentation generated on Fri, 10 Jan 2014 22:03:53 +0100 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.4</a>
+	</p>
+	</div></body>
 </html>
