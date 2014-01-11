@@ -175,6 +175,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 *
 	 * @param mixed  $maniaLink
 	 * @param Player $player
+	 * @param string $widgetName
 	 */
 	public function displayWidget($maniaLink, Player $player, $widgetName = '') {
 		// render and display xml

@@ -77,6 +77,8 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERDISCONNECT, $this, 'handlePlayerDisconnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
+		$this->maniaControl->callbackManager->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_OPENED, $this, 'handleWidgetOpened');
+		$this->maniaControl->callbackManager->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_CLOSED, $this, 'closeWidget');
 
 		// Create server settings
 		$this->serverSettings = new ServerSettings($maniaControl);
@@ -144,6 +146,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	 */
 	public function handleSaveConfigAction(array $callback, Player $player) {
 		foreach($this->menus as $menu) {
+			/** @var ConfiguratorMenu $menu */
 			$menu->saveConfigData($callback[1], $player);
 		}
 	}
@@ -165,11 +168,33 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	 * @param int    $menuId
 	 */
 	public function showMenu(Player $player, $menuId = 0) {
-		$manialink     = $this->buildManialink($menuId);
-		$manialinkText = $manialink->render()->saveXML();
-		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
-		$this->maniaControl->manialinkManager->disableAltMenu($player);
+		$manialink = $this->buildManialink($menuId);
+		$this->maniaControl->manialinkManager->displayWidget($manialink, $player, "Configurator");
 		$this->playersMenuShown[$player->login] = true;
+	}
+
+	/**
+	 * Unset the player if he opened another Main Widget
+	 *
+	 * @param array $callback
+	 */
+	public function handleWidgetOpened(array $callback) {
+		$player       = $callback[1];
+		$openedWidget = $callback[2];
+		//unset when another main widget got opened
+		if($openedWidget != 'Configurator') {
+			unset($this->playersMenuShown[$player->login]);
+		}
+	}
+
+	/**
+	 * Widget get closed -> unset player
+	 *
+	 * @param array $callback
+	 */
+	public function closeWidget(array $callback) {
+		$player = $callback[1];
+		unset($this->playersMenuShown[$player->login]);
 	}
 
 	/**
@@ -178,11 +203,8 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	 * @param Player $player
 	 */
 	public function hideMenu(Player $player) {
-		$emptyManialink = new ManiaLink(ManialinkManager::MAIN_MLID);
-		$manialinkText  = $emptyManialink->render()->saveXML();
-		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
-		$this->maniaControl->manialinkManager->enableAltMenu($player);
 		unset($this->playersMenuShown[$player->login]);
+		$this->maniaControl->manialinkManager->closeWidget($player);
 	}
 
 	/**
