@@ -22,6 +22,7 @@ use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
+use ManiaControl\Players\PlayerManager;
 use ManiaControl\Server\ServerCommands;
 
 
@@ -97,6 +98,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 		$this->maniaControl->callbackManager->registerCallbackListener(self::CB_CUSTOM_VOTE_FINISHED, $this, 'handleVoteFinished');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
+		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'handlePlayerConnect');
 
 		//Settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_VOTE_ICON_POSX, 156.);
@@ -132,6 +134,16 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	}
 
 	/**
+	 * Handle PlayerConnect callback
+	 *
+	 * @param array $callback
+	 */
+	public function handlePlayerConnect(array $callback) {
+		$player = $callback[1];
+		$this->showIcon($player->login);
+	}
+
+	/**
 	 * Chat Vote
 	 *
 	 * @param array  $chat
@@ -152,123 +164,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 * @param array $callback
 	 */
 	public function handleOnInit(array $callback) {
-		$posX              = $this->maniaControl->settingManager->getSetting($this, self::SETTING_VOTE_ICON_POSX);
-		$posY              = $this->maniaControl->settingManager->getSetting($this, self::SETTING_VOTE_ICON_POSY);
-		$width             = $this->maniaControl->settingManager->getSetting($this, self::SETTING_VOTE_ICON_WIDTH);
-		$height            = $this->maniaControl->settingManager->getSetting($this, self::SETTING_VOTE_ICON_HEIGHT);
-		$quadStyle         = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
-		$quadSubstyle      = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
-		$itemMarginFactorX = 1.3;
-		$itemMarginFactorY = 1.2;
-
-		$itemSize = $width;
-
-		$maniaLink = new ManiaLink(self::MLID_ICON);
-		$script    = $maniaLink->getScript();
-
-		//Custom Vote Menu Iconsframe
-		$frame = new Frame();
-		$maniaLink->add($frame);
-		$frame->setPosition($posX, $posY);
-
-		$backgroundQuad = new Quad();
-		$frame->add($backgroundQuad);
-		$backgroundQuad->setSize($width * $itemMarginFactorX, $height * $itemMarginFactorY);
-		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-
-		$iconFrame = new Frame();
-		$frame->add($iconFrame);
-
-		$iconFrame->setSize($itemSize, $itemSize);
-		$itemQuad = new Quad_Icons64x64_1();
-		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_StateSuggested);
-		$itemQuad->setSize($itemSize, $itemSize);
-		$iconFrame->add($itemQuad);
-
-		//Define Description Label
-		$menuEntries      = 4;
-		$descriptionFrame = new Frame();
-		$maniaLink->add($descriptionFrame);
-		$descriptionFrame->setPosition($posX - $menuEntries * $itemSize * 1.15 - 6, $posY);
-
-		$descriptionLabel = new Label();
-		$descriptionFrame->add($descriptionLabel);
-		$descriptionLabel->setAlign(Control::RIGHT, Control::TOP);
-		$descriptionLabel->setSize(40, 4);
-		$descriptionLabel->setTextSize(1.4);
-		$descriptionLabel->setTextColor('fff');
-
-		//Popout Frame
-		$popoutFrame = new Frame();
-		$maniaLink->add($popoutFrame);
-		$popoutFrame->setPosition($posX - $itemSize * 0.5, $posY);
-		$popoutFrame->setHAlign(Control::RIGHT);
-		$popoutFrame->setSize(4 * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
-
-		$backgroundQuad = new Quad();
-		$popoutFrame->add($backgroundQuad);
-		$backgroundQuad->setHAlign(Control::RIGHT);
-		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-		$backgroundQuad->setSize($menuEntries * $itemSize * 1.15 + 2, $itemSize * $itemMarginFactorY);
-
-		$script->addToggle($itemQuad, $popoutFrame);
-
-		//Menu Items
-		$x = -1;
-
-		//TODO build dynamically
-		//Vote Balance Teams
-		$itemQuad = new Quad_Icons128x32_1();
-		$popoutFrame->add($itemQuad);
-		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_RT_Team);
-		$itemQuad->setAction(self::ACTION_START_VOTE . 'teambalance');
-		$itemQuad->setSize($itemSize, $itemSize);
-		$itemQuad->setX($x);
-		$itemQuad->setHAlign(Control::RIGHT);
-		$description = '$s' . 'Vote for Team-Balance';
-		$script->addTooltip($itemQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $description));
-		$x -= $itemSize * 1.05;
-
-		// Vote SkipMap
-		$itemQuad = new Quad_Icons64x64_1();
-		$popoutFrame->add($itemQuad);
-		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ArrowFastNext);
-		$itemQuad->setAction(self::ACTION_START_VOTE . 'skipmap');
-		$itemQuad->setSize($itemSize, $itemSize);
-		$itemQuad->setX($x);
-		$itemQuad->setHAlign(Control::RIGHT);
-		$description = '$s' . 'Vote for Skip-Map';
-		$script->addTooltip($itemQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $description));
-		$x -= $itemSize * 1.05;
-
-		// Set Pause
-		$itemQuad = new Quad_Icons128x32_1(); //TODO check if mode supports it
-		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ManiaLinkSwitch);
-		$popoutFrame->add($itemQuad);
-		$itemQuad->setAction(self::ACTION_START_VOTE . 'pausegame');
-		$itemQuad->setSize($itemSize, $itemSize);
-		$itemQuad->setX($x);
-		$itemQuad->setHAlign(Control::RIGHT);
-		$description = '$s' . 'Vote for a pause of Current Game';
-		$script->addTooltip($itemQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $description));
-		$x -= $itemSize * 1.05;
-
-
-		// Vote RestartMap
-		$itemQuad = new Quad_UIConstruction_Buttons();
-		$popoutFrame->add($itemQuad);
-		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Reload);
-		$itemQuad->setAction(self::ACTION_START_VOTE . 'restartmap');
-		$itemQuad->setSize($itemSize, $itemSize);
-		$itemQuad->setX($x);
-		$itemQuad->setHAlign(Control::RIGHT);
-		$description = '$s' . 'Vote for Restart-Map';
-		$script->addTooltip($itemQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $description));
-		//$x -= $itemSize * 1.05;
-
-		// Send manialink
-		$manialinkText = $maniaLink->render()->saveXML();
-		$this->maniaControl->manialinkManager->sendManialink($manialinkText);
+		$this->showIcon();
 	}
 
 	/**
@@ -620,6 +516,132 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$manialinkText = $maniaLink->render()->saveXML();
 		$this->maniaControl->manialinkManager->sendManialink($manialinkText);
 	}
+
+	/**
+	 * Shows the Icon Widget
+	 *
+	 * @param bool $login
+	 */
+	private function showIcon($login = false) {
+		$posX              = $this->maniaControl->settingManager->getSetting($this, self::SETTING_VOTE_ICON_POSX);
+		$posY              = $this->maniaControl->settingManager->getSetting($this, self::SETTING_VOTE_ICON_POSY);
+		$width             = $this->maniaControl->settingManager->getSetting($this, self::SETTING_VOTE_ICON_WIDTH);
+		$height            = $this->maniaControl->settingManager->getSetting($this, self::SETTING_VOTE_ICON_HEIGHT);
+		$quadStyle         = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
+		$quadSubstyle      = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
+		$itemMarginFactorX = 1.3;
+		$itemMarginFactorY = 1.2;
+
+		$itemSize = $width;
+
+		$maniaLink = new ManiaLink(self::MLID_ICON);
+		$script    = $maniaLink->getScript();
+
+		//Custom Vote Menu Iconsframe
+		$frame = new Frame();
+		$maniaLink->add($frame);
+		$frame->setPosition($posX, $posY);
+
+		$backgroundQuad = new Quad();
+		$frame->add($backgroundQuad);
+		$backgroundQuad->setSize($width * $itemMarginFactorX, $height * $itemMarginFactorY);
+		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
+
+		$iconFrame = new Frame();
+		$frame->add($iconFrame);
+
+		$iconFrame->setSize($itemSize, $itemSize);
+		$itemQuad = new Quad_Icons64x64_1();
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_StateSuggested);
+		$itemQuad->setSize($itemSize, $itemSize);
+		$iconFrame->add($itemQuad);
+
+		//Define Description Label
+		$menuEntries      = 4;
+		$descriptionFrame = new Frame();
+		$maniaLink->add($descriptionFrame);
+		$descriptionFrame->setPosition($posX - $menuEntries * $itemSize * 1.15 - 6, $posY);
+
+		$descriptionLabel = new Label();
+		$descriptionFrame->add($descriptionLabel);
+		$descriptionLabel->setAlign(Control::RIGHT, Control::TOP);
+		$descriptionLabel->setSize(40, 4);
+		$descriptionLabel->setTextSize(1.4);
+		$descriptionLabel->setTextColor('fff');
+
+		//Popout Frame
+		$popoutFrame = new Frame();
+		$maniaLink->add($popoutFrame);
+		$popoutFrame->setPosition($posX - $itemSize * 0.5, $posY);
+		$popoutFrame->setHAlign(Control::RIGHT);
+		$popoutFrame->setSize(4 * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
+
+		$backgroundQuad = new Quad();
+		$popoutFrame->add($backgroundQuad);
+		$backgroundQuad->setHAlign(Control::RIGHT);
+		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
+		$backgroundQuad->setSize($menuEntries * $itemSize * 1.15 + 2, $itemSize * $itemMarginFactorY);
+
+		$script->addToggle($itemQuad, $popoutFrame);
+
+		//Menu Items
+		$x = -1;
+
+		//TODO build dynamically
+		//Vote Balance Teams
+		$itemQuad = new Quad_Icons128x32_1();
+		$popoutFrame->add($itemQuad);
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_RT_Team);
+		$itemQuad->setAction(self::ACTION_START_VOTE . 'teambalance');
+		$itemQuad->setSize($itemSize, $itemSize);
+		$itemQuad->setX($x);
+		$itemQuad->setHAlign(Control::RIGHT);
+		$description = '$s' . 'Vote for Team-Balance';
+		$script->addTooltip($itemQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $description));
+		$x -= $itemSize * 1.05;
+
+		// Vote SkipMap
+		$itemQuad = new Quad_Icons64x64_1();
+		$popoutFrame->add($itemQuad);
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ArrowFastNext);
+		$itemQuad->setAction(self::ACTION_START_VOTE . 'skipmap');
+		$itemQuad->setSize($itemSize, $itemSize);
+		$itemQuad->setX($x);
+		$itemQuad->setHAlign(Control::RIGHT);
+		$description = '$s' . 'Vote for Skip-Map';
+		$script->addTooltip($itemQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $description));
+		$x -= $itemSize * 1.05;
+
+		// Set Pause
+		$itemQuad = new Quad_Icons128x32_1(); //TODO check if mode supports it
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ManiaLinkSwitch);
+		$popoutFrame->add($itemQuad);
+		$itemQuad->setAction(self::ACTION_START_VOTE . 'pausegame');
+		$itemQuad->setSize($itemSize, $itemSize);
+		$itemQuad->setX($x);
+		$itemQuad->setHAlign(Control::RIGHT);
+		$description = '$s' . 'Vote for a pause of Current Game';
+		$script->addTooltip($itemQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $description));
+		$x -= $itemSize * 1.05;
+
+
+		// Vote RestartMap
+		$itemQuad = new Quad_UIConstruction_Buttons();
+		$popoutFrame->add($itemQuad);
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Reload);
+		$itemQuad->setAction(self::ACTION_START_VOTE . 'restartmap');
+		$itemQuad->setSize($itemSize, $itemSize);
+		$itemQuad->setX($x);
+		$itemQuad->setHAlign(Control::RIGHT);
+		$description = '$s' . 'Vote for Restart-Map';
+		$script->addTooltip($itemQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $description));
+		//$x -= $itemSize * 1.05;
+
+		// Send manialink
+		$manialinkText = $maniaLink->render()->saveXML();
+		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $login);
+	}
+
 
 	/**
 	 * Get plugin id
