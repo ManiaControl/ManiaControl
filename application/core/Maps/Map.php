@@ -53,7 +53,7 @@ class Map {
 		if(!$rpc_infos) {
 			return;
 		}
-		$this->name        = $rpc_infos['Name'];
+		$this->name        = FORMATTER::stripDirtyCodes($rpc_infos['Name']);
 		$this->uid         = $rpc_infos['UId'];
 		$this->fileName    = $rpc_infos['FileName'];
 		$this->authorLogin = $rpc_infos['Author'];
