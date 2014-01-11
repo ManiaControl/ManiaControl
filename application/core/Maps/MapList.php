@@ -63,6 +63,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 		// Register for Callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_CLOSED, $this, 'closeWidget');
+		$this->maniaControl->callbackManager->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_OPENED, $this, 'handleWidgetOpened');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 		$this->maniaControl->callbackManager->registerCallbackListener(MapQueue::CB_MAPQUEUE_CHANGED, $this, 'updateWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_MAPS_UPDATED, $this, 'updateWidget');
@@ -310,7 +311,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$quad->setAction(self::ACTION_SEARCH_AUTHOR);
 
 		// render and display xml
-		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player);
+		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player, 'MxList');
 	}
 
 	/**
@@ -582,7 +583,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			}
 			$id++;
 		}
-		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player);
+		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player, 'MapList');
 	}
 
 	/**
@@ -641,6 +642,18 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		return $confirmFrame;
 	}
 
+	/**
+	 * Unset the player if he opened another Main Widget
+	 * @param array $callback
+	 */
+	public function handleWidgetOpened(array $callback){
+		$player = $callback[1];
+		$openedWidget = $callback[2];
+		//unset when another main widget got opened
+		if($openedWidget != 'MapList' && $openedWidget != 'MxList'){
+			unset($this->mapListShown[$player->login]);
+		}
+	}
 	/**
 	 * Closes the widget
 	 *

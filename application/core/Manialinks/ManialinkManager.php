@@ -29,6 +29,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	const MAIN_MLID             = 'Main.ManiaLinkId';
 	const ACTION_CLOSEWIDGET    = 'ManiaLinkManager.CloseWidget';
 	const CB_MAIN_WINDOW_CLOSED = 'ManialinkManagerCallback.MainWindowClosed';
+	const CB_MAIN_WINDOW_OPENED = 'ManialinkManagerCallback.MainWindowOpened';
 
 	/**
 	 * Public properties
@@ -127,7 +128,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 * @return bool
 	 */
 	public function sendManialink($manialinkText, $logins = null, $timeout = 0, $hideOnClick = false) {
-		$manialinkText = (string) $manialinkText;
+		$manialinkText = (string)$manialinkText;
 		if(!$logins) {
 			return $this->maniaControl->client->query('SendDisplayManialinkPage', $manialinkText, $timeout, $hideOnClick);
 		}
@@ -172,13 +173,18 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	/**
 	 * Displays a ManiaLink Widget to a certain Player
 	 *
-	 * @param mixed $maniaLink
+	 * @param mixed  $maniaLink
 	 * @param Player $player
 	 */
-	public function displayWidget($maniaLink, Player $player) {
+	public function displayWidget($maniaLink, Player $player, $widgetName = '') {
 		// render and display xml
 		$this->maniaControl->manialinkManager->sendManialink($maniaLink, $player->login);
 		$this->disableAltMenu($player);
+
+		if($widgetName != '') {
+			// Trigger callback
+			$this->maniaControl->callbackManager->triggerCallback(self::CB_MAIN_WINDOW_OPENED, array(self::CB_MAIN_WINDOW_OPENED, $player, $widgetName));
+		}
 	}
 
 	/**

@@ -66,6 +66,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_CLOSE_PLAYER_ADV, $this, 'closePlayerAdvancedWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_CLOSED, $this, 'closeWidget');
+		$this->maniaControl->callbackManager->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_OPENED, $this, 'handleWidgetOpened');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 
 		// Update Widget Events
@@ -330,7 +331,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		}
 
 		// Render and display xml
-		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player);
+		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player, 'PlayerList');
 	}
 
 	/**
@@ -536,6 +537,20 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		}
 
 		return $frame;
+	}
+
+	/**
+	 * Unset the player if he opened another Main Widget
+	 *
+	 * @param array $callback
+	 */
+	public function handleWidgetOpened(array $callback) {
+		$player       = $callback[1];
+		$openedWidget = $callback[2];
+		//unset when another main widget got opened
+		if($openedWidget != 'PlayerList') {
+			unset($this->playersListShown[$player->login]);
+		}
 	}
 
 	/**
