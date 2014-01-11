@@ -34,6 +34,15 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	const PLUGIN_NAME    = 'CustomVotesPlugin';
 	const PLUGIN_AUTHOR  = 'kremsy and steeffeen';
 
+	const SETTING_WIDGET_POSX                = 'Widget-Position: X';
+	const SETTING_WIDGET_POSY                = 'Widget-Position: Y';
+	const SETTING_WIDGET_WIDTH               = 'Widget-Size: Width';
+	const SETTING_WIDGET_HEIGHT              = 'Widget-Size: Height';
+	const SETTING_VOTE_TIME                  = 'Voting Time';
+	const SETTING_DEFAULT_RATIO              = 'Default Success Ratio';
+	const SETTING_SPECTATOR_ALLOW_VOTE       = 'Allow Specators to vote';
+	const SETTING_SPECTATOR_ALLOW_START_VOTE = 'Allow Specators to start a vote';
+
 	const MLID_WIDGET = 'CustomVotesPlugin.WidgetId';
 
 	const VOTE_FOR_ACTION     = '1';
@@ -56,6 +65,8 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	private $currentVoteExpireTime = 0;
 	private $playersVoted = array();
 	private $playersVotedPositiv = 0;
+	/** @var Player $voter */
+	private $voter = null;
 
 	/**
 	 * Load the plugin
@@ -72,6 +83,19 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_1_SECOND, $this, 'handle1Second');
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_POSITIVE_VOTE, $this, 'handlePositiveVote');
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_NEGATIVE_VOTE, $this, 'handleNegativeVote');
+
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
+
+
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSX, 160 - 42 - 15);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSY, 90 - 2 - 15);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_WIDTH, 30);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_HEIGHT, 25);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_DEFAULT_RATIO, 0.65);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SPECTATOR_ALLOW_VOTE, false);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SPECTATOR_ALLOW_START_VOTE, false);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_VOTE_TIME, 60);
+
 		return true;
 	}
 
@@ -98,6 +122,9 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	}
 
 
+	public function handleManialinkPageAnswer(array $callback){
+		var_dump($callback);
+	}
 	/**
 	 * Defines a Vote
 	 *
@@ -110,40 +137,67 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	/**
 	 * Starts a vote
 	 *
-	 * @param $player
-	 * @param $voteName
+	 * @param \ManiaControl\Players\Player $player
+	 * @param                              $voteName
 	 */
-	public function startVote($player, $voteName) {
+	public function startVote(Player $player, $voteName) {
 		if($this->maniaControl->playerManager->playerActions->isPlayerMuted($player)) {
 			return;
 		}
+
+		if($player->isSpectator && !$this->maniaControl->settingManager->getSetting($this, self::SETTING_SPECTATOR_ALLOW_START_VOTE)) {
+			return;
+		}
+
 		$this->maniaControl->chat->sendChat("Vote started");
 		$this->currentVote           = $voteName;
 		$this->currentVoteExpireTime = time() + 60; //TODO as setting
 
 		$this->playersVoted[$player->login] = self::VOTE_FOR_ACTION;
 		$this->playersVotedPositiv++;
+
+		$this->voter = $player;
 	}
 
+	/**
+	 * Handles a Positive Vote
+	 *
+	 * @param array  $callback
+	 * @param Player $player
+	 */
 	public function handlePositiveVote(array $callback, Player $player) {
-		if(isset($this->playersVoted[$player->login])){
-			if($this->playersVoted[$player->login] == self::VOTE_AGAINST_ACTION){
+		if($player->isSpectator && !$this->maniaControl->settingManager->getSetting($this, self::SETTING_SPECTATOR_ALLOW_VOTE)) {
+			return;
+		}
+
+		if(isset($this->playersVoted[$player->login])) {
+			if($this->playersVoted[$player->login] == self::VOTE_AGAINST_ACTION) {
 				$this->playersVoted[$player->login] = self::VOTE_FOR_ACTION;
 				$this->playersVotedPositiv++;
 			}
-		}else{
+		} else {
 			$this->playersVoted[$player->login] = self::VOTE_FOR_ACTION;
 			$this->playersVotedPositiv++;
 		}
 	}
 
+	/**
+	 * Handles a negative Vote
+	 *
+	 * @param array  $callback
+	 * @param Player $player
+	 */
 	public function handleNegativeVote(array $callback, Player $player) {
-		if(isset($this->playersVoted[$player->login])){
-			if($this->playersVoted[$player->login] == self::VOTE_FOR_ACTION){
+		if($player->isSpectator && !$this->maniaControl->settingManager->getSetting($this, self::SETTING_SPECTATOR_ALLOW_VOTE)) {
+			return;
+		}
+
+		if(isset($this->playersVoted[$player->login])) {
+			if($this->playersVoted[$player->login] == self::VOTE_FOR_ACTION) {
 				$this->playersVoted[$player->login] = self::VOTE_AGAINST_ACTION;
 				$this->playersVotedPositiv--;
 			}
-		}else{
+		} else {
 			$this->playersVoted[$player->login] = self::VOTE_AGAINST_ACTION;
 		}
 	}
@@ -170,24 +224,23 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 			$emptyManialink = new ManiaLink(self::MLID_WIDGET);
 			$manialinkText  = $emptyManialink->render()->saveXML();
 			$this->maniaControl->manialinkManager->sendManialink($manialinkText);
+
+			$voter = null;
 		}
 	}
 
 	private function showVoteWidget($timeUntilExpire, $votePercentage) {
-		//$pos_x        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_POSX);
-		//$pos_y        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_POSY);
-		//$width        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_WIDTH);
-		//$height       = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_HEIGHT);
-		$pos_x  = 160 - 42 - 15;
-		$pos_y  = 90 - 2 - 15;
-		$width  = 30;
-		$height = 25;
+		$pos_x  = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_POSX);
+		$pos_y  = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_POSY);
+		$width  = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_WIDTH);
+		$height = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_HEIGHT);
 
 		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
 		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
 		$labelStyle   = $this->maniaControl->manialinkManager->styleManager->getDefaultLabelStyle();
 
 		$maniaLink = new ManiaLink(self::MLID_WIDGET);
+
 		//$script    = new Script();
 		//$maniaLink->setScript($script);
 
@@ -203,37 +256,45 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$backgroundQuad->setSize($width, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 
+		/*$keyQuad = new Quad();
+		$frame->add($keyQuad);
+		$keyQuad->setPosition(500,500);
+		$keyQuad->setAction(382009003);*/
+
+
 		$label = new Label_Text();
 		$frame->add($label);
 		$label->setY($height / 2 - 4);
 		$label->setAlign(Control::CENTER, Control::CENTER);
 		$label->setSize($width - 5, $height);
-		$label->setTextSize(1.6);
-		$label->setText('Vote');
-		$label->setTextColor("900");
+		$label->setTextSize(1.3);
+		$label->setText('Vote for ' . $this->currentVote);
+		//$label->setTextColor("900");
 
-		$label = new Label_Text();
+		/*$label = new Label_Text();
 		$frame->add($label);
 		$label->setY($height / 2 - 7);
 		$label->setAlign(Control::CENTER, Control::CENTER);
 		$label->setSize($width - 5, $height);
 		$label->setTextSize(1.3);
 		$label->setText($this->currentVote);
-		$label->setTextColor("F00");
+		$label->setTextColor("F00");*/
 
+		//Started by nick
 		$label = new Label_Text();
 		$frame->add($label);
-		$label->setY($height / 2 - 10);
+		$label->setY($height / 2 - 7);
 		$label->setAlign(Control::CENTER, Control::CENTER);
-		$label->setSize($width - 5, $height);
-		$label->setTextSize(1.3);
-		$label->setText("Time left: " . $timeUntilExpire . "s");
-		$label->setTextColor("FFF");
+		$label->setSize($width - 5, 2);
+		$label->setTextSize(1);
+		$label->setTextColor("F80");
+		$label->setText("Started by " . $this->voter->nickname);
 
 
 		//Time Gaunge
 		$timeGauge = new Gauge();
 		$frame->add($timeGauge);
+		$timeGauge->setY(0);
 		$timeGauge->setSize($width * 0.95, 6);
 		$timeGauge->setDrawBg(false);
 		$maxTime        = 60; //TODO set maxtime
@@ -241,6 +302,16 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$timeGauge->setRatio($timeGaugeRatio + 0.15 - $timeGaugeRatio * 0.15);
 		$gaugeColor = ColorUtil::floatToStatusColor($timeGaugeRatio);
 		$timeGauge->setColor($gaugeColor . '9');
+
+		//Time Left
+		$label = new Label_Text();
+		$frame->add($label);
+		$label->setY(-2);
+		$label->setAlign(Control::CENTER, Control::CENTER);
+		$label->setSize($width - 5, $height);
+		$label->setTextSize(1.3);
+		$label->setText("Time left: " . $timeUntilExpire . "s");
+		$label->setTextColor("FFF");
 
 		//Vote Gauge
 		$voteGauge = new Gauge();
@@ -278,7 +349,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$label->setY($y);
 		$label->setStyle($labelStyle);
 		$label->setTextSize(1);
-		$label->setSize(3,3);
+		$label->setSize(3, 3);
 		$label->setTextColor("F00");
 		$label->setText("F1");
 
