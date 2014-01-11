@@ -221,7 +221,7 @@ class PlayerDetailed {
 		$quad->setAction(PlayerCommands::ACTION_OPEN_PLAYERLIST);
 
 		// render and display xml
-		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player);
+		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player, 'PlayerDetailed');
 	}
 
 	public function statisticsFrame($player) {
