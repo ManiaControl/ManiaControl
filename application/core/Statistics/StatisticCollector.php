@@ -22,6 +22,7 @@ class StatisticCollector implements CallbackListener {
 	/*
 	 * Statistics
 	 */
+	const STAT_PLAYTIME                  = 'Play Time';
 	const STAT_ON_SHOOT                  = 'Shots';
 	const STAT_ON_NEARMISS               = 'Near Misses';
 	const STAT_ON_CAPTURE                = 'Captures';
@@ -44,7 +45,7 @@ class StatisticCollector implements CallbackListener {
 	 *
 	 * @param \ManiaControl\ManiaControl $maniaControl
 	 */
-	public function __construct(ManiaControl $maniaControl) { //TODO Stat player playtime without spec and warmup
+	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
 		//Register Callbacks
@@ -66,6 +67,7 @@ class StatisticCollector implements CallbackListener {
 	 */
 	public function onInit(array $callback) {
 		//Define Stats MetaData
+		$this->maniaControl->statisticManager->defineStatMetaData(self::STAT_PLAYTIME, StatisticManager::STAT_TYPE_TIME);
 		$this->maniaControl->statisticManager->defineStatMetaData(self::STAT_ON_SHOOT);
 		$this->maniaControl->statisticManager->defineStatMetaData(self::STAT_ON_NEARMISS);
 		$this->maniaControl->statisticManager->defineStatMetaData(self::STAT_ON_CAPTURE);
@@ -90,7 +92,7 @@ class StatisticCollector implements CallbackListener {
 
 		//Write Shoot Data into database
 		if($this->onShootArray[$login] > $this->maniaControl->settingManager->getSetting($this, self::SETTING_ON_SHOOT_PRESTORE)) {
-			$player      = $this->maniaControl->playerManager->getPlayer($login);
+			$player = $this->maniaControl->playerManager->getPlayer($login);
 			$this->maniaControl->statisticManager->insertStat(self::STAT_ON_SHOOT, $player, $this->maniaControl->server->index, $this->onShootArray[$login]);
 			$this->onShootArray[$login] = 0;
 		}
@@ -125,7 +127,6 @@ class StatisticCollector implements CallbackListener {
 	 * @param array $callback
 	 */
 	public function handleCallbacks(array $callback) {
-
 		//Check if Stat Collecting is enabled
 		if(!$this->maniaControl->settingManager->getSetting($this, self::SETTING_COLLECT_STATS_ENABLED)) {
 			return;
@@ -155,17 +156,20 @@ class StatisticCollector implements CallbackListener {
 			case 'LibXmlRpc_OnCapture':
 				$logins = $callback[1][1][0];
 				$logins = explode(';', $logins);
-				foreach ($logins as $login) {
+				foreach($logins as $login) {
 					$player = $this->maniaControl->playerManager->getPlayer($login);
-					if (!$player) continue;
+					if(!$player) {
+						continue;
+					}
 					$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_CAPTURE, $player);
 				}
 				break;
 			case 'LibXmlRpc_OnArmorEmpty':
 				$shooter = $this->maniaControl->playerManager->getPlayer($callback[1][1][0]);
 				$victim  = $this->maniaControl->playerManager->getPlayer($callback[1][1][1]);
-				if($shooter != null)
+				if($shooter != null) {
 					$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_KILL, $shooter);
+				}
 				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_DEATH, $victim);
 				break;
 			case 'LibXmlRpc_OnPlayerRequestRespawn':
@@ -189,7 +193,7 @@ class StatisticCollector implements CallbackListener {
 			case 'OnHit':
 				$paramsObject = json_decode($callback[1][1]);
 				$shooter      = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Shooter->Login);
-				$victim = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Victim->Login);
+				$victim       = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Victim->Login);
 				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_HIT, $shooter);
 				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_GOT_HIT, $victim);
 				break;
@@ -198,13 +202,23 @@ class StatisticCollector implements CallbackListener {
 				$victim       = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Victim->Login);
 				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_DEATH, $victim);
 				$shooter = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Shooter->Login);
-				if($shooter != null)
+				if($shooter != null) {
 					$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_KILL, $shooter);
+				}
 				break;
 			case 'OnRequestRespawn':
 				$paramsObject = json_decode($callback[1][1]);
 				$player       = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Player->Login);
 				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_PLAYER_REQUEST_RESPAWN, $player);
+				break;
+			case 'EndTurn': //TODO make it for other modes working
+				$paramsObject = json_decode($callback[1][1]);
+				$durationTime = (int)(($paramsObject->EndTime - $paramsObject->StartTime) / 1000);
+				$scoresTable  = $paramsObject->ScoresTable;
+				foreach($scoresTable as $score) {
+					$player = $this->maniaControl->playerManager->getPlayer($score->Login);
+					$this->maniaControl->statisticManager->insertStat(self::STAT_PLAYTIME, $player, -1, $durationTime);
+				}
 				break;
 		}
 	}
