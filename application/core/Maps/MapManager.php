@@ -260,7 +260,7 @@ class MapManager implements CallbackListener {
 	 * Returns map By UID
 	 *
 	 * @param $uid
-	 * @return mixed
+	 * @return Map array
 	 */
 	public function getMapByUid($uid) {
 		if(!isset($this->maps[$uid])) {

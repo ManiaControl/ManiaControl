@@ -35,6 +35,7 @@ class ManiaExchangeInfoSearcher { //TODO rename to ManiaExchangeManager
 	 * Private Propertieswc
 	 */
 	private $maniaControl = null;
+	private $mxIdUidVector = array();
 
 	/**
 	 * Construct map manager
@@ -69,7 +70,15 @@ class ManiaExchangeInfoSearcher { //TODO rename to ManiaExchangeManager
 			if($saveMapStatement->error) {
 				trigger_error($saveMapStatement->error);
 			}
-			$map = $this->maniaControl->mapManager->getMapByUid($mxMapInfo->uid);
+
+			//Take the uid out of the vektor
+			if(isset($this->mxIdUidVector[$mxMapInfo->id])) {
+				$uid = $this->mxIdUidVector[$mxMapInfo->id];
+			} else {
+				$uid = $mxMapInfo->uid;
+			}
+			$map = $this->maniaControl->mapManager->getMapByUid($uid);
+
 			/** @var Map $map */
 			$map->mx = $mxMapInfo;
 		}
@@ -110,11 +119,13 @@ class ManiaExchangeInfoSearcher { //TODO rename to ManiaExchangeManager
 			//Set changed time into the map object
 			$map->lastUpdate = strtotime($changed);
 
-			//if($mxId != null) { //TODO not working due a fail on mx
-			//	$mapIdString .= $mxId . ',';
-			//} else {
-			$mapIdString .= $map->uid . ',';
-			//}
+			if($mxId != 0) {
+				$mapIdString .= $mxId . ',';
+				//Set the mx id to the mxidmapvektor
+				$this->mxIdUidVector[$mxId] = $map->uid;
+			} else {
+				$mapIdString .= $map->uid . ',';
+			}
 
 			$id++;
 
