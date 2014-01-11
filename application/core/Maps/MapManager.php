@@ -23,12 +23,12 @@ class MapManager implements CallbackListener {
 	/**
 	 * Constants
 	 */
-	const TABLE_MAPS                    = 'mc_maps';
-	const CB_BEGINMAP                   = 'MapManager.BeginMap';
-	const CB_MAPS_UPDATED               = 'MapManager.MapsUpdated';
-	const CB_KARMA_UPDATED              = 'MapManager.KarmaUpdated';
-	const SETTING_PERMISSION_ADD_MAP    = 'Add Maps';
-	const SETTING_PERMISSION_REMOVE_MAP = 'Remove Maps';
+	const TABLE_MAPS                      = 'mc_maps';
+	const CB_BEGINMAP                     = 'MapManager.BeginMap';
+	const CB_MAPS_UPDATED                 = 'MapManager.MapsUpdated';
+	const CB_KARMA_UPDATED                = 'MapManager.KarmaUpdated';
+	const SETTING_PERMISSION_ADD_MAP      = 'Add Maps';
+	const SETTING_PERMISSION_REMOVE_MAP   = 'Remove Maps';
 	const SETTING_PERMISSION_SHUFFLE_MAPS = 'Shuffle Maps';
 
 	/**
@@ -164,18 +164,22 @@ class MapManager implements CallbackListener {
 	 * @return bool
 	 */
 	public function shuffleMapList() {
-		if(!$this->maniaControl->client->query('GetMapList', 100, 0)) {
-			trigger_error("Couldn't fetch mapList. " . $this->maniaControl->getClientErrorText());
-			return false;
+		shuffle($this->maps);
+
+		$mapArray = array();
+
+		foreach($this->maps as $map) {
+			/** @var Map $map */
+			$mapArray[] = $map->fileName;
 		}
 
-		$mapList = $this->maniaControl->client->getResponse();
-		shuffle($mapList);
-
-		if(!$this->maniaControl->client->query('ChooseNextChallengeList', $mapList)) {
+		if(!$this->maniaControl->client->query('ChooseNextMapList', $mapArray)) {
 			trigger_error("Couldn't shuffle mapList. " . $this->maniaControl->getClientErrorText());
 			return false;
 		}
+
+		$this->fetchCurrentMap();
+
 		return true;
 	}
 
