@@ -3,7 +3,7 @@
 namespace FML\Types;
 
 /**
- * Interface for elements with style attribute
+ * Interface for Elements with Style Attribute
  *
  * @author steeffeen
  */
@@ -12,8 +12,7 @@ interface Styleable {
 	/**
 	 * Set Style
 	 *
-	 * @param string $style
-	 *        	Style
+	 * @param string $style Style Name
 	 */
 	public function setStyle($style);
 }

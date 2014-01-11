@@ -12,8 +12,8 @@ abstract class Builder {
 	/**
 	 * Build a Label Implementation Block
 	 *
-	 * @param string $labelName
-	 * @param string $implementationCode
+	 * @param string $labelName Name of the Label
+	 * @param string $implementationCode Label Implementation Coding (without declaration)
 	 * @return string
 	 */
 	public static function getLabelImplementationBlock($labelName, $implementationCode) {
@@ -24,7 +24,7 @@ abstract class Builder {
 	/**
 	 * Get the Real String-Representation of the given Value
 	 *
-	 * @param float $value
+	 * @param float $value The Float Value to convert to a ManiaScript Real 
 	 * @return string
 	 */
 	public static function getReal($value) {

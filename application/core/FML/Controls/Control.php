@@ -5,7 +5,8 @@ namespace FML\Controls;
 use FML\Types\Renderable;
 
 /**
- * Class representing CMlControl
+ * Base Control Element
+ * (CMlControl)
  *
  * @author steeffeen
  */
@@ -39,12 +40,10 @@ abstract class Control implements Renderable {
 	/**
 	 * Construct a new Control
 	 *
-	 * @param string $id Control Id
+	 * @param string $id (optional) Control Id
 	 */
 	public function __construct($id = null) {
-		if ($id !== null) {
-			$this->setId($id);
-		}
+		$this->setId($id);
 	}
 
 	/**
@@ -63,7 +62,7 @@ abstract class Control implements Renderable {
 	 * @return \FML\Controls\Control
 	 */
 	public function setId($id) {
-		$this->id = $id;
+		$this->id = (string) $id;
 		return $this;
 	}
 
@@ -100,7 +99,7 @@ abstract class Control implements Renderable {
 	 * @return \FML\Controls\Control
 	 */
 	public function setX($x) {
-		$this->x = $x;
+		$this->x = (float) $x;
 		return $this;
 	}
 
@@ -111,7 +110,7 @@ abstract class Control implements Renderable {
 	 * @return \FML\Controls\Control
 	 */
 	public function setY($y) {
-		$this->y = $y;
+		$this->y = (float) $y;
 		return $this;
 	}
 
@@ -122,7 +121,7 @@ abstract class Control implements Renderable {
 	 * @return \FML\Controls\Control
 	 */
 	public function setZ($z) {
-		$this->z = $z;
+		$this->z = (float) $z;
 		return $this;
 	}
 
@@ -131,7 +130,7 @@ abstract class Control implements Renderable {
 	 *
 	 * @param float $x Horizontal Position
 	 * @param float $y Vertical Position
-	 * @param float $z Depth
+	 * @param float $z (optional) Depth
 	 * @return \FML\Controls\Control
 	 */
 	public function setPosition($x, $y, $z = null) {
@@ -150,7 +149,7 @@ abstract class Control implements Renderable {
 	 * @return \FML\Controls\Control
 	 */
 	public function setWidth($width) {
-		$this->width = $width;
+		$this->width = (float) $width;
 		return $this;
 	}
 
@@ -161,7 +160,7 @@ abstract class Control implements Renderable {
 	 * @return \FML\Controls\Control
 	 */
 	public function setHeight($height) {
-		$this->height = $height;
+		$this->height = (float) $height;
 		return $this;
 	}
 
@@ -185,7 +184,7 @@ abstract class Control implements Renderable {
 	 * @return \FML\Controls\Control
 	 */
 	public function setHAlign($hAlign) {
-		$this->hAlign = $hAlign;
+		$this->hAlign = (string) $hAlign;
 		return $this;
 	}
 
@@ -196,7 +195,7 @@ abstract class Control implements Renderable {
 	 * @return \FML\Controls\Control
 	 */
 	public function setVAlign($vAlign) {
-		$this->vAlign = $vAlign;
+		$this->vAlign = (string) $vAlign;
 		return $this;
 	}
 
@@ -220,14 +219,14 @@ abstract class Control implements Renderable {
 	 * @return \FML\Controls\Control
 	 */
 	public function setScale($scale) {
-		$this->scale = $scale;
+		$this->scale = (float) $scale;
 		return $this;
 	}
 
 	/**
 	 * Set Visibility
 	 *
-	 * @param bool $visible If Control should be visible
+	 * @param bool $visible Whether Control should be visible
 	 * @return \FML\Controls\Control
 	 */
 	public function setVisible($visible) {
@@ -242,6 +241,7 @@ abstract class Control implements Renderable {
 	 * @return \FML\Controls\Control
 	 */
 	public function addClass($class) {
+		$class = (string) $class;
 		if (!in_array($class, $this->classes)) {
 			array_push($this->classes, $class);
 		}
@@ -253,35 +253,35 @@ abstract class Control implements Renderable {
 	 * @see \FML\Types\Renderable::render()
 	 */
 	public function render(\DOMDocument $domDocument) {
-		$xml = $domDocument->createElement($this->tagName);
+		$xmlElement = $domDocument->createElement($this->tagName);
 		if ($this->id) {
-			$xml->setAttribute('id', $this->id);
+			$xmlElement->setAttribute('id', $this->id);
 		}
-		if ($this->x !== 0. || $this->y !== 0. || $this->z !== 0.) {
-			$xml->setAttribute('posn', "{$this->x} {$this->y} {$this->z}");
+		if ($this->x != 0. || $this->y != 0. || $this->z != 0.) {
+			$xmlElement->setAttribute('posn', "{$this->x} {$this->y} {$this->z}");
 		}
 		if ($this->width >= 0. || $this->height >= 0.) {
-			$xml->setAttribute('sizen', "{$this->width} {$this->height}");
+			$xmlElement->setAttribute('sizen', "{$this->width} {$this->height}");
 		}
 		if ($this->hAlign) {
-			$xml->setAttribute('halign', $this->hAlign);
+			$xmlElement->setAttribute('halign', $this->hAlign);
 		}
 		if ($this->vAlign) {
-			$xml->setAttribute('valign', $this->vAlign);
+			$xmlElement->setAttribute('valign', $this->vAlign);
 		}
-		if ($this->scale !== 1.) {
-			$xml->setAttribute('scale', $this->scale);
+		if ($this->scale != 1.) {
+			$xmlElement->setAttribute('scale', $this->scale);
 		}
 		if ($this->hidden) {
-			$xml->setAttribute('hidden', $this->hidden);
+			$xmlElement->setAttribute('hidden', $this->hidden);
 		}
-		$classes = '';
-		foreach ($this->classes as $class) {
-			$classes .= $class . ' ';
+		if (!empty($this->classes)) {
+			$classes = '';
+			foreach ($this->classes as $class) {
+				$classes .= $class . ' ';
+			}
+			$xmlElement->setAttribute('class', $classes);
 		}
-		if ($classes) {
-			$xml->setAttribute('class', $classes);
-		}
-		return $xml;
+		return $xmlElement;
 	}
 }

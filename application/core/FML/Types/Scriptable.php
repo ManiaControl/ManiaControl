@@ -3,7 +3,7 @@
 namespace FML\Types;
 
 /**
- * Interface for elements with ScriptEvents attribute
+ * Interface for Elements with ScriptEvents Attribute
  *
  * @author steeffeen
  */
@@ -12,8 +12,7 @@ interface Scriptable {
 	/**
 	 * Set ScriptEvents
 	 *
-	 * @param bool $scriptEvents
-	 *        	If Script Events should be enabled
+	 * @param bool $scriptEvents Whether Script Events should be enabled
 	 */
 	public function setScriptEvents($scriptEvents);
 }

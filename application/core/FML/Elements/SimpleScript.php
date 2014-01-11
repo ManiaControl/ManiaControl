@@ -5,7 +5,7 @@ namespace FML\Elements;
 use FML\Types\Renderable;
 
 /**
- * Class representing a manialink script tag with a simple script text
+ * Class representing a ManiaLink Script Tag with a simple Script Text
  *
  * @author steeffeen
  */
@@ -19,7 +19,7 @@ class SimpleScript implements Renderable {
 	/**
 	 * Set Script Text
 	 *
-	 * @param string $text        	
+	 * @param string $text The Complete Script Text
 	 * @return \FML\Script\Script
 	 */
 	public function setText($text) {
@@ -32,9 +32,9 @@ class SimpleScript implements Renderable {
 	 * @see \FML\Types\Renderable::render()
 	 */
 	public function render(\DOMDocument $domDocument) {
-		$xml = $domDocument->createElement($this->tagName);
+		$xmlElement = $domDocument->createElement($this->tagName);
 		$scriptComment = $domDocument->createComment($this->text);
-		$xml->appendChild($scriptComment);
-		return $xml;
+		$xmlElement->appendChild($scriptComment);
+		return $xmlElement;
 	}
 }

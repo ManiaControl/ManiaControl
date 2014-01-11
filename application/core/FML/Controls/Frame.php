@@ -6,7 +6,8 @@ use FML\Types\Container;
 use FML\Types\Renderable;
 
 /**
- * Class representing CMlFrame
+ * Frame Element
+ * (CMlFrame)
  *
  * @author steeffeen
  */
@@ -19,8 +20,7 @@ class Frame extends Control implements Container {
 	/**
 	 * Construct a new Frame Control
 	 *
-	 * @param string $id
-	 *        	Control Id
+	 * @param string $id (optional) Control Id
 	 */
 	public function __construct($id = null) {
 		parent::__construct($id);
@@ -33,7 +33,9 @@ class Frame extends Control implements Container {
 	 * @return \FML\Controls\Frame
 	 */
 	public function add(Renderable $child) {
-		array_push($this->children, $child);
+		if (!in_array($child, $this->children)) {
+			array_push($this->children, $child);
+		}
 		return $this;
 	}
 
@@ -52,11 +54,11 @@ class Frame extends Control implements Container {
 	 * @see \FML\Renderable::render()
 	 */
 	public function render(\DOMDocument $domDocument) {
-		$xml = parent::render($domDocument);
+		$xmlElement = parent::render($domDocument);
 		foreach ($this->children as $child) {
-			$childXml = $child->render($domDocument);
-			$xml->appendChild($childXml);
+			$childXmlElement = $child->render($domDocument);
+			$xmlElement->appendChild($childXmlElement);
 		}
-		return $xml;
+		return $xmlElement;
 	}
 }

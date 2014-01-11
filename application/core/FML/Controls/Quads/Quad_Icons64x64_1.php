@@ -5,7 +5,7 @@ namespace FML\Controls\Quads;
 use FML\Controls\Quad;
 
 /**
- * Quad class for style 'Icons64x64_1'
+ * Quad Class for 'Icons64x64_1' Style
  *
  * @author steeffeen
  */

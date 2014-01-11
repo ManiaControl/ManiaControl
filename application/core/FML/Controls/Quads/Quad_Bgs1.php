@@ -5,7 +5,7 @@ namespace FML\Controls\Quads;
 use FML\Controls\Quad;
 
 /**
- * Quad class for style 'Bgs1'
+ * Quad Class for 'Bgs1' Style
  *
  * @author steeffeen
  */

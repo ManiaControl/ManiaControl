@@ -8,7 +8,6 @@ namespace FML;
  * @author steeffeen
  */
 class CustomUI {
-	
 	/**
 	 * Protected Properties
 	 */
@@ -26,18 +25,18 @@ class CustomUI {
 	/**
 	 * Set XML Encoding
 	 *
-	 * @param string $encoding
+	 * @param string $encoding XML Encoding
 	 * @return \FML\CustomUI
 	 */
 	public function setXMLEncoding($encoding) {
-		$this->encoding = $encoding;
+		$this->encoding = (string) $encoding;
 		return $this;
 	}
 
 	/**
 	 * Set Showing of Notices
 	 *
-	 * @param bool $visible
+	 * @param bool $visible Whether Notices should be shown
 	 * @return \FML\CustomUI
 	 */
 	public function setNoticeVisible($visible) {
@@ -48,7 +47,7 @@ class CustomUI {
 	/**
 	 * Set Showing of the Challenge Info
 	 *
-	 * @param bool $visible
+	 * @param bool $visible Whether the Challenge Info should be shown
 	 * @return \FML\CustomUI
 	 */
 	public function setChallengeInfoVisible($visible) {
@@ -59,7 +58,7 @@ class CustomUI {
 	/**
 	 * Set Showing of the Net Infos
 	 *
-	 * @param bool $visible
+	 * @param bool $visible Whether the Net Infos should be shown
 	 * @return \FML\CustomUI
 	 */
 	public function setNetInfosVisible($visible) {
@@ -70,7 +69,7 @@ class CustomUI {
 	/**
 	 * Set Showing of the Chat
 	 *
-	 * @param bool $visible
+	 * @param bool $visible Whether the Chat should be shown
 	 * @return \FML\CustomUI
 	 */
 	public function setChatVisible($visible) {
@@ -81,7 +80,7 @@ class CustomUI {
 	/**
 	 * Set Showing of the Checkpoint List
 	 *
-	 * @param bool $visible
+	 * @param bool $visible Whether the Checkpoint should be shown
 	 * @return \FML\CustomUI
 	 */
 	public function setCheckpointListVisible($visible) {
@@ -92,7 +91,7 @@ class CustomUI {
 	/**
 	 * Set Showing of Round Scores
 	 *
-	 * @param bool $visible
+	 * @param bool $visible Whether the Round Scores should be shown
 	 * @return \FML\CustomUI
 	 */
 	public function setRoundScoresVisible($visible) {
@@ -103,7 +102,7 @@ class CustomUI {
 	/**
 	 * Set Showing of the Scoretable
 	 *
-	 * @param bool $visible
+	 * @param bool $visible Whether the Scoretable should be shown
 	 * @return \FML\CustomUI
 	 */
 	public function setScoretableVisible($visible) {
@@ -114,7 +113,7 @@ class CustomUI {
 	/**
 	 * Set Global Showing
 	 *
-	 * @param bool $visible
+	 * @param bool $visible Wether the UI should be disabled completely
 	 * @return \FML\CustomUI
 	 */
 	public function setGlobalVisible($visible) {
@@ -125,19 +124,18 @@ class CustomUI {
 	/**
 	 * Render the XML Document
 	 *
-	 * @param \DOMDocument $domDocument
+	 * @param \DOMDocument $domDocument (optional) DomDocument for which the XML Element should be rendered
 	 * @return \DOMDocument
 	 */
 	public function render($domDocument = null) {
-		$isChild = false;
-		if ($domDocument) {
-			$isChild = true;
-		}
+		$isChild = (bool) $domDocument;
 		if (!$isChild) {
 			$domDocument = new \DOMDocument('1.0', $this->encoding);
 		}
 		$xmlElement = $domDocument->createElement($this->tagName);
-		$domDocument->appendChild($xmlElement);
+		if (!$isChild) {
+			$domDocument->appendChild($xmlElement);
+		}
 		$settings = $this->getSettings();
 		foreach ($settings as $setting => $value) {
 			if ($value === null) continue;
