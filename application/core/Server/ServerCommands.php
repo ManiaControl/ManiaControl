@@ -23,6 +23,8 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 	 */
 	const ACTION_SET_PAUSE   = 'ServerCommands.SetPause';
 	const ACTION_CANCEL_VOTE = 'ServerCommands.CancelVote';
+	const CB_VOTE_CANCELED   = 'ServerCommands.VoteCanceled';
+
 	/**
 	 * Private properties
 	 */
@@ -90,6 +92,9 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 			return;
 		}
 		$this->maniaControl->chat->sendInformation('$<' . $player->nickname . '$> canceled the Vote!');
+
+		// Trigger callback
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_VOTE_CANCELED, array(self::CB_VOTE_CANCELED, $player));
 	}
 
 	/**

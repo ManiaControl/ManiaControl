@@ -10,9 +10,11 @@ use FML\Controls\Labels\Label_Button;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
-use FML\Controls\Quads\Quad_Icons128x128_1;
+use FML\Controls\Quads\Quad_Icons128x32_1;
 use FML\Controls\Quads\Quad_Icons64x64_1;
+use FML\Controls\Quads\Quad_UIConstruction_Buttons;
 use FML\ManiaLink;
+use FML\Script\Script;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ColorUtil;
@@ -20,6 +22,7 @@ use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
+use ManiaControl\Server\ServerCommands;
 
 
 /**
@@ -31,7 +34,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	/**
 	 * Constants
 	 */
-	const PLUGIN_ID      = 9;
+	const PLUGIN_ID      = 10;
 	const PLUGIN_VERSION = 0.1;
 	const PLUGIN_NAME    = 'CustomVotesPlugin';
 	const PLUGIN_AUTHOR  = 'kremsy and steeffeen';
@@ -58,6 +61,8 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 	const ACTION_POSITIVE_VOTE = 'CustomVotesPlugin.PositivVote';
 	const ACTION_NEGATIVE_VOTE = 'CustomVotesPlugin.NegativeVote';
+	const ACTION_START_VOTE    = 'CustomVotesPlugin.StartVote.';
+
 
 	const CB_CUSTOM_VOTE_FINISHED = 'CustomVotesPlugin.CustomVoteFinished';
 
@@ -85,6 +90,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 		$this->maniaControl->commandManager->registerCommandListener('vote', $this, 'chat_vote');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_1_SECOND, $this, 'handle1Second');
+		$this->maniaControl->callbackManager->registerCallbackListener(ServerCommands::CB_VOTE_CANCELED, $this, 'handleVoteCanceled');
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_POSITIVE_VOTE, $this, 'handlePositiveVote');
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_NEGATIVE_VOTE, $this, 'handleNegativeVote');
 
@@ -106,7 +112,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_DEFAULT_RATIO, 0.65);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SPECTATOR_ALLOW_VOTE, false);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SPECTATOR_ALLOW_START_VOTE, false);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_VOTE_TIME, 20);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_VOTE_TIME, 60);
 
 		$this->defineVote("teambalance", "Team Balance");
 		$this->defineVote("skipmap", "Skip Map");
@@ -160,7 +166,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$maniaLink = new ManiaLink(self::MLID_ICON);
 		$script    = $maniaLink->getScript();
 
-		// Donate Menu Icon Frame
+		//Custom Vote Menu Iconsframe
 		$frame = new Frame();
 		$maniaLink->add($frame);
 		$frame->setPosition($posX, $posY);
@@ -179,10 +185,100 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$itemQuad->setSize($itemSize, $itemSize);
 		$iconFrame->add($itemQuad);
 
+		//Define Description Label
+		$menuEntries      = 4;
+		$descriptionFrame = new Frame();
+		$maniaLink->add($descriptionFrame);
+		$descriptionFrame->setPosition($posX - $menuEntries * $itemSize * 1.15 - 6, $posY);
+
+		$descriptionLabel = new Label();
+		$descriptionFrame->add($descriptionLabel);
+		$descriptionLabel->setAlign(Control::RIGHT, Control::TOP);
+		$descriptionLabel->setSize(40, 4);
+		$descriptionLabel->setTextSize(1.4);
+		$descriptionLabel->setTextColor('fff');
+
+		//Popout Frame
+		$popoutFrame = new Frame();
+		$maniaLink->add($popoutFrame);
+		$popoutFrame->setPosition($posX - $itemSize * 0.5, $posY);
+		$popoutFrame->setHAlign(Control::RIGHT);
+		$popoutFrame->setSize(4 * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
+
+		$backgroundQuad = new Quad();
+		$popoutFrame->add($backgroundQuad);
+		$backgroundQuad->setHAlign(Control::RIGHT);
+		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
+		$backgroundQuad->setSize($menuEntries * $itemSize * 1.15 + 2, $itemSize * $itemMarginFactorY);
+
+		$script->addToggle($itemQuad, $popoutFrame);
+
+		//Menu Items
+		$x = -1;
+
+		//TODO build dynamically
+		//Vote Balance Teams
+		$itemQuad = new Quad_Icons128x32_1();
+		$popoutFrame->add($itemQuad);
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_RT_Team);
+		$itemQuad->setAction(self::ACTION_START_VOTE . 'teambalance');
+		$itemQuad->setSize($itemSize, $itemSize);
+		$itemQuad->setX($x);
+		$itemQuad->setHAlign(Control::RIGHT);
+		$description = '$s' . 'Vote for Team-Balance';
+		$script->addTooltip($itemQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $description));
+		$x -= $itemSize * 1.05;
+
+		// Vote SkipMap
+		$itemQuad = new Quad_Icons64x64_1();
+		$popoutFrame->add($itemQuad);
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ArrowFastNext);
+		$itemQuad->setAction(self::ACTION_START_VOTE . 'skipmap');
+		$itemQuad->setSize($itemSize, $itemSize);
+		$itemQuad->setX($x);
+		$itemQuad->setHAlign(Control::RIGHT);
+		$description = '$s' . 'Vote for Skip-Map';
+		$script->addTooltip($itemQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $description));
+		$x -= $itemSize * 1.05;
+
+		// Set Pause
+		$itemQuad = new Quad_Icons128x32_1(); //TODO check if mode supports it
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ManiaLinkSwitch);
+		$popoutFrame->add($itemQuad);
+		$itemQuad->setAction(self::ACTION_START_VOTE . 'pausegame');
+		$itemQuad->setSize($itemSize, $itemSize);
+		$itemQuad->setX($x);
+		$itemQuad->setHAlign(Control::RIGHT);
+		$description = '$s' . 'Vote for a pause of Current Game';
+		$script->addTooltip($itemQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $description));
+		$x -= $itemSize * 1.05;
+
+
+		// Vote RestartMap
+		$itemQuad = new Quad_UIConstruction_Buttons();
+		$popoutFrame->add($itemQuad);
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Reload);
+		$itemQuad->setAction(self::ACTION_START_VOTE . 'restartmap');
+		$itemQuad->setSize($itemSize, $itemSize);
+		$itemQuad->setX($x);
+		$itemQuad->setHAlign(Control::RIGHT);
+		$description = '$s' . 'Vote for Restart-Map';
+		$script->addTooltip($itemQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $description));
+		//$x -= $itemSize * 1.05;
 
 		// Send manialink
 		$manialinkText = $maniaLink->render()->saveXML();
 		$this->maniaControl->manialinkManager->sendManialink($manialinkText);
+	}
+
+	/**
+	 * Destroy the Vote on Canceled Callback
+	 *
+	 * @param array $callback
+	 */
+	public function handleVoteCanceled(array $callback) {
+		//reset vote
+		$this->destroyVote();
 	}
 
 	/**
@@ -224,11 +320,25 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	}
 
 	/**
+	 * Handles the ManialinkPageAnswers and start a vote if a button in the panel got clicked
 	 *
 	 * @param array $callback
 	 */
 	public function handleManialinkPageAnswer(array $callback) {
 		//TODO Fx buttons
+
+		$actionId    = $callback[1][2];
+		$actionArray = explode('.', $actionId);
+		if(count($actionArray) <= 2) {
+			return;
+		}
+
+		$voteIndex = $actionArray[2];
+		if(isset($this->voteCommands[$voteIndex])) {
+			$login  = $callback[1][1];
+			$player = $this->maniaControl->playerManager->getPlayer($login);
+			$this->startVote($player, $voteIndex);
+		}
 	}
 
 	/**
@@ -343,19 +453,26 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 		//Check if vote is over
 		if($timeUntilExpire <= 0) {
-			$emptyManialink = new ManiaLink(self::MLID_WIDGET);
-			$manialinkText  = $emptyManialink->render()->saveXML();
-			$this->maniaControl->manialinkManager->sendManialink($manialinkText);
-
 			// Trigger callback
 			$this->maniaControl->callbackManager->triggerCallback(self::CB_CUSTOM_VOTE_FINISHED, array(self::CB_CUSTOM_VOTE_FINISHED, $this->currentVote["Index"], $votePercentage));
 
 			//reset vote
-			$this->playersVotedPositiv = 0;
-			$this->playersVoted        = null;
-			$this->currentVote         = null;
-			$voter                     = null;
+			$this->destroyVote();
 		}
+	}
+
+	/**
+	 * Destroys the current Vote
+	 */
+	private function destroyVote() {
+		$emptyManialink = new ManiaLink(self::MLID_WIDGET);
+		$manialinkText  = $emptyManialink->render()->saveXML();
+		$this->maniaControl->manialinkManager->sendManialink($manialinkText);
+
+		$this->playersVotedPositiv = 0;
+		$this->playersVoted        = null;
+		$this->currentVote         = null;
+		$this->voter               = null;
 	}
 
 	/**
