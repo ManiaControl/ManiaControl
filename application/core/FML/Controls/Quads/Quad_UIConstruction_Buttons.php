@@ -5,7 +5,7 @@ namespace FML\Controls\Quads;
 use FML\Controls\Quad;
 
 /**
- * Quad class for style 'UIConstruction_Buttons'
+ * Quad Class for 'UIConstruction_Buttons' Style
  *
  * @author steeffeen
  */

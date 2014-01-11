@@ -3,7 +3,7 @@
 namespace FML\Types;
 
 /**
- * Interface for elements with AutoNewLine attribute
+ * Interface for Elements with AutoNewLine Attribute
  *
  * @author steeffeen
  */
@@ -12,8 +12,7 @@ interface NewLineable {
 	/**
 	 * Set Auto New Line
 	 *
-	 * @param bool $autoNewLine
-	 *        	If the Control should insert New Lines automatically
+	 * @param bool $autoNewLine Whether the Control should insert New Lines automatically
 	 */
 	public function setAutoNewLine($autoNewLine);
 }

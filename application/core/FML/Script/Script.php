@@ -15,7 +15,7 @@ class Script {
 	/**
 	 * Constants
 	 */
-	const CLASS_TOOLTIPS = 'FML_Tooltips';
+	const CLASS_TOOLTIP = 'FML_Tooltip';
 	const CLASS_MENU = 'FML_Menu';
 	const CLASS_MENUBUTTON = 'FML_MenuButton';
 	const CLASS_PAGE = 'FML_Page';
@@ -25,11 +25,12 @@ class Script {
 	const CLASS_MAPINFO = 'FML_MapInfo';
 	const CLASS_SOUND = 'FML_Sound';
 	const CLASS_TOGGLE = 'FML_Toggle';
-	const CLASS_SHOW = 'FML_Show';
-	const CLASS_HIDE = 'FML_Hide';
-	const OPTION_TOOLTIP_STAYONCLICK = 'FML_Tooltip_StayOnClick';
-	const OPTION_TOOLTIP_INVERT = 'FML_Tooltip_Invert';
-	const OPTION_TOOLTIP_TEXT = 'FML_Tooltip_Text';
+	const CLASS_SPECTATE = 'FML_Spectate';
+	const OPTION_TOOLTIP_STAYONCLICK = 'FML_StayOnClick_Tooltip';
+	const OPTION_TOOLTIP_INVERT = 'FML_Invert_Tooltip';
+	const OPTION_TOOLTIP_TEXT = 'FML_Text_Tooltip';
+	const OPTION_TOGGLE_SHOW = 'FML_Show_Toggle';
+	const OPTION_TOGGLE_HIDE = 'FML_Hide_Toggle';
 	const LABEL_ONINIT = 'OnInit';
 	const LABEL_LOOP = 'Loop';
 	const LABEL_ENTRYSUBMIT = 'EntrySubmit';
@@ -38,6 +39,7 @@ class Script {
 	const LABEL_MOUSEOUT = 'MouseOut';
 	const LABEL_MOUSEOVER = 'MouseOver';
 	const CONSTANT_TOOLTIPTEXTS = 'C_FML_TooltipTexts';
+	const FUNCTION_GETTOOLTIPCONTROLID = 'FML_GetTooltipControlId';
 	const FUNCTION_SETTOOLTIPTEXT = 'FML_SetTooltipText';
 	const FUNCTION_TOGGLE = 'FML_Toggle';
 	
@@ -56,12 +58,13 @@ class Script {
 	protected $mapInfo = false;
 	protected $sounds = array();
 	protected $toggles = false;
+	protected $spectate = false;
 
 	/**
 	 * Set an Include of the Script
 	 *
-	 * @param string $namespace
-	 * @param string $file
+	 * @param string $namespace Namespace used for the Include
+	 * @param string $file Included File Url
 	 * @return \FML\Script\Script
 	 */
 	public function setInclude($namespace, $file) {
@@ -72,8 +75,8 @@ class Script {
 	/**
 	 * Set a Constant of the Script
 	 *
-	 * @param string $name
-	 * @param string $value
+	 * @param string $name Variable Name of the Constant
+	 * @param string $value Constant Value
 	 * @return \FML\Script\Script
 	 */
 	public function setConstant($name, $value) {
@@ -84,8 +87,8 @@ class Script {
 	/**
 	 * Set a Function of the Script
 	 *
-	 * @param string $name
-	 * @param string $coding
+	 * @param string $name Function Name
+	 * @param string $coding Complete Function Implementation including Declaration
 	 * @return \FML\Script\Script
 	 */
 	public function setFunction($name, $coding) {
@@ -110,8 +113,8 @@ class Script {
 		$tooltipControl->setVisible(false);
 		$hoverControl->checkId();
 		$hoverControl->setScriptEvents(true);
-		$hoverControl->addClass(self::CLASS_TOOLTIPS);
-		$hoverControl->addClass($tooltipControl->getId());
+		$hoverControl->addClass(self::CLASS_TOOLTIP);
+		$hoverControl->addClass(self::CLASS_TOOLTIP . '-' . $tooltipControl->getId());
 		$options = $this->spliceParameters(func_get_args(), 2);
 		foreach ($options as $option => $value) {
 			if ($option == self::OPTION_TOOLTIP_TEXT) {
@@ -139,9 +142,9 @@ class Script {
 	/**
 	 * Add a Menu Behavior
 	 *
-	 * @param Control $clickControl
-	 * @param Control $menuControl
-	 * @param string $menuId
+	 * @param Control $clickControl The Control showing the Menu
+	 * @param Control $menuControl The Menu to show
+	 * @param string $menuId (optional) An identifier to specify the Menu Group
 	 * @return \FML\Script\Script
 	 */
 	public function addMenu(Control $clickControl, Control $menuControl, $menuId = null) {
@@ -156,7 +159,6 @@ class Script {
 		$clickControl->setScriptEvents(true);
 		$clickControl->addClass(self::CLASS_MENUBUTTON);
 		$clickControl->addClass($menuId . '-' . $menuControl->getId());
-		$this->setInclude('TextLib', 'TextLib');
 		$this->menus = true;
 		return $this;
 	}
@@ -164,9 +166,9 @@ class Script {
 	/**
 	 * Add a Page for a Paging Behavior
 	 *
-	 * @param Control $pageControl
-	 * @param int $pageNumber
-	 * @param string $pagesId
+	 * @param Control $pageControl The Page to display
+	 * @param int $pageNumber The Number of the Page
+	 * @param string $pagesId (optional) An identifier to specify the Pages Group
 	 * @return \FML\Script\Script
 	 */
 	public function addPage(Control $pageControl, $pageNumber, $pagesId = null) {
@@ -181,9 +183,9 @@ class Script {
 	/**
 	 * Add a Pager Button for a Paging Behavior
 	 *
-	 * @param Control $pagerControl
-	 * @param int $pagingAction
-	 * @param string $pagesId
+	 * @param Control $pagerControl The Control to leaf through the Pages
+	 * @param int $pagingAction The Number of Pages the Pager leafs
+	 * @param string $pagesId (optional) An identifier to specify the Pages Group
 	 * @return \FML\Script\Script
 	 */
 	public function addPager(Control $pagerControl, $pagingAction, $pagesId = null) {
@@ -197,7 +199,6 @@ class Script {
 		$pagerControl->addClass(self::CLASS_PAGER);
 		$pagerControl->addClass(self::CLASS_PAGER . '-I' . $pagesId);
 		$pagerControl->addClass(self::CLASS_PAGER . '-A' . $pagingAction);
-		$this->setInclude('TextLib', 'TextLib');
 		$this->pages = true;
 		return $this;
 	}
@@ -205,7 +206,7 @@ class Script {
 	/**
 	 * Add a Label that shows the current Page Number
 	 *
-	 * @param Label $pageLabel
+	 * @param Label $pageLabel The Label showing the Number of the currently displayed Page
 	 * @param string $pagesId
 	 * @return \FML\Script\Script
 	 */
@@ -218,9 +219,10 @@ class Script {
 
 	/**
 	 * Add a Button Behavior that will open the Built-In Player Profile
+	 * (Works only for Server ManiaLinks)
 	 *
-	 * @param Control $profileControl
-	 * @param string $playerLogin
+	 * @param Control $profileControl The Control opening a Profile
+	 * @param string $playerLogin The Player Login
 	 * @return \FML\Script\Script
 	 */
 	public function addProfileButton(Control $profileControl, $playerLogin) {
@@ -230,18 +232,17 @@ class Script {
 		}
 		$profileControl->setScriptEvents(true);
 		$profileControl->addClass(self::CLASS_PROFILE);
-		if ($playerLogin) {
-			$profileControl->addClass(self::CLASS_PROFILE . '-' . $playerLogin);
-		}
-		$this->setInclude('TextLib', 'TextLib');
+		$playerLogin = (string) $playerLogin;
+		$profileControl->addClass(self::CLASS_PROFILE . '-' . $playerLogin);
 		$this->profile = true;
 		return $this;
 	}
 
 	/**
 	 * Add a Button Behavior that will open the Built-In Map Info
+	 * (Works only on a Server)
 	 *
-	 * @param Control $mapInfoControl
+	 * @param Control $mapInfoControl The Control opening the Map Info
 	 * @return \FML\Script\Script
 	 */
 	public function addMapInfoButton(Control $mapInfoControl) {
@@ -257,12 +258,13 @@ class Script {
 
 	/**
 	 * Add a Sound Playing for the Control
+	 * (Works only for Server ManiaLinks)
 	 *
-	 * @param Control $control
-	 * @param string $soundName
-	 * @param int $soundVariant
-	 * @param float $soundVolume
-	 * @param string $eventLabel
+	 * @param Control $control The Control playing a Sound
+	 * @param string $soundName The Sound to play
+	 * @param int $soundVariant (optional) Sound Variant
+	 * @param float $soundVolume (optional) Sound Volume
+	 * @param string $eventLabel (optional) The Event Label on which the Sound should be played
 	 * @return \FML\Script\Script
 	 */
 	public function addSound(Control $control, $soundName, $soundVariant = 0, $soundVolume = 1., $eventLabel = self::LABEL_MOUSECLICK) {
@@ -286,35 +288,56 @@ class Script {
 	/**
 	 * Add a Toggling Behavior
 	 *
-	 * @param Control $clickControl
-	 * @param Control $toggleControl
-	 * @param string $mode
+	 * @param Control $clickControl The Control that toggles another Control on Click
+	 * @param Control $toggleControl The Control to toggle
+	 * @param string $mode (optional) Whether the Visibility should be toggled or only en-/disabled
 	 * @return \FML\Script\Script
 	 */
-	public function addToggle(Control $clickControl, Control $toggleControl, $mode = self::CLASS_TOGGLE) {
+	public function addToggle(Control $clickControl, Control $toggleControl, $option = null) {
 		if (!($clickControl instanceof Scriptable)) {
 			trigger_error('Scriptable Control needed as ClickControl for Toggles!');
 			return $this;
 		}
 		$toggleControl->checkId();
-		if ($mode == self::CLASS_HIDE) {
+		if ($option == self::OPTION_TOGGLE_HIDE) {
 			$toggleControl->setVisible(true);
+			$clickControl->addClass($option);
 		}
-		else {
+		else if ($option == self::OPTION_TOGGLE_SHOW) {
 			$toggleControl->setVisible(false);
+			$clickControl->addClass($option);
 		}
 		$clickControl->setScriptEvents(true);
 		$clickControl->addClass(self::CLASS_TOGGLE);
-		$clickControl->addClass($mode);
-		$clickControl->addClass($toggleControl->getId());
+		$clickControl->addClass(self::CLASS_TOGGLE . '-' . $toggleControl->getId());
 		$this->toggles = true;
+		return $this;
+	}
+
+	/**
+	 * Add a Spectate Button Behavior
+	 *
+	 * @param Control $clickControl The Control that works as Spectate Button
+	 * @param string $spectateTargetLogin The Login of the Player to Spectate
+	 * @return \FML\Script\Script
+	 */
+	public function addSpectateButton(Control $clickControl, $spectateTargetLogin) {
+		if (!($clickControl instanceof Scriptable)) {
+			trigger_error('Scriptable Control needed as ClickControl for Spectating!');
+			return $this;
+		}
+		$clickControl->setScriptEvents(true);
+		$clickControl->addClass(self::CLASS_SPECTATE);
+		$spectateTargetLogin = (string) $spectateTargetLogin;
+		$clickControl->addClass(self::CLASS_SPECTATE . '-' . $spectateTargetLogin);
+		$this->spectate = true;
 		return $this;
 	}
 
 	/**
 	 * Create the Script XML Tag
 	 *
-	 * @param \DOMDocument $domDocument
+	 * @param \DOMDocument $domDocument DOMDocument for which the XML Element should be created
 	 * @return \DOMElement
 	 */
 	public function render(\DOMDocument $domDocument) {
@@ -343,6 +366,7 @@ class Script {
 		$scriptText .= $this->getMapInfoLabels();
 		$scriptText .= $this->getSoundLabels();
 		$scriptText .= $this->getToggleLabels();
+		$scriptText .= $this->getSpectateLabels();
 		$scriptText .= $this->getMainFunction();
 		return $scriptText;
 	}
@@ -438,6 +462,7 @@ class Script {
 	 */
 	private function buildTooltipFunctions() {
 		if (!$this->tooltips) return;
+		$this->setInclude('TextLib', 'TextLib');
 		$setFunctionText = "
 Void " . self::FUNCTION_SETTOOLTIPTEXT . "(CMlControl _TooltipControl, CMlControl _HoverControl) {
 	if (!_TooltipControl.Visible) return;
@@ -447,6 +472,13 @@ Void " . self::FUNCTION_SETTOOLTIPTEXT . "(CMlControl _TooltipControl, CMlContro
 	if (!" . self::CONSTANT_TOOLTIPTEXTS . "[TooltipId].existskey(HoverId)) return;
 	declare Label = (_TooltipControl as CMlLabel);
 	Label.Value = " . self::CONSTANT_TOOLTIPTEXTS . "[TooltipId][HoverId];
+}
+
+Text " . self::FUNCTION_GETTOOLTIPCONTROLID . "(Text _ControlClass) {
+	declare ClassParts = TextLib::Split(\"-\", _ControlClass);
+	if (ClassParts.count < 2) return \"\”;
+	if (ClassParts[0] != \"" . self::CLASS_TOOLTIP . "\") return \"\";
+	return ClassParts[1];
 }";
 		$this->setFunction(self::FUNCTION_SETTOOLTIPTEXT, $setFunctionText);
 	}
@@ -457,25 +489,29 @@ Void " . self::FUNCTION_SETTOOLTIPTEXT . "(CMlControl _TooltipControl, CMlContro
 	 * @return string
 	 */
 	private function getTooltipLabels() {
-		if (!$this->tooltips) return "";
+		if (!$this->tooltips) return '';
 		$mouseOverScript = "
-if (Event.Control.HasClass(\"" . self::CLASS_TOOLTIPS . "\")) {
+if (Event.Control.HasClass(\"" . self::CLASS_TOOLTIP . "\")) {
 	declare Invert = Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_INVERT . "\");
 	foreach (ControlClass in Event.Control.ControlClasses) {
-		declare TooltipControl <=> Page.GetFirstChild(ControlClass);
+		declare ControlId = " . self::FUNCTION_GETTOOLTIPCONTROLID . "(ControlClass);
+		if (ControlId == \"\") continue;
+		declare TooltipControl <=> Page.GetFirstChild(ControlId);
 		if (TooltipControl == Null) continue;
 		TooltipControl.Visible = !Invert;
 		" . self::FUNCTION_SETTOOLTIPTEXT . "(TooltipControl, Event.Control);
 	}
 }";
 		$mouseOutScript = "
-if (Event.Control.HasClass(\"" . self::CLASS_TOOLTIPS . "\")) {
+if (Event.Control.HasClass(\"" . self::CLASS_TOOLTIP . "\")) {
 	declare FML_Clicked for Event.Control = False;
 	declare StayOnClick = Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_STAYONCLICK . "\");
 	if (!StayOnClick || !FML_Clicked) {
 		declare Invert = Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_INVERT . "\");
 		foreach (ControlClass in Event.Control.ControlClasses) {
-			declare TooltipControl <=> Page.GetFirstChild(ControlClass);
+			declare ControlId = " . self::FUNCTION_GETTOOLTIPCONTROLID . "(ControlClass);
+			if (ControlId == \"\") continue;
+			declare TooltipControl <=> Page.GetFirstChild(ControlId);
 			if (TooltipControl == Null) continue;
 			TooltipControl.Visible = Invert;
 			" . self::FUNCTION_SETTOOLTIPTEXT . "(TooltipControl, Event.Control);
@@ -483,7 +519,7 @@ if (Event.Control.HasClass(\"" . self::CLASS_TOOLTIPS . "\")) {
 	}
 }";
 		$mouseClickScript = "
-if (Event.Control.HasClass(\"" . self::CLASS_TOOLTIPS . "\")) {
+if (Event.Control.HasClass(\"" . self::CLASS_TOOLTIP . "\")) {
 	declare Handle = True;
 	declare Show = False;
 	declare StayOnClick = Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_STAYONCLICK . "\");
@@ -501,7 +537,9 @@ if (Event.Control.HasClass(\"" . self::CLASS_TOOLTIPS . "\")) {
 	if (Handle) {
 		declare Invert = Event.Control.HasClass(\"" . self::OPTION_TOOLTIP_INVERT . "\");
 		foreach (ControlClass in Event.Control.ControlClasses) {
-			declare TooltipControl <=> Page.GetFirstChild(ControlClass);
+			declare ControlId = " . self::FUNCTION_GETTOOLTIPCONTROLID . "(ControlClass);
+			if (ControlId == \"\") continue;
+			declare TooltipControl <=> Page.GetFirstChild(ControlId);
 			if (TooltipControl == Null) continue;
 			TooltipControl.Visible = Show && !Invert;
 			" . self::FUNCTION_SETTOOLTIPTEXT . "(TooltipControl, Event.Control);
@@ -520,14 +558,15 @@ if (Event.Control.HasClass(\"" . self::CLASS_TOOLTIPS . "\")) {
 	 * @return string
 	 */
 	private function getMenuLabels() {
-		if (!$this->menus) return "";
+		if (!$this->menus) return '';
+		$this->setInclude('TextLib', 'TextLib');
 		$mouseClickScript = "
 if (Event.Control.HasClass(\"" . self::CLASS_MENUBUTTON . "\")) {
 	declare Text MenuIdClass;
 	declare Text MenuControlId;
 	foreach (ControlClass in Event.Control.ControlClasses) {
 		declare ClassParts = TextLib::Split(\"-\", ControlClass);
-		if (ClassParts.count <= 1) continue;
+		if (ClassParts.count < 2) continue;
 		MenuIdClass = ClassParts[0];
 		MenuControlId = ClassParts[1];
 		break;
@@ -549,6 +588,7 @@ if (Event.Control.HasClass(\"" . self::CLASS_MENUBUTTON . "\")) {
 	 */
 	private function getPagesLabels() {
 		if (!$this->pages) return "";
+		$this->setInclude('TextLib', 'TextLib');
 		$pagesNumberPrefix = self::CLASS_PAGE . '-P';
 		$pagesNumberPrefixLength = strlen($pagesNumberPrefix);
 		$pagesScript = "
@@ -557,7 +597,7 @@ if (Event.Control.HasClass(\"" . self::CLASS_PAGER . "\")) {
 	declare Integer PagingAction;
 	foreach (ControlClass in Event.Control.ControlClasses) {
 		declare ClassParts = TextLib::Split(\"-\", ControlClass);
-		if (ClassParts.count <= 1) continue;
+		if (ClassParts.count < 2) continue;
 		if (ClassParts[0] != \"" . self::CLASS_PAGER . "\") continue;
 		switch (TextLib::SubText(ClassParts[1], 0, 1)) {
 			case \"I\": {
@@ -627,14 +667,19 @@ if (Event.Control.HasClass(\"" . self::CLASS_PAGER . "\")) {
 	 */
 	private function getProfileLabels() {
 		if (!$this->profile) return "";
+		$this->setInclude('TextLib', 'TextLib');
 		$profileScript = "
 if (Event.Control.HasClass(\"" . self::CLASS_PROFILE . "\")) {
 	declare Login = LocalUser.Login;
 	foreach (ControlClass in Event.Control.ControlClasses) {
 		declare ClassParts = TextLib::Split(\"-\", ControlClass);
-		if (ClassParts.count <= 1) continue;
+		if (ClassParts.count < 2) continue;
 		if (ClassParts[0] != \"" . self::CLASS_PROFILE . "\") continue;
-		Login = ClassParts[1];
+		Login = \"\";
+		for (Index, 1, ClassParts.count - 1) {
+			Login ^= ClassParts[Index];
+			if (Index < ClassParts.count - 1) Login ^= \"-\";
+		}
 		break;
 	}
 	ShowProfile(Login);
@@ -698,18 +743,23 @@ if (Event.Control.HasClass(\"" . self::CLASS_SOUND . "\")) {
 	 */
 	private function getToggleLabels() {
 		if (!$this->toggles) return '';
+		$this->setInclude('TextLib', 'TextLib');
 		$toggleScript = "
 if (Event.Control.HasClass(\"" . self::CLASS_TOGGLE . "\")) {
-	declare HasShow = Event.Control.HasClass(\"" . self::CLASS_SHOW . "\");
-	declare HasHide = Event.Control.HasClass(\"" . self::CLASS_HIDE . "\");
+	declare HasShow = Event.Control.HasClass(\"" . self::OPTION_TOGGLE_SHOW . "\");
+	declare HasHide = Event.Control.HasClass(\"" . self::OPTION_TOGGLE_HIDE . "\");
 	declare Toggle = True;
 	declare Show = True;
 	if (HasShow || HasHide) {
 		Toggle = False;
 		Show = HasShow;
 	}
+	declare PrefixLength = TextLib::Length(\"" . self::CLASS_TOGGLE . "\");
 	foreach (ControlClass in Event.Control.ControlClasses) {
-		declare ToggleControl <=> Page.GetFirstChild(ControlClass);
+		declare ClassParts = TextLib::Split(\"-\", ControlClass);
+		if (ClassParts.count < 2) continue;
+		if (ClassParts[0] != \"" . self::CLASS_TOGGLE . "\") continue;
+		declare ToggleControl <=> Page.GetFirstChild(ClassParts[1]);
 		if (ToggleControl == Null) continue;
 		if (Toggle) {
 			ToggleControl.Visible = !ToggleControl.Visible;
@@ -720,6 +770,33 @@ if (Event.Control.HasClass(\"" . self::CLASS_TOGGLE . "\")) {
 }";
 		$toggleScript = Builder::getLabelImplementationBlock(self::LABEL_MOUSECLICK, $toggleScript);
 		return $toggleScript;
+	}
+
+	/**
+	 * Get the Spectate labels
+	 *
+	 * @return string
+	 */
+	private function getSpectateLabels() {
+		if (!$this->spectate) return '';
+		$spectateScript = "
+if (Event.Control.HasClass(\"" . self::CLASS_SPECTATE . "\")) {
+	declare Login = \"\";
+	foreach (ControlClass in Event.Control.ControlClass) {
+		declare ClassParts = TextLib::Split(\"-\", ControlClass);
+		if (ClassParts.count < 2) continue;
+		if (ClassParts[0] != \"" . self::CLASS_SPECTATE . "\") continue;
+		for (Index, 1, ClassParts.count - 1) {
+			Login ^= ClassParts[Index];
+			if (Index < ClassParts.count - 1) Login ^= \"-\";
+		}
+	}
+	if (Login != \"\") {
+		SetSpectateTarget(Login);
+	}
+}";
+		$spectateScript = Builder::getLabelImplementationBlock(self::LABEL_MOUSECLICK, $spectateScript);
+		return $spectateScript;
 	}
 
 	/**
@@ -735,8 +812,8 @@ if (Event.Control.HasClass(\"" . self::CLASS_TOGGLE . "\")) {
 	/**
 	 * Return the Array of additional optional Parameters
 	 *
-	 * @param array $args
-	 * @param int $offset
+	 * @param array $args The Array of Function Parameters
+	 * @param int $offset The Number of obligatory Parameters
 	 * @return array
 	 */
 	private function spliceParameters(array $params, $offset) {

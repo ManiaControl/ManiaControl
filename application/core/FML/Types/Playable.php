@@ -3,7 +3,7 @@
 namespace FML\Types;
 
 /**
- * Interface for elements with media attributes
+ * Interface for Elements with Media Attributes
  *
  * @author steeffeen
  */
@@ -12,40 +12,35 @@ interface Playable {
 	/**
 	 * Set Data
 	 *
-	 * @param string $data
-	 *        	Media Url
+	 * @param string $data Media Url
 	 */
 	public function setData($data);
 
 	/**
 	 * Set Play
 	 *
-	 * @param bool $play
-	 *        	If the Control should start playing automatically
+	 * @param bool $play Whether the Control should start playing automatically
 	 */
 	public function setPlay($play);
 
 	/**
 	 * Set Looping
 	 *
-	 * @param bool $looping
-	 *        	If the Control should playback looping
+	 * @param bool $looping Whether the Control should play looping
 	 */
 	public function setLooping($looping);
 
 	/**
 	 * Set Music
 	 *
-	 * @param bool $music
-	 *        	If the Control is Background Music
+	 * @param bool $music Whether the Control represents Background Music
 	 */
 	public function setMusic($music);
 
 	/**
 	 * Set Volume
 	 *
-	 * @param float $volume
-	 *        	Control Volume
+	 * @param float $volume Media Volume
 	 */
 	public function setVolume($volume);
 }

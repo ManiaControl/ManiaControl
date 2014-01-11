@@ -5,7 +5,7 @@ namespace FML\Controls\Quads;
 use FML\Controls\Quad;
 
 /**
- * Quad class for style 'UiSMSpectatorScoreBig'
+ * Quad Class for 'UiSMSpectatorScoreBig' Style
  *
  * @author steeffeen
  */

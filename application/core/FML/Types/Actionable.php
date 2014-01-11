@@ -3,17 +3,30 @@
 namespace FML\Types;
 
 /**
- * Interface for elements that support the action attribute
+ * Interface for Elements that support the Action Attribute
  *
  * @author steeffeen
  */
 interface Actionable {
+	/**
+	 * Constants
+	 */
+	const ACTIONKEY_F5 = 1;
+	const ACTIONKEY_F6 = 2;
+	const ACTIONKEY_F7 = 3;
+	const ACTIONKEY_F8 = 4;
 
 	/**
-	 * Set action
+	 * Set Action
 	 *
-	 * @param string $action
-	 *        	Action Name
+	 * @param string $action Action Name
 	 */
 	public function setAction($action);
+
+	/**
+	 * Set Action Key
+	 *
+	 * @param int $actionKey Action Key Number
+	 */
+	public function setActionKey($actionKey);
 }

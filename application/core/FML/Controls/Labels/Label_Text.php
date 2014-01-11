@@ -5,7 +5,7 @@ namespace FML\Controls\Labels;
 use FML\Controls\Label;
 
 /**
- * Label class for text styles
+ * Label Class for Text Styles
  *
  * @author steeffeen
  */

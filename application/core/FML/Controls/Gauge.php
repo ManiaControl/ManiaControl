@@ -5,7 +5,8 @@ namespace FML\Controls;
 use FML\Types\Styleable;
 
 /**
- * Class representing CMlGauge
+ * Gauge Element
+ * (CMlGauge)
  *
  * @author steeffeen
  */
@@ -14,6 +15,7 @@ class Gauge extends Control implements Styleable {
 	 * Protected Properties
 	 */
 	protected $ratio = 1.;
+	// TODO: validate grading
 	protected $grading = 1.;
 	protected $color = '';
 	protected $rotation = 0.;
@@ -26,8 +28,7 @@ class Gauge extends Control implements Styleable {
 	/**
 	 * Construct a new Gauge Control
 	 *
-	 * @param string $id
-	 *        	Control Id
+	 * @param string $id (optional) Control Id
 	 */
 	public function __construct($id = null) {
 		parent::__construct($id);
@@ -37,56 +38,51 @@ class Gauge extends Control implements Styleable {
 	/**
 	 * Set Ratio
 	 *
-	 * @param float $ratio
-	 *        	Ratio Value
+	 * @param float $ratio Ratio Value
 	 * @return \FML\Controls\Gauge
 	 */
 	public function setRatio($ratio) {
-		$this->ratio = $ratio;
+		$this->ratio = (float) $ratio;
 		return $this;
 	}
 
 	/**
 	 * Set Grading
 	 *
-	 * @param float $grading
-	 *        	Grading Value
+	 * @param float $grading Grading Value
 	 * @return \FML\Controls\Gauge
 	 */
 	public function setGrading($grading) {
-		$this->grading = $grading;
+		$this->grading = (float) $grading;
 		return $this;
 	}
 
 	/**
 	 * Set Color
 	 *
-	 * @param string $color
-	 *        	Gauge Color
+	 * @param string $color Gauge Color
 	 * @return \FML\Controls\Gauge
 	 */
 	public function setColor($color) {
-		$this->color = $color;
+		$this->color = (string) $color;
 		return $this;
 	}
 
 	/**
 	 * Set Rotation
 	 *
-	 * @param float $rotation
-	 *        	Gauge Rotation
+	 * @param float $rotation Gauge Rotation
 	 * @return \FML\Controls\Gauge
 	 */
 	public function setRotation($rotation) {
-		$this->rotation = $rotation;
+		$this->rotation = (float) $rotation;
 		return $this;
 	}
 
 	/**
 	 * Set Centered
 	 *
-	 * @param bool $centered
-	 *        	If Gauge is centered
+	 * @param bool $centered Whether Gauge is centered
 	 * @return \FML\Controls\Gauge
 	 */
 	public function setCentered($centered) {
@@ -97,20 +93,18 @@ class Gauge extends Control implements Styleable {
 	/**
 	 * Set Clan
 	 *
-	 * @param int $clan
-	 *        	Clan number
+	 * @param int $clan Clan number
 	 * @return \FML\Controls\Gauge
 	 */
 	public function setClan($clan) {
-		$this->clan = $clan;
+		$this->clan = (int) $clan;
 		return $this;
 	}
 
 	/**
 	 * Set Draw Background
 	 *
-	 * @param bool $drawBg
-	 *        	If Gauge Background should be drawn
+	 * @param bool $drawBg Whether Gauge Background should be drawn
 	 * @return \FML\Controls\Gauge
 	 */
 	public function setDrawBg($drawBg) {
@@ -121,8 +115,7 @@ class Gauge extends Control implements Styleable {
 	/**
 	 * Set Draw Block Background
 	 *
-	 * @param bool $drawBlockBg
-	 *        	If Gauge Block Background should be drawn
+	 * @param bool $drawBlockBg Whether Gauge Block Background should be drawn
 	 * @return \FML\Controls\Gauge
 	 */
 	public function setDrawBlockBg($drawBlockBg) {
@@ -136,7 +129,7 @@ class Gauge extends Control implements Styleable {
 	 * @return \FML\Controls\Gauge
 	 */
 	public function setStyle($style) {
-		$this->style = $style;
+		$this->style = (string) $style;
 		return $this;
 	}
 
@@ -145,26 +138,27 @@ class Gauge extends Control implements Styleable {
 	 * @see \FML\Control::render()
 	 */
 	public function render(\DOMDocument $domDocument) {
-		$xml = parent::render($domDocument);
-		$xml->setAttribute('ratio', $this->ratio);
-		$xml->setAttribute('grading', $this->grading);
+		$xmlElement = parent::render($domDocument);
+		// TODO: validate default values
+		$xmlElement->setAttribute('ratio', $this->ratio);
+		$xmlElement->setAttribute('grading', $this->grading);
 		if ($this->color) {
-			$xml->setAttribute('color', $this->color);
+			$xmlElement->setAttribute('color', $this->color);
 		}
 		if ($this->rotation) {
-			$xml->setAttribute('rotation', $this->rotation);
+			$xmlElement->setAttribute('rotation', $this->rotation);
 		}
 		if ($this->centered) {
-			$xml->setAttribute('centered', $this->centered);
+			$xmlElement->setAttribute('centered', $this->centered);
 		}
 		if ($this->clan) {
-			$xml->setAttribute('clan', $this->clan);
+			$xmlElement->setAttribute('clan', $this->clan);
 		}
-		$xml->setAttribute('drawbg', $this->drawBg);
-		$xml->setAttribute('drawblockbg', $this->drawBlockBg);
+		$xmlElement->setAttribute('drawbg', $this->drawBg);
+		$xmlElement->setAttribute('drawblockbg', $this->drawBlockBg);
 		if ($this->style) {
-			$xml->setAttribute('style', $this->style);
+			$xmlElement->setAttribute('style', $this->style);
 		}
-		return $xml;
+		return $xmlElement;
 	}
 }

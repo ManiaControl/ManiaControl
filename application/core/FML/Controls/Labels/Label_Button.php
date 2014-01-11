@@ -5,7 +5,7 @@ namespace FML\Controls\Labels;
 use FML\Controls\Label;
 
 /**
- * Label class for button styles
+ * Label Class for Button Styles
  *
  * @author steeffeen
  */

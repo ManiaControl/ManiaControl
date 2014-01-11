@@ -8,7 +8,8 @@ use FML\Types\Styleable;
 use FML\Types\TextFormatable;
 
 /**
- * Class representing CMlEntry
+ * Entry Element
+ * (CMlEntry)
  *
  * @author steeffeen
  */
@@ -29,7 +30,7 @@ class Entry extends Control implements NewLineable, Scriptable, Styleable, TextF
 	/**
 	 * Construct a new Entry Control
 	 *
-	 * @param string $id        	
+	 * @param string $id (optional) Control Id
 	 */
 	public function __construct($id = null) {
 		parent::__construct($id);
@@ -39,20 +40,18 @@ class Entry extends Control implements NewLineable, Scriptable, Styleable, TextF
 	/**
 	 * Set Entry Name
 	 *
-	 * @param string $name
-	 *        	Entry Name
+	 * @param string $name Entry Name
 	 * @return \FML\Controls\Entry
 	 */
 	public function setName($name) {
-		$this->name = $name;
+		$this->name = (string) $name;
 		return $this;
 	}
 
 	/**
 	 * Set Default Value
 	 *
-	 * @param string $default
-	 *        	Default Value
+	 * @param string $default Default Value
 	 * @return \FML\Controls\Entry
 	 */
 	public function setDefault($default) {
@@ -86,7 +85,7 @@ class Entry extends Control implements NewLineable, Scriptable, Styleable, TextF
 	 * @return \FML\Controls\Entry
 	 */
 	public function setStyle($style) {
-		$this->style = $style;
+		$this->style = (string) $style;
 		return $this;
 	}
 
@@ -96,7 +95,7 @@ class Entry extends Control implements NewLineable, Scriptable, Styleable, TextF
 	 * @return \FML\Controls\Entry
 	 */
 	public function setTextColor($textColor) {
-		$this->textColor = $textColor;
+		$this->textColor = (string) $textColor;
 		return $this;
 	}
 
@@ -106,7 +105,7 @@ class Entry extends Control implements NewLineable, Scriptable, Styleable, TextF
 	 * @return \FML\Controls\Entry
 	 */
 	public function setTextSize($textSize) {
-		$this->textSize = $textSize;
+		$this->textSize = (int) $textSize;
 		return $this;
 	}
 
@@ -116,7 +115,7 @@ class Entry extends Control implements NewLineable, Scriptable, Styleable, TextF
 	 * @return \FML\Controls\Entry
 	 */
 	public function setAreaColor($areaColor) {
-		$this->areaColor = $areaColor;
+		$this->areaColor = (string) $areaColor;
 		return $this;
 	}
 
@@ -126,7 +125,7 @@ class Entry extends Control implements NewLineable, Scriptable, Styleable, TextF
 	 * @return \FML\Controls\Entry
 	 */
 	public function setAreaFocusColor($areaFocusColor) {
-		$this->areaFocusColor = $areaFocusColor;
+		$this->areaFocusColor = (string) $areaFocusColor;
 		return $this;
 	}
 
@@ -135,34 +134,34 @@ class Entry extends Control implements NewLineable, Scriptable, Styleable, TextF
 	 * @see \FML\Control::render()
 	 */
 	public function render(\DOMDocument $domDocument) {
-		$xml = parent::render($domDocument);
+		$xmlElement = parent::render($domDocument);
 		if ($this->name) {
-			$xml->setAttribute('name', $this->name);
+			$xmlElement->setAttribute('name', $this->name);
 		}
 		if ($this->default !== null) {
-			$xml->setAttribute('default', $this->default);
+			$xmlElement->setAttribute('default', $this->default);
 		}
 		if ($this->autoNewLine) {
-			$xml->setAttribute('autonewline', $this->autoNewLine);
+			$xmlElement->setAttribute('autonewline', $this->autoNewLine);
 		}
 		if ($this->scriptEvents) {
-			$xml->setAttribute('scriptevents', $this->scriptEvents);
+			$xmlElement->setAttribute('scriptevents', $this->scriptEvents);
 		}
 		if ($this->style) {
-			$xml->setAttribute('style', $this->style);
+			$xmlElement->setAttribute('style', $this->style);
 		}
 		if ($this->textColor) {
-			$xml->setAttribute('textcolor', $this->textColor);
+			$xmlElement->setAttribute('textcolor', $this->textColor);
 		}
 		if ($this->textSize >= 0.) {
-			$xml->setAttribute('textsize', $this->textSize);
+			$xmlElement->setAttribute('textsize', $this->textSize);
 		}
 		if ($this->areaColor) {
-			$xml->setAttribute('areacolor', $this->areaColor);
+			$xmlElement->setAttribute('areacolor', $this->areaColor);
 		}
 		if ($this->areaFocusColor) {
-			$xml->setAttribute('areafocuscolor', $this->areaFocusColor);
+			$xmlElement->setAttribute('areafocuscolor', $this->areaFocusColor);
 		}
-		return $xml;
+		return $xmlElement;
 	}
 }

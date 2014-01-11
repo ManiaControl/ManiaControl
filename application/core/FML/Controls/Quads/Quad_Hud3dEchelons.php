@@ -5,7 +5,7 @@ namespace FML\Controls\Quads;
 use FML\Controls\Quad;
 
 /**
- * Quad class for style 'Hud3dEchelons'
+ * Quad Class for 'Hud3dEchelons' Style
  *
  * @author steeffeen
  */

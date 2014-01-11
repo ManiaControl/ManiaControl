@@ -5,7 +5,7 @@ namespace FML\Controls\Quads;
 use FML\Controls\Quad;
 
 /**
- * Quad class for style 'EnergyBar'
+ * Quad Class for 'EnergyBar' Style
  *
  * @author steeffeen
  */
