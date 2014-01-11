@@ -104,8 +104,8 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_VOTE_ICON_WIDTH, 6);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_VOTE_ICON_HEIGHT, 6);
 
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSX, 160 - 42 - 15);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSY, 90 - 2 - 15);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSX, 160 - 15); //160 - 42 - 15
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSY, -15); //90 - 2 - 15
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_WIDTH, 30);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_HEIGHT, 25);
 
