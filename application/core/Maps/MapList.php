@@ -217,7 +217,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 			$mapFrame->setY($y);
 
-
 			$mxQuad = new Quad();
 			$mapFrame->add($mxQuad);
 			$mxQuad->setSize(3, 3);
@@ -409,12 +408,13 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
 
 		// Predefine Description Label
-		$preDefinedDescriptionLabel = new Label();
-		$preDefinedDescriptionLabel->setAlign(Control::LEFT, Control::TOP);
-		$preDefinedDescriptionLabel->setPosition($x + 10, -$height / 2 + 5);
-		$preDefinedDescriptionLabel->setSize($width * 0.7, 4);
-		$preDefinedDescriptionLabel->setTextSize(2);
-		$preDefinedDescriptionLabel->setVisible(false);
+		$descriptionLabel = new Label();
+		$frame->add($descriptionLabel);
+		$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
+		$descriptionLabel->setPosition($x + 10, -$height / 2 + 5);
+		$descriptionLabel->setSize($width * 0.7, 4);
+		$descriptionLabel->setTextSize(2);
+		$descriptionLabel->setVisible(false);
 
 		$queuedMaps = $this->maniaControl->mapManager->mapQueue->getQueuedMapsRanking();
 		/**
@@ -431,7 +431,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		 * @var Map $map
 		 */
 		foreach($mapList as $map) {
-			var_dump($map->updateAvailable());
 			if(!isset($pageFrame)) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
@@ -469,16 +468,35 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$mxId = '-';
 			if(isset($map->mx->id)) {
 				$mxId = $map->mx->id;
+
+				$mxQuad = new Quad();
+				$mapFrame->add($mxQuad);
+				$mxQuad->setSize(3, 3);
+				$mxQuad->setImage($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON));
+				$mxQuad->setImageFocus($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON_MOVER));
+				$mxQuad->setX($x + 65);
+				$mxQuad->setUrl($map->mx->pageurl);
+				$mxQuad->setZ(0.01);
+				$script->addTooltip($mxQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "View $<" . $map->name . "$> on Mania-Exchange"));
+
+				if($map->updateAvailable()) {
+					$mxQuad = new Quad();
+					$mapFrame->add($mxQuad);
+					$mxQuad->setSize(3, 3);
+					$mxQuad->setImage($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON_GREEN));
+					$mxQuad->setImageFocus($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON_GREEN_MOVER));
+					$mxQuad->setX($x + 62);
+					$mxQuad->setUrl($map->mx->pageurl);
+					$mxQuad->setZ(0.01);
+					$script->addTooltip($mxQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Update of $<" . $map->name . "$> available on Mania-Exchange"));
+				}
+
 			}
 
 			// Display Maps
 			$array = array($id => $x + 5, $mxId => $x + 10, Formatter::stripDirtyCodes($map->name) => $x + 20, $map->authorNick => $x + 68);
 			$this->maniaControl->manialinkManager->labelLine($mapFrame, $array);
 			// TODO action detailed map info including mx info
-
-			// MapQueue Description Label
-			$descriptionLabel = clone $preDefinedDescriptionLabel;
-			$frame->add($descriptionLabel);
 
 			// Map-Queue-Map-Label
 			if(isset($queuedMaps[$map->uid])) {
@@ -490,7 +508,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$label->setTextSize(1.5);
 				$label->setText($queuedMaps[$map->uid]);
 				$label->setTextColor('fff');
-				$descriptionLabel->setText('$<' . $map->name . '$> is on Map-Queue Position: ' . $queuedMaps[$map->uid]);
+				$script->addTooltip($label, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => '$<' . $map->name . '$> is on Map-Queue Position: ' . $queuedMaps[$map->uid]));
 			} else {
 				// Map-Queue-Map-Button
 				$queueLabel = new Label_Button();
@@ -502,8 +520,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$queueLabel->setText('+');
 				$queueLabel->setTextColor('09f');
 
-				$descriptionLabel->setText('Add Map to the Map Queue: $<' . $map->name . '$>');
-				$script->addTooltip($queueLabel, $descriptionLabel);
+				$script->addTooltip($queueLabel, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => 'Add Map to the Map Queue: $<' . $map->name . '$>'));
 			}
 
 			if($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_REMOVE_MAP)) {
@@ -521,11 +538,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				//$script->addToggle($eraseLabel, $confirmFrame); //TODO
 				$script->addTooltip($eraseLabel, $confirmFrame, Script::OPTION_TOOLTIP_STAYONCLICK);
 
-				// Description Label
-				$descriptionLabel = clone $preDefinedDescriptionLabel;
-				$frame->add($descriptionLabel);
-				$descriptionLabel->setText('Remove Map: $<' . $map->name . '$>');
-				$script->addTooltip($eraseLabel, $descriptionLabel);
+				$script->addTooltip($eraseLabel, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => 'Remove Map: $<' . $map->name . '$>'));
+
 			}
 
 			if($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
@@ -543,10 +557,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$script->addTooltip($switchLabel, $confirmFrame, Script::OPTION_TOOLTIP_STAYONCLICK); //TODO
 				//$script->addToggle($switchLabel, $confirmFrame);
 
-				$descriptionLabel = clone $preDefinedDescriptionLabel;
-				$frame->add($descriptionLabel);
-				$descriptionLabel->setText('Switch Directly to Map: $<' . $map->name . '$>');
-				$script->addTooltip($switchLabel, $descriptionLabel);
+				$script->addTooltip($switchLabel, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => 'Switch Directly to Map: $<' . $map->name . '$>'));
+
 			}
 
 			// Display Karma bar
@@ -644,16 +656,18 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 	/**
 	 * Unset the player if he opened another Main Widget
+	 *
 	 * @param array $callback
 	 */
-	public function handleWidgetOpened(array $callback){
-		$player = $callback[1];
+	public function handleWidgetOpened(array $callback) {
+		$player       = $callback[1];
 		$openedWidget = $callback[2];
 		//unset when another main widget got opened
-		if($openedWidget != 'MapList' && $openedWidget != 'MxList'){
+		if($openedWidget != 'MapList' && $openedWidget != 'MxList') {
 			unset($this->mapListShown[$player->login]);
 		}
 	}
+
 	/**
 	 * Closes the widget
 	 *
