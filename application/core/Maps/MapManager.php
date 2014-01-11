@@ -172,7 +172,7 @@ class MapManager implements CallbackListener {
 		$mapList = $this->maniaControl->client->getResponse();
 		shuffle($mapList);
 
-		if(!$this->maniaControl->client->query('hooseNextChallengeLis', $mapList)) {
+		if(!$this->maniaControl->client->query('ChooseNextChallengeList', $mapList)) {
 			trigger_error("Couldn't shuffle mapList. " . $this->maniaControl->getClientErrorText());
 			return false;
 		}
