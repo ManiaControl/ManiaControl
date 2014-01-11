@@ -106,6 +106,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$this->maniaControl->chat->sendError("Couldn't remove map.", $player->login);
 			return;
 		}
+		//TODO message
 		//RemoveMap
 		$this->maniaControl->mapManager->removeMap($player, $map->uid);
 	}
@@ -159,6 +160,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
+		//TODO message
 		$this->maniaControl->client->query('NextMap');
 	}
 
@@ -173,6 +175,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
+		//TODO message
 		$this->maniaControl->client->query('RestartMap');
 	}
 
