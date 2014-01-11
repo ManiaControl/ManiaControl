@@ -30,6 +30,7 @@ class Server implements CallbackListener {
 	public $p2pPort = -1;
 	public $login = null;
 	public $titleId = null;
+	public $dataDirectory = '';
 	public $serverCommands = null;
 
 	/**
@@ -130,11 +131,14 @@ class Server implements CallbackListener {
 	 * @return string
 	 */
 	public function getDataDirectory() {
-		if(!$this->maniaControl->client->query('GameDataDirectory')) {
-			trigger_error("Couldn't get data directory. " . $this->maniaControl->getClientErrorText());
-			return null;
+		if($this->dataDirectory == '') {
+			if(!$this->maniaControl->client->query('GameDataDirectory')) {
+				trigger_error("Couldn't get data directory. " . $this->maniaControl->getClientErrorText());
+				return null;
+			}
+			$this->dataDirectory = $this->maniaControl->client->getResponse();
 		}
-		return $this->maniaControl->client->getResponse();
+		return $this->dataDirectory;
 	}
 
 	/**
