@@ -46,6 +46,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		$this->maniaControl->commandManager->registerCommandListener('restartmap', $this, 'command_RestartMap', true);
 		$this->maniaControl->commandManager->registerCommandListener('addmap', $this, 'command_AddMap', true);
 		$this->maniaControl->commandManager->registerCommandListener(array('removemap', 'removethis', 'erasemap', 'erasethis'), $this, 'command_RemoveMap', true);
+		$this->maniaControl->commandManager->registerCommandListener('shufflemaps', $this, 'command_ShuffleMap', true);
 
 		// Register for player chat commands
 		$this->maniaControl->commandManager->registerCommandListener(array('maps', 'list'), $this, 'command_List');
@@ -107,6 +108,23 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		}
 		//RemoveMap
 		$this->maniaControl->mapManager->removeMap($player, $map->uid);
+	}
+
+	/**
+	 * Handle addmap command
+	 *
+	 * @param array                        $chatCallback
+	 * @param \ManiaControl\Players\Player $player
+	 */
+	public function command_ShuffleMaps(array $chatCallback, Player $player) {
+		if(!$this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_SHUFFLE_MAPS)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+			return;
+		}
+
+		// add Map from Mania Exchange
+		$this->maniaControl->mapManager->shuffleMapList();
+		//TODO message
 	}
 
 	/**
