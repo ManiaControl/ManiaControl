@@ -27,6 +27,9 @@ class IconManager implements CallbackListener {
 	const MX_ICON       = 'ManiaExchange.png';
 	const MX_ICON_MOVER = 'ManiaExchange_logo_press.png';
 
+	const MX_ICON_GREEN      = 'ManiaExchangeGreen.png';
+	const MX_ICON_GREEN_MOVER = 'ManiaExchange_logo_pressGreen.png';
+
 	/**
 	 * Private Properties
 	 */
@@ -53,6 +56,9 @@ class IconManager implements CallbackListener {
 	private function addDefaultIcons() {
 		$this->addIcon(self::MX_ICON);
 		$this->addIcon(self::MX_ICON_MOVER);
+		$this->addIcon(self::MX_ICON_GREEN, "http://www.pictures.esc-clan.net/upload/"); //TODO mc website
+		$this->addIcon(self::MX_ICON_GREEN_MOVER , " http://www.pictures.esc-clan.net/upload/");
+
 	}
 
 	/**
