@@ -431,7 +431,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		 * @var Map $map
 		 */
 		foreach($mapList as $map) {
-
+			var_dump($map->updateAvailable());
 			if(!isset($pageFrame)) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
