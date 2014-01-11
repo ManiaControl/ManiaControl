@@ -29,6 +29,7 @@ class MapManager implements CallbackListener {
 	const CB_KARMA_UPDATED              = 'MapManager.KarmaUpdated';
 	const SETTING_PERMISSION_ADD_MAP    = 'Add Maps';
 	const SETTING_PERMISSION_REMOVE_MAP = 'Remove Maps';
+	const SETTING_PERMISSION_SHUFFLE_MAPS = 'Shuffle Maps';
 
 	/**
 	 * Public Properties
@@ -68,6 +69,7 @@ class MapManager implements CallbackListener {
 		//Define Rights
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_ADD_MAP, AuthenticationManager::AUTH_LEVEL_ADMIN);
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_REMOVE_MAP, AuthenticationManager::AUTH_LEVEL_ADMIN);
+		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_SHUFFLE_MAPS, AuthenticationManager::AUTH_LEVEL_ADMIN);
 	}
 
 	/**
@@ -155,6 +157,28 @@ class MapManager implements CallbackListener {
 		$this->maniaControl->log($message, true);
 		unset($this->maps[$uid]);
 	}
+
+	/**
+	 * Shuffles the MapList
+	 *
+	 * @return bool
+	 */
+	public function shuffleMapList() {
+		if(!$this->maniaControl->client->query('GetMapList', 100, 0)) {
+			trigger_error("Couldn't fetch mapList. " . $this->maniaControl->getClientErrorText());
+			return false;
+		}
+
+		$mapList = $this->maniaControl->client->getResponse();
+		shuffle($mapList);
+
+		if(!$this->maniaControl->client->query('hooseNextChallengeLis', $mapList)) {
+			trigger_error("Couldn't shuffle mapList. " . $this->maniaControl->getClientErrorText());
+			return false;
+		}
+		return true;
+	}
+
 
 	/**
 	 * Updates the full Map list, needed on Init, addMap and on ShuffleMaps
