@@ -138,6 +138,30 @@ class MapManager implements CallbackListener {
 	}
 
 	/**
+	 * Updates a Map from Mania Exchange
+	 *
+	 * @param Player $admin
+	 * @param        $mxId
+	 * @param        $uid
+	 */
+	public function updateMap(Player $admin, $uid) {
+		return;
+		//TODO not finished yet
+
+		$mapsDirectory = $this->maniaControl->server->getMapsDirectory();
+		if(!$this->maniaControl->server->checkAccess($mapsDirectory)) {
+			$this->maniaControl->chat->sendError("ManiaControl doesn't have access to the maps directory.", $admin->login);
+			return;
+		}
+
+		$map = $this->maps[$uid];
+		/** @var Map $map */
+		$mxId = $map->mx->id;
+		$this->removeMap($admin, $uid, true);
+		$this->addMapFromMx($mxId, $admin->login);
+	}
+
+	/**
 	 * Remove a Map
 	 *
 	 * @param string $uid

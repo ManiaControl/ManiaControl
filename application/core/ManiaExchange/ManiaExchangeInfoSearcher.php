@@ -59,7 +59,7 @@ class ManiaExchangeInfoSearcher { //TODO rename to ManiaExchangeManager
 		// Save map data
 		$saveMapQuery     = "UPDATE `" . MapManager::TABLE_MAPS . "`
 				SET `mxid` = ?
-				WHERE `index` = ?;";
+				WHERE `uid` = ?;";
 		$saveMapStatement = $mysqli->prepare($saveMapQuery);
 		if($mysqli->error) {
 			trigger_error($mysqli->error);

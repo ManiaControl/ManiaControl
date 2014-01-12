@@ -35,6 +35,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 * Constants
 	 */
 	const ACTION_ADD_MAP              = 'MapList.AddMap';
+	const ACTION_UPDATE_MAP           = 'MapList.UpdateMap';
 	const ACTION_SEARCH_MAPNAME       = 'MapList.SearchMapName';
 	const ACTION_SEARCH_AUTHOR        = 'MapList.SearchAuthor';
 	const ACTION_GET_MAPS_FROM_AUTHOR = 'MapList.GetMapsFromAuthor';
@@ -489,6 +490,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 					$mxQuad->setUrl($map->mx->pageurl);
 					$mxQuad->setZ(0.01);
 					$script->addTooltip($mxQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Update of $<" . $map->name . "$> available on Mania-Exchange"));
+					$mxQuad->setAction(self::ACTION_UPDATE_MAP . '.' . $map->uid);
 				}
 
 			}
@@ -710,6 +712,10 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				break;
 			case self::ACTION_ADD_MAP:
 				$this->maniaControl->mapManager->addMapFromMx($mapId, $player->login);
+				break;
+			case self::ACTION_UPDATE_MAP:
+				$mapUid = $actionArray[2];
+				$this->maniaControl->mapManager->updateMap($player, $mapUid);
 				break;
 			case self::ACTION_ERASE_MAP:
 				$mapUid = $actionArray[3];
