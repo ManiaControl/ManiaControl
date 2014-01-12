@@ -52,7 +52,7 @@ class ManiaExchangeInfoSearcher { //TODO rename to ManiaExchangeManager
 	 *
 	 * @param $mxMapInfos
 	 */
-	private function updateMapObjectWithManiaExchangeIds($mxMapInfos) {
+	public function updateMapObjectsWithManiaExchangeIds($mxMapInfos) {
 		$mysqli = $this->maniaControl->database->mysqli;
 		// Save map data
 		$saveMapQuery     = "UPDATE `" . MapManager::TABLE_MAPS . "`
@@ -132,14 +132,14 @@ class ManiaExchangeInfoSearcher { //TODO rename to ManiaExchangeManager
 			//if($id % self::MAPS_PER_MX_FETCH == 0) {
 			if($id % 6 == 0) { //TODO 6 is temporary
 				$maps = $this->getMaplistByMixedUidIdString($mapIdString);
-				$this->updateMapObjectWithManiaExchangeIds($maps);
+				$this->updateMapObjectsWithManiaExchangeIds($maps);
 				$mapIdString = '';
 			}
 		}
 
 		if($mapIdString != '') {
 			$maps = $this->getMaplistByMixedUidIdString($mapIdString);
-			$this->updateMapObjectWithManiaExchangeIds($maps);
+			$this->updateMapObjectsWithManiaExchangeIds($maps);
 		}
 
 		$fetchMapStatement->close();

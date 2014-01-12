@@ -486,7 +486,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
 		$quad->setSize(5, 5);
 		$quad->setAction(self::ACTION_NEGATIVE_VOTE);
-		$quad->setActionKey($quad::ACTIONKEY_F5);
+		$quad->setActionKey($quad::ACTIONKEY_F7);
 
 		$label = new Label_Button();
 		$frame->add($label);
@@ -497,19 +497,19 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$label->setTextSize(1);
 		$label->setSize(3, 3);
 		$label->setTextColor("F00");
-		$label->setText("F5");
+		$label->setText("F7");
 
 		$quad = clone $quad;
 		$frame->add($quad);
 		$quad->setX($width / 2 - 4);
 		$quad->setAction(self::ACTION_POSITIVE_VOTE);
-		$quad->setActionKey($quad::ACTIONKEY_F6);
+		$quad->setActionKey($quad::ACTIONKEY_F8);
 
 		$label = clone $label;
 		$frame->add($label);
 		$label->setX($width / 2 - 4);
 		$label->setTextColor("0F0");
-		$label->setText("F6");
+		$label->setText("F8");
 
 		// Send manialink
 		$manialinkText = $maniaLink->render()->saveXML();
