@@ -3,7 +3,6 @@
 namespace ManiaControl\Maps;
 
 use ManiaControl\Formatter;
-use ManiaControl\ManiaControl;
 
 /**
  * Map Class
@@ -36,19 +35,13 @@ class Map {
 	public $lastUpdate = 0;
 
 	/**
-	 * Private Properties
-	 */
-	private $maniaControl = null;
-
-	/**
 	 * Create a new Map Object from Rpc Data
 	 *
-	 * @param \ManiaControl\ManiaControl $maniaControl
-	 * @param array                      $rpc_infos
+	 * @param array $rpc_infos
+	 * @internal param \ManiaControl\ManiaControl $maniaControl
 	 */
-	public function __construct(ManiaControl $maniaControl, $rpc_infos = null) {
-		$this->maniaControl = $maniaControl;
-		$this->startTime    = time();
+	public function __construct($rpc_infos = null) {
+		$this->startTime = time();
 
 		if(!$rpc_infos) {
 			return;
@@ -68,20 +61,6 @@ class Map {
 		}
 
 		$this->authorNick = $this->authorLogin;
-
-		$mapsDirectory = $this->maniaControl->server->getMapsDirectory();
-		if($this->maniaControl->server->checkAccess($mapsDirectory)) {
-			$mapFetcher = new \GBXChallMapFetcher(true);
-			try {
-				$mapFetcher->processFile($mapsDirectory . $this->fileName);
-				$this->authorNick  = FORMATTER::stripDirtyCodes($mapFetcher->authorNick);
-				$this->authorEInfo = $mapFetcher->authorEInfo;
-				$this->authorZone  = $mapFetcher->authorZone;
-				$this->comment     = $mapFetcher->comment;
-			} catch(\Exception $e) {
-				trigger_error($e->getMessage());
-			}
-		}
 	}
 
 	/**
