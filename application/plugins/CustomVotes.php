@@ -50,6 +50,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	const SETTING_WIDGET_WIDTH               = 'Widget-Size: Width';
 	const SETTING_WIDGET_HEIGHT              = 'Widget-Size: Height';
 	const SETTING_VOTE_TIME                  = 'Voting Time';
+	const SETTING_DEFAULT_PLAYER_RATIO       = 'Minimum Player Voters Ratio';
 	const SETTING_DEFAULT_RATIO              = 'Default Success Ratio';
 	const SETTING_SPECTATOR_ALLOW_VOTE       = 'Allow Specators to vote';
 	const SETTING_SPECTATOR_ALLOW_START_VOTE = 'Allow Specators to start a vote';
@@ -111,7 +112,8 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_WIDTH, 30);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_HEIGHT, 25);
 
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_DEFAULT_RATIO, 0.65);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_DEFAULT_RATIO, 0.75);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_DEFAULT_PLAYER_RATIO, 0.65);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SPECTATOR_ALLOW_VOTE, false);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SPECTATOR_ALLOW_START_VOTE, false);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_VOTE_TIME, 60);
@@ -345,8 +347,15 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$timeUntilExpire = $this->currentVoteExpireTime - time();
 		$this->showVoteWidget($timeUntilExpire, $votePercentage);
 
+		$playerCount      = count($this->maniaControl->playerManager->getPlayers());
+		$playersVoteRatio = (100 / $playerCount * count($this->playersVoted)) / 100;
+
+		//TODO load into property at vote start:
+		$neededPlayerRatio = floatval($this->maniaControl->settingManager->getSetting($this, self::SETTING_DEFAULT_PLAYER_RATIO));
+		$neededRatio       = floatval($this->maniaControl->settingManager->getSetting($this, self::SETTING_DEFAULT_RATIO));
+
 		//Check if vote is over
-		if($timeUntilExpire <= 0) {
+		if($timeUntilExpire <= 0 || (($playersVoteRatio >= $neededPlayerRatio) && (($votePercentage >= $neededRatio) || ($votePercentage <= 1 - $neededRatio)))) {
 			// Trigger callback
 			$this->maniaControl->callbackManager->triggerCallback(self::CB_CUSTOM_VOTE_FINISHED, array(self::CB_CUSTOM_VOTE_FINISHED, $this->currentVote["Index"], $votePercentage));
 
@@ -403,12 +412,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$backgroundQuad->setSize($width, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 
-		/*$keyQuad = new Quad();
-		$frame->add($keyQuad);
-		$keyQuad->setPosition(500,500);
-		$keyQuad->setAction(382009003);*/
-
-
+		//Vote for label
 		$label = new Label_Text();
 		$frame->add($label);
 		$label->setY($height / 2 - 4);
