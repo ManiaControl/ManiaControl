@@ -476,7 +476,7 @@ Void " . self::FUNCTION_SETTOOLTIPTEXT . "(CMlControl _TooltipControl, CMlContro
 
 Text " . self::FUNCTION_GETTOOLTIPCONTROLID . "(Text _ControlClass) {
 	declare ClassParts = TextLib::Split(\"-\", _ControlClass);
-	if (ClassParts.count < 2) return \"\”;
+	if (ClassParts.count < 2) return \"\";
 	if (ClassParts[0] != \"" . self::CLASS_TOOLTIP . "\") return \"\";
 	return ClassParts[1];
 }";
