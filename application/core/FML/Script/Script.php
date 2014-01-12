@@ -472,8 +472,8 @@ Void " . self::FUNCTION_SETTOOLTIPTEXT . "(CMlControl _TooltipControl, CMlContro
 	if (!" . self::CONSTANT_TOOLTIPTEXTS . "[TooltipId].existskey(HoverId)) return;
 	declare Label = (_TooltipControl as CMlLabel);
 	Label.Value = " . self::CONSTANT_TOOLTIPTEXTS . "[TooltipId][HoverId];
-}
-
+}";
+		$getFunctionText = "
 Text " . self::FUNCTION_GETTOOLTIPCONTROLID . "(Text _ControlClass) {
 	declare ClassParts = TextLib::Split(\"-\", _ControlClass);
 	if (ClassParts.count < 2) return \"\";
@@ -481,6 +481,7 @@ Text " . self::FUNCTION_GETTOOLTIPCONTROLID . "(Text _ControlClass) {
 	return ClassParts[1];
 }";
 		$this->setFunction(self::FUNCTION_SETTOOLTIPTEXT, $setFunctionText);
+		$this->setFunction(self::FUNCTION_GETTOOLTIPCONTROLID, $getFunctionText);
 	}
 
 	/**
@@ -779,6 +780,7 @@ if (Event.Control.HasClass(\"" . self::CLASS_TOGGLE . "\")) {
 	 */
 	private function getSpectateLabels() {
 		if (!$this->spectate) return '';
+		$this->setInclude('TextLib', 'TextLib');
 		$spectateScript = "
 if (Event.Control.HasClass(\"" . self::CLASS_SPECTATE . "\")) {
 	declare Login = \"\";
