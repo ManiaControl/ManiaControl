@@ -340,18 +340,15 @@ class MapManager implements CallbackListener {
 			$title      = strtolower(substr($serverInfo['TitleId'], 0, 2));
 
 			// Check if map exists
-			$url = "http://api.mania-exchange.com/{$title}/maps/{$mapId}?format=json";
+			$mxMapInfos = $this->maniaControl->mapManager->mxInfoSearcher->getMaplistByMixedUidIdString($mapId);
+			$mapInfo    = $mxMapInfos[0];
+			/** @var MXMapInfo $mapInfo */
 
-			$mapInfo = FileUtil::loadFile($url, "application/json");
-
-			if(!$mapInfo || strlen($mapInfo) <= 0) {
+			if(!$mapInfo || !isset($mapInfo->uploaded)) {
 				// Invalid id
 				$this->maniaControl->chat->sendError('Invalid MX-Id!', $login);
 				return;
 			}
-
-			$mapInfo = json_decode($mapInfo, true);
-			$mapInfo = $mapInfo[0];
 
 			$url  = "http://{$title}.mania-exchange.com/tracks/download/{$mapId}";
 			$file = FileUtil::loadFile($url);
@@ -361,7 +358,7 @@ class MapManager implements CallbackListener {
 				return;
 			}
 			// Save map
-			$fileName = $mapId . '_' . $mapInfo['Name'] . '.Map.Gbx';
+			$fileName = $mapId . '_' . $mapInfo->name . '.Map.Gbx';
 			$fileName = FileUtil::getClearedFileName($fileName);
 			if(!file_put_contents($mapDir . $fileName, $file)) {
 				// Save error
@@ -387,12 +384,15 @@ class MapManager implements CallbackListener {
 				$this->maniaControl->chat->sendError("Couldn't add map to match settings!", $login);
 				return;
 			}
-			$this->maniaControl->chat->sendSuccess('Map $<' . $mapInfo['Name'] . '$> added!');
+			$this->maniaControl->chat->sendSuccess('Map $<' . $mapInfo->name . '$> added!');
 
 			$this->updateFullMapList();
 
+			//Update Mx MapInfo
+			$this->maniaControl->mapManager->mxInfoSearcher->updateMapObjectsWithManiaExchangeIds($mxMapInfos);
+
 			// Queue requested Map
-			$this->maniaControl->mapManager->mapQueue->addMapToMapQueue($login, $mapInfo['MapUID']);
+			$this->maniaControl->mapManager->mapQueue->addMapToMapQueue($login, $mapInfo->uid);
 		}
 		// TODO: add local map by filename
 	}
