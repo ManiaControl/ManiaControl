@@ -221,9 +221,6 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 * @param array $callback
 	 */
 	public function handleManialinkPageAnswer(array $callback) {
-		var_dump($callback);
-		//TODO Fx buttons
-
 		$actionId    = $callback[1][2];
 		$actionArray = explode('.', $actionId);
 		if(count($actionArray) <= 2) {
