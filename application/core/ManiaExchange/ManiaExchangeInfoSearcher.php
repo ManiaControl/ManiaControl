@@ -31,6 +31,8 @@ class ManiaExchangeInfoSearcher { //TODO rename to ManiaExchangeManager
 	const SEARCH_ORDER_LENGHT_SHORTEST    = 14;
 	const SEARCH_ORDER_LENGHT_LONGEST     = 15;
 	const MAPS_PER_MX_FETCH               = 10;
+
+	const MX_CHAR_LIMIT = 250;
 	/**
 	 * Private Propertieswc
 	 */
@@ -120,21 +122,24 @@ class ManiaExchangeInfoSearcher { //TODO rename to ManiaExchangeManager
 			$map->lastUpdate = strtotime($changed);
 
 			if($mxId != 0) {
-				$mapIdString .= $mxId . ',';
+				$appendString = $mxId . ',';
 				//Set the mx id to the mxidmapvektor
 				$this->mxIdUidVector[$mxId] = $map->uid;
 			} else {
-				$mapIdString .= $map->uid . ',';
+				$appendString = $map->uid . ',';
 			}
 
 			$id++;
 
-			//if($id % self::MAPS_PER_MX_FETCH == 0) {
-			if($id % 6 == 0) { //TODO 6 is temporary
+			//If Max Maplimit is reached, or string gets too long send the request
+			if(($id % self::MAPS_PER_MX_FETCH == 0) || ((strlen($mapIdString) + strlen($appendString)) > self::MX_CHAR_LIMIT)) {
 				$maps = $this->getMaplistByMixedUidIdString($mapIdString);
 				$this->updateMapObjectsWithManiaExchangeIds($maps);
 				$mapIdString = '';
+				$id          = 0;
 			}
+
+			$mapIdString .= $appendString;
 		}
 
 		if($mapIdString != '') {
