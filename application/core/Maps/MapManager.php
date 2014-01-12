@@ -6,6 +6,7 @@ use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\FileUtil;
+use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 
@@ -183,6 +184,31 @@ class MapManager implements CallbackListener {
 		return true;
 	}
 
+	/**
+	 * Initializes a Map
+	 *
+	 * @param $rpcMap
+	 * @return Map
+	 */
+	public function initializeMap($rpcMap) {
+		$map = new Map($rpcMap);
+		$this->saveMap($map);
+
+		$mapsDirectory = $this->maniaControl->server->getMapsDirectory();
+		if($this->maniaControl->server->checkAccess($mapsDirectory)) {
+			$mapFetcher = new \GBXChallMapFetcher(true);
+			try {
+				$mapFetcher->processFile($mapsDirectory . $map->fileName);
+				$map->authorNick  = FORMATTER::stripDirtyCodes($mapFetcher->authorNick);
+				$map->authorEInfo = $mapFetcher->authorEInfo;
+				$map->authorZone  = $mapFetcher->authorZone;
+				$map->comment     = $mapFetcher->comment;
+			} catch(\Exception $e) {
+				trigger_error($e->getMessage());
+			}
+		}
+		return $map;
+	}
 
 	/**
 	 * Updates the full Map list, needed on Init, addMap and on ShuffleMaps
@@ -201,8 +227,7 @@ class MapManager implements CallbackListener {
 				// Map already exists, only update index
 				$tempList[$rpcMap["UId"]] = $this->maps[$rpcMap["UId"]];
 			} else { // Insert Map Object
-				$map = new Map($this->maniaControl, $rpcMap);
-				$this->saveMap($map);
+				$map                 = $this->initializeMap($rpcMap);
 				$tempList[$map->uid] = $map;
 			}
 		}
@@ -229,8 +254,7 @@ class MapManager implements CallbackListener {
 			$this->currentMap = $this->maps[$rpcMap["UId"]];
 			return true;
 		}
-		$map = new Map($this->maniaControl, $rpcMap);
-		$this->saveMap($map);
+		$map                   = $this->initializeMap($rpcMap);
 		$this->maps[$map->uid] = $map;
 		$this->currentMap      = $map;
 		return true;
