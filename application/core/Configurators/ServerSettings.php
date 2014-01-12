@@ -90,9 +90,10 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	 * @return bool
 	 */
 	public function loadSettingsFromDatabase() {
-		$mysqli = $this->maniaControl->database->mysqli;
-		$query  = "SELECT * FROM `" . self::TABLE_SERVER_SETTINGS . "`;";
-		$result = $mysqli->query($query);
+		$serverId = $this->maniaControl->server->index;
+		$mysqli   = $this->maniaControl->database->mysqli;
+		$query    = "SELECT * FROM `" . self::TABLE_SERVER_SETTINGS . "` WHERE serverIndex = " . $serverId . ";";
+		$result   = $mysqli->query($query);
 		if($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
@@ -109,8 +110,9 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			settype($loadedSettings[$row->settingName], gettype($serverSettings[$row->settingName]));
 		}
 		$result->close();
-		if(!$loadedSettings)
+		if(!$loadedSettings) {
 			return true;
+		}
 
 		$success = $this->maniaControl->client->query('SetServerOptions', $loadedSettings);
 		if(!$success) {
@@ -308,8 +310,9 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	public function handleManialinkPageAnswer(array $callback) {
 		$actionId    = $callback[1][2];
 		$boolSetting = (strpos($actionId, self::ACTION_SETTING_BOOL) === 0);
-		if(!$boolSetting)
+		if(!$boolSetting) {
 			return;
+		}
 
 		$login  = $callback[1][1];
 		$player = $this->maniaControl->playerManager->getPlayer($login);
@@ -326,8 +329,9 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	 * @return bool
 	 */
 	private function applyNewScriptSettings(array $newSettings, Player $player) {
-		if(!$newSettings)
+		if(!$newSettings) {
 			return true;
+		}
 		$success = $this->maniaControl->client->query('SetServerOptions', $newSettings);
 		if(!$success) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
