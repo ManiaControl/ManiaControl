@@ -223,6 +223,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$popoutFrame->setPosition($posX - $itemSize * 0.5, $posY);
 		$popoutFrame->setHAlign(Control::RIGHT);
 		$popoutFrame->setSize(4 * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
+		$popoutFrame->setVisible(false);
 
 		$quad = new Quad();
 		$popoutFrame->add($quad);

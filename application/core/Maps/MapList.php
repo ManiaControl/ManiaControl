@@ -535,9 +535,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$eraseLabel->setTextColor('a00');
 
 				$confirmFrame = $this->buildConfirmFrame($maniaLink, $y, $id, $map->uid);
-				//$script->addToggle($eraseLabel, $confirmFrame); //TODO
-				$script->addTooltip($eraseLabel, $confirmFrame, Script::OPTION_TOOLTIP_STAYONCLICK);
-
+				$script->addToggle($eraseLabel, $confirmFrame);
 				$script->addTooltip($eraseLabel, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => 'Remove Map: $<' . $map->name . '$>'));
 
 			}
@@ -554,8 +552,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$switchLabel->setTextColor('0f0');
 
 				$confirmFrame = $this->buildConfirmFrame($maniaLink, $y, $id);
-				$script->addTooltip($switchLabel, $confirmFrame, Script::OPTION_TOOLTIP_STAYONCLICK); //TODO
-				//$script->addToggle($switchLabel, $confirmFrame);
+				$script->addToggle($switchLabel, $confirmFrame);
 
 				$script->addTooltip($switchLabel, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => 'Switch Directly to Map: $<' . $map->name . '$>'));
 
@@ -615,6 +612,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$confirmFrame = new Frame();
 		$maniaLink->add($confirmFrame);
 		$confirmFrame->setPosition($width / 2 + 6, $y);
+		$confirmFrame->setVisible(false);
 
 		$quad = new Quad();
 		$confirmFrame->add($quad);
