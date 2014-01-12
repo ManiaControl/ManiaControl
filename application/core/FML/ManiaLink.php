@@ -95,7 +95,9 @@ class ManiaLink implements Container {
 	 * @return \FML\ManiaLink
 	 */
 	public function add(Renderable $child) {
-		array_push($this->children, $child);
+		if (!in_array($child, $this->children, true)) {
+			array_push($this->children, $child);
+		}
 		return $this;
 	}
 
