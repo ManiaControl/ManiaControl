@@ -478,7 +478,6 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$voteLabel->setTextSize(1);
 		$voteLabel->setText('  ' . round($votePercentage * 100.) . '% (' . count($this->playersVoted) . ')');
 
-		// Mute Player
 		$y    = $height / 2 - 20.4;
 		$quad = new Quad_BgsPlayerCard();
 		$frame->add($quad);
