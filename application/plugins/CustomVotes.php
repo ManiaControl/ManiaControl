@@ -415,7 +415,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$label->setAlign(Control::CENTER, Control::CENTER);
 		$label->setSize($width - 5, $height);
 		$label->setTextSize(1.3);
-		$label->setText('Vote for ' . $this->currentVote["Name"]);
+		$label->setText('$sVote for ' . $this->currentVote["Name"]);
 		//$label->setTextColor("900");
 
 		/*$label = new Label_Text();
@@ -435,7 +435,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$label->setSize($width - 5, 2);
 		$label->setTextSize(1);
 		$label->setTextColor("F80");
-		$label->setText("Started by " . $this->voter->nickname);
+		$label->setText('$sStarted by ' . $this->voter->nickname);
 
 
 		//Time Gaunge
@@ -551,8 +551,8 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$frame->add($iconFrame);
 
 		$iconFrame->setSize($itemSize, $itemSize);
-		$itemQuad = new Quad_Icons64x64_1();
-		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_StateSuggested);
+		$itemQuad = new Quad_UIConstruction_Buttons();
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Add);
 		$itemQuad->setSize($itemSize, $itemSize);
 		$iconFrame->add($itemQuad);
 
