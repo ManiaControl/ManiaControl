@@ -132,7 +132,8 @@ class ManiaExchangeInfoSearcher { //TODO rename to ManiaExchangeManager
 
 			//If Max Maplimit is reached, or string gets too long send the request
 			if($id % self::MAPS_PER_MX_FETCH == 0) {
-				$maps = $this->getMaplistByMixedUidIdString($mapIdString);
+				$mapIdString = substr($mapIdString, 0, -1);
+				$maps        = $this->getMaplistByMixedUidIdString($mapIdString);
 				$this->updateMapObjectsWithManiaExchangeIds($maps);
 				$mapIdString = '';
 			}
@@ -141,7 +142,8 @@ class ManiaExchangeInfoSearcher { //TODO rename to ManiaExchangeManager
 		}
 
 		if($mapIdString != '') {
-			$maps = $this->getMaplistByMixedUidIdString($mapIdString);
+			$mapIdString = substr($mapIdString, 0, -1);
+			$maps        = $this->getMaplistByMixedUidIdString($mapIdString);
 			$this->updateMapObjectsWithManiaExchangeIds($maps);
 		}
 
@@ -156,7 +158,6 @@ class ManiaExchangeInfoSearcher { //TODO rename to ManiaExchangeManager
 
 		// compile search URL
 		$url = 'http://api.mania-exchange.com/' . $titlePrefix . '/maps/?ids=' . $string;
-
 		// $mapInfo = FileUtil::loadFile($url, "application/json"); //TODO use mc fileutil
 		$mapInfo = $this->get_file($url);
 
