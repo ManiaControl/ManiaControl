@@ -199,6 +199,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 			$popoutFrame->setPosition($posX - $itemSize * 0.5, $posY);
 			$popoutFrame->setHAlign(Control::RIGHT);
 			$popoutFrame->setSize(4 * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
+			$popoutFrame->setVisible(false);
 
 			$backgroundQuad = new Quad();
 			$popoutFrame->add($backgroundQuad);
@@ -267,6 +268,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		$popoutFrame->setPosition($posX - $itemSize * 0.5, $posY - $itemSize * $itemMarginFactorY);
 		$popoutFrame->setHAlign(Control::RIGHT);
 		$popoutFrame->setSize(4 * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
+		$popoutFrame->setVisible(false);
 
 		$backgroundQuad = new Quad();
 		$popoutFrame->add($backgroundQuad);
