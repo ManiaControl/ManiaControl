@@ -354,20 +354,21 @@ class Script {
 	 * @return string
 	 */
 	private function buildScriptText() {
-		$scriptText = "";
-		$scriptText .= $this->getHeaderComment();
-		$scriptText .= $this->getIncludes();
-		$scriptText .= $this->getConstants();
-		$scriptText .= $this->getFunctions();
-		$scriptText .= $this->getTooltipLabels();
-		$scriptText .= $this->getMenuLabels();
-		$scriptText .= $this->getPagesLabels();
-		$scriptText .= $this->getProfileLabels();
-		$scriptText .= $this->getMapInfoLabels();
-		$scriptText .= $this->getSoundLabels();
-		$scriptText .= $this->getToggleLabels();
-		$scriptText .= $this->getSpectateLabels();
-		$scriptText .= $this->getMainFunction();
+		$mainFunction = $this->getMainFunction();
+		$labels = $this->getLabels();
+		$functions = $this->getFunctions();
+		$constants = $this->getConstants();
+		$includes = $this->getIncludes();
+		$headerComment = $this->getHeaderComment();
+		
+		$scriptText = PHP_EOL;
+		$scriptText .= $headerComment;
+		$scriptText .= $includes;
+		$scriptText .= $constants;
+		$scriptText .= $functions;
+		$scriptText .= $labels;
+		$scriptText .= $mainFunction;
+		
 		return $scriptText;
 	}
 
@@ -473,6 +474,7 @@ Void " . self::FUNCTION_SETTOOLTIPTEXT . "(CMlControl _TooltipControl, CMlContro
 	declare Label = (_TooltipControl as CMlLabel);
 	Label.Value = " . self::CONSTANT_TOOLTIPTEXTS . "[TooltipId][HoverId];
 }";
+		$this->setFunction(self::FUNCTION_SETTOOLTIPTEXT, $setFunctionText);
 		$getFunctionText = "
 Text " . self::FUNCTION_GETTOOLTIPCONTROLID . "(Text _ControlClass) {
 	declare ClassParts = TextLib::Split(\"-\", _ControlClass);
@@ -480,8 +482,25 @@ Text " . self::FUNCTION_GETTOOLTIPCONTROLID . "(Text _ControlClass) {
 	if (ClassParts[0] != \"" . self::CLASS_TOOLTIP . "\") return \"\";
 	return ClassParts[1];
 }";
-		$this->setFunction(self::FUNCTION_SETTOOLTIPTEXT, $setFunctionText);
 		$this->setFunction(self::FUNCTION_GETTOOLTIPCONTROLID, $getFunctionText);
+	}
+
+	/**
+	 * Get Labels
+	 *
+	 * @return string
+	 */
+	private function getLabels() {
+		$labelsText = PHP_EOL;
+		$labelsText .= $this->getTooltipLabels();
+		$labelsText .= $this->getMenuLabels();
+		$labelsText .= $this->getPagesLabels();
+		$labelsText .= $this->getProfileLabels();
+		$labelsText .= $this->getMapInfoLabels();
+		$labelsText .= $this->getSoundLabels();
+		$labelsText .= $this->getToggleLabels();
+		$labelsText .= $this->getSpectateLabels();
+		return $labelsText;
 	}
 
 	/**
