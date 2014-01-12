@@ -120,7 +120,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener {
 	 * @param array  $chatCallback
 	 * @param Player $player
 	 */
-	public function command_Warn(array $chatCallback, Player $player) {
+	public function command_Warn(array $chat, Player $player) {
 		$params = explode(' ', $chat[1][2], 3);
 		if(count($params) <= 1) {
 			$this->maniaControl->chat->sendUsageInfo("No Login given! Example: '//kick login'", $player->login);
