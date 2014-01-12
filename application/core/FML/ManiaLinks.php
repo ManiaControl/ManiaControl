@@ -34,7 +34,7 @@ class ManiaLinks {
 	 * @return \FML\ManiaLinks
 	 */
 	public function add(ManiaLink $child) {
-		if (!in_array($child, $this->children)) {
+		if (!in_array($child, $this->children, true)) {
 			array_push($this->children, $child);
 		}
 		return $this;
