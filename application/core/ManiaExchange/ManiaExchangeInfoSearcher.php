@@ -30,9 +30,8 @@ class ManiaExchangeInfoSearcher { //TODO rename to ManiaExchangeManager
 	const SEARCH_ORDER_DIFFICULTY_HARDEST = 13;
 	const SEARCH_ORDER_LENGHT_SHORTEST    = 14;
 	const SEARCH_ORDER_LENGHT_LONGEST     = 15;
-	const MAPS_PER_MX_FETCH               = 10;
+	const MAPS_PER_MX_FETCH               = 50;
 
-	const MX_CHAR_LIMIT = 250;
 	/**
 	 * Private Propertieswc
 	 */
@@ -132,11 +131,10 @@ class ManiaExchangeInfoSearcher { //TODO rename to ManiaExchangeManager
 			$id++;
 
 			//If Max Maplimit is reached, or string gets too long send the request
-			if(($id % self::MAPS_PER_MX_FETCH == 0) || ((strlen($mapIdString) + strlen($appendString)) > self::MX_CHAR_LIMIT)) {
+			if($id % self::MAPS_PER_MX_FETCH == 0) {
 				$maps = $this->getMaplistByMixedUidIdString($mapIdString);
 				$this->updateMapObjectsWithManiaExchangeIds($maps);
 				$mapIdString = '';
-				$id          = 1;
 			}
 
 			$mapIdString .= $appendString;
@@ -157,7 +155,7 @@ class ManiaExchangeInfoSearcher { //TODO rename to ManiaExchangeManager
 		$titlePrefix = strtolower(substr($titleId, 0, 2));
 
 		// compile search URL
-		$url = 'http://api.mania-exchange.com/' . $titlePrefix . '/maps/' . $string;
+		$url = 'http://api.mania-exchange.com/' . $titlePrefix . '/maps/?ids=' . $string;
 
 		// $mapInfo = FileUtil::loadFile($url, "application/json"); //TODO use mc fileutil
 		$mapInfo = $this->get_file($url);
