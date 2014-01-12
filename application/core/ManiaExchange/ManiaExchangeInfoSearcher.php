@@ -136,7 +136,7 @@ class ManiaExchangeInfoSearcher { //TODO rename to ManiaExchangeManager
 				$maps = $this->getMaplistByMixedUidIdString($mapIdString);
 				$this->updateMapObjectsWithManiaExchangeIds($maps);
 				$mapIdString = '';
-				$id          = 0;
+				$id          = 1;
 			}
 
 			$mapIdString .= $appendString;
