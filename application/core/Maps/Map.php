@@ -69,7 +69,7 @@ class Map {
 	 * @return bool
 	 */
 	public function updateAvailable() {
-		if($this->mx != null && ($this->lastUpdate < $this->mx->updated || $this->uid != $this->mx->uid)) {
+		if($this->mx != null && ($this->lastUpdate < strtotime($this->mx->updated) || $this->uid != $this->mx->uid)) {
 			return true;
 		} else {
 			return false;
