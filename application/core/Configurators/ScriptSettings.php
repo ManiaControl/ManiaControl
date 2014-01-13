@@ -100,10 +100,10 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			trigger_error('Error occured: ' . $scriptSettings['faultString']);
 			return false;
 		}
-
-		$mysqli = $this->maniaControl->database->mysqli;
-		$query  = "SELECT * FROM `" . self::TABLE_SCRIPT_SETTINGS . "`;";
-		$result = $mysqli->query($query);
+		$mysqli   = $this->maniaControl->database->mysqli;
+		$serverId = $this->maniaControl->server->index;
+		$query    = "SELECT * FROM `" . self::TABLE_SCRIPT_SETTINGS . "` WHERE serverIndex = " . $serverId . ";";
+		$result   = $mysqli->query($query);
 		if($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
