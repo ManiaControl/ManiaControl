@@ -17,7 +17,6 @@ class SettingManager {
 	const TYPE_REAL      = 'real';
 	const TYPE_BOOL      = 'bool';
 	const TYPE_ARRAY     = 'array';
-	//const TYPE_AUTH_LEVEL = 'auth'; //TODO
 
 	/**
 	 * Private properties

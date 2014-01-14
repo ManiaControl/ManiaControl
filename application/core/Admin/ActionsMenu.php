@@ -123,7 +123,6 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		if(!$this->initCompleted) {
 			return;
 		}
-		// TODO: Render only once
 		$players = $this->maniaControl->playerManager->getPlayers();
 		foreach($players as $player) {
 			$manialink     = $this->buildMenuIconsManialink($player);

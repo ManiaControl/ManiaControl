@@ -750,7 +750,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$player = $this->maniaControl->playerManager->getPlayer($login);
 				if($player != null) {
 					if($shown == self::SHOW_MX_LIST) {
-						//TODO
+						//nothing to update yet
 					} else if($shown == self::SHOW_MAP_LIST) {
 						$this->showMapList($player);
 					}

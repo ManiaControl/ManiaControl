@@ -1,6 +1,7 @@
 <?php
 
 namespace ManiaControl\Maps;
+
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Commands\CommandListener;
@@ -17,13 +18,13 @@ class MapQueue implements CallbackListener, CommandListener {
 	/**
 	 * Constants
 	 */
-	const CB_MAPQUEUE_CHANGED =  'MapQueue.MapQueueBoxChanged';
+	const CB_MAPQUEUE_CHANGED = 'MapQueue.MapQueueBoxChanged';
 
-	const SETTING_SKIP_MAP_ON_LEAVE = 'Skip Map when the requester leaves';
+	const SETTING_SKIP_MAP_ON_LEAVE   = 'Skip Map when the requester leaves';
 	const SETTING_SKIP_MAPQUEUE_ADMIN = 'Skip Map when admin leaves';
 
 	const ADMIN_COMMAND_CLEAR_MAPQUEUE = 'clearmapqueue';
-	const ADMIN_COMMAND_CLEAR_JUKEBOX = 'clearjukebox';
+	const ADMIN_COMMAND_CLEAR_JUKEBOX  = 'clearjukebox';
 	/**
 	 * Private properties
 	 */
@@ -39,7 +40,7 @@ class MapQueue implements CallbackListener, CommandListener {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ENDMAP, $this,'endMap');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ENDMAP, $this, 'endMap');
 
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SKIP_MAP_ON_LEAVE, true);
@@ -52,17 +53,18 @@ class MapQueue implements CallbackListener, CommandListener {
 
 	/**
 	 * Clears the map-queue via admin command clearmap queue
+	 *
 	 * @param array  $chat
 	 * @param Player $player
 	 */
-	public function command_ClearMapQueue(array $chat, Player $admin){
+	public function command_ClearMapQueue(array $chat, Player $admin) {
 		$title = $this->maniaControl->authenticationManager->getAuthLevelName($admin->authLevel);
 
 		//Destroy map - queue list
 		$this->queuedMaps = array();
 
 		$this->maniaControl->chat->sendInformation($title . ' $<' . $admin->nickname . '$> cleared the Queued-Map list!');
-		$this->maniaControl->log($title .' ' . Formatter::stripCodes($admin->nickname) . ' cleared the Queued-Map list!');
+		$this->maniaControl->log($title . ' ' . Formatter::stripCodes($admin->nickname) . ' cleared the Queued-Map list!');
 
 		// Trigger callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_MAPQUEUE_CHANGED, array('clear'));
@@ -70,14 +72,15 @@ class MapQueue implements CallbackListener, CommandListener {
 
 	/**
 	 * Adds a Map to the map-queue
+	 *
 	 * @param $login
 	 * @param $uid
 	 */
-	public function addMapToMapQueue($login, $uid){ //TODO if from MX other message
+	public function addMapToMapQueue($login, $uid) {
 		$player = $this->maniaControl->playerManager->getPlayer($login);
 
 		//Check if the map is already juked
-		if(array_key_exists($uid, $this->queuedMaps)){
+		if(array_key_exists($uid, $this->queuedMaps)) {
 			$this->maniaControl->chat->sendError('Map is already in the Map-Queue', $login);
 			return;
 		}
@@ -97,34 +100,36 @@ class MapQueue implements CallbackListener, CommandListener {
 
 	/**
 	 * Revmoes a Map from the Map queue
+	 *
 	 * @param $login
 	 * @param $uid
 	 */
-	public function removeFromMapQueue($login, $uid){
+	public function removeFromMapQueue($login, $uid) {
 		unset($this->queuedMaps[$uid]);
 	}
 
 
 	/**
 	 * Called on endmap
+	 *
 	 * @param array $callback
 	 */
-	public function endMap(array $callback){
+	public function endMap(array $callback) {
 		$this->nextMap = null;
-		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_SKIP_MAP_ON_LEAVE) == TRUE){
+		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_SKIP_MAP_ON_LEAVE) == TRUE) {
 
 			//Skip Map if requester has left
-			foreach($this->queuedMaps as $queuedMap){
+			foreach($this->queuedMaps as $queuedMap) {
 				$player = $queuedMap[0];
 
 				//found player, so play this map
-				if($this->maniaControl->playerManager->getPlayer($player->login) != null){
+				if($this->maniaControl->playerManager->getPlayer($player->login) != null) {
 					break;
 				}
 
-				if($this->maniaControl->settingManager->getSetting($this, self::SETTING_SKIP_MAPQUEUE_ADMIN) == FALSE){
+				if($this->maniaControl->settingManager->getSetting($this, self::SETTING_SKIP_MAPQUEUE_ADMIN) == FALSE) {
 					//Check if the queuer is a admin
-					if($player->authLevel > 0){
+					if($player->authLevel > 0) {
 						break;
 					}
 				}
@@ -142,13 +147,14 @@ class MapQueue implements CallbackListener, CommandListener {
 		$this->nextMap = array_shift($this->queuedMaps);
 
 		//Check if Map Queue is empty
-		if($this->nextMap == null)
+		if($this->nextMap == null) {
 			return;
+		}
 		$map = $this->nextMap[1];
 
 
 		$success = $this->maniaControl->client->query('ChooseNextMap', $map->fileName);
-		if (!$success) {
+		if(!$success) {
 			trigger_error('[' . $this->maniaControl->client->getErrorCode() . '] ChooseNextMap - ' . $this->maniaControl->client->getErrorCode(), E_USER_WARNING);
 			return;
 		}
@@ -156,20 +162,23 @@ class MapQueue implements CallbackListener, CommandListener {
 
 	/**
 	 * Returns the next Map if the next map is a queuedmap or null if it's not
+	 *
 	 * @return null
 	 */
-	public function getNextMap(){
+	public function getNextMap() {
 		return $this->nextMap;
 	}
+
 	/**
 	 * Returns a list with the indexes of the queued maps
+	 *
 	 * @return array
 	 */
-	public function getQueuedMapsRanking(){
-		$i = 1;
+	public function getQueuedMapsRanking() {
+		$i          = 1;
 		$queuedMaps = array();
-		foreach($this->queuedMaps as $map){
-			$map = $map[1];
+		foreach($this->queuedMaps as $map) {
+			$map                   = $map[1];
 			$queuedMaps[$map->uid] = $i;
 			$i++;
 		}
@@ -179,8 +188,8 @@ class MapQueue implements CallbackListener, CommandListener {
 	/**
 	 * Dummy Function for testing
 	 */
-	public function printAllMaps(){
-		foreach($this->queuedMaps as $map){
+	public function printAllMaps() {
+		foreach($this->queuedMaps as $map) {
 			$map = $map[1];
 			var_dump($map->name);
 		}
