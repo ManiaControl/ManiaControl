@@ -462,7 +462,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$voteGauge->setY(-4);
 		$voteGauge->setSize($width * 0.65, 12);
 		$voteGauge->setDrawBg(false);
-		$voteGauge->setRatio($votePercentage + 0.15 - $votePercentage * 0.15);
+		$voteGauge->setRatio($votePercentage + 0.10 - $votePercentage * 0.10);
 		$gaugeColor = ColorUtil::floatToStatusColor($votePercentage);
 		$voteGauge->setColor($gaugeColor . '6');
 
