@@ -114,7 +114,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		}
 
 		// search for matching maps
-		$maps = $this->maniaControl->mapManager->mxInfoSearcher->getMaps($searchString, $author, $environment);
+		$maps = $this->maniaControl->mapManager->mxManager->getMaps($searchString, $author, $environment);
 
 		// check if there are any results
 		if($maps == null) {

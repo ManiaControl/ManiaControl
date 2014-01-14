@@ -9,10 +9,11 @@ use ManiaControl\ManiaControl;
  *
  * @author steeffeen & kremsy
  */
-class ManiaExchangeInfoSearcher { //TODO rename to ManiaExchangeManager
+class ManiaExchangeManager {
 	/**
 	 * Constants
 	 */
+	//Search others
 	const SEARCH_ORDER_NONE               = -1;
 	const SEARCH_ORDER_TRACK_NAME         = 0;
 	const SEARCH_ORDER_AUTHOR             = 1;
@@ -30,7 +31,9 @@ class ManiaExchangeInfoSearcher { //TODO rename to ManiaExchangeManager
 	const SEARCH_ORDER_DIFFICULTY_HARDEST = 13;
 	const SEARCH_ORDER_LENGHT_SHORTEST    = 14;
 	const SEARCH_ORDER_LENGHT_LONGEST     = 15;
-	const MAPS_PER_MX_FETCH               = 50;
+
+	//Maximum Maps per request
+	const MAPS_PER_MX_FETCH = 50;
 
 	/**
 	 * Private Propertieswc
@@ -151,6 +154,12 @@ class ManiaExchangeInfoSearcher { //TODO rename to ManiaExchangeManager
 	}
 
 
+	/**
+	 * Get the Whole Maplist from MX by Mixed Uid and Id String fetch
+	 *
+	 * @param $string
+	 * @return array|null
+	 */
 	public function getMaplistByMixedUidIdString($string) {
 		// Get Title Id
 		$titleId     = $this->maniaControl->server->titleId;
@@ -259,6 +268,12 @@ class ManiaExchangeInfoSearcher { //TODO rename to ManiaExchangeManager
 		return $maps;
 	}
 
+	/**
+	 * Loads an file
+	 *
+	 * @param $url
+	 * @return bool|int|string
+	 */
 	private function get_file($url) {
 		$url   = parse_url($url);
 		$port  = isset($url['port']) ? $url['port'] : 80;
@@ -289,6 +304,13 @@ class ManiaExchangeInfoSearcher { //TODO rename to ManiaExchangeManager
 			return trim($page[1]);
 		}
 	} // get_file
+
+	/**
+	 * Gets the Current Environemnt by String
+	 *
+	 * @param $env
+	 * @return int
+	 */
 	private function getEnvironment($env) {
 		switch($env) {
 			case 'TMCanyon':
