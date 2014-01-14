@@ -161,12 +161,19 @@ class ManiaExchangeInfoSearcher { //TODO rename to ManiaExchangeManager
 		// $mapInfo = FileUtil::loadFile($url, "application/json"); //TODO use mc fileutil
 		$mapInfo = $this->get_file($url);
 
-		// TODO errors
-		/*
-		 * if ($file === false) { $this->error = 'Connection or response error on ' . $url; return array(); } elseif ($file === -1) { $this->error =
-		 * 'Timed out while reading data from ' . $url; return array(); } elseif ($file == '') { if (empty($maps)) { $this->error = 'No data returned
-		 * from ' . $url; return array(); } else { break; } }
-		 */
+
+		if($mapInfo === false) {
+			$this->error = 'Connection or response error on ' . $url;
+			return array();
+		} elseif($mapInfo === -1) {
+			$this->error = 'Timed out while reading data from ' . $url;
+			return array();
+		} elseif($mapInfo == '') {
+			if(empty($maps)) {
+				$this->error = 'No data returned from ' . $url;
+				return array();
+			}
+		}
 
 		$mxMapList = json_decode($mapInfo);
 		if($mxMapList === null) {
@@ -224,12 +231,18 @@ class ManiaExchangeInfoSearcher { //TODO rename to ManiaExchangeManager
 		// $mapInfo = FileUtil::loadFile($url, "application/json"); //TODO use mc fileutil
 		$mapInfo = $this->get_file($url);
 
-		// TODO errors
-		/*
-		 * if ($file === false) { $this->error = 'Connection or response error on ' . $url; return array(); } elseif ($file === -1) { $this->error =
-		 * 'Timed out while reading data from ' . $url; return array(); } elseif ($file == '') { if (empty($maps)) { $this->error = 'No data returned
-		 * from ' . $url; return array(); } else { break; } }
-		 */
+		if($mapInfo === false) {
+			$this->error = 'Connection or response error on ' . $url;
+			return array();
+		} elseif($mapInfo === -1) {
+			$this->error = 'Timed out while reading data from ' . $url;
+			return array();
+		} elseif($mapInfo == '') {
+			if(empty($maps)) {
+				$this->error = 'No data returned from ' . $url;
+				return array();
+			}
+		}
 
 		$mxMapList = json_decode($mapInfo);
 		if($mxMapList === null) {
