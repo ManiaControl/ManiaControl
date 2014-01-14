@@ -49,7 +49,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_POSX, 156.);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_POSY, -37.);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_POSY, -17.);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_ITEMSIZE, 6.);
 
 		// Register for callbacks
@@ -210,7 +210,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 
 			// Add items
 			$x = -1;
-			foreach($this->adminMenuItems as $order => $menuItems) {
+			foreach($this->adminMenuItems as $menuItems) {
 				foreach($menuItems as $menuItem) {
 					$menuQuad = $menuItem[0];
 					/**
@@ -274,7 +274,6 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		$backgroundQuad->setHAlign(Control::RIGHT);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 		$backgroundQuad->setSize(count($this->playerMenuItems) * $itemSize * 1.15 + 2, $itemSize * $itemMarginFactorY);
-
 		$script->addToggle($itemQuad, $popoutFrame);
 
 		// Add items

@@ -61,7 +61,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	const VOTE_FOR_ACTION     = '1';
 	const VOTE_AGAINST_ACTION = '-1';
 
-	const ACTION_POSITIVE_VOTE = 'CustomVotesPlugin.PositivVote';
+	const ACTION_POSITIVE_VOTE = 'CustomVotesPlugin.PositiveVote';
 	const ACTION_NEGATIVE_VOTE = 'CustomVotesPlugin.NegativeVote';
 	const ACTION_START_VOTE    = 'CustomVotesPlugin.StartVote.';
 
@@ -74,6 +74,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	/** @var maniaControl $maniaControl */
 	private $maniaControl = null;
 	private $voteCommands = array();
+	private $voteMenuItems = array();
 	private $currentVote = null;
 	private $currentVoteExpireTime = 0;
 	private $playersVoted = array();
@@ -105,7 +106,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 		//Settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_VOTE_ICON_POSX, 156.);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_VOTE_ICON_POSY, -58.6);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_VOTE_ICON_POSY, -38.6);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_VOTE_ICON_WIDTH, 6);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_VOTE_ICON_HEIGHT, 6);
 
@@ -148,6 +149,21 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	}
 
 	/**
+	 * Add a new Vote Menu Item
+	 *
+	 * @param Control $control
+	 * @param int     $order
+	 * @param string  $description
+	 */
+	public function addVoteMenuItem(Control $control, $order = 0, $description = null) {
+		if(!isset($this->voteMenuItems[$order])) {
+			$this->voteMenuItems[$order] = array();
+		}
+		array_push($this->voteMenuItems[$order], array($control, $description));
+		krsort($this->voteMenuItems);
+	}
+
+	/**
 	 * Chat Vote
 	 *
 	 * @param array  $chat
@@ -168,6 +184,45 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 * @param array $callback
 	 */
 	public function handleOnInit(array $callback) {
+		// Menu RestartMap
+		$itemQuad = new Quad_UIConstruction_Buttons();
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Reload);
+		$itemQuad->setAction(self::ACTION_START_VOTE . 'restartmap');
+		$this->addVoteMenuItem($itemQuad, 5, 'Vote for Restart-Map');
+
+		//Check if Pause exists in current gamemode
+		$this->maniaControl->client->query('GetModeScriptInfo');
+		$scriptInfos = $this->maniaControl->client->getResponse();
+
+		$pauseExists = false;
+		foreach($scriptInfos["CommandDescs"] as $param) {
+			if($param['Name'] == "Command_ForceWarmUp") {
+				$pauseExists = true;
+				break;
+			}
+		}
+
+		// Menu Pause
+		if($pauseExists) {
+			$itemQuad = new Quad_Icons128x32_1();
+			$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ManiaLinkSwitch);
+			$itemQuad->setAction(self::ACTION_START_VOTE . 'pausegame');
+			$this->addVoteMenuItem($itemQuad, 10, 'Vote for a pause of Current Game');
+		}
+
+		//Menu SkipMap
+		$itemQuad = new Quad_Icons64x64_1();
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ArrowFastNext);
+		$itemQuad->setAction(self::ACTION_START_VOTE . 'skipmap');
+		$this->addVoteMenuItem($itemQuad, 15, 'Vote for a Mapskip');
+
+		//Menu TeamBalance
+		$itemQuad = new Quad_Icons128x32_1();
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_RT_Team);
+		$itemQuad->setAction(self::ACTION_START_VOTE . 'teambalance');
+		$this->addVoteMenuItem($itemQuad, 20, 'Vote for Team-Balance');
+
+		//Show the Menu's icon
 		$this->showIcon();
 	}
 
@@ -553,7 +608,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$iconFrame->add($itemQuad);
 
 		//Define Description Label
-		$menuEntries      = 4;
+		$menuEntries      = count($this->voteMenuItems);
 		$descriptionFrame = new Frame();
 		$maniaLink->add($descriptionFrame);
 		$descriptionFrame->setPosition($posX - $menuEntries * $itemSize * 1.15 - 6, $posY);
@@ -581,71 +636,28 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 		$script->addToggle($itemQuad, $popoutFrame);
 
-		//Menu Items
+		// Add items
 		$x = -1;
+		foreach($this->voteMenuItems as $menuItems) {
+			foreach($menuItems as $menuItem) {
+				$menuQuad = $menuItem[0];
+				/**
+				 *
+				 * @var Quad $menuQuad
+				 */
+				$popoutFrame->add($menuQuad);
+				$menuQuad->setSize($itemSize, $itemSize);
+				$menuQuad->setX($x);
+				$menuQuad->setHAlign(Control::RIGHT);
+				$x -= $itemSize * 1.05;
 
-		//TODO build dynamically
-		//Vote Balance Teams
-		$itemQuad = new Quad_Icons128x32_1();
-		$popoutFrame->add($itemQuad);
-		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_RT_Team);
-		$itemQuad->setAction(self::ACTION_START_VOTE . 'teambalance');
-		$itemQuad->setSize($itemSize, $itemSize);
-		$itemQuad->setX($x);
-		$itemQuad->setHAlign(Control::RIGHT);
-		$description = '$s' . 'Vote for Team-Balance';
-		$script->addTooltip($itemQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $description));
-		$x -= $itemSize * 1.05;
-
-		// Vote SkipMap
-		$itemQuad = new Quad_Icons64x64_1();
-		$popoutFrame->add($itemQuad);
-		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ArrowFastNext);
-		$itemQuad->setAction(self::ACTION_START_VOTE . 'skipmap');
-		$itemQuad->setSize($itemSize, $itemSize);
-		$itemQuad->setX($x);
-		$itemQuad->setHAlign(Control::RIGHT);
-		$description = '$s' . 'Vote for Skip-Map';
-		$script->addTooltip($itemQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $description));
-		$x -= $itemSize * 1.05;
-
-		//Check if Pause exists in current gamemode
-		$this->maniaControl->client->query('GetModeScriptInfo');
-		$scriptInfos = $this->maniaControl->client->getResponse();
-
-		$pauseExists = false;
-		foreach($scriptInfos["CommandDescs"] as $param) {
-			if($param['Name'] == "Command_ForceWarmUp") {
-				$pauseExists = true;
-				break;
+				if($menuItem[1]) {
+					$description = '$s' . $menuItem[1];
+					$script->addTooltip($menuQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $description));
+				}
 			}
 		}
 
-		if($pauseExists) {
-			// Set Pause
-			$itemQuad = new Quad_Icons128x32_1();
-			$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ManiaLinkSwitch);
-			$popoutFrame->add($itemQuad);
-			$itemQuad->setAction(self::ACTION_START_VOTE . 'pausegame');
-			$itemQuad->setSize($itemSize, $itemSize);
-			$itemQuad->setX($x);
-			$itemQuad->setHAlign(Control::RIGHT);
-			$description = '$s' . 'Vote for a pause of Current Game';
-			$script->addTooltip($itemQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $description));
-			$x -= $itemSize * 1.05;
-		}
-
-		// Vote RestartMap
-		$itemQuad = new Quad_UIConstruction_Buttons();
-		$popoutFrame->add($itemQuad);
-		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Reload);
-		$itemQuad->setAction(self::ACTION_START_VOTE . 'restartmap');
-		$itemQuad->setSize($itemSize, $itemSize);
-		$itemQuad->setX($x);
-		$itemQuad->setHAlign(Control::RIGHT);
-		$description = '$s' . 'Vote for Restart-Map';
-		$script->addTooltip($itemQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $description));
-		//$x -= $itemSize * 1.05;
 
 		// Send manialink
 		$manialinkText = $maniaLink->render()->saveXML();
