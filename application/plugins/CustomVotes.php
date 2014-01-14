@@ -78,6 +78,8 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	private $currentVoteExpireTime = 0;
 	private $playersVoted = array();
 	private $playersVotedPositiv = 0;
+	private $currentNeededRatio = 0;
+	private $currentNeededPlayerRatio = 0;
 	/** @var Player $voter */
 	private $voter = null;
 
@@ -185,11 +187,10 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 * @param array $callback
 	 */
 	public function handleVoteFinished(array $callback) {
-		$voteName    = $callback[1];
-		$voteResult  = $callback[2];
-		$neededRatio = $this->maniaControl->settingManager->getSetting($this, self::SETTING_DEFAULT_RATIO);
+		$voteName   = $callback[1];
+		$voteResult = $callback[2];
 
-		if($voteResult >= $neededRatio) {
+		if($voteResult >= $this->currentNeededRatio) {
 			switch($voteName) {
 				case 'teambalance':
 					$this->maniaControl->client->query('AutoTeamBalance');
@@ -209,8 +210,6 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 					$this->maniaControl->chat->sendInformation('Vote Successfully -> Current Game paused!');
 					break;
 			}
-
-
 		} else {
 			$this->maniaControl->chat->sendInformation('Vote Failed!');
 		}
@@ -256,32 +255,38 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 * @param                              $voteIndex
 	 */
 	public function startVote(Player $player, $voteIndex) {
-		//TODO messages
 		//Player is muted
 		if($this->maniaControl->playerManager->playerActions->isPlayerMuted($player)) {
+			$this->maniaControl->chat->sendError('Muted Players are not allowed to start a vote.', $player->login);
 			return;
 		}
 
 		//Specators are not allowed to start a vote
 		if($player->isSpectator && !$this->maniaControl->settingManager->getSetting($this, self::SETTING_SPECTATOR_ALLOW_START_VOTE)) {
+			$this->maniaControl->chat->sendError('Spectators are not allowed to start a vote.', $player->login);
 			return;
 		}
 
 		//Vote does not exist
 		if(!isset($this->voteCommands[$voteIndex])) {
+			$this->maniaControl->chat->sendError('Undefined vote.', $player->login);
 			return;
 		}
 
 		//A vote is currently running
 		if($this->currentVote != null) {
+			$this->maniaControl->chat->sendError('There is currently another vote running.', $player->login);
 			return;
 		}
+
+		$this->currentNeededPlayerRatio = floatval($this->maniaControl->settingManager->getSetting($this, self::SETTING_DEFAULT_PLAYER_RATIO));
+		$this->currentNeededRatio       = floatval($this->maniaControl->settingManager->getSetting($this, self::SETTING_DEFAULT_RATIO));
 
 		$maxTime = $this->maniaControl->settingManager->getSetting($this, self::SETTING_VOTE_TIME);
 
 		$this->maniaControl->chat->sendChat("Vote started");
 		$this->currentVote           = $this->voteCommands[$voteIndex];
-		$this->currentVoteExpireTime = time() + $maxTime; //TODO as setting
+		$this->currentVoteExpireTime = time() + $maxTime;
 
 		$this->playersVoted[$player->login] = self::VOTE_FOR_ACTION;
 		$this->playersVotedPositiv++;
@@ -350,12 +355,8 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$playerCount      = count($this->maniaControl->playerManager->getPlayers());
 		$playersVoteRatio = (100 / $playerCount * count($this->playersVoted)) / 100;
 
-		//TODO load into property at vote start:
-		$neededPlayerRatio = floatval($this->maniaControl->settingManager->getSetting($this, self::SETTING_DEFAULT_PLAYER_RATIO));
-		$neededRatio       = floatval($this->maniaControl->settingManager->getSetting($this, self::SETTING_DEFAULT_RATIO));
-
 		//Check if vote is over
-		if($timeUntilExpire <= 0 || (($playersVoteRatio >= $neededPlayerRatio) && (($votePercentage >= $neededRatio) || ($votePercentage <= 1 - $neededRatio)))) {
+		if($timeUntilExpire <= 0 || (($playersVoteRatio >= $this->currentNeededPlayerRatio) && (($votePercentage >= $this->currentNeededRatio) || ($votePercentage <= 1 - $this->currentNeededRatio)))) {
 			// Trigger callback
 			$this->maniaControl->callbackManager->triggerCallback(self::CB_CUSTOM_VOTE_FINISHED, array(self::CB_CUSTOM_VOTE_FINISHED, $this->currentVote["Index"], $votePercentage));
 
@@ -372,10 +373,12 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$manialinkText  = $emptyManialink->render()->saveXML();
 		$this->maniaControl->manialinkManager->sendManialink($manialinkText);
 
-		$this->playersVotedPositiv = 0;
-		$this->playersVoted        = null;
-		$this->currentVote         = null;
-		$this->voter               = null;
+		$this->currentNeededPlayerRatio = 0;
+		$this->currentNeededRatio       = 0;
+		$this->playersVotedPositiv      = 0;
+		$this->playersVoted             = null;
+		$this->currentVote              = null;
+		$this->voter                    = null;
 	}
 
 	/**
