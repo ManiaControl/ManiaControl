@@ -159,7 +159,9 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
-		//TODO message
+		$message = '$<' . $player->nickname . '$> skipped the current Map!';
+		$this->maniaControl->chat->sendSuccess($message);
+		$this->maniaControl->log($message, true);
 		$this->maniaControl->client->query('NextMap');
 	}
 
@@ -174,7 +176,9 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
-		//TODO message
+		$message = '$<' . $player->nickname . '$> restarted the current Map!';
+		$this->maniaControl->chat->sendSuccess($message);
+		$this->maniaControl->log($message, true);
 		$this->maniaControl->client->query('RestartMap');
 	}
 
