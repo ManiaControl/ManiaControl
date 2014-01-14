@@ -609,18 +609,31 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$script->addTooltip($itemQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $description));
 		$x -= $itemSize * 1.05;
 
-		// Set Pause
-		$itemQuad = new Quad_Icons128x32_1(); //TODO check if mode supports it
-		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ManiaLinkSwitch);
-		$popoutFrame->add($itemQuad);
-		$itemQuad->setAction(self::ACTION_START_VOTE . 'pausegame');
-		$itemQuad->setSize($itemSize, $itemSize);
-		$itemQuad->setX($x);
-		$itemQuad->setHAlign(Control::RIGHT);
-		$description = '$s' . 'Vote for a pause of Current Game';
-		$script->addTooltip($itemQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $description));
-		$x -= $itemSize * 1.05;
+		//Check if Pause exists in current gamemode
+		$this->maniaControl->client->query('GetModeScriptInfo');
+		$scriptInfos = $this->maniaControl->client->getResponse();
 
+		$pauseExists = false;
+		foreach($scriptInfos["CommandDescs"] as $param) {
+			if($param['Name'] == "Command_ForceWarmUp") {
+				$pauseExists = true;
+				break;
+			}
+		}
+
+		if($pauseExists) {
+			// Set Pause
+			$itemQuad = new Quad_Icons128x32_1();
+			$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ManiaLinkSwitch);
+			$popoutFrame->add($itemQuad);
+			$itemQuad->setAction(self::ACTION_START_VOTE . 'pausegame');
+			$itemQuad->setSize($itemSize, $itemSize);
+			$itemQuad->setX($x);
+			$itemQuad->setHAlign(Control::RIGHT);
+			$description = '$s' . 'Vote for a pause of Current Game';
+			$script->addTooltip($itemQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $description));
+			$x -= $itemSize * 1.05;
+		}
 
 		// Vote RestartMap
 		$itemQuad = new Quad_UIConstruction_Buttons();
