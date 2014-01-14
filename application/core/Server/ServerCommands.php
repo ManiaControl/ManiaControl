@@ -42,6 +42,7 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_5_SECOND, $this, 'each5Seconds');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
 
 		// Register for commands
 		$this->maniaControl->commandManager->registerCommandListener('setpwd', $this, 'command_SetPwd', true);
@@ -51,21 +52,35 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 		$this->maniaControl->commandManager->registerCommandListener('setspecpwd', $this, 'command_SetSpecPwd', true);
 		$this->maniaControl->commandManager->registerCommandListener('shutdownserver', $this, 'command_ShutdownServer', true);
 		$this->maniaControl->commandManager->registerCommandListener('systeminfo', $this, 'command_SystemInfo', true);
-		$this->maniaControl->commandManager->registerCommandListener('hideserver', $this, 'command_HideServer', true);
-		$this->maniaControl->commandManager->registerCommandListener('showserver', $this, 'command_ShowServer', true);
-		$this->maniaControl->commandManager->registerCommandListener('enablemapdownload', $this, 'command_EnableMapDownload', true);
-		$this->maniaControl->commandManager->registerCommandListener('disablemapdownload', $this, 'command_DisableMapDownload', true);
-		$this->maniaControl->commandManager->registerCommandListener('enablehorns', $this, 'command_EnableHorns', true);
-		$this->maniaControl->commandManager->registerCommandListener('disablehorns', $this, 'command_DisableHorns', true);
 
 		$this->maniaControl->commandManager->registerCommandListener('cancel', $this, 'command_CancelVote', true);
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_SET_PAUSE, $this, 'setPause');
+	}
 
+	/**
+	 * Set Menu items on init
+	 *
+	 * @param array $callback
+	 */
+	public function handleOnInit(array $callback) {
+		//Check if Pause exists in current gamemode
+		$this->maniaControl->client->query('GetModeScriptInfo');
+		$scriptInfos = $this->maniaControl->client->getResponse();
+
+		$pauseExists = false;
+		foreach($scriptInfos["CommandDescs"] as $param) {
+			if($param['Name'] == "Command_ForceWarmUp") {
+				$pauseExists = true;
+				break;
+			}
+		}
 		// Set Pause
-		$itemQuad = new Quad_Icons128x32_1(); //TODO check if mode supports it
-		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ManiaLinkSwitch);
-		$itemQuad->setAction(self::ACTION_SET_PAUSE);
-		$this->maniaControl->actionsMenu->addAdminMenuItem($itemQuad, 1, 'Pauses the current game');
+		if($pauseExists) {
+			$itemQuad = new Quad_Icons128x32_1();
+			$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ManiaLinkSwitch);
+			$itemQuad->setAction(self::ACTION_SET_PAUSE);
+			$this->maniaControl->actionsMenu->addAdminMenuItem($itemQuad, 1, 'Pauses the current game');
+		}
 
 		// Action cancel Vote
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_CANCEL_VOTE, $this, 'command_cancelVote');
@@ -328,120 +343,6 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 			return;
 		}
 		$this->maniaControl->chat->sendSuccess("Changed max spectators to: {$amount}", $player->login);
-	}
-
-	/**
-	 * Handle //hideserver command
-	 *
-	 * @param array  $chatCallback
-	 * @param Player $player
-	 */
-	public function command_HideServer(array $chatCallback, Player $player) {
-		if(!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
-			$this->maniaControl->authenticationManager->sendNotAllowed($player);
-			return;
-		}
-		$success = $this->maniaControl->client->query('SetHideServer', 1);
-		if(!$success) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
-			return;
-		}
-		$this->maniaControl->chat->sendSuccess('Server is now hidden!', $player->login);
-	}
-
-	/**
-	 * Handle //showserver command
-	 *
-	 * @param array  $chatCallback
-	 * @param Player $player
-	 */
-	public function command_ShowServer(array $chatCallback, Player $player) {
-		if(!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
-			$this->maniaControl->authenticationManager->sendNotAllowed($player);
-			return;
-		}
-		$success = $this->maniaControl->client->query('SetHideServer', 0);
-		if(!$success) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
-			return;
-		}
-		$this->maniaControl->chat->sendSuccess('Server is now visible!', $player->login);
-	}
-
-	/**
-	 * Handle //enablemapdownload command
-	 *
-	 * @param array  $chatCallback
-	 * @param Player $player
-	 */
-	public function command_EnableMapDownload(array $chatCallback, Player $player) {
-		if(!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
-			$this->maniaControl->authenticationManager->sendNotAllowed($player);
-			return;
-		}
-		$success = $this->maniaControl->client->query('AllowMapDownload', true);
-		if(!$success) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
-			return;
-		}
-		$this->maniaControl->chat->sendSuccess('Map Download is now enabled!', $player->login);
-	}
-
-	/**
-	 * Handle //disablemapdownload command
-	 *
-	 * @param array  $chatCallback
-	 * @param Player $player
-	 */
-	public function command_DisableMapDownload(array $chatCallback, Player $player) {
-		if(!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
-			$this->maniaControl->authenticationManager->sendNotAllowed($player);
-			return;
-		}
-		$success = $this->maniaControl->client->query('AllowMapDownload', false);
-		if(!$success) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
-			return;
-		}
-		$this->maniaControl->chat->sendSuccess('Map Download is now disabled!', $player->login);
-	}
-
-	/**
-	 * Handle //enablehorns command
-	 *
-	 * @param array  $chatCallback
-	 * @param Player $player
-	 */
-	public function command_EnableHorns(array $chatCallback, Player $player) {
-		if(!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
-			$this->maniaControl->authenticationManager->sendNotAllowed($player);
-			return;
-		}
-		$success = $this->maniaControl->client->query('DisableHorns', false);
-		if(!$success) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
-			return;
-		}
-		$this->maniaControl->chat->sendSuccess('Horns enabled!', $player->login);
-	}
-
-	/**
-	 * Handle //disablehorns command
-	 *
-	 * @param array  $chatCallback
-	 * @param Player $player
-	 */
-	public function command_DisableHorns(array $chatCallback, Player $player) {
-		if(!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
-			$this->maniaControl->authenticationManager->sendNotAllowed($player);
-			return;
-		}
-		$success = $this->maniaControl->client->query('DisableHorns', true);
-		if(!$success) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
-			return;
-		}
-		$this->maniaControl->chat->sendSuccess('Horns disabled!', $player->login);
 	}
 
 	/**
