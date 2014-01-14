@@ -19,6 +19,7 @@ class CommandManager implements CallbackListener {
 	private $maniaControl = null;
 	private $helpManager = array();
 	private $adminCommandListeners = array();
+	private $commandListeners = array();
 
 	/**
 	 * Construct a new Commands Manager
@@ -29,7 +30,7 @@ class CommandManager implements CallbackListener {
 		$this->maniaControl = $maniaControl;
 
 		//Create help manager instance
-		$this->helpManager = new HelpManager($this->maniaControl, $this);
+		$this->helpManager = new HelpManager($this->maniaControl);
 
 		// Register for callback
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCHAT, $this, 'handleChatCallback');
