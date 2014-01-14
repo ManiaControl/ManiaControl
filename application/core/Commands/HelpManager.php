@@ -2,12 +2,16 @@
 
 namespace ManiaControl\Commands;
 
-
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 
+/**
+ * ManiaControl Chat-Message Plugin
+ *
+ * @author kremsy and steeffeen
+ */
 class HelpManager implements CommandListener, CallbackListener {
 	/**
 	 * Private Properties
