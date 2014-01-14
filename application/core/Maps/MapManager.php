@@ -38,7 +38,7 @@ class MapManager implements CallbackListener {
 	public $mapQueue = null;
 	public $mapCommands = null;
 	public $mapList = null;
-	public $mxInfoSearcher = null;
+	public $mxManager = null;
 
 	/**
 	 * Private Properties
