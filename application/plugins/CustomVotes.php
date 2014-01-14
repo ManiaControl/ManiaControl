@@ -249,26 +249,25 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 			switch($voteName) {
 				case 'teambalance':
 					$this->maniaControl->client->query('AutoTeamBalance');
-					$this->maniaControl->chat->sendInformation('Vote Successfully -> Teams got Balanced!');
+					$this->maniaControl->chat->sendInformation('$sVote Successfully -> Teams got Balanced!');
 					break;
 				case 'skipmap':
 				case 'nextmap':
 					$this->maniaControl->client->query('NextMap');
-					$this->maniaControl->chat->sendInformation('Vote Successfully -> Map skipped!');
+					$this->maniaControl->chat->sendInformation('$sVote Successfully -> Map skipped!');
 					break;
 				case 'restartmap':
 					$this->maniaControl->client->query('RestartMap');
-					$this->maniaControl->chat->sendInformation('Vote Successfully -> Map restarted!');
+					$this->maniaControl->chat->sendInformation('$sVote Successfully -> Map restarted!');
 					break;
 				case 'pausegame':
 					$this->maniaControl->client->query('SendModeScriptCommands', array('Command_ForceWarmUp' => True));
-					$this->maniaControl->chat->sendInformation('Vote Successfully -> Current Game paused!');
+					$this->maniaControl->chat->sendInformation('$sVote Successfully -> Current Game paused!');
 					break;
 			}
 		} else {
-			$this->maniaControl->chat->sendInformation('Vote Failed!');
+			$this->maniaControl->chat->sendError('Vote Failed!');
 		}
-
 	}
 
 	/**
@@ -339,7 +338,6 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 		$maxTime = $this->maniaControl->settingManager->getSetting($this, self::SETTING_VOTE_TIME);
 
-		$this->maniaControl->chat->sendChat("Vote started");
 		$this->currentVote           = $this->voteCommands[$voteIndex];
 		$this->currentVoteExpireTime = time() + $maxTime;
 
@@ -347,6 +345,8 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$this->playersVotedPositiv++;
 
 		$this->voter = $player;
+
+		$this->maniaControl->chat->sendSuccess('$<' . $player->nickname . '$>$s started a $<' . $this->currentVote['Name'] . '$> vote!');
 	}
 
 	/**
