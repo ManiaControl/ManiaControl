@@ -188,7 +188,7 @@ class MapManager implements CallbackListener {
 	 *
 	 * @return bool
 	 */
-	public function shuffleMapList() {
+	public function shuffleMapList($admin = null) {
 		shuffle($this->maps);
 
 		$mapArray = array();
@@ -204,6 +204,12 @@ class MapManager implements CallbackListener {
 		}
 
 		$this->fetchCurrentMap();
+
+		if($admin != null) {
+			$message = '$<' . $admin->nickname . '$> shuffled the Maplist!';
+			$this->maniaControl->chat->sendSuccess($message);
+			$this->maniaControl->log($message, true);
+		}
 
 		return true;
 	}

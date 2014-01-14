@@ -106,7 +106,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$this->maniaControl->chat->sendError("Couldn't remove map.", $player->login);
 			return;
 		}
-		//TODO message
+
 		//RemoveMap
 		$this->maniaControl->mapManager->removeMap($player, $map->uid);
 	}
@@ -124,8 +124,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		}
 
 		// Shuffles the maps
-		$this->maniaControl->mapManager->shuffleMapList();
-		//TODO message
+		$this->maniaControl->mapManager->shuffleMapList($player);
 	}
 
 	/**
