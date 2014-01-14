@@ -107,10 +107,10 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_VOTE_ICON_WIDTH, 6);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_VOTE_ICON_HEIGHT, 6);
 
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSX, 160 - 15); //160 - 42 - 15
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSY, -15); //90 - 2 - 15
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_WIDTH, 30);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_HEIGHT, 25);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSX, -80); //160 -15
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSY, 80); //-15
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_WIDTH, 50); //30
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_HEIGHT, 20); //25
 
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_DEFAULT_RATIO, 0.75);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_DEFAULT_PLAYER_RATIO, 0.65);
@@ -415,26 +415,16 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		//Vote for label
 		$label = new Label_Text();
 		$frame->add($label);
-		$label->setY($height / 2 - 4);
+		$label->setY($height / 2 - 3);
 		$label->setAlign(Control::CENTER, Control::CENTER);
 		$label->setSize($width - 5, $height);
 		$label->setTextSize(1.3);
 		$label->setText('$sVote for ' . $this->currentVote["Name"]);
-		//$label->setTextColor("900");
-
-		/*$label = new Label_Text();
-		$frame->add($label);
-		$label->setY($height / 2 - 7);
-		$label->setAlign(Control::CENTER, Control::CENTER);
-		$label->setSize($width - 5, $height);
-		$label->setTextSize(1.3);
-		$label->setText($this->currentVote);
-		$label->setTextColor("F00");*/
 
 		//Started by nick
 		$label = new Label_Text();
 		$frame->add($label);
-		$label->setY($height / 2 - 7);
+		$label->setY($height / 2 - 6);
 		$label->setAlign(Control::CENTER, Control::CENTER);
 		$label->setSize($width - 5, 2);
 		$label->setTextSize(1);
@@ -445,7 +435,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		//Time Gaunge
 		$timeGauge = new Gauge();
 		$frame->add($timeGauge);
-		$timeGauge->setY(0);
+		$timeGauge->setY(1.5);
 		$timeGauge->setSize($width * 0.95, 6);
 		$timeGauge->setDrawBg(false);
 		$timeGaugeRatio = (100 / $maxTime * $timeUntilExpire) / 100;
@@ -456,36 +446,36 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		//Time Left
 		$label = new Label_Text();
 		$frame->add($label);
-		$label->setY(-2);
+		$label->setY(0);
 		$label->setAlign(Control::CENTER, Control::CENTER);
 		$label->setSize($width - 5, $height);
-		$label->setTextSize(1.3);
-		$label->setText("Time left: " . $timeUntilExpire . "s");
+		$label->setTextSize(1.1);
+		$label->setText('$sTime left: ' . $timeUntilExpire . "s");
 		$label->setTextColor("FFF");
 
 		//Vote Gauge
 		$voteGauge = new Gauge();
 		$frame->add($voteGauge);
-		$voteGauge->setY($height / 2 - 20);
+		$voteGauge->setY(-4);
 		$voteGauge->setSize($width * 0.65, 12);
 		$voteGauge->setDrawBg(false);
 		$voteGauge->setRatio($votePercentage + 0.15 - $votePercentage * 0.15);
 		$gaugeColor = ColorUtil::floatToStatusColor($votePercentage);
-		$voteGauge->setColor($gaugeColor . '9');
+		$voteGauge->setColor($gaugeColor . '6');
 
-
+		$y         = -4.4;
 		$voteLabel = new Label();
 		$frame->add($voteLabel);
-		$voteLabel->setY($height / 2 - 20.4);
+		$voteLabel->setY($y);
 		$voteLabel->setSize($width * 0.65, 12);
 		$voteLabel->setStyle($labelStyle);
 		$voteLabel->setTextSize(1);
 		$voteLabel->setText('  ' . round($votePercentage * 100.) . '% (' . count($this->playersVoted) . ')');
 
-		$y    = $height / 2 - 20.4;
+
 		$quad = new Quad_BgsPlayerCard();
 		$frame->add($quad);
-		$quad->setX(-$width / 2 + 4);
+		$quad->setX(-$width / 2 + 6);
 		$quad->setY($y);
 		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
 		$quad->setSize(5, 5);
@@ -494,7 +484,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 		$label = new Label_Button();
 		$frame->add($label);
-		$label->setX(-$width / 2 + 4);
+		$label->setX(-$width / 2 + 6);
 		$label->setAlign(Control::CENTER, Control::CENTER);
 		$label->setY($y);
 		$label->setStyle($labelStyle);
@@ -505,13 +495,13 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 		$quad = clone $quad;
 		$frame->add($quad);
-		$quad->setX($width / 2 - 4);
+		$quad->setX($width / 2 - 6);
 		$quad->setAction(self::ACTION_POSITIVE_VOTE);
 		$quad->setActionKey($quad::ACTIONKEY_F8);
 
 		$label = clone $label;
 		$frame->add($label);
-		$label->setX($width / 2 - 4);
+		$label->setX($width / 2 - 6);
 		$label->setTextColor("0F0");
 		$label->setText("F8");
 
