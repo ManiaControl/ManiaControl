@@ -57,10 +57,10 @@ class MapManager implements CallbackListener {
 		$this->initTables();
 
 		// Create map commands instance
-		$this->mapList        = new MapList($this->maniaControl);
-		$this->mapCommands    = new MapCommands($maniaControl);
-		$this->mapQueue       = new MapQueue($this->maniaControl);
-		$this->mxInfoSearcher = new ManiaExchangeInfoSearcher($this->maniaControl);
+		$this->mapList     = new MapList($this->maniaControl);
+		$this->mapCommands = new MapCommands($maniaControl);
+		$this->mapQueue    = new MapQueue($this->maniaControl);
+		$this->mxManager   = new ManiaExchangeManager($this->maniaControl);
 
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
@@ -292,7 +292,7 @@ class MapManager implements CallbackListener {
 	public function handleOnInit(array $callback) {
 		$this->updateFullMapList();
 		$this->fetchCurrentMap();
-		$this->mxInfoSearcher->fetchManiaExchangeMapInformations();
+		$this->mxManager->fetchManiaExchangeMapInformations();
 	}
 
 	/**
@@ -388,7 +388,7 @@ class MapManager implements CallbackListener {
 			$title      = strtolower(substr($serverInfo['TitleId'], 0, 2));
 
 			// Check if map exists
-			$mxMapInfos = $this->maniaControl->mapManager->mxInfoSearcher->getMaplistByMixedUidIdString($mapId);
+			$mxMapInfos = $this->maniaControl->mapManager->mxManager->getMaplistByMixedUidIdString($mapId);
 			$mapInfo    = $mxMapInfos[0];
 			/** @var MXMapInfo $mapInfo */
 
@@ -437,7 +437,7 @@ class MapManager implements CallbackListener {
 			$this->updateFullMapList();
 
 			//Update Mx MapInfo
-			$this->maniaControl->mapManager->mxInfoSearcher->updateMapObjectsWithManiaExchangeIds($mxMapInfos);
+			$this->maniaControl->mapManager->mxManager->updateMapObjectsWithManiaExchangeIds($mxMapInfos);
 
 			// Queue requested Map
 			$this->maniaControl->mapManager->mapQueue->addMapToMapQueue($login, $mapInfo->uid);
