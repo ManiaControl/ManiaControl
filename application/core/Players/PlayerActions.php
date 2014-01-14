@@ -67,9 +67,11 @@ class PlayerActions {
 	 *
 	 * @param string $adminLogin
 	 * @param string $targetLogin
-	 * @param int    $type
+	 * @param bool   $userIsAbleToSelect
+	 * @param bool   $displayAnnouncement
+	 * @internal param int $type
 	 */
-	public function forcePlayerToPlay($adminLogin, $targetLogin, $type = 2) {
+	public function forcePlayerToPlay($adminLogin, $targetLogin, $userIsAbleToSelect = true, $displayAnnouncement = true) {
 		$admin = $this->maniaControl->playerManager->getPlayer($adminLogin);
 		if(!$this->maniaControl->authenticationManager->checkPermission($admin, self::SETTING_PERMISSION_FORCE_PLAYER_PLAY)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($admin);
@@ -80,15 +82,25 @@ class PlayerActions {
 			return;
 		}
 
-		$success = $this->maniaControl->client->query('ForceSpectator', $target->login, ($type != 1 ? 0 : 2));
+		$success = $this->maniaControl->client->query('ForceSpectator', $target->login, self::SPECTATOR_PLAYER);
 		if(!$success) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $admin->login);
 			return;
 		}
 
+		if($userIsAbleToSelect) {
+			$success = $this->maniaControl->client->query('ForceSpectator', $target->login, self::SPECTATOR_USER_SELECTABLE);
+			if(!$success) {
+				$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $admin->login);
+				return;
+			}
+		}
+
 		// Announce force
-		$chatMessage = '$<' . $admin->nickname . '$> forced $<' . $target->nickname . '$> to Play!';
-		$this->maniaControl->chat->sendInformation($chatMessage);
+		if($displayAnnouncement) {
+			$chatMessage = '$<' . $admin->nickname . '$> forced $<' . $target->nickname . '$> to Play!';
+			$this->maniaControl->chat->sendInformation($chatMessage);
+		}
 	}
 
 	/**
@@ -110,11 +122,7 @@ class PlayerActions {
 		}
 
 		if($target->isSpectator) {
-			$success = $this->maniaControl->client->query('ForceSpectator', $target->login, self::SPECTATOR_PLAYER);
-			if(!$success) {
-				$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $admin->login);
-				return;
-			}
+			$this->forcePlayerToPlay($adminLogin, $targetLogin, true, false);
 		}
 
 		$success = $this->maniaControl->client->query('ForcePlayerTeam', $target->login, $teamId);
