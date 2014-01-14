@@ -25,6 +25,7 @@ require_once __DIR__ . '/Callbacks/CallbackManager.php';
 require_once __DIR__ . '/Chat.php';
 require_once __DIR__ . '/ColorUtil.php';
 require_once __DIR__ . '/Commands/CommandManager.php';
+require_once __DIR__ . '/Commands/HelpManager.php';
 require_once __DIR__ . '/Configurators/Configurator.php';
 require_once __DIR__ . '/Database.php';
 require_once __DIR__ . '/FileUtil.php';
