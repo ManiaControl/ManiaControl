@@ -3,10 +3,12 @@
 namespace ManiaControl\Commands;
 
 
+use ManiaControl\Callbacks\CallbackListener;
+use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 
-class HelpManager implements CommandListener {
+class HelpManager implements CommandListener, CallbackListener {
 	/**
 	 * Private Properties
 	 */
@@ -19,20 +21,49 @@ class HelpManager implements CommandListener {
 	 *
 	 * @param \ManiaControl\ManiaControl $maniaControl
 	 */
-	public function __construct(ManiaControl $maniaControl, CommandManager $commandManager) {
+	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		//Register the help command
-		$commandManager->registerCommandListener('help', $this, 'command_playerHelp', false);
+		// Register for callbacks
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
 	}
 
+	public function handleOnInit(array $callback) {
+		//Register the help command
+		$this->maniaControl->commandManager->registerCommandListener('help', $this, 'command_playerHelp', false);
+		$this->maniaControl->commandManager->registerCommandListener('help', $this, 'command_adminHelp', true);
+	}
 
-	public function command_playerHelp(array $chat, Player $player) {
-		$string = '';
-
-		foreach($this->playerCommands as $key => $value) {
-			var_dump($key, $value);
+	/**
+	 * Shows a list of Admin Commands
+	 *
+	 * @param array  $chat
+	 * @param Player $player
+	 */
+	public function command_adminHelp(array $chat, Player $player) {
+		//TODO only show first command in command arrays
+		$message = '$sSupported Admin Commands: ';
+		foreach(array_reverse($this->adminCommands) as $command) {
+			$message .= $command['Name'] . ',';
 		}
+		$message = substr($message, 0, -1);
+		$this->maniaControl->chat->sendChat($message, $player->login);
+	}
+
+	/**
+	 * Shows a list of Player Commands
+	 *
+	 * @param array  $chat
+	 * @param Player $player
+	 */
+	public function command_playerHelp(array $chat, Player $player) {
+		//TODO only show first command in command arrays
+		$message = '$sSupported Player Commands: ';
+		foreach(array_reverse($this->playerCommands) as $command) {
+			$message .= $command['Name'] . ',';
+		}
+		$message = substr($message, 0, -1);
+		$this->maniaControl->chat->sendChat($message, $player->login);
 	}
 
 	/**
