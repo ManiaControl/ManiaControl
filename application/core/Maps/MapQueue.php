@@ -169,6 +169,20 @@ class MapQueue implements CallbackListener, CommandListener {
 		return $this->nextMap;
 	}
 
+
+	/**
+	 * Returns the first Queued Map
+	 *
+	 * @return array(Player $player, Map $map)
+	 */
+	public function getNextQueuedMap() {
+		foreach($this->queuedMaps as $queuedMap) {
+			//return the first Queued Map
+			return $queuedMap;
+		}
+		return null;
+	}
+
 	/**
 	 * Returns a list with the indexes of the queued maps
 	 *

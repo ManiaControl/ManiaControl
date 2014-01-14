@@ -49,6 +49,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		$this->maniaControl->commandManager->registerCommandListener(array('shufflemaps', 'shuffle'), $this, 'command_ShuffleMaps', true);
 
 		// Register for player chat commands
+		$this->maniaControl->commandManager->registerCommandListener('nextmap', $this, 'command_showNextMap');
 		$this->maniaControl->commandManager->registerCommandListener(array('maps', 'list'), $this, 'command_List');
 		$this->maniaControl->commandManager->registerCommandListener(array('xmaps', 'xlist'), $this, 'command_xList');
 
@@ -87,6 +88,29 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ArrowFastNext);
 		$itemQuad->setAction(self::ACTION_SKIP_MAP);
 		$this->maniaControl->actionsMenu->addAdminMenuItem($itemQuad, 2, 'Skip Map');
+	}
+
+	/**
+	 * Shows which map is the next
+	 *
+	 * @param array  $chat
+	 * @param Player $player
+	 */
+	public function command_ShowNextMap(array $chat, Player $player) {
+		$nextQueued = $this->maniaControl->mapManager->mapQueue->getNextQueuedMap();
+		if($nextQueued != null) {
+			/** @var Player $requester */
+			$requester = $nextQueued[0];
+			/** @var Map $map */
+			$map = $nextQueued[1];
+			$this->maniaControl->chat->sendInformation("Next map is $<" . $map->name . "$> from $<" . $map->authorNick . "$> requested by $<" . $requester->nickname . "$>.", $player->login);
+		} else {
+			$this->maniaControl->client->query('GetNextMapIndex');
+			$mapIndex = $this->maniaControl->client->getResponse();
+			$maps     = $this->maniaControl->mapManager->getMaps();
+			$map      = $maps[$mapIndex];
+			$this->maniaControl->chat->sendInformation("Next map is $<" . $map->name . "$> from $<" . $map->authorNick . "$>.", $player->login);
+		}
 	}
 
 	/**
