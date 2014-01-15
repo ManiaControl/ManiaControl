@@ -89,11 +89,20 @@ class ManiaExchangeManager {
 		$saveMapStatement->close();
 	}
 
+
 	/**
 	 * Fetch Map Information from Mania Exchange
+	 * @param null $map
 	 */
-	public function fetchManiaExchangeMapInformations() {
-		$maps        = $this->maniaControl->mapManager->getMaps();
+	public function fetchManiaExchangeMapInformations($map = null) {
+		if(!$map){
+			//Fetch Informations for whole Maplist
+			$maps        = $this->maniaControl->mapManager->getMaps();
+		}else{
+			//Fetch Information for a single map
+			$maps[] = $map;
+		}
+
 		$mysqli      = $this->maniaControl->database->mysqli;
 		$mapIdString = '';
 
