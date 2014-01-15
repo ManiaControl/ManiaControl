@@ -14,14 +14,17 @@ class StyleManager {
 	/**
 	 * Constants
 	 */
-	const SETTING_LABEL_DEFAULT_STYLE = 'Default Label Style';
-	const SETTING_QUAD_DEFAULT_STYLE = 'Default Quad Style';
+	const SETTING_LABEL_DEFAULT_STYLE   = 'Default Label Style';
+	const SETTING_QUAD_DEFAULT_STYLE    = 'Default Quad Style';
 	const SETTING_QUAD_DEFAULT_SUBSTYLE = 'Default Quad SubStyle';
 
-	const SETTING_MAIN_WIDGET_DEFAULT_STYLE = 'Main Widget Default Quad Style';
+	const SETTING_MAIN_WIDGET_DEFAULT_STYLE    = 'Main Widget Default Quad Style';
 	const SETTING_MAIN_WIDGET_DEFAULT_SUBSTYLE = 'Main Widget Default Quad SubStyle';
-	const SETTING_LIST_WIDGETS_WIDTH = 'List Widgets Width';
-	const SETTING_LIST_WIDGETS_HEIGHT = 'List Widgets Height';
+	const SETTING_LIST_WIDGETS_WIDTH           = 'List Widgets Width';
+	const SETTING_LIST_WIDGETS_HEIGHT          = 'List Widgets Height';
+
+	const SETTING_ICON_DEFAULT_OFFSET_SM = 'Default Icon Offset in Shootmania';
+
 	/**
 	 * Private properties
 	 */
@@ -30,11 +33,11 @@ class StyleManager {
 	/**
 	 * Create a new style manager instance
 	 *
-	 * @param ManiaControl $maniaControl        	
+	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
-		
+
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_LABEL_DEFAULT_STYLE, 'TextTitle1');
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_QUAD_DEFAULT_STYLE, 'Bgs1InRace');
@@ -45,6 +48,16 @@ class StyleManager {
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAIN_WIDGET_DEFAULT_SUBSTYLE, Quad_BgRaceScore2::SUBSTYLE_HandleSelectable);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_LIST_WIDGETS_WIDTH, '150');
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_LIST_WIDGETS_HEIGHT, '80');
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_ICON_DEFAULT_OFFSET_SM, '20');
+	}
+
+	/**
+	 * Get the default Icon Offset for shootmania
+	 *
+	 * @return string
+	 */
+	public function getDefaultIconOffsetSM() {
+		return $this->maniaControl->settingManager->getSetting($this, self::SETTING_ICON_DEFAULT_OFFSET_SM);
 	}
 
 	/**
@@ -79,7 +92,7 @@ class StyleManager {
 	 *
 	 * @return string
 	 */
-	public function getDefaultMainWindowStyle(){
+	public function getDefaultMainWindowStyle() {
 		return $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAIN_WIDGET_DEFAULT_STYLE);
 	}
 
@@ -88,7 +101,7 @@ class StyleManager {
 	 *
 	 * @return string
 	 */
-	public function getDefaultMainWindowSubStyle(){
+	public function getDefaultMainWindowSubStyle() {
 		return $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAIN_WIDGET_DEFAULT_SUBSTYLE);
 	}
 
@@ -97,7 +110,7 @@ class StyleManager {
 	 *
 	 * @return string
 	 */
-	public function getListWidgetsWidth(){
+	public function getListWidgetsWidth() {
 		return $this->maniaControl->settingManager->getSetting($this, self::SETTING_LIST_WIDGETS_WIDTH);
 	}
 
@@ -106,7 +119,7 @@ class StyleManager {
 	 *
 	 * @return string
 	 */
-	public function getListWidgetsHeight(){
+	public function getListWidgetsHeight() {
 		return $this->maniaControl->settingManager->getSetting($this, self::SETTING_LIST_WIDGETS_HEIGHT);
 	}
 
