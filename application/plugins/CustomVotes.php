@@ -578,10 +578,20 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$posY              = $this->maniaControl->settingManager->getSetting($this, self::SETTING_VOTE_ICON_POSY);
 		$width             = $this->maniaControl->settingManager->getSetting($this, self::SETTING_VOTE_ICON_WIDTH);
 		$height            = $this->maniaControl->settingManager->getSetting($this, self::SETTING_VOTE_ICON_HEIGHT);
+		$shootManiaOffset  = $this->maniaControl->manialinkManager->styleManager->getDefaultIconOffsetSM();
 		$quadStyle         = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
 		$quadSubstyle      = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
 		$itemMarginFactorX = 1.3;
 		$itemMarginFactorY = 1.2;
+
+		// Get Title Id
+		$titleId     = $this->maniaControl->server->titleId;
+		$titlePrefix = strtoupper(substr($titleId, 0, 2));
+
+		//If game is shootmania lower the icons position by 20
+		if($titlePrefix == 'SM') {
+			$posY -= $shootManiaOffset;
+		}
 
 		$itemSize = $width;
 
