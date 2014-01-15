@@ -490,7 +490,11 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 					$mxQuad->setUrl($map->mx->pageurl);
 					$mxQuad->setZ(0.01);
 					$script->addTooltip($mxQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Update of $<" . $map->name . "$> available on Mania-Exchange"));
-					$mxQuad->setAction(self::ACTION_UPDATE_MAP . '.' . $map->uid);
+
+					//Update Button
+					if($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
+						$mxQuad->setAction(self::ACTION_UPDATE_MAP . '.' . $map->uid);
+					}
 				}
 
 			}
