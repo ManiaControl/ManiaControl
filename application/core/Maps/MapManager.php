@@ -411,6 +411,14 @@ class MapManager implements CallbackListener {
 				$this->maniaControl->chat->sendError('Download failed!', $login);
 				return;
 			}
+
+			//Check if map is already on the server
+			if($this->getMapByUid($mapInfo->uid) != null) {
+				// Download error
+				$this->maniaControl->chat->sendError('Map is already on the server!', $login);
+				return;
+			}
+
 			// Save map
 			$fileName = $mapId . '_' . $mapInfo->name . '.Map.Gbx';
 			$fileName = FileUtil::getClearedFileName($fileName);
@@ -433,6 +441,7 @@ class MapManager implements CallbackListener {
 				$this->maniaControl->chat->sendError("Invalid map type.", $login);
 				return;
 			}
+
 			// Add map to map list
 			if(!$this->maniaControl->client->query('InsertMap', $mapFileName)) {
 				$this->maniaControl->chat->sendError("Couldn't add map to match settings!", $login);
