@@ -108,7 +108,7 @@ class IconManager implements CallbackListener {
 	 *
 	 * @param string $login
 	 */
-	private function preloadIcons($login = false) {
+	public function preloadIcons($login = false) {
 		$maniaLink = new ManiaLink(self::PRELOAD_MLID);
 		$frame     = new Frame();
 		$maniaLink->add($frame);
@@ -125,4 +125,4 @@ class IconManager implements CallbackListener {
 		$manialinkText = $maniaLink->render()->saveXML();
 		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $login);
 	}
-} 
+}
