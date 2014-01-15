@@ -89,16 +89,25 @@ class ManiaExchangeManager {
 		$saveMapStatement->close();
 	}
 
+	/**
+	 * Unset Map by Mx Id
+	 *
+	 * @param $mxId
+	 */
+	public function unsetMap($mxId) {
+		unset($this->mxIdUidVector[$mxId]);
+	}
 
 	/**
 	 * Fetch Map Information from Mania Exchange
+	 *
 	 * @param null $map
 	 */
 	public function fetchManiaExchangeMapInformations($map = null) {
-		if(!$map){
+		if(!$map) {
 			//Fetch Informations for whole Maplist
-			$maps        = $this->maniaControl->mapManager->getMaps();
-		}else{
+			$maps = $this->maniaControl->mapManager->getMaps();
+		} else {
 			//Fetch Information for a single map
 			$maps[] = $map;
 		}

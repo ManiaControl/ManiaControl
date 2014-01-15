@@ -139,6 +139,32 @@ class MapManager implements CallbackListener {
 	}
 
 	/**
+	 * Updates the Timestamp of a map
+	 *
+	 * @param $map
+	 * @return bool
+	 */
+	private function updateMapTimestamp($uid) {
+		$mysqli   = $this->maniaControl->database->mysqli;
+		$mapQuery = "UPDATE `" . self::TABLE_MAPS . "` SET mxid = 0, changed = NOW() WHERE 'uid' = ?";
+
+		$mapStatement = $mysqli->prepare($mapQuery);
+		if($mysqli->error) {
+			trigger_error($mysqli->error);
+			return false;
+		}
+		$mapStatement->bind_param('s', $uid);
+		$mapStatement->execute();
+		if($mapStatement->error) {
+			trigger_error($mapStatement->error);
+			$mapStatement->close();
+			return false;
+		}
+		$mapStatement->close();
+		return true;
+	}
+
+	/**
 	 * Updates a Map from Mania Exchange
 	 *
 	 * @param Player $admin
@@ -146,8 +172,7 @@ class MapManager implements CallbackListener {
 	 * @param        $uid
 	 */
 	public function updateMap(Player $admin, $uid) {
-		return;
-		//TODO not finished yet
+		$this->updateMapTimestamp($uid);
 
 		$mapsDirectory = $this->maniaControl->server->getMapsDirectory();
 		if(!$this->maniaControl->server->checkAccess($mapsDirectory)) {
@@ -158,8 +183,8 @@ class MapManager implements CallbackListener {
 		$map = $this->maps[$uid];
 		/** @var Map $map */
 		$mxId = $map->mx->id;
-		$this->removeMap($admin, $uid, true);
-		$this->addMapFromMx($mxId, $admin->login);
+		$this->removeMap($admin, $uid, true, false);
+		$this->addMapFromMx($mxId, $admin->login, true);
 	}
 
 	/**
@@ -168,9 +193,14 @@ class MapManager implements CallbackListener {
 	 * @param \ManiaControl\Players\Player $admin
 	 * @param string                       $uid
 	 * @param bool                         $eraseFile
+	 * @param bool                         $message
 	 */
-	public function removeMap(Player $admin, $uid, $eraseFile = false) { //TODO erasefile?
+	public function removeMap(Player $admin, $uid, $eraseFile = false, $message = true) { //TODO erasefile?
 		$map = $this->maps[$uid];
+
+		//Unset the Map everywhere
+		$this->mapQueue->removeFromMapQueue($admin->login, $map->uid);
+		$this->mxManager->unsetMap($map->mx->id);
 
 		// Remove map
 		if(!$this->maniaControl->client->query('RemoveMap', $map->fileName)) {
@@ -179,9 +209,13 @@ class MapManager implements CallbackListener {
 			return;
 		}
 
-		$message = '$<' . $admin->nickname . '$> removed $<' . $map->name . '$>!';
-		$this->maniaControl->chat->sendSuccess($message);
-		$this->maniaControl->log($message, true);
+		//Show Message
+		if($message) {
+			$message = '$<' . $admin->nickname . '$> removed $<' . $map->name . '$>!';
+			$this->maniaControl->chat->sendSuccess($message);
+			$this->maniaControl->log($message, true);
+		}
+
 		unset($this->maps[$uid]);
 	}
 
@@ -429,10 +463,11 @@ class MapManager implements CallbackListener {
 	/**
 	 * Adds a Map from Mania Exchange
 	 *
-	 * @param $mapId
-	 * @param $login
+	 * @param      $mapId
+	 * @param      $login
+	 * @param bool $update
 	 */
-	public function addMapFromMx($mapId, $login) {
+	public function addMapFromMx($mapId, $login, $update = false) {
 		// Check if ManiaControl can even write to the maps dir
 		if(!$this->maniaControl->client->query('GetMapsDirectory')) {
 			trigger_error("Couldn't get map directory. " . $this->maniaControl->getClientErrorText());
@@ -515,15 +550,27 @@ class MapManager implements CallbackListener {
 				$this->maniaControl->chat->sendError("Couldn't add map to match settings!", $login);
 				return;
 			}
-			$this->maniaControl->chat->sendSuccess('Map $<' . $mapInfo->name . '$> added!');
 
 			$this->updateFullMapList();
 
 			//Update Mx MapInfo
 			$this->maniaControl->mapManager->mxManager->updateMapObjectsWithManiaExchangeIds($mxMapInfos);
 
-			// Queue requested Map
-			$this->maniaControl->mapManager->mapQueue->addMapToMapQueue($login, $mapInfo->uid);
+			//Update last updated time
+			$map = $this->maps[$mapInfo->uid];
+			/** @var Map $map */
+			$map->lastUpdate = time();
+
+			$player = $this->maniaControl->playerManager->getPlayer($login);
+
+			if(!$update) {
+				//Message
+				$this->maniaControl->chat->sendSuccess('$<' . $player->nickname . '$> added $<' . $mapInfo->name . '$>!');
+				// Queue requested Map
+				$this->maniaControl->mapManager->mapQueue->addMapToMapQueue($login, $mapInfo->uid);
+			} else {
+				$this->maniaControl->chat->sendSuccess('$<' . $player->nickname . '$> updated $<' . $mapInfo->name . '$>!');
+			}
 		}
 		// TODO: add local map by filename
 	}
