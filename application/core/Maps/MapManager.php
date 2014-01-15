@@ -45,6 +45,7 @@ class MapManager implements CallbackListener {
 	 */
 	private $maniaControl = null;
 	private $maps = array();
+	/** @var Map $currentMap */
 	private $currentMap = null;
 
 	/**
@@ -164,8 +165,9 @@ class MapManager implements CallbackListener {
 	/**
 	 * Remove a Map
 	 *
-	 * @param string $uid
-	 * @param bool   $eraseFile
+	 * @param \ManiaControl\Players\Player $admin
+	 * @param string                       $uid
+	 * @param bool                         $eraseFile
 	 */
 	public function removeMap(Player $admin, $uid, $eraseFile = false) { //TODO erasefile?
 		$map = $this->maps[$uid];
@@ -183,17 +185,55 @@ class MapManager implements CallbackListener {
 		unset($this->maps[$uid]);
 	}
 
+
+	/**
+	 * Restructures the Maplist
+	 */
+	public function restructureMapList() {
+		$currentIndex = $this->getMapIndex($this->currentMap);
+
+		//No RestructureNeeded
+		if($currentIndex < 14) {
+			return true;
+		}
+
+		$lowerMapArray  = array();
+		$higherMapArray = array();
+
+		$i = 0;
+		foreach($this->maps as $map) {
+			/** @var Map $map */
+			if($i < $currentIndex) {
+				$lowerMapArray[] = $map->fileName;
+			} else {
+				$higherMapArray[] = $map->fileName;
+			}
+			$i++;
+		}
+
+		$mapArray = array_merge($higherMapArray, $lowerMapArray);
+
+		if(!$this->maniaControl->client->query('ChooseNextMapList', $mapArray)) {
+			trigger_error("Error while restructuring the Maplist. " . $this->maniaControl->getClientErrorText());
+			return false;
+		}
+
+		return true;
+	}
+
 	/**
 	 * Shuffles the MapList
 	 *
+	 * @param Player $admin
 	 * @return bool
 	 */
 	public function shuffleMapList($admin = null) {
-		shuffle($this->maps);
+		$shuffledMaps = $this->maps;
+		shuffle($shuffledMaps);
 
 		$mapArray = array();
 
-		foreach($this->maps as $map) {
+		foreach($shuffledMaps as $map) {
 			/** @var Map $map */
 			$mapArray[] = $map->fileName;
 		}
@@ -211,6 +251,8 @@ class MapManager implements CallbackListener {
 			$this->maniaControl->log($message, true);
 		}
 
+		//Restructure if needed
+		$this->restructureMapList();
 		return true;
 	}
 
@@ -298,7 +340,13 @@ class MapManager implements CallbackListener {
 	public function handleOnInit(array $callback) {
 		$this->updateFullMapList();
 		$this->fetchCurrentMap();
+
+		//Fetch Mx Infos
 		$this->mxManager->fetchManiaExchangeMapInformations();
+
+		//Restructure Maplist
+		$this->restructureMapList();
+
 	}
 
 	/**
@@ -337,8 +385,15 @@ class MapManager implements CallbackListener {
 			$this->fetchCurrentMap();
 		}
 
+		//Restructure MapList if id is over 15
+		$this->restructureMapList();
+
+		//Update the mx of the map (for update checks, etc.)
+		$this->mxManager->fetchManiaExchangeMapInformations($this->currentMap);
+
 		// Trigger own BeginMap callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_BEGINMAP, array(self::CB_BEGINMAP, $this->currentMap));
+
 	}
 
 	/**
@@ -357,6 +412,19 @@ class MapManager implements CallbackListener {
 	public function getMaps() {
 		return array_values($this->maps);
 	}
+
+	/**
+	 * Returns the MapIndex of a given map
+	 *
+	 * @param Map $map
+	 * @internal param $uid
+	 * @return mixed
+	 */
+	public function getMapIndex(Map $map) {
+		$maps = $this->getMaps();
+		return array_search($map, $maps);
+	}
+
 
 	/**
 	 * Adds a Map from Mania Exchange
