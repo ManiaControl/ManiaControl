@@ -157,7 +157,7 @@ class KarmaPlugin implements CallbackListener, Plugin {
 			$karma = floatval($karma);
 			$karmaGauge->setRatio($karma + 0.15 - $karma * 0.15);
 			$karmaColor = ColorUtil::floatToStatusColor($karma);
-			$karmaGauge->setColor($karmaColor . '9');
+			$karmaGauge->setColor($karmaColor . '7');
 			$karmaLabel->setText('  ' . round($karma * 100.) . '% (' . $votes['count'] . ')');
 		} else {
 			$karma = 0.;
@@ -274,7 +274,6 @@ class KarmaPlugin implements CallbackListener, Plugin {
 		$map     = $this->maniaControl->mapManager->getCurrentMap();
 
 		$voted = $this->getPlayerVote($player, $map);
-		var_dump($voted);
 		if(!$voted){
 			$this->maniaControl->statisticManager->incrementStat(self::STAT_PLAYER_MAPVOTES, $player, $this->maniaControl->server->index);
 		}
