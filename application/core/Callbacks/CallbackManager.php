@@ -180,8 +180,8 @@ class CallbackManager {
 		
 		// Server Callbacks
 		if (!$this->maniaControl->client) return;
-		$this->maniaControl->client->readCB();
-		$callbacks = $this->maniaControl->client->getCBResponses();
+
+		$callbacks = $this->maniaControl->client->executeCallbacks();
 		if (!is_array($callbacks)) {
 			trigger_error("Error reading server callbacks. " . $this->maniaControl->getClientErrorText());
 			return;
