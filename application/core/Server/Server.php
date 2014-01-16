@@ -132,11 +132,10 @@ class Server implements CallbackListener {
 	 */
 	public function getDataDirectory() {
 		if($this->dataDirectory == '') {
-			if(!$this->maniaControl->client->query('GameDataDirectory')) {
+			if(!$this->dataDirectory = $this->maniaControl->client->gameDataDirectory()) {
 				trigger_error("Couldn't get data directory. " . $this->maniaControl->getClientErrorText());
 				return null;
 			}
-			$this->dataDirectory = $this->maniaControl->client->getResponse();
 		}
 		return $this->dataDirectory;
 	}
@@ -176,17 +175,18 @@ class Server implements CallbackListener {
 	public function getInfo($detailed = false) {
 		if($detailed) {
 			$login = $this->login;
-			if(!$this->maniaControl->client->query('GetDetailedPlayerInfo', $login)) {
+			if(!$info = $this->maniaControl->client->getDetailedPlayerInfo($login)) {
 				trigger_error("Couldn't fetch detailed server info. " . $this->maniaControl->getClientErrorText());
 				return null;
 			}
-			return $this->maniaControl->client->getResponse();
+			return $info;
 		}
-		if(!$this->maniaControl->client->query('GetMainServerPlayerInfo')) {
+
+		if(!$info = $this->maniaControl->client->getMainServerPlayerInfo()) {
 			trigger_error("Couldn't fetch server info. " . $this->maniaControl->getClientErrorText());
 			return null;
 		}
-		return $this->maniaControl->client->getResponse();
+		return $info;
 	}
 
 	/**
@@ -195,11 +195,11 @@ class Server implements CallbackListener {
 	 * @return array
 	 */
 	public function getOptions() {
-		if(!$this->maniaControl->client->query('GetServerOptions')) {
+		if(!$options = $this->maniaControl->client->getServerOptions()) {
 			trigger_error("Couldn't fetch server options. " . $this->maniaControl->getClientErrorText());
 			return null;
 		}
-		return $this->maniaControl->client->getResponse();
+		return $options;
 	}
 
 	/**
@@ -208,11 +208,11 @@ class Server implements CallbackListener {
 	 * @return string
 	 */
 	public function getName() {
-		if(!$this->maniaControl->client->query('GetServerName')) {
+		if(!$name = $this->maniaControl->client->getServerName()) {
 			trigger_error("Couldn't fetch server name. " . $this->maniaControl->getClientErrorText());
 			return null;
 		}
-		return $this->maniaControl->client->getResponse();
+		return $name;
 	}
 
 	/**
@@ -221,11 +221,11 @@ class Server implements CallbackListener {
 	 * @return string
 	 */
 	public function getVersion() {
-		if(!$this->maniaControl->client->query('GetVersion')) {
+		if(!$version = $this->maniaControl->client->getVersion()) {
 			trigger_error("Couldn't fetch server version. " . $this->maniaControl->getClientErrorText());
 			return null;
 		}
-		return $this->maniaControl->client->getResponse();
+		return $version;
 	}
 
 	/**
@@ -234,11 +234,11 @@ class Server implements CallbackListener {
 	 * @return array
 	 */
 	public function getSystemInfo() {
-		if(!$this->maniaControl->client->query('GetSystemInfo')) {
+		if(!$systemInfo = $this->maniaControl->client->getSystemInfo()) {
 			trigger_error("Couldn't fetch server system info. " . $this->maniaControl->getClientErrorText());
 			return null;
 		}
-		return $this->maniaControl->client->getResponse();
+		return $systemInfo;
 	}
 
 	/**
@@ -252,11 +252,12 @@ class Server implements CallbackListener {
 		if(is_int($parseValue)) {
 			$gameMode = $parseValue;
 		} else {
-			if(!$this->maniaControl->client->query('GetGameMode')) {
+			$gameMode = $this->maniaControl->client->getGameMode();
+
+			/*if(!$gameMode = $this->maniaControl->client->getGameMode()){
 				trigger_error("Couldn't fetch current game mode. " . $this->maniaControl->getClientErrorText());
 				return null;
-			}
-			$gameMode = $this->maniaControl->client->getResponse();
+			}*/
 		}
 		if($stringValue) {
 			switch($gameMode) {
@@ -288,11 +289,11 @@ class Server implements CallbackListener {
 	 * @return string
 	 */
 	public function getValidationReplay(Player $player) {
-		if(!$this->maniaControl->client->query('GetValidationReplay', $player->login)) {
+		if(!$replay = $this->maniaControl->client->getValidationReplay($player->login)) {
 			trigger_error("Couldn't get validation replay of '{$player->login}'. " . $this->maniaControl->getClientErrorText());
 			return null;
 		}
-		return $this->maniaControl->client->getResponse();
+		return $replay;
 	}
 
 	/**
@@ -308,13 +309,13 @@ class Server implements CallbackListener {
 		}
 
 		// Build file name
-		$map      = $this->getMap();
+		$map      = $this->getMap(); //TODO does that work?=
 		$gameMode = $this->getGameMode();
 		$time     = time();
 		$fileName = "GhostReplays/Ghost.{$player->login}.{$gameMode}.{$time}.{$map['UId']}.Replay.Gbx";
 
 		// Save ghost replay
-		if(!$this->maniaControl->client->query('SaveBestGhostsReplay', $player->login, $fileName)) {
+		if(!$this->maniaControl->client->saveBestGhostsReplay($player->login, $fileName)) {
 			trigger_error("Couldn't save ghost replay. " . $this->maniaControl->getClientErrorText());
 			return null;
 		}
@@ -335,10 +336,9 @@ class Server implements CallbackListener {
 	 * @return bool
 	 */
 	public function waitForStatus($statusCode = 4) {
-		$this->maniaControl->client->query('GetStatus');
-		$response = $this->maniaControl->client->getResponse();
+		$response = $this->maniaControl->client->getStatus();
 		// Check if server has the given status
-		if($response['Code'] === 4) {
+		if($response->code === 4) {
 			return true;
 		}
 		// Server not yet in given status - Wait for it...
@@ -347,10 +347,9 @@ class Server implements CallbackListener {
 		$lastStatus  = $response['Name'];
 		$this->maniaControl->log("Waiting for server to reach status {$statusCode}...");
 		$this->maniaControl->log("Current Status: {$lastStatus}");
-		while($response['Code'] !== 4) {
+		while($response->code !== 4) {
 			sleep(1);
-			$this->maniaControl->client->query('GetStatus');
-			$response = $this->maniaControl->client->getResponse();
+			$response = $this->maniaControl->client->getStatus();
 			if($lastStatus !== $response['Name']) {
 				$this->maniaControl->log("New Status: {$response['Name']}");
 				$lastStatus = $response['Name'];
