@@ -367,6 +367,11 @@ class PlayerActions {
 			return;
 		}
 
+		if($target->isFakePlayer()) {
+			$this->maniaControl->chat->sendError('It is not possible to Ban a bot', $admin->login);
+			return;
+		}
+
 		$success = $this->maniaControl->client->ban($target->login, $message);
 		if(!$success) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $admin->login);
