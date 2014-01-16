@@ -129,7 +129,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 */
 	public function sendManialink($manialinkText, $logins = null, $timeout = 0, $hideOnClick = false) { //TODO imrpvoe
 		$manialinkText = (string)$manialinkText;
-		if(!$logins) {//TODO check if null works?
+		if(!$logins) { //TODO check if null works?
 			return $this->maniaControl->client->sendDisplayManialinkPage(null, $manialinkText, $timeout, $hideOnClick);
 		}
 		if(is_string($logins)) {
@@ -199,18 +199,25 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	}
 
 	/**
-	 * Closes the Manialink Widget and enables the Alt Menu
+	 * Closes a Manialink Widget
 	 *
 	 * @param Player $player
+	 * @param bool   $widgetId
 	 */
-	public function closeWidget(Player $player) {
-		$emptyManialink = new ManiaLink(self::MAIN_MLID);
-		$manialinkText  = $emptyManialink->render()->saveXML();
-		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
-		$this->enableAltMenu($player);
+	public function closeWidget(Player $player, $widgetId = false) {
+		if(!$widgetId) {
+			$emptyManialink = new ManiaLink(self::MAIN_MLID);
+			$manialinkText  = $emptyManialink->render()->saveXML();
+			$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
+			$this->enableAltMenu($player);
 
-		// Trigger callback
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_MAIN_WINDOW_CLOSED, array(self::CB_MAIN_WINDOW_CLOSED, $player));
+			// Trigger callback
+			$this->maniaControl->callbackManager->triggerCallback(self::CB_MAIN_WINDOW_CLOSED, array(self::CB_MAIN_WINDOW_CLOSED, $player));
+		} else {
+			$emptyManialink = new ManiaLink($widgetId);
+			$manialinkText  = $emptyManialink->render()->saveXML();
+			$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
+		}
 	}
 
 	/**
