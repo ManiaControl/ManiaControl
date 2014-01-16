@@ -102,11 +102,8 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
-		$success = $this->maniaControl->client->cancelVote();
-		if(!$success) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
-			return;
-		}
+		$this->maniaControl->client->cancelVote();
+
 		$this->maniaControl->chat->sendInformation('$<' . $player->nickname . '$> canceled the Vote!');
 
 		// Trigger callback
