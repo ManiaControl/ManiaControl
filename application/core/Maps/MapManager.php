@@ -491,7 +491,7 @@ class MapManager implements CallbackListener {
 		if(is_numeric($mapId)) {
 			// Load from MX
 			$serverInfo = $this->maniaControl->server->getSystemInfo();
-			$title      = strtolower(substr($serverInfo['TitleId'], 0, 2));
+			$title      = strtolower(substr($serverInfo->titleId, 0, 2));
 
 			// Check if map exists
 			$mxMapInfos = $this->maniaControl->mapManager->mxManager->getMaplistByMixedUidIdString($mapId);
