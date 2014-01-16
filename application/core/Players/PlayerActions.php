@@ -11,6 +11,8 @@ use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
+use Maniaplanet\DedicatedServer\InvalidArgumentException;
+use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
  * PlayerActions Class
@@ -82,15 +84,20 @@ class PlayerActions {
 			return;
 		}
 
-		$success = $this->maniaControl->client->forceSpectator($target->login, self::SPECTATOR_PLAYER);
-		if(!$success) {
+		try {
+			$this->maniaControl->client->forceSpectator($target->login, self::SPECTATOR_PLAYER);
+
+		} catch(Exception $e) {
+			//TODO $e error text
 			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $admin->login);
 			return;
 		}
 
 		if($userIsAbleToSelect) {
-			$success = $this->maniaControl->client->forceSpectator($target->login, self::SPECTATOR_USER_SELECTABLE);
-			if(!$success) {
+			try {
+				$this->maniaControl->client->forceSpectator($target->login, self::SPECTATOR_USER_SELECTABLE);
+			} catch(Exception $e) {
+				//TODO $e error text
 				$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $admin->login);
 				return;
 			}
@@ -161,8 +168,10 @@ class PlayerActions {
 		}
 		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
 
-		$success = $this->maniaControl->client->forceSpectator($target->login, $spectatorState);
-		if(!$success) {
+		try {
+			$this->maniaControl->client->forceSpectator($target->login, $spectatorState);
+		} catch(Exception $e) {
+			//TODO error message from $e
 			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $admin->login);
 			return;
 		}
@@ -174,7 +183,12 @@ class PlayerActions {
 
 		if($releaseSlot) {
 			// Free player slot
-			//$this->maniaControl->client->spectatorReleasePlayerSlot($target->login); //TODO not in spec exception mp crash
+			try {
+				$this->maniaControl->client->spectatorReleasePlayerSlot($target->login);
+			} catch(InvalidArgumentException $e) {
+				//TODO error message from $e
+				$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $admin->login);
+			}
 		}
 	}
 
