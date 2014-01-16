@@ -323,12 +323,11 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		}
 
 		$message = 'Donate ' . $amount . ' Planets to $<' . $receiverName . '$>?';
-		if(!$this->maniaControl->client->query('SendBill', $player->login, $amount, $message, $receiver)) {
+		if(!$bill = $this->maniaControl->client->sendBill($player->login, $amount, $message, $receiver)) {
 			trigger_error("Couldn't create donation of {$amount} planets from '{$player->login}' for '{$receiver}'. " . $this->maniaControl->getClientErrorText());
 			$this->maniaControl->chat->sendError("Creating donation failed.", $player->login);
 			return false;
 		}
-		$bill                   = $this->maniaControl->client->getResponse();
 		$this->openBills[$bill] = array(true, $player->login, $receiver, $amount, time());
 
 		return true;
@@ -363,12 +362,11 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 			$receiver = $player->login;
 		}
 		$message = 'Payout from $<' . $this->maniaControl->server->getName() . '$>.';
-		if(!$this->maniaControl->client->query('Pay', $receiver, $amount, $message)) {
+		if(!$bill = $this->maniaControl->client->pay($receiver, $amount, $message)) {
 			trigger_error("Couldn't create payout of {$amount} planets by '{$player->login}' for '{$receiver}'. " . $this->maniaControl->getClientErrorText());
 			$this->maniaControl->chat->sendError("Creating payout failed.", $player->login);
 			return false;
 		}
-		$bill                   = $this->maniaControl->client->getResponse();
 		$this->openBills[$bill] = array(false, $player->login, $receiver, $amount, time());
 		return true;
 	}
@@ -385,11 +383,10 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return false;
 		}
-		if(!$this->maniaControl->client->query('GetServerPlanets')) {
+		if(!$planets = $this->maniaControl->client->getServerPlanets()) {
 			trigger_error("Couldn't retrieve server planets. " . $this->maniaControl->getClientErrorText());
 			return false;
 		}
-		$planets = $this->maniaControl->client->getResponse();
 		$message = "This Server has {$planets} Planets!";
 		return $this->maniaControl->chat->sendInformation($message, $player->login);
 	}

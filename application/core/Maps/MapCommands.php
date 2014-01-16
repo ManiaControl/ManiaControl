@@ -105,8 +105,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$map = $nextQueued[1];
 			$this->maniaControl->chat->sendInformation("Next map is $<" . $map->name . "$> from $<" . $map->authorNick . "$> requested by $<" . $requester->nickname . "$>.", $player->login);
 		} else {
-			$this->maniaControl->client->query('GetNextMapIndex');
-			$mapIndex = $this->maniaControl->client->getResponse();
+			$mapIndex = $this->maniaControl->client->getNextMapIndex();
 			$maps     = $this->maniaControl->mapManager->getMaps();
 			$map      = $maps[$mapIndex];
 			$this->maniaControl->chat->sendInformation("Next map is $<" . $map->name . "$> from $<" . $map->authorNick . "$>.", $player->login);
@@ -186,7 +185,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		$message = '$<' . $player->nickname . '$> skipped the current Map!';
 		$this->maniaControl->chat->sendSuccess($message);
 		$this->maniaControl->log($message, true);
-		$this->maniaControl->client->query('NextMap');
+		$this->maniaControl->client->nextMap();
 	}
 
 	/**
@@ -203,7 +202,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		$message = '$<' . $player->nickname . '$> restarted the current Map!';
 		$this->maniaControl->chat->sendSuccess($message);
 		$this->maniaControl->log($message, true);
-		$this->maniaControl->client->query('RestartMap');
+		$this->maniaControl->client->restartMap();
 	}
 
 	/**

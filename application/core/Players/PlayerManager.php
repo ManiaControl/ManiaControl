@@ -117,7 +117,7 @@ class PlayerManager implements CallbackListener {
 			if($playerItem->playerId <= 0) {
 				continue;
 			}
-			$playerInfo = $this->maniaControl->client->getDetailedPlayerInfo($playerItem['Login']);
+			$playerInfo = $this->maniaControl->client->getDetailedPlayerInfo($playerItem->login);
 			$player     = new Player($playerInfo);
 			$this->addPlayer($player);
 		}
