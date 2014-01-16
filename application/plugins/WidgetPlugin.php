@@ -439,7 +439,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		// if the nextmap is not a queued map, get it from map info
 		if($queuedMap == null) {
 			$map    = $this->maniaControl->client->getNextMapInfo();
-			$name   = $map->name;
+			$name   = Formatter::stripDirtyCodes($map->name);
 			$author = $map->author;
 		} else {
 			$requester = $queuedMap[0];
