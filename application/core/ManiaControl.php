@@ -15,7 +15,9 @@ use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\PluginManager;
 use ManiaControl\Server\Server;
 use ManiaControl\Statistics\StatisticManager;
+use Maniaplanet\DedicatedServer\Connection;
 
+require_once __DIR__ . '/Maniaplanet/DedicatedServer/Connection.php';
 require_once __DIR__ . '/Callbacks/CallbackListener.php';
 require_once __DIR__ . '/Commands/CommandListener.php';
 require_once __DIR__ . '/Manialinks/ManialinkPageAnswerListener.php';
@@ -71,10 +73,7 @@ class ManiaControl implements CommandListener {
 	public $chat = null;
 	public $config = null;
 	public $configurator = null;
-	/**
-	 *
-	 * @var \IXR_ClientMulticall_Gbx
-	 */
+	/** @var Connection $client */
 	public $client = null;
 	public $commandManager = null;
 	public $database = null;
@@ -166,10 +165,12 @@ class ManiaControl implements CommandListener {
 	 * @return string
 	 */
 	public function getClientErrorText($client = null) {
-		if(is_object($client)) {
+		/*if(is_object($client)) {
 			return $client->getErrorMessage() . ' (' . $client->getErrorCode() . ')';
 		}
-		return $this->client->getErrorMessage() . ' (' . $this->client->getErrorCode() . ')';
+		return $this->client->getErrorMessage() . ' (' . $this->client->getErrorCode() . ')';*/
+		//TODO
+
 	}
 
 	/**
@@ -234,10 +235,13 @@ class ManiaControl implements CommandListener {
 		$this->chat->sendInformation('ManiaControl shutting down.');
 
 		// Hide manialinks
-		$this->client->query('SendHideManialinkPage');
+		$this->client->sendHideManialinkPage();
+
+
+		//TODO: $this->client->delete()
 
 		// Close connection
-		$this->client->Terminate();
+		//$this->client->Terminate();
 
 		$this->log('Quitting ManiaControl!');
 		exit();
@@ -259,10 +263,10 @@ class ManiaControl implements CommandListener {
 		}
 
 		// Hide widgets
-		$this->client->query('SendHideManialinkPage');
+		$this->client->sendHideManialinkPage();
 
 		// Close connection
-		$this->client->Terminate();
+		//$this->client->Terminate(); //TODO
 
 		$this->log('Restarting ManiaControl!');
 
@@ -322,7 +326,7 @@ class ManiaControl implements CommandListener {
 		}
 
 		//Close the client connection
-		$this->client->Terminate();
+		//$this->client->Terminate();
 
 		// Shutdown
 		$this->quit();
@@ -333,8 +337,6 @@ class ManiaControl implements CommandListener {
 	 */
 	private function connect() {
 		// Load remote client
-		$this->client = new \IXR_ClientMulticall_Gbx();
-
 		$host = $this->config->server->xpath('host');
 		if(!$host) {
 			trigger_error("Invalid server configuration (host).", E_USER_ERROR);
@@ -348,11 +350,6 @@ class ManiaControl implements CommandListener {
 
 		$this->log("Connecting to server at {$host}:{$port}...");
 
-		// Connect
-		if(!$this->client->InitWithIp($host, $port, 20)) {
-			trigger_error("Couldn't connect to server! " . $this->getClientErrorText(), E_USER_ERROR);
-		}
-
 		$login = $this->config->server->xpath('login');
 		if(!$login) {
 			trigger_error("Invalid server configuration (login).", E_USER_ERROR);
@@ -364,13 +361,14 @@ class ManiaControl implements CommandListener {
 		}
 		$pass = (string)$pass[0];
 
-		// Authenticate
-		if(!$this->client->query('Authenticate', $login, $pass)) {
+		//TODO timeout as constant
+		$this->client = Connection::factory($host, $port, 20, $login, $pass);
+		if($this->client == null) {
 			trigger_error("Couldn't authenticate on server with user '{$login}'! " . $this->getClientErrorText(), E_USER_ERROR);
 		}
 
 		// Enable callback system
-		if(!$this->client->query('EnableCallbacks', true)) {
+		if(!$this->client->enableCallbacks(true)) {
 			trigger_error("Couldn't enable callbacks! " . $this->getClientErrorText(), E_USER_ERROR);
 		}
 
@@ -380,30 +378,32 @@ class ManiaControl implements CommandListener {
 		}
 
 		// Set api version
-		if(!$this->client->query('SetApiVersion', self::API_VERSION)) {
-			trigger_error("Couldn't set API version '" . self::API_VERSION . "'! This might cause problems. " . $this->getClientErrorText());
-		}
+		/*	if(!$this->client->query('SetApiVersion', self::API_VERSION)) {
+				trigger_error("Couldn't set API version '" . self::API_VERSION . "'! This might cause problems. " . $this->getClientErrorText());
+			}*/
 
 		// Connect finished
 		$this->log("Server Connection successfully established!");
 
 		// Hide old widgets
-		$this->client->query('SendHideManialinkPage');
+		$this->client->sendHideManialinkPage();
+		//$this->client->query('SendHideManialinkPage');
 
 		// Enable script callbacks if needed
 		if($this->server->getGameMode() != 0) {
 			return;
 		}
-		if(!$this->client->query('GetModeScriptSettings')) {
+		if(!$scriptSettings = $this->client->getModeScriptSettings()) {
 			trigger_error("Couldn't get mode script settings. " . $this->getClientErrorText());
 			return;
 		}
-		$scriptSettings = $this->client->getResponse();
+
 		if(!array_key_exists('S_UseScriptCallbacks', $scriptSettings)) {
 			return;
 		}
+
 		$scriptSettings['S_UseScriptCallbacks'] = true;
-		if(!$this->client->query('SetModeScriptSettings', $scriptSettings)) {
+		if(!$this->client->setModeScriptSettings($scriptSettings)) {
 			trigger_error("Couldn't set mode script settings to enable script callbacks. " . $this->getClientErrorText());
 			return;
 		}
