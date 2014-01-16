@@ -82,7 +82,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
-		$success = $this->maniaControl->client->query('AutoTeamBalance');
+		$success = $this->maniaControl->client->autoTeamBalance();
 		if(!$success) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
 			return;
@@ -246,7 +246,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener {
 		}
 		$success = true;
 		for($i = 0; $i < $amount; $i++) {
-			if(!$this->maniaControl->client->query('ConnectFakePlayer')) {
+			if(!$this->maniaControl->client->connectFakePlayer()) {
 				$success = false;
 			}
 		}
@@ -268,7 +268,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
-		$success = $this->maniaControl->client->query('DisconnectFakePlayer', '*');
+		$success = $this->maniaControl->client->disconnectFakePlayer('*');
 		if(!$success) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
 			return;

@@ -203,7 +203,7 @@ class MapManager implements CallbackListener {
 		$this->mxManager->unsetMap($map->mx->id);
 
 		// Remove map
-		if(!$this->maniaControl->client->query('RemoveMap', $map->fileName)) {
+		if(!$this->maniaControl->client->removeMap($map->fileName)) {
 			trigger_error("Couldn't remove current map. " . $this->maniaControl->getClientErrorText());
 			$this->maniaControl->chat->sendError("Couldn't remove map.", $admin);
 			return;
@@ -247,7 +247,7 @@ class MapManager implements CallbackListener {
 
 		$mapArray = array_merge($higherMapArray, $lowerMapArray);
 
-		if(!$this->maniaControl->client->query('ChooseNextMapList', $mapArray)) {
+		if(!$this->maniaControl->client->chooseNextMapList($mapArray)) {
 			trigger_error("Error while restructuring the Maplist. " . $this->maniaControl->getClientErrorText());
 			return false;
 		}
@@ -272,7 +272,7 @@ class MapManager implements CallbackListener {
 			$mapArray[] = $map->fileName;
 		}
 
-		if(!$this->maniaControl->client->query('ChooseNextMapList', $mapArray)) {
+		if(!$this->maniaControl->client->chooseNextMapList($mapArray)) {
 			trigger_error("Couldn't shuffle mapList. " . $this->maniaControl->getClientErrorText());
 			return false;
 		}
