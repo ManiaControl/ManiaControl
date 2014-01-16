@@ -137,7 +137,8 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		$pagesId = 'ServerSettingsPages';
 		$frame   = new Frame();
 
-		$serverSettings = $this->maniaControl->client->getServerOptions();
+		//TODO temporary
+		$serverSettings = $this->maniaControl->client->execute('GetServerOptions');
 
 		// Config
 		$pagerSize     = 9.;
@@ -268,7 +269,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		}
 
 		// Note on ServerOptions the whole Options have to be saved, otherwise a error will appear
-		$serverSettings = (array)$this->maniaControl->client->getServerOptions();
+		$serverSettings = $this->maniaControl->client->execute('GetServerOptions'); //TODO just temporary
 
 		$prefixLength = strlen(self::ACTION_PREFIX_SETTING);
 
@@ -329,12 +330,12 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		if(!$newSettings) {
 			return true;
 		}
-		//TODO not working yet
-		/*$success = $this->maniaControl->client->setServerOptions($newSettings);
+
+		$success = $this->maniaControl->client->setServerOptions($newSettings);
 		if(!$success) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
 			return false;
-		}*/
+		}
 
 		// Save Settings into Database
 		$mysqli = $this->maniaControl->database->mysqli;

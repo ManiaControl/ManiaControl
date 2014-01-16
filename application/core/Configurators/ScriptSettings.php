@@ -145,17 +145,18 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		$pagesId = 'ScriptSettingsPages';
 		$frame   = new Frame();
 
-		$scriptInfo = $this->maniaControl->client->getModeScriptInfo();
-		/*if(isset($scriptInfo->)) {
+		//$scriptInfo = (array)$this->maniaControl->client->getModeScriptInfo();
+		$scriptInfo = $this->maniaControl->client->execute('GetModeScriptInfo');
+		if(isset($scriptInfo['faultCode'])) {
 			// Not in script mode
-			$label = new Label(); //TODO
+			$label = new Label();
 			$frame->add($label);
 			$label->setText($scriptInfo['faultString']);
 			return $frame;
-		}*/
-		$scriptParams = $scriptInfo->paramDescs;
+		}
+		$scriptParams = $scriptInfo['ParamDescs'];
 
-		$scriptSettings = (array)$this->maniaControl->client->getModeScriptSettings();
+		$scriptSettings = $this->maniaControl->client->execute('GetModeScriptSettings');
 
 		// Config
 		$pagerSize     = 9.;
@@ -192,7 +193,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		$pageFrames = array();
 		$y          = 0.;
 		foreach($scriptParams as $index => $scriptParam) {
-			$settingName = $scriptParam->name;
+			$settingName = $scriptParam['Name'];
 
 			if(!isset($scriptSettings[$settingName])) {
 				continue;
@@ -259,7 +260,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			$descriptionLabel->setSize($width * 0.7, $settingHeight);
 			$descriptionLabel->setTextSize($labelTextSize);
 			$descriptionLabel->setTranslate(true);
-			$descriptionLabel->setText($scriptParam->desc);
+			$descriptionLabel->setText($scriptParam['Desc']);
 			$script->addTooltip($nameLabel, $descriptionLabel);
 
 			$y -= $settingHeight;
@@ -276,14 +277,14 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
 	 */
 	public function saveConfigData(array $configData, Player $player) {
-		//TODO fix settings
+
 		$prefix = explode(".", $configData[3][0]['Name']);
 		if($prefix[0] != self::ACTION_PREFIX_SETTING) {
 			return;
 		}
 
-		$scriptInfo = (array)$this->maniaControl->client->getModeScriptInfo();
-
+		$scriptSettings = $this->maniaControl->client->execute('GetModeScriptSettings');
+		
 		$prefixLength = strlen(self::ACTION_PREFIX_SETTING);
 
 		$newSettings = array();
@@ -344,8 +345,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 * @param        $setting
 	 */
 	public function toggleBooleanSetting($setting, Player $player) {
-		$scriptInfo = (array)$this->maniaControl->client->getModeScriptInfo();
-
+		$scriptSettings = $this->maniaControl->client->execute('GetModeScriptSettings');
 		if(!isset($scriptSettings[$setting])) {
 			var_dump('no setting ' . $setting);
 			return;
