@@ -22,6 +22,8 @@ use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
+use Maniaplanet\DedicatedServer\InvalidArgumentException;
+use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
  * PlayerList Widget Class
@@ -593,7 +595,11 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		switch($action) {
 			case self::ACTION_SPECTATE_PLAYER:
 				$this->maniaControl->client->forceSpectator($adminLogin, PlayerActions::SPECTATOR_BUT_KEEP_SELECTABLE);
-				//$this->maniaControl->client->forceSpectatorTarget($adminLogin, $targetLogin, 1); //TODO mc crash player is not a spectator
+				try {
+					$this->maniaControl->client->forceSpectatorTarget($adminLogin, $targetLogin, 1); //TODO mc crash player is not a spectator
+				} catch(Exception $e) {
+					//TODO error message from $e
+				}
 				break;
 			case self::ACTION_OPEN_PLAYER_DETAILED:
 				$player = $this->maniaControl->playerManager->getPlayer($adminLogin);
