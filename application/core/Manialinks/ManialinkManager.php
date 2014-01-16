@@ -127,18 +127,18 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 * @param bool   $hideOnClick
 	 * @return bool
 	 */
-	public function sendManialink($manialinkText, $logins = null, $timeout = 0, $hideOnClick = false) {
+	public function sendManialink($manialinkText, $logins = null, $timeout = 0, $hideOnClick = false) { //TODO imrpvoe
 		$manialinkText = (string)$manialinkText;
-		if(!$logins) {
-			return $this->maniaControl->client->query('SendDisplayManialinkPage', $manialinkText, $timeout, $hideOnClick);
+		if(!$logins) {//TODO check if null works?
+			return $this->maniaControl->client->sendDisplayManialinkPage(null, $manialinkText, $timeout, $hideOnClick);
 		}
 		if(is_string($logins)) {
-			return $this->maniaControl->client->query('SendDisplayManialinkPageToLogin', $logins, $manialinkText, $timeout, $hideOnClick);
+			return $this->maniaControl->client->sendDisplayManialinkPage(null, $logins, $manialinkText, $timeout, $hideOnClick);
 		}
 		if(is_array($logins)) {
 			$success = true;
 			foreach($logins as $login) {
-				$subSuccess = $this->maniaControl->client->query('SendDisplayManialinkPageToLogin', $login, $manialinkText, $timeout, $hideOnClick);
+				$subSuccess = $this->maniaControl->client->sendDisplayManialinkPage(null, $login, $manialinkText, $timeout, $hideOnClick);
 				if(!$subSuccess) {
 					$success = false;
 				}
@@ -157,7 +157,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 * @return bool
 	 */
 	public function enableAltMenu(Player $player) {
-		return $this->maniaControl->client->query('TriggerModeScriptEvent', 'LibXmlRpc_EnableAltMenu', $player->login);
+		return $this->maniaControl->client->triggerModeScriptEvent('LibXmlRpc_EnableAltMenu', $player->login);
 	}
 
 	/**
@@ -167,7 +167,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 * @return bool
 	 */
 	public function disableAltMenu(Player $player) {
-		return $this->maniaControl->client->query('TriggerModeScriptEvent', 'LibXmlRpc_DisableAltMenu', $player->login);
+		return $this->maniaControl->client->triggerModeScriptEvent('LibXmlRpc_DisableAltMenu', $player->login);
 	}
 
 	/**
