@@ -153,9 +153,9 @@ class MapQueue implements CallbackListener, CommandListener {
 		$map = $this->nextMap[1];
 
 
-		$success = $this->maniaControl->client->query('ChooseNextMap', $map->fileName);
-		if(!$success) {
-			trigger_error('[' . $this->maniaControl->client->getErrorCode() . '] ChooseNextMap - ' . $this->maniaControl->client->getErrorCode(), E_USER_WARNING);
+		$success = $this->maniaControl->client->chooseNextMap($map->fileName);
+		if(!$success) { //TODO error code?
+			//trigger_error('[' . $this->maniaControl->client->getErrorCode() . '] ChooseNextMap - ' . $this->maniaControl->client->getErrorCode(), E_USER_WARNING);
 			return;
 		}
 	}

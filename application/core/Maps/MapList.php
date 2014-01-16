@@ -727,7 +727,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$this->showMapList($player);
 				break;
 			case self::ACTION_SWITCH_MAP:
-				$this->maniaControl->client->query('JumpToMapIndex', $mapId);
+				$this->maniaControl->client->jumpToMapIndex($mapId);
 				$mapList = $this->maniaControl->mapManager->getMaps();
 				$map     = $mapList[$mapId];
 

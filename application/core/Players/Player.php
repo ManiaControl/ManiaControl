@@ -36,30 +36,32 @@ class Player {
 	/**
 	 * Construct a player from XmlRpc data
 	 *
-	 * @param array $rpcInfos
+	 * @param \Maniaplanet\DedicatedServer\Structures\Player $mpPlayer
 	 */
-	public function __construct(array $rpcInfos) {
-		if(!$rpcInfos) {
+	public function __construct($mpPlayer) {
+		if(!$mpPlayer) {
 			return;
 		}
 
-		$this->pid         = $rpcInfos['PlayerId'];
-		$this->login       = $rpcInfos['Login'];
-		$this->nickname    = Formatter::stripDirtyCodes($rpcInfos['NickName']);
-		$this->path        = $rpcInfos['Path'];
-		$this->language    = $rpcInfos['Language'];
-		$this->avatar      = $rpcInfos['Avatar']['FileName'];
-		$this->allies      = $rpcInfos['Allies'];
-		$this->clubLink    = $rpcInfos['ClubLink'];
-		$this->teamId      = $rpcInfos['TeamId'];
-		$this->isSpectator = $rpcInfos['IsSpectator'];
-		$this->isOfficial  = $rpcInfos['IsInOfficialMode'];
-		$this->isReferee   = $rpcInfos['IsReferee'];
-		$this->ladderScore = $rpcInfos['LadderStats']['PlayerRankings'][0]['Score'];
-		$this->ladderRank  = $rpcInfos['LadderStats']['PlayerRankings'][0]['Ranking'];
-		$this->maniaPlanetPlayDays = $rpcInfos['HoursSinceZoneInscription'] / 24;
+		$rpcInfos = (array)$mpPlayer; //Temporary
 
-		$this->ipAddress = $rpcInfos['IPAddress'];
+		$this->pid                 = $mpPlayer->playerId;
+		$this->login               = $mpPlayer->login;
+		$this->nickname            = Formatter::stripDirtyCodes($mpPlayer->nickName);
+		$this->path                = $mpPlayer->path;
+		$this->language            = $mpPlayer->language;
+		$this->avatar              = $mpPlayer->avatar['FileName'];
+		$this->allies              = $mpPlayer->allies;
+		$this->clubLink            = $mpPlayer->clubLink;
+		$this->teamId              = $mpPlayer->teamId;
+		$this->isSpectator         = $mpPlayer->isSpectator;
+		$this->isOfficial          = $mpPlayer->isInOfficialMode;
+		$this->isReferee           = $mpPlayer->isReferee;
+		$this->ladderScore         = $mpPlayer->ladderStats['PlayerRankings'][0]['Score'];
+		$this->ladderRank          = $mpPlayer->ladderStats['PlayerRankings'][0]['Ranking'];
+		$this->maniaPlanetPlayDays = $mpPlayer->hoursSinceZoneInscription / 24;
+
+		$this->ipAddress = $mpPlayer->iPAddress;
 
 		$this->joinTime = time();
 

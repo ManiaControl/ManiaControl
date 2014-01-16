@@ -233,10 +233,9 @@ class ManiaExchangeManager {
 		$titlePrefix = strtolower(substr($titleId, 0, 2));
 
 		// Get MapTypes
-		$this->maniaControl->client->query('GetModeScriptInfo');
-		$scriptInfos = $this->maniaControl->client->getResponse();
+		$scriptInfos = $this->maniaControl->client->getModeScriptInfo();
 
-		$mapTypes = $scriptInfos["CompatibleMapTypes"];
+		$mapTypes = $scriptInfos->compatibleMapTypes;
 
 		// compile search URL
 		$url = 'http://' . $titlePrefix . '.mania-exchange.com/tracksearch?api=on';

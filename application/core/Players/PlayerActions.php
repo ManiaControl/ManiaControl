@@ -82,14 +82,14 @@ class PlayerActions {
 			return;
 		}
 
-		$success = $this->maniaControl->client->query('ForceSpectator', $target->login, self::SPECTATOR_PLAYER);
+		$success = $this->maniaControl->client->forceSpectator($target->login, self::SPECTATOR_PLAYER);
 		if(!$success) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $admin->login);
 			return;
 		}
 
 		if($userIsAbleToSelect) {
-			$success = $this->maniaControl->client->query('ForceSpectator', $target->login, self::SPECTATOR_USER_SELECTABLE);
+			$success = $this->maniaControl->client->forceSpectator($target->login, self::SPECTATOR_USER_SELECTABLE);
 			if(!$success) {
 				$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $admin->login);
 				return;
@@ -125,7 +125,7 @@ class PlayerActions {
 			$this->forcePlayerToPlay($adminLogin, $targetLogin, true, false);
 		}
 
-		$success = $this->maniaControl->client->query('ForcePlayerTeam', $target->login, $teamId);
+		$success = $this->maniaControl->client->forcePlayerTeam($target->login, $teamId);
 		if(!$success) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $admin->login);
 			return;
@@ -161,7 +161,7 @@ class PlayerActions {
 		}
 		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
 
-		$success = $this->maniaControl->client->query('ForceSpectator', $target->login, $spectatorState);
+		$success = $this->maniaControl->client->forceSpectator($target->login, $spectatorState);
 		if(!$success) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $admin->login);
 			return;
@@ -174,7 +174,7 @@ class PlayerActions {
 
 		if($releaseSlot) {
 			// Free player slot
-			$this->maniaControl->client->query('SpectatorReleasePlayerSlot', $target->login);
+			$this->maniaControl->client->spectatorReleasePlayerSlot($target->login);
 		}
 	}
 
@@ -194,7 +194,7 @@ class PlayerActions {
 
 		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
 
-		$success = $this->maniaControl->client->query('UnIgnore', $target->login);
+		$success = $this->maniaControl->client->unIgnore($target->login);
 		if(!$success) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $admin->login);
 			return;
@@ -222,7 +222,7 @@ class PlayerActions {
 
 		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
 
-		$success = $this->maniaControl->client->query('Ignore', $targetLogin);
+		$success = $this->maniaControl->client->ignore($targetLogin);
 		if(!$success) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $admin->login);
 			return;
@@ -333,9 +333,9 @@ class PlayerActions {
 		}
 
 		if($target->isFakePlayer()) {
-			$success = $this->maniaControl->client->query('DisconnectFakePlayer', $target->login);
+			$success = $this->maniaControl->client->disconnectFakePlayer($target->login);
 		} else {
-			$success = $this->maniaControl->client->query('Kick', $target->login, $message);
+			$success = $this->maniaControl->client->kick($target->login, $message);
 		}
 		if(!$success) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $admin->login);
@@ -367,7 +367,7 @@ class PlayerActions {
 			return;
 		}
 
-		$success = $this->maniaControl->client->query('Ban', $target->login, $message);
+		$success = $this->maniaControl->client->ban($target->login, $message);
 		if(!$success) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $admin->login);
 			return;
@@ -462,9 +462,9 @@ class PlayerActions {
 	 * @return bool
 	 */
 	public function isPlayerMuted($login) {
-		$this->maniaControl->client->query('GetIgnoreList', 100, 0);
-		foreach($this->maniaControl->client->getResponse() as $ignoredPlayers) {
-			if($ignoredPlayers["Login"] == $login) {
+		$ignoreList = $this->maniaControl->client->getIgnoreList(100, 0);
+		foreach($ignoreList as $ignoredPlayers) {
+			if($ignoredPlayers->login == $login) {
 				return true;
 			}
 		}
