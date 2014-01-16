@@ -174,7 +174,7 @@ class PlayerActions {
 
 		if($releaseSlot) {
 			// Free player slot
-			$this->maniaControl->client->spectatorReleasePlayerSlot($target->login);
+			//$this->maniaControl->client->spectatorReleasePlayerSlot($target->login); //TODO not in spec exception mp crash
 		}
 	}
 

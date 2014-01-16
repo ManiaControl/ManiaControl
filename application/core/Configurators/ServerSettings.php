@@ -268,7 +268,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		}
 
 		// Note on ServerOptions the whole Options have to be saved, otherwise a error will appear
-		$serverSettings = $this->maniaControl->client->getServerOptions();
+		$serverSettings = (array)$this->maniaControl->client->getServerOptions();
 
 		$prefixLength = strlen(self::ACTION_PREFIX_SETTING);
 
@@ -292,7 +292,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			settype($newSettings[$settingName], gettype($serverSettings[$settingName]));
 		}
 
-		$this->applyNewScriptSettings($newSettings, $player);
+		$this->applyNewServerSettings($newSettings, $player);
 
 		//Reopen the Menu
 		$menuId = $this->maniaControl->configurator->getMenuId($this->getTitle());
@@ -319,21 +319,22 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	}
 
 	/**
-	 * Apply the Array of new Script Settings
+	 * Apply the Array of new Server Settings
 	 *
 	 * @param array  $newSettings
 	 * @param Player $player
 	 * @return bool
 	 */
-	private function applyNewScriptSettings(array $newSettings, Player $player) {
+	private function applyNewServerSettings(array $newSettings, Player $player) {
 		if(!$newSettings) {
 			return true;
 		}
-		$success = $this->maniaControl->client->setServerOptions($newSettings);
+		//TODO not working yet
+		/*$success = $this->maniaControl->client->setServerOptions($newSettings);
 		if(!$success) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
 			return false;
-		}
+		}*/
 
 		// Save Settings into Database
 		$mysqli = $this->maniaControl->database->mysqli;
