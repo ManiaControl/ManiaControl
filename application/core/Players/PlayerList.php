@@ -581,7 +581,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 	 */
 	public function handleManialinkPageAnswer(array $callback) {
 		$actionId    = $callback[1][2];
-		$actionArray = explode('.', $actionId);
+		$actionArray = explode('.', $actionId, 3);
 		if(count($actionArray) <= 2) {
 			return;
 		}
