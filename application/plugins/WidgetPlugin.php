@@ -286,11 +286,9 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$backgroundQuad->setSize($width, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 
-		$this->maniaControl->client->query('GetMaxPlayers');
-		$maxPlayers = $this->maniaControl->client->getResponse();
+		$maxPlayers = $this->maniaControl->client->getMaxPlayers();
 
-		$this->maniaControl->client->query('GetMaxSpectators');
-		$maxSpectators = $this->maniaControl->client->getResponse();
+		$maxSpectators = $this->maniaControl->client->getMaxSpectators();
 
 		$serverName = $this->maniaControl->server->getName();
 
@@ -440,10 +438,9 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$requester = null;
 		// if the nextmap is not a queued map, get it from map info
 		if($queuedMap == null) {
-			$this->maniaControl->client->query("GetNextMapInfo");
-			$map    = $this->maniaControl->client->getResponse();
-			$name   = $map['Name'];
-			$author = $map['Author'];
+			$map    = $this->maniaControl->client->getNextMapInfo();
+			$name   = $map->name;
+			$author = $map->author;
 		} else {
 			$requester = $queuedMap[0];
 			$map       = $queuedMap[1];

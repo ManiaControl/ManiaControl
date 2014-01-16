@@ -99,8 +99,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			return false;
 		}
 
-		$this->maniaControl->client->query('GetServerOptions');
-		$serverSettings = $this->maniaControl->client->getResponse();
+		$serverSettings = (array)$this->maniaControl->client->getServerOptions();
 		$loadedSettings = array();
 		while($row = $result->fetch_object()) {
 			if(!isset($serverSettings[$row->settingName])) {
@@ -114,7 +113,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			return true;
 		}
 
-		$success = $this->maniaControl->client->query('SetServerOptions', $loadedSettings);
+		$success = $this->maniaControl->client->getServerOptions($loadedSettings);
 		if(!$success) {
 			trigger_error('Error occurred: ' . $this->maniaControl->getClientErrorText());
 			return false;
@@ -138,8 +137,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		$pagesId = 'ServerSettingsPages';
 		$frame   = new Frame();
 
-		$this->maniaControl->client->query('GetServerOptions');
-		$serverSettings = $this->maniaControl->client->getResponse();
+		$serverSettings = $this->maniaControl->client->getServerOptions();
 
 		// Config
 		$pagerSize     = 9.;
@@ -270,8 +268,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		}
 
 		// Note on ServerOptions the whole Options have to be saved, otherwise a error will appear
-		$this->maniaControl->client->query('GetServerOptions');
-		$serverSettings = $this->maniaControl->client->getResponse();
+		$serverSettings = $this->maniaControl->client->getServerOptions();
 
 		$prefixLength = strlen(self::ACTION_PREFIX_SETTING);
 
@@ -332,7 +329,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		if(!$newSettings) {
 			return true;
 		}
-		$success = $this->maniaControl->client->query('SetServerOptions', $newSettings);
+		$success = $this->maniaControl->client->setServerOptions($newSettings);
 		if(!$success) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
 			return false;

@@ -191,11 +191,10 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$this->addVoteMenuItem($itemQuad, 5, 'Vote for Restart-Map');
 
 		//Check if Pause exists in current gamemode
-		$this->maniaControl->client->query('GetModeScriptInfo');
-		$scriptInfos = $this->maniaControl->client->getResponse();
+		$scriptInfos = (array)$this->maniaControl->client->getModeScriptInfo();
 
 		$pauseExists = false;
-		foreach($scriptInfos["CommandDescs"] as $param) {
+		foreach($scriptInfos["commandDescs"] as $param) {
 			if($param['Name'] == "Command_ForceWarmUp") {
 				$pauseExists = true;
 				break;
@@ -248,20 +247,20 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		if($voteResult >= $this->currentNeededRatio) {
 			switch($voteName) {
 				case 'teambalance':
-					$this->maniaControl->client->query('AutoTeamBalance');
+					$this->maniaControl->client->autoTeamBalance();
 					$this->maniaControl->chat->sendInformation('$sVote Successfully -> Teams got Balanced!');
 					break;
 				case 'skipmap':
 				case 'nextmap':
-					$this->maniaControl->client->query('NextMap');
+					$this->maniaControl->client->nextMap();
 					$this->maniaControl->chat->sendInformation('$sVote Successfully -> Map skipped!');
 					break;
 				case 'restartmap':
-					$this->maniaControl->client->query('RestartMap');
+					$this->maniaControl->client->restartMap();
 					$this->maniaControl->chat->sendInformation('$sVote Successfully -> Map restarted!');
 					break;
 				case 'pausegame':
-					$this->maniaControl->client->query('SendModeScriptCommands', array('Command_ForceWarmUp' => True));
+					$this->maniaControl->client->sendModeScriptCommands(array('Command_ForceWarmUp' => True));
 					$this->maniaControl->chat->sendInformation('$sVote Successfully -> Current Game paused!');
 					break;
 			}
