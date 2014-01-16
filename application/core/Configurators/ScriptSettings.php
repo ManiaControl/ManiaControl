@@ -145,15 +145,15 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		$pagesId = 'ScriptSettingsPages';
 		$frame   = new Frame();
 
-		$scriptInfo = (array)$this->maniaControl->client->getModeScriptInfo();
-		if(isset($scriptInfo['faultCode'])) {
+		$scriptInfo = $this->maniaControl->client->getModeScriptInfo();
+		/*if(isset($scriptInfo->)) {
 			// Not in script mode
-			$label = new Label();
+			$label = new Label(); //TODO
 			$frame->add($label);
 			$label->setText($scriptInfo['faultString']);
 			return $frame;
-		}
-		$scriptParams = $scriptInfo['ParamDescs'];
+		}*/
+		$scriptParams = $scriptInfo->paramDescs;
 
 		$scriptSettings = (array)$this->maniaControl->client->getModeScriptSettings();
 
@@ -192,7 +192,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		$pageFrames = array();
 		$y          = 0.;
 		foreach($scriptParams as $index => $scriptParam) {
-			$settingName = $scriptParam['Name'];
+			$settingName = $scriptParam->name;
 
 			if(!isset($scriptSettings[$settingName])) {
 				continue;
@@ -259,7 +259,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			$descriptionLabel->setSize($width * 0.7, $settingHeight);
 			$descriptionLabel->setTextSize($labelTextSize);
 			$descriptionLabel->setTranslate(true);
-			$descriptionLabel->setText($scriptParam['Desc']);
+			$descriptionLabel->setText($scriptParam->desc);
 			$script->addTooltip($nameLabel, $descriptionLabel);
 
 			$y -= $settingHeight;
@@ -276,7 +276,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
 	 */
 	public function saveConfigData(array $configData, Player $player) {
-
+		//TODO fix settings
 		$prefix = explode(".", $configData[3][0]['Name']);
 		if($prefix[0] != self::ACTION_PREFIX_SETTING) {
 			return;
