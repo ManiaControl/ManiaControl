@@ -43,12 +43,6 @@ require_once __DIR__ . '/Plugins/PluginManager.php';
 require_once __DIR__ . '/Server/Server.php';
 require_once __DIR__ . '/Settings/SettingManager.php';
 require_once __DIR__ . '/UpdateManager.php';
-list($endiantest) = array_values(unpack('L1L', pack('V', 1)));
-if($endiantest == 1) {
-	require_once __DIR__ . '/PhpRemote/GbxRemote.inc.php';
-} else {
-	require_once __DIR__ . '/PhpRemote/GbxRemote.bem.php';
-}
 
 /**
  * ManiaControl Server Controller for ManiaPlanet Server
