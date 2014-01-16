@@ -37,27 +37,27 @@ class Map {
 	/**
 	 * Create a new Map Object from Rpc Data
 	 *
-	 * @param array $rpc_infos
+	 * @param \Maniaplanet\DedicatedServer\Structures\Map $mpMap
 	 * @internal param \ManiaControl\ManiaControl $maniaControl
 	 */
-	public function __construct($rpc_infos = null) {
+	public function __construct($mpMap = null) {
 		$this->startTime = time();
 
-		if(!$rpc_infos) {
+		if(!$mpMap) {
 			return;
 		}
-		$this->name        = FORMATTER::stripDirtyCodes($rpc_infos['Name']);
-		$this->uid         = $rpc_infos['UId'];
-		$this->fileName    = $rpc_infos['FileName'];
-		$this->authorLogin = $rpc_infos['Author'];
-		$this->environment = $rpc_infos['Environnement'];
-		$this->goldTime    = $rpc_infos['GoldTime'];
-		$this->copperPrice = $rpc_infos['CopperPrice'];
-		$this->mapType     = $rpc_infos['MapType'];
-		$this->mapStyle    = $rpc_infos['MapStyle'];
+		$this->name        = FORMATTER::stripDirtyCodes($mpMap->name);
+		$this->uid         = $mpMap->uId;
+		$this->fileName    = $mpMap->fileName;
+		$this->authorLogin = $mpMap->author;
+		$this->environment = $mpMap->environnement;
+		$this->goldTime    = $mpMap->goldTime;
+		$this->copperPrice = $mpMap->copperPrice;
+		$this->mapType     = $mpMap->mapType;
+		$this->mapStyle    = $mpMap->mapStyle;
 
-		if(isset($rpc_infos['NbCheckpoints'])) {
-			$this->nbCheckpoints = $rpc_infos['NbCheckpoints'];
+		if(isset($mpMap->nbCheckpoints)) {
+			$this->nbCheckpoints = $mpMap->nbCheckpoints;
 		}
 
 		$this->authorNick = $this->authorLogin;

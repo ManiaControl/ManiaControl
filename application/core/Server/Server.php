@@ -6,6 +6,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
+use Maniaplanet\DedicatedServer\Structures\SystemInfos;
 
 require_once __DIR__ . '/ServerCommands.php';
 
@@ -59,11 +60,11 @@ class Server implements CallbackListener {
 	private function updateProperties() {
 		// System info
 		$systemInfo    = $this->getSystemInfo();
-		$this->ip      = $systemInfo['PublishedIp'];
-		$this->port    = $systemInfo['Port'];
-		$this->p2pPort = $systemInfo['P2PPort'];
-		$this->login   = $systemInfo['ServerLogin'];
-		$this->titleId = $systemInfo['TitleId'];
+		$this->ip      = $systemInfo->publishedIp;
+		$this->port    = $systemInfo->port;
+		$this->p2pPort = $systemInfo->p2PPort;
+		$this->login   = $systemInfo->serverLogin;
+		$this->titleId = $systemInfo->titleId;
 
 		// Database index
 		$mysqli    = $this->maniaControl->database->mysqli;
@@ -231,7 +232,7 @@ class Server implements CallbackListener {
 	/**
 	 * Fetch Server System Info
 	 *
-	 * @return array
+	 * @return SystemInfos
 	 */
 	public function getSystemInfo() {
 		if(!$systemInfo = $this->maniaControl->client->getSystemInfo()) {
@@ -309,7 +310,7 @@ class Server implements CallbackListener {
 		}
 
 		// Build file name
-		$map      = $this->getMap(); //TODO does that work?=
+		$map      = $this->getMap(); //TODO does that workm, where is the method?=
 		$gameMode = $this->getGameMode();
 		$time     = time();
 		$fileName = "GhostReplays/Ghost.{$player->login}.{$gameMode}.{$time}.{$map['UId']}.Replay.Gbx";

@@ -112,14 +112,12 @@ class PlayerManager implements CallbackListener {
 	 */
 	public function onInit(array $callback) {
 		// Add all players
-		$this->maniaControl->client->query('GetPlayerList', 300, 0, 2);
-		$players = $this->maniaControl->client->getResponse();
+		$players = $this->maniaControl->client->getPlayerList(300, 0, 2);
 		foreach($players as $playerItem) {
-			if($playerItem['PlayerId'] <= 0) {
+			if($playerItem->playerId <= 0) {
 				continue;
 			}
-			$this->maniaControl->client->query('GetDetailedPlayerInfo', $playerItem['Login']);
-			$playerInfo = $this->maniaControl->client->getResponse();
+			$playerInfo = $this->maniaControl->client->getDetailedPlayerInfo($playerItem['Login']);
 			$player     = new Player($playerInfo);
 			$this->addPlayer($player);
 		}
@@ -134,9 +132,8 @@ class PlayerManager implements CallbackListener {
 	 * @param array $callback
 	 */
 	public function playerConnect(array $callback) {
-		$login = $callback[1][0];
-		$this->maniaControl->client->query('GetDetailedPlayerInfo', $login);
-		$playerInfo = $this->maniaControl->client->getResponse();
+		$login      = $callback[1][0];
+		$playerInfo = $this->maniaControl->client->getDetailedPlayerInfo($login);
 		$player     = new Player($playerInfo);
 
 		$this->addPlayer($player);
@@ -220,10 +217,9 @@ class PlayerManager implements CallbackListener {
 			if($player->index == $index) {
 
 				return $player;
-			} else {
-				return null;
 			}
 		}
+		return null;
 	}
 
 	/**
