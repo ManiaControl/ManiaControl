@@ -156,7 +156,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		}
 		$scriptParams = $scriptInfo['ParamDescs'];
 
-		$scriptSettings = $this->maniaControl->client->execute('GetModeScriptSettings');
+		$scriptSettings = $this->maniaControl->client->getModeScriptSettings();
 
 		// Config
 		$pagerSize     = 9.;
@@ -283,8 +283,8 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			return;
 		}
 
-		$scriptSettings = $this->maniaControl->client->execute('GetModeScriptSettings');
-		
+		$scriptSettings = $this->maniaControl->client->getModeScriptSettings();
+
 		$prefixLength = strlen(self::ACTION_PREFIX_SETTING);
 
 		$newSettings = array();
@@ -345,7 +345,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 * @param        $setting
 	 */
 	public function toggleBooleanSetting($setting, Player $player) {
-		$scriptSettings = $this->maniaControl->client->execute('GetModeScriptSettings');
+		$scriptSettings = $this->maniaControl->client->getModeScriptSettings();
 		if(!isset($scriptSettings[$setting])) {
 			var_dump('no setting ' . $setting);
 			return;
