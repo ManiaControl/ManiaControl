@@ -89,6 +89,10 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 * @see \ManiaControl\Plugins\Plugin::unload()
 	 */
 	public function unload() {
+		$emptyManialink = new ManiaLink(self::MLID_DONATE_WIDGET);
+		$manialinkText  = $emptyManialink->render()->saveXML();
+		$this->maniaControl->manialinkManager->sendManialink($manialinkText);
+
 		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
 		$this->maniaControl->commandManager->unregisterCommandListener($this);
 		unset($this->maniaControl);
