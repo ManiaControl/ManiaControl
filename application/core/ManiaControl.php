@@ -16,6 +16,7 @@ use ManiaControl\Plugins\PluginManager;
 use ManiaControl\Server\Server;
 use ManiaControl\Statistics\StatisticManager;
 use Maniaplanet\DedicatedServer\Connection;
+use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 require_once __DIR__ . '/Maniaplanet/DedicatedServer/Connection.php';
 require_once __DIR__ . '/Callbacks/CallbackListener.php';
@@ -356,14 +357,17 @@ class ManiaControl implements CommandListener {
 		$pass = (string)$pass[0];
 
 		//TODO timeout as constant
-		$this->client = Connection::factory($host, $port, 20, $login, $pass);
-		if($this->client == null) {
-			trigger_error("Couldn't authenticate on server with user '{$login}'! " . $this->getClientErrorText(), E_USER_ERROR);
+		try {
+			$this->client = Connection::factory($host, $port, 20, $login, $pass);
+		} catch(Exception $e) {
+			trigger_error("Couldn't authenticate on server with user '{$login}'! " . $e->getMessage(), E_USER_ERROR);
 		}
 
 		// Enable callback system
-		if(!$this->client->enableCallbacks(true)) {
-			trigger_error("Couldn't enable callbacks! " . $this->getClientErrorText(), E_USER_ERROR);
+		try {
+			$this->client->enableCallbacks(true);
+		} catch(Exception $e) {
+			trigger_error("Couldn't enable callbacks! " . $e->getMessage(), E_USER_ERROR);
 		}
 
 		// Wait for server to be ready
@@ -381,14 +385,16 @@ class ManiaControl implements CommandListener {
 
 		// Hide old widgets
 		$this->client->sendHideManialinkPage();
-		//$this->client->query('SendHideManialinkPage');
 
 		// Enable script callbacks if needed
 		if($this->server->getGameMode() != 0) {
 			return;
 		}
-		if(!$scriptSettings = $this->client->getModeScriptSettings()) {
-			trigger_error("Couldn't get mode script settings. " . $this->getClientErrorText());
+
+		try {
+			$scriptSettings = $this->client->getModeScriptSettings();
+		} catch(Exception $e) {
+			trigger_error("Couldn't get mode script settings. " . $e->getMessage());
 			return;
 		}
 
@@ -397,7 +403,9 @@ class ManiaControl implements CommandListener {
 		}
 
 		$scriptSettings['S_UseScriptCallbacks'] = true;
-		if(!$this->client->setModeScriptSettings($scriptSettings)) {
+		try {
+			$this->client->setModeScriptSettings($scriptSettings);
+		} catch(Exception $e) {
 			trigger_error("Couldn't set mode script settings to enable script callbacks. " . $this->getClientErrorText());
 			return;
 		}
