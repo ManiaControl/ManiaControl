@@ -145,16 +145,20 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		$pagesId = 'ScriptSettingsPages';
 		$frame   = new Frame();
 
-		//$scriptInfo = (array)$this->maniaControl->client->getModeScriptInfo();
-		$scriptInfo = $this->maniaControl->client->execute('GetModeScriptInfo');
-		if(isset($scriptInfo['faultCode'])) {
+		$scriptInfo = $this->maniaControl->client->getModeScriptInfo();
+		//$scriptInfo = $this->maniaControl->client->execute('GetModeScriptInfo');
+
+		//TODO:
+	/*if(isset($scriptInfo['faultCode'])) {
 			// Not in script mode
 			$label = new Label();
 			$frame->add($label);
 			$label->setText($scriptInfo['faultString']);
 			return $frame;
 		}
-		$scriptParams = $scriptInfo['ParamDescs'];
+		$scriptParams = $scriptInfo['ParamDescs'];*/
+
+		$scriptParams = $scriptInfo->paramDescs;
 
 		$scriptSettings = $this->maniaControl->client->getModeScriptSettings();
 
@@ -193,7 +197,8 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		$pageFrames = array();
 		$y          = 0.;
 		foreach($scriptParams as $index => $scriptParam) {
-			$settingName = $scriptParam['Name'];
+			/** @var \Maniaplanet\DedicatedServer\Structures\ScriptSettings $scriptParam */
+			$settingName = $scriptParam->name;
 
 			if(!isset($scriptSettings[$settingName])) {
 				continue;
@@ -260,7 +265,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			$descriptionLabel->setSize($width * 0.7, $settingHeight);
 			$descriptionLabel->setTextSize($labelTextSize);
 			$descriptionLabel->setTranslate(true);
-			$descriptionLabel->setText($scriptParam['Desc']);
+			$descriptionLabel->setText($scriptParam->desc);
 			$script->addTooltip($nameLabel, $descriptionLabel);
 
 			$y -= $settingHeight;
