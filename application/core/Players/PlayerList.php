@@ -107,6 +107,13 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$backgroundQuad->setSize($width, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 
+		/*$backgroundQuad = new Quad();
+		$frame->add($backgroundQuad);
+		$backgroundQuad->setSize($width* 1.3, $height* 1.3);
+		//$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
+		$backgroundQuad->setImage("http://www.imgdumper.nl/uploads7/52d991addf7a1/52d991add72ef-border-playerstats.png");
+		$backgroundQuad->setZ(-0.5);*/
+
 		// Close Quad (X)
 		$closeQuad = new Quad_Icons64x64_1();
 		$frame->add($closeQuad);

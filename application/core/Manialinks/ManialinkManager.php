@@ -10,6 +10,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
+use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 require_once __DIR__ . '/StyleManager.php';
 require_once __DIR__ . '/IconManager.php';
@@ -129,25 +130,30 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 */
 	public function sendManialink($manialinkText, $logins = null, $timeout = 0, $hideOnClick = false) { //TODO imrpvoe
 		$manialinkText = (string)$manialinkText;
-		if(!$logins) { //TODO check if null works?
-			return $this->maniaControl->client->sendDisplayManialinkPage(null, $manialinkText, $timeout, $hideOnClick);
-		}
-		if(is_string($logins)) {
-			return $this->maniaControl->client->sendDisplayManialinkPage($logins, $manialinkText, $timeout, $hideOnClick);
-		}
-		if(is_array($logins)) {
-			$success = true;
-			foreach($logins as $login) {
-				$subSuccess = $this->maniaControl->client->sendDisplayManialinkPage($login, $manialinkText, $timeout, $hideOnClick);
-				if(!$subSuccess) {
-					$success = false;
-				}
+
+		try {
+			if(!$logins) {
+				return $this->maniaControl->client->sendDisplayManialinkPage(null, $manialinkText, $timeout, $hideOnClick);
 			}
+			if(is_string($logins)) {
+				return $this->maniaControl->client->sendDisplayManialinkPage($logins, $manialinkText, $timeout, $hideOnClick);
+			}
+			if(is_array($logins)) {
+				$success = true;
+				foreach($logins as $login) {
+					$subSuccess = $this->maniaControl->client->sendDisplayManialinkPage($login, $manialinkText, $timeout, $hideOnClick);
+					if(!$subSuccess) {
+						$success = false;
+					}
+				}
 
-			return $success;
+				return $success;
+			}
+		} catch(Exception $e) {
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 
 	/**
