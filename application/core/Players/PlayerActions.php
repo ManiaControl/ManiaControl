@@ -11,7 +11,6 @@ use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
-use Maniaplanet\DedicatedServer\InvalidArgumentException;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
@@ -185,9 +184,8 @@ class PlayerActions {
 			// Free player slot
 			try {
 				$this->maniaControl->client->spectatorReleasePlayerSlot($target->login);
-			} catch(InvalidArgumentException $e) {
+			} catch(Exception $e) {
 				//TODO error message from $e
-				$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $admin->login);
 			}
 		}
 	}
