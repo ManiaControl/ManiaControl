@@ -100,11 +100,17 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 		/** @var  ManiaControl/SettingManager $this->maniaControl->settingManager */
 		$settings = $this->maniaControl->settingManager->getSettings();
 
+		$pluginClasses = $this->maniaControl->pluginManager->getPluginClasses();
+
 		$pageFrames = array();
 		$y          = 0;
 		$index      = 1;
 		$prevClass  = '';
 		foreach($settings as $id => $setting) {
+			//Don't display Plugin Settings
+			if(array_search($setting->class, $pluginClasses) !== FALSE) {
+				continue;
+			}
 
 			if(!isset($pageFrame)) {
 				$pageFrame = new Frame();
@@ -228,8 +234,9 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 
 		foreach($configData[3] as $setting) {
 			$settingName = substr($setting['Name'], $prefixLength + 1);
-			$oldSetting  = $maniaControlSettings[$settingName];
-			if($setting['Value'] == $oldSetting->value || $oldSetting->type = 'bool') {
+
+			$oldSetting = $maniaControlSettings[$settingName];
+			if($setting['Value'] == $oldSetting->value || $oldSetting->type == 'bool') {
 				continue;
 			}
 
