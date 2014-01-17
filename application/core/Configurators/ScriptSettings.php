@@ -92,6 +92,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 */
 	public function loadSettingsFromDatabase() {
 		$scriptSettings = (array)$this->maniaControl->client->getModeScriptSettings();
+
 		if(isset($scriptSettings['faultString'])) {
 			if($scriptSettings['faultString'] == 'Not in script mode.') {
 				return false;
@@ -99,6 +100,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			trigger_error('Error occured: ' . $scriptSettings['faultString']);
 			return false;
 		}
+
 		$mysqli   = $this->maniaControl->database->mysqli;
 		$serverId = $this->maniaControl->server->index;
 		$query    = "SELECT * FROM `" . self::TABLE_SCRIPT_SETTINGS . "` WHERE serverIndex = " . $serverId . ";";
@@ -146,17 +148,16 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		$frame   = new Frame();
 
 		$scriptInfo = $this->maniaControl->client->getModeScriptInfo();
-		//$scriptInfo = $this->maniaControl->client->execute('GetModeScriptInfo');
 
-		//TODO:
-	/*if(isset($scriptInfo['faultCode'])) {
-			// Not in script mode
-			$label = new Label();
-			$frame->add($label);
-			$label->setText($scriptInfo['faultString']);
-			return $frame;
-		}
-		$scriptParams = $scriptInfo['ParamDescs'];*/
+		//TODO check error on not script modes, maybe exception happen, or dunno what, there is no faultString property?
+		/*if(isset($scriptInfo['faultCode'])) {
+				// Not in script mode
+				$label = new Label();
+				$frame->add($label);
+				$label->setText($scriptInfo['faultString']);
+				return $frame;
+			}
+			*/
 
 		$scriptParams = $scriptInfo->paramDescs;
 
