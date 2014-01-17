@@ -42,6 +42,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	const ACTION_ERASE_MAP            = 'MapList.EraseMap';
 	const ACTION_SWITCH_MAP           = 'MapList.SwitchMap';
 	const ACTION_QUEUED_MAP           = 'MapList.QueueMap';
+	const ACTION_CHECK_UPDATE         = 'MapList.CheckUpdate';
+	const ACTION_CLEAR_MAPQUEUE       = 'MapList.ClearMapQueue';
 	const MAX_MAPS_PER_PAGE           = 15;
 	const MAX_MX_MAPS_PER_PAGE        = 14;
 	const SHOW_MX_LIST                = 1;
@@ -73,8 +75,33 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_SEARCH_MAPNAME, $this, 'showManiaExchangeList');
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_SEARCH_AUTHOR, $this, 'showManiaExchangeList');
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_CHECK_UPDATE, $this, 'checkUpdates');
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_CLEAR_MAPQUEUE, $this, 'clearMapQueue');
 	}
 
+	/**
+	 * Clears the Map Queue
+	 *
+	 * @param array  $chatCallback
+	 * @param Player $player
+	 */
+	public function clearMapQueue(array $chatCallback, Player $player) {
+		//Clears the Map Queue
+		$this->maniaControl->mapManager->mapQueue->clearMapQueue($player);
+	}
+
+	/**
+	 * Check for Map Updates
+	 *
+	 * @param array  $chatCallback
+	 * @param Player $player
+	 */
+	public function checkUpdates(array $chatCallback, Player $player) {
+		//Update Mx Infos
+		$this->maniaControl->mapManager->mxManager->fetchManiaExchangeMapInformations();
+		//Reshow the Maplist
+		$this->showMapList($player);
+	}
 
 	/**
 	 * Display the Mania Exchange List
@@ -228,6 +255,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$mxQuad->setZ(0.01);
 			$script->addTooltip($mxQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "View " . $map->name . " on Mania-Exchange"));
 
+			//TODO permission Clear Jukebox
 			if($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
 				$addQuad = new Quad_Icons64x64_1();
 				$mapFrame->add($addQuad);
@@ -399,6 +427,51 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$pageCountLabel->setTextSize(1.3);
 			$script->addPageLabel($pageCountLabel, $pagesId);
 		}
+
+		//Admin Buttons
+		if($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
+			//Clear Jukebox
+			$label = new Label_Button();
+			$frame->add($label);
+			$label->setText("Clear Map-Queue");
+			$label->setTextSize(1);
+			$label->setPosition($width / 2 - 8, -$height / 2 + 9);
+			$label->setHAlign(Control::RIGHT);
+
+			$quad = new Quad_BgsPlayerCard();
+			$frame->add($quad);
+			$quad->setPosition($width / 2 - 5, -$height / 2 + 9, 0.01);
+			$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
+			$quad->setHAlign(Control::RIGHT);
+			$quad->setSize(29, 4);
+			$quad->setAction(self::ACTION_CLEAR_MAPQUEUE);
+
+			//Check Update
+			$label = new Label_Button();
+			$frame->add($label);
+			$label->setText("Check MX Updates");
+			$label->setTextSize(1);
+			$label->setPosition($width / 2 - 41, -$height / 2 + 9, 0.01);
+			$label->setHAlign(Control::RIGHT);
+
+			$quad = new Quad_BgsPlayerCard();
+			$frame->add($quad);
+			$quad->setPosition($width / 2 - 37, -$height / 2 + 9, 0.01);
+			$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
+			$quad->setHAlign(Control::RIGHT);
+			$quad->setSize(35, 4);
+			$quad->setAction(self::ACTION_CHECK_UPDATE);
+
+			$mxQuad = new Quad();
+			$frame->add($mxQuad);
+			$mxQuad->setSize(3, 3);
+			$mxQuad->setImage($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON_GREEN));
+			$mxQuad->setImageFocus($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON_GREEN_MOVER));
+			$mxQuad->setPosition($width / 2 - 67, -$height / 2 + 9);
+			$mxQuad->setZ(0.01);
+			$mxQuad->setAction(self::ACTION_CHECK_UPDATE);
+		}
+
 
 		// Headline
 		$headFrame = new Frame();

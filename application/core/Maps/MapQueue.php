@@ -58,6 +58,15 @@ class MapQueue implements CallbackListener, CommandListener {
 	 * @param Player $player
 	 */
 	public function command_ClearMapQueue(array $chat, Player $admin) {
+		$this->clearMapQueue($admin);
+	}
+
+	/**
+	 * Clears the Map Queue
+	 *
+	 * @param $admin
+	 */
+	public function clearMapQueue($admin) {
 		$title = $this->maniaControl->authenticationManager->getAuthLevelName($admin->authLevel);
 
 		//Destroy map - queue list
@@ -69,6 +78,7 @@ class MapQueue implements CallbackListener, CommandListener {
 		// Trigger callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_MAPQUEUE_CHANGED, array('clear'));
 	}
+
 
 	/**
 	 * Adds a Map to the map-queue
