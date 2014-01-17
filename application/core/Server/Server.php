@@ -33,6 +33,7 @@ class Server implements CallbackListener {
 	public $titleId = null;
 	public $dataDirectory = '';
 	public $serverCommands = null;
+	public $usageReporter = null;
 
 	/**
 	 * Private Properties
@@ -49,6 +50,7 @@ class Server implements CallbackListener {
 		$this->initTables();
 
 		$this->serverCommands = new ServerCommands($maniaControl);
+		$this->usageReporter  = new UsageReporter($maniaControl);
 
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'onInit');

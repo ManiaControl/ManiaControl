@@ -44,6 +44,7 @@ require_once __DIR__ . '/Plugins/PluginManager.php';
 require_once __DIR__ . '/Server/Server.php';
 require_once __DIR__ . '/Settings/SettingManager.php';
 require_once __DIR__ . '/UpdateManager.php';
+require_once __DIR__ . '/Server/UsageReporter.php';
 
 /**
  * ManiaControl Server Controller for ManiaPlanet Server
