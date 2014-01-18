@@ -134,6 +134,10 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 * Unload the plugin and its resources
 	 */
 	public function unload() {
+		$this->destroyVote();
+		$emptyManialink = new ManiaLink(self::MLID_ICON);
+		$manialinkText  = $emptyManialink->render()->saveXML();
+		$this->maniaControl->manialinkManager->sendManialink($manialinkText);
 		$this->maniaControl->commandManager->unregisterCommandListener($this);
 		unset($this->maniaControl);
 	}
@@ -716,6 +720,6 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 * @return string
 	 */
 	public static function getDescription() {
-		return null;
+		return 'Plugin offers your Custom Votes like Restart, Skip, Balance...';
 	}
 } 

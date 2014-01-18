@@ -124,6 +124,10 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	 * Unload the plugin and its resources
 	 */
 	public function unload() {
+		$this->closeWidget(self::MLID_CLOCKWIDGET);
+		$this->closeWidget(self::MLID_SERVERINFOWIDGET);
+		$this->closeWidget(self::MLID_MAPWIDGET);
+		$this->closeWidget(self::MLID_NEXTMAPWIDGET);
 		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
 		unset($this->maniaControl);
 	}
@@ -584,6 +588,6 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	 * @return string
 	 */
 	public static function getDescription() {
-		return null;
+		return 'Plugin offers some Widgets';
 	}
 }

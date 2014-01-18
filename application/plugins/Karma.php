@@ -81,6 +81,9 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	 * @see \ManiaControl\Plugins\Plugin::unload()
 	 */
 	public function unload() {
+		$emptyManialink = new ManiaLink(self::MLID_KARMA);
+		$manialinkText  = $emptyManialink->render()->saveXML();
+		$this->maniaControl->manialinkManager->sendManialink($manialinkText);
 		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
 		unset($this->maniaControl);
 	}
