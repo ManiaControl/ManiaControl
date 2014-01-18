@@ -294,7 +294,6 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 		} else {
 			$this->maniaControl->settingManager->updateSetting($oldSetting->class, $oldSetting->setting, "1");
 		}
-
 	}
 
 }

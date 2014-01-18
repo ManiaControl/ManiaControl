@@ -75,6 +75,21 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	}
 
 	/**
+	 * Removes a Menu Item
+	 *
+	 * @param      $order
+	 * @param bool $playerAction
+	 */
+	public function removeMenuItem($order, $playerAction = true) {
+		if($playerAction) {
+			unset($this->playerMenuItems[$order]);
+		} else {
+			unset($this->adminMenuItems[$order]);
+		}
+		$this->rebuildAndShowMenu();
+	}
+
+	/**
 	 * Add a new Player Menu Item
 	 *
 	 * @param Control $control
