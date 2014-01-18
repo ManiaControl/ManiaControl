@@ -3,10 +3,12 @@
 namespace ManiaControl\Plugins;
 
 use FML\Controls\Control;
+use FML\Controls\Entry;
 use FML\Controls\Frame;
 use FML\Controls\Label;
 use FML\Controls\Labels\Label_Button;
 use FML\Controls\Labels\Label_Text;
+use FML\Controls\Quads\Quad_Icons128x32_1;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Script\Pages;
 use FML\Script\Script;
@@ -29,11 +31,14 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 	 */
 	const ACTION_PREFIX_ENABLEPLUGIN  = 'PluginMenu.Enable.';
 	const ACTION_PREFIX_DISABLEPLUGIN = 'PluginMenu.Disable.';
-
+	const ACTION_PREFIX_SETTINGS      = 'PluginMenu.Settings.';
+	const ACTION_PREFIX_SETTING       = 'PluginMenuSetting';
+	const ACTION_SETTING_BOOL         = 'PluginMenuActionBoolSetting.';
 	/**
 	 * Private properties
 	 */
 	private $maniaControl = null;
+	private $settingsClass = '';
 
 	/**
 	 * Create a new plugin menu instance
@@ -95,6 +100,120 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 
 		$script->addPageLabel($pageCountLabel, $pagesId);
 
+
+		//Show Settings Menu
+		if($this->settingsClass != '') {
+			/** @var  ManiaControl/SettingManager $this->maniaControl->settingManager */
+			$settings      = $this->maniaControl->settingManager->getSettingsByClass($this->settingsClass);
+			$pageFrames    = array();
+			$y             = 0;
+			$index         = 1;
+			$settingHeight = 5.;
+			foreach($settings as $id => $setting) {
+				if(!isset($pageFrame)) {
+					$pageFrame = new Frame();
+					$frame->add($pageFrame);
+					if(!empty($pageFrames)) {
+						$pageFrame->setVisible(false);
+					}
+					array_push($pageFrames, $pageFrame);
+					$y = $height * 0.41;
+					$script->addPage($pageFrame, count($pageFrames), $pagesId);
+				}
+
+				$settingFrame = new Frame();
+				$pageFrame->add($settingFrame);
+				$settingFrame->setY($y);
+
+				if($index == 1) {
+					//Headline Label
+					$headLabel = new Label_Text();
+					$settingFrame->add($headLabel);
+					$headLabel->setHAlign(Control::LEFT);
+					$headLabel->setX($width * -0.46);
+					$headLabel->setSize($width * 0.6, $settingHeight);
+					$headLabel->setStyle($headLabel::STYLE_TextCardSmall);
+					$headLabel->setTextSize($labelTextSize);
+					$headLabel->setText($setting->class);
+					$headLabel->setTextColor("F00");
+
+					$y -= $settingHeight;
+
+
+					if($index % $pageMaxCount == $pageMaxCount - 1) {
+						$pageFrame = new Frame();
+						$frame->add($pageFrame);
+						if(!empty($pageFrames)) {
+							$pageFrame->setVisible(false);
+						}
+						array_push($pageFrames, $pageFrame);
+						$y = $height * 0.41;
+						$script->addPage($pageFrame, count($pageFrames), $pagesId);
+					}
+				}
+				$index++;
+
+				$settingFrame = new Frame();
+				$pageFrame->add($settingFrame);
+				$settingFrame->setY($y);
+				//Headline Label finished
+
+				$nameLabel = new Label_Text();
+				$settingFrame->add($nameLabel);
+				$nameLabel->setHAlign(Control::LEFT);
+				$nameLabel->setX($width * -0.46);
+				$nameLabel->setSize($width * 0.6, $settingHeight);
+				$nameLabel->setStyle($nameLabel::STYLE_TextCardSmall);
+				$nameLabel->setTextSize($labelTextSize);
+				$nameLabel->setText($setting->setting);
+				$nameLabel->setTextColor("FFF");
+
+				$substyle = '';
+
+
+				$entry = new Entry();
+				$settingFrame->add($entry);
+				$entry->setStyle(Label_Text::STYLE_TextValueSmall);
+				$entry->setHAlign(Control::CENTER);
+				$entry->setX($width / 2 * 0.65);
+				$entry->setTextSize(1);
+				$entry->setSize($width * 0.3, $settingHeight * 0.9);
+				$entry->setName(self::ACTION_PREFIX_SETTING . '.' . $setting->index);
+				$entry->setDefault($setting->value);
+
+
+				if($setting->type == "bool") {
+					if($setting->value == "0") {
+						$substyle = Quad_Icons64x64_1::SUBSTYLE_LvlRed;
+					} else if($setting->value == "1") {
+						$substyle = Quad_Icons64x64_1::SUBSTYLE_LvlGreen;
+					}
+
+					$quad = new Quad_Icons64x64_1();
+					$settingFrame->add($quad);
+					$quad->setX($width / 2 * 0.6);
+					$quad->setZ(-0.01);
+					$quad->setSubStyle($substyle);
+					$quad->setSize(4, 4);
+					$quad->setHAlign(Control::CENTER2);
+					$quad->setAction(self::ACTION_SETTING_BOOL . $setting->index);
+					$entry->setVisible(false);
+				}
+
+				$y -= $settingHeight;
+				if($index % $pageMaxCount == $pageMaxCount - 1) {
+					unset($pageFrame);
+				}
+
+				$index++;
+
+			}
+
+			$this->settingsClass = '';
+			return $frame;
+		}
+
+
 		// Plugin pages
 		$pageFrames = array();
 		$y          = 0.;
@@ -105,6 +224,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 				if(!empty($pageFrames)) {
 					$pageFrame->setVisible(false);
 				}
+
 				array_push($pageFrames, $pageFrame);
 				$script->addPage($pageFrame, count($pageFrames), $pagesId);
 				$y = $height * 0.41;
@@ -149,6 +269,13 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 			$descriptionLabel->setText($description);
 			$script->addTooltip($nameLabel, $descriptionLabel);
 
+			$quad = new Quad_Icons128x32_1();
+			$pluginFrame->add($quad);
+			$quad->setSubStyle($quad::SUBSTYLE_Settings);
+			$quad->setX(15);
+			$quad->setSize(5, 5);
+			$quad->setAction(self::ACTION_PREFIX_SETTINGS . $pluginClass);
+
 			$statusChangeButton = new Label_Button();
 			$pluginFrame->add($statusChangeButton);
 			$statusChangeButton->setHAlign(Control::RIGHT);
@@ -178,6 +305,29 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
 	 */
 	public function saveConfigData(array $configData, Player $player) {
+		$prefix = explode(".", $configData[3][0]['Name']);
+		if($prefix[0] != self::ACTION_PREFIX_SETTING) {
+			return;
+		}
+
+		$maniaControlSettings = $this->maniaControl->settingManager->getSettings();
+
+		$prefixLength = strlen(self::ACTION_PREFIX_SETTING);
+
+		foreach($configData[3] as $setting) {
+			$settingName = substr($setting['Name'], $prefixLength + 1);
+
+			$oldSetting = $maniaControlSettings[$settingName];
+			if($setting['Value'] == $oldSetting->value || $oldSetting->type == 'bool') {
+				continue;
+			}
+
+			$this->maniaControl->settingManager->updateSetting($oldSetting->class, $oldSetting->setting, $setting['Value']);
+		}
+
+		//Reopen the Menu
+		$menuId = $this->maniaControl->configurator->getMenuId($this->getTitle());
+		$this->maniaControl->configurator->reopenMenu($menuId);
 	}
 
 	/**
@@ -186,10 +336,13 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 	 * @param array $callback
 	 */
 	public function handleManialinkPageAnswer(array $callback) {
-		$actionId = $callback[1][2];
-		$enable   = (strpos($actionId, self::ACTION_PREFIX_ENABLEPLUGIN) === 0);
-		$disable  = (strpos($actionId, self::ACTION_PREFIX_DISABLEPLUGIN) === 0);
-		if(!$enable && !$disable) {
+		$actionId    = $callback[1][2];
+		$enable      = (strpos($actionId, self::ACTION_PREFIX_ENABLEPLUGIN) === 0);
+		$disable     = (strpos($actionId, self::ACTION_PREFIX_DISABLEPLUGIN) === 0);
+		$settings    = (strpos($actionId, self::ACTION_PREFIX_SETTINGS) === 0);
+		$boolSetting = (strpos($actionId, self::ACTION_SETTING_BOOL) === 0);
+
+		if(!$enable && !$disable && !$settings && !$boolSetting) {
 			return;
 		}
 		$login  = $callback[1][1];
@@ -207,7 +360,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 			} else {
 				$this->maniaControl->chat->sendError('Error activating ' . $pluginClass::getName() . '!', $player->login);
 			}
-		} else {
+		} else if($disable) {
 			$pluginClass = substr($actionId, strlen(self::ACTION_PREFIX_DISABLEPLUGIN));
 			$deactivated = $this->maniaControl->pluginManager->deactivatePlugin($pluginClass);
 			if($deactivated) {
@@ -217,10 +370,47 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 			} else {
 				$this->maniaControl->chat->sendError('Error deactivating ' . $pluginClass::getName() . '!', $player->login);
 			}
+		} else if($settings) { //Open Settings Menu
+			$pluginClass         = substr($actionId, strlen(self::ACTION_PREFIX_SETTINGS));
+			$this->settingsClass = $pluginClass;
+		} else if($boolSetting) {
+
+			$actionArray = explode(".", $actionId);
+			$setting     = $actionArray[1];
+
+			// Toggle the Boolean Setting
+			$this->toggleBooleanSetting($setting, $player);
+
+			// Save all Changes
+			$this->saveConfigData($callback[1], $player);
 		}
 
 		//Reopen the Menu
+
 		$menuId = $this->maniaControl->configurator->getMenuId($this->getTitle());
+
 		$this->maniaControl->configurator->reopenMenu($menuId);
+	}
+
+	/**
+	 * Toggles a Boolean Value
+	 *
+	 * @param        $setting
+	 * @param Player $player
+	 */
+	public function toggleBooleanSetting($setting, Player $player) {
+		$oldSetting = $this->maniaControl->settingManager->getSettingByIndex($setting);
+
+		if(!isset($oldSetting)) {
+			var_dump('no setting ' . $setting);
+			return;
+		}
+
+		//Toggle value
+		if($oldSetting->value == "1") {
+			$this->maniaControl->settingManager->updateSetting($oldSetting->class, $oldSetting->setting, "0");
+		} else {
+			$this->maniaControl->settingManager->updateSetting($oldSetting->class, $oldSetting->setting, "1");
+		}
 	}
 }
