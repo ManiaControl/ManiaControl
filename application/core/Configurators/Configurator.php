@@ -119,13 +119,8 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	 *
 	 * @param array $callback
 	 */
-	public function reopenMenu($menuId = 0) {
-		foreach($this->playersMenuShown as $login => $shown) {
-			if($shown == true) {
-				$player = $this->maniaControl->playerManager->getPlayer($login);
-				$this->showMenu($player, $menuId);
-			}
-		}
+	public function reopenMenu($player, $menuId = 0) {
+		$this->showMenu($player, $menuId);
 	}
 
 	/**
@@ -318,7 +313,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$closeQuad->setPosition($menuWidth * 0.483, $menuHeight * 0.467, 3);
 		$closeQuad->setSize(6, 6);
 		$closeQuad->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_QuitRace);
-		$closeQuad->setAction(self::ACTION_TOGGLEMENU);
+		$closeQuad->setAction(ManialinkManager::ACTION_CLOSEWIDGET);
 
 		// Add close button
 		$closeButton = new Label();

@@ -10,14 +10,13 @@ use FML\Controls\Labels\Label_Button;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quads\Quad_Icons128x32_1;
 use FML\Controls\Quads\Quad_Icons64x64_1;
-use FML\Script\Pages;
 use FML\Script\Script;
-use FML\Script\Tooltips;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Configurators\ConfiguratorMenu;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
+use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 
 /**
@@ -25,7 +24,7 @@ use ManiaControl\Players\Player;
  *
  * @author steeffeen
  */
-class PluginMenu implements CallbackListener, ConfiguratorMenu {
+class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAnswerListener {
 	/**
 	 * Constants
 	 */
@@ -34,11 +33,13 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 	const ACTION_PREFIX_SETTINGS      = 'PluginMenu.Settings.';
 	const ACTION_PREFIX_SETTING       = 'PluginMenuSetting';
 	const ACTION_SETTING_BOOL         = 'PluginMenuActionBoolSetting.';
+	const ACTION_BACK_TO_PLUGINS      = 'PluginMenu.BackToPlugins';
+
 	/**
 	 * Private properties
 	 */
 	private $maniaControl = null;
-	private $settingsClass = '';
+	private $settingsClass = ''; //TODO needs to be improved
 
 	/**
 	 * Create a new plugin menu instance
@@ -48,6 +49,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_BACK_TO_PLUGINS, $this, 'backToPlugins');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 	}
 
@@ -57,6 +59,15 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 	 */
 	public function getTitle() {
 		return 'Plugins';
+	}
+
+	/**
+	 * Returns Back to the Plugins
+	 */
+	public function backToPlugins($callback, Player $player) {
+		$this->settingsClass = ''; //TODO specify player
+		$menuId              = $this->maniaControl->configurator->getMenuId($this->getTitle());
+		$this->maniaControl->configurator->reopenMenu($player, $menuId);
 	}
 
 	/**
@@ -102,13 +113,14 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 
 
 		//Show Settings Menu
-		if($this->settingsClass != '') {
+		if($this->settingsClass != '') { //TODO improve
 			/** @var  ManiaControl/SettingManager $this->maniaControl->settingManager */
-			$settings      = $this->maniaControl->settingManager->getSettingsByClass($this->settingsClass);
-			$pageFrames    = array();
-			$y             = 0;
-			$index         = 1;
-			$settingHeight = 5.;
+			$settings             = $this->maniaControl->settingManager->getSettingsByClass($this->settingsClass);
+			$pageFrames           = array();
+			$pageSettingsMaxCount = 12;
+			$y                    = 0;
+			$index                = 1;
+			$settingHeight        = 5.;
 			foreach($settings as $id => $setting) {
 				if(!isset($pageFrame)) {
 					$pageFrame = new Frame();
@@ -139,7 +151,6 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 
 					$y -= $settingHeight;
 
-
 					if($index % $pageMaxCount == $pageMaxCount - 1) {
 						$pageFrame = new Frame();
 						$frame->add($pageFrame);
@@ -151,7 +162,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 						$script->addPage($pageFrame, count($pageFrames), $pagesId);
 					}
 				}
-				$index++;
+
 
 				$settingFrame = new Frame();
 				$pageFrame->add($settingFrame);
@@ -201,19 +212,28 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 				}
 
 				$y -= $settingHeight;
-				if($index % $pageMaxCount == $pageMaxCount - 1) {
+
+				if($index % $pageSettingsMaxCount == $pageSettingsMaxCount - 1) {
 					unset($pageFrame);
 				}
 
 				$index++;
-
 			}
 
-			$this->settingsClass = '';
+			$quad = new Label_Button();
+			$frame->add($quad);
+			$quad->setStyle($quad::STYLE_CardMain_Quit);
+			$quad->setHAlign(Control::LEFT);
+			$quad->setScale(0.75);
+			$quad->setText("Back");
+			$quad->setPosition(-$width / 2 + 7, -$height / 2 + 7);
+			$quad->setAction(self::ACTION_BACK_TO_PLUGINS);
+
 			return $frame;
 		}
 
 
+		//Display normal Plugin List
 		// Plugin pages
 		$pageFrames = array();
 		$y          = 0.;
@@ -273,6 +293,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 			$pluginFrame->add($quad);
 			$quad->setSubStyle($quad::SUBSTYLE_Settings);
 			$quad->setX(15);
+			$quad->setZ(1);
 			$quad->setSize(5, 5);
 			$quad->setAction(self::ACTION_PREFIX_SETTINGS . $pluginClass);
 
@@ -327,7 +348,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 
 		//Reopen the Menu
 		$menuId = $this->maniaControl->configurator->getMenuId($this->getTitle());
-		$this->maniaControl->configurator->reopenMenu($menuId);
+		$this->maniaControl->configurator->reopenMenu($player, $menuId);
 	}
 
 	/**
@@ -389,7 +410,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 
 		$menuId = $this->maniaControl->configurator->getMenuId($this->getTitle());
 
-		$this->maniaControl->configurator->reopenMenu($menuId);
+		$this->maniaControl->configurator->reopenMenu($player, $menuId);
 	}
 
 	/**
