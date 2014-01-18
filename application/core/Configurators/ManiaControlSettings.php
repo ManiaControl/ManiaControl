@@ -245,7 +245,7 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 
 		//Reopen the Menu
 		$menuId = $this->maniaControl->configurator->getMenuId($this->getTitle());
-		$this->maniaControl->configurator->reopenMenu($menuId);
+		$this->maniaControl->configurator->reopenMenu($player, $menuId);
 	}
 
 	/**
