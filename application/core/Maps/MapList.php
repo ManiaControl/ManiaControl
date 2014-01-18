@@ -204,12 +204,12 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		// Headline
 		$headFrame = new Frame();
 		$frame->add($headFrame);
-		$headFrame->setY($y - 5);
-		$array = array('Mx Id' => $x + 5, 'Name' => $x + 17, 'Author' => $x + 65, 'Type' => $x + 100, 'Mood' => $x + 115, 'Last Update' => $x + 130);
+		$headFrame->setY($y - 12);
+		$array = array('$oMx Id' => $x + 5, '$oName' => $x + 17, '$oAuthor' => $x + 65, '$oType' => $x + 100, '$oMood' => $x + 115, '$oLast Update' => $x + 130);
 		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
 
-		$i = 0;
-		$y -= 10;
+		$i          = 0;
+		$y          = $height / 2 - 16;
 		$pageFrames = array();
 		foreach($maps as $map) { //TODO order possabilities
 			if(!isset($pageFrame)) {
@@ -219,7 +219,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 					$pageFrame->setVisible(false);
 				}
 				array_push($pageFrames, $pageFrame);
-				$y = $height / 2 - 10;
+				$y = $height / 2 - 16;
 				$script->addPage($pageFrame, count($pageFrames), $pagesId);
 			}
 
@@ -295,7 +295,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 		$label = new Label_Text();
 		$frame->add($label);
-		$label->setPosition(-$width / 2 + 5, -$height / 2 + 10);
+		$label->setPosition(-$width / 2 + 5, $height / 2 - 5);
 		$label->setHAlign(Control::LEFT);
 		$label->setTextSize(1.3);
 		$label->setText("Search:");
@@ -304,7 +304,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$frame->add($entry);
 		$entry->setStyle(Label_Text::STYLE_TextValueSmall);
 		$entry->setHAlign(Control::LEFT);
-		$entry->setPosition(-$width / 2 + 15, -$height / 2 + 10);
+		$entry->setPosition(-$width / 2 + 15, $height / 2 - 5);
 		$entry->setTextSize(1);
 		$entry->setSize($width * 0.25, 4);
 		$entry->setName('SearchString');
@@ -313,13 +313,13 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		//Search for Map-Name
 		$label = new Label_Button();
 		$frame->add($label);
-		$label->setPosition(-$width / 2 + 63, -$height / 2 + 10);
+		$label->setPosition(-$width / 2 + 63, $height / 2 - 5);
 		$label->setText("MapName");
 		$label->setTextSize(1.3);
 
 		$quad = new Quad_BgsPlayerCard();
 		$frame->add($quad);
-		$quad->setPosition(-$width / 2 + 63, -$height / 2 + 10, 0.01);
+		$quad->setPosition(-$width / 2 + 63, $height / 2 - 5, 0.01);
 		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
 		$quad->setSize(18, 5);
 		$quad->setAction(self::ACTION_SEARCH_MAPNAME);
@@ -327,13 +327,13 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		//Search for Author
 		$label = new Label_Button();
 		$frame->add($label);
-		$label->setPosition(-$width / 2 + 82, -$height / 2 + 10);
+		$label->setPosition(-$width / 2 + 82, $height / 2 - 5);
 		$label->setText("Author");
 		$label->setTextSize(1.3);
 
 		$quad = new Quad_BgsPlayerCard();
 		$frame->add($quad);
-		$quad->setPosition(-$width / 2 + 82, -$height / 2 + 10, 0.01);
+		$quad->setPosition(-$width / 2 + 82, $height / 2 - 5, 0.01);
 		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
 		$quad->setSize(18, 5);
 		$quad->setAction(self::ACTION_SEARCH_AUTHOR);
