@@ -5,8 +5,8 @@ namespace ManiaControl\Plugins;
 require_once __DIR__ . '/Plugin.php';
 require_once __DIR__ . '/PluginMenu.php';
 
-use ManiaControl\ManiaControl;
 use ManiaControl\Callbacks\CallbackListener;
+use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 
 /**
@@ -19,7 +19,7 @@ class PluginManager {
 	 * Constants
 	 */
 	const TABLE_PLUGINS = 'mc_plugins';
-	
+
 	/**
 	 * Private properties
 	 */
@@ -36,7 +36,7 @@ class PluginManager {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		$this->initTables();
-		
+
 		$this->pluginMenu = new PluginMenu($maniaControl);
 		$this->maniaControl->configurator->addMenu($this->pluginMenu);
 	}
@@ -47,7 +47,7 @@ class PluginManager {
 	 * @return bool
 	 */
 	private function initTables() {
-		$mysqli = $this->maniaControl->database->mysqli;
+		$mysqli            = $this->maniaControl->database->mysqli;
 		$pluginsTableQuery = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_PLUGINS . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
 				`className` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
@@ -56,13 +56,13 @@ class PluginManager {
 				PRIMARY KEY (`index`),
 				UNIQUE KEY `className` (`className`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='ManiaControl plugin status' AUTO_INCREMENT=1;";
-		$tableStatement = $mysqli->prepare($pluginsTableQuery);
-		if ($mysqli->error) {
+		$tableStatement    = $mysqli->prepare($pluginsTableQuery);
+		if($mysqli->error) {
 			trigger_error($mysqli->error, E_USER_ERROR);
 			return false;
 		}
 		$tableStatement->execute();
-		if ($tableStatement->error) {
+		if($tableStatement->error) {
 			trigger_error($tableStatement->error, E_USER_ERROR);
 			return false;
 		}
@@ -77,7 +77,7 @@ class PluginManager {
 	 * @return bool
 	 */
 	public function isPluginActive($pluginClass) {
-		if (is_object($pluginClass)) {
+		if(is_object($pluginClass)) {
 			$pluginClass = get_class($pluginClass);
 		}
 		return isset($this->activePlugins[$pluginClass]);
@@ -90,10 +90,10 @@ class PluginManager {
 	 * @return bool
 	 */
 	public function isPluginClass($pluginClass) {
-		if (is_object($pluginClass)) {
+		if(is_object($pluginClass)) {
 			$pluginClass = get_class($pluginClass);
 		}
-		if (!in_array(Plugin::PLUGIN_INTERFACE, class_implements($pluginClass))) {
+		if(!in_array(Plugin::PLUGIN_INTERFACE, class_implements($pluginClass))) {
 			return false;
 		}
 		return true;
@@ -106,13 +106,13 @@ class PluginManager {
 	 * @return bool
 	 */
 	public function addPluginClass($pluginClass) {
-		if (is_object($pluginClass)) {
+		if(is_object($pluginClass)) {
 			$pluginClass = get_class($pluginClass);
 		}
-		if (in_array($pluginClass, $this->pluginClasses)) {
+		if(in_array($pluginClass, $this->pluginClasses)) {
 			return false;
 		}
-		if (!$this->isPluginClass($pluginClass)) {
+		if(!$this->isPluginClass($pluginClass)) {
 			return false;
 		}
 		array_push($this->pluginClasses, $pluginClass);
@@ -123,20 +123,28 @@ class PluginManager {
 	 * Activate and start the plugin with the given name
 	 *
 	 * @param string $pluginClass
+	 * @param string $adminLogin
 	 * @return bool
 	 */
-	public function activatePlugin($pluginClass) {
-		if (!is_string($pluginClass)) {
+	public function activatePlugin($pluginClass, $adminLogin = false) {
+		if(!is_string($pluginClass)) {
 			return false;
 		}
-		if (!$this->isPluginClass($pluginClass)) {
+		if(!$this->isPluginClass($pluginClass)) {
 			return false;
 		}
-		if ($this->isPluginActive($pluginClass)) {
+		if($this->isPluginActive($pluginClass)) {
 			return false;
 		}
 		$plugin = new $pluginClass();
-		$plugin->load($this->maniaControl);
+		try {
+			$plugin->load($this->maniaControl);
+		} catch(\Exception $e) {
+			$this->maniaControl->chat->sendError('Error on Plugin activation ' . $e->getMessage(), $adminLogin);
+			$this->log('Error while plugin activation: ' . $e->getMessage());
+			return false;
+		}
+
 		$this->activePlugins[$pluginClass] = $plugin;
 		$this->savePluginStatus($pluginClass, true);
 		return true;
@@ -149,21 +157,21 @@ class PluginManager {
 	 * @return bool
 	 */
 	public function deactivatePlugin($pluginClass) {
-		if (is_object($pluginClass)) {
+		if(is_object($pluginClass)) {
 			$pluginClass = get_class($pluginClass);
 		}
-		if (!$this->isPluginActive($pluginClass)) {
+		if(!$this->isPluginActive($pluginClass)) {
 			return false;
 		}
 		$plugin = $this->activePlugins[$pluginClass];
 		unset($this->activePlugins[$pluginClass]);
 		$plugin->unload();
 		$interfaces = class_implements($pluginClass);
-		if (in_array(CallbackListener::CALLBACKLISTENER_INTERFACE, $interfaces)) {
+		if(in_array(CallbackListener::CALLBACKLISTENER_INTERFACE, $interfaces)) {
 			$this->maniaControl->callbackManager->unregisterCallbackListener($plugin);
 			$this->maniaControl->callbackManager->unregisterScriptCallbackListener($plugin);
 		}
-		if (in_array(ManialinkPageAnswerListener::MANIALINKPAGEANSWERLISTENER_INTERFACE, $interfaces)) {
+		if(in_array(ManialinkPageAnswerListener::MANIALINKPAGEANSWERLISTENER_INTERFACE, $interfaces)) {
 			$this->maniaControl->manialinkManager->unregisterManialinkPageAnswerListener($plugin);
 		}
 		$this->savePluginStatus($pluginClass, false);
@@ -175,27 +183,27 @@ class PluginManager {
 	 */
 	public function loadPlugins() {
 		$pluginsDirectory = ManiaControlDir . '/plugins/';
-		$pluginFiles = scandir($pluginsDirectory, 0);
-		foreach ($pluginFiles as $pluginFile) {
-			if (stripos($pluginFile, '.') === 0) {
+		$pluginFiles      = scandir($pluginsDirectory, 0);
+		foreach($pluginFiles as $pluginFile) {
+			if(stripos($pluginFile, '.') === 0) {
 				continue;
 			}
 			$classesBefore = get_declared_classes();
-			$success = include_once $pluginsDirectory . $pluginFile;
-			if (!$success) {
+			$success       = include_once $pluginsDirectory . $pluginFile;
+			if(!$success) {
 				continue;
 			}
 			$classesAfter = get_declared_classes();
-			$newClasses = array_diff($classesAfter, $classesBefore);
-			foreach ($newClasses as $className) {
-				if (!$this->isPluginClass($className)) {
+			$newClasses   = array_diff($classesAfter, $classesBefore);
+			foreach($newClasses as $className) {
+				if(!$this->isPluginClass($className)) {
 					continue;
 				}
 				$this->addPluginClass($className);
-				if ($this->isPluginActive($className)) {
+				if($this->isPluginActive($className)) {
 					continue;
 				}
-				if (!$this->getSavedPluginStatus($className)) {
+				if(!$this->getSavedPluginStatus($className)) {
 					continue;
 				}
 				$this->activatePlugin($className);
@@ -210,7 +218,7 @@ class PluginManager {
 	 * @return Plugin
 	 */
 	public function getPlugin($pluginClass) {
-		if ($this->isPluginActive($pluginClass)) {
+		if($this->isPluginActive($pluginClass)) {
 			return $this->activePlugins[$pluginClass];
 		}
 		return null;
@@ -238,11 +246,11 @@ class PluginManager {
 	 * Save plugin status in database
 	 *
 	 * @param string $className
-	 * @param bool $active
+	 * @param bool   $active
 	 * @return bool
 	 */
 	private function savePluginStatus($className, $active) {
-		$mysqli = $this->maniaControl->database->mysqli;
+		$mysqli            = $this->maniaControl->database->mysqli;
 		$pluginStatusQuery = "INSERT INTO `" . self::TABLE_PLUGINS . "` (
 				`className`,
 				`active`
@@ -250,15 +258,15 @@ class PluginManager {
 				?, ?
 				) ON DUPLICATE KEY UPDATE
 				`active` = VALUES(`active`);";
-		$pluginStatement = $mysqli->prepare($pluginStatusQuery);
-		if ($mysqli->error) {
+		$pluginStatement   = $mysqli->prepare($pluginStatusQuery);
+		if($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
 		}
 		$activeInt = ($active ? 1 : 0);
 		$pluginStatement->bind_param('si', $className, $activeInt);
 		$pluginStatement->execute();
-		if ($pluginStatement->error) {
+		if($pluginStatement->error) {
 			trigger_error($pluginStatement->error);
 			$pluginStatement->close();
 			return false;
@@ -274,23 +282,23 @@ class PluginManager {
 	 * @return bool
 	 */
 	private function getSavedPluginStatus($className) {
-		$mysqli = $this->maniaControl->database->mysqli;
+		$mysqli            = $this->maniaControl->database->mysqli;
 		$pluginStatusQuery = "SELECT `active` FROM `" . self::TABLE_PLUGINS . "`
 				WHERE `className` = ?;";
-		$pluginStatement = $mysqli->prepare($pluginStatusQuery);
-		if ($mysqli->error) {
+		$pluginStatement   = $mysqli->prepare($pluginStatusQuery);
+		if($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
 		}
 		$pluginStatement->bind_param('s', $className);
 		$pluginStatement->execute();
-		if ($pluginStatement->error) {
+		if($pluginStatement->error) {
 			trigger_error($pluginStatement->error);
 			$pluginStatement->close();
 			return false;
 		}
 		$pluginStatement->store_result();
-		if ($pluginStatement->num_rows <= 0) {
+		if($pluginStatement->num_rows <= 0) {
 			$pluginStatement->free_result();
 			$pluginStatement->close();
 			$this->savePluginStatus($className, false);
