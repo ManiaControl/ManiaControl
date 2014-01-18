@@ -141,7 +141,7 @@ class PluginManager {
 			$plugin->load($this->maniaControl);
 		} catch(\Exception $e) {
 			$this->maniaControl->chat->sendError('Error on Plugin activation ' . $e->getMessage(), $adminLogin);
-			$this->log('Error while plugin activation: ' . $e->getMessage());
+			$this->maniaControl->log('Error while plugin activation: ' . $e->getMessage());
 			return false;
 		}
 
