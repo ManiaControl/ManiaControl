@@ -139,6 +139,8 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$manialinkText  = $emptyManialink->render()->saveXML();
 		$this->maniaControl->manialinkManager->sendManialink($manialinkText);
 		$this->maniaControl->commandManager->unregisterCommandListener($this);
+		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
+		$this->maniaControl->manialinkManager->unregisterManialinkPageAnswerListener($this);
 		unset($this->maniaControl);
 	}
 

@@ -137,15 +137,18 @@ class PluginManager {
 			return false;
 		}
 		$plugin = new $pluginClass();
+		$this->activePlugins[$pluginClass] = $plugin;
+		$this->savePluginStatus($pluginClass, true);
 		try {
 			$plugin->load($this->maniaControl);
 		} catch(\Exception $e) {
 			$this->maniaControl->chat->sendError('Error while plugin activating ' . $pluginClass . ': ' . $e->getMessage(), $adminLogin);
 			$this->maniaControl->log('Error while plugin activation: ' . $pluginClass . ': ' . $e->getMessage());
+			unset($this->activePlugins[$pluginClass]);
+			$this->savePluginStatus($pluginClass, false);
 			return false;
 		}
 
-		$this->activePlugins[$pluginClass] = $plugin;
 		$this->savePluginStatus($pluginClass, true);
 		return true;
 	}
