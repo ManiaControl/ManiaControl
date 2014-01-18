@@ -126,7 +126,7 @@ class PluginManager {
 	 * @param string $adminLogin
 	 * @return bool
 	 */
-	public function activatePlugin($pluginClass, $adminLogin = false) {
+	public function activatePlugin($pluginClass, $adminLogin = null) {
 		if(!is_string($pluginClass)) {
 			return false;
 		}
