@@ -301,7 +301,7 @@ class MapManager implements CallbackListener {
 		$this->saveMap($map);
 
 		$mapsDirectory = $this->maniaControl->server->getMapsDirectory();
-		if($this->maniaControl->server->checkAccess($mapsDirectory)) {
+		if(is_readable($mapsDirectory . $map->fileName)) {
 			$mapFetcher = new \GBXChallMapFetcher(true);
 			try {
 				$mapFetcher->processFile($mapsDirectory . $map->fileName);
