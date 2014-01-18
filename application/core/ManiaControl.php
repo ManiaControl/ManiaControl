@@ -285,9 +285,6 @@ class ManiaControl implements CommandListener {
 	public function run() {
 		$this->log('Starting ManiaControl v' . self::VERSION . '!');
 
-		// Load plugins
-		$this->pluginManager->loadPlugins();
-
 		// Connect to server
 		$this->connect();
 
@@ -296,6 +293,9 @@ class ManiaControl implements CommandListener {
 
 		// OnInit callback
 		$this->callbackManager->triggerCallback(CallbackManager::CB_MC_ONINIT, array(CallbackManager::CB_MC_ONINIT));
+
+		// Load plugins
+		$this->pluginManager->loadPlugins();
 
 		// Announce ManiaControl
 		$this->chat->sendInformation('ManiaControl v' . self::VERSION . ' successfully started!');

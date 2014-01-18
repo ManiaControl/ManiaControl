@@ -86,7 +86,6 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$this->maniaControl->manialinkManager->customUIManager->setChallengeInfoVisible(false);
 
 		// Register for callbacks
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_BEGINMAP, $this, 'handleOnBeginMap');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ENDMAP, $this, 'handleOnEndMap');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'handlePlayerConnect');
@@ -116,6 +115,8 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_CLOCK_WIDGET_POSY, 90 - 11);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_CLOCK_WIDGET_WIDTH, 10);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_CLOCK_WIDGET_HEIGHT, 5.5);
+
+		$this->displayWidgets();
 		return true;
 	}
 
@@ -128,11 +129,11 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	}
 
 	/**
-	 * Handle ManiaControl OnInit callback
+	 * Displays the Widgets onLoad
 	 *
 	 * @param array $callback
 	 */
-	public function handleOnInit(array $callback) {
+	private function displayWidgets() {
 		// Display Map Widget
 		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED)) {
 			$this->displayMapWidget();

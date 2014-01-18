@@ -101,7 +101,6 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 		$this->maniaControl->callbackManager->registerCallbackListener(self::CB_CUSTOM_VOTE_FINISHED, $this, 'handleVoteFinished');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'handlePlayerConnect');
 
 		//Settings
@@ -127,6 +126,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$this->defineVote("restartmap", "Restart Map");
 		$this->defineVote("pausegame", "Pause Game");
 
+		$this->constructMenu();
 		return true;
 	}
 
@@ -183,7 +183,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 *
 	 * @param array $callback
 	 */
-	public function handleOnInit(array $callback) {
+	private function constructMenu() {
 		// Menu RestartMap
 		$itemQuad = new Quad_UIConstruction_Buttons();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Reload);

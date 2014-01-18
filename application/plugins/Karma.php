@@ -64,7 +64,6 @@ class KarmaPlugin implements CallbackListener, Plugin {
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_HEIGHT, 12.);
 
 		// Register for callbacks
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_BEGINMAP, $this, 'handleBeginMap');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_1_SECOND, $this, 'handle1Second');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCONNECT, $this, 'handlePlayerConnect');
@@ -73,6 +72,7 @@ class KarmaPlugin implements CallbackListener, Plugin {
 		// Define player stats
 		$this->maniaControl->statisticManager->defineStatMetaData(self::STAT_PLAYER_MAPVOTES);
 
+		$this->updateManialink = true;
 		return true;
 	}
 
@@ -182,15 +182,6 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	}
 
 	/**
-	 * Handle ManiaControl OnInit callback
-	 *
-	 * @param array $callback
-	 */
-	public function handleOnInit(array $callback) {
-		$this->updateManialink = true;
-	}
-
-	/**
 	 * Handle BeginMap ManiaControl callback
 	 *
 	 * @param array $callback
@@ -233,10 +224,10 @@ class KarmaPlugin implements CallbackListener, Plugin {
 		}
 		$countPositive = substr_count($message, '+');
 		$countNegative = substr_count($message, '-');
-		if ($countPositive <= 0 && $countNegative <= 0) {
+		if($countPositive <= 0 && $countNegative <= 0) {
 			return;
-		}  
-		$vote = $countPositive - $countNegative;
+		}
+		$vote    = $countPositive - $countNegative;
 		$success = $this->handleVote($player, $vote);
 		if(!$success) {
 			$this->maniaControl->chat->sendError('Error occurred.', $player->login);
@@ -271,10 +262,10 @@ class KarmaPlugin implements CallbackListener, Plugin {
 		$vote /= $voteHigh;
 
 		// Save vote
-		$map     = $this->maniaControl->mapManager->getCurrentMap();
+		$map = $this->maniaControl->mapManager->getCurrentMap();
 
 		$voted = $this->getPlayerVote($player, $map);
-		if(!$voted){
+		if(!$voted) {
 			$this->maniaControl->statisticManager->incrementStat(self::STAT_PLAYER_MAPVOTES, $player, $this->maniaControl->server->index);
 		}
 
