@@ -92,12 +92,17 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 * @return bool
 	 */
 	public function unregisterManialinkPageAnswerListener(ManialinkPageAnswerListener $listener) {
-		$keys = array_keys($this->pageAnswerListeners, $listener);
-		foreach($keys as $key) {
-			unset($this->pageAnswerListeners[$key]);
+		$removed = false;
+		foreach($this->pageAnswerListeners as &$listeners) {
+			foreach($listeners as $key => &$listenerCallback) {
+				if($listenerCallback[0] != $listener) {
+					continue;
+				}
+				unset($listeners[$key]);
+				$removed = true;
+			}
 		}
-
-		return true;
+		return $removed;
 	}
 
 	/**
