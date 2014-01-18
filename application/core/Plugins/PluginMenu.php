@@ -199,7 +199,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu {
 		}
 		if($enable) {
 			$pluginClass = substr($actionId, strlen(self::ACTION_PREFIX_ENABLEPLUGIN));
-			$activated   = $this->maniaControl->pluginManager->activatePlugin($pluginClass);
+			$activated   = $this->maniaControl->pluginManager->activatePlugin($pluginClass, $player->login);
 			if($activated) {
 				$this->maniaControl->chat->sendSuccess($pluginClass::getName() . ' activated!', $player->login);
 				$this->maniaControl->configurator->showMenu($player);
