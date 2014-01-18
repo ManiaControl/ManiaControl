@@ -55,10 +55,11 @@ class ManiaControl implements CommandListener {
 	/**
 	 * Constants
 	 */
-	const VERSION     = '0.01';
-	const API_VERSION = '2013-04-16';
-	const OS_UNIX     = 'Unix';
-	const OS_WIN      = 'Windows';
+	const VERSION         = '0.01';
+	const API_VERSION     = '2013-04-16';
+	const OS_UNIX         = 'Unix';
+	const OS_WIN          = 'Windows';
+	const CONNECT_TIMEOUT = 20;
 
 	/**
 	 * Public properties
@@ -357,9 +358,8 @@ class ManiaControl implements CommandListener {
 		}
 		$pass = (string)$pass[0];
 
-		//TODO timeout as constant
 		try {
-			$this->client = Connection::factory($host, $port, 20, $login, $pass);
+			$this->client = Connection::factory($host, $port, self::CONNECT_TIMEOUT, $login, $pass);
 		} catch(Exception $e) {
 			trigger_error("Couldn't authenticate on server with user '{$login}'! " . $e->getMessage(), E_USER_ERROR);
 		}
@@ -407,7 +407,7 @@ class ManiaControl implements CommandListener {
 		try {
 			$this->client->setModeScriptSettings($scriptSettings);
 		} catch(Exception $e) {
-			trigger_error("Couldn't set mode script settings to enable script callbacks. " . $this->getClientErrorText());
+			trigger_error("Couldn't set mode script settings to enable script callbacks. " . $e->getMessage());
 			return;
 		}
 		$this->log('Script Callbacks successfully enabled!');
