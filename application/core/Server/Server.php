@@ -7,6 +7,7 @@ use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\Structures\SystemInfos;
+use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 require_once __DIR__ . '/ServerCommands.php';
 
@@ -135,8 +136,10 @@ class Server implements CallbackListener {
 	 */
 	public function getDataDirectory() {
 		if($this->dataDirectory == '') {
-			if(!$this->dataDirectory = $this->maniaControl->client->gameDataDirectory()) {
-				trigger_error("Couldn't get data directory. " . $this->maniaControl->getClientErrorText());
+			try {
+				$this->dataDirectory = $this->maniaControl->client->gameDataDirectory();
+			} catch(Exception $e) {
+				trigger_error("Couldn't get data directory. " . $e->getMessage());
 				return null;
 			}
 		}
@@ -178,15 +181,18 @@ class Server implements CallbackListener {
 	public function getInfo($detailed = false) {
 		if($detailed) {
 			$login = $this->login;
-			if(!$info = $this->maniaControl->client->getDetailedPlayerInfo($login)) {
-				trigger_error("Couldn't fetch detailed server info. " . $this->maniaControl->getClientErrorText());
+			try {
+				$info = $this->maniaControl->client->getDetailedPlayerInfo($login);
+			} catch(Exception $e) {
+				trigger_error("Couldn't fetch detailed server info. " . $e->getMessage());
 				return null;
 			}
 			return $info;
 		}
-
-		if(!$info = $this->maniaControl->client->getMainServerPlayerInfo()) {
-			trigger_error("Couldn't fetch server info. " . $this->maniaControl->getClientErrorText());
+		try {
+			$info = $this->maniaControl->client->getMainServerPlayerInfo();
+		} catch(Exception $e) {
+			trigger_error("Couldn't fetch server info. " . $e->getMessage());
 			return null;
 		}
 		return $info;
@@ -198,10 +204,13 @@ class Server implements CallbackListener {
 	 * @return array
 	 */
 	public function getOptions() {
-		if(!$options = $this->maniaControl->client->getServerOptions()) {
-			trigger_error("Couldn't fetch server options. " . $this->maniaControl->getClientErrorText());
+		try {
+			$options = $this->maniaControl->client->getServerOptions();
+		} catch(Exception $e) {
+			trigger_error("Couldn't fetch server options. " . $e->getMessage());
 			return null;
 		}
+
 		return $options;
 	}
 
@@ -211,12 +220,15 @@ class Server implements CallbackListener {
 	 * @return string
 	 */
 	public function getName() {
-		if(!$name = $this->maniaControl->client->getServerName()) {
-			trigger_error("Couldn't fetch server name. " . $this->maniaControl->getClientErrorText());
+		try {
+			$name = $this->maniaControl->client->getServerName();
+		} catch(Exception $e) {
+			trigger_error("Couldn't fetch server name. " . $e->getMessage());
 			return null;
 		}
 		return $name;
 	}
+
 
 	/**
 	 * Fetch Server Version
@@ -224,8 +236,10 @@ class Server implements CallbackListener {
 	 * @return string
 	 */
 	public function getVersion() {
-		if(!$version = $this->maniaControl->client->getVersion()) {
-			trigger_error("Couldn't fetch server version. " . $this->maniaControl->getClientErrorText());
+		try {
+			$version = $this->maniaControl->client->getVersion();
+		} catch(Exception $e) {
+			trigger_error("Couldn't fetch server version. " . $e->getMessage());
 			return null;
 		}
 		return $version;
@@ -237,10 +251,13 @@ class Server implements CallbackListener {
 	 * @return SystemInfos
 	 */
 	public function getSystemInfo() {
-		if(!$systemInfo = $this->maniaControl->client->getSystemInfo()) {
-			trigger_error("Couldn't fetch server system info. " . $this->maniaControl->getClientErrorText());
+		try {
+			$systemInfo = $this->maniaControl->client->getSystemInfo();
+		} catch(Exception $e) {
+			trigger_error("Couldn't fetch server system info. " . $e->getMessage());
 			return null;
 		}
+
 		return $systemInfo;
 	}
 
@@ -255,12 +272,12 @@ class Server implements CallbackListener {
 		if(is_int($parseValue)) {
 			$gameMode = $parseValue;
 		} else {
-			$gameMode = $this->maniaControl->client->getGameMode();
-
-			/*if(!$gameMode = $this->maniaControl->client->getGameMode()){
+			try {
+				$gameMode = $this->maniaControl->client->getGameMode();
+			} catch(Exception $e) {
 				trigger_error("Couldn't fetch current game mode. " . $this->maniaControl->getClientErrorText());
 				return null;
-			}*/
+			}
 		}
 		if($stringValue) {
 			switch($gameMode) {
@@ -292,7 +309,9 @@ class Server implements CallbackListener {
 	 * @return string
 	 */
 	public function getValidationReplay(Player $player) {
-		if(!$replay = $this->maniaControl->client->getValidationReplay($player->login)) {
+		try {
+			$replay = $this->maniaControl->client->getValidationReplay($player->login);
+		} catch(Exception $e) {
 			trigger_error("Couldn't get validation replay of '{$player->login}'. " . $this->maniaControl->getClientErrorText());
 			return null;
 		}
@@ -312,14 +331,16 @@ class Server implements CallbackListener {
 		}
 
 		// Build file name
-		$map      = $this->getMap(); //TODO does that workm, where is the method?=
+		$map      = $this->maniaControl->mapManager->getCurrentMap();
 		$gameMode = $this->getGameMode();
 		$time     = time();
-		$fileName = "GhostReplays/Ghost.{$player->login}.{$gameMode}.{$time}.{$map['UId']}.Replay.Gbx";
+		$fileName = "GhostReplays/Ghost.{$player->login}.{$gameMode}.{$time}.{$map->uid}.Replay.Gbx";
 
 		// Save ghost replay
-		if(!$this->maniaControl->client->saveBestGhostsReplay($player->login, $fileName)) {
-			trigger_error("Couldn't save ghost replay. " . $this->maniaControl->getClientErrorText());
+		try {
+			$this->maniaControl->client->saveBestGhostsReplay($player->login, $fileName);
+		} catch(Exception $e) {
+			trigger_error("Couldn't save ghost replay. " . $e->getMessage());
 			return null;
 		}
 
