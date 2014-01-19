@@ -180,7 +180,7 @@ class CallbackManager {
 		
 		// Server Callbacks
 		if (!$this->maniaControl->client) return;
-
+		
 		$callbacks = $this->maniaControl->client->executeCallbacks();
 		if (!is_array($callbacks)) {
 			trigger_error("Error reading server callbacks. " . $this->maniaControl->getClientErrorText());
@@ -225,6 +225,14 @@ class CallbackManager {
 		$scriptCallbackData = $callback[1];
 		$scriptCallbackName = $scriptCallbackData[0];
 		switch ($scriptCallbackName) {
+			case 'BeginMap':
+				$this->triggerScriptCallback($scriptCallbackName, $scriptCallbackData);
+				$this->triggerCallback(self::CB_MC_BEGINMAP, $callback);
+				break;
+			case 'LibXmlRpc_BeginMap':
+				$this->triggerScriptCallback($scriptCallbackName, $scriptCallbackData);
+				$this->triggerCallback(self::CB_MC_BEGINMAP, $callback);
+				break;
 			case 'EndMap':
 				$this->triggerScriptCallback($scriptCallbackName, $scriptCallbackData);
 				if (!$this->mapEnded) {
