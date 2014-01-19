@@ -15,19 +15,19 @@ use ManiaControl\Players\PlayerManager;
  * @author steeffeen & kremsy
  */
 class UpdateManager implements CallbackListener, CommandListener {
-	/**
+	/*
 	 * Constants
 	 */
 	const SETTING_ENABLEUPDATECHECK = 'Enable Automatic Core Update Check';
 	const SETTING_UPDATECHECK_INTERVAL = 'Core Update Check Interval (Hours)';
-	const SETTING_UPDATECHECK_CHANNEL = 'Core Update Channel (release, beta, alpha)';
+	const SETTING_UPDATECHECK_CHANNEL = 'Core Update Channel (release, beta, nightly)';
 	const SETTING_PERFORM_BACKUPS = 'Perform Backup before Updating';
 	const URL_WEBSERVICE = 'http://ws.maniacontrol.com/';
 	const CHANNEL_RELEASE = 'release';
 	const CHANNEL_BETA = 'beta';
-	const CHANNEL_ALPHA = 'alpha';
+	const CHANNEL_NIGHTLY = 'nightly';
 	
-	/**
+	/*
 	 * Private Properties
 	 */
 	private $maniaControl = null;
@@ -35,7 +35,7 @@ class UpdateManager implements CallbackListener, CommandListener {
 	private $coreUpdateData = null;
 
 	/**
-	 * Create a new Updater
+	 * Create a new Update Manager
 	 *
 	 * @param ManiaControl $maniaControl
 	 */
@@ -45,7 +45,7 @@ class UpdateManager implements CallbackListener, CommandListener {
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_ENABLEUPDATECHECK, true);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_UPDATECHECK_INTERVAL, 24.);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_UPDATECHECK_CHANNEL, self::CHANNEL_ALPHA);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_UPDATECHECK_CHANNEL, self::CHANNEL_RELEASE);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_PERFORM_BACKUPS, true);
 		
 		// Register for callbacks
@@ -66,22 +66,15 @@ class UpdateManager implements CallbackListener, CommandListener {
 		$updateCheckEnabled = $this->maniaControl->settingManager->getSetting($this, self::SETTING_ENABLEUPDATECHECK);
 		if (!$updateCheckEnabled) {
 			// Automatic update check disabled
-			if ($this->coreUpdateData) {
-				$this->coreUpdateData = null;
-			}
+			if ($this->coreUpdateData) $this->coreUpdateData = null;
 			return;
 		}
 		// Only check once per hour
 		$updateInterval = $this->maniaControl->settingManager->getSetting($this, self::SETTING_UPDATECHECK_INTERVAL);
-		if ($this->lastUpdateCheck > time() - $updateInterval * 3600.) {
-			return;
-		}
+		if ($this->lastUpdateCheck > time() - $updateInterval * 3600.) return;
 		$this->lastUpdateCheck = time();
 		$updateData = $this->checkCoreUpdate();
-		if (!$updateData) {
-			// No update available
-			return;
-		}
+		if (!$updateData) return;
 		$this->maniaControl->log('New ManiaControl Version ' . $updateData->version . ' available!');
 		$this->coreUpdateData = $updateData;
 	}
@@ -92,14 +85,11 @@ class UpdateManager implements CallbackListener, CommandListener {
 	 * @param array $callback
 	 */
 	public function handlePlayerJoined(array $callback) {
-		if (!$this->coreUpdateData) {
-			return;
-		}
+		if (!$this->coreUpdateData) return;
 		// Announce available update
 		$player = $callback[1];
 		if (!AuthenticationManager::checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)) return;
-		$this->maniaControl->chat->sendInformation('New ManiaControl Version ' . $this->coreUpdateData->version . ' available!', 
-				$player->login);
+		$this->maniaControl->chat->sendInformation('New ManiaControl Version ' . $this->coreUpdateData->version . ' available!', $player->login);
 	}
 
 	/**
@@ -113,12 +103,42 @@ class UpdateManager implements CallbackListener, CommandListener {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
-		$updateData = $this->checkCoreUpdate();
-		if (!$updateData) {
-			$this->maniaControl->chat->sendInformation('No Update available!', $player->login);
-			return;
+		$updateChannel = $this->maniaControl->settingManager->getSetting($this, self::SETTING_UPDATECHECK_CHANNEL);
+		if ($updateChannel != self::CHANNEL_NIGHTLY) {
+			// Check update and send result message
+			$updateData = $this->checkCoreUpdate();
+			if (!$updateData) {
+				$this->maniaControl->chat->sendInformation('No Update available!', $player->login);
+				return;
+			}
+			$this->maniaControl->chat->sendSuccess('Update for Version ' . $updateData->version . ' available!', $player->login);
 		}
-		$this->maniaControl->chat->sendSuccess('Update for Version ' . $updateData->version . ' available!', $player->login);
+		else {
+			// Special nightly channel updating
+			$updateData = $this->checkCoreUpdate(true);
+			$buildDate = $this->getNightlyBuildDate();
+			if ($buildDate) {
+				$buildTime = strtotime($buildDate);
+				$releaseTime = strtotime($updateData->release_date);
+				if ($buildTime >= $releaseTime) {
+					$this->maniaControl->chat->sendInformation('No new Build available!', $player->login);
+					return;
+				}
+			}
+			$this->maniaControl->chat->sendSuccess('New Nightly Build available!', $player->login);
+		}
+	}
+
+	/**
+	 * Get the Build Date of the local Nightly Build Version
+	 *
+	 * @return mixed
+	 */
+	private function getNightlyBuildDate() {
+		$nightlyBuildDateFile = ManiaControlDir . '/core/nightly_build.txt';
+		if (!file_exists($nightlyBuildDateFile)) return false;
+		$fileContent = file_get_contents($nightlyBuildDateFile);
+		return $fileContent;
 	}
 
 	/**
@@ -202,7 +222,7 @@ class UpdateManager implements CallbackListener, CommandListener {
 	private function performBackup() {
 		$backupFolder = ManiaControlDir . '/backup/';
 		if (!is_dir($backupFolder)) mkdir($backupFolder);
-		$backupFileName = $backupFolder . 'backup_' . ManiaControl::VERSION . '_' . date('y-m-d') . '.zip';
+		$backupFileName = $backupFolder . 'backup_' . ManiaControl::VERSION . '_' . date('y-m-d') . '_' . time() . '.zip';
 		$backupZip = new \ZipArchive();
 		if ($backupZip->open($backupFileName, \ZipArchive::CREATE) !== TRUE) {
 			trigger_error("Couldn't create Backup Zip!");
@@ -294,7 +314,7 @@ class UpdateManager implements CallbackListener, CommandListener {
 	private function getCurrentUpdateChannelSetting() {
 		$updateChannel = $this->maniaControl->settingManager->getSetting($this, self::SETTING_UPDATECHECK_CHANNEL);
 		$updateChannel = strtolower($updateChannel);
-		if (!in_array($updateChannel, array(self::CHANNEL_RELEASE, self::CHANNEL_BETA, self::CHANNEL_ALPHA))) {
+		if (!in_array($updateChannel, array(self::CHANNEL_RELEASE, self::CHANNEL_BETA, self::CHANNEL_NIGHTLY))) {
 			$updateChannel = self::CHANNEL_RELEASE;
 		}
 		return $updateChannel;

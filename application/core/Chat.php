@@ -66,12 +66,11 @@ class Chat {
 		if(!$this->maniaControl->client) {
 			return false;
 		}
-		$client      = $this->maniaControl->client;
 		$chatMessage = '$z$<' . $this->getPrefix($prefix) . $message . '$>$z';
 		if($login === null) {
-			return $client->chatSendServerMessage($chatMessage);
+			return $this->maniaControl->client->chatSendServerMessage($chatMessage);
 		}
-		return $client->chatSendServerMessage($chatMessage, $login);
+		return $this->maniaControl->client->chatSendServerMessage($chatMessage, $login);
 	}
 
 	/**
