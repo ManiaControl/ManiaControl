@@ -22,9 +22,23 @@ abstract class Builder {
 	}
 
 	/**
+	 * Escape dangerous Characters in the given Text
+	 *
+	 * @param string $text Text to escape
+	 * @return string
+	 */
+	public static function escapeText($text) {
+		$escapedText = $text;
+		$dangers = array('\\', '"');
+		$replacements = array('\\\\', '\\"');
+		$escapedText = str_ireplace($dangers, $replacements, $escapedText);
+		return $escapedText;
+	}
+
+	/**
 	 * Get the Real String-Representation of the given Value
 	 *
-	 * @param float $value The Float Value to convert to a ManiaScript Real 
+	 * @param float $value The Float Value to convert to a ManiaScript Real
 	 * @return string
 	 */
 	public static function getReal($value) {

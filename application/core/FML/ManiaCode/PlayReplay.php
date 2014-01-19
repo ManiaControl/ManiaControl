@@ -16,6 +16,18 @@ class PlayReplay implements Element {
 	protected $url = '';
 
 	/**
+	 * Create a new PlayReplay Element
+	 *
+	 * @param string $name (optional) Replay Name
+	 * @param string $url (optional) Replay Url
+	 * @return \FML\ManiaCode\PlayReplay
+	 */
+	public static function create($name = null, $url = null) {
+		$playReplay = new PlayReplay($name, $url);
+		return $playReplay;
+	}
+
+	/**
 	 * Construct a new PlayReplay Element
 	 *
 	 * @param string $name (optional) Replay Name

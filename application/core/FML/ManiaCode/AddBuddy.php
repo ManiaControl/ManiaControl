@@ -18,6 +18,17 @@ class AddBuddy implements Element {
 	 * Construct a new AddBuddy Element
 	 *
 	 * @param string $login (optional) Buddy Login
+	 * @return \FML\ManiaCode\AddBuddy
+	 */
+	public static function create($login = null) {
+		$addBuddy = new AddBuddy($login);
+		return $addBuddy;
+	}
+
+	/**
+	 * Construct a new AddBuddy Element
+	 *
+	 * @param string $login (optional) Buddy Login
 	 */
 	public function __construct($login = null) {
 		if ($login !== null) {

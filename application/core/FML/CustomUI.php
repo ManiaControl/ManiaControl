@@ -23,6 +23,22 @@ class CustomUI {
 	protected $globalVisible = null;
 
 	/**
+	 * Create a new CustomUI Object
+	 *
+	 * @return \FML\CustomUI
+	 */
+	public static function create() {
+		$customUI = new CustomUI();
+		return $customUI;
+	}
+
+	/**
+	 * Construct a new CustomUI Object
+	 */
+	public function __construct() {
+	}
+
+	/**
 	 * Set XML Encoding
 	 *
 	 * @param string $encoding XML Encoding
@@ -131,6 +147,7 @@ class CustomUI {
 		$isChild = (bool) $domDocument;
 		if (!$isChild) {
 			$domDocument = new \DOMDocument('1.0', $this->encoding);
+			$domDocument->xmlStandalone = true;
 		}
 		$xmlElement = $domDocument->createElement($this->tagName);
 		if (!$isChild) {

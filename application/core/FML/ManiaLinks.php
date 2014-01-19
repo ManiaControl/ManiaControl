@@ -17,6 +17,22 @@ class ManiaLinks {
 	protected $customUI = null;
 
 	/**
+	 * Create a new ManiaLinks Object
+	 *
+	 * @return \FML\ManiaLinks
+	 */
+	public static function create() {
+		$maniaLinks = new ManiaLinks();
+		return $maniaLinks;
+	}
+
+	/**
+	 * Construct a new ManiaLinks Object
+	 */
+	public function __construct() {
+	}
+
+	/**
 	 * Set XML Encoding
 	 *
 	 * @param string $encoding XML Encoding
@@ -62,6 +78,19 @@ class ManiaLinks {
 	}
 
 	/**
+	 * Get the current CustomUI
+	 *
+	 * @param bool $createIfEmpty (optional) Whether the CustomUI Object should be created if it's not set yet
+	 * @return \FML\CustomUI
+	 */
+	public function getCustomUI($createIfEmpty = true) {
+		if (!$this->customUI && $createIfEmpty) {
+			$this->customUI = new CustomUI();
+		}
+		return $this->customUI;
+	}
+
+	/**
 	 * Render the XML Document
 	 *
 	 * @param bool (optional) $echo Whether the XML Text should be echoed and the Content-Type Header should be set
@@ -69,6 +98,7 @@ class ManiaLinks {
 	 */
 	public function render($echo = false) {
 		$domDocument = new \DOMDocument('1.0', $this->encoding);
+		$domDocument->xmlStandalone = true;
 		$maniaLinks = $domDocument->createElement($this->tagName);
 		$domDocument->appendChild($maniaLinks);
 		foreach ($this->children as $child) {
@@ -80,7 +110,7 @@ class ManiaLinks {
 			$maniaLinks->appendChild($customUIXml);
 		}
 		if ($echo) {
-			header('Content-Type: application/xml');
+			header('Content-Type: application/xml; charset=utf-8;');
 			echo $domDocument->saveXML();
 		}
 		return $domDocument;

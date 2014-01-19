@@ -17,13 +17,35 @@ class SimpleScript implements Renderable {
 	protected $text = '';
 
 	/**
+	 * Create a new SimpleScript Element
+	 *
+	 * @param string $text (optional) Script Text
+	 * @return \FML\Elements\SimpleScript
+	 */
+	public static function create($text = null) {
+		$simpleScript = new SimpleScript($text);
+		return $simpleScript;
+	}
+
+	/**
+	 * Construct a new SimpleScript Element
+	 *
+	 * @param string $text (optional) Script Text
+	 */
+	public function __construct($text = null) {
+		if ($text !== null) {
+			$this->setText($text);
+		}
+	}
+
+	/**
 	 * Set Script Text
 	 *
 	 * @param string $text The Complete Script Text
 	 * @return \FML\Script\Script
 	 */
 	public function setText($text) {
-		$this->text = $text;
+		$this->text = (string) $text;
 		return $this;
 	}
 
@@ -33,8 +55,10 @@ class SimpleScript implements Renderable {
 	 */
 	public function render(\DOMDocument $domDocument) {
 		$xmlElement = $domDocument->createElement($this->tagName);
-		$scriptComment = $domDocument->createComment($this->text);
-		$xmlElement->appendChild($scriptComment);
+		if ($this->text) {
+			$scriptComment = $domDocument->createComment($this->text);
+			$xmlElement->appendChild($scriptComment);
+		}
 		return $xmlElement;
 	}
 }

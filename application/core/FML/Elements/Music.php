@@ -17,6 +17,28 @@ class Music implements Renderable {
 	protected $data = '';
 
 	/**
+	 * Create a new Music Element
+	 *
+	 * @param string $data (optional) Media Url
+	 * @return \FML\Elements\Music
+	 */
+	public static function create($data = null) {
+		$music = new Music($data);
+		return $music;
+	}
+
+	/**
+	 * Construct a new Music Element
+	 *
+	 * @param string $data (optional) Media Url
+	 */
+	public function __construct($data = null) {
+		if ($data !== null) {
+			$this->setData($data);
+		}
+	}
+
+	/**
 	 * Set Data Url
 	 *
 	 * @param string $data Media Url

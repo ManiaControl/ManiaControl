@@ -10,7 +10,7 @@ use FML\Types\Styleable;
 use FML\Types\SubStyleable;
 
 /**
- * Quad Element
+ * Quad Control
  * (CMlQuad)
  *
  * @author steeffeen
@@ -20,7 +20,9 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	 * Protected Properties
 	 */
 	protected $image = '';
+	protected $imageId = '';
 	protected $imageFocus = '';
+	protected $imageFocusId = '';
 	protected $colorize = '';
 	protected $modulizeColor = '';
 	protected $autoScale = 1;
@@ -28,10 +30,23 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	protected $actionKey = -1;
 	protected $bgColor = '';
 	protected $url = '';
+	protected $urlId = '';
 	protected $manialink = '';
+	protected $manialinkId = '';
 	protected $scriptEvents = 0;
 	protected $style = '';
 	protected $subStyle = '';
+
+	/**
+	 * Create a new Quad Control
+	 *
+	 * @param string $id (optional) Control Id
+	 * @return \FML\Controls\Quad
+	 */
+	public static function create($id = null) {
+		$quad = new Quad($id);
+		return $quad;
+	}
 
 	/**
 	 * Construct a new Quad Control
@@ -56,6 +71,17 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	}
 
 	/**
+	 * Set Image Id to use from the Dico
+	 *
+	 * @param string $imageId Image Id
+	 * @return \FML\Controls\Quad
+	 */
+	public function setImageId($imageId) {
+		$this->imageId = (string) $imageId;
+		return $this;
+	}
+
+	/**
 	 * Set Focus Image Url
 	 *
 	 * @param string $imageFocus Focus Image Url
@@ -63,6 +89,17 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	 */
 	public function setImageFocus($imageFocus) {
 		$this->imageFocus = (string) $imageFocus;
+		return $this;
+	}
+
+	/**
+	 * Set Focus Image Id to use from the Dico
+	 *
+	 * @param string $imageFocusId Focus Image Id
+	 * @return \FML\Controls\Quad
+	 */
+	public function setImageFocusId($imageFocusId) {
+		$this->imageFocusId = (string) $imageFocusId;
 		return $this;
 	}
 
@@ -141,11 +178,31 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 
 	/**
 	 *
+	 * @see \FML\Types\Linkable::setUrlId()
+	 * @return \FML\Controls\Quad
+	 */
+	public function setUrlId($urlId) {
+		$this->urlId = (string) $urlId;
+		return $this;
+	}
+
+	/**
+	 *
 	 * @see \FML\Types\Linkable::setManialink()
 	 * @return \FML\Controls\Quad
 	 */
 	public function setManialink($manialink) {
 		$this->manialink = (string) $manialink;
+		return $this;
+	}
+
+	/**
+	 *
+	 * @see \FML\Types\Linkable::setManialinkId()
+	 * @return \FML\Controls\Quad
+	 */
+	public function setManialinkId($manialinkId) {
+		$this->manialinkId = (string) $manialinkId;
 		return $this;
 	}
 
@@ -199,8 +256,14 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 		if ($this->image) {
 			$xmlElement->setAttribute('image', $this->image);
 		}
+		if ($this->imageId) {
+			$xmlElement->setAttribute('imageid', $this->imageId);
+		}
 		if ($this->imageFocus) {
 			$xmlElement->setAttribute('imagefocus', $this->imageFocus);
+		}
+		if ($this->imageFocusId) {
+			$xmlElement->setAttribute('imagefocusid', $this->imageFocusId);
 		}
 		if ($this->colorize) {
 			$xmlElement->setAttribute('colorize', $this->colorize);

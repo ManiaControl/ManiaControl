@@ -30,8 +30,20 @@ class Quad_BgsPlayerCard extends Quad {
 	const SUBSTYLE_ProgressBar = 'ProgressBar';
 
 	/**
+	 * Create a new Quad_BgsPlayerCard Control
 	 *
-	 * @see \FML\Controls\Quad
+	 * @param string $id (optional) Control Id
+	 * @return \FML\Controls\Quads\Quad_BgsPlayerCard
+	 */
+	public static function create($id = null) {
+		$quadBgsPlayerCard = new Quad_BgsPlayerCard($id);
+		return $quadBgsPlayerCard;
+	}
+
+	/**
+	 * Construct a new Quad_BgsPlayerCard Control
+	 *
+	 * @param string $id (optional) Control Id
 	 */
 	public function __construct($id = null) {
 		parent::__construct($id);

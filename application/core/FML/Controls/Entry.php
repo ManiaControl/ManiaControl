@@ -8,7 +8,7 @@ use FML\Types\Styleable;
 use FML\Types\TextFormatable;
 
 /**
- * Entry Element
+ * Entry Control
  * (CMlEntry)
  *
  * @author steeffeen
@@ -24,8 +24,19 @@ class Entry extends Control implements NewLineable, Scriptable, Styleable, TextF
 	protected $style = '';
 	protected $textColor = '';
 	protected $textSize = -1;
-	protected $areaColor = '';
-	protected $areaFocusColor = '';
+	protected $focusAreaColor1 = '';
+	protected $focusAreaColor2 = '';
+
+	/**
+	 * Create a new Entry Control
+	 *
+	 * @param string $id (optional) Control Id
+	 * @return \FML\Controls\Entry
+	 */
+	public static function create($id = null) {
+		$entry = new Entry($id);
+		return $entry;
+	}
 
 	/**
 	 * Construct a new Entry Control
@@ -115,7 +126,7 @@ class Entry extends Control implements NewLineable, Scriptable, Styleable, TextF
 	 * @return \FML\Controls\Entry
 	 */
 	public function setAreaColor($areaColor) {
-		$this->areaColor = (string) $areaColor;
+		$this->focusAreaColor1 = (string) $areaColor;
 		return $this;
 	}
 
@@ -125,7 +136,7 @@ class Entry extends Control implements NewLineable, Scriptable, Styleable, TextF
 	 * @return \FML\Controls\Entry
 	 */
 	public function setAreaFocusColor($areaFocusColor) {
-		$this->areaFocusColor = (string) $areaFocusColor;
+		$this->focusAreaColor2 = (string) $areaFocusColor;
 		return $this;
 	}
 
@@ -156,11 +167,11 @@ class Entry extends Control implements NewLineable, Scriptable, Styleable, TextF
 		if ($this->textSize >= 0.) {
 			$xmlElement->setAttribute('textsize', $this->textSize);
 		}
-		if ($this->areaColor) {
-			$xmlElement->setAttribute('areacolor', $this->areaColor);
+		if ($this->focusAreaColor1) {
+			$xmlElement->setAttribute('focusareacolor1', $this->focusAreaColor1);
 		}
-		if ($this->areaFocusColor) {
-			$xmlElement->setAttribute('areafocuscolor', $this->areaFocusColor);
+		if ($this->focusAreaColor2) {
+			$xmlElement->setAttribute('focusareacolor2', $this->focusAreaColor2);
 		}
 		return $xmlElement;
 	}

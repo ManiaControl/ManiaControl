@@ -17,6 +17,13 @@ interface Playable {
 	public function setData($data);
 
 	/**
+	 * Set Data Id to use from the Dico
+	 * 
+	 * @param string $dataId
+	 */
+	public function setDataId($dataId);
+
+	/**
 	 * Set Play
 	 *
 	 * @param bool $play Whether the Control should start playing automatically

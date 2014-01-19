@@ -17,6 +17,19 @@ class InstallSkin implements Element {
 	protected $url = '';
 
 	/**
+	 * Create a new InstallSkin Element
+	 *
+	 * @param string $name (optional) Skin Name
+	 * @param string $file (optional) Skin File
+	 * @param string $url (optional) Skin Url
+	 * @return \FML\ManiaCode\InstallSkin
+	 */
+	public static function create($name = null, $file = null, $url = null) {
+		$installSkin = new InstallSkin($name, $file, $url);
+		return $installSkin;
+	}
+
+	/**
 	 * Construct a new InstallSkin Element
 	 *
 	 * @param string $name (optional) Skin Name

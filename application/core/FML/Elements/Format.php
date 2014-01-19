@@ -21,8 +21,24 @@ class Format implements BgColorable, Renderable, Styleable, TextFormatable {
 	protected $style = '';
 	protected $textSize = -1;
 	protected $textColor = '';
-	protected $areaColor = '';
-	protected $areaFocusColor = '';
+	protected $focusAreaColor1 = '';
+	protected $focusAreaColor2 = '';
+
+	/**
+	 * Create a new Format Element
+	 *
+	 * @return \FML\Elements\Format
+	 */
+	public static function create() {
+		$format = new Format();
+		return $format;
+	}
+
+	/**
+	 * Construct a new Format Element
+	 */
+	public function __construct() {
+	}
 
 	/**
 	 *
@@ -70,7 +86,7 @@ class Format implements BgColorable, Renderable, Styleable, TextFormatable {
 	 * @return \FML\Elements\Format
 	 */
 	public function setAreaColor($areaColor) {
-		$this->areaColor = (string) $areaColor;
+		$this->focusAreaColor1 = (string) $areaColor;
 		return $this;
 	}
 
@@ -80,7 +96,7 @@ class Format implements BgColorable, Renderable, Styleable, TextFormatable {
 	 * @return \FML\Elements\Format
 	 */
 	public function setAreaFocusColor($areaFocusColor) {
-		$this->areaFocusColor = (string) $areaFocusColor;
+		$this->focusAreaColor2 = (string) $areaFocusColor;
 		return $this;
 	}
 
@@ -89,25 +105,25 @@ class Format implements BgColorable, Renderable, Styleable, TextFormatable {
 	 * @see \FML\Renderable::render()
 	 */
 	public function render(\DOMDocument $domDocument) {
-		$xmlElement = $domDocument->createElement($this->tagName);
+		$formatXmlElement = $domDocument->createElement($this->tagName);
 		if ($this->bgColor) {
-			$xmlElement->setAttribute('bgcolor', $this->bgColor);
+			$formatXmlElement->setAttribute('bgcolor', $this->bgColor);
 		}
 		if ($this->style) {
-			$xmlElement->setAttribute('style', $this->style);
+			$formatXmlElement->setAttribute('style', $this->style);
 		}
 		if ($this->textSize >= 0) {
-			$xmlElement->setAttribute('textsize', $this->textSize);
+			$formatXmlElement->setAttribute('textsize', $this->textSize);
 		}
 		if ($this->textColor) {
-			$xmlElement->setAttribute('textcolor', $this->textColor);
+			$formatXmlElement->setAttribute('textcolor', $this->textColor);
 		}
-		if ($this->areaColor) {
-			$xmlElement->setAttribute('areacolor', $this->areaColor);
+		if ($this->focusAreaColor1) {
+			$formatXmlElement->setAttribute('focusareacolor1', $this->focusAreaColor1);
 		}
-		if ($this->areaFocusColor) {
-			$xmlElement->setAttribute('areafocuscolor', $this->areaFocusColor);
+		if ($this->focusAreaColor2) {
+			$formatXmlElement->setAttribute('focusareacolor2', $this->focusAreaColor2);
 		}
-		return $xmlElement;
+		return $formatXmlElement;
 	}
 }

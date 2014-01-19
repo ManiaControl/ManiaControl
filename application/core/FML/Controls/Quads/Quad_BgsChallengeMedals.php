@@ -22,8 +22,20 @@ class Quad_BgsChallengeMedals extends Quad {
 	const SUBSTYLE_BgSilver = 'BgSilver';
 
 	/**
+	 * Create a new Quad_BgsChallengeMedals Control
 	 *
-	 * @see \FML\Controls\Quad
+	 * @param string $id (optional) Control Id
+	 * @return \FML\Controls\Quads\Quad_BgsChallengeMedals
+	 */
+	public static function create($id = null) {
+		$quadBgsChallengeMedals = new Quad_BgsChallengeMedals($id);
+		return $quadBgsChallengeMedals;
+	}
+
+	/**
+	 * Construct a new Quad_BgsChallengeMedals Control
+	 *
+	 * @param string $id (optional) Control Id
 	 */
 	public function __construct($id = null) {
 		parent::__construct($id);

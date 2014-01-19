@@ -23,8 +23,20 @@ class Quad_MedalsBig extends Quad {
 	const SUBSTYLE_MedalSlot = 'MedalSlot';
 
 	/**
+	 * Create a new Quad_MedalsBig Control
 	 *
-	 * @see \FML\Controls\Quad
+	 * @param string $id (optional) Control Id
+	 * @return \FML\Controls\Quads\Quad_MedalsBig
+	 */
+	public static function create($id = null) {
+		$quadMedalsBig = new Quad_MedalsBig($id);
+		return $quadMedalsBig;
+	}
+
+	/**
+	 * Construct a new Quad_MedalsBig Control
+	 *
+	 * @param string $id (optional) Control Id
 	 */
 	public function __construct($id = null) {
 		parent::__construct($id);

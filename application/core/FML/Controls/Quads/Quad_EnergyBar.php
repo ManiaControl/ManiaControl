@@ -22,8 +22,20 @@ class Quad_EnergyBar extends Quad {
 	const SUBSTYLE_HeaderGaugeRight = 'HeaderGaugeRight';
 
 	/**
+	 * Create a new Quad_EnergyBar Control
 	 *
-	 * @see \FML\Controls\Quad
+	 * @param string $id (optional) Control Id
+	 * @return \FML\Controls\Quads\Quad_EnergyBar
+	 */
+	public static function create($id = null) {
+		$quadEnergybar = new Quad_EnergyBar($id);
+		return $quadEnergybar;
+	}
+
+	/**
+	 * Construct a new Quad_EnergyBar Control
+	 *
+	 * @param string $id (optional) Control Id
 	 */
 	public function __construct($id = null) {
 		parent::__construct($id);

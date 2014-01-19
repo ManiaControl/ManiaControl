@@ -15,6 +15,17 @@ class Go_To implements Element {
 	protected $link = '';
 
 	/**
+	 * Create a new Go_To Element
+	 *
+	 * @param string $link (optional) Goto Link
+	 * @return \FML\ManiaCode\Go_To
+	 */
+	public static function create($link = null) {
+		$goTo = new Go_To($link);
+		return $goTo;
+	}
+
+	/**
 	 * Construct a new Go_To Element
 	 *
 	 * @param string $link (optional) Goto Link

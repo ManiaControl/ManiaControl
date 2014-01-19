@@ -2,22 +2,22 @@
 
 namespace FML;
 
-use FML\ManiaCode\Message;
-use FML\ManiaCode\Element;
-use FML\ManiaCode\ShowMessage;
-use FML\ManiaCode\InstallMap;
-use FML\ManiaCode\PlayMap;
-use FML\ManiaCode\InstallReplay;
-use FML\ManiaCode\ViewReplay;
-use FML\ManiaCode\PlayReplay;
-use FML\ManiaCode\InstallSkin;
-use FML\ManiaCode\GetSkin;
 use FML\ManiaCode\AddBuddy;
-use FML\ManiaCode\Go_To;
-use FML\ManiaCode\JoinServer;
 use FML\ManiaCode\AddFavorite;
-use FML\ManiaCode\InstallScript;
+use FML\ManiaCode\Element;
+use FML\ManiaCode\GetSkin;
+use FML\ManiaCode\Go_To;
+use FML\ManiaCode\InstallMap;
 use FML\ManiaCode\InstallPack;
+use FML\ManiaCode\InstallReplay;
+use FML\ManiaCode\InstallScript;
+use FML\ManiaCode\InstallSkin;
+use FML\ManiaCode\JoinServer;
+use FML\ManiaCode\Message;
+use FML\ManiaCode\PlayMap;
+use FML\ManiaCode\PlayReplay;
+use FML\ManiaCode\ShowMessage;
+use FML\ManiaCode\ViewReplay;
 
 /**
  * Class representing a ManiaCode
@@ -32,6 +32,22 @@ class ManiaCode {
 	protected $tagName = 'maniacode';
 	protected $noConfirmation = null;
 	protected $elements = array();
+
+	/**
+	 * Create a new ManiaCode Object
+	 *
+	 * @return \FML\ManiaCode
+	 */
+	public static function create() {
+		$maniaCode = new ManiaCode();
+		return $maniaCode;
+	}
+
+	/**
+	 * Construct a new ManiaCode Object
+	 */
+	public function __construct() {
+	}
 
 	/**
 	 * Set XML Encoding
@@ -265,6 +281,7 @@ class ManiaCode {
 	 */
 	public function render($echo = false) {
 		$domDocument = new \DOMDocument('1.0', $this->encoding);
+		$domDocument->xmlStandalone = true;
 		$maniaCode = $domDocument->createElement($this->tagName);
 		$domDocument->appendChild($maniaCode);
 		if ($this->noConfirmation) {
@@ -275,7 +292,7 @@ class ManiaCode {
 			$maniaCode->appendChild($xmlElement);
 		}
 		if ($echo) {
-			header('Content-Type: application/xml');
+			header('Content-Type: application/xml; charset=utf-8;');
 			echo $domDocument->saveXML();
 		}
 		return $domDocument;

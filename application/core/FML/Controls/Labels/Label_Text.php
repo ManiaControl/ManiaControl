@@ -88,4 +88,24 @@ class Label_Text extends Label {
 	const STYLE_UiDriving_BgBottom = 'UiDriving_BgBottom';
 	const STYLE_UiDriving_BgCard = 'UiDriving_BgCard';
 	const STYLE_UiDriving_BgCenter = 'UiDriving_BgCenter';
+
+	/**
+	 * Create a new Label_Text Control
+	 *
+	 * @param string $id (optional) Control Id
+	 * @return \FML\Controls\Labels\Label_Button
+	 */
+	public static function create($id = null) {
+		$labelText = new Label_Text($id);
+		return $labelText;
+	}
+
+	/**
+	 * Construct a new Label_Text Control
+	 *
+	 * @param string $id (optional) Control Id
+	 */
+	public function __construct($id = null) {
+		parent::__construct($id);
+	}
 }

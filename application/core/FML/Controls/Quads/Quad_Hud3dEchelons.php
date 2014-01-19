@@ -25,8 +25,20 @@ class Quad_Hud3dEchelons extends Quad {
 	const SUBSTYLE_EchelonSilver3 = 'EchelonSilver3';
 
 	/**
+	 * Create a new Quad_Hud3dEchelons Control
 	 *
-	 * @see \FML\Controls\Quad
+	 * @param string $id (optional) Control Id
+	 * @return \FML\Controls\Quads\Quad_Hud3dEchelons
+	 */
+	public static function create($id = null) {
+		$quadHud3dEchelons = new Quad_Hud3dEchelons($id);
+		return $quadHud3dEchelons;
+	}
+
+	/**
+	 * Construct a new Quad_Hud3dEchelons Control
+	 *
+	 * @param string $id (optional) Control Id
 	 */
 	public function __construct($id = null) {
 		parent::__construct($id);

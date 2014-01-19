@@ -41,8 +41,20 @@ class Quad_Icons128x32_1 extends Quad {
 	const SUBSTYLE_Windowed = 'Windowed';
 
 	/**
+	 * Create a new Quad_Icons128x32_1 Control
 	 *
-	 * @see \FML\Controls\Quad
+	 * @param string $id (optional) Control Id
+	 * @return \FML\Controls\Quads\Quad_Icons128x32_1
+	 */
+	public static function create($id = null) {
+		$quadIcons128x32_1 = new Quad_Icons128x32_1($id);
+		return $quadIcons128x32_1;
+	}
+
+	/**
+	 * Construct a new Quad_Icons128x32_1 Control
+	 *
+	 * @param string $id (optional) Control Id
 	 */
 	public function __construct($id = null) {
 		parent::__construct($id);

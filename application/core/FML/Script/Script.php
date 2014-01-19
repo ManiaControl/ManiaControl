@@ -3,8 +3,8 @@
 namespace FML\Script;
 
 use FML\Controls\Control;
-use FML\Types\Scriptable;
 use FML\Controls\Label;
+use FML\Types\Scriptable;
 
 /**
  * Class representing the ManiaLink Script
@@ -31,6 +31,7 @@ class Script {
 	const OPTION_TOOLTIP_TEXT = 'FML_Text_Tooltip';
 	const OPTION_TOGGLE_SHOW = 'FML_Show_Toggle';
 	const OPTION_TOGGLE_HIDE = 'FML_Hide_Toggle';
+	const OPTION_PROFILE_OWN = 'FML_Own_Profile';
 	const LABEL_ONINIT = 'OnInit';
 	const LABEL_LOOP = 'Loop';
 	const LABEL_ENTRYSUBMIT = 'EntrySubmit';
@@ -59,6 +60,22 @@ class Script {
 	protected $sounds = array();
 	protected $toggles = false;
 	protected $spectate = false;
+
+	/**
+	 * Create a new Script Object
+	 *
+	 * @return \FML\Script\Script
+	 */
+	public static function create() {
+		$script = new Script();
+		return $script;
+	}
+
+	/**
+	 * Construct a new Script Object
+	 */
+	public function __construct() {
+	}
 
 	/**
 	 * Set an Include of the Script
@@ -223,6 +240,7 @@ class Script {
 	 *
 	 * @param Control $profileControl The Control opening a Profile
 	 * @param string $playerLogin The Player Login
+	 * @param string $options,... (optional) Unlimited Number of Profile Options
 	 * @return \FML\Script\Script
 	 */
 	public function addProfileButton(Control $profileControl, $playerLogin) {
@@ -234,6 +252,10 @@ class Script {
 		$profileControl->addClass(self::CLASS_PROFILE);
 		$playerLogin = (string) $playerLogin;
 		$profileControl->addClass(self::CLASS_PROFILE . '-' . $playerLogin);
+		$options = $this->spliceParameters(func_get_args(), 2);
+		foreach ($options as $option => $value) {
+			$profileControl->addClass($option);
+		}
 		$this->profile = true;
 		return $this;
 	}
@@ -322,6 +344,7 @@ class Script {
 	 * @return \FML\Script\Script
 	 */
 	public function addSpectateButton(Control $clickControl, $spectateTargetLogin) {
+		// FIXME: current implementation doesn't support logins with dots in them ('nick.name')
 		if (!($clickControl instanceof Scriptable)) {
 			trigger_error('Scriptable Control needed as ClickControl for Spectating!');
 			return $this;
@@ -419,12 +442,12 @@ class Script {
 		$count = count($this->tooltipTexts);
 		if ($count > 0) {
 			foreach ($this->tooltipTexts as $tooltipId => $tooltipTexts) {
-				$constantText .= '"' . $tooltipId . '" => [';
+				$constantText .= '"' . Builder::escapeText($tooltipId) . '" => [';
 				$subIndex = 0;
 				$subCount = count($tooltipTexts);
 				if ($subCount > 0) {
 					foreach ($tooltipTexts as $hoverId => $text) {
-						$constantText .= '"' . $hoverId . '" => "' . $text . '"';
+						$constantText .= '"' . Builder::escapeText($hoverId) . '" => "' . Builder::escapeText($text) . '"';
 						if ($subIndex < $subCount - 1) $constantText .= ', ';
 						$subIndex++;
 					}
@@ -688,19 +711,18 @@ if (Event.Control.HasClass(\"" . self::CLASS_PAGER . "\")) {
 	private function getProfileLabels() {
 		if (!$this->profile) return "";
 		$this->setInclude('TextLib', 'TextLib');
+		$prefixLength = strlen(self::CLASS_PROFILE) + 1;
 		$profileScript = "
 if (Event.Control.HasClass(\"" . self::CLASS_PROFILE . "\")) {
 	declare Login = LocalUser.Login;
-	foreach (ControlClass in Event.Control.ControlClasses) {
-		declare ClassParts = TextLib::Split(\"-\", ControlClass);
-		if (ClassParts.count < 2) continue;
-		if (ClassParts[0] != \"" . self::CLASS_PROFILE . "\") continue;
-		Login = \"\";
-		for (Index, 1, ClassParts.count - 1) {
-			Login ^= ClassParts[Index];
-			if (Index < ClassParts.count - 1) Login ^= \"-\";
+	if (!Event.Control.HasClass(\"" . self::OPTION_PROFILE_OWN . "\") {
+		foreach (ControlClass in Event.Control.ControlClasses) {
+			declare ClassParts = TextLib::Split(\"-\", ControlClass);
+			if (ClassParts.count < 2) continue;
+			if (ClassParts[0] != \"" . self::CLASS_PROFILE . "\") continue;
+			Login = TextLib::SubText(ControlClass, {$prefixLength}, TextLib::Length(ControlClass));
+			break;
 		}
-		break;
 	}
 	ShowProfile(Login);
 }";
@@ -800,17 +822,16 @@ if (Event.Control.HasClass(\"" . self::CLASS_TOGGLE . "\")) {
 	private function getSpectateLabels() {
 		if (!$this->spectate) return '';
 		$this->setInclude('TextLib', 'TextLib');
+		$prefixLength = strlen(self::CLASS_SPECTATE) + 1;
 		$spectateScript = "
 if (Event.Control.HasClass(\"" . self::CLASS_SPECTATE . "\")) {
 	declare Login = \"\";
-	foreach (ControlClass in Event.Control.ControlClass) {
+	foreach (ControlClass in Event.Control.ControlClasses) {
 		declare ClassParts = TextLib::Split(\"-\", ControlClass);
 		if (ClassParts.count < 2) continue;
 		if (ClassParts[0] != \"" . self::CLASS_SPECTATE . "\") continue;
-		for (Index, 1, ClassParts.count - 1) {
-			Login ^= ClassParts[Index];
-			if (Index < ClassParts.count - 1) Login ^= \"-\";
-		}
+		Login = TextLib::SubText(ControlClass, {$prefixLength}, TextLib::Length(ControlClass));
+		break;
 	}
 	if (Login != \"\") {
 		SetSpectateTarget(Login);

@@ -20,6 +20,17 @@ class AddFavorite implements Element {
 	 * Construct a new AddFavorite Element
 	 *
 	 * @param string $login (optional) Server Login
+	 * @return \FML\ManiaCode\AddFavorite
+	 */
+	public static function create($login = null) {
+		$addFavorite = new AddFavorite($login);
+		return $addFavorite;
+	}
+
+	/**
+	 * Construct a new AddFavorite Element
+	 *
+	 * @param string $login (optional) Server Login
 	 */
 	public function __construct($login = null) {
 		if ($login !== null) {

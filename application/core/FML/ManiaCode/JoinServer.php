@@ -17,6 +17,17 @@ class JoinServer implements Element {
 	protected $port = null;
 
 	/**
+	 * Create a new JoinServer Element
+	 *
+	 * @param string $login (optional) Server Login
+	 * @return \FML\ManiaCode\JoinServer
+	 */
+	public static function create($login = null) {
+		$joinServer = new JoinServer($login);
+		return $joinServer;
+	}
+
+	/**
 	 * Construct a new JoinServer Element
 	 *
 	 * @param string $login (optional) Server Login
