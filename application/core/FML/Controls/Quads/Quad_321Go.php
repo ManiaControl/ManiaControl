@@ -20,8 +20,20 @@ class Quad_321Go extends Quad {
 	const SUBSTYLE_Go = 'Go!';
 
 	/**
+	 * Create a new Quad_321Go Control
 	 *
-	 * @see \FML\Controls\Quad
+	 * @param string $id (optional) Control Id
+	 * @return \FML\Controls\Quads\Quad_321Go
+	 */
+	public static function create($id = null) {
+		$quad321Go = new Quad_321Go($id);
+		return $quad321Go;
+	}
+
+	/**
+	 * Construct a new Quad_321Go Control
+	 *
+	 * @param string $id (optional) Control Id
 	 */
 	public function __construct($id = null) {
 		parent::__construct($id);

@@ -15,6 +15,17 @@ class ShowMessage implements Element {
 	protected $message = '';
 
 	/**
+	 * Create a new ShowMessage Element
+	 * 
+	 * @param string $message (optional) Message Text
+	 * @return \FML\ManiaCode\ShowMessage
+	 */
+	public static function create($message = null) {
+		$showMessage = new ShowMessage($message);
+		return $showMessage;
+	}
+
+	/**
 	 * Construct a new ShowMessage Element
 	 *
 	 * @param string $message (optional) Message Text

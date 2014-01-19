@@ -17,9 +17,23 @@ interface Linkable {
 	public function setUrl($url);
 
 	/**
+	 * Set Url Id to use from the Dico
+	 *
+	 * @param string $urlId
+	 */
+	public function setUrlId($urlId);
+
+	/**
 	 * Set Manialink
 	 *
 	 * @param string $manialink Manialink Name
 	 */
 	public function setManialink($manialink);
+
+	/**
+	 * Set Manialink Id to use from the Dico
+	 * 
+	 * @param string $manialinkId Manialink Id
+	 */
+	public function setManialinkId($manialinkId);
 }

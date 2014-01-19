@@ -6,7 +6,7 @@ use FML\Types\Playable;
 use FML\Types\Scriptable;
 
 /**
- * Video Element
+ * Video Control
  * (CMlMediaPlayer)
  *
  * @author steeffeen
@@ -16,11 +16,23 @@ class Video extends Control implements Playable, Scriptable {
 	 * Protected Properties
 	 */
 	protected $data = '';
+	protected $dataId = '';
 	protected $play = 0;
 	protected $looping = 0;
 	protected $music = 0;
 	protected $volume = 1.;
 	protected $scriptEvents = 0;
+
+	/**
+	 * Create a new Video Control
+	 *
+	 * @param string $id (optional) Control Id
+	 * @return \FML\Controls\Video
+	 */
+	public static function create($id = null) {
+		$video = new Video($id);
+		return $video;
+	}
 
 	/**
 	 * Construct a new Video Control
@@ -39,6 +51,16 @@ class Video extends Control implements Playable, Scriptable {
 	 */
 	public function setData($data) {
 		$this->data = (string) $data;
+		return $this;
+	}
+
+	/**
+	 *
+	 * @see \FML\Types\Playable::setDataId()
+	 * @return \FML\Controls\Video
+	 */
+	public function setDataId($dataId) {
+		$this->dataId = (string) $dataId;
 		return $this;
 	}
 
@@ -104,7 +126,7 @@ class Video extends Control implements Playable, Scriptable {
 		if ($this->play) {
 			$xmlElement->setAttribute('play', $this->play);
 		}
-		if ($this->looping) {
+		if (!$this->looping) {
 			$xmlElement->setAttribute('looping', $this->looping);
 		}
 		if ($this->music) {

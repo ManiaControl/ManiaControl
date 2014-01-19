@@ -17,6 +17,28 @@ class Including implements Renderable {
 	protected $url = '';
 
 	/**
+	 * Construct a new Include Element
+	 *
+	 * @param string $url (optional) Include Url
+	 * @return \FML\Elements\Including
+	 */
+	public static function create($url = null) {
+		$including = new Including($url);
+		return $including;
+	}
+
+	/**
+	 * Construct a new Include Element
+	 *
+	 * @param string $url (optional) Include Url
+	 */
+	public function __construct($url = null) {
+		if ($url !== null) {
+			$this->setUrl($url);
+		}
+	}
+
+	/**
 	 * Set Url
 	 *
 	 * @param string $url Include Url

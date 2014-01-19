@@ -5,7 +5,7 @@ namespace FML\Controls;
 use FML\Types\Renderable;
 
 /**
- * Base Control Element
+ * Base Control
  * (CMlControl)
  *
  * @author steeffeen
@@ -43,7 +43,9 @@ abstract class Control implements Renderable {
 	 * @param string $id (optional) Control Id
 	 */
 	public function __construct($id = null) {
-		$this->setId($id);
+		if ($id !== null) {
+			$this->setId($id);
+		}
 	}
 
 	/**

@@ -16,6 +16,18 @@ class InstallMap implements Element {
 	protected $url = '';
 
 	/**
+	 * Create a new InstallMap Element
+	 *
+	 * @param string $name (optional) Map Name
+	 * @param string $url (optional) Map Url
+	 * @return \FML\ManiaCode\InstallMap
+	 */
+	public static function create($name = null, $url = null) {
+		$installMap = new InstallMap($name, $url);
+		return $installMap;
+	}
+
+	/**
 	 * Construct a new InstallMap Element
 	 *
 	 * @param string $name (optional) Map Name

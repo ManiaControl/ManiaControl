@@ -17,6 +17,19 @@ class InstallPack implements Element {
 	protected $url = '';
 
 	/**
+	 * Create a new InstallPack Element
+	 *
+	 * @param string $name (optional) Pack Name
+	 * @param string $file (optional) Pack File
+	 * @param string $url (optional) Pack Url
+	 * @return \FML\ManiaCode\InstallPack
+	 */
+	public static function create($name = null, $file = null, $url = null) {
+		$installPack = new InstallPack($name, $file, $url);
+		return $installPack;
+	}
+
+	/**
 	 * Construct a new InstallPack Element
 	 *
 	 * @param string $name (optional) Pack Name
@@ -40,7 +53,7 @@ class InstallPack implements Element {
 	 *
 	 * @param string $name Pack Name
 	 * @return \FML\ManiaCode\InstallPack
-	 */	
+	 */
 	public function setName($name) {
 		$this->name = (string) $name;
 		return $this;

@@ -3,7 +3,8 @@
 namespace FML\Controls;
 
 /**
- * Class representing CMlFileEntry
+ * FileEntry Control
+ * (CMlFileEntry)
  *
  * @author steeffeen
  */
@@ -12,6 +13,17 @@ class FileEntry extends Entry {
 	 * Protected Properties
 	 */
 	protected $folder = '';
+
+	/**
+	 * Create a new FileEntry Control
+	 *
+	 * @param string $id (optional) Control Id
+	 * @return \FML\Controls\FileEntry
+	 */
+	public static function create($id = null) {
+		$fileEntry = new FileEntry($id);
+		return $fileEntry;
+	}
 
 	/**
 	 * Construct a new FileEntry Control

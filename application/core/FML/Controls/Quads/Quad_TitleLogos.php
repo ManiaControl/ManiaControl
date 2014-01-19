@@ -20,8 +20,20 @@ class Quad_TitleLogos extends Quad {
 	const SUBSTYLE_Title = 'Title';
 
 	/**
+	 * Create a new Quad_TitleLogos Control
 	 *
-	 * @see \FML\Controls\Quad
+	 * @param string $id (optional) Control Id
+	 * @return \FML\Controls\Quads\Quad_TitleLogos
+	 */
+	public static function create($id = null) {
+		$quadTitleLogos = new Quad_TitleLogos($id);
+		return $quadTitleLogos;
+	}
+
+	/**
+	 * Construct a new Quad_TitleLogos Control
+	 *
+	 * @param string $id (optional) Control Id
 	 */
 	public function __construct($id = null) {
 		parent::__construct($id);

@@ -31,4 +31,24 @@ class Label_Button extends Label {
 	const STYLE_CardButtonSmallXXXL = 'CardButtonSmallXXXL';
 	const STYLE_CardMain_Quit = 'CardMain_Quit';
 	const STYLE_CardMain_Tool = 'CardMain_Tool';
+
+	/**
+	 * Create a new Label_Button Control
+	 *
+	 * @param string $id (optional) Control Id
+	 * @return \FML\Controls\Labels\Label_Button
+	 */
+	public static function create($id = null) {
+		$labelButton = new Label_Button($id);
+		return $labelButton;
+	}
+
+	/**
+	 * Construct a new Label_Button Control
+	 *
+	 * @param string $id (optional) Control Id
+	 */
+	public function __construct($id = null) {
+		parent::__construct($id);
+	}
 }

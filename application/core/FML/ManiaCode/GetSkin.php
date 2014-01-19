@@ -3,7 +3,7 @@
 namespace FML\ManiaCode;
 
 /**
- * ManiaCode Element getting a Skin
+ * ManiaCode Element downloading a Skin
  *
  * @author steeffeen
  */
@@ -15,6 +15,19 @@ class GetSkin implements Element {
 	protected $name = '';
 	protected $file = '';
 	protected $url = '';
+
+	/**
+	 * Create a new GetSkin Element
+	 *
+	 * @param string $name (optional) Skin Name
+	 * @param string $file (optional) Skin File
+	 * @param string $url (optional) Skin Url
+	 * @return \FML\ManiaCode\GetSkin
+	 */
+	public static function create($name = null, $file = null, $url = null) {
+		$getSkin = new GetSkin($name, $file, $url);
+		return $getSkin;
+	}
 
 	/**
 	 * Construct a new GetSkin Element

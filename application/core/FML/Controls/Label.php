@@ -10,7 +10,7 @@ use FML\Types\Styleable;
 use FML\Types\TextFormatable;
 
 /**
- * Label Element
+ * Label Control
  * (CMlLabel)
  *
  * @author steeffeen
@@ -20,6 +20,7 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	 * Protected Properties
 	 */
 	protected $text = '';
+	protected $textId = '';
 	protected $textPrefix = '';
 	protected $textEmboss = 0;
 	protected $translate = 0;
@@ -27,14 +28,27 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	protected $action = '';
 	protected $actionKey = -1;
 	protected $url = '';
+	protected $urlId = '';
 	protected $manialink = '';
+	protected $manialinkId = '';
 	protected $autoNewLine = 0;
 	protected $scriptEvents = 0;
 	protected $style = '';
 	protected $textSize = -1;
 	protected $textColor = '';
-	protected $areaColor = '';
-	protected $areaFocusColor = '';
+	protected $focusAreaColor1 = '';
+	protected $focusAreaColor2 = '';
+
+	/**
+	 * Create a new Label Control
+	 *
+	 * @param string $id (optional) Control Id
+	 * @return \FML\Controls\Label
+	 */
+	public static function create($id = null) {
+		$label = new Label($id);
+		return $label;
+	}
 
 	/**
 	 * Construct a new Label Control
@@ -55,6 +69,17 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	 */
 	public function setText($text) {
 		$this->text = (string) $text;
+		return $this;
+	}
+
+	/**
+	 * Set Text Id to use from the Dico
+	 *
+	 * @param string $textId Text Id
+	 * @return \FML\Controls\Label
+	 */
+	public function setTextId($textId) {
+		$this->textId = (string) $textId;
 		return $this;
 	}
 
@@ -134,11 +159,31 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 
 	/**
 	 *
+	 * @see \FML\Types\Linkable::setUrlId()
+	 * @return \FML\Controls\Label
+	 */
+	public function setUrlId($urlId) {
+		$this->urlId = (string) $urlId;
+		return $this;
+	}
+
+	/**
+	 *
 	 * @see \FML\Types\Linkable::setManialink()
 	 * @return \FML\Controls\Label
 	 */
 	public function setManialink($manialink) {
 		$this->manialink = (string) $manialink;
+		return $this;
+	}
+
+	/**
+	 *
+	 * @see \FML\Types\Linkable::setManialinkId()
+	 * @return \FML\Controls\Label
+	 */
+	public function setManialinkId($manialinkId) {
+		$this->manialinkId = (string) $manialinkId;
 		return $this;
 	}
 
@@ -198,7 +243,7 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	 * @return \FML\Controls\Label
 	 */
 	public function setAreaColor($areaColor) {
-		$this->areaColor = (string) $areaColor;
+		$this->focusAreaColor1 = (string) $areaColor;
 		return $this;
 	}
 
@@ -208,7 +253,7 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	 * @return \FML\Controls\Label
 	 */
 	public function setAreaFocusColor($areaFocusColor) {
-		$this->areaFocusColor = (string) $areaFocusColor;
+		$this->focusAreaColor2 = (string) $areaFocusColor;
 		return $this;
 	}
 
@@ -220,6 +265,9 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 		$xmlElement = parent::render($domDocument);
 		if ($this->text) {
 			$xmlElement->setAttribute('text', $this->text);
+		}
+		if ($this->textId) {
+			$xmlElement->setAttribute('textid', $this->textId);
 		}
 		if ($this->textPrefix) {
 			$xmlElement->setAttribute('textprefix', $this->textPrefix);
@@ -260,11 +308,11 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 		if ($this->textColor) {
 			$xmlElement->setAttribute('textcolor', $this->textColor);
 		}
-		if ($this->areaColor) {
-			$xmlElement->setAttribute('areacolor', $this->areaColor);
+		if ($this->focusAreaColor1) {
+			$xmlElement->setAttribute('focusareacolor1', $this->focusAreaColor1);
 		}
-		if ($this->areaFocusColor) {
-			$xmlElement->setAttribute('areafocuscolor', $this->areaFocusColor);
+		if ($this->focusAreaColor2) {
+			$xmlElement->setAttribute('focusareacolor2', $this->focusAreaColor2);
 		}
 		return $xmlElement;
 	}

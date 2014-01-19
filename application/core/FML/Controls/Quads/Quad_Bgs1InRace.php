@@ -80,8 +80,20 @@ class Quad_Bgs1InRace extends Quad {
 	const SUBSTYLE_Shadow = 'Shadow';
 
 	/**
+	 * Create a new Quad_Bgs1InRace Control
 	 *
-	 * @see \FML\Controls\Quad
+	 * @param string $id (optional) Control Id
+	 * @return \FML\Controls\Quads\Quad_Bgs1InRace
+	 */
+	public static function create($id = null) {
+		$quadBgs1InRace = new Quad_Bgs1InRace($id);
+		return $quadBgs1InRace;
+	}
+
+	/**
+	 * Construct a new Quad_Bgs1InRace Control
+	 *
+	 * @param string $id (optional) Control Id
 	 */
 	public function __construct($id = null) {
 		parent::__construct($id);

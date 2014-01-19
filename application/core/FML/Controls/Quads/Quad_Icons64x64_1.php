@@ -101,8 +101,20 @@ class Quad_Icons64x64_1 extends Quad {
 	const SUBSTYLE_YellowLow = 'YellowLow';
 
 	/**
+	 * Create a new Quad_Icons64x64_1 Control
 	 *
-	 * @see \FML\Controls\Quad
+	 * @param string $id (optional) Control Id
+	 * @return \FML\Controls\Quads\Quad_Icons64x64_1
+	 */
+	public static function create($id = null) {
+		$quadIcons64x64_1 = new Quad_Icons64x64_1($id);
+		return $quadIcons64x64_1;
+	}
+
+	/**
+	 * Construct a new Quad_Icons64x64_1 Control
+	 *
+	 * @param string $id (optional) Control Id
 	 */
 	public function __construct($id = null) {
 		parent::__construct($id);

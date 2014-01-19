@@ -16,6 +16,18 @@ class PlayMap implements Element {
 	protected $url = '';
 
 	/**
+	 * Create a new PlayMap Element
+	 *
+	 * @param string $name (optional) Map Name
+	 * @param string $url (optional) Map Url
+	 * @return \FML\ManiaCode\PlayMap
+	 */
+	public static function create($name = null, $url = null) {
+		$playMap = new PlayMap($name, $url);
+		return $playMap;
+	}
+
+	/**
 	 * Construct a new PlayMap Element
 	 *
 	 * @param string $name (optional) Map Name

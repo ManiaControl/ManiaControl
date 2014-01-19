@@ -70,8 +70,20 @@ class Quad_UIConstruction_Buttons extends Quad {
 	const SUBSTYLE_Validate_Step3 = 'Validate_Step3';
 
 	/**
+	 * Create a new Quad_UIConstruction_Buttons Control
 	 *
-	 * @see \FML\Controls\Quad
+	 * @param string $id (optional) Control Id
+	 * @return \FML\Controls\Quads\Quad_UIConstruction_Buttons
+	 */
+	public static function create($id = null) {
+		$quadUIConstructionButtons = new Quad_UIConstruction_Buttons($id);
+		return $quadUIConstructionButtons;
+	}
+
+	/**
+	 * Construct a new Quad_UIConstruction_Buttons Control
+	 *
+	 * @param string $id (optional) Control Id
 	 */
 	public function __construct($id = null) {
 		parent::__construct($id);

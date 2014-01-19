@@ -80,7 +80,20 @@ class Quad_Icons128x128_1 extends Quad {
 	const SUBSTYLE_Vehicles = 'Vehicles';
 
 	/**
-	 * Construct Icons128x128_1 quad
+	 * Create a new Quad_Icons128x128_1 Control
+	 *
+	 * @param string $id (optional) Control Id
+	 * @return \FML\Controls\Quads\Quad_Icons128x128_1
+	 */
+	public static function create($id = null) {
+		$quadIcons128x128_1 = new Quad_Icons128x128_1($id);
+		return $quadIcons128x128_1;
+	}
+
+	/**
+	 * Construct a new Quad_Icons128x128_1 Control
+	 *
+	 * @param string $id (optional) Control Id
 	 */
 	public function __construct($id = null) {
 		parent::__construct($id);

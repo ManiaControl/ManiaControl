@@ -16,6 +16,18 @@ class InstallReplay implements Element {
 	protected $url = '';
 
 	/**
+	 * Create a new InstallReplay Element
+	 *
+	 * @param string $name (optional) Replay Name
+	 * @param string $url (optional) Replay Url
+	 * @return \FML\ManiaCode\InstallReplay
+	 */
+	public static function create($name = null, $url = null) {
+		$installReplay = new InstallReplay($name, $url);
+		return $installReplay;
+	}
+
+	/**
 	 * Construct a new InstallReplay Element
 	 *
 	 * @param string $name (optional) Replay Name

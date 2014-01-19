@@ -28,8 +28,20 @@ class Quad_Copilot extends Quad {
 	const SUBSTYLE_UpWrong = 'UpWrong';
 
 	/**
+	 * Create a new Quad_Copilot Control
 	 *
-	 * @see \FML\Controls\Quad
+	 * @param string $id (optional) Control Id
+	 * @return \FML\Controls\Quads\Quad_Copilot
+	 */
+	public static function create($id = null) {
+		$quadCopilot = new Quad_Copilot($id);
+		return $quadCopilot;
+	}
+
+	/**
+	 * Construct a new Quad_Copilot Control
+	 *
+	 * @param string $id (optional) Control Id
 	 */
 	public function __construct($id = null) {
 		parent::__construct($id);

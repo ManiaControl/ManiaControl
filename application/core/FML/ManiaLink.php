@@ -2,16 +2,25 @@
 
 namespace FML;
 
-use FML\Types\Container;
 use FML\Types\Renderable;
 use FML\Script\Script;
+use FML\Elements\Dico;
+use FML\Stylesheet\Stylesheet;
 
 /**
  * Class representing a ManiaLink
  *
  * @author steeffeen
  */
-class ManiaLink implements Container {
+class ManiaLink {
+	/**
+	 * Constants
+	 */
+	const BACKGROUND_0 = '0';
+	const BACKGROUND_STARS = 'stars';
+	const BACKGROUND_STATIONS = 'stations';
+	const BACKGROUND_TITLE = 'title';
+	
 	/**
 	 * Protected Properties
 	 */
@@ -23,15 +32,30 @@ class ManiaLink implements Container {
 	protected $navigable3d = 0;
 	protected $timeout = 0;
 	protected $children = array();
+	protected $dico = null;
+	protected $stylesheet = null;
 	protected $script = null;
 
 	/**
-	 * Create a new ManiaLink
+	 * Create a new ManiaLink Object
 	 *
-	 * @param string $id Manialink Id
+	 * @param string $id (optional) Manialink Id
+	 * @return \FML\ManiaLink
+	 */
+	public static function create($id = null) {
+		$maniaLink = new ManiaLink($id);
+		return $maniaLink;
+	}
+
+	/**
+	 * Construct a new ManiaLink Object
+	 *
+	 * @param string $id (optional) Manialink Id
 	 */
 	public function __construct($id = null) {
-		$this->setId($id);
+		if ($id !== null) {
+			$this->setId($id);
+		}
 	}
 
 	/**
@@ -90,8 +114,8 @@ class ManiaLink implements Container {
 	}
 
 	/**
+	 * Add an Element to the ManiaLink
 	 *
-	 * @see \FML\Types\Container::add()
 	 * @return \FML\ManiaLink
 	 */
 	public function add(Renderable $child) {
@@ -102,13 +126,61 @@ class ManiaLink implements Container {
 	}
 
 	/**
+	 * Remove all Elements from the ManiaLinks
 	 *
-	 * @see \FML\Types\Container::removeChildren()
 	 * @return \FML\ManiaLink
 	 */
 	public function removeChildren() {
 		$this->children = array();
 		return $this;
+	}
+
+	/**
+	 * Set the Dictionary of the ManiaLink
+	 *
+	 * @param Dico $dico The Dictionary to use
+	 * @return \FML\ManiaLink
+	 */
+	public function setDico(Dico $dico) {
+		$this->dico = $dico;
+		return $this;
+	}
+
+	/**
+	 * Get the current Dictionary of the ManiaLink
+	 *
+	 * @param bool $createIfEmpty (optional) Whether the Dico Object should be created if it's not set yet
+	 * @return \FML\Elements\Dico
+	 */
+	public function getDico($createIfEmpty = true) {
+		if (!$this->dico && $createIfEmpty) {
+			$this->dico = new Dico();
+		}
+		return $this->dico;
+	}
+
+	/**
+	 * Set the Stylesheet of the ManiaLink
+	 *
+	 * @param Stylesheet $stylesheet Stylesheet Object
+	 * @return \FML\ManiaLink
+	 */
+	public function setStylesheet(Stylesheet $stylesheet) {
+		$this->stylesheet = $stylesheet;
+		return $this;
+	}
+
+	/**
+	 * Get the Stylesheet of the ManiaLink
+	 *
+	 * @param bool $createIfEmpty (optional) Whether the Script Object should be created if it's not set yet
+	 * @return \FML\Stylesheet\Stylesheet
+	 */
+	public function getStylesheet($createIfEmpty = true) {
+		if (!$this->stylesheet && $createIfEmpty) {
+			$this->stylesheet = new Stylesheet();
+		}
+		return $this->stylesheet;
 	}
 
 	/**
@@ -125,7 +197,7 @@ class ManiaLink implements Container {
 	/**
 	 * Get the current Script of the ManiaLink
 	 *
-	 * @param string $createIfEmpty (optional) Whether the Script Object should be created if it's not set yet
+	 * @param bool $createIfEmpty (optional) Whether the Script Object should be created if it's not set yet
 	 * @return \FML\Script\Script
 	 */
 	public function getScript($createIfEmpty = true) {
@@ -146,30 +218,39 @@ class ManiaLink implements Container {
 		$isChild = (bool) $domDocument;
 		if (!$isChild) {
 			$domDocument = new \DOMDocument('1.0', $this->encoding);
+			$domDocument->xmlStandalone = true;
 		}
 		$maniaLink = $domDocument->createElement($this->tagName);
 		if (!$isChild) {
 			$domDocument->appendChild($maniaLink);
 		}
-		if ($this->id !== null) {
+		if ($this->id) {
 			$maniaLink->setAttribute('id', $this->id);
 		}
-		if ($this->version !== null) {
+		if ($this->version) {
 			$maniaLink->setAttribute('version', $this->version);
 		}
-		if ($this->background !== null) {
+		if ($this->background) {
 			$maniaLink->setAttribute('background', $this->background);
 		}
-		if ($this->navigable3d !== null) {
+		if (!$this->navigable3d) {
 			$maniaLink->setAttribute('navigable3d', $this->navigable3d);
 		}
-		if ($this->timeout !== null) {
+		if ($this->timeout) {
 			$timeoutXml = $domDocument->createElement('timeout', $this->timeout);
 			$maniaLink->appendChild($timeoutXml);
 		}
 		foreach ($this->children as $child) {
 			$childXml = $child->render($domDocument);
 			$maniaLink->appendChild($childXml);
+		}
+		if ($this->dico) {
+			$dicoXml = $this->dico->render($domDocument);
+			$maniaLink->appendChild($dicoXml);
+		}
+		if ($this->stylesheet) {
+			$stylesheetXml = $this->stylesheet->render($domDocument);
+			$maniaLink->appendChild($stylesheetXml);
 		}
 		if ($this->script) {
 			$scriptXml = $this->script->render($domDocument);
@@ -179,7 +260,7 @@ class ManiaLink implements Container {
 			return $maniaLink;
 		}
 		if ($echo) {
-			header('Content-Type: application/xml');
+			header('Content-Type: application/xml; charset=utf-8;');
 			echo $domDocument->saveXML();
 		}
 		return $domDocument;

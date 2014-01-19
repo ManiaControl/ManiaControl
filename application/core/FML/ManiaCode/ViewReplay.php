@@ -16,6 +16,18 @@ class ViewReplay implements Element {
 	protected $url = '';
 
 	/**
+	 * Create a new ViewReplay Element
+	 * 
+	 * @param string $name (optional) Replay Name
+	 * @param string $url (optional) Replay Url
+	 * @return \FML\ManiaCode\ViewReplay
+	 */
+	public static function create($name = null, $url = null) {
+		$viewReplay = new ViewReplay($name, $url);
+		return $viewReplay;
+	}
+
+	/**
 	 * Construct a new ViewReplay Element
 	 *
 	 * @param string $name (optional) Replay Name

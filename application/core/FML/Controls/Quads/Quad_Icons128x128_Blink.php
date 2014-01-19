@@ -80,8 +80,20 @@ class Quad_Icons128x128_Blink extends Quad {
 	const SUBSTYLE_Vehicles = 'Vehicles';
 
 	/**
+	 * Create a new Quad_Icons128x128_Blink Control
 	 *
-	 * @see \FML\Controls\Quad
+	 * @param string $id (optional) Control Id
+	 * @return \FML\Controls\Quads\Quad_Icons128x128_Blink
+	 */
+	public static function create($id = null) {
+		$quadIcons128x128_Blink = new Quad_Icons128x128_Blink($id);
+		return $quadIcons128x128_Blink;
+	}
+
+	/**
+	 * Construct a new Quad_Icons128x128_Blink Control
+	 *
+	 * @param string $id (optional) Control Id
 	 */
 	public function __construct($id = null) {
 		parent::__construct($id);

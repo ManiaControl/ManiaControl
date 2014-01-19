@@ -17,6 +17,19 @@ class InstallScript implements Element {
 	protected $url = '';
 
 	/**
+	 * Create a new InstallScript Element
+	 *
+	 * @param string $name (optional) Script Name
+	 * @param string $file (optional) Script File
+	 * @param string $url (optional) Script Url
+	 * @return \FML\ManiaCode\InstallScript
+	 */
+	public static function create($name = null, $file = null, $url = null) {
+		$installScript = new InstallScript($name, $file, $url);
+		return $installScript;
+	}
+
+	/**
 	 * Construct a new InstallScript Element
 	 *
 	 * @param string $name (optional) Script Name
