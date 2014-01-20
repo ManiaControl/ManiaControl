@@ -13,6 +13,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
+use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
  * Class offering a Configurator for Script Settings
@@ -123,9 +124,10 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			return true;
 		}
 
-		$success = $this->maniaControl->client->setModeScriptSettings($loadedSettings);
-		if(!$success) {
-			trigger_error('Error occured: ' . $this->maniaControl->getClientErrorText());
+		try {
+			$this->maniaControl->client->setModeScriptSettings($loadedSettings);
+		} catch(Exception $e) {
+			trigger_error('Error occured: ' . $e->getMessage());
 			return false;
 		}
 		return true;
@@ -374,9 +376,11 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		if(!$newSettings) {
 			return true;
 		}
-		$success = $this->maniaControl->client->setModeScriptSettings($newSettings);
-		if(!$success) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
+
+		try {
+			$success = $this->maniaControl->client->setModeScriptSettings($newSettings);
+		} catch(Exception $e) {
+			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 			return false;
 		}
 

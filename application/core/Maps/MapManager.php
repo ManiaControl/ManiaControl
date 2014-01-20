@@ -9,6 +9,7 @@ use ManiaControl\FileUtil;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
+use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 require_once __DIR__ . '/Map.php';
 require_once __DIR__ . '/MapCommands.php';
@@ -203,8 +204,10 @@ class MapManager implements CallbackListener {
 		$this->mxManager->unsetMap($map->mx->id);
 
 		// Remove map
-		if(!$this->maniaControl->client->removeMap($map->fileName)) {
-			trigger_error("Couldn't remove current map. " . $this->maniaControl->getClientErrorText());
+		try {
+			$this->maniaControl->client->removeMap($map->fileName);
+		} catch(Exception $e) {
+			trigger_error("Couldn't remove current map. " . $e->getMessage());
 			$this->maniaControl->chat->sendError("Couldn't remove map.", $admin);
 			return;
 		}
@@ -247,11 +250,12 @@ class MapManager implements CallbackListener {
 
 		$mapArray = array_merge($higherMapArray, $lowerMapArray);
 
-		if(!$this->maniaControl->client->chooseNextMapList($mapArray)) {
-			trigger_error("Error while restructuring the Maplist. " . $this->maniaControl->getClientErrorText());
+		try {
+			$this->maniaControl->client->chooseNextMapList($mapArray);
+		} catch(Exception $e) {
+			trigger_error("Error while restructuring the Maplist. " . $e->getMessage());
 			return false;
 		}
-
 		return true;
 	}
 
@@ -272,8 +276,10 @@ class MapManager implements CallbackListener {
 			$mapArray[] = $map->fileName;
 		}
 
-		if(!$this->maniaControl->client->chooseNextMapList($mapArray)) {
-			trigger_error("Couldn't shuffle mapList. " . $this->maniaControl->getClientErrorText());
+		try {
+			$this->maniaControl->client->chooseNextMapList($mapArray);
+		} catch(Exception $e) {
+			trigger_error("Couldn't shuffle mapList. " . $e->getMessage());
 			return false;
 		}
 
@@ -320,8 +326,11 @@ class MapManager implements CallbackListener {
 	 * Updates the full Map list, needed on Init, addMap and on ShuffleMaps
 	 */
 	private function updateFullMapList() {
-		if(!$maps = $this->maniaControl->client->getMapList(100, 0)) {
-			trigger_error("Couldn't fetch mapList. " . $this->maniaControl->getClientErrorText());
+
+		try {
+			$maps = $this->maniaControl->client->getMapList(100, 0);
+		} catch(Exception $e) {
+			trigger_error("Couldn't fetch mapList. " . $e->getMessage());
 			return null;
 		}
 
@@ -350,10 +359,13 @@ class MapManager implements CallbackListener {
 	 * @return bool
 	 */
 	private function fetchCurrentMap() {
-		if(!$rpcMap = $this->maniaControl->client->getCurrentMapInfo()) {
-			trigger_error("Couldn't fetch map info. " . $this->maniaControl->getClientErrorText());
+		try {
+			$rpcMap = $this->maniaControl->client->getCurrentMapInfo();
+		} catch(Exception $e) {
+			trigger_error("Couldn't fetch map info. " . $e->getMessage());
 			return false;
 		}
+
 		if(array_key_exists($rpcMap->uId, $this->maps)) {
 			$this->currentMap = $this->maps[$rpcMap->uId];
 			return true;
@@ -467,8 +479,10 @@ class MapManager implements CallbackListener {
 	 */
 	public function addMapFromMx($mapId, $login, $update = false) {
 		// Check if ManiaControl can even write to the maps dir
-		if(!$mapDir = $this->maniaControl->client->getMapsDirectory()) {
-			trigger_error("Couldn't get map directory. " . $this->maniaControl->getClientErrorText());
+		try {
+			$mapDir = $this->maniaControl->client->getMapsDirectory();
+		} catch(Exception $e) {
+			trigger_error("Couldn't get map directory. " . $e->getMessage());
 			$this->maniaControl->chat->sendError("ManiaControl couldn't retrieve the maps directory.", $login);
 			return;
 		}
@@ -530,8 +544,10 @@ class MapManager implements CallbackListener {
 			// Check for valid map
 			$mapFileName = $downloadDirectory . '/' . $fileName;
 
-			if(!$response = $this->maniaControl->client->checkMapForCurrentServerParams($mapFileName)) {
-				trigger_error("Couldn't check if map is valid ('{$mapFileName}'). " . $this->maniaControl->getClientErrorText());
+			try {
+				$response = $this->maniaControl->client->checkMapForCurrentServerParams($mapFileName);
+			} catch(Exception $e) {
+				trigger_error("Couldn't check if map is valid ('{$mapFileName}'). " . $e->getMessage());
 				$this->maniaControl->chat->sendError('Error checking map!', $login);
 				return;
 			}

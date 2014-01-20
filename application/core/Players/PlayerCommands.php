@@ -8,6 +8,7 @@ use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
+use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
  * Class offering various Admin Commands related to Players
@@ -82,11 +83,14 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
-		$success = $this->maniaControl->client->autoTeamBalance();
-		if(!$success) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
+
+		try {
+			$this->maniaControl->client->autoTeamBalance();
+		} catch(Exception $e) {
+			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 			return;
 		}
+
 		$this->maniaControl->chat->sendInformation('$<' . $player->nickname . '$> balanced Teams!');
 	}
 
@@ -244,16 +248,15 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener {
 		if(isset($messageParts[1]) && is_numeric($messageParts[1])) {
 			$amount = intval($messageParts[1]);
 		}
-		$success = true;
-		for($i = 0; $i < $amount; $i++) {
-			if(!$this->maniaControl->client->connectFakePlayer()) {
-				$success = false;
+		try {
+			for($i = 0; $i < $amount; $i++) {
+				$this->maniaControl->client->connectFakePlayer();
 			}
-		}
-		if(!$success) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
+		} catch(Exception $e) {
+			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 			return;
 		}
+
 		$this->maniaControl->chat->sendSuccess('Fake players connected!', $player->login);
 	}
 
@@ -268,11 +271,14 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
-		$success = $this->maniaControl->client->disconnectFakePlayer('*');
-		if(!$success) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
+
+		try {
+			$this->maniaControl->client->disconnectFakePlayer('*');
+		} catch(Exception $e) {
+			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 			return;
 		}
+
 		$this->maniaControl->chat->sendSuccess('Fake players disconnected!', $player->login);
 	}
 
