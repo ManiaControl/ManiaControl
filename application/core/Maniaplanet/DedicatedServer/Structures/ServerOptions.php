@@ -4,7 +4,7 @@
  *
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL License 3
  */
- 
+
 namespace Maniaplanet\DedicatedServer\Structures;
 
 class ServerOptions extends AbstractStructure
@@ -39,4 +39,6 @@ class ServerOptions extends AbstractStructure
 	public $nextUseChangingValidationSeed;
 	public $clientInputsMaxLatency;
 	public $keepPlayerSlots;
+	public $disableHorns;
+	public $disableServiceAnnounces;
 }

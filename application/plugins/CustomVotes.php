@@ -197,11 +197,11 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$this->addVoteMenuItem($itemQuad, 5, 'Vote for Restart-Map');
 
 		//Check if Pause exists in current gamemode
-		$scriptInfos = (array)$this->maniaControl->client->getModeScriptInfo();
+		$scriptInfos = $this->maniaControl->client->getModeScriptInfo();
 
 		$pauseExists = false;
-		foreach($scriptInfos["commandDescs"] as $param) {
-			if($param['Name'] == "Command_ForceWarmUp") {
+		foreach($scriptInfos->commandDescs as $param) {
+			if($param->name == "Command_ForceWarmUp") {
 				$pauseExists = true;
 				break;
 			}

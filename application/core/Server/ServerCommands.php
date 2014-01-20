@@ -67,13 +67,12 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 		$scriptInfos = $this->maniaControl->client->getModeScriptInfo();
 
 		$pauseExists = false;
-		/*foreach($scriptInfos['commandDescs'] as $param) {
-			if($param['Name'] == "Command_ForceWarmUp") {
+		foreach($scriptInfos->commandDescs as $param) {
+			if($param->name == "Command_ForceWarmUp") {
 				$pauseExists = true;
 				break;
 			}
-		}*/ //TODO temp
-		$pauseExists = true;
+		}
 
 		// Set Pause
 		if($pauseExists) {
