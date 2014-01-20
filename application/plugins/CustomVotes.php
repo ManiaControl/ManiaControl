@@ -21,6 +21,7 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
+use ManiaControl\Plugins\Plugin;
 use ManiaControl\Server\ServerCommands;
 
 

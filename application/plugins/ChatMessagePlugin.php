@@ -3,6 +3,7 @@
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
+use ManiaControl\Plugins\Plugin;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
@@ -300,9 +301,10 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		$this->maniaControl->chat->sendChat($msg, null, true);
 
 		$message = '$39F Thanks for Playing, please come back soon!$z';
-		$success = $this->maniaControl->client->kick($player->login, $message);
-		if(!$success) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
+		try {
+			$this->maniaControl->client->kick($player->login, $message);
+		} catch(Exception $e) {
+			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 			return;
 		}
 	}
@@ -318,9 +320,10 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		$this->maniaControl->chat->sendChat($msg, null, true);
 
 		$message = '$39F Thanks for Playing, please come back soon!$z';
-		$success = $this->maniaControl->client->kick($player->login, $message);
-		if(!$success) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
+		try {
+			$this->maniaControl->client->kick($player->login, $message);
+		} catch(Exception $e) {
+			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 			return;
 		}
 	}
@@ -337,9 +340,10 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 
 		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_AFK_FORCE_SPEC)) {
 			// force into spec
-			$success = $this->maniaControl->client->forceSpectator($player->login, 3);
-			if(!$success) {
-				$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
+			try {
+				$this->maniaControl->client->forceSpectator($player->login, 3);
+			} catch(Exception $e) {
+				$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 				return;
 			}
 
@@ -347,6 +351,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 			try {
 				$this->maniaControl->client->spectatorReleasePlayerSlot($player->login);
 			} catch(Exception $e) {
+				//to nothing
 			}
 		}
 	}

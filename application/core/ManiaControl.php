@@ -60,6 +60,7 @@ class ManiaControl implements CommandListener {
 	const OS_UNIX         = 'Unix';
 	const OS_WIN          = 'Windows';
 	const CONNECT_TIMEOUT = 20;
+	const SCRIPT_TIMEOUT  = 20;
 
 	/**
 	 * Public properties
@@ -82,6 +83,7 @@ class ManiaControl implements CommandListener {
 	public $settingManager = null;
 	public $statisticManager = null;
 	public $updateManager = null;
+
 
 	/**
 	 * Private properties
@@ -156,21 +158,6 @@ class ManiaControl implements CommandListener {
 	}
 
 	/**
-	 * Return message composed of client error message and error code
-	 *
-	 * @param object $client
-	 * @return string
-	 */
-	public function getClientErrorText($client = null) {
-		/*if(is_object($client)) {
-			return $client->getErrorMessage() . ' (' . $client->getErrorCode() . ')';
-		}
-		return $this->client->getErrorMessage() . ' (' . $this->client->getErrorCode() . ')';*/
-		//TODO
-
-	}
-
-	/**
 	 * Handle Version Command
 	 *
 	 * @param array  $chatCallback
@@ -234,11 +221,8 @@ class ManiaControl implements CommandListener {
 		// Hide manialinks
 		$this->client->sendHideManialinkPage();
 
-
-		//TODO: $this->client->delete()
-
-		// Close connection
-		//$this->client->Terminate();
+		//Close the client connection
+		$this->client->delete($this->server->ip, $this->server->port);
 
 		$this->log('Quitting ManiaControl!');
 		exit();
@@ -262,9 +246,6 @@ class ManiaControl implements CommandListener {
 		// Hide widgets
 		$this->client->sendHideManialinkPage();
 
-		// Close connection
-		//$this->client->Terminate(); //TODO
-
 		$this->log('Restarting ManiaControl!');
 
 		// Execute start script in background
@@ -272,11 +253,9 @@ class ManiaControl implements CommandListener {
 			$command = 'sh ' . escapeshellarg(ManiaControlDir . '/ManiaControl.sh') . ' > /dev/null &';
 			exec($command);
 		} else {
-			// TODO: validate restart on windows
-			$command = 'start /B ' . escapeshellarg(ManiaControlDir . '/ManiaControl.bat');
-			pclose(popen($command, 'r'));
+			$command = escapeshellarg(ManiaControlDir . "\ManiaControl.bat");
+			system($command); //TODO, windows stucks here as long controller is running
 		}
-
 		exit();
 	}
 
@@ -309,7 +288,7 @@ class ManiaControl implements CommandListener {
 			$loopStart = microtime(true);
 
 			// Disable script timeout
-			set_time_limit(30);
+			set_time_limit(self::SCRIPT_TIMEOUT);
 
 			// Manager callbacks
 			$this->callbackManager->manageCallbacks();
@@ -321,9 +300,6 @@ class ManiaControl implements CommandListener {
 				usleep($sleepTime);
 			}
 		}
-
-		//Close the client connection
-		//$this->client->Terminate();
 
 		// Shutdown
 		$this->quit();

@@ -11,6 +11,7 @@ use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
+use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
  * Class offering various commands related to the dedicated server
@@ -216,8 +217,10 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 			return;
 		}
 		$serverName = $params[1];
-		if(!$this->maniaControl->client->setServerName($serverName)) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
+		try {
+			$this->maniaControl->client->setServerName($serverName);
+		} catch(Exception $e) {
+			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 			return;
 		}
 		$this->maniaControl->chat->sendSuccess("Server name changed to: '{$serverName}'!", $player->login);
@@ -241,9 +244,10 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 			$password       = $messageParts[1];
 			$successMessage = "Password changed to: '{$password}'!";
 		}
-		$success = $this->maniaControl->client->setServerPassword($password);
-		if(!$success) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
+		try {
+			$this->maniaControl->client->setServerPassword($password);
+		} catch(Exception $e) {
+			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 			return;
 		}
 		$this->maniaControl->chat->sendSuccess($successMessage, $player->login);
@@ -267,9 +271,10 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 			$password       = $messageParts[1];
 			$successMessage = "Spectator password changed to: '{$password}'!";
 		}
-		$success = $this->maniaControl->client->setServerPasswordForSpectator($password);
-		if(!$success) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
+		try {
+			$this->maniaControl->client->setServerPasswordForSpectator($password);
+		} catch(Exception $e) {
+			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 			return;
 		}
 		$this->maniaControl->chat->sendSuccess($successMessage, $player->login);
@@ -300,11 +305,14 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 		if($amount < 0) {
 			$amount = 0;
 		}
-		$success = $this->maniaControl->client->setMaxPlayers($amount);
-		if(!$success) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
+
+		try {
+			$this->maniaControl->client->setMaxPlayers($amount);
+		} catch(Exception $e) {
+			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 			return;
 		}
+
 		$this->maniaControl->chat->sendSuccess("Changed max players to: {$amount}", $player->login);
 	}
 
@@ -333,9 +341,11 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 		if($amount < 0) {
 			$amount = 0;
 		}
-		$success = $this->maniaControl->client->setMaxSpectators($amount);
-		if(!$success) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $player->login);
+
+		try {
+			$this->maniaControl->client->setMaxSpectators($amount);
+		} catch(Exception $e) {
+			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 			return;
 		}
 		$this->maniaControl->chat->sendSuccess("Changed max spectators to: {$amount}", $player->login);
@@ -348,7 +358,9 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 	 * @return bool
 	 */
 	private function shutdownServer($login = '#') {
-		if(!$this->maniaControl->client->stopServer()) {
+		try {
+			$this->maniaControl->client->stopServer();
+		} catch(Exception $e) {
 			trigger_error("Server shutdown command from '{login}' failed. " . $this->maniaControl->getClientErrorText());
 			return false;
 		}

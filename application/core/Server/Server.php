@@ -275,7 +275,7 @@ class Server implements CallbackListener {
 			try {
 				$gameMode = $this->maniaControl->client->getGameMode();
 			} catch(Exception $e) {
-				trigger_error("Couldn't fetch current game mode. " . $this->maniaControl->getClientErrorText());
+				trigger_error("Couldn't fetch current game mode. " . $e->getMessage());
 				return null;
 			}
 		}
@@ -312,7 +312,7 @@ class Server implements CallbackListener {
 		try {
 			$replay = $this->maniaControl->client->getValidationReplay($player->login);
 		} catch(Exception $e) {
-			trigger_error("Couldn't get validation replay of '{$player->login}'. " . $this->maniaControl->getClientErrorText());
+			trigger_error("Couldn't get validation replay of '{$player->login}'. " . $e->getMessage());
 			return null;
 		}
 		return $replay;
@@ -380,7 +380,7 @@ class Server implements CallbackListener {
 			}
 			if(time() - $maxWaitTime > $waitBegin) {
 				// It took too long to reach the status
-				trigger_error("Server couldn't reach status {$statusCode} after {$maxWaitTime} seconds! " . $this->maniaControl->getClientErrorText());
+				trigger_error("Server couldn't reach status {$statusCode} after {$maxWaitTime} seconds! ");
 				return false;
 			}
 		}

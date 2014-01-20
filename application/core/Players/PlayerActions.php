@@ -87,8 +87,7 @@ class PlayerActions {
 			$this->maniaControl->client->forceSpectator($target->login, self::SPECTATOR_PLAYER);
 
 		} catch(Exception $e) {
-			//TODO $e error text
-			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $admin->login);
+			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $admin->login);
 			return;
 		}
 
@@ -96,8 +95,7 @@ class PlayerActions {
 			try {
 				$this->maniaControl->client->forceSpectator($target->login, self::SPECTATOR_USER_SELECTABLE);
 			} catch(Exception $e) {
-				//TODO $e error text
-				$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $admin->login);
+				$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $admin->login);
 				return;
 			}
 		}
@@ -131,9 +129,10 @@ class PlayerActions {
 			$this->forcePlayerToPlay($adminLogin, $targetLogin, true, false);
 		}
 
-		$success = $this->maniaControl->client->forcePlayerTeam($target->login, $teamId);
-		if(!$success) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $admin->login);
+		try {
+			$this->maniaControl->client->forcePlayerTeam($target->login, $teamId);
+		} catch(Exception $e) {
+			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $admin->login);
 			return;
 		}
 
@@ -170,8 +169,7 @@ class PlayerActions {
 		try {
 			$this->maniaControl->client->forceSpectator($target->login, $spectatorState);
 		} catch(Exception $e) {
-			//TODO error message from $e
-			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $admin->login);
+			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $admin->login);
 			return;
 		}
 
@@ -185,7 +183,7 @@ class PlayerActions {
 			try {
 				$this->maniaControl->client->spectatorReleasePlayerSlot($target->login);
 			} catch(Exception $e) {
-				//TODO error message from $e
+				//do nothing
 			}
 		}
 	}
@@ -206,9 +204,10 @@ class PlayerActions {
 
 		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
 
-		$success = $this->maniaControl->client->unIgnore($target->login);
-		if(!$success) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $admin->login);
+		try {
+			$this->maniaControl->client->unIgnore($targetLogin);
+		} catch(Exception $e) {
+			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $adminLogin);
 			return;
 		}
 
@@ -234,9 +233,10 @@ class PlayerActions {
 
 		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
 
-		$success = $this->maniaControl->client->ignore($targetLogin);
-		if(!$success) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $admin->login);
+		try {
+			$this->maniaControl->client->ignore($targetLogin);
+		} catch(Exception $e) {
+			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $admin->login);
 			return;
 		}
 
@@ -344,13 +344,14 @@ class PlayerActions {
 			return;
 		}
 
-		if($target->isFakePlayer()) {
-			$success = $this->maniaControl->client->disconnectFakePlayer($target->login);
-		} else {
-			$success = $this->maniaControl->client->kick($target->login, $message);
-		}
-		if(!$success) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $admin->login);
+		try {
+			if($target->isFakePlayer()) {
+				$this->maniaControl->client->disconnectFakePlayer($target->login);
+			} else {
+				$this->maniaControl->client->kick($target->login, $message);
+			}
+		} catch(Exception $e) {
+			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $admin->login);
 			return;
 		}
 
@@ -384,9 +385,10 @@ class PlayerActions {
 			return;
 		}
 
-		$success = $this->maniaControl->client->ban($target->login, $message);
-		if(!$success) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $this->maniaControl->getClientErrorText(), $admin->login);
+		try {
+			$this->maniaControl->client->ban($target->login, $message);
+		} catch(Exception $e) {
+			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $admin->login);
 			return;
 		}
 

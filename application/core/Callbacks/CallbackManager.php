@@ -3,6 +3,7 @@
 namespace ManiaControl\Callbacks;
 
 use ManiaControl\ManiaControl;
+use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
  * Class for managing Server and ManiaControl Callbacks
@@ -192,10 +193,10 @@ class CallbackManager {
 			return;
 		}
 
-		$callbacks = $this->maniaControl->client->executeCallbacks();
-		if(!is_array($callbacks)) {
-			trigger_error("Error reading server callbacks. " . $this->maniaControl->getClientErrorText());
-			return;
+		try{
+			$callbacks = $this->maniaControl->client->executeCallbacks();
+		}catch(Exception $e){
+			trigger_error("Error reading server callbacks. " . $e->getMessage());
 		}
 
 		// Handle callbacks
