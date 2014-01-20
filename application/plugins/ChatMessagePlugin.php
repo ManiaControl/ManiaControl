@@ -1,7 +1,5 @@
 <?php
 
-namespace ManiaControl\Plugins;
-
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
