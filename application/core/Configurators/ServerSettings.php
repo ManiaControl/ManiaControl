@@ -98,8 +98,8 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			trigger_error($mysqli->error);
 			return false;
 		}
+		$serverSettings = $this->maniaControl->client->getServerOptions()->toArray();
 
-		$serverSettings = (array)$this->maniaControl->client->getServerOptions();
 		$loadedSettings = array();
 		while($row = $result->fetch_object()) {
 			if(!isset($serverSettings[$row->settingName])) {
@@ -137,8 +137,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		$pagesId = 'ServerSettingsPages';
 		$frame   = new Frame();
 
-		//TODO temporary
-		$serverSettings = $this->maniaControl->client->execute('GetServerOptions');
+		$serverSettings = $this->maniaControl->client->getServerOptions()->toArray();
 
 		// Config
 		$pagerSize     = 9.;
@@ -268,8 +267,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			return;
 		}
 
-		// Note on ServerOptions the whole Options have to be saved, otherwise a error will appear
-		$serverSettings = $this->maniaControl->client->execute('GetServerOptions'); //TODO just temporary
+		$serverSettings = $this->maniaControl->client->getServerOptions()->toArray();
 
 		$prefixLength = strlen(self::ACTION_PREFIX_SETTING);
 
@@ -361,6 +359,9 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		// $chatMessage = '$ff0' . $title . ' $<' . $player->nickname . '$> set ScriptSetting' . ($settingsCount > 1 ? 's' : '') . ' ';
 
 		foreach($newSettings as $setting => $value) {
+			if($value == null) {
+				continue;
+			}
 			$statement->bind_param('iss', $this->maniaControl->server->index, $setting, $value);
 			$statement->execute();
 			if($statement->error) {
@@ -393,16 +394,4 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		return true;
 	}
 
-	/**
-	 * Parse the Setting Value to a String Representation
-	 *
-	 * @param mixed $value
-	 * @return string
-	 */
-	private function parseSettingValue($value) {
-		if(is_bool($value)) {
-			return ($value ? 'True' : 'False');
-		}
-		return (string)$value;
-	}
 }

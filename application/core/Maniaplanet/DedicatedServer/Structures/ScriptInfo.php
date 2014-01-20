@@ -15,6 +15,7 @@ class ScriptInfo extends AbstractStructure
 	public $description;
 	public $version;
 	public $paramDescs = array();
+	public $commandDescs = array();
 
 	static public function fromArray($array)
 	{
@@ -23,6 +24,10 @@ class ScriptInfo extends AbstractStructure
 		if($object->paramDescs)
 		{
 			$object->paramDescs = ScriptSettings::fromArrayOfArray($object->paramDescs);
+		}
+		if($object->commandDescs)
+		{
+			$object->commandDescs = Command::fromArrayOfArray($object->commandDescs);
 		}
 		return $object;
 	}

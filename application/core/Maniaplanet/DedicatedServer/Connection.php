@@ -106,8 +106,8 @@ class Connection
 	 * @param string $authLevel
 	 * @param array $params
 	 */
-	public function execute($methodName, $params = array(), $multicall = false)
-	{//TODO just temporary
+	protected function execute($methodName, $params = array(), $multicall = false)
+	{
 		if($multicall)
 		{
 			$this->xmlrpcClient->addCall($methodName, $params);
