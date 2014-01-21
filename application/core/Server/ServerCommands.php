@@ -361,7 +361,7 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 		try {
 			$this->maniaControl->client->stopServer();
 		} catch(Exception $e) {
-			trigger_error("Server shutdown command from '{login}' failed. " . $this->maniaControl->getClientErrorText());
+			trigger_error("Server shutdown command from '{login}' failed. " . $e->getMessage());
 			return false;
 		}
 		$this->maniaControl->quit("Server shutdown requested by '{$login}'");
