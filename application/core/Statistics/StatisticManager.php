@@ -87,6 +87,42 @@ class StatisticManager {
 	}
 
 	/**
+	 * Get All statistics orderd by an given name
+	 *
+	 * @param $orderedBy
+	 * @param $serverIndex
+	 * @return object
+	 */
+	public function getStatsRanking($statName = '', $serverIndex = -1) {
+		$mysqli = $this->maniaControl->database->mysqli;
+		$statId = $this->getStatId($statName);
+
+		$query = "SELECT playerId, serverIndex, value FROM `" . self::TABLE_STATISTICS . "` WHERE statId = " . $statId . " ORDER BY value DESC;";
+
+		$result = $mysqli->query($query);
+		if(!$result) {
+			trigger_error($mysqli->error);
+			return null;
+		}
+
+		$stats = array();
+		while($row = $result->fetch_object()) {
+			if($serverIndex == -1) {
+				if(!isset($stats[$row->playerId])) {
+					$stats[$row->playerId] = $row->value;
+				} else {
+					$stats[$row->playerId] += $row->value;
+				}
+			} else if($serverIndex == $row->serverIndex) {
+				$stats[$row->playerId] = $row->value;
+			}
+		}
+
+		$result->close();
+		return $stats;
+	}
+
+	/**
 	 * Store Stats Meta Data from the Database
 	 */
 	private function storeStatMetaData() {
@@ -136,6 +172,7 @@ class StatisticManager {
 
 		return $playerStats;
 	}
+
 
 	/**
 	 * Inserts a Stat into the database
@@ -268,7 +305,7 @@ class StatisticManager {
 				`serverIndex` int(11) NOT NULL,
 				`playerId` int(11) NOT NULL,
 				`statId` int(11) NOT NULL,
-				`value` int(20) COLLATE utf8_unicode_ci NOT NULL,
+				`value` int(20) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
 				PRIMARY KEY (`index`),
 				UNIQUE KEY `unique` (`statId`,`playerId`,`serverIndex`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Statistics' AUTO_INCREMENT=1;";
