@@ -8,7 +8,7 @@ namespace FML\ManiaCode;
  * @author steeffeen
  */
 class PlayMap implements Element {
-	/**
+	/*
 	 * Protected Properties
 	 */
 	protected $tagName = 'play_map';

@@ -12,7 +12,7 @@ use FML\Types\Renderable;
  * @author steeffeen
  */
 class FrameModel implements Container, Renderable {
-	/**
+	/*
 	 * Protected Properties
 	 */
 	protected $tagName = 'framemodel';

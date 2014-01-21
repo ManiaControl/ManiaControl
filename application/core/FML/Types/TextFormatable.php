@@ -13,6 +13,7 @@ interface TextFormatable {
 	 * Set Text Size
 	 *
 	 * @param int $textSize Text Size
+	 * @return \FML\Types\TextFormatable
 	 */
 	public function setTextSize($textSize);
 
@@ -20,6 +21,7 @@ interface TextFormatable {
 	 * Set Text Color
 	 *
 	 * @param string $textColor Text Color
+	 * @return \FML\Types\TextFormatable
 	 */
 	public function setTextColor($textColor);
 
@@ -27,6 +29,7 @@ interface TextFormatable {
 	 * Set Area Color
 	 *
 	 * @param string $areaColor Area Color
+	 * @return \FML\Types\TextFormatable
 	 */
 	public function setAreaColor($areaColor);
 
@@ -34,6 +37,7 @@ interface TextFormatable {
 	 * Set Area Focus Color
 	 *
 	 * @param string $areaFocusColor Area Focus Color
+	 * @return \FML\Types\TextFormatable
 	 */
 	public function setAreaFocusColor($areaFocusColor);
 }

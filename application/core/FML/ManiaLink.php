@@ -2,10 +2,10 @@
 
 namespace FML;
 
-use FML\Types\Renderable;
-use FML\Script\Script;
 use FML\Elements\Dico;
+use FML\Script\Script;
 use FML\Stylesheet\Stylesheet;
+use FML\Types\Renderable;
 
 /**
  * Class representing a ManiaLink
@@ -13,7 +13,7 @@ use FML\Stylesheet\Stylesheet;
  * @author steeffeen
  */
 class ManiaLink {
-	/**
+	/*
 	 * Constants
 	 */
 	const BACKGROUND_0 = '0';
@@ -21,7 +21,7 @@ class ManiaLink {
 	const BACKGROUND_STATIONS = 'stations';
 	const BACKGROUND_TITLE = 'title';
 	
-	/**
+	/*
 	 * Protected Properties
 	 */
 	protected $encoding = 'utf-8';
@@ -224,16 +224,17 @@ class ManiaLink {
 		if (!$isChild) {
 			$domDocument->appendChild($maniaLink);
 		}
-		if ($this->id) {
+		if (strlen($this->id) > 0) {
 			$maniaLink->setAttribute('id', $this->id);
 		}
 		if ($this->version) {
 			$maniaLink->setAttribute('version', $this->version);
 		}
-		if ($this->background) {
+		if (strlen($this->background) > 0) {
 			$maniaLink->setAttribute('background', $this->background);
 		}
-		if (!$this->navigable3d) {
+		if ($this->navigable3d) {
+			// TODO: check default value
 			$maniaLink->setAttribute('navigable3d', $this->navigable3d);
 		}
 		if ($this->timeout) {

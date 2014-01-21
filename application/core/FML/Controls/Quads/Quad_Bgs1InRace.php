@@ -10,7 +10,7 @@ use FML\Controls\Quad;
  * @author steeffeen
  */
 class Quad_Bgs1InRace extends Quad {
-	/**
+	/*
 	 * Constants
 	 */
 	const STYLE = 'Bgs1InRace';

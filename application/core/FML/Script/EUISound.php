@@ -8,7 +8,7 @@ namespace FML\Script;
  * @author steeffeen
  */
 abstract class EUISound {
-	/**
+	/*
 	 * Constants
 	 */
 	const SOUND_Bonus = 'Bonus';

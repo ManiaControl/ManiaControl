@@ -10,7 +10,7 @@ use FML\Types\Renderable;
  * @author steeffeen
  */
 class SimpleScript implements Renderable {
-	/**
+	/*
 	 * Protected Properties
 	 */
 	protected $tagName = 'script';

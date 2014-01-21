@@ -8,7 +8,7 @@ namespace FML;
  * @author steeffeen
  */
 class ManiaLinks {
-	/**
+	/*
 	 * Protected Properties
 	 */
 	protected $encoding = 'utf-8';

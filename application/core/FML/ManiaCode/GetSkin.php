@@ -8,7 +8,7 @@ namespace FML\ManiaCode;
  * @author steeffeen
  */
 class GetSkin implements Element {
-	/**
+	/*
 	 * Protected Properties
 	 */
 	protected $tagName = 'get_skin';

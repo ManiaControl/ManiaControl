@@ -13,6 +13,7 @@ interface Scriptable {
 	 * Set ScriptEvents
 	 *
 	 * @param bool $scriptEvents Whether Script Events should be enabled
+	 * @return \FML\Types\Scriptable
 	 */
 	public function setScriptEvents($scriptEvents);
 }

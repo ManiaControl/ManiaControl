@@ -10,7 +10,7 @@ use FML\Controls\Quad;
  * @author steeffeen
  */
 class Quad_Icons128x128_1 extends Quad {
-	/**
+	/*
 	 * Constants
 	 */
 	const STYLE = 'Icons128x128_1';

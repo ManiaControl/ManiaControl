@@ -8,7 +8,7 @@ namespace FML\ManiaCode;
  * @author steeffeen
  */
 class AddFavorite implements Element {
-	/**
+	/*
 	 * Protected Properties
 	 */
 	protected $tagName = 'add_favourite';

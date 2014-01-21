@@ -10,7 +10,7 @@ use FML\Controls\Label;
  * @author steeffeen
  */
 class Label_Button extends Label {
-	/**
+	/*
 	 * Constants
 	 */
 	const STYLE_CardButtonMedium = 'CardButtonMedium';

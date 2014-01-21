@@ -8,7 +8,7 @@ namespace FML\ManiaCode;
  * @author steeffeen
  */
 class Go_To implements Element {
-	/**
+	/*
 	 * Protected Properties
 	 */
 	protected $tagName = 'goto';

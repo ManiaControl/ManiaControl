@@ -14,7 +14,7 @@ use FML\Types\TextFormatable;
  * @author steeffeen
  */
 class Entry extends Control implements NewLineable, Scriptable, Styleable, TextFormatable {
-	/**
+	/*
 	 * Protected Properties
 	 */
 	protected $name = '';

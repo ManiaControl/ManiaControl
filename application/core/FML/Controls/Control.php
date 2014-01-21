@@ -11,7 +11,7 @@ use FML\Types\Renderable;
  * @author steeffeen
  */
 abstract class Control implements Renderable {
-	/**
+	/*
 	 * Constants
 	 */
 	const CENTER = 'center';
@@ -21,7 +21,7 @@ abstract class Control implements Renderable {
 	const BOTTOM = 'bottom';
 	const LEFT = 'left';
 	
-	/**
+	/*
 	 * Protected Properties
 	 */
 	protected $tagName = 'control';

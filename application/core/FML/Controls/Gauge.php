@@ -10,9 +10,16 @@ use FML\Types\Styleable;
  *
  * @author steeffeen
  */
-// TODO: gauge styles
 class Gauge extends Control implements Styleable {
-	/**
+	/*
+	 * Constants
+	 */
+	const STYLE_BgCard = 'BgCard';
+	const STYLE_EnergyBar = 'EnergyBar';
+	const STYLE_ProgressBar = 'ProgressBar';
+	const STYLE_ProgressBarSmall = 'ProgressBarSmall';
+	
+	/*
 	 * Protected Properties
 	 */
 	protected $ratio = 0.;

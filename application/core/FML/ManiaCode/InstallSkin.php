@@ -8,7 +8,7 @@ namespace FML\ManiaCode;
  * @author steeffeen
  */
 class InstallSkin implements Element {
-	/**
+	/*
 	 * Protected Properties
 	 */
 	protected $tagName = 'install_skin';

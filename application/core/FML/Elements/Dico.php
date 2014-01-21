@@ -148,7 +148,7 @@ class Dico {
 	 */
 	const LANG_CHINESE = 'zh';
 	
-	/**
+	/*
 	 * Protected Properties
 	 */
 	protected $tagName = 'dico';

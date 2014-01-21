@@ -9,7 +9,7 @@ namespace FML\Controls;
  * @author steeffeen
  */
 class FileEntry extends Entry {
-	/**
+	/*
 	 * Protected Properties
 	 */
 	protected $folder = '';

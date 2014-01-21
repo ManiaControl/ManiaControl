@@ -25,7 +25,7 @@ use FML\ManiaCode\ViewReplay;
  * @author steeffeen
  */
 class ManiaCode {
-	/**
+	/*
 	 * Protected Properties
 	 */
 	protected $encoding = 'utf-8';
