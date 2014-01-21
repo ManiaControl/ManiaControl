@@ -63,7 +63,7 @@ abstract class Formatter {
 	 * @return string
 	 */
 	public static function formatTimeH($seconds) {
-		return gmdate("H:i:s", $seconds);
+		return date("H:i:s", $seconds);
 	}
 
 	/**

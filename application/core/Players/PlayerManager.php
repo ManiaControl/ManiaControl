@@ -219,7 +219,8 @@ class PlayerManager implements CallbackListener {
 				return $player;
 			}
 		}
-		return null;
+		//Player is not online -> get Player from Database
+		return $this->getPlayerFromDatabaseByIndex($index);
 	}
 
 	/**
@@ -265,6 +266,41 @@ class PlayerManager implements CallbackListener {
 		}
 		return $player;
 	}
+
+
+	/**
+	 * Get's a Player out of the database
+	 *
+	 * @param $playerIndex
+	 * @return Player $player
+	 */
+	private function getPlayerFromDatabaseByIndex($playerIndex) {
+		$mysqli = $this->maniaControl->database->mysqli;
+
+		if(!is_numeric($playerIndex)) {
+			return null;
+		}
+
+		$query  = "SELECT * FROM `" . self::TABLE_PLAYERS . "` WHERE `index` = " . $playerIndex . ";";
+		$result = $mysqli->query($query);
+		if(!$result) {
+			trigger_error($mysqli->error);
+			return null;
+		}
+
+		$row = $result->fetch_object();
+		$result->close();
+
+		$player            = new Player(false);
+		$player->index     = $playerIndex;
+		$player->login     = $row->login;
+		$player->nickname  = $row->nickname;
+		$player->path      = $row->path;
+		$player->authLevel = $row->authLevel;
+
+		return $player;
+	}
+
 
 	/**
 	 * Save player in Database and fill up Object Properties
