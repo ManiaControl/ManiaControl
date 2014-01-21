@@ -23,6 +23,7 @@ class UpdateManager implements CallbackListener, CommandListener {
 	const SETTING_UPDATECHECK_CHANNEL  = 'Core Update Channel (release, beta, nightly)';
 	const SETTING_PERFORM_BACKUPS      = 'Perform Backup before Updating';
 	const SETTING_AUTO_UPDATE          = 'Perform update automatically';
+	const SETTING_PERMISSION_UPDATE    = 'Update Core';
 	const URL_WEBSERVICE               = 'http://ws.maniacontrol.com/';
 	const CHANNEL_RELEASE              = 'release';
 	const CHANNEL_BETA                 = 'beta';
@@ -55,6 +56,8 @@ class UpdateManager implements CallbackListener, CommandListener {
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_1_MINUTE, $this, 'handle1Minute');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'handlePlayerJoined');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECTED, $this, 'handlePlayerDisconnected');
+		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_UPDATE, AuthenticationManager::AUTH_LEVEL_ADMIN);
+
 
 		// Register for chat commands
 		$this->maniaControl->commandManager->registerCommandListener('checkupdate', $this, 'handle_CheckUpdate', true);
@@ -198,7 +201,7 @@ class UpdateManager implements CallbackListener, CommandListener {
 	 * @param Player $player
 	 */
 	public function handle_CoreUpdate(array $chatCallback, Player $player) {
-		if(!AuthenticationManager::checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) { //TODO, define permission setting
+		if(!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_UPDATE)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
