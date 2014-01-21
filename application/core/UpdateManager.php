@@ -22,6 +22,7 @@ class UpdateManager implements CallbackListener, CommandListener {
 	const SETTING_UPDATECHECK_INTERVAL = 'Core Update Check Interval (Hours)';
 	const SETTING_UPDATECHECK_CHANNEL  = 'Core Update Channel (release, beta, nightly)';
 	const SETTING_PERFORM_BACKUPS      = 'Perform Backup before Updating';
+	const SETTING_AUTO_UPDATE          = 'Perform update automatically';
 	const URL_WEBSERVICE               = 'http://ws.maniacontrol.com/';
 	const CHANNEL_RELEASE              = 'release';
 	const CHANNEL_BETA                 = 'beta';
@@ -44,9 +45,11 @@ class UpdateManager implements CallbackListener, CommandListener {
 
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_ENABLEUPDATECHECK, true);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_AUTO_UPDATE, true);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_UPDATECHECK_INTERVAL, 24.);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_UPDATECHECK_CHANNEL, self::CHANNEL_NIGHTLY); //TODO just temp until release
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_PERFORM_BACKUPS, true);
+
 
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_1_MINUTE, $this, 'handle1Minute');
@@ -109,7 +112,12 @@ class UpdateManager implements CallbackListener, CommandListener {
 	 * @param array $callback
 	 */
 	public function handlePlayerDisconnected(array $callback) {
-		//TODO Setting for autoupdate
+		$performBackup = $this->maniaControl->settingManager->getSetting($this, self::SETTING_AUTO_UPDATE);
+		if(!$performBackup) {
+			return;
+		}
+
+
 		if(count($this->maniaControl->playerManager->getPlayers()) > 0) {
 			return;
 		}

@@ -23,6 +23,7 @@ use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
 use ManiaControl\Server\ServerCommands;
+use Maniaplanet\DedicatedServer\Structures\VoteRatio;
 
 
 /**
@@ -119,11 +120,32 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SPECTATOR_ALLOW_START_VOTE, false);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_VOTE_TIME, 60);
 
+		//Define Votes
 		$this->defineVote("teambalance", "Team Balance");
 		$this->defineVote("skipmap", "Skip Map");
 		$this->defineVote("nextmap", "Skip Map");
 		$this->defineVote("restartmap", "Restart Map");
 		$this->defineVote("pausegame", "Pause Game");
+
+		/* Disable Standard Votes */
+		$array["Command"] = VoteRatio::COMMAND_BAN;
+		$array["Param"]   = "";
+		$array["Ratio"]   = (float)-1;
+		$ratioArray[]     = $array;
+
+		$array["Command"] = VoteRatio::COMMAND_KICK;
+		$ratioArray[]     = $array;
+
+		$array["Command"] = VoteRatio::COMMAND_RESTART_MAP;
+		$ratioArray[]     = $array;
+
+		$array["Command"] = VoteRatio::COMMAND_TEAM_BALANCE;
+		$ratioArray[]     = $array;
+
+		$array["Command"] = VoteRatio::COMMAND_NEXT_MAP;
+		$ratioArray[]     = $array;
+
+		$this->maniaControl->client->setCallVoteRatiosEx(false, $ratioArray);
 
 		$this->constructMenu();
 		return true;
@@ -133,6 +155,24 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 * Unload the plugin and its resources
 	 */
 	public function unload() {
+		//Enable Standard Votes
+		$defaultRatio = $this->maniaControl->client->getCallVoteRatio();
+
+		$array["Command"] = VoteRatio::COMMAND_BAN;
+		$array["Param"]   = "";
+		$array["Ratio"]   = (float)$defaultRatio;
+		$ratioArray[]     = $array;
+		$array["Command"] = VoteRatio::COMMAND_KICK;
+		$ratioArray[]     = $array;
+		$array["Command"] = VoteRatio::COMMAND_RESTART_MAP;
+		$ratioArray[]     = $array;
+		$array["Command"] = VoteRatio::COMMAND_TEAM_BALANCE;
+		$ratioArray[]     = $array;
+		$array["Command"] = VoteRatio::COMMAND_NEXT_MAP;
+		$ratioArray[]     = $array;
+
+		$this->maniaControl->client->setCallVoteRatiosEx(false, $ratioArray);
+
 		$this->destroyVote();
 		$emptyManialink = new ManiaLink(self::MLID_ICON);
 		$manialinkText  = $emptyManialink->render()->saveXML();
