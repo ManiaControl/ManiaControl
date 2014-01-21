@@ -10,7 +10,7 @@ use FML\Controls\Quad;
  * @author steeffeen
  */
 class Quad_UIConstruction_Buttons extends Quad {
-	/**
+	/*
 	 * Constants
 	 */
 	const STYLE = 'UIConstruction_Buttons';

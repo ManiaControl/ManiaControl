@@ -8,7 +8,7 @@ namespace FML\ManiaCode;
  * @author steeffeen
  */
 class ViewReplay implements Element {
-	/**
+	/*
 	 * Protected Properties
 	 */
 	protected $tagName = 'view_replay';

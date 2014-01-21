@@ -8,7 +8,7 @@ namespace FML\Stylesheet;
  * @author steeffeen
  */
 class Stylesheet {
-	/**
+	/*
 	 * Protected Properties
 	 */
 	protected $tagName = 'stylesheet';

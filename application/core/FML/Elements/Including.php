@@ -10,7 +10,7 @@ use FML\Types\Renderable;
  * @author steeffeen
  */
 class Including implements Renderable {
-	/**
+	/*
 	 * Protected Properties
 	 */
 	protected $tagName = 'include';

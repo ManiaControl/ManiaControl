@@ -10,7 +10,7 @@ use FML\Controls\Quad;
  * @author steeffeen
  */
 class Quad_ManiaPlanetLogos extends Quad {
-	/**
+	/*
 	 * Constants
 	 */
 	const STYLE = 'ManiaPlanetLogos';

@@ -12,7 +12,7 @@ use FML\Stylesheet\Style3d;
  * @author steeffeen
  */
 class Frame3d extends Frame implements Scriptable {
-	/**
+	/*
 	 * Protected Properties
 	 */
 	protected $style3dId = '';

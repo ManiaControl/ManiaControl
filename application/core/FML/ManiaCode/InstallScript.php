@@ -8,7 +8,7 @@ namespace FML\ManiaCode;
  * @author steeffeen
  */
 class InstallScript implements Element {
-	/**
+	/*
 	 * Protected Properties
 	 */
 	protected $tagName = 'install_script';

@@ -10,7 +10,7 @@ use FML\Controls\Label;
  * @author steeffeen
  */
 class Label_Text extends Label {
-	/**
+	/*
 	 * Constants
 	 */
 	const STYLE_AvatarButtonNormal = 'AvatarButtonNormal';
@@ -93,7 +93,7 @@ class Label_Text extends Label {
 	 * Create a new Label_Text Control
 	 *
 	 * @param string $id (optional) Control Id
-	 * @return \FML\Controls\Labels\Label_Button
+	 * @return \FML\Controls\Labels\Label_Text
 	 */
 	public static function create($id = null) {
 		$labelText = new Label_Text($id);

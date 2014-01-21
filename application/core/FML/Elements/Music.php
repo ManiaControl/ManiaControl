@@ -10,7 +10,7 @@ use FML\Types\Renderable;
  * @author steeffeen
  */
 class Music implements Renderable {
-	/**
+	/*
 	 * Protected Properties
 	 */
 	protected $tagName = 'music';

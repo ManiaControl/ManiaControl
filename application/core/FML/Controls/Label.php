@@ -16,7 +16,7 @@ use FML\Types\TextFormatable;
  * @author steeffeen
  */
 class Label extends Control implements Actionable, Linkable, NewLineable, Scriptable, Styleable, TextFormatable {
-	/**
+	/*
 	 * Protected Properties
 	 */
 	protected $text = '';
@@ -135,6 +135,14 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	public function setAction($action) {
 		$this->action = (string) $action;
 		return $this;
+	}
+
+	/**
+	 *
+	 * @see \FML\Types\Actionable::getAction()
+	 */
+	public function getAction() {
+		return $this->action;
 	}
 
 	/**
@@ -263,7 +271,7 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	 */
 	public function render(\DOMDocument $domDocument) {
 		$xmlElement = parent::render($domDocument);
-		if ($this->text) {
+		if (strlen($this->text) > 0) {
 			$xmlElement->setAttribute('text', $this->text);
 		}
 		if ($this->textId) {
@@ -281,7 +289,7 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 		if ($this->maxLines >= 0) {
 			$xmlElement->setAttribute('maxlines', $this->maxLines);
 		}
-		if ($this->action) {
+		if (strlen($this->action) > 0) {
 			$xmlElement->setAttribute('action', $this->action);
 		}
 		if ($this->actionKey >= 0) {

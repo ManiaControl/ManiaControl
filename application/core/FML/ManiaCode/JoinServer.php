@@ -8,7 +8,7 @@ namespace FML\ManiaCode;
  * @author steeffeen
  */
 class JoinServer implements Element {
-	/**
+	/*
 	 * Protected Properties
 	 */
 	protected $tagName = 'join_server';

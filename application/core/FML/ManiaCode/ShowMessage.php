@@ -8,7 +8,7 @@ namespace FML\ManiaCode;
  * @author steeffeen
  */
 class ShowMessage implements Element {
-	/**
+	/*
 	 * Protected Properties
 	 */
 	protected $tagName = 'show_message';

@@ -12,7 +12,7 @@ use FML\Types\Renderable;
  * @author steeffeen
  */
 class FrameInstance extends Control {
-	/**
+	/*
 	 * Protected Properties
 	 */
 	protected $modelId = '';

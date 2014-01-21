@@ -5,6 +5,7 @@ namespace FML\Script;
 use FML\Controls\Control;
 use FML\Controls\Label;
 use FML\Types\Scriptable;
+use FML\Types\Actionable;
 
 /**
  * Class representing the ManiaLink Script
@@ -12,7 +13,7 @@ use FML\Types\Scriptable;
  * @author steeffeen
  */
 class Script {
-	/**
+	/*
 	 * Constants
 	 */
 	const CLASS_TOOLTIP = 'FML_Tooltip';
@@ -26,6 +27,7 @@ class Script {
 	const CLASS_SOUND = 'FML_Sound';
 	const CLASS_TOGGLE = 'FML_Toggle';
 	const CLASS_SPECTATE = 'FML_Spectate';
+	const CLASS_PAGEACTION = 'FML_PageAction';
 	const OPTION_TOOLTIP_STAYONCLICK = 'FML_StayOnClick_Tooltip';
 	const OPTION_TOOLTIP_INVERT = 'FML_Invert_Tooltip';
 	const OPTION_TOOLTIP_TEXT = 'FML_Text_Tooltip';
@@ -44,7 +46,7 @@ class Script {
 	const FUNCTION_SETTOOLTIPTEXT = 'FML_SetTooltipText';
 	const FUNCTION_TOGGLE = 'FML_Toggle';
 	
-	/**
+	/*
 	 * Protected Properties
 	 */
 	protected $tagName = 'script';
@@ -60,6 +62,7 @@ class Script {
 	protected $sounds = array();
 	protected $toggles = false;
 	protected $spectate = false;
+	protected $pageActions = false;
 
 	/**
 	 * Create a new Script Object
@@ -358,6 +361,33 @@ class Script {
 	}
 
 	/**
+	 * Trigger an Action on Control Click
+	 *
+	 * @param Control $actionControl The Control triggering the Action
+	 * @param string $action (optional) The Action to trigger (if empty the Action of the Control will be triggered)
+	 */
+	public function addPageActionTrigger(Control $actionControl, $action = null) {
+		if (!($actionControl instanceof Scriptable)) {
+			trigger_error('Scriptable Control needed as ActionControl for PageActions!');
+			return $this;
+		}
+		$action = (string) $action;
+		if (strlen($action) <= 0) {
+			if (!($actionControl instanceof Actionable)) {
+				trigger_error('Either Action or Actionable Control needed for PageActions!');
+				return $this;
+			}
+			$action = $actionControl->getAction();
+		}
+		$actionControl->setScriptEvents(true);
+		$actionControl->setAction('');
+		$actionControl->addClass(self::CLASS_PAGEACTION);
+		$actionControl->addClass(self::CLASS_PAGEACTION . '-' . $action);
+		$this->pageActions = true;
+		return $this;
+	}
+
+	/**
 	 * Create the Script XML Tag
 	 *
 	 * @param \DOMDocument $domDocument DOMDocument for which the XML Element should be created
@@ -644,10 +674,10 @@ if (Event.Control.HasClass(\"" . self::CLASS_PAGER . "\")) {
 		if (ClassParts[0] != \"" . self::CLASS_PAGER . "\") continue;
 		switch (TextLib::SubText(ClassParts[1], 0, 1)) {
 			case \"I\": {
-				PagesId = TextLib::SubText(ClassParts[1], 1, 99);
+				PagesId = TextLib::SubText(ClassParts[1], 1, TextLib::Length(ClassParts[1]));
 			}
 			case \"A\": {
-				PagingAction = TextLib::ToInteger(TextLib::SubText(ClassParts[1], 1, 99));
+				PagingAction = TextLib::ToInteger(TextLib::SubText(ClassParts[1], 1, TextLib::Length(ClassParts[1])));
 			}
 		}
 	}
@@ -661,7 +691,7 @@ if (Event.Control.HasClass(\"" . self::CLASS_PAGER . "\")) {
 			if (!PageControl.HasClass(\"" . self::CLASS_PAGE . "\")) continue;
 			foreach (ControlClass in PageControl.ControlClasses) {
 				if (TextLib::SubText(ControlClass, 0, {$pagesNumberPrefixLength}) != \"{$pagesNumberPrefix}\") continue;
-				declare PageNumber = TextLib::ToInteger(TextLib::SubText(ControlClass, {$pagesNumberPrefixLength}, 99));
+				declare PageNumber = TextLib::ToInteger(TextLib::SubText(ControlClass, {$pagesNumberPrefixLength}, TextLib::Length(ControlClass)));
 				if (!FML_MinPageNumber.existskey(PagesId) || PageNumber < FML_MinPageNumber[PagesId]) {
 					FML_MinPageNumber[PagesId] = PageNumber;
 				}
@@ -687,7 +717,7 @@ if (Event.Control.HasClass(\"" . self::CLASS_PAGER . "\")) {
 		declare PageNumber = -1;
 		foreach (ControlClass in PageControl.ControlClasses) {
 			if (TextLib::SubText(ControlClass, 0, {$pagesNumberPrefixLength}) != \"{$pagesNumberPrefix}\") continue;
-			PageNumber = TextLib::ToInteger(TextLib::SubText(ControlClass, {$pagesNumberPrefixLength}, 99));
+			PageNumber = TextLib::ToInteger(TextLib::SubText(ControlClass, {$pagesNumberPrefixLength}, TextLib::Length(ControlClass)));
 			break;
 		}
 		PageControl.Visible = (PageNumber == FML_PageNumber[PagesId]);
@@ -839,6 +869,33 @@ if (Event.Control.HasClass(\"" . self::CLASS_SPECTATE . "\")) {
 }";
 		$spectateScript = Builder::getLabelImplementationBlock(self::LABEL_MOUSECLICK, $spectateScript);
 		return $spectateScript;
+	}
+
+	/**
+	 * Get the Page Actions Labels
+	 *
+	 * @return string
+	 */
+	private function getPageActionLabels() {
+		if (!$this->pageActions) return '';
+		$this->setInclude('TextLib', 'TextLib');
+		$prefixLength = strlen(self::CLASS_PAGEACTION) + 1;
+		$pageActionScript = "
+if (Event.Control.HasClass(\"" . self::CLASS_PAGEACTION . "\")) {
+	declare Action = \"\";
+	foreach (ControlClass in Event.Control.ControlClasses) {
+		declare ClassParts = TextLib::Split(\"-\", ControlClass);
+		if (ClassParts.count < 2) continue;
+		if (ClassParts[0] != \"" . self::CLASS_PAGEACTION . "\") continue;
+		Action = TextLib::SubText(ControlClass, {$prefixLength}, TextLib::Length(ControlClass));
+		break;
+	}
+	if (Action != \"\") {
+		TriggerPageAction(Action);
+	}
+}";
+		$pageActionScript = Builder::getLabelImplementationBlock(self::LABEL_MOUSECLICK, $pageActionScript);
+		return $pageActionScript;
 	}
 
 	/**

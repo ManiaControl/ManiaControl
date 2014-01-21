@@ -12,7 +12,7 @@ use FML\Types\Scriptable;
  * @author steeffeen
  */
 class Audio extends Control implements Playable, Scriptable {
-	/**
+	/*
 	 * Protected Properties
 	 */
 	protected $data = '';

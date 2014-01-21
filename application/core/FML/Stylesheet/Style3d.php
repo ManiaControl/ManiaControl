@@ -8,7 +8,7 @@ namespace FML\Stylesheet;
  * @author steeffeen
  */
 class Style3d {
-	/**
+	/*
 	 * Constants
 	 */
 	const MODEL_Box = 'Box';
@@ -17,7 +17,7 @@ class Style3d {
 	const MODEL_Title = 'Title';
 	const MODEL_Window = 'Window';
 	
-	/**
+	/*
 	 * Protected Properties
 	 */
 	protected $tagName = 'style3d';

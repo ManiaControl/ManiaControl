@@ -13,7 +13,7 @@ use FML\Types\TextFormatable;
  * @author steeffeen
  */
 class Format implements BgColorable, Renderable, Styleable, TextFormatable {
-	/**
+	/*
 	 * Protected Properties
 	 */
 	protected $tagName = 'format';

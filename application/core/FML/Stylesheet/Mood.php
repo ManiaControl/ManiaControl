@@ -11,7 +11,7 @@ namespace FML\Stylesheet;
  * @author steeffeen
  */
 class Mood {
-	/**
+	/*
 	 * Protected Properties
 	 */
 	protected $tagName = 'mood';

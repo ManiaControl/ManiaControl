@@ -14,7 +14,7 @@ use FML\Elements\FrameModel;
  * @author steeffeen
  */
 class Frame extends Control implements Container {
-	/**
+	/*
 	 * Protected Properties
 	 */
 	protected $children = array();

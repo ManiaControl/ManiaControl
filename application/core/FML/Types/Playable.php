@@ -13,6 +13,7 @@ interface Playable {
 	 * Set Data
 	 *
 	 * @param string $data Media Url
+	 * @return \FML\Types\Playable
 	 */
 	public function setData($data);
 
@@ -20,6 +21,7 @@ interface Playable {
 	 * Set Data Id to use from the Dico
 	 * 
 	 * @param string $dataId
+	 * @return \FML\Types\Playable
 	 */
 	public function setDataId($dataId);
 
@@ -27,6 +29,7 @@ interface Playable {
 	 * Set Play
 	 *
 	 * @param bool $play Whether the Control should start playing automatically
+	 * @return \FML\Types\Playable
 	 */
 	public function setPlay($play);
 
@@ -34,6 +37,7 @@ interface Playable {
 	 * Set Looping
 	 *
 	 * @param bool $looping Whether the Control should play looping
+	 * @return \FML\Types\Playable
 	 */
 	public function setLooping($looping);
 
@@ -41,6 +45,7 @@ interface Playable {
 	 * Set Music
 	 *
 	 * @param bool $music Whether the Control represents Background Music
+	 * @return \FML\Types\Playable
 	 */
 	public function setMusic($music);
 
@@ -48,6 +53,7 @@ interface Playable {
 	 * Set Volume
 	 *
 	 * @param float $volume Media Volume
+	 * @return \FML\Types\Playable
 	 */
 	public function setVolume($volume);
 }

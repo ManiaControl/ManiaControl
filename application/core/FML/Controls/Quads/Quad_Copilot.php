@@ -10,7 +10,7 @@ use FML\Controls\Quad;
  * @author steeffeen
  */
 class Quad_Copilot extends Quad {
-	/**
+	/*
 	 * Constants
 	 */
 	const STYLE = 'Copilot';
