@@ -421,6 +421,9 @@ class MapManager implements CallbackListener {
 	 * @param array $callback
 	 */
 	public function handleBeginMap(array $callback) {
+		if(!isset($callback[1][0]["UId"])) { //TODO why this can happen?
+			return;
+		}
 		if(array_key_exists($callback[1][0]["UId"], $this->maps)) {
 			// Map already exists, only update index
 			$this->currentMap = $this->maps[$callback[1][0]["UId"]];
