@@ -211,5 +211,4 @@ class Player {
 		$this->autoTarget           = (bool)(intval($spectatorStatus / 1000) % 10);
 		$this->currentTargetId      = intval($spectatorStatus / 10000);
 	}
-
 }

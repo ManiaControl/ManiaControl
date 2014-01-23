@@ -157,7 +157,7 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 			return;
 		}
 		$systemInfo = $this->maniaControl->server->getSystemInfo();
-		$message    = 'SystemInfo: ip=' . $systemInfo['PublishedIp'] . ', port=' . $systemInfo['Port'] . ', p2pPort=' . $systemInfo['P2PPort'] . ', title=' . $systemInfo['TitleId'] . ', login=' . $systemInfo['ServerLogin'] . '.';
+		$message    = 'SystemInfo: ip=' . $systemInfo->publishedIp . ', port=' . $systemInfo->port . ', p2pPort=' . $systemInfo->p2PPort . ', title=' . $systemInfo->titleId . ', login=' . $systemInfo->serverLogin . '.';
 		$this->maniaControl->chat->sendInformation($message, $player->login);
 	}
 
