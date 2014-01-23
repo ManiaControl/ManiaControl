@@ -14,7 +14,6 @@ use FML\Controls\Quads\Quad_UIConstruction_Buttons;
 use FML\ManiaLink;
 use FML\Script\Script;
 use ManiaControl\Callbacks\CallbackListener;
-use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
@@ -32,6 +31,8 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener {
 	 * Private Properties
 	 */
 	private $maniaControl = null;
+	private $statArray = array();
+	private $statsWidth = 0;
 
 	/**
 	 * Create a PlayerList Instance
@@ -42,7 +43,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener {
 		$this->maniaControl = $maniaControl;
 
 		//$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
-		}
+	}
 
 	/**
 	 * Add the menu entry
@@ -58,6 +59,24 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener {
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Stats);
 		$itemQuad->setAction(self::ACTION_OPEN_STATSLIST);
 		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, true, 14, 'Open Statistics');
+
+		//TODO setting if a stat get shown
+		//TODO sort out stats where no player have a point
+		$this->registerStat(PlayerManager::STAT_SERVERTIME, 10, "ST", 20, StatisticManager::STAT_TYPE_TIME);
+		$this->registerStat(StatisticCollector::STAT_ON_HIT, 20, "H");
+		$this->registerStat(StatisticCollector::STAT_ON_NEARMISS, 30, "NM");
+		$this->registerStat(StatisticCollector::STAT_ON_KILL, 40, "K");
+		$this->registerStat(StatisticCollector::STAT_ON_DEATH, 50, "D");
+		$this->registerStat(StatisticCollector::STAT_ON_CAPTURE, 60, "C");
+
+		//TODO register from classes:
+		if($this->maniaControl->pluginManager->getPlugin('DonationPlugin')) {
+			$this->registerStat(\DonationPlugin::STAT_PLAYER_DONATIONS, 70, "D", 20);
+		}
+
+		if($this->maniaControl->pluginManager->getPlugin('KarmaPlugin')) {
+			$this->registerStat(\DonationPlugin::STAT_PLAYER_DONATIONS, 80, "VM");
+		}
 	}
 
 	/**
@@ -70,20 +89,32 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener {
 		$this->showStatsList($player);
 	}
 
+
+	public function registerStat($statName, $order, $headShortCut, $width = 8, $format = StatisticManager::STAT_TYPE_INT) {
+		$this->statArray[$order]                 = array();
+		$this->statArray[$order]["Name"]         = $statName;
+		$this->statArray[$order]["HeadShortCut"] = '$o' . $headShortCut;
+		$this->statArray[$order]["Width"]        = $width;
+		$this->statArray[$order]["Format"]       = $format;
+		$this->statsWidth += $width;
+	}
+
+
 	/**
 	 * Show the PlayerList Widget to the Player
 	 *
 	 * @param Player $player
 	 */
 	public function showStatsList(Player $player) {
-		$width        = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
 		$height       = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
 		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowStyle();
 		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowSubStyle();
 
-		$width = $width * 1.4; //TODO setting
 
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
+
+		$width = $this->statsWidth + 80;
+
 		// Create script and features
 		$script = new Script();
 		$maniaLink->setScript($script);
@@ -127,22 +158,29 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener {
 		$headFrame->setY($y - 5);
 
 
-		// get Players by Main-Order
-		//$players = $this->maniaControl->playerManager->getPlayers();
-		$time   = $this->maniaControl->statisticManager->getStatsRanking(PlayerManager::STAT_SERVERTIME);
-		$kills  = $this->maniaControl->statisticManager->getStatsRanking(StatisticCollector::STAT_ON_KILL);
-		$deaths = $this->maniaControl->statisticManager->getStatsRanking(StatisticCollector::STAT_ON_DEATH);
-
+		$playTime = $this->maniaControl->statisticManager->getStatsRanking(StatisticCollector::STAT_PLAYTIME);
+		$shots    = $this->maniaControl->statisticManager->getStatsRanking(StatisticCollector::STAT_ON_SHOOT);
 
 		$x                   = $xStart;
 		$array['$oId']       = $x + 5;
 		$array['$oNickname'] = $x + 14;
-		$array['$oS']        = $x += 55;
-		$array['$oK']        = $x += 20;
-		$array['$oD']        = $x += 8;
-		$array['$oK/D']      = $x += 8;
 
-		//$array = array("Id" => $xStart + 5, "Nickname" => $xStart + 14, "K" => $xStart + 50, "D" => $xStart + 58);
+		$x = $xStart + 55;
+
+		$statRankings = array();
+		foreach($this->statArray as $key => $stat) {
+			$statRankings[$stat["Name"]]  = $this->maniaControl->statisticManager->getStatsRanking($stat["Name"]);
+			$array[$stat['HeadShortCut']] = $x;
+			$x += $stat["Width"];
+		}
+
+		$standardWidth  = 10;
+		$array['$oK/D'] = $x;
+		$x += $standardWidth;
+		$array['$oH/h'] = $x;
+
+		$order = PlayerManager::STAT_SERVERTIME;
+
 		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
 
 		// define standard properties
@@ -152,44 +190,45 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener {
 		$textColor = 'FFF';
 		$i         = 1;
 		$y -= 10;
-		foreach($time as $playerId => $value) {
+		foreach($statRankings[$order] as $playerId => $value) {
 			$listPlayer = $this->maniaControl->playerManager->getPlayerByIndex($playerId);
-			//var_dump($listPlayer);
-			/**
-			 *
-			 * @var Player $listPlayer
-			 */
+			if($i == 15) {
+				break;
+			}
+
+			/** @var Player $listPlayer * */
 
 			$playerFrame = new Frame();
 			$frame->add($playerFrame);
 
-			//$this->maniaControl->statisticManager->get
-
 			$displayArray = array();
 
-			if(!isset($kills[$playerId])) {
-				$killStat = 0;
-			} else {
-				$killStat = $kills[$playerId];
+			foreach($this->statArray as $stat) {
+				$statValue = 0;
+				if(isset($statRankings[$stat['Name']][$playerId])) {
+					$statValue = $statRankings[$stat['Name']][$playerId];
+					if($stat['Format'] == StatisticManager::STAT_TYPE_TIME) {
+						$statValue = Formatter::formatTimeH($statValue);
+					}
+				}
+				$displayArray[$stat['Name']] = array("Value" => strval($statValue), "Width" => $stat['Width']);
 			}
 
-			if(!isset($deaths[$playerId])) {
-				$deathStat = 0;
+			isset($playTime[$playerId]) ? $playTimeStat = $playTime[$playerId] : $playTimeStat = 0;
+
+			if(isset($statRankings[StatisticCollector::STAT_ON_DEATH][$playerId])) {
+				$deathStat                        = $statRankings[StatisticCollector::STAT_ON_DEATH][$playerId];
+				$killStat                         = $statRankings[StatisticCollector::STAT_ON_KILL][$playerId];
+				$displayArray['Kill-Death Ratio'] = array("Value" => round($killStat / $deathStat, 2), "Width" => $standardWidth);
 			} else {
-				$deathStat = $deaths[$playerId];
+				$displayArray['Kill-Death Ratio'] = array("Value" => "-", "Width" => $standardWidth);
 			}
 
-			$displayArray['Server Time'] = Formatter::formatTimeH($value);
-			var_dump($value);
-			$displayArray['Kills'] = strval($killStat);
-			//var_dump($deaths);
-			$displayArray['Deaths'] = strval($deathStat);
-
-			//	var_dump($displayArray);
-			if($deathStat == 0) {
-				$displayArray['Kill-Death Ratio'] = '-';
+			if($playTimeStat == 0) {
+				$displayArray['Hits per Hour'] = array("Value" => "-", "Width" => $standardWidth);
 			} else {
-				$displayArray['Kill-Death Ratio'] = strval(round($killStat / $deathStat, 2));
+				$hitStat                       = $statRankings[StatisticCollector::STAT_ON_HIT][$playerId];
+				$displayArray['Hits per Hour'] = array("Value" => strval(round(intval($hitStat) / (intval($playTimeStat) / 3600), 1)), "Width" => $standardWidth);
 			}
 
 			$array = array($i => $xStart + 5, $listPlayer->nickname => $xStart + 14);
@@ -203,13 +242,10 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener {
 				$label->setX($x);
 				$label->setStyle($style);
 				$label->setTextSize($textSize);
-				$label->setText($array);
+				$label->setText($array['Value']);
 				$label->setTextColor($textColor);
 				$script->addTooltip($label, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => '$o ' . $key));
-				if($x == $xStart + 55) {
-					$x += 10; //TODO improve
-				}
-				$x += 8;
+				$x += $array['Width'];
 			}
 
 
