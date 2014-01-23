@@ -117,8 +117,9 @@ class PlayerManager implements CallbackListener {
 			if($playerItem->playerId <= 0) {
 				continue;
 			}
-			$playerInfo = $this->maniaControl->client->getDetailedPlayerInfo($playerItem->login);
-			$player     = new Player($playerInfo);
+			$playerInfo            = $this->maniaControl->client->getDetailedPlayerInfo($playerItem->login);
+			$player                = new Player($playerInfo);
+			$player->hasJoinedGame = true;
 			$this->addPlayer($player);
 		}
 
@@ -137,19 +138,6 @@ class PlayerManager implements CallbackListener {
 		$player     = new Player($playerInfo);
 
 		$this->addPlayer($player);
-
-		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES) && !$player->isFakePlayer()) {
-			$string      = array(0 => '$0f0Player', 1 => '$0f0Moderator', 2 => '$0f0Admin', 3 => '$0f0MasterAdmin', 4 => '$0f0MasterAdmin');
-			$chatMessage = '$s$0f0' . $string[$player->authLevel] . ' $fff' . $player->nickname . '$z$s$0f0 Nation:$fff ' . $player->getCountry() . ' $z$s$0f0joined!';
-			$this->maniaControl->chat->sendChat($chatMessage);
-			$this->maniaControl->chat->sendInformation('This server uses ManiaControl v' . ManiaControl::VERSION . '!', $player->login);
-		}
-
-		$logMessage = "Player joined: {$player->login} / " . Formatter::stripCodes($player->nickname) . " Nation: " . $player->getCountry() . " IP: {$player->ipAddress}";
-		$this->maniaControl->log($logMessage);
-
-		// Trigger own PlayerJoined callback
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERJOINED, array(self::CB_PLAYERJOINED, $player));
 	}
 
 	/**
@@ -192,9 +180,30 @@ class PlayerManager implements CallbackListener {
 		$player->isSpectator = $callback[1][0]["SpectatorStatus"];
 		$player->ladderRank  = $callback[1][0]["LadderRanking"];
 
+		$prevJoinState = $player->hasJoinedGame;
+
+		$player->updatePlayerFlags($callback[1][0]["Flags"]);
+		$player->updateSpectatorStatus($callback[1][0]["SpectatorStatus"]);
+
+		//Check if Player finished joining the game
+		if($player->hasJoinedGame && !$prevJoinState) {
+			if($this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES) && !$player->isFakePlayer()) {
+				$string      = array(0 => '$0f0Player', 1 => '$0f0Moderator', 2 => '$0f0Admin', 3 => '$0f0SuperAdmin', 4 => '$0f0MasterAdmin');
+				$chatMessage = '$s$0f0' . $string[$player->authLevel] . ' $fff' . $player->nickname . '$z$s$0f0 Nation:$fff ' . $player->getCountry() . ' $z$s$0f0joined!';
+				$this->maniaControl->chat->sendChat($chatMessage);
+				$this->maniaControl->chat->sendInformation('This server uses ManiaControl v' . ManiaControl::VERSION . '!', $player->login);
+			}
+
+			$logMessage = "Player joined: {$player->login} / " . Formatter::stripCodes($player->nickname) . " Nation: " . $player->getCountry() . " IP: {$player->ipAddress}";
+			$this->maniaControl->log($logMessage);
+
+			// Trigger own PlayerJoined callback
+			$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERJOINED, array(self::CB_PLAYERJOINED, $player));
+		}
 		// Trigger own callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERINFOCHANGED, array(self::CB_PLAYERINFOCHANGED));
 	}
+
 
 	/**
 	 * Get all Players
