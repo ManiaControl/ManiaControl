@@ -139,6 +139,11 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 		return 'Plugin offers the known AutoQueue/SpecJam options.';
 	}
 
+	/**
+	 * Function handling on the connection of a player.
+	 *
+	 * @param array $callback
+	 */
 	public function handlePlayerConnect(array $callback) {
 		$login  = $callback[1]->login;
 		$player = $this->maniaControl->playerManager->getPlayer($login);
@@ -156,6 +161,11 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 		}
 	}
 
+	/**
+	 * Function handling on the disconnection of a player.
+	 *
+	 * @param array $callback
+	 */
 	public function handlePlayerDisconnect(array $callback) {
 		/** @var  Player $player */
 		$player = $callback[1];
@@ -166,6 +176,11 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 		$this->moveFirstPlayerToPlay();
 	}
 
+	/**
+	 * Function handling the change of player information.
+	 *
+	 * @param array $callback
+	 */
 	public function handlePlayerInfoChanged(array $callback) {
 		$login  = $callback[1][0]['Login'];
 		$player = $this->maniaControl->playerManager->getPlayer($login);
@@ -181,6 +196,9 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 		}
 	}
 
+	/**
+	 * Function called on every second.
+	 */
 	public function handleEverySecond() {
 		if($this->maniaControl->client->getMaxPlayers()['CurrentValue'] > count($this->maniaControl->playerManager->players)) {
 			$this->moveFirstPlayerToPlay();
@@ -199,16 +217,31 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 		}
 	}
 
+	/**
+	 * Function handling the click of the widget to add them to the queue.
+	 *
+	 * @param array  $chatCallback
+	 * @param Player $player
+	 */
 	public function handleManiaLinkAnswerAdd(array $chatCallback, Player $player) {
 		$this->addPlayerToQueue($player);
 	}
 
+	/**
+	 * Function handling the click of the widget to remove them from the queue.
+	 *
+	 * @param array  $chatCallback
+	 * @param Player $player
+	 */
 	public function handleManiaLinkAnswerRemove(array $chatCallback, Player $player) {
 		$this->removePlayerFromQueue($player->login);
 		$this->showJoinQueueWidget($player);
 		$this->maniaControl->chat->sendChat('$z$s$090[Queue] $<$fff' . $player->nickname . '$> has left the queue!');
 	}
 
+	/**
+	 * Function used to move the first queued player to the
+	 */
 	private function moveFirstPlayerToPlay() {
 		if(count($this->queue) > 0) {
 			$firstPlayer = $this->maniaControl->playerManager->getPlayer($this->queue[0]->login);
@@ -216,6 +249,11 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 		}
 	}
 
+	/**
+	 * Function to force a player to play status.
+	 *
+	 * @param Player $player
+	 */
 	private function forcePlayerToPlay(Player $player) {
 		if($this->maniaControl->client->getMaxPlayers()['CurrentValue'] > count($this->maniaControl->playerManager->players)) {
 			$this->maniaControl->client->forceSpectator($player->login, 2);
@@ -229,6 +267,11 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 		}
 	}
 
+	/**
+	 * Function adds a player to the queue.
+	 *
+	 * @param Player $player
+	 */
 	private function addPlayerToQueue(Player $player) {
 		if($this->maniaControl->settingManager->getSetting($this, self::QUEUE_MAX) > count($this->queue)) {
 			$this->queue[count($this->queue)] = $player;
@@ -236,6 +279,11 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 		}
 	}
 
+	/**
+	 * Function removes a player from the queue.
+	 *
+	 * @param $login
+	 */
 	private function removePlayerFromQueue($login) {
 		$count    = 0;
 		$newQueue = array();
@@ -249,6 +297,11 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 		$this->queue = $newQueue;
 	}
 
+	/**
+	 * Function shows the join queue widget to a player.
+	 *
+	 * @param Player $player
+	 */
 	private function showJoinQueueWidget(Player $player) {
 		$maniaLink = new ManiaLink(self::ML_ID);
 
@@ -332,6 +385,11 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player, 'Queue');
 	}
 
+	/**
+	 * Function shows the "You got a free spot, enjoy playing!" widget.
+	 *
+	 * @param Player $player
+	 */
 	private function showPlayWidget(Player $player) {
 		$maniaLink = new ManiaLink(self::ML_ID);
 
@@ -370,6 +428,11 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 		$this->showPlay[$player->login] = array('time' => time(), 'player' => $player);
 	}
 
+	/**
+	 * Function hides the queue widget from the player.
+	 *
+	 * @param Player $player
+	 */
 	private function hideQueueWidget(Player $player) {
 		$maniaLink = new ManiaLink(self::ML_ID);
 		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player, 'Queue');
