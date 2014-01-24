@@ -183,8 +183,9 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
             $this->moveFirstPlayerToPlay();
         }
 
-        foreach($this->queue as $queuedPlayer) {
-            $this->showJoinQueueWidget($queuedPlayer);
+        foreach($this->spectators as $login) {
+            $player = $this->maniaControl->playerManager->getPlayer($login);
+            $this->showJoinQueueWidget($player);
         }
 
         foreach($this->showPlay as $showPlay) {
