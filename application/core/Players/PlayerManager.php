@@ -117,17 +117,17 @@ class PlayerManager implements CallbackListener {
 			if($playerItem->playerId <= 0) {
 				continue;
 			}
-			$playerInfo            = $this->maniaControl->client->getPlayerInfo($playerItem->login);
+			$playerInfo = $this->maniaControl->client->getPlayerInfo($playerItem->login);
 
 			//TODO just a workaround due nadeos bad structure
-			$detailedPlayerInfo            = $this->maniaControl->client->getDetailedPlayerInfo($playerItem->login);
-			$playerInfo->path = $detailedPlayerInfo->path;
-			$playerInfo->language = $detailedPlayerInfo->language;
+			$detailedPlayerInfo        = $this->maniaControl->client->getDetailedPlayerInfo($playerItem->login);
+			$playerInfo->path          = $detailedPlayerInfo->path;
+			$playerInfo->language      = $detailedPlayerInfo->language;
 			$playerInfo->clientVersion = $detailedPlayerInfo->clientVersion;
-			$playerInfo->iPAddress = $detailedPlayerInfo->iPAddress;
-			$playerInfo->isSpectator = $detailedPlayerInfo->isSpectator;
-			$playerInfo->avatar = $detailedPlayerInfo->avatar;
-			$playerInfo->ladderStats = $detailedPlayerInfo->ladderStats;
+			$playerInfo->iPAddress     = $detailedPlayerInfo->iPAddress;
+			$playerInfo->isSpectator   = $detailedPlayerInfo->isSpectator;
+			$playerInfo->avatar        = $detailedPlayerInfo->avatar;
+			$playerInfo->ladderStats   = $detailedPlayerInfo->ladderStats;
 
 			$player                = new Player($playerInfo);
 			$player->hasJoinedGame = true;
@@ -187,8 +187,8 @@ class PlayerManager implements CallbackListener {
 			return;
 		}
 
-		$player->teamId      = $callback[1][0]["TeamId"];
-		$player->ladderRank  = $callback[1][0]["LadderRanking"];
+		$player->teamId     = $callback[1][0]["TeamId"];
+		$player->ladderRank = $callback[1][0]["LadderRanking"];
 
 		$prevJoinState = $player->hasJoinedGame;
 
@@ -206,6 +206,9 @@ class PlayerManager implements CallbackListener {
 
 			$logMessage = "Player joined: {$player->login} / " . Formatter::stripCodes($player->nickname) . " Nation: " . $player->getCountry() . " IP: {$player->ipAddress}";
 			$this->maniaControl->log($logMessage);
+
+			// Increment the Player Join Count
+			$this->maniaControl->statisticManager->incrementStat(self::STAT_JOIN_COUNT, $player, $this->maniaControl->server->index);
 
 			// Trigger own PlayerJoined callback
 			$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERJOINED, array(self::CB_PLAYERJOINED, $player));
@@ -376,9 +379,6 @@ class PlayerManager implements CallbackListener {
 		$playerStatement->fetch();
 		$playerStatement->free_result();
 		$playerStatement->close();
-
-		// Increment the Player Join Count
-		$this->maniaControl->statisticManager->incrementStat(self::STAT_JOIN_COUNT, $player, $this->maniaControl->server->index);
 
 		return true;
 	}
