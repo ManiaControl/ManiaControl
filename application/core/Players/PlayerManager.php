@@ -117,7 +117,18 @@ class PlayerManager implements CallbackListener {
 			if($playerItem->playerId <= 0) {
 				continue;
 			}
-			$playerInfo            = $this->maniaControl->client->getDetailedPlayerInfo($playerItem->login);
+			$playerInfo            = $this->maniaControl->client->getPlayerInfo($playerItem->login);
+
+			//TODO just a workaround due nadeos bad structure
+			$detailedPlayerInfo            = $this->maniaControl->client->getDetailedPlayerInfo($playerItem->login);
+			$playerInfo->path = $detailedPlayerInfo->path;
+			$playerInfo->language = $detailedPlayerInfo->language;
+			$playerInfo->clientVersion = $detailedPlayerInfo->clientVersion;
+			$playerInfo->iPAddress = $detailedPlayerInfo->iPAddress;
+			$playerInfo->isSpectator = $detailedPlayerInfo->isSpectator;
+			$playerInfo->avatar = $detailedPlayerInfo->avatar;
+			$playerInfo->ladderStats = $detailedPlayerInfo->ladderStats;
+
 			$player                = new Player($playerInfo);
 			$player->hasJoinedGame = true;
 			$this->addPlayer($player);
@@ -135,6 +146,7 @@ class PlayerManager implements CallbackListener {
 	public function playerConnect(array $callback) {
 		$login      = $callback[1][0];
 		$playerInfo = $this->maniaControl->client->getDetailedPlayerInfo($login);
+		var_dump($playerInfo);
 		$player     = new Player($playerInfo);
 
 		$this->addPlayer($player);
