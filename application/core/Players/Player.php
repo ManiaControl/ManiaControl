@@ -61,7 +61,7 @@ class Player {
 
 
 	/**
-	 * Construct a player from XmlRpc data
+	 * Construct a player from ManiaPlanet Player structure
 	 *
 	 * @param \Maniaplanet\DedicatedServer\Structures\Player $mpPlayer
 	 */
