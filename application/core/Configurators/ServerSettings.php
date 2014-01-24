@@ -100,22 +100,21 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			return false;
 		}
 		$serverSettings = $this->maniaControl->client->getServerOptions()->toArray();
-
-		$loadedSettings = array();
 		while($row = $result->fetch_object()) {
 			if(!isset($serverSettings[$row->settingName])) {
 				continue;
 			}
-			$loadedSettings[$row->settingName] = $row->settingValue;
-			settype($loadedSettings[$row->settingName], gettype($serverSettings[$row->settingName]));
+			$oldType                           = gettype($serverSettings[$row->settingName]);
+			$serverSettings[$row->settingName] = $row->settingValue;
+			settype($serverSettings[$row->settingName], $oldType);
 		}
 		$result->close();
-		if(!$loadedSettings) {
+		if(!$serverSettings) {
 			return true;
 		}
 
 		try {
-			$this->maniaControl->client->setServerOptions($loadedSettings);
+			$this->maniaControl->client->setServerOptions($serverSettings);
 		} catch(Exception $e) {
 			trigger_error('Error occured: ' . $e->getMessage());
 			return false;
