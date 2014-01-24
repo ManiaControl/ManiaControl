@@ -376,15 +376,20 @@ class UpdateManager implements CallbackListener, CommandListener {
 
     private function checkPermissions() {
         $writableDirectories = array('core/', 'plugins/');
-        $ignore              = array('.', '..');
         $path                = str_replace('core', '', realpath(dirname(__FILE__)));
 
         foreach($writableDirectories as $writableDirecotry) {
-            $files = scandir($path.$writableDirecotry);
+            $files = array();
+            $di = new \RecursiveDirectoryIterator($path.$writableDirecotry);
+            foreach (new \RecursiveIteratorIterator($di) as $filename => $file) {
+                $files[] = $filename;
+            }
+
             foreach($files as $file) {
-                if(!in_array($file, $ignore)) {
-                    if(!is_writable($path.$writableDirecotry.$file)) {
-                        $this->maniaControl->log('Cannot update: the file/directory "'.$path.$writableDirecotry.$file.'" is not writable!');
+                if(substr($file, -1) != '.' && substr($file, -2) != '..') {
+                    echo $file."\n\r";
+                    if(!is_writable($file)) {
+                        $this->maniaControl->log('Cannot update: the file/directory "'.$file.'" is not writable!');
                         return false;
                     }
                 }
