@@ -65,7 +65,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 
         foreach($this->maniaControl->playerManager->getPlayers() as $player) {
             if($player->isSpectator) {
-                $this->spectators[] = $player->login;
+                $this->spectators[$player->login] = $player->login;
                 $this->maniaControl->client->forceSpectator($player->login, 1);
                 $this->showJoinQueueWidget($player);
             }
@@ -144,13 +144,13 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
         $player = $this->maniaControl->playerManager->getPlayer($login);
 
         if($player->isSpectator) {
-            $this->spectators[$player->login] = $player;
+            $this->spectators[$player->login] = $player->login;
             $this->maniaControl->client->forceSpectator($player->login, 1);
             $this->showJoinQueueWidget($player);
         } else {
             if(count($this->queue) != 0) {
                 $this->maniaControl->client->forceSpectator($player->login, 1);
-                $this->spectators[$player->login] = $player;
+                $this->spectators[$player->login] = $player->login;
                 $this->showJoinQueueWidget($player);
             }
         }
@@ -171,7 +171,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
             if($player->isSpectator) {
                 if(!isset($this->spectators[$player->login])) {
                     $this->maniaControl->client->forceSpectator($player->login, 1);
-                    $this->spectators[$player->login] = $player;
+                    $this->spectators[$player->login] = $player->login;
                     $this->showJoinQueueWidget($player);
                 }
             }
