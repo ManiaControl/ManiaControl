@@ -227,7 +227,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
     private function addPlayerToQueue(Player $player) {
         if($this->maniaControl->settingManager->getSetting($this, self::QUEUE_MAX) > count($this->queue)) {
             $this->queue[count($this->queue)] = $player;
-            $this->maniaControl->chat->sendChat('$z$s$090[Queue] $fff'.$player->nickname.'$z$s$090 has joined the queue!');
+            $this->maniaControl->chat->sendChat('$z$s$090[Queue] $fff'.$player->nickname.'$z$s$090 just joined the queue!');
         }
     }
 
@@ -294,7 +294,15 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 
         if($inQueue) {
             $message = '$fff$sYou\'re in the queue (click to unqueue).';
-            $statusLabel->setText('$aaaStatus: Queued spectator      Waiting: '.count($this->queue).'/'.$max_queue.'');
+
+            $position = 0;
+            foreach (array_values($this->queue) as $i => $queuePlayer) {
+                if($player->login == $queuePlayer->login) {
+                    $position = ($i+1);
+                }
+            }
+
+            $statusLabel->setText('$aaaStatus: In queue, ('.$position.'/'.count($this->queue).')      Waiting: '.count($this->queue).'/'.$max_queue.'');
             $messageLabel->setAction(self::ML_REMOVEFROMQUEUE);
             $backgroundQuad->setAction(self::ML_REMOVEFROMQUEUE);
             $statusLabel->setAction(self::ML_REMOVEFROMQUEUE);
@@ -350,7 +358,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
         $messageLabel->setSize(56, 4);
         $messageLabel->setAlign('center', 'center');
         $messageLabel->setScale(1.0);
-        $messageLabel->setText('$090You have a free spot, enjoy playing!');
+        $messageLabel->setText('$090You got a free spot, enjoy playing!');
         $messageLabel->setStyle(Label_Text::STYLE_TextStaticSmall);
 
         $this->maniaControl->manialinkManager->displayWidget($maniaLink, $player, 'Queue');
