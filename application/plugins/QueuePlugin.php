@@ -307,7 +307,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 				}
 			}
 
-			$statusLabel->setText('$aaaStatus: In queue, (' . $position . '/' . count($this->queue) . ')      Waiting: ' . count($this->queue) . '/' . $max_queue . '');
+			$statusLabel->setText('$aaaStatus: In queue (' . $position . '/' . count($this->queue) . ')      Waiting: ' . count($this->queue) . '/' . $max_queue . '');
 			$messageLabel->setAction(self::ML_REMOVEFROMQUEUE);
 			$backgroundQuad->setAction(self::ML_REMOVEFROMQUEUE);
 			$statusLabel->setAction(self::ML_REMOVEFROMQUEUE);
