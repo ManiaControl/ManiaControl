@@ -211,60 +211,21 @@ class UpdateManager implements CallbackListener, CommandListener {
 			return;
 		}
 
-        if($this->checkPermissions($player)) {
-            $this->maniaControl->chat->sendInformation("Starting Update to Version v{$updateData->version}...", $player->login);
-            $this->maniaControl->log("Starting Update to Version v{$updateData->version}...");
-            $performBackup = $this->maniaControl->settingManager->getSetting($this, self::SETTING_PERFORM_BACKUPS);
-            if($performBackup && !$this->performBackup()) {
-                $this->maniaControl->chat->sendError('Creating backup failed.', $player->login);
-                $this->maniaControl->log("Creating backup failed.");
-            }
-            if(!$this->performCoreUpdate($updateData)) {
-                $this->maniaControl->chat->sendError('Update failed!', $player->login);
-                return;
-            }
-            $this->maniaControl->chat->sendSuccess('Update finished!', $player->login);
-
-            $this->maniaControl->restart();
+        $this->maniaControl->chat->sendInformation("Starting Update to Version v{$updateData->version}...", $player->login);
+        $this->maniaControl->log("Starting Update to Version v{$updateData->version}...");
+        $performBackup = $this->maniaControl->settingManager->getSetting($this, self::SETTING_PERFORM_BACKUPS);
+        if($performBackup && !$this->performBackup()) {
+            $this->maniaControl->chat->sendError('Creating backup failed.', $player->login);
+            $this->maniaControl->log("Creating backup failed.");
         }
+        if(!$this->performCoreUpdate($updateData)) {
+            $this->maniaControl->chat->sendError('Update failed!', $player->login);
+            return;
+        }
+        $this->maniaControl->chat->sendSuccess('Update finished!', $player->login);
+
+        $this->maniaControl->restart();
 	}
-
-    private function checkPermissions(Player $player) {
-        $writableDirectories = array('core/', 'plugins/');
-        $readableDirectories = array('configs/');
-        $ignore              = array('.', '..');
-        $path                = str_replace('core', '', realpath(dirname(__FILE__)));
-
-        try {
-            foreach($writableDirectories as $writableDirecotry) {
-                $files = scandir($path.$writableDirecotry);
-                foreach($files as $file) {
-                    if(!in_array($file, $ignore)) {
-                        if(!is_writable($path.$writableDirecotry.$file)) {
-                            throw new \Exception('"'.$path.$writableDirecotry.$file.'" is not writable!');
-                        }
-                    }
-                }
-            }
-
-            foreach($readableDirectories as $readableDirectory) {
-                $files = scandir($path.$readableDirectory);
-                foreach($files as $file) {
-                    if(!in_array($file, $ignore)) {
-                        if(!is_readable($path.$readableDirectory.$file)) {
-                            throw new \Exception('"'.$path.$readableDirectory.$file.'" is not readable!');
-                        }
-                    }
-                }
-            }
-        } catch(\Exception $e) {
-            $this->maniaControl->log('Cannot update: '.$e->getMessage());
-            $this->maniaControl->chat->sendError('Cannot update: '.$e->getMessage(), $player->login);
-            return false;
-        }
-
-        return true;
-    }
 
 	/**
 	 * Check given Plugin Class for Update
@@ -379,6 +340,10 @@ class UpdateManager implements CallbackListener, CommandListener {
 	 * @return bool
 	 */
 	private function performCoreUpdate($updateData = null) {
+        if(!$this->checkPermissions()) {
+            return false;
+        }
+
 		if(!$updateData) {
 			$updateData = $this->checkCoreUpdate();
 			if(!$updateData) {
@@ -408,6 +373,26 @@ class UpdateManager implements CallbackListener, CommandListener {
 		@rmdir($tempDir);
 		return true;
 	}
+
+    private function checkPermissions() {
+        $writableDirectories = array('core/', 'plugins/');
+        $ignore              = array('.', '..');
+        $path                = str_replace('core', '', realpath(dirname(__FILE__)));
+
+        foreach($writableDirectories as $writableDirecotry) {
+            $files = scandir($path.$writableDirecotry);
+            foreach($files as $file) {
+                if(!in_array($file, $ignore)) {
+                    if(!is_writable($path.$writableDirecotry.$file)) {
+                        $this->maniaControl->log('Cannot update: the file/directory "'.$path.$writableDirecotry.$file.'" is not writable!');
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
 
 	/**
 	 * Retrieve the Update Channel Setting
