@@ -745,7 +745,7 @@ if (Event.Control.HasClass(\"" . self::CLASS_PAGER . "\")) {
 		$profileScript = "
 if (Event.Control.HasClass(\"" . self::CLASS_PROFILE . "\")) {
 	declare Login = LocalUser.Login;
-	if (!Event.Control.HasClass(\"" . self::OPTION_PROFILE_OWN . "\") {
+	if (!Event.Control.HasClass(\"" . self::OPTION_PROFILE_OWN . "\")) {
 		foreach (ControlClass in Event.Control.ControlClasses) {
 			declare ClassParts = TextLib::Split(\"-\", ControlClass);
 			if (ClassParts.count < 2) continue;
