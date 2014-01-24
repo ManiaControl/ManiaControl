@@ -374,6 +374,11 @@ class UpdateManager implements CallbackListener, CommandListener {
 		return true;
 	}
 
+    /**
+     * Function checks if ManiaControl has sufficient access to files to update them.
+     * 
+     * @return bool
+     */
     private function checkPermissions() {
         $writableDirectories = array('core/', 'plugins/');
         $path                = str_replace('core', '', realpath(dirname(__FILE__)));
