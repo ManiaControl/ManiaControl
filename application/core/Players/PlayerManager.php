@@ -146,7 +146,6 @@ class PlayerManager implements CallbackListener {
 	public function playerConnect(array $callback) {
 		$login      = $callback[1][0];
 		$playerInfo = $this->maniaControl->client->getDetailedPlayerInfo($login);
-		var_dump($playerInfo);
 		$player     = new Player($playerInfo);
 
 		$this->addPlayer($player);
