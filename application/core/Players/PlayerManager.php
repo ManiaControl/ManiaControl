@@ -177,7 +177,6 @@ class PlayerManager implements CallbackListener {
 		}
 
 		$player->teamId      = $callback[1][0]["TeamId"];
-		$player->isSpectator = $callback[1][0]["SpectatorStatus"];
 		$player->ladderRank  = $callback[1][0]["LadderRanking"];
 
 		$prevJoinState = $player->hasJoinedGame;
@@ -200,6 +199,7 @@ class PlayerManager implements CallbackListener {
 			// Trigger own PlayerJoined callback
 			$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERJOINED, array(self::CB_PLAYERJOINED, $player));
 		}
+
 		// Trigger own callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERINFOCHANGED, array(self::CB_PLAYERINFOCHANGED));
 	}
