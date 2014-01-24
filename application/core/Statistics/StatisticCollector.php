@@ -177,8 +177,6 @@ class StatisticCollector implements CallbackListener {
 					return -1;
 			}
 		}
-
-
 	}
 
 
@@ -224,13 +222,13 @@ class StatisticCollector implements CallbackListener {
 
 		switch($callbackName) {
 			case 'LibXmlRpc_OnShoot':
-				$this->handleOnShoot($callback[1][1][0], $callback[1][1][1]);
+				$this->handleOnShoot($callback[1][1][0], $callback[1][1][3]);
 				break;
 			case 'LibXmlRpc_OnHit':
 				$shooter = $this->maniaControl->playerManager->getPlayer($callback[1][1][0]);
 				$victim  = $this->maniaControl->playerManager->getPlayer($callback[1][1][1]);
-				$weapon  = $this->maniaControl->playerManager->getPlayer($callback[1][1][3]);
-				$this->maniaControl->statisticManager->incrementStat($this->getWeaponStat($weapon, false), $shooter);
+				$weapon  = $callback[1][1][3];
+				$this->maniaControl->statisticManager->incrementStat($this->getWeaponStat(intval($weapon), false), $shooter);
 				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_HIT, $shooter);
 				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_GOT_HIT, $victim);
 				break;
@@ -279,7 +277,7 @@ class StatisticCollector implements CallbackListener {
 				$paramsObject = json_decode($callback[1][1]);
 				$shooter      = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Shooter->Login);
 				$victim       = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Victim->Login);
-				$weapon       = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->WeaponNum);
+				$weapon       = $paramsObject->Event->WeaponNum;
 				$this->maniaControl->statisticManager->incrementStat($this->getWeaponStat($weapon, false), $shooter);
 				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_HIT, $shooter);
 				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_GOT_HIT, $victim);
