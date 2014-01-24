@@ -202,6 +202,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
     public function handleManiaLinkAnswerRemove(array $chatCallback, Player $player) {
         $this->removePlayerFromQueue($player);
         $this->showJoinQueueWidget($player);
+        $this->maniaControl->chat->sendChat('$090[Queue] $fff'.$player->nickname.'$z$s$090 has left the queue!');
     }
 
     private function moveFirstPlayerToPlay() {
@@ -218,12 +219,14 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
             if(isset($this->spectators[$player->login])) unset($this->spectators[$player->login]);
             $this->removePlayerFromQueue($player->login);
             $this->showPlayWidget($player);
+            $this->maniaControl->chat->sendChat('$090[Queue] $fff'.$player->nickname.'$z$s$090 has a free spot and is now playing!');
         }
     }
 
     private function addPlayerToQueue(Player $player) {
         if($this->maniaControl->settingManager->getSetting($this, self::QUEUE_MAX) > count($this->queue)) {
             $this->queue[count($this->queue)] = $player;
+            $this->maniaControl->chat->sendChat('$090[Queue] $fff'.$player->nickname.'$z$s$090 has joined the queue!');
         }
     }
 
