@@ -192,6 +192,9 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 					$this->spectators[$player->login] = $player->login;
 					$this->showJoinQueueWidget($player);
 				}
+			} else {
+				$this->removePlayerFromQueue($player->login);
+				if(isset($this->spectators[$player->login])) unset($this->spectators[$player->login]);
 			}
 		}
 	}
@@ -200,7 +203,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 	 * Function called on every second.
 	 */
 	public function handleEverySecond() {
-		if($this->maniaControl->client->getMaxPlayers()['CurrentValue'] > count($this->maniaControl->playerManager->players)) {
+		if($this->maniaControl->client->getMaxPlayers()['CurrentValue'] > (count($this->maniaControl->playerManager->players)-count($this->spectators))) {
 			$this->moveFirstPlayerToPlay();
 		}
 
