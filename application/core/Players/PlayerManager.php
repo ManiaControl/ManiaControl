@@ -126,6 +126,8 @@ class PlayerManager implements CallbackListener {
 			$playerItem->isSpectator   = $detailedPlayerInfo->isSpectator;
 			$playerItem->avatar        = $detailedPlayerInfo->avatar;
 			$playerItem->ladderStats   = $detailedPlayerInfo->ladderStats;
+			
+			$playerItem->hoursSinceZoneInscription = $detailedPlayerInfo->hoursSinceZoneInscription;
 
 			$player                = new Player($playerItem);
 			$player->hasJoinedGame = true;
