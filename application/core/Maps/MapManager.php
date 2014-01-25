@@ -548,16 +548,10 @@ class MapManager implements CallbackListener {
 			$mapFileName = $downloadDirectory . '/' . $fileName;
 
 			try {
-				$response = $this->maniaControl->client->checkMapForCurrentServerParams($mapFileName);
+				$this->maniaControl->client->checkMapForCurrentServerParams($mapFileName);
 			} catch(Exception $e) {
 				trigger_error("Couldn't check if map is valid ('{$mapFileName}'). " . $e->getMessage());
-				$this->maniaControl->chat->sendError('Error checking map!', $login);
-				return;
-			}
-
-			if(!$response) {
-				// Invalid map type
-				$this->maniaControl->chat->sendError("Invalid map type.", $login);
+				$this->maniaControl->chat->sendError('Wrong MapType or not validated!', $login);
 				return;
 			}
 
