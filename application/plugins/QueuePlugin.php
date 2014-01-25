@@ -274,8 +274,16 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 	 * Function adds a player to the queue.
 	 *
 	 * @param Player $player
+	 * @return bool
 	 */
 	private function addPlayerToQueue(Player $player) {
+		foreach($this->queue as $queuedPlayer) {
+			if($queuedPlayer->login == $player->login) {
+				$this->maniaControl->chat->sendError('You\'re already in the queue!', $player->login);
+				return false;
+			}
+		}
+		
 		if($this->maniaControl->settingManager->getSetting($this, self::QUEUE_MAX) > count($this->queue)) {
 			$this->queue[count($this->queue)] = $player;
 			$this->maniaControl->chat->sendChat('$z$s$090[Queue] $<$fff' . $player->nickname . '$> just joined the queue!');
