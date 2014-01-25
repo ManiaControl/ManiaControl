@@ -800,7 +800,12 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$this->showMapList($player);
 				break;
 			case self::ACTION_SWITCH_MAP:
-				$this->maniaControl->client->jumpToMapIndex($mapId);
+				try {
+					$this->maniaControl->client->jumpToMapIndex($mapId);
+				} catch(\Exception $e) {
+					$this->maniaControl->chat->sendError("Error while Jumping to Map Index");
+					break;
+				}
 				$mapList = $this->maniaControl->mapManager->getMaps();
 				$map     = $mapList[$mapId];
 
