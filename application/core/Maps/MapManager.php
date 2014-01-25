@@ -581,11 +581,15 @@ class MapManager implements CallbackListener {
 
 			if(!$update) {
 				//Message
-				$this->maniaControl->chat->sendSuccess('$<' . $player->nickname . '$> added $<' . $mapInfo->name . '$>!');
+				$message = '$<' . $player->nickname . '$> added $<' . $mapInfo->name . '$>!';
+				$this->maniaControl->chat->sendSuccess($message);
+				$this->maniaControl->log($message, true);
 				// Queue requested Map
 				$this->maniaControl->mapManager->mapQueue->addMapToMapQueue($login, $mapInfo->uid);
 			} else {
-				$this->maniaControl->chat->sendSuccess('$<' . $player->nickname . '$> updated $<' . $mapInfo->name . '$>!');
+				$message = '$<' . $player->nickname . '$> updated $<' . $mapInfo->name . '$>!';
+				$this->maniaControl->chat->sendSuccess($message);
+				$this->maniaControl->log($message, true);
 			}
 		}
 		// TODO: add local map by filename
