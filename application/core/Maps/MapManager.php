@@ -181,6 +181,12 @@ class MapManager implements CallbackListener {
 			return;
 		}
 
+		if(!isset($uid)) {
+			trigger_error("Error while updating Map, unkown UID: " . $uid);
+			$this->maniaControl->chat->sendError("Error while updating Map.", $admin->login);
+			return;
+		}
+
 		$map = $this->maps[$uid];
 		/** @var Map $map */
 		$mxId = $map->mx->id;
