@@ -9,8 +9,6 @@ use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\Structures\SystemInfos;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
-require_once __DIR__ . '/ServerCommands.php';
-
 /**
  * Class providing Information about theconnected ManiaPlanet Server
  *

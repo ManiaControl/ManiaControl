@@ -2,9 +2,6 @@
 
 namespace ManiaControl\Plugins;
 
-require_once __DIR__ . '/Plugin.php';
-require_once __DIR__ . '/PluginMenu.php';
-
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;

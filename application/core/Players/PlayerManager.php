@@ -8,12 +8,6 @@ use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Statistics\StatisticManager;
 
-require_once __DIR__ . '/Player.php';
-require_once __DIR__ . '/PlayerActions.php';
-require_once __DIR__ . '/PlayerCommands.php';
-require_once __DIR__ . '/PlayerDetailed.php';
-require_once __DIR__ . '/PlayerList.php';
-
 /**
  * Class managing Players
  *

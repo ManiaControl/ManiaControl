@@ -5,9 +5,6 @@ namespace ManiaControl\Statistics;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 
-require_once __DIR__ . '/StatisticCollector.php';
-require_once __DIR__ . '/SimpleStatsList.php';
-
 /**
  * Statistic Manager Class
  *
