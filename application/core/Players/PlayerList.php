@@ -22,7 +22,6 @@ use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
-use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
  * PlayerList Widget Class
@@ -50,6 +49,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 	const ACTION_OPEN_PLAYER_DETAILED = 'PlayerList.OpenPlayerDetailed';
 	const ACTION_SPECTATE_PLAYER      = 'PlayerList.SpectatePlayer';
 	const SHOWN_MAIN_WINDOW           = -1;
+	const MAX_PLAYERS_PER_PAGE        = 15;
 
 	/**
 	 * Private Properties
@@ -122,6 +122,26 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$closeQuad->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_QuitRace);
 		$closeQuad->setAction(ManialinkManager::ACTION_CLOSEWIDGET);
 
+		$pagerSize = 6.;
+		$pagesId   = 'PlayerListPages';
+
+		// get PlayerList
+		$players = $this->maniaControl->playerManager->getPlayers();
+
+		if(count($players) > self::MAX_PLAYERS_PER_PAGE) {
+			$pagerPrev = new Quad_Icons64x64_1();
+			$frame->add($pagerPrev);
+			$pagerPrev->setPosition($width * 0.42, $height * -0.44, 2);
+			$pagerPrev->setSize($pagerSize, $pagerSize);
+			$pagerPrev->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowPrev);
+
+			$pagerNext = new Quad_Icons64x64_1();
+			$frame->add($pagerNext);
+			$pagerNext->setPosition($width * 0.45, $height * -0.44, 2);
+			$pagerNext->setSize($pagerSize, $pagerSize);
+			$pagerNext->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowNext);
+		}
+
 		// Start offsets
 		$x = -$width / 2;
 		$y = $height / 2;
@@ -147,20 +167,26 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		}
 		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
 
-		// get PlayerList
-		$players = $this->maniaControl->playerManager->getPlayers();
-
 		$i = 1;
 		$y -= 10;
+		$pageFrames = array();
 		foreach($players as $listPlayer) {
-			/**
-			 *
-			 * @var Player $listPlayer
-			 */
+			/** @var Player $listPlayer * */
+			if(!isset($pageFrame)) {
+				$pageFrame = new Frame();
+				$frame->add($pageFrame);
+				if(!empty($pageFrames)) {
+					$pageFrame->setVisible(false);
+				}
+				array_push($pageFrames, $pageFrame);
+				$y = $height / 2 - 16;
+				$script->addPage($pageFrame, count($pageFrames), $pagesId);
+			}
+
 
 			$path        = $listPlayer->getProvince();
 			$playerFrame = new Frame();
-			$frame->add($playerFrame);
+			$pageFrame->add($playerFrame);
 
 			if($i % 2 != 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
@@ -328,8 +354,11 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				// Force to Spectator Description Label
 				$script->addTooltip($spectatorQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Force " . $listPlayer->nickname . '$z to Spectator!'));
 			}
-			$i++;
 			$y -= 4;
+			$i++;
+			if($i % self::MAX_PLAYERS_PER_PAGE == 0) {
+				unset($pageFrame);
+			}
 		}
 
 		// Show advanced window
@@ -608,11 +637,10 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 
 		switch($action) {
 			case self::ACTION_SPECTATE_PLAYER:
-				$this->maniaControl->client->forceSpectator($adminLogin, PlayerActions::SPECTATOR_BUT_KEEP_SELECTABLE);
 				try {
+					$this->maniaControl->client->forceSpectator($adminLogin, PlayerActions::SPECTATOR_BUT_KEEP_SELECTABLE);
 					$this->maniaControl->client->forceSpectatorTarget($adminLogin, $targetLogin, 1);
-				} catch(Exception $e) {
-					//TODO error message from $e
+				} catch(\Exception $e) {
 				}
 				break;
 			case self::ACTION_OPEN_PLAYER_DETAILED:
