@@ -129,14 +129,13 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 	 * Unload the plugin and its resources
 	 */
 	public function unload() {
-		$this->serverData  = array();
-		$this->lastRequest = null;
+		$this->serverData = array();
 
 		$this->maniaControl->actionsMenu->removeMenuItem(1, true);
 		$this->maniaControl->manialinkManager->unregisterManialinkPageAnswerListener($this);
 		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
 		$this->maniaControl->commandManager->unregisterCommandListener($this);
-		$this->maniaControl = null;
+		unset($this->maniaControl);
 	}
 
 	/**
