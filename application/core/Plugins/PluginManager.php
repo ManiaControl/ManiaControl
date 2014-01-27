@@ -36,8 +36,6 @@ class PluginManager {
 
 		$this->pluginMenu = new PluginMenu($maniaControl);
 		$this->maniaControl->configurator->addMenu($this->pluginMenu);
-
-		$this->preparePlugins();
 	}
 
 	/**
@@ -198,6 +196,9 @@ class PluginManager {
 			$classesAfter = get_declared_classes();
 			$newClasses   = array_diff($classesAfter, $classesBefore);
 			foreach($newClasses as $className) {
+				//Prepare Plugin
+				$className::prepare($this->maniaControl);
+
 				if (!$this->isPluginClass($className)) {
 					continue;
 				}
@@ -224,15 +225,6 @@ class PluginManager {
 			return $this->activePlugins[$pluginClass];
 		}
 		return null;
-	}
-
-	/**
-	 * Prepare all Plugins
-	 */
-	private function preparePlugins() {
-		foreach($this->pluginClasses as $plugin) {
-			$plugin::prepare($this->maniaControl);
-		}
 	}
 
 	/**
