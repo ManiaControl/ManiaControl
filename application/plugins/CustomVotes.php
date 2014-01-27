@@ -91,7 +91,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 * @return mixed
 	 */
 	public static function prepare(ManiaControl $maniaControl) {
-		// TODO: Implement prepare() method.
+		//do nothing
 	}
 
 	/**
