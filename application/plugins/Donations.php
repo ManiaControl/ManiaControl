@@ -59,7 +59,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 * @return mixed
 	 */
 	public static function prepare(ManiaControl $maniaControl) {
-		// TODO: Implement prepare() method.
+		//do nothing
 	}
 
 

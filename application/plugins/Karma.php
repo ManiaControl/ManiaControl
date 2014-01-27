@@ -52,7 +52,7 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	 * @return mixed
 	 */
 	public static function prepare(ManiaControl $maniaControl) {
-		// TODO: Implement prepare() method.
+		//do nothing
 	}
 
 	/**
