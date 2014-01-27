@@ -117,21 +117,21 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$searchString = '';
 		$author       = '';
 		$environment  = '';
-		if(count($params) >= 1) {
+		if (count($params) >= 1) {
 			foreach($params as $param) {
-				if($param == '/xlist' || $param == MapCommands::ACTION_OPEN_XLIST) {
+				if ($param == '/xlist' || $param == MapCommands::ACTION_OPEN_XLIST) {
 					continue;
 				}
-				if($param == self::ACTION_SEARCH_MAPNAME) {
+				if ($param == self::ACTION_SEARCH_MAPNAME) {
 					$searchString = $chatCallback[1][3][0]['Value'];
-				} else if($param == self::ACTION_SEARCH_AUTHOR) {
+				} else if ($param == self::ACTION_SEARCH_AUTHOR) {
 					$author = $chatCallback[1][3][0]['Value'];
-				} else if(strtolower(substr($param, 0, 5)) == 'auth:') {
+				} else if (strtolower(substr($param, 0, 5)) == 'auth:') {
 					$author = substr($param, 5);
-				} else if(strtolower(substr($param, 0, 4)) == 'env:') {
+				} else if (strtolower(substr($param, 0, 4)) == 'env:') {
 					$environment = substr($param, 4);
 				} else {
-					if($searchString == '') {
+					if ($searchString == '') {
 						$searchString = $param;
 					} else { // concatenate words in name
 						$searchString .= '%20' . $param;
@@ -144,7 +144,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$maps = $this->maniaControl->mapManager->mxManager->getMaps($searchString, $author, $environment);
 
 		// check if there are any results
-		if($maps == null) {
+		if ($maps == null) {
 			$this->maniaControl->chat->sendError('No maps found, or MX is down!', $player->login);
 			return;
 		}
@@ -212,10 +212,10 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$y          = $height / 2 - 16;
 		$pageFrames = array();
 		foreach($maps as $map) { //TODO order possabilities
-			if(!isset($pageFrame)) {
+			if (!isset($pageFrame)) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
-				if(!empty($pageFrames)) {
+				if (!empty($pageFrames)) {
 					$pageFrame->setVisible(false);
 				}
 				array_push($pageFrames, $pageFrame);
@@ -227,7 +227,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$mapFrame = new Frame();
 			$pageFrame->add($mapFrame);
 
-			if($i % 2 == 0) {
+			if ($i % 2 == 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
 				$mapFrame->add($lineQuad);
 				$lineQuad->setSize($width, 4);
@@ -256,7 +256,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$script->addTooltip($mxQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "View " . $map->name . " on Mania-Exchange"));
 
 			//TODO permission Clear Jukebox
-			if($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
+			if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
 				$addQuad = new Quad_Icons64x64_1();
 				$mapFrame->add($addQuad);
 				$addQuad->setX($x + 59);
@@ -270,7 +270,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			}
 
 			//Award Quad
-			if($map->awards > 0) {
+			if ($map->awards > 0) {
 				$awardQuad = new Quad_Icons64x64_1();
 				$mapFrame->add($awardQuad);
 				$awardQuad->setSize(3, 3);
@@ -288,7 +288,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 			$y -= 4;
 			$i++;
-			if($i % self::MAX_MX_MAPS_PER_PAGE == 0) {
+			if ($i % self::MAX_MX_MAPS_PER_PAGE == 0) {
 				unset($pageFrame);
 			}
 		}
@@ -403,7 +403,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$pagerSize = 6.;
 		$pagesId   = 'MapListPages';
 
-		if(count($mapList) > self::MAX_MAPS_PER_PAGE) {
+		if (count($mapList) > self::MAX_MAPS_PER_PAGE) {
 			$pagerPrev = new Quad_Icons64x64_1();
 			$frame->add($pagerPrev);
 			$pagerPrev->setPosition($width * 0.42, $height * -0.44, 2);
@@ -429,7 +429,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		}
 
 		//Admin Buttons
-		if($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
+		if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
 			//Clear Jukebox
 			$label = new Label_Button();
 			$frame->add($label);
@@ -492,7 +492,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 		$queuedMaps = $this->maniaControl->mapManager->mapQueue->getQueuedMapsRanking();
 		/**
-		 *
 		 * @var KarmaPlugin $karmaPlugin
 		 */
 		$karmaPlugin = $this->maniaControl->pluginManager->getPlugin(self::DEFAULT_KARMA_PLUGIN);
@@ -501,14 +500,13 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$y          = $height / 2 - 10;
 		$pageFrames = array();
 		/**
-		 *
 		 * @var Map $map
 		 */
 		foreach($mapList as $map) {
-			if(!isset($pageFrame)) {
+			if (!isset($pageFrame)) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
-				if(!empty($pageFrames)) {
+				if (!empty($pageFrames)) {
 					$pageFrame->setVisible(false);
 				}
 				array_push($pageFrames, $pageFrame);
@@ -522,7 +520,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$mapFrame->setZ(0.1);
 			$mapFrame->setY($y);
 
-			if($id % 2 != 0) {
+			if ($id % 2 != 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
 				$mapFrame->add($lineQuad);
 				$lineQuad->setSize($width, 4);
@@ -530,7 +528,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$lineQuad->setZ(0.001);
 			}
 
-			if($this->maniaControl->mapManager->getCurrentMap() === $map) {
+			if ($this->maniaControl->mapManager->getCurrentMap() === $map) {
 				$currentQuad = new Quad_Icons64x64_1();
 				$mapFrame->add($currentQuad);
 				$currentQuad->setX($x + 3.5);
@@ -540,7 +538,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			}
 
 			$mxId = '-';
-			if(isset($map->mx->id)) {
+			if (isset($map->mx->id)) {
 				$mxId = $map->mx->id;
 
 				$mxQuad = new Quad();
@@ -553,7 +551,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$mxQuad->setZ(0.01);
 				$script->addTooltip($mxQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "View $<" . $map->name . "$> on Mania-Exchange"));
 
-				if($map->updateAvailable()) {
+				if ($map->updateAvailable()) {
 					$mxQuad = new Quad();
 					$mapFrame->add($mxQuad);
 					$mxQuad->setSize(3, 3);
@@ -565,7 +563,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 					$script->addTooltip($mxQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Update of $<" . $map->name . "$> available on Mania-Exchange"));
 
 					//Update Button
-					if($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
+					if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
 						$mxQuad->setAction(self::ACTION_UPDATE_MAP . '.' . $map->uid);
 					}
 				}
@@ -573,12 +571,14 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			}
 
 			// Display Maps
-			$array = array($id => $x + 5, $mxId => $x + 10, Formatter::stripDirtyCodes($map->name) => $x + 20, $map->authorNick => $x + 68);
-			$this->maniaControl->manialinkManager->labelLine($mapFrame, $array);
+			$array  = array($id => $x + 5, $mxId => $x + 10, Formatter::stripDirtyCodes($map->name) => $x + 20, $map->authorNick => $x + 68);
+			$labels = $this->maniaControl->manialinkManager->labelLine($mapFrame, $array);
+			$script->addTooltip($labels[3], $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => '$<' . $map->name . '$> made by $<' . $map->authorLogin . '$>'));
+
 			// TODO action detailed map info including mx info
 
 			// Map-Queue-Map-Label
-			if(isset($queuedMaps[$map->uid])) {
+			if (isset($queuedMaps[$map->uid])) {
 				$label = new Label_Text();
 				$mapFrame->add($label);
 				$label->setX($width / 2 - 15);
@@ -602,7 +602,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$script->addTooltip($queueLabel, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => 'Add Map to the Map Queue: $<' . $map->name . '$>'));
 			}
 
-			if($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_REMOVE_MAP)) {
+			if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_REMOVE_MAP)) {
 				// erase map quad
 				$eraseLabel = new Label_Button();
 				$mapFrame->add($eraseLabel);
@@ -619,7 +619,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 			}
 
-			if($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
+			if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
 				// Switch to map
 				$switchLabel = new Label_Button();
 				$mapFrame->add($switchLabel);
@@ -638,10 +638,10 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			}
 
 			// Display Karma bar
-			if($karmaPlugin) {
+			if ($karmaPlugin) {
 				$karma = $karmaPlugin->getMapKarma($map);
 				$votes = $karmaPlugin->getMapVotes($map);
-				if(is_numeric($karma)) {
+				if (is_numeric($karma)) {
 					$karmaGauge = new Gauge();
 					$mapFrame->add($karmaGauge);
 					$karmaGauge->setZ(2);
@@ -666,7 +666,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			}
 
 			$y -= 4;
-			if($id % self::MAX_MAPS_PER_PAGE == 0) {
+			if ($id % self::MAX_MAPS_PER_PAGE == 0) {
 				unset($pageFrame);
 			}
 			$id++;
@@ -717,7 +717,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$buttLabel->setSize(3, 3);
 		$buttLabel->setAlign(Control::CENTER, Control::CENTER);
 
-		if(!$mapUid) {
+		if (!$mapUid) {
 			$quad->setAction(self::ACTION_SWITCH_MAP . '.' . ($id - 1));
 			$buttLabel->setText('»');
 			$buttLabel->setTextColor('0f0');
@@ -740,7 +740,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$player       = $callback[1];
 		$openedWidget = $callback[2];
 		//unset when another main widget got opened
-		if($openedWidget != 'MapList' && $openedWidget != 'MxList') {
+		if ($openedWidget != 'MapList' && $openedWidget != 'MxList') {
 			unset($this->mapListShown[$player->login]);
 		}
 	}
@@ -773,7 +773,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	public function handleManialinkPageAnswer(array $callback) {
 		$actionId    = $callback[1][2];
 		$actionArray = explode('.', $actionId);
-		if(count($actionArray) <= 2) {
+		if (count($actionArray) <= 2) {
 			return;
 		}
 
@@ -828,12 +828,12 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 */
 	public function updateWidget(array $callback) {
 		foreach($this->mapListShown as $login => $shown) {
-			if($shown) {
+			if ($shown) {
 				$player = $this->maniaControl->playerManager->getPlayer($login);
-				if($player != null) {
-					if($shown == self::SHOW_MX_LIST) {
+				if ($player != null) {
+					if ($shown == self::SHOW_MX_LIST) {
 						//nothing to update yet
-					} else if($shown == self::SHOW_MAP_LIST) {
+					} else if ($shown == self::SHOW_MAP_LIST) {
 						$this->showMapList($player);
 					}
 				} else {
