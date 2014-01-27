@@ -2,6 +2,7 @@
 
 namespace ManiaControl;
 
+use ErrorHandler;
 use ManiaControl\Admin\ActionsMenu;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackManager;
@@ -62,6 +63,7 @@ class ManiaControl implements CommandListener {
 	public $settingManager = null;
 	public $statisticManager = null;
 	public $updateManager = null;
+	public $errorHandler = null;
 
 	/**
 	 * Private properties
@@ -72,6 +74,9 @@ class ManiaControl implements CommandListener {
 	 * Construct ManiaControl
 	 */
 	public function __construct() {
+		//Construct Error Handler
+		$this->errorHandler = new ErrorHandler($this);
+
 		$this->log('Loading ManiaControl v' . self::VERSION . '...');
 
 		// Load config
@@ -100,6 +105,7 @@ class ManiaControl implements CommandListener {
 		$this->commandManager->registerCommandListener('shutdown', $this, 'command_Shutdown', true);
 	}
 
+
 	/**
 	 * Print a message to console and log
 	 *
@@ -107,7 +113,7 @@ class ManiaControl implements CommandListener {
 	 */
 	public function log($message, $stripCodes = false) {
 		$date = date("d.M y H:i:s");
-		if($stripCodes) {
+		if ($stripCodes) {
 			$message = Formatter::stripCodes($message);
 		}
 		logMessage($date . ' ' . $message);
@@ -121,15 +127,15 @@ class ManiaControl implements CommandListener {
 	 */
 	public function getOS($compareOS = null) {
 		$windows = defined('PHP_WINDOWS_VERSION_MAJOR');
-		if($compareOS) {
+		if ($compareOS) {
 			// Return bool whether OS equals $compareOS
-			if($compareOS == self::OS_WIN) {
+			if ($compareOS == self::OS_WIN) {
 				return $windows;
 			}
 			return !$windows;
 		}
 		// Return OS
-		if($windows) {
+		if ($windows) {
 			return self::OS_WIN;
 		}
 		return self::OS_UNIX;
@@ -153,7 +159,7 @@ class ManiaControl implements CommandListener {
 	 * @param Player $player
 	 */
 	public function command_Restart(array $chatCallback, Player $player) {
-		if(!AuthenticationManager::checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)) {
+		if (!AuthenticationManager::checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)) {
 			$this->authenticationManager->sendNotAllowed($player);
 			return;
 		}
@@ -167,7 +173,7 @@ class ManiaControl implements CommandListener {
 	 * @param Player $player
 	 */
 	public function command_Shutdown(array $chat, Player $player) {
-		if(!$this->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)) {
+		if (!$this->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)) {
 			$this->authenticationManager->sendNotAllowed($player);
 			return;
 		}
@@ -180,7 +186,7 @@ class ManiaControl implements CommandListener {
 	 * @param string $message
 	 */
 	public function quit($message = null) {
-		if($message) {
+		if ($message) {
 			$this->log($message);
 		}
 		exit();
@@ -217,7 +223,7 @@ class ManiaControl implements CommandListener {
 
 		// Announce restart
 		$this->chat->sendInformation('Restarting ManiaControl...');
-		if($message) {
+		if ($message) {
 			$this->log($message);
 		}
 
@@ -227,7 +233,7 @@ class ManiaControl implements CommandListener {
 		$this->log('Restarting ManiaControl!');
 
 		// Execute start script in background
-		if($this->getOS(self::OS_UNIX)) {
+		if ($this->getOS(self::OS_UNIX)) {
 			$command = 'sh ' . escapeshellarg(ManiaControlDir . '/ManiaControl.sh') . ' > /dev/null &';
 			exec($command);
 		} else {
@@ -274,7 +280,7 @@ class ManiaControl implements CommandListener {
 			// Yield for next tick
 			$loopEnd   = microtime(true);
 			$sleepTime = 300000 - $loopEnd + $loopStart;
-			if($sleepTime > 0) {
+			if ($sleepTime > 0) {
 				usleep($sleepTime);
 			}
 		}
@@ -289,12 +295,12 @@ class ManiaControl implements CommandListener {
 	private function connect() {
 		// Load remote client
 		$host = $this->config->server->xpath('host');
-		if(!$host) {
+		if (!$host) {
 			trigger_error("Invalid server configuration (host).", E_USER_ERROR);
 		}
 		$host = (string)$host[0];
 		$port = $this->config->server->xpath('port');
-		if(!$host) {
+		if (!$host) {
 			trigger_error("Invalid server configuration (port).", E_USER_ERROR);
 		}
 		$port = (string)$port[0];
@@ -302,12 +308,12 @@ class ManiaControl implements CommandListener {
 		$this->log("Connecting to server at {$host}:{$port}...");
 
 		$login = $this->config->server->xpath('login');
-		if(!$login) {
+		if (!$login) {
 			trigger_error("Invalid server configuration (login).", E_USER_ERROR);
 		}
 		$login = (string)$login[0];
 		$pass  = $this->config->server->xpath('pass');
-		if(!$pass) {
+		if (!$pass) {
 			trigger_error("Invalid server configuration (password).", E_USER_ERROR);
 		}
 		$pass = (string)$pass[0];
@@ -326,7 +332,7 @@ class ManiaControl implements CommandListener {
 		}
 
 		// Wait for server to be ready
-		if(!$this->server->waitForStatus(4)) {
+		if (!$this->server->waitForStatus(4)) {
 			trigger_error("Server couldn't get ready!", E_USER_ERROR);
 		}
 
@@ -343,7 +349,7 @@ class ManiaControl implements CommandListener {
 		$this->client->sendHideManialinkPage();
 
 		// Enable script callbacks if needed
-		if($this->server->getGameMode() != 0) {
+		if ($this->server->getGameMode() != 0) {
 			return;
 		}
 
@@ -354,7 +360,7 @@ class ManiaControl implements CommandListener {
 			return;
 		}
 
-		if(!array_key_exists('S_UseScriptCallbacks', $scriptSettings)) {
+		if (!array_key_exists('S_UseScriptCallbacks', $scriptSettings)) {
 			return;
 		}
 
