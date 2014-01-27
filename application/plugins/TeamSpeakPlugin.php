@@ -40,7 +40,6 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 
 	const TS_ICON       = 'Teamspeak.png';
 	const TS_ICON_MOVER = 'Teamspeak_logo_press.png';
-	const TS_ICON_LINK  = 'http://dump.klaversma.eu';
 
 	/**
 	 * Private properties
@@ -74,8 +73,8 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 
 		$this->refreshTime = time();
 
-		$this->maniaControl->manialinkManager->iconManager->addIcon(self::TS_ICON, self::TS_ICON_LINK);
-		$this->maniaControl->manialinkManager->iconManager->addIcon(self::TS_ICON_MOVER, self::TS_ICON_LINK);
+		$this->maniaControl->manialinkManager->iconManager->addIcon(self::TS_ICON);
+		$this->maniaControl->manialinkManager->iconManager->addIcon(self::TS_ICON_MOVER);
 
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_1_SECOND, $this, 'ts3_queryServer');
 
