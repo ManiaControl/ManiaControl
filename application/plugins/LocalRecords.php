@@ -46,6 +46,16 @@ class LocalRecordsPlugin implements CallbackListener, Plugin {
 	private $updateManialink = false;
 
 	/**
+	 * Prepares the Plugin
+	 *
+	 * @param ManiaControl $maniaControl
+	 * @return mixed
+	 */
+	public static function prepare(ManiaControl $maniaControl) {
+		// TODO: Implement prepare() method.
+	}
+
+	/**
 	 *
 	 * @see \ManiaControl\Plugins\Plugin::load()
 	 */

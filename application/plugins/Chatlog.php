@@ -1,8 +1,8 @@
 <?php
-use ManiaControl\FileUtil;
-use ManiaControl\ManiaControl;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\FileUtil;
+use ManiaControl\ManiaControl;
 use ManiaControl\Plugins\Plugin;
 
 /**
@@ -14,39 +14,48 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 	/**
 	 * Constants
 	 */
-	const ID = 1;
-	const VERSION = 0.1;
-	const DATE = 'd-m-y h:i:sa T';
-	const SETTING_FOLDERNAME = 'Log-Folder Name';
-	const SETTING_FILENAME = 'Log-File Name';
-	const SETTING_USEPID = 'Use Process-Id for File Name';
+	const ID                        = 1;
+	const VERSION                   = 0.1;
+	const DATE                      = 'd-m-y h:i:sa T';
+	const SETTING_FOLDERNAME        = 'Log-Folder Name';
+	const SETTING_FILENAME          = 'Log-File Name';
+	const SETTING_USEPID            = 'Use Process-Id for File Name';
 	const SETTING_LOGSERVERMESSAGES = 'Log Server Messages';
-	
+
 	/**
 	 * Private properties
 	 */
-	/** @var maniaControl $maniaControl  */
+	/** @var maniaControl $maniaControl */
 	private $maniaControl = null;
 	private $fileName = null;
 	private $logServerMessages = true;
 
 	/**
+	 * Prepares the Plugin
 	 *
+	 * @param ManiaControl $maniaControl
+	 * @return mixed
+	 */
+	public static function prepare(ManiaControl $maniaControl) {
+		// TODO: Implement prepare() method.
+	}
+
+	/**
 	 * @see \ManiaControl\Plugins\Plugin::load()
 	 */
 	public function load(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
-		
+
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_FOLDERNAME, 'logs');
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_FILENAME, 'ChatLog.log');
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_USEPID, false);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_LOGSERVERMESSAGES, true);
-		
+
 		// Get settings
 		$folderName = $this->maniaControl->settingManager->getSetting($this, self::SETTING_FOLDERNAME);
 		$folderName = FileUtil::getClearedFileName($folderName);
-		$folderDir = ManiaControlDir . '/' . $folderName;
+		$folderDir  = ManiaControlDir . '/' . $folderName;
 		if (!is_dir($folderDir)) {
 			$success = mkdir($folderDir);
 			if (!$success) {
@@ -55,29 +64,26 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 		}
 		$fileName = $this->maniaControl->settingManager->getSetting($this, self::SETTING_FILENAME);
 		$fileName = FileUtil::getClearedFileName($fileName);
-		$usePId = $this->maniaControl->settingManager->getSetting($this, self::SETTING_USEPID);
+		$usePId   = $this->maniaControl->settingManager->getSetting($this, self::SETTING_USEPID);
 		if ($usePId) {
 			$dotIndex = strripos($fileName, '.');
-			$pIdPart = '_' . getmypid();
+			$pIdPart  = '_' . getmypid();
 			if ($dotIndex !== false && $dotIndex >= 0) {
 				$fileName = substr($fileName, 0, $dotIndex) . $pIdPart . substr($fileName, $dotIndex);
-			}
-			else {
+			} else {
 				$fileName .= $pIdPart;
 			}
 		}
-		$this->fileName = $folderDir . '/' . $fileName;
+		$this->fileName          = $folderDir . '/' . $fileName;
 		$this->logServerMessages = $this->maniaControl->settingManager->getSetting($this, self::SETTING_LOGSERVERMESSAGES);
-		
+
 		// Register for callbacks
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCHAT, $this, 
-				'handlePlayerChatCallback');
-		
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCHAT, $this, 'handlePlayerChatCallback');
+
 		return true;
 	}
 
 	/**
-	 *
 	 * @see \ManiaControl\Plugins\Plugin::unload()
 	 */
 	public function unload() {
@@ -86,7 +92,6 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 	}
 
 	/**
-	 *
 	 * @see \ManiaControl\Plugins\Plugin::getId()
 	 */
 	public static function getId() {
@@ -94,7 +99,6 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 	}
 
 	/**
-	 *
 	 * @see \ManiaControl\Plugins\Plugin::getName()
 	 */
 	public static function getName() {
@@ -102,7 +106,6 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 	}
 
 	/**
-	 *
 	 * @see \ManiaControl\Plugins\Plugin::getVersion()
 	 */
 	public static function getVersion() {
@@ -110,7 +113,6 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 	}
 
 	/**
-	 *
 	 * @see \ManiaControl\Plugins\Plugin::getAuthor()
 	 */
 	public static function getAuthor() {
@@ -118,7 +120,6 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 	}
 
 	/**
-	 *
 	 * @see \ManiaControl\Plugins\Plugin::getDescription()
 	 */
 	public static function getDescription() {
@@ -128,7 +129,7 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 	/**
 	 * Handle PlayerChat callback
 	 *
-	 * @param array $chatCallback        	
+	 * @param array $chatCallback
 	 */
 	public function handlePlayerChatCallback(array $chatCallback) {
 		$data = $chatCallback[1];
@@ -142,8 +143,8 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 	/**
 	 * Log the given message
 	 *
-	 * @param string $text        	
-	 * @param string $login        	
+	 * @param string $text
+	 * @param string $login
 	 */
 	private function logText($text, $login = null) {
 		if (!$login) {

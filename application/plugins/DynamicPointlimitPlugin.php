@@ -28,6 +28,16 @@ class DynamicPointlimitPlugin implements CallbackListener, CommandListener, Plug
 	const DYNPNT_MAX        = 'Maximum pointlimit';
 
 	/**
+	 * Prepares the Plugin
+	 *
+	 * @param ManiaControl $maniaControl
+	 * @return mixed
+	 */
+	public static function prepare(ManiaControl $maniaControl) {
+		// TODO: Implement prepare() method.
+	}
+
+	/**
 	 * Private properties
 	 */
 	/** @var ManiaControl $maniaControl */

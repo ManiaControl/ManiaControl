@@ -16,9 +16,17 @@ interface Plugin {
 	const PLUGIN_INTERFACE = __CLASS__;
 
 	/**
+	 * Prepares the Plugin
+	 *
+	 * @param ManiaControl $maniaControl
+	 * @return mixed
+	 */
+	public static function prepare(ManiaControl $maniaControl);
+
+	/**
 	 * Load the plugin
 	 *
-	 * @param \ManiaControl\ManiaControl $maniaControl        	
+	 * @param \ManiaControl\ManiaControl $maniaControl
 	 * @return bool
 	 */
 	public function load(ManiaControl $maniaControl);

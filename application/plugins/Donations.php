@@ -44,6 +44,16 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	const SETTING_MIN_AMOUNT_SHOWN        = 'Minimum Donation amount to get shown';
 
 	/**
+	 * Prepares the Plugin
+	 *
+	 * @param ManiaControl $maniaControl
+	 * @return mixed
+	 */
+	public static function prepare(ManiaControl $maniaControl) {
+		// TODO: Implement prepare() method.
+	}
+
+	/**
 	 * Private properties
 	 */
 	/**
