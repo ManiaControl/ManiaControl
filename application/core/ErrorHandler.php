@@ -1,4 +1,5 @@
 <?php
+use ManiaControl\ManiaControl;
 
 /**
  * Error and Exception Manager Class
@@ -7,21 +8,29 @@
  */
 class ErrorHandler {
 	/**
+	 * Private Properties
+	 */
+	private $maniaControl = null;
+
+	/**
 	 * Construct Error Handler
 	 */
-	public function __construct() {
+	public function __construct(ManiaControl $maniaControl) {
+		$this->maniaControl = $maniaControl;
 		set_error_handler(array(&$this, 'errorHandler'), -1);
 		set_exception_handler(array(&$this, 'exceptionHandler'));
 	}
 
 	/**
 	 * ManiaControl ExceptionHandler
+	 * ManiaControl Shuts down after exception
 	 *
 	 * @param Exception $ex
 	 */
-	public function exceptionHandler(Exception $ex) {
+	public function exceptionHandler(\Exception $ex) {
 		$message = "[ManiaControl EXCEPTION]: {$ex->getMessage()} Trace: {$ex->getTraceAsString()}!";
 		logMessage($message);
+		exit();
 	}
 
 	/**
