@@ -12,11 +12,6 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
-require_once __DIR__ . '/StyleManager.php';
-require_once __DIR__ . '/IconManager.php';
-require_once __DIR__ . '/CustomUIManager.php';
-require_once __DIR__ . '/../FML/autoload.php';
-
 /**
  * Manialink manager class
  *

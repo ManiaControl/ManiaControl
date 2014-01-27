@@ -19,11 +19,6 @@ use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 
-require_once __DIR__ . '/ConfiguratorMenu.php';
-require_once __DIR__ . '/ScriptSettings.php';
-require_once __DIR__ . '/ServerSettings.php';
-require_once __DIR__ . '/ManiaControlSettings.php';
-
 /**
  * Class managing ingame ManiaControl configuration
  *

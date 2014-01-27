@@ -8,8 +8,6 @@ use ManiaControl\Players\PlayerManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 
-require_once __DIR__ . '/AuthCommands.php';
-
 /**
  * Class managing Authentication Levels
  *

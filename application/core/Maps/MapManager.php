@@ -11,11 +11,6 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
-require_once __DIR__ . '/Map.php';
-require_once __DIR__ . '/MapCommands.php';
-require_once __DIR__ . '/MapList.php';
-require_once __DIR__ . '/MapQueue.php';
-
 /**
  * Manager for Maps
  *
