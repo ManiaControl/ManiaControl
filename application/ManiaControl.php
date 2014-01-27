@@ -48,6 +48,7 @@ function logMessage($message) {
 
 /**
  * Get the prefix for the given error level
+ * 
  * @param int $errorLevel
  * @return string
  */
@@ -91,7 +92,17 @@ set_error_handler(
 			return false;
 		}, -1);
 
+// Autoload Function that loads ManiaControl Class Files on Demand
+spl_autoload_register(
+		function ($className) {
+			$classPath = str_replace('\\', DIRECTORY_SEPARATOR, $className);
+			$classPath = preg_replace('/ManiaControl/', 'core', $classPath, 1);
+			$filePath = ManiaControlDir . DIRECTORY_SEPARATOR . $classPath . '.php';
+			if (file_exists($filePath)) {
+				require_once $filePath;
+			}
+		});
+
 // Start ManiaControl
-require_once __DIR__ . '/core/ManiaControl.php';
-$maniaControl = new ManiaControl\ManiaControl();
+$maniaControl = new \ManiaControl\ManiaControl();
 $maniaControl->run();
