@@ -205,6 +205,15 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 			} else {
 				$this->removePlayerFromQueue($player->login);
 				if(isset($this->spectators[$player->login])) unset($this->spectators[$player->login]);
+
+				$found = false;
+				foreach($this->showPlay as $showPlay) {
+					if($showPlay['player']->login == $player->login) {
+						$found = true;
+					}
+				}
+				
+				if(!$found) $this->hideQueueWidget($player);
 			}
 		}
 	}
