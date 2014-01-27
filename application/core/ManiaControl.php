@@ -14,10 +14,10 @@ use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\PluginManager;
 use ManiaControl\Server\Server;
+use ManiaControl\Settings\SettingManager;
 use ManiaControl\Statistics\StatisticManager;
 use Maniaplanet\DedicatedServer\Connection;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
-use ManiaControl\Settings\SettingManager;
 
 require_once __DIR__ . '/Maniaplanet/DedicatedServer/Connection.php';
 require_once __DIR__ . '/GbxDataFetcher/gbxdatafetcher.inc.php';
@@ -34,13 +34,13 @@ class ManiaControl implements CommandListener {
 	/**
 	 * Constants
 	 */
-	const VERSION = '0.01';
-	const API_VERSION = '2013-04-16';
-	const OS_UNIX = 'Unix';
-	const OS_WIN = 'Windows';
+	const VERSION         = '0.01';
+	const API_VERSION     = '2013-04-16';
+	const OS_UNIX         = 'Unix';
+	const OS_WIN          = 'Windows';
 	const CONNECT_TIMEOUT = 20;
-	const SCRIPT_TIMEOUT = 20;
-	
+	const SCRIPT_TIMEOUT  = 20;
+
 	/**
 	 * Public properties
 	 */
@@ -50,9 +50,7 @@ class ManiaControl implements CommandListener {
 	public $chat = null;
 	public $config = null;
 	public $configurator = null;
-	/**
-	 * @var Connection $client
-	 */
+	/** @var Connection $client */
 	public $client = null;
 	public $commandManager = null;
 	public $database = null;
@@ -64,7 +62,7 @@ class ManiaControl implements CommandListener {
 	public $settingManager = null;
 	public $statisticManager = null;
 	public $updateManager = null;
-	
+
 	/**
 	 * Private properties
 	 */
@@ -75,27 +73,27 @@ class ManiaControl implements CommandListener {
 	 */
 	public function __construct() {
 		$this->log('Loading ManiaControl v' . self::VERSION . '...');
-		
+
 		// Load config
 		$this->config = FileUtil::loadConfig('server.xml');
-		
+
 		// Load ManiaControl Modules
-		$this->database = new Database($this);
-		$this->callbackManager = new CallbackManager($this);
-		$this->settingManager = new SettingManager($this);
-		$this->statisticManager = new StatisticManager($this);
-		$this->manialinkManager = new ManialinkManager($this);
-		$this->actionsMenu = new ActionsMenu($this);
-		$this->chat = new Chat($this);
-		$this->commandManager = new CommandManager($this);
-		$this->server = new Server($this);
+		$this->database              = new Database($this);
+		$this->callbackManager       = new CallbackManager($this);
+		$this->settingManager        = new SettingManager($this);
+		$this->statisticManager      = new StatisticManager($this);
+		$this->manialinkManager      = new ManialinkManager($this);
+		$this->actionsMenu           = new ActionsMenu($this);
+		$this->chat                  = new Chat($this);
+		$this->commandManager        = new CommandManager($this);
+		$this->server                = new Server($this);
 		$this->authenticationManager = new AuthenticationManager($this);
-		$this->playerManager = new PlayerManager($this);
-		$this->mapManager = new MapManager($this);
-		$this->configurator = new Configurator($this);
-		$this->pluginManager = new PluginManager($this);
-		$this->updateManager = new UpdateManager($this);
-		
+		$this->playerManager         = new PlayerManager($this);
+		$this->mapManager            = new MapManager($this);
+		$this->configurator          = new Configurator($this);
+		$this->pluginManager         = new PluginManager($this);
+		$this->updateManager         = new UpdateManager($this);
+
 		// Register for commands
 		$this->commandManager->registerCommandListener('version', $this, 'command_Version');
 		$this->commandManager->registerCommandListener('restart', $this, 'command_Restart', true);
@@ -109,7 +107,7 @@ class ManiaControl implements CommandListener {
 	 */
 	public function log($message, $stripCodes = false) {
 		$date = date("d.M y H:i:s");
-		if ($stripCodes) {
+		if($stripCodes) {
 			$message = Formatter::stripCodes($message);
 		}
 		logMessage($date . ' ' . $message);
@@ -123,15 +121,15 @@ class ManiaControl implements CommandListener {
 	 */
 	public function getOS($compareOS = null) {
 		$windows = defined('PHP_WINDOWS_VERSION_MAJOR');
-		if ($compareOS) {
+		if($compareOS) {
 			// Return bool whether OS equals $compareOS
-			if ($compareOS == self::OS_WIN) {
+			if($compareOS == self::OS_WIN) {
 				return $windows;
 			}
 			return !$windows;
 		}
 		// Return OS
-		if ($windows) {
+		if($windows) {
 			return self::OS_WIN;
 		}
 		return self::OS_UNIX;
@@ -140,7 +138,7 @@ class ManiaControl implements CommandListener {
 	/**
 	 * Handle Version Command
 	 *
-	 * @param array $chatCallback
+	 * @param array  $chatCallback
 	 * @param Player $player
 	 */
 	public function command_Version(array $chatCallback, Player $player) {
@@ -151,11 +149,11 @@ class ManiaControl implements CommandListener {
 	/**
 	 * Handle Restart AdminCommand
 	 *
-	 * @param array $chatCallback
+	 * @param array  $chatCallback
 	 * @param Player $player
 	 */
 	public function command_Restart(array $chatCallback, Player $player) {
-		if (!AuthenticationManager::checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)) {
+		if(!AuthenticationManager::checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)) {
 			$this->authenticationManager->sendNotAllowed($player);
 			return;
 		}
@@ -165,11 +163,11 @@ class ManiaControl implements CommandListener {
 	/**
 	 * Handle //shutdown command
 	 *
-	 * @param array $chat
+	 * @param array  $chat
 	 * @param Player $player
 	 */
 	public function command_Shutdown(array $chat, Player $player) {
-		if (!$this->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)) {
+		if(!$this->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)) {
 			$this->authenticationManager->sendNotAllowed($player);
 			return;
 		}
@@ -182,7 +180,7 @@ class ManiaControl implements CommandListener {
 	 * @param string $message
 	 */
 	public function quit($message = null) {
-		if ($message) {
+		if($message) {
 			$this->log($message);
 		}
 		exit();
@@ -194,16 +192,16 @@ class ManiaControl implements CommandListener {
 	public function handleShutdown() {
 		// OnShutdown callback
 		$this->callbackManager->triggerCallback(CallbackManager::CB_MC_ONSHUTDOWN, array(CallbackManager::CB_MC_ONSHUTDOWN));
-		
+
 		// Announce quit
 		$this->chat->sendInformation('ManiaControl shutting down.');
-		
+
 		// Hide manialinks
 		$this->client->sendHideManialinkPage();
-		
+
 		// Close the client connection
 		$this->client->delete($this->server->ip, $this->server->port);
-		
+
 		$this->log('Quitting ManiaControl!');
 		exit();
 	}
@@ -216,24 +214,23 @@ class ManiaControl implements CommandListener {
 	public function restart($message = null) {
 		// Shutdown callback
 		$this->callbackManager->triggerCallback(CallbackManager::CB_MC_ONSHUTDOWN, array(CallbackManager::CB_MC_ONSHUTDOWN));
-		
+
 		// Announce restart
 		$this->chat->sendInformation('Restarting ManiaControl...');
-		if ($message) {
+		if($message) {
 			$this->log($message);
 		}
-		
+
 		// Hide widgets
 		$this->client->sendHideManialinkPage();
-		
+
 		$this->log('Restarting ManiaControl!');
-		
+
 		// Execute start script in background
-		if ($this->getOS(self::OS_UNIX)) {
+		if($this->getOS(self::OS_UNIX)) {
 			$command = 'sh ' . escapeshellarg(ManiaControlDir . '/ManiaControl.sh') . ' > /dev/null &';
 			exec($command);
-		}
-		else {
+		} else {
 			$command = escapeshellarg(ManiaControlDir . "\ManiaControl.bat");
 			system($command); // TODO, windows stucks here as long controller is running
 		}
@@ -245,43 +242,43 @@ class ManiaControl implements CommandListener {
 	 */
 	public function run() {
 		$this->log('Starting ManiaControl v' . self::VERSION . '!');
-		
+
 		// Connect to server
 		$this->connect();
-		
+
 		// Register shutdown handler
 		register_shutdown_function(array($this, 'handleShutdown'));
-		
+
 		// OnInit callback
 		$this->callbackManager->triggerCallback(CallbackManager::CB_MC_ONINIT, array(CallbackManager::CB_MC_ONINIT));
-		
+
 		// Load plugins
 		$this->pluginManager->loadPlugins();
-		
+
 		// Announce ManiaControl
 		$this->chat->sendInformation('ManiaControl v' . self::VERSION . ' successfully started!');
-		
+
 		// Loading finished
 		$this->log('Loading completed!');
-		
+
 		// Main loop
-		while (!$this->shutdownRequested) {
+		while(!$this->shutdownRequested) {
 			$loopStart = microtime(true);
-			
+
 			// Disable script timeout
 			set_time_limit(self::SCRIPT_TIMEOUT);
-			
+
 			// Manager callbacks
 			$this->callbackManager->manageCallbacks();
-			
+
 			// Yield for next tick
-			$loopEnd = microtime(true);
+			$loopEnd   = microtime(true);
 			$sleepTime = 300000 - $loopEnd + $loopStart;
-			if ($sleepTime > 0) {
+			if($sleepTime > 0) {
 				usleep($sleepTime);
 			}
 		}
-		
+
 		// Shutdown
 		$this->quit();
 	}
@@ -292,83 +289,79 @@ class ManiaControl implements CommandListener {
 	private function connect() {
 		// Load remote client
 		$host = $this->config->server->xpath('host');
-		if (!$host) {
+		if(!$host) {
 			trigger_error("Invalid server configuration (host).", E_USER_ERROR);
 		}
-		$host = (string) $host[0];
+		$host = (string)$host[0];
 		$port = $this->config->server->xpath('port');
-		if (!$host) {
+		if(!$host) {
 			trigger_error("Invalid server configuration (port).", E_USER_ERROR);
 		}
-		$port = (string) $port[0];
-		
+		$port = (string)$port[0];
+
 		$this->log("Connecting to server at {$host}:{$port}...");
-		
+
 		$login = $this->config->server->xpath('login');
-		if (!$login) {
+		if(!$login) {
 			trigger_error("Invalid server configuration (login).", E_USER_ERROR);
 		}
-		$login = (string) $login[0];
-		$pass = $this->config->server->xpath('pass');
-		if (!$pass) {
+		$login = (string)$login[0];
+		$pass  = $this->config->server->xpath('pass');
+		if(!$pass) {
 			trigger_error("Invalid server configuration (password).", E_USER_ERROR);
 		}
-		$pass = (string) $pass[0];
-		
+		$pass = (string)$pass[0];
+
 		try {
 			$this->client = Connection::factory($host, $port, self::CONNECT_TIMEOUT, $login, $pass);
-		}
-		catch (Exception $e) {
+		} catch(Exception $e) {
 			trigger_error("Couldn't authenticate on server with user '{$login}'! " . $e->getMessage(), E_USER_ERROR);
 		}
-		
+
 		// Enable callback system
 		try {
 			$this->client->enableCallbacks(true);
-		}
-		catch (Exception $e) {
+		} catch(Exception $e) {
 			trigger_error("Couldn't enable callbacks! " . $e->getMessage(), E_USER_ERROR);
 		}
-		
+
 		// Wait for server to be ready
-		if (!$this->server->waitForStatus(4)) {
+		if(!$this->server->waitForStatus(4)) {
 			trigger_error("Server couldn't get ready!", E_USER_ERROR);
 		}
-		
+
 		// Set api version
 		/*
 		 * if(!$this->client->query('SetApiVersion', self::API_VERSION)) { trigger_error("Couldn't set API version '" . self::API_VERSION . "'! This
 		 * might cause problems. " . $this->getClientErrorText()); }
 		 */
-		
+
 		// Connect finished
 		$this->log("Server Connection successfully established!");
-		
+
 		// Hide old widgets
 		$this->client->sendHideManialinkPage();
-		
+
 		// Enable script callbacks if needed
-		if ($this->server->getGameMode() != 0) {
+		if($this->server->getGameMode() != 0) {
 			return;
 		}
-		
+
 		try {
 			$scriptSettings = $this->client->getModeScriptSettings();
-		}
-		catch (Exception $e) {
+		} catch(Exception $e) {
 			trigger_error("Couldn't get mode script settings. " . $e->getMessage());
 			return;
 		}
-		
-		if (!array_key_exists('S_UseScriptCallbacks', $scriptSettings)) {
+
+		if(!array_key_exists('S_UseScriptCallbacks', $scriptSettings)) {
 			return;
 		}
-		
+
 		$scriptSettings['S_UseScriptCallbacks'] = true;
 		try {
 			$this->client->setModeScriptSettings($scriptSettings);
-		}
-		catch (Exception $e) {
+		} catch(Exception $e) {
 			trigger_error("Couldn't set mode script settings to enable script callbacks. " . $e->getMessage());
 			return;
 		}
