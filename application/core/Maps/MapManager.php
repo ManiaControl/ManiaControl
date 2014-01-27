@@ -555,11 +555,13 @@ class MapManager implements CallbackListener {
 			}
 
 			// Add map to map list
-			if (!$this->maniaControl->client->insertMap($mapFileName)) {
+			try {
+				$this->maniaControl->client->insertMap($mapFileName);
+			} catch(\Exception $e) {
 				$this->maniaControl->chat->sendError("Couldn't add map to match settings!", $login);
 				return;
 			}
-
+			
 			$this->updateFullMapList();
 
 			//Update Mx MapInfo
