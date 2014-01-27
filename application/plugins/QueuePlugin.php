@@ -46,6 +46,16 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 	private $showPlay = array();
 
 	/**
+	 * Prepares the Plugin
+	 *
+	 * @param ManiaControl $maniaControl
+	 * @return mixed
+	 */
+	public static function prepare(ManiaControl $maniaControl) {
+		// TODO: Implement prepare() method.
+	}
+
+	/**
 	 * Load the plugin
 	 *
 	 * @param \ManiaControl\ManiaControl $maniaControl

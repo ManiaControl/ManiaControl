@@ -31,6 +31,16 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	private $maniaControl = null;
 
 	/**
+	 * Prepares the Plugin
+	 *
+	 * @param ManiaControl $maniaControl
+	 * @return mixed
+	 */
+	public static function prepare(ManiaControl $maniaControl) {
+		// TODO: Implement prepare() method.
+	}
+
+	/**
 	 * Load the plugin
 	 *
 	 * @param \ManiaControl\ManiaControl $maniaControl

@@ -26,6 +26,16 @@ class EndurancePlugin implements CallbackListener, Plugin {
 	private $playerLapTimes = array();
 
 	/**
+	 * Prepares the Plugin
+	 *
+	 * @param ManiaControl $maniaControl
+	 * @return mixed
+	 */
+	public static function prepare(ManiaControl $maniaControl) {
+		// TODO: Implement prepare() method.
+	}
+
+	/**
 	 *
 	 * @see \ManiaControl\Plugins\Plugin::load()
 	 */
