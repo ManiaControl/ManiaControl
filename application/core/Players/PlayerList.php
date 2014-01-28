@@ -87,71 +87,23 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 	 * @param Player $player
 	 */
 	public function showPlayerList(Player $player) {
-		$width        = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
-		$height       = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
-		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowStyle();
-		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowSubStyle();
+		$width  = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
+		$height = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
 
+		// get PlayerList
+		$players = $this->maniaControl->playerManager->getPlayers();
+		$pagesId = '';
+		if (count($players) > self::MAX_PLAYERS_PER_PAGE) {
+			$pagesId = 'PlayerListPages';
+		}
+
+		//create manialink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$script    = $maniaLink->getScript();
 
 		// Main frame
-		$frame = new Frame();
+		$frame = $this->maniaControl->manialinkManager->styleManager->defaultListFrame($script, $pagesId);
 		$maniaLink->add($frame);
-		$frame->setSize($width, $height);
-		$frame->setPosition(0, 0, 10);
-
-		// Background
-		$backgroundQuad = new Quad();
-		$frame->add($backgroundQuad);
-		$backgroundQuad->setSize($width, $height);
-		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-
-		/*$backgroundQuad = new Quad();
-		$frame->add($backgroundQuad);
-		$backgroundQuad->setSize($width* 1.3, $height* 1.3);
-		//$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-		$backgroundQuad->setImage("http://www.imgdumper.nl/uploads7/52d991addf7a1/52d991add72ef-border-playerstats.png");
-		$backgroundQuad->setZ(-0.5);*/
-
-		// Close Quad (X)
-		$closeQuad = new Quad_Icons64x64_1();
-		$frame->add($closeQuad);
-		$closeQuad->setPosition($width * 0.483, $height * 0.467, 3);
-		$closeQuad->setSize(6, 6);
-		$closeQuad->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_QuitRace);
-		$closeQuad->setAction(ManialinkManager::ACTION_CLOSEWIDGET);
-
-		$pagerSize = 6.;
-		$pagesId   = 'PlayerListPages';
-
-		// get PlayerList
-		$players = $this->maniaControl->playerManager->getPlayers();
-
-		if (count($players) > self::MAX_PLAYERS_PER_PAGE) {
-			$pagerPrev = new Quad_Icons64x64_1();
-			$frame->add($pagerPrev);
-			$pagerPrev->setPosition($width * 0.42, $height * -0.44, 2);
-			$pagerPrev->setSize($pagerSize, $pagerSize);
-			$pagerPrev->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowPrev);
-
-			$pagerNext = new Quad_Icons64x64_1();
-			$frame->add($pagerNext);
-			$pagerNext->setPosition($width * 0.45, $height * -0.44, 2);
-			$pagerNext->setSize($pagerSize, $pagerSize);
-			$pagerNext->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowNext);
-
-			$script->addPager($pagerPrev, -1, $pagesId);
-			$script->addPager($pagerNext, 1, $pagesId);
-
-			$pageCountLabel = new Label_Text();
-			$frame->add($pageCountLabel);
-			$pageCountLabel->setHAlign(Control::RIGHT);
-			$pageCountLabel->setPosition($width * 0.40, $height * -0.44, 1);
-			$pageCountLabel->setStyle($pageCountLabel::STYLE_TextTitle1);
-			$pageCountLabel->setTextSize(1.3);
-			$script->addPageLabel($pageCountLabel, $pagesId);
-		}
 
 		// Start offsets
 		$x = -$width / 2;
@@ -170,7 +122,6 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$headFrame = new Frame();
 		$frame->add($headFrame);
 		$headFrame->setY($y - 5);
-		// $array = array("Id" => $x + 5, "Nickname" => $x + 10, "Login" => $x + 40, "Ladder" => $x + 60,"Zone" => $x + 85);
 		if ($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
 			$array = array("Id" => $x + 5, "Nickname" => $x + 18, "Login" => $x + 70, "Location" => $x + 101, "Actions" => $x + 135);
 		} else {
