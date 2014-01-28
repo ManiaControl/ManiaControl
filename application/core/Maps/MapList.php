@@ -75,7 +75,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 * @param array  $chatCallback
 	 * @param Player $player
 	 */
-	public function clearMapQueue(array $chatCallback, Player $player) {
+	public function clearMapQueue(array  $chatCallback, Player $player) {
 		//Clears the Map Queue
 		$this->maniaControl->mapManager->mapQueue->clearMapQueue($player);
 	}
