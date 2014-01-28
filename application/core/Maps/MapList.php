@@ -37,6 +37,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	const ACTION_ERASE_MAP      = 'MapList.EraseMap';
 	const ACTION_SWITCH_MAP     = 'MapList.SwitchMap';
 	const ACTION_QUEUED_MAP     = 'MapList.QueueMap';
+	const ACTION_UNQUEUE_MAP    = 'MapList.UnQueueMap';
 	const ACTION_CHECK_UPDATE   = 'MapList.CheckUpdate';
 	const ACTION_CLEAR_MAPQUEUE = 'MapList.ClearMapQueue';
 	const MAX_MAPS_PER_PAGE     = 15;
@@ -122,7 +123,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$maniaLink->add($frame);
 
 		//Admin Buttons
-		if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
+		if ($this->maniaControl->authenticationManager->checkPermission($player, MapQueue::SETTING_PERMISSION_CLEAR_MAPQUEUE)) {
 			//Clear Map-Queue
 			$label = new Label_Button();
 			$frame->add($label);
@@ -280,7 +281,16 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$label->setTextSize(1.5);
 				$label->setText($queuedMaps[$map->uid]);
 				$label->setTextColor('fff');
-				$script->addTooltip($label, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => '$<' . $map->name . '$> is on Map-Queue Position: ' . $queuedMaps[$map->uid]));
+
+				//Checks if the Player who openend the Widget has queued the map
+				$queuer = $this->maniaControl->mapManager->mapQueue->getQueuer($map->uid);
+				if ($queuer->login == $player->login) {
+					$script->addTooltip($label, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => 'Remove $<' . $map->name . '$> from the Map Queue'));
+					$label->setAction(self::ACTION_UNQUEUE_MAP . '.' . $map->uid);
+				} else {
+					$script->addTooltip($label, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => '$<' . $map->name . '$> is on Map-Queue Position: ' . $queuedMaps[$map->uid]));
+				}
+
 			} else {
 				// Map-Queue-Map-Button
 				$queueLabel = new Label_Button();
@@ -292,7 +302,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$queueLabel->setText('+');
 				$queueLabel->setTextColor('09f');
 
-				$script->addTooltip($queueLabel, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => 'Add Map to the Map Queue: $<' . $map->name . '$>'));
+				$script->addTooltip($queueLabel, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => 'Add $<' . $map->name . '$> to the Map Queue'));
 			}
 
 			if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_REMOVE_MAP)) {
@@ -503,6 +513,9 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				break;
 			case self::ACTION_QUEUED_MAP:
 				$this->maniaControl->mapManager->mapQueue->addMapToMapQueue($callback[1][1], $actionArray[2]);
+				break;
+			case self::ACTION_UNQUEUE_MAP:
+				$this->maniaControl->mapManager->mapQueue->removeFromMapQueue($player, $actionArray[2]);
 				break;
 		}
 	}

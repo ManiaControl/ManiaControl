@@ -205,7 +205,7 @@ class MapManager implements CallbackListener {
 		$map = $this->maps[$uid];
 
 		//Unset the Map everywhere
-		$this->mapQueue->removeFromMapQueue($admin->login, $map->uid);
+		$this->mapQueue->removeFromMapQueue($admin, $map->uid);
 		$this->mxManager->unsetMap($map->mx->id);
 
 		// Remove map
