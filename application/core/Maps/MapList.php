@@ -543,9 +543,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			if ($shown) {
 				$player = $this->maniaControl->playerManager->getPlayer($login);
 				if ($player != null) {
-					if ($shown) {
-						$this->showMapList($player);
-					}
+					$this->showMapList($player);
 				} else {
 					unset($this->mapListShown[$login]);
 				}
