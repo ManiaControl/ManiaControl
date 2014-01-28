@@ -139,7 +139,9 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$quad->setHAlign(Control::RIGHT);
 			$quad->setSize(29, 4);
 			$quad->setAction(self::ACTION_CLEAR_MAPQUEUE);
+		}
 
+		if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_CHECK_UPDATE)) {
 			//Check Update
 			$label = new Label_Button();
 			$frame->add($label);
@@ -165,7 +167,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$mxQuad->setZ(0.01);
 			$mxQuad->setAction(self::ACTION_CHECK_UPDATE);
 		}
-
 
 		// Headline
 		$headFrame = new Frame();
