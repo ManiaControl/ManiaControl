@@ -128,7 +128,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 * @param bool   $hideOnClick
 	 * @return bool
 	 */
-	public function sendManialink($manialinkText, $logins = null, $timeout = 0, $hideOnClick = false) { //TODO imrpvoe
+	public function sendManialink($manialinkText, $logins = null, $timeout = 0, $hideOnClick = false) {
 		$manialinkText = (string)$manialinkText;
 
 		try {
@@ -235,13 +235,11 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 * @return array Returns the labels (to add special Properties later)
 	 */
 	public function labelLine(Frame $frame, array $labelStrings, array $properties = array()) {
-		// TODO overwrite standard properties with properties from array
-
 		// define standard properties
-		$hAlign    = Control::LEFT;
-		$style     = Label_Text::STYLE_TextCardSmall;
-		$textSize  = 1.5;
-		$textColor = 'FFF';
+		$hAlign    = (isset($properties['hAlign']) ? $properties['hAlign'] : Control::LEFT);
+		$style     = (isset($properties['style']) ? $properties['style'] : Label_Text::STYLE_TextCardSmall);
+		$textSize  = (isset($properties['textSize']) ? $properties['textSize'] : 1.5);
+		$textColor = (isset($properties['textColor']) ? $properties['textColor'] : 'FFF');
 		$profile   = (isset($properties['profile']) ? $properties['profile'] : false);
 		$script    = (isset($properties['script']) ? $properties['script'] : null);
 
