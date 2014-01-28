@@ -114,48 +114,21 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 			return;
 		}
 
-		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
-		$frame     = $this->maniaControl->manialinkManager->styleManager->defaultListFrame();
-		$maniaLink->add($frame);
-		$frame->setZ(10);
-
-		// Create script and features
-		$script = new Script();
-		$maniaLink->setScript($script);
-
 		// Start offsets
 		$width  = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
 		$height = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
 		$x      = -$width / 2;
 		$y      = $height / 2;
 
-		// Pagers
-		// Config
-		$pagerSize = 6.;
-		$pagesId   = 'MxListPages';
+		//Create ManiaLink
+		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
+		$script    = $maniaLink->getScript();
 
-		$pagerPrev = new Quad_Icons64x64_1();
-		$frame->add($pagerPrev);
-		$pagerPrev->setPosition($width * 0.42, $height * -0.44, 2);
-		$pagerPrev->setSize($pagerSize, $pagerSize);
-		$pagerPrev->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowPrev);
+		$pagesId = 'MxListPages';
 
-		$pagerNext = new Quad_Icons64x64_1();
-		$frame->add($pagerNext);
-		$pagerNext->setPosition($width * 0.45, $height * -0.44, 2);
-		$pagerNext->setSize($pagerSize, $pagerSize);
-		$pagerNext->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowNext);
-
-		$script->addPager($pagerPrev, -1, $pagesId);
-		$script->addPager($pagerNext, 1, $pagesId);
-
-		$pageCountLabel = new Label_Text();
-		$frame->add($pageCountLabel);
-		$pageCountLabel->setHAlign(Control::RIGHT);
-		$pageCountLabel->setPosition($width * 0.40, $height * -0.44, 1);
-		$pageCountLabel->setStyle($pageCountLabel::STYLE_TextTitle1);
-		$pageCountLabel->setTextSize(1.3);
-		$script->addPageLabel($pageCountLabel, $pagesId);
+		// Main frame
+		$frame = $this->maniaControl->manialinkManager->styleManager->defaultListFrame($script, $pagesId);
+		$maniaLink->add($frame);
 
 		// Predefine Description Label
 		$descriptionLabel = new Label();

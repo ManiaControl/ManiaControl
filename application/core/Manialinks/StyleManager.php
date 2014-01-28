@@ -2,10 +2,13 @@
 
 namespace ManiaControl\Manialinks;
 
+use FML\Controls\Control;
 use FML\Controls\Frame;
+use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_BgRaceScore2;
 use FML\Controls\Quads\Quad_Icons64x64_1;
+use FML\Script\Script;
 use ManiaControl\ManiaControl;
 
 /**
@@ -132,7 +135,7 @@ class StyleManager {
 	 *
 	 * @return Frame $frame
 	 */
-	public function defaultListFrame() {
+	public function defaultListFrame(Script $script = null, $pagesId = '') {
 		$width        = $this->getListWidgetsWidth();
 		$height       = $this->getListWidgetsHeight();
 		$quadStyle    = $this->getDefaultMainWindowStyle();
@@ -141,7 +144,7 @@ class StyleManager {
 		// mainframe
 		$frame = new Frame();
 		$frame->setSize($width, $height);
-		$frame->setPosition(0, 0);
+		$frame->setPosition(0, 0, 10);
 
 		// Background Quad
 		$backgroundQuad = new Quad();
@@ -156,6 +159,32 @@ class StyleManager {
 		$closeQuad->setSize(6, 6);
 		$closeQuad->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_QuitRace);
 		$closeQuad->setAction(ManialinkManager::ACTION_CLOSEWIDGET);
+
+		if ($pagesId && isset($script)) {
+			$pagerSize = 6.;
+			$pagerPrev = new Quad_Icons64x64_1();
+			$frame->add($pagerPrev);
+			$pagerPrev->setPosition($width * 0.42, $height * -0.44, 2);
+			$pagerPrev->setSize($pagerSize, $pagerSize);
+			$pagerPrev->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowPrev);
+
+			$pagerNext = new Quad_Icons64x64_1();
+			$frame->add($pagerNext);
+			$pagerNext->setPosition($width * 0.45, $height * -0.44, 2);
+			$pagerNext->setSize($pagerSize, $pagerSize);
+			$pagerNext->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowNext);
+
+			$script->addPager($pagerPrev, -1, $pagesId);
+			$script->addPager($pagerNext, 1, $pagesId);
+
+			$pageCountLabel = new Label_Text();
+			$frame->add($pageCountLabel);
+			$pageCountLabel->setHAlign(Control::RIGHT);
+			$pageCountLabel->setPosition($width * 0.40, $height * -0.44, 1);
+			$pageCountLabel->setStyle($pageCountLabel::STYLE_TextTitle1);
+			$pageCountLabel->setTextSize(1.3);
+			$script->addPageLabel($pageCountLabel, $pagesId);
+		}
 
 		return $frame;
 	}
