@@ -35,10 +35,6 @@ class Player {
 	public $downloadRate = -1;
 	public $uploadRate = -1;
 	public $skins = null;
-	public $stateUpdateLatency; //TODO format?
-	public $stateUpdatePeriod; //TODO format?
-	public $latestNetworkActivity; //TODO format?
-	public $packetLossRate; //TODO format?
 	public $maniaPlanetPlayDays = -1;
 
 	//Flags details
@@ -66,35 +62,30 @@ class Player {
 	 * @param \Maniaplanet\DedicatedServer\Structures\Player $mpPlayer
 	 */
 	public function __construct($mpPlayer) {
-		if(!$mpPlayer) {
+		if (!$mpPlayer) {
 			$this->isConnected = false;
 			return;
 		}
 
-		$this->pid                   = $mpPlayer->playerId;
-		$this->login                 = $mpPlayer->login;
-		$this->nickname              = Formatter::stripDirtyCodes($mpPlayer->nickName);
-		$this->path                  = $mpPlayer->path;
-		$this->language              = $mpPlayer->language;
-		$this->avatar                = $mpPlayer->avatar['FileName'];
-		$this->allies                = $mpPlayer->allies;
-		$this->clubLink              = $mpPlayer->clubLink;
-		$this->teamId                = $mpPlayer->teamId;
-		$this->isOfficial            = $mpPlayer->isInOfficialMode;
-		$this->ladderScore           = $mpPlayer->ladderStats['PlayerRankings'][0]['Score'];
-		$this->ladderRank            = $mpPlayer->ladderStats['PlayerRankings'][0]['Ranking'];
-		$this->ladderStats           = $mpPlayer->ladderStats;
-		$this->maniaPlanetPlayDays   = $mpPlayer->hoursSinceZoneInscription / 24; //TODO change
-		$this->ipAddress             = $mpPlayer->iPAddress;
-		$this->clientVersion         = $mpPlayer->clientVersion;
-		$this->downloadRate          = $mpPlayer->downloadRate;
-		$this->uploadRate            = $mpPlayer->uploadRate;
-		$this->skins                 = $mpPlayer->skins;
-		$this->stateUpdateLatency    = $mpPlayer->stateUpdateLatency;
-		$this->stateUpdatePeriod     = $mpPlayer->stateUpdatePeriod;
-		$this->latestNetworkActivity = $mpPlayer->latestNetworkActivity;
-		$this->packetLossRate        = $mpPlayer->packetLossRate;
-
+		$this->pid                 = $mpPlayer->playerId;
+		$this->login               = $mpPlayer->login;
+		$this->nickname            = Formatter::stripDirtyCodes($mpPlayer->nickName);
+		$this->path                = $mpPlayer->path;
+		$this->language            = $mpPlayer->language;
+		$this->avatar              = $mpPlayer->avatar['FileName'];
+		$this->allies              = $mpPlayer->allies;
+		$this->clubLink            = $mpPlayer->clubLink;
+		$this->teamId              = $mpPlayer->teamId;
+		$this->isOfficial          = $mpPlayer->isInOfficialMode;
+		$this->ladderScore         = $mpPlayer->ladderStats['PlayerRankings'][0]['Score'];
+		$this->ladderRank          = $mpPlayer->ladderStats['PlayerRankings'][0]['Ranking'];
+		$this->ladderStats         = $mpPlayer->ladderStats;
+		$this->maniaPlanetPlayDays = $mpPlayer->hoursSinceZoneInscription / 24; //TODO change
+		$this->ipAddress           = $mpPlayer->iPAddress;
+		$this->clientVersion       = $mpPlayer->clientVersion;
+		$this->downloadRate        = $mpPlayer->downloadRate;
+		$this->uploadRate          = $mpPlayer->uploadRate;
+		$this->skins               = $mpPlayer->skins;
 
 		//Flag Details
 		$this->forcedSpectatorState     = $mpPlayer->forceSpectator;
@@ -114,10 +105,8 @@ class Player {
 		$this->autoTarget           = $mpPlayer->autoTarget;
 		$this->currentTargetId      = $mpPlayer->currentTargetId;
 
-
 		$this->joinTime = time();
-
-		if($this->nickname == '') {
+		if ($this->nickname == '') {
 			$this->nickname = $this->login;
 		}
 	}
@@ -139,7 +128,7 @@ class Player {
 	 */
 	public function getProvince() {
 		$pathParts = explode('|', $this->path);
-		if(isset($pathParts[3])) {
+		if (isset($pathParts[3])) {
 			return $pathParts[3];
 		}
 		return $this->getCountry();
@@ -152,13 +141,13 @@ class Player {
 	 */
 	public function getCountry() {
 		$pathParts = explode('|', $this->path);
-		if(isset($pathParts[2])) {
+		if (isset($pathParts[2])) {
 			return $pathParts[2];
 		}
-		if(isset($pathParts[1])) {
+		if (isset($pathParts[1])) {
 			return $pathParts[1];
 		}
-		if(isset($pathParts[0])) {
+		if (isset($pathParts[0])) {
 			return $pathParts[0];
 		}
 		return $this->path;
@@ -171,10 +160,10 @@ class Player {
 	 */
 	public function getContinent() {
 		$pathParts = explode('|', $this->path);
-		if(isset($pathParts[1])) {
+		if (isset($pathParts[1])) {
 			return $pathParts[1];
 		}
-		if(isset($pathParts[0])) {
+		if (isset($pathParts[0])) {
 			return $pathParts[0];
 		}
 		return $this->path;

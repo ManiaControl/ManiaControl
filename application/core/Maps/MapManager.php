@@ -10,6 +10,7 @@ use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\ManiaExchange\ManiaExchangeList;
 use ManiaControl\ManiaExchange\ManiaExchangeManager;
+use ManiaControl\ManiaExchange\MXMapInfo;
 use ManiaControl\Players\Player;
 
 /**

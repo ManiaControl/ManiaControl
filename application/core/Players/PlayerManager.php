@@ -86,12 +86,12 @@ class PlayerManager implements CallbackListener {
 				UNIQUE KEY `login` (`login`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Player Data' AUTO_INCREMENT=1;";
 		$playerTableStatement = $mysqli->prepare($playerTableQuery);
-		if($mysqli->error) {
+		if ($mysqli->error) {
 			trigger_error($mysqli->error, E_USER_ERROR);
 			return false;
 		}
 		$playerTableStatement->execute();
-		if($playerTableStatement->error) {
+		if ($playerTableStatement->error) {
 			trigger_error($playerTableStatement->error, E_USER_ERROR);
 			return false;
 		}
@@ -108,7 +108,7 @@ class PlayerManager implements CallbackListener {
 		// Add all players
 		$players = $this->maniaControl->client->getPlayerList(300, 0, 2);
 		foreach($players as $playerItem) {
-			if($playerItem->playerId <= 0) {
+			if ($playerItem->playerId <= 0) {
 				continue;
 			}
 
@@ -120,7 +120,9 @@ class PlayerManager implements CallbackListener {
 			$playerItem->isSpectator   = $detailedPlayerInfo->isSpectator;
 			$playerItem->avatar        = $detailedPlayerInfo->avatar;
 			$playerItem->ladderStats   = $detailedPlayerInfo->ladderStats;
-			
+			$playerItem->downloadRate  = $detailedPlayerInfo->downloadRate;
+			$playerItem->uploadRate    = $detailedPlayerInfo->uploadRate;
+
 			$playerItem->hoursSinceZoneInscription = $detailedPlayerInfo->hoursSinceZoneInscription;
 
 			$player                = new Player($playerItem);
@@ -157,7 +159,7 @@ class PlayerManager implements CallbackListener {
 		// Trigger own callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERDISCONNECTED, array(self::CB_PLAYERDISCONNECTED, $player));
 
-		if($player == null || $player->isFakePlayer()) {
+		if ($player == null || $player->isFakePlayer()) {
 			return;
 		}
 
@@ -165,7 +167,7 @@ class PlayerManager implements CallbackListener {
 		$logMessage = "Player left: {$player->login} / {$player->nickname} Playtime: {$played}";
 		$this->maniaControl->log(Formatter::stripCodes($logMessage));
 
-		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES)) {
+		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES)) {
 			$this->maniaControl->chat->sendChat('$<' . $player->nickname . '$> $s$0f0has left the game');
 		}
 	}
@@ -177,7 +179,7 @@ class PlayerManager implements CallbackListener {
 	 */
 	public function playerInfoChanged(array $callback) {
 		$player = $this->getPlayer($callback[1][0]['Login']);
-		if($player == null) {
+		if ($player == null) {
 			return;
 		}
 
@@ -190,8 +192,8 @@ class PlayerManager implements CallbackListener {
 		$player->updateSpectatorStatus($callback[1][0]["SpectatorStatus"]);
 
 		//Check if Player finished joining the game
-		if($player->hasJoinedGame && !$prevJoinState) {
-			if($this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES) && !$player->isFakePlayer()) {
+		if ($player->hasJoinedGame && !$prevJoinState) {
+			if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES) && !$player->isFakePlayer()) {
 				$string      = array(0 => '$0f0Player', 1 => '$0f0Moderator', 2 => '$0f0Admin', 3 => '$0f0SuperAdmin', 4 => '$0f0MasterAdmin');
 				$chatMessage = '$s$0f0' . $string[$player->authLevel] . ' $fff' . $player->nickname . '$z$s$0f0 Nation:$fff ' . $player->getCountry() . ' $z$s$0f0joined!';
 				$this->maniaControl->chat->sendChat($chatMessage);
@@ -231,7 +233,7 @@ class PlayerManager implements CallbackListener {
 	public function getPlayerByIndex($index) {
 		foreach($this->players as $player) {
 			/** @var Player $player */
-			if($player->index == $index) {
+			if ($player->index == $index) {
 
 				return $player;
 			}
@@ -247,7 +249,7 @@ class PlayerManager implements CallbackListener {
 	 * @return \ManiaControl\Players\Player
 	 */
 	public function getPlayer($login) {
-		if(!isset($this->players[$login])) {
+		if (!isset($this->players[$login])) {
 			return null;
 		}
 		return $this->players[$login];
@@ -273,12 +275,12 @@ class PlayerManager implements CallbackListener {
 	 * @return Player $player
 	 */
 	private function removePlayer($login, $savePlayedTime = true) {
-		if(!isset($this->players[$login])) {
+		if (!isset($this->players[$login])) {
 			return null;
 		}
 		$player = $this->players[$login];
 		unset($this->players[$login]);
-		if($savePlayedTime) {
+		if ($savePlayedTime) {
 			$this->updatePlayedTime($player);
 		}
 		return $player;
@@ -294,13 +296,13 @@ class PlayerManager implements CallbackListener {
 	private function getPlayerFromDatabaseByIndex($playerIndex) {
 		$mysqli = $this->maniaControl->database->mysqli;
 
-		if(!is_numeric($playerIndex)) {
+		if (!is_numeric($playerIndex)) {
 			return null;
 		}
 
 		$query  = "SELECT * FROM `" . self::TABLE_PLAYERS . "` WHERE `index` = " . $playerIndex . ";";
 		$result = $mysqli->query($query);
-		if(!$result) {
+		if (!$result) {
 			trigger_error($mysqli->error);
 			return null;
 		}
@@ -340,13 +342,13 @@ class PlayerManager implements CallbackListener {
 				`nickname` = VALUES(`nickname`),
 				`path` = VALUES(`path`);";
 		$playerStatement = $mysqli->prepare($playerQuery);
-		if($mysqli->error) {
+		if ($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
 		}
 		$playerStatement->bind_param('sss', $player->login, $player->nickname, $player->path);
 		$playerStatement->execute();
-		if($playerStatement->error) {
+		if ($playerStatement->error) {
 			trigger_error($playerStatement->error);
 			$playerStatement->close();
 			return false;
@@ -357,13 +359,13 @@ class PlayerManager implements CallbackListener {
 		// Get Player Auth Level from DB
 		$playerQuery     = "SELECT `authLevel` FROM `" . self::TABLE_PLAYERS . "` WHERE `index` = ?;";
 		$playerStatement = $mysqli->prepare($playerQuery);
-		if($mysqli->error) {
+		if ($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
 		}
 		$playerStatement->bind_param('i', $player->index);
 		$playerStatement->execute();
-		if($playerStatement->error) {
+		if ($playerStatement->error) {
 			trigger_error($playerStatement->error);
 			$playerStatement->close();
 			return false;
@@ -384,7 +386,7 @@ class PlayerManager implements CallbackListener {
 	 * @return bool
 	 */
 	private function updatePlayedTime(Player $player) {
-		if(!$player) {
+		if (!$player) {
 			return false;
 		}
 		$playedTime = time() - $player->joinTime;
