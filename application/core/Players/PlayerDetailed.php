@@ -8,7 +8,6 @@ use FML\Controls\Labels\Label_Button;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
-use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\ManiaLink;
 use FML\Script\Script;
 use ManiaControl\Formatter;
@@ -22,7 +21,10 @@ use ManiaControl\Statistics\StatisticManager;
  * @author steeffeen & kremsy
  */
 class PlayerDetailed {
-
+	/**
+	 * Constants
+	 */
+	const STATS_PER_COLUMN = 13;
 
 	/**
 	 * Private properties
@@ -42,40 +44,25 @@ class PlayerDetailed {
 		$this->height       = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
 		$this->quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowStyle();
 		$this->quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowSubStyle();
-
 	}
 
 
 	public function showPlayerDetailed(Player $player, $targetLogin) {
-		$target    = $this->maniaControl->playerManager->getPlayer($targetLogin);
+		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
+
+		//Create ManiaLink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
+		$script    = $maniaLink->getScript();
+
+		// Main frame
+		$frame = $this->maniaControl->manialinkManager->styleManager->defaultListFrame($script);
+		$maniaLink->add($frame);
 
 		// Create script and features
 		$script = new Script();
 		$maniaLink->setScript($script);
 
-		// mainframe
-		$frame = new Frame();
-		$maniaLink->add($frame);
-		$frame->setSize($this->width, $this->height);
-		$frame->setPosition(0, 0);
-
-		// Background Quad
-		$backgroundQuad = new Quad();
-		$frame->add($backgroundQuad);
-		$backgroundQuad->setSize($this->width, $this->height);
-		$backgroundQuad->setStyles($this->quadStyle, $this->quadSubstyle);
-
-		// Add Close Quad (X)
-		$closeQuad = new Quad_Icons64x64_1();
-		$frame->add($closeQuad);
-		$closeQuad->setPosition($this->width * 0.483, $this->height * 0.467, 3);
-		$closeQuad->setSize(6, 6);
-		$closeQuad->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_QuitRace);
-		$closeQuad->setAction(ManialinkManager::ACTION_CLOSEWIDGET);
-
-
-		$y = $this->height / 2 - 10;
+		$y = $this->height / 2 - 7;
 
 		//Nation Quad
 		$countryQuad = new Quad();
@@ -88,7 +75,6 @@ class PlayerDetailed {
 		$countryQuad->setHAlign(Control::LEFT);
 
 		//Nickname
-
 		$label = new Label_Text();
 		$frame->add($label);
 		$label->setPosition(-$this->width / 2 + 15, $y);
@@ -97,7 +83,7 @@ class PlayerDetailed {
 
 
 		//Define MainLabel (Login)
-		$y -= 5;
+		$y -= 8;
 		$mainLabel = new Label_Text();
 		$frame->add($mainLabel);
 		$mainLabel->setPosition(-$this->width / 2 + 10, $y);
@@ -139,7 +125,13 @@ class PlayerDetailed {
 		$label = clone $mainLabel;
 		$frame->add($label);
 		$label->setY($y);
-		$label->setText("Plays since:");
+		$label->setText("Inscribed Zone:");
+
+		$y -= 5;
+		$label = clone $mainLabel;
+		$frame->add($label);
+		$label->setY($y);
+		$label->setText('Avatar');
 
 		//Login
 		$y         = $this->height / 2 - 15;
@@ -192,18 +184,10 @@ class PlayerDetailed {
 		$label->setY($y);
 		$label->setText(date("d M Y", time() - 3600 * 24 * $target->maniaPlanetPlayDays));
 
-		//Avatar
-		$label = new Label_Text();
-		$frame->add($label);
-		$label->setPosition($this->width / 2 - 10, $this->height / 2 - 10);
-		$label->setText("Avatar");
-		$label->setTextSize(1.3);
-		$label->setHAlign(Control::RIGHT);
-
 		$quad = new Quad();
 		$frame->add($quad);
 		$quad->setImage('file://' . $target->avatar);
-		$quad->setPosition($this->width / 2 - 10, $this->height / 2 - 10);
+		$quad->setPosition(-$this->width / 2 + 50, -$this->height / 2 + 34);
 		$quad->setAlign(Control::RIGHT, Control::TOP);
 		$quad->setSize(20, 20);
 
@@ -216,7 +200,7 @@ class PlayerDetailed {
 		$quad->setStyle($quad::STYLE_CardMain_Quit);
 		$quad->setHAlign(Control::LEFT);
 		$quad->setScale(0.75);
-		$quad->setText("Back to Playerlist");
+		$quad->setText("Back");
 		$quad->setPosition(-$this->width / 2 + 7, -$this->height / 2 + 7);
 		$quad->setAction(PlayerCommands::ACTION_OPEN_PLAYERLIST);
 
@@ -227,50 +211,54 @@ class PlayerDetailed {
 	public function statisticsFrame($player) {
 		$frame = new Frame();
 
-		/*$mainLabel = new Label_Text();
-		$frame->add($mainLabel);
-		$mainLabel->setPosition(-$this->width / 2 + 50, $this->height / 2 - 10);
-		$mainLabel->setTextSize(1.2);
-		$mainLabel->setHAlign(Control::LEFT);
-		$mainLabel->setText("Statistics");*/
-
 		$playerStats = $this->maniaControl->statisticManager->getAllPlayerStats($player);
 
 		$y  = $this->height / 2 - 15;
+		$x  = -$this->width / 2 + 52;
 		$id = 1;
 		foreach($playerStats as $stat) {
 			$statProperties = $stat[0];
 			$value          = $stat[1];
 
-			if($statProperties->type == StatisticManager::STAT_TYPE_TIME) {
+			if ((int)$value == 0) {
+				continue;
+			}
+
+			if ($statProperties->type == StatisticManager::STAT_TYPE_TIME) {
 				$value = Formatter::formatTimeH($value);
 			}
 
-			if($id % 2 != 0) {
+			if ($id % 2 != 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
 				$frame->add($lineQuad);
 				$lineQuad->setSize(49, 4);
 				$lineQuad->setSubStyle($lineQuad::SUBSTYLE_BgPlayerCardBig);
-				$lineQuad->setPosition(-$this->width / 2 + 66, $y, 0.001);
+				$lineQuad->setPosition($x, $y, 0.001);
 				$lineQuad->setHAlign(Control::LEFT);
 			}
 
 			$label = new Label_Text();
 			$frame->add($label);
-			$label->setPosition(-$this->width / 2 + 70, $y);
+			$label->setPosition($x + 4, $y);
 			$label->setText($statProperties->name);
 			$label->setHAlign(Control::LEFT);
 			$label->setTextSize(1.5);
 
 			$label = new Label_Text();
 			$frame->add($label);
-			$label->setPosition(-$this->width / 2 + 100, $y);
+			$label->setPosition($x + 40, $y);
 			$label->setText($value);
-			$label->setHAlign(Control::LEFT);
+			$label->setVAlign(Control::CENTER2);
 			$label->setTextSize(1.5);
 
 			$y -= 4;
 			$id++;
+
+			if ($id > self::STATS_PER_COLUMN) {
+				$y = $this->height / 2 - 15;
+				$x += 47;
+				$id = 0;
+			}
 		}
 		return $frame;
 	}

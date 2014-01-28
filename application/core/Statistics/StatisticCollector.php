@@ -32,13 +32,13 @@ class StatisticCollector implements CallbackListener {
 	const STAT_ON_PLAYER_REQUEST_RESPAWN = 'Respawns';
 	const STAT_ON_KILL                   = 'Kills';
 	const STAT_LASER_SHOT                = 'Laser Shots';
-	const STAT_LASER_HIT                 = 'Laser Hit';
+	const STAT_LASER_HIT                 = 'Laser Hits';
 	const STAT_ROCKET_SHOT               = 'Rocket Shots';
-	const STAT_ROCKET_HIT                = 'Rocket Hit';
+	const STAT_ROCKET_HIT                = 'Rocket Hits';
 	const STAT_ARROW_SHOT                = 'Arrow Shots';
-	const STAT_ARROW_HIT                 = 'Arrow Hit';
+	const STAT_ARROW_HIT                 = 'Arrow Hits';
 	const STAT_NUCLEUS_SHOT              = 'Nucleus Shots';
-	const STAT_NUCLEUS_HIT               = 'Nucleus Hit';
+	const STAT_NUCLEUS_HIT               = 'Nucleus Hits';
 
 	const SPECIAL_STAT_KILL_DEATH_RATIO = 'Kill / Death';
 
@@ -105,7 +105,7 @@ class StatisticCollector implements CallbackListener {
 	 * @param $login
 	 */
 	private function handleOnShoot($login, $weaponNumber) {
-		if(!isset($this->onShootArray[$login])) {
+		if (!isset($this->onShootArray[$login])) {
 			$this->onShootArray[$login] = array(self::WEAPON_ROCKET => 0, self::WEAPON_ARROW => 0, self::WEAPON_NUCLEUS => 0, self::WEAPON_LASER => 0);
 			$this->onShootArray[$login][$weaponNumber]++;
 		} else {
@@ -113,7 +113,7 @@ class StatisticCollector implements CallbackListener {
 		}
 
 		//Write Shoot Data into database
-		if(array_sum($this->onShootArray[$login]) > $this->maniaControl->settingManager->getSetting($this, self::SETTING_ON_SHOOT_PRESTORE)) {
+		if (array_sum($this->onShootArray[$login]) > $this->maniaControl->settingManager->getSetting($this, self::SETTING_ON_SHOOT_PRESTORE)) {
 			$player = $this->maniaControl->playerManager->getPlayer($login);
 
 			$rocketShots  = $this->onShootArray[$login][self::WEAPON_ROCKET];
@@ -121,19 +121,19 @@ class StatisticCollector implements CallbackListener {
 			$arrowShots   = $this->onShootArray[$login][self::WEAPON_ARROW];
 			$nucleusShots = $this->onShootArray[$login][self::WEAPON_NUCLEUS];
 
-			if($rocketShots > 0) {
+			if ($rocketShots > 0) {
 				$this->maniaControl->statisticManager->insertStat(self::STAT_ROCKET_SHOT, $player, $this->maniaControl->server->index, $rocketShots);
 				$this->onShootArray[$login][self::WEAPON_ROCKET] = 0;
 			}
-			if($laserShots > 0) {
+			if ($laserShots > 0) {
 				$this->maniaControl->statisticManager->insertStat(self::STAT_LASER_SHOT, $player, $this->maniaControl->server->index, $laserShots);
 				$this->onShootArray[$login][self::WEAPON_LASER] = 0;
 			}
-			if($arrowShots > 0) {
+			if ($arrowShots > 0) {
 				$this->maniaControl->statisticManager->insertStat(self::STAT_ARROW_SHOT, $player, $this->maniaControl->server->index, $arrowShots);
 				$this->onShootArray[$login][self::WEAPON_ARROW] = 0;
 			}
-			if($nucleusShots > 0) {
+			if ($nucleusShots > 0) {
 				$this->maniaControl->statisticManager->insertStat(self::STAT_NUCLEUS_SHOT, $player, $this->maniaControl->server->index, $nucleusShots);
 				$this->onShootArray[$login][self::WEAPON_NUCLEUS] = 0;
 			}
@@ -150,7 +150,7 @@ class StatisticCollector implements CallbackListener {
 	 * @return string
 	 */
 	private function getWeaponStat($weaponNumber, $shot = true) {
-		if($shot) {
+		if ($shot) {
 			switch($weaponNumber) {
 				case self::WEAPON_ROCKET:
 					return self::STAT_ROCKET_SHOT;
@@ -189,13 +189,13 @@ class StatisticCollector implements CallbackListener {
 		$player = $callback[1];
 
 		//Check if Stat Collecting is enabled
-		if(!$this->maniaControl->settingManager->getSetting($this, self::SETTING_COLLECT_STATS_ENABLED)) {
+		if (!$this->maniaControl->settingManager->getSetting($this, self::SETTING_COLLECT_STATS_ENABLED)) {
 			return;
 		}
 
 		//Insert Data into Database, and destroy player
-		if(isset($this->onShootArray[$player->login])) {
-			if($this->onShootArray[$player->login] > 0) {
+		if (isset($this->onShootArray[$player->login])) {
+			if ($this->onShootArray[$player->login] > 0) {
 				$this->maniaControl->statisticManager->insertStat(self::STAT_ON_SHOOT, $player, $this->maniaControl->server->index, $this->onShootArray[$player->login]);
 			}
 			unset($this->onShootArray[$player->login]);
@@ -209,12 +209,12 @@ class StatisticCollector implements CallbackListener {
 	 */
 	public function handleCallbacks(array $callback) {
 		//Check if Stat Collecting is enabled
-		if(!$this->maniaControl->settingManager->getSetting($this, self::SETTING_COLLECT_STATS_ENABLED)) {
+		if (!$this->maniaControl->settingManager->getSetting($this, self::SETTING_COLLECT_STATS_ENABLED)) {
 			return;
 		}
 
 		//Check for Minplayer
-		if(count($this->maniaControl->playerManager->getPlayers()) < $this->maniaControl->settingManager->getSetting($this, self::SETTING_COLLECT_STATS_MINPLAYERS)) {
+		if (count($this->maniaControl->playerManager->getPlayers()) < $this->maniaControl->settingManager->getSetting($this, self::SETTING_COLLECT_STATS_MINPLAYERS)) {
 			return;
 		}
 
@@ -241,7 +241,7 @@ class StatisticCollector implements CallbackListener {
 				$logins = explode(';', $logins);
 				foreach($logins as $login) {
 					$player = $this->maniaControl->playerManager->getPlayer($login);
-					if(!$player) {
+					if (!$player) {
 						continue;
 					}
 					$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_CAPTURE, $player);
@@ -250,7 +250,7 @@ class StatisticCollector implements CallbackListener {
 			case 'LibXmlRpc_OnArmorEmpty':
 				$shooter = $this->maniaControl->playerManager->getPlayer($callback[1][1][0]);
 				$victim  = $this->maniaControl->playerManager->getPlayer($callback[1][1][1]);
-				if($shooter != null) {
+				if ($shooter != null) {
 					$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_KILL, $shooter);
 				}
 				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_DEATH, $victim);
@@ -287,7 +287,7 @@ class StatisticCollector implements CallbackListener {
 				$victim       = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Victim->Login);
 				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_DEATH, $victim);
 				$shooter = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Shooter->Login);
-				if($shooter != null) {
+				if ($shooter != null) {
 					$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_KILL, $shooter);
 				}
 				break;
