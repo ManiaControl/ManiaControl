@@ -89,7 +89,7 @@ class MapQueue implements CallbackListener, CommandListener {
 	}
 
 
-	/**
+	/**d
 	 * Adds a Map to the map-queue
 	 *
 	 * @param $login
