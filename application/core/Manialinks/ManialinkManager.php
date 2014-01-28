@@ -177,7 +177,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	}
 
 	/**
-	 * Displays a ManiaLink Widget to a certain Player
+	 * Displays a ManiaLink Widget to a certain Player (Should only be used on Main Widgets)
 	 *
 	 * @param mixed  $maniaLink
 	 * @param Player $player
@@ -186,9 +186,9 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	public function displayWidget($maniaLink, Player $player, $widgetName = '') {
 		// render and display xml
 		$this->maniaControl->manialinkManager->sendManialink($maniaLink, $player->login);
-		$this->disableAltMenu($player);
 
-		if ($widgetName != '') {
+		if ($widgetName != '') { //TODO make check by manialinkId, getter is needed to avoid uses on non main widgets
+			$this->disableAltMenu($player);
 			// Trigger callback
 			$this->maniaControl->callbackManager->triggerCallback(self::CB_MAIN_WINDOW_OPENED, array(self::CB_MAIN_WINDOW_OPENED, $player, $widgetName));
 		}

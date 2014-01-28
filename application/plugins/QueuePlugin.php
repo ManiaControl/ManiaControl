@@ -415,7 +415,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 		$messageLabel->setText($message);
 		$messageLabel->setStyle(Label_Text::STYLE_TextStaticSmall);
 
-		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player);
+		$this->maniaControl->manialinkManager->sendManialink($maniaLink, $player->login);
 	}
 
 	/**
@@ -457,7 +457,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 		$messageLabel->setText('$090You got a free spot, enjoy playing!');
 		$messageLabel->setStyle(Label_Text::STYLE_TextStaticSmall);
 
-		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player, 'Queue');
+		$this->maniaControl->manialinkManager->sendManialink($maniaLink, $player->login);
 		$this->showPlay[$player->login] = array('time' => time(), 'player' => $player);
 	}
 
@@ -468,6 +468,6 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 	 */
 	private function hideQueueWidget(Player $player) {
 		$maniaLink = new ManiaLink(self::ML_ID);
-		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player, 'Queue');
+		$this->maniaControl->manialinkManager->sendManialink($maniaLink, $player->login);
 	}
 }
