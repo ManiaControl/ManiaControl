@@ -78,7 +78,7 @@ class IconManager implements CallbackListener {
 	 * @return string
 	 */
 	public function getIcon($iconName) {
-		if(!isset($this->icons[$iconName])) {
+		if (!isset($this->icons[$iconName])) {
 			return null;
 		}
 		return $this->icons[$iconName];

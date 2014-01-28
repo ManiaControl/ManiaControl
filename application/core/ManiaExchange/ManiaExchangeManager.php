@@ -1,8 +1,10 @@
 <?php
 
-namespace ManiaControl\Maps;
+namespace ManiaControl\ManiaExchange;
 
 use ManiaControl\ManiaControl;
+use ManiaControl\Maps\Map;
+use ManiaControl\Maps\MapManager;
 
 /**
  * Mania Exchange Info Searcher Class
@@ -63,7 +65,7 @@ class ManiaExchangeManager {
 				SET `mxid` = ?
 				WHERE `uid` = ?;";
 		$saveMapStatement = $mysqli->prepare($saveMapQuery);
-		if($mysqli->error) {
+		if ($mysqli->error) {
 			trigger_error($mysqli->error);
 			return;
 		}
@@ -71,12 +73,12 @@ class ManiaExchangeManager {
 			/** @var MXMapInfo $mxMapInfo */
 			$saveMapStatement->bind_param('is', $mxMapInfo->id, $mxMapInfo->uid);
 			$saveMapStatement->execute();
-			if($saveMapStatement->error) {
+			if ($saveMapStatement->error) {
 				trigger_error($saveMapStatement->error);
 			}
 
 			//Take the uid out of the vektor
-			if(isset($this->mxIdUidVector[$mxMapInfo->id])) {
+			if (isset($this->mxIdUidVector[$mxMapInfo->id])) {
 				$uid = $this->mxIdUidVector[$mxMapInfo->id];
 			} else {
 				$uid = $mxMapInfo->uid;
@@ -104,7 +106,7 @@ class ManiaExchangeManager {
 	 * @param null $map
 	 */
 	public function fetchManiaExchangeMapInformations($map = null) {
-		if(!$map) {
+		if (!$map) {
 			//Fetch Informations for whole Maplist
 			$maps = $this->maniaControl->mapManager->getMaps();
 		} else {
@@ -119,7 +121,7 @@ class ManiaExchangeManager {
 		$fetchMapQuery     = "SELECT `mxid`, `changed`  FROM `" . MapManager::TABLE_MAPS . "`
 				WHERE `index` = ?;";
 		$fetchMapStatement = $mysqli->prepare($fetchMapQuery);
-		if($mysqli->error) {
+		if ($mysqli->error) {
 			trigger_error($mysqli->error);
 			return;
 		}
@@ -129,7 +131,7 @@ class ManiaExchangeManager {
 			/** @var Map $map */
 			$fetchMapStatement->bind_param('i', $map->index);
 			$fetchMapStatement->execute();
-			if($fetchMapStatement->error) {
+			if ($fetchMapStatement->error) {
 				trigger_error($fetchMapStatement->error);
 				continue;
 			}
@@ -141,7 +143,7 @@ class ManiaExchangeManager {
 			//Set changed time into the map object
 			$map->lastUpdate = strtotime($changed);
 
-			if($mxId != 0) {
+			if ($mxId != 0) {
 				$appendString = $mxId . ',';
 				//Set the mx id to the mxidmapvektor
 				$this->mxIdUidVector[$mxId] = $map->uid;
@@ -152,7 +154,7 @@ class ManiaExchangeManager {
 			$id++;
 
 			//If Max Maplimit is reached, or string gets too long send the request
-			if($id % self::MAPS_PER_MX_FETCH == 0) {
+			if ($id % self::MAPS_PER_MX_FETCH == 0) {
 				$mapIdString = substr($mapIdString, 0, -1);
 				$maps        = $this->getMaplistByMixedUidIdString($mapIdString);
 				$this->updateMapObjectsWithManiaExchangeIds($maps);
@@ -162,7 +164,7 @@ class ManiaExchangeManager {
 			$mapIdString .= $appendString;
 		}
 
-		if($mapIdString != '') {
+		if ($mapIdString != '') {
 			$mapIdString = substr($mapIdString, 0, -1);
 			$maps        = $this->getMaplistByMixedUidIdString($mapIdString);
 			$this->updateMapObjectsWithManiaExchangeIds($maps);
@@ -189,28 +191,28 @@ class ManiaExchangeManager {
 		$mapInfo = $this->get_file($url);
 
 
-		if($mapInfo === false) {
+		if ($mapInfo === false) {
 			$this->error = 'Connection or response error on ' . $url;
 			return array();
-		} elseif($mapInfo === -1) {
+		} elseif ($mapInfo === -1) {
 			$this->error = 'Timed out while reading data from ' . $url;
 			return array();
-		} elseif($mapInfo == '') {
-			if(empty($maps)) {
+		} elseif ($mapInfo == '') {
+			if (empty($maps)) {
 				$this->error = 'No data returned from ' . $url;
 				return array();
 			}
 		}
 
 		$mxMapList = json_decode($mapInfo);
-		if($mxMapList === null) {
+		if ($mxMapList === null) {
 			trigger_error('Cannot decode searched JSON data from ' . $url);
 			return null;
 		}
 
 		$maps = array();
 		foreach($mxMapList as $map) {
-			if(!empty($map)) {
+			if (!empty($map)) {
 				array_push($maps, new MXMapInfo($titlePrefix, $map));
 			}
 		}
@@ -240,13 +242,13 @@ class ManiaExchangeManager {
 		// compile search URL
 		$url = 'http://' . $titlePrefix . '.mania-exchange.com/tracksearch?api=on';
 
-		if($env != '') {
+		if ($env != '') {
 			$url .= '&environments=' . $this->getEnvironment($env);
 		}
-		if($name != '') {
+		if ($name != '') {
 			$url .= '&trackname=' . str_replace(" ", "%20", $name);
 		}
-		if($author != '') {
+		if ($author != '') {
 			$url .= '&author=' . $author;
 		}
 
@@ -257,28 +259,28 @@ class ManiaExchangeManager {
 		// $mapInfo = FileUtil::loadFile($url, "application/json"); //TODO use mc fileutil
 		$mapInfo = $this->get_file($url);
 
-		if($mapInfo === false) {
+		if ($mapInfo === false) {
 			$this->error = 'Connection or response error on ' . $url;
 			return array();
-		} elseif($mapInfo === -1) {
+		} elseif ($mapInfo === -1) {
 			$this->error = 'Timed out while reading data from ' . $url;
 			return array();
-		} elseif($mapInfo == '') {
-			if(empty($maps)) {
+		} elseif ($mapInfo == '') {
+			if (empty($maps)) {
 				$this->error = 'No data returned from ' . $url;
 				return array();
 			}
 		}
 
 		$mxMapList = json_decode($mapInfo);
-		if($mxMapList === null) {
+		if ($mxMapList === null) {
 			trigger_error('Cannot decode searched JSON data from ' . $url);
 			return null;
 		}
 
 		$maps = array();
 		foreach($mxMapList as $map) {
-			if(!empty($map)) {
+			if (!empty($map)) {
 				array_push($maps, new MXMapInfo($titlePrefix, $map));
 			}
 		}
@@ -297,7 +299,7 @@ class ManiaExchangeManager {
 		$query = isset($url['query']) ? "?" . $url['query'] : "";
 
 		$fp = @fsockopen($url['host'], $port, $errno, $errstr, 4);
-		if(!$fp) {
+		if (!$fp) {
 			return false;
 		}
 
@@ -311,10 +313,10 @@ class ManiaExchangeManager {
 		}
 		fclose($fp);
 
-		if($info['timed_out']) {
+		if ($info['timed_out']) {
 			return -1;
 		} else {
-			if(substr($res, 9, 3) != '200') {
+			if (substr($res, 9, 3) != '200') {
 				return false;
 			}
 			$page = explode("\r\n\r\n", $res, 2);
@@ -342,96 +344,3 @@ class ManiaExchangeManager {
 		}
 	}
 }
-
-//TODO put in own file
-class MXMapInfo {
-	public $prefix, $id, $uid, $name, $userid, $author, $uploaded, $updated, $type, $maptype;
-	public $titlepack, $style, $envir, $mood, $dispcost, $lightmap, $modname, $exever;
-	public $exebld, $routes, $length, $unlimiter, $laps, $diffic, $lbrating, $trkvalue;
-	public $replaytyp, $replayid, $replaycnt, $acomment, $awards, $comments, $rating;
-	public $ratingex, $ratingcnt, $pageurl, $replayurl, $imageurl, $thumburl, $dloadurl;
-
-	/**
-	 * Returns map object with all available data from MX map data
-	 *
-	 * @param String $prefix MX URL prefix
-	 * @param Object $map    The MX map data from MXInfoSearcher
-	 * @return MXMapInfo
-	 */
-	public function __construct($prefix, $mx) {
-		$this->prefix = $prefix;
-		if($mx) {
-			if($this->prefix == 'tm') {
-				$dir = 'tracks';
-			} else // 'sm' || 'qm'
-			{
-				$dir = 'maps';
-			}
-
-			if($this->prefix == 'tm' || !property_exists($mx, "MapID")) {
-				$this->id = $mx->TrackID;
-			} else {
-				$this->id = $mx->MapID;
-			}
-
-			$this->name = $mx->Name;
-
-			$this->uid       = isset($mx->MapUID) ? $mx->MapUID : '';
-			$this->userid    = $mx->UserID;
-			$this->author    = $mx->Username;
-			$this->uploaded  = $mx->UploadedAt;
-			$this->updated   = $mx->UpdatedAt;
-			$this->type      = $mx->TypeName;
-			$this->maptype   = isset($mx->MapType) ? $mx->MapType : '';
-			$this->titlepack = isset($mx->TitlePack) ? $mx->TitlePack : '';
-			$this->style     = isset($mx->StyleName) ? $mx->StyleName : '';
-			$this->envir     = $mx->EnvironmentName;
-			$this->mood      = $mx->Mood;
-			$this->dispcost  = $mx->DisplayCost;
-			$this->lightmap  = $mx->Lightmap;
-			$this->modname   = isset($mx->ModName) ? $mx->ModName : '';
-			$this->exever    = $mx->ExeVersion;
-			$this->exebld    = $mx->ExeBuild;
-			$this->routes    = isset($mx->RouteName) ? $mx->RouteName : '';
-			$this->length    = isset($mx->LengthName) ? $mx->LengthName : '';
-			$this->unlimiter = isset($mx->UnlimiterRequired) ? $mx->UnlimiterRequired : false;
-			$this->laps      = isset($mx->Laps) ? $mx->Laps : 0;
-			$this->diffic    = $mx->DifficultyName;
-			$this->lbrating  = isset($mx->LBRating) ? $mx->LBRating : 0;
-			$this->trkvalue  = isset($mx->TrackValue) ? $mx->TrackValue : 0;
-			$this->replaytyp = isset($mx->ReplayTypeName) ? $mx->ReplayTypeName : '';
-			$this->replayid  = isset($mx->ReplayWRID) ? $mx->ReplayWRID : 0;
-			$this->replaycnt = isset($mx->ReplayCount) ? $mx->ReplayCount : 0;
-			$this->acomment  = $mx->Comments;
-			$this->awards    = isset($mx->AwardCount) ? $mx->AwardCount : 0;
-			$this->comments  = $mx->CommentCount;
-			$this->rating    = isset($mx->Rating) ? $mx->Rating : 0.0;
-			$this->ratingex  = isset($mx->RatingExact) ? $mx->RatingExact : 0.0;
-			$this->ratingcnt = isset($mx->RatingCount) ? $mx->RatingCount : 0;
-
-			if($this->trkvalue == 0 && $this->lbrating > 0) {
-				$this->trkvalue = $this->lbrating;
-			} elseif($this->lbrating == 0 && $this->trkvalue > 0) {
-				$this->lbrating = $this->trkvalue;
-			}
-
-			$search         = array(chr(31), '[b]', '[/b]', '[i]', '[/i]', '[u]', '[/u]', '[url]', '[/url]');
-			$replace        = array('<br/>', '<b>', '</b>', '<i>', '</i>', '<u>', '</u>', '<i>', '</i>');
-			$this->acomment = str_ireplace($search, $replace, $this->acomment);
-			$this->acomment = preg_replace('/\[url=.*\]/', '<i>', $this->acomment);
-
-			$this->pageurl  = 'http://' . $this->prefix . '.mania-exchange.com/' . $dir . '/view/' . $this->id;
-			$this->imageurl = 'http://' . $this->prefix . '.mania-exchange.com/' . $dir . '/screenshot/normal/' . $this->id;
-			$this->thumburl = 'http://' . $this->prefix . '.mania-exchange.com/' . $dir . '/screenshot/small/' . $this->id;
-			$this->dloadurl = 'http://' . $this->prefix . '.mania-exchange.com/' . $dir . '/download/' . $this->id;
-
-			if($this->prefix == 'tm' && $this->replayid > 0) {
-				$this->replayurl = 'http://' . $this->prefix . '.mania-exchange.com/replays/download/' . $this->replayid;
-			} else {
-				$this->replayurl = '';
-			}
-		}
-	} // MXMapInfo
-} // class MXMapInfo
-
-

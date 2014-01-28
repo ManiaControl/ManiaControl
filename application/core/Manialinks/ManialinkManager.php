@@ -65,12 +65,12 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 * @return bool
 	 */
 	public function registerManialinkPageAnswerListener($actionId, ManialinkPageAnswerListener $listener, $method) {
-		if(!method_exists($listener, $method)) {
+		if (!method_exists($listener, $method)) {
 			trigger_error("Given listener for actionId '{$actionId}' doesn't have callback method '{$method}'!");
 
 			return false;
 		}
-		if(!array_key_exists($actionId, $this->pageAnswerListeners) || !is_array($this->pageAnswerListeners[$actionId])) {
+		if (!array_key_exists($actionId, $this->pageAnswerListeners) || !is_array($this->pageAnswerListeners[$actionId])) {
 			// Init listeners array
 			$this->pageAnswerListeners[$actionId] = array();
 		}
@@ -90,7 +90,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 		$removed = false;
 		foreach($this->pageAnswerListeners as &$listeners) {
 			foreach($listeners as $key => &$listenerCallback) {
-				if($listenerCallback[0] != $listener) {
+				if ($listenerCallback[0] != $listener) {
 					continue;
 				}
 				unset($listeners[$key]);
@@ -109,7 +109,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 		$actionId = $callback[1][2];
 		$login    = $callback[1][1];
 		$player   = $this->maniaControl->playerManager->getPlayer($login);
-		if(!array_key_exists($actionId, $this->pageAnswerListeners) || !is_array($this->pageAnswerListeners[$actionId])) {
+		if (!array_key_exists($actionId, $this->pageAnswerListeners) || !is_array($this->pageAnswerListeners[$actionId])) {
 			// No page answer listener registered
 			return;
 		}
@@ -132,17 +132,17 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 		$manialinkText = (string)$manialinkText;
 
 		try {
-			if(!$logins) {
+			if (!$logins) {
 				return $this->maniaControl->client->sendDisplayManialinkPage(null, $manialinkText, $timeout, $hideOnClick);
 			}
-			if(is_string($logins)) {
+			if (is_string($logins)) {
 				return $this->maniaControl->client->sendDisplayManialinkPage($logins, $manialinkText, $timeout, $hideOnClick);
 			}
-			if(is_array($logins)) {
+			if (is_array($logins)) {
 				$success = true;
 				foreach($logins as $login) {
 					$subSuccess = $this->maniaControl->client->sendDisplayManialinkPage($login, $manialinkText, $timeout, $hideOnClick);
-					if(!$subSuccess) {
+					if (!$subSuccess) {
 						$success = false;
 					}
 				}
@@ -188,7 +188,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 		$this->maniaControl->manialinkManager->sendManialink($maniaLink, $player->login);
 		$this->disableAltMenu($player);
 
-		if($widgetName != '') {
+		if ($widgetName != '') {
 			// Trigger callback
 			$this->maniaControl->callbackManager->triggerCallback(self::CB_MAIN_WINDOW_OPENED, array(self::CB_MAIN_WINDOW_OPENED, $player, $widgetName));
 		}
@@ -211,7 +211,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 * @param bool   $widgetId
 	 */
 	public function closeWidget(Player $player, $widgetId = false) {
-		if(!$widgetId) {
+		if (!$widgetId) {
 			$emptyManialink = new ManiaLink(self::MAIN_MLID);
 			$manialinkText  = $emptyManialink->render()->saveXML();
 			$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
@@ -256,7 +256,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 			$label->setText($text);
 			$label->setTextColor($textColor);
 
-			if($profile) {
+			if ($profile) {
 				$script->addProfileButton($label, $profile);
 			}
 
