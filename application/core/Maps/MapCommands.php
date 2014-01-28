@@ -98,7 +98,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	 */
 	public function command_ShowNextMap(array $chat, Player $player) {
 		$nextQueued = $this->maniaControl->mapManager->mapQueue->getNextQueuedMap();
-		if($nextQueued != null) {
+		if ($nextQueued != null) {
 			/** @var Player $requester */
 			$requester = $nextQueued[0];
 			/** @var Map $map */
@@ -119,13 +119,13 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	 * @param \ManiaControl\Players\Player $player
 	 */
 	public function command_RemoveMap(array $chat, Player $player) {
-		if(!$this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_REMOVE_MAP)) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_REMOVE_MAP)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
 		// Get map
 		$map = $this->maniaControl->mapManager->getCurrentMap();
-		if(!$map) {
+		if (!$map) {
 			$this->maniaControl->chat->sendError("Couldn't remove map.", $player->login);
 			return;
 		}
@@ -141,7 +141,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	 * @param \ManiaControl\Players\Player $player
 	 */
 	public function command_ShuffleMaps(array $chatCallback, Player $player) {
-		if(!$this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_SHUFFLE_MAPS)) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_SHUFFLE_MAPS)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
@@ -157,12 +157,12 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	 * @param \ManiaControl\Players\Player $player
 	 */
 	public function command_AddMap(array $chatCallback, Player $player) {
-		if(!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
+		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
 		$params = explode(' ', $chatCallback[1][2], 2);
-		if(count($params) < 2) {
+		if (count($params) < 2) {
 			$this->maniaControl->chat->sendUsageInfo('Usage example: //addmap 1234', $player->login);
 			return;
 		}
@@ -178,7 +178,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	 * @param \ManiaControl\Players\Player $player
 	 */
 	public function command_NextMap(array $chat, Player $player) {
-		if(!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
+		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
@@ -195,7 +195,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	 * @param \ManiaControl\Players\Player $player
 	 */
 	public function command_RestartMap(array $chat, Player $player) {
-		if(!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
+		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
@@ -222,6 +222,6 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	 * @param Player $player
 	 */
 	public function command_xList(array $chatCallback, Player $player) {
-		$this->maniaControl->mapManager->mapList->showManiaExchangeList($chatCallback, $player);
+		$this->maniaControl->mapManager->mxList->showManiaExchangeList($chatCallback, $player);
 	}
 }

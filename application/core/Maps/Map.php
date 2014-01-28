@@ -3,6 +3,7 @@
 namespace ManiaControl\Maps;
 
 use ManiaControl\Formatter;
+use ManiaControl\ManiaExchange\MXMapInfo;
 
 /**
  * Map Class
