@@ -8,6 +8,7 @@ use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\FileUtil;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
+use ManiaControl\ManiaExchange\ManiaExchangeManager;
 use ManiaControl\Players\Player;
 
 /**

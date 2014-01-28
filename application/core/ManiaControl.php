@@ -22,8 +22,6 @@ use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 require_once __DIR__ . '/Maniaplanet/DedicatedServer/Connection.php';
 require_once __DIR__ . '/GbxDataFetcher/gbxdatafetcher.inc.php';
-require_once __DIR__ . '/ManiaExchange/mxinfofetcher.inc.php';
-require_once __DIR__ . '/ManiaExchange/ManiaExchangeManager.php';
 require_once __DIR__ . '/FML/autoload.php';
 
 /**

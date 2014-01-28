@@ -3,9 +3,9 @@
 namespace ManiaControl\Manialinks;
 
 use FML\CustomUI;
-use ManiaControl\ManiaControl;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 
@@ -15,12 +15,12 @@ use ManiaControl\Players\PlayerManager;
  * @author steeffeen & kremsy
  */
 class CustomUIManager implements CallbackListener {
-	
+
 	/**
 	 * Constants
 	 */
 	const CUSTOMUI_MLID = 'CustomUI.MLID';
-	
+
 	/**
 	 * Private Properties
 	 */
@@ -36,7 +36,7 @@ class CustomUIManager implements CallbackListener {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		$this->prepareManialink();
-		
+
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_1_SECOND, $this, 'handle1Second');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'handlePlayerJoined');
@@ -69,7 +69,9 @@ class CustomUIManager implements CallbackListener {
 	 * @param array $callback
 	 */
 	public function handle1Second(array $callback) {
-		if (!$this->updateManialink) return;
+		if (!$this->updateManialink) {
+			return;
+		}
 		$this->updateManialink = false;
 		$this->updateManialink();
 	}
