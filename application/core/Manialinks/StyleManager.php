@@ -2,7 +2,10 @@
 
 namespace ManiaControl\Manialinks;
 
+use FML\Controls\Frame;
+use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_BgRaceScore2;
+use FML\Controls\Quads\Quad_Icons64x64_1;
 use ManiaControl\ManiaControl;
 
 /**
@@ -123,4 +126,37 @@ class StyleManager {
 		return $this->maniaControl->settingManager->getSetting($this, self::SETTING_LIST_WIDGETS_HEIGHT);
 	}
 
+
+	/**
+	 * Builds the Default List Frame
+	 *
+	 * @return Frame $frame
+	 */
+	public function defaultListFrame() {
+		$width        = $this->getListWidgetsWidth();
+		$height       = $this->getListWidgetsHeight();
+		$quadStyle    = $this->getDefaultMainWindowStyle();
+		$quadSubstyle = $this->getDefaultMainWindowSubStyle();
+
+		// mainframe
+		$frame = new Frame();
+		$frame->setSize($width, $height);
+		$frame->setPosition(0, 0);
+
+		// Background Quad
+		$backgroundQuad = new Quad();
+		$frame->add($backgroundQuad);
+		$backgroundQuad->setSize($width, $height);
+		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
+
+		// Add Close Quad (X)
+		$closeQuad = new Quad_Icons64x64_1();
+		$frame->add($closeQuad);
+		$closeQuad->setPosition($width * 0.483, $height * 0.467, 3);
+		$closeQuad->setSize(6, 6);
+		$closeQuad->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_QuitRace);
+		$closeQuad->setAction(ManialinkManager::ACTION_CLOSEWIDGET);
+
+		return $frame;
+	}
 }

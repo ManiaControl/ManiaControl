@@ -8,6 +8,7 @@ use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\FileUtil;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
+use ManiaControl\ManiaExchange\ManiaExchangeList;
 use ManiaControl\ManiaExchange\ManiaExchangeManager;
 use ManiaControl\Players\Player;
 
@@ -34,6 +35,7 @@ class MapManager implements CallbackListener {
 	public $mapQueue = null;
 	public $mapCommands = null;
 	public $mapList = null;
+	public $mxList = null;
 	public $mxManager = null;
 
 	/**
@@ -54,10 +56,11 @@ class MapManager implements CallbackListener {
 		$this->initTables();
 
 		// Create map commands instance
+		$this->mxManager   = new ManiaExchangeManager($this->maniaControl);
 		$this->mapList     = new MapList($this->maniaControl);
+		$this->mxList      = new ManiaExchangeList($this->maniaControl);
 		$this->mapCommands = new MapCommands($maniaControl);
 		$this->mapQueue    = new MapQueue($this->maniaControl);
-		$this->mxManager   = new ManiaExchangeManager($this->maniaControl);
 
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
@@ -562,7 +565,7 @@ class MapManager implements CallbackListener {
 				$this->maniaControl->chat->sendError("Couldn't add map to match settings!", $login);
 				return;
 			}
-			
+
 			$this->updateFullMapList();
 
 			//Update Mx MapInfo
