@@ -20,6 +20,9 @@ class StatisticManager {
 	const TABLE_STATISTICS   = 'mc_statistics';
 	const STAT_TYPE_INT      = '0';
 	const STAT_TYPE_TIME     = '1';
+	const STAT_TYPE_FLOAT     = '2';
+
+	const SPECIAL_STAT_KD_RATIO = 'Kill Death Ratio'; //TODO dynamic later
 
 	/**
 	 * Public Properties
@@ -32,6 +35,7 @@ class StatisticManager {
 	 */
 	private $maniaControl = null;
 	private $stats = array();
+	private $specialStats = array();
 
 	/**
 	 * Construct player manager
@@ -61,18 +65,18 @@ class StatisticManager {
 		$mysqli = $this->maniaControl->database->mysqli;
 		$statId = $this->getStatId($statName);
 
-		if($statId == null) {
+		if ($statId == null) {
 			return -1;
 		}
 
-		if($serverIndex == -1) {
+		if ($serverIndex == -1) {
 			$query = "SELECT SUM(value) as value FROM `" . self::TABLE_STATISTICS . "` WHERE `statId` = " . $statId . " AND `playerId` = " . $playerId . ";";
 		} else {
 			$query = "SELECT value FROM `" . self::TABLE_STATISTICS . "` WHERE `statId` = " . $statId . " AND `playerId` = " . $playerId . " AND `serverIndex` = '" . $serverIndex . "';";
 		}
 
 		$result = $mysqli->query($query);
-		if(!$result) {
+		if (!$result) {
 			trigger_error($mysqli->error);
 			return null;
 		}
@@ -97,20 +101,20 @@ class StatisticManager {
 		$query = "SELECT playerId, serverIndex, value FROM `" . self::TABLE_STATISTICS . "` WHERE statId = " . $statId . " ORDER BY value DESC;";
 
 		$result = $mysqli->query($query);
-		if(!$result) {
+		if (!$result) {
 			trigger_error($mysqli->error);
 			return null;
 		}
 
 		$stats = array();
 		while($row = $result->fetch_object()) {
-			if($serverIndex == -1) {
-				if(!isset($stats[$row->playerId])) {
+			if ($serverIndex == -1) {
+				if (!isset($stats[$row->playerId])) {
 					$stats[$row->playerId] = $row->value;
 				} else {
 					$stats[$row->playerId] += $row->value;
 				}
-			} else if($serverIndex == $row->serverIndex) {
+			} else if ($serverIndex == $row->serverIndex) {
 				$stats[$row->playerId] = $row->value;
 			}
 		}
@@ -120,6 +124,29 @@ class StatisticManager {
 	}
 
 	/**
+	 * Gets The Ranking of an Special Stat
+	 *
+	 * @param string $statName
+	 */
+	public function getStatsRankingOfSpecialStat($statName = '') {
+		$statsArray = array();
+		switch($statName) {
+			case self::SPECIAL_STAT_KD_RATIO:
+				$kills  = $this->getStatsRanking(StatisticCollector::STAT_ON_KILL);
+				$deaths = $this->getStatsRanking(StatisticCollector::STAT_ON_DEATH);
+
+				foreach($deaths as $key => $death) {
+					if ($death == 0 || !isset($kills[$key])) {
+						continue;
+					}
+					$statsArray[$key] = intval($kills[$key]) / intval($death);
+				}
+		}
+		return $statsArray;
+	}
+
+
+	/**
 	 * Store Stats Meta Data from the Database
 	 */
 	private function storeStatMetaData() {
@@ -127,7 +154,7 @@ class StatisticManager {
 
 		$query  = "SELECT * FROM `" . self::TABLE_STATMETADATA . "`;";
 		$result = $mysqli->query($query);
-		if(!$result) {
+		if (!$result) {
 			trigger_error($mysqli->error);
 			return;
 		}
@@ -136,6 +163,11 @@ class StatisticManager {
 			$this->stats[$row->name] = $row;
 		}
 		$result->close();
+
+		$stat = new \stdClass();
+		$stat->name = self::SPECIAL_STAT_KD_RATIO;
+		$stat->type = self::STAT_TYPE_FLOAT;
+		$this->specialStats[self::SPECIAL_STAT_KD_RATIO] = $stat;
 	}
 
 	/**
@@ -145,7 +177,7 @@ class StatisticManager {
 	 * @return int
 	 */
 	private function getStatId($statName) {
-		if(isset($this->stats[$statName])) {
+		if (isset($this->stats[$statName])) {
 			$stat = $this->stats[$statName];
 			return (int)$stat->index;
 		}
@@ -167,6 +199,42 @@ class StatisticManager {
 			$playerStats[$stat->name] = array($stat, $value);
 		}
 
+		foreach($this->specialStats as $stat){
+			switch($stat->name){
+				case self::SPECIAL_STAT_KD_RATIO:
+					if(!isset($playerStats[StatisticCollector::STAT_ON_KILL]) || !isset($playerStats[StatisticCollector::STAT_ON_DEATH]))
+						continue;
+					$kills =  intval($playerStats[StatisticCollector::STAT_ON_KILL]);
+					$deaths = intval($playerStats[StatisticCollector::STAT_ON_DEATH]);
+					if($deaths == 0)
+						continue;
+					$playerStats[$stat->name] = array($stat, $kills / $deaths);
+			}
+		}
+		return $playerStats;
+	}
+
+	/**
+	 * Gets The Ranking of an Special Stat
+	 *
+	 * @param string $statName
+	 */
+	public function getAllSpecialPlayerStats(Player $player, $serverIndex = -1) {
+		$playerStats = array();
+		foreach($this->specialStats as $special){
+			switch($special){
+				case self::SPECIAL_STAT_KD_RATIO:
+					$kills  = $this->getStatsRanking(StatisticCollector::STAT_ON_KILL);
+					$deaths = $this->getStatsRanking(StatisticCollector::STAT_ON_DEATH);
+
+					foreach($deaths as $key => $death) {
+						if ($death == 0 || !isset($kills[$key])) {
+							continue;
+						}
+						$statsArray[$key] = intval($kills[$key]) / intval($death);
+					}
+			}
+		}
 		return $playerStats;
 	}
 
@@ -182,18 +250,18 @@ class StatisticManager {
 	 * @return bool
 	 */
 	public function insertStat($statName, Player $player, $serverIndex = -1, $value, $statType = self::STAT_TYPE_INT) {
-		if(!$player) {
+		if (!$player) {
 			return false;
 		}
-		if($player->isFakePlayer()) {
+		if ($player->isFakePlayer()) {
 			return true;
 		}
 		$statId = $this->getStatId($statName);
-		if(!$statId) {
+		if (!$statId) {
 			return false;
 		}
 
-		if($serverIndex == -1) {
+		if ($serverIndex == -1) {
 			$serverIndex = $this->maniaControl->server->index;
 		}
 
@@ -208,13 +276,13 @@ class StatisticManager {
 				) ON DUPLICATE KEY UPDATE
 				`value` = `value` + VALUES(`value`);";
 		$statement = $mysqli->prepare($query);
-		if($mysqli->error) {
+		if ($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
 		}
 		$statement->bind_param('iiii', $serverIndex, $player->index, $statId, $value);
 		$statement->execute();
-		if($statement->error) {
+		if ($statement->error) {
 			trigger_error($statement->error);
 			$statement->close();
 			return false;
@@ -255,13 +323,13 @@ class StatisticManager {
 				`type` = VALUES(`type`),
 				`description` = VALUES(`description`);";
 		$statement = $mysqli->prepare($query);
-		if($mysqli->error) {
+		if ($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
 		}
 		$statement->bind_param('sis', $statName, $type, $statDescription);
 		$statement->execute();
-		if($statement->error) {
+		if ($statement->error) {
 			trigger_error($statement->error);
 			$statement->close();
 			return false;
@@ -286,12 +354,12 @@ class StatisticManager {
 				UNIQUE KEY `name` (`name`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Statistics Meta Data' AUTO_INCREMENT=1;";
 		$statement = $mysqli->prepare($query);
-		if($mysqli->error) {
+		if ($mysqli->error) {
 			trigger_error($mysqli->error, E_USER_ERROR);
 			return false;
 		}
 		$statement->execute();
-		if($statement->error) {
+		if ($statement->error) {
 			trigger_error($statement->error, E_USER_ERROR);
 			return false;
 		}
@@ -307,12 +375,12 @@ class StatisticManager {
 				UNIQUE KEY `unique` (`statId`,`playerId`,`serverIndex`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Statistics' AUTO_INCREMENT=1;";
 		$statement = $mysqli->prepare($query);
-		if($mysqli->error) {
+		if ($mysqli->error) {
 			trigger_error($mysqli->error, E_USER_ERROR);
 			return false;
 		}
 		$statement->execute();
-		if($statement->error) {
+		if ($statement->error) {
 			trigger_error($statement->error, E_USER_ERROR);
 			return false;
 		}
