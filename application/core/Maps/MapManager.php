@@ -29,6 +29,7 @@ class MapManager implements CallbackListener {
 	const SETTING_PERMISSION_ADD_MAP      = 'Add Maps';
 	const SETTING_PERMISSION_REMOVE_MAP   = 'Remove Maps';
 	const SETTING_PERMISSION_SHUFFLE_MAPS = 'Shuffle Maps';
+	const SETTING_PERMISSION_CHECK_UPDATE = 'Check Map Update';
 
 	/**
 	 * Public Properties
@@ -72,6 +73,7 @@ class MapManager implements CallbackListener {
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_ADD_MAP, AuthenticationManager::AUTH_LEVEL_ADMIN);
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_REMOVE_MAP, AuthenticationManager::AUTH_LEVEL_ADMIN);
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_SHUFFLE_MAPS, AuthenticationManager::AUTH_LEVEL_ADMIN);
+		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_CHECK_UPDATE, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 	}
 
 	/**
