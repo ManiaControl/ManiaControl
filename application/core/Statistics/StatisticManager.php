@@ -215,31 +215,6 @@ class StatisticManager {
 	}
 
 	/**
-	 * Gets The Ranking of an Special Stat
-	 *
-	 * @param string $statName
-	 */
-	public function getAllSpecialPlayerStats(Player $player, $serverIndex = -1) {
-		$playerStats = array();
-		foreach($this->specialStats as $special){
-			switch($special){
-				case self::SPECIAL_STAT_KD_RATIO:
-					$kills  = $this->getStatsRanking(StatisticCollector::STAT_ON_KILL);
-					$deaths = $this->getStatsRanking(StatisticCollector::STAT_ON_DEATH);
-
-					foreach($deaths as $key => $death) {
-						if ($death == 0 || !isset($kills[$key])) {
-							continue;
-						}
-						$statsArray[$key] = intval($kills[$key]) / intval($death);
-					}
-			}
-		}
-		return $playerStats;
-	}
-
-
-	/**
 	 * Inserts a Stat into the database
 	 *
 	 * @param string $statName
