@@ -21,6 +21,11 @@ class StatisticManager {
 	const STAT_TYPE_FLOAT    = '2';
 
 	const SPECIAL_STAT_KD_RATIO = 'Kill Death Ratio'; //TODO dynamic later
+	const SPECIAL_STAT_HITS_PH     = 'Hits Per Hour';
+	const SPECIAL_STAT_LASER_ACC   = 'Laser Accuracy';
+	const SPECIAL_STAT_NUCLEUS_ACC = 'Nucleus Accuracy';
+	const SPECIAL_STAT_ROCKET_ACC  = 'Rocket Accuracy';
+	const SPECIAL_STAT_ARROW_ACC   = 'Arrow Accuracy';
 
 	/**
 	 * Public Properties
@@ -93,6 +98,10 @@ class StatisticManager {
 	 * @return object
 	 */
 	public function getStatsRanking($statName = '', $serverIndex = -1) {
+		if (isset($this->specialStats[$statName])) {
+			return $this->getStatsRankingOfSpecialStat($statName, $serverIndex);
+		}
+
 		$mysqli = $this->maniaControl->database->mysqli;
 		$statId = $this->getStatId($statName);
 
@@ -125,13 +134,15 @@ class StatisticManager {
 	 * Gets The Ranking of an Special Stat
 	 *
 	 * @param string $statName
+	 * @param        $serverIndex
+	 * @return array
 	 */
-	public function getStatsRankingOfSpecialStat($statName = '') {
+	public function getStatsRankingOfSpecialStat($statName = '', $serverIndex = -1) {
 		$statsArray = array();
 		switch($statName) {
 			case self::SPECIAL_STAT_KD_RATIO:
-				$kills  = $this->getStatsRanking(StatisticCollector::STAT_ON_KILL);
-				$deaths = $this->getStatsRanking(StatisticCollector::STAT_ON_DEATH);
+				$kills  = $this->getStatsRanking(StatisticCollector::STAT_ON_KILL, $serverIndex);
+				$deaths = $this->getStatsRanking(StatisticCollector::STAT_ON_DEATH, $serverIndex);
 
 				foreach($deaths as $key => $death) {
 					if ($death == 0 || !isset($kills[$key])) {
@@ -139,7 +150,60 @@ class StatisticManager {
 					}
 					$statsArray[$key] = intval($kills[$key]) / intval($death);
 				}
+				break;
+			case self::SPECIAL_STAT_HITS_PH:
+				$hits  = $this->getStatsRanking(StatisticCollector::STAT_ON_HIT, $serverIndex);
+				$times = $this->getStatsRanking(StatisticCollector::STAT_PLAYTIME, $serverIndex);
+				foreach($times as $key => $time) {
+					if ($time == 0 || !isset($hits[$key])) {
+						continue;
+					}
+					$statsArray[$key] = intval($hits[$key]) / (intval($time) / 3600);
+				}
+				break;
+			case self::SPECIAL_STAT_ARROW_ACC:
+				$hits  = $this->getStatsRanking(StatisticCollector::STAT_ARROW_HIT, $serverIndex);
+				$shots = $this->getStatsRanking(StatisticCollector::STAT_ARROW_SHOT, $serverIndex);
+				foreach($shots as $key => $shot) {
+					if ($shot == 0 || !isset($hits[$key])) {
+						continue;
+					}
+					$statsArray[$key] = intval($hits[$key]) / (intval($shot));
+				}
+				break;
+			case self::SPECIAL_STAT_LASER_ACC:
+				$hits  = $this->getStatsRanking(StatisticCollector::STAT_LASER_HIT, $serverIndex);
+				$shots = $this->getStatsRanking(StatisticCollector::STAT_LASER_SHOT, $serverIndex);
+				foreach($shots as $key => $shot) {
+					if ($shot == 0 || !isset($hits[$key])) {
+						continue;
+					}
+					$statsArray[$key] = intval($hits[$key]) / (intval($shot));
+				}
+				break;
+			case self::SPECIAL_STAT_ROCKET_ACC:
+				$hits  = $this->getStatsRanking(StatisticCollector::STAT_ROCKET_HIT, $serverIndex);
+				$shots = $this->getStatsRanking(StatisticCollector::STAT_ROCKET_SHOT, $serverIndex);
+				foreach($shots as $key => $shot) {
+					if ($shot == 0 || !isset($hits[$key])) {
+						continue;
+					}
+					$statsArray[$key] = intval($hits[$key]) / (intval($shot));
+				}
+				break;
+			case self::SPECIAL_STAT_NUCLEUS_ACC:
+				$hits  = $this->getStatsRanking(StatisticCollector::STAT_NUCLEUS_HIT, $serverIndex);
+				$shots = $this->getStatsRanking(StatisticCollector::STAT_NUCLEUS_SHOT, $serverIndex);
+				foreach($shots as $key => $shot) {
+					if ($shot == 0 || !isset($hits[$key])) {
+						continue;
+					}
+					$statsArray[$key] = intval($hits[$key]) / (intval($shot));
+				}
+				break;
 		}
+
+		//	var_dump($statsArray);
 		return $statsArray;
 	}
 
@@ -161,11 +225,41 @@ class StatisticManager {
 			$this->stats[$row->name] = $row;
 		}
 		$result->close();
-
+		//Define Special Stat Kill / Death Ratio
 		$stat                                            = new \stdClass();
 		$stat->name                                      = self::SPECIAL_STAT_KD_RATIO;
 		$stat->type                                      = self::STAT_TYPE_FLOAT;
 		$this->specialStats[self::SPECIAL_STAT_KD_RATIO] = $stat;
+
+		//Hits Per Hour
+		$stat                                           = new \stdClass();
+		$stat->name                                     = self::SPECIAL_STAT_HITS_PH;
+		$stat->type                                     = self::STAT_TYPE_FLOAT;
+		$this->specialStats[self::SPECIAL_STAT_HITS_PH] = $stat;
+
+		//Laser Accuracy
+		$stat                                             = new \stdClass();
+		$stat->name                                       = self::SPECIAL_STAT_LASER_ACC;
+		$stat->type                                       = self::STAT_TYPE_FLOAT;
+		$this->specialStats[self::SPECIAL_STAT_LASER_ACC] = $stat;
+
+		//Nuceleus Accuracy
+		$stat                                               = new \stdClass();
+		$stat->name                                         = self::SPECIAL_STAT_NUCLEUS_ACC;
+		$stat->type                                         = self::STAT_TYPE_FLOAT;
+		$this->specialStats[self::SPECIAL_STAT_NUCLEUS_ACC] = $stat;
+
+		//Arrow Accuracy
+		$stat                                             = new \stdClass();
+		$stat->name                                       = self::SPECIAL_STAT_ARROW_ACC;
+		$stat->type                                       = self::STAT_TYPE_FLOAT;
+		$this->specialStats[self::SPECIAL_STAT_ARROW_ACC] = $stat;
+
+		//Rocket Accuracy
+		$stat                                              = new \stdClass();
+		$stat->name                                        = self::SPECIAL_STAT_ROCKET_ACC;
+		$stat->type                                        = self::STAT_TYPE_FLOAT;
+		$this->specialStats[self::SPECIAL_STAT_ROCKET_ACC] = $stat;
 	}
 
 	/**
@@ -183,14 +277,14 @@ class StatisticManager {
 	}
 
 	/**
-	 * Get all statistics of a certain palyer
+	 * Get all statistics of a certain player
 	 *
 	 * @param Player $player
 	 * @param int    $serverIndex
 	 * @return array
 	 */
 	public function getAllPlayerStats(Player $player, $serverIndex = -1) {
-		// TODO improve performance
+		// TODO improve performance of the foreach
 		$playerStats = array();
 		foreach($this->stats as $stat) {
 			$value                    = $this->getStatisticData($stat->name, $player->index, $serverIndex);
@@ -203,12 +297,69 @@ class StatisticManager {
 					if (!isset($playerStats[StatisticCollector::STAT_ON_KILL]) || !isset($playerStats[StatisticCollector::STAT_ON_DEATH])) {
 						continue;
 					}
-					$kills  = intval($playerStats[StatisticCollector::STAT_ON_KILL]);
-					$deaths = intval($playerStats[StatisticCollector::STAT_ON_DEATH]);
+					$kills  = intval($playerStats[StatisticCollector::STAT_ON_KILL][1]);
+					$deaths = intval($playerStats[StatisticCollector::STAT_ON_DEATH][1]);
 					if ($deaths == 0) {
 						continue;
 					}
 					$playerStats[$stat->name] = array($stat, $kills / $deaths);
+					break;
+				case self::SPECIAL_STAT_HITS_PH:
+					if (!isset($playerStats[StatisticCollector::STAT_PLAYTIME]) || !isset($playerStats[StatisticCollector::STAT_ON_HIT])) {
+						continue;
+					}
+					$hits = intval($playerStats[StatisticCollector::STAT_ON_HIT][1]);
+					$time = intval($playerStats[StatisticCollector::STAT_PLAYTIME][1]);
+					if ($time == 0) {
+						continue;
+					}
+					$playerStats[$stat->name] = array($stat, $hits / ($time / 3600));
+					break;
+				case self::SPECIAL_STAT_ARROW_ACC:
+					if (!isset($playerStats[StatisticCollector::STAT_ARROW_HIT]) || !isset($playerStats[StatisticCollector::STAT_ARROW_SHOT])) {
+						continue;
+					}
+					$hits  = intval($playerStats[StatisticCollector::STAT_ARROW_HIT][1]);
+					$shots = intval($playerStats[StatisticCollector::STAT_ARROW_SHOT][1]);
+					if ($shots == 0) {
+						continue;
+					}
+					$playerStats[$stat->name] = array($stat, $hits / $shots);
+					break;
+				case self::SPECIAL_STAT_LASER_ACC:
+					if (!isset($playerStats[StatisticCollector::STAT_LASER_HIT]) || !isset($playerStats[StatisticCollector::STAT_LASER_SHOT])) {
+						continue;
+					}
+					$hits  = intval($playerStats[StatisticCollector::STAT_LASER_HIT][1]);
+					$shots = intval($playerStats[StatisticCollector::STAT_LASER_SHOT][1]);
+					if ($shots == 0) {
+						continue;
+					}
+					$playerStats[$stat->name] = array($stat, $hits / $shots);
+					var_dump($hits, $shots, (float)($hits / $shots));
+					break;
+				case self::SPECIAL_STAT_ROCKET_ACC:
+					if (!isset($playerStats[StatisticCollector::STAT_ROCKET_HIT]) || !isset($playerStats[StatisticCollector::STAT_ROCKET_SHOT])) {
+						continue;
+					}
+					$hits  = intval($playerStats[StatisticCollector::STAT_ROCKET_HIT][1]);
+					$shots = intval($playerStats[StatisticCollector::STAT_ROCKET_SHOT][1]);
+					if ($shots == 0) {
+						continue;
+					}
+					$playerStats[$stat->name] = array($stat, $hits / $shots);
+					break;
+				case self::SPECIAL_STAT_NUCLEUS_ACC:
+					if (!isset($playerStats[StatisticCollector::STAT_NUCLEUS_HIT]) || !isset($playerStats[StatisticCollector::STAT_NUCLEUS_SHOT])) {
+						continue;
+					}
+					$hits  = intval($playerStats[StatisticCollector::STAT_NUCLEUS_HIT][1]);
+					$shots = intval($playerStats[StatisticCollector::STAT_NUCLEUS_SHOT][1]);
+					if ($shots == 0) {
+						continue;
+					}
+					$playerStats[$stat->name] = array($stat, (float)($hits / $shots));
+					break;
 			}
 		}
 		return $playerStats;

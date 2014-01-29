@@ -14,6 +14,7 @@ use FML\Controls\Quads\Quad_UIConstruction_Buttons;
 use FML\ManiaLink;
 use FML\Script\Script;
 use ManiaControl\Callbacks\CallbackListener;
+use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
@@ -42,7 +43,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		//$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
 	}
 
 	/**
@@ -69,14 +70,9 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener {
 		$this->registerStat(StatisticCollector::STAT_ON_DEATH, 50, "D");
 		$this->registerStat(StatisticCollector::STAT_ON_CAPTURE, 60, "C");
 
-		//TODO register from classes:
-		if($this->maniaControl->pluginManager->getPlugin('DonationPlugin')) {
-			$this->registerStat(\DonationPlugin::STAT_PLAYER_DONATIONS, 70, "D", 20);
-		}
-
-		if($this->maniaControl->pluginManager->getPlugin('KarmaPlugin')) {
-			$this->registerStat(\DonationPlugin::STAT_PLAYER_DONATIONS, 80, "VM");
-		}
+		$this->registerStat(StatisticManager::SPECIAL_STAT_KD_RATIO, 70, "K/D", 10, StatisticManager::STAT_TYPE_FLOAT);
+		$this->registerStat(StatisticManager::SPECIAL_STAT_LASER_ACC, 80, "Lacc", 13, StatisticManager::STAT_TYPE_FLOAT);
+		$this->registerStat(StatisticManager::SPECIAL_STAT_HITS_PH, 85, "H/h", 13, StatisticManager::STAT_TYPE_FLOAT);
 	}
 
 	/**
@@ -105,19 +101,15 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener {
 	 *
 	 * @param Player $player
 	 */
-	public function showStatsList(Player $player) {
+	public function showStatsList(Player $player, $order = PlayerManager::STAT_SERVERTIME) {
 		$height       = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
 		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowStyle();
 		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowSubStyle();
 
 
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
-
-		$width = $this->statsWidth + 80;
-
-		// Create script and features
-		$script = new Script();
-		$maniaLink->setScript($script);
+		$script    = $maniaLink->getScript();
+		$width     = $this->statsWidth + 60;
 
 		// Main frame
 		$frame = new Frame();
@@ -157,10 +149,6 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener {
 		$frame->add($headFrame);
 		$headFrame->setY($y - 5);
 
-
-		$playTime = $this->maniaControl->statisticManager->getStatsRanking(StatisticCollector::STAT_PLAYTIME);
-		$shots    = $this->maniaControl->statisticManager->getStatsRanking(StatisticCollector::STAT_ON_SHOOT);
-
 		$x                   = $xStart;
 		$array['$oId']       = $x + 5;
 		$array['$oNickname'] = $x + 14;
@@ -174,14 +162,9 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener {
 			$x += $stat["Width"];
 		}
 
-		$standardWidth  = 10;
-		$array['$oK/D'] = $x;
-		$x += $standardWidth;
-		$array['$oH/h'] = $x;
-
-		$order = PlayerManager::STAT_SERVERTIME;
-
+		//TODO description on each
 		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
+
 
 		// define standard properties
 		$hAlign    = Control::LEFT;
@@ -190,9 +173,10 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener {
 		$textColor = 'FFF';
 		$i         = 1;
 		$y -= 10;
+
 		foreach($statRankings[$order] as $playerId => $value) {
 			$listPlayer = $this->maniaControl->playerManager->getPlayerByIndex($playerId);
-			if($i == 15) {
+			if ($i == 15) {
 				break;
 			}
 
@@ -205,34 +189,22 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener {
 
 			foreach($this->statArray as $stat) {
 				$statValue = 0;
-				if(isset($statRankings[$stat['Name']][$playerId])) {
+				if (isset($statRankings[$stat['Name']][$playerId])) {
 					$statValue = $statRankings[$stat['Name']][$playerId];
-					if($stat['Format'] == StatisticManager::STAT_TYPE_TIME) {
+					if ($stat['Format'] == StatisticManager::STAT_TYPE_TIME) {
 						$statValue = Formatter::formatTimeH($statValue);
+					} else if ($stat['Format'] == StatisticManager::STAT_TYPE_FLOAT) {
+						$statValue = round(floatval($statValue), 2);
 					}
+
 				}
 				$displayArray[$stat['Name']] = array("Value" => strval($statValue), "Width" => $stat['Width']);
 			}
 
-			isset($playTime[$playerId]) ? $playTimeStat = $playTime[$playerId] : $playTimeStat = 0;
-
-			if(isset($statRankings[StatisticCollector::STAT_ON_DEATH][$playerId])) {
-				$deathStat                        = $statRankings[StatisticCollector::STAT_ON_DEATH][$playerId];
-				$killStat                         = $statRankings[StatisticCollector::STAT_ON_KILL][$playerId];
-				$displayArray['Kill-Death Ratio'] = array("Value" => round($killStat / $deathStat, 2), "Width" => $standardWidth);
-			} else {
-				$displayArray['Kill-Death Ratio'] = array("Value" => "-", "Width" => $standardWidth);
-			}
-
-			if($playTimeStat == 0) {
-				$displayArray['Hits per Hour'] = array("Value" => "-", "Width" => $standardWidth);
-			} else {
-				$hitStat                       = $statRankings[StatisticCollector::STAT_ON_HIT][$playerId];
-				$displayArray['Hits per Hour'] = array("Value" => strval(round(intval($hitStat) / (intval($playTimeStat) / 3600), 1)), "Width" => $standardWidth);
-			}
 
 			$array = array($i => $xStart + 5, $listPlayer->nickname => $xStart + 14);
 			$this->maniaControl->manialinkManager->labelLine($playerFrame, $array);
+
 
 			$x = $xStart + 55;
 			foreach($displayArray as $key => $array) {
@@ -251,7 +223,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener {
 
 			$playerFrame->setY($y);
 
-			if($i % 2 != 0) {
+			if ($i % 2 != 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
 				$playerFrame->add($lineQuad);
 				$lineQuad->setSize($width, 4);
@@ -265,6 +237,6 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener {
 		}
 
 		// Render and display xml
-		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player, 'PlayerList');
+		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player, 'SimpleStatsList');
 	}
 } 

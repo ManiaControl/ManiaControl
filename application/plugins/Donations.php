@@ -90,6 +90,9 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_DONATION_VALUES, "20,50,100,500,1000,2000");
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MIN_AMOUNT_SHOWN, 100);
 
+		// Register Stat in Simple StatsList
+		$this->maniaControl->statisticManager->simpleStatsList->registerStat(self::STAT_PLAYER_DONATIONS, 90, "DP", 15);
+
 		$this->displayWidget();
 		return true;
 	}
