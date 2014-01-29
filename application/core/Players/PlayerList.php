@@ -195,12 +195,13 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 				$countryQuad = new Quad();
 				$playerFrame->add($countryQuad);
 				$countryCode = Formatter::mapCountry($listPlayer->getCountry());
+				//TODO fix on other
 				$countryQuad->setImage("file://Skins/Avatars/Flags/{$countryCode}.dds");
 				$countryQuad->setX($x + 98);
 				$countryQuad->setSize(4, 4);
 				$countryQuad->setZ(1);
 
-				$script->addTooltip($countryQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $listPlayer->nickname . " from " . $listPlayer->path));
+				$script->addTooltip($countryQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "$<" . $listPlayer->nickname . "$> from " . $listPlayer->path));
 			}
 
 			// Level Quad
