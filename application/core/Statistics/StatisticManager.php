@@ -202,8 +202,6 @@ class StatisticManager {
 				}
 				break;
 		}
-
-		//	var_dump($statsArray);
 		return $statsArray;
 	}
 
@@ -336,7 +334,6 @@ class StatisticManager {
 						continue;
 					}
 					$playerStats[$stat->name] = array($stat, $hits / $shots);
-					var_dump($hits, $shots, (float)($hits / $shots));
 					break;
 				case self::SPECIAL_STAT_ROCKET_ACC:
 					if (!isset($playerStats[StatisticCollector::STAT_ROCKET_HIT]) || !isset($playerStats[StatisticCollector::STAT_ROCKET_SHOT])) {
