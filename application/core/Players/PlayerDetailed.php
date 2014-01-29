@@ -212,16 +212,15 @@ class PlayerDetailed {
 		$frame = new Frame();
 
 		$playerStats = $this->maniaControl->statisticManager->getAllPlayerStats($player);
-
-		$y  = $this->height / 2 - 15;
-		$x  = -$this->width / 2 + 52;
-		$id = 1;
+		$y           = $this->height / 2 - 15;
+		$x           = -$this->width / 2 + 52;
+		$id          = 1;
 
 		foreach($playerStats as $stat) {
 			$statProperties = $stat[0];
 			$value          = $stat[1];
 
-			if ((int)$value == 0) {
+			if (floatval($value) == 0) {
 				continue;
 			}
 
