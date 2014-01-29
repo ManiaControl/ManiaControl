@@ -278,7 +278,7 @@ class Client
 		$request = new Request($method, $args);
 
 		// Check if request is larger than 512 Kbytes
-		if ($request->getLength() > 512*1024-8) 
+		if ($request->getLength() > 1024*1024-8) //TODO changed temporary to 1024 * 1024
 		{
 			throw new Exception('transport error - request too large!', -32700);
 		}
