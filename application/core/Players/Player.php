@@ -35,7 +35,7 @@ class Player {
 	public $downloadRate = -1;
 	public $uploadRate = -1;
 	public $skins = null;
-	public $maniaPlanetPlayDays = -1;
+	public $daysSinceZoneInscription = -1;
 
 	//Flags details
 	public $forcedSpectatorState = 0;
@@ -67,25 +67,25 @@ class Player {
 			return;
 		}
 
-		$this->pid                 = $mpPlayer->playerId;
-		$this->login               = $mpPlayer->login;
-		$this->nickname            = Formatter::stripDirtyCodes($mpPlayer->nickName);
-		$this->path                = $mpPlayer->path;
-		$this->language            = $mpPlayer->language;
-		$this->avatar              = $mpPlayer->avatar['FileName'];
-		$this->allies              = $mpPlayer->allies;
-		$this->clubLink            = $mpPlayer->clubLink;
-		$this->teamId              = $mpPlayer->teamId;
-		$this->isOfficial          = $mpPlayer->isInOfficialMode;
-		$this->ladderScore         = $mpPlayer->ladderStats['PlayerRankings'][0]['Score'];
-		$this->ladderRank          = $mpPlayer->ladderStats['PlayerRankings'][0]['Ranking'];
-		$this->ladderStats         = $mpPlayer->ladderStats;
-		$this->maniaPlanetPlayDays = $mpPlayer->hoursSinceZoneInscription / 24; //TODO change
-		$this->ipAddress           = $mpPlayer->iPAddress;
-		$this->clientVersion       = $mpPlayer->clientVersion;
-		$this->downloadRate        = $mpPlayer->downloadRate;
-		$this->uploadRate          = $mpPlayer->uploadRate;
-		$this->skins               = $mpPlayer->skins;
+		$this->pid                      = $mpPlayer->playerId;
+		$this->login                    = $mpPlayer->login;
+		$this->nickname                 = Formatter::stripDirtyCodes($mpPlayer->nickName);
+		$this->path                     = $mpPlayer->path;
+		$this->language                 = $mpPlayer->language;
+		$this->avatar                   = $mpPlayer->avatar['FileName'];
+		$this->allies                   = $mpPlayer->allies;
+		$this->clubLink                 = $mpPlayer->clubLink;
+		$this->teamId                   = $mpPlayer->teamId;
+		$this->isOfficial               = $mpPlayer->isInOfficialMode;
+		$this->ladderScore              = $mpPlayer->ladderStats['PlayerRankings'][0]['Score'];
+		$this->ladderRank               = $mpPlayer->ladderStats['PlayerRankings'][0]['Ranking'];
+		$this->ladderStats              = $mpPlayer->ladderStats;
+		$this->daysSinceZoneInscription = $mpPlayer->hoursSinceZoneInscription / 24;
+		$this->ipAddress                = $mpPlayer->iPAddress;
+		$this->clientVersion            = $mpPlayer->clientVersion;
+		$this->downloadRate             = $mpPlayer->downloadRate;
+		$this->uploadRate               = $mpPlayer->uploadRate;
+		$this->skins                    = $mpPlayer->skins;
 
 		//Flag Details
 		$this->forcedSpectatorState     = $mpPlayer->forceSpectator;
