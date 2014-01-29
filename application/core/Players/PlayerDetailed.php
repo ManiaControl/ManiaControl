@@ -216,6 +216,7 @@ class PlayerDetailed {
 		$y  = $this->height / 2 - 15;
 		$x  = -$this->width / 2 + 52;
 		$id = 1;
+
 		foreach($playerStats as $stat) {
 			$statProperties = $stat[0];
 			$value          = $stat[1];
@@ -226,7 +227,10 @@ class PlayerDetailed {
 
 			if ($statProperties->type == StatisticManager::STAT_TYPE_TIME) {
 				$value = Formatter::formatTimeH($value);
+			} else if ($statProperties->type == StatisticManager::STAT_TYPE_FLOAT) {
+				$value = round(floatval($value), 2);
 			}
+
 
 			if ($id % 2 != 0) {
 				$lineQuad = new Quad_BgsPlayerCard();

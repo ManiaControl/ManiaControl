@@ -82,6 +82,9 @@ class KarmaPlugin implements CallbackListener, Plugin {
 		// Define player stats
 		$this->maniaControl->statisticManager->defineStatMetaData(self::STAT_PLAYER_MAPVOTES);
 
+		// Register Stat in Simple StatsList
+		$this->maniaControl->statisticManager->simpleStatsList->registerStat(self::STAT_PLAYER_MAPVOTES, 100, "VM");
+
 		$this->updateManialink = true;
 		return true;
 	}
