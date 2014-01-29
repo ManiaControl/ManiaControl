@@ -478,7 +478,6 @@ class MapManager implements CallbackListener {
 		return array_search($map, $maps);
 	}
 
-
 	/**
 	 * Adds a Map from Mania Exchange
 	 *
@@ -495,20 +494,6 @@ class MapManager implements CallbackListener {
 			$this->maniaControl->chat->sendError("ManiaControl couldn't retrieve the maps directory.", $login);
 			return;
 		}
-
-		if (!is_dir($mapDir)) {
-			trigger_error("ManiaControl doesn't have have access to the maps directory in '{$mapDir}'.");
-			$this->maniaControl->chat->sendError("ManiaControl doesn't have access to the maps directory.", $login);
-			return;
-		}
-		$downloadDirectory = $this->maniaControl->settingManager->getSetting($this, 'MapDownloadDirectory', 'MX');
-		// Create download directory if necessary
-		if (!is_dir($mapDir . $downloadDirectory) && !mkdir($mapDir . $downloadDirectory)) {
-			trigger_error("ManiaControl doesn't have to rights to save maps in '{$mapDir}{$downloadDirectory}'.");
-			$this->maniaControl->chat->sendError("ManiaControl doesn't have the rights to save maps.", $login);
-			return;
-		}
-		$mapDir .= $downloadDirectory . '/';
 
 		// Download the map
 		if (is_numeric($mapId)) {
@@ -545,14 +530,38 @@ class MapManager implements CallbackListener {
 			// Save map
 			$fileName = $mapId . '_' . $mapInfo->name . '.Map.Gbx';
 			$fileName = FileUtil::getClearedFileName($fileName);
-			if (!file_put_contents($mapDir . $fileName, $file)) {
-				// Save error
-				$this->maniaControl->chat->sendError('Saving map failed!', $login);
-				return;
-			}
-			// Check for valid map
+
+			$downloadDirectory = $this->maniaControl->settingManager->getSetting($this, 'MapDownloadDirectory', 'MX');
+
 			$mapFileName = $downloadDirectory . '/' . $fileName;
 
+			//Check if it can get locally Written
+			if (is_dir($mapDir)) {
+				// Create download directory if necessary
+				if (!is_dir($mapDir . $downloadDirectory) && !mkdir($mapDir . $downloadDirectory)) {
+					trigger_error("ManiaControl doesn't have to rights to save maps in '{$mapDir}{$downloadDirectory}'.");
+					$this->maniaControl->chat->sendError("ManiaControl doesn't have the rights to save maps.", $login);
+					return;
+				}
+
+				$mapDir .= $downloadDirectory . '/';
+
+				if (!file_put_contents($mapDir . $fileName, $file)) {
+					// Save error
+					$this->maniaControl->chat->sendError('Saving map failed!', $login);
+					return;
+				}
+				//Write via Write File Method
+			} else {
+				try {
+					$this->maniaControl->client->writeFileFromString($mapFileName, $file);
+				} catch(\Exception $e) {
+					$this->maniaControl->chat->sendError("Map is too big for a remote save.", $login);
+					return;
+				}
+			}
+
+			// Check for valid map
 			try {
 				$this->maniaControl->client->checkMapForCurrentServerParams($mapFileName);
 			} catch(\Exception $e) {
