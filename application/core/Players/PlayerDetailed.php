@@ -182,7 +182,7 @@ class PlayerDetailed {
 		$label = clone $mainLabel;
 		$frame->add($label);
 		$label->setY($y);
-		$label->setText(date("d M Y", time() - 3600 * 24 * $target->maniaPlanetPlayDays));
+		$label->setText(date("d M Y", time() - 3600 * 24 * $target->daysSinceZoneInscription));
 
 		$quad = new Quad();
 		$frame->add($quad);

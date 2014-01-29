@@ -10,8 +10,6 @@ use ManiaControl\Players\Player;
  *
  * @author steeffeen & kremsy
  */
-// TODO db reference between player index and statsitics playerId
-// TODO db reference between metadata statId and statistics statId
 class StatisticManager {
 	/**
 	 * Constants
@@ -20,7 +18,7 @@ class StatisticManager {
 	const TABLE_STATISTICS   = 'mc_statistics';
 	const STAT_TYPE_INT      = '0';
 	const STAT_TYPE_TIME     = '1';
-	const STAT_TYPE_FLOAT     = '2';
+	const STAT_TYPE_FLOAT    = '2';
 
 	const SPECIAL_STAT_KD_RATIO = 'Kill Death Ratio'; //TODO dynamic later
 
@@ -164,9 +162,9 @@ class StatisticManager {
 		}
 		$result->close();
 
-		$stat = new \stdClass();
-		$stat->name = self::SPECIAL_STAT_KD_RATIO;
-		$stat->type = self::STAT_TYPE_FLOAT;
+		$stat                                            = new \stdClass();
+		$stat->name                                      = self::SPECIAL_STAT_KD_RATIO;
+		$stat->type                                      = self::STAT_TYPE_FLOAT;
 		$this->specialStats[self::SPECIAL_STAT_KD_RATIO] = $stat;
 	}
 
@@ -199,15 +197,17 @@ class StatisticManager {
 			$playerStats[$stat->name] = array($stat, $value);
 		}
 
-		foreach($this->specialStats as $stat){
-			switch($stat->name){
+		foreach($this->specialStats as $stat) {
+			switch($stat->name) {
 				case self::SPECIAL_STAT_KD_RATIO:
-					if(!isset($playerStats[StatisticCollector::STAT_ON_KILL]) || !isset($playerStats[StatisticCollector::STAT_ON_DEATH]))
+					if (!isset($playerStats[StatisticCollector::STAT_ON_KILL]) || !isset($playerStats[StatisticCollector::STAT_ON_DEATH])) {
 						continue;
-					$kills =  intval($playerStats[StatisticCollector::STAT_ON_KILL]);
+					}
+					$kills  = intval($playerStats[StatisticCollector::STAT_ON_KILL]);
 					$deaths = intval($playerStats[StatisticCollector::STAT_ON_DEATH]);
-					if($deaths == 0)
+					if ($deaths == 0) {
 						continue;
+					}
 					$playerStats[$stat->name] = array($stat, $kills / $deaths);
 			}
 		}
