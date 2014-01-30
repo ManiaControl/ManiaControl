@@ -1,11 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Lukas
- * Date: 30.01.14
- * Time: 21:11
+ * Class for managing Timers
+ *
+ * @author steeffeen & kremsy
  */
-
 namespace ManiaControl\Callbacks;
 
 
@@ -15,8 +13,25 @@ class TimerManager {
 	private $maniaControl = null;
 	private $timerListenings = array();
 
+	/**
+	 * Construct a new Timer Manager
+	 *
+	 * @param \ManiaControl\ManiaControl $maniaControl
+	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
+	}
+
+
+	/**
+	 * Registers a One Time Listening
+	 *
+	 * @param TimerListener $listener
+	 * @param               $method
+	 * @param               $time
+	 */
+	public function registerOneTimeListening(TimerListener $listener, $method, $time) {
+		$this->registerTimerListening($listener, $method, $time, true);
 	}
 
 	/**
@@ -27,14 +42,41 @@ class TimerManager {
 	 * @param               $time
 	 * @return bool
 	 */
-	public function registerTimerListening(TimerListener $listener, $method, $time) {
+	public function registerTimerListening(TimerListener $listener, $method, $time, $oneTime = false) {
 		if (!method_exists($listener, $method)) {
 			trigger_error("Given listener (" . get_class($listener) . ") can't handle timer (no method '{$method}')!");
 			return false;
 		}
-		array_push($this->timerListenings, array("Listener" => $listener, "Method" => $method, "DeltaTime" => ($time / 1000), "LastTrigger" => microtime(true)));
-		return true;
 
+		//Init the Timer Listening
+		$listening              = new \stdClass();
+		$listening->listener    = $listener;
+		$listening->method      = $method;
+		$listening->deltaTime   = $time / 1000;
+		$listening->lastTrigger = -1;
+		$listening->oneTime     = $oneTime;
+
+		array_push($this->timerListenings, $listening);
+
+		return true;
+	}
+
+	/**
+	 * Remove a Script Callback Listener
+	 *
+	 * @param CallbackListener $listener
+	 * @return bool
+	 */
+	public function unregisterTimerListenings(CallbackListener $listener) {
+		$removed = false;
+		foreach($this->timerListenings as $key => &$listening) {
+			if ($listening->listener != $listener) {
+				continue;
+			}
+			unset($this->timerListenings[$key]);
+			$removed = true;
+		}
+		return $removed;
 	}
 
 	/**
@@ -42,12 +84,23 @@ class TimerManager {
 	 */
 	public function manageTimings() {
 		$time = microtime(true);
-		foreach($this->timerListenings as $key => $listening) {
-			if ($listening["LastTrigger"] + $listening["DeltaTime"] < $time) {
-				call_user_func(array($listening["Listener"], $listening["Method"]), $time);
-				$this->timerListenings[$key]["LastTrigger"] += ($listening["DeltaTime"]);
+		foreach($this->timerListenings as $key => &$listening) {
+			if (($listening->lastTrigger + $listening->deltaTime) <= $time) {
+				call_user_func(array($listening->listener, $listening->method), $time);
+
+				//Unregister one time Listening
+				if ($listening->oneTime == true) {
+					unset($this->timerListenings[$key]);
+					continue;
+				}
+
+				if ($listening->lastTrigger != -1) {
+					$listening->lastTrigger += $listening->deltaTime;
+				} else {
+					//Initial Time Initialize (self increment needed to improve accuracy)
+					$listening->lastTrigger = microtime(true);
+				}
 			}
 		}
 	}
-
 } 
