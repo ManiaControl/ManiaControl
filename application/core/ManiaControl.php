@@ -6,6 +6,7 @@ use ErrorHandler;
 use ManiaControl\Admin\ActionsMenu;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Callbacks\TimerManager;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\Commands\CommandManager;
 use ManiaControl\Configurators\Configurator;
@@ -62,6 +63,7 @@ class ManiaControl implements CommandListener {
 	public $statisticManager = null;
 	public $updateManager = null;
 	public $errorHandler = null;
+	public $timerManager = null;
 
 	/**
 	 * Private properties
@@ -83,6 +85,7 @@ class ManiaControl implements CommandListener {
 		// Load ManiaControl Modules
 		$this->database              = new Database($this);
 		$this->callbackManager       = new CallbackManager($this);
+		$this->timerManager          = new TimerManager($this);
 		$this->settingManager        = new SettingManager($this);
 		$this->statisticManager      = new StatisticManager($this);
 		$this->manialinkManager      = new ManialinkManager($this);
@@ -277,7 +280,8 @@ class ManiaControl implements CommandListener {
 
 			// Yield for next tick
 			$loopEnd   = microtime(true);
-			$sleepTime = 1000 - $loopEnd + $loopStart;
+
+			$sleepTime = (int) (1000 - $loopEnd + $loopStart);
 			if ($sleepTime > 0) {
 				usleep($sleepTime);
 			}
