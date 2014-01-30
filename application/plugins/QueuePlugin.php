@@ -7,6 +7,7 @@ use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\ManiaLink;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
@@ -23,7 +24,7 @@ use ManiaControl\Plugins\Plugin;
 // TODO: worst kick function
 // TODO: idlekick function (?)
 
-class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAnswerListener, Plugin {
+class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAnswerListener, TimerListener , Plugin {
 	/**
 	 * Constants
 	 */
@@ -63,10 +64,10 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 	public function load(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
+		$this->maniaControl->timerManager->registerTimerListening($this, 'handleEverySecond', 1000);
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'handlePlayerConnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECTED, $this, 'handlePlayerDisconnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERINFOCHANGED, $this, 'handlePlayerInfoChanged');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_1_SECOND, $this, 'handleEverySecond');
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ML_ADDTOQUEUE, $this, 'handleManiaLinkAnswerAdd');
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ML_REMOVEFROMQUEUE, $this, 'handleManiaLinkAnswerRemove');
 

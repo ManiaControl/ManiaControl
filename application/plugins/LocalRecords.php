@@ -1,4 +1,5 @@
 <?php
+use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Callbacks\CallbackListener;
@@ -18,7 +19,7 @@ use FML\Controls\Quad;
  *
  * @author steeffeen
  */
-class LocalRecordsPlugin implements CallbackListener, Plugin {
+class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 	/**
 	 * Constants
 	 */
@@ -74,8 +75,8 @@ class LocalRecordsPlugin implements CallbackListener, Plugin {
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_NOTIFY_BEST_RECORDS, -1);
 		
 		// Register for callbacks
+		$this->maniaControl->timerManager->registerTimerListening($this, 'handle1Second', 1000);
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_1_SECOND, $this, 'handle1Second');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_BEGINMAP, $this, 'handleMapBegin');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_CLIENTUPDATED, $this, 
 				'handleClientUpdated');
@@ -166,9 +167,9 @@ class LocalRecordsPlugin implements CallbackListener, Plugin {
 	/**
 	 * Handle 1Second callback
 	 *
-	 * @param array $callback
+	 * @param $time
 	 */
-	public function handle1Second(array $callback) {
+	public function handle1Second($time) {
 		if (!$this->updateManialink) return;
 		$this->updateManialink = false;
 		$manialink = $this->buildManialink();

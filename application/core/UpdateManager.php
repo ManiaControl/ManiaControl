@@ -4,7 +4,7 @@ namespace ManiaControl;
 
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
-use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
@@ -15,7 +15,7 @@ use ManiaControl\Plugins\Plugin;
  *
  * @author steeffeen & kremsy
  */
-class UpdateManager implements CallbackListener, CommandListener {
+class UpdateManager implements CallbackListener, CommandListener, TimerListener {
 	/*
 	 * Constants
 	 */
@@ -54,7 +54,7 @@ class UpdateManager implements CallbackListener, CommandListener {
 
 
 		// Register for callbacks
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_1_MINUTE, $this, 'handle1Minute');
+		$this->maniaControl->timerManager->registerTimerListening($this, 'handle1Minute', 1000 * 60);
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'handlePlayerJoined');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECTED, $this, 'handlePlayerDisconnected');
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_UPDATE, AuthenticationManager::AUTH_LEVEL_ADMIN);
@@ -68,9 +68,9 @@ class UpdateManager implements CallbackListener, CommandListener {
 	/**
 	 * Handle ManiaControl 1Minute callback
 	 *
-	 * @param array $callback
+	 * @param $time
 	 */
-	public function handle1Minute(array $callback) {
+	public function handle1Minute($time) {
 		$updateCheckEnabled = $this->maniaControl->settingManager->getSetting($this, self::SETTING_ENABLEUPDATECHECK);
 		if (!$updateCheckEnabled) {
 			// Automatic update check disabled

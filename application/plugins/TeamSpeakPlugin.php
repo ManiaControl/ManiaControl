@@ -7,6 +7,7 @@ use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\ManiaLink;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
@@ -21,7 +22,7 @@ use ManiaControl\Plugins\Plugin;
  *
  * @author TheM
  */
-class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPageAnswerListener, Plugin {
+class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPageAnswerListener, TimerListener, Plugin {
 	/**
 	 * Constants
 	 */
@@ -76,7 +77,7 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 		$this->maniaControl->manialinkManager->iconManager->addIcon(self::TS_ICON);
 		$this->maniaControl->manialinkManager->iconManager->addIcon(self::TS_ICON_MOVER);
 
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_1_SECOND, $this, 'ts3_queryServer');
+		$this->maniaControl->timerManager->registerTimerListening($this, 'ts3_queryServer', 1000);
 
 		$this->addToMenu();
 	}
