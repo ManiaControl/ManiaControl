@@ -18,6 +18,7 @@ use FML\Script\Script;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
@@ -28,7 +29,7 @@ use ManiaControl\Manialinks\ManialinkPageAnswerListener;
  *
  * @author steeffeen & kremsy
  */
-class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
+class PlayerList implements ManialinkPageAnswerListener, CallbackListener, TimerListener {
 	/**
 	 * Constants
 	 */
@@ -75,6 +76,12 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener {
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECTED, $this, 'updateWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'updateWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(AuthenticationManager::CB_AUTH_LEVEL_CHANGED, $this, 'updateWidget');
+
+		$this->maniaControl->timerManager->registerTimerListening($this, 'test', 1); //TODo just a test
+	}
+
+	public function test($triggerTime){
+		var_dump($triggerTime);
 	}
 
 	public function addPlayerToShownList(Player $player, $showStatus = self::SHOWN_MAIN_WINDOW) {
