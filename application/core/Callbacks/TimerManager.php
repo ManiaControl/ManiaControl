@@ -85,21 +85,23 @@ class TimerManager {
 	public function manageTimings() {
 		$time = microtime(true);
 		foreach($this->timerListenings as $key => &$listening) {
+
 			if (($listening->lastTrigger + $listening->deltaTime) <= $time) {
-				call_user_func(array($listening->listener, $listening->method), $time);
+				//Increase the lastTrigger time manually (to improve accuracy)
+				if ($listening->lastTrigger != -1) {
+					$listening->lastTrigger += $listening->deltaTime;
+				} else {
+					//Initialize Timer
+					$listening->lastTrigger = $time;
+				}
 
 				//Unregister one time Listening
 				if ($listening->oneTime == true) {
 					unset($this->timerListenings[$key]);
-					continue;
 				}
 
-				if ($listening->lastTrigger != -1) {
-					$listening->lastTrigger += $listening->deltaTime;
-				} else {
-					//Initial Time Initialize (self increment needed to improve accuracy)
-					$listening->lastTrigger = microtime(true);
-				}
+				//Call the User func (at the end to avoid endless loops)
+				call_user_func(array($listening->listener, $listening->method), $time);
 			}
 		}
 	}
