@@ -15,9 +15,6 @@ class CallbackManager {
 	 * Constants
 	 */
 	// ManiaControl callbacks
-	const CB_MC_1_SECOND      = 'ManiaControl.1Second';
-	const CB_MC_5_SECOND      = 'ManiaControl.5Second';
-	const CB_MC_1_MINUTE      = 'ManiaControl.1Minute';
 	const CB_MC_ONINIT        = 'ManiaControl.OnInit';
 	const CB_MC_ONSHUTDOWN    = 'ManiaControl.OnShutdown';
 	const CB_MC_CLIENTUPDATED = 'ManiaControl.ClientUpdated';
@@ -186,9 +183,8 @@ class CallbackManager {
 	 * Trigger internal Callbacks and manage Server Callbacks
 	 */
 	public function manageCallbacks() {
-		// Timed callbacks
+		// Manage Timings
 		$this->maniaControl->timerManager->manageTimings();
-		$this->manageTimedCallbacks();
 
 		// Server Callbacks
 		if (!$this->maniaControl->client) {
@@ -266,31 +262,5 @@ class CallbackManager {
 				$this->triggerScriptCallback($scriptCallbackName, $scriptCallbackData);
 				break;
 		}
-	}
-
-	/**
-	 * Manage recurring timed Callbacks
-	 */
-	private function manageTimedCallbacks() {
-		// 1 second
-		if ($this->last1Second > time() - 1) {
-			return;
-		}
-		$this->last1Second = time();
-		$this->triggerCallback(self::CB_MC_1_SECOND, array(self::CB_MC_1_SECOND));
-
-		// 5 second
-		if ($this->last5Second > time() - 5) {
-			return;
-		}
-		$this->last5Second = time();
-		$this->triggerCallback(self::CB_MC_5_SECOND, array(self::CB_MC_5_SECOND));
-
-		// 1 minute
-		if ($this->last1Minute > time() - 60) {
-			return;
-		}
-		$this->last1Minute = time();
-		$this->triggerCallback(self::CB_MC_1_MINUTE, array(self::CB_MC_1_MINUTE));
 	}
 }

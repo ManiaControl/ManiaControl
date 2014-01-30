@@ -6,6 +6,7 @@ use FML\Controls\Quad;
 use FML\ManiaLink;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\ColorUtil;
 use ManiaControl\ManiaControl;
 use ManiaControl\Maps\Map;
@@ -17,7 +18,7 @@ use ManiaControl\Plugins\Plugin;
  *
  * @author steeffeen
  */
-class KarmaPlugin implements CallbackListener, Plugin {
+class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	/**
 	 * Constants
 	 */
@@ -74,8 +75,8 @@ class KarmaPlugin implements CallbackListener, Plugin {
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_HEIGHT, 12.);
 
 		// Register for callbacks
+		$this->maniaControl->timerManager->registerTimerListening($this, 'handle1Second', 1000);
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_BEGINMAP, $this, 'handleBeginMap');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_1_SECOND, $this, 'handle1Second');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCONNECT, $this, 'handlePlayerConnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCHAT, $this, 'handlePlayerChat');
 
@@ -144,9 +145,9 @@ class KarmaPlugin implements CallbackListener, Plugin {
 	/**
 	 * Handle ManiaControl 1 Second callback
 	 *
-	 * @param array $callback
+	 * @param $time
 	 */
-	public function handle1Second(array $callback) {
+	public function handle1Second($time) {
 		if(!$this->updateManialink) {
 			return;
 		}

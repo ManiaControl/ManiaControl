@@ -9,6 +9,7 @@ use FML\ManiaLink;
 use ManiaControl\Admin\ActionsMenu;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
@@ -16,7 +17,7 @@ use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
-class SlotMachinePlugin implements Plugin, CallbackListener, ManialinkPageAnswerListener {
+class SlotMachinePlugin implements Plugin, CallbackListener, ManialinkPageAnswerListener, TimerListener {
 	/**
 	 * Constants
 	 */
@@ -92,9 +93,10 @@ class SlotMachinePlugin implements Plugin, CallbackListener, ManialinkPageAnswer
 	public function load(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
+		$this->maniaControl->timerManager->registerTimerListening($this, 'onEverySecond', 1000);
+		$this->maniaControl->timerManager->registerTimerListening($this, 'updateDatabaseEveryMinute', 1000 * 60);
+
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_BILLUPDATED, $this, 'handleBillUpdated');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_1_SECOND, $this, 'onEverySecond');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_1_MINUTE, $this, 'updateDatabaseEveryMinute');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'handlePlayerConnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECTED, $this, 'handlePlayerDisconnect');
 

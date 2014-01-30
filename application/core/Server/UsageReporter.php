@@ -2,8 +2,7 @@
 
 namespace ManiaControl\Server;
 
-use ManiaControl\Callbacks\CallbackListener;
-use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\ManiaControl;
 
 /**
@@ -11,7 +10,7 @@ use ManiaControl\ManiaControl;
  *
  * @author steeffeen & kremsy
  */
-class UsageReporter implements CallbackListener {
+class UsageReporter implements TimerListener {
 	/**
 	 * Constants
 	 */
@@ -21,7 +20,6 @@ class UsageReporter implements CallbackListener {
 	 * Private Properties
 	 */
 	private $maniaControl = null;
-	private $minuteCount = 0;
 
 	/**
 	 * Create a new Server Settings Instance
@@ -31,34 +29,35 @@ class UsageReporter implements CallbackListener {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		//TODO setting
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_1_MINUTE, $this, 'handleEveryMinute');
+
+		$this->maniaControl->timerManager->registerTimerListening($this, 'reportUsage', 1000 * 60 * self::UPDATE_MINUTE_COUNT);
 
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_DISABLE_USAGE_REPORTING, false);
 	}
 
-	public function handleEveryMinute(array $callback) {
-		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_DISABLE_USAGE_REPORTING)) {
+	/**
+	 * Reports Usage every xx Minutes
+	 *
+	 * @param $time
+	 */
+	public function reportUsage($time) {
+		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_DISABLE_USAGE_REPORTING)) {
 			return;
 		}
 
-		$this->minuteCount++;
+		$properties                    = array();
+		$properties['MC_Version']      = ManiaControl::VERSION;
+		$properties['OperatingSystem'] = php_uname();
+		$properties['PHPVersion']      = phpversion();
+		$properties['ServerLogin']     = $this->maniaControl->server->login;
+		$properties['TitleId']         = $this->maniaControl->server->titleId;
+		$properties['ServerName']      = $this->maniaControl->server->getName();
+		$properties['PlayerCount']     = count($this->maniaControl->playerManager->getPlayers());
+		$properties['MaxPlayers']      = $this->maniaControl->client->getMaxPlayers();
 
-		if($this->minuteCount >= self::UPDATE_MINUTE_COUNT) {
-			$properties                    = array();
-			$properties['MC_Version']      = ManiaControl::VERSION;
-			$properties['OperatingSystem'] = php_uname();
-			$properties['PHPVersion']      = phpversion();
-			$properties['ServerLogin']     = $this->maniaControl->server->login;
-			$properties['TitleId']         = $this->maniaControl->server->titleId;
-			$properties['ServerName']      = $this->maniaControl->server->getName();
-			$properties['PlayerCount']     = count($this->maniaControl->playerManager->getPlayers());
-			$properties['MaxPlayers']      = $this->maniaControl->client->getMaxPlayers();
+		$json = json_encode($properties);
+		$info = base64_encode($json);
 
-			$json = json_encode($properties);
-			$info = base64_encode($json);
-
-			//TODO send Info
-			$this->minuteCount = 0;
-		}
+		//TODO send Info
 	}
 } 

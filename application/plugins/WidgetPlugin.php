@@ -9,6 +9,7 @@ use FML\ManiaLink;
 use FML\Script\Script;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\IconManager;
@@ -21,7 +22,7 @@ use ManiaControl\Plugins\Plugin;
  *
  * @author kremsy
  */
-class WidgetPlugin implements CallbackListener, Plugin {
+class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 
 	/**
 	 * Constants
@@ -67,7 +68,6 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	 * Private Properties
 	 */
 	/**
-	 *
 	 * @var maniaControl $maniaControl
 	 */
 	private $maniaControl = null;
@@ -99,7 +99,8 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ENDMAP, $this, 'handleOnEndMap');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'handlePlayerConnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECTED, $this, 'handlePlayerDisconnect');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_1_MINUTE, $this, 'handleEveryMinute');
+
+		$this->maniaControl->timerManager->registerTimerListening($this, 'handleEveryMinute', 1000 * 60);
 
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED, true);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAP_WIDGET_POSX, 160 - 20);
@@ -148,13 +149,13 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	 */
 	private function displayWidgets() {
 		// Display Map Widget
-		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED)) {
+		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED)) {
 			$this->displayMapWidget();
 		}
-		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_ACTIVATED)) {
+		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_ACTIVATED)) {
 			$this->displayClockWidget();
 		}
-		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_SERVERINFO_WIDGET_ACTIVATED)) {
+		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_SERVERINFO_WIDGET_ACTIVATED)) {
 			$this->displayServerInfoWidget();
 		}
 	}
@@ -213,7 +214,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$label->setText($map->authorLogin);
 		$label->setTextColor("FFF");
 
-		if(isset($map->mx->pageurl)) {
+		if (isset($map->mx->pageurl)) {
 			$quad = new Quad();
 			$frame->add($quad);
 			$quad->setImageFocus($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON_MOVER));
@@ -310,11 +311,10 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$playerCount    = 0;
 		$spectatorCount = 0;
 		/**
-		 *
 		 * @var Player $player
 		 */
 		foreach($players as $player) {
-			if($player->isSpectator) {
+			if ($player->isSpectator) {
 				$spectatorCount++;
 			} else {
 				$playerCount++;
@@ -385,7 +385,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	 */
 	public function handleOnBeginMap(array $callback) {
 		// Display Map Widget
-		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED)) {
+		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED)) {
 			$this->displayMapWidget();
 		}
 		$this->closeWidget(self::MLID_NEXTMAPWIDGET);
@@ -409,7 +409,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	 */
 	public function handleOnEndMap(array $callback) {
 		// Display Map Widget
-		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_NEXTMAP_WIDGET_ACTIVATED)) {
+		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_NEXTMAP_WIDGET_ACTIVATED)) {
 			$this->displayNextMapWidget();
 		}
 	}
@@ -446,12 +446,11 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$queuedMap = $this->maniaControl->mapManager->mapQueue->getNextMap();
 
 		/**
-		 *
 		 * @var Player $requester
 		 */
 		$requester = null;
 		// if the nextmap is not a queued map, get it from map info
-		if($queuedMap == null) {
+		if ($queuedMap == null) {
 			$map    = $this->maniaControl->client->getNextMapInfo();
 			$name   = Formatter::stripDirtyCodes($map->name);
 			$author = $map->author;
@@ -495,7 +494,7 @@ class WidgetPlugin implements CallbackListener, Plugin {
 		$label->setText($author);
 		$label->setTextColor("FFF");
 
-		if($requester != null) {
+		if ($requester != null) {
 			$label = new Label_Text();
 			$frame->add($label);
 			$label->setX(0);
@@ -522,13 +521,13 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	public function handlePlayerConnect(array $callback) {
 		$player = $callback[1];
 		// Display Map Widget
-		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED)) {
+		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED)) {
 			$this->displayMapWidget($player->login);
 		}
-		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_ACTIVATED)) {
+		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_ACTIVATED)) {
 			$this->displayClockWidget($player->login);
 		}
-		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_SERVERINFO_WIDGET_ACTIVATED)) {
+		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_SERVERINFO_WIDGET_ACTIVATED)) {
 			$this->displayServerInfoWidget();
 		}
 	}
@@ -539,18 +538,18 @@ class WidgetPlugin implements CallbackListener, Plugin {
 	 * @param array $callback
 	 */
 	public function handlePlayerDisconnect(array $callback) {
-		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_SERVERINFO_WIDGET_ACTIVATED)) {
+		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_SERVERINFO_WIDGET_ACTIVATED)) {
 			$this->displayServerInfoWidget();
 		}
 	}
 
 	/**
-	 * Aktualize the clock widget every minute
+	 * Actualize the clock widget every minute
 	 *
-	 * @param array $callback
+	 * @param $time
 	 */
-	public function handleEveryMinute(array $callback) {
-		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_ACTIVATED)) {
+	public function handleEveryMinute($time) {
+		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_ACTIVATED)) {
 			$this->displayClockWidget();
 		}
 	}
