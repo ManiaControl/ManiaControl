@@ -76,9 +76,15 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECTED, $this, 'updateWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'updateWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(AuthenticationManager::CB_AUTH_LEVEL_CHANGED, $this, 'updateWidget');
+
+
 	}
 
-
+	/**
+	 * Add Player to Shown List
+	 * @param Player $player
+	 * @param int    $showStatus
+	 */
 	public function addPlayerToShownList(Player $player, $showStatus = self::SHOWN_MAIN_WINDOW) {
 		$this->playersListShown[$player->login] = $showStatus;
 	}
