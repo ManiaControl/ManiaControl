@@ -4,6 +4,7 @@ namespace ManiaControl\Manialinks;
 
 use FML\Controls\Control;
 use FML\Controls\Frame;
+use FML\Controls\Label;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_BgRaceScore2;
@@ -131,11 +132,31 @@ class StyleManager {
 
 
 	/**
+	 * Gets the Default Description Label
+	 *
+	 * @return Label
+	 */
+	public function getDefaultDescriptionLabel() {
+		$width  = $this->getListWidgetsWidth();
+		$height = $this->getListWidgetsHeight();
+
+		// Predefine Description Label
+		$descriptionLabel = new Label();
+		$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
+		$descriptionLabel->setPosition(-$width / 2 + 10, -$height / 2 + 5);
+		$descriptionLabel->setSize($width * 0.7, 4);
+		$descriptionLabel->setTextSize(2);
+		$descriptionLabel->setVisible(false);
+
+		return $descriptionLabel;
+	}
+
+	/**
 	 * Builds the Default List Frame
 	 *
 	 * @return Frame $frame
 	 */
-	public function defaultListFrame(Script $script = null, $pagesId = '') {
+	public function getDefaultListFrame(Script $script = null, $pagesId = '') {
 		$width        = $this->getListWidgetsWidth();
 		$height       = $this->getListWidgetsHeight();
 		$quadStyle    = $this->getDefaultMainWindowStyle();

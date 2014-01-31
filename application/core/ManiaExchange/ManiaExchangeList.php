@@ -127,17 +127,12 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		$pagesId = 'MxListPages';
 
 		// Main frame
-		$frame = $this->maniaControl->manialinkManager->styleManager->defaultListFrame($script, $pagesId);
+		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script, $pagesId);
 		$maniaLink->add($frame);
 
-		// Predefine Description Label
-		$descriptionLabel = new Label();
+		//Predefine description Label
+		$descriptionLabel = $this->maniaControl->manialinkManager->styleManager->getDefaultDescriptionLabel();
 		$frame->add($descriptionLabel);
-		$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
-		$descriptionLabel->setPosition($x + 10, -$height / 2 + 5);
-		$descriptionLabel->setSize($width * 0.7, 4);
-		$descriptionLabel->setTextSize(2);
-		$descriptionLabel->setVisible(false);
 
 		// Headline
 		$headFrame = new Frame();

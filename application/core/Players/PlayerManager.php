@@ -2,6 +2,7 @@
 
 namespace ManiaControl\Players;
 
+use ManiaControl\Admin\AdminLists;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Formatter;
@@ -33,6 +34,7 @@ class PlayerManager implements CallbackListener {
 	public $playerCommands = null;
 	public $playerDetailed = null;
 	public $playerList = null;
+	public $adminLists = null;
 	public $players = array();
 
 	/**
@@ -53,6 +55,7 @@ class PlayerManager implements CallbackListener {
 		$this->playerActions  = new PlayerActions($maniaControl);
 		$this->playerDetailed = new PlayerDetailed($maniaControl);
 		$this->playerList     = new PlayerList($this->maniaControl);
+		$this->adminLists     = new AdminLists($this->maniaControl);
 
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES, true);
