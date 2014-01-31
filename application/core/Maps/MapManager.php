@@ -197,12 +197,15 @@ class MapManager implements CallbackListener {
 	 * @param bool                         $eraseFile
 	 * @param bool                         $message
 	 */
-	public function removeMap(Player $admin, $uid, $eraseFile = false, $message = true) { //TODO erasefile?
+	public function removeMap(Player $admin, $uid, $eraseFile = false, $message = true) {
 		$map = $this->maps[$uid];
 
 		//Unset the Map everywhere
 		$this->mapQueue->removeFromMapQueue($admin, $map->uid);
-		$this->mxManager->unsetMap($map->mx->id);
+
+		if ($map->mx != null) {
+			$this->mxManager->unsetMap($map->mx->id);
+		}
 
 		// Remove map
 		try {
@@ -211,6 +214,23 @@ class MapManager implements CallbackListener {
 			trigger_error("Couldn't remove current map. " . $e->getMessage());
 			$this->maniaControl->chat->sendError("Couldn't remove map.", $admin);
 			return;
+		}
+
+		if ($eraseFile) {
+			// Check if ManiaControl can even write to the maps dir
+			try {
+				$mapDir = $this->maniaControl->client->getMapsDirectory();
+			} catch(\Exception $e) {
+				trigger_error("Couldn't get map directory. " . $e->getMessage());
+				$this->maniaControl->chat->sendError("ManiaControl couldn't retrieve the maps directory.", $admin->login);
+				return;
+			}
+
+			if (!@unlink($mapDir . $map->fileName)) {
+				trigger_error("Couldn't remove Map '{$mapDir}{$map->fileName}'.");
+				$this->maniaControl->chat->sendError("ManiaControl couldn't remove the MapFile.", $admin->login);
+				return;
+			}
 		}
 
 		//Show Message
