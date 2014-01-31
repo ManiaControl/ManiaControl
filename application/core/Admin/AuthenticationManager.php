@@ -2,11 +2,11 @@
 
 namespace ManiaControl\Admin;
 
+use ManiaControl\Callbacks\CallbackListener;
+use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
-use ManiaControl\Callbacks\CallbackListener;
-use ManiaControl\Callbacks\CallbackManager;
 
 /**
  * Class managing Authentication Levels
@@ -17,18 +17,18 @@ class AuthenticationManager implements CallbackListener {
 	/**
 	 * Constants
 	 */
-	const AUTH_LEVEL_PLAYER = 0;
-	const AUTH_LEVEL_MODERATOR = 1;
-	const AUTH_LEVEL_ADMIN = 2;
-	const AUTH_LEVEL_SUPERADMIN = 3;
+	const AUTH_LEVEL_PLAYER      = 0;
+	const AUTH_LEVEL_MODERATOR   = 1;
+	const AUTH_LEVEL_ADMIN       = 2;
+	const AUTH_LEVEL_SUPERADMIN  = 3;
 	const AUTH_LEVEL_MASTERADMIN = 4;
-	const CB_AUTH_LEVEL_CHANGED = 'AuthenticationManager.AuthLevelChanged';
-	
+	const CB_AUTH_LEVEL_CHANGED  = 'AuthenticationManager.AuthLevelChanged';
+
 	/**
 	 * Public Properties
 	 */
 	public $authCommands = null;
-	
+
 	/**
 	 * Private Properties
 	 */
@@ -42,7 +42,7 @@ class AuthenticationManager implements CallbackListener {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		$this->authCommands = new AuthCommands($maniaControl);
-		
+
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
 	}
 
@@ -57,9 +57,9 @@ class AuthenticationManager implements CallbackListener {
 	 */
 	private function updateMasterAdmins() {
 		$mysqli = $this->maniaControl->database->mysqli;
-		
+
 		// Remove all MasterAdmins
-		$adminQuery = "UPDATE `" . PlayerManager::TABLE_PLAYERS . "`
+		$adminQuery     = "UPDATE `" . PlayerManager::TABLE_PLAYERS . "`
 				SET `authLevel` = ?
 				WHERE `authLevel` = ?;";
 		$adminStatement = $mysqli->prepare($adminQuery);
@@ -67,7 +67,7 @@ class AuthenticationManager implements CallbackListener {
 			trigger_error($mysqli->error, E_USER_ERROR);
 			return false;
 		}
-		$adminLevel = self::AUTH_LEVEL_SUPERADMIN;
+		$adminLevel       = self::AUTH_LEVEL_SUPERADMIN;
 		$masterAdminLevel = self::AUTH_LEVEL_MASTERADMIN;
 		$adminStatement->bind_param('ii', $adminLevel, $masterAdminLevel);
 		$adminStatement->execute();
@@ -75,10 +75,10 @@ class AuthenticationManager implements CallbackListener {
 			trigger_error($adminStatement->error);
 		}
 		$adminStatement->close();
-		
+
 		// Set MasterAdmins
-		$masterAdmins = $this->maniaControl->config->masteradmins->xpath('login');
-		$adminQuery = "INSERT INTO `" . PlayerManager::TABLE_PLAYERS . "` (
+		$masterAdmins   = $this->maniaControl->config->masteradmins->xpath('login');
+		$adminQuery     = "INSERT INTO `" . PlayerManager::TABLE_PLAYERS . "` (
 				`login`,
 				`authLevel`
 				) VALUES (
@@ -92,8 +92,8 @@ class AuthenticationManager implements CallbackListener {
 		}
 		$adminStatement->bind_param('si', $login, $masterAdminLevel);
 		$success = true;
-		foreach ($masterAdmins as $masterAdmin) {
-			$login = (string) $masterAdmin;
+		foreach($masterAdmins as $masterAdmin) {
+			$login = (string)$masterAdmin;
 			$adminStatement->execute();
 			if ($adminStatement->error) {
 				trigger_error($adminStatement->error);
@@ -105,19 +105,50 @@ class AuthenticationManager implements CallbackListener {
 	}
 
 	/**
+	 * Get a List of all Admins
+	 *
+	 * @param $authLevel
+	 * @return array|null
+	 */
+	public function getAdmins($authLevel = -1) {
+		$mysqli = $this->maniaControl->database->mysqli;
+
+		if ($authLevel == -1) {
+			$query = "SELECT * FROM `" . PlayerManager::TABLE_PLAYERS . "` WHERE `authLevel` > 0 ORDER BY `authLevel` DESC;";
+		} else {
+			$query = "SELECT * FROM `" . PlayerManager::TABLE_PLAYERS . "` WHERE `authLevel` = " . $authLevel . ";";
+		}
+
+		$result = $mysqli->query($query);
+		if (!$result) {
+			trigger_error($mysqli->error);
+			return null;
+		}
+
+		$admins = array();
+		while($row = $result->fetch_object()) {
+			array_push($admins, $row);
+		}
+		return $admins;
+	}
+
+	/**
 	 * Grant the Auth Level to the Player
 	 *
 	 * @param Player $player
-	 * @param int $authLevel
+	 * @param int    $authLevel
 	 * @return bool
 	 */
 	public function grantAuthLevel(Player &$player, $authLevel) {
-		if (!$player || !is_numeric($authLevel)) return false;
-		$authLevel = (int) $authLevel;
-		if ($authLevel >= self::AUTH_LEVEL_MASTERADMIN) return false;
-		
-		$mysqli = $this->maniaControl->database->mysqli;
-		$authQuery = "INSERT INTO `" . PlayerManager::TABLE_PLAYERS . "` (
+		if (!$player || !is_numeric($authLevel)) {
+			return false;
+		}
+		$authLevel = (int)$authLevel;
+		if ($authLevel >= self::AUTH_LEVEL_MASTERADMIN)
+			return false;
+
+		$mysqli        = $this->maniaControl->database->mysqli;
+		$authQuery     = "INSERT INTO `" . PlayerManager::TABLE_PLAYERS . "` (
 				`login`,
 				`authLevel`
 				) VALUES (
@@ -137,10 +168,10 @@ class AuthenticationManager implements CallbackListener {
 			return false;
 		}
 		$authStatement->close();
-		
+
 		$player->authLevel = $authLevel;
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_AUTH_LEVEL_CHANGED, array(self::CB_AUTH_LEVEL_CHANGED, $player));
-		
+
 		return true;
 	}
 
@@ -151,7 +182,8 @@ class AuthenticationManager implements CallbackListener {
 	 * @return bool
 	 */
 	public function sendNotAllowed(Player $player) {
-		if (!$player) return false;
+		if (!$player)
+			return false;
 		return $this->maniaControl->chat->sendError('You do not have the required Rights to perform this Command!', $player->login);
 	}
 
@@ -159,7 +191,7 @@ class AuthenticationManager implements CallbackListener {
 	 * Check if the Player has enough Rights
 	 *
 	 * @param Player $player
-	 * @param int $neededAuthLevel
+	 * @param int    $neededAuthLevel
 	 * @return bool
 	 */
 	public static function checkRight(Player $player, $neededAuthLevel) {
@@ -170,7 +202,7 @@ class AuthenticationManager implements CallbackListener {
 	 * Checks the permission by a right name
 	 *
 	 * @param Player $player
-	 * @param $rightName
+	 * @param        $rightName
 	 * @return bool
 	 */
 	public function checkPermission(Player $player, $rightName) {
@@ -229,7 +261,7 @@ class AuthenticationManager implements CallbackListener {
 		if ($authLevelInt == self::AUTH_LEVEL_MODERATOR) {
 			return 'MOD';
 		}
-		return 'PL';
+		return '';
 	}
 
 	/**

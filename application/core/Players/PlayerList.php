@@ -4,7 +4,6 @@ namespace ManiaControl\Players;
 
 use FML\Controls\Control;
 use FML\Controls\Frame;
-use FML\Controls\Label;
 use FML\Controls\Labels\Label_Button;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;
@@ -82,6 +81,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 
 	/**
 	 * Add Player to Shown List
+	 *
 	 * @param Player $player
 	 * @param int    $showStatus
 	 */
@@ -110,7 +110,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$script    = $maniaLink->getScript();
 
 		// Main frame
-		$frame = $this->maniaControl->manialinkManager->styleManager->defaultListFrame($script, $pagesId);
+		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script, $pagesId);
 		$maniaLink->add($frame);
 
 		// Start offsets
@@ -118,13 +118,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$y = $height / 2;
 
 		// Predefine Description Label
-		$descriptionLabel = new Label();
+		$descriptionLabel = $this->maniaControl->manialinkManager->styleManager->getDefaultDescriptionLabel();
 		$frame->add($descriptionLabel);
-		$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
-		$descriptionLabel->setPosition($x + 10, -$height / 2 + 5);
-		$descriptionLabel->setSize($width * 0.7, 4);
-		$descriptionLabel->setTextSize(2);
-		$descriptionLabel->setVisible(false);
 
 		// Headline
 		$headFrame = new Frame();
@@ -225,6 +220,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 			$rightLabel->setX($x + 13.9);
 			$rightLabel->setTextSize(0.8);
 			$rightLabel->setZ(10);
+			$rightLabel->setText($this->maniaControl->authenticationManager->getAuthLevelAbbreviation($listPlayer->authLevel));
+			$rightLabel->setTextColor("fff");
 
 			$script->addTooltip($rightLabel, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $this->maniaControl->authenticationManager->getAuthLevelName($listPlayer->authLevel) . " " . $listPlayer->nickname));
 
@@ -259,22 +256,6 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 
 			// Description Label
 			$script->addTooltip($playerQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "View Player profile of " . $listPlayer->nickname));
-
-			switch($listPlayer->authLevel) {
-				case authenticationManager::AUTH_LEVEL_MASTERADMIN:
-					$rightLabel->setText("MA");
-					break;
-				case authenticationManager::AUTH_LEVEL_SUPERADMIN:
-					$rightLabel->setText("SA");
-					break;
-				case authenticationManager::AUTH_LEVEL_ADMIN:
-					$rightLabel->setText("AD");
-					break;
-				case authenticationManager::AUTH_LEVEL_MODERATOR:
-					$rightLabel->setText("MOD");
-			}
-
-			$rightLabel->setTextColor("fff");
 
 			if ($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
 				// Further Player actions Quad

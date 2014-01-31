@@ -119,7 +119,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$script    = $maniaLink->getScript();
 
 		// Main frame
-		$frame = $this->maniaControl->manialinkManager->styleManager->defaultListFrame($script, $pagesId);
+		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script, $pagesId);
 		$maniaLink->add($frame);
 
 		//Admin Buttons
@@ -176,14 +176,9 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$array = array('Id' => $x + 5, 'Mx Id' => $x + 10, 'Map Name' => $x + 20, 'Author' => $x + 68, 'Karma' => $x + 115, 'Actions' => $width / 2 - 15);
 		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
 
-		// Predefine Description Label
-		$descriptionLabel = new Label();
+		//Predefine description Label
+		$descriptionLabel = $this->maniaControl->manialinkManager->styleManager->getDefaultDescriptionLabel();
 		$frame->add($descriptionLabel);
-		$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
-		$descriptionLabel->setPosition($x + 10, -$height / 2 + 5);
-		$descriptionLabel->setSize($width * 0.7, 4);
-		$descriptionLabel->setTextSize(2);
-		$descriptionLabel->setVisible(false);
 
 		$queuedMaps = $this->maniaControl->mapManager->mapQueue->getQueuedMapsRanking();
 		/**

@@ -55,7 +55,7 @@ class PlayerDetailed {
 		$script    = $maniaLink->getScript();
 
 		// Main frame
-		$frame = $this->maniaControl->manialinkManager->styleManager->defaultListFrame($script);
+		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script);
 		$maniaLink->add($frame);
 
 		// Create script and features
