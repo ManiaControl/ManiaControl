@@ -14,6 +14,7 @@ use FML\Controls\Label;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Script\Script;
+use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
@@ -23,9 +24,10 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 	/**
 	 * Constants
 	 */
-	const TITLE                 = 'ManiaControl Settings';
-	const ACTION_PREFIX_SETTING = 'ManiaControlSettings';
-	const ACTION_SETTING_BOOL   = 'ManiaControlSettings.ActionBoolSetting.';
+	const TITLE                                 = 'ManiaControl Settings';
+	const ACTION_PREFIX_SETTING                 = 'ManiaControlSettings';
+	const ACTION_SETTING_BOOL                   = 'ManiaControlSettings.ActionBoolSetting.';
+	const SETTING_PERMISSION_CHANGE_MC_SETTINGS = 'Change ManiaControl Settings';
 
 	/**
 	 * Private Properties
@@ -42,6 +44,7 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
+		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_CHANGE_MC_SETTINGS, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
 	}
 
 	/**
@@ -108,14 +111,14 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 		$prevClass  = '';
 		foreach($settings as $id => $setting) {
 			//Don't display Plugin Settings
-			if(array_search($setting->class, $pluginClasses) !== FALSE) {
+			if (array_search($setting->class, $pluginClasses) !== FALSE) {
 				continue;
 			}
 
-			if(!isset($pageFrame)) {
+			if (!isset($pageFrame)) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
-				if(!empty($pageFrames)) {
+				if (!empty($pageFrames)) {
 					$pageFrame->setVisible(false);
 				}
 				array_push($pageFrames, $pageFrame);
@@ -128,7 +131,7 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 			$settingFrame->setY($y);
 
 			//Headline Label
-			if($prevClass != $setting->class) {
+			if ($prevClass != $setting->class) {
 				$headLabel = new Label_Text();
 				$settingFrame->add($headLabel);
 				$headLabel->setHAlign(Control::LEFT);
@@ -142,10 +145,10 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 				$y -= $settingHeight;
 
 
-				if($index % $pageMaxCount == $pageMaxCount - 1) {
+				if ($index % $pageMaxCount == $pageMaxCount - 1) {
 					$pageFrame = new Frame();
 					$frame->add($pageFrame);
-					if(!empty($pageFrames)) {
+					if (!empty($pageFrames)) {
 						$pageFrame->setVisible(false);
 					}
 					array_push($pageFrames, $pageFrame);
@@ -184,10 +187,10 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 			$entry->setDefault($setting->value);
 
 
-			if($setting->type == "bool") {
-				if($setting->value == "0") {
+			if ($setting->type == "bool") {
+				if ($setting->value == "0") {
 					$substyle = Quad_Icons64x64_1::SUBSTYLE_LvlRed;
-				} else if($setting->value == "1") {
+				} else if ($setting->value == "1") {
 					$substyle = Quad_Icons64x64_1::SUBSTYLE_LvlGreen;
 				}
 
@@ -206,7 +209,7 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 			$prevClass = $setting->class;
 
 			$y -= $settingHeight;
-			if($index % $pageMaxCount == $pageMaxCount - 1) {
+			if ($index % $pageMaxCount == $pageMaxCount - 1) {
 				unset($pageFrame);
 			}
 
@@ -223,8 +226,13 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 	 * @param Player $player
 	 */
 	public function saveConfigData(array $configData, Player $player) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_CHANGE_MC_SETTINGS)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+			return;
+		}
+
 		$prefix = explode(".", $configData[3][0]['Name']);
-		if($prefix[0] != self::ACTION_PREFIX_SETTING) {
+		if ($prefix[0] != self::ACTION_PREFIX_SETTING) {
 			return;
 		}
 
@@ -236,7 +244,7 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 			$settingName = substr($setting['Name'], $prefixLength + 1);
 
 			$oldSetting = $maniaControlSettings[$settingName];
-			if($setting['Value'] == $oldSetting->value || $oldSetting->type == 'bool') {
+			if ($setting['Value'] == $oldSetting->value || $oldSetting->type == 'bool') {
 				continue;
 			}
 
@@ -256,7 +264,7 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 	public function handleManialinkPageAnswer(array $callback) {
 		$actionId    = $callback[1][2];
 		$boolSetting = (strpos($actionId, self::ACTION_SETTING_BOOL) === 0);
-		if(!$boolSetting) {
+		if (!$boolSetting) {
 			return;
 		}
 
@@ -281,15 +289,20 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 	 * @param Player $player
 	 */
 	public function toggleBooleanSetting($setting, Player $player) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_CHANGE_MC_SETTINGS)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+			return;
+		}
+
 		$oldSetting = $this->maniaControl->settingManager->getSettingByIndex($setting);
 
-		if(!isset($oldSetting)) {
+		if (!isset($oldSetting)) {
 			var_dump('no setting ' . $setting);
 			return;
 		}
 
 		//Toggle value
-		if($oldSetting->value == "1") {
+		if ($oldSetting->value == "1") {
 			$this->maniaControl->settingManager->updateSetting($oldSetting->class, $oldSetting->setting, "0");
 		} else {
 			$this->maniaControl->settingManager->updateSetting($oldSetting->class, $oldSetting->setting, "1");

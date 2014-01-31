@@ -144,8 +144,9 @@ class AuthenticationManager implements CallbackListener {
 			return false;
 		}
 		$authLevel = (int)$authLevel;
-		if ($authLevel >= self::AUTH_LEVEL_MASTERADMIN)
+		if ($authLevel >= self::AUTH_LEVEL_MASTERADMIN) {
 			return false;
+		}
 
 		$mysqli        = $this->maniaControl->database->mysqli;
 		$authQuery     = "INSERT INTO `" . PlayerManager::TABLE_PLAYERS . "` (
@@ -182,9 +183,10 @@ class AuthenticationManager implements CallbackListener {
 	 * @return bool
 	 */
 	public function sendNotAllowed(Player $player) {
-		if (!$player)
+		if (!$player) {
 			return false;
-		return $this->maniaControl->chat->sendError('You do not have the required Rights to perform this Command!', $player->login);
+		}
+		return $this->maniaControl->chat->sendError('You do not have the required Rights to perform this Action!', $player->login);
 	}
 
 	/**

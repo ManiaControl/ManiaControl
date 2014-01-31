@@ -16,6 +16,7 @@ use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\PluginManager;
 use ManiaControl\Server\Server;
+use ManiaControl\Server\ServerCommands;
 use ManiaControl\Settings\SettingManager;
 use ManiaControl\Statistics\StatisticManager;
 use Maniaplanet\DedicatedServer\Connection;
@@ -33,12 +34,14 @@ class ManiaControl implements CommandListener {
 	/**
 	 * Constants
 	 */
-	const VERSION         = '0.01';
-	const API_VERSION     = '2013-04-16';
-	const OS_UNIX         = 'Unix';
-	const OS_WIN          = 'Windows';
-	const CONNECT_TIMEOUT = 20;
-	const SCRIPT_TIMEOUT  = 20;
+	const VERSION                     = '0.01';
+	const API_VERSION                 = '2013-04-16';
+	const OS_UNIX                     = 'Unix';
+	const OS_WIN                      = 'Windows';
+	const CONNECT_TIMEOUT             = 20;
+	const SCRIPT_TIMEOUT              = 20;
+	const SETTING_PERMISSION_SHUTDOWN = 'Shutdown ManiaControl';
+	const SETTING_PERMISSION_RESTART  = 'Restart ManiaControl';
 
 	/**
 	 * Public properties
@@ -98,6 +101,10 @@ class ManiaControl implements CommandListener {
 		$this->configurator          = new Configurator($this);
 		$this->pluginManager         = new PluginManager($this);
 		$this->updateManager         = new UpdateManager($this);
+
+		//Define Permission Levels
+		$this->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_SHUTDOWN, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
+		$this->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_RESTART, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
 
 		// Register for commands
 		$this->commandManager->registerCommandListener('version', $this, 'command_Version');
@@ -159,7 +166,7 @@ class ManiaControl implements CommandListener {
 	 * @param Player $player
 	 */
 	public function command_Restart(array $chatCallback, Player $player) {
-		if (!AuthenticationManager::checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)) {
+		if (!$this->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_RESTART)) {
 			$this->authenticationManager->sendNotAllowed($player);
 			return;
 		}
@@ -173,7 +180,7 @@ class ManiaControl implements CommandListener {
 	 * @param Player $player
 	 */
 	public function command_Shutdown(array $chat, Player $player) {
-		if (!$this->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)) {
+		if (!$this->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_SHUTDOWN)) {
 			$this->authenticationManager->sendNotAllowed($player);
 			return;
 		}
@@ -278,9 +285,9 @@ class ManiaControl implements CommandListener {
 			$this->callbackManager->manageCallbacks();
 
 			// Yield for next tick
-			$loopEnd   = microtime(true);
+			$loopEnd = microtime(true);
 
-			$sleepTime = (int) (1000 - $loopEnd + $loopStart);
+			$sleepTime = (int)(1000 - $loopEnd + $loopStart);
 			if ($sleepTime > 0) {
 				usleep($sleepTime);
 			}
