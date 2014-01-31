@@ -28,6 +28,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 	 * Constants
 	 */
 	const ACTION_OPEN_STATSLIST = 'SimpleStatsList.OpenStatsList';
+	const ACTION_SORT_STATS     = 'SimpleStatsList.SortStats';
 
 	/**
 	 * Private Properties
@@ -44,6 +45,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
 	}
 
@@ -173,6 +175,8 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		//Description Label
 		$i = 2;
 		foreach($this->statArray as $statArray) {
+			/** @var Label_Text $labels [] */
+			$labels[$i]->setAction(self::ACTION_SORT_STATS . '.' . $statArray["Name"]);
 			$script->addTooltip($labels[$i], $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => '$o ' . $statArray["Name"]));
 			$i++;
 		}
@@ -191,10 +195,18 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 				break;
 			}
 
-			/** @var Player $listPlayer * */
-
 			$playerFrame = new Frame();
 			$frame->add($playerFrame);
+
+			//Show current Player Arrow
+			if ($playerId == $player->index) {
+				$currentQuad = new Quad_Icons64x64_1();
+				$playerFrame->add($currentQuad);
+				$currentQuad->setX($xStart + 3.5);
+				$currentQuad->setZ(0.2);
+				$currentQuad->setSize(4, 4);
+				$currentQuad->setSubStyle($currentQuad::SUBSTYLE_ArrowBlue);
+			}
 
 			$displayArray = array();
 
@@ -248,5 +260,28 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 
 		// Render and display xml
 		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player, 'SimpleStatsList');
+	}
+
+	/**
+	 * Called on ManialinkPageAnswer
+	 *
+	 * @param array $callback
+	 */
+	public function handleManialinkPageAnswer(array $callback) {
+		$actionId    = $callback[1][2];
+		$actionArray = explode('.', $actionId, 3);
+		if (count($actionArray) <= 2) {
+			return;
+		}
+
+		$action = $actionArray[0] . "." . $actionArray[1];
+
+		switch($action) {
+			case self::ACTION_SORT_STATS:
+				$playerLogin = $callback[1][1];
+				$player      = $this->maniaControl->playerManager->getPlayer($playerLogin);
+				$this->showStatsList($player, $actionArray[2]);
+				break;
+		}
 	}
 } 

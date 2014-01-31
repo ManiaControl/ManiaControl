@@ -150,6 +150,7 @@ class StatisticManager {
 					}
 					$statsArray[$key] = intval($kills[$key]) / intval($death);
 				}
+				arsort($statsArray);
 				break;
 			case self::SPECIAL_STAT_HITS_PH:
 				$hits  = $this->getStatsRanking(StatisticCollector::STAT_ON_HIT, $serverIndex);
@@ -160,6 +161,7 @@ class StatisticManager {
 					}
 					$statsArray[$key] = intval($hits[$key]) / (intval($time) / 3600);
 				}
+				arsort($statsArray);
 				break;
 			case self::SPECIAL_STAT_ARROW_ACC:
 				$hits  = $this->getStatsRanking(StatisticCollector::STAT_ARROW_HIT, $serverIndex);
@@ -170,6 +172,7 @@ class StatisticManager {
 					}
 					$statsArray[$key] = intval($hits[$key]) / (intval($shot));
 				}
+				arsort($statsArray);
 				break;
 			case self::SPECIAL_STAT_LASER_ACC:
 				$hits  = $this->getStatsRanking(StatisticCollector::STAT_LASER_HIT, $serverIndex);
@@ -180,6 +183,7 @@ class StatisticManager {
 					}
 					$statsArray[$key] = intval($hits[$key]) / (intval($shot));
 				}
+				arsort($statsArray);
 				break;
 			case self::SPECIAL_STAT_ROCKET_ACC:
 				$hits  = $this->getStatsRanking(StatisticCollector::STAT_ROCKET_HIT, $serverIndex);
@@ -190,6 +194,7 @@ class StatisticManager {
 					}
 					$statsArray[$key] = intval($hits[$key]) / (intval($shot));
 				}
+				arsort($statsArray);
 				break;
 			case self::SPECIAL_STAT_NUCLEUS_ACC:
 				$hits  = $this->getStatsRanking(StatisticCollector::STAT_NUCLEUS_HIT, $serverIndex);
@@ -200,6 +205,7 @@ class StatisticManager {
 					}
 					$statsArray[$key] = intval($hits[$key]) / (intval($shot));
 				}
+				arsort($statsArray);
 				break;
 		}
 		return $statsArray;

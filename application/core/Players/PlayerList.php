@@ -163,6 +163,16 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 
 			$playerFrame->setY($y);
 
+			//Show current Player Arrow
+			if ($listPlayer->index == $player->index) {
+				$currentQuad = new Quad_Icons64x64_1();
+				$playerFrame->add($currentQuad);
+				$currentQuad->setX($x + 3.5);
+				$currentQuad->setZ(0.2);
+				$currentQuad->setSize(4, 4);
+				$currentQuad->setSubStyle($currentQuad::SUBSTYLE_ArrowBlue);
+			}
+
 			// Team Emblem
 			if ($listPlayer->teamId >= 0) {
 				// Player is in a Team
