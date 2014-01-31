@@ -105,7 +105,7 @@ class StatisticManager {
 		$mysqli = $this->maniaControl->database->mysqli;
 		$statId = $this->getStatId($statName);
 
-		$query = "SELECT playerId, serverIndex, value FROM `" . self::TABLE_STATISTICS . "` WHERE statId = " . $statId . " ORDER BY value DESC;";
+		$query = "SELECT playerId, serverIndex, value FROM `" . self::TABLE_STATISTICS . "` WHERE statId = " . $statId . " ORDER BY value DESC LIMIT 100;";
 
 		$result = $mysqli->query($query);
 		if (!$result) {
@@ -126,6 +126,7 @@ class StatisticManager {
 			}
 		}
 
+		arsort($stats);
 		$result->close();
 		return $stats;
 	}
