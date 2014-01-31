@@ -16,7 +16,6 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
-use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
  * Donation plugin
@@ -336,7 +335,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$message = 'Donate ' . $amount . ' Planets to $<' . $receiverName . '$>?';
 		try {
 			$bill = $this->maniaControl->client->sendBill($player->login, $amount, $message, $receiver);
-		} catch(Exception $e) {
+		} catch(\Exception $e) {
 			trigger_error("Couldn't create donation of {$amount} planets from '{$player->login}' for '{$receiver}'. " . $e->getMessage());
 			$this->maniaControl->chat->sendError("Creating donation failed.", $player->login);
 			return false;
@@ -379,7 +378,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 
 		try {
 			$bill = $this->maniaControl->client->pay($receiver, $amount, $message);
-		} catch(Exception $e) {
+		} catch(\Exception $e) {
 			trigger_error("Couldn't retrieve server planets. " . $e->getMessage());
 			trigger_error("Couldn't create payout of {$amount} planets by '{$player->login}' for '{$receiver}'. " . $e->getMessage());
 			$this->maniaControl->chat->sendError("Creating payout failed.", $player->login);
@@ -404,7 +403,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		}
 		try {
 			$planets = $this->maniaControl->client->getServerPlanets();
-		} catch(Exception $e) {
+		} catch(\Exception $e) {
 			trigger_error("Couldn't retrieve server planets. " . $e->getMessage());
 			return false;
 		}

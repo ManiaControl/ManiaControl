@@ -19,7 +19,6 @@ use ManiaControl\Server\Server;
 use ManiaControl\Settings\SettingManager;
 use ManiaControl\Statistics\StatisticManager;
 use Maniaplanet\DedicatedServer\Connection;
-use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 require_once __DIR__ . '/Maniaplanet/DedicatedServer/Connection.php';
 require_once __DIR__ . '/GbxDataFetcher/gbxdatafetcher.inc.php';
@@ -322,14 +321,14 @@ class ManiaControl implements CommandListener {
 
 		try {
 			$this->client = Connection::factory($host, $port, self::CONNECT_TIMEOUT, $login, $pass);
-		} catch(Exception $e) {
+		} catch(\Exception $e) {
 			trigger_error("Couldn't authenticate on server with user '{$login}'! " . $e->getMessage(), E_USER_ERROR);
 		}
 
 		// Enable callback system
 		try {
 			$this->client->enableCallbacks(true);
-		} catch(Exception $e) {
+		} catch(\Exception $e) {
 			trigger_error("Couldn't enable callbacks! " . $e->getMessage(), E_USER_ERROR);
 		}
 
@@ -357,7 +356,7 @@ class ManiaControl implements CommandListener {
 
 		try {
 			$scriptSettings = $this->client->getModeScriptSettings();
-		} catch(Exception $e) {
+		} catch(\Exception $e) {
 			trigger_error("Couldn't get mode script settings. " . $e->getMessage());
 			return;
 		}
@@ -369,7 +368,7 @@ class ManiaControl implements CommandListener {
 		$scriptSettings['S_UseScriptCallbacks'] = true;
 		try {
 			$this->client->setModeScriptSettings($scriptSettings);
-		} catch(Exception $e) {
+		} catch(\Exception $e) {
 			trigger_error("Couldn't set mode script settings to enable script callbacks. " . $e->getMessage());
 			return;
 		}

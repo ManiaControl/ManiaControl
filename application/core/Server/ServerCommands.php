@@ -12,7 +12,6 @@ use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
-use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
  * Class offering various commands related to the dedicated server
@@ -220,7 +219,7 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 		$serverName = $params[1];
 		try {
 			$this->maniaControl->client->setServerName($serverName);
-		} catch(Exception $e) {
+		} catch(\Exception $e) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 			return;
 		}
@@ -247,7 +246,7 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 		}
 		try {
 			$this->maniaControl->client->setServerPassword($password);
-		} catch(Exception $e) {
+		} catch(\Exception $e) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 			return;
 		}
@@ -274,7 +273,7 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 		}
 		try {
 			$this->maniaControl->client->setServerPasswordForSpectator($password);
-		} catch(Exception $e) {
+		} catch(\Exception $e) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 			return;
 		}
@@ -309,7 +308,7 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 
 		try {
 			$this->maniaControl->client->setMaxPlayers($amount);
-		} catch(Exception $e) {
+		} catch(\Exception $e) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 			return;
 		}
@@ -345,7 +344,7 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 
 		try {
 			$this->maniaControl->client->setMaxSpectators($amount);
-		} catch(Exception $e) {
+		} catch(\Exception $e) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 			return;
 		}
@@ -361,7 +360,7 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 	private function shutdownServer($login = '#') {
 		try {
 			$this->maniaControl->client->stopServer();
-		} catch(Exception $e) {
+		} catch(\Exception $e) {
 			trigger_error("Server shutdown command from '{login}' failed. " . $e->getMessage());
 			return false;
 		}

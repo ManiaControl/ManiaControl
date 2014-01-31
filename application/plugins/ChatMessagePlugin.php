@@ -4,7 +4,6 @@ use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Plugins\Plugin;
-use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
  * ManiaControl Chat-Message Plugin
@@ -25,7 +24,6 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	 * Private properties
 	 */
 	/**
-	 *
 	 * @var maniaControl $maniaControl
 	 */
 	private $maniaControl = null;
@@ -104,7 +102,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	public function chat_hi(array $chat, Player $player) {
 		$command = explode(" ", $chat[1][2]);
 
-		if(isset($command[1])) {
+		if (isset($command[1])) {
 			$msg = '$g[$<' . $player->nickname . '$>$s] $ff0$iHello $z$<' . $this->getTarget($command[1]) . '$>$i!';
 		} else {
 			$msg = '$g[$<' . $player->nickname . '$>$s] $ff0$iHello All!';
@@ -121,7 +119,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	public function chat_bye(array $chat, Player $player) {
 		$command = explode(" ", $chat[1][2]);
 
-		if(isset($command[1])) {
+		if (isset($command[1])) {
 			$msg = '$g[$<' . $player->nickname . '$>$s] $ff0$iBye $z$<' . $this->getTarget($command[1]) . '$>$i!';
 		} else {
 			$msg = '$g[$<' . $player->nickname . '$>$s] $ff0$iI have to go... Bye All!';
@@ -139,7 +137,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	public function chat_thx(array $chat, Player $player) {
 		$command = explode(" ", $chat[1][2]);
 
-		if(isset($command[1])) {
+		if (isset($command[1])) {
 			$msg = '$g[$<' . $player->nickname . '$>$s] $ff0$iThanks $z$<' . $this->getTarget($command[1]) . '$>$i!';
 		} else {
 			$msg = '$g[$<' . $player->nickname . '$>$s] $ff0$iThanks All!';
@@ -157,7 +155,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	public function chat_gg(array $chat, Player $player) {
 		$command = explode(" ", $chat[1][2]);
 
-		if(isset($command[1])) {
+		if (isset($command[1])) {
 			$msg = '$g[$<' . $player->nickname . '$>$s] $ff0$iGood Game $z$<' . $this->getTarget($command[1]) . '$>$i!';
 		} else {
 			$msg = '$g[$<' . $player->nickname . '$>$s] $ff0$iGood Game All!';
@@ -175,7 +173,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	public function chat_gl(array $chat, Player $player) {
 		$command = explode(" ", $chat[1][2]);
 
-		if(isset($command[1])) {
+		if (isset($command[1])) {
 			$msg = '$g[$<' . $player->nickname . '$>$s] $ff0$iGood Luck $z$<' . $this->getTarget($command[1]) . '$>$i!';
 		} else {
 			$msg = '$g[$<' . $player->nickname . '$>$s] $ff0$iGood Luck All!';
@@ -193,7 +191,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	public function chat_hf(array $chat, Player $player) {
 		$command = explode(" ", $chat[1][2]);
 
-		if(isset($command[1])) {
+		if (isset($command[1])) {
 			$msg = '$g[$<' . $player->nickname . '$>$s] $ff0$iHave Fun $z$<' . $this->getTarget($command[1]) . '$>$i!';
 		} else {
 			$msg = '$g[$<' . $player->nickname . '$>$s] $ff0$iHave Fun All!';
@@ -211,7 +209,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	public function chat_glhf(array $chat, Player $player) {
 		$command = explode(" ", $chat[1][2]);
 
-		if(isset($command[1])) {
+		if (isset($command[1])) {
 			$msg = '$g[$<' . $player->nickname . '$>$s] $ff0$iGood Luck and Have Fun $z$<' . $this->getTarget($command[1]) . '$>$i!';
 		} else {
 			$msg = '$g[$<' . $player->nickname . '$>$s] $ff0$iGood Luck and Have Fun All!';
@@ -229,7 +227,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	public function chat_ns(array $chat, Player $player) {
 		$command = explode(" ", $chat[1][2]);
 
-		if(isset($command[1])) {
+		if (isset($command[1])) {
 			$msg = '$g[$<' . $player->nickname . '$>$s] $ff0$iNice Shot $z$<' . $this->getTarget($command[1]) . '$>$i!';
 		} else {
 			$msg = '$g[$<' . $player->nickname . '$>$s] $ff0$iNice Shot!';
@@ -247,7 +245,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	public function chat_n1(array $chat, Player $player) {
 		$command = explode(" ", $chat[1][2]);
 
-		if(isset($command[1])) {
+		if (isset($command[1])) {
 			$msg = '$g[$<' . $player->nickname . '$>$s] $ff0$iNice One $z$<' . $this->getTarget($command[1]) . '$>$i!';
 		} else {
 			$msg = '$g[$<' . $player->nickname . '$>$s] $ff0$iNice One!';
@@ -313,7 +311,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		$message = '$39F Thanks for Playing, please come back soon!$z';
 		try {
 			$this->maniaControl->client->kick($player->login, $message);
-		} catch(Exception $e) {
+		} catch(\Exception $e) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 			return;
 		}
@@ -332,7 +330,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		$message = '$39F Thanks for Playing, please come back soon!$z';
 		try {
 			$this->maniaControl->client->kick($player->login, $message);
-		} catch(Exception $e) {
+		} catch(\Exception $e) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 			return;
 		}
@@ -348,11 +346,11 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		$msg = '$g[$<' . $player->nickname . '$>$s] $ff0$iAway From Keyboard!';
 		$this->maniaControl->chat->sendChat($msg, null, false);
 
-		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_AFK_FORCE_SPEC)) {
+		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_AFK_FORCE_SPEC)) {
 			// force into spec
 			try {
 				$this->maniaControl->client->forceSpectator($player->login, 3);
-			} catch(Exception $e) {
+			} catch(\Exception $e) {
 				$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 				return;
 			}
@@ -360,7 +358,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 			// free player slot
 			try {
 				$this->maniaControl->client->spectatorReleasePlayerSlot($player->login);
-			} catch(Exception $e) {
+			} catch(\Exception $e) {
 				//to nothing
 			}
 		}
@@ -377,13 +375,13 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		$pid = 1;
 
 		foreach($this->maniaControl->playerManager->getPlayers() as $player) {
-			if($login == $player->login || $login == $pid || $login == $player->nickname) {
+			if ($login == $player->login || $login == $pid || $login == $player->nickname) {
 				return $player->nickname;
 			}
 			$pid++;
 		}
 
-		if($login == 'lj') {
+		if ($login == 'lj') {
 			return $player->nickname;
 		}
 
