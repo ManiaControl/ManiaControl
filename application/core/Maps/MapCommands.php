@@ -104,9 +104,15 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$map = $nextQueued[1];
 			$this->maniaControl->chat->sendInformation("Next map is $<" . $map->name . "$> from $<" . $map->authorNick . "$> requested by $<" . $requester->nickname . "$>.", $player->login);
 		} else {
-			$mapIndex = $this->maniaControl->client->getNextMapIndex();
-			$maps     = $this->maniaControl->mapManager->getMaps();
-			$map      = $maps[$mapIndex];
+			try {
+				$mapIndex = $this->maniaControl->client->getNextMapIndex();
+			} catch(\Exception $e) {
+				trigger_error("Error while Reading the next Map Index");
+				$this->maniaControl->chat->sendError("Error while Reading next Map Inde");
+				return;
+			}
+			$maps = $this->maniaControl->mapManager->getMaps();
+			$map  = $maps[$mapIndex];
 			$this->maniaControl->chat->sendInformation("Next map is $<" . $map->name . "$> from $<" . $map->authorNick . "$>.", $player->login);
 		}
 	}
@@ -181,10 +187,17 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
+
+		try {
+			$this->maniaControl->client->nextMap();
+		} catch(\Exception $e) {
+			$this->maniaControl->chat->sendError("Error while Skipping the Map");
+			return;
+		}
+
 		$message = '$<' . $player->nickname . '$> skipped the current Map!';
 		$this->maniaControl->chat->sendSuccess($message);
 		$this->maniaControl->log($message, true);
-		$this->maniaControl->client->nextMap();
 	}
 
 	/**
@@ -201,7 +214,11 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		$message = '$<' . $player->nickname . '$> restarted the current Map!';
 		$this->maniaControl->chat->sendSuccess($message);
 		$this->maniaControl->log($message, true);
-		$this->maniaControl->client->restartMap();
+		try {
+			$this->maniaControl->client->restartMap();
+		} catch(\Exception $e) {
+			//do nothing
+		}
 	}
 
 	/**
