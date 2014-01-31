@@ -529,7 +529,6 @@ class MapManager implements CallbackListener {
 
 			$mapFileName = $downloadDirectory . '/' . $fileName;
 
-			var_dump($mapDir);
 			//Check if it can get locally Written
 			if (is_dir($mapDir)) {
 				// Create download directory if necessary

@@ -15,6 +15,7 @@ use FML\ManiaLink;
 use FML\Script\Script;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Commands\CommandListener;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
@@ -22,7 +23,7 @@ use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 
-class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener {
+class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, CommandListener {
 	/**
 	 * Constants
 	 */
@@ -52,17 +53,18 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener {
 	 * @param array $callback
 	 */
 	public function handleOnInit(array $callback) {
+		$this->maniaControl->commandManager->registerCommandListener('stats', $this, 'command_ShowStatsList');
+
 		// Action Open StatsList
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_OPEN_STATSLIST, $this, 'command_ShowStatsList');
-		//TODO command
+
 
 		$itemQuad = new Quad_UIConstruction_Buttons();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Stats);
 		$itemQuad->setAction(self::ACTION_OPEN_STATSLIST);
 		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, true, 14, 'Open Statistics');
 
-		//TODO setting if a stat get shown
-		//TODO sort out stats where no player have a point
+		//TODO settings if a stat get shown
 		$this->registerStat(PlayerManager::STAT_SERVERTIME, 10, "ST", 20, StatisticManager::STAT_TYPE_TIME);
 		$this->registerStat(StatisticCollector::STAT_ON_HIT, 20, "H");
 		$this->registerStat(StatisticCollector::STAT_ON_NEARMISS, 30, "NM");
@@ -155,16 +157,25 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener {
 
 		$x = $xStart + 55;
 
+		//Display Head
 		$statRankings = array();
-		foreach($this->statArray as $key => $stat) {
-			$statRankings[$stat["Name"]]  = $this->maniaControl->statisticManager->getStatsRanking($stat["Name"]);
-			$array[$stat['HeadShortCut']] = $x;
-			$x += $stat["Width"];
+		foreach($this->statArray as $stat) {
+			$ranking = $this->maniaControl->statisticManager->getStatsRanking($stat["Name"]);
+			if (!empty($ranking)) {
+				$statRankings[$stat["Name"]]  = $ranking;
+				$array[$stat['HeadShortCut']] = $x;
+				$x += $stat["Width"];
+			}
 		}
 
-		//TODO description on each
-		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
+		$labels = $this->maniaControl->manialinkManager->labelLine($headFrame, $array);
 
+		//Description Label
+		$i = 2;
+		foreach($this->statArray as $statArray) {
+			$script->addTooltip($labels[$i], $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => '$o ' . $statArray["Name"]));
+			$i++;
+		}
 
 		// define standard properties
 		$hAlign    = Control::LEFT;
@@ -192,11 +203,10 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener {
 				if (isset($statRankings[$stat['Name']][$playerId])) {
 					$statValue = $statRankings[$stat['Name']][$playerId];
 					if ($stat['Format'] == StatisticManager::STAT_TYPE_TIME) {
-						$statValue = Formatter::formatTimeH($statValue);
+						$statValue = Formatter::formatTimeHMS($statValue);
 					} else if ($stat['Format'] == StatisticManager::STAT_TYPE_FLOAT) {
 						$statValue = round(floatval($statValue), 2);
 					}
-
 				}
 				$displayArray[$stat['Name']] = array("Value" => strval($statValue), "Width" => $stat['Width']);
 			}

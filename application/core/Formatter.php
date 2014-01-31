@@ -16,7 +16,7 @@ abstract class Formatter {
 	 * @return string
 	 */
 	public static function formatTime($time) {
-		if(!is_int($time)) {
+		if (!is_int($time)) {
 			$time = (int)$time;
 		}
 		$milliseconds = $time % 1000;
@@ -33,6 +33,25 @@ abstract class Formatter {
 	}
 
 	/**
+	 * Formats a Time to H:M:S
+	 *
+	 * @param int $seconds
+	 * @return string
+	 */
+	public static function formatTimeHMS($seconds) {
+		$minutes = floor($seconds / 60);
+		$hours   = floor($minutes / 60);
+		$minutes -= $hours * 60;
+		$seconds -= ($hours * 3600 + $minutes * 60);
+
+		$hours   = ($hours < 10 ? '0' : '') . $hours;
+		$minutes = ($minutes < 10 ? '0' : '') . $minutes;;
+		$seconds = ($seconds < 10 ? '0' : '') . $seconds;;
+
+		return $hours . ":" . $minutes . ":" . $seconds;
+	}
+
+	/**
 	 * Formatts a Elapset time String (2 days ago...) by a given timestamp
 	 *
 	 * @param $ptime
@@ -41,7 +60,7 @@ abstract class Formatter {
 	public static function time_elapsed_string($ptime) {
 		$etime = time() - $ptime;
 
-		if($etime < 1) {
+		if ($etime < 1) {
 			return '0 seconds';
 		}
 
@@ -49,7 +68,7 @@ abstract class Formatter {
 
 		foreach($a as $secs => $str) {
 			$d = $etime / $secs;
-			if($d >= 1) {
+			if ($d >= 1) {
 				$r = round($d);
 				return $r . ' ' . $str . ($r > 1 ? 's' : '') . ' ago';
 			}
@@ -136,10 +155,10 @@ abstract class Formatter {
 						 'Canada'       => 'CAN', 'Cape Verde' => 'CPV', 'Central African Republic' => 'CAF', 'Chad' => 'CHA', 'Chile' => 'CHI', 'China' => 'CHN', 'Chinese Taipei' => 'TPE', 'Colombia' => 'COL', 'Congo' => 'CGO', 'Costa Rica' => 'CRC', 'Croatia' => 'CRO', 'Cuba' => 'CUB', 'Cyprus' => 'CYP', 'Czech Republic' => 'CZE', 'Czech republic' => 'CZE', 'DR Congo' => 'COD', 'Denmark' => 'DEN', 'Djibouti' => 'DJI', 'Dominica' => 'DMA', 'Dominican Republic' => 'DOM', 'Ecuador' => 'ECU', 'Egypt' => 'EGY', 'El Salvador' => 'ESA', 'Eritrea' => 'ERI', 'Estonia' => 'EST', 'Ethiopia' => 'ETH', 'Fiji' => 'FIJ', 'Finland' => 'FIN', 'France' => 'FRA', 'Gabon' => 'GAB', 'Gambia' => 'GAM', 'Georgia' => 'GEO', 'Germany' => 'GER', 'Ghana' => 'GHA', 'Greece' => 'GRE', 'Grenada' => 'GRN', 'Guam' => 'GUM', 'Guatemala' => 'GUA', 'Guinea' => 'GUI', 'Guinea-Bissau' => 'GBS', 'Guyana' => 'GUY', 'Haiti' => 'HAI', 'Honduras' => 'HON', 'Hong Kong' => 'HKG', 'Hungary' => 'HUN', 'Iceland' => 'ISL', 'India' => 'IND', 'Indonesia' => 'INA', 'Iran' => 'IRI', 'Iraq' => 'IRQ', 'Ireland' => 'IRL', 'Israel' => 'ISR', 'Italy' => 'ITA', 'Ivory Coast' => 'CIV', 'Jamaica' => 'JAM', 'Japan' => 'JPN', 'Jordan' => 'JOR', 'Kazakhstan' => 'KAZ', 'Kenya' => 'KEN', 'Kiribati' => 'KIR', 'Korea' => 'KOR', 'Kuwait' => 'KUW', 'Kyrgyzstan' => 'KGZ', 'Laos' => 'LAO', 'Latvia' => 'LAT', 'Lebanon' => 'LIB', 'Lesotho' => 'LES', 'Liberia' => 'LBR', 'Libya' => 'LBA', 'Liechtenstein' => 'LIE', 'Lithuania' => 'LTU', 'Luxembourg' => 'LUX', 'Macedonia' => 'MKD', 'Malawi' => 'MAW', 'Malaysia' => 'MAS', 'Mali' => 'MLI', 'Malta' => 'MLT', 'Mauritania' => 'MTN', 'Mauritius' => 'MRI', 'Mexico' => 'MEX', 'Moldova' => 'MDA', 'Monaco' => 'MON', 'Mongolia' => 'MGL', 'Montenegro' => 'MNE', 'Morocco' => 'MAR', 'Mozambique' => 'MOZ', 'Myanmar' => 'MYA', 'Namibia' => 'NAM', 'Nauru' => 'NRU', 'Nepal' => 'NEP', 'Netherlands' => 'NED', 'New Zealand' => 'NZL', 'Nicaragua' => 'NCA', 'Niger' => 'NIG', 'Nigeria' => 'NGR', 'Norway' => 'NOR', 'Oman' => 'OMA', 'Other Countries' => 'OTH', 'Pakistan' => 'PAK', 'Palau' => 'PLW', 'Palestine' => 'PLE', 'Panama' => 'PAN', 'Paraguay' => 'PAR', 'Peru' => 'PER', 'Philippines' => 'PHI', 'Poland' => 'POL', 'Portugal' => 'POR', 'Puerto Rico' => 'PUR', 'Qatar' => 'QAT', 'Romania' => 'ROM', // actually ROU
 						 'Russia'       => 'RUS', 'Rwanda' => 'RWA', 'Samoa' => 'SAM', 'San Marino' => 'SMR', 'Saudi Arabia' => 'KSA', 'Senegal' => 'SEN', 'Serbia' => 'SCG', // actually SRB
 						 'Sierra Leone' => 'SLE', 'Singapore' => 'SIN', 'Slovakia' => 'SVK', 'Slovenia' => 'SLO', 'Somalia' => 'SOM', 'South Africa' => 'RSA', 'Spain' => 'ESP', 'Sri Lanka' => 'SRI', 'Sudan' => 'SUD', 'Suriname' => 'SUR', 'Swaziland' => 'SWZ', 'Sweden' => 'SWE', 'Switzerland' => 'SUI', 'Syria' => 'SYR', 'Taiwan' => 'TWN', 'Tajikistan' => 'TJK', 'Tanzania' => 'TAN', 'Thailand' => 'THA', 'Togo' => 'TOG', 'Tonga' => 'TGA', 'Trinidad and Tobago' => 'TRI', 'Tunisia' => 'TUN', 'Turkey' => 'TUR', 'Turkmenistan' => 'TKM', 'Tuvalu' => 'TUV', 'Uganda' => 'UGA', 'Ukraine' => 'UKR', 'United Arab Emirates' => 'UAE', 'United Kingdom' => 'GBR', 'United States of America' => 'USA', 'Uruguay' => 'URU', 'Uzbekistan' => 'UZB', 'Vanuatu' => 'VAN', 'Venezuela' => 'VEN', 'Vietnam' => 'VIE', 'Yemen' => 'YEM', 'Zambia' => 'ZAM', 'Zimbabwe' => 'ZIM');
-		if(array_key_exists($country, $nations)) {
+		if (array_key_exists($country, $nations)) {
 			return $nations[$country];
 		}
-		if($country) {
+		if ($country) {
 			trigger_error("Couldn't map Country: '{$country}'!");
 		}
 		return 'OTH';
