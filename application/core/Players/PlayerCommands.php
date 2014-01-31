@@ -66,7 +66,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener {
 		$itemQuad = new Quad_Icons128x32_1();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_RT_Team);
 		$itemQuad->setAction(self::ACTION_BALANCE_TEAMS);
-		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 9, 'Balance Teams');
+		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 40, 'Balance Teams');
 
 		// Action Open Playerlist
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_OPEN_PLAYERLIST, $this, 'command_playerList');

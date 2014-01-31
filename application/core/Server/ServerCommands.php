@@ -2,6 +2,7 @@
 
 namespace ManiaControl\Server;
 
+use FML\Controls\Quads\Quad_BgRaceScore2;
 use FML\Controls\Quads\Quad_Icons128x32_1;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use ManiaControl\Admin\AuthenticationManager;
@@ -23,10 +24,13 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 	 * Constants
 	 */
 	const ACTION_SET_PAUSE                         = 'ServerCommands.SetPause';
+	const ACTION_EXTEND_WARMUP                     = 'ServerCommands.ExtendWarmup';
+	const ACTION_END_WARMUP                        = 'ServerCommands.EndWarmup';
 	const ACTION_CANCEL_VOTE                       = 'ServerCommands.CancelVote';
 	const CB_VOTE_CANCELED                         = 'ServerCommands.VoteCanceled';
 	const SETTING_PERMISSION_CANCEL_VOTE           = 'Cancel Vote';
 	const SETTING_PERMISSION_SET_PAUSE             = 'Set Pause';
+	const SETTING_PERMISSION_HANDLE_WARMUP         = 'Handle Warmup';
 	const SETTING_PERMISSION_SHOW_SYSTEMINFO       = 'Show SystemInfo';
 	const SETTING_PERMISSION_SHUTDOWN_SERVER       = 'Shutdown Server';
 	const SETTING_PERMISSION_CHANGE_SERVERSETTINGS = 'Change ServerSettings';
@@ -75,6 +79,7 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_CHANGE_SERVERSETTINGS, AuthenticationManager::AUTH_LEVEL_ADMIN);
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_SET_PAUSE, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_CANCEL_VOTE, AuthenticationManager::AUTH_LEVEL_MODERATOR);
+		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_HANDLE_WARMUP, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 
 		//Check if Pause exists in current GameMode
 		$scriptInfos = $this->maniaControl->client->getModeScriptInfo();
@@ -92,15 +97,29 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 			$itemQuad = new Quad_Icons128x32_1();
 			$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ManiaLinkSwitch);
 			$itemQuad->setAction(self::ACTION_SET_PAUSE);
-			$this->maniaControl->actionsMenu->addAdminMenuItem($itemQuad, 1, 'Pauses the current game');
+			$this->maniaControl->actionsMenu->addAdminMenuItem($itemQuad, 13, 'Pauses the current game');
 		}
+
+		// Extend WarmUp
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_EXTEND_WARMUP, $this, 'command_extendWarmup');
+		$itemQuad = new Quad_BgRaceScore2();
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_SendScore);
+		$itemQuad->setAction(self::ACTION_EXTEND_WARMUP);
+		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 14, 'Extend Warmup');
+
+		// Stop WarmUp
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_END_WARMUP, $this, 'command_endWarmup');
+		$itemQuad = new Quad_Icons64x64_1();
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ArrowGreen);
+		$itemQuad->setAction(self::ACTION_END_WARMUP);
+		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 15, 'End Warmup');
 
 		// Action cancel Vote
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_CANCEL_VOTE, $this, 'command_cancelVote');
 		$itemQuad = new Quad_Icons64x64_1();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ArrowRed);
 		$itemQuad->setAction(self::ACTION_CANCEL_VOTE);
-		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 6, 'Cancel Vote');
+		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 30, 'Cancel Vote');
 	}
 
 	/**
@@ -120,6 +139,51 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 
 		// Trigger callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_VOTE_CANCELED, array(self::CB_VOTE_CANCELED, $player));
+	}
+
+
+	/**
+	 * Extends the Warmup
+	 *
+	 * @param array  $callback
+	 * @param Player $player
+	 */
+	public function command_extendWarmup(array $callback, Player $player) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_HANDLE_WARMUP)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+			return;
+		}
+
+		try {
+			$this->maniaControl->client->triggerModeScriptEvent('WarmUp_Extend', '10');
+		} catch(\Exception $e) {
+			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
+			return;
+		}
+
+		$this->maniaControl->chat->sendInformation('$<' . $player->nickname . '$> extended the WarmUp by 10 seconds!');
+	}
+
+	/**
+	 * Ends the Warmup
+	 *
+	 * @param array  $callback
+	 * @param Player $player
+	 */
+	public function command_endWarmup(array $callback, Player $player) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_HANDLE_WARMUP)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+			return;
+		}
+
+		try {
+			$this->maniaControl->client->triggerModeScriptEvent('WarmUp_Stop', '');
+		} catch(\Exception $e) {
+			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
+			return;
+		}
+
+		$this->maniaControl->chat->sendInformation('$<' . $player->nickname . '$> stopped the WarmUp!');
 	}
 
 	/**
