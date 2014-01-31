@@ -75,8 +75,6 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECTED, $this, 'updateWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'updateWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(AuthenticationManager::CB_AUTH_LEVEL_CHANGED, $this, 'updateWidget');
-
-
 	}
 
 	/**
@@ -147,7 +145,6 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				$y = $height / 2 - 10;
 				$script->addPage($pageFrame, count($pageFrames), $pagesId);
 			}
-
 
 			$path        = $listPlayer->getProvince();
 			$playerFrame = new Frame();

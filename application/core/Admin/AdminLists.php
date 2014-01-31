@@ -34,6 +34,11 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 	const MAX_PLAYERS_PER_PAGE   = 15;
 
 	/**
+	 * Private Properties
+	 */
+	private $adminListShown = array();
+
+	/**
 	 * Create a PlayerList Instance
 	 *
 	 * @param ManiaControl $maniaControl
@@ -42,8 +47,12 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 		$this->maniaControl = $maniaControl;
 
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
+		$this->maniaControl->callbackManager->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_CLOSED, $this, 'closeWidget');
+		$this->maniaControl->callbackManager->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_OPENED, $this, 'handleWidgetOpened');
+		$this->maniaControl->callbackManager->registerCallbackListener(AuthenticationManager::CB_AUTH_LEVEL_CHANGED, $this, 'updateWidget');
 
-		// Action Open AdminList
+
+		// Menu Entry AdminList
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_OPEN_ADMINLISTS, $this, 'openAdminList');
 		$itemQuad = new Quad_UIConstruction_Buttons();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Author);
@@ -56,6 +65,8 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 	}
 
 	public function showAdminLists(Player $player) {
+		$this->adminListShown[$player->login] = true;
+
 		$width  = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
 		$height = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
 
@@ -164,12 +175,11 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 				$label->setTextSize(1);
 				$label->setTextColor($textColor);
 				$label->setText("Revoke Rights");
-				//$label->setTextColor("700");
 			}
 
 			$y -= 4;
 			$i++;
-			if ($i % self::MAX_PLAYERS_PER_PAGE == 0) {
+			if (($i - 1) % self::MAX_PLAYERS_PER_PAGE == 0) {
 				unset($pageFrame);
 			}
 		}
@@ -201,4 +211,45 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 		}
 	}
 
+	/**
+	 * Reopen the widget on Map Begin, MapListChanged, etc.
+	 *
+	 * @param array $callback
+	 */
+	public function updateWidget(array $callback) {
+		foreach($this->adminListShown as $login => $shown) {
+			if ($shown) {
+				$player = $this->maniaControl->playerManager->getPlayer($login);
+				if ($player != null) {
+					$this->showAdminLists($player);
+				} else {
+					unset($this->adminListShown[$login]);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Closes the widget
+	 *
+	 * @param array $callback
+	 */
+	public function closeWidget(array $callback) {
+		$player = $callback[1];
+		unset($this->adminListShown[$player->login]);
+	}
+
+	/**
+	 * Unset the player if he opened another Main Widget
+	 *
+	 * @param array $callback
+	 */
+	public function handleWidgetOpened(array $callback) {
+		$player       = $callback[1];
+		$openedWidget = $callback[2];
+		//unset when another main widget got opened
+		if ($openedWidget != 'AdminList') {
+			unset($this->adminListShown[$player->login]);
+		}
+	}
 } 
