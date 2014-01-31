@@ -19,16 +19,17 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	/*
 	 * Constants
 	 */
-	const SETTING_ENABLEUPDATECHECK    = 'Enable Automatic Core Update Check';
-	const SETTING_UPDATECHECK_INTERVAL = 'Core Update Check Interval (Hours)';
-	const SETTING_UPDATECHECK_CHANNEL  = 'Core Update Channel (release, beta, nightly)';
-	const SETTING_PERFORM_BACKUPS      = 'Perform Backup before Updating';
-	const SETTING_AUTO_UPDATE          = 'Perform update automatically';
-	const SETTING_PERMISSION_UPDATE    = 'Update Core';
-	const URL_WEBSERVICE               = 'http://ws.maniacontrol.com/';
-	const CHANNEL_RELEASE              = 'release';
-	const CHANNEL_BETA                 = 'beta';
-	const CHANNEL_NIGHTLY              = 'nightly';
+	const SETTING_ENABLEUPDATECHECK      = 'Enable Automatic Core Update Check';
+	const SETTING_UPDATECHECK_INTERVAL   = 'Core Update Check Interval (Hours)';
+	const SETTING_UPDATECHECK_CHANNEL    = 'Core Update Channel (release, beta, nightly)';
+	const SETTING_PERFORM_BACKUPS        = 'Perform Backup before Updating';
+	const SETTING_AUTO_UPDATE            = 'Perform update automatically';
+	const SETTING_PERMISSION_UPDATE      = 'Update Core';
+	const SETTING_PERMISSION_UPDATECHECK = 'Check Core Update';
+	const URL_WEBSERVICE                 = 'http://ws.maniacontrol.com/';
+	const CHANNEL_RELEASE                = 'release';
+	const CHANNEL_BETA                   = 'beta';
+	const CHANNEL_NIGHTLY                = 'nightly';
 
 	/*
 	 * Private Properties
@@ -57,8 +58,10 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		$this->maniaControl->timerManager->registerTimerListening($this, 'handle1Minute', 1000 * 60);
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'handlePlayerJoined');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECTED, $this, 'handlePlayerDisconnected');
-		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_UPDATE, AuthenticationManager::AUTH_LEVEL_ADMIN);
 
+		//define Permissions
+		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_UPDATE, AuthenticationManager::AUTH_LEVEL_ADMIN);
+		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_UPDATECHECK, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 
 		// Register for chat commands
 		$this->maniaControl->commandManager->registerCommandListener('checkupdate', $this, 'handle_CheckUpdate', true);
@@ -104,7 +107,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		}
 		// Announce available update
 		$player = $callback[1];
-		if (!AuthenticationManager::checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_UPDATE)) {
 			return;
 		}
 		$this->maniaControl->chat->sendInformation('New ManiaControl Version ' . $this->coreUpdateData->version . ' available!', $player->login);
@@ -152,7 +155,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 * @param Player $player
 	 */
 	public function handle_CheckUpdate(array $chatCallback, Player $player) {
-		if (!AuthenticationManager::checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_UPDATECHECK)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}

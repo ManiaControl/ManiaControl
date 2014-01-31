@@ -11,6 +11,7 @@ use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quads\Quad_Icons128x32_1;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Script\Script;
+use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Configurators\ConfiguratorMenu;
@@ -34,6 +35,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	const ACTION_PREFIX_SETTING       = 'PluginMenuSetting';
 	const ACTION_SETTING_BOOL         = 'PluginMenuActionBoolSetting.';
 	const ACTION_BACK_TO_PLUGINS      = 'PluginMenu.BackToPlugins';
+	const SETTING_PERMISSION_CHANGE_PLUGIN_SETTINGS = 'Change Plugin Settings';
 
 	/**
 	 * Private properties
@@ -51,6 +53,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_BACK_TO_PLUGINS, $this, 'backToPlugins');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
+		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_CHANGE_PLUGIN_SETTINGS, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
 	}
 
 	/**
@@ -326,6 +329,11 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
 	 */
 	public function saveConfigData(array $configData, Player $player) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_CHANGE_PLUGIN_SETTINGS)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+			return;
+		}
+
 		$prefix = explode(".", $configData[3][0]['Name']);
 		if($prefix[0] != self::ACTION_PREFIX_SETTING) {
 			return;
@@ -420,6 +428,11 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	 * @param Player $player
 	 */
 	public function toggleBooleanSetting($setting, Player $player) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_CHANGE_PLUGIN_SETTINGS)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+			return;
+		}
+
 		$oldSetting = $this->maniaControl->settingManager->getSettingByIndex($setting);
 
 		if(!isset($oldSetting)) {

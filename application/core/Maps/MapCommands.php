@@ -5,7 +5,6 @@ namespace ManiaControl\Maps;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Controls\Quads\Quad_UIConstruction_Buttons;
-use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
@@ -157,7 +156,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	 * @param \ManiaControl\Players\Player $player
 	 */
 	public function command_AddMap(array $chatCallback, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
@@ -178,7 +177,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	 * @param \ManiaControl\Players\Player $player
 	 */
 	public function command_NextMap(array $chat, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_SKIP_MAP)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
@@ -195,7 +194,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	 * @param \ManiaControl\Players\Player $player
 	 */
 	public function command_RestartMap(array $chat, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_RESTART_MAP)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
