@@ -45,10 +45,10 @@ class Chat {
 	 * @return string
 	 */
 	private function getPrefix($prefix) {
-		if(is_string($prefix)) {
+		if (is_string($prefix)) {
 			return $prefix;
 		}
-		if($prefix === true) {
+		if ($prefix === true) {
 			return $this->maniaControl->settingManager->getSetting($this, self::SETTING_PREFIX);
 		}
 		return '';
@@ -63,14 +63,20 @@ class Chat {
 	 * @return bool
 	 */
 	public function sendChat($message, $login = null, $prefix = true) {
-		if(!$this->maniaControl->client) {
+		if (!$this->maniaControl->client) {
 			return false;
 		}
 		$chatMessage = '$z$<' . $this->getPrefix($prefix) . $message . '$>$z';
-		if($login === null) {
-			return $this->maniaControl->client->chatSendServerMessage($chatMessage);
+		try {
+			if ($login === null) {
+				$this->maniaControl->client->chatSendServerMessage($chatMessage);
+			} else {
+				$this->maniaControl->client->chatSendServerMessage($chatMessage, $login);
+			}
+		} catch(\Exception $e) {
+			return false;
 		}
-		return $this->maniaControl->client->chatSendServerMessage($chatMessage, $login);
+		return true;
 	}
 
 	/**
