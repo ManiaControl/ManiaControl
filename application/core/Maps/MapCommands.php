@@ -80,13 +80,13 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		$itemQuad = new Quad_UIConstruction_Buttons();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Reload);
 		$itemQuad->setAction(self::ACTION_RESTART_MAP);
-		$this->maniaControl->actionsMenu->addAdminMenuItem($itemQuad, 0, 'Restart Map');
+		$this->maniaControl->actionsMenu->addAdminMenuItem($itemQuad, 10, 'Restart Map');
 
 		// Menu NextMap
 		$itemQuad = new Quad_Icons64x64_1();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ArrowFastNext);
 		$itemQuad->setAction(self::ACTION_SKIP_MAP);
-		$this->maniaControl->actionsMenu->addAdminMenuItem($itemQuad, 2, 'Skip Map');
+		$this->maniaControl->actionsMenu->addAdminMenuItem($itemQuad, 20, 'Skip Map');
 	}
 
 	/**
