@@ -9,23 +9,28 @@
 namespace ManiaControl\Admin;
 
 
+use FML\Controls\Control;
 use FML\Controls\Frame;
+use FML\Controls\Labels\Label_Button;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quads\Quad_BgRaceScore2;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
 use FML\Controls\Quads\Quad_UIConstruction_Buttons;
 use FML\ManiaLink;
 use FML\Script\Script;
+use ManiaControl\Callbacks\CallbackListener;
+use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 
-class AdminLists implements ManialinkPageAnswerListener {
+class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 	/**
 	 * Constants
 	 */
 	const ACTION_OPEN_ADMINLISTS = "AdminList.OpenAdminLists";
+	const ACTION_REVOKE_RIGHTS   = "AdminList.RevokeRights";
 	const MAX_PLAYERS_PER_PAGE   = 15;
 
 	/**
@@ -36,18 +41,9 @@ class AdminLists implements ManialinkPageAnswerListener {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		/*$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_CLOSE_PLAYER_ADV, $this, 'closePlayerAdvancedWidget');
-		$this->maniaControl->callbackManager->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_CLOSED, $this, 'closeWidget');
-		$this->maniaControl->callbackManager->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_OPENED, $this, 'handleWidgetOpened');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 
-		// Update Widget Events
-		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERINFOCHANGED, $this, 'updateWidget');
-		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECTED, $this, 'updateWidget');
-		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'updateWidget');
-		$this->maniaControl->callbackManager->registerCallbackListener(AuthenticationManager::CB_AUTH_LEVEL_CHANGED, $this, 'updateWidget');*/
-
-		// Action Open Playerlist
+		// Action Open AdminList
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_OPEN_ADMINLISTS, $this, 'openAdminList');
 		$itemQuad = new Quad_UIConstruction_Buttons();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Author);
@@ -63,17 +59,14 @@ class AdminLists implements ManialinkPageAnswerListener {
 		$width  = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
 		$height = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
 
-		// get PlayerList
-		//	$admins = $this->maniaControl->authenticationManager->
-		/*$players = $this->maniaControl->playerManager->getPlayers();
+		// get Admins
+		$admins  = $this->maniaControl->authenticationManager->getAdmins();
 		$pagesId = '';
-		if (count($players) > self::MAX_PLAYERS_PER_PAGE) {
-			$pagesId = 'AdminListsPages';
-		}*/
-		$pagesId = 'AdminListsPages';
+		if (count($admins) > self::MAX_PLAYERS_PER_PAGE) {
+			$pagesId = 'AdminListPages';
+		}
 
-
-		//create manialink
+		//Create ManiaLink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$script    = $maniaLink->getScript();
 
@@ -83,14 +76,21 @@ class AdminLists implements ManialinkPageAnswerListener {
 
 		// Start offsets
 		$x = -$width / 2;
+		$y = $height / 2;
+
 		//Predefine description Label
 		$descriptionLabel = $this->maniaControl->manialinkManager->styleManager->getDefaultDescriptionLabel();
 		$frame->add($descriptionLabel);
 
-		$admins = $this->maniaControl->authenticationManager->getAdmins();
+		// Headline
+		$headFrame = new Frame();
+		$frame->add($headFrame);
+		$headFrame->setY($y - 5);
+		$array = array("Id" => $x + 5, "Nickname" => $x + 18, "Login" => $x + 70, "Actions" => $x + 120);
+		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
 
 		$i          = 1;
-		$y          = $height / 2 - 10;
+		$y          = $y - 10;
 		$pageFrames = array();
 		foreach($admins as $admin) {
 			if (!isset($pageFrame)) {
@@ -137,6 +137,35 @@ class AdminLists implements ManialinkPageAnswerListener {
 			$rightLabel->setText($this->maniaControl->authenticationManager->getAuthLevelAbbreviation($admin->authLevel));
 			$script->addTooltip($rightLabel, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $this->maniaControl->authenticationManager->getAuthLevelName($admin->authLevel) . " " . $admin->nickname));
 
+			//Revoke Button
+			if ($admin->authLevel > 0 && $this->maniaControl->authenticationManager->checkRight($player, $admin->authLevel + 1)) {
+				//Settings
+				$style      = Label_Text::STYLE_TextCardSmall;
+				$textColor  = 'FFF';
+				$quadWidth  = 24;
+				$quadHeight = 3.4;
+
+				// Quad
+				$quad = new Quad_BgsPlayerCard();
+				$playerFrame->add($quad);
+				$quad->setZ(11);
+				$quad->setX($x + 130);
+				$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
+				$quad->setSize($quadWidth, $quadHeight);
+				$quad->setAction(self::ACTION_REVOKE_RIGHTS . "." . $admin->login);
+
+				//Label
+				$label = new Label_Button();
+				$playerFrame->add($label);
+				$label->setX($x + 130);
+				$quad->setZ(12);
+				$label->setAlign(Control::CENTER, Control::CENTER);
+				$label->setStyle($style);
+				$label->setTextSize(1);
+				$label->setTextColor($textColor);
+				$label->setText("Revoke Rights");
+				//$label->setTextColor("700");
+			}
 
 			$y -= 4;
 			$i++;
@@ -147,6 +176,29 @@ class AdminLists implements ManialinkPageAnswerListener {
 
 		// Render and display xml
 		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player, 'AdminList');
+	}
+
+	/**
+	 * Called on ManialinkPageAnswer
+	 *
+	 * @param array $callback
+	 */
+	public function handleManialinkPageAnswer(array $callback) {
+		$actionId    = $callback[1][2];
+		$actionArray = explode('.', $actionId, 3);
+		if (count($actionArray) <= 2) {
+			return;
+		}
+
+		$action      = $actionArray[0] . "." . $actionArray[1];
+		$adminLogin  = $callback[1][1];
+		$targetLogin = $actionArray[2];
+
+		switch($action) {
+			case self::ACTION_REVOKE_RIGHTS:
+				$this->maniaControl->playerManager->playerActions->revokeAuthLevel($adminLogin, $targetLogin);
+				break;
+		}
 	}
 
 } 

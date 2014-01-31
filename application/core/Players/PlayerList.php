@@ -315,7 +315,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 
 		// Show advanced window
 		if ($this->playersListShown[$player->login] && $this->playersListShown[$player->login] != self::SHOWN_MAIN_WINDOW) {
-			$frame = $this->showAdvancedPlayerWidget($this->playersListShown[$player->login]);
+			$frame = $this->showAdvancedPlayerWidget($player, $this->playersListShown[$player->login]);
 			$maniaLink->add($frame);
 		}
 
@@ -343,7 +343,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 	 * @param $login
 	 * @return Frame
 	 */
-	public function showAdvancedPlayerWidget($login) {
+	public function showAdvancedPlayerWidget($admin, $login) {
 		$player       = $this->maniaControl->playerManager->getPlayer($login);
 		$width        = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
 		$height       = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
@@ -518,7 +518,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$label->setText("Set Moderator");
 		$label->setTextColor($textColor);
 
-		if ($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
+		if ($player->authLevel > 0 && $this->maniaControl->authenticationManager->checkRight($admin, $player->authLevel + 1)) {
 			$y -= 5;
 			// Revoke Rights
 			$quad = clone $quad;
