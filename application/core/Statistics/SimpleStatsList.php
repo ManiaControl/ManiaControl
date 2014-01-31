@@ -175,6 +175,9 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		//Description Label
 		$i = 2;
 		foreach($this->statArray as $statArray) {
+			if(!isset($labels[$i]))
+				break;
+
 			/** @var Label_Text $labels [] */
 			$labels[$i]->setAction(self::ACTION_SORT_STATS . '.' . $statArray["Name"]);
 			$script->addTooltip($labels[$i], $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => '$o ' . $statArray["Name"]));

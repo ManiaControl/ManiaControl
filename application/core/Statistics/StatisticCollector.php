@@ -222,7 +222,7 @@ class StatisticCollector implements CallbackListener {
 
 		switch($callbackName) {
 			case 'LibXmlRpc_OnShoot':
-				$this->handleOnShoot($callback[1][1][0], $callback[1][1][3]);
+				$this->handleOnShoot($callback[1][1][0], $callback[1][1][1]);
 				break;
 			case 'LibXmlRpc_OnHit':
 				$shooter = $this->maniaControl->playerManager->getPlayer($callback[1][1][0]);
