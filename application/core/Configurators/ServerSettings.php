@@ -13,7 +13,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
-use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
+
 
 /**
  * Class offering a Configurator for Server Settings
@@ -115,7 +115,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 
 		try {
 			$this->maniaControl->client->setServerOptions($serverSettings);
-		} catch(Exception $e) {
+		} catch(\Exception $e) {
 			trigger_error('Error occured: ' . $e->getMessage());
 			return false;
 		}
@@ -332,7 +332,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 
 		try {
 			$this->maniaControl->client->setServerOptions($newSettings);
-		} catch(Exception $e) {
+		} catch(\Exception $e) {
 			trigger_error('Error occured: ' . $e->getMessage());
 			return false;
 		}

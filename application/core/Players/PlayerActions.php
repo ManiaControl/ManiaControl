@@ -11,7 +11,6 @@ use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
-use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
  * PlayerActions Class
@@ -86,7 +85,7 @@ class PlayerActions {
 		try {
 			$this->maniaControl->client->forceSpectator($target->login, self::SPECTATOR_PLAYER);
 
-		} catch(Exception $e) {
+		} catch(\Exception $e) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $admin->login);
 			return;
 		}
@@ -94,7 +93,7 @@ class PlayerActions {
 		if($userIsAbleToSelect) {
 			try {
 				$this->maniaControl->client->forceSpectator($target->login, self::SPECTATOR_USER_SELECTABLE);
-			} catch(Exception $e) {
+			} catch(\Exception $e) {
 				$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $admin->login);
 				return;
 			}
@@ -131,7 +130,7 @@ class PlayerActions {
 
 		try {
 			$this->maniaControl->client->forcePlayerTeam($target->login, $teamId);
-		} catch(Exception $e) {
+		} catch(\Exception $e) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $admin->login);
 			return;
 		}
@@ -168,7 +167,7 @@ class PlayerActions {
 
 		try {
 			$this->maniaControl->client->forceSpectator($target->login, $spectatorState);
-		} catch(Exception $e) {
+		} catch(\Exception $e) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $admin->login);
 			return;
 		}
@@ -182,7 +181,7 @@ class PlayerActions {
 			// Free player slot
 			try {
 				$this->maniaControl->client->spectatorReleasePlayerSlot($target->login);
-			} catch(Exception $e) {
+			} catch(\Exception $e) {
 				//do nothing
 			}
 		}
@@ -206,7 +205,7 @@ class PlayerActions {
 
 		try {
 			$this->maniaControl->client->unIgnore($targetLogin);
-		} catch(Exception $e) {
+		} catch(\Exception $e) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $adminLogin);
 			return;
 		}
@@ -235,7 +234,7 @@ class PlayerActions {
 
 		try {
 			$this->maniaControl->client->ignore($targetLogin);
-		} catch(Exception $e) {
+		} catch(\Exception $e) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $admin->login);
 			return;
 		}
@@ -350,7 +349,7 @@ class PlayerActions {
 			} else {
 				$this->maniaControl->client->kick($target->login, $message);
 			}
-		} catch(Exception $e) {
+		} catch(\Exception $e) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $admin->login);
 			return;
 		}
@@ -387,7 +386,7 @@ class PlayerActions {
 
 		try {
 			$this->maniaControl->client->ban($target->login, $message);
-		} catch(Exception $e) {
+		} catch(\Exception $e) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $admin->login);
 			return;
 		}

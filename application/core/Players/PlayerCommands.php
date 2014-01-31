@@ -8,7 +8,6 @@ use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
-use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
  * Class offering various Admin Commands related to Players
@@ -86,7 +85,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener {
 
 		try {
 			$this->maniaControl->client->autoTeamBalance();
-		} catch(Exception $e) {
+		} catch(\Exception $e) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 			return;
 		}
@@ -252,7 +251,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener {
 			for($i = 0; $i < $amount; $i++) {
 				$this->maniaControl->client->connectFakePlayer();
 			}
-		} catch(Exception $e) {
+		} catch(\Exception $e) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 			return;
 		}
@@ -274,7 +273,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener {
 
 		try {
 			$this->maniaControl->client->disconnectFakePlayer('*');
-		} catch(Exception $e) {
+		} catch(\Exception $e) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 			return;
 		}
