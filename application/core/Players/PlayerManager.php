@@ -253,7 +253,7 @@ class PlayerManager implements CallbackListener {
 	 */
 	public function getPlayer($login) {
 		if (!isset($this->players[$login])) {
-			return null;
+			return $this->getPlayerFromDatabaseByLogin($login);
 		}
 		return $this->players[$login];
 	}
@@ -313,6 +313,10 @@ class PlayerManager implements CallbackListener {
 		$row = $result->fetch_object();
 		$result->close();
 
+		if (!isset($row)) {
+			return null;
+		}
+		
 		$player            = new Player(false);
 		$player->index     = $playerIndex;
 		$player->login     = $row->login;
@@ -323,6 +327,39 @@ class PlayerManager implements CallbackListener {
 		return $player;
 	}
 
+
+	/**
+	 * Get's a Player out of the database
+	 *
+	 * @param $playerIndex
+	 * @return Player $player
+	 */
+	private function getPlayerFromDatabaseByLogin($playerLogin) {
+		$mysqli = $this->maniaControl->database->mysqli;
+
+		$query  = "SELECT * FROM `" . self::TABLE_PLAYERS . "` WHERE `login` LIKE '" . $mysqli->escape_string($playerLogin) . "';";
+		$result = $mysqli->query($query);
+		if (!$result) {
+			trigger_error($mysqli->error);
+			return null;
+		}
+
+		$row = $result->fetch_object();
+		$result->close();
+
+		if (!isset($row)) {
+			return null;
+		}
+
+		$player            = new Player(false);
+		$player->index     = $row->index;
+		$player->login     = $row->login;
+		$player->nickname  = $row->nickname;
+		$player->path      = $row->path;
+		$player->authLevel = $row->authLevel;
+
+		return $player;
+	}
 
 	/**
 	 * Save player in Database and fill up Object Properties
