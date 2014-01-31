@@ -5,7 +5,6 @@ namespace ManiaControl\ManiaExchange;
 use FML\Controls\Control;
 use FML\Controls\Entry;
 use FML\Controls\Frame;
-use FML\Controls\Label;
 use FML\Controls\Labels\Label_Button;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;
@@ -21,7 +20,7 @@ use ManiaControl\Manialinks\IconManager;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Maps\MapCommands;
-use ManiaControl\Maps\MapManager;
+use ManiaControl\Maps\MapQueue;
 use ManiaControl\Players\Player;
 
 
@@ -188,8 +187,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 			$mxQuad->setZ(0.01);
 			$script->addTooltip($mxQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "View " . $map->name . " on Mania-Exchange"));
 
-			//TODO permission Clear Jukebox
-			if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
+			if ($this->maniaControl->authenticationManager->checkPermission($player, MapQueue::SETTING_PERMISSION_CLEAR_MAPQUEUE)) {
 				$addQuad = new Quad_Icons64x64_1();
 				$mapFrame->add($addQuad);
 				$addQuad->setX($x + 59);

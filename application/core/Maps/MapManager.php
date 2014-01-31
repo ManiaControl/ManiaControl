@@ -176,12 +176,6 @@ class MapManager implements CallbackListener {
 	public function updateMap(Player $admin, $uid) {
 		$this->updateMapTimestamp($uid);
 
-		$mapsDirectory = $this->maniaControl->server->getMapsDirectory();
-		if (!$this->maniaControl->server->checkAccess($mapsDirectory)) {
-			$this->maniaControl->chat->sendError("ManiaControl doesn't have access to the maps directory.", $admin->login);
-			return;
-		}
-
 		if (!isset($uid)) {
 			trigger_error("Error while updating Map, unkown UID: " . $uid);
 			$this->maniaControl->chat->sendError("Error while updating Map.", $admin->login);
@@ -535,6 +529,7 @@ class MapManager implements CallbackListener {
 
 			$mapFileName = $downloadDirectory . '/' . $fileName;
 
+			var_dump($mapDir);
 			//Check if it can get locally Written
 			if (is_dir($mapDir)) {
 				// Create download directory if necessary
