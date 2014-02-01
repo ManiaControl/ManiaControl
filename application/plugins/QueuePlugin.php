@@ -282,7 +282,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 	 * @param Player $player
 	 */
 	private function forcePlayerToPlay(Player $player) {
-		if ($this->maniaControl->client->getMaxPlayers()['CurrentValue'] > count($this->maniaControl->playerManager->players)) {
+		if ($this->maniaControl->client->getMaxPlayers()['CurrentValue'] > (count($this->maniaControl->playerManager->players) - count($this->spectators))) {
 			$this->maniaControl->client->forceSpectator($player->login, 2);
 			$this->maniaControl->client->forceSpectator($player->login, 0);
 			if (isset($this->spectators[$player->login])) {
