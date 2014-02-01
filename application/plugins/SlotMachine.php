@@ -768,6 +768,7 @@ class SlotMachinePlugin implements Plugin, CallbackListener, ManialinkPageAnswer
 
 		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
 		$this->maniaControl->manialinkManager->unregisterManialinkPageAnswerListener($this);
+		$this->maniaControl->timerManager->unregisterTimerListenings($this);
 		unset($this->maniaControl);
 	}
 

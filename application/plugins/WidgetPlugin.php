@@ -139,6 +139,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$this->closeWidget(self::MLID_MAPWIDGET);
 		$this->closeWidget(self::MLID_NEXTMAPWIDGET);
 		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
+		$this->maniaControl->timerManager->unregisterTimerListenings($this);
 		unset($this->maniaControl);
 	}
 

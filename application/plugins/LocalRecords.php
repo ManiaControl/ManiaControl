@@ -92,6 +92,7 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 	 */
 	public function unload() {
 		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
+		$this->maniaControl->timerManager->unregisterTimerListenings($this);
 		unset($this->maniaControl);
 	}
 

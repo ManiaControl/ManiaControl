@@ -99,6 +99,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		$manialinkText  = $emptyManialink->render()->saveXML();
 		$this->maniaControl->manialinkManager->sendManialink($manialinkText);
 		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
+		$this->maniaControl->timerManager->unregisterTimerListenings($this);
 		unset($this->maniaControl);
 	}
 
