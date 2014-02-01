@@ -16,7 +16,6 @@ use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\PluginManager;
 use ManiaControl\Server\Server;
-use ManiaControl\Server\ServerCommands;
 use ManiaControl\Settings\SettingManager;
 use ManiaControl\Statistics\StatisticManager;
 use Maniaplanet\DedicatedServer\Connection;
@@ -210,10 +209,14 @@ class ManiaControl implements CommandListener {
 		$this->chat->sendInformation('ManiaControl shutting down.');
 
 		// Hide manialinks
-		$this->client->sendHideManialinkPage();
+		try {
+			$this->client->sendHideManialinkPage();
 
-		// Close the client connection
-		$this->client->delete($this->server->ip, $this->server->port);
+			// Close the client connection
+			$this->client->delete($this->server->ip, $this->server->port);
+		} catch(\Exception $e) {
+			//do nothing
+		}
 
 		$this->log('Quitting ManiaControl!');
 		exit();
