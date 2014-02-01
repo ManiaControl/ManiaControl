@@ -55,9 +55,9 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 
 
 		// Register for callbacks
-		$this->maniaControl->timerManager->registerTimerListening($this, 'handle1Minute', 1000 * 60);
+		$this->maniaControl->timerManager->registerTimerListening($this, 'hourlyUpdateCheck', 1000 * 60 * 60);
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'handlePlayerJoined');
-		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECTED, $this, 'handlePlayerDisconnected');
+		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECTED, $this, 'autoUpdate');
 
 		//define Permissions
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_UPDATE, AuthenticationManager::AUTH_LEVEL_ADMIN);
@@ -69,11 +69,11 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	}
 
 	/**
-	 * Handle ManiaControl 1Minute callback
+	 * Perform Hourly Update Che
 	 *
 	 * @param $time
 	 */
-	public function handle1Minute($time) {
+	public function hourlyUpdateCheck($time) {
 		$updateCheckEnabled = $this->maniaControl->settingManager->getSetting($this, self::SETTING_ENABLEUPDATECHECK);
 		if (!$updateCheckEnabled) {
 			// Automatic update check disabled
@@ -82,9 +82,10 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			}
 			return;
 		}
+
 		// Only check once per hour
 		$updateInterval = $this->maniaControl->settingManager->getSetting($this, self::SETTING_UPDATECHECK_INTERVAL);
-		if ($this->lastUpdateCheck > time() - $updateInterval * 3600.) {
+		if ($this->lastUpdateCheck > time() - $updateInterval * 3600) {
 			return;
 		}
 		$this->lastUpdateCheck = time();
@@ -94,6 +95,8 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		}
 		$this->maniaControl->log('New ManiaControl Version ' . $updateData->version . ' available!');
 		$this->coreUpdateData = $updateData;
+
+		$this->autoUpdate($time);
 	}
 
 	/**
@@ -113,17 +116,17 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		$this->maniaControl->chat->sendInformation('New ManiaControl Version ' . $this->coreUpdateData->version . ' available!', $player->login);
 	}
 
+
 	/**
-	 * Perform automatic update as soon as a the Server is empty
+	 * Perform automatic update as soon as a the Server is empty (also every hour got checked when its empty)
 	 *
-	 * @param array $callback
+	 * @param mixed $callback
 	 */
-	public function handlePlayerDisconnected(array $callback) {
-		$performBackup = $this->maniaControl->settingManager->getSetting($this, self::SETTING_AUTO_UPDATE);
-		if (!$performBackup) {
+	public function autoUpdate($callback) {
+		$autoUpdate = $this->maniaControl->settingManager->getSetting($this, self::SETTING_AUTO_UPDATE);
+		if (!$autoUpdate) {
 			return;
 		}
-
 
 		if (count($this->maniaControl->playerManager->getPlayers()) > 0) {
 			return;
@@ -147,6 +150,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 
 		$this->maniaControl->restart();
 	}
+
 
 	/**
 	 * Handle //checkupdate command
@@ -175,7 +179,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			$releaseTime = strtotime($updateData->release_date);
 			if ($buildDate) {
 				$buildTime = strtotime($buildDate);
-				if ($buildTime >= $releaseTime) {
+				if ($buildTime >= $releaseTime) { //FIXME will ever fail, releaseTime > buildTime (because releaseTime "2014-02-01 14:59:49")
 					$this->maniaControl->chat->sendInformation('No new Build available, current build: ' . date("Y-m-d", $buildTime) . '!', $player->login);
 					return;
 				}
