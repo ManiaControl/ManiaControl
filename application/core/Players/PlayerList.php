@@ -278,7 +278,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				// Description Label
 				$script->addTooltip($playerQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Advanced Player Actions on " . $listPlayer->nickname));
 
-				if($this->maniaControl->server->isTeamMode()){
+				if ($this->maniaControl->server->isTeamMode()) {
 					// Force to Red-Team Quad
 					$redQuad = new Quad_Emblems();
 					$playerFrame->add($redQuad);
@@ -302,15 +302,18 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 
 					// Force to Blue-Team Description Label
 					$script->addTooltip($blueQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Force " . $listPlayer->nickname . '$z to Blue Team!'));
-				}else{
+				} else {
 					// Force to Play
-					$redQuad = new Quad_Emblems();
-					$playerFrame->add($redQuad);
-					$redQuad->setX($x + 145);
-					$redQuad->setZ(0.1);
-					$redQuad->setSubStyle($redQuad::SUBSTYLE_2);
-					$redQuad->setSize(3.8, 3.8);
-					$redQuad->setAction(self::ACTION_FORCE_PLAY . "." . $listPlayer->login);
+					$playQuad = new Quad_Emblems();
+					$playerFrame->add($playQuad);
+					$playQuad->setX($x + 143);
+					$playQuad->setZ(0.1);
+					$playQuad->setSubStyle($playQuad::SUBSTYLE_2);
+					$playQuad->setSize(3.8, 3.8);
+					$playQuad->setAction(self::ACTION_FORCE_PLAY . "." . $listPlayer->login);
+
+					// Force to Blue-Team Description Label
+					$script->addTooltip($playQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Force " . $listPlayer->nickname . '$z to Play!'));
 				}
 
 				// Force to Spectator Quad
@@ -627,6 +630,9 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				break;
 			case self::ACTION_FORCE_SPEC:
 				$this->maniaControl->playerManager->playerActions->forcePlayerToSpectator($adminLogin, $targetLogin, PlayerActions::SPECTATOR_BUT_KEEP_SELECTABLE);
+				break;
+			case self::ACTION_FORCE_PLAY:
+				$this->maniaControl->playerManager->playerActions->forcePlayerToPlay($adminLogin, $targetLogin);
 				break;
 			case self::ACTION_MUTE_PLAYER:
 				$this->maniaControl->playerManager->playerActions->mutePlayer($adminLogin, $targetLogin);
