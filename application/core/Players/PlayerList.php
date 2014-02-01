@@ -35,6 +35,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 	const ACTION_FORCE_RED            = 'PlayerList.ForceRed';
 	const ACTION_FORCE_BLUE           = 'PlayerList.ForceBlue';
 	const ACTION_FORCE_SPEC           = 'PlayerList.ForceSpec';
+	const ACTION_FORCE_PLAY           = 'PlayerList.ForcePlay';
 	const ACTION_PLAYER_ADV           = 'PlayerList.PlayerAdvancedActions';
 	const ACTION_CLOSE_PLAYER_ADV     = 'PlayerList.ClosePlayerAdvWidget';
 	const ACTION_MUTE_PLAYER          = 'PlayerList.MutePlayer';
@@ -301,6 +302,15 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 
 					// Force to Blue-Team Description Label
 					$script->addTooltip($blueQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Force " . $listPlayer->nickname . '$z to Blue Team!'));
+				}else{
+					// Force to Play
+					$redQuad = new Quad_Emblems();
+					$playerFrame->add($redQuad);
+					$redQuad->setX($x + 145);
+					$redQuad->setZ(0.1);
+					$redQuad->setSubStyle($redQuad::SUBSTYLE_2);
+					$redQuad->setSize(3.8, 3.8);
+					$redQuad->setAction(self::ACTION_FORCE_PLAY . "." . $listPlayer->login);
 				}
 
 				// Force to Spectator Quad
