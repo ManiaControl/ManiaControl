@@ -18,7 +18,8 @@ class Server implements CallbackListener {
 	/**
 	 * Constants
 	 */
-	const TABLE_SERVERS = 'mc_servers';
+	const TABLE_SERVERS          = 'mc_servers';
+	const CB_TEAM_STATUS_CHANGED = 'ServerCallback.TeamStatusChanged';
 
 	/**
 	 * Public Properties
@@ -33,10 +34,12 @@ class Server implements CallbackListener {
 	public $serverCommands = null;
 	public $usageReporter = null;
 
+
 	/**
 	 * Private Properties
 	 */
 	private $maniaControl = null;
+	private $teamMode = false;
 
 	/**
 	 * Construct a new Server
@@ -125,6 +128,28 @@ class Server implements CallbackListener {
 	public function onInit(array $callback) {
 		$this->updateProperties();
 	}
+
+	/**
+	 * Set if the Server Runs a Team-Mode or not
+	 *
+	 * @param bool $teamMode
+	 */
+	public function setTeamMode($teamMode = true) {
+		$this->teamMode = $teamMode;
+
+		// Trigger  callback
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_TEAM_STATUS_CHANGED, array(self::CB_TEAM_STATUS_CHANGED, $teamMode));
+	}
+
+	/**
+	 * Check if the Server Runs a TeamMode
+	 *
+	 * @return bool
+	 */
+	public function isTeamMode() {
+		return $this->teamMode;
+	}
+
 
 	/**
 	 * Fetch Game Data Directory

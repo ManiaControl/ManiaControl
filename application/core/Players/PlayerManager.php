@@ -128,6 +128,11 @@ class PlayerManager implements CallbackListener {
 
 			$playerItem->hoursSinceZoneInscription = $detailedPlayerInfo->hoursSinceZoneInscription;
 
+			//Check if the Player is in a Team, to notify if its a TeamMode or not
+			if ($playerItem->teamId != -1) {
+				$this->maniaControl->server->setTeamMode(true);
+			}
+
 			$player                = new Player($playerItem);
 			$player->hasJoinedGame = true;
 			$this->addPlayer($player);
@@ -186,8 +191,14 @@ class PlayerManager implements CallbackListener {
 			return;
 		}
 
-		$player->teamId     = $callback[1][0]["TeamId"];
+
 		$player->ladderRank = $callback[1][0]["LadderRanking"];
+		$player->teamId     = $callback[1][0]["TeamId"];
+
+		//Check if the Player is in a Team, to notify if its a TeamMode or not
+		if ($player->teamId != -1) {
+			$this->maniaControl->server->setTeamMode(true);
+		}
 
 		$prevJoinState = $player->hasJoinedGame;
 
@@ -316,7 +327,7 @@ class PlayerManager implements CallbackListener {
 		if (!isset($row)) {
 			return null;
 		}
-		
+
 		$player            = new Player(false);
 		$player->index     = $playerIndex;
 		$player->login     = $row->login;
