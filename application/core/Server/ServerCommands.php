@@ -83,7 +83,6 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 
 		//Check if Pause exists in current GameMode
 		$scriptInfos = $this->maniaControl->client->getModeScriptInfo();
-
 		$pauseExists = false;
 		foreach($scriptInfos->commandDescs as $param) {
 			if ($param->name == "Command_ForceWarmUp") {
@@ -121,6 +120,7 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 		$itemQuad->setAction(self::ACTION_CANCEL_VOTE);
 		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 30, 'Cancel Vote');
 	}
+
 
 	/**
 	 * Handle //cancelvote command

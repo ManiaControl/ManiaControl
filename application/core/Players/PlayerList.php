@@ -277,29 +277,31 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				// Description Label
 				$script->addTooltip($playerQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Advanced Player Actions on " . $listPlayer->nickname));
 
-				// Force to Red-Team Quad
-				$redQuad = new Quad_Emblems();
-				$playerFrame->add($redQuad);
-				$redQuad->setX($x + 145);
-				$redQuad->setZ(0.1);
-				$redQuad->setSubStyle($redQuad::SUBSTYLE_2);
-				$redQuad->setSize(3.8, 3.8);
-				$redQuad->setAction(self::ACTION_FORCE_RED . "." . $listPlayer->login);
+				if($this->maniaControl->server->isTeamMode()){
+					// Force to Red-Team Quad
+					$redQuad = new Quad_Emblems();
+					$playerFrame->add($redQuad);
+					$redQuad->setX($x + 145);
+					$redQuad->setZ(0.1);
+					$redQuad->setSubStyle($redQuad::SUBSTYLE_2);
+					$redQuad->setSize(3.8, 3.8);
+					$redQuad->setAction(self::ACTION_FORCE_RED . "." . $listPlayer->login);
 
-				// Force to Red-Team Description Label
-				$script->addTooltip($redQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Force " . $listPlayer->nickname . '$z to Red Team!'));
+					// Force to Red-Team Description Label
+					$script->addTooltip($redQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Force " . $listPlayer->nickname . '$z to Red Team!'));
 
-				// Force to Blue-Team Quad
-				$blueQuad = new Quad_Emblems();
-				$playerFrame->add($blueQuad);
-				$blueQuad->setX($x + 141);
-				$blueQuad->setZ(0.1);
-				$blueQuad->setSubStyle($blueQuad::SUBSTYLE_1);
-				$blueQuad->setSize(3.8, 3.8);
-				$blueQuad->setAction(self::ACTION_FORCE_BLUE . "." . $listPlayer->login);
+					// Force to Blue-Team Quad
+					$blueQuad = new Quad_Emblems();
+					$playerFrame->add($blueQuad);
+					$blueQuad->setX($x + 141);
+					$blueQuad->setZ(0.1);
+					$blueQuad->setSubStyle($blueQuad::SUBSTYLE_1);
+					$blueQuad->setSize(3.8, 3.8);
+					$blueQuad->setAction(self::ACTION_FORCE_BLUE . "." . $listPlayer->login);
 
-				// Force to Blue-Team Description Label
-				$script->addTooltip($blueQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Force " . $listPlayer->nickname . '$z to Blue Team!'));
+					// Force to Blue-Team Description Label
+					$script->addTooltip($blueQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Force " . $listPlayer->nickname . '$z to Blue Team!'));
+				}
 
 				// Force to Spectator Quad
 				$spectatorQuad = new Quad_BgRaceScore2();

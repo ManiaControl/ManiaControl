@@ -5,16 +5,18 @@ namespace ManiaControl\Players;
 use FML\Controls\Quads\Quad_Icons128x32_1;
 use FML\Controls\Quads\Quad_UIConstruction_Buttons;
 use ManiaControl\Admin\AuthenticationManager;
+use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
+use ManiaControl\Server\Server;
 
 /**
  * Class offering various Admin Commands related to Players
  *
  * @author steeffeen & kremsy
  */
-class PlayerCommands implements CommandListener, ManialinkPageAnswerListener {
+class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, CallbackListener {
 	/**
 	 * Constants
 	 */
@@ -61,12 +63,8 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener {
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_ADD_BOT, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_TEAM_BALANCE, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 
-		// Action Balance Teams
-		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_BALANCE_TEAMS, $this, 'command_TeamBalance');
-		$itemQuad = new Quad_Icons128x32_1();
-		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_RT_Team);
-		$itemQuad->setAction(self::ACTION_BALANCE_TEAMS);
-		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 40, 'Balance Teams');
+		//CallbackManager
+		$this->maniaControl->callbackManager->registerCallbackListener(Server::CB_TEAM_STATUS_CHANGED, $this, 'teamStatusChanged');
 
 		// Action Open Playerlist
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_OPEN_PLAYERLIST, $this, 'command_playerList');
@@ -76,6 +74,22 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener {
 		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, true, 15, 'Open Playerlist');
 	}
 
+	/**
+	 * Handle TeamStatusChanged
+	 * @param array $callback
+	 */
+	public function teamStatusChanged(array $callback) {
+		$status =  $callback[1];
+		//Add Balance Team Icon if it's a teamMode
+		if ($status) {
+			// Action Balance Teams
+			$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_BALANCE_TEAMS, $this, 'command_TeamBalance');
+			$itemQuad = new Quad_Icons128x32_1();
+			$itemQuad->setSubStyle($itemQuad::SUBSTYLE_RT_Team);
+			$itemQuad->setAction(self::ACTION_BALANCE_TEAMS);
+			$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 40, 'Balance Teams');
+		}
+	}
 
 	/**
 	 * Handle //teambalance command
