@@ -135,6 +135,7 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 		$this->maniaControl->manialinkManager->unregisterManialinkPageAnswerListener($this);
 		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
 		$this->maniaControl->commandManager->unregisterCommandListener($this);
+		$this->maniaControl->timerManager->unregisterTimerListenings($this);
 		unset($this->maniaControl);
 	}
 

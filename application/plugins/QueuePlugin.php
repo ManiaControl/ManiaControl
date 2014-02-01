@@ -88,6 +88,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 	public function unload() {
 		$this->maniaControl->manialinkManager->unregisterManialinkPageAnswerListener($this);
 		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
+		$this->maniaControl->timerManager->unregisterTimerListenings($this);
 
 		foreach($this->spectators as $spectator) {
 			$this->maniaControl->client->forceSpectator($spectator, 3);
@@ -101,7 +102,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 		$this->queue        = array();
 		$this->spectators   = array();
 		$this->showPlay     = array();
-		$this->maniaControl = null;
+		unset($this->maniaControl);
 	}
 
 	/**
