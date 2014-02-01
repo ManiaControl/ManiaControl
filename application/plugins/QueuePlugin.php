@@ -355,12 +355,13 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowStyle();
 		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowSubStyle();
 		$max_queue    = $this->maniaControl->settingManager->getSetting($this, self::QUEUE_MAX);
+		//TODO position setting
 
 		// Main frame
 		$frame = new Frame();
 		$maniaLink->add($frame);
 		$frame->setSize(60, 6);
-		$frame->setPosition(0, 67, 0);
+		$frame->setPosition(0, -46, 0);
 
 		// Background
 		$backgroundQuad = new Quad();
@@ -447,7 +448,8 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 		$frame = new Frame();
 		$maniaLink->add($frame);
 		$frame->setSize(60, 6);
-		$frame->setPosition(0, 67, 0);
+		$frame->setPosition(0, -46, 0);
+		//TODO position setting
 
 		// Background
 		$backgroundQuad = new Quad();
