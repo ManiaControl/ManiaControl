@@ -63,12 +63,12 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 				UNIQUE KEY `setting` (`serverIndex`, `settingName`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Server Settings' AUTO_INCREMENT=1;";
 		$statement = $mysqli->prepare($query);
-		if($mysqli->error) {
+		if ($mysqli->error) {
 			trigger_error($mysqli->error, E_USER_ERROR);
 			return false;
 		}
 		$statement->execute();
-		if($statement->error) {
+		if ($statement->error) {
 			trigger_error($statement->error, E_USER_ERROR);
 			return false;
 		}
@@ -95,13 +95,13 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		$mysqli   = $this->maniaControl->database->mysqli;
 		$query    = "SELECT * FROM `" . self::TABLE_SERVER_SETTINGS . "` WHERE serverIndex = " . $serverId . ";";
 		$result   = $mysqli->query($query);
-		if($mysqli->error) {
+		if ($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
 		}
 		$serverSettings = $this->maniaControl->client->getServerOptions()->toArray();
 		while($row = $result->fetch_object()) {
-			if(!isset($serverSettings[$row->settingName])) {
+			if (!isset($serverSettings[$row->settingName])) {
 				continue;
 			}
 			$oldType                           = gettype($serverSettings[$row->settingName]);
@@ -109,7 +109,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			settype($serverSettings[$row->settingName], $oldType);
 		}
 		$result->close();
-		if(!$serverSettings) {
+		if (!$serverSettings) {
 			return true;
 		}
 
@@ -123,7 +123,6 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	}
 
 	/**
-	 *
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getTitle()
 	 */
 	public function getTitle() {
@@ -131,7 +130,6 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	}
 
 	/**
-	 *
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getMenu()
 	 */
 	public function getMenu($width, $height, Script $script) {
@@ -178,14 +176,14 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		foreach($serverSettings as $name => $value) {
 			// Continue on CurrentMaxPlayers...
 			$pos = strpos($name, "Current"); // TODO maybe current irgentwo anzeigen
-			if($pos !== false) {
+			if ($pos !== false) {
 				continue;
 			}
 
-			if(!isset($pageFrame)) {
+			if (!isset($pageFrame)) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
-				if(!empty($pageFrames)) {
+				if (!empty($pageFrames)) {
 					$pageFrame->setVisible(false);
 				}
 				array_push($pageFrames, $pageFrame);
@@ -208,9 +206,9 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			$nameLabel->setTextColor("FFF");
 
 			$substyle = '';
-			if($value === false) {
+			if ($value === false) {
 				$substyle = Quad_Icons64x64_1::SUBSTYLE_LvlRed;
-			} else if($value === true) {
+			} else if ($value === true) {
 				$substyle = Quad_Icons64x64_1::SUBSTYLE_LvlGreen;
 			}
 
@@ -224,7 +222,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			$entry->setName(self::ACTION_PREFIX_SETTING . '.' . $name);
 			$entry->setDefault($value);
 
-			if($name == "Comment") { //
+			if ($name == "Comment") { //
 				$entry->setAutoNewLine(true);
 				$entry->setSize($width * 0.48, $settingHeight * 3 + $settingHeight * 0.9);
 				$settingFrame->setY($y - $settingHeight * 1.5);
@@ -233,7 +231,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 				$id += 3;
 			}
 
-			if($substyle != '') {
+			if ($substyle != '') {
 				$quad = new Quad_Icons64x64_1();
 				$settingFrame->add($quad);
 				$quad->setX($width / 2 * 0.46);
@@ -247,7 +245,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			}
 
 			$y -= $settingHeight;
-			if($id % $pageMaxCount == $pageMaxCount - 1) {
+			if ($id % $pageMaxCount == $pageMaxCount - 1) {
 				unset($pageFrame);
 			}
 
@@ -258,13 +256,11 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	}
 
 	/**
-	 *
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
 	 */
 	public function saveConfigData(array $configData, Player $player) {
-
 		$prefix = explode(".", $configData[3][0]['Name']);
-		if($prefix[0] != self::ACTION_PREFIX_SETTING) {
+		if ($prefix[0] != self::ACTION_PREFIX_SETTING) {
 			return;
 		}
 
@@ -275,14 +271,14 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		$actionArray = explode(".", $configData[2]);
 
 		$boolSettingName = '';
-		if(isset($actionArray[2])) {
+		if (isset($actionArray[2])) {
 			$boolSettingName = self::ACTION_PREFIX_SETTING . '.' . $actionArray[2];
 		}
 
 		$newSettings = array();
 		foreach($configData[3] as $setting) {
 			// Check if it was a boolean button
-			if($setting['Name'] == $boolSettingName) {
+			if ($setting['Name'] == $boolSettingName) {
 				$setting['Value'] = ($setting['Value'] ? false : true);
 			}
 
@@ -307,7 +303,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	public function handleManialinkPageAnswer(array $callback) {
 		$actionId    = $callback[1][2];
 		$boolSetting = (strpos($actionId, self::ACTION_SETTING_BOOL) === 0);
-		if(!$boolSetting) {
+		if (!$boolSetting) {
 			return;
 		}
 
@@ -326,7 +322,8 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	 * @return bool
 	 */
 	private function applyNewServerSettings(array $newSettings, Player $player) {
-		if(!$newSettings) {
+		var_dump($newSettings);
+		if (!$newSettings) {
 			return true;
 		}
 
@@ -349,7 +346,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 				) ON DUPLICATE KEY UPDATE
 				`settingValue` = VALUES(`settingValue`);";
 		$statement = $mysqli->prepare($query);
-		if($mysqli->error) {
+		if ($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
 		}
@@ -361,12 +358,13 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		// $chatMessage = '$ff0' . $title . ' $<' . $player->nickname . '$> set ScriptSetting' . ($settingsCount > 1 ? 's' : '') . ' ';
 
 		foreach($newSettings as $setting => $value) {
-			if($value == null) {
+			if ($value === null) {
 				continue;
 			}
+
 			$statement->bind_param('iss', $this->maniaControl->server->index, $setting, $value);
 			$statement->execute();
-			if($statement->error) {
+			if ($statement->error) {
 				trigger_error($statement->error);
 				$statement->close();
 				return false;

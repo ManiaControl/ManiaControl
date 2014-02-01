@@ -63,12 +63,12 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Script Settings' AUTO_INCREMENT=1;";
 
 		$statement = $mysqli->prepare($query);
-		if($mysqli->error) {
+		if ($mysqli->error) {
 			trigger_error($mysqli->error, E_USER_ERROR);
 			return false;
 		}
 		$statement->execute();
-		if($statement->error) {
+		if ($statement->error) {
 			trigger_error($statement->error, E_USER_ERROR);
 			return false;
 		}
@@ -93,8 +93,8 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	public function loadSettingsFromDatabase() {
 		$scriptSettings = (array)$this->maniaControl->client->getModeScriptSettings();
 
-		if(isset($scriptSettings['faultString'])) {
-			if($scriptSettings['faultString'] == 'Not in script mode.') {
+		if (isset($scriptSettings['faultString'])) {
+			if ($scriptSettings['faultString'] == 'Not in script mode.') {
 				return false;
 			}
 			trigger_error('Error occured: ' . $scriptSettings['faultString']);
@@ -105,21 +105,21 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		$serverId = $this->maniaControl->server->index;
 		$query    = "SELECT * FROM `" . self::TABLE_SCRIPT_SETTINGS . "` WHERE serverIndex = " . $serverId . ";";
 		$result   = $mysqli->query($query);
-		if($mysqli->error) {
+		if ($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
 		}
 
 		$loadedSettings = array();
 		while($row = $result->fetch_object()) {
-			if(!isset($scriptSettings[$row->settingName])) {
+			if (!isset($scriptSettings[$row->settingName])) {
 				continue;
 			}
 			$loadedSettings[$row->settingName] = $row->settingValue;
 			settype($loadedSettings[$row->settingName], gettype($scriptSettings[$row->settingName]));
 		}
 		$result->close();
-		if(!$loadedSettings) {
+		if (!$loadedSettings) {
 			return true;
 		}
 
@@ -133,7 +133,6 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	}
 
 	/**
-	 *
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getTitle()
 	 */
 	public function getTitle() {
@@ -141,7 +140,6 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	}
 
 	/**
-	 *
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getMenu()
 	 */
 	public function getMenu($width, $height, Script $script) {
@@ -202,14 +200,14 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			/** @var \Maniaplanet\DedicatedServer\Structures\ScriptSettings $scriptParam */
 			$settingName = $scriptParam->name;
 
-			if(!isset($scriptSettings[$settingName])) {
+			if (!isset($scriptSettings[$settingName])) {
 				continue;
 			}
 
-			if(!isset($pageFrame)) {
+			if (!isset($pageFrame)) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
-				if(!empty($pageFrames)) {
+				if (!empty($pageFrames)) {
 					$pageFrame->setVisible(false);
 				}
 				array_push($pageFrames, $pageFrame);
@@ -233,13 +231,13 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			$settingValue = $scriptSettings[$settingName];
 
 			$substyle = '';
-			if($settingValue === false) {
+			if ($settingValue === false) {
 				$substyle = Quad_Icons64x64_1::SUBSTYLE_LvlRed;
-			} else if($settingValue === true) {
+			} else if ($settingValue === true) {
 				$substyle = Quad_Icons64x64_1::SUBSTYLE_LvlGreen;
 			}
 
-			if($substyle != '') {
+			if ($substyle != '') {
 				$quad = new Quad_Icons64x64_1();
 				$settingFrame->add($quad);
 				$quad->setX($width / 2 * 0.545);
@@ -271,7 +269,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			$script->addTooltip($nameLabel, $descriptionLabel);
 
 			$y -= $settingHeight;
-			if($index % $pageMaxCount == $pageMaxCount - 1) {
+			if ($index % $pageMaxCount == $pageMaxCount - 1) {
 				unset($pageFrame);
 			}
 		}
@@ -280,13 +278,12 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	}
 
 	/**
-	 *
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
 	 */
 	public function saveConfigData(array $configData, Player $player) {
 
 		$prefix = explode(".", $configData[3][0]['Name']);
-		if($prefix[0] != self::ACTION_PREFIX_SETTING) {
+		if ($prefix[0] != self::ACTION_PREFIX_SETTING) {
 			return;
 		}
 
@@ -299,12 +296,12 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 
 
 			$settingName = substr($setting['Name'], $prefixLength + 1);
-			if(!isset($scriptSettings[$settingName])) {
+			if (!isset($scriptSettings[$settingName])) {
 				var_dump('no setting ' . $settingName);
 				continue;
 			}
 
-			if($setting['Value'] == $scriptSettings[$settingName]) {
+			if ($setting['Value'] == $scriptSettings[$settingName]) {
 				// Not changed
 				continue;
 			}
@@ -328,7 +325,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	public function handleManialinkPageAnswer(array $callback) {
 		$actionId    = $callback[1][2];
 		$boolSetting = (strpos($actionId, self::ACTION_SETTING_BOOL) === 0);
-		if(!$boolSetting) {
+		if (!$boolSetting) {
 			return;
 		}
 
@@ -353,7 +350,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 */
 	public function toggleBooleanSetting($setting, Player $player) {
 		$scriptSettings = $this->maniaControl->client->getModeScriptSettings();
-		if(!isset($scriptSettings[$setting])) {
+		if (!isset($scriptSettings[$setting])) {
 			var_dump('no setting ' . $setting);
 			return;
 		}
@@ -372,12 +369,12 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 * @param        bool
 	 */
 	private function applyNewScriptSettings(array $newSettings, Player $player) {
-		if(!$newSettings) {
+		if (!$newSettings) {
 			return true;
 		}
 
 		try {
-			$success = $this->maniaControl->client->setModeScriptSettings($newSettings);
+			$this->maniaControl->client->setModeScriptSettings($newSettings);
 		} catch(\Exception $e) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 			return false;
@@ -394,7 +391,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 				) ON DUPLICATE KEY UPDATE
 				`settingValue` = VALUES(`settingValue`);";
 		$statement = $mysqli->prepare($query);
-		if($mysqli->error) {
+		if ($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
 		}
@@ -408,14 +405,14 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			$chatMessage .= '$<' . '$fff' . preg_replace('/^S_/', '', $setting) . '$z$s$ff0 ';
 			$chatMessage .= 'to $fff' . $this->parseSettingValue($value) . '$>';
 
-			if($settingIndex <= $settingsCount - 2) {
+			if ($settingIndex <= $settingsCount - 2) {
 				$chatMessage .= ', ';
 			}
 
 			// Add To Database
 			$statement->bind_param('iss', $this->maniaControl->server->index, $setting, $value);
 			$statement->execute();
-			if($statement->error) {
+			if ($statement->error) {
 				trigger_error($statement->error);
 				$statement->close();
 				return false;
@@ -443,7 +440,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 * @return string
 	 */
 	private function parseSettingValue($value) {
-		if(is_bool($value)) {
+		if (is_bool($value)) {
 			return ($value ? 'True' : 'False');
 		}
 		return (string)$value;
