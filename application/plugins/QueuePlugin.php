@@ -34,7 +34,9 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 	const ML_ADDTOQUEUE      = 'Queue.Add';
 	const ML_REMOVEFROMQUEUE = 'Queue.Remove';
 
-	const QUEUE_MAX = 'Maximum number in the queue';
+	const QUEUE_MAX          = 'Maximum number in the queue';
+	const QUEUE_WIDGET_POS_X = 'X position of the widget';
+	const QUEUE_WIDGET_POS_Y = 'Y position of the widget';
 
 	/**
 	 * Private properties
@@ -72,9 +74,11 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ML_REMOVEFROMQUEUE, $this, 'handleManiaLinkAnswerRemove');
 
 		$this->maniaControl->settingManager->initSetting($this, self::QUEUE_MAX, 8);
+		$this->maniaControl->settingManager->initSetting($this, self::QUEUE_WIDGET_POS_X, 0);
+		$this->maniaControl->settingManager->initSetting($this, self::QUEUE_WIDGET_POS_Y, -46);
 
 		foreach($this->maniaControl->playerManager->getPlayers() as $player) {
-			if ($player->isSpectator) {
+			if($player->isSpectator) {
 				$this->spectators[$player->login] = $player->login;
 				$this->maniaControl->client->forceSpectator($player->login, 1);
 				$this->showJoinQueueWidget($player);
@@ -159,12 +163,12 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 		$login  = $callback[1]->login;
 		$player = $this->maniaControl->playerManager->getPlayer($login);
 
-		if ($player->isSpectator) {
+		if($player->isSpectator) {
 			$this->spectators[$player->login] = $player->login;
 			$this->maniaControl->client->forceSpectator($player->login, 1);
 			$this->showJoinQueueWidget($player);
 		} else {
-			if (count($this->queue) != 0) {
+			if(count($this->queue) != 0) {
 				$this->maniaControl->client->forceSpectator($player->login, 1);
 				$this->spectators[$player->login] = $player->login;
 				$this->showJoinQueueWidget($player);
@@ -180,7 +184,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 	public function handlePlayerDisconnect(array $callback) {
 		/** @var  Player $player */
 		$player = $callback[1];
-		if (isset($this->spectators[$player->login])) {
+		if(isset($this->spectators[$player->login])) {
 			unset($this->spectators[$player->login]);
 		}
 		$this->removePlayerFromQueue($player->login);
@@ -196,27 +200,27 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 		$login  = $callback[1][0]['Login'];
 		$player = $this->maniaControl->playerManager->getPlayer($login);
 
-		if (!is_null($player)) {
-			if ($player->isSpectator) {
-				if (!isset($this->spectators[$player->login])) {
+		if(!is_null($player)) {
+			if($player->isSpectator) {
+				if(!isset($this->spectators[$player->login])) {
 					$this->maniaControl->client->forceSpectator($player->login, 1);
 					$this->spectators[$player->login] = $player->login;
 					$this->showJoinQueueWidget($player);
 				}
 			} else {
 				$this->removePlayerFromQueue($player->login);
-				if (isset($this->spectators[$player->login])) {
+				if(isset($this->spectators[$player->login])) {
 					unset($this->spectators[$player->login]);
 				}
 
 				$found = false;
 				foreach($this->showPlay as $showPlay) {
-					if ($showPlay['player']->login == $player->login) {
+					if($showPlay['player']->login == $player->login) {
 						$found = true;
 					}
 				}
 
-				if (!$found) {
+				if(!$found) {
 					$this->hideQueueWidget($player);
 				}
 			}
@@ -227,7 +231,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 	 * Function called on every second.
 	 */
 	public function handleEverySecond() {
-		if ($this->maniaControl->client->getMaxPlayers()['CurrentValue'] > (count($this->maniaControl->playerManager->players) - count($this->spectators))) {
+		if($this->maniaControl->client->getMaxPlayers()['CurrentValue'] > (count($this->maniaControl->playerManager->players) - count($this->spectators))) {
 			$this->moveFirstPlayerToPlay();
 		}
 
@@ -237,7 +241,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 		}
 
 		foreach($this->showPlay as $showPlay) {
-			if (($showPlay['time'] + 5) < time()) {
+			if(($showPlay['time'] + 5) < time()) {
 				$this->hideQueueWidget($showPlay['player']);
 				unset($this->showPlay[$showPlay['player']->login]);
 			}
@@ -270,7 +274,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 	 * Function used to move the first queued player to the
 	 */
 	private function moveFirstPlayerToPlay() {
-		if (count($this->queue) > 0) {
+		if(count($this->queue) > 0) {
 			$firstPlayer = $this->maniaControl->playerManager->getPlayer($this->queue[0]->login);
 			$this->forcePlayerToPlay($firstPlayer);
 		}
@@ -282,7 +286,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 	 * @param Player $player
 	 */
 	private function forcePlayerToPlay(Player $player) {
-		if ($this->maniaControl->client->getMaxPlayers()['CurrentValue'] > (count($this->maniaControl->playerManager->players) - count($this->spectators))) {
+		if($this->maniaControl->client->getMaxPlayers()['CurrentValue'] > (count($this->maniaControl->playerManager->players) - count($this->spectators))) {
 			try {
 				$this->maniaControl->client->forceSpectator($player->login, 2);
 			} catch(\Exception $e) {
@@ -296,7 +300,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 				//do nothing
 			}
 
-			if (isset($this->spectators[$player->login])) {
+			if(isset($this->spectators[$player->login])) {
 				unset($this->spectators[$player->login]);
 			}
 			$this->removePlayerFromQueue($player->login);
@@ -314,13 +318,13 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 	 */
 	private function addPlayerToQueue(Player $player) {
 		foreach($this->queue as $queuedPlayer) {
-			if ($queuedPlayer->login == $player->login) {
+			if($queuedPlayer->login == $player->login) {
 				$this->maniaControl->chat->sendError('You\'re already in the queue!', $player->login);
 				return false;
 			}
 		}
 
-		if ($this->maniaControl->settingManager->getSetting($this, self::QUEUE_MAX) > count($this->queue)) {
+		if($this->maniaControl->settingManager->getSetting($this, self::QUEUE_MAX) > count($this->queue)) {
 			$this->queue[count($this->queue)] = $player;
 			$this->maniaControl->chat->sendChat('$z$s$090[Queue] $<$fff' . $player->nickname . '$> just joined the queue!');
 		}
@@ -335,7 +339,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 		$count    = 0;
 		$newQueue = array();
 		foreach($this->queue as $queuePlayer) {
-			if ($queuePlayer->login != $login) {
+			if($queuePlayer->login != $login) {
 				$newQueue[$count] = $queuePlayer;
 				$count++;
 			}
@@ -355,13 +359,12 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowStyle();
 		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowSubStyle();
 		$max_queue    = $this->maniaControl->settingManager->getSetting($this, self::QUEUE_MAX);
-		//TODO position setting
 
 		// Main frame
 		$frame = new Frame();
 		$maniaLink->add($frame);
 		$frame->setSize(60, 6);
-		$frame->setPosition(0, -46, 0);
+		$frame->setPosition($this->maniaControl->settingManager->getSetting($this, self::QUEUE_WIDGET_POS_X), $this->maniaControl->settingManager->getSetting($this, self::QUEUE_WIDGET_POS_Y), 0);
 
 		// Background
 		$backgroundQuad = new Quad();
@@ -393,17 +396,17 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 
 		$inQueue = false;
 		foreach($this->queue as $queuedPlayer) {
-			if ($queuedPlayer->login == $player->login) {
+			if($queuedPlayer->login == $player->login) {
 				$inQueue = true;
 			}
 		}
 
-		if ($inQueue) {
+		if($inQueue) {
 			$message = '$fff$sYou\'re in the queue (click to unqueue).';
 
 			$position = 0;
 			foreach(array_values($this->queue) as $i => $queuePlayer) {
-				if ($player->login == $queuePlayer->login) {
+				if($player->login == $queuePlayer->login) {
 					$position = ($i + 1);
 				}
 			}
@@ -414,7 +417,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 			$statusLabel->setAction(self::ML_REMOVEFROMQUEUE);
 			$cameraQuad->setAction(self::ML_REMOVEFROMQUEUE);
 		} else {
-			if (count($this->queue) < $max_queue) {
+			if(count($this->queue) < $max_queue) {
 				$message = '$0ff$sClick to join spectator waiting list.';
 				$messageLabel->setAction(self::ML_ADDTOQUEUE);
 				$backgroundQuad->setAction(self::ML_ADDTOQUEUE);
@@ -448,8 +451,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 		$frame = new Frame();
 		$maniaLink->add($frame);
 		$frame->setSize(60, 6);
-		$frame->setPosition(0, -46, 0);
-		//TODO position setting
+		$frame->setPosition($this->maniaControl->settingManager->getSetting($this, self::QUEUE_WIDGET_POS_X), $this->maniaControl->settingManager->getSetting($this, self::QUEUE_WIDGET_POS_Y), 0);
 
 		// Background
 		$backgroundQuad = new Quad();
