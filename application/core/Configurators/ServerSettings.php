@@ -322,7 +322,6 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	 * @return bool
 	 */
 	private function applyNewServerSettings(array $newSettings, Player $player) {
-		var_dump($newSettings);
 		if (!$newSettings) {
 			return true;
 		}

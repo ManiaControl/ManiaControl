@@ -135,10 +135,13 @@ class Server implements CallbackListener {
 	 * @param bool $teamMode
 	 */
 	public function setTeamMode($teamMode = true) {
+		$oldStatus      = $this->teamMode;
 		$this->teamMode = $teamMode;
 
 		// Trigger  callback
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_TEAM_STATUS_CHANGED, array(self::CB_TEAM_STATUS_CHANGED, $teamMode));
+		if ($oldStatus != $this->teamMode) {
+			$this->maniaControl->callbackManager->triggerCallback(self::CB_TEAM_STATUS_CHANGED, array(self::CB_TEAM_STATUS_CHANGED, $teamMode));
+		}
 	}
 
 	/**
