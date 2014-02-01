@@ -24,7 +24,7 @@ use ManiaControl\Plugins\Plugin;
 // TODO: worst kick function
 // TODO: idlekick function (?)
 
-class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAnswerListener, TimerListener , Plugin {
+class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAnswerListener, TimerListener, Plugin {
 	/**
 	 * Constants
 	 */
@@ -99,9 +99,9 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 			$this->hideQueueWidget($player);
 		}
 
-		$this->queue        = array();
-		$this->spectators   = array();
-		$this->showPlay     = array();
+		$this->queue      = array();
+		$this->spectators = array();
+		$this->showPlay   = array();
 		unset($this->maniaControl);
 	}
 
@@ -283,8 +283,19 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 	 */
 	private function forcePlayerToPlay(Player $player) {
 		if ($this->maniaControl->client->getMaxPlayers()['CurrentValue'] > (count($this->maniaControl->playerManager->players) - count($this->spectators))) {
-			$this->maniaControl->client->forceSpectator($player->login, 2);
-			$this->maniaControl->client->forceSpectator($player->login, 0);
+			try {
+				$this->maniaControl->client->forceSpectator($player->login, 2);
+			} catch(\Exception $e) {
+				$this->maniaControl->chat->sendError("Error while leaving the Queue", $player->login);
+				return;
+			}
+
+			try {
+				$this->maniaControl->client->forceSpectator($player->login, 0);
+			} catch(\Exception $e) {
+				//do nothing
+			}
+
 			if (isset($this->spectators[$player->login])) {
 				unset($this->spectators[$player->login]);
 			}
@@ -292,6 +303,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 			$this->showPlayWidget($player);
 			$this->maniaControl->chat->sendChat('$z$s$090[Queue] $<$fff' . $player->nickname . '$> has a free spot and is now playing!');
 		}
+
 	}
 
 	/**
