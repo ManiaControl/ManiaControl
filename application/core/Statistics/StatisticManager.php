@@ -390,6 +390,9 @@ class StatisticManager {
 		if (!$statId) {
 			return false;
 		}
+		if ($value < 1) {
+			return false;
+		}
 
 		if ($serverIndex == -1) {
 			$serverIndex = $this->maniaControl->server->index;

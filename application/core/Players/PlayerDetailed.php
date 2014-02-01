@@ -225,11 +225,10 @@ class PlayerDetailed {
 			}
 
 			if ($statProperties->type == StatisticManager::STAT_TYPE_TIME) {
-				$value = Formatter::formatTimeH($value);
+				$value = Formatter::formatTimeHMS($value);
 			} else if ($statProperties->type == StatisticManager::STAT_TYPE_FLOAT) {
 				$value = round(floatval($value), 2);
 			}
-
 
 			if ($id % 2 != 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
