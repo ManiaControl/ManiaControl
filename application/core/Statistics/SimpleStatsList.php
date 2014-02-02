@@ -114,6 +114,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$script    = $maniaLink->getScript();
 		$width     = $this->statsWidth + 60;
+		//TODO handle size when stats are empty
 
 		// Main frame
 		$frame = new Frame();
@@ -157,16 +158,18 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		$array['$oId']       = $x + 5;
 		$array['$oNickname'] = $x + 14;
 
-		$x = $xStart + 55;
 
-		//Display Head
+		//Compute Headline
+		$x = $xStart + 55;
 		$statRankings = array();
-		foreach($this->statArray as $stat) {
+		foreach($this->statArray as $key => $stat) {
 			$ranking = $this->maniaControl->statisticManager->getStatsRanking($stat["Name"]);
 			if (!empty($ranking)) {
 				$statRankings[$stat["Name"]]  = $ranking;
 				$array[$stat['HeadShortCut']] = $x;
 				$x += $stat["Width"];
+			}else{
+				unset($this->statArray[$key]);
 			}
 		}
 
