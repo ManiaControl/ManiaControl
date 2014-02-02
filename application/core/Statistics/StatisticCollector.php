@@ -207,7 +207,7 @@ class StatisticCollector implements CallbackListener {
 	 *
 	 * @param array $callback
 	 */
-	public function handleCallbacks(array $callback) {
+	public function handleCallbacks(array $callback) { //TODO survivals
 		//Check if Stat Collecting is enabled
 		if (!$this->maniaControl->settingManager->getSetting($this, self::SETTING_COLLECT_STATS_ENABLED)) {
 			return;
