@@ -6,17 +6,22 @@
 
 $host   = "localhost";
 $port   = 3306;
-$user   = "maniacontrol";
-$dbname = "convert_test";
-$pass   = "kjhgvhbjnfih2394ugnjk";
+
+$targetUser = "smparagon";
+$targetDb = "maniacontrol_1337";
+$targetPass = "";
+
+$user   = "smesc1";
+$dbname = "smesc2";
+$pass   = "";
 
 
-$converter = new DatabaseConverter($host, $port, $user, $pass, $dbname);
-$converter->connectToSourceDB($host, $port, $user, $pass, "smesc12");
-$test = $converter->convertPlayersAndStatistics();
-$test = $converter->convertMapsAndKarma();
+$converter = new DatabaseConverter($host, $port, $targetUser, $targetPass, $targetDb);
+$converter->connectToSourceDB($host, $port, $user, $pass, $dbname);
+$test1 = $converter->convertPlayersAndStatistics();
+$test2 = $converter->convertMapsAndKarma();
 unset($converter);
-var_dump($test);
+var_dump($test1 && $test2);
 
 class DatabaseConverter {
 	/**
@@ -170,10 +175,10 @@ class DatabaseConverter {
 		$result->free_result();
 
 
-		//SELECT Login, Uid, Score FROM `rs_karma` INNER JOIN `maps` ON (maps.id = rs_karma.id) INNER JOIN `players` ON (players.Id = rs_karma.PlayerId);
+		//SELECT Login, Uid, Score FROM `rs_karma` INNER JOIN `players` ON (players.Id = rs_karma.PlayerId) LEFT JOIN `maps` ON (maps.id = rs_karma.MapId)
 		//Get Karma Table
 		$karmaQuery = "SELECT Login, Uid, Score FROM `" . self::AS_TABLE_KARMA . "`
-					INNER JOIN `" . self::AS_TABLE_MAPS . "` ON (" . self::AS_TABLE_MAPS . ".id = " . self::AS_TABLE_KARMA . ".id)
+					LEFT JOIN `" . self::AS_TABLE_MAPS . "` ON (" . self::AS_TABLE_MAPS . ".id = " . self::AS_TABLE_KARMA . ".MapId)
 					INNER JOIN `" . self::AS_TABLE_PLAYERS . "` ON (" . self::AS_TABLE_PLAYERS . ".Id = " . self::AS_TABLE_KARMA . ".PlayerId);";
 		$result     = $this->sourceMysqli->query($karmaQuery);
 
@@ -193,6 +198,9 @@ class DatabaseConverter {
 
 		//Loop through all the players
 		while($row = $result->fetch_object()) {
+			if (!isset($mapvector[$row->Uid])) {
+				continue;
+			}
 			$mapId    = intval($mapvector[$row->Uid]);
 			$playerId = intval($playerVector[$row->Login]);
 			$vote     = 1;
