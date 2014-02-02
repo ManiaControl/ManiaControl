@@ -127,9 +127,10 @@ class MapManager implements CallbackListener {
 				?, ?, ?, ?, ?, ?
 				) ON DUPLICATE KEY UPDATE
 				`index` = LAST_INSERT_ID(`index`),
-				`fileName` = LAST_INSERT_ID(`fileName`),
-				`environment` = LAST_INSERT_ID(`environment`),
-				`mapType` = LAST_INSERT_ID(`mapType`);";
+				`fileName` = VALUES(`fileName`),
+				`environment` = VALUES(`environment`),
+				`mapType` = VALUES(`mapType`);";
+
 		$mapStatement = $mysqli->prepare($mapQuery);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error);
