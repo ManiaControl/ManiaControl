@@ -30,8 +30,8 @@ class MapManager implements CallbackListener {
 	const SETTING_PERMISSION_REMOVE_MAP   = 'Remove Maps';
 	const SETTING_PERMISSION_SHUFFLE_MAPS = 'Shuffle Maps';
 	const SETTING_PERMISSION_CHECK_UPDATE = 'Check Map Update';
-	const SETTING_PERMISSION_SKIP_MAP = 'Skip Map';
-	const SETTING_PERMISSION_RESTART_MAP = 'Restart Map';
+	const SETTING_PERMISSION_SKIP_MAP     = 'Skip Map';
+	const SETTING_PERMISSION_RESTART_MAP  = 'Restart Map';
 
 	/**
 	 * Public Properties
@@ -126,7 +126,10 @@ class MapManager implements CallbackListener {
 				) VALUES (
 				?, ?, ?, ?, ?, ?
 				) ON DUPLICATE KEY UPDATE
-				`index` = LAST_INSERT_ID(`index`);";
+				`index` = LAST_INSERT_ID(`index`),
+				`fileName` = LAST_INSERT_ID(`fileName`),
+				`environment` = LAST_INSERT_ID(`environment`),
+				`mapType` = LAST_INSERT_ID(`mapType`);";
 		$mapStatement = $mysqli->prepare($mapQuery);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error);
