@@ -106,7 +106,8 @@ class Player {
 		$this->currentTargetId      = $mpPlayer->currentTargetId;
 
 		$this->joinTime = time();
-		if ($this->nickname == '') {
+
+		if ($this->nickname == null || $this->nickname == '') {
 			$this->nickname = $this->login;
 		}
 	}
