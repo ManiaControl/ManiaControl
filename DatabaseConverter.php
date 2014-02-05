@@ -341,6 +341,12 @@ class DatabaseConverter {
 				$statStatement->bind_param('iiii', $row->Id, $statId, $row->Shots, $serverIndex);
 				$statStatement->execute();
 			}
+
+			if ($row->attackerWon > 0) {
+				$statId = 14;
+				$statStatement->bind_param('iiii', $row->Id, $statId, $row->attackerWon, $serverIndex);
+				$statStatement->execute();
+			}
 			/*
 					(12, 'Kills', 0, ''),
 			 */
@@ -545,7 +551,8 @@ class DatabaseConverter {
 					(10, 'Deaths', 0, ''),
 					(11, 'Respawns', 0, ''),
 					(12, 'Kills', 0, ''),
-					(13, 'Shots', 0, '');";
+					(13, 'Shots', 0, '');
+					(14, 'Won Attacks', 0, '')";
 
 		$statement = $mysqli->prepare($query);
 		if ($mysqli->error) {

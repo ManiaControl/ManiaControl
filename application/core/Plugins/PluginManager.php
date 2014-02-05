@@ -196,12 +196,12 @@ class PluginManager {
 			$classesAfter = get_declared_classes();
 			$newClasses   = array_diff($classesAfter, $classesBefore);
 			foreach($newClasses as $className) {
-				//Prepare Plugin
-				$className::prepare($this->maniaControl);
-
 				if (!$this->isPluginClass($className)) {
 					continue;
 				}
+				//Prepare Plugin
+				$className::prepare($this->maniaControl);
+
 				$this->addPluginClass($className);
 				if ($this->isPluginActive($className)) {
 					continue;
