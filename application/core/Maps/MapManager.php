@@ -5,7 +5,7 @@ namespace ManiaControl\Maps;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
-use ManiaControl\FileUtil;
+use ManiaControl\Files\FileUtil;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\ManiaExchange\ManiaExchangeList;
@@ -115,8 +115,8 @@ class MapManager implements CallbackListener {
 	 * @return bool
 	 */
 	private function saveMap(Map &$map) {
-		$mysqli       = $this->maniaControl->database->mysqli;
-		$mapQuery     = "INSERT INTO `" . self::TABLE_MAPS . "` (
+		$mysqli   = $this->maniaControl->database->mysqli;
+		$mapQuery = "INSERT INTO `" . self::TABLE_MAPS . "` (
 				`uid`,
 				`name`,
 				`authorLogin`,

@@ -6,7 +6,7 @@
  * Time: 00:18
  */
 
-namespace Structures;
+namespace ManiaControl\Files;
 
 /**
  * Socket Structure
