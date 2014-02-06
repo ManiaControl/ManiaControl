@@ -7,29 +7,33 @@
 //Settings Begin
 
 //Connection Settings
-$host   = "localhost";
-$port   = 3306;
+$host = "localhost";
+$port = 3306;
 
 //Settings of Target Database
 $targetUser = "maniacontrol";
-$targetDb = "convert_test";
+$targetDb   = "convert_test";
 $targetPass = "";
 
 //Settings of Source Database
-$sourceUser   = "maniacontrol";
-$sourceDb = "smesc12";
-$sourcePass   = "";
+$sourceUser = "maniacontrol";
+$sourceDb   = "smesc12";
+$sourcePass = "";
 
 //Convert Hits to Kills (means each Hit gets Converted to one Kill
-$convertHitsToKills = true;
+$convertHitsToKills      = true;
+$convertHitsToLaserHits  = true;
+$convertShotsToLaserShots = true;
 
 //Settings END
 
 $converter = new DatabaseConverter($host, $port, $targetUser, $targetPass, $targetDb);
 $converter->connectToSourceDB($host, $port, $sourceUser, $sourcePass, $sourceDb);
-$converter->convertHitsToKills = $convertHitsToKills;
-$test1 = $converter->convertPlayersAndStatistics();
-$test2 = $converter->convertMapsAndKarma();
+$converter->convertHitsToKills      = $convertHitsToKills;
+$converter->convertHitsToLaserHits  = $convertHitsToLaserHits;
+$converter->convertShotsToLaserShots = $convertShotsToLaserShots;
+$test1                              = $converter->convertPlayersAndStatistics();
+$test2                              = $converter->convertMapsAndKarma();
 unset($converter);
 var_dump($test1 && $test2);
 
@@ -51,6 +55,8 @@ class DatabaseConverter {
 	 * Public properties
 	 */
 	public $convertHitsToKills = true;
+	public $convertHitsToLaserHits = true;
+	public $convertShotsToLaserShots = true;
 
 	/**
 	 * Private Properties
@@ -153,6 +159,7 @@ class DatabaseConverter {
 
 	/**
 	 * Converts the Map Karma
+	 *
 	 * @param $serverIndex
 	 * @return bool
 	 */
@@ -236,9 +243,8 @@ class DatabaseConverter {
 		$statement->close();
 
 
-
 		//SELECT PlayerIndex, COUNT(*) FROM `mc_karma` GROUP BY PlayerIndex
-		$votedMapsQuery = "SELECT PlayerIndex, COUNT(*) as cnt FROM `".self::MC_TABLE_KARMA. "` GROUP BY PlayerIndex;";
+		$votedMapsQuery = "SELECT PlayerIndex, COUNT(*) as cnt FROM `" . self::MC_TABLE_KARMA . "` GROUP BY PlayerIndex;";
 
 		$result = $this->mysqli->query($votedMapsQuery);
 
@@ -263,7 +269,7 @@ class DatabaseConverter {
 				continue;
 			}
 
-			$statId = 15;
+			$statId = 17;
 			$statement->bind_param('iiii', $row->PlayerIndex, $statId, $row->cnt, $serverIndex);
 			$statement->execute();
 			if ($statement->error) {
@@ -280,6 +286,7 @@ class DatabaseConverter {
 
 	/**
 	 * Converts the Players and Statistics Table
+	 *
 	 * @param $serverIndex
 	 * @return bool
 	 */
@@ -331,6 +338,11 @@ class DatabaseConverter {
 
 		//Loop through all the players
 		while($row = $result->fetch_object()) {
+			//Ignore Bots
+			if (strpos($row->Login, "*fakeplayer") !== false) {
+				continue;
+			}
+
 			$statement->bind_param('iss', $row->Id, $row->Login, $row->NickName);
 			$statement->execute();
 			if ($statement->error) {
@@ -379,8 +391,14 @@ class DatabaseConverter {
 				$statStatement->bind_param('iiii', $row->Id, $statId, $row->Hits, $serverIndex);
 				$statStatement->execute();
 
-				if($this->convertHitsToKills){
+				if ($this->convertHitsToKills) {
 					$statId = 12;
+					$statStatement->bind_param('iiii', $row->Id, $statId, $row->Hits, $serverIndex);
+					$statStatement->execute();
+				}
+
+				if ($this->convertHitsToLaserHits) {
+					$statId = 14;
 					$statStatement->bind_param('iiii', $row->Id, $statId, $row->Hits, $serverIndex);
 					$statStatement->execute();
 				}
@@ -408,11 +426,23 @@ class DatabaseConverter {
 				$statId = 13;
 				$statStatement->bind_param('iiii', $row->Id, $statId, $row->Shots, $serverIndex);
 				$statStatement->execute();
+
+				if ($this->convertShotsToLaserShots) {
+					$statId = 15;
+					$statStatement->bind_param('iiii', $row->Id, $statId, $row->Shots, $serverIndex);
+					$statStatement->execute();
+				}
 			}
 
 			if ($row->attackerWon > 0) {
-				$statId = 14;
+				$statId = 16;
 				$statStatement->bind_param('iiii', $row->Id, $statId, $row->attackerWon, $serverIndex);
+				$statStatement->execute();
+			}
+
+			if ($row->AllPoints > 0) {
+				$statId = 18;
+				$statStatement->bind_param('iiii', $row->Id, $statId, $row->AllPoints, $serverIndex);
 				$statStatement->execute();
 			}
 		}
@@ -425,6 +455,7 @@ class DatabaseConverter {
 
 	/**
 	 * Konvert the Players Extra (Donations)
+	 *
 	 * @param $serverIndex
 	 * @return bool
 	 */
@@ -613,7 +644,7 @@ class DatabaseConverter {
 					(2, 'Servertime', 1, ''),
 					(3, 'Donated Planets', 0, ''),
 					(4, 'Survivals', 0, ''),
-					(5, 'Wins', 0, ''),
+					(5, 'Map Wins', 0, ''),
 					(6, 'Near Misses', 0, ''),
 					(7, 'Captures', 0, ''),
 					(8, 'Hits', 0, ''),
@@ -622,8 +653,11 @@ class DatabaseConverter {
 					(11, 'Respawns', 0, ''),
 					(12, 'Kills', 0, ''),
 					(13, 'Shots', 0, ''),
-					(14, 'Won Attacks', 0, ''),
-					(15, 'Voted Maps', 0, '');";
+					(14, 'Laser Hits', 0, ''),
+					(15, 'Laser Shots', 0, ''),
+					(16, 'Won Attacks', 0, ''),
+					(17, 'Voted Maps', 0, ''),
+					(18, 'Points', 0, '');";
 
 		$statement = $mysqli->prepare($query);
 		if ($mysqli->error) {

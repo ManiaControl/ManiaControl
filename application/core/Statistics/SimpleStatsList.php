@@ -74,9 +74,9 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		$this->registerStat(StatisticCollector::STAT_ON_DEATH, 50, "D");
 		$this->registerStat(StatisticCollector::STAT_ON_CAPTURE, 60, "C");
 
-		$this->registerStat(StatisticManager::SPECIAL_STAT_KD_RATIO, 70, "K/D", 10, StatisticManager::STAT_TYPE_FLOAT);
-		$this->registerStat(StatisticManager::SPECIAL_STAT_LASER_ACC, 80, "Lacc", 13, StatisticManager::STAT_TYPE_FLOAT);
-		$this->registerStat(StatisticManager::SPECIAL_STAT_HITS_PH, 85, "H/h", 13, StatisticManager::STAT_TYPE_FLOAT);
+		$this->registerStat(StatisticManager::SPECIAL_STAT_KD_RATIO, 70, "K/D", 12, StatisticManager::STAT_TYPE_FLOAT);
+		$this->registerStat(StatisticManager::SPECIAL_STAT_LASER_ACC, 80, "Lacc", 15, StatisticManager::STAT_TYPE_FLOAT);
+		$this->registerStat(StatisticManager::SPECIAL_STAT_HITS_PH, 85, "H/h", 15, StatisticManager::STAT_TYPE_FLOAT);
 	}
 
 	/**
@@ -90,7 +90,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 	}
 
 
-	public function registerStat($statName, $order, $headShortCut, $width = 8, $format = StatisticManager::STAT_TYPE_INT) {
+	public function registerStat($statName, $order, $headShortCut, $width = 10, $format = StatisticManager::STAT_TYPE_INT) {
 		$this->statArray[$order]                 = array();
 		$this->statArray[$order]["Name"]         = $statName;
 		$this->statArray[$order]["HeadShortCut"] = '$o' . $headShortCut;

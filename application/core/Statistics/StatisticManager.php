@@ -65,6 +65,52 @@ class StatisticManager {
 	 * @return int
 	 */
 	public function getStatisticData($statName, $playerId, $serverIndex = -1) {
+		//Handle Special Stats
+		switch($statName) {
+			case self::SPECIAL_STAT_KD_RATIO:
+				$kills  = $this->getStatisticData(StatisticCollector::STAT_ON_KILL, $playerId, $serverIndex);
+				$deaths = $this->getStatisticData(StatisticCollector::STAT_ON_DEATH, $playerId, $serverIndex);
+				if ($deaths == 0) {
+					return -1;
+				}
+				return intval($kills) / intval($deaths);
+			case self::SPECIAL_STAT_HITS_PH:
+				$hits = $this->getStatisticData(StatisticCollector::STAT_ON_HIT, $playerId, $serverIndex);
+				$time = $this->getStatisticData(StatisticCollector::STAT_PLAYTIME, $playerId, $serverIndex);
+				if ($time == 0) {
+					return -1;
+				}
+				return intval($hits) / (intval($time) / 3600);
+			case self::SPECIAL_STAT_ARROW_ACC:
+				$hits  = $this->getStatisticData(StatisticCollector::STAT_ARROW_HIT, $playerId, $serverIndex);
+				$shots = $this->getStatisticData(StatisticCollector::STAT_ARROW_SHOT, $playerId, $serverIndex);
+				if ($shots == 0) {
+					return -1;
+				}
+				return intval($hits) / intval($shots);
+			case self::SPECIAL_STAT_LASER_ACC:
+				$hits  = $this->getStatisticData(StatisticCollector::STAT_LASER_HIT, $playerId, $serverIndex);
+				$shots = $this->getStatisticData(StatisticCollector::STAT_LASER_SHOT, $playerId, $serverIndex);
+				if ($shots == 0) {
+					return -1;
+				}
+				return intval($hits) / intval($shots);
+			case self::SPECIAL_STAT_NUCLEUS_ACC:
+				$hits  = $this->getStatisticData(StatisticCollector::STAT_NUCLEUS_HIT, $playerId, $serverIndex);
+				$shots = $this->getStatisticData(StatisticCollector::STAT_NUCLEUS_SHOT, $playerId, $serverIndex);
+				if ($shots == 0) {
+					return -1;
+				}
+				return intval($hits) / intval($shots);
+			case self::SPECIAL_STAT_ROCKET_ACC:
+				$hits  = $this->getStatisticData(StatisticCollector::STAT_ROCKET_HIT, $playerId, $serverIndex);
+				$shots = $this->getStatisticData(StatisticCollector::STAT_ROCKET_SHOT, $playerId, $serverIndex);
+				if ($shots == 0) {
+					return -1;
+				}
+				return intval($hits) / intval($shots);
+		}
+
 		$mysqli = $this->maniaControl->database->mysqli;
 		$statId = $this->getStatId($statName);
 
@@ -81,7 +127,7 @@ class StatisticManager {
 		$result = $mysqli->query($query);
 		if (!$result) {
 			trigger_error($mysqli->error);
-			return null;
+			return -1;
 		}
 
 		$row = $result->fetch_object();
@@ -108,7 +154,7 @@ class StatisticManager {
 		$statId = $this->getStatId($statName);
 
 		if ($minValue == -1) {
-			$query = "SELECT playerId, serverIndex, value FROM `" . self::TABLE_STATISTICS . "` WHERE statId = " . $statId . " ORDER BY value DESC LIMIT 100;";
+			$query = "SELECT playerId, serverIndex, value FROM `" . self::TABLE_STATISTICS . "` WHERE statId = " . $statId . " ORDER BY value DESC;";
 		} else {
 			$query = "SELECT playerId, serverIndex, value FROM `" . self::TABLE_STATISTICS . "` WHERE statId = " . $statId . " AND value >= " . $minValue . " ORDER BY value DESC;";
 		}
