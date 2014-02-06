@@ -1,8 +1,8 @@
 <?php
+namespace ManiaControl\Files;
 
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\ManiaControl;
-use Structures\SocketStructure;
 
 class AsynchronousFileReader implements TimerListener {
 	/**
