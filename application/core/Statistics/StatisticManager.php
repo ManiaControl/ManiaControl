@@ -91,13 +91,15 @@ class StatisticManager {
 	}
 
 	/**
-	 * Get All statistics orderd by an given name
+	 * Get All statistics ordered by an given name
 	 *
-	 * @param $orderedBy
-	 * @param $serverIndex
+	 * @param string $statName
+	 * @param        $serverIndex
+	 * @param        $minValue
+	 * @internal param $orderedBy
 	 * @return object
 	 */
-	public function getStatsRanking($statName = '', $serverIndex = -1) {
+	public function getStatsRanking($statName = '', $serverIndex = -1, $minValue = -1) {
 		if (isset($this->specialStats[$statName])) {
 			return $this->getStatsRankingOfSpecialStat($statName, $serverIndex);
 		}
@@ -105,7 +107,11 @@ class StatisticManager {
 		$mysqli = $this->maniaControl->database->mysqli;
 		$statId = $this->getStatId($statName);
 
-		$query = "SELECT playerId, serverIndex, value FROM `" . self::TABLE_STATISTICS . "` WHERE statId = " . $statId . " ORDER BY value DESC LIMIT 100;";
+		if ($minValue == -1) {
+			$query = "SELECT playerId, serverIndex, value FROM `" . self::TABLE_STATISTICS . "` WHERE statId = " . $statId . " ORDER BY value DESC LIMIT 100;";
+		} else {
+			$query = "SELECT playerId, serverIndex, value FROM `" . self::TABLE_STATISTICS . "` WHERE statId = " . $statId . " AND value >= " . $minValue . " ORDER BY value DESC;";
+		}
 
 		$result = $mysqli->query($query);
 		if (!$result) {

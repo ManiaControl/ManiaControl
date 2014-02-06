@@ -393,7 +393,7 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 	 * @param int $limit
 	 * @return array
 	 */
-	private function getLocalRecords(Map $map, $limit = -1) {
+	public function getLocalRecords(Map $map, $limit = -1) {
 		$mysqli = $this->maniaControl->database->mysqli;
 		$limit = ($limit > 0 ? "LIMIT " . $limit : "");
 		$query = "SELECT * FROM (
