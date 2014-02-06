@@ -4,20 +4,30 @@
  * 2014 by Lukas Kremsmayr
  **/
 
+//Settings Begin
+
+//Connection Settings
 $host   = "localhost";
 $port   = 3306;
 
-$targetUser = "smparagon";
-$targetDb = "maniacontrol_1337";
+//Settings of Target Database
+$targetUser = "maniacontrol";
+$targetDb = "convert_test";
 $targetPass = "";
 
-$user   = "smesc1";
-$dbname = "smesc2";
-$pass   = "";
+//Settings of Source Database
+$sourceUser   = "maniacontrol";
+$sourceDb = "smesc12";
+$sourcePass   = "";
 
+//Convert Hits to Kills (means each Hit gets Converted to one Kill
+$convertHitsToKills = true;
+
+//Settings END
 
 $converter = new DatabaseConverter($host, $port, $targetUser, $targetPass, $targetDb);
-$converter->connectToSourceDB($host, $port, $user, $pass, $dbname);
+$converter->connectToSourceDB($host, $port, $sourceUser, $sourcePass, $sourceDb);
+$converter->convertHitsToKills = $convertHitsToKills;
 $test1 = $converter->convertPlayersAndStatistics();
 $test2 = $converter->convertMapsAndKarma();
 unset($converter);
@@ -40,12 +50,16 @@ class DatabaseConverter {
 	/**
 	 * Public properties
 	 */
+	public $convertHitsToKills = true;
+
+	/**
+	 * Private Properties
+	 */
 	private $mysqli = null;
 	/** @var \mysqli $sourceMysqli */
 	private $sourceMysqli = null;
 
 	private $targetDatabase = "";
-
 
 	public function __construct($host, $port, $user, $pass, $dbname) {
 		$host = (string)$host;
@@ -137,7 +151,12 @@ class DatabaseConverter {
 		return $this->convertKarma();
 	}
 
-	private function convertKarma() {
+	/**
+	 * Converts the Map Karma
+	 * @param $serverIndex
+	 * @return bool
+	 */
+	private function convertKarma($serverIndex = -1) {
 		$success = $this->initKarmaTable();
 		if (!$success) {
 			return false;
@@ -151,7 +170,6 @@ class DatabaseConverter {
 			trigger_error("Building Map Vector failed");
 			return false;
 		}
-
 
 		$mapvector = array();
 		while($row = $result->fetch_object()) {
@@ -217,9 +235,54 @@ class DatabaseConverter {
 		$result->free_result();
 		$statement->close();
 
+
+
+		//SELECT PlayerIndex, COUNT(*) FROM `mc_karma` GROUP BY PlayerIndex
+		$votedMapsQuery = "SELECT PlayerIndex, COUNT(*) as cnt FROM `".self::MC_TABLE_KARMA. "` GROUP BY PlayerIndex;";
+
+		$result = $this->mysqli->query($votedMapsQuery);
+
+		if (!$result) {
+			return false;
+		}
+
+
+		$statisticQuery = "INSERT IGNORE INTO `" . self::MC_TABLE_STATISTICS . "`
+			(`playerId`, `statId`, `value`, `serverIndex`)
+			VALUES
+			(?,?,?,?);";
+		$statement      = $this->mysqli->prepare($statisticQuery);
+		if ($this->mysqli->error) {
+			trigger_error($this->mysqli->error);
+			return false;
+		}
+
+		//Loop through all the players and Insert the Voted Maps Stat
+		while($row = $result->fetch_object()) {
+			if ($row->cnt == 0) {
+				continue;
+			}
+
+			$statId = 15;
+			$statement->bind_param('iiii', $row->PlayerIndex, $statId, $row->cnt, $serverIndex);
+			$statement->execute();
+			if ($statement->error) {
+				trigger_error($statement->error);
+				return false;
+			}
+
+		}
+
+		$result->free_result();
+
 		return true;
 	}
 
+	/**
+	 * Converts the Players and Statistics Table
+	 * @param $serverIndex
+	 * @return bool
+	 */
 	public function convertPlayersAndStatistics($serverIndex = -1) {
 		$success = $this->initPlayerTable();
 		if (!$success) {
@@ -275,9 +338,8 @@ class DatabaseConverter {
 				return false;
 			}
 
-
 			if ($row->Joins > 0) {
-				$statId = 0;
+				$statId = 1;
 				$statStatement->bind_param('iiii', $row->Id, $statId, $row->Joins, $serverIndex);
 				$statStatement->execute();
 			}
@@ -316,6 +378,12 @@ class DatabaseConverter {
 				$statId = 8;
 				$statStatement->bind_param('iiii', $row->Id, $statId, $row->Hits, $serverIndex);
 				$statStatement->execute();
+
+				if($this->convertHitsToKills){
+					$statId = 12;
+					$statStatement->bind_param('iiii', $row->Id, $statId, $row->Hits, $serverIndex);
+					$statStatement->execute();
+				}
 			}
 
 			if ($row->GotHits > 0) {
@@ -347,9 +415,6 @@ class DatabaseConverter {
 				$statStatement->bind_param('iiii', $row->Id, $statId, $row->attackerWon, $serverIndex);
 				$statStatement->execute();
 			}
-			/*
-					(12, 'Kills', 0, ''),
-			 */
 		}
 
 		$statement->close();
@@ -358,6 +423,11 @@ class DatabaseConverter {
 		return $this->convertPlayersExtra($serverIndex);
 	}
 
+	/**
+	 * Konvert the Players Extra (Donations)
+	 * @param $serverIndex
+	 * @return bool
+	 */
 	private function convertPlayersExtra($serverIndex) { //TODO dont rely on playerId from Aseco table
 		$databaseQuery = "SELECT * FROM `" . self::AS_TABLE_PLAYERS_EXTRA . "`;";
 
@@ -551,8 +621,9 @@ class DatabaseConverter {
 					(10, 'Deaths', 0, ''),
 					(11, 'Respawns', 0, ''),
 					(12, 'Kills', 0, ''),
-					(13, 'Shots', 0, '');
-					(14, 'Won Attacks', 0, '')";
+					(13, 'Shots', 0, ''),
+					(14, 'Won Attacks', 0, ''),
+					(15, 'Voted Maps', 0, '');";
 
 		$statement = $mysqli->prepare($query);
 		if ($mysqli->error) {
