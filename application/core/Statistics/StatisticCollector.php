@@ -23,6 +23,7 @@ class StatisticCollector implements CallbackListener {
 	 * Statistics
 	 */
 	const STAT_PLAYTIME                  = 'Play Time';
+	const STAT_MAP_WINS                  = 'Map Wins';
 	const STAT_ON_SHOOT                  = 'Shots';
 	const STAT_ON_NEARMISS               = 'Near Misses';
 	const STAT_ON_CAPTURE                = 'Captures';
@@ -53,6 +54,7 @@ class StatisticCollector implements CallbackListener {
 	private $maniaControl = null;
 	private $onShootArray = array();
 
+
 	/**
 	 * Construct player manager
 	 *
@@ -81,6 +83,7 @@ class StatisticCollector implements CallbackListener {
 	public function onInit(array $callback) {
 		//Define Stats MetaData
 		$this->maniaControl->statisticManager->defineStatMetaData(self::STAT_PLAYTIME, StatisticManager::STAT_TYPE_TIME);
+		$this->maniaControl->statisticManager->defineStatMetaData(self::STAT_MAP_WINS);
 		$this->maniaControl->statisticManager->defineStatMetaData(self::STAT_ON_SHOOT);
 		$this->maniaControl->statisticManager->defineStatMetaData(self::STAT_ON_NEARMISS);
 		$this->maniaControl->statisticManager->defineStatMetaData(self::STAT_ON_CAPTURE);
@@ -97,6 +100,25 @@ class StatisticCollector implements CallbackListener {
 		$this->maniaControl->statisticManager->defineStatMetaData(self::STAT_ROCKET_SHOT);
 		$this->maniaControl->statisticManager->defineStatMetaData(self::STAT_ARROW_HIT);
 		$this->maniaControl->statisticManager->defineStatMetaData(self::STAT_ARROW_SHOT);
+	}
+
+	/**
+	 * Handle EndMap
+	 *
+	 * @param array $callback
+	 */
+	public function onEndMap(array $callback) {
+		//Check for Minimum PlayerCount
+		if (count($this->maniaControl->playerManager->getPlayers()) < $this->maniaControl->settingManager->getSetting($this, self::SETTING_COLLECT_STATS_MINPLAYERS)) {
+			return;
+		}
+
+		$leaders = $this->maniaControl->server->rankingManager->getLeaders();
+
+		foreach($leaders as $leaderLogin) {
+			$leader = $this->maniaControl->playerManager->getPlayer($leaderLogin);
+			$this->maniaControl->statisticManager->incrementStat(self::STAT_MAP_WINS, $leader);
+		}
 	}
 
 	/**
@@ -142,7 +164,6 @@ class StatisticCollector implements CallbackListener {
 		}
 	}
 
-
 	/**
 	 * Gets the Weapon stat
 	 *
@@ -179,7 +200,6 @@ class StatisticCollector implements CallbackListener {
 		}
 	}
 
-
 	/**
 	 * Insert OnShoot Statistic when a player leaves
 	 *
@@ -213,7 +233,7 @@ class StatisticCollector implements CallbackListener {
 			return;
 		}
 
-		//Check for Minplayer
+		//Check for Minimum PlayerCount
 		if (count($this->maniaControl->playerManager->getPlayers()) < $this->maniaControl->settingManager->getSetting($this, self::SETTING_COLLECT_STATS_MINPLAYERS)) {
 			return;
 		}

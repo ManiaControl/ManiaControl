@@ -66,9 +66,10 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 
 		$titleId     = $this->maniaControl->server->titleId;
 		$titlePrefix = strtolower(substr($titleId, 0, 2));
+
 		if ($titlePrefix == 'tm') { //TODO also add obstacle here as default
 			$maniaControl->settingManager->initSetting($this, self::SETTING_MIN_RANKING_TYPE, self::RANKING_TYPE_RECORDS);
-		} else if ($this->maniaControl->client->getScriptName() == "InstaDM.Script.txt") {
+		} else if ($this->maniaControl->client->getScriptName()["CurrentValue"] == "InstaDM.Script.txt") {
 			$maniaControl->settingManager->initSetting($this, self::SETTING_MIN_RANKING_TYPE, self::RANKING_TYPE_RATIOS);
 		} else {
 			$maniaControl->settingManager->initSetting($this, self::SETTING_MIN_RANKING_TYPE, self::RANKING_TYPE_HITS);
@@ -88,6 +89,8 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		//Register CommandListener
 		$this->maniaControl->commandManager->registerCommandListener('rank', $this, 'command_showRank', false);
 		$this->maniaControl->commandManager->registerCommandListener('nextrank', $this, 'command_nextRank', false);
+
+		$this->resetRanks(); //TODO only update records count
 	}
 
 	/**
@@ -184,10 +187,12 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 					if (!isset($killDeathRatios[$player]) || !isset($accuracies[$player])) {
 						continue;
 					}
-					$ranks[$player] = $killDeathRatios[$player] * $accuracies[$player];
+					$ranks[$player] = $killDeathRatios[$player] * $accuracies[$player] * 1000;
+
 				}
 
 				arsort($ranks);
+
 
 				break;
 			case self::RANKING_TYPE_HITS:
@@ -273,8 +278,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 	 * @param array $callback
 	 */
 	public function handlePlayerConnect(array $callback) {
-		$login  = $callback[1][0];
-		$player = $this->maniaControl->playerManager->getPlayer($login);
+		$player = $callback[1];
 		if (!$player) {
 			return;
 		}
@@ -314,7 +318,9 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		if ($rankObj != null) {
 			switch($type) {
 				case self::RANKING_TYPE_RATIOS:
-					$message = '$0f3Your Server rank is $<$ff3' . $rankObj->rank . '$> / $<$fff' . $this->recordCount . '$> Ratio: $fff' . round($rankObj->avg, 2);
+					$kd      = $this->maniaControl->statisticManager->getStatisticData(StatisticManager::SPECIAL_STAT_KD_RATIO, $player->index);
+					$acc     = $this->maniaControl->statisticManager->getStatisticData(StatisticManager::SPECIAL_STAT_LASER_ACC, $player->index);
+					$message = '$0f3Your Server rank is $<$ff3' . $rankObj->rank . '$> / $<$fff' . $this->recordCount . '$> (K/D: $<$fff' . round($kd, 2) . '$> Acc: $<$fff' . round($acc * 100) . '%$>)';
 					break;
 				case self::RANKING_TYPE_HITS:
 					$message = '$0f3Your Server rank is $<$ff3' . $rankObj->rank . '$> / $<$fff' . $this->recordCount . '$> Hits: $fff' . $rankObj->avg;
