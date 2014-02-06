@@ -2,6 +2,7 @@
 
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
@@ -10,7 +11,7 @@ use ManiaControl\Statistics\StatisticCollector;
 use ManiaControl\Statistics\StatisticManager;
 use Maniaplanet\DedicatedServer\Structures\AbstractStructure;
 
-class ServerRankingPlugin implements Plugin, CallbackListener {
+class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 	/**
 	 * Constants
 	 */
@@ -27,6 +28,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener {
 	const SETTING_MIN_HITS_HITS_RANKING  = 'Min Hits on Hits Rankings';
 	const SETTING_MIN_REQUIRED_RECORDS   = 'Minimum amount of records required on Records Ranking';
 	const SETTING_MAX_STORED_RECORDS     = 'Maximum number of records per map for calculations';
+	const CB_RANK_BUILT                  = 'ServerRankingPlugin.RankBuilt';
 
 	/**
 	 * Private Properties
@@ -56,9 +58,6 @@ class ServerRankingPlugin implements Plugin, CallbackListener {
 
 		$this->initTables();
 
-		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'handlePlayerConnect');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ENDMAP, $this, 'handleEndMap');
-
 		$maniaControl->settingManager->initSetting($this, self::SETTING_MIN_HITS_RATIO_RANKING, 100);
 		$maniaControl->settingManager->initSetting($this, self::SETTING_MIN_HITS_HITS_RANKING, 15);
 
@@ -81,6 +80,14 @@ class ServerRankingPlugin implements Plugin, CallbackListener {
 			$error = 'Ranking Type is not correct, possible values(' . self::RANKING_TYPE_RATIOS . ', ' . self::RANKING_TYPE_HITS . ', ' . self::RANKING_TYPE_HITS . ')';
 			throw new Exception($error);
 		}
+
+		//Register CallbackListeners
+		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'handlePlayerConnect');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ENDMAP, $this, 'handleEndMap');
+
+		//Register CommandListener
+		$this->maniaControl->commandManager->registerCommandListener('rank', $this, 'command_showRank', false);
+		$this->maniaControl->commandManager->registerCommandListener('nextrank', $this, 'command_nextRank', false);
 	}
 
 	/**
@@ -88,6 +95,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener {
 	 */
 	public function unload() {
 		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
+		$this->maniaControl->commandManager->unregisterCommandListener($this);
 	}
 
 	/**
@@ -167,7 +175,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener {
 			case self::RANKING_TYPE_RATIOS:
 				$minHits = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MIN_HITS_RATIO_RANKING);
 
-				$hits            = $this->maniaControl->statisticManager->getStatsRanking(StatisticCollector::STAT_ON_HIT, -1 , $minHits);
+				$hits            = $this->maniaControl->statisticManager->getStatsRanking(StatisticCollector::STAT_ON_HIT, -1, $minHits);
 				$killDeathRatios = $this->maniaControl->statisticManager->getStatsRanking(StatisticManager::SPECIAL_STAT_KD_RATIO);
 				$accuracies      = $this->maniaControl->statisticManager->getStatsRanking(StatisticManager::SPECIAL_STAT_LASER_ACC);
 
@@ -235,8 +243,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener {
 					$ranks[$player] = ($sum + ($mapCount - $cnt) * $maxRecords) / $mapCount;
 				}
 
-				//TODO improve statement:
-				array_reverse(arsort($ranks));
+				asort($ranks);
 				break;
 		}
 
@@ -288,7 +295,9 @@ class ServerRankingPlugin implements Plugin, CallbackListener {
 			$this->showRank($player);
 			$this->showNextRank($player);
 		}
-		//TODO cb on rank builded
+
+		// Trigger callback
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_RANK_BUILT, array(self::CB_RANK_BUILT));
 	}
 
 	/**
@@ -375,7 +384,29 @@ class ServerRankingPlugin implements Plugin, CallbackListener {
 	}
 
 
-	//TODO chatcommand showrank
+	/**
+	 * Shows the current Server-Rank
+	 *
+	 * @param array  $chatCallback
+	 * @param Player $player
+	 */
+	public function command_showRank(array $chatCallback, Player $player) {
+		$this->showRank($player);
+	}
+
+	/**
+	 * Show the next better ranked player
+	 *
+	 * @param array  $chatCallback
+	 * @param Player $player
+	 */
+	public function command_nextRank(array $chatCallback, Player $player) {
+		if (!$this->showNextRank($player)) {
+			$message = '$0f3You need to have a ServerRank first!';
+			$this->maniaControl->chat->sendChat($message, $player->login);
+		}
+	}
+
 
 	/**
 	 * Shows which Player is next ranked to you
@@ -383,7 +414,6 @@ class ServerRankingPlugin implements Plugin, CallbackListener {
 	 * @param Player $player
 	 */
 	public function showNextRank(Player $player) {
-		//TODO chatcommand
 		$rankObject = $this->getRank($player);
 
 		if ($rankObject != null) {
@@ -395,7 +425,10 @@ class ServerRankingPlugin implements Plugin, CallbackListener {
 				$message = '$0f3No better ranked player :-)';
 			}
 			$this->maniaControl->chat->sendChat($message, $player->login);
+
+			return true;
 		}
+		return false;
 	}
 }
 
