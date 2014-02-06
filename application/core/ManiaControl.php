@@ -10,6 +10,7 @@ use ManiaControl\Callbacks\TimerManager;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\Commands\CommandManager;
 use ManiaControl\Configurators\Configurator;
+use ManiaControl\Files\FileUtil;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Maps\MapManager;
 use ManiaControl\Players\Player;
