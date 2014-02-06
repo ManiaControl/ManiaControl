@@ -15,20 +15,20 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 	/**
 	 * Constants
 	 */
-	const PLUGIN_ID                      = 11;
-	const PLUGIN_VERSION                 = 0.1;
-	const PLUGIN_NAME                    = 'ServerRankingPlugin';
-	const PLUGIN_AUTHOR                  = 'kremsy';
-	const TABLE_RANK                     = 'mc_rank';
-	const RANKING_TYPE_RECORDS           = 'Records';
-	const RANKING_TYPE_RATIOS            = 'Ratios';
-	const RANKING_TYPE_HITS              = 'Hits';
-	const SETTING_MIN_RANKING_TYPE       = 'ServerRankings Type Records/Hits/Ratios';
-	const SETTING_MIN_HITS_RATIO_RANKING = 'Min Hits on Ratio Rankings';
-	const SETTING_MIN_HITS_HITS_RANKING  = 'Min Hits on Hits Rankings';
-	const SETTING_MIN_REQUIRED_RECORDS   = 'Minimum amount of records required on Records Ranking';
-	const SETTING_MAX_STORED_RECORDS     = 'Maximum number of records per map for calculations';
-	const CB_RANK_BUILT                  = 'ServerRankingPlugin.RankBuilt';
+	const PLUGIN_ID                       = 11;
+	const PLUGIN_VERSION                  = 0.1;
+	const PLUGIN_NAME                     = 'ServerRankingPlugin';
+	const PLUGIN_AUTHOR                   = 'kremsy';
+	const TABLE_RANK                      = 'mc_rank';
+	const RANKING_TYPE_RECORDS            = 'Records';
+	const RANKING_TYPE_RATIOS             = 'Ratios';
+	const RANKING_TYPE_POINTS             = 'Points';
+	const SETTING_MIN_RANKING_TYPE        = 'ServerRankings Type Records/Points/Ratios';
+	const SETTING_MIN_HITS_RATIO_RANKING  = 'Min Hits on Ratio Rankings';
+	const SETTING_MIN_HITS_POINTS_RANKING = 'Min Hits on Points Rankings';
+	const SETTING_MIN_REQUIRED_RECORDS    = 'Minimum amount of records required on Records Ranking';
+	const SETTING_MAX_STORED_RECORDS      = 'Maximum number of records per map for calculations';
+	const CB_RANK_BUILT                   = 'ServerRankingPlugin.RankBuilt';
 
 	/**
 	 * Private Properties
@@ -59,7 +59,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		$this->initTables();
 
 		$maniaControl->settingManager->initSetting($this, self::SETTING_MIN_HITS_RATIO_RANKING, 100);
-		$maniaControl->settingManager->initSetting($this, self::SETTING_MIN_HITS_HITS_RANKING, 15);
+		$maniaControl->settingManager->initSetting($this, self::SETTING_MIN_HITS_POINTS_RANKING, 15);
 
 		$maniaControl->settingManager->initSetting($this, self::SETTING_MIN_REQUIRED_RECORDS, 3);
 		$maniaControl->settingManager->initSetting($this, self::SETTING_MAX_STORED_RECORDS, 50);
@@ -72,13 +72,13 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		} else if ($this->maniaControl->client->getScriptName()["CurrentValue"] == "InstaDM.Script.txt") {
 			$maniaControl->settingManager->initSetting($this, self::SETTING_MIN_RANKING_TYPE, self::RANKING_TYPE_RATIOS);
 		} else {
-			$maniaControl->settingManager->initSetting($this, self::SETTING_MIN_RANKING_TYPE, self::RANKING_TYPE_HITS);
+			$maniaControl->settingManager->initSetting($this, self::SETTING_MIN_RANKING_TYPE, self::RANKING_TYPE_POINTS);
 		}
 
 		//Check if the type is Correct
 		$type = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MIN_RANKING_TYPE);
-		if ($type != self::RANKING_TYPE_RECORDS && $type != self::RANKING_TYPE_HITS && $type != self::RANKING_TYPE_RATIOS) {
-			$error = 'Ranking Type is not correct, possible values(' . self::RANKING_TYPE_RATIOS . ', ' . self::RANKING_TYPE_HITS . ', ' . self::RANKING_TYPE_HITS . ')';
+		if ($type != self::RANKING_TYPE_RECORDS && $type != self::RANKING_TYPE_POINTS && $type != self::RANKING_TYPE_RATIOS) {
+			$error = 'Ranking Type is not correct, possible values(' . self::RANKING_TYPE_RATIOS . ', ' . self::RANKING_TYPE_POINTS . ', ' . self::RANKING_TYPE_POINTS . ')';
 			throw new Exception($error);
 		}
 
@@ -143,7 +143,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 	 * @return string
 	 */
 	public static function getDescription() {
-		return "ServerRanking Plugin, Serverranking by an avg build from the records, per count of hits, or by a multiplication from Kill/Death Ratio and Laser accuracy";
+		return "ServerRanking Plugin, ServerRanking by an avg build from the records, per count of points, or by a multiplication from Kill/Death Ratio and Laser accuracy";
 	}
 
 	/**
@@ -195,8 +195,8 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 
 
 				break;
-			case self::RANKING_TYPE_HITS:
-				$minHits = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MIN_HITS_HITS_RANKING);
+			case self::RANKING_TYPE_POINTS:
+				$minHits = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MIN_HITS_POINTS_RANKING);
 
 				$ranks = $this->maniaControl->statisticManager->getStatsRanking(StatisticCollector::STAT_ON_HIT, -1, $minHits);
 
@@ -322,8 +322,8 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 					$acc     = $this->maniaControl->statisticManager->getStatisticData(StatisticManager::SPECIAL_STAT_LASER_ACC, $player->index);
 					$message = '$0f3Your Server rank is $<$ff3' . $rankObj->rank . '$> / $<$fff' . $this->recordCount . '$> (K/D: $<$fff' . round($kd, 2) . '$> Acc: $<$fff' . round($acc * 100) . '%$>)';
 					break;
-				case self::RANKING_TYPE_HITS:
-					$message = '$0f3Your Server rank is $<$ff3' . $rankObj->rank . '$> / $<$fff' . $this->recordCount . '$> Hits: $fff' . $rankObj->avg;
+				case self::RANKING_TYPE_POINTS:
+					$message = '$0f3Your Server rank is $<$ff3' . $rankObj->rank . '$> / $<$fff' . $this->recordCount . '$> Points: $fff' . $rankObj->avg;
 					break;
 				case self::RANKING_TYPE_RECORDS:
 					$message = '$0f3Your Server rank is $<$ff3' . $rankObj->rank . '$> / $<$fff' . $this->recordCount . '$> Avg: $fff' . round($rankObj->avg, 2);
@@ -332,15 +332,15 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 			switch($type) {
 				case self::RANKING_TYPE_RATIOS:
 					$minHits = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MIN_HITS_RATIO_RANKING);
-					$message = '$0f3 You must make $<$fff' . $minHits . '$> Hits on this server before recieving a rank...';
+					$message = '$0f3 You must make $<$fff' . $minHits . '$> Hits on this server before receiving a rank...';
 					break;
-				case self::RANKING_TYPE_HITS:
-					$minHits = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MIN_HITS_HITS_RANKING);
-					$message = '$0f3 You must make $<$fff' . $minHits . '$> Hits on this server before recieving a rank...';
+				case self::RANKING_TYPE_POINTS:
+					$minHits = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MIN_HITS_POINTS_RANKING);
+					$message = '$0f3 You must make $<$fff' . $minHits . '$> Hits on this server before receiving a rank...';
 					break;
 				case self::RANKING_TYPE_RECORDS:
 					$minHits = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MIN_REQUIRED_RECORDS);
-					$message = '$0f3 You need $<$fff' . $minHits . '$> Records on this server before recieving a rank...';
+					$message = '$0f3 You need $<$fff' . $minHits . '$> Records on this server before receiving a rank...';
 			}
 		}
 		$this->maniaControl->chat->sendChat($message, $player->login);

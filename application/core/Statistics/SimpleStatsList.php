@@ -90,6 +90,14 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 	}
 
 
+	/**
+	 * Register a Certain Stat
+	 * @param        $statName
+	 * @param        $order
+	 * @param        $headShortCut
+	 * @param int    $width
+	 * @param string $format
+	 */
 	public function registerStat($statName, $order, $headShortCut, $width = 10, $format = StatisticManager::STAT_TYPE_INT) {
 		$this->statArray[$order]                 = array();
 		$this->statArray[$order]["Name"]         = $statName;
