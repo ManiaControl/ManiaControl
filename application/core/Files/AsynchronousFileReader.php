@@ -1,7 +1,6 @@
 <?php
 namespace ManiaControl\Files;
 
-use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\ManiaControl;
 
 /**
@@ -9,7 +8,7 @@ use ManiaControl\ManiaControl;
  *
  * @author kremsy & steeffeen
  */
-class AsynchronousFileReader implements TimerListener {
+class AsynchronousFileReader {
 	/**
 	 * Constants
 	 */
