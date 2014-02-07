@@ -517,33 +517,31 @@ class MapManager implements CallbackListener {
 			return;
 		}
 
-		// Download the map
 		if (is_numeric($mapId)) {
-			// Load from MX
-			$serverInfo = $this->maniaControl->server->getSystemInfo();
-			$title      = strtolower(substr($serverInfo->titleId, 0, 2));
-
 			// Check if map exists
-			$mapInfo = $this->maniaControl->mapManager->mxManager->getMap($mapId);
-
-			if (!$mapInfo || !isset($mapInfo->uploaded)) {
-				// Invalid id
-				$this->maniaControl->chat->sendError('Invalid MX-Id!', $login);
-				return;
-			}
-
-			$url = "http://{$title}.mania-exchange.com/tracks/download/{$mapId}";
-
-			//Download the file
-			$function = function ($file, $error) use (&$login, &$mapInfo, &$mapDir, &$update) {
-				if (!$file) {
-					// Download error
-					$this->maniaControl->chat->sendError('Download failed!', $login);
+			$this->maniaControl->mapManager->mxManager->getMapInfo($mapId, function (MXMapInfo $mapInfo) use ($login) {
+				if (!$mapInfo || !isset($mapInfo->uploaded)) {
+					// Invalid id
+					$this->maniaControl->chat->sendError('Invalid MX-Id!', $login);
 					return;
 				}
-				$this->processMapFile($file, $mapInfo, $mapDir, $login, $update);
-			};
-			$this->maniaControl->fileReader->loadFile($url, $function);
+
+				$serverInfo = $this->maniaControl->server->getSystemInfo();
+				$title      = strtolower(substr($serverInfo->titleId, 0, 2));
+
+				$url = "http://{$title}.mania-exchange.com/tracks/download/{$mapInfo->id}";
+
+				//Download the file
+				$function = function ($file, $error) use (&$login, &$mapInfo, &$mapDir, &$update) {
+					if (!$file) {
+						// Download error
+						$this->maniaControl->chat->sendError('Download failed!', $login);
+						return;
+					}
+					$this->processMapFile($file, $mapInfo, $mapDir, $login, $update);
+				};
+				$this->maniaControl->fileReader->loadFile($url, $function);
+			});
 		}
 	}
 
@@ -641,5 +639,4 @@ class MapManager implements CallbackListener {
 		}
 	}
 	// TODO: add local map by filename
-
 } 

@@ -172,6 +172,36 @@ class ManiaExchangeManager {
 		$fetchMapStatement->close();
 	}
 
+	/**
+	 * Get Map Info Asynchronously
+	 *
+	 * @param $id
+	 * @param $function
+	 * @return bool
+	 */
+	public function getMapInfo($id, $function) {
+		// Get Title Id
+		$titleId     = $this->maniaControl->server->titleId;
+		$titlePrefix = strtolower(substr($titleId, 0, 2));
+
+		// compile search URL
+		$url = 'http://api.mania-exchange.com/' . $titlePrefix . '/maps/?ids=' . $id;
+
+		return $this->maniaControl->fileReader->loadFile($url, function ($mapInfo, $error) use (&$function, $titlePrefix, $url) {
+			$mxMapInfo = null;
+			if ($error) {
+				trigger_error($error);
+			} else {
+				$mxMapList = json_decode($mapInfo);
+				if ($mxMapList === null) {
+					trigger_error('Cannot decode searched JSON data from ' . $url);
+				} else {
+					$mxMapInfo = new MXMapInfo($titlePrefix, $mxMapList[0]);
+				}
+			}
+			call_user_func($function, $mxMapInfo);
+		}, "application/json");
+	}
 
 	/**
 	 * Gets a Single Map
