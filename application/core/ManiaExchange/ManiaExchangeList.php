@@ -111,8 +111,9 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 	/**
 	 * Display the Mania Exchange List
 	 *
-	 * @param array  $chatCallback
+	 * @param        $maps
 	 * @param Player $player
+	 * @internal param array $chatCallback
 	 */
 	private function showManiaExchangeList($maps, Player $player) {
 		// Start offsets
@@ -146,6 +147,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		$y          = $height / 2 - 16;
 		$pageFrames = array();
 		foreach($maps as $map) { //TODO order possabilities
+			/** @var MxMapInfo $map */
 			if (!isset($pageFrame)) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
