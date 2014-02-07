@@ -2,6 +2,7 @@
 
 namespace ManiaControl\Maps;
 
+use CustomVotesPlugin;
 use FML\Controls\Control;
 use FML\Controls\Frame;
 use FML\Controls\Gauge;
@@ -33,15 +34,17 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	/**
 	 * Constants
 	 */
-	const ACTION_UPDATE_MAP     = 'MapList.UpdateMap';
-	const ACTION_ERASE_MAP      = 'MapList.EraseMap';
-	const ACTION_SWITCH_MAP     = 'MapList.SwitchMap';
-	const ACTION_QUEUED_MAP     = 'MapList.QueueMap';
-	const ACTION_UNQUEUE_MAP    = 'MapList.UnQueueMap';
-	const ACTION_CHECK_UPDATE   = 'MapList.CheckUpdate';
-	const ACTION_CLEAR_MAPQUEUE = 'MapList.ClearMapQueue';
-	const MAX_MAPS_PER_PAGE     = 15;
-	const DEFAULT_KARMA_PLUGIN  = 'KarmaPlugin';
+	const ACTION_UPDATE_MAP          = 'MapList.UpdateMap';
+	const ACTION_ERASE_MAP           = 'MapList.EraseMap';
+	const ACTION_SWITCH_MAP          = 'MapList.SwitchMap';
+	const ACTION_START_SWITCH_VOTE   = 'MapList.StartMapSwitchVote';
+	const ACTION_QUEUED_MAP          = 'MapList.QueueMap';
+	const ACTION_UNQUEUE_MAP         = 'MapList.UnQueueMap';
+	const ACTION_CHECK_UPDATE        = 'MapList.CheckUpdate';
+	const ACTION_CLEAR_MAPQUEUE      = 'MapList.ClearMapQueue';
+	const MAX_MAPS_PER_PAGE          = 15;
+	const DEFAULT_KARMA_PLUGIN       = 'KarmaPlugin';
+	const DEFAULT_CUSTOM_VOTE_PLUGIN = 'CustomVotesPlugin';
 
 	/**
 	 * Private Properties
@@ -316,10 +319,23 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$confirmFrame = $this->buildConfirmFrame($maniaLink, $y, $id, $map->uid);
 				$script->addToggle($eraseLabel, $confirmFrame);
 				$script->addTooltip($eraseLabel, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => 'Remove Map: $<' . $map->name . '$>'));
-
 			}
 
-			if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
+			//Switch Map Voting
+			if ($this->maniaControl->pluginManager->isPluginActive(self::DEFAULT_CUSTOM_VOTE_PLUGIN)) {
+				$switchLabel = new Label_Button();
+				$mapFrame->add($switchLabel);
+				$switchLabel->setX($width / 2 - 10);
+				$switchLabel->setZ(0.2);
+				$switchLabel->setSize(3, 3);
+				$switchLabel->setTextSize(2);
+				$switchLabel->setText('»');
+				$switchLabel->setTextColor('0f0');
+
+				$switchLabel->setAction(self::ACTION_START_SWITCH_VOTE . '.' . ($id - 1) . '.' . $map->uid);
+
+				$script->addTooltip($switchLabel, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => 'Start Map-Switch vote: $<' . $map->name . '$>'));
+			} else if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
 				// Switch to map
 				$switchLabel = new Label_Button();
 				$mapFrame->add($switchLabel);
@@ -334,7 +350,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$script->addToggle($switchLabel, $confirmFrame);
 
 				$script->addTooltip($switchLabel, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => 'Switch Directly to Map: $<' . $map->name . '$>'));
-
 			}
 
 			// Display Karma bar
@@ -507,6 +522,25 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$this->maniaControl->log($message, true);
 
 				$this->playerCloseWidget($player);
+				break;
+			case self::ACTION_START_SWITCH_VOTE:
+				/** @var $votesPlugin CustomVotesPlugin */
+				$votesPlugin = $this->maniaControl->pluginManager->getPlugin(self::DEFAULT_CUSTOM_VOTE_PLUGIN);
+				$mapList     = $this->maniaControl->mapManager->getMaps();
+				$map         = $mapList[$mapId];
+				/** @var Map $map */
+				$votesPlugin->defineVote('switchmap', "Goto " . $map->name, true);
+
+				$votesPlugin->startVote($player, 'switchmap', function ($result) use (&$votesPlugin, &$map) {
+					$this->maniaControl->chat->sendInformation('$sVote Successfully -> Map switched!');
+					$votesPlugin->undefineVote('switchmap');
+
+					try {
+						$this->maniaControl->client->jumpToMapIndex($map->index);
+					} catch(\Exception $e) {
+						$this->maniaControl->chat->sendError("Error while Switching Map");
+					}
+				});
 				break;
 			case self::ACTION_QUEUED_MAP:
 				$this->maniaControl->mapManager->mapQueue->addMapToMapQueue($callback[1][1], $actionArray[2]);
