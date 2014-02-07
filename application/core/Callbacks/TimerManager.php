@@ -43,7 +43,7 @@ class TimerManager {
 	 * @return bool
 	 */
 	public function registerTimerListening(TimerListener $listener, $method, $time, $oneTime = false) {
-		if (!method_exists($listener, $method)) {
+		if (!method_exists($listener, $method) && !is_callable($method)) {
 			trigger_error("Given listener (" . get_class($listener) . ") can't handle timer (no method '{$method}')!");
 			return false;
 		}
@@ -101,7 +101,11 @@ class TimerManager {
 				}
 
 				//Call the User func (at the end to avoid endless loops)
-				call_user_func(array($listening->listener, $listening->method), $time);
+				if (is_callable($listening->method)) {
+					call_user_func($listening->method, $time);
+				} else {
+					call_user_func(array($listening->listener, $listening->method), $time);
+				}
 			}
 		}
 	}
