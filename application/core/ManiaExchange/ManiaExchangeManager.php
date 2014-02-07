@@ -212,7 +212,7 @@ class ManiaExchangeManager {
 	}
 
 	/**
-	 * Get the Whole Maplist from MX by Mixed Uid and Id String fetch
+	 * Get the Whole MapList from MX by Mixed Uid and Id String fetch
 	 *
 	 * @param $string
 	 * @return array|null
@@ -225,33 +225,44 @@ class ManiaExchangeManager {
 		// compile search URL
 		$url = 'http://api.mania-exchange.com/' . $titlePrefix . '/maps/?ids=' . $string;
 
-		try { //FIXME exceptions get not caught here?
-			$success = $this->maniaControl->fileReader->loadFile($url, function ($mapInfo) use ($titlePrefix, $url) {
-				$mxMapList = json_decode($mapInfo);
-				if ($mxMapList === null) {
-					trigger_error('Cannot decode searched JSON data from ' . $url);
-					return null;
-				}
+		$success = $this->maniaControl->fileReader->loadFile($url, function ($mapInfo, $error) use ($titlePrefix, $url) {
+			if ($error) {
+				trigger_error($error);
+				return null;
+			}
 
-				$maps = array();
-				foreach($mxMapList as $map) {
-					if (!empty($map)) {
-						array_push($maps, new MXMapInfo($titlePrefix, $map));
-					}
-				}
+			$mxMapList = json_decode($mapInfo);
+			if ($mxMapList === null) {
+				trigger_error('Cannot decode searched JSON data from ' . $url);
+				return null;
+			}
 
-				$this->updateMapObjectsWithManiaExchangeIds($maps);
-				return true;
-			}, "application/json");
-		} catch(\Exception $e) {
-			$this->maniaControl->log("Error while fetching Map Infos" . $e->getTraceAsString());
-			return false;
-		}
+			$maps = array();
+			foreach($mxMapList as $map) {
+				if (!empty($map)) {
+					array_push($maps, new MXMapInfo($titlePrefix, $map));
+				}
+			}
+
+			$this->updateMapObjectsWithManiaExchangeIds($maps);
+			return true;
+		}, "application/json");
 
 		return $success;
 	}
 
-	public function getMapsAssync($function, $name = '', $author = '', $env = '', $maxMapsReturned = 100, $searchOrder = self::SEARCH_ORDER_UPDATED_NEWEST) {
+	/**
+	 * Fetch a MapList Asynchronously
+	 *
+	 * @param        $function
+	 * @param string $name
+	 * @param string $author
+	 * @param string $env
+	 * @param int    $maxMapsReturned
+	 * @param int    $searchOrder
+	 * @return bool
+	 */
+	public function getMapsAsync($function, $name = '', $author = '', $env = '', $maxMapsReturned = 100, $searchOrder = self::SEARCH_ORDER_UPDATED_NEWEST) {
 		if (!is_callable($function)) {
 			$this->maniaControl->log("Function is not callable");
 			return false;
@@ -283,103 +294,34 @@ class ManiaExchangeManager {
 		$url .= '&limit=' . $maxMapsReturned;
 		$url .= '&mtype=' . $mapTypes;
 
-		try {
-			$success = $this->maniaControl->fileReader->loadFile($url, function ($mapInfo) use (&$function) {
-				// Get Title Id
-				$titleId     = $this->maniaControl->server->titleId;
-				$titlePrefix = strtolower(substr($titleId, 0, 2));
 
-				$mxMapList = json_decode($mapInfo);
-				if ($mxMapList === null) {
-					trigger_error('Cannot decode searched JSON data');
-					return null;
+		$fileFunc = function ($mapInfo, $error) use (&$function, $titlePrefix) {
+			if ($error) {
+				trigger_error($error);
+				return null;
+			}
+
+			$mxMapList = json_decode($mapInfo);
+			if ($mxMapList === null) {
+				trigger_error('Cannot decode searched JSON data');
+				return null;
+			}
+
+			$maps = array();
+			foreach($mxMapList as $map) {
+				if (!empty($map)) {
+					array_push($maps, new MXMapInfo($titlePrefix, $map));
 				}
+			}
 
-				$maps = array();
-				foreach($mxMapList as $map) {
-					if (!empty($map)) {
-						array_push($maps, new MXMapInfo($titlePrefix, $map));
-					}
-				}
+			call_user_func($function, $maps);
 
-				call_user_func($function, $maps);
+			return true;
+		};
 
-				return true;
-			}, "application/json");
-		} catch(\Exception $e) {
-			var_dump($e);
-			return false;
-		}
+		$success = $this->maniaControl->fileReader->loadFile($url, $fileFunc, "application/json");
 
 		return $success;
-	}
-
-
-	/**
-	 * Gets a Maplist from Mania Exchange
-	 *
-	 * @param string $name
-	 * @param string $author
-	 * @param string $env
-	 * @param int    $maxMapsReturned
-	 * @param int    $searchOrder
-	 * @return array null
-	 */
-	public function getMaps($name = '', $author = '', $env = '', $maxMapsReturned = 100, $searchOrder = self::SEARCH_ORDER_UPDATED_NEWEST) {
-		// Get Title Id
-		$titleId     = $this->maniaControl->server->titleId;
-		$titlePrefix = strtolower(substr($titleId, 0, 2));
-
-		// Get MapTypes
-		$scriptInfos = $this->maniaControl->client->getModeScriptInfo();
-
-		$mapTypes = $scriptInfos->compatibleMapTypes;
-
-		// compile search URL
-		$url = 'http://' . $titlePrefix . '.mania-exchange.com/tracksearch?api=on';
-
-		if ($env != '') {
-			$url .= '&environments=' . $this->getEnvironment($env);
-		}
-		if ($name != '') {
-			$url .= '&trackname=' . str_replace(" ", "%20", $name);
-		}
-		if ($author != '') {
-			$url .= '&author=' . $author;
-		}
-
-		$url .= '&priord=' . $searchOrder;
-		$url .= '&limit=' . $maxMapsReturned;
-		$url .= '&mtype=' . $mapTypes;
-
-		$mapInfo = FileUtil::loadFile($url, "application/json");
-
-		if ($mapInfo === false) {
-			$this->error = 'Connection or response error on ' . $url;
-			return array();
-		} elseif ($mapInfo === -1) {
-			$this->error = 'Timed out while reading data from ' . $url;
-			return array();
-		} elseif ($mapInfo == '') {
-			if (empty($maps)) {
-				$this->error = 'No data returned from ' . $url;
-				return array();
-			}
-		}
-
-		$mxMapList = json_decode($mapInfo);
-		if ($mxMapList === null) {
-			trigger_error('Cannot decode searched JSON data from ' . $url);
-			return null;
-		}
-
-		$maps = array();
-		foreach($mxMapList as $map) {
-			if (!empty($map)) {
-				array_push($maps, new MXMapInfo($titlePrefix, $map));
-			}
-		}
-		return $maps;
 	}
 
 	/**

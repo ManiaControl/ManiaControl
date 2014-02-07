@@ -10,6 +10,7 @@ use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\ManiaExchange\ManiaExchangeList;
 use ManiaControl\ManiaExchange\ManiaExchangeManager;
+use ManiaControl\ManiaExchange\MXMapInfo;
 use ManiaControl\Players\Player;
 
 /**
@@ -531,97 +532,114 @@ class MapManager implements CallbackListener {
 				return;
 			}
 
-			$url  = "http://{$title}.mania-exchange.com/tracks/download/{$mapId}";
-			$file = FileUtil::loadFile($url);
-			if (!$file) {
-				// Download error
-				$this->maniaControl->chat->sendError('Download failed!', $login);
+			$url = "http://{$title}.mania-exchange.com/tracks/download/{$mapId}";
+
+			//Download the file
+			$function = function ($file, $error) use (&$login, &$mapInfo, &$mapDir, &$update) {
+				if (!$file) {
+					// Download error
+					$this->maniaControl->chat->sendError('Download failed!', $login);
+					return;
+				}
+				$this->processMapFile($file, $mapInfo, $mapDir, $login, $update);
+			};
+			$this->maniaControl->fileReader->loadFile($url, $function);
+		}
+	}
+
+	/**
+	 * Process the MapFile
+	 *
+	 * @param           $file
+	 * @param MXMapInfo $mapInfo
+	 * @param           $mapDir
+	 * @param           $login
+	 * @param           $update
+	 */
+	private function processMapFile($file, MXMapInfo $mapInfo, $mapDir, $login, $update) {
+		//Check if map is already on the server
+		if ($this->getMapByUid($mapInfo->uid) != null) {
+			// Download error
+			$this->maniaControl->chat->sendError('Map is already on the server!', $login);
+			return;
+		}
+
+		// Save map
+		$fileName = $mapInfo->id . '_' . $mapInfo->name . '.Map.Gbx';
+		$fileName = FileUtil::getClearedFileName($fileName);
+
+		$downloadDirectory = $this->maniaControl->settingManager->getSetting($this, 'MapDownloadDirectory', 'MX');
+
+		$mapFileName = $downloadDirectory . '/' . $fileName;
+
+		//Check if it can get locally Written
+		if (is_dir($mapDir)) {
+			// Create download directory if necessary
+			if (!is_dir($mapDir . $downloadDirectory) && !mkdir($mapDir . $downloadDirectory)) {
+				trigger_error("ManiaControl doesn't have to rights to save maps in '{$mapDir}{$downloadDirectory}'.");
+				$this->maniaControl->chat->sendError("ManiaControl doesn't have the rights to save maps.", $login);
 				return;
 			}
 
-			//Check if map is already on the server
-			if ($this->getMapByUid($mapInfo->uid) != null) {
-				// Download error
-				$this->maniaControl->chat->sendError('Map is already on the server!', $login);
+			$mapDir .= $downloadDirectory . '/';
+
+			if (!file_put_contents($mapDir . $fileName, $file)) {
+				// Save error
+				$this->maniaControl->chat->sendError('Saving map failed!', $login);
 				return;
 			}
-
-			// Save map
-			$fileName = $mapId . '_' . $mapInfo->name . '.Map.Gbx';
-			$fileName = FileUtil::getClearedFileName($fileName);
-
-			$downloadDirectory = $this->maniaControl->settingManager->getSetting($this, 'MapDownloadDirectory', 'MX');
-
-			$mapFileName = $downloadDirectory . '/' . $fileName;
-
-			//Check if it can get locally Written
-			if (is_dir($mapDir)) {
-				// Create download directory if necessary
-				if (!is_dir($mapDir . $downloadDirectory) && !mkdir($mapDir . $downloadDirectory)) {
-					trigger_error("ManiaControl doesn't have to rights to save maps in '{$mapDir}{$downloadDirectory}'.");
-					$this->maniaControl->chat->sendError("ManiaControl doesn't have the rights to save maps.", $login);
-					return;
-				}
-
-				$mapDir .= $downloadDirectory . '/';
-
-				if (!file_put_contents($mapDir . $fileName, $file)) {
-					// Save error
-					$this->maniaControl->chat->sendError('Saving map failed!', $login);
-					return;
-				}
-				//Write via Write File Method
-			} else {
-				try {
-					$this->maniaControl->client->writeFileFromString($mapFileName, $file);
-				} catch(\Exception $e) {
-					$this->maniaControl->chat->sendError("Map is too big for a remote save.", $login);
-					return;
-				}
-			}
-
-			// Check for valid map
+			//Write via Write File Method
+		} else {
 			try {
-				$this->maniaControl->client->checkMapForCurrentServerParams($mapFileName);
+				$this->maniaControl->client->writeFileFromString($mapFileName, $file);
 			} catch(\Exception $e) {
-				trigger_error("Couldn't check if map is valid ('{$mapFileName}'). " . $e->getMessage());
-				$this->maniaControl->chat->sendError('Wrong MapType or not validated!', $login);
+				$this->maniaControl->chat->sendError("Map is too big for a remote save.", $login);
 				return;
-			}
-
-			// Add map to map list
-			try {
-				$this->maniaControl->client->insertMap($mapFileName);
-			} catch(\Exception $e) {
-				$this->maniaControl->chat->sendError("Couldn't add map to match settings!", $login);
-				return;
-			}
-
-			$this->updateFullMapList();
-
-			//Update Mx MapInfo
-			$this->maniaControl->mapManager->mxManager->updateMapObjectsWithManiaExchangeIds(array($mapInfo));
-
-			//Update last updated time
-			$map = $this->maps[$mapInfo->uid];
-			/** @var Map $map */
-			$map->lastUpdate = time();
-
-			$player = $this->maniaControl->playerManager->getPlayer($login);
-
-			if (!$update) {
-				//Message
-				$message = '$<' . $player->nickname . '$> added $<' . $mapInfo->name . '$>!';
-				$this->maniaControl->chat->sendSuccess($message);
-				$this->maniaControl->log($message, true);
-				// Queue requested Map
-				$this->maniaControl->mapManager->mapQueue->addMapToMapQueue($login, $mapInfo->uid);
-			} else {
-				$message = '$<' . $player->nickname . '$> updated $<' . $mapInfo->name . '$>!';
-				$this->maniaControl->chat->sendSuccess($message);
-				$this->maniaControl->log($message, true);
 			}
 		}
-		// TODO: add local map by filename
+
+		// Check for valid map
+		try {
+			$this->maniaControl->client->checkMapForCurrentServerParams($mapFileName);
+		} catch(\Exception $e) {
+			trigger_error("Couldn't check if map is valid ('{$mapFileName}'). " . $e->getMessage());
+			$this->maniaControl->chat->sendError('Wrong MapType or not validated!', $login);
+			return;
+		}
+
+		// Add map to map list
+		try {
+			$this->maniaControl->client->insertMap($mapFileName);
+		} catch(\Exception $e) {
+			$this->maniaControl->chat->sendError("Couldn't add map to match settings!", $login);
+			return;
+		}
+
+		$this->updateFullMapList();
+
+		//Update Mx MapInfo
+		$this->maniaControl->mapManager->mxManager->updateMapObjectsWithManiaExchangeIds(array($mapInfo));
+
+		//Update last updated time
+		$map = $this->maps[$mapInfo->uid];
+		/** @var Map $map */
+		$map->lastUpdate = time();
+
+		$player = $this->maniaControl->playerManager->getPlayer($login);
+
+		if (!$update) {
+			//Message
+			$message = '$<' . $player->nickname . '$> added $<' . $mapInfo->name . '$>!';
+			$this->maniaControl->chat->sendSuccess($message);
+			$this->maniaControl->log($message, true);
+			// Queue requested Map
+			$this->maniaControl->mapManager->mapQueue->addMapToMapQueue($login, $mapInfo->uid);
+		} else {
+			$message = '$<' . $player->nickname . '$> updated $<' . $mapInfo->name . '$>!';
+			$this->maniaControl->chat->sendSuccess($message);
+			$this->maniaControl->log($message, true);
+		}
 	}
+	// TODO: add local map by filename
+
 } 

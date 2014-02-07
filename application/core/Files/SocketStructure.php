@@ -14,11 +14,13 @@ class SocketStructure {
 	public $socket;
 	public $function;
 	public $url;
+	public $creationTime;
 
 	public function __construct($url, $socket, $function) {
 		$this->url          = $url;
 		$this->socket       = $socket;
 		$this->function     = $function;
+		$this->creationTime = time();
 		$this->streamBuffer = '';
 	}
 }
