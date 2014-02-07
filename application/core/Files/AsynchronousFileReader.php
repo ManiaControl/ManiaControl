@@ -28,7 +28,7 @@ class AsynchronousFileReader implements TimerListener {
 	public function appendData() {
 		foreach($this->sockets as $key => &$socket) {
 			/** @var SocketStructure $socket */
-			$socket->streamBuffer .= fread($socket->socket, 512);
+			$socket->streamBuffer .= fread($socket->socket, 1024);
 			$info = stream_get_meta_data($socket->socket);
 
 			if (feof($socket->socket) || $info['timed_out']) {
