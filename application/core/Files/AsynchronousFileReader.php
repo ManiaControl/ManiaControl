@@ -11,6 +11,16 @@ use ManiaControl\ManiaControl;
  */
 class AsynchronousFileReader implements TimerListener {
 	/**
+	 * Constants
+	 */
+	const TIMEOUT_ERROR        = 'Timed out while reading data';
+	const RESPONSE_ERROR       = 'Connection or response error';
+	const NO_DATA_ERROR        = 'No data returned';
+	const INVALID_RESULT_ERROR = 'Invalid Result';
+	const SOCKET_TIMEOUT       = 10;
+
+
+	/**
 	 * Private Properties
 	 */
 	private $sockets = array();
@@ -27,37 +37,33 @@ class AsynchronousFileReader implements TimerListener {
 
 	/**
 	 * Appends the Data
-	 * @throws \Exception
 	 */
 	public function appendData() {
 		foreach($this->sockets as $key => &$socket) {
 			/** @var SocketStructure $socket */
-			$socket->streamBuffer .= fread($socket->socket, 1024);
-			$info = stream_get_meta_data($socket->socket);
+			$socket->streamBuffer .= fread($socket->socket, 4096);
 
-			if (feof($socket->socket) || $info['timed_out']) {
+			if (feof($socket->socket) || time() > ($socket->creationTime + self::SOCKET_TIMEOUT)) {
 				fclose($socket->socket);
 				unset($this->sockets[$key]);
 
-				if ($info['timed_out']) {
-					throw new \Exception("Timed out while reading data from " . $socket->url);
+				$result = array();
+				$error  = 0;
+				if (time() > ($socket->creationTime + self::SOCKET_TIMEOUT)) {
+					$error = self::TIMEOUT_ERROR;
+				} else if (substr($socket->streamBuffer, 9, 3) != "200") {
+					$error = self::RESPONSE_ERROR;
+				} else if ($socket->streamBuffer == '') {
+					$error = self::NO_DATA_ERROR;
+				} else {
+					$result = explode("\r\n\r\n", $socket->streamBuffer, 2);
+
+					if (count($result) < 2) {
+						$error = self::INVALID_RESULT_ERROR;
+					}
 				}
 
-				if (substr($socket->streamBuffer, 9, 3) != "200") {
-					throw new \Exception("Connection or response error on " . $socket->url);
-				}
-
-				if ($socket->streamBuffer == '') {
-					throw new \Exception("No data returned from " . $socket->url);
-				}
-
-				$result = explode("\r\n\r\n", $socket->streamBuffer, 2);
-
-				if (count($result) < 2) {
-					throw new \Exception("Invalid Result");
-				}
-
-				call_user_func($socket->function, $result[1]);
+				call_user_func($socket->function, $result[1], $error);
 			}
 		}
 	}
@@ -87,7 +93,6 @@ class AsynchronousFileReader implements TimerListener {
 		if (!$socket) {
 			return false;
 		}
-		stream_set_timeout($socket, 10);
 
 		$query = 'GET ' . $urlData['path'] . $urlQuery . ' HTTP/1.0' . PHP_EOL;
 		$query .= 'Host: ' . $urlData['host'] . PHP_EOL;

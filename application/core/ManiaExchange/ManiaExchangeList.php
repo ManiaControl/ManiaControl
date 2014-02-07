@@ -107,7 +107,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		};
 
 		// search for matching maps
-		$this->maniaControl->mapManager->mxManager->getMapsAssync($function, $searchString, $author, $environment);
+		$this->maniaControl->mapManager->mxManager->getMapsAsync($function, $searchString, $author, $environment);
 	}
 
 	/**
