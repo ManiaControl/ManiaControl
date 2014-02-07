@@ -2,7 +2,6 @@
 
 namespace ManiaControl\ManiaExchange;
 
-use ManiaControl\Files\FileUtil;
 use ManiaControl\ManiaControl;
 use ManiaControl\Maps\Map;
 use ManiaControl\Maps\MapManager;
@@ -203,43 +202,6 @@ class ManiaExchangeManager {
 		}, "application/json");
 	}
 
-	/**
-	 * Gets a Single Map
-	 *
-	 * @param $string
-	 * @return MXMapInfo
-	 */
-	public function getMap($id) {
-		// Get Title Id
-		$titleId     = $this->maniaControl->server->titleId;
-		$titlePrefix = strtolower(substr($titleId, 0, 2));
-
-		// compile search URL
-		$url = 'http://api.mania-exchange.com/' . $titlePrefix . '/maps/?ids=' . $id;
-
-		$mapInfo = FileUtil::loadFile($url, "application/json");
-
-		if ($mapInfo === false) {
-			$this->error = 'Connection or response error on ' . $url;
-			return array();
-		} elseif ($mapInfo === -1) {
-			$this->error = 'Timed out while reading data from ' . $url;
-			return array();
-		} elseif ($mapInfo == '') {
-			if (empty($maps)) {
-				$this->error = 'No data returned from ' . $url;
-				return array();
-			}
-		}
-
-		$mxMapList = json_decode($mapInfo);
-		if ($mxMapList === null) {
-			trigger_error('Cannot decode searched JSON data from ' . $url);
-			return null;
-		}
-
-		return new MXMapInfo($titlePrefix, $mxMapList[0]);
-	}
 
 	/**
 	 * Get the Whole MapList from MX by Mixed Uid and Id String fetch
