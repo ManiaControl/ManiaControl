@@ -1,11 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Lukas
- * Date: 07.02.14
- * Time: 00:18
+ * Socket Structure
+ *
+ * @author kremsy & steeffeen
  */
-
 namespace ManiaControl\Files;
 
 /**
@@ -15,8 +13,10 @@ class SocketStructure {
 	public $streamBuffer;
 	public $socket;
 	public $function;
+	public $url;
 
-	public function construct($socket, $function) {
+	public function __construct($url, $socket, $function) {
+		$this->url          = $url;
 		$this->socket       = $socket;
 		$this->function     = $function;
 		$this->streamBuffer = '';

@@ -10,6 +10,7 @@ use ManiaControl\Callbacks\TimerManager;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\Commands\CommandManager;
 use ManiaControl\Configurators\Configurator;
+use ManiaControl\Files\AsynchronousFileReader;
 use ManiaControl\Files\FileUtil;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Maps\MapManager;
@@ -66,7 +67,7 @@ class ManiaControl implements CommandListener {
 	public $updateManager = null;
 	public $errorHandler = null;
 	public $timerManager = null;
-
+	public $fileReader = null;
 	/**
 	 * Private properties
 	 */
@@ -88,6 +89,7 @@ class ManiaControl implements CommandListener {
 		$this->database              = new Database($this);
 		$this->callbackManager       = new CallbackManager($this);
 		$this->timerManager          = new TimerManager($this);
+		$this->fileReader            = new AsynchronousFileReader($this);
 		$this->settingManager        = new SettingManager($this);
 		$this->statisticManager      = new StatisticManager($this);
 		$this->manialinkManager      = new ManialinkManager($this);
@@ -287,6 +289,9 @@ class ManiaControl implements CommandListener {
 
 			// Manager callbacks
 			$this->callbackManager->manageCallbacks();
+
+			// Manage FileReader
+			$this->fileReader->appendData();
 
 			// Yield for next tick
 			$loopEnd = microtime(true);

@@ -2,6 +2,7 @@
 
 namespace ManiaControl\ManiaExchange;
 
+use ManiaControl\Files\FileUtil;
 use ManiaControl\ManiaControl;
 use ManiaControl\Maps\Map;
 use ManiaControl\Maps\MapManager;
@@ -156,8 +157,7 @@ class ManiaExchangeManager {
 			//If Max Maplimit is reached, or string gets too long send the request
 			if ($id % self::MAPS_PER_MX_FETCH == 0) {
 				$mapIdString = substr($mapIdString, 0, -1);
-				$maps        = $this->getMaplistByMixedUidIdString($mapIdString);
-				$this->updateMapObjectsWithManiaExchangeIds($maps);
+				$this->getMaplistByMixedUidIdString($mapIdString);
 				$mapIdString = '';
 			}
 
@@ -166,8 +166,7 @@ class ManiaExchangeManager {
 
 		if ($mapIdString != '') {
 			$mapIdString = substr($mapIdString, 0, -1);
-			$maps        = $this->getMaplistByMixedUidIdString($mapIdString);
-			$this->updateMapObjectsWithManiaExchangeIds($maps);
+			$this->getMaplistByMixedUidIdString($mapIdString);
 		}
 
 		$fetchMapStatement->close();
@@ -187,36 +186,36 @@ class ManiaExchangeManager {
 
 		// compile search URL
 		$url = 'http://api.mania-exchange.com/' . $titlePrefix . '/maps/?ids=' . $string;
-		// $mapInfo = FileUtil::loadFile($url, "application/json"); //TODO use mc fileutil
-		$mapInfo = $this->get_file($url);
 
+		try { //FIXME exceptions get not caught here?
+			$success = $this->maniaControl->fileReader->loadFile($url, function ($mapInfo) {
 
-		if ($mapInfo === false) {
-			$this->error = 'Connection or response error on ' . $url;
-			return array();
-		} elseif ($mapInfo === -1) {
-			$this->error = 'Timed out while reading data from ' . $url;
-			return array();
-		} elseif ($mapInfo == '') {
-			if (empty($maps)) {
-				$this->error = 'No data returned from ' . $url;
-				return array();
-			}
+				// Get Title Id
+				$titleId     = $this->maniaControl->server->titleId;
+				$titlePrefix = strtolower(substr($titleId, 0, 2));
+
+				$mxMapList = json_decode($mapInfo);
+				if ($mxMapList === null) {
+					trigger_error('Cannot decode searched JSON data');
+					return null;
+				}
+
+				$maps = array();
+				foreach($mxMapList as $map) {
+					if (!empty($map)) {
+						array_push($maps, new MXMapInfo($titlePrefix, $map));
+					}
+				}
+
+				$this->updateMapObjectsWithManiaExchangeIds($maps);
+				return true;
+			}, "application/json");
+		} catch(\Exception $e) {
+			$this->maniaControl->log("Error while fetching Map Infos" . $e->getTraceAsString());
+			return false;
 		}
 
-		$mxMapList = json_decode($mapInfo);
-		if ($mxMapList === null) {
-			trigger_error('Cannot decode searched JSON data from ' . $url);
-			return null;
-		}
-
-		$maps = array();
-		foreach($mxMapList as $map) {
-			if (!empty($map)) {
-				array_push($maps, new MXMapInfo($titlePrefix, $map));
-			}
-		}
-		return $maps;
+		return $success;
 	}
 
 	/**
@@ -256,8 +255,7 @@ class ManiaExchangeManager {
 		$url .= '&limit=' . $maxMapsReturned;
 		$url .= '&mtype=' . $mapTypes;
 
-		// $mapInfo = FileUtil::loadFile($url, "application/json"); //TODO use mc fileutil
-		$mapInfo = $this->get_file($url);
+		$mapInfo = FileUtil::loadFile($url, "application/json");
 
 		if ($mapInfo === false) {
 			$this->error = 'Connection or response error on ' . $url;
@@ -286,43 +284,6 @@ class ManiaExchangeManager {
 		}
 		return $maps;
 	}
-
-	/**
-	 * Loads an file
-	 *
-	 * @param $url
-	 * @return bool|int|string
-	 */
-	private function get_file($url) {
-		$url   = parse_url($url);
-		$port  = isset($url['port']) ? $url['port'] : 80;
-		$query = isset($url['query']) ? "?" . $url['query'] : "";
-
-		$fp = @fsockopen($url['host'], $port, $errno, $errstr, 4);
-		if (!$fp) {
-			return false;
-		}
-
-		fwrite($fp, 'GET ' . $url['path'] . $query . " HTTP/1.0\r\n" . 'Host: ' . $url['host'] . "\r\n" . 'Content-Type: application/json' . "\r\n" . 'User-Agent: ManiaControl v' . ManiaControl::VERSION . "\r\n\r\n");
-		stream_set_timeout($fp, 2);
-		$res               = '';
-		$info['timed_out'] = false;
-		while(!feof($fp) && !$info['timed_out']) {
-			$res .= fread($fp, 512);
-			$info = stream_get_meta_data($fp);
-		}
-		fclose($fp);
-
-		if ($info['timed_out']) {
-			return -1;
-		} else {
-			if (substr($res, 9, 3) != '200') {
-				return false;
-			}
-			$page = explode("\r\n\r\n", $res, 2);
-			return trim($page[1]);
-		}
-	} // get_file
 
 	/**
 	 * Gets the Current Environemnt by String

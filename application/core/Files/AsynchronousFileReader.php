@@ -4,6 +4,11 @@ namespace ManiaControl\Files;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\ManiaControl;
 
+/**
+ * Asynchronous File Reader
+ *
+ * @author kremsy & steeffeen
+ */
 class AsynchronousFileReader implements TimerListener {
 	/**
 	 * Private Properties
@@ -18,33 +23,37 @@ class AsynchronousFileReader implements TimerListener {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
-		$this->maniaControl->timerManager->registerTimerListening($this, 'appendData', 1);
 	}
 
 	public function appendData() {
-		foreach($this->sockets as &$socket) {
+		foreach($this->sockets as $key => &$socket) {
 			/** @var SocketStructure $socket */
 			$socket->streamBuffer .= fread($socket->socket, 512);
 			$info = stream_get_meta_data($socket->socket);
 
-			if (feof($socket->socket || $info['timed_out'])) { //TODO special error threadment on timeout
+			if (feof($socket->socket) || $info['timed_out']) {
 				fclose($socket->socket);
+				unset($this->sockets[$key]);
 
-				$error = 0; //TODO error constants
-				if ($info['timed_out'] || !$socket->streamBuffer) {
-					$error = 1;
-				} else if (substr($socket->streamBuffer, 9, 3) != "200") {
-					$error = 2;
+				if ($info['timed_out']) {
+					throw new \Exception("Timed out while reading data from " . $socket->url);
+				}
+
+				if (substr($socket->streamBuffer, 9, 3) != "200") {
+					throw new \Exception("Connection or response error on " . $socket->url);
+				}
+
+				if ($socket->streamBuffer == '') {
+					throw new \Exception("No data returned from " . $socket->url);
 				}
 
 				$result = explode("\r\n\r\n", $socket->streamBuffer, 2);
 
 				if (count($result) < 2) {
-					$error = 3;
+					throw new \Exception("Invalid Result");
 				}
 
-				//TODO call inner function
-
+				call_user_func($socket->function, $result[1]);
 			}
 		}
 	}
@@ -53,21 +62,30 @@ class AsynchronousFileReader implements TimerListener {
 	 * Load a remote file
 	 *
 	 * @param string $url
+	 * @param        $function
 	 * @param string $contentType
-	 * @return string || null
+	 * @return bool
 	 */
-	public function loadFile($url, $contentType = 'UTF-8', $function) {
+	public function loadFile($url, $function, $contentType = 'UTF-8') {
+		if (!is_callable($function)) {
+			$this->maniaControl->log("Function is not callable");
+			return false;
+		}
+
 		if (!$url) {
 			return null;
 		}
-		$urlData = parse_url($url);
-		$port    = (isset($urlData['port']) ? $urlData['port'] : 80);
+		$urlData  = parse_url($url);
+		$port     = (isset($urlData['port']) ? $urlData['port'] : 80);
+		$urlQuery = isset($urlData['query']) ? "?" . $urlData['query'] : "";
 
-		$socket = fsockopen($urlData['host'], $port);
-		stream_set_timeout($socket, 5);
+		$socket = @fsockopen($urlData['host'], $port, $errno, $errstr, 4);
+		if (!$socket) {
+			return false;
+		}
+		stream_set_timeout($socket, 10);
 
-
-		$query = 'GET ' . $urlData['path'] . ' HTTP/1.0' . PHP_EOL;
+		$query = 'GET ' . $urlData['path'] . $urlQuery . ' HTTP/1.0' . PHP_EOL;
 		$query .= 'Host: ' . $urlData['host'] . PHP_EOL;
 		$query .= 'Content-Type: ' . $contentType . PHP_EOL;
 		$query .= 'User-Agent: ManiaControl v' . ManiaControl::VERSION . PHP_EOL;
@@ -75,10 +93,14 @@ class AsynchronousFileReader implements TimerListener {
 
 		fwrite($socket, $query);
 
-		//TODO check error
-		stream_set_blocking($this->sockets, 0);
+		$success = stream_set_blocking($socket, 0);
+		if (!$success) {
+			return false;
+		}
 
-		$socketStructure = new SocketStructure($socket, $function);
+		$socketStructure = new SocketStructure($url, $socket, $function);
 		array_push($this->sockets, $socketStructure);
+
+		return true;
 	}
 }
