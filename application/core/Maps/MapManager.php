@@ -10,7 +10,6 @@ use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\ManiaExchange\ManiaExchangeList;
 use ManiaControl\ManiaExchange\ManiaExchangeManager;
-use ManiaControl\ManiaExchange\MXMapInfo;
 use ManiaControl\Players\Player;
 
 /**
@@ -524,9 +523,7 @@ class MapManager implements CallbackListener {
 			$title      = strtolower(substr($serverInfo->titleId, 0, 2));
 
 			// Check if map exists
-			$mxMapInfos = $this->maniaControl->mapManager->mxManager->getMaplistByMixedUidIdString($mapId);
-			$mapInfo    = $mxMapInfos[0];
-			/** @var MXMapInfo $mapInfo */
+			$mapInfo = $this->maniaControl->mapManager->mxManager->getMap($mapId);
 
 			if (!$mapInfo || !isset($mapInfo->uploaded)) {
 				// Invalid id
@@ -603,7 +600,7 @@ class MapManager implements CallbackListener {
 			$this->updateFullMapList();
 
 			//Update Mx MapInfo
-			$this->maniaControl->mapManager->mxManager->updateMapObjectsWithManiaExchangeIds($mxMapInfos);
+			$this->maniaControl->mapManager->mxManager->updateMapObjectsWithManiaExchangeIds(array($mapInfo));
 
 			//Update last updated time
 			$map = $this->maps[$mapInfo->uid];

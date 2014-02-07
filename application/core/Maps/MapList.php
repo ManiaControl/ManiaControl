@@ -90,6 +90,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	public function checkUpdates(array $chatCallback, Player $player) {
 		//Update Mx Infos
 		$this->maniaControl->mapManager->mxManager->fetchManiaExchangeMapInformations();
+
 		//Reshow the Maplist
 		$this->showMapList($player);
 	}
