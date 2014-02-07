@@ -25,6 +25,10 @@ class AsynchronousFileReader implements TimerListener {
 		$this->maniaControl = $maniaControl;
 	}
 
+	/**
+	 * Appends the Data
+	 * @throws \Exception
+	 */
 	public function appendData() {
 		foreach($this->sockets as $key => &$socket) {
 			/** @var SocketStructure $socket */
