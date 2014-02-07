@@ -59,8 +59,6 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	const MLID_WIDGET = 'CustomVotesPlugin.WidgetId';
 	const MLID_ICON   = 'CustomVotesPlugin.IconWidgetId';
 
-	const VOTE_FOR_ACTION     = '1';
-	const VOTE_AGAINST_ACTION = '-1';
 
 	const ACTION_POSITIVE_VOTE = 'CustomVotesPlugin.PositiveVote';
 	const ACTION_NEGATIVE_VOTE = 'CustomVotesPlugin.NegativeVote';
@@ -76,14 +74,8 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	private $maniaControl = null;
 	private $voteCommands = array();
 	private $voteMenuItems = array();
+	/** @var CurrentVote $currentVote */
 	private $currentVote = null;
-	private $currentVoteExpireTime = 0;
-	private $playersVoted = array();
-	private $playersVotedPositiv = 0;
-	private $currentNeededRatio = 0;
-	private $currentNeededPlayerRatio = 0;
-	/** @var Player $voter */
-	private $voter = null;
 
 	/**
 	 * Prepares the Plugin
@@ -132,11 +124,11 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_VOTE_TIME, 60);
 
 		//Define Votes
-		$this->defineVote("teambalance", "Team Balance");
-		$this->defineVote("skipmap", "Skip Map");
-		$this->defineVote("nextmap", "Skip Map");
-		$this->defineVote("restartmap", "Restart Map");
-		$this->defineVote("pausegame", "Pause Game");
+		$this->defineVote("teambalance", "Vote for Team Balance");
+		$this->defineVote("skipmap", "Vote for Skip Map");
+		$this->defineVote("nextmap", "Vote for Skip Map");
+		$this->defineVote("restartmap", "Vote for Restart Map");
+		$this->defineVote("pausegame", "Vote for Pause Game");
 
 		/* Disable Standard Votes */
 		$array["Command"] = VoteRatio::COMMAND_BAN;
@@ -238,7 +230,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	/**
 	 * Handle ManiaControl OnInit callback
 	 *
-	 * @param array $callback
+	 * @internal param array $callback
 	 */
 	private function constructMenu() {
 		// Menu RestartMap
@@ -301,7 +293,13 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$voteName   = $callback[1];
 		$voteResult = $callback[2];
 
-		if ($voteResult >= $this->currentNeededRatio) {
+		if ($voteResult >= $this->currentVote->neededRatio) {
+			// Call Closure if one exists
+			if (is_callable($this->currentVote->function)) {
+				call_user_func($this->currentVote->function, $voteResult);
+				return;
+			}
+
 			switch($voteName) {
 				case 'teambalance':
 					$this->maniaControl->client->autoTeamBalance();
@@ -349,22 +347,36 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	/**
 	 * Defines a Vote
 	 *
-	 * @param $voteName
+	 * @param      $voteIndex
+	 * @param      $voteName
+	 * @param bool $idBased
+	 * @param      $neededRatio
 	 */
-	public function defineVote($voteIndex, $voteName, $neededRatio = -1) {
+	public function defineVote($voteIndex, $voteName, $idBased = false, $neededRatio = -1) {
 		if ($neededRatio == -1) {
 			$neededRatio = $this->maniaControl->settingManager->getSetting($this, self::SETTING_DEFAULT_RATIO);
 		}
-		$this->voteCommands[$voteIndex] = array("Index" => $voteIndex, "Name" => $voteName, "Ratio" => $neededRatio);
+		$this->voteCommands[$voteIndex] = new VoteCommand($voteIndex, $voteName, $idBased, $neededRatio);
 	}
+
+	/**
+	 * Undefines a Vote
+	 *
+	 * @param $voteIndex
+	 */
+	public function undefineVote($voteIndex) {
+		unset($this->voteCommands[$voteIndex]);
+	}
+
 
 	/**
 	 * Starts a vote
 	 *
 	 * @param \ManiaControl\Players\Player $player
 	 * @param                              $voteIndex
+	 * @param                              $action
 	 */
-	public function startVote(Player $player, $voteIndex) {
+	public function startVote(Player $player, $voteIndex, $function = null) {
 		//Player is muted
 		if ($this->maniaControl->playerManager->playerActions->isPlayerMuted($player)) {
 			$this->maniaControl->chat->sendError('Muted Players are not allowed to start a vote.', $player->login);
@@ -384,25 +396,21 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		}
 
 		//A vote is currently running
-		if ($this->currentVote != null) {
+		if (isset($this->currentVote)) {
 			$this->maniaControl->chat->sendError('There is currently another vote running.', $player->login);
 			return;
 		}
 
-		$this->currentNeededPlayerRatio = floatval($this->maniaControl->settingManager->getSetting($this, self::SETTING_DEFAULT_PLAYER_RATIO));
-		$this->currentNeededRatio       = floatval($this->maniaControl->settingManager->getSetting($this, self::SETTING_DEFAULT_RATIO));
-
 		$maxTime = $this->maniaControl->settingManager->getSetting($this, self::SETTING_VOTE_TIME);
 
-		$this->currentVote           = $this->voteCommands[$voteIndex];
-		$this->currentVoteExpireTime = time() + $maxTime;
+		$this->currentVote = $this->voteCommands[$voteIndex];
 
-		$this->playersVoted[$player->login] = self::VOTE_FOR_ACTION;
-		$this->playersVotedPositiv++;
+		$this->currentVote                    = new CurrentVote($this->voteCommands[$voteIndex], $player, time() + $maxTime);
+		$this->currentVote->neededRatio       = floatval($this->maniaControl->settingManager->getSetting($this, self::SETTING_DEFAULT_RATIO));
+		$this->currentVote->neededPlayerRatio = floatval($this->maniaControl->settingManager->getSetting($this, self::SETTING_DEFAULT_PLAYER_RATIO));
+		$this->currentVote->function          = $function;
 
-		$this->voter = $player;
-
-		$this->maniaControl->chat->sendSuccess('$<' . $player->nickname . '$>$s started a $<' . $this->currentVote['Name'] . '$> vote!');
+		$this->maniaControl->chat->sendSuccess('$<' . $player->nickname . '$>$s started a $<' . $this->currentVote->voteCommand->name . '$>!');
 	}
 
 	/**
@@ -416,15 +424,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 			return;
 		}
 
-		if (isset($this->playersVoted[$player->login])) {
-			if ($this->playersVoted[$player->login] == self::VOTE_AGAINST_ACTION) {
-				$this->playersVoted[$player->login] = self::VOTE_FOR_ACTION;
-				$this->playersVotedPositiv++;
-			}
-		} else {
-			$this->playersVoted[$player->login] = self::VOTE_FOR_ACTION;
-			$this->playersVotedPositiv++;
-		}
+		$this->currentVote->votePositive($player->login);
 	}
 
 	/**
@@ -438,14 +438,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 			return;
 		}
 
-		if (isset($this->playersVoted[$player->login])) {
-			if ($this->playersVoted[$player->login] == self::VOTE_FOR_ACTION) {
-				$this->playersVoted[$player->login] = self::VOTE_AGAINST_ACTION;
-				$this->playersVotedPositiv--;
-			}
-		} else {
-			$this->playersVoted[$player->login] = self::VOTE_AGAINST_ACTION;
-		}
+		$this->currentVote->voteNegative($player->login);
 	}
 
 	/**
@@ -454,22 +447,22 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 * @param $time
 	 */
 	public function handle1Second($time) {
-		if ($this->currentVote == null) {
+		if (!isset($this->currentVote)) {
 			return;
 		}
 
-		$votePercentage = $this->playersVotedPositiv / count($this->playersVoted);
+		$votePercentage = $this->currentVote->positiveVotes / $this->currentVote->getVoteCount();
 
-		$timeUntilExpire = $this->currentVoteExpireTime - time();
+		$timeUntilExpire = $this->currentVote->expireTime - time();
 		$this->showVoteWidget($timeUntilExpire, $votePercentage);
 
 		$playerCount      = count($this->maniaControl->playerManager->getPlayers());
-		$playersVoteRatio = (100 / $playerCount * count($this->playersVoted)) / 100;
+		$playersVoteRatio = (100 / $playerCount * $this->currentVote->getVoteCount()) / 100;
 
 		//Check if vote is over
-		if ($timeUntilExpire <= 0 || (($playersVoteRatio >= $this->currentNeededPlayerRatio) && (($votePercentage >= $this->currentNeededRatio) || ($votePercentage <= 1 - $this->currentNeededRatio)))) {
+		if ($timeUntilExpire <= 0 || (($playersVoteRatio >= $this->currentVote->neededPlayerRatio) && (($votePercentage >= $this->currentVote->neededRatio) || ($votePercentage <= 1 - $this->currentVote->neededRatio)))) {
 			// Trigger callback
-			$this->maniaControl->callbackManager->triggerCallback(self::CB_CUSTOM_VOTE_FINISHED, array(self::CB_CUSTOM_VOTE_FINISHED, $this->currentVote["Index"], $votePercentage));
+			$this->maniaControl->callbackManager->triggerCallback(self::CB_CUSTOM_VOTE_FINISHED, array(self::CB_CUSTOM_VOTE_FINISHED, $this->currentVote->voteCommand->index, $votePercentage));
 
 			//reset vote
 			$this->destroyVote();
@@ -484,12 +477,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$manialinkText  = $emptyManialink->render()->saveXML();
 		$this->maniaControl->manialinkManager->sendManialink($manialinkText);
 
-		$this->currentNeededPlayerRatio = 0;
-		$this->currentNeededRatio       = 0;
-		$this->playersVotedPositiv      = 0;
-		$this->playersVoted             = null;
-		$this->currentVote              = null;
-		$this->voter                    = null;
+		unset($this->currentVote);
 	}
 
 	/**
@@ -533,7 +521,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$label->setAlign(Control::CENTER, Control::CENTER);
 		$label->setSize($width - 5, $height);
 		$label->setTextSize(1.3);
-		$label->setText('$sVote for ' . $this->currentVote["Name"]);
+		$label->setText('$s ' . $this->currentVote->voteCommand->name);
 
 		//Started by nick
 		$label = new Label_Text();
@@ -543,10 +531,9 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$label->setSize($width - 5, 2);
 		$label->setTextSize(1);
 		$label->setTextColor("F80");
-		$label->setText('$sStarted by ' . $this->voter->nickname);
+		$label->setText('$sStarted by ' . $this->currentVote->voter->nickname);
 
-
-		//Time Gaunge
+		//Time Gauge
 		$timeGauge = new Gauge();
 		$frame->add($timeGauge);
 		$timeGauge->setY(1.5);
@@ -584,7 +571,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$voteLabel->setSize($width * 0.65, 12);
 		$voteLabel->setStyle($labelStyle);
 		$voteLabel->setTextSize(1);
-		$voteLabel->setText('  ' . round($votePercentage * 100.) . '% (' . count($this->playersVoted) . ')');
+		$voteLabel->setText('  ' . round($votePercentage * 100.) . '% (' . $this->currentVote->getVoteCount() . ')');
 
 
 		$quad = new Quad_BgsPlayerCard();
@@ -774,4 +761,76 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	public static function getDescription() {
 		return 'Plugin offers your Custom Votes like Restart, Skip, Balance...';
 	}
-} 
+}
+
+/**
+ * Vote Command Structure
+ */
+class VoteCommand {
+	public $index;
+	public $name;
+	public $neededRatio;
+	public $idBased;
+
+	public function __construct($index, $name, $idBased, $neededRatio) {
+		$this->index       = $index;
+		$this->name        = $name;
+		$this->idBased     = $idBased;
+		$this->neededRatio = $neededRatio;
+	}
+}
+
+/**
+ * Current Vote Structure
+ */
+class CurrentVote {
+	const VOTE_FOR_ACTION     = '1';
+	const VOTE_AGAINST_ACTION = '-1';
+
+	public $voteCommand = null;
+	public $expireTime = 0;
+	public $positiveVotes = 0;
+	public $neededRatio = 0;
+	public $neededPlayerRatio = 0;
+	public $voter = null;
+	public $map = null;
+	public $player = null;
+	public $function = null;
+
+	private $playersVoted = array();
+
+	public function __construct(VoteCommand $voteCommand, Player $voter, $expireTime) {
+		$this->expireTime  = $expireTime;
+		$this->voteCommand = $voteCommand;
+		$this->voter       = $voter;
+		$this->votePositive($voter->login);
+	}
+
+	public function votePositive($login) {
+		if (isset($this->playersVoted[$login])) {
+			if ($this->playersVoted[$login] == self::VOTE_AGAINST_ACTION) {
+				$this->playersVoted[$login] = self::VOTE_FOR_ACTION;
+				$this->positiveVotes++;
+			}
+		} else {
+			$this->playersVoted[$login] = self::VOTE_FOR_ACTION;
+			$this->positiveVotes++;
+		}
+	}
+
+	public function voteNegative($login) {
+		if (isset($this->playersVoted[$login])) {
+			if ($this->playersVoted[$login] == self::VOTE_FOR_ACTION) {
+				$this->playersVoted[$login] = self::VOTE_AGAINST_ACTION;
+				$this->positiveVotes--;
+			}
+		} else {
+			$this->playersVoted[$login] = self::VOTE_AGAINST_ACTION;
+		}
+	}
+
+	public function getVoteCount() {
+		return count($this->playersVoted);
+	}
+
+}
