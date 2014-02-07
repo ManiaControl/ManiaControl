@@ -308,7 +308,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		$msg = '$i$ff0 $<' . $player->nickname . '$>$s$39f chooses to boot back to the real world!';
 		$this->maniaControl->chat->sendChat($msg, null, true);
 
-		$message = '$39F Thanks for Playing, please come back soon!$z';
+		$message = '$39F Thanks for Playing, please come back soon!$z ';
 		try {
 			$this->maniaControl->client->kick($player->login, $message);
 		} catch(\Exception $e) {
@@ -327,7 +327,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		$msg = '$i$ff0 $<' . $player->nickname . '$>$s$f00 said: "@"#!" and ragequitted!';
 		$this->maniaControl->chat->sendChat($msg, null, true);
 
-		$message = '$39F Thanks for Playing, please come back soon!$z';
+		$message = '$39F Thanks for Playing, please come back soon!$z ';
 		try {
 			$this->maniaControl->client->kick($player->login, $message);
 		} catch(\Exception $e) {

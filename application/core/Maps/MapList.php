@@ -332,7 +332,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$switchLabel->setText('»');
 				$switchLabel->setTextColor('0f0');
 
-				$switchLabel->setAction(self::ACTION_START_SWITCH_VOTE . '.' . ($id - 1) . '.' . $map->uid);
+				$switchLabel->setAction(self::ACTION_START_SWITCH_VOTE . '.' . ($id - 1));
 
 				$script->addTooltip($switchLabel, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => 'Start Map-Switch vote: $<' . $map->name . '$>'));
 			} else if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
@@ -528,8 +528,11 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$votesPlugin = $this->maniaControl->pluginManager->getPlugin(self::DEFAULT_CUSTOM_VOTE_PLUGIN);
 				$mapList     = $this->maniaControl->mapManager->getMaps();
 				$map         = $mapList[$mapId];
+
+				$message = '$<' . $player->nickname . '$>$s started a vote to switch to $<' . $map->name . '$>!';
+
 				/** @var Map $map */
-				$votesPlugin->defineVote('switchmap', "Goto " . $map->name, true);
+				$votesPlugin->defineVote('switchmap', "Goto " . $map->name, true, $message);
 
 				$votesPlugin->startVote($player, 'switchmap', function ($result) use (&$votesPlugin, &$map) {
 					$this->maniaControl->chat->sendInformation('$sVote Successfully -> Map switched!');

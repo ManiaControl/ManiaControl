@@ -23,6 +23,7 @@ use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
+use ManiaControl\Server\Server;
 use ManiaControl\Server\ServerCommands;
 use Maniaplanet\DedicatedServer\Structures\VoteRatio;
 
@@ -105,6 +106,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 		$this->maniaControl->callbackManager->registerCallbackListener(self::CB_CUSTOM_VOTE_FINISHED, $this, 'handleVoteFinished');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'handlePlayerConnect');
+		$this->maniaControl->callbackManager->registerCallbackListener(Server::CB_TEAM_STATUS_CHANGED, $this, 'constructMenu');
 
 		//Settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_VOTE_ICON_POSX, 156.);
@@ -264,12 +266,13 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$itemQuad->setAction(self::ACTION_START_VOTE . 'skipmap');
 		$this->addVoteMenuItem($itemQuad, 15, 'Vote for a Mapskip');
 
-		//Menu TeamBalance
-		$itemQuad = new Quad_Icons128x32_1();
-		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_RT_Team);
-		$itemQuad->setAction(self::ACTION_START_VOTE . 'teambalance');
-		$this->addVoteMenuItem($itemQuad, 20, 'Vote for Team-Balance');
-
+		if ($this->maniaControl->server->isTeamMode()) {
+			//Menu TeamBalance
+			$itemQuad = new Quad_Icons128x32_1();
+			$itemQuad->setSubStyle($itemQuad::SUBSTYLE_RT_Team);
+			$itemQuad->setAction(self::ACTION_START_VOTE . 'teambalance');
+			$this->addVoteMenuItem($itemQuad, 20, 'Vote for Team-Balance');
+		}
 		//Show the Menu's icon
 		$this->showIcon();
 	}
@@ -352,11 +355,13 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 * @param bool $idBased
 	 * @param      $neededRatio
 	 */
-	public function defineVote($voteIndex, $voteName, $idBased = false, $neededRatio = -1) {
+	public function defineVote($voteIndex, $voteName, $idBased = false, $startText = '', $neededRatio = -1) {
 		if ($neededRatio == -1) {
 			$neededRatio = $this->maniaControl->settingManager->getSetting($this, self::SETTING_DEFAULT_RATIO);
 		}
-		$this->voteCommands[$voteIndex] = new VoteCommand($voteIndex, $voteName, $idBased, $neededRatio);
+		$voteCommand                    = new VoteCommand($voteIndex, $voteName, $idBased, $neededRatio);
+		$voteCommand->startText         = $startText;
+		$this->voteCommands[$voteIndex] = $voteCommand;
 	}
 
 	/**
@@ -410,7 +415,13 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$this->currentVote->neededPlayerRatio = floatval($this->maniaControl->settingManager->getSetting($this, self::SETTING_DEFAULT_PLAYER_RATIO));
 		$this->currentVote->function          = $function;
 
-		$this->maniaControl->chat->sendSuccess('$<' . $player->nickname . '$>$s started a $<' . $this->currentVote->voteCommand->name . '$>!');
+		if ($this->currentVote->voteCommand->startText != '') {
+			$message = $this->currentVote->voteCommand->startText;
+		} else {
+			$message = '$<' . $player->nickname . '$>$s started a $<' . $this->currentVote->voteCommand->name . '$>!';
+		}
+
+		$this->maniaControl->chat->sendSuccess($message);
 	}
 
 	/**
@@ -506,7 +517,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$frame = new Frame();
 		$maniaLink->add($frame);
 		$frame->setSize($width, $height);
-		$frame->setPosition($pos_x, $pos_y);
+		$frame->setPosition($pos_x, $pos_y, 30);
 
 		// Background Quad
 		$backgroundQuad = new Quad();
@@ -767,10 +778,11 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
  * Vote Command Structure
  */
 class VoteCommand {
-	public $index;
-	public $name;
-	public $neededRatio;
-	public $idBased;
+	public $index = '';
+	public $name = '';
+	public $neededRatio = 0;
+	public $idBased = false;
+	public $startText = '';
 
 	public function __construct($index, $name, $idBased, $neededRatio) {
 		$this->index       = $index;
