@@ -58,29 +58,23 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		$this->maniaControl->callbackManager->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_OPENED, $this, 'handleWidgetOpened');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 
-		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_SEARCH_MAPNAME, $this, 'showManiaExchangeList');
-		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_SEARCH_AUTHOR, $this, 'showManiaExchangeList');
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_SEARCH_MAPNAME, $this, 'showList');
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_SEARCH_AUTHOR, $this, 'showList');
 	}
 
-
-	public function showList(array $chatCallback, Player $player) {
-		$this->showManiaExchangeList($chatCallback, $player);
-	}
 
 	/**
-	 * Display the Mania Exchange List
+	 * Shows the List
 	 *
 	 * @param array  $chatCallback
 	 * @param Player $player
 	 */
-	public function showManiaExchangeList(array $chatCallback, Player $player) {
+	public function showList(array $chatCallback, Player $player) {
 		$this->mapListShown[$player->login] = true;
-
-		$params = explode(' ', $chatCallback[1][2]);
-
-		$searchString = '';
-		$author       = '';
-		$environment  = '';
+		$params                             = explode(' ', $chatCallback[1][2]);
+		$searchString                       = '';
+		$author                             = '';
+		$environment                        = '';
 		if (count($params) >= 1) {
 			foreach($params as $param) {
 				if ($param == '/xlist' || $param == MapCommands::ACTION_OPEN_XLIST) {
@@ -105,14 +99,22 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		}
 
 		// search for matching maps
-		$maps = $this->maniaControl->mapManager->mxManager->getMaps($searchString, $author, $environment);
+		$this->maniaControl->mapManager->mxManager->getMapsAssync(function ($maps) use (&$player) {
+			if ($maps == null) {
+				$this->maniaControl->chat->sendError('No maps found, or MX is down!', $player->login);
+				return;
+			}
+			$this->showManiaExchangeList($maps, $player);
+		}, $searchString, $author, $environment);
+	}
 
-		// check if there are any results
-		if ($maps == null) {
-			$this->maniaControl->chat->sendError('No maps found, or MX is down!', $player->login);
-			return;
-		}
-
+	/**
+	 * Display the Mania Exchange List
+	 *
+	 * @param array  $chatCallback
+	 * @param Player $player
+	 */
+	private function showManiaExchangeList($maps, Player $player) {
 		// Start offsets
 		$width  = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
 		$height = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
@@ -293,7 +295,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		switch($action) {
 			case self::ACTION_GET_MAPS_FROM_AUTHOR:
 				$callback[1][2] = 'auth:' . $actionArray[2];
-				$this->showManiaExchangeList($callback, $player);
+				$this->showList($callback, $player);
 				break;
 			case self::ACTION_ADD_MAP:
 				$this->maniaControl->mapManager->addMapFromMx($mapId, $player->login);

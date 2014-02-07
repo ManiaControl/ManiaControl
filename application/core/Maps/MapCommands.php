@@ -238,6 +238,6 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	 * @param Player $player
 	 */
 	public function command_xList(array $chatCallback, Player $player) {
-		$this->maniaControl->mapManager->mxList->showManiaExchangeList($chatCallback, $player);
+		$this->maniaControl->mapManager->mxList->showList($chatCallback, $player);
 	}
 }

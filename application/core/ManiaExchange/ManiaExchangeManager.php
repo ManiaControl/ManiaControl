@@ -251,7 +251,7 @@ class ManiaExchangeManager {
 		return $success;
 	}
 
-	/*public function getMapsAssync($function, $name = '', $author = '', $env = '', $maxMapsReturned = 100, $searchOrder = self::SEARCH_ORDER_UPDATED_NEWEST) {
+	public function getMapsAssync($function, $name = '', $author = '', $env = '', $maxMapsReturned = 100, $searchOrder = self::SEARCH_ORDER_UPDATED_NEWEST) {
 		if (!is_callable($function)) {
 			$this->maniaControl->log("Function is not callable");
 			return false;
@@ -312,7 +312,7 @@ class ManiaExchangeManager {
 		}
 
 		return $success;
-	}*/
+	}
 
 
 	/**
