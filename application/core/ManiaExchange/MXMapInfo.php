@@ -2,6 +2,8 @@
 
 namespace ManiaControl\ManiaExchange;
 
+use ManiaControl\Formatter;
+
 /**
  * Mania Exchange Map Info Object
  *
@@ -11,7 +13,7 @@ namespace ManiaControl\ManiaExchange;
 class MXMapInfo {
 	public $prefix, $id, $uid, $name, $userid, $author, $uploaded, $updated, $type, $maptype;
 	public $titlepack, $style, $envir, $mood, $dispcost, $lightmap, $modname, $exever;
-	public $exebld, $routes, $length, $unlimiter, $laps, $diffic, $lbrating, $trkvalue;
+	public $exebld, $routes, $length, $unlimiter, $laps, $difficulty, $lbrating, $trkvalue;
 	public $replaytyp, $replayid, $replaycnt, $acomment, $awards, $comments, $rating;
 	public $ratingex, $ratingcnt, $pageurl, $replayurl, $imageurl, $thumburl, $dloadurl;
 
@@ -37,40 +39,44 @@ class MXMapInfo {
 				$this->id = $mx->MapID;
 			}
 
-			$this->name = $mx->Name;
+			if (!isset($mx->GbxMapName) || $mx->GbxMapName == '') {
+				$this->name = $mx->Name;
+			} else {
+				$this->name = Formatter::stripDirtyCodes($mx->GbxMapName);
+			}
 
-			$this->uid       = isset($mx->MapUID) ? $mx->MapUID : '';
-			$this->userid    = $mx->UserID;
-			$this->author    = $mx->Username;
-			$this->uploaded  = $mx->UploadedAt;
-			$this->updated   = $mx->UpdatedAt;
-			$this->type      = $mx->TypeName;
-			$this->maptype   = isset($mx->MapType) ? $mx->MapType : '';
-			$this->titlepack = isset($mx->TitlePack) ? $mx->TitlePack : '';
-			$this->style     = isset($mx->StyleName) ? $mx->StyleName : '';
-			$this->envir     = $mx->EnvironmentName;
-			$this->mood      = $mx->Mood;
-			$this->dispcost  = $mx->DisplayCost;
-			$this->lightmap  = $mx->Lightmap;
-			$this->modname   = isset($mx->ModName) ? $mx->ModName : '';
-			$this->exever    = $mx->ExeVersion;
-			$this->exebld    = $mx->ExeBuild;
-			$this->routes    = isset($mx->RouteName) ? $mx->RouteName : '';
-			$this->length    = isset($mx->LengthName) ? $mx->LengthName : '';
-			$this->unlimiter = isset($mx->UnlimiterRequired) ? $mx->UnlimiterRequired : false;
-			$this->laps      = isset($mx->Laps) ? $mx->Laps : 0;
-			$this->diffic    = $mx->DifficultyName;
-			$this->lbrating  = isset($mx->LBRating) ? $mx->LBRating : 0;
-			$this->trkvalue  = isset($mx->TrackValue) ? $mx->TrackValue : 0;
-			$this->replaytyp = isset($mx->ReplayTypeName) ? $mx->ReplayTypeName : '';
-			$this->replayid  = isset($mx->ReplayWRID) ? $mx->ReplayWRID : 0;
-			$this->replaycnt = isset($mx->ReplayCount) ? $mx->ReplayCount : 0;
-			$this->acomment  = $mx->Comments;
-			$this->awards    = isset($mx->AwardCount) ? $mx->AwardCount : 0;
-			$this->comments  = $mx->CommentCount;
-			$this->rating    = isset($mx->Rating) ? $mx->Rating : 0.0;
-			$this->ratingex  = isset($mx->RatingExact) ? $mx->RatingExact : 0.0;
-			$this->ratingcnt = isset($mx->RatingCount) ? $mx->RatingCount : 0;
+			$this->uid        = isset($mx->MapUID) ? $mx->MapUID : '';
+			$this->userid     = $mx->UserID;
+			$this->author     = $mx->Username;
+			$this->uploaded   = $mx->UploadedAt;
+			$this->updated    = $mx->UpdatedAt;
+			$this->type       = $mx->TypeName;
+			$this->maptype    = isset($mx->MapType) ? $mx->MapType : '';
+			$this->titlepack  = isset($mx->TitlePack) ? $mx->TitlePack : '';
+			$this->style      = isset($mx->StyleName) ? $mx->StyleName : '';
+			$this->envir      = $mx->EnvironmentName;
+			$this->mood       = $mx->Mood;
+			$this->dispcost   = $mx->DisplayCost;
+			$this->lightmap   = $mx->Lightmap;
+			$this->modname    = isset($mx->ModName) ? $mx->ModName : '';
+			$this->exever     = $mx->ExeVersion;
+			$this->exebld     = $mx->ExeBuild;
+			$this->routes     = isset($mx->RouteName) ? $mx->RouteName : '';
+			$this->length     = isset($mx->LengthName) ? $mx->LengthName : '';
+			$this->unlimiter  = isset($mx->UnlimiterRequired) ? $mx->UnlimiterRequired : false;
+			$this->laps       = isset($mx->Laps) ? $mx->Laps : 0;
+			$this->difficulty = $mx->DifficultyName;
+			$this->lbrating   = isset($mx->LBRating) ? $mx->LBRating : 0;
+			$this->trkvalue   = isset($mx->TrackValue) ? $mx->TrackValue : 0;
+			$this->replaytyp  = isset($mx->ReplayTypeName) ? $mx->ReplayTypeName : '';
+			$this->replayid   = isset($mx->ReplayWRID) ? $mx->ReplayWRID : 0;
+			$this->replaycnt  = isset($mx->ReplayCount) ? $mx->ReplayCount : 0;
+			$this->acomment   = $mx->Comments;
+			$this->awards     = isset($mx->AwardCount) ? $mx->AwardCount : 0;
+			$this->comments   = $mx->CommentCount;
+			$this->rating     = isset($mx->Rating) ? $mx->Rating : 0.0;
+			$this->ratingex   = isset($mx->RatingExact) ? $mx->RatingExact : 0.0;
+			$this->ratingcnt  = isset($mx->RatingCount) ? $mx->RatingCount : 0;
 
 			if ($this->trkvalue == 0 && $this->lbrating > 0) {
 				$this->trkvalue = $this->lbrating;
