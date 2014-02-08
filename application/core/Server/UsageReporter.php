@@ -4,6 +4,7 @@ namespace ManiaControl\Server;
 
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\ManiaControl;
+use ManiaControl\UpdateManager;
 
 /**
  * Class reports Usage
@@ -16,6 +17,7 @@ class UsageReporter implements TimerListener {
 	 */
 	const UPDATE_MINUTE_COUNT             = 10;
 	const SETTING_DISABLE_USAGE_REPORTING = 'Disable Usage Reporting';
+
 	/**
 	 * Private Properties
 	 */
@@ -28,8 +30,7 @@ class UsageReporter implements TimerListener {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
-		//TODO setting
-
+		
 		$this->maniaControl->timerManager->registerTimerListening($this, 'reportUsage', 1000 * 60 * self::UPDATE_MINUTE_COUNT);
 
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_DISABLE_USAGE_REPORTING, false);
@@ -45,24 +46,29 @@ class UsageReporter implements TimerListener {
 			return;
 		}
 
-		$properties                    = array();
-		$properties['MC_Version']      = ManiaControl::VERSION;
-		$properties['OperatingSystem'] = php_uname();
-		$properties['PHPVersion']      = phpversion();
-		$properties['ServerLogin']     = $this->maniaControl->server->login;
-		$properties['TitleId']         = $this->maniaControl->server->titleId;
-		$properties['ServerName']      = $this->maniaControl->server->getName();
-		$properties['PlayerCount']     = count($this->maniaControl->playerManager->getPlayers());
-		$properties['MaxPlayers']      = $this->maniaControl->client->getMaxPlayers();
+		$properties                        = array();
+		$properties['ManiaControlVersion'] = ManiaControl::VERSION;
+		$properties['OperatingSystem']     = php_uname();
+		$properties['PHPVersion']          = phpversion();
+		$properties['ServerLogin']         = $this->maniaControl->server->login;
+		$properties['TitleId']             = $this->maniaControl->server->titleId;
+		$properties['ServerName']          = $this->maniaControl->server->getName();
+		$properties['PlayerCount']         = count($this->maniaControl->playerManager->getPlayers());
+		try {
+			$maxPlayers               = $this->maniaControl->client->getMaxPlayers();
+			$properties['MaxPlayers'] = $maxPlayers["CurrentValue"];
+		} catch(\Exception $e) {
+			//do nothing
+		}
 
 		$json = json_encode($properties);
 		$info = base64_encode($json);
 
-		//TODO make on website
-	/*	$this->maniaControl->fileReader->loadFile("url/webservice?info=" . $info, function ($response, $error) {
-				if ($error) {
+		$this->maniaControl->fileReader->loadFile(UpdateManager::URL_WEBSERVICE . "/usagereport?info=" . $info, function ($response, $error) {
+				$response = json_decode($response);
+				if ($error || !$response) {
 					$this->maniaControl->log("Error while Sending data: " . $error);
 				}
-			});*/
+			});
 	}
 } 
