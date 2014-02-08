@@ -58,6 +58,9 @@ class UsageReporter implements TimerListener {
 		$json = json_encode($properties);
 		$info = base64_encode($json);
 
-		//TODO send Info
+		//TODO make on website
+		/*$this->maniaControl->fileReader->loadFile("url/webservice?info=" . $info, function ($response, $error){
+			$this->maniaControl->log("Error while Sending data: " . $error);
+		});*/
 	}
 } 
