@@ -30,7 +30,7 @@ class UsageReporter implements TimerListener {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
-		
+
 		$this->maniaControl->timerManager->registerTimerListening($this, 'reportUsage', 1000 * 60 * self::UPDATE_MINUTE_COUNT);
 
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_DISABLE_USAGE_REPORTING, false);
