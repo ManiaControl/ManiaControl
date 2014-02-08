@@ -2,6 +2,7 @@
 use ManiaControl\ManiaControl;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Maps\Map;
 use ManiaControl\Plugins\Plugin;
 
 /**
@@ -22,6 +23,7 @@ class EndurancePlugin implements CallbackListener, Plugin {
 	 */
 	/** @var maniaControl $maniaControl  */
 	private $maniaControl = null;
+	/** @var Map $currentMap */
 	private $currentMap = null;
 	private $playerLapTimes = array();
 

@@ -522,7 +522,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		// Background Quad
 		$backgroundQuad = new Quad();
 		$frame->add($backgroundQuad);
-		$backgroundQuad->setSize($width, $height);
+		$backgroundQuad->setSize($width, $height);	
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 
 		//Vote for label

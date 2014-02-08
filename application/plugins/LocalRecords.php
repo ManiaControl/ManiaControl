@@ -174,7 +174,7 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 		if (!$this->updateManialink) return;
 		$this->updateManialink = false;
 		$manialink = $this->buildManialink();
-		$this->sendManialink($manialink);
+		$this->maniaControl->manialinkManager->sendManialink($manialink);
 	}
 
 	/**
@@ -267,24 +267,6 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 			$message = '$<' . $player->nickname . '$> ' . $improvement . ' $<$o' . $newRecord->rank . '.$> Local Record: ' .
 					 Formatter::formatTime($newRecord->time);
 			$this->maniaControl->chat->sendInformation($message);
-		}
-	}
-
-	/**
-	 * Send manialink to clients
-	 *
-	 * @param string $manialink
-	 * @param string $login
-	 */
-	private function sendManialink($manialink, $login = null) {
-		if ($login) {
-			if (!$this->maniaControl->client->query('SendDisplayManialinkPageToLogin', $login, $manialink, 0, false)) {
-				trigger_error("Couldn't send manialink to player '{$login}'. " . $this->maniaControl->getClientErrorText());
-			}
-			return;
-		}
-		if (!$this->maniaControl->client->query('SendDisplayManialinkPage', $manialink, 0, false)) {
-			trigger_error("Couldn't send manialink to players. " . $this->maniaControl->getClientErrorText());
 		}
 	}
 
