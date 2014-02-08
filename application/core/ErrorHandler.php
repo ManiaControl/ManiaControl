@@ -1,5 +1,7 @@
 <?php
+use ManiaControl\Files\FileUtil;
 use ManiaControl\ManiaControl;
+use ManiaControl\UpdateManager;
 
 /**
  * Error and Exception Manager Class
@@ -30,6 +32,25 @@ class ErrorHandler {
 	public function exceptionHandler(\Exception $ex) {
 		$message = "[ManiaControl EXCEPTION]: {$ex->getMessage()} Trace: {$ex->getTraceAsString()}!";
 		logMessage($message);
+
+		$error                        = array();
+		$error["Type"]                = "Exception";
+		$error["Message"]             = $message;
+		$error['ManiaControlVersion'] = ManiaControl::VERSION;
+		$error['OperatingSystem']     = php_uname();
+		$error['PHPVersion']          = phpversion();
+		$error['SeverLogin']          = null;
+
+		$json = json_encode($error);
+		$info = base64_encode($json);
+
+		$url     = UpdateManager::URL_WEBSERVICE . "errorreport?error=" . $info;
+		$success = FileUtil::loadFile($url);
+
+		if (!json_decode($success)) {
+			logMessage("Exception-Report failed");
+		}
+
 		exit();
 	}
 
@@ -52,6 +73,25 @@ class ErrorHandler {
 		$message  = "{$errorTag}: {$errorString} in File '{$errorFile}' on Line {$errorLine}!";
 		logMessage($message);
 		if ($errorNumber == E_ERROR || $errorNumber == E_USER_ERROR) {
+
+			$error                        = array();
+			$error["Type"]                = "Error";
+			$error["Message"]             = $message;
+			$error['ManiaControlVersion'] = ManiaControl::VERSION;
+			$error['OperatingSystem']     = php_uname();
+			$error['PHPVersion']          = phpversion();
+			$error['SeverLogin']          = $this->maniaControl->server->login;
+
+			$json = json_encode($error);
+			$info = base64_encode($json);
+
+			$url     = UpdateManager::URL_WEBSERVICE . "errorreport?error=" . $info;
+			$success = FileUtil::loadFile($url);
+
+			if (!json_decode($success)) {
+				logMessage("Error-Report failed");
+			}
+
 			logMessage('Stopping execution...');
 			exit();
 		}
