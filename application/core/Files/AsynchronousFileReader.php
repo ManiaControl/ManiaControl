@@ -46,7 +46,7 @@ class AsynchronousFileReader {
 				fclose($socket->socket);
 				unset($this->sockets[$key]);
 
-				$result = array();
+				$result = "";
 				$error  = 0;
 				if (time() > ($socket->creationTime + self::SOCKET_TIMEOUT)) {
 					$error = self::TIMEOUT_ERROR;
@@ -55,14 +55,15 @@ class AsynchronousFileReader {
 				} else if ($socket->streamBuffer == '') {
 					$error = self::NO_DATA_ERROR;
 				} else {
-					$result = explode("\r\n\r\n", $socket->streamBuffer, 2);
+					$resultArray = explode("\r\n\r\n", $socket->streamBuffer, 2);
 
-					if (count($result) < 2) {
+					if (count($resultArray) < 2) {
 						$error = self::INVALID_RESULT_ERROR;
+					} else {
+						$result = $resultArray[1];
 					}
 				}
-
-				call_user_func($socket->function, $result[1], $error);
+				call_user_func($socket->function, $result, $error);
 			}
 		}
 	}
