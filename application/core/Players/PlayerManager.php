@@ -239,6 +239,36 @@ class PlayerManager implements CallbackListener {
 	}
 
 	/**
+	 * Gets the Count of all Player
+	 * @return int
+	 */
+	public function getPlayerCount(){
+		$count = 0;
+		foreach($this->players as $player){
+			/** @var Player $player */
+			if(!$player->isSpectator){
+				$count++;
+			}
+		}
+		return $count;
+	}
+
+	/**
+	 * Gets the Count of all Spectators
+	 * @return int
+	 */
+	public function getSpectatorCount(){
+		$count = 0;
+		foreach($this->players as $player){
+			/** @var Player $player */
+			if($player->isSpectator){
+				$count++;
+			}
+		}
+		return $count;
+	}
+
+	/**
 	 * Gets a Player by his index
 	 *
 	 * @param $index
@@ -248,7 +278,6 @@ class PlayerManager implements CallbackListener {
 		foreach($this->players as $player) {
 			/** @var Player $player */
 			if ($player->index == $index) {
-
 				return $player;
 			}
 		}
