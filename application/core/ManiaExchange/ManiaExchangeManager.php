@@ -219,7 +219,7 @@ class ManiaExchangeManager {
 
 		$success = $this->maniaControl->fileReader->loadFile($url, function ($mapInfo, $error) use ($titlePrefix, $url) {
 			if ($error) {
-				trigger_error($error);
+				trigger_error($error . " " . $url);
 				return null;
 			}
 
