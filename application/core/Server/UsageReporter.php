@@ -58,7 +58,7 @@ class UsageReporter implements TimerListener {
 		try {
 			$maxPlayers                = $this->maniaControl->client->getMaxPlayers();
 			$properties['MaxPlayers']  = $maxPlayers["CurrentValue"];
-			$properties['ScriptTitle'] = $this->maniaControl->client->getScriptName();
+			$properties['ScriptName'] = $this->maniaControl->client->getScriptName();
 		} catch(\Exception $e) {
 			//do nothing
 		}
