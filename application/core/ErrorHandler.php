@@ -39,7 +39,7 @@ class ErrorHandler {
 		$error['ManiaControlVersion'] = ManiaControl::VERSION;
 		$error['OperatingSystem']     = php_uname();
 		$error['PHPVersion']          = phpversion();
-		$error['SeverLogin']          = null;
+		$error['ServerLogin']          = null;
 
 		$json = json_encode($error);
 		$info = base64_encode($json);
@@ -80,7 +80,7 @@ class ErrorHandler {
 			$error['ManiaControlVersion'] = ManiaControl::VERSION;
 			$error['OperatingSystem']     = php_uname();
 			$error['PHPVersion']          = phpversion();
-			$error['SeverLogin']          = $this->maniaControl->server->login;
+			$error['ServerLogin']          = $this->maniaControl->server->login;
 
 			$json = json_encode($error);
 			$info = base64_encode($json);
