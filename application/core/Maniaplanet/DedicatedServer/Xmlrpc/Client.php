@@ -277,8 +277,8 @@ class Client
 
 		$request = new Request($method, $args);
 
-		// Check if request is larger than 512 Kbytes
-		if ($request->getLength() > 1024*1024-8) //TODO changed temporary to 1024 * 1024
+		// Check if request is larger than 1024 Kbytes
+		if ($request->getLength() > 1024*1024-8)
 		{
 			throw new Exception('transport error - request too large!', -32700);
 		}
@@ -300,9 +300,9 @@ class Client
 
 		$request = new Request($method, $args);
 
-		// Check if the request is greater than 512 Kbytes to avoid errors
+		// Check if the request is greater than 1024 Kbytes to avoid errors
 		// If the method is system.multicall, make two calls (possibly recursively)
-		if ($request->getLength() > 512*1024-8) 
+		if ($request->getLength() > 1024*1024-8)
 		{
 			if ($method == 'system.multicall' && isset($args[0])) 
 			{
