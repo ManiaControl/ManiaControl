@@ -351,7 +351,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		}
 
 		if (!$updateData) {
-			$updateData = $this->checkCoreUpdate(true);
+			$updateData = $this->checkCoreUpdate();
 			if (!$updateData) {
 				if ($player != null) {
 					$this->maniaControl->chat->sendError('Update failed: No update Data available!', $player->login);
