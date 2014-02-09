@@ -142,13 +142,8 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		if ($performBackup && !$this->performBackup()) {
 			$this->maniaControl->log("Creating Backup failed!");
 		}
-		if (!$this->performCoreUpdate($updateData)) {
-			$this->maniaControl->log("Update failed!");
-			return;
-		}
-		$this->maniaControl->log("Update finished!");
 
-		$this->maniaControl->restart();
+		$this->performCoreUpdate($updateData);
 	}
 
 
@@ -228,13 +223,8 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			$this->maniaControl->chat->sendError('Creating backup failed.', $player->login);
 			$this->maniaControl->log("Creating backup failed.");
 		}
-		if (!$this->performCoreUpdate($updateData)) {
-			$this->maniaControl->chat->sendError('Update failed!', $player->login);
-			return;
-		}
-		$this->maniaControl->chat->sendSuccess('Update finished!', $player->login);
 
-		$this->maniaControl->restart();
+		$this->performCoreUpdate($updateData, $player);
 	}
 
 	/**
@@ -347,41 +337,71 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	/**
 	 * Perform a Core Update
 	 *
-	 * @param object $updateData
+	 * @param object         $updateData
+	 * @param Players\Player $player
 	 * @return bool
 	 */
-	private function performCoreUpdate($updateData = null) {
+	private function performCoreUpdate($updateData = null, Player $player = null) {
 		if (!$this->checkPermissions()) {
+			if ($player != null) {
+				$this->maniaControl->chat->sendError('Update failed: Incorrect Filesystem permissions!', $player->login);
+			}
+			$this->maniaControl->log('Update failed!');
 			return false;
 		}
 
 		if (!$updateData) {
-			$updateData = $this->checkCoreUpdate();
+			$updateData = $this->checkCoreUpdate(true);
 			if (!$updateData) {
+				if ($player != null) {
+					$this->maniaControl->chat->sendError('Update failed: No update Data available!', $player->login);
+				}
+				$this->maniaControl->log('Update failed: No update Data available!');
 				return false;
 			}
 		}
-		$updateFileContent = file_get_contents($updateData->url);
-		$tempDir           = ManiaControlDir . '/temp/';
-		if (!is_dir($tempDir)) {
-			mkdir($tempDir);
-		}
-		$updateFileName = $tempDir . basename($updateData->url);
-		$bytes          = file_put_contents($updateFileName, $updateFileContent);
-		if (!$bytes || $bytes <= 0) {
-			trigger_error("Couldn't save Update Zip.");
-			return false;
-		}
-		$zip    = new \ZipArchive();
-		$result = $zip->open($updateFileName);
-		if ($result !== true) {
-			trigger_error("Couldn't open Update Zip. ({$result})");
-			return false;
-		}
-		$zip->extractTo(ManiaControlDir);
-		$zip->close();
-		unlink($updateFileName);
-		@rmdir($tempDir);
+
+		$this->maniaControl->fileReader->loadFile($updateData->url, function ($updateFileContent, $error) use (&$updateData, &$player) {
+			$tempDir = ManiaControlDir . '/temp/';
+			if (!is_dir($tempDir)) {
+				mkdir($tempDir);
+			}
+			$updateFileName = $tempDir . basename($updateData->url);
+
+
+			$bytes = file_put_contents($updateFileName, $updateFileContent);
+			if (!$bytes || $bytes <= 0) {
+				trigger_error("Couldn't save Update Zip.");
+				if ($player != null) {
+					$this->maniaControl->chat->sendError('Update failed: Couldn\'t save Update zip!', $player->login);
+				}
+				return false;
+			}
+			$zip    = new \ZipArchive();
+			$result = $zip->open($updateFileName);
+			if ($result !== true) {
+				trigger_error("Couldn't open Update Zip. ({$result})");
+				if ($player != null) {
+					$this->maniaControl->chat->sendError('Update failed: Couldn\'t open Update zip!', $player->login);
+				}
+				return false;
+			}
+
+			$zip->extractTo(ManiaControlDir);
+			$zip->close();
+			unlink($updateFileName);
+			@rmdir($tempDir);
+
+			if ($player != null) {
+				$this->maniaControl->chat->sendSuccess('Update finished!', $player->login);
+			}
+			$this->maniaControl->log("Update finished!");
+
+			$this->maniaControl->restart();
+
+			return true;
+		});
+
 		return true;
 	}
 
@@ -403,7 +423,6 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 
 			foreach($files as $file) {
 				if (substr($file, -1) != '.' && substr($file, -2) != '..') {
-					echo $file . "\n\r";
 					if (!is_writable($file)) {
 						$this->maniaControl->log('Cannot update: the file/directory "' . $file . '" is not writable!');
 						return false;

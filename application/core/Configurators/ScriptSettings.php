@@ -91,15 +91,20 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 * @return bool
 	 */
 	public function loadSettingsFromDatabase() {
-		$scriptSettings = (array)$this->maniaControl->client->getModeScriptSettings();
+		try{
+			$scriptSettings = $this->maniaControl->client->getModeScriptSettings();
+		} catch (\Exception $e){
+			return false;
+		}
 
-		if (isset($scriptSettings['faultString'])) {
+		//TODO check error on not script modes, maybe exception happen, or dunno what, there is no faultString property?
+		/*if (isset($scriptSettings['faultString'])) {
 			if ($scriptSettings['faultString'] == 'Not in script mode.') {
 				return false;
 			}
 			trigger_error('Error occured: ' . $scriptSettings['faultString']);
 			return false;
-		}
+		}*/
 
 		$mysqli   = $this->maniaControl->database->mysqli;
 		$serverId = $this->maniaControl->server->index;
