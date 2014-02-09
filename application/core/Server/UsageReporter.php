@@ -3,6 +3,7 @@
 namespace ManiaControl\Server;
 
 use ManiaControl\Callbacks\TimerListener;
+use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\UpdateManager;
 
@@ -52,7 +53,7 @@ class UsageReporter implements TimerListener {
 		$properties['PHPVersion']          = phpversion();
 		$properties['ServerLogin']         = $this->maniaControl->server->login;
 		$properties['TitleId']             = $this->maniaControl->server->titleId;
-		$properties['ServerName']          = $this->maniaControl->server->getName();
+		$properties['ServerName']          = Formatter::stripDirtyCodes($this->maniaControl->server->getName());
 		$properties['PlayerCount']         = $this->maniaControl->playerManager->getPlayerCount();
 
 		try {
@@ -72,7 +73,7 @@ class UsageReporter implements TimerListener {
 		$json = json_encode($properties);
 		$info = base64_encode($json);
 
-		$this->maniaControl->fileReader->loadFile(UpdateManager::URL_WEBSERVICE . "/usagereport?info=" . $info, function ($response, $error) {
+		$this->maniaControl->fileReader->loadFile(UpdateManager::URL_WEBSERVICE . "/usagereport?info=" . urlencode($info), function ($response, $error) {
 			$response = json_decode($response);
 			if ($error || !$response) {
 				$this->maniaControl->log("Error while Sending data: " . $error);

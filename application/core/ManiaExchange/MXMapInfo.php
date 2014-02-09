@@ -39,7 +39,7 @@ class MXMapInfo {
 				$this->id = $mx->MapID;
 			}
 
-			if (!isset($mx->GbxMapName) || $mx->GbxMapName == '') {
+			if (!isset($mx->GbxMapName) || $mx->GbxMapName == '?') {
 				$this->name = $mx->Name;
 			} else {
 				$this->name = Formatter::stripDirtyCodes($mx->GbxMapName);
