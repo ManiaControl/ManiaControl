@@ -144,7 +144,10 @@ class DatabaseConverter {
 
 		//Loop through all the players
 		while($row = $result->fetch_object()) {
-			$statement->bind_param('ssss', $row->Uid, $row->Name, $row->Author, $row->Environment);
+			//Strip links and dirty codes
+			$name = preg_replace('/(?<!\$)((?:\$\$)*)\$[hlp](?:\[.*?\])?(.*?)(?:\$[hlp]|(\$z)|$)/iu', '$1$2$3', $row->name);
+			$name = preg_replace('/(?<!\$)((?:\$\$)*)\$[ow<>]/iu', '$1', $name);
+			$statement->bind_param('ssss', $row->Uid, $name, $row->Author, $row->Environment);
 			$statement->execute();
 			if ($statement->error) {
 				trigger_error($statement->error);
