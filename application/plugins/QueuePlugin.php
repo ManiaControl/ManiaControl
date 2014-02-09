@@ -296,9 +296,26 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 
 			try {
 				$this->maniaControl->client->forceSpectator($player->login, 0);
-			} catch(\Exception $e) {
-				//do nothing
+			} catch(\Exception $e) { }
+
+			$teams = array();
+			/** @var  Player $player */
+			foreach($this->maniaControl->playerManager->players as $player) {
+				$teams[$player->teamId]++;
 			}
+
+			$smallestTeam = null;
+			$smallestSize = 999;
+			foreach($teams as $team => $size) {
+				if($size < $smallestSize) {
+					$smallestTeam = $team;
+					$smallestSize = $size;
+				}
+			}
+
+			try {
+				$this->maniaControl->client->forcePlayerTeam($player->login, $smallestTeam);
+			} catch(\Exception $e) { }
 
 			if(isset($this->spectators[$player->login])) {
 				unset($this->spectators[$player->login]);
