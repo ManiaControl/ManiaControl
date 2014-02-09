@@ -54,9 +54,11 @@ class UsageReporter implements TimerListener {
 		$properties['TitleId']             = $this->maniaControl->server->titleId;
 		$properties['ServerName']          = $this->maniaControl->server->getName();
 		$properties['PlayerCount']         = $this->maniaControl->playerManager->getPlayerCount();
+
 		try {
-			$maxPlayers               = $this->maniaControl->client->getMaxPlayers();
-			$properties['MaxPlayers'] = $maxPlayers["CurrentValue"];
+			$maxPlayers                = $this->maniaControl->client->getMaxPlayers();
+			$properties['MaxPlayers']  = $maxPlayers["CurrentValue"];
+			$properties['ScriptTitle'] = $this->maniaControl->client->getScriptName();
 		} catch(\Exception $e) {
 			//do nothing
 		}
@@ -65,10 +67,10 @@ class UsageReporter implements TimerListener {
 		$info = base64_encode($json);
 
 		$this->maniaControl->fileReader->loadFile(UpdateManager::URL_WEBSERVICE . "/usagereport?info=" . $info, function ($response, $error) {
-				$response = json_decode($response);
-				if ($error || !$response) {
-					$this->maniaControl->log("Error while Sending data: " . $error);
-				}
-			});
+			$response = json_decode($response);
+			if ($error || !$response) {
+				$this->maniaControl->log("Error while Sending data: " . $error);
+			}
+		});
 	}
 } 
