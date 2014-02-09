@@ -39,12 +39,12 @@ class ErrorHandler {
 		$error['ManiaControlVersion'] = ManiaControl::VERSION;
 		$error['OperatingSystem']     = php_uname();
 		$error['PHPVersion']          = phpversion();
-		$error['ServerLogin']          = null;
+		$error['ServerLogin']         = null;
 
 		$json = json_encode($error);
 		$info = base64_encode($json);
 
-		$url     = UpdateManager::URL_WEBSERVICE . "errorreport?error=" . $info;
+		$url     = UpdateManager::URL_WEBSERVICE . "errorreport?error=" . urlencode($info);
 		$success = FileUtil::loadFile($url);
 
 		if (!json_decode($success)) {
@@ -80,12 +80,12 @@ class ErrorHandler {
 			$error['ManiaControlVersion'] = ManiaControl::VERSION;
 			$error['OperatingSystem']     = php_uname();
 			$error['PHPVersion']          = phpversion();
-			$error['ServerLogin']          = $this->maniaControl->server->login;
+			$error['ServerLogin']         = $this->maniaControl->server->login;
 
 			$json = json_encode($error);
 			$info = base64_encode($json);
 
-			$url     = UpdateManager::URL_WEBSERVICE . "errorreport?error=" . $info;
+			$url     = UpdateManager::URL_WEBSERVICE . "errorreport?error=" . urlencode($info);
 			$success = FileUtil::loadFile($url);
 
 			if (!json_decode($success)) {
