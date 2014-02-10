@@ -37,6 +37,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 */
 	private $maniaControl = null;
 	private $coreUpdateData = null;
+	private $currentBuiltDate = "";
 
 	/**
 	 * Create a new Update Manager
@@ -66,6 +67,8 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		// Register for chat commands
 		$this->maniaControl->commandManager->registerCommandListener('checkupdate', $this, 'handle_CheckUpdate', true);
 		$this->maniaControl->commandManager->registerCommandListener('coreupdate', $this, 'handle_CoreUpdate', true);
+
+		$this->currentBuiltDate = $this->getNightlyBuildDate();
 	}
 
 	/**
@@ -83,14 +86,16 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			return;
 		}
 
-		$updateData = $this->checkCoreUpdate();
-		if (!$updateData) {
-			return;
-		}
-		$this->maniaControl->log('New ManiaControl Version ' . $updateData->version . ' available!');
-		$this->coreUpdateData = $updateData;
-
-		$this->autoUpdate($time);
+		//Check if a new Core Update is Available
+		$this->checkCoreUpdateAsync(function ($updateData) use ($time) {
+			$buildDate   = strtotime($this->currentBuiltDate);
+			$releaseTime = strtotime($updateData->release_date);
+			if ($buildDate < $releaseTime) {
+				$this->maniaControl->log('New ManiaControl Version ' . $updateData->version . ' available!');
+				$this->coreUpdateData = $updateData;
+				$this->autoUpdate($time);
+			}
+		}, true);
 	}
 
 	/**
@@ -107,7 +112,12 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_UPDATE)) {
 			return;
 		}
-		$this->maniaControl->chat->sendInformation('New ManiaControl Version ' . $this->coreUpdateData->version . ' available!', $player->login);
+
+		$buildDate   = strtotime($this->currentBuiltDate);
+		$releaseTime = strtotime($this->coreUpdateData->release_date);
+		if ($buildDate < $releaseTime) {
+			$this->maniaControl->chat->sendInformation('New ManiaControl Version ' . $this->coreUpdateData->version . ' available!', $player->login);
+		}
 	}
 
 
@@ -126,17 +136,22 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			return;
 		}
 
-		$updateData = $this->checkCoreUpdate(true);
-		if (!$updateData) {
+		if (!$this->coreUpdateData) {
 			return;
 		}
 
-		$this->maniaControl->log("Starting Update to Version v{$updateData->version}...");
+		$buildDate   = strtotime($this->currentBuiltDate);
+		$releaseTime = strtotime($this->coreUpdateData->release_date);
+		if ($buildDate && $buildDate >= $releaseTime) {
+			return;
+		}
+
+		$this->maniaControl->log("Starting Update to Version v{$this->coreUpdateData->version}...");
 		$performBackup = $this->maniaControl->settingManager->getSetting($this, self::SETTING_PERFORM_BACKUPS);
 		if ($performBackup && !$this->performBackup()) {
 			$this->maniaControl->log("Creating Backup failed!");
 		}
-		$this->performCoreUpdate($updateData);
+		$this->performCoreUpdate($this->coreUpdateData);
 	}
 
 
@@ -163,11 +178,11 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		} else {
 			// Special nightly channel updating
 			$updateData  = $this->checkCoreUpdate(true);
-			$buildDate   = $this->getNightlyBuildDate();
+			$buildDate   = $this->currentBuiltDate;
 			$releaseTime = strtotime($updateData->release_date);
 			if ($buildDate) {
 				$buildTime = strtotime($buildDate);
-				if ($buildTime >= $releaseTime) { //FIXME will ever fail, releaseTime > buildTime (because releaseTime "2014-02-01 14:59:49")
+				if ($buildTime >= $releaseTime) {
 					$this->maniaControl->chat->sendInformation('No new Build available, current build: ' . date("Y-m-d", $buildTime) . '!', $player->login);
 					return;
 				}
@@ -190,6 +205,19 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		}
 		$fileContent = file_get_contents($nightlyBuildDateFile);
 		return $fileContent;
+	}
+
+	/**
+	 * Set the Build Date of the local Nightly Build Version
+	 *
+	 * @param $date
+	 * @return mixed
+	 */
+	private function setNightlyBuildDate($date) {
+		$nightlyBuildDateFile   = ManiaControlDir . '/core/nightly_build.txt';
+		$success                = file_put_contents($nightlyBuildDateFile, $date);
+		$this->currentBuiltDate = $date;
+		return $success;
 	}
 
 	/**
@@ -244,6 +272,31 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			return false;
 		}
 		return $pluginData;
+	}
+
+
+	/**
+	 * Checks a core update Asynchrnously
+	 *
+	 * @param      $function
+	 * @param bool $ignoreVersion
+	 */
+	private function checkCoreUpdateAsync($function, $ignoreVersion = false) {
+		$updateChannel = $this->getCurrentUpdateChannelSetting();
+		$url           = self::URL_WEBSERVICE . 'versions?update=1&current=1&channel=' . $updateChannel;
+
+		$this->maniaControl->fileReader->loadFile($url, function ($dataJson, $error) use (&$function, $ignoreVersion) {
+			$versions = json_decode($dataJson);
+			if (!$versions || !isset($versions[0])) {
+				return;
+			}
+			$updateData = $versions[0];
+			if (!$ignoreVersion && $updateData->version <= ManiaControl::VERSION) {
+				return;
+			}
+
+			call_user_func($function, $updateData);
+		});
 	}
 
 	/**
@@ -334,7 +387,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 * @param Players\Player $player
 	 * @return bool
 	 */
-	private function performCoreUpdate($updateData = null, Player $player = null) {
+	private function performCoreUpdate($updateData, Player $player = null) {
 		if (!$this->checkPermissions()) {
 			if ($player != null) {
 				$this->maniaControl->chat->sendError('Update failed: Incorrect Filesystem permissions!', $player->login);
@@ -343,15 +396,12 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			return false;
 		}
 
-		if (!$updateData) {
-			$updateData = $this->checkCoreUpdate();
-			if (!$updateData) {
-				if ($player != null) {
-					$this->maniaControl->chat->sendError('Update failed: No update Data available!', $player->login);
-				}
-				$this->maniaControl->log('Update failed: No update Data available!');
-				return false;
+		if (!isset($updateData->url) && !isset($updateData->release_date)) {
+			if ($player != null) {
+				$this->maniaControl->chat->sendError('Update failed: No update Data available!', $player->login);
 			}
+			$this->maniaControl->log('Update failed: No update Data available!');
+			return false;
 		}
 
 		$this->maniaControl->fileReader->loadFile($updateData->url, function ($updateFileContent, $error) use (&$updateData, &$player) {
@@ -360,7 +410,6 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 				mkdir($tempDir);
 			}
 			$updateFileName = $tempDir . basename($updateData->url);
-
 
 			$bytes = file_put_contents($updateFileName, $updateFileContent);
 			if (!$bytes || $bytes <= 0) {
@@ -384,6 +433,9 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			$zip->close();
 			unlink($updateFileName);
 			@rmdir($tempDir);
+
+			//Set the Nightly Build Date
+			$this->setNightlyBuildDate($updateData->release_date);
 
 			if ($player != null) {
 				$this->maniaControl->chat->sendSuccess('Update finished!', $player->login);
