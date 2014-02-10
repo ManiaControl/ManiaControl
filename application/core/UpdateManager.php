@@ -37,7 +37,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 */
 	private $maniaControl = null;
 	private $coreUpdateData = null;
-	private $currentBuiltDate = "";
+	private $currentBuildDate = "";
 
 	/**
 	 * Create a new Update Manager
@@ -68,7 +68,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		$this->maniaControl->commandManager->registerCommandListener('checkupdate', $this, 'handle_CheckUpdate', true);
 		$this->maniaControl->commandManager->registerCommandListener('coreupdate', $this, 'handle_CoreUpdate', true);
 
-		$this->currentBuiltDate = $this->getNightlyBuildDate();
+		$this->currentBuildDate = $this->getNightlyBuildDate();
 	}
 
 	/**
@@ -88,10 +88,15 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 
 		//Check if a new Core Update is Available
 		$this->checkCoreUpdateAsync(function ($updateData) use ($time) {
-			$buildDate   = strtotime($this->currentBuiltDate);
+			$buildDate   = strtotime($this->currentBuildDate);
 			$releaseTime = strtotime($updateData->release_date);
 			if ($buildDate < $releaseTime) {
-				$this->maniaControl->log('New ManiaControl Version ' . $updateData->version . ' available!');
+				$updateChannel = $this->maniaControl->settingManager->getSetting($this, self::SETTING_UPDATECHECK_CHANNEL);
+				if ($updateChannel != self::CHANNEL_NIGHTLY) {
+					$this->maniaControl->log('New ManiaControl Version ' . $updateData->version . ' available!');
+				} else {
+					$this->maniaControl->log('New Nightly Build (' . $updateData->release_date . ') available!');
+				}
 				$this->coreUpdateData = $updateData;
 				$this->autoUpdate($time);
 			}
@@ -113,10 +118,15 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			return;
 		}
 
-		$buildDate   = strtotime($this->currentBuiltDate);
+		$buildDate   = strtotime($this->currentBuildDate);
 		$releaseTime = strtotime($this->coreUpdateData->release_date);
 		if ($buildDate < $releaseTime) {
-			$this->maniaControl->chat->sendInformation('New ManiaControl Version ' . $this->coreUpdateData->version . ' available!', $player->login);
+			$updateChannel = $this->maniaControl->settingManager->getSetting($this, self::SETTING_UPDATECHECK_CHANNEL);
+			if ($updateChannel != self::CHANNEL_NIGHTLY) {
+				$this->maniaControl->chat->sendInformation('New ManiaControl Version ' . $this->coreUpdateData->version . ' available!', $player->login);
+			} else {
+				$this->maniaControl->chat->sendSuccess('New Nightly Build (' . $this->coreUpdateData->release_date . ') available!', $player->login);
+			}
 		}
 	}
 
@@ -140,7 +150,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			return;
 		}
 
-		$buildDate   = strtotime($this->currentBuiltDate);
+		$buildDate   = strtotime($this->currentBuildDate);
 		$releaseTime = strtotime($this->coreUpdateData->release_date);
 		if ($buildDate && $buildDate >= $releaseTime) {
 			return;
@@ -169,39 +179,45 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		$updateChannel = $this->maniaControl->settingManager->getSetting($this, self::SETTING_UPDATECHECK_CHANNEL);
 		if ($updateChannel != self::CHANNEL_NIGHTLY) {
 			// Check update and send result message
-			$updateData = $this->checkCoreUpdate();
-			if (!$updateData) {
-				$this->maniaControl->chat->sendInformation('No Update available!', $player->login);
-				return;
-			}
-			$this->maniaControl->chat->sendSuccess('Update for Version ' . $updateData->version . ' available!', $player->login);
-		} else {
-			// Special nightly channel updating
-			$updateData  = $this->checkCoreUpdate(true);
-			$buildDate   = $this->currentBuiltDate;
-			$releaseTime = strtotime($updateData->release_date);
-			if ($buildDate) {
-				$buildTime = strtotime($buildDate);
-				if ($buildTime >= $releaseTime) {
-					$this->maniaControl->chat->sendInformation('No new Build available, current build: ' . date("Y-m-d", $buildTime) . '!', $player->login);
+			$this->checkCoreUpdateAsync(function ($updateData) use (&$player) {
+				if (!$updateData) {
+					$this->maniaControl->chat->sendInformation('No Update available!', $player->login);
 					return;
 				}
-				$this->maniaControl->chat->sendSuccess('New Nightly Build (' . date("Y-m-d", $releaseTime) . ') available, current build: ' . date("Y-m-d", $buildTime) . '!', $player->login);
-			} else {
-				$this->maniaControl->chat->sendSuccess('New Nightly Build (' . date("Y-m-d", $releaseTime) . ') available!', $player->login);
-			}
+				$this->maniaControl->chat->sendSuccess('Update for Version ' . $updateData->version . ' available!', $player->login);
+			});
+		} else {
+			// Special nightly channel updating
+			$this->checkCoreUpdateAsync(function ($updateData) use (&$player) {
+				if (!$updateData) {
+					$this->maniaControl->chat->sendInformation('No Update available!', $player->login);
+					return;
+				}
+
+				$buildTime   = strtotime($this->currentBuildDate);
+				$releaseTime = strtotime($updateData->release_date);
+				if ($buildTime != '') {
+					if ($buildTime >= $releaseTime) {
+						$this->maniaControl->chat->sendInformation('No new Build available, current build: ' . date("Y-m-d", $buildTime) . '!', $player->login);
+						return;
+					}
+					$this->maniaControl->chat->sendSuccess('New Nightly Build (' . $updateData->release_date . ') available, current build: ' . $this->currentBuildDate . '!', $player->login);
+				} else {
+					$this->maniaControl->chat->sendSuccess('New Nightly Build (' . $updateData->release_date . ') available!', $player->login);
+				}
+			}, true);
 		}
 	}
 
 	/**
 	 * Get the Build Date of the local Nightly Build Version
 	 *
-	 * @return mixed
+	 * @return String $buildTime
 	 */
 	private function getNightlyBuildDate() {
 		$nightlyBuildDateFile = ManiaControlDir . '/core/nightly_build.txt';
 		if (!file_exists($nightlyBuildDateFile)) {
-			return false;
+			return '';
 		}
 		$fileContent = file_get_contents($nightlyBuildDateFile);
 		return $fileContent;
@@ -216,7 +232,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	private function setNightlyBuildDate($date) {
 		$nightlyBuildDateFile   = ManiaControlDir . '/core/nightly_build.txt';
 		$success                = file_put_contents($nightlyBuildDateFile, $date);
-		$this->currentBuiltDate = $date;
+		$this->currentBuildDate = $date;
 		return $success;
 	}
 
