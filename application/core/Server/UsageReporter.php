@@ -5,7 +5,7 @@ namespace ManiaControl\Server;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
-use ManiaControl\UpdateManager;
+use ManiaControl\Update\UpdateManager;
 
 /**
  * Class reports Usage
