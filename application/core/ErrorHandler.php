@@ -78,8 +78,8 @@ class ErrorHandler {
 		$errorTag = $this->getErrorTag($errorNumber);
 		$message  = "{$errorTag}: {$errorString} in File '{$errorFile}' on Line {$errorLine}!";
 		logMessage($message);
-		if ($errorNumber == E_ERROR || $errorNumber == E_USER_ERROR) {
 
+		if ($errorNumber != E_USER_ERROR && $errorNumber != E_USER_WARNING && $errorNumber != E_USER_NOTICE) {
 			$error                        = array();
 			$error["Type"]                = "Error";
 			$error["Message"]             = $message;
@@ -101,7 +101,9 @@ class ErrorHandler {
 			if (!json_decode($success)) {
 				logMessage("Error-Report failed");
 			}
+		}
 
+		if ($errorNumber == E_ERROR || $errorNumber == E_USER_ERROR) {
 			logMessage('Stopping execution...');
 			exit();
 		}
