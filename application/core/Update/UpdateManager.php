@@ -394,7 +394,6 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			$this->maniaControl->log('Update failed!');
 			return false;
 		}
-		var_dump("test");
 
 		if (!isset($updateData->url) && !isset($updateData->releaseDate)) {
 			if ($player != null) {
