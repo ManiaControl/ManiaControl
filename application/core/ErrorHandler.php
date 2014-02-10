@@ -3,8 +3,7 @@
 namespace ManiaControl;
 
 use ManiaControl\Files\FileUtil;
-use ManiaControl\ManiaControl;
-use ManiaControl\UpdateManager;
+use ManiaControl\Update\UpdateManager;
 
 /**
  * Error and Exception Manager Class
@@ -30,7 +29,7 @@ class ErrorHandler {
 	 * ManiaControl ExceptionHandler
 	 * ManiaControl Shuts down after exception
 	 *
-	 * @param Exception $ex
+	 * @param \Exception $ex
 	 */
 	public function exceptionHandler(\Exception $ex) {
 		$message = "[ManiaControl EXCEPTION]: {$ex->getMessage()} Trace: {$ex->getTraceAsString()}!";

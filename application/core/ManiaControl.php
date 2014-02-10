@@ -9,7 +9,6 @@ use ManiaControl\Callbacks\TimerManager;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\Commands\CommandManager;
 use ManiaControl\Configurators\Configurator;
-use ManiaControl\ErrorHandler;
 use ManiaControl\Files\AsynchronousFileReader;
 use ManiaControl\Files\FileUtil;
 use ManiaControl\Manialinks\ManialinkManager;
@@ -20,6 +19,7 @@ use ManiaControl\Plugins\PluginManager;
 use ManiaControl\Server\Server;
 use ManiaControl\Settings\SettingManager;
 use ManiaControl\Statistics\StatisticManager;
+use ManiaControl\Update\UpdateManager;
 use Maniaplanet\DedicatedServer\Connection;
 
 require_once __DIR__ . '/Maniaplanet/DedicatedServer/Connection.php';
@@ -29,7 +29,7 @@ require_once __DIR__ . '/FML/autoload.php';
 /**
  * ManiaControl Server Controller for ManiaPlanet Server
  *
- * @author steeffeen & kremsy
+ * @author    steeffeen & kremsy
  * @copyright ManiaControl Copyright © 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
