@@ -6,6 +6,7 @@ use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
+use ManiaControl\Files\FileUtil;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
@@ -232,7 +233,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		/** @var  Plugin $pluginClass */
 		$pluginId       = $pluginClass::getId();
 		$url            = self::URL_WEBSERVICE . 'plugins?id=' . $pluginId;
-		$dataJson       = file_get_contents($url);
+		$dataJson       = FileUtil::loadFile($url);
 		$pluginVersions = json_decode($dataJson);
 		if (!$pluginVersions || !isset($pluginVersions[0])) {
 			return false;
@@ -253,7 +254,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	private function checkCoreUpdate($ignoreVersion = false) {
 		$updateChannel = $this->getCurrentUpdateChannelSetting();
 		$url           = self::URL_WEBSERVICE . 'versions?update=1&current=1&channel=' . $updateChannel;
-		$dataJson      = file_get_contents($url);
+		$dataJson      = FileUtil::loadFile($url);
 		$versions      = json_decode($dataJson);
 		if (!$versions || !isset($versions[0])) {
 			return false;
