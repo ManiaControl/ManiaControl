@@ -29,8 +29,9 @@ require_once __DIR__ . '/FML/autoload.php';
 /**
  * ManiaControl Server Controller for ManiaPlanet Server
  *
+ * @author steeffeen & kremsy
  * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ManiaControl implements CommandListener {
 	/**
