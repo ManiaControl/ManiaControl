@@ -35,7 +35,6 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 * Private Properties
 	 */
 	private $maniaControl = null;
-	private $lastUpdateCheck = -1;
 	private $coreUpdateData = null;
 
 	/**
@@ -49,13 +48,13 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_ENABLEUPDATECHECK, true);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_AUTO_UPDATE, true);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_UPDATECHECK_INTERVAL, 24.);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_UPDATECHECK_INTERVAL, 1);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_UPDATECHECK_CHANNEL, self::CHANNEL_NIGHTLY); //TODO just temp until release
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_PERFORM_BACKUPS, true);
 
-
 		// Register for callbacks
-		$this->maniaControl->timerManager->registerTimerListening($this, 'hourlyUpdateCheck', 1000 * 60 * 60);
+		$updateInterval = $this->maniaControl->settingManager->getSetting($this, self::SETTING_UPDATECHECK_INTERVAL);
+		$this->maniaControl->timerManager->registerTimerListening($this, 'hourlyUpdateCheck', 1000 * 60 * 60 * $updateInterval);
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'handlePlayerJoined');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECTED, $this, 'autoUpdate');
 
@@ -69,7 +68,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	}
 
 	/**
-	 * Perform Hourly Update Che
+	 * Perform Hourly Update Check
 	 *
 	 * @param $time
 	 */
@@ -83,13 +82,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			return;
 		}
 
-		// Only check once per hour
-		$updateInterval = $this->maniaControl->settingManager->getSetting($this, self::SETTING_UPDATECHECK_INTERVAL);
-		if ($this->lastUpdateCheck > time() - $updateInterval * 3600) {
-			return;
-		}
-		$this->lastUpdateCheck = time();
-		$updateData            = $this->checkCoreUpdate();
+		$updateData = $this->checkCoreUpdate();
 		if (!$updateData) {
 			return;
 		}
@@ -142,7 +135,6 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		if ($performBackup && !$this->performBackup()) {
 			$this->maniaControl->log("Creating Backup failed!");
 		}
-
 		$this->performCoreUpdate($updateData);
 	}
 
