@@ -241,7 +241,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$itemQuad->setAction(self::ACTION_START_VOTE . 'restartmap');
 		$this->addVoteMenuItem($itemQuad, 5, 'Vote for Restart-Map');
 
-		//Check if Pause exists in current gamemode
+		//Check if Pause exists in current GameMode
 		$scriptInfos = $this->maniaControl->client->getModeScriptInfo();
 
 		$pauseExists = false;
@@ -522,7 +522,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		// Background Quad
 		$backgroundQuad = new Quad();
 		$frame->add($backgroundQuad);
-		$backgroundQuad->setSize($width, $height);	
+		$backgroundQuad->setSize($width, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 
 		//Vote for label
