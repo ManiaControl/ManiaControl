@@ -322,7 +322,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			}
 
 			//Switch Map Voting
-		/*	if ($this->maniaControl->pluginManager->isPluginActive(self::DEFAULT_CUSTOM_VOTE_PLUGIN)) {
+			if ($this->maniaControl->pluginManager->isPluginActive(self::DEFAULT_CUSTOM_VOTE_PLUGIN)) {
 				$switchLabel = new Label_Button();
 				$mapFrame->add($switchLabel);
 				$switchLabel->setX($width / 2 - 10);
@@ -335,7 +335,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$switchLabel->setAction(self::ACTION_START_SWITCH_VOTE . '.' . ($id - 1));
 
 				$script->addTooltip($switchLabel, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => 'Start Map-Switch vote: $<' . $map->name . '$>'));
-			} else */ if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
+			} else if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
 
 				// Switch to map
 				$switchLabel = new Label_Button();
@@ -540,7 +540,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 					$votesPlugin->undefineVote('switchmap');
 
 					try {
-						$this->maniaControl->client->jumpToMapIndex($map->index);
+						$index = $this->maniaControl->mapManager->getMapIndex($map);
+						$this->maniaControl->client->jumpToMapIndex($index);
 					} catch(\Exception $e) {
 						$this->maniaControl->chat->sendError("Error while Switching Map");
 					}
