@@ -234,7 +234,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 *
 	 * @internal param array $callback
 	 */
-	private function constructMenu() {
+	public function constructMenu() {
 		// Menu RestartMap
 		$itemQuad = new Quad_UIConstruction_Buttons();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Reload);
