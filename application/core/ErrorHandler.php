@@ -1,4 +1,7 @@
 <?php
+
+namespace ManiaControl;
+
 use ManiaControl\Files\FileUtil;
 use ManiaControl\ManiaControl;
 use ManiaControl\UpdateManager;

@@ -2,7 +2,6 @@
 
 namespace ManiaControl;
 
-use ErrorHandler;
 use ManiaControl\Admin\ActionsMenu;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackManager;
@@ -10,6 +9,7 @@ use ManiaControl\Callbacks\TimerManager;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\Commands\CommandManager;
 use ManiaControl\Configurators\Configurator;
+use ManiaControl\ErrorHandler;
 use ManiaControl\Files\AsynchronousFileReader;
 use ManiaControl\Files\FileUtil;
 use ManiaControl\Manialinks\ManialinkManager;
