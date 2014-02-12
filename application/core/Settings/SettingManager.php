@@ -313,6 +313,9 @@ class SettingManager {
 			return false;
 		}
 		$settingStatement->close();
+
+		//Trigger settings changed Callback
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_SETTINGS_CHANGED, array(self::CB_SETTINGS_CHANGED, $className, $settingName, $value));
 		return $success;
 	}
 
@@ -327,9 +330,6 @@ class SettingManager {
 	public function setSetting($object, $settingName, $value) {
 		$className = $this->getClassName($object);
 		$this->updateSetting($className, $settingName, $value);
-
-		//Trigger settings changed Callback
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_SETTINGS_CHANGED, array(self::CB_SETTINGS_CHANGED, $className, $settingName, $value));
 	}
 
 	/**
