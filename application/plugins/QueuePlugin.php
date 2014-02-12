@@ -301,7 +301,11 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 			$teams = array();
 			/** @var  Player $player */
 			foreach($this->maniaControl->playerManager->players as $player) {
-				$teams[$player->teamId]++;
+				if(!isset($teams[$player->teamId])){
+					$teams[$player->teamId] = 1;
+				}else{
+					$teams[$player->teamId]++;
+				}
 			}
 
 			$smallestTeam = null;
