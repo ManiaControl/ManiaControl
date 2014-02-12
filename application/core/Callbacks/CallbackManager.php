@@ -15,6 +15,7 @@ class CallbackManager {
 	 */
 	// ManiaControl callbacks
 	const CB_MC_ONINIT        = 'ManiaControl.OnInit';
+	const CB_MC_AFTERINIT        = 'ManiaControl.AfterInit';
 	const CB_MC_ONSHUTDOWN    = 'ManiaControl.OnShutdown';
 	const CB_MC_CLIENTUPDATED = 'ManiaControl.ClientUpdated';
 	const CB_MC_BEGINMAP      = 'ManiaControl.BeginMap';
