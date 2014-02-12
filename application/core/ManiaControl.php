@@ -276,6 +276,9 @@ class ManiaControl implements CommandListener {
 		// Load plugins
 		$this->pluginManager->loadPlugins();
 
+		// AfterInit callback
+		$this->callbackManager->triggerCallback(CallbackManager::CB_MC_AFTERINIT, array(CallbackManager::CB_MC_AFTERINIT));
+
 		// Announce ManiaControl
 		$this->chat->sendInformation('ManiaControl v' . self::VERSION . ' successfully started!');
 
