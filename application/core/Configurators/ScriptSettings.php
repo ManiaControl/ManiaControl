@@ -113,15 +113,6 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			return false;
 		}
 
-		//TODO check error on not script modes, maybe exception happen, or dunno what, there is no faultString property?
-		/*if (isset($scriptSettings['faultString'])) {
-			if ($scriptSettings['faultString'] == 'Not in script mode.') {
-				return false;
-			}
-			trigger_error('Error occured: ' . $scriptSettings['faultString']);
-			return false;
-		}*/
-
 		$mysqli   = $this->maniaControl->database->mysqli;
 		$serverId = $this->maniaControl->server->index;
 		$query    = "SELECT * FROM `" . self::TABLE_SCRIPT_SETTINGS . "` WHERE serverIndex = " . $serverId . ";";
@@ -167,21 +158,23 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		$pagesId = 'ScriptSettingsPages';
 		$frame   = new Frame();
 
-		$scriptInfo = $this->maniaControl->client->getModeScriptInfo();
-
-		//TODO check error on not script modes, maybe exception happen, or dunno what, there is no faultString property?
-		/*if(isset($scriptInfo['faultCode'])) {
-				// Not in script mode
-				$label = new Label();
-				$frame->add($label);
-				$label->setText($scriptInfo['faultString']);
-				return $frame;
-			}
-			*/
+		try {
+			$scriptInfo = $this->maniaControl->client->getModeScriptInfo();
+		} catch(\Exception $e) {
+			// Not in script mode
+			$label = new Label();
+			$frame->add($label);
+			$label->setText($e->getMessage());
+			return $frame;
+		}
 
 		$scriptParams = $scriptInfo->paramDescs;
 
-		$scriptSettings = $this->maniaControl->client->getModeScriptSettings();
+		try {
+			$scriptSettings = $this->maniaControl->client->getModeScriptSettings();
+		} catch(\Exception $e) {
+			//do nothing
+		}
 
 		// Config
 		$pagerSize     = 9.;
@@ -308,7 +301,11 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			return;
 		}
 
-		$scriptSettings = $this->maniaControl->client->getModeScriptSettings();
+		try {
+			$scriptSettings = $this->maniaControl->client->getModeScriptSettings();
+		} catch(\Exception $e) {
+			return;
+		}
 
 		$prefixLength = strlen(self::ACTION_PREFIX_SETTING);
 
@@ -370,7 +367,12 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 * @param        $setting
 	 */
 	public function toggleBooleanSetting($setting, Player $player) {
-		$scriptSettings = $this->maniaControl->client->getModeScriptSettings();
+		try {
+			$scriptSettings = $this->maniaControl->client->getModeScriptSettings();
+		} catch(\Exception $e) {
+			return;
+		}
+
 		if (!isset($scriptSettings[$setting])) {
 			var_dump('no setting ' . $setting);
 			return;
