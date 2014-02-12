@@ -284,6 +284,7 @@ class ManiaControl implements CommandListener {
 
 		// Loading finished
 		$this->log('Loading completed!');
+		$this->log('Link: maniaplanet://#join=' . $this->server->login .'@' . $this->server->titleId);
 
 		// Main loop
 		while(!$this->shutdownRequested) {
