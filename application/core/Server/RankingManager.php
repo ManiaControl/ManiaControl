@@ -96,7 +96,7 @@ class RankingManager implements CallbackListener {
 	public function getLeaders() {
 		$leaders = array();
 		$prev    = -1;
-		foreach($this->rankings as $player => $score) {
+		foreach($this->rankings as $score) {
 			if ($prev != -1 && $prev < $score) {
 				return $leaders;
 			}

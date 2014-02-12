@@ -73,6 +73,7 @@ abstract class Formatter {
 				return $r . ' ' . $str . ($r > 1 ? 's' : '') . ' ago';
 			}
 		}
+		return '';
 	}
 
 	/**

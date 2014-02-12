@@ -29,12 +29,12 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	/**
 	 * Constants
 	 */
-	const ACTION_PREFIX_ENABLEPLUGIN  = 'PluginMenu.Enable.';
-	const ACTION_PREFIX_DISABLEPLUGIN = 'PluginMenu.Disable.';
-	const ACTION_PREFIX_SETTINGS      = 'PluginMenu.Settings.';
-	const ACTION_PREFIX_SETTING       = 'PluginMenuSetting';
-	const ACTION_SETTING_BOOL         = 'PluginMenuActionBoolSetting.';
-	const ACTION_BACK_TO_PLUGINS      = 'PluginMenu.BackToPlugins';
+	const ACTION_PREFIX_ENABLEPLUGIN                = 'PluginMenu.Enable.';
+	const ACTION_PREFIX_DISABLEPLUGIN               = 'PluginMenu.Disable.';
+	const ACTION_PREFIX_SETTINGS                    = 'PluginMenu.Settings.';
+	const ACTION_PREFIX_SETTING                     = 'PluginMenuSetting';
+	const ACTION_SETTING_BOOL                       = 'PluginMenuActionBoolSetting.';
+	const ACTION_BACK_TO_PLUGINS                    = 'PluginMenu.BackToPlugins';
 	const SETTING_PERMISSION_CHANGE_PLUGIN_SETTINGS = 'Change Plugin Settings';
 
 	/**
@@ -57,7 +57,6 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	}
 
 	/**
-	 *
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getTitle()
 	 */
 	public function getTitle() {
@@ -74,7 +73,6 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	}
 
 	/**
-	 *
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getMenu()
 	 */
 	public function getMenu($width, $height, Script $script) {
@@ -116,7 +114,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 
 
 		//Show Settings Menu
-		if($this->settingsClass != '') { //TODO improve
+		if ($this->settingsClass != '') { //TODO improve
 			/** @var  ManiaControl/SettingManager $this->maniaControl->settingManager */
 			$settings             = $this->maniaControl->settingManager->getSettingsByClass($this->settingsClass);
 			$pageFrames           = array();
@@ -124,11 +122,11 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			$y                    = 0;
 			$index                = 1;
 			$settingHeight        = 5.;
-			foreach($settings as $id => $setting) {
-				if(!isset($pageFrame)) {
+			foreach($settings as $setting) {
+				if (!isset($pageFrame)) {
 					$pageFrame = new Frame();
 					$frame->add($pageFrame);
-					if(!empty($pageFrames)) {
+					if (!empty($pageFrames)) {
 						$pageFrame->setVisible(false);
 					}
 					array_push($pageFrames, $pageFrame);
@@ -140,7 +138,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 				$pageFrame->add($settingFrame);
 				$settingFrame->setY($y);
 
-				if($index == 1) {
+				if ($index == 1) {
 					//Headline Label
 					$headLabel = new Label_Text();
 					$settingFrame->add($headLabel);
@@ -154,10 +152,10 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 
 					$y -= $settingHeight;
 
-					if($index % $pageMaxCount == $pageMaxCount - 1) {
+					if ($index % $pageMaxCount == $pageMaxCount - 1) {
 						$pageFrame = new Frame();
 						$frame->add($pageFrame);
-						if(!empty($pageFrames)) {
+						if (!empty($pageFrames)) {
 							$pageFrame->setVisible(false);
 						}
 						array_push($pageFrames, $pageFrame);
@@ -196,10 +194,10 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 				$entry->setDefault($setting->value);
 
 
-				if($setting->type == "bool") {
-					if($setting->value == "0") {
+				if ($setting->type == "bool") {
+					if ($setting->value == "0") {
 						$substyle = Quad_Icons64x64_1::SUBSTYLE_LvlRed;
-					} else if($setting->value == "1") {
+					} else if ($setting->value == "1") {
 						$substyle = Quad_Icons64x64_1::SUBSTYLE_LvlGreen;
 					}
 
@@ -216,7 +214,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 
 				$y -= $settingHeight;
 
-				if($index % $pageSettingsMaxCount == $pageSettingsMaxCount - 1) {
+				if ($index % $pageSettingsMaxCount == $pageSettingsMaxCount - 1) {
 					unset($pageFrame);
 				}
 
@@ -241,10 +239,11 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 		$pageFrames = array();
 		$y          = 0.;
 		foreach($pluginClasses as $index => $pluginClass) {
-			if(!isset($pageFrame)) {
+			/** @var Plugin $pluginClass */
+			if (!isset($pageFrame)) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
-				if(!empty($pageFrames)) {
+				if (!empty($pageFrames)) {
 					$pageFrame->setVisible(false);
 				}
 
@@ -263,7 +262,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			$pluginFrame->add($activeQuad);
 			$activeQuad->setPosition($width * -0.45, -0.1, 1);
 			$activeQuad->setSize($entryHeight * 0.9, $entryHeight * 0.9);
-			if($active) {
+			if ($active) {
 				$activeQuad->setSubStyle($activeQuad::SUBSTYLE_LvlGreen);
 			} else {
 				$activeQuad->setSubStyle($activeQuad::SUBSTYLE_LvlRed);
@@ -305,7 +304,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			$statusChangeButton->setHAlign(Control::RIGHT);
 			$statusChangeButton->setX($width * 0.45);
 			$statusChangeButton->setStyle($statusChangeButton::STYLE_CardButtonSmall);
-			if($active) {
+			if ($active) {
 				$statusChangeButton->setTextPrefix('$f00');
 				$statusChangeButton->setText('Deactivate');
 				$statusChangeButton->setAction(self::ACTION_PREFIX_DISABLEPLUGIN . $pluginClass);
@@ -316,7 +315,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			}
 
 			$y -= $entryHeight;
-			if($index % $pageMaxCount == $pageMaxCount - 1) {
+			if ($index % $pageMaxCount == $pageMaxCount - 1) {
 				unset($pageFrame);
 			}
 		}
@@ -325,7 +324,6 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	}
 
 	/**
-	 *
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
 	 */
 	public function saveConfigData(array $configData, Player $player) {
@@ -335,7 +333,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 		}
 
 		$prefix = explode(".", $configData[3][0]['Name']);
-		if($prefix[0] != self::ACTION_PREFIX_SETTING) {
+		if ($prefix[0] != self::ACTION_PREFIX_SETTING) {
 			return;
 		}
 
@@ -347,11 +345,11 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			$settingName = substr($setting['Name'], $prefixLength + 1);
 
 			$oldSetting = $maniaControlSettings[$settingName];
-			if($setting['Value'] == $oldSetting->value || $oldSetting->type == 'bool') {
+			if ($setting['Value'] == $oldSetting->value || $oldSetting->type == 'bool') {
 				continue;
 			}
 
-			$this->maniaControl->settingManager->updateSetting($oldSetting->class, $oldSetting->setting, $setting['Value']);
+			$this->maniaControl->settingManager->setSetting($oldSetting->class, $oldSetting->setting, $setting['Value']);
 		}
 
 		//Reopen the Menu
@@ -371,38 +369,40 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 		$settings    = (strpos($actionId, self::ACTION_PREFIX_SETTINGS) === 0);
 		$boolSetting = (strpos($actionId, self::ACTION_SETTING_BOOL) === 0);
 
-		if(!$enable && !$disable && !$settings && !$boolSetting) {
+		if (!$enable && !$disable && !$settings && !$boolSetting) {
 			return;
 		}
 		$login  = $callback[1][1];
 		$player = $this->maniaControl->playerManager->getPlayer($login);
-		if(!$player) {
+		if (!$player) {
 			return;
 		}
-		if($enable) {
+		if ($enable) {
 			$pluginClass = substr($actionId, strlen(self::ACTION_PREFIX_ENABLEPLUGIN));
-			$activated   = $this->maniaControl->pluginManager->activatePlugin($pluginClass, $player->login);
-			if($activated) {
+			/** @var Plugin $pluginClass */
+			$activated = $this->maniaControl->pluginManager->activatePlugin($pluginClass, $player->login);
+			if ($activated) {
 				$this->maniaControl->chat->sendSuccess($pluginClass::getName() . ' activated!', $player->login);
 				$this->maniaControl->configurator->showMenu($player);
 				$this->maniaControl->log(Formatter::stripCodes("{$player->login} activated '{$pluginClass}'!"));
 			} else {
 				$this->maniaControl->chat->sendError('Error activating ' . $pluginClass::getName() . '!', $player->login);
 			}
-		} else if($disable) {
+		} else if ($disable) {
 			$pluginClass = substr($actionId, strlen(self::ACTION_PREFIX_DISABLEPLUGIN));
+			/** @var Plugin $pluginClass */
 			$deactivated = $this->maniaControl->pluginManager->deactivatePlugin($pluginClass);
-			if($deactivated) {
+			if ($deactivated) {
 				$this->maniaControl->chat->sendSuccess($pluginClass::getName() . ' deactivated!', $player->login);
 				$this->maniaControl->configurator->showMenu($player);
 				$this->maniaControl->log(Formatter::stripCodes("{$player->login} deactivated '{$pluginClass}'!"));
 			} else {
 				$this->maniaControl->chat->sendError('Error deactivating ' . $pluginClass::getName() . '!', $player->login);
 			}
-		} else if($settings) { //Open Settings Menu
+		} else if ($settings) { //Open Settings Menu
 			$pluginClass         = substr($actionId, strlen(self::ACTION_PREFIX_SETTINGS));
 			$this->settingsClass = $pluginClass;
-		} else if($boolSetting) {
+		} else if ($boolSetting) {
 
 			$actionArray = explode(".", $actionId);
 			$setting     = $actionArray[1];
@@ -435,16 +435,16 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 
 		$oldSetting = $this->maniaControl->settingManager->getSettingByIndex($setting);
 
-		if(!isset($oldSetting)) {
+		if (!isset($oldSetting)) {
 			var_dump('no setting ' . $setting);
 			return;
 		}
 
 		//Toggle value
-		if($oldSetting->value == "1") {
-			$this->maniaControl->settingManager->updateSetting($oldSetting->class, $oldSetting->setting, "0");
+		if ($oldSetting->value == "1") {
+			$this->maniaControl->settingManager->setSetting($oldSetting->class, $oldSetting->setting, "0");
 		} else {
-			$this->maniaControl->settingManager->updateSetting($oldSetting->class, $oldSetting->setting, "1");
+			$this->maniaControl->settingManager->setSetting($oldSetting->class, $oldSetting->setting, "1");
 		}
 	}
 }
