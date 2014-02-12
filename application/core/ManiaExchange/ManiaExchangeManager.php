@@ -264,11 +264,6 @@ class ManiaExchangeManager {
 		$titleId     = $this->maniaControl->server->titleId;
 		$titlePrefix = strtolower(substr($titleId, 0, 2));
 
-		// Get MapTypes
-		$scriptInfos = $this->maniaControl->client->getModeScriptInfo();
-
-		$mapTypes = $scriptInfos->compatibleMapTypes;
-
 		// compile search URL
 		$url = 'http://' . $titlePrefix . '.mania-exchange.com/tracksearch?api=on';
 
@@ -284,8 +279,15 @@ class ManiaExchangeManager {
 
 		$url .= '&priord=' . $searchOrder;
 		$url .= '&limit=' . $maxMapsReturned;
-		$url .= '&mtype=' . $mapTypes;
 
+		// Get MapTypes
+		try {
+			$scriptInfos = $this->maniaControl->client->getModeScriptInfo();
+			$mapTypes    = $scriptInfos->compatibleMapTypes;
+			$url .= '&mtype=' . $mapTypes;
+		} catch(\Exception $e) {
+			//dont append map tpye
+		}
 
 		$fileFunc = function ($mapInfo, $error) use (&$function, $titlePrefix) {
 			if ($error) {

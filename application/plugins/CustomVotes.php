@@ -242,22 +242,26 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$this->addVoteMenuItem($itemQuad, 5, 'Vote for Restart-Map');
 
 		//Check if Pause exists in current GameMode
-		$scriptInfos = $this->maniaControl->client->getModeScriptInfo();
+		try {
+			$scriptInfos = $this->maniaControl->client->getModeScriptInfo();
 
-		$pauseExists = false;
-		foreach($scriptInfos->commandDescs as $param) {
-			if ($param->name == "Command_ForceWarmUp") {
-				$pauseExists = true;
-				break;
+			$pauseExists = false;
+			foreach($scriptInfos->commandDescs as $param) {
+				if ($param->name == "Command_ForceWarmUp") {
+					$pauseExists = true;
+					break;
+				}
 			}
-		}
 
-		// Menu Pause
-		if ($pauseExists) {
-			$itemQuad = new Quad_Icons128x32_1();
-			$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ManiaLinkSwitch);
-			$itemQuad->setAction(self::ACTION_START_VOTE . 'pausegame');
-			$this->addVoteMenuItem($itemQuad, 10, 'Vote for a pause of Current Game');
+			// Menu Pause
+			if ($pauseExists) {
+				$itemQuad = new Quad_Icons128x32_1();
+				$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ManiaLinkSwitch);
+				$itemQuad->setAction(self::ACTION_START_VOTE . 'pausegame');
+				$this->addVoteMenuItem($itemQuad, 10, 'Vote for a pause of Current Game');
+			}
+		} catch(\Exception $e) {
+			//do nothing
 		}
 
 		//Menu SkipMap

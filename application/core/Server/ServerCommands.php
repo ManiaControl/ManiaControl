@@ -81,24 +81,6 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_CANCEL_VOTE, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_HANDLE_WARMUP, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 
-		//Check if Pause exists in current GameMode
-		$scriptInfos = $this->maniaControl->client->getModeScriptInfo();
-		$pauseExists = false;
-		foreach($scriptInfos->commandDescs as $param) {
-			if ($param->name == "Command_ForceWarmUp") {
-				$pauseExists = true;
-				break;
-			}
-		}
-
-		// Set Pause
-		if ($pauseExists) {
-			$itemQuad = new Quad_Icons128x32_1();
-			$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ManiaLinkSwitch);
-			$itemQuad->setAction(self::ACTION_SET_PAUSE);
-			$this->maniaControl->actionsMenu->addAdminMenuItem($itemQuad, 13, 'Pauses the current game');
-		}
-
 		// Extend WarmUp
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_EXTEND_WARMUP, $this, 'command_extendWarmup');
 		$itemQuad = new Quad_BgRaceScore2();
@@ -119,6 +101,28 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ArrowRed);
 		$itemQuad->setAction(self::ACTION_CANCEL_VOTE);
 		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 30, 'Cancel Vote');
+
+		//Check if Pause exists in current GameMode
+		try {
+			$scriptInfos = $this->maniaControl->client->getModeScriptInfo();
+		} catch(\Exception $e) {
+			return;
+		}
+		$pauseExists = false;
+		foreach($scriptInfos->commandDescs as $param) {
+			if ($param->name == "Command_ForceWarmUp") {
+				$pauseExists = true;
+				break;
+			}
+		}
+
+		// Set Pause
+		if ($pauseExists) {
+			$itemQuad = new Quad_Icons128x32_1();
+			$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ManiaLinkSwitch);
+			$itemQuad->setAction(self::ACTION_SET_PAUSE);
+			$this->maniaControl->actionsMenu->addAdminMenuItem($itemQuad, 13, 'Pauses the current game');
+		}
 	}
 
 
