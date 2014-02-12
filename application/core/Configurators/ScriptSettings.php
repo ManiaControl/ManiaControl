@@ -12,6 +12,7 @@ use FML\Script\Script;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
+use ManiaControl\Maps\MapManager;
 use ManiaControl\Players\Player;
 
 /**
@@ -23,11 +24,12 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	/**
 	 * Constants
 	 */
-	const ACTION_PREFIX_SETTING     = 'ScriptSetting';
-	const ACTION_SETTING_BOOL       = 'ScriptSetting.ActionBoolSetting.';
-	const CB_SCRIPTSETTING_CHANGED  = 'ScriptSettings.SettingChanged';
-	const CB_SCRIPTSETTINGS_CHANGED = 'ScriptSettings.SettingsChanged';
-	const TABLE_SCRIPT_SETTINGS     = 'mc_scriptsettings';
+	const ACTION_PREFIX_SETTING                   = 'ScriptSetting';
+	const ACTION_SETTING_BOOL                     = 'ScriptSetting.ActionBoolSetting.';
+	const CB_SCRIPTSETTING_CHANGED                = 'ScriptSettings.SettingChanged';
+	const CB_SCRIPTSETTINGS_CHANGED               = 'ScriptSettings.SettingsChanged';
+	const TABLE_SCRIPT_SETTINGS                   = 'mc_scriptsettings';
+	const SETTING_LOAD_DEFAULT_SETTINGS_MAP_BEGIN = 'Load Stored Script-Settings on Map-Begin';
 
 	/**
 	 * Private Properties
@@ -45,6 +47,8 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'onInit');
+		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_BEGINMAP, $this, 'onBeginMap');
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_LOAD_DEFAULT_SETTINGS_MAP_BEGIN, true);
 		$this->initTables();
 	}
 
@@ -83,6 +87,18 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 */
 	public function onInit(array $callback) {
 		$this->loadSettingsFromDatabase();
+
+	}
+
+	/**
+	 * Handle OnBegin Map Callback
+	 *
+	 * @param array $callback
+	 */
+	public function onBeginMap(array $callback) {
+		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_LOAD_DEFAULT_SETTINGS_MAP_BEGIN)) {
+			$this->loadSettingsFromDatabase();
+		}
 	}
 
 	/**
@@ -91,9 +107,9 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 * @return bool
 	 */
 	public function loadSettingsFromDatabase() {
-		try{
+		try {
 			$scriptSettings = $this->maniaControl->client->getModeScriptSettings();
-		} catch (\Exception $e){
+		} catch(\Exception $e) {
 			return false;
 		}
 
