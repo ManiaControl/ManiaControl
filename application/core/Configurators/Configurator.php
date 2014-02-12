@@ -172,7 +172,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$player       = $callback[1];
 		$openedWidget = $callback[2];
 		//unset when another main widget got opened
-		if($openedWidget != 'Configurator') {
+		if ($openedWidget != 'Configurator') {
 			unset($this->playersMenuShown[$player->login]);
 		}
 	}
@@ -203,7 +203,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	 * @param Player $player
 	 */
 	public function toggleMenu(Player $player) {
-		if(isset($this->playersMenuShown[$player->login])) {
+		if (isset($this->playersMenuShown[$player->login])) {
 			$this->hideMenu($player);
 		} else {
 			$this->showMenu($player);
@@ -220,7 +220,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$i = 0;
 		foreach($this->menus as $menu) {
 			/** @var  ConfiguratorMenu $menu */
-			if($menu->getTitle() == $name) {
+			if ($menu->getTitle() == $name) {
 				return $i;
 			}
 			$i++;
@@ -279,7 +279,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 
 		$menuItemY = $menuHeight * 0.42;
 		$menuId    = 0;
-		foreach($this->menus as $index => $menu) {
+		foreach($this->menus as $menu) {
 			/** @var ConfiguratorMenu $menu */
 
 			// Add title
@@ -292,7 +292,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 			$menuItemLabel->setAction(self::ACTION_SELECTMENU . '.' . $menuId);
 
 			//Show a Menu
-			if($menuId == $menuIdShown) {
+			if ($menuId == $menuIdShown) {
 				$menuControl = $menu->getMenu($subMenuWidth, $subMenuHeight, $script);
 				$menusFrame->add($menuControl);
 				$script->addMenu($menuItemLabel, $menuControl);
@@ -344,7 +344,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	public function handleManialinkPageAnswer(array $callback) {
 		$actionId       = $callback[1][2];
 		$boolSelectMenu = (strpos($actionId, self::ACTION_SELECTMENU) === 0);
-		if(!$boolSelectMenu) {
+		if (!$boolSelectMenu) {
 			return;
 		}
 

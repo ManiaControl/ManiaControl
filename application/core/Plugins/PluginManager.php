@@ -133,7 +133,8 @@ class PluginManager {
 		if ($this->isPluginActive($pluginClass)) {
 			return false;
 		}
-		$plugin                            = new $pluginClass();
+		$plugin = new $pluginClass();
+		/** @var Plugin $plugin */
 		$this->activePlugins[$pluginClass] = $plugin;
 		$this->savePluginStatus($pluginClass, true);
 		try {
@@ -164,6 +165,7 @@ class PluginManager {
 			return false;
 		}
 		$plugin = $this->activePlugins[$pluginClass];
+		/** @var Plugin $plugin */
 		unset($this->activePlugins[$pluginClass]);
 		$plugin->unload();
 		$interfaces = class_implements($pluginClass);

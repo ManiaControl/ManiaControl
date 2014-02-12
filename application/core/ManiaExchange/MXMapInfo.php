@@ -21,7 +21,8 @@ class MXMapInfo {
 	 * Returns map object with all available data from MX map data
 	 *
 	 * @param String $prefix MX URL prefix
-	 * @param Object $map    The MX map data from MXInfoSearcher
+	 * @param        $mx
+	 * @internal param Object $map The MX map data from MXInfoSearcher
 	 * @return MXMapInfo
 	 */
 	public function __construct($prefix, $mx) {

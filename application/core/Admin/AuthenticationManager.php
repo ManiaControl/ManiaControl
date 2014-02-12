@@ -90,10 +90,10 @@ class AuthenticationManager implements CallbackListener {
 			trigger_error($mysqli->error, E_USER_ERROR);
 			return false;
 		}
-		$adminStatement->bind_param('si', $login, $masterAdminLevel);
 		$success = true;
 		foreach($masterAdmins as $masterAdmin) {
 			$login = (string)$masterAdmin;
+			$adminStatement->bind_param('si', $login, $masterAdminLevel);
 			$adminStatement->execute();
 			if ($adminStatement->error) {
 				trigger_error($adminStatement->error);

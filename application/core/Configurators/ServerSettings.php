@@ -351,9 +351,9 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		}
 
 		// Notifications
-		$settingsCount = count($newSettings);
-		$settingIndex  = 0;
-		$title         = $this->maniaControl->authenticationManager->getAuthLevelName($player->authLevel);
+		//$settingsCount = count($newSettings);
+		$settingIndex = 0;
+		//$title         = $this->maniaControl->authenticationManager->getAuthLevelName($player->authLevel);
 		// $chatMessage = '$ff0' . $title . ' $<' . $player->nickname . '$> set ScriptSetting' . ($settingsCount > 1 ? 's' : '') . ' ';
 
 		foreach($newSettings as $setting => $value) {

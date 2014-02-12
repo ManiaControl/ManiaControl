@@ -2,9 +2,7 @@
 
 namespace ManiaControl\Configurators;
 
-use FML\Script\Pages;
 use FML\Script\Script;
-use FML\Script\Tooltips;
 use ManiaControl\Players\Player;
 
 /**
@@ -24,8 +22,8 @@ interface ConfiguratorMenu {
 	/**
 	 * Get the Configurator Menu Frame
 	 *
-	 * @param float $width
-	 * @param float $height
+	 * @param float  $width
+	 * @param float  $height
 	 * @param Script $script
 	 * @return \FML\Controls\Frame
 	 */
@@ -34,7 +32,7 @@ interface ConfiguratorMenu {
 	/**
 	 * Save the Config Data
 	 *
-	 * @param array $configData
+	 * @param array  $configData
 	 * @param Player $player
 	 */
 	public function saveConfigData(array $configData, Player $player);
