@@ -49,6 +49,7 @@ class TimerManager {
 		}
 
 		//Init the Timer Listening
+		// TODO: extra model class
 		$listening              = new \stdClass();
 		$listening->listener    = $listener;
 		$listening->method      = $method;

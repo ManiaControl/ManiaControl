@@ -282,6 +282,9 @@ class StatisticManager {
 			$this->stats[$row->name] = $row;
 		}
 		$result->close();
+		
+		// TODO: own model class
+		
 		//Define Special Stat Kill / Death Ratio
 		$stat                                            = new \stdClass();
 		$stat->name                                      = self::SPECIAL_STAT_KD_RATIO;
@@ -300,7 +303,7 @@ class StatisticManager {
 		$stat->type                                       = self::STAT_TYPE_FLOAT;
 		$this->specialStats[self::SPECIAL_STAT_LASER_ACC] = $stat;
 
-		//Nuceleus Accuracy
+		//Nucleus Accuracy
 		$stat                                               = new \stdClass();
 		$stat->name                                         = self::SPECIAL_STAT_NUCLEUS_ACC;
 		$stat->type                                         = self::STAT_TYPE_FLOAT;
