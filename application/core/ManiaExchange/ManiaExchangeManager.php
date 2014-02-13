@@ -233,7 +233,10 @@ class ManiaExchangeManager {
 			$maps = array();
 			foreach($mxMapList as $map) {
 				if ($map != null) {
-					array_push($maps, new MXMapInfo($titlePrefix, $map));
+					$mxMapObject = new MXMapInfo($titlePrefix, $map);
+					if ($mxMapObject != null) {
+						array_push($maps, $mxMapObject);
+					}
 				}
 			}
 
