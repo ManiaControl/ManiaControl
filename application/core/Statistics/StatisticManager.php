@@ -535,9 +535,9 @@ class StatisticManager {
 		$mysqli    = $this->maniaControl->database->mysqli;
 		$query     = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_STATMETADATA . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
-				`name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+				`name` varchar(100) NOT NULL,
 				`type` int(5) NOT NULL,
-				`description` varchar(150) COLLATE utf8_unicode_ci,
+				`description` varchar(150) NOT NULL,
 				PRIMARY KEY (`index`),
 				UNIQUE KEY `name` (`name`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Statistics Meta Data' AUTO_INCREMENT=1;";
@@ -558,7 +558,7 @@ class StatisticManager {
 				`serverIndex` int(11) NOT NULL,
 				`playerId` int(11) NOT NULL,
 				`statId` int(11) NOT NULL,
-				`value` int(20) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
+				`value` int(20) NOT NULL DEFAULT '0',
 				PRIMARY KEY (`index`),
 				UNIQUE KEY `unique` (`statId`,`playerId`,`serverIndex`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Statistics' AUTO_INCREMENT=1;";

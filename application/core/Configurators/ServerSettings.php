@@ -57,9 +57,11 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	private function initTables() {
 		$mysqli    = $this->maniaControl->database->mysqli;
 		$query     = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_SERVER_SETTINGS . "` (
-				`serverIndex` int(11) NOT NULL AUTO_INCREMENT,
-				`settingName` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-				`settingValue` varchar(500) COLLATE utf8_unicode_ci NOT NULL,
+				`index` int(11) NOT NULL AUTO_INCREMENT,
+				`serverIndex` int(11) NOT NULL,
+				`settingName` varchar(100) NOT NULL,
+				`settingValue` varchar(500) NOT NULL,
+				PRIMARY KEY (`index`),
 				UNIQUE KEY `setting` (`serverIndex`, `settingName`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Server Settings' AUTO_INCREMENT=1;";
 		$statement = $mysqli->prepare($query);

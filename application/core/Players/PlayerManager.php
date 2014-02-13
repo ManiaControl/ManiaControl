@@ -80,9 +80,9 @@ class PlayerManager implements CallbackListener {
 		$mysqli               = $this->maniaControl->database->mysqli;
 		$playerTableQuery     = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_PLAYERS . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
-				`login` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-				`nickname` varchar(150) COLLATE utf8_unicode_ci NOT NULL,
-				`path` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+				`login` varchar(100) NOT NULL,
+				`nickname` varchar(150) NOT NULL,
+				`path` varchar(100) NOT NULL,
 				`authLevel` int(11) NOT NULL DEFAULT '0',
 				`changed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 				PRIMARY KEY (`index`),

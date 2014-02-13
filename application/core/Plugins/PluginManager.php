@@ -47,7 +47,7 @@ class PluginManager {
 		$mysqli            = $this->maniaControl->database->mysqli;
 		$pluginsTableQuery = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_PLUGINS . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
-				`className` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+				`className` varchar(100) NOT NULL,
 				`active` tinyint(1) NOT NULL DEFAULT '0',
 				`changed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 				PRIMARY KEY (`index`),
