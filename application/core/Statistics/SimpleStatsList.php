@@ -92,6 +92,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 
 	/**
 	 * Register a Certain Stat
+	 *
 	 * @param        $statName
 	 * @param        $order
 	 * @param        $headShortCut
@@ -168,7 +169,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 
 
 		//Compute Headline
-		$x = $xStart + 55;
+		$x            = $xStart + 55;
 		$statRankings = array();
 		foreach($this->statArray as $key => $stat) {
 			$ranking = $this->maniaControl->statisticManager->getStatsRanking($stat["Name"]);
@@ -176,7 +177,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 				$statRankings[$stat["Name"]]  = $ranking;
 				$array[$stat['HeadShortCut']] = $x;
 				$x += $stat["Width"];
-			}else{
+			} else {
 				unset($this->statArray[$key]);
 			}
 		}
@@ -186,8 +187,9 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		//Description Label
 		$i = 2;
 		foreach($this->statArray as $statArray) {
-			if(!isset($labels[$i]))
+			if (!isset($labels[$i])) {
 				break;
+			}
 
 			/** @var Label_Text $labels [] */
 			$labels[$i]->setAction(self::ACTION_SORT_STATS . '.' . $statArray["Name"]);
@@ -202,6 +204,10 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		$textColor = 'FFF';
 		$i         = 1;
 		$y -= 10;
+
+		if (!isset($statRankings[$order])) {
+			return;
+		}
 
 		foreach($statRankings[$order] as $playerId => $value) {
 			$listPlayer = $this->maniaControl->playerManager->getPlayerByIndex($playerId);
