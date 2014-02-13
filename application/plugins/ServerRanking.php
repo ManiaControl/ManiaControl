@@ -210,10 +210,15 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 				$requiredRecords = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MIN_REQUIRED_RECORDS);
 				$maxRecords      = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAX_STORED_RECORDS);
 
+				//FIXME requiredrecords = NULL
+
+				$requiredRecords = 3;
+
 				$query   = 'SELECT playerIndex, COUNT(*) AS Cnt
   		          FROM ' . LocalRecordsPlugin::TABLE_RECORDS . '
-  		          GROUP BY PlayerId
+  		          GROUP BY PlayerIndex
   		          HAVING Cnt >=' . $requiredRecords;
+
 				$result  = $mysqli->query($query);
 				$players = array();
 				while($row = $result->fetch_object()) {
