@@ -32,7 +32,9 @@ class ErrorHandler {
 	 * @param \Exception $ex
 	 */
 	public function exceptionHandler(\Exception $ex) {
-		$message = "[ManiaControl EXCEPTION]: {$ex->getMessage()} Trace: {$ex->getTraceAsString()}!";
+		$message = "[ManiaControl EXCEPTION]: {$ex->getMessage()}" . PHP_EOL;
+		$message .= "Class: ". get_class($ex) . PHP_EOL;
+		$message .= "Trace: {$ex->getTraceAsString()}" . PHP_EOL;
 		logMessage($message);
 
 		$error                        = array();
