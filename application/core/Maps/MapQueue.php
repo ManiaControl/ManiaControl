@@ -9,7 +9,6 @@ use ManiaControl\Commands\CommandListener;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
-use Maniaplanet\DedicatedServer\InvalidArgumentException;
 
 /**
  * MapQueue Class
@@ -176,17 +175,12 @@ class MapQueue implements CallbackListener, CommandListener {
 		$this->nextMap = array_shift($this->queuedMaps);
 
 		//Check if Map Queue is empty
-		if ($this->nextMap == null) {
+		if ($this->nextMap == null || !isset($this->nextMap[1])) {
 			return;
 		}
 		$map = $this->nextMap[1];
 
-
-		try {
-			$this->maniaControl->client->chooseNextMap($map->fileName);
-		} catch(InvalidArgumentException $e) {
-			//do nothing
-		}
+		$this->maniaControl->client->chooseNextMap($map->fileName);
 	}
 
 	/**
