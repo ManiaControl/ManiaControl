@@ -21,6 +21,7 @@ use ManiaControl\Settings\SettingManager;
 use ManiaControl\Statistics\StatisticManager;
 use ManiaControl\Update\UpdateManager;
 use Maniaplanet\DedicatedServer\Connection;
+use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 require_once __DIR__ . '/Maniaplanet/DedicatedServer/Connection.php';
 require_once __DIR__ . '/GbxDataFetcher/gbxdatafetcher.inc.php';
@@ -216,12 +217,11 @@ class ManiaControl implements CommandListener {
 		// Hide manialinks
 		try {
 			$this->client->sendHideManialinkPage();
-
-			// Close the client connection
-			$this->client->delete($this->server->ip, $this->server->port);
-		} catch(\Exception $e) {
-			//do nothing
+		} catch(Exception $e) {
 		}
+		
+		// Close the client connection
+		$this->client->delete($this->server->ip, $this->server->port);
 
 		$this->log('Quitting ManiaControl!');
 		exit();
@@ -343,27 +343,18 @@ class ManiaControl implements CommandListener {
 
 		try {
 			$this->client = Connection::factory($host, $port, self::CONNECT_TIMEOUT, $login, $pass);
-		} catch(\Exception $e) {
+		} catch(Exception $e) {
+			// TODO: is it even needed to try-catch here? we will crash anyways
 			trigger_error("Couldn't authenticate on server with user '{$login}'! " . $e->getMessage(), E_USER_ERROR);
 		}
 
 		// Enable callback system
-		try {
-			$this->client->enableCallbacks(true);
-		} catch(\Exception $e) {
-			trigger_error("Couldn't enable callbacks! " . $e->getMessage(), E_USER_ERROR);
-		}
+		$this->client->enableCallbacks(true);
 
 		// Wait for server to be ready
 		if (!$this->server->waitForStatus(4)) {
 			trigger_error("Server couldn't get ready!", E_USER_ERROR);
 		}
-
-		// Set api version
-		/*
-		 * if(!$this->client->query('SetApiVersion', self::API_VERSION)) { trigger_error("Couldn't set API version '" . self::API_VERSION . "'! This
-		 * might cause problems. " . $this->getClientErrorText()); }
-		 */
 
 		// Connect finished
 		$this->log("Server Connection successfully established!");
@@ -378,9 +369,11 @@ class ManiaControl implements CommandListener {
 
 		try {
 			$scriptSettings = $this->client->getModeScriptSettings();
-		} catch(\Exception $e) {
-			trigger_error("Couldn't get mode script settings. " . $e->getMessage());
-			return;
+		} catch(Exception $e) {
+			if ($e->getMessage() == 'Not in script mode.') {
+				return;
+			}
+			throw $e;
 		}
 
 		if (!array_key_exists('S_UseScriptCallbacks', $scriptSettings)) {
@@ -390,7 +383,7 @@ class ManiaControl implements CommandListener {
 		$scriptSettings['S_UseScriptCallbacks'] = true;
 		try {
 			$this->client->setModeScriptSettings($scriptSettings);
-		} catch(\Exception $e) {
+		} catch(Exception $e) {
 			trigger_error("Couldn't set mode script settings to enable script callbacks. " . $e->getMessage());
 			return;
 		}

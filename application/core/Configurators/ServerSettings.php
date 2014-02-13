@@ -100,25 +100,22 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			return false;
 		}
 		$serverSettings = $this->maniaControl->client->getServerOptions()->toArray();
-		while($row = $result->fetch_object()) {
+		$applySettings = false;
+		while ($row = $result->fetch_object()) {
 			if (!isset($serverSettings[$row->settingName])) {
 				continue;
 			}
 			$oldType                           = gettype($serverSettings[$row->settingName]);
 			$serverSettings[$row->settingName] = $row->settingValue;
 			settype($serverSettings[$row->settingName], $oldType);
+			$applySettings = true;
 		}
 		$result->close();
-		if (!$serverSettings) {
+		if (!$applySettings) {
 			return true;
 		}
 
-		try {
-			$this->maniaControl->client->setServerOptions($serverSettings);
-		} catch(\Exception $e) {
-			trigger_error('Error occured: ' . $e->getMessage());
-			return false;
-		}
+		$this->maniaControl->client->setServerOptions($serverSettings);
 		return true;
 	}
 
@@ -325,13 +322,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		if (!$newSettings) {
 			return true;
 		}
-
-		try {
-			$this->maniaControl->client->setServerOptions($newSettings);
-		} catch(\Exception $e) {
-			trigger_error('Error occured: ' . $e->getMessage());
-			return false;
-		}
+		$this->maniaControl->client->setServerOptions($newSettings);
 
 		// Save Settings into Database
 		$mysqli = $this->maniaControl->database->mysqli;

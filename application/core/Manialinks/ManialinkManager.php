@@ -10,6 +10,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
+use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
  * Manialink manager class
@@ -148,7 +149,8 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 
 				return $success;
 			}
-		} catch(\Exception $e) {
+		} catch(Exception $e) {
+			// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
 			return false;
 		}
 

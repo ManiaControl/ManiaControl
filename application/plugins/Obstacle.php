@@ -6,6 +6,7 @@ use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\Players\Player;
 use ManiaControl\Plugins\Plugin;
+use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
  * ManiaControl Obstacle Plugin
@@ -128,8 +129,12 @@ class ObstaclePlugin implements CallbackListener, CommandListener, Plugin {
 		$param = $player->login . ";" . $params[1] . ";";
 		try{
 			$this->maniaControl->client->triggerModeScriptEvent(self::CB_JUMPTO, $param);
-		} catch(\Exception $e){
-			trigger_error("Couldn't send jump callback for '{$player->login}'. " . $e->getMessage());
+		} catch(Exception $e) {
+			if ($e->getMessage() == 'Not in script mode.') {
+				trigger_error("Couldn't send jump callback for '{$player->login}'. " . $e->getMessage());
+				return;
+			}
+			throw $e;
 		}
 	}
 

@@ -4,6 +4,7 @@ use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Plugins\Plugin;
+use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
  * ManiaControl Chat-Message Plugin
@@ -308,10 +309,11 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		$msg = '$i$ff0 $<' . $player->nickname . '$>$s$39f chooses to boot back to the real world!';
 		$this->maniaControl->chat->sendChat($msg, null, true);
 
-		$message = '$39F Thanks for Playing, please come back soon!$z ';
+		$message = '$39F Thanks for Playing, see you around!$z';
 		try {
 			$this->maniaControl->client->kick($player->login, $message);
-		} catch(\Exception $e) {
+		} catch(Exception $e) {
+			// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 			return;
 		}
@@ -330,7 +332,8 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		$message = '$39F Thanks for Playing, please come back soon!$z ';
 		try {
 			$this->maniaControl->client->kick($player->login, $message);
-		} catch(\Exception $e) {
+		} catch(Exception $e) {
+			// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 			return;
 		}
@@ -350,7 +353,8 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 			// force into spec
 			try {
 				$this->maniaControl->client->forceSpectator($player->login, 3);
-			} catch(\Exception $e) {
+			} catch(Exception $e) {
+				// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
 				$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 				return;
 			}
@@ -358,7 +362,8 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 			// free player slot
 			try {
 				$this->maniaControl->client->spectatorReleasePlayerSlot($player->login);
-			} catch(\Exception $e) {
+			} catch(Exception $e) {
+				// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
 				//to nothing
 			}
 		}

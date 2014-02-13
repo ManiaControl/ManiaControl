@@ -6,6 +6,7 @@ use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Update\UpdateManager;
+use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
  * Class reports Usage
@@ -56,18 +57,18 @@ class UsageReporter implements TimerListener {
 		$properties['ServerName']          = Formatter::stripDirtyCodes($this->maniaControl->server->getName());
 		$properties['PlayerCount']         = $this->maniaControl->playerManager->getPlayerCount();
 
-		try {
-			$maxPlayers               = $this->maniaControl->client->getMaxPlayers();
-			$properties['MaxPlayers'] = $maxPlayers["CurrentValue"];
-		} catch(\Exception $e) {
-			$properties['MaxPlayers'] = -1;
-		}
+		$maxPlayers               = $this->maniaControl->client->getMaxPlayers();
+		$properties['MaxPlayers'] = $maxPlayers["CurrentValue"];
 
 		try {
 			$scriptName               = $this->maniaControl->client->getScriptName();
 			$properties['ScriptName'] = $scriptName["CurrentValue"];
-		} catch(\Exception $e) {
-			$properties['ScriptName'] = '';
+		} catch(Exception $e) {
+			if ($e->getMessage() == 'Not in script mode.') {
+				$properties['ScriptName'] = '';
+			} else {
+				throw $e;
+			}
 		}
 
 		$json = json_encode($properties);

@@ -191,12 +191,7 @@ class CallbackManager {
 			return;
 		}
 
-		try {
-			$callbacks = $this->maniaControl->client->executeCallbacks();
-		} catch(\Exception $e) {
-			trigger_error("Error reading server callbacks. " . $e->getMessage());
-			return;
-		}
+		$callbacks = $this->maniaControl->client->executeCallbacks();
 
 		// Handle callbacks
 		foreach($callbacks as $callback) {

@@ -13,6 +13,7 @@ use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
+use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
  * Class offering various commands related to the dedicated server
@@ -105,8 +106,11 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 		//Check if Pause exists in current GameMode
 		try {
 			$scriptInfos = $this->maniaControl->client->getModeScriptInfo();
-		} catch(\Exception $e) {
-			return;
+		} catch(Exception $e) {
+			if ($e->getMessage() == 'Not in script mode.') {
+				return;
+			}
+			throw $e;
 		}
 		$pauseExists = false;
 		foreach($scriptInfos->commandDescs as $param) {
@@ -160,9 +164,12 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 
 		try {
 			$this->maniaControl->client->triggerModeScriptEvent('WarmUp_Extend', '10');
-		} catch(\Exception $e) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
-			return;
+		} catch(Exception $e) {
+			if ($e->getMessage() == 'Not in script mode.') {
+				$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
+				return;
+			}
+			throw $e;
 		}
 
 		$this->maniaControl->chat->sendInformation('$<' . $player->nickname . '$> extended the WarmUp by 10 seconds!');
@@ -182,9 +189,12 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 
 		try {
 			$this->maniaControl->client->triggerModeScriptEvent('WarmUp_Stop', '');
-		} catch(\Exception $e) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
-			return;
+		} catch(Exception $e) {
+			if ($e->getMessage() == 'Not in script mode.') {
+				$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
+				return;
+			}
+			throw $e;
 		}
 
 		$this->maniaControl->chat->sendInformation('$<' . $player->nickname . '$> stopped the WarmUp!');
@@ -202,9 +212,12 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 		}
 		try {
 			$this->maniaControl->client->sendModeScriptCommands(array('Command_ForceWarmUp' => True));
-		} catch(\Exception $e) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
-			return;
+		} catch(Exception $e) {
+			if ($e->getMessage() == 'Not in script mode.') {
+				$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
+				return;
+			}
+			throw $e;
 		}
 
 		$this->maniaControl->chat->sendInformation('$<' . $player->nickname . '$> paused the Game!');
@@ -305,12 +318,7 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 			return;
 		}
 		$serverName = $params[1];
-		try {
-			$this->maniaControl->client->setServerName($serverName);
-		} catch(\Exception $e) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
-			return;
-		}
+		$this->maniaControl->client->setServerName($serverName);
 		$this->maniaControl->chat->sendSuccess("Server name changed to: '{$serverName}'!", $player->login);
 	}
 
@@ -332,12 +340,7 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 			$password       = $messageParts[1];
 			$successMessage = "Password changed to: '{$password}'!";
 		}
-		try {
-			$this->maniaControl->client->setServerPassword($password);
-		} catch(\Exception $e) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
-			return;
-		}
+		$this->maniaControl->client->setServerPassword($password);
 		$this->maniaControl->chat->sendSuccess($successMessage, $player->login);
 	}
 
@@ -359,12 +362,7 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 			$password       = $messageParts[1];
 			$successMessage = "Spectator password changed to: '{$password}'!";
 		}
-		try {
-			$this->maniaControl->client->setServerPasswordForSpectator($password);
-		} catch(\Exception $e) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
-			return;
-		}
+		$this->maniaControl->client->setServerPasswordForSpectator($password);
 		$this->maniaControl->chat->sendSuccess($successMessage, $player->login);
 	}
 
@@ -394,13 +392,7 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 			$amount = 0;
 		}
 
-		try {
-			$this->maniaControl->client->setMaxPlayers($amount);
-		} catch(\Exception $e) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
-			return;
-		}
-
+		$this->maniaControl->client->setMaxPlayers($amount);
 		$this->maniaControl->chat->sendSuccess("Changed max players to: {$amount}", $player->login);
 	}
 
@@ -430,12 +422,7 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 			$amount = 0;
 		}
 
-		try {
-			$this->maniaControl->client->setMaxSpectators($amount);
-		} catch(\Exception $e) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
-			return;
-		}
+		$this->maniaControl->client->setMaxSpectators($amount);
 		$this->maniaControl->chat->sendSuccess("Changed max spectators to: {$amount}", $player->login);
 	}
 
@@ -443,16 +430,9 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 	 * Perform server shutdown
 	 *
 	 * @param string $login
-	 * @return bool
 	 */
 	private function shutdownServer($login = '#') {
-		try {
-			$this->maniaControl->client->stopServer();
-		} catch(\Exception $e) {
-			trigger_error("Server shutdown command from '{login}' failed. " . $e->getMessage());
-			return false;
-		}
+		$this->maniaControl->client->stopServer();
 		$this->maniaControl->quit("Server shutdown requested by '{$login}'");
-		return true;
 	}
 }

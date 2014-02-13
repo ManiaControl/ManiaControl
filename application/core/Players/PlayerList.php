@@ -23,6 +23,7 @@ use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
+use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
  * PlayerList Widget Class
@@ -650,7 +651,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				try {
 					$this->maniaControl->client->forceSpectator($adminLogin, PlayerActions::SPECTATOR_BUT_KEEP_SELECTABLE);
 					$this->maniaControl->client->forceSpectatorTarget($adminLogin, $targetLogin, 1);
-				} catch(\Exception $e) {
+				} catch(Exception $e) {
+					// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
 				}
 				break;
 			case self::ACTION_OPEN_PLAYER_DETAILED:
@@ -721,8 +723,9 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 					try {
 						$this->maniaControl->client->forceSpectator($target->login, PlayerActions::SPECTATOR_BUT_KEEP_SELECTABLE);
 						$this->maniaControl->client->spectatorReleasePlayerSlot($target->login);
-					} catch(\Exception $e) {
+					} catch(Exception $e) {
 						//do nothing
+						// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
 					}
 				});
 				break;
@@ -745,7 +748,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 					$message = '$39F You got kicked due a Public vote!$z ';
 					try {
 						$this->maniaControl->client->kick($target->login, $message);
-					} catch(\Exception $e) {
+					} catch(Exception $e) {
+						// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
 						$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $target->login);
 						return;
 					}

@@ -14,6 +14,7 @@ use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
+use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
  * Queue plugin
@@ -289,14 +290,17 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 		if($this->maniaControl->client->getMaxPlayers()['CurrentValue'] > (count($this->maniaControl->playerManager->players) - count($this->spectators))) {
 			try {
 				$this->maniaControl->client->forceSpectator($player->login, 2);
-			} catch(\Exception $e) {
+			} catch(Exception $e) {
+				// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
 				$this->maniaControl->chat->sendError("Error while leaving the Queue", $player->login);
 				return;
 			}
 
 			try {
 				$this->maniaControl->client->forceSpectator($player->login, 0);
-			} catch(\Exception $e) { }
+			} catch(Exception $e) {
+				// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
+			}
 
 			$teams = array();
 			/** @var  Player $player */
@@ -319,7 +323,9 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 
 			try {
 				$this->maniaControl->client->forcePlayerTeam($player->login, $smallestTeam);
-			} catch(\Exception $e) { }
+			} catch(Exception $e) {
+				// TODO: only possible valid exceptions should be "wrong login" or "not in team mode" - throw others (like connection error)
+			}
 
 			if(isset($this->spectators[$player->login])) {
 				unset($this->spectators[$player->login]);

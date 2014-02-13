@@ -10,6 +10,7 @@ use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Server\Server;
+use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
  * Class offering various Admin Commands related to Players
@@ -105,7 +106,8 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 
 		try {
 			$this->maniaControl->client->autoTeamBalance();
-		} catch(\Exception $e) {
+		} catch(Exception $e) {
+			// TODO: only catch 'not in team mode' exception - throw others (like connection error)
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 			return;
 		}
@@ -267,15 +269,9 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 		if (isset($messageParts[1]) && is_numeric($messageParts[1])) {
 			$amount = intval($messageParts[1]);
 		}
-		try {
-			for($i = 0; $i < $amount; $i++) {
-				$this->maniaControl->client->connectFakePlayer();
-			}
-		} catch(\Exception $e) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
-			return;
+		for ($i = 0; $i < $amount; $i++) {
+			$this->maniaControl->client->connectFakePlayer();
 		}
-
 		$this->maniaControl->chat->sendSuccess('Fake players connected!', $player->login);
 	}
 
@@ -290,14 +286,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
-
-		try {
-			$this->maniaControl->client->disconnectFakePlayer('*');
-		} catch(\Exception $e) {
-			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
-			return;
-		}
-
+		$this->maniaControl->client->disconnectFakePlayer('*');
 		$this->maniaControl->chat->sendSuccess('Fake players disconnected!', $player->login);
 	}
 

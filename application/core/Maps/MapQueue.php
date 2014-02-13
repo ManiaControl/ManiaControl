@@ -9,6 +9,7 @@ use ManiaControl\Commands\CommandListener;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
+use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
  * MapQueue Class
@@ -183,7 +184,8 @@ class MapQueue implements CallbackListener, CommandListener {
 
 		try {
 			$this->maniaControl->client->chooseNextMap($map->fileName);
-		} catch(\Exception $e) {
+		} catch(Exception $e) {
+			// TODO: is it even possible that an exception other than connection errors will be thrown? - remove try-catch?
 			//do nothing
 		}
 	}

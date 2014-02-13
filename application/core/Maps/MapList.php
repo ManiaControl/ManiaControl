@@ -24,6 +24,7 @@ use ManiaControl\Manialinks\IconManager;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
+use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
  * MapList Widget Class
@@ -511,7 +512,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			case self::ACTION_SWITCH_MAP:
 				try {
 					$this->maniaControl->client->jumpToMapIndex($mapId);
-				} catch(\Exception $e) {
+				} catch(Exception $e) {
+					// TODO: is it even possible that an exception other than connection errors will be thrown? - remove try-catch?
 					$this->maniaControl->chat->sendError("Error while Jumping to Map Index");
 					break;
 				}
@@ -542,7 +544,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 					try {
 						$index = $this->maniaControl->mapManager->getMapIndex($map);
 						$this->maniaControl->client->jumpToMapIndex($index);
-					} catch(\Exception $e) {
+					} catch(Exception $e) {
+						// TODO: is it even possible that an exception other than connection errors will be thrown? - remove try-catch?
 						$this->maniaControl->chat->sendError("Error while Switching Map");
 					}
 				});

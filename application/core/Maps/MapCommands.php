@@ -11,6 +11,7 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\IconManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
+use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
  * Class offering commands to manage maps
@@ -106,7 +107,8 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		} else {
 			try {
 				$mapIndex = $this->maniaControl->client->getNextMapIndex();
-			} catch(\Exception $e) {
+			} catch(Exception $e) {
+				// TODO: is it even possible that an exception other than connection errors will be thrown? - remove try-catch?
 				trigger_error("Error while Reading the next Map Index");
 				$this->maniaControl->chat->sendError("Error while Reading next Map Inde");
 				return;
@@ -190,7 +192,8 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 
 		try {
 			$this->maniaControl->client->nextMap();
-		} catch(\Exception $e) {
+		} catch(Exception $e) {
+			// TODO: is it even possible that an exception other than connection errors will be thrown? - remove try-catch?
 			$this->maniaControl->chat->sendError("Error while Skipping the Map");
 			return;
 		}
@@ -216,7 +219,8 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		$this->maniaControl->log($message, true);
 		try {
 			$this->maniaControl->client->restartMap();
-		} catch(\Exception $e) {
+		} catch(Exception $e) {
+			// TODO: is it even possible that an exception other than connection errors will be thrown? - remove try-catch?
 			//do nothing
 		}
 	}
