@@ -164,7 +164,12 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 * @return bool
 	 */
 	public function enableAltMenu(Player $player) {
-		return $this->maniaControl->client->triggerModeScriptEvent('LibXmlRpc_EnableAltMenu', $player->login);
+		try {
+			$success = $this->maniaControl->client->triggerModeScriptEvent('LibXmlRpc_EnableAltMenu', $player->login);
+		} catch(\Exception $e) {
+			return false;
+		}
+		return $success;
 	}
 
 	/**
@@ -174,7 +179,12 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 * @return bool
 	 */
 	public function disableAltMenu(Player $player) {
-		return $this->maniaControl->client->triggerModeScriptEvent('LibXmlRpc_DisableAltMenu', $player->login);
+		try {
+			$success = $this->maniaControl->client->triggerModeScriptEvent('LibXmlRpc_DisableAltMenu', $player->login);
+		} catch(\Exception $e) {
+			return false;
+		}
+		return $success;
 	}
 
 	/**

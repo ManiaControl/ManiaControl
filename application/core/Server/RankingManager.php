@@ -43,7 +43,11 @@ class RankingManager implements CallbackListener {
 	 *    Initialize the Rankings
 	 */
 	public function onInit() {
-		$this->maniaControl->client->triggerModeScriptEvent('LibXmlRpc_GetRankings', '');
+		try {
+			$this->maniaControl->client->triggerModeScriptEvent('LibXmlRpc_GetRankings', '');
+		} catch(\Exception $e) {
+			//do nothing
+		}
 	}
 
 
