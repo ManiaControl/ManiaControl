@@ -232,7 +232,8 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 	 * Function called on every second.
 	 */
 	public function handleEverySecond() {
-		if($this->maniaControl->client->getMaxPlayers()['CurrentValue'] > (count($this->maniaControl->playerManager->players) - count($this->spectators))) {
+		$maxPlayers = $this->maniaControl->client->getMaxPlayers();
+		if($maxPlayers['CurrentValue'] > (count($this->maniaControl->playerManager->players) - count($this->spectators))) {
 			$this->moveFirstPlayerToPlay();
 		}
 
@@ -287,7 +288,8 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 	 * @param Player $player
 	 */
 	private function forcePlayerToPlay(Player $player) {
-		if($this->maniaControl->client->getMaxPlayers()['CurrentValue'] > (count($this->maniaControl->playerManager->players) - count($this->spectators))) {
+		$maxPlayers = $this->maniaControl->client->getMaxPlayers();
+		if($maxPlayers['CurrentValue'] > (count($this->maniaControl->playerManager->players) - count($this->spectators))) {
 			try {
 				$this->maniaControl->client->forceSpectator($player->login, 2);
 			} catch(Exception $e) {
