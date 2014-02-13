@@ -214,7 +214,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 
 				$requiredRecords = 3;
 
-				$query   = 'SELECT playerIndex, COUNT(*) AS Cnt
+				$query = 'SELECT playerIndex, COUNT(*) AS Cnt
   		          FROM ' . LocalRecordsPlugin::TABLE_RECORDS . '
   		          GROUP BY PlayerIndex
   		          HAVING Cnt >=' . $requiredRecords;

@@ -33,7 +33,7 @@ class ErrorHandler {
 	 */
 	public function exceptionHandler(\Exception $ex) {
 		$message = "[ManiaControl EXCEPTION]: {$ex->getMessage()}" . PHP_EOL;
-		$message .= "Class: ". get_class($ex) . PHP_EOL;
+		$message .= "Class: " . get_class($ex) . PHP_EOL;
 		$message .= "Trace: {$ex->getTraceAsString()}" . PHP_EOL;
 		logMessage($message);
 
@@ -57,6 +57,8 @@ class ErrorHandler {
 
 		if (!json_decode($success)) {
 			logMessage("Exception-Report failed");
+		} else {
+			logMessage("Exception successfully reported!");
 		}
 
 		exit();
@@ -101,11 +103,13 @@ class ErrorHandler {
 			$success = FileUtil::loadFile($url);
 
 			if (!json_decode($success)) {
-				logMessage("Error-Report failed");
+				logMessage("Error-Report failed!");
+			} else {
+				logMessage("Error successfully reported!");
 			}
 		}
 
-		if ($errorNumber == E_ERROR || $errorNumber == E_USER_ERROR) {
+		if ($errorNumber == E_ERROR || $errorNumber == E_USER_ERROR || $errorNumber == E_FATAL) {
 			logMessage('Stopping execution...');
 			exit();
 		}
@@ -127,6 +131,15 @@ class ErrorHandler {
 		}
 		if ($errorLevel == E_ERROR) {
 			return '[PHP ERROR]';
+		}
+		if ($errorLevel == E_CORE_ERROR) {
+			return '[PHP CORE ERROR]';
+		}
+		if ($errorLevel == E_COMPILE_ERROR) {
+			return '[PHP COMPILE ERROR]';
+		}
+		if ($errorLevel == E_RECOVERABLE_ERROR) {
+			return '[PHP RECOVERABLE ERROR]';
 		}
 		if ($errorLevel == E_USER_NOTICE) {
 			return '[ManiaControl NOTICE]';

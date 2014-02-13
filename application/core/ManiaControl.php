@@ -219,9 +219,15 @@ class ManiaControl implements CommandListener {
 			$this->client->sendHideManialinkPage();
 		} catch(Exception $e) {
 		}
-		
+
 		// Close the client connection
 		$this->client->delete($this->server->ip, $this->server->port);
+
+		//Check and Trigger Fatal Errors
+		$error = error_get_last();
+		if ($error && ($error['type'] & E_FATAL)) {
+			$this->errorHandler->errorHandler($error['type'], $error['message'], $error['file'], $error['line']);
+		}
 
 		$this->log('Quitting ManiaControl!');
 		exit();
@@ -284,7 +290,7 @@ class ManiaControl implements CommandListener {
 
 		// Loading finished
 		$this->log('Loading completed!');
-		$this->log('Link: maniaplanet://#join=' . $this->server->login .'@' . $this->server->titleId);
+		$this->log('Link: maniaplanet://#join=' . $this->server->login . '@' . $this->server->titleId);
 
 		// Main loop
 		while(!$this->shutdownRequested) {
