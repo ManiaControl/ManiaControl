@@ -306,8 +306,8 @@ class StatisticCollector implements CallbackListener {
 				$paramsObject = json_decode($callback[1][1]);
 				$victim       = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Victim->Login);
 				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_DEATH, $victim);
-				$shooter = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Shooter->Login);
-				if ($shooter != null) {
+				if (isset($paramsObject->Event->Shooter->Login)) {
+					$shooter = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Shooter->Login);
 					$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_KILL, $shooter);
 				}
 				break;
