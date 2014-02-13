@@ -14,6 +14,7 @@ use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Maps\MapManager;
 use ManiaControl\Players\Player;
+use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
  * Class offering a Configurator for Script Settings
@@ -109,8 +110,11 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	public function loadSettingsFromDatabase() {
 		try {
 			$scriptSettings = $this->maniaControl->client->getModeScriptSettings();
-		} catch(\Exception $e) {
-			return false;
+		} catch(Exception $e) {
+			if ($e->getMessage() == 'Not in script mode.') {
+				return false;
+			}
+			throw $e;
 		}
 
 		$mysqli   = $this->maniaControl->database->mysqli;
@@ -137,7 +141,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 
 		try {
 			$this->maniaControl->client->setModeScriptSettings($loadedSettings);
-		} catch(\Exception $e) {
+		} catch(Exception $e) {
 			trigger_error('Error occured: ' . $e->getMessage());
 			return false;
 		}
@@ -160,19 +164,21 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 
 		try {
 			$scriptInfo = $this->maniaControl->client->getModeScriptInfo();
-		} catch(\Exception $e) {
-			// Not in script mode
-			$label = new Label();
-			$frame->add($label);
-			$label->setText($e->getMessage());
-			return $frame;
+		} catch(Exception $e) {
+			if ($e->getMessage() == 'Not in script mode.') {
+				$label = new Label();
+				$frame->add($label);
+				$label->setText($e->getMessage());
+				return $frame;
+			}
+			throw $e;
 		}
 
 		$scriptParams = $scriptInfo->paramDescs;
 
 		try {
 			$scriptSettings = $this->maniaControl->client->getModeScriptSettings();
-		} catch(\Exception $e) {
+		} catch(Exception $e) {
 			//do nothing
 		}
 
@@ -303,8 +309,11 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 
 		try {
 			$scriptSettings = $this->maniaControl->client->getModeScriptSettings();
-		} catch(\Exception $e) {
-			return;
+		} catch(Exception $e) {
+			if ($e->getMessage() == 'Not in script mode.') {
+				return;
+			}
+			throw $e;
 		}
 
 		$prefixLength = strlen(self::ACTION_PREFIX_SETTING);
@@ -369,8 +378,11 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	public function toggleBooleanSetting($setting, Player $player) {
 		try {
 			$scriptSettings = $this->maniaControl->client->getModeScriptSettings();
-		} catch(\Exception $e) {
-			return;
+		} catch(Exception $e) {
+			if ($e->getMessage() == 'Not in script mode.') {
+				return;
+			}
+			throw $e;
 		}
 
 		if (!isset($scriptSettings[$setting])) {
@@ -398,7 +410,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 
 		try {
 			$this->maniaControl->client->setModeScriptSettings($newSettings);
-		} catch(\Exception $e) {
+		} catch(Exception $e) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 			return false;
 		}

@@ -16,6 +16,7 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
+use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
  * Donation plugin
@@ -335,7 +336,8 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$message = 'Donate ' . $amount . ' Planets to $<' . $receiverName . '$>?';
 		try {
 			$bill = $this->maniaControl->client->sendBill($player->login, $amount, $message, $receiver);
-		} catch(\Exception $e) {
+		} catch(Exception $e) {
+			// TODO: handle errors like 'too few server planets' - throw other like connection errors
 			trigger_error("Couldn't create donation of {$amount} planets from '{$player->login}' for '{$receiver}'. " . $e->getMessage());
 			$this->maniaControl->chat->sendError("Creating donation failed.", $player->login);
 			return false;
@@ -378,8 +380,8 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 
 		try {
 			$bill = $this->maniaControl->client->pay($receiver, $amount, $message);
-		} catch(\Exception $e) {
-			trigger_error("Couldn't retrieve server planets. " . $e->getMessage());
+		} catch(Exception $e) {
+			// TODO: handle errors like 'too few server planets' - throw other like connection errors
 			trigger_error("Couldn't create payout of {$amount} planets by '{$player->login}' for '{$receiver}'. " . $e->getMessage());
 			$this->maniaControl->chat->sendError("Creating payout failed.", $player->login);
 			return false;
@@ -401,13 +403,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return false;
 		}
-		try {
-			$planets = $this->maniaControl->client->getServerPlanets();
-		} catch(\Exception $e) {
-			trigger_error("Couldn't retrieve server planets. " . $e->getMessage());
-			return false;
-		}
-
+		$planets = $this->maniaControl->client->getServerPlanets();
 		$message = "This Server has {$planets} Planets!";
 		return $this->maniaControl->chat->sendInformation($message, $player->login);
 	}

@@ -5,6 +5,7 @@ namespace ManiaControl\ManiaExchange;
 use ManiaControl\ManiaControl;
 use ManiaControl\Maps\Map;
 use ManiaControl\Maps\MapManager;
+use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
  * Mania Exchange Info Searcher Class
@@ -285,7 +286,10 @@ class ManiaExchangeManager {
 			$scriptInfos = $this->maniaControl->client->getModeScriptInfo();
 			$mapTypes    = $scriptInfos->compatibleMapTypes;
 			$url .= '&mtype=' . $mapTypes;
-		} catch(\Exception $e) {
+		} catch(Exception $e) {
+			if ($e->getMessage() != 'Not in script mode.') {
+				throw $e;
+			}
 			//dont append map tpye
 		}
 

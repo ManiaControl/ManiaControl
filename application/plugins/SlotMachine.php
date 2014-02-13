@@ -15,6 +15,7 @@ use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
+use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 class SlotMachinePlugin implements Plugin, CallbackListener, ManialinkPageAnswerListener, TimerListener {
 	/**
@@ -467,7 +468,8 @@ class SlotMachinePlugin implements Plugin, CallbackListener, ManialinkPageAnswer
 
 		try {
 			$billId = $this->maniaControl->client->pay($player->login, (int)$balance, $message);
-		} catch(\Exception $e) {
+		} catch(Exception $e) {
+			// TODO: handle errors like 'too few server planets' - throw other like connection errors
 			return;
 		}
 

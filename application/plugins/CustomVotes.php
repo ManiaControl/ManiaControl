@@ -26,6 +26,7 @@ use ManiaControl\Plugins\Plugin;
 use ManiaControl\Server\Server;
 use ManiaControl\Server\ServerCommands;
 use Maniaplanet\DedicatedServer\Structures\VoteRatio;
+use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 
 /**
@@ -260,8 +261,12 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 				$itemQuad->setAction(self::ACTION_START_VOTE . 'pausegame');
 				$this->addVoteMenuItem($itemQuad, 10, 'Vote for a pause of Current Game');
 			}
-		} catch(\Exception $e) {
-			//do nothing
+		} catch(Exception $e) {
+			if ($e->getMessage() == 'Not in script mode.') {
+				// Do nothing
+			} else {
+				throw $e;
+			}
 		}
 
 		//Menu SkipMap
