@@ -268,9 +268,9 @@ class StatisticCollector implements CallbackListener {
 				}
 				break;
 			case 'LibXmlRpc_OnArmorEmpty':
-				$shooter = $this->maniaControl->playerManager->getPlayer($callback[1][1][0]);
-				$victim  = $this->maniaControl->playerManager->getPlayer($callback[1][1][1]);
-				if ($shooter != null) {
+				$victim = $this->maniaControl->playerManager->getPlayer($callback[1][1][1]);
+				if (isset($callback[1][1][0])) {
+					$shooter = $this->maniaControl->playerManager->getPlayer($callback[1][1][0]);
 					$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_KILL, $shooter);
 				}
 				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_DEATH, $victim);
