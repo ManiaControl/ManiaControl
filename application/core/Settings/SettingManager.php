@@ -61,11 +61,11 @@ class SettingManager implements CallbackListener {
 		$typeSet               = $defaultType . ",'" . self::TYPE_INT . "'" . ",'" . self::TYPE_REAL . "'" . ",'" . self::TYPE_BOOL . "'" . ",'" . self::TYPE_ARRAY . "'";
 		$settingTableQuery     = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_SETTINGS . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
-				`class` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-				`setting` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-				`type` set({$typeSet}) COLLATE utf8_unicode_ci NOT NULL DEFAULT {$defaultType},
-				`value` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-				`default` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+				`class` varchar(50) NOT NULL,
+				`setting` varchar(50) NOT NULL,
+				`type` set({$typeSet}) NOT NULL DEFAULT {$defaultType},
+				`value` varchar(100) NOT NULL,
+				`default` varchar(100) NOT NULL,
 				`changed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 				PRIMARY KEY (`index`),
 				UNIQUE KEY `settingId` (`class`,`setting`)
@@ -202,7 +202,7 @@ class SettingManager implements CallbackListener {
 				@value
 				) ON DUPLICATE KEY UPDATE
 				`type` = VALUES(`type`),
-				`value` = IF(`default` = VALUES(`default`), `value`, VALUES(`default`)), 
+				`value` = IF(`default` = VALUES(`default`), `value`, VALUES(`default`)),
 				`default` = VALUES(`default`),
 				`changed` = NOW();";
 		$settingStatement = $mysqli->prepare($settingQuery);

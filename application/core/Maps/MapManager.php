@@ -91,16 +91,16 @@ class MapManager implements CallbackListener {
 		$query  = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_MAPS . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
 				`mxid` int(11),
-				`uid` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-				`name` varchar(150) COLLATE utf8_unicode_ci NOT NULL,
-				`authorLogin` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-				`fileName` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-				`environment` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-				`mapType` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+				`uid` varchar(50) NOT NULL,
+				`name` varchar(150) NOT NULL,
+				`authorLogin` varchar(100) NOT NULL,
+				`fileName` varchar(100) NOT NULL,
+				`environment` varchar(50) NOT NULL,
+				`mapType` varchar(50) NOT NULL,
 				`changed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 				PRIMARY KEY (`index`),
 				UNIQUE KEY `uid` (`uid`)
-				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Map data' AUTO_INCREMENT=1;";
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Map Data' AUTO_INCREMENT=1;";
 		$result = $mysqli->query($query);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error, E_USER_ERROR);

@@ -104,7 +104,7 @@ class Server implements CallbackListener {
 		$mysqli    = $this->maniaControl->database->mysqli;
 		$query     = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_SERVERS . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
-				`login` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+				`login` varchar(100) NOT NULL,
 				PRIMARY KEY (`index`),
 				UNIQUE KEY `login` (`login`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Servers' AUTO_INCREMENT=1;";
