@@ -232,7 +232,7 @@ class ManiaExchangeManager {
 
 			$maps = array();
 			foreach($mxMapList as $map) {
-				if (!empty($map)) {
+				if ($map != null) {
 					array_push($maps, new MXMapInfo($titlePrefix, $map));
 				}
 			}
@@ -290,7 +290,7 @@ class ManiaExchangeManager {
 			if ($e->getMessage() != 'Not in script mode.') {
 				throw $e;
 			}
-			//dont append map tpye
+			//dont append map type
 		}
 
 		$fileFunc = function ($mapInfo, $error) use (&$function, $titlePrefix) {
