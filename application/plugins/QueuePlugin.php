@@ -324,7 +324,9 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 			}
 
 			try {
-				$this->maniaControl->client->forcePlayerTeam($player->login, $smallestTeam);
+				if($smallestTeam != -1) {
+					$this->maniaControl->client->forcePlayerTeam($player->login, $smallestTeam);
+				}
 			} catch(Exception $e) {
 				// TODO: only possible valid exceptions should be "wrong login" or "not in team mode" - throw others (like connection error)
 			}
