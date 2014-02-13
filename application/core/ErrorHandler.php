@@ -61,6 +61,8 @@ class ErrorHandler {
 			logMessage("Exception successfully reported!");
 		}
 
+
+		$this->maniaControl->restart();
 		exit();
 	}
 
