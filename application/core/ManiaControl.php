@@ -306,7 +306,9 @@ class ManiaControl implements CommandListener {
 			} catch(Exception $e) {
 				if ($e->getMessage() == 'Connection interupted') {
 					$this->quit($e->getMessage());
+					return;
 				}
+				throw $e;
 			}
 
 			// Manage FileReader
