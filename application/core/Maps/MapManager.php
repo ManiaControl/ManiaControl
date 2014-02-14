@@ -222,7 +222,7 @@ class MapManager implements CallbackListener {
 		if ($eraseFile) {
 			// Check if ManiaControl can even write to the maps dir
 			$mapDir = $this->maniaControl->client->getMapsDirectory();
-			
+
 			// Delete map file
 			if (!@unlink($mapDir . $map->fileName)) {
 				trigger_error("Couldn't remove Map '{$mapDir}{$map->fileName}'.");
@@ -346,7 +346,7 @@ class MapManager implements CallbackListener {
 	 * Updates the full Map list, needed on Init, addMap and on ShuffleMaps
 	 */
 	private function updateFullMapList() {
-		$maps = $this->maniaControl->client->getMapList(100, 0);
+		$maps     = $this->maniaControl->client->getMapList(100, 0);
 		$tempList = array();
 
 		foreach($maps as $rpcMap) {
@@ -525,6 +525,8 @@ class MapManager implements CallbackListener {
 	 * @param           $mapDir
 	 * @param           $login
 	 * @param           $update
+	 * @throws \Exception
+	 * @throws \Maniaplanet\DedicatedServer\Xmlrpc\Exception
 	 */
 	private function processMapFile($file, MXMapInfo $mapInfo, $mapDir, $login, $update) {
 		//Check if map is already on the server
@@ -563,9 +565,11 @@ class MapManager implements CallbackListener {
 			try {
 				$this->maniaControl->client->writeFileFromString($mapFileName, $file);
 			} catch(Exception $e) {
-				// TODO: add check for error message - throw other stuff like connection errors
-				$this->maniaControl->chat->sendError("Map is too big for a remote save.", $login);
-				return;
+				if ($e->getMessage() == 'transport error - request too large!') {
+					$this->maniaControl->chat->sendError("Map is too big for a remote save.", $login);
+					return;
+				}
+				throw $e;
 			}
 		}
 
