@@ -184,7 +184,8 @@ class PluginManager {
 	/**
 	 * Load complete plugins directory and start all configured plugins
 	 */
-	public function loadPlugins($dir = '') { //TODO first include all files, than handle plugin activation
+	public function loadPlugins($dir = '') {
+		//TODO first include all files, than handle plugin activation
 		$pluginsDirectory = ManiaControlDir . '/plugins/' . $dir . '/';
 		$pluginFiles      = scandir($pluginsDirectory, 0);
 		foreach($pluginFiles as $pluginFile) {
@@ -194,7 +195,6 @@ class PluginManager {
 
 			if (is_dir($pluginsDirectory . $pluginFile)) {
 				$this->loadPlugins($pluginFile);
-				var_dump("test");
 				continue;
 			}
 
