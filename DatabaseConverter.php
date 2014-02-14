@@ -37,7 +37,7 @@ $test2                              = $converter->convertMapsAndKarma();
 unset($converter);
 var_dump($test1 && $test2);
 
-class DatabaseConverter {
+class DatabaseConverter { //TODO move bind param before loop everywhere, convert localdatabase xaseco2
 	/**
 	 * Constants
 	 */
