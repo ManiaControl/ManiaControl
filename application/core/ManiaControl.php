@@ -303,14 +303,14 @@ class ManiaControl implements CommandListener {
 				// Manager callbacks
 				$this->callbackManager->manageCallbacks();
 
-				// Manage FileReader
-				$this->fileReader->appendData();
-
 			} catch(Exception $e) {
 				if ($e->getMessage() == 'Connection interupted') {
 					$this->quit($e->getMessage());
 				}
 			}
+
+			// Manage FileReader
+			$this->fileReader->appendData();
 
 			// Yield for next tick
 			$loopEnd = microtime(true);
