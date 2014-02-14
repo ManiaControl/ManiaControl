@@ -359,7 +359,7 @@ class ManiaControl implements CommandListener {
 		try {
 			$this->client = Connection::factory($host, $port, self::CONNECT_TIMEOUT, $login, $pass);
 		} catch(Exception $e) {
-			// TODO: is it even needed to try-catch here? we will crash anyways
+			// TODO: is it even needed to try-catch here? we will crash anyways, YES to avoid a message report to mc website
 			trigger_error("Couldn't authenticate on server with user '{$login}'! " . $e->getMessage(), E_USER_ERROR);
 		}
 
