@@ -76,7 +76,7 @@ class AsynchronousFileReader {
 	 * @param string $contentType
 	 * @return bool
 	 */
-	public function loadFile($url, $function, $contentType = 'UTF-8') {
+	public function loadFile($url, $function, $contentType = 'UTF-8', $customHeader = '') {
 		if (!is_callable($function)) {
 			$this->maniaControl->log("Function is not callable");
 			return false;
@@ -94,11 +94,15 @@ class AsynchronousFileReader {
 			return false;
 		}
 
-		$query = 'GET ' . $urlData['path'] . $urlQuery . ' HTTP/1.0' . PHP_EOL;
-		$query .= 'Host: ' . $urlData['host'] . PHP_EOL;
-		$query .= 'Content-Type: ' . $contentType . PHP_EOL;
-		$query .= 'User-Agent: ManiaControl v' . ManiaControl::VERSION . PHP_EOL;
-		$query .= PHP_EOL;
+		if ($customHeader == '') {
+			$query = 'GET ' . $urlData['path'] . $urlQuery . ' HTTP/1.0' . PHP_EOL;
+			$query .= 'Host: ' . $urlData['host'] . PHP_EOL;
+			$query .= 'Content-Type: ' . $contentType . PHP_EOL;
+			$query .= 'User-Agent: ManiaControl v' . ManiaControl::VERSION . PHP_EOL;
+			$query .= PHP_EOL;
+		} else {
+			$query = $customHeader;
+		}
 
 		fwrite($socket, $query);
 
