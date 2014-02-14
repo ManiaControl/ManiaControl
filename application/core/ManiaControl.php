@@ -299,11 +299,18 @@ class ManiaControl implements CommandListener {
 			// Disable script timeout
 			set_time_limit(self::SCRIPT_TIMEOUT);
 
-			// Manager callbacks
-			$this->callbackManager->manageCallbacks();
+			try {
+				// Manager callbacks
+				$this->callbackManager->manageCallbacks();
 
-			// Manage FileReader
-			$this->fileReader->appendData();
+				// Manage FileReader
+				$this->fileReader->appendData();
+
+			} catch(Exception $e) {
+				if ($e->getMessage() == 'Connection interupted') {
+					$this->quit($e->getMessage());
+				}
+			}
 
 			// Yield for next tick
 			$loopEnd = microtime(true);
