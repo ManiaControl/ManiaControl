@@ -304,7 +304,7 @@ class ManiaControl implements CommandListener {
 				$this->callbackManager->manageCallbacks();
 
 			} catch(Exception $e) {
-				if ($e->getMessage() == 'Connection interupted') {
+				if ($e->getMessage() == 'Connection interupted' || $e->getMessage() == 'transport error - connection interrupted!') {
 					$this->quit($e->getMessage());
 					return;
 				}
