@@ -180,16 +180,23 @@ class PluginManager {
 		return true;
 	}
 
+
 	/**
 	 * Load complete plugins directory and start all configured plugins
 	 */
-	public function loadPlugins() {
-		$pluginsDirectory = ManiaControlDir . '/plugins/';
+	public function loadPlugins($dir = '') {
+		$pluginsDirectory = ManiaControlDir . '/plugins/' . $dir . '/';
 		$pluginFiles      = scandir($pluginsDirectory, 0);
 		foreach($pluginFiles as $pluginFile) {
 			if (stripos($pluginFile, '.') === 0) {
 				continue;
 			}
+
+			if (is_dir($pluginsDirectory . $pluginFile)) {
+				$this->loadPlugins($pluginFile);
+				continue;
+			}
+
 			$classesBefore = get_declared_classes();
 			$success       = include_once $pluginsDirectory . $pluginFile;
 			if (!$success) {
@@ -201,6 +208,7 @@ class PluginManager {
 				if (!$this->isPluginClass($className)) {
 					continue;
 				}
+				
 				//Prepare Plugin
 				$className::prepare($this->maniaControl);
 
