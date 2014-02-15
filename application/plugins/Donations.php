@@ -316,7 +316,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 			$receiverName   = ($receiverPlayer ? $receiverPlayer['NickName'] : $receiver);
 		} else {
 			$receiver     = '';
-			$receiverName = $this->maniaControl->server->getName();
+			$receiverName = $this->maniaControl->client->getServerName();
 		}
 
 		return $this->handleDonation($player, $amount, $receiver, $receiverName);
@@ -330,7 +330,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 */
 	private function handleDonation(Player $player, $amount, $receiver = '', $receiverName = false) {
 		if (!$receiverName) {
-			$receiverName = $this->maniaControl->server->getName();
+			$receiverName = $this->maniaControl->client->getServerName();
 		}
 
 		$message = 'Donate ' . $amount . ' Planets to $<' . $receiverName . '$>?';
@@ -376,7 +376,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		} else {
 			$receiver = $player->login;
 		}
-		$message = 'Payout from $<' . $this->maniaControl->server->getName() . '$>.';
+		$message = 'Payout from $<' . $this->maniaControl->client->getServerName() . '$>.';
 
 		try {
 			$bill = $this->maniaControl->client->pay($receiver, $amount, $message);

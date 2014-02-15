@@ -306,7 +306,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 
 		$maxSpectators = $this->maniaControl->client->getMaxSpectators();
 
-		$serverName = $this->maniaControl->server->getName();
+		$serverName = $this->maniaControl->client->getServerName();
 
 		$players        = $this->maniaControl->playerManager->getPlayers();
 		$playerCount    = 0;

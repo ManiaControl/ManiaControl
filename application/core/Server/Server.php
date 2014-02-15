@@ -66,7 +66,7 @@ class Server implements CallbackListener {
 	 */
 	private function updateProperties() {
 		// System info
-		$systemInfo    = $this->getSystemInfo();
+		$systemInfo    = $this->maniaControl->client->getSystemInfo();
 		$this->ip      = $systemInfo->publishedIp;
 		$this->port    = $systemInfo->port;
 		$this->p2pPort = $systemInfo->p2PPort;
@@ -203,43 +203,6 @@ class Server implements CallbackListener {
 	 */
 	public function getInfo() {
 		return $this->maniaControl->client->getMainServerPlayerInfo();
-	}
-
-	/**
-	 * Get Server Options
-	 *
-	 * @return ServerOptions
-	 */
-	public function getOptions() {
-		return $this->maniaControl->client->getServerOptions();
-	}
-
-	/**
-	 * Fetch current Server Name
-	 *
-	 * @return string
-	 */
-	public function getName() {
-		return $this->maniaControl->client->getServerName();
-	}
-
-
-	/**
-	 * Fetch Server Version
-	 *
-	 * @return Version
-	 */
-	public function getVersion() {
-		return $this->maniaControl->client->getVersion();
-	}
-
-	/**
-	 * Fetch Server System Info
-	 *
-	 * @return SystemInfos
-	 */
-	public function getSystemInfo() {
-		return $this->maniaControl->client->getSystemInfo();
 	}
 
 	/**

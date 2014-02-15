@@ -498,7 +498,7 @@ class MapManager implements CallbackListener {
 					return;
 				}
 
-				$serverInfo = $this->maniaControl->server->getSystemInfo();
+				$serverInfo = $this->maniaControl->client->getSystemInfo();
 				$title      = strtolower(substr($serverInfo->titleId, 0, 2));
 
 				$url = "http://{$title}.mania-exchange.com/tracks/download/{$mapInfo->id}";

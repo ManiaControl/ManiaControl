@@ -57,7 +57,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	private function openDedimaniaSession($init = false) {
 		// Open session
 		$serverInfo          = $this->maniaControl->server->getInfo();
-		$serverVersion       = $this->maniaControl->server->getVersion();
+		$serverVersion       = $this->maniaControl->client->getVersion();
 		$packMask            = substr($this->maniaControl->server->titleId, 2);
 		$this->dedimaniaData = new DedimaniaData("abc", "cde", $serverInfo->path, $packMask, $serverVersion);
 
