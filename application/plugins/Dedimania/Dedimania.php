@@ -49,7 +49,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	public function load(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		//return;
+		return;
 
 		$this->openDedimaniaSession(true);
 	}
