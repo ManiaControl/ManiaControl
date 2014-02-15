@@ -74,7 +74,7 @@ class AsynchronousFileReader {
 	 * @return string
 	 */
 	private function parseResult($streamBuffer) {
-		$resultArray = explode(PHP_EOL . PHP_EOL, $streamBuffer, 2);
+		$resultArray = explode("\r\n\r\n", $streamBuffer, 2);
 
 		switch(count($resultArray)) {
 			case 0:
@@ -102,7 +102,7 @@ class AsynchronousFileReader {
 	 */
 	private function decode_chunked($str) {
 		for($res = ''; !empty($str); $str = trim($str)) {
-			$pos = strpos($str, PHP_EOL);
+			$pos = strpos($str, "\r\n");
 			$len = hexdec(substr($str, 0, $pos));
 			$res .= substr($str, $pos + 2, $len);
 			$str = substr($str, $pos + 2 + $len);
@@ -117,7 +117,7 @@ class AsynchronousFileReader {
 	 * @return array
 	 */
 	function parseHeader($header) {
-		$headers = explode(PHP_EOL, $header);
+		$headers = explode("\r\n", $header);
 		$output  = array();
 
 		if ('HTTP' === substr($headers[0], 0, 4)) {
