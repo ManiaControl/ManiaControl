@@ -75,7 +75,7 @@ class AsynchronousFileReader {
 	 * @param string $customHeader
 	 * @return bool
 	 */
-	public function loadFile($url, $function, $contentType = 'utf-8', $customHeader = '') {
+	public function loadFile($url, $function, $contentType = 'UTF-8', $customHeader = '') {
 		if (!is_callable($function)) {
 			$this->maniaControl->log("Function is not callable");
 			return false;
