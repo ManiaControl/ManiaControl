@@ -375,7 +375,8 @@ class MapManager implements CallbackListener {
 		$rpcMap = $this->maniaControl->client->getCurrentMapInfo();
 
 		if (array_key_exists($rpcMap->uId, $this->maps)) {
-			$this->currentMap = $this->maps[$rpcMap->uId];
+			$this->currentMap                = $this->maps[$rpcMap->uId];
+			$this->currentMap->nbCheckpoints = $rpcMap->nbCheckpoints;
 			return true;
 		}
 		$map                   = $this->initializeMap($rpcMap);

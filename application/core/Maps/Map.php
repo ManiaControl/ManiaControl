@@ -44,22 +44,19 @@ class Map {
 	public function __construct($mpMap = null) {
 		$this->startTime = time();
 
-		if(!$mpMap) {
+		if (!$mpMap) {
 			return;
 		}
-		$this->name        = FORMATTER::stripDirtyCodes($mpMap->name);
-		$this->uid         = $mpMap->uId;
-		$this->fileName    = $mpMap->fileName;
-		$this->authorLogin = $mpMap->author;
-		$this->environment = $mpMap->environnement;
-		$this->goldTime    = $mpMap->goldTime;
-		$this->copperPrice = $mpMap->copperPrice;
-		$this->mapType     = $mpMap->mapType;
-		$this->mapStyle    = $mpMap->mapStyle;
-
-		if(isset($mpMap->nbCheckpoints)) {
-			$this->nbCheckpoints = $mpMap->nbCheckpoints;
-		}
+		$this->name          = FORMATTER::stripDirtyCodes($mpMap->name);
+		$this->uid           = $mpMap->uId;
+		$this->fileName      = $mpMap->fileName;
+		$this->authorLogin   = $mpMap->author;
+		$this->environment   = $mpMap->environnement;
+		$this->goldTime      = $mpMap->goldTime;
+		$this->copperPrice   = $mpMap->copperPrice;
+		$this->mapType       = $mpMap->mapType;
+		$this->mapStyle      = $mpMap->mapStyle;
+		$this->nbCheckpoints = $mpMap->nbCheckpoints;
 
 		$this->authorNick = $this->authorLogin;
 	}
@@ -71,7 +68,7 @@ class Map {
 	 */
 	public function updateAvailable() {
 
-		if($this->mx != null && ($this->lastUpdate < strtotime($this->mx->updated) || $this->uid != $this->mx->uid)) {
+		if ($this->mx != null && ($this->lastUpdate < strtotime($this->mx->updated) || $this->uid != $this->mx->uid)) {
 			return true;
 		} else {
 			return false;
