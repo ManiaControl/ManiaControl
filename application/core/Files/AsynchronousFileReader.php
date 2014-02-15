@@ -75,8 +75,12 @@ class AsynchronousFileReader {
 	 */
 	private function parseResult($streamBuffer) {
 		$resultArray = explode(PHP_EOL . PHP_EOL, $streamBuffer, 2);
-		if (count($resultArray) < 2) {
-			return self::INVALID_RESULT_ERROR;
+
+		switch(count($resultArray)) {
+			case 0:
+				return self::INVALID_RESULT_ERROR;
+			case 1:
+				return '';
 		}
 
 		$header = $this->parseHeader($resultArray[0]);
@@ -85,7 +89,7 @@ class AsynchronousFileReader {
 		} else {
 			$result = $resultArray[1];
 		}
-		
+
 		return $result;
 	}
 
