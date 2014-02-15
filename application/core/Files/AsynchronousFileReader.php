@@ -41,7 +41,6 @@ class AsynchronousFileReader {
 		foreach($this->sockets as $key => &$socket) {
 			/** @var SocketStructure $socket */
 			$socket->streamBuffer .= fread($socket->socket, 4096);
-
 			if (feof($socket->socket) || time() > ($socket->creationTime + self::SOCKET_TIMEOUT)) {
 				fclose($socket->socket);
 				unset($this->sockets[$key]);
@@ -56,7 +55,6 @@ class AsynchronousFileReader {
 					$error = self::NO_DATA_ERROR;
 				} else {
 					$resultArray = explode("\r\n\r\n", $socket->streamBuffer, 2);
-
 					if (count($resultArray) < 2) {
 						$error = self::INVALID_RESULT_ERROR;
 					} else {
@@ -74,9 +72,10 @@ class AsynchronousFileReader {
 	 * @param string $url
 	 * @param        $function
 	 * @param string $contentType
+	 * @param string $customHeader
 	 * @return bool
 	 */
-	public function loadFile($url, $function, $contentType = 'UTF-8', $customHeader = '') {
+	public function loadFile($url, $function, $contentType = 'utf-8', $customHeader = '') {
 		if (!is_callable($function)) {
 			$this->maniaControl->log("Function is not callable");
 			return false;
@@ -94,10 +93,12 @@ class AsynchronousFileReader {
 			return false;
 		}
 
+		//TODO head over to http/1.1
 		if ($customHeader == '') {
 			$query = 'GET ' . $urlData['path'] . $urlQuery . ' HTTP/1.0' . PHP_EOL;
 			$query .= 'Host: ' . $urlData['host'] . PHP_EOL;
 			$query .= 'Content-Type: ' . $contentType . PHP_EOL;
+			//$query .= 'Connection: close' . PHP_EOL; //TODO for http 1.1
 			$query .= 'User-Agent: ManiaControl v' . ManiaControl::VERSION . PHP_EOL;
 			$query .= PHP_EOL;
 		} else {
