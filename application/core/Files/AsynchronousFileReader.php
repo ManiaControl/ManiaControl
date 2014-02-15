@@ -51,6 +51,14 @@ class AsynchronousFileReader {
 					$error = self::TIMEOUT_ERROR;
 				} else if (substr($socket->streamBuffer, 9, 3) != "200") {
 					$error = self::RESPONSE_ERROR;
+
+					$resultArray = explode("\r\n\r\n", $socket->streamBuffer, 2);
+					if (count($resultArray) < 2) {
+						$error = self::INVALID_RESULT_ERROR;
+					} else {
+						$result = $resultArray[1];
+					}
+
 				} else if ($socket->streamBuffer == '') {
 					$error = self::NO_DATA_ERROR;
 				} else {
