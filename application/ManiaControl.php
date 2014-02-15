@@ -58,10 +58,20 @@ function logMessage($message) {
 // Autoload Function that loads ManiaControl Class Files on Demand
 spl_autoload_register(function ($className) {
 	$classPath = str_replace('\\', DIRECTORY_SEPARATOR, $className);
-	$classPath = preg_replace('/ManiaControl/', 'core', $classPath, 1);
-	$filePath  = ManiaControlDir . DIRECTORY_SEPARATOR . $classPath . '.php';
+	
+	// Core file
+	$classDirectoryPath = preg_replace('/ManiaControl/', 'core', $classPath, 1);
+	$filePath  = ManiaControlDir . DIRECTORY_SEPARATOR . $classDirectoryPath . '.php';
 	if (file_exists($filePath)) {
 		require_once $filePath;
+		return;
+	}
+	
+	// Plugin file
+	$filePath  = ManiaControlDir . DIRECTORY_SEPARATOR . 'plugins/' . $classPath . '.php';
+	if (file_exists($filePath)) {
+		require_once $filePath;
+		return;
 	}
 });
 
