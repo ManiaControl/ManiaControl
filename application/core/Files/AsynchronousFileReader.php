@@ -50,28 +50,96 @@ class AsynchronousFileReader {
 				if (time() > ($socket->creationTime + self::SOCKET_TIMEOUT)) {
 					$error = self::TIMEOUT_ERROR;
 				} else if (substr($socket->streamBuffer, 9, 3) != "200") {
-					$error = self::RESPONSE_ERROR;
-
-					$resultArray = explode("\r\n\r\n", $socket->streamBuffer, 2);
-					if (count($resultArray) < 2) {
-						$error = self::INVALID_RESULT_ERROR;
-					} else {
-						$result = $resultArray[1];
-					}
+					$error  = self::RESPONSE_ERROR;
+					$result = $this->parseResult($socket->streamBuffer);
 
 				} else if ($socket->streamBuffer == '') {
 					$error = self::NO_DATA_ERROR;
 				} else {
-					$resultArray = explode("\r\n\r\n", $socket->streamBuffer, 2);
-					if (count($resultArray) < 2) {
+					$result = $this->parseResult($socket->streamBuffer);
+					if ($result == self::INVALID_RESULT_ERROR) {
 						$error = self::INVALID_RESULT_ERROR;
-					} else {
-						$result = $resultArray[1];
 					}
 				}
+
 				call_user_func($socket->function, $result, $error);
 			}
 		}
+	}
+
+	/**
+	 * Parse the Stream Result
+	 *
+	 * @param $streamBuffer
+	 * @return string
+	 */
+	private function parseResult($streamBuffer) {
+		$resultArray = explode(PHP_EOL . PHP_EOL, $streamBuffer, 2);
+		if (count($resultArray) < 2) {
+			$result = self::INVALID_RESULT_ERROR;
+		} else {
+			$header = $this->parse_header($resultArray[0]);
+			if (isset($header["Transfer-Encoding"])) {
+				$result = $this->decode_chunked($resultArray[1]);
+			} else {
+				$result = $resultArray[1];
+			}
+		}
+		return $result;
+	}
+
+
+	/**
+	 * Decode Chunks
+	 *
+	 * @param $str
+	 * @return string
+	 */
+	private function decode_chunked($str) {
+		for($res = ''; !empty($str); $str = trim($str)) {
+			$pos = strpos($str, PHP_EOL);
+			$len = hexdec(substr($str, 0, $pos));
+			$res .= substr($str, $pos + 2, $len);
+			$str = substr($str, $pos + 2 + $len);
+		}
+		return $res;
+	}
+
+
+	/**
+	 * Parse The Header
+	 *
+	 * @param $raw_headers
+	 * @return array
+	 */
+	private function parse_header($raw_headers) {
+		$headers = array();
+		$key     = '';
+
+		foreach(explode("\n", $raw_headers) as $i => $h) {
+			$h = explode(':', $h, 2);
+
+			if (isset($h[1])) {
+				if (!isset($headers[$h[0]])) {
+					$headers[$h[0]] = trim($h[1]);
+				} elseif (is_array($headers[$h[0]])) {
+					$headers[$h[0]] = array_merge($headers[$h[0]], array(trim($h[1]))); // [+]
+				} else {
+					$headers[$h[0]] = array_merge(array($headers[$h[0]]), array(trim($h[1]))); // [+]
+				}
+
+				$key = $h[0];
+			} else {
+				if (substr($h[0], 0, 1) == "\t") // [+]
+				{
+					$headers[$key] .= "\r\n\t" . trim($h[0]);
+				} elseif (!$key) {
+					$headers[0] = trim($h[0]);
+				}
+				trim($h[0]);
+			}
+		}
+		return $headers;
 	}
 
 	/**
@@ -101,12 +169,11 @@ class AsynchronousFileReader {
 			return false;
 		}
 
-		//TODO head over to http/1.1
 		if ($customHeader == '') {
-			$query = 'GET ' . $urlData['path'] . $urlQuery . ' HTTP/1.0' . PHP_EOL;
+			$query = 'GET ' . $urlData['path'] . $urlQuery . ' HTTP/1.1' . PHP_EOL;
 			$query .= 'Host: ' . $urlData['host'] . PHP_EOL;
 			$query .= 'Content-Type: ' . $contentType . PHP_EOL;
-			//$query .= 'Connection: close' . PHP_EOL; //TODO for http 1.1
+			$query .= 'Connection: close' . PHP_EOL;
 			$query .= 'User-Agent: ManiaControl v' . ManiaControl::VERSION . PHP_EOL;
 			$query .= PHP_EOL;
 		} else {
