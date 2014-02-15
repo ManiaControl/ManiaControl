@@ -61,8 +61,8 @@ class SettingManager implements CallbackListener {
 		$typeSet               = $defaultType . ",'" . self::TYPE_INT . "'" . ",'" . self::TYPE_REAL . "'" . ",'" . self::TYPE_BOOL . "'" . ",'" . self::TYPE_ARRAY . "'";
 		$settingTableQuery     = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_SETTINGS . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
-				`class` varchar(50) NOT NULL,
-				`setting` varchar(50) NOT NULL,
+				`class` varchar(100) NOT NULL,
+				`setting` varchar(150) NOT NULL,
 				`type` set({$typeSet}) NOT NULL DEFAULT {$defaultType},
 				`value` varchar(100) NOT NULL,
 				`default` varchar(100) NOT NULL,
