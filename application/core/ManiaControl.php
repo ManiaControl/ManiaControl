@@ -271,11 +271,11 @@ class ManiaControl implements CommandListener {
 	public function run() {
 		$this->log('Starting ManiaControl v' . self::VERSION . '!');
 
-		// Connect to server
-		$this->connect();
-
 		// Register shutdown handler
 		register_shutdown_function(array($this, 'handleShutdown'));
+		
+		// Connect to server
+		$this->connect();
 
 		// OnInit callback
 		$this->callbackManager->triggerCallback(CallbackManager::CB_MC_ONINIT, array(CallbackManager::CB_MC_ONINIT));
