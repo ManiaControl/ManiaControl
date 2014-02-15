@@ -7,7 +7,7 @@ use ManiaControl\Formatter;
 /**
  * Mania Exchange Map Info Object
  *
- * @author  xymph
+ * @author  Xymph
  * @updated lukas and steeffeen
  */
 class MXMapInfo {
@@ -35,9 +35,11 @@ class MXMapInfo {
 			}
 
 			if ($this->prefix == 'tm' || !property_exists($mx, "MapID")) {
-				$this->id = $mx->TrackID;
+				$this->id  = $mx->TrackID;
+				$this->uid = $mx->TrackUID;
 			} else {
-				$this->id = $mx->MapID;
+				$this->id  = $mx->MapID;
+				$this->uid = $mx->MapUID;
 			}
 
 			if (!isset($mx->GbxMapName) || $mx->GbxMapName == '?') {
@@ -46,7 +48,6 @@ class MXMapInfo {
 				$this->name = Formatter::stripDirtyCodes($mx->GbxMapName);
 			}
 
-			$this->uid        = isset($mx->MapUID) ? $mx->MapUID : '';
 			$this->userid     = $mx->UserID;
 			$this->author     = $mx->Username;
 			$this->uploaded   = $mx->UploadedAt;
