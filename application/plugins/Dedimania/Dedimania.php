@@ -56,11 +56,10 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 
 	private function openDedimaniaSession($init = false) {
 		// Open session
-
-		$path                = "GRA";
-		$serverVersion       = $this->maniaControl->client->getVersion();
+		$serverInfo          = $this->maniaControl->server->getInfo();
+		$serverVersion       = $this->maniaControl->server->getVersion();
 		$packMask            = substr($this->maniaControl->server->titleId, 2);
-		$this->dedimaniaData = new DedimaniaData("abc", "cde", $path, $packMask, $serverVersion);
+		$this->dedimaniaData = new DedimaniaData("abc", "cde", $serverInfo->path, $packMask, $serverVersion);
 
 
 		$url = self::DEDIMANIA_URL;
