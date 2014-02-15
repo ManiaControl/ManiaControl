@@ -6,7 +6,9 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
+use Maniaplanet\DedicatedServer\Structures\ServerOptions;
 use Maniaplanet\DedicatedServer\Structures\SystemInfos;
+use Maniaplanet\DedicatedServer\Structures\Version;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
@@ -197,7 +199,7 @@ class Server implements CallbackListener {
 	/**
 	 * Get Server Player Info
 	 *
-	 * @return array
+	 * @return \Maniaplanet\DedicatedServer\Structures\Player
 	 */
 	public function getInfo() {
 		return $this->maniaControl->client->getMainServerPlayerInfo();
@@ -206,7 +208,7 @@ class Server implements CallbackListener {
 	/**
 	 * Get Server Options
 	 *
-	 * @return array
+	 * @return ServerOptions
 	 */
 	public function getOptions() {
 		return $this->maniaControl->client->getServerOptions();
@@ -225,7 +227,7 @@ class Server implements CallbackListener {
 	/**
 	 * Fetch Server Version
 	 *
-	 * @return string
+	 * @return Version
 	 */
 	public function getVersion() {
 		return $this->maniaControl->client->getVersion();
