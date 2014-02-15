@@ -78,8 +78,8 @@ class AsynchronousFileReader {
 		if (count($resultArray) < 2) {
 			$result = self::INVALID_RESULT_ERROR;
 		} else {
-			$header = $this->parse_header($resultArray[0]);
-			if (isset($header["Transfer-Encoding"])) {
+			$header = $this->parseHeader($resultArray[0]);
+			if (isset($header["transfer-encoding"])) {
 				$result = $this->decode_chunked($resultArray[1]);
 			} else {
 				$result = $resultArray[1];
@@ -105,42 +105,28 @@ class AsynchronousFileReader {
 		return $res;
 	}
 
-
 	/**
-	 * Parse The Header
-	 *
-	 * @param $raw_headers
+	 * Parse the Header
+	 * @param $header
 	 * @return array
 	 */
-	private function parse_header($raw_headers) {
-		$headers = array();
-		$key     = '';
+	function parseHeader($header) {
+		$headers = explode(PHP_EOL, $header);
+		$output  = array();
 
-		foreach(explode("\n", $raw_headers) as $i => $h) {
-			$h = explode(':', $h, 2);
-
-			if (isset($h[1])) {
-				if (!isset($headers[$h[0]])) {
-					$headers[$h[0]] = trim($h[1]);
-				} elseif (is_array($headers[$h[0]])) {
-					$headers[$h[0]] = array_merge($headers[$h[0]], array(trim($h[1]))); // [+]
-				} else {
-					$headers[$h[0]] = array_merge(array($headers[$h[0]]), array(trim($h[1]))); // [+]
-				}
-
-				$key = $h[0];
-			} else {
-				if (substr($h[0], 0, 1) == "\t") // [+]
-				{
-					$headers[$key] .= "\r\n\t" . trim($h[0]);
-				} elseif (!$key) {
-					$headers[0] = trim($h[0]);
-				}
-				trim($h[0]);
-			}
+		if ('HTTP' === substr($headers[0], 0, 4)) {
+			list(, $output['status'], $output['status_text']) = explode(' ', $headers[0]);
+			unset($headers[0]);
 		}
-		return $headers;
+
+		foreach($headers as $v) {
+			$h                         = preg_split('/:\s*/', $v);
+			$output[strtolower($h[0])] = $h[1];
+		}
+
+		return $output;
 	}
+
 
 	/**
 	 * Load a remote file
