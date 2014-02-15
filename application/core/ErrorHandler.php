@@ -37,16 +37,23 @@ class ErrorHandler {
 		$message .= "Trace: {$ex->getTraceAsString()}" . PHP_EOL;
 		logMessage($message);
 
-		$error                        = array();
-		$error["Type"]                = "Exception";
-		$error["Message"]             = $message;
-		$error['ManiaControlVersion'] = ManiaControl::VERSION;
-		$error['OperatingSystem']     = php_uname();
-		$error['PHPVersion']          = phpversion();
+		$error["Type"]            = "Exception";
+		$error["Message"]         = $message;
+		$error['OperatingSystem'] = php_uname();
+		$error['PHPVersion']      = phpversion();
+
 		if ($this->maniaControl->server != null) {
 			$error['ServerLogin'] = $this->maniaControl->server->login;
 		} else {
 			$error['ServerLogin'] = null;
+		}
+
+		if ($this->maniaControl->settingManager != null && $this->maniaControl->updateManager != null) {
+			$error['UpdateChannel']       = $this->maniaControl->settingManager->getSetting($this->maniaControl->updateManager, UpdateManager::SETTING_UPDATECHECK_CHANNEL);
+			$error['ManiaControlVersion'] = $this->maniaControl->updateManager->getCurrentBuildDate();
+		} else {
+			$error['UpdateChannel']       = null;
+			$error['ManiaControlVersion'] = ManiaControl::VERSION;
 		}
 
 		$json = json_encode($error);
@@ -86,16 +93,24 @@ class ErrorHandler {
 		logMessage($message);
 
 		if ($errorNumber != E_USER_ERROR && $errorNumber != E_USER_WARNING && $errorNumber != E_USER_NOTICE) {
-			$error                        = array();
-			$error["Type"]                = "Error";
-			$error["Message"]             = $message;
-			$error['ManiaControlVersion'] = ManiaControl::VERSION;
-			$error['OperatingSystem']     = php_uname();
-			$error['PHPVersion']          = phpversion();
+			$error                    = array();
+			$error["Type"]            = "Error";
+			$error["Message"]         = $message;
+			$error['OperatingSystem'] = php_uname();
+			$error['PHPVersion']      = phpversion();
+			
 			if ($this->maniaControl->server != null) {
 				$error['ServerLogin'] = $this->maniaControl->server->login;
 			} else {
 				$error['ServerLogin'] = null;
+			}
+
+			if ($this->maniaControl->settingManager != null && $this->maniaControl->updateManager != null) {
+				$error['UpdateChannel']       = $this->maniaControl->settingManager->getSetting($this->maniaControl->updateManager, UpdateManager::SETTING_UPDATECHECK_CHANNEL);
+				$error['ManiaControlVersion'] = $this->maniaControl->updateManager->getCurrentBuildDate();
+			} else {
+				$error['UpdateChannel']       = null;
+				$error['ManiaControlVersion'] = ManiaControl::VERSION;
 			}
 
 			$json = json_encode($error);
