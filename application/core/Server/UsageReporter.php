@@ -5,7 +5,6 @@ namespace ManiaControl\Server;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
-use ManiaControl\Update\UpdateManager;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
