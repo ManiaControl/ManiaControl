@@ -95,6 +95,7 @@ class ErrorHandler {
 
 		if ($errorNumber != E_USER_ERROR && $errorNumber != E_USER_WARNING && $errorNumber != E_USER_NOTICE) {
 
+			$error                    = array();
 			$error["Type"]            = "Error";
 			$error["Message"]         = $message;
 			$error['OperatingSystem'] = php_uname();
