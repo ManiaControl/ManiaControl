@@ -44,6 +44,7 @@ class ManiaControl implements CommandListener {
 	const OS_WIN                      = 'Windows';
 	const CONNECT_TIMEOUT             = 20;
 	const SCRIPT_TIMEOUT              = 20;
+	const URL_WEBSERVICE              = 'http://ws.maniacontrol.com/';
 	const SETTING_PERMISSION_SHUTDOWN = 'Shutdown ManiaControl';
 	const SETTING_PERMISSION_RESTART  = 'Restart ManiaControl';
 

@@ -9,7 +9,7 @@ use ManiaControl\Update\UpdateManager;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
- * Class reports Usage
+ * Class reporting ManiaControl Usage for the Server
  *
  * @author steeffeen & kremsy
  */
@@ -26,27 +26,27 @@ class UsageReporter implements TimerListener {
 	private $maniaControl = null;
 
 	/**
-	 * Create a new Server Settings Instance
+	 * Create a new Usage Reporter Instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
-
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_DISABLE_USAGE_REPORTING, false);
 		$this->maniaControl->timerManager->registerTimerListening($this, 'reportUsage', 1000 * 60 * self::UPDATE_MINUTE_COUNT);
 
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_DISABLE_USAGE_REPORTING, false);
 	}
 
 	/**
 	 * Reports Usage every xx Minutes
 	 *
-	 * @param $time
+	 * @param float $time
 	 */
 	public function reportUsage($time) {
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_DISABLE_USAGE_REPORTING)) {
 			return;
 		}
+		
 
 		$properties                        = array();
 		$properties['ManiaControlVersion'] = ManiaControl::VERSION;
@@ -74,7 +74,7 @@ class UsageReporter implements TimerListener {
 		$json = json_encode($properties);
 		$info = base64_encode($json);
 
-		$this->maniaControl->fileReader->loadFile(UpdateManager::URL_WEBSERVICE . "/usagereport?info=" . urlencode($info), function ($response, $error) {
+		$this->maniaControl->fileReader->loadFile(ManiaControl::URL_WEBSERVICE . "/usagereport?info=" . urlencode($info), function ($response, $error) {
 			$response = json_decode($response);
 			if ($error || !$response) {
 				$this->maniaControl->log("Error while Sending data: " . $error);
