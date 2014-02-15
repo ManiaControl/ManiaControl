@@ -180,53 +180,67 @@ class PluginManager {
 		return true;
 	}
 
-
 	/**
-	 * Load complete plugins directory and start all configured plugins
+	 * Load complete Plugins Directory and start all configured Plugins
 	 */
-	public function loadPlugins($dir = '') {
-		//TODO first include all files, than handle plugin activation
-		$pluginsDirectory = ManiaControlDir . '/plugins/' . $dir . '/';
-		$pluginFiles      = scandir($pluginsDirectory, 0);
-		foreach($pluginFiles as $pluginFile) {
+	public function loadPlugins() {
+		$pluginsDirectory = ManiaControlDir . '/plugins/';
+
+		$classesBefore = get_declared_classes();
+		$this->loadPluginFiles($pluginsDirectory);
+		$classesAfter = get_declared_classes();
+		
+		$newClasses   = array_diff($classesAfter, $classesBefore);
+		foreach($newClasses as $className) {
+			if (!$this->isPluginClass($className)) {
+				continue;
+			}
+		
+			$this->addPluginClass($className);
+			$className::prepare($this->maniaControl);
+		
+			if ($this->isPluginActive($className)) {
+				continue;
+			}
+			if (!$this->getSavedPluginStatus($className)) {
+				continue;
+			}
+			
+			$this->activatePlugin($className);
+		}
+	}
+	
+	/**
+	 * Load all Plugin Files from the Directory
+	 * 
+	 * @param string $directory
+	 */
+	private function loadPluginFiles($directory = '') {
+		$pluginFiles = scandir($directory);
+		foreach ($pluginFiles as $pluginFile) {
 			if (stripos($pluginFile, '.') === 0) {
 				continue;
 			}
 
-			if (is_dir($pluginsDirectory . $pluginFile)) {
-				$this->loadPlugins($pluginFile);
+			$filePath = $directory . $pluginFile;
+			if (is_file($filePath)) {
+				$success = include_once $filePath;
+				if (!$success) {
+					trigger_error("Error loading File '{$filePath}'!");
+				}
 				continue;
 			}
 
-			$classesBefore = get_declared_classes();
-			$success       = include_once $pluginsDirectory . $pluginFile;
-			if (!$success) {
+			$dirPath = $directory . $pluginFile;
+			if (is_dir($dirPath)) {
+				$this->loadPluginFiles($dirPath . '/');
 				continue;
-			}
-			$classesAfter = get_declared_classes();
-			$newClasses   = array_diff($classesAfter, $classesBefore);
-			foreach($newClasses as $className) {
-				if (!$this->isPluginClass($className)) {
-					continue;
-				}
-
-				//Prepare Plugin
-				$className::prepare($this->maniaControl);
-
-				$this->addPluginClass($className);
-				if ($this->isPluginActive($className)) {
-					continue;
-				}
-				if (!$this->getSavedPluginStatus($className)) {
-					continue;
-				}
-				$this->activatePlugin($className);
 			}
 		}
 	}
 
 	/**
-	 * Returns an Plugin if it is activated
+	 * Returns a Plugin if it is activated
 	 *
 	 * @param string $pluginClass
 	 * @return Plugin
