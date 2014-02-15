@@ -54,7 +54,7 @@ class UsageReporter implements TimerListener {
 		$properties['PHPVersion']          = phpversion();
 		$properties['ServerLogin']         = $this->maniaControl->server->login;
 		$properties['TitleId']             = $this->maniaControl->server->titleId;
-		$properties['ServerName']          = Formatter::stripDirtyCodes($this->maniaControl->server->getName());
+		$properties['ServerName']          = Formatter::stripDirtyCodes($this->maniaControl->client->getServerName());
 		$properties['PlayerCount']         = $this->maniaControl->playerManager->getPlayerCount();
 
 		$maxPlayers               = $this->maniaControl->client->getMaxPlayers();
