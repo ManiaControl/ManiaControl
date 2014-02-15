@@ -307,15 +307,15 @@ class Server implements CallbackListener {
 		// Server not yet in given status - Wait for it...
 		$waitBegin   = time();
 		$maxWaitTime = 20;
-		$lastStatus  = $response['Name'];
+		$lastStatus  = $response->name;
 		$this->maniaControl->log("Waiting for server to reach status {$statusCode}...");
 		$this->maniaControl->log("Current Status: {$lastStatus}");
 		while($response->code !== 4) {
 			sleep(1);
 			$response = $this->maniaControl->client->getStatus();
-			if ($lastStatus !== $response['Name']) {
-				$this->maniaControl->log("New Status: {$response['Name']}");
-				$lastStatus = $response['Name'];
+			if ($lastStatus !== $response->name) {
+				$this->maniaControl->log("New Status: {$response->name}");
+				$lastStatus = $response->name;
 			}
 			if (time() - $maxWaitTime > $waitBegin) {
 				// It took too long to reach the status
