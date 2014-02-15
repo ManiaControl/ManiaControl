@@ -226,6 +226,15 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	}
 
 	/**
+	 * Get the CurrentBuildDate
+	 *
+	 * @return string
+	 */
+	public function getCurrentBuildDate() {
+		return $this->currentBuildDate;
+	}
+
+	/**
 	 * Set the Build Date of the local Nightly Build Version
 	 *
 	 * @param $date
