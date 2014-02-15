@@ -8,23 +8,41 @@
 
 namespace Dedimania;
 
+use ManiaControl\ManiaControl;
+use Maniaplanet\DedicatedServer\Structures\Version;
+
 /**
  * Dedimania Structure
  *
  * @author kremsy & steeffeen
  */
 class DedimaniaData {
-	/*public $streamBuffer;
-	public $socket;
-	public $function;
-	public $url;
-	public $creationTime;*/
+	public $game;
+	public $path;
+	public $packmask;
+	public $serverVersion;
+	public $serverBuild;
+	public $tool;
+	public $version;
+	public $login;
+	public $code;
 
-	public function __construct($url, $socket, $function) {
-		/*$this->url          = $url;
-		$this->socket       = $socket;
-		$this->function     = $function;
-		$this->creationTime = time();
-		$this->streamBuffer = '';*/
+	public function __construct($serverLogin, $dedimaniaCode, $path, $packmask, Version $serverVersion) {
+		$this->game          = "TM2";
+		$this->login         = $serverLogin;
+		$this->code          = $dedimaniaCode;
+		$this->version       = ManiaControl::VERSION;
+		$this->tool          = "ManiaControl";
+		$this->path          = $path;
+		$this->packmask      = $packmask;
+		$this->serverVersion = $serverVersion->version;
+		$this->serverBuild   = $serverVersion->build;
+	}
+
+	public function toArray() {
+		$array = array();
+		foreach(get_object_vars($this) as $key => $value)
+			$array[ucfirst($key)] = $value;
+		return $array;
 	}
 } 
