@@ -28,7 +28,6 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	const SETTING_AUTO_UPDATE            = 'Perform update automatically';
 	const SETTING_PERMISSION_UPDATE      = 'Update Core';
 	const SETTING_PERMISSION_UPDATECHECK = 'Check Core Update';
-	const URL_WEBSERVICE                 = 'http://ws.maniacontrol.com/';
 	const CHANNEL_RELEASE                = 'release';
 	const CHANNEL_BETA                   = 'beta';
 	const CHANNEL_NIGHTLY                = 'nightly';
@@ -289,7 +288,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		}
 		/** @var  Plugin $pluginClass */
 		$pluginId       = $pluginClass::getId();
-		$url            = self::URL_WEBSERVICE . 'plugins?id=' . $pluginId;
+		$url            = ManiaControl::URL_WEBSERVICE . 'plugins?id=' . $pluginId;
 		$dataJson       = FileUtil::loadFile($url);
 		$pluginVersions = json_decode($dataJson);
 		if (!$pluginVersions || !isset($pluginVersions[0])) {
@@ -312,7 +311,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 */
 	private function checkCoreUpdateAsync($function, $ignoreVersion = false) {
 		$updateChannel = $this->getCurrentUpdateChannelSetting();
-		$url           = self::URL_WEBSERVICE . 'versions?update=1&current=1&channel=' . $updateChannel;
+		$url           = ManiaControl::URL_WEBSERVICE . 'versions?update=1&current=1&channel=' . $updateChannel;
 
 		$this->maniaControl->fileReader->loadFile($url, function ($dataJson, $error) use (&$function, $ignoreVersion) {
 			$versions = json_decode($dataJson);
