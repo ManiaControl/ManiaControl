@@ -76,15 +76,16 @@ class AsynchronousFileReader {
 	private function parseResult($streamBuffer) {
 		$resultArray = explode(PHP_EOL . PHP_EOL, $streamBuffer, 2);
 		if (count($resultArray) < 2) {
-			$result = self::INVALID_RESULT_ERROR;
-		} else {
-			$header = $this->parseHeader($resultArray[0]);
-			if (isset($header["transfer-encoding"])) {
-				$result = $this->decode_chunked($resultArray[1]);
-			} else {
-				$result = $resultArray[1];
-			}
+			return self::INVALID_RESULT_ERROR;
 		}
+
+		$header = $this->parseHeader($resultArray[0]);
+		if (isset($header["transfer-encoding"])) {
+			$result = $this->decode_chunked($resultArray[1]);
+		} else {
+			$result = $resultArray[1];
+		}
+		
 		return $result;
 	}
 
@@ -107,6 +108,7 @@ class AsynchronousFileReader {
 
 	/**
 	 * Parse the Header
+	 *
 	 * @param $header
 	 * @return array
 	 */
