@@ -58,7 +58,7 @@ class SettingManager implements CallbackListener {
 	private function initTables() {
 		$mysqli                = $this->maniaControl->database->mysqli;
 		$defaultType           = "'" . self::TYPE_STRING . "'";
-		$typeSet               = $defaultType . ",'" . self::TYPE_INT . "'" . ",'" . self::TYPE_REAL . "'" . ",'" . self::TYPE_BOOL . "'" . ",'" . self::TYPE_ARRAY . "'";
+		$typeSet               = $defaultType . ",'" . self::TYPE_INT . "','" . self::TYPE_REAL . "','" . self::TYPE_BOOL . "','" . self::TYPE_ARRAY . "'";
 		$settingTableQuery     = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_SETTINGS . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
 				`class` varchar(100) NOT NULL,
@@ -70,18 +70,21 @@ class SettingManager implements CallbackListener {
 				PRIMARY KEY (`index`),
 				UNIQUE KEY `settingId` (`class`,`setting`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Settings and Configurations' AUTO_INCREMENT=1;";
-		$settingTableStatement = $mysqli->prepare($settingTableQuery);
+		$result = $mysqli->query($settingTableQuery);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error, E_USER_ERROR);
-			return false;
 		}
-		$success = $settingTableStatement->execute();
-		if ($settingTableStatement->error) {
-			trigger_error($settingTableStatement->error, E_USER_ERROR);
-			return false;
+		
+		// TODO: remove before release
+		$settingTableChangesQuery = "ALTER TABLE  `".self::TABLE_SETTINGS."`
+				MODIFY `class` VARCHAR(100) NOT NULL,
+				MODIFY `setting` VARCHAR(150) NOT NULL;";
+		$result2 = $mysqli->query($settingTableChangesQuery);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error);
 		}
-		$settingTableStatement->close();
-		return $success;
+		
+		return $result && $result2;
 	}
 
 	/**
