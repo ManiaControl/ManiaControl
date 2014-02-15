@@ -164,10 +164,13 @@ class PlayerManager implements CallbackListener {
 		$login  = $callback[1][0];
 		$player = $this->removePlayer($login);
 
+		if ($player == null) {
+			return;
+		}
 		// Trigger own callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERDISCONNECTED, array(self::CB_PLAYERDISCONNECTED, $player));
 
-		if ($player == null || $player->isFakePlayer()) {
+		if ($player->isFakePlayer()) {
 			return;
 		}
 
@@ -240,13 +243,14 @@ class PlayerManager implements CallbackListener {
 
 	/**
 	 * Gets the Count of all Player
+	 *
 	 * @return int
 	 */
-	public function getPlayerCount(){
+	public function getPlayerCount() {
 		$count = 0;
-		foreach($this->players as $player){
+		foreach($this->players as $player) {
 			/** @var Player $player */
-			if(!$player->isSpectator){
+			if (!$player->isSpectator) {
 				$count++;
 			}
 		}
@@ -255,13 +259,14 @@ class PlayerManager implements CallbackListener {
 
 	/**
 	 * Gets the Count of all Spectators
+	 *
 	 * @return int
 	 */
-	public function getSpectatorCount(){
+	public function getSpectatorCount() {
 		$count = 0;
-		foreach($this->players as $player){
+		foreach($this->players as $player) {
 			/** @var Player $player */
-			if($player->isSpectator){
+			if ($player->isSpectator) {
 				$count++;
 			}
 		}
