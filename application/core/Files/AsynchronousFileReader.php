@@ -41,10 +41,23 @@ class AsynchronousFileReader {
 		foreach($this->sockets as $key => &$socket) {
 			/** @var SocketStructure $socket */
 			$socket->streamBuffer .= fread($socket->socket, 4096);
+
+
+			//$socket->streamBuffer .= fgets($socket->socket, 4096);
+			//var_dump($socket->streamBuffer);
+			/*	$meta = stream_get_meta_data($socket->socket);
+				while($meta["unread_bytes"] > 0){
+					var_dump("test");
+					$socket->streamBuffer .= fgets($socket->socket, 4096);
+					$meta = stream_get_meta_data($socket->socket);
+					var_dump($meta);
+				}
+
+				var_dump($meta);
+				exit();*/
 			if (feof($socket->socket) || time() > ($socket->creationTime + self::SOCKET_TIMEOUT)) {
 				fclose($socket->socket);
 				unset($this->sockets[$key]);
-
 				$result = "";
 				$error  = 0;
 				if (time() > ($socket->creationTime + self::SOCKET_TIMEOUT)) {
@@ -84,15 +97,36 @@ class AsynchronousFileReader {
 		}
 
 		$header = $this->parseHeader($resultArray[0]);
+
 		if (isset($header["transfer-encoding"])) {
 			$result = $this->decode_chunked($resultArray[1]);
 		} else {
 			$result = $resultArray[1];
 		}
 
-		return $result;
+		return $this->decompressData($header, $result);
 	}
 
+	/**
+	 * Checks if the data is Compressed and uncompress it
+	 *
+	 * @param $header
+	 * @param $data
+	 * @return string
+	 */
+	private function decompressData($header, $data) {
+		if (isset($header["content-encoding"])) {
+			switch($header["content-encoding"]) {
+				case "gzip":
+				case "gzip;":
+					return gzdecode($data);
+				case "deflate":
+				case "deflate;":
+					return gzinflate($data);
+			}
+		}
+		return $data;
+	}
 
 	/**
 	 * Decode Chunks
@@ -133,6 +167,58 @@ class AsynchronousFileReader {
 		return $output;
 	}
 
+
+	/**
+	 * Send Data via POST Method
+	 *
+	 * @param        $url
+	 * @param        $function
+	 * @param        $content
+	 * @param string $contentType
+	 * @return bool|null
+	 */
+	public function postData($url, $function, $content, $compressed = false, $contentType = 'UTF-8') {
+		if (!is_callable($function)) {
+			$this->maniaControl->log("Function is not callable");
+			return false;
+		}
+
+		if (!$url) {
+			return null;
+		}
+		$urlData = parse_url($url);
+		$port    = (isset($urlData['port']) ? $urlData['port'] : 80);
+
+		$socket = @fsockopen($urlData['host'], $port, $errno, $errstr, 4);
+		if (!$socket) {
+			return false;
+		}
+
+		$query = 'POST ' . $urlData['path'] . ' HTTP/1.1' . PHP_EOL;
+		$query .= 'Host: ' . $urlData['host'] . PHP_EOL;
+		$query .= 'Accept-Charset: utf-8' . PHP_EOL;
+		$query .= 'Accept-Encoding: gzip, deflate' . PHP_EOL;
+		//$query .= 'Content-Encoding: gzip' . PHP_EOL;
+		$query .= 'Content-Type: text/xml; charset=utf-8;' . PHP_EOL;
+		$query .= 'Keep-Alive: 300' . PHP_EOL;
+		$query .= 'Connection: Keep-Alive' . PHP_EOL;
+		$query .= 'User-Agent: ManiaControl v' . ManiaControl::VERSION . PHP_EOL;
+		$query .= 'Content-Length: ' . strlen($content) . PHP_EOL . PHP_EOL;
+
+		$query .= $content . PHP_EOL;
+
+		fwrite($socket, $query);
+
+		$success = stream_set_blocking($socket, 0);
+		if (!$success) {
+			return false;
+		}
+
+		$socketStructure = new SocketStructure($url, $socket, $function);
+		array_push($this->sockets, $socketStructure);
+
+		return true;
+	}
 
 	/**
 	 * Load a remote file

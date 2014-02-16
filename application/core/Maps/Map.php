@@ -24,6 +24,7 @@ class Map {
 	public $mapType = '';
 	public $mapStyle = '';
 	public $nbCheckpoints = -1;
+	public $nbLaps = -1;
 	/** @var MXMapInfo $mx */
 	public $mx = null;
 	public $authorLogin = '';
@@ -57,6 +58,7 @@ class Map {
 		$this->mapType       = $mpMap->mapType;
 		$this->mapStyle      = $mpMap->mapStyle;
 		$this->nbCheckpoints = $mpMap->nbCheckpoints;
+		$this->nbLaps        = $mpMap->nbLaps;
 
 		$this->authorNick = $this->authorLogin;
 	}

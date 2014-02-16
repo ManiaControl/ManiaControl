@@ -377,6 +377,7 @@ class MapManager implements CallbackListener {
 		if (array_key_exists($rpcMap->uId, $this->maps)) {
 			$this->currentMap                = $this->maps[$rpcMap->uId];
 			$this->currentMap->nbCheckpoints = $rpcMap->nbCheckpoints;
+			$this->currentMap->nbLaps        = $rpcMap->nbLaps;
 			return true;
 		}
 		$map                   = $this->initializeMap($rpcMap);
