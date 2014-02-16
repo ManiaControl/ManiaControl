@@ -36,10 +36,10 @@ class MXMapInfo {
 
 			if ($this->prefix == 'tm' || !property_exists($mx, "MapID")) {
 				$this->id  = $mx->TrackID;
-				$this->uid = $mx->TrackUID;
+				$this->uid    = isset($mx->TrackUID) ? $mx->TrackUID : '';
 			} else {
 				$this->id  = $mx->MapID;
-				$this->uid = $mx->MapUID;
+				$this->uid    = isset($mx->MapUID) ? $mx->MapUID : '';
 			}
 
 			if (!isset($mx->GbxMapName) || $mx->GbxMapName == '?') {
