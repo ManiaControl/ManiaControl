@@ -28,16 +28,13 @@ class MXMapInfo {
 	public function __construct($prefix, $mx) {
 		$this->prefix = $prefix;
 		if ($mx) {
+
 			if ($this->prefix == 'tm') {
 				$dir = 'tracks';
-			} else { // 'sm' || 'qm'
-				$dir = 'maps';
-			}
-
-			if ($this->prefix == 'tm' || !property_exists($mx, "MapID")) {
 				$this->id  = $mx->TrackID;
 				$this->uid = isset($mx->TrackUID) ? $mx->TrackUID : '';
 			} else {
+				$dir = 'maps';
 				$this->id  = $mx->MapID;
 				$this->uid = isset($mx->MapUID) ? $mx->MapUID : '';
 			}
