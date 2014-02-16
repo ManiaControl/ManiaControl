@@ -47,4 +47,18 @@ abstract class Builder {
 		if (!fmod($value, 1)) $stringVal .= '.';
 		return $stringVal;
 	}
+	
+	/**
+	 * Get the Boolean String-Representation of the given Value
+	 * 
+	 * @param bool $value The Value to convert to a ManiaScript Boolean
+	 * @return string
+	 */
+	public static function getBoolean($value) {
+		$bool = (bool) $value;
+		if ($bool) {
+			return "True";
+		}
+		return "False";
+	}
 }

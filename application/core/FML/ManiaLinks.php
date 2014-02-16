@@ -44,9 +44,9 @@ class ManiaLinks {
 	}
 
 	/**
-	 * Add a Child Manialink
+	 * Add a Child ManiaLink
 	 *
-	 * @param ManiaLink $child Child Manialink
+	 * @param ManiaLink $child Child ManiaLink
 	 * @return \FML\ManiaLinks
 	 */
 	public function add(ManiaLink $child) {
@@ -57,7 +57,7 @@ class ManiaLinks {
 	}
 
 	/**
-	 * Remove all Child Manialinks
+	 * Remove all Child ManiaLinks
 	 *
 	 * @return \FML\ManiaLinks
 	 */

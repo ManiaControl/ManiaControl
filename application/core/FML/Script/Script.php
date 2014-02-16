@@ -28,14 +28,17 @@ class Script {
 	const CLASS_TOGGLE = 'FML_Toggle';
 	const CLASS_SPECTATE = 'FML_Spectate';
 	const CLASS_PAGEACTION = 'FML_PageAction';
+	const CLASS_TIME = 'FML_Time';
 	const OPTION_TOOLTIP_STAYONCLICK = 'FML_StayOnClick_Tooltip';
 	const OPTION_TOOLTIP_INVERT = 'FML_Invert_Tooltip';
 	const OPTION_TOOLTIP_TEXT = 'FML_Text_Tooltip';
 	const OPTION_TOGGLE_SHOW = 'FML_Show_Toggle';
 	const OPTION_TOGGLE_HIDE = 'FML_Hide_Toggle';
 	const OPTION_PROFILE_OWN = 'FML_Own_Profile';
+	const OPTION_TIME_FULLDATE = 'FML_FullDate_Time';
 	const LABEL_ONINIT = 'OnInit';
 	const LABEL_LOOP = 'Loop';
+	const LABEL_TICK = 'Tick';
 	const LABEL_ENTRYSUBMIT = 'EntrySubmit';
 	const LABEL_KEYPRESS = 'KeyPress';
 	const LABEL_MOUSECLICK = 'MouseClick';
@@ -63,6 +66,7 @@ class Script {
 	protected $toggles = false;
 	protected $spectate = false;
 	protected $pageActions = false;
+	protected $times = false;
 
 	/**
 	 * Create a new Script Object
@@ -365,6 +369,7 @@ class Script {
 	 *
 	 * @param Control $actionControl The Control triggering the Action
 	 * @param string $action (optional) The Action to trigger (if empty the Action of the Control will be triggered)
+	 * @return \FML\Script\Script
 	 */
 	public function addPageActionTrigger(Control $actionControl, $action = null) {
 		if (!($actionControl instanceof Scriptable)) {
@@ -384,6 +389,22 @@ class Script {
 		$actionControl->addClass(self::CLASS_PAGEACTION);
 		$actionControl->addClass(self::CLASS_PAGEACTION . '-' . $action);
 		$this->pageActions = true;
+		return $this;
+	}
+
+	/**
+	 * Add a Label showing the current Time
+	 *
+	 * @param Label $timeLabel The Label showing the current Time
+	 * @param bool $showFullDate Whether to show the full Date Text
+	 * @return \FML\Script\Script
+	 */
+	public function addTimeLabel(Label $timeLabel, $showFullDate = false) {
+		$timeLabel->addClass(self::CLASS_TIME);
+		if ($showFullDate) {
+			$timeLabel->addClass(self::OPTION_TIME_FULLDATE);
+		}
+		$this->times = true;
 		return $this;
 	}
 
@@ -553,6 +574,7 @@ Text " . self::FUNCTION_GETTOOLTIPCONTROLID . "(Text _ControlClass) {
 		$labelsText .= $this->getSoundLabels();
 		$labelsText .= $this->getToggleLabels();
 		$labelsText .= $this->getSpectateLabels();
+		$labelsText .= $this->getTimeLabels();
 		return $labelsText;
 	}
 
@@ -896,6 +918,29 @@ if (Event.Control.HasClass(\"" . self::CLASS_PAGEACTION . "\")) {
 }";
 		$pageActionScript = Builder::getLabelImplementationBlock(self::LABEL_MOUSECLICK, $pageActionScript);
 		return $pageActionScript;
+	}
+
+	/**
+	 * Get the Time Labels
+	 *
+	 * @return string
+	 */
+	private function getTimeLabels() {
+		if (!$this->times) return '';
+		$this->setInclude('TextLib', 'TextLib');
+		$timesScript = "
+Page.GetClassChildren(\"" . self::CLASS_TIME . "\", Page.MainFrame, True);
+foreach (TimeLabelControl in Page.GetClassChildren_Result) {
+	declare TimeLabel = (TimeLabelControl as CMlLabel);
+	declare ShowFullDate = TimeLabel.HasClass(\"" . self::OPTION_TIME_FULLDATE . "\");
+	if (ShowFullDate) {
+		TimeLabel.Value = CurrentLocalDateText;
+	} else {
+		TimeLabel.Value = TextLib::SubText(CurrentLocalDateText, 11, 8);
+	}
+}";
+		$timesScript = Builder::getLabelImplementationBlock(self::LABEL_TICK, $timesScript);
+		return $timesScript;
 	}
 
 	/**
