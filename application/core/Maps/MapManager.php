@@ -499,9 +499,6 @@ class MapManager implements CallbackListener {
 					return;
 				}
 
-				$serverInfo = $this->maniaControl->client->getSystemInfo();
-				$title      = strtolower(substr($serverInfo->titleId, 0, 2));
-
 				//Download the file
 				$function = function ($file, $error) use (&$login, &$mapInfo, &$mapDir, &$update) {
 					if (!$file) {
