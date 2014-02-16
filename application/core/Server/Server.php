@@ -225,7 +225,7 @@ class Server implements CallbackListener {
 				case 1:
 					return 'Rounds';
 				case 2:
-					return 'Timeattack';
+					return 'TimeAttack';
 				case 3:
 					return 'Team';
 				case 4:
