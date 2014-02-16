@@ -225,7 +225,7 @@ class Server implements CallbackListener {
 				case 1:
 					return 'Rounds';
 				case 2:
-					return 'TimeAttack';
+					return 'Timeattack';
 				case 3:
 					return 'Team';
 				case 4:
@@ -306,7 +306,7 @@ class Server implements CallbackListener {
 		}
 		// Server not yet in given status - Wait for it...
 		$waitBegin   = time();
-		$maxWaitTime = 20;
+		$maxWaitTime = 30;
 		$lastStatus  = $response->name;
 		$this->maniaControl->log("Waiting for server to reach status {$statusCode}...");
 		$this->maniaControl->log("Current Status: {$lastStatus}");
