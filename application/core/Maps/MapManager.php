@@ -502,8 +502,6 @@ class MapManager implements CallbackListener {
 				$serverInfo = $this->maniaControl->client->getSystemInfo();
 				$title      = strtolower(substr($serverInfo->titleId, 0, 2));
 
-				$url = "http://{$title}.mania-exchange.com/tracks/download/{$mapInfo->id}";
-
 				//Download the file
 				$function = function ($file, $error) use (&$login, &$mapInfo, &$mapDir, &$update) {
 					if (!$file) {
@@ -513,7 +511,7 @@ class MapManager implements CallbackListener {
 					}
 					$this->processMapFile($file, $mapInfo, $mapDir, $login, $update);
 				};
-				$this->maniaControl->fileReader->loadFile($url, $function);
+				$this->maniaControl->fileReader->loadFile($mapInfo->downLoadUrl, $function);
 			});
 		}
 	}
