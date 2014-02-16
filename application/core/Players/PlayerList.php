@@ -224,7 +224,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 			$rightQuad = new Quad_BgRaceScore2();
 			$playerFrame->add($rightQuad);
 			$rightQuad->setX($x + 13);
-			$rightQuad->setZ(5);
+			$rightQuad->setZ(3);
 			$rightQuad->setSubStyle($rightQuad::SUBSTYLE_CupFinisher);
 			$rightQuad->setSize(7, 3.5);
 
@@ -232,7 +232,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 			$playerFrame->add($rightLabel);
 			$rightLabel->setX($x + 13.9);
 			$rightLabel->setTextSize(0.8);
-			$rightLabel->setZ(10);
+			$rightLabel->setZ(3.1);
 			$rightLabel->setText($this->maniaControl->authenticationManager->getAuthLevelAbbreviation($listPlayer->authLevel));
 			$rightLabel->setTextColor("fff");
 
@@ -242,7 +242,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 			$playerQuad = new Quad_Icons64x64_1();
 			$playerFrame->add($playerQuad);
 			$playerQuad->setX($x + 61);
-			$playerQuad->setZ(20);
+			$playerQuad->setZ(3);
 			$playerQuad->setSubStyle($playerQuad::SUBSTYLE_TrackInfo);
 			$playerQuad->setSize(2.7, 2.7);
 			$playerQuad->setAction(self::ACTION_OPEN_PLAYER_DETAILED . "." . $listPlayer->login);
@@ -252,7 +252,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 			$playerQuad = new Quad_UIConstruction_Buttons();
 			$playerFrame->add($playerQuad);
 			$playerQuad->setX($x + 64.5);
-			$playerQuad->setZ(20);
+			$playerQuad->setZ(3);
 			$playerQuad->setSubStyle($playerQuad::SUBSTYLE_Camera);
 			$playerQuad->setSize(3.8, 3.8);
 			$script->addTooltip($playerQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Spectate " . $listPlayer->nickname));
@@ -262,7 +262,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 			$playerQuad = new Quad_UIConstruction_Buttons();
 			$playerFrame->add($playerQuad);
 			$playerQuad->setX($x + 68);
-			$playerQuad->setZ(20);
+			$playerQuad->setZ(3);
 			$playerQuad->setSubStyle($playerQuad::SUBSTYLE_Author);
 			$playerQuad->setSize(3.8, 3.8);
 			$script->addProfileButton($playerQuad, $listPlayer->login);
