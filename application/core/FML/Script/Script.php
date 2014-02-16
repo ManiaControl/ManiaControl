@@ -35,6 +35,7 @@ class Script {
 	const OPTION_TOGGLE_SHOW = 'FML_Show_Toggle';
 	const OPTION_TOGGLE_HIDE = 'FML_Hide_Toggle';
 	const OPTION_PROFILE_OWN = 'FML_Own_Profile';
+	const OPTION_TIME_HIDESECONDS = 'FML_HideSeconds_Time';
 	const OPTION_TIME_FULLDATE = 'FML_FullDate_Time';
 	const LABEL_ONINIT = 'OnInit';
 	const LABEL_LOOP = 'Loop';
@@ -396,12 +397,16 @@ class Script {
 	 * Add a Label showing the current Time
 	 *
 	 * @param Label $timeLabel The Label showing the current Time
-	 * @param bool $showFullDate Whether to show the full Date Text
+	 * @param bool $hideSeconds Whether the seconds should be hidden
+	 * @param bool $showDate Whether to show the full Date Text
 	 * @return \FML\Script\Script
 	 */
-	public function addTimeLabel(Label $timeLabel, $showFullDate = false) {
+	public function addTimeLabel(Label $timeLabel, $hideSeconds = false, $showDate = false) {
 		$timeLabel->addClass(self::CLASS_TIME);
-		if ($showFullDate) {
+		if ($hideSeconds) {
+			$timeLabel->addClass(self::OPTION_TIME_HIDESECONDS);
+		}
+		if ($showDate) {
 			$timeLabel->addClass(self::OPTION_TIME_FULLDATE);
 		}
 		$this->times = true;
@@ -932,12 +937,16 @@ if (Event.Control.HasClass(\"" . self::CLASS_PAGEACTION . "\")) {
 Page.GetClassChildren(\"" . self::CLASS_TIME . "\", Page.MainFrame, True);
 foreach (TimeLabelControl in Page.GetClassChildren_Result) {
 	declare TimeLabel = (TimeLabelControl as CMlLabel);
-	declare ShowFullDate = TimeLabel.HasClass(\"" . self::OPTION_TIME_FULLDATE . "\");
-	if (ShowFullDate) {
-		TimeLabel.Value = CurrentLocalDateText;
-	} else {
-		TimeLabel.Value = TextLib::SubText(CurrentLocalDateText, 11, 8);
+	declare HideSeconds = TimeLabel.HasClass(\"" . self::OPTION_TIME_HIDESECONDS . "\");
+	declare ShowDate = TimeLabel.HasClass(\"" . self::OPTION_TIME_FULLDATE . "\");
+	declare TimeText = CurrentLocalDateText;
+	if (HideSeconds) {
+		TimeText = TextLib::SubText(TimeText, 0, 16);
 	}
+	if (!ShowDate) {
+		TimeText = TextLib::SubText(TimeText, 11, 9);
+	}
+	TimeLabel.Value = TimeText;
 }";
 		$timesScript = Builder::getLabelImplementationBlock(self::LABEL_TICK, $timesScript);
 		return $timesScript;
