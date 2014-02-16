@@ -15,7 +15,7 @@ class MXMapInfo {
 	public $titlepack, $style, $envir, $mood, $dispcost, $lightmap, $modname, $exever;
 	public $exebld, $routes, $length, $unlimiter, $laps, $difficulty, $lbrating, $trkvalue;
 	public $replaytyp, $replayid, $replaycnt, $acomment, $awards, $comments, $rating;
-	public $ratingex, $ratingcnt, $pageurl, $replayurl, $imageurl, $thumburl, $downLoadUrl;
+	public $ratingex, $ratingcnt, $pageurl, $replayurl, $imageurl, $thumburl, $downloadurl;
 
 	/**
 	 * Returns map object with all available data from MX map data
@@ -94,7 +94,7 @@ class MXMapInfo {
 			$this->pageurl     = 'http://' . $this->prefix . '.mania-exchange.com/' . $dir . '/view/' . $this->id;
 			$this->imageurl    = 'http://' . $this->prefix . '.mania-exchange.com/' . $dir . '/screenshot/normal/' . $this->id;
 			$this->thumburl    = 'http://' . $this->prefix . '.mania-exchange.com/' . $dir . '/screenshot/small/' . $this->id;
-			$this->downLoadUrl = 'http://' . $this->prefix . '.mania-exchange.com/' . $dir . '/download/' . $this->id;
+			$this->downloadurl = 'http://' . $this->prefix . '.mania-exchange.com/' . $dir . '/download/' . $this->id;
 
 			if ($this->prefix == 'tm' && $this->replayid > 0) {
 				$this->replayurl = 'http://' . $this->prefix . '.mania-exchange.com/replays/download/' . $this->replayid;

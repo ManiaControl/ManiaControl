@@ -508,7 +508,7 @@ class MapManager implements CallbackListener {
 					}
 					$this->processMapFile($file, $mapInfo, $mapDir, $login, $update);
 				};
-				$this->maniaControl->fileReader->loadFile($mapInfo->downLoadUrl, $function);
+				$this->maniaControl->fileReader->loadFile($mapInfo->downloadurl, $function);
 			});
 		}
 	}
