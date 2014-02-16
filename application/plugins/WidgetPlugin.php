@@ -100,8 +100,6 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'handlePlayerConnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECTED, $this, 'handlePlayerDisconnect');
 
-		$this->maniaControl->timerManager->registerTimerListening($this, 'handleEveryMinute', 1000 * 60);
-
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED, true);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAP_WIDGET_POSX, 160 - 20);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAP_WIDGET_POSY, 90 - 4.5);
@@ -245,6 +243,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
 
 		$maniaLink = new ManiaLink(self::MLID_CLOCKWIDGET);
+		$script = $maniaLink->getScript();
 
 		// mainframe
 		$frame = new Frame();
@@ -258,8 +257,6 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$backgroundQuad->setSize($width, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 
-		$localTime = date("H:i", time());
-
 		$label = new Label_Text();
 		$frame->add($label);
 		$label->setY(1.5);
@@ -267,8 +264,8 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$label->setAlign(Control::CENTER, Control::TOP);
 		$label->setZ(0.2);
 		$label->setTextSize(1);
-		$label->setText($localTime);
 		$label->setTextColor("FFF");
+		$script->addTimeLabel($label, true);
 
 		// Send manialink
 		$manialinkText = $maniaLink->render()->saveXML();
@@ -541,17 +538,6 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	public function handlePlayerDisconnect(array $callback) {
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_SERVERINFO_WIDGET_ACTIVATED)) {
 			$this->displayServerInfoWidget();
-		}
-	}
-
-	/**
-	 * Actualize the clock widget every minute
-	 *
-	 * @param $time
-	 */
-	public function handleEveryMinute($time) {
-		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_ACTIVATED)) {
-			$this->displayClockWidget();
 		}
 	}
 
