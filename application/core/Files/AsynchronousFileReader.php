@@ -55,38 +55,39 @@ class AsynchronousFileReader {
 					unset($this->sockets[$key]);
 					$this->handleContent($socket);
 					continue 2;
-				}else{
-					$meta = stream_get_meta_data($socket->socket);
 				}
+
+				$meta = stream_get_meta_data($socket->socket);
 			} while($meta["unread_bytes"] > 0);
 		}
 	}
 
 	/**
 	 * Handles the Content
+	 *
 	 * @param $socket
 	 */
-	private function handleContent(SocketStructure $socket){ //TODO timeout handling
+	private function handleContent(SocketStructure $socket) { //TODO timeout handling
 		//if (feof($socket->socket) || time() > ($socket->creationTime + self::SOCKET_TIMEOUT)) {
-			$result = "";
-			$error  = 0;
-			/*if (time() > ($socket->creationTime + self::SOCKET_TIMEOUT)) {
-				$error = self::TIMEOUT_ERROR;
-			} else*/
-			if ($socket->header["status"] != "200") {
-				$error  = self::RESPONSE_ERROR;
-				$result = $this->parseResult2($socket);
+		$result = "";
+		$error  = 0;
+		/*if (time() > ($socket->creationTime + self::SOCKET_TIMEOUT)) {
+			$error = self::TIMEOUT_ERROR;
+		} else*/
+		if ($socket->header["status"] != "200") {
+			$error  = self::RESPONSE_ERROR;
+			$result = $this->parseResult2($socket);
 
-			} else if ($socket->streamBuffer == '') {
-				$error = self::NO_DATA_ERROR;
-			} else {
-				$result = $this->parseResult2($socket);
-				if ($result == self::INVALID_RESULT_ERROR) {
-					$error = self::INVALID_RESULT_ERROR;
-				}
+		} else if ($socket->streamBuffer == '') {
+			$error = self::NO_DATA_ERROR;
+		} else {
+			$result = $this->parseResult2($socket);
+			if ($result == self::INVALID_RESULT_ERROR) {
+				$error = self::INVALID_RESULT_ERROR;
 			}
-			//var_dump($result);
-			call_user_func($socket->function, $result, $error);
+		}
+		//var_dump($result);
+		call_user_func($socket->function, $result, $error);
 		//}
 	}
 
