@@ -15,6 +15,7 @@ class SocketStructure {
 	public $function;
 	public $url;
 	public $creationTime;
+	public $header;
 
 	public function __construct($url, $socket, $function) {
 		$this->url          = $url;
@@ -22,5 +23,6 @@ class SocketStructure {
 		$this->function     = $function;
 		$this->creationTime = time();
 		$this->streamBuffer = '';
+		$this->header = array();
 	}
 }

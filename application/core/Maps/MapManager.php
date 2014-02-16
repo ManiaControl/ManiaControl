@@ -12,6 +12,7 @@ use ManiaControl\ManiaExchange\ManiaExchangeList;
 use ManiaControl\ManiaExchange\ManiaExchangeManager;
 use ManiaControl\ManiaExchange\MXMapInfo;
 use ManiaControl\Players\Player;
+use Maniaplanet\DedicatedServer\InvalidArgumentException;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
@@ -561,8 +562,8 @@ class MapManager implements CallbackListener {
 		} else {
 			try {
 				$this->maniaControl->client->writeFileFromString($mapFileName, $file);
-			} catch(Exception $e) {
-				if ($e->getMessage() == 'transport error - request too large!') {
+			} catch(InvalidArgumentException $e) {
+				if ($e->getMessage() == 'data are too big') {
 					$this->maniaControl->chat->sendError("Map is too big for a remote save.", $login);
 					return;
 				}

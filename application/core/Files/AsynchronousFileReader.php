@@ -40,71 +40,72 @@ class AsynchronousFileReader {
 	public function appendData() {
 		foreach($this->sockets as $key => &$socket) {
 			/** @var SocketStructure $socket */
-			$socket->streamBuffer .= fread($socket->socket, 4096);
+			do {
+				$line = fgets($socket->socket, 4096);
+				if (empty($socket->header) && $line == "\r\n") {
+					$socket->header       = $this->parseHeader($socket->streamBuffer);
+					$socket->streamBuffer = "";
+					$line                 = "";
+				}
+				$socket->streamBuffer .= $line;
 
-
-			//$socket->streamBuffer .= fgets($socket->socket, 4096);
-			//var_dump($socket->streamBuffer);
-			/*	$meta = stream_get_meta_data($socket->socket);
-				while($meta["unread_bytes"] > 0){
-					var_dump("test");
-					$socket->streamBuffer .= fgets($socket->socket, 4096);
+				if (feof($socket->socket) || isset($socket->header["content-length"]) && strlen($socket->streamBuffer) >= $socket->header["content-length"]) {
+					//TODO special handling for chunked...
+					fclose($socket->socket);
+					unset($this->sockets[$key]);
+					$this->handleContent($socket);
+					continue 2;
+				}else{
 					$meta = stream_get_meta_data($socket->socket);
-					var_dump($meta);
 				}
-
-				var_dump($meta);
-				exit();*/
-			if (feof($socket->socket) || time() > ($socket->creationTime + self::SOCKET_TIMEOUT)) {
-				fclose($socket->socket);
-				unset($this->sockets[$key]);
-				$result = "";
-				$error  = 0;
-				if (time() > ($socket->creationTime + self::SOCKET_TIMEOUT)) {
-					$error = self::TIMEOUT_ERROR;
-				} else if (substr($socket->streamBuffer, 9, 3) != "200") {
-					$error  = self::RESPONSE_ERROR;
-					$result = $this->parseResult($socket->streamBuffer);
-
-				} else if ($socket->streamBuffer == '') {
-					$error = self::NO_DATA_ERROR;
-				} else {
-					$result = $this->parseResult($socket->streamBuffer);
-					if ($result == self::INVALID_RESULT_ERROR) {
-						$error = self::INVALID_RESULT_ERROR;
-					}
-				}
-
-				call_user_func($socket->function, $result, $error);
-			}
+			} while($meta["unread_bytes"] > 0);
 		}
+	}
+
+	/**
+	 * Handles the Content
+	 * @param $socket
+	 */
+	private function handleContent(SocketStructure $socket){ //TODO timeout handling
+		//if (feof($socket->socket) || time() > ($socket->creationTime + self::SOCKET_TIMEOUT)) {
+			$result = "";
+			$error  = 0;
+			/*if (time() > ($socket->creationTime + self::SOCKET_TIMEOUT)) {
+				$error = self::TIMEOUT_ERROR;
+			} else*/
+			if ($socket->header["status"] != "200") {
+				$error  = self::RESPONSE_ERROR;
+				$result = $this->parseResult2($socket);
+
+			} else if ($socket->streamBuffer == '') {
+				$error = self::NO_DATA_ERROR;
+			} else {
+				$result = $this->parseResult2($socket);
+				if ($result == self::INVALID_RESULT_ERROR) {
+					$error = self::INVALID_RESULT_ERROR;
+				}
+			}
+			//var_dump($result);
+			call_user_func($socket->function, $result, $error);
+		//}
 	}
 
 	/**
 	 * Parse the Stream Result
 	 *
-	 * @param $streamBuffer
+	 * @param SocketStructure $socket
+	 * @internal param $streamBuffer
 	 * @return string
 	 */
-	private function parseResult($streamBuffer) {
-		$resultArray = explode("\r\n\r\n", $streamBuffer, 2);
+	private function parseResult2(SocketStructure $socket) {
 
-		switch(count($resultArray)) {
-			case 0:
-				return self::INVALID_RESULT_ERROR;
-			case 1:
-				return '';
-		}
-
-		$header = $this->parseHeader($resultArray[0]);
-
-		if (isset($header["transfer-encoding"])) {
-			$result = $this->decode_chunked($resultArray[1]);
+		if (isset($socket->header["transfer-encoding"])) {
+			$result = $this->decode_chunked($socket->streamBuffer);
 		} else {
-			$result = $resultArray[1];
+			$result = $socket->streamBuffer;
 		}
 
-		return $this->decompressData($header, $result);
+		return $this->decompressData($socket->header, $result);
 	}
 
 	/**
@@ -160,6 +161,9 @@ class AsynchronousFileReader {
 		}
 
 		foreach($headers as $v) {
+			if ($v == "") {
+				break;
+			}
 			$h                         = preg_split('/:\s*/', $v);
 			$output[strtolower($h[0])] = $h[1];
 		}
