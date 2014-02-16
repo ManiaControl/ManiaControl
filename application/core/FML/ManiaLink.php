@@ -39,7 +39,7 @@ class ManiaLink {
 	/**
 	 * Create a new ManiaLink Object
 	 *
-	 * @param string $id (optional) Manialink Id
+	 * @param string $id (optional) ManiaLink Id
 	 * @return \FML\ManiaLink
 	 */
 	public static function create($id = null) {
@@ -50,7 +50,7 @@ class ManiaLink {
 	/**
 	 * Construct a new ManiaLink Object
 	 *
-	 * @param string $id (optional) Manialink Id
+	 * @param string $id (optional) ManiaLink Id
 	 */
 	public function __construct($id = null) {
 		if ($id !== null) {
@@ -70,14 +70,23 @@ class ManiaLink {
 	}
 
 	/**
-	 * Set Manialink Id
+	 * Set ManiaLink Id
 	 *
-	 * @param string $id Manialink Id
+	 * @param string $id ManiaLink Id
 	 * @return \FML\ManiaLink
 	 */
 	public function setId($id) {
 		$this->id = (string) $id;
 		return $this;
+	}
+
+	/**
+	 * Get ManiaLink Id
+	 * 
+	 * @return string
+	 */
+	public function getId() {
+		return $this->id;
 	}
 
 	/**

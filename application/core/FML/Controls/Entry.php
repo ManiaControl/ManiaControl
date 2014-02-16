@@ -146,9 +146,6 @@ class Entry extends Control implements NewLineable, Scriptable, Styleable, TextF
 	 */
 	public function render(\DOMDocument $domDocument) {
 		$xmlElement = parent::render($domDocument);
-		if (false) {
-			$xmlElement->setAttribute('action', 'TestAction');
-		}
 		if ($this->name) {
 			$xmlElement->setAttribute('name', $this->name);
 		}
