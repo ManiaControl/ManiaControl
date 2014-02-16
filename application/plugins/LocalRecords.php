@@ -35,6 +35,7 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 	const SETTING_WIDGET_LINEHEIGHT = 'Widget Line Height';
 	const SETTING_NOTIFY_ONLY_DRIVER = 'Notify only the Driver on New Records';
 	const SETTING_NOTIFY_BEST_RECORDS = 'Notify Publicly only for the X Best Records';
+	const SETTING_ADJUST_OUTER_BORDER = 'Adjust outer Border to Number of actual Records';
 	
 	/**
 	 * Private properties
@@ -73,10 +74,11 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_LINEHEIGHT, 4.);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_NOTIFY_ONLY_DRIVER, false);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_NOTIFY_BEST_RECORDS, -1);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_ADJUST_OUTER_BORDER, false);
 		
 		// Register for callbacks
 		$this->maniaControl->timerManager->registerTimerListening($this, 'handle1Second', 1000);
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_AFTERINIT, $this, 'handleAfterInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_BEGINMAP, $this, 'handleMapBegin');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_CLIENTUPDATED, $this, 
 				'handleClientUpdated');
@@ -157,11 +159,11 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 	}
 
 	/**
-	 * Handle ManiaControl init
+	 * Handle ManiaControl After Init
 	 *
 	 * @param array $callback
 	 */
-	public function handleOnInit(array $callback) {
+	public function handleAfterInit(array $callback) {
 		$this->updateManialink = true;
 	}
 
@@ -310,11 +312,13 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 		$frame = new Frame();
 		$manialink->add($frame);
 		$frame->setPosition($pos_x, $pos_y);
-		
+
 		$backgroundQuad = new Quad();
 		$frame->add($backgroundQuad);
 		$backgroundQuad->setVAlign(Control::TOP);
-		$backgroundQuad->setSize($width * 1.05, 7. + $lines * $lineHeight);
+		$adjustOuterBorder = $this->maniaControl->settingManager->getSetting($this, self::SETTING_ADJUST_OUTER_BORDER);
+		$height = 7. + ($adjustOuterBorder ? count($records) : $lines) * $lineHeight;
+		$backgroundQuad->setSize($width * 1.05, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 		
 		$titleLabel = new Label();
@@ -333,10 +337,10 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 			$recordFrame = new Frame();
 			$frame->add($recordFrame);
 			$recordFrame->setPosition(0, $y);
-			
+
 			$backgroundQuad = new Quad();
 			$recordFrame->add($backgroundQuad);
-			$backgroundQuad->setSize($width * 1.03, $lineHeight * 1.32);
+			$backgroundQuad->setSize($width * 1.04, $lineHeight * 1.4);
 			$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 			
 			$rankLabel = new Label();
