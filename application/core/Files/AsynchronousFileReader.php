@@ -78,6 +78,10 @@ class AsynchronousFileReader {
 			$error  = self::RESPONSE_ERROR;
 			$result = $this->parseResult($socket);
 
+			if (intval($socket->header["status"]) > 300 && intval($socket->header["status"]) < 310) {
+				$this->maniaControl->errorHandler->triggerDebugNotice("HTTP Error, Code:" . $socket->header["status"] . "URL: " . $socket->url);
+			}
+
 		} else if ($socket->streamBuffer == '') {
 			$error = self::NO_DATA_ERROR;
 		} else {
