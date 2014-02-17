@@ -12,6 +12,11 @@ use ManiaControl\Update\UpdateManager;
  */
 class ErrorHandler {
 	/**
+	 * Constants
+	 */
+	const MC_DEBUG_NOTICE = "ManiaControl.DebugNotice";
+
+	/**
 	 * Private Properties
 	 */
 	private $maniaControl = null;
@@ -94,7 +99,6 @@ class ErrorHandler {
 		logMessage($message);
 
 		if ($errorNumber != E_USER_ERROR && $errorNumber != E_USER_WARNING && $errorNumber != E_USER_NOTICE) {
-
 			$error                    = array();
 			$error["Type"]            = "Error";
 			$error["Message"]         = $message;
@@ -136,6 +140,17 @@ class ErrorHandler {
 	}
 
 	/**
+	 * Triggers a Debug Notice to the ManiaControl Website
+	 *
+	 * @param $message
+	 */
+	public function triggerDebugNotice($message) {
+		$backtrace = debug_backtrace();
+		$callee    = next($backtrace);
+		$this->errorHandler(self::MC_DEBUG_NOTICE, $message, $callee['file'], $callee['line']);
+	}
+
+	/**
 	 * Get the prefix for the given error level
 	 *
 	 * @param int $errorLevel
@@ -168,6 +183,9 @@ class ErrorHandler {
 		}
 		if ($errorLevel == E_USER_ERROR) {
 			return '[ManiaControl ERROR]';
+		}
+		if ($errorLevel == self::MC_DEBUG_NOTICE) {
+			return '[ManiaControl DEBUG]';
 		}
 		return "[PHP {$errorLevel}]";
 	}
