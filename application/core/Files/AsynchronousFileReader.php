@@ -49,8 +49,8 @@ class AsynchronousFileReader {
 				}
 				$socket->streamBuffer .= $line;
 
-				if (feof($socket->socket) || isset($socket->header["content-length"]) && strlen($socket->streamBuffer) >= $socket->header["content-length"]) {
-					//TODO special handling for chunked...
+				$chunked = isset($socket->header["transfer-encoding"]) && $socket->header["transfer-encoding"] == "chunked" && $line == "0";
+				if ($chunked || isset($socket->header["content-length"]) && strlen($socket->streamBuffer) >= $socket->header["content-length"]) {
 					fclose($socket->socket);
 					unset($this->sockets[$key]);
 					$this->handleContent($socket);
@@ -76,17 +76,16 @@ class AsynchronousFileReader {
 		} else*/
 		if ($socket->header["status"] != "200") {
 			$error  = self::RESPONSE_ERROR;
-			$result = $this->parseResult2($socket);
+			$result = $this->parseResult($socket);
 
 		} else if ($socket->streamBuffer == '') {
 			$error = self::NO_DATA_ERROR;
 		} else {
-			$result = $this->parseResult2($socket);
+			$result = $this->parseResult($socket);
 			if ($result == self::INVALID_RESULT_ERROR) {
 				$error = self::INVALID_RESULT_ERROR;
 			}
 		}
-		//var_dump($result);
 		call_user_func($socket->function, $result, $error);
 		//}
 	}
@@ -98,9 +97,9 @@ class AsynchronousFileReader {
 	 * @internal param $streamBuffer
 	 * @return string
 	 */
-	private function parseResult2(SocketStructure $socket) {
+	private function parseResult(SocketStructure $socket) {
 
-		if (isset($socket->header["transfer-encoding"])) {
+		if (isset($socket->header["transfer-encoding"]) && $socket->header["transfer-encoding"] == "chunked") {
 			$result = $this->decode_chunked($socket->streamBuffer);
 		} else {
 			$result = $socket->streamBuffer;
