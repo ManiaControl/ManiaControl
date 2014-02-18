@@ -23,9 +23,9 @@ use ManiaControl\Update\UpdateManager;
 use Maniaplanet\DedicatedServer\Connection;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
-require_once __DIR__ . '/Maniaplanet/DedicatedServer/Connection.php';
-require_once __DIR__ . '/GbxDataFetcher/gbxdatafetcher.inc.php';
-require_once __DIR__ . '/FML/autoload.php';
+require_once __DIR__ . '/Libs/Maniaplanet/DedicatedServer/Connection.php';
+require_once __DIR__ . '/Libs/GbxDataFetcher/gbxdatafetcher.inc.php';
+require_once __DIR__ . '/Libs/FML/autoload.php';
 
 /**
  * ManiaControl Server Controller for ManiaPlanet Server
