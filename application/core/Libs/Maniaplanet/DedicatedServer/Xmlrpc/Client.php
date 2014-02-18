@@ -394,6 +394,7 @@ class Client
 			{
 				throw new Exception('transport error - connection interrupted!', -32700);
 			}
+			var_dump($contents);
 			$array_result = unpack('Vsize/Vhandle', $contents);
 			$size = $array_result['size'];
 			$recvhandle = $array_result['handle'];
