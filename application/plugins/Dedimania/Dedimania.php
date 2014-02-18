@@ -76,21 +76,22 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	 * Opens the Dedimania Session
 	 */
 	private function openDedimaniaSession() {
-		//$content = gzcompress($this->encode_request(self::DEDIMANIA_OPENSESSION, array($this->dedimaniaData->toArray())));
 		$content = $this->encode_request(self::DEDIMANIA_OPENSESSION, array($this->dedimaniaData->toArray()));
 
 		$this->maniaControl->fileReader->postData(self::DEDIMANIA_URL, function ($data, $error) {
 			$this->maniaControl->log("Try to connect on Dedimania");
-			$data = $this->decode($data);
 
-			var_dump($error);
+			if ($error != '') {
+				$this->maniaControl->log("Dedimania Error: " . $error);
+			}
+
+			$data = $this->decode($data);
 			if (is_array($data)) {
 				foreach($data as $index => $methodResponse) {
 					if (xmlrpc_is_fault($methodResponse)) {
 						$this->handleXmlRpcFault($methodResponse);
 					} else if ($index <= 0) {
 						$responseData = $methodResponse[0];
-						var_dump($responseData);
 						$this->dedimaniaData->sessionId = $responseData['SessionId'];
 						if ($this->dedimaniaData->sessionId != '') {
 							$this->maniaControl->log("Dedimania connection successfully established.");
@@ -101,7 +102,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 					}
 				}
 			}
-		}, $content, self::USE_COMPRESSION);
+		}, $content, true);
 	}
 
 	/**
@@ -149,8 +150,11 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 		$content = $this->encode_request(self::DEDIMANIA_GETRECORDS, $data);
 
 		$this->maniaControl->fileReader->postData(self::DEDIMANIA_URL, function ($data, $error) {
-			$data = $this->decode($data);
+			if ($error != '') {
+				$this->maniaControl->log("Dedimania Error: " . $error);
+			}
 
+			$data = $this->decode($data);
 			if (is_array($data)) {
 				foreach($data as $index => $methodResponse) {
 					if (xmlrpc_is_fault($methodResponse)) {
@@ -164,7 +168,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 			}
 			$this->updateManialink = true;
 			return true;
-		}, $content, self::USE_COMPRESSION);
+		}, $content, true);
 
 		return true;
 	}
@@ -181,8 +185,11 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 		$content = $this->encode_request(self::DEDIMANIA_CHECKSESSION, array($this->dedimaniaData->sessionId));
 
 		$this->maniaControl->fileReader->postData(self::DEDIMANIA_URL, function ($data, $error) {
-			$data = $this->decode($data);
+			if ($error != '') {
+				$this->maniaControl->log("Dedimania Error: " . $error);
+			}
 
+			$data = $this->decode($data);
 			if (is_array($data)) {
 				foreach($data as $methodResponse) {
 					if (xmlrpc_is_fault($methodResponse)) {
@@ -197,7 +204,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 					}
 				}
 			}
-		}, $content, self::USE_COMPRESSION);
+		}, $content, true);
 		return;
 	}
 
