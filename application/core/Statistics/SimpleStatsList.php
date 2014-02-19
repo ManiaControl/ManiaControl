@@ -51,10 +51,8 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 
 	/**
 	 * Add the menu entry
-	 *
-	 * @param array $callback
 	 */
-	public function handleOnInit(array $callback) {
+	public function handleOnInit() {
 		$this->maniaControl->commandManager->registerCommandListener('stats', $this, 'command_ShowStatsList');
 
 		// Action Open StatsList

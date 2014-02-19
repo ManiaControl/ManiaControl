@@ -514,10 +514,9 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	/**
 	 * Handle PlayerConnect callback
 	 *
-	 * @param array $callback
+	 * @param Player $player
 	 */
-	public function handlePlayerConnect(array $callback) {
-		$player = $callback[1];
+	public function handlePlayerConnect(Player $player) {
 		// Display Map Widget
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED)) {
 			$this->displayMapWidget($player->login);
@@ -533,9 +532,9 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	/**
 	 * Handle PlayerConnect callback
 	 *
-	 * @param array $callback
+	 * @param Player $player
 	 */
-	public function handlePlayerDisconnect(array $callback) {
+	public function handlePlayerDisconnect(Player $player) {
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_SERVERINFO_WIDGET_ACTIVATED)) {
 			$this->displayServerInfoWidget();
 		}

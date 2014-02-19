@@ -214,7 +214,7 @@ class ManiaControl implements CommandListener {
 	 */
 	public function handleShutdown() {
 		// OnShutdown callback
-		$this->callbackManager->triggerCallback(CallbackManager::CB_ONSHUTDOWN, array(CallbackManager::CB_ONSHUTDOWN));
+		$this->callbackManager->triggerCallback(CallbackManager::CB_ONSHUTDOWN);
 
 		// Announce quit
 		$this->chat->sendInformation('ManiaControl shutting down.');
@@ -245,7 +245,7 @@ class ManiaControl implements CommandListener {
 	 */
 	public function restart($message = null) {
 		// Shutdown callback
-		$this->callbackManager->triggerCallback(CallbackManager::CB_ONSHUTDOWN, array(CallbackManager::CB_ONSHUTDOWN));
+		$this->callbackManager->triggerCallback(CallbackManager::CB_ONSHUTDOWN);
 
 		// Announce restart
 		$this->chat->sendInformation('Restarting ManiaControl...');
@@ -282,13 +282,13 @@ class ManiaControl implements CommandListener {
 		$this->connect();
 
 		// OnInit callback
-		$this->callbackManager->triggerCallback(CallbackManager::CB_ONINIT, array(CallbackManager::CB_ONINIT));
+		$this->callbackManager->triggerCallback(CallbackManager::CB_ONINIT);
 
 		// Load plugins
 		$this->pluginManager->loadPlugins();
 
 		// AfterInit callback
-		$this->callbackManager->triggerCallback(CallbackManager::CB_AFTERINIT, array(CallbackManager::CB_AFTERINIT));
+		$this->callbackManager->triggerCallback(CallbackManager::CB_AFTERINIT);
 
 		// Announce ManiaControl
 		$this->chat->sendInformation('ManiaControl v' . self::VERSION . ' successfully started!');

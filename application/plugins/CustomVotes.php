@@ -107,7 +107,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 		$this->maniaControl->callbackManager->registerCallbackListener(self::CB_CUSTOM_VOTE_FINISHED, $this, 'handleVoteFinished');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
-		$this->maniaControl->callbackManager->registerCallbackListener(Server::CB_TEAM_STATUS_CHANGED, $this, 'constructMenu');
+		$this->maniaControl->callbackManager->registerCallbackListener(Server::CB_TEAM_MODE_CHANGED, $this, 'constructMenu');
 
 		//Settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_VOTE_ICON_POSX, 156.);
@@ -193,10 +193,9 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	/**
 	 * Handle PlayerConnect callback
 	 *
-	 * @param array $callback
+	 * @param Player $player
 	 */
-	public function handlePlayerConnect(array $callback) {
-		$player = $callback[1];
+	public function handlePlayerConnect(Player $player) {
 		$this->showIcon($player->login);
 	}
 
@@ -482,7 +481,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		//Check if vote is over
 		if ($timeUntilExpire <= 0 || (($playersVoteRatio >= $this->currentVote->neededPlayerRatio) && (($votePercentage >= $this->currentVote->neededRatio) || ($votePercentage <= 1 - $this->currentVote->neededRatio)))) {
 			// Trigger callback
-			$this->maniaControl->callbackManager->triggerCallback(self::CB_CUSTOM_VOTE_FINISHED, array(self::CB_CUSTOM_VOTE_FINISHED, $this->currentVote->voteCommand->index, $votePercentage));
+			$this->maniaControl->callbackManager->triggerCallback(self::CB_CUSTOM_VOTE_FINISHED, $this->currentVote->voteCommand->index, $votePercentage);
 
 			//reset vote
 			$this->destroyVote();

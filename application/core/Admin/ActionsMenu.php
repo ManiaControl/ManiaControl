@@ -123,10 +123,8 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 
 	/**
 	 * Handle ManiaControl OnInit callback
-	 *
-	 * @param array $callback
 	 */
-	public function handleOnInit(array $callback) {
+	public function handleOnInit() {
 		$this->initCompleted = true;
 		$this->rebuildAndShowMenu();
 	}
@@ -149,10 +147,9 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	/**
 	 * Handle PlayerJoined callback
 	 *
-	 * @param array $callback
+	 * @param Player $player
 	 */
-	public function handlePlayerJoined(array $callback) {
-		$player        = $callback[1];
+	public function handlePlayerJoined(Player $player) {
 		$manialinkText = $this->buildMenuIconsManialink($player)->render()->saveXML();
 		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
 	}

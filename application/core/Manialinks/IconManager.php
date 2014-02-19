@@ -8,6 +8,7 @@ use FML\ManiaLink;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\PlayerManager;
+use ManiaControl\Players\Player;
 
 /**
  * Class managing Icons
@@ -86,29 +87,26 @@ class IconManager implements CallbackListener {
 
 	/**
 	 * Handle OnInit Callback
-	 *
-	 * @param array $callback
 	 */
-	public function handleOnInit(array $callback) {
+	public function handleOnInit() {
 		$this->preloadIcons();
 	}
 
 	/**
 	 * Handle PlayerConnect Callback
 	 *
-	 * @param array $callback
+	 * @param Player $player
 	 */
-	public function handlePlayerConnect(array $callback) {
-		$login = $callback[1];
-		$this->preloadIcons($login);
+	public function handlePlayerConnect(Player $player) {
+		$this->preloadIcons($player);
 	}
 
 	/**
 	 * Preload Icons
 	 *
-	 * @param string $login
+	 * @param Player $player
 	 */
-	public function preloadIcons($login = false) {
+	public function preloadIcons($player = null) {
 		$maniaLink = new ManiaLink(self::PRELOAD_MLID);
 		$frame     = new Frame();
 		$maniaLink->add($frame);
@@ -123,6 +121,6 @@ class IconManager implements CallbackListener {
 
 		// Send manialink
 		$manialinkText = $maniaLink->render()->saveXML();
-		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $login);
+		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player);
 	}
 }

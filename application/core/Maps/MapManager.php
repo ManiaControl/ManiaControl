@@ -364,7 +364,7 @@ class MapManager implements CallbackListener {
 		$this->maps = $tempList;
 
 		// Trigger own callback
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_MAPS_UPDATED, array(self::CB_MAPS_UPDATED));
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_MAPS_UPDATED);
 	}
 
 	/**
@@ -389,10 +389,8 @@ class MapManager implements CallbackListener {
 
 	/**
 	 * Handle OnInit callback
-	 *
-	 * @param array $callback
 	 */
-	public function handleOnInit(array $callback) {
+	public function handleOnInit() {
 		$this->updateFullMapList();
 		$this->fetchCurrentMap();
 
@@ -401,7 +399,6 @@ class MapManager implements CallbackListener {
 
 		//Restructure Maplist
 		$this->restructureMapList();
-
 	}
 
 	/**
@@ -450,7 +447,7 @@ class MapManager implements CallbackListener {
 		$this->mxManager->fetchManiaExchangeMapInformations($this->currentMap);
 
 		// Trigger own BeginMap callback
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_BEGINMAP, array(self::CB_BEGINMAP, $this->currentMap));
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_BEGINMAP, $this->currentMap);
 
 	}
 

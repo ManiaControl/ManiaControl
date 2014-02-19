@@ -79,10 +79,9 @@ class CustomUIManager implements CallbackListener, TimerListener {
 	/**
 	 * Handle PlayerJoined Callback
 	 *
-	 * @param array $callback
+	 * @param Player $player
 	 */
-	public function handlePlayerJoined(array $callback) {
-		$player = $callback[1];
+	public function handlePlayerJoined(Player $player) {
 		$this->updateManialink($player);
 	}
 

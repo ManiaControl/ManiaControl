@@ -104,10 +104,8 @@ class PlayerManager implements CallbackListener {
 
 	/**
 	 * Handle OnInit callback
-	 *
-	 * @param array $callback
 	 */
-	public function onInit(array $callback) {
+	public function onInit() {
 		// Add all players
 		$players = $this->maniaControl->client->getPlayerList(300, 0, 2);
 		foreach($players as $playerItem) {
@@ -139,7 +137,8 @@ class PlayerManager implements CallbackListener {
 		}
 
 		// Trigger own callback
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_ONINIT, array(self::CB_ONINIT));
+		// TODO: what for?
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_ONINIT);
 	}
 
 	/**
@@ -168,7 +167,7 @@ class PlayerManager implements CallbackListener {
 			return;
 		}
 		// Trigger own callback
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERDISCONNECT, array(self::CB_PLAYERDISCONNECT, $player));
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERDISCONNECT, $player);
 
 		if ($player->isFakePlayer()) {
 			return;
@@ -193,7 +192,6 @@ class PlayerManager implements CallbackListener {
 		if ($player == null) {
 			return;
 		}
-
 
 		$player->ladderRank = $callback[1][0]["LadderRanking"];
 		$player->teamId     = $callback[1][0]["TeamId"];
@@ -224,11 +222,11 @@ class PlayerManager implements CallbackListener {
 			$this->maniaControl->statisticManager->incrementStat(self::STAT_JOIN_COUNT, $player, $this->maniaControl->server->index);
 
 			// Trigger own PlayerJoined callback
-			$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERCONNECT, array(self::CB_PLAYERCONNECT, $player));
+			$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERCONNECT, $player);
 		}
 
 		// Trigger own callback
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERINFOCHANGED, array(self::CB_PLAYERINFOCHANGED));
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERINFOCHANGED, $player);
 	}
 
 

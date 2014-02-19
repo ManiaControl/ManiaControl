@@ -46,7 +46,10 @@ class AuthenticationManager implements CallbackListener {
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_ONINIT, $this, 'handleOnInit');
 	}
 
-	public function handleOnInit(array $callback) {
+	/**
+	 * Handle ManiaControl OnInit Callback
+	 */
+	public function handleOnInit() {
 		$this->updateMasterAdmins();
 	}
 
@@ -171,7 +174,7 @@ class AuthenticationManager implements CallbackListener {
 		$authStatement->close();
 
 		$player->authLevel = $authLevel;
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_AUTH_LEVEL_CHANGED, array(self::CB_AUTH_LEVEL_CHANGED, $player));
+		$this->maniaControl->callbackManager->triggerCallback($player);
 
 		return true;
 	}

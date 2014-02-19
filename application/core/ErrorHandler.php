@@ -15,11 +15,12 @@ class ErrorHandler {
 	 * Constants
 	 */
 	const MC_DEBUG_NOTICE = "ManiaControl.DebugNotice";
-
+	
 	/**
 	 * Private Properties
 	 */
 	private $maniaControl = null;
+	private $reportErrors = true;
 
 	/**
 	 * Construct Error Handler
@@ -41,39 +42,45 @@ class ErrorHandler {
 		$message .= "Class: " . get_class($ex) . PHP_EOL;
 		$message .= "Trace: {$ex->getTraceAsString()}" . PHP_EOL;
 		logMessage($message);
-
-		$error                    = array();
-		$error["Type"]            = "Exception";
-		$error["Message"]         = $message;
-		$error['OperatingSystem'] = php_uname();
-		$error['PHPVersion']      = phpversion();
-
-		if ($this->maniaControl->server) {
-			$error['ServerLogin'] = $this->maniaControl->server->login;
-		} else {
-			$error['ServerLogin'] = '';
+		
+		if ($this->reportErrors) {
+			$error = array();
+			$error["Type"] = "Exception";
+			$error["Message"] = $message;
+			$error['OperatingSystem'] = php_uname();
+			$error['PHPVersion'] = phpversion();
+			
+			if ($this->maniaControl->server) {
+				$error['ServerLogin'] = $this->maniaControl->server->login;
+			}
+			else {
+				$error['ServerLogin'] = '';
+			}
+			
+			if ($this->maniaControl->settingManager && $this->maniaControl->updateManager) {
+				$error['UpdateChannel'] = $this->maniaControl->settingManager->getSetting($this->maniaControl->updateManager, 
+						UpdateManager::SETTING_UPDATECHECK_CHANNEL);
+				$error['ManiaControlVersion'] = $this->maniaControl->updateManager->getCurrentBuildDate();
+			}
+			else {
+				$error['UpdateChannel'] = '';
+				$error['ManiaControlVersion'] = ManiaControl::VERSION;
+			}
+			
+			$json = json_encode($error);
+			$info = base64_encode($json);
+			
+			$url = ManiaControl::URL_WEBSERVICE . "errorreport?error=" . urlencode($info);
+			$success = FileUtil::loadFile($url);
+			
+			if (!json_decode($success)) {
+				logMessage("Exception-Report failed!");
+			}
+			else {
+				logMessage("Exception successfully reported!");
+			}
 		}
-
-		if ($this->maniaControl->settingManager && $this->maniaControl->updateManager) {
-			$error['UpdateChannel']       = $this->maniaControl->settingManager->getSetting($this->maniaControl->updateManager, UpdateManager::SETTING_UPDATECHECK_CHANNEL);
-			$error['ManiaControlVersion'] = $this->maniaControl->updateManager->getCurrentBuildDate();
-		} else {
-			$error['UpdateChannel']       = '';
-			$error['ManiaControlVersion'] = ManiaControl::VERSION;
-		}
-
-		$json = json_encode($error);
-		$info = base64_encode($json);
-
-		$url     = ManiaControl::URL_WEBSERVICE . "errorreport?error=" . urlencode($info);
-		$success = FileUtil::loadFile($url);
-
-		if (!json_decode($success)) {
-			logMessage("Exception-Report failed!");
-		} else {
-			logMessage("Exception successfully reported!");
-		}
-
+		
 		$this->maniaControl->restart();
 		exit();
 	}
@@ -92,46 +99,50 @@ class ErrorHandler {
 			// Error suppressed
 			return false;
 		}
-
+		
 		// Log error
 		$errorTag = $this->getErrorTag($errorNumber);
-		$message  = "{$errorTag}: {$errorString} in File '{$errorFile}' on Line {$errorLine}!";
+		$message = "{$errorTag}: {$errorString} in File '{$errorFile}' on Line {$errorLine}!";
 		logMessage($message);
-
-		if ($errorNumber != E_USER_ERROR && $errorNumber != E_USER_WARNING && $errorNumber != E_USER_NOTICE) {
-			$error                    = array();
-			$error["Type"]            = "Error";
-			$error["Message"]         = $message;
+		
+		if ($this->reportErrors && $errorNumber != E_USER_ERROR && $errorNumber != E_USER_WARNING && $errorNumber != E_USER_NOTICE) {
+			$error = array();
+			$error["Type"] = "Error";
+			$error["Message"] = $message;
 			$error['OperatingSystem'] = php_uname();
-			$error['PHPVersion']      = phpversion();
-
+			$error['PHPVersion'] = phpversion();
+			
 			if ($this->maniaControl->server) {
 				$error['ServerLogin'] = $this->maniaControl->server->login;
-			} else {
+			}
+			else {
 				$error['ServerLogin'] = '';
 			}
-
+			
 			if ($this->maniaControl->settingManager && $this->maniaControl->updateManager) {
-				$error['UpdateChannel']       = $this->maniaControl->settingManager->getSetting($this->maniaControl->updateManager, UpdateManager::SETTING_UPDATECHECK_CHANNEL);
+				$error['UpdateChannel'] = $this->maniaControl->settingManager->getSetting($this->maniaControl->updateManager, 
+						UpdateManager::SETTING_UPDATECHECK_CHANNEL);
 				$error['ManiaControlVersion'] = $this->maniaControl->updateManager->getCurrentBuildDate();
-			} else {
-				$error['UpdateChannel']       = '';
+			}
+			else {
+				$error['UpdateChannel'] = '';
 				$error['ManiaControlVersion'] = ManiaControl::VERSION;
 			}
-
+			
 			$json = json_encode($error);
 			$info = base64_encode($json);
-
-			$url     = ManiaControl::URL_WEBSERVICE . "errorreport?error=" . urlencode($info);
+			
+			$url = ManiaControl::URL_WEBSERVICE . "errorreport?error=" . urlencode($info);
 			$success = FileUtil::loadFile($url);
-
+			
 			if (!json_decode($success)) {
 				logMessage("Error-Report failed!");
-			} else {
+			}
+			else {
 				logMessage("Error successfully reported!");
 			}
 		}
-
+		
 		if ($errorNumber == E_ERROR || $errorNumber == E_USER_ERROR || $errorNumber == E_FATAL) {
 			logMessage('Stopping execution...');
 			exit();
@@ -146,7 +157,7 @@ class ErrorHandler {
 	 */
 	public function triggerDebugNotice($message) {
 		$backtrace = debug_backtrace();
-		$callee    = next($backtrace);
+		$callee = next($backtrace);
 		$this->errorHandler(self::MC_DEBUG_NOTICE, $message, $callee['file'], $callee['line']);
 	}
 

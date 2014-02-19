@@ -22,7 +22,7 @@ class Server implements CallbackListener {
 	 * Constants
 	 */
 	const TABLE_SERVERS          = 'mc_servers';
-	const CB_TEAM_STATUS_CHANGED = 'ServerCallback.TeamStatusChanged';
+	const CB_TEAM_MODE_CHANGED = 'ServerCallback.TeamModeChanged';
 
 	/**
 	 * Public Properties
@@ -126,10 +126,8 @@ class Server implements CallbackListener {
 
 	/**
 	 * Handle OnInit Callback
-	 *
-	 * @param array $callback
 	 */
-	public function onInit(array $callback) {
+	public function onInit() {
 		$this->updateProperties();
 	}
 
@@ -144,7 +142,7 @@ class Server implements CallbackListener {
 
 		// Trigger  callback
 		if ($oldStatus != $this->teamMode) {
-			$this->maniaControl->callbackManager->triggerCallback(self::CB_TEAM_STATUS_CHANGED, array(self::CB_TEAM_STATUS_CHANGED, $teamMode));
+			$this->maniaControl->callbackManager->triggerCallback(self::CB_TEAM_MODE_CHANGED, $teamMode);
 		}
 	}
 

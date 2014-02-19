@@ -158,12 +158,9 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 	/**
 	 * Function handling on the connection of a player.
 	 *
-	 * @param array $callback
+	 * @param Player $player
 	 */
-	public function handlePlayerConnect(array $callback) {
-		$login  = $callback[1]->login;
-		$player = $this->maniaControl->playerManager->getPlayer($login);
-
+	public function handlePlayerConnect(Player $player) {
 		if($player->isSpectator) {
 			$this->spectators[$player->login] = $player->login;
 			$this->maniaControl->client->forceSpectator($player->login, 1);
@@ -180,11 +177,9 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 	/**
 	 * Function handling on the disconnection of a player.
 	 *
-	 * @param array $callback
+	 * @param Player $player
 	 */
-	public function handlePlayerDisconnect(array $callback) {
-		/** @var  Player $player */
-		$player = $callback[1];
+	public function handlePlayerDisconnect(Player $player) {
 		if(isset($this->spectators[$player->login])) {
 			unset($this->spectators[$player->login]);
 		}

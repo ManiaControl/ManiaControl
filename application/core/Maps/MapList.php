@@ -561,10 +561,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 	/**
 	 * Reopen the widget on Map Begin, MapListChanged, etc.
-	 *
-	 * @param array $callback
 	 */
-	public function updateWidget(array $callback) {
+	public function updateWidget() {
 		foreach($this->mapListShown as $login => $shown) {
 			if ($shown) {
 				$player = $this->maniaControl->playerManager->getPlayer($login);
