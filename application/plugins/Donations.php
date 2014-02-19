@@ -142,7 +142,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 * @see \ManiaControl\Plugins\Plugin::getDescription()
 	 */
 	public static function getDescription() {
-		return 'Plugin offering commands like /donate, /pay and /getplanets and a donation widget.';
+		return 'Plugin offering commands like /donate, /pay and /planets and a donation widget.';
 	}
 
 	/**
