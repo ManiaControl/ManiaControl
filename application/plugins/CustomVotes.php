@@ -288,9 +288,9 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	/**
 	 * Destroy the Vote on Canceled Callback
 	 *
-	 * @param array $callback
+	 * @param Player $player
 	 */
-	public function handleVoteCanceled(array $callback) {
+	public function handleVoteCanceled(Player $player) {
 		//reset vote
 		$this->destroyVote();
 	}
