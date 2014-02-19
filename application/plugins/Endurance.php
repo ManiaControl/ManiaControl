@@ -45,8 +45,8 @@ class EndurancePlugin implements CallbackListener, Plugin {
 		$this->maniaControl = $maniaControl;
 		
 		// Register for callbacks
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'callback_OnInit');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_BEGINMAP, $this, 'callback_BeginMap');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_ONINIT, $this, 'callback_OnInit');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_BEGINMAP, $this, 'callback_BeginMap');
 		$this->maniaControl->callbackManager->registerScriptCallbackListener(self::CB_CHECKPOINT, $this, 'callback_Checkpoint');
 		
 		return true;

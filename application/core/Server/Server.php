@@ -58,7 +58,7 @@ class Server implements CallbackListener {
 		$this->rankingManager = new RankingManager($maniaControl);
 
 		// Register for callbacks
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'onInit');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_ONINIT, $this, 'onInit');
 	}
 
 	/**

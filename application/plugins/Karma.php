@@ -76,7 +76,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 		// Register for callbacks
 		$this->maniaControl->timerManager->registerTimerListening($this, 'handle1Second', 1000);
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_BEGINMAP, $this, 'handleBeginMap');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_BEGINMAP, $this, 'handleBeginMap');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCONNECT, $this, 'handlePlayerConnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCHAT, $this, 'handlePlayerChat');
 

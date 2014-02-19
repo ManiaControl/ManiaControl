@@ -29,7 +29,7 @@ class HelpManager implements CommandListener, CallbackListener {
 		$this->maniaControl = $maniaControl;
 
 		// Register for callbacks
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_ONINIT, $this, 'handleOnInit');
 	}
 
 	public function handleOnInit(array $callback) {

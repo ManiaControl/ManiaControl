@@ -95,8 +95,8 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$this->maniaControl->manialinkManager->customUIManager->setChallengeInfoVisible(false);
 
 		// Register for callbacks
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_BEGINMAP, $this, 'handleOnBeginMap');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ENDMAP, $this, 'handleOnEndMap');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_BEGINMAP, $this, 'handleOnBeginMap');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_ENDMAP, $this, 'handleOnEndMap');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECT, $this, 'handlePlayerDisconnect');
 

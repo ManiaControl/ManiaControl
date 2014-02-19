@@ -78,9 +78,9 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 		
 		// Register for callbacks
 		$this->maniaControl->timerManager->registerTimerListening($this, 'handle1Second', 1000);
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_AFTERINIT, $this, 'handleAfterInit');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_BEGINMAP, $this, 'handleMapBegin');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_CLIENTUPDATED, $this, 
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_AFTERINIT, $this, 'handleAfterInit');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_BEGINMAP, $this, 'handleMapBegin');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_CLIENTUPDATED, $this,
 				'handleClientUpdated');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_TM_PLAYERFINISH, $this, 
 				'handlePlayerFinish');

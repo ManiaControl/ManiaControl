@@ -42,7 +42,7 @@ class MapQueue implements CallbackListener, CommandListener {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ENDMAP, $this, 'endMap');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_ENDMAP, $this, 'endMap');
 
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SKIP_MAP_ON_LEAVE, true);
