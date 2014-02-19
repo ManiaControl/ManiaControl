@@ -330,16 +330,11 @@ class MapManager implements CallbackListener {
 		$mapsDirectory = $this->maniaControl->server->getMapsDirectory();
 		if (is_readable($mapsDirectory . $map->fileName)) {
 			$mapFetcher = new \GBXChallMapFetcher(true);
-			try {
 				$mapFetcher->processFile($mapsDirectory . $map->fileName);
 				$map->authorNick  = FORMATTER::stripDirtyCodes($mapFetcher->authorNick);
 				$map->authorEInfo = $mapFetcher->authorEInfo;
 				$map->authorZone  = $mapFetcher->authorZone;
 				$map->comment     = $mapFetcher->comment;
-			} catch(\Exception $e) {
-				// TODO: replace \Exception with api exception class (?)
-				trigger_error($e->getMessage());
-			}
 		}
 		return $map;
 	}
@@ -577,8 +572,6 @@ class MapManager implements CallbackListener {
 	 * @param           $mapDir
 	 * @param           $login
 	 * @param           $update
-	 * @throws \Exception
-	 * @throws \Maniaplanet\DedicatedServer\Xmlrpc\Exception
 	 */
 	private function processMapFile($file, MXMapInfo $mapInfo, $mapDir, $login, $update) {
 		//Check if map is already on the server
@@ -635,14 +628,7 @@ class MapManager implements CallbackListener {
 		}
 
 		// Add map to map list
-		try {
-			$this->maniaControl->client->insertMap($mapFileName);
-		} catch(Exception $e) {
-			// TODO: is it even possible that an exception other than connection errors will be thrown? - remove try-catch?
-			$this->maniaControl->chat->sendError("Couldn't add map to match settings!", $login);
-			return;
-		}
-
+		$this->maniaControl->client->insertMap($mapFileName);
 		$this->updateFullMapList();
 
 		//Update Mx MapInfo
