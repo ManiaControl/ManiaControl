@@ -157,7 +157,7 @@ class ErrorHandler {
 	 */
 	public function triggerDebugNotice($message) {
 		$backtrace = debug_backtrace();
-		$callee = next($backtrace);
+		$callee = array_shift($backtrace);
 		$this->errorHandler(self::MC_DEBUG_NOTICE, $message, $callee['file'], $callee['line']);
 	}
 
