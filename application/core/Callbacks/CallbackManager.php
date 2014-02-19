@@ -17,9 +17,6 @@ class CallbackManager {
 	const CB_ONINIT        = 'ManiaControl.OnInit';
 	const CB_AFTERINIT     = 'ManiaControl.AfterInit';
 	const CB_ONSHUTDOWN    = 'ManiaControl.OnShutdown';
-	const CB_CLIENTUPDATED = 'ManiaControl.ClientUpdated';
-	const CB_BEGINMAP      = 'ManiaControl.BeginMap';
-	const CB_ENDMAP        = 'ManiaControl.EndMap';
 
 	// ManiaPlanet callbacks
 	const CB_MP_SERVERSTART               = 'ManiaPlanet.ServerStart';
@@ -52,11 +49,6 @@ class CallbackManager {
 	private $maniaControl = null;
 	private $callbackListeners = array();
 	private $scriptCallbackListener = array();
-	private $last1Second = -1;
-	private $last5Second = -1;
-	private $last1Minute = -1;
-	private $mapEnded = false;
-	private $mapBegan = false;
 
 	/**
 	 * Construct a new Callbacks Manager
@@ -65,10 +57,6 @@ class CallbackManager {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
-		$this->last1Second  = time();
-		$this->last5Second  = time();
-		$this->last1Minute  = time();
-
 	}
 
 	/**
@@ -200,29 +188,23 @@ class CallbackManager {
 		// Handle callbacks
 		foreach($callbacks as $callback) {
 			$callbackName = $callback[0];
-			switch($callbackName) {
+			switch ($callbackName) {
 				case 'ManiaPlanet.BeginMap':
-					if (!$this->mapBegan) {
-						$this->triggerCallback(self::CB_BEGINMAP, $callback);
-						$this->mapBegan = true;
-						$this->mapEnded = false;
-					}
+					$this->maniaControl->mapManager->handleBeginMap($callback);
+					$this->triggerCallback($callbackName, $callback);
 					break;
 				case 'ManiaPlanet.EndMatch': //TODO temporary fix
 				case 'ManiaPlanet.EndMap':
-					if (!$this->mapEnded) {
-						$this->triggerCallback(self::CB_ENDMAP, $callback);
-						$this->mapEnded = true;
-						$this->mapBegan = false;
-					}
+					$this->maniaControl->mapManager->handleEndMap($callback);
+					$this->triggerCallback($callbackName, $callback);
 					break;
 				case self::CB_MP_MODESCRIPTCALLBACK:
 					$this->handleScriptCallback($callback);
-					$this->triggerCallback(self::CB_MP_MODESCRIPTCALLBACK, $callback);
+					$this->triggerCallback($callbackName, $callback);
 					break;
 				case self::CB_MP_MODESCRIPTCALLBACKARRAY:
 					$this->handleScriptCallback($callback);
-					$this->triggerCallback(self::CB_MP_MODESCRIPTCALLBACKARRAY, $callback);
+					$this->triggerCallback($callbackName, $callback);
 					break;
 				default:
 					$this->triggerCallback($callbackName, $callback);
@@ -242,21 +224,13 @@ class CallbackManager {
 		switch($scriptCallbackName) {
 			case 'BeginMap':
 			case 'LibXmlRpc_BeginMap':
+				$this->maniaControl->mapManager->handleScriptBeginMap($callback);
 				$this->triggerScriptCallback($scriptCallbackName, $scriptCallbackData);
-				if (!$this->mapBegan) {
-					$this->triggerCallback(self::CB_BEGINMAP, $callback);
-					$this->mapBegan = true;
-					$this->mapEnded = false;
-				}
 				break;
 			case 'EndMap':
 			case 'LibXmlRpc_EndMap':
+				$this->maniaControl->mapManager->handleScriptEndMap($callback);
 				$this->triggerScriptCallback($scriptCallbackName, $scriptCallbackData);
-				if (!$this->mapEnded) {
-					$this->triggerCallback(self::CB_ENDMAP, $callback);
-					$this->mapEnded = true;
-					$this->mapBegan = false;
-				}
 				break;
 			default:
 				$this->triggerScriptCallback($scriptCallbackName, $scriptCallbackData);

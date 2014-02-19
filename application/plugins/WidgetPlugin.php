@@ -16,6 +16,8 @@ use ManiaControl\Manialinks\IconManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
+use ManiaControl\Maps\MapManager;
+use ManiaControl\Maps\Map;
 
 /**
  * ManiaControl Widget Plugin
@@ -95,8 +97,8 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$this->maniaControl->manialinkManager->customUIManager->setChallengeInfoVisible(false);
 
 		// Register for callbacks
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_BEGINMAP, $this, 'handleOnBeginMap');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_ENDMAP, $this, 'handleOnEndMap');
+		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_BEGINMAP, $this, 'handleOnBeginMap');
+		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_ENDMAP, $this, 'handleOnEndMap');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECT, $this, 'handlePlayerDisconnect');
 
@@ -379,9 +381,9 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	/**
 	 * Handle on Begin Map
 	 *
-	 * @param array $callback
+	 * @param Map $map
 	 */
-	public function handleOnBeginMap(array $callback) {
+	public function handleOnBeginMap(Map $map) {
 		// Display Map Widget
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED)) {
 			$this->displayMapWidget();
@@ -403,9 +405,9 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	/**
 	 * Handle on End Map
 	 *
-	 * @param array $callback
+	 * @param Map $map
 	 */
-	public function handleOnEndMap(array $callback) {
+	public function handleOnEndMap(Map $map) {
 		// Display Map Widget
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_NEXTMAP_WIDGET_ACTIVATED)) {
 			$this->displayNextMapWidget();
