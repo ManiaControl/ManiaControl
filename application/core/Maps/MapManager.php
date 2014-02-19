@@ -439,6 +439,7 @@ class MapManager implements CallbackListener {
 	
 		if (!isset($callback[1][0]["UId"])) {
 			// TODO: why can this even happen?
+			$this->maniaControl->errorHandler->triggerDebugNotice('map uid not set! '.print_r($callback, true));
 			return;
 		}
 		if (array_key_exists($callback[1][0]["UId"], $this->maps)) {
