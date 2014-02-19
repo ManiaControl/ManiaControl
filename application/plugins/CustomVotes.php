@@ -298,12 +298,10 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	/**
 	 * Handle Standard Votes
 	 *
-	 * @param array $callback
+	 * @param $voteName
+	 * @param $voteResult
 	 */
-	public function handleVoteFinished(array $callback) {
-		$voteName   = $callback[1];
-		$voteResult = $callback[2];
-
+	public function handleVoteFinished($voteName, $voteResult) {
 		if ($voteResult >= $this->currentVote->neededRatio) {
 			// Call Closure if one exists
 			if (is_callable($this->currentVote->function)) {
