@@ -53,7 +53,7 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 
 		// Register for callbacks
 		$this->maniaControl->timerManager->registerTimerListening($this, 'each5Seconds', 5000);
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_ONINIT, $this, 'handleOnInit');
 
 		// Register for commands
 		$this->maniaControl->commandManager->registerCommandListener('setpwd', $this, 'command_SetPwd', true);

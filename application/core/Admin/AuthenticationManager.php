@@ -43,7 +43,7 @@ class AuthenticationManager implements CallbackListener {
 		$this->maniaControl = $maniaControl;
 		$this->authCommands = new AuthCommands($maniaControl);
 
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ONINIT, $this, 'handleOnInit');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_ONINIT, $this, 'handleOnInit');
 	}
 
 	public function handleOnInit(array $callback) {

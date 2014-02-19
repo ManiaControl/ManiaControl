@@ -14,12 +14,13 @@ class CallbackManager {
 	 * Constants
 	 */
 	// ManiaControl callbacks
-	const CB_MC_ONINIT        = 'ManiaControl.OnInit';
-	const CB_MC_AFTERINIT        = 'ManiaControl.AfterInit';
-	const CB_MC_ONSHUTDOWN    = 'ManiaControl.OnShutdown';
-	const CB_MC_CLIENTUPDATED = 'ManiaControl.ClientUpdated';
-	const CB_MC_BEGINMAP      = 'ManiaControl.BeginMap';
-	const CB_MC_ENDMAP        = 'ManiaControl.EndMap';
+	const CB_ONINIT        = 'ManiaControl.OnInit';
+	const CB_AFTERINIT     = 'ManiaControl.AfterInit';
+	const CB_ONSHUTDOWN    = 'ManiaControl.OnShutdown';
+	const CB_CLIENTUPDATED = 'ManiaControl.ClientUpdated';
+	const CB_BEGINMAP      = 'ManiaControl.BeginMap';
+	const CB_ENDMAP        = 'ManiaControl.EndMap';
+
 	// ManiaPlanet callbacks
 	const CB_MP_SERVERSTART               = 'ManiaPlanet.ServerStart';
 	const CB_MP_SERVERSTOP                = 'ManiaPlanet.ServerStop';
@@ -39,6 +40,7 @@ class CallbackManager {
 	const CB_MP_MODESCRIPTCALLBACK        = 'ManiaPlanet.ModeScriptCallback';
 	const CB_MP_MODESCRIPTCALLBACKARRAY   = 'ManiaPlanet.ModeScriptCallbackArray';
 	const CB_MP_TUNNELDATARECEIVED        = 'ManiaPlanet.TunnelDataReceived';
+	
 	// TrackMania callbacks
 	const CB_TM_PLAYERCHECKPOINT  = 'TrackMania.PlayerCheckpoint';
 	const CB_TM_PLAYERFINISH      = 'TrackMania.PlayerFinish';
@@ -199,14 +201,14 @@ class CallbackManager {
 			switch($callbackName) {
 				case 'ManiaPlanet.BeginMap':
 					if (!$this->mapBegan) {
-						$this->triggerCallback(self::CB_MC_BEGINMAP, $callback);
+						$this->triggerCallback(self::CB_BEGINMAP, $callback);
 						$this->mapBegan = true;
 						$this->mapEnded = false;
 					}
 					break;
 				case 'ManiaPlanet.EndMap':
 					if (!$this->mapEnded) {
-						$this->triggerCallback(self::CB_MC_ENDMAP, $callback);
+						$this->triggerCallback(self::CB_ENDMAP, $callback);
 						$this->mapEnded = true;
 						$this->mapBegan = false;
 					}
@@ -239,7 +241,7 @@ class CallbackManager {
 			case 'LibXmlRpc_BeginMap':
 				$this->triggerScriptCallback($scriptCallbackName, $scriptCallbackData);
 				if (!$this->mapBegan) {
-					$this->triggerCallback(self::CB_MC_BEGINMAP, $callback);
+					$this->triggerCallback(self::CB_BEGINMAP, $callback);
 					$this->mapBegan = true;
 					$this->mapEnded = false;
 				}
@@ -248,7 +250,7 @@ class CallbackManager {
 			case 'LibXmlRpc_EndMap':
 				$this->triggerScriptCallback($scriptCallbackName, $scriptCallbackData);
 				if (!$this->mapEnded) {
-					$this->triggerCallback(self::CB_MC_ENDMAP, $callback);
+					$this->triggerCallback(self::CB_ENDMAP, $callback);
 					$this->mapEnded = true;
 					$this->mapBegan = false;
 				}

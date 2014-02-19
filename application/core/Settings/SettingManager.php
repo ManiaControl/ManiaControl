@@ -38,7 +38,7 @@ class SettingManager implements CallbackListener {
 		$this->maniaControl = $maniaControl;
 		$this->initTables();
 
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_AFTERINIT, $this, 'handleAfterInit');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_AFTERINIT, $this, 'handleAfterInit');
 	}
 
 	/**
