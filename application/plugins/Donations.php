@@ -72,7 +72,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		// Register for commands
 		$this->maniaControl->commandManager->registerCommandListener('donate', $this, 'command_Donate');
 		$this->maniaControl->commandManager->registerCommandListener('pay', $this, 'command_Pay', true);
-		$this->maniaControl->commandManager->registerCommandListener('getplanets', $this, 'command_GetPlanets', true);
+		$this->maniaControl->commandManager->registerCommandListener('planets', $this, 'command_GetPlanets', true);
 
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_BILLUPDATED, $this, 'handleBillUpdated');
