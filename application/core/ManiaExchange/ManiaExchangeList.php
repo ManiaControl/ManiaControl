@@ -307,14 +307,14 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		}
 	}
 
+
 	/**
 	 * Unset the player if he opened another Main Widget
 	 *
-	 * @param array $callback
+	 * @param Player $player
+	 * @param        $openedWidget
 	 */
-	public function handleWidgetOpened(array $callback) {
-		$player       = $callback[1];
-		$openedWidget = $callback[2];
+	public function handleWidgetOpened(Player $player, $openedWidget) {
 		//unset when another main widget got opened
 		if ($openedWidget != 'ManiaExchangeList') {
 			unset($this->mapListShown[$player->login]);
@@ -324,10 +324,10 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 	/**
 	 * Closes the widget
 	 *
-	 * @param array $callback
+	 * @param \ManiaControl\Players\Player $player
+	 * @internal param array $callback
 	 */
-	public function closeWidget(array $callback) {
-		$player = $callback[1];
+	public function closeWidget(Player $player) {
 		unset($this->mapListShown[$player->login]);
 	}
 

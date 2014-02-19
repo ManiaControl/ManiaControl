@@ -166,11 +166,10 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	/**
 	 * Unset the player if he opened another Main Widget
 	 *
-	 * @param array $callback
+	 * @param Player $player
+	 * @param        $openedWidget
 	 */
-	public function handleWidgetOpened(array $callback) {
-		$player       = $callback[1];
-		$openedWidget = $callback[2];
+	public function handleWidgetOpened(Player $player, $openedWidget) {
 		//unset when another main widget got opened
 		if ($openedWidget != 'Configurator') {
 			unset($this->playersMenuShown[$player->login]);
@@ -180,10 +179,9 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	/**
 	 * Widget get closed -> unset player
 	 *
-	 * @param array $callback
+	 * @param \ManiaControl\Players\Player $player
 	 */
-	public function closeWidget(array $callback) {
-		$player = $callback[1];
+	public function closeWidget(Player $player) {
 		unset($this->playersMenuShown[$player->login]);
 	}
 

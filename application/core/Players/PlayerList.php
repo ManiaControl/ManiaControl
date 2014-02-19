@@ -598,11 +598,10 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 	/**
 	 * Unset the player if he opened another Main Widget
 	 *
-	 * @param array $callback
+	 * @param Player $player
+	 * @param        $openedWidget
 	 */
-	public function handleWidgetOpened(array $callback) {
-		$player       = $callback[1];
-		$openedWidget = $callback[2];
+	public function handleWidgetOpened(Player $player, $openedWidget) {
 		//unset when another main widget got opened
 		if ($openedWidget != 'PlayerList') {
 			unset($this->playersListShown[$player->login]);
@@ -612,10 +611,9 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 	/**
 	 * Closes the widget
 	 *
-	 * @param array $callback
+	 * @param Player $player
 	 */
-	public function closeWidget(array $callback) {
-		$player = $callback[1];
+	public function closeWidget(Player $player) {
 		unset($this->playersListShown[$player->login]);
 	}
 
