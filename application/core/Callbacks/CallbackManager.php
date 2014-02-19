@@ -192,7 +192,7 @@ class CallbackManager {
 				case 'ManiaPlanet.BeginMatch':
 					$titleId     = $this->maniaControl->server->titleId;
 					$titlePrefix = strtolower(substr($titleId, 0, 2));
-					if ($titlePrefix != "sm") {
+					if ($titlePrefix == "sm") {
 						$this->triggerCallback($callbackName, $callback);
 						break;
 					}
@@ -203,7 +203,7 @@ class CallbackManager {
 				case 'ManiaPlanet.EndMatch': //TODO temporary fix
 					$titleId     = $this->maniaControl->server->titleId;
 					$titlePrefix = strtolower(substr($titleId, 0, 2));
-					if ($titlePrefix != "sm") {
+					if ($titlePrefix == "sm") {
 						$this->triggerCallback($callbackName, $callback);
 						break;
 					}
