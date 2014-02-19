@@ -14,9 +14,9 @@ class CallbackManager {
 	 * Constants
 	 */
 	// ManiaControl callbacks
-	const CB_ONINIT        = 'ManiaControl.OnInit';
-	const CB_AFTERINIT     = 'ManiaControl.AfterInit';
-	const CB_ONSHUTDOWN    = 'ManiaControl.OnShutdown';
+	const CB_ONINIT     = 'ManiaControl.OnInit';
+	const CB_AFTERINIT  = 'ManiaControl.AfterInit';
+	const CB_ONSHUTDOWN = 'ManiaControl.OnShutdown';
 
 	// ManiaPlanet callbacks
 	const CB_MP_SERVERSTART               = 'ManiaPlanet.ServerStart';
@@ -150,7 +150,7 @@ class CallbackManager {
 		}
 		$params = func_get_args();
 		$params = array_slice($params, 1, count($params), true);
-		foreach ($this->callbackListeners[$callbackName] as $listener) {
+		foreach($this->callbackListeners[$callbackName] as $listener) {
 			call_user_func_array(array($listener[0], $listener[1]), $params);
 		}
 	}
@@ -170,7 +170,7 @@ class CallbackManager {
 			call_user_func_array(array($listener[0], $listener[1]), $params);
 		}
 	}
-	
+
 	/**
 	 * Trigger internal Callbacks and manage Server Callbacks
 	 */
@@ -188,12 +188,25 @@ class CallbackManager {
 		// Handle callbacks
 		foreach($callbacks as $callback) {
 			$callbackName = $callback[0];
-			switch ($callbackName) {
+			switch($callbackName) {
+				case 'ManiaPlanet.BeginMatch':
+					$titleId     = $this->maniaControl->server->titleId;
+					$titlePrefix = strtolower(substr($titleId, 0, 2));
+					if ($titlePrefix != "sm") {
+						$this->triggerCallback($callbackName, $callback);
+						break;
+					}
 				case 'ManiaPlanet.BeginMap':
 					$this->maniaControl->mapManager->handleBeginMap($callback);
 					$this->triggerCallback($callbackName, $callback);
 					break;
 				case 'ManiaPlanet.EndMatch': //TODO temporary fix
+					$titleId     = $this->maniaControl->server->titleId;
+					$titlePrefix = strtolower(substr($titleId, 0, 2));
+					if ($titlePrefix != "sm") {
+						$this->triggerCallback($callbackName, $callback);
+						break;
+					}
 				case 'ManiaPlanet.EndMap':
 					$this->maniaControl->mapManager->handleEndMap($callback);
 					$this->triggerCallback($callbackName, $callback);
