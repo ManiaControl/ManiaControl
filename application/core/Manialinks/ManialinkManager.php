@@ -169,8 +169,11 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	public function enableAltMenu(Player $player) {
 		try {
 			$success = $this->maniaControl->client->triggerModeScriptEvent('LibXmlRpc_EnableAltMenu', $player->login);
-		} catch(\Exception $e) {
-			return false;
+		} catch(Exception $e) {
+			if ($e->getMessage() == 'Not in script mode.') {
+				return false;
+			}
+			throw $e;
 		}
 		return $success;
 	}
@@ -184,8 +187,11 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	public function disableAltMenu(Player $player) {
 		try {
 			$success = $this->maniaControl->client->triggerModeScriptEvent('LibXmlRpc_DisableAltMenu', $player->login);
-		} catch(\Exception $e) {
-			return false;
+		} catch(Exception $e) {
+			if ($e->getMessage() == 'Not in script mode.') {
+				return false;
+			}
+			throw $e;
 		}
 		return $success;
 	}
