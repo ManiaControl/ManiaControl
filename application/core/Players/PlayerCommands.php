@@ -65,7 +65,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_TEAM_BALANCE, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 
 		//CallbackManager
-		$this->maniaControl->callbackManager->registerCallbackListener(Server::CB_TEAM_STATUS_CHANGED, $this, 'teamStatusChanged');
+		$this->maniaControl->callbackManager->registerCallbackListener(Server::CB_TEAM_MODE_CHANGED, $this, 'teamStatusChanged');
 
 		// Action Open Playerlist
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_OPEN_PLAYERLIST, $this, 'command_playerList');
@@ -77,12 +77,12 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 
 	/**
 	 * Handle TeamStatusChanged
-	 * @param array $callback
+	 * 
+	 * @param bool $teamMode
 	 */
-	public function teamStatusChanged(array $callback) {
-		$status =  $callback[1];
+	public function teamStatusChanged($teamMode) {
 		//Add Balance Team Icon if it's a teamMode
-		if ($status) {
+		if ($teamMode) {
 			// Action Balance Teams
 			$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_BALANCE_TEAMS, $this, 'command_TeamBalance');
 			$itemQuad = new Quad_Icons128x32_1();

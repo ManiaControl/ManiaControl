@@ -15,6 +15,7 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Maps\MapManager;
 use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
+use ManiaControl\Maps\Map;
 
 /**
  * Class offering a Configurator for Script Settings
@@ -85,20 +86,17 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 
 	/**
 	 * Handle OnInit callback
-	 *
-	 * @param array $callback
 	 */
-	public function onInit(array $callback) {
+	public function onInit() {
 		$this->loadSettingsFromDatabase();
-
 	}
 
 	/**
 	 * Handle OnBegin Map Callback
 	 *
-	 * @param array $callback
+	 * @param Map $map
 	 */
-	public function onBeginMap(array $callback) {
+	public function onBeginMap(Map $map) {
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_LOAD_DEFAULT_SETTINGS_MAP_BEGIN)) {
 			$this->loadSettingsFromDatabase();
 		}
@@ -456,13 +454,13 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			}
 
 			// Trigger own callback
-			$this->maniaControl->callbackManager->triggerCallback(self::CB_SCRIPTSETTING_CHANGED, array(self::CB_SCRIPTSETTING_CHANGED, $setting, $value));
+			$this->maniaControl->callbackManager->triggerCallback(self::CB_SCRIPTSETTING_CHANGED, $setting, $value);
 
 			$settingIndex++;
 		}
 		$statement->close();
 
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_SCRIPTSETTINGS_CHANGED, array(self::CB_SCRIPTSETTINGS_CHANGED));
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_SCRIPTSETTINGS_CHANGED);
 
 		$chatMessage .= '!';
 		$this->maniaControl->chat->sendInformation($chatMessage);

@@ -155,14 +155,15 @@ class CallbackManager {
 	 * Trigger a specific Callback
 	 *
 	 * @param string $callbackName
-	 * @param array  $callback
 	 */
-	public function triggerCallback($callbackName, array $callback) {
+	public function triggerCallback($callbackName) {
 		if (!array_key_exists($callbackName, $this->callbackListeners)) {
 			return;
 		}
-		foreach($this->callbackListeners[$callbackName] as $listener) {
-			call_user_func(array($listener[0], $listener[1]), $callback);
+		$params = func_get_args();
+		$params = array_slice($params, 1, count($params), true);
+		foreach ($this->callbackListeners[$callbackName] as $listener) {
+			call_user_func_array(array($listener[0], $listener[1]), $params);
 		}
 	}
 
@@ -170,17 +171,18 @@ class CallbackManager {
 	 * Trigger a specific Script Callback
 	 *
 	 * @param string $callbackName
-	 * @param array  $callback
 	 */
-	public function triggerScriptCallback($callbackName, array $callback) {
+	public function triggerScriptCallback($callbackName) {
 		if (!array_key_exists($callbackName, $this->scriptCallbackListener)) {
 			return;
 		}
+		$params = func_get_args();
+		$params = array_slice($params, 1, count($params), true);
 		foreach($this->scriptCallbackListener[$callbackName] as $listener) {
-			call_user_func(array($listener[0], $listener[1]), $callback);
+			call_user_func_array(array($listener[0], $listener[1]), $params);
 		}
 	}
-
+	
 	/**
 	 * Trigger internal Callbacks and manage Server Callbacks
 	 */

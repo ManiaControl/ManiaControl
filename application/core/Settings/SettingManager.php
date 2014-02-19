@@ -43,10 +43,8 @@ class SettingManager implements CallbackListener {
 
 	/**
 	 * Handle After Init Callback
-	 *
-	 * @param array $callback
 	 */
-	public function handleAfterInit(array $callback) {
+	public function handleAfterInit() {
 		$this->deleteUnusedSettings();
 	}
 
@@ -318,7 +316,7 @@ class SettingManager implements CallbackListener {
 		$settingStatement->close();
 
 		//Trigger settings changed Callback
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_SETTINGS_CHANGED, array(self::CB_SETTINGS_CHANGED, $className, $settingName, $value));
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_SETTINGS_CHANGED, $className, $settingName, $value);
 		return $success;
 	}
 

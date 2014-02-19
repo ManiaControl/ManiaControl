@@ -272,18 +272,12 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		$mysqli->query($query);
 	}
 
-
 	/**
 	 * Handle PlayerConnect callback
 	 *
-	 * @param array $callback
+	 * @param Player $player
 	 */
-	public function handlePlayerConnect(array $callback) {
-		$player = $callback[1];
-		if (!$player) {
-			return;
-		}
-
+	public function handlePlayerConnect(Player $player) {
 		$this->showRank($player);
 		$this->showNextRank($player);
 	}
@@ -306,7 +300,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		}
 
 		// Trigger callback
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_RANK_BUILT, array(self::CB_RANK_BUILT));
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_RANK_BUILT);
 	}
 
 	/**

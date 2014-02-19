@@ -80,10 +80,8 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 
 	/**
 	 * Handle OnInit callback
-	 *
-	 * @param array $callback
 	 */
-	public function onInit(array $callback) {
+	public function onInit() {
 		$this->loadSettingsFromDatabase();
 	}
 

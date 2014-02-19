@@ -37,8 +37,8 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 	const SETTING_NOTIFY_BEST_RECORDS = 'Notify Publicly only for the X Best Records';
 	const SETTING_ADJUST_OUTER_BORDER = 'Adjust outer Border to Number of actual Records';
 	
-	/**
-	 * Private properties
+	/*
+	 * Private Properties
 	 */
 	/**
 	 *
@@ -160,10 +160,8 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 
 	/**
 	 * Handle ManiaControl After Init
-	 *
-	 * @param array $callback
 	 */
-	public function handleAfterInit(array $callback) {
+	public function handleAfterInit() {
 		$this->updateManialink = true;
 	}
 

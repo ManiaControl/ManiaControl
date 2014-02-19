@@ -69,11 +69,9 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 	}
 
 	/**
-	 * Set Menu items on init
-	 *
-	 * @param array $callback
+	 * Handle ManiaControl OnInit Callback
 	 */
-	public function handleOnInit(array $callback) {
+	public function handleOnInit() {
 		//Define Permissions
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_SHUTDOWN_SERVER, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_SHOW_SYSTEMINFO, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
@@ -146,7 +144,7 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 		$this->maniaControl->chat->sendInformation('$<' . $player->nickname . '$> canceled the Vote!');
 
 		// Trigger callback
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_VOTE_CANCELED, array(self::CB_VOTE_CANCELED, $player));
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_VOTE_CANCELED, $player);
 	}
 
 

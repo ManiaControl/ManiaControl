@@ -108,14 +108,13 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	/**
 	 * Handle ManiaControl PlayerJoined callback
 	 *
-	 * @param array $callback
+	 * @param Player $player
 	 */
-	public function handlePlayerJoined(array $callback) {
+	public function handlePlayerJoined(Player $player) {
 		if (!$this->coreUpdateData) {
 			return;
 		}
 		// Announce available update
-		$player = $callback[1];
 		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_UPDATE)) {
 			return;
 		}

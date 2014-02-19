@@ -125,9 +125,9 @@ class DynamicPointlimitPlugin implements CallbackListener, CommandListener, Plug
 	/**
 	 * Function called on player connect and disconnect, changing the pointlimit.
 	 *
-	 * @param array $callback
+	 * @param Player $player
 	 */
-	public function changePointlimit(array $callback) {
+	public function changePointlimit(Player $player) {
 		$numberOfPlayers    = 0;
 		$numberOfSpectators = 0;
 

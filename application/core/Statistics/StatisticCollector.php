@@ -11,6 +11,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\PlayerManager;
+use ManiaControl\Players\Player;
 
 class StatisticCollector implements CallbackListener {
 	/**
@@ -54,7 +55,6 @@ class StatisticCollector implements CallbackListener {
 	private $maniaControl = null;
 	private $onShootArray = array();
 
-
 	/**
 	 * Construct player manager
 	 *
@@ -76,11 +76,9 @@ class StatisticCollector implements CallbackListener {
 	}
 
 	/**
-	 * onInit
-	 *
-	 * @param array $callback
+	 * Handle ManiaControl OnInit Callback
 	 */
-	public function onInit(array $callback) {
+	public function onInit() {
 		//Define Stats MetaData
 		$this->maniaControl->statisticManager->defineStatMetaData(self::STAT_PLAYTIME, StatisticManager::STAT_TYPE_TIME);
 		$this->maniaControl->statisticManager->defineStatMetaData(self::STAT_MAP_WINS);
@@ -203,17 +201,15 @@ class StatisticCollector implements CallbackListener {
 	/**
 	 * Insert OnShoot Statistic when a player leaves
 	 *
-	 * @param array $callback
+	 * @param Player $player
 	 */
-	public function onPlayerDisconnect(array $callback) {
-		$player = $callback[1];
-
-		//Check if Stat Collecting is enabled
+	public function onPlayerDisconnect(Player $player) {
+		// Check if Stat Collecting is enabled
 		if (!$this->maniaControl->settingManager->getSetting($this, self::SETTING_COLLECT_STATS_ENABLED)) {
 			return;
 		}
 
-		//Insert Data into Database, and destroy player
+		// Insert Data into Database, and destroy player
 		if (isset($this->onShootArray[$player->login])) {
 			if ($this->onShootArray[$player->login] > 0) {
 				$this->maniaControl->statisticManager->insertStat(self::STAT_ON_SHOOT, $player, $this->maniaControl->server->index, $this->onShootArray[$player->login]);

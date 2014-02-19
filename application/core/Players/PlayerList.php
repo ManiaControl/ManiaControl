@@ -761,9 +761,9 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 	/**
 	 * Reopen the widget on PlayerInfoChanged / Player Connect and Disconnect
 	 *
-	 * @param array $callback
+	 * @param Player $player
 	 */
-	public function updateWidget(array $callback) {
+	public function updateWidget(Player $player) {
 		foreach($this->playersListShown as $login => $shown) {
 			if ($shown) {
 				// Check if Shown player still exists

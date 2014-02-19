@@ -32,7 +32,10 @@ class HelpManager implements CommandListener, CallbackListener {
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_ONINIT, $this, 'handleOnInit');
 	}
 
-	public function handleOnInit(array $callback) {
+	/**
+	 * Handle ManiaControl OnInit Callback
+	 */
+	public function handleOnInit() {
 		//Register the help command
 		$this->maniaControl->commandManager->registerCommandListener('help', $this, 'command_playerHelp', false);
 		$this->maniaControl->commandManager->registerCommandListener('help', $this, 'command_adminHelp', true);

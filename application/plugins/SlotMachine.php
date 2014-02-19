@@ -152,11 +152,9 @@ class SlotMachinePlugin implements Plugin, CallbackListener, ManialinkPageAnswer
 	/**
 	 * Handle Player connect
 	 *
-	 * @param array $callback
+	 * @param Player $player
 	 */
-	public function handlePlayerConnect(array $callback) {
-		$player = $callback[1];
-		/** @var Player $player */
+	public function handlePlayerConnect(Player $player) {
 		$this->displayIcon($player->login);
 		//Initialize Player
 		$this->playerSettings[$player->index] = array("Balance" => $this->getBalance($player->index), "Won" => 0, "Spent" => 0, "Plays" => 0, "ClicksLastSecond" => 0, "Visible" => 0);
@@ -165,12 +163,10 @@ class SlotMachinePlugin implements Plugin, CallbackListener, ManialinkPageAnswer
 	/**
 	 * Handle Player disconnect
 	 *
-	 * @param array  $chatCallback
 	 * @param Player $player
 	 */
-	public function handlePlayerDisconnect(array $callback) {
+	public function handlePlayerDisconnect(Player $player) {
 		$this->updateDatabaseEveryMinute();
-		$player = $callback[1];
 		unset($this->playerSettings[$player->index]);
 	}
 
