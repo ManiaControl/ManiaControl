@@ -40,7 +40,7 @@ class CallbackManager {
 	const CB_MP_MODESCRIPTCALLBACK        = 'ManiaPlanet.ModeScriptCallback';
 	const CB_MP_MODESCRIPTCALLBACKARRAY   = 'ManiaPlanet.ModeScriptCallbackArray';
 	const CB_MP_TUNNELDATARECEIVED        = 'ManiaPlanet.TunnelDataReceived';
-	
+
 	// TrackMania callbacks
 	const CB_TM_PLAYERCHECKPOINT  = 'TrackMania.PlayerCheckpoint';
 	const CB_TM_PLAYERFINISH      = 'TrackMania.PlayerFinish';
@@ -206,6 +206,7 @@ class CallbackManager {
 						$this->mapEnded = false;
 					}
 					break;
+				case 'ManiaPlanet.EndMatch': //TODO temporary fix
 				case 'ManiaPlanet.EndMap':
 					if (!$this->mapEnded) {
 						$this->triggerCallback(self::CB_ENDMAP, $callback);
