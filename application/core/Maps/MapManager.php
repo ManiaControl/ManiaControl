@@ -373,7 +373,7 @@ class MapManager implements CallbackListener {
 	 *
 	 * @return Map
 	 */
-	public function fetchCurrentMap() {
+	private function fetchCurrentMap() {
 		$rpcMap = $this->maniaControl->client->getCurrentMapInfo();
 
 		if (array_key_exists($rpcMap->uId, $this->maps)) {
