@@ -6,6 +6,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
+use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
 
 class Dedimania implements CallbackListener, TimerListener, Plugin {
@@ -59,6 +60,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 
 		return;
 
+		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT,$this, 'handlePlayerConnect');
 		$this->maniaControl->timerManager->registerTimerListening($this, 'updateEverySecond', 1000);
 		$this->maniaControl->timerManager->registerTimerListening($this, 'handleEveryMinute', 1000 * 60);
 		//TODO parse settings
@@ -120,6 +122,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	 */
 	public function handleEveryMinute($callback = null) {
 		//$this->checkDedimaniaSession();
+		//TODO uncomment
 	}
 
 	/**

@@ -97,8 +97,8 @@ class SlotMachinePlugin implements Plugin, CallbackListener, ManialinkPageAnswer
 		$this->maniaControl->timerManager->registerTimerListening($this, 'updateDatabaseEveryMinute', 1000 * 60);
 
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_BILLUPDATED, $this, 'handleBillUpdated');
-		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'handlePlayerConnect');
-		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECTED, $this, 'handlePlayerDisconnect');
+		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
+		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECT, $this, 'handlePlayerDisconnect');
 
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_PLAY, $this, 'actionPlay');
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_DEPOSIT, $this, 'actionDeposit');

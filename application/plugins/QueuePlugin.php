@@ -68,8 +68,8 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 		$this->maniaControl = $maniaControl;
 
 		$this->maniaControl->timerManager->registerTimerListening($this, 'handleEverySecond', 1000);
-		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'handlePlayerConnect');
-		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECTED, $this, 'handlePlayerDisconnect');
+		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
+		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECT, $this, 'handlePlayerDisconnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERINFOCHANGED, $this, 'handlePlayerInfoChanged');
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ML_ADDTOQUEUE, $this, 'handleManiaLinkAnswerAdd');
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ML_REMOVEFROMQUEUE, $this, 'handleManiaLinkAnswerRemove');
