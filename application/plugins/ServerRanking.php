@@ -83,7 +83,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		}
 
 		//Register CallbackListeners
-		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERJOINED, $this, 'handlePlayerConnect');
+		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MC_ENDMAP, $this, 'handleEndMap');
 
 		//Register CommandListener

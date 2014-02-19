@@ -18,8 +18,8 @@ class PlayerManager implements CallbackListener {
 	/**
 	 * Constants
 	 */
-	const CB_PLAYERJOINED             = 'PlayerManagerCallback.PlayerJoined';
-	const CB_PLAYERDISCONNECTED       = 'PlayerManagerCallback.PlayerDisconnected';
+	const CB_PLAYERCONNECT            = 'PlayerManagerCallback.PlayerConnect';
+	const CB_PLAYERDISCONNECT         = 'PlayerManagerCallback.PlayerDisconnect';
 	const CB_ONINIT                   = 'PlayerManagerCallback.OnInit';
 	const CB_PLAYERINFOCHANGED        = 'PlayerManagerCallback.PlayerInfoChanged';
 	const TABLE_PLAYERS               = 'mc_players';
@@ -168,7 +168,7 @@ class PlayerManager implements CallbackListener {
 			return;
 		}
 		// Trigger own callback
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERDISCONNECTED, array(self::CB_PLAYERDISCONNECTED, $player));
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERDISCONNECT, array(self::CB_PLAYERDISCONNECT, $player));
 
 		if ($player->isFakePlayer()) {
 			return;
@@ -224,7 +224,7 @@ class PlayerManager implements CallbackListener {
 			$this->maniaControl->statisticManager->incrementStat(self::STAT_JOIN_COUNT, $player, $this->maniaControl->server->index);
 
 			// Trigger own PlayerJoined callback
-			$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERJOINED, array(self::CB_PLAYERJOINED, $player));
+			$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERCONNECT, array(self::CB_PLAYERCONNECT, $player));
 		}
 
 		// Trigger own callback
