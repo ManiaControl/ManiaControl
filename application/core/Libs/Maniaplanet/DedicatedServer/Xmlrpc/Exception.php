@@ -7,6 +7,11 @@
 
 namespace Maniaplanet\DedicatedServer\Xmlrpc;
 
-class Exception extends \Exception {}
+class Exception extends \Exception 
+{
+	const ANWSER_TOO_BIG = 1;
+	const REQUEST_TOO_BIG = 2;
+	const OTHER = 999;
+}
 
 ?>
