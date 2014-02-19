@@ -12,6 +12,7 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Maps\Map;
 use ManiaControl\Players\Player;
 use ManiaControl\Plugins\Plugin;
+use ManiaControl\Maps\MapManager;
 
 /**
  * ManiaControl Karma Plugin
@@ -76,7 +77,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 		// Register for callbacks
 		$this->maniaControl->timerManager->registerTimerListening($this, 'handle1Second', 1000);
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_BEGINMAP, $this, 'handleBeginMap');
+		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_BEGINMAP, $this, 'handleBeginMap');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCONNECT, $this, 'handlePlayerConnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCHAT, $this, 'handlePlayerChat');
 
@@ -202,9 +203,9 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	/**
 	 * Handle BeginMap ManiaControl callback
 	 *
-	 * @param array $callback
+	 * @param Map $map
 	 */
-	public function handleBeginMap(array $callback) {
+	public function handleBeginMap(Map $map) {
 		$this->updateManialink = true;
 	}
 

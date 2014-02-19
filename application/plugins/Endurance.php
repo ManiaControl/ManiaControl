@@ -4,6 +4,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Maps\Map;
 use ManiaControl\Plugins\Plugin;
+use ManiaControl\Maps\MapManager;
 
 /**
  * Plugin for the TM Game Mode 'Endurance' by TGYoshi
@@ -46,7 +47,7 @@ class EndurancePlugin implements CallbackListener, Plugin {
 		
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_ONINIT, $this, 'callback_OnInit');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_BEGINMAP, $this, 'callback_BeginMap');
+		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_BEGINMAP, $this, 'callback_BeginMap');
 		$this->maniaControl->callbackManager->registerScriptCallbackListener(self::CB_CHECKPOINT, $this, 'callback_Checkpoint');
 		
 		return true;
@@ -115,10 +116,10 @@ class EndurancePlugin implements CallbackListener, Plugin {
 	/**
 	 * Handle BeginMap callback
 	 *
-	 * @param array $callback        	
+	 * @param Map $map
 	 */
-	public function callback_BeginMap(array $callback) {
-		$this->currentMap = $this->maniaControl->mapManager->getCurrentMap();
+	public function callback_BeginMap(Map $map) {
+		$this->currentMap = $map;
 		$this->playerLapTimes = array();
 	}
 

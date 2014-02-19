@@ -10,6 +10,8 @@ use ManiaControl\Plugins\Plugin;
 use ManiaControl\Statistics\StatisticCollector;
 use ManiaControl\Statistics\StatisticManager;
 use Maniaplanet\DedicatedServer\Structures\AbstractStructure;
+use ManiaControl\Maps\MapManager;
+use ManiaControl\Maps\Map;
 
 class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 	/**
@@ -84,7 +86,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 
 		//Register CallbackListeners
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_ENDMAP, $this, 'handleEndMap');
+		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_ENDMAP, $this, 'handleEndMap');
 
 		//Register CommandListener
 		$this->maniaControl->commandManager->registerCommandListener('rank', $this, 'command_showRank', false);
@@ -285,9 +287,9 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 	/**
 	 * Shows Ranks on endMap
 	 *
-	 * @param array $callback
+	 * @param Map $map
 	 */
-	public function handleEndMap(array $callback) {
+	public function handleEndMap(Map $map) {
 		$this->resetRanks();
 
 		foreach($this->maniaControl->playerManager->getPlayers() as $player) {

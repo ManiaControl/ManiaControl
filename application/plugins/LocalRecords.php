@@ -13,6 +13,7 @@ use FML\Controls\Control;
 use FML\Controls\Frame;
 use FML\Controls\Label;
 use FML\Controls\Quad;
+use ManiaControl\Maps\MapManager;
 
 /**
  * ManiaControl Local Records Plugin
@@ -79,9 +80,7 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 		// Register for callbacks
 		$this->maniaControl->timerManager->registerTimerListening($this, 'handle1Second', 1000);
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_AFTERINIT, $this, 'handleAfterInit');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_BEGINMAP, $this, 'handleMapBegin');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_CLIENTUPDATED, $this,
-				'handleClientUpdated');
+		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_BEGINMAP, $this, 'handleMapBegin');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_TM_PLAYERFINISH, $this, 
 				'handlePlayerFinish');
 		
@@ -189,9 +188,9 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 	/**
 	 * Handle BeginMap callback
 	 *
-	 * @param array $callback
+	 * @param Map $map
 	 */
-	public function handleMapBegin(array $callback) {
+	public function handleMapBegin(Map $map) {
 		$this->updateManialink = true;
 	}
 
@@ -268,15 +267,6 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 					 Formatter::formatTime($newRecord->time);
 			$this->maniaControl->chat->sendInformation($message);
 		}
-	}
-
-	/**
-	 * Handle ClientUpdated callback
-	 *
-	 * @param array $callback
-	 */
-	public function handleClientUpdated(array $callback) {
-		$this->updateManialink = true;
 	}
 
 	/**

@@ -21,11 +21,12 @@ use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
  * @author kremsy & steeffeen
  */
 class MapManager implements CallbackListener {
-	/**
+	/*
 	 * Constants
 	 */
 	const TABLE_MAPS                      = 'mc_maps';
 	const CB_BEGINMAP                     = 'MapManager.BeginMap';
+	const CB_ENDMAP                	     = 'MapManager.EndMap';
 	const CB_MAPS_UPDATED                 = 'MapManager.MapsUpdated';
 	const CB_KARMA_UPDATED                = 'MapManager.KarmaUpdated';
 	const SETTING_PERMISSION_ADD_MAP      = 'Add Maps';
@@ -35,7 +36,7 @@ class MapManager implements CallbackListener {
 	const SETTING_PERMISSION_SKIP_MAP     = 'Skip Map';
 	const SETTING_PERMISSION_RESTART_MAP  = 'Restart Map';
 
-	/**
+	/*
 	 * Public Properties
 	 */
 	public $mapQueue = null;
@@ -44,16 +45,18 @@ class MapManager implements CallbackListener {
 	public $mxList = null;
 	public $mxManager = null;
 
-	/**
+	/*
 	 * Private Properties
 	 */
 	private $maniaControl = null;
 	private $maps = array();
 	/** @var Map $currentMap */
 	private $currentMap = null;
+	private $mapEnded = false;
+	private $mapBegan = false;
 
 	/**
-	 * Construct map manager
+	 * Construct a new Map Manager
 	 *
 	 * @param \ManiaControl\ManiaControl $maniaControl
 	 */
@@ -70,10 +73,9 @@ class MapManager implements CallbackListener {
 
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_ONINIT, $this, 'handleOnInit');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_BEGINMAP, $this, 'handleBeginMap');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_MAPLISTMODIFIED, $this, 'mapsModified');
 
-		//Define Rights
+		// Define Rights
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_ADD_MAP, AuthenticationManager::AUTH_LEVEL_ADMIN);
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_REMOVE_MAP, AuthenticationManager::AUTH_LEVEL_ADMIN);
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_SHUFFLE_MAPS, AuthenticationManager::AUTH_LEVEL_ADMIN);
@@ -83,7 +85,7 @@ class MapManager implements CallbackListener {
 	}
 
 	/**
-	 * Initialize necessary database tables
+	 * Initialize necessary Database Tables
 	 *
 	 * @return bool
 	 */
@@ -242,7 +244,6 @@ class MapManager implements CallbackListener {
 		unset($this->maps[$uid]);
 	}
 
-
 	/**
 	 * Restructures the Maplist
 	 */
@@ -368,23 +369,24 @@ class MapManager implements CallbackListener {
 	}
 
 	/**
-	 * Fetch current Map
+	 * Freshly fetch current Map
 	 *
-	 * @return bool
+	 * @return Map
 	 */
-	private function fetchCurrentMap() {
+	public function fetchCurrentMap() {
 		$rpcMap = $this->maniaControl->client->getCurrentMapInfo();
 
 		if (array_key_exists($rpcMap->uId, $this->maps)) {
 			$this->currentMap                = $this->maps[$rpcMap->uId];
+			// TODO: why set numbers? shouldn't they be set already?
 			$this->currentMap->nbCheckpoints = $rpcMap->nbCheckpoints;
 			$this->currentMap->nbLaps        = $rpcMap->nbLaps;
-			return true;
+			return $this->currentMap;
 		}
-		$map                   = $this->initializeMap($rpcMap);
-		$this->maps[$map->uid] = $map;
-		$this->currentMap      = $map;
-		return true;
+		
+		$this->currentMap                   = $this->initializeMap($rpcMap);
+		$this->maps[$this->currentMap->uid] = $this->currentMap;
+		return $this->currentMap;
 	}
 
 	/**
@@ -429,26 +431,73 @@ class MapManager implements CallbackListener {
 	 * @param array $callback
 	 */
 	public function handleBeginMap(array $callback) {
-		if (!isset($callback[1][0]["UId"])) { //TODO why this can happen?
+		if ($this->mapBegan) {
+			return;
+		}
+		$this->mapBegan = true;
+		$this->mapEnded = false;
+	
+		if (!isset($callback[1][0]["UId"])) {
+			// TODO: why can this even happen?
 			return;
 		}
 		if (array_key_exists($callback[1][0]["UId"], $this->maps)) {
 			// Map already exists, only update index
 			$this->currentMap = $this->maps[$callback[1][0]["UId"]];
 		} else {
-			// can this ever happen?
+			// TODO: can this ever happen?
 			$this->fetchCurrentMap();
 		}
-
-		//Restructure MapList if id is over 15
+	
+		// Restructure MapList if id is over 15
 		$this->restructureMapList();
-
-		//Update the mx of the map (for update checks, etc.)
+	
+		// Update the mx of the map (for update checks, etc.)
 		$this->mxManager->fetchManiaExchangeMapInformations($this->currentMap);
-
+	
 		// Trigger own BeginMap callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_BEGINMAP, $this->currentMap);
+	}
+	
+	/**
+	 * Handle Script BeginMap callback
+	 *
+	 * @param array $callback
+	 */
+	public function handleScriptBeginMap(array $callback) {
+		// ignored
+	}
+	
+	/**
+	 * Handle EndMap Callback
+	 * 
+	 * @param array $callback
+	 */
+	public function handleEndMap(array $callback) {
+		if ($this->mapEnded) {
+			return;
+		}
+		$this->mapEnded = true;
+		$this->mapBegan = false;
 
+		// Trigger own EndMap callback
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_ENDMAP, $this->currentMap);
+	}
+	
+	/**
+	 * Handle Script EndMap Callback
+	 * 
+	 * @param array $callback
+	 */
+	public function handleScriptEndMap(array $callback) {
+		if ($this->mapEnded) {
+			return;
+		}
+		$this->mapEnded = true;
+		$this->mapBegan = false;
+
+		// Trigger own EndMap callback
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_ENDMAP, $this->currentMap);
 	}
 
 	/**
@@ -461,6 +510,8 @@ class MapManager implements CallbackListener {
 	}
 
 	/**
+	 * Get all Maps
+	 * 
 	 * @return array
 	 */
 	public function getMaps() {
