@@ -22,6 +22,7 @@ use ManiaControl\Statistics\StatisticManager;
 use ManiaControl\Update\UpdateManager;
 use Maniaplanet\DedicatedServer\Connection;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
+use Maniaplanet\DedicatedServer\Xmlrpc\FatalException;
 
 require_once __DIR__ . '/Libs/Maniaplanet/DedicatedServer/Connection.php';
 require_once __DIR__ . '/Libs/GbxDataFetcher/gbxdatafetcher.inc.php';
@@ -276,7 +277,7 @@ class ManiaControl implements CommandListener {
 
 		// Register shutdown handler
 		register_shutdown_function(array($this, 'handleShutdown'));
-		
+
 		// Connect to server
 		$this->connect();
 
@@ -307,13 +308,9 @@ class ManiaControl implements CommandListener {
 				// Manager callbacks
 				$this->callbackManager->manageCallbacks();
 
-			} catch(Exception $e) {
-			if ($e->getMessage() == 'Connection interupted' || $e->getMessage() == 'transport error - connection interrupted!') {
+			} catch(FatalException $e) {
 				$this->quit($e->getMessage());
-				return;
 			}
-			throw $e;
-		}
 
 			// Manage FileReader
 			$this->fileReader->appendData();
@@ -363,7 +360,6 @@ class ManiaControl implements CommandListener {
 		try {
 			$this->client = Connection::factory($host, $port, self::CONNECT_TIMEOUT, $login, $pass);
 		} catch(Exception $e) {
-			// TODO: is it even needed to try-catch here? we will crash anyways, YES to avoid a message report to mc website
 			trigger_error("Couldn't authenticate on server with user '{$login}'! " . $e->getMessage(), E_USER_ERROR);
 		}
 

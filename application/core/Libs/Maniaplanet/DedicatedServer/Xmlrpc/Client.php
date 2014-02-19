@@ -104,14 +104,14 @@ class Client
 		$this->socket = @fsockopen($hostname, $port, $errno, $errstr, $timeout);
 		if (!$this->socket) 
 		{
-			throw new Exception("transport error - could not open socket (error: $errno, $errstr)", -32300);
+			throw new FatalException("transport error - could not open socket (error: $errno, $errstr)", FatalException::NOT_INITIALIZED);
 		}
 		// handshake
 		$array_result = unpack('Vsize', fread($this->socket, 4));
 		$size = $array_result['size'];
 		if ($size > 64) 
 		{
-			throw new Exception('transport error - wrong lowlevel protocol header', -32300);
+			throw new FatalException('transport error - wrong lowlevel protocol header', FatalException::OTHER);
 		}
 		$handshake = fread($this->socket, $size);
 		if ($handshake == 'GBXRemote 1') 
@@ -124,7 +124,7 @@ class Client
 		} 
 		else 
 		{
-			throw new Exception('transport error - wrong lowlevel protocol version', -32300);
+			throw new FatalException('transport error - wrong lowlevel protocol version', FatalException::OTHER);
 		}
 	}
 	
@@ -163,7 +163,7 @@ class Client
 			$r = fwrite($this->socket, $bytes);
 			if ($r === false || $r == 0) 
 			{
-				throw new Exception('Connection interupted');
+				throw new FatalException('Connection interupted', FatalException::INTERRUPTED);
 			}
 
 			$bytes_to_write -= $r;
@@ -191,7 +191,7 @@ class Client
 				$contents = fread($this->socket, 4);
 				if (strlen($contents) == 0) 
 				{
-					throw new Exception('transport error - connection interrupted!', -32700);
+					throw new FatalException('transport error - connection interrupted!', FatalException::INTERRUPTED);
 				}
 				$array_result = unpack('Vsize', $contents);
 				$size = $array_result['size'];
@@ -202,7 +202,7 @@ class Client
 				$contents = fread($this->socket, 8);
 				if (strlen($contents) == 0) 
 				{
-					throw new Exception('transport error - connection interrupted!', -32700);
+					throw new FatalException('transport error - connection interrupted!', FatalException::INTERRUPTED);
 				}
 				$array_result = unpack('Vsize/Vhandle', $contents);
 				$size = $array_result['size'];
@@ -217,12 +217,12 @@ class Client
 
 			if ($recvhandle == 0 || $size == 0) 
 			{
-				throw new Exception('transport error - connection interrupted!', -32700);
+				throw new FatalException('transport error - connection interrupted!', FatalException::INTERRUPTED);
 			}
 			
 			if ($size > SIZE_MAX) 
 			{
-				throw new Exception("transport error - answer too big ($size)", -32700);
+				throw new Exception("transport error - answer too big ($size)", Exception::ANWSER_TOO_BIG);
 			}
 
 			self::$received += $size;
@@ -253,7 +253,7 @@ class Client
 		if (!$this->message->parse()) 
 		{
 			// XML error
-			throw new Exception('parse error. not well formed', -32700);
+			throw new Exception('parse error. not well formed', Exception::OTHER);
 		}
 		// Is the message a fault?
 		if ($this->message->messageType == 'fault') 
@@ -272,15 +272,15 @@ class Client
 
 		if (!$this->socket || $this->protocol == 0) 
 		{
-			throw new Exception('transport error - Client not initialized', -32300);
+			throw new FatalException('transport error - Client not initialized', FatalException::NOT_INITIALIZED);
 		}
 
 		$request = new Request($method, $args);
 
 		// Check if request is larger than 1024 Kbytes
-		if ($request->getLength() > 1024*1024-8)
+		if ($request->getLength() > 1024*1024-8) 
 		{
-			throw new Exception('transport error - request too large!', -32700);
+			throw new Exception('transport error - request too large!', Exception::REQUEST_TOO_BIG);
 		}
 
 		$this->sendRequest($request);
@@ -295,14 +295,14 @@ class Client
 
 		if (!$this->socket || $this->protocol == 0) 
 		{
-			throw new Exception('transport error - Client not initialized', -32300);
+			throw new FatalException('transport error - Client not initialized', FatalException::NOT_INITIALIZED);
 		}
 
 		$request = new Request($method, $args);
 
-		// Check if the request is greater than 1024 Kbytes to avoid errors
+		// Check if the request is greater than 512 Kbytes to avoid errors
 		// If the method is system.multicall, make two calls (possibly recursively)
-		if ($request->getLength() > 1024*1024-8)
+		if ($request->getLength() > 1024*1024-8) 
 		{
 			if ($method == 'system.multicall' && isset($args[0])) 
 			{
@@ -310,7 +310,7 @@ class Client
 				// If count is 1, query cannot be reduced
 				if ($count < 2) 
 				{
-					throw new Exception('transport error - request too large!', -32700);
+					throw new Exception('transport error - request too large!', Exception::REQUEST_TOO_BIG);
 				}
 				$length = floor($count/2);
 
@@ -324,7 +324,7 @@ class Client
 			// If the method is not a multicall, just stop
 			else 
 			{
-				throw new Exception('transport error - request too large!', -32700);
+				throw new Exception('transport error - request too large!', Exception::REQUEST_TOO_BIG);
 			}
 		}
 
@@ -340,7 +340,7 @@ class Client
 	function readCallbacks($timeout = 2000) 
 	{
 		if (!$this->socket || $this->protocol == 0) 
-			throw new Exception('transport error - Client not initialized', -32300);
+			throw new FatalException('transport error - Client not initialized', FatalException::NOT_INITIALIZED);
 		if ($this->protocol == 1)
 			return false;
 
@@ -349,7 +349,7 @@ class Client
 		$contents = '';
 		$contents_length = 0;
 
-		@stream_set_timeout($this->socket, 0, 10000);  // timeout 10 ms (to read available data)
+		@stream_set_timeout($this->socket, 0, 100000);  // timeout 10 ms (to read available data)
 		// (assignment in arguments is forbidden since php 5.1.1)
 		$read = array($this->socket);
 		$write = NULL;
@@ -392,20 +392,19 @@ class Client
 			$contents = fread($this->socket, 8);
 			if (strlen($contents) == 0) 
 			{
-				throw new Exception('transport error - connection interrupted!', -32700);
+				throw new FatalException('transport error - connection interrupted!', FatalException::INTERRUPTED);
 			}
-
 			$array_result = unpack('Vsize/Vhandle', $contents);
 			$size = $array_result['size'];
 			$recvhandle = $array_result['handle'];
 
 			if ($recvhandle == 0 || $size == 0) 
 			{
-				throw new Exception('transport error - connection interrupted!', -32700);
+				throw new FatalException('transport error - connection interrupted!', FatalException::INTERRUPTED);
 			}
 			if ($size > SIZE_MAX) 
 			{
-				throw new Exception("transport error - answer too big ($size)", -32700);
+				throw new Exception("transport error - answer too big ($size)", Exception::ANWSER_TOO_BIG);
 			}
 			
 			self::$received += $size;
