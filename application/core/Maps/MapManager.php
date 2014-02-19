@@ -409,6 +409,9 @@ class MapManager implements CallbackListener {
 	 * @return Map currentMap
 	 */
 	public function getCurrentMap() {
+		if (!$this->currentMap) {
+			return $this->fetchCurrentMap();
+		}
 		return $this->currentMap;
 	}
 
@@ -446,8 +449,10 @@ class MapManager implements CallbackListener {
 			// Map already exists, only update index
 			$this->currentMap = $this->maps[$callback[1][0]["UId"]];
 		} else {
+			$rpcMap = \Maniaplanet\DedicatedServer\Structures\Map::fromArray($callback[1][0]);
+			$this->currentMap = $this->initializeMap($rpcMap);
 			// TODO: can this ever happen?
-			$this->fetchCurrentMap();
+			$this->maniaControl->errorHandler->triggerDebugNotice("new map wasn't fetched yet! ".$callback[1][0]["UId"]);
 		}
 	
 		// Restructure MapList if id is over 15
