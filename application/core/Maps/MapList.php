@@ -322,22 +322,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$script->addTooltip($eraseLabel, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => 'Remove Map: $<' . $map->name . '$>'));
 			}
 
-			//Switch Map Voting
-			if ($this->maniaControl->pluginManager->isPluginActive(self::DEFAULT_CUSTOM_VOTE_PLUGIN)) {
-				$switchLabel = new Label_Button();
-				$mapFrame->add($switchLabel);
-				$switchLabel->setX($width / 2 - 10);
-				$switchLabel->setZ(0.2);
-				$switchLabel->setSize(3, 3);
-				$switchLabel->setTextSize(2);
-				$switchLabel->setText('»');
-				$switchLabel->setTextColor('0f0');
 
-				$switchLabel->setAction(self::ACTION_START_SWITCH_VOTE . '.' . ($id - 1));
-
-				$script->addTooltip($switchLabel, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => 'Start Map-Switch vote: $<' . $map->name . '$>'));
-			} else if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
-
+			if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
 				// Switch to map
 				$switchLabel = new Label_Button();
 				$mapFrame->add($switchLabel);
@@ -352,6 +338,20 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$script->addToggle($switchLabel, $confirmFrame);
 
 				$script->addTooltip($switchLabel, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => 'Switch Directly to Map: $<' . $map->name . '$>'));
+			} else if ($this->maniaControl->pluginManager->isPluginActive(self::DEFAULT_CUSTOM_VOTE_PLUGIN)) {
+				//Switch Map Voting
+				$switchLabel = new Label_Button();
+				$mapFrame->add($switchLabel);
+				$switchLabel->setX($width / 2 - 10);
+				$switchLabel->setZ(0.2);
+				$switchLabel->setSize(3, 3);
+				$switchLabel->setTextSize(2);
+				$switchLabel->setText('»');
+				$switchLabel->setTextColor('0f0');
+
+				$switchLabel->setAction(self::ACTION_START_SWITCH_VOTE . '.' . ($id - 1));
+
+				$script->addTooltip($switchLabel, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => 'Start Map-Switch vote: $<' . $map->name . '$>'));
 			}
 
 			// Display Karma bar
