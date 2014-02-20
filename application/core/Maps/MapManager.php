@@ -26,7 +26,7 @@ class MapManager implements CallbackListener {
 	 */
 	const TABLE_MAPS                      = 'mc_maps';
 	const CB_BEGINMAP                     = 'MapManager.BeginMap';
-	const CB_ENDMAP                	     = 'MapManager.EndMap';
+	const CB_ENDMAP                       = 'MapManager.EndMap';
 	const CB_MAPS_UPDATED                 = 'MapManager.MapsUpdated';
 	const CB_KARMA_UPDATED                = 'MapManager.KarmaUpdated';
 	const SETTING_PERMISSION_ADD_MAP      = 'Add Maps';
@@ -330,11 +330,11 @@ class MapManager implements CallbackListener {
 		$mapsDirectory = $this->maniaControl->server->getMapsDirectory();
 		if (is_readable($mapsDirectory . $map->fileName)) {
 			$mapFetcher = new \GBXChallMapFetcher(true);
-				$mapFetcher->processFile($mapsDirectory . $map->fileName);
-				$map->authorNick  = FORMATTER::stripDirtyCodes($mapFetcher->authorNick);
-				$map->authorEInfo = $mapFetcher->authorEInfo;
-				$map->authorZone  = $mapFetcher->authorZone;
-				$map->comment     = $mapFetcher->comment;
+			$mapFetcher->processFile($mapsDirectory . $map->fileName);
+			$map->authorNick  = FORMATTER::stripDirtyCodes($mapFetcher->authorNick);
+			$map->authorEInfo = $mapFetcher->authorEInfo;
+			$map->authorZone  = $mapFetcher->authorZone;
+			$map->comment     = $mapFetcher->comment;
 		}
 		return $map;
 	}
@@ -373,12 +373,11 @@ class MapManager implements CallbackListener {
 
 		if (array_key_exists($rpcMap->uId, $this->maps)) {
 			$this->currentMap                = $this->maps[$rpcMap->uId];
-			// TODO: why set numbers? shouldn't they be set already?
 			$this->currentMap->nbCheckpoints = $rpcMap->nbCheckpoints;
 			$this->currentMap->nbLaps        = $rpcMap->nbLaps;
 			return $this->currentMap;
 		}
-		
+
 		$this->currentMap                   = $this->initializeMap($rpcMap);
 		$this->maps[$this->currentMap->uid] = $this->currentMap;
 		return $this->currentMap;
@@ -434,32 +433,37 @@ class MapManager implements CallbackListener {
 		}
 		$this->mapBegan = true;
 		$this->mapEnded = false;
-	
+
 		if (!isset($callback[1][0]["UId"])) {
 			// TODO: why can this even happen?
-			$this->maniaControl->errorHandler->triggerDebugNotice('map uid not set! '.print_r($callback, true));
+			$this->maniaControl->errorHandler->triggerDebugNotice('map uid not set! ' . print_r($callback, true));
 			return;
 		}
 		if (array_key_exists($callback[1][0]["UId"], $this->maps)) {
 			// Map already exists, only update index
 			$this->currentMap = $this->maps[$callback[1][0]["UId"]];
+			if (!$this->currentMap->nbCheckpoints || !$this->currentMap->nbLaps) {
+				$rpcMap                          = $this->maniaControl->client->getCurrentMapInfo();
+				$this->currentMap->nbLaps        = $rpcMap->nbLaps;
+				$this->currentMap->nbCheckpoints = $rpcMap->nbCheckpoints;
+			}
 		} else {
-			$rpcMap = \Maniaplanet\DedicatedServer\Structures\Map::fromArray($callback[1][0]);
+			$rpcMap           = \Maniaplanet\DedicatedServer\Structures\Map::fromArray($callback[1][0]);
 			$this->currentMap = $this->initializeMap($rpcMap);
 			// TODO: can this ever happen?
-			$this->maniaControl->errorHandler->triggerDebugNotice("new map wasn't fetched yet! ".$callback[1][0]["UId"]);
+			$this->maniaControl->errorHandler->triggerDebugNotice("new map wasn't fetched yet! " . $callback[1][0]["UId"]);
 		}
-	
+
 		// Restructure MapList if id is over 15
 		$this->restructureMapList();
-	
+
 		// Update the mx of the map (for update checks, etc.)
 		$this->mxManager->fetchManiaExchangeMapInformations($this->currentMap);
-	
+
 		// Trigger own BeginMap callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_BEGINMAP, $this->currentMap);
 	}
-	
+
 	/**
 	 * Handle Script BeginMap callback
 	 *
@@ -468,10 +472,10 @@ class MapManager implements CallbackListener {
 	public function handleScriptBeginMap(array $callback) {
 		// ignored
 	}
-	
+
 	/**
 	 * Handle EndMap Callback
-	 * 
+	 *
 	 * @param array $callback
 	 */
 	public function handleEndMap(array $callback) {
@@ -484,10 +488,10 @@ class MapManager implements CallbackListener {
 		// Trigger own EndMap callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_ENDMAP, $this->currentMap);
 	}
-	
+
 	/**
 	 * Handle Script EndMap Callback
-	 * 
+	 *
 	 * @param array $callback
 	 */
 	public function handleScriptEndMap(array $callback) {
@@ -512,7 +516,7 @@ class MapManager implements CallbackListener {
 
 	/**
 	 * Get all Maps
-	 * 
+	 *
 	 * @return array
 	 */
 	public function getMaps() {
