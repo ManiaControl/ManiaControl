@@ -242,14 +242,14 @@ class Server implements CallbackListener {
 	/**
 	 * Retrieve Validation Replay for the given Player
 	 *
-	 * @param Player $player
+	 * @param $login
 	 * @return string
 	 */
-	public function getValidationReplay(Player $player) {
+	public function getValidationReplay($login) {
 		try {
-			$replay = $this->maniaControl->client->getValidationReplay($player->login);
+			$replay = $this->maniaControl->client->getValidationReplay($login);
 		} catch(Exception $e) {
-			trigger_error("Couldn't get validation replay of '{$player->login}'. " . $e->getMessage());
+			trigger_error("Couldn't get validation replay of '{$login}'. " . $e->getMessage());
 			return null;
 		}
 		return $replay;
@@ -258,10 +258,10 @@ class Server implements CallbackListener {
 	/**
 	 * Retrieve Ghost Replay for the given Player
 	 *
-	 * @param Player $player
+	 * @param $login
 	 * @return string
 	 */
-	public function getGhostReplay(Player $player) {
+	public function getGhostReplay($login) {
 		$dataDir = $this->getDataDirectory();
 		if (!$this->checkAccess($dataDir)) {
 			return null;
@@ -271,11 +271,11 @@ class Server implements CallbackListener {
 		$map      = $this->maniaControl->mapManager->getCurrentMap();
 		$gameMode = $this->getGameMode();
 		$time     = time();
-		$fileName = "GhostReplays/Ghost.{$player->login}.{$gameMode}.{$time}.{$map->uid}.Replay.Gbx";
+		$fileName = "GhostReplays/Ghost.{$login}.{$gameMode}.{$time}.{$map->uid}.Replay.Gbx";
 
 		// Save ghost replay
 		try {
-			$this->maniaControl->client->saveBestGhostsReplay($player->login, $fileName);
+			$this->maniaControl->client->saveBestGhostsReplay($login, $fileName);
 		} catch(Exception $e) {
 			trigger_error("Couldn't save ghost replay. " . $e->getMessage());
 			return null;

@@ -167,11 +167,9 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 		if (!$this->updateManialink) {
 			return;
 		}
-		var_dump($this->dedimaniaData->records);
 		if (!$this->dedimaniaData->records) {
 			return;
 		}
-		var_dump("update");
 
 		$this->updateManialink = false;
 
@@ -305,19 +303,25 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 		if (!isset($replays['Top1GReplay'])) {
 			$replays['Top1GReplay'] = '';
 		}
+		//$replays['VReplay'] = '';
+		$replays['Top1GReplay'] = '';
+		$replays['VReplay'] = base64_encode($replays['VReplay']);
+		//$replays['Top1GReplay'] = base64_encode($replays['Top1GReplay']);
+		//xmlrpc_set_type($replays['VReplay'], 'base64');
+		//xmlrpc_set_type($replays['Top1GReplay'], 'base64');
 
-		xmlrpc_set_type($replays['VReplay'], 'base64');
-		xmlrpc_set_type($replays['Top1GReplay'], 'base64');
-
+		var_dump($replays);
 		$data    = array($this->dedimaniaData->sessionId, $this->getMapInfo(), $gameMode, $times, $replays);
+		//var_dump($data);
 		$content = $this->encode_request(self::DEDIMANIA_SETCHALLENGETIMES, $data);
 
 		$this->maniaControl->fileReader->postData(self::DEDIMANIA_URL, function ($data, $error) {
 			if ($error != '') {
 				$this->maniaControl->log("Dedimania Error: " . $error);
 			}
-
+			var_dump($data);
 			$data = $this->decode($data);
+			var_dump($data);
 			if (is_array($data)) {
 				foreach($data as $index => $methodResponse) {
 					if (xmlrpc_is_fault($methodResponse)) {
@@ -420,55 +424,40 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 
 
 		$oldRecord = $this->getDedimaniaRecord($login);
-
-		$save = true;
+		$save      = true;
 		if ($oldRecord) {
 			if ($oldRecord['Best'] <= $time) {
 				$save = false;
 			}
-
-			if ($save) {
-				$player = $this->maniaControl->playerManager->getPlayer($login);
-				// Save time
-				$newRecord = array('Login' => $login, 'NickName' => $player->nickname, 'Best' => $data[2], 'Checks' => $this->getCheckpoints($login), 'New' => true);
-				if ($this->insertDedimaniaRecord($newRecord, $oldRecord)) {
-					$this->displayRecordData($player, $oldRecord, $newRecord);
+		}
+		if ($save) {
+			$player = $this->maniaControl->playerManager->getPlayer($login);
+			// Save time
+			$newRecord = array('Login' => $login, 'NickName' => $player->nickname, 'Best' => $data[2], 'Checks' => $this->getCheckpoints($login), 'New' => true);
+			if ($this->insertDedimaniaRecord($newRecord, $oldRecord)) {
+				// Get newly saved record
+				foreach($this->dedimaniaData->records['Records'] as &$record) {
+					if ($record['Login'] !== $newRecord['Login']) {
+						continue;
+					}
+					$newRecord = $record;
+					break;
 				}
+
+				// Announce record
+				if (!$oldRecord || $newRecord['Rank'] < $oldRecord['Rank']) {
+					// Gained rank
+					$improvement = 'gained the';
+				} else {
+					// Only improved time
+					$improvement = 'improved her/his';
+				}
+				$message = '$<' . $player->nickname . '$> ' . $improvement . ' $<$o' . $newRecord['Rank'] . '.$> Dedimania Record: ' . Formatter::formatTime($newRecord['Best']);
+				$this->maniaControl->chat->sendInformation($message);
+
+				$this->updateManialink = true;
 			}
 		}
-
-	}
-
-	/**
-	 * Display the Record Data
-	 *
-	 * @param $player
-	 * @param $oldRecord
-	 * @param $newRecord
-	 */
-	private function displayRecordData($player, $oldRecord, $newRecord) {
-		// Get newly saved record
-		foreach($this->dedimaniaData['records']['Records'] as &$record) {
-			if ($record['Login'] !== $newRecord['Login']) {
-				continue;
-			}
-			$newRecord = $record;
-			break;
-		}
-
-		// Announce record
-		if (!$oldRecord || $newRecord['Rank'] < $oldRecord['Rank']) {
-			// Gained rank
-			$improvement = 'gained the';
-		} else {
-			// Only improved time
-			$improvement = 'improved her/his';
-		}
-		$message = '$<' . $player['NickName'] . '$> ' . $improvement . ' $<$o' . $newRecord['Rank'] . '.$> Dedimania Record: ' . Formatter::formatTime($newRecord['Best']);
-		$this->maniaControl->chat->sendInformation($message);
-
-		$this->updateManialink = true;
-
 	}
 
 	/**
@@ -643,7 +632,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	 * Update the sorting and the ranks of all dedimania records
 	 */
 	private function updateDedimaniaRecordRanks() {
-		if (!$this->dedimaniaData->records|| !isset($this->dedimaniaData->records['Records'])) {
+		if (!$this->dedimaniaData->records || !isset($this->dedimaniaData->records['Records'])) {
 			return;
 		}
 
