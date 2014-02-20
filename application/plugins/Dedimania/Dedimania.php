@@ -303,15 +303,15 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 		if (!isset($replays['Top1GReplay'])) {
 			$replays['Top1GReplay'] = '';
 		}
-		//$replays['VReplay'] = '';
-		$replays['Top1GReplay'] = '';
-		$replays['VReplay'] = base64_encode($replays['VReplay']);
-		//$replays['Top1GReplay'] = base64_encode($replays['Top1GReplay']);
-		//xmlrpc_set_type($replays['VReplay'], 'base64');
-		//xmlrpc_set_type($replays['Top1GReplay'], 'base64');
 
-		var_dump($replays);
-		$data    = array($this->dedimaniaData->sessionId, $this->getMapInfo(), $gameMode, $times, $replays);
+		$replays['VReplay']     = base64_encode($replays['VReplay']);
+		$replays['Top1GReplay'] = base64_encode($replays['Top1GReplay']);
+
+		xmlrpc_set_type($replays['VReplay'], 'string');
+		xmlrpc_set_type($replays['Top1GReplay'], 'string');
+
+		//var_dump($replays);
+		$data = array($this->dedimaniaData->sessionId, $this->getMapInfo(), $gameMode, $times, $replays);
 		//var_dump($data);
 		$content = $this->encode_request(self::DEDIMANIA_SETCHALLENGETIMES, $data);
 
@@ -321,7 +321,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 			}
 			var_dump($data);
 			$data = $this->decode($data);
-			var_dump($data);
+			//var_dump($data);
 			if (is_array($data)) {
 				foreach($data as $index => $methodResponse) {
 					if (xmlrpc_is_fault($methodResponse)) {
