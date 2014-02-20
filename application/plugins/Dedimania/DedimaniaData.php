@@ -28,6 +28,7 @@ class DedimaniaData {
 	public $code;
 	public $sessionId = '';
 	public $records = array();
+	public $directoryAccessChecked = false;
 
 	public function __construct($serverLogin, $dedimaniaCode, $path, $packmask, Version $serverVersion) {
 		$this->game          = "TM2";
@@ -44,7 +45,7 @@ class DedimaniaData {
 	public function toArray() {
 		$array = array();
 		foreach(get_object_vars($this) as $key => $value) {
-			if ($key == 'records' || $key == 'sessionId') {
+			if ($key == 'records' || $key == 'sessionId' || $key == 'directoryAccessChecked') {
 				continue;
 			}
 			$array[ucfirst($key)] = $value;
