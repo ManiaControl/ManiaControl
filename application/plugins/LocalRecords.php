@@ -69,9 +69,9 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_TITLE, 'Local Records');
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSX, -139.);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSY, 65.);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSY, 75);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_WIDTH, 40.);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_LINESCOUNT, 25);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_LINESCOUNT, 15);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_LINEHEIGHT, 4.);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_NOTIFY_ONLY_DRIVER, false);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_NOTIFY_BEST_RECORDS, -1);
@@ -170,7 +170,9 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 	 * @param $time
 	 */
 	public function handle1Second($time) {
-		if (!$this->updateManialink) return;
+		if (!$this->updateManialink) {
+			return;
+		}
 		$this->updateManialink = false;
 		$manialink = $this->buildManialink();
 		$this->maniaControl->manialinkManager->sendManialink($manialink);
