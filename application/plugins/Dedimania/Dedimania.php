@@ -2,6 +2,11 @@
 namespace Dedimania;
 
 require_once "DedimaniaData.php";
+use FML\Controls\Control;
+use FML\Controls\Frame;
+use FML\Controls\Label;
+use FML\Controls\Quad;
+use FML\ManiaLink;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\TimerListener;
@@ -29,6 +34,14 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	const DEDIMANIA_UPDATESERVERPLAYERS = 'dedimania.UpdateServerPlayers';
 	const DEDIMANIA_SETCHALLENGETIMES   = 'dedimania.SetChallengeTimes';
 	const DEDIMANIA_WARNINGSANDTTR2     = 'dedimania.WarningsAndTTR2';
+	const SETTING_WIDGET_TITLE          = 'Widget Title';
+	const SETTING_WIDGET_POSX           = 'Widget Position: X';
+	const SETTING_WIDGET_POSY           = 'Widget Position: Y';
+	const SETTING_WIDGET_WIDTH          = 'Widget Width';
+	const SETTING_WIDGET_LINESCOUNT     = 'Widget Displayed Lines Count';
+	const SETTING_WIDGET_LINEHEIGHT     = 'Widget Line Height';
+	const SETTING_SERVER_LOGINS         = 'Serverlogins, splitted by ;';
+	const SETTING_DEDIMANIA_CODES       = 'Dedimania Codes, splitted by ;';
 
 	/**
 	 * Private Properties
@@ -37,10 +50,9 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	private $maniaControl = null;
 	/** @var DedimaniaData $dedimaniaData */
 	private $dedimaniaData = null;
-	private $manialink = null;
-	//private $lastSendManialink = array();
 	private $updateManialink = false;
 	private $checkpoints = array();
+	private $init = false;
 
 	/**
 	 * Prepares the Plugin
@@ -49,7 +61,8 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	 * @return mixed
 	 */
 	public static function prepare(ManiaControl $maniaControl) {
-		// TODO: Implement prepare() method.
+		$maniaControl->settingManager->initSetting(get_class(), self::SETTING_SERVER_LOGINS, '');
+		$maniaControl->settingManager->initSetting(get_class(), self::SETTING_DEDIMANIA_CODES, '');
 	}
 
 	/**
@@ -61,25 +74,54 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	public function load(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		return;
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_TITLE, 'Dedimania');
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSX, -139);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSY, 7);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_WIDTH, 40);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_LINEHEIGHT, 4);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_LINESCOUNT, 15);
 
+		//TODO what was CB_IC_ClientUpdated?
 		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_BEGINMAP, $this, 'handleBeginMap');
-		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_ENDMAP, $this, 'handleEndMap');
+		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_ENDMAP, $this, 'handleMapEnd');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerDisconnect');
-		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERINFOCHANGED, $this, 'handlePlayerInfoChanged');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_TM_PLAYERCHECKPOINT, $this, 'handlePlayerCheckpoint');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_TM_PLAYERFINISH, $this, 'handlePlayerFinish');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_TM_PLAYERFINISH, $this, 'handlePlayerFinished');
 		$this->maniaControl->timerManager->registerTimerListening($this, 'updateEverySecond', 1000);
 		$this->maniaControl->timerManager->registerTimerListening($this, 'handleEveryMinute', 1000 * 60);
 		$this->maniaControl->timerManager->registerTimerListening($this, 'updatePlayerList', 1000 * 60 * 3);
-		//TODO parse settings
 
 		// Open session
-		$serverInfo          = $this->maniaControl->server->getInfo();
-		$serverVersion       = $this->maniaControl->client->getVersion();
-		$packMask            = substr($this->maniaControl->server->titleId, 2);
-		$this->dedimaniaData = new DedimaniaData(".paragoncanyon", "a3ee654ac8", $serverInfo->path, $packMask, $serverVersion);
+		$serverInfo    = $this->maniaControl->server->getInfo();
+		$serverVersion = $this->maniaControl->client->getVersion();
+		$packMask      = substr($this->maniaControl->server->titleId, 2);
+
+		$logins = $this->maniaControl->settingManager->getSetting($this, self::SETTING_SERVER_LOGINS);
+		$codes  = $this->maniaControl->settingManager->getSetting($this, self::SETTING_DEDIMANIA_CODES);
+
+		if ($logins == '' || $codes == '') {
+			throw new \Exception("No Dedimania Data Specified, check the settings!");
+		}
+
+		$logins = explode(";", $logins);
+		$codes  = explode(";", $codes);
+
+		$dedimaniaCode = "";
+		foreach($logins as $key => $login) {
+			if ($login == $serverInfo->login) {
+				if (!isset($codes[$key])) {
+					throw new \Exception("No Dedimania Code Specified, check the settings!");
+				}
+				$dedimaniaCode = $codes[$key];
+			}
+		}
+
+		if ($dedimaniaCode == '') {
+			throw new \Exception("No Valid Serverlogin Specified, check the settings!");
+		}
+
+		$this->dedimaniaData = new DedimaniaData($serverInfo->login, $dedimaniaCode, $serverInfo->path, $packMask, $serverVersion);
 
 		$this->openDedimaniaSession();
 	}
@@ -101,13 +143,14 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 			if (is_array($data)) {
 				foreach($data as $index => $methodResponse) {
 					if (xmlrpc_is_fault($methodResponse)) {
-						$this->handleXmlRpcFault($methodResponse);
+						$this->handleXmlRpcFault($methodResponse, self::DEDIMANIA_OPENSESSION);
 					} else if ($index <= 0) {
 						$responseData                   = $methodResponse[0];
 						$this->dedimaniaData->sessionId = $responseData['SessionId'];
 						if ($this->dedimaniaData->sessionId != '') {
 							$this->maniaControl->log("Dedimania connection successfully established.");
 							$this->fetchDedimaniaRecords();
+							$this->init = true;
 						} else {
 							$this->maniaControl->log("Error while opening Dedimania Connection");
 						}
@@ -121,8 +164,15 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	 * Handle 1Second callback
 	 */
 	public function updateEverySecond($time) {
+		if (!$this->updateManialink) {
+			return;
+		}
 		$this->updateManialink = false;
-		//TODO send manialink
+		if (!$this->dedimaniaData->records) {
+			return;
+		}
+		$manialink = $this->buildManialink();
+		$this->maniaControl->manialinkManager->sendManialink($manialink);
 	}
 
 	/**
@@ -131,9 +181,10 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	 * @param null $callback
 	 */
 	public function handleEveryMinute($callback = null) {
+		if (!$this->init)
+			return;
 		$this->checkDedimaniaSession();
 	}
-
 
 	/**
 	 * Handle PlayerConnect callback
@@ -145,7 +196,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 		$data    = array($this->dedimaniaData->sessionId, $player->login, $player->nickname, $player->path, $player->isSpectator);
 		$content = $this->encode_request(self::DEDIMANIA_PLAYERCONNECT, $data);
 
-		$this->maniaControl->fileReader->postData(self::DEDIMANIA_URL, function ($data, $error) {
+		$this->maniaControl->fileReader->postData(self::DEDIMANIA_URL, function ($data, $error) use (&$player) {
 			if ($error != '') {
 				$this->maniaControl->log("Dedimania Error: " . $error);
 			}
@@ -154,7 +205,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 			if (is_array($data)) {
 				foreach($data as $methodResponse) {
 					if (xmlrpc_is_fault($methodResponse)) {
-						$this->handleXmlRpcFault($methodResponse);
+						$this->handleXmlRpcFault($methodResponse, self::DEDIMANIA_PLAYERCONNECT);
 					}
 				}
 			} else {
@@ -163,10 +214,12 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 					var_dump($data);
 				}
 			}
+
+			$manialink = $this->buildManialink();
+			$this->maniaControl->manialinkManager->sendManialink($manialink, $player->login);
+
 			return true;
 		}, $content, true);
-
-		//TODO send manialink to login
 	}
 
 	/**
@@ -188,7 +241,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 			if (is_array($data)) {
 				foreach($data as $methodResponse) {
 					if (xmlrpc_is_fault($methodResponse)) {
-						$this->handleXmlRpcFault($methodResponse);
+						$this->handleXmlRpcFault($methodResponse, self::DEDIMANIA_PLAYERDISCONNECT);
 					}
 				}
 			} else {
@@ -208,8 +261,8 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	 */
 	public function handleBeginMap($callback) {
 		$this->fetchDedimaniaRecords(true);
-		$this->updateManialink = true;
 	}
+
 
 	/**
 	 * Handle EndMap callback
@@ -217,6 +270,9 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	 * @param $callback
 	 */
 	public function handleMapEnd($callback) {
+		if (!$this->dedimaniaData->records)
+			return;
+
 		// Send dedimania records
 		$gameMode = $this->getGameModeString();
 		$times    = array();
@@ -259,7 +315,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 			if (is_array($data)) {
 				foreach($data as $index => $methodResponse) {
 					if (xmlrpc_is_fault($methodResponse)) {
-						$this->handleXmlRpcFault($methodResponse);
+						$this->handleXmlRpcFault($methodResponse, self::DEDIMANIA_SETCHALLENGETIMES);
 					} else {
 						if ($index <= 0) {
 							// Called method response
@@ -290,7 +346,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 		$serverInfo = $this->getServerInfo();
 		$playerList = $this->getPlayerList();
 		$votesInfo  = $this->getVotesInfo();
-		if (!$serverInfo || !$votesInfo || !$playerList) {
+		if (!$serverInfo || !$votesInfo || !$playerList || !isset($this->dedimaniaData) || $this->dedimaniaData->sessionId == '') {
 			return;
 		}
 
@@ -307,7 +363,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 			if (is_array($data)) {
 				foreach($data as $methodResponse) {
 					if (xmlrpc_is_fault($methodResponse)) {
-						$this->handleXmlRpcFault($methodResponse);
+						$this->handleXmlRpcFault($methodResponse, self::DEDIMANIA_UPDATESERVERPLAYERS);
 					}
 				}
 			} else {
@@ -322,12 +378,14 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 
 	/**
 	 * Handle PlayerCheckpoint callback
+	 *
+	 * @param $callback
 	 */
 	public function handlePlayerCheckpoint($callback) {
-		$data    = $callback[1];
-		$login   = $data[1];
-		$time    = $data[2];
-		$lap     = $data[3];
+		$data  = $callback[1];
+		$login = $data[1];
+		$time  = $data[2];
+		//$lap     = $data[3];
 		$cpIndex = $data[4];
 		if (!isset($this->checkpoints[$login]) || $cpIndex <= 0) {
 			$this->checkpoints[$login] = array();
@@ -335,6 +393,11 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 		$this->checkpoints[$login][$cpIndex] = $time;
 	}
 
+	/**
+	 * Plyer finished callback
+	 *
+	 * @param $callback
+	 */
 	public function handlePlayerFinished($callback) {
 		$data = $callback[1];
 		if ($data[0] <= 0 || $data[2] <= 0) {
@@ -363,7 +426,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 				$inserted  = $this->insertDedimaniaRecord($newRecord, $oldRecord);
 				if ($inserted) {
 					// Get newly saved record
-					foreach($this->dedimaniaData['records']['Records'] as $key => &$record) {
+					foreach($this->dedimaniaData['records']['Records'] as &$record) {
 						if ($record['Login'] !== $newRecord['Login']) {
 							continue;
 						}
@@ -423,7 +486,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 			if (is_array($data)) {
 				foreach($data as $index => $methodResponse) {
 					if (xmlrpc_is_fault($methodResponse)) {
-						$this->handleXmlRpcFault($methodResponse);
+						$this->handleXmlRpcFault($methodResponse, self::DEDIMANIA_GETRECORDS);
 						return false;
 					} else if ($index <= 0) {
 						$responseData                 = $methodResponse[0];
@@ -458,7 +521,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 			if (is_array($data)) {
 				foreach($data as $methodResponse) {
 					if (xmlrpc_is_fault($methodResponse)) {
-						$this->handleXmlRpcFault($methodResponse);
+						$this->handleXmlRpcFault($methodResponse, self::DEDIMANIA_CHECKSESSION);
 					} else {
 						$responseData = $methodResponse[0];
 						if (is_bool($responseData)) {
@@ -484,13 +547,13 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 			return false;
 		}
 
-		$insert     = false;
-		$newRecords = array();
+		$insert = false;
 
 		// Get max possible rank
 		$maxRank = $this->getMaxRank($newRecord['Login']);
-		if (!$maxRank)
+		if (!$maxRank) {
 			$maxRank = 30;
+		}
 
 		// Loop through existing records
 		foreach($this->dedimaniaData->records['Records'] as $key => &$record) {
@@ -540,7 +603,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 			$this->updateDedimaniaRecordRanks();
 
 			// Save replays
-			foreach($this->dedimaniaData->records['Records'] as $key => &$record) {
+			foreach($this->dedimaniaData->records['Records'] as &$record) {
 				if ($record['Login'] !== $newRecord['Login'])
 					continue;
 				$this->setRecordReplays($record);
@@ -721,7 +784,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 		if (!isset($this->dedimaniaData->records))
 			return null;
 		$records = $this->dedimaniaData->records['Records'];
-		foreach($records as $index => $record) {
+		foreach($records as $record) {
 			if ($record['Login'] === $login)
 				return $record;
 		}
@@ -790,9 +853,96 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	 * Handles xml rpc fault
 	 *
 	 * @param $fault
+	 * @param $method
 	 */
-	private function handleXmlRpcFault($fault) {
-		trigger_error('XmlRpc Fault: ' . $fault['faultString'] . ' (' . $fault['faultCode'] . ')');
+	private function handleXmlRpcFault($fault, $method) {
+		trigger_error('XmlRpc Fault on ' . $method . ': ' . $fault['faultString'] . ' (' . $fault['faultCode'] . ')');
+	}
+
+
+	private function buildManialink() {
+		if (!$this->dedimaniaData->records) {
+			return '';
+		}
+		$records = $this->dedimaniaData->records['Records'];
+
+		$title        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_TITLE);
+		$pos_x        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_POSX);
+		$pos_y        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_POSY);
+		$width        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_WIDTH);
+		$lines        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_LINESCOUNT);
+		$lineHeight   = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_LINEHEIGHT);
+		$labelStyle   = $this->maniaControl->manialinkManager->styleManager->getDefaultLabelStyle();
+		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
+		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
+
+
+		$manialink = new ManiaLink(self::MLID_DEDIMANIA);
+		$frame     = new Frame();
+		$manialink->add($frame);
+		$frame->setPosition($pos_x, $pos_y);
+
+		$backgroundQuad = new Quad();
+		$frame->add($backgroundQuad);
+		$backgroundQuad->setVAlign(Control::TOP);
+		$height = 7. + $lines * $lineHeight;
+		$backgroundQuad->setSize($width * 1.05, $height);
+		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
+
+		$titleLabel = new Label();
+		$frame->add($titleLabel);
+		$titleLabel->setPosition(0, $lineHeight * -0.9);
+		$titleLabel->setWidth($width);
+		$titleLabel->setStyle($labelStyle);
+		$titleLabel->setTextSize(2);
+		$titleLabel->setText($title);
+		$titleLabel->setTranslate(true);
+
+		foreach($records as $index => $record) {
+			if ($index >= $lines)
+				break;
+
+			$y = -8. - $index * $lineHeight;
+
+			$recordFrame = new Frame();
+			$frame->add($recordFrame);
+			$recordFrame->setPosition(0, $y);
+
+			$backgroundQuad = new Quad();
+			$recordFrame->add($backgroundQuad);
+			$backgroundQuad->setSize($width * 1.04, $lineHeight * 1.4);
+			$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
+
+			//Rank
+			$rankLabel = new Label();
+			$recordFrame->add($rankLabel);
+			$rankLabel->setHAlign(Control::LEFT);
+			$rankLabel->setX($width * -0.47);
+			$rankLabel->setSize($width * 0.06, $lineHeight);
+			$rankLabel->setTextSize(1);
+			$rankLabel->setTextPrefix('$o');
+			$rankLabel->setText($record['Rank']);
+
+			//Name
+			$nameLabel = new Label();
+			$recordFrame->add($nameLabel);
+			$nameLabel->setHAlign(Control::LEFT);
+			$nameLabel->setX($width * -0.4);
+			$nameLabel->setSize($width * 0.6, $lineHeight);
+			$nameLabel->setTextSize(1);
+			$nameLabel->setText(Formatter::stripDirtyCodes($record['NickName']));
+
+			//Time
+			$timeLabel = new Label();
+			$recordFrame->add($timeLabel);
+			$timeLabel->setHAlign(Control::RIGHT);
+			$timeLabel->setX($width * 0.47);
+			$timeLabel->setSize($width * 0.25, $lineHeight);
+			$timeLabel->setTextSize(1);
+			$timeLabel->setText(Formatter::formatTime($record['Best']));
+		}
+
+		return $manialink->render()->saveXML();
 	}
 
 	/**
