@@ -437,7 +437,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 * @param Player $player
 	 */
 	public function handlePositiveVote(array $callback, Player $player) {
-		if ($player->isSpectator && !$this->maniaControl->settingManager->getSetting($this, self::SETTING_SPECTATOR_ALLOW_VOTE)) {
+		if (!isset($this->currentVote) || $player->isSpectator && !$this->maniaControl->settingManager->getSetting($this, self::SETTING_SPECTATOR_ALLOW_VOTE)) {
 			return;
 		}
 
@@ -451,7 +451,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 * @param Player $player
 	 */
 	public function handleNegativeVote(array $callback, Player $player) {
-		if ($player->isSpectator && !$this->maniaControl->settingManager->getSetting($this, self::SETTING_SPECTATOR_ALLOW_VOTE)) {
+		if (!isset($this->currentVote) || $player->isSpectator && !$this->maniaControl->settingManager->getSetting($this, self::SETTING_SPECTATOR_ALLOW_VOTE)) {
 			return;
 		}
 
