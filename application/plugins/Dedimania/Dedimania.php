@@ -342,7 +342,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 					}
 				}
 			}
-		}, $content, false); //TODO compression
+		}, $content, true); //TODO compression
 	}
 
 	/**
