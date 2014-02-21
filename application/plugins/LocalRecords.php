@@ -322,6 +322,10 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 		
 		// Times
 		foreach ($records as $index => $record) {
+			if ($index >= $lines) {
+				break;
+			}
+
 			$y = -8. - $index * $lineHeight;
 			
 			$recordFrame = new Frame();
