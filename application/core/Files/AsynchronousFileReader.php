@@ -126,9 +126,15 @@ class AsynchronousFileReader {
 			return false;
 		}
 
+		$content = str_replace(array("\r", "\n"), '', $content);
+
 		if ($compression) {
 			$content = gzencode($content);
+			$header  = array("Content-Type: " . $contentType, "Keep-Alive: 300", "Connection: Keep-Alive", "Content-Encoding: gzip");
+		} else {
+			$header = array("Content-Type: " . $contentType, "Keep-Alive: 300", "Connection: Keep-Alive");
 		}
+
 
 		$request = new Request($url);
 		$request->getOptions()->set(CURLOPT_HEADER, false) //don't display response header
@@ -137,7 +143,7 @@ class AsynchronousFileReader {
 			//->set(CURLOPT_AUTOREFERER, true)//accept link reference
 			->set(CURLOPT_POST, true) //post field
 			->set(CURLOPT_POSTFIELDS, $content) //post content field
-			->set(CURLOPT_HTTPHEADER, array("Content-Type: " . $contentType, "Keep-Alive: 300", "Connection: Keep-Alive", "Content-Encoding: gzip")) //
+			->set(CURLOPT_HTTPHEADER, $header) //
 			//->set(CURLOPT_HTTPHEADER, array("Content-Type: " . $contentType,  "Keep-Alive: 300", "Connection: Keep-Alive")) //
 			->set(CURLOPT_USERAGENT, 'ManiaControl v' . ManiaControl::VERSION) //
 			->set(CURLOPT_RETURNTRANSFER, true);
