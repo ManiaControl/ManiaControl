@@ -300,12 +300,12 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 			}
 
 			$teams = array();
-			/** @var  Player $player */
-			foreach($this->maniaControl->playerManager->players as $player) {
-				if(!isset($teams[$player->teamId])){
-					$teams[$player->teamId] = 1;
+			/** @var  Player $playerObj */
+			foreach($this->maniaControl->playerManager->players as $playerObj) {
+				if(!isset($teams[$playerObj->teamId])){
+					$teams[$playerObj->teamId] = 1;
 				}else{
-					$teams[$player->teamId]++;
+					$teams[$playerObj->teamId]++;
 				}
 			}
 
