@@ -236,6 +236,7 @@ class ManiaControl implements CommandListener, TimerListener {
 		}
 
 		//Disable Garbage Collector
+		$this->collectGarbage();
 		gc_disable();
 
 		$this->log('Quitting ManiaControl!');
