@@ -45,7 +45,7 @@ class UsageReporter implements TimerListener {
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_DISABLE_USAGE_REPORTING)) {
 			return;
 		}
-		
+
 
 		$properties                        = array();
 		$properties['ManiaControlVersion'] = ManiaControl::VERSION;
@@ -55,6 +55,8 @@ class UsageReporter implements TimerListener {
 		$properties['TitleId']             = $this->maniaControl->server->titleId;
 		$properties['ServerName']          = Formatter::stripDirtyCodes($this->maniaControl->client->getServerName());
 		$properties['PlayerCount']         = $this->maniaControl->playerManager->getPlayerCount();
+		$properties['MemoryUsage']         = memory_get_usage();
+		$properties['MemoryPeakUsage']     = memory_get_peak_usage();
 
 		$maxPlayers               = $this->maniaControl->client->getMaxPlayers();
 		$properties['MaxPlayers'] = $maxPlayers["CurrentValue"];
