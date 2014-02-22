@@ -127,7 +127,6 @@ class AsynchronousFileReader {
 		}
 
 		$content = str_replace(array("\r", "\n"), '', $content);
-
 		if ($compression) {
 			$content = gzencode($content);
 			$header  = array("Content-Type: " . $contentType, "Keep-Alive: 300", "Connection: Keep-Alive", "Content-Encoding: gzip");

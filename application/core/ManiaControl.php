@@ -5,6 +5,7 @@ namespace ManiaControl;
 use ManiaControl\Admin\ActionsMenu;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Callbacks\TimerManager;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\Commands\CommandManager;
@@ -38,7 +39,7 @@ require_once __DIR__ . '/Libs/curl-easy/autoload.php';
  * @copyright ManiaControl Copyright © 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class ManiaControl implements CommandListener {
+class ManiaControl implements CommandListener, TimerListener {
 	/**
 	 * Constants
 	 */
@@ -234,6 +235,9 @@ class ManiaControl implements CommandListener {
 			$this->errorHandler->errorHandler($error['type'], $error['message'], $error['file'], $error['line']);
 		}
 
+		//Disable Garbage Collector
+		gc_disable();
+
 		$this->log('Quitting ManiaControl!');
 		exit();
 	}
@@ -290,6 +294,10 @@ class ManiaControl implements CommandListener {
 		// AfterInit callback
 		$this->callbackManager->triggerCallback(CallbackManager::CB_AFTERINIT);
 
+		//Enable Garbage Collecting
+		gc_enable();
+		$this->timerManager->registerTimerListening($this, 'collectGarbage', 1000 * 60);
+
 		// Announce ManiaControl
 		$this->chat->sendInformation('ManiaControl v' . self::VERSION . ' successfully started!');
 
@@ -326,6 +334,13 @@ class ManiaControl implements CommandListener {
 
 		// Shutdown
 		$this->quit();
+	}
+
+	/**
+	 * Collect Garbage
+	 */
+	public function collectGarbage() {
+		gc_collect_cycles();
 	}
 
 	/**
