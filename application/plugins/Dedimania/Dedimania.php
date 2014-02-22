@@ -16,6 +16,7 @@ use ManiaControl\Maps\MapManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
+use Maniaplanet\DedicatedServer\Xmlrpc\Base64;
 
 class Dedimania implements CallbackListener, TimerListener, Plugin {
 	/**
@@ -304,11 +305,8 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 			$replays['Top1GReplay'] = '';
 		}
 
-		$replays['VReplay']     = base64_encode($replays['VReplay']);
-		$replays['Top1GReplay'] = base64_encode($replays['Top1GReplay']);
-
-		xmlrpc_set_type($replays['VReplay'], 'string');
-		xmlrpc_set_type($replays['Top1GReplay'], 'string');
+		xmlrpc_set_type($replays['VReplay'], 'base64');
+		xmlrpc_set_type($replays['Top1GReplay'], 'base64');
 
 		//var_dump($replays);
 		$data = array($this->dedimaniaData->sessionId, $this->getMapInfo(), $gameMode, $times, $replays);
@@ -344,7 +342,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 					}
 				}
 			}
-		}, $content, true);
+		}, $content, true); //TODO compression
 	}
 
 	/**
