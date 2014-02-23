@@ -12,6 +12,7 @@ class KarmaTest implements Plugin {
 	const MX_KARMA_URL             = 'http://karma.mania-exchange.com/api2/';
 	const MX_KARMA_STARTSESSION    = 'startSession';
 	const MX_KARMA_ACTIVATESESSION = 'activateSession';
+	const MX_KARMA_SAVEVOTES = 'saveVotes';
 
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
@@ -75,18 +76,62 @@ class KarmaTest implements Plugin {
 
 		var_dump($query);
 
-		$this->maniaControl->fileReader->loadFile($query, function ($data, $error) {
+		$this->maniaControl->fileReader->loadFile($query, function ($data, $error) use ($sessionKey) {
 			if (!$error) {
 				$data = json_decode($data);
-				if (!$data->activated) {
-					$this->maniaControl->log("Error while authenticating on Mania-Exchange Karma");
-				} else {
+				var_dump($data);
+				if ($data->success && $data->data->activated) {
 					$this->maniaControl->log("Successfully authenticated on Mania-Exchange Karma");
+
+					$this->saveVotes($sessionKey);
+				} else {
+					$this->maniaControl->log("Error while authenticating on Mania-Exchange Karma");
 				}
 			} else {
 				$this->maniaControl->log($error);
 			}
 		}, "application/json", 1000);
+
+	}
+
+	private function saveVotes($sessionKey){
+		$gameMode = $this->maniaControl->server->getGameMode(true);
+
+		$properties = array();
+		if($gameMode == 'Script'){
+			$scriptName               = $this->maniaControl->client->getScriptName();
+			$properties['gamemode'] = $scriptName["CurrentValue"];
+		}else{
+			$properties['gamemode'] = $gameMode;
+		}
+
+		$properties['titleid'] = $this->maniaControl->server->titleId;
+
+		$map = $this->maniaControl->mapManager->getCurrentMap();
+		$properties['mapname'] = $map->name;
+		$properties['mapuid'] = $map->uid;
+		$properties['mapauthor'] = $map->authorLogin;
+		$properties['votes'] = array();
+
+		$content = json_encode($properties);
+
+		$this->maniaControl->fileReader->postData(self::MX_KARMA_URL.self::MX_KARMA_SAVEVOTES . "?sessionKey=" . $sessionKey , function ($data, $error) use ($sessionKey) {
+			if (!$error) {
+				$data = json_decode($data);
+				var_dump($data);
+				if ($data->success && $data->data->activated) {
+					$this->maniaControl->log("Successfully authenticated on Mania-Exchange Karma");
+
+					$this->saveVotes($sessionKey);
+				} else {
+					$this->maniaControl->log("Error while authenticating on Mania-Exchange Karma");
+				}
+			} else {
+				$this->maniaControl->log($error);
+			}
+		}, $content, false, 'application/json');
+
+
 
 	}
 
