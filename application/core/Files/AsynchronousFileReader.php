@@ -55,7 +55,7 @@ class AsynchronousFileReader {
 	 * @param string $contentType
 	 * @return bool
 	 */
-	public function loadFile($url, $function, $contentType = 'UTF-8') {
+	public function loadFile($url, $function, $contentType = 'UTF-8', $keepAlive = 0) {
 		if (!is_callable($function)) {
 			$this->maniaControl->log("Function is not callable");
 			return false;
@@ -66,6 +66,12 @@ class AsynchronousFileReader {
 			return false;
 		}
 
+		if($keepAlive){
+			$header  = array("Content-Type: " . $contentType, "Keep-Alive: " . $keepAlive, "Connection: Keep-Alive");
+		}else{
+			$header = array("Content-Type: " . $contentType);
+		}
+
 		$request = new Request($url);
 
 		$request->getOptions()->set(CURLOPT_TIMEOUT, 5) //
@@ -73,7 +79,7 @@ class AsynchronousFileReader {
 			->set(CURLOPT_CRLF, true) //linux linefeed
 			->set(CURLOPT_ENCODING, "")//accept encoding
 			->set(CURLOPT_AUTOREFERER, true)//accept link reference
-			->set(CURLOPT_HTTPHEADER, array("Content-Type: " . $contentType)) //
+			->set(CURLOPT_HTTPHEADER, $header) //
 			->set(CURLOPT_USERAGENT, 'ManiaControl v' . ManiaControl::VERSION) //
 			->set(CURLOPT_RETURNTRANSFER, true);
 
