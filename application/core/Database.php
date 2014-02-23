@@ -39,14 +39,14 @@ class Database {
 		$port = (int) $port[0];
 		$user = (string) $user[0];
 		$pass = (string) $pass[0];
-		
+
 		// Open database connection
 		$this->mysqli = new \mysqli($host, $user, $pass, null, $port);
 		if ($this->mysqli->connect_error) {
 			trigger_error($this->mysqli->connect_error, E_USER_ERROR);
 		}
 		$this->mysqli->set_charset("utf8");
-		
+
 		$this->initDatabase();
 		$this->optimizeTables();
 	}
