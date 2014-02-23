@@ -9,6 +9,11 @@ use ManiaControl\Plugins\Plugin;
  * Time: 14:03
  */
 class KarmaTest implements Plugin {
+	const MX_KARMA_URL             = 'http://karma.mania-exchange.com/api2/';
+	const MX_KARMA_STARTSESSION    = 'startSession';
+	const MX_KARMA_ACTIVATESESSION = 'activateSession';
+
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 
 	/**
@@ -29,9 +34,64 @@ class KarmaTest implements Plugin {
 	 */
 	public function load(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
+		return;
+		$this->openSession();
+	}
 
-		$serverLogin = $this->maniaControl->server->login;
+	private function openSession() {
+		//$serverLogin           = $this->maniaControl->server->login;
+		$serverLogin           = ".escsiege";
+		$applicationIdentifier = 'ManiaControl v' . ManiaControl::VERSION;
+		$testMode              = 'true';
 
+		$query = self::MX_KARMA_URL . self::MX_KARMA_STARTSESSION;
+		$query .= '?serverLogin=' . $serverLogin;
+		$query .= '&applicationIdentifier=' . urlencode($applicationIdentifier);
+		$query .= '&game=sm';
+		$query .= '&testMode=' . $testMode;
+
+
+		$this->maniaControl->fileReader->loadFile($query, function ($data, $error) {
+			var_dump($error);
+			if (!$error) {
+				$data = json_decode($data);
+				if ($data->success) {
+					$this->activateSession($data->data->sessionKey, $data->data->sessionSeed);
+				} else {
+					$this->maniaControl->log("Error while authenticating on Mania-Exchange Karma");
+				}
+			} else {
+				$this->maniaControl->log($error);
+			}
+		}, "application/json", 1000);
+	}
+
+	private function activateSession($sessionKey, $sessionSeed) {
+		$hash = $this->buildActivationHash($sessionSeed, "XNTOWRNVQCKEUBBKXNJSCPYOAA");
+
+		$query = self::MX_KARMA_URL . self::MX_KARMA_ACTIVATESESSION;
+		$query .= '?sessionKey=' . urlencode($sessionKey);
+		$query .= '&activationHash=' . urlencode($hash);
+
+		var_dump($query);
+
+		$this->maniaControl->fileReader->loadFile($query, function ($data, $error) {
+			if (!$error) {
+				$data = json_decode($data);
+				if (!$data->activated) {
+					$this->maniaControl->log("Error while authenticating on Mania-Exchange Karma");
+				} else {
+					$this->maniaControl->log("Successfully authenticated on Mania-Exchange Karma");
+				}
+			} else {
+				$this->maniaControl->log($error);
+			}
+		}, "application/json", 1000);
+
+	}
+
+	private function buildActivationHash($sessionSeed, $mxKey) {
+		return hash('sha512', $mxKey . $sessionSeed);
 	}
 
 	/**
