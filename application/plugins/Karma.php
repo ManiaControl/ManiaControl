@@ -601,6 +601,10 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			return;
 		}
 
+		if(count($this->mxKarma['votes'] == 0)){
+			return;
+		}
+
 		$gameMode = $this->maniaControl->server->getGameMode(true);
 
 		$properties = array();
