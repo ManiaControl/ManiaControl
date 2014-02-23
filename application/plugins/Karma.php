@@ -217,6 +217,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	 * @param Map $map
 	 */
 	public function handleBeginMap(Map $map) {
+		unset($this->mxKarma['votes']);
 		$this->updateManialink = true;
 	}
 
