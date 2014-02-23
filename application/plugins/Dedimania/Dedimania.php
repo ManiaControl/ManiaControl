@@ -39,8 +39,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	const SETTING_WIDGET_WIDTH          = 'Widget Width';
 	const SETTING_WIDGET_LINESCOUNT     = 'Widget Displayed Lines Count';
 	const SETTING_WIDGET_LINEHEIGHT     = 'Widget Line Height';
-	const SETTING_SERVER_LOGINS         = 'Serverlogins, splitted by ;';
-	const SETTING_DEDIMANIA_CODES       = 'Dedimania Codes, splitted by ;';
+	const SETTING_DEDIMANIA_CODE        = 'Dedimania Code for ';
 
 	/**
 	 * Private Properties
@@ -60,8 +59,10 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	 * @return mixed
 	 */
 	public static function prepare(ManiaControl $maniaControl) {
-		$maniaControl->settingManager->initSetting(get_class(), self::SETTING_SERVER_LOGINS, '');
-		$maniaControl->settingManager->initSetting(get_class(), self::SETTING_DEDIMANIA_CODES, '');
+		$servers = $maniaControl->server->getAllServers();
+		foreach($servers as $server) {
+			$maniaControl->settingManager->initSetting(get_class(), self::SETTING_DEDIMANIA_CODE . $server->login, '');
+		}
 	}
 
 	/**
@@ -100,28 +101,9 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 		$serverVersion = $this->maniaControl->client->getVersion();
 		$packMask      = substr($this->maniaControl->server->titleId, 2);
 
-		$logins = $this->maniaControl->settingManager->getSetting($this, self::SETTING_SERVER_LOGINS);
-		$codes  = $this->maniaControl->settingManager->getSetting($this, self::SETTING_DEDIMANIA_CODES);
-
-		if ($logins == '' || $codes == '') {
-			throw new \Exception("No Dedimania Data Specified, check the settings!");
-		}
-
-		$logins = explode(";", $logins);
-		$codes  = explode(";", $codes);
-
-		$dedimaniaCode = "";
-		foreach($logins as $key => $login) {
-			if ($login == $serverInfo->login) {
-				if (!isset($codes[$key])) {
-					throw new \Exception("No Dedimania Code Specified, check the settings!");
-				}
-				$dedimaniaCode = $codes[$key];
-			}
-		}
-
+		$dedimaniaCode = $this->maniaControl->settingManager->getSetting($this, self::SETTING_DEDIMANIA_CODE . $serverInfo->login);
 		if ($dedimaniaCode == '') {
-			throw new \Exception("No Valid Serverlogin Specified, check the settings!");
+			throw new \Exception("No Dedimania Code Specified, check the settings!");
 		}
 
 		$this->dedimaniaData = new DedimaniaData($serverInfo->login, $dedimaniaCode, $serverInfo->path, $packMask, $serverVersion);
