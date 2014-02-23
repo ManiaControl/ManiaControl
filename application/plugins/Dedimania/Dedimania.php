@@ -447,7 +447,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	 * @param bool $reset
 	 */
 	private function fetchDedimaniaRecords($reset = true) {
-		if ($this->dedimaniaData->sessionId == '') {
+		if (!$this->dedimaniaData || $this->dedimaniaData->sessionId == '') {
 			return false;
 		}
 
