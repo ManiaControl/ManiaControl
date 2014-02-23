@@ -111,28 +111,22 @@ class KarmaTest implements Plugin {
 		$properties['mapname'] = $map->name;
 		$properties['mapuid'] = $map->uid;
 		$properties['mapauthor'] = $map->authorLogin;
-		$properties['votes'] = array();
-
+		$properties['votes'] = array(array("login" => "kremsy", "nickname" => "test123", "vote" => 52));
 		$content = json_encode($properties);
-
-		$this->maniaControl->fileReader->postData(self::MX_KARMA_URL.self::MX_KARMA_SAVEVOTES . "?sessionKey=" . $sessionKey , function ($data, $error) use ($sessionKey) {
+		var_dump($content);
+		$this->maniaControl->fileReader->postData(self::MX_KARMA_URL.self::MX_KARMA_SAVEVOTES . "?sessionKey=" . urlencode($sessionKey) , function ($data, $error) use ($sessionKey) {
 			if (!$error) {
 				$data = json_decode($data);
 				var_dump($data);
-				if ($data->success && $data->data->activated) {
-					$this->maniaControl->log("Successfully authenticated on Mania-Exchange Karma");
-
-					$this->saveVotes($sessionKey);
+				if ($data->success) {
+					$this->maniaControl->log("Votes successfully permitted");
 				} else {
-					$this->maniaControl->log("Error while authenticating on Mania-Exchange Karma");
+					$this->maniaControl->log("Error while updating votes");
 				}
 			} else {
 				$this->maniaControl->log($error);
 			}
 		}, $content, false, 'application/json');
-
-
-
 	}
 
 	private function buildActivationHash($sessionSeed, $mxKey) {

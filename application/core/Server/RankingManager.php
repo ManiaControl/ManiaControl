@@ -85,6 +85,10 @@ class RankingManager implements CallbackListener {
 	 * @param $data
 	 */
 	private function updateRankings($data) {
+		if (!is_string($data)) {
+			return;
+		}
+
 		$scores = explode(';', $data);
 		foreach($scores as $player) {
 			if (strpos($player, ':') !== false) {
