@@ -39,7 +39,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	/**
 	 * Constants MX Karma
 	 */
-	const SETTING_MX_KARMA_AKTIVATED = 'Aktivate MX-Karma';
+	const SETTING_MX_KARMA_ACTIVATED = 'Aktivate MX-Karma';
 	const MX_KARMA_SETTING_CODE      = 'MX Karma Code for ';
 	const MX_KARMA_URL               = 'http://karma.mania-exchange.com/api2/';
 	const MX_KARMA_STARTSESSION      = 'startSession';
@@ -65,7 +65,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	 * @return mixed
 	 */
 	public static function prepare(ManiaControl $maniaControl) {
-		$maniaControl->settingManager->initSetting(get_class(), self::SETTING_MX_KARMA_AKTIVATED, true);
+		$maniaControl->settingManager->initSetting(get_class(), self::SETTING_MX_KARMA_ACTIVATED, true);
 		$servers = $maniaControl->server->getAllServers();
 		foreach($servers as $server) {
 			$maniaControl->settingManager->initSetting(get_class(), self::MX_KARMA_SETTING_CODE . $server->login, '');
@@ -369,7 +369,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		}
 
 		//Update vote in MX karma array
-		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_MX_KARMA_AKTIVATED)) {
+		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_MX_KARMA_ACTIVATED)) {
 			$this->mxKarma["votes"][$player->login] = $vote * 100;
 		}
 
@@ -527,7 +527,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	 *  Open a Mx Karma Session
 	 */
 	private function mxKarmaOpenSession() {
-		if (!$this->maniaControl->settingManager->getSetting($this, self::SETTING_MX_KARMA_AKTIVATED)) {
+		if (!$this->maniaControl->settingManager->getSetting($this, self::SETTING_MX_KARMA_ACTIVATED)) {
 			return;
 		}
 
@@ -548,7 +548,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		$query .= '&testMode=' . $testMode;
 
 
-		$this->maniaControl->fileReader->loadFile($query, function ($data, $error) use($mxKarmaCode){
+		$this->maniaControl->fileReader->loadFile($query, function ($data, $error) use ($mxKarmaCode) {
 			if (!$error) {
 				$data = json_decode($data);
 				if ($data->success) {
@@ -565,6 +565,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 	/**
 	 * Activates the MX-Karma Session
+	 *
 	 * @param $mxKarmaCode
 	 */
 	private function activateSession($mxKarmaCode) {
@@ -574,7 +575,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		$query .= '?sessionKey=' . urlencode($this->mxKarma['session']->sessionKey);
 		$query .= '&activationHash=' . urlencode($hash);
 
-		$this->maniaControl->fileReader->loadFile($query, function ($data, $error){
+		$this->maniaControl->fileReader->loadFile($query, function ($data, $error) {
 			if (!$error) {
 				$data = json_decode($data);
 				if ($data->success && $data->data->activated) {
@@ -589,46 +590,46 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	}
 
 	/**
-	 *	Save Mx Karma Votes at Mapend
+	 *    Save Mx Karma Votes at Mapend
 	 */
-	public function saveMxKarmaVotes(Map $map){
-		if (!$this->maniaControl->settingManager->getSetting($this, self::SETTING_MX_KARMA_AKTIVATED)) {
+	public function saveMxKarmaVotes(Map $map) {
+		if (!$this->maniaControl->settingManager->getSetting($this, self::SETTING_MX_KARMA_ACTIVATED)) {
 			return;
 		}
 
-		if(!isset($this->mxKarma['session'])){
+		if (!isset($this->mxKarma['session'])) {
 			$this->mxKarmaOpenSession();
 			return;
 		}
 
-		if(count($this->mxKarma['votes'] == 0)){
+		if (count($this->mxKarma['votes'] == 0)) {
 			return;
 		}
 
 		$gameMode = $this->maniaControl->server->getGameMode(true);
 
 		$properties = array();
-		if($gameMode == 'Script'){
-			$scriptName               = $this->maniaControl->client->getScriptName();
+		if ($gameMode == 'Script') {
+			$scriptName             = $this->maniaControl->client->getScriptName();
 			$properties['gamemode'] = $scriptName["CurrentValue"];
-		}else{
+		} else {
 			$properties['gamemode'] = $gameMode;
 		}
 
 		$properties['titleid'] = $this->maniaControl->server->titleId;
 
-		$properties['mapname'] = $map->name;
-		$properties['mapuid'] = $map->uid;
+		$properties['mapname']   = $map->name;
+		$properties['mapuid']    = $map->uid;
 		$properties['mapauthor'] = $map->authorLogin;
 
 		$properties['votes'] = array();
-		foreach($this->mxKarma['votes'] as $login => $value){
+		foreach($this->mxKarma['votes'] as $login => $value) {
 			$player = $this->maniaControl->playerManager->getPlayer($login);
 			array_push($properties['votes'], array("login" => $login, "nickname" => $player->nickname, "vote" => $value));
 		}
 
 		$content = json_encode($properties);
-		$this->maniaControl->fileReader->postData(self::MX_KARMA_URL.self::MX_KARMA_SAVEVOTES . "?sessionKey=" . urlencode($this->mxKarma['session']->sessionKey) , function ($data, $error){
+		$this->maniaControl->fileReader->postData(self::MX_KARMA_URL . self::MX_KARMA_SAVEVOTES . "?sessionKey=" . urlencode($this->mxKarma['session']->sessionKey), function ($data, $error) {
 			if (!$error) {
 				$data = json_decode($data);
 				var_dump($data);
@@ -642,8 +643,10 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			}
 		}, $content, false, 'application/json');
 	}
+
 	/**
 	 * Builds a sha512 activation Hash for the MX-Karma
+	 *
 	 * @param $sessionSeed
 	 * @param $mxKey
 	 * @return string
