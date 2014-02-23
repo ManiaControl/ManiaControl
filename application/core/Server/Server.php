@@ -5,10 +5,6 @@ namespace ManiaControl\Server;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
-use ManiaControl\Players\Player;
-use Maniaplanet\DedicatedServer\Structures\ServerOptions;
-use Maniaplanet\DedicatedServer\Structures\SystemInfos;
-use Maniaplanet\DedicatedServer\Structures\Version;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
@@ -21,7 +17,7 @@ class Server implements CallbackListener {
 	/**
 	 * Constants
 	 */
-	const TABLE_SERVERS          = 'mc_servers';
+	const TABLE_SERVERS        = 'mc_servers';
 	const CB_TEAM_MODE_CHANGED = 'ServerCallback.TeamModeChanged';
 
 	/**
@@ -122,6 +118,29 @@ class Server implements CallbackListener {
 		}
 		$statement->close();
 		return true;
+	}
+
+	/**
+	 * Gets all Servers from the Database
+	 *
+	 * @return array
+	 */
+	public function getAllServers() {
+		$mysqli = $this->maniaControl->database->mysqli;
+		$query  = "SELECT * FROM `" . self::TABLE_SERVERS . "`";
+		$result = $mysqli->query($query);
+		if (!$result) {
+			trigger_error($mysqli->error);
+			return array();
+		}
+
+		$servers = array();
+		while($row = $result->fetch_object()) {
+			array_push($servers, $row);
+		}
+		$result->close();
+
+		return $servers;
 	}
 
 	/**

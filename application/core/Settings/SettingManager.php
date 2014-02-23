@@ -72,7 +72,7 @@ class SettingManager implements CallbackListener {
 		if ($mysqli->error) {
 			trigger_error($mysqli->error, E_USER_ERROR);
 		}
-		
+
 		// TODO: remove before release
 		$settingTableChangesQuery = "ALTER TABLE  `".self::TABLE_SETTINGS."`
 				MODIFY `class` VARCHAR(100) NOT NULL,
@@ -81,7 +81,7 @@ class SettingManager implements CallbackListener {
 		if ($mysqli->error) {
 			trigger_error($mysqli->error);
 		}
-		
+
 		return $result && $result2;
 	}
 
