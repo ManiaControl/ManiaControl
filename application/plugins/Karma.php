@@ -603,7 +603,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			return;
 		}
 
-		if (count($this->mxKarma['votes'] == 0)) {
+		if (count($this->mxKarma['votes']) == 0) {
 			return;
 		}
 
