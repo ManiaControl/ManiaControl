@@ -277,10 +277,16 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 				continue;
 			}
 			array_push($times, array('Login' => $record->login, 'Best' => $record->best, 'Checks' => $record->checkpoints));
-			$replays['VReplay']       = $record->vReplay;
-			$replays['Top1GReplay']   = $record->top1GReplay;
-			$replays['VReplayChecks'] = '';
-			// TODO: VReplayChecks
+			if(!isset($replays['VReplay'])){
+				$replays['VReplay']       = $record->vReplay;
+			}
+			if (!isset($replays['Top1GReplay'])) {
+				$replays['Top1GReplay']   = $record->top1GReplay;
+			}
+			if (!isset($replays['VReplayChecks'])) {
+				$replays['VReplayChecks'] = '';
+				// TODO: VReplayChecks
+			}
 		}
 
 		xmlrpc_set_type($replays['VReplay'], 'base64');
