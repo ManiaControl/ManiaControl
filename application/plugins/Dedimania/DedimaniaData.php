@@ -28,7 +28,9 @@ class DedimaniaData {
 	public $code;
 	public $sessionId = '';
 	public $records = array();
+	public $players = array();
 	public $directoryAccessChecked = false;
+	public $serverMaxRank = 30;
 
 	public function __construct($serverLogin, $dedimaniaCode, $path, $packmask, Version $serverVersion) {
 		$this->game          = "TM2";
@@ -45,11 +47,54 @@ class DedimaniaData {
 	public function toArray() {
 		$array = array();
 		foreach(get_object_vars($this) as $key => $value) {
-			if ($key == 'records' || $key == 'sessionId' || $key == 'directoryAccessChecked') {
+			if ($key == 'records' || $key == 'sessionId' || $key == 'directoryAccessChecked' || $key == 'serverMaxRank' || $key == 'players') {
 				continue;
 			}
 			$array[ucfirst($key)] = $value;
 		}
 		return $array;
+	}
+
+	public function getRecordCount() {
+		return count($this->records);
+	}
+
+	/**
+	 * Get Max Rank for a certain Player
+	 *
+	 * @param $login
+	 * @return int
+	 */
+	public function getPlayerMaxRank($login) {
+		$maxRank = $this->serverMaxRank;
+		foreach($this->players as $player) {
+			/** @var DedimaniaPlayer $player */
+			if ($player->login === $login) {
+				if ($player->maxRank > $maxRank) {
+					$maxRank = $player->maxRank;
+				}
+				break;
+			}
+		}
+		return $maxRank;
+	}
+
+	/**
+	 * Adds a Player to the Players array
+	 *
+	 * @param DedimaniaPlayer $player
+	 */
+	public function addPlayer(DedimaniaPlayer $player) {
+		/** @var DedimaniaPlayer $player */
+		$this->players[$player->login] = $player;
+	}
+
+	/**
+	 * Removes a Dedimania Player by its login
+	 *
+	 * @param string $player
+	 */
+	public function removePlayer($login) {
+		unset($this->players[$login]);
 	}
 } 
