@@ -263,7 +263,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	 * @param $callback
 	 */
 	public function handleMapEnd($callback) {
-		if (!$this->dedimaniaData->records) {
+		if (!$this->dedimaniaData || !$this->dedimaniaData->records) {
 			return;
 		}
 
