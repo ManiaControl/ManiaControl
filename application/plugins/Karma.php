@@ -40,11 +40,11 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	 * Constants MX Karma
 	 */
 	const SETTING_MX_KARMA_ACTIVATED = 'Aktivate MX-Karma';
-	const MX_KARMA_SETTING_CODE      = 'MX Karma Code for ';
-	const MX_KARMA_URL               = 'http://karma.mania-exchange.com/api2/';
-	const MX_KARMA_STARTSESSION      = 'startSession';
-	const MX_KARMA_ACTIVATESESSION   = 'activateSession';
-	const MX_KARMA_SAVEVOTES         = 'saveVotes';
+	//const MX_KARMA_SETTING_CODE      = '$l[http://karma.mania-exchange.com/auth/getapikey?server={serverlogin}]MX Karma Code for ';
+	const MX_KARMA_URL             = 'http://karma.mania-exchange.com/api2/';
+	const MX_KARMA_STARTSESSION    = 'startSession';
+	const MX_KARMA_ACTIVATESESSION = 'activateSession';
+	const MX_KARMA_SAVEVOTES       = 'saveVotes';
 
 	/**
 	 * Private properties
@@ -68,7 +68,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		$maniaControl->settingManager->initSetting(get_class(), self::SETTING_MX_KARMA_ACTIVATED, true);
 		$servers = $maniaControl->server->getAllServers();
 		foreach($servers as $server) {
-			$maniaControl->settingManager->initSetting(get_class(), self::MX_KARMA_SETTING_CODE . $server->login, '');
+			$maniaControl->settingManager->initSetting(get_class(), '$l[http://karma.mania-exchange.com/auth/getapikey?server=' . $server->login . ']MX Karma Code for ' . $server->login . '$l', '');
 		}
 	}
 
@@ -534,7 +534,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 		$serverLogin = $this->maniaControl->server->login;
 
-		$mxKarmaCode = $this->maniaControl->settingManager->getSetting($this, self::MX_KARMA_SETTING_CODE . $serverLogin);
+		$mxKarmaCode = $this->maniaControl->settingManager->getSetting($this, '$l[http://karma.mania-exchange.com/auth/getapikey?server=' . $serverLogin . ']MX Karma Code for ' . $serverLogin . '$l');
 		if ($mxKarmaCode == '') {
 			return;
 		}

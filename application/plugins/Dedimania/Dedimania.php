@@ -39,7 +39,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	const SETTING_WIDGET_WIDTH          = 'Widget Width';
 	const SETTING_WIDGET_LINESCOUNT     = 'Widget Displayed Lines Count';
 	const SETTING_WIDGET_LINEHEIGHT     = 'Widget Line Height';
-	const SETTING_DEDIMANIA_CODE        = 'Dedimania Code for ';
+	const SETTING_DEDIMANIA_CODE        = '$l[http://dedimania.net/tm2stats/?do=register]Dedimania Code for ';
 
 	/**
 	 * Private Properties
@@ -61,7 +61,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	public static function prepare(ManiaControl $maniaControl) {
 		$servers = $maniaControl->server->getAllServers();
 		foreach($servers as $server) {
-			$maniaControl->settingManager->initSetting(get_class(), self::SETTING_DEDIMANIA_CODE . $server->login, '');
+			$maniaControl->settingManager->initSetting(get_class(), self::SETTING_DEDIMANIA_CODE . $server->login . '$l', '');
 		}
 	}
 
@@ -101,7 +101,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 		$serverVersion = $this->maniaControl->client->getVersion();
 		$packMask      = substr($this->maniaControl->server->titleId, 2);
 
-		$dedimaniaCode = $this->maniaControl->settingManager->getSetting($this, self::SETTING_DEDIMANIA_CODE . $serverInfo->login);
+		$dedimaniaCode = $this->maniaControl->settingManager->getSetting($this, self::SETTING_DEDIMANIA_CODE . $serverInfo->login . '$l');
 		if ($dedimaniaCode == '') {
 			throw new \Exception("No Dedimania Code Specified, check the settings!");
 		}
