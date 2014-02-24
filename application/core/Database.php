@@ -41,7 +41,7 @@ class Database {
 		$pass = (string) $pass[0];
 
 		// Open database connection
-		$this->mysqli = new \mysqli($host, $user, $pass, null, $port);
+		$this->mysqli = @new \mysqli($host, $user, $pass, null, $port);
 		if ($this->mysqli->connect_error) {
 			trigger_error($this->mysqli->connect_error, E_USER_ERROR);
 		}
