@@ -41,6 +41,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	 */
 	const SETTING_MX_KARMA_ACTIVATED = 'Aktivate MX-Karma';
 	//const MX_KARMA_SETTING_CODE      = '$l[http://karma.mania-exchange.com/auth/getapikey?server={serverlogin}]MX Karma Code for ';
+	const MX_IMPORT_TABLE          = 'mc_karma_mximport';
 	const MX_KARMA_URL             = 'http://karma.mania-exchange.com/api2/';
 	const MX_KARMA_STARTSESSION    = 'startSession';
 	const MX_KARMA_ACTIVATESESSION = 'activateSession';
@@ -341,6 +342,20 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		if ($mysqli->error) {
 			trigger_error($mysqli->error, E_USER_ERROR);
 		}
+
+		if (!$this->maniaControl->settingManager->getSetting($this, self::SETTING_MX_KARMA_ACTIVATED)) {
+			return;
+		}
+
+		$query = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_KARMA . "` (
+				`index` int(11) NOT NULL AUTO_INCREMENT,
+				`mapIndex` int(11) NOT NULL,
+				`playerIndex` int(11) NOT NULL,
+				`vote` float NOT NULL DEFAULT '-1',
+				`changed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+				PRIMARY KEY (`index`),
+				UNIQUE KEY `player_map_vote` (`mapIndex`, `playerIndex`)
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Save players map votes' AUTO_INCREMENT=1;";
 	}
 
 	/**
@@ -590,6 +605,12 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		}, "application/json", 1000);
 	}
 
+	public function importVotes(Map $map) {
+		if (!$this->maniaControl->settingManager->getSetting($this, self::SETTING_MX_KARMA_ACTIVATED)) {
+			return;
+		}
+	}
+
 	/**
 	 *    Save Mx Karma Votes at Mapend
 	 */
@@ -619,29 +640,29 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 		$properties['titleid'] = $this->maniaControl->server->titleId;
 
-		$properties['mapname']   = $map->name;
+		$properties['mapname']   = $map->rawName;
 		$properties['mapuid']    = $map->uid;
 		$properties['mapauthor'] = $map->authorLogin;
 
 		$properties['votes'] = array();
 		foreach($this->mxKarma['votes'] as $login => $value) {
 			$player = $this->maniaControl->playerManager->getPlayer($login);
-			array_push($properties['votes'], array("login" => $login, "nickname" => $player->nickname, "vote" => $value));
+			array_push($properties['votes'], array("login" => $login, "nickname" => $player->rawNickname, "vote" => $value));
 		}
 
 		$content = json_encode($properties);
 		$this->maniaControl->fileReader->postData(self::MX_KARMA_URL . self::MX_KARMA_SAVEVOTES . "?sessionKey=" . urlencode($this->mxKarma['session']->sessionKey), function ($data, $error) {
-				if (!$error) {
-					$data = json_decode($data);
-					if ($data->success) {
-						$this->maniaControl->log("Votes successfully permitted");
-					} else {
-						$this->maniaControl->log("Error while updating votes");
-					}
+			if (!$error) {
+				$data = json_decode($data);
+				if ($data->success) {
+					$this->maniaControl->log("Votes successfully permitted");
 				} else {
-					$this->maniaControl->log($error);
+					$this->maniaControl->log("Error while updating votes");
 				}
-			}, $content, false, 'application/json');
+			} else {
+				$this->maniaControl->log($error);
+			}
+		}, $content, false, 'application/json');
 	}
 
 	/**

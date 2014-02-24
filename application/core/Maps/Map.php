@@ -16,6 +16,7 @@ class Map {
 	 */
 	public $index = -1;
 	public $name = 'undefined';
+	public $rawName = '';
 	public $uid = '';
 	public $fileName = '';
 	public $environment = '';
@@ -49,6 +50,7 @@ class Map {
 			return;
 		}
 		$this->name          = FORMATTER::stripDirtyCodes($mpMap->name);
+		$this->rawName		 = $mpMap->name;
 		$this->uid           = $mpMap->uId;
 		$this->fileName      = $mpMap->fileName;
 		$this->authorLogin   = $mpMap->author;

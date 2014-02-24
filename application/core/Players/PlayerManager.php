@@ -360,12 +360,13 @@ class PlayerManager implements CallbackListener {
 			return null;
 		}
 
-		$player            = new Player(false);
-		$player->index     = $playerIndex;
-		$player->login     = $row->login;
-		$player->nickname  = $row->nickname;
-		$player->path      = $row->path;
-		$player->authLevel = $row->authLevel;
+		$player              = new Player(false);
+		$player->index       = $playerIndex;
+		$player->login       = $row->login;
+		$player->rawNickname = $row->nickname;
+		$player->nickname    = Formatter::stripDirtyCodes($player->rawNickname);
+		$player->path        = $row->path;
+		$player->authLevel   = $row->authLevel;
 
 		return $player;
 	}
@@ -394,12 +395,13 @@ class PlayerManager implements CallbackListener {
 			return null;
 		}
 
-		$player            = new Player(false);
-		$player->index     = $row->index;
-		$player->login     = $row->login;
-		$player->nickname  = $row->nickname;
-		$player->path      = $row->path;
-		$player->authLevel = $row->authLevel;
+		$player              = new Player(false);
+		$player->index       = $row->index;
+		$player->login       = $row->login;
+		$player->rawNickname = $row->nickname;
+		$player->nickname    = Formatter::stripDirtyCodes($player->rawNickname);
+		$player->path        = $row->path;
+		$player->authLevel   = $row->authLevel;
 
 		return $player;
 	}
@@ -429,7 +431,7 @@ class PlayerManager implements CallbackListener {
 			trigger_error($mysqli->error);
 			return false;
 		}
-		$playerStatement->bind_param('sss', $player->login, $player->nickname, $player->path);
+		$playerStatement->bind_param('sss', $player->login, $player->rawNickname, $player->path);
 		$playerStatement->execute();
 		if ($playerStatement->error) {
 			trigger_error($playerStatement->error);

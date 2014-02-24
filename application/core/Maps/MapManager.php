@@ -140,7 +140,7 @@ class MapManager implements CallbackListener {
 			trigger_error($mysqli->error);
 			return false;
 		}
-		$mapStatement->bind_param('ssssss', $map->uid, $map->name, $map->authorLogin, $map->fileName, $map->environment, $map->mapType);
+		$mapStatement->bind_param('ssssss', $map->uid, $map->rawName, $map->authorLogin, $map->fileName, $map->environment, $map->mapType);
 		$mapStatement->execute();
 		if ($mapStatement->error) {
 			trigger_error($mapStatement->error);
