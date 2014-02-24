@@ -40,7 +40,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	/**
 	 * Constants MX Karma
 	 */
-	const SETTING_MX_KARMA_ACTIVATED = 'Aktivate MX-Karma';
+	const SETTING_MX_KARMA_ACTIVATED = 'Activate MX-Karma';
 	const SETTING_MX_KARMA_IMPORTING = 'Import old MX-Karmas';
 	const MX_IMPORT_TABLE          = 'mc_karma_mximport';
 	const MX_KARMA_URL             = 'http://karma.mania-exchange.com/api2/';
