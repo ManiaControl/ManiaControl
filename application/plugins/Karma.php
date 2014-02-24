@@ -145,7 +145,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	 * @see \ManiaControl\Plugins\Plugin::getAuthor()
 	 */
 	public static function getAuthor() {
-		return 'steeffeen';
+		return 'steeffeen and kremsy';
 	}
 
 	/**
@@ -603,7 +603,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			return;
 		}
 
-		if (count($this->mxKarma['votes']) == 0) {
+		if (!isset($this->mxKarma['votes']) || count($this->mxKarma['votes']) == 0) {
 			return;
 		}
 
@@ -631,18 +631,17 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 		$content = json_encode($properties);
 		$this->maniaControl->fileReader->postData(self::MX_KARMA_URL . self::MX_KARMA_SAVEVOTES . "?sessionKey=" . urlencode($this->mxKarma['session']->sessionKey), function ($data, $error) {
-			if (!$error) {
-				$data = json_decode($data);
-				var_dump($data);
-				if ($data->success) {
-					$this->maniaControl->log("Votes successfully permitted");
+				if (!$error) {
+					$data = json_decode($data);
+					if ($data->success) {
+						$this->maniaControl->log("Votes successfully permitted");
+					} else {
+						$this->maniaControl->log("Error while updating votes");
+					}
 				} else {
-					$this->maniaControl->log("Error while updating votes");
+					$this->maniaControl->log($error);
 				}
-			} else {
-				$this->maniaControl->log($error);
-			}
-		}, $content, false, 'application/json');
+			}, $content, false, 'application/json');
 	}
 
 	/**
