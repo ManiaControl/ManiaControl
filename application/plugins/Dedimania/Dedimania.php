@@ -181,7 +181,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	 */
 	public function handlePlayerConnect(Player $player) {
 		// Send Dedimania request
-		$data    = array($this->dedimaniaData->sessionId, $player->login, $player->nickname, $player->path, $player->isSpectator);
+		$data    = array($this->dedimaniaData->sessionId, $player->login, $player->rawNickname, $player->path, $player->isSpectator);
 		$content = $this->encode_request(self::DEDIMANIA_PLAYERCONNECT, $data);
 
 		$this->maniaControl->fileReader->postData(self::DEDIMANIA_URL, function ($data, $error) use (&$player) {
@@ -738,7 +738,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 		}
 		$mapInfo                  = array();
 		$mapInfo['UId']           = $map->uid;
-		$mapInfo['Name']          = $map->name;
+		$mapInfo['Name']          = $map->rawName;
 		$mapInfo['Author']        = $map->authorLogin;
 		$mapInfo['Environment']   = $map->environment;
 		$mapInfo['NbCheckpoints'] = $map->nbCheckpoints;

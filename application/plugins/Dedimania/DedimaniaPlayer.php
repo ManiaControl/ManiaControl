@@ -25,16 +25,17 @@ class DedimaniaPlayer {
 		$this->maxRank        = $player['MaxRank'];
 		$this->banned         = $player['Banned'];
 		$this->optionsEnabled = $player['OptionsEnabled'];
-		$this->options     = $player['Options'];
+		$this->options        = $player['Options'];
 	}
 
 	/**
 	 * Construct a new Player by its login and maxRank
+	 *
 	 * @param $login
 	 * @param $maxRank
 	 */
-	public function constructNewPlayer($login, $maxRank){
-		$this->login = $login;
+	public function constructNewPlayer($login, $maxRank) {
+		$this->login   = $login;
 		$this->maxRank = $maxRank;
 	}
 } 

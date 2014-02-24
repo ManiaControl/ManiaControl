@@ -17,6 +17,7 @@ class Player {
 	public $pid = -1;
 	public $login = '';
 	public $nickname = '';
+	public $rawNickname = '';
 	public $path = '';
 	public $authLevel = 0;
 	public $language = '';
@@ -70,6 +71,7 @@ class Player {
 		$this->pid                      = $mpPlayer->playerId;
 		$this->login                    = $mpPlayer->login;
 		$this->nickname                 = Formatter::stripDirtyCodes($mpPlayer->nickName);
+		$this->rawNickname				= $mpPlayer->nickName;
 		$this->path                     = $mpPlayer->path;
 		$this->language                 = $mpPlayer->language;
 		$this->avatar                   = $mpPlayer->avatar['FileName'];

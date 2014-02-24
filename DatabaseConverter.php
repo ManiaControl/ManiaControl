@@ -144,10 +144,7 @@ class DatabaseConverter { //TODO move bind param before loop everywhere, convert
 
 		//Loop through all the players
 		while($row = $result->fetch_object()) {
-			//Strip links and dirty codes
-			$name = preg_replace('/(?<!\$)((?:\$\$)*)\$[hlp](?:\[.*?\])?(.*?)(?:\$[hlp]|(\$z)|$)/iu', '$1$2$3', $row->Name);
-			$name = preg_replace('/(?<!\$)((?:\$\$)*)\$[ow<>]/iu', '$1', $name);
-			$statement->bind_param('ssss', $row->Uid, $name, $row->Author, $row->Environment);
+			$statement->bind_param('ssss', $row->Uid, $row->Name, $row->Author, $row->Environment);
 			$statement->execute();
 			if ($statement->error) {
 				trigger_error($statement->error);
