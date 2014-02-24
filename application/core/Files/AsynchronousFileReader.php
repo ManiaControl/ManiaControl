@@ -66,9 +66,9 @@ class AsynchronousFileReader {
 			return false;
 		}
 
-		if($keepAlive){
-			$header  = array("Content-Type: " . $contentType, "Keep-Alive: " . $keepAlive, "Connection: Keep-Alive");
-		}else{
+		if ($keepAlive) {
+			$header = array("Content-Type: " . $contentType, "Keep-Alive: " . $keepAlive, "Connection: Keep-Alive");
+		} else {
 			$header = array("Content-Type: " . $contentType);
 		}
 
@@ -134,7 +134,7 @@ class AsynchronousFileReader {
 
 		$content = str_replace(array("\r", "\n"), '', $content);
 		if ($compression) {
-			$content = gzencode($content);
+			$content = zlib_encode($content, 31);
 			$header  = array("Content-Type: " . $contentType, "Keep-Alive: 300", "Connection: Keep-Alive", "Content-Encoding: gzip");
 		} else {
 			$header = array("Content-Type: " . $contentType, "Keep-Alive: 300", "Connection: Keep-Alive");

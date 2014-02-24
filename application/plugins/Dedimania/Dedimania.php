@@ -326,7 +326,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 					}
 				}
 			}
-		}, $content, true); //TODO compression
+		}, $content, false);
 	}
 
 	/**
@@ -413,7 +413,6 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 			// Save time
 			$newRecord = new RecordData(null);
 			$newRecord->constructNewRecord($login, $player->nickname, $data[2], $this->getCheckpoints($login), true);
-
 			if ($this->insertDedimaniaRecord($newRecord, $oldRecord)) {
 				// Get newly saved record
 				foreach($this->dedimaniaData->records as &$record) {
@@ -544,7 +543,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	 */
 	private function insertDedimaniaRecord(RecordData &$newRecord, RecordData $oldRecord) {
 		//if (!$newRecord || !$this->dedimaniaData->records || !isset($this->dedimaniaData->records['Records'])) {
-		if ($newRecord->nullRecord || !$this->dedimaniaData->getRecordCount() == 0) {
+		if ($newRecord->nullRecord || $this->dedimaniaData->getRecordCount() == 0) {
 			return false;
 		}
 
@@ -667,7 +666,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	 */
 	private function setRecordReplays(RecordData &$record) {
 		// Set validation replay
-		$validationReplay = $this->maniaControl->server->getValidationReplay($record['Login']);
+		$validationReplay = $this->maniaControl->server->getValidationReplay($record->login);
 		if ($validationReplay) {
 			$record->vReplay = $validationReplay;
 		}
@@ -772,7 +771,6 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 		if (!$this->dedimaniaData->records) {
 			return new RecordData(null);
 		}
-		//TODO
 		$records = $this->dedimaniaData->records;
 		foreach($records as &$record) {
 			/** @var RecordData $record */
