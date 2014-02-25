@@ -24,7 +24,7 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 	/**
 	 * Constants
 	 */
-	const ID = 6;
+	const ID = 7;
 	const VERSION = 0.1;
 	const MLID_RECORDS = 'ml_local_records';
 	const TABLE_RECORDS = 'mc_localrecords';
