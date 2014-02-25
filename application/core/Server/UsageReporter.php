@@ -87,8 +87,6 @@ class UsageReporter implements TimerListener {
 		$json = json_encode($properties);
 		$info = base64_encode($json);
 
-		echo ManiaControl::URL_WEBSERVICE . "/usagereport?info=" . urlencode($info);
-
 		$this->maniaControl->fileReader->loadFile(ManiaControl::URL_WEBSERVICE . "/usagereport?info=" . urlencode($info), function ($response, $error) {
 			$response = json_decode($response);
 			if ($error || !$response) {
