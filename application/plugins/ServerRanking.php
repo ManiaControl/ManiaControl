@@ -17,7 +17,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 	/**
 	 * Constants
 	 */
-	const PLUGIN_ID                       = 11;
+	const PLUGIN_ID                       = 8;
 	const PLUGIN_VERSION                  = 0.1;
 	const PLUGIN_NAME                     = 'ServerRankingPlugin';
 	const PLUGIN_AUTHOR                   = 'kremsy';

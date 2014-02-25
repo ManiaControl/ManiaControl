@@ -24,7 +24,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	/**
 	 * Constants
 	 */
-	const ID                      = 5;
+	const ID                      = 2;
 	const VERSION                 = 0.1;
 	const MLID_KARMA              = 'KarmaPlugin.MLID';
 	const TABLE_KARMA             = 'mc_karma';

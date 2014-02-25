@@ -17,7 +17,7 @@ class ObstaclePlugin implements CallbackListener, CommandListener, Plugin {
 	/**
 	 * Constants
 	 */
-	const ID = 7;
+	const ID = 102;
 	const VERSION = 0.1;
 	const CB_JUMPTO = 'Obstacle.JumpTo';
 	const SCB_ONFINISH = 'OnFinish';

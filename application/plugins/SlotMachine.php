@@ -21,7 +21,7 @@ class SlotMachinePlugin implements Plugin, CallbackListener, ManialinkPageAnswer
 	/**
 	 * Constants
 	 */
-	const PLUGIN_ID             = 50;
+	const PLUGIN_ID             = 103;
 	const PLUGIN_VERSION        = 0.1;
 	const PLUGIN_NAME           = 'SlotMachine';
 	const PLUGIN_AUTHOR         = 'kremsy';

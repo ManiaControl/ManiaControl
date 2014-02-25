@@ -38,7 +38,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	/**
 	 * Constants
 	 */
-	const PLUGIN_ID      = 10;
+	const PLUGIN_ID      = 5;
 	const PLUGIN_VERSION = 0.1;
 	const PLUGIN_NAME    = 'CustomVotesPlugin';
 	const PLUGIN_AUTHOR  = 'kremsy and steeffeen';

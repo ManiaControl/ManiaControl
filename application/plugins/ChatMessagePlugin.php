@@ -15,7 +15,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	/**
 	 * Constants
 	 */
-	const PLUGIN_ID              = 9;
+	const PLUGIN_ID              = 4;
 	const PLUGIN_VERSION         = 0.1;
 	const PLUGIN_NAME            = 'ChatMessagePlugin';
 	const PLUGIN_AUTHOR          = 'kremsy';

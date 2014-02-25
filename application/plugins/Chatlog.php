@@ -14,7 +14,7 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 	/**
 	 * Constants
 	 */
-	const ID                        = 1;
+	const ID                        = 100;
 	const VERSION                   = 0.1;
 	const DATE                      = 'd-m-y h:i:sa T';
 	const SETTING_FOLDERNAME        = 'Log-Folder Name';
