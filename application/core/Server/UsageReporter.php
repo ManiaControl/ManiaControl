@@ -72,8 +72,22 @@ class UsageReporter implements TimerListener {
 			}
 		}
 
+		$activePlugins = array();
+
+		if(is_array($this->maniaControl->pluginManager->getActivePlugins())) {
+			foreach($this->maniaControl->pluginManager->getActivePlugins() as $plugin) {
+				if(!is_null($plugin->getId()) && is_numeric($plugin->getId())) {
+					$activePlugins[] = $plugin->getId();
+				}
+			}
+		}
+
+		$properties['ActivePlugins'] = $activePlugins;
+
 		$json = json_encode($properties);
 		$info = base64_encode($json);
+
+		echo ManiaControl::URL_WEBSERVICE . "/usagereport?info=" . urlencode($info);
 
 		$this->maniaControl->fileReader->loadFile(ManiaControl::URL_WEBSERVICE . "/usagereport?info=" . urlencode($info), function ($response, $error) {
 			$response = json_decode($response);
