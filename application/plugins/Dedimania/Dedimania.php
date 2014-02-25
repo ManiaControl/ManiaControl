@@ -277,11 +277,11 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 				continue;
 			}
 			array_push($times, array('Login' => $record->login, 'Best' => $record->best, 'Checks' => $record->checkpoints));
-			if(!isset($replays['VReplay'])){
-				$replays['VReplay']       = $record->vReplay;
+			if (!isset($replays['VReplay'])) {
+				$replays['VReplay'] = $record->vReplay;
 			}
 			if (!isset($replays['Top1GReplay'])) {
-				$replays['Top1GReplay']   = $record->top1GReplay;
+				$replays['Top1GReplay'] = $record->top1GReplay;
 			}
 			if (!isset($replays['VReplayChecks'])) {
 				$replays['VReplayChecks'] = '';
@@ -555,6 +555,10 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 		// Loop through existing records
 		foreach($this->dedimaniaData->records as $key => &$record) {
 			/** @var RecordData $record */
+			if ($record->rank > $maxRank) {
+				// Max rank reached
+				return false;
+			}
 			if ($record->login === $newRecord->login) {
 				// Old record of the same player
 				if ($record->best <= $newRecord->best) {
