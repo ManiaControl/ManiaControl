@@ -9,6 +9,7 @@ use FML\Controls\Quads\Quad_Icons128x128_1;
 use FML\ManiaLink;
 use FML\Script\Script;
 use ManiaControl\Admin\AuthenticationManager;
+use ManiaControl\Bills\BillManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Commands\CommandListener;
@@ -16,7 +17,6 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
-use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
  * Donation plugin
@@ -50,7 +50,6 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 * @var maniaControl $maniaControl
 	 */
 	private $maniaControl = null;
-	private $openBills = array();
 
 	/**
 	 * Prepares the Plugin
@@ -75,7 +74,6 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$this->maniaControl->commandManager->registerCommandListener('planets', $this, 'command_GetPlanets', true);
 
 		// Register for callbacks
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_BILLUPDATED, $this, 'handleBillUpdated');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 
@@ -312,7 +310,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		if (count($params) >= 3) {
 			$receiver       = $params[2];
 			$receiverPlayer = $this->maniaControl->playerManager->getPlayer($receiver);
-			$receiverName   = ($receiverPlayer ? $receiverPlayer['NickName'] : $receiver);
+			$receiverName   = ($receiverPlayer ? $receiverPlayer->nickname : $receiver);
 		} else {
 			$receiver     = '';
 			$receiverName = $this->maniaControl->client->getServerName();
@@ -328,21 +326,41 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 * @param        $value
 	 */
 	private function handleDonation(Player $player, $amount, $receiver = '', $receiverName = false) {
+
 		if (!$receiverName) {
-			$receiverName = $this->maniaControl->client->getServerName();
+			$serverName = $this->maniaControl->client->getServerName();
+			$message    = 'Donate ' . $amount . ' Planets to $<' . $serverName . '$>?';
+		} else {
+			$message = 'Donate ' . $amount . ' Planets to $<' . $receiverName . '$>?';
 		}
 
-		$message = 'Donate ' . $amount . ' Planets to $<' . $receiverName . '$>?';
-		try {
-			$bill = $this->maniaControl->client->sendBill($player->login, $amount, $message, $receiver);
-		} catch(Exception $e) {
-			// TODO: handle errors like 'too few server planets' - throw other like connection errors
-			trigger_error("Couldn't create donation of {$amount} planets from '{$player->login}' for '{$receiver}'. " . $e->getMessage());
-			$this->maniaControl->chat->sendError("Creating donation failed.", $player->login);
-			return false;
-		}
-
-		$this->openBills[$bill] = array(true, $player->login, $receiver, $amount, time());
+		//Send and Handle the Bill
+		$this->maniaControl->billManager->sendBill(function ($data, $status) use (&$player, $amount, $receiver) {
+			switch($status) {
+				case BillManager::DONATED_TO_SERVER:
+					if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_ANNOUNCE_SERVERDONATION, true) && $amount >= $this->maniaControl->settingManager->getSetting($this, self::SETTING_MIN_AMOUNT_SHOWN, true)) {
+						$login   = null;
+						$message = '$<' . $player->nickname . '$> donated ' . $amount . ' Planets! Thanks.';
+					} else {
+						$message = 'Donation successful! Thanks.';
+					}
+					$this->maniaControl->chat->sendSuccess($message, $player->login);
+					$this->maniaControl->statisticManager->insertStat(self::STAT_PLAYER_DONATIONS, $player, $this->maniaControl->server->index, $amount);
+					break;
+				case BillManager::DONATED_TO_RECEIVER:
+					$message = "Successfully donated {$amount} to '{$receiver}'!";
+					$this->maniaControl->chat->sendSuccess($message, $player->login);
+					break;
+				case BillManager::PLAYER_REFUSED_DONATION:
+					$message = 'Transaction cancelled.';
+					$this->maniaControl->chat->sendError($message, $player->login);
+					break;
+				case BillManager::ERROR_WHILE_TRANSACTION:
+					$message = $data;
+					$this->maniaControl->chat->sendError($message, $player->login);
+					break;
+			}
+		}, $player, $amount, $message);
 
 		return true;
 	}
@@ -377,16 +395,23 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		}
 		$message = 'Payout from $<' . $this->maniaControl->client->getServerName() . '$>.';
 
-		try {
-			$bill = $this->maniaControl->client->pay($receiver, $amount, $message);
-		} catch(Exception $e) {
-			// TODO: handle errors like 'too few server planets' - throw other like connection errors
-			trigger_error("Couldn't create payout of {$amount} planets by '{$player->login}' for '{$receiver}'. " . $e->getMessage());
-			$this->maniaControl->chat->sendError("Creating payout failed.", $player->login);
-			return false;
-		}
+		$this->maniaControl->billManager->sendPlanets(function ($data, $status) use (&$player, $amount, $receiver) {
+			switch($status) {
+				case BillManager::PAYED_FROM_SERVER:
+					$message = "Successfully payed out {$amount} to '{$receiver}'!";
+					$this->maniaControl->chat->sendSuccess($message, $player->login);
+					break;
+				case BillManager::PLAYER_REFUSED_DONATION:
+					$message = 'Transaction cancelled.';
+					$this->maniaControl->chat->sendError($message, $player->login);
+					break;
+				case BillManager::ERROR_WHILE_TRANSACTION:
+					$message = $data;
+					$this->maniaControl->chat->sendError($message, $player->login);
+					break;
+			}
+		}, $receiver, $amount, $message);
 
-		$this->openBills[$bill] = array(false, $player->login, $receiver, $amount, time());
 		return true;
 	}
 
@@ -405,75 +430,6 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$planets = $this->maniaControl->client->getServerPlanets();
 		$message = "This Server has {$planets} Planets!";
 		return $this->maniaControl->chat->sendInformation($message, $player->login);
-	}
-
-	/**
-	 * Handle bill updated callback
-	 *
-	 * @param array $callback
-	 * @return bool
-	 */
-	public function handleBillUpdated(array $callback) {
-		$billId = $callback[1][0];
-		if (!array_key_exists($billId, $this->openBills)) {
-			return false;
-		}
-		$billData = $this->openBills[$billId];
-		$login    = $billData[1];
-		$receiver = $billData[2];
-		switch($callback[1][1]) {
-			case 4:
-			{
-				// Payed
-				$donation = $billData[0];
-				$amount   = $billData[3];
-				if ($donation) {
-					$player = $this->maniaControl->playerManager->getPlayer($login);
-
-					// Donation
-					if (strlen($receiver) > 0) {
-						// To player
-						$message = "Successfully donated {$amount} to '{$receiver}'!";
-						$this->maniaControl->chat->sendSuccess($message, $login);
-					} else {
-						// To server
-						if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_ANNOUNCE_SERVERDONATION, true) && $amount >= $this->maniaControl->settingManager->getSetting($this, self::SETTING_MIN_AMOUNT_SHOWN, true)
-						) {
-							$login   = null;
-							$message = '$<' . $player->nickname . '$> donated ' . $amount . ' Planets! Thanks.';
-						} else {
-							$message = 'Donation successful! Thanks.';
-						}
-
-
-						$this->maniaControl->chat->sendSuccess($message, $login);
-						$this->maniaControl->statisticManager->insertStat(self::STAT_PLAYER_DONATIONS, $player, $this->maniaControl->server->index, $amount);
-					}
-				} else {
-					// Payout
-					$message = "Successfully payed out {$amount} to '{$receiver}'!";
-					$this->maniaControl->chat->sendSuccess($message, $login);
-				}
-				unset($this->openBills[$billId]);
-				break;
-			}
-			case 5:
-			{
-				// Refused
-				$message = 'Transaction cancelled.';
-				$this->maniaControl->chat->sendError($message, $login);
-				unset($this->openBills[$billId]);
-				break;
-			}
-			case 6:
-			{
-				// Error
-				$this->maniaControl->chat->sendError($callback[1][2], $login);
-				unset($this->openBills[$billId]);
-				break;
-			}
-		}
-		return true;
 	}
 
 	/**

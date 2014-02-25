@@ -1,11 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Lukas
- * Date: 23.02.14
- * Time: 12:45
+ * Dedimania Player DataStructure
+ *
+ * @author kremsy and steeffeen
  */
-
 namespace Dedimania;
 
 

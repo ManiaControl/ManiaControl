@@ -4,6 +4,7 @@ namespace ManiaControl;
 
 use ManiaControl\Admin\ActionsMenu;
 use ManiaControl\Admin\AuthenticationManager;
+use ManiaControl\Bills\BillManager;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Callbacks\TimerManager;
@@ -77,6 +78,8 @@ class ManiaControl implements CommandListener, TimerListener {
 	public $errorHandler = null;
 	public $timerManager = null;
 	public $fileReader = null;
+	public $billManager = null;
+
 	/**
 	 * Private properties
 	 */
@@ -99,6 +102,7 @@ class ManiaControl implements CommandListener, TimerListener {
 		$this->callbackManager       = new CallbackManager($this);
 		$this->timerManager          = new TimerManager($this);
 		$this->fileReader            = new AsynchronousFileReader($this);
+		$this->billManager           = new BillManager($this);
 		$this->settingManager        = new SettingManager($this);
 		$this->statisticManager      = new StatisticManager($this);
 		$this->manialinkManager      = new ManialinkManager($this);

@@ -1,11 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Lukas
- * Date: 23.02.14
- * Time: 11:31
+ * Dedimania Record DataStructure
+ *
+ * @author kremsy and steeffeen
  */
-
 namespace Dedimania;
 
 
@@ -25,6 +23,7 @@ class RecordData {
 
 	/**
 	 * Construct a Record by a given Record Array
+	 *
 	 * @param $record
 	 */
 	public function __construct($record) {
@@ -43,6 +42,7 @@ class RecordData {
 
 	/**
 	 * Constructs a new Record via it's properties
+	 *
 	 * @param      $login
 	 * @param      $nickName
 	 * @param      $best
@@ -50,7 +50,7 @@ class RecordData {
 	 * @param bool $newRecord
 	 */
 	public function constructNewRecord($login, $nickName, $best, $checkpoints, $newRecord = false) {
-		$this->nullRecord = false;
+		$this->nullRecord  = false;
 		$this->login       = $login;
 		$this->nickName    = $nickName;
 		$this->best        = $best;
