@@ -1,11 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Lukas
- * Date: 14.02.14
- * Time: 17:16
+ * Dedimania DataStructure
+ *
+ * @author kremsy and steeffeen
  */
-
 namespace Dedimania;
 
 use ManiaControl\ManiaControl;

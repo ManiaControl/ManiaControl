@@ -301,7 +301,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 			if ($error != '') {
 				$this->maniaControl->log("Dedimania Error: " . $error);
 			}
-			var_dump($data);
+			//var_dump($data);
 			$data = $this->decode($data);
 			//var_dump($data);
 			if (is_array($data)) {
