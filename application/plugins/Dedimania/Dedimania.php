@@ -20,7 +20,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	/**
 	 * Constants
 	 */
-	const ID                            = 7;
+	const ID                            = 8;
 	const VERSION                       = 0.1;
 	const MLID_DEDIMANIA                = 'Dedimania.ManialinkId';
 	const XMLRPC_MULTICALL              = 'system.multicall';
