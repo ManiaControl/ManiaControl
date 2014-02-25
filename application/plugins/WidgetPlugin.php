@@ -29,7 +29,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	/**
 	 * Constants
 	 */
-	const PLUGIN_ID      = 8;
+	const PLUGIN_ID      = 1;
 	const PLUGIN_VERSION = 0.1;
 	const PLUGIN_NAME    = 'WidgetPlugin';
 	const PLUGIN_AUTHOR  = 'kremsy';

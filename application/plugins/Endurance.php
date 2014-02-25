@@ -15,7 +15,7 @@ class EndurancePlugin implements CallbackListener, Plugin {
 	/**
 	 * Constants
 	 */
-	const ID = 4;
+	const ID = 101;
 	const VERSION = 0.1;
 	const CB_CHECKPOINT = 'Endurance.Checkpoint';
 	
