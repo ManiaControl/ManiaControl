@@ -251,7 +251,7 @@ class MapManager implements CallbackListener {
 		$currentIndex = $this->getMapIndex($this->currentMap);
 
 		//No RestructureNeeded
-		if ($currentIndex < 14) {
+		if ($currentIndex < Maplist::MAX_MAPS_PER_PAGE - 1) {
 			return true;
 		}
 
@@ -260,7 +260,6 @@ class MapManager implements CallbackListener {
 
 		$i = 0;
 		foreach($this->maps as $map) {
-			/** @var Map $map */
 			if ($i < $currentIndex) {
 				$lowerMapArray[] = $map->fileName;
 			} else {
@@ -270,6 +269,7 @@ class MapManager implements CallbackListener {
 		}
 
 		$mapArray = array_merge($higherMapArray, $lowerMapArray);
+		array_shift($mapArray);
 
 		try {
 			$this->maniaControl->client->chooseNextMapList($mapArray);
