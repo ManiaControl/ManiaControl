@@ -5,6 +5,7 @@ namespace ManiaControl\Server;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
+use ManiaControl\Plugins\Plugin;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
@@ -76,6 +77,7 @@ class UsageReporter implements TimerListener {
 
 		if(is_array($this->maniaControl->pluginManager->getActivePlugins())) {
 			foreach($this->maniaControl->pluginManager->getActivePlugins() as $plugin) {
+				/** @var Plugin $plugin */
 				if(!is_null($plugin::getId()) && is_numeric($plugin::getId())) {
 					$activePlugins[] = $plugin::getId();
 				}
