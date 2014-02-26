@@ -543,8 +543,6 @@ class MapManager implements CallbackListener {
 	 * @param bool $update
 	 */
 	public function addMapFromMx($mapId, $login, $update = false) {
-		$mapDir = $this->maniaControl->client->getMapsDirectory();
-
 		if (is_numeric($mapId)) {
 			// Check if map exists
 			$this->maniaControl->mapManager->mxManager->getMapInfo($mapId, function (MXMapInfo $mapInfo) use ($login) {
