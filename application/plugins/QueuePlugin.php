@@ -11,6 +11,7 @@ use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
+use ManiaControl\Maps\MapManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
@@ -47,6 +48,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 	private $queue = array();
 	private $spectators = array();
 	private $showPlay = array();
+    private $maxPlayers = 0;
 
 	/**
 	 * Prepares the Plugin
@@ -71,6 +73,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECT, $this, 'handlePlayerDisconnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERINFOCHANGED, $this, 'handlePlayerInfoChanged');
+        $this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_BEGINMAP, $this, 'handleBeginMap');
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ML_ADDTOQUEUE, $this, 'handleManiaLinkAnswerAdd');
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ML_REMOVEFROMQUEUE, $this, 'handleManiaLinkAnswerRemove');
 
@@ -161,6 +164,9 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 	 * @param Player $player
 	 */
 	public function handlePlayerConnect(Player $player) {
+        $maxPlayers = $this->maniaControl->client->getMaxPlayers();
+        $this->maxPlayers = $maxPlayers['CurrentValue'];
+
 		if($player->isSpectator) {
 			$this->spectators[$player->login] = $player->login;
 			$this->maniaControl->client->forceSpectator($player->login, 1);
@@ -180,6 +186,9 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 	 * @param Player $player
 	 */
 	public function handlePlayerDisconnect(Player $player) {
+        $maxPlayers = $this->maniaControl->client->getMaxPlayers();
+        $this->maxPlayers = $maxPlayers['CurrentValue'];
+
 		if(isset($this->spectators[$player->login])) {
 			unset($this->spectators[$player->login]);
 		}
@@ -227,8 +236,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 	 * Function called on every second.
 	 */
 	public function handleEverySecond() {
-		$maxPlayers = $this->maniaControl->client->getMaxPlayers();
-		if($maxPlayers['CurrentValue'] > (count($this->maniaControl->playerManager->players) - count($this->spectators))) {
+		if($this->maxPlayers > (count($this->maniaControl->playerManager->players) - count($this->spectators))) {
 			$this->moveFirstPlayerToPlay();
 		}
 
@@ -244,6 +252,16 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 			}
 		}
 	}
+
+    /**
+     * Checks for being of new map to retrieve maximum number of players.
+     *
+     * @param $currentMap
+     */
+    public function handleBeginMap($currentMap) {
+        $maxPlayers = $this->maniaControl->client->getMaxPlayers();
+        $this->maxPlayers = $maxPlayers['CurrentValue'];
+    }
 
 	/**
 	 * Function handling the click of the widget to add them to the queue.
@@ -283,8 +301,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 	 * @param Player $player
 	 */
 	private function forcePlayerToPlay(Player $player) {
-		$maxPlayers = $this->maniaControl->client->getMaxPlayers();
-		if($maxPlayers['CurrentValue'] > (count($this->maniaControl->playerManager->players) - count($this->spectators))) {
+		if($this->maxPlayers > (count($this->maniaControl->playerManager->players) - count($this->spectators))) {
 			try {
 				$this->maniaControl->client->forceSpectator($player->login, 2);
 			} catch(Exception $e) {
