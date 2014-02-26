@@ -17,7 +17,7 @@ class ObstaclePlugin implements CallbackListener, CommandListener, Plugin {
 	/**
 	 * Constants
 	 */
-	const ID = 102;
+	const ID = 24;
 	const VERSION = 0.1;
 	const CB_JUMPTO = 'Obstacle.JumpTo';
 	const SCB_ONFINISH = 'OnFinish';
@@ -108,7 +108,7 @@ class ObstaclePlugin implements CallbackListener, CommandListener, Plugin {
 	 * @see \ManiaControl\Plugins\Plugin::getDescription()
 	 */
 	public static function getDescription() {
-		return "Plugin offering various Commands for the ShootMania 'Obstacle' Game Mode by steeffeen.";
+		return "Plugin offering CP Jumping and Local Records Support for the ShootManie Gamemode 'Obstacle'.";
 	}
 
 	/**

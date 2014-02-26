@@ -14,7 +14,7 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 	/**
 	 * Constants
 	 */
-	const ID                        = 100;
+	const ID                        = 26;
 	const VERSION                   = 0.1;
 	const DATE                      = 'd-m-y h:i:sa T';
 	const SETTING_FOLDERNAME        = 'Log-Folder Name';
@@ -122,7 +122,7 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 	 * @see \ManiaControl\Plugins\Plugin::getDescription()
 	 */
 	public static function getDescription() {
-		return 'Plugin logging the chat messages of the server.';
+		return 'Plugin logging the Chat Messages of the Server for later Checks and Controlling.';
 	}
 
 	/**
