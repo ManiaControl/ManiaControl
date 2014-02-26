@@ -76,8 +76,8 @@ class UsageReporter implements TimerListener {
 
 		if(is_array($this->maniaControl->pluginManager->getActivePlugins())) {
 			foreach($this->maniaControl->pluginManager->getActivePlugins() as $plugin) {
-				if(!is_null($plugin->getId()) && is_numeric($plugin->getId())) {
-					$activePlugins[] = $plugin->getId();
+				if(!is_null($plugin::getId()) && is_numeric($plugin::getId())) {
+					$activePlugins[] = $plugin::getId();
 				}
 			}
 		}
