@@ -221,6 +221,17 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	 * @param Map $map
 	 */
 	public function handleBeginMap(Map $map) {
+		//send Map Karma to MX from previous Map
+		if(isset($this->mxKarma['map'])){
+			$votes = array();
+			foreach($this->mxKarma['votes'] as $login => $value) {
+				$player = $this->maniaControl->playerManager->getPlayer($login);
+				array_push($votes, array("login" => $login, "nickname" => $player->rawNickname, "vote" => $value));
+			}
+			$this->postKarmaVotes($this->mxKarma['map'], $votes);
+			unset($this->mxKarma['map']);
+		}
+
 		unset($this->mxKarma['votes']);
 		$this->updateManialink = true;
 	}
@@ -689,13 +700,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			return;
 		}
 
-		$votes = array();
-		foreach($this->mxKarma['votes'] as $login => $value) {
-			$player = $this->maniaControl->playerManager->getPlayer($login);
-			array_push($votes, array("login" => $login, "nickname" => $player->rawNickname, "vote" => $value));
-		}
-
-		$this->postKarmaVotes($map, $votes);
+		$this->mxKarma['map'] = $map;
 	}
 
 	/**
