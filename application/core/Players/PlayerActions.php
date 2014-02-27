@@ -74,12 +74,12 @@ class PlayerActions {
 	 */
 	public function forcePlayerToPlay($adminLogin, $targetLogin, $userIsAbleToSelect = true, $displayAnnouncement = true) {
 		$admin = $this->maniaControl->playerManager->getPlayer($adminLogin);
-		if(!$this->maniaControl->authenticationManager->checkPermission($admin, self::SETTING_PERMISSION_FORCE_PLAYER_PLAY)) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($admin, self::SETTING_PERMISSION_FORCE_PLAYER_PLAY)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($admin);
 			return;
 		}
 		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
-		if(!$target) {
+		if (!$target) {
 			return;
 		}
 
@@ -91,7 +91,7 @@ class PlayerActions {
 			return;
 		}
 
-		if($userIsAbleToSelect) {
+		if ($userIsAbleToSelect) {
 			try {
 				$this->maniaControl->client->forceSpectator($target->login, self::SPECTATOR_USER_SELECTABLE);
 			} catch(Exception $e) {
@@ -102,7 +102,7 @@ class PlayerActions {
 		}
 
 		// Announce force
-		if($displayAnnouncement) {
+		if ($displayAnnouncement) {
 			$chatMessage = '$<' . $admin->nickname . '$> forced $<' . $target->nickname . '$> to Play!';
 			$this->maniaControl->chat->sendInformation($chatMessage);
 		}
@@ -117,29 +117,29 @@ class PlayerActions {
 	 */
 	public function forcePlayerToTeam($adminLogin, $targetLogin, $teamId) {
 		$admin = $this->maniaControl->playerManager->getPlayer($adminLogin);
-		if(!$this->maniaControl->authenticationManager->checkPermission($admin, self::SETTING_PERMISSION_FORCE_PLAYER_TEAM)) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($admin, self::SETTING_PERMISSION_FORCE_PLAYER_TEAM)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($admin);
 			return;
 		}
 		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
-		if(!$target || !$admin) {
+		if (!$target || !$admin) {
 			return;
 		}
 
-		if($target->isSpectator) {
+		if ($target->isSpectator) {
 			$this->forcePlayerToPlay($adminLogin, $targetLogin, true, false);
 		}
 
-			$this->maniaControl->client->forcePlayerTeam($target->login, $teamId);
+		$this->maniaControl->client->forcePlayerTeam($target->login, $teamId);
 
 		$chatMessage = false;
 		$title       = $this->maniaControl->authenticationManager->getAuthLevelName($admin->authLevel);
-		if($teamId == self::TEAM_BLUE) {
+		if ($teamId == self::TEAM_BLUE) {
 			$chatMessage = $title . ' $<' . $admin->nickname . '$> forced $<' . $target->nickname . '$> into the Blue-Team!';
-		} else if($teamId == self::TEAM_RED) {
+		} else if ($teamId == self::TEAM_RED) {
 			$chatMessage = $title . ' $<' . $admin->nickname . '$> forced $<' . $target->nickname . '$> into the Red-Team!';
 		}
-		if(!$chatMessage) {
+		if (!$chatMessage) {
 			return;
 		}
 		$this->maniaControl->chat->sendInformation($chatMessage);
@@ -156,24 +156,24 @@ class PlayerActions {
 	 */
 	public function forcePlayerToSpectator($adminLogin, $targetLogin, $spectatorState = self::SPECTATOR_BUT_KEEP_SELECTABLE, $releaseSlot = true) {
 		$admin = $this->maniaControl->playerManager->getPlayer($adminLogin);
-		if(!$this->maniaControl->authenticationManager->checkPermission($admin, self::SETTING_PERMISSION_FORCE_PLAYER_SPEC)) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($admin, self::SETTING_PERMISSION_FORCE_PLAYER_SPEC)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($admin);
 			return;
 		}
 		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
 
-		if(!$admin || !$target){
+		if (!$admin || !$target) {
 			return;
 		}
 
-			$this->maniaControl->client->forceSpectator($target->login, $spectatorState);
+		$this->maniaControl->client->forceSpectator($target->login, $spectatorState);
 
 		$title       = $this->maniaControl->authenticationManager->getAuthLevelName($admin->authLevel);
 		$chatMessage = $title . ' $<' . $admin->nickname . '$> forced $<' . $target->nickname . '$> to Spectator!';
 		$this->maniaControl->chat->sendInformation($chatMessage);
 		$this->maniaControl->log($chatMessage, true);
 
-		if($releaseSlot) {
+		if ($releaseSlot) {
 			// Free player slot
 			try {
 				$this->maniaControl->client->spectatorReleasePlayerSlot($target->login);
@@ -193,18 +193,18 @@ class PlayerActions {
 	 */
 	public function unMutePlayer($adminLogin, $targetLogin) {
 		$admin = $this->maniaControl->playerManager->getPlayer($adminLogin);
-		if(!$this->maniaControl->authenticationManager->checkPermission($admin, self::SETTING_PERMISSION_MUTE_PLAYER)) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($admin, self::SETTING_PERMISSION_MUTE_PLAYER)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($admin);
 			return;
 		}
 
 		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
 
-		if(!$target){
+		if (!$target) {
 			return;
 		}
 
-			$this->maniaControl->client->unIgnore($targetLogin);
+		$this->maniaControl->client->unIgnore($targetLogin);
 
 		$title       = $this->maniaControl->authenticationManager->getAuthLevelName($admin->authLevel);
 		$chatMessage = $title . ' $<' . $admin->nickname . '$> un-muted $<' . $target->nickname . '$>!';
@@ -221,14 +221,14 @@ class PlayerActions {
 	 */
 	public function mutePlayer($adminLogin, $targetLogin) {
 		$admin = $this->maniaControl->playerManager->getPlayer($adminLogin);
-		if(!$this->maniaControl->authenticationManager->checkPermission($admin, self::SETTING_PERMISSION_MUTE_PLAYER)) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($admin, self::SETTING_PERMISSION_MUTE_PLAYER)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($admin);
 			return;
 		}
 
 		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
 
-		if(!$target){
+		if (!$target) {
 			return;
 		}
 
@@ -248,14 +248,14 @@ class PlayerActions {
 	 */
 	public function warnPlayer($adminLogin, $targetLogin) {
 		$admin = $this->maniaControl->playerManager->getPlayer($adminLogin);
-		if(!$this->maniaControl->authenticationManager->checkPermission($admin, self::SETTING_PERMISSION_WARN_PLAYER)) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($admin, self::SETTING_PERMISSION_WARN_PLAYER)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($admin);
 			return;
 		}
 
 		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
 
-		if(!$target) {
+		if (!$target) {
 			return;
 		}
 
@@ -331,17 +331,17 @@ class PlayerActions {
 	 */
 	public function kickPlayer($adminLogin, $targetLogin, $message = '') {
 		$admin = $this->maniaControl->playerManager->getPlayer($adminLogin);
-		if(!$this->maniaControl->authenticationManager->checkPermission($admin, self::SETTING_PERMISSION_KICK_PLAYER)) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($admin, self::SETTING_PERMISSION_KICK_PLAYER)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($admin);
 			return;
 		}
 		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
-		if(!$target) {
+		if (!$target) {
 			return;
 		}
 
 		try {
-			if($target->isFakePlayer()) {
+			if ($target->isFakePlayer()) {
 				$this->maniaControl->client->disconnectFakePlayer($target->login);
 			} else {
 				$this->maniaControl->client->kick($target->login, $message);
@@ -368,16 +368,16 @@ class PlayerActions {
 	 */
 	public function banPlayer($adminLogin, $targetLogin, $message = '') {
 		$admin = $this->maniaControl->playerManager->getPlayer($adminLogin);
-		if(!$this->maniaControl->authenticationManager->checkPermission($admin, self::SETTING_PERMISSION_BAN_PLAYER)) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($admin, self::SETTING_PERMISSION_BAN_PLAYER)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($admin);
 			return;
 		}
 		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
-		if(!$target) {
+		if (!$target) {
 			return;
 		}
 
-		if($target->isFakePlayer()) {
+		if ($target->isFakePlayer()) {
 			$this->maniaControl->chat->sendError('It is not possible to Ban a bot', $admin->login);
 			return;
 		}
@@ -401,23 +401,23 @@ class PlayerActions {
 	public function grandAuthLevel($adminLogin, $targetLogin, $authLevel) {
 		$admin  = $this->maniaControl->playerManager->getPlayer($adminLogin);
 		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
-		if(!$admin || !$target) {
+		if (!$admin || !$target) {
 			return;
 		}
 
 		$authLevelName = $this->maniaControl->authenticationManager->getAuthLevelName($authLevel);
-		if(!$this->maniaControl->authenticationManager->checkRight($admin, $authLevel + 1)) {
+		if (!$this->maniaControl->authenticationManager->checkRight($admin, $authLevel + 1)) {
 			$this->maniaControl->chat->sendError("You don't have the permission to add a {$authLevelName}!", $admin->login);
 			return;
 		}
 
-		if($this->maniaControl->authenticationManager->checkRight($target, $authLevel)) {
+		if ($this->maniaControl->authenticationManager->checkRight($target, $authLevel)) {
 			$this->maniaControl->chat->sendError("This Player is already {$authLevelName}!", $admin->login);
 			return;
 		}
 
 		$success = $this->maniaControl->authenticationManager->grantAuthLevel($target, $authLevel);
-		if(!$success) {
+		if (!$success) {
 			$this->maniaControl->chat->sendError('Error occurred.', $admin->login);
 			return;
 		}
@@ -438,23 +438,23 @@ class PlayerActions {
 	public function revokeAuthLevel($adminLogin, $targetLogin) {
 		$admin  = $this->maniaControl->playerManager->getPlayer($adminLogin);
 		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
-		if(!$admin || !$target) {
+		if (!$admin || !$target) {
 			return;
 		}
 
-		if(!$this->maniaControl->authenticationManager->checkRight($admin, $target->authLevel + 1)) {
+		if (!$this->maniaControl->authenticationManager->checkRight($admin, $target->authLevel + 1)) {
 			$title = $this->maniaControl->authenticationManager->getAuthLevelName($target->authLevel);
 			$this->maniaControl->chat->sendError("You can't revoke the Rights of a {$title}!", $admin->login);
 			return;
 		}
 
-		if($this->maniaControl->authenticationManager->checkRight($target, AuthenticationManager::AUTH_LEVEL_MASTERADMIN)) {
+		if ($this->maniaControl->authenticationManager->checkRight($target, AuthenticationManager::AUTH_LEVEL_MASTERADMIN)) {
 			$this->maniaControl->chat->sendError("MasterAdmins can't be removed!", $admin->login);
 			return;
 		}
 
 		$success = $this->maniaControl->authenticationManager->grantAuthLevel($target, AuthenticationManager::AUTH_LEVEL_PLAYER);
-		if(!$success) {
+		if (!$success) {
 			$this->maniaControl->chat->sendError('Error occurred.', $admin->login);
 			return;
 		}
@@ -475,7 +475,7 @@ class PlayerActions {
 	public function isPlayerMuted($login) {
 		$ignoreList = $this->maniaControl->client->getIgnoreList(100, 0);
 		foreach($ignoreList as $ignoredPlayers) {
-			if($ignoredPlayers->login == $login) {
+			if ($ignoredPlayers->login == $login) {
 				return true;
 			}
 		}
