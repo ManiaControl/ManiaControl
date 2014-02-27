@@ -216,7 +216,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 	 *
 	 * @param array $callback
 	 */
-	public function updateWidget(array $callback) {
+	public function updateWidget(Player $player) {
 		foreach($this->adminListShown as $login => $shown) {
 			if ($shown) {
 				$player = $this->maniaControl->playerManager->getPlayer($login);

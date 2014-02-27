@@ -174,7 +174,7 @@ class AuthenticationManager implements CallbackListener {
 		$authStatement->close();
 
 		$player->authLevel = $authLevel;
-		$this->maniaControl->callbackManager->triggerCallback($player);
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_AUTH_LEVEL_CHANGED, $player);
 
 		return true;
 	}

@@ -253,6 +253,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	 * @param $callback
 	 */
 	public function handleBeginMap($callback) {
+		unset($this->dedimaniaData->records);
 		$this->fetchDedimaniaRecords(true);
 	}
 
@@ -273,6 +274,10 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 		$replays  = array();
 		foreach($this->dedimaniaData->records as $record) {
 			/** @var RecordData $record */
+			if($record->rank > $this->dedimaniaData->serverMaxRank){
+				break;
+			}
+
 			if ($record->newRecord == false) {
 				continue;
 			}
@@ -321,7 +326,9 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 						// Warnings and TTR
 						$errors = $methodResponse[0]['methods'][0]['errors'];
 						if ($errors) {
-							trigger_error($errors);
+							//TODO just temporary
+							$this->maniaControl->errorHandler->triggerDebugNotice("Dedimania Notice on SetChallengeTimes: " . $errors);
+							//trigger_error($errors);
 						}
 					}
 				}
@@ -406,14 +413,15 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 
 
 		$oldRecord = $this->getDedimaniaRecord($login);
-
 		if ($oldRecord->nullRecord || $oldRecord && $oldRecord->best > $time) {
 			$player = $this->maniaControl->playerManager->getPlayer($login);
 
 			// Save time
 			$newRecord = new RecordData(null);
 			$newRecord->constructNewRecord($login, $player->nickname, $data[2], $this->getCheckpoints($login), true);
+			var_dump($oldRecord, $newRecord); //TODO remvoe
 			if ($this->insertDedimaniaRecord($newRecord, $oldRecord)) {
+				var_dump("test1234");
 				// Get newly saved record
 				foreach($this->dedimaniaData->records as &$record) {
 					/** @var RecordData $record */
@@ -455,6 +463,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 			$this->dedimaniaData->records = array();
 		}
 
+
 		$serverInfo = $this->getServerInfo();
 		$playerInfo = $this->getPlayerList();
 		$mapInfo    = $this->getMapInfo();
@@ -463,6 +472,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 		if (!$serverInfo || !$playerInfo || !$mapInfo || !$gameMode) {
 			return false;
 		}
+
 		$data    = array($this->dedimaniaData->sessionId, $mapInfo, $gameMode, $serverInfo, $playerInfo);
 		$content = $this->encode_request(self::DEDIMANIA_GETRECORDS, $data);
 
@@ -542,8 +552,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	 * @return bool
 	 */
 	private function insertDedimaniaRecord(RecordData &$newRecord, RecordData $oldRecord) {
-		//if (!$newRecord || !$this->dedimaniaData->records || !isset($this->dedimaniaData->records['Records'])) {
-		if ($newRecord->nullRecord || $this->dedimaniaData->getRecordCount() == 0) {
+		if ($newRecord->nullRecord) {
 			return false;
 		}
 
