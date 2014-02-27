@@ -122,7 +122,7 @@ class PlayerActions {
 			return;
 		}
 		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
-		if(!$target) {
+		if(!$target || !$admin) {
 			return;
 		}
 
@@ -130,13 +130,7 @@ class PlayerActions {
 			$this->forcePlayerToPlay($adminLogin, $targetLogin, true, false);
 		}
 
-		try {
 			$this->maniaControl->client->forcePlayerTeam($target->login, $teamId);
-		} catch(Exception $e) {
-			// TODO: only possible valid exceptions should be "wrong login" or "not in team mode" - throw others (like connection error)
-			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $admin->login);
-			return;
-		}
 
 		$chatMessage = false;
 		$title       = $this->maniaControl->authenticationManager->getAuthLevelName($admin->authLevel);
@@ -168,13 +162,11 @@ class PlayerActions {
 		}
 		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
 
-		try {
-			$this->maniaControl->client->forceSpectator($target->login, $spectatorState);
-		} catch(Exception $e) {
-			// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
-			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $admin->login);
+		if(!$admin || !$target){
 			return;
 		}
+
+			$this->maniaControl->client->forceSpectator($target->login, $spectatorState);
 
 		$title       = $this->maniaControl->authenticationManager->getAuthLevelName($admin->authLevel);
 		$chatMessage = $title . ' $<' . $admin->nickname . '$> forced $<' . $target->nickname . '$> to Spectator!';
@@ -208,13 +200,11 @@ class PlayerActions {
 
 		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
 
-		try {
-			$this->maniaControl->client->unIgnore($targetLogin);
-		} catch(Exception $e) {
-			// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
-			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $adminLogin);
+		if(!$target){
 			return;
 		}
+
+			$this->maniaControl->client->unIgnore($targetLogin);
 
 		$title       = $this->maniaControl->authenticationManager->getAuthLevelName($admin->authLevel);
 		$chatMessage = $title . ' $<' . $admin->nickname . '$> un-muted $<' . $target->nickname . '$>!';
@@ -238,6 +228,10 @@ class PlayerActions {
 
 		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
 
+		if(!$target){
+			return;
+		}
+
 		$this->maniaControl->client->ignore($targetLogin);
 
 		$title       = $this->maniaControl->authenticationManager->getAuthLevelName($admin->authLevel);
@@ -258,7 +252,9 @@ class PlayerActions {
 			$this->maniaControl->authenticationManager->sendNotAllowed($admin);
 			return;
 		}
+
 		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
+
 		if(!$target) {
 			return;
 		}
