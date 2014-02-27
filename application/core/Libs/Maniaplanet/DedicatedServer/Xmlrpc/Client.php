@@ -196,7 +196,7 @@ class Client
 		{
 			$size = 0;
 			$recvhandle = 0;
-			@stream_set_timeout($this->socket, 0, $this->timeout * 1000 * 2);
+			@stream_set_timeout($this->socket, 0, $this->timeout * 1000 * 5);
 			// Get result
 			if ($this->protocol == 1)
 			{
@@ -214,7 +214,8 @@ class Client
 				$contents = fread($this->socket, 8);
 				if (strlen($contents) == 0 || $contents === false)
 				{
-					throw new FatalException('transport error - connection interrupted!', FatalException::INTERRUPTED);
+					var_dump($contents);
+					throw new FatalException('deb1 transport error - connection interrupted!', FatalException::INTERRUPTED);
 				}
 				$array_result = unpack('Vsize/Vhandle', $contents);
 				$size = $array_result['size'];
@@ -229,12 +230,12 @@ class Client
 
 			if ($recvhandle == 0 || $size == 0)
 			{
-				throw new FatalException('transport error - connection interrupted!', FatalException::INTERRUPTED);
+				throw new FatalException('deb2 transport error - connection interrupted!', FatalException::INTERRUPTED);
 			}
 
 			if ($size > SIZE_MAX)
 			{
-				throw new Exception("transport error - answer too big ($size)", Exception::ANWSER_TOO_BIG);
+				throw new Exception("deb3 transport error - answer too big ($size)", Exception::ANWSER_TOO_BIG);
 			}
 
 			self::$received += $size;
@@ -284,7 +285,7 @@ class Client
 
 		if (!$this->socket || $this->protocol == 0)
 		{
-			throw new FatalException('transport error - Client not initialized', FatalException::NOT_INITIALIZED);
+			throw new FatalException('deb4 transport error - Client not initialized', FatalException::NOT_INITIALIZED);
 		}
 
 		$request = new Request($method, $args);
@@ -307,7 +308,7 @@ class Client
 
 		if (!$this->socket || $this->protocol == 0)
 		{
-			throw new FatalException('transport error - Client not initialized', FatalException::NOT_INITIALIZED);
+			throw new FatalException('deb 5transport error - Client not initialized', FatalException::NOT_INITIALIZED);
 		}
 
 		$request = new Request($method, $args);
@@ -397,7 +398,8 @@ class Client
 				$contents .= fread($this->socket, 8 - strlen($contents));
 				if (strlen($contents) == 0 || $contents === false)
 				{
-					throw new FatalException('transport error - connection interrupted!', FatalException::INTERRUPTED);
+					var_dump("deb6 transport error");
+					//throw new FatalException('deb6 transport error - connection interrupted!', FatalException::INTERRUPTED);
 				}
 			}
 
@@ -407,7 +409,7 @@ class Client
 
 			if ($recvhandle == 0 || $size == 0)
 			{
-				throw new FatalException('transport error - connection interrupted!', FatalException::INTERRUPTED);
+				throw new FatalException('deb7 transport error - connection interrupted!', FatalException::INTERRUPTED);
 			}
 			if ($size > SIZE_MAX)
 			{
@@ -464,6 +466,7 @@ class Client
 				$nb = count($read);
 			}
 		}
+		//stream_set_blocking($this->socket, true);
 		return !empty($this->cb_message);
 	}
 
