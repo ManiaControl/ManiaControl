@@ -299,7 +299,7 @@ class ManiaExchangeManager {
 			//dont append map type
 		}
 
-		$fileFunc = function ($mapInfo, $error) use (&$function, $titlePrefix) {
+		$success = $this->maniaControl->fileReader->loadFile($url, function ($mapInfo, $error) use (&$function, $titlePrefix) {
 			if ($error) {
 				trigger_error($error);
 				return null;
@@ -319,11 +319,8 @@ class ManiaExchangeManager {
 			}
 
 			call_user_func($function, $maps);
-
 			return true;
-		};
-
-		$success = $this->maniaControl->fileReader->loadFile($url, $fileFunc, "application/json");
+		}, "application/json");
 
 		return $success;
 	}

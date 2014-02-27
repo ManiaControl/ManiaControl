@@ -419,9 +419,8 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 			// Save time
 			$newRecord = new RecordData(null);
 			$newRecord->constructNewRecord($login, $player->nickname, $data[2], $this->getCheckpoints($login), true);
-			var_dump($oldRecord, $newRecord); //TODO remvoe
 			if ($this->insertDedimaniaRecord($newRecord, $oldRecord)) {
-				var_dump("test1234");
+
 				// Get newly saved record
 				foreach($this->dedimaniaData->records as &$record) {
 					/** @var RecordData $record */
