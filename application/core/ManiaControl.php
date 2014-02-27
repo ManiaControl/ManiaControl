@@ -48,7 +48,7 @@ class ManiaControl implements CommandListener, TimerListener {
 	const API_VERSION                 = '2013-04-16';
 	const OS_UNIX                     = 'Unix';
 	const OS_WIN                      = 'Windows';
-	const CONNECT_TIMEOUT             = 20000;
+	const CONNECT_TIMEOUT             = 50;
 	const SCRIPT_TIMEOUT              = 20;
 	const URL_WEBSERVICE              = 'http://ws.maniacontrol.com/';
 	const SETTING_PERMISSION_SHUTDOWN = 'Shutdown ManiaControl';
@@ -211,6 +211,7 @@ class ManiaControl implements CommandListener, TimerListener {
 		if ($message) {
 			$this->log($message);
 		}
+
 		exit();
 	}
 
@@ -225,10 +226,14 @@ class ManiaControl implements CommandListener, TimerListener {
 		$this->chat->sendInformation('ManiaControl shutting down.');
 
 		if($this->client){
+			try{
 			// Hide manialinks
 			$this->client->sendHideManialinkPage();
 			// Close the client connection
 			$this->client->delete($this->server->ip, $this->server->port);
+			} catch(FatalException $e){
+				$this->errorHandler->triggerDebugNotice($e->getMessage() ." File: " . $e->getFile() . " Line: " . $e->getLine());
+			}
 		}
 
 		//Check and Trigger Fatal Errors
