@@ -113,7 +113,7 @@ class Client
 		$this->bigEndianTest();
 
 		// open connection
-		$this->socket = @fsockopen($hostname, $port, $errno, $errstr, $this->timeout * 10000);
+		$this->socket = @fsockopen($hostname, $port, $errno, $errstr, $this->timeout);
 		if (!$this->socket)
 		{
 			throw new FatalException("transport error - could not open socket (error: $errno, $errstr)", FatalException::NOT_INITIALIZED);
@@ -356,12 +356,7 @@ class Client
 		if ($this->protocol == 1)
 			return false;
 
-		// flo: moved to end
-		//$something_received = count($this->cb_message)>0;
-		$contents = '';
-		$contents_length = 0;
-
-		@stream_set_timeout($this->socket, 0, $this->timeout * 100);  // timeout 10 ms (to read available data)
+		@stream_set_timeout($this->socket, 0, $this->timeout * 20);  // timeout 1 ms (to read available data)
 		// (assignment in arguments is forbidden since php 5.1.1)
 		$read = array($this->socket);
 		$write = NULL;
@@ -370,7 +365,7 @@ class Client
 
 		try
 		{
-			$nb = @stream_select($read, $write, $except, 0, $this->timeout * 100);
+			$nb = @stream_select($read, $write, $except, 0, $this->timeout * 20);
 		}
 		catch (\Exception $e)
 		{
@@ -396,14 +391,16 @@ class Client
 
 		while ($nb !== false && $nb > 0)
 		{
-			$size = 0;
-			$recvhandle = 0;
 			// Get result
-			$contents = fread($this->socket, 8);
-			if (strlen($contents) == 0 || $contents === false)
-			{
-				throw new FatalException('transport error - connection interrupted!', FatalException::INTERRUPTED);
+			$contents = '';
+			while(strlen($contents) < 8){
+				$contents .= fread($this->socket, 8 - strlen($contents));
+				if (strlen($contents) == 0 || $contents === false)
+				{
+					throw new FatalException('transport error - connection interrupted!', FatalException::INTERRUPTED);
+				}
 			}
+
 			$array_result = unpack('Vsize/Vhandle', $contents);
 			$size = $array_result['size'];
 			$recvhandle = $array_result['handle'];
