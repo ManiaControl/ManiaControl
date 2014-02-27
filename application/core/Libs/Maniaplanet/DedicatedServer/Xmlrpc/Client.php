@@ -24,11 +24,6 @@ class Client
 	public $cb_message = array();
 	public $reqhandle;
 	public $protocol = 0;
-	
-	/**
-	 * @var int Timeout in milli-seconds 
-	 */
-	public $timeout;
 
 	static $received;
 	static $sent;
@@ -88,18 +83,11 @@ class Client
 		}
 	}
 
-	/**
-	 * 
-	 * @param string $hostname
-	 * @param int $port
-	 * @param int $timeout In milliseconds
-	 */
-	function __construct($hostname, $port, $timeout = 50) 
+	function __construct($hostname = 'localhost', $port = 5000, $timeout) 
 	{
 		$this->socket = false;
 		$this->reqhandle = 0x80000000;
-		$this->timeout = $timeout;
-		$this->init($hostname, $port);
+		$this->init($hostname, $port, $timeout);
 	}
 	
 	function __destruct()
@@ -107,13 +95,13 @@ class Client
 		$this->terminate();
 	}
 
-	protected function init($hostname, $port) 
+	protected function init($hostname, $port, $timeout) 
 	{
 
 		$this->bigEndianTest();
 
 		// open connection
-		$this->socket = @fsockopen($hostname, $port, $errno, $errstr, $this->timeout/1000);
+		$this->socket = @fsockopen($hostname, $port, $errno, $errstr, $timeout);
 		if (!$this->socket) 
 		{
 			throw new FatalException("transport error - could not open socket (error: $errno, $errstr)", FatalException::NOT_INITIALIZED);
@@ -153,7 +141,7 @@ class Client
 	{
 		$xml = $request->getXml();
 
-		@stream_set_timeout($this->socket, 0, $this->timeout * 1000 * 100);
+		@stream_set_timeout($this->socket, 20);  // timeout 20 s (to write the request)
 		// send request
 		$this->reqhandle++;
 		if ($this->protocol == 1) 
@@ -196,12 +184,12 @@ class Client
 		{
 			$size = 0;
 			$recvhandle = 0;
-			@stream_set_timeout($this->socket, 0, $this->timeout * 1000);  
+			@stream_set_timeout($this->socket, 5);  // timeout 20 s (to read the reply header)
 			// Get result
 			if ($this->protocol == 1) 
 			{
 				$contents = fread($this->socket, 4);
-				if (strlen($contents) == 0 || $contents === false) 
+				if (strlen($contents) == 0) 
 				{
 					throw new FatalException('transport error - connection interrupted!', FatalException::INTERRUPTED);
 				}
@@ -212,7 +200,7 @@ class Client
 			else 
 			{
 				$contents = fread($this->socket, 8);
-				if (strlen($contents) == 0 || $contents === false) 
+				if (strlen($contents) == 0) 
 				{
 					throw new FatalException('transport error - connection interrupted!', FatalException::INTERRUPTED);
 				}
@@ -241,7 +229,7 @@ class Client
 			
 			$contents = '';
 			$contents_length = 0;
-			@stream_set_timeout($this->socket, 0, $this->timeout * 1000);  
+			@stream_set_timeout($this->socket, 0, 10000);  // timeout 10 ms (for successive reads until end)
 			while ($contents_length < $size) 
 			{
 				$contents .= fread($this->socket, $size-$contents_length);
@@ -349,7 +337,7 @@ class Client
 		return $this->message->params[0];
 	}
 	
-	function readCallbacks() 
+	function readCallbacks($timeout = 2000) 
 	{
 		if (!$this->socket || $this->protocol == 0) 
 			throw new FatalException('transport error - Client not initialized', FatalException::NOT_INITIALIZED);
@@ -361,7 +349,7 @@ class Client
 		$contents = '';
 		$contents_length = 0;
 
-		@stream_set_timeout($this->socket, 0, $this->timeout * 1000);  // timeout 10 ms (to read available data)
+		@stream_set_timeout($this->socket, 0, 100000);  // timeout 10 ms (to read available data)
 		// (assignment in arguments is forbidden since php 5.1.1)
 		$read = array($this->socket);
 		$write = NULL;
@@ -370,7 +358,7 @@ class Client
 		
 		try
 		{
-			$nb = @stream_select($read, $write, $except, 0, $this->timeout * 1000);
+			$nb = @stream_select($read, $write, $except, 0, $timeout);
 		}
 		catch (\Exception $e)
 		{
@@ -396,11 +384,13 @@ class Client
 
 		while ($nb !== false && $nb > 0) 
 		{
+			$timeout = 0;  // we don't want to wait for the full time again, just flush the available data
+
 			$size = 0;
 			$recvhandle = 0;
 			// Get result
 			$contents = fread($this->socket, 8);
-			if (strlen($contents) == 0 || $contents === false) 
+			if (strlen($contents) == 0) 
 			{
 				throw new FatalException('transport error - connection interrupted!', FatalException::INTERRUPTED);
 			}
@@ -447,7 +437,7 @@ class Client
 			
 			try
 			{
-				$nb = @stream_select($read, $write, $except, 0, 0); // Notimeout, just flush the data
+				$nb = @stream_select($read, $write, $except, 0, $timeout);
 			}
 			catch (\Exception $e)
 			{
