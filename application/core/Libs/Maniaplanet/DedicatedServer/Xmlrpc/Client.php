@@ -153,7 +153,7 @@ class Client
 	{
 		$xml = $request->getXml();
 
-		@stream_set_timeout($this->socket, 0, $this->timeout * 1000 * 5);
+		@stream_set_timeout($this->socket, 0, $this->timeout * 1000 * 10);
 		// send request
 		$this->reqhandle++;
 		if ($this->protocol == 1)
@@ -196,7 +196,7 @@ class Client
 		{
 			$size = 0;
 			$recvhandle = 0;
-			@stream_set_timeout($this->socket, 0, $this->timeout * 1000 * 5);
+			@stream_set_timeout($this->socket, 0, $this->timeout * 1000 * 10);
 			// Get result
 			if ($this->protocol == 1)
 			{
