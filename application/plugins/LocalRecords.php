@@ -1,19 +1,19 @@
 <?php
-use ManiaControl\Callbacks\TimerListener;
-use ManiaControl\Formatter;
-use ManiaControl\ManiaControl;
-use ManiaControl\Callbacks\CallbackListener;
-use ManiaControl\Callbacks\CallbackManager;
-use ManiaControl\Maps\Map;
-use ManiaControl\Players\Player;
-use ManiaControl\Players\PlayerManager;
-use ManiaControl\Plugins\Plugin;
-use FML\ManiaLink;
 use FML\Controls\Control;
 use FML\Controls\Frame;
 use FML\Controls\Label;
 use FML\Controls\Quad;
+use FML\ManiaLink;
+use ManiaControl\Callbacks\CallbackListener;
+use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Callbacks\TimerListener;
+use ManiaControl\Formatter;
+use ManiaControl\ManiaControl;
+use ManiaControl\Maps\Map;
 use ManiaControl\Maps\MapManager;
+use ManiaControl\Players\Player;
+use ManiaControl\Players\PlayerManager;
+use ManiaControl\Plugins\Plugin;
 
 /**
  * ManiaControl Local Records Plugin
@@ -24,25 +24,24 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 	/**
 	 * Constants
 	 */
-	const ID = 7;
-	const VERSION = 0.1;
-	const MLID_RECORDS = 'ml_local_records';
-	const TABLE_RECORDS = 'mc_localrecords';
-	const SETTING_WIDGET_TITLE = 'Widget Title';
-	const SETTING_WIDGET_POSX = 'Widget Position: X';
-	const SETTING_WIDGET_POSY = 'Widget Position: Y';
-	const SETTING_WIDGET_WIDTH = 'Widget Width';
-	const SETTING_WIDGET_LINESCOUNT = 'Widget Displayed Lines Count';
-	const SETTING_WIDGET_LINEHEIGHT = 'Widget Line Height';
-	const SETTING_NOTIFY_ONLY_DRIVER = 'Notify only the Driver on New Records';
+	const ID                          = 7;
+	const VERSION                     = 0.1;
+	const MLID_RECORDS                = 'ml_local_records';
+	const TABLE_RECORDS               = 'mc_localrecords';
+	const SETTING_WIDGET_TITLE        = 'Widget Title';
+	const SETTING_WIDGET_POSX         = 'Widget Position: X';
+	const SETTING_WIDGET_POSY         = 'Widget Position: Y';
+	const SETTING_WIDGET_WIDTH        = 'Widget Width';
+	const SETTING_WIDGET_LINESCOUNT   = 'Widget Displayed Lines Count';
+	const SETTING_WIDGET_LINEHEIGHT   = 'Widget Line Height';
+	const SETTING_NOTIFY_ONLY_DRIVER  = 'Notify only the Driver on New Records';
 	const SETTING_NOTIFY_BEST_RECORDS = 'Notify Publicly only for the X Best Records';
 	const SETTING_ADJUST_OUTER_BORDER = 'Adjust outer Border to Number of actual Records';
-	
+
 	/*
 	 * Private Properties
 	 */
 	/**
-	 *
 	 * @var maniaControl $maniaControl
 	 */
 	private $maniaControl = null;
@@ -59,13 +58,12 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 	}
 
 	/**
-	 *
 	 * @see \ManiaControl\Plugins\Plugin::load()
 	 */
 	public function load(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		$this->initTables();
-		
+
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_TITLE, 'Local Records');
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSX, -139.);
@@ -76,19 +74,18 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_NOTIFY_ONLY_DRIVER, false);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_NOTIFY_BEST_RECORDS, -1);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_ADJUST_OUTER_BORDER, false);
-		
+
 		// Register for callbacks
 		$this->maniaControl->timerManager->registerTimerListening($this, 'handle1Second', 1000);
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_AFTERINIT, $this, 'handleAfterInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_BEGINMAP, $this, 'handleMapBegin');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_TM_PLAYERFINISH, $this, 
-				'handlePlayerFinish');
-		
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_TM_PLAYERFINISH, $this, 'handlePlayerFinish');
+		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
+
 		return true;
 	}
 
 	/**
-	 *
 	 * @see \ManiaControl\Plugins\Plugin::unload()
 	 */
 	public function unload() {
@@ -102,7 +99,7 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 	 */
 	private function initTables() {
 		$mysqli = $this->maniaControl->database->mysqli;
-		$query = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_RECORDS . "` (
+		$query  = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_RECORDS . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
 				`mapIndex` int(11) NOT NULL,
 				`playerIndex` int(11) NOT NULL,
@@ -118,7 +115,6 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 	}
 
 	/**
-	 *
 	 * @see \ManiaControl\Plugins\Plugin::getId()
 	 */
 	public static function getId() {
@@ -126,7 +122,6 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 	}
 
 	/**
-	 *
 	 * @see \ManiaControl\Plugins\Plugin::getName()
 	 */
 	public static function getName() {
@@ -134,7 +129,6 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 	}
 
 	/**
-	 *
 	 * @see \ManiaControl\Plugins\Plugin::getVersion()
 	 */
 	public static function getVersion() {
@@ -142,7 +136,6 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 	}
 
 	/**
-	 *
 	 * @see \ManiaControl\Plugins\Plugin::getAuthor()
 	 */
 	public static function getAuthor() {
@@ -150,7 +143,6 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 	}
 
 	/**
-	 *
 	 * @see \ManiaControl\Plugins\Plugin::getDescription()
 	 */
 	public static function getDescription() {
@@ -174,16 +166,16 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 			return;
 		}
 		$this->updateManialink = false;
-		$manialink = $this->buildManialink();
+		$manialink             = $this->buildManialink();
 		$this->maniaControl->manialinkManager->sendManialink($manialink);
 	}
 
 	/**
 	 * Handle PlayerConnect callback
 	 *
-	 * @param array $callback
+	 * @param Player $player
 	 */
-	public function handlePlayerConnect(array $callback) {
+	public function handlePlayerConnect(Player $player) {
 		$this->updateManialink = true;
 	}
 
@@ -207,17 +199,17 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 			// Invalid player or time
 			return;
 		}
-		
-		$login = $data[1];
+
+		$login  = $data[1];
 		$player = $this->maniaControl->playerManager->getPlayer($login);
 		if (!$player) {
 			// Invalid player
 			return;
 		}
-		
+
 		$time = $data[2];
-		$map = $this->maniaControl->mapManager->getCurrentMap();
-		
+		$map  = $this->maniaControl->mapManager->getCurrentMap();
+
 		// Check old record of the player
 		$oldRecord = $this->getLocalRecord($map, $player);
 		if ($oldRecord) {
@@ -227,16 +219,15 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 			}
 			if ($oldRecord->time == $time) {
 				// Same time
-				$message = '$<' . $player->nickname . '$> equalized her/his $<$o' . $oldRecord->rank . '.$> Local Record: ' .
-						 Formatter::formatTime($oldRecord->time);
+				$message = '$<' . $player->nickname . '$> equalized her/his $<$o' . $oldRecord->rank . '.$> Local Record: ' . Formatter::formatTime($oldRecord->time);
 				$this->maniaControl->chat->sendInformation($message);
 				return;
 			}
 		}
-		
+
 		// Save time
 		$mysqli = $this->maniaControl->database->mysqli;
-		$query = "INSERT INTO `" . self::TABLE_RECORDS . "` (
+		$query  = "INSERT INTO `" . self::TABLE_RECORDS . "` (
 				`mapIndex`,
 				`playerIndex`,
 				`time`
@@ -252,21 +243,18 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 			return;
 		}
 		$this->updateManialink = true;
-		
+
 		// Announce record
-		$newRecord = $this->getLocalRecord($map, $player);
-		$notifyOnlyDriver = $this->maniaControl->settingManager->getSetting($this, self::SETTING_NOTIFY_ONLY_DRIVER);
+		$newRecord             = $this->getLocalRecord($map, $player);
+		$notifyOnlyDriver      = $this->maniaControl->settingManager->getSetting($this, self::SETTING_NOTIFY_ONLY_DRIVER);
 		$notifyOnlyBestRecords = $this->maniaControl->settingManager->getSetting($this, self::SETTING_NOTIFY_BEST_RECORDS);
 		if ($notifyOnlyDriver || $notifyOnlyBestRecords > 0 && $newRecord->rank > $notifyOnlyBestRecords) {
 			$improvement = ((!$oldRecord || $newRecord->rank < $oldRecord->rank) ? 'gained the' : 'improved Your');
-			$message = 'You ' . $improvement . ' $<$o' . $newRecord->rank . '.$> Local Record: ' .
-					 Formatter::formatTime($newRecord->time);
+			$message     = 'You ' . $improvement . ' $<$o' . $newRecord->rank . '.$> Local Record: ' . Formatter::formatTime($newRecord->time);
 			$this->maniaControl->chat->sendInformation($message, $player->login);
-		}
-		else {
+		} else {
 			$improvement = ((!$oldRecord || $newRecord->rank < $oldRecord->rank) ? 'gained the' : 'improved the');
-			$message = '$<' . $player->nickname . '$> ' . $improvement . ' $<$o' . $newRecord->rank . '.$> Local Record: ' .
-					 Formatter::formatTime($newRecord->time);
+			$message     = '$<' . $player->nickname . '$> ' . $improvement . ' $<$o' . $newRecord->rank . '.$> Local Record: ' . Formatter::formatTime($newRecord->time);
 			$this->maniaControl->chat->sendInformation($message);
 		}
 	}
@@ -281,25 +269,25 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 		if (!$map) {
 			return null;
 		}
-		
-		$title = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_TITLE);
-		$pos_x = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_POSX);
-		$pos_y = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_POSY);
-		$width = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_WIDTH);
-		$lines = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_LINESCOUNT);
-		$lineHeight = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_LINEHEIGHT);
-		$labelStyle = $this->maniaControl->manialinkManager->styleManager->getDefaultLabelStyle();
-		$quadStyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
+
+		$title        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_TITLE);
+		$pos_x        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_POSX);
+		$pos_y        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_POSY);
+		$width        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_WIDTH);
+		$lines        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_LINESCOUNT);
+		$lineHeight   = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_LINEHEIGHT);
+		$labelStyle   = $this->maniaControl->manialinkManager->styleManager->getDefaultLabelStyle();
+		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
 		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
-		
+
 		$records = $this->getLocalRecords($map);
 		if (!is_array($records)) {
 			trigger_error("Couldn't fetch player records.");
 			return null;
 		}
-		
+
 		$manialink = new ManiaLink(self::MLID_RECORDS);
-		$frame = new Frame();
+		$frame     = new Frame();
 		$manialink->add($frame);
 		$frame->setPosition($pos_x, $pos_y);
 
@@ -307,10 +295,10 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 		$frame->add($backgroundQuad);
 		$backgroundQuad->setVAlign(Control::TOP);
 		$adjustOuterBorder = $this->maniaControl->settingManager->getSetting($this, self::SETTING_ADJUST_OUTER_BORDER);
-		$height = 7. + ($adjustOuterBorder ? count($records) : $lines) * $lineHeight;
+		$height            = 7. + ($adjustOuterBorder ? count($records) : $lines) * $lineHeight;
 		$backgroundQuad->setSize($width * 1.05, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-		
+
 		$titleLabel = new Label();
 		$frame->add($titleLabel);
 		$titleLabel->setPosition(0, $lineHeight * -0.9);
@@ -319,15 +307,15 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 		$titleLabel->setTextSize(2);
 		$titleLabel->setText($title);
 		$titleLabel->setTranslate(true);
-		
+
 		// Times
-		foreach ($records as $index => $record) {
+		foreach($records as $index => $record) {
 			if ($index >= $lines) {
 				break;
 			}
 
 			$y = -8. - $index * $lineHeight;
-			
+
 			$recordFrame = new Frame();
 			$frame->add($recordFrame);
 			$recordFrame->setPosition(0, $y);
@@ -336,7 +324,7 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 			$recordFrame->add($backgroundQuad);
 			$backgroundQuad->setSize($width * 1.04, $lineHeight * 1.4);
 			$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-			
+
 			$rankLabel = new Label();
 			$recordFrame->add($rankLabel);
 			$rankLabel->setHAlign(Control::LEFT);
@@ -345,7 +333,7 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 			$rankLabel->setTextSize(1);
 			$rankLabel->setTextPrefix('$o');
 			$rankLabel->setText($record->rank);
-			
+
 			$nameLabel = new Label();
 			$recordFrame->add($nameLabel);
 			$nameLabel->setHAlign(Control::LEFT);
@@ -353,7 +341,7 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 			$nameLabel->setSize($width * 0.6, $lineHeight);
 			$nameLabel->setTextSize(1);
 			$nameLabel->setText($record->nickname);
-			
+
 			$timeLabel = new Label();
 			$recordFrame->add($timeLabel);
 			$timeLabel->setHAlign(Control::RIGHT);
@@ -362,7 +350,7 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 			$timeLabel->setTextSize(1);
 			$timeLabel->setText(Formatter::formatTime($record->time));
 		}
-		
+
 		return $manialink->render()->saveXML();
 	}
 
@@ -375,8 +363,8 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 	 */
 	public function getLocalRecords(Map $map, $limit = -1) {
 		$mysqli = $this->maniaControl->database->mysqli;
-		$limit = ($limit > 0 ? "LIMIT " . $limit : "");
-		$query = "SELECT * FROM (
+		$limit  = ($limit > 0 ? "LIMIT " . $limit : "");
+		$query  = "SELECT * FROM (
 					SELECT recs.*, @rank := @rank + 1 as `rank` FROM `" . self::TABLE_RECORDS . "` recs, (SELECT @rank := 0) ra
 					WHERE recs.`mapIndex` = {$map->index}
 					ORDER BY recs.`time` ASC
@@ -389,7 +377,7 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 			return null;
 		}
 		$records = array();
-		while ($record = $result->fetch_object()) {
+		while($record = $result->fetch_object()) {
 			array_push($records, $record);
 		}
 		$result->free();
@@ -399,13 +387,13 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 	/**
 	 * Retrieve the local record for the given map and login
 	 *
-	 * @param Map $map
+	 * @param Map    $map
 	 * @param Player $player
 	 * @return mixed
 	 */
 	private function getLocalRecord(Map $map, Player $player) {
 		$mysqli = $this->maniaControl->database->mysqli;
-		$query = "SELECT records.* FROM (
+		$query  = "SELECT records.* FROM (
 					SELECT recs.*, @rank := @rank + 1 as `rank` FROM `" . self::TABLE_RECORDS . "` recs, (SELECT @rank := 0) ra
 					WHERE recs.`mapIndex` = {$map->index}
 					ORDER BY recs.`time` ASC) records

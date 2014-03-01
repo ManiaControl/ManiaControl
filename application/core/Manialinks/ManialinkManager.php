@@ -136,10 +136,12 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 				return $this->maniaControl->client->sendDisplayManialinkPage(null, $manialinkText, $timeout, $hideOnClick);
 			}
 			if (is_string($logins)) {
-				return $this->maniaControl->client->sendDisplayManialinkPage($logins, $manialinkText, $timeout, $hideOnClick);
+				$success = $this->maniaControl->client->sendDisplayManialinkPage($logins, $manialinkText, $timeout, $hideOnClick);
+				return $success;
 			}
 			if ($logins instanceof Player) {
-				return $this->maniaControl->client->sendDisplayManialinkPage($logins->login, $manialinkText, $timeout, $hideOnClick);
+				$success = $this->maniaControl->client->sendDisplayManialinkPage($logins->login, $manialinkText, $timeout, $hideOnClick);
+				return $success;
 			}
 			if (is_array($logins)) {
 				$success = true;
@@ -153,6 +155,10 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 				return $success;
 			}
 		} catch(Exception $e) {
+			if($e->getMessage() == "Login unknown."){
+				return false;
+			}
+			$this->maniaControl->errorHandler->triggerDebugNotice("Exception while sending Manialink: " . $e->getMessage());
 			// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
 			return false;
 		}
