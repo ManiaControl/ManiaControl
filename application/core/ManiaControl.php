@@ -225,14 +225,14 @@ class ManiaControl implements CommandListener, TimerListener {
 		// Announce quit
 		$this->chat->sendInformation('ManiaControl shutting down.');
 
-		if($this->client){
-			try{
-			// Hide manialinks
-			$this->client->sendHideManialinkPage();
-			// Close the client connection
-			$this->client->delete($this->server->ip, $this->server->port);
-			} catch(FatalException $e){
-				$this->errorHandler->triggerDebugNotice($e->getMessage() ." File: " . $e->getFile() . " Line: " . $e->getLine());
+		if ($this->client) {
+			try {
+				// Hide manialinks
+				$this->client->sendHideManialinkPage();
+				// Close the client connection
+				$this->client->delete($this->server->ip, $this->server->port);
+			} catch(FatalException $e) {
+				$this->errorHandler->triggerDebugNotice($e->getMessage() . " File: " . $e->getFile() . " Line: " . $e->getLine());
 			}
 		}
 
@@ -326,8 +326,8 @@ class ManiaControl implements CommandListener, TimerListener {
 
 			} catch(FatalException $e) {
 				//TODO remove
-				if($this->errorHandler){
-					$this->errorHandler->triggerDebugNotice("Fatal Exception: " . $e->getMessage() . " tracestring " . $e->getTraceAsString());
+				if ($this->errorHandler) {
+					$this->errorHandler->triggerDebugNotice("Fatal Exception: " . $e->getMessage() . " Trace: " . $e->getTraceAsString());
 				}
 				$this->quit($e->getMessage());
 			}
@@ -394,8 +394,16 @@ class ManiaControl implements CommandListener, TimerListener {
 		$this->client->enableCallbacks(true);
 
 		// Wait for server to be ready
-		if (!$this->server->waitForStatus(4)) {
-			trigger_error("Server couldn't get ready!", E_USER_ERROR);
+		try {
+			if (!$this->server->waitForStatus(4)) {
+				trigger_error("Server couldn't get ready!", E_USER_ERROR);
+			}
+		} catch(FatalException $e) {
+			//TODO remove
+			if ($this->errorHandler) {
+				$this->errorHandler->triggerDebugNotice("Fatal Exception: " . $e->getMessage() . " Trace: " . $e->getTraceAsString());
+			}
+			$this->quit($e->getMessage());
 		}
 
 		// Connect finished
