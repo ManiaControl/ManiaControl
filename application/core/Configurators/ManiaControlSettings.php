@@ -248,7 +248,7 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 				continue;
 			}
 
-			$this->maniaControl->settingManager->updateSetting($oldSetting->class, $oldSetting->setting, $setting['Value']);
+			$this->maniaControl->settingManager->setSetting($oldSetting->class, $oldSetting->setting, $setting['Value']);
 		}
 
 		//Reopen the Menu
