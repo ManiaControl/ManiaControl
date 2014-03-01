@@ -320,10 +320,10 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 			$frame->add($recordFrame);
 			$recordFrame->setPosition(0, $y);
 
-			$backgroundQuad = new Quad();
+			/*$backgroundQuad = new Quad();
 			$recordFrame->add($backgroundQuad);
 			$backgroundQuad->setSize($width * 1.04, $lineHeight * 1.4);
-			$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
+			$backgroundQuad->setStyles($quadStyle, $quadSubstyle);*/
 
 			$rankLabel = new Label();
 			$recordFrame->add($rankLabel);
@@ -333,6 +333,7 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 			$rankLabel->setTextSize(1);
 			$rankLabel->setTextPrefix('$o');
 			$rankLabel->setText($record->rank);
+			$rankLabel->setTextEmboss(true);
 
 			$nameLabel = new Label();
 			$recordFrame->add($nameLabel);
@@ -341,6 +342,7 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 			$nameLabel->setSize($width * 0.6, $lineHeight);
 			$nameLabel->setTextSize(1);
 			$nameLabel->setText($record->nickname);
+			$nameLabel->setTextEmboss(true);
 
 			$timeLabel = new Label();
 			$recordFrame->add($timeLabel);
@@ -349,6 +351,7 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 			$timeLabel->setSize($width * 0.25, $lineHeight);
 			$timeLabel->setTextSize(1);
 			$timeLabel->setText(Formatter::formatTime($record->time));
+			$timeLabel->setTextEmboss(true);
 		}
 
 		return $manialink->render()->saveXML();
