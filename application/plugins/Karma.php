@@ -594,6 +594,8 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 				}
 			} else {
 				$this->maniaControl->log($error);
+				//TODO remove temp trigger
+				$this->maniaControl->errorHandler->triggerDebugNotice("Error while authenticating on Mania-Exchange Karma " . $error);
 			}
 		}, "application/json", 1000);
 	}
@@ -621,6 +623,8 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 					$this->maniaControl->errorHandler->triggerDebugNotice("Error while authenticating on Mania-Exchange Karma " . $data->data->message);
 				}
 			} else {
+				//TODO remove temp trigger
+				$this->maniaControl->errorHandler->triggerDebugNotice("Error while authenticating on Mania-Exchange Karma " . $error);
 				$this->maniaControl->log($error);
 			}
 		}, "application/json", 1000);
