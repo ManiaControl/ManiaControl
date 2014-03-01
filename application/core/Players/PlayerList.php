@@ -650,6 +650,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 					$this->maniaControl->client->forceSpectator($adminLogin, PlayerActions::SPECTATOR_BUT_KEEP_SELECTABLE);
 					$this->maniaControl->client->forceSpectatorTarget($adminLogin, $targetLogin, 1);
 				} catch(Exception $e) {
+					$this->maniaControl->errorHandler->triggerDebugNotice("PlayerList Debug Line 653: " . $e->getMessage());
 					// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
 				}
 				break;
@@ -724,6 +725,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 					} catch(Exception $e) {
 						//do nothing
 						// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
+						$this->maniaControl->errorHandler->triggerDebugNotice("PlayerList Debug Line 727: " . $e->getMessage());
 					}
 				});
 				break;
@@ -747,6 +749,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 					try {
 						$this->maniaControl->client->kick($target->login, $message);
 					} catch(Exception $e) {
+						$this->maniaControl->errorHandler->triggerDebugNotice("PlayerList Debug Line 751: " . $e->getMessage());
 						// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
 						$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $target->login);
 						return;

@@ -545,23 +545,21 @@ class MapManager implements CallbackListener {
 	public function addMapFromMx($mapId, $login, $update = false) {
 		if (is_numeric($mapId)) {
 			// Check if map exists
-			$this->maniaControl->mapManager->mxManager->getMapInfo($mapId, function (MXMapInfo $mapInfo) use ($login) {
+			$this->maniaControl->mapManager->mxManager->getMapInfo($mapId, function (MXMapInfo $mapInfo) use (&$login, &$update) {
 				if (!$mapInfo || !isset($mapInfo->uploaded)) {
 					// Invalid id
 					$this->maniaControl->chat->sendError('Invalid MX-Id!', $login);
 					return;
 				}
-
 				//Download the file
-				$function = function ($file, $error) use (&$login, &$mapInfo, &$mapDir, &$update) {
+				$this->maniaControl->fileReader->loadFile($mapInfo->downloadurl, function ($file, $error) use (&$login, &$mapInfo, &$mapDir, &$update) {
 					if (!$file) {
 						// Download error
 						$this->maniaControl->chat->sendError('Download failed!', $login);
 						return;
 					}
 					$this->processMapFile($file, $mapInfo, $mapDir, $login, $update);
-				};
-				$this->maniaControl->fileReader->loadFile($mapInfo->downloadurl, $function);
+				});
 			});
 		}
 	}

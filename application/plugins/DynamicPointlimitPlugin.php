@@ -1,10 +1,7 @@
 <?php
 use ManiaControl\Callbacks\CallbackListener;
-use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
-use ManiaControl\Manialinks\ManialinkPageAnswerListener;
-use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
@@ -22,10 +19,11 @@ class DynamicPointlimitPlugin implements CallbackListener, CommandListener, Plug
 	const ID      = 21;
 	const VERSION = 0.1;
 
-	const DYNPNT_MULTIPLIER = 'Pointlimit multiplier';
-	const DYNPNT_OFFSET     = 'Pointlimit offset';
-	const DYNPNT_MIN        = 'Minimum pointlimit';
-	const DYNPNT_MAX        = 'Maximum pointlimit';
+	const DYNPNT_MULTIPLIER  = 'Pointlimit multiplier';
+	const DYNPNT_OFFSET      = 'Pointlimit offset';
+	const DYNPNT_MIN         = 'Minimum pointlimit';
+	const DYNPNT_MAX         = 'Maximum pointlimit';
+	const ACCEPT_OTHER_MODES = 'Activate in Other mode as Royal';
 
 	/**
 	 * Prepares the Plugin
@@ -34,7 +32,11 @@ class DynamicPointlimitPlugin implements CallbackListener, CommandListener, Plug
 	 * @return mixed
 	 */
 	public static function prepare(ManiaControl $maniaControl) {
-		// TODO: Implement prepare() method.
+		$maniaControl->settingManager->initSetting(get_class(), self::ACCEPT_OTHER_MODES, false);
+		$maniaControl->settingManager->initSetting(get_class(), self::DYNPNT_MULTIPLIER, 10);
+		$maniaControl->settingManager->initSetting(get_class(), self::DYNPNT_OFFSET, 0);
+		$maniaControl->settingManager->initSetting(get_class(), self::DYNPNT_MIN, 30);
+		$maniaControl->settingManager->initSetting(get_class(), self::DYNPNT_MAX, 200);
 	}
 
 	/**
@@ -56,13 +58,9 @@ class DynamicPointlimitPlugin implements CallbackListener, CommandListener, Plug
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'changePointlimit');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECT, $this, 'changePointlimit');
 
-		$this->maniaControl->settingManager->initSetting($this, self::DYNPNT_MULTIPLIER, 10);
-		$this->maniaControl->settingManager->initSetting($this, self::DYNPNT_OFFSET, 0);
-		$this->maniaControl->settingManager->initSetting($this, self::DYNPNT_MIN, 30);
-		$this->maniaControl->settingManager->initSetting($this, self::DYNPNT_MAX, 200);
-
-		if($this->maniaControl->server->titleId != 'SMStormRoyal@nadeolabs') {
-			$error = 'This plugin only supports Royal!';
+		$allowOthers = $this->maniaControl->settingManager->getSetting($this, self::ACCEPT_OTHER_MODES);
+		if (!$allowOthers && $this->maniaControl->server->titleId != 'SMStormRoyal@nadeolabs') {
+			$error = 'This plugin only supports Royal (check Settings)!';
 			throw new Exception($error);
 		}
 	}
@@ -74,7 +72,7 @@ class DynamicPointlimitPlugin implements CallbackListener, CommandListener, Plug
 		$this->maniaControl->manialinkManager->unregisterManialinkPageAnswerListener($this);
 		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
 
-		$this->maniaControl = null;
+		unset($this->maniaControl);
 	}
 
 	/**
@@ -133,7 +131,7 @@ class DynamicPointlimitPlugin implements CallbackListener, CommandListener, Plug
 
 		/** @var  Player $player */
 		foreach($this->maniaControl->playerManager->getPlayers() as $player) {
-			if($player->isSpectator) {
+			if ($player->isSpectator) {
 				$numberOfSpectators++;
 			} else {
 				$numberOfPlayers++;
@@ -144,10 +142,12 @@ class DynamicPointlimitPlugin implements CallbackListener, CommandListener, Plug
 
 		$min_value = $this->maniaControl->settingManager->getSetting($this, self::DYNPNT_MIN);
 		$max_value = $this->maniaControl->settingManager->getSetting($this, self::DYNPNT_MAX);
-		if($pointlimit < $min_value)
+		if ($pointlimit < $min_value) {
 			$pointlimit = $min_value;
-		if($pointlimit > $max_value)
+		}
+		if ($pointlimit > $max_value) {
 			$pointlimit = $max_value;
+		}
 
 		$this->maniaControl->client->setModeScriptSettings(array('S_MapPointsLimit' => $pointlimit));
 	}

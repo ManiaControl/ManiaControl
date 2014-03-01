@@ -87,6 +87,7 @@ class PlayerActions {
 			$this->maniaControl->client->forceSpectator($target->login, self::SPECTATOR_PLAYER);
 		} catch(Exception $e) {
 			// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
+			$this->maniaControl->errorHandler->triggerDebugNotice("PlayerActions Debug Line 90: " . $e->getMessage());
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $admin->login);
 			return;
 		}
@@ -96,6 +97,7 @@ class PlayerActions {
 				$this->maniaControl->client->forceSpectator($target->login, self::SPECTATOR_USER_SELECTABLE);
 			} catch(Exception $e) {
 				// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
+				$this->maniaControl->errorHandler->triggerDebugNotice("PlayerActions Debug Line 100: " . $e->getMessage());
 				$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $admin->login);
 				return;
 			}
@@ -178,6 +180,7 @@ class PlayerActions {
 			try {
 				$this->maniaControl->client->spectatorReleasePlayerSlot($target->login);
 			} catch(Exception $e) {
+				$this->maniaControl->errorHandler->triggerDebugNotice("PlayerActions Debug Line 183: " . $e->getMessage());
 				// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
 				//do nothing
 			}
@@ -348,6 +351,7 @@ class PlayerActions {
 			}
 		} catch(Exception $e) {
 			// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
+			$this->maniaControl->errorHandler->triggerDebugNotice("PlayerActions Debug Line 354: " . $e->getMessage());
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $admin->login);
 			return;
 		}

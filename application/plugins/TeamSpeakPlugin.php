@@ -6,7 +6,6 @@ use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\ManiaLink;
 use ManiaControl\Callbacks\CallbackListener;
-use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
@@ -52,13 +51,19 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 	private $refreshInterval = 90;
 
 	/**
-	 * Prepares the Plugin
+	 * Prepares the Plugin (Init Settings)
 	 *
 	 * @param ManiaControl $maniaControl
 	 * @return mixed
 	 */
 	public static function prepare(ManiaControl $maniaControl) {
-		// TODO: Implement prepare() method.
+		$maniaControl->settingManager->initSetting(get_class(), self::TEAMSPEAK_SID, 1);
+		$maniaControl->settingManager->initSetting(get_class(), self::TEAMSPEAK_SERVERHOST, 'ts3.somehoster.com');
+		$maniaControl->settingManager->initSetting(get_class(), self::TEAMSPEAK_SERVERPORT, 9987);
+		$maniaControl->settingManager->initSetting(get_class(), self::TEAMSPEAK_QUERYHOST, '');
+		$maniaControl->settingManager->initSetting(get_class(), self::TEAMSPEAK_QUERYPORT, 10011);
+		$maniaControl->settingManager->initSetting(get_class(), self::TEAMSPEAK_QUERYUSER, '');
+		$maniaControl->settingManager->initSetting(get_class(), self::TEAMSPEAK_QUERYPASS, '');
 	}
 
 	/**
@@ -69,7 +74,6 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 	 */
 	public function load(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
-		$this->addConfigs();
 		$this->checkConfig();
 
 		$this->refreshTime = time();
@@ -82,18 +86,6 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 		$this->addToMenu();
 	}
 
-	/**
-	 * Function used to add the configuration options to the settings manager.
-	 */
-	private function addConfigs() {
-		$this->maniaControl->settingManager->initSetting($this, self::TEAMSPEAK_SID, 1);
-		$this->maniaControl->settingManager->initSetting($this, self::TEAMSPEAK_SERVERHOST, 'ts3.somehoster.com');
-		$this->maniaControl->settingManager->initSetting($this, self::TEAMSPEAK_SERVERPORT, 9987);
-		$this->maniaControl->settingManager->initSetting($this, self::TEAMSPEAK_QUERYHOST, '');
-		$this->maniaControl->settingManager->initSetting($this, self::TEAMSPEAK_QUERYPORT, 10011);
-		$this->maniaControl->settingManager->initSetting($this, self::TEAMSPEAK_QUERYUSER, '');
-		$this->maniaControl->settingManager->initSetting($this, self::TEAMSPEAK_QUERYPASS, '');
-	}
 
 	/**
 	 * Function used to check certain configuration options to check if they can be used.

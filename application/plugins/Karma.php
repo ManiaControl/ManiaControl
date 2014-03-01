@@ -203,7 +203,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		// Loop players
 		foreach($players as $login => $player) {
 			// Get player vote
-			$vote = $this->getPlayerVote($player, $map); //TODO what is this for, vote nowhere used?
+			//$vote = $this->getPlayerVote($player, $map); //TODO what is this for, vote nowhere used?
 
 			// Adjust manialink for player's vote
 			$votesFrame = $this->manialink->votesFrame;

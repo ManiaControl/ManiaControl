@@ -10,6 +10,7 @@ use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\ManiaLink;
 use FML\Script\Script;
 use ManiaControl\Callbacks\CallbackListener;
+use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
@@ -53,7 +54,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_ITEMSIZE, 6.);
 
 		// Register for callbacks
-		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_ONINIT, $this, 'handleOnInit');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_AFTERINIT, $this, 'handleAfterInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerJoined');
 		$this->maniaControl->callbackManager->registerCallbackListener(AuthenticationManager::CB_AUTH_LEVEL_CHANGED, $this, 'handlePlayerJoined');
 	}
@@ -122,9 +123,9 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	}
 
 	/**
-	 * Handle ManiaControl OnInit callback
+	 * Handle ManiaControl AfterInit callback
 	 */
-	public function handleOnInit() {
+	public function handleAfterInit() {
 		$this->initCompleted = true;
 		$this->rebuildAndShowMenu();
 	}
