@@ -209,9 +209,9 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	public function addVoteMenuItem(Control $control, $order = 0, $description = null) {
 		if (!isset($this->voteMenuItems[$order])) {
 			$this->voteMenuItems[$order] = array();
+			array_push($this->voteMenuItems[$order], array($control, $description));
+			krsort($this->voteMenuItems);
 		}
-		array_push($this->voteMenuItems[$order], array($control, $description));
-		krsort($this->voteMenuItems);
 	}
 
 	/**
