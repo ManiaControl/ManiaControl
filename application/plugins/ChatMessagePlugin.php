@@ -313,6 +313,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		try {
 			$this->maniaControl->client->kick($player->login, $message);
 		} catch(Exception $e) {
+			$this->maniaControl->errorHandler->triggerDebugNotice("ChatMessagePlugin Debug Line 316: " . $e->getMessage());
 			// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 			return;
@@ -333,6 +334,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		try {
 			$this->maniaControl->client->kick($player->login, $message);
 		} catch(Exception $e) {
+			$this->maniaControl->errorHandler->triggerDebugNotice("ChatMessagePlugin Debug Line " . $e->getLine() . ": " . $e->getMessage());
 			// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 			return;
@@ -354,6 +356,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 			try {
 				$this->maniaControl->client->forceSpectator($player->login, 3);
 			} catch(Exception $e) {
+				$this->maniaControl->errorHandler->triggerDebugNotice("ChatMessagePlugin Debug Line " . $e->getLine() . ": " . $e->getMessage());
 				// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
 				$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 				return;
@@ -363,6 +366,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 			try {
 				$this->maniaControl->client->spectatorReleasePlayerSlot($player->login);
 			} catch(Exception $e) {
+				$this->maniaControl->errorHandler->triggerDebugNotice("ChatMessagePlugin Debug Line " . $e->getLine() . ": " . $e->getMessage());
 				// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
 				//to nothing
 			}
@@ -386,7 +390,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 			$pid++;
 		}
 
-		if ($login == 'lj') {
+		if ($login == 'lj' && $pid > 1) {
 			return $player->nickname;
 		}
 
@@ -435,6 +439,6 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	 * @return string
 	 */
 	public static function getDescription() {
-		return null;
+		return "Plugin offers various Chat-Commands like /gg /hi /afk /rq...";
 	}
 }

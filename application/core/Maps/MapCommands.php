@@ -11,7 +11,6 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\IconManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
-use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
  * Class offering commands to manage maps
@@ -105,16 +104,10 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$map = $nextQueued[1];
 			$this->maniaControl->chat->sendInformation("Next map is $<" . $map->name . "$> from $<" . $map->authorNick . "$> requested by $<" . $requester->nickname . "$>.", $player->login);
 		} else {
-			try {
-				$mapIndex = $this->maniaControl->client->getNextMapIndex();
-			} catch(Exception $e) {
-				// TODO: is it even possible that an exception other than connection errors will be thrown? - remove try-catch?
-				trigger_error("Error while Reading the next Map Index");
-				$this->maniaControl->chat->sendError("Error while Reading next Map Inde");
-				return;
-			}
-			$maps = $this->maniaControl->mapManager->getMaps();
-			$map  = $maps[$mapIndex];
+
+			$mapIndex = $this->maniaControl->client->getNextMapIndex();
+			$maps     = $this->maniaControl->mapManager->getMaps();
+			$map      = $maps[$mapIndex];
 			$this->maniaControl->chat->sendInformation("Next map is $<" . $map->name . "$> from $<" . $map->authorNick . "$>.", $player->login);
 		}
 	}
@@ -190,13 +183,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			return;
 		}
 
-		try {
-			$this->maniaControl->client->nextMap();
-		} catch(Exception $e) {
-			// TODO: is it even possible that an exception other than connection errors will be thrown? - remove try-catch?
-			$this->maniaControl->chat->sendError("Error while Skipping the Map");
-			return;
-		}
+		$this->maniaControl->client->nextMap();
 
 		$message = '$<' . $player->nickname . '$> skipped the current Map!';
 		$this->maniaControl->chat->sendSuccess($message);
@@ -217,12 +204,8 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		$message = '$<' . $player->nickname . '$> restarted the current Map!';
 		$this->maniaControl->chat->sendSuccess($message);
 		$this->maniaControl->log($message, true);
-		try {
-			$this->maniaControl->client->restartMap();
-		} catch(Exception $e) {
-			// TODO: is it even possible that an exception other than connection errors will be thrown? - remove try-catch?
-			//do nothing
-		}
+
+		$this->maniaControl->client->restartMap();
 	}
 
 	/**

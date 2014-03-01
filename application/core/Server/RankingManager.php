@@ -30,14 +30,14 @@ class RankingManager implements CallbackListener {
 	 *
 	 * @param \ManiaControl\ManiaControl $maniaControl
 	 */
-	public function __construct(ManiaControl $maniaControl) { //TODO statistic wins
+	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
 		//Register Callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_MODESCRIPTCALLBACK, $this, 'handleCallbacks');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_MODESCRIPTCALLBACKARRAY, $this, 'handleCallbacks');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_ONINIT, $this, 'onInit');
-		//TODO won message at end of the map (disable as setting)
+		//TODO won message at end of the map (disable as setting) (and public announce only all %50 (setting) players)
 	}
 
 	/**

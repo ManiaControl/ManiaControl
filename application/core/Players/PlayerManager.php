@@ -20,7 +20,6 @@ class PlayerManager implements CallbackListener {
 	 */
 	const CB_PLAYERCONNECT            = 'PlayerManagerCallback.PlayerConnect';
 	const CB_PLAYERDISCONNECT         = 'PlayerManagerCallback.PlayerDisconnect';
-	const CB_ONINIT                   = 'PlayerManagerCallback.OnInit';
 	const CB_PLAYERINFOCHANGED        = 'PlayerManagerCallback.PlayerInfoChanged';
 	const TABLE_PLAYERS               = 'mc_players';
 	const SETTING_JOIN_LEAVE_MESSAGES = 'Enable Join & Leave Messages';
@@ -135,10 +134,6 @@ class PlayerManager implements CallbackListener {
 			$player->hasJoinedGame = true;
 			$this->addPlayer($player);
 		}
-
-		// Trigger own callback
-		// TODO: what for?
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_ONINIT);
 	}
 
 	/**

@@ -60,7 +60,7 @@ class StatisticCollector implements CallbackListener {
 	 *
 	 * @param \ManiaControl\ManiaControl $maniaControl
 	 */
-	public function __construct(ManiaControl $maniaControl) { //TODO statistic wins
+	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
 		//Register Callbacks

@@ -2,7 +2,6 @@
 
 namespace ManiaControl;
 
-use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 /**
  * Chat utility class
  *
@@ -68,15 +67,10 @@ class Chat {
 			return false;
 		}
 		$chatMessage = '$z$<' . $this->getPrefix($prefix) . $message . '$>$z';
-		try {
-			if ($login === null) {
-				$this->maniaControl->client->chatSendServerMessage($chatMessage);
-			} else {
-				$this->maniaControl->client->chatSendServerMessage($chatMessage, $login);
-			}
-		} catch(Exception $e) {
-			// TODO: is it even possible that an exception other than connection errors will be thrown? - remove try-catch?
-			return false;
+		if ($login === null) {
+			$this->maniaControl->client->chatSendServerMessage($chatMessage);
+		} else {
+			$this->maniaControl->client->chatSendServerMessage($chatMessage, $login);
 		}
 		return true;
 	}

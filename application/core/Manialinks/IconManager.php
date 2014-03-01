@@ -6,6 +6,7 @@ use FML\Controls\Frame;
 use FML\Controls\Quad;
 use FML\ManiaLink;
 use ManiaControl\Callbacks\CallbackListener;
+use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Players\Player;
@@ -47,7 +48,7 @@ class IconManager implements CallbackListener {
 		$this->addDefaultIcons();
 
 		// Register for callbacks
-		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_ONINIT, $this, 'handleOnInit');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_AFTERINIT, $this, 'handleAfterInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
 	}
 
@@ -88,7 +89,7 @@ class IconManager implements CallbackListener {
 	/**
 	 * Handle OnInit Callback
 	 */
-	public function handleOnInit() {
+	public function handleAfterInit() {
 		$this->preloadIcons();
 	}
 
