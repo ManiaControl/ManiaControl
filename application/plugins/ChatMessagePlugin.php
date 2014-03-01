@@ -352,6 +352,10 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		$this->maniaControl->chat->sendChat($msg, null, false);
 
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_AFK_FORCE_SPEC)) {
+			if($player->isSpectator){
+				return;
+			}
+
 			// force into spec
 			try {
 				$this->maniaControl->client->forceSpectator($player->login, 3);
