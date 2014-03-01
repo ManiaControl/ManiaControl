@@ -325,6 +325,10 @@ class ManiaControl implements CommandListener, TimerListener {
 				$this->callbackManager->manageCallbacks();
 
 			} catch(FatalException $e) {
+				//TODO remove
+				if($this->errorHandler){
+					$this->errorHandler->triggerDebugNotice("Fatal Exception: " . $e->getMessage() . " tracestring " . $e->getTraceAsString());
+				}
 				$this->quit($e->getMessage());
 			}
 
