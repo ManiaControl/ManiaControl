@@ -197,6 +197,11 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 					} else if ($index <= 0) {
 						$responseData = $methodResponse[0];
 						$this->dedimaniaData->addPlayer(new DedimaniaPlayer($responseData));
+
+						//Fetch records if he is the first who joined the server
+						if (count($this->maniaControl->playerManager->getPlayers()) == 1) {
+							$this->fetchDedimaniaRecords(true);
+						}
 					}
 				}
 			} else {
@@ -274,7 +279,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 		$replays  = array();
 		foreach($this->dedimaniaData->records as $record) {
 			/** @var RecordData $record */
-			if($record->rank > $this->dedimaniaData->serverMaxRank){
+			if ($record->rank > $this->dedimaniaData->serverMaxRank) {
 				break;
 			}
 
