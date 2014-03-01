@@ -36,6 +36,10 @@ class PluginManager {
 
 		$this->pluginMenu = new PluginMenu($maniaControl);
 		$this->maniaControl->configurator->addMenu($this->pluginMenu);
+
+		/*$this->fetchPluginList(function ($data) {
+			var_dump($data);
+		});*/
 	}
 
 	/**
@@ -189,35 +193,35 @@ class PluginManager {
 		$classesBefore = get_declared_classes();
 		$this->loadPluginFiles($pluginsDirectory);
 		$classesAfter = get_declared_classes();
-		
-		$newClasses   = array_diff($classesAfter, $classesBefore);
+
+		$newClasses = array_diff($classesAfter, $classesBefore);
 		foreach($newClasses as $className) {
 			if (!$this->isPluginClass($className)) {
 				continue;
 			}
-		
+
 			$this->addPluginClass($className);
 			$className::prepare($this->maniaControl);
-		
+
 			if ($this->isPluginActive($className)) {
 				continue;
 			}
 			if (!$this->getSavedPluginStatus($className)) {
 				continue;
 			}
-			
+
 			$this->activatePlugin($className);
 		}
 	}
-	
+
 	/**
 	 * Load all Plugin Files from the Directory
-	 * 
+	 *
 	 * @param string $directory
 	 */
 	private function loadPluginFiles($directory = '') {
 		$pluginFiles = scandir($directory);
-		foreach ($pluginFiles as $pluginFile) {
+		foreach($pluginFiles as $pluginFile) {
 			if (stripos($pluginFile, '.') === 0) {
 				continue;
 			}
@@ -338,5 +342,24 @@ class PluginManager {
 		$pluginStatement->free_result();
 		$pluginStatement->close();
 		return $active;
+	}
+
+	/**
+	 * Fetch the plugin list of the ManiaControl Website
+	 *
+	 * @param      $function
+	 * @param bool $ignoreVersion
+	 */
+	private function fetchPluginList($function) {
+		$url = ManiaControl::URL_WEBSERVICE . 'plugins';
+
+		$this->maniaControl->fileReader->loadFile($url, function ($dataJson, $error) use (&$function) {
+			$data = json_decode($dataJson);
+			if (!$data || !isset($data[0])) {
+				return;
+			}
+
+			call_user_func($function, $data[0]);
+		});
 	}
 }
