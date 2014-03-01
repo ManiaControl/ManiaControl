@@ -164,7 +164,7 @@ class PlayerActions {
 		}
 		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
 
-		if (!$admin || !$target) {
+		if (!$admin || !$target || $target->isSpectator) {
 			return;
 		}
 
