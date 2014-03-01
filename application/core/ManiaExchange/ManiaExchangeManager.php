@@ -274,8 +274,10 @@ class ManiaExchangeManager {
 		// compile search URL
 		$url = 'http://' . $titlePrefix . '.mania-exchange.com/tracksearch?api=on';
 
-		if ($env != '') {
-			$url .= '&environments=' . $this->getEnvironment($env);
+		$game = explode('@', $titleId);
+		$envNumber = $this->getEnvironment($game[0]);
+		if($env != '' || $envNumber != -1){
+			$url .= '&environments=' . $envNumber;
 		}
 		if ($name != '') {
 			$url .= '&trackname=' . str_replace(" ", "%20", $name);
@@ -286,6 +288,7 @@ class ManiaExchangeManager {
 
 		$url .= '&priord=' . $searchOrder;
 		$url .= '&limit=' . $maxMapsReturned;
+
 
 		// Get MapTypes
 		try {
@@ -334,7 +337,6 @@ class ManiaExchangeManager {
 	private function getEnvironment($env) {
 		switch($env) {
 			case 'TMCanyon':
-			case 'SMStorm':
 				return 1;
 			case 'TMStadium':
 				return 2;
