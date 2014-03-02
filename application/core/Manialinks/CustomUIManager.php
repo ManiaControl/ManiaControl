@@ -56,10 +56,10 @@ class CustomUIManager implements CallbackListener, TimerListener {
 	 */
 	private function updateManialink(Player $player = null) {
 		$manialinkText = $this->customUI->render()->saveXML();
-		/*if ($player) {
+		if ($player) {
 			$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
 			return;
-		}*/
+		}
 		$this->maniaControl->manialinkManager->sendManialink($manialinkText);
 	}
 
@@ -83,10 +83,6 @@ class CustomUIManager implements CallbackListener, TimerListener {
 	 */
 	public function handlePlayerJoined(Player $player) {
 		$this->updateManialink($player);
-		//send it again after 10 secs
-		$this->maniaControl->timerManager->registerOneTimeListening($this, function($time) use (&$player){
-			$this->updateManialink($player);
-		},5000);
 	}
 
 	/**
