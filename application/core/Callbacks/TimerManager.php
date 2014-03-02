@@ -43,7 +43,7 @@ class TimerManager {
 	 * @return bool
 	 */
 	public function registerTimerListening(TimerListener $listener, $method, $time, $oneTime = false) {
-		if (!method_exists($listener, $method) && !is_callable($method)) {
+		if ((!is_string($method) || !method_exists($listener, $method)) && !is_callable($method)) {
 			trigger_error("Given listener (" . get_class($listener) . ") can't handle timer (no method '{$method}')!");
 			return false;
 		}
@@ -54,9 +54,12 @@ class TimerManager {
 		$listening->listener    = $listener;
 		$listening->method      = $method;
 		$listening->deltaTime   = $time / 1000;
-		$listening->lastTrigger = -1;
 		$listening->oneTime     = $oneTime;
-
+		if($oneTime){
+			$listening->lastTrigger = microtime(true);
+		}else{
+			$listening->lastTrigger = -1;
+		}
 		array_push($this->timerListenings, $listening);
 
 		return true;

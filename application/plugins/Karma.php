@@ -97,7 +97,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_BEGINMAP, $this, 'handleBeginMap');
 		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_BEGINMAP, $this, 'importMxKarmaVotes');
 		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_ENDMAP, $this, 'sendMxKarmaVotes');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCONNECT, $this, 'handlePlayerConnect');
+		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCHAT, $this, 'handlePlayerChat');
 
 		// Define player stats
@@ -239,11 +239,9 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	/**
 	 * Handle PlayerConnect callback
 	 *
-	 * @param array $callback
+	 * @param \ManiaControl\Players\Player $player
 	 */
-	public function handlePlayerConnect(array $callback) {
-		$login  = $callback[1][0];
-		$player = $this->maniaControl->playerManager->getPlayer($login);
+	public function handlePlayerConnect(Player $player) {
 		if (!$player) {
 			return;
 		}
