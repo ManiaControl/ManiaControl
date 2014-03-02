@@ -48,7 +48,11 @@ class StyleManager {
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_LABEL_DEFAULT_STYLE, 'TextTitle1');
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_QUAD_DEFAULT_STYLE, 'Bgs1InRace');
+<<<<<<< HEAD
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_QUAD_DEFAULT_SUBSTYLE, 'BgCardList');
+=======
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_QUAD_DEFAULT_SUBSTYLE, 'BgTitleShadow');
+>>>>>>> parent of 1220ee5... Change widgets to fit new style
 
 		//Main Widget
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAIN_WIDGET_DEFAULT_STYLE, Quad_BgRaceScore2::STYLE);
