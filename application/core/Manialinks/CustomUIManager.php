@@ -25,6 +25,7 @@ class CustomUIManager implements CallbackListener, TimerListener {
 	 * Private Properties
 	 */
 	private $maniaControl = null;
+	/** @var customUI $customUI */
 	private $customUI = null;
 	private $updateManialink = false;
 
