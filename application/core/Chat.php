@@ -1,6 +1,7 @@
 <?php
 
 namespace ManiaControl;
+use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
  * Chat utility class
@@ -70,7 +71,13 @@ class Chat {
 		if ($login === null) {
 			$this->maniaControl->client->chatSendServerMessage($chatMessage);
 		} else {
+			try{
 			$this->maniaControl->client->chatSendServerMessage($chatMessage, $login);
+			} catch(Exception $e){
+				if($e->getMessage() != "Login unknown."){
+					throw $e;
+				}
+			}
 		}
 		return true;
 	}

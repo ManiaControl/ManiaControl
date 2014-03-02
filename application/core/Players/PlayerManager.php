@@ -5,6 +5,7 @@ namespace ManiaControl\Players;
 use ManiaControl\Admin\AdminLists;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Statistics\StatisticManager;
@@ -14,7 +15,7 @@ use ManiaControl\Statistics\StatisticManager;
  *
  * @author kremsy & steeffeen
  */
-class PlayerManager implements CallbackListener {
+class PlayerManager implements CallbackListener, TimerListener {
 	/**
 	 * Constants
 	 */
@@ -203,21 +204,24 @@ class PlayerManager implements CallbackListener {
 
 		//Check if Player finished joining the game
 		if($player->hasJoinedGame && !$prevJoinState){
-			if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES) && !$player->isFakePlayer()) {
-				$string      = array(0 => '$0f0Player', 1 => '$0f0Moderator', 2 => '$0f0Admin', 3 => '$0f0SuperAdmin', 4 => '$0f0MasterAdmin');
-				$chatMessage = '$s$0f0' . $string[$player->authLevel] . ' $fff' . $player->nickname . '$z$s$0f0 Nation:$fff ' . $player->getCountry() . ' $z$s$0f0joined!';
-				$this->maniaControl->chat->sendChat($chatMessage);
-				$this->maniaControl->chat->sendInformation('This server uses ManiaControl v' . ManiaControl::VERSION . '!', $player->login);
-			}
+			//Delay join on 5secs to avoid the non appearing widgets in tm
+			$this->maniaControl->timerManager->registerOneTimeListening($this, function($time) use (&$player){
+				if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES) && !$player->isFakePlayer()) {
+					$string      = array(0 => '$0f0Player', 1 => '$0f0Moderator', 2 => '$0f0Admin', 3 => '$0f0SuperAdmin', 4 => '$0f0MasterAdmin');
+					$chatMessage = '$s$0f0' . $string[$player->authLevel] . ' $fff' . $player->nickname . '$z$s$0f0 Nation:$fff ' . $player->getCountry() . ' $z$s$0f0joined!';
+					$this->maniaControl->chat->sendChat($chatMessage);
+					$this->maniaControl->chat->sendInformation('This server uses ManiaControl v' . ManiaControl::VERSION . '!', $player->login);
+				}
 
-			$logMessage = "Player joined: {$player->login} / " . Formatter::stripCodes($player->nickname) . " Nation: " . $player->getCountry() . " IP: {$player->ipAddress}";
-			$this->maniaControl->log($logMessage);
+				$logMessage = "Player joined: {$player->login} / " . Formatter::stripCodes($player->nickname) . " Nation: " . $player->getCountry() . " IP: {$player->ipAddress}";
+				$this->maniaControl->log($logMessage);
 
-			// Increment the Player Join Count
-			$this->maniaControl->statisticManager->incrementStat(self::STAT_JOIN_COUNT, $player, $this->maniaControl->server->index);
+				// Increment the Player Join Count
+				$this->maniaControl->statisticManager->incrementStat(self::STAT_JOIN_COUNT, $player, $this->maniaControl->server->index);
 
-			// Trigger own PlayerJoined callback
-			$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERCONNECT, $player);
+				// Trigger own PlayerJoined callback
+				$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERCONNECT, $player);
+			}, 2000);
 		}
 
 		// Trigger own callback
