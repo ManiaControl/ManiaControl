@@ -85,7 +85,6 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_LINEHEIGHT, 4);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_LINESCOUNT, 12);
 
-		//TODO what was CB_IC_ClientUpdated?
 		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_BEGINMAP, $this, 'handleBeginMap');
 		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_ENDMAP, $this, 'handleMapEnd');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
@@ -730,8 +729,6 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	 * Build simple player list for callbacks
 	 */
 	private function getPlayerList() {
-		$client = null;
-
 		$players = $this->maniaControl->playerManager->getPlayers();
 
 		if (count($players) == 0) {
@@ -957,9 +954,9 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 			$timeLabel->setTextEmboss(true);
 		}
 
-		return $manialink->render()->saveXML();
+		return $manialink;
 	}
-
+	
 	/**
 	 * Decodes xml rpc response
 	 *

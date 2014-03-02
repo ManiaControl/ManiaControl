@@ -358,8 +358,7 @@ class SlotMachinePlugin implements Plugin, CallbackListener, ManialinkPageAnswer
 
 		// Send manialink
 		if ($showSelf) {
-			$manialinkText = $maniaLink->render()->saveXML();
-			$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
+			$this->maniaControl->manialinkManager->sendManialink($maniaLink, $player->login);
 		} else {
 			return $frame;
 		}
@@ -418,8 +417,7 @@ class SlotMachinePlugin implements Plugin, CallbackListener, ManialinkPageAnswer
 
 
 		// Send manialink
-		$manialinkText = $maniaLink->render()->saveXML();
-		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $login);
+		$this->maniaControl->manialinkManager->sendManialink($maniaLink, $login);
 	}
 
 	/**
@@ -757,12 +755,10 @@ class SlotMachinePlugin implements Plugin, CallbackListener, ManialinkPageAnswer
 	 */
 	public function unload() {
 		$emptyManialink = new ManiaLink(self::SLOT_MAIN_ML);
-		$manialinkText  = $emptyManialink->render()->saveXML();
-		$this->maniaControl->manialinkManager->sendManialink($manialinkText);
+		$this->maniaControl->manialinkManager->sendManialink($emptyManialink);
 
 		$emptyManialink = new ManiaLink(self::SLOT_ICON_ML);
-		$manialinkText  = $emptyManialink->render()->saveXML();
-		$this->maniaControl->manialinkManager->sendManialink($manialinkText);
+		$this->maniaControl->manialinkManager->sendManialink($emptyManialink);
 
 		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
 		$this->maniaControl->manialinkManager->unregisterManialinkPageAnswerListener($this);

@@ -181,8 +181,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 		$this->destroyVote();
 		$emptyManialink = new ManiaLink(self::MLID_ICON);
-		$manialinkText  = $emptyManialink->render()->saveXML();
-		$this->maniaControl->manialinkManager->sendManialink($manialinkText);
+		$this->maniaControl->manialinkManager->sendManialink($emptyManialink);
 		$this->maniaControl->commandManager->unregisterCommandListener($this);
 		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
 		$this->maniaControl->manialinkManager->unregisterManialinkPageAnswerListener($this);
@@ -491,8 +490,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 */
 	private function destroyVote() {
 		$emptyManialink = new ManiaLink(self::MLID_WIDGET);
-		$manialinkText  = $emptyManialink->render()->saveXML();
-		$this->maniaControl->manialinkManager->sendManialink($manialinkText);
+		$this->maniaControl->manialinkManager->sendManialink($emptyManialink);
 
 		unset($this->currentVote);
 	}
@@ -624,8 +622,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$label->setText("F8");
 
 		// Send manialink
-		$manialinkText = $maniaLink->render()->saveXML();
-		$this->maniaControl->manialinkManager->sendManialink($manialinkText);
+		$this->maniaControl->manialinkManager->sendManialink($maniaLink);
 	}
 
 	/**
@@ -729,8 +726,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 
 		// Send manialink
-		$manialinkText = $maniaLink->render()->saveXML();
-		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $login);
+		$this->maniaControl->manialinkManager->sendManialink($maniaLink, $login);
 	}
 
 
