@@ -202,6 +202,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$label->setTextSize(1.3);
 		$label->setText(Formatter::stripDirtyCodes($map->name));
 		$label->setTextColor("FFF");
+		$label->setSize($width - 5, $height);
 
 		$label = new Label_Text();
 		$frame->add($label);
@@ -214,6 +215,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$label->setScale(0.8);
 		$label->setText($map->authorLogin);
 		$label->setTextColor("FFF");
+		$label->setSize($width - 5, $height);
 
 		if (isset($map->mx->pageurl)) {
 			$quad = new Quad();
