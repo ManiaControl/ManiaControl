@@ -131,6 +131,9 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	public function sendManialink($manialinkText, $logins = null, $timeout = 0, $hideOnClick = false) {
 		$manialinkText = (string) $manialinkText;
 
+		if(!$manialinkText)
+			return true;
+
 		try {
 			if (!$logins) {
 				return $this->maniaControl->client->sendDisplayManialinkPage(null, $manialinkText, $timeout, $hideOnClick);
