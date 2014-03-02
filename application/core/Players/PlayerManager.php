@@ -204,7 +204,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 
 		//Check if Player finished joining the game
 		if($player->hasJoinedGame && !$prevJoinState){
-			//Delay join on 5secs to avoid the non appearing widgets in tm
+			//Delay join on 2secs to avoid the non appearing widgets in tm
 			$this->maniaControl->timerManager->registerOneTimeListening($this, function($time) use (&$player){
 				if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES) && !$player->isFakePlayer()) {
 					$string      = array(0 => '$0f0Player', 1 => '$0f0Moderator', 2 => '$0f0Admin', 3 => '$0f0SuperAdmin', 4 => '$0f0MasterAdmin');
@@ -221,7 +221,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 
 				// Trigger own PlayerJoined callback
 				$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERCONNECT, $player);
-			}, 2000);
+			}, 1000);
 		}
 
 		// Trigger own callback
