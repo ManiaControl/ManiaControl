@@ -10,8 +10,8 @@ namespace ManiaControl\Statistics;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
-use ManiaControl\Players\PlayerManager;
 use ManiaControl\Players\Player;
+use ManiaControl\Players\PlayerManager;
 
 class StatisticCollector implements CallbackListener {
 	/**
@@ -71,7 +71,7 @@ class StatisticCollector implements CallbackListener {
 
 		//Initialize Settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_COLLECT_STATS_ENABLED, true);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_COLLECT_STATS_MINPLAYERS, 2); //TODO just temp on 2
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_COLLECT_STATS_MINPLAYERS, 4);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_ON_SHOOT_PRESTORE, 10);
 	}
 
@@ -271,7 +271,9 @@ class StatisticCollector implements CallbackListener {
 						$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_KILL, $shooter);
 					}
 				}
-				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_DEATH, $victim);
+				if ($victim) {
+					$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_DEATH, $victim);
+				}
 				break;
 			case 'LibXmlRpc_OnPlayerRequestRespawn':
 				$player = $this->maniaControl->playerManager->getPlayer($callback[1][1][0]);
