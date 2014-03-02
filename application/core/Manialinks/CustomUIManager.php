@@ -55,12 +55,11 @@ class CustomUIManager implements CallbackListener, TimerListener {
 	 * @param Player $player
 	 */
 	private function updateManialink(Player $player = null) {
-		$manialinkText = $this->customUI->render()->saveXML();
 		if ($player) {
-			$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
+			$this->maniaControl->manialinkManager->sendManialink($this->customUI, $player->login);
 			return;
 		}
-		$this->maniaControl->manialinkManager->sendManialink($manialinkText);
+		$this->maniaControl->manialinkManager->sendManialink($this->customUI);
 	}
 
 	/**

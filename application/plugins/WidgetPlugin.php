@@ -227,8 +227,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		}
 
 		// Send manialink
-		$manialinkText = $maniaLink->render()->saveXML();
-		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $login);
+		$this->maniaControl->manialinkManager->sendManialink($maniaLink, $login);
 	}
 
 	/**
@@ -270,8 +269,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$script->addTimeLabel($label, true);
 
 		// Send manialink
-		$manialinkText = $maniaLink->render()->saveXML();
-		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $login);
+		$this->maniaControl->manialinkManager->sendManialink($maniaLink, $login);
 	}
 
 	/**
@@ -374,8 +372,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$quad->setManialink('mcontrol?favorite=' . urlencode($this->maniaControl->server->login));
 
 		// Send manialink
-		$manialinkText = $maniaLink->render()->saveXML();
-		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $login);
+		$this->maniaControl->manialinkManager->sendManialink($maniaLink, $login);
 	}
 
 	/**
@@ -398,8 +395,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	 */
 	public function closeWidget($widgetId) {
 		$emptyManialink = new ManiaLink($widgetId);
-		$manialinkText  = $emptyManialink->render()->saveXML();
-		$this->maniaControl->manialinkManager->sendManialink($manialinkText);
+		$this->maniaControl->manialinkManager->sendManialink($emptyManialink);
 	}
 
 	/**
@@ -509,8 +505,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		}
 
 		// Send manialink
-		$manialinkText = $maniaLink->render()->saveXML();
-		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $login);
+		$this->maniaControl->manialinkManager->sendManialink($maniaLink, $login);
 	}
 
 	/**

@@ -117,8 +117,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	 */
 	public function unload() {
 		$emptyManialink = new ManiaLink(self::MLID_KARMA);
-		$manialinkText  = $emptyManialink->render()->saveXML();
-		$this->maniaControl->manialinkManager->sendManialink($manialinkText);
+		$this->maniaControl->manialinkManager->sendManialink($emptyManialink);
 		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
 		$this->maniaControl->timerManager->unregisterTimerListenings($this);
 		unset($this->maniaControl);
@@ -210,8 +209,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			$votesFrame->removeChildren();
 
 			// Send manialink
-			$manialinkText = $this->manialink->render()->saveXML();
-			$this->maniaControl->manialinkManager->sendManialink($manialinkText, $login);
+			$this->maniaControl->manialinkManager->sendManialink($this->manialink, $login);
 		}
 	}
 

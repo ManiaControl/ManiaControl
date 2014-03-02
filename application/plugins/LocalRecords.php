@@ -354,7 +354,7 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 			$timeLabel->setTextEmboss(true);
 		}
 
-		return $manialink->render()->saveXML();
+		return $manialink;
 	}
 
 	/**

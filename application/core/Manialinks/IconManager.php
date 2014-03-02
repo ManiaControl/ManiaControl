@@ -121,7 +121,6 @@ class IconManager implements CallbackListener {
 		}
 
 		// Send manialink
-		$manialinkText = $maniaLink->render()->saveXML();
-		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player);
+		$this->maniaControl->manialinkManager->sendManialink($maniaLink, $player);
 	}
 }

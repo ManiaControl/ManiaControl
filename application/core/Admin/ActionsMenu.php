@@ -140,8 +140,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		$players = $this->maniaControl->playerManager->getPlayers();
 		foreach($players as $player) {
 			$manialink     = $this->buildMenuIconsManialink($player);
-			$manialinkText = $manialink->render()->saveXML();
-			$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
+			$this->maniaControl->manialinkManager->sendManialink($manialink, $player->login);
 		}
 	}
 
@@ -151,8 +150,8 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	 * @param Player $player
 	 */
 	public function handlePlayerJoined(Player $player) {
-		$manialinkText = $this->buildMenuIconsManialink($player)->render()->saveXML();
-		$this->maniaControl->manialinkManager->sendManialink($manialinkText, $player->login);
+		$maniaLink = $this->buildMenuIconsManialink($player);
+		$this->maniaControl->manialinkManager->sendManialink($maniaLink, $player->login);
 	}
 
 	/**
