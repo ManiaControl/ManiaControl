@@ -87,10 +87,10 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_AVAILABLE_VOTES, '-2,2');
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_TITLE, 'Map-Karma');
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSX, 132.5);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSY, 73.5);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSX, 160 - 27.5);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSY, 90 - 10 - 6);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_WIDTH, 25.);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_HEIGHT, 12);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_HEIGHT, 12.);
 
 		// Register for callbacks
 		$this->maniaControl->timerManager->registerTimerListening($this, 'handle1Second', 1000);
