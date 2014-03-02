@@ -56,6 +56,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	 */
 	private $maniaControl = null;
 	private $updateManialink = false;
+	/** @var ManiaLink $manialink */
 	private $manialink = null;
 
 	private $mxKarma = array();
@@ -109,6 +110,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		$this->updateManialink = true;
 
 		$this->mxKarmaOpenSession();
+		$this->mxKarma['startTime'] = time();
 		return true;
 	}
 
@@ -231,6 +233,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		}
 
 		unset($this->mxKarma['votes']);
+		$this->mxKarma['startTime'] = time();
 		$this->updateManialink = true;
 	}
 
@@ -724,13 +727,20 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			$properties['gamemode'] = $gameMode;
 		}
 
+		if($import){
+			$properties['maptime'] = 0;
+		}else{
+			$properties['maptime'] = time() - $this->mxKarma['startTime'];
+		}
+
 		$properties['votes']     = $votes;
 		$properties['titleid']   = $this->maniaControl->server->titleId;
 		$properties['mapname']   = $map->rawName;
 		$properties['mapuid']    = $map->uid;
 		$properties['mapauthor'] = $map->authorLogin;
 		$properties['isimport']  = $import;
-		$content = json_encode($properties);
+
+ 		$content = json_encode($properties);
 		$this->maniaControl->fileReader->postData(self::MX_KARMA_URL . self::MX_KARMA_SAVEVOTES . "?sessionKey=" . urlencode($this->mxKarma['session']->sessionKey), function ($data, $error) {
 			if (!$error) {
 				$data = json_decode($data);
