@@ -202,6 +202,9 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 							$this->fetchDedimaniaRecords(true);
 						}
 					}
+
+					$manialink = $this->buildManialink();
+					$this->maniaControl->manialinkManager->sendManialink($manialink, $player->login);
 				}
 			} else {
 				if (!$data) {
@@ -209,10 +212,6 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 					var_dump($data);
 				}
 			}
-
-			$manialink = $this->buildManialink();
-			$this->maniaControl->manialinkManager->sendManialink($manialink, $player->login);
-
 			return true;
 		}, $content, true);
 	}
