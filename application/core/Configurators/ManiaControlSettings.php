@@ -303,9 +303,9 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 
 		//Toggle value
 		if ($oldSetting->value == "1") {
-			$this->maniaControl->settingManager->updateSetting($oldSetting->class, $oldSetting->setting, "0");
+			$this->maniaControl->settingManager->setSetting($oldSetting->class, $oldSetting->setting, "0");
 		} else {
-			$this->maniaControl->settingManager->updateSetting($oldSetting->class, $oldSetting->setting, "1");
+			$this->maniaControl->settingManager->setSetting($oldSetting->class, $oldSetting->setting, "1");
 		}
 	}
 

@@ -344,6 +344,9 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 		foreach($configData[3] as $setting) {
 			$settingName = substr($setting['Name'], $prefixLength + 1);
 
+			if(!isset($maniaControlSettings[$settingName]))
+				continue;
+
 			$oldSetting = $maniaControlSettings[$settingName];
 			if ($setting['Value'] == $oldSetting->value || $oldSetting->type == 'bool') {
 				continue;
