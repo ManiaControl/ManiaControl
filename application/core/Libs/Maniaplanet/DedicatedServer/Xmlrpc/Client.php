@@ -211,14 +211,14 @@ class Client
 			}
 			else
 			{
-				$contents = '';
+				$contents = "";
 				while(strlen($contents) < 8){
-					$contents .= fread($this->socket, 8 - strlen($contents));
-					if (strlen($contents) == 0 || $contents === false)
-					{
-						//var_dump("deb6 transport error");
-						throw new FatalException('deb1 transport error - connection interrupted!', FatalException::INTERRUPTED);
+					$newContent = fread($this->socket, 8 - strlen($contents));
+					if($newContent === false){
+						var_dump("deb1 transport error" . $contents);
+						throw new FatalException('deb1 transport error - connection interrupted!' . $contents, FatalException::INTERRUPTED);
 					}
+					$contents .= $newContent;
 				}
 
 				$array_result = unpack('Vsize/Vhandle', $contents);
