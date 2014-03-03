@@ -611,7 +611,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		$query .= '?sessionKey=' . urlencode($this->mxKarma['session']->sessionKey);
 		$query .= '&activationHash=' . urlencode($hash);
 
-		$this->maniaControl->fileReader->loadFile($query, function ($data, $error) {
+		$this->maniaControl->fileReader->loadFile($query, function ($data, $error) use($query) {
 			if (!$error) {
 				$data = json_decode($data);
 				if ($data->success && $data->data->activated) {
@@ -619,7 +619,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 				} else {
 					$this->maniaControl->log("Error while authenticating on Mania-Exchange Karma " . $data->data->message);
 					//TODO remove temp trigger
-					$this->maniaControl->errorHandler->triggerDebugNotice("Error while authenticating on Mania-Exchange Karma " . $data->data->message);
+					$this->maniaControl->errorHandler->triggerDebugNotice("Error while authenticating on Mania-Exchange Karma " . $data->data->message . " url Query " . $query);
 				}
 			} else {
 				//TODO remove temp trigger

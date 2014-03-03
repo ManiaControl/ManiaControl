@@ -196,7 +196,7 @@ class Client
 		{
 			$size = 0;
 			$recvhandle = 0;
-			@stream_set_timeout($this->socket, 0, $this->timeout * 1000 * 50);
+			@stream_set_timeout($this->socket, 0, $this->timeout * 1000 * 100);
 			// Get result
 			if ($this->protocol == 1)
 			{
@@ -211,12 +211,16 @@ class Client
 			}
 			else
 			{
-				$contents = fread($this->socket, 8);
-				if (strlen($contents) == 0 || $contents === false)
-				{
-					var_dump($contents);
-					throw new FatalException('deb1 transport error - connection interrupted!', FatalException::INTERRUPTED);
+				$contents = '';
+				while(strlen($contents) < 8){
+					$contents .= fread($this->socket, 8 - strlen($contents));
+					if (strlen($contents) == 0 || $contents === false)
+					{
+						//var_dump("deb6 transport error");
+						throw new FatalException('deb1 transport error - connection interrupted!', FatalException::INTERRUPTED);
+					}
 				}
+
 				$array_result = unpack('Vsize/Vhandle', $contents);
 				$size = $array_result['size'];
 				$recvhandle = $array_result['handle'];
