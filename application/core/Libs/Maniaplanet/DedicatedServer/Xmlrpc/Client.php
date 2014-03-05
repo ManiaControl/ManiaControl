@@ -153,7 +153,7 @@ class Client
 	{
 		$xml = $request->getXml();
 
-		@stream_set_timeout($this->socket, 0, $this->timeout * 1000 * 100);
+		@stream_set_timeout($this->socket, 0, $this->timeout * 1000 * 200);
 		// send request
 		$this->reqhandle++;
 		if ($this->protocol == 1)
@@ -196,7 +196,7 @@ class Client
 		{
 			$size = 0;
 			$recvhandle = 0;
-			@stream_set_timeout($this->socket, 0, $this->timeout * 1000 * 100);
+			@stream_set_timeout($this->socket, 0, $this->timeout * 1000 * 200);
 			// Get result
 			if ($this->protocol == 1)
 			{
@@ -214,7 +214,8 @@ class Client
 				$contents = "";
 				while(strlen($contents) < 8){
 					$newContent = fread($this->socket, 8 - strlen($contents));
-					if($newContent === false){
+					var_dump($contents, $newContent, strlen($contents));
+					if(strlen($newContent) == 0){
 						var_dump("deb1 transport error" . $contents);
 						throw new FatalException('deb1 transport error - connection interrupted!' . $contents, FatalException::INTERRUPTED);
 					}

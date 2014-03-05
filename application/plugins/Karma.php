@@ -576,7 +576,6 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		$query = self::MX_KARMA_URL . self::MX_KARMA_STARTSESSION;
 		$query .= '?serverLogin=' . $serverLogin;
 		$query .= '&applicationIdentifier=' . urlencode($applicationIdentifier);
-		$query .= '&game=sm';
 		$query .= '&testMode=' . $testMode;
 
 
