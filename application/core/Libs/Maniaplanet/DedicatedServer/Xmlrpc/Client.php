@@ -214,7 +214,7 @@ class Client
 				$contents = "";
 				while(strlen($contents) < 8){
 					$newContent = fread($this->socket, 8 - strlen($contents));
-					var_dump($contents, $newContent, strlen($contents));
+					//var_dump($contents, $newContent, strlen($contents));
 					if(strlen($newContent) == 0){
 						var_dump("deb1 transport error" . $contents);
 						throw new FatalException('deb1 transport error - connection interrupted!' . $contents, FatalException::INTERRUPTED);
