@@ -180,6 +180,10 @@ class PlayerActions {
 			try {
 				$this->maniaControl->client->spectatorReleasePlayerSlot($target->login);
 			} catch(Exception $e) {
+				if ($e->getMessage() == 'The player is not a spectator') {
+					$this->kickPlayer($adminLogin, $targetLogin, 'Disconnect');
+					$this->maniaControl->errorHandler->triggerDebugNotice("inaktiv spec player kicked " . $e->getMessage());
+				}
 				$this->maniaControl->errorHandler->triggerDebugNotice("PlayerActions Debug Line 183: " . $e->getMessage());
 				// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
 				//do nothing
