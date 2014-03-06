@@ -5,7 +5,7 @@
 	<server>
 
 		<!-- Server Connection Details -->
-		<host>localhost</host>
+		<host>127.0.0.1</host>
 		<port>port</port>
 
 		<!-- XmlRpc Login Details -->
