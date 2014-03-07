@@ -40,6 +40,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 	const QUEUE_WIDGET_POS_X   = 'X position of the widget';
 	const QUEUE_WIDGET_POS_Y   = 'Y position of the widget';
 	const QUEUE_ACTIVE_ON_PASS = 'Activate queue when there is a play password';
+	const QUEUE_CHATMESSAGES   = 'Activate chatmessages on queue join/leave/move to play';
 
 	/**
 	 * Private properties
@@ -82,6 +83,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 		$this->maniaControl->settingManager->initSetting($this, self::QUEUE_WIDGET_POS_X, 0);
 		$this->maniaControl->settingManager->initSetting($this, self::QUEUE_WIDGET_POS_Y, -46);
 		$this->maniaControl->settingManager->initSetting($this, self::QUEUE_ACTIVE_ON_PASS, false);
+		$this->maniaControl->settingManager->initSetting($this, self::QUEUE_CHATMESSAGES, true);
 
 		foreach($this->maniaControl->playerManager->getPlayers() as $player) {
 			if($player->isSpectator) {
@@ -284,7 +286,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 	public function handleManiaLinkAnswerRemove(array $chatCallback, Player $player) {
 		$this->removePlayerFromQueue($player->login);
 		$this->showJoinQueueWidget($player);
-		$this->maniaControl->chat->sendChat('$z$s$090[Queue] $<$fff' . $player->nickname . '$> has left the queue!');
+		$this->sendChatMessage('$<$fff' . $player->nickname . '$> has left the queue!');
 	}
 
 	/**
@@ -352,7 +354,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 			}
 			$this->removePlayerFromQueue($player->login);
 			$this->showPlayWidget($player);
-			$this->maniaControl->chat->sendChat('$z$s$090[Queue] $<$fff' . $player->nickname . '$> has a free spot and is now playing!');
+			$this->sendChatMessage('$<$fff' . $player->nickname . '$> has a free spot and is now playing!');
 		}
 
 	}
@@ -375,7 +377,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 
 		if($this->maniaControl->settingManager->getSetting($this, self::QUEUE_MAX) > count($this->queue)) {
 			$this->queue[count($this->queue)] = $player;
-			$this->maniaControl->chat->sendChat('$z$s$090[Queue] $<$fff' . $player->nickname . '$> just joined the queue!');
+			$this->sendChatMessage('$<$fff' . $player->nickname . '$> just joined the queue!');
 		}
 	}
 
@@ -395,6 +397,17 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 		}
 
 		$this->queue = $newQueue;
+	}
+
+	/**
+	 * Function sends (or not depending on setting) chatmessages for the queue.
+	 *
+	 * @param $message
+	 */
+	private function sendChatMessage($message) {
+		if($this->maniaControl->settingManager->getSetting($this, self::QUEUE_CHATMESSAGES)) {
+			$this->maniaControl->chat->sendChat('$z$s$090[Queue] '.$message);
+		}
 	}
 
 	/**
