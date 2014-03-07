@@ -35,6 +35,8 @@ class MapManager implements CallbackListener {
 	const SETTING_PERMISSION_CHECK_UPDATE = 'Check Map Update';
 	const SETTING_PERMISSION_SKIP_MAP     = 'Skip Map';
 	const SETTING_PERMISSION_RESTART_MAP  = 'Restart Map';
+	const SETTING_AUTOSAVE_MAPLIST        = 'Autosave Maplist file';
+	const SETTING_MAPLIST_FILE            = 'File to write Maplist in';
 
 	/*
 	 * Public Properties
@@ -82,6 +84,9 @@ class MapManager implements CallbackListener {
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_CHECK_UPDATE, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_SKIP_MAP, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_RESTART_MAP, AuthenticationManager::AUTH_LEVEL_MODERATOR);
+
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_AUTOSAVE_MAPLIST, true);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAPLIST_FILE, "MatchSettings/tracklist.txt");
 	}
 
 	/**
@@ -361,6 +366,11 @@ class MapManager implements CallbackListener {
 
 		// Trigger own callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_MAPS_UPDATED);
+
+		//Write MapList
+		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_AUTOSAVE_MAPLIST)){
+			$this->maniaControl->client->saveMatchSettings($this->maniaControl->settingManager->getSetting($this, self::SETTING_MAPLIST_FILE));
+		}
 	}
 
 	/**
