@@ -53,7 +53,7 @@ class AuthCommands implements CommandListener {
 			$this->maniaControl->chat->sendError("Player '{$commandParts[1]}' not found!", $player->login);
 			return;
 		}
-		$success = $this->maniaControl->authenticationManager->grantAuthLevel($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
+		$success = $this->maniaControl->authenticationManager->grantAuthLevel($target, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
 		if (!$success) {
 			$this->maniaControl->chat->sendError('Error occurred.', $player->login);
 			return;
@@ -84,7 +84,7 @@ class AuthCommands implements CommandListener {
 			$this->maniaControl->chat->sendError("Player '{$commandParts[1]}' not found!", $player->login);
 			return;
 		}
-		$success = $this->maniaControl->authenticationManager->grantAuthLevel($player, AuthenticationManager::AUTH_LEVEL_ADMIN);
+		$success = $this->maniaControl->authenticationManager->grantAuthLevel($target, AuthenticationManager::AUTH_LEVEL_ADMIN);
 		if (!$success) {
 			$this->maniaControl->chat->sendError('Error occurred.', $player->login);
 			return;
@@ -115,7 +115,7 @@ class AuthCommands implements CommandListener {
 			$this->maniaControl->chat->sendError("Player '{$commandParts[1]}' not found!", $player->login);
 			return;
 		}
-		$success = $this->maniaControl->authenticationManager->grantAuthLevel($player, AuthenticationManager::AUTH_LEVEL_MODERATOR);
+		$success = $this->maniaControl->authenticationManager->grantAuthLevel($target, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 		if (!$success) {
 			$this->maniaControl->chat->sendError('Error occurred.', $player->login);
 			return;
