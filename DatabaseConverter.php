@@ -20,20 +20,25 @@ $sourceUser = "maniacontrol";
 $sourceDb   = "smesc12";
 $sourcePass = "";
 
-//Convert Hits to Kills (means each Hit gets Converted to one Kill
-$convertHitsToKills      = true;
-$convertHitsToLaserHits  = true;
-$convertShotsToLaserShots = true;
+//Convert Hits to Kills (means each Hit gets Converted to one Kill)
+$convertHitsToKills       = false;
+//Convert 2 Hits to Kills (means two Hits gets Converted to one Kill)
+$convertTwoHitsToOneKill  = true;
+//Convert all Hits to Laser Hits
+$convertHitsToLaserHits   = false;
+//Convert all Shots to Laser Shots
+$convertShotsToLaserShots = false;
 
 //Settings END
 
 $converter = new DatabaseConverter($host, $port, $targetUser, $targetPass, $targetDb);
 $converter->connectToSourceDB($host, $port, $sourceUser, $sourcePass, $sourceDb);
-$converter->convertHitsToKills      = $convertHitsToKills;
-$converter->convertHitsToLaserHits  = $convertHitsToLaserHits;
+$converter->convertHitsToKills       = $convertHitsToKills;
+$converter->convertTwoHitsToOneKill  = $convertTwoHitsToOneKill;
+$converter->convertHitsToLaserHits   = $convertHitsToLaserHits;
 $converter->convertShotsToLaserShots = $convertShotsToLaserShots;
-$test1                              = $converter->convertPlayersAndStatistics();
-$test2                              = $converter->convertMapsAndKarma();
+$test1                               = $converter->convertPlayersAndStatistics();
+$test2                               = $converter->convertMapsAndKarma();
 unset($converter);
 var_dump($test1 && $test2);
 
@@ -55,6 +60,7 @@ class DatabaseConverter { //TODO move bind param before loop everywhere, convert
 	 * Public properties
 	 */
 	public $convertHitsToKills = true;
+	public $convertTwoHitsToOneKill = true;
 	public $convertHitsToLaserHits = true;
 	public $convertShotsToLaserShots = true;
 
@@ -391,7 +397,12 @@ class DatabaseConverter { //TODO move bind param before loop everywhere, convert
 				$statStatement->bind_param('iiii', $row->Id, $statId, $row->Hits, $serverIndex);
 				$statStatement->execute();
 
-				if ($this->convertHitsToKills) {
+				if ($this->convertTwoHitsToOneKill){
+					$statId = 12;
+					$kills = $row->Hits / 2;
+					$statStatement->bind_param('iiii', $row->Id, $statId, $kills, $serverIndex);
+					$statStatement->execute();
+				} else if ($this->convertHitsToKills) {
 					$statId = 12;
 					$statStatement->bind_param('iiii', $row->Id, $statId, $row->Hits, $serverIndex);
 					$statStatement->execute();
