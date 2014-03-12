@@ -98,9 +98,9 @@ class ManiaControl implements CommandListener, TimerListener {
 		$this->config = FileUtil::loadConfig('server.xml');
 
 		// Load ManiaControl Modules
-		$this->database              = new Database($this);
 		$this->callbackManager       = new CallbackManager($this);
 		$this->timerManager          = new TimerManager($this);
+		$this->database              = new Database($this);
 		$this->fileReader            = new AsynchronousFileReader($this);
 		$this->billManager           = new BillManager($this);
 		$this->settingManager        = new SettingManager($this);
