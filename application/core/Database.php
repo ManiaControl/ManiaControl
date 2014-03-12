@@ -1,13 +1,14 @@
 <?php
 
 namespace ManiaControl;
+use ManiaControl\Callbacks\TimerListener;
 
 /**
  * Database connection class
  *
  * @author steeffeen & kremsy
  */
-class Database {
+class Database implements TimerListener{
 	/**
 	 * Public properties
 	 */
@@ -40,6 +41,9 @@ class Database {
 		$user = (string) $user[0];
 		$pass = (string) $pass[0];
 
+		//Enable mysqli Reconnect
+		ini_set('mysqli.reconnect', 'on');
+
 		// Open database connection
 		$this->mysqli = @new \mysqli($host, $user, $pass, null, $port);
 		if ($this->mysqli->connect_error) {
@@ -49,13 +53,28 @@ class Database {
 
 		$this->initDatabase();
 		$this->optimizeTables();
+
+		//Register Method which checks the Database Connection every 5 seconds
+		$this->maniaControl->timerManager->registerTimerListening($this, 'checkConnection', 5000);
+	}
+
+	/**
+	 * Check if Connection still exists every 5 seconds
+	 * @param $time
+	 */
+	public function checkConnection($time){
+		if (!$this->mysqli->ping()) {
+			$this->maniaControl->quit("The MySQL server has gone away");
+		}
 	}
 
 	/**
 	 * Destruct database connection
 	 */
 	public function __destruct() {
-		$this->mysqli->close();
+		if($this->mysqli){
+			$this->mysqli->close();
+		}
 	}
 
 	/**
