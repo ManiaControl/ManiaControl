@@ -14,6 +14,7 @@ use ManiaControl\Maps\MapManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
+use ManiaControl\Settings\SettingManager;
 
 /**
  * ManiaControl Karma Plugin
@@ -100,6 +101,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_ENDMAP, $this, 'sendMxKarmaVotes');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCHAT, $this, 'handlePlayerChat');
+		$this->maniaControl->callbackManager->registerCallbackListener(SettingManager::CB_SETTINGS_CHANGED, $this, 'updateSettings');
 
 		// Define player stats
 		$this->maniaControl->statisticManager->defineStatMetaData(self::STAT_PLAYER_MAPVOTES);
@@ -555,6 +557,23 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		$this->manialink = $manialink;
 	}
 
+
+	/**
+	 * Update Settings
+	 * @param $class
+	 * @param $settingName
+	 * @param $value
+	 */
+	public function updateSettings($class, $settingName, $value){
+		if(!$class = get_class())
+			return;
+
+		$serverLogin = $this->maniaControl->server->login;
+		if($settingName == '$l[http://karma.mania-exchange.com/auth/getapikey?server=' . $serverLogin . ']MX Karma Code for ' . $serverLogin . '$l'){
+			$this->mxKarmaOpenSession();
+		}
+	}
+
 	/**
 	 *  Open a Mx Karma Session
 	 */
@@ -564,8 +583,8 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		}
 
 		$serverLogin = $this->maniaControl->server->login;
-
 		$mxKarmaCode = $this->maniaControl->settingManager->getSetting($this, '$l[http://karma.mania-exchange.com/auth/getapikey?server=' . $serverLogin . ']MX Karma Code for ' . $serverLogin . '$l');
+
 		if ($mxKarmaCode == '') {
 			return;
 		}
