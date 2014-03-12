@@ -381,12 +381,8 @@ class SlotMachinePlugin implements Plugin, CallbackListener, ManialinkPageAnswer
 		$itemMarginFactorY = 1.2;
 		$posY += $width * $itemMarginFactorY;
 
-		// Get Title Id
-		$titleId     = $this->maniaControl->server->titleId;
-		$titlePrefix = strtoupper(substr($titleId, 0, 2));
-
 		//If game is shootmania lower the icons position by 20
-		if ($titlePrefix == 'SM') {
+		if($this->maniaControl->mapManager->getCurrentMap()->getGame() == 'sm') {
 			$posY -= $shootManiaOffset;
 		}
 
