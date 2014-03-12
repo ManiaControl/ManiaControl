@@ -50,7 +50,7 @@ class Map {
 			return;
 		}
 		$this->name          = FORMATTER::stripDirtyCodes($mpMap->name);
-		$this->rawName		 = $mpMap->name;
+		$this->rawName       = $mpMap->name;
 		$this->uid           = $mpMap->uId;
 		$this->fileName      = $mpMap->fileName;
 		$this->authorLogin   = $mpMap->author;
@@ -63,6 +63,24 @@ class Map {
 		$this->nbLaps        = $mpMap->nbLaps;
 
 		$this->authorNick = $this->authorLogin;
+	}
+
+	/**
+	 * Get's the gameType of the Current Map
+	 *
+	 * @return string
+	 */
+	public function getGame() {
+		switch($this->environment) {
+			case 'Storm':
+				return "sm";
+			case 'Canyon':
+			case 'Stadium':
+			case 'Valley':
+				return "tm";
+			default:
+				return "";
+		}
 	}
 
 	/**

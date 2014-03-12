@@ -641,12 +641,8 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$itemMarginFactorX = 1.3;
 		$itemMarginFactorY = 1.2;
 
-		// Get Title Id
-		$titleId     = $this->maniaControl->server->titleId;
-		$titlePrefix = strtoupper(substr($titleId, 0, 2));
-
 		//If game is shootmania lower the icons position by 20
-		if ($titlePrefix == 'SM') {
+		if($this->maniaControl->mapManager->getCurrentMap()->getGame() == 'sm') {
 			$posY -= $shootManiaOffset;
 		}
 

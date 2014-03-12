@@ -1,17 +1,16 @@
 <?php
 
 use ManiaControl\Callbacks\CallbackListener;
-use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
+use ManiaControl\Maps\Map;
+use ManiaControl\Maps\MapManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
 use ManiaControl\Statistics\StatisticCollector;
 use ManiaControl\Statistics\StatisticManager;
 use Maniaplanet\DedicatedServer\Structures\AbstractStructure;
-use ManiaControl\Maps\MapManager;
-use ManiaControl\Maps\Map;
 
 class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 	/**
@@ -66,10 +65,8 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		$maniaControl->settingManager->initSetting($this, self::SETTING_MIN_REQUIRED_RECORDS, 3);
 		$maniaControl->settingManager->initSetting($this, self::SETTING_MAX_STORED_RECORDS, 50);
 
-		$titleId     = $this->maniaControl->server->titleId;
-		$titlePrefix = strtolower(substr($titleId, 0, 2));
-
-		if ($titlePrefix == 'tm') { //TODO also add obstacle here as default
+		if ($this->maniaControl->mapManager->getCurrentMap()->getGame() == 'tm') {
+			//TODO also add obstacle here as default
 			$maniaControl->settingManager->initSetting($this, self::SETTING_MIN_RANKING_TYPE, self::RANKING_TYPE_RECORDS);
 		} else if ($this->maniaControl->client->getScriptName()["CurrentValue"] == "InstaDM.Script.txt") {
 			$maniaControl->settingManager->initSetting($this, self::SETTING_MIN_RANKING_TYPE, self::RANKING_TYPE_RATIOS);

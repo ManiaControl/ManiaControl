@@ -180,9 +180,8 @@ class ManiaExchangeManager {
 	 * @return bool
 	 */
 	public function getMapInfo($id, $function) {
-		// Get Title Id
-		$titleId     = $this->maniaControl->server->titleId;
-		$titlePrefix = strtolower(substr($titleId, 0, 2));
+		// Get Title Prefix
+		$titlePrefix = $this->maniaControl->mapManager->getCurrentMap()->getGame();
 
 		// compile search URL
 		$url = 'http://api.mania-exchange.com/' . $titlePrefix . '/maps/?ids=' . $id;
@@ -211,9 +210,8 @@ class ManiaExchangeManager {
 	 * @return array|null
 	 */
 	public function getMaplistByMixedUidIdString($string) {
-		// Get Title Id
-		$titleId     = $this->maniaControl->server->titleId;
-		$titlePrefix = strtolower(substr($titleId, 0, 2));
+		// Get Title Prefix
+		$titlePrefix = $this->maniaControl->mapManager->getCurrentMap()->getGame();
 
 		// compile search URL
 		$url = 'http://api.mania-exchange.com/' . $titlePrefix . '/maps/?ids=' . $string;
@@ -269,7 +267,7 @@ class ManiaExchangeManager {
 
 		// Get Title Id
 		$titleId     = $this->maniaControl->server->titleId;
-		$titlePrefix = strtolower(substr($titleId, 0, 2));
+		$titlePrefix = $this->maniaControl->mapManager->getCurrentMap()->getGame();
 
 		// compile search URL
 		$url = 'http://' . $titlePrefix . '.mania-exchange.com/tracksearch?api=on';
