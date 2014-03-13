@@ -86,9 +86,14 @@ class PlayerActions {
 		try {
 			$this->maniaControl->client->forceSpectator($target->login, self::SPECTATOR_PLAYER);
 		} catch(Exception $e) {
-			// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
-			$this->maniaControl->errorHandler->triggerDebugNotice("PlayerActions Debug Line 90: " . $e->getMessage());
-			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $admin->login);
+			if ($e->getMessage() == 'There are too many players') {
+				$this->maniaControl->chat->sendError("Too many Spectators");
+				return;
+			} else {
+				// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
+				$this->maniaControl->errorHandler->triggerDebugNotice("PlayerActions Debug Line 90: " . $e->getMessage());
+				$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $admin->login);
+			}
 			return;
 		}
 
@@ -192,10 +197,11 @@ class PlayerActions {
 				if ($e->getMessage() == 'The player is not a spectator') {
 					$this->kickPlayer($adminLogin, $targetLogin, 'Disconnect');
 					$this->maniaControl->errorHandler->triggerDebugNotice("inaktiv spec player kicked " . $e->getMessage());
+				} else {
+					$this->maniaControl->errorHandler->triggerDebugNotice("PlayerActions Debug Line 183: " . $e->getMessage());
+					// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
+					//do nothing
 				}
-				$this->maniaControl->errorHandler->triggerDebugNotice("PlayerActions Debug Line 183: " . $e->getMessage());
-				// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
-				//do nothing
 			}
 		}
 	}

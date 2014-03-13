@@ -46,29 +46,29 @@ class CommandManager implements CallbackListener {
 	 * @return bool
 	 */
 	public function registerCommandListener($commandName, CommandListener $listener, $method, $adminCommand = false) {
-		if(is_array($commandName)) {
+		if (is_array($commandName)) {
 			$success = true;
 			foreach($commandName as $command) {
-				if(!$this->registerCommandListener($command, $listener, $method, $adminCommand)) {
+				if (!$this->registerCommandListener($command, $listener, $method, $adminCommand)) {
 					$success = false;
 				}
 			}
 			return $success;
 		}
 		$command = strtolower($commandName);
-		if(!method_exists($listener, $method)) {
+		if (!method_exists($listener, $method)) {
 			trigger_error("Given listener can't handle command '{$command}' (no method '{$method}')!");
 			return false;
 		}
-		if($adminCommand) {
-			if(!array_key_exists($command, $this->adminCommandListeners) || !is_array($this->adminCommandListeners[$command])) {
+		if ($adminCommand) {
+			if (!array_key_exists($command, $this->adminCommandListeners) || !is_array($this->adminCommandListeners[$command])) {
 				// Init admin listeners array
 				$this->adminCommandListeners[$command] = array();
 			}
 			// Register admin command listener
 			array_push($this->adminCommandListeners[$command], array($listener, $method));
 		} else {
-			if(!array_key_exists($command, $this->commandListeners) || !is_array($this->commandListeners[$command])) {
+			if (!array_key_exists($command, $this->commandListeners) || !is_array($this->commandListeners[$command])) {
 				// Init listeners array
 				$this->commandListeners[$command] = array();
 			}
@@ -92,7 +92,7 @@ class CommandManager implements CallbackListener {
 		$removed = false;
 		foreach($this->commandListeners as &$listeners) {
 			foreach($listeners as $key => &$listenerCallback) {
-				if($listenerCallback[0] == $listener) {
+				if ($listenerCallback[0] == $listener) {
 					unset($listeners[$key]);
 					$removed = true;
 				}
@@ -100,7 +100,7 @@ class CommandManager implements CallbackListener {
 		}
 		foreach($this->adminCommandListeners as &$listeners) {
 			foreach($listeners as $key => &$listenerCallback) {
-				if($listenerCallback[0] == $listener) {
+				if ($listenerCallback[0] == $listener) {
 					unset($listeners[$key]);
 					$removed = true;
 				}
@@ -116,14 +116,14 @@ class CommandManager implements CallbackListener {
 	 */
 	public function handleChatCallback(array $callback) {
 		// Check for command
-		if(!$callback[1][3]) {
+		if (!$callback[1][3]) {
 			return;
 		}
 
 		// Check for valid player
 		$login  = $callback[1][1];
 		$player = $this->maniaControl->playerManager->getPlayer($login);
-		if(!$player) {
+		if (!$player) {
 			return;
 		}
 
@@ -131,18 +131,20 @@ class CommandManager implements CallbackListener {
 		$message      = $callback[1][2];
 		$commandArray = explode(' ', $message);
 		$command      = ltrim(strtolower($commandArray[0]), '/');
-		if(!$command) {
+		if (!$command) {
 			return;
 		}
 
-		if(substr($message, 0, 2) == '//' || $command == 'admin') {
+		if (substr($message, 0, 2) == '//' || $command == 'admin') {
 			// Admin command
 			$commandListeners = $this->adminCommandListeners;
 
-			if($command == 'admin') {
+			if ($command == 'admin') {
 				// Strip 'admin' keyword
-				$command = $commandArray[1];
-				unset($commandArray[1]);
+				if (isset($commandArray[1])) {
+					$command = $commandArray[1];
+					unset($commandArray[1]);
+				}
 			}
 			unset($commandArray[0]);
 
@@ -157,7 +159,7 @@ class CommandManager implements CallbackListener {
 			$commandListeners = $this->commandListeners;
 		}
 
-		if(!array_key_exists($command, $commandListeners) || !is_array($commandListeners[$command])) {
+		if (!array_key_exists($command, $commandListeners) || !is_array($commandListeners[$command])) {
 			// No command listener registered
 			return;
 		}
