@@ -9,6 +9,7 @@ use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Statistics\StatisticManager;
+use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
  * Class managing Players
@@ -143,11 +144,17 @@ class PlayerManager implements CallbackListener, TimerListener {
 	 * @param array $callback
 	 */
 	public function playerConnect(array $callback) {
-		$login      = $callback[1][0];
-		$playerInfo = $this->maniaControl->client->getDetailedPlayerInfo($login);
-		$player     = new Player($playerInfo);
+		$login = $callback[1][0];
+		try {
+			$playerInfo = $this->maniaControl->client->getDetailedPlayerInfo($login);
+			$player     = new Player($playerInfo);
 
-		$this->addPlayer($player);
+			$this->addPlayer($player);
+		} catch(Exception $e) {
+			if ($e->getMessage() != 'Login unknown.') {
+				throw $e;
+			}
+		}
 	}
 
 	/**

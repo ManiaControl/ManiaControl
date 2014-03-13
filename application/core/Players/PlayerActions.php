@@ -132,7 +132,16 @@ class PlayerActions {
 			$this->forcePlayerToPlay($adminLogin, $targetLogin, true, false);
 		}
 
-		$this->maniaControl->client->forcePlayerTeam($target->login, $teamId);
+		try {
+			$this->maniaControl->client->forcePlayerTeam($target->login, $teamId);
+		} catch(Exception $e) {
+			if ($e->getMessage() == "Not in Team mode.") {
+				$this->forcePlayerToPlay($adminLogin, $targetLogin);
+				return;
+			} else {
+				throw $e;
+			}
+		}
 
 		$chatMessage = false;
 		$title       = $this->maniaControl->authenticationManager->getAuthLevelName($admin->authLevel);
