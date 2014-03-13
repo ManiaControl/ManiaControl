@@ -11,6 +11,7 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\IconManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
+use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
  * Class offering commands to manage maps
@@ -205,7 +206,13 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		$this->maniaControl->chat->sendSuccess($message);
 		$this->maniaControl->log($message, true);
 
-		$this->maniaControl->client->restartMap();
+		try {
+			$this->maniaControl->client->restartMap();
+		} catch(Exception $e) {
+			if ($e->getMessage() != 'Change in progress.') {
+				throw $e;
+			}
+		}
 	}
 
 	/**

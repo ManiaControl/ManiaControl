@@ -98,7 +98,9 @@ class ManiaExchangeManager {
 	 * @param $mxId
 	 */
 	public function unsetMap($mxId) {
-		unset($this->mxIdUidVector[$mxId]);
+		if (isset($this->mxIdUidVector[$mxId])) {
+			unset($this->mxIdUidVector[$mxId]);
+		}
 	}
 
 	/**
@@ -272,9 +274,9 @@ class ManiaExchangeManager {
 		// compile search URL
 		$url = 'http://' . $titlePrefix . '.mania-exchange.com/tracksearch?api=on';
 
-		$game = explode('@', $titleId);
+		$game      = explode('@', $titleId);
 		$envNumber = $this->getEnvironment($game[0]);
-		if($env != '' || $envNumber != -1){
+		if ($env != '' || $envNumber != -1) {
 			$url .= '&environments=' . $envNumber;
 		}
 		if ($name != '') {

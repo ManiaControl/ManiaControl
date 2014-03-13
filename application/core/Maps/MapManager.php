@@ -368,8 +368,16 @@ class MapManager implements CallbackListener {
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_MAPS_UPDATED);
 
 		//Write MapList
-		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_AUTOSAVE_MAPLIST)){
-			$this->maniaControl->client->saveMatchSettings($this->maniaControl->settingManager->getSetting($this, self::SETTING_MAPLIST_FILE));
+		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_AUTOSAVE_MAPLIST)) {
+			try {
+				$this->maniaControl->client->saveMatchSettings($this->maniaControl->settingManager->getSetting($this, self::SETTING_MAPLIST_FILE));
+			} catch(Exception $e) {
+				if ($e->getMessage() == 'Unable to write the playlist file.') {
+					$this->maniaControl->log("Unable to write the playlist file, please checkout your MX-Folders File permissions!");
+				} else {
+					throw $e;
+				}
+			}
 		}
 	}
 
