@@ -723,9 +723,11 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 						$this->maniaControl->client->forceSpectator($target->login, PlayerActions::SPECTATOR_BUT_KEEP_SELECTABLE);
 						$this->maniaControl->client->spectatorReleasePlayerSlot($target->login);
 					} catch(Exception $e) {
-						//do nothing
-						// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
-						$this->maniaControl->errorHandler->triggerDebugNotice("PlayerList Debug Line 727: " . $e->getMessage());
+						if ($e->getMessage() != 'Login unknown.') {
+							//do nothing
+							// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
+							$this->maniaControl->errorHandler->triggerDebugNotice("PlayerList Debug Line 727: " . $e->getMessage());
+						}
 					}
 				});
 				break;

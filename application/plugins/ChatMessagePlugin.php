@@ -352,7 +352,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		$this->maniaControl->chat->sendChat($msg, null, false);
 
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_AFK_FORCE_SPEC)) {
-			if($player->isSpectator){
+			if ($player->isSpectator) {
 				return;
 			}
 
@@ -370,9 +370,11 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 			try {
 				$this->maniaControl->client->spectatorReleasePlayerSlot($player->login);
 			} catch(Exception $e) {
-				$this->maniaControl->errorHandler->triggerDebugNotice("ChatMessagePlugin Debug Line " . $e->getLine() . ": " . $e->getMessage());
-				// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
-				//to nothing
+				if ($e->getMessage() != 'The player is not a spectator') {
+					$this->maniaControl->errorHandler->triggerDebugNotice("ChatMessagePlugin Debug Line " . $e->getLine() . ": " . $e->getMessage());
+					// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
+					//to nothing
+				}
 			}
 		}
 	}

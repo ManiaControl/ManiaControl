@@ -196,7 +196,9 @@ class StatisticManager {
 			case self::SPECIAL_STAT_KD_RATIO:
 				$kills  = $this->getStatsRanking(StatisticCollector::STAT_ON_KILL, $serverIndex);
 				$deaths = $this->getStatsRanking(StatisticCollector::STAT_ON_DEATH, $serverIndex);
-
+				if(!$kills || !$deaths){
+					return array();
+				}
 				foreach($deaths as $key => $death) {
 					if ($death == 0 || !isset($kills[$key])) {
 						continue;
@@ -208,6 +210,9 @@ class StatisticManager {
 			case self::SPECIAL_STAT_HITS_PH:
 				$hits  = $this->getStatsRanking(StatisticCollector::STAT_ON_HIT, $serverIndex);
 				$times = $this->getStatsRanking(StatisticCollector::STAT_PLAYTIME, $serverIndex);
+				if(!$hits || !$times){
+					return array();
+				}
 				foreach($times as $key => $time) {
 					if ($time == 0 || !isset($hits[$key])) {
 						continue;
@@ -219,6 +224,9 @@ class StatisticManager {
 			case self::SPECIAL_STAT_ARROW_ACC:
 				$hits  = $this->getStatsRanking(StatisticCollector::STAT_ARROW_HIT, $serverIndex);
 				$shots = $this->getStatsRanking(StatisticCollector::STAT_ARROW_SHOT, $serverIndex);
+				if(!$hits || !$shots){
+					return array();
+				}
 				foreach($shots as $key => $shot) {
 					if ($shot == 0 || !isset($hits[$key])) {
 						continue;
@@ -230,6 +238,9 @@ class StatisticManager {
 			case self::SPECIAL_STAT_LASER_ACC:
 				$hits  = $this->getStatsRanking(StatisticCollector::STAT_LASER_HIT, $serverIndex);
 				$shots = $this->getStatsRanking(StatisticCollector::STAT_LASER_SHOT, $serverIndex);
+				if(!$hits || !$shots){
+					return array();
+				}
 				foreach($shots as $key => $shot) {
 					if ($shot == 0 || !isset($hits[$key])) {
 						continue;
@@ -241,6 +252,9 @@ class StatisticManager {
 			case self::SPECIAL_STAT_ROCKET_ACC:
 				$hits  = $this->getStatsRanking(StatisticCollector::STAT_ROCKET_HIT, $serverIndex);
 				$shots = $this->getStatsRanking(StatisticCollector::STAT_ROCKET_SHOT, $serverIndex);
+				if(!$hits || !$shots){
+					return array();
+				}
 				foreach($shots as $key => $shot) {
 					if ($shot == 0 || !isset($hits[$key])) {
 						continue;
@@ -252,6 +266,9 @@ class StatisticManager {
 			case self::SPECIAL_STAT_NUCLEUS_ACC:
 				$hits  = $this->getStatsRanking(StatisticCollector::STAT_NUCLEUS_HIT, $serverIndex);
 				$shots = $this->getStatsRanking(StatisticCollector::STAT_NUCLEUS_SHOT, $serverIndex);
+				if(!$hits || !$shots){
+					return array();
+				}
 				foreach($shots as $key => $shot) {
 					if ($shot == 0 || !isset($hits[$key])) {
 						continue;

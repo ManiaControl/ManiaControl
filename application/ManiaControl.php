@@ -48,9 +48,13 @@ if (LOG_WRITE_CURRENT_FILE) {
 function logMessage($message) {
 	$message .= PHP_EOL;
 	if (defined('LOG_CURRENT_FILE')) {
-		file_put_contents(LOG_CURRENT_FILE, $message, FILE_APPEND);
+		if(!file_put_contents(LOG_CURRENT_FILE, $message, FILE_APPEND)){
+			echo "Logfile not Write-able, please check your file Permissions";
+		}
 	}
-	file_put_contents(LOG_FILE, $message, FILE_APPEND);
+	if(!file_put_contents(LOG_FILE, $message, FILE_APPEND)){
+		echo "Logfile not Write-able, please check your file Permissions";
+	}
 	echo $message;
 }
 
