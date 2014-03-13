@@ -65,10 +65,12 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		$maniaControl->settingManager->initSetting($this, self::SETTING_MIN_REQUIRED_RECORDS, 3);
 		$maniaControl->settingManager->initSetting($this, self::SETTING_MAX_STORED_RECORDS, 50);
 
+		$script = $this->maniaControl->client->getScriptName();
+
 		if ($this->maniaControl->mapManager->getCurrentMap()->getGame() == 'tm') {
 			//TODO also add obstacle here as default
 			$maniaControl->settingManager->initSetting($this, self::SETTING_MIN_RANKING_TYPE, self::RANKING_TYPE_RECORDS);
-		} else if ($this->maniaControl->client->getScriptName()["CurrentValue"] == "InstaDM.Script.txt") {
+		} else if ($script["CurrentValue"] == "InstaDM.Script.txt") {
 			$maniaControl->settingManager->initSetting($this, self::SETTING_MIN_RANKING_TYPE, self::RANKING_TYPE_RATIOS);
 		} else {
 			$maniaControl->settingManager->initSetting($this, self::SETTING_MIN_RANKING_TYPE, self::RANKING_TYPE_POINTS);
