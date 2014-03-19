@@ -844,7 +844,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	}
 
 	/**
-	 * Encodes the given xml rpc method and params
+	 * Encode the given xml rpc method and params
 	 *
 	 * @param string $method
 	 * @param array  $params
@@ -856,7 +856,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	}
 
 	/**
-	 * Handles xml rpc fault
+	 * Handle xml rpc fault
 	 *
 	 * @param $fault
 	 * @param $method
@@ -865,10 +865,14 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 		trigger_error('XmlRpc Fault on ' . $method . ': ' . $fault['faultString'] . ' (' . $fault['faultCode'] . ')');
 	}
 
-
+	/**
+	 * Build Manialink
+	 * 
+	 * @return \FML\ManiaLink
+	 */
 	private function buildManialink() {
 		if (!$this->dedimaniaData->records) {
-			return '';
+			return null;
 		}
 		$records = $this->dedimaniaData->records;
 
