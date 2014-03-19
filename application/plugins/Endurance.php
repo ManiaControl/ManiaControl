@@ -130,7 +130,7 @@ class EndurancePlugin implements CallbackListener, Plugin {
 	 */
 	public function callback_Checkpoint(array $callback) {
 		$callbackData = json_decode($callback[1]);
-		if ($callbackData->Checkpoint % $this->currentMap->nbCheckpoints != 0) {
+		if (!$this->currentMap->nbCheckpoints || $callbackData->Checkpoint % $this->currentMap->nbCheckpoints != 0) {
 			return;
 		}
 		$player = $this->maniaControl->playerManager->getPlayer($callbackData->Login);
