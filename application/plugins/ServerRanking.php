@@ -357,14 +357,18 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		$mysqli = $this->maniaControl->database->mysqli;
 
 		$result = $mysqli->query('SELECT * FROM ' . self::TABLE_RANK . ' WHERE PlayerIndex=' . $player->index);
-		if ($result->num_rows > 0) {
-			$row = $result->fetch_array();
-			$result->free_result();
-			return Rank::fromArray($row);
-		} else {
+		if ($mysqli->error) {
+			trigger_error($mysqli->error);
+			return null;
+		}
+		if ($result->num_rows <= 0) {
 			$result->free_result();
 			return null;
 		}
+		
+		$row = $result->fetch_array();
+		$result->free_result();
+		return Rank::fromArray($row);
 	}
 
 	/**
