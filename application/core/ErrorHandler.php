@@ -38,15 +38,16 @@ class ErrorHandler {
 	 * @param \Exception $ex
 	 */
 	public function exceptionHandler(\Exception $ex) {
-		$message = "[ManiaControl EXCEPTION]: {$ex->getMessage()}" . PHP_EOL;
-		$message .= "Class: " . get_class($ex) . PHP_EOL;
-		$message .= "Trace: {$ex->getTraceAsString()}" . PHP_EOL;
-		logMessage($message);
+		$message = "[ManiaControl EXCEPTION]: {$ex->getMessage()}";
+		$traceMessage = 'Class: ' . get_class($ex) . PHP_EOL;
+		$traceMessage .= 'Trace:' . PHP_EOL . $ex->getTraceAsString();
+		logMessage($message . PHP_EOL . $traceMessage);
 		
 		if ($this->reportErrors) {
 			$error = array();
 			$error["Type"] = "Exception";
 			$error["Message"] = $message;
+			$error["Backtrace"] = $traceMessage;
 			$error['OperatingSystem'] = php_uname();
 			$error['PHPVersion'] = phpversion();
 			
@@ -102,13 +103,15 @@ class ErrorHandler {
 		
 		// Log error
 		$errorTag = $this->getErrorTag($errorNumber);
-		$message = "{$errorTag}: {$errorString} in File '{$errorFile}' on Line {$errorLine}!";
-		logMessage($message);
+		$message = $errorTag . ': ' . $errorString;
+		$traceMessage = $this->parseBackTrace(debug_backtrace());
+		logMessage($message . PHP_EOL . $traceMessage);
 		
 		if ($this->reportErrors && $errorNumber != E_USER_ERROR && $errorNumber != E_USER_WARNING && $errorNumber != E_USER_NOTICE) {
 			$error = array();
 			$error["Type"] = "Error";
 			$error["Message"] = $message;
+			$error["Backtrace"] = $traceMessage;
 			$error['OperatingSystem'] = php_uname();
 			$error['PHPVersion'] = phpversion();
 			
@@ -199,5 +202,37 @@ class ErrorHandler {
 			return '[ManiaControl DEBUG]';
 		}
 		return "[PHP {$errorLevel}]";
+	}
+
+	/**
+	 * Parse the Debug Backtrace into a String for the Error Report
+	 *
+	 * return string
+	 */
+	private function parseBackTrace(array $backtrace) {
+		$traceString = 'Trace:';
+		$stepCount = 0;
+		foreach ($backtrace as $traceStep) {
+			$traceString .= PHP_EOL . '#' . $stepCount . ': ';
+			if (isset($traceStep['class'])) {
+				$traceString .= $traceStep['class'];
+			}
+			if (isset($traceStep['type'])) {
+				$traceString .= $traceStep['type'];
+			}
+			if (isset($traceStep['function'])) {
+				$traceString .= $traceStep['function'];
+			}
+			if (isset($traceStep['file'])) {
+				$traceString .= ' in File ';
+				$traceString .= $traceStep['file'];
+			}
+			if (isset($traceStep['line'])) {
+				$traceString .= ' on Line ';
+				$traceString .= $traceStep['line'];
+			}
+			$stepCount++;
+		}
+		return $traceString;
 	}
 } 

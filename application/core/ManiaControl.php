@@ -127,7 +127,6 @@ class ManiaControl implements CommandListener, TimerListener {
 		$this->commandManager->registerCommandListener('shutdown', $this, 'command_Shutdown', true);
 	}
 
-
 	/**
 	 * Print a message to console and log
 	 *
