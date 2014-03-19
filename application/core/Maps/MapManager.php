@@ -220,7 +220,7 @@ class MapManager implements CallbackListener {
 		//Unset the Map everywhere
 		$this->mapQueue->removeFromMapQueue($admin, $map->uid);
 
-		if ($map->mx != null) {
+		if ($map->mx) {
 			$this->mxManager->unsetMap($map->mx->id);
 		}
 
