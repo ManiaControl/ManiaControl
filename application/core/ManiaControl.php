@@ -32,7 +32,6 @@ require_once __DIR__ . '/Libs/FML/autoload.php';
 require_once __DIR__ . '/Libs/Symfony/autoload.php';
 require_once __DIR__ . '/Libs/curl-easy/autoload.php';
 
-
 /**
  * ManiaControl Server Controller for ManiaPlanet Server
  *
