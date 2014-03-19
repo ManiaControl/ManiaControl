@@ -91,7 +91,7 @@ class ManiaControl implements CommandListener, TimerListener {
 	public function __construct() {
 		//Construct Error Handler
 		$this->errorHandler = new ErrorHandler($this);
-
+		
 		$this->log('Loading ManiaControl v' . self::VERSION . '...');
 
 		// Load config
