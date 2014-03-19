@@ -218,15 +218,17 @@ class ManiaExchangeManager {
 		// compile search URL
 		$url = 'http://api.mania-exchange.com/' . $titlePrefix . '/maps/?ids=' . $string;
 
-		$success = $this->maniaControl->fileReader->loadFile($url, function ($mapInfo, $error) use ($titlePrefix, $url) {
+		$thisRef = $this;
+		$success = $this->maniaControl->fileReader->loadFile($url, function ($mapInfo, $error) use ($thisRef, $titlePrefix, $url) {
 			if ($error) {
 				trigger_error($error . " " . $url);
 				return null;
 			}
 
-			if ($mapInfo == '') {
+			if (!$mapInfo) {
 				return null;
 			}
+			
 			$mxMapList = json_decode($mapInfo);
 			if ($mxMapList === null) {
 				trigger_error('Cannot decode searched JSON data from ' . $url);
@@ -243,7 +245,7 @@ class ManiaExchangeManager {
 				}
 			}
 
-			$this->updateMapObjectsWithManiaExchangeIds($maps);
+			$thisRef->updateMapObjectsWithManiaExchangeIds($maps);
 			return true;
 		}, "application/json");
 
