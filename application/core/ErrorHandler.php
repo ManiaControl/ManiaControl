@@ -38,6 +38,7 @@ class ErrorHandler {
 	 * @param \Exception $ex
 	 */
 	public function exceptionHandler(\Exception $ex) {
+		// Log exception
 		$message = "[ManiaControl EXCEPTION]: {$ex->getMessage()}";
 		$traceMessage = 'Class: ' . get_class($ex) . PHP_EOL;
 		$traceMessage .= 'Trace:' . PHP_EOL . $ex->getTraceAsString();
@@ -95,7 +96,7 @@ class ErrorHandler {
 	 * @param $errorLine
 	 * @return bool
 	 */
-	public function errorHandler($errorNumber, $errorString, $errorFile, $errorLine) {
+	public function errorHandler($errorNumber, $errorString, $errorFile = null, $errorLine = -1) {
 		if (error_reporting() == 0) {
 			// Error suppressed
 			return false;
@@ -159,9 +160,7 @@ class ErrorHandler {
 	 * @param $message
 	 */
 	public function triggerDebugNotice($message) {
-		$backtrace = debug_backtrace();
-		$callee = array_shift($backtrace);
-		$this->errorHandler(self::MC_DEBUG_NOTICE, $message, $callee['file'], $callee['line']);
+		$this->errorHandler(self::MC_DEBUG_NOTICE, $message);
 	}
 
 	/**
