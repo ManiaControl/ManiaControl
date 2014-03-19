@@ -14,37 +14,42 @@ class CallbackManager {
 	 * Constants
 	 */
 	// ManiaControl callbacks
-	const CB_ONINIT     = 'ManiaControl.OnInit';
-	const CB_AFTERINIT  = 'ManiaControl.AfterInit';
+	const CB_ONINIT = 'ManiaControl.OnInit';
+	const CB_AFTERINIT = 'ManiaControl.AfterInit';
 	const CB_ONSHUTDOWN = 'ManiaControl.OnShutdown';
-
+	
 	// ManiaPlanet callbacks
-	const CB_MP_SERVERSTART               = 'ManiaPlanet.ServerStart';
-	const CB_MP_SERVERSTOP                = 'ManiaPlanet.ServerStop';
-	const CB_MP_BEGINMATCH                = 'ManiaPlanet.BeginMatch';
-	const CB_MP_ENDMATCH                  = 'ManiaPlanet.EndMatch';
-	const CB_MP_MAPLISTMODIFIED           = 'ManiaPlanet.MapListModified';
-	const CB_MP_ECHO                      = 'ManiaPlanet.Echo';
-	const CB_MP_BILLUPDATED               = 'ManiaPlanet.BillUpdated';
-	const CB_MP_PLAYERCHAT                = 'ManiaPlanet.PlayerChat';
-	const CB_MP_PLAYERCONNECT             = 'ManiaPlanet.PlayerConnect';
-	const CB_MP_PLAYERDISCONNECT          = 'ManiaPlanet.PlayerDisconnect';
+	const CB_MP_SERVERSTART = 'ManiaPlanet.ServerStart';
+	const CB_MP_SERVERSTOP = 'ManiaPlanet.ServerStop';
+	const CB_MP_BEGINMATCH = 'ManiaPlanet.BeginMatch';
+	const CB_MP_ENDMATCH = 'ManiaPlanet.EndMatch';
+	const CB_MP_MAPLISTMODIFIED = 'ManiaPlanet.MapListModified';
+	const CB_MP_ECHO = 'ManiaPlanet.Echo';
+	const CB_MP_BILLUPDATED = 'ManiaPlanet.BillUpdated';
+	const CB_MP_PLAYERCHAT = 'ManiaPlanet.PlayerChat';
+	const CB_MP_PLAYERCONNECT = 'ManiaPlanet.PlayerConnect';
+	const CB_MP_PLAYERDISCONNECT = 'ManiaPlanet.PlayerDisconnect';
 	const CB_MP_PLAYERMANIALINKPAGEANSWER = 'ManiaPlanet.PlayerManialinkPageAnswer';
-	const CB_MP_PLAYERINFOCHANGED         = 'ManiaPlanet.PlayerInfoChanged';
-	const CB_MP_PLAYERALLIESCHANGED       = 'ManiaPlanet.PlayerAlliesChanged';
-	const CB_MP_VOTEUPDATED               = 'ManiaPlanet.VoteUpdated';
-	const CB_MP_STATUSCHANGED             = 'ManiaPlanet.StatusChanged';
-	const CB_MP_MODESCRIPTCALLBACK        = 'ManiaPlanet.ModeScriptCallback';
-	const CB_MP_MODESCRIPTCALLBACKARRAY   = 'ManiaPlanet.ModeScriptCallbackArray';
-	const CB_MP_TUNNELDATARECEIVED        = 'ManiaPlanet.TunnelDataReceived';
-
+	const CB_MP_PLAYERINFOCHANGED = 'ManiaPlanet.PlayerInfoChanged';
+	const CB_MP_PLAYERALLIESCHANGED = 'ManiaPlanet.PlayerAlliesChanged';
+	const CB_MP_VOTEUPDATED = 'ManiaPlanet.VoteUpdated';
+	const CB_MP_STATUSCHANGED = 'ManiaPlanet.StatusChanged';
+	const CB_MP_MODESCRIPTCALLBACK = 'ManiaPlanet.ModeScriptCallback';
+	const CB_MP_MODESCRIPTCALLBACKARRAY = 'ManiaPlanet.ModeScriptCallbackArray';
+	const CB_MP_TUNNELDATARECEIVED = 'ManiaPlanet.TunnelDataReceived';
+	
 	// TrackMania callbacks
-	const CB_TM_PLAYERCHECKPOINT  = 'TrackMania.PlayerCheckpoint';
-	const CB_TM_PLAYERFINISH      = 'TrackMania.PlayerFinish';
+	const CB_TM_PLAYERCHECKPOINT = 'TrackMania.PlayerCheckpoint';
+	const CB_TM_PLAYERFINISH = 'TrackMania.PlayerFinish';
 	const CB_TM_PLAYERINCOHERENCE = 'TrackMania.PlayerIncoherence';
-
-	/**
-	 * Private Properties
+	
+	/*
+	 * Public proeprties
+	 */
+	public $shootManiaCallbacks = null;
+	
+	/*
+	 * Private properties
 	 */
 	private $maniaControl = null;
 	private $callbackListeners = array();
@@ -57,14 +62,16 @@ class CallbackManager {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
+		
+		$this->shootManiaCallbacks = new ShootManiaCallbacks($maniaControl, $this);
 	}
 
 	/**
 	 * Register a new Callback Listener
 	 *
-	 * @param string                                   $callbackName
+	 * @param string $callbackName
 	 * @param \ManiaControl\Callbacks\CallbackListener $listener
-	 * @param string                                   $method
+	 * @param string $method
 	 * @return bool
 	 */
 	public function registerCallbackListener($callbackName, CallbackListener $listener, $method) {
@@ -82,9 +89,9 @@ class CallbackManager {
 	/**
 	 * Register a new Script Callback Listener
 	 *
-	 * @param string           $callbackName
+	 * @param string $callbackName
 	 * @param CallbackListener $listener
-	 * @param string           $method
+	 * @param string $method
 	 * @return bool
 	 */
 	public function registerScriptCallbackListener($callbackName, CallbackListener $listener, $method) {
@@ -107,8 +114,8 @@ class CallbackManager {
 	 */
 	public function unregisterCallbackListener(CallbackListener $listener) {
 		$removed = false;
-		foreach($this->callbackListeners as &$listeners) {
-			foreach($listeners as $key => &$listenerCallback) {
+		foreach ($this->callbackListeners as &$listeners) {
+			foreach ($listeners as $key => &$listenerCallback) {
 				if ($listenerCallback[0] != $listener) {
 					continue;
 				}
@@ -127,8 +134,8 @@ class CallbackManager {
 	 */
 	public function unregisterScriptCallbackListener(CallbackListener $listener) {
 		$removed = false;
-		foreach($this->scriptCallbackListener as &$listeners) {
-			foreach($listeners as $key => &$listenerCallback) {
+		foreach ($this->scriptCallbackListener as &$listeners) {
+			foreach ($listeners as $key => &$listenerCallback) {
 				if ($listenerCallback[0] != $listener) {
 					continue;
 				}
@@ -150,7 +157,7 @@ class CallbackManager {
 		}
 		$params = func_get_args();
 		$params = array_slice($params, 1, count($params), true);
-		foreach($this->callbackListeners[$callbackName] as $listener) {
+		foreach ($this->callbackListeners[$callbackName] as $listener) {
 			call_user_func_array(array($listener[0], $listener[1]), $params);
 		}
 	}
@@ -166,7 +173,7 @@ class CallbackManager {
 		}
 		$params = func_get_args();
 		$params = array_slice($params, 1, count($params), true);
-		foreach($this->scriptCallbackListener[$callbackName] as $listener) {
+		foreach ($this->scriptCallbackListener[$callbackName] as $listener) {
 			call_user_func_array(array($listener[0], $listener[1]), $params);
 		}
 	}
@@ -177,48 +184,57 @@ class CallbackManager {
 	public function manageCallbacks() {
 		// Manage Timings
 		$this->maniaControl->timerManager->manageTimings();
-
+		
 		// Server Callbacks
 		if (!$this->maniaControl->client) {
 			return;
 		}
-
+		
 		$callbacks = $this->maniaControl->client->executeCallbacks();
-
+		
 		// Handle callbacks
-		foreach($callbacks as $callback) {
-			$callbackName = $callback[0];
-			switch($callbackName) {
-				case 'ManiaPlanet.BeginMatch':
-					if ($this->maniaControl->mapManager->getCurrentMap()->getGame() == 'sm') {
-						$this->triggerCallback($callbackName, $callback);
-						break;
-					}
-				case 'ManiaPlanet.BeginMap':
-					$this->maniaControl->mapManager->handleBeginMap($callback);
+		foreach ($callbacks as $callback) {
+			$this->handleCallback($callback);
+		}
+	}
+
+	/**
+	 * Handle the given Callback
+	 *
+	 * @param array $callback
+	 */
+	private function handleCallback(array $callback) {
+		$callbackName = $callback[0];
+		switch ($callbackName) {
+			case 'ManiaPlanet.BeginMatch':
+				if ($this->maniaControl->mapManager->getCurrentMap()->getGame() == 'sm') {
 					$this->triggerCallback($callbackName, $callback);
 					break;
-				case 'ManiaPlanet.EndMatch': //TODO temporary fix
-					if ($this->maniaControl->mapManager->getCurrentMap()->getGame() == 'sm') {
-						$this->triggerCallback($callbackName, $callback);
-						break;
-					}
-				case 'ManiaPlanet.EndMap':
-					$this->maniaControl->mapManager->handleEndMap($callback);
+				}
+			case 'ManiaPlanet.BeginMap':
+				$this->maniaControl->mapManager->handleBeginMap($callback);
+				$this->triggerCallback($callbackName, $callback);
+				break;
+			case 'ManiaPlanet.EndMatch': // TODO temporary fix
+				if ($this->maniaControl->mapManager->getCurrentMap()->getGame() == 'sm') {
 					$this->triggerCallback($callbackName, $callback);
 					break;
-				case self::CB_MP_MODESCRIPTCALLBACK:
-					$this->handleScriptCallback($callback);
-					$this->triggerCallback($callbackName, $callback);
-					break;
-				case self::CB_MP_MODESCRIPTCALLBACKARRAY:
-					$this->handleScriptCallback($callback);
-					$this->triggerCallback($callbackName, $callback);
-					break;
-				default:
-					$this->triggerCallback($callbackName, $callback);
-					break;
-			}
+				}
+			case 'ManiaPlanet.EndMap':
+				$this->maniaControl->mapManager->handleEndMap($callback);
+				$this->triggerCallback($callbackName, $callback);
+				break;
+			case self::CB_MP_MODESCRIPTCALLBACK:
+				$this->handleScriptCallback($callback);
+				$this->triggerCallback($callbackName, $callback);
+				break;
+			case self::CB_MP_MODESCRIPTCALLBACKARRAY:
+				$this->handleScriptCallback($callback);
+				$this->triggerCallback($callbackName, $callback);
+				break;
+			default:
+				$this->triggerCallback($callbackName, $callback);
+				break;
 		}
 	}
 
@@ -230,20 +246,6 @@ class CallbackManager {
 	private function handleScriptCallback(array $callback) {
 		$scriptCallbackData = $callback[1];
 		$scriptCallbackName = $scriptCallbackData[0];
-		switch($scriptCallbackName) {
-			case 'BeginMap':
-			case 'LibXmlRpc_BeginMap':
-				$this->maniaControl->mapManager->handleScriptBeginMap($callback);
-				$this->triggerScriptCallback($scriptCallbackName, $scriptCallbackData);
-				break;
-			case 'EndMap':
-			case 'LibXmlRpc_EndMap':
-				$this->maniaControl->mapManager->handleScriptEndMap($callback);
-				$this->triggerScriptCallback($scriptCallbackName, $scriptCallbackData);
-				break;
-			default:
-				$this->triggerScriptCallback($scriptCallbackName, $scriptCallbackData);
-				break;
-		}
+		$this->triggerScriptCallback($scriptCallbackName, $scriptCallbackData);
 	}
 }
