@@ -35,6 +35,22 @@ class TimerManager {
 	}
 
 	/**
+	 * Unregisters a Timer Listening
+	 * @param TimerListener $listener
+	 * @param               $method
+	 * @return bool
+	 */
+	public function unregisterTimerListening(TimerListener $listener, $method){
+		foreach($this->timerListenings as $key => $listening){
+			if($listening->listener == $listener && $listening->method == $method){
+				unset($this->timerListenings[$key]);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Registers a Timing Listening, note < 10ms it can get inaccurate
 	 *
 	 * @param TimerListener $listener
