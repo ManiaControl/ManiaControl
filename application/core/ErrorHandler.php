@@ -102,13 +102,16 @@ class ErrorHandler {
 			return false;
 		}
 		
+		$userError = ($errorNumber == E_USER_ERROR || $errorNumber == E_USER_WARNING || $errorNumber == E_USER_NOTICE ||
+				 $errorNumber == E_USER_DEPRECATED);
+		
 		// Log error
 		$errorTag = $this->getErrorTag($errorNumber);
 		$message = $errorTag . ': ' . $errorString;
 		$traceMessage = $this->parseBackTrace(debug_backtrace());
-		logMessage($message . PHP_EOL . $traceMessage);
+		logMessage($message . ($userError ? '' : PHP_EOL . $traceMessage));
 		
-		if ($this->reportErrors && $errorNumber != E_USER_ERROR && $errorNumber != E_USER_WARNING && $errorNumber != E_USER_NOTICE) {
+		if ($this->reportErrors && !$userError) {
 			$error = array();
 			$error["Type"] = "Error";
 			$error["Message"] = $message;
