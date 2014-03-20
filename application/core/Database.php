@@ -1,6 +1,7 @@
 <?php
 
 namespace ManiaControl;
+
 use ManiaControl\Callbacks\TimerListener;
 
 /**
@@ -8,7 +9,7 @@ use ManiaControl\Callbacks\TimerListener;
  *
  * @author steeffeen & kremsy
  */
-class Database implements TimerListener{
+class Database implements TimerListener {
 	/**
 	 * Public properties
 	 */
@@ -40,29 +41,30 @@ class Database implements TimerListener{
 		$port = (int) $port[0];
 		$user = (string) $user[0];
 		$pass = (string) $pass[0];
-
-		//Enable mysqli Reconnect
+		
+		// Enable mysqli Reconnect
 		ini_set('mysqli.reconnect', 'on');
-
+		
 		// Open database connection
 		$this->mysqli = @new \mysqli($host, $user, $pass, null, $port);
 		if ($this->mysqli->connect_error) {
 			trigger_error($this->mysqli->connect_error, E_USER_ERROR);
 		}
 		$this->mysqli->set_charset("utf8");
-
+		
 		$this->initDatabase();
 		$this->optimizeTables();
-
-		//Register Method which checks the Database Connection every 5 seconds
+		
+		// Register Method which checks the Database Connection every 5 seconds
 		$this->maniaControl->timerManager->registerTimerListening($this, 'checkConnection', 5000);
 	}
 
 	/**
 	 * Check if Connection still exists every 5 seconds
+	 * 
 	 * @param $time
 	 */
-	public function checkConnection($time){
+	public function checkConnection($time) {
 		if (!$this->mysqli->ping()) {
 			$this->maniaControl->quit("The MySQL server has gone away");
 		}
@@ -72,7 +74,7 @@ class Database implements TimerListener{
 	 * Destruct database connection
 	 */
 	public function __destruct() {
-		if($this->mysqli){
+		if ($this->mysqli) {
 			$this->mysqli->close();
 		}
 	}
@@ -132,6 +134,7 @@ class Database implements TimerListener{
 		}
 		$count = $result->num_rows;
 		if ($count <= 0) {
+			$result->close();
 			return true;
 		}
 		$optimizeQuery = "OPTIMIZE TABLE ";
@@ -144,6 +147,7 @@ class Database implements TimerListener{
 			}
 			$index++;
 		}
+		$result->close();
 		$optimizeQuery .= ";";
 		$this->mysqli->query($optimizeQuery);
 		if ($this->mysqli->error) {
