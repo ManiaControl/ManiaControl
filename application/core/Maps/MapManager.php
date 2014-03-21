@@ -592,7 +592,7 @@ class MapManager implements CallbackListener {
 	 */
 	private function processMapFile($file, MXMapInfo $mapInfo, $login, $update) {
 		$mapDir = $this->maniaControl->client->getMapsDirectory();
-		
+
 		//Check if map is already on the server
 		if ($this->getMapByUid($mapInfo->uid) != null) {
 			// Download error
