@@ -570,13 +570,13 @@ class MapManager implements CallbackListener {
 					return;
 				}
 				//Download the file
-				$this->maniaControl->fileReader->loadFile($mapInfo->downloadurl, function ($file, $error) use (&$login, &$mapInfo, &$mapDir, &$update) {
+				$this->maniaControl->fileReader->loadFile($mapInfo->downloadurl, function ($file, $error) use (&$login, &$mapInfo, &$update) {
 					if (!$file) {
 						// Download error
 						$this->maniaControl->chat->sendError('Download failed!', $login);
 						return;
 					}
-					$this->processMapFile($file, $mapInfo, $mapDir, $login, $update);
+					$this->processMapFile($file, $mapInfo, $login, $update);
 				});
 			});
 		}
@@ -587,11 +587,12 @@ class MapManager implements CallbackListener {
 	 *
 	 * @param           $file
 	 * @param MXMapInfo $mapInfo
-	 * @param           $mapDir
 	 * @param           $login
 	 * @param           $update
 	 */
-	private function processMapFile($file, MXMapInfo $mapInfo, $mapDir, $login, $update) {
+	private function processMapFile($file, MXMapInfo $mapInfo, $login, $update) {
+		$mapDir = $this->maniaControl->client->getMapsDirectory();
+		
 		//Check if map is already on the server
 		if ($this->getMapByUid($mapInfo->uid) != null) {
 			// Download error
