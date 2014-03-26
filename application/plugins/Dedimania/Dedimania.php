@@ -470,7 +470,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 		$playerInfo = $this->getPlayerList();
 		$mapInfo    = $this->getMapInfo();
 		$gameMode   = $this->getGameModeString();
-
+		
 		if (!$serverInfo || !$playerInfo || !$mapInfo || !$gameMode) {
 			return false;
 		}
@@ -802,11 +802,17 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	 */
 	private function getGameModeString() {
 		$gameMode = $this->maniaControl->server->getGameMode();
+		$scriptName = str_replace('.Script.txt', '', $this->maniaControl->client->getScriptName()["CurrentValue"]);
 		if ($gameMode === null) {
 			trigger_error("Couldn't retrieve game mode. ");
 			return null;
 		}
 		switch($gameMode) {
+			case 0:
+			{
+			if($scriptName == 'Rounds' || $scriptName == 'Cup' || $scriptName == 'Team') { return 'Rounds'; }
+			else if($scriptName == 'TimeAttack' || $scriptName == 'Laps' || $scriptName == 'TeamAttack'){ return 'TA'; }
+			}
 			case 1:
 			case 3:
 			case 5:
