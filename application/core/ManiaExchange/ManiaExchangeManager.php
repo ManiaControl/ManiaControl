@@ -12,7 +12,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
  *
  * @author steeffeen & kremsy
  */
-class ManiaExchangeManager {
+class ManiaExchangeManager{
 	/**
 	 * Constants
 	 */
@@ -38,6 +38,9 @@ class ManiaExchangeManager {
 	//Maximum Maps per request
 	const MAPS_PER_MX_FETCH = 50;
 
+	//Beta Testing Activated
+	const SETTING_MP3_BETA_TESTING = 'Activate MP3 Beta Testing';
+
 	/**
 	 * Private Propertieswc
 	 */
@@ -51,6 +54,8 @@ class ManiaExchangeManager {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
+
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MP3_BETA_TESTING, false);
 	}
 
 
@@ -187,6 +192,9 @@ class ManiaExchangeManager {
 
 		// compile search URL
 		$url = 'http://api.mania-exchange.com/' . $titlePrefix . '/maps/?ids=' . $id;
+		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_MP3_BETA_TESTING)){
+			$url .= '&key=t42kEMjzH7xpAjBFHAvEkC7rqAlw';
+		}
 
 		return $this->maniaControl->fileReader->loadFile($url, function ($mapInfo, $error) use (&$function, $titlePrefix, $url) {
 			$mxMapInfo = null;
@@ -217,6 +225,9 @@ class ManiaExchangeManager {
 
 		// compile search URL
 		$url = 'http://api.mania-exchange.com/' . $titlePrefix . '/maps/?ids=' . $string;
+		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_MP3_BETA_TESTING)){
+			$url .= '&key=t42kEMjzH7xpAjBFHAvEkC7rqAlw';
+		}
 
 		$thisRef = $this;
 		$success = $this->maniaControl->fileReader->loadFile($url, function ($mapInfo, $error) use ($thisRef, $titlePrefix, $url) {
@@ -274,7 +285,7 @@ class ManiaExchangeManager {
 		$titlePrefix = $this->maniaControl->mapManager->getCurrentMap()->getGame();
 
 		// compile search URL
-		$url = 'http://' . $titlePrefix . '.mania-exchange.com/tracksearch?api=on';
+		$url = 'http://' . $titlePrefix . '.mania-exchange.com/tracksearch2/search?api=on';
 
 		$game      = explode('@', $titleId);
 		$envNumber = $this->getEnvironment($game[0]);
@@ -291,6 +302,10 @@ class ManiaExchangeManager {
 		$url .= '&priord=' . $searchOrder;
 		$url .= '&limit=' . $maxMapsReturned;
 
+		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_MP3_BETA_TESTING)){
+			$url .= '&key=t42kEMjzH7xpAjBFHAvEkC7rqAlw';
+			$url .= '&mapgroup=1';
+		}
 
 		// Get MapTypes
 		try {
@@ -311,6 +326,14 @@ class ManiaExchangeManager {
 			}
 
 			$mxMapList = json_decode($mapInfo);
+
+			if (!isset($mxMapList->results)) {
+				trigger_error('Cannot decode searched JSON data');
+				return null;
+			}
+
+			$mxMapList = $mxMapList->results;
+
 			if ($mxMapList === null) {
 				trigger_error('Cannot decode searched JSON data');
 				return null;
