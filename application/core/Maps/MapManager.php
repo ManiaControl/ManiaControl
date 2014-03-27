@@ -569,8 +569,15 @@ class MapManager implements CallbackListener {
 					$this->maniaControl->chat->sendError('Invalid MX-Id!', $login);
 					return;
 				}
+
+				//TODO hardcoded whiel beta, later take just $mapInfo->url again
+				$url = 'http://' . $mapInfo->prefix . '.mania-exchange.com/' . $mapInfo->dir . '/download/' . $mapInfo->id;
+				if($this->maniaControl->settingManager->getSetting($this->mxManager, ManiaExchangeManager::SETTING_MP3_BETA_TESTING)){
+					$url .= '?key=t42kEMjzH7xpAjBFHAvEkC7rqAlw';
+				}
+
 				//Download the file
-				$this->maniaControl->fileReader->loadFile($mapInfo->downloadurl, function ($file, $error) use (&$login, &$mapInfo, &$update) {
+				$this->maniaControl->fileReader->loadFile($url, function ($file, $error) use (&$login, &$mapInfo, &$update) {
 					if (!$file) {
 						// Download error
 						$this->maniaControl->chat->sendError('Download failed!', $login);

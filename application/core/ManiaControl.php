@@ -341,7 +341,7 @@ class ManiaControl implements CommandListener, TimerListener {
 			// Yield for next tick
 			$loopEnd = microtime(true);
 			
-			$sleepTime = (int) (5000 - ($loopEnd - $loopStart) * 1000000);
+			$sleepTime = (int) (2000 - ($loopEnd - $loopStart) * 1000000);
 			if ($sleepTime > 0) {
 				usleep($sleepTime);
 			}

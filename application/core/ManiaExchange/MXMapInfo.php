@@ -15,7 +15,7 @@ class MXMapInfo {
 	public $titlepack, $style, $envir, $mood, $dispcost, $lightmap, $modname, $exever;
 	public $exebld, $routes, $length, $unlimiter, $laps, $difficulty, $lbrating, $trkvalue;
 	public $replaytyp, $replayid, $replaycnt, $acomment, $awards, $comments, $rating;
-	public $ratingex, $ratingcnt, $pageurl, $replayurl, $imageurl, $thumburl, $downloadurl;
+	public $ratingex, $ratingcnt, $pageurl, $replayurl, $imageurl, $thumburl, $downloadurl, $dir;
 
 	/**
 	 * Returns map object with all available data from MX map data
@@ -30,11 +30,11 @@ class MXMapInfo {
 		if ($mx) {
 
 			if ($this->prefix == 'tm') {
-				$dir = 'tracks';
+				$this->dir = 'tracks';
 				$this->id  = $mx->TrackID;
 				$this->uid = isset($mx->TrackUID) ? $mx->TrackUID : '';
 			} else {
-				$dir = 'maps';
+				$this->dir = 'maps';
 				$this->id  = $mx->MapID;
 				$this->uid = isset($mx->MapUID) ? $mx->MapUID : '';
 			}
@@ -88,10 +88,10 @@ class MXMapInfo {
 			$this->acomment = str_ireplace($search, $replace, $this->acomment);
 			$this->acomment = preg_replace('/\[url=.*\]/', '<i>', $this->acomment);
 
-			$this->pageurl     = 'http://' . $this->prefix . '.mania-exchange.com/' . $dir . '/view/' . $this->id;
-			$this->imageurl    = 'http://' . $this->prefix . '.mania-exchange.com/' . $dir . '/screenshot/normal/' . $this->id;
-			$this->thumburl    = 'http://' . $this->prefix . '.mania-exchange.com/' . $dir . '/screenshot/small/' . $this->id;
-			$this->downloadurl = 'http://' . $this->prefix . '.mania-exchange.com/' . $dir . '/download/' . $this->id;
+			$this->pageurl     = 'http://' . $this->prefix . '.mania-exchange.com/' . $this->dir . '/view/' . $this->id;
+			$this->imageurl    = 'http://' . $this->prefix . '.mania-exchange.com/' . $this->dir . '/screenshot/normal/' . $this->id;
+			$this->thumburl    = 'http://' . $this->prefix . '.mania-exchange.com/' . $this->dir . '/screenshot/small/' . $this->id;
+			$this->downloadurl = 'http://' . $this->prefix . '.mania-exchange.com/' . $this->dir . '/download/' . $this->id;
 
 			if ($this->prefix == 'tm' && $this->replayid > 0) {
 				$this->replayurl = 'http://' . $this->prefix . '.mania-exchange.com/replays/download/' . $this->replayid;
