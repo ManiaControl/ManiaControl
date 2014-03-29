@@ -11,6 +11,7 @@ use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Controls\Quads\Quad_UIConstruction_Buttons;
 use FML\ManiaLink;
 use FML\Script\Script;
+use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Commands\CommandListener;
@@ -97,6 +98,11 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	 * @param array $callback
 	 */
 	public function handleConfigCommand(array $callback, Player $player) {
+		if(!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+			return;
+		}
+
 		$this->showMenu($player);
 	}
 
