@@ -404,9 +404,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 * @param        bool
 	 */
 	private function applyNewScriptSettings(array $newSettings, Player $player) {
-		if (!$newSettings) {
-			return true;
-		}
+		if (!$newSettings) return true;
 
 		try {
 			$this->maniaControl->client->setModeScriptSettings($newSettings);
@@ -449,8 +447,6 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			$statement->execute();
 			if ($statement->error) {
 				trigger_error($statement->error);
-				$statement->close();
-				return false;
 			}
 
 			// Trigger own callback
