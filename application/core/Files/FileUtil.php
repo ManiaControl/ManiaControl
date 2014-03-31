@@ -3,6 +3,7 @@
 namespace ManiaControl\Files;
 
 use ManiaControl\ManiaControl;
+use ManiaControl\Formatter;
 
 /**
  * File utility class
@@ -87,6 +88,8 @@ abstract class FileUtil {
 	 * @return string
 	 */
 	public static function getClearedFileName($fileName) {
-		return str_replace(array('\\', '/', ':', '*', '?', '"', '<', '>', '|'), '_', $fileName);
+		$fileName = Formatter::stripCodes($fileName);
+		$fileName = str_replace(array('\\', '/', ':', '*', '?', '"', '<', '>', '|'), '_', $fileName);
+		return $fileName;
 	}
 }
