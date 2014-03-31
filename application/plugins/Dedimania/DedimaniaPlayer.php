@@ -15,9 +15,7 @@ class DedimaniaPlayer {
 	public $options = '';
 
 	public function __construct($player) {
-		if ($player == null) {
-			return;
-		}
+		if (!$player) return;
 
 		$this->login          = $player['Login'];
 		$this->maxRank        = $player['MaxRank'];

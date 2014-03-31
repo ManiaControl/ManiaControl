@@ -27,7 +27,7 @@ class RecordData {
 	 * @param $record
 	 */
 	public function __construct($record) {
-		if ($record == null) {
+		if (!$record) {
 			$this->nullRecord = true;
 			return;
 		}
