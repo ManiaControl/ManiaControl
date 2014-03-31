@@ -136,7 +136,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	}
 
 	/**
-	 * Handle addmap command
+	 * Handle shufflemaps command
 	 *
 	 * @param array                        $chatCallback
 	 * @param \ManiaControl\Players\Player $player
