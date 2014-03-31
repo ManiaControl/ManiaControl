@@ -774,7 +774,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 					$this->playersListShown[$login] = false;
 				}
 				$player = $this->maniaControl->playerManager->getPlayer($login);
-				if ($player != null) {
+				if ($player) {
 					$this->showPlayerList($player);
 				} else {
 					// if player with the open widget disconnected remove him from the shownlist

@@ -325,7 +325,7 @@ class MapManager implements CallbackListener {
 		
 		$this->fetchCurrentMap();
 		
-		if ($admin != null) {
+		if ($admin) {
 			$message = '$<' . $admin->nickname . '$> shuffled the Maplist!';
 			$this->maniaControl->chat->sendSuccess($message);
 			$this->maniaControl->log($message, true);
@@ -619,7 +619,7 @@ class MapManager implements CallbackListener {
 	 */
 	private function processMapFile($file, MXMapInfo $mapInfo, $login, $update) {
 		// Check if map is already on the server
-		if ($this->getMapByUid($mapInfo->uid) != null) {
+		if ($this->getMapByUid($mapInfo->uid)) {
 			// Download error
 			$this->maniaControl->chat->sendError('Map is already on the server!', $login);
 			return;

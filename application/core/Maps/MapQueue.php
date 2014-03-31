@@ -151,7 +151,7 @@ class MapQueue implements CallbackListener, CommandListener {
 				$player = $queuedMap[0];
 
 				//found player, so play this map
-				if ($this->maniaControl->playerManager->getPlayer($player->login) != null) {
+				if ($this->maniaControl->playerManager->getPlayer($player->login)) {
 					break;
 				}
 

@@ -220,7 +220,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 		foreach($this->adminListShown as $login => $shown) {
 			if ($shown) {
 				$player = $this->maniaControl->playerManager->getPlayer($login);
-				if ($player != null) {
+				if ($player) {
 					$this->showAdminLists($player);
 				} else {
 					unset($this->adminListShown[$login]);

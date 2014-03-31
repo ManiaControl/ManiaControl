@@ -98,7 +98,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	 */
 	public function command_ShowNextMap(array $chat, Player $player) {
 		$nextQueued = $this->maniaControl->mapManager->mapQueue->getNextQueuedMap();
-		if ($nextQueued != null) {
+		if ($nextQueued) {
 			/** @var Player $requester */
 			$requester = $nextQueued[0];
 			/** @var Map $map */
