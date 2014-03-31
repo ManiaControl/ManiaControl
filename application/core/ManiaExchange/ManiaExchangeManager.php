@@ -248,9 +248,9 @@ class ManiaExchangeManager{
 
 			$maps = array();
 			foreach($mxMapList as $map) {
-				if ($map != null) {
+				if ($map) {
 					$mxMapObject = new MXMapInfo($titlePrefix, $map);
-					if ($mxMapObject != null) {
+					if ($mxMapObject) {
 						array_push($maps, $mxMapObject);
 					}
 				}

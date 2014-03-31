@@ -315,7 +315,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		$type = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MIN_RANKING_TYPE);
 
 		$message = '';
-		if ($rankObj != null) {
+		if ($rankObj) {
 			switch($type) {
 				case self::RANKING_TYPE_RATIOS:
 					$kd      = $this->maniaControl->statisticManager->getStatisticData(StatisticManager::SPECIAL_STAT_KD_RATIO, $player->index);
@@ -426,7 +426,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 	public function showNextRank(Player $player) {
 		$rankObject = $this->getRank($player);
 
-		if ($rankObject != null) {
+		if ($rankObject) {
 			if ($rankObject->rank > 1) {
 				$nextRank   = $this->getNextRank($player);
 				$nextPlayer = $this->maniaControl->playerManager->getPlayerByIndex($nextRank->playerIndex);

@@ -396,15 +396,15 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 */
 	private function performCoreUpdate(UpdateData $updateData, Player $player = null) {
 		if (!$this->checkPermissions()) {
-			if ($player != null) {
-				$this->maniaControl->chat->sendError('Update failed: Incorrect Filesystem permissions!', $player->login);
+			if ($player) {
+				$this->maniaControl->chat->sendError('Update failed: Incorrect file system permissions!', $player->login);
 			}
 			$this->maniaControl->log('Update failed!');
 			return false;
 		}
 
 		if (!isset($updateData->url) && !isset($updateData->releaseDate)) {
-			if ($player != null) {
+			if ($player) {
 				$this->maniaControl->chat->sendError('Update failed: No update Data available!', $player->login);
 			}
 			$this->maniaControl->log('Update failed: No update Data available!');
@@ -421,7 +421,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			$bytes = file_put_contents($updateFileName, $updateFileContent);
 			if (!$bytes || $bytes <= 0) {
 				trigger_error("Couldn't save Update Zip.");
-				if ($player != null) {
+				if ($player) {
 					$this->maniaControl->chat->sendError('Update failed: Couldn\'t save Update zip!', $player->login);
 				}
 				return false;
@@ -430,7 +430,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			$result = $zip->open($updateFileName);
 			if ($result !== true) {
 				trigger_error("Couldn't open Update Zip. ({$result})");
-				if ($player != null) {
+				if ($player) {
 					$this->maniaControl->chat->sendError('Update failed: Couldn\'t open Update zip!', $player->login);
 				}
 				return false;
@@ -444,7 +444,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			//Set the Nightly Build Date
 			$this->setNightlyBuildDate($updateData->releaseDate);
 
-			if ($player != null) {
+			if ($player) {
 				$this->maniaControl->chat->sendSuccess('Update finished!', $player->login);
 			}
 			$this->maniaControl->log("Update finished!");

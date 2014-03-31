@@ -119,7 +119,7 @@ class DatabaseConverter { //TODO move bind param before loop everywhere, convert
 	 */
 	public function __destruct() {
 		$this->mysqli->close();
-		if ($this->sourceMysqli != null) {
+		if ($this->sourceMysqli) {
 			$this->sourceMysqli->close();
 		}
 	}
