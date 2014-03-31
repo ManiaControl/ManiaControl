@@ -767,20 +767,21 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 	 * @param Player $player
 	 */
 	public function updateWidget(Player $player) {
-		foreach($this->playersListShown as $login => $shown) {
-			if ($shown) {
-				// Check if Shown player still exists
-				if ($shown != self::SHOWN_MAIN_WINDOW && $this->maniaControl->playerManager->getPlayer($shown) == null) {
-					$this->playersListShown[$login] = false;
-				}
-				$player = $this->maniaControl->playerManager->getPlayer($login);
-				if ($player) {
-					$this->showPlayerList($player);
-				} else {
-					// if player with the open widget disconnected remove him from the shownlist
-					unset($this->playersListShown[$login]);
-				}
+		foreach ($this->playersListShown as $login => $shown) {
+			if (!$shown) continue;
+			
+			// Check if shown player still exists
+			$player = $this->maniaControl->playerManager->getPlayer($login);
+			if (!$player) {
+				unset($this->playersListShown[$login]);
+				continue;
 			}
+			
+			// Reopen widget
+			if ($shown != self::SHOWN_MAIN_WINDOW) {
+				$this->playersListShown[$login] = false;
+			}
+			$this->showPlayerList($player);
 		}
 	}
 }
