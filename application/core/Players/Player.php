@@ -109,7 +109,7 @@ class Player {
 
 		$this->joinTime = time();
 
-		if ($this->nickname == null || $this->nickname == '') {
+		if (!$this->nickname) {
 			$this->nickname = $this->login;
 		}
 	}

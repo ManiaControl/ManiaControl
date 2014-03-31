@@ -99,7 +99,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		}
 
 		$function = function ($maps) use (&$player) {
-			if ($maps == null) {
+			if (!$maps) {
 				$this->maniaControl->chat->sendError('No maps found, or MX is down!', $player->login);
 				return;
 			}

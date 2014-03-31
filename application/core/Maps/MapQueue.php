@@ -175,7 +175,7 @@ class MapQueue implements CallbackListener, CommandListener {
 		$this->nextMap = array_shift($this->queuedMaps);
 
 		//Check if Map Queue is empty
-		if ($this->nextMap == null || !isset($this->nextMap[1])) {
+		if (!$this->nextMap || !isset($this->nextMap[1])) {
 			return;
 		}
 		$map = $this->nextMap[1];

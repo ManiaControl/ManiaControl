@@ -114,9 +114,7 @@ class StatisticManager {
 		$mysqli = $this->maniaControl->database->mysqli;
 		$statId = $this->getStatId($statName);
 
-		if ($statId == null) {
-			return -1;
-		}
+		if (!$statId) return -1;
 
 		if ($serverIndex == -1) {
 			$query = "SELECT SUM(value) as value FROM `" . self::TABLE_STATISTICS . "` WHERE `statId` = " . $statId . " AND `playerId` = " . $playerId . ";";

@@ -165,16 +165,12 @@ class PlayerManager implements CallbackListener, TimerListener {
 	public function playerDisconnect(array $callback) {
 		$login  = $callback[1][0];
 		$player = $this->removePlayer($login);
-
-		if ($player == null) {
-			return;
-		}
+		if (!$player) return;
+		
 		// Trigger own callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERDISCONNECT, $player);
 
-		if ($player->isFakePlayer()) {
-			return;
-		}
+		if ($player->isFakePlayer()) return;
 
 		$played     = Formatter::formatTimeH(time() - $player->joinTime);
 		$logMessage = "Player left: {$player->login} / {$player->nickname} Playtime: {$played}";
@@ -192,9 +188,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 	 */
 	public function playerInfoChanged(array $callback) {
 		$player = $this->getPlayer($callback[1][0]['Login']);
-		if ($player == null) {
-			return;
-		}
+		if (!$player) return;
 
 		$player->ladderRank = $callback[1][0]["LadderRanking"];
 		$player->teamId     = $callback[1][0]["TeamId"];
