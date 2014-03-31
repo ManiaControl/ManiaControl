@@ -342,6 +342,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		}
 
 		// Notifications
+		//TODO: clean up those comments
 		//$settingsCount = count($newSettings);
 		$settingIndex = 0;
 		//$title         = $this->maniaControl->authenticationManager->getAuthLevelName($player->authLevel);
