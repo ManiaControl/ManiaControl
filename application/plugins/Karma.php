@@ -560,16 +560,18 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 	/**
 	 * Update Settings
+	 *
 	 * @param $class
 	 * @param $settingName
 	 * @param $value
 	 */
-	public function updateSettings($class, $settingName, $value){
-		if(!$class = get_class())
+	public function updateSettings($class, $settingName, $value) {
+		if (!$class = get_class()) {
 			return;
+		}
 
 		$serverLogin = $this->maniaControl->server->login;
-		if($settingName == '$l[http://karma.mania-exchange.com/auth/getapikey?server=' . $serverLogin . ']MX Karma Code for ' . $serverLogin . '$l'){
+		if ($settingName == '$l[http://karma.mania-exchange.com/auth/getapikey?server=' . $serverLogin . ']MX Karma Code for ' . $serverLogin . '$l') {
 			$this->mxKarmaOpenSession();
 		}
 	}
@@ -667,7 +669,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			return;
 		}
 
-		if (!isset($this->mxKarma['session']) && isset($this->mxKarma['connectionInProgress']) && $this->mxKarma['connectionInProgress'] != true) {
+		if (!isset($this->mxKarma['session']) && !(isset($this->mxKarma['connectionInProgress']) && $this->mxKarma['connectionInProgress'])) {
 			$this->mxKarmaOpenSession();
 			return;
 		}
@@ -718,7 +720,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			return;
 		}
 
-		if (!isset($this->mxKarma['session']) && isset($this->mxKarma['connectionInProgress']) && $this->mxKarma['connectionInProgress'] != true) {
+		if (!isset($this->mxKarma['session']) && !(isset($this->mxKarma['connectionInProgress']) && $this->mxKarma['connectionInProgress'])) {
 			$this->mxKarmaOpenSession();
 			return;
 		}
@@ -738,6 +740,11 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	 * @param bool  $import
 	 */
 	private function postKarmaVotes(Map $map, array $votes, $import = false) {
+		if (!isset($this->mxKarma['session']) && !(isset($this->mxKarma['connectionInProgress']) && $this->mxKarma['connectionInProgress'])) {
+			$this->mxKarmaOpenSession();
+			return;
+		}
+
 		$gameMode = $this->maniaControl->server->getGameMode(true);
 
 		if (count($votes) == 0) {
