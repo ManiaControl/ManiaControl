@@ -330,7 +330,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 						$errors = $methodResponse[0]['methods'][0]['errors'];
 						if ($errors) {
 							//TODO just temporary
-							$this->maniaControl->errorHandler->triggerDebugNotice("Dedimania Notice on SetChallengeTimes: " . $errors);
+							//$this->maniaControl->errorHandler->triggerDebugNotice("Dedimania Notice on SetChallengeTimes: " . $errors);
 							//trigger_error($errors);
 						}
 					}
