@@ -244,9 +244,13 @@ class StatisticCollector implements CallbackListener {
 				$shooter = $this->maniaControl->playerManager->getPlayer($callback[1][1][0]);
 				$victim  = $this->maniaControl->playerManager->getPlayer($callback[1][1][1]);
 				$weapon  = $callback[1][1][3];
-				$this->maniaControl->statisticManager->incrementStat($this->getWeaponStat(intval($weapon), false), $shooter);
-				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_HIT, $shooter);
-				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_GOT_HIT, $victim);
+				if ($shooter) {
+					$this->maniaControl->statisticManager->incrementStat($this->getWeaponStat(intval($weapon), false), $shooter);
+					$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_HIT, $shooter);
+				}
+				if ($victim) {
+					$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_GOT_HIT, $victim);
+				}
 				break;
 			case 'LibXmlRpc_OnNearMiss':
 				$player = $this->maniaControl->playerManager->getPlayer($callback[1][1][0]);
@@ -298,9 +302,13 @@ class StatisticCollector implements CallbackListener {
 				$shooter      = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Shooter->Login);
 				$victim       = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Victim->Login);
 				$weapon       = $paramsObject->Event->WeaponNum;
-				$this->maniaControl->statisticManager->incrementStat($this->getWeaponStat($weapon, false), $shooter);
-				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_HIT, $shooter);
-				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_GOT_HIT, $victim);
+				if ($shooter) {
+					$this->maniaControl->statisticManager->incrementStat($this->getWeaponStat(intval($weapon), false), $shooter);
+					$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_HIT, $shooter);
+				}
+				if ($victim) {
+					$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_GOT_HIT, $victim);
+				}
 				break;
 			case 'OnArmorEmpty':
 				$paramsObject = json_decode($callback[1][1]);

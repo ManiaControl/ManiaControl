@@ -196,7 +196,7 @@ class Client
 		{
 			$size = 0;
 			$recvhandle = 0;
-			@stream_set_timeout($this->socket, 0, $this->timeout * 1000 * 200);
+			@stream_set_timeout($this->socket, 0, $this->timeout * 1000 * 1000);
 			// Get result
 			if ($this->protocol == 1)
 			{
