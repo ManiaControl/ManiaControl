@@ -268,7 +268,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			// Display Maps
 			$array  = array($id => $x + 5, $mxId => $x + 10, Formatter::stripDirtyCodes($map->name) => $x + 20, $map->authorNick => $x + 68);
 			$labels = $this->maniaControl->manialinkManager->labelLine($mapFrame, $array);
-			if ($labels[3]) {
+			if (isset($labels[3])) {
 				$script->addTooltip($labels[3], $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => '$<' . $map->name . '$> made by $<' . $map->authorLogin . '$>'));
 			}
 
