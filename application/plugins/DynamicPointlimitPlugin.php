@@ -69,7 +69,6 @@ class DynamicPointlimitPlugin implements CallbackListener, CommandListener, Plug
 	 * Unload the plugin and its resources
 	 */
 	public function unload() {
-		$this->maniaControl->manialinkManager->unregisterManialinkPageAnswerListener($this);
 		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
 
 		unset($this->maniaControl);
