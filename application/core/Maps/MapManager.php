@@ -225,7 +225,12 @@ class MapManager implements CallbackListener {
 	 */
 	public function removeMap(Player $admin, $uid, $eraseFile = false, $message = true) {
 		$map = $this->maps[$uid];
-		
+
+		if(!$map){
+			$this->maniaControl->chat->sendError("Map is not existing anymore)", $admin->login);
+			return;
+		}
+
 		// Unset the Map everywhere
 		$this->mapQueue->removeFromMapQueue($admin, $map->uid);
 		
