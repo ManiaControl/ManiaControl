@@ -220,6 +220,11 @@ class Client
 						throw new FatalException('deb1 transport error - connection interrupted!' . $contents, FatalException::INTERRUPTED);
 					}
 					$contents .= $newContent;
+
+					if(strlen($contents) < 8){
+						usleep(10);
+						var_dump("deb1 test new");
+					}
 				}
 
 				$array_result = unpack('Vsize/Vhandle', $contents);
