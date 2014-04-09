@@ -369,6 +369,9 @@ class PlayerActions {
 				$this->maniaControl->client->kick($target->login, $message);
 			}
 		} catch(Exception $e) {
+			if($e == "Login unknown."){
+				return;
+			}
 			// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
 			$this->maniaControl->errorHandler->triggerDebugNotice("PlayerActions Debug Line 354: " . $e->getMessage());
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $admin->login);
