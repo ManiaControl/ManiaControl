@@ -211,22 +211,11 @@ class Client
 			}
 			else
 			{
-				$contents = "";
-				while(strlen($contents) < 8){
-					$newContent = fread($this->socket, 8 - strlen($contents));
-					//var_dump($contents, $newContent, strlen($contents));
-					if(strlen($newContent) == 0){
-						var_dump("deb1 transport error" . $contents);
-						throw new FatalException('deb1 transport error - connection interrupted!' . $contents, FatalException::INTERRUPTED);
-					}
-					$contents .= $newContent;
-
-					if(strlen($contents) < 8){
-						usleep(10);
-						var_dump("deb1 test new");
-					}
+				$contents = fread($this->socket, 8);
+				if (strlen($contents) == 0 || $contents === false)
+				{
+					throw new FatalException('transport error - connection interrupted!', FatalException::INTERRUPTED);
 				}
-
 				$array_result = unpack('Vsize/Vhandle', $contents);
 				$size = $array_result['size'];
 				$recvhandle = $array_result['handle'];
@@ -240,12 +229,12 @@ class Client
 
 			if ($recvhandle == 0 || $size == 0)
 			{
-				throw new FatalException('deb2 transport error - connection interrupted!', FatalException::INTERRUPTED);
+				throw new FatalException('transport error - connection interrupted!', FatalException::INTERRUPTED);
 			}
 
 			if ($size > SIZE_MAX)
 			{
-				throw new Exception("deb3 transport error - answer too big ($size)", Exception::ANWSER_TOO_BIG);
+				throw new Exception("transport error - answer too big ($size)", Exception::ANWSER_TOO_BIG);
 			}
 
 			self::$received += $size;
