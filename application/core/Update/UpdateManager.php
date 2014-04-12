@@ -16,6 +16,8 @@ use ManiaControl\Plugins\Plugin;
  * Manager checking for ManiaControl Core and Plugin Updates
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class UpdateManager implements CallbackListener, CommandListener, TimerListener {
 	/*

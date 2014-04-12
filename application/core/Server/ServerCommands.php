@@ -16,12 +16,14 @@ use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
- * Class offering various commands related to the dedicated server
+ * Class offering various Commands related to the Dedicated Server
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ServerCommands implements CallbackListener, CommandListener, ManialinkPageAnswerListener, TimerListener {
-	/**
+	/*
 	 * Constants
 	 */
 	const ACTION_SET_PAUSE                         = 'ServerCommands.SetPause';
@@ -36,8 +38,8 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 	const SETTING_PERMISSION_SHUTDOWN_SERVER       = 'Shutdown Server';
 	const SETTING_PERMISSION_CHANGE_SERVERSETTINGS = 'Change ServerSettings';
 
-	/**
-	 * Private properties
+	/*
+	 * Private Properties
 	 */
 	private $maniaControl = null;
 	private $serverShutdownTime = -1;

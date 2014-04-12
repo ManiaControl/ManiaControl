@@ -15,9 +15,11 @@ use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
  * Class managing Players
  *
  * @author kremsy & steeffeen
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class PlayerManager implements CallbackListener, TimerListener {
-	/**
+	/*
 	 * Constants
 	 */
 	const CB_PLAYERCONNECT            = 'PlayerManagerCallback.PlayerConnect';
@@ -28,7 +30,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 	const STAT_JOIN_COUNT             = 'Joins';
 	const STAT_SERVERTIME             = 'Servertime';
 
-	/**
+	/*
 	 * Public Properties
 	 */
 	public $playerActions = null;
@@ -38,7 +40,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 	public $adminLists = null;
 	public $players = array();
 
-	/**
+	/*
 	 * Private Properties
 	 */
 	private $maniaControl = null;

@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Lukas
- * Date: 31.01.14
- * Time: 12:54
- */
 
 namespace ManiaControl\Admin;
-
 
 use FML\Controls\Control;
 use FML\Controls\Frame;
@@ -25,15 +18,22 @@ use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 
+/**
+ * Widget Class listing Authorized Players
+ * 
+ * @author kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ */
 class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
-	/**
+	/*
 	 * Constants
 	 */
 	const ACTION_OPEN_ADMINLISTS = "AdminList.OpenAdminLists";
 	const ACTION_REVOKE_RIGHTS   = "AdminList.RevokeRights";
 	const MAX_PLAYERS_PER_PAGE   = 15;
 
-	/**
+	/*
 	 * Private Properties
 	 */
 	private $adminListShown = array();
@@ -51,7 +51,6 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 		$this->maniaControl->callbackManager->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_OPENED, $this, 'handleWidgetOpened');
 		$this->maniaControl->callbackManager->registerCallbackListener(AuthenticationManager::CB_AUTH_LEVEL_CHANGED, $this, 'updateWidget');
 
-
 		// Menu Entry AdminList
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_OPEN_ADMINLISTS, $this, 'openAdminList');
 		$itemQuad = new Quad_UIConstruction_Buttons();
@@ -60,10 +59,21 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 50, 'Open Adminlist');
 	}
 
+	/**
+	 * Open Admin List Action
+	 * 
+	 * @param array $callback
+	 * @param Player $player
+	 */
 	public function openAdminList(array $callback, Player $player) {
 		$this->showAdminLists($player);
 	}
 
+	/**
+	 * Show the Admin List
+	 * 
+	 * @param Player $player
+	 */
 	public function showAdminLists(Player $player) {
 		$this->adminListShown[$player->login] = true;
 

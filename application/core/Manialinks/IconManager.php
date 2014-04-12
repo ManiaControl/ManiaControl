@@ -15,9 +15,11 @@ use ManiaControl\Players\Player;
  * Class managing Icons
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class IconManager implements CallbackListener {
-	/**
+	/*
 	 * Constants
 	 */
 	const DEFAULT_IMG_URL = 'http://images.maniacontrol.com/icons/';

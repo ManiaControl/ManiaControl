@@ -19,15 +19,17 @@ use ManiaControl\Statistics\StatisticManager;
  * Player Detailed Page
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class PlayerDetailed {
-	/**
+	/*
 	 * Constants
 	 */
 	const STATS_PER_COLUMN = 13;
 
-	/**
-	 * Private properties
+	/*
+	 * Private Properties
 	 */
 	private $maniaControl = null;
 

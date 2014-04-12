@@ -8,10 +8,12 @@ use ManiaControl\Formatter;
  * Player Model Class
  *
  * @author kremsy & steeffeen
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Player {
-	/**
-	 * Public properties
+	/*
+	 * Public Properties
 	 */
 	public $index = -1;
 	public $pid = -1;
@@ -55,7 +57,6 @@ class Player {
 	public $isPureSpectator = false;
 	public $autoTarget = false;
 	public $currentTargetId = 0;
-
 
 	/**
 	 * Construct a player from ManiaPlanet Player structure
@@ -113,7 +114,6 @@ class Player {
 			$this->nickname = $this->login;
 		}
 	}
-
 
 	/**
 	 * Check if player is not a real player

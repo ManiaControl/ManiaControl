@@ -1,15 +1,18 @@
 <?php
 
 namespace ManiaControl;
+
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
- * Chat utility class
+ * Chat Utility Class
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Chat {
-	/**
+	/*
 	 * Constants
 	 */
 	const SETTING_PREFIX             = 'Messages Prefix';
@@ -18,8 +21,8 @@ class Chat {
 	const SETTING_FORMAT_ERROR       = 'Error Format';
 	const SETTING_FORMAT_USAGEINFO   = 'UsageInfo Format';
 
-	/**
-	 * Private properties
+	/*
+	 * Private Properties
 	 */
 	private $maniaControl = null;
 

@@ -8,12 +8,13 @@ use ManiaControl\ManiaControl;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
- * Class providing Information about theconnected ManiaPlanet Server
+ * Class providing Access to the connected ManiaPlanet Server
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Server implements CallbackListener {
-	
 	/*
 	 * Constants
 	 */
@@ -21,7 +22,7 @@ class Server implements CallbackListener {
 	const CB_TEAM_MODE_CHANGED = 'ServerCallback.TeamModeChanged';
 	
 	/*
-	 * Public properties
+	 * Public Properties
 	 */
 	public $config = null;
 	public $index = -1;
@@ -36,7 +37,7 @@ class Server implements CallbackListener {
 	public $rankingManager = null;
 	
 	/*
-	 * Private properties
+	 * Private Properties
 	 */
 	private $maniaControl = null;
 	private $teamMode = false;

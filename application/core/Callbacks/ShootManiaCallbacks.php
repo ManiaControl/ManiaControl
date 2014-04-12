@@ -8,6 +8,8 @@ use ManiaControl\ManiaControl;
  * Class handling and parsing ShootMania Callbacks
  *
  * @author steeffeen
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ShootManiaCallbacks implements CallbackListener {
 	/*
@@ -23,7 +25,7 @@ class ShootManiaCallbacks implements CallbackListener {
 	const SCB_TIMEATTACK_ONFINISH = 'TimeAttack_OnFinish';
 	
 	/*
-	 * Private properties
+	 * Private Properties
 	 */
 	private $maniaControl = null;
 

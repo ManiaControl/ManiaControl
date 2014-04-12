@@ -1,11 +1,6 @@
 <?php
-/**
- * Statistic Collector Class
- *
- * @author steeffeen & kremsy
- */
-namespace ManiaControl\Statistics;
 
+namespace ManiaControl\Statistics;
 
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
@@ -13,8 +8,15 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 
+/**
+ * Statistic Collector Class
+ *
+ * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ */
 class StatisticCollector implements CallbackListener {
-	/**
+	/*
 	 * Constants
 	 */
 	const SETTING_COLLECT_STATS_ENABLED    = 'Collect Stats Enabled';
@@ -49,7 +51,7 @@ class StatisticCollector implements CallbackListener {
 	const WEAPON_NUCLEUS = 3;
 	const WEAPON_ARROW   = 5;
 
-	/**
+	/*
 	 * Private Properties
 	 */
 	private $maniaControl = null;

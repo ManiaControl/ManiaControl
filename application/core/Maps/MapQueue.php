@@ -14,9 +14,11 @@ use ManiaControl\Players\Player;
  * MapQueue Class
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class MapQueue implements CallbackListener, CommandListener {
-	/**
+	/*
 	 * Constants
 	 */
 	const CB_MAPQUEUE_CHANGED = 'MapQueue.MapQueueBoxChanged';
@@ -27,8 +29,9 @@ class MapQueue implements CallbackListener, CommandListener {
 
 	const ADMIN_COMMAND_CLEAR_MAPQUEUE = 'clearmapqueue';
 	const ADMIN_COMMAND_CLEAR_JUKEBOX  = 'clearjukebox';
-	/**
-	 * Private properties
+	
+	/*
+	 * Private Properties
 	 */
 	private $maniaControl = null;
 	private $queuedMaps = array();
@@ -241,5 +244,4 @@ class MapQueue implements CallbackListener, CommandListener {
 			var_dump($map->name);
 		}
 	}
-
 } 

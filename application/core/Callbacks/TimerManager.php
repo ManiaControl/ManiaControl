@@ -1,15 +1,20 @@
 <?php
-/**
- * Class for managing Timers
- *
- * @author steeffeen & kremsy
- */
-namespace ManiaControl\Callbacks;
 
+namespace ManiaControl\Callbacks;
 
 use ManiaControl\ManiaControl;
 
+/**
+ * Class for managing Timers
+ *
+ * @author kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ */
 class TimerManager {
+	/*
+	 * Private Properties
+	 */
 	private $maniaControl = null;
 	private $timerListenings = array();
 
@@ -21,7 +26,6 @@ class TimerManager {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 	}
-
 
 	/**
 	 * Registers a One Time Listening

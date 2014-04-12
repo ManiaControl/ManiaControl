@@ -10,9 +10,11 @@ use ManiaControl\ManiaControl;
  * Class managing Settings and Configurations
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class SettingManager implements CallbackListener {
-	/**
+	/*
 	 * Constants
 	 */
 	const TABLE_SETTINGS      = 'mc_settings';
@@ -23,8 +25,8 @@ class SettingManager implements CallbackListener {
 	const TYPE_ARRAY          = 'array';
 	const CB_SETTINGS_CHANGED = 'SettingManager.SettingsChanged';
 
-	/**
-	 * Private properties
+	/*
+	 * Private Properties
 	 */
 	private $maniaControl = null;
 	private $arrayDelimiter = ';;';

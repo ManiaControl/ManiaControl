@@ -9,11 +9,12 @@ use ManiaControl\ManiaControl;
 /**
  * Class for handling Chat Commands
  *
- * @property mixed commandListeners
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class CommandManager implements CallbackListener {
-	/**
+	/*
 	 * Private Properties
 	 */
 	private $maniaControl = null;

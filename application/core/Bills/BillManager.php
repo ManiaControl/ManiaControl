@@ -1,11 +1,6 @@
 <?php
-/**
- * ManiaControl Bill-Manager
- *
- * @author kremsy and steeffeen
- */
-namespace ManiaControl\Bills;
 
+namespace ManiaControl\Bills;
 
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
@@ -14,8 +9,15 @@ use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\Structures\Bill;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
+/**
+ * ManiaControl Bill-Manager
+ *
+ * @author kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ */
 class BillManager implements CallbackListener {
-	/**
+	/*
 	 * Constants
 	 */
 	const DONATED_TO_SERVER       = 1;
@@ -24,7 +26,7 @@ class BillManager implements CallbackListener {
 	const PLAYER_REFUSED_DONATION = 4;
 	const ERROR_WHILE_TRANSACTION = 5;
 
-	/**
+	/*
 	 * Private Properties
 	 */
 	private $maniaControl = null;

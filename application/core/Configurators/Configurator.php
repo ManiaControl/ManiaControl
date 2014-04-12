@@ -21,12 +21,14 @@ use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 
 /**
- * Class managing ingame ManiaControl configuration
+ * Class managing ingame ManiaControl Configuration
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Configurator implements CallbackListener, CommandListener, ManialinkPageAnswerListener {
-	/**
+	/*
 	 * Constants
 	 */
 	const ACTION_TOGGLEMENU     = 'Configurator.ToggleMenuAction';
@@ -39,8 +41,8 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	const SETTING_MENU_STYLE    = 'Menu Widget BackgroundQuad Style';
 	const SETTING_MENU_SUBSTYLE = 'Menu Widget BackgroundQuad Substyle';
 
-	/**
-	 * Private properties
+	/*
+	 * Private Properties
 	 */
 	private $maniaControl = null;
 	private $scriptSettings = null;

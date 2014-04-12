@@ -1,4 +1,5 @@
 <?php
+
 namespace ManiaControl\Files;
 
 use cURL\Exception;
@@ -9,17 +10,19 @@ use ManiaControl\ManiaControl;
 /**
  * Asynchronous File Reader
  *
- * @author kremsy & steeffeen
+ * @author kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class AsynchronousFileReader {
-	/**
+	/*
 	 * Private Properties
 	 */
 	private $maniaControl = null;
 	private $requests = array();
 
 	/**
-	 * Construct
+	 * Construct FileReader
 	 *
 	 * @param ManiaControl $maniaControl
 	 */

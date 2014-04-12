@@ -14,12 +14,14 @@ use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
- * Class offering commands to manage maps
+ * Class offering Commands to manage Maps
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class MapCommands implements CommandListener, ManialinkPageAnswerListener, CallbackListener {
-	/**
+	/*
 	 * Constants
 	 */
 	const ACTION_OPEN_MAPLIST = 'MapCommands.OpenMapList';
@@ -27,7 +29,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	const ACTION_RESTART_MAP  = 'MapCommands.RestartMap';
 	const ACTION_SKIP_MAP     = 'MapCommands.NextMap';
 
-	/**
+	/*
 	 * Private Properties
 	 */
 	private $maniaControl = null;

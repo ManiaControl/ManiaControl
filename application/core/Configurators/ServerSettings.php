@@ -14,14 +14,15 @@ use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 
-
 /**
  * Class offering a Configurator for Server Settings
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ServerSettings implements ConfiguratorMenu, CallbackListener {
-	/**
+	/*
 	 * Constants
 	 */
 	const ACTION_PREFIX_SETTING     = 'ServerSettings';
@@ -30,7 +31,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	const CB_SERVERSETTINGS_CHANGED = 'ServerSettings.SettingsChanged';
 	const TABLE_SERVER_SETTINGS     = 'mc_serversettings';
 
-	/**
+	/*
 	 * Private Properties
 	 */
 	private $maniaControl = null;

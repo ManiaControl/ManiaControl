@@ -1,11 +1,6 @@
 <?php
-/**
- * Class offering a Configurator for Script Settings
- *
- * @author steeffeen & kremsy
- */
-namespace ManiaControl\Configurators;
 
+namespace ManiaControl\Configurators;
 
 use FML\Controls\Control;
 use FML\Controls\Entry;
@@ -20,8 +15,15 @@ use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 
+/**
+ * Class offering a Configurator for ManiaControl Settings
+ *
+ * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ */
 class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
-	/**
+	/*
 	 * Constants
 	 */
 	const TITLE                                 = 'ManiaControl Settings';
@@ -29,7 +31,7 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 	const ACTION_SETTING_BOOL                   = 'ManiaControlSettings.ActionBoolSetting.';
 	const SETTING_PERMISSION_CHANGE_MC_SETTINGS = 'Change ManiaControl Settings';
 
-	/**
+	/*
 	 * Private Properties
 	 */
 	private $maniaControl = null;

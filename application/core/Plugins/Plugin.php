@@ -8,9 +8,11 @@ use ManiaControl\ManiaControl;
  * Interface for ManiaControl Plugins
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 interface Plugin {
-	/**
+	/*
 	 * Constants
 	 */
 	const PLUGIN_INTERFACE = __CLASS__;

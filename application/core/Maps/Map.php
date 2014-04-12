@@ -9,9 +9,11 @@ use ManiaControl\ManiaExchange\MXMapInfo;
  * Map Class
  *
  * @author kremsy & steeffeen
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Map {
-	/**
+	/*
 	 * Public Properties
 	 */
 	public $index = -1;

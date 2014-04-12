@@ -7,12 +7,14 @@ use ManiaControl\Commands\CommandListener;
 use ManiaControl\Players\Player;
 
 /**
- * Class offering commands to grant authorizations to players
+ * Class offering Commands to grant Authorizations to Players
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class AuthCommands implements CommandListener {
-	/**
+	/*
 	 * Private properties
 	 */
 	private $maniaControl = null;

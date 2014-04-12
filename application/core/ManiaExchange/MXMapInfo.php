@@ -8,7 +8,9 @@ use ManiaControl\Formatter;
  * Mania Exchange Map Info Object
  *
  * @author  Xymph
- * @updated lukas and steeffeen
+ * @updated kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class MXMapInfo {
 	public $prefix, $id, $uid, $name, $userid, $author, $uploaded, $updated, $type, $maptype;

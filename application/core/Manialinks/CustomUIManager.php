@@ -13,15 +13,16 @@ use ManiaControl\Players\PlayerManager;
  * Class managing the Custom UI Settings
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class CustomUIManager implements CallbackListener, TimerListener {
-
-	/**
+	/*
 	 * Constants
 	 */
 	const CUSTOMUI_MLID = 'CustomUI.MLID';
 
-	/**
+	/*
 	 * Private Properties
 	 */
 	private $maniaControl = null;

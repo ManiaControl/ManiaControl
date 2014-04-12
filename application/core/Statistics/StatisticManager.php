@@ -9,9 +9,11 @@ use ManiaControl\Players\Player;
  * Statistic Manager Class
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class StatisticManager {
-	/**
+	/*
 	 * Constants
 	 */
 	const TABLE_STATMETADATA = 'mc_statmetadata';
@@ -27,13 +29,13 @@ class StatisticManager {
 	const SPECIAL_STAT_ROCKET_ACC  = 'Rocket Accuracy';
 	const SPECIAL_STAT_ARROW_ACC   = 'Arrow Accuracy';
 
-	/**
+	/*
 	 * Public Properties
 	 */
 	public $statisticCollector = null;
 	public $simpleStatsList = null;
 
-	/**
+	/*
 	 * Private Properties
 	 */
 	private $maniaControl = null;

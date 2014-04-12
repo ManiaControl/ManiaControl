@@ -9,14 +9,16 @@ use ManiaControl\Update\UpdateManager;
  * Error and Exception Manager Class
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ErrorHandler {
-	/**
+	/*
 	 * Constants
 	 */
 	const MC_DEBUG_NOTICE = "ManiaControl.DebugNotice";
 	
-	/**
+	/*
 	 * Private Properties
 	 */
 	private $maniaControl = null;

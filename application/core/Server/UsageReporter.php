@@ -12,15 +12,17 @@ use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
  * Class reporting ManiaControl Usage for the Server
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class UsageReporter implements TimerListener {
-	/**
+	/*
 	 * Constants
 	 */
 	const UPDATE_MINUTE_COUNT             = 10;
 	const SETTING_DISABLE_USAGE_REPORTING = 'Disable Usage Reporting';
 
-	/**
+	/*
 	 * Private Properties
 	 */
 	private $maniaControl = null;
