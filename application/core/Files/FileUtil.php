@@ -6,9 +6,11 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Formatter;
 
 /**
- * File utility class
+ * Files Utility Class
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 abstract class FileUtil {
 

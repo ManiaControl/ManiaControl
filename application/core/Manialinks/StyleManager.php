@@ -13,12 +13,14 @@ use FML\Script\Script;
 use ManiaControl\ManiaControl;
 
 /**
- * Class managing default control styles
+ * Class managing default Control Styles
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class StyleManager {
-	/**
+	/*
 	 * Constants
 	 */
 	const SETTING_LABEL_DEFAULT_STYLE   = 'Default Label Style';
@@ -32,8 +34,8 @@ class StyleManager {
 
 	const SETTING_ICON_DEFAULT_OFFSET_SM = 'Default Icon Offset in Shootmania';
 
-	/**
-	 * Private properties
+	/*
+	 * Private Properties
 	 */
 	private $maniaControl = null;
 

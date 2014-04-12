@@ -6,10 +6,12 @@ namespace ManiaControl\Server;
  * Model Class holding the Server Config
  *
  * @author steeffeen
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Config {
 	/*
-	 * Public properties
+	 * Public Properties
 	 */
 	public $id = null;
 	public $host = null;

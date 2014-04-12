@@ -1,24 +1,28 @@
 <?php
-/**
- * Class managing Rankings
- *
- * @author steeffeen & kremsy
- */
-namespace ManiaControl\Server;
 
+namespace ManiaControl\Server;
 
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
+/**
+ * Class managing Rankings
+ *
+ * @author kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ */
 class RankingManager implements CallbackListener {
-	/**
+	/*
 	 * Private Properties
 	 */
 	private $rankings = array();
 
 	/**
+	 * Get Rankings
+	 * 
 	 * @return mixed
 	 */
 	public function getRankings() {

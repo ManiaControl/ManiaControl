@@ -8,12 +8,14 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 
 /**
- * ManiaControl Chat-Message Plugin
+ * Help Manager
  *
- * @author kremsy and steeffeen
+ * @author kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class HelpManager implements CommandListener, CallbackListener {
-	/**
+	/*
 	 * Private Properties
 	 */
 	private $maniaControl = null;
@@ -87,5 +89,4 @@ class HelpManager implements CommandListener, CallbackListener {
 			array_push($this->playerCommands, array("Name" => $name, "Description" => $description));
 		}
 	}
-
 } 

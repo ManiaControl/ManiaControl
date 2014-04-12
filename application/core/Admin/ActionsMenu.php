@@ -20,9 +20,11 @@ use ManiaControl\Players\PlayerManager;
  * Class managing Actions Menus
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
-	/**
+	/*
 	 * Constants
 	 */
 	const MLID_MENU               = 'ActionsMenu.MLID';
@@ -32,7 +34,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	const ACTION_OPEN_ADMIN_MENU  = 'ActionsMenu.OpenAdminMenu';
 	const ACTION_OPEN_PLAYER_MENU = 'ActionsMenu.OpenPlayerMenu';
 
-	/**
+	/*
 	 * Private Properties
 	 */
 	private $maniaControl = null;

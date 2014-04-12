@@ -8,9 +8,11 @@ use ManiaControl\ManiaControl;
  * Class for managing Server and ManiaControl Callbacks
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class CallbackManager {
-	/**
+	/*
 	 * Constants
 	 */
 	// ManiaControl callbacks
@@ -44,12 +46,12 @@ class CallbackManager {
 	const CB_TM_PLAYERINCOHERENCE = 'TrackMania.PlayerIncoherence';
 	
 	/*
-	 * Public proeprties
+	 * Public Properties
 	 */
 	public $shootManiaCallbacks = null;
 	
 	/*
-	 * Private properties
+	 * Private Properties
 	 */
 	private $maniaControl = null;
 	private $callbackListeners = array();

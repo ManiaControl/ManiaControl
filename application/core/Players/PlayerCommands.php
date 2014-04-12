@@ -16,9 +16,11 @@ use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
  * Class offering various Admin Commands related to Players
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, CallbackListener {
-	/**
+	/*
 	 * Constants
 	 */
 	const ACTION_BALANCE_TEAMS            = 'PlayerCommands.BalanceTeams';
@@ -26,7 +28,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 	const SETTING_PERMISSION_ADD_BOT      = 'Add Bot';
 	const SETTING_PERMISSION_TEAM_BALANCE = 'Balance Teams';
 
-	/**
+	/*
 	 * Private Properties
 	 */
 	private $maniaControl = null;

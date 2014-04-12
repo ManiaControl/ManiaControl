@@ -11,9 +11,11 @@ use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
  * Mania Exchange Info Searcher Class
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ManiaExchangeManager{
-	/**
+	/*
 	 * Constants
 	 */
 	//Search others
@@ -41,8 +43,8 @@ class ManiaExchangeManager{
 	//Beta Testing Activated
 	const SETTING_MP3_BETA_TESTING = 'Activate MP3 Beta Testing';
 
-	/**
-	 * Private Propertieswc
+	/*
+	 * Private Properties
 	 */
 	private $maniaControl = null;
 	private $mxIdUidVector = array();

@@ -29,9 +29,11 @@ use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
  * PlayerList Widget Class
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class PlayerList implements ManialinkPageAnswerListener, CallbackListener, TimerListener {
-	/**
+	/*
 	 * Constants
 	 */
 	const ACTION_FORCE_RED            = 'PlayerList.ForceRed';
@@ -57,7 +59,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 	const SHOWN_MAIN_WINDOW           = -1;
 	const MAX_PLAYERS_PER_PAGE        = 15;
 
-	/**
+	/*
 	 * Private Properties
 	 */
 	private $maniaControl = null;

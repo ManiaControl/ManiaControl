@@ -12,9 +12,11 @@ use ManiaControl\Players\PlayerManager;
  * Class managing Authentication Levels
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class AuthenticationManager implements CallbackListener {
-	/**
+	/*
 	 * Constants
 	 */
 	const AUTH_LEVEL_PLAYER      = 0;
@@ -24,12 +26,12 @@ class AuthenticationManager implements CallbackListener {
 	const AUTH_LEVEL_MASTERADMIN = 4;
 	const CB_AUTH_LEVEL_CHANGED  = 'AuthenticationManager.AuthLevelChanged';
 
-	/**
+	/*
 	 * Public Properties
 	 */
 	public $authCommands = null;
 
-	/**
+	/*
 	 * Private Properties
 	 */
 	private $maniaControl = null;

@@ -14,12 +14,14 @@ use ManiaControl\Manialinks\ManialinkManager;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
- * PlayerActions Class
+ * Player Actions Class
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class PlayerActions {
-	/**
+	/*
 	 * Constants
 	 */
 	const TEAM_BLUE                     = 0;
@@ -29,7 +31,7 @@ class PlayerActions {
 	const SPECTATOR_PLAYER              = 2;
 	const SPECTATOR_BUT_KEEP_SELECTABLE = 3;
 
-	/**
+	/*
 	 * Permission Setting Constants
 	 */
 	const SETTING_PERMISSION_FORCE_PLAYER_PLAY = 'Force Player to Play';
@@ -40,7 +42,7 @@ class PlayerActions {
 	const SETTING_PERMISSION_KICK_PLAYER       = 'Kick Player';
 	const SETTING_PERMISSION_BAN_PLAYER        = 'Ban Player';
 
-	/**
+	/*
 	 * Private Properties
 	 */
 	private $maniaControl = null;

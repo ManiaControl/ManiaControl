@@ -5,18 +5,20 @@ namespace ManiaControl;
 use ManiaControl\Callbacks\TimerListener;
 
 /**
- * Database connection class
+ * Database Connection Class
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Database implements TimerListener {
-	/**
-	 * Public properties
+	/*
+	 * Public Properties
 	 */
 	public $mysqli = null;
 	
-	/**
-	 * Private properties
+	/*
+	 * Private Properties
 	 */
 	private $maniaControl = null;
 

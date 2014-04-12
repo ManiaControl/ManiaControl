@@ -6,11 +6,13 @@ namespace ManiaControl;
  * Class offering Methods to format Texts and Values
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 abstract class Formatter {
 
 	/**
-	 * Formats the given Time (Milliseconds)
+	 * Format the given Time (in Milliseconds)
 	 *
 	 * @param int $time
 	 * @return string

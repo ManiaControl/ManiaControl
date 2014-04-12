@@ -23,14 +23,15 @@ use ManiaControl\Maps\MapCommands;
 use ManiaControl\Maps\MapQueue;
 use ManiaControl\Players\Player;
 
-
 /**
  * ManiaExchange List Widget Class
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener {
-	/**
+	/*
 	 * Constants
 	 */
 	const ACTION_ADD_MAP              = 'ManiaExchangeList.AddMap';
@@ -39,7 +40,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 	const ACTION_GET_MAPS_FROM_AUTHOR = 'ManiaExchangeList.GetMapsFromAuthor';
 	const MAX_MX_MAPS_PER_PAGE        = 14;
 
-	/**
+	/*
 	 * Private Properties
 	 */
 	private $maniaControl = null;

@@ -13,13 +13,14 @@ use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
- * Manialink manager class
+ * Manialink Manager Class
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener {
-
-	/**
+	/*
 	 * Constants
 	 */
 	const MAIN_MLID             = 'Main.ManiaLinkId';
@@ -27,15 +28,15 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	const CB_MAIN_WINDOW_CLOSED = 'ManialinkManagerCallback.MainWindowClosed';
 	const CB_MAIN_WINDOW_OPENED = 'ManialinkManagerCallback.MainWindowOpened';
 
-	/**
-	 * Public properties
+	/*
+	 * Public Properties
 	 */
 	public $styleManager = null;
 	public $customUIManager = null;
 	public $iconManager = null;
 
-	/**
-	 * Private properties
+	/*
+	 * Private Properties
 	 */
 	private $maniaControl = null;
 	private $pageAnswerListeners = array();

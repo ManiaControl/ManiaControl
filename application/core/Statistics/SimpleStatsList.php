@@ -2,7 +2,6 @@
 
 namespace ManiaControl\Statistics;
 
-
 use FML\Controls\Control;
 use FML\Controls\Frame;
 use FML\Controls\Label;
@@ -23,14 +22,21 @@ use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 
+/**
+ * Simple Stats List Class
+ * 
+ * @author kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ */
 class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, CommandListener {
-	/**
+	/*
 	 * Constants
 	 */
 	const ACTION_OPEN_STATSLIST = 'SimpleStatsList.OpenStatsList';
 	const ACTION_SORT_STATS     = 'SimpleStatsList.SortStats';
 
-	/**
+	/*
 	 * Private Properties
 	 */
 	private $maniaControl = null;

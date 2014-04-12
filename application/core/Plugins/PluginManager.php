@@ -10,15 +10,17 @@ use ManiaControl\Manialinks\ManialinkPageAnswerListener;
  * Class managing Plugins
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class PluginManager {
-	/**
+	/*
 	 * Constants
 	 */
 	const TABLE_PLUGINS = 'mc_plugins';
 
-	/**
-	 * Private properties
+	/*
+	 * Private Properties
 	 */
 	private $maniaControl = null;
 	private $pluginMenu = null;

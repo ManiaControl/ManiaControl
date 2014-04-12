@@ -21,9 +21,11 @@ use ManiaControl\Maps\Map;
  * Class offering a Configurator for Script Settings
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ScriptSettings implements ConfiguratorMenu, CallbackListener {
-	/**
+	/*
 	 * Constants
 	 */
 	const ACTION_PREFIX_SETTING                   = 'ScriptSetting';
@@ -33,7 +35,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	const TABLE_SCRIPT_SETTINGS                   = 'mc_scriptsettings';
 	const SETTING_LOAD_DEFAULT_SETTINGS_MAP_BEGIN = 'Load Stored Script-Settings on Map-Begin';
 
-	/**
+	/*
 	 * Private Properties
 	 */
 	private $maniaControl = null;

@@ -21,12 +21,14 @@ use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 
 /**
- * Configurator for enabling and disabling plugins
+ * Configurator for enabling and disabling Plugins
  *
  * @author steeffeen
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAnswerListener {
-	/**
+	/*
 	 * Constants
 	 */
 	const ACTION_PREFIX_ENABLEPLUGIN                = 'PluginMenu.Enable.';
@@ -37,8 +39,8 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	const ACTION_BACK_TO_PLUGINS                    = 'PluginMenu.BackToPlugins';
 	const SETTING_PERMISSION_CHANGE_PLUGIN_SETTINGS = 'Change Plugin Settings';
 
-	/**
-	 * Private properties
+	/*
+	 * Private Properties
 	 */
 	private $maniaControl = null;
 	private $settingsClass = ''; //TODO needs to be improved

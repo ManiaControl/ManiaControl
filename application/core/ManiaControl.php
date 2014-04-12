@@ -40,7 +40,7 @@ require_once __DIR__ . '/Libs/curl-easy/autoload.php';
  * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ManiaControl implements CommandListener, TimerListener {
-	/**
+	/*
 	 * Constants
 	 */
 	const VERSION = '0.01';
@@ -53,8 +53,8 @@ class ManiaControl implements CommandListener, TimerListener {
 	const SETTING_PERMISSION_SHUTDOWN = 'Shutdown ManiaControl';
 	const SETTING_PERMISSION_RESTART = 'Restart ManiaControl';
 	
-	/**
-	 * Public properties
+	/*
+	 * Public Properties
 	 */
 	public $actionsMenu = null;
 	public $authenticationManager = null;
@@ -62,10 +62,7 @@ class ManiaControl implements CommandListener, TimerListener {
 	public $chat = null;
 	public $config = null;
 	public $configurator = null;
-	/**
-	 *
-	 * @var Connection $client
-	 */
+	/** @var Connection $client */
 	public $client = null;
 	public $commandManager = null;
 	public $database = null;
@@ -82,8 +79,8 @@ class ManiaControl implements CommandListener, TimerListener {
 	public $fileReader = null;
 	public $billManager = null;
 	
-	/**
-	 * Private properties
+	/*
+	 * Private Properties
 	 */
 	private $shutdownRequested = false;
 

@@ -30,9 +30,11 @@ use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
  * MapList Widget Class
  *
  * @author steeffeen & kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class MapList implements ManialinkPageAnswerListener, CallbackListener {
-	/**
+	/*
 	 * Constants
 	 */
 	const ACTION_UPDATE_MAP          = 'MapList.UpdateMap';
@@ -47,7 +49,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	const DEFAULT_KARMA_PLUGIN       = 'KarmaPlugin';
 	const DEFAULT_CUSTOM_VOTE_PLUGIN = 'CustomVotesPlugin';
 
-	/**
+	/*
 	 * Private Properties
 	 */
 	private $maniaControl = null;

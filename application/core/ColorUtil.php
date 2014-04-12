@@ -3,9 +3,11 @@
 namespace ManiaControl;
 
 /**
- * Utility class offering methods to convert and use ManiaPlanet colors
+ * Utility Class offering Methods to convert and use ManiaPlanet Colors
  *
  * @author steeffeen
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 abstract class ColorUtil {
 
