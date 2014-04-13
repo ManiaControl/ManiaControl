@@ -336,9 +336,10 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 						$login   = null;
 						$message = '$<' . $player->nickname . '$> donated ' . $amount . ' Planets! Thanks.';
 					} else {
+						$login = $player->login;
 						$message = 'Donation successful! Thanks.';
 					}
-					$this->maniaControl->chat->sendSuccess($message, $player->login);
+					$this->maniaControl->chat->sendSuccess($message, $login);
 					$this->maniaControl->statisticManager->insertStat(self::STAT_PLAYER_DONATIONS, $player, $this->maniaControl->server->index, $amount);
 					break;
 				case BillManager::DONATED_TO_RECEIVER:
