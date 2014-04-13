@@ -5,6 +5,8 @@ namespace ManiaControl\ManiaExchange;
 use FML\Controls\Control;
 use FML\Controls\Entry;
 use FML\Controls\Frame;
+use FML\Controls\Gauge;
+use FML\Controls\Label;
 use FML\Controls\Labels\Label_Button;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;
@@ -14,12 +16,14 @@ use FML\ManiaLink;
 use FML\Script\Script;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\ColorUtil;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\IconManager;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Maps\MapCommands;
+use ManiaControl\Maps\MapManager;
 use ManiaControl\Maps\MapQueue;
 use ManiaControl\Players\Player;
 
@@ -143,7 +147,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		$headFrame = new Frame();
 		$frame->add($headFrame);
 		$headFrame->setY($y - 12);
-		$array = array('$oMx Id' => $x + 5, '$oName' => $x + 17, '$oAuthor' => $x + 65, '$oType' => $x + 100, '$oMood' => $x + 115, '$oLast Update' => $x + 130);
+		$array = array('$oId' => $x + 3.5, '$oName' => $x + 12.5, '$oAuthor' => $x + 59, '$oKarma' => $x + 85, '$oType' => $x + 103, '$oMood' => $x + 118, '$oLast Update' => $x + 130);
 		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
 
 		$i          = 0;
@@ -176,7 +180,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 
 			/** @var MxMapInfo $map */
 			$time   = Formatter::time_elapsed_string(strtotime($map->updated));
-			$array  = array($map->id => $x + 5, $map->name => $x + 17, $map->author => $x + 65, str_replace("Arena", "", $map->maptype) => $x + 100, $map->mood => $x + 115, $time => $x + 130);
+			$array  = array('$s'. $map->id => $x + 3.5, '$s'. $map->name => $x + 12.5, '$s'. $map->author => $x + 59, '$s'. str_replace("Arena", "", $map->maptype) => $x + 103, '$s'. $map->mood => $x + 118, '$s'. $time => $x + 130);
 			$labels = $this->maniaControl->manialinkManager->labelLine($mapFrame, $array);
 			/** @var  Label_Text $authorLabel */
 			$authorLabel = $labels[2];
@@ -189,15 +193,15 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 			$mxQuad->setSize(3, 3);
 			$mxQuad->setImage($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON));
 			$mxQuad->setImageFocus($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON_MOVER));
-			$mxQuad->setX($x + 62);
+			$mxQuad->setX($x + 56);
 			$mxQuad->setUrl($map->pageurl);
 			$mxQuad->setZ(0.01);
 			$script->addTooltip($mxQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "View " . $map->name . " on Mania-Exchange"));
 
-			if ($this->maniaControl->authenticationManager->checkPermission($player, MapQueue::SETTING_PERMISSION_CLEAR_MAPQUEUE)) {
+			if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
 				$addQuad = new Quad_Icons64x64_1();
 				$mapFrame->add($addQuad);
-				$addQuad->setX($x + 59);
+				$addQuad->setX($x + 53);
 				$addQuad->setZ(-0.1);
 				$addQuad->setSubStyle($addQuad::SUBSTYLE_Add);
 				$addQuad->setSize(4, 4);
@@ -213,16 +217,43 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 				$mapFrame->add($awardQuad);
 				$awardQuad->setSize(3, 3);
 				$awardQuad->setSubStyle($awardQuad::SUBSTYLE_OfficialRace);
-				$awardQuad->setX($x + 93);
+				$awardQuad->setX($x + 99.5);
 				$awardQuad->setZ(0.01);
 
 				$awardLabel = new Label_Text();
 				$mapFrame->add($awardLabel);
-				$awardLabel->setX($x + 94.5);
+				$awardLabel->setX($x + 101);
 				$awardLabel->setHAlign(Control::LEFT);
 				$awardLabel->setText($map->awards);
 				$awardLabel->setTextSize(1.3);
 			}
+
+			//Map Karma
+			$karma = $map->ratingVoteAverage / 100;
+			$voteCount = $map->ratingVoteCount;
+			if (is_numeric($karma) && $voteCount > 0) {
+				$karmaGauge = new Gauge();
+				$mapFrame->add($karmaGauge);
+				$karmaGauge->setZ(2);
+				$karmaGauge->setX($x + 90);
+				$karmaGauge->setSize(20, 9);
+				$karmaGauge->setDrawBg(false);
+				$karma = floatval($karma);
+				$karmaGauge->setRatio($karma + 0.15 - $karma * 0.15);
+				$karmaColor = ColorUtil::floatToStatusColor($karma);
+				$karmaGauge->setColor($karmaColor . '9');
+
+				$karmaLabel = new Label();
+				$mapFrame->add($karmaLabel);
+				$karmaLabel->setZ(2);
+				$karmaLabel->setX($x + 90);
+				$karmaLabel->setSize(20 * 0.9, 5);
+				$karmaLabel->setTextSize(0.9);
+				$karmaLabel->setTextColor('000');
+				$karmaLabel->setAlign(Control::CENTER, Control::CENTER);
+				$karmaLabel->setText('  ' . round($karma * 100.) . '% (' . $voteCount . ')');
+			}
+
 
 			$y -= 4;
 			$i++;
