@@ -19,9 +19,11 @@ use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
 
 /**
- * Donation plugin
+ * ManiaControl Donation Plugin
  *
- * @author steeffeen & kremsy
+ * @author kremsy and steeffeen
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	/**

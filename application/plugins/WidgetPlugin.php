@@ -22,7 +22,9 @@ use ManiaControl\Maps\Map;
 /**
  * ManiaControl Widget Plugin
  *
- * @author kremsy
+ * @author steeffeen and kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 

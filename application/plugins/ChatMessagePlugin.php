@@ -10,6 +10,8 @@ use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
  * ManiaControl Chat-Message Plugin
  *
  * @author kremsy
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ChatMessagePlugin implements CommandListener, Plugin {
 	/**
@@ -67,7 +69,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		$this->maniaControl->commandManager->registerCommandListener('bootme', $this, 'chat_bootme');
 		$this->maniaControl->commandManager->registerCommandListener('ragequit', $this, 'chat_ragequit');
 		$this->maniaControl->commandManager->registerCommandListener('rq', $this, 'chat_ragequit');
-
+		//TODO block commandlistener for muted people
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_AFK_FORCE_SPEC, true);
 
 		return true;

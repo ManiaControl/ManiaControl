@@ -1,12 +1,13 @@
 <?php
-/**
- * Dedimania Record DataStructure
- *
- * @author kremsy and steeffeen
- */
 namespace Dedimania;
 
-
+/**
+ * ManiaControl Dedimania-Plugin Record DataStructure
+ *
+ * @author kremsy and steeffeen
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ */
 use ManiaControl\Formatter;
 
 class RecordData {

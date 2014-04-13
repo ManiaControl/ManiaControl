@@ -30,9 +30,11 @@ use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 
 /**
- * ManiaControl Chat-Message Plugin
+ * ManiaControl Custom-Votes Plugin
  *
  * @author kremsy and steeffeen
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkPageAnswerListener, TimerListener, Plugin {
 	/**
