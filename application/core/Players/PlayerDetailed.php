@@ -69,8 +69,7 @@ class PlayerDetailed {
 		//Nation Quad
 		$countryQuad = new Quad();
 		$frame->add($countryQuad);
-		$countryCode = Formatter::mapCountry($target->getCountry());
-		$countryQuad->setImage("file://Skins/Avatars/Flags/{$countryCode}.dds");
+		$countryQuad->setImage("file://ZoneFlags/Login/{$targetLogin}/country");
 		$countryQuad->setPosition(-$this->width / 2 + 10, $y);
 		$countryQuad->setSize(5, 5);
 		$countryQuad->setZ(-0.1);
@@ -188,7 +187,7 @@ class PlayerDetailed {
 
 		$quad = new Quad();
 		$frame->add($quad);
-		$quad->setImage('file://' . $target->avatar);
+		$quad->setImage('file://Avatars/' . $targetLogin . "/default");
 		$quad->setPosition(-$this->width / 2 + 50, -$this->height / 2 + 34);
 		$quad->setAlign(Control::RIGHT, Control::TOP);
 		$quad->setSize(20, 20);
