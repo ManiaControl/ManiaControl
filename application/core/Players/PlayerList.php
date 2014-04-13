@@ -213,8 +213,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				// Nation Quad
 				$countryQuad = new Quad();
 				$playerFrame->add($countryQuad);
-				$countryCode = Formatter::mapCountry($listPlayer->getCountry());
-				$countryQuad->setImage("file://Skins/Avatars/Flags/{$countryCode}.dds");
+				$countryQuad->setImage("file://ZoneFlags/Login/{$listPlayer->login}/country");
 				$countryQuad->setX($x + 98);
 				$countryQuad->setSize(4, 4);
 				$countryQuad->setZ(1);
