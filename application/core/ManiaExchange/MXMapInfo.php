@@ -16,9 +16,9 @@ class MXMapInfo {
 	public $prefix, $id, $uid, $name, $userid, $author, $uploaded, $updated, $type, $maptype;
 	public $titlepack, $style, $envir, $mood, $dispcost, $lightmap, $modname, $exever;
 	public $exebld, $routes, $length, $unlimiter, $laps, $difficulty, $lbrating, $trkvalue;
-	public $replaytyp, $replayid, $replaycnt, $acomment, $awards, $comments, $rating;
-	public $ratingex, $ratingcnt, $pageurl, $replayurl, $imageurl, $thumburl, $downloadurl, $dir;
-
+	public $replaytyp, $replayid, $replaycnt, $acomment, $awards, $comments;
+	public $pageurl, $replayurl, $imageurl, $thumburl, $downloadurl, $dir;
+	public $ratingVoteCount, $ratingVoteAverage;
 	/**
 	 * Returns map object with all available data from MX map data
 	 *
@@ -30,7 +30,6 @@ class MXMapInfo {
 	public function __construct($prefix, $mx) {
 		$this->prefix = $prefix;
 		if ($mx) {
-
 			if ($this->prefix == 'tm') {
 				$this->dir = 'tracks';
 				$this->id  = $mx->TrackID;
@@ -75,9 +74,9 @@ class MXMapInfo {
 			$this->acomment   = $mx->Comments;
 			$this->awards     = isset($mx->AwardCount) ? $mx->AwardCount : 0;
 			$this->comments   = $mx->CommentCount;
-			$this->rating     = isset($mx->Rating) ? $mx->Rating : 0.0;
-			$this->ratingex   = isset($mx->RatingExact) ? $mx->RatingExact : 0.0;
-			$this->ratingcnt  = isset($mx->RatingCount) ? $mx->RatingCount : 0;
+
+			$this->ratingVoteCount   = isset($mx->RatingVoteCount) ? $mx->RatingVoteCount : 0;
+			$this->ratingVoteAverage  = isset($mx->RatingVoteAverage) ? $mx->RatingVoteAverage : 0;
 
 			if ($this->trkvalue == 0 && $this->lbrating > 0) {
 				$this->trkvalue = $this->lbrating;
