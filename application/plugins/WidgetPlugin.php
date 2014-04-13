@@ -8,23 +8,22 @@ use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\ManiaLink;
 use FML\Script\Script;
 use ManiaControl\Callbacks\CallbackListener;
-use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\IconManager;
+use ManiaControl\Maps\Map;
+use ManiaControl\Maps\MapManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
-use ManiaControl\Maps\MapManager;
-use ManiaControl\Maps\Map;
 
 /**
  * ManiaControl Widget Plugin
  *
- * @author steeffeen and kremsy
+ * @author    steeffeen and kremsy
  * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 
@@ -248,7 +247,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
 
 		$maniaLink = new ManiaLink(self::MLID_CLOCKWIDGET);
-		$script = $maniaLink->getScript();
+		$script    = $maniaLink->getScript();
 
 		// mainframe
 		$frame = new Frame();

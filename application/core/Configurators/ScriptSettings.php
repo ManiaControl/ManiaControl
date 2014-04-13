@@ -9,6 +9,7 @@ use FML\Controls\Label;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Script\Script;
+use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
@@ -34,6 +35,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	const CB_SCRIPTSETTINGS_CHANGED               = 'ScriptSettings.SettingsChanged';
 	const TABLE_SCRIPT_SETTINGS                   = 'mc_scriptsettings';
 	const SETTING_LOAD_DEFAULT_SETTINGS_MAP_BEGIN = 'Load Stored Script-Settings on Map-Begin';
+	const SETTING_PERMISSION_CHANGE_SCRIPT_SETTINGS = 'Change Script-Settings';
 
 	/*
 	 * Private Properties
@@ -54,6 +56,9 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_BEGINMAP, $this, 'onBeginMap');
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_LOAD_DEFAULT_SETTINGS_MAP_BEGIN, true);
 		$this->initTables();
+
+		//Permission for Change Script-Settings
+		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_CHANGE_SCRIPT_SETTINGS, AuthenticationManager::AUTH_LEVEL_ADMIN);
 	}
 
 	/**
@@ -303,6 +308,10 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
 	 */
 	public function saveConfigData(array $configData, Player $player) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_CHANGE_SCRIPT_SETTINGS)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+			return;
+		}
 
 		$prefix = explode(".", $configData[3][0]['Name']);
 		if ($prefix[0] != self::ACTION_PREFIX_SETTING) {
