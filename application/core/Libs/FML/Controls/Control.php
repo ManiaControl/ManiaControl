@@ -9,6 +9,8 @@ use FML\Types\Renderable;
  * (CMlControl)
  *
  * @author steeffeen
+ * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 abstract class Control implements Renderable {
 	/*
@@ -20,6 +22,11 @@ abstract class Control implements Renderable {
 	const RIGHT = 'right';
 	const BOTTOM = 'bottom';
 	const LEFT = 'left';
+	
+	/*
+	 * Static Properties
+	 */
+	protected static $currentIndex = 0;
 	
 	/*
 	 * Protected Properties
@@ -69,13 +76,14 @@ abstract class Control implements Renderable {
 	}
 
 	/**
-	 * Check Id for dangerous Characters and assign an unique Id if necessary
+	 * Check Id for dangerous Characters and assign a unique Id if necessary
 	 *
 	 * @return \FML\Controls\Control
 	 */
 	public function checkId() {
 		if (!$this->getId()) {
-			$this->setId(uniqid());
+			$this->setId('FML_ID_' . self::$currentIndex);
+			self::$currentIndex++;
 			return $this;
 		}
 		$dangerousCharacters = array(' ', '	', '.', '|', '-', PHP_EOL);

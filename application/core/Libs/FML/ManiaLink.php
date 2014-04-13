@@ -11,12 +11,15 @@ use FML\Types\Renderable;
  * Class representing a ManiaLink
  *
  * @author steeffeen
+ * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ManiaLink {
 	/*
 	 * Constants
 	 */
 	const BACKGROUND_0 = '0';
+	const BACKGROUND_1 = '1';
 	const BACKGROUND_STARS = 'stars';
 	const BACKGROUND_STATIONS = 'stations';
 	const BACKGROUND_TITLE = 'title';
@@ -163,7 +166,7 @@ class ManiaLink {
 	 */
 	public function getDico($createIfEmpty = true) {
 		if (!$this->dico && $createIfEmpty) {
-			$this->dico = new Dico();
+			$this->setDico(new Dico());
 		}
 		return $this->dico;
 	}
@@ -187,7 +190,7 @@ class ManiaLink {
 	 */
 	public function getStylesheet($createIfEmpty = true) {
 		if (!$this->stylesheet && $createIfEmpty) {
-			$this->stylesheet = new Stylesheet();
+			$this->setStylesheet(new Stylesheet());
 		}
 		return $this->stylesheet;
 	}
@@ -211,7 +214,7 @@ class ManiaLink {
 	 */
 	public function getScript($createIfEmpty = true) {
 		if (!$this->script && $createIfEmpty) {
-			$this->script = new Script();
+			$this->setScript(new Script());
 		}
 		return $this->script;
 	}

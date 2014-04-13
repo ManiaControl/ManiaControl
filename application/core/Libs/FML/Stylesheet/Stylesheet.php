@@ -6,6 +6,8 @@ namespace FML\Stylesheet;
  * Class representing the ManiaLinks Stylesheet
  *
  * @author steeffeen
+ * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Stylesheet {
 	/*
@@ -73,7 +75,7 @@ class Stylesheet {
 	 */
 	public function getMood($createIfEmpty = true) {
 		if (!$this->mood && $createIfEmpty) {
-			$this->mood = new Mood();
+			$this->setMood(new Mood());
 		}
 		return $this->mood;
 	}

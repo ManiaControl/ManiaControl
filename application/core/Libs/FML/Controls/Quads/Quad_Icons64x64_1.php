@@ -8,6 +8,8 @@ use FML\Controls\Quad;
  * Quad Class for 'Icons64x64_1' Style
  *
  * @author steeffeen
+ * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Quad_Icons64x64_1 extends Quad {
 	/*
@@ -79,6 +81,7 @@ class Quad_Icons64x64_1 extends Quad {
 	const SUBSTYLE_ShowRight2 = 'ShowRight2';
 	const SUBSTYLE_ShowUp = 'ShowUp';
 	const SUBSTYLE_ShowUp2 = 'ShowUp2';
+	const SUBSTYLE_ShowUpChanging = 'ShowUpChanging';
 	const SUBSTYLE_SliderCursor = 'SliderCursor';
 	const SUBSTYLE_SliderCursor2 = 'SliderCursor2';
 	const SUBSTYLE_StateFavourite = 'StateFavourite';

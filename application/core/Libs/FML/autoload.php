@@ -5,6 +5,8 @@
  *
  * @author steeffeen
  * @version 1.0
+ * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 if (!defined('FML_PATH')) {
 	define('FML_PATH', __DIR__ . '/../');

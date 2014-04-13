@@ -12,6 +12,8 @@ use FML\Types\TextFormatable;
  * (CMlEntry)
  *
  * @author steeffeen
+ * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Entry extends Control implements NewLineable, Scriptable, Styleable, TextFormatable {
 	/*

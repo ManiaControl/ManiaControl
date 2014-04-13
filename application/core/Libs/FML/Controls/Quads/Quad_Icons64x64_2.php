@@ -8,6 +8,8 @@ use FML\Controls\Quad;
  * Quad Class for 'Icons64x64_2' Style
  *
  * @author steeffeen
+ * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Quad_Icons64x64_2 extends Quad {
 	/*
@@ -25,6 +27,7 @@ class Quad_Icons64x64_2 extends Quad {
 	const SUBSTYLE_RocketElimination = 'RocketElimination';
 	const SUBSTYLE_RocketHit = 'RocketHit';
 	const SUBSTYLE_ServerNotice = 'ServerNotice';
+	const SUBSTYLE_SortBy = 'SortBy';
 	const SUBSTYLE_UnknownElimination = 'UnknownElimination';
 	const SUBSTYLE_UnknownHit = 'UnknownHit';
 
