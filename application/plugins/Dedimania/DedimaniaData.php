@@ -1,18 +1,15 @@
 <?php
-/**
- * Dedimania DataStructure
- *
- * @author kremsy and steeffeen
- */
 namespace Dedimania;
 
 use ManiaControl\ManiaControl;
 use Maniaplanet\DedicatedServer\Structures\Version;
 
 /**
- * Dedimania Structure
+ * ManiaControl Dedimania Plugin DataStructure
  *
- * @author kremsy & steeffeen
+ * @author kremsy and steeffeen
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class DedimaniaData {
 	public $game;

@@ -9,6 +9,8 @@ use ManiaControl\Plugins\Plugin;
  * ManiaControl Chatlog Plugin
  *
  * @author steeffeen
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ChatlogPlugin implements CallbackListener, Plugin {
 	/**

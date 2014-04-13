@@ -16,6 +16,13 @@ use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
 
+/**
+ * ManiaControl Dedimania Plugin
+ *
+ * @author kremsy and steeffeen
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ */
 class Dedimania implements CallbackListener, TimerListener, Plugin {
 	/**
 	 * Constants

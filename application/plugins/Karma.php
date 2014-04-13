@@ -19,7 +19,9 @@ use ManiaControl\Settings\SettingManager;
 /**
  * ManiaControl Karma Plugin
  *
- * @author steeffeen
+ * @author kremsy and steeffeen
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	/**

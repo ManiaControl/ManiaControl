@@ -1,12 +1,13 @@
 <?php
-/**
- * Dedimania Player DataStructure
- *
- * @author kremsy and steeffeen
- */
 namespace Dedimania;
 
-
+/**
+ * ManiaControl Dedimania-Plugin Player DataStructure
+ *
+ * @author kremsy and steeffeen
+ * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ */
 class DedimaniaPlayer {
 	public $login = '';
 	public $maxRank = -1;
