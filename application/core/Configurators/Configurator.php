@@ -40,6 +40,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	const SETTING_MENU_HEIGHT   = 'Menu Widget Height';
 	const SETTING_MENU_STYLE    = 'Menu Widget BackgroundQuad Style';
 	const SETTING_MENU_SUBSTYLE = 'Menu Widget BackgroundQuad Substyle';
+	const SETTING_PERMISSION_OPEN_CONFIGURATOR = 'Open Configurator';
 
 	/*
 	 * Private Properties
@@ -68,6 +69,9 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_STYLE, Quad_BgRaceScore2::STYLE);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_SUBSTYLE, Quad_BgRaceScore2::SUBSTYLE_HandleSelectable);
 
+		//Permission for opening
+		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_OPEN_CONFIGURATOR, AuthenticationManager::AUTH_LEVEL_ADMIN);
+
 		// Register for page answers
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_TOGGLEMENU, $this, 'handleToggleMenuAction');
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_SAVECONFIG, $this, 'handleSaveConfigAction');
@@ -77,6 +81,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 		$this->maniaControl->callbackManager->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_OPENED, $this, 'handleWidgetOpened');
 		$this->maniaControl->callbackManager->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_CLOSED, $this, 'closeWidget');
+
 
 		// Create server settings
 		$this->serverSettings = new ServerSettings($maniaControl);
@@ -100,7 +105,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	 * @param array $callback
 	 */
 	public function handleConfigCommand(array $callback, Player $player) {
-		if(!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_OPEN_CONFIGURATOR)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}

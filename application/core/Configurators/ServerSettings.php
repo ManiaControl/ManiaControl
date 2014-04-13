@@ -9,6 +9,7 @@ use FML\Controls\Label;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Script\Script;
+use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
@@ -17,19 +18,20 @@ use ManiaControl\Players\Player;
 /**
  * Class offering a Configurator for Server Settings
  *
- * @author steeffeen & kremsy
+ * @author    steeffeen & kremsy
  * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	/*
 	 * Constants
 	 */
-	const ACTION_PREFIX_SETTING     = 'ServerSettings';
-	const ACTION_SETTING_BOOL       = 'ServerSettings.ActionBoolSetting.';
-	const CB_SERVERSETTING_CHANGED  = 'ServerSettings.SettingChanged';
-	const CB_SERVERSETTINGS_CHANGED = 'ServerSettings.SettingsChanged';
-	const TABLE_SERVER_SETTINGS     = 'mc_serversettings';
+	const ACTION_PREFIX_SETTING                     = 'ServerSettings';
+	const ACTION_SETTING_BOOL                       = 'ServerSettings.ActionBoolSetting.';
+	const CB_SERVERSETTING_CHANGED                  = 'ServerSettings.SettingChanged';
+	const CB_SERVERSETTINGS_CHANGED                 = 'ServerSettings.SettingsChanged';
+	const TABLE_SERVER_SETTINGS                     = 'mc_serversettings';
+	const SETTING_PERMISSION_CHANGE_SERVER_SETTINGS = 'Change Server-Settings';
 
 	/*
 	 * Private Properties
@@ -48,6 +50,9 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_ONINIT, $this, 'onInit');
+
+		//Permission for Change Script-Settings
+		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_CHANGE_SERVER_SETTINGS, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
 	}
 
 	/**
@@ -101,8 +106,8 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			return false;
 		}
 		$serverSettings = $this->maniaControl->client->getServerOptions()->toArray();
-		$applySettings = false;
-		while ($row = $result->fetch_object()) {
+		$applySettings  = false;
+		while($row = $result->fetch_object()) {
 			if (!isset($serverSettings[$row->settingName])) {
 				continue;
 			}
@@ -257,6 +262,11 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
 	 */
 	public function saveConfigData(array $configData, Player $player) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_CHANGE_SERVER_SETTINGS)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+			return;
+		}
+
 		$prefix = explode(".", $configData[3][0]['Name']);
 		if ($prefix[0] != self::ACTION_PREFIX_SETTING) {
 			return;
