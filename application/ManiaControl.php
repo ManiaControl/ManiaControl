@@ -49,7 +49,7 @@ logMessage('Starting ManiaControl ...');
  * - cURL
  */
 logMessage('Checking for installed MySQLi ... ', false);
-if (function_exists('mysqli_connect')) {
+if (extension_loaded('mysqli')) {
 	logMessage('FOUND!');
 } else {
 	logMessage('NOT FOUND!');
@@ -58,7 +58,7 @@ if (function_exists('mysqli_connect')) {
 }
 
 logMessage('Checking for installed cURL   ... ', false);
-if(function_exists('curl_version')) {
+if(extension_loaded('curl')) {
 	logMessage('FOUND!');
 } else {
 	logMessage('NOT FOUND!');
