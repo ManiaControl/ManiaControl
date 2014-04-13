@@ -781,7 +781,8 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 				} else {
 					$this->maniaControl->log("Error while updating votes: " . $data->data->message);
 					//TODO remove temp trigger
-					$this->maniaControl->errorHandler->triggerDebugNotice("Error while updating votes: " . $data->data->message);
+					$this->maniaControl->errorHandler->triggerDebugNotice("Error while updating votes: " . $data->data->message . " " .
+						self::MX_KARMA_URL . self::MX_KARMA_SAVEVOTES . "?sessionKey=" . urlencode($this->mxKarma['session']->sessionKey));
 				}
 			} else {
 				$this->maniaControl->log($error);
