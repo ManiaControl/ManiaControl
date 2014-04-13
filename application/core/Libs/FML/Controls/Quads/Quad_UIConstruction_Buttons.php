@@ -8,6 +8,8 @@ use FML\Controls\Quad;
  * Quad Class for 'UIConstruction_Buttons' Style
  *
  * @author steeffeen
+ * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Quad_UIConstruction_Buttons extends Quad {
 	/*
@@ -16,6 +18,7 @@ class Quad_UIConstruction_Buttons extends Quad {
 	const STYLE = 'UIConstruction_Buttons';
 	const SUBSTYLE_ActionMaker = 'ActionMaker';
 	const SUBSTYLE_Add = 'Add';
+	const SUBSTYLE_AirMapping = 'AirMapping';
 	const SUBSTYLE_Author = 'Author';
 	const SUBSTYLE_AuthorTime = 'AuthorTime';
 	const SUBSTYLE_BgEditors = 'BgEditors';
@@ -32,6 +35,7 @@ class Quad_UIConstruction_Buttons extends Quad {
 	const SUBSTYLE_Down = 'Down';
 	const SUBSTYLE_Drive = 'Drive';
 	const SUBSTYLE_Erase = 'Erase';
+	const SUBSTYLE_GhostBlocks = 'GhostBlocks';
 	const SUBSTYLE_Help = 'Help';
 	const SUBSTYLE_Item = 'Item';
 	const SUBSTYLE_Left = 'Left';

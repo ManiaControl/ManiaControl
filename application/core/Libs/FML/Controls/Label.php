@@ -14,6 +14,8 @@ use FML\Types\TextFormatable;
  * (CMlLabel)
  *
  * @author steeffeen
+ * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Label extends Control implements Actionable, Linkable, NewLineable, Scriptable, Styleable, TextFormatable {
 	/*

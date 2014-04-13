@@ -10,6 +10,8 @@ use FML\Types\Scriptable;
  * (CMlMediaPlayer)
  *
  * @author steeffeen
+ * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Audio extends Control implements Playable, Scriptable {
 	/*

@@ -10,6 +10,8 @@ use FML\Stylesheet\Style3d;
  * (CMlFrame)
  *
  * @author steeffeen
+ * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Frame3d extends Frame implements Scriptable {
 	/*

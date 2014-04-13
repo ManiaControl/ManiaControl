@@ -6,6 +6,8 @@ namespace FML;
  * Class holding several ManiaLinks at once
  *
  * @author steeffeen
+ * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ManiaLinks {
 	/*
@@ -85,7 +87,7 @@ class ManiaLinks {
 	 */
 	public function getCustomUI($createIfEmpty = true) {
 		if (!$this->customUI && $createIfEmpty) {
-			$this->customUI = new CustomUI();
+			$this->setCustomUI(new CustomUI());
 		}
 		return $this->customUI;
 	}

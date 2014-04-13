@@ -8,6 +8,8 @@ use FML\Controls\Label;
  * Label Class for Button Styles
  *
  * @author steeffeen
+ * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Label_Button extends Label {
 	/*

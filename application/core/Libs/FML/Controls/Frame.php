@@ -12,6 +12,8 @@ use FML\Elements\FrameModel;
  * (CMlFrame)
  *
  * @author steeffeen
+ * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Frame extends Control implements Container {
 	/*
@@ -79,7 +81,7 @@ class Frame extends Control implements Container {
 	 */
 	public function getFormat($createIfEmpty = true) {
 		if (!$this->format && $createIfEmpty) {
-			$this->format = new Format();
+			$this->setFormat(new Format());
 		}
 		return $this->format;
 	}

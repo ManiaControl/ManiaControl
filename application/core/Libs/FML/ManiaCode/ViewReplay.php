@@ -6,6 +6,8 @@ namespace FML\ManiaCode;
  * ManiaCode Element viewing a Replay
  *
  * @author steeffeen
+ * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ViewReplay implements Element {
 	/*
