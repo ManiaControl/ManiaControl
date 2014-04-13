@@ -41,13 +41,38 @@ if (LOG_WRITE_CURRENT_FILE) {
 	define('LOG_CURRENT_FILE', $currentLogFileName);
 }
 
+logMessage('Starting ManiaControl ...');
+
+/**
+ * Checking if all the needed libraries are installed.
+ * - MySQLi
+ * - cURL
+ */
+logMessage('Checking for installed MySQLi ... ', false);
+if (function_exists('mysqli_connect')) {
+	logMessage('FOUND!');
+} else {
+	logMessage('NOT FOUND!');
+	logMessage(' -- You do not have MySQLi installed, make sure to check: http://www.php.net/manual/en/mysqli.installation.php');
+	exit();
+}
+
+logMessage('Checking for installed cURL   ... ', false);
+if(function_exists('curl_version')) {
+	logMessage('FOUND!');
+} else {
+	logMessage('NOT FOUND!');
+	logMessage('You do not have cURL installed, make sure to check: http://www.php.net/manual/en/curl.installation.php');
+	exit();
+}
+
 /**
  * Log and echo the given text
  *
  * @param string $message
  */
-function logMessage($message) {
-	$message .= PHP_EOL;
+function logMessage($message, $eol = true) {
+	if($eol) $message .= PHP_EOL;
 	if (defined('LOG_CURRENT_FILE')) {
 		if (!file_put_contents(LOG_CURRENT_FILE, $message, FILE_APPEND)) {
 			echo "Logfile not Write-able, please check your file Permissions";
