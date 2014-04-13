@@ -16,9 +16,9 @@ use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 /**
  * Player Actions Class
  *
- * @author steeffeen & kremsy
+ * @author    steeffeen & kremsy
  * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class PlayerActions {
 	/*
@@ -184,7 +184,17 @@ class PlayerActions {
 			return;
 		}
 
-		$this->maniaControl->client->forceSpectator($target->login, $spectatorState);
+
+		try {
+			$this->maniaControl->client->forceSpectator($target->login, $spectatorState);
+		} catch(Exception $e) {
+			if ($e->getMessage() == "There are too many spectators") {
+				$this->maniaControl->chat->sendError($e->getMessage(), $adminLogin);
+				return;
+			}
+			throw $e;
+		}
+
 
 		$title       = $this->maniaControl->authenticationManager->getAuthLevelName($admin->authLevel);
 		$chatMessage = $title . ' $<' . $admin->nickname . '$> forced $<' . $target->nickname . '$> to Spectator!';
@@ -197,12 +207,12 @@ class PlayerActions {
 				$this->maniaControl->client->spectatorReleasePlayerSlot($target->login);
 			} catch(Exception $e) {
 				//if ($e->getMessage() == 'The player is not a spectator') {
-					//$this->kickPlayer($adminLogin, $targetLogin, 'Disconnect');
-					//$this->maniaControl->errorHandler->triggerDebugNotice("inaktiv spec player kicked " . $e->getMessage());
+				//$this->kickPlayer($adminLogin, $targetLogin, 'Disconnect');
+				//$this->maniaControl->errorHandler->triggerDebugNotice("inaktiv spec player kicked " . $e->getMessage());
 				//} else {
-					$this->maniaControl->errorHandler->triggerDebugNotice("PlayerActions Debug Line 183: " . $e->getMessage());
-					// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
-					//do nothing
+				$this->maniaControl->errorHandler->triggerDebugNotice("PlayerActions Debug Line 183: " . $e->getMessage());
+				// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
+				//do nothing
 				//}
 			}
 		}
@@ -371,7 +381,7 @@ class PlayerActions {
 				$this->maniaControl->client->kick($target->login, $message);
 			}
 		} catch(Exception $e) {
-			if($e == "Login unknown."){
+			if ($e == "Login unknown.") {
 				return;
 			}
 			// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
