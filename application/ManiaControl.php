@@ -53,7 +53,7 @@ if (function_exists('mysqli_connect')) {
 	logMessage('FOUND!');
 } else {
 	logMessage('NOT FOUND!');
-	logMessage(' -- You do not have MySQLi installed, make sure to check: http://www.php.net/manual/en/mysqli.installation.php');
+	logMessage(' -- You don\'t have MySQLi installed, make sure to check: http://www.php.net/manual/en/mysqli.installation.php');
 	exit();
 }
 
@@ -62,7 +62,7 @@ if(function_exists('curl_version')) {
 	logMessage('FOUND!');
 } else {
 	logMessage('NOT FOUND!');
-	logMessage('You do not have cURL installed, make sure to check: http://www.php.net/manual/en/curl.installation.php');
+	logMessage('You don\'t have cURL installed, make sure to check: http://www.php.net/manual/en/curl.installation.php');
 	exit();
 }
 
