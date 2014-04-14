@@ -456,8 +456,8 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		} else {
 			$requester = $queuedMap[0];
 			$map       = $queuedMap[1];
-			$name      = $queuedMap->name;
-			$author    = $queuedMap->authorLogin;
+			$name      = $map->name;
+			$author    = $map->authorLogin;
 		}
 
 		$label = new Label_Text();
