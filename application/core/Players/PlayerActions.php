@@ -88,14 +88,7 @@ class PlayerActions {
 		try {
 			$this->maniaControl->client->forceSpectator($target->login, self::SPECTATOR_PLAYER);
 		} catch(Exception $e) {
-			if ($e->getMessage() == 'There are too many players') {
-				$this->maniaControl->chat->sendError("Too many Spectators");
-				return;
-			} else {
-				// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
-				$this->maniaControl->errorHandler->triggerDebugNotice("PlayerActions Debug Line 90: " . $e->getMessage());
-				$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $admin->login);
-			}
+			$this->maniaControl->chat->sendException($e, $admin->login);
 			return;
 		}
 
@@ -103,9 +96,7 @@ class PlayerActions {
 			try {
 				$this->maniaControl->client->forceSpectator($target->login, self::SPECTATOR_USER_SELECTABLE);
 			} catch(Exception $e) {
-				// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
-				$this->maniaControl->errorHandler->triggerDebugNotice("PlayerActions Debug Line 100: " . $e->getMessage());
-				$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $admin->login);
+				$this->maniaControl->chat->sendException($e, $admin->login);
 				return;
 			}
 		}
@@ -184,17 +175,12 @@ class PlayerActions {
 			return;
 		}
 
-
 		try {
 			$this->maniaControl->client->forceSpectator($target->login, $spectatorState);
 		} catch(Exception $e) {
-			if ($e->getMessage() == "There are too many spectators") {
-				$this->maniaControl->chat->sendError($e->getMessage(), $adminLogin);
-				return;
-			}
-			throw $e;
+			$this->maniaControl->chat->sendException($e, $admin->login);
+			return;
 		}
-
 
 		$title       = $this->maniaControl->authenticationManager->getAuthLevelName($admin->authLevel);
 		$chatMessage = $title . ' $<' . $admin->nickname . '$> forced $<' . $target->nickname . '$> to Spectator!';
@@ -206,14 +192,8 @@ class PlayerActions {
 			try {
 				$this->maniaControl->client->spectatorReleasePlayerSlot($target->login);
 			} catch(Exception $e) {
-				//if ($e->getMessage() == 'The player is not a spectator') {
-				//$this->kickPlayer($adminLogin, $targetLogin, 'Disconnect');
-				//$this->maniaControl->errorHandler->triggerDebugNotice("inaktiv spec player kicked " . $e->getMessage());
-				//} else {
-				$this->maniaControl->errorHandler->triggerDebugNotice("PlayerActions Debug Line 183: " . $e->getMessage());
-				// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
-				//do nothing
-				//}
+				$this->maniaControl->chat->sendException($e, $admin->login);
+				return;
 			}
 		}
 	}
@@ -381,12 +361,7 @@ class PlayerActions {
 				$this->maniaControl->client->kick($target->login, $message);
 			}
 		} catch(Exception $e) {
-			if ($e == "Login unknown.") {
-				return;
-			}
-			// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
-			$this->maniaControl->errorHandler->triggerDebugNotice("PlayerActions Debug Line 354: " . $e->getMessage());
-			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $admin->login);
+			$this->maniaControl->chat->sendException($e, $admin->login);
 			return;
 		}
 

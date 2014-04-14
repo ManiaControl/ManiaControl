@@ -132,8 +132,9 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	public function sendManialink($manialinkText, $logins = null, $timeout = 0, $hideOnClick = false) {
 		$manialinkText = (string) $manialinkText;
 
-		if(!$manialinkText)
+		if(!$manialinkText) {
 			return true;
+		}
 
 		try {
 			if (!$logins) {
@@ -159,12 +160,10 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 				return $success;
 			}
 		} catch(Exception $e) {
-			if($e->getMessage() == "Login unknown."){
+			if($e->getMessage() == "Login unknown.") {
 				return false;
 			}
-			$this->maniaControl->errorHandler->triggerDebugNotice("Exception while sending Manialink: " . $e->getMessage());
-			// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
-			return false;
+			throw $e;
 		}
 
 		return true;
@@ -217,7 +216,8 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 		// render and display xml
 		$this->sendManialink($maniaLink, $player->login);
 
-		if ($widgetName != '') { //TODO make check by manialinkId, getter is needed to avoid uses on non main widgets
+		if ($widgetName != '') {
+			//TODO make check by manialinkId, getter is needed to avoid uses on non main widgets
 			$this->disableAltMenu($player);
 			// Trigger callback
 			$this->maniaControl->callbackManager->triggerCallback(self::CB_MAIN_WINDOW_OPENED, $player, $widgetName);
