@@ -217,12 +217,12 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 				$mapFrame->add($awardQuad);
 				$awardQuad->setSize(3, 3);
 				$awardQuad->setSubStyle($awardQuad::SUBSTYLE_OfficialRace);
-				$awardQuad->setX($x + 97.5);
+				$awardQuad->setX($x + 97);
 				$awardQuad->setZ(0.01);
 
 				$awardLabel = new Label_Text();
 				$mapFrame->add($awardLabel);
-				$awardLabel->setX($x + 99);
+				$awardLabel->setX($x + 98.5);
 				$awardLabel->setHAlign(Control::LEFT);
 				$awardLabel->setText($map->awards);
 				$awardLabel->setTextSize(1.3);
@@ -235,7 +235,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 				$karmaGauge = new Gauge();
 				$mapFrame->add($karmaGauge);
 				$karmaGauge->setZ(2);
-				$karmaGauge->setX($x + 89.5);
+				$karmaGauge->setX($x + 89);
 				$karmaGauge->setSize(16.5, 9);
 				$karmaGauge->setDrawBg(false);
 				$karma = floatval($karma);
@@ -246,7 +246,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 				$karmaLabel = new Label();
 				$mapFrame->add($karmaLabel);
 				$karmaLabel->setZ(2);
-				$karmaLabel->setX($x + 89.5);
+				$karmaLabel->setX($x + 89);
 				$karmaLabel->setSize(16.5 * 0.9, 5);
 				$karmaLabel->setTextSize(0.9);
 				$karmaLabel->setTextColor('000');
