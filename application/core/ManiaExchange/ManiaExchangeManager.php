@@ -306,7 +306,11 @@ class ManiaExchangeManager{
 
 		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_MP3_BETA_TESTING)){
 			$url .= '&key=t42kEMjzH7xpAjBFHAvEkC7rqAlw';
-			$url .= '&mapgroup=1';
+			if($titlePrefix == "tm"){
+				$url .= '&mapgroup=17';
+			}else{
+				$url .= '&mapgroup=1';
+			}
 		}
 
 		// Get MapTypes
