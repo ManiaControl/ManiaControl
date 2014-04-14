@@ -3,6 +3,7 @@
 namespace ManiaControl;
 
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
+use ManiaControl\Players\Player;
 
 /**
  * Chat Utility Class
@@ -48,7 +49,7 @@ class Chat {
 	 * @param string|bool $prefix
 	 * @return string
 	 */
-	private function getPrefix($prefix) {
+	private function getPrefix($prefix) {	
 		if (is_string($prefix)) {
 			return $prefix;
 		}
@@ -57,7 +58,7 @@ class Chat {
 		}
 		return '';
 	}
-
+	
 	/**
 	 * Send a chat message to the given login
 	 *
@@ -71,11 +72,14 @@ class Chat {
 			return false;
 		}
 		$chatMessage = '$z$<' . $this->getPrefix($prefix) . $message . '$>$z';
-		if ($login === null) {
+		if (!$login) {
 			$this->maniaControl->client->chatSendServerMessage($chatMessage);
 		} else {
+			if ($login instanceof Player) {
+				$login = $login->login;
+			}
 			try{
-			$this->maniaControl->client->chatSendServerMessage($chatMessage, $login);
+				$this->maniaControl->client->chatSendServerMessage($chatMessage, $login);
 			} catch(Exception $e){
 				if($e->getMessage() != "Login unknown."){
 					throw $e;
@@ -112,7 +116,7 @@ class Chat {
 	}
 
 	/**
-	 * Send an error message to the given login
+	 * Send an Error Message to the Chat
 	 *
 	 * @param string      $message
 	 * @param string      $login
@@ -122,6 +126,18 @@ class Chat {
 	public function sendError($message, $login = null, $prefix = true) {
 		$format = $this->maniaControl->settingManager->getSetting($this, self::SETTING_FORMAT_ERROR);
 		return $this->sendChat($format . $message, $login);
+	}
+	
+	/**
+	 * Send the Exception Information to the Chat
+	 * 
+	 * @param Exception $exception
+	 * @param string $login
+	 * @return bool
+	 */
+	public function sendException(\Exception $exception, $login = null) {
+		$message = "Exception occured: '{$exception->getMessage()}' ({$exception->getCode()})";
+		$this->sendError($message, $login);
 	}
 
 	/**
