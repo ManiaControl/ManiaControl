@@ -152,6 +152,11 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			return;
 		}
 
+		$version = $this->maniaControl->client->getVersion();
+		if($this->coreUpdateData->minDedicatedBuild > $version->build){
+			return;
+		}
+
 		$buildDate   = strtotime($this->currentBuildDate);
 		$releaseTime = strtotime($this->coreUpdateData->releaseDate);
 		if ($buildDate && $buildDate >= $releaseTime) {
@@ -186,6 +191,13 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 					$this->maniaControl->chat->sendInformation('No Update available!', $player->login);
 					return;
 				}
+
+				$version = $this->maniaControl->client->getVersion();
+				if($updateData->minDedicatedBuild > $version->build){
+					$this->maniaControl->chat->sendError("No new Build for this Server-version available!", $player->login);
+					return;
+				}
+
 				$this->maniaControl->chat->sendSuccess('Update for Version ' . $updateData->version . ' available!', $player->login);
 			});
 		} else {
@@ -193,6 +205,12 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			$this->checkCoreUpdateAsync(function (UpdateData $updateData) use (&$player) {
 				if (!$updateData) {
 					$this->maniaControl->chat->sendInformation('No Update available!', $player->login);
+					return;
+				}
+
+				$version = $this->maniaControl->client->getVersion();
+				if($updateData->minDedicatedBuild > $version->build){
+					$this->maniaControl->chat->sendError("No new Build for this Server-version available!", $player->login);
 					return;
 				}
 
@@ -259,9 +277,14 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			return;
 		}
 
-		$this->checkCoreUpdateAsync(function ($updateData) use (&$player) {
+		$this->checkCoreUpdateAsync(function (UpdateData $updateData) use (&$player) {
 			if (!$updateData) {
 				$this->maniaControl->chat->sendError('Update is currently not possible!', $player->login);
+				return;
+			}
+			$version = $this->maniaControl->client->getVersion();
+			if($updateData->minDedicatedBuild > $version->build){
+				$this->maniaControl->chat->sendError("ManiaControl update version requires a newer Dedicated Server version!", $player->login);
 				return;
 			}
 
@@ -323,7 +346,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			if (!$ignoreVersion && $updateData->version <= ManiaControl::VERSION) {
 				return;
 			}
-
+			
 			call_user_func($function, $updateData);
 		});
 	}

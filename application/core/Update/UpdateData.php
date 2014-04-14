@@ -17,16 +17,17 @@ class UpdateData {
 	public $channel = "";
 	public $url = "";
 	public $releaseDate = "";
-
+	public $minDedicatedBuild = "";
 	/**
 	 * Construct new Update Data
 	 * 
-	 * @param unknown $updateData
+	 * @param Object $updateData
 	 */
 	public function __construct($updateData) {
 		$this->version     = $updateData->version;
 		$this->channel     = $updateData->channel;
 		$this->url         = $updateData->url;
 		$this->releaseDate = $updateData->release_date;
+		$this->minDedicatedBuild = $updateData->min_dedicated_build;
 	}
 } 
