@@ -32,7 +32,7 @@ SETUP:
 
 INFORMATION:
 
-- ManiaControl is only tested on UNIX Machines.
+- ManiaControl is mainly tested on UNIX Machines.
 	- Even though it might run properly on Windows we can't promise it will work all Cases.
 	- In order to run ManiaControl on Windows you have to alter the File ManiaControl.bat and enter the Path to your php.exe!
 
