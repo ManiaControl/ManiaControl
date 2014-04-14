@@ -192,8 +192,9 @@ class PlayerActions {
 			try {
 				$this->maniaControl->client->spectatorReleasePlayerSlot($target->login);
 			} catch(Exception $e) {
-				$this->maniaControl->chat->sendException($e, $admin->login);
-				return;
+				if($e->getMessage() != "The player is not a spectator"){
+					throw $e;
+				}
 			}
 		}
 	}
