@@ -651,7 +651,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 					$this->maniaControl->client->forceSpectator($adminLogin, PlayerActions::SPECTATOR_BUT_KEEP_SELECTABLE);
 					$this->maniaControl->client->forceSpectatorTarget($adminLogin, $targetLogin, 1);
 				} catch(Exception $e) {
-					if($e->getMessage() != "This player is not a spectator."){
+					if($e->getMessage() != "The player is not a spectator"){
 						throw $e;
 					}
 				}
@@ -725,7 +725,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 						$this->maniaControl->client->forceSpectator($target->login, PlayerActions::SPECTATOR_BUT_KEEP_SELECTABLE);
 						$this->maniaControl->client->spectatorReleasePlayerSlot($target->login);
 					} catch(Exception $e) {
-						if ($e->getMessage() != 'Login unknown.' && $e->getMessage() != 'The player is not a spectator.') {
+						if ($e->getMessage() != 'Login unknown.' && $e->getMessage() != 'The player is not a spectator') {
 							$this->maniaControl->chat->sendException($e);
 						}
 					}
