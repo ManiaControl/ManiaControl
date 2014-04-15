@@ -9,6 +9,7 @@ use FML\Controls\Label;
 use FML\Controls\Labels\Label_Button;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quads\Quad_Icons128x32_1;
+use FML\Controls\Quads\Quad_Icons128x128_1;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Script\Script;
 use ManiaControl\Admin\AuthenticationManager;
@@ -37,6 +38,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	const ACTION_PREFIX_SETTING                     = 'PluginMenuSetting';
 	const ACTION_SETTING_BOOL                       = 'PluginMenuActionBoolSetting.';
 	const ACTION_BACK_TO_PLUGINS                    = 'PluginMenu.BackToPlugins';
+	const ACTION_PREFIX_UPDATEPLUGIN                = 'PluginMenu.Update.';
 	const SETTING_PERMISSION_CHANGE_PLUGIN_SETTINGS = 'Change Plugin Settings';
 
 	/*
@@ -314,6 +316,16 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 				$statusChangeButton->setTextPrefix('a');
 				$statusChangeButton->setText('Activate');
 				$statusChangeButton->setAction(self::ACTION_PREFIX_ENABLEPLUGIN . $pluginClass);
+			}
+
+			if ($this->maniaControl->updateManager->checkPluginUpdate($pluginClass) != false) {
+				$quadUpdate = new Quad_Icons128x128_1();
+				$pluginFrame->add($quadUpdate);
+				$quadUpdate->setSubStyle($quadUpdate::SUBSTYLE_ProfileVehicle);
+				$quadUpdate->setX(56);
+				$quadUpdate->setZ(2);
+				$quadUpdate->setSize(5, 5);
+				$quadUpdate->setAction(self::ACTION_PREFIX_UPDATEPLUGIN . $pluginClass);
 			}
 
 			$y -= $entryHeight;
