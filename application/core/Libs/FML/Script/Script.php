@@ -693,7 +693,43 @@ if (Event.Control.HasClass(\"" . self::CLASS_MENUBUTTON . "\")) {
 		$this->setInclude('TextLib', 'TextLib');
 		$pagesNumberPrefix = self::CLASS_PAGE . '-P';
 		$pagesNumberPrefixLength = strlen($pagesNumberPrefix);
-		$pagesScript = "
+		
+		$pagesInitScript = "
+declare PageLabelControls = CMlControl[];
+Page.GetClassChildren(\"" . self::CLASS_PAGELABEL . "\", Page.MainFrame, True);
+foreach (PageLabelControl in Page.GetClassChildren_Result) {
+	declare Temp = PageLabelControl; 
+	PageLabelControls.add(Temp);
+}
+declare FML_MinPageNumber for This = Integer[Text];
+declare FML_MaxPageNumber for This = Integer[Text];
+declare FML_PageNumber for This = Integer[Text];
+foreach (PageLabelControl in PageLabelControls) {
+	foreach (ControlClass in PageLabelControl.ControlClasses) {
+		Page.GetClassChildren(ControlClass, Page.MainFrame, True);
+		foreach (PageControl in Page.GetClassChildren_Result) {
+			if (!PageControl.HasClass(\"" . self::CLASS_PAGE . "\")) continue;
+			foreach (PageControlClass in PageControl.ControlClasses) {
+				if (TextLib::SubText(PageControlClass, 0, {$pagesNumberPrefixLength}) != \"{$pagesNumberPrefix}\") continue;
+				declare PageNumber = TextLib::ToInteger(TextLib::SubText(PageControlClass, {$pagesNumberPrefixLength}, TextLib::Length(PageControlClass)));
+				if (!FML_MinPageNumber.existskey(ControlClass) || PageNumber < FML_MinPageNumber[ControlClass]) {
+					FML_MinPageNumber[ControlClass] = PageNumber;
+				}
+				if (!FML_MaxPageNumber.existskey(ControlClass) || PageNumber > FML_MaxPageNumber[ControlClass]) {
+					FML_MaxPageNumber[ControlClass] = PageNumber;
+				}
+				break;
+			}
+		}
+		if (FML_MinPageNumber.existskey(ControlClass)) {
+			FML_PageNumber[ControlClass] = FML_MinPageNumber[ControlClass];
+			declare PageLabel <=> (PageLabelControl as CMlLabel);
+			PageLabel.Value = FML_PageNumber[ControlClass]^\"/\"^FML_MaxPageNumber[ControlClass];
+		}
+	}
+}";
+		
+		$pagesClickScript = "
 if (Event.Control.HasClass(\"" . self::CLASS_PAGER . "\")) {
 	declare Text PagesId;
 	declare Integer PagingAction;
@@ -710,28 +746,9 @@ if (Event.Control.HasClass(\"" . self::CLASS_PAGER . "\")) {
 			}
 		}
 	}
-	declare FML_PagesLastScriptStart for This = FML_ScriptStart;
 	declare FML_MinPageNumber for This = Integer[Text];
 	declare FML_MaxPageNumber for This = Integer[Text];
 	declare FML_PageNumber for This = Integer[Text];
-	if (FML_PagesLastScriptStart != FML_ScriptStart || !FML_PageNumber.existskey(PagesId) || !FML_MinPageNumber.existskey(PagesId) || !FML_MaxPageNumber.existskey(PagesId)) {
-		Page.GetClassChildren(PagesId, Page.MainFrame, True);
-		foreach (PageControl in Page.GetClassChildren_Result) {
-			if (!PageControl.HasClass(\"" . self::CLASS_PAGE . "\")) continue;
-			foreach (ControlClass in PageControl.ControlClasses) {
-				if (TextLib::SubText(ControlClass, 0, {$pagesNumberPrefixLength}) != \"{$pagesNumberPrefix}\") continue;
-				declare PageNumber = TextLib::ToInteger(TextLib::SubText(ControlClass, {$pagesNumberPrefixLength}, TextLib::Length(ControlClass)));
-				if (!FML_MinPageNumber.existskey(PagesId) || PageNumber < FML_MinPageNumber[PagesId]) {
-					FML_MinPageNumber[PagesId] = PageNumber;
-				}
-				if (!FML_MaxPageNumber.existskey(PagesId) || PageNumber > FML_MaxPageNumber[PagesId]) {
-					FML_MaxPageNumber[PagesId] = PageNumber;
-				}
-				break;
-			}
-		}
-		FML_PageNumber[PagesId] = FML_MinPageNumber[PagesId];
-	}
 	FML_PageNumber[PagesId] += PagingAction;
 	if (FML_PageNumber[PagesId] < FML_MinPageNumber[PagesId]) {
 		FML_PageNumber[PagesId] = FML_MinPageNumber[PagesId];
@@ -739,7 +756,6 @@ if (Event.Control.HasClass(\"" . self::CLASS_PAGER . "\")) {
 	if (FML_PageNumber[PagesId] > FML_MaxPageNumber[PagesId]) {
 		FML_PageNumber[PagesId] = FML_MaxPageNumber[PagesId];
 	}
-	FML_PagesLastScriptStart = FML_ScriptStart;
 	Page.GetClassChildren(PagesId, Page.MainFrame, True);
 	foreach (PageControl in Page.GetClassChildren_Result) {
 		if (!PageControl.HasClass(\"" . self::CLASS_PAGE . "\")) continue;
@@ -758,7 +774,9 @@ if (Event.Control.HasClass(\"" . self::CLASS_PAGER . "\")) {
 		PageLabel.Value = FML_PageNumber[PagesId]^\"/\"^FML_MaxPageNumber[PagesId];
 	}
 }";
-		$pagesLabels = Builder::getLabelImplementationBlock(self::LABEL_MOUSECLICK, $pagesScript);
+		
+		$pagesLabels = Builder::getLabelImplementationBlock(self::LABEL_ONINIT, $pagesInitScript);
+		$pagesLabels .= Builder::getLabelImplementationBlock(self::LABEL_MOUSECLICK, $pagesClickScript);
 		return $pagesLabels;
 	}
 

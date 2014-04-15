@@ -18,6 +18,7 @@ use FML\ManiaCode\PlayMap;
 use FML\ManiaCode\PlayReplay;
 use FML\ManiaCode\ShowMessage;
 use FML\ManiaCode\ViewReplay;
+use FML\ManiaCode\InstallMacroblock;
 
 /**
  * Class representing a ManiaCode
@@ -82,6 +83,20 @@ class ManiaCode {
 	public function addShowMessage($message) {
 		$messageElement = new ShowMessage($message);
 		$this->addElement($messageElement);
+		return $this;
+	}
+
+	/**
+	 * Install a Macroblock
+	 *
+	 * @param string $name Macroblock Name
+	 * @param string $file Macroblock File
+	 * @param string $url Macroblock Url
+	 * @return \FML\ManiaCode
+	 */
+	public function addInstallMacroblock($name, $file, $url) {
+		$macroblockElement = new InstallMacroblock($name, $file, $url);
+		$this->addElement($macroblockElement);
 		return $this;
 	}
 
