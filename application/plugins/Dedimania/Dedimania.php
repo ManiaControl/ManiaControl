@@ -809,7 +809,8 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	 */
 	private function getGameModeString() {
 		$gameMode = $this->maniaControl->server->getGameMode();
-		$scriptName = str_replace('.Script.txt', '', $this->maniaControl->client->getScriptName()["CurrentValue"]);
+		$scriptNameResponse = $this->maniaControl->client->getScriptName();
+		$scriptName = str_replace('.Script.txt', '', $scriptNameResponse["CurrentValue"]);
 		if ($gameMode === null) {
 			trigger_error("Couldn't retrieve game mode. ");
 			return null;

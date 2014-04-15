@@ -91,18 +91,20 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		}
 
 		//Check if a new Core Update is Available
-		$this->checkCoreUpdateAsync(function (UpdateData $updateData) use ($time) {
-			$buildDate   = strtotime($this->currentBuildDate);
+		$self = $this;
+		$maniaControl = $this->maniaControl;
+		$this->checkCoreUpdateAsync(function (UpdateData $updateData) use ($self, $maniaControl, $time) {
+			$buildDate   = strtotime($self->getCurrentBuildDate());
 			$releaseTime = strtotime($updateData->releaseDate);
 			if ($buildDate < $releaseTime) {
-				$updateChannel = $this->maniaControl->settingManager->getSetting($this, self::SETTING_UPDATECHECK_CHANNEL);
-				if ($updateChannel != self::CHANNEL_NIGHTLY) {
-					$this->maniaControl->log('New ManiaControl Version ' . $updateData->version . ' available!');
+				$updateChannel = $maniaControl->settingManager->getSetting($self, UpdateManager::SETTING_UPDATECHECK_CHANNEL);
+				if ($updateChannel != UpdateManager::CHANNEL_NIGHTLY) {
+					$maniaControl->log('New ManiaControl Version ' . $updateData->version . ' available!');
 				} else {
-					$this->maniaControl->log('New Nightly Build (' . $updateData->releaseDate . ') available!');
+					$maniaControl->log('New Nightly Build (' . $updateData->releaseDate . ') available!');
 				}
-				$this->coreUpdateData = $updateData;
-				$this->autoUpdate($time);
+				$self->setCoreUpdateData($updateData);
+				$self->autoUpdate($time);
 			}
 		}, true);
 	}
@@ -326,6 +328,14 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		return $pluginData;
 	}
 
+	/**
+	 * Set Core Update Data
+	 * 
+	 * @param UpdateData $coreUpdateData
+	 */
+	public function setCoreUpdateData(UpdateData $coreUpdateData = null) {
+		$this->coreUpdateData = $coreUpdateData;
+	}
 
 	/**
 	 * Checks a core update Asynchronously
