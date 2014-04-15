@@ -336,15 +336,17 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 		}
 
 		$numberOfOutdated = $this->maniaControl->updateManager->getNumberOfOutdatedPlugins();
-		$updatePluginsButton = new Label_Button();
-		$frame->add($updatePluginsButton);
-		$updatePluginsButton->setHAlign(Control::RIGHT);
-		$updatePluginsButton->setX($width * 0.1);
-		$updatePluginsButton->setY(-35.5);
-		$updatePluginsButton->setZ(2);
-		$updatePluginsButton->setStyle($updatePluginsButton::STYLE_CardButtonSmall);
-		$updatePluginsButton->setText('Update '.$numberOfOutdated.' plugin(s)');
-		$updatePluginsButton->setAction(self::ACTION_UPDATEPLUGINS);
+		if($numberOfOutdated > 0) {
+			$updatePluginsButton = new Label_Button();
+			$frame->add($updatePluginsButton);
+			$updatePluginsButton->setHAlign(Control::RIGHT);
+			$updatePluginsButton->setX($width * 0.1);
+			$updatePluginsButton->setY(-35.5);
+			$updatePluginsButton->setZ(2);
+			$updatePluginsButton->setStyle($updatePluginsButton::STYLE_CardButtonSmall);
+			$updatePluginsButton->setText('Update '.$numberOfOutdated.' plugin(s)');
+			$updatePluginsButton->setAction(self::ACTION_UPDATEPLUGINS);
+		}
 
 		return $frame;
 	}
