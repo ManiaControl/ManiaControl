@@ -249,10 +249,14 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 
 		if($update) {
 			$pluginClass = substr($actionId, strlen(PluginMenu::ACTION_PREFIX_UPDATEPLUGIN));
-			$newUpdate = $this->checkPluginUpdate($pluginClass);
-			if($newUpdate != false) {
-				$newUpdate->pluginClass = $pluginClass;
-				$this->updatePlugin($newUpdate, $player, true);
+			if($pluginClass == 'All') {
+				$this->checkPluginsUpdate($player);
+			} else {
+				$newUpdate = $this->checkPluginUpdate($pluginClass);
+				if($newUpdate != false) {
+					$newUpdate->pluginClass = $pluginClass;
+					$this->updatePlugin($newUpdate, $player, true);
+				}
 			}
 		}
 	}
@@ -345,6 +349,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 
 	/**
 	 * Checks if there are outdated plugins active.
+	 * @param Player $player
 	 */
 	public function checkPluginsUpdate(Player $player = null) {
 		$this->maniaControl->log('[UPDATE] Checking plugins for newer versions ...');
@@ -374,6 +379,22 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 				$this->maniaControl->chat->sendInformation('Checking plugins: COMPLETE, all plugins are up-to-date!', $player->login);
 			}
 		}
+	}
+
+	/**
+	 * Returns the number of outdated plugins active.
+	 * @return int
+	 */
+	public function getNumberOfOutdatedPlugins() {
+		$number = 0;
+		foreach ($this->maniaControl->pluginManager->getPluginClasses() as $pluginClass) {
+			$pluginData = $this->checkPluginUpdate($pluginClass);
+			if ($pluginData != false) {
+				$number++;
+			}
+		}
+
+		return $number;
 	}
 
 	/**

@@ -39,6 +39,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	const ACTION_SETTING_BOOL                       = 'PluginMenuActionBoolSetting.';
 	const ACTION_BACK_TO_PLUGINS                    = 'PluginMenu.BackToPlugins';
 	const ACTION_PREFIX_UPDATEPLUGIN                = 'PluginMenu.Update.';
+	const ACTION_UPDATEPLUGINS                      = 'PluginMenu.Update.All';
 	const SETTING_PERMISSION_CHANGE_PLUGIN_SETTINGS = 'Change Plugin Settings';
 
 	/*
@@ -333,6 +334,17 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 				unset($pageFrame);
 			}
 		}
+
+		$numberOfOutdated = $this->maniaControl->updateManager->getNumberOfOutdatedPlugins();
+		$updatePluginsButton = new Label_Button();
+		$frame->add($updatePluginsButton);
+		$updatePluginsButton->setHAlign(Control::RIGHT);
+		$updatePluginsButton->setX($width * 0.1);
+		$updatePluginsButton->setY(-35.5);
+		$updatePluginsButton->setZ(2);
+		$updatePluginsButton->setStyle($updatePluginsButton::STYLE_CardButtonSmall);
+		$updatePluginsButton->setText('Update '.$numberOfOutdated.' plugin(s)');
+		$updatePluginsButton->setAction(self::ACTION_UPDATEPLUGINS);
 
 		return $frame;
 	}
