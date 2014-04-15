@@ -302,15 +302,30 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		}, true);
 	}
 
+	/**
+	 * Checks if there are outdated plugins active.
+	 */
 	public function checkPluginsUpdate() {
 		$this->maniaControl->log('[UPDATE] Checking plugins for newer versions ...');
+		$outdatedPlugins = array();
+
 		foreach($this->maniaControl->pluginManager->getPluginClasses() as $pluginClass) {
 			$pluginData = $this->checkPluginUpdate($pluginClass);
 			if($pluginData != false) {
+				$outdatedPlugins[] = $pluginData;
 				$this->maniaControl->log('[UPDATE] '.$pluginClass.': There is a newer version available: '.$pluginData->currentVersion->version.'!');
 			}
 		}
-		$this->maniaControl->log('[UPDATE] Checking plugins: COMPLETE!');
+
+		if(count($outdatedPlugins) > 0) {
+			$this->maniaControl->log('[UPDATE] Checking plugins: COMPLETE, there are '.count($outdatedPlugins).' outdated plugins, now updating ...');
+			$this->performPluginsBackup();
+			foreach($outdatedPlugins as $plugin) {
+				$this->updatePlugin($plugin);
+			}
+		} else {
+			$this->maniaControl->log('[UPDATE] Checking plugins: COMPLETE, all plugins are up-to-date!');
+		}
 	}
 
 	/**
@@ -337,6 +352,42 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			return false;
 		}
 		return $pluginData;
+	}
+
+	private function updatePlugin($pluginData) {
+		$this->maniaControl->fileReader->loadFile($pluginData->currentVersion->url, function ($updateFileContent, $error) use (&$updateData, &$player, &$pluginData) {
+			$this->maniaControl->log('[UPDATE] Now updating '.$pluginData->name.' ...');
+			$tempDir = ManiaControlDir . '/temp/';
+			if (!is_dir($tempDir)) {
+				mkdir($tempDir);
+			}
+			$updateFileName = $tempDir . $pluginData->currentVersion->zipfile;
+
+			$bytes = file_put_contents($updateFileName, $updateFileContent);
+			if (!$bytes || $bytes <= 0) {
+				trigger_error("Couldn't save plugin Zip.");
+				if ($player) {
+					$this->maniaControl->chat->sendError('Update failed: Couldn\'t save plugin zip!', $player->login);
+				}
+				return false;
+			}
+			$zip    = new \ZipArchive();
+			$result = $zip->open($updateFileName);
+			if ($result !== true) {
+				trigger_error("Couldn't open plugin Zip. ({$result})");
+				if ($player) {
+					$this->maniaControl->chat->sendError('Update failed: Couldn\'t open plugin zip!', $player->login);
+				}
+				return false;
+			}
+
+			$zip->extractTo(ManiaControlDir.'/plugins');
+			$zip->close();
+			unlink($updateFileName);
+			@rmdir($tempDir);
+
+			$this->maniaControl->log('[UPDATE] Successfully updated '.$pluginData->name.'!');
+		});
 	}
 
 	/**
@@ -394,6 +445,32 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		$dirName    = $pathInfo['basename'];
 		$backupZip->addEmptyDir($dirName);
 		$this->zipDirectory($backupZip, ManiaControlDir, strlen($parentPath), $excludes);
+		$backupZip->close();
+		return true;
+	}
+
+	/**
+	 * Perform a Backup of the plugins
+	 *
+	 * @return bool
+	 */
+	private function performPluginsBackup() {
+		$backupFolder = ManiaControlDir . '/backup/';
+		if (!is_dir($backupFolder)) {
+			mkdir($backupFolder);
+		}
+		$backupFileName = $backupFolder . 'backup_plugins_' . date('y-m-d') . '_' . time() . '.zip';
+		$backupZip      = new \ZipArchive();
+		if ($backupZip->open($backupFileName, \ZipArchive::CREATE) !== TRUE) {
+			trigger_error("Couldn't create Backup Zip!");
+			return false;
+		}
+		$excludes   = array('.', '..');
+		$pathInfo   = pathInfo(ManiaControlDir.'/plugins');
+		$parentPath = $pathInfo['dirname'] . '/';
+		$dirName    = $pathInfo['basename'];
+		$backupZip->addEmptyDir($dirName);
+		$this->zipDirectory($backupZip, ManiaControlDir.'/plugins', strlen($parentPath), $excludes);
 		$backupZip->close();
 		return true;
 	}
