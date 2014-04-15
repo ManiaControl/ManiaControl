@@ -71,6 +71,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		// Register for chat commands
 		$this->maniaControl->commandManager->registerCommandListener('checkupdate', $this, 'handle_CheckUpdate', true);
 		$this->maniaControl->commandManager->registerCommandListener('coreupdate', $this, 'handle_CoreUpdate', true);
+		$this->maniaControl->commandManager->registerCommandListener('pluginupdate', $this, 'handle_PluginUpdate', true);
 
 		$this->currentBuildDate = $this->getNightlyBuildDate();
 	}
@@ -303,28 +304,50 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	}
 
 	/**
+	 * Handle //pluginupdate command
+	 *
+	 * @param array  $chatCallback
+	 * @param Player $player
+	 */
+	public function handle_PluginUpdate(array $chatCallback, Player $player) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_UPDATE)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+			return;
+		}
+
+		$this->checkPluginsUpdate($player);
+	}
+
+	/**
 	 * Checks if there are outdated plugins active.
 	 */
-	public function checkPluginsUpdate() {
+	public function checkPluginsUpdate(Player $player = null) {
 		$this->maniaControl->log('[UPDATE] Checking plugins for newer versions ...');
 		$outdatedPlugins = array();
 
-		foreach($this->maniaControl->pluginManager->getPluginClasses() as $pluginClass) {
+		foreach ($this->maniaControl->pluginManager->getPluginClasses() as $pluginClass) {
 			$pluginData = $this->checkPluginUpdate($pluginClass);
-			if($pluginData != false) {
+			if ($pluginData != false) {
+				$pluginData->pluginClass = $pluginClass;
 				$outdatedPlugins[] = $pluginData;
 				$this->maniaControl->log('[UPDATE] '.$pluginClass.': There is a newer version available: '.$pluginData->currentVersion->version.'!');
 			}
 		}
 
-		if(count($outdatedPlugins) > 0) {
+		if (count($outdatedPlugins) > 0) {
 			$this->maniaControl->log('[UPDATE] Checking plugins: COMPLETE, there are '.count($outdatedPlugins).' outdated plugins, now updating ...');
+			if ($player) {
+				$this->maniaControl->chat->sendInformation('Checking plugins: COMPLETE, there are '.count($outdatedPlugins).' outdated plugins, now updating ...', $player->login);
+			}
 			$this->performPluginsBackup();
-			foreach($outdatedPlugins as $plugin) {
-				$this->updatePlugin($plugin);
+			foreach ($outdatedPlugins as $plugin) {
+				$this->updatePlugin($plugin, $player);
 			}
 		} else {
 			$this->maniaControl->log('[UPDATE] Checking plugins: COMPLETE, all plugins are up-to-date!');
+			if ($player) {
+				$this->maniaControl->chat->sendInformation('Checking plugins: COMPLETE, all plugins are up-to-date!', $player->login);
+			}
 		}
 	}
 
@@ -354,9 +377,18 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		return $pluginData;
 	}
 
-	private function updatePlugin($pluginData) {
+	/**
+	 * Update pluginfile
+	 *
+	 * @param        $pluginData
+	 * @param Player $player
+	 */
+	private function updatePlugin($pluginData, Player $player = null) {
 		$this->maniaControl->fileReader->loadFile($pluginData->currentVersion->url, function ($updateFileContent, $error) use (&$updateData, &$player, &$pluginData) {
 			$this->maniaControl->log('[UPDATE] Now updating '.$pluginData->name.' ...');
+			if ($player) {
+				$this->maniaControl->chat->sendInformation('Now updating '.$pluginData->name.' ...', $player->login);
+			}
 			$tempDir = ManiaControlDir . '/temp/';
 			if (!is_dir($tempDir)) {
 				mkdir($tempDir);
@@ -387,6 +419,11 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			@rmdir($tempDir);
 
 			$this->maniaControl->log('[UPDATE] Successfully updated '.$pluginData->name.'!');
+			if ($player) {
+				$this->maniaControl->chat->sendSuccess('Successfully updated '.$pluginData->name.'!', $player->login);
+				$this->maniaControl->pluginManager->deactivatePlugin($pluginData->pluginClass);
+				$this->maniaControl->pluginManager->activatePlugin($pluginData->pluginClass);
+			}
 		});
 	}
 
