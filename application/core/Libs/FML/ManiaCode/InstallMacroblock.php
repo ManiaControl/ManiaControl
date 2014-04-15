@@ -3,40 +3,38 @@
 namespace FML\ManiaCode;
 
 /**
- * ManiaCode Element installing a Title Pack
+ * ManiaCode Element installing a Macroblock
  *
  * @author steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
  * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class InstallPack implements Element {
+class InstallMacroblock implements Element {
 	/*
 	 * Protected Properties
 	 */
-	protected $tagName = 'install_pack';
+	protected $tagName = 'install_macroblock';
 	protected $name = '';
 	protected $file = '';
 	protected $url = '';
 
 	/**
-	 * Create a new InstallPack Element
+	 * Create a new InstallMacroblock Element
 	 *
-	 * @param string $name (optional) Pack Name
-	 * @param string $file (optional) Pack File
-	 * @param string $url (optional) Pack Url
-	 * @return \FML\ManiaCode\InstallPack
+	 * @param string $name (optional) Macroblock Name
+	 * @param string $url (optional) Macroblock Url
+	 * @return \FML\ManiaCode\InstallMacroblock
 	 */
-	public static function create($name = null, $file = null, $url = null) {
-		$installPack = new InstallPack($name, $file, $url);
-		return $installPack;
+	public static function create($name = null, $url = null) {
+		$installMacroblock = new InstallMacroblock($name, $url);
+		return $installMacroblock;
 	}
 
 	/**
-	 * Construct a new InstallPack Element
+	 * Construct a new InstallMacroblock Element
 	 *
-	 * @param string $name (optional) Pack Name
-	 * @param string $file (optional) Pack File
-	 * @param string $url (optional) Pack Url
+	 * @param string $name (optional) Macroblock Name
+	 * @param string $url (optional) Macroblock Url
 	 */
 	public function __construct($name = null, $file = null, $url = null) {
 		if ($name !== null) {
@@ -51,10 +49,10 @@ class InstallPack implements Element {
 	}
 
 	/**
-	 * Set the Name of the Pack
+	 * Set the Name of the Macroblock
 	 *
-	 * @param string $name Pack Name
-	 * @return \FML\ManiaCode\InstallPack
+	 * @param string $name Macroblock Name
+	 * @return \FML\ManiaCode\InstallMacroblock
 	 */
 	public function setName($name) {
 		$this->name = (string) $name;
@@ -62,21 +60,21 @@ class InstallPack implements Element {
 	}
 
 	/**
-	 * Set the File of the Pack
+	 * Set the File of the Macroblock
 	 *
-	 * @param string $file Pack File
-	 * @return \FML\ManiaCode\InstallPack
+	 * @param string $file Macroblock File
+	 * @return \FML\ManiaCode\InstallMacroblock
 	 */
 	public function setFile($file) {
 		$this->file = (string) $file;
 		return $this;
 	}
-
+	
 	/**
-	 * Set the Url of the Pack
+	 * Set the Url of the Macroblock
 	 *
-	 * @param string $url Pack Url
-	 * @return \FML\ManiaCode\InstallPack
+	 * @param string $url Macroblock Url
+	 * @return \FML\ManiaCode\InstallMacroblock
 	 */
 	public function setUrl($url) {
 		$this->url = (string) $url;
