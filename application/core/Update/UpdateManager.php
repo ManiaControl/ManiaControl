@@ -3,6 +3,7 @@
 namespace ManiaControl\Update;
 
 use ManiaControl\Admin\AuthenticationManager;
+use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
@@ -11,6 +12,7 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
+use ManiaControl\Plugins\PluginMenu;
 
 /**
  * Manager checking for ManiaControl Core and Plugin Updates
@@ -63,6 +65,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		$this->maniaControl->timerManager->registerTimerListening($this, 'hourlyUpdateCheck', 1000 * 60 * 60 * $updateInterval);
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerJoined');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECT, $this, 'autoUpdate');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 
 		//define Permissions
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_UPDATE, AuthenticationManager::AUTH_LEVEL_ADMIN);
@@ -233,6 +236,28 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	}
 
 	/**
+	 * Handle PlayerManialinkPageAnswer callback
+	 *
+	 * @param array $callback
+	 */
+	public function handleManialinkPageAnswer(array $callback) {
+		$actionId    = $callback[1][2];
+		$update      = (strpos($actionId, PluginMenu::ACTION_PREFIX_UPDATEPLUGIN) === 0);
+
+		$login  = $callback[1][1];
+		$player = $this->maniaControl->playerManager->getPlayer($login);
+
+		if($update) {
+			$pluginClass = substr($actionId, strlen(PluginMenu::ACTION_PREFIX_UPDATEPLUGIN));
+			$newUpdate = $this->checkPluginUpdate($pluginClass);
+			if($newUpdate != false) {
+				$newUpdate->pluginClass = $pluginClass;
+				$this->updatePlugin($newUpdate, $player, true);
+			}
+		}
+	}
+
+	/**
 	 * Get the Build Date of the local Nightly Build Version
 	 *
 	 * @return String $buildTime
@@ -382,9 +407,10 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 *
 	 * @param        $pluginData
 	 * @param Player $player
+	 * @param bool   $reopen
 	 */
-	private function updatePlugin($pluginData, Player $player = null) {
-		$this->maniaControl->fileReader->loadFile($pluginData->currentVersion->url, function ($updateFileContent, $error) use (&$updateData, &$player, &$pluginData) {
+	private function updatePlugin($pluginData, Player $player = null, $reopen = false) {
+		$this->maniaControl->fileReader->loadFile($pluginData->currentVersion->url, function ($updateFileContent, $error) use (&$updateData, &$player, &$pluginData, &$reopen) {
 			$this->maniaControl->log('[UPDATE] Now updating '.$pluginData->name.' ...');
 			if ($player) {
 				$this->maniaControl->chat->sendInformation('Now updating '.$pluginData->name.' ...', $player->login);
@@ -423,6 +449,11 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 				$this->maniaControl->chat->sendSuccess('Successfully updated '.$pluginData->name.'!', $player->login);
 				$this->maniaControl->pluginManager->deactivatePlugin($pluginData->pluginClass);
 				$this->maniaControl->pluginManager->activatePlugin($pluginData->pluginClass);
+
+				if ($reopen) {
+					$menuId = $this->maniaControl->configurator->getMenuId('Plugins');
+					$this->maniaControl->configurator->reopenMenu($player, $menuId);
+				}
 			}
 		});
 	}
