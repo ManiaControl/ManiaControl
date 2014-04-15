@@ -306,6 +306,7 @@ class ManiaControl implements CommandListener, TimerListener {
 		
 		// Load plugins
 		$this->pluginManager->loadPlugins();
+		$this->updateManager->checkPluginsUpdate();
 		
 		// AfterInit callback
 		$this->callbackManager->triggerCallback(CallbackManager::CB_AFTERINIT);
