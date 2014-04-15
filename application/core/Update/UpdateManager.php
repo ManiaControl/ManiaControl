@@ -302,6 +302,17 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		}, true);
 	}
 
+	public function checkPluginsUpdate() {
+		$this->maniaControl->log('[UPDATE] Checking plugins for newer versions ...');
+		foreach($this->maniaControl->pluginManager->getPluginClasses() as $pluginClass) {
+			$pluginData = $this->checkPluginUpdate($pluginClass);
+			if($pluginData != false) {
+				$this->maniaControl->log('[UPDATE] '.$pluginClass.': There is a newer version available: '.$pluginData->currentVersion->version.'!');
+			}
+		}
+		$this->maniaControl->log('[UPDATE] Checking plugins: COMPLETE!');
+	}
+
 	/**
 	 * Check given Plugin Class for Update
 	 *
@@ -322,7 +333,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		}
 		$pluginData    = $pluginVersions[0];
 		$pluginVersion = $pluginClass::getVersion();
-		if ($pluginData->version <= $pluginVersion) {
+		if ($pluginData->currentVersion->version <= $pluginVersion) {
 			return false;
 		}
 		return $pluginData;
