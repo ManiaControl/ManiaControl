@@ -30,7 +30,7 @@ use ManiaControl\Players\Player;
  * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAnswerListener {
-	const SETTING_PERMISSION_INSTALL_PLUGINS = 'Install plugins';
+	const SETTING_PERMISSION_INSTALL_PLUGINS  = 'Install plugins';
 	const ACTION_PREFIX_INSTALLPLUGIN         = 'PluginInstallMenu.Install.';
 
 	/**
