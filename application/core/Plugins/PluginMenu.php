@@ -241,8 +241,10 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 
 		//Display normal Plugin List
 		// Plugin pages
-		$pageFrames = array();
-		$y          = 0.;
+		$pageFrames    = array();
+		$y             = 0.;
+		$pluginUpdates = $this->maniaControl->updateManager->getPluginsUpdates();
+
 		foreach($pluginClasses as $index => $pluginClass) {
 			/** @var Plugin $pluginClass */
 			if (!isset($pageFrame)) {
@@ -319,7 +321,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 				$statusChangeButton->setAction(self::ACTION_PREFIX_ENABLEPLUGIN . $pluginClass);
 			}
 
-			if ($this->maniaControl->updateManager->checkPluginUpdate($pluginClass) != false) {
+			if ($pluginUpdates != false && array_key_exists($pluginClass::getId(), $pluginUpdates)) {
 				$quadUpdate = new Quad_Icons128x128_1();
 				$pluginFrame->add($quadUpdate);
 				$quadUpdate->setSubStyle($quadUpdate::SUBSTYLE_ProfileVehicle);
@@ -335,16 +337,16 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			}
 		}
 
-		$numberOfOutdated = $this->maniaControl->updateManager->getNumberOfOutdatedPlugins();
-		if($numberOfOutdated > 0) {
+		if($pluginUpdates != false) {
 			$updatePluginsButton = new Label_Button();
 			$frame->add($updatePluginsButton);
 			$updatePluginsButton->setHAlign(Control::RIGHT);
-			$updatePluginsButton->setX($width * 0.1);
-			$updatePluginsButton->setY(-35.5);
+			$updatePluginsButton->setX($width * 0.5);
+			$updatePluginsButton->setY(-29);
 			$updatePluginsButton->setZ(2);
-			$updatePluginsButton->setStyle($updatePluginsButton::STYLE_CardButtonSmall);
-			$updatePluginsButton->setText('Update '.$numberOfOutdated.' plugin(s)');
+			$updatePluginsButton->setWidth(10);
+			$updatePluginsButton->setStyle($updatePluginsButton::STYLE_CardButtonSmallS);
+			$updatePluginsButton->setText(count($pluginUpdates).' update(s)');
 			$updatePluginsButton->setAction(self::ACTION_UPDATEPLUGINS);
 		}
 
