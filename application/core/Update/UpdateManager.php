@@ -75,6 +75,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		$this->maniaControl->commandManager->registerCommandListener('checkupdate', $this, 'handle_CheckUpdate', true);
 		$this->maniaControl->commandManager->registerCommandListener('coreupdate', $this, 'handle_CoreUpdate', true);
 		$this->maniaControl->commandManager->registerCommandListener('pluginupdate', $this, 'handle_PluginUpdate', true);
+		$this->maniaControl->commandManager->registerCommandListener('pluginlist', $this, 'handle_PluginList', true);
 
 		$this->currentBuildDate = $this->getNightlyBuildDate();
 	}
@@ -345,6 +346,39 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		}
 
 		$this->checkPluginsUpdate($player);
+	}
+
+	/**
+	 * Handle //pluginlist command
+	 *
+	 * @param array  $chatCallback
+	 * @param Player $player
+	 */
+	public function handle_PluginList(array $chatCallback, Player $player) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_UPDATE)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+			return;
+		}
+
+		$url            = ManiaControl::URL_WEBSERVICE . 'plugins';
+		$dataJson       = FileUtil::loadFile($url);
+		$pluginList     = json_decode($dataJson);
+		if (!$pluginList || !isset($pluginList[0])) {
+			$this->maniaControl->chat->sendInformation('Pluginlist could not be retrieved from the Web Services!', $player->login);
+		}
+
+		$pluginClasses = $this->maniaControl->pluginManager->getPluginClasses();
+		$pluginIds = array();
+		/** @var  Plugin $class */
+		foreach($pluginClasses as $class) {
+			$pluginIds[] = $class::getId();
+		}
+
+		foreach($pluginList as $plugin) {
+			if(!in_array($plugin->id, $pluginIds)) {
+				$this->maniaControl->chat->sendInformation($plugin->name.' (v'.$plugin->currentVersion->version.') - '.$plugin->description, $player->login);
+			}
+		}
 	}
 
 	/**
