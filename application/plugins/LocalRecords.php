@@ -45,6 +45,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 	const SETTING_NOTIFY_BEST_RECORDS = 'Notify Publicly only for the X Best Records';
 	const SETTING_ADJUST_OUTER_BORDER = 'Adjust outer Border to Number of actual Records';
 	const CB_LOCALRECORDS_CHANGE      = 'LocalRecords.Change';
+	const ACTION_SHOW_RECORDSLIST     = 'LocalRecords.ShowRecordsList';
 
 	/*
 	 * Private Properties
@@ -91,6 +92,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_TM_PLAYERFINISH, $this, 'handlePlayerFinish');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
         $this->maniaControl->callbackManager->registerCallbackListener(SettingManager::CB_SETTINGS_CHANGED, $this, 'handleSettingsChanged');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 		$this->maniaControl->commandManager->registerCommandListener('records', $this, 'showRecordsList');
 
 		return true;
@@ -287,6 +289,22 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 	}
 
 	/**
+	 * Handle PlayerManialinkPageAnswer callback
+	 *
+	 * @param array $callback
+	 */
+	public function handleManialinkPageAnswer(array $callback) {
+		$actionId    = $callback[1][2];
+
+		$login  = $callback[1][1];
+		$player = $this->maniaControl->playerManager->getPlayer($login);
+
+		if($actionId == self::ACTION_SHOW_RECORDSLIST) {
+			$this->showRecordsList(array(), $player);
+		}
+	}
+
+	/**
 	 * Shows a ManiaLink list with the local records.
 	 *
 	 * @param array  $chat
@@ -408,6 +426,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$height            = 7. + ($adjustOuterBorder ? count($records) : $lines) * $lineHeight;
 		$backgroundQuad->setSize($width * 1.05, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
+		$backgroundQuad->setAction(self::ACTION_SHOW_RECORDSLIST);
 
 		$titleLabel = new Label();
 		$frame->add($titleLabel);
