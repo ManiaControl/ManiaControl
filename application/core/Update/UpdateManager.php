@@ -416,22 +416,6 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	}
 
 	/**
-	 * Returns the number of outdated plugins active.
-	 * @return int
-	 */
-	public function getNumberOfOutdatedPlugins() {
-		$number = 0;
-		foreach ($this->maniaControl->pluginManager->getPluginClasses() as $pluginClass) {
-			$pluginData = $this->checkPluginUpdate($pluginClass);
-			if ($pluginData != false) {
-				$number++;
-			}
-		}
-
-		return $number;
-	}
-
-	/**
 	 * Check given Plugin Class for Update
 	 *
 	 * @param string $pluginClass
@@ -455,6 +439,42 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			return false;
 		}
 		return $pluginData;
+	}
+
+	/**
+	 * Check for updates
+	 *
+	 * @return mixed
+	 */
+	public function getPluginsUpdates() {
+		$pluginUpdates  = array();
+		$pluginsWS      = array();
+
+		$url            = ManiaControl::URL_WEBSERVICE . 'plugins';
+		$dataJson       = FileUtil::loadFile($url);
+		$pluginVersions = json_decode($dataJson);
+		if (!$pluginVersions || !isset($pluginVersions[0])) {
+			return false;
+		}
+
+		foreach($pluginVersions as $plugin) {
+			$pluginsWS[$plugin->id] = $plugin;
+		}
+
+		/** @var  Plugin $pluginClass */
+		foreach($this->maniaControl->pluginManager->getPluginClasses() as $pluginClass) {
+			$pluginId = $pluginClass::getId();
+			if(array_key_exists($pluginId, $pluginsWS)) {
+				if($pluginsWS[$pluginId]->currentVersion->version > $pluginClass::getVersion()) {
+					$pluginUpdates[$pluginId] = $pluginsWS[$pluginId];
+				}
+			}
+		}
+
+		if(empty($pluginUpdates)) {
+			return false;
+		}
+		return $pluginUpdates;
 	}
 
 	/**
