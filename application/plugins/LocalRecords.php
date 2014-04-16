@@ -44,6 +44,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 	const SETTING_NOTIFY_ONLY_DRIVER  = 'Notify only the Driver on New Records';
 	const SETTING_NOTIFY_BEST_RECORDS = 'Notify Publicly only for the X Best Records';
 	const SETTING_ADJUST_OUTER_BORDER = 'Adjust outer Border to Number of actual Records';
+	const CB_LOCALRECORDS_CHANGE      = 'LocalRecords.Change';
 
 	/*
 	 * Private Properties
@@ -268,6 +269,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 			return;
 		}
 		$this->updateManialink = true;
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_LOCALRECORDS_CHANGE);
 
 		// Announce record
 		$newRecord             = $this->getLocalRecord($map, $player);
