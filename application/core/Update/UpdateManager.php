@@ -78,6 +78,9 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		$this->maniaControl->commandManager->registerCommandListener('pluginlist', $this, 'handle_PluginList', true);
 
 		$this->currentBuildDate = $this->getNightlyBuildDate();
+
+		$this->pluginInstallMenu = new PluginInstallMenu($maniaControl);
+		$this->maniaControl->configurator->addMenu($this->pluginInstallMenu);
 	}
 
 	/**
