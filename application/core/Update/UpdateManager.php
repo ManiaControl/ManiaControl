@@ -516,7 +516,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	}
 
 	/**
-	 * Update pluginfile
+	 * Install pluginfile
 	 *
 	 * @param        $pluginData
 	 * @param Player $player
