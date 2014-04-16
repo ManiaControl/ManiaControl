@@ -3,14 +3,18 @@ use FML\Controls\Control;
 use FML\Controls\Frame;
 use FML\Controls\Label;
 use FML\Controls\Quad;
+use FML\Controls\Quads\Quad_BgsPlayerCard;
 use FML\ManiaLink;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\TimerListener;
+use ManiaControl\Commands\CommandListener;
+use ManiaControl\Settings\SettingManager;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Maps\Map;
 use ManiaControl\Maps\MapManager;
+use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
@@ -22,7 +26,7 @@ use ManiaControl\Plugins\Plugin;
  * @copyright ManiaControl Copyright © 2014 ManiaControl Team
  * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
+class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerListener, Plugin {
 	/**
 	 * Constants
 	 */
@@ -36,6 +40,7 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 	const SETTING_WIDGET_WIDTH        = 'Widget Width';
 	const SETTING_WIDGET_LINESCOUNT   = 'Widget Displayed Lines Count';
 	const SETTING_WIDGET_LINEHEIGHT   = 'Widget Line Height';
+    const SETTING_WIDGET_ENABLE       = 'Enable Local Records Widget';
 	const SETTING_NOTIFY_ONLY_DRIVER  = 'Notify only the Driver on New Records';
 	const SETTING_NOTIFY_BEST_RECORDS = 'Notify Publicly only for the X Best Records';
 	const SETTING_ADJUST_OUTER_BORDER = 'Adjust outer Border to Number of actual Records';
@@ -73,6 +78,7 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_WIDTH, 40.);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_LINESCOUNT, 15);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_LINEHEIGHT, 4.);
+        $this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_ENABLE, false);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_NOTIFY_ONLY_DRIVER, false);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_NOTIFY_BEST_RECORDS, -1);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_ADJUST_OUTER_BORDER, false);
@@ -83,6 +89,8 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_BEGINMAP, $this, 'handleMapBegin');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_TM_PLAYERFINISH, $this, 'handlePlayerFinish');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
+        $this->maniaControl->callbackManager->registerCallbackListener(SettingManager::CB_SETTINGS_CHANGED, $this, 'handleSettingsChanged');
+		$this->maniaControl->commandManager->registerCommandListener('records', $this, 'showRecordsList');
 
 		return true;
 	}
@@ -164,13 +172,28 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 	 * @param $time
 	 */
 	public function handle1Second($time) {
-		if (!$this->updateManialink) {
-			return;
-		}
-		$this->updateManialink = false;
-		$manialink             = $this->buildManialink();
-		$this->maniaControl->manialinkManager->sendManialink($manialink);
-	}
+
+        if (!$this->updateManialink) {
+            return;
+        }
+        $this->updateManialink = false;
+        $manialink             = $this->buildManialink();
+        $this->maniaControl->manialinkManager->sendManialink($manialink);
+    }
+
+
+    public function handleSettingsChanged($class, $settingName, $value) {
+        if (!$class = get_class()) {
+            return;
+        }
+        if ($settingName == 'Enable Local Records Widget' && $value == true) {
+            $this->updateManialink = true;
+        } elseif ($settingName == 'Enable Local Records Widget' && $value == false) {
+            $ml = new ManiaLink(self::MLID_RECORDS);
+            $mltext = $ml->render()->saveXML();
+            $this->maniaControl->manialinkManager->sendManialink($mltext);
+        }
+    }
 
 	/**
 	 * Handle PlayerConnect callback
@@ -259,6 +282,90 @@ class LocalRecordsPlugin implements CallbackListener, TimerListener, Plugin {
 			$message     = '$<' . $player->nickname . '$> ' . $improvement . ' $<$o' . $newRecord->rank . '.$> Local Record: ' . Formatter::formatTime($newRecord->time);
 			$this->maniaControl->chat->sendInformation($message);
 		}
+	}
+
+	/**
+	 * Shows a ManiaLink list with the local records.
+	 *
+	 * @param array  $chat
+	 * @param Player $player
+	 */
+	public function showRecordsList(array $chat, Player $player) {
+		$width  = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
+		$height = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
+
+		// get PlayerList
+		$players = $this->maniaControl->playerManager->getPlayers();
+		$records = $this->getLocalRecords($this->maniaControl->mapManager->getCurrentMap());
+
+		$pagesId = '';
+		if (count($players) > 15) {
+			$pagesId = 'RecordsListPages';
+		}
+
+		//create manialink
+		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
+		$script    = $maniaLink->getScript();
+
+		// Main frame
+		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script, $pagesId);
+		$maniaLink->add($frame);
+
+		// Start offsets
+		$x = -$width / 2;
+		$y = $height / 2;
+
+		// Predefine Description Label
+		$descriptionLabel = $this->maniaControl->manialinkManager->styleManager->getDefaultDescriptionLabel();
+		$frame->add($descriptionLabel);
+
+		// Headline
+		$headFrame = new Frame();
+		$frame->add($headFrame);
+		$headFrame->setY($y - 5);
+		$array = array("No" => $x + 5, "Nickname" => $x + 18, "Login" => $x + 70, "Time" => $x + 101);
+		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
+
+		$i          = 1;
+		$y          = $height / 2 - 10;
+		$pageFrames = array();
+		foreach($records as $listRecord) {
+			if (!isset($pageFrame)) {
+				$pageFrame = new Frame();
+				$frame->add($pageFrame);
+				if (!empty($pageFrames)) {
+					$pageFrame->setVisible(false);
+				}
+				array_push($pageFrames, $pageFrame);
+				$y = $height / 2 - 10;
+				$script->addPage($pageFrame, count($pageFrames), $pagesId);
+			}
+
+			$playerFrame = new Frame();
+			$pageFrame->add($playerFrame);
+
+			if ($i % 2 != 0) {
+				$lineQuad = new Quad_BgsPlayerCard();
+				$playerFrame->add($lineQuad);
+				$lineQuad->setSize($width, 4);
+				$lineQuad->setSubStyle($lineQuad::SUBSTYLE_BgPlayerCardBig);
+				$lineQuad->setZ(0.001);
+			}
+
+			$array = array($i => $x + 5, $listRecord->nickname => $x + 18, $listRecord->login => $x + 70, Formatter::formatTime($listRecord->time) => $x + 101);
+			$this->maniaControl->manialinkManager->labelLine($playerFrame, $array);
+
+			$playerFrame->setY($y);
+
+			$y -= 4;
+			$i++;
+			if ($i % 15 == 0) {
+				unset($pageFrame);
+			}
+		}
+
+		// Render and display xml
+		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player, 'PlayerList');
 	}
 
 	/**
