@@ -295,11 +295,10 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$height = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
 
 		// get PlayerList
-		$players = $this->maniaControl->playerManager->getPlayers();
 		$records = $this->getLocalRecords($this->maniaControl->mapManager->getCurrentMap());
 
 		$pagesId = '';
-		if (count($players) > 15) {
+		if (count($records) > 15) {
 			$pagesId = 'RecordsListPages';
 		}
 
@@ -326,7 +325,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$array = array("No" => $x + 5, "Nickname" => $x + 18, "Login" => $x + 70, "Time" => $x + 101);
 		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
 
-		$i          = 1;
+		$i          = 0;
 		$y          = $height / 2 - 10;
 		$pageFrames = array();
 		foreach($records as $listRecord) {
@@ -341,21 +340,21 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 				$script->addPage($pageFrame, count($pageFrames), $pagesId);
 			}
 
-			$playerFrame = new Frame();
-			$pageFrame->add($playerFrame);
+			$recordFrame = new Frame();
+			$pageFrame->add($recordFrame);
 
 			if ($i % 2 != 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
-				$playerFrame->add($lineQuad);
+				$recordFrame->add($lineQuad);
 				$lineQuad->setSize($width, 4);
 				$lineQuad->setSubStyle($lineQuad::SUBSTYLE_BgPlayerCardBig);
 				$lineQuad->setZ(0.001);
 			}
 
-			$array = array($i => $x + 5, $listRecord->nickname => $x + 18, $listRecord->login => $x + 70, Formatter::formatTime($listRecord->time) => $x + 101);
-			$this->maniaControl->manialinkManager->labelLine($playerFrame, $array);
+			$array = array($listRecord->rank => $x + 5, $listRecord->nickname => $x + 18, $listRecord->login => $x + 70, Formatter::formatTime($listRecord->time) => $x + 101);
+			$this->maniaControl->manialinkManager->labelLine($recordFrame, $array);
 
-			$playerFrame->setY($y);
+			$recordFrame->setY($y);
 
 			$y -= 4;
 			$i++;
