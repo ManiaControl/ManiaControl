@@ -75,7 +75,6 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		$this->maniaControl->commandManager->registerCommandListener('checkupdate', $this, 'handle_CheckUpdate', true);
 		$this->maniaControl->commandManager->registerCommandListener('coreupdate', $this, 'handle_CoreUpdate', true);
 		$this->maniaControl->commandManager->registerCommandListener('pluginupdate', $this, 'handle_PluginUpdate', true);
-		$this->maniaControl->commandManager->registerCommandListener('pluginlist', $this, 'handle_PluginList', true);
 
 		$this->currentBuildDate = $this->getNightlyBuildDate();
 
@@ -247,6 +246,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	public function handleManialinkPageAnswer(array $callback) {
 		$actionId    = $callback[1][2];
 		$update      = (strpos($actionId, PluginMenu::ACTION_PREFIX_UPDATEPLUGIN) === 0);
+		$install     = (strpos($actionId, PluginInstallMenu::ACTION_PREFIX_INSTALLPLUGIN) === 0);
 
 		$login  = $callback[1][1];
 		$player = $this->maniaControl->playerManager->getPlayer($login);
@@ -261,6 +261,18 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 					$newUpdate->pluginClass = $pluginClass;
 					$this->updatePlugin($newUpdate, $player, true);
 				}
+			}
+		}
+
+		if($install) {
+			$pluginId = substr($actionId, strlen(PluginInstallMenu::ACTION_PREFIX_INSTALLPLUGIN));
+
+			$url            = ManiaControl::URL_WEBSERVICE . 'plugins?id=' . $pluginId;
+			$dataJson       = FileUtil::loadFile($url);
+			$pluginVersions = json_decode($dataJson);
+			if ($pluginVersions && isset($pluginVersions[0])) {
+				$pluginData = $pluginVersions[0];
+				$this->installPlugin($pluginData, $player, true);
 			}
 		}
 	}
@@ -349,39 +361,6 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		}
 
 		$this->checkPluginsUpdate($player);
-	}
-
-	/**
-	 * Handle //pluginlist command
-	 *
-	 * @param array  $chatCallback
-	 * @param Player $player
-	 */
-	public function handle_PluginList(array $chatCallback, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_UPDATE)) {
-			$this->maniaControl->authenticationManager->sendNotAllowed($player);
-			return;
-		}
-
-		$url            = ManiaControl::URL_WEBSERVICE . 'plugins';
-		$dataJson       = FileUtil::loadFile($url);
-		$pluginList     = json_decode($dataJson);
-		if (!$pluginList || !isset($pluginList[0])) {
-			$this->maniaControl->chat->sendInformation('Pluginlist could not be retrieved from the Web Services!', $player->login);
-		}
-
-		$pluginClasses = $this->maniaControl->pluginManager->getPluginClasses();
-		$pluginIds = array();
-		/** @var  Plugin $class */
-		foreach($pluginClasses as $class) {
-			$pluginIds[] = $class::getId();
-		}
-
-		foreach($pluginList as $plugin) {
-			if(!in_array($plugin->id, $pluginIds)) {
-				$this->maniaControl->chat->sendInformation($plugin->name.' (v'.$plugin->currentVersion->version.') - '.$plugin->description, $player->login);
-			}
-		}
 	}
 
 	/**
@@ -532,6 +511,97 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 					$menuId = $this->maniaControl->configurator->getMenuId('Plugins');
 					$this->maniaControl->configurator->reopenMenu($player, $menuId);
 				}
+			}
+		});
+	}
+
+	/**
+	 * Update pluginfile
+	 *
+	 * @param        $pluginData
+	 * @param Player $player
+	 * @param bool   $reopen
+	 */
+	private function installPlugin($pluginData, Player $player, $reopen = false) {
+		$this->maniaControl->fileReader->loadFile($pluginData->currentVersion->url, function ($installFileContent, $error) use (&$updateData, &$player, &$pluginData, &$reopen) {
+			$pluginsDirectory = ManiaControlDir . '/plugins/';
+			$pluginFiles = scandir($pluginsDirectory);
+
+			$this->maniaControl->log('[UPDATE] Now installing '.$pluginData->name.' ...');
+			$this->maniaControl->chat->sendInformation('Now installing '.$pluginData->name.' ...', $player->login);
+
+			$tempDir = ManiaControlDir . '/temp/';
+			if (!is_dir($tempDir)) {
+				mkdir($tempDir);
+			}
+			$installFileName = $tempDir . $pluginData->currentVersion->zipfile;
+
+			$bytes = file_put_contents($installFileName, $installFileContent);
+			if (!$bytes || $bytes <= 0) {
+				trigger_error("Couldn't save plugin Zip.");
+				$this->maniaControl->chat->sendError('Install failed: Couldn\'t save plugin zip!', $player->login);
+				return false;
+			}
+			$zip    = new \ZipArchive();
+			$result = $zip->open($installFileName);
+			if ($result !== true) {
+				trigger_error("Couldn't open plugin Zip. ({$result})");
+				$this->maniaControl->chat->sendError('Install failed: Couldn\'t open plugin zip!', $player->login);
+				return false;
+			}
+
+			$zip->extractTo(ManiaControlDir.'/plugins');
+			$zip->close();
+			unlink($installFileName);
+			@rmdir($tempDir);
+
+			$pluginFilesAfter = scandir($pluginsDirectory);
+			$newFiles = array_diff($pluginFilesAfter, $pluginFiles);
+
+			$classesBefore = get_declared_classes();
+			foreach($newFiles as $newFile) {
+				$filePath = $pluginsDirectory . $newFile;
+
+				if (is_file($filePath)) {
+					$success = include_once $filePath;
+					if (!$success) {
+						trigger_error("Error loading File '{$filePath}'!");
+					}
+					continue;
+				}
+
+				$dirPath = $pluginsDirectory . $newFile;
+				if (is_dir($dirPath)) {
+					$this->maniaControl->pluginManager->loadPluginFiles($dirPath);
+					continue;
+				}
+			}
+			$classesAfter = get_declared_classes();
+
+			$newClasses = array_diff($classesAfter, $classesBefore);
+			foreach($newClasses as $className) {
+				if (!$this->maniaControl->pluginManager->isPluginClass($className)) {
+					continue;
+				}
+
+				/** @var Plugin $className */
+				$this->maniaControl->pluginManager->addPluginClass($className);
+				$className::prepare($this->maniaControl);
+
+				if ($this->maniaControl->pluginManager->isPluginActive($className)) {
+					continue;
+				}
+				if (!$this->maniaControl->pluginManager->getSavedPluginStatus($className)) {
+					continue;
+				}
+			}
+
+			$this->maniaControl->log('[UPDATE] Successfully installed '.$pluginData->name.'!');
+			$this->maniaControl->chat->sendSuccess('Successfully installed '.$pluginData->name.'!', $player->login);
+
+			if ($reopen) {
+				$menuId = $this->maniaControl->configurator->getMenuId('Install Plugins');
+				$this->maniaControl->configurator->reopenMenu($player, $menuId);
 			}
 		});
 	}

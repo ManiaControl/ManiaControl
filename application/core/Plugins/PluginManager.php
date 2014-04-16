@@ -119,6 +119,7 @@ class PluginManager {
 			return false;
 		}
 		array_push($this->pluginClasses, $pluginClass);
+		sort($this->pluginClasses);
 		return true;
 	}
 
@@ -221,7 +222,7 @@ class PluginManager {
 	 *
 	 * @param string $directory
 	 */
-	private function loadPluginFiles($directory = '') {
+	public function loadPluginFiles($directory = '') {
 		$pluginFiles = scandir($directory);
 		foreach($pluginFiles as $pluginFile) {
 			if (stripos($pluginFile, '.') === 0) {
@@ -315,7 +316,7 @@ class PluginManager {
 	 * @param string $className
 	 * @return bool
 	 */
-	private function getSavedPluginStatus($className) {
+	public function getSavedPluginStatus($className) {
 		$mysqli            = $this->maniaControl->database->mysqli;
 		$pluginStatusQuery = "SELECT `active` FROM `" . self::TABLE_PLUGINS . "`
 				WHERE `className` = ?;";
