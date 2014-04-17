@@ -5,12 +5,15 @@ use FML\Controls\Control;
 use FML\Controls\Frame;
 use FML\Controls\Label;
 use FML\Controls\Quad;
+use FML\Controls\Quads\Quad_BgsPlayerCard;
 use FML\ManiaLink;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\TimerListener;
+use ManiaControl\Commands\CommandListener;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
+use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Maps\MapManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
@@ -23,7 +26,7 @@ use ManiaControl\Plugins\Plugin;
  * @copyright ManiaControl Copyright © 2014 ManiaControl Team
  * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class Dedimania implements CallbackListener, TimerListener, Plugin {
+class Dedimania implements CallbackListener, CommandListener, TimerListener, Plugin {
 	/**
 	 * Constants
 	 */
@@ -48,6 +51,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	const SETTING_WIDGET_LINEHEIGHT     = 'Widget Line Height';
 	const SETTING_DEDIMANIA_CODE        = '$l[http://dedimania.net/tm2stats/?do=register]Dedimania Code for ';
 	const CB_DEDIMANIA_CHANGE           = 'Dedimania.Change';
+	const ACTION_SHOW_DEDIRECORDSLIST       = 'Dedimania.ShowDediRecordsList';
 
 	/**
 	 * Private Properties
@@ -99,9 +103,11 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECT, $this, 'handlePlayerDisconnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_TM_PLAYERCHECKPOINT, $this, 'handlePlayerCheckpoint');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_TM_PLAYERFINISH, $this, 'handlePlayerFinished');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 		$this->maniaControl->timerManager->registerTimerListening($this, 'updateEverySecond', 1000);
 		$this->maniaControl->timerManager->registerTimerListening($this, 'handleEveryMinute', 1000 * 60);
 		$this->maniaControl->timerManager->registerTimerListening($this, 'updatePlayerList', 1000 * 60 * 3);
+		$this->maniaControl->commandManager->registerCommandListener('dedirecs', $this, 'showDediRecordsList');
 
 		// Open session
 		$serverInfo    = $this->maniaControl->server->getInfo();
@@ -457,6 +463,110 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 
 				$this->updateManialink = true;
 			}
+		}
+	}
+
+	/**
+	 * Shows a ManiaLink list with the local records.
+	 *
+	 * @param array  $chat
+	 * @param Player $player
+	 */
+	public function showDediRecordsList(array $chat, Player $player) {
+		$width  = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
+		$height = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
+
+		// get PlayerList
+		$records = $this->dedimaniaData->records;
+		if(!$records) {
+			$this->maniaControl->chat->sendInformation('There are no Dedimania records on this map!');
+			return;
+		}
+
+		$pagesId = '';
+		if (count($records) > 15) {
+			$pagesId = 'DediRecordsListPages';
+		}
+
+		//create manialink
+		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
+		$script    = $maniaLink->getScript();
+
+		// Main frame
+		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script, $pagesId);
+		$maniaLink->add($frame);
+
+		// Start offsets
+		$x = -$width / 2;
+		$y = $height / 2;
+
+		// Predefine Description Label
+		$descriptionLabel = $this->maniaControl->manialinkManager->styleManager->getDefaultDescriptionLabel();
+		$frame->add($descriptionLabel);
+
+		// Headline
+		$headFrame = new Frame();
+		$frame->add($headFrame);
+		$headFrame->setY($y - 5);
+		$array = array("Rank" => $x + 5, "Nickname" => $x + 18, "Login" => $x + 70, "Time" => $x + 101);
+		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
+
+		$i          = 0;
+		$y          = $height / 2 - 10;
+		$pageFrames = array();
+		foreach($records as $listRecord) {
+			if (!isset($pageFrame)) {
+				$pageFrame = new Frame();
+				$frame->add($pageFrame);
+				if (!empty($pageFrames)) {
+					$pageFrame->setVisible(false);
+				}
+				array_push($pageFrames, $pageFrame);
+				$y = $height / 2 - 10;
+				$script->addPage($pageFrame, count($pageFrames), $pagesId);
+			}
+
+			$recordFrame = new Frame();
+			$pageFrame->add($recordFrame);
+
+			if ($i % 2 != 0) {
+				$lineQuad = new Quad_BgsPlayerCard();
+				$recordFrame->add($lineQuad);
+				$lineQuad->setSize($width, 4);
+				$lineQuad->setSubStyle($lineQuad::SUBSTYLE_BgPlayerCardBig);
+				$lineQuad->setZ(0.001);
+			}
+
+			if(strlen($listRecord->nickName) < 2) $listRecord->nickName = $listRecord->login;
+			$array = array($listRecord->rank => $x + 5, '$fff'.$listRecord->nickName => $x + 18, $listRecord->login => $x + 70, Formatter::formatTime($listRecord->best) => $x + 101);
+			$this->maniaControl->manialinkManager->labelLine($recordFrame, $array);
+
+			$recordFrame->setY($y);
+
+			$y -= 4;
+			$i++;
+			if ($i % 15 == 0) {
+				unset($pageFrame);
+			}
+		}
+
+		// Render and display xml
+		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player, 'DediRecordsList');
+	}
+
+	/**
+	 * Handle PlayerManialinkPageAnswer callback
+	 *
+	 * @param array $callback
+	 */
+	public function handleManialinkPageAnswer(array $callback) {
+		$actionId    = $callback[1][2];
+
+		$login  = $callback[1][1];
+		$player = $this->maniaControl->playerManager->getPlayer($login);
+
+		if($actionId == self::ACTION_SHOW_DEDIRECORDSLIST) {
+			$this->showDediRecordsList(array(), $player);
 		}
 	}
 
