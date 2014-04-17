@@ -8,9 +8,9 @@ use ManiaControl\ManiaExchange\MXMapInfo;
 /**
  * Map Class
  *
- * @author kremsy & steeffeen
+ * @author    kremsy & steeffeen
  * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Map {
 	/*
@@ -22,6 +22,7 @@ class Map {
 	public $uid = '';
 	public $fileName = '';
 	public $environment = '';
+	public $authorTime = -1;
 	public $goldTime = -1;
 	public $copperPrice = -1;
 	public $mapType = '';
@@ -38,6 +39,7 @@ class Map {
 	public $titleUid = '';
 	public $startTime = -1;
 	public $lastUpdate = 0;
+
 
 	/**
 	 * Create a new Map Object from Rpc Data
@@ -57,6 +59,7 @@ class Map {
 		$this->fileName      = $mpMap->fileName;
 		$this->authorLogin   = $mpMap->author;
 		$this->environment   = $mpMap->environnement;
+		$this->authorTime    = $mpMap->authorTime;
 		$this->goldTime      = $mpMap->goldTime;
 		$this->copperPrice   = $mpMap->copperPrice;
 		$this->mapType       = $mpMap->mapType;
