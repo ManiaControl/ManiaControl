@@ -345,7 +345,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$headFrame = new Frame();
 		$frame->add($headFrame);
 		$headFrame->setY($y - 5);
-		$array = array("No" => $x + 5, "Nickname" => $x + 18, "Login" => $x + 70, "Time" => $x + 101);
+		$array = array("Rank" => $x + 5, "Nickname" => $x + 18, "Login" => $x + 70, "Time" => $x + 101);
 		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
 
 		$i          = 0;
