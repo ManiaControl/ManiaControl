@@ -47,6 +47,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	const SETTING_WIDGET_LINESCOUNT     = 'Widget Displayed Lines Count';
 	const SETTING_WIDGET_LINEHEIGHT     = 'Widget Line Height';
 	const SETTING_DEDIMANIA_CODE        = '$l[http://dedimania.net/tm2stats/?do=register]Dedimania Code for ';
+	const CB_DEDIMANIA_CHANGE           = 'Dedimania.Change';
 
 	/**
 	 * Private Properties
@@ -440,6 +441,8 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 					$newRecord = $record;
 					break;
 				}
+
+				$this->maniaControl->callbackManager->triggerCallback(self::CB_DEDIMANIA_CHANGE, array($newRecord));
 
 				// Announce record
 				if ($oldRecord->nullRecord || $newRecord->rank < $oldRecord->rank) {
