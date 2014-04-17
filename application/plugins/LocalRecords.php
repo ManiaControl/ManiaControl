@@ -175,13 +175,15 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 	 * @param $time
 	 */
 	public function handle1Second($time) {
-
         if (!$this->updateManialink) {
             return;
         }
+
         $this->updateManialink = false;
-        $manialink             = $this->buildManialink();
-        $this->maniaControl->manialinkManager->sendManialink($manialink);
+		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_ENABLE)) {
+			$manialink             = $this->buildManialink();
+			$this->maniaControl->manialinkManager->sendManialink($manialink);
+		}
     }
 
 
@@ -271,10 +273,11 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 			return;
 		}
 		$this->updateManialink = true;
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_LOCALRECORDS_CHANGE);
 
 		// Announce record
 		$newRecord             = $this->getLocalRecord($map, $player);
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_LOCALRECORDS_CHANGE, array($newRecord));
+
 		$notifyOnlyDriver      = $this->maniaControl->settingManager->getSetting($this, self::SETTING_NOTIFY_ONLY_DRIVER);
 		$notifyOnlyBestRecords = $this->maniaControl->settingManager->getSetting($this, self::SETTING_NOTIFY_BEST_RECORDS);
 		if ($notifyOnlyDriver || $notifyOnlyBestRecords > 0 && $newRecord->rank > $notifyOnlyBestRecords) {
