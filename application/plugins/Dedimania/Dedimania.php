@@ -791,7 +791,7 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	 */
 	public function getDedimaniaRecords() {
 		if (!$this->dedimaniaData->records) {
-			return new RecordData(null);
+			return null;
 		}
 		$records = $this->dedimaniaData->records;
 		return $records;
