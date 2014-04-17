@@ -374,7 +374,8 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 				$lineQuad->setZ(0.001);
 			}
 
-			$array = array($listRecord->rank => $x + 5, $listRecord->nickname => $x + 18, $listRecord->login => $x + 70, Formatter::formatTime($listRecord->time) => $x + 101);
+			if(strlen($listRecord->nickname) < 2) $listRecord->nickname = $listRecord->login;
+			$array = array($listRecord->rank => $x + 5, '$fff'.$listRecord->nickname => $x + 18, $listRecord->login => $x + 70, Formatter::formatTime($listRecord->time) => $x + 101);
 			$this->maniaControl->manialinkManager->labelLine($recordFrame, $array);
 
 			$recordFrame->setY($y);
