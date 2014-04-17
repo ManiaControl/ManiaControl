@@ -50,8 +50,9 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 	const SETTING_WIDGET_LINESCOUNT     = 'Widget Displayed Lines Count';
 	const SETTING_WIDGET_LINEHEIGHT     = 'Widget Line Height';
 	const SETTING_DEDIMANIA_CODE        = '$l[http://dedimania.net/tm2stats/?do=register]Dedimania Code for ';
-	const CB_DEDIMANIA_CHANGE           = 'Dedimania.Change';
-	const ACTION_SHOW_DEDIRECORDSLIST       = 'Dedimania.ShowDediRecordsList';
+	const CB_DEDIMANIA_CHANGED          = 'Dedimania.Changed';
+	const CB_DEDIMANIA_UPDATED          = 'Dedimania.Updated';
+	const ACTION_SHOW_DEDIRECORDSLIST   = 'Dedimania.ShowDediRecordsList';
 
 	/**
 	 * Private Properties
@@ -448,7 +449,7 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 					break;
 				}
 
-				$this->maniaControl->callbackManager->triggerCallback(self::CB_DEDIMANIA_CHANGE, array($newRecord));
+				$this->maniaControl->callbackManager->triggerCallback(self::CB_DEDIMANIA_CHANGED, $newRecord);
 
 				// Announce record
 				if ($oldRecord->nullRecord || $newRecord->rank < $oldRecord->rank) {
@@ -626,6 +627,7 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 				}
 			}
 			$this->updateManialink = true;
+			$this->maniaControl->callbackManager->triggerCallback(self::CB_DEDIMANIA_UPDATED, $this->dedimaniaData->records);
 			return true;
 		}, $content, true);
 
@@ -757,6 +759,7 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 	 */
 	private function updateDedimaniaRecordRanks() {
 		if ($this->dedimaniaData->getRecordCount() == 0) {
+			$this->maniaControl->callbackManager->triggerCallback(self::CB_DEDIMANIA_UPDATED, $this->dedimaniaData->records);
 			return;
 		}
 		//TODO move into class dedimania data
@@ -770,6 +773,7 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 			$record->rank = $rank;
 			$rank++;
 		}
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_DEDIMANIA_UPDATED, $this->dedimaniaData->records);
 	}
 
 	/**
