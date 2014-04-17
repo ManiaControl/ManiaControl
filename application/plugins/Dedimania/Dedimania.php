@@ -785,6 +785,19 @@ class Dedimania implements CallbackListener, TimerListener, Plugin {
 	}
 
 	/**
+	 * Function to retrieve the dedimania records on the current map
+	 *
+	 * @return array|RecordData
+	 */
+	public function getDedimaniaRecords() {
+		if (!$this->dedimaniaData->records) {
+			return new RecordData(null);
+		}
+		$records = $this->dedimaniaData->records;
+		return $records;
+	}
+
+	/**
 	 * Get the dedimania record of the given login
 	 *
 	 * @param string $login
