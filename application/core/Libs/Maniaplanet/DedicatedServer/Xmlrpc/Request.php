@@ -11,6 +11,12 @@ if(extension_loaded('xmlrpc'))
 {
 	abstract class Request
 	{
+		private static $options = array(
+			'encoding' => 'utf-8',
+			'escaping' => 'markup',
+			'verbosity' => 'no_white_space'
+		);
+
 		/**
 		 * @param string $method
 		 * @param mixed[] $args
@@ -18,7 +24,7 @@ if(extension_loaded('xmlrpc'))
 		 */
 		static function encode($method, $args)
 		{
-			return xmlrpc_encode_request($method, $args, array('encoding' => 'utf-8', 'verbosity' => 'no_white_space'));
+			return xmlrpc_encode_request($method, $args, self::$options);
 		}
 
 		/**
