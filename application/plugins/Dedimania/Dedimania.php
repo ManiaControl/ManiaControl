@@ -22,9 +22,9 @@ use ManiaControl\Plugins\Plugin;
 /**
  * ManiaControl Dedimania Plugin
  *
- * @author kremsy and steeffeen
+ * @author    kremsy and steeffeen
  * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Dedimania implements CallbackListener, CommandListener, TimerListener, Plugin {
 	/**
@@ -43,6 +43,7 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 	const DEDIMANIA_UPDATESERVERPLAYERS = 'dedimania.UpdateServerPlayers';
 	const DEDIMANIA_SETCHALLENGETIMES   = 'dedimania.SetChallengeTimes';
 	const DEDIMANIA_WARNINGSANDTTR2     = 'dedimania.WarningsAndTTR2';
+	const SETTING_WIDGET_ENABLE         = 'Enable Dedimania Widget';
 	const SETTING_WIDGET_TITLE          = 'Widget Title';
 	const SETTING_WIDGET_POSX           = 'Widget Position: X';
 	const SETTING_WIDGET_POSY           = 'Widget Position: Y';
@@ -91,6 +92,7 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 			throw new \Exception("You need to activate the PHP extension xmlrpc to run this Plugin!");
 		}
 
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_ENABLE, true);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_TITLE, 'Dedimania');
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSX, -139);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSY, 7);
@@ -172,8 +174,10 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 
 		$this->updateManialink = false;
 
-		$manialink = $this->buildManialink();
-		$this->maniaControl->manialinkManager->sendManialink($manialink);
+		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_ENABLE)) {
+			$manialink = $this->buildManialink();
+			$this->maniaControl->manialinkManager->sendManialink($manialink);
+		}
 	}
 
 	/**
@@ -479,7 +483,7 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 
 		// get PlayerList
 		$records = $this->dedimaniaData->records;
-		if(!$records) {
+		if (!$records) {
 			$this->maniaControl->chat->sendInformation('There are no Dedimania records on this map!');
 			return;
 		}
@@ -538,8 +542,10 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 				$lineQuad->setZ(0.001);
 			}
 
-			if(strlen($listRecord->nickName) < 2) $listRecord->nickName = $listRecord->login;
-			$array = array($listRecord->rank => $x + 5, '$fff'.$listRecord->nickName => $x + 18, $listRecord->login => $x + 70, Formatter::formatTime($listRecord->best) => $x + 101);
+			if (strlen($listRecord->nickName) < 2) {
+				$listRecord->nickName = $listRecord->login;
+			}
+			$array = array($listRecord->rank => $x + 5, '$fff' . $listRecord->nickName => $x + 18, $listRecord->login => $x + 70, Formatter::formatTime($listRecord->best) => $x + 101);
 			$this->maniaControl->manialinkManager->labelLine($recordFrame, $array);
 
 			$recordFrame->setY($y);
@@ -561,12 +567,12 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 	 * @param array $callback
 	 */
 	public function handleManialinkPageAnswer(array $callback) {
-		$actionId    = $callback[1][2];
+		$actionId = $callback[1][2];
 
 		$login  = $callback[1][1];
 		$player = $this->maniaControl->playerManager->getPlayer($login);
 
-		if($actionId == self::ACTION_SHOW_DEDIRECORDSLIST) {
+		if ($actionId == self::ACTION_SHOW_DEDIRECORDSLIST) {
 			$this->showDediRecordsList(array(), $player);
 		}
 	}
@@ -591,7 +597,7 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 		$playerInfo = $this->getPlayerList();
 		$mapInfo    = $this->getMapInfo();
 		$gameMode   = $this->getGameModeString();
-		
+
 		if (!$serverInfo || !$playerInfo || !$mapInfo || !$gameMode) {
 			return false;
 		}
@@ -938,9 +944,9 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 	 * @return String
 	 */
 	private function getGameModeString() {
-		$gameMode = $this->maniaControl->server->getGameMode();
+		$gameMode           = $this->maniaControl->server->getGameMode();
 		$scriptNameResponse = $this->maniaControl->client->getScriptName();
-		$scriptName = str_replace('.Script.txt', '', $scriptNameResponse["CurrentValue"]);
+		$scriptName         = str_replace('.Script.txt', '', $scriptNameResponse["CurrentValue"]);
 		if ($gameMode === null) {
 			trigger_error("Couldn't retrieve game mode. ");
 			return null;
@@ -948,8 +954,11 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 		switch($gameMode) {
 			case 0:
 			{
-			if($scriptName == 'Rounds' || $scriptName == 'Cup' || $scriptName == 'Team') { return 'Rounds'; }
-			else if($scriptName == 'TimeAttack' || $scriptName == 'Laps' || $scriptName == 'TeamAttack'){ return 'TA'; }
+				if ($scriptName == 'Rounds' || $scriptName == 'Cup' || $scriptName == 'Team') {
+					return 'Rounds';
+				} else if ($scriptName == 'TimeAttack' || $scriptName == 'Laps' || $scriptName == 'TeamAttack') {
+					return 'TA';
+				}
 			}
 			case 1:
 			case 3:
@@ -1011,7 +1020,7 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 
 	/**
 	 * Build Manialink
-	 * 
+	 *
 	 * @return \FML\ManiaLink
 	 */
 	private function buildManialink() {
