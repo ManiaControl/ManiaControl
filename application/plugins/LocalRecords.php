@@ -281,12 +281,16 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$notifyOnlyDriver      = $this->maniaControl->settingManager->getSetting($this, self::SETTING_NOTIFY_ONLY_DRIVER);
 		$notifyOnlyBestRecords = $this->maniaControl->settingManager->getSetting($this, self::SETTING_NOTIFY_BEST_RECORDS);
 		if ($notifyOnlyDriver || $notifyOnlyBestRecords > 0 && $newRecord->rank > $notifyOnlyBestRecords) {
-			$improvement = ((!$oldRecord || $newRecord->rank < $oldRecord->rank) ? 'gained the' : 'improved Your');
+			$improvement = ((!$oldRecord || $newRecord->rank < $oldRecord->rank) ? 'gained the' : 'improved your');
 			$message     = 'You ' . $improvement . ' $<$o' . $newRecord->rank . '.$> Local Record: ' . Formatter::formatTime($newRecord->time);
+			if($oldRecord) $oldRank = ($improvement == 'improved your') ? '' : $oldRecord->rank.'. ';
+			if($oldRecord) $message .= ' ('.$oldRank.'-'.Formatter::formatTime(($oldRecord->time-$newRecord->time)).')';
 			$this->maniaControl->chat->sendInformation($message, $player->login);
 		} else {
 			$improvement = ((!$oldRecord || $newRecord->rank < $oldRecord->rank) ? 'gained the' : 'improved the');
 			$message     = '$<' . $player->nickname . '$> ' . $improvement . ' $<$o' . $newRecord->rank . '.$> Local Record: ' . Formatter::formatTime($newRecord->time);
+			if($oldRecord) $oldRank = ($improvement == 'improved the') ? '' : $oldRecord->rank.'. ';
+			if($oldRecord) $message .= ' ('.$oldRank.'-'.Formatter::formatTime(($oldRecord->time-$newRecord->time)).')';
 			$this->maniaControl->chat->sendInformation($message);
 		}
 	}
