@@ -302,20 +302,4 @@ class MessageException extends Exception
 	const RESPONSE_TOO_LARGE = 2;
 }
 
-class FaultException extends Exception
-{
-	static function create($faultString, $faultCode)
-	{
-		switch($faultString)
-		{
-			case 'Login unknown.':
-				return new LoginUnknownException($faultString, $faultCode);
-		}
-
-		return new self($faultString, $faultCode);
-	}
-}
-
-class LoginUnknownException extends FaultException {}
-
 ?>
