@@ -20,19 +20,19 @@ class Connection
 
 	/**
 	 * XML-RPC client instance
-	 * @var Xmlrpc\ClientMulticall
+	 * @var Xmlrpc\GbxRemote
 	 */
 	protected $xmlrpcClient;
 
 	/**
 	 * @param string $host
 	 * @param int $port
-	 * @param int $timeout
+	 * @param int $timeout (in ms)
 	 * @param string $user
 	 * @param string $password
 	 * @return Connection
 	 */
-	static function factory($host = '127.0.0.1', $port = 5000, $timeout = 5, $user = 'SuperAdmin', $password = 'SuperAdmin')
+	static function factory($host = '127.0.0.1', $port = 5000, $timeout = 50, $user = 'SuperAdmin', $password = 'SuperAdmin')
 	{
 		$key = $host.':'.$port;
 		if(!isset(self::$instances[$key]))
@@ -57,6 +57,24 @@ class Connection
 	}
 
 	/**
+	 * Change client timeouts
+	 * @param int $read read timeout (in ms), null or 0 to leave unchanged
+	 * @param int $write write timeout (in ms), null or 0 to leave unchanged
+	 */
+	function setTimeouts($read=null, $write=null)
+	{
+		$this->xmlrpcClient->setTimeouts($read, $write);
+	}
+
+	/**
+	 * @return int Network idle time in seconds
+	 */
+	function getIdleTime()
+	{
+		return $this->xmlrpcClient->getIdleTime();
+	}
+
+	/**
 	 * @param string $host
 	 * @param int $port
 	 * @param int $timeout
@@ -65,7 +83,7 @@ class Connection
 	 */
 	protected function __construct($host, $port, $timeout, $user, $password)
 	{
-		$this->xmlrpcClient = new Xmlrpc\ClientMulticall($host, $port, $timeout);
+		$this->xmlrpcClient = new Xmlrpc\GbxRemote($host, $port, array('open' => $timeout));
 		$this->authenticate($user, $password);
 		$this->setApiVersion('2013-04-16');
 	}
@@ -86,9 +104,7 @@ class Connection
 	 */
 	function executeCallbacks()
 	{
-		$this->xmlrpcClient->readCallbacks();
-		$calls = $this->xmlrpcClient->getCallbackResponses();
-		return $calls;
+		return $this->xmlrpcClient->getCallbacks();
 	}
 
 	/**
@@ -97,7 +113,7 @@ class Connection
 	 */
 	function executeMulticall()
 	{
-		$this->xmlrpcClient->multiqueryIgnoreResult();
+		$this->xmlrpcClient->multiquery();
 	}
 
 	/**
@@ -114,9 +130,7 @@ class Connection
 		}
 		else
 		{
-			array_unshift($params, $methodName);
-			call_user_func_array(array($this->xmlrpcClient, 'query'), $params);
-			return $this->xmlrpcClient->getResponse();
+			return $this->xmlrpcClient->query($methodName, $params);
 		}
 	}
 
@@ -227,9 +241,9 @@ class Connection
 			throw new InvalidArgumentException('vote->cmdParam = '.print_r($vote->cmdParam, true));
 		}
 
-		$tmpCmd = new Xmlrpc\Request($vote->cmdName, $vote->cmdParam);
+		$tmpCmd = Xmlrpc\Request::encode($vote->cmdName, $vote->cmdName);
 
-		return $this->execute(ucfirst(__FUNCTION__).'Ex', array($tmpCmd->getXml(), $ratio, $timeout, $voters), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__).'Ex', array($tmpCmd, $ratio, $timeout, $voters), $multicall);
 	}
 
 	/**
@@ -264,9 +278,9 @@ class Connection
 			throw new InvalidArgumentException('voters = '.print_r($voters, true));
 		}
 
-		$tmpCmd = new Xmlrpc\Request('Kick', array($login));
+		$tmpCmd = Xmlrpc\Request::encode('Kick', array($login));
 
-		return $this->execute('CallVoteEx', array($tmpCmd->getXml(), $ratio, $timeout, $voters), $multicall);
+		return $this->execute('CallVoteEx', array($tmpCmd, $ratio, $timeout, $voters), $multicall);
 	}
 
 	/**
@@ -301,9 +315,9 @@ class Connection
 			throw new InvalidArgumentException('voters = '.print_r($voters, true));
 		}
 
-		$tmpCmd = new Xmlrpc\Request('Ban', array($login));
+		$tmpCmd = Xmlrpc\Request::encode('Ban', array($login));
 
-		return $this->execute('CallVoteEx', array($tmpCmd->getXml(), $ratio, $timeout, $voters), $multicall);
+		return $this->execute('CallVoteEx', array($tmpCmd, $ratio, $timeout, $voters), $multicall);
 	}
 
 	/**
@@ -333,9 +347,9 @@ class Connection
 			throw new InvalidArgumentException('voters = '.print_r($voters, true));
 		}
 
-		$tmpCmd = new Xmlrpc\Request('RestartMap', array());
+		$tmpCmd = Xmlrpc\Request::encode('RestartMap', array());
 
-		return $this->execute('CallVoteEx', array($tmpCmd->getXml(), $ratio, $timeout, $voters), $multicall);
+		return $this->execute('CallVoteEx', array($tmpCmd, $ratio, $timeout, $voters), $multicall);
 	}
 
 	/**
@@ -365,9 +379,9 @@ class Connection
 			throw new InvalidArgumentException('voters = '.print_r($voters, true));
 		}
 
-		$tmpCmd = new Xmlrpc\Request('NextMap', array());
+		$tmpCmd = Xmlrpc\Request::encode('NextMap', array());
 
-		return $this->execute('CallVoteEx', array($tmpCmd->getXml(), $ratio, $timeout, $voters), $multicall);
+		return $this->execute('CallVoteEx', array($tmpCmd, $ratio, $timeout, $voters), $multicall);
 	}
 
 	/**
@@ -832,11 +846,11 @@ class Connection
 	{
 		return $this->execute(ucfirst(__FUNCTION__));
 	}
-	
+
 	/**
-	 * Opens a link in the client with the specified players. 
-	 * The parameters are the login of the client to whom the link to open is sent, the link url, and the 'LinkType' 
-	 * (0 in the external browser, 1 in the internal manialink browser). 
+	 * Opens a link in the client with the specified players.
+	 * The parameters are the login of the client to whom the link to open is sent, the link url, and the 'LinkType'
+	 * (0 in the external browser, 1 in the internal manialink browser).
 	 * Login can be a single login or a list of comma-separated logins. Only available to
 	 * @param Structures\Player|string|mixed[] $player
 	 * @param string $link
@@ -859,7 +873,7 @@ class Connection
 		{
 			throw new InvalidArgumentException('linkType = '.print_r($linkType, true));
 		}
-		
+
 		return $this->execute('SendOpenLinkToLogin', array($login, $link, $linkType), $multicall);
 	}
 
@@ -1229,13 +1243,7 @@ class Connection
 		}
 
 		$inputData = file_get_contents($localFilename);
-
 		$data = new Xmlrpc\Base64($inputData);
-
-		if(strlen($data->getXml()) > 1024 * 1024 - 15)
-		{
-			throw new InvalidArgumentException('file is too big');
-		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($filename, $data), $multicall);
 	}
@@ -1256,11 +1264,6 @@ class Connection
 		}
 
 		$data = new Xmlrpc\Base64($data);
-
-		if(strlen($data->getXml()) > 1024 * 1024 - 15)
-		{
-			throw new InvalidArgumentException('data are too big');
-		}
 
 		return $this->execute('WriteFile', array($filename, $data), $multicall);
 	}
@@ -1284,13 +1287,8 @@ class Connection
 		{
 			throw new InvalidArgumentException('filename = '.print_r($filename, true));
 		}
-		if(filesize($filename) > 4 * 1024)
-		{
-			throw new InvalidArgumentException('file is too big');
-		}
 
 		$inputData = file_get_contents($filename);
-
 		$data = new Xmlrpc\Base64($inputData);
 
 		return $this->execute('TunnelSendDataToLogin', array($login, $data), $multicall);
@@ -1541,9 +1539,9 @@ class Connection
 
 		return $this->execute(ucfirst(__FUNCTION__), array($downloadRate, $uploadRate), $multicall);
 	}
-	
+
 	/**
-	 * Returns the list of tags and associated values set on this server. 
+	 * Returns the list of tags and associated values set on this server.
 	 * The list is an array of structures {string Name, string Value}.
 	 * Only available to Admin.
 	 * @return array
@@ -1552,10 +1550,10 @@ class Connection
 	{
 		return $this->execute(ucfirst(__FUNCTION__));
 	}
-	
+
 	/**
-	 * Set a tag and its value on the server. This method takes two parameters. 
-	 * The first parameter specifies the name of the tag, and the second one its value.  
+	 * Set a tag and its value on the server. This method takes two parameters.
+	 * The first parameter specifies the name of the tag, and the second one its value.
 	 * Only available to Admin.
 	 * @param string $key
 	 * @param string $value
@@ -1575,9 +1573,9 @@ class Connection
 		}
 		return $this->execute(ucfirst(__FUNCTION__), array($key, $value), $multicall);
 	}
-	
+
 	/**
-	 * Unset the tag with the specified name on the server. 
+	 * Unset the tag with the specified name on the server.
 	 * Only available to Admin.
 	 * @param string $key
 	 * @param bool $multicall
@@ -1592,9 +1590,9 @@ class Connection
 		}
 		return $this->execute(ucfirst(__FUNCTION__), array($key), $multicall);
 	}
-	
+
 	/**
-	 * Reset all tags on the server. 
+	 * Reset all tags on the server.
 	 * Only available to Admin.
 	 * @param bool $multicall
 	 * @return bool
@@ -1833,7 +1831,7 @@ class Connection
 	}
 
 	/**
-	 * Get whether the server if a lobby, the number and maximum number of players currently managed by it. 
+	 * Get whether the server if a lobby, the number and maximum number of players currently managed by it.
 	 * The struct returned contains 4 fields IsLobby, LobbyPlayers, LobbyMaxPlayers, and LobbyPlayersLevel.
 	 * @return Structures\LobbyInfo
 	 */
@@ -1842,9 +1840,9 @@ class Connection
 		$result = $this->execute(ucfirst(__FUNCTION__));
 		return Structures\LobbyInfo::fromArray($result);
 	}
-	
+
 	/**
-	 * Customize the clients 'leave server' dialog box. 
+	 * Customize the clients 'leave server' dialog box.
 	 * Parameters are: ManialinkPage, SendToServer url '#qjoin=login@title',
 	 * ProposeAddToFavorites and DelayQuitButton (in milliseconds).
 	 * Only available to Admin.
@@ -2077,7 +2075,7 @@ class Connection
 	 * Returns a replay containing the data needed to validate the current best time of the player.
 	 * The parameter is the login of the player.
 	 * @param Structures\Player|string $player
-	 * @return string base64 encoded
+	 * @return string
 	 * @throws InvalidArgumentException
 	 */
 	function getValidationReplay($player)
@@ -2086,7 +2084,7 @@ class Connection
 		{
 			throw new InvalidArgumentException('player must be set');
 		}
-		return $this->execute(ucfirst(__FUNCTION__), array($login));
+		return $this->execute(ucfirst(__FUNCTION__), array($login))->scalar;
 	}
 
 	/**
@@ -2639,7 +2637,7 @@ class Connection
 	{
 		return $this->execute(ucfirst(__FUNCTION__), array($rules), $multicall);
 	}
-	
+
 	/**
 	 * Send commands to the mode script.
 	 * Only available to Admin.
@@ -2651,9 +2649,9 @@ class Connection
 	{
 		return $this->execute(ucfirst(__FUNCTION__), array($commands), $multicall);
 	}
-	
+
 	/**
-	 * Change the settings and send commands to the mode script. 
+	 * Change the settings and send commands to the mode script.
 	 * Only available to Admin.
 	 * @param array $settings
 	 * @param array $commands
@@ -3590,9 +3588,9 @@ class Connection
 		}
 		return $this->execute(ucfirst(__FUNCTION__), array($fakePlayerLogin), $multicall);
 	}
-	
+
 	/**
-	 * Returns the token infos for a player. 
+	 * Returns the token infos for a player.
 	 * The returned structure is { TokenCost, CanPayToken }.
 	 * @param Structures\Player|string $player
 	 * @return array
@@ -4393,27 +4391,8 @@ class Connection
 }
 
 /**
- * Exception Dedicated to Query Error
- */
-class QueryException extends \Exception
-{
-
-}
-
-/**
- * Exception Dedicated to Connection Error
- */
-class ConnectionException extends \Exception
-{
-
-}
-
-/**
  * Exception Dedicated to Invalid Argument Error on Request Call
  */
-class InvalidArgumentException extends \Exception
-{
-
-}
+class InvalidArgumentException extends \Exception {}
 
 ?>

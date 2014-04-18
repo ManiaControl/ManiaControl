@@ -111,6 +111,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 			$this->showManiaExchangeList($maps, $player);
 		};
 
+
 		// search for matching maps
 		$this->maniaControl->mapManager->mxManager->getMapsAsync($function, $searchString, $author, $environment);
 	}

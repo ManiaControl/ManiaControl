@@ -7,18 +7,17 @@
 
 namespace Maniaplanet\DedicatedServer\Xmlrpc;
 
-class Base64 
+class Base64
 {
-	public $data;
+	public $scalar;
+	public $xmlrpc_type = 'base64';
 
+	/**
+	 * @param string $data
+	 */
 	function __construct($data)
 	{
-		$this->data = $data;
-	}
-
-	function getXml() 
-	{
-		return '<base64>'.base64_encode($this->data).'</base64>';
+		$this->scalar = $data;
 	}
 }
 
