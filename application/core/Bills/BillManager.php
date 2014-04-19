@@ -7,14 +7,13 @@ use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\Structures\Bill;
-use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
  * ManiaControl Bill-Manager
  *
- * @author kremsy
+ * @author    kremsy
  * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class BillManager implements CallbackListener {
 	/*
@@ -58,16 +57,10 @@ class BillManager implements CallbackListener {
 			return false;
 		}
 
-		try {
-			if (!$receiver) {
-				$bill = $this->maniaControl->client->sendBill($player->login, $amount, $message);
-			} else {
-				$bill = $this->maniaControl->client->sendBill($player->login, $amount, $message, $receiver);
-			}
-		} catch(Exception $e) {
-			// TODO: handle errors like 'too few server planets' - throw other like connection errors
-			$this->maniaControl->errorHandler->triggerDebugNotice("Couldn't create donation of {$amount} planets from '{$player->login}' for '{$receiver}'. " . $e->getMessage());
-			return false;
+		if (!$receiver) {
+			$bill = $this->maniaControl->client->sendBill($player->login, $amount, $message);
+		} else {
+			$bill = $this->maniaControl->client->sendBill($player->login, $amount, $message, $receiver);
 		}
 
 		$this->openBills[$bill] = new BillData($function, $player, $amount);
@@ -89,14 +82,7 @@ class BillManager implements CallbackListener {
 			return false;
 		}
 
-		try {
-			$bill = $this->maniaControl->client->pay($receiverLogin, $amount, $message);
-		} catch(Exception $e) {
-			// TODO: handle errors like 'too few server planets' - throw other like connection errors
-			//trigger_error("Couldn't create payout of {$amount} planets by '{$player->login}' for '{$receiver}'. " . $e->getMessage());
-			$this->maniaControl->errorHandler->triggerDebugNotice("Couldn't create payout of {$amount} planets to '{$receiverLogin}' " . $e->getMessage());
-			return false;
-		}
+		$bill = $this->maniaControl->client->pay($receiverLogin, $amount, $message);
 
 		$this->openBills[$bill] = new BillData($function, $receiverLogin, $amount, true);
 
