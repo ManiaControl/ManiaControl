@@ -12,6 +12,8 @@ use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
+use Maniaplanet\DedicatedServer\Xmlrpc\NotInTeamModeException;
+use Maniaplanet\DedicatedServer\Xmlrpc\PlayerIsNotSpectatorException;
 
 /**
  * Player Actions Class
@@ -132,13 +134,9 @@ class PlayerActions {
 
 		try {
 			$this->maniaControl->client->forcePlayerTeam($target->login, $teamId);
-		} catch(Exception $e) {
-			if ($e->getMessage() == "Not in Team mode.") {
-				$this->forcePlayerToPlay($adminLogin, $targetLogin);
-				return;
-			} else {
-				throw $e;
-			}
+		} catch(NotInTeamModeException $e) {
+			$this->forcePlayerToPlay($adminLogin, $targetLogin);
+			return;
 		}
 
 		$chatMessage = false;
@@ -191,10 +189,7 @@ class PlayerActions {
 			// Free player slot
 			try {
 				$this->maniaControl->client->spectatorReleasePlayerSlot($target->login);
-			} catch(Exception $e) {
-				if($e->getMessage() != "The player is not a spectator"){
-					throw $e;
-				}
+			} catch(PlayerIsNotSpectatorException $e) {
 			}
 		}
 	}
