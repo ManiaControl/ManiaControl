@@ -25,6 +25,8 @@ class FaultException extends Exception
 				return new ChangeInProgressException($faultString, $faultCode);
 			case 'The player is not a spectator':
 				return new PlayerIsNotSpectatorException($faultString, $faultCode);
+			case 'Not in Team mode.':
+				return new NotInTeamModeException($faultString, $faultCode);
 		}
 
 		return new self($faultString, $faultCode);
@@ -37,4 +39,5 @@ class StartIndexOutOfBoundException extends FaultException {}
 class NotInScriptModeException extends FaultException {}
 class ChangeInProgressException extends FaultException {}
 class PlayerIsNotSpectatorException extends FaultException {}
+class NotInTeamModeException extends FaultException {}
 ?>
