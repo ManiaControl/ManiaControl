@@ -199,6 +199,12 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		/**
 		 * @var Map $map
 		 */
+		$currentMap = $this->maniaControl->mapManager->getCurrentMap();
+		$mxIcon = $this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON);
+		$mxIconHover = $this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON_MOVER);
+		$mxIconGreen = $this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON_GREEN);
+		$mxIconGreenHover = $this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON_GREEN_MOVER);
+
 		foreach($mapList as $map) {
 			if (!isset($pageFrame)) {
 				$pageFrame = new Frame();
@@ -225,7 +231,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$lineQuad->setZ(0.001);
 			}
 
-			if ($this->maniaControl->mapManager->getCurrentMap() === $map) {
+			if ($currentMap === $map) {
 				$currentQuad = new Quad_Icons64x64_1();
 				$mapFrame->add($currentQuad);
 				$currentQuad->setX($x + 3.5);
@@ -241,8 +247,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$mxQuad = new Quad();
 				$mapFrame->add($mxQuad);
 				$mxQuad->setSize(3, 3);
-				$mxQuad->setImage($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON));
-				$mxQuad->setImageFocus($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON_MOVER));
+				$mxQuad->setImage($mxIcon);
+				$mxQuad->setImageFocus($mxIconHover);
 				$mxQuad->setX($x + 65);
 				$mxQuad->setUrl($map->mx->pageurl);
 				$mxQuad->setZ(0.01);
@@ -252,8 +258,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 					$mxQuad = new Quad();
 					$mapFrame->add($mxQuad);
 					$mxQuad->setSize(3, 3);
-					$mxQuad->setImage($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON_GREEN));
-					$mxQuad->setImageFocus($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON_GREEN_MOVER));
+					$mxQuad->setImage($mxIconGreen);
+					$mxQuad->setImageFocus($mxIconGreenHover);
 					$mxQuad->setX($x + 62);
 					$mxQuad->setUrl($map->mx->pageurl);
 					$mxQuad->setZ(0.01);
