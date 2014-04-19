@@ -32,6 +32,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	const MLID_KARMA              = 'KarmaPlugin.MLID';
 	const TABLE_KARMA             = 'mc_karma';
 	const CB_KARMA_CHANGED        = 'KarmaPlugin.Changed';
+	const CB_KARMA_MXUPDATED      = 'KarmaPlugin.MXUpdated';
 	const SETTING_AVAILABLE_VOTES = 'Available Votes (X-Y: Comma separated)';
 	const SETTING_WIDGET_ENABLE   = 'Enable Karma Widget';
 	const SETTING_WIDGET_TITLE    = 'Widget-Title';
@@ -773,6 +774,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 					}
 
 					$this->updateManialink = true;
+					$this->maniaControl->callbackManager->triggerCallback(self::CB_KARMA_MXUPDATED, $this->mxKarma);
 					$this->maniaControl->log("MX-Karma Votes successfully fetched");
 				} else {
 					$this->maniaControl->log("Error while fetching votes: " . $data->data->message);
@@ -784,7 +786,6 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			}
 		}, $content, false, 'application/json');
 	}
-
 
 	/**
 	 * Import old Karma votes to Mania-Exchange Karma
