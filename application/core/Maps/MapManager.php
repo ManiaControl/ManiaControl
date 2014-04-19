@@ -370,7 +370,7 @@ class MapManager implements CallbackListener {
 	 * Updates the full Map list, needed on Init, addMap and on ShuffleMaps
 	 */
 	private function updateFullMapList() {
-		$maps = $this->maniaControl->client->getMapList(1000, 0);
+		$maps = $this->maniaControl->client->getMapList(150, 0);
 		$tempList = array();
 		foreach ($maps as $rpcMap) {
 			if (array_key_exists($rpcMap->uId, $this->maps)) {
