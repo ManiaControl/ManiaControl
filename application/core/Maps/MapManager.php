@@ -79,6 +79,7 @@ class MapManager implements CallbackListener {
 		
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_ONINIT, $this, 'handleOnInit');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_AFTERINIT, $this, 'handleAfterInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_MAPLISTMODIFIED, $this, 'mapsModified');
 		
 		// Define Rights
@@ -353,7 +354,7 @@ class MapManager implements CallbackListener {
 		$map = new Map($rpcMap);
 		$this->saveMap($map);
 		
-		$mapsDirectory = $this->maniaControl->server->getMapsDirectory();
+		/*$mapsDirectory = $this->maniaControl->server->getMapsDirectory();
 		if (is_readable($mapsDirectory . $map->fileName)) {
 			$mapFetcher = new \GBXChallMapFetcher(true);
 			$mapFetcher->processFile($mapsDirectory . $map->fileName);
@@ -361,7 +362,7 @@ class MapManager implements CallbackListener {
 			$map->authorEInfo = $mapFetcher->authorEInfo;
 			$map->authorZone = $mapFetcher->authorZone;
 			$map->comment = $mapFetcher->comment;
-		}
+		}*/
 		return $map;
 	}
 
@@ -369,9 +370,8 @@ class MapManager implements CallbackListener {
 	 * Updates the full Map list, needed on Init, addMap and on ShuffleMaps
 	 */
 	private function updateFullMapList() {
-		$maps = $this->maniaControl->client->getMapList(100, 0);
+		$maps = $this->maniaControl->client->getMapList(1000, 0);
 		$tempList = array();
-		
 		foreach ($maps as $rpcMap) {
 			if (array_key_exists($rpcMap->uId, $this->maps)) {
 				// Map already exists, only update index
@@ -432,11 +432,16 @@ class MapManager implements CallbackListener {
 		$this->updateFullMapList();
 		$this->fetchCurrentMap();
 		
-		// Fetch Mx Infos
-		$this->mxManager->fetchManiaExchangeMapInformations();
-		
 		// Restructure Maplist
 		$this->restructureMapList();
+	}
+
+	/**
+	 * Handle AfterInit callback
+	 */
+	public function handleAfterInit() {
+		// Fetch MX infos
+		$this->mxManager->fetchManiaExchangeMapInformations();
 	}
 
 	/**
