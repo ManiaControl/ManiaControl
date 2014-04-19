@@ -45,7 +45,6 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 
 		// Register for admin chat commands
 		$this->maniaControl->commandManager->registerCommandListener(array('nextmap', 'next', 'skip'), $this, 'command_NextMap', true);
-		$this->maniaControl->commandManager->registerCommandListener('skip', $this, 'command_NextMap', true);
 		$this->maniaControl->commandManager->registerCommandListener(array('restartmap', 'resmap', 'res'), $this, 'command_RestartMap', true);
 		$this->maniaControl->commandManager->registerCommandListener(array('addmap', 'add'), $this, 'command_AddMap', true);
 		$this->maniaControl->commandManager->registerCommandListener(array('removemap', 'removethis', 'erasemap', 'erasethis'), $this, 'command_RemoveMap', true);
