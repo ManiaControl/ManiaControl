@@ -31,7 +31,9 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	const VERSION                 = 0.1;
 	const MLID_KARMA              = 'KarmaPlugin.MLID';
 	const TABLE_KARMA             = 'mc_karma';
+	const CB_KARMA_CHANGED        = 'KarmaPlugin.Changed';
 	const SETTING_AVAILABLE_VOTES = 'Available Votes (X-Y: Comma separated)';
+	const SETTING_WIDGET_ENABLE   = 'Enable Karma Widget';
 	const SETTING_WIDGET_TITLE    = 'Widget-Title';
 	const SETTING_WIDGET_POSX     = 'Widget-Position: X';
 	const SETTING_WIDGET_POSY     = 'Widget-Position: Y';
@@ -93,6 +95,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_AVAILABLE_VOTES, '-2,2');
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_ENABLE, true);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_TITLE, 'Map-Karma');
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSX, 160 - 27.5);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSY, 90 - 10 - 6);
@@ -200,36 +203,38 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			$voteCount = $votes['count'];
 		}
 
-		// Build karma manialink
-		$this->buildManialink();
+		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_ENABLE)) {
+			// Build karma manialink
+			$this->buildManialink();
 
-		// Update karma gauge & label
-		$karmaGauge = $this->manialink->karmaGauge;
-		$karmaLabel = $this->manialink->karmaLabel;
-		if (is_numeric($karma) && $voteCount > 0) {
-			$karma = floatval($karma);
-			$karmaGauge->setRatio($karma + 0.15 - $karma * 0.15);
-			$karmaColor = ColorUtil::floatToStatusColor($karma);
-			$karmaGauge->setColor($karmaColor . '7');
-			$karmaLabel->setText('  ' . round($karma * 100.) . '% (' . $voteCount . ')');
-		} else {
-			$karma = 0.;
-			$karmaGauge->setRatio(0.);
-			$karmaGauge->setColor('00fb');
-			$karmaLabel->setText('-');
-		}
+			// Update karma gauge & label
+			$karmaGauge = $this->manialink->karmaGauge;
+			$karmaLabel = $this->manialink->karmaLabel;
+			if (is_numeric($karma) && $voteCount > 0) {
+				$karma = floatval($karma);
+				$karmaGauge->setRatio($karma + 0.15 - $karma * 0.15);
+				$karmaColor = ColorUtil::floatToStatusColor($karma);
+				$karmaGauge->setColor($karmaColor . '7');
+				$karmaLabel->setText('  ' . round($karma * 100.) . '% (' . $voteCount . ')');
+			} else {
+				$karma = 0.;
+				$karmaGauge->setRatio(0.);
+				$karmaGauge->setColor('00fb');
+				$karmaLabel->setText('-');
+			}
 
-		// Loop players
-		foreach($players as $login => $player) {
-			// Get player vote
-			//$vote = $this->getPlayerVote($player, $map); //TODO what is this for, vote nowhere used?
+			// Loop players
+			foreach($players as $login => $player) {
+				// Get player vote
+				//$vote = $this->getPlayerVote($player, $map); //TODO what is this for, vote nowhere used?
 
-			// Adjust manialink for player's vote
-			$votesFrame = $this->manialink->votesFrame;
-			$votesFrame->removeChildren();
+				// Adjust manialink for player's vote
+				$votesFrame = $this->manialink->votesFrame;
+				$votesFrame->removeChildren();
 
-			// Send manialink
-			$this->maniaControl->manialinkManager->sendManialink($this->manialink, $login);
+				// Send manialink
+				$this->maniaControl->manialinkManager->sendManialink($this->manialink, $login);
+			}
 		}
 	}
 
@@ -362,6 +367,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		if (!$success) {
 			return false;
 		}
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_KARMA_CHANGED);
 		$this->updateManialink = true;
 		return true;
 	}
@@ -454,7 +460,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	 * @param Map    $map
 	 * @return int
 	 */
-	private function getPlayerVote(Player $player, Map $map) {
+	public function getPlayerVote(Player $player, Map $map) {
 		$mysqli = $this->maniaControl->database->mysqli;
 		$query  = "SELECT * FROM `" . self::TABLE_KARMA . "`
 				WHERE `playerIndex` = {$player->index}
@@ -610,6 +616,16 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		$serverLogin = $this->maniaControl->server->login;
 		if ($settingName == '$l[http://karma.mania-exchange.com/auth/getapikey?server=' . $serverLogin . ']MX Karma Code for ' . $serverLogin . '$l') {
 			$this->mxKarmaOpenSession();
+		}
+
+		if ($settingName == 'Enable Karma Widget' && $value == true) {
+			$this->updateManialink = true;
+			$this->handle1Second(time());
+		} elseif ($settingName == 'Enable Karma Widget' && $value == false) {
+			$this->updateManialink = false;
+			$ml = new ManiaLink(self::MLID_KARMA);
+			$mltext = $ml->render()->saveXML();
+			$this->maniaControl->manialinkManager->sendManialink($mltext);
 		}
 	}
 
