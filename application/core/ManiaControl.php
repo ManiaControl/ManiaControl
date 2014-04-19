@@ -25,6 +25,7 @@ use ManiaControl\Update\UpdateManager;
 use Maniaplanet\DedicatedServer\Connection;
 use Maniaplanet\DedicatedServer\Transport\TransportException;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
+use Maniaplanet\DedicatedServer\Xmlrpc\NotInScriptModeException;
 
 require_once __DIR__ . '/Libs/Maniaplanet/DedicatedServer/Connection.php';
 require_once __DIR__ . '/Libs/GbxDataFetcher/gbxdatafetcher.inc.php';
@@ -132,10 +133,11 @@ class ManiaControl implements CommandListener, TimerListener {
 
 	/**
 	 * Checks connection every xxx Minutes
+	 *
 	 * @param $time
 	 */
-	public function checkConnection($time){
-		if($this->client->getIdleTime() > 180){
+	public function checkConnection($time) {
+		if ($this->client->getIdleTime() > 180) {
 			$this->client->getServerName();
 		}
 	}
@@ -243,7 +245,7 @@ class ManiaControl implements CommandListener, TimerListener {
 				$this->client->sendHideManialinkPage();
 				// Close the client connection
 				$this->client->delete($this->server->ip, $this->server->port);
-			} catch(FatalException $e) {
+			} catch(TransportException $e) {
 				$this->errorHandler->triggerDebugNotice($e->getMessage() . " File: " . $e->getFile() . " Line: " . $e->getLine());
 			}
 		}
@@ -399,7 +401,7 @@ class ManiaControl implements CommandListener, TimerListener {
 			if (!$this->server->waitForStatus(4)) {
 				trigger_error("Server couldn't get ready!", E_USER_ERROR);
 			}
-		} catch(FatalException $e) {
+		} catch(Exception $e) {
 			// TODO remove
 			if ($this->errorHandler) {
 				$this->errorHandler->triggerDebugNotice("Fatal Exception: " . $e->getMessage() . " Trace: " . $e->getTraceAsString());
@@ -420,11 +422,8 @@ class ManiaControl implements CommandListener, TimerListener {
 
 		try {
 			$scriptSettings = $this->client->getModeScriptSettings();
-		} catch(Exception $e) {
-			if ($e->getMessage() == 'Not in script mode.') {
-				return;
-			}
-			throw $e;
+		} catch(NotInScriptModeException $e) {
+			return;
 		}
 
 		if (!array_key_exists('S_UseScriptCallbacks', $scriptSettings)) {
@@ -435,6 +434,9 @@ class ManiaControl implements CommandListener, TimerListener {
 		try {
 			$this->client->setModeScriptSettings($scriptSettings);
 		} catch(Exception $e) {
+			//TODO temp added 19.04.2014
+			$this->maniaControl->errorHandler->triggerDebugNotice("Exception line 437 ManiaControl.php " . $e->getMessage());
+
 			trigger_error("Couldn't set mode script settings to enable script callbacks. " . $e->getMessage());
 			return;
 		}

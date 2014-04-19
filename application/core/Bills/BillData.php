@@ -1,6 +1,7 @@
 <?php
 
 namespace ManiaControl\Bills;
+use ManiaControl\Players\Player;
 
 /**
  * ManiaControl BillData Structure
@@ -22,9 +23,9 @@ class BillData {
 
 	/**
 	 * Construct new BillData
-	 * @param unknown $function
-	 * @param unknown $player
-	 * @param unknown $amount
+	 * @param mixed $function
+	 * @param Player $player
+	 * @param int $amount
 	 * @param string $pay
 	 * @param string $receiverLogin
 	 */

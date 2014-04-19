@@ -13,28 +13,29 @@ use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
+use ManiaControl\Maps\Map;
 use ManiaControl\Maps\MapManager;
 use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
-use ManiaControl\Maps\Map;
+use Maniaplanet\DedicatedServer\Xmlrpc\NotInScriptModeException;
 
 /**
  * Class offering a Configurator for Script Settings
  *
- * @author steeffeen & kremsy
+ * @author    steeffeen & kremsy
  * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	/*
 	 * Constants
 	 */
-	const ACTION_PREFIX_SETTING                   = 'ScriptSetting';
-	const ACTION_SETTING_BOOL                     = 'ScriptSetting.ActionBoolSetting.';
-	const CB_SCRIPTSETTING_CHANGED                = 'ScriptSettings.SettingChanged';
-	const CB_SCRIPTSETTINGS_CHANGED               = 'ScriptSettings.SettingsChanged';
-	const TABLE_SCRIPT_SETTINGS                   = 'mc_scriptsettings';
-	const SETTING_LOAD_DEFAULT_SETTINGS_MAP_BEGIN = 'Load Stored Script-Settings on Map-Begin';
+	const ACTION_PREFIX_SETTING                     = 'ScriptSetting';
+	const ACTION_SETTING_BOOL                       = 'ScriptSetting.ActionBoolSetting.';
+	const CB_SCRIPTSETTING_CHANGED                  = 'ScriptSettings.SettingChanged';
+	const CB_SCRIPTSETTINGS_CHANGED                 = 'ScriptSettings.SettingsChanged';
+	const TABLE_SCRIPT_SETTINGS                     = 'mc_scriptsettings';
+	const SETTING_LOAD_DEFAULT_SETTINGS_MAP_BEGIN   = 'Load Stored Script-Settings on Map-Begin';
 	const SETTING_PERMISSION_CHANGE_SCRIPT_SETTINGS = 'Change Script-Settings';
 
 	/*
@@ -117,11 +118,8 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	public function loadSettingsFromDatabase() {
 		try {
 			$scriptSettings = $this->maniaControl->client->getModeScriptSettings();
-		} catch(Exception $e) {
-			if ($e->getMessage() == 'Not in script mode.') {
-				return false;
-			}
-			throw $e;
+		} catch(NotInScriptModeException $e) {
+			return false;
 		}
 
 		$mysqli   = $this->maniaControl->database->mysqli;
@@ -185,7 +183,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 
 		try {
 			$scriptSettings = $this->maniaControl->client->getModeScriptSettings();
-		} catch(Exception $e) {
+		} catch(NotInScriptModeException $e) {
 			//do nothing
 		}
 
@@ -320,11 +318,8 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 
 		try {
 			$scriptSettings = $this->maniaControl->client->getModeScriptSettings();
-		} catch(Exception $e) {
-			if ($e->getMessage() == 'Not in script mode.') {
-				return;
-			}
-			throw $e;
+		} catch(NotInScriptModeException $e) {
+			return;
 		}
 
 		$prefixLength = strlen(self::ACTION_PREFIX_SETTING);
@@ -389,11 +384,8 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	public function toggleBooleanSetting($setting, Player $player) {
 		try {
 			$scriptSettings = $this->maniaControl->client->getModeScriptSettings();
-		} catch(Exception $e) {
-			if ($e->getMessage() == 'Not in script mode.') {
-				return;
-			}
-			throw $e;
+		} catch(NotInScriptModeException $e) {
+			return;
 		}
 
 		if (!isset($scriptSettings[$setting])) {
@@ -415,11 +407,15 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 * @param        bool
 	 */
 	private function applyNewScriptSettings(array $newSettings, Player $player) {
-		if (!$newSettings) return true;
+		if (!$newSettings) {
+			return true;
+		}
 
 		try {
 			$this->maniaControl->client->setModeScriptSettings($newSettings);
 		} catch(Exception $e) {
+			//TODO temp added 19.04.2014
+			$this->maniaControl->errorHandler->triggerDebugNotice("Exception line 416 ScriptSettings.php" . $e->getMessage());
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 			return false;
 		}

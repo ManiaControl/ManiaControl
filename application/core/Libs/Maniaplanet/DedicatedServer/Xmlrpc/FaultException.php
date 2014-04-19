@@ -19,6 +19,8 @@ class FaultException extends Exception
 				return new CouldNotWritePlaylistFileException($faultString, $faultCode);
 			case 'Start index out of bound.':
 				return new StartIndexOutOfBoundException($faultString, $faultCode);
+			case 'Not in script mode.':
+				return new NotInScriptModeException($faultString, $faultCode);
 		}
 
 		return new self($faultString, $faultCode);
@@ -28,4 +30,5 @@ class FaultException extends Exception
 class LoginUnknownException extends FaultException {}
 class CouldNotWritePlaylistFileException extends FaultException {}
 class StartIndexOutOfBoundException extends FaultException {}
+class NotInScriptModeException extends FaultException {}
 ?>
