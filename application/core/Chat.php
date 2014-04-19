@@ -4,6 +4,7 @@ namespace ManiaControl;
 
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 use ManiaControl\Players\Player;
+use Maniaplanet\DedicatedServer\Xmlrpc\LoginUnknownException;
 
 /**
  * Chat Utility Class
@@ -80,10 +81,7 @@ class Chat {
 			}
 			try{
 				$this->maniaControl->client->chatSendServerMessage($chatMessage, $login);
-			} catch(Exception $e){
-				if($e->getMessage() != "Login unknown."){
-					throw $e;
-				}
+			} catch(LoginUnknownException $e){
 			}
 		}
 		return true;

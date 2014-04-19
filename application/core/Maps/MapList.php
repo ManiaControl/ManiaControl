@@ -553,7 +553,9 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 						$index = $this->maniaControl->mapManager->getMapIndex($map);
 						$this->maniaControl->client->jumpToMapIndex($index);
 					} catch(Exception $e) {
-						// TODO: is it even possible that an exception other than connection errors will be thrown? - remove try-catch?
+						//TODO temp added 19.04.2014
+						$this->maniaControl->errorHandler->triggerDebugNotice("Exception line 557 MapList.php" . $e->getMessage());
+
 						$this->maniaControl->chat->sendError("Error while Switching Map");
 					}
 				});

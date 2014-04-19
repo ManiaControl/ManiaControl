@@ -11,14 +11,14 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\IconManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
-use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
+use Maniaplanet\DedicatedServer\Xmlrpc\ChangeInProgressException;
 
 /**
  * Class offering Commands to manage Maps
  *
- * @author steeffeen & kremsy
+ * @author    steeffeen & kremsy
  * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class MapCommands implements CommandListener, ManialinkPageAnswerListener, CallbackListener {
 	/*
@@ -210,10 +210,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 
 		try {
 			$this->maniaControl->client->restartMap();
-		} catch(Exception $e) {
-			if ($e->getMessage() != 'Change in progress.') {
-				throw $e;
-			}
+		} catch(ChangeInProgressException $e) {
 		}
 	}
 

@@ -11,13 +11,15 @@ use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
+use Maniaplanet\DedicatedServer\Xmlrpc\LoginUnknownException;
+use Maniaplanet\DedicatedServer\Xmlrpc\NotInScriptModeException;
 
 /**
  * Manialink Manager Class
  *
- * @author steeffeen & kremsy
+ * @author    steeffeen & kremsy
  * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener {
 	/*
@@ -130,9 +132,9 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 * @return bool
 	 */
 	public function sendManialink($manialinkText, $logins = null, $timeout = 0, $hideOnClick = false) {
-		$manialinkText = (string) $manialinkText;
+		$manialinkText = (string)$manialinkText;
 
-		if(!$manialinkText) {
+		if (!$manialinkText) {
 			return true;
 		}
 
@@ -150,7 +152,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 			}
 			if (is_array($logins)) {
 				$success = true;
-				foreach ($logins as $login) {
+				foreach($logins as $login) {
 					$subSuccess = $this->maniaControl->client->sendDisplayManialinkPage($login, $manialinkText, $timeout, $hideOnClick);
 					if (!$subSuccess) {
 						$success = false;
@@ -159,11 +161,8 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 
 				return $success;
 			}
-		} catch(Exception $e) {
-			if($e->getMessage() == "Login unknown.") {
-				return false;
-			}
-			throw $e;
+		} catch(LoginUnknownException $e) {
+			return false;
 		}
 
 		return true;
@@ -178,11 +177,8 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	public function enableAltMenu(Player $player) {
 		try {
 			$success = $this->maniaControl->client->triggerModeScriptEvent('LibXmlRpc_EnableAltMenu', $player->login);
-		} catch(Exception $e) {
-			if ($e->getMessage() == 'Not in script mode.') {
-				return false;
-			}
-			throw $e;
+		} catch(NotInScriptModeException $e) {
+			return false;
 		}
 		return $success;
 	}
@@ -196,11 +192,8 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	public function disableAltMenu(Player $player) {
 		try {
 			$success = $this->maniaControl->client->triggerModeScriptEvent('LibXmlRpc_DisableAltMenu', $player->login);
-		} catch(Exception $e) {
-			if ($e->getMessage() == 'Not in script mode.') {
-				return false;
-			}
-			throw $e;
+		} catch(NotInScriptModeException $e) {
+			return false;
 		}
 		return $success;
 	}

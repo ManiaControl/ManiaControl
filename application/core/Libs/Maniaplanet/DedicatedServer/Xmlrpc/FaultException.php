@@ -21,6 +21,10 @@ class FaultException extends Exception
 				return new StartIndexOutOfBoundException($faultString, $faultCode);
 			case 'Not in script mode.':
 				return new NotInScriptModeException($faultString, $faultCode);
+			case 'Change in progress.':
+				return new ChangeInProgressException($faultString, $faultCode);
+			case 'The player is not a spectator':
+				return new PlayerIsNotSpectatorException($faultString, $faultCode);
 		}
 
 		return new self($faultString, $faultCode);
@@ -31,4 +35,6 @@ class LoginUnknownException extends FaultException {}
 class CouldNotWritePlaylistFileException extends FaultException {}
 class StartIndexOutOfBoundException extends FaultException {}
 class NotInScriptModeException extends FaultException {}
+class ChangeInProgressException extends FaultException {}
+class PlayerIsNotSpectatorException extends FaultException {}
 ?>

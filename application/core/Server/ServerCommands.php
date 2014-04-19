@@ -13,14 +13,14 @@ use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
-use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
+use Maniaplanet\DedicatedServer\Xmlrpc\NotInScriptModeException;
 
 /**
  * Class offering various Commands related to the Dedicated Server
  *
- * @author steeffeen & kremsy
+ * @author    steeffeen & kremsy
  * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ServerCommands implements CallbackListener, CommandListener, ManialinkPageAnswerListener, TimerListener {
 	/*
@@ -106,11 +106,8 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 		//Check if Pause exists in current GameMode
 		try {
 			$scriptInfos = $this->maniaControl->client->getModeScriptInfo();
-		} catch(Exception $e) {
-			if ($e->getMessage() == 'Not in script mode.') {
-				return;
-			}
-			throw $e;
+		} catch(NotInScriptModeException $e) {
+			return;
 		}
 		$pauseExists = false;
 		foreach($scriptInfos->commandDescs as $param) {
@@ -164,12 +161,8 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 
 		try {
 			$this->maniaControl->client->triggerModeScriptEvent('WarmUp_Extend', '10');
-		} catch(Exception $e) {
-			if ($e->getMessage() == 'Not in script mode.') {
-				$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
-				return;
-			}
-			throw $e;
+		} catch(NotInScriptModeException $e) {
+			return;
 		}
 
 		$this->maniaControl->chat->sendInformation('$<' . $player->nickname . '$> extended the WarmUp by 10 seconds!');
@@ -189,12 +182,8 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 
 		try {
 			$this->maniaControl->client->triggerModeScriptEvent('WarmUp_Stop', '');
-		} catch(Exception $e) {
-			if ($e->getMessage() == 'Not in script mode.') {
-				$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
-				return;
-			}
-			throw $e;
+		} catch(NotInScriptModeException $e) {
+			return;
 		}
 
 		$this->maniaControl->chat->sendInformation('$<' . $player->nickname . '$> stopped the WarmUp!');
@@ -212,12 +201,8 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 		}
 		try {
 			$this->maniaControl->client->sendModeScriptCommands(array('Command_ForceWarmUp' => True));
-		} catch(Exception $e) {
-			if ($e->getMessage() == 'Not in script mode.') {
-				$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
-				return;
-			}
-			throw $e;
+		} catch(NotInScriptModeException $e) {
+			return;
 		}
 
 		$this->maniaControl->chat->sendInformation('$<' . $player->nickname . '$> paused the Game!');

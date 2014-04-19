@@ -109,7 +109,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 		try {
 			$this->maniaControl->client->autoTeamBalance();
 		} catch(Exception $e) {
-			$this->maniaControl->errorHandler->triggerDebugNotice("PlayerCommands Debug Line 110: " . $e->getMessage());
+			$this->maniaControl->errorHandler->triggerDebugNotice("PlayerCommands Debug Line 112: " . $e->getMessage());
 			// TODO: only catch 'not in team mode' exception - throw others (like connection error)
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
 			return;

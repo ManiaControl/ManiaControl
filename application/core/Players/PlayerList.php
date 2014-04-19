@@ -23,14 +23,14 @@ use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
-use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
+use Maniaplanet\DedicatedServer\Xmlrpc\PlayerIsNotSpectatorException;
 
 /**
  * PlayerList Widget Class
  *
- * @author steeffeen & kremsy
+ * @author    steeffeen & kremsy
  * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class PlayerList implements ManialinkPageAnswerListener, CallbackListener, TimerListener {
 	/*
@@ -650,10 +650,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				try {
 					$this->maniaControl->client->forceSpectator($adminLogin, PlayerActions::SPECTATOR_BUT_KEEP_SELECTABLE);
 					$this->maniaControl->client->forceSpectatorTarget($adminLogin, $targetLogin, 1);
-				} catch(Exception $e) {
-					if($e->getMessage() != "The player is not a spectator"){
-						throw $e;
-					}
+				} catch(PlayerIsNotSpectatorException $e) {
 				}
 				break;
 			case self::ACTION_OPEN_PLAYER_DETAILED:
@@ -724,10 +721,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 					try {
 						$this->maniaControl->client->forceSpectator($target->login, PlayerActions::SPECTATOR_BUT_KEEP_SELECTABLE);
 						$this->maniaControl->client->spectatorReleasePlayerSlot($target->login);
-					} catch(Exception $e) {
-						if ($e->getMessage() != 'Login unknown.' && $e->getMessage() != 'The player is not a spectator') {
-							$this->maniaControl->chat->sendException($e);
-						}
+					} catch(PlayerIsNotSpectatorException $e) {
 					}
 				});
 				break;
@@ -748,14 +742,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 					$votesPlugin->undefineVote('kick');
 
 					$message = '$39F You got kicked due a Public vote!$z ';
-					try {
-						$this->maniaControl->client->kick($target->login, $message);
-					} catch(Exception $e) {
-						$this->maniaControl->errorHandler->triggerDebugNotice("PlayerList Debug Line 751: " . $e->getMessage());
-						// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
-						$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $target->login);
-						return;
-					}
+					$this->maniaControl->client->kick($target->login, $message);
 				});
 				break;
 		}
@@ -767,16 +754,18 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 	 * @param Player $player
 	 */
 	public function updateWidget(Player $player) {
-		foreach ($this->playersListShown as $login => $shown) {
-			if (!$shown) continue;
-			
+		foreach($this->playersListShown as $login => $shown) {
+			if (!$shown) {
+				continue;
+			}
+
 			// Check if shown player still exists
 			$player = $this->maniaControl->playerManager->getPlayer($login);
 			if (!$player) {
 				unset($this->playersListShown[$login]);
 				continue;
 			}
-			
+
 			// Reopen widget
 			if ($shown != self::SHOWN_MAIN_WINDOW) {
 				$this->playersListShown[$login] = false;
