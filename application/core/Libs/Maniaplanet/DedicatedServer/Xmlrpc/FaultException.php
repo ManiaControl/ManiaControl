@@ -15,6 +15,10 @@ class FaultException extends Exception
 		{
 			case 'Login unknown.':
 				return new LoginUnknownException($faultString, $faultCode);
+			case 'Unable to write the playlist file.':
+				return new CouldNotWritePlaylistFileException($faultString, $faultCode);
+			case 'Start index out of bound.':
+				return new StartIndexOutOfBoundException($faultString, $faultCode);
 		}
 
 		return new self($faultString, $faultCode);
@@ -22,5 +26,6 @@ class FaultException extends Exception
 }
 
 class LoginUnknownException extends FaultException {}
-
+class CouldNotWritePlaylistFileException extends FaultException {}
+class StartIndexOutOfBoundException extends FaultException {}
 ?>
