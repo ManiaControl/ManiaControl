@@ -73,9 +73,11 @@ class GbxRemote
 	private function connect($host, $port)
 	{
 		$this->socket = @fsockopen($host, $port, $errno, $errstr, $this->timeouts['open']);
-		stream_set_write_buffer($this->socket, 0);
+
 		if(!$this->socket)
 			throw new TransportException('Cannot open socket', TransportException::NOT_INITIALIZED);
+
+		stream_set_write_buffer($this->socket, 0);
 
 		// handshake
 		$header = $this->read(15);
