@@ -6,6 +6,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
+use Maniaplanet\DedicatedServer\Xmlrpc\NotInScriptModeException;
 
 /**
  * Class managing Rankings
@@ -50,12 +51,7 @@ class RankingManager implements CallbackListener {
 	public function onInit() {
 		try {
 			$this->maniaControl->client->triggerModeScriptEvent('LibXmlRpc_GetRankings', '');
-		} catch(Exception $e) {
-			if ($e->getMessage() == 'Not in script mode.') {
-				//	do nothing
-				return;
-			}
-			throw $e;
+		} catch(NotInScriptModeException $e) {
 		}
 	}
 
