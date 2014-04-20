@@ -23,6 +23,7 @@ use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
+use Maniaplanet\DedicatedServer\Xmlrpc\LoginUnknownException;
 use Maniaplanet\DedicatedServer\Xmlrpc\PlayerIsNotSpectatorException;
 
 /**
@@ -742,7 +743,10 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 					$votesPlugin->undefineVote('kick');
 
 					$message = '$39F You got kicked due a Public vote!$z ';
-					$this->maniaControl->client->kick($target->login, $message);
+					try {
+						$this->maniaControl->client->kick($target->login, $message);
+					} catch(LoginUnknownException $e) {
+					}
 				});
 				break;
 		}
