@@ -169,14 +169,11 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 
 		try {
 			$scriptInfo = $this->maniaControl->client->getModeScriptInfo();
-		} catch(Exception $e) {
-			if ($e->getMessage() == 'Not in script mode.') {
-				$label = new Label();
-				$frame->add($label);
-				$label->setText($e->getMessage());
-				return $frame;
-			}
-			throw $e;
+		} catch(NotInScriptModeException $e) {
+			$label = new Label();
+			$frame->add($label);
+			$label->setText($e->getMessage());
+			return $frame;
 		}
 
 		$scriptParams = $scriptInfo->paramDescs;
