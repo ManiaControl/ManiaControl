@@ -139,7 +139,6 @@ class ManiaControl implements CommandListener, TimerListener {
 	public function checkConnection($time) {
 		if ($this->client->getIdleTime() > 180) {
 			$this->client->getServerName();
-			var_dump("test");
 		}
 	}
 
