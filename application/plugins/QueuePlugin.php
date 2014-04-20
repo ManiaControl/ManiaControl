@@ -416,10 +416,10 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 	 * @param Player $player
 	 */
 	private function showJoinQueueWidget(Player $player) {
-		if($this->maniaControl->client->getServerPassword() != false && $this->maniaControl->settingManager->getSetting($this, self::QUEUE_ACTIVE_ON_PASS) == false) {
+		/*if($this->maniaControl->client->getServerPassword() != false && $this->maniaControl->settingManager->getSetting($this, self::QUEUE_ACTIVE_ON_PASS) == false) {
 			$this->hideQueueWidget($player);
 			return;
-		}
+		}*/
 
 		$maniaLink = new ManiaLink(self::ML_ID);
 
