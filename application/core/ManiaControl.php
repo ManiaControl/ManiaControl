@@ -127,8 +127,8 @@ class ManiaControl implements CommandListener, TimerListener {
 		$this->commandManager->registerCommandListener('restart', $this, 'command_Restart', true);
 		$this->commandManager->registerCommandListener('shutdown', $this, 'command_Shutdown', true);
 
-		//Check connection every 3 minutes
-		$this->timerManager->registerTimerListening($this, 'checkConnection', 1000 * 180);
+		//Check connection every 30 seconds
+		$this->timerManager->registerTimerListening($this, 'checkConnection', 1000 * 30);
 	}
 
 	/**
@@ -139,6 +139,7 @@ class ManiaControl implements CommandListener, TimerListener {
 	public function checkConnection($time) {
 		if ($this->client->getIdleTime() > 180) {
 			$this->client->getServerName();
+			var_dump("test");
 		}
 	}
 
