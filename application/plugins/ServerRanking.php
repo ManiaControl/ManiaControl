@@ -208,7 +208,6 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 
 				$ranks = $this->maniaControl->statisticManager->getStatsRanking(StatisticCollector::STAT_ON_HIT, -1, $minHits);
 
-				arsort($ranks);
 				break;
 			case self::RANKING_TYPE_RECORDS: //TODO verify workable status
 				if (!$this->maniaControl->pluginManager->isPluginActive('LocalRecordsPlugin')) {

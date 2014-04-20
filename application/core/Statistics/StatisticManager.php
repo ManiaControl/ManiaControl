@@ -143,7 +143,7 @@ class StatisticManager {
 	 * @param        $serverIndex
 	 * @param        $minValue
 	 * @internal param $orderedBy
-	 * @return object
+	 * @return array
 	 */
 	public function getStatsRanking($statName = '', $serverIndex = -1, $minValue = -1) {
 		if (isset($this->specialStats[$statName])) {
