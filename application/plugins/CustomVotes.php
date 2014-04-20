@@ -26,7 +26,6 @@ use ManiaControl\Plugins\Plugin;
 use ManiaControl\Server\Server;
 use ManiaControl\Server\ServerCommands;
 use Maniaplanet\DedicatedServer\Structures\VoteRatio;
-use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 use Maniaplanet\DedicatedServer\Xmlrpc\NotInScriptModeException;
 
 
