@@ -195,44 +195,46 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		$updateChannel = $this->maniaControl->settingManager->getSetting($this, self::SETTING_UPDATECHECK_CHANNEL);
 		if ($updateChannel != self::CHANNEL_NIGHTLY) {
 			// Check update and send result message
-			$this->checkCoreUpdateAsync(function (UpdateData $updateData) use (&$player) {
+			$self = $this;
+			$this->checkCoreUpdateAsync(function (UpdateData $updateData) use (&$self, &$player) {
 				if (!$updateData) {
-					$this->maniaControl->chat->sendInformation('No Update available!', $player->login);
+					$self->maniaControl->chat->sendInformation('No Update available!', $player->login);
 					return;
 				}
 
-				$version = $this->maniaControl->client->getVersion();
+				$version = $self->maniaControl->client->getVersion();
 				if($updateData->minDedicatedBuild > $version->build){
-					$this->maniaControl->chat->sendError("No new Build for this Server-version available!", $player->login);
+					$self->maniaControl->chat->sendError("No new Build for this Server-version available!", $player->login);
 					return;
 				}
 
-				$this->maniaControl->chat->sendSuccess('Update for Version ' . $updateData->version . ' available!', $player->login);
+				$self->maniaControl->chat->sendSuccess('Update for Version ' . $updateData->version . ' available!', $player->login);
 			});
 		} else {
 			// Special nightly channel updating
-			$this->checkCoreUpdateAsync(function (UpdateData $updateData) use (&$player) {
+			$self = $this;
+			$this->checkCoreUpdateAsync(function (UpdateData $updateData) use (&$self, &$player) {
 				if (!$updateData) {
-					$this->maniaControl->chat->sendInformation('No Update available!', $player->login);
+					$self->maniaControl->chat->sendInformation('No Update available!', $player->login);
 					return;
 				}
 
-				$version = $this->maniaControl->client->getVersion();
+				$version = $self->maniaControl->client->getVersion();
 				if($updateData->minDedicatedBuild > $version->build){
-					$this->maniaControl->chat->sendError("No new Build for this Server-version available!", $player->login);
+					$self->maniaControl->chat->sendError("No new Build for this Server-version available!", $player->login);
 					return;
 				}
 
-				$buildTime   = strtotime($this->currentBuildDate);
+				$buildTime   = strtotime($self->currentBuildDate);
 				$releaseTime = strtotime($updateData->releaseDate);
 				if ($buildTime != '') {
 					if ($buildTime >= $releaseTime) {
-						$this->maniaControl->chat->sendInformation('No new Build available, current build: ' . date("Y-m-d", $buildTime) . '!', $player->login);
+						$self->maniaControl->chat->sendInformation('No new Build available, current build: ' . date("Y-m-d", $buildTime) . '!', $player->login);
 						return;
 					}
-					$this->maniaControl->chat->sendSuccess('New Nightly Build (' . $updateData->releaseDate . ') available, current build: ' . $this->currentBuildDate . '!', $player->login);
+					$self->maniaControl->chat->sendSuccess('New Nightly Build (' . $updateData->releaseDate . ') available, current build: ' . $self->currentBuildDate . '!', $player->login);
 				} else {
-					$this->maniaControl->chat->sendSuccess('New Nightly Build (' . $updateData->releaseDate . ') available!', $player->login);
+					$self->maniaControl->chat->sendSuccess('New Nightly Build (' . $updateData->releaseDate . ') available!', $player->login);
 				}
 			}, true);
 		}
@@ -325,26 +327,27 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			return;
 		}
 
-		$this->checkCoreUpdateAsync(function (UpdateData $updateData) use (&$player) {
+		$self = $this;
+		$this->checkCoreUpdateAsync(function (UpdateData $updateData) use (&$self,&$player) {
 			if (!$updateData) {
-				$this->maniaControl->chat->sendError('Update is currently not possible!', $player->login);
+				$self->maniaControl->chat->sendError('Update is currently not possible!', $player->login);
 				return;
 			}
-			$version = $this->maniaControl->client->getVersion();
+			$version = $self->maniaControl->client->getVersion();
 			if($updateData->minDedicatedBuild > $version->build){
-				$this->maniaControl->chat->sendError("ManiaControl update version requires a newer Dedicated Server version!", $player->login);
+				$self->maniaControl->chat->sendError("ManiaControl update version requires a newer Dedicated Server version!", $player->login);
 				return;
 			}
 
-			$this->maniaControl->chat->sendInformation("Starting Update to Version v{$updateData->version}...", $player->login);
-			$this->maniaControl->log("Starting Update to Version v{$updateData->version}...");
-			$performBackup = $this->maniaControl->settingManager->getSetting($this, self::SETTING_PERFORM_BACKUPS);
-			if ($performBackup && !$this->performBackup()) {
-				$this->maniaControl->chat->sendError('Creating backup failed.', $player->login);
-				$this->maniaControl->log("Creating backup failed.");
+			$self->maniaControl->chat->sendInformation("Starting Update to Version v{$updateData->version}...", $player->login);
+			$self->maniaControl->log("Starting Update to Version v{$updateData->version}...");
+			$performBackup = $self->maniaControl->settingManager->getSetting($self, UpdateManager::SETTING_PERFORM_BACKUPS);
+			if ($performBackup && !$self->performBackup()) {
+				$self->maniaControl->chat->sendError('Creating backup failed.', $player->login);
+				$self->maniaControl->log("Creating backup failed.");
 			}
 
-			$this->performCoreUpdate($updateData, $player);
+			$self->performCoreUpdate($updateData, $player);
 		}, true);
 	}
 
@@ -467,10 +470,11 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 * @param bool   $reopen
 	 */
 	private function updatePlugin($pluginData, Player $player = null, $reopen = false) {
-		$this->maniaControl->fileReader->loadFile($pluginData->currentVersion->url, function ($updateFileContent, $error) use (&$updateData, &$player, &$pluginData, &$reopen) {
-			$this->maniaControl->log('[UPDATE] Now updating '.$pluginData->name.' ...');
+		$self = $this;
+		$this->maniaControl->fileReader->loadFile($pluginData->currentVersion->url, function ($updateFileContent, $error) use (&$self, &$updateData, &$player, &$pluginData, &$reopen) {
+			$self->maniaControl->log('[UPDATE] Now updating '.$pluginData->name.' ...');
 			if ($player) {
-				$this->maniaControl->chat->sendInformation('Now updating '.$pluginData->name.' ...', $player->login);
+				$self->maniaControl->chat->sendInformation('Now updating '.$pluginData->name.' ...', $player->login);
 			}
 			$tempDir = ManiaControlDir . '/temp/';
 			if (!is_dir($tempDir)) {
@@ -482,7 +486,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			if (!$bytes || $bytes <= 0) {
 				trigger_error("Couldn't save plugin Zip.");
 				if ($player) {
-					$this->maniaControl->chat->sendError('Update failed: Couldn\'t save plugin zip!', $player->login);
+					$self->maniaControl->chat->sendError('Update failed: Couldn\'t save plugin zip!', $player->login);
 				}
 				return false;
 			}
@@ -491,7 +495,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			if ($result !== true) {
 				trigger_error("Couldn't open plugin Zip. ({$result})");
 				if ($player) {
-					$this->maniaControl->chat->sendError('Update failed: Couldn\'t open plugin zip!', $player->login);
+					$self->maniaControl->chat->sendError('Update failed: Couldn\'t open plugin zip!', $player->login);
 				}
 				return false;
 			}
@@ -501,15 +505,15 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			unlink($updateFileName);
 			@rmdir($tempDir);
 
-			$this->maniaControl->log('[UPDATE] Successfully updated '.$pluginData->name.'!');
+			$self->maniaControl->log('[UPDATE] Successfully updated '.$pluginData->name.'!');
 			if ($player) {
-				$this->maniaControl->chat->sendSuccess('Successfully updated '.$pluginData->name.'!', $player->login);
-				$this->maniaControl->pluginManager->deactivatePlugin($pluginData->pluginClass);
-				$this->maniaControl->pluginManager->activatePlugin($pluginData->pluginClass);
+				$self->maniaControl->chat->sendSuccess('Successfully updated '.$pluginData->name.'!', $player->login);
+				$self->maniaControl->pluginManager->deactivatePlugin($pluginData->pluginClass);
+				$self->maniaControl->pluginManager->activatePlugin($pluginData->pluginClass);
 
 				if ($reopen) {
-					$menuId = $this->maniaControl->configurator->getMenuId('Plugins');
-					$this->maniaControl->configurator->reopenMenu($player, $menuId);
+					$menuId = $self->maniaControl->configurator->getMenuId('Plugins');
+					$self->maniaControl->configurator->reopenMenu($player, $menuId);
 				}
 			}
 		});
@@ -523,12 +527,13 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 * @param bool   $reopen
 	 */
 	private function installPlugin($pluginData, Player $player, $reopen = false) {
-		$this->maniaControl->fileReader->loadFile($pluginData->currentVersion->url, function ($installFileContent, $error) use (&$updateData, &$player, &$pluginData, &$reopen) {
+		$self = $this;
+		$this->maniaControl->fileReader->loadFile($pluginData->currentVersion->url, function ($installFileContent, $error) use (&$self, &$updateData, &$player, &$pluginData, &$reopen) {
 			$pluginsDirectory = ManiaControlDir . '/plugins/';
 			$pluginFiles = scandir($pluginsDirectory);
 
-			$this->maniaControl->log('[UPDATE] Now installing '.$pluginData->name.' ...');
-			$this->maniaControl->chat->sendInformation('Now installing '.$pluginData->name.' ...', $player->login);
+			$self->maniaControl->log('[UPDATE] Now installing '.$pluginData->name.' ...');
+			$self->maniaControl->chat->sendInformation('Now installing '.$pluginData->name.' ...', $player->login);
 
 			$tempDir = ManiaControlDir . '/temp/';
 			if (!is_dir($tempDir)) {
@@ -539,14 +544,14 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			$bytes = file_put_contents($installFileName, $installFileContent);
 			if (!$bytes || $bytes <= 0) {
 				trigger_error("Couldn't save plugin Zip.");
-				$this->maniaControl->chat->sendError('Install failed: Couldn\'t save plugin zip!', $player->login);
+				$self->maniaControl->chat->sendError('Install failed: Couldn\'t save plugin zip!', $player->login);
 				return false;
 			}
 			$zip    = new \ZipArchive();
 			$result = $zip->open($installFileName);
 			if ($result !== true) {
 				trigger_error("Couldn't open plugin Zip. ({$result})");
-				$this->maniaControl->chat->sendError('Install failed: Couldn\'t open plugin zip!', $player->login);
+				$self->maniaControl->chat->sendError('Install failed: Couldn\'t open plugin zip!', $player->login);
 				return false;
 			}
 
@@ -572,7 +577,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 
 				$dirPath = $pluginsDirectory . $newFile;
 				if (is_dir($dirPath)) {
-					$this->maniaControl->pluginManager->loadPluginFiles($dirPath);
+					$self->maniaControl->pluginManager->loadPluginFiles($dirPath);
 					continue;
 				}
 			}
@@ -580,28 +585,28 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 
 			$newClasses = array_diff($classesAfter, $classesBefore);
 			foreach($newClasses as $className) {
-				if (!$this->maniaControl->pluginManager->isPluginClass($className)) {
+				if (!$self->maniaControl->pluginManager->isPluginClass($className)) {
 					continue;
 				}
 
 				/** @var Plugin $className */
-				$this->maniaControl->pluginManager->addPluginClass($className);
-				$className::prepare($this->maniaControl);
+				$self->maniaControl->pluginManager->addPluginClass($className);
+				$className::prepare($self->maniaControl);
 
-				if ($this->maniaControl->pluginManager->isPluginActive($className)) {
+				if ($self->maniaControl->pluginManager->isPluginActive($className)) {
 					continue;
 				}
-				if (!$this->maniaControl->pluginManager->getSavedPluginStatus($className)) {
+				if (!$self->maniaControl->pluginManager->getSavedPluginStatus($className)) {
 					continue;
 				}
 			}
 
-			$this->maniaControl->log('[UPDATE] Successfully installed '.$pluginData->name.'!');
-			$this->maniaControl->chat->sendSuccess('Successfully installed '.$pluginData->name.'!', $player->login);
+			$self->maniaControl->log('[UPDATE] Successfully installed '.$pluginData->name.'!');
+			$self->maniaControl->chat->sendSuccess('Successfully installed '.$pluginData->name.'!', $player->login);
 
 			if ($reopen) {
-				$menuId = $this->maniaControl->configurator->getMenuId('Install Plugins');
-				$this->maniaControl->configurator->reopenMenu($player, $menuId);
+				$menuId = $self->maniaControl->configurator->getMenuId('Install Plugins');
+				$self->maniaControl->configurator->reopenMenu($player, $menuId);
 			}
 		});
 	}
@@ -750,7 +755,8 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			return false;
 		}
 
-		$this->maniaControl->fileReader->loadFile($updateData->url, function ($updateFileContent, $error) use (&$updateData, &$player) {
+		$self = $this;
+		$this->maniaControl->fileReader->loadFile($updateData->url, function ($updateFileContent, $error) use (&$self, &$updateData, &$player) {
 			$tempDir = ManiaControlDir . '/temp/';
 			if (!is_dir($tempDir)) {
 				mkdir($tempDir);
@@ -761,7 +767,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			if (!$bytes || $bytes <= 0) {
 				trigger_error("Couldn't save Update Zip.");
 				if ($player) {
-					$this->maniaControl->chat->sendError('Update failed: Couldn\'t save Update zip!', $player->login);
+					$self->maniaControl->chat->sendError('Update failed: Couldn\'t save Update zip!', $player->login);
 				}
 				return false;
 			}
@@ -770,7 +776,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			if ($result !== true) {
 				trigger_error("Couldn't open Update Zip. ({$result})");
 				if ($player) {
-					$this->maniaControl->chat->sendError('Update failed: Couldn\'t open Update zip!', $player->login);
+					$self->maniaControl->chat->sendError('Update failed: Couldn\'t open Update zip!', $player->login);
 				}
 				return false;
 			}
@@ -781,14 +787,14 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			@rmdir($tempDir);
 
 			//Set the Nightly Build Date
-			$this->setNightlyBuildDate($updateData->releaseDate);
+			$self->setNightlyBuildDate($updateData->releaseDate);
 
 			if ($player) {
-				$this->maniaControl->chat->sendSuccess('Update finished!', $player->login);
+				$self->maniaControl->chat->sendSuccess('Update finished!', $player->login);
 			}
-			$this->maniaControl->log("Update finished!");
+			$self->maniaControl->log("Update finished!");
 
-			$this->maniaControl->restart();
+			$self->maniaControl->restart();
 
 			return true;
 		});

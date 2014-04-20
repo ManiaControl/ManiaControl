@@ -586,27 +586,28 @@ class MapManager implements CallbackListener {
 	public function addMapFromMx($mapId, $login, $update = false) {
 		if (is_numeric($mapId)) {
 			// Check if map exists
-			$this->maniaControl->mapManager->mxManager->getMapInfo($mapId, function (MXMapInfo $mapInfo) use (&$login, &$update) {
+			$self = $this;
+			$this->maniaControl->mapManager->mxManager->getMapInfo($mapId, function (MXMapInfo $mapInfo) use (&$self, &$login, &$update) {
 				if (!$mapInfo || !isset($mapInfo->uploaded)) {
 					// Invalid id
-					$this->maniaControl->chat->sendError('Invalid MX-Id!', $login);
+					$self->maniaControl->chat->sendError('Invalid MX-Id!', $login);
 					return;
 				}
 
 				// TODO hardcoded during closed beta, later take just $mapInfo->url again
 				$url = 'http://' . $mapInfo->prefix . '.mania-exchange.com/' . $mapInfo->dir . '/download/' . $mapInfo->id;
-				if ($this->maniaControl->settingManager->getSetting($this->mxManager, ManiaExchangeManager::SETTING_MP3_BETA_TESTING)) {
+				if ($self->maniaControl->settingManager->getSetting($self->mxManager, ManiaExchangeManager::SETTING_MP3_BETA_TESTING)) {
 					$url .= '?key=t42kEMjzH7xpAjBFHAvEkC7rqAlw';
 				}
 
 				// Download the file
-				$this->maniaControl->fileReader->loadFile($url, function ($file, $error) use (&$login, &$mapInfo, &$update) {
+				$self->maniaControl->fileReader->loadFile($url, function ($file, $error) use (&$self, &$login, &$mapInfo, &$update) {
 					if (!$file) {
 						// Download error
-						$this->maniaControl->chat->sendError('Download failed!', $login);
+						$self->maniaControl->chat->sendError('Download failed!', $login);
 						return;
 					}
-					$this->processMapFile($file, $mapInfo, $login, $update);
+					$self->processMapFile($file, $mapInfo, $login, $update);
 				});
 			});
 		}

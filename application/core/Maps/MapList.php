@@ -545,18 +545,19 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				/** @var Map $map */
 				$votesPlugin->defineVote('switchmap', "Goto " . $map->name, true, $message);
 
-				$votesPlugin->startVote($player, 'switchmap', function ($result) use (&$votesPlugin, &$map) {
-					$this->maniaControl->chat->sendInformation('$sVote Successfully -> Map switched!');
+				$self = $this;
+				$votesPlugin->startVote($player, 'switchmap', function ($result) use (&$self, &$votesPlugin, &$map) {
+					$self->maniaControl->chat->sendInformation('$sVote Successfully -> Map switched!');
 					$votesPlugin->undefineVote('switchmap');
 
 					try {
-						$index = $this->maniaControl->mapManager->getMapIndex($map);
-						$this->maniaControl->client->jumpToMapIndex($index);
+						$index = $self->maniaControl->mapManager->getMapIndex($map);
+						$self->maniaControl->client->jumpToMapIndex($index);
 					} catch(Exception $e) {
 						//TODO temp added 19.04.2014
-						$this->maniaControl->errorHandler->triggerDebugNotice("Exception line 557 MapList.php" . $e->getMessage());
+						$self->maniaControl->errorHandler->triggerDebugNotice("Exception line 557 MapList.php" . $e->getMessage());
 
-						$this->maniaControl->chat->sendError("Error while Switching Map");
+						$self->maniaControl->chat->sendError("Error while Switching Map");
 					}
 				});
 				break;

@@ -655,23 +655,24 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 		$this->mxKarma['connectionInProgress'] = true;
 
-		$this->maniaControl->fileReader->loadFile($query, function ($data, $error) use ($mxKarmaCode) {
+		$self = $this;
+		$this->maniaControl->fileReader->loadFile($query, function ($data, $error) use (&$self, $mxKarmaCode) {
 			if (!$error) {
 				$data = json_decode($data);
 				if ($data->success) {
-					$this->mxKarma['session'] = $data->data;
-					$this->activateSession($mxKarmaCode);
+					$self->mxKarma['session'] = $data->data;
+					$self->activateSession($mxKarmaCode);
 				} else {
-					$this->maniaControl->log("Error while authenticating on Mania-Exchange Karma");
+					$self->maniaControl->log("Error while authenticating on Mania-Exchange Karma");
 					//TODO remove temp trigger
-					$this->maniaControl->errorHandler->triggerDebugNotice("Error while authenticating on Mania-Exchange Karma " . $data->data->message);
-					$this->mxKarma['connectionInProgress'] = false;
+					$self->maniaControl->errorHandler->triggerDebugNotice("Error while authenticating on Mania-Exchange Karma " . $data->data->message);
+					$self->mxKarma['connectionInProgress'] = false;
 				}
 			} else {
-				$this->maniaControl->log($error);
+				$self->maniaControl->log($error);
 				//TODO remove temp trigger
-				$this->maniaControl->errorHandler->triggerDebugNotice("Error while authenticating on Mania-Exchange Karma " . $error);
-				$this->mxKarma['connectionInProgress'] = false;
+				$self->maniaControl->errorHandler->triggerDebugNotice("Error while authenticating on Mania-Exchange Karma " . $error);
+				$self->mxKarma['connectionInProgress'] = false;
 			}
 		}, "application/json", 1000);
 	}
@@ -688,26 +689,27 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		$query .= '?sessionKey=' . urlencode($this->mxKarma['session']->sessionKey);
 		$query .= '&activationHash=' . urlencode($hash);
 
-		$this->maniaControl->fileReader->loadFile($query, function ($data, $error) use ($query) {
+		$self = $this;
+		$this->maniaControl->fileReader->loadFile($query, function ($data, $error) use (&$self, $query) {
 			if (!$error) {
 				$data = json_decode($data);
 				if ($data->success && $data->data->activated) {
-					$this->maniaControl->log("Successfully authenticated on Mania-Exchange Karma");
-					$this->mxKarma['connectionInProgress'] = false;
+					$self->maniaControl->log("Successfully authenticated on Mania-Exchange Karma");
+					$self->mxKarma['connectionInProgress'] = false;
 
 					//Fetch the Mx Karma Votes
-					$this->getMxKarmaVotes();
+					$self->getMxKarmaVotes();
 				} else {
-					$this->maniaControl->log("Error while authenticating on Mania-Exchange Karma " . $data->data->message);
+					$self->maniaControl->log("Error while authenticating on Mania-Exchange Karma " . $data->data->message);
 					//TODO remove temp trigger
-					$this->maniaControl->errorHandler->triggerDebugNotice("Error while authenticating on Mania-Exchange Karma " . $data->data->message . " url Query " . $query);
-					$this->mxKarma['connectionInProgress'] = false;
+					$self->maniaControl->errorHandler->triggerDebugNotice("Error while authenticating on Mania-Exchange Karma " . $data->data->message . " url Query " . $query);
+					$self->mxKarma['connectionInProgress'] = false;
 				}
 			} else {
 				//TODO remove temp trigger
-				$this->maniaControl->errorHandler->triggerDebugNotice("Error while authenticating on Mania-Exchange Karma " . $error);
-				$this->maniaControl->log($error);
-				$this->mxKarma['connectionInProgress'] = false;
+				$self->maniaControl->errorHandler->triggerDebugNotice("Error while authenticating on Mania-Exchange Karma " . $error);
+				$self->maniaControl->log($error);
+				$self->mxKarma['connectionInProgress'] = false;
 			}
 		}, "application/json", 1000);
 	}
@@ -756,33 +758,34 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		}
 
 		$content = json_encode($properties);
-		$this->maniaControl->fileReader->postData(self::MX_KARMA_URL . self::MX_KARMA_GETMAPRATING . "?sessionKey=" . urlencode($this->mxKarma['session']->sessionKey), function ($data, $error) use (&$player) {
+		$self = $this;
+		$this->maniaControl->fileReader->postData(self::MX_KARMA_URL . self::MX_KARMA_GETMAPRATING . "?sessionKey=" . urlencode($this->mxKarma['session']->sessionKey), function ($data, $error) use (&$self, &$player) {
 			if (!$error) {
 				$data = json_decode($data);
 				if ($data->success) {
 
 					//Fetch averages if its for the whole server
 					if (!$player) {
-						$this->mxKarma["voteCount"]       = $data->data->votecount;
-						$this->mxKarma["voteAverage"]     = $data->data->voteaverage;
-						$this->mxKarma["modeVoteCount"]   = $data->data->modevotecount;
-						$this->mxKarma["modeVoteAverage"] = $data->data->modevoteaverage;
+						$self->mxKarma["voteCount"]       = $data->data->votecount;
+						$self->mxKarma["voteAverage"]     = $data->data->voteaverage;
+						$self->mxKarma["modeVoteCount"]   = $data->data->modevotecount;
+						$self->mxKarma["modeVoteAverage"] = $data->data->modevoteaverage;
 					}
 
 					foreach($data->data->votes as $votes) {
-						$this->mxKarma["votes"][$votes->login] = $votes->vote;
+						$self->mxKarma["votes"][$votes->login] = $votes->vote;
 					}
 
-					$this->updateManialink = true;
-					$this->maniaControl->callbackManager->triggerCallback(self::CB_KARMA_MXUPDATED, $this->mxKarma);
-					$this->maniaControl->log("MX-Karma Votes successfully fetched");
+					$self->updateManialink = true;
+					$self->maniaControl->callbackManager->triggerCallback($self::CB_KARMA_MXUPDATED, $self->mxKarma);
+					$self->maniaControl->log("MX-Karma Votes successfully fetched");
 				} else {
-					$this->maniaControl->log("Error while fetching votes: " . $data->data->message);
+					$self->maniaControl->log("Error while fetching votes: " . $data->data->message);
 					//TODO remove temp trigger
-					$this->maniaControl->errorHandler->triggerDebugNotice("Error while fetching votes: " . $data->data->message . " " . self::MX_KARMA_URL . self::MX_KARMA_SAVEVOTES . "?sessionKey=" . urlencode($this->mxKarma['session']->sessionKey));
+					$self->maniaControl->errorHandler->triggerDebugNotice("Error while fetching votes: " . $data->data->message . " " . KarmaPlugin::MX_KARMA_URL . KarmaPlugin::MX_KARMA_SAVEVOTES . "?sessionKey=" . urlencode($self->mxKarma['session']->sessionKey));
 				}
 			} else {
-				$this->maniaControl->log($error);
+				$self->maniaControl->log($error);
 			}
 		}, $content, false, 'application/json');
 	}
@@ -911,18 +914,20 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		$properties['isimport']  = $import;
 
 		$content = json_encode($properties);
-		$this->maniaControl->fileReader->postData(self::MX_KARMA_URL . self::MX_KARMA_SAVEVOTES . "?sessionKey=" . urlencode($this->mxKarma['session']->sessionKey), function ($data, $error) {
+
+		$self = $this;
+		$this->maniaControl->fileReader->postData(self::MX_KARMA_URL . self::MX_KARMA_SAVEVOTES . "?sessionKey=" . urlencode($this->mxKarma['session']->sessionKey), function ($data, $error) use(&$self){
 			if (!$error) {
 				$data = json_decode($data);
 				if ($data->success) {
-					$this->maniaControl->log("Votes successfully permitted");
+					$self->maniaControl->log("Votes successfully permitted");
 				} else {
-					$this->maniaControl->log("Error while updating votes: " . $data->data->message);
+					$self->maniaControl->log("Error while updating votes: " . $data->data->message);
 					//TODO remove temp trigger
-					$this->maniaControl->errorHandler->triggerDebugNotice("Error while updating votes: " . $data->data->message . " " . self::MX_KARMA_URL . self::MX_KARMA_SAVEVOTES . "?sessionKey=" . urlencode($this->mxKarma['session']->sessionKey));
+					$self->maniaControl->errorHandler->triggerDebugNotice("Error while updating votes: " . $data->data->message . " " . KarmaPlugin::MX_KARMA_URL . $self::MX_KARMA_SAVEVOTES . "?sessionKey=" . urlencode($self->mxKarma['session']->sessionKey));
 				}
 			} else {
-				$this->maniaControl->log($error);
+				$self->maniaControl->log($error);
 			}
 		}, $content, false, 'application/json');
 	}

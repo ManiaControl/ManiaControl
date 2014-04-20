@@ -715,13 +715,14 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 
 				$votesPlugin->defineVote('forcespec', "Force $<" . $target->nickname . "$> Spec", true, $startMessage);
 
-				$votesPlugin->startVote($admin, 'forcespec', function ($result) use (&$votesPlugin, &$target) {
-					$this->maniaControl->chat->sendInformation('$sVote Successfully -> Player $<' . $target->nickname . '$> forced to Spectator!');
+				$self = $this;
+				$votesPlugin->startVote($admin, 'forcespec', function ($result) use (&$self, &$votesPlugin, &$target) {
+					$self->maniaControl->chat->sendInformation('$sVote Successfully -> Player $<' . $target->nickname . '$> forced to Spectator!');
 					$votesPlugin->undefineVote('forcespec');
 
 					try {
-						$this->maniaControl->client->forceSpectator($target->login, PlayerActions::SPECTATOR_BUT_KEEP_SELECTABLE);
-						$this->maniaControl->client->spectatorReleasePlayerSlot($target->login);
+						$self->maniaControl->client->forceSpectator($target->login, PlayerActions::SPECTATOR_BUT_KEEP_SELECTABLE);
+						$self->maniaControl->client->spectatorReleasePlayerSlot($target->login);
 					} catch(PlayerIsNotSpectatorException $e) {
 					}
 				});
@@ -738,13 +739,14 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 
 				$votesPlugin->defineVote('kick', "Kick $<" . $target->nickname . "$>", true, $startMessage);
 
-				$votesPlugin->startVote($admin, 'kick', function ($result) use (&$votesPlugin, &$target) {
-					$this->maniaControl->chat->sendInformation('$sVote Successfully -> $<' . $target->nickname . '$> got Kicked!');
+				$self = $this;
+				$votesPlugin->startVote($admin, 'kick', function ($result) use (&$self, &$votesPlugin, &$target) {
+					$self->maniaControl->chat->sendInformation('$sVote Successfully -> $<' . $target->nickname . '$> got Kicked!');
 					$votesPlugin->undefineVote('kick');
 
 					$message = '$39F You got kicked due a Public vote!$z ';
 					try {
-						$this->maniaControl->client->kick($target->login, $message);
+						$self->maniaControl->client->kick($target->login, $message);
 					} catch(LoginUnknownException $e) {
 					}
 				});

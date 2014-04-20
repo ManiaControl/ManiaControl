@@ -145,7 +145,7 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 			if (is_array($data)) {
 				foreach($data as $index => $methodResponse) {
 					if (xmlrpc_is_fault($methodResponse)) {
-						$self->handleXmlRpcFault($methodResponse, self::DEDIMANIA_OPENSESSION);
+						$self->handleXmlRpcFault($methodResponse, Dedimania::DEDIMANIA_OPENSESSION);
 					} else if ($index <= 0) {
 						$responseData                   = $methodResponse[0];
 						$self->dedimaniaData->sessionId = $responseData['SessionId'];
@@ -213,7 +213,7 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 			if (is_array($data)) {
 				foreach($data as $index => $methodResponse) {
 					if (xmlrpc_is_fault($methodResponse)) {
-						$self->handleXmlRpcFault($methodResponse, self::DEDIMANIA_PLAYERCONNECT);
+						$self->handleXmlRpcFault($methodResponse, Dedimania::DEDIMANIA_PLAYERCONNECT);
 					} else if ($index <= 0) {
 						$responseData = $methodResponse[0];
 						$self->dedimaniaData->addPlayer(new DedimaniaPlayer($responseData));
@@ -223,8 +223,8 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 							$self->fetchDedimaniaRecords(true);
 						}
 					}
-					if ($self->maniaControl->settingManager->getSetting($self, self::SETTING_WIDGET_ENABLE)) {
-						$manialink = $this->buildManialink();
+					if ($self->maniaControl->settingManager->getSetting($self, Dedimania::SETTING_WIDGET_ENABLE)) {
+						$manialink = $self->buildManialink();
 						$self->maniaControl->manialinkManager->sendManialink($manialink, $player->login);
 					}
 				}
@@ -260,7 +260,7 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 			if (is_array($data)) {
 				foreach($data as $methodResponse) {
 					if (xmlrpc_is_fault($methodResponse)) {
-						$self->handleXmlRpcFault($methodResponse, self::DEDIMANIA_PLAYERDISCONNECT);
+						$self->handleXmlRpcFault($methodResponse, Dedimania::DEDIMANIA_PLAYERDISCONNECT);
 					}
 				}
 			} else {
@@ -334,11 +334,11 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 				$self->maniaControl->log("Dedimania Error: " . $error);
 			}
 
-			$data = $this->decode($data);
+			$data = $self->decode($data);
 			if (is_array($data)) {
 				foreach($data as $index => $methodResponse) {
 					if (xmlrpc_is_fault($methodResponse)) {
-						$self->handleXmlRpcFault($methodResponse, self::DEDIMANIA_SETCHALLENGETIMES);
+						$self->handleXmlRpcFault($methodResponse, Dedimania::DEDIMANIA_SETCHALLENGETIMES);
 					} else {
 						if ($index <= 0) {
 							// Called method response
@@ -351,6 +351,7 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 
 						// Warnings and TTR
 						$errors = $methodResponse[0]['methods'][0]['errors'];
+						//TODO ?
 					}
 				}
 			}
@@ -384,7 +385,7 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 			if (is_array($data)) {
 				foreach($data as $methodResponse) {
 					if (xmlrpc_is_fault($methodResponse)) {
-						$self->handleXmlRpcFault($methodResponse, self::DEDIMANIA_UPDATESERVERPLAYERS);
+						$self->handleXmlRpcFault($methodResponse, Dedimania::DEDIMANIA_UPDATESERVERPLAYERS);
 					}
 				}
 			} else {
@@ -616,7 +617,7 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 			if (is_array($data)) {
 				foreach($data as $index => $methodResponse) {
 					if (xmlrpc_is_fault($methodResponse)) {
-						$self->handleXmlRpcFault($methodResponse, self::DEDIMANIA_GETRECORDS);
+						$self->handleXmlRpcFault($methodResponse, Dedimania::DEDIMANIA_GETRECORDS);
 						return false;
 					} else if ($index <= 0) {
 						$responseData                       = $methodResponse[0];
@@ -633,8 +634,8 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 					}
 				}
 			}
-			$this->updateManialink = true;
-			$this->maniaControl->callbackManager->triggerCallback(self::CB_DEDIMANIA_UPDATED, $this->dedimaniaData->records);
+			$self->updateManialink = true;
+			$self->maniaControl->callbackManager->triggerCallback(Dedimania::CB_DEDIMANIA_UPDATED, $self->dedimaniaData->records);
 			return true;
 		}, $content, true);
 
@@ -662,7 +663,7 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 			if (is_array($data)) {
 				foreach($data as $methodResponse) {
 					if (xmlrpc_is_fault($methodResponse)) {
-						$self->handleXmlRpcFault($methodResponse, self::DEDIMANIA_CHECKSESSION);
+						$self->handleXmlRpcFault($methodResponse, Dedimania::DEDIMANIA_CHECKSESSION);
 					} else {
 						$responseData = $methodResponse[0];
 						if (is_bool($responseData)) {
