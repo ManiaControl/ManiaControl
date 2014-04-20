@@ -38,10 +38,6 @@ class PluginManager {
 
 		$this->pluginMenu = new PluginMenu($maniaControl);
 		$this->maniaControl->configurator->addMenu($this->pluginMenu);
-
-		/*$this->fetchPluginList(function ($data) {
-			var_dump($data);
-		});*/
 	}
 
 	/**
@@ -353,16 +349,12 @@ class PluginManager {
 	 * @param      $function
 	 * @param bool $ignoreVersion
 	 */
-	private function fetchPluginList($function) {
+	public function fetchPluginList($function) {
 		$url = ManiaControl::URL_WEBSERVICE . 'plugins';
 
 		$this->maniaControl->fileReader->loadFile($url, function ($dataJson, $error) use (&$function) {
 			$data = json_decode($dataJson);
-			if (!$data || !isset($data[0])) {
-				return;
-			}
-
-			call_user_func($function, $data[0]);
+			call_user_func($function, $data, $error);
 		});
 	}
 }

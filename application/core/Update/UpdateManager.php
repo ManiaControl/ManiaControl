@@ -3,8 +3,8 @@
 namespace ManiaControl\Update;
 
 use ManiaControl\Admin\AuthenticationManager;
-use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\CallbackListener;
+use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\Files\FileUtil;
@@ -17,9 +17,9 @@ use ManiaControl\Plugins\PluginMenu;
 /**
  * Manager checking for ManiaControl Core and Plugin Updates
  *
- * @author steeffeen & kremsy
+ * @author    steeffeen & kremsy
  * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class UpdateManager implements CallbackListener, CommandListener, TimerListener {
 	/*
@@ -98,7 +98,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		}
 
 		//Check if a new Core Update is Available
-		$self = $this;
+		$self         = $this;
 		$maniaControl = $this->maniaControl;
 		$this->checkCoreUpdateAsync(function (UpdateData $updateData) use ($self, $maniaControl, $time) {
 			$buildDate   = strtotime($self->getCurrentBuildDate());
@@ -162,7 +162,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		}
 
 		$version = $this->maniaControl->client->getVersion();
-		if($this->coreUpdateData->minDedicatedBuild > $version->build){
+		if ($this->coreUpdateData->minDedicatedBuild > $version->build) {
 			return;
 		}
 
@@ -203,7 +203,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 				}
 
 				$version = $self->maniaControl->client->getVersion();
-				if($updateData->minDedicatedBuild > $version->build){
+				if ($updateData->minDedicatedBuild > $version->build) {
 					$self->maniaControl->chat->sendError("No new Build for this Server-version available!", $player->login);
 					return;
 				}
@@ -220,7 +220,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 				}
 
 				$version = $self->maniaControl->client->getVersion();
-				if($updateData->minDedicatedBuild > $version->build){
+				if ($updateData->minDedicatedBuild > $version->build) {
 					$self->maniaControl->chat->sendError("No new Build for this Server-version available!", $player->login);
 					return;
 				}
@@ -246,27 +246,27 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 * @param array $callback
 	 */
 	public function handleManialinkPageAnswer(array $callback) {
-		$actionId    = $callback[1][2];
-		$update      = (strpos($actionId, PluginMenu::ACTION_PREFIX_UPDATEPLUGIN) === 0);
-		$install     = (strpos($actionId, PluginInstallMenu::ACTION_PREFIX_INSTALLPLUGIN) === 0);
+		$actionId = $callback[1][2];
+		$update   = (strpos($actionId, PluginMenu::ACTION_PREFIX_UPDATEPLUGIN) === 0);
+		$install  = (strpos($actionId, PluginInstallMenu::ACTION_PREFIX_INSTALLPLUGIN) === 0);
 
 		$login  = $callback[1][1];
 		$player = $this->maniaControl->playerManager->getPlayer($login);
 
-		if($update) {
+		if ($update) {
 			$pluginClass = substr($actionId, strlen(PluginMenu::ACTION_PREFIX_UPDATEPLUGIN));
-			if($pluginClass == 'All') {
+			if ($pluginClass == 'All') {
 				$this->checkPluginsUpdate($player);
 			} else {
 				$newUpdate = $this->checkPluginUpdate($pluginClass);
-				if($newUpdate != false) {
+				if ($newUpdate != false) {
 					$newUpdate->pluginClass = $pluginClass;
 					$this->updatePlugin($newUpdate, $player, true);
 				}
 			}
 		}
 
-		if($install) {
+		if ($install) {
 			$pluginId = substr($actionId, strlen(PluginInstallMenu::ACTION_PREFIX_INSTALLPLUGIN));
 
 			$url            = ManiaControl::URL_WEBSERVICE . 'plugins?id=' . $pluginId;
@@ -328,13 +328,13 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		}
 
 		$self = $this;
-		$this->checkCoreUpdateAsync(function (UpdateData $updateData) use (&$self,&$player) {
+		$this->checkCoreUpdateAsync(function (UpdateData $updateData) use (&$self, &$player) {
 			if (!$updateData) {
 				$self->maniaControl->chat->sendError('Update is currently not possible!', $player->login);
 				return;
 			}
 			$version = $self->maniaControl->client->getVersion();
-			if($updateData->minDedicatedBuild > $version->build){
+			if ($updateData->minDedicatedBuild > $version->build) {
 				$self->maniaControl->chat->sendError("ManiaControl update version requires a newer Dedicated Server version!", $player->login);
 				return;
 			}
@@ -368,36 +368,51 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 
 	/**
 	 * Checks if there are outdated plugins active.
+	 *
 	 * @param Player $player
 	 */
 	public function checkPluginsUpdate(Player $player = null) {
 		$this->maniaControl->log('[UPDATE] Checking plugins for newer versions ...');
-		$outdatedPlugins = array();
 
-		foreach ($this->maniaControl->pluginManager->getPluginClasses() as $pluginClass) {
-			$pluginData = $this->checkPluginUpdate($pluginClass);
-			if ($pluginData != false) {
-				$pluginData->pluginClass = $pluginClass;
-				$outdatedPlugins[] = $pluginData;
-				$this->maniaControl->log('[UPDATE] '.$pluginClass.': There is a newer version available: '.$pluginData->currentVersion->version.'!');
-			}
-		}
+		$self = $this;
+		$this->maniaControl->pluginManager->fetchPluginList(function ($data, $error) use (&$self, &$player) {
+			$outdatedPlugins = array();
 
-		if (count($outdatedPlugins) > 0) {
-			$this->maniaControl->log('[UPDATE] Checking plugins: COMPLETE, there are '.count($outdatedPlugins).' outdated plugins, now updating ...');
-			if ($player) {
-				$this->maniaControl->chat->sendInformation('Checking plugins: COMPLETE, there are '.count($outdatedPlugins).' outdated plugins, now updating ...', $player->login);
+			if (!$data || $error) {
+				$self->maniaControl->log('[UPDATE] Error while checking plugins for newer version');
+				return;
 			}
-			$this->performPluginsBackup();
-			foreach ($outdatedPlugins as $plugin) {
-				$this->updatePlugin($plugin, $player);
+
+			$pluginClasses = $self->maniaControl->pluginManager->getPluginClasses();
+
+			foreach($data as $plugin) {
+				foreach($pluginClasses as $pluginClass) {
+					$id = $pluginClass::getId();
+					if ($plugin->id == $id) {
+						if ($plugin->currentVersion->version > $pluginClass::getVersion()) {
+							$outdatedPlugins[] = $plugin;
+							$self->maniaControl->log('[UPDATE] ' . $pluginClass . ': There is a newer version available: ' . $plugin->currentVersion->version . '!');
+						}
+					}
+				}
 			}
-		} else {
-			$this->maniaControl->log('[UPDATE] Checking plugins: COMPLETE, all plugins are up-to-date!');
-			if ($player) {
-				$this->maniaControl->chat->sendInformation('Checking plugins: COMPLETE, all plugins are up-to-date!', $player->login);
+
+			if (count($outdatedPlugins) > 0) {
+				$self->maniaControl->log('[UPDATE] Checking plugins: COMPLETE, there are ' . count($outdatedPlugins) . ' outdated plugins, now updating ...');
+				if ($player) {
+					$self->maniaControl->chat->sendInformation('Checking plugins: COMPLETE, there are ' . count($outdatedPlugins) . ' outdated plugins, now updating ...', $player->login);
+				}
+				$self->performPluginsBackup();
+				foreach($outdatedPlugins as $plugin) {
+					$self->updatePlugin($plugin, $player);
+				}
+			} else {
+				$self->maniaControl->log('[UPDATE] Checking plugins: COMPLETE, all plugins are up-to-date!');
+				if ($player) {
+					$self->maniaControl->chat->sendInformation('Checking plugins: COMPLETE, all plugins are up-to-date!', $player->login);
+				}
 			}
-		}
+		});
 	}
 
 	/**
@@ -432,8 +447,8 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 * @return mixed
 	 */
 	public function getPluginsUpdates() {
-		$pluginUpdates  = array();
-		$pluginsWS      = array();
+		$pluginUpdates = array();
+		$pluginsWS     = array();
 
 		$url            = ManiaControl::URL_WEBSERVICE . 'plugins';
 		$dataJson       = FileUtil::loadFile($url);
@@ -449,14 +464,14 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		/** @var  Plugin $pluginClass */
 		foreach($this->maniaControl->pluginManager->getPluginClasses() as $pluginClass) {
 			$pluginId = $pluginClass::getId();
-			if(array_key_exists($pluginId, $pluginsWS)) {
-				if($pluginsWS[$pluginId]->currentVersion->version > $pluginClass::getVersion()) {
+			if (array_key_exists($pluginId, $pluginsWS)) {
+				if ($pluginsWS[$pluginId]->currentVersion->version > $pluginClass::getVersion()) {
 					$pluginUpdates[$pluginId] = $pluginsWS[$pluginId];
 				}
 			}
 		}
 
-		if(empty($pluginUpdates)) {
+		if (empty($pluginUpdates)) {
 			return false;
 		}
 		return $pluginUpdates;
@@ -472,9 +487,9 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	private function updatePlugin($pluginData, Player $player = null, $reopen = false) {
 		$self = $this;
 		$this->maniaControl->fileReader->loadFile($pluginData->currentVersion->url, function ($updateFileContent, $error) use (&$self, &$updateData, &$player, &$pluginData, &$reopen) {
-			$self->maniaControl->log('[UPDATE] Now updating '.$pluginData->name.' ...');
+			$self->maniaControl->log('[UPDATE] Now updating ' . $pluginData->name . ' ...');
 			if ($player) {
-				$self->maniaControl->chat->sendInformation('Now updating '.$pluginData->name.' ...', $player->login);
+				$self->maniaControl->chat->sendInformation('Now updating ' . $pluginData->name . ' ...', $player->login);
 			}
 			$tempDir = ManiaControlDir . '/temp/';
 			if (!is_dir($tempDir)) {
@@ -500,14 +515,14 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 				return false;
 			}
 
-			$zip->extractTo(ManiaControlDir.'/plugins');
+			$zip->extractTo(ManiaControlDir . '/plugins');
 			$zip->close();
 			unlink($updateFileName);
 			@rmdir($tempDir);
 
-			$self->maniaControl->log('[UPDATE] Successfully updated '.$pluginData->name.'!');
+			$self->maniaControl->log('[UPDATE] Successfully updated ' . $pluginData->name . '!');
 			if ($player) {
-				$self->maniaControl->chat->sendSuccess('Successfully updated '.$pluginData->name.'!', $player->login);
+				$self->maniaControl->chat->sendSuccess('Successfully updated ' . $pluginData->name . '!', $player->login);
 				$self->maniaControl->pluginManager->deactivatePlugin($pluginData->pluginClass);
 				$self->maniaControl->pluginManager->activatePlugin($pluginData->pluginClass);
 
@@ -530,10 +545,10 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		$self = $this;
 		$this->maniaControl->fileReader->loadFile($pluginData->currentVersion->url, function ($installFileContent, $error) use (&$self, &$updateData, &$player, &$pluginData, &$reopen) {
 			$pluginsDirectory = ManiaControlDir . '/plugins/';
-			$pluginFiles = scandir($pluginsDirectory);
+			$pluginFiles      = scandir($pluginsDirectory);
 
-			$self->maniaControl->log('[UPDATE] Now installing '.$pluginData->name.' ...');
-			$self->maniaControl->chat->sendInformation('Now installing '.$pluginData->name.' ...', $player->login);
+			$self->maniaControl->log('[UPDATE] Now installing ' . $pluginData->name . ' ...');
+			$self->maniaControl->chat->sendInformation('Now installing ' . $pluginData->name . ' ...', $player->login);
 
 			$tempDir = ManiaControlDir . '/temp/';
 			if (!is_dir($tempDir)) {
@@ -555,13 +570,13 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 				return false;
 			}
 
-			$zip->extractTo(ManiaControlDir.'/plugins');
+			$zip->extractTo(ManiaControlDir . '/plugins');
 			$zip->close();
 			unlink($installFileName);
 			@rmdir($tempDir);
 
 			$pluginFilesAfter = scandir($pluginsDirectory);
-			$newFiles = array_diff($pluginFilesAfter, $pluginFiles);
+			$newFiles         = array_diff($pluginFilesAfter, $pluginFiles);
 
 			$classesBefore = get_declared_classes();
 			foreach($newFiles as $newFile) {
@@ -601,8 +616,8 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 				}
 			}
 
-			$self->maniaControl->log('[UPDATE] Successfully installed '.$pluginData->name.'!');
-			$self->maniaControl->chat->sendSuccess('Successfully installed '.$pluginData->name.'!', $player->login);
+			$self->maniaControl->log('[UPDATE] Successfully installed ' . $pluginData->name . '!');
+			$self->maniaControl->chat->sendSuccess('Successfully installed ' . $pluginData->name . '!', $player->login);
 
 			if ($reopen) {
 				$menuId = $self->maniaControl->configurator->getMenuId('Install Plugins');
@@ -613,7 +628,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 
 	/**
 	 * Set Core Update Data
-	 * 
+	 *
 	 * @param UpdateData $coreUpdateData
 	 */
 	public function setCoreUpdateData(UpdateData $coreUpdateData = null) {
@@ -639,7 +654,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			if (!$ignoreVersion && $updateData->version <= ManiaControl::VERSION) {
 				return;
 			}
-			
+
 			call_user_func($function, $updateData);
 		});
 	}
@@ -687,11 +702,11 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			return false;
 		}
 		$excludes   = array('.', '..');
-		$pathInfo   = pathInfo(ManiaControlDir.'/plugins');
+		$pathInfo   = pathInfo(ManiaControlDir . '/plugins');
 		$parentPath = $pathInfo['dirname'] . '/';
 		$dirName    = $pathInfo['basename'];
 		$backupZip->addEmptyDir($dirName);
-		$this->zipDirectory($backupZip, ManiaControlDir.'/plugins', strlen($parentPath), $excludes);
+		$this->zipDirectory($backupZip, ManiaControlDir . '/plugins', strlen($parentPath), $excludes);
 		$backupZip->close();
 		return true;
 	}
