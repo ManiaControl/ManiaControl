@@ -9,14 +9,14 @@ use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Statistics\StatisticManager;
-use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
+use Maniaplanet\DedicatedServer\Xmlrpc\LoginUnknownException;
 
 /**
  * Class managing Players
  *
- * @author kremsy & steeffeen
+ * @author    kremsy & steeffeen
  * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class PlayerManager implements CallbackListener, TimerListener {
 	/*
@@ -152,10 +152,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 			$player     = new Player($playerInfo);
 
 			$this->addPlayer($player);
-		} catch(Exception $e) {
-			if ($e->getMessage() != 'Login unknown.') {
-				throw $e;
-			}
+		} catch(LoginUnknownException $e) {
 		}
 	}
 
@@ -167,12 +164,15 @@ class PlayerManager implements CallbackListener, TimerListener {
 	public function playerDisconnect(array $callback) {
 		$login  = $callback[1][0];
 		$player = $this->removePlayer($login);
-		if (!$player) return;
-		
+		if (!$player) {
+			return;
+		}
+
 		// Trigger own callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERDISCONNECT, $player);
 
-		if ($player->isFakePlayer()) return;
+		if ($player->isFakePlayer())
+			return;
 
 		$played     = Formatter::formatTimeH(time() - $player->joinTime);
 		$logMessage = "Player left: {$player->login} / {$player->nickname} Playtime: {$played}";
@@ -190,7 +190,8 @@ class PlayerManager implements CallbackListener, TimerListener {
 	 */
 	public function playerInfoChanged(array $callback) {
 		$player = $this->getPlayer($callback[1][0]['Login']);
-		if (!$player) return;
+		if (!$player)
+			return;
 
 		$player->ladderRank = $callback[1][0]["LadderRanking"];
 		$player->teamId     = $callback[1][0]["TeamId"];
@@ -275,15 +276,20 @@ class PlayerManager implements CallbackListener, TimerListener {
 	/**
 	 * Gets a Player by his index
 	 *
-	 * @param $index
+	 * @param      $index
+	 * @param bool $connectedPlayersOnly
 	 * @return Player|null
 	 */
-	public function getPlayerByIndex($index) {
+	public function getPlayerByIndex($index, $connectedPlayersOnly = false) {
 		foreach($this->players as $player) {
 			/** @var Player $player */
 			if ($player->index == $index) {
 				return $player;
 			}
+		}
+
+		if ($connectedPlayersOnly) {
+			return null;
 		}
 		//Player is not online -> get Player from Database
 		return $this->getPlayerFromDatabaseByIndex($index);
@@ -293,10 +299,14 @@ class PlayerManager implements CallbackListener, TimerListener {
 	 * Get a Player by Login
 	 *
 	 * @param string $login
-	 * @return \ManiaControl\Players\Player
+	 * @param bool   $connectedPlayersOnly
+	 * @return Player|null
 	 */
-	public function getPlayer($login) {
+	public function getPlayer($login, $connectedPlayersOnly = false) {
 		if (!isset($this->players[$login])) {
+			if ($connectedPlayersOnly) {
+				return null;
+			}
 			return $this->getPlayerFromDatabaseByLogin($login);
 		}
 		return $this->players[$login];
