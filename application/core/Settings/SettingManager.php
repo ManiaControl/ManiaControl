@@ -9,9 +9,9 @@ use ManiaControl\ManiaControl;
 /**
  * Class managing Settings and Configurations
  *
- * @author steeffeen & kremsy
+ * @author    steeffeen & kremsy
  * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class SettingManager implements CallbackListener {
 	/*
@@ -30,6 +30,7 @@ class SettingManager implements CallbackListener {
 	 */
 	private $maniaControl = null;
 	private $arrayDelimiter = ';;';
+	private $storedSettings = array();
 
 	/**
 	 * Construct a new Setting Manager
@@ -56,10 +57,10 @@ class SettingManager implements CallbackListener {
 	 * @return bool
 	 */
 	private function initTables() {
-		$mysqli                = $this->maniaControl->database->mysqli;
-		$defaultType           = "'" . self::TYPE_STRING . "'";
-		$typeSet               = $defaultType . ",'" . self::TYPE_INT . "','" . self::TYPE_REAL . "','" . self::TYPE_BOOL . "','" . self::TYPE_ARRAY . "'";
-		$settingTableQuery     = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_SETTINGS . "` (
+		$mysqli            = $this->maniaControl->database->mysqli;
+		$defaultType       = "'" . self::TYPE_STRING . "'";
+		$typeSet           = $defaultType . ",'" . self::TYPE_INT . "','" . self::TYPE_REAL . "','" . self::TYPE_BOOL . "','" . self::TYPE_ARRAY . "'";
+		$settingTableQuery = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_SETTINGS . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
 				`class` varchar(100) NOT NULL,
 				`setting` varchar(150) NOT NULL,
@@ -70,21 +71,12 @@ class SettingManager implements CallbackListener {
 				PRIMARY KEY (`index`),
 				UNIQUE KEY `settingId` (`class`,`setting`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Settings and Configurations' AUTO_INCREMENT=1;";
-		$result = $mysqli->query($settingTableQuery);
+		$result            = $mysqli->query($settingTableQuery);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error, E_USER_ERROR);
 		}
 
-		// TODO: remove before release
-		$settingTableChangesQuery = "ALTER TABLE  `".self::TABLE_SETTINGS."`
-				MODIFY `class` VARCHAR(100) NOT NULL,
-				MODIFY `setting` VARCHAR(150) NOT NULL;";
-		$result2 = $mysqli->query($settingTableChangesQuery);
-		if ($mysqli->error) {
-			trigger_error($mysqli->error);
-		}
-
-		return $result && $result2;
+		return $result;
 	}
 
 	/**
@@ -258,7 +250,13 @@ class SettingManager implements CallbackListener {
 	 * @return mixed
 	 */
 	public function getSetting($object, $settingName, $default = null) {
-		$className        = $this->getClassName($object);
+		$className = $this->getClassName($object);
+
+		//Check if setting is already in the ram
+		if (isset($this->storedSettings[$className . $settingName])) {
+			return $this->storedSettings[$className . $settingName];
+		}
+
 		$mysqli           = $this->maniaControl->database->mysqli;
 		$settingQuery     = "SELECT `type`, `value` FROM `" . self::TABLE_SETTINGS . "`
 				WHERE `class` = ?
@@ -284,6 +282,9 @@ class SettingManager implements CallbackListener {
 		$settingStatement->free_result();
 		$settingStatement->close();
 		$setting = $this->castSetting($type, $value);
+
+		//Store setting in the ram
+		$this->storedSettings[$className . $settingName] = $setting;
 		return $setting;
 	}
 
@@ -316,6 +317,11 @@ class SettingManager implements CallbackListener {
 			return false;
 		}
 		$settingStatement->close();
+
+		//FIXME store changed value
+		if (isset($this->storedSettings[$className . $settingName])) {
+			unset($this->storedSettings[$className . $settingName]);
+		}
 
 		//Trigger settings changed Callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_SETTINGS_CHANGED, $className, $settingName, $value);
