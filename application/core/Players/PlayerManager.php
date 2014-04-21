@@ -54,11 +54,12 @@ class PlayerManager implements CallbackListener, TimerListener {
 		$this->maniaControl = $maniaControl;
 		$this->initTables();
 
-		$this->playerCommands = new PlayerCommands($maniaControl);
-		$this->playerActions  = new PlayerActions($maniaControl);
-		$this->playerDetailed = new PlayerDetailed($maniaControl);
-		$this->playerList     = new PlayerList($this->maniaControl);
-		$this->adminLists     = new AdminLists($this->maniaControl);
+		$this->playerCommands    = new PlayerCommands($maniaControl);
+		$this->playerActions     = new PlayerActions($maniaControl);
+		$this->playerDetailed    = new PlayerDetailed($maniaControl);
+		$this->playerDataManager = new PlayerDataManager($maniaControl);
+		$this->playerList        = new PlayerList($maniaControl);
+		$this->adminLists        = new AdminLists($maniaControl);
 
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES, true);
@@ -171,8 +172,9 @@ class PlayerManager implements CallbackListener, TimerListener {
 		// Trigger own callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERDISCONNECT, $player);
 
-		if ($player->isFakePlayer())
+		if ($player->isFakePlayer()) {
 			return;
+		}
 
 		$played     = Formatter::formatTimeH(time() - $player->joinTime);
 		$logMessage = "Player left: {$player->login} / {$player->nickname} Playtime: {$played}";
