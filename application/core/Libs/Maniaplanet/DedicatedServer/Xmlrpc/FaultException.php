@@ -24,9 +24,12 @@ class FaultException extends Exception
 			case 'Change in progress.':
 				return new ChangeInProgressException($faultString, $faultCode);
 			case 'The player is not a spectator':
+			case 'The player is not a spectator.':
 				return new PlayerIsNotSpectatorException($faultString, $faultCode);
 			case 'Not in Team mode.':
 				return new NotInTeamModeException($faultString, $faultCode);
+			case 'The map isn\'t in the current selection.':
+				return new MapNotInCurrentSelectionException($faultString, $faultCode);
 		}
 
 		return new self($faultString, $faultCode);
@@ -40,4 +43,6 @@ class NotInScriptModeException extends FaultException {}
 class ChangeInProgressException extends FaultException {}
 class PlayerIsNotSpectatorException extends FaultException {}
 class NotInTeamModeException extends FaultException {}
+class MapNotInCurrentSelectionException extends FaultException{}
+
 ?>

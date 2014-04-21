@@ -23,7 +23,6 @@ use ManiaControl\Settings\SettingManager;
 use ManiaControl\Statistics\StatisticManager;
 use ManiaControl\Update\UpdateManager;
 use Maniaplanet\DedicatedServer\Connection;
-use Maniaplanet\DedicatedServer\Transport\TransportException;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 use Maniaplanet\DedicatedServer\Xmlrpc\NotInScriptModeException;
 
