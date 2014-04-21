@@ -14,6 +14,7 @@ use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\InvalidArgumentException;
 use Maniaplanet\DedicatedServer\Xmlrpc\CouldNotWritePlaylistFileException;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
+use Maniaplanet\DedicatedServer\Xmlrpc\MapNotInCurrentSelectionException;
 use Maniaplanet\DedicatedServer\Xmlrpc\StartIndexOutOfBoundException;
 
 /**
@@ -238,7 +239,11 @@ class MapManager implements CallbackListener {
 		}
 
 		// Remove map
-		$this->maniaControl->client->removeMap($map->fileName);
+		try{
+			$this->maniaControl->client->removeMap($map->fileName);
+		}catch(MapNotInCurrentSelectionException $e){
+		}
+
 
 		if ($eraseFile) {
 			// Check if ManiaControl can even write to the maps dir
