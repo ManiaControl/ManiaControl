@@ -285,6 +285,7 @@ class ManiaControl implements CommandListener, TimerListener {
 		$this->log('Restarting ManiaControl!');
 
 		// Execute start script in background
+		// TODO: restart the .php script itself ($_SERVER['scriptname'] or something + $argv)
 		if ($this->getOS(self::OS_UNIX)) {
 			$command = 'sh ' . escapeshellarg(ManiaControlDir . '/ManiaControl.sh') . ' > /dev/null &';
 			exec($command);
