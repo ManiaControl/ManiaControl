@@ -178,10 +178,6 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	 * @param $time
 	 */
 	public function handle1Second($time) {
-		$this->maniaControl->playerManager->playerDataManager->defineMetaData($this, "Player Balance", 0.25, "hallo");
-
-		$this->maniaControl->playerManager->playerDataManager->insertPlayerData($this, "Player Balance", $this->maniaControl->playerManager->getPlayer("kremsy"), 200, $this->maniaControl->server->index);
-
 		if (!$this->updateManialink) {
 			return;
 		}
