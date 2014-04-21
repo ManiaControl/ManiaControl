@@ -675,6 +675,7 @@ class MapManager implements CallbackListener {
 			$this->maniaControl->client->checkMapForCurrentServerParams($relativeMapFileName);
 		} catch(Exception $e) {
 			//TODO temp added 19.04.2014
+			//TODO except appeared: Map not complete. (wait for possible others)
 			$this->maniaControl->errorHandler->triggerDebugNotice("Exception line 673 MapManager" . $e->getMessage());
 
 			trigger_error("Couldn't check if map is valid ('{$relativeMapFileName}'). " . $e->getMessage());
