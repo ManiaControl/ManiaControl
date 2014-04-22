@@ -14,6 +14,7 @@ use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\InvalidArgumentException;
 use Maniaplanet\DedicatedServer\Xmlrpc\CouldNotWritePlaylistFileException;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
+use Maniaplanet\DedicatedServer\Xmlrpc\MapNotCompatibleOrCompleteException;
 use Maniaplanet\DedicatedServer\Xmlrpc\MapNotInCurrentSelectionException;
 use Maniaplanet\DedicatedServer\Xmlrpc\StartIndexOutOfBoundException;
 
@@ -673,11 +674,7 @@ class MapManager implements CallbackListener {
 		// Check for valid map
 		try {
 			$this->maniaControl->client->checkMapForCurrentServerParams($relativeMapFileName);
-		} catch(Exception $e) {
-			//TODO temp added 19.04.2014
-			//TODO except appeared: Map not complete. (wait for possible others)
-			$this->maniaControl->errorHandler->triggerDebugNotice("Exception line 673 MapManager" . $e->getMessage());
-
+		} catch(MapNotCompatibleOrCompleteException $e) {
 			trigger_error("Couldn't check if map is valid ('{$relativeMapFileName}'). " . $e->getMessage());
 			$this->maniaControl->chat->sendError('Wrong MapType or not validated!', $login);
 			return;

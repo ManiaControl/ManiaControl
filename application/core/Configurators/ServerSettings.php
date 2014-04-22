@@ -14,6 +14,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
+use Maniaplanet\DedicatedServer\Xmlrpc\LadderModeUnknownException;
 
 /**
  * Class offering a Configurator for Server Settings
@@ -333,7 +334,13 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		if (!$newSettings) {
 			return true;
 		}
-		$this->maniaControl->client->setServerOptions($newSettings);
+
+		try {
+			$this->maniaControl->client->setServerOptions($newSettings);
+		} catch(LadderModeUnknownException $e) {
+			$this->maniaControl->chat->sendError("Unknown Ladder-Mode");
+			return false;
+		}
 
 		// Save Settings into Database
 		$mysqli = $this->maniaControl->database->mysqli;
@@ -352,13 +359,6 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			return false;
 		}
 
-		// Notifications
-		//TODO: clean up those comments
-		//$settingsCount = count($newSettings);
-		$settingIndex = 0;
-		//$title         = $this->maniaControl->authenticationManager->getAuthLevelName($player->authLevel);
-		// $chatMessage = '$ff0' . $title . ' $<' . $player->nickname . '$> set ScriptSetting' . ($settingsCount > 1 ? 's' : '') . ' ';
-
 		foreach($newSettings as $setting => $value) {
 			if ($value === null) {
 				continue;
@@ -372,28 +372,14 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 				return false;
 			}
 
-			// $chatMessage .= '$<' . '$fff' . preg_replace('/^S_/', '', $setting) . '$z$s$ff0 ';
-			// $chatMessage .= 'to $fff' . $this->parseSettingValue($value) . '$>';
-
-			/*
-			 * if ($settingIndex <= $settingsCount - 2) { $chatMessage .= ', '; }
-			 */
-
 			// Trigger own callback
 			$this->maniaControl->callbackManager->triggerCallback(self::CB_SERVERSETTING_CHANGED, array(self::CB_SERVERSETTING_CHANGED, $setting, $value));
-
-			$settingIndex++;
 		}
 
 		$statement->close();
 
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_SERVERSETTINGS_CHANGED, array(self::CB_SERVERSETTINGS_CHANGED));
 
-		// $chatMessage .= '!';
-		// $this->maniaControl->chat->sendInformation($chatMessage);
-		// $this->maniaControl->log(Formatter::stripCodes($chatMessage));
-
 		return true;
 	}
-
 }
