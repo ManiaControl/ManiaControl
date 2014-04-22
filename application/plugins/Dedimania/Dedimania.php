@@ -329,9 +329,10 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 		$content = $this->encode_request(self::DEDIMANIA_SETCHALLENGETIMES, $data);
 
 		$self = $this;
-		$this->maniaControl->fileReader->postData(self::DEDIMANIA_URL, function ($data, $error) use (&$self) {
+		$maniaControl = $this->maniaControl;
+		$this->maniaControl->fileReader->postData(self::DEDIMANIA_URL, function ($data, $error) use (&$self, &$maniaControl) {
 			if ($error != '') {
-				$self->maniaControl->log("Dedimania Error: " . $error);
+				$maniaControl->log("Dedimania Error: " . $error);
 			}
 
 			$data = $self->decode($data);
@@ -351,7 +352,10 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 
 						// Warnings and TTR
 						$errors = $methodResponse[0]['methods'][0]['errors'];
-						//TODO ?
+						if ($errors) {
+							$maniaControl->errorHandler->triggerDebugNotice($errors);
+							// TODO: check if this is sufficient 
+						}
 					}
 				}
 			}
