@@ -30,6 +30,11 @@ class FaultException extends Exception
 				return new NotInTeamModeException($faultString, $faultCode);
 			case 'The map isn\'t in the current selection.':
 				return new MapNotInCurrentSelectionException($faultString, $faultCode);
+			case 'Incompatible map type.':
+			case 'Map not complete.':
+				return new MapNotCompatibleOrCompleteException($faultString, $faultCode);
+			case 'Ladder mode unknown.':
+				return new LadderModeUnknownException($faultString, $faultCode);
 		}
 
 		return new self($faultString, $faultCode);
@@ -44,5 +49,7 @@ class ChangeInProgressException extends FaultException {}
 class PlayerIsNotSpectatorException extends FaultException {}
 class NotInTeamModeException extends FaultException {}
 class MapNotInCurrentSelectionException extends FaultException{}
+class MapNotCompatibleOrCompleteException extends FaultException{}
+class LadderModeUnknownException extends FaultException{}
 
 ?>
