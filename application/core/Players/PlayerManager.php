@@ -183,6 +183,9 @@ class PlayerManager implements CallbackListener, TimerListener {
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES)) {
 			$this->maniaControl->chat->sendChat('$<' . $player->nickname . '$> $s$0f0has left the game');
 		}
+
+		//Destroys stored PlayerData, after all Disconnect Callbacks got Handled
+		$this->playerDataManager->destroyPlayerData($player);
 	}
 
 	/**
@@ -192,8 +195,9 @@ class PlayerManager implements CallbackListener, TimerListener {
 	 */
 	public function playerInfoChanged(array $callback) {
 		$player = $this->getPlayer($callback[1][0]['Login']);
-		if (!$player)
+		if (!$player) {
 			return;
+		}
 
 		$player->ladderRank = $callback[1][0]["LadderRanking"];
 		$player->teamId     = $callback[1][0]["TeamId"];

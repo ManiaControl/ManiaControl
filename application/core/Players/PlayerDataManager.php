@@ -27,6 +27,7 @@ class PlayerDataManager {
 	private $maniaControl = null;
 	private $arrayDelimiter = ';;';
 	private $metaData = array();
+	private $storedData = array();
 
 	/**
 	 * Construct player manager
@@ -38,7 +39,16 @@ class PlayerDataManager {
 		$this->initTables();
 
 		// Store Stats MetaData
-		//$this->storeMetaData();
+		$this->storeMetaData();
+	}
+
+	/**
+	 * Destroys the stored PlayerData (Method get called by PlayerManager, so don't call it anywhere else)
+	 *
+	 * @param Player $player
+	 */
+	public function destroyPlayerData(Player $player) {
+		unset($this->storedData[$player->index]);
 	}
 
 	/**
@@ -52,7 +62,7 @@ class PlayerDataManager {
 	 */
 	public function defineMetaData($object, $dataName, $default, $dataDescription = '') {
 		$mysqli    = $this->maniaControl->database->mysqli;
-		$className        = $this->getClassName($object);
+		$className = $this->getClassName($object);
 
 		$query     = "INSERT INTO `" . self::TABLE_PLAYERDATAMETADATA . "` (
 				`class`,
@@ -103,9 +113,64 @@ class PlayerDataManager {
 		$result->close();
 	}
 
+	/**
+	 * Gets the Player Data
+	 *
+	 * @param        $object
+	 * @param        $dataName
+	 * @param Player $player
+	 * @param        $serverIndex
+	 * @return mixed|null
+	 */
+	public function getPlayerData($object, $statName, Player $player, $serverIndex = -1) {
+		$className = $this->getClassName($object);
+
+		$meta = $this->metaData[$className . $statName];
+
+		//Check if data is already in the ram
+		if (isset($this->storedData[$player->index])) {
+			if (isset($this->storedData[$player->index][$meta->dataId])) {
+				return $this->storedData[$player->index][$meta->dataId];
+			}
+		}
+
+		$mysqli        = $this->maniaControl->database->mysqli;
+		$dataQuery     = "SELECT `value` FROM `" . self::TABLE_PLAYERDATA . "`
+				WHERE `dataId` = ?
+				AND `playerId` = ?
+				AND `serverIndex` = ?;";
+		$dataStatement = $mysqli->prepare($dataQuery);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error);
+			return null;
+		}
+		$dataStatement->bind_param('iii', $meta->dataId, $player->index, $serverIndex);
+		$dataStatement->execute();
+		if ($dataStatement->error) {
+			trigger_error($dataStatement->error);
+			return null;
+		}
+		$dataStatement->store_result();
+		if ($dataStatement->num_rows <= 0) {
+			$this->setPlayerData($object, $statName, $player, $meta->defaultValue, $serverIndex);
+			return $meta->default;
+		}
+		$dataStatement->bind_result($value);
+		$dataStatement->fetch();
+		$dataStatement->free_result();
+		$dataStatement->close();
+		$data = $this->castSetting($meta->type, $value);
+
+		//Store setting in the ram
+		if (!isset($this->storedData[$player->index])) {
+			$this->storedData[$player->index] = array();
+		}
+		$this->storedData[$player->index][$meta->dataId] = $data;
+		return $data;
+	}
 
 	/**
-	 * Inserts a PlayerData to a specific defined statMetaData
+	 * Set a PlayerData to a specific defined statMetaData
 	 *
 	 * @param        $object
 	 * @param        $statName
@@ -114,13 +179,13 @@ class PlayerDataManager {
 	 * @param        $serverIndex (let it empty if its global)
 	 * @return bool
 	 */
-	public function insertPlayerData($object, $statName, Player $player, $value, $serverIndex = -1) {
-		$className        = $this->getClassName($object);
+	public function setPlayerData($object, $dataName, Player $player, $value, $serverIndex = -1) {
+		$className = $this->getClassName($object);
 		if (!$player) {
 			return false;
 		}
 
-		$dataId = $this->getMetaDataId($className, $statName);
+		$dataId = $this->getMetaDataId($className, $dataName);
 		if (!$dataId) {
 			return false;
 		}
@@ -148,6 +213,12 @@ class PlayerDataManager {
 			return false;
 		}
 		$statement->close();
+
+		//FIXME store changed value
+		if (isset($this->storedData[$player->index]) && isset($this->storedData[$player->index][$dataId])) {
+			unset($this->storedData[$player->index][$dataId]);
+		}
+
 		return true;
 	}
 
