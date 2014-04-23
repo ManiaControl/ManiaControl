@@ -240,9 +240,9 @@ class MapManager implements CallbackListener {
 		}
 
 		// Remove map
-		try{
+		try {
 			$this->maniaControl->client->removeMap($map->fileName);
-		}catch(MapNotInCurrentSelectionException $e){
+		} catch(MapNotInCurrentSelectionException $e) {
 		}
 
 
@@ -486,11 +486,8 @@ class MapManager implements CallbackListener {
 		$this->mapEnded = false;
 
 		if (!isset($callback[1][0]["UId"])) {
-			// TODO: why can this even happen?
-			$this->maniaControl->errorHandler->triggerDebugNotice('map uid not set! ' . print_r($callback, true));
-			return;
-		}
-		if (array_key_exists($callback[1][0]["UId"], $this->maps)) {
+			$this->currentMap = $this->fetchCurrentMap();
+		} else if (array_key_exists($callback[1][0]["UId"], $this->maps)) {
 			// Map already exists, only update index
 			$this->currentMap = $this->maps[$callback[1][0]["UId"]];
 			if (!$this->currentMap->nbCheckpoints || !$this->currentMap->nbLaps) {
@@ -516,7 +513,7 @@ class MapManager implements CallbackListener {
 	 * @param array $callback
 	 */
 	public function handleScriptBeginMap(array $callback) {
-		// ignored
+		$this->handleBeginMap(array());
 	}
 
 	/**
