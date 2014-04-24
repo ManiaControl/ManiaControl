@@ -5,6 +5,7 @@ namespace ManiaControl\Maps;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Files\FileUtil;
 use ManiaControl\ManiaControl;
 use ManiaControl\ManiaExchange\ManiaExchangeList;
@@ -29,8 +30,10 @@ class MapManager implements CallbackListener {
 	/*
 	 * Constants
 	 */
-	const TABLE_MAPS                      = 'mc_maps';
-	const CB_BEGINMAP                     = 'MapManager.BeginMap';
+	const TABLE_MAPS = 'mc_maps';
+	/**  @deprecated CB_BEGINMAP */
+	const CB_BEGINMAP = 'MapManager.BeginMap';
+	/**  @deprecated CB_ENDMAP */
 	const CB_ENDMAP                       = 'MapManager.EndMap';
 	const CB_MAPS_UPDATED                 = 'MapManager.MapsUpdated';
 	const CB_KARMA_UPDATED                = 'MapManager.KarmaUpdated';
@@ -503,16 +506,18 @@ class MapManager implements CallbackListener {
 		// Update the mx of the map (for update checks, etc.)
 		$this->mxManager->fetchManiaExchangeMapInformations($this->currentMap);
 
-		// Trigger own BeginMap callback
+		// Trigger own BeginMap callback (
+		//TODO remove deprecated callback later
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_BEGINMAP, $this->currentMap);
+		$this->maniaControl->callbackManager->triggerCallback(Callbacks::BEGINMAP, $this->currentMap);
 	}
 
 	/**
 	 * Handle Script BeginMap callback
 	 *
-	 * @param array $callback
+	 * @param int $mapNumber
 	 */
-	public function handleScriptBeginMap(array $callback) {
+	public function handleScriptBeginMap($mapNumber) {
 		$this->handleBeginMap(array());
 	}
 
@@ -530,22 +535,17 @@ class MapManager implements CallbackListener {
 
 		// Trigger own EndMap callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_ENDMAP, $this->currentMap);
+		//TODO remove deprecated callback later
+		$this->maniaControl->callbackManager->triggerCallback(Callbacks::ENDMAP, $this->currentMap);
 	}
 
 	/**
 	 * Handle Script EndMap Callback
 	 *
-	 * @param array $callback
+	 * @param int $mapNumber
 	 */
-	public function handleScriptEndMap(array $callback) {
-		if ($this->mapEnded) {
-			return;
-		}
-		$this->mapEnded = true;
-		$this->mapBegan = false;
-
-		// Trigger own EndMap callback
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_ENDMAP, $this->currentMap);
+	public function handleScriptEndMap($mapNumber) {
+		$this->handleEndMap(array());
 	}
 
 	/**
