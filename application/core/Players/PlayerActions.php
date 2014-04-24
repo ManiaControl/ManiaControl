@@ -15,6 +15,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 use Maniaplanet\DedicatedServer\Xmlrpc\NotInTeamModeException;
 use Maniaplanet\DedicatedServer\Xmlrpc\PlayerAlreadyIgnoredException;
 use Maniaplanet\DedicatedServer\Xmlrpc\PlayerIsNotSpectatorException;
+use Maniaplanet\DedicatedServer\Xmlrpc\PlayerNotIgnoredException;
 
 /**
  * Player Actions Class
@@ -215,7 +216,12 @@ class PlayerActions {
 			return;
 		}
 
-		$this->maniaControl->client->unIgnore($targetLogin);
+		try{
+			$this->maniaControl->client->unIgnore($targetLogin);
+		}catch(PlayerNotIgnoredException $e){
+			$this->maniaControl->chat->sendError("Player is not ignored!");
+			return;
+		}
 
 		$title       = $this->maniaControl->authenticationManager->getAuthLevelName($admin->authLevel);
 		$chatMessage = $title . ' $<' . $admin->nickname . '$> un-muted $<' . $target->nickname . '$>!';
@@ -246,6 +252,8 @@ class PlayerActions {
 		try{
 			$this->maniaControl->client->ignore($targetLogin);
 		}catch(PlayerAlreadyIgnoredException $e){
+			$this->maniaControl->chat->sendError("Player already ignored!");
+			return;
 		}
 
 		$title       = $this->maniaControl->authenticationManager->getAuthLevelName($admin->authLevel);
