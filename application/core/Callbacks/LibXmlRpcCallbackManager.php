@@ -21,6 +21,12 @@ class LibXmlRpcCallbackManager implements CallbackListener {
 		$callbackManager->registerCallbackListener(Callbacks::SCRIPTCALLBACK, $this, 'handleScriptCallbacks');
 	}
 
+	/**
+	 * Handle Script Callbacks
+	 *
+	 * @param $name
+	 * @param $data
+	 */
 	public function handleScriptCallbacks($name, $data) {
 		switch($name) {
 			case 'LibXmlRpc_BeginMatch':
@@ -61,6 +67,19 @@ class LibXmlRpcCallbackManager implements CallbackListener {
 			case 'LibXmlRpc_EndWarmUp':
 				$this->maniaControl->callbackManager->triggerCallback(Callbacks::ENDWARMUP);
 				break;
+			case 'LibXmlRpc_PlayerRanking': //TODO really useful? what does it have what RankingsManager not have?
+				$this->triggerPlayerRanking($data[0]);
+				break;
 		}
+	}
+
+	/**
+	 * Triggers the Ranking of a Player
+	 *
+	 * @param $data
+	 */
+	private function triggerPlayerRanking($data) {
+		$player = $this->maniaControl->playerManager->getPlayer($data[1]);
+		$this->maniaControl->callbackManager->triggerCallback(Callbacks::PLAYERRANKING, $player, $data[0], $data[6], $data[5]);
 	}
 }
