@@ -26,6 +26,10 @@ class FaultException extends Exception
 			case 'The player is not a spectator':
 			case 'The player is not a spectator.':
 				return new PlayerIsNotSpectatorException($faultString, $faultCode);
+			case 'Player already ignored.':
+				return new PlayerAlreadyIgnoredException($faultString, $faultCode);
+			case 'Player not ignored.':
+				return new PlayerNotIgnoredException($faultString, $faultCode);
 			case 'Not in Team mode.':
 				return new NotInTeamModeException($faultString, $faultCode);
 			case 'The map isn\'t in the current selection.':
@@ -51,5 +55,7 @@ class NotInTeamModeException extends FaultException {}
 class MapNotInCurrentSelectionException extends FaultException{}
 class MapNotCompatibleOrCompleteException extends FaultException{}
 class LadderModeUnknownException extends FaultException{}
+class PlayerAlreadyIgnoredException extends FaultException{}
+class PlayerNotIgnoredException extends FaultException{}
 
 ?>
