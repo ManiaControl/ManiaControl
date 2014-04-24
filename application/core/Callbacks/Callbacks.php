@@ -11,9 +11,9 @@ namespace ManiaControl\Callbacks;
 interface Callbacks {
 	const ScriptCallback       = 'Callbacks.ScriptCallback';
 	/** BeginMatch Callback, param1 MapNumber */
-	const LibXmlRpc_BeginMatch = "Callbacks.LibXmlRpc_BeginMatch";
-	/** BeginMatch Callback, param1 MapNumber */
-	const LibXmlRpc_LoadingMap = "Callbacks.LibXmlRpc_LoadingMap";
-	/** BeginMatch Callback, param1 MapNumber */
-	const LibXmlRpc_BeginMap   = "Callbacks.LibXmlRpc_BeginMap";
+	const BeginMatch = "Callbacks.BeginMatch";
+	/** LoadingMap Callback, param1 MapNumber */
+	const LoadingMap = "Callbacks.LoadingMap";
+	/** BeginMap Callback, param1 MapNumber */
+	const BeginMap   = "Callbacks.BeginMap";
 } 

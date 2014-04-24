@@ -30,13 +30,14 @@ class LibXmlRpcCallbackManager implements CallbackListener{
 	public function handleScriptCallbacks($name, $data){
 		switch($name){
 			case 'LibXmlRpc_BeginMatch':
-				$this->maniaControl->callbackManager->triggerCallback(Callbacks::LibXmlRpc_BeginMatch, $data[0]);
+				$this->maniaControl->callbackManager->triggerCallback(Callbacks::BeginMatch, $data[0]);
 				break;
 			case 'LibXmlRpc_LoadingMap':
-				$this->maniaControl->callbackManager->triggerCallback(Callbacks::LibXmlRpc_LoadingMap, $data[0]);
+				$this->maniaControl->callbackManager->triggerCallback(Callbacks::LoadingMap, $data[0]);
 				break;
 			case 'LibXmlRpc_BeginMap':
-				$this->maniaControl->callbackManager->triggerCallback(Callbacks::LibXmlRpc_BeginMap, $data[0]);
+				//$this->maniaControl->callbackManager->triggerCallback(Callbacks::BeginMap, $data[0]);
+				$this->maniaControl->mapManager->handleScriptBeginMap($data[0]);
 				break;
 
 
