@@ -4,31 +4,22 @@ namespace ManiaControl\Server;
 
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\ManiaControl;
-use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 use Maniaplanet\DedicatedServer\Xmlrpc\NotInScriptModeException;
 
 /**
  * Class managing Rankings
  *
- * @author kremsy
+ * @author    kremsy
  * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class RankingManager implements CallbackListener {
 	/*
 	 * Private Properties
 	 */
 	private $rankings = array();
-
-	/**
-	 * Get Rankings
-	 * 
-	 * @return mixed
-	 */
-	public function getRankings() {
-		return $this->rankings;
-	}
 
 	/**
 	 * Construct player manager
@@ -46,7 +37,7 @@ class RankingManager implements CallbackListener {
 	}
 
 	/**
-	 *    Initialize the Rankings
+	 *    Initialize the Rankings (never call this Method)
 	 */
 	public function onInit() {
 		try {
@@ -55,9 +46,18 @@ class RankingManager implements CallbackListener {
 		}
 	}
 
+	/**
+	 * Get Rankings
+	 *
+	 * @return array
+	 */
+	public function getRankings() {
+		return $this->rankings;
+	}
+
 
 	/**
-	 * Handle stats on callbacks
+	 * Handle stats on callbacks (never call this Method)
 	 *
 	 * @param array $callback
 	 */
@@ -66,7 +66,6 @@ class RankingManager implements CallbackListener {
 
 		//TODO not tested in TrackMania
 		switch($callbackName) {
-			case 'LibXmlRpc_Rankings':
 			case 'updateRankings':
 				$this->updateRankings($callback[1][1][0]);
 				break;
@@ -80,11 +79,11 @@ class RankingManager implements CallbackListener {
 	}
 
 	/**
-	 * Update Game Rankings
+	 * Update Game Rankings (never call this Method)
 	 *
 	 * @param $data
 	 */
-	private function updateRankings($data) {
+	public function updateRankings($data) {
 		if (!is_string($data)) {
 			return;
 		}
@@ -99,6 +98,7 @@ class RankingManager implements CallbackListener {
 		array_multisort($this->rankings, SORT_DESC, SORT_NUMERIC);
 
 		//TODO if Local Records activated-> sort asc
+		$this->maniaControl->callbackManager->triggerCallback(Callbacks::RANKINGSUPDATED, $this->getRankings());
 	}
 
 	/**
@@ -117,5 +117,9 @@ class RankingManager implements CallbackListener {
 			$prev = $score;
 		}
 		return null;
+	}
+
+	public function getPlayerRanking() {
+		//TODO complete this
 	}
 } 

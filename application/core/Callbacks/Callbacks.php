@@ -1,6 +1,6 @@
 <?php
 namespace ManiaControl\Callbacks;
-
+	//TODO method class for all the libxmlrpc get Methods, to fetch the callback asnyc
 /**
  * Callbacks Interface
  *
@@ -9,6 +9,7 @@ namespace ManiaControl\Callbacks;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 interface Callbacks {
+	//Common Callbacks
 	const SCRIPTCALLBACK = 'Callbacks.ScriptCallback';
 	/** BeginMatch Callback, param1 MatchNumber */
 	const BEGINMATCH = "Callbacks.BeginMatch";
@@ -36,4 +37,21 @@ interface Callbacks {
 	const BEGINWARMUP = "Callbacks.BeginWarmUp";
 	/** EndWarmup Callback, no parameters */
 	const ENDWARMUP = "Callbacks.EndWarmUp";
+	/** PlayerRanking callback, returned after LibXmlRpc_PlayerRanking
+	 * try to avoid to use this, just use the Get function of the RankingsManager instead
+	 * param1 Player $player
+	 * param2 int $rank
+	 * param3 int $currentPoints
+	 * param4 int AFKStatus */
+	const PLAYERRANKING = 'Callbacks.PlayerRanking';
+
+	//Shootmania Callbacks
+	/** RankingsUpdated Callback, param1 Sorted Rankings */
+	const RANKINGSUPDATED = 'Callbacks.RankingsUpdated';
+	/** RankingsUpdated Callback, returned after LibXmlRpc_PlayerRanking param1 Scores */
+	const SCORES = 'Callbacks.Scores';
+	/** Returns the AFKStatus of an Player, returned after  param1 Scores */ //returned after TODO
+	const AFKSTATUS = 'Callbacks.AfkStatus';
+	/** Returns if the GameMode has Warmup aktivated, returned after  param1 Scores */ //returned after TODO
+	const WARMUPSTATUS = 'Callbacks.WarmupStatus';
 } 

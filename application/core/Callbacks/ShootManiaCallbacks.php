@@ -34,8 +34,39 @@ class ShootManiaCallbacks implements CallbackListener {
 		$this->maniaControl = $maniaControl;
 
 		// Register for script callbacks
+		$callbackManager->registerCallbackListener(Callbacks::SCRIPTCALLBACK, $this, 'handleScriptCallbacks');
 		$callbackManager->registerScriptCallbackListener(self::SCB_TIMEATTACK_ONCHECKPOINT, $this, 'callback_TimeAttack_OnCheckpoint');
 		$callbackManager->registerScriptCallbackListener(self::SCB_TIMEATTACK_ONFINISH, $this, 'callback_TimeAttack_OnFinish');
+	}
+
+	/**
+	 * Handle Script Callbacks
+	 *
+	 * @param $name
+	 * @param $data
+	 */
+	public function handleScriptCallbacks($name, $data) {
+		switch($name) {
+			case 'LibXmlRpc_Rankings':
+				$this->maniaControl->server->rankingManager->updateRankings($data[0]);
+				break;
+			case 'LibXmlRpc_Scores':
+				$this->maniaControl->callbackManager->triggerCallback(Callbacks::AFKSTATUS, $data[0]);
+				break;
+			case 'LibAFK_IsAFK':
+				$this->triggerAfkStatus($data[0]);
+				break;
+		}
+	}
+
+	/**
+	 * Triggers the AFK Status of an Player
+	 *
+	 * @param $login
+	 */
+	private function triggerAfkStatus($login) {
+		$player = $this->maniaControl->playerManager->getPlayer($login);
+		$this->maniaControl->callbackManager->triggerCallback(Callbacks::AFKSTATUS, $player);
 	}
 
 	/**
