@@ -49,7 +49,8 @@ class CallbackManager {
 	 * Public Properties
 	 */
 	public $shootManiaCallbacks = null;
-	
+	public $libXmlRpcCallbacks = null;
+
 	/*
 	 * Private Properties
 	 */
@@ -66,6 +67,7 @@ class CallbackManager {
 		$this->maniaControl = $maniaControl;
 		
 		$this->shootManiaCallbacks = new ShootManiaCallbacks($maniaControl, $this);
+		$this->libXmlRpcCallbacks = new LibXmlRpcCallbackManager($maniaControl, $this);
 	}
 
 	/**
@@ -249,5 +251,6 @@ class CallbackManager {
 		$scriptCallbackData = $callback[1];
 		$scriptCallbackName = $scriptCallbackData[0];
 		$this->triggerScriptCallback($scriptCallbackName, $scriptCallbackData);
+		$this->triggerCallback(Callbacks::ScriptCallback, $scriptCallbackName, $scriptCallbackData[1]);
 	}
 }
