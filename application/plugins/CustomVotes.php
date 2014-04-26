@@ -132,8 +132,14 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$this->defineVote("teambalance", "Vote for Team Balance");
 		$this->defineVote("skipmap", "Vote for Skip Map");
 		$this->defineVote("nextmap", "Vote for Skip Map");
+		$this->defineVote("skip", "Vote for Skip Map");
 		$this->defineVote("restartmap", "Vote for Restart Map");
+		$this->defineVote("restart", "Vote for Restart Map");
 		$this->defineVote("pausegame", "Vote for Pause Game");
+
+		foreach($this->voteCommands as $name => $voteCommand) {
+			$this->maniaControl->commandManager->registerCommandListener($name, $this, 'handleChatVote');
+		}
 
 		/* Disable Standard Votes */
 		$array["Command"] = VoteRatio::COMMAND_BAN;
@@ -308,20 +314,21 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 			switch($voteName) {
 				case 'teambalance':
 					$this->maniaControl->client->autoTeamBalance();
-					$this->maniaControl->chat->sendInformation('$sVote Successfully -> Teams got Balanced!');
+					$this->maniaControl->chat->sendInformation('$s$f8fVote to $fffbalance the teams$f8f has been successfull!');
 					break;
 				case 'skipmap':
+				case 'skip':
 				case 'nextmap':
 					$this->maniaControl->client->nextMap();
-					$this->maniaControl->chat->sendInformation('$sVote Successfully -> Map skipped!');
+					$this->maniaControl->chat->sendInformation('$s$f8fVote to $fffskip the map$f8f has been successfull!');
 					break;
 				case 'restartmap':
 					$this->maniaControl->client->restartMap();
-					$this->maniaControl->chat->sendInformation('$sVote Successfully -> Map restarted!');
+					$this->maniaControl->chat->sendInformation('$s$f8fVote to $fffrestart the map$f8f has been successfull!');
 					break;
 				case 'pausegame':
 					$this->maniaControl->client->sendModeScriptCommands(array('Command_ForceWarmUp' => True));
-					$this->maniaControl->chat->sendInformation('$sVote Successfully -> Current Game paused!');
+					$this->maniaControl->chat->sendInformation('$s$f8fVote to $fffpause the current game$f8f has been successfull!');
 					break;
 			}
 		} else {
@@ -346,6 +353,16 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 			$login  = $callback[1][1];
 			$player = $this->maniaControl->playerManager->getPlayer($login);
 			$this->startVote($player, $voteIndex);
+		}
+	}
+
+	public function handleChatVote(array $chat, Player $player) {
+		$chatCommand = explode(' ', $chat[1][2]);
+		$chatCommand = $chatCommand[0];
+		$chatCommand = str_replace('/', '', $chatCommand);
+
+		if (isset($this->voteCommands[$chatCommand])) {
+			$this->startVote($player, $chatCommand);
 		}
 	}
 
@@ -420,7 +437,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		if ($this->currentVote->voteCommand->startText != '') {
 			$message = $this->currentVote->voteCommand->startText;
 		} else {
-			$message = '$<' . $player->nickname . '$>$s started a $<' . $this->currentVote->voteCommand->name . '$>!';
+			$message = '$fff$<' . $player->nickname . '$>$s$f8f started a $fff$<' . $this->currentVote->voteCommand->name . '$>$f8f!';
 		}
 
 		$this->maniaControl->chat->sendSuccess($message);
@@ -592,8 +609,8 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$quad->setY($y);
 		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
 		$quad->setSize(5, 5);
-		$quad->setAction(self::ACTION_NEGATIVE_VOTE);
-		$quad->setActionKey($quad::ACTIONKEY_F7);
+		$quad->setAction(self::ACTION_POSITIVE_VOTE);
+		$quad->setActionKey($quad::ACTIONKEY_F5);
 
 		$label = new Label_Button();
 		$frame->add($label);
@@ -603,20 +620,20 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$label->setStyle($labelStyle);
 		$label->setTextSize(1);
 		$label->setSize(3, 3);
-		$label->setTextColor("F00");
-		$label->setText("F7");
+		$label->setTextColor("0F0");
+		$label->setText("F5");
 
 		$quad = clone $quad;
 		$frame->add($quad);
 		$quad->setX($width / 2 - 6);
-		$quad->setAction(self::ACTION_POSITIVE_VOTE);
-		$quad->setActionKey($quad::ACTIONKEY_F8);
+		$quad->setAction(self::ACTION_NEGATIVE_VOTE);
+		$quad->setActionKey($quad::ACTIONKEY_F6);
 
 		$label = clone $label;
 		$frame->add($label);
 		$label->setX($width / 2 - 6);
-		$label->setTextColor("0F0");
-		$label->setText("F8");
+		$label->setTextColor("F00");
+		$label->setText("F6");
 
 		// Send manialink
 		$this->maniaControl->manialinkManager->sendManialink($maniaLink);
