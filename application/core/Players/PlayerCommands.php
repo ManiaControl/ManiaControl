@@ -46,6 +46,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 		$this->maniaControl->commandManager->registerCommandListener('teambalance', $this, 'command_TeamBalance', true);
 		$this->maniaControl->commandManager->registerCommandListener('autoteambalance', $this, 'command_TeamBalance', true);
 		$this->maniaControl->commandManager->registerCommandListener('kick', $this, 'command_Kick', true);
+		$this->maniaControl->commandManager->registerCommandListener('ban', $this, 'command_Ban', true);
 		$this->maniaControl->commandManager->registerCommandListener('forcespec', $this, 'command_ForceSpectator', true);
 		$this->maniaControl->commandManager->registerCommandListener('forcespectator', $this, 'command_ForceSpectator', true);
 		$this->maniaControl->commandManager->registerCommandListener('forceplay', $this, 'command_ForcePlay', true);
@@ -140,6 +141,30 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 			$message = $params[2];
 		}
 		$this->maniaControl->playerManager->playerActions->kickPlayer($player->login, $targetLogin, $message);
+	}
+
+	/**
+	 * Handle //ban command
+	 *
+	 * @param array  $chat
+	 * @param Player $player
+	 */
+	public function command_Ban(array $chat, Player $player) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($player, PlayerActions::SETTING_PERMISSION_BAN_PLAYER)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+			return;
+		}
+		$params = explode(' ', $chat[1][2], 3);
+		if (count($params) <= 1) {
+			$this->maniaControl->chat->sendUsageInfo("No Login given! Example: '//ban login'", $player->login);
+			return;
+		}
+		$targetLogin = $params[1];
+		$message     = '';
+		if (isset($params[2])) {
+			$message = $params[2];
+		}
+		$this->maniaControl->playerManager->playerActions->banPlayer($player->login, $targetLogin, $message);
 	}
 
 	/**
