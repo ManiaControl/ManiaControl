@@ -5,6 +5,7 @@ use FML\Controls\Label;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
 use FML\ManiaLink;
+use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\TimerListener;
@@ -94,6 +95,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
         $this->maniaControl->callbackManager->registerCallbackListener(SettingManager::CB_SETTINGS_CHANGED, $this, 'handleSettingsChanged');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 		$this->maniaControl->commandManager->registerCommandListener('records', $this, 'showRecordsList');
+		$this->maniaControl->commandManager->registerCommandListener('delrec', $this, 'deleteRecord', true);
 
 		return true;
 	}
@@ -308,6 +310,38 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 
 		if($actionId == self::ACTION_SHOW_RECORDSLIST) {
 			$this->showRecordsList(array(), $player);
+		}
+	}
+
+	public function deleteRecord(array $chat, Player $player) {
+		if(!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MASTERADMIN)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+			return;
+		}
+
+		$chatCommand = explode(' ', $chat[1][2]);
+		$recordId = (int)$chatCommand[1];
+		if(is_integer($recordId)) {
+			$currentMap = $this->maniaControl->mapManager->getCurrentMap();
+			$records = $this->getLocalRecords($currentMap);
+			if(count($records) < $recordId) {
+				$this->maniaControl->chat->sendError('Cannot remove record $<$fff'.$recordId.'$>!', $player);
+				return;
+			}
+
+			$mysqli = $this->maniaControl->database->mysqli;
+			$removeRecord = $records[$recordId-1];
+			$query  = "DELETE FROM `" . self::TABLE_RECORDS . "` WHERE `mapIndex` = ".$currentMap->index." AND `playerIndex` = ".$player->index."";
+			$result = $mysqli->query($query);
+			if ($mysqli->error) {
+				trigger_error($mysqli->error);
+				return null;
+			}
+
+			$this->maniaControl->callbackManager->triggerCallback(self::CB_LOCALRECORDS_CHANGED, null);
+			$this->maniaControl->chat->sendInformation('Record no. $<$fff'.$recordId.'$> has been removed!');
+		} else {
+			$this->maniaControl->chat->sendError('Cannot remove record $<$fff'.$recordId.'$>, because it\'s not an integer!', $player);
 		}
 	}
 
