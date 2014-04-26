@@ -46,6 +46,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		// Register for admin chat commands
 		$this->maniaControl->commandManager->registerCommandListener(array('nextmap', 'next', 'skip'), $this, 'command_NextMap', true);
 		$this->maniaControl->commandManager->registerCommandListener(array('restartmap', 'resmap', 'res'), $this, 'command_RestartMap', true);
+		$this->maniaControl->commandManager->registerCommandListener(array('replaymap', 'replay'), $this, 'command_ReplayMap', true);
 		$this->maniaControl->commandManager->registerCommandListener(array('addmap', 'add'), $this, 'command_AddMap', true);
 		$this->maniaControl->commandManager->registerCommandListener(array('removemap', 'removethis', 'erasemap', 'erasethis'), $this, 'command_RemoveMap', true);
 		$this->maniaControl->commandManager->registerCommandListener(array('shufflemaps', 'shuffle'), $this, 'command_ShuffleMaps', true);
@@ -213,6 +214,25 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$this->maniaControl->client->restartMap();
 		} catch(ChangeInProgressException $e) {
 		}
+	}
+
+	////$this->maniaControl->mapManager->mapQueue->addFirstMapToMapQueue($this->currentVote->voter, $this->maniaControl->mapManager->getCurrentMap());
+	/**
+	 * Handle replaymap command
+	 *
+	 * @param array                        $chat
+	 * @param \ManiaControl\Players\Player $player
+	 */
+	public function command_ReplayMap(array $chat, Player $player) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_RESTART_MAP)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+			return;
+		}
+		$message = '$<' . $player->nickname . '$> replays the current Map!';
+		$this->maniaControl->chat->sendSuccess($message);
+		$this->maniaControl->log($message, true);
+
+		$this->maniaControl->mapManager->mapQueue->addFirstMapToMapQueue($player, $this->maniaControl->mapManager->getCurrentMap());
 	}
 
 	/**

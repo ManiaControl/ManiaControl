@@ -136,6 +136,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$this->defineVote("restartmap", "Vote for Restart Map");
 		$this->defineVote("restart", "Vote for Restart Map");
 		$this->defineVote("pausegame", "Vote for Pause Game");
+		$this->defineVote("replay", "Vote to replay current map");
 
 		foreach($this->voteCommands as $name => $voteCommand) {
 			$this->maniaControl->commandManager->registerCommandListener($name, $this, 'handleChatVote');
@@ -329,6 +330,10 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 				case 'pausegame':
 					$this->maniaControl->client->sendModeScriptCommands(array('Command_ForceWarmUp' => True));
 					$this->maniaControl->chat->sendInformation('$s$f8fVote to $fffpause the current game$f8f has been successfull!');
+					break;
+				case 'replay':
+					$this->maniaControl->mapManager->mapQueue->addFirstMapToMapQueue($this->currentVote->voter, $this->maniaControl->mapManager->getCurrentMap());
+					$this->maniaControl->chat->sendInformation('$s$f8fVote to $fffreplay the map$f8f has been successfull!');
 					break;
 			}
 		} else {
