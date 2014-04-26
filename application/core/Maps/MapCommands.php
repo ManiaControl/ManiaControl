@@ -262,11 +262,15 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		}
 
 		$maplist = 'MatchSettings/'.$maplist;
-		$this->maniaControl->client->saveMatchSettings($maplist);
+		try {
+			$this->maniaControl->client->saveMatchSettings($maplist);
 
-		$message = 'Maplist $<$fff'.$maplist.'$> written.';
-		$this->maniaControl->chat->sendSuccess($message, $player);
-		$this->maniaControl->log($message, true);
+			$message = 'Maplist $<$fff'.$maplist.'$> written.';
+			$this->maniaControl->chat->sendSuccess($message, $player);
+			$this->maniaControl->log($message, true);
+		} catch(FaultException $e) {
+			$this->maniaControl->chat->sendError('Cannot write maplist $<$fff'.$maplist.'$>!', $player);
+		}
 	}
 
 	/**
