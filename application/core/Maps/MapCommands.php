@@ -12,6 +12,7 @@ use ManiaControl\Manialinks\IconManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\Xmlrpc\ChangeInProgressException;
+use Maniaplanet\DedicatedServer\Xmlrpc\FaultException;
 
 /**
  * Class offering Commands to manage Maps
@@ -50,6 +51,8 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		$this->maniaControl->commandManager->registerCommandListener(array('addmap', 'add'), $this, 'command_AddMap', true);
 		$this->maniaControl->commandManager->registerCommandListener(array('removemap', 'removethis', 'erasemap', 'erasethis'), $this, 'command_RemoveMap', true);
 		$this->maniaControl->commandManager->registerCommandListener(array('shufflemaps', 'shuffle'), $this, 'command_ShuffleMaps', true);
+		$this->maniaControl->commandManager->registerCommandListener(array('writemaplist', 'wml'), $this, 'command_WriteMapList', true);
+		$this->maniaControl->commandManager->registerCommandListener(array('readmaplist', 'rml'), $this, 'command_ReadMapList', true);
 
 		// Register for player chat commands
 		$this->maniaControl->commandManager->registerCommandListener('nextmap', $this, 'command_showNextMap');
@@ -233,6 +236,73 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		$this->maniaControl->log($message, true);
 
 		$this->maniaControl->mapManager->mapQueue->addFirstMapToMapQueue($player, $this->maniaControl->mapManager->getCurrentMap());
+	}
+
+	/**
+	 * Handle writemaplist command
+	 *
+	 * @param array                        $chat
+	 * @param \ManiaControl\Players\Player $player
+	 */
+	public function command_WriteMapList(array $chat, Player $player) {
+		if (!$this->maniaControl->authenticationManager->checkRight($player, 3)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+			return;
+		}
+
+		$chatCommand = explode(' ', $chat[1][2]);
+		if(isset($chatCommand[1])) {
+			if(strstr($chatCommand[1], '.txt')) {
+				$maplist = $chatCommand[1];
+			} else {
+				$maplist = $chatCommand.'.txt';
+			}
+		} else {
+			$maplist = 'maplist.txt';
+		}
+
+		$maplist = 'MatchSettings/'.$maplist;
+		$this->maniaControl->client->saveMatchSettings($maplist);
+
+		$message = 'Maplist $<$fff'.$maplist.'$> written.';
+		$this->maniaControl->chat->sendSuccess($message, $player);
+		$this->maniaControl->log($message, true);
+	}
+
+	/**
+	 * Handle readmaplist command
+	 *
+	 * @param array                        $chat
+	 * @param \ManiaControl\Players\Player $player
+	 */
+	public function command_ReadMapList(array $chat, Player $player) {
+		if (!$this->maniaControl->authenticationManager->checkRight($player, 3)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+			return;
+		}
+
+		$chatCommand = explode(' ', $chat[1][2]);
+		if(isset($chatCommand[1])) {
+			if(strstr($chatCommand[1], '.txt')) {
+				$maplist = $chatCommand[1];
+			} else {
+				$maplist = $chatCommand[1].'.txt';
+			}
+		} else {
+			$maplist = 'maplist.txt';
+		}
+
+		$maplist = 'MatchSettings/'.$maplist;
+		try {
+			$this->maniaControl->client->loadMatchSettings($maplist);
+
+			$message = 'Maplist $<$fff'.$maplist.'$> loaded.';
+			$this->maniaControl->mapManager->restructureMapList();
+			$this->maniaControl->chat->sendSuccess($message, $player);
+			$this->maniaControl->log($message, true);
+		} catch(FaultException $e) {
+			$this->maniaControl->chat->sendError('Cannot load maplist $<$fff'.$maplist.'$>!', $player);
+		}
 	}
 
 	/**
