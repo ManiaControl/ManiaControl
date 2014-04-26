@@ -91,6 +91,16 @@ class MapQueue implements CallbackListener, CommandListener {
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_MAPQUEUE_CHANGED, array('clear'));
 	}
 
+	public function addFirstMapToMapQueue($player, $map) {
+		if ($map) {
+			if (array_key_exists($map->uid, $this->queuedMaps)) {
+				unset($this->queuedMaps[$map->uid]);
+			}
+
+			array_unshift($this->queuedMaps, array($player, $map));
+		}
+	}
+
 
 	/**
 	 * Adds a Map to the map-queue
