@@ -218,7 +218,6 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 				$karmaGauge->setColor($karmaColor . '7');
 				$karmaLabel->setText('  ' . round($karma * 100.) . '% (' . $voteCount . ')');
 			} else {
-				$karma = 0.;
 				$karmaGauge->setRatio(0.);
 				$karmaGauge->setColor('00fb');
 				$karmaLabel->setText('-');
@@ -227,7 +226,8 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			// Loop players
 			foreach($players as $login => $player) {
 				// Get player vote
-				//$vote = $this->getPlayerVote($player, $map); //TODO what is this for, vote nowhere used?
+                // TODO: show the player his own vote in some way
+				//$vote = $this->getPlayerVote($player, $map);
 
 				// Adjust manialink for player's vote
 				$votesFrame = $this->manialink->votesFrame;

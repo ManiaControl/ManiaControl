@@ -100,7 +100,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	}
 
 	/**
-	 * Handle Config Admin Aommand
+	 * Handle Config Admin Command
 	 *
 	 * @param array $callback
 	 */

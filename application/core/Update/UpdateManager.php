@@ -501,18 +501,18 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			if (!$bytes || $bytes <= 0) {
 				trigger_error("Couldn't save plugin Zip.");
 				if ($player) {
-					$self->maniaControl->chat->sendError('Update failed: Couldn\'t save plugin zip!', $player->login);
+					$self->maniaControl->chat->sendError("Update failed: Couldn't save plugin zip!", $player->login);
 				}
-				return false;
+				return;
 			}
 			$zip    = new \ZipArchive();
 			$result = $zip->open($updateFileName);
 			if ($result !== true) {
 				trigger_error("Couldn't open plugin Zip. ({$result})");
 				if ($player) {
-					$self->maniaControl->chat->sendError('Update failed: Couldn\'t open plugin zip!', $player->login);
+					$self->maniaControl->chat->sendError("Update failed: Couldn't open plugin zip!", $player->login);
 				}
-				return false;
+				return;
 			}
 
 			$zip->extractTo(ManiaControlDir . '/plugins');
@@ -559,15 +559,15 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			$bytes = file_put_contents($installFileName, $installFileContent);
 			if (!$bytes || $bytes <= 0) {
 				trigger_error("Couldn't save plugin Zip.");
-				$self->maniaControl->chat->sendError('Install failed: Couldn\'t save plugin zip!', $player->login);
-				return false;
+				$self->maniaControl->chat->sendError("Install failed: Couldn't save plugin zip!", $player->login);
+				return;
 			}
 			$zip    = new \ZipArchive();
 			$result = $zip->open($installFileName);
 			if ($result !== true) {
 				trigger_error("Couldn't open plugin Zip. ({$result})");
-				$self->maniaControl->chat->sendError('Install failed: Couldn\'t open plugin zip!', $player->login);
-				return false;
+				$self->maniaControl->chat->sendError("Install failed: Couldn't open plugin zip!", $player->login);
+				return;
 			}
 
 			$zip->extractTo(ManiaControlDir . '/plugins');
@@ -782,7 +782,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			if (!$bytes || $bytes <= 0) {
 				trigger_error("Couldn't save Update Zip.");
 				if ($player) {
-					$self->maniaControl->chat->sendError('Update failed: Couldn\'t save Update zip!', $player->login);
+					$self->maniaControl->chat->sendError("Update failed: Couldn't save Update zip!", $player->login);
 				}
 				return false;
 			}
@@ -791,7 +791,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			if ($result !== true) {
 				trigger_error("Couldn't open Update Zip. ({$result})");
 				if ($player) {
-					$self->maniaControl->chat->sendError('Update failed: Couldn\'t open Update zip!', $player->login);
+					$self->maniaControl->chat->sendError("Update failed: Couldn't open Update zip!", $player->login);
 				}
 				return false;
 			}

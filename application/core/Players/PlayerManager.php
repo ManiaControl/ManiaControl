@@ -377,7 +377,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 			return null;
 		}
 
-		$player              = new Player(false);
+		$player              = new Player(null);
 		$player->index       = $playerIndex;
 		$player->login       = $row->login;
 		$player->rawNickname = $row->nickname;
@@ -412,7 +412,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 			return null;
 		}
 
-		$player              = new Player(false);
+		$player              = new Player(null);
 		$player->index       = $row->index;
 		$player->login       = $row->login;
 		$player->rawNickname = $row->nickname;

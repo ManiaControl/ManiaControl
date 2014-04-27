@@ -45,13 +45,13 @@ interface Callbacks {
 	 * param4 int AFKStatus */
 	const PLAYERRANKING = 'Callbacks.PlayerRanking';
 
-	//Shootmania Callbacks
+	//ShootMania Callbacks
 	/** RankingsUpdated Callback, param1 Sorted Rankings */
 	const RANKINGSUPDATED = 'Callbacks.RankingsUpdated';
 	/** RankingsUpdated Callback, returned after LibXmlRpc_PlayerRanking param1 Scores */
 	const SCORES = 'Callbacks.Scores';
 	/** Returns the AFKStatus of an Player, returned after  param1 Scores */ //returned after TODO
 	const AFKSTATUS = 'Callbacks.AfkStatus';
-	/** Returns if the GameMode has Warmup aktivated, returned after  param1 Scores */ //returned after TODO
+	/** Returns if the GameMode has Warmup activated, returned after  param1 Scores */ //returned after TODO
 	const WARMUPSTATUS = 'Callbacks.WarmupStatus';
 } 

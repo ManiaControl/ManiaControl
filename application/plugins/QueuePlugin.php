@@ -366,7 +366,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 	 * @return bool
 	 */
 	private function addPlayerToQueue(Player $player) {
-		if($this->maniaControl->client->getServerPassword() != false && $this->maniaControl->settingManager->getSetting($this, self::QUEUE_ACTIVE_ON_PASS) == false) return;
+		if($this->maniaControl->client->getServerPassword() != false && $this->maniaControl->settingManager->getSetting($this, self::QUEUE_ACTIVE_ON_PASS) == false) return false;
 
 		foreach($this->queue as $queuedPlayer) {
 			if($queuedPlayer->login == $player->login) {
@@ -379,6 +379,8 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 			$this->queue[count($this->queue)] = $player;
 			$this->sendChatMessage('$<$fff' . $player->nickname . '$> just joined the queue!');
 		}
+
+        return true;
 	}
 
 	/**

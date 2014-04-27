@@ -359,9 +359,8 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 			}
 
 			$mysqli = $this->maniaControl->database->mysqli;
-			$removeRecord = $records[$recordId-1];
 			$query  = "DELETE FROM `" . self::TABLE_RECORDS . "` WHERE `mapIndex` = ".$currentMap->index." AND `playerIndex` = ".$player->index."";
-			$result = $mysqli->query($query);
+			$mysqli->query($query);
 			if ($mysqli->error) {
 				trigger_error($mysqli->error);
 				return null;
