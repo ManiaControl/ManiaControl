@@ -201,13 +201,10 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 			$itemQuad->setSubStyle($itemQuad::SUBSTYLE_IconServers);
 			$itemQuad->setSize($itemSize, $itemSize);
 			
-			// Admin Menu Description Label
-			$descriptionFrame = new Frame();
-			$manialink->add($descriptionFrame);
-			$descriptionFrame->setPosition($posX - count($this->adminMenuItems) * $itemSize * 1.15 - 6, $posY);
-			
+			// Admin Menu Description
 			$descriptionLabel = new Label();
-			$descriptionFrame->add($descriptionLabel);
+			$manialink->add($descriptionLabel);
+			$descriptionLabel->setPosition($posX - count($this->adminMenuItems) * $itemSize * 1.15 - 6, $posY);
 			$descriptionLabel->setAlign(Control::RIGHT, Control::TOP);
 			$descriptionLabel->setSize(40, 4);
 			$descriptionLabel->setTextSize(1.4);
@@ -234,7 +231,9 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 			foreach ($this->adminMenuItems as $menuItems) {
 				foreach ($menuItems as $menuItem) {
 					$menuQuad = $menuItem[0];
-					/** @var Quad $menuQuad */
+					/**
+					 * @var Quad $menuQuad
+					 */
 					$popoutFrame->add($menuQuad);
 					$menuQuad->setSize($itemSize, $itemSize);
 					$menuQuad->setX($x);
@@ -242,6 +241,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 					$x -= $itemSize * 1.05;
 					
 					if ($menuItem[1]) {
+						$menuQuad->removeScriptFeatures();
 						$description = '$s' . $menuItem[1];
 						$menuQuad->addTooltipLabelFeature($descriptionLabel, $description);
 					}
@@ -267,13 +267,10 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_IconPlayers);
 		$itemQuad->setSize($itemSize, $itemSize);
 		
-		// Player Menu Description Frame
-		$descriptionFrame = new Frame();
-		$manialink->add($descriptionFrame);
-		$descriptionFrame->setPosition($posX - count($this->playerMenuItems) * $itemSize * 1.15 - 6, $posY - $itemSize * $itemMarginFactorY);
-		
+		// Player Menu Description
 		$descriptionLabel = new Label();
-		$descriptionFrame->add($descriptionLabel);
+		$manialink->add($descriptionLabel);
+		$descriptionLabel->setPosition($posX - count($this->playerMenuItems) * $itemSize * 1.15 - 6, $posY - $itemSize * $itemMarginFactorY);
 		$descriptionLabel->setAlign(Control::RIGHT, Control::TOP);
 		$descriptionLabel->setSize(40, 4);
 		$descriptionLabel->setTextSize(1.4);
@@ -300,7 +297,9 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		foreach ($this->playerMenuItems as $menuItems) {
 			foreach ($menuItems as $menuItem) {
 				$menuQuad = $menuItem[0];
-				/** @var Quad $menuQuad */
+				/**
+				 * @var Quad $menuQuad
+				 */
 				$popoutFrame->add($menuQuad);
 				$menuQuad->setSize($itemSize, $itemSize);
 				$menuQuad->setX($x);
@@ -308,13 +307,12 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 				$x -= $itemSize * 1.05;
 				
 				if ($menuItem[1]) {
+					$menuQuad->removeScriptFeatures();
 					$description = '$s' . $menuItem[1];
 					$menuQuad->addTooltipLabelFeature($descriptionLabel, $description);
 				}
 			}
 		}
-		
-		//if ($player->login === 'steeffeen') var_dump((string)$manialink);
 		
 		return $manialink;
 	}
