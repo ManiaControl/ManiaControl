@@ -57,7 +57,6 @@ class FrameModel implements Container, Renderable {
 	/**
 	 *
 	 * @see \FML\Types\Container::add()
-	 * @return \FML\Elements\FrameModel
 	 */
 	public function add(Control $childControl) {
 		if (!in_array($childControl, $this->children, true)) {
@@ -69,7 +68,6 @@ class FrameModel implements Container, Renderable {
 	/**
 	 *
 	 * @see \FML\Types\Container::removeChildren()
-	 * @return \FML\Elements\FrameModel
 	 */
 	public function removeChildren() {
 		$this->children = array();
@@ -79,7 +77,6 @@ class FrameModel implements Container, Renderable {
 	/**
 	 *
 	 * @see \FML\Types\Container::setFormat()
-	 * @return \FML\Elements\FrameModel
 	 */
 	public function setFormat(Format $format) {
 		$this->format = $format;

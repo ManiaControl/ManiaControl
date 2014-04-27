@@ -34,6 +34,7 @@ class InstallMacroblock implements Element {
 	 * Construct a new InstallMacroblock Element
 	 *
 	 * @param string $name (optional) Macroblock Name
+	 * @param string $file (optional) Macroblock File
 	 * @param string $url (optional) Macroblock Url
 	 */
 	public function __construct($name = null, $file = null, $url = null) {
@@ -69,7 +70,7 @@ class InstallMacroblock implements Element {
 		$this->file = (string) $file;
 		return $this;
 	}
-	
+
 	/**
 	 * Set the Url of the Macroblock
 	 *

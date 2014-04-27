@@ -6,6 +6,7 @@ use FML\Elements\Dico;
 use FML\Script\Script;
 use FML\Stylesheet\Stylesheet;
 use FML\Types\Renderable;
+use FML\Types\ScriptFeatureable;
 
 /**
  * Class representing a ManiaLink
@@ -32,7 +33,7 @@ class ManiaLink {
 	protected $id = '';
 	protected $version = 1;
 	protected $background = '';
-	protected $navigable3d = 0;
+	protected $navigable3d = 1;
 	protected $timeout = 0;
 	protected $children = array();
 	protected $dico = null;
@@ -85,7 +86,7 @@ class ManiaLink {
 
 	/**
 	 * Get ManiaLink Id
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getId() {
@@ -128,6 +129,7 @@ class ManiaLink {
 	/**
 	 * Add an Element to the ManiaLink
 	 *
+	 * @param Renderable $child Child Element to add
 	 * @return \FML\ManiaLink
 	 */
 	public function add(Renderable $child) {
@@ -245,30 +247,37 @@ class ManiaLink {
 		if (strlen($this->background) > 0) {
 			$maniaLink->setAttribute('background', $this->background);
 		}
-		if ($this->navigable3d) {
-			// TODO: check default value
+		if (!$this->navigable3d) {
 			$maniaLink->setAttribute('navigable3d', $this->navigable3d);
 		}
 		if ($this->timeout) {
 			$timeoutXml = $domDocument->createElement('timeout', $this->timeout);
 			$maniaLink->appendChild($timeoutXml);
 		}
-		foreach ($this->children as $child) {
-			$childXml = $child->render($domDocument);
-			$maniaLink->appendChild($childXml);
-		}
 		if ($this->dico) {
 			$dicoXml = $this->dico->render($domDocument);
 			$maniaLink->appendChild($dicoXml);
+		}
+		$scriptFeatures = array();
+		foreach ($this->children as $child) {
+			$childXml = $child->render($domDocument, $this->getScript());
+			$maniaLink->appendChild($childXml);
+			if ($child instanceof ScriptFeatureable) {
+				$scriptFeatures = array_merge($scriptFeatures, $child->getScriptFeatures());
+			}
+		}
+		if ($scriptFeatures) {
+			$this->getScript()->loadFeatures($scriptFeatures);
 		}
 		if ($this->stylesheet) {
 			$stylesheetXml = $this->stylesheet->render($domDocument);
 			$maniaLink->appendChild($stylesheetXml);
 		}
-		if ($this->script) {
+		if ($this->script->needsRendering()) {
 			$scriptXml = $this->script->render($domDocument);
 			$maniaLink->appendChild($scriptXml);
 		}
+		$this->script->resetGenericScriptLabels();
 		if ($isChild) {
 			return $maniaLink;
 		}

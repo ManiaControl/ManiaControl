@@ -3,7 +3,7 @@
 namespace FML\Controls;
 
 use FML\Elements\FrameModel;
-use FML\Types\Renderable;
+
 
 /**
  * Class representing an Instance of a Frame Model

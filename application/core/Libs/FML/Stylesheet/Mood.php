@@ -35,7 +35,7 @@ class Mood {
 	/**
 	 * Create a new Mood Object
 	 *
-	 * @return \FML\Elements\Mood
+	 * @return \FML\Stylesheet\Mood
 	 */
 	public static function create() {
 		$mood = new Mood();
@@ -168,7 +168,7 @@ class Mood {
 	 * @return \FML\Stylesheet\Mood
 	 */
 	public function setLightBallIntensity($intensity) {
-		$this->lBall_Intens = (float) $intensity;
+		$this->lBall_Intensity = (float) $intensity;
 		return $this;
 	}
 
@@ -218,7 +218,7 @@ class Mood {
 	/**
 	 * Set Sky Gradient Scale
 	 *
-	 * @param float $vScale Gradient Scale Scale
+	 * @param float $scale Gradient Scale
 	 * @return \FML\Stylesheet\Mood
 	 */
 	public function setSkyGradientScale($scale) {
@@ -283,8 +283,8 @@ class Mood {
 		if ($this->lBall_LinearRgb) {
 			$moodXml->setAttribute('LBall_LinearRgb', $this->lBall_LinearRgb);
 		}
-		if ($this->lBall_Intens) {
-			$moodXml->setAttribute('LBall_Intens', $this->lBall_Intens);
+		if ($this->lBall_Intensity) {
+			$moodXml->setAttribute('LBall_Intens', $this->lBall_Intensity);
 		}
 		if ($this->lBall_Radius) {
 			$moodXml->setAttribute('LBall_Radius', $this->lBall_Radius);

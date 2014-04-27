@@ -23,27 +23,26 @@ class Style3d {
 	 * Protected Properties
 	 */
 	protected $tagName = 'style3d';
-	protected $id = '';
+	protected $id = null;
 	protected $model = self::MODEL_Box;
-	// TODO: check what happens for negative thickness values + adapt rendering
 	protected $thickness = null;
-	protected $color = '';
-	protected $focusColor = '';
-	protected $lightColor = '';
-	protected $focusLightColor = '';
-	// TODO: check offset value ranges + apapt rendering
-	protected $yOffset = 0.;
-	protected $focusYOffset = 0.;
-	protected $zOffset = 0.;
-	protected $focusZOffset = 0.;
+	protected $color = null;
+	protected $focusColor = null;
+	protected $lightColor = null;
+	protected $focusLightColor = null;
+	protected $yOffset = null;
+	protected $focusYOffset = null;
+	protected $zOffset = null;
+	protected $focusZOffset = null;
 
 	/**
 	 * Create a new Style3d Object
 	 *
-	 * @return \FML\Elements\Style3d
+	 * @param string $id (optional) Style Id
+	 * @return \FML\Stylesheet\Style3d
 	 */
-	public static function create() {
-		$style3d = new Style3d();
+	public static function create($id = null) {
+		$style3d = new Style3d($id);
 		return $style3d;
 	}
 
@@ -159,7 +158,7 @@ class Style3d {
 	/**
 	 * Set Y-Offset
 	 *
-	 * @param flaot $yOffset Y-Offset
+	 * @param float $yOffset Y-Offset
 	 * @return \FML\Stylesheet\Style3d
 	 */
 	public function setYOffset($yOffset) {

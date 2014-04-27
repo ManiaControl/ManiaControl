@@ -20,7 +20,7 @@ class Stylesheet {
 	/**
 	 * Create a new Stylesheet Object
 	 *
-	 * @return \FML\Elements\Stylesheet
+	 * @return \FML\Stylesheet\Stylesheet
 	 */
 	public static function create() {
 		$stylesheet = new Stylesheet();
@@ -37,7 +37,7 @@ class Stylesheet {
 	 * Add a new Style3d
 	 *
 	 * @param Style3d $style3d The Style3d to add
-	 * @return \FML\Stylesheet\Frame3dStyles
+	 * @return \FML\Stylesheet\Stylesheet
 	 */
 	public function addStyle3d(Style3d $style3d) {
 		if (!in_array($style3d, $this->styles3d, true)) {
@@ -49,7 +49,7 @@ class Stylesheet {
 	/**
 	 * Remove all Styles
 	 *
-	 * @return \FML\Stylesheet\Frame3dStyles
+	 * @return \FML\Stylesheet\Stylesheet
 	 */
 	public function removeStyles() {
 		$this->styles3d = array();

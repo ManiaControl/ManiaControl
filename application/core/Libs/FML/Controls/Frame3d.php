@@ -62,14 +62,12 @@ class Frame3d extends Frame implements Scriptable {
 	 */
 	public function setStyle3d(Style3d $style3d) {
 		$this->style3d = $style3d;
-		$this->style = '';
 		return $this;
 	}
 
 	/**
 	 *
 	 * @see \FML\Types\Scriptable::setScriptEvents()
-	 * @return \FML\Controls\Frame3d
 	 */
 	public function setScriptEvents($scriptEvents) {
 		$this->scriptEvents = ($scriptEvents ? 1 : 0);
