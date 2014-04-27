@@ -10,8 +10,4 @@ namespace ManiaControl\Callbacks;
  * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 interface CallbackListener {
-	/*
-	 * Constants
-	 */
-	const CALLBACKLISTENER_INTERFACE = __CLASS__;
 }
