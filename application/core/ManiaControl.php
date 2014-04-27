@@ -26,6 +26,7 @@ use Maniaplanet\DedicatedServer\Connection;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 use Maniaplanet\DedicatedServer\Xmlrpc\NotInScriptModeException;
 use Maniaplanet\DedicatedServer\Xmlrpc\TransportException;
+use ManiaControl\Database\Database;
 
 require_once __DIR__ . '/Libs/Maniaplanet/DedicatedServer/Connection.php';
 require_once __DIR__ . '/Libs/GbxDataFetcher/gbxdatafetcher.inc.php';
