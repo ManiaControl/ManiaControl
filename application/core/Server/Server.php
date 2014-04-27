@@ -24,6 +24,7 @@ class Server implements CallbackListener {
 	/*
 	 * Public Properties
 	 */
+    /** @var Config $config */
 	public $config = null;
 	public $index = -1;
 	public $ip = null;

@@ -270,7 +270,9 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 
 		// Check old record of the player
 		$oldRecord = $this->getLocalRecord($map, $player);
+        $oldRank = -1;
 		if ($oldRecord) {
+            $oldRank = $oldRecord->rank;
 			if ($oldRecord->time < $time) {
 				// Not improved
 				return;

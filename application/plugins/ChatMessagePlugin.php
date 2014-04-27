@@ -389,20 +389,19 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	 * @return mixed
 	 */
 	private function getTarget($login) {
-		$pid = 1;
-
+        /** @var Player $player */
+        $player = null;
 		foreach($this->maniaControl->playerManager->getPlayers() as $player) {
-			if ($login == $player->login || $login == $pid || $login == $player->nickname) {
+			if ($login == $player->login || $login == $player->pid || $login == $player->nickname) {
 				return $player->nickname;
 			}
-			$pid++;
 		}
 
-		if ($login == 'lj' && $pid > 1) {
+		if ($player && $login == 'lj') {
 			return $player->nickname;
 		}
 
-		return $login;
+		return null;
 	}
 
 	/**
