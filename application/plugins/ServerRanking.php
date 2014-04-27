@@ -230,7 +230,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 				$result->free_result();
 
 				/** @var \MCTeam\LocalRecordsPlugin $localRecordsPlugin */
-				$localRecordsPlugin = $this->maniaControl->pluginManager->getPlugin('LocalRecordsPlugin');
+				$localRecordsPlugin = $this->maniaControl->pluginManager->getPlugin('\MCTeam\LocalRecordsPlugin');
 				$maps               = $this->maniaControl->mapManager->getMaps();
 				foreach($maps as $map) {
 					$records = $localRecordsPlugin->getLocalRecords($map, $maxRecords);
