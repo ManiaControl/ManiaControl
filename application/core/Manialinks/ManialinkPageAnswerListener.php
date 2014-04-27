@@ -10,8 +10,4 @@ namespace ManiaControl\Manialinks;
  * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 interface ManialinkPageAnswerListener {
-	/*
-	 * Constants
-	 */
-	const MANIALINKPAGEANSWERLISTENER_INTERFACE = __CLASS__;
 }

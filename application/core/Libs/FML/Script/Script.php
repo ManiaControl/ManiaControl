@@ -81,7 +81,7 @@ class Script {
 		else {
 			$scriptFunction = new ScriptFunction($name, $text);
 		}
-		array_push($this->functions, $scriptFunction);
+		$this->functions[$scriptFunction->getName()] = $scriptFunction;
 		return $this;
 	}
 

@@ -159,12 +159,19 @@ class StyleManager {
 	 *
 	 * @return Frame $frame
 	 */
-	public function getDefaultListFrame(Script $script = null, $pagesId = '') {
-        $paging = null;
-        if ($script) {
-            $paging = new Paging();
-            $script->addFeature($paging);
-        }
+	public function getDefaultListFrame() {
+		$args = func_get_args();
+		$script = null;
+		$paging = null;
+		foreach ($args as $arg) {
+			if ($arg instanceof Script) {
+				$script = $arg;
+			}
+			if ($arg instanceof Paging) {
+				$paging = $arg;
+			}
+		}
+		
 		$width        = $this->getListWidgetsWidth();
 		$height       = $this->getListWidgetsHeight();
 		$quadStyle    = $this->getDefaultMainWindowStyle();
@@ -189,7 +196,7 @@ class StyleManager {
 		$closeQuad->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_QuitRace);
 		$closeQuad->setAction(ManialinkManager::ACTION_CLOSEWIDGET);
 
-		if ($pagesId && isset($script)) {
+		if ($script) {
 			$pagerSize = 6.;
 			$pagerPrev = new Quad_Icons64x64_1();
 			$frame->add($pagerPrev);

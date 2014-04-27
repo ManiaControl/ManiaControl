@@ -10,8 +10,4 @@ namespace ManiaControl\Callbacks;
  * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 interface TimerListener {
-	/*
-	 * Constants
-	 */
-	const TIMERLISTENER_INTERFACE = __CLASS__;
 }
