@@ -7,7 +7,6 @@ use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_Icons128x128_1;
 use FML\ManiaLink;
-use FML\Script\Script;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Bills\BillManager;
 use ManiaControl\Callbacks\CallbackListener;
@@ -209,7 +208,6 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$itemSize = $width;
 
 		$maniaLink = new ManiaLink(self::MLID_DONATE_WIDGET);
-		$script    = $maniaLink->getScript();
 
 		// Donate Menu Icon Frame
 		$frame = new Frame();
@@ -247,8 +245,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$quad->setSize(strlen($values) * 2 + count($valueArray) * 1, $itemSize * $itemMarginFactorY);
 
 		$popoutFrame->add($quad);
-
-		$script->addToggle($itemQuad, $popoutFrame);
+        $itemQuad->addToggleFeature($popoutFrame);
 
 		// Description Label
 		$descriptionFrame = new Frame();
@@ -275,7 +272,8 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 			$label->setTextSize(1.2);
 			$label->setAction(self::ACTION_DONATE_VALUE . "." . $value);
 			$label->setStyle(Label_Text::STYLE_TextCardSmall);
-			$script->addTooltip($label, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Donate " . $value . " Planets"));
+            $description = "Donate {$value} Planets";
+            $label->addTooltipLabelFeature($descriptionLabel, $description);
 
 			$x -= strlen($value) * 2 + 1.7;
 		}

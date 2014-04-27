@@ -12,7 +12,6 @@ use FML\Controls\Quads\Quad_Icons128x32_1;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Controls\Quads\Quad_UIConstruction_Buttons;
 use FML\ManiaLink;
-use FML\Script\Script;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\TimerListener;
@@ -668,7 +667,6 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$itemSize = $width;
 
 		$maniaLink = new ManiaLink(self::MLID_ICON);
-		$script    = $maniaLink->getScript();
 
 		//Custom Vote Menu Iconsframe
 		$frame = new Frame();
@@ -716,7 +714,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 		$backgroundQuad->setSize($menuEntries * $itemSize * 1.15 + 2, $itemSize * $itemMarginFactorY);
 
-		$script->addToggle($itemQuad, $popoutFrame);
+        $itemQuad->addToggleFeature($popoutFrame);
 
 		// Add items
 		$x = -1;
@@ -734,7 +732,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 				if ($menuItem[1]) {
 					$description = '$s' . $menuItem[1];
-					$script->addTooltip($menuQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $description));
+                    $menuQuad->addTooltipLabelFeature($descriptionLabel, $description);
 				}
 			}
 		}

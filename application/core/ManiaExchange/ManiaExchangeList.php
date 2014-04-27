@@ -13,7 +13,7 @@ use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\ManiaLink;
-use FML\Script\Script;
+use FML\Script\Features\Paging;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ColorUtil;
@@ -130,6 +130,8 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		//Create ManiaLink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$script    = $maniaLink->getScript();
+        $paging = new Paging();
+        $script->addFeature($paging);
 
 		$pagesId = 'MxListPages';
 
@@ -161,7 +163,8 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 				}
 				array_push($pageFrames, $pageFrame);
 				$y = $height / 2 - 16;
-				$script->addPage($pageFrame, count($pageFrames), $pagesId);
+
+                $paging->addPage($pageFrame);
 			}
 
 			// Map Frame
@@ -194,7 +197,8 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 			$mxQuad->setX($x + 56);
 			$mxQuad->setUrl($map->pageurl);
 			$mxQuad->setZ(0.01);
-			$script->addTooltip($mxQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "View " . $map->name . " on Mania-Exchange"));
+            $description = 'View $<' . $map->name . '$> on Mania-Exchange';
+            $mxQuad->addTooltipLabelFeature($descriptionLabel, $description);
 
 			if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
 				$addQuad = new Quad_Icons64x64_1();
@@ -206,7 +210,8 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 				$addQuad->setAction(self::ACTION_ADD_MAP . '.' . $map->id);
 				$addQuad->setZ(0.01);
 
-				$script->addTooltip($addQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => 'Add-Map: $<' . $map->name . '$>'));
+                $description = 'Add-Map: $<' . $map->name . '$>';
+                $addQuad->addTooltipLabelFeature($descriptionLabel, $description);
 			}
 
 			//Award Quad

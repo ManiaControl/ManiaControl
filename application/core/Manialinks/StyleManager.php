@@ -9,6 +9,7 @@ use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_BgRaceScore2;
 use FML\Controls\Quads\Quad_Icons64x64_1;
+use FML\Script\Features\Paging;
 use FML\Script\Script;
 use ManiaControl\ManiaControl;
 
@@ -159,6 +160,11 @@ class StyleManager {
 	 * @return Frame $frame
 	 */
 	public function getDefaultListFrame(Script $script = null, $pagesId = '') {
+        $paging = null;
+        if ($script) {
+            $paging = new Paging();
+            $script->addFeature($paging);
+        }
 		$width        = $this->getListWidgetsWidth();
 		$height       = $this->getListWidgetsHeight();
 		$quadStyle    = $this->getDefaultMainWindowStyle();
@@ -197,8 +203,10 @@ class StyleManager {
 			$pagerNext->setSize($pagerSize, $pagerSize);
 			$pagerNext->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowNext);
 
-			$script->addPager($pagerPrev, -1, $pagesId);
-			$script->addPager($pagerNext, 1, $pagesId);
+            if ($paging) {
+                $paging->addButton($pagerNext);
+                $paging->addButton($pagerPrev);
+            }
 
 			$pageCountLabel = new Label_Text();
 			$frame->add($pageCountLabel);
@@ -206,7 +214,9 @@ class StyleManager {
 			$pageCountLabel->setPosition($width * 0.40, $height * -0.44, 1);
 			$pageCountLabel->setStyle($pageCountLabel::STYLE_TextTitle1);
 			$pageCountLabel->setTextSize(1.3);
-			$script->addPageLabel($pageCountLabel, $pagesId);
+            if ($paging) {
+                $paging->setLabel($pageCountLabel);
+            }
 		}
 
 		return $frame;

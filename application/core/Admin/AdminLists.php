@@ -10,7 +10,7 @@ use FML\Controls\Quads\Quad_BgRaceScore2;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
 use FML\Controls\Quads\Quad_UIConstruction_Buttons;
 use FML\ManiaLink;
-use FML\Script\Script;
+use FML\Script\Features\Paging;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
@@ -90,6 +90,8 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 		//Create ManiaLink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$script    = $maniaLink->getScript();
+        $paging = new Paging();
+        $script->addFeature($paging);
 
 		// Main frame
 		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script, $pagesId);
@@ -122,7 +124,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 				}
 				array_push($pageFrames, $pageFrame);
 				$y = $height / 2 - 10;
-				$script->addPage($pageFrame, count($pageFrames), $pagesId);
+                $paging->addPage($pageFrame);
 			}
 
 
@@ -155,8 +157,9 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 			$rightLabel->setX($x + 13.9);
 			$rightLabel->setTextSize(0.8);
 			$rightLabel->setZ(10);
-			$rightLabel->setText($this->maniaControl->authenticationManager->getAuthLevelAbbreviation($admin->authLevel));
-			$script->addTooltip($rightLabel, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $this->maniaControl->authenticationManager->getAuthLevelName($admin->authLevel) . " " . $admin->nickname));
+			$rightLabel->setText($this->maniaControl->authenticationManager->getAuthLevelAbbreviation($admin));
+            $description = $this->maniaControl->authenticationManager->getAuthLevelName($admin) . " " . $admin->nickname;
+            $rightLabel->addTooltipLabelFeature($descriptionLabel, $description);
 
 			//Revoke Button
 			if ($admin->authLevel > 0 && $this->maniaControl->authenticationManager->checkRight($player, $admin->authLevel + 1)) {

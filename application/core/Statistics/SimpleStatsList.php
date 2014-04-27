@@ -11,7 +11,6 @@ use FML\Controls\Quads\Quad_BgsPlayerCard;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Controls\Quads\Quad_UIConstruction_Buttons;
 use FML\ManiaLink;
-use FML\Script\Script;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Commands\CommandListener;
@@ -125,7 +124,6 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 
 
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
-		$script    = $maniaLink->getScript();
 		$width     = $this->statsWidth + 60;
 		//TODO handle size when stats are empty
 
@@ -195,9 +193,11 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 				break;
 			}
 
-			/** @var Label_Text $labels [] */
-			$labels[$i]->setAction(self::ACTION_SORT_STATS . '.' . $statArray["Name"]);
-			$script->addTooltip($labels[$i], $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => '$o ' . $statArray["Name"]));
+			/** @var Label_Text $label [] */
+            $label = $labels[$i];
+
+			$label->setAction(self::ACTION_SORT_STATS . '.' . $statArray["Name"]);
+            $label->addTooltipLabelFeature($descriptionLabel, '$o '.$statArray["Name"]);
 			$i++;
 		}
 
@@ -262,7 +262,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 				$label->setTextSize($textSize);
 				$label->setText($array['Value']);
 				$label->setTextColor($textColor);
-				$script->addTooltip($label, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => '$o ' . $key));
+                $label->addTooltipLabelFeature($descriptionLabel, '$o '.$key);
 				$x += $array['Width'];
 			}
 

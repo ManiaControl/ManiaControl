@@ -1,4 +1,7 @@
 <?php
+
+namespace MCTeam;
+
 use FML\Controls\Frame;
 use FML\Controls\Gauge;
 use FML\Controls\Label;
@@ -209,7 +212,9 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			$this->buildManialink();
 
 			// Update karma gauge & label
+            /** @var Gauge $karmaGauge */
 			$karmaGauge = $this->manialink->karmaGauge;
+            /** @var Label $karmaLabel */
 			$karmaLabel = $this->manialink->karmaLabel;
 			if (is_numeric($karma) && $voteCount > 0) {
 				$karma = floatval($karma);
@@ -228,10 +233,8 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 				// Get player vote
                 // TODO: show the player his own vote in some way
 				//$vote = $this->getPlayerVote($player, $map);
-
-				// Adjust manialink for player's vote
-				$votesFrame = $this->manialink->votesFrame;
-				$votesFrame->removeChildren();
+				//$votesFrame = $this->manialink->votesFrame;
+				//$votesFrame->removeChildren();
 
 				// Send manialink
 				$this->maniaControl->manialinkManager->sendManialink($this->manialink, $login);

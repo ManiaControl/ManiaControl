@@ -210,7 +210,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 
 				break;
 			case self::RANKING_TYPE_RECORDS: //TODO verify workable status
-				if (!$this->maniaControl->pluginManager->isPluginActive('LocalRecordsPlugin')) {
+				if (!$this->maniaControl->pluginManager->isPluginActive('\MCTeam\LocalRecordsPlugin')) {
 					return;
 				}
 
@@ -218,7 +218,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 				$maxRecords      = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAX_STORED_RECORDS);
 
 				$query = 'SELECT playerIndex, COUNT(*) AS Cnt
-  		          FROM ' . LocalRecordsPlugin::TABLE_RECORDS . '
+  		          FROM ' . \MCTeam\LocalRecordsPlugin::TABLE_RECORDS . '
   		          GROUP BY PlayerIndex
   		          HAVING Cnt >=' . $requiredRecords;
 
@@ -229,7 +229,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 				}
 				$result->free_result();
 
-				/** @var LocalRecordsPlugin $localRecordsPlugin */
+				/** @var \MCTeam\LocalRecordsPlugin $localRecordsPlugin */
 				$localRecordsPlugin = $this->maniaControl->pluginManager->getPlugin('LocalRecordsPlugin');
 				$maps               = $this->maniaControl->mapManager->getMaps();
 				foreach($maps as $map) {

@@ -13,8 +13,7 @@ use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\ManiaLink;
-use FML\Script\Script;
-use KarmaPlugin;
+use FML\Script\Features\Paging;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ColorUtil;
@@ -25,6 +24,7 @@ use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
+use MCTeam\KarmaPlugin;
 
 /**
  * MapList Widget Class
@@ -135,6 +135,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		//Create ManiaLink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$script    = $maniaLink->getScript();
+        $paging = new Paging();
+        $script->addFeature($paging);
 
 		// Main frame
 		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script, $pagesId);
@@ -225,7 +227,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				}
 				array_push($pageFrames, $pageFrame);
 				$y = $height / 2 - 10;
-				$script->addPage($pageFrame, count($pageFrames), $pagesId);
+
+                $paging->addPage($pageFrame);
 			}
 
 			// Map Frame
@@ -263,7 +266,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$mxQuad->setX($x + 65);
 				$mxQuad->setUrl($map->mx->pageurl);
 				$mxQuad->setZ(0.01);
-				$script->addTooltip($mxQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "View $<" . $map->name . "$> on Mania-Exchange"));
+                $description = 'View $<' . $map->name . '$> on Mania-Exchange';
+                $mxQuad->addTooltipLabelFeature($descriptionLabel, $description);
 
 				if ($map->updateAvailable()) {
 					$mxQuad = new Quad();
@@ -274,7 +278,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 					$mxQuad->setX($x + 62);
 					$mxQuad->setUrl($map->mx->pageurl);
 					$mxQuad->setZ(0.01);
-					$script->addTooltip($mxQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Update of $<" . $map->name . "$> available on Mania-Exchange"));
+                    $description = 'Update for $<' . $map->name . '$> available on Mania-Exchange!';
+                    $mxQuad->addTooltipLabelFeature($descriptionLabel, $description);
 
 					//Update Button
 					if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
@@ -288,7 +293,10 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$array  = array($id => $x + 5, $mxId => $x + 10, Formatter::stripDirtyCodes($map->name) => $x + 20, $map->authorNick => $x + 68);
 			$labels = $this->maniaControl->manialinkManager->labelLine($mapFrame, $array);
 			if (isset($labels[3])) {
-				$script->addTooltip($labels[3], $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => '$<' . $map->name . '$> made by $<' . $map->authorLogin . '$>'));
+                /** @var Label $label */
+                $label = $labels[3];
+                $description = '$<' . $map->name . '$> made by $<' . $map->authorLogin . '$>';
+                $label->addTooltipLabelFeature($descriptionLabel, $description);
 			}
 
 			// TODO action detailed map info including mx info
@@ -307,10 +315,12 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				//Checks if the Player who openend the Widget has queued the map
 				$queuer = $this->maniaControl->mapManager->mapQueue->getQueuer($map->uid);
 				if ($queuer->login == $player->login) {
-					$script->addTooltip($label, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => 'Remove $<' . $map->name . '$> from the Map Queue'));
+                    $description = 'Remove $<' . $map->name . '$> from the Map Queue';
+                    $label->addTooltipLabelFeature($descriptionLabel, $description);
 					$label->setAction(self::ACTION_UNQUEUE_MAP . '.' . $map->uid);
 				} else {
-					$script->addTooltip($label, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => '$<' . $map->name . '$> is on Map-Queue Position: ' . $queuedMaps[$map->uid]));
+                    $description = '$<' . $map->name . '$> is on Map-Queue Position: ' . $queuedMaps[$map->uid];
+                    $label->addTooltipLabelFeature($descriptionLabel, $description);
 				}
 
 			} else {
@@ -324,7 +334,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$queueLabel->setText('+');
 				$queueLabel->setTextColor('09f');
 
-				$script->addTooltip($queueLabel, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => 'Add $<' . $map->name . '$> to the Map Queue'));
+                $description = 'Add $<' . $map->name . '$> to the Map Queue';
+                $queueLabel->addTooltipLabelFeature($descriptionLabel, $description);
 			}
 
 			if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_REMOVE_MAP)) {
@@ -339,10 +350,10 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$eraseLabel->setTextColor('a00');
 
 				$confirmFrame = $this->buildConfirmFrame($maniaLink, $y, $id, $map->uid);
-				$script->addToggle($eraseLabel, $confirmFrame);
-				$script->addTooltip($eraseLabel, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => 'Remove Map: $<' . $map->name . '$>'));
+                $eraseLabel->addToggleFeature($confirmFrame);
+                $description = 'Remove Map: $<' . $map->name . '$>';
+                $eraseLabel->addToggleFeature($descriptionLabel, $description);
 			}
-
 
 			if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
 				// Switch to map
@@ -356,9 +367,11 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$switchLabel->setTextColor('0f0');
 
 				$confirmFrame = $this->buildConfirmFrame($maniaLink, $y, $id);
-				$script->addToggle($switchLabel, $confirmFrame);
+                $switchLabel->addToggleFeature($confirmFrame);
 
-				$script->addTooltip($switchLabel, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => 'Switch Directly to Map: $<' . $map->name . '$>'));
+                $description = 'Switch Directly to Map: $<' . $map->name . '$>';
+                $switchLabel->addTooltipLabelFeature($descriptionLabel, $description);
+
 			} else if ($this->maniaControl->pluginManager->isPluginActive(self::DEFAULT_CUSTOM_VOTE_PLUGIN)) {
 				//Switch Map Voting
 				$switchLabel = new Label_Button();
@@ -372,7 +385,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 				$switchLabel->setAction(self::ACTION_START_SWITCH_VOTE . '.' . ($id - 1));
 
-				$script->addTooltip($switchLabel, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => 'Start Map-Switch vote: $<' . $map->name . '$>'));
+                $description = 'Start Map-Switch Vote: $<' . $map->name . '$>';
+                $switchLabel->addTooltipLabelFeature($descriptionLabel, $description);
 			}
 
 			// Display Karma bar

@@ -226,7 +226,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 			$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 			$backgroundQuad->setSize(count($this->adminMenuItems) * $itemSize * 1.15 + 2, $itemSize * $itemMarginFactorY);
 
-			$script->addToggle($itemQuad, $popoutFrame);
+            $itemQuad->addToggleFeature($popoutFrame);
 
 			// Add items
 			$x = -1;
@@ -245,7 +245,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 
 					if($menuItem[1]) {
 						$description = '$s' . $menuItem[1];
-						$script->addTooltip($menuQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $description));
+                        $menuQuad->addTooltipLabelFeature($descriptionLabel, $description);
 					}
 				}
 			}
@@ -294,7 +294,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		$backgroundQuad->setHAlign(Control::RIGHT);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 		$backgroundQuad->setSize(count($this->playerMenuItems) * $itemSize * 1.15 + 2, $itemSize * $itemMarginFactorY);
-		$script->addToggle($itemQuad, $popoutFrame);
+        $itemQuad->addToggleFeature($popoutFrame);
 
 		// Add items
 		$x = -1;
@@ -313,7 +313,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 
 				if($menuItem[1]) {
 					$description = '$s' . $menuItem[1];
-					$script->addTooltip($menuQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $description));
+                    $menuQuad->addTooltipLabelFeature($descriptionLabel, $description);
 				}
 			}
 		}

@@ -230,10 +230,15 @@ class AuthenticationManager implements CallbackListener {
 	/**
 	 * Get Name of the Authentication Level from Level Int
 	 *
-	 * @param int $authLevelInt
+	 * @param mixed $authLevelInt
 	 * @return string
 	 */
 	public static function getAuthLevelName($authLevelInt) {
+        if ($authLevelInt instanceof Player) {
+            $authLevelInt = $authLevelInt->authLevel;
+        } else {
+            $authLevelInt = (int) $authLevelInt;
+        }
 		if ($authLevelInt == self::AUTH_LEVEL_MASTERADMIN) {
 			return 'MasterAdmin';
 		}
@@ -252,10 +257,15 @@ class AuthenticationManager implements CallbackListener {
 	/**
 	 * Get the Abbreviation of the Authentication Level from Level Int
 	 *
-	 * @param int $authLevelInt
+	 * @param mixed $authLevelInt
 	 * @return string
 	 */
 	public static function getAuthLevelAbbreviation($authLevelInt) {
+        if ($authLevelInt instanceof Player) {
+            $authLevelInt = $authLevelInt->authLevel;
+        } else {
+            $authLevelInt = (int) $authLevelInt;
+        }
 		if ($authLevelInt == self::AUTH_LEVEL_MASTERADMIN) {
 			return 'MA';
 		}
