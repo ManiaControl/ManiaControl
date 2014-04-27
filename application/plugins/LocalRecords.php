@@ -56,6 +56,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 	 */
 	private $maniaControl = null;
 	private $updateManialink = false;
+	private $checkpoints = array();
 
 	/**
 	 * Prepares the Plugin
@@ -92,6 +93,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_BEGINMAP, $this, 'handleMapBegin');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_TM_PLAYERFINISH, $this, 'handlePlayerFinish');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_TM_PLAYERCHECKPOINT, $this, 'handlePlayerCheckpoint');
         $this->maniaControl->callbackManager->registerCallbackListener(SettingManager::CB_SETTINGS_CHANGED, $this, 'handleSettingsChanged');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 		$this->maniaControl->commandManager->registerCommandListener('records', $this, 'showRecordsList');
@@ -126,6 +128,13 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$mysqli->query($query);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error, E_USER_ERROR);
+		}
+
+		$mysqli->query("ALTER TABLE `" . self::TABLE_RECORDS . "` ADD `checkpoints` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL");
+		if ($mysqli->error) {
+			if(!strstr($mysqli->error, 'Duplicate')) {
+				trigger_error($mysqli->error, E_USER_ERROR);
+			}
 		}
 	}
 
@@ -203,6 +212,23 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
     }
 
 	/**
+	 * Handle PlayerCheckpoint callback
+	 *
+	 * @param $callback
+	 */
+	public function handlePlayerCheckpoint($callback) {
+		$data  = $callback[1];
+		$login = $data[1];
+		$time  = $data[2];
+		//$lap     = $data[3];
+		$cpIndex = $data[4];
+		if (!isset($this->checkpoints[$login]) || $cpIndex <= 0) {
+			$this->checkpoints[$login] = array();
+		}
+		$this->checkpoints[$login][$cpIndex] = $time;
+	}
+
+	/**
 	 * Handle PlayerConnect callback
 	 *
 	 * @param Player $player
@@ -262,13 +288,16 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$query  = "INSERT INTO `" . self::TABLE_RECORDS . "` (
 				`mapIndex`,
 				`playerIndex`,
-				`time`
+				`time`,
+				`checkpoints`
 				) VALUES (
 				{$map->index},
 				{$player->index},
-				{$time}
+				{$time},
+				'{$this->getCheckpoints($player->login)}'
 				) ON DUPLICATE KEY UPDATE
-				`time` = VALUES(`time`);";
+				`time` = VALUES(`time`),
+				`checkpoints` = VALUES(`checkpoints`);";
 		$mysqli->query($query);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error);
@@ -427,6 +456,27 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 
 		// Render and display xml
 		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player, 'PlayerList');
+	}
+
+	/**
+	 * Get current checkpoint string for dedimania record
+	 *
+	 * @param string $login
+	 * @return string
+	 */
+	private function getCheckpoints($login) {
+		if (!$login || !isset($this->checkpoints[$login])) {
+			return null;
+		}
+		$string = '';
+		$count  = count($this->checkpoints[$login]);
+		foreach($this->checkpoints[$login] as $index => $check) {
+			$string .= $check;
+			if ($index < $count - 1) {
+				$string .= ',';
+			}
+		}
+		return $string;
 	}
 
 	/**
