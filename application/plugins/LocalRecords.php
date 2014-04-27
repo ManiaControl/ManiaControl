@@ -277,8 +277,8 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 			}
 			if ($oldRecord->time == $time) {
 				// Same time
-				$message = '$<' . $player->nickname . '$> equalized her/his $<$o' . $oldRecord->rank . '.$> Local Record: ' . Formatter::formatTime($oldRecord->time);
-				$this->maniaControl->chat->sendInformation($message);
+				$message = '$<' . $player->nickname . '$> equalized his/her $<$ff0' . $oldRecord->rank . '.$> Local Record: $<$fff' . Formatter::formatTime($oldRecord->time).'$>!';
+				$this->maniaControl->chat->sendInformation('$3c0'.$message);
 				return;
 			}
 		}
@@ -313,16 +313,16 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$notifyOnlyBestRecords = $this->maniaControl->settingManager->getSetting($this, self::SETTING_NOTIFY_BEST_RECORDS);
 		if ($notifyOnlyDriver || $notifyOnlyBestRecords > 0 && $newRecord->rank > $notifyOnlyBestRecords) {
 			$improvement = ((!$oldRecord || $newRecord->rank < $oldRecord->rank) ? 'gained the' : 'improved your');
-			$message     = 'You ' . $improvement . ' $<$o' . $newRecord->rank . '.$> Local Record: ' . Formatter::formatTime($newRecord->time);
+			$message     = 'You ' . $improvement . ' $<$ff0' . $newRecord->rank . '.$> Local Record: $<$fff' . Formatter::formatTime($newRecord->time);
 			if($oldRecord) $oldRank = ($improvement == 'improved your') ? '' : $oldRecord->rank.'. ';
-			if($oldRecord) $message .= ' ('.$oldRank.'-'.Formatter::formatTime(($oldRecord->time-$newRecord->time)).')';
-			$this->maniaControl->chat->sendInformation($message, $player->login);
+			if($oldRecord) $message .= '$> ($<$ff0'.$oldRank.'$>$<$fff-'.Formatter::formatTime(($oldRecord->time-$newRecord->time)).'$>)!';
+			$this->maniaControl->chat->sendInformation('$3c0'.$message, $player->login);
 		} else {
 			$improvement = ((!$oldRecord || $newRecord->rank < $oldRecord->rank) ? 'gained the' : 'improved the');
-			$message     = '$<' . $player->nickname . '$> ' . $improvement . ' $<$o' . $newRecord->rank . '.$> Local Record: ' . Formatter::formatTime($newRecord->time);
+			$message     = '$<' . $player->nickname . '$> ' . $improvement . ' $<$ff0' . $newRecord->rank . '.$> Local Record: $<$fff' . Formatter::formatTime($newRecord->time);
 			if($oldRecord) $oldRank = ($improvement == 'improved the') ? '' : $oldRecord->rank.'. ';
-			if($oldRecord) $message .= ' ('.$oldRank.'-'.Formatter::formatTime(($oldRecord->time-$newRecord->time)).')';
-			$this->maniaControl->chat->sendInformation($message);
+			if($oldRecord) $message .= '$> ($<$ff0'.$oldRank.'$>$<$fff-'.Formatter::formatTime(($oldRecord->time-$newRecord->time)).'$>)!';
+			$this->maniaControl->chat->sendInformation('$3c0'.$message);
 		}
 	}
 
