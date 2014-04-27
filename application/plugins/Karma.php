@@ -427,7 +427,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		}
 		
 		// Migrate settings
-		$this->maniaControl->database->migrationHelper->transferSettings('ManiaControl\Chat', $this);
+		$this->maniaControl->database->migrationHelper->transferSettings('KarmaPlugin', $this);
 		
 		if (!$this->maniaControl->settingManager->getSetting($this, self::SETTING_MX_KARMA_ACTIVATED)) {
 			return;
