@@ -6,7 +6,6 @@ use FML\Controls\Control;
 use FML\Script\Script;
 use FML\Script\ScriptLabel;
 use FML\Script\Builder;
-
 use FML\Controls\Label;
 use FML\Script\ScriptInclude;
 
@@ -201,7 +200,10 @@ class Paging extends ScriptFeature {
 		}
 		
 		$pagingId = $minPage->getControl()->getId(true);
-		$pageLabelId = $this->label->getId(true);
+		$pageLabelId = '';
+		if ($this->label) {
+			$pageLabelId = $this->label->getId(true);
+		}
 		$pagesArrayText = $this->getPagesArrayText();
 		$pageButtonsArrayText = $this->getPageButtonsArrayText();
 		
@@ -257,6 +259,7 @@ Void {$updatePageFunction}(Text _PagingId, Text _PageLabelId, Integer _BrowseAct
 		}
 		TriggerPageAction(ChunkAction);
 	}
+	if (_PageLabelId == \"\") return;
 	declare PageLabel <=> (Page.GetFirstChild(_PageLabelId) as CMlLabel);
 	if (PageLabel == Null) return;
 	PageLabel.Value = CurrentPage^\"/\"^_MaxPageNumber;
