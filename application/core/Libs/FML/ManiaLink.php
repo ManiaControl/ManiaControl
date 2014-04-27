@@ -273,11 +273,13 @@ class ManiaLink {
 			$stylesheetXml = $this->stylesheet->render($domDocument);
 			$maniaLink->appendChild($stylesheetXml);
 		}
-		if ($this->script->needsRendering()) {
-			$scriptXml = $this->script->render($domDocument);
-			$maniaLink->appendChild($scriptXml);
+		if ($this->script) {
+			if ($this->script->needsRendering()) {
+				$scriptXml = $this->script->render($domDocument);
+				$maniaLink->appendChild($scriptXml);
+			}
+			$this->script->resetGenericScriptLabels();
 		}
-		$this->script->resetGenericScriptLabels();
 		if ($isChild) {
 			return $maniaLink;
 		}
