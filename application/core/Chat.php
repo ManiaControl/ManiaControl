@@ -72,7 +72,7 @@ class Chat {
 		if (!$this->maniaControl->client) {
 			return false;
 		}
-		$chatMessage = '$z$<' . $this->getPrefix($prefix) . $message . '$>$z';
+		$chatMessage = '$z$s$<' . $this->getPrefix($prefix) . $message . '$>$z$s';
 		if (!$login) {
 			$this->maniaControl->client->chatSendServerMessage($chatMessage);
 		} else {
