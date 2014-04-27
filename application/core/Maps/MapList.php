@@ -52,8 +52,9 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	/*
 	 * Private Properties
 	 */
-	private $maniaControl = null;
-	private $mapListShown = array();
+	private $maniaControl    = null;
+	private $mapListShown    = array();
+	private $mapsInListShown = array();
 
 	/**
 	 * Create a new MapList Instance
@@ -67,7 +68,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$this->maniaControl->callbackManager->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_CLOSED, $this, 'closeWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_OPENED, $this, 'handleWidgetOpened');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
-		$this->maniaControl->callbackManager->registerCallbackListener(MapQueue::CB_MAPQUEUE_CHANGED, $this, 'updateWidget');
+		$this->maniaControl->callbackManager->registerCallbackListener(MapQueue::CB_MAPQUEUE_CHANGED, $this, 'updateWidgetQueue');
 		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_MAPS_UPDATED, $this, 'updateWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_KARMA_UPDATED, $this, 'updateWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_BEGINMAP, $this, 'updateWidget');
@@ -107,14 +108,24 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 *
 	 * @param Player $player
 	 */
-	public function showMapList(Player $player) {
+	public function showMapList(Player $player, $maps = null) {
 		$width  = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
 		$height = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
 
 		$this->mapListShown[$player->login] = true;
 
 		// Get Maps
-		$mapList = $this->maniaControl->mapManager->getMaps();
+		if(is_null($maps) && $maps != 'redirect') {
+			$mapList = $this->maniaControl->mapManager->getMaps();
+		} else {
+			if(array_key_exists($player->login, $this->mapsInListShown) && $maps == 'redirect') {
+				$mapList = $this->mapsInListShown[$player->login];
+			} else {
+				$mapList = $maps;
+			}
+		}
+
+		$this->mapsInListShown[$player->login] = $mapList;
 
 		$pagesId = '';
 		if (count($mapList) > self::MAX_MAPS_PER_PAGE) {
@@ -563,9 +574,11 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				break;
 			case self::ACTION_QUEUED_MAP:
 				$this->maniaControl->mapManager->mapQueue->addMapToMapQueue($callback[1][1], $actionArray[2]);
+				$this->showMapList($player, 'redirect');
 				break;
 			case self::ACTION_UNQUEUE_MAP:
 				$this->maniaControl->mapManager->mapQueue->removeFromMapQueue($player, $actionArray[2]);
+				$this->showMapList($player, 'redirect');
 				break;
 		}
 	}
@@ -579,6 +592,22 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$player = $this->maniaControl->playerManager->getPlayer($login);
 				if ($player) {
 					$this->showMapList($player);
+				} else {
+					unset($this->mapListShown[$login]);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Reopen the widget on MapQueue changed
+	 */
+	public function updateWidgetQueue() {
+		foreach($this->mapListShown as $login => $shown) {
+			if ($shown) {
+				$player = $this->maniaControl->playerManager->getPlayer($login);
+				if ($player) {
+					$this->showMapList($player, 'redirect');
 				} else {
 					unset($this->mapListShown[$login]);
 				}

@@ -51,7 +51,7 @@ class HelpManager implements CommandListener, CallbackListener {
 	 */
 	public function command_adminHelp(array $chat, Player $player) {
 		//TODO only show first command in command arrays
-		$message = '$sSupported Admin Commands: ';
+		$message = 'Supported Admin Commands: ';
 		foreach(array_reverse($this->adminCommands) as $command) {
 			$message .= $command['Name'] . ',';
 		}
@@ -67,7 +67,7 @@ class HelpManager implements CommandListener, CallbackListener {
 	 */
 	public function command_playerHelp(array $chat, Player $player) {
 		//TODO only show first command in command arrays
-		$message = '$sSupported Player Commands: ';
+		$message = 'Supported Player Commands: ';
 		foreach(array_reverse($this->playerCommands) as $command) {
 			$message .= $command['Name'] . ',';
 		}
