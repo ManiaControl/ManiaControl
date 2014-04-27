@@ -1,4 +1,7 @@
 <?php
+
+namespace MCTeam;
+
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Files\FileUtil;

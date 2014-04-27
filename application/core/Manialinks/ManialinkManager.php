@@ -261,7 +261,6 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 		$textSize  = (isset($properties['textSize']) ? $properties['textSize'] : 1.5);
 		$textColor = (isset($properties['textColor']) ? $properties['textColor'] : 'FFF');
 		$profile   = (isset($properties['profile']) ? $properties['profile'] : false);
-		$script    = (isset($properties['script']) ? $properties['script'] : null);
 
 		$labels = array();
 		foreach($labelStrings as $text => $x) {
@@ -275,7 +274,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 			$label->setTextColor($textColor);
 
 			if ($profile) {
-				$script->addProfileButton($label, $profile);
+                $label->addPlayerProfileFeature($profile);
 			}
 
 			$labels[] = $label; // add Label to the labels array

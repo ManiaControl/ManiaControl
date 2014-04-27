@@ -14,7 +14,7 @@ use FML\Controls\Quads\Quad_Emblems;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Controls\Quads\Quad_UIConstruction_Buttons;
 use FML\ManiaLink;
-use FML\Script\Script;
+use FML\Script\Features\Paging;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
@@ -115,6 +115,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		//create manialink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$script    = $maniaLink->getScript();
+        $paging = new Paging();
+        $script->addFeature($paging);
 
 		// Main frame
 		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script, $pagesId);
@@ -152,7 +154,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				}
 				array_push($pageFrames, $pageFrame);
 				$y = $height / 2 - 10;
-				$script->addPage($pageFrame, count($pageFrames), $pagesId);
+                $paging->addPage($pageFrame);
 			}
 
 			$path        = $listPlayer->getProvince();
@@ -219,7 +221,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				$countryQuad->setSize(4, 4);
 				$countryQuad->setZ(1);
 
-				$script->addTooltip($countryQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "$<" . $listPlayer->nickname . "$> from " . $listPlayer->path));
+                $countryQuad->addTooltipLabelFeature($descriptionLabel, '$<' . $listPlayer->nickname . '$> from ' . $listPlayer->path);
 			}
 
 			// Level Quad
@@ -238,7 +240,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 			$rightLabel->setText($this->maniaControl->authenticationManager->getAuthLevelAbbreviation($listPlayer->authLevel));
 			$rightLabel->setTextColor("fff");
 
-			$script->addTooltip($rightLabel, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => $this->maniaControl->authenticationManager->getAuthLevelName($listPlayer->authLevel) . " " . $listPlayer->nickname));
+            $description = $this->maniaControl->authenticationManager->getAuthLevelName($listPlayer) . " " . $listPlayer->nickname;
+            $rightLabel->addTooltipLabelFeature($descriptionLabel, $description);
 
 			// Player Statistics
 			$playerQuad = new Quad_Icons64x64_1();
@@ -248,7 +251,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 			$playerQuad->setSubStyle($playerQuad::SUBSTYLE_TrackInfo);
 			$playerQuad->setSize(2.7, 2.7);
 			$playerQuad->setAction(self::ACTION_OPEN_PLAYER_DETAILED . "." . $listPlayer->login);
-			$script->addTooltip($playerQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "View Statistics of " . $listPlayer->nickname));
+            $description = 'View Statistics of $<'.$listPlayer->nickname. '$>';
+            $playerQuad->addTooltipLabelFeature($descriptionLabel, $description);
 
 			// Camera Quad
 			$playerQuad = new Quad_UIConstruction_Buttons();
@@ -257,7 +261,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 			$playerQuad->setZ(3);
 			$playerQuad->setSubStyle($playerQuad::SUBSTYLE_Camera);
 			$playerQuad->setSize(3.8, 3.8);
-			$script->addTooltip($playerQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Spectate " . $listPlayer->nickname));
+            $description = 'Spectate $<'.$listPlayer->nickname.'$>';
+            $playerQuad->addTooltipLabelFeature($descriptionLabel, $description);
 			$playerQuad->setAction(self::ACTION_SPECTATE_PLAYER . "." . $listPlayer->login);
 
 			// Player Profile Quad
@@ -267,10 +272,11 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 			$playerQuad->setZ(3);
 			$playerQuad->setSubStyle($playerQuad::SUBSTYLE_Author);
 			$playerQuad->setSize(3.8, 3.8);
-			$script->addProfileButton($playerQuad, $listPlayer->login);
+            $playerQuad->addPlayerProfileFeature($listPlayer->login);
 
 			// Description Label
-			$script->addTooltip($playerQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "View Player profile of " . $listPlayer->nickname));
+            $description = 'View Player Profile of $<' . $listPlayer->nickname.'$>';
+            $playerQuad->addTooltipLabelFeature($descriptionLabel, $description);
 
 			if ($this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
 				// Further Player actions Quad
@@ -283,7 +289,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				$playerQuad->setAction(self::ACTION_PLAYER_ADV . "." . $listPlayer->login);
 
 				// Description Label
-				$script->addTooltip($playerQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Advanced Player Actions on " . $listPlayer->nickname));
+                $description = 'Advanced Player Actions for $<' . $listPlayer->nickname.'$>';
+                $playerQuad->addTooltipLabelFeature($descriptionLabel, $description);
 			}
 
 			if ($this->maniaControl->server->isTeamMode()) {
@@ -298,7 +305,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 					$redQuad->setAction(self::ACTION_FORCE_RED . "." . $listPlayer->login);
 
 					// Force to Red-Team Description Label
-					$script->addTooltip($redQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Force $<" . $listPlayer->nickname . '$> to Red Team!'));
+                    $description = 'Force $<' . $listPlayer->nickname . '$> to Red Team!';
+                    $redQuad->addTooltipLabelFeature($descriptionLabel, $description);
 
 					// Force to Blue-Team Quad
 					$blueQuad = new Quad_Emblems();
@@ -310,7 +318,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 					$blueQuad->setAction(self::ACTION_FORCE_BLUE . "." . $listPlayer->login);
 
 					// Force to Blue-Team Description Label
-					$script->addTooltip($blueQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Force $<" . $listPlayer->nickname . '$> to Blue Team!'));
+                    $description = 'Force $<' . $listPlayer->nickname . '$> to Blue Team!';
+                    $blueQuad->addTooltipLabelFeature($descriptionLabel, $description);
 
 				} else if ($this->maniaControl->pluginManager->isPluginActive(self::DEFAULT_CUSTOM_VOTE_PLUGIN)) {
 					// Kick Player Vote
@@ -322,8 +331,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 					$kickQuad->setSize(3.8, 3.8);
 					$kickQuad->setAction(self::ACTION_KICK_PLAYER_VOTE . "." . $listPlayer->login);
 
-					// Force to Spectator Description Label
-					$script->addTooltip($kickQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Vote a kick vote on $<" . $listPlayer->nickname . '$>!'));
+                    $description = 'Start a Kick Vote on $<' . $listPlayer->nickname . '$>!';
+                    $kickQuad->addTooltipLabelFeature($descriptionLabel, $description);
 				}
 			} else {
 				if ($this->maniaControl->authenticationManager->checkPermission($player, PlayerActions::SETTING_PERMISSION_FORCE_PLAYER_PLAY)) {
@@ -336,8 +345,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 					$playQuad->setSize(3.8, 3.8);
 					$playQuad->setAction(self::ACTION_FORCE_PLAY . "." . $listPlayer->login);
 
-					// Force to Blue-Team Description Label
-					$script->addTooltip($playQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Force " . $listPlayer->nickname . '$z to Play!'));
+                    $description = 'Force $<' . $listPlayer->nickname . '$> to Play!';
+                    $playQuad->addTooltipLabelFeature($descriptionLabel, $description);
 				}
 			}
 
@@ -352,7 +361,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				$spectatorQuad->setAction(self::ACTION_FORCE_SPEC . "." . $listPlayer->login);
 
 				// Force to Spectator Description Label
-				$script->addTooltip($spectatorQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Force " . $listPlayer->nickname . '$z to Spectator!'));
+                $description = 'Force $<' . $listPlayer->nickname . '$> to Spectator!';
+                $spectatorQuad->addTooltipLabelFeature($descriptionLabel, $description);
 			} else if ($this->maniaControl->pluginManager->isPluginActive(self::DEFAULT_CUSTOM_VOTE_PLUGIN)) {
 				// Force to Spectator Quad
 				$spectatorQuad = new Quad_BgRaceScore2();
@@ -364,7 +374,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				$spectatorQuad->setAction(self::ACTION_FORCE_SPEC_VOTE . "." . $listPlayer->login);
 
 				// Force to Spectator Description Label
-				$script->addTooltip($spectatorQuad, $descriptionLabel, array(Script::OPTION_TOOLTIP_TEXT => "Vote for force " . $listPlayer->nickname . '$z to Spectator!'));
+                $description = 'Start a Vote to force $<' . $listPlayer->nickname . '$> to Spectator!';
+                $spectatorQuad->addTooltipLabelFeature($descriptionLabel, $description);
 			}
 
 			$y -= 4;

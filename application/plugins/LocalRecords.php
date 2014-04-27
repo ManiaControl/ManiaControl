@@ -1,10 +1,14 @@
 <?php
+
+namespace MCTeam;
+
 use FML\Controls\Control;
 use FML\Controls\Frame;
 use FML\Controls\Label;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
 use FML\ManiaLink;
+use FML\Script\Features\Paging;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
@@ -396,6 +400,8 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		//create manialink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$script    = $maniaLink->getScript();
+        $paging = new Paging();
+        $script->addFeature($paging);
 
 		// Main frame
 		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script, $pagesId);
@@ -428,7 +434,8 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 				}
 				array_push($pageFrames, $pageFrame);
 				$y = $height / 2 - 10;
-				$script->addPage($pageFrame, count($pageFrames), $pagesId);
+
+                $paging->addPage($pageFrame);
 			}
 
 			$recordFrame = new Frame();

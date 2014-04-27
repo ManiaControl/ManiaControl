@@ -1,4 +1,7 @@
 <?php
+
+namespace MCTeam;
+
 use FML\Controls\Control;
 use FML\Controls\Frame;
 use FML\Controls\Labels\Label_Text;
@@ -190,7 +193,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$frame->add($backgroundQuad);
 		$backgroundQuad->setSize($width, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-		$script->addMapInfoButton($backgroundQuad);
+        $backgroundQuad->addMapInfoFeature();
 
 		$map = $this->maniaControl->mapManager->getCurrentMap();
 
@@ -247,7 +250,6 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
 
 		$maniaLink = new ManiaLink(self::MLID_CLOCKWIDGET);
-		$script    = $maniaLink->getScript();
 
 		// mainframe
 		$frame = new Frame();
@@ -269,7 +271,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$label->setZ(0.2);
 		$label->setTextSize(1);
 		$label->setTextColor("FFF");
-		$script->addTimeLabel($label, true);
+        $label->addClockFeature(true);
 
 		// Send manialink
 		$this->maniaControl->manialinkManager->sendManialink($maniaLink, $login);

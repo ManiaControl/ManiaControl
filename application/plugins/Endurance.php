@@ -1,4 +1,7 @@
 <?php
+
+namespace steeffeen;
+
 use ManiaControl\ManiaControl;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;

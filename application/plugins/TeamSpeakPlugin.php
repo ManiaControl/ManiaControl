@@ -293,44 +293,48 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 			if ($channel['channel_maxclients'] == 0 || strpos($channel['channel_name'], 'spacer') > 0) {
 				continue;
 			}
-			$channels[$i] = new Label_Text();
-			$frame->add($channels[$i]);
+			$channelLabel = new Label_Text();
+			$frame->add($channelLabel);
 			$y = 17.5 + ($i * 2.5);
-			$channels[$i]->setY($height / 2 - $y);
+            $channelLabel->setY($height / 2 - $y);
 			$x = $startx;
 			if ($channel['pid'] != 0) {
 				$x = $startx + 5;
 			}
-			$channels[$i]->setX($x);
-			$channels[$i]->setStyle($channels[$i]::STYLE_TextCardMedium);
-			$channels[$i]->setHAlign('left');
-			$channels[$i]->setTextSize(1);
-			$channels[$i]->setScale(0.9);
+            $channelLabel->setX($x);
+            $channelLabel->setStyle($channels[$i]::STYLE_TextCardMedium);
+            $channelLabel->setHAlign('left');
+            $channelLabel->setTextSize(1);
+            $channelLabel->setScale(0.9);
 			if ($channel['channel_flag_default'] == 1) {
 				$channel['total_clients'] = ($channel['total_clients'] - 1);
 			} // remove query client
-			$channels[$i]->setText('$o' . $channel['channel_name'] . '$o (' . $channel['total_clients'] . ')');
-			$channels[$i]->setTextColor('fff');
+            $channelLabel->setText('$o' . $channel['channel_name'] . '$o (' . $channel['total_clients'] . ')');
+            $channelLabel->setTextColor('fff');
+
+            $channels[$i] = $channelLabel;
 
 			$i++;
 			foreach($this->serverData['users'] as $user) {
 				if ($user['cid'] == $channel['cid']) {
-					$users[$userid] = new Label_Text();
-					$frame->add($users[$userid]);
+                    $userLabel = new Label_Text();
+					$frame->add($userLabel);
 					$y = 17.5 + ($i * 2.5);
-					$users[$userid]->setY($height / 2 - $y);
+                    $userLabel->setY($height / 2 - $y);
 					if ($channel['pid'] != 0) {
 						$x = $startx + 7;
 					} else {
 						$x = $startx + 2;
 					}
-					$users[$userid]->setX($x);
-					$users[$userid]->setStyle($users[$userid]::STYLE_TextCardMedium);
-					$users[$userid]->setHAlign('left');
-					$users[$userid]->setTextSize(1);
-					$users[$userid]->setScale(0.9);
-					$users[$userid]->setText($user['client_nickname']);
-					$users[$userid]->setTextColor('fff');
+                    $userLabel->setX($x);
+                    $userLabel->setStyle($userLabel::STYLE_TextCardMedium);
+                    $userLabel->setHAlign('left');
+                    $userLabel->setTextSize(1);
+                    $userLabel->setScale(0.9);
+                    $userLabel->setText($user['client_nickname']);
+                    $userLabel->setTextColor('fff');
+                    $users[$userid] = $userLabel;
+
 					$userid++;
 					$i++;
 

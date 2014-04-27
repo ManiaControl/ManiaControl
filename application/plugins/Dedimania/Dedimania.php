@@ -7,6 +7,7 @@ use FML\Controls\Label;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
 use FML\ManiaLink;
+use FML\Script\Features\Paging;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\TimerListener;
@@ -502,6 +503,8 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 		//create manialink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$script    = $maniaLink->getScript();
+        $paging = new Paging();
+        $script->addFeature($paging);
 
 		// Main frame
 		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script, $pagesId);
@@ -534,7 +537,7 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 				}
 				array_push($pageFrames, $pageFrame);
 				$y = $height / 2 - 10;
-				$script->addPage($pageFrame, count($pageFrames), $pagesId);
+                $paging->addPage($pageFrame);
 			}
 
 			$recordFrame = new Frame();

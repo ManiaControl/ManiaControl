@@ -8,6 +8,7 @@ use FML\Controls\Label;
 use FML\Controls\Labels\Label_Button;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quads\Quad_Icons64x64_1;
+use FML\Script\Features\Paging;
 use FML\Script\Script;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
@@ -58,7 +59,10 @@ class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, Manialink
 	 * @return \FML\Controls\Frame
 	 */
 	public function getMenu($width, $height, Script $script) {
-		$pagesId = 'PluginInstallPages';
+        $paging = new Paging();
+        $script->addFeature($paging);
+        $paging = new Paging();
+        $script->addFeature($paging);
 		$frame   = new Frame();
 
 		// Config
@@ -82,8 +86,8 @@ class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, Manialink
 		$pagerNext->setSize($pagerSize, $pagerSize);
 		$pagerNext->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowNext);
 
-		$script->addPager($pagerPrev, -1, $pagesId);
-		$script->addPager($pagerNext, 1, $pagesId);
+        $paging->addButton($pagerNext);
+        $paging->addButton($pagerPrev);
 
 		$pageCountLabel = new Label_Text();
 		$frame->add($pageCountLabel);
@@ -92,7 +96,7 @@ class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, Manialink
 		$pageCountLabel->setStyle($pageCountLabel::STYLE_TextTitle1);
 		$pageCountLabel->setTextSize(2);
 
-		$script->addPageLabel($pageCountLabel, $pagesId);
+        $paging->setLabel($pageCountLabel);
 
 		$url            = ManiaControl::URL_WEBSERVICE . 'plugins';
 		$dataJson       = FileUtil::loadFile($url);
@@ -116,7 +120,7 @@ class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, Manialink
 						}
 
 						array_push($pageFrames, $pageFrame);
-						$script->addPage($pageFrame, count($pageFrames), $pagesId);
+                        $paging->addPage($pageFrame);
 						$y = $height * 0.41;
 					}
 
@@ -145,7 +149,7 @@ class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, Manialink
 					$descriptionLabel->setMaxLines(5);
 					$description = "Author: {$plugin->author}\nVersion: {$plugin->currentVersion->version}\nDesc: {$plugin->description}";
 					$descriptionLabel->setText($description);
-					$script->addTooltip($nameLabel, $descriptionLabel);
+                    $nameLabel->addTooltipFeature($descriptionLabel);
 
 					$installButton = new Label_Button();
 					$pluginFrame->add($installButton);

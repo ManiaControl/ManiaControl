@@ -8,6 +8,7 @@ use FML\Controls\Frame;
 use FML\Controls\Label;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quads\Quad_Icons64x64_1;
+use FML\Script\Features\Paging;
 use FML\Script\Script;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
@@ -137,7 +138,8 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getMenu()
 	 */
 	public function getMenu($width, $height, Script $script) {
-		$pagesId = 'ServerSettingsPages';
+        $paging = new Paging();
+        $script->addFeature($paging);
 		$frame   = new Frame();
 
 		$serverSettings = $this->maniaControl->client->getServerOptions()->toArray();
@@ -161,8 +163,8 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		$pagerNext->setSize($pagerSize, $pagerSize);
 		$pagerNext->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowNext);
 
-		$script->addPager($pagerPrev, -1, $pagesId);
-		$script->addPager($pagerNext, 1, $pagesId);
+        $paging->addButton($pagerNext);
+        $paging->addButton($pagerPrev);
 
 		$pageCountLabel = new Label();
 		$frame->add($pageCountLabel);
@@ -171,7 +173,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		$pageCountLabel->setStyle('TextTitle1');
 		$pageCountLabel->setTextSize(2);
 
-		$script->addPageLabel($pageCountLabel, $pagesId);
+        $paging->setLabel($pageCountLabel);
 
 		// Setting pages
 		$pageFrames = array();
@@ -192,7 +194,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 				}
 				array_push($pageFrames, $pageFrame);
 				$y = $height * 0.41;
-				$script->addPage($pageFrame, count($pageFrames), $pagesId);
+                $paging->addPage($pageFrame);
 			}
 
 			$settingFrame = new Frame();
