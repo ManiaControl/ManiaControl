@@ -24,7 +24,6 @@ use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Maps\MapCommands;
 use ManiaControl\Maps\MapManager;
-use ManiaControl\Maps\MapQueue;
 use ManiaControl\Players\Player;
 
 /**

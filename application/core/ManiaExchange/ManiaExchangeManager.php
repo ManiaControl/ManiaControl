@@ -360,7 +360,7 @@ class ManiaExchangeManager{
 	}
 
 	/**
-	 * Gets the Current Environemnt by String
+	 * Gets the Current Environment by String
 	 *
 	 * @param $env
 	 * @return int

@@ -319,7 +319,6 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 					$frame->add($users[$userid]);
 					$y = 17.5 + ($i * 2.5);
 					$users[$userid]->setY($height / 2 - $y);
-					$x = $startx;
 					if ($channel['pid'] != 0) {
 						$x = $startx + 7;
 					} else {

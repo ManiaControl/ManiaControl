@@ -373,7 +373,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	}
 
 	/**
-	 * Toogle a Boolean Setting
+	 * Toggle a Boolean Setting
 	 *
 	 * @param Player $player
 	 * @param        $setting

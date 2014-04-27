@@ -111,7 +111,7 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 		$y          = 0;
 		$index      = 1;
 		$prevClass  = '';
-		foreach($settings as $id => $setting) {
+		foreach($settings as $setting) {
 			//Don't display Plugin Settings
 			if (array_search($setting->class, $pluginClasses) !== FALSE) {
 				continue;

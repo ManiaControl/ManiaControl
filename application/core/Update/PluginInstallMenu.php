@@ -3,20 +3,15 @@
 namespace ManiaControl\Update;
 
 use FML\Controls\Control;
-use FML\Controls\Entry;
 use FML\Controls\Frame;
 use FML\Controls\Label;
 use FML\Controls\Labels\Label_Button;
 use FML\Controls\Labels\Label_Text;
-use FML\Controls\Quads\Quad_Icons128x32_1;
-use FML\Controls\Quads\Quad_Icons128x128_1;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Script\Script;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
-use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Configurators\ConfiguratorMenu;
-use ManiaControl\Formatter;
 use ManiaControl\Files\FileUtil;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
@@ -65,8 +60,6 @@ class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, Manialink
 		$pagesId = 'PluginInstallPages';
 		$frame   = new Frame();
 
-		$pluginClasses = $this->maniaControl->pluginManager->getPluginClasses();
-
 		// Config
 		$pagerSize     = 9.;
 		$entryHeight   = 5.;
@@ -105,7 +98,7 @@ class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, Manialink
 		$pluginList     = json_decode($dataJson);
 		$index          = 0;
 		if ($pluginList && isset($pluginList[0])) {
-			$pluginClasses = $this->maniaControl->pluginManager->getPluginClasses();
+            $pluginClasses = $this->maniaControl->pluginManager->getPluginClasses();
 			$pluginIds = array();
 			/** @var  Plugin $class */
 			foreach($pluginClasses as $class) {

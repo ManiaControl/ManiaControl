@@ -10,7 +10,6 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
-use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 use Maniaplanet\DedicatedServer\Xmlrpc\LoginUnknownException;
 use Maniaplanet\DedicatedServer\Xmlrpc\NotInScriptModeException;
 

@@ -383,7 +383,7 @@ class ManiaControl implements CommandListener, TimerListener {
 	 */
 	private function connect() {
 		// Load remote client
-		$success = $this->server->loadConfig();
+		$this->server->loadConfig();
 
 		$this->log("Connecting to server at {$this->server->config->host}:{$this->server->config->port}...");
 

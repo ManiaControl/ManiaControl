@@ -76,9 +76,7 @@ class PluginManager {
 	 * @return bool
 	 */
 	public function isPluginActive($pluginClass) {
-		if (is_object($pluginClass)) {
-			$pluginClass = get_class($pluginClass);
-		}
+        $pluginClass = $this->getPluginClass($pluginClass);
 		return isset($this->activePlugins[$pluginClass]);
 	}
 
@@ -89,9 +87,7 @@ class PluginManager {
 	 * @return bool
 	 */
 	public function isPluginClass($pluginClass) {
-		if (is_object($pluginClass)) {
-			$pluginClass = get_class($pluginClass);
-		}
+        $pluginClass = $this->getPluginClass($pluginClass);
 		if (!in_array(Plugin::PLUGIN_INTERFACE, class_implements($pluginClass))) {
 			return false;
 		}
@@ -105,9 +101,7 @@ class PluginManager {
 	 * @return bool
 	 */
 	public function addPluginClass($pluginClass) {
-		if (is_object($pluginClass)) {
-			$pluginClass = get_class($pluginClass);
-		}
+        $pluginClass = $this->getPluginClass($pluginClass);
 		if (in_array($pluginClass, $this->pluginClasses)) {
 			return false;
 		}
@@ -161,9 +155,7 @@ class PluginManager {
 	 * @return bool
 	 */
 	public function deactivatePlugin($pluginClass) {
-		if (is_object($pluginClass)) {
-			$pluginClass = get_class($pluginClass);
-		}
+        $pluginClass = $this->getPluginClass($pluginClass);
 		if (!$this->isPluginActive($pluginClass)) {
 			return false;
 		}
@@ -171,12 +163,11 @@ class PluginManager {
 		/** @var Plugin $plugin */
 		unset($this->activePlugins[$pluginClass]);
 		$plugin->unload();
-		$interfaces = class_implements($pluginClass);
-		if (in_array(CallbackListener::CALLBACKLISTENER_INTERFACE, $interfaces)) {
+		if ($plugin instanceof CallbackListener) {
 			$this->maniaControl->callbackManager->unregisterCallbackListener($plugin);
 			$this->maniaControl->callbackManager->unregisterScriptCallbackListener($plugin);
 		}
-		if (in_array(ManialinkPageAnswerListener::MANIALINKPAGEANSWERLISTENER_INTERFACE, $interfaces)) {
+		if ($plugin instanceof ManialinkPageAnswerListener) {
 			$this->maniaControl->manialinkManager->unregisterManialinkPageAnswerListener($plugin);
 		}
 		$this->savePluginStatus($pluginClass, false);
@@ -357,4 +348,17 @@ class PluginManager {
 			call_user_func($function, $data, $error);
 		});
 	}
+
+    /**
+     * Get the Class of the Plugin
+     *
+     * @param mixed $pluginClass
+     * @return string
+     */
+    private function getPluginClass($pluginClass) {
+        if (is_object($pluginClass)) {
+            $pluginClass = get_class($pluginClass);
+        }
+        return (string) $pluginClass;
+    }
 }

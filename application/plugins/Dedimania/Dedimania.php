@@ -967,6 +967,7 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 				} else if ($scriptName == 'TimeAttack' || $scriptName == 'Laps' || $scriptName == 'TeamAttack' || $scriptName == 'TimeAttackPlus') {
 					return 'TA';
 				}
+                break;
 			}
 			case 1:
 			case 3:
