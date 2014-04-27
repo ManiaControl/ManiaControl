@@ -180,6 +180,9 @@ class Paging extends ScriptFeature {
 	 * @see \FML\Script\Features\ScriptFeature::prepare()
 	 */
 	public function prepare(Script $script) {
+		if (!$this->pages) {
+			return $this;
+		}
 		$script->setScriptInclude(ScriptInclude::TEXTLIB);
 		
 		$currentPageVariable = self::VAR_CURRENT_PAGE;
@@ -270,6 +273,7 @@ Void {$updatePageFunction}(Text _PagingId, Text _PageLabelId, Integer _BrowseAct
 	protected function getMinPage() {
 		$minPageNumber = null;
 		$minPage = null;
+		var_dump($this->pages);
 		foreach ($this->pages as $page) {
 			$pageNumber = $page->getPageNumber();
 			if ($minPageNumber === null || $pageNumber < $minPageNumber) {

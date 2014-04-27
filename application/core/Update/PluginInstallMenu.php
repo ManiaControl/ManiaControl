@@ -61,8 +61,6 @@ class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, Manialink
 	public function getMenu($width, $height, Script $script) {
         $paging = new Paging();
         $script->addFeature($paging);
-        $paging = new Paging();
-        $script->addFeature($paging);
 		$frame   = new Frame();
 
 		// Config
