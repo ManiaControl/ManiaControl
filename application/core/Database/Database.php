@@ -1,8 +1,9 @@
 <?php
 
-namespace ManiaControl;
+namespace ManiaControl\Database;
 
 use ManiaControl\Callbacks\TimerListener;
+use ManiaControl\ManiaControl;
 
 /**
  * Database Connection Class
@@ -16,6 +17,7 @@ class Database implements TimerListener {
 	 * Public Properties
 	 */
 	public $mysqli = null;
+	public $migrationHelper = null;
 	
 	/*
 	 * Private Properties
@@ -59,6 +61,9 @@ class Database implements TimerListener {
 		
 		// Register Method which checks the Database Connection every 5 seconds
 		$this->maniaControl->timerManager->registerTimerListening($this, 'checkConnection', 5000);
+		
+		// Create migration helper
+		$this->migrationHelper = new MigrationHelper($maniaControl);
 	}
 
 	/**
