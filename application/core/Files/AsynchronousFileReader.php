@@ -2,6 +2,7 @@
 
 namespace ManiaControl\Files;
 
+use cURL\Event;
 use cURL\Exception;
 use cURL\Request;
 use cURL\Response;
@@ -86,7 +87,7 @@ class AsynchronousFileReader {
 			->set(CURLOPT_USERAGENT, 'ManiaControl v' . ManiaControl::VERSION) //
 			->set(CURLOPT_RETURNTRANSFER, true);
 
-		$request->addListener('complete', function (\cURL\Event $event) use (&$function) {
+		$request->addListener('complete', function (Event $event) use (&$function) {
 			/** @var Response $response */
 			$response = $event->response;
 
@@ -156,7 +157,7 @@ class AsynchronousFileReader {
 			->set(CURLOPT_USERAGENT, 'ManiaControl v' . ManiaControl::VERSION) //
 			->set(CURLOPT_RETURNTRANSFER, true);
 
-		$request->addListener('complete', function (\cURL\Event $event) use (&$function) {
+		$request->addListener('complete', function (Event $event) use (&$function) {
 			/** @var Response $response */
 			$response = $event->response;
 			$error    = "";

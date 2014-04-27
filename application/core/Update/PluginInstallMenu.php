@@ -16,6 +16,7 @@ use ManiaControl\Files\FileUtil;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
+use ManiaControl\Plugins\Plugin;
 
 /**
  * Configurator for enabling and disabling Plugins
@@ -100,7 +101,7 @@ class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, Manialink
 		if ($pluginList && isset($pluginList[0])) {
             $pluginClasses = $this->maniaControl->pluginManager->getPluginClasses();
 			$pluginIds = array();
-			/** @var  Plugin $class */
+			/** @var Plugin $class */
 			foreach($pluginClasses as $class) {
 				$pluginIds[] = $class::getId();
 			}

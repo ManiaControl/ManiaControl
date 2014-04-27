@@ -25,6 +25,7 @@ use ManiaControl\Update\UpdateManager;
 use Maniaplanet\DedicatedServer\Connection;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 use Maniaplanet\DedicatedServer\Xmlrpc\NotInScriptModeException;
+use Maniaplanet\DedicatedServer\Xmlrpc\TransportException;
 
 require_once __DIR__ . '/Libs/Maniaplanet/DedicatedServer/Connection.php';
 require_once __DIR__ . '/Libs/GbxDataFetcher/gbxdatafetcher.inc.php';
@@ -61,7 +62,7 @@ class ManiaControl implements CommandListener, TimerListener {
 	public $authenticationManager = null;
 	public $callbackManager = null;
 	public $chat = null;
-	public $config = null;
+    public $config = null;
 	public $configurator = null;
 	/** @var Connection $client */
 	public $client = null;
@@ -435,7 +436,7 @@ class ManiaControl implements CommandListener, TimerListener {
 			$this->client->setModeScriptSettings($scriptSettings);
 		} catch(Exception $e) {
 			//TODO temp added 19.04.2014
-			$this->maniaControl->errorHandler->triggerDebugNotice("Exception line 437 ManiaControl.php " . $e->getMessage());
+			$this->errorHandler->triggerDebugNotice("Exception line 437 ManiaControl.php " . $e->getMessage());
 
 			trigger_error("Couldn't set mode script settings to enable script callbacks. " . $e->getMessage());
 			return;
