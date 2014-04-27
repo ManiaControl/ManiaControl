@@ -404,7 +404,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
         $script->addFeature($paging);
 
 		// Main frame
-		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script, $pagesId);
+		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script, $paging);
 		$maniaLink->add($frame);
 
 		// Start offsets
