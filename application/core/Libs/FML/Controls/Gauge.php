@@ -146,7 +146,6 @@ class Gauge extends Control implements Styleable {
 	/**
 	 *
 	 * @see \FML\Types\Styleable::setStyle()
-	 * @return \FML\Controls\Gauge
 	 */
 	public function setStyle($style) {
 		$this->style = (string) $style;

@@ -13,7 +13,6 @@ use FML\ManiaCode\InstallReplay;
 use FML\ManiaCode\InstallScript;
 use FML\ManiaCode\InstallSkin;
 use FML\ManiaCode\JoinServer;
-use FML\ManiaCode\Message;
 use FML\ManiaCode\PlayMap;
 use FML\ManiaCode\PlayReplay;
 use FML\ManiaCode\ShowMessage;

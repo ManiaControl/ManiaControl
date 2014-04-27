@@ -49,7 +49,6 @@ class Video extends Control implements Playable, Scriptable {
 	/**
 	 *
 	 * @see \FML\Types\Playable::setData()
-	 * @return \FML\Controls\Video
 	 */
 	public function setData($data) {
 		$this->data = (string) $data;
@@ -59,7 +58,6 @@ class Video extends Control implements Playable, Scriptable {
 	/**
 	 *
 	 * @see \FML\Types\Playable::setDataId()
-	 * @return \FML\Controls\Video
 	 */
 	public function setDataId($dataId) {
 		$this->dataId = (string) $dataId;
@@ -69,7 +67,6 @@ class Video extends Control implements Playable, Scriptable {
 	/**
 	 *
 	 * @see \FML\Types\Playable::setPlay()
-	 * @return \FML\Controls\Video
 	 */
 	public function setPlay($play) {
 		$this->play = ($play ? 1 : 0);
@@ -79,7 +76,6 @@ class Video extends Control implements Playable, Scriptable {
 	/**
 	 *
 	 * @see \FML\Types\Playable::setLooping()
-	 * @return \FML\Controls\Video
 	 */
 	public function setLooping($looping) {
 		$this->looping = ($looping ? 1 : 0);
@@ -89,7 +85,6 @@ class Video extends Control implements Playable, Scriptable {
 	/**
 	 *
 	 * @see \FML\Types\Playable::setMusic()
-	 * @return \FML\Controls\Video
 	 */
 	public function setMusic($music) {
 		$this->music = ($music ? 1 : 0);
@@ -99,7 +94,6 @@ class Video extends Control implements Playable, Scriptable {
 	/**
 	 *
 	 * @see \FML\Types\Playable::setVolume()
-	 * @return \FML\Controls\Video
 	 */
 	public function setVolume($volume) {
 		$this->volume = (float) $volume;
@@ -109,7 +103,6 @@ class Video extends Control implements Playable, Scriptable {
 	/**
 	 *
 	 * @see \FML\Types\Scriptable::setScriptEvents()
-	 * @return \FML\Controls\Video
 	 */
 	public function setScriptEvents($scriptEvents) {
 		$this->scriptEvents = ($scriptEvents ? 1 : 0);

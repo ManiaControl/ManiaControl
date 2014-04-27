@@ -3,6 +3,16 @@
 namespace FML\Controls;
 
 use FML\Types\Renderable;
+use FML\Script\Features\ActionTrigger;
+use FML\Script\ScriptLabel;
+
+use FML\Types\ScriptFeatureable;
+use FML\Script\Features\MapInfo;
+use FML\Script\Features\PlayerProfile;
+use FML\Script\Features\UISound;
+use FML\Script\Builder;
+use FML\Script\Features\Toggle;
+use FML\Script\Features\Tooltip;
 
 /**
  * Base Control
@@ -12,7 +22,7 @@ use FML\Types\Renderable;
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
  * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-abstract class Control implements Renderable {
+abstract class Control implements Renderable, ScriptFeatureable {
 	/*
 	 * Constants
 	 */
@@ -43,6 +53,7 @@ abstract class Control implements Renderable {
 	protected $scale = 1.;
 	protected $hidden = 0;
 	protected $classes = array();
+	protected $scriptFeatures = array();
 
 	/**
 	 * Construct a new Control
@@ -58,9 +69,13 @@ abstract class Control implements Renderable {
 	/**
 	 * Get Control Id
 	 *
+	 * @param bool $escaped (optional) Whether the Id should be escaped for ManiaScript
 	 * @return string
 	 */
-	public function getId() {
+	public function getId($escaped = false) {
+		if ($escaped) {
+			return Builder::escapeText($this->id);
+		}
 		return $this->id;
 	}
 
@@ -259,6 +274,110 @@ abstract class Control implements Renderable {
 	}
 
 	/**
+	 * Add a dynamic Action Trigger
+	 *
+	 * @param string $actionName Action to trigger
+	 * @param string $eventLabel (optional) Event on which the Action is triggered
+	 * @return \FML\Controls\Control
+	 */
+	public function addActionTriggerFeature($actionName, $eventLabel = ScriptLabel::MOUSECLICK) {
+		$actionTrigger = new ActionTrigger($actionName, $this, $eventLabel);
+		array_push($this->scriptFeatures, $actionTrigger);
+		return $this;
+	}
+
+	/**
+	 * Add a dynamic Feature opening the current Map Info
+	 *
+	 * @param string $eventLabel (optional) Event on which the Map Info will be opened
+	 * @return \FML\Controls\Control
+	 */
+	public function addMapInfoFeature($eventLabel = ScriptLabel::MOUSECLICK) {
+		$mapInfo = new MapInfo($this, $eventLabel);
+		array_push($this->scriptFeatures, $mapInfo);
+		return $this;
+	}
+
+	/**
+	 * Add a dynamic Feature to open a specific Player Profile
+	 *
+	 * @param string $login The Login of the Player
+	 * @param string $eventLabel (optional) Event on which the Player Profile will be opened
+	 * @return \FML\Controls\Control
+	 */
+	public function addPlayerProfileFeature($login, $eventLabel = ScriptLabel::MOUSECLICK) {
+		$playerProfile = new PlayerProfile($login, $this, $eventLabel);
+		array_push($this->scriptFeatures, $playerProfile);
+		return $this;
+	}
+
+	/**
+	 * Add a dynamic Feature playing an UISound
+	 *
+	 * @param string $soundName UISound Name
+	 * @param int $variant (optional) Sound Variant
+	 * @param string $eventLabel (optional) Event on which the Sound will be played
+	 * @return \FML\Controls\Control
+	 */
+	public function addUISoundFeature($soundName, $variant = 0, $eventLabel = ScriptLabel::MOUSECLICK) {
+		$uiSound = new UISound($soundName, $this, $variant, $eventLabel);
+		array_push($this->scriptFeatures, $uiSound);
+		return $this;
+	}
+
+	/**
+	 * Add a dynamic Feature toggling another Control
+	 *
+	 * @param Control $toggledControl Toggled Control
+	 * @param string $labelName (optional) Script Label Name
+	 * @param bool $onlyShow (optional) Whether it should only Show the Control but not toggle
+	 * @param bool $onlyHide (optional) Whether it should only Hide the Control but not toggle
+	 * @return \FML\Controls\Control
+	 */
+	public function addToggleFeature(Control $toggledControl, $labelName = Scriptlabel::MOUSECLICK, $onlyShow = false, $onlyHide = false) {
+		$toggle = new Toggle($this, $toggledControl, $labelName, $onlyShow, $onlyHide);
+		array_push($this->scriptFeatures, $toggle);
+		return $this;
+	}
+
+	/**
+	 * Add a dynamic Feature showing a Tooltip on hovering
+	 *
+	 * @param Control $tooltipControl Tooltip Control
+	 * @param bool $stayOnClick (optional) Whether the Tooltip should stay on Click
+	 * @param bool $invert (optional) Whether the Visibility Toggling should be inverted
+	 * @return \FML\Controls\Control
+	 */
+	public function addTooltipFeature(Control $tooltipControl, $stayOnClick = false, $invert = false) {
+		$tooltip = new Tooltip($this, $tooltipControl, $stayOnClick, $invert);
+		array_push($this->scriptFeatures, $tooltip);
+		return $this;
+	}
+
+	/**
+	 * Add a dynamic Feature showing a Tooltip on hovering
+	 *
+	 * @param Label $tooltipControl Tooltip Control
+	 * @param string $text The Text to display on the Tooltip Label
+	 * @param bool $stayOnClick (optional) Whether the Tooltip should stay on Click
+	 * @param bool $invert (optional) Whether the Visibility Toggling should be inverted
+	 * @return \FML\Controls\Control
+	 */
+	public function addTooltipLabelFeature(Label $tooltipControl, $text, $stayOnClick = false, $invert = false) {
+		$tooltip = new Tooltip($this, $tooltipControl, $stayOnClick, $invert, $text);
+		array_push($this->scriptFeatures, $tooltip);
+		return $this;
+	}
+
+	/**
+	 *
+	 * @see \FML\Types\ScriptFeatureable::getScriptFeatures()
+	 */
+	public function getScriptFeatures() {
+		return $this->scriptFeatures;
+	}
+
+	/**
 	 *
 	 * @see \FML\Types\Renderable::render()
 	 */
@@ -286,10 +405,7 @@ abstract class Control implements Renderable {
 			$xmlElement->setAttribute('hidden', $this->hidden);
 		}
 		if (!empty($this->classes)) {
-			$classes = '';
-			foreach ($this->classes as $class) {
-				$classes .= $class . ' ';
-			}
+			$classes = implode(' ', $this->classes);
 			$xmlElement->setAttribute('class', $classes);
 		}
 		return $xmlElement;

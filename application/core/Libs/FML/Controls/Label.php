@@ -8,6 +8,7 @@ use FML\Types\NewLineable;
 use FML\Types\Scriptable;
 use FML\Types\Styleable;
 use FML\Types\TextFormatable;
+use FML\Script\Features\Clock;
 
 /**
  * Label Control
@@ -132,7 +133,6 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	/**
 	 *
 	 * @see \FML\Types\Actionable::setAction()
-	 * @return \FML\Controls\Label
 	 */
 	public function setAction($action) {
 		$this->action = (string) $action;
@@ -150,7 +150,6 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	/**
 	 *
 	 * @see \FML\Types\Actionable::setActionKey()
-	 * @return \FML\Controls\Label
 	 */
 	public function setActionKey($actionKey) {
 		$this->actionKey = (int) $actionKey;
@@ -160,7 +159,6 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	/**
 	 *
 	 * @see \FML\Types\Linkable::setUrl()
-	 * @return \FML\Controls\Label
 	 */
 	public function setUrl($url) {
 		$this->url = (string) $url;
@@ -170,7 +168,6 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	/**
 	 *
 	 * @see \FML\Types\Linkable::setUrlId()
-	 * @return \FML\Controls\Label
 	 */
 	public function setUrlId($urlId) {
 		$this->urlId = (string) $urlId;
@@ -180,7 +177,6 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	/**
 	 *
 	 * @see \FML\Types\Linkable::setManialink()
-	 * @return \FML\Controls\Label
 	 */
 	public function setManialink($manialink) {
 		$this->manialink = (string) $manialink;
@@ -190,7 +186,6 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	/**
 	 *
 	 * @see \FML\Types\Linkable::setManialinkId()
-	 * @return \FML\Controls\Label
 	 */
 	public function setManialinkId($manialinkId) {
 		$this->manialinkId = (string) $manialinkId;
@@ -200,7 +195,6 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	/**
 	 *
 	 * @see \FML\Types\NewLineable::setAutoNewLine()
-	 * @return \FML\Controls\Label
 	 */
 	public function setAutoNewLine($autoNewLine) {
 		$this->autoNewLine = ($autoNewLine ? 1 : 0);
@@ -210,7 +204,6 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	/**
 	 *
 	 * @see \FML\Types\Scriptable::setScriptEvents()
-	 * @return \FML\Controls\Label
 	 */
 	public function setScriptEvents($scriptEvents) {
 		$this->scriptEvents = ($scriptEvents ? 1 : 0);
@@ -220,7 +213,6 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	/**
 	 *
 	 * @see \FML\Types\Styleable::setStyle()
-	 * @return \FML\Controls\Label
 	 */
 	public function setStyle($style) {
 		$this->style = (string) $style;
@@ -230,7 +222,6 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	/**
 	 *
 	 * @see \FML\Types\TextFormatable::setTextSize()
-	 * @return \FML\Controls\Label
 	 */
 	public function setTextSize($textSize) {
 		$this->textSize = (int) $textSize;
@@ -240,7 +231,6 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	/**
 	 *
 	 * @see \FML\Types\TextFormatable::setTextColor()
-	 * @return \FML\Controls\Label
 	 */
 	public function setTextColor($textColor) {
 		$this->textColor = (string) $textColor;
@@ -250,7 +240,6 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	/**
 	 *
 	 * @see \FML\Types\TextFormatable::setAreaColor()
-	 * @return \FML\Controls\Label
 	 */
 	public function setAreaColor($areaColor) {
 		$this->focusAreaColor1 = (string) $areaColor;
@@ -260,10 +249,22 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	/**
 	 *
 	 * @see \FML\Types\TextFormatable::setAreaFocusColor()
-	 * @return \FML\Controls\Label
 	 */
 	public function setAreaFocusColor($areaFocusColor) {
 		$this->focusAreaColor2 = (string) $areaFocusColor;
+		return $this;
+	}
+
+	/**
+	 * Add a dynamic Feature showing the current Time
+	 *
+	 * @param bool $showSeconds (optional) Whether the Seconds should be shown
+	 * @param bool $showFullDate (optional) Whether the Date should be shown
+	 * @return \FML\Controls\Label
+	 */
+	public function addClockFeature($showSeconds = true, $showFullDate = false) {
+		$clock = new Clock($this, $showSeconds, $showFullDate);
+		array_push($this->scriptFeatures, $clock);
 		return $this;
 	}
 

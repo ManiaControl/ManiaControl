@@ -184,7 +184,7 @@ class CustomUI {
 	 *
 	 * @return array
 	 */
-	private function getSettings() {
+	protected function getSettings() {
 		$settings = array();
 		$settings['challenge_info'] = $this->challengeInfoVisible;
 		$settings['chat'] = $this->chatVisible;

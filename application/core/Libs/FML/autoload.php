@@ -4,7 +4,8 @@
  * FancyManiaLinks - Automatic ManiaLink Generator Framework
  *
  * @author steeffeen
- * @version 1.0
+ * @version 1.1
+ * @link http://github.com/steeffeen/FancyManiaLinks
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
  * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
@@ -12,7 +13,7 @@ if (!defined('FML_PATH')) {
 	define('FML_PATH', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
 }
 if (!defined('FML_VERSION')) {
-	define('FML_VERSION', 1.0);
+	define('FML_VERSION', 1.1);
 }
 if (!defined('FML_SIMPLE_CLASSES')) {
 	define('FML_SIMPLE_CLASSES', false);
@@ -34,6 +35,15 @@ if (!defined('FML_AUTOLOAD_DEFINED')) {
 			// Load as simple class name
 			if (!function_exists('loadSimpleClass')) {
 
+				/**
+				 * Load FML Class Files from the given Directory
+				 *
+				 * @param string $className Class to load
+				 * @param string $directory Directory to open
+				 * @param array $excludes File Names to ignore
+				 * @param string $baseNamespace Base Namespace
+				 * @return bool
+				 */
 				function loadSimpleClass($className, $directory, $excludes, $baseNamespace) {
 					if ($dirHandle = opendir($directory)) {
 						$classParts = explode('\\', $className);
