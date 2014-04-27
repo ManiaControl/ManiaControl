@@ -466,10 +466,11 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 					$improvement = 'gained the';
 				} else {
 					// Only improved time
-					$improvement = 'improved her/his';
+					$improvement = 'improved his/her';
 				}
-				$message = '$<' . $player->nickname . '$> ' . $improvement . ' $<$o' . $newRecord->rank . '.$> Dedimania Record: ' . Formatter::formatTime($newRecord->best);
-				$this->maniaControl->chat->sendInformation($message);
+				$message = '$390$<$fff' . $player->nickname . '$> ' . $improvement . ' $<$ff0' . $newRecord->rank . '.$> Dedimania Record: $<$fff' . Formatter::formatTime($newRecord->best).'$>';
+				if(!$oldRecord->nullRecord) $message .= ' ($<$ff0'.$oldRecord->rank.'.$> $<$fff-'.Formatter::formatTime(($oldRecord->best-$time)).'$>)';
+				$this->maniaControl->chat->sendInformation($message.'!');
 
 				$this->updateManialink = true;
 			}
