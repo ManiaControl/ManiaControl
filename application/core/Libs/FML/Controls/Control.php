@@ -5,7 +5,6 @@ namespace FML\Controls;
 use FML\Types\Renderable;
 use FML\Script\Features\ActionTrigger;
 use FML\Script\ScriptLabel;
-
 use FML\Types\ScriptFeatureable;
 use FML\Script\Features\MapInfo;
 use FML\Script\Features\PlayerProfile;
@@ -369,6 +368,16 @@ abstract class Control implements Renderable, ScriptFeatureable {
 		return $this;
 	}
 
+	/**
+	 * Remove all Script Features
+	 * 
+	 * @return \FML\Controls\Control
+	 */
+	public function removeScriptFeatures() {
+		$this->scriptFeatures = array();
+		return $this;
+	}
+	
 	/**
 	 *
 	 * @see \FML\Types\ScriptFeatureable::getScriptFeatures()
