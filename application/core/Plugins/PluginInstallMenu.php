@@ -1,6 +1,6 @@
 <?php
 
-namespace ManiaControl\Update;
+namespace ManiaControl\Plugins;
 
 use FML\Controls\Control;
 use FML\Controls\Frame;
@@ -17,7 +17,6 @@ use ManiaControl\Files\FileUtil;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
-use ManiaControl\Plugins\Plugin;
 
 /**
  * Configurator for enabling and disabling Plugins
@@ -27,6 +26,9 @@ use ManiaControl\Plugins\Plugin;
  * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAnswerListener {
+	/*
+	 * Constants
+	 */
 	const SETTING_PERMISSION_INSTALL_PLUGINS  = 'Install plugins';
 	const ACTION_PREFIX_INSTALLPLUGIN         = 'PluginInstallMenu.Install.';
 

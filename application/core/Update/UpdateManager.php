@@ -12,6 +12,7 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
+use ManiaControl\Plugins\PluginInstallMenu;
 use ManiaControl\Plugins\PluginMenu;
 
 /**
@@ -77,9 +78,6 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		$this->maniaControl->commandManager->registerCommandListener('pluginupdate', $this, 'handle_PluginUpdate', true);
 
 		$this->currentBuildDate = $this->getNightlyBuildDate();
-
-		$this->pluginInstallMenu = new PluginInstallMenu($maniaControl);
-		$this->maniaControl->configurator->addMenu($this->pluginInstallMenu);
 	}
 
 	/**

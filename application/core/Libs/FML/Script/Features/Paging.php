@@ -273,7 +273,6 @@ Void {$updatePageFunction}(Text _PagingId, Text _PageLabelId, Integer _BrowseAct
 	protected function getMinPage() {
 		$minPageNumber = null;
 		$minPage = null;
-		var_dump($this->pages);
 		foreach ($this->pages as $page) {
 			$pageNumber = $page->getPageNumber();
 			if ($minPageNumber === null || $pageNumber < $minPageNumber) {

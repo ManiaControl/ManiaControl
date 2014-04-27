@@ -23,7 +23,8 @@ class PluginManager {
 	 * Private Properties
 	 */
 	private $maniaControl = null;
-	private $pluginMenu = null;
+    private $pluginMenu = null;
+    private $pluginInstallMenu = null;
 	private $activePlugins = array();
 	private $pluginClasses = array();
 
@@ -38,6 +39,9 @@ class PluginManager {
 
 		$this->pluginMenu = new PluginMenu($maniaControl);
 		$this->maniaControl->configurator->addMenu($this->pluginMenu);
+
+        $this->pluginInstallMenu = new PluginInstallMenu($maniaControl);
+        $this->maniaControl->configurator->addMenu($this->pluginInstallMenu);
 	}
 
 	/**
