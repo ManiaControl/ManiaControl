@@ -2,6 +2,7 @@
 
 namespace steeffeen;
 
+use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\ManiaControl;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
@@ -50,7 +51,7 @@ class EndurancePlugin implements CallbackListener, Plugin {
 		
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_ONINIT, $this, 'callback_OnInit');
-		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_BEGINMAP, $this, 'callback_BeginMap');
+		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::BEGINMAP, $this, 'callback_BeginMap');
 		$this->maniaControl->callbackManager->registerScriptCallbackListener(self::CB_CHECKPOINT, $this, 'callback_Checkpoint');
 		
 		return true;

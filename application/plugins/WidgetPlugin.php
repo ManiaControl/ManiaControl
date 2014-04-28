@@ -11,6 +11,7 @@ use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\ManiaLink;
 use FML\Script\Script;
 use ManiaControl\Callbacks\CallbackListener;
+use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
@@ -101,8 +102,8 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$this->maniaControl->manialinkManager->customUIManager->setChallengeInfoVisible(false);
 
 		// Register for callbacks
-		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_BEGINMAP, $this, 'handleOnBeginMap');
-		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_ENDMAP, $this, 'handleOnEndMap');
+		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::BEGINMAP, $this, 'handleOnBeginMap');
+		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::ENDMAP, $this, 'handleOnEndMap');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECT, $this, 'handlePlayerDisconnect');
 

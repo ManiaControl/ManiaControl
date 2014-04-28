@@ -1,6 +1,7 @@
 <?php
 
 use ManiaControl\Callbacks\CallbackListener;
+use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Maps\Map;
@@ -92,7 +93,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 
 		//Register CallbackListeners
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
-		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_ENDMAP, $this, 'handleEndMap');
+		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::ENDMAP, $this, 'handleEndMap');
 
 		//Register CommandListener
 		$this->maniaControl->commandManager->registerCommandListener('rank', $this, 'command_showRank', false);
