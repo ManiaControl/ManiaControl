@@ -88,10 +88,10 @@ class TimerManager {
 	/**
 	 * Remove a Script Callback Listener
 	 *
-	 * @param CallbackListener $listener
+	 * @param TimerListener $listener
 	 * @return bool
 	 */
-	public function unregisterTimerListenings(CallbackListener $listener) {
+	public function unregisterTimerListenings(TimerListener $listener) {
 		$removed = false;
 		foreach($this->timerListenings as $key => &$listening) {
 			if ($listening->listener != $listener) {
