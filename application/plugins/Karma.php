@@ -27,7 +27,7 @@ use ManiaControl\Settings\SettingManager;
  * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
-	/**
+	/*
 	 * Constants
 	 */
 	const ID = 2;
@@ -45,7 +45,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	const SETTING_WIDGET_HEIGHT = 'Widget-Size: Height';
 	const STAT_PLAYER_MAPVOTES = 'Voted Maps';
 	
-	/**
+	/*
 	 * Constants MX Karma
 	 */
 	const SETTING_WIDGET_DISPLAY_MX = 'Display MX-Karma in Widget';
@@ -58,12 +58,12 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	const MX_KARMA_SAVEVOTES = 'saveVotes';
 	const MX_KARMA_GETMAPRATING = 'getMapRating';
 	
-	/**
-	 * Private properties
+	/*
+	 * Private Properties
 	 */
 	/**
 	 *
-	 * @var maniaControl $maniaControl
+	 * @var ManiaControl $maniaControl
 	 */
 	private $maniaControl = null;
 	private $updateManialink = false;
@@ -74,10 +74,8 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	private $mxKarma = array();
 
 	/**
-	 * Prepares the Plugin
-	 *
-	 * @param ManiaControl $maniaControl
-	 * @return mixed
+	 * 
+	 * @see \ManiaControl\Plugins\Plugin
 	 */
 	public static function prepare(ManiaControl $maniaControl) {
 		$maniaControl->settingManager->initSetting(get_class(), self::SETTING_MX_KARMA_ACTIVATED, true);
