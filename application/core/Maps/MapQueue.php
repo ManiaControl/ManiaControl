@@ -4,6 +4,7 @@ namespace ManiaControl\Maps;
 
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
+use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
@@ -26,7 +27,9 @@ class MapQueue implements CallbackListener, CommandListener {
 	const SETTING_SKIP_MAPQUEUE_ADMIN       = 'Skip Map when admin leaves';
 	const SETTING_MAPLIMIT_PLAYER           = 'Maximum maps per player in the Map-Queue (-1 = unlimited)';
 	const SETTING_MAPLIMIT_ADMIN            = 'Maximum maps per admin (Admin+) in the Map-Queue (-1 = unlimited)';
+	const SETTING_BUFFERSIZE                = 'Size of the Map-Queue buffer (recently played maps)';
 	const SETTING_PERMISSION_CLEAR_MAPQUEUE = 'Clear Mapqueue';
+	const SETTING_PERMISSION_QUEUE_BUFFER   = 'Queue maps in buffer';
 
 	const ADMIN_COMMAND_CLEAR_MAPQUEUE = 'clearmapqueue';
 	const ADMIN_COMMAND_CLEAR_JUKEBOX  = 'clearjukebox';
@@ -37,6 +40,7 @@ class MapQueue implements CallbackListener, CommandListener {
 	private $maniaControl = null;
 	private $queuedMaps = array();
 	private $nextMap = null;
+	private $buffer = array();
 
 	/**
 	 * Create a new server MapQueue
@@ -47,19 +51,31 @@ class MapQueue implements CallbackListener, CommandListener {
 		$this->maniaControl = $maniaControl;
 
 		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_ENDMAP, $this, 'endMap');
+		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_BEGINMAP, $this, 'beginMap');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_AFTERINIT, $this, 'handleAfterInit');
 
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SKIP_MAP_ON_LEAVE, true);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SKIP_MAPQUEUE_ADMIN, false);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAPLIMIT_PLAYER, 1);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAPLIMIT_ADMIN, -1);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_BUFFERSIZE, 10);
 
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_CLEAR_MAPQUEUE, AuthenticationManager::AUTH_LEVEL_MODERATOR);
+		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_QUEUE_BUFFER, AuthenticationManager::AUTH_LEVEL_ADMIN);
 
 		//Register Admin Commands
 		$this->maniaControl->commandManager->registerCommandListener(self::ADMIN_COMMAND_CLEAR_JUKEBOX, $this, 'command_ClearMapQueue', true);
 		$this->maniaControl->commandManager->registerCommandListener(self::ADMIN_COMMAND_CLEAR_MAPQUEUE, $this, 'command_ClearMapQueue', true);
 		$this->maniaControl->commandManager->registerCommandListener(array('jb', 'jukebox', 'mapqueue'), $this, 'command_MapQueue');
+	}
+
+	/**
+	 * Adds current map to buffer on startup
+	 */
+	public function handleAfterInit() {
+		$currentMap = $this->maniaControl->mapManager->getCurrentMap();
+		$this->buffer[] = $currentMap->uid;
 	}
 
 	/**
@@ -73,6 +89,12 @@ class MapQueue implements CallbackListener, CommandListener {
 		$this->clearMapQueue($admin);
 	}
 
+	/**
+	 * Handles the mapqueue/jukebox command
+	 *
+	 * @param array  $chat
+	 * @param Player $player
+	 */
 	public function command_MapQueue(array $chat, Player $player) {
 		$chatCommands = explode(' ', $chat[1][2]);
 
@@ -89,6 +111,11 @@ class MapQueue implements CallbackListener, CommandListener {
 		}
 	}
 
+	/**
+	 * Shows current mapqueue in the chat
+	 *
+	 * @param $player
+	 */
 	public function showMapQueue($player) {
 		if(count($this->queuedMaps) == 0) {
 			$this->maniaControl->chat->sendError('$fa0There are no maps in the jukebox!', $player->login);
@@ -105,6 +132,11 @@ class MapQueue implements CallbackListener, CommandListener {
 		$this->maniaControl->chat->sendInformation($message, $player->login);
 	}
 
+	/**
+	 * Shows current mapqueue in a manialink
+	 *
+	 * @param $player
+	 */
 	public function showMapQueueManialink($player) {
 		if(count($this->queuedMaps) == 0) {
 			$this->maniaControl->chat->sendError('$fa0There are no maps in the jukebox!', $player->login);
@@ -117,6 +149,15 @@ class MapQueue implements CallbackListener, CommandListener {
 		}
 
 		$this->maniaControl->mapManager->mapList->showMapList($player, $maps);
+	}
+
+	/**
+	 * Returns the current queue buffer
+	 *
+	 * @return array
+	 */
+	public function getQueueBuffer() {
+		return $this->buffer;
 	}
 
 	/**
@@ -209,6 +250,13 @@ class MapQueue implements CallbackListener, CommandListener {
 		}
 
 		//TODO recently maps not able to add to queue-amps setting, and management
+		// Check if map is in the buffer
+		if(in_array($uid, $this->buffer)) {
+			$this->maniaControl->chat->sendError('That map has recently been played!', $login);
+			if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_CLEAR_MAPQUEUE)) {
+				return;
+			}
+		}
 
 		$map = $this->maniaControl->mapManager->getMapByUid($uid);
 
@@ -286,6 +334,23 @@ class MapQueue implements CallbackListener, CommandListener {
 		$this->maniaControl->chat->sendInformation('$fa0Next map will be $<$fff' . $map->name .'$> as requested by $<' . $this->nextMap[0]->nickname . '$>.');
 
 		$this->maniaControl->client->chooseNextMap($map->fileName);
+	}
+
+	/**
+	 * Called on begin map
+	 *
+	 * @param Map $map
+	 */
+	public function beginMap(Map $map) {
+		if(in_array($map->uid, $this->buffer)) {
+			return;
+		}
+
+		if(count($this->buffer) >= $this->maniaControl->settingManager->getSetting($this, self::SETTING_BUFFERSIZE)) {
+			array_shift($this->buffer);
+		}
+
+		$this->buffer[] = $map->uid;
 	}
 
 	/**

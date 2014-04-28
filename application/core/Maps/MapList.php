@@ -112,6 +112,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$height = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
 		
 		$this->mapListShown[$player->login] = true;
+		$queueBuffer = $this->maniaControl->mapManager->mapQueue->getQueueBuffer();
 		
 		// Get Maps
 		if (is_null($maps) && $maps != 'redirect') {
@@ -331,12 +332,21 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$queueLabel->setX($width / 2 - 15);
 				$queueLabel->setZ(0.2);
 				$queueLabel->setSize(3, 3);
-				$queueLabel->setAction(self::ACTION_QUEUED_MAP . '.' . $map->uid);
 				$queueLabel->setText('+');
-				$queueLabel->setTextColor('09f');
-				
-				$description = 'Add $<' . $map->name . '$> to the Map Queue';
-				$queueLabel->addTooltipLabelFeature($descriptionLabel, $description);
+
+				if(in_array($map->uid, $queueBuffer)) {
+					if ($this->maniaControl->authenticationManager->checkPermission($player, MapQueue::SETTING_PERMISSION_CLEAR_MAPQUEUE)) {
+						$queueLabel->setAction(self::ACTION_QUEUED_MAP . '.' . $map->uid);
+					}
+					$queueLabel->setTextColor('f00');
+					$description = '$<' . $map->name . '$> has recently been played!';
+					$queueLabel->addTooltipLabelFeature($descriptionLabel, $description);
+				} else {
+					$queueLabel->setTextColor('09f');
+					$queueLabel->setAction(self::ACTION_QUEUED_MAP . '.' . $map->uid);
+					$description = 'Add $<' . $map->name . '$> to the Map Queue';
+					$queueLabel->addTooltipLabelFeature($descriptionLabel, $description);
+				}
 			}
 			
 			if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_REMOVE_MAP)) {
