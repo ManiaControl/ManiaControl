@@ -4,6 +4,7 @@ namespace ManiaControl;
 
 use ManiaControl\Files\FileUtil;
 use ManiaControl\Update\UpdateManager;
+use ManiaControl\Callbacks\Callbacks;
 
 /**
  * Error and Exception Manager Class
@@ -17,6 +18,7 @@ class ErrorHandler {
 	 * Constants
 	 */
 	const MC_DEBUG_NOTICE = "ManiaControl.DebugNotice";
+	const SETTING_RESTART_ON_EXCEPTION = 'Automatically restart on Exceptions';
 	
 	/*
 	 * Private Properties
@@ -31,6 +33,13 @@ class ErrorHandler {
 		$this->maniaControl = $maniaControl;
 		set_error_handler(array(&$this, 'errorHandler'), -1);
 		set_exception_handler(array(&$this, 'exceptionHandler'));
+	}
+
+	/**
+	 * Initialize other Error Handler Features
+	 */
+	public function init() {
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_RESTART_ON_EXCEPTION, true);
 	}
 
 	/**
@@ -62,8 +71,7 @@ class ErrorHandler {
 			}
 			
 			if ($this->maniaControl->settingManager && $this->maniaControl->updateManager) {
-				$error['UpdateChannel'] = $this->maniaControl->settingManager->getSetting($this->maniaControl->updateManager, 
-						UpdateManager::SETTING_UPDATECHECK_CHANNEL);
+				$error['UpdateChannel'] = $this->maniaControl->settingManager->getSetting($this->maniaControl->updateManager, UpdateManager::SETTING_UPDATECHECK_CHANNEL);
 				$error['ManiaControlVersion'] = $this->maniaControl->updateManager->getCurrentBuildDate();
 			}
 			else {
@@ -85,7 +93,9 @@ class ErrorHandler {
 			}
 		}
 		
-		$this->maniaControl->restart();
+		if ($this->shouldRestart()) {
+			$this->maniaControl->restart();
+		}
 		exit();
 	}
 
@@ -104,8 +114,7 @@ class ErrorHandler {
 			return false;
 		}
 		
-		$userError = ($errorNumber == E_USER_ERROR || $errorNumber == E_USER_WARNING || $errorNumber == E_USER_NOTICE ||
-				 $errorNumber == E_USER_DEPRECATED);
+		$userError = ($errorNumber == E_USER_ERROR || $errorNumber == E_USER_WARNING || $errorNumber == E_USER_NOTICE || $errorNumber == E_USER_DEPRECATED);
 		
 		// Log error
 		$errorTag = $this->getErrorTag($errorNumber);
@@ -129,8 +138,7 @@ class ErrorHandler {
 			}
 			
 			if ($this->maniaControl->settingManager && $this->maniaControl->updateManager) {
-				$error['UpdateChannel'] = $this->maniaControl->settingManager->getSetting($this->maniaControl->updateManager, 
-						UpdateManager::SETTING_UPDATECHECK_CHANNEL);
+				$error['UpdateChannel'] = $this->maniaControl->settingManager->getSetting($this->maniaControl->updateManager, UpdateManager::SETTING_UPDATECHECK_CHANNEL);
 				$error['ManiaControlVersion'] = $this->maniaControl->updateManager->getCurrentBuildDate();
 			}
 			else {
@@ -206,6 +214,19 @@ class ErrorHandler {
 			return '[ManiaControl DEBUG]';
 		}
 		return "[PHP {$errorLevel}]";
+	}
+
+	/**
+	 * Test if ManiaControl should restart automatically
+	 *
+	 * @return bool
+	 */
+	private function shouldRestart() {
+		if (!$this->maniaControl || !$this->maniaControl->settingManager) {
+			return false;
+		}
+		$setting = $this->maniaControl->settingManager->getSetting($this, self::SETTING_RESTART_ON_EXCEPTION, true);
+		return $setting;
 	}
 
 	/**

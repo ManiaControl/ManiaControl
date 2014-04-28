@@ -38,8 +38,6 @@ class MigrationHelper {
 		$sourceClass = $this->getClass($sourceClass);
 		$targetClass = $this->getClass($targetClass);
 		
-		var_dump($sourceClass, $targetClass);
-		
 		$mysqli = $this->maniaControl->database->mysqli;
 		
 		$query = "INSERT INTO `" . SettingManager::TABLE_SETTINGS . "` (`class`, `setting`, `type`, `value`, `default`)

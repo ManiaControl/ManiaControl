@@ -130,6 +130,8 @@ class ManiaControl implements CommandListener, TimerListener {
 
 		//Check connection every 30 seconds
 		$this->timerManager->registerTimerListening($this, 'checkConnection', 1000 * 30);
+		
+		$this->errorHandler->init();
 	}
 
 	/**
