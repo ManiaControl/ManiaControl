@@ -123,12 +123,15 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$mapList = array();
 		if (is_array($maps)) {
 			$mapList = $maps;
+			$pageCount = ceil(count($mapList) / self::MAX_MAPS_PER_PAGE);
 		}
 		else if ($maps !== 'redirect') {
 			$mapList = $this->maniaControl->mapManager->getMaps($chunk * self::MAX_PAGES_PER_CHUNK * self::MAX_MAPS_PER_PAGE, self::MAX_PAGES_PER_CHUNK * self::MAX_MAPS_PER_PAGE);
+			$pageCount = ceil($this->maniaControl->mapManager->getMapsCount() / self::MAX_MAPS_PER_PAGE);
 		}
 		else if (array_key_exists($player->login, $this->mapsInListShown)) {
 			$mapList = $this->mapsInListShown[$player->login];
+			$pageCount = ceil(count($mapList) / self::MAX_MAPS_PER_PAGE);
 		}
 		
 		$this->mapsInListShown[$player->login] = $mapList;
@@ -138,7 +141,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$script = $maniaLink->getScript();
 		$paging = new Paging();
 		$script->addFeature($paging);
-		$paging->setCustomMaxPageNumber($this->maniaControl->mapManager->getMapsCount() / self::MAX_MAPS_PER_PAGE);
+		$paging->setCustomMaxPageNumber($pageCount);
 		$paging->setChunkActionAppendsPageNumber(true);
 		$paging->setChunkActions(self::ACTION_PAGING_CHUNKS);
 		
