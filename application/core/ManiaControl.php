@@ -353,7 +353,7 @@ class ManiaControl implements CommandListener, TimerListener {
 				$this->log("Connection interrupted!");
 				// TODO remove
 				if ($this->errorHandler) {
-					$this->errorHandler->triggerDebugNotice("Fatal Exception: " . $e->getMessage() . " Trace: " . $e->getTraceAsString());
+					$this->errorHandler->exceptionHandler($e, false);
 				}
 				$this->quit($e->getMessage());
 			}

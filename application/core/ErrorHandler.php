@@ -8,7 +8,7 @@ use ManiaControl\Callbacks\Callbacks;
 
 /**
  * Error and Exception Manager Class
- *
+ * 
  * @author steeffeen & kremsy
  * @copyright ManiaControl Copyright © 2014 ManiaControl Team
  * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
@@ -45,10 +45,10 @@ class ErrorHandler {
 	/**
 	 * ManiaControl ExceptionHandler
 	 * ManiaControl Shuts down after exception
-	 *
+	 * 
 	 * @param \Exception $ex
 	 */
-	public function exceptionHandler(\Exception $ex) {
+	public function exceptionHandler(\Exception $ex, $shutdown = true) {
 		// Log exception
 		$message = "[ManiaControl EXCEPTION]: {$ex->getMessage()}";
 		$traceMessage = 'Class: ' . get_class($ex) . PHP_EOL;
@@ -93,15 +93,17 @@ class ErrorHandler {
 			}
 		}
 		
-		if ($this->shouldRestart()) {
-			$this->maniaControl->restart();
+		if ($shutdown) {
+			if ($this->shouldRestart()) {
+				$this->maniaControl->restart();
+			}
+			exit();
 		}
-		exit();
 	}
 
 	/**
 	 * Error Handler
-	 *
+	 * 
 	 * @param $errorNumber
 	 * @param $errorString
 	 * @param $errorFile
@@ -169,7 +171,7 @@ class ErrorHandler {
 
 	/**
 	 * Triggers a Debug Notice to the ManiaControl Website
-	 *
+	 * 
 	 * @param $message
 	 */
 	public function triggerDebugNotice($message) {
@@ -178,7 +180,7 @@ class ErrorHandler {
 
 	/**
 	 * Get the prefix for the given error level
-	 *
+	 * 
 	 * @param int $errorLevel
 	 * @return string
 	 */
@@ -218,7 +220,7 @@ class ErrorHandler {
 
 	/**
 	 * Test if ManiaControl should restart automatically
-	 *
+	 * 
 	 * @return bool
 	 */
 	private function shouldRestart() {
@@ -231,7 +233,6 @@ class ErrorHandler {
 
 	/**
 	 * Parse the Debug Backtrace into a String for the Error Report
-	 *
 	 * return string
 	 */
 	private function parseBackTrace(array $backtrace) {
