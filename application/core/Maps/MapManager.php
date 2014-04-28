@@ -562,8 +562,23 @@ class MapManager implements CallbackListener {
 	 *
 	 * @return array
 	 */
-	public function getMaps() {
-		return array_values($this->maps);
+	public function getMaps($offset = null, $length = null) {
+		if ($offset === null) {
+			return array_values($this->maps);
+		}
+		if ($length === null) {
+			return array_slice($this->maps, $offset);
+		}
+		return array_slice($this->maps, $offset, $length);
+	}
+	
+	/**
+	 * Get the Number of Maps
+	 * 
+	 * @return int
+	 */
+	public function getMapsCount() {
+		return count($this->maps);
 	}
 
 	/**
