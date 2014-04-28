@@ -12,6 +12,7 @@ use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
+use Maniaplanet\DedicatedServer\Xmlrpc\FaultException;
 use Maniaplanet\DedicatedServer\Xmlrpc\NotInTeamModeException;
 use Maniaplanet\DedicatedServer\Xmlrpc\PlayerAlreadyIgnoredException;
 use Maniaplanet\DedicatedServer\Xmlrpc\PlayerIsNotSpectatorException;
@@ -91,7 +92,8 @@ class PlayerActions {
 
 		try {
 			$this->maniaControl->client->forceSpectator($target->login, self::SPECTATOR_PLAYER);
-		} catch(Exception $e) {
+		} catch(FaultException $e) {
+			//TODO exception 'There are too many players' appeared 28.04.2014, wait for more before add to faultexception
 			$this->maniaControl->chat->sendException($e, $admin->login);
 			return;
 		}
