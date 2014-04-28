@@ -159,6 +159,23 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	}
 
 	/**
+	 * Hide the Manialink with the given Id
+	 * 
+	 * @param mixed $manialinkId
+	 * @param mixed $logins
+	 */
+	public function hideManialink($manialinkId, $logins = null) {
+		if (is_array($manialinkId)) {
+			foreach ($manialinkId as $mlId) {
+				$this->hideManialink($mlId, $logins);
+			}
+		} else {
+			$emptyManialink = new ManiaLink($manialinkId);
+			$this->sendManialink($emptyManialink, $logins);
+		}
+	}
+	
+	/**
 	 * Send the given manialink to players
 	 * 
 	 * @param string $manialinkText

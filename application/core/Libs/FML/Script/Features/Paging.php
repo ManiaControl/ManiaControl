@@ -254,7 +254,6 @@ Void {$updatePageFunction}(Text _PagingId, Text _PageLabelId, Integer _BrowseAct
 			PageFound = True;
 		}
 	}
-	log(Now^PageFound^CurrentPage^_Pages);
 	if (!PageFound && _BrowseAction != 0) {
 		declare Text ChunkAction;
 		if (_BrowseAction < 0) {
@@ -265,7 +264,6 @@ Void {$updatePageFunction}(Text _PagingId, Text _PageLabelId, Integer _BrowseAct
 		if (_ChunkActionAppendPageNumber) {
 			ChunkAction ^= CurrentPage;
 		}
-		log(Now^ChunkAction);
 		TriggerPageAction(ChunkAction);
 	}
 	if (_PageLabelId == \"\") return;

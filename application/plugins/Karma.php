@@ -21,7 +21,7 @@ use ManiaControl\Settings\SettingManager;
 
 /**
  * ManiaControl Karma Plugin
- *
+ * 
  * @author kremsy and steeffeen
  * @copyright ManiaControl Copyright © 2014 ManiaControl Team
  * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
@@ -68,13 +68,14 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	private $maniaControl = null;
 	private $updateManialink = false;
 	/**
+	 *
 	 * @var ManiaLink $manialink
 	 */
 	private $manialink = null;
 	private $mxKarma = array();
 
 	/**
-	 * 
+	 *
 	 * @see \ManiaControl\Plugins\Plugin
 	 */
 	public static function prepare(ManiaControl $maniaControl) {
@@ -126,6 +127,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		// Open MX-Karma Session
 		$this->mxKarmaOpenSession();
 		$this->mxKarma['startTime'] = time();
+		
 		return true;
 	}
 
@@ -134,8 +136,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	 * @see \ManiaControl\Plugins\Plugin::unload()
 	 */
 	public function unload() {
-		$emptyManialink = new ManiaLink(self::MLID_KARMA);
-		$this->maniaControl->manialinkManager->sendManialink($emptyManialink);
+		$this->maniaControl->manialinkManager->hideManialink(self::MLID_KARMA);
 		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
 		$this->maniaControl->timerManager->unregisterTimerListenings($this);
 		unset($this->maniaControl);
@@ -183,7 +184,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 	/**
 	 * Handle ManiaControl 1 Second callback
-	 *
+	 * 
 	 * @param $time
 	 */
 	public function handle1Second($time) {
@@ -220,10 +221,12 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			
 			// Update karma gauge & label
 			/**
+			 *
 			 * @var Gauge $karmaGauge
 			 */
 			$karmaGauge = $this->manialink->karmaGauge;
 			/**
+			 *
 			 * @var Label $karmaLabel
 			 */
 			$karmaLabel = $this->manialink->karmaLabel;
@@ -256,7 +259,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 	/**
 	 * Handle BeginMap ManiaControl callback
-	 *
+	 * 
 	 * @param Map $map
 	 */
 	public function handleBeginMap(Map $map) {
@@ -281,7 +284,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 	/**
 	 * Handle PlayerConnect callback
-	 *
+	 * 
 	 * @param \ManiaControl\Players\Player $player
 	 */
 	public function handlePlayerConnect(Player $player) {
@@ -296,7 +299,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 	/**
 	 * Handle PlayerChat callback
-	 *
+	 * 
 	 * @param array $chatCallback
 	 */
 	public function handlePlayerChat(array $chatCallback) {
@@ -328,7 +331,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 	/**
 	 * Handle a vote done by a player
-	 *
+	 * 
 	 * @param Player $player
 	 * @param int $vote
 	 * @return bool
@@ -390,7 +393,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 	/**
 	 * Query the player to update the manialink
-	 *
+	 * 
 	 * @param Player $player
 	 */
 	private function queryManialinkUpdateFor(Player $player) {
@@ -448,7 +451,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 	/**
 	 * Save the vote of the player for the map
-	 *
+	 * 
 	 * @param Player $player
 	 * @param Map $map
 	 * @param float $vote
@@ -477,7 +480,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 	/**
 	 * Get the current vote of the player for the map
-	 *
+	 * 
 	 * @param Player $player
 	 * @param Map $map
 	 * @return int
@@ -505,7 +508,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 	/**
 	 * Get the current karma of the map
-	 *
+	 * 
 	 * @param Map $map
 	 * @return float | bool
 	 */
@@ -534,7 +537,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 	/**
 	 * Get the current Votes for the Map
-	 *
+	 * 
 	 * @param Map $map
 	 * @return array
 	 */
@@ -562,7 +565,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 	/**
 	 * Build karma voting manialink if necessary
-	 *
+	 * 
 	 * @param bool $forceBuild
 	 */
 	private function buildManialink($forceBuild = false) {
@@ -624,7 +627,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 	/**
 	 * Update Settings
-	 *
+	 * 
 	 * @param $class
 	 * @param $settingName
 	 * @param $value
@@ -702,7 +705,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 	/**
 	 * Activates the MX-Karma Session
-	 *
+	 * 
 	 * @param $mxKarmaCode
 	 */
 	private function activateSession($mxKarmaCode) {
@@ -775,6 +778,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			$properties['playerlogins'] = array();
 			foreach ($this->maniaControl->playerManager->getPlayers() as $plyr) {
 				/**
+				 *
 				 * @var Player $player
 				 */
 				$properties['playerlogins'][] = $plyr->login;
@@ -822,7 +826,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 	/**
 	 * Import old Karma votes to Mania-Exchange Karma
-	 *
+	 * 
 	 * @param Map $map
 	 */
 	public function importMxKarmaVotes(Map $map) {
@@ -903,7 +907,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 	/**
 	 * Post the Karma votes to MX-Karma
-	 *
+	 * 
 	 * @param Map $map
 	 * @param array $votes
 	 * @param bool $import
@@ -968,7 +972,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 	/**
 	 * Builds a sha512 activation Hash for the MX-Karma
-	 *
+	 * 
 	 * @param $sessionSeed
 	 * @param $mxKey
 	 * @return string
