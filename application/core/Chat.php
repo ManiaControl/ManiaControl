@@ -72,10 +72,13 @@ class Chat {
 		if (!$this->maniaControl->client) {
 			return false;
 		}
-		$chatMessage = '$z$s$<' . $this->getPrefix($prefix) . $message . '$>$z$s';
+
 		if (!$login) {
+			$prefix = $this->getPrefix($prefix);
+			$chatMessage = '$z$s$<' . str_replace(' ', '', $prefix) . $prefix . $message . '$>$z$s';
 			$this->maniaControl->client->chatSendServerMessage($chatMessage);
 		} else {
+			$chatMessage = '$z$s$<' . $this->getPrefix($prefix) . $message . '$>$z$s';
 			if ($login instanceof Player) {
 				$login = $login->login;
 			}
