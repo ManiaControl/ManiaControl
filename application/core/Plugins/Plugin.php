@@ -18,10 +18,9 @@ interface Plugin {
 	const PLUGIN_INTERFACE = __CLASS__;
 
 	/**
-	 * Prepares the Plugin
+	 * Prepare the Plugin
 	 *
 	 * @param ManiaControl $maniaControl
-	 * @return mixed
 	 */
 	public static function prepare(ManiaControl $maniaControl);
 
@@ -34,7 +33,7 @@ interface Plugin {
 	public function load(ManiaControl $maniaControl);
 
 	/**
-	 * Unload the plugin and its resources
+	 * Unload the plugin and its Resources
 	 */
 	public function unload();
 
