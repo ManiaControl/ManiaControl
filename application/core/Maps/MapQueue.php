@@ -24,6 +24,8 @@ class MapQueue implements CallbackListener, CommandListener {
 
 	const SETTING_SKIP_MAP_ON_LEAVE         = 'Skip Map when the requester leaves';
 	const SETTING_SKIP_MAPQUEUE_ADMIN       = 'Skip Map when admin leaves';
+	const SETTING_MAPLIMIT_PLAYER           = 'Maximum maps per player in the Map-Queue (-1 = unlimited)';
+	const SETTING_MAPLIMIT_ADMIN            = 'Maximum maps per admin (Admin+) in the Map-Queue (-1 = unlimited)';
 	const SETTING_PERMISSION_CLEAR_MAPQUEUE = 'Clear Mapqueue';
 
 	const ADMIN_COMMAND_CLEAR_MAPQUEUE = 'clearmapqueue';
@@ -49,6 +51,8 @@ class MapQueue implements CallbackListener, CommandListener {
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SKIP_MAP_ON_LEAVE, true);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SKIP_MAPQUEUE_ADMIN, false);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAPLIMIT_PLAYER, 1);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAPLIMIT_ADMIN, -1);
 
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_CLEAR_MAPQUEUE, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 
@@ -168,9 +172,39 @@ class MapQueue implements CallbackListener, CommandListener {
 	public function addMapToMapQueue($login, $uid) {
 		$player = $this->maniaControl->playerManager->getPlayer($login);
 
+		//Check if player is allowed to add (another) map
+		$admin = false;
+		if($this->maniaControl->authenticationManager->checkRight($player, 2) ||
+		   $this->maniaControl->authenticationManager->checkRight($player, 3) ||
+		   $this->maniaControl->authenticationManager->checkRight($player, 4)) {
+			$admin = true;
+		}
+
+		$mapsForPlayer = 0;
+		foreach($this->queuedMaps as $queuedMap) {
+			if($queuedMap[0]->login == $login) {
+				$mapsForPlayer++;
+			}
+		}
+
+		$maxPlayer = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAPLIMIT_PLAYER);
+		$maxAdmin  = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAPLIMIT_ADMIN);
+
+		if($admin && $maxAdmin != -1) {
+			if($mapsForPlayer == $maxAdmin) {
+				$this->maniaControl->chat->sendError('You already have $<$fff'.$maxAdmin.'$> map(s) in the Map-Queue!', $login);
+				return;
+			}
+		} elseif(!$admin && $maxPlayer != -1) {
+			if($mapsForPlayer == $maxPlayer) {
+				$this->maniaControl->chat->sendError('You already have $<$fff'.$maxPlayer.'$> map(s) in the Map-Queue!', $login);
+				return;
+			}
+		}
+
 		//Check if the map is already juked
 		if (array_key_exists($uid, $this->queuedMaps)) {
-			$this->maniaControl->chat->sendError('$fa0That map is already in the Map-Queue!', $login);
+			$this->maniaControl->chat->sendError('That map is already in the Map-Queue!', $login);
 			return;
 		}
 
