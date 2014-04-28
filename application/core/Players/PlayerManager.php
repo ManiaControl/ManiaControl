@@ -181,7 +181,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 		$this->maniaControl->log(Formatter::stripCodes($logMessage));
 
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES)) {
-			$this->maniaControl->chat->sendChat('$<' . $player->nickname . '$> $s$0f0has left the game');
+			$this->maniaControl->chat->sendChat('$0f0$<$fff' . $player->nickname . '$> has left the game');
 		}
 
 		//Destroys stored PlayerData, after all Disconnect Callbacks got Handled
@@ -217,7 +217,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 
 			if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES) && !$player->isFakePlayer()) {
 				$string      = array(0 => '$0f0Player', 1 => '$0f0Moderator', 2 => '$0f0Admin', 3 => '$0f0SuperAdmin', 4 => '$0f0MasterAdmin');
-				$chatMessage = '$s$0f0' . $string[$player->authLevel] . ' $fff' . $player->nickname . '$z$s$0f0 Nation:$fff ' . $player->getCountry() . ' $z$s$0f0joined!';
+				$chatMessage = '$0f0' . $string[$player->authLevel] . ' $<$fff' . $player->nickname . '$> Nation: $<$fff' . $player->getCountry() . '$> joined!';
 				$this->maniaControl->chat->sendChat($chatMessage);
 				$this->maniaControl->chat->sendInformation('This server uses ManiaControl v' . ManiaControl::VERSION . '!', $player->login);
 			}
