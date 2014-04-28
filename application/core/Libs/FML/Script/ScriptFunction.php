@@ -39,15 +39,6 @@ class ScriptFunction {
 	}
 
 	/**
-	 * Get the Name
-	 * 
-	 * @return string
-	 */
-	public function getName() {
-		return $this->name;
-	}
-	
-	/**
 	 * Set the Text
 	 *
 	 * @param string $text Function Text

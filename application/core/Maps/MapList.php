@@ -28,7 +28,7 @@ use MCTeam\KarmaPlugin;
 
 /**
  * MapList Widget Class
- *
+ * 
  * @author steeffeen & kremsy
  * @copyright ManiaControl Copyright © 2014 ManiaControl Team
  * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
@@ -45,7 +45,9 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	const ACTION_UNQUEUE_MAP = 'MapList.UnQueueMap';
 	const ACTION_CHECK_UPDATE = 'MapList.CheckUpdate';
 	const ACTION_CLEAR_MAPQUEUE = 'MapList.ClearMapQueue';
+	const ACTION_PAGING_CHUNKS = 'MapList.PagingChunk.';
 	const MAX_MAPS_PER_PAGE = 15;
+	const MAX_PAGES_PER_CHUNK = 2;
 	const DEFAULT_KARMA_PLUGIN = 'MCTeam\KarmaPlugin';
 	const DEFAULT_CUSTOM_VOTE_PLUGIN = 'CustomVotesPlugin';
 	
@@ -58,7 +60,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 	/**
 	 * Create a new MapList Instance
-	 *
+	 * 
 	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
@@ -79,7 +81,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 	/**
 	 * Clears the Map Queue
-	 *
+	 * 
 	 * @param array $chatCallback
 	 * @param Player $player
 	 */
@@ -90,7 +92,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 	/**
 	 * Check for Map Updates
-	 *
+	 * 
 	 * @param array $chatCallback
 	 * @param Player $player
 	 */
@@ -103,11 +105,14 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	}
 
 	/**
-	 * Displayes a MapList on the screen
-	 *
+	 * Display a MapList on the Screen
+	 * 
 	 * @param Player $player
+	 * @param array $maps
+	 * @param int $chunk
+	 * @param int $startPage
 	 */
-	public function showMapList(Player $player, $maps = null) {
+	public function showMapList(Player $player, $maps = null, $chunk = 0, $startPage = null) {
 		$width = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
 		$height = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
 		
@@ -115,16 +120,15 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$queueBuffer = $this->maniaControl->mapManager->mapQueue->getQueueBuffer();
 		
 		// Get Maps
-		if (is_null($maps) && $maps != 'redirect') {
-			$mapList = $this->maniaControl->mapManager->getMaps();
+		$mapList = array();
+		if (is_array($maps)) {
+			$mapList = $maps;
 		}
-		else {
-			if (array_key_exists($player->login, $this->mapsInListShown) && $maps == 'redirect') {
-				$mapList = $this->mapsInListShown[$player->login];
-			}
-			else {
-				$mapList = $maps;
-			}
+		else if ($maps !== 'redirect') {
+			$mapList = $this->maniaControl->mapManager->getMaps($chunk * self::MAX_PAGES_PER_CHUNK * self::MAX_MAPS_PER_PAGE, self::MAX_PAGES_PER_CHUNK * self::MAX_MAPS_PER_PAGE);
+		}
+		else if (array_key_exists($player->login, $this->mapsInListShown)) {
+			$mapList = $this->mapsInListShown[$player->login];
 		}
 		
 		$this->mapsInListShown[$player->login] = $mapList;
@@ -134,6 +138,9 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$script = $maniaLink->getScript();
 		$paging = new Paging();
 		$script->addFeature($paging);
+		$paging->setCustomMaxPageNumber($this->maniaControl->mapManager->getMapsCount() / self::MAX_MAPS_PER_PAGE);
+		$paging->setChunkActionAppendsPageNumber(true);
+		$paging->setChunkActions(self::ACTION_PAGING_CHUNKS);
 		
 		// Main frame
 		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script, $paging);
@@ -204,8 +211,12 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		 * @var KarmaPlugin $karmaPlugin
 		 */
 		$karmaPlugin = $this->maniaControl->pluginManager->getPlugin(self::DEFAULT_KARMA_PLUGIN);
+
+		$pageNumber = 1 + $chunk * self::MAX_PAGES_PER_CHUNK;
+		$startPageNumber = (is_int($startPage) ? $startPage : $pageNumber);
+		$paging->setStartPageNumber($startPageNumber);
 		
-		$id = 1;
+		$id = 1 + $chunk * self::MAX_PAGES_PER_CHUNK * self::MAX_MAPS_PER_PAGE;
 		$y = $height / 2 - 10;
 		$pageFrames = array();
 		/**
@@ -228,7 +239,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				array_push($pageFrames, $pageFrame);
 				$y = $height / 2 - 10;
 				
-				$paging->addPage($pageFrame);
+				$paging->addPage($pageFrame, $pageNumber);
+				$pageNumber++;
 			}
 			
 			// Map Frame
@@ -293,6 +305,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$labels = $this->maniaControl->manialinkManager->labelLine($mapFrame, $array);
 			if (isset($labels[3])) {
 				/**
+				 *
 				 * @var Label $label
 				 */
 				$label = $labels[3];
@@ -440,7 +453,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 	/**
 	 * Builds the confirmation frame
-	 *
+	 * 
 	 * @param ManiaLink $maniaLink
 	 * @param $y
 	 * @param $id
@@ -498,7 +511,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 	/**
 	 * Unset the player if he opened another Main Widget
-	 *
+	 * 
 	 * @param Player $player
 	 * @param $openedWidget
 	 */
@@ -511,7 +524,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 	/**
 	 * Closes the widget
-	 *
+	 * 
 	 * @param \ManiaControl\Players\Player $player
 	 */
 	public function closeWidget(Player $player) {
@@ -520,7 +533,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 	/**
 	 * Closes the widget
-	 *
+	 * 
 	 * @param Player $player
 	 */
 	public function playerCloseWidget(Player $player) {
@@ -530,12 +543,13 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 	/**
 	 * Handle ManialinkPageAnswer Callback
-	 *
+	 * 
 	 * @param array $callback
 	 */
 	public function handleManialinkPageAnswer(array $callback) {
 		$actionId = $callback[1][2];
 		$actionArray = explode('.', $actionId);
+		
 		if (count($actionArray) <= 2) {
 			return;
 		}
@@ -575,6 +589,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				break;
 			case self::ACTION_START_SWITCH_VOTE:
 				/**
+				 *
 				 * @var $votesPlugin CustomVotesPlugin
 				 */
 				$votesPlugin = $this->maniaControl->pluginManager->getPlugin(self::DEFAULT_CUSTOM_VOTE_PLUGIN);
@@ -584,6 +599,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$message = '$<' . $player->nickname . '$>$s started a vote to switch to $<' . $map->name . '$>!';
 				
 				/**
+				 *
 				 * @var Map $map
 				 */
 				$votesPlugin->defineVote('switchmap', "Goto " . $map->name, true, $message);
@@ -612,6 +628,14 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			case self::ACTION_UNQUEUE_MAP:
 				$this->maniaControl->mapManager->mapQueue->removeFromMapQueue($player, $actionArray[2]);
 				$this->showMapList($player, 'redirect');
+				break;
+			default:
+				if (substr($actionId, 0, strlen(self::ACTION_PAGING_CHUNKS)) === self::ACTION_PAGING_CHUNKS) {
+					// Paging chunks
+					$neededPage = (int) substr($actionId, strlen(self::ACTION_PAGING_CHUNKS));
+					$chunk = (int) ($neededPage / self::MAX_PAGES_PER_CHUNK - 0.5);
+					$this->showMapList($player, null, $chunk, $neededPage);
+				}
 				break;
 		}
 	}
