@@ -10,12 +10,12 @@ use FML\ManiaLink;
 use FML\Script\Features\Paging;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
-use ManiaControl\Maps\MapManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
@@ -101,8 +101,8 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_LINEHEIGHT, 4);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_LINESCOUNT, 12);
 
-		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_BEGINMAP, $this, 'handleBeginMap');
-		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_ENDMAP, $this, 'handleMapEnd');
+		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::BEGINMAP, $this, 'handleBeginMap');
+		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::ENDMAP, $this, 'handleMapEnd');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECT, $this, 'handlePlayerDisconnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_TM_PLAYERCHECKPOINT, $this, 'handlePlayerCheckpoint');
@@ -329,7 +329,7 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 		//var_dump($data);
 		$content = $this->encode_request(self::DEDIMANIA_SETCHALLENGETIMES, $data);
 
-		$self = $this;
+		$self         = $this;
 		$maniaControl = $this->maniaControl;
 		$this->maniaControl->fileReader->postData(self::DEDIMANIA_URL, function ($data, $error) use (&$self, &$maniaControl) {
 			if ($error != '') {
@@ -469,9 +469,11 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 					// Only improved time
 					$improvement = 'improved his/her';
 				}
-				$message = '$390$<$fff' . $player->nickname . '$> ' . $improvement . ' $<$ff0' . $newRecord->rank . '.$> Dedimania Record: $<$fff' . Formatter::formatTime($newRecord->best).'$>';
-				if(!$oldRecord->nullRecord) $message .= ' ($<$ff0'.$oldRecord->rank.'.$> $<$fff-'.Formatter::formatTime(($oldRecord->best-$time)).'$>)';
-				$this->maniaControl->chat->sendInformation($message.'!');
+				$message = '$390$<$fff' . $player->nickname . '$> ' . $improvement . ' $<$ff0' . $newRecord->rank . '.$> Dedimania Record: $<$fff' . Formatter::formatTime($newRecord->best) . '$>';
+				if (!$oldRecord->nullRecord) {
+					$message .= ' ($<$ff0' . $oldRecord->rank . '.$> $<$fff-' . Formatter::formatTime(($oldRecord->best - $time)) . '$>)';
+				}
+				$this->maniaControl->chat->sendInformation($message . '!');
 
 				$this->updateManialink = true;
 			}
@@ -503,8 +505,8 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 		//create manialink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$script    = $maniaLink->getScript();
-        $paging = new Paging();
-        $script->addFeature($paging);
+		$paging    = new Paging();
+		$script->addFeature($paging);
 
 		// Main frame
 		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script, $paging);
@@ -537,7 +539,7 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 				}
 				array_push($pageFrames, $pageFrame);
 				$y = $height / 2 - 10;
-                $paging->addPage($pageFrame);
+				$paging->addPage($pageFrame);
 			}
 
 			$recordFrame = new Frame();
@@ -970,7 +972,7 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 				} else if ($scriptName == 'TimeAttack' || $scriptName == 'Laps' || $scriptName == 'TeamAttack' || $scriptName == 'TimeAttackPlus') {
 					return 'TA';
 				}
-                break;
+				break;
 			}
 			case 1:
 			case 3:
