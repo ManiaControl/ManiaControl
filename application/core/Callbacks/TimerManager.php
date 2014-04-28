@@ -86,7 +86,7 @@ class TimerManager {
 	}
 
 	/**
-	 * Remove a Script Callback Listener
+	 * Remove a Timer Listener
 	 *
 	 * @param TimerListener $listener
 	 * @return bool
