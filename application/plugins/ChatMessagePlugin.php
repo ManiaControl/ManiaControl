@@ -401,7 +401,8 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 			return $player->nickname;
 		}
 
-		return null;
+		//returns the text given if nothing matches
+		return $login;
 	}
 
 	/**
