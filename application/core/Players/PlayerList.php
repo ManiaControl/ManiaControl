@@ -2,7 +2,7 @@
 
 namespace ManiaControl\Players;
 
-use CustomVotesPlugin;
+use MCTeam\CustomVotesPlugin;
 use FML\Controls\Control;
 use FML\Controls\Frame;
 use FML\Controls\Labels\Label_Button;
@@ -56,7 +56,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 	const ACTION_REVOKE_RIGHTS        = 'PlayerList.RevokeRights';
 	const ACTION_OPEN_PLAYER_DETAILED = 'PlayerList.OpenPlayerDetailed';
 	const ACTION_SPECTATE_PLAYER      = 'PlayerList.SpectatePlayer';
-	const DEFAULT_CUSTOM_VOTE_PLUGIN  = 'CustomVotesPlugin';
+	const DEFAULT_CUSTOM_VOTE_PLUGIN  = 'MCTeam\CustomVotesPlugin';
 	const SHOWN_MAIN_WINDOW           = -1;
 	const MAX_PLAYERS_PER_PAGE        = 15;
 

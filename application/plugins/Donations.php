@@ -1,4 +1,6 @@
 <?php
+namespace MCTeam;
+
 use FML\Controls\Control;
 use FML\Controls\Frame;
 use FML\Controls\Label;
