@@ -311,7 +311,6 @@ class ManiaControl implements CommandListener, TimerListener {
 		// Connect to server
 		$this->connect();
 
-		 - Commented for now, because of updates towards MP2 MCs
 		// Check if the version of the server is high enough
 		$version = $this->client->getVersion();
 		if($version->build < self::MIN_DEDIVERSION) {
