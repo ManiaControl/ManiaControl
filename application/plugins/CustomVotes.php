@@ -26,6 +26,7 @@ use ManiaControl\Server\Server;
 use ManiaControl\Server\ServerCommands;
 use Maniaplanet\DedicatedServer\Structures\VoteRatio;
 use Maniaplanet\DedicatedServer\Xmlrpc\NotInScriptModeException;
+use FML\Script\Features\KeyAction;
 
 
 /**
@@ -314,25 +315,25 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 			switch($voteName) {
 				case 'teambalance':
 					$this->maniaControl->client->autoTeamBalance();
-					$this->maniaControl->chat->sendInformation('$s$f8fVote to $fffbalance the teams$f8f has been successfull!');
+					$this->maniaControl->chat->sendInformation('$s$f8fVote to $fffbalance the teams$f8f was successful!');
 					break;
 				case 'skipmap':
 				case 'skip':
 				case 'nextmap':
 					$this->maniaControl->client->nextMap();
-					$this->maniaControl->chat->sendInformation('$s$f8fVote to $fffskip the map$f8f has been successfull!');
+					$this->maniaControl->chat->sendInformation('$s$f8fVote to $fffskip the map$f8f was successful!');
 					break;
 				case 'restartmap':
 					$this->maniaControl->client->restartMap();
-					$this->maniaControl->chat->sendInformation('$s$f8fVote to $fffrestart the map$f8f has been successfull!');
+					$this->maniaControl->chat->sendInformation('$s$f8fVote to $fffrestart the map$f8f was successful!');
 					break;
 				case 'pausegame':
 					$this->maniaControl->client->sendModeScriptCommands(array('Command_ForceWarmUp' => True));
-					$this->maniaControl->chat->sendInformation('$s$f8fVote to $fffpause the current game$f8f has been successfull!');
+					$this->maniaControl->chat->sendInformation('$s$f8fVote to $fffpause the current game$f8f was successful!');
 					break;
 				case 'replay':
 					$this->maniaControl->mapManager->mapQueue->addFirstMapToMapQueue($this->currentVote->voter, $this->maniaControl->mapManager->getCurrentMap());
-					$this->maniaControl->chat->sendInformation('$s$f8fVote to $fffreplay the map$f8f has been successfull!');
+					$this->maniaControl->chat->sendInformation('$s$f8fVote to $fffreplay the map$f8f was successful!');
 					break;
 			}
 		} else {
@@ -532,9 +533,6 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 		$maniaLink = new ManiaLink(self::MLID_WIDGET);
 
-		//$script    = new Script();
-		//$maniaLink->setScript($script);
-
 		// mainframe
 		$frame = new Frame();
 		$maniaLink->add($frame);
@@ -638,6 +636,13 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$label->setX($width / 2 - 6);
 		$label->setTextColor("F00");
 		$label->setText("F6");
+		
+		// Key Action
+		$script = $maniaLink->getScript();
+		$keyActionPositive = new KeyAction(self::ACTION_POSITIVE_VOTE, 'F1');
+		$script->addFeature($keyActionPositive);
+		$keyActionNegative = new KeyAction(self::ACTION_NEGATIVE_VOTE, 'F2');
+		$script->addFeature($keyActionNegative);
 
 		// Send manialink
 		$this->maniaControl->manialinkManager->sendManialink($maniaLink);
@@ -731,6 +736,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 				$x -= $itemSize * 1.05;
 
 				if ($menuItem[1]) {
+						$menuQuad->removeScriptFeatures();
 					$description = '$s' . $menuItem[1];
                     $menuQuad->addTooltipLabelFeature($descriptionLabel, $description);
 				}
