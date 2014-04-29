@@ -134,9 +134,10 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$mapList = array_slice($completeList, $chunk * self::MAX_PAGES_PER_CHUNK * self::MAX_MAPS_PER_PAGE, self::MAX_PAGES_PER_CHUNK * self::MAX_MAPS_PER_PAGE);
 			$pageCount = ceil(count($completeList) / self::MAX_MAPS_PER_PAGE);
 		}
-		else if ($maps !== 'redirect') {
+		else {
 			$mapList = $this->maniaControl->mapManager->getMaps($chunk * self::MAX_PAGES_PER_CHUNK * self::MAX_MAPS_PER_PAGE, self::MAX_PAGES_PER_CHUNK * self::MAX_MAPS_PER_PAGE);
 			$pageCount = ceil($this->maniaControl->mapManager->getMapsCount() / self::MAX_MAPS_PER_PAGE);
+			$this->mapsInListShown[$player->login] = $this->maniaControl->mapManager->getMaps();
 		}
 		
 		// Create ManiaLink
@@ -144,7 +145,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$script = $maniaLink->getScript();
 		$paging = new Paging();
 		$script->addFeature($paging);
-		if (is_int($pageCount)) $paging->setCustomMaxPageNumber($pageCount);
+		/*if (is_int($pageCount))*/ $paging->setCustomMaxPageNumber($pageCount);
 		$paging->setChunkActionAppendsPageNumber(true);
 		$paging->setChunkActions(self::ACTION_PAGING_CHUNKS);
 		
@@ -646,11 +647,11 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				break;
 			case self::ACTION_QUEUED_MAP:
 				$this->maniaControl->mapManager->mapQueue->addMapToMapQueue($callback[1][1], $actionArray[2]);
-				$this->showMapList($player, 'redirect');
+				$this->showMapList($player);
 				break;
 			case self::ACTION_UNQUEUE_MAP:
 				$this->maniaControl->mapManager->mapQueue->removeFromMapQueue($player, $actionArray[2]);
-				$this->showMapList($player, 'redirect');
+				$this->showMapList($player);
 				break;
 			default:
 				if (substr($actionId, 0, strlen(self::ACTION_PAGING_CHUNKS)) === self::ACTION_PAGING_CHUNKS) {
@@ -688,7 +689,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			if ($shown) {
 				$player = $this->maniaControl->playerManager->getPlayer($login);
 				if ($player) {
-					$this->showMapList($player, 'redirect');
+					$this->showMapList($player);
 				}
 				else {
 					unset($this->mapListShown[$login]);
