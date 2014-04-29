@@ -314,25 +314,25 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 			switch($voteName) {
 				case 'teambalance':
 					$this->maniaControl->client->autoTeamBalance();
-					$this->maniaControl->chat->sendInformation('$s$f8fVote to $fffbalance the teams$f8f has been successfull!');
+					$this->maniaControl->chat->sendInformation('$f8fVote to $fffbalance the teams$f8f has been successfull!');
 					break;
 				case 'skipmap':
 				case 'skip':
 				case 'nextmap':
 					$this->maniaControl->client->nextMap();
-					$this->maniaControl->chat->sendInformation('$s$f8fVote to $fffskip the map$f8f has been successfull!');
+					$this->maniaControl->chat->sendInformation('$f8fVote to $fffskip the map$f8f has been successfull!');
 					break;
 				case 'restartmap':
 					$this->maniaControl->client->restartMap();
-					$this->maniaControl->chat->sendInformation('$s$f8fVote to $fffrestart the map$f8f has been successfull!');
+					$this->maniaControl->chat->sendInformation('$f8fVote to $fffrestart the map$f8f has been successfull!');
 					break;
 				case 'pausegame':
 					$this->maniaControl->client->sendModeScriptCommands(array('Command_ForceWarmUp' => True));
-					$this->maniaControl->chat->sendInformation('$s$f8fVote to $fffpause the current game$f8f has been successfull!');
+					$this->maniaControl->chat->sendInformation('$f8fVote to $fffpause the current game$f8f has been successfull!');
 					break;
 				case 'replay':
 					$this->maniaControl->mapManager->mapQueue->addFirstMapToMapQueue($this->currentVote->voter, $this->maniaControl->mapManager->getCurrentMap());
-					$this->maniaControl->chat->sendInformation('$s$f8fVote to $fffreplay the map$f8f has been successfull!');
+					$this->maniaControl->chat->sendInformation('$f8fVote to $fffreplay the map$f8f has been successfull!');
 					break;
 			}
 		} else {
@@ -441,7 +441,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		if ($this->currentVote->voteCommand->startText != '') {
 			$message = $this->currentVote->voteCommand->startText;
 		} else {
-			$message = '$fff$<' . $player->nickname . '$>$s$f8f started a $fff$<' . $this->currentVote->voteCommand->name . '$>$f8f!';
+			$message = '$fff$<' . $player->nickname . '$>$f8f started a $fff$<' . $this->currentVote->voteCommand->name . '$>$f8f!';
 		}
 
 		$this->maniaControl->chat->sendSuccess($message);

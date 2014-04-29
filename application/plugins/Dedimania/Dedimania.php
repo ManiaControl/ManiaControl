@@ -200,6 +200,9 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 	 * @param \ManiaControl\Players\Player $player
 	 */
 	public function handlePlayerConnect(Player $player) {
+		if (!$this->init) {
+			return;
+		}
 		// Send Dedimania request
 		$data    = array($this->dedimaniaData->sessionId, $player->login, $player->rawNickname, $player->path, $player->isSpectator);
 		$content = $this->encode_request(self::DEDIMANIA_PLAYERCONNECT, $data);
@@ -245,6 +248,9 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 	 * @param \ManiaControl\Players\Player $player
 	 */
 	public function handlePlayerDisconnect(Player $player) {
+		if (!$this->init) {
+			return;
+		}
 		$this->dedimaniaData->removePlayer($player->login);
 
 		// Send Dedimania request
@@ -280,6 +286,9 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 	 * @param $callback
 	 */
 	public function handleBeginMap($callback) {
+		if (!$this->init) {
+			return;
+		}
 		unset($this->dedimaniaData->records);
 		$this->fetchDedimaniaRecords(true);
 	}
@@ -291,6 +300,9 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 	 * @param $callback
 	 */
 	public function handleMapEnd($callback) {
+		if (!$this->init) {
+			return;
+		}
 		if (!$this->dedimaniaData || !$this->dedimaniaData->records) {
 			return;
 		}
@@ -369,6 +381,9 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 	 * @param $callback
 	 */
 	public function updatePlayerList($callback) {
+		if (!$this->init) {
+			return;
+		}
 		$serverInfo = $this->getServerInfo();
 		$playerList = $this->getPlayerList();
 		$votesInfo  = $this->getVotesInfo();
@@ -409,6 +424,9 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 	 * @param $callback
 	 */
 	public function handlePlayerCheckpoint($callback) {
+		if (!$this->init) {
+			return;
+		}
 		$data  = $callback[1];
 		$login = $data[1];
 		$time  = $data[2];
@@ -426,6 +444,9 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 	 * @param $callback
 	 */
 	public function handlePlayerFinished($callback) {
+		if (!$this->init) {
+			return;
+		}
 		//var_dump($callback);
 		$data = $callback[1];
 		if ($data[0] <= 0 || $data[2] <= 0) {
@@ -596,6 +617,10 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 	private function fetchDedimaniaRecords($reset = true) {
 		if (!$this->dedimaniaData || $this->dedimaniaData->sessionId == '') {
 			return false;
+		}
+
+		if (!$this->init) {
+			return;
 		}
 
 		// Reset records
@@ -923,6 +948,10 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 	 * @return array|RecordData
 	 */
 	public function getDedimaniaRecords() {
+		if (!$this->init) {
+			return false;
+		}
+
 		if (!$this->dedimaniaData->records) {
 			return null;
 		}
