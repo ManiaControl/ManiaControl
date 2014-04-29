@@ -234,6 +234,7 @@ class AuthenticationManager implements CallbackListener {
 	 * @return string
 	 */
 	public static function getAuthLevelName($authLevelInt) {
+		//FIXME somehow it fails here (look also AdminList.php)
         if ($authLevelInt instanceof Player) {
             $authLevelInt = $authLevelInt->authLevel;
         } else {

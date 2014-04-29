@@ -157,6 +157,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 			$rightLabel->setX($x + 13.9);
 			$rightLabel->setTextSize(0.8);
 			$rightLabel->setZ(10);
+			//FIXME, getAuthLevelAbbrev fails
 			$rightLabel->setText($this->maniaControl->authenticationManager->getAuthLevelAbbreviation($admin));
             $description = $this->maniaControl->authenticationManager->getAuthLevelName($admin) . " " . $admin->nickname;
             $rightLabel->addTooltipLabelFeature($descriptionLabel, $description);
