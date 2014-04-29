@@ -145,7 +145,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$script = $maniaLink->getScript();
 		$paging = new Paging();
 		$script->addFeature($paging);
-		/*if (is_int($pageCount))*/ $paging->setCustomMaxPageNumber($pageCount);
+		if (!is_null($pageCount)) $paging->setCustomMaxPageNumber($pageCount);
 		$paging->setChunkActionAppendsPageNumber(true);
 		$paging->setChunkActions(self::ACTION_PAGING_CHUNKS);
 		
