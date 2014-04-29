@@ -272,7 +272,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$label->setZ(0.2);
 		$label->setTextSize(1);
 		$label->setTextColor("FFF");
-        $label->addClockFeature(true);
+        $label->addClockFeature(false);
 
 		// Send manialink
 		$this->maniaControl->manialinkManager->sendManialink($maniaLink, $login);
