@@ -123,19 +123,20 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		// Get Maps
 		$mapList = array();
 		if (is_array($maps)) {
-			$mapList = $maps;
-			$pageCount = ceil(count($mapList) / self::MAX_MAPS_PER_PAGE);
+			$mapList = array_slice($maps, $chunk, self::MAX_PAGES_PER_CHUNK * self::MAX_MAPS_PER_PAGE);
+			$this->mapsInListShown[$player->login] = $maps;
+			$pageCount = ceil(count($maps) / self::MAX_MAPS_PER_PAGE);
+		}
+		else if (array_key_exists($player->login, $this->mapsInListShown)) {
+			$completeList = $this->mapsInListShown[$player->login];
+			$this->mapsInListShown[$player->login] = $completeList;
+			$mapList = array_slice($completeList, $chunk * self::MAX_PAGES_PER_CHUNK * self::MAX_MAPS_PER_PAGE, self::MAX_PAGES_PER_CHUNK * self::MAX_MAPS_PER_PAGE);
+			$pageCount = ceil(count($completeList) / self::MAX_MAPS_PER_PAGE);
 		}
 		else if ($maps !== 'redirect') {
 			$mapList = $this->maniaControl->mapManager->getMaps($chunk * self::MAX_PAGES_PER_CHUNK * self::MAX_MAPS_PER_PAGE, self::MAX_PAGES_PER_CHUNK * self::MAX_MAPS_PER_PAGE);
 			$pageCount = ceil($this->maniaControl->mapManager->getMapsCount() / self::MAX_MAPS_PER_PAGE);
 		}
-		else if (array_key_exists($player->login, $this->mapsInListShown)) {
-			$mapList = $this->mapsInListShown[$player->login];
-			$pageCount = ceil(count($mapList) / self::MAX_MAPS_PER_PAGE);
-		}
-		
-		$this->mapsInListShown[$player->login] = $mapList;
 		
 		// Create ManiaLink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
@@ -422,6 +423,21 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$karma = $karmaPlugin->getMapKarma($map);
 				$votes = $karmaPlugin->getMapVotes($map);
 				if (is_numeric($karma)) {
+					$min = 0;
+					$plus = 0;
+					foreach($votes as $vote) {
+						if(isset($vote->vote)) {
+							if($vote->vote != 0.5) {
+								if($vote->vote < 0.5) {
+									$min = $min+$vote->count;
+								} else {
+									$plus = $plus+$vote->count;
+								}
+							}
+						}
+					}
+					$endKarma = $plus-$min;
+
 					$karmaGauge = new Gauge();
 					$mapFrame->add($karmaGauge);
 					$karmaGauge->setZ(2);
@@ -441,7 +457,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 					$karmaLabel->setTextSize(0.9);
 					$karmaLabel->setTextColor('000');
 					$karmaLabel->setAlign(Control::CENTER, Control::CENTER);
-					$karmaLabel->setText('  ' . round($karma * 100.) . '% (' . $votes['count'] . ')');
+					$karmaLabel->setText('  ' . $endKarma . ' (' . $votes['count'] . 'x / ' . round($karma * 100.) . '%)');
 				}
 			}
 			
@@ -533,6 +549,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 */
 	public function closeWidget(Player $player) {
 		unset($this->mapListShown[$player->login]);
+		unset($this->mapsInListShown[$player->login]);
 	}
 
 	/**
@@ -542,6 +559,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 */
 	public function playerCloseWidget(Player $player) {
 		unset($this->mapListShown[$player->login]);
+		unset($this->mapsInListShown[$player->login]);
 		$this->maniaControl->manialinkManager->closeWidget($player);
 	}
 

@@ -316,7 +316,79 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	 * @param Player $player
 	 */
 	public function command_List(array $chatCallback, Player $player) {
-		$this->maniaControl->mapManager->mapList->showMapList($player);
+		$chatCommands = explode(' ', $chatCallback[1][2]);
+		$this->maniaControl->mapManager->mapList->playerCloseWidget($player);
+		if(isset($chatCommands[1])) {
+			if($chatCommands[1] == ' ' || $chatCommands[1] == 'all') {
+				$this->maniaControl->mapManager->mapList->showMapList($player);
+			} elseif($chatCommands[1] == 'best') {
+				$this->showMapListKarma(true, $player);
+			} elseif($chatCommands[1] == 'worst') {
+				$this->showMapListKarma(false, $player);
+			} elseif($chatCommands[1] == 'newest') {
+				$this->showMapListDate(true, $player);
+			} elseif($chatCommands[1] == 'oldest') {
+				$this->showMapListDate(false, $player);
+			}
+		} else {
+			$this->maniaControl->mapManager->mapList->showMapList($player);
+		}
+	}
+
+	private function showMapListKarma($best, $player) {
+		/** @var \MCTeam\KarmaPlugin $karmaPlugin */
+		$karmaPlugin = $this->maniaControl->pluginManager->getPlugin(MapList::DEFAULT_KARMA_PLUGIN);
+		if($karmaPlugin) {
+			$maps = $this->maniaControl->mapManager->getMaps();
+			$mapList = array();
+			foreach($maps as $map) {
+				if($map instanceof Map) {
+					$votes = $karmaPlugin->getMapVotes($map);
+					$min = 0;
+					$plus = 0;
+					foreach($votes as $vote) {
+						if(isset($vote->vote)) {
+							if($vote->vote != 0.5) {
+								if($vote->vote < 0.5) {
+									$min = $min+$vote->count;
+								} else {
+									$plus = $plus+$vote->count;
+								}
+							}
+						}
+					}
+					$map->karma = $plus-$min;
+					$mapList[] = $map;
+				}
+			}
+
+			usort($mapList, array($this, 'sortByKarma'));
+			if($best) {
+				$mapList = array_reverse($mapList);
+			}
+
+			$this->maniaControl->mapManager->mapList->showMapList($player, $mapList);
+		} else {
+			$this->maniaControl->chat->sendError('KarmaPlugin is not enabled!', $player->login);
+		}
+	}
+
+	private function sortByKarma($a, $b) {
+		return $a->karma - $b->karma;
+	}
+
+	private function showMapListDate($newest, $player) {
+		$maps = $this->maniaControl->mapManager->getMaps();
+
+		usort($maps, function($a, $b) {
+			return $a->index - $b->index;
+		});
+
+		if($newest) {
+			$maps = array_reverse($maps);
+		}
+
+		$this->maniaControl->mapManager->mapList->showMapList($player, $maps);
 	}
 
 	/**
