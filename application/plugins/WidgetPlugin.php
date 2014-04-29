@@ -17,7 +17,6 @@ use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\IconManager;
 use ManiaControl\Maps\Map;
-use ManiaControl\Maps\MapManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
@@ -157,7 +156,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	private function displayWidgets() {
 		// Display Map Widget
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED)) {
-
+			$this->maniaControl->client->triggerModeScriptEventArray("Siege_SetProgressionLayerPosition", array("160.", "-67.", "0."));
 			$this->displayMapWidget();
 		}
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_ACTIVATED)) {
@@ -196,7 +195,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$frame->add($backgroundQuad);
 		$backgroundQuad->setSize($width, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-        $backgroundQuad->addMapInfoFeature();
+		$backgroundQuad->addMapInfoFeature();
 
 		$map = $this->maniaControl->mapManager->getCurrentMap();
 
@@ -245,9 +244,6 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	 * @param bool $login
 	 */
 	public function displayClockWidget($login = false) {
-
-		$this->maniaControl->client->triggerModeScriptEventArray("Siege_SetProgressionLayerPosition", array("0.", "0.", "0."));
-
 		$pos_x        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_POSX);
 		$pos_y        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_POSY);
 		$width        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_WIDTH);
@@ -277,7 +273,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$label->setZ(0.2);
 		$label->setTextSize(1);
 		$label->setTextColor("FFF");
-        $label->addClockFeature(false);
+		$label->addClockFeature(false);
 
 		// Send manialink
 		$this->maniaControl->manialinkManager->sendManialink($maniaLink, $login);
