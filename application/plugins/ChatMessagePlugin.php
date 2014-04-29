@@ -1,4 +1,5 @@
 <?php
+namespace MCTeam;
 
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
@@ -9,9 +10,9 @@ use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 /**
  * ManiaControl Chat-Message Plugin
  *
- * @author kremsy
+ * @author    kremsy
  * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ChatMessagePlugin implements CommandListener, Plugin {
 	/**
@@ -389,8 +390,8 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	 * @return mixed
 	 */
 	private function getTarget($login) {
-        /** @var Player $player */
-        $player = null;
+		/** @var Player $player */
+		$player = null;
 		foreach($this->maniaControl->playerManager->getPlayers() as $player) {
 			if ($login == $player->login || $login == $player->pid || $login == $player->nickname) {
 				return $player->nickname;

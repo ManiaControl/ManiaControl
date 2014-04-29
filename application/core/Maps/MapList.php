@@ -2,7 +2,7 @@
 
 namespace ManiaControl\Maps;
 
-use CustomVotesPlugin;
+use MCTeam\CustomVotesPlugin;
 use FML\Controls\Control;
 use FML\Controls\Frame;
 use FML\Controls\Gauge;
@@ -50,7 +50,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	const MAX_MAPS_PER_PAGE = 15;
 	const MAX_PAGES_PER_CHUNK = 2;
 	const DEFAULT_KARMA_PLUGIN = 'MCTeam\KarmaPlugin';
-	const DEFAULT_CUSTOM_VOTE_PLUGIN = 'CustomVotesPlugin';
+	const DEFAULT_CUSTOM_VOTE_PLUGIN = 'MCTeam\CustomVotesPlugin';
 	
 	/*
 	 * Private Properties

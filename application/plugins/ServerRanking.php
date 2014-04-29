@@ -1,5 +1,7 @@
 <?php
 
+namespace MCTeam;
+
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Commands\CommandListener;
