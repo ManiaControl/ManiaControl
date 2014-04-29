@@ -17,7 +17,6 @@ use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\IconManager;
 use ManiaControl\Maps\Map;
-use ManiaControl\Maps\MapManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
@@ -132,6 +131,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_CLOCK_WIDGET_HEIGHT, 5.5);
 
 		$this->displayWidgets();
+
 		return true;
 	}
 
@@ -156,6 +156,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	private function displayWidgets() {
 		// Display Map Widget
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED)) {
+			$this->maniaControl->client->triggerModeScriptEventArray("Siege_SetProgressionLayerPosition", array("160.", "-67.", "0."));
 			$this->displayMapWidget();
 		}
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_ACTIVATED)) {
@@ -194,7 +195,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$frame->add($backgroundQuad);
 		$backgroundQuad->setSize($width, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-        $backgroundQuad->addMapInfoFeature();
+		$backgroundQuad->addMapInfoFeature();
 
 		$map = $this->maniaControl->mapManager->getCurrentMap();
 
@@ -272,7 +273,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$label->setZ(0.2);
 		$label->setTextSize(1);
 		$label->setTextColor("FFF");
-        $label->addClockFeature(true);
+		$label->addClockFeature(false);
 
 		// Send manialink
 		$this->maniaControl->manialinkManager->sendManialink($maniaLink, $login);

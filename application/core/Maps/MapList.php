@@ -122,6 +122,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		
 		// Get Maps
 		$mapList = array();
+		$pageCount = null;
 		if (is_array($maps)) {
 			$mapList = array_slice($maps, $chunk, self::MAX_PAGES_PER_CHUNK * self::MAX_MAPS_PER_PAGE);
 			$this->mapsInListShown[$player->login] = $maps;
@@ -143,7 +144,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$script = $maniaLink->getScript();
 		$paging = new Paging();
 		$script->addFeature($paging);
-		$paging->setCustomMaxPageNumber($pageCount);
+		if (is_int($pageCount)) $paging->setCustomMaxPageNumber($pageCount);
 		$paging->setChunkActionAppendsPageNumber(true);
 		$paging->setChunkActions(self::ACTION_PAGING_CHUNKS);
 		
