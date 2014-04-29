@@ -32,7 +32,7 @@ use FML\Script\Features\KeyAction;
 /**
  * ManiaControl Custom-Votes Plugin
  *
- * @author kremsy and steeffeen
+ * @author kremsy
  * @copyright ManiaControl Copyright © 2014 ManiaControl Team
  * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
@@ -43,7 +43,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	const PLUGIN_ID      = 5;
 	const PLUGIN_VERSION = 0.1;
 	const PLUGIN_NAME    = 'CustomVotesPlugin';
-	const PLUGIN_AUTHOR  = 'kremsy and steeffeen';
+	const PLUGIN_AUTHOR  = 'kremsy';
 
 	const SETTING_VOTE_ICON_POSX   = 'Vote-Icon-Position: X';
 	const SETTING_VOTE_ICON_POSY   = 'Vote-Icon-Position: Y';
@@ -605,39 +605,35 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$voteLabel->setText('  ' . round($votePercentage * 100.) . '% (' . $this->currentVote->getVoteCount() . ')');
 
 
-		$quad = new Quad_BgsPlayerCard();
-		$frame->add($quad);
-		$quad->setX(-$width / 2 + 6);
-		$quad->setY($y);
-		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
-		$quad->setSize(5, 5);
-		$quad->setAction(self::ACTION_POSITIVE_VOTE);
-		$quad->setActionKey($quad::ACTIONKEY_F5);
+		$positiveQuad = new Quad_BgsPlayerCard();
+		$frame->add($positiveQuad);
+		$positiveQuad->setPosition(-$width / 2 + 6, $y);
+		$positiveQuad->setSubStyle($positiveQuad::SUBSTYLE_BgPlayerCardBig);
+		$positiveQuad->setSize(5, 5);
 
-		$label = new Label_Button();
-		$frame->add($label);
-		$label->setX(-$width / 2 + 6);
-		$label->setAlign(Control::CENTER, Control::CENTER);
-		$label->setY($y);
-		$label->setStyle($labelStyle);
-		$label->setTextSize(1);
-		$label->setSize(3, 3);
-		$label->setTextColor("0F0");
-		$label->setText("F5");
+		$positiveLabel = new Label_Button();
+		$frame->add($positiveLabel);
+		$positiveLabel->setPosition(-$width / 2 + 6, $y);
+		$positiveLabel->setStyle($labelStyle);
+		$positiveLabel->setTextSize(1);
+		$positiveLabel->setSize(3, 3);
+		$positiveLabel->setTextColor("0F0");
+		$positiveLabel->setText("F1");
 
-		$quad = clone $quad;
-		$frame->add($quad);
-		$quad->setX($width / 2 - 6);
-		$quad->setAction(self::ACTION_NEGATIVE_VOTE);
-		$quad->setActionKey($quad::ACTIONKEY_F6);
+		$negativeQuad = clone $positiveQuad;
+		$frame->add($negativeQuad);
+		$negativeQuad->setX($width / 2 - 6);
 
-		$label = clone $label;
-		$frame->add($label);
-		$label->setX($width / 2 - 6);
-		$label->setTextColor("F00");
-		$label->setText("F6");
+		$negativeLabel = clone $positiveLabel;
+		$frame->add($negativeLabel);
+		$negativeLabel->setX($width / 2 - 6);
+		$negativeLabel->setTextColor("F00");
+		$negativeLabel->setText("F2");
 		
-		// Key Action
+		// Voting Actions
+		$positiveQuad->addActionTriggerFeature(self::ACTION_POSITIVE_VOTE);
+		$negativeQuad->addActionTriggerFeature(self::ACTION_NEGATIVE_VOTE);
+		
 		$script = $maniaLink->getScript();
 		$keyActionPositive = new KeyAction(self::ACTION_POSITIVE_VOTE, 'F1');
 		$script->addFeature($keyActionPositive);
