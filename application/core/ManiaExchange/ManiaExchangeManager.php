@@ -5,16 +5,16 @@ namespace ManiaControl\ManiaExchange;
 use ManiaControl\ManiaControl;
 use ManiaControl\Maps\Map;
 use ManiaControl\Maps\MapManager;
-use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
+use Maniaplanet\DedicatedServer\Xmlrpc\NotInScriptModeException;
 
 /**
  * Mania Exchange Info Searcher Class
  *
- * @author steeffeen & kremsy
+ * @author    steeffeen & kremsy
  * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class ManiaExchangeManager{
+class ManiaExchangeManager {
 	/*
 	 * Constants
 	 */
@@ -40,8 +40,7 @@ class ManiaExchangeManager{
 	//Maximum Maps per request
 	const MAPS_PER_MX_FETCH = 50;
 
-	//Beta Testing Activated
-	const SETTING_MP3_BETA_TESTING = 'Activate MP3 Beta Testing';
+	const MIN_EXE_BUILD = "2014-04-01_00_00";
 
 	/*
 	 * Private Properties
@@ -56,8 +55,6 @@ class ManiaExchangeManager{
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
-
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MP3_BETA_TESTING, false);
 	}
 
 
@@ -194,9 +191,8 @@ class ManiaExchangeManager{
 
 		// compile search URL
 		$url = 'http://api.mania-exchange.com/' . $titlePrefix . '/maps/?ids=' . $id;
-		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_MP3_BETA_TESTING)){
-			$url .= '&key=t42kEMjzH7xpAjBFHAvEkC7rqAlw';
-		}
+		$url .= '&key=t42kEMjzH7xpAjBFHAvEkC7rqAlw';
+
 
 		return $this->maniaControl->fileReader->loadFile($url, function ($mapInfo, $error) use (&$function, $titlePrefix, $url) {
 			$mxMapInfo = null;
@@ -227,9 +223,7 @@ class ManiaExchangeManager{
 
 		// compile search URL
 		$url = 'http://api.mania-exchange.com/' . $titlePrefix . '/maps/?ids=' . $string;
-		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_MP3_BETA_TESTING)){
-			$url .= '&key=t42kEMjzH7xpAjBFHAvEkC7rqAlw';
-		}
+		$url .= '&key=t42kEMjzH7xpAjBFHAvEkC7rqAlw';
 
 		$thisRef = $this;
 		$success = $this->maniaControl->fileReader->loadFile($url, function ($mapInfo, $error) use ($thisRef, $titlePrefix, $url) {
@@ -241,7 +235,7 @@ class ManiaExchangeManager{
 			if (!$mapInfo) {
 				return null;
 			}
-			
+
 			$mxMapList = json_decode($mapInfo);
 			if ($mxMapList === null) {
 				trigger_error('Cannot decode searched JSON data from ' . $url);
@@ -304,13 +298,13 @@ class ManiaExchangeManager{
 		$url .= '&priord=' . $searchOrder;
 		$url .= '&limit=' . $maxMapsReturned;
 
-		if($this->maniaControl->settingManager->getSetting($this, self::SETTING_MP3_BETA_TESTING)){
-			$url .= '&key=t42kEMjzH7xpAjBFHAvEkC7rqAlw';
-			if($titlePrefix == "tm"){
-				$url .= '&mapgroup=17';
-			}else{
-				$url .= '&mapgroup=1';
-			}
+		$url .= '&minexebuild=' . self::MIN_EXE_BUILD;
+
+		$url .= '&key=t42kEMjzH7xpAjBFHAvEkC7rqAlw';
+		if ($titlePrefix == "tm") {
+			$url .= '&mapgroup=17';
+		} else {
+			$url .= '&mapgroup=1';
 		}
 
 		// Get MapTypes
@@ -318,11 +312,7 @@ class ManiaExchangeManager{
 			$scriptInfos = $this->maniaControl->client->getModeScriptInfo();
 			$mapTypes    = $scriptInfos->compatibleMapTypes;
 			$url .= '&mtype=' . $mapTypes;
-		} catch(Exception $e) {
-			if ($e->getMessage() != 'Not in script mode.') {
-				throw $e;
-			}
-			//dont append map type
+		} catch(NotInScriptModeException $e) {
 		}
 
 		$success = $this->maniaControl->fileReader->loadFile($url, function ($mapInfo, $error) use (&$function, $titlePrefix) {

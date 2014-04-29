@@ -132,6 +132,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_CLOCK_WIDGET_HEIGHT, 5.5);
 
 		$this->displayWidgets();
+
 		return true;
 	}
 
@@ -156,6 +157,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	private function displayWidgets() {
 		// Display Map Widget
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED)) {
+
 			$this->displayMapWidget();
 		}
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_ACTIVATED)) {
@@ -243,6 +245,9 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	 * @param bool $login
 	 */
 	public function displayClockWidget($login = false) {
+
+		$this->maniaControl->client->triggerModeScriptEventArray("Siege_SetProgressionLayerPosition", array("0.", "0.", "0."));
+
 		$pos_x        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_POSX);
 		$pos_y        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_POSY);
 		$width        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_CLOCK_WIDGET_WIDTH);
