@@ -571,10 +571,10 @@ class MapManager implements CallbackListener {
 		}
 		return array_slice($this->maps, $offset, $length);
 	}
-	
+
 	/**
 	 * Get the Number of Maps
-	 * 
+	 *
 	 * @return int
 	 */
 	public function getMapsCount() {
@@ -613,9 +613,8 @@ class MapManager implements CallbackListener {
 
 				// TODO hardcoded during closed beta, later take just $mapInfo->url again
 				$url = 'http://' . $mapInfo->prefix . '.mania-exchange.com/' . $mapInfo->dir . '/download/' . $mapInfo->id;
-				if ($self->maniaControl->settingManager->getSetting($self->mxManager, ManiaExchangeManager::SETTING_MP3_BETA_TESTING)) {
-					$url .= '?key=t42kEMjzH7xpAjBFHAvEkC7rqAlw';
-				}
+				$url .= '?key=t42kEMjzH7xpAjBFHAvEkC7rqAlw';
+
 
 				// Download the file
 				$self->maniaControl->fileReader->loadFile($url, function ($file, $error) use (&$self, &$login, &$mapInfo, &$update) {
