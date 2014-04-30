@@ -98,8 +98,8 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::ENDMAP, $this, 'handleEndMap');
 
 		//Register CommandListener
-		$this->maniaControl->commandManager->registerCommandListener('rank', $this, 'command_showRank', false);
-		$this->maniaControl->commandManager->registerCommandListener('nextrank', $this, 'command_nextRank', false);
+		$this->maniaControl->commandManager->registerCommandListener('rank', $this, 'command_showRank', false, 'Shows your current serverrank.');
+		$this->maniaControl->commandManager->registerCommandListener('nextrank', $this, 'command_nextRank', false, 'Shows the person in front of you in the serverranking.');
 
 		$this->resetRanks(); //TODO only update records count
 	}

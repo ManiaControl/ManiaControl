@@ -51,25 +51,23 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	public function load(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		$this->maniaControl->commandManager->registerCommandListener('me', $this, 'chat_me');
-		$this->maniaControl->commandManager->registerCommandListener('hi', $this, 'chat_hi');
-		$this->maniaControl->commandManager->registerCommandListener('bye', $this, 'chat_bye');
-		$this->maniaControl->commandManager->registerCommandListener('bb', $this, 'chat_bye');
-		$this->maniaControl->commandManager->registerCommandListener('thx', $this, 'chat_thx');
-		$this->maniaControl->commandManager->registerCommandListener('gg', $this, 'chat_gg');
-		$this->maniaControl->commandManager->registerCommandListener('gl', $this, 'chat_gl');
-		$this->maniaControl->commandManager->registerCommandListener('hf', $this, 'chat_hf');
-		$this->maniaControl->commandManager->registerCommandListener('glhf', $this, 'chat_glhf');
-		$this->maniaControl->commandManager->registerCommandListener('ns', $this, 'chat_ns');
-		$this->maniaControl->commandManager->registerCommandListener('n1', $this, 'chat_n1');
-		$this->maniaControl->commandManager->registerCommandListener('lol', $this, 'chat_lol');
-		$this->maniaControl->commandManager->registerCommandListener('lool', $this, 'chat_lool');
-		$this->maniaControl->commandManager->registerCommandListener('brb', $this, 'chat_brb');
-		$this->maniaControl->commandManager->registerCommandListener('bgm', $this, 'chat_bgm');
-		$this->maniaControl->commandManager->registerCommandListener('afk', $this, 'chat_afk');
-		$this->maniaControl->commandManager->registerCommandListener('bootme', $this, 'chat_bootme');
-		$this->maniaControl->commandManager->registerCommandListener('ragequit', $this, 'chat_ragequit');
-		$this->maniaControl->commandManager->registerCommandListener('rq', $this, 'chat_ragequit');
+		$this->maniaControl->commandManager->registerCommandListener('me', $this, 'chat_me', false, 'Can be used to express your feelings/ideas.');
+		$this->maniaControl->commandManager->registerCommandListener('hi', $this, 'chat_hi', false, 'Writes an hello message to the chat.');
+		$this->maniaControl->commandManager->registerCommandListener(array('bb', 'bye'), $this, 'chat_bye', false, 'Writes a goodbye message to the chat.');
+		$this->maniaControl->commandManager->registerCommandListener('thx', $this, 'chat_thx', false, 'Writes a thanks message to the chat.');
+		$this->maniaControl->commandManager->registerCommandListener('gg', $this, 'chat_gg', false, 'Writes a good game message to the chat.');
+		$this->maniaControl->commandManager->registerCommandListener('gl', $this, 'chat_gl', false, 'Writes a good luck message to the chat.');
+		$this->maniaControl->commandManager->registerCommandListener('hf', $this, 'chat_hf', false, 'Writes an have fun message to the chat.');
+		$this->maniaControl->commandManager->registerCommandListener('glhf', $this, 'chat_glhf', false, 'Writes a good luck, have fun message to the chat.');
+		$this->maniaControl->commandManager->registerCommandListener('ns', $this, 'chat_ns', false, 'Writes a nice shot message to the chat.');
+		$this->maniaControl->commandManager->registerCommandListener('n1', $this, 'chat_n1', false, 'Writes a nice one message to the chat.');
+		$this->maniaControl->commandManager->registerCommandListener('lol', $this, 'chat_lol', false, 'Writes a lol message to the chat.');
+		$this->maniaControl->commandManager->registerCommandListener('lool', $this, 'chat_lool', false, 'Writes a lool message to the chat.');
+		$this->maniaControl->commandManager->registerCommandListener('brb', $this, 'chat_brb', false, 'Writes a be right back message to the chat.');
+		$this->maniaControl->commandManager->registerCommandListener('bgm', $this, 'chat_bgm', false, 'Writes a bad game for me message to the chat.');
+		$this->maniaControl->commandManager->registerCommandListener('afk', $this, 'chat_afk', false, 'Writes an away from keyboard message to the chat.');
+		$this->maniaControl->commandManager->registerCommandListener(array('bm', 'bootme'), $this, 'chat_bootme', false, 'Gets you away from this server quickly!');
+		$this->maniaControl->commandManager->registerCommandListener(array('rq', 'ragequit'), $this, 'chat_ragequit', false, 'Gets you away from this server in rage!');
 		//TODO block commandlistener for muted people
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_AFK_FORCE_SPEC, true);
 
