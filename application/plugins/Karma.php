@@ -551,6 +551,16 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	}
 
 	/**
+	 * Get all players votes
+	 *
+	 * @param Map $map
+	 * @return array
+	 */
+	public function getMapPlayerVotes(Map $map) {
+
+	}
+
+	/**
 	 * Build karma voting manialink if necessary
 	 *
 	 * @param bool $forceBuild

@@ -425,9 +425,9 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$karma = $karmaPlugin->getMapKarma($map);
 				$votes = $karmaPlugin->getMapVotes($map);
 				if (is_numeric($karma)) {
-					if($this->maniaControl->settingManager->getSetting($karmaPlugin, $karmaPlugin::SETTING_NEWKARMA) === true) {
+					if($this->maniaControl->settingManager->getSetting($karmaPlugin, $karmaPlugin::SETTING_NEWKARMA)) {
 						$endKarma = $karma;
-						$karmaText = '  ' . round($karma * 100.) . ' (' . $votes['count'] . ')';
+
 					} else {
 						$min = 0;
 						$plus = 0;
@@ -465,7 +465,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 					$karmaLabel->setTextSize(0.9);
 					$karmaLabel->setTextColor('000');
 					$karmaLabel->setAlign(Control::CENTER, Control::CENTER);
-					$karmaLabel->setText($karmaText);
+					$karmaLabel->setText('  ' . $endKarma . ' (' . $votes['count'] . 'x / ' . round($karma * 100.) . '%)');
 				}
 			}
 			

@@ -75,10 +75,10 @@ class Chat {
 
 		if (!$login) {
 			$prefix = $this->getPrefix($prefix);
-			$chatMessage = '$z$s$<' . str_replace(' ', '', $prefix) . $prefix . $message . '$>$z$s';
+			$chatMessage = '$<$z$ff0' . str_replace(' ', '', $prefix) . $prefix . $message . '$>';
 			$this->maniaControl->client->chatSendServerMessage($chatMessage);
 		} else {
-			$chatMessage = '$z$s$<' . $this->getPrefix($prefix) . $message . '$>$z$s';
+			$chatMessage = '$<$z$ff0' . $this->getPrefix($prefix) . $message . '$>';
 			if ($login instanceof Player) {
 				$login = $login->login;
 			}
