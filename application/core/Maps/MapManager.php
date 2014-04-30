@@ -611,13 +611,8 @@ class MapManager implements CallbackListener {
 					return;
 				}
 
-				// TODO hardcoded during closed beta, later take just $mapInfo->url again
-				$url = 'http://' . $mapInfo->prefix . '.mania-exchange.com/' . $mapInfo->dir . '/download/' . $mapInfo->id;
-				$url .= '?key=t42kEMjzH7xpAjBFHAvEkC7rqAlw';
-
-
 				// Download the file
-				$self->maniaControl->fileReader->loadFile($url, function ($file, $error) use (&$self, &$login, &$mapInfo, &$update) {
+				$self->maniaControl->fileReader->loadFile($mapInfo->downloadurl, function ($file, $error) use (&$self, &$login, &$mapInfo, &$update) {
 					if (!$file) {
 						// Download error
 						$self->maniaControl->chat->sendError('Download failed!', $login);

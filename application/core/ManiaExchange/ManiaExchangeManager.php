@@ -78,7 +78,7 @@ class ManiaExchangeManager {
 		foreach($mxMapInfos as $mxMapInfo) {
 			/** @var MXMapInfo $mxMapInfo */
 			$mapMxId = $mxMapInfo->id;
-			$mapUId = $mxMapInfo->uid;
+			$mapUId  = $mxMapInfo->uid;
 			$saveMapStatement->execute();
 			if ($saveMapStatement->error) {
 				trigger_error($saveMapStatement->error);
@@ -195,8 +195,6 @@ class ManiaExchangeManager {
 
 		// compile search URL
 		$url = 'http://api.mania-exchange.com/' . $titlePrefix . '/maps/?ids=' . $id;
-		$url .= '&key=t42kEMjzH7xpAjBFHAvEkC7rqAlw';
-
 
 		return $this->maniaControl->fileReader->loadFile($url, function ($mapInfo, $error) use (&$function, $titlePrefix, $url) {
 			$mxMapInfo = null;
@@ -227,7 +225,6 @@ class ManiaExchangeManager {
 
 		// compile search URL
 		$url = 'http://api.mania-exchange.com/' . $titlePrefix . '/maps/?ids=' . $string;
-		$url .= '&key=t42kEMjzH7xpAjBFHAvEkC7rqAlw';
 
 		$thisRef = $this;
 		$success = $this->maniaControl->fileReader->loadFile($url, function ($mapInfo, $error) use ($thisRef, $titlePrefix, $url) {
@@ -303,13 +300,6 @@ class ManiaExchangeManager {
 		$url .= '&limit=' . $maxMapsReturned;
 
 		$url .= '&minexebuild=' . self::MIN_EXE_BUILD;
-
-		$url .= '&key=t42kEMjzH7xpAjBFHAvEkC7rqAlw';
-		if ($titlePrefix == "tm") {
-			$url .= '&mapgroup=17';
-		} else {
-			$url .= '&mapgroup=1';
-		}
 
 		// Get MapTypes
 		try {
