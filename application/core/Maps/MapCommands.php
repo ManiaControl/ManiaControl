@@ -329,10 +329,34 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 				$this->showMapListDate(true, $player);
 			} elseif($chatCommands[1] == 'oldest') {
 				$this->showMapListDate(false, $player);
+			} elseif($chatCommands[1] == 'author') {
+				if(isset($chatCommands[2])) {
+					$this->showMaplistAuthor($chatCommands[2], $player);
+				} else {
+					$this->maniaControl->chat->sendError('There are no maps to show!', $player->login);
+				}
 			}
 		} else {
 			$this->maniaControl->mapManager->mapList->showMapList($player);
 		}
+	}
+
+	private function showMapListAuthor($author, $player) {
+		$maps = $this->maniaControl->mapManager->getMaps();
+		$mapList = array();
+		/** @var Map $map */
+		foreach($maps as $map) {
+			if($map->authorLogin == $author) {
+				$mapList[] = $map;
+			}
+		}
+
+		if(count($mapList) == 0) {
+			$this->maniaControl->chat->sendError('There are no maps to show!', $player->login);
+			return;
+		}
+
+		$this->maniaControl->mapManager->mapList->showMapList($player, $mapList);
 	}
 
 	private function showMapListKarma($best, $player) {
