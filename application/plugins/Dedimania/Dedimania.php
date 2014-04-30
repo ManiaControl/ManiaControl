@@ -111,7 +111,7 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 		$this->maniaControl->timerManager->registerTimerListening($this, 'updateEverySecond', 1000);
 		$this->maniaControl->timerManager->registerTimerListening($this, 'handleEveryMinute', 1000 * 60);
 		$this->maniaControl->timerManager->registerTimerListening($this, 'updatePlayerList', 1000 * 60 * 3);
-		$this->maniaControl->commandManager->registerCommandListener('dedirecs', $this, 'showDediRecordsList');
+		$this->maniaControl->commandManager->registerCommandListener(array('dedirecs', 'dedirecords'), $this, 'showDediRecordsList', false, 'Shows a list of Dedimania records of the current map.');
 
 		// Open session
 		$serverInfo    = $this->maniaControl->server->getInfo();

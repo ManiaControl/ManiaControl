@@ -103,8 +103,8 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_TM_PLAYERCHECKPOINT, $this, 'handlePlayerCheckpoint');
 		$this->maniaControl->callbackManager->registerCallbackListener(SettingManager::CB_SETTINGS_CHANGED, $this, 'handleSettingsChanged');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
-		$this->maniaControl->commandManager->registerCommandListener('records', $this, 'showRecordsList');
-		$this->maniaControl->commandManager->registerCommandListener('delrec', $this, 'deleteRecord', true);
+		$this->maniaControl->commandManager->registerCommandListener(array('recs', 'records'), $this, 'showRecordsList', false, 'Shows a list of Local Records on the current map.');
+		$this->maniaControl->commandManager->registerCommandListener('delrec', $this, 'deleteRecord', true, 'Removes a record from the database.');
 		
 		return true;
 	}
