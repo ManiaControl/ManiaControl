@@ -42,26 +42,20 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 		$this->maniaControl = $maniaControl;
 
 		// Register for admin commands
-		$this->maniaControl->commandManager->registerCommandListener('balance', $this, 'command_TeamBalance', true);
-		$this->maniaControl->commandManager->registerCommandListener('teambalance', $this, 'command_TeamBalance', true);
-		$this->maniaControl->commandManager->registerCommandListener('autoteambalance', $this, 'command_TeamBalance', true);
-		$this->maniaControl->commandManager->registerCommandListener('kick', $this, 'command_Kick', true);
-		$this->maniaControl->commandManager->registerCommandListener('ban', $this, 'command_Ban', true);
-		$this->maniaControl->commandManager->registerCommandListener('forcespec', $this, 'command_ForceSpectator', true);
-		$this->maniaControl->commandManager->registerCommandListener('forcespectator', $this, 'command_ForceSpectator', true);
-		$this->maniaControl->commandManager->registerCommandListener('forceplay', $this, 'command_ForcePlay', true);
-		$this->maniaControl->commandManager->registerCommandListener('forceblue', $this, 'command_ForceBlue', true);
-		$this->maniaControl->commandManager->registerCommandListener('forcered', $this, 'command_ForceRed', true);
-		$this->maniaControl->commandManager->registerCommandListener('addbot', $this, 'command_AddFakePlayers', true);
-		$this->maniaControl->commandManager->registerCommandListener('removebot', $this, 'command_RemoveFakePlayers', true);
-		$this->maniaControl->commandManager->registerCommandListener('addbots', $this, 'command_AddFakePlayers', true);
-		$this->maniaControl->commandManager->registerCommandListener('removebots', $this, 'command_RemoveFakePlayers', true);
-		$this->maniaControl->commandManager->registerCommandListener('mute', $this, 'command_MutePlayer', true);
-		$this->maniaControl->commandManager->registerCommandListener('unmute', $this, 'command_UnmutePlayer', true);
+		$this->maniaControl->commandManager->registerCommandListener(array('balance', 'teambalance', 'autoteambalance'), $this, 'command_TeamBalance', true, 'Balances the teams.');
+		$this->maniaControl->commandManager->registerCommandListener('kick', $this, 'command_Kick', true, 'Kicks player from the server.');
+		$this->maniaControl->commandManager->registerCommandListener('ban', $this, 'command_Ban', true, 'Bans player from the server.');
+		$this->maniaControl->commandManager->registerCommandListener(array('forcespec', 'forcespectator'), $this, 'command_ForceSpectator', true, 'Forces player into spectator.');
+		$this->maniaControl->commandManager->registerCommandListener('forceplay', $this, 'command_ForcePlay', true, 'Forces player into playmode.');
+		$this->maniaControl->commandManager->registerCommandListener('forceblue', $this, 'command_ForceBlue', true, 'Forces player into blue team.');
+		$this->maniaControl->commandManager->registerCommandListener('forcered', $this, 'command_ForceRed', true, 'Forces player into red team.');
+		$this->maniaControl->commandManager->registerCommandListener(array('addbots', 'addbot'), $this, 'command_AddFakePlayers', true, 'Adds bots to the game.');
+		$this->maniaControl->commandManager->registerCommandListener(array('removebot', 'removebots'), $this, 'command_RemoveFakePlayers', true, 'Removes bots from the game.');
+		$this->maniaControl->commandManager->registerCommandListener('mute', $this, 'command_MutePlayer', true, 'Mutes a player (prevents player from chatting).');
+		$this->maniaControl->commandManager->registerCommandListener('unmute', $this, 'command_UnmutePlayer', true, 'Unmutes a player (enables player to chat again).');
 
 		// Register for player chat commands
-		$this->maniaControl->commandManager->registerCommandListener('player', $this, 'command_playerList');
-		$this->maniaControl->commandManager->registerCommandListener('players', $this, 'command_playerList');
+		$this->maniaControl->commandManager->registerCommandListener(array('player', 'players'), $this, 'command_playerList', false, 'Shows players currently on the server.');
 
 		//Define Rights
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_ADD_BOT, AuthenticationManager::AUTH_LEVEL_MODERATOR);

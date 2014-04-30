@@ -96,7 +96,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$this->addMenu($this->maniaControlSettings);
 
 		// Register for commands
-		$this->maniaControl->commandManager->registerCommandListener('config', $this, 'handleConfigCommand', true);
+		$this->maniaControl->commandManager->registerCommandListener('config', $this, 'handleConfigCommand', true, 'Loads Config panel.');
 	}
 
 	/**

@@ -47,19 +47,19 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		$this->initActionsMenuButtons();
 
 		// Register for admin chat commands
-		$this->maniaControl->commandManager->registerCommandListener(array('nextmap', 'next', 'skip'), $this, 'command_NextMap', true);
-		$this->maniaControl->commandManager->registerCommandListener(array('restartmap', 'resmap', 'res'), $this, 'command_RestartMap', true);
-		$this->maniaControl->commandManager->registerCommandListener(array('replaymap', 'replay'), $this, 'command_ReplayMap', true);
-		$this->maniaControl->commandManager->registerCommandListener(array('addmap', 'add'), $this, 'command_AddMap', true);
-		$this->maniaControl->commandManager->registerCommandListener(array('removemap', 'removethis', 'erasemap', 'erasethis'), $this, 'command_RemoveMap', true);
-		$this->maniaControl->commandManager->registerCommandListener(array('shufflemaps', 'shuffle'), $this, 'command_ShuffleMaps', true);
-		$this->maniaControl->commandManager->registerCommandListener(array('writemaplist', 'wml'), $this, 'command_WriteMapList', true);
-		$this->maniaControl->commandManager->registerCommandListener(array('readmaplist', 'rml'), $this, 'command_ReadMapList', true);
+		$this->maniaControl->commandManager->registerCommandListener(array('nextmap', 'next', 'skip'), $this, 'command_NextMap', true, 'Skips to the next map.');
+		$this->maniaControl->commandManager->registerCommandListener(array('restartmap', 'resmap', 'res'), $this, 'command_RestartMap', true, 'Restarts the current map.');
+		$this->maniaControl->commandManager->registerCommandListener(array('replaymap', 'replay'), $this, 'command_ReplayMap', true, 'Replays the current map (after the end of the map).');
+		$this->maniaControl->commandManager->registerCommandListener(array('addmap', 'add'), $this, 'command_AddMap', true, 'Adds map from ManiaExchange.');
+		$this->maniaControl->commandManager->registerCommandListener(array('removemap', 'removethis', 'erasemap', 'erasethis'), $this, 'command_RemoveMap', true, 'Removes the current map.');
+		$this->maniaControl->commandManager->registerCommandListener(array('shufflemaps', 'shuffle'), $this, 'command_ShuffleMaps', true, 'Shuffles the maplist.');
+		$this->maniaControl->commandManager->registerCommandListener(array('writemaplist', 'wml'), $this, 'command_WriteMapList', true, 'Writes the current maplist to a file.');
+		$this->maniaControl->commandManager->registerCommandListener(array('readmaplist', 'rml'), $this, 'command_ReadMapList', true, 'Loads a maplist into the server.');
 
 		// Register for player chat commands
-		$this->maniaControl->commandManager->registerCommandListener('nextmap', $this, 'command_showNextMap');
-		$this->maniaControl->commandManager->registerCommandListener(array('maps', 'list'), $this, 'command_List');
-		$this->maniaControl->commandManager->registerCommandListener(array('xmaps', 'xlist'), $this, 'command_xList');
+		$this->maniaControl->commandManager->registerCommandListener('nextmap', $this, 'command_showNextMap', false, 'Shows which map is next.');
+		$this->maniaControl->commandManager->registerCommandListener(array('maps', 'list'), $this, 'command_List', false, 'Shows the current maplist (or variations).');
+		$this->maniaControl->commandManager->registerCommandListener(array('xmaps', 'xlist'), $this, 'command_xList', false, 'Shows maps from ManiaExchange.');
 
 		// Menu Buttons
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_OPEN_XLIST, $this, 'command_xList');
