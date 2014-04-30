@@ -165,7 +165,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	/**
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getMenu()
 	 */
-	public function getMenu($width, $height, Script $script) {
+	public function getMenu($width, $height, Script $script, Player $player) {
         $paging = new Paging();
         $script->addFeature($paging);
 		$frame   = new Frame();
@@ -310,9 +310,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
-
-		$prefix = explode(".", $configData[3][0]['Name']);
-		if ($prefix[0] != self::ACTION_PREFIX_SETTING) {
+		if (!$configData[3] || strpos($configData[3][0]['Name'], self::ACTION_PREFIX_SETTING) !== 0) {
 			return;
 		}
 
@@ -326,8 +324,6 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 
 		$newSettings = array();
 		foreach($configData[3] as $setting) {
-
-
 			$settingName = substr($setting['Name'], $prefixLength + 1);
 			if (!isset($scriptSettings[$settingName])) {
 				var_dump('no setting ' . $settingName);

@@ -300,8 +300,6 @@ class SettingManager implements CallbackListener {
 	public function setSetting($object, $settingName, $value) {
 		$className = $this->getClassName($object);
 		
-		var_dump($className, $settingName, $value);
-		
 		$mysqli = $this->maniaControl->database->mysqli;
 		$settingQuery = "UPDATE `" . self::TABLE_SETTINGS . "`
 				SET `value` = ?
@@ -403,7 +401,7 @@ class SettingManager implements CallbackListener {
 	public function getSettingsByClass($object) {
 		$className = $this->getClassName($object);
 		$mysqli = $this->maniaControl->database->mysqli;
-		$query = "SELECT * FROM `" . self::TABLE_SETTINGS . "` WHERE `class`= '" . $mysqli->escape_string($className) . "'
+		$query = "SELECT * FROM `" . self::TABLE_SETTINGS . "` WHERE `class` = '" . $mysqli->escape_string($className) . "'
 				ORDER BY `setting` ASC;";
 		$result = $mysqli->query($query);
 		if ($mysqli->error) {
@@ -445,7 +443,7 @@ class SettingManager implements CallbackListener {
 	 * 
 	 * @return array
 	 */
-	public function getSettingClasses($hidePluginClasses = true) {
+	public function getSettingClasses($hidePluginClasses = false) {
 		$mysqli = $this->maniaControl->database->mysqli;
 		$query = "SELECT DISTINCT `class` FROM `" . self::TABLE_SETTINGS . "`
 				ORDER BY `class` ASC;";
