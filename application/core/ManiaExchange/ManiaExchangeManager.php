@@ -74,9 +74,11 @@ class ManiaExchangeManager {
 			trigger_error($mysqli->error);
 			return;
 		}
+		$saveMapStatement->bind_param('is', $mapMxId, $mapUId);
 		foreach($mxMapInfos as $mxMapInfo) {
 			/** @var MXMapInfo $mxMapInfo */
-			$saveMapStatement->bind_param('is', $mxMapInfo->id, $mxMapInfo->uid);
+			$mapMxId = $mxMapInfo->id;
+			$mapUId = $mxMapInfo->uid;
 			$saveMapStatement->execute();
 			if ($saveMapStatement->error) {
 				trigger_error($saveMapStatement->error);
@@ -89,9 +91,11 @@ class ManiaExchangeManager {
 				$uid = $mxMapInfo->uid;
 			}
 			$map = $this->maniaControl->mapManager->getMapByUid($uid);
-
-			/** @var Map $map */
-			$map->mx = $mxMapInfo;
+			if ($map) {
+				// TODO: how does it come that $map can be empty here? we got an error report for that
+				/** @var Map $map */
+				$map->mx = $mxMapInfo;
+			}
 		}
 		$saveMapStatement->close();
 	}
