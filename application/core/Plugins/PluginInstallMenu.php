@@ -60,7 +60,7 @@ class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, Manialink
 	 * @param Script $script
 	 * @return \FML\Controls\Frame
 	 */
-	public function getMenu($width, $height, Script $script) {
+	public function getMenu($width, $height, Script $script, Player $player) {
         $paging = new Paging();
         $script->addFeature($paging);
 		$frame   = new Frame();
