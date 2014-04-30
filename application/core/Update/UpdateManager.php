@@ -537,6 +537,8 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			$self->maniaControl->log('[UPDATE] Successfully updated ' . $pluginData->name . '!');
 			if ($player) {
 				$self->maniaControl->chat->sendSuccess('Successfully updated ' . $pluginData->name . '!', $player->login);
+				// FIXME: the property $pluginData->pluginClass doesn't exist
+				// TODO: to update a plugin you need to restart maniacontrol, otherwise the new file isn't loaded by php
 				$self->maniaControl->pluginManager->deactivatePlugin($pluginData->pluginClass);
 				$self->maniaControl->pluginManager->activatePlugin($pluginData->pluginClass);
 				
