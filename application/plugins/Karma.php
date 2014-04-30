@@ -557,7 +557,29 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	 * @return array
 	 */
 	public function getMapPlayerVotes(Map $map) {
+		$mysqli = $this->maniaControl->database->mysqli;
+		$query  = "SELECT * FROM `" . self::TABLE_KARMA . "`
+				WHERE `mapIndex` = {$map->index}
+				AND `vote` >= 0";
+		$result = $mysqli->query($query);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error);
+			return false;
+		}
 
+		$votes = array();
+		while($vote = $result->fetch_object()) {
+			$player = $this->maniaControl->playerManager->getPlayerByIndex($vote->playerIndex);
+			$karma = $vote->vote;
+			$votes[] = array('player' => $player, 'karma' => $karma);
+		}
+
+		usort($votes, function($a, $b) {
+			return $a['karma'] - $b['karma'];
+		});
+		$votes = array_reverse($votes);
+
+		return $votes;
 	}
 
 	/**
