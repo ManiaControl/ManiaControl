@@ -124,9 +124,9 @@ class ManiaControl implements CommandListener, TimerListener {
 		$this->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_RESTART, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
 
 		// Register for commands
-		$this->commandManager->registerCommandListener('version', $this, 'command_Version');
-		$this->commandManager->registerCommandListener('restart', $this, 'command_Restart', true);
-		$this->commandManager->registerCommandListener('shutdown', $this, 'command_Shutdown', true);
+		$this->commandManager->registerCommandListener('version', $this, 'command_Version', false, 'Shows ManiaControl version.');
+		$this->commandManager->registerCommandListener('restart', $this, 'command_Restart', true, 'Restarts ManiaControl.');
+		$this->commandManager->registerCommandListener('shutdown', $this, 'command_Shutdown', true, 'Shuts ManiaControl down.');
 
 		//Check connection every 30 seconds
 		$this->timerManager->registerTimerListening($this, 'checkConnection', 1000 * 30);

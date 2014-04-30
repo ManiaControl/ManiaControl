@@ -141,7 +141,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$this->defineVote("replay", "Vote to replay current map");
 
 		foreach($this->voteCommands as $name => $voteCommand) {
-			$this->maniaControl->commandManager->registerCommandListener($name, $this, 'handleChatVote');
+			$this->maniaControl->commandManager->registerCommandListener($name, $this, 'handleChatVote', false, $voteCommand->name);
 		}
 
 		/* Disable Standard Votes */

@@ -58,15 +58,15 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_ONINIT, $this, 'handleOnInit');
 
 		// Register for commands
-		$this->maniaControl->commandManager->registerCommandListener('setpwd', $this, 'command_SetPwd', true);
-		$this->maniaControl->commandManager->registerCommandListener('setservername', $this, 'command_SetServerName', true);
-		$this->maniaControl->commandManager->registerCommandListener('setmaxplayers', $this, 'command_SetMaxPlayers', true);
-		$this->maniaControl->commandManager->registerCommandListener('setmaxspectators', $this, 'command_SetMaxSpectators', true);
-		$this->maniaControl->commandManager->registerCommandListener('setspecpwd', $this, 'command_SetSpecPwd', true);
-		$this->maniaControl->commandManager->registerCommandListener('shutdownserver', $this, 'command_ShutdownServer', true);
-		$this->maniaControl->commandManager->registerCommandListener('systeminfo', $this, 'command_SystemInfo', true);
+		$this->maniaControl->commandManager->registerCommandListener('setpwd', $this, 'command_SetPwd', true, 'Sets play password.');
+		$this->maniaControl->commandManager->registerCommandListener('setservername', $this, 'command_SetServerName', true, 'Sets the servername.');
+		$this->maniaControl->commandManager->registerCommandListener('setmaxplayers', $this, 'command_SetMaxPlayers', true, 'Sets the maximum number of players.');
+		$this->maniaControl->commandManager->registerCommandListener('setmaxspectators', $this, 'command_SetMaxSpectators', true, 'Sets the maximum number of spectators.');
+		$this->maniaControl->commandManager->registerCommandListener('setspecpwd', $this, 'command_SetSpecPwd', true, 'Sets spectator password.');
+		$this->maniaControl->commandManager->registerCommandListener('shutdownserver', $this, 'command_ShutdownServer', true, 'Shuts down the ManiaPlanet server.');
+		$this->maniaControl->commandManager->registerCommandListener('systeminfo', $this, 'command_SystemInfo', true, 'Shows system information.');
 
-		$this->maniaControl->commandManager->registerCommandListener('cancel', $this, 'command_CancelVote', true);
+		$this->maniaControl->commandManager->registerCommandListener('cancel', $this, 'command_CancelVote', true, 'Cancels the current vote.');
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_SET_PAUSE, $this, 'setPause');
 	}
 
