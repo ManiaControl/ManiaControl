@@ -327,17 +327,17 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$notifyOnlyBestRecords = $this->maniaControl->settingManager->getSetting($this, self::SETTING_NOTIFY_BEST_RECORDS);
 		if ($notifyOnlyDriver || $notifyOnlyBestRecords > 0 && $newRecord->rank > $notifyOnlyBestRecords) {
 			$improvement = ((!$oldRecord || $newRecord->rank < $oldRecord->rank) ? 'gained the' : 'improved your');
-			$message = 'You ' . $improvement . ' $<$ff0' . $newRecord->rank . '.$> Local Record: $<$fff' . Formatter::formatTime($newRecord->time);
+			$message = 'You ' . $improvement . ' $<$ff0' . $newRecord->rank . '.$> Local Record: $<$fff' . Formatter::formatTime($newRecord->time) . '$>';
 			if ($oldRecord) $oldRank = ($improvement == 'improved your') ? '' : $oldRecord->rank . '. ';
-			if ($oldRecord) $message .= '$> ($<$ff0' . $oldRank . '$>$<$fff-' . Formatter::formatTime(($oldRecord->time - $newRecord->time)) . '$>)!';
-			$this->maniaControl->chat->sendInformation('$3c0' . $message, $player->login);
+			if ($oldRecord) $message .= ' ($<$ff0' . $oldRank . '$>$<$fff-' . Formatter::formatTime(($oldRecord->time - $newRecord->time)) . '$>!';
+			$this->maniaControl->chat->sendInformation('$3c0' . $message.'!', $player->login);
 		}
 		else {
 			$improvement = ((!$oldRecord || $newRecord->rank < $oldRecord->rank) ? 'gained the' : 'improved the');
-			$message = '$<' . $player->nickname . '$> ' . $improvement . ' $<$ff0' . $newRecord->rank . '.$> Local Record: $<$fff' . Formatter::formatTime($newRecord->time);
+			$message = '$<' . $player->nickname . '$> ' . $improvement . ' $<$ff0' . $newRecord->rank . '.$> Local Record: $<$fff' . Formatter::formatTime($newRecord->time) . '$>';
 			if ($oldRecord) $oldRank = ($improvement == 'improved the') ? '' : $oldRecord->rank . '. ';
-			if ($oldRecord) $message .= '$> ($<$ff0' . $oldRank . '$>$<$fff-' . Formatter::formatTime(($oldRecord->time - $newRecord->time)) . '$>)!';
-			$this->maniaControl->chat->sendInformation('$3c0' . $message);
+			if ($oldRecord) $message .= ' ($<$ff0' . $oldRank . '$>$<$fff-' . Formatter::formatTime(($oldRecord->time - $newRecord->time)) . '$>)';
+			$this->maniaControl->chat->sendInformation('$3c0' . $message.'!');
 		}
 	}
 
