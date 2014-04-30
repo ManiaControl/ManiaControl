@@ -133,6 +133,12 @@ class HelpManager implements CommandListener, CallbackListener {
 		$this->prepareHelpAll($this->adminCommands, $player);
 	}
 
+	/**
+	 * Prepares the commands for the HelpAll ManiaLink.
+	 *
+	 * @param $commands
+	 * @param $player
+	 */
 	private function prepareHelpAll($commands, $player) {
 		$showCommands = array();
 		$registeredMethods = array();
@@ -158,6 +164,12 @@ class HelpManager implements CommandListener, CallbackListener {
 		$this->showHelpAllList($showCommands, $player);
 	}
 
+	/**
+	 * Shows the HelpAll list to the player.
+	 *
+	 * @param $commands
+	 * @param $player
+	 */
 	private function showHelpAllList($commands, $player) {
 		$width  = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
 		$height = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
