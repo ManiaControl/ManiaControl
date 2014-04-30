@@ -316,7 +316,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				 * @var Label $label
 				 */
 				$label = $labels[3];
-				$description = '$<' . $map->name . '$> made by $<' . $map->authorLogin . '$>';
+				$description = 'Click to checkout all maps by $<' . $map->authorLogin . '$>!';
+				$label->setAction(MapCommands::ACTION_SHOW_AUTHOR . $map->authorLogin);
 				$label->addTooltipLabelFeature($descriptionLabel, $description);
 			}
 			
