@@ -5,6 +5,7 @@ namespace ManiaControl\Settings;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
+use ManiaControl\Plugins\PluginManager;
 
 /**
  * Class managing Settings and Configurations
@@ -437,6 +438,30 @@ class SettingManager implements CallbackListener {
 		}
 		$result->free();
 		return $settings;
+	}
+
+	/**
+	 * Get all Setting Classes
+	 * 
+	 * @return array
+	 */
+	public function getSettingClasses($hidePluginClasses = true) {
+		$mysqli = $this->maniaControl->database->mysqli;
+		$query = "SELECT DISTINCT `class` FROM `" . self::TABLE_SETTINGS . "`
+				ORDER BY `class` ASC;";
+		$result = $mysqli->query($query);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error);
+			return null;
+		}
+		$settingClasses = array();
+		while ($setting = $result->fetch_object()) {
+			if (!$hidePluginClasses || !PluginManager::isPluginClass($setting->class)) {
+				array_push($settingClasses, $setting->class);
+			}
+		}
+		$result->free();
+		return $settingClasses;
 	}
 
 	/**
