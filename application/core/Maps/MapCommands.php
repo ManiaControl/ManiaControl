@@ -343,21 +343,26 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$mapList = array();
 			foreach($maps as $map) {
 				if($map instanceof Map) {
-					$votes = $karmaPlugin->getMapVotes($map);
-					$min = 0;
-					$plus = 0;
-					foreach($votes as $vote) {
-						if(isset($vote->vote)) {
-							if($vote->vote != 0.5) {
-								if($vote->vote < 0.5) {
-									$min = $min+$vote->count;
-								} else {
-									$plus = $plus+$vote->count;
+					if($this->maniaControl->settingManager->getSetting($karmaPlugin, $karmaPlugin::SETTING_NEWKARMA) === true) {
+						$karma = $karmaPlugin->getMapKarma($map);
+						$map->karma = round($karma * 100.);
+					} else {
+						$votes = $karmaPlugin->getMapVotes($map);
+						$min = 0;
+						$plus = 0;
+						foreach($votes as $vote) {
+							if(isset($vote->vote)) {
+								if($vote->vote != 0.5) {
+									if($vote->vote < 0.5) {
+										$min = $min+$vote->count;
+									} else {
+										$plus = $plus+$vote->count;
+									}
 								}
 							}
 						}
+						$map->karma = $plus-$min;
 					}
-					$map->karma = $plus-$min;
 					$mapList[] = $map;
 				}
 			}
