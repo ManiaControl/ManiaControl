@@ -5,26 +5,27 @@ namespace ManiaControl\Settings;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
+use ManiaControl\Plugins\PluginManager;
 
 /**
  * Class managing Settings and Configurations
- *
- * @author    steeffeen & kremsy
+ * 
+ * @author steeffeen & kremsy
  * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class SettingManager implements CallbackListener {
 	/*
 	 * Constants
 	 */
-	const TABLE_SETTINGS      = 'mc_settings';
-	const TYPE_STRING         = 'string';
-	const TYPE_INT            = 'int';
-	const TYPE_REAL           = 'real';
-	const TYPE_BOOL           = 'bool';
-	const TYPE_ARRAY          = 'array';
+	const TABLE_SETTINGS = 'mc_settings';
+	const TYPE_STRING = 'string';
+	const TYPE_INT = 'int';
+	const TYPE_REAL = 'real';
+	const TYPE_BOOL = 'bool';
+	const TYPE_ARRAY = 'array';
 	const CB_SETTINGS_CHANGED = 'SettingManager.SettingsChanged';
-
+	
 	/*
 	 * Private Properties
 	 */
@@ -34,13 +35,13 @@ class SettingManager implements CallbackListener {
 
 	/**
 	 * Construct a new Setting Manager
-	 *
+	 * 
 	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		$this->initTables();
-
+		
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_AFTERINIT, $this, 'handleAfterInit');
 	}
 
@@ -53,13 +54,13 @@ class SettingManager implements CallbackListener {
 
 	/**
 	 * Initialize necessary Database Tables
-	 *
+	 * 
 	 * @return bool
 	 */
 	private function initTables() {
-		$mysqli            = $this->maniaControl->database->mysqli;
-		$defaultType       = "'" . self::TYPE_STRING . "'";
-		$typeSet           = $defaultType . ",'" . self::TYPE_INT . "','" . self::TYPE_REAL . "','" . self::TYPE_BOOL . "','" . self::TYPE_ARRAY . "'";
+		$mysqli = $this->maniaControl->database->mysqli;
+		$defaultType = "'" . self::TYPE_STRING . "'";
+		$typeSet = $defaultType . ",'" . self::TYPE_INT . "','" . self::TYPE_REAL . "','" . self::TYPE_BOOL . "','" . self::TYPE_ARRAY . "'";
 		$settingTableQuery = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_SETTINGS . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
 				`class` varchar(100) NOT NULL,
@@ -71,17 +72,17 @@ class SettingManager implements CallbackListener {
 				PRIMARY KEY (`index`),
 				UNIQUE KEY `settingId` (`class`,`setting`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Settings and Configurations' AUTO_INCREMENT=1;";
-		$result            = $mysqli->query($settingTableQuery);
+		$result = $mysqli->query($settingTableQuery);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error, E_USER_ERROR);
 		}
-
+		
 		return $result;
 	}
 
 	/**
 	 * Get Class Name of a Parameter
-	 *
+	 * 
 	 * @param mixed $param
 	 * @return string
 	 */
@@ -93,12 +94,12 @@ class SettingManager implements CallbackListener {
 			return $param;
 		}
 		trigger_error('Invalid class param. ' . $param);
-		return (string)$param;
+		return (string) $param;
 	}
 
 	/**
 	 * Get Type of a Parameter
-	 *
+	 * 
 	 * @param mixed $param
 	 * @return string
 	 */
@@ -124,23 +125,23 @@ class SettingManager implements CallbackListener {
 
 	/**
 	 * Cast a Setting to the given Type
-	 *
+	 * 
 	 * @param string $type
-	 * @param mixed  $value
+	 * @param mixed $value
 	 * @return mixed
 	 */
 	private function castSetting($type, $value) {
 		if ($type === self::TYPE_INT) {
-			return (int)$value;
+			return (int) $value;
 		}
 		if ($type === self::TYPE_REAL) {
-			return (float)$value;
+			return (float) $value;
 		}
 		if ($type === self::TYPE_BOOL) {
-			return (bool)$value;
+			return (bool) $value;
 		}
 		if ($type === self::TYPE_STRING) {
-			return (string)$value;
+			return (string) $value;
 		}
 		if ($type === self::TYPE_ARRAY) {
 			return explode($this->arrayDelimiter, $value);
@@ -151,8 +152,8 @@ class SettingManager implements CallbackListener {
 
 	/**
 	 * Format a Setting for saving it to the Database
-	 *
-	 * @param mixed  $value
+	 * 
+	 * @param mixed $value
 	 * @param string $type
 	 * @return mixed
 	 */
@@ -171,21 +172,21 @@ class SettingManager implements CallbackListener {
 
 	/**
 	 * Initialize a Setting for the given Object
-	 *
-	 * @param mixed  $object
+	 * 
+	 * @param mixed $object
 	 * @param string $settingName
-	 * @param mixed  $default
+	 * @param mixed $default
 	 * @return bool
 	 */
 	public function initSetting($object, $settingName, $default) {
-		if ($default === null || is_object($default)) {
+		if (is_null($default) || is_object($default)) {
 			return false;
 		}
-		$className        = $this->getClassName($object);
-		$type             = $this->getType($default);
-		$default          = $this->formatSetting($default, $type);
-		$mysqli           = $this->maniaControl->database->mysqli;
-		$settingQuery     = "INSERT INTO `" . self::TABLE_SETTINGS . "` (
+		$className = $this->getClassName($object);
+		$type = $this->getType($default);
+		$default = $this->formatSetting($default, $type);
+		$mysqli = $this->maniaControl->database->mysqli;
+		$settingQuery = "INSERT INTO `" . self::TABLE_SETTINGS . "` (
 				`class`,
 				`setting`,
 				`type`,
@@ -218,16 +219,16 @@ class SettingManager implements CallbackListener {
 
 	/**
 	 * Get a Setting by its Index
-	 *
-	 * @param int   $settingIndex
+	 * 
+	 * @param int $settingIndex
 	 * @param mixed $default
 	 * @return mixed
 	 */
 	public function getSettingByIndex($settingIndex, $default = false) {
-		$mysqli       = $this->maniaControl->database->mysqli;
+		$mysqli = $this->maniaControl->database->mysqli;
 		$settingQuery = "SELECT * FROM `" . self::TABLE_SETTINGS . "`
 				WHERE `index` = {$settingIndex};";
-		$result       = $mysqli->query($settingQuery);
+		$result = $mysqli->query($settingQuery);
 		if (!$result) {
 			trigger_error($mysqli->error);
 			return null;
@@ -243,22 +244,22 @@ class SettingManager implements CallbackListener {
 
 	/**
 	 * Get Setting by Name for the given Object
-	 *
-	 * @param mixed  $object
+	 * 
+	 * @param mixed $object
 	 * @param string $settingName
-	 * @param mixed  $default
+	 * @param mixed $default
 	 * @return mixed
 	 */
 	public function getSetting($object, $settingName, $default = null) {
 		$className = $this->getClassName($object);
-
-		//Check if setting is already in the ram
+		
+		// Check if setting is already in the ram
 		if (isset($this->storedSettings[$className . $settingName])) {
 			return $this->storedSettings[$className . $settingName];
 		}
-
-		$mysqli           = $this->maniaControl->database->mysqli;
-		$settingQuery     = "SELECT `type`, `value` FROM `" . self::TABLE_SETTINGS . "`
+		
+		$mysqli = $this->maniaControl->database->mysqli;
+		$settingQuery = "SELECT `type`, `value` FROM `" . self::TABLE_SETTINGS . "`
 				WHERE `class` = ?
 				AND `setting` = ?;";
 		$settingStatement = $mysqli->prepare($settingQuery);
@@ -282,24 +283,25 @@ class SettingManager implements CallbackListener {
 		$settingStatement->free_result();
 		$settingStatement->close();
 		$setting = $this->castSetting($type, $value);
-
-		//Store setting in the ram
+		
+		// Store setting in the ram
 		$this->storedSettings[$className . $settingName] = $setting;
 		return $setting;
 	}
 
 	/**
 	 * Set a Setting for the given Object
-	 *
-	 * @param mixed  $object
+	 * 
+	 * @param mixed $object
 	 * @param string $settingName
-	 * @param mixed  $value
+	 * @param mixed $value
 	 * @return bool
 	 */
 	public function setSetting($object, $settingName, $value) {
-		$className        = $this->getClassName($object);
-		$mysqli           = $this->maniaControl->database->mysqli;
-		$settingQuery     = "UPDATE `" . self::TABLE_SETTINGS . "`
+		$className = $this->getClassName($object);
+		
+		$mysqli = $this->maniaControl->database->mysqli;
+		$settingQuery = "UPDATE `" . self::TABLE_SETTINGS . "`
 				SET `value` = ?
 				WHERE `class` = ?
 				AND `setting` = ?;";
@@ -308,8 +310,8 @@ class SettingManager implements CallbackListener {
 			trigger_error($mysqli->error);
 			return false;
 		}
-		$value = $this->formatSetting($value);
-		$settingStatement->bind_param('sss', $value, $className, $settingName);
+		$setting = $this->formatSetting($value);
+		$settingStatement->bind_param('sss', $setting, $className, $settingName);
 		$success = $settingStatement->execute();
 		if ($settingStatement->error) {
 			trigger_error($settingStatement->error);
@@ -317,28 +319,25 @@ class SettingManager implements CallbackListener {
 			return false;
 		}
 		$settingStatement->close();
-
-		//FIXME store changed value
-		if (isset($this->storedSettings[$className . $settingName])) {
-			unset($this->storedSettings[$className . $settingName]);
-		}
-
-		//Trigger settings changed Callback
+		
+		$this->storedSettings[$className . $settingName] = $value;
+		
+		// Trigger settings changed Callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_SETTINGS_CHANGED, $className, $settingName, $value);
 		return $success;
 	}
 
 	/**
 	 * Reset a Setting to its default Value
-	 *
-	 * @param mixed  $object
+	 * 
+	 * @param mixed $object
 	 * @param string $settingName
 	 * @return bool
 	 */
 	public function resetSetting($object, $settingName) {
-		$className        = $this->getClassName($object);
-		$mysqli           = $this->maniaControl->database->mysqli;
-		$settingQuery     = "UPDATE `" . self::TABLE_SETTINGS . "`
+		$className = $this->getClassName($object);
+		$mysqli = $this->maniaControl->database->mysqli;
+		$settingQuery = "UPDATE `" . self::TABLE_SETTINGS . "`
 				SET `value` = `default`
 				WHERE `class` = ?
 				AND `setting` = ?;";
@@ -355,20 +354,23 @@ class SettingManager implements CallbackListener {
 			return false;
 		}
 		$settingStatement->close();
+		if (isset($this->storedSettings[$className . $settingName])) {
+			unset($this->storedSettings[$className . $settingName]);
+		}
 		return $success;
 	}
 
 	/**
 	 * Delete a Setting
-	 *
-	 * @param mixed  $object
+	 * 
+	 * @param mixed $object
 	 * @param string $settingName
 	 * @return bool
 	 */
 	public function deleteSetting($object, $settingName) {
-		$className        = $this->getClassName($object);
-		$mysqli           = $this->maniaControl->database->mysqli;
-		$settingQuery     = "DELETE FROM `" . self::TABLE_SETTINGS . "`
+		$className = $this->getClassName($object);
+		$mysqli = $this->maniaControl->database->mysqli;
+		$settingQuery = "DELETE FROM `" . self::TABLE_SETTINGS . "`
 				WHERE `class` = ?
 				AND `setting` = ?;";
 		$settingStatement = $mysqli->prepare($settingQuery);
@@ -384,27 +386,30 @@ class SettingManager implements CallbackListener {
 			return false;
 		}
 		$settingStatement->close();
+		if (isset($this->storedSettings[$className . $settingName])) {
+			unset($this->storedSettings[$className . $settingName]);
+		}
 		return $success;
 	}
 
 	/**
 	 * Get all Settings for the given Class
-	 *
+	 * 
 	 * @param mixed $object
 	 * @return array
 	 */
 	public function getSettingsByClass($object) {
 		$className = $this->getClassName($object);
-		$mysqli    = $this->maniaControl->database->mysqli;
-		$query     = "SELECT * FROM `" . self::TABLE_SETTINGS . "` WHERE `class`= '" . $mysqli->escape_string($className) . "'
+		$mysqli = $this->maniaControl->database->mysqli;
+		$query = "SELECT * FROM `" . self::TABLE_SETTINGS . "` WHERE `class` = '" . $mysqli->escape_string($className) . "'
 				ORDER BY `setting` ASC;";
-		$result    = $mysqli->query($query);
+		$result = $mysqli->query($query);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error);
 			return null;
 		}
 		$settings = array();
-		while($setting = $result->fetch_object()) {
+		while ($setting = $result->fetch_object()) {
 			$settings[$setting->index] = $setting;
 		}
 		$result->free();
@@ -413,12 +418,12 @@ class SettingManager implements CallbackListener {
 
 	/**
 	 * Get all settings
-	 *
+	 * 
 	 * @return array
 	 */
 	public function getSettings() {
 		$mysqli = $this->maniaControl->database->mysqli;
-		$query  = "SELECT * FROM `" . self::TABLE_SETTINGS . "`
+		$query = "SELECT * FROM `" . self::TABLE_SETTINGS . "`
 				ORDER BY `class` ASC, `setting` ASC;";
 		$result = $mysqli->query($query);
 		if ($mysqli->error) {
@@ -426,7 +431,7 @@ class SettingManager implements CallbackListener {
 			return null;
 		}
 		$settings = array();
-		while($setting = $result->fetch_object()) {
+		while ($setting = $result->fetch_object()) {
 			$settings[$setting->index] = $setting;
 		}
 		$result->free();
@@ -434,13 +439,37 @@ class SettingManager implements CallbackListener {
 	}
 
 	/**
+	 * Get all Setting Classes
+	 * 
+	 * @return array
+	 */
+	public function getSettingClasses($hidePluginClasses = false) {
+		$mysqli = $this->maniaControl->database->mysqli;
+		$query = "SELECT DISTINCT `class` FROM `" . self::TABLE_SETTINGS . "`
+				ORDER BY `class` ASC;";
+		$result = $mysqli->query($query);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error);
+			return null;
+		}
+		$settingClasses = array();
+		while ($setting = $result->fetch_object()) {
+			if (!$hidePluginClasses || !PluginManager::isPluginClass($setting->class)) {
+				array_push($settingClasses, $setting->class);
+			}
+		}
+		$result->free();
+		return $settingClasses;
+	}
+
+	/**
 	 * Delete all unused Settings that haven't been initialized during the current Startup
-	 *
+	 * 
 	 * @return bool
 	 */
 	private function deleteUnusedSettings() {
-		$mysqli           = $this->maniaControl->database->mysqli;
-		$settingQuery     = "DELETE FROM `" . self::TABLE_SETTINGS . "`
+		$mysqli = $this->maniaControl->database->mysqli;
+		$settingQuery = "DELETE FROM `" . self::TABLE_SETTINGS . "`
 				WHERE `changed` < NOW() - INTERVAL 1 HOUR;";
 		$settingStatement = $mysqli->prepare($settingQuery);
 		if ($mysqli->error) {
@@ -454,6 +483,7 @@ class SettingManager implements CallbackListener {
 			return false;
 		}
 		$settingStatement->close();
+		$this->storedSettings = array();
 		return $success;
 	}
 }

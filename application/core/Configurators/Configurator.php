@@ -171,7 +171,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	 * @param int    $menuId
 	 */
 	public function showMenu(Player $player, $menuId = 0) {
-		$manialink = $this->buildManialink($menuId);
+		$manialink = $this->buildManialink($menuId, $player);
 		$this->maniaControl->manialinkManager->displayWidget($manialink, $player, "Configurator");
 		$this->playersMenuShown[$player->login] = true;
 	}
@@ -231,7 +231,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$i = 0;
 		foreach($this->menus as $menu) {
 			/** @var  ConfiguratorMenu $menu */
-			if ($menu->getTitle() == $name) {
+			if ($menu == $name || $menu->getTitle() == $name) {
 				return $i;
 			}
 			$i++;
@@ -246,7 +246,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	 * @internal param bool $forceBuild
 	 * @return \FML\ManiaLink
 	 */
-	private function buildManialink($menuIdShown = 0) {
+	private function buildManialink($menuIdShown = 0, Player $player) {
 		$menuPosX     = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_POSX);
 		$menuPosY     = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_POSY);
 		$menuWidth    = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_WIDTH);
@@ -305,7 +305,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 
 			//Show a Menu
 			if ($menuId == $menuIdShown) {
-				$menuControl = $menu->getMenu($subMenuWidth, $subMenuHeight, $script);
+				$menuControl = $menu->getMenu($subMenuWidth, $subMenuHeight, $script, $player);
 				$menusFrame->add($menuControl);
                 $menuScript->addElement($menuItemLabel, $menuControl);
 			}
@@ -343,10 +343,9 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$saveButton->setTranslate(true);
 		$saveButton->setText('$zSave$z');
 		$saveButton->setAction(self::ACTION_SAVECONFIG);
-
+		
 		return $manialink;
 	}
-
 
 	/**
 	 * Handle ManialinkPageAnswer Callback
