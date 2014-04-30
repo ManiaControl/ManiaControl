@@ -299,8 +299,10 @@ class ManiaExchangeManager {
 		$url .= '&priord=' . $searchOrder;
 		$url .= '&limit=' . $maxMapsReturned;
 
-		$url .= '&minexebuild=' . self::MIN_EXE_BUILD;
-
+		if ($titlePrefix != "tm") {
+			$url .= '&minexebuild=' . self::MIN_EXE_BUILD;
+		}
+		
 		// Get MapTypes
 		try {
 			$scriptInfos = $this->maniaControl->client->getModeScriptInfo();
