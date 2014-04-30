@@ -43,6 +43,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	const SETTING_WIDGET_POSY     = 'Widget-Position: Y';
 	const SETTING_WIDGET_WIDTH    = 'Widget-Size: Width';
 	const SETTING_WIDGET_HEIGHT   = 'Widget-Size: Height';
+	const SETTING_NEWKARMA        = 'Enable "new karma" (percentage), disable = RASP karma';
 	const STAT_PLAYER_MAPVOTES    = 'Voted Maps';
 
 	/*
@@ -102,6 +103,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSY, 90 - 10 - 6);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_WIDTH, 25.);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_HEIGHT, 12.);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_NEWKARMA, true);
 
 		// Register for callbacks
 		$this->maniaControl->timerManager->registerTimerListening($this, 'handle1Second', 1000);

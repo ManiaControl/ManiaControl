@@ -425,20 +425,26 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$karma = $karmaPlugin->getMapKarma($map);
 				$votes = $karmaPlugin->getMapVotes($map);
 				if (is_numeric($karma)) {
-					$min = 0;
-					$plus = 0;
-					foreach($votes as $vote) {
-						if(isset($vote->vote)) {
-							if($vote->vote != 0.5) {
-								if($vote->vote < 0.5) {
-									$min = $min+$vote->count;
-								} else {
-									$plus = $plus+$vote->count;
+					if($this->maniaControl->settingManager->getSetting($karmaPlugin, $karmaPlugin::SETTING_NEWKARMA) === true) {
+						$endKarma = $karma;
+						$karmaText = '  ' . round($karma * 100.) . ' (' . $votes['count'] . ')';
+					} else {
+						$min = 0;
+						$plus = 0;
+						foreach($votes as $vote) {
+							if(isset($vote->vote)) {
+								if($vote->vote != 0.5) {
+									if($vote->vote < 0.5) {
+										$min = $min+$vote->count;
+									} else {
+										$plus = $plus+$vote->count;
+									}
 								}
 							}
 						}
+						$endKarma = $plus-$min;
+						$karmaText = '  ' . $endKarma . ' (' . $votes['count'] . 'x / ' . round($karma * 100.) . '%)';
 					}
-					$endKarma = $plus-$min;
 
 					$karmaGauge = new Gauge();
 					$mapFrame->add($karmaGauge);
@@ -459,7 +465,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 					$karmaLabel->setTextSize(0.9);
 					$karmaLabel->setTextColor('000');
 					$karmaLabel->setAlign(Control::CENTER, Control::CENTER);
-					$karmaLabel->setText('  ' . $endKarma . ' (' . $votes['count'] . 'x / ' . round($karma * 100.) . '%)');
+					$karmaLabel->setText($karmaText);
 				}
 			}
 			
