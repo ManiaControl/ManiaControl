@@ -5,6 +5,7 @@ namespace ManiaControl\Maps;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Controls\Quads\Quad_UIConstruction_Buttons;
+use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
@@ -29,6 +30,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	const ACTION_OPEN_XLIST   = 'MapCommands.OpenMXList';
 	const ACTION_RESTART_MAP  = 'MapCommands.RestartMap';
 	const ACTION_SKIP_MAP     = 'MapCommands.NextMap';
+	const ACTION_SHOW_AUTHOR  = 'MapList.ShowAuthorList.';
 
 	/*
 	 * Private Properties
@@ -64,6 +66,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_OPEN_MAPLIST, $this, 'command_List');
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_RESTART_MAP, $this, 'command_RestartMap');
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_SKIP_MAP, $this, 'command_NextMap');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 	}
 
 	/**
@@ -306,6 +309,19 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$this->maniaControl->log($message, true);
 		} catch(FaultException $e) {
 			$this->maniaControl->chat->sendError('Cannot load maplist $<$fff'.$maplist.'$>!', $player);
+		}
+	}
+
+	public function handleManialinkPageAnswer(array $callback) {
+		$actionId = $callback[1][2];
+
+		$login = $callback[1][1];
+		$player = $this->maniaControl->playerManager->getPlayer($login);
+
+		if (strstr($actionId, self::ACTION_SHOW_AUTHOR)) {
+			$login = str_replace(self::ACTION_SHOW_AUTHOR, '', $actionId);
+			$this->maniaControl->mapManager->mapList->playerCloseWidget($player);
+			$this->showMapListAuthor($login, $player);
 		}
 	}
 
