@@ -61,7 +61,7 @@ class HelpManager implements CommandListener, CallbackListener {
 		$showCommands = array();
 		$registeredMethods = array();
 		foreach(array_reverse($this->adminCommands) as $command) {
-			if(array_key_exists($command['Method'], $registeredMethods) && $showCommands[$command['Method']]['Description'] == $command['Description']) {
+			if(array_key_exists($command['Method'], $registeredMethods) && $showCommands[$registeredMethods[$command['Method']]]['Description'] == $command['Description']) {
 				$name = $registeredMethods[$command['Method']];
 				$showCommands[$name]['Name'] .= '|'.$command['Name'];
 			} else {
@@ -92,7 +92,7 @@ class HelpManager implements CommandListener, CallbackListener {
 		$showCommands = array();
 		$registeredMethods = array();
 		foreach(array_reverse($this->playerCommands) as $command) {
-			if(array_key_exists($command['Method'], $registeredMethods) && $showCommands[$command['Method']]['Description'] == $command['Description']) {
+			if(array_key_exists($command['Method'], $registeredMethods) && $showCommands[$registeredMethods[$command['Method']]]['Description'] == $command['Description']) {
 				$name = $registeredMethods[$command['Method']];
 				$showCommands[$name]['Name'] .= '|'.$command['Name'];
 			} else {
