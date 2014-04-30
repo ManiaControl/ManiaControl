@@ -92,8 +92,8 @@ class PluginManager {
 	 * @param string $pluginClass
 	 * @return bool
 	 */
-	public function isPluginClass($pluginClass) {
-		$pluginClass = $this->getPluginClass($pluginClass);
+	public static function isPluginClass($pluginClass) {
+		$pluginClass = self::getPluginClass($pluginClass);
 		if (!in_array(Plugin::PLUGIN_INTERFACE, class_implements($pluginClass))) {
 			return false;
 		}
@@ -372,7 +372,7 @@ class PluginManager {
 	 * @param mixed $pluginClass
 	 * @return string
 	 */
-	private function getPluginClass($pluginClass) {
+	private static function getPluginClass($pluginClass) {
 		if (is_object($pluginClass)) {
 			$pluginClass = get_class($pluginClass);
 		}
