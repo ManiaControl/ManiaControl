@@ -39,7 +39,7 @@ use FML\Script\Features\KeyAction;
  * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkPageAnswerListener, TimerListener, Plugin {
-	/**
+	/*
 	 * Constants
 	 */
 	const PLUGIN_ID      = 5;
@@ -572,6 +572,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$timeGauge->setY(1.5);
 		$timeGauge->setSize($width * 0.95, 6);
 		$timeGauge->setDrawBg(false);
+		if (!$timeUntilExpire) $timeUntilExpire = 1;
 		$timeGaugeRatio = (100 / $maxTime * $timeUntilExpire) / 100;
 		$timeGauge->setRatio($timeGaugeRatio + 0.15 - $timeGaugeRatio * 0.15);
 		$gaugeColor = ColorUtil::floatToStatusColor($timeGaugeRatio);
