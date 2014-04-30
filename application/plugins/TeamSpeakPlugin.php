@@ -302,7 +302,7 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 				$x = $startx + 5;
 			}
             $channelLabel->setX($x);
-            $channelLabel->setStyle($channels[$i]::STYLE_TextCardMedium);
+            $channelLabel->setStyle($channelLabel::STYLE_TextCardMedium);
             $channelLabel->setHAlign('left');
             $channelLabel->setTextSize(1);
             $channelLabel->setScale(0.9);
