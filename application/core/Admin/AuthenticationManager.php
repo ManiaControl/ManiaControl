@@ -238,17 +238,15 @@ class AuthenticationManager implements CallbackListener {
 	 */
 	public static function getAuthLevelName($authLevelInt) {
 		$authLevelInt = self::getAuthLevelInt($authLevelInt);
-		if ($authLevelInt === self::AUTH_LEVEL_MASTERADMIN) {
-			return self::AUTH_NAME_MASTERADMIN;
-		}
-		if ($authLevelInt === self::AUTH_LEVEL_SUPERADMIN) {
-			return self::AUTH_NAME_SUPERADMIN;
-		}
-		if ($authLevelInt === self::AUTH_LEVEL_ADMIN) {
-			return self::AUTH_NAME_ADMIN;
-		}
-		if ($authLevelInt === self::AUTH_LEVEL_MODERATOR) {
-			return self::AUTH_NAME_MODERATOR;
+		switch ($authLevelInt) {
+			case self::AUTH_LEVEL_MASTERADMIN:
+				return self::AUTH_NAME_MASTERADMIN;
+			case self::AUTH_LEVEL_SUPERADMIN:
+				return self::AUTH_NAME_SUPERADMIN;
+			case self::AUTH_LEVEL_ADMIN:
+				return self::AUTH_NAME_ADMIN;
+			case self::AUTH_LEVEL_MODERATOR:
+				return self::AUTH_NAME_MODERATOR;
 		}
 		return self::AUTH_NAME_PLAYER;
 	}
@@ -261,17 +259,15 @@ class AuthenticationManager implements CallbackListener {
 	 */
 	public static function getAuthLevelAbbreviation($authLevelInt) {
 		$authLevelInt = self::getAuthLevelInt($authLevelInt);
-		if ($authLevelInt === self::AUTH_LEVEL_MASTERADMIN) {
-			return 'MA';
-		}
-		if ($authLevelInt === self::AUTH_LEVEL_SUPERADMIN) {
-			return 'SA';
-		}
-		if ($authLevelInt === self::AUTH_LEVEL_ADMIN) {
-			return 'AD';
-		}
-		if ($authLevelInt === self::AUTH_LEVEL_MODERATOR) {
-			return 'MOD';
+		switch ($authLevelInt) {
+			case self::AUTH_LEVEL_MASTERADMIN:
+				return 'MA';
+			case self::AUTH_LEVEL_SUPERADMIN:
+				return 'SA';
+			case self::AUTH_LEVEL_ADMIN:
+				return 'AD';
+			case self::AUTH_LEVEL_MODERATOR:
+				return 'MOD';
 		}
 		return '';
 	}
@@ -283,18 +279,16 @@ class AuthenticationManager implements CallbackListener {
 	 * @return int
 	 */
 	public static function getAuthLevel($authLevelName) {
-		$authLevelName = strtolower($authLevelName);
-		if ($authLevelName === self::AUTH_NAME_MASTERADMIN) {
-			return self::AUTH_LEVEL_MASTERADMIN;
-		}
-		if ($authLevelName === self::AUTH_NAME_SUPERADMIN) {
-			return self::AUTH_LEVEL_SUPERADMIN;
-		}
-		if ($authLevelName === self::AUTH_NAME_ADMIN) {
-			return self::AUTH_LEVEL_ADMIN;
-		}
-		if ($authLevelName === self::AUTH_NAME_MODERATOR) {
-			return self::AUTH_LEVEL_MODERATOR;
+		$authLevelName = (string) $authLevelName;
+		switch ($authLevelName) {
+			case self::AUTH_NAME_MASTERADMIN:
+				return self::AUTH_LEVEL_MASTERADMIN;
+			case self::AUTH_NAME_SUPERADMIN:
+				return self::AUTH_LEVEL_SUPERADMIN;
+			case self::AUTH_NAME_ADMIN:
+				return self::AUTH_LEVEL_ADMIN;
+			case self::AUTH_NAME_MODERATOR:
+				return self::AUTH_LEVEL_MODERATOR;
 		}
 		return self::AUTH_LEVEL_PLAYER;
 	}
@@ -308,6 +302,9 @@ class AuthenticationManager implements CallbackListener {
 	public static function getAuthLevelInt($authLevelParam) {
 		if (is_object($authLevelParam) && property_exists($authLevelParam, 'authLevel')) {
 			return (int) $authLevelParam->authLevel;
+		}
+		if (is_string($authLevelParam)) {
+			return self::getAuthLevel($authLevelParam);
 		}
 		return (int) $authLevelParam;
 	}
