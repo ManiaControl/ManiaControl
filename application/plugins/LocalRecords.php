@@ -291,7 +291,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 			}
 			if ($oldRecord->time == $time) {
 				// Same time
-				$message = '$<' . $player->nickname . '$> equalized his/her $<$ff0' . $oldRecord->rank . '.$> Local Record: $<$fff' . Formatter::formatTime($oldRecord->time) . '$>!';
+				$message = '$<$fff' . $player->nickname . '$> equalized his/her $<$ff0' . $oldRecord->rank . '.$> Local Record: $<$fff' . Formatter::formatTime($oldRecord->time) . '$>!';
 				$this->maniaControl->chat->sendInformation('$3c0' . $message);
 				return;
 			}
@@ -334,7 +334,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		}
 		else {
 			$improvement = ((!$oldRecord || $newRecord->rank < $oldRecord->rank) ? 'gained the' : 'improved the');
-			$message = '$<' . $player->nickname . '$> ' . $improvement . ' $<$ff0' . $newRecord->rank . '.$> Local Record: $<$fff' . Formatter::formatTime($newRecord->time) . '$>';
+			$message = '$<$fff' . $player->nickname . '$> ' . $improvement . ' $<$ff0' . $newRecord->rank . '.$> Local Record: $<$fff' . Formatter::formatTime($newRecord->time) . '$>';
 			if ($oldRecord) $oldRank = ($improvement == 'improved the') ? '' : $oldRecord->rank . '. ';
 			if ($oldRecord) $message .= ' ($<$ff0' . $oldRank . '$>$<$fff-' . Formatter::formatTime(($oldRecord->time - $newRecord->time)) . '$>)';
 			$this->maniaControl->chat->sendInformation('$3c0' . $message.'!');
