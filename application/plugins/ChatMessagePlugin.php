@@ -1,4 +1,5 @@
 <?php
+
 namespace MCTeam;
 
 use ManiaControl\Commands\CommandListener;
