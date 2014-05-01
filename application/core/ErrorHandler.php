@@ -7,6 +7,7 @@ use ManiaControl\Update\UpdateManager;
 use ManiaControl\Callbacks\Callbacks;
 
 /**
+ * gittest
  * Error and Exception Manager Class
  * 
  * @author steeffeen & kremsy
