@@ -77,7 +77,7 @@ abstract class FileUtil {
 			return null;
 		}
 		if (!is_readable($fileLocation)) {
-			trigger_error("Config file isn't readable! ({$fileName})");
+			trigger_error("Config file isn't readable! Please check your file permissions. ({$fileName})");
 			return null;
 		}
 		return simplexml_load_file($fileLocation);
