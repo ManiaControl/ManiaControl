@@ -561,7 +561,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		$self = $this;
 		$this->maniaControl->fileReader->loadFile($pluginData->currentVersion->url, function ($installFileContent, $error) use(&$self, &$updateData, &$player, &$pluginData, &$reopen) {
 			$pluginsDirectory = ManiaControlDir . '/plugins/';
-			$pluginFiles = scandir($pluginsDirectory);
+			$pluginFiles = $this->scanDirectory($pluginsDirectory);
 			
 			$self->maniaControl->log('[UPDATE] Now installing ' . $pluginData->name . ' ...');
 			$self->maniaControl->chat->sendInformation('Now installing ' . $pluginData->name . ' ...', $player->login);
@@ -590,15 +590,15 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			$zip->close();
 			unlink($installFileName);
 			@rmdir($tempDir);
-			
-			$pluginFilesAfter = scandir($pluginsDirectory);
+
+			$pluginFilesAfter = $this->scanDirectory($pluginsDirectory);
 			$newFiles = array_diff($pluginFilesAfter, $pluginFiles);
 			
 			$classesBefore = get_declared_classes();
 			foreach ($newFiles as $newFile) {
 				$filePath = $pluginsDirectory . $newFile;
 				
-				if (is_file($filePath)) {
+				if (is_file($filePath) && strstr($filePath, '.php')) {
 					$success = include_once $filePath;
 					if (!$success) {
 						trigger_error("Error loading File '{$filePath}'!");
@@ -643,6 +643,31 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 				$self->maniaControl->configurator->reopenMenu($player, $menuId);
 			}
 		});
+	}
+
+	/**
+	 * Scans the plugindirectory recursively.
+	 *
+	 * @param $dir
+	 * @return array
+	 */
+	function scanDirectory($dir) {
+		$result = array();
+
+		$cdir = scandir($dir);
+		foreach($cdir as $key => $value) {
+			if(!in_array($value,array(".",".."))) {
+				if(is_dir($dir . DIRECTORY_SEPARATOR . $value)) {
+					foreach($this->scanDirectory($dir . DIRECTORY_SEPARATOR . $value) as $dirValue) {
+						$result[] = $value.DIRECTORY_SEPARATOR.$dirValue;
+					}
+				} else {
+					$result[] = $value;
+				}
+			}
+		}
+
+		return $result;
 	}
 
 	/**
