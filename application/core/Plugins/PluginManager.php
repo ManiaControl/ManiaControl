@@ -94,7 +94,10 @@ class PluginManager {
 	 */
 	public static function isPluginClass($pluginClass) {
 		$pluginClass = self::getPluginClass($pluginClass);
-		if (!in_array(Plugin::PLUGIN_INTERFACE, class_implements($pluginClass))) {
+		if (!class_exists($pluginClass, false)) {
+			return false;
+		}
+		if (!in_array(Plugin::PLUGIN_INTERFACE, class_implements($pluginClass, false))) {
 			return false;
 		}
 		return true;
