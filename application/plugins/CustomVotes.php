@@ -102,7 +102,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	public function load(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		$this->maniaControl->commandManager->registerCommandListener('vote', $this, 'chat_vote', false, 'Votes for the current vote.');
+		$this->maniaControl->commandManager->registerCommandListener('vote', $this, 'chat_vote', false, 'Starts a new vote.');
 		$this->maniaControl->timerManager->registerTimerListening($this, 'handle1Second', 1000);
 		$this->maniaControl->callbackManager->registerCallbackListener(ServerCommands::CB_VOTE_CANCELED, $this, 'handleVoteCanceled');
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_POSITIVE_VOTE, $this, 'handlePositiveVote');
