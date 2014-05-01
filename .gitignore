@@ -1,5 +1,4 @@
-/.idea/
-/application/.idea/
-/.settings/
-/.buildpath
-/.project
+.settings
+.buildpath
+.project
+.idea
