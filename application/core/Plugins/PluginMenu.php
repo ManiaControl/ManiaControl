@@ -244,6 +244,10 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 		$y             = 0.;
 		$pluginUpdates = $this->maniaControl->updateManager->getPluginsUpdates();
 
+		usort($pluginClasses, function($a, $b) {
+			return strcmp($a::getName(), $b::getName());
+		});
+
 		foreach($pluginClasses as $index => $pluginClass) {
 			/** @var Plugin $pluginClass */
 			if (!isset($pageFrame)) {
