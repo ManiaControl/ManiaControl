@@ -138,6 +138,7 @@ class PluginManager {
 		}
 		$plugin = new $pluginClass();
 		/**
+		 *
 		 * @var Plugin $plugin
 		 */
 		$this->activePlugins[$pluginClass] = $plugin;
@@ -170,6 +171,7 @@ class PluginManager {
 		}
 		$plugin = $this->activePlugins[$pluginClass];
 		/**
+		 *
 		 * @var Plugin $plugin
 		 */
 		$plugin->unload();
@@ -235,6 +237,9 @@ class PluginManager {
 			
 			$filePath = $directory . $pluginFile;
 			if (is_file($filePath)) {
+				if (!stripos($pluginFile, '.php')) {
+					continue;
+				}
 				$success = include_once $filePath;
 				if (!$success) {
 					trigger_error("Error loading File '{$filePath}'!");
