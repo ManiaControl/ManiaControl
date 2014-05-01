@@ -14,6 +14,7 @@ use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
 use ManiaControl\Plugins\PluginInstallMenu;
 use ManiaControl\Plugins\PluginMenu;
+use ManiaControl\Plugins\PluginManager;
 
 /**
  * Manager checking for ManiaControl Core and Plugin Updates
@@ -430,15 +431,14 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 * @return mixed
 	 */
 	public function checkPluginUpdate($pluginClass) {
-		if (is_object($pluginClass)) {
-			$pluginClass = get_class($pluginClass);
-		}
+		$pluginClass = PluginManager::getPluginClass($pluginClass);
 		/**
 		 *
 		 * @var Plugin $pluginClass
 		 */
 		$pluginId = $pluginClass::getId();
 		$url = ManiaControl::URL_WEBSERVICE . 'plugins?id=' . $pluginId;
+		// TODO: asynchronous loading
 		$dataJson = FileUtil::loadFile($url);
 		$pluginVersions = json_decode($dataJson);
 		if (!$pluginVersions || !isset($pluginVersions[0])) {

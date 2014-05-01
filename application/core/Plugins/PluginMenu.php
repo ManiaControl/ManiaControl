@@ -25,7 +25,7 @@ use ManiaControl\Players\Player;
 /**
  * Configurator for enabling and disabling Plugins
  *
- * @author steeffeen
+ * @author ManiaControl Team
  * @copyright ManiaControl Copyright © 2014 ManiaControl Team
  * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */

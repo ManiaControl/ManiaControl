@@ -380,7 +380,7 @@ class PluginManager {
 	 * @param mixed $pluginClass
 	 * @return string
 	 */
-	private static function getPluginClass($pluginClass) {
+	public static function getPluginClass($pluginClass) {
 		if (is_object($pluginClass)) {
 			$pluginClass = get_class($pluginClass);
 		}
