@@ -405,7 +405,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		}
 		
 		$self = $this;
-		$this->maniaControl->fileReader->loadFile($updateData->url, function ($updateFileContent, $error) use(&$self, &$updateData, &$player) {
+		$this->maniaControl->fileReader->loadFile($this->coreUpdateData->url, function ($updateFileContent, $error) use(&$self, &$updateData, &$player) {
 			$tempDir = FileUtil::getTempFolder();
 			$updateFileName = $tempDir . basename($updateData->url);
 			
