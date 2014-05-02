@@ -8,17 +8,22 @@ use FML\Controls\Label;
 use FML\Controls\Labels\Label_Button;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;
+use FML\Controls\Quads\Quad_BgsPlayerCard;
 use FML\Controls\Quads\Quad_Icons128x128_1;
 use FML\ManiaLink;
+use FML\Script\Features\Paging;
+
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Bills\BillManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
+use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
+use ManiaControl\Statistics\StatisticManager;
 
 /**
  * ManiaControl Donation Plugin
@@ -76,6 +81,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$this->maniaControl->commandManager->registerCommandListener('donate', $this, 'command_Donate', false, 'Donate some planets to the server.');
 		$this->maniaControl->commandManager->registerCommandListener('pay', $this, 'command_Pay', true, 'Pays planets from the server to a player.');
 		$this->maniaControl->commandManager->registerCommandListener('planets', $this, 'command_GetPlanets', true, 'Checks the planets-balance of the server.');
+		$this->maniaControl->commandManager->registerCommandListener('topdons', $this, 'command_TopDons', false, 'Provides an overview of who dontated the most planets.');
 
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
@@ -452,5 +458,101 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	private function sendPayUsageExample(Player $player) {
 		$message = "Usage Example: '/pay 100 login'";
 		return $this->maniaControl->chat->sendChat($message, $player->login);
+	}
+
+	/**
+	 * Handles the /topdons command
+	 *
+	 * @param array  $chatCallback
+	 * @param Player $player
+	 */
+	public function command_TopDons(array $chatCallback, Player $player) {
+		$this->showTopDonsList($player);
+	}
+
+	/**
+	 * Provides a ManiaLink overview with donators.
+	 *
+	 * @param Player $player
+	 * @return null
+	 */
+	private function showTopDonsList(Player $player) {
+		$query = "SELECT * FROM `".StatisticManager::TABLE_STATISTICS."` WHERE `statId` = 3 ORDER BY `value` DESC LIMIT 0, 100";
+		$mysqli = $this->maniaControl->database->mysqli;
+		$result = $mysqli->query($query);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error);
+			return null;
+		}
+
+		$width  = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
+		$height = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
+
+		// create manialink
+		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
+		$script = $maniaLink->getScript();
+		$paging = new Paging();
+		$script->addFeature($paging);
+
+		// Main frame
+		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script, $paging);
+		$maniaLink->add($frame);
+
+		// Start offsets
+		$x = -$width / 2;
+		$y = $height / 2;
+
+		//Predefine description Label
+		$descriptionLabel = $this->maniaControl->manialinkManager->styleManager->getDefaultDescriptionLabel();
+		$frame->add($descriptionLabel);
+
+		// Headline
+		$headFrame = new Frame();
+		$frame->add($headFrame);
+		$headFrame->setY($y - 5);
+		$array = array('$oId' => $x + 5, '$oNickname' => $x + 18, '$oDonated planets' => $x + 70);
+		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
+
+		$i          = 1;
+		$y          = $y - 10;
+		$pageFrames = array();
+		while($donator = $result->fetch_object()) {
+			if (!isset($pageFrame)) {
+				$pageFrame = new Frame();
+				$frame->add($pageFrame);
+				if (!empty($pageFrames)) {
+					$pageFrame->setVisible(false);
+				}
+				array_push($pageFrames, $pageFrame);
+				$y = $height / 2 - 10;
+				$paging->addPage($pageFrame);
+			}
+
+
+			$playerFrame = new Frame();
+			$pageFrame->add($playerFrame);
+			$playerFrame->setY($y);
+
+			if ($i % 2 != 0) {
+				$lineQuad = new Quad_BgsPlayerCard();
+				$playerFrame->add($lineQuad);
+				$lineQuad->setSize($width, 4);
+				$lineQuad->setSubStyle($lineQuad::SUBSTYLE_BgPlayerCardBig);
+				$lineQuad->setZ(0.001);
+			}
+
+			$donatingPlayer = $this->maniaControl->playerManager->getPlayerByIndex($donator->playerId);
+			$array = array($i => $x + 5, $donatingPlayer->nickname => $x + 18, $donator->value => $x + 70);
+			$this->maniaControl->manialinkManager->labelLine($playerFrame, $array);
+
+			$y -= 4;
+			$i++;
+			if (($i - 1) % 15 == 0) {
+				unset($pageFrame);
+			}
+		}
+
+		// Render and display xml
+		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player, 'TopDons');
 	}
 }
