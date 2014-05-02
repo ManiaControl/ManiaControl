@@ -179,7 +179,6 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		}
 		
 		$manialink = new ManiaLink(self::MLID_MENU);
-		$script = $manialink->getScript();
 		
 		/*
 		 * Admin Menu

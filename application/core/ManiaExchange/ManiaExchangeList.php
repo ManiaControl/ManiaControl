@@ -133,8 +133,6 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
         $paging = new Paging();
         $script->addFeature($paging);
 
-		$pagesId = 'MxListPages';
-
 		// Main frame
 		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script, $paging);
 		$maniaLink->add($frame);
