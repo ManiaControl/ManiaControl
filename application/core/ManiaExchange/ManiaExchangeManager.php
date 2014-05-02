@@ -118,7 +118,7 @@ class ManiaExchangeManager {
 	 */
 	public function fetchManiaExchangeMapInformations($map = null) {
 		if (!$map) {
-			//Fetch Informations for whole Maplist
+			//Fetch Information for whole MapList
 			$maps = $this->maniaControl->mapManager->getMaps();
 		} else {
 			//Fetch Information for a single map

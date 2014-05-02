@@ -35,7 +35,7 @@ abstract class Formatter {
 	}
 
 	/**
-	 * Formats a Time to H:M:S
+	 * Format a Time to H:M:S
 	 *
 	 * @param int $seconds
 	 * @return string
@@ -54,9 +54,9 @@ abstract class Formatter {
 	}
 
 	/**
-	 * Formatts a Elapset time String (2 days ago...) by a given timestamp
+	 * Format an elapsed time String (2 days ago...) by a given timestamp
 	 *
-	 * @param $ptime
+	 * @param int $ptime
 	 * @return string
 	 */
 	public static function time_elapsed_string($ptime) {
@@ -79,7 +79,7 @@ abstract class Formatter {
 	}
 
 	/**
-	 * Formats the given Time (Seconds) to hh:mm:ss
+	 * Format the given Time (Seconds) to hh:mm:ss
 	 *
 	 * @param int $seconds
 	 * @return string

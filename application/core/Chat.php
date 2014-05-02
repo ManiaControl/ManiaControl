@@ -136,7 +136,7 @@ class Chat {
 	 * @return bool
 	 */
 	public function sendException(\Exception $exception, $login = null) {
-		$message = "Exception occured: '{$exception->getMessage()}' ({$exception->getCode()})";
+		$message = "Exception occurred: '{$exception->getMessage()}' ({$exception->getCode()})";
 		$this->maniaControl->errorHandler->triggerDebugNotice($message);
 		$this->sendError($message, $login);
 	}

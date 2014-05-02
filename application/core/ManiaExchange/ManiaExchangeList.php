@@ -151,7 +151,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		$i          = 0;
 		$y          = $height / 2 - 16;
 		$pageFrames = array();
-		foreach($maps as $map) { //TODO order possabilities
+		foreach($maps as $map) { //TODO order possibilities
 			/** @var MxMapInfo $map */
 			if (!isset($pageFrame)) {
 				$pageFrame = new Frame();
