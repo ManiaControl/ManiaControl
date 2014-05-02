@@ -18,8 +18,8 @@ use Maniaplanet\DedicatedServer\Xmlrpc\NotInScriptModeException;
 /**
  * Class offering various Commands related to the Dedicated Server
  *
- * @author    steeffeen & kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ServerCommands implements CallbackListener, CommandListener, ManialinkPageAnswerListener, TimerListener {
@@ -106,11 +106,11 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 		//Check if Pause exists in current GameMode
 		try {
 			$scriptInfos = $this->maniaControl->client->getModeScriptInfo();
-		} catch(NotInScriptModeException $e) {
+		} catch (NotInScriptModeException $e) {
 			return;
 		}
 		$pauseExists = false;
-		foreach($scriptInfos->commandDescs as $param) {
+		foreach ($scriptInfos->commandDescs as $param) {
 			if ($param->name == "Command_ForceWarmUp") {
 				$pauseExists = true;
 				break;
@@ -161,7 +161,7 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 
 		try {
 			$this->maniaControl->client->triggerModeScriptEvent('WarmUp_Extend', '10');
-		} catch(NotInScriptModeException $e) {
+		} catch (NotInScriptModeException $e) {
 			return;
 		}
 
@@ -182,7 +182,7 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 
 		try {
 			$this->maniaControl->client->triggerModeScriptEvent('WarmUp_Stop', '');
-		} catch(NotInScriptModeException $e) {
+		} catch (NotInScriptModeException $e) {
 			return;
 		}
 
@@ -192,7 +192,7 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 	/**
 	 * Pause the current game
 	 *
-	 * @param array $callback
+	 * @param array  $callback
 	 * @param Player $player
 	 */
 	public function setPause(array $callback, Player $player) {
@@ -201,8 +201,8 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 			return;
 		}
 		try {
-			$this->maniaControl->client->sendModeScriptCommands(array('Command_ForceWarmUp' => True));
-		} catch(NotInScriptModeException $e) {
+			$this->maniaControl->client->sendModeScriptCommands(array('Command_ForceWarmUp' => true));
+		} catch (NotInScriptModeException $e) {
 			return;
 		}
 
@@ -230,6 +230,16 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 				$this->shutdownServer('delayed');
 			}
 		}
+	}
+
+	/**
+	 * Perform server shutdown
+	 *
+	 * @param string $login
+	 */
+	private function shutdownServer($login = '#') {
+		$this->maniaControl->client->stopServer();
+		$this->maniaControl->quit("Server shutdown requested by '{$login}'");
 	}
 
 	/**
@@ -410,15 +420,5 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 
 		$this->maniaControl->client->setMaxSpectators($amount);
 		$this->maniaControl->chat->sendSuccess("Changed max spectators to: {$amount}", $player->login);
-	}
-
-	/**
-	 * Perform server shutdown
-	 *
-	 * @param string $login
-	 */
-	private function shutdownServer($login = '#') {
-		$this->maniaControl->client->stopServer();
-		$this->maniaControl->quit("Server shutdown requested by '{$login}'");
 	}
 }

@@ -4,10 +4,10 @@ namespace ManiaControl\Update;
 
 /**
  * Plugin Update Data Structure
- * 
- * @author ManiaControl Team
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ *
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class PluginUpdateData {
 	/*
@@ -24,25 +24,25 @@ class PluginUpdateData {
 
 	/**
 	 * Construct new Plugin Update Data
-	 * 
+	 *
 	 * @param object $updateData
 	 */
 	public function __construct($updateData) {
-		$this->pluginId = $updateData->id;
-		$this->pluginName = $updateData->name;
-		$this->pluginAuthor = $updateData->author;
+		$this->pluginId          = $updateData->id;
+		$this->pluginName        = $updateData->name;
+		$this->pluginAuthor      = $updateData->author;
 		$this->pluginDescription = $updateData->description;
 		if ($updateData->currentVersion) {
-			$this->id = $updateData->currentVersion->id;
+			$this->id      = $updateData->currentVersion->id;
 			$this->version = $updateData->currentVersion->version;
 			$this->zipfile = $updateData->currentVersion->zipfile;
-			$this->url = $updateData->currentVersion->url;
+			$this->url     = $updateData->currentVersion->url;
 		}
 	}
 
 	/**
 	 * Check if the Plugin Update Data is newer than the given Plugin Version
-	 * 
+	 *
 	 * @param float $version
 	 * @return bool
 	 */

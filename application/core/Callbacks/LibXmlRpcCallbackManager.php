@@ -8,9 +8,9 @@ use ManiaControl\ManiaControl;
 /**
  * Class managing & converting LibXmlRpc Callbacks
  *
- * @author ManiaControl Team
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class LibXmlRpcCallbackManager implements CallbackListener {
 	/*
@@ -21,7 +21,7 @@ class LibXmlRpcCallbackManager implements CallbackListener {
 	/**
 	 * Create a new LibXmlRpc Callbacks Instance
 	 *
-	 * @param ManiaControl $maniaControl
+	 * @param ManiaControl    $maniaControl
 	 * @param CallbackManager $callbackManager
 	 */
 	public function __construct(ManiaControl $maniaControl, CallbackManager $callbackManager) {
@@ -33,10 +33,10 @@ class LibXmlRpcCallbackManager implements CallbackListener {
 	 * Handle Script Callbacks
 	 *
 	 * @param string $name
-	 * @param array $data
+	 * @param array  $data
 	 */
 	public function handleScriptCallbacks($name, array $data) {
-		switch($name) {
+		switch ($name) {
 			case 'LibXmlRpc_BeginMatch':
 				$this->maniaControl->callbackManager->triggerCallback(Callbacks::BEGINMATCH, $data[0]);
 				break;

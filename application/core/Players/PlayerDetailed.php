@@ -19,9 +19,9 @@ use Maniaplanet\DedicatedServer\Structures\Player;
 /**
  * Player Detailed Page
  *
- * @author steeffeen & kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class PlayerDetailed {
 	/*
@@ -230,7 +230,7 @@ class PlayerDetailed {
 		$x           = -$this->width / 2 + 52;
 		$id          = 1;
 
-		foreach($playerStats as $stat) {
+		foreach ($playerStats as $stat) {
 			$statProperties = $stat[0];
 			$value          = $stat[1];
 

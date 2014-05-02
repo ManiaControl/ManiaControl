@@ -8,8 +8,8 @@ use ManiaControl\ManiaControl;
 /**
  * Player Data Manager
  *
- * @author    steeffeen & kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class PlayerDataManager {
@@ -40,6 +40,80 @@ class PlayerDataManager {
 
 		// Store Stats MetaData
 		$this->storeMetaData();
+	}
+
+	/**
+	 * Initialize necessary database tables
+	 *
+	 * @return bool
+	 */
+	private function initTables() {
+		$mysqli      = $this->maniaControl->database->mysqli;
+		$defaultType = "'" . self::TYPE_STRING . "'";
+		$typeSet     = $defaultType . ",'" . self::TYPE_INT . "','" . self::TYPE_REAL . "','" . self::TYPE_BOOL . "','" . self::TYPE_ARRAY . "'";
+		$query       = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_PLAYERDATAMETADATA . "` (
+				`dataId` int(11) NOT NULL AUTO_INCREMENT,
+				`class` varchar(100) NOT NULL,
+				`dataName` varchar(100) NOT NULL,
+				`type` set({$typeSet}) NOT NULL DEFAULT {$defaultType},
+				`defaultValue` varchar(150) NOT NULL,
+				`description` varchar(150) NOT NULL,
+				PRIMARY KEY (`dataId`),
+				UNIQUE KEY `name` (`class`, `dataName`)
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Player-Data MetaData' AUTO_INCREMENT=1;";
+		$statement   = $mysqli->prepare($query);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error, E_USER_ERROR);
+			return false;
+		}
+		$statement->execute();
+		if ($statement->error) {
+			trigger_error($statement->error, E_USER_ERROR);
+			return false;
+		}
+		$statement->close();
+
+		$query     = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_PLAYERDATA . "` (
+				`index` int(11) NOT NULL AUTO_INCREMENT,
+				`serverIndex` int(11) NOT NULL,
+				`playerId` int(11) NOT NULL,
+				`dataId` int(11) NOT NULL,
+				`value` varchar(150) NOT NULL,
+				`changed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+				PRIMARY KEY (`index`),
+				UNIQUE KEY `unique` (`dataId`,`playerId`,`serverIndex`)
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Player Data' AUTO_INCREMENT=1;";
+		$statement = $mysqli->prepare($query);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error, E_USER_ERROR);
+			return false;
+		}
+		$statement->execute();
+		if ($statement->error) {
+			trigger_error($statement->error, E_USER_ERROR);
+			return false;
+		}
+		$statement->close();
+		return true;
+	}
+
+	/**
+	 * Store Meta Data from the Database in the Ram
+	 */
+	private function storeMetaData() {
+		$mysqli = $this->maniaControl->database->mysqli;
+
+		$query  = "SELECT * FROM `" . self::TABLE_PLAYERDATAMETADATA . "`;";
+		$result = $mysqli->query($query);
+		if (!$result) {
+			trigger_error($mysqli->error);
+			return;
+		}
+
+		while ($row = $result->fetch_object()) {
+			$this->metaData[$row->class . $row->dataName] = $row;
+		}
+		$result->close();
 	}
 
 	/**
@@ -95,31 +169,55 @@ class PlayerDataManager {
 	}
 
 	/**
-	 * Store Meta Data from the Database in the Ram
+	 * Get Class Name of a Parameter
+	 *
+	 * @param mixed $param
+	 * @return string
 	 */
-	private function storeMetaData() {
-		$mysqli = $this->maniaControl->database->mysqli;
-
-		$query  = "SELECT * FROM `" . self::TABLE_PLAYERDATAMETADATA . "`;";
-		$result = $mysqli->query($query);
-		if (!$result) {
-			trigger_error($mysqli->error);
-			return;
+	private function getClassName($param) {
+		if (is_object($param)) {
+			return get_class($param);
 		}
-
-		while($row = $result->fetch_object()) {
-			$this->metaData[$row->class . $row->dataName] = $row;
+		if (is_string($param)) {
+			return $param;
 		}
-		$result->close();
+		trigger_error('Invalid class param. ' . $param);
+		return (string)$param;
+	}
+
+	/**
+	 * Get Type of a Parameter
+	 *
+	 * @param mixed $param
+	 * @return string
+	 */
+	private function getType($param) {
+		if (is_int($param)) {
+			return self::TYPE_INT;
+		}
+		if (is_real($param)) {
+			return self::TYPE_REAL;
+		}
+		if (is_bool($param)) {
+			return self::TYPE_BOOL;
+		}
+		if (is_string($param)) {
+			return self::TYPE_STRING;
+		}
+		if (is_array($param)) {
+			return self::TYPE_ARRAY;
+		}
+		trigger_error('Unsupported setting type. ' . print_r($param, true));
+		return null;
 	}
 
 	/**
 	 * Gets the Player Data
 	 *
-	 * @param  mixed      $object
-	 * @param   string     $dataName
-	 * @param Player $player
-	 * @param     int   $serverIndex
+	 * @param  mixed   $object
+	 * @param   string $dataName
+	 * @param Player   $player
+	 * @param     int  $serverIndex
 	 * @return mixed|null
 	 */
 	public function getPlayerData($object, $dataName, Player $player, $serverIndex = -1) {
@@ -172,10 +270,10 @@ class PlayerDataManager {
 	/**
 	 * Set a PlayerData to a specific defined statMetaData
 	 *
-	 * @param    mixed    $object
-	 * @param    string    $dataName
-	 * @param Player $player
-	 * @param     mixed   $value
+	 * @param    mixed  $object
+	 * @param    string $dataName
+	 * @param Player    $player
+	 * @param     mixed $value
 	 * @param     int   $serverIndex (let it empty if its global)
 	 * @return bool
 	 */
@@ -238,87 +336,6 @@ class PlayerDataManager {
 	}
 
 	/**
-	 * Initialize necessary database tables
-	 *
-	 * @return bool
-	 */
-	private function initTables() {
-		$mysqli      = $this->maniaControl->database->mysqli;
-		$defaultType = "'" . self::TYPE_STRING . "'";
-		$typeSet     = $defaultType . ",'" . self::TYPE_INT . "','" . self::TYPE_REAL . "','" . self::TYPE_BOOL . "','" . self::TYPE_ARRAY . "'";
-		$query       = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_PLAYERDATAMETADATA . "` (
-				`dataId` int(11) NOT NULL AUTO_INCREMENT,
-				`class` varchar(100) NOT NULL,
-				`dataName` varchar(100) NOT NULL,
-				`type` set({$typeSet}) NOT NULL DEFAULT {$defaultType},
-				`defaultValue` varchar(150) NOT NULL,
-				`description` varchar(150) NOT NULL,
-				PRIMARY KEY (`dataId`),
-				UNIQUE KEY `name` (`class`, `dataName`)
-				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Player-Data MetaData' AUTO_INCREMENT=1;";
-		$statement   = $mysqli->prepare($query);
-		if ($mysqli->error) {
-			trigger_error($mysqli->error, E_USER_ERROR);
-			return false;
-		}
-		$statement->execute();
-		if ($statement->error) {
-			trigger_error($statement->error, E_USER_ERROR);
-			return false;
-		}
-		$statement->close();
-
-		$query     = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_PLAYERDATA . "` (
-				`index` int(11) NOT NULL AUTO_INCREMENT,
-				`serverIndex` int(11) NOT NULL,
-				`playerId` int(11) NOT NULL,
-				`dataId` int(11) NOT NULL,
-				`value` varchar(150) NOT NULL,
-				`changed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-				PRIMARY KEY (`index`),
-				UNIQUE KEY `unique` (`dataId`,`playerId`,`serverIndex`)
-				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Player Data' AUTO_INCREMENT=1;";
-		$statement = $mysqli->prepare($query);
-		if ($mysqli->error) {
-			trigger_error($mysqli->error, E_USER_ERROR);
-			return false;
-		}
-		$statement->execute();
-		if ($statement->error) {
-			trigger_error($statement->error, E_USER_ERROR);
-			return false;
-		}
-		$statement->close();
-		return true;
-	}
-
-	/**
-	 * Get Type of a Parameter
-	 *
-	 * @param mixed $param
-	 * @return string
-	 */
-	private function getType($param) {
-		if (is_int($param)) {
-			return self::TYPE_INT;
-		}
-		if (is_real($param)) {
-			return self::TYPE_REAL;
-		}
-		if (is_bool($param)) {
-			return self::TYPE_BOOL;
-		}
-		if (is_string($param)) {
-			return self::TYPE_STRING;
-		}
-		if (is_array($param)) {
-			return self::TYPE_ARRAY;
-		}
-		trigger_error('Unsupported setting type. ' . print_r($param, true));
-		return null;
-	}
-
-	/**
 	 * Cast a Setting to the given Type
 	 *
 	 * @param string $type
@@ -343,22 +360,5 @@ class PlayerDataManager {
 		}
 		trigger_error('Unsupported setting type. ' . print_r($type, true));
 		return $value;
-	}
-
-	/**
-	 * Get Class Name of a Parameter
-	 *
-	 * @param mixed $param
-	 * @return string
-	 */
-	private function getClassName($param) {
-		if (is_object($param)) {
-			return get_class($param);
-		}
-		if (is_string($param)) {
-			return $param;
-		}
-		trigger_error('Invalid class param. ' . $param);
-		return (string)$param;
 	}
 } 

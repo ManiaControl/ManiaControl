@@ -29,9 +29,9 @@ use ManiaControl\Players\Player;
 /**
  * ManiaExchange List Widget Class
  *
- * @author steeffeen & kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener {
 	/*
@@ -66,6 +66,33 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_SEARCH_AUTHOR, $this, 'showList');
 	}
 
+	/**
+	 * Handle ManialinkPageAnswer Callback
+	 *
+	 * @param array $callback
+	 */
+	public function handleManialinkPageAnswer(array $callback) {
+		$actionId    = $callback[1][2];
+		$actionArray = explode('.', $actionId);
+		if (count($actionArray) <= 2) {
+			return;
+		}
+
+		$action = $actionArray[0] . '.' . $actionArray[1];
+		$login  = $callback[1][1];
+		$player = $this->maniaControl->playerManager->getPlayer($login);
+		$mapId  = (int)$actionArray[2];
+
+		switch ($action) {
+			case self::ACTION_GET_MAPS_FROM_AUTHOR:
+				$callback[1][2] = 'auth:' . $actionArray[2];
+				$this->showList($callback, $player);
+				break;
+			case self::ACTION_ADD_MAP:
+				$this->maniaControl->mapManager->addMapFromMx($mapId, $player->login);
+				break;
+		}
+	}
 
 	/**
 	 * Shows the List
@@ -80,7 +107,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		$author                             = '';
 		$environment                        = '';
 		if (count($params) >= 1) {
-			foreach($params as $param) {
+			foreach ($params as $param) {
 				if ($param == '/xlist' || $param == MapCommands::ACTION_OPEN_XLIST) {
 					continue;
 				}
@@ -130,8 +157,8 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		//Create ManiaLink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$script    = $maniaLink->getScript();
-        $paging = new Paging();
-        $script->addFeature($paging);
+		$paging    = new Paging();
+		$script->addFeature($paging);
 
 		// Main frame
 		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script, $paging);
@@ -151,7 +178,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		$i          = 0;
 		$y          = $height / 2 - 16;
 		$pageFrames = array();
-		foreach($maps as $map) { //TODO order possibilities
+		foreach ($maps as $map) { //TODO order possibilities
 			/** @var MxMapInfo $map */
 			if (!isset($pageFrame)) {
 				$pageFrame = new Frame();
@@ -162,7 +189,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 				array_push($pageFrames, $pageFrame);
 				$y = $height / 2 - 16;
 
-                $paging->addPage($pageFrame);
+				$paging->addPage($pageFrame);
 			}
 
 			// Map Frame
@@ -179,7 +206,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 
 			/** @var MxMapInfo $map */
 			$time   = Formatter::time_elapsed_string(strtotime($map->updated));
-			$array  = array('$s'. $map->id => $x + 3.5, '$s'. $map->name => $x + 12.5, '$s'. $map->author => $x + 59, '$s'. str_replace("Arena", "", $map->maptype) => $x + 103, '$s'. $map->mood => $x + 118, '$s'. $time => $x + 130);
+			$array  = array('$s' . $map->id => $x + 3.5, '$s' . $map->name => $x + 12.5, '$s' . $map->author => $x + 59, '$s' . str_replace("Arena", "", $map->maptype) => $x + 103, '$s' . $map->mood => $x + 118, '$s' . $time => $x + 130);
 			$labels = $this->maniaControl->manialinkManager->labelLine($mapFrame, $array);
 			/** @var  Label_Text $authorLabel */
 			$authorLabel = $labels[2];
@@ -195,8 +222,8 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 			$mxQuad->setX($x + 56);
 			$mxQuad->setUrl($map->pageurl);
 			$mxQuad->setZ(0.01);
-            $description = 'View $<' . $map->name . '$> on Mania-Exchange';
-            $mxQuad->addTooltipLabelFeature($descriptionLabel, $description);
+			$description = 'View $<' . $map->name . '$> on Mania-Exchange';
+			$mxQuad->addTooltipLabelFeature($descriptionLabel, $description);
 
 			if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
 				$addQuad = new Quad_Icons64x64_1();
@@ -208,8 +235,8 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 				$addQuad->setAction(self::ACTION_ADD_MAP . '.' . $map->id);
 				$addQuad->setZ(0.01);
 
-                $description = 'Add-Map: $<' . $map->name . '$>';
-                $addQuad->addTooltipLabelFeature($descriptionLabel, $description);
+				$description = 'Add-Map: $<' . $map->name . '$>';
+				$addQuad->addTooltipLabelFeature($descriptionLabel, $description);
 			}
 
 			//Award Quad
@@ -230,7 +257,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 			}
 
 			//Map Karma
-			$karma = $map->ratingVoteAverage / 100;
+			$karma     = $map->ratingVoteAverage / 100;
 			$voteCount = $map->ratingVoteCount;
 			if (is_numeric($karma) && $voteCount > 0) {
 				$karmaGauge = new Gauge();
@@ -313,35 +340,6 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 	}
 
 	/**
-	 * Handle ManialinkPageAnswer Callback
-	 *
-	 * @param array $callback
-	 */
-	public function handleManialinkPageAnswer(array $callback) {
-		$actionId    = $callback[1][2];
-		$actionArray = explode('.', $actionId);
-		if (count($actionArray) <= 2) {
-			return;
-		}
-
-		$action = $actionArray[0] . '.' . $actionArray[1];
-		$login  = $callback[1][1];
-		$player = $this->maniaControl->playerManager->getPlayer($login);
-		$mapId  = (int)$actionArray[2];
-
-		switch($action) {
-			case self::ACTION_GET_MAPS_FROM_AUTHOR:
-				$callback[1][2] = 'auth:' . $actionArray[2];
-				$this->showList($callback, $player);
-				break;
-			case self::ACTION_ADD_MAP:
-				$this->maniaControl->mapManager->addMapFromMx($mapId, $player->login);
-				break;
-		}
-	}
-
-
-	/**
 	 * Unset the player if he opened another Main Widget
 	 *
 	 * @param Player $player
@@ -364,5 +362,4 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		unset($this->mapListShown[$player->login]);
 	}
 
-
-} 
+}

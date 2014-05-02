@@ -21,8 +21,8 @@ use Maniaplanet\DedicatedServer\Xmlrpc\PlayerNotIgnoredException;
 /**
  * Player Actions Class
  *
- * @author    steeffeen & kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class PlayerActions {
@@ -71,50 +71,6 @@ class PlayerActions {
 	}
 
 	/**
-	 * Force a Player to Play
-	 *
-	 * @param string $adminLogin
-	 * @param string $targetLogin
-	 * @param bool   $userIsAbleToSelect
-	 * @param bool   $displayAnnouncement
-	 * @internal param int $type
-	 */
-	public function forcePlayerToPlay($adminLogin, $targetLogin, $userIsAbleToSelect = true, $displayAnnouncement = true) {
-		$admin = $this->maniaControl->playerManager->getPlayer($adminLogin);
-		if (!$this->maniaControl->authenticationManager->checkPermission($admin, self::SETTING_PERMISSION_FORCE_PLAYER_PLAY)) {
-			$this->maniaControl->authenticationManager->sendNotAllowed($admin);
-			return;
-		}
-		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
-		if (!$target) {
-			return;
-		}
-
-		try {
-			$this->maniaControl->client->forceSpectator($target->login, self::SPECTATOR_PLAYER);
-		} catch(FaultException $e) {
-			//TODO exception 'There are too many players' appeared 28.04.2014, wait for more before add to faultexception
-			$this->maniaControl->chat->sendException($e, $admin->login);
-			return;
-		}
-
-		if ($userIsAbleToSelect) {
-			try {
-				$this->maniaControl->client->forceSpectator($target->login, self::SPECTATOR_USER_SELECTABLE);
-			} catch(Exception $e) {
-				$this->maniaControl->chat->sendException($e, $admin->login);
-				return;
-			}
-		}
-
-		// Announce force
-		if ($displayAnnouncement) {
-			$chatMessage = '$<' . $admin->nickname . '$> forced $<' . $target->nickname . '$> to Play!';
-			$this->maniaControl->chat->sendInformation($chatMessage);
-		}
-	}
-
-	/**
 	 * Force a Player to a certain Team
 	 *
 	 * @param string $adminLogin
@@ -138,7 +94,7 @@ class PlayerActions {
 
 		try {
 			$this->maniaControl->client->forcePlayerTeam($target->login, $teamId);
-		} catch(NotInTeamModeException $e) {
+		} catch (NotInTeamModeException $e) {
 			$this->forcePlayerToPlay($adminLogin, $targetLogin);
 			return;
 		}
@@ -155,6 +111,50 @@ class PlayerActions {
 		}
 		$this->maniaControl->chat->sendInformation($chatMessage);
 		$this->maniaControl->log($chatMessage, true);
+	}
+
+	/**
+	 * Force a Player to Play
+	 *
+	 * @param string $adminLogin
+	 * @param string $targetLogin
+	 * @param bool   $userIsAbleToSelect
+	 * @param bool   $displayAnnouncement
+	 * @internal param int $type
+	 */
+	public function forcePlayerToPlay($adminLogin, $targetLogin, $userIsAbleToSelect = true, $displayAnnouncement = true) {
+		$admin = $this->maniaControl->playerManager->getPlayer($adminLogin);
+		if (!$this->maniaControl->authenticationManager->checkPermission($admin, self::SETTING_PERMISSION_FORCE_PLAYER_PLAY)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($admin);
+			return;
+		}
+		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
+		if (!$target) {
+			return;
+		}
+
+		try {
+			$this->maniaControl->client->forceSpectator($target->login, self::SPECTATOR_PLAYER);
+		} catch (FaultException $e) {
+			//TODO exception 'There are too many players' appeared 28.04.2014, wait for more before add to faultexception
+			$this->maniaControl->chat->sendException($e, $admin->login);
+			return;
+		}
+
+		if ($userIsAbleToSelect) {
+			try {
+				$this->maniaControl->client->forceSpectator($target->login, self::SPECTATOR_USER_SELECTABLE);
+			} catch (Exception $e) {
+				$this->maniaControl->chat->sendException($e, $admin->login);
+				return;
+			}
+		}
+
+		// Announce force
+		if ($displayAnnouncement) {
+			$chatMessage = '$<' . $admin->nickname . '$> forced $<' . $target->nickname . '$> to Play!';
+			$this->maniaControl->chat->sendInformation($chatMessage);
+		}
 	}
 
 	/**
@@ -179,7 +179,7 @@ class PlayerActions {
 
 		try {
 			$this->maniaControl->client->forceSpectator($target->login, $spectatorState);
-		} catch(Exception $e) {
+		} catch (Exception $e) {
 			$this->maniaControl->chat->sendException($e, $admin->login);
 			return;
 		}
@@ -193,7 +193,7 @@ class PlayerActions {
 			// Free player slot
 			try {
 				$this->maniaControl->client->spectatorReleasePlayerSlot($target->login);
-			} catch(PlayerIsNotSpectatorException $e) {
+			} catch (PlayerIsNotSpectatorException $e) {
 			}
 		}
 	}
@@ -217,9 +217,9 @@ class PlayerActions {
 			return;
 		}
 
-		try{
+		try {
 			$this->maniaControl->client->unIgnore($targetLogin);
-		}catch(PlayerNotIgnoredException $e){
+		} catch (PlayerNotIgnoredException $e) {
 			$this->maniaControl->chat->sendError("Player is not ignored!");
 			return;
 		}
@@ -249,9 +249,9 @@ class PlayerActions {
 			return;
 		}
 
-		try{
+		try {
 			$this->maniaControl->client->ignore($targetLogin);
-		}catch(PlayerAlreadyIgnoredException $e){
+		} catch (PlayerAlreadyIgnoredException $e) {
 			$this->maniaControl->chat->sendError("Player already ignored!");
 			return;
 		}
@@ -322,7 +322,7 @@ class PlayerActions {
 		$label->setTextColor('f00');
 
 		$y = $height / 2 - 15;
-		foreach($message as $line) {
+		foreach ($message as $line) {
 			// Message lines
 			$label = new Label_Text();
 			$frame->add($label);
@@ -368,7 +368,7 @@ class PlayerActions {
 			} else {
 				$this->maniaControl->client->kick($target->login, $message);
 			}
-		} catch(Exception $e) {
+		} catch (Exception $e) {
 			$this->maniaControl->chat->sendException($e, $admin->login);
 			return;
 		}
@@ -495,7 +495,7 @@ class PlayerActions {
 	 */
 	public function isPlayerMuted($login) {
 		$ignoreList = $this->maniaControl->client->getIgnoreList(100, 0);
-		foreach($ignoreList as $ignoredPlayers) {
+		foreach ($ignoreList as $ignoredPlayers) {
 			if ($ignoredPlayers->login == $login) {
 				return true;
 			}

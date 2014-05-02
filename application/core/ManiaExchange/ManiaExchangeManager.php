@@ -10,8 +10,8 @@ use Maniaplanet\DedicatedServer\Xmlrpc\NotInScriptModeException;
 /**
  * Mania Exchange Info Searcher Class
  *
- * @author    steeffeen & kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ManiaExchangeManager {
@@ -57,49 +57,6 @@ class ManiaExchangeManager {
 		$this->maniaControl = $maniaControl;
 	}
 
-
-	/**
-	 * Store Map Info from MX and store the mxid in the database and the mx info in the map object
-	 *
-	 * @param $mxMapInfos
-	 */
-	public function updateMapObjectsWithManiaExchangeIds($mxMapInfos) {
-		$mysqli = $this->maniaControl->database->mysqli;
-		// Save map data
-		$saveMapQuery     = "UPDATE `" . MapManager::TABLE_MAPS . "`
-				SET `mxid` = ?
-				WHERE `uid` = ?;";
-		$saveMapStatement = $mysqli->prepare($saveMapQuery);
-		if ($mysqli->error) {
-			trigger_error($mysqli->error);
-			return;
-		}
-		$saveMapStatement->bind_param('is', $mapMxId, $mapUId);
-		foreach($mxMapInfos as $mxMapInfo) {
-			/** @var MXMapInfo $mxMapInfo */
-			$mapMxId = $mxMapInfo->id;
-			$mapUId  = $mxMapInfo->uid;
-			$saveMapStatement->execute();
-			if ($saveMapStatement->error) {
-				trigger_error($saveMapStatement->error);
-			}
-
-			//Take the uid out of the vector
-			if (isset($this->mxIdUidVector[$mxMapInfo->id])) {
-				$uid = $this->mxIdUidVector[$mxMapInfo->id];
-			} else {
-				$uid = $mxMapInfo->uid;
-			}
-			$map = $this->maniaControl->mapManager->getMapByUid($uid);
-			if ($map) {
-				// TODO: how does it come that $map can be empty here? we got an error report for that
-				/** @var Map $map */
-				$map->mx = $mxMapInfo;
-			}
-		}
-		$saveMapStatement->close();
-	}
-
 	/**
 	 * Unset Map by Mx Id
 	 *
@@ -138,7 +95,7 @@ class ManiaExchangeManager {
 		}
 
 		$id = 0;
-		foreach($maps as $map) {
+		foreach ($maps as $map) {
 			/** @var Map $map */
 			$fetchMapStatement->bind_param('i', $map->index);
 			$fetchMapStatement->execute();
@@ -183,37 +140,6 @@ class ManiaExchangeManager {
 	}
 
 	/**
-	 * Get Map Info Asynchronously
-	 *
-	 * @param $id
-	 * @param $function
-	 * @return bool
-	 */
-	public function getMapInfo($id, $function) {
-		// Get Title Prefix
-		$titlePrefix = $this->maniaControl->mapManager->getCurrentMap()->getGame();
-
-		// compile search URL
-		$url = 'http://api.mania-exchange.com/' . $titlePrefix . '/maps/?ids=' . $id;
-
-		return $this->maniaControl->fileReader->loadFile($url, function ($mapInfo, $error) use (&$function, $titlePrefix, $url) {
-			$mxMapInfo = null;
-			if ($error) {
-				trigger_error($error);
-			} else {
-				$mxMapList = json_decode($mapInfo);
-				if ($mxMapList === null) {
-					trigger_error('Cannot decode searched JSON data from ' . $url);
-				} else {
-					$mxMapInfo = new MXMapInfo($titlePrefix, $mxMapList[0]);
-				}
-			}
-			call_user_func($function, $mxMapInfo);
-		}, "application/json");
-	}
-
-
-	/**
 	 * Get the Whole MapList from MX by Mixed Uid and Id String fetch
 	 *
 	 * @param $string
@@ -244,7 +170,7 @@ class ManiaExchangeManager {
 			}
 
 			$maps = array();
-			foreach($mxMapList as $map) {
+			foreach ($mxMapList as $map) {
 				if ($map) {
 					$mxMapObject = new MXMapInfo($titlePrefix, $map);
 					if ($mxMapObject) {
@@ -258,6 +184,78 @@ class ManiaExchangeManager {
 		}, "application/json");
 
 		return $success;
+	}
+
+	/**
+	 * Store Map Info from MX and store the mxid in the database and the mx info in the map object
+	 *
+	 * @param $mxMapInfos
+	 */
+	public function updateMapObjectsWithManiaExchangeIds($mxMapInfos) {
+		$mysqli = $this->maniaControl->database->mysqli;
+		// Save map data
+		$saveMapQuery     = "UPDATE `" . MapManager::TABLE_MAPS . "`
+				SET `mxid` = ?
+				WHERE `uid` = ?;";
+		$saveMapStatement = $mysqli->prepare($saveMapQuery);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error);
+			return;
+		}
+		$saveMapStatement->bind_param('is', $mapMxId, $mapUId);
+		foreach ($mxMapInfos as $mxMapInfo) {
+			/** @var MXMapInfo $mxMapInfo */
+			$mapMxId = $mxMapInfo->id;
+			$mapUId  = $mxMapInfo->uid;
+			$saveMapStatement->execute();
+			if ($saveMapStatement->error) {
+				trigger_error($saveMapStatement->error);
+			}
+
+			//Take the uid out of the vector
+			if (isset($this->mxIdUidVector[$mxMapInfo->id])) {
+				$uid = $this->mxIdUidVector[$mxMapInfo->id];
+			} else {
+				$uid = $mxMapInfo->uid;
+			}
+			$map = $this->maniaControl->mapManager->getMapByUid($uid);
+			if ($map) {
+				// TODO: how does it come that $map can be empty here? we got an error report for that
+				/** @var Map $map */
+				$map->mx = $mxMapInfo;
+			}
+		}
+		$saveMapStatement->close();
+	}
+
+	/**
+	 * Get Map Info Asynchronously
+	 *
+	 * @param $id
+	 * @param $function
+	 * @return bool
+	 */
+	public function getMapInfo($id, $function) {
+		// Get Title Prefix
+		$titlePrefix = $this->maniaControl->mapManager->getCurrentMap()->getGame();
+
+		// compile search URL
+		$url = 'http://api.mania-exchange.com/' . $titlePrefix . '/maps/?ids=' . $id;
+
+		return $this->maniaControl->fileReader->loadFile($url, function ($mapInfo, $error) use (&$function, $titlePrefix, $url) {
+			$mxMapInfo = null;
+			if ($error) {
+				trigger_error($error);
+			} else {
+				$mxMapList = json_decode($mapInfo);
+				if ($mxMapList === null) {
+					trigger_error('Cannot decode searched JSON data from ' . $url);
+				} else {
+					$mxMapInfo = new MXMapInfo($titlePrefix, $mxMapList[0]);
+				}
+			}
+			call_user_func($function, $mxMapInfo);
+		}, "application/json");
 	}
 
 	/**
@@ -302,13 +300,13 @@ class ManiaExchangeManager {
 		if ($titlePrefix != "tm") {
 			$url .= '&minexebuild=' . self::MIN_EXE_BUILD;
 		}
-		
+
 		// Get MapTypes
 		try {
 			$scriptInfos = $this->maniaControl->client->getModeScriptInfo();
 			$mapTypes    = $scriptInfos->compatibleMapTypes;
 			$url .= '&mtype=' . $mapTypes;
-		} catch(NotInScriptModeException $e) {
+		} catch (NotInScriptModeException $e) {
 		}
 
 		$success = $this->maniaControl->fileReader->loadFile($url, function ($mapInfo, $error) use (&$function, $titlePrefix) {
@@ -332,7 +330,7 @@ class ManiaExchangeManager {
 			}
 
 			$maps = array();
-			foreach($mxMapList as $map) {
+			foreach ($mxMapList as $map) {
 				if (!empty($map)) {
 					array_push($maps, new MXMapInfo($titlePrefix, $map));
 				}
@@ -352,7 +350,7 @@ class ManiaExchangeManager {
 	 * @return int
 	 */
 	private function getEnvironment($env) {
-		switch($env) {
+		switch ($env) {
 			case 'TMCanyon':
 				return 1;
 			case 'TMStadium':

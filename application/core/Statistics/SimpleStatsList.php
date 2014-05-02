@@ -23,10 +23,10 @@ use ManiaControl\Players\PlayerManager;
 
 /**
  * Simple Stats List Class
- * 
- * @author kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ *
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, CommandListener {
 	/*
@@ -83,17 +83,6 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 	}
 
 	/**
-	 * Show the stat List
-	 *
-	 * @param array  $callback
-	 * @param Player $player
-	 */
-	public function command_ShowStatsList(array $callback, Player $player) {
-		$this->showStatsList($player);
-	}
-
-
-	/**
 	 * Register a Certain Stat
 	 *
 	 * @param        $statName
@@ -111,6 +100,15 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		$this->statsWidth += $width;
 	}
 
+	/**
+	 * Show the stat List
+	 *
+	 * @param array  $callback
+	 * @param Player $player
+	 */
+	public function command_ShowStatsList(array $callback, Player $player) {
+		$this->showStatsList($player);
+	}
 
 	/**
 	 * Show the StatsList Widget to the Player
@@ -174,7 +172,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		//Compute Headline
 		$x            = $xStart + 55;
 		$statRankings = array();
-		foreach($this->statArray as $key => $stat) {
+		foreach ($this->statArray as $key => $stat) {
 			$ranking = $this->maniaControl->statisticManager->getStatsRanking($stat["Name"]);
 			if (!empty($ranking)) {
 				$statRankings[$stat["Name"]]  = $ranking;
@@ -189,16 +187,16 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 
 		//Description Label
 		$i = 2;
-		foreach($this->statArray as $statArray) {
+		foreach ($this->statArray as $statArray) {
 			if (!isset($labels[$i])) {
 				break;
 			}
 
 			/** @var Label_Text $label [] */
-            $label = $labels[$i];
+			$label = $labels[$i];
 
 			$label->setAction(self::ACTION_SORT_STATS . '.' . $statArray["Name"]);
-            $label->addTooltipLabelFeature($descriptionLabel, '$o '.$statArray["Name"]);
+			$label->addTooltipLabelFeature($descriptionLabel, '$o ' . $statArray["Name"]);
 			$i++;
 		}
 
@@ -214,7 +212,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 			return;
 		}
 
-		foreach($statRankings[$order] as $playerId => $value) {
+		foreach ($statRankings[$order] as $playerId => $value) {
 			$listPlayer = $this->maniaControl->playerManager->getPlayerByIndex($playerId);
 			if ($i == 15) {
 				break;
@@ -235,7 +233,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 
 			$displayArray = array();
 
-			foreach($this->statArray as $stat) {
+			foreach ($this->statArray as $stat) {
 				$statValue = 0;
 				if (isset($statRankings[$stat['Name']][$playerId])) {
 					$statValue = $statRankings[$stat['Name']][$playerId];
@@ -254,7 +252,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 
 
 			$x = $xStart + 55;
-			foreach($displayArray as $key => $array) {
+			foreach ($displayArray as $key => $array) {
 				$label = new Label_Text();
 				$playerFrame->add($label);
 				$label->setHAlign($hAlign);
@@ -263,7 +261,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 				$label->setTextSize($textSize);
 				$label->setText($array['Value']);
 				$label->setTextColor($textColor);
-                $label->addTooltipLabelFeature($descriptionLabel, '$o '.$key);
+				$label->addTooltipLabelFeature($descriptionLabel, '$o ' . $key);
 				$x += $array['Width'];
 			}
 
@@ -301,7 +299,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 
 		$action = $actionArray[0] . "." . $actionArray[1];
 
-		switch($action) {
+		switch ($action) {
 			case self::ACTION_SORT_STATS:
 				$playerLogin = $callback[1][1];
 				$player      = $this->maniaControl->playerManager->getPlayer($playerLogin);

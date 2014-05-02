@@ -11,8 +11,8 @@ use Maniaplanet\DedicatedServer\Xmlrpc\NotInScriptModeException;
 /**
  * Class managing Rankings
  *
- * @author    kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class RankingManager implements CallbackListener {
@@ -42,19 +42,9 @@ class RankingManager implements CallbackListener {
 	public function onInit() {
 		try {
 			$this->maniaControl->client->triggerModeScriptEvent('LibXmlRpc_GetRankings', '');
-		} catch(NotInScriptModeException $e) {
+		} catch (NotInScriptModeException $e) {
 		}
 	}
-
-	/**
-	 * Get Rankings
-	 *
-	 * @return array
-	 */
-	public function getRankings() {
-		return $this->rankings;
-	}
-
 
 	/**
 	 * Handle stats on callbacks (never call this Method)
@@ -65,7 +55,7 @@ class RankingManager implements CallbackListener {
 		$callbackName = $callback[1][0];
 
 		//TODO not tested in TrackMania
-		switch($callbackName) {
+		switch ($callbackName) {
 			case 'updateRankings':
 				$this->updateRankings($callback[1][1][0]);
 				break;
@@ -89,7 +79,7 @@ class RankingManager implements CallbackListener {
 		}
 
 		$scores = explode(';', $data);
-		foreach($scores as $player) {
+		foreach ($scores as $player) {
 			if (strpos($player, ':') !== false) {
 				$tmp                     = explode(':', $player);
 				$this->rankings[$tmp[0]] = $tmp[1];
@@ -102,6 +92,15 @@ class RankingManager implements CallbackListener {
 	}
 
 	/**
+	 * Get Rankings
+	 *
+	 * @return array
+	 */
+	public function getRankings() {
+		return $this->rankings;
+	}
+
+	/**
 	 * Get the Current Leading Players (as Login Array)
 	 *
 	 * @return array|null
@@ -109,7 +108,7 @@ class RankingManager implements CallbackListener {
 	public function getLeaders() {
 		$leaders = array();
 		$prev    = -1;
-		foreach($this->rankings as $score) {
+		foreach ($this->rankings as $score) {
 			if ($prev != -1 && $prev < $score) {
 				return $leaders;
 			}

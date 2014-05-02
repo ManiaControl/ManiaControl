@@ -5,8 +5,8 @@ namespace ManiaControl\Maps;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Controls\Quads\Quad_UIConstruction_Buttons;
-use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\CallbackListener;
+use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\IconManager;
@@ -18,8 +18,8 @@ use Maniaplanet\DedicatedServer\Xmlrpc\FaultException;
 /**
  * Class offering Commands to manage Maps
  *
- * @author    steeffeen & kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class MapCommands implements CommandListener, ManialinkPageAnswerListener, CallbackListener {
@@ -194,7 +194,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		}
 		try {
 			$this->maniaControl->client->nextMap();
-		} catch(ChangeInProgressException $e) {
+		} catch (ChangeInProgressException $e) {
 		}
 		$message = '$<' . $player->nickname . '$> skipped the current Map!';
 		$this->maniaControl->chat->sendSuccess($message);
@@ -218,7 +218,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 
 		try {
 			$this->maniaControl->client->restartMap();
-		} catch(ChangeInProgressException $e) {
+		} catch (ChangeInProgressException $e) {
 		}
 	}
 
@@ -254,25 +254,25 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		}
 
 		$chatCommand = explode(' ', $chat[1][2]);
-		if(isset($chatCommand[1])) {
-			if(strstr($chatCommand[1], '.txt')) {
+		if (isset($chatCommand[1])) {
+			if (strstr($chatCommand[1], '.txt')) {
 				$maplist = $chatCommand[1];
 			} else {
-				$maplist = $chatCommand.'.txt';
+				$maplist = $chatCommand . '.txt';
 			}
 		} else {
 			$maplist = 'maplist.txt';
 		}
 
-		$maplist = 'MatchSettings/'.$maplist;
+		$maplist = 'MatchSettings/' . $maplist;
 		try {
 			$this->maniaControl->client->saveMatchSettings($maplist);
 
-			$message = 'Maplist $<$fff'.$maplist.'$> written.';
+			$message = 'Maplist $<$fff' . $maplist . '$> written.';
 			$this->maniaControl->chat->sendSuccess($message, $player);
 			$this->maniaControl->log($message, true);
-		} catch(FaultException $e) {
-			$this->maniaControl->chat->sendError('Cannot write maplist $<$fff'.$maplist.'$>!', $player);
+		} catch (FaultException $e) {
+			$this->maniaControl->chat->sendError('Cannot write maplist $<$fff' . $maplist . '$>!', $player);
 		}
 	}
 
@@ -289,26 +289,26 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		}
 
 		$chatCommand = explode(' ', $chat[1][2]);
-		if(isset($chatCommand[1])) {
-			if(strstr($chatCommand[1], '.txt')) {
+		if (isset($chatCommand[1])) {
+			if (strstr($chatCommand[1], '.txt')) {
 				$maplist = $chatCommand[1];
 			} else {
-				$maplist = $chatCommand[1].'.txt';
+				$maplist = $chatCommand[1] . '.txt';
 			}
 		} else {
 			$maplist = 'maplist.txt';
 		}
 
-		$maplist = 'MatchSettings/'.$maplist;
+		$maplist = 'MatchSettings/' . $maplist;
 		try {
 			$this->maniaControl->client->loadMatchSettings($maplist);
 
-			$message = 'Maplist $<$fff'.$maplist.'$> loaded.';
+			$message = 'Maplist $<$fff' . $maplist . '$> loaded.';
 			$this->maniaControl->mapManager->restructureMapList();
 			$this->maniaControl->chat->sendSuccess($message, $player);
 			$this->maniaControl->log($message, true);
-		} catch(FaultException $e) {
-			$this->maniaControl->chat->sendError('Cannot load maplist $<$fff'.$maplist.'$>!', $player);
+		} catch (FaultException $e) {
+			$this->maniaControl->chat->sendError('Cannot load maplist $<$fff' . $maplist . '$>!', $player);
 		}
 	}
 
@@ -320,7 +320,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	public function handleManialinkPageAnswer(array $callback) {
 		$actionId = $callback[1][2];
 
-		$login = $callback[1][1];
+		$login  = $callback[1][1];
 		$player = $this->maniaControl->playerManager->getPlayer($login);
 
 		if (strstr($actionId, self::ACTION_SHOW_AUTHOR)) {
@@ -328,6 +328,30 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$this->maniaControl->mapManager->mapList->playerCloseWidget($player);
 			$this->showMapListAuthor($login, $player);
 		}
+	}
+
+	/**
+	 * Show the Player a List of Maps from the given Author
+	 *
+	 * @param string $author
+	 * @param Player $player
+	 */
+	private function showMapListAuthor($author, Player $player) {
+		$maps    = $this->maniaControl->mapManager->getMaps();
+		$mapList = array();
+		/** @var Map $map */
+		foreach ($maps as $map) {
+			if ($map->authorLogin == $author) {
+				$mapList[] = $map;
+			}
+		}
+
+		if (count($mapList) == 0) {
+			$this->maniaControl->chat->sendError('There are no maps to show!', $player->login);
+			return;
+		}
+
+		$this->maniaControl->mapManager->mapList->showMapList($player, $mapList);
 	}
 
 	/**
@@ -339,19 +363,19 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	public function command_List(array $chatCallback, Player $player) {
 		$chatCommands = explode(' ', $chatCallback[1][2]);
 		$this->maniaControl->mapManager->mapList->playerCloseWidget($player);
-		if(isset($chatCommands[1])) {
-			if($chatCommands[1] == ' ' || $chatCommands[1] == 'all') {
+		if (isset($chatCommands[1])) {
+			if ($chatCommands[1] == ' ' || $chatCommands[1] == 'all') {
 				$this->maniaControl->mapManager->mapList->showMapList($player);
-			} elseif($chatCommands[1] == 'best') {
+			} elseif ($chatCommands[1] == 'best') {
 				$this->showMapListKarma(true, $player);
-			} elseif($chatCommands[1] == 'worst') {
+			} elseif ($chatCommands[1] == 'worst') {
 				$this->showMapListKarma(false, $player);
-			} elseif($chatCommands[1] == 'newest') {
+			} elseif ($chatCommands[1] == 'newest') {
 				$this->showMapListDate(true, $player);
-			} elseif($chatCommands[1] == 'oldest') {
+			} elseif ($chatCommands[1] == 'oldest') {
 				$this->showMapListDate(false, $player);
-			} elseif($chatCommands[1] == 'author') {
-				if(isset($chatCommands[2])) {
+			} elseif ($chatCommands[1] == 'author') {
+				if (isset($chatCommands[2])) {
 					$this->showMaplistAuthor($chatCommands[2], $player);
 				} else {
 					$this->maniaControl->chat->sendError('There are no maps to show!', $player->login);
@@ -363,68 +387,45 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	}
 
 	/**
-	 * Show the Player a List of Maps from the given Author
-	 * @param string $author
-	 * @param Player $player
-	 */
-	private function showMapListAuthor($author, Player $player) {
-		$maps = $this->maniaControl->mapManager->getMaps();
-		$mapList = array();
-		/** @var Map $map */
-		foreach($maps as $map) {
-			if($map->authorLogin == $author) {
-				$mapList[] = $map;
-			}
-		}
-
-		if(count($mapList) == 0) {
-			$this->maniaControl->chat->sendError('There are no maps to show!', $player->login);
-			return;
-		}
-
-		$this->maniaControl->mapManager->mapList->showMapList($player, $mapList);
-	}
-
-	/**
 	 * Show a Karma based MapList
 	 *
-	 * @param bool $best
+	 * @param bool   $best
 	 * @param Player $player
 	 */
 	private function showMapListKarma($best, Player $player) {
 		/** @var \MCTeam\KarmaPlugin $karmaPlugin */
 		$karmaPlugin = $this->maniaControl->pluginManager->getPlugin(MapList::DEFAULT_KARMA_PLUGIN);
-		if($karmaPlugin) {
-			$maps = $this->maniaControl->mapManager->getMaps();
+		if ($karmaPlugin) {
+			$maps    = $this->maniaControl->mapManager->getMaps();
 			$mapList = array();
-			foreach($maps as $map) {
-				if($map instanceof Map) {
-					if($this->maniaControl->settingManager->getSetting($karmaPlugin, $karmaPlugin::SETTING_NEWKARMA) === true) {
-						$karma = $karmaPlugin->getMapKarma($map);
+			foreach ($maps as $map) {
+				if ($map instanceof Map) {
+					if ($this->maniaControl->settingManager->getSetting($karmaPlugin, $karmaPlugin::SETTING_NEWKARMA) === true) {
+						$karma      = $karmaPlugin->getMapKarma($map);
 						$map->karma = round($karma * 100.);
 					} else {
 						$votes = $karmaPlugin->getMapVotes($map);
-						$min = 0;
-						$plus = 0;
-						foreach($votes as $vote) {
-							if(isset($vote->vote)) {
-								if($vote->vote != 0.5) {
-									if($vote->vote < 0.5) {
-										$min = $min+$vote->count;
+						$min   = 0;
+						$plus  = 0;
+						foreach ($votes as $vote) {
+							if (isset($vote->vote)) {
+								if ($vote->vote != 0.5) {
+									if ($vote->vote < 0.5) {
+										$min = $min + $vote->count;
 									} else {
-										$plus = $plus+$vote->count;
+										$plus = $plus + $vote->count;
 									}
 								}
 							}
 						}
-						$map->karma = $plus-$min;
+						$map->karma = $plus - $min;
 					}
 					$mapList[] = $map;
 				}
 			}
 
 			usort($mapList, array($this, 'sortByKarma'));
-			if($best) {
+			if ($best) {
 				$mapList = array_reverse($mapList);
 			}
 
@@ -435,30 +436,19 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	}
 
 	/**
-	 * Helper Function to sort Maps by Karma
-	 *
-	 * @param Map $a
-	 * @param Map $b
-	 * @return mixed
-	 */
-	private function sortByKarma($a, $b) {
-		return ($a->karma - $b->karma);
-	}
-
-	/**
 	 * Show a Date based MapList
 	 *
-	 * @param bool $newest
+	 * @param bool   $newest
 	 * @param Player $player
 	 */
 	private function showMapListDate($newest, Player $player) {
 		$maps = $this->maniaControl->mapManager->getMaps();
 
-		usort($maps, function($a, $b) {
+		usort($maps, function ($a, $b) {
 			return ($a->index - $b->index);
 		});
 
-		if($newest) {
+		if ($newest) {
 			$maps = array_reverse($maps);
 		}
 
@@ -473,5 +463,16 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	 */
 	public function command_xList(array $chatCallback, Player $player) {
 		$this->maniaControl->mapManager->mxList->showList($chatCallback, $player);
+	}
+
+	/**
+	 * Helper Function to sort Maps by Karma
+	 *
+	 * @param Map $a
+	 * @param Map $b
+	 * @return mixed
+	 */
+	private function sortByKarma($a, $b) {
+		return ($a->karma - $b->karma);
 	}
 }

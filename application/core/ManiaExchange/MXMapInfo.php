@@ -7,10 +7,10 @@ use ManiaControl\Formatter;
 /**
  * Mania Exchange Map Info Object
  *
- * @author  Xymph
- * @updated kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @author    Xymph
+ * @updated   kremsy <kremsy@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class MXMapInfo {
 	public $prefix, $id, $uid, $name, $userid, $author, $uploaded, $updated, $type, $maptype;
@@ -19,6 +19,7 @@ class MXMapInfo {
 	public $replaytyp, $replayid, $replaycnt, $acomment, $awards, $comments;
 	public $pageurl, $replayurl, $imageurl, $thumburl, $downloadurl, $dir;
 	public $ratingVoteCount, $ratingVoteAverage;
+
 	/**
 	 * Returns map object with all available data from MX map data
 	 *
@@ -76,7 +77,7 @@ class MXMapInfo {
 			$this->comments   = $mx->CommentCount;
 
 			$this->ratingVoteCount   = isset($mx->RatingVoteCount) ? $mx->RatingVoteCount : 0;
-			$this->ratingVoteAverage  = isset($mx->RatingVoteAverage) ? $mx->RatingVoteAverage : 0;
+			$this->ratingVoteAverage = isset($mx->RatingVoteAverage) ? $mx->RatingVoteAverage : 0;
 
 			if ($this->trkvalue == 0 && $this->lbrating > 0) {
 				$this->trkvalue = $this->lbrating;

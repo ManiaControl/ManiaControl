@@ -3,11 +3,11 @@
 namespace ManiaControl\Callbacks;
 
 /**
- * Interface for CallbackListener
+ * Interface for Callback Listener
  *
- * @author steeffeen & kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 interface CallbackListener {
 }

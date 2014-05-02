@@ -11,9 +11,9 @@ use ManiaControl\Players\PlayerManager;
 /**
  * Statistic Collector Class
  *
- * @author steeffeen & kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class StatisticCollector implements CallbackListener {
 	/*
@@ -115,90 +115,9 @@ class StatisticCollector implements CallbackListener {
 
 		$leaders = $this->maniaControl->server->rankingManager->getLeaders();
 
-		foreach($leaders as $leaderLogin) {
+		foreach ($leaders as $leaderLogin) {
 			$leader = $this->maniaControl->playerManager->getPlayer($leaderLogin);
 			$this->maniaControl->statisticManager->incrementStat(self::STAT_MAP_WINS, $leader);
-		}
-	}
-
-	/**
-	 * Handle Player Shots
-	 *
-	 * @param string $login
-	 * @param int $weaponNumber
-	 */
-	private function handleOnShoot($login, $weaponNumber) {
-		if (!isset($this->onShootArray[$login])) {
-			$this->onShootArray[$login] = array(self::WEAPON_ROCKET => 0, self::WEAPON_ARROW => 0, self::WEAPON_NUCLEUS => 0, self::WEAPON_LASER => 0);
-			$this->onShootArray[$login][$weaponNumber]++;
-		} else {
-			$this->onShootArray[$login][$weaponNumber]++;
-		}
-
-		//Write Shoot Data into database
-		if (array_sum($this->onShootArray[$login]) > $this->maniaControl->settingManager->getSetting($this, self::SETTING_ON_SHOOT_PRESTORE)) {
-			$player = $this->maniaControl->playerManager->getPlayer($login);
-
-			$rocketShots  = $this->onShootArray[$login][self::WEAPON_ROCKET];
-			$laserShots   = $this->onShootArray[$login][self::WEAPON_LASER];
-			$arrowShots   = $this->onShootArray[$login][self::WEAPON_ARROW];
-			$nucleusShots = $this->onShootArray[$login][self::WEAPON_NUCLEUS];
-
-			if ($rocketShots > 0) {
-				$this->maniaControl->statisticManager->insertStat(self::STAT_ROCKET_SHOT, $player, $this->maniaControl->server->index, $rocketShots);
-				$this->onShootArray[$login][self::WEAPON_ROCKET] = 0;
-			}
-			if ($laserShots > 0) {
-				$this->maniaControl->statisticManager->insertStat(self::STAT_LASER_SHOT, $player, $this->maniaControl->server->index, $laserShots);
-				$this->onShootArray[$login][self::WEAPON_LASER] = 0;
-			}
-			if ($arrowShots > 0) {
-				$this->maniaControl->statisticManager->insertStat(self::STAT_ARROW_SHOT, $player, $this->maniaControl->server->index, $arrowShots);
-				$this->onShootArray[$login][self::WEAPON_ARROW] = 0;
-			}
-			if ($nucleusShots > 0) {
-				$this->maniaControl->statisticManager->insertStat(self::STAT_NUCLEUS_SHOT, $player, $this->maniaControl->server->index, $nucleusShots);
-				$this->onShootArray[$login][self::WEAPON_NUCLEUS] = 0;
-			}
-
-			$this->maniaControl->statisticManager->insertStat(self::STAT_ON_SHOOT, $player, $this->maniaControl->server->index, $rocketShots + $laserShots + $arrowShots + $nucleusShots);
-		}
-	}
-
-	/**
-	 * Get the Weapon stat
-	 *
-	 * @param int $weaponNumber
-	 * @param bool $shot
-	 * @return string
-	 */
-	private function getWeaponStat($weaponNumber, $shot = true) {
-		if ($shot) {
-			switch($weaponNumber) {
-				case self::WEAPON_ROCKET:
-					return self::STAT_ROCKET_SHOT;
-				case self::WEAPON_LASER:
-					return self::STAT_LASER_SHOT;
-				case self::WEAPON_ARROW:
-					return self::STAT_ARROW_SHOT;
-				case self::WEAPON_NUCLEUS:
-					return self::STAT_NUCLEUS_SHOT;
-				default:
-					return -1;
-			}
-		} else {
-			switch($weaponNumber) {
-				case self::WEAPON_ROCKET:
-					return self::STAT_ROCKET_HIT;
-				case self::WEAPON_LASER:
-					return self::STAT_LASER_HIT;
-				case self::WEAPON_ARROW:
-					return self::STAT_ARROW_HIT;
-				case self::WEAPON_NUCLEUS:
-					return self::STAT_NUCLEUS_HIT;
-				default:
-					return -1;
-			}
 		}
 	}
 
@@ -240,7 +159,7 @@ class StatisticCollector implements CallbackListener {
 
 		$callbackName = $callback[1][0];
 
-		switch($callbackName) {
+		switch ($callbackName) {
 			case 'LibXmlRpc_OnShoot':
 				$this->handleOnShoot($callback[1][1][0], $callback[1][1][1]);
 				break;
@@ -263,7 +182,7 @@ class StatisticCollector implements CallbackListener {
 			case 'LibXmlRpc_OnCapture':
 				$logins = $callback[1][1][0];
 				$logins = explode(';', $logins);
-				foreach($logins as $login) {
+				foreach ($logins as $login) {
 					$player = $this->maniaControl->playerManager->getPlayer($login);
 					if (!$player) {
 						continue;
@@ -335,11 +254,92 @@ class StatisticCollector implements CallbackListener {
 				$paramsObject = json_decode($callback[1][1]);
 				$durationTime = (int)(($paramsObject->EndTime - $paramsObject->StartTime) / 1000);
 				$scoresTable  = $paramsObject->ScoresTable;
-				foreach($scoresTable as $score) {
+				foreach ($scoresTable as $score) {
 					$player = $this->maniaControl->playerManager->getPlayer($score->Login);
 					$this->maniaControl->statisticManager->insertStat(self::STAT_PLAYTIME, $player, -1, $durationTime);
 				}
 				break;
+		}
+	}
+
+	/**
+	 * Handle Player Shots
+	 *
+	 * @param string $login
+	 * @param int    $weaponNumber
+	 */
+	private function handleOnShoot($login, $weaponNumber) {
+		if (!isset($this->onShootArray[$login])) {
+			$this->onShootArray[$login] = array(self::WEAPON_ROCKET => 0, self::WEAPON_ARROW => 0, self::WEAPON_NUCLEUS => 0, self::WEAPON_LASER => 0);
+			$this->onShootArray[$login][$weaponNumber]++;
+		} else {
+			$this->onShootArray[$login][$weaponNumber]++;
+		}
+
+		//Write Shoot Data into database
+		if (array_sum($this->onShootArray[$login]) > $this->maniaControl->settingManager->getSetting($this, self::SETTING_ON_SHOOT_PRESTORE)) {
+			$player = $this->maniaControl->playerManager->getPlayer($login);
+
+			$rocketShots  = $this->onShootArray[$login][self::WEAPON_ROCKET];
+			$laserShots   = $this->onShootArray[$login][self::WEAPON_LASER];
+			$arrowShots   = $this->onShootArray[$login][self::WEAPON_ARROW];
+			$nucleusShots = $this->onShootArray[$login][self::WEAPON_NUCLEUS];
+
+			if ($rocketShots > 0) {
+				$this->maniaControl->statisticManager->insertStat(self::STAT_ROCKET_SHOT, $player, $this->maniaControl->server->index, $rocketShots);
+				$this->onShootArray[$login][self::WEAPON_ROCKET] = 0;
+			}
+			if ($laserShots > 0) {
+				$this->maniaControl->statisticManager->insertStat(self::STAT_LASER_SHOT, $player, $this->maniaControl->server->index, $laserShots);
+				$this->onShootArray[$login][self::WEAPON_LASER] = 0;
+			}
+			if ($arrowShots > 0) {
+				$this->maniaControl->statisticManager->insertStat(self::STAT_ARROW_SHOT, $player, $this->maniaControl->server->index, $arrowShots);
+				$this->onShootArray[$login][self::WEAPON_ARROW] = 0;
+			}
+			if ($nucleusShots > 0) {
+				$this->maniaControl->statisticManager->insertStat(self::STAT_NUCLEUS_SHOT, $player, $this->maniaControl->server->index, $nucleusShots);
+				$this->onShootArray[$login][self::WEAPON_NUCLEUS] = 0;
+			}
+
+			$this->maniaControl->statisticManager->insertStat(self::STAT_ON_SHOOT, $player, $this->maniaControl->server->index, $rocketShots + $laserShots + $arrowShots + $nucleusShots);
+		}
+	}
+
+	/**
+	 * Get the Weapon stat
+	 *
+	 * @param int  $weaponNumber
+	 * @param bool $shot
+	 * @return string
+	 */
+	private function getWeaponStat($weaponNumber, $shot = true) {
+		if ($shot) {
+			switch ($weaponNumber) {
+				case self::WEAPON_ROCKET:
+					return self::STAT_ROCKET_SHOT;
+				case self::WEAPON_LASER:
+					return self::STAT_LASER_SHOT;
+				case self::WEAPON_ARROW:
+					return self::STAT_ARROW_SHOT;
+				case self::WEAPON_NUCLEUS:
+					return self::STAT_NUCLEUS_SHOT;
+				default:
+					return -1;
+			}
+		} else {
+			switch ($weaponNumber) {
+				case self::WEAPON_ROCKET:
+					return self::STAT_ROCKET_HIT;
+				case self::WEAPON_LASER:
+					return self::STAT_LASER_HIT;
+				case self::WEAPON_ARROW:
+					return self::STAT_ARROW_HIT;
+				case self::WEAPON_NUCLEUS:
+					return self::STAT_NUCLEUS_HIT;
+				default:
+					return -1;
+			}
 		}
 	}
 } 

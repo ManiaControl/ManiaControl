@@ -23,23 +23,23 @@ use ManiaControl\Players\Player;
 /**
  * Class managing ingame ManiaControl Configuration
  *
- * @author steeffeen & kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Configurator implements CallbackListener, CommandListener, ManialinkPageAnswerListener {
 	/*
 	 * Constants
 	 */
-	const ACTION_TOGGLEMENU     = 'Configurator.ToggleMenuAction';
-	const ACTION_SAVECONFIG     = 'Configurator.SaveConfigAction';
-	const ACTION_SELECTMENU     = 'Configurator.SelectMenu';
-	const SETTING_MENU_POSX     = 'Menu Widget Position: X';
-	const SETTING_MENU_POSY     = 'Menu Widget Position: Y';
-	const SETTING_MENU_WIDTH    = 'Menu Widget Width';
-	const SETTING_MENU_HEIGHT   = 'Menu Widget Height';
-	const SETTING_MENU_STYLE    = 'Menu Widget BackgroundQuad Style';
-	const SETTING_MENU_SUBSTYLE = 'Menu Widget BackgroundQuad Substyle';
+	const ACTION_TOGGLEMENU                    = 'Configurator.ToggleMenuAction';
+	const ACTION_SAVECONFIG                    = 'Configurator.SaveConfigAction';
+	const ACTION_SELECTMENU                    = 'Configurator.SelectMenu';
+	const SETTING_MENU_POSX                    = 'Menu Widget Position: X';
+	const SETTING_MENU_POSY                    = 'Menu Widget Position: Y';
+	const SETTING_MENU_WIDTH                   = 'Menu Widget Width';
+	const SETTING_MENU_HEIGHT                  = 'Menu Widget Height';
+	const SETTING_MENU_STYLE                   = 'Menu Widget BackgroundQuad Style';
+	const SETTING_MENU_SUBSTYLE                = 'Menu Widget BackgroundQuad Substyle';
 	const SETTING_PERMISSION_OPEN_CONFIGURATOR = 'Open Configurator';
 
 	/*
@@ -100,18 +100,13 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	}
 
 	/**
-	 * Handle Config Admin Command
-	 *
-	 * @param array $callback
-	 * @param Player $player
+	 * Add Menu Item to the Actions Menu
 	 */
-	public function handleConfigCommand(array $callback, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_OPEN_CONFIGURATOR)) {
-			$this->maniaControl->authenticationManager->sendNotAllowed($player);
-			return;
-		}
-
-		$this->showMenu($player);
+	private function addActionsMenuItem() {
+		$itemQuad = new Quad_UIConstruction_Buttons();
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Tools);
+		$itemQuad->setAction(self::ACTION_TOGGLEMENU);
+		$this->maniaControl->actionsMenu->addAdminMenuItem($itemQuad, 100, 'Settings');
 	}
 
 	/**
@@ -124,46 +119,18 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	}
 
 	/**
-	 * Reopen the Menu
-	 *
-	 * @param Player $player
-	 * @param int $menuId
-	 */
-	public function reopenMenu(Player $player, $menuId = 0) {
-		$this->showMenu($player, $menuId);
-	}
-
-	/**
-	 * Handle toggle menu action
+	 * Handle Config Admin Command
 	 *
 	 * @param array  $callback
 	 * @param Player $player
 	 */
-	public function handleToggleMenuAction(array $callback, Player $player) {
-		$this->toggleMenu($player);
-	}
-
-	/**
-	 * Save the config data received from the manialink
-	 *
-	 * @param array  $callback
-	 * @param Player $player
-	 */
-	public function handleSaveConfigAction(array $callback, Player $player) {
-		foreach($this->menus as $menu) {
-			/** @var ConfiguratorMenu $menu */
-			$menu->saveConfigData($callback[1], $player);
+	public function handleConfigCommand(array $callback, Player $player) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_OPEN_CONFIGURATOR)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+			return;
 		}
-	}
 
-	/**
-	 * Handle PlayerDisconnect callback
-	 *
-	 * @param array $callback
-	 */
-	public function handlePlayerDisconnect(array $callback) {
-		$login = $callback[1][0];
-		unset($this->playersMenuShown[$login]);
+		$this->showMenu($player);
 	}
 
 	/**
@@ -179,72 +146,9 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	}
 
 	/**
-	 * Unset the player if he opened another Main Widget
-	 *
-	 * @param Player $player
-	 * @param        $openedWidget
-	 */
-	public function handleWidgetOpened(Player $player, $openedWidget) {
-		//unset when another main widget got opened
-		if ($openedWidget != 'Configurator') {
-			unset($this->playersMenuShown[$player->login]);
-		}
-	}
-
-	/**
-	 * Widget get closed -> unset player
-	 *
-	 * @param \ManiaControl\Players\Player $player
-	 */
-	public function closeWidget(Player $player) {
-		unset($this->playersMenuShown[$player->login]);
-	}
-
-	/**
-	 * Hide the Menu for the Player
-	 *
-	 * @param Player $player
-	 */
-	public function hideMenu(Player $player) {
-		unset($this->playersMenuShown[$player->login]);
-		$this->maniaControl->manialinkManager->closeWidget($player);
-	}
-
-	/**
-	 * Toggle the Menu for the Player
-	 *
-	 * @param Player $player
-	 */
-	public function toggleMenu(Player $player) {
-		if (isset($this->playersMenuShown[$player->login])) {
-			$this->hideMenu($player);
-		} else {
-			$this->showMenu($player);
-		}
-	}
-
-	/**
-	 * Gets the Menu Id
-	 *
-	 * @param $name
-	 * @return int
-	 */
-	public function getMenuId($name) {
-		$i = 0;
-		foreach($this->menus as $menu) {
-			/** @var  ConfiguratorMenu $menu */
-			if ($menu == $name || $menu->getTitle() == $name) {
-				return $i;
-			}
-			$i++;
-		}
-		return 0;
-	}
-
-	/**
 	 * Build Menu ManiaLink if necessary
 	 *
-	 * @param int $menuIdShown
+	 * @param int    $menuIdShown
 	 * @param Player $player
 	 * @return \FML\ManiaLink
 	 */
@@ -287,13 +191,13 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$menusFrame->setX($menuWidth * -0.5 + $menuListWidth + $subMenuWidth * 0.5);
 
 		// Create script and features
-		$script = $manialink->getScript();
-        $menuScript = new Menu();
-        $script->addFeature($menuScript);
+		$script     = $manialink->getScript();
+		$menuScript = new Menu();
+		$script->addFeature($menuScript);
 
 		$menuItemY = $menuHeight * 0.42;
 		$menuId    = 0;
-		foreach($this->menus as $menu) {
+		foreach ($this->menus as $menu) {
 			/** @var ConfiguratorMenu $menu */
 
 			// Add title
@@ -309,7 +213,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 			if ($menuId == $menuIdShown) {
 				$menuControl = $menu->getMenu($subMenuWidth, $subMenuHeight, $script, $player);
 				$menusFrame->add($menuControl);
-                $menuScript->addElement($menuItemLabel, $menuControl);
+				$menuScript->addElement($menuItemLabel, $menuControl);
 			}
 
 			$menuItemY -= $menuItemHeight * 1.1;
@@ -345,8 +249,114 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$saveButton->setTranslate(true);
 		$saveButton->setText('$zSave$z');
 		$saveButton->setAction(self::ACTION_SAVECONFIG);
-		
+
 		return $manialink;
+	}
+
+	/**
+	 * Reopen the Menu
+	 *
+	 * @param Player $player
+	 * @param int    $menuId
+	 */
+	public function reopenMenu(Player $player, $menuId = 0) {
+		$this->showMenu($player, $menuId);
+	}
+
+	/**
+	 * Handle toggle menu action
+	 *
+	 * @param array  $callback
+	 * @param Player $player
+	 */
+	public function handleToggleMenuAction(array $callback, Player $player) {
+		$this->toggleMenu($player);
+	}
+
+	/**
+	 * Toggle the Menu for the Player
+	 *
+	 * @param Player $player
+	 */
+	public function toggleMenu(Player $player) {
+		if (isset($this->playersMenuShown[$player->login])) {
+			$this->hideMenu($player);
+		} else {
+			$this->showMenu($player);
+		}
+	}
+
+	/**
+	 * Hide the Menu for the Player
+	 *
+	 * @param Player $player
+	 */
+	public function hideMenu(Player $player) {
+		unset($this->playersMenuShown[$player->login]);
+		$this->maniaControl->manialinkManager->closeWidget($player);
+	}
+
+	/**
+	 * Save the config data received from the manialink
+	 *
+	 * @param array  $callback
+	 * @param Player $player
+	 */
+	public function handleSaveConfigAction(array $callback, Player $player) {
+		foreach ($this->menus as $menu) {
+			/** @var ConfiguratorMenu $menu */
+			$menu->saveConfigData($callback[1], $player);
+		}
+	}
+
+	/**
+	 * Handle PlayerDisconnect callback
+	 *
+	 * @param array $callback
+	 */
+	public function handlePlayerDisconnect(array $callback) {
+		$login = $callback[1][0];
+		unset($this->playersMenuShown[$login]);
+	}
+
+	/**
+	 * Unset the player if he opened another Main Widget
+	 *
+	 * @param Player $player
+	 * @param        $openedWidget
+	 */
+	public function handleWidgetOpened(Player $player, $openedWidget) {
+		//unset when another main widget got opened
+		if ($openedWidget != 'Configurator') {
+			unset($this->playersMenuShown[$player->login]);
+		}
+	}
+
+	/**
+	 * Widget get closed -> unset player
+	 *
+	 * @param \ManiaControl\Players\Player $player
+	 */
+	public function closeWidget(Player $player) {
+		unset($this->playersMenuShown[$player->login]);
+	}
+
+	/**
+	 * Gets the Menu Id
+	 *
+	 * @param $name
+	 * @return int
+	 */
+	public function getMenuId($name) {
+		$i = 0;
+		foreach ($this->menus as $menu) {
+			/** @var  ConfiguratorMenu $menu */
+			if ($menu == $name || $menu->getTitle() == $name) {
+				return $i;
+			}
+			$i++;
+		}
+		return 0;
 	}
 
 	/**
@@ -366,15 +376,5 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 
 		$player = $this->maniaControl->playerManager->getPlayer($login);
 		$this->showMenu($player, intval($actionArray[2]));
-	}
-
-	/**
-	 * Add Menu Item to the Actions Menu
-	 */
-	private function addActionsMenuItem() {
-		$itemQuad = new Quad_UIConstruction_Buttons();
-		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Tools);
-		$itemQuad->setAction(self::ACTION_TOGGLEMENU);
-		$this->maniaControl->actionsMenu->addAdminMenuItem($itemQuad, 100, 'Settings');
 	}
 }
