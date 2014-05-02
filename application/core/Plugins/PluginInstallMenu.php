@@ -21,16 +21,16 @@ use ManiaControl\Players\Player;
 /**
  * Configurator for enabling and disabling Plugins
  *
- * @author steeffeen
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAnswerListener {
 	/*
 	 * Constants
 	 */
-	const SETTING_PERMISSION_INSTALL_PLUGINS  = 'Install plugins';
-	const ACTION_PREFIX_INSTALLPLUGIN         = 'PluginInstallMenu.Install.';
+	const SETTING_PERMISSION_INSTALL_PLUGINS = 'Install plugins';
+	const ACTION_PREFIX_INSTALLPLUGIN        = 'PluginInstallMenu.Install.';
 
 	/**
 	 * Create a new plugin menu instance
@@ -62,9 +62,9 @@ class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, Manialink
 	 * @return \FML\Controls\Frame
 	 */
 	public function getMenu($width, $height, Script $script, Player $player) {
-        $paging = new Paging();
-        $script->addFeature($paging);
-		$frame   = new Frame();
+		$paging = new Paging();
+		$script->addFeature($paging);
+		$frame = new Frame();
 
 		// Config
 		$pagerSize     = 9.;
@@ -87,8 +87,8 @@ class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, Manialink
 		$pagerNext->setSize($pagerSize, $pagerSize);
 		$pagerNext->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowNext);
 
-        $paging->addButton($pagerNext);
-        $paging->addButton($pagerPrev);
+		$paging->addButton($pagerNext);
+		$paging->addButton($pagerPrev);
 
 		$pageCountLabel = new Label_Text();
 		$frame->add($pageCountLabel);
@@ -97,22 +97,22 @@ class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, Manialink
 		$pageCountLabel->setStyle($pageCountLabel::STYLE_TextTitle1);
 		$pageCountLabel->setTextSize(2);
 
-        $paging->setLabel($pageCountLabel);
+		$paging->setLabel($pageCountLabel);
 
-		$url            = ManiaControl::URL_WEBSERVICE . 'plugins';
-		$dataJson       = FileUtil::loadFile($url);
-		$pluginList     = json_decode($dataJson);
-		$index          = 0;
+		$url        = ManiaControl::URL_WEBSERVICE . 'plugins';
+		$dataJson   = FileUtil::loadFile($url);
+		$pluginList = json_decode($dataJson);
+		$index      = 0;
 		if ($pluginList && isset($pluginList[0])) {
-            $pluginClasses = $this->maniaControl->pluginManager->getPluginClasses();
-			$pluginIds = array();
+			$pluginClasses = $this->maniaControl->pluginManager->getPluginClasses();
+			$pluginIds     = array();
 			/** @var Plugin $class */
-			foreach($pluginClasses as $class) {
+			foreach ($pluginClasses as $class) {
 				$pluginIds[] = $class::getId();
 			}
 
-			foreach($pluginList as $plugin) {
-				if(!in_array($plugin->id, $pluginIds)) {
+			foreach ($pluginList as $plugin) {
+				if (!in_array($plugin->id, $pluginIds)) {
 					if (!isset($pageFrame)) {
 						$pageFrame = new Frame();
 						$frame->add($pageFrame);
@@ -121,7 +121,7 @@ class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, Manialink
 						}
 
 						array_push($pageFrames, $pageFrame);
-                        $paging->addPage($pageFrame);
+						$paging->addPage($pageFrame);
 						$y = $height * 0.41;
 					}
 
@@ -150,7 +150,7 @@ class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, Manialink
 					$descriptionLabel->setMaxLines(5);
 					$description = "Author: {$plugin->author}\nVersion: {$plugin->currentVersion->version}\nDesc: {$plugin->description}";
 					$descriptionLabel->setText($description);
-                    $nameLabel->addTooltipFeature($descriptionLabel);
+					$nameLabel->addTooltipFeature($descriptionLabel);
 
 					$installButton = new Label_Button();
 					$pluginFrame->add($installButton);

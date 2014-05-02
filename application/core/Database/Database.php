@@ -8,9 +8,9 @@ use ManiaControl\ManiaControl;
 /**
  * Database Connection Class
  *
- * @author steeffeen & kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Database implements TimerListener {
 	/*
@@ -18,7 +18,7 @@ class Database implements TimerListener {
 	 */
 	public $mysqli = null;
 	public $migrationHelper = null;
-	
+
 	/*
 	 * Private Properties
 	 */
@@ -29,13 +29,13 @@ class Database implements TimerListener {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
-		
+
 		// Get mysql server information
 		$host = $this->maniaControl->config->database->xpath('host');
 		$port = $this->maniaControl->config->database->xpath('port');
 		$user = $this->maniaControl->config->database->xpath('user');
 		$pass = $this->maniaControl->config->database->xpath('pass');
-		
+
 		if (!$host) {
 			trigger_error("Invalid database configuration (host).", E_USER_ERROR);
 		}
@@ -48,50 +48,30 @@ class Database implements TimerListener {
 		if (!$pass) {
 			trigger_error("Invalid database configuration (pass).", E_USER_ERROR);
 		}
-		
-		$host = (string) $host[0];
-		$port = (int) $port[0];
-		$user = (string) $user[0];
-		$pass = (string) $pass[0];
-		
+
+		$host = (string)$host[0];
+		$port = (int)$port[0];
+		$user = (string)$user[0];
+		$pass = (string)$pass[0];
+
 		// Enable mysqli Reconnect
 		ini_set('mysqli.reconnect', 'on');
-		
+
 		// Open database connection
 		$this->mysqli = @new \mysqli($host, $user, $pass, null, $port);
 		if ($this->mysqli->connect_error) {
 			trigger_error($this->mysqli->connect_error, E_USER_ERROR);
 		}
 		$this->mysqli->set_charset("utf8");
-		
+
 		$this->initDatabase();
 		$this->optimizeTables();
-		
+
 		// Register Method which checks the Database Connection every 5 seconds
 		$this->maniaControl->timerManager->registerTimerListening($this, 'checkConnection', 5000);
-		
+
 		// Create migration helper
 		$this->migrationHelper = new MigrationHelper($maniaControl);
-	}
-
-	/**
-	 * Check if Connection still exists every 5 seconds
-	 * 
-	 * @param $time
-	 */
-	public function checkConnection($time) {
-		if (!$this->mysqli->ping()) {
-			$this->maniaControl->quit("The MySQL server has gone away");
-		}
-	}
-
-	/**
-	 * Destruct database connection
-	 */
-	public function __destruct() {
-		if ($this->mysqli) {
-			$this->mysqli->close();
-		}
 	}
 
 	/**
@@ -105,14 +85,16 @@ class Database implements TimerListener {
 			trigger_error("Invalid database configuration (database).", E_USER_ERROR);
 			return false;
 		}
-		$dbName = (string) $dbName[0];
-		
+		$dbName = (string)$dbName[0];
+
 		// Try to connect
 		$result = $this->mysqli->select_db($dbName);
-		if ($result) return true;
-		
+		if ($result) {
+			return true;
+		}
+
 		// Create database
-		$databaseQuery = "CREATE DATABASE ?;";
+		$databaseQuery     = "CREATE DATABASE ?;";
 		$databaseStatement = $this->mysqli->prepare($databaseQuery);
 		if ($this->mysqli->error) {
 			trigger_error($this->mysqli->error, E_USER_ERROR);
@@ -125,7 +107,7 @@ class Database implements TimerListener {
 			return false;
 		}
 		$databaseStatement->close();
-		
+
 		// Connect to new database
 		$this->mysqli->select_db($dbName);
 		if ($this->mysqli->error) {
@@ -142,7 +124,7 @@ class Database implements TimerListener {
 	 */
 	private function optimizeTables() {
 		$showQuery = "SHOW TABLES;";
-		$result = $this->mysqli->query($showQuery);
+		$result    = $this->mysqli->query($showQuery);
 		if ($this->mysqli->error) {
 			trigger_error($this->mysqli->error);
 			return false;
@@ -153,7 +135,7 @@ class Database implements TimerListener {
 			return true;
 		}
 		$optimizeQuery = "OPTIMIZE TABLE ";
-		$index = 0;
+		$index         = 0;
 		while ($row = $result->fetch_row()) {
 			$tableName = $row[0];
 			$optimizeQuery .= "`{$tableName}`";
@@ -170,5 +152,25 @@ class Database implements TimerListener {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Check if Connection still exists every 5 seconds
+	 *
+	 * @param $time
+	 */
+	public function checkConnection($time) {
+		if (!$this->mysqli->ping()) {
+			$this->maniaControl->quit("The MySQL server has gone away");
+		}
+	}
+
+	/**
+	 * Destruct database connection
+	 */
+	public function __destruct() {
+		if ($this->mysqli) {
+			$this->mysqli->close();
+		}
 	}
 }

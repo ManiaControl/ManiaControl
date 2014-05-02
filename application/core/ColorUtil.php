@@ -5,21 +5,21 @@ namespace ManiaControl;
 /**
  * Utility Class offering Methods to convert and use ManiaPlanet Colors
  *
- * @author steeffeen
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 abstract class ColorUtil {
 
 	/**
 	 * Convert the given float value to a color code from red to green
 	 *
-	 * @param float $value        	
+	 * @param float $value
 	 * @return string
 	 */
 	public static function floatToStatusColor($value) {
 		$value = floatval($value);
-		$red = 1.;
+		$red   = 1.;
 		$green = 1.;
 		if ($value < 0.5) {
 			$green = $value * 2.;
@@ -27,7 +27,7 @@ abstract class ColorUtil {
 		if ($value > 0.5) {
 			$red = 2. * (1. - $value);
 		}
-		$red = ColorUtil::floatToCode($red);
+		$red   = ColorUtil::floatToCode($red);
 		$green = ColorUtil::floatToCode($green);
 		return $red . $green . '0';
 	}
@@ -35,7 +35,7 @@ abstract class ColorUtil {
 	/**
 	 * Get hex color representation of the float
 	 *
-	 * @param float $value        	
+	 * @param float $value
 	 * @return string
 	 */
 	public static function floatToCode($value) {
@@ -47,9 +47,9 @@ abstract class ColorUtil {
 			$value = 1.;
 		}
 		$value *= 15.;
-		$value = (int) round($value);
+		$value = (int)round($value);
 		if ($value < 10) {
-			return (string) $value;
+			return (string)$value;
 		}
 		$codes = array(10 => 'a', 11 => 'b', 12 => 'c', 13 => 'd', 14 => 'e', 15 => 'f');
 		return $codes[$value];

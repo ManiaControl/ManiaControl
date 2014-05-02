@@ -8,8 +8,8 @@ use FML\Controls\Frame;
 use FML\Controls\Label;
 use FML\Controls\Labels\Label_Button;
 use FML\Controls\Labels\Label_Text;
-use FML\Controls\Quads\Quad_Icons128x32_1;
 use FML\Controls\Quads\Quad_Icons128x128_1;
+use FML\Controls\Quads\Quad_Icons128x32_1;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Script\Features\Paging;
 use FML\Script\Script;
@@ -25,9 +25,9 @@ use ManiaControl\Players\Player;
 /**
  * Configurator for enabling and disabling Plugins
  *
- * @author ManiaControl Team
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAnswerListener {
 	/*
@@ -63,13 +63,6 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	}
 
 	/**
-	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getTitle()
-	 */
-	public function getTitle() {
-		return 'Plugins';
-	}
-
-	/**
 	 * Returns Back to the Plugins
 	 */
 	public function backToPlugins($callback, Player $player) {
@@ -79,12 +72,19 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	}
 
 	/**
+	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getTitle()
+	 */
+	public function getTitle() {
+		return 'Plugins';
+	}
+
+	/**
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getMenu()
 	 */
 	public function getMenu($width, $height, Script $script, Player $player) {
-        $paging = new Paging();
-        $script->addFeature($paging);
-		$frame   = new Frame();
+		$paging = new Paging();
+		$script->addFeature($paging);
+		$frame = new Frame();
 
 		$pluginClasses = $this->maniaControl->pluginManager->getPluginClasses();
 
@@ -107,8 +107,8 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 		$pagerNext->setSize($pagerSize, $pagerSize);
 		$pagerNext->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowNext);
 
-        $paging->addButton($pagerNext);
-        $paging->addButton($pagerPrev);
+		$paging->addButton($pagerNext);
+		$paging->addButton($pagerPrev);
 
 		$pageCountLabel = new Label_Text();
 		$frame->add($pageCountLabel);
@@ -117,7 +117,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 		$pageCountLabel->setStyle($pageCountLabel::STYLE_TextTitle1);
 		$pageCountLabel->setTextSize(2);
 
-        $paging->setLabel($pageCountLabel);
+		$paging->setLabel($pageCountLabel);
 
 		//Show Settings Menu
 		if ($this->settingsClass != '') { //TODO improve
@@ -128,7 +128,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			$y                    = 0;
 			$index                = 1;
 			$settingHeight        = 5.;
-			foreach($settings as $setting) {
+			foreach ($settings as $setting) {
 				if (!isset($pageFrame)) {
 					$pageFrame = new Frame();
 					$frame->add($pageFrame);
@@ -137,7 +137,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 					}
 					array_push($pageFrames, $pageFrame);
 					$y = $height * 0.41;
-                    $paging->addPage($pageFrame);
+					$paging->addPage($pageFrame);
 				}
 
 				$settingFrame = new Frame();
@@ -166,7 +166,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 						}
 						array_push($pageFrames, $pageFrame);
 						$y = $height * 0.41;
-                        $paging->addPage($pageFrame);
+						$paging->addPage($pageFrame);
 					}
 				}
 
@@ -244,11 +244,11 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 		$y             = 0.;
 		$pluginUpdates = $this->maniaControl->updateManager->pluginUpdateManager->getPluginsUpdates();
 
-		usort($pluginClasses, function($a, $b) {
+		usort($pluginClasses, function ($a, $b) {
 			return strcmp($a::getName(), $b::getName());
 		});
 
-		foreach($pluginClasses as $index => $pluginClass) {
+		foreach ($pluginClasses as $index => $pluginClass) {
 			/** @var Plugin $pluginClass */
 			if (!isset($pageFrame)) {
 				$pageFrame = new Frame();
@@ -258,7 +258,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 				}
 
 				array_push($pageFrames, $pageFrame);
-                $paging->addPage($pageFrame);
+				$paging->addPage($pageFrame);
 				$y = $height * 0.41;
 			}
 
@@ -299,7 +299,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			$descriptionLabel->setMaxLines(5);
 			$description = "Author: {$pluginClass::getAuthor()}\nVersion: {$pluginClass::getVersion()}\nDesc: {$pluginClass::getDescription()}";
 			$descriptionLabel->setText($description);
-            $nameLabel->addTooltipFeature($descriptionLabel);
+			$nameLabel->addTooltipFeature($descriptionLabel);
 
 			$quad = new Quad_Icons128x32_1();
 			$pluginFrame->add($quad);
@@ -340,7 +340,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			}
 		}
 
-		if($pluginUpdates != false) {
+		if ($pluginUpdates != false) {
 			$updatePluginsButton = new Label_Button();
 			$frame->add($updatePluginsButton);
 			$updatePluginsButton->setHAlign(Control::RIGHT);
@@ -349,46 +349,11 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			$updatePluginsButton->setZ(2);
 			$updatePluginsButton->setWidth(10);
 			$updatePluginsButton->setStyle($updatePluginsButton::STYLE_CardButtonSmallS);
-			$updatePluginsButton->setText(count($pluginUpdates).' update(s)');
+			$updatePluginsButton->setText(count($pluginUpdates) . ' update(s)');
 			$updatePluginsButton->setAction(self::ACTION_UPDATEPLUGINS);
 		}
 
 		return $frame;
-	}
-
-	/**
-	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
-	 */
-	public function saveConfigData(array $configData, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_CHANGE_PLUGIN_SETTINGS)) {
-			$this->maniaControl->authenticationManager->sendNotAllowed($player);
-			return;
-		}
-		if (!$configData[3] || strpos($configData[3][0]['Name'], self::ACTION_PREFIX_SETTING) !== 0) {
-			return;
-		}
-
-		$maniaControlSettings = $this->maniaControl->settingManager->getSettings();
-
-		$prefixLength = strlen(self::ACTION_PREFIX_SETTING);
-
-		foreach($configData[3] as $setting) {
-			$settingName = substr($setting['Name'], $prefixLength + 1);
-
-			if(!isset($maniaControlSettings[$settingName]))
-				continue;
-
-			$oldSetting = $maniaControlSettings[$settingName];
-			if ($setting['Value'] == $oldSetting->value || $oldSetting->type == 'bool') {
-				continue;
-			}
-
-			$this->maniaControl->settingManager->setSetting($oldSetting->class, $oldSetting->setting, $setting['Value']);
-		}
-
-		//Reopen the Menu
-		$menuId = $this->maniaControl->configurator->getMenuId($this->getTitle());
-		$this->maniaControl->configurator->reopenMenu($player, $menuId);
 	}
 
 	/**
@@ -456,7 +421,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	}
 
 	/**
-	 * Toggles a Boolean Value
+	 * Toggle a Boolean Value
 	 *
 	 * @param        $setting
 	 * @param Player $player
@@ -480,5 +445,41 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 		} else {
 			$this->maniaControl->settingManager->setSetting($oldSetting->class, $oldSetting->setting, "1");
 		}
+	}
+
+	/**
+	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
+	 */
+	public function saveConfigData(array $configData, Player $player) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_CHANGE_PLUGIN_SETTINGS)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+			return;
+		}
+		if (!$configData[3] || strpos($configData[3][0]['Name'], self::ACTION_PREFIX_SETTING) !== 0) {
+			return;
+		}
+
+		$maniaControlSettings = $this->maniaControl->settingManager->getSettings();
+
+		$prefixLength = strlen(self::ACTION_PREFIX_SETTING);
+
+		foreach ($configData[3] as $setting) {
+			$settingName = substr($setting['Name'], $prefixLength + 1);
+
+			if (!isset($maniaControlSettings[$settingName])) {
+				continue;
+			}
+
+			$oldSetting = $maniaControlSettings[$settingName];
+			if ($setting['Value'] == $oldSetting->value || $oldSetting->type == 'bool') {
+				continue;
+			}
+
+			$this->maniaControl->settingManager->setSetting($oldSetting->class, $oldSetting->setting, $setting['Value']);
+		}
+
+		//Reopen the Menu
+		$menuId = $this->maniaControl->configurator->getMenuId($this->getTitle());
+		$this->maniaControl->configurator->reopenMenu($player, $menuId);
 	}
 }
