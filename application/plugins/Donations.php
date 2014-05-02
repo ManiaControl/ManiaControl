@@ -70,7 +70,6 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		//do nothing
 	}
 
-
 	/**
 	 * @see \ManiaControl\Plugins\Plugin::load()
 	 */
@@ -153,9 +152,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	}
 
 	/**
-	 * Handle ManiaControl OnStartup
-	 *
-	 * @param array $callback
+	 * Display the Widget
 	 */
 	public function displayWidget() {
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATE_WIDGET_ACTIVATED)) {
@@ -323,12 +320,15 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	}
 
 	/**
-	 * Handles a Player Donate
+	 * Handle a Player Donation
 	 *
 	 * @param Player $player
-	 * @param        $value
+	 * @param int    $amount
+	 * @param string $receiver
+	 * @param string $receiverName
+	 * @return bool
 	 */
-	private function handleDonation(Player $player, $amount, $receiver = '', $receiverName = false) {
+	private function handleDonation(Player $player, $amount, $receiver = '', $receiverName = null) {
 
 		if (!$receiverName) {
 			$serverName = $this->maniaControl->client->getServerName();

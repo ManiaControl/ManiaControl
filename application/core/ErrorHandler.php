@@ -43,9 +43,9 @@ class ErrorHandler {
 
 	/**
 	 * ManiaControl ExceptionHandler
-	 * ManiaControl Shuts down after exception
 	 * 
 	 * @param \Exception $ex
+	 * @param bool $shutdown
 	 */
 	public function exceptionHandler(\Exception $ex, $shutdown = true) {
 		// Log exception

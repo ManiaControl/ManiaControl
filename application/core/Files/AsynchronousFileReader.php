@@ -55,8 +55,9 @@ class AsynchronousFileReader {
 	 * Load a remote file
 	 *
 	 * @param string $url
-	 * @param        $function
+	 * @param    callable    $function
 	 * @param string $contentType
+	 * @param int $keepAlive
 	 * @return bool
 	 */
 	public function loadFile($url, $function, $contentType = 'UTF-8', $keepAlive = 0) {
@@ -118,10 +119,10 @@ class AsynchronousFileReader {
 	/**
 	 * Send Data via POST Method
 	 *
-	 * @param        $url
-	 * @param        $function
-	 * @param        $content
-	 * @param string $compression
+	 * @param    string    $url
+	 * @param      callable  $function
+	 * @param   string     $content
+	 * @param bool $compression
 	 * @param string $contentType
 	 * @return bool
 	 */

@@ -203,7 +203,6 @@ class PlayerActions {
 	 *
 	 * @param string $adminLogin
 	 * @param string $targetLogin
-	 * @param int    $spectatorState
 	 */
 	public function unMutePlayer($adminLogin, $targetLogin) {
 		$admin = $this->maniaControl->playerManager->getPlayer($adminLogin);
@@ -236,7 +235,6 @@ class PlayerActions {
 	 *
 	 * @param string $adminLogin
 	 * @param string $targetLogin
-	 * @param int    $spectatorState
 	 */
 	public function mutePlayer($adminLogin, $targetLogin) {
 		$admin = $this->maniaControl->playerManager->getPlayer($adminLogin);

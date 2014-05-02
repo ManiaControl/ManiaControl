@@ -440,7 +440,8 @@ class SettingManager implements CallbackListener {
 
 	/**
 	 * Get all Setting Classes
-	 * 
+	 *
+	 * @param bool $hidePluginClasses
 	 * @return array
 	 */
 	public function getSettingClasses($hidePluginClasses = false) {

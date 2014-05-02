@@ -453,6 +453,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 * Check if ManiaControl is running the Nightly Update Channel
 	 * 
 	 * @param string $updateChannel
+	 * @return bool
 	 */
 	public function isNightlyUpdateChannel($updateChannel = null) {
 		if (!$updateChannel) {

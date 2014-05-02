@@ -306,7 +306,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 	 *
 	 * @param string $login
 	 * @param bool   $connectedPlayersOnly
-	 * @return Player|null
+	 * @return Player
 	 */
 	public function getPlayer($login, $connectedPlayersOnly = false) {
 		if (!isset($this->players[$login])) {
@@ -390,10 +390,10 @@ class PlayerManager implements CallbackListener, TimerListener {
 
 
 	/**
-	 * Get's a Player out of the database
+	 * Get a Player from the Database
 	 *
-	 * @param $playerIndex
-	 * @return Player $player
+	 * @param string $playerLogin
+	 * @return Player
 	 */
 	private function getPlayerFromDatabaseByLogin($playerLogin) {
 		$mysqli = $this->maniaControl->database->mysqli;

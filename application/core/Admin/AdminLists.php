@@ -227,7 +227,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 	/**
 	 * Reopen the widget on Map Begin, MapListChanged, etc.
 	 *
-	 * @param array $callback
+	 * @param Player $player
 	 */
 	public function updateWidget(Player $player) {
 		foreach($this->adminListShown as $login => $shown) {

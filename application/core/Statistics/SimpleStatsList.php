@@ -113,9 +113,10 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 
 
 	/**
-	 * Show the PlayerList Widget to the Player
+	 * Show the StatsList Widget to the Player
 	 *
 	 * @param Player $player
+	 * @param string $order
 	 */
 	public function showStatsList(Player $player, $order = PlayerManager::STAT_SERVERTIME) {
 		$height       = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();

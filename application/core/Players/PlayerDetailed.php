@@ -14,6 +14,7 @@ use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Statistics\StatisticManager;
+use Maniaplanet\DedicatedServer\Structures\Player;
 
 /**
  * Player Detailed Page
@@ -48,8 +49,14 @@ class PlayerDetailed {
 		$this->quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowSubStyle();
 	}
 
-
+	/**
+	 * Show a Frame with detailed Information about the Target Player
+	 *
+	 * @param Player $player
+	 * @param string $targetLogin
+	 */
 	public function showPlayerDetailed(Player $player, $targetLogin) {
+		/** @var Player $target */
 		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
 
 		//Create ManiaLink
@@ -209,7 +216,13 @@ class PlayerDetailed {
 		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player, 'PlayerDetailed');
 	}
 
-	public function statisticsFrame($player) {
+	/**
+	 * Build a Frame with Statistics about the given Player
+	 *
+	 * @param Player $player
+	 * @return Frame
+	 */
+	public function statisticsFrame(Player $player) {
 		$frame = new Frame();
 
 		$playerStats = $this->maniaControl->statisticManager->getAllPlayerStats($player);

@@ -122,9 +122,10 @@ class StatisticCollector implements CallbackListener {
 	}
 
 	/**
-	 * Handle Player Shoots
+	 * Handle Player Shots
 	 *
-	 * @param $login
+	 * @param string $login
+	 * @param int $weaponNumber
 	 */
 	private function handleOnShoot($login, $weaponNumber) {
 		if (!isset($this->onShootArray[$login])) {
@@ -165,9 +166,10 @@ class StatisticCollector implements CallbackListener {
 	}
 
 	/**
-	 * Gets the Weapon stat
+	 * Get the Weapon stat
 	 *
-	 * @param $weaponNumber
+	 * @param int $weaponNumber
+	 * @param bool $shot
 	 * @return string
 	 */
 	private function getWeaponStat($weaponNumber, $shot = true) {

@@ -190,9 +190,10 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 	}
 
 	/**
-	 * Breaks the current game
+	 * Pause the current game
 	 *
 	 * @param array $callback
+	 * @param Player $player
 	 */
 	public function setPause(array $callback, Player $player) {
 		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_SET_PAUSE)) {

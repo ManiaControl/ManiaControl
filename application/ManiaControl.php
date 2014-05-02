@@ -72,6 +72,7 @@ else {
  * Log and echo the given text
  * 
  * @param string $message
+ * @param bool $eol
  */
 function logMessage($message, $eol = true) {
 	$date = date("d.M y H:i:s");

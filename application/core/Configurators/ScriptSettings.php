@@ -399,7 +399,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 *
 	 * @param array  $newSettings
 	 * @param Player $player
-	 * @param        bool
+	 * @return        bool
 	 */
 	private function applyNewScriptSettings(array $newSettings, Player $player) {
 		if (!$newSettings) {

@@ -41,7 +41,7 @@ class PluginUpdateData {
 	}
 
 	/**
-	 * Check if the Plugin Update Data is newer than the given Plugin Versin
+	 * Check if the Plugin Update Data is newer than the given Plugin Version
 	 * 
 	 * @param float $version
 	 * @return bool

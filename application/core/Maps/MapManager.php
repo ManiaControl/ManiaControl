@@ -170,14 +170,17 @@ class MapManager implements CallbackListener {
 	}
 
 	/**
-	 * Updates the Timestamp of a map
+	 * Update the Timestamp of a Map
 	 *
-	 * @param $map
+	 * @param string $uid
 	 * @return bool
 	 */
 	private function updateMapTimestamp($uid) {
 		$mysqli   = $this->maniaControl->database->mysqli;
-		$mapQuery = "UPDATE `" . self::TABLE_MAPS . "` SET mxid = 0, changed = NOW() WHERE 'uid' = ?";
+		$mapQuery = "UPDATE `" . self::TABLE_MAPS . "` SET
+				mxid = 0,
+				changed = NOW()
+				WHERE 'uid' = ?";
 
 		$mapStatement = $mysqli->prepare($mapQuery);
 		if ($mysqli->error) {
@@ -196,17 +199,16 @@ class MapManager implements CallbackListener {
 	}
 
 	/**
-	 * Updates a Map from Mania Exchange
+	 * Update a Map from Mania Exchange
 	 *
 	 * @param Player $admin
-	 * @param        $mxId
-	 * @param        $uid
+	 * @param  string      $uid
 	 */
 	public function updateMap(Player $admin, $uid) {
 		$this->updateMapTimestamp($uid);
 
 		if (!isset($uid) || !isset($this->maps[$uid])) {
-			trigger_error("Error while updating Map, unkown UID: " . $uid);
+			trigger_error("Error while updating Map, unknown UID: " . $uid);
 			$this->maniaControl->chat->sendError("Error while updating Map.", $admin->login);
 			return;
 		}
@@ -560,6 +562,8 @@ class MapManager implements CallbackListener {
 	/**
 	 * Get all Maps
 	 *
+	 * @param int $offset
+	 * @param int $length
 	 * @return array
 	 */
 	public function getMaps($offset = null, $length = null) {

@@ -28,9 +28,9 @@ class AuthCommands implements CommandListener {
 		$this->maniaControl = $maniaControl;
 		
 		// Register for commands
-		$this->maniaControl->commandManager->registerCommandListener('addsuperadmin', $this, 'command_AddSuperAdmin',true, 'Adds player to adminlist as SuperAdmin.');
-		$this->maniaControl->commandManager->registerCommandListener('addadmin', $this, 'command_AddAdmin',true, 'Adds player to adminlist as Admin.');
-		$this->maniaControl->commandManager->registerCommandListener('addmod', $this, 'command_AddModerator',true, 'Add player to adminlist as Moderator.');
+		$this->maniaControl->commandManager->registerCommandListener('addsuperadmin', $this, 'command_AddSuperAdmin',true, 'Add Player to the AdminList as SuperAdmin.');
+		$this->maniaControl->commandManager->registerCommandListener('addadmin', $this, 'command_AddAdmin',true, 'Add Player to the AdminList as Admin.');
+		$this->maniaControl->commandManager->registerCommandListener('addmod', $this, 'command_AddModerator',true, 'Add Player to the AdminList as Moderator.');
 	}
 
 	/**

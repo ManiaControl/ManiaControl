@@ -103,6 +103,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	 * Handle Config Admin Command
 	 *
 	 * @param array $callback
+	 * @param Player $player
 	 */
 	public function handleConfigCommand(array $callback, Player $player) {
 		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_OPEN_CONFIGURATOR)) {
@@ -123,11 +124,12 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	}
 
 	/**
-	 * Reopens the Menu
+	 * Reopen the Menu
 	 *
-	 * @param array $callback
+	 * @param Player $player
+	 * @param int $menuId
 	 */
-	public function reopenMenu($player, $menuId = 0) {
+	public function reopenMenu(Player $player, $menuId = 0) {
 		$this->showMenu($player, $menuId);
 	}
 
@@ -240,10 +242,10 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	}
 
 	/**
-	 * Build menu manialink if necessary
+	 * Build Menu ManiaLink if necessary
 	 *
 	 * @param int $menuIdShown
-	 * @internal param bool $forceBuild
+	 * @param Player $player
 	 * @return \FML\ManiaLink
 	 */
 	private function buildManialink($menuIdShown = 0, Player $player) {

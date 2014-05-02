@@ -396,7 +396,7 @@ class PluginManager {
 	/**
 	 * Get the Class of the Object
 	 * 
-	 * @param mixed $pluginClass
+	 * @param mixed $object
 	 * @return string
 	 */
 	private static function getClass($object) {

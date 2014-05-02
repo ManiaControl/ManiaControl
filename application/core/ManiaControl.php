@@ -167,6 +167,7 @@ class ManiaControl implements CommandListener, TimerListener {
 	 * Print a message to console and log
 	 * 
 	 * @param string $message
+	 * @param bool $stripCodes
 	 */
 	public function log($message, $stripCodes = false) {
 		if ($stripCodes) {

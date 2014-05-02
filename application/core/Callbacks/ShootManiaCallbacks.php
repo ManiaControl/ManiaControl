@@ -29,6 +29,7 @@ class ShootManiaCallbacks implements CallbackListener {
 	 * Create a new ShootMania Callbacks Instance
 	 *
 	 * @param ManiaControl $maniaControl
+	 * @param CallbackManager $callbackManager
 	 */
 	public function __construct(ManiaControl $maniaControl, CallbackManager $callbackManager) {
 		$this->maniaControl = $maniaControl;

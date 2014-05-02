@@ -17,7 +17,7 @@ class BillData {
 	public $function = null;
 	public $pay = false;
 	public $player = null;
-	public $receiverLogin = false;
+	public $receiverLogin = null;
 	public $amount = 0;
 	public $creationTime = -1;
 
@@ -26,10 +26,10 @@ class BillData {
 	 * @param mixed $function
 	 * @param Player $player
 	 * @param int $amount
-	 * @param string $pay
+	 * @param bool $pay
 	 * @param string $receiverLogin
 	 */
-	public function __construct($function, $player, $amount, $pay = false, $receiverLogin = false) {
+	public function __construct($function, Player $player, $amount, $pay = false, $receiverLogin = null) {
 		$this->function      = $function;
 		$this->player        = $player;
 		$this->amount        = $amount;

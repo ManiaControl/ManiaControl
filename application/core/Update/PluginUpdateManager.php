@@ -322,6 +322,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 	 * 
 	 * @param PluginUpdateData $pluginUpdateData
 	 * @param Player $player
+	 * @param bool $update
 	 */
 	private function installPlugin(PluginUpdateData $pluginUpdateData, Player $player = null, $update = false) {
 		$self = $this;

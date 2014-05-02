@@ -55,11 +55,12 @@ class TimerManager {
 	}
 
 	/**
-	 * Register a Timing Listening, note < 10ms it can get inaccurate
+	 * Register a Timer Listening, note < 10ms it can get inaccurate
 	 *
 	 * @param TimerListener $listener
-	 * @param               $method
-	 * @param               $time
+	 * @param      string         $method
+	 * @param          float     $time
+	 * @param bool $oneTime
 	 * @return bool
 	 */
 	public function registerTimerListening(TimerListener $listener, $method, $time, $oneTime = false) {

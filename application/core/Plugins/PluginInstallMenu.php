@@ -58,6 +58,7 @@ class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, Manialink
 	 * @param float  $width
 	 * @param float  $height
 	 * @param Script $script
+	 * @param Player $player
 	 * @return \FML\Controls\Frame
 	 */
 	public function getMenu($width, $height, Script $script, Player $player) {

@@ -2,6 +2,7 @@
 
 namespace ManiaControl\Players;
 
+use Maniaplanet\DedicatedServer\Structures\Player;
 use MCTeam\CustomVotesPlugin;
 use FML\Controls\Control;
 use FML\Controls\Frame;
@@ -412,10 +413,11 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 	/**
 	 * Extra window with special actions on players like warn,kick, ban, authorization levels...
 	 *
-	 * @param $login
+	 * @param Player $admin
+	 * @param string $login
 	 * @return Frame
 	 */
-	public function showAdvancedPlayerWidget($admin, $login) {
+	public function showAdvancedPlayerWidget(Player $admin, $login) {
 		$player       = $this->maniaControl->playerManager->getPlayer($login);
 		$width        = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
 		$height       = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();

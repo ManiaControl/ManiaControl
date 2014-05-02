@@ -312,6 +312,11 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		}
 	}
 
+	/**
+	 * Handle ManialinkPageAnswer Callback
+	 *
+	 * @param array $callback
+	 */
 	public function handleManialinkPageAnswer(array $callback) {
 		$actionId = $callback[1][2];
 
@@ -357,7 +362,12 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		}
 	}
 
-	private function showMapListAuthor($author, $player) {
+	/**
+	 * Show the Player a List of Maps from the given Author
+	 * @param string $author
+	 * @param Player $player
+	 */
+	private function showMapListAuthor($author, Player $player) {
 		$maps = $this->maniaControl->mapManager->getMaps();
 		$mapList = array();
 		/** @var Map $map */
@@ -375,7 +385,13 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		$this->maniaControl->mapManager->mapList->showMapList($player, $mapList);
 	}
 
-	private function showMapListKarma($best, $player) {
+	/**
+	 * Show a Karma based MapList
+	 *
+	 * @param bool $best
+	 * @param Player $player
+	 */
+	private function showMapListKarma($best, Player $player) {
 		/** @var \MCTeam\KarmaPlugin $karmaPlugin */
 		$karmaPlugin = $this->maniaControl->pluginManager->getPlugin(MapList::DEFAULT_KARMA_PLUGIN);
 		if($karmaPlugin) {
@@ -418,15 +434,28 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		}
 	}
 
+	/**
+	 * Helper Function to sort Maps by Karma
+	 *
+	 * @param Map $a
+	 * @param Map $b
+	 * @return mixed
+	 */
 	private function sortByKarma($a, $b) {
-		return $a->karma - $b->karma;
+		return ($a->karma - $b->karma);
 	}
 
-	private function showMapListDate($newest, $player) {
+	/**
+	 * Show a Date based MapList
+	 *
+	 * @param bool $newest
+	 * @param Player $player
+	 */
+	private function showMapListDate($newest, Player $player) {
 		$maps = $this->maniaControl->mapManager->getMaps();
 
 		usort($maps, function($a, $b) {
-			return $a->index - $b->index;
+			return ($a->index - $b->index);
 		});
 
 		if($newest) {

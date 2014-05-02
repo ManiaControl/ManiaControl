@@ -149,9 +149,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	}
 
 	/**
-	 * Displays the Widgets onLoad
-	 *
-	 * @param array $callback
+	 * Display the Widgets
 	 */
 	private function displayWidgets() {
 		// Display Map Widget
@@ -168,11 +166,11 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	}
 
 	/**
-	 * Displays the Map Widget
+	 * Display the Map Widget
 	 *
-	 * @param String $login
+	 * @param string $login
 	 */
-	public function displayMapWidget($login = false) {
+	public function displayMapWidget($login = null) {
 		$pos_x        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_POSX);
 		$pos_y        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_POSY);
 		$width        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_WIDTH);
@@ -280,11 +278,11 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	}
 
 	/**
-	 * Displays the Server Info Widget
+	 * Display the Server Info Widget
 	 *
-	 * @param String $login
+	 * @param string $login
 	 */
-	public function displayServerInfoWidget($login = false) {
+	public function displayServerInfoWidget($login = null) {
 		$pos_x        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_SERVERINFO_WIDGET_POSX);
 		$pos_y        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_SERVERINFO_WIDGET_POSY);
 		$width        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_SERVERINFO_WIDGET_WIDTH);

@@ -116,16 +116,16 @@ class PlayerDataManager {
 	/**
 	 * Gets the Player Data
 	 *
-	 * @param        $object
-	 * @param        $dataName
+	 * @param  mixed      $object
+	 * @param   string     $dataName
 	 * @param Player $player
-	 * @param        $serverIndex
+	 * @param     int   $serverIndex
 	 * @return mixed|null
 	 */
-	public function getPlayerData($object, $statName, Player $player, $serverIndex = -1) {
+	public function getPlayerData($object, $dataName, Player $player, $serverIndex = -1) {
 		$className = $this->getClassName($object);
 
-		$meta = $this->metaData[$className . $statName];
+		$meta = $this->metaData[$className . $dataName];
 
 		//Check if data is already in the ram
 		if (isset($this->storedData[$player->index])) {
@@ -152,7 +152,7 @@ class PlayerDataManager {
 		}
 		$dataStatement->store_result();
 		if ($dataStatement->num_rows <= 0) {
-			$this->setPlayerData($object, $statName, $player, $meta->defaultValue, $serverIndex);
+			$this->setPlayerData($object, $dataName, $player, $meta->defaultValue, $serverIndex);
 			return $meta->default;
 		}
 		$dataStatement->bind_result($value);
@@ -172,11 +172,11 @@ class PlayerDataManager {
 	/**
 	 * Set a PlayerData to a specific defined statMetaData
 	 *
-	 * @param        $object
-	 * @param        $statName
+	 * @param    mixed    $object
+	 * @param    string    $dataName
 	 * @param Player $player
-	 * @param        $value
-	 * @param        $serverIndex (let it empty if its global)
+	 * @param     mixed   $value
+	 * @param     int   $serverIndex (let it empty if its global)
 	 * @return bool
 	 */
 	public function setPlayerData($object, $dataName, Player $player, $value, $serverIndex = -1) {
@@ -225,7 +225,8 @@ class PlayerDataManager {
 	/**
 	 * Return the Id of the MetaData
 	 *
-	 * @param $statName
+	 * @param string $className
+	 * @param string $statName
 	 * @return int
 	 */
 	private function getMetaDataId($className, $statName) {
