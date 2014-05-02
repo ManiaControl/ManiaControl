@@ -84,7 +84,7 @@ class ManiaExchangeManager {
 				trigger_error($saveMapStatement->error);
 			}
 
-			//Take the uid out of the vektor
+			//Take the uid out of the vector
 			if (isset($this->mxIdUidVector[$mxMapInfo->id])) {
 				$uid = $this->mxIdUidVector[$mxMapInfo->id];
 			} else {
@@ -118,7 +118,7 @@ class ManiaExchangeManager {
 	 */
 	public function fetchManiaExchangeMapInformations($map = null) {
 		if (!$map) {
-			//Fetch Informations for whole Maplist
+			//Fetch Information for whole MapList
 			$maps = $this->maniaControl->mapManager->getMaps();
 		} else {
 			//Fetch Information for a single map

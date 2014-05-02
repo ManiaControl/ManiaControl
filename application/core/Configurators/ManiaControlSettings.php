@@ -234,6 +234,7 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 		
 		$pageFrame = null;
 		$index = 0;
+		$y = 0;
 		foreach ($settings as $setting) {
 			if (!$pageFrame) {
 				$pageFrame = new Frame();

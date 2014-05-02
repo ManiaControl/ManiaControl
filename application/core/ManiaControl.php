@@ -79,6 +79,7 @@ class ManiaControl implements CommandListener, TimerListener {
 	public $server = null;
 	public $settingManager = null;
 	public $statisticManager = null;
+	/** @var UpdateManager $updateManager */
 	public $updateManager = null;
 	public $errorHandler = null;
 	public $timerManager = null;

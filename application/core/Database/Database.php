@@ -36,10 +36,18 @@ class Database implements TimerListener {
 		$user = $this->maniaControl->config->database->xpath('user');
 		$pass = $this->maniaControl->config->database->xpath('pass');
 		
-		if (!$host) trigger_error("Invalid database configuration (host).", E_USER_ERROR);
-		if (!$port) trigger_error("Invalid database configuration (port).", E_USER_ERROR);
-		if (!$user) trigger_error("Invalid database configuration (user).", E_USER_ERROR);
-		if (!$pass) trigger_error("Invalid database configuration (pass).", E_USER_ERROR);
+		if (!$host) {
+			trigger_error("Invalid database configuration (host).", E_USER_ERROR);
+		}
+		if (!$port) {
+			trigger_error("Invalid database configuration (port).", E_USER_ERROR);
+		}
+		if (!$user) {
+			trigger_error("Invalid database configuration (user).", E_USER_ERROR);
+		}
+		if (!$pass) {
+			trigger_error("Invalid database configuration (pass).", E_USER_ERROR);
+		}
 		
 		$host = (string) $host[0];
 		$port = (int) $port[0];

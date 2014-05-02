@@ -3,6 +3,7 @@
 namespace ManiaControl\Commands;
 
 use FML\Controls\Frame;
+use FML\Controls\Label;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
 use FML\ManiaLink;
 use FML\Script\Features\Paging;
@@ -228,7 +229,10 @@ class HelpManager implements CommandListener, CallbackListener {
 
 			$array = array($command['Name'] => $x + 5, $command['Description'] => $x + 50);
 			$labels = $this->maniaControl->manialinkManager->labelLine($playerFrame, $array);
-			$labels[0]->setWidth(40);
+
+			/** @var Label $label */
+			$label = $labels[0];
+			$label->setWidth(40);
 
 			$y -= 4;
 			$i++;

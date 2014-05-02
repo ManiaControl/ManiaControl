@@ -121,7 +121,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$queueBuffer = $this->maniaControl->mapManager->mapQueue->getQueueBuffer();
 		
 		// Get Maps
-		$mapList = array();
+		$mapList = null;
 		$pageCount = null;
 		if (is_array($maps)) {
 			$mapList = array_slice($maps, $chunk, self::MAX_PAGES_PER_CHUNK * self::MAX_MAPS_PER_PAGE);

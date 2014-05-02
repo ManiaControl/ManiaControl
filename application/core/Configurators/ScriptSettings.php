@@ -148,7 +148,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		try {
 			$this->maniaControl->client->setModeScriptSettings($loadedSettings);
 		} catch(Exception $e) {
-			trigger_error('Error occured: ' . $e->getMessage());
+			trigger_error('Error occurred: ' . $e->getMessage());
 			return false;
 		}
 		return true;

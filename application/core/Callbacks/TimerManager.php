@@ -39,7 +39,7 @@ class TimerManager {
 	}
 
 	/**
-	 * Unregisters a Timer Listening
+	 * Unregister a Timer Listening
 	 * @param TimerListener $listener
 	 * @param               $method
 	 * @return bool
@@ -55,7 +55,7 @@ class TimerManager {
 	}
 
 	/**
-	 * Registers a Timing Listening, note < 10ms it can get inaccurate
+	 * Register a Timing Listening, note < 10ms it can get inaccurate
 	 *
 	 * @param TimerListener $listener
 	 * @param               $method

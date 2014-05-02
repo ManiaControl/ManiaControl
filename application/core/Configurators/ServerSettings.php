@@ -181,7 +181,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		$id         = 0;
 		foreach($serverSettings as $name => $value) {
 			// Continue on CurrentMaxPlayers...
-			$pos = strpos($name, "Current"); // TODO maybe current irgentwo anzeigen
+			$pos = strpos($name, "Current"); // TODO maybe display current somewhere
 			if ($pos !== false) {
 				continue;
 			}

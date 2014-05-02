@@ -1,6 +1,7 @@
 <?php
 
 namespace ManiaControl\Files;
+use ManiaControl\ManiaControl;
 
 /**
  * Backup Utility Class

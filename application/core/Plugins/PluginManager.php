@@ -220,7 +220,8 @@ class PluginManager {
 				continue;
 			}
 			array_push($newPluginClasses, $className);
-			
+
+			/** @var Plugin $className */
 			$className::prepare($this->maniaControl);
 			
 			if ($this->getSavedPluginStatus($className)) {
