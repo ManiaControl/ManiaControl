@@ -93,7 +93,7 @@ class PluginManager {
 	 * @return bool
 	 */
 	public static function isPluginClass($pluginClass) {
-		$pluginClass = self::getPluginClass($pluginClass);
+		$pluginClass = self::getClass($pluginClass);
 		if (!class_exists($pluginClass, false)) {
 			return false;
 		}
@@ -198,6 +198,8 @@ class PluginManager {
 
 	/**
 	 * Load complete Plugins Directory and start all configured Plugins
+	 * 
+	 * @return array
 	 */
 	public function loadPlugins() {
 		$pluginsDirectory = ManiaControlDir . '/plugins/';
@@ -206,24 +208,27 @@ class PluginManager {
 		$this->loadPluginFiles($pluginsDirectory);
 		$classesAfter = get_declared_classes();
 		
+		$newPluginClasses = array();
+		
 		$newClasses = array_diff($classesAfter, $classesBefore);
 		foreach ($newClasses as $className) {
 			if (!$this->isPluginClass($className)) {
 				continue;
 			}
 			
-			$this->addPluginClass($className);
+			if (!$this->addPluginClass($className)) {
+				continue;
+			}
+			array_push($newPluginClasses, $className);
+			
 			$className::prepare($this->maniaControl);
 			
-			if ($this->isPluginActive($className)) {
-				continue;
+			if ($this->getSavedPluginStatus($className)) {
+				$this->activatePlugin($className);
 			}
-			if (!$this->getSavedPluginStatus($className)) {
-				continue;
-			}
-			
-			$this->activatePlugin($className);
 		}
+		
+		return $newPluginClasses;
 	}
 
 	/**
@@ -360,10 +365,9 @@ class PluginManager {
 	}
 
 	/**
-	 * Fetch the plugin list of the ManiaControl Website
+	 * Fetch the Plugins List from the ManiaControl Website
 	 * 
 	 * @param $function
-	 * @param bool $ignoreVersion
 	 */
 	public function fetchPluginList($function) {
 		$url = ManiaControl::URL_WEBSERVICE . 'plugins';
@@ -381,9 +385,23 @@ class PluginManager {
 	 * @return string
 	 */
 	public static function getPluginClass($pluginClass) {
-		if (is_object($pluginClass)) {
-			$pluginClass = get_class($pluginClass);
+		$pluginClass = self::getClass($pluginClass);
+		if (!self::isPluginClass($pluginClass)) {
+			return false;
 		}
-		return (string) $pluginClass;
+		return $pluginClass;
+	}
+
+	/**
+	 * Get the Class of the Object
+	 * 
+	 * @param mixed $pluginClass
+	 * @return string
+	 */
+	private static function getClass($object) {
+		if (is_object($object)) {
+			return get_class($object);
+		}
+		return (string) $object;
 	}
 }
