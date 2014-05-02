@@ -332,7 +332,7 @@ class ManiaControl implements CommandListener, TimerListener {
 		// Check if the version of the server is high enough
 		$version = $this->client->getVersion();
 		if ($version->build < self::MIN_DEDIVERSION) {
-			trigger_error("The server has version " . $version->build . ", while at least " . self::MIN_DEDIVERSION . " is required!", E_USER_ERROR);
+			trigger_error("The Server has Version '{$version->build}', while at least '" . self::MIN_DEDIVERSION . "' is required!", E_USER_ERROR);
 		}
 		
 		// OnInit callback
@@ -340,7 +340,7 @@ class ManiaControl implements CommandListener, TimerListener {
 		
 		// Load plugins
 		$this->pluginManager->loadPlugins();
-		$this->updateManager->checkPluginsUpdate();
+		$this->updateManager->pluginUpdateManager->checkPluginsUpdate();
 		
 		// AfterInit callback
 		$this->callbackManager->triggerCallback(CallbackManager::CB_AFTERINIT);
