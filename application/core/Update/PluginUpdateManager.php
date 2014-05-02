@@ -85,6 +85,9 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 		$actionId = $callback[1][2];
 		$update = (strpos($actionId, PluginMenu::ACTION_PREFIX_UPDATEPLUGIN) === 0);
 		$install = (strpos($actionId, PluginInstallMenu::ACTION_PREFIX_INSTALLPLUGIN) === 0);
+		if (!$update && !$install) {
+			return;
+		}
 		
 		$login = $callback[1][1];
 		$player = $this->maniaControl->playerManager->getPlayer($login);
@@ -92,27 +95,39 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 		if ($update) {
 			$pluginClass = substr($actionId, strlen(PluginMenu::ACTION_PREFIX_UPDATEPLUGIN));
 			if ($pluginClass == 'All') {
-				$this->checkPluginsUpdate($player);
+				$this->performPluginsUpdate($player);
 			}
 			else {
-				$newUpdate = $this->getPluginUpdate($pluginClass);
-				if ($newUpdate) {
-					$newUpdate->pluginClass = $pluginClass;
-					$this->updatePlugin($newUpdate, $player, true);
+				$pluginUpdateData = $this->getPluginUpdate($pluginClass);
+				if ($pluginUpdateData) {
+					$this->installPlugin($pluginUpdateData, $player, true);
+				}
+				else {
+					$message = 'Error loading Plugin Update Data!';
+					$this->maniaControl->chat->sendError($message, $player);
 				}
 			}
 		}
-		
-		if ($install) {
+		else {
 			$pluginId = substr($actionId, strlen(PluginInstallMenu::ACTION_PREFIX_INSTALLPLUGIN));
 			
 			$url = ManiaControl::URL_WEBSERVICE . 'plugins?id=' . $pluginId;
-			$dataJson = FileUtil::loadFile($url);
-			$pluginVersions = json_decode($dataJson);
-			if ($pluginVersions && isset($pluginVersions[0])) {
-				$pluginData = $pluginVersions[0];
-				$this->installPlugin($pluginData, $player, true);
-			}
+			$self = $this;
+			$this->maniaControl->fileReader->loadFile($url, function ($data, $error) use(&$self, &$player) {
+				if ($error || !$data) {
+					$message = "Error loading Plugin Install Data! {$error}";
+					$self->maniaControl->chat->sendError($message, $player);
+					return;
+				}
+				$data = json_decode($data);
+				if (!isset($data[0])) {
+					$message = "Error loading Plugin Install Data! {$error}";
+					$self->maniaControl->chat->sendError($message, $player);
+					return;
+				}
+				$pluginUpdateData = new PluginUpdateData($data[0]);
+				$self->installPlugin($pluginUpdateData, $player);
+			});
 		}
 	}
 
@@ -253,7 +268,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 	 * @return mixed
 	 */
 	public function parsePluginsData($webServiceResult) {
-		if (!$webServiceResult || is_array($webServiceResult)) {
+		if (!$webServiceResult || !is_array($webServiceResult)) {
 			return false;
 		}
 		$pluginsData = array();
@@ -310,7 +325,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 	 */
 	private function installPlugin(PluginUpdateData $pluginUpdateData, Player $player = null, $update = false) {
 		$self = $this;
-		$this->maniaControl->fileReader->loadFile($pluginData->currentVersion->url, function ($updateFileContent, $error) use(&$self, &$pluginUpdateData, &$player, &$update) {
+		$this->maniaControl->fileReader->loadFile($pluginUpdateData->url, function ($updateFileContent, $error) use(&$self, &$pluginUpdateData, &$player, &$update) {
 			$actionNoun = ($update ? 'Update' : 'Install');
 			$actionVerb = ($update ? 'Updating' : 'Installing');
 			$actionVerbDone = ($update ? 'updated' : 'installed');
@@ -350,7 +365,11 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 			unlink($updateFileName);
 			FileUtil::removeTempFolder();
 			
-			$message = "Successfully {$actionVerbDone} '{$pluginUpdateData->pluginName}'!";
+			$messageExtra = '';
+			if ($update) {
+				$messageExtra = ' (Restart ManiaControl to load the new Version!)';
+			}
+			$message = "Successfully {$actionVerbDone} '{$pluginUpdateData->pluginName}'!{$messageExtra}";
 			if ($player) {
 				$self->maniaControl->chat->sendSuccess($message, $player);
 			}
