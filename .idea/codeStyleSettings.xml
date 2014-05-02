@@ -173,6 +173,20 @@
             </rules>
           </arrangement>
         </codeStyleSettings>
+        <codeStyleSettings language="XML">
+          <indentOptions>
+            <option name="USE_TAB_CHARACTER" value="true" />
+          </indentOptions>
+          <arrangement>
+            <rules>
+              <rule>
+                <match>
+                  <NAME>xmlns:.*</NAME>
+                </match>
+              </rule>
+            </rules>
+          </arrangement>
+        </codeStyleSettings>
       </value>
     </option>
     <option name="USE_PER_PROJECT_SETTINGS" value="true" />
