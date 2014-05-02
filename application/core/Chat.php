@@ -79,7 +79,7 @@ class Chat {
 			$this->maniaControl->client->chatSendServerMessage($chatMessage);
 		} else {
 			$chatMessage = '$<$z$ff0' . $this->getPrefix($prefix) . $message . '$>';
-			if ($login instanceof Player) {
+			if (is_object($login) && property_exists($login, 'login')) {
 				$login = $login->login;
 			}
 			try{
