@@ -5,6 +5,13 @@ namespace ManiaControl\Callbacks;
 
 use ManiaControl\ManiaControl;
 
+/**
+ * Class managing & converting LibXmlRpc Callbacks
+ *
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ */
 class LibXmlRpcCallbackManager implements CallbackListener {
 	/*
 	 * Private Properties
@@ -14,7 +21,8 @@ class LibXmlRpcCallbackManager implements CallbackListener {
 	/**
 	 * Create a new LibXmlRpc Callbacks Instance
 	 *
-	 * @param ManiaControl $maniaControl
+	 * @param ManiaControl    $maniaControl
+	 * @param CallbackManager $callbackManager
 	 */
 	public function __construct(ManiaControl $maniaControl, CallbackManager $callbackManager) {
 		$this->maniaControl = $maniaControl;
@@ -24,11 +32,11 @@ class LibXmlRpcCallbackManager implements CallbackListener {
 	/**
 	 * Handle Script Callbacks
 	 *
-	 * @param $name
-	 * @param $data
+	 * @param string $name
+	 * @param array  $data
 	 */
-	public function handleScriptCallbacks($name, $data) {
-		switch($name) {
+	public function handleScriptCallbacks($name, array $data) {
+		switch ($name) {
 			case 'LibXmlRpc_BeginMatch':
 				$this->maniaControl->callbackManager->triggerCallback(Callbacks::BEGINMATCH, $data[0]);
 				break;
@@ -76,9 +84,9 @@ class LibXmlRpcCallbackManager implements CallbackListener {
 	/**
 	 * Triggers the Ranking of a Player
 	 *
-	 * @param $data
+	 * @param array $data
 	 */
-	private function triggerPlayerRanking($data) {
+	private function triggerPlayerRanking(array $data) {
 		$player = $this->maniaControl->playerManager->getPlayer($data[1]);
 		$this->maniaControl->callbackManager->triggerCallback(Callbacks::PLAYERRANKING, $player, $data[0], $data[6], $data[5]);
 	}

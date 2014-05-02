@@ -2,15 +2,14 @@
 
 namespace ManiaControl;
 
-use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 use Maniaplanet\DedicatedServer\Xmlrpc\LoginUnknownException;
 
 /**
  * Chat Utility Class
  *
- * @author steeffeen & kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Chat {
 	/*
@@ -44,21 +43,18 @@ class Chat {
 	}
 
 	/**
-	 * Get prefix
+	 * Send an information message to the given login
 	 *
+	 * @param string      $message
+	 * @param string      $login
 	 * @param string|bool $prefix
-	 * @return string
+	 * @return bool
 	 */
-	private function getPrefix($prefix) {	
-		if (is_string($prefix)) {
-			return $prefix;
-		}
-		if ($prefix === true) {
-			return $this->maniaControl->settingManager->getSetting($this, self::SETTING_PREFIX);
-		}
-		return '';
+	public function sendInformation($message, $login = null, $prefix = true) {
+		$format = $this->maniaControl->settingManager->getSetting($this, self::SETTING_FORMAT_INFORMATION);
+		return $this->sendChat($format . $message, $login);
 	}
-	
+
 	/**
 	 * Send a chat message to the given login
 	 *
@@ -73,7 +69,7 @@ class Chat {
 		}
 
 		if (!$login) {
-			$prefix = $this->getPrefix($prefix);
+			$prefix      = $this->getPrefix($prefix);
 			$chatMessage = '$<$z$ff0' . str_replace(' ', '', $prefix) . $prefix . $message . '$>';
 			$this->maniaControl->client->chatSendServerMessage($chatMessage);
 		} else {
@@ -81,25 +77,28 @@ class Chat {
 			if (is_object($login) && property_exists($login, 'login')) {
 				$login = $login->login;
 			}
-			try{
+			try {
 				$this->maniaControl->client->chatSendServerMessage($chatMessage, $login);
-			} catch(LoginUnknownException $e){
+			} catch (LoginUnknownException $e) {
 			}
 		}
 		return true;
 	}
 
 	/**
-	 * Send an information message to the given login
+	 * Get prefix
 	 *
-	 * @param string      $message
-	 * @param string      $login
 	 * @param string|bool $prefix
-	 * @return bool
+	 * @return string
 	 */
-	public function sendInformation($message, $login = null, $prefix = true) {
-		$format = $this->maniaControl->settingManager->getSetting($this, self::SETTING_FORMAT_INFORMATION);
-		return $this->sendChat($format . $message, $login);
+	private function getPrefix($prefix) {
+		if (is_string($prefix)) {
+			return $prefix;
+		}
+		if ($prefix === true) {
+			return $this->maniaControl->settingManager->getSetting($this, self::SETTING_PREFIX);
+		}
+		return '';
 	}
 
 	/**
@@ -116,6 +115,19 @@ class Chat {
 	}
 
 	/**
+	 * Send the Exception Information to the Chat
+	 *
+	 * @param \Exception $exception
+	 * @param string     $login
+	 * @return bool
+	 */
+	public function sendException(\Exception $exception, $login = null) {
+		$message = "Exception occurred: '{$exception->getMessage()}' ({$exception->getCode()})";
+		$this->maniaControl->errorHandler->triggerDebugNotice($message);
+		return $this->sendError($message, $login);
+	}
+
+	/**
 	 * Send an Error Message to the Chat
 	 *
 	 * @param string      $message
@@ -126,19 +138,6 @@ class Chat {
 	public function sendError($message, $login = null, $prefix = true) {
 		$format = $this->maniaControl->settingManager->getSetting($this, self::SETTING_FORMAT_ERROR);
 		return $this->sendChat($format . $message, $login);
-	}
-	
-	/**
-	 * Send the Exception Information to the Chat
-	 * 
-	 * @param Exception $exception
-	 * @param string $login
-	 * @return bool
-	 */
-	public function sendException(\Exception $exception, $login = null) {
-		$message = "Exception occurred: '{$exception->getMessage()}' ({$exception->getCode()})";
-		$this->maniaControl->errorHandler->triggerDebugNotice($message);
-		$this->sendError($message, $login);
 	}
 
 	/**

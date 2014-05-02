@@ -11,9 +11,9 @@ use ManiaControl\ManiaControl;
 /**
  * Asynchronous File Reader
  *
- * @author kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class AsynchronousFileReader {
 	/*
@@ -35,13 +35,13 @@ class AsynchronousFileReader {
 	 * Appends the Data
 	 */
 	public function appendData() {
-		foreach($this->requests as $key => $request) {
+		foreach ($this->requests as $key => $request) {
 			/** @var Request $request */
 			try {
 				if ($request->socketPerform()) {
 					$request->socketSelect();
 				}
-			} catch(Exception $e) {
+			} catch (Exception $e) {
 				if ($e->getMessage() == "Cannot perform if there are no requests in queue.") {
 					unset($this->requests[$key]);
 				} else {
@@ -54,9 +54,10 @@ class AsynchronousFileReader {
 	/**
 	 * Load a remote file
 	 *
-	 * @param string $url
-	 * @param        $function
-	 * @param string $contentType
+	 * @param string      $url
+	 * @param    callable $function
+	 * @param string      $contentType
+	 * @param int         $keepAlive
 	 * @return bool
 	 */
 	public function loadFile($url, $function, $contentType = 'UTF-8', $keepAlive = 0) {
@@ -118,11 +119,11 @@ class AsynchronousFileReader {
 	/**
 	 * Send Data via POST Method
 	 *
-	 * @param        $url
-	 * @param        $function
-	 * @param        $content
-	 * @param string $compression
-	 * @param string $contentType
+	 * @param    string     $url
+	 * @param      callable $function
+	 * @param   string      $content
+	 * @param bool          $compression
+	 * @param string        $contentType
 	 * @return bool
 	 */
 	public function postData($url, $function, $content, $compression = false, $contentType = 'text/xml; charset=UTF-8') {

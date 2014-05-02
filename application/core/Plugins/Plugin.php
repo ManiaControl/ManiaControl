@@ -7,9 +7,9 @@ use ManiaControl\ManiaControl;
 /**
  * Interface for ManiaControl Plugins
  *
- * @author steeffeen & kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 interface Plugin {
 	/*
@@ -23,19 +23,6 @@ interface Plugin {
 	 * @param ManiaControl $maniaControl
 	 */
 	public static function prepare(ManiaControl $maniaControl);
-
-	/**
-	 * Load the plugin
-	 *
-	 * @param \ManiaControl\ManiaControl $maniaControl
-	 * @return bool
-	 */
-	public function load(ManiaControl $maniaControl);
-
-	/**
-	 * Unload the plugin and its Resources
-	 */
-	public function unload();
 
 	/**
 	 * Get plugin id
@@ -71,4 +58,17 @@ interface Plugin {
 	 * @return string
 	 */
 	public static function getDescription();
+
+	/**
+	 * Load the plugin
+	 *
+	 * @param \ManiaControl\ManiaControl $maniaControl
+	 * @return bool
+	 */
+	public function load(ManiaControl $maniaControl);
+
+	/**
+	 * Unload the plugin and its Resources
+	 */
+	public function unload();
 }

@@ -4,29 +4,28 @@ namespace ManiaControl\Server;
 
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\CommandLineHelper;
 use ManiaControl\ManiaControl;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
-use ManiaControl\CommandLineHelper;
 
 /**
  * Class providing Access to the connected ManiaPlanet Server
- * 
- * @author steeffeen & kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ *
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Server implements CallbackListener {
 	/*
 	 * Constants
 	 */
-	const TABLE_SERVERS = 'mc_servers';
+	const TABLE_SERVERS        = 'mc_servers';
 	const CB_TEAM_MODE_CHANGED = 'ServerCallback.TeamModeChanged';
-	
+
 	/*
 	 * Public Properties
 	 */
 	/**
-	 *
 	 * @var Config $config
 	 */
 	public $config = null;
@@ -40,7 +39,7 @@ class Server implements CallbackListener {
 	public $serverCommands = null;
 	public $usageReporter = null;
 	public $rankingManager = null;
-	
+
 	/*
 	 * Private Properties
 	 */
@@ -49,19 +48,46 @@ class Server implements CallbackListener {
 
 	/**
 	 * Construct a new Server
-	 * 
+	 *
 	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		$this->initTables();
-		
+
 		$this->serverCommands = new ServerCommands($maniaControl);
-		$this->usageReporter = new UsageReporter($maniaControl);
+		$this->usageReporter  = new UsageReporter($maniaControl);
 		$this->rankingManager = new RankingManager($maniaControl);
-		
+
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_ONINIT, $this, 'onInit');
+	}
+
+	/**
+	 * Initialize necessary Database Tables
+	 *
+	 * @return bool
+	 */
+	private function initTables() {
+		$mysqli    = $this->maniaControl->database->mysqli;
+		$query     = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_SERVERS . "` (
+				`index` int(11) NOT NULL AUTO_INCREMENT,
+				`login` varchar(100) NOT NULL,
+				PRIMARY KEY (`index`),
+				UNIQUE KEY `login` (`login`)
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Servers' AUTO_INCREMENT=1;";
+		$statement = $mysqli->prepare($query);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error, E_USER_ERROR);
+			return false;
+		}
+		$statement->execute();
+		if ($statement->error) {
+			trigger_error($statement->error, E_USER_ERROR);
+			return false;
+		}
+		$statement->close();
+		return true;
 	}
 
 	/**
@@ -70,7 +96,7 @@ class Server implements CallbackListener {
 	public function loadConfig() {
 		// Server id parameter
 		$serverId = CommandLineHelper::getParameter('-id');
-		
+
 		// Xml server tag with given id
 		$serverTag = null;
 		if ($serverId) {
@@ -81,8 +107,7 @@ class Server implements CallbackListener {
 			if (!$serverTag) {
 				trigger_error("No Server configured with the ID '{$serverId}'!", E_USER_ERROR);
 			}
-		}
-		else {
+		} else {
 			$serverTags = $this->maniaControl->config->xpath('server');
 			if ($serverTags) {
 				$serverTag = $serverTags[0];
@@ -91,45 +116,75 @@ class Server implements CallbackListener {
 				trigger_error('No Server configured!', E_USER_ERROR);
 			}
 		}
-		
+
 		// Host
 		$host = $serverTag->xpath('host');
 		if ($host) {
-			$host = (string) $host[0];
+			$host = (string)$host[0];
 		}
 		if (!$host) {
 			trigger_error("Invalid server configuration (host).", E_USER_ERROR);
 		}
-		
+
 		// Port
 		$port = $serverTag->xpath('port');
 		if ($port) {
-			$port = (string) $port[0];
+			$port = (string)$port[0];
 		}
 		if (!$port) {
 			trigger_error("Invalid server configuration (port).", E_USER_ERROR);
 		}
-		
+
 		// Login
 		$login = $serverTag->xpath('login');
 		if ($login) {
-			$login = (string) $login[0];
+			$login = (string)$login[0];
 		}
 		if (!$login) {
 			trigger_error("Invalid server configuration (login).", E_USER_ERROR);
 		}
-		
+
 		// Password
 		$pass = $serverTag->xpath('pass');
 		if ($pass) {
-			$pass = (string) $pass[0];
+			$pass = (string)$pass[0];
 		}
 		if (!$pass) {
 			trigger_error("Invalid server configuration (password).", E_USER_ERROR);
 		}
-		
+
 		// Create config object
 		$this->config = new Config($serverId, $host, $port, $login, $pass);
+	}
+
+	/**
+	 * Gets all Servers from the Database
+	 *
+	 * @return array
+	 */
+	public function getAllServers() {
+		$mysqli = $this->maniaControl->database->mysqli;
+		$query  = "SELECT * FROM `" . self::TABLE_SERVERS . "`";
+		$result = $mysqli->query($query);
+		if (!$result) {
+			trigger_error($mysqli->error);
+			return array();
+		}
+
+		$servers = array();
+		while ($row = $result->fetch_object()) {
+			array_push($servers, $row);
+		}
+		$result->close();
+
+		return $servers;
+	}
+
+	/**
+	 * Handle OnInit Callback
+	 */
+	public function onInit() {
+		$this->updateProperties();
 	}
 
 	/**
@@ -137,16 +192,16 @@ class Server implements CallbackListener {
 	 */
 	private function updateProperties() {
 		// System info
-		$systemInfo = $this->maniaControl->client->getSystemInfo();
-		$this->ip = $systemInfo->publishedIp;
-		$this->port = $systemInfo->port;
+		$systemInfo    = $this->maniaControl->client->getSystemInfo();
+		$this->ip      = $systemInfo->publishedIp;
+		$this->port    = $systemInfo->port;
 		$this->p2pPort = $systemInfo->p2PPort;
-		$this->login = $systemInfo->serverLogin;
+		$this->login   = $systemInfo->serverLogin;
 		$this->titleId = $systemInfo->titleId;
-		
+
 		// Database index
-		$mysqli = $this->maniaControl->database->mysqli;
-		$query = "INSERT INTO `" . self::TABLE_SERVERS . "` (
+		$mysqli    = $this->maniaControl->database->mysqli;
+		$query     = "INSERT INTO `" . self::TABLE_SERVERS . "` (
 				`login`
 				) VALUES (
 				?
@@ -169,71 +224,14 @@ class Server implements CallbackListener {
 	}
 
 	/**
-	 * Initialize necessary Database Tables
-	 * 
-	 * @return bool
-	 */
-	private function initTables() {
-		$mysqli = $this->maniaControl->database->mysqli;
-		$query = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_SERVERS . "` (
-				`index` int(11) NOT NULL AUTO_INCREMENT,
-				`login` varchar(100) NOT NULL,
-				PRIMARY KEY (`index`),
-				UNIQUE KEY `login` (`login`)
-				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Servers' AUTO_INCREMENT=1;";
-		$statement = $mysqli->prepare($query);
-		if ($mysqli->error) {
-			trigger_error($mysqli->error, E_USER_ERROR);
-			return false;
-		}
-		$statement->execute();
-		if ($statement->error) {
-			trigger_error($statement->error, E_USER_ERROR);
-			return false;
-		}
-		$statement->close();
-		return true;
-	}
-
-	/**
-	 * Gets all Servers from the Database
-	 * 
-	 * @return array
-	 */
-	public function getAllServers() {
-		$mysqli = $this->maniaControl->database->mysqli;
-		$query = "SELECT * FROM `" . self::TABLE_SERVERS . "`";
-		$result = $mysqli->query($query);
-		if (!$result) {
-			trigger_error($mysqli->error);
-			return array();
-		}
-		
-		$servers = array();
-		while ($row = $result->fetch_object()) {
-			array_push($servers, $row);
-		}
-		$result->close();
-		
-		return $servers;
-	}
-
-	/**
-	 * Handle OnInit Callback
-	 */
-	public function onInit() {
-		$this->updateProperties();
-	}
-
-	/**
 	 * Set if the Server Runs a Team-Mode or not
-	 * 
+	 *
 	 * @param bool $teamMode
 	 */
 	public function setTeamMode($teamMode = true) {
-		$oldStatus = $this->teamMode;
+		$oldStatus      = $this->teamMode;
 		$this->teamMode = $teamMode;
-		
+
 		// Trigger callback
 		if ($oldStatus != $this->teamMode) {
 			$this->maniaControl->callbackManager->triggerCallback(self::CB_TEAM_MODE_CHANGED, $teamMode);
@@ -242,7 +240,7 @@ class Server implements CallbackListener {
 
 	/**
 	 * Check if the Server Runs a TeamMode
-	 * 
+	 *
 	 * @return bool
 	 */
 	public function isTeamMode() {
@@ -250,20 +248,8 @@ class Server implements CallbackListener {
 	}
 
 	/**
-	 * Fetch Game Data Directory
-	 * 
-	 * @return string
-	 */
-	public function getDataDirectory() {
-		if ($this->dataDirectory == '') {
-			$this->dataDirectory = $this->maniaControl->client->gameDataDirectory();
-		}
-		return $this->dataDirectory;
-	}
-
-	/**
 	 * Fetch Maps Directory
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getMapsDirectory() {
@@ -275,8 +261,86 @@ class Server implements CallbackListener {
 	}
 
 	/**
+	 * Fetch Game Data Directory
+	 *
+	 * @return string
+	 */
+	public function getDataDirectory() {
+		if ($this->dataDirectory == '') {
+			$this->dataDirectory = $this->maniaControl->client->gameDataDirectory();
+		}
+		return $this->dataDirectory;
+	}
+
+	/**
+	 * Get Server Player Info
+	 *
+	 * @return \Maniaplanet\DedicatedServer\Structures\Player
+	 */
+	public function getInfo() {
+		return $this->maniaControl->client->getMainServerPlayerInfo();
+	}
+
+	/**
+	 * Retrieve Validation Replay for the given Player
+	 *
+	 * @param $login
+	 * @return string
+	 */
+	public function getValidationReplay($login) {
+		try {
+			$replay = $this->maniaControl->client->getValidationReplay($login);
+		} catch (Exception $e) {
+			// TODO temp added 19.04.2014
+			$this->maniaControl->errorHandler->triggerDebugNotice("Exception line 330 Server.php" . $e->getMessage());
+
+			trigger_error("Couldn't get validation replay of '{$login}'. " . $e->getMessage());
+			return null;
+		}
+		return $replay;
+	}
+
+	/**
+	 * Retrieve Ghost Replay for the given Player
+	 *
+	 * @param $login
+	 * @return string
+	 */
+	public function getGhostReplay($login) {
+		$dataDir = $this->getDataDirectory();
+		if (!$this->checkAccess($dataDir)) {
+			return null;
+		}
+
+		// Build file name
+		$map      = $this->maniaControl->mapManager->getCurrentMap();
+		$gameMode = $this->getGameMode();
+		$time     = time();
+		$fileName = "GhostReplays/Ghost.{$login}.{$gameMode}.{$time}.{$map->uid}.Replay.Gbx";
+
+		// Save ghost replay
+		try {
+			$this->maniaControl->client->saveBestGhostsReplay($login, $fileName);
+		} catch (Exception $e) {
+			// TODO temp added 19.04.2014
+			$this->maniaControl->errorHandler->triggerDebugNotice("Exception line 360 Server.php" . $e->getMessage());
+
+			trigger_error("Couldn't save ghost replay. " . $e->getMessage());
+			return null;
+		}
+
+		// Load replay file
+		$ghostReplay = file_get_contents("{$dataDir}Replays/{$fileName}");
+		if (!$ghostReplay) {
+			trigger_error("Couldn't retrieve saved ghost replay.");
+			return null;
+		}
+		return $ghostReplay;
+	}
+
+	/**
 	 * Checks if ManiaControl has Access to the given Directory
-	 * 
+	 *
 	 * @param string $directory
 	 * @return bool
 	 */
@@ -288,26 +352,16 @@ class Server implements CallbackListener {
 	}
 
 	/**
-	 * Get Server Player Info
-	 * 
-	 * @return \Maniaplanet\DedicatedServer\Structures\Player
-	 */
-	public function getInfo() {
-		return $this->maniaControl->client->getMainServerPlayerInfo();
-	}
-
-	/**
 	 * Fetch current Game Mode
-	 * 
+	 *
 	 * @param bool $stringValue
-	 * @param int $parseValue
+	 * @param int  $parseValue
 	 * @return int | string
 	 */
 	public function getGameMode($stringValue = false, $parseValue = null) {
 		if (is_int($parseValue)) {
 			$gameMode = $parseValue;
-		}
-		else {
+		} else {
 			$gameMode = $this->maniaControl->client->getGameMode();
 		}
 		if ($stringValue) {
@@ -334,67 +388,8 @@ class Server implements CallbackListener {
 	}
 
 	/**
-	 * Retrieve Validation Replay for the given Player
-	 * 
-	 * @param $login
-	 * @return string
-	 */
-	public function getValidationReplay($login) {
-		try {
-			$replay = $this->maniaControl->client->getValidationReplay($login);
-		}
-		catch (Exception $e) {
-			// TODO temp added 19.04.2014
-			$this->maniaControl->errorHandler->triggerDebugNotice("Exception line 330 Server.php" . $e->getMessage());
-			
-			trigger_error("Couldn't get validation replay of '{$login}'. " . $e->getMessage());
-			return null;
-		}
-		return $replay;
-	}
-
-	/**
-	 * Retrieve Ghost Replay for the given Player
-	 * 
-	 * @param $login
-	 * @return string
-	 */
-	public function getGhostReplay($login) {
-		$dataDir = $this->getDataDirectory();
-		if (!$this->checkAccess($dataDir)) {
-			return null;
-		}
-		
-		// Build file name
-		$map = $this->maniaControl->mapManager->getCurrentMap();
-		$gameMode = $this->getGameMode();
-		$time = time();
-		$fileName = "GhostReplays/Ghost.{$login}.{$gameMode}.{$time}.{$map->uid}.Replay.Gbx";
-		
-		// Save ghost replay
-		try {
-			$this->maniaControl->client->saveBestGhostsReplay($login, $fileName);
-		}
-		catch (Exception $e) {
-			// TODO temp added 19.04.2014
-			$this->maniaControl->errorHandler->triggerDebugNotice("Exception line 360 Server.php" . $e->getMessage());
-			
-			trigger_error("Couldn't save ghost replay. " . $e->getMessage());
-			return null;
-		}
-		
-		// Load replay file
-		$ghostReplay = file_get_contents("{$dataDir}Replays/{$fileName}");
-		if (!$ghostReplay) {
-			trigger_error("Couldn't retrieve saved ghost replay.");
-			return null;
-		}
-		return $ghostReplay;
-	}
-
-	/**
 	 * Wait for the Server to have the given Status
-	 * 
+	 *
 	 * @param int $statusCode
 	 * @return bool
 	 */
@@ -405,9 +400,9 @@ class Server implements CallbackListener {
 			return true;
 		}
 		// Server not yet in given status - Wait for it...
-		$waitBegin = time();
+		$waitBegin   = time();
 		$maxWaitTime = 50;
-		$lastStatus = $response->name;
+		$lastStatus  = $response->name;
 		$this->maniaControl->log("Waiting for server to reach status {$statusCode}...");
 		$this->maniaControl->log("Current Status: {$lastStatus}");
 		while ($response->code !== 4) {

@@ -9,9 +9,9 @@ use ManiaControl\ManiaControl;
 /**
  * Class for handling Chat Commands
  *
- * @author steeffeen & kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class CommandManager implements CallbackListener {
 	/*
@@ -50,7 +50,7 @@ class CommandManager implements CallbackListener {
 	public function registerCommandListener($commandName, CommandListener $listener, $method, $adminCommand = false, $description = '') {
 		if (is_array($commandName)) {
 			$success = true;
-			foreach($commandName as $command) {
+			foreach ($commandName as $command) {
 				if (!$this->registerCommandListener($command, $listener, $method, $adminCommand, $description)) {
 					$success = false;
 				}
@@ -92,16 +92,16 @@ class CommandManager implements CallbackListener {
 	 */
 	public function unregisterCommandListener(CommandListener $listener) {
 		$removed = false;
-		foreach($this->commandListeners as &$listeners) {
-			foreach($listeners as $key => &$listenerCallback) {
+		foreach ($this->commandListeners as &$listeners) {
+			foreach ($listeners as $key => &$listenerCallback) {
 				if ($listenerCallback[0] == $listener) {
 					unset($listeners[$key]);
 					$removed = true;
 				}
 			}
 		}
-		foreach($this->adminCommandListeners as &$listeners) {
-			foreach($listeners as $key => &$listenerCallback) {
+		foreach ($this->adminCommandListeners as &$listeners) {
+			foreach ($listeners as $key => &$listenerCallback) {
 				if ($listenerCallback[0] == $listener) {
 					unset($listeners[$key]);
 					$removed = true;
@@ -152,7 +152,7 @@ class CommandManager implements CallbackListener {
 
 			// Compose uniformed message
 			$message = '//' . $command;
-			foreach($commandArray as $commandPart) {
+			foreach ($commandArray as $commandPart) {
 				$message .= ' ' . $commandPart;
 			}
 			$callback[1][2] = $message;
@@ -167,7 +167,7 @@ class CommandManager implements CallbackListener {
 		}
 
 		// Inform command listeners
-		foreach($commandListeners[$command] as $listener) {
+		foreach ($commandListeners[$command] as $listener) {
 			call_user_func(array($listener[0], $listener[1]), $callback, $player);
 		}
 	}

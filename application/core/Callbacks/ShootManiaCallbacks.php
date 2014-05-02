@@ -7,8 +7,8 @@ use ManiaControl\ManiaControl;
 /**
  * Class handling and parsing ShootMania Callbacks
  *
- * @author    steeffeen
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ShootManiaCallbacks implements CallbackListener {
@@ -28,7 +28,8 @@ class ShootManiaCallbacks implements CallbackListener {
 	/**
 	 * Create a new ShootMania Callbacks Instance
 	 *
-	 * @param ManiaControl $maniaControl
+	 * @param ManiaControl    $maniaControl
+	 * @param CallbackManager $callbackManager
 	 */
 	public function __construct(ManiaControl $maniaControl, CallbackManager $callbackManager) {
 		$this->maniaControl = $maniaControl;
@@ -42,11 +43,11 @@ class ShootManiaCallbacks implements CallbackListener {
 	/**
 	 * Handle Script Callbacks
 	 *
-	 * @param $name
-	 * @param $data
+	 * @param string $name
+	 * @param array $data
 	 */
 	public function handleScriptCallbacks($name, $data) {
-		switch($name) {
+		switch ($name) {
 			case 'LibXmlRpc_Rankings':
 				$this->maniaControl->server->rankingManager->updateRankings($data[0]);
 				break;
@@ -62,7 +63,7 @@ class ShootManiaCallbacks implements CallbackListener {
 	/**
 	 * Triggers the AFK Status of an Player
 	 *
-	 * @param $login
+	 * @param string $login
 	 */
 	private function triggerAfkStatus($login) {
 		$player = $this->maniaControl->playerManager->getPlayer($login);

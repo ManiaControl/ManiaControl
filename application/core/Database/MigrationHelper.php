@@ -1,16 +1,16 @@
 <?php
 
 namespace ManiaControl\Database;
-	
-use ManiaControl\Settings\SettingManager;
+
 use ManiaControl\ManiaControl;
+use ManiaControl\Settings\SettingManager;
 
 /**
  * Database Migration Assistant
  *
- * @author steeffeen
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class MigrationHelper {
 	/*
@@ -20,7 +20,7 @@ class MigrationHelper {
 
 	/**
 	 * Construct Migration Helper
-	 * 
+	 *
 	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
@@ -37,10 +37,10 @@ class MigrationHelper {
 	public function transferSettings($sourceClass, $targetClass) {
 		$sourceClass = $this->getClass($sourceClass);
 		$targetClass = $this->getClass($targetClass);
-		
+
 		$mysqli = $this->maniaControl->database->mysqli;
-		
-		$query = "INSERT INTO `" . SettingManager::TABLE_SETTINGS . "` (`class`, `setting`, `type`, `value`, `default`)
+
+		$query     = "INSERT INTO `" . SettingManager::TABLE_SETTINGS . "` (`class`, `setting`, `type`, `value`, `default`)
 				SELECT ?, `setting`, `type`, `value`, `default` FROM `" . SettingManager::TABLE_SETTINGS . "` WHERE `class` = ?;";
 		$statement = $mysqli->prepare($query);
 		if ($mysqli->error) {
@@ -68,6 +68,6 @@ class MigrationHelper {
 		if (is_object($class)) {
 			return get_class($class);
 		}
-		return (string) $class;
+		return (string)$class;
 	}
 }

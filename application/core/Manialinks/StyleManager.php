@@ -16,9 +16,9 @@ use ManiaControl\ManiaControl;
 /**
  * Class managing default Control Styles
  *
- * @author steeffeen & kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class StyleManager {
 	/*
@@ -98,43 +98,6 @@ class StyleManager {
 	}
 
 	/**
-	 * Get the default main window style
-	 *
-	 * @return string
-	 */
-	public function getDefaultMainWindowStyle() {
-		return $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAIN_WIDGET_DEFAULT_STYLE);
-	}
-
-	/**
-	 * Get the default main window substyle
-	 *
-	 * @return string
-	 */
-	public function getDefaultMainWindowSubStyle() {
-		return $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAIN_WIDGET_DEFAULT_SUBSTYLE);
-	}
-
-	/**
-	 * Get the default list widget width
-	 *
-	 * @return string
-	 */
-	public function getListWidgetsWidth() {
-		return $this->maniaControl->settingManager->getSetting($this, self::SETTING_LIST_WIDGETS_WIDTH);
-	}
-
-	/**
-	 * Get the default list widget height
-	 *
-	 * @return string
-	 */
-	public function getListWidgetsHeight() {
-		return $this->maniaControl->settingManager->getSetting($this, self::SETTING_LIST_WIDGETS_HEIGHT);
-	}
-
-
-	/**
 	 * Gets the Default Description Label
 	 *
 	 * @return Label
@@ -155,12 +118,30 @@ class StyleManager {
 	}
 
 	/**
+	 * Get the default list widget width
+	 *
+	 * @return string
+	 */
+	public function getListWidgetsWidth() {
+		return $this->maniaControl->settingManager->getSetting($this, self::SETTING_LIST_WIDGETS_WIDTH);
+	}
+
+	/**
+	 * Get the default list widget height
+	 *
+	 * @return string
+	 */
+	public function getListWidgetsHeight() {
+		return $this->maniaControl->settingManager->getSetting($this, self::SETTING_LIST_WIDGETS_HEIGHT);
+	}
+
+	/**
 	 * Builds the Default List Frame
 	 *
 	 * @return Frame $frame
 	 */
 	public function getDefaultListFrame() {
-		$args = func_get_args();
+		$args   = func_get_args();
 		$script = null;
 		$paging = null;
 		foreach ($args as $arg) {
@@ -171,7 +152,7 @@ class StyleManager {
 				$paging = $arg;
 			}
 		}
-		
+
 		$width        = $this->getListWidgetsWidth();
 		$height       = $this->getListWidgetsHeight();
 		$quadStyle    = $this->getDefaultMainWindowStyle();
@@ -210,10 +191,10 @@ class StyleManager {
 			$pagerNext->setSize($pagerSize, $pagerSize);
 			$pagerNext->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowNext);
 
-            if ($paging) {
-                $paging->addButton($pagerNext);
-                $paging->addButton($pagerPrev);
-            }
+			if ($paging) {
+				$paging->addButton($pagerNext);
+				$paging->addButton($pagerPrev);
+			}
 
 			$pageCountLabel = new Label_Text();
 			$frame->add($pageCountLabel);
@@ -221,11 +202,29 @@ class StyleManager {
 			$pageCountLabel->setPosition($width * 0.40, $height * -0.44, 1);
 			$pageCountLabel->setStyle($pageCountLabel::STYLE_TextTitle1);
 			$pageCountLabel->setTextSize(1.3);
-            if ($paging) {
-                $paging->setLabel($pageCountLabel);
-            }
+			if ($paging) {
+				$paging->setLabel($pageCountLabel);
+			}
 		}
 
 		return $frame;
+	}
+
+	/**
+	 * Get the default main window style
+	 *
+	 * @return string
+	 */
+	public function getDefaultMainWindowStyle() {
+		return $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAIN_WIDGET_DEFAULT_STYLE);
+	}
+
+	/**
+	 * Get the default main window substyle
+	 *
+	 * @return string
+	 */
+	public function getDefaultMainWindowSubStyle() {
+		return $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAIN_WIDGET_DEFAULT_SUBSTYLE);
 	}
 }

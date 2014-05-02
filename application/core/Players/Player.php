@@ -7,9 +7,9 @@ use ManiaControl\Formatter;
 /**
  * Player Model Class
  *
- * @author kremsy & steeffeen
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Player {
 	/*
@@ -72,7 +72,7 @@ class Player {
 		$this->pid                      = $mpPlayer->playerId;
 		$this->login                    = $mpPlayer->login;
 		$this->nickname                 = Formatter::stripDirtyCodes($mpPlayer->nickName);
-		$this->rawNickname				= $mpPlayer->nickName;
+		$this->rawNickname              = $mpPlayer->nickName;
 		$this->path                     = $mpPlayer->path;
 		$this->language                 = $mpPlayer->language;
 		$this->avatar                   = $mpPlayer->avatar['FileName'];

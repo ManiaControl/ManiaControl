@@ -20,8 +20,8 @@ use Maniaplanet\DedicatedServer\Xmlrpc\LadderModeUnknownException;
 /**
  * Class offering a Configurator for Server Settings
  *
- * @author    steeffeen & kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ServerSettings implements ConfiguratorMenu, CallbackListener {
@@ -109,7 +109,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		}
 		$serverSettings = $this->maniaControl->client->getServerOptions()->toArray();
 		$applySettings  = false;
-		while($row = $result->fetch_object()) {
+		while ($row = $result->fetch_object()) {
 			if (!isset($serverSettings[$row->settingName])) {
 				continue;
 			}
@@ -128,19 +128,12 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	}
 
 	/**
-	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getTitle()
-	 */
-	public function getTitle() {
-		return 'Server Settings';
-	}
-
-	/**
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getMenu()
 	 */
 	public function getMenu($width, $height, Script $script, Player $player) {
-        $paging = new Paging();
-        $script->addFeature($paging);
-		$frame   = new Frame();
+		$paging = new Paging();
+		$script->addFeature($paging);
+		$frame = new Frame();
 
 		$serverSettings = $this->maniaControl->client->getServerOptions()->toArray();
 
@@ -163,8 +156,8 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		$pagerNext->setSize($pagerSize, $pagerSize);
 		$pagerNext->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowNext);
 
-        $paging->addButton($pagerNext);
-        $paging->addButton($pagerPrev);
+		$paging->addButton($pagerNext);
+		$paging->addButton($pagerPrev);
 
 		$pageCountLabel = new Label();
 		$frame->add($pageCountLabel);
@@ -173,13 +166,13 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		$pageCountLabel->setStyle('TextTitle1');
 		$pageCountLabel->setTextSize(2);
 
-        $paging->setLabel($pageCountLabel);
+		$paging->setLabel($pageCountLabel);
 
 		// Setting pages
 		$pageFrames = array();
 		$y          = 0.;
 		$id         = 0;
-		foreach($serverSettings as $name => $value) {
+		foreach ($serverSettings as $name => $value) {
 			// Continue on CurrentMaxPlayers...
 			$pos = strpos($name, "Current"); // TODO maybe display current somewhere
 			if ($pos !== false) {
@@ -194,7 +187,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 				}
 				array_push($pageFrames, $pageFrame);
 				$y = $height * 0.41;
-                $paging->addPage($pageFrame);
+				$paging->addPage($pageFrame);
 			}
 
 			$settingFrame = new Frame();
@@ -262,6 +255,25 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	}
 
 	/**
+	 * Handle ManialinkPageAnswer Callback
+	 *
+	 * @param array $callback
+	 */
+	public function handleManialinkPageAnswer(array $callback) {
+		$actionId    = $callback[1][2];
+		$boolSetting = (strpos($actionId, self::ACTION_SETTING_BOOL) === 0);
+		if (!$boolSetting) {
+			return;
+		}
+
+		$login  = $callback[1][1];
+		$player = $this->maniaControl->playerManager->getPlayer($login);
+
+		// Save all Changes
+		$this->saveConfigData($callback[1], $player);
+	}
+
+	/**
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
 	 */
 	public function saveConfigData(array $configData, Player $player) {
@@ -285,7 +297,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		}
 
 		$newSettings = array();
-		foreach($configData[3] as $setting) {
+		foreach ($configData[3] as $setting) {
 			// Check if it was a boolean button
 			if ($setting['Name'] == $boolSettingName) {
 				$setting['Value'] = ($setting['Value'] ? false : true);
@@ -305,25 +317,6 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	}
 
 	/**
-	 * Handle ManialinkPageAnswer Callback
-	 *
-	 * @param array $callback
-	 */
-	public function handleManialinkPageAnswer(array $callback) {
-		$actionId    = $callback[1][2];
-		$boolSetting = (strpos($actionId, self::ACTION_SETTING_BOOL) === 0);
-		if (!$boolSetting) {
-			return;
-		}
-
-		$login  = $callback[1][1];
-		$player = $this->maniaControl->playerManager->getPlayer($login);
-
-		// Save all Changes
-		$this->saveConfigData($callback[1], $player);
-	}
-
-	/**
 	 * Apply the Array of new Server Settings
 	 *
 	 * @param array  $newSettings
@@ -337,7 +330,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 
 		try {
 			$this->maniaControl->client->setServerOptions($newSettings);
-		} catch(LadderModeUnknownException $e) {
+		} catch (LadderModeUnknownException $e) {
 			$this->maniaControl->chat->sendError("Unknown Ladder-Mode");
 			return false;
 		}
@@ -359,7 +352,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			return false;
 		}
 
-		foreach($newSettings as $setting => $value) {
+		foreach ($newSettings as $setting => $value) {
 			if ($value === null) {
 				continue;
 			}
@@ -381,5 +374,12 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_SERVERSETTINGS_CHANGED, array(self::CB_SERVERSETTINGS_CHANGED));
 
 		return true;
+	}
+
+	/**
+	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getTitle()
+	 */
+	public function getTitle() {
+		return 'Server Settings';
 	}
 }

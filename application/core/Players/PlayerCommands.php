@@ -15,9 +15,9 @@ use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 /**
  * Class offering various Admin Commands related to Players
  *
- * @author steeffeen & kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, CallbackListener {
 	/*
@@ -74,7 +74,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 
 	/**
 	 * Handle TeamStatusChanged
-	 * 
+	 *
 	 * @param bool $teamMode
 	 */
 	public function teamStatusChanged($teamMode) {
@@ -103,7 +103,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 
 		try {
 			$this->maniaControl->client->autoTeamBalance();
-		} catch(Exception $e) {
+		} catch (Exception $e) {
 			$this->maniaControl->errorHandler->triggerDebugNotice("PlayerCommands Debug Line 112: " . $e->getMessage());
 			// TODO: only catch 'not in team mode' exception - throw others (like connection error)
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
@@ -167,8 +167,8 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 	 * @param array  $chatCallback
 	 * @param Player $player
 	 */
-	public function command_Warn(array $chat, Player $player) {
-		$params = explode(' ', $chat[1][2], 3);
+	public function command_Warn(array $chatCallback, Player $player) {
+		$params = explode(' ', $chatCallback[1][2], 3);
 		if (count($params) <= 1) {
 			$this->maniaControl->chat->sendUsageInfo("No Login given! Example: '//kick login'", $player->login);
 			return;

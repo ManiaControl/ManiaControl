@@ -11,9 +11,9 @@ use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 /**
  * Class reporting ManiaControl Usage for the Server
  *
- * @author steeffeen & kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class UsageReporter implements TimerListener {
 	/*
@@ -58,9 +58,9 @@ class UsageReporter implements TimerListener {
 		$properties['TitleId']             = $this->maniaControl->server->titleId;
 		$properties['ServerName']          = Formatter::stripDirtyCodes($this->maniaControl->client->getServerName());
 
-		$properties['PlayerCount']         = $this->maniaControl->playerManager->getPlayerCount();
-		$properties['MemoryUsage']         = memory_get_usage();
-		$properties['MemoryPeakUsage']     = memory_get_peak_usage();
+		$properties['PlayerCount']     = $this->maniaControl->playerManager->getPlayerCount();
+		$properties['MemoryUsage']     = memory_get_usage();
+		$properties['MemoryPeakUsage'] = memory_get_peak_usage();
 
 		$maxPlayers               = $this->maniaControl->client->getMaxPlayers();
 		$properties['MaxPlayers'] = $maxPlayers["CurrentValue"];
@@ -68,7 +68,7 @@ class UsageReporter implements TimerListener {
 		try {
 			$scriptName               = $this->maniaControl->client->getScriptName();
 			$properties['ScriptName'] = $scriptName["CurrentValue"];
-		} catch(Exception $e) {
+		} catch (Exception $e) {
 			if ($e->getMessage() == 'Not in script mode.') {
 				$properties['ScriptName'] = '';
 			} else {
@@ -79,7 +79,7 @@ class UsageReporter implements TimerListener {
 		$activePlugins = array();
 
 		if (is_array($this->maniaControl->pluginManager->getActivePlugins())) {
-			foreach($this->maniaControl->pluginManager->getActivePlugins() as $plugin) {
+			foreach ($this->maniaControl->pluginManager->getActivePlugins() as $plugin) {
 				/** @var Plugin $plugin */
 				if (!is_null($plugin::getId()) && is_numeric($plugin::getId())) {
 					$activePlugins[] = $plugin::getId();
@@ -93,7 +93,7 @@ class UsageReporter implements TimerListener {
 		$info = base64_encode($json);
 
 		$self = $this;
-		$this->maniaControl->fileReader->loadFile(ManiaControl::URL_WEBSERVICE . "/usagereport?info=" . urlencode($info), function ($response, $error) use(&$self){
+		$this->maniaControl->fileReader->loadFile(ManiaControl::URL_WEBSERVICE . "/usagereport?info=" . urlencode($info), function ($response, $error) use (&$self) {
 			$response = json_decode($response);
 			if ($error || !$response) {
 				$self->maniaControl->log("Error while Sending data: " . $error);

@@ -24,8 +24,8 @@ use ManiaControl\Plugins\Plugin;
 /**
  * ManiaControl Widget Plugin
  *
- * @author    steeffeen and kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
@@ -89,6 +89,51 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	}
 
 	/**
+	 * Get plugin id
+	 *
+	 * @return int
+	 */
+	public static function getId() {
+		return self::PLUGIN_ID;
+	}
+
+	/**
+	 * Get Plugin Name
+	 *
+	 * @return string
+	 */
+	public static function getName() {
+		return self::PLUGIN_NAME;
+	}
+
+	/**
+	 * Get Plugin Version
+	 *
+	 * @return float,,
+	 */
+	public static function getVersion() {
+		return self::PLUGIN_VERSION;
+	}
+
+	/**
+	 * Get Plugin Author
+	 *
+	 * @return string
+	 */
+	public static function getAuthor() {
+		return self::PLUGIN_AUTHOR;
+	}
+
+	/**
+	 * Get Plugin Description
+	 *
+	 * @return string
+	 */
+	public static function getDescription() {
+		return 'Plugin offers some Widgets';
+	}
+
+	/**
 	 * Load the plugin
 	 *
 	 * @param ManiaControl $maniaControl
@@ -136,22 +181,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	}
 
 	/**
-	 * Unload the plugin and its resources
-	 */
-	public function unload() {
-		$this->closeWidget(self::MLID_CLOCKWIDGET);
-		$this->closeWidget(self::MLID_SERVERINFOWIDGET);
-		$this->closeWidget(self::MLID_MAPWIDGET);
-		$this->closeWidget(self::MLID_NEXTMAPWIDGET);
-		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
-		$this->maniaControl->timerManager->unregisterTimerListenings($this);
-		unset($this->maniaControl);
-	}
-
-	/**
-	 * Displays the Widgets onLoad
-	 *
-	 * @param array $callback
+	 * Display the Widgets
 	 */
 	private function displayWidgets() {
 		// Display Map Widget
@@ -168,11 +198,11 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	}
 
 	/**
-	 * Displays the Map Widget
+	 * Display the Map Widget
 	 *
-	 * @param String $login
+	 * @param string $login
 	 */
-	public function displayMapWidget($login = false) {
+	public function displayMapWidget($login = null) {
 		$pos_x        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_POSX);
 		$pos_y        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_POSY);
 		$width        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_WIDTH);
@@ -280,11 +310,11 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	}
 
 	/**
-	 * Displays the Server Info Widget
+	 * Display the Server Info Widget
 	 *
-	 * @param String $login
+	 * @param string $login
 	 */
-	public function displayServerInfoWidget($login = false) {
+	public function displayServerInfoWidget($login = null) {
 		$pos_x        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_SERVERINFO_WIDGET_POSX);
 		$pos_y        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_SERVERINFO_WIDGET_POSY);
 		$width        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_SERVERINFO_WIDGET_WIDTH);
@@ -318,7 +348,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		/**
 		 * @var Player $player
 		 */
-		foreach($players as $player) {
+		foreach ($players as $player) {
 			if ($player->isSpectator) {
 				$spectatorCount++;
 			} else {
@@ -383,16 +413,16 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	}
 
 	/**
-	 * Handle on Begin Map
-	 *
-	 * @param Map $map
+	 * Unload the plugin and its resources
 	 */
-	public function handleOnBeginMap(Map $map) {
-		// Display Map Widget
-		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED)) {
-			$this->displayMapWidget();
-		}
+	public function unload() {
+		$this->closeWidget(self::MLID_CLOCKWIDGET);
+		$this->closeWidget(self::MLID_SERVERINFOWIDGET);
+		$this->closeWidget(self::MLID_MAPWIDGET);
 		$this->closeWidget(self::MLID_NEXTMAPWIDGET);
+		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
+		$this->maniaControl->timerManager->unregisterTimerListenings($this);
+		unset($this->maniaControl);
 	}
 
 	/**
@@ -403,6 +433,19 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	public function closeWidget($widgetId) {
 		$emptyManialink = new ManiaLink($widgetId);
 		$this->maniaControl->manialinkManager->sendManialink($emptyManialink);
+	}
+
+	/**
+	 * Handle on Begin Map
+	 *
+	 * @param Map $map
+	 */
+	public function handleOnBeginMap(Map $map) {
+		// Display Map Widget
+		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED)) {
+			$this->displayMapWidget();
+		}
+		$this->closeWidget(self::MLID_NEXTMAPWIDGET);
 	}
 
 	/**
@@ -542,50 +585,5 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_SERVERINFO_WIDGET_ACTIVATED)) {
 			$this->displayServerInfoWidget();
 		}
-	}
-
-	/**
-	 * Get plugin id
-	 *
-	 * @return int
-	 */
-	public static function getId() {
-		return self::PLUGIN_ID;
-	}
-
-	/**
-	 * Get Plugin Name
-	 *
-	 * @return string
-	 */
-	public static function getName() {
-		return self::PLUGIN_NAME;
-	}
-
-	/**
-	 * Get Plugin Version
-	 *
-	 * @return float,,
-	 */
-	public static function getVersion() {
-		return self::PLUGIN_VERSION;
-	}
-
-	/**
-	 * Get Plugin Author
-	 *
-	 * @return string
-	 */
-	public static function getAuthor() {
-		return self::PLUGIN_AUTHOR;
-	}
-
-	/**
-	 * Get Plugin Description
-	 *
-	 * @return string
-	 */
-	public static function getDescription() {
-		return 'Plugin offers some Widgets';
 	}
 }

@@ -20,10 +20,10 @@ use ManiaControl\Players\Player;
 
 /**
  * Widget Class listing Authorized Players
- * 
- * @author kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ *
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 	/*
@@ -61,8 +61,8 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 
 	/**
 	 * Open Admin List Action
-	 * 
-	 * @param array $callback
+	 *
+	 * @param array  $callback
 	 * @param Player $player
 	 */
 	public function openAdminList(array $callback, Player $player) {
@@ -71,7 +71,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 
 	/**
 	 * Show the Admin List
-	 * 
+	 *
 	 * @param Player $player
 	 */
 	public function showAdminLists(Player $player) {
@@ -90,8 +90,8 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 		//Create ManiaLink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$script    = $maniaLink->getScript();
-        $paging = new Paging();
-        $script->addFeature($paging);
+		$paging    = new Paging();
+		$script->addFeature($paging);
 
 		// Main frame
 		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script, $pagesId);
@@ -115,7 +115,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 		$i          = 1;
 		$y          = $y - 10;
 		$pageFrames = array();
-		foreach($admins as $admin) {
+		foreach ($admins as $admin) {
 			if (!isset($pageFrame)) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
@@ -124,7 +124,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 				}
 				array_push($pageFrames, $pageFrame);
 				$y = $height / 2 - 10;
-                $paging->addPage($pageFrame);
+				$paging->addPage($pageFrame);
 			}
 
 
@@ -158,8 +158,8 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 			$rightLabel->setTextSize(0.8);
 			$rightLabel->setZ(10);
 			$rightLabel->setText($this->maniaControl->authenticationManager->getAuthLevelAbbreviation($admin));
-            $description = $this->maniaControl->authenticationManager->getAuthLevelName($admin) . " " . $admin->nickname;
-            $rightLabel->addTooltipLabelFeature($descriptionLabel, $description);
+			$description = $this->maniaControl->authenticationManager->getAuthLevelName($admin) . " " . $admin->nickname;
+			$rightLabel->addTooltipLabelFeature($descriptionLabel, $description);
 
 			//Revoke Button
 			if ($admin->authLevel > 0 && $this->maniaControl->authenticationManager->checkRight($player, $admin->authLevel + 1)) {
@@ -217,7 +217,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 		$adminLogin  = $callback[1][1];
 		$targetLogin = $actionArray[2];
 
-		switch($action) {
+		switch ($action) {
 			case self::ACTION_REVOKE_RIGHTS:
 				$this->maniaControl->playerManager->playerActions->revokeAuthLevel($adminLogin, $targetLogin);
 				break;
@@ -227,10 +227,10 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 	/**
 	 * Reopen the widget on Map Begin, MapListChanged, etc.
 	 *
-	 * @param array $callback
+	 * @param Player $player
 	 */
 	public function updateWidget(Player $player) {
-		foreach($this->adminListShown as $login => $shown) {
+		foreach ($this->adminListShown as $login => $shown) {
 			if ($shown) {
 				$player = $this->maniaControl->playerManager->getPlayer($login);
 				if ($player) {

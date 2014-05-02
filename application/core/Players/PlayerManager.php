@@ -14,8 +14,8 @@ use Maniaplanet\DedicatedServer\Xmlrpc\LoginUnknownException;
 /**
  * Class managing Players
  *
- * @author    kremsy & steeffeen
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class PlayerManager implements CallbackListener, TimerListener {
@@ -112,7 +112,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 	public function onInit() {
 		// Add all players
 		$players = $this->maniaControl->client->getPlayerList(300, 0, 2);
-		foreach($players as $playerItem) {
+		foreach ($players as $playerItem) {
 			if ($playerItem->playerId <= 0) {
 				continue;
 			}
@@ -142,183 +142,6 @@ class PlayerManager implements CallbackListener, TimerListener {
 	}
 
 	/**
-	 * Handle playerConnect callback
-	 *
-	 * @param array $callback
-	 */
-	public function playerConnect(array $callback) {
-		$login = $callback[1][0];
-		try {
-			$playerInfo = $this->maniaControl->client->getDetailedPlayerInfo($login);
-			$player     = new Player($playerInfo);
-
-			$this->addPlayer($player);
-		} catch(LoginUnknownException $e) {
-		}
-	}
-
-	/**
-	 * Handle playerDisconnect callback
-	 *
-	 * @param array $callback
-	 */
-	public function playerDisconnect(array $callback) {
-		$login  = $callback[1][0];
-		$player = $this->removePlayer($login);
-		if (!$player) {
-			return;
-		}
-
-		// Trigger own callback
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERDISCONNECT, $player);
-
-		if ($player->isFakePlayer()) {
-			return;
-		}
-
-		$played     = Formatter::formatTimeH(time() - $player->joinTime);
-		$logMessage = "Player left: {$player->login} / {$player->nickname} Playtime: {$played}";
-		$this->maniaControl->log(Formatter::stripCodes($logMessage));
-
-		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES)) {
-			$this->maniaControl->chat->sendChat('$0f0$<$fff' . $player->nickname . '$> has left the game');
-		}
-
-		//Destroys stored PlayerData, after all Disconnect Callbacks got Handled
-		$this->playerDataManager->destroyPlayerData($player);
-	}
-
-	/**
-	 * Update PlayerInfo
-	 *
-	 * @param array $callback
-	 */
-	public function playerInfoChanged(array $callback) {
-		$player = $this->getPlayer($callback[1][0]['Login']);
-		if (!$player) {
-			return;
-		}
-
-		$player->ladderRank = $callback[1][0]["LadderRanking"];
-		$player->teamId     = $callback[1][0]["TeamId"];
-
-		//Check if the Player is in a Team, to notify if its a TeamMode or not
-		if ($player->teamId != -1) {
-			$this->maniaControl->server->setTeamMode(true);
-		}
-
-		$prevJoinState = $player->hasJoinedGame;
-
-		$player->updatePlayerFlags($callback[1][0]["Flags"]);
-		$player->updateSpectatorStatus($callback[1][0]["SpectatorStatus"]);
-
-		//Check if Player finished joining the game
-		if ($player->hasJoinedGame && !$prevJoinState) {
-
-			if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES) && !$player->isFakePlayer()) {
-				$string      = array(0 => '$0f0Player', 1 => '$0f0Moderator', 2 => '$0f0Admin', 3 => '$0f0SuperAdmin', 4 => '$0f0MasterAdmin');
-				$chatMessage = '$0f0' . $string[$player->authLevel] . ' $<$fff' . $player->nickname . '$> Nation: $<$fff' . $player->getCountry() . '$> joined!';
-				$this->maniaControl->chat->sendChat($chatMessage);
-				$this->maniaControl->chat->sendInformation('This server uses ManiaControl v' . ManiaControl::VERSION . '!', $player->login);
-			}
-
-			$logMessage = "Player joined: {$player->login} / " . Formatter::stripCodes($player->nickname) . " Nation: " . $player->getCountry() . " IP: {$player->ipAddress}";
-			$this->maniaControl->log($logMessage);
-
-			// Increment the Player Join Count
-			$this->maniaControl->statisticManager->incrementStat(self::STAT_JOIN_COUNT, $player, $this->maniaControl->server->index);
-
-			// Trigger own PlayerJoined callback
-			$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERCONNECT, $player);
-
-		}
-
-		// Trigger own callback
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERINFOCHANGED, $player);
-	}
-
-
-	/**
-	 * Get all Players
-	 *
-	 * @return array
-	 */
-	public function getPlayers() {
-		return $this->players;
-	}
-
-	/**
-	 * Gets the Count of all Player
-	 *
-	 * @return int
-	 */
-	public function getPlayerCount() {
-		$count = 0;
-		foreach($this->players as $player) {
-			/** @var Player $player */
-			if (!$player->isSpectator) {
-				$count++;
-			}
-		}
-		return $count;
-	}
-
-	/**
-	 * Gets the Count of all Spectators
-	 *
-	 * @return int
-	 */
-	public function getSpectatorCount() {
-		$count = 0;
-		foreach($this->players as $player) {
-			/** @var Player $player */
-			if ($player->isSpectator) {
-				$count++;
-			}
-		}
-		return $count;
-	}
-
-	/**
-	 * Gets a Player by his index
-	 *
-	 * @param      $index
-	 * @param bool $connectedPlayersOnly
-	 * @return Player|null
-	 */
-	public function getPlayerByIndex($index, $connectedPlayersOnly = false) {
-		foreach($this->players as $player) {
-			/** @var Player $player */
-			if ($player->index == $index) {
-				return $player;
-			}
-		}
-
-		if ($connectedPlayersOnly) {
-			return null;
-		}
-		//Player is not online -> get Player from Database
-		return $this->getPlayerFromDatabaseByIndex($index);
-	}
-
-	/**
-	 * Get a Player by Login
-	 *
-	 * @param string $login
-	 * @param bool   $connectedPlayersOnly
-	 * @return Player|null
-	 */
-	public function getPlayer($login, $connectedPlayersOnly = false) {
-		if (!isset($this->players[$login])) {
-			if ($connectedPlayersOnly) {
-				return null;
-			}
-			return $this->getPlayerFromDatabaseByLogin($login);
-		}
-		return $this->players[$login];
-	}
-
-	/**
 	 * Add a player
 	 *
 	 * @param Player $player
@@ -328,99 +151,6 @@ class PlayerManager implements CallbackListener, TimerListener {
 		$this->savePlayer($player);
 		$this->players[$player->login] = $player;
 		return true;
-	}
-
-	/**
-	 * Remove a Player
-	 *
-	 * @param string $login
-	 * @param bool   $savePlayedTime
-	 * @return Player $player
-	 */
-	private function removePlayer($login, $savePlayedTime = true) {
-		if (!isset($this->players[$login])) {
-			return null;
-		}
-		$player = $this->players[$login];
-		unset($this->players[$login]);
-		if ($savePlayedTime) {
-			$this->updatePlayedTime($player);
-		}
-		return $player;
-	}
-
-
-	/**
-	 * Get's a Player out of the database
-	 *
-	 * @param $playerIndex
-	 * @return Player $player
-	 */
-	private function getPlayerFromDatabaseByIndex($playerIndex) {
-		$mysqli = $this->maniaControl->database->mysqli;
-
-		if (!is_numeric($playerIndex)) {
-			return null;
-		}
-
-		$query  = "SELECT * FROM `" . self::TABLE_PLAYERS . "` WHERE `index` = " . $playerIndex . ";";
-		$result = $mysqli->query($query);
-		if (!$result) {
-			trigger_error($mysqli->error);
-			return null;
-		}
-
-		$row = $result->fetch_object();
-		$result->close();
-
-		if (!isset($row)) {
-			return null;
-		}
-
-		$player              = new Player(null);
-		$player->index       = $playerIndex;
-		$player->login       = $row->login;
-		$player->rawNickname = $row->nickname;
-		$player->nickname    = Formatter::stripDirtyCodes($player->rawNickname);
-		$player->path        = $row->path;
-		$player->authLevel   = $row->authLevel;
-
-		return $player;
-	}
-
-
-	/**
-	 * Get's a Player out of the database
-	 *
-	 * @param $playerIndex
-	 * @return Player $player
-	 */
-	private function getPlayerFromDatabaseByLogin($playerLogin) {
-		$mysqli = $this->maniaControl->database->mysqli;
-
-		$query  = "SELECT * FROM `" . self::TABLE_PLAYERS . "` WHERE `login` LIKE '" . $mysqli->escape_string($playerLogin) . "';";
-		$result = $mysqli->query($query);
-		if (!$result) {
-			trigger_error($mysqli->error);
-			return null;
-		}
-
-		$row = $result->fetch_object();
-		$result->close();
-
-		if (!isset($row)) {
-			return null;
-		}
-
-		$player              = new Player(null);
-		$player->index       = $row->index;
-		$player->login       = $row->login;
-		$player->rawNickname = $row->nickname;
-		$player->nickname    = Formatter::stripDirtyCodes($player->rawNickname);
-		$player->path        = $row->path;
-		$player->authLevel   = $row->authLevel;
-
-		return $player;
 	}
 
 	/**
@@ -482,6 +212,72 @@ class PlayerManager implements CallbackListener, TimerListener {
 	}
 
 	/**
+	 * Handle playerConnect callback
+	 *
+	 * @param array $callback
+	 */
+	public function playerConnect(array $callback) {
+		$login = $callback[1][0];
+		try {
+			$playerInfo = $this->maniaControl->client->getDetailedPlayerInfo($login);
+			$player     = new Player($playerInfo);
+
+			$this->addPlayer($player);
+		} catch (LoginUnknownException $e) {
+		}
+	}
+
+	/**
+	 * Handle playerDisconnect callback
+	 *
+	 * @param array $callback
+	 */
+	public function playerDisconnect(array $callback) {
+		$login  = $callback[1][0];
+		$player = $this->removePlayer($login);
+		if (!$player) {
+			return;
+		}
+
+		// Trigger own callback
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERDISCONNECT, $player);
+
+		if ($player->isFakePlayer()) {
+			return;
+		}
+
+		$played     = Formatter::formatTimeH(time() - $player->joinTime);
+		$logMessage = "Player left: {$player->login} / {$player->nickname} Playtime: {$played}";
+		$this->maniaControl->log(Formatter::stripCodes($logMessage));
+
+		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES)) {
+			$this->maniaControl->chat->sendChat('$0f0$<$fff' . $player->nickname . '$> has left the game');
+		}
+
+		//Destroys stored PlayerData, after all Disconnect Callbacks got Handled
+		$this->playerDataManager->destroyPlayerData($player);
+	}
+
+	/**
+	 * Remove a Player
+	 *
+	 * @param string $login
+	 * @param bool   $savePlayedTime
+	 * @return Player $player
+	 */
+	private function removePlayer($login, $savePlayedTime = true) {
+		if (!isset($this->players[$login])) {
+			return null;
+		}
+		$player = $this->players[$login];
+		unset($this->players[$login]);
+		if ($savePlayedTime) {
+			$this->updatePlayedTime($player);
+		}
+		return $player;
+	}
+
+	/**
 	 * Update total played time of the player
 	 *
 	 * @param Player $player
@@ -494,5 +290,206 @@ class PlayerManager implements CallbackListener, TimerListener {
 		$playedTime = time() - $player->joinTime;
 
 		return $this->maniaControl->statisticManager->insertStat(self::STAT_SERVERTIME, $player, $this->maniaControl->server->index, $playedTime);
+	}
+
+	/**
+	 * Update PlayerInfo
+	 *
+	 * @param array $callback
+	 */
+	public function playerInfoChanged(array $callback) {
+		$player = $this->getPlayer($callback[1][0]['Login']);
+		if (!$player) {
+			return;
+		}
+
+		$player->ladderRank = $callback[1][0]["LadderRanking"];
+		$player->teamId     = $callback[1][0]["TeamId"];
+
+		//Check if the Player is in a Team, to notify if its a TeamMode or not
+		if ($player->teamId != -1) {
+			$this->maniaControl->server->setTeamMode(true);
+		}
+
+		$prevJoinState = $player->hasJoinedGame;
+
+		$player->updatePlayerFlags($callback[1][0]["Flags"]);
+		$player->updateSpectatorStatus($callback[1][0]["SpectatorStatus"]);
+
+		//Check if Player finished joining the game
+		if ($player->hasJoinedGame && !$prevJoinState) {
+
+			if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES) && !$player->isFakePlayer()) {
+				$string      = array(0 => '$0f0Player', 1 => '$0f0Moderator', 2 => '$0f0Admin', 3 => '$0f0SuperAdmin', 4 => '$0f0MasterAdmin');
+				$chatMessage = '$0f0' . $string[$player->authLevel] . ' $<$fff' . $player->nickname . '$> Nation: $<$fff' . $player->getCountry() . '$> joined!';
+				$this->maniaControl->chat->sendChat($chatMessage);
+				$this->maniaControl->chat->sendInformation('This server uses ManiaControl v' . ManiaControl::VERSION . '!', $player->login);
+			}
+
+			$logMessage = "Player joined: {$player->login} / " . Formatter::stripCodes($player->nickname) . " Nation: " . $player->getCountry() . " IP: {$player->ipAddress}";
+			$this->maniaControl->log($logMessage);
+
+			// Increment the Player Join Count
+			$this->maniaControl->statisticManager->incrementStat(self::STAT_JOIN_COUNT, $player, $this->maniaControl->server->index);
+
+			// Trigger own PlayerJoined callback
+			$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERCONNECT, $player);
+
+		}
+
+		// Trigger own callback
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERINFOCHANGED, $player);
+	}
+
+	/**
+	 * Get a Player by Login
+	 *
+	 * @param string $login
+	 * @param bool   $connectedPlayersOnly
+	 * @return Player
+	 */
+	public function getPlayer($login, $connectedPlayersOnly = false) {
+		if (!isset($this->players[$login])) {
+			if ($connectedPlayersOnly) {
+				return null;
+			}
+			return $this->getPlayerFromDatabaseByLogin($login);
+		}
+		return $this->players[$login];
+	}
+
+	/**
+	 * Get a Player from the Database
+	 *
+	 * @param string $playerLogin
+	 * @return Player
+	 */
+	private function getPlayerFromDatabaseByLogin($playerLogin) {
+		$mysqli = $this->maniaControl->database->mysqli;
+
+		$query  = "SELECT * FROM `" . self::TABLE_PLAYERS . "` WHERE `login` LIKE '" . $mysqli->escape_string($playerLogin) . "';";
+		$result = $mysqli->query($query);
+		if (!$result) {
+			trigger_error($mysqli->error);
+			return null;
+		}
+
+		$row = $result->fetch_object();
+		$result->close();
+
+		if (!isset($row)) {
+			return null;
+		}
+
+		$player              = new Player(null);
+		$player->index       = $row->index;
+		$player->login       = $row->login;
+		$player->rawNickname = $row->nickname;
+		$player->nickname    = Formatter::stripDirtyCodes($player->rawNickname);
+		$player->path        = $row->path;
+		$player->authLevel   = $row->authLevel;
+
+		return $player;
+	}
+
+	/**
+	 * Get all Players
+	 *
+	 * @return array
+	 */
+	public function getPlayers() {
+		return $this->players;
+	}
+
+	/**
+	 * Gets the Count of all Player
+	 *
+	 * @return int
+	 */
+	public function getPlayerCount() {
+		$count = 0;
+		foreach ($this->players as $player) {
+			/** @var Player $player */
+			if (!$player->isSpectator) {
+				$count++;
+			}
+		}
+		return $count;
+	}
+
+	/**
+	 * Gets the Count of all Spectators
+	 *
+	 * @return int
+	 */
+	public function getSpectatorCount() {
+		$count = 0;
+		foreach ($this->players as $player) {
+			/** @var Player $player */
+			if ($player->isSpectator) {
+				$count++;
+			}
+		}
+		return $count;
+	}
+
+	/**
+	 * Gets a Player by his index
+	 *
+	 * @param      $index
+	 * @param bool $connectedPlayersOnly
+	 * @return Player|null
+	 */
+	public function getPlayerByIndex($index, $connectedPlayersOnly = false) {
+		foreach ($this->players as $player) {
+			/** @var Player $player */
+			if ($player->index == $index) {
+				return $player;
+			}
+		}
+
+		if ($connectedPlayersOnly) {
+			return null;
+		}
+		//Player is not online -> get Player from Database
+		return $this->getPlayerFromDatabaseByIndex($index);
+	}
+
+	/**
+	 * Get's a Player out of the database
+	 *
+	 * @param $playerIndex
+	 * @return Player $player
+	 */
+	private function getPlayerFromDatabaseByIndex($playerIndex) {
+		$mysqli = $this->maniaControl->database->mysqli;
+
+		if (!is_numeric($playerIndex)) {
+			return null;
+		}
+
+		$query  = "SELECT * FROM `" . self::TABLE_PLAYERS . "` WHERE `index` = " . $playerIndex . ";";
+		$result = $mysqli->query($query);
+		if (!$result) {
+			trigger_error($mysqli->error);
+			return null;
+		}
+
+		$row = $result->fetch_object();
+		$result->close();
+
+		if (!isset($row)) {
+			return null;
+		}
+
+		$player              = new Player(null);
+		$player->index       = $playerIndex;
+		$player->login       = $row->login;
+		$player->rawNickname = $row->nickname;
+		$player->nickname    = Formatter::stripDirtyCodes($player->rawNickname);
+		$player->path        = $row->path;
+		$player->authLevel   = $row->authLevel;
+
+		return $player;
 	}
 }

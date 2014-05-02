@@ -7,19 +7,18 @@ use FML\Controls\Label;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
 use FML\ManiaLink;
 use FML\Script\Features\Paging;
-
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
-use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\ManiaControl;
+use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Players\Player;
 
 /**
  * Help Manager
  *
- * @author kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class HelpManager implements CommandListener, CallbackListener {
 	/*
@@ -59,24 +58,24 @@ class HelpManager implements CommandListener, CallbackListener {
 	 * @param Player $player
 	 */
 	public function command_adminHelp(array $chat, Player $player) {
-		$showCommands = array();
+		$showCommands      = array();
 		$registeredMethods = array();
-		foreach(array_reverse($this->adminCommands) as $command) {
-			if(array_key_exists($command['Method'], $registeredMethods) && $showCommands[$registeredMethods[$command['Method']]]['Description'] == $command['Description']) {
+		foreach (array_reverse($this->adminCommands) as $command) {
+			if (array_key_exists($command['Method'], $registeredMethods) && $showCommands[$registeredMethods[$command['Method']]]['Description'] == $command['Description']) {
 				$name = $registeredMethods[$command['Method']];
-				$showCommands[$name]['Name'] .= '|'.$command['Name'];
+				$showCommands[$name]['Name'] .= '|' . $command['Name'];
 			} else {
-				$showCommands[$command['Name']] = $command;
+				$showCommands[$command['Name']]        = $command;
 				$registeredMethods[$command['Method']] = $command['Name'];
 			}
 		}
 
-		usort($showCommands, function($a, $b) {
+		usort($showCommands, function ($a, $b) {
 			return strcmp($a["Name"], $b["Name"]);
 		});
 
 		$message = 'Supported Admin Commands: ';
-		foreach($showCommands as $command) {
+		foreach ($showCommands as $command) {
 			$message .= $command['Name'] . ',';
 		}
 		$message = substr($message, 0, -1);
@@ -90,24 +89,24 @@ class HelpManager implements CommandListener, CallbackListener {
 	 * @param Player $player
 	 */
 	public function command_playerHelp(array $chat, Player $player) {
-		$showCommands = array();
+		$showCommands      = array();
 		$registeredMethods = array();
-		foreach(array_reverse($this->playerCommands) as $command) {
-			if(array_key_exists($command['Method'], $registeredMethods) && $showCommands[$registeredMethods[$command['Method']]]['Description'] == $command['Description']) {
+		foreach (array_reverse($this->playerCommands) as $command) {
+			if (array_key_exists($command['Method'], $registeredMethods) && $showCommands[$registeredMethods[$command['Method']]]['Description'] == $command['Description']) {
 				$name = $registeredMethods[$command['Method']];
-				$showCommands[$name]['Name'] .= '|'.$command['Name'];
+				$showCommands[$name]['Name'] .= '|' . $command['Name'];
 			} else {
-				$showCommands[$command['Name']] = $command;
+				$showCommands[$command['Name']]        = $command;
 				$registeredMethods[$command['Method']] = $command['Name'];
 			}
 		}
 
-		usort($showCommands, function($a, $b) {
+		usort($showCommands, function ($a, $b) {
 			return strcmp($a["Name"], $b["Name"]);
 		});
 
 		$message = 'Supported Player Commands: ';
-		foreach($showCommands as $command) {
+		foreach ($showCommands as $command) {
 			$message .= $command['Name'] . ',';
 		}
 		$message = substr($message, 0, -1);
@@ -125,40 +124,30 @@ class HelpManager implements CommandListener, CallbackListener {
 	}
 
 	/**
-	 * Shows a ManiaLink list of Admin Commands
-	 *
-	 * @param array  $chat
-	 * @param Player $player
-	 */
-	public function command_adminHelpAll(array $chat, Player $player) {
-		$this->prepareHelpAll($this->adminCommands, $player);
-	}
-
-	/**
 	 * Prepares the commands for the HelpAll ManiaLink.
 	 *
 	 * @param $commands
 	 * @param $player
 	 */
 	private function prepareHelpAll($commands, $player) {
-		$showCommands = array();
+		$showCommands      = array();
 		$registeredMethods = array();
-		foreach(array_reverse($commands) as $command) {
-			if(array_key_exists($command['Method'], $registeredMethods)) {
-				if($showCommands[$registeredMethods[$command['Method']]]['Description'] == $command['Description']) {
+		foreach (array_reverse($commands) as $command) {
+			if (array_key_exists($command['Method'], $registeredMethods)) {
+				if ($showCommands[$registeredMethods[$command['Method']]]['Description'] == $command['Description']) {
 					$name = $registeredMethods[$command['Method']];
-					$showCommands[$name]['Name'] .= '|'.$command['Name'];
+					$showCommands[$name]['Name'] .= '|' . $command['Name'];
 				} else {
-					$showCommands[$command['Name']] = $command;
+					$showCommands[$command['Name']]        = $command;
 					$registeredMethods[$command['Method']] = $command['Name'];
 				}
 			} else {
-				$showCommands[$command['Name']] = $command;
+				$showCommands[$command['Name']]        = $command;
 				$registeredMethods[$command['Method']] = $command['Name'];
 			}
 		}
 
-		usort($showCommands, function($a, $b) {
+		usort($showCommands, function ($a, $b) {
 			return strcmp($a["Name"], $b["Name"]);
 		});
 
@@ -177,8 +166,8 @@ class HelpManager implements CommandListener, CallbackListener {
 
 		// create manialink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
-		$script = $maniaLink->getScript();
-		$paging = new Paging();
+		$script    = $maniaLink->getScript();
+		$paging    = new Paging();
 		$script->addFeature($paging);
 
 		// Main frame
@@ -203,7 +192,7 @@ class HelpManager implements CommandListener, CallbackListener {
 		$i          = 1;
 		$y          = $y - 10;
 		$pageFrames = array();
-		foreach($commands as $command) {
+		foreach ($commands as $command) {
 			if (!isset($pageFrame)) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
@@ -227,7 +216,7 @@ class HelpManager implements CommandListener, CallbackListener {
 				$lineQuad->setZ(0.001);
 			}
 
-			$array = array($command['Name'] => $x + 5, $command['Description'] => $x + 50);
+			$array  = array($command['Name'] => $x + 5, $command['Description'] => $x + 50);
 			$labels = $this->maniaControl->manialinkManager->labelLine($playerFrame, $array);
 
 			/** @var Label $label */
@@ -246,6 +235,16 @@ class HelpManager implements CommandListener, CallbackListener {
 	}
 
 	/**
+	 * Shows a ManiaLink list of Admin Commands
+	 *
+	 * @param array  $chat
+	 * @param Player $player
+	 */
+	public function command_adminHelpAll(array $chat, Player $player) {
+		$this->prepareHelpAll($this->adminCommands, $player);
+	}
+
+	/**
 	 * Registers a new Command
 	 *
 	 * @param        $name
@@ -254,7 +253,7 @@ class HelpManager implements CommandListener, CallbackListener {
 	 * @param        $method
 	 */
 	public function registerCommand($name, $adminCommand = false, $description = '', $method) {
-		if($adminCommand) {
+		if ($adminCommand) {
 			array_push($this->adminCommands, array("Name" => $name, "Description" => $description, "Method" => $method));
 		} else {
 			array_push($this->playerCommands, array("Name" => $name, "Description" => $description, "Method" => $method));

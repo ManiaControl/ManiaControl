@@ -5,9 +5,9 @@ namespace ManiaControl\Callbacks;
 /**
  * Interface for TimerListener
  *
- * @author kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 interface TimerListener {
 }

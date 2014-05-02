@@ -11,8 +11,8 @@ use Maniaplanet\DedicatedServer\Structures\Bill;
 /**
  * ManiaControl Bill-Manager
  *
- * @author    kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class BillManager implements CallbackListener {
@@ -103,7 +103,7 @@ class BillManager implements CallbackListener {
 		$billData = $this->openBills[$billId];
 
 		/** @var BillData $billData */
-		switch($callback[1][1]) {
+		switch ($callback[1][1]) {
 			case Bill::STATE_PAYED:
 				if ($billData->pay) {
 					call_user_func($billData->function, $billData, self::PAYED_FROM_SERVER);

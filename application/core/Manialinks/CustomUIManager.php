@@ -12,9 +12,9 @@ use ManiaControl\Players\PlayerManager;
 /**
  * Class managing the Custom UI Settings
  *
- * @author steeffeen & kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class CustomUIManager implements CallbackListener, TimerListener {
 	/*
@@ -52,19 +52,6 @@ class CustomUIManager implements CallbackListener, TimerListener {
 	}
 
 	/**
-	 * Update the CustomUI Manialink
-	 *
-	 * @param Player $player
-	 */
-	private function updateManialink(Player $player = null) {
-		if ($player) {
-			$this->maniaControl->manialinkManager->sendManialink($this->customUI, $player->login);
-			return;
-		}
-		$this->maniaControl->manialinkManager->sendManialink($this->customUI);
-	}
-
-	/**
 	 * Handle 1Second
 	 *
 	 * @param $time
@@ -78,6 +65,19 @@ class CustomUIManager implements CallbackListener, TimerListener {
 	}
 
 	/**
+	 * Update the CustomUI Manialink
+	 *
+	 * @param Player $player
+	 */
+	private function updateManialink(Player $player = null) {
+		if ($player) {
+			$this->maniaControl->manialinkManager->sendManialink($this->customUI, $player->login);
+			return;
+		}
+		$this->maniaControl->manialinkManager->sendManialink($this->customUI);
+	}
+
+	/**
 	 * Handle PlayerJoined Callback
 	 *
 	 * @param Player $player
@@ -87,9 +87,9 @@ class CustomUIManager implements CallbackListener, TimerListener {
 
 		//send it again after 500ms
 		$self = $this;
-		$this->maniaControl->timerManager->registerOneTimeListening($this, function($time) use (&$self, &$player){
+		$this->maniaControl->timerManager->registerOneTimeListening($this, function ($time) use (&$self, &$player) {
 			$self->updateManialink($player);
-		},500);
+		}, 500);
 	}
 
 	/**

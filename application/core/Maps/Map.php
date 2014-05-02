@@ -6,10 +6,10 @@ use ManiaControl\Formatter;
 use ManiaControl\ManiaExchange\MXMapInfo;
 
 /**
- * Map Class
+ * Map Model Class
  *
- * @author    kremsy & steeffeen
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Map {
@@ -76,7 +76,7 @@ class Map {
 	 * @return string
 	 */
 	public function getGame() {
-		switch($this->environment) {
+		switch ($this->environment) {
 			case 'Storm':
 				return "sm";
 			case 'Canyon':

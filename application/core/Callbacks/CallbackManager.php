@@ -7,8 +7,8 @@ use ManiaControl\ManiaControl;
 /**
  * Class for managing Server and ManiaControl Callbacks
  *
- * @author    steeffeen & kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class CallbackManager {
@@ -118,8 +118,8 @@ class CallbackManager {
 	 */
 	public function unregisterCallbackListener(CallbackListener $listener) {
 		$removed = false;
-		foreach($this->callbackListeners as &$listeners) {
-			foreach($listeners as $key => &$listenerCallback) {
+		foreach ($this->callbackListeners as &$listeners) {
+			foreach ($listeners as $key => &$listenerCallback) {
 				if ($listenerCallback[0] != $listener) {
 					continue;
 				}
@@ -138,8 +138,8 @@ class CallbackManager {
 	 */
 	public function unregisterScriptCallbackListener(CallbackListener $listener) {
 		$removed = false;
-		foreach($this->scriptCallbackListener as &$listeners) {
-			foreach($listeners as $key => &$listenerCallback) {
+		foreach ($this->scriptCallbackListener as &$listeners) {
+			foreach ($listeners as $key => &$listenerCallback) {
 				if ($listenerCallback[0] != $listener) {
 					continue;
 				}
@@ -148,38 +148,6 @@ class CallbackManager {
 			}
 		}
 		return $removed;
-	}
-
-	/**
-	 * Trigger a specific Callback
-	 *
-	 * @param string $callbackName
-	 */
-	public function triggerCallback($callbackName) {
-		if (!array_key_exists($callbackName, $this->callbackListeners)) {
-			return;
-		}
-		$params = func_get_args();
-		$params = array_slice($params, 1, count($params), true);
-		foreach($this->callbackListeners[$callbackName] as $listener) {
-			call_user_func_array(array($listener[0], $listener[1]), $params);
-		}
-	}
-
-	/**
-	 * Trigger a specific Script Callback
-	 *
-	 * @param string $callbackName
-	 */
-	public function triggerScriptCallback($callbackName) {
-		if (!array_key_exists($callbackName, $this->scriptCallbackListener)) {
-			return;
-		}
-		$params = func_get_args();
-		$params = array_slice($params, 1, count($params), true);
-		foreach($this->scriptCallbackListener[$callbackName] as $listener) {
-			call_user_func_array(array($listener[0], $listener[1]), $params);
-		}
 	}
 
 	/**
@@ -197,7 +165,7 @@ class CallbackManager {
 		$callbacks = $this->maniaControl->client->executeCallbacks();
 
 		// Handle callbacks
-		foreach($callbacks as $callback) {
+		foreach ($callbacks as $callback) {
 			$this->handleCallback($callback);
 		}
 	}
@@ -209,12 +177,12 @@ class CallbackManager {
 	 */
 	private function handleCallback(array $callback) {
 		$callbackName = $callback[0];
-		switch($callbackName) {
+		switch ($callbackName) {
 			case 'ManiaPlanet.BeginMatch':
 				if ($this->maniaControl->mapManager->getCurrentMap()->getGame() == 'sm') {
 					$this->triggerCallback($callbackName, $callback);
 				}
-                break;
+				break;
 			case 'ManiaPlanet.BeginMap':
 				$this->maniaControl->mapManager->handleBeginMap($callback);
 				$this->triggerCallback($callbackName, $callback);
@@ -223,7 +191,7 @@ class CallbackManager {
 				if ($this->maniaControl->mapManager->getCurrentMap()->getGame() == 'sm') {
 					$this->triggerCallback($callbackName, $callback);
 				}
-                break;
+				break;
 			case 'ManiaPlanet.EndMap':
 				$this->maniaControl->mapManager->handleEndMap($callback);
 				$this->triggerCallback($callbackName, $callback);
@@ -243,6 +211,22 @@ class CallbackManager {
 	}
 
 	/**
+	 * Trigger a specific Callback
+	 *
+	 * @param string $callbackName
+	 */
+	public function triggerCallback($callbackName) {
+		if (!array_key_exists($callbackName, $this->callbackListeners)) {
+			return;
+		}
+		$params = func_get_args();
+		$params = array_slice($params, 1, count($params), true);
+		foreach ($this->callbackListeners[$callbackName] as $listener) {
+			call_user_func_array(array($listener[0], $listener[1]), $params);
+		}
+	}
+
+	/**
 	 * Handle the given Script Callback
 	 *
 	 * @param array $callback
@@ -252,5 +236,21 @@ class CallbackManager {
 		$scriptCallbackName = $scriptCallbackData[0];
 		$this->triggerScriptCallback($scriptCallbackName, $scriptCallbackData);
 		$this->triggerCallback(Callbacks::SCRIPTCALLBACK, $scriptCallbackName, $scriptCallbackData[1]);
+	}
+
+	/**
+	 * Trigger a specific Script Callback
+	 *
+	 * @param string $callbackName
+	 */
+	public function triggerScriptCallback($callbackName) {
+		if (!array_key_exists($callbackName, $this->scriptCallbackListener)) {
+			return;
+		}
+		$params = func_get_args();
+		$params = array_slice($params, 1, count($params), true);
+		foreach ($this->scriptCallbackListener[$callbackName] as $listener) {
+			call_user_func_array(array($listener[0], $listener[1]), $params);
+		}
 	}
 }

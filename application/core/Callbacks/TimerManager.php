@@ -7,9 +7,9 @@ use ManiaControl\ManiaControl;
 /**
  * Class for managing Timers
  *
- * @author kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class TimerManager {
 	/*
@@ -39,27 +39,12 @@ class TimerManager {
 	}
 
 	/**
-	 * Unregister a Timer Listening
-	 * @param TimerListener $listener
-	 * @param               $method
-	 * @return bool
-	 */
-	public function unregisterTimerListening(TimerListener $listener, $method){
-		foreach($this->timerListenings as $key => $listening){
-			if($listening->listener == $listener && $listening->method == $method){
-				unset($this->timerListenings[$key]);
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Register a Timing Listening, note < 10ms it can get inaccurate
+	 * Register a Timer Listening, note < 10ms it can get inaccurate
 	 *
-	 * @param TimerListener $listener
-	 * @param               $method
-	 * @param               $time
+	 * @param TimerListener  $listener
+	 * @param      string    $method
+	 * @param          float $time
+	 * @param bool           $oneTime
 	 * @return bool
 	 */
 	public function registerTimerListening(TimerListener $listener, $method, $time, $oneTime = false) {
@@ -70,19 +55,36 @@ class TimerManager {
 
 		//Init the Timer Listening
 		// TODO: extra model class
-		$listening              = new \stdClass();
-		$listening->listener    = $listener;
-		$listening->method      = $method;
-		$listening->deltaTime   = $time / 1000;
-		$listening->oneTime     = $oneTime;
-		if($oneTime){
+		$listening            = new \stdClass();
+		$listening->listener  = $listener;
+		$listening->method    = $method;
+		$listening->deltaTime = $time / 1000;
+		$listening->oneTime   = $oneTime;
+		if ($oneTime) {
 			$listening->lastTrigger = microtime(true);
-		}else{
+		} else {
 			$listening->lastTrigger = -1;
 		}
 		array_push($this->timerListenings, $listening);
 
 		return true;
+	}
+
+	/**
+	 * Unregister a Timer Listening
+	 *
+	 * @param TimerListener $listener
+	 * @param               $method
+	 * @return bool
+	 */
+	public function unregisterTimerListening(TimerListener $listener, $method) {
+		foreach ($this->timerListenings as $key => $listening) {
+			if ($listening->listener == $listener && $listening->method == $method) {
+				unset($this->timerListenings[$key]);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -93,7 +95,7 @@ class TimerManager {
 	 */
 	public function unregisterTimerListenings(TimerListener $listener) {
 		$removed = false;
-		foreach($this->timerListenings as $key => &$listening) {
+		foreach ($this->timerListenings as $key => &$listening) {
 			if ($listening->listener != $listener) {
 				continue;
 			}
@@ -108,7 +110,7 @@ class TimerManager {
 	 */
 	public function manageTimings() {
 		$time = microtime(true);
-		foreach($this->timerListenings as $key => &$listening) {
+		foreach ($this->timerListenings as $key => &$listening) {
 
 			if (($listening->lastTrigger + $listening->deltaTime) <= $time) {
 				//Increase the lastTrigger time manually (to improve accuracy)

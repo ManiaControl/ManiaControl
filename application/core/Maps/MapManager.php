@@ -22,8 +22,8 @@ use Maniaplanet\DedicatedServer\Xmlrpc\StartIndexOutOfBoundException;
 /**
  * Manager for Maps
  *
- * @author    kremsy & steeffeen
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class MapManager implements CallbackListener {
@@ -129,55 +129,40 @@ class MapManager implements CallbackListener {
 	}
 
 	/**
-	 * Save a Map in the Database
+	 * Update a Map from Mania Exchange
 	 *
-	 * @param \ManiaControl\Maps\Map $map
-	 * @return bool
+	 * @param Player  $admin
+	 * @param  string $uid
 	 */
-	private function saveMap(Map &$map) {
-		//TODO saveMaps for whole maplist at once (usage of prepared statements)
-		$mysqli   = $this->maniaControl->database->mysqli;
-		$mapQuery = "INSERT INTO `" . self::TABLE_MAPS . "` (
-				`uid`,
-				`name`,
-				`authorLogin`,
-				`fileName`,
-				`environment`,
-				`mapType`
-				) VALUES (
-				?, ?, ?, ?, ?, ?
-				) ON DUPLICATE KEY UPDATE
-				`index` = LAST_INSERT_ID(`index`),
-				`fileName` = VALUES(`fileName`),
-				`environment` = VALUES(`environment`),
-				`mapType` = VALUES(`mapType`);";
+	public function updateMap(Player $admin, $uid) {
+		$this->updateMapTimestamp($uid);
 
-		$mapStatement = $mysqli->prepare($mapQuery);
-		if ($mysqli->error) {
-			trigger_error($mysqli->error);
-			return false;
+		if (!isset($uid) || !isset($this->maps[$uid])) {
+			trigger_error("Error while updating Map, unknown UID: " . $uid);
+			$this->maniaControl->chat->sendError("Error while updating Map.", $admin->login);
+			return;
 		}
-		$mapStatement->bind_param('ssssss', $map->uid, $map->rawName, $map->authorLogin, $map->fileName, $map->environment, $map->mapType);
-		$mapStatement->execute();
-		if ($mapStatement->error) {
-			trigger_error($mapStatement->error);
-			$mapStatement->close();
-			return false;
-		}
-		$map->index = $mapStatement->insert_id;
-		$mapStatement->close();
-		return true;
+
+		/** @var Map $map */
+		$map = $this->maps[$uid];
+
+		$mxId = $map->mx->id;
+		$this->removeMap($admin, $uid, true, false);
+		$this->addMapFromMx($mxId, $admin->login, true);
 	}
 
 	/**
-	 * Updates the Timestamp of a map
+	 * Update the Timestamp of a Map
 	 *
-	 * @param $map
+	 * @param string $uid
 	 * @return bool
 	 */
 	private function updateMapTimestamp($uid) {
 		$mysqli   = $this->maniaControl->database->mysqli;
-		$mapQuery = "UPDATE `" . self::TABLE_MAPS . "` SET mxid = 0, changed = NOW() WHERE 'uid' = ?";
+		$mapQuery = "UPDATE `" . self::TABLE_MAPS . "` SET
+				mxid = 0,
+				changed = NOW()
+				WHERE 'uid' = ?";
 
 		$mapStatement = $mysqli->prepare($mapQuery);
 		if ($mysqli->error) {
@@ -193,30 +178,6 @@ class MapManager implements CallbackListener {
 		}
 		$mapStatement->close();
 		return true;
-	}
-
-	/**
-	 * Updates a Map from Mania Exchange
-	 *
-	 * @param Player $admin
-	 * @param        $mxId
-	 * @param        $uid
-	 */
-	public function updateMap(Player $admin, $uid) {
-		$this->updateMapTimestamp($uid);
-
-		if (!isset($uid) || !isset($this->maps[$uid])) {
-			trigger_error("Error while updating Map, unkown UID: " . $uid);
-			$this->maniaControl->chat->sendError("Error while updating Map.", $admin->login);
-			return;
-		}
-
-		/** @var Map $map */
-		$map = $this->maps[$uid];
-
-		$mxId = $map->mx->id;
-		$this->removeMap($admin, $uid, true, false);
-		$this->addMapFromMx($mxId, $admin->login, true);
 	}
 
 	/**
@@ -245,7 +206,7 @@ class MapManager implements CallbackListener {
 		// Remove map
 		try {
 			$this->maniaControl->client->removeMap($map->fileName);
-		} catch(MapNotInCurrentSelectionException $e) {
+		} catch (MapNotInCurrentSelectionException $e) {
 		}
 
 
@@ -269,328 +230,6 @@ class MapManager implements CallbackListener {
 		}
 
 		unset($this->maps[$uid]);
-	}
-
-	/**
-	 * Restructures the Maplist
-	 */
-	public function restructureMapList() {
-		$currentIndex = $this->getMapIndex($this->currentMap);
-
-		// No RestructureNeeded
-		if ($currentIndex < Maplist::MAX_MAPS_PER_PAGE - 1) {
-			return true;
-		}
-
-		$lowerMapArray  = array();
-		$higherMapArray = array();
-
-		$i = 0;
-		foreach($this->maps as $map) {
-			if ($i < $currentIndex) {
-				$lowerMapArray[] = $map->fileName;
-			} else {
-				$higherMapArray[] = $map->fileName;
-			}
-			$i++;
-		}
-
-		$mapArray = array_merge($higherMapArray, $lowerMapArray);
-		array_shift($mapArray);
-
-		try {
-			$this->maniaControl->client->chooseNextMapList($mapArray);
-		} catch(Exception $e) {
-			trigger_error("Error while restructuring the Maplist. " . $e->getMessage());
-			return false;
-		}
-		return true;
-	}
-
-	/**
-	 * Shuffles the MapList
-	 *
-	 * @param Player $admin
-	 * @return bool
-	 */
-	public function shuffleMapList($admin = null) {
-		$shuffledMaps = $this->maps;
-		shuffle($shuffledMaps);
-
-		$mapArray = array();
-
-		foreach($shuffledMaps as $map) {
-			/**
-			 * @var Map $map
-			 */
-			$mapArray[] = $map->fileName;
-		}
-
-		try {
-			$this->maniaControl->client->chooseNextMapList($mapArray);
-		} catch(Exception $e) {
-			//TODO temp added 19.04.2014
-			$this->maniaControl->errorHandler->triggerDebugNotice("Exception line 331 MapManager" . $e->getMessage());
-			trigger_error("Couldn't shuffle mapList. " . $e->getMessage());
-			return false;
-		}
-
-		$this->fetchCurrentMap();
-
-		if ($admin) {
-			$message = '$<' . $admin->nickname . '$> shuffled the Maplist!';
-			$this->maniaControl->chat->sendSuccess($message);
-			$this->maniaControl->log($message, true);
-		}
-
-		// Restructure if needed
-		$this->restructureMapList();
-		return true;
-	}
-
-	/**
-	 * Initializes a Map
-	 *
-	 * @param $rpcMap
-	 * @return Map
-	 */
-	public function initializeMap($rpcMap) {
-		$map = new Map($rpcMap);
-		$this->saveMap($map);
-
-		/*$mapsDirectory = $this->maniaControl->server->getMapsDirectory();
-		if (is_readable($mapsDirectory . $map->fileName)) {
-			$mapFetcher = new \GBXChallMapFetcher(true);
-			$mapFetcher->processFile($mapsDirectory . $map->fileName);
-			$map->authorNick = FORMATTER::stripDirtyCodes($mapFetcher->authorNick);
-			$map->authorEInfo = $mapFetcher->authorEInfo;
-			$map->authorZone = $mapFetcher->authorZone;
-			$map->comment = $mapFetcher->comment;
-		}*/
-		return $map;
-	}
-
-	/**
-	 * Updates the full Map list, needed on Init, addMap and on ShuffleMaps
-	 */
-	private function updateFullMapList() {
-		$tempList = array();
-
-		try {
-			$i = 0;
-			while(true) {
-				$maps = $this->maniaControl->client->getMapList(150, $i);
-
-				foreach($maps as $rpcMap) {
-					if (array_key_exists($rpcMap->uId, $this->maps)) {
-						// Map already exists, only update index
-						$tempList[$rpcMap->uId] = $this->maps[$rpcMap->uId];
-					} else { // Insert Map Object
-						$map                 = $this->initializeMap($rpcMap);
-						$tempList[$map->uid] = $map;
-					}
-				}
-
-				$i += 150;
-			}
-		} catch(StartIndexOutOfBoundException $e) {
-		}
-
-		// restore Sorted MapList
-		$this->maps = $tempList;
-
-		// Trigger own callback
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_MAPS_UPDATED);
-
-		// Write MapList
-		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_AUTOSAVE_MAPLIST)) {
-			try {
-				$this->maniaControl->client->saveMatchSettings($this->maniaControl->settingManager->getSetting($this, self::SETTING_MAPLIST_FILE));
-			} catch(CouldNotWritePlaylistFileException $e) {
-				$this->maniaControl->log("Unable to write the playlist file, please checkout your MX-Folders File permissions!");
-			}
-		}
-	}
-
-	/**
-	 * Freshly fetch current Map
-	 *
-	 * @return Map
-	 */
-	private function fetchCurrentMap() {
-		$rpcMap = $this->maniaControl->client->getCurrentMapInfo();
-
-		if (array_key_exists($rpcMap->uId, $this->maps)) {
-			$this->currentMap                = $this->maps[$rpcMap->uId];
-			$this->currentMap->nbCheckpoints = $rpcMap->nbCheckpoints;
-			$this->currentMap->nbLaps        = $rpcMap->nbLaps;
-			return $this->currentMap;
-		}
-
-		$this->currentMap                   = $this->initializeMap($rpcMap);
-		$this->maps[$this->currentMap->uid] = $this->currentMap;
-		return $this->currentMap;
-	}
-
-	/**
-	 * Handle OnInit callback
-	 */
-	public function handleOnInit() {
-		$this->updateFullMapList();
-		$this->fetchCurrentMap();
-
-		// Restructure Maplist
-		$this->restructureMapList();
-	}
-
-	/**
-	 * Handle AfterInit callback
-	 */
-	public function handleAfterInit() {
-		// Fetch MX infos
-		$this->mxManager->fetchManiaExchangeMapInformations();
-	}
-
-	/**
-	 * Get Current Map
-	 *
-	 * @return Map currentMap
-	 */
-	public function getCurrentMap() {
-		if (!$this->currentMap) {
-			return $this->fetchCurrentMap();
-		}
-		return $this->currentMap;
-	}
-
-	/**
-	 * Returns map By UID
-	 *
-	 * @param $uid
-	 * @return Map array
-	 */
-	public function getMapByUid($uid) {
-		if (!isset($this->maps[$uid])) {
-			return null;
-		}
-		return $this->maps[$uid];
-	}
-
-	/**
-	 * Handle BeginMap callback
-	 *
-	 * @param array $callback
-	 */
-	public function handleBeginMap(array $callback) {
-		if ($this->mapBegan) {
-			return;
-		}
-		$this->mapBegan = true;
-		$this->mapEnded = false;
-
-		if (!isset($callback[1][0]["UId"])) {
-			$this->currentMap = $this->fetchCurrentMap();
-		} else if (array_key_exists($callback[1][0]["UId"], $this->maps)) {
-			// Map already exists, only update index
-			$this->currentMap = $this->maps[$callback[1][0]["UId"]];
-			if (!$this->currentMap->nbCheckpoints || !$this->currentMap->nbLaps) {
-				$rpcMap                          = $this->maniaControl->client->getCurrentMapInfo();
-				$this->currentMap->nbLaps        = $rpcMap->nbLaps;
-				$this->currentMap->nbCheckpoints = $rpcMap->nbCheckpoints;
-			}
-		}
-
-		// Restructure MapList if id is over 15
-		$this->restructureMapList();
-
-		// Update the mx of the map (for update checks, etc.)
-		$this->mxManager->fetchManiaExchangeMapInformations($this->currentMap);
-
-		// Trigger own BeginMap callback (
-		//TODO remove deprecated callback later
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_BEGINMAP, $this->currentMap);
-		$this->maniaControl->callbackManager->triggerCallback(Callbacks::BEGINMAP, $this->currentMap);
-	}
-
-	/**
-	 * Handle Script BeginMap callback
-	 *
-	 * @param int $mapNumber
-	 */
-	public function handleScriptBeginMap($mapNumber) {
-		$this->handleBeginMap(array());
-	}
-
-	/**
-	 * Handle EndMap Callback
-	 *
-	 * @param array $callback
-	 */
-	public function handleEndMap(array $callback) {
-		if ($this->mapEnded) {
-			return;
-		}
-		$this->mapEnded = true;
-		$this->mapBegan = false;
-
-		// Trigger own EndMap callback
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_ENDMAP, $this->currentMap);
-		//TODO remove deprecated callback later
-		$this->maniaControl->callbackManager->triggerCallback(Callbacks::ENDMAP, $this->currentMap);
-	}
-
-	/**
-	 * Handle Script EndMap Callback
-	 *
-	 * @param int $mapNumber
-	 */
-	public function handleScriptEndMap($mapNumber) {
-		$this->handleEndMap(array());
-	}
-
-	/**
-	 * Handle Maps Modified Callback
-	 *
-	 * @param array $callback
-	 */
-	public function mapsModified(array $callback) {
-		$this->updateFullMapList();
-	}
-
-	/**
-	 * Get all Maps
-	 *
-	 * @return array
-	 */
-	public function getMaps($offset = null, $length = null) {
-		if ($offset === null) {
-			return array_values($this->maps);
-		}
-		if ($length === null) {
-			return array_slice($this->maps, $offset);
-		}
-		return array_slice($this->maps, $offset, $length);
-	}
-
-	/**
-	 * Get the Number of Maps
-	 *
-	 * @return int
-	 */
-	public function getMapsCount() {
-		return count($this->maps);
-	}
-
-	/**
-	 * Returns the MapIndex of a given map
-	 *
-	 * @param Map $map
-	 * @internal param $uid
-	 * @return mixed
-	 */
-	public function getMapIndex(Map $map) {
-		$maps = $this->getMaps();
-		return array_search($map, $maps);
 	}
 
 	/**
@@ -668,7 +307,7 @@ class MapManager implements CallbackListener {
 			// Write map via write file method
 			try {
 				$this->maniaControl->client->writeFileFromString($relativeMapFileName, $file);
-			} catch(InvalidArgumentException $e) {
+			} catch (InvalidArgumentException $e) {
 				if ($e->getMessage() == 'data are too big') {
 					$this->maniaControl->chat->sendError("Map is too big for a remote save.", $login);
 					return;
@@ -680,7 +319,7 @@ class MapManager implements CallbackListener {
 		// Check for valid map
 		try {
 			$this->maniaControl->client->checkMapForCurrentServerParams($relativeMapFileName);
-		} catch(MapNotCompatibleOrCompleteException $e) {
+		} catch (MapNotCompatibleOrCompleteException $e) {
 			trigger_error("Couldn't check if map is valid ('{$relativeMapFileName}'). " . $e->getMessage());
 			$this->maniaControl->chat->sendError('Wrong MapType or not validated!', $login);
 			return;
@@ -714,6 +353,371 @@ class MapManager implements CallbackListener {
 			$this->maniaControl->chat->sendSuccess($message);
 			$this->maniaControl->log($message, true);
 		}
+	}
+
+	/**
+	 * Returns map By UID
+	 *
+	 * @param $uid
+	 * @return Map array
+	 */
+	public function getMapByUid($uid) {
+		if (!isset($this->maps[$uid])) {
+			return null;
+		}
+		return $this->maps[$uid];
+	}
+
+	/**
+	 * Updates the full Map list, needed on Init, addMap and on ShuffleMaps
+	 */
+	private function updateFullMapList() {
+		$tempList = array();
+
+		try {
+			$i = 0;
+			while (true) {
+				$maps = $this->maniaControl->client->getMapList(150, $i);
+
+				foreach ($maps as $rpcMap) {
+					if (array_key_exists($rpcMap->uId, $this->maps)) {
+						// Map already exists, only update index
+						$tempList[$rpcMap->uId] = $this->maps[$rpcMap->uId];
+					} else { // Insert Map Object
+						$map                 = $this->initializeMap($rpcMap);
+						$tempList[$map->uid] = $map;
+					}
+				}
+
+				$i += 150;
+			}
+		} catch (StartIndexOutOfBoundException $e) {
+		}
+
+		// restore Sorted MapList
+		$this->maps = $tempList;
+
+		// Trigger own callback
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_MAPS_UPDATED);
+
+		// Write MapList
+		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_AUTOSAVE_MAPLIST)) {
+			try {
+				$this->maniaControl->client->saveMatchSettings($this->maniaControl->settingManager->getSetting($this, self::SETTING_MAPLIST_FILE));
+			} catch (CouldNotWritePlaylistFileException $e) {
+				$this->maniaControl->log("Unable to write the playlist file, please checkout your MX-Folders File permissions!");
+			}
+		}
+	}
+
+	/**
+	 * Initializes a Map
+	 *
+	 * @param $rpcMap
+	 * @return Map
+	 */
+	public function initializeMap($rpcMap) {
+		$map = new Map($rpcMap);
+		$this->saveMap($map);
+
+		/*$mapsDirectory = $this->maniaControl->server->getMapsDirectory();
+		if (is_readable($mapsDirectory . $map->fileName)) {
+			$mapFetcher = new \GBXChallMapFetcher(true);
+			$mapFetcher->processFile($mapsDirectory . $map->fileName);
+			$map->authorNick = FORMATTER::stripDirtyCodes($mapFetcher->authorNick);
+			$map->authorEInfo = $mapFetcher->authorEInfo;
+			$map->authorZone = $mapFetcher->authorZone;
+			$map->comment = $mapFetcher->comment;
+		}*/
+		return $map;
+	}
+
+	/**
+	 * Save a Map in the Database
+	 *
+	 * @param \ManiaControl\Maps\Map $map
+	 * @return bool
+	 */
+	private function saveMap(Map &$map) {
+		//TODO saveMaps for whole maplist at once (usage of prepared statements)
+		$mysqli   = $this->maniaControl->database->mysqli;
+		$mapQuery = "INSERT INTO `" . self::TABLE_MAPS . "` (
+				`uid`,
+				`name`,
+				`authorLogin`,
+				`fileName`,
+				`environment`,
+				`mapType`
+				) VALUES (
+				?, ?, ?, ?, ?, ?
+				) ON DUPLICATE KEY UPDATE
+				`index` = LAST_INSERT_ID(`index`),
+				`fileName` = VALUES(`fileName`),
+				`environment` = VALUES(`environment`),
+				`mapType` = VALUES(`mapType`);";
+
+		$mapStatement = $mysqli->prepare($mapQuery);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error);
+			return false;
+		}
+		$mapStatement->bind_param('ssssss', $map->uid, $map->rawName, $map->authorLogin, $map->fileName, $map->environment, $map->mapType);
+		$mapStatement->execute();
+		if ($mapStatement->error) {
+			trigger_error($mapStatement->error);
+			$mapStatement->close();
+			return false;
+		}
+		$map->index = $mapStatement->insert_id;
+		$mapStatement->close();
+		return true;
+	}
+
+	/**
+	 * Shuffles the MapList
+	 *
+	 * @param Player $admin
+	 * @return bool
+	 */
+	public function shuffleMapList($admin = null) {
+		$shuffledMaps = $this->maps;
+		shuffle($shuffledMaps);
+
+		$mapArray = array();
+
+		foreach ($shuffledMaps as $map) {
+			/**
+			 * @var Map $map
+			 */
+			$mapArray[] = $map->fileName;
+		}
+
+		try {
+			$this->maniaControl->client->chooseNextMapList($mapArray);
+		} catch (Exception $e) {
+			//TODO temp added 19.04.2014
+			$this->maniaControl->errorHandler->triggerDebugNotice("Exception line 331 MapManager" . $e->getMessage());
+			trigger_error("Couldn't shuffle mapList. " . $e->getMessage());
+			return false;
+		}
+
+		$this->fetchCurrentMap();
+
+		if ($admin) {
+			$message = '$<' . $admin->nickname . '$> shuffled the Maplist!';
+			$this->maniaControl->chat->sendSuccess($message);
+			$this->maniaControl->log($message, true);
+		}
+
+		// Restructure if needed
+		$this->restructureMapList();
+		return true;
+	}
+
+	/**
+	 * Freshly fetch current Map
+	 *
+	 * @return Map
+	 */
+	private function fetchCurrentMap() {
+		$rpcMap = $this->maniaControl->client->getCurrentMapInfo();
+
+		if (array_key_exists($rpcMap->uId, $this->maps)) {
+			$this->currentMap                = $this->maps[$rpcMap->uId];
+			$this->currentMap->nbCheckpoints = $rpcMap->nbCheckpoints;
+			$this->currentMap->nbLaps        = $rpcMap->nbLaps;
+			return $this->currentMap;
+		}
+
+		$this->currentMap                   = $this->initializeMap($rpcMap);
+		$this->maps[$this->currentMap->uid] = $this->currentMap;
+		return $this->currentMap;
+	}
+
+	/**
+	 * Restructures the Maplist
+	 */
+	public function restructureMapList() {
+		$currentIndex = $this->getMapIndex($this->currentMap);
+
+		// No RestructureNeeded
+		if ($currentIndex < Maplist::MAX_MAPS_PER_PAGE - 1) {
+			return true;
+		}
+
+		$lowerMapArray  = array();
+		$higherMapArray = array();
+
+		$i = 0;
+		foreach ($this->maps as $map) {
+			if ($i < $currentIndex) {
+				$lowerMapArray[] = $map->fileName;
+			} else {
+				$higherMapArray[] = $map->fileName;
+			}
+			$i++;
+		}
+
+		$mapArray = array_merge($higherMapArray, $lowerMapArray);
+		array_shift($mapArray);
+
+		try {
+			$this->maniaControl->client->chooseNextMapList($mapArray);
+		} catch (Exception $e) {
+			trigger_error("Error while restructuring the Maplist. " . $e->getMessage());
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Returns the MapIndex of a given map
+	 *
+	 * @param Map $map
+	 * @internal param $uid
+	 * @return mixed
+	 */
+	public function getMapIndex(Map $map) {
+		$maps = $this->getMaps();
+		return array_search($map, $maps);
+	}
+
+	/**
+	 * Get all Maps
+	 *
+	 * @param int $offset
+	 * @param int $length
+	 * @return array
+	 */
+	public function getMaps($offset = null, $length = null) {
+		if ($offset === null) {
+			return array_values($this->maps);
+		}
+		if ($length === null) {
+			return array_slice($this->maps, $offset);
+		}
+		return array_slice($this->maps, $offset, $length);
+	}
+
+	/**
+	 * Handle OnInit callback
+	 */
+	public function handleOnInit() {
+		$this->updateFullMapList();
+		$this->fetchCurrentMap();
+
+		// Restructure Maplist
+		$this->restructureMapList();
+	}
+
+	/**
+	 * Handle AfterInit callback
+	 */
+	public function handleAfterInit() {
+		// Fetch MX infos
+		$this->mxManager->fetchManiaExchangeMapInformations();
+	}
+
+	/**
+	 * Get Current Map
+	 *
+	 * @return Map currentMap
+	 */
+	public function getCurrentMap() {
+		if (!$this->currentMap) {
+			return $this->fetchCurrentMap();
+		}
+		return $this->currentMap;
+	}
+
+	/**
+	 * Handle Script BeginMap callback
+	 *
+	 * @param int $mapNumber
+	 */
+	public function handleScriptBeginMap($mapNumber) {
+		$this->handleBeginMap(array());
+	}
+
+	/**
+	 * Handle BeginMap callback
+	 *
+	 * @param array $callback
+	 */
+	public function handleBeginMap(array $callback) {
+		if ($this->mapBegan) {
+			return;
+		}
+		$this->mapBegan = true;
+		$this->mapEnded = false;
+
+		if (!isset($callback[1][0]["UId"])) {
+			$this->currentMap = $this->fetchCurrentMap();
+		} else if (array_key_exists($callback[1][0]["UId"], $this->maps)) {
+			// Map already exists, only update index
+			$this->currentMap = $this->maps[$callback[1][0]["UId"]];
+			if (!$this->currentMap->nbCheckpoints || !$this->currentMap->nbLaps) {
+				$rpcMap                          = $this->maniaControl->client->getCurrentMapInfo();
+				$this->currentMap->nbLaps        = $rpcMap->nbLaps;
+				$this->currentMap->nbCheckpoints = $rpcMap->nbCheckpoints;
+			}
+		}
+
+		// Restructure MapList if id is over 15
+		$this->restructureMapList();
+
+		// Update the mx of the map (for update checks, etc.)
+		$this->mxManager->fetchManiaExchangeMapInformations($this->currentMap);
+
+		// Trigger own BeginMap callback (
+		//TODO remove deprecated callback later
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_BEGINMAP, $this->currentMap);
+		$this->maniaControl->callbackManager->triggerCallback(Callbacks::BEGINMAP, $this->currentMap);
+	}
+
+	/**
+	 * Handle Script EndMap Callback
+	 *
+	 * @param int $mapNumber
+	 */
+	public function handleScriptEndMap($mapNumber) {
+		$this->handleEndMap(array());
+	}
+
+	/**
+	 * Handle EndMap Callback
+	 *
+	 * @param array $callback
+	 */
+	public function handleEndMap(array $callback) {
+		if ($this->mapEnded) {
+			return;
+		}
+		$this->mapEnded = true;
+		$this->mapBegan = false;
+
+		// Trigger own EndMap callback
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_ENDMAP, $this->currentMap);
+		//TODO remove deprecated callback later
+		$this->maniaControl->callbackManager->triggerCallback(Callbacks::ENDMAP, $this->currentMap);
+	}
+
+	/**
+	 * Handle Maps Modified Callback
+	 *
+	 * @param array $callback
+	 */
+	public function mapsModified(array $callback) {
+		$this->updateFullMapList();
+	}
+
+	/**
+	 * Get the Number of Maps
+	 *
+	 * @return int
+	 */
+	public function getMapsCount() {
+		return count($this->maps);
 	}
 	// TODO: add local map by filename
 } 

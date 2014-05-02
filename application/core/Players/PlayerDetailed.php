@@ -14,13 +14,14 @@ use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Statistics\StatisticManager;
+use Maniaplanet\DedicatedServer\Structures\Player;
 
 /**
  * Player Detailed Page
  *
- * @author steeffeen & kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class PlayerDetailed {
 	/*
@@ -48,8 +49,14 @@ class PlayerDetailed {
 		$this->quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowSubStyle();
 	}
 
-
+	/**
+	 * Show a Frame with detailed Information about the Target Player
+	 *
+	 * @param Player $player
+	 * @param string $targetLogin
+	 */
 	public function showPlayerDetailed(Player $player, $targetLogin) {
+		/** @var Player $target */
 		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
 
 		//Create ManiaLink
@@ -209,7 +216,13 @@ class PlayerDetailed {
 		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player, 'PlayerDetailed');
 	}
 
-	public function statisticsFrame($player) {
+	/**
+	 * Build a Frame with Statistics about the given Player
+	 *
+	 * @param Player $player
+	 * @return Frame
+	 */
+	public function statisticsFrame(Player $player) {
 		$frame = new Frame();
 
 		$playerStats = $this->maniaControl->statisticManager->getAllPlayerStats($player);
@@ -217,7 +230,7 @@ class PlayerDetailed {
 		$x           = -$this->width / 2 + 52;
 		$id          = 1;
 
-		foreach($playerStats as $stat) {
+		foreach ($playerStats as $stat) {
 			$statProperties = $stat[0];
 			$value          = $stat[1];
 

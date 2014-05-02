@@ -5,9 +5,9 @@ namespace ManiaControl\Server;
 /**
  * Model Class holding the Server Config
  *
- * @author steeffeen
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Config {
 	/*
@@ -22,17 +22,17 @@ class Config {
 	/**
 	 * Create a new Server Config Instance
 	 *
-	 * @param string $id Config Id
-	 * @param string $host Server Ip
-	 * @param string $port Server Port
+	 * @param string $id    Config Id
+	 * @param string $host  Server Ip
+	 * @param string $port  Server Port
 	 * @param string $login XmlRpc Login
-	 * @param string $pass XmlRpc Password
+	 * @param string $pass  XmlRpc Password
 	 */
 	public function __construct($id = null, $host = null, $port = null, $login = null, $pass = null) {
-		$this->id = $id;
-		$this->host = $host;
-		$this->port = $port;
+		$this->id    = $id;
+		$this->host  = $host;
+		$this->port  = $port;
 		$this->login = $login;
-		$this->pass = $pass;
+		$this->pass  = $pass;
 	}
 }

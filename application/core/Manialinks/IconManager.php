@@ -8,15 +8,15 @@ use FML\ManiaLink;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
-use ManiaControl\Players\PlayerManager;
 use ManiaControl\Players\Player;
+use ManiaControl\Players\PlayerManager;
 
 /**
  * Class managing Icons
  *
- * @author steeffeen & kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class IconManager implements CallbackListener {
 	/*
@@ -96,15 +96,6 @@ class IconManager implements CallbackListener {
 	}
 
 	/**
-	 * Handle PlayerConnect Callback
-	 *
-	 * @param Player $player
-	 */
-	public function handlePlayerConnect(Player $player) {
-		$this->preloadIcons($player);
-	}
-
-	/**
 	 * Preload Icons
 	 *
 	 * @param Player $player
@@ -115,7 +106,7 @@ class IconManager implements CallbackListener {
 		$maniaLink->add($frame);
 		$frame->setPosition(500, 500);
 
-		foreach($this->icons as $iconUrl) {
+		foreach ($this->icons as $iconUrl) {
 			$iconQuad = new Quad();
 			$iconQuad->setImage($iconUrl);
 			$iconQuad->setSize(1, 1);
@@ -124,5 +115,14 @@ class IconManager implements CallbackListener {
 
 		// Send manialink
 		$this->maniaControl->manialinkManager->sendManialink($maniaLink, $player);
+	}
+
+	/**
+	 * Handle PlayerConnect Callback
+	 *
+	 * @param Player $player
+	 */
+	public function handlePlayerConnect(Player $player) {
+		$this->preloadIcons($player);
 	}
 }

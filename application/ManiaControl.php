@@ -4,7 +4,7 @@
 define('LOG_WRITE_CURRENT_FILE', 'ManiaControl.log'); // Write current log to extra file in base dir
 define('LOG_NAME_USE_DATE', true); // Use current date as suffix for log file name in logs folder
 define('LOG_NAME_USE_PID', true); // Use current process id as suffix for log file name in logs folder
-                                  
+
 // Define base dir
 define('ManiaControlDir', __DIR__);
 
@@ -51,8 +51,7 @@ logMessage('Starting ManiaControl ...');
 logMessage('Checking for installed MySQLi ... ', false);
 if (extension_loaded('mysqli')) {
 	logMessage('FOUND!');
-}
-else {
+} else {
 	logMessage('NOT FOUND!');
 	logMessage(' -- You don\'t have MySQLi installed, make sure to check: http://www.php.net/manual/en/mysqli.installation.php');
 	exit();
@@ -61,8 +60,7 @@ else {
 logMessage('Checking for installed cURL   ... ', false);
 if (extension_loaded('curl')) {
 	logMessage('FOUND!');
-}
-else {
+} else {
 	logMessage('NOT FOUND!');
 	logMessage('You don\'t have cURL installed, make sure to check: http://www.php.net/manual/en/curl.installation.php');
 	exit();
@@ -70,11 +68,12 @@ else {
 
 /**
  * Log and echo the given text
- * 
+ *
  * @param string $message
+ * @param bool   $eol
  */
 function logMessage($message, $eol = true) {
-	$date = date("d.M y H:i:s");
+	$date    = date("d.M y H:i:s");
 	$message = $date . ' ' . $message;
 	if ($eol) {
 		$message .= PHP_EOL;
@@ -93,15 +92,15 @@ function logMessage($message, $eol = true) {
 // Autoload Function that loads ManiaControl Class Files on Demand
 spl_autoload_register(function ($className) {
 	$classPath = str_replace('\\', DIRECTORY_SEPARATOR, $className);
-	
+
 	// Core file
 	$classDirectoryPath = preg_replace('/ManiaControl/', 'core', $classPath, 1);
-	$filePath = ManiaControlDir . DIRECTORY_SEPARATOR . $classDirectoryPath . '.php';
+	$filePath           = ManiaControlDir . DIRECTORY_SEPARATOR . $classDirectoryPath . '.php';
 	if (file_exists($filePath)) {
 		require_once $filePath;
 		return;
 	}
-	
+
 	// Plugin file
 	$filePath = ManiaControlDir . DIRECTORY_SEPARATOR . 'plugins/' . $classPath . '.php';
 	if (file_exists($filePath)) {

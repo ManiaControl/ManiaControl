@@ -11,8 +11,8 @@ use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 /**
  * ManiaControl Chat-Message Plugin
  *
- * @author    kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
+ * @author    kremsy <kremsy@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ChatMessagePlugin implements CommandListener, Plugin {
@@ -41,6 +41,51 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	 */
 	public static function prepare(ManiaControl $maniaControl) {
 		//do nothing
+	}
+
+	/**
+	 * Get plugin id
+	 *
+	 * @return int
+	 */
+	public static function getId() {
+		return self::PLUGIN_ID;
+	}
+
+	/**
+	 * Get Plugin Name
+	 *
+	 * @return string
+	 */
+	public static function getName() {
+		return self::PLUGIN_NAME;
+	}
+
+	/**
+	 * Get Plugin Version
+	 *
+	 * @return float,,
+	 */
+	public static function getVersion() {
+		return self::PLUGIN_VERSION;
+	}
+
+	/**
+	 * Get Plugin Author
+	 *
+	 * @return string
+	 */
+	public static function getAuthor() {
+		return self::PLUGIN_AUTHOR;
+	}
+
+	/**
+	 * Get Plugin Description
+	 *
+	 * @return string
+	 */
+	public static function getDescription() {
+		return "Plugin offers various Chat-Commands like /gg /hi /afk /rq...";
 	}
 
 	/**
@@ -111,6 +156,30 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 			$msg = '$ff0[$<' . $player->nickname . '$>] $ff0$iHello All!';
 		}
 		$this->maniaControl->chat->sendChat($msg, null, false);
+	}
+
+	/**
+	 * Checks if a Player is in the PlayerList and returns the nickname if he is, can be called per login, pid or nickname or lj for
+	 * (last joined)
+	 *
+	 * @param $login
+	 * @return mixed
+	 */
+	private function getTarget($login) {
+		/** @var Player $player */
+		$player = null;
+		foreach ($this->maniaControl->playerManager->getPlayers() as $player) {
+			if ($login == $player->login || $login == $player->pid || $login == $player->nickname) {
+				return $player->nickname;
+			}
+		}
+
+		if ($player && $login == 'lj') {
+			return $player->nickname;
+		}
+
+		//returns the text given if nothing matches
+		return $login;
 	}
 
 	/**
@@ -314,7 +383,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		$message = '$39F Thanks for Playing, see you around!$z';
 		try {
 			$this->maniaControl->client->kick($player->login, $message);
-		} catch(Exception $e) {
+		} catch (Exception $e) {
 			$this->maniaControl->errorHandler->triggerDebugNotice("ChatMessagePlugin Debug Line 316: " . $e->getMessage());
 			// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
@@ -335,7 +404,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		$message = '$39F Thanks for Playing, please come back soon!$z ';
 		try {
 			$this->maniaControl->client->kick($player->login, $message);
-		} catch(Exception $e) {
+		} catch (Exception $e) {
 			$this->maniaControl->errorHandler->triggerDebugNotice("ChatMessagePlugin Debug Line " . $e->getLine() . ": " . $e->getMessage());
 			// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
@@ -361,7 +430,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 			// force into spec
 			try {
 				$this->maniaControl->client->forceSpectator($player->login, 3);
-			} catch(Exception $e) {
+			} catch (Exception $e) {
 				$this->maniaControl->errorHandler->triggerDebugNotice("ChatMessagePlugin Debug Line " . $e->getLine() . ": " . $e->getMessage());
 				// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
 				$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
@@ -371,7 +440,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 			// free player slot
 			try {
 				$this->maniaControl->client->spectatorReleasePlayerSlot($player->login);
-			} catch(Exception $e) {
+			} catch (Exception $e) {
 				if ($e->getMessage() != 'The player is not a spectator') {
 					$this->maniaControl->errorHandler->triggerDebugNotice("ChatMessagePlugin Debug Line " . $e->getLine() . ": " . $e->getMessage());
 					// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
@@ -379,74 +448,5 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 				}
 			}
 		}
-	}
-
-	/**
-	 * Checks if a Player is in the PlayerList and returns the nickname if he is, can be called per login, pid or nickname or lj for
-	 * (last joined)
-	 *
-	 * @param $login
-	 * @return mixed
-	 */
-	private function getTarget($login) {
-		/** @var Player $player */
-		$player = null;
-		foreach($this->maniaControl->playerManager->getPlayers() as $player) {
-			if ($login == $player->login || $login == $player->pid || $login == $player->nickname) {
-				return $player->nickname;
-			}
-		}
-
-		if ($player && $login == 'lj') {
-			return $player->nickname;
-		}
-
-		//returns the text given if nothing matches
-		return $login;
-	}
-
-	/**
-	 * Get plugin id
-	 *
-	 * @return int
-	 */
-	public static function getId() {
-		return self::PLUGIN_ID;
-	}
-
-	/**
-	 * Get Plugin Name
-	 *
-	 * @return string
-	 */
-	public static function getName() {
-		return self::PLUGIN_NAME;
-	}
-
-	/**
-	 * Get Plugin Version
-	 *
-	 * @return float,,
-	 */
-	public static function getVersion() {
-		return self::PLUGIN_VERSION;
-	}
-
-	/**
-	 * Get Plugin Author
-	 *
-	 * @return string
-	 */
-	public static function getAuthor() {
-		return self::PLUGIN_AUTHOR;
-	}
-
-	/**
-	 * Get Plugin Description
-	 *
-	 * @return string
-	 */
-	public static function getDescription() {
-		return "Plugin offers various Chat-Commands like /gg /hi /afk /rq...";
 	}
 }

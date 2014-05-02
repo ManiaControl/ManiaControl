@@ -11,7 +11,7 @@
 		<!-- XmlRpc Login Details -->
 		<login>SuperAdmin</login>
 		<pass>password</pass>
-		
+
 	</server>
 
 	<!-- Configure the MySQL Database used by ManiaControl -->
