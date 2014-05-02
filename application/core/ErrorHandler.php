@@ -203,37 +203,29 @@ class ErrorHandler {
 	 * @return string
 	 */
 	public function getErrorTag($errorLevel) {
-		if ($errorLevel == E_NOTICE) {
-			return '[PHP NOTICE]';
+		switch ($errorLevel) {
+			case E_NOTICE:
+				return '[PHP NOTICE]';
+			case E_WARNING:
+				return '[PHP WARNING]';
+			case E_ERROR:
+				return '[PHP ERROR]';
+			case E_CORE_ERROR:
+				return '[PHP CORE ERROR]';
+			case E_COMPILE_ERROR:
+				return '[PHP COMPILE ERROR]';
+			case E_RECOVERABLE_ERROR:
+				return '[PHP RECOVERABLE ERROR]';
+			case E_USER_NOTICE:
+				return '[ManiaControl NOTICE]';
+			case E_USER_WARNING:
+				return '[ManiaControl WARNING]';
+			case E_USER_ERROR:
+				return '[ManiaControl ERROR]';
+			case self::MC_DEBUG_NOTICE:
+				return '[ManiaControl DEBUG]';
 		}
-		if ($errorLevel == E_WARNING) {
-			return '[PHP WARNING]';
-		}
-		if ($errorLevel == E_ERROR) {
-			return '[PHP ERROR]';
-		}
-		if ($errorLevel == E_CORE_ERROR) {
-			return '[PHP CORE ERROR]';
-		}
-		if ($errorLevel == E_COMPILE_ERROR) {
-			return '[PHP COMPILE ERROR]';
-		}
-		if ($errorLevel == E_RECOVERABLE_ERROR) {
-			return '[PHP RECOVERABLE ERROR]';
-		}
-		if ($errorLevel == E_USER_NOTICE) {
-			return '[ManiaControl NOTICE]';
-		}
-		if ($errorLevel == E_USER_WARNING) {
-			return '[ManiaControl WARNING]';
-		}
-		if ($errorLevel == E_USER_ERROR) {
-			return '[ManiaControl ERROR]';
-		}
-		if ($errorLevel == self::MC_DEBUG_NOTICE) {
-			return '[ManiaControl DEBUG]';
-		}
-		return "[PHP {$errorLevel}]";
+		return "[PHP ERROR '{$errorLevel}']";
 	}
 
 	/**

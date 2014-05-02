@@ -22,7 +22,6 @@ use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
-use Maniaplanet\DedicatedServer\Structures\Player;
 use Maniaplanet\DedicatedServer\Xmlrpc\LoginUnknownException;
 use Maniaplanet\DedicatedServer\Xmlrpc\PlayerIsNotSpectatorException;
 use MCTeam\CustomVotesPlugin;

@@ -54,10 +54,10 @@ class HelpManager implements CommandListener, CallbackListener {
 	/**
 	 * Shows a list of Admin Commands
 	 *
-	 * @param array  $chat
+	 * @param array  $chatCallback
 	 * @param Player $player
 	 */
-	public function command_adminHelp(array $chat, Player $player) {
+	public function command_adminHelp(array $chatCallback, Player $player) {
 		$showCommands      = array();
 		$registeredMethods = array();
 		foreach (array_reverse($this->adminCommands) as $command) {
@@ -85,10 +85,10 @@ class HelpManager implements CommandListener, CallbackListener {
 	/**
 	 * Shows a list of Player Commands
 	 *
-	 * @param array  $chat
+	 * @param array  $chatCallback
 	 * @param Player $player
 	 */
-	public function command_playerHelp(array $chat, Player $player) {
+	public function command_playerHelp(array $chatCallback, Player $player) {
 		$showCommands      = array();
 		$registeredMethods = array();
 		foreach (array_reverse($this->playerCommands) as $command) {
@@ -116,10 +116,10 @@ class HelpManager implements CommandListener, CallbackListener {
 	/**
 	 * Shows a ManiaLink list of Player Commands
 	 *
-	 * @param array  $chat
+	 * @param array  $chatCallback
 	 * @param Player $player
 	 */
-	public function command_playerHelpAll(array $chat, Player $player) {
+	public function command_playerHelpAll(array $chatCallback, Player $player) {
 		$this->prepareHelpAll($this->playerCommands, $player);
 	}
 
@@ -237,10 +237,10 @@ class HelpManager implements CommandListener, CallbackListener {
 	/**
 	 * Shows a ManiaLink list of Admin Commands
 	 *
-	 * @param array  $chat
+	 * @param array  $chatCallback
 	 * @param Player $player
 	 */
-	public function command_adminHelpAll(array $chat, Player $player) {
+	public function command_adminHelpAll(array $chatCallback, Player $player) {
 		$this->prepareHelpAll($this->adminCommands, $player);
 	}
 

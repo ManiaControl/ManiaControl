@@ -242,6 +242,14 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 	private function installPlugin(PluginUpdateData $pluginUpdateData, Player $player = null, $update = false) {
 		$self = $this;
 		$this->maniaControl->fileReader->loadFile($pluginUpdateData->url, function ($updateFileContent, $error) use (&$self, &$pluginUpdateData, &$player, &$update) {
+			if (!$updateFileContent || $error) {
+				$message = "Error loading Update Data for '{$pluginUpdateData->pluginName}': {$error}!";
+				if ($player) {
+					$self->maniaControl->chat->sendInformation($message, $player);
+				}
+				$self->maniaControl->log($message);
+				return;
+			}
 			$actionNoun     = ($update ? 'Update' : 'Install');
 			$actionVerb     = ($update ? 'Updating' : 'Installing');
 			$actionVerbDone = ($update ? 'updated' : 'installed');

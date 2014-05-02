@@ -472,7 +472,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	 * @param Map $b
 	 * @return mixed
 	 */
-	private function sortByKarma($a, $b) {
+	private function sortByKarma(Map $a, Map $b) {
 		return ($a->karma - $b->karma);
 	}
 }

@@ -303,6 +303,15 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 
 		$self = $this;
 		$this->maniaControl->fileReader->loadFile($this->coreUpdateData->url, function ($updateFileContent, $error) use (&$self, &$updateData, &$player) {
+			if (!$updateFileContent || !$error) {
+				$message = "Update failed: Couldn't load Update zip!";
+				if ($player) {
+					$self->maniaControl->chat->sendError($message, $player);
+				}
+				logMessage($message);
+				return;
+			}
+
 			$tempDir        = FileUtil::getTempFolder();
 			$updateFileName = $tempDir . basename($updateData->url);
 

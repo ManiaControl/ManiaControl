@@ -14,7 +14,6 @@ use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Statistics\StatisticManager;
-use Maniaplanet\DedicatedServer\Structures\Player;
 
 /**
  * Player Detailed Page

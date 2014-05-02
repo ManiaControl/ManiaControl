@@ -252,9 +252,9 @@ class MapManager implements CallbackListener {
 
 				// Download the file
 				$self->maniaControl->fileReader->loadFile($mapInfo->downloadurl, function ($file, $error) use (&$self, &$login, &$mapInfo, &$update) {
-					if (!$file) {
+					if (!$file || $error) {
 						// Download error
-						$self->maniaControl->chat->sendError('Download failed!', $login);
+						$self->maniaControl->chat->sendError("Download failed: '{$error}'!", $login);
 						return;
 					}
 					$self->processMapFile($file, $mapInfo, $login, $update);
