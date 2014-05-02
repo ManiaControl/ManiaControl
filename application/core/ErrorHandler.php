@@ -71,7 +71,7 @@ class ErrorHandler {
 			
 			if ($this->maniaControl->settingManager && $this->maniaControl->updateManager) {
 				$error['UpdateChannel'] = $this->maniaControl->settingManager->getSetting($this->maniaControl->updateManager, UpdateManager::SETTING_UPDATECHECK_CHANNEL);
-				$error['ManiaControlVersion'] = $this->maniaControl->updateManager->getCurrentBuildDate();
+				$error['ManiaControlVersion'] = $this->maniaControl->updateManager->getNightlyBuildDate();
 			}
 			else {
 				$error['UpdateChannel'] = '';
