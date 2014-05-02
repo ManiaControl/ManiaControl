@@ -166,6 +166,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 				if (!isset($pluginsData[$pluginId])) {
 					continue;
 				}
+				/** @var PluginUpdateData $pluginData */
 				$pluginData = $pluginsData[$pluginId];
 				$pluginVersion = $pluginClass::getVersion();
 				if ($pluginData->isNewerThan($pluginVersion)) {
@@ -301,6 +302,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 			 */
 			$pluginId = $pluginClass::getId();
 			if (isset($pluginsUpdates[$pluginId])) {
+				/** @var PluginUpdateData $pluginUpdateData */
 				$pluginUpdateData = $pluginsUpdates[$pluginId];
 				$pluginVersion = $pluginClass::getVersion();
 				if ($pluginUpdateData->isNewerThan($pluginVersion)) {
