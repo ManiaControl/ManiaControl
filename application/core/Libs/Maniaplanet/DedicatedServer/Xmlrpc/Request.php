@@ -40,7 +40,7 @@ if(extension_loaded('xmlrpc'))
 
 			if($method === null)
 			{
-				if(@xmlrpc_is_fault($value))
+				if(is_array($value) && @xmlrpc_is_fault($value))
 					return array('fault', $value);
 				return array('response', $value);
 			}

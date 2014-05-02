@@ -185,7 +185,10 @@ class GbxRemote
 	 */
 	private function flush($waitResponse=false)
 	{
-		$n = @stream_select($r=array($this->socket), $w=null, $e=null, 0);
+		$r=array($this->socket);
+		$w=null;
+		$e=null;
+		$n = @stream_select($r, $w, $e, 0);
 		while($waitResponse || $n > 0)
 		{
 			list($handle, $xml) = $this->readMessage();
@@ -202,8 +205,12 @@ class GbxRemote
 					$this->callbacksBuffer[] = $value;
 			}
 
-			if(!$waitResponse)
-				$n = @stream_select($r=array($this->socket), $w=null, $e=null, 0);
+			if(!$waitResponse){
+				$r=array($this->socket);
+				$w=null;
+				$e=null;
+				$n = @stream_select($r, $w, $e, 0);
+			}
 		};
 	}
 
