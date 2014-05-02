@@ -18,21 +18,21 @@ use ManiaControl\Players\PlayerManager;
 /**
  * Class managing Actions Menus
  *
- * @author steeffeen & kremsy
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	/*
 	 * Constants
 	 */
-	const MLID_MENU = 'ActionsMenu.MLID';
-	const SETTING_MENU_POSX = 'Menu Position: X';
-	const SETTING_MENU_POSY = 'Menu Position: Y';
-	const SETTING_MENU_ITEMSIZE = 'Menu Item Size';
-	const ACTION_OPEN_ADMIN_MENU = 'ActionsMenu.OpenAdminMenu';
+	const MLID_MENU               = 'ActionsMenu.MLID';
+	const SETTING_MENU_POSX       = 'Menu Position: X';
+	const SETTING_MENU_POSY       = 'Menu Position: Y';
+	const SETTING_MENU_ITEMSIZE   = 'Menu Item Size';
+	const ACTION_OPEN_ADMIN_MENU  = 'ActionsMenu.OpenAdminMenu';
 	const ACTION_OPEN_PLAYER_MENU = 'ActionsMenu.OpenPlayerMenu';
-	
+
 	/*
 	 * Private Properties
 	 */
@@ -48,12 +48,12 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
-		
+
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_POSX, 156.);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_POSY, -17.);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_ITEMSIZE, 6.);
-		
+
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_AFTERINIT, $this, 'handleAfterInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerJoined');
@@ -64,41 +64,24 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	 * Add a new Menu Item
 	 *
 	 * @param Control $control
-	 * @param bool $playerAction
-	 * @param int $order
-	 * @param string $description
+	 * @param bool    $playerAction
+	 * @param int     $order
+	 * @param string  $description
 	 */
 	public function addMenuItem(Control $control, $playerAction = true, $order = 0, $description = null) {
 		if ($playerAction) {
 			$this->addPlayerMenuItem($control, $order, $description);
-		}
-		else {
+		} else {
 			$this->addAdminMenuItem($control, $order, $description);
 		}
-	}
-
-	/**
-	 * Removes a Menu Item
-	 *
-	 * @param $order
-	 * @param bool $playerAction
-	 */
-	public function removeMenuItem($order, $playerAction = true) {
-		if ($playerAction) {
-			unset($this->playerMenuItems[$order]);
-		}
-		else {
-			unset($this->adminMenuItems[$order]);
-		}
-		$this->rebuildAndShowMenu();
 	}
 
 	/**
 	 * Add a new Player Menu Item
 	 *
 	 * @param Control $control
-	 * @param int $order
-	 * @param string $description
+	 * @param int     $order
+	 * @param string  $description
 	 */
 	public function addPlayerMenuItem(Control $control, $order = 0, $description = null) {
 		if (!isset($this->playerMenuItems[$order])) {
@@ -106,30 +89,6 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		}
 		array_push($this->playerMenuItems[$order], array($control, $description));
 		krsort($this->playerMenuItems);
-		$this->rebuildAndShowMenu();
-	}
-
-	/**
-	 * Add a new Admin Menu Item
-	 *
-	 * @param Control $control
-	 * @param int $order
-	 * @param string $description
-	 */
-	public function addAdminMenuItem(Control $control, $order = 0, $description = null) {
-		if (!isset($this->adminMenuItems[$order])) {
-			$this->adminMenuItems[$order] = array();
-		}
-		array_push($this->adminMenuItems[$order], array($control, $description));
-		krsort($this->adminMenuItems);
-		$this->rebuildAndShowMenu();
-	}
-
-	/**
-	 * Handle ManiaControl AfterInit callback
-	 */
-	public function handleAfterInit() {
-		$this->initCompleted = true;
 		$this->rebuildAndShowMenu();
 	}
 
@@ -148,38 +107,28 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	}
 
 	/**
-	 * Handle PlayerJoined callback
-	 *
-	 * @param Player $player
-	 */
-	public function handlePlayerJoined(Player $player) {
-		$maniaLink = $this->buildMenuIconsManialink($player);
-		$this->maniaControl->manialinkManager->sendManialink($maniaLink, $player->login);
-	}
-
-	/**
 	 * Builds the Manialink
 	 *
 	 * @param Player $player
 	 * @return ManiaLink
 	 */
 	private function buildMenuIconsManialink(Player $player) {
-		$posX = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_POSX);
-		$posY = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_POSY);
-		$itemSize = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_ITEMSIZE);
-		$shootManiaOffset = $this->maniaControl->manialinkManager->styleManager->getDefaultIconOffsetSM();
-		$quadStyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
-		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
+		$posX              = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_POSX);
+		$posY              = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_POSY);
+		$itemSize          = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_ITEMSIZE);
+		$shootManiaOffset  = $this->maniaControl->manialinkManager->styleManager->getDefaultIconOffsetSM();
+		$quadStyle         = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
+		$quadSubstyle      = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
 		$itemMarginFactorX = 1.3;
 		$itemMarginFactorY = 1.2;
-		
+
 		// If game is shootmania lower the icons position by 20
 		if ($this->maniaControl->mapManager->getCurrentMap()->getGame() == 'sm') {
 			$posY -= $shootManiaOffset;
 		}
-		
+
 		$manialink = new ManiaLink(self::MLID_MENU);
-		
+
 		/*
 		 * Admin Menu
 		 */
@@ -188,17 +137,17 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 			$iconFrame = new Frame();
 			$manialink->add($iconFrame);
 			$iconFrame->setPosition($posX, $posY);
-			
+
 			$backgroundQuad = new Quad();
 			$iconFrame->add($backgroundQuad);
 			$backgroundQuad->setSize($itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
 			$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-			
+
 			$itemQuad = new Quad_Icons64x64_1();
 			$iconFrame->add($itemQuad);
 			$itemQuad->setSubStyle($itemQuad::SUBSTYLE_IconServers);
 			$itemQuad->setSize($itemSize, $itemSize);
-			
+
 			// Admin Menu Description
 			$descriptionLabel = new Label();
 			$manialink->add($descriptionLabel);
@@ -207,7 +156,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 			$descriptionLabel->setSize(40, 4);
 			$descriptionLabel->setTextSize(1.4);
 			$descriptionLabel->setTextColor('fff');
-			
+
 			// Admin Menu
 			$popoutFrame = new Frame();
 			$manialink->add($popoutFrame);
@@ -215,15 +164,15 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 			$popoutFrame->setHAlign(Control::RIGHT);
 			$popoutFrame->setSize(4 * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
 			$popoutFrame->setVisible(false);
-			
+
 			$backgroundQuad = new Quad();
 			$popoutFrame->add($backgroundQuad);
 			$backgroundQuad->setHAlign(Control::RIGHT);
 			$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 			$backgroundQuad->setSize(count($this->adminMenuItems) * $itemSize * 1.15 + 2, $itemSize * $itemMarginFactorY);
-			
+
 			$itemQuad->addToggleFeature($popoutFrame);
-			
+
 			// Add items
 			$x = -1;
 			foreach ($this->adminMenuItems as $menuItems) {
@@ -237,7 +186,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 					$menuQuad->setX($x);
 					$menuQuad->setHAlign(Control::RIGHT);
 					$x -= $itemSize * 1.05;
-					
+
 					if ($menuItem[1]) {
 						$menuQuad->removeScriptFeatures();
 						$description = '$s' . $menuItem[1];
@@ -246,7 +195,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 				}
 			}
 		}
-		
+
 		/*
 		 * Player Menu
 		 */
@@ -254,17 +203,17 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		$iconFrame = new Frame();
 		$manialink->add($iconFrame);
 		$iconFrame->setPosition($posX, $posY - $itemSize * $itemMarginFactorY);
-		
+
 		$backgroundQuad = new Quad();
 		$iconFrame->add($backgroundQuad);
 		$backgroundQuad->setSize($itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-		
+
 		$itemQuad = new Quad_Icons64x64_1();
 		$iconFrame->add($itemQuad);
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_IconPlayers);
 		$itemQuad->setSize($itemSize, $itemSize);
-		
+
 		// Player Menu Description
 		$descriptionLabel = new Label();
 		$manialink->add($descriptionLabel);
@@ -273,7 +222,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		$descriptionLabel->setSize(40, 4);
 		$descriptionLabel->setTextSize(1.4);
 		$descriptionLabel->setTextColor('fff');
-		
+
 		// Player Menu
 		$popoutFrame = new Frame();
 		$manialink->add($popoutFrame);
@@ -281,15 +230,15 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		$popoutFrame->setHAlign(Control::RIGHT);
 		$popoutFrame->setSize(4 * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
 		$popoutFrame->setVisible(false);
-		
+
 		$backgroundQuad = new Quad();
 		$popoutFrame->add($backgroundQuad);
 		$backgroundQuad->setHAlign(Control::RIGHT);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 		$backgroundQuad->setSize(count($this->playerMenuItems) * $itemSize * 1.15 + 2, $itemSize * $itemMarginFactorY);
-		
+
 		$itemQuad->addToggleFeature($popoutFrame);
-		
+
 		// Add items
 		$x = -1;
 		foreach ($this->playerMenuItems as $menuItems) {
@@ -303,7 +252,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 				$menuQuad->setX($x);
 				$menuQuad->setHAlign(Control::RIGHT);
 				$x -= $itemSize * 1.05;
-				
+
 				if ($menuItem[1]) {
 					$menuQuad->removeScriptFeatures();
 					$description = '$s' . $menuItem[1];
@@ -311,7 +260,56 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 				}
 			}
 		}
-		
+
 		return $manialink;
+	}
+
+	/**
+	 * Add a new Admin Menu Item
+	 *
+	 * @param Control $control
+	 * @param int     $order
+	 * @param string  $description
+	 */
+	public function addAdminMenuItem(Control $control, $order = 0, $description = null) {
+		if (!isset($this->adminMenuItems[$order])) {
+			$this->adminMenuItems[$order] = array();
+		}
+		array_push($this->adminMenuItems[$order], array($control, $description));
+		krsort($this->adminMenuItems);
+		$this->rebuildAndShowMenu();
+	}
+
+	/**
+	 * Removes a Menu Item
+	 *
+	 * @param      $order
+	 * @param bool $playerAction
+	 */
+	public function removeMenuItem($order, $playerAction = true) {
+		if ($playerAction) {
+			unset($this->playerMenuItems[$order]);
+		} else {
+			unset($this->adminMenuItems[$order]);
+		}
+		$this->rebuildAndShowMenu();
+	}
+
+	/**
+	 * Handle ManiaControl AfterInit callback
+	 */
+	public function handleAfterInit() {
+		$this->initCompleted = true;
+		$this->rebuildAndShowMenu();
+	}
+
+	/**
+	 * Handle PlayerJoined callback
+	 *
+	 * @param Player $player
+	 */
+	public function handlePlayerJoined(Player $player) {
+		$maniaLink = $this->buildMenuIconsManialink($player);
+		$this->maniaControl->manialinkManager->sendManialink($maniaLink, $player->login);
 	}
 }
