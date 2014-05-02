@@ -3,7 +3,6 @@
 namespace ManiaControl;
 
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
-use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\Xmlrpc\LoginUnknownException;
 
 /**

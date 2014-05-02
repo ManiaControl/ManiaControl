@@ -16,7 +16,6 @@ use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\ManiaControl;
 use ManiaControl\Maps\Map;
-use ManiaControl\Maps\MapManager;
 use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 use Maniaplanet\DedicatedServer\Xmlrpc\NotInScriptModeException;

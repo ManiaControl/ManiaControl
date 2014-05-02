@@ -5,7 +5,6 @@ namespace ManiaControl\Configurators;
 use FML\Controls\Control;
 use FML\Controls\Entry;
 use FML\Controls\Frame;
-use FML\Controls\Label;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Script\Features\Paging;
@@ -15,9 +14,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
-use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Players\PlayerManager;
-use FML\Types\Playable;
 use FML\Controls\Labels\Label_Button;
 use ManiaControl\Settings\SettingManager;
 

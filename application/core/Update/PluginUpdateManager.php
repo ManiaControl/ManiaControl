@@ -2,7 +2,6 @@
 
 namespace ManiaControl\Update;
 
-use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\TimerListener;
@@ -10,7 +9,6 @@ use ManiaControl\Commands\CommandListener;
 use ManiaControl\Files\FileUtil;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
-use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
 use ManiaControl\Plugins\PluginInstallMenu;
 use ManiaControl\Plugins\PluginMenu;
