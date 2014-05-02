@@ -101,7 +101,7 @@ abstract class BackupUtil {
 			}
 			if (is_dir($filePath)) {
 				$zipArchive->addEmptyDir($localPath);
-				$this->zipDirectory($zipArchive, $filePath, $prefixLength, $excludes);
+				self::zipDirectory($zipArchive, $filePath, $prefixLength, $excludes);
 				continue;
 			}
 		}

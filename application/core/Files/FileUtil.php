@@ -143,7 +143,7 @@ abstract class FileUtil {
 				}
 				if (!is_writable($fileName)) {
 					$message = "Write-Access missing for File '{$fileName}'!";
-					$this->maniaControl->log($message);
+					logMessage($message);
 					return false;
 				}
 			}
