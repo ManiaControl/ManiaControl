@@ -110,23 +110,26 @@ class ErrorHandler {
 	 * @return bool
 	 */
 	public function errorHandler($errorNumber, $errorString, $errorFile = null, $errorLine = -1) {
-		if (error_reporting() == 0) {
+		if (error_reporting() === 0) {
 			// Error suppressed
 			return false;
 		}
 		
-		$userError = ($errorNumber == E_USER_ERROR || $errorNumber == E_USER_WARNING || $errorNumber == E_USER_NOTICE || $errorNumber == E_USER_DEPRECATED);
+		$userError = $this->isUserErrorNumber($errorNumber);
 		
 		// Log error
 		$errorTag = $this->getErrorTag($errorNumber);
 		$message = $errorTag . ': ' . $errorString;
+		$fileLine = $errorFile . ': ' . $errorLine;
 		$traceMessage = $this->parseBackTrace(debug_backtrace());
-		logMessage($message . ($userError ? '' : PHP_EOL . $traceMessage));
+		$logMessage = $message . PHP_EOL . ($userError ? $fileLine : $traceMessage);
+		logMessage($logMessage);
 		
 		if ($this->reportErrors && !$userError) {
 			$error = array();
 			$error["Type"] = "Error";
 			$error["Message"] = $message;
+			$error["FileLine"] = $fileLine;
 			$error["Backtrace"] = $traceMessage;
 			$error['OperatingSystem'] = php_uname();
 			$error['PHPVersion'] = phpversion();
@@ -140,7 +143,7 @@ class ErrorHandler {
 			
 			if ($this->maniaControl->settingManager && $this->maniaControl->updateManager) {
 				$error['UpdateChannel'] = $this->maniaControl->settingManager->getSetting($this->maniaControl->updateManager, UpdateManager::SETTING_UPDATECHECK_CHANNEL);
-				$error['ManiaControlVersion'] = $this->maniaControl->updateManager->getCurrentBuildDate();
+				$error['ManiaControlVersion'] = ManiaControl::VERSION . '#' . $this->maniaControl->updateManager->getNightlyBuildDate();
 			}
 			else {
 				$error['UpdateChannel'] = '';
@@ -160,12 +163,21 @@ class ErrorHandler {
 				logMessage("Error successfully reported!");
 			}
 		}
-		
-		if ($errorNumber == E_ERROR || $errorNumber == E_USER_ERROR || $errorNumber == E_FATAL) {
+		if ($this->shouldStopExecution($errorNumber)) {
 			logMessage('Stopping execution...');
 			exit();
 		}
 		return false;
+	}
+
+	/**
+	 * Check if the given Error Number is a User Error
+	 * 
+	 * @param int $errorNumber
+	 * @return bool
+	 */
+	private function isUserErrorNumber($errorNumber) {
+		return ($errorNumber === E_USER_ERROR || $errorNumber === E_USER_WARNING || $errorNumber === E_USER_NOTICE || $errorNumber === E_USER_DEPRECATED);
 	}
 
 	/**
@@ -178,7 +190,7 @@ class ErrorHandler {
 	}
 
 	/**
-	 * Get the prefix for the given error level
+	 * Get the Prefix for the given Error Level
 	 * 
 	 * @param int $errorLevel
 	 * @return string
@@ -215,6 +227,16 @@ class ErrorHandler {
 			return '[ManiaControl DEBUG]';
 		}
 		return "[PHP {$errorLevel}]";
+	}
+
+	/**
+	 * Test if ManiaControl should stop its Execution
+	 * 
+	 * @param int $errorNumber
+	 * @return bool
+	 */
+	private function shouldStopExecution($errorNumber) {
+		return ($errorNumber === E_ERROR || $errorNumber === E_USER_ERROR || $errorNumber === E_FATAL);
 	}
 
 	/**
