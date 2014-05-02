@@ -477,13 +477,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 * @return null
 	 */
 	private function showTopDonsList(Player $player) {
-		$query = "SELECT * FROM `".StatisticManager::TABLE_STATISTICS."` WHERE `statId` = 3 ORDER BY `value` DESC LIMIT 0, 100";
-		$mysqli = $this->maniaControl->database->mysqli;
-		$result = $mysqli->query($query);
-		if ($mysqli->error) {
-			trigger_error($mysqli->error);
-			return null;
-		}
+		$stats = $this->maniaControl->statisticManager->getStatsRanking(self::STAT_PLAYER_DONATIONS);
 
 		$width  = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
 		$height = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
@@ -516,7 +510,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$i          = 1;
 		$y          = $y - 10;
 		$pageFrames = array();
-		while($donator = $result->fetch_object()) {
+		foreach($stats as $playerIndex => $donations) {
 			if (!isset($pageFrame)) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
@@ -541,14 +535,18 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 				$lineQuad->setZ(0.001);
 			}
 
-			$donatingPlayer = $this->maniaControl->playerManager->getPlayerByIndex($donator->playerId);
-			$array = array($i => $x + 5, $donatingPlayer->nickname => $x + 18, $donator->value => $x + 70);
+			$donatingPlayer = $this->maniaControl->playerManager->getPlayerByIndex($playerIndex);
+			$array = array($i => $x + 5, $donatingPlayer->nickname => $x + 18, $donations => $x + 70);
 			$this->maniaControl->manialinkManager->labelLine($playerFrame, $array);
 
 			$y -= 4;
 			$i++;
 			if (($i - 1) % 15 == 0) {
 				unset($pageFrame);
+			}
+
+			if($i > 100) {
+				break;
 			}
 		}
 
