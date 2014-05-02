@@ -33,7 +33,7 @@ abstract class BackupUtil {
 		$parentPath = $pathInfo['dirname'] . '/';
 		$dirName = $pathInfo['basename'];
 		$backupZip->addEmptyDir($dirName);
-		$this->zipDirectory($backupZip, ManiaControlDir, strlen($parentPath), $excludes);
+		self::zipDirectory($backupZip, ManiaControlDir, strlen($parentPath), $excludes);
 		$backupZip->close();
 		return true;
 	}
@@ -56,7 +56,7 @@ abstract class BackupUtil {
 		$parentPath = $pathInfo['dirname'] . '/';
 		$dirName = $pathInfo['basename'];
 		$backupZip->addEmptyDir($dirName);
-		$this->zipDirectory($backupZip, ManiaControlDir . '/plugins', strlen($parentPath), $excludes);
+		self::zipDirectory($backupZip, ManiaControlDir . '/plugins', strlen($parentPath), $excludes);
 		$backupZip->close();
 		return true;
 	}

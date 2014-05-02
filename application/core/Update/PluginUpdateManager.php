@@ -214,7 +214,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 			return;
 		}
 		
-		$message = "Starting Plugins Updating... You'll need to restart ManiaControl when it's finished!";
+		$message = "Starting Plugins Updating...";
 		if ($player) {
 			$this->maniaControl->chat->sendInformation($message, $player);
 		}
@@ -230,7 +230,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 		}
 		
 		foreach ($pluginsUpdates as $pluginUpdateData) {
-			$self->installPlugin($pluginUpdateData, $player, true);
+			$this->installPlugin($pluginUpdateData, $player, true);
 		}
 	}
 
