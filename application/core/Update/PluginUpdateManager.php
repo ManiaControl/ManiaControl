@@ -71,26 +71,24 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 		}
 		$this->maniaControl->log($message);
 
-		$self = $this;
-		$this->maniaControl->pluginManager->fetchPluginList(function ($data, $error) use (&$self, &$player) {
-
+		$self         = $this;
+		$maniaControl = $this->maniaControl;
+		$this->maniaControl->pluginManager->fetchPluginList(function ($data, $error) use (&$self, &$maniaControl, &$player) {
 			if (!$data || $error) {
 				$message = 'Error while checking Plugins for newer Versions!';
 				if ($player) {
-					$self->maniaControl->chat->sendError($message, $player);
+					$maniaControl->chat->sendError($message, $player);
 				}
-				$self->maniaControl->log($message);
+				$maniaControl->log($message);
 				return;
 			}
 
 			$pluginsData   = $self->parsePluginsData($data);
-			$pluginClasses = $self->maniaControl->pluginManager->getPluginClasses();
+			$pluginClasses = $maniaControl->pluginManager->getPluginClasses();
 			$pluginUpdates = array();
 
 			foreach ($pluginClasses as $pluginClass) {
-				/**
-				 * @var Plugin $pluginClass
-				 */
+				/** @var Plugin $pluginClass */
 				$pluginId = $pluginClass::getId();
 				if (!isset($pluginsData[$pluginId])) {
 					continue;
@@ -102,25 +100,25 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 					$pluginUpdates[$pluginId] = $pluginData;
 					$message                  = "There is an Update of '{$pluginData->pluginName}' available! ('{$pluginClass}' - Version {$pluginData->version})";
 					if ($player) {
-						$self->maniaControl->chat->sendSuccess($message, $player);
+						$maniaControl->chat->sendSuccess($message, $player);
 					}
-					$self->maniaControl->log($message);
+					$maniaControl->log($message);
 				}
 			}
 
 			if (empty($pluginUpdates)) {
 				$message = 'Plugins Update Check completed: All Plugins are up-to-date!';
 				if ($player) {
-					$self->maniaControl->chat->sendSuccess($message, $player);
+					$maniaControl->chat->sendSuccess($message, $player);
 				}
-				$self->maniaControl->log($message);
+				$maniaControl->log($message);
 			} else {
 				$updatesCount = count($pluginUpdates);
 				$message      = "Plugins Update Check completed: There are {$updatesCount} Updates available!";
 				if ($player) {
-					$self->maniaControl->chat->sendSuccess($message, $player);
+					$maniaControl->chat->sendSuccess($message, $player);
 				}
-				$self->maniaControl->log($message);
+				$maniaControl->log($message);
 			}
 		});
 	}
