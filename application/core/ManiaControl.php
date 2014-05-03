@@ -302,11 +302,7 @@ class ManiaControl implements CommandListener, TimerListener {
 			}
 		}
 
-		// Check and Trigger Fatal Errors
-		$error = error_get_last();
-		if ($error && ($error['type'] & E_FATAL)) {
-			$this->errorHandler->handleError($error['type'], $error['message'], $error['file'], $error['line']);
-		}
+		$this->errorHandler->handleShutdown();
 
 		// Disable Garbage Collector
 		$this->collectGarbage();

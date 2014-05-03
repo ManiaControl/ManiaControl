@@ -111,9 +111,9 @@ class ErrorHandler {
 	}
 
 	/**
-	 * Triggers a Debug Notice to the ManiaControl Website
+	 * Trigger a Debug Notice to the ManiaControl Website
 	 *
-	 * @param $message
+	 * @param string $message
 	 */
 	public function triggerDebugNotice($message) {
 		$this->handleError(self::MC_DEBUG_NOTICE, $message);
@@ -122,10 +122,10 @@ class ErrorHandler {
 	/**
 	 * Error Handler
 	 *
-	 * @param int $errorNumber
+	 * @param int    $errorNumber
 	 * @param string $errorString
 	 * @param string $errorFile
-	 * @param int $errorLine
+	 * @param int    $errorLine
 	 * @return bool
 	 */
 	public function handleError($errorNumber, $errorString, $errorFile = null, $errorLine = -1) {
@@ -262,5 +262,15 @@ class ErrorHandler {
 	 */
 	private function shouldStopExecution($errorNumber) {
 		return ($errorNumber === E_ERROR || $errorNumber === E_USER_ERROR || $errorNumber === E_FATAL);
+	}
+
+	/**
+	 * Check if the Shutdown was caused by a Fatal Error and report it
+	 */
+	public function handleShutdown() {
+		$error = error_get_last();
+		if ($error && ($error['type'] & E_FATAL)) {
+			$this->handleError($error['type'], $error['message'], $error['file'], $error['line']);
+		}
 	}
 } 
