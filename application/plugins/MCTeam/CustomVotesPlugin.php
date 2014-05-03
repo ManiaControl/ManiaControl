@@ -74,7 +74,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	const CB_CUSTOM_VOTE_FINISHED = 'CustomVotesPlugin.CustomVoteFinished';
 
 	/**
-	 * Private properties
+	 * Private Properties
 	 */
 	/** @var maniaControl $maniaControl */
 	private $maniaControl = null;
@@ -191,13 +191,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$this->maniaControl->client->setCallVoteRatiosEx(false, $ratioArray);
 
 		$this->destroyVote();
-		$emptyManialink = new ManiaLink(self::MLID_ICON);
-		$this->maniaControl->manialinkManager->sendManialink($emptyManialink);
-		$this->maniaControl->commandManager->unregisterCommandListener($this);
-		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
-		$this->maniaControl->manialinkManager->unregisterManialinkPageAnswerListener($this);
-		$this->maniaControl->timerManager->unregisterTimerListenings($this);
-		unset($this->maniaControl);
+		$this->maniaControl->manialinkManager->hideManialink(self::MLID_ICON);
 	}
 
 	/**

@@ -112,11 +112,9 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 	}
 
 	/**
-	 * Unload the plugin and its resources
+	 * @see \ManiaControl\Plugins\Plugin::unload()
 	 */
 	public function unload() {
-		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
-		$this->maniaControl->commandManager->unregisterCommandListener($this);
 	}
 
 	/**

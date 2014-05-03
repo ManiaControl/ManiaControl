@@ -70,9 +70,6 @@ class ObstaclePlugin implements CallbackListener, CommandListener, Plugin {
 	 * @see \ManiaControl\Plugins\Plugin::unload()
 	 */
 	public function unload() {
-		$this->maniaControl->commandManager->unregisterCommandListener($this);
-		$this->maniaControl->callbackManager->unregisterScriptCallbackListener($this);
-		unset($this->maniaControl);
 	}
 
 	/**

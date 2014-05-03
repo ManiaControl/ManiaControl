@@ -91,8 +91,6 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 	 * @see \ManiaControl\Plugins\Plugin::unload()
 	 */
 	public function unload() {
-		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
-		unset($this->maniaControl);
 	}
 
 	/**

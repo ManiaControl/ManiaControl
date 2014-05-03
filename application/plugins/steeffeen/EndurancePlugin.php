@@ -62,9 +62,6 @@ class EndurancePlugin implements CallbackListener, Plugin {
 	 * @see \ManiaControl\Plugins\Plugin::unload()
 	 */
 	public function unload() {
-		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
-		$this->maniaControl->callbackManager->unregisterScriptCallbackListener($this);
-		unset($this->maniaControl);
 	}
 
 	/**

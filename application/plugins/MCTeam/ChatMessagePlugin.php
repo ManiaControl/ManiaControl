@@ -26,11 +26,9 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	const SETTING_AFK_FORCE_SPEC = 'AFK command forces spec';
 
 	/**
-	 * Private properties
+	 * Private Properties
 	 */
-	/**
-	 * @var maniaControl $maniaControl
-	 */
+	/** @var maniaControl $maniaControl */
 	private $maniaControl = null;
 
 	/**
@@ -124,8 +122,6 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	 * Unload the plugin and its resources
 	 */
 	public function unload() {
-		$this->maniaControl->commandManager->unregisterCommandListener($this);
-		unset($this->maniaControl);
 	}
 
 	/**

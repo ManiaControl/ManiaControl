@@ -116,8 +116,6 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 	 * @see \ManiaControl\Plugins\Plugin::unload()
 	 */
 	public function unload() {
-		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
-		$this->maniaControl->timerManager->unregisterTimerListenings($this);
 	}
 
 	/**

@@ -384,9 +384,6 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	 */
 	public function unload() {
 		$this->maniaControl->manialinkManager->hideManialink(self::MLID_KARMA);
-		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
-		$this->maniaControl->timerManager->unregisterTimerListenings($this);
-		unset($this->maniaControl);
 	}
 
 	/**

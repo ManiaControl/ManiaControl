@@ -287,7 +287,6 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 		$this->fetchDedimaniaRecords(true);
 	}
 
-
 	/**
 	 * Handle EndMap callback
 	 *
@@ -1144,9 +1143,6 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 	 * Unload the plugin and its resources
 	 */
 	public function unload() {
-		$this->maniaControl->timerManager->unregisterTimerListenings($this);
-		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
-		unset($this->maniaControl);
 	}
 
 	/**
