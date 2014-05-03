@@ -136,7 +136,7 @@ class ErrorHandler {
 		$message      = $errorTag . ': ' . $errorString;
 		$fileLine     = $errorFile . ': ' . $errorLine;
 		$traceMessage = $this->parseBackTrace(debug_backtrace());
-		$logMessage   = $message . PHP_EOL . ($userError ? $fileLine : $traceMessage);
+		$logMessage   = $message . PHP_EOL . $fileLine . PHP_EOL . $traceMessage;
 		logMessage($logMessage);
 
 		if ($this->reportErrors && !$userError) {

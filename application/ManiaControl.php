@@ -22,8 +22,8 @@ if (function_exists('date_default_timezone_get') && function_exists('date_defaul
 
 // Build log file name
 $logFileName = ManiaControlDir . 'logs' . DIRECTORY_SEPARATOR;
-if (!is_dir($logFileName)) {
-	mkdir($logFileName);
+if (!is_dir($logFileName) && !mkdir($logFileName)) {
+	echo "Couldn't create Logs Folder, please check the File Permissions!";
 }
 $logFileName .= 'ManiaControl';
 if (LOG_NAME_USE_DATE) {
@@ -105,7 +105,7 @@ spl_autoload_register(function ($className) {
 	}
 
 	// Plugin file
-	$filePath = ManiaControlDir . 'plugins'.DIRECTORY_SEPARATOR . $classPath . '.php';
+	$filePath = ManiaControlDir . 'plugins' . DIRECTORY_SEPARATOR . $classPath . '.php';
 	if (file_exists($filePath)) {
 		require_once $filePath;
 		return;
