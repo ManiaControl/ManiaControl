@@ -416,6 +416,9 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	 * Unload the plugin and its resources
 	 */
 	public function unload() {
+		//Restore Siege Progression Layer
+		$this->maniaControl->client->triggerModeScriptEventArray("Siege_SetProgressionLayerPosition", array("160.", "90.", "0."));
+
 		$this->closeWidget(self::MLID_CLOCKWIDGET);
 		$this->closeWidget(self::MLID_SERVERINFOWIDGET);
 		$this->closeWidget(self::MLID_MAPWIDGET);
