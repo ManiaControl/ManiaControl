@@ -16,7 +16,7 @@ class ErrorHandler {
 	/*
 	 * Constants
 	 */
-	const MC_DEBUG_NOTICE              = "ManiaControl.DebugNotice";
+	const MC_DEBUG_NOTICE              = 'ManiaControl.DebugNotice';
 	const SETTING_RESTART_ON_EXCEPTION = 'Automatically restart on Exceptions';
 
 	/*
@@ -42,23 +42,26 @@ class ErrorHandler {
 	}
 
 	/**
-	 * ManiaControl ExceptionHandler
+	 * ManiaControl Exception Handler
 	 *
 	 * @param \Exception $ex
 	 * @param bool       $shutdown
 	 */
 	public function handleException(\Exception $ex, $shutdown = true) {
-		// Log exception
-		$message      = "[ManiaControl EXCEPTION]: {$ex->getMessage()}";
-		$traceMessage = 'Class: ' . get_class($ex) . PHP_EOL;
-		$traceMessage .= 'Trace:' . PHP_EOL . $ex->getTraceAsString();
-		logMessage($message . PHP_EOL . $traceMessage);
+		$message = "[ManiaControl EXCEPTION]: {$ex->getMessage()}";
+
+		$exceptionClass = get_class($ex);
+		$traceString    = $ex->getTraceAsString();
+
+		$logMessage = $message . PHP_EOL . 'Class: ' . $exceptionClass . PHP_EOL . 'Trace:' . PHP_EOL . $traceString;
+		logMessage($logMessage);
 
 		if ($this->reportErrors) {
 			$error                    = array();
-			$error["Type"]            = "Exception";
-			$error["Message"]         = $message;
-			$error["Backtrace"]       = $traceMessage;
+			$error['Type']            = 'Exception';
+			$error['Message']         = $message;
+			$error['Class']           = $exceptionClass;
+			$error['Backtrace']       = $traceString;
 			$error['OperatingSystem'] = php_uname();
 			$error['PHPVersion']      = phpversion();
 
@@ -79,13 +82,13 @@ class ErrorHandler {
 			$json = json_encode($error);
 			$info = base64_encode($json);
 
-			$url     = ManiaControl::URL_WEBSERVICE . "errorreport?error=" . urlencode($info);
+			$url     = ManiaControl::URL_WEBSERVICE . 'errorreport?error=' . urlencode($info);
 			$success = FileUtil::loadFile($url);
 
 			if (!json_decode($success)) {
-				logMessage("Exception-Report failed!");
+				logMessage('Exception-Report failed!');
 			} else {
-				logMessage("Exception successfully reported!");
+				logMessage('Exception successfully reported!');
 			}
 		}
 
@@ -120,7 +123,7 @@ class ErrorHandler {
 	}
 
 	/**
-	 * Error Handler
+	 * ManiaControl Error Handler
 	 *
 	 * @param int    $errorNumber
 	 * @param string $errorString
@@ -129,22 +132,21 @@ class ErrorHandler {
 	 * @return bool
 	 */
 	public function handleError($errorNumber, $errorString, $errorFile = null, $errorLine = -1) {
-		$userError = $this->isUserErrorNumber($errorNumber);
+		$errorTag = $this->getErrorTag($errorNumber);
 
-		// Log error
-		$errorTag     = $this->getErrorTag($errorNumber);
-		$message      = $errorTag . ': ' . $errorString;
-		$fileLine     = $errorFile . ': ' . $errorLine;
-		$traceMessage = $this->parseBackTrace(debug_backtrace());
-		$logMessage   = $message . PHP_EOL . $fileLine . PHP_EOL . $traceMessage;
+		$message     = $errorTag . ': ' . $errorString;
+		$fileLine    = $errorFile . ': ' . $errorLine;
+		$traceString = $this->parseBackTrace(debug_backtrace());
+
+		$logMessage = $message . PHP_EOL . 'File&Line: ' . $fileLine . PHP_EOL . 'Trace: ' . $traceString;
 		logMessage($logMessage);
 
-		if ($this->reportErrors && !$userError) {
+		if ($this->reportErrors && !$this->isUserErrorNumber($errorNumber)) {
 			$error                    = array();
-			$error["Type"]            = "Error";
-			$error["Message"]         = $message;
-			$error["FileLine"]        = $fileLine;
-			$error["Backtrace"]       = $traceMessage;
+			$error['Type']            = 'Error';
+			$error['Message']         = $message;
+			$error['FileLine']        = $fileLine;
+			$error['Backtrace']       = $traceString;
 			$error['OperatingSystem'] = php_uname();
 			$error['PHPVersion']      = phpversion();
 
@@ -165,13 +167,13 @@ class ErrorHandler {
 			$json = json_encode($error);
 			$info = base64_encode($json);
 
-			$url     = ManiaControl::URL_WEBSERVICE . "errorreport?error=" . urlencode($info);
+			$url     = ManiaControl::URL_WEBSERVICE . 'errorreport?error=' . urlencode($info);
 			$success = FileUtil::loadFile($url);
 
 			if (!json_decode($success)) {
-				logMessage("Error-Report failed!");
+				logMessage('Error-Report failed!');
 			} else {
-				logMessage("Error successfully reported!");
+				logMessage('Error successfully reported!');
 			}
 		}
 		if ($this->shouldStopExecution($errorNumber)) {
@@ -179,16 +181,6 @@ class ErrorHandler {
 			exit();
 		}
 		return false;
-	}
-
-	/**
-	 * Check if the given Error Number is a User Error
-	 *
-	 * @param int $errorNumber
-	 * @return bool
-	 */
-	private function isUserErrorNumber($errorNumber) {
-		return ($errorNumber === E_USER_ERROR || $errorNumber === E_USER_WARNING || $errorNumber === E_USER_NOTICE || $errorNumber === E_USER_DEPRECATED);
 	}
 
 	/**
@@ -225,10 +217,11 @@ class ErrorHandler {
 
 	/**
 	 * Parse the Debug Backtrace into a String for the Error Report
-	 * return string
+	 *
+	 * @return string
 	 */
 	private function parseBackTrace(array $backtrace) {
-		$traceString = 'Trace:';
+		$traceString = '';
 		$stepCount   = 0;
 		foreach ($backtrace as $traceStep) {
 			$traceString .= PHP_EOL . '#' . $stepCount . ': ';
@@ -252,6 +245,16 @@ class ErrorHandler {
 			$stepCount++;
 		}
 		return $traceString;
+	}
+
+	/**
+	 * Check if the given Error Number is a User Error
+	 *
+	 * @param int $errorNumber
+	 * @return bool
+	 */
+	private function isUserErrorNumber($errorNumber) {
+		return ($errorNumber === E_USER_ERROR || $errorNumber === E_USER_WARNING || $errorNumber === E_USER_NOTICE || $errorNumber === E_USER_DEPRECATED);
 	}
 
 	/**
