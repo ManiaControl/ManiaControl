@@ -26,7 +26,8 @@ class LibXmlRpcCallbackManager implements CallbackListener {
 	 */
 	public function __construct(ManiaControl $maniaControl, CallbackManager $callbackManager) {
 		$this->maniaControl = $maniaControl;
-		$callbackManager->registerCallbackListener(Callbacks::SCRIPTCALLBACK, $this, 'handleScriptCallbacks');
+		//FIXME
+		//$callbackManager->registerCallbackListener(Callbacks::SCRIPTCALLBACK, $this, 'handleScriptCallbacks');
 	}
 
 	/**
