@@ -11,12 +11,12 @@ use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 /**
  * ManiaControl Chat-Message Plugin
  *
- * @author    kremsy <kremsy@maniacontrol.com>
+ * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ChatMessagePlugin implements CommandListener, Plugin {
-	/**
+	/*
 	 * Constants
 	 */
 	const PLUGIN_ID              = 4;
@@ -25,72 +25,55 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	const PLUGIN_AUTHOR          = 'kremsy';
 	const SETTING_AFK_FORCE_SPEC = 'AFK command forces spec';
 
-	/**
+	/*
 	 * Private Properties
 	 */
-	/** @var maniaControl $maniaControl */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 
 	/**
-	 * Prepares the Plugin
-	 *
-	 * @param ManiaControl $maniaControl
-	 * @return mixed
+	 * @see \ManiaControl\Plugins\Plugin::prepare()
 	 */
 	public static function prepare(ManiaControl $maniaControl) {
-		//do nothing
 	}
 
 	/**
-	 * Get plugin id
-	 *
-	 * @return int
+	 * @see \ManiaControl\Plugins\Plugin::getId()
 	 */
 	public static function getId() {
 		return self::PLUGIN_ID;
 	}
 
 	/**
-	 * Get Plugin Name
-	 *
-	 * @return string
+	 * @see \ManiaControl\Plugins\Plugin::getName()
 	 */
 	public static function getName() {
 		return self::PLUGIN_NAME;
 	}
 
 	/**
-	 * Get Plugin Version
-	 *
-	 * @return float,,
+	 * @see \ManiaControl\Plugins\Plugin::getVersion()
 	 */
 	public static function getVersion() {
 		return self::PLUGIN_VERSION;
 	}
 
 	/**
-	 * Get Plugin Author
-	 *
-	 * @return string
+	 * @see \ManiaControl\Plugins\Plugin::getAuthor()
 	 */
 	public static function getAuthor() {
 		return self::PLUGIN_AUTHOR;
 	}
 
 	/**
-	 * Get Plugin Description
-	 *
-	 * @return string
+	 * @see \ManiaControl\Plugins\Plugin::getDescription()
 	 */
 	public static function getDescription() {
 		return "Plugin offers various Chat-Commands like /gg /hi /afk /rq...";
 	}
 
 	/**
-	 * Load the plugin
-	 *
-	 * @param \ManiaControl\ManiaControl $maniaControl
-	 * @return bool
+	 * @see \ManiaControl\Plugins\Plugin::load()
 	 */
 	public function load(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
@@ -119,7 +102,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	}
 
 	/**
-	 * Unload the plugin and its resources
+	 * @see \ManiaControl\Plugins\Plugin::unload()
 	 */
 	public function unload() {
 	}

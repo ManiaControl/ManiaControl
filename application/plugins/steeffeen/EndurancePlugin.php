@@ -2,13 +2,12 @@
 
 namespace steeffeen;
 
-use ManiaControl\Callbacks\Callbacks;
-use ManiaControl\ManiaControl;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Callbacks\Callbacks;
+use ManiaControl\ManiaControl;
 use ManiaControl\Maps\Map;
 use ManiaControl\Plugins\Plugin;
-use ManiaControl\Maps\MapManager;
 
 /**
  * Plugin for the TM Game Mode 'Endurance' by TGYoshi
@@ -16,56 +15,32 @@ use ManiaControl\Maps\MapManager;
  * @author steeffeen
  */
 class EndurancePlugin implements CallbackListener, Plugin {
-	/**
+	/*
 	 * Constants
 	 */
-	const ID = 25;
-	const VERSION = 0.2;
+	const ID            = 25;
+	const VERSION       = 0.2;
+	const NAME          = 'Endurance Plugin';
+	const AUTHOR        = 'steeffeen';
 	const CB_CHECKPOINT = 'Endurance.Checkpoint';
-	
+
 	/**
-	 * Private properties
+	 * Private Properties
 	 */
-	/** @var maniaControl $maniaControl  */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	/** @var Map $currentMap */
 	private $currentMap = null;
 	private $playerLapTimes = array();
 
 	/**
-	 * Prepares the Plugin
-	 *
-	 * @param ManiaControl $maniaControl
-	 * @return mixed
+	 * @see \ManiaControl\Plugins\Plugin::prepare()
 	 */
 	public static function prepare(ManiaControl $maniaControl) {
 		//do nothing
 	}
 
 	/**
-	 *
-	 * @see \ManiaControl\Plugins\Plugin::load()
-	 */
-	public function load(ManiaControl $maniaControl) {
-		$this->maniaControl = $maniaControl;
-		
-		// Register for callbacks
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_ONINIT, $this, 'callback_OnInit');
-		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::BEGINMAP, $this, 'callback_BeginMap');
-		$this->maniaControl->callbackManager->registerScriptCallbackListener(self::CB_CHECKPOINT, $this, 'callback_Checkpoint');
-		
-		return true;
-	}
-
-	/**
-	 *
-	 * @see \ManiaControl\Plugins\Plugin::unload()
-	 */
-	public function unload() {
-	}
-
-	/**
-	 *
 	 * @see \ManiaControl\Plugins\Plugin::getId()
 	 */
 	public static function getId() {
@@ -73,15 +48,13 @@ class EndurancePlugin implements CallbackListener, Plugin {
 	}
 
 	/**
-	 *
 	 * @see \ManiaControl\Plugins\Plugin::getName()
 	 */
 	public static function getName() {
-		return 'Endurance Plugin';
+		return self::NAME;
 	}
 
 	/**
-	 *
 	 * @see \ManiaControl\Plugins\Plugin::getVersion()
 	 */
 	public static function getVersion() {
@@ -89,15 +62,13 @@ class EndurancePlugin implements CallbackListener, Plugin {
 	}
 
 	/**
-	 *
 	 * @see \ManiaControl\Plugins\Plugin::getAuthor()
 	 */
 	public static function getAuthor() {
-		return 'steeffeen';
+		return self::AUTHOR;
 	}
 
 	/**
-	 *
 	 * @see \ManiaControl\Plugins\Plugin::getDescription()
 	 */
 	public static function getDescription() {
@@ -105,12 +76,32 @@ class EndurancePlugin implements CallbackListener, Plugin {
 	}
 
 	/**
+	 * @see \ManiaControl\Plugins\Plugin::load()
+	 */
+	public function load(ManiaControl $maniaControl) {
+		$this->maniaControl = $maniaControl;
+
+		// Register for callbacks
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_ONINIT, $this, 'callback_OnInit');
+		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::BEGINMAP, $this, 'callback_BeginMap');
+		$this->maniaControl->callbackManager->registerScriptCallbackListener(self::CB_CHECKPOINT, $this, 'callback_Checkpoint');
+
+		return true;
+	}
+
+	/**
+	 * @see \ManiaControl\Plugins\Plugin::unload()
+	 */
+	public function unload() {
+	}
+
+	/**
 	 * Handle ManiaControl OnInit callback
 	 *
-	 * @param array $callback        	
+	 * @param array $callback
 	 */
 	public function callback_OnInit(array $callback) {
-		$this->currentMap = $this->maniaControl->mapManager->getCurrentMap();
+		$this->currentMap     = $this->maniaControl->mapManager->getCurrentMap();
 		$this->playerLapTimes = array();
 	}
 
@@ -120,14 +111,14 @@ class EndurancePlugin implements CallbackListener, Plugin {
 	 * @param Map $map
 	 */
 	public function callback_BeginMap(Map $map) {
-		$this->currentMap = $map;
+		$this->currentMap     = $map;
 		$this->playerLapTimes = array();
 	}
 
 	/**
 	 * Handle Endurance Checkpoint callback
 	 *
-	 * @param array $callback        	
+	 * @param array $callback
 	 */
 	public function callback_Checkpoint(array $callback) {
 		$callbackData = json_decode($callback[1]);

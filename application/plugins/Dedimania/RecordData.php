@@ -1,16 +1,20 @@
 <?php
+
 namespace Dedimania;
+
+use ManiaControl\Formatter;
 
 /**
  * ManiaControl Dedimania-Plugin Record DataStructure
  *
- * @author kremsy and steeffeen
- * @copyright ManiaControl Copyright © 2014 ManiaControl Team
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-use ManiaControl\Formatter;
-
 class RecordData {
+	/*
+	 * Public Properties
+	 */
 	public $nullRecord = false;
 	public $login = '';
 	public $nickName = '';
@@ -25,7 +29,7 @@ class RecordData {
 	/**
 	 * Construct a Record by a given Record Array
 	 *
-	 * @param $record
+	 * @param array $record
 	 */
 	public function __construct($record) {
 		if (!$record) {
@@ -42,13 +46,13 @@ class RecordData {
 	}
 
 	/**
-	 * Constructs a new Record via it's properties
+	 * Construct a new Record via its Properties
 	 *
-	 * @param      $login
-	 * @param      $nickName
-	 * @param      $best
-	 * @param      $checkpoints
-	 * @param bool $newRecord
+	 * @param string $login
+	 * @param string $nickName
+	 * @param float  $best
+	 * @param int    $checkpoints
+	 * @param bool   $newRecord
 	 */
 	public function constructNewRecord($login, $nickName, $best, $checkpoints, $newRecord = false) {
 		$this->nullRecord  = false;
@@ -58,4 +62,4 @@ class RecordData {
 		$this->checkpoints = $checkpoints;
 		$this->newRecord   = $newRecord;
 	}
-} 
+}

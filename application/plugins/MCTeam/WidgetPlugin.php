@@ -29,8 +29,7 @@ use ManiaControl\Plugins\Plugin;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
-
-	/**
+	/*
 	 * Constants
 	 */
 	const PLUGIN_ID      = 1;
@@ -70,74 +69,55 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	const SETTING_SERVERINFO_WIDGET_WIDTH     = 'ServerInfo-Widget-Size: Width';
 	const SETTING_SERVERINFO_WIDGET_HEIGHT    = 'ServerInfo-Widget-Size: Height';
 
-	/**
+	/*
 	 * Private Properties
 	 */
-	/**
-	 * @var maniaControl $maniaControl
-	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 
 	/**
-	 * Prepares the Plugin
-	 *
-	 * @param ManiaControl $maniaControl
-	 * @return mixed
+	 * @see \ManiaControl\Plugins\Plugin::prepare()
 	 */
 	public static function prepare(ManiaControl $maniaControl) {
-		//do nothing
 	}
 
 	/**
-	 * Get plugin id
-	 *
-	 * @return int
+	 * @see \ManiaControl\Plugins\Plugin::getId()
 	 */
 	public static function getId() {
 		return self::PLUGIN_ID;
 	}
 
 	/**
-	 * Get Plugin Name
-	 *
-	 * @return string
+	 * @see \ManiaControl\Plugins\Plugin::getName()
 	 */
 	public static function getName() {
 		return self::PLUGIN_NAME;
 	}
 
 	/**
-	 * Get Plugin Version
-	 *
-	 * @return float,,
+	 * @see \ManiaControl\Plugins\Plugin::getVersion()
 	 */
 	public static function getVersion() {
 		return self::PLUGIN_VERSION;
 	}
 
 	/**
-	 * Get Plugin Author
-	 *
-	 * @return string
+	 * @see \ManiaControl\Plugins\Plugin::getAuthor()
 	 */
 	public static function getAuthor() {
 		return self::PLUGIN_AUTHOR;
 	}
 
 	/**
-	 * Get Plugin Description
-	 *
-	 * @return string
+	 * @see \ManiaControl\Plugins\Plugin::getDescription()
 	 */
 	public static function getDescription() {
 		return 'Plugin offers some Widgets';
 	}
 
 	/**
-	 * Load the plugin
-	 *
-	 * @param ManiaControl $maniaControl
-	 * @return bool
+	 * @see \ManiaControl\Plugins\Plugin::load()
 	 */
 	public function load(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
@@ -413,7 +393,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	}
 
 	/**
-	 * Unload the plugin and its resources
+	 * @see \ManiaControl\Plugins\Plugin::unload()
 	 */
 	public function unload() {
 		//Restore Siege Progression Layer
@@ -426,9 +406,9 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	}
 
 	/**
-	 * Closes a Widget
+	 * Close a Widget
 	 *
-	 * @param $widgetId
+	 * @param string $widgetId
 	 */
 	public function closeWidget($widgetId) {
 		$emptyManialink = new ManiaLink($widgetId);

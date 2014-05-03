@@ -32,6 +32,8 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	 */
 	const ID                      = 2;
 	const VERSION                 = 0.1;
+	const NAME                    = 'Karma Plugin';
+	const AUTHOR                  = 'MCTeam';
 	const MLID_KARMA              = 'KarmaPlugin.MLID';
 	const TABLE_KARMA             = 'mc_karma';
 	const CB_KARMA_CHANGED        = 'KarmaPlugin.Changed';
@@ -62,19 +64,15 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	/*
 	 * Private Properties
 	 */
-	/**
-	 * @var ManiaControl $maniaControl
-	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	private $updateManialink = false;
-	/**
-	 * @var ManiaLink $manialink
-	 */
+	/** @var ManiaLink $manialink */
 	private $manialink = null;
 	private $mxKarma = array();
 
 	/**
-	 * @see \ManiaControl\Plugins\Plugin
+	 * @see \ManiaControl\Plugins\Plugin::prepare()
 	 */
 	public static function prepare(ManiaControl $maniaControl) {
 		$maniaControl->settingManager->initSetting(get_class(), self::SETTING_MX_KARMA_ACTIVATED, true);
@@ -97,7 +95,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	 * @see \ManiaControl\Plugins\Plugin::getName()
 	 */
 	public static function getName() {
-		return 'Karma Plugin';
+		return self::NAME;
 	}
 
 	/**
@@ -111,7 +109,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	 * @see \ManiaControl\Plugins\Plugin::getAuthor()
 	 */
 	public static function getAuthor() {
-		return 'steeffeen and kremsy';
+		return self::AUTHOR;
 	}
 
 	/**

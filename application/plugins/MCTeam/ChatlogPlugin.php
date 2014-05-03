@@ -17,7 +17,7 @@ use ManiaControl\Settings\SettingManager;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ChatlogPlugin implements CallbackListener, Plugin {
-	/**
+	/*
 	 * Constants
 	 */
 	const ID                        = 26;
@@ -31,7 +31,7 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 	const SETTING_LOGSERVERMESSAGES = 'Log Server Messages';
 
 	/**
-	 * Private properties
+	 * Private Properties
 	 */
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
