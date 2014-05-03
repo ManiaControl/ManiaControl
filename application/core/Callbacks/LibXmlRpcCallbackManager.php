@@ -26,17 +26,16 @@ class LibXmlRpcCallbackManager implements CallbackListener {
 	 */
 	public function __construct(ManiaControl $maniaControl, CallbackManager $callbackManager) {
 		$this->maniaControl = $maniaControl;
-		//FIXME
-		//$callbackManager->registerCallbackListener(Callbacks::SCRIPTCALLBACK, $this, 'handleScriptCallbacks');
+		$callbackManager->registerCallbackListener(Callbacks::SCRIPTCALLBACK, $this, 'handleScriptCallbacks');
 	}
 
 	/**
 	 * Handle Script Callbacks
 	 *
 	 * @param string $name
-	 * @param array  $data
+	 * @param mixed  $data
 	 */
-	public function handleScriptCallbacks($name, array $data) {
+	public function handleScriptCallbacks($name, $data) {
 		switch ($name) {
 			case 'LibXmlRpc_BeginMatch':
 				$this->maniaControl->callbackManager->triggerCallback(Callbacks::BEGINMATCH, $data[0]);

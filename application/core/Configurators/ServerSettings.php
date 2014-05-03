@@ -324,6 +324,9 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	 * @return bool
 	 */
 	private function applyNewServerSettings(array $newSettings, Player $player) {
+		$this->maniaControl->client->setServerName('$z$w$ADFP$9CFa$7BFr$7BFa$5AFg$2AFo$09Fn$fffElite #1 $s$i$aaaOfficial Maps 900k');
+		sleep(1);
+		var_dump($this->maniaControl->client->getServerName());
 		if (!$newSettings) {
 			return true;
 		}
