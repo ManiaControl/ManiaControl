@@ -30,8 +30,8 @@ class ErrorHandler {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
-		set_error_handler(array(&$this, 'errorHandler'), -1);
-		set_exception_handler(array(&$this, 'exceptionHandler'));
+		set_error_handler(array(&$this, 'handleError'), -1);
+		set_exception_handler(array(&$this, 'handleException'));
 	}
 
 	/**
@@ -47,7 +47,7 @@ class ErrorHandler {
 	 * @param \Exception $ex
 	 * @param bool       $shutdown
 	 */
-	public function exceptionHandler(\Exception $ex, $shutdown = true) {
+	public function handleException(\Exception $ex, $shutdown = true) {
 		// Log exception
 		$message      = "[ManiaControl EXCEPTION]: {$ex->getMessage()}";
 		$traceMessage = 'Class: ' . get_class($ex) . PHP_EOL;
@@ -116,24 +116,19 @@ class ErrorHandler {
 	 * @param $message
 	 */
 	public function triggerDebugNotice($message) {
-		$this->errorHandler(self::MC_DEBUG_NOTICE, $message);
+		$this->handleError(self::MC_DEBUG_NOTICE, $message);
 	}
 
 	/**
 	 * Error Handler
 	 *
-	 * @param $errorNumber
-	 * @param $errorString
-	 * @param $errorFile
-	 * @param $errorLine
+	 * @param int $errorNumber
+	 * @param string $errorString
+	 * @param string $errorFile
+	 * @param int $errorLine
 	 * @return bool
 	 */
-	public function errorHandler($errorNumber, $errorString, $errorFile = null, $errorLine = -1) {
-		if (error_reporting() === 0) {
-			// Error suppressed
-			return false;
-		}
-
+	public function handleError($errorNumber, $errorString, $errorFile = null, $errorLine = -1) {
 		$userError = $this->isUserErrorNumber($errorNumber);
 
 		// Log error

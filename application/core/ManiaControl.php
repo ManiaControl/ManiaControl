@@ -305,7 +305,7 @@ class ManiaControl implements CommandListener, TimerListener {
 		// Check and Trigger Fatal Errors
 		$error = error_get_last();
 		if ($error && ($error['type'] & E_FATAL)) {
-			$this->errorHandler->errorHandler($error['type'], $error['message'], $error['file'], $error['line']);
+			$this->errorHandler->handleError($error['type'], $error['message'], $error['file'], $error['line']);
 		}
 
 		// Disable Garbage Collector
@@ -376,7 +376,7 @@ class ManiaControl implements CommandListener, TimerListener {
 				$this->log("Connection interrupted!");
 				// TODO remove
 				if ($this->errorHandler) {
-					$this->errorHandler->exceptionHandler($e, false);
+					$this->errorHandler->handleException($e, false);
 				}
 				$this->quit($e->getMessage());
 			}
