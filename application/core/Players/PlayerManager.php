@@ -116,26 +116,16 @@ class PlayerManager implements CallbackListener, TimerListener {
 			if ($playerItem->playerId <= 0) {
 				continue;
 			}
-
-			$detailedPlayerInfo        = $this->maniaControl->client->getDetailedPlayerInfo($playerItem->login);
-			$playerItem->path          = $detailedPlayerInfo->path;
-			$playerItem->language      = $detailedPlayerInfo->language;
-			$playerItem->clientVersion = $detailedPlayerInfo->clientVersion;
-			$playerItem->iPAddress     = $detailedPlayerInfo->iPAddress;
-			$playerItem->isSpectator   = $detailedPlayerInfo->isSpectator;
-			$playerItem->avatar        = $detailedPlayerInfo->avatar;
-			$playerItem->ladderStats   = $detailedPlayerInfo->ladderStats;
-			$playerItem->downloadRate  = $detailedPlayerInfo->downloadRate;
-			$playerItem->uploadRate    = $detailedPlayerInfo->uploadRate;
-
-			$playerItem->hoursSinceZoneInscription = $detailedPlayerInfo->hoursSinceZoneInscription;
+			$detailedPlayerInfo = $this->maniaControl->client->getDetailedPlayerInfo($playerItem->login);
 
 			//Check if the Player is in a Team, to notify if its a TeamMode or not
 			if ($playerItem->teamId != -1) {
 				$this->maniaControl->server->setTeamMode(true);
 			}
 
-			$player                = new Player($playerItem);
+			$player = new Player(true);
+			$player->setInfo($playerItem);
+			$player->setDetailedInfo($detailedPlayerInfo);
 			$player->hasJoinedGame = true;
 			$this->addPlayer($player);
 		}
@@ -220,7 +210,8 @@ class PlayerManager implements CallbackListener, TimerListener {
 		$login = $callback[1][0];
 		try {
 			$playerInfo = $this->maniaControl->client->getDetailedPlayerInfo($login);
-			$player     = new Player($playerInfo);
+			$player     = new Player(true);
+			$player->setDetailedInfo($playerInfo);
 
 			$this->addPlayer($player);
 		} catch (LoginUnknownException $e) {
@@ -381,7 +372,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 			return null;
 		}
 
-		$player              = new Player(null);
+		$player              = new Player(false);
 		$player->index       = $row->index;
 		$player->login       = $row->login;
 		$player->rawNickname = $row->nickname;
@@ -482,7 +473,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 			return null;
 		}
 
-		$player              = new Player(null);
+		$player              = new Player(false);
 		$player->index       = $playerIndex;
 		$player->login       = $row->login;
 		$player->rawNickname = $row->nickname;
