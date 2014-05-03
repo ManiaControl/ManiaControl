@@ -28,14 +28,14 @@ use ManiaControl\Plugins\Plugin;
  * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class Dedimania implements CallbackListener, CommandListener, TimerListener, Plugin {
+class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListener, Plugin {
 	/*
 	 * Constants
 	 */
 	const ID                            = 8;
 	const VERSION                       = 0.1;
-	const AUTHOR = 'MCTeam';
-	const NAME = 'Dedimania Plugin';
+	const AUTHOR                        = 'MCTeam';
+	const NAME                          = 'Dedimania Plugin';
 	const MLID_DEDIMANIA                = 'Dedimania.ManialinkId';
 	const XMLRPC_MULTICALL              = 'system.multicall';
 	const DEDIMANIA_URL                 = 'http://dedimania.net:8081/Dedimania';
@@ -74,6 +74,8 @@ class Dedimania implements CallbackListener, CommandListener, TimerListener, Plu
 	 * @see \ManiaControl\Plugins\Plugin::prepare()
 	 */
 	public static function prepare(ManiaControl $maniaControl) {
+		$maniaControl->database->migrationHelper->transferSettings('Dedimania\Dedimania', get_class());
+
 		$servers = $maniaControl->server->getAllServers();
 		foreach ($servers as $server) {
 			$maniaControl->settingManager->initSetting(get_class(), self::SETTING_DEDIMANIA_CODE . $server->login . '$l', '');
