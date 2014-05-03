@@ -203,7 +203,7 @@ class PluginManager {
 	 * @return array
 	 */
 	public function loadPlugins() {
-		$pluginsDirectory = ManiaControlDir . '/plugins/';
+		$pluginsDirectory = ManiaControlDir . 'plugins'. DIRECTORY_SEPARATOR;
 
 		$classesBefore = get_declared_classes();
 		$this->loadPluginFiles($pluginsDirectory);
@@ -259,7 +259,7 @@ class PluginManager {
 
 			$dirPath = $directory . $pluginFile;
 			if (is_dir($dirPath)) {
-				$this->loadPluginFiles($dirPath . '/');
+				$this->loadPluginFiles($dirPath . DIRECTORY_SEPARATOR);
 				continue;
 			}
 		}

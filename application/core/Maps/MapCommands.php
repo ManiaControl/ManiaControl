@@ -264,7 +264,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$maplist = 'maplist.txt';
 		}
 
-		$maplist = 'MatchSettings/' . $maplist;
+		$maplist = 'MatchSettings' . DIRECTORY_SEPARATOR . $maplist;
 		try {
 			$this->maniaControl->client->saveMatchSettings($maplist);
 
@@ -299,7 +299,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$maplist = 'maplist.txt';
 		}
 
-		$maplist = 'MatchSettings/' . $maplist;
+		$maplist = 'MatchSettings' . DIRECTORY_SEPARATOR . $maplist;
 		try {
 			$this->maniaControl->client->loadMatchSettings($maplist);
 

@@ -284,9 +284,9 @@ class MapManager implements CallbackListener {
 		$fileName = FileUtil::getClearedFileName($fileName);
 
 		$downloadFolderName  = $this->maniaControl->settingManager->getSetting($this, 'MapDownloadDirectory', 'MX');
-		$relativeMapFileName = $downloadFolderName . '/' . $fileName;
+		$relativeMapFileName = $downloadFolderName . DIRECTORY_SEPARATOR . $fileName;
 		$mapDir              = $this->maniaControl->client->getMapsDirectory();
-		$downloadDirectory   = $mapDir . '/' . $downloadFolderName . '/';
+		$downloadDirectory   = $mapDir . DIRECTORY_SEPARATOR . $downloadFolderName . DIRECTORY_SEPARATOR;
 		$fullMapFileName     = $downloadDirectory . $fileName;
 
 		// Check if it can get written locally

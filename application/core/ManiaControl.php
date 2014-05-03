@@ -223,10 +223,10 @@ class ManiaControl implements CommandListener, TimerListener {
 		// Execute start script in background
 		// TODO: restart the .php script itself ($_SERVER['scriptname'] or something + $argv)
 		if ($this->getOS(self::OS_UNIX)) {
-			$command = 'sh ' . escapeshellarg(ManiaControlDir . '/ManiaControl.sh') . ' > /dev/null &';
+			$command = 'sh ' . escapeshellarg(ManiaControlDir . 'ManiaControl.sh') . ' > /dev/null &';
 			exec($command);
 		} else {
-			$command = escapeshellarg(ManiaControlDir . "\ManiaControl.bat");
+			$command = escapeshellarg(ManiaControlDir . "ManiaControl.bat");
 			system($command); // TODO, windows stucks here as long controller is running
 		}
 		exit();

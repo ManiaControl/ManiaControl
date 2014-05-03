@@ -284,7 +284,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 				return;
 			}
 
-			$zip->extractTo(ManiaControlDir . '/plugins/');
+			$zip->extractTo(ManiaControlDir . 'plugins' . DIRECTORY_SEPARATOR);
 			$zip->close();
 			unlink($updateFileName);
 			FileUtil::removeTempFolder();

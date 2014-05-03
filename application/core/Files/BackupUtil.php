@@ -15,7 +15,7 @@ abstract class BackupUtil {
 	/*
 	 * Constants
 	 */
-	const FOLDER_NAME_BACKUP = '/backup/';
+	const FOLDER_NAME_BACKUP = 'backup/';
 
 	/**
 	 * Perform a Full Backup of ManiaControl
@@ -32,7 +32,7 @@ abstract class BackupUtil {
 		}
 		$excludes   = array('.', '..', 'backup', 'logs', 'ManiaControl.log');
 		$pathInfo   = pathInfo(ManiaControlDir);
-		$parentPath = $pathInfo['dirname'] . '/';
+		$parentPath = $pathInfo['dirname'] . DIRECTORY_SEPARATOR;
 		$dirName    = $pathInfo['basename'];
 		$backupZip->addEmptyDir($dirName);
 		self::zipDirectory($backupZip, ManiaControlDir, strlen($parentPath), $excludes);
@@ -72,7 +72,7 @@ abstract class BackupUtil {
 			if (in_array($file, $excludes)) {
 				continue;
 			}
-			$filePath  = $folderName . '/' . $file;
+			$filePath  = $folderName . DIRECTORY_SEPARATOR . $file;
 			$localPath = substr($filePath, $prefixLength);
 			if (is_file($filePath)) {
 				$zipArchive->addFile($filePath, $localPath);
@@ -102,11 +102,11 @@ abstract class BackupUtil {
 			return false;
 		}
 		$excludes   = array('.', '..');
-		$pathInfo   = pathInfo(ManiaControlDir . '/plugins');
-		$parentPath = $pathInfo['dirname'] . '/';
+		$pathInfo   = pathInfo(ManiaControlDir . 'plugins');
+		$parentPath = $pathInfo['dirname'] . DIRECTORY_SEPARATOR;
 		$dirName    = $pathInfo['basename'];
 		$backupZip->addEmptyDir($dirName);
-		self::zipDirectory($backupZip, ManiaControlDir . '/plugins', strlen($parentPath), $excludes);
+		self::zipDirectory($backupZip, ManiaControlDir . 'plugins', strlen($parentPath), $excludes);
 		$backupZip->close();
 		return true;
 	}
