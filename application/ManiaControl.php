@@ -82,11 +82,11 @@ function logMessage($message, $eol = true) {
 		$message .= PHP_EOL;
 	}
 	if (defined('LOG_CURRENT_FILE')) {
-		if (!file_put_contents(LOG_CURRENT_FILE, $message, FILE_APPEND)) {
-			echo 'Logfile not write-able, please check the File Permissions!';
+		if (!is_writable(dirname(LOG_CURRENT_FILE)) || !file_put_contents(LOG_CURRENT_FILE, $message, FILE_APPEND)) {
+			echo 'Current-Logfile not write-able, please check the File Permissions!';
 		}
 	}
-	if (!file_put_contents(LOG_FILE, $message, FILE_APPEND)) {
+	if (!is_writable(dirname(LOG_FILE)) || !file_put_contents(LOG_FILE, $message, FILE_APPEND)) {
 		echo 'Logfile not write-able, please check the File Permissions!';
 	}
 	echo $message;
