@@ -419,7 +419,7 @@ class ManiaControl implements CommandListener, TimerListener {
 		} catch (Exception $e) {
 			// TODO remove
 			if ($this->errorHandler) {
-				$this->errorHandler->triggerDebugNotice("Fatal Exception: " . $e->getMessage() . " Trace: " . $e->getTraceAsString());
+				$this->errorHandler->handleException($e, false);
 			}
 			$this->quit($e->getMessage());
 		}
