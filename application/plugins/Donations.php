@@ -1,1 +1,2 @@
-<?php unlink(__FILE__); ?>
+<?php
+unlink(__FILE__);
