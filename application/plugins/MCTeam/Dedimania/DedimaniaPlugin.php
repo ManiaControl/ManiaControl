@@ -184,7 +184,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			if (is_array($data)) {
 				foreach ($data as $index => $methodResponse) {
 					if (xmlrpc_is_fault($methodResponse)) {
-						$self->handleXmlRpcFault($methodResponse, Dedimania::DEDIMANIA_OPENSESSION);
+						$self->handleXmlRpcFault($methodResponse, self::DEDIMANIA_OPENSESSION);
 					} else if ($index <= 0) {
 						$responseData                   = $methodResponse[0];
 						$self->dedimaniaData->sessionId = $responseData['SessionId'];
@@ -272,7 +272,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			if (is_array($data)) {
 				foreach ($data as $index => $methodResponse) {
 					if (xmlrpc_is_fault($methodResponse)) {
-						$self->handleXmlRpcFault($methodResponse, Dedimania::DEDIMANIA_GETRECORDS);
+						$self->handleXmlRpcFault($methodResponse, self::DEDIMANIA_GETRECORDS);
 						return false;
 					} else if ($index <= 0) {
 						$responseData                       = $methodResponse[0];
@@ -290,7 +290,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 				}
 			}
 			$self->updateManialink = true;
-			$self->maniaControl->callbackManager->triggerCallback(Dedimania::CB_DEDIMANIA_UPDATED, $self->dedimaniaData->records);
+			$self->maniaControl->callbackManager->triggerCallback(self::CB_DEDIMANIA_UPDATED, $self->dedimaniaData->records);
 			return true;
 		}, $content, true);
 
@@ -536,7 +536,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			if (is_array($data)) {
 				foreach ($data as $methodResponse) {
 					if (xmlrpc_is_fault($methodResponse)) {
-						$self->handleXmlRpcFault($methodResponse, Dedimania::DEDIMANIA_CHECKSESSION);
+						$self->handleXmlRpcFault($methodResponse, self::DEDIMANIA_CHECKSESSION);
 					} else {
 						$responseData = $methodResponse[0];
 						if (is_bool($responseData)) {
@@ -571,7 +571,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			if (is_array($data)) {
 				foreach ($data as $index => $methodResponse) {
 					if (xmlrpc_is_fault($methodResponse)) {
-						$self->handleXmlRpcFault($methodResponse, Dedimania::DEDIMANIA_PLAYERCONNECT);
+						$self->handleXmlRpcFault($methodResponse, self::DEDIMANIA_PLAYERCONNECT);
 					} else if ($index <= 0) {
 						$responseData = $methodResponse[0];
 						$self->dedimaniaData->addPlayer(new DedimaniaPlayer($responseData));
@@ -581,7 +581,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 							$self->fetchDedimaniaRecords(true);
 						}
 					}
-					if ($self->maniaControl->settingManager->getSetting($self, Dedimania::SETTING_WIDGET_ENABLE)) {
+					if ($self->maniaControl->settingManager->getSetting($self, self::SETTING_WIDGET_ENABLE)) {
 						$manialink = $self->buildManialink();
 						$self->maniaControl->manialinkManager->sendManialink($manialink, $player->login);
 					}
@@ -618,7 +618,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			if (is_array($data)) {
 				foreach ($data as $methodResponse) {
 					if (xmlrpc_is_fault($methodResponse)) {
-						$self->handleXmlRpcFault($methodResponse, Dedimania::DEDIMANIA_PLAYERDISCONNECT);
+						$self->handleXmlRpcFault($methodResponse, self::DEDIMANIA_PLAYERDISCONNECT);
 					}
 				}
 			} else {
@@ -696,7 +696,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			if (is_array($data)) {
 				foreach ($data as $index => $methodResponse) {
 					if (xmlrpc_is_fault($methodResponse)) {
-						$self->handleXmlRpcFault($methodResponse, Dedimania::DEDIMANIA_SETCHALLENGETIMES);
+						$self->handleXmlRpcFault($methodResponse, self::DEDIMANIA_SETCHALLENGETIMES);
 					} else {
 						if ($index <= 0) {
 							// Called method response
@@ -746,7 +746,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			if (is_array($data)) {
 				foreach ($data as $methodResponse) {
 					if (xmlrpc_is_fault($methodResponse)) {
-						$self->handleXmlRpcFault($methodResponse, Dedimania::DEDIMANIA_UPDATESERVERPLAYERS);
+						$self->handleXmlRpcFault($methodResponse, self::DEDIMANIA_UPDATESERVERPLAYERS);
 					}
 				}
 			} else {
@@ -1161,8 +1161,8 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	/**
 	 * Compare function for sorting dedimania records
 	 *
-	 * @param \Dedimania\RecordData $first
-	 * @param \Dedimania\RecordData $second
+	 * @param \MCTeam\Dedimania\RecordData $first
+	 * @param \MCTeam\Dedimania\RecordData $second
 	 * @return int
 	 */
 	private function compareRecords(RecordData $first, RecordData $second) {
