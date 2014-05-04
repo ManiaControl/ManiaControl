@@ -302,13 +302,15 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		}
 
 		$self = $this;
-		$this->maniaControl->fileReader->loadFile($this->coreUpdateData->url, function ($updateFileContent, $error) use (&$self, &$updateData, &$player) {
+		$updateData = $this->coreUpdateData;
+		$maniaControl = $this->maniaControl;
+		$this->maniaControl->fileReader->loadFile($updateData->url, function ($updateFileContent, $error) use (&$self, &$maniaControl, &$updateData, &$player) {
 			if (!$updateFileContent || $error) {
 				$message = "Update failed: Couldn't load Update zip! {$error}";
 				if ($player) {
-					$self->maniaControl->chat->sendError($message, $player);
+					$maniaControl->chat->sendError($message, $player);
 				}
-				logMessage($message);
+				$maniaControl->log($message);
 				return;
 			}
 
@@ -319,19 +321,20 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			if (!$bytes || $bytes <= 0) {
 				$message = "Update failed: Couldn't save Update zip!";
 				if ($player) {
-					$self->maniaControl->chat->sendError($message, $player);
+					$maniaControl->chat->sendError($message, $player);
 				}
-				logMessage($message);
+				$maniaControl->log($message);
 				return;
 			}
 
 			$zip    = new \ZipArchive();
 			$result = $zip->open($updateFileName);
 			if ($result !== true) {
-				trigger_error("Couldn't open Update Zip. ({$result})");
+				$message = "Update failed: Couldn't open Update Zip. ({$result})";
 				if ($player) {
-					$self->maniaControl->chat->sendError("Update failed: Couldn't open Update zip!", $player);
+					$maniaControl->chat->sendError($message, $player);
 				}
+				$maniaControl->log($message);
 				return;
 			}
 
@@ -345,11 +348,11 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 
 			$message = 'Update finished!';
 			if ($player) {
-				$self->maniaControl->chat->sendSuccess($message, $player);
+				$maniaControl->chat->sendSuccess($message, $player);
 			}
-			$self->maniaControl->log($message);
+			$maniaControl->log($message);
 
-			$self->maniaControl->restart();
+			$maniaControl->restart();
 		});
 
 		return true;
@@ -411,14 +414,15 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		}
 
 		$self = $this;
-		$this->checkCoreUpdateAsync(function (UpdateData $updateData = null) use (&$self, &$player) {
+		$maniaControl = $this->maniaControl;
+		$this->checkCoreUpdateAsync(function (UpdateData $updateData = null) use (&$self, &$maniaControl, &$player) {
 			if (!$self->checkUpdateData($updateData)) {
-				$self->maniaControl->chat->sendInformation('No Update available!', $player->login);
+				$maniaControl->chat->sendInformation('No Update available!', $player->login);
 				return;
 			}
 
 			if (!$self->checkUpdateDataBuildVersion($updateData)) {
-				$self->maniaControl->chat->sendError("Please update Your Server to '{$updateData->minDedicatedBuild}' in order to receive further Updates!", $player->login);
+				$maniaControl->chat->sendError("Please update Your Server to '{$updateData->minDedicatedBuild}' in order to receive further Updates!", $player->login);
 				return;
 			}
 
@@ -427,16 +431,19 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 				$buildDate = $self->getNightlyBuildDate();
 				if ($buildDate) {
 					if ($updateData->isNewerThan($buildDate)) {
-						$self->maniaControl->chat->sendInformation("No new Build available! (Current Build: '{$buildDate}')", $player->login);
+						$maniaControl->chat->sendInformation("No new Build available! (Current Build: '{$buildDate}')", $player->login);
+						return;
 					} else {
-						$self->maniaControl->chat->sendSuccess("New Nightly Build ({$updateData->releaseDate}) available! (Current Build: '{$buildDate}')", $player->login);
+						$maniaControl->chat->sendSuccess("New Nightly Build ({$updateData->releaseDate}) available! (Current Build: '{$buildDate}')", $player->login);
 					}
 				} else {
-					$self->maniaControl->chat->sendSuccess("New Nightly Build ('{$updateData->releaseDate}') available!", $player->login);
+					$maniaControl->chat->sendSuccess("New Nightly Build ('{$updateData->releaseDate}') available!", $player->login);
 				}
 			} else {
-				$self->maniaControl->chat->sendSuccess('Update for Version ' . $updateData->version . ' available!', $player->login);
+				$maniaControl->chat->sendSuccess('Update for Version ' . $updateData->version . ' available!', $player->login);
 			}
+
+			$self->coreUpdateData = $updateData;
 		});
 	}
 
