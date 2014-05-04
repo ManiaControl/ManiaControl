@@ -28,7 +28,7 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 	 * Constants
 	 */
 	const ID      = 23;
-	const VERSION = 0.1;
+	const VERSION = 0.11;
 
 	const TEAMSPEAK_SID        = 'TS Server ID';
 	const TEAMSPEAK_SERVERHOST = 'TS Server host';

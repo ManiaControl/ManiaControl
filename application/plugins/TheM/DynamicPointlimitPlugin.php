@@ -18,7 +18,7 @@ class DynamicPointlimitPlugin implements CallbackListener, CommandListener, Plug
 	 * Constants
 	 */
 	const ID      = 21;
-	const VERSION = 0.1;
+	const VERSION = 0.11;
 
 	const DYNPNT_MULTIPLIER  = 'Pointlimit multiplier';
 	const DYNPNT_OFFSET      = 'Pointlimit offset';

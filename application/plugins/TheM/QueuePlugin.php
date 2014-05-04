@@ -33,7 +33,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 	 * Constants
 	 */
 	const ID                 = 22;
-	const VERSION            = 0.1;
+	const VERSION            = 0.11;
 	const ML_ID              = 'Queue.Widget';
 	const ML_ADDTOQUEUE      = 'Queue.Add';
 	const ML_REMOVEFROMQUEUE = 'Queue.Remove';
