@@ -20,6 +20,8 @@ class PluginManager {
 	 * Constants
 	 */
 	const TABLE_PLUGINS = 'mc_plugins';
+	const CB_PLUGIN_LOADED = 'PluginManager.PluginLoaded';
+	const CB_PLUGIN_UNLOADED = 'PluginManager.PluginUnloaded';
 
 	/*
 	 * Private Properties
@@ -76,22 +78,26 @@ class PluginManager {
 	}
 
 	/**
-	 * Deactivate the plugin with the given class
+	 * Deactivate the Plugin with the given Class
 	 *
 	 * @param string $pluginClass
 	 * @return bool
 	 */
 	public function deactivatePlugin($pluginClass) {
 		$pluginClass = $this->getPluginClass($pluginClass);
+		if (!$pluginClass) {
+			return false;
+		}
 		if (!$this->isPluginActive($pluginClass)) {
 			return false;
 		}
+
+		/** @var Plugin $plugin */
 		$plugin = $this->activePlugins[$pluginClass];
-		/**
-		 * @var Plugin $plugin
-		 */
-		$plugin->unload();
 		unset($this->activePlugins[$pluginClass]);
+
+		$plugin->unload();
+
 		if ($plugin instanceof CallbackListener) {
 			$this->maniaControl->callbackManager->unregisterCallbackListener($plugin);
 			$this->maniaControl->callbackManager->unregisterScriptCallbackListener($plugin);
@@ -105,7 +111,11 @@ class PluginManager {
 		if ($plugin instanceof TimerListener) {
 			$this->maniaControl->timerManager->unregisterTimerListenings($plugin);
 		}
+
 		$this->savePluginStatus($pluginClass, false);
+
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLUGIN_UNLOADED, $pluginClass, $plugin);
+
 		return true;
 	}
 
@@ -350,6 +360,9 @@ class PluginManager {
 
 		$this->activePlugins[$pluginClass] = $plugin;
 		$this->savePluginStatus($pluginClass, true);
+
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLUGIN_LOADED, $pluginClass, $plugin);
+
 		return true;
 	}
 
