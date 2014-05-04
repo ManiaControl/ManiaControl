@@ -201,7 +201,7 @@ class MapQueue implements CallbackListener, CommandListener {
 				unset($this->queuedMaps[$map->uid]);
 			}
 
-			array_unshift($this->queuedMaps, array($player, $map));
+			array_unshift($this->queuedMaps, array($player, $map, true));
 		}
 	}
 
@@ -300,6 +300,11 @@ class MapQueue implements CallbackListener, CommandListener {
 			//Skip Map if requester has left
 			foreach ($this->queuedMaps as $queuedMap) {
 				$player = $queuedMap[0];
+
+				// Check if map is added via replay vote/command
+				if(isset($queuedMap[2]) && $queuedMap[2] === true) {
+					break;
+				}
 
 				//found player, so play this map
 				if ($this->maniaControl->playerManager->getPlayer($player->login)) {
