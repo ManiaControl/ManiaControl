@@ -25,6 +25,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 	const CB_PLAYERCONNECT            = 'PlayerManagerCallback.PlayerConnect';
 	const CB_PLAYERDISCONNECT         = 'PlayerManagerCallback.PlayerDisconnect';
 	const CB_PLAYERINFOCHANGED        = 'PlayerManagerCallback.PlayerInfoChanged';
+	const CB_SERVER_EMPTY             = 'PlayerManagerCallback.ServerEmpty';
 	const TABLE_PLAYERS               = 'mc_players';
 	const SETTING_JOIN_LEAVE_MESSAGES = 'Enable Join & Leave Messages';
 	const STAT_JOIN_COUNT             = 'Joins';
@@ -48,7 +49,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 	/**
 	 * Construct a new Player Manager
 	 *
-	 * @param \ManiaControl\ManiaControl $maniaControl
+	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
@@ -76,7 +77,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 	}
 
 	/**
-	 * Initialize necessary database tables
+	 * Initialize necessary Database Tables
 	 *
 	 * @return bool
 	 */
@@ -100,6 +101,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 		$playerTableStatement->execute();
 		if ($playerTableStatement->error) {
 			trigger_error($playerTableStatement->error, E_USER_ERROR);
+			$playerTableStatement->close();
 			return false;
 		}
 		$playerTableStatement->close();
@@ -212,7 +214,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 	}
 
 	/**
-	 * Handle playerConnect callback
+	 * Handle PlayerConnect Callback
 	 *
 	 * @param array $callback
 	 */
@@ -228,7 +230,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 	}
 
 	/**
-	 * Handle playerDisconnect callback
+	 * Handle PlayerDisconnect callback
 	 *
 	 * @param array $callback
 	 */
@@ -239,8 +241,11 @@ class PlayerManager implements CallbackListener, TimerListener {
 			return;
 		}
 
-		// Trigger own callback
+		// Trigger own callbacks
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLAYERDISCONNECT, $player);
+		if ($this->getPlayerCount(false) <= 0) {
+			$this->maniaControl->callbackManager->triggerCallback(self::CB_SERVER_EMPTY);
+		}
 
 		if ($player->isFakePlayer()) {
 			return;
@@ -290,6 +295,23 @@ class PlayerManager implements CallbackListener, TimerListener {
 		$playedTime = time() - $player->joinTime;
 
 		return $this->maniaControl->statisticManager->insertStat(self::STAT_SERVERTIME, $player, $this->maniaControl->server->index, $playedTime);
+	}
+
+	/**
+	 * Get the Count of all Player
+	 *
+	 * @param bool $withoutSpectators
+	 * @return int
+	 */
+	public function getPlayerCount($withoutSpectators = true) {
+		$count = 0;
+		foreach ($this->players as $player) {
+			/** @var Player $player */
+			if (!$player->isSpectator || !$withoutSpectators) {
+				$count++;
+			}
+		}
+		return $count;
 	}
 
 	/**
@@ -402,22 +424,6 @@ class PlayerManager implements CallbackListener, TimerListener {
 	}
 
 	/**
-	 * Gets the Count of all Player
-	 *
-	 * @return int
-	 */
-	public function getPlayerCount() {
-		$count = 0;
-		foreach ($this->players as $player) {
-			/** @var Player $player */
-			if (!$player->isSpectator) {
-				$count++;
-			}
-		}
-		return $count;
-	}
-
-	/**
 	 * Gets the Count of all Spectators
 	 *
 	 * @return int
@@ -436,7 +442,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 	/**
 	 * Gets a Player by his index
 	 *
-	 * @param      $index
+	 * @param int  $index
 	 * @param bool $connectedPlayersOnly
 	 * @return Player|null
 	 */
@@ -456,9 +462,9 @@ class PlayerManager implements CallbackListener, TimerListener {
 	}
 
 	/**
-	 * Get's a Player out of the database
+	 * Get a Player out of the database
 	 *
-	 * @param $playerIndex
+	 * @param int $playerIndex
 	 * @return Player $player
 	 */
 	private function getPlayerFromDatabaseByIndex($playerIndex) {
