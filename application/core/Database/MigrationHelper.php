@@ -40,20 +40,23 @@ class MigrationHelper {
 
 		$mysqli = $this->maniaControl->database->mysqli;
 
-		$query     = "INSERT INTO `" . SettingManager::TABLE_SETTINGS . "` (`class`, `setting`, `type`, `value`, `default`)
-				SELECT ?, `setting`, `type`, `value`, `default` FROM `" . SettingManager::TABLE_SETTINGS . "` WHERE `class` = ?;";
+		$query     = "INSERT IGNORE INTO `" . SettingManager::TABLE_SETTINGS . "`
+				(`class`, `setting`, `type`, `value`, `default`)
+				SELECT ?, `setting`, `type`, `value`, `default`
+				FROM `" . SettingManager::TABLE_SETTINGS . "`
+				WHERE `class` = ?;";
 		$statement = $mysqli->prepare($query);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
 		}
 		$statement->bind_param('ss', $targetClass, $sourceClass);
+		$success = $statement->execute();
 		if ($statement->error) {
 			trigger_error($statement->error);
 			$statement->close();
 			return false;
 		}
-		$success = $statement->execute();
 		$statement->close();
 		return $success;
 	}

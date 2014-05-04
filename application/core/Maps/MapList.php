@@ -11,6 +11,7 @@ use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
 use FML\Controls\Quads\Quad_Icons64x64_1;
+use FML\Controls\Quads\Quad_UIConstruction_Buttons;
 use FML\ManiaLink;
 use FML\Script\Features\Paging;
 use ManiaControl\Callbacks\CallbackListener;
@@ -397,21 +398,33 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 				$description = 'Switch Directly to Map: $<' . $map->name . '$>';
 				$switchLabel->addTooltipLabelFeature($descriptionLabel, $description);
-			} else if ($this->maniaControl->pluginManager->isPluginActive(self::DEFAULT_CUSTOM_VOTE_PLUGIN)) {
-				// Switch Map Voting
-				$switchLabel = new Label_Button();
-				$mapFrame->add($switchLabel);
-				$switchLabel->setX($width / 2 - 10);
-				$switchLabel->setZ(0.2);
-				$switchLabel->setSize(3, 3);
-				$switchLabel->setTextSize(2);
-				$switchLabel->setText('»');
-				$switchLabel->setTextColor('0f0');
-
-				$switchLabel->setAction(self::ACTION_START_SWITCH_VOTE . '.' . ($id - 1));
-
-				$description = 'Start Map-Switch Vote: $<' . $map->name . '$>';
-				$switchLabel->addTooltipLabelFeature($descriptionLabel, $description);
+			}
+			if ($this->maniaControl->pluginManager->isPluginActive(self::DEFAULT_CUSTOM_VOTE_PLUGIN)) {
+				if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
+					// Switch Map Voting for Admins
+					$switchQuad = new Quad_UIConstruction_Buttons();
+					$mapFrame->add($switchQuad);
+					$switchQuad->setX($width / 2 - 20);
+					$switchQuad->setZ(0.2);
+					$switchQuad->setSubStyle($switchQuad::SUBSTYLE_Validate_Step2);
+					$switchQuad->setSize(3.8, 3.8);
+					$switchQuad->setAction(self::ACTION_START_SWITCH_VOTE . '.' . ($id - 1));
+					$description = 'Start Map-Switch Vote: $<' . $map->name . '$>';
+					$switchQuad->addTooltipLabelFeature($descriptionLabel, $description);
+				} else {
+					// Switch Map Voting for Player
+					$switchLabel = new Label_Button();
+					$mapFrame->add($switchLabel);
+					$switchLabel->setX($width / 2 - 10);
+					$switchLabel->setZ(0.2);
+					$switchLabel->setSize(3, 3);
+					$switchLabel->setTextSize(2);
+					$switchLabel->setText('»');
+					$switchLabel->setTextColor('0f0');
+					$switchLabel->setAction(self::ACTION_START_SWITCH_VOTE . '.' . ($id - 1));
+					$description = 'Start Map-Switch Vote: $<' . $map->name . '$>';
+					$switchLabel->addTooltipLabelFeature($descriptionLabel, $description);
+				}
 			}
 
 			// Display Karma bar

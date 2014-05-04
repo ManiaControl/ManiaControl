@@ -223,10 +223,10 @@ class ManiaControl implements CommandListener, TimerListener {
 		// Execute start script in background
 		// TODO: restart the .php script itself ($_SERVER['scriptname'] or something + $argv)
 		if ($this->getOS(self::OS_UNIX)) {
-			$command = 'sh ' . escapeshellarg(ManiaControlDir . '/ManiaControl.sh') . ' > /dev/null &';
+			$command = 'sh ' . escapeshellarg(ManiaControlDir . 'ManiaControl.sh') . ' > /dev/null &';
 			exec($command);
 		} else {
-			$command = escapeshellarg(ManiaControlDir . "\ManiaControl.bat");
+			$command = escapeshellarg(ManiaControlDir . "ManiaControl.bat");
 			system($command); // TODO, windows stucks here as long controller is running
 		}
 		exit();
@@ -302,11 +302,7 @@ class ManiaControl implements CommandListener, TimerListener {
 			}
 		}
 
-		// Check and Trigger Fatal Errors
-		$error = error_get_last();
-		if ($error && ($error['type'] & E_FATAL)) {
-			$this->errorHandler->errorHandler($error['type'], $error['message'], $error['file'], $error['line']);
-		}
+		$this->errorHandler->handleShutdown();
 
 		// Disable Garbage Collector
 		$this->collectGarbage();
@@ -376,7 +372,7 @@ class ManiaControl implements CommandListener, TimerListener {
 				$this->log("Connection interrupted!");
 				// TODO remove
 				if ($this->errorHandler) {
-					$this->errorHandler->exceptionHandler($e, false);
+					$this->errorHandler->handleException($e, false);
 				}
 				$this->quit($e->getMessage());
 			}
@@ -423,7 +419,7 @@ class ManiaControl implements CommandListener, TimerListener {
 		} catch (Exception $e) {
 			// TODO remove
 			if ($this->errorHandler) {
-				$this->errorHandler->triggerDebugNotice("Fatal Exception: " . $e->getMessage() . " Trace: " . $e->getTraceAsString());
+				$this->errorHandler->handleException($e, false);
 			}
 			$this->quit($e->getMessage());
 		}

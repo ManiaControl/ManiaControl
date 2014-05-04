@@ -264,7 +264,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$maplist = 'maplist.txt';
 		}
 
-		$maplist = 'MatchSettings/' . $maplist;
+		$maplist = 'MatchSettings' . DIRECTORY_SEPARATOR . $maplist;
 		try {
 			$this->maniaControl->client->saveMatchSettings($maplist);
 
@@ -299,7 +299,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$maplist = 'maplist.txt';
 		}
 
-		$maplist = 'MatchSettings/' . $maplist;
+		$maplist = 'MatchSettings' . DIRECTORY_SEPARATOR . $maplist;
 		try {
 			$this->maniaControl->client->loadMatchSettings($maplist);
 
@@ -472,7 +472,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	 * @param Map $b
 	 * @return mixed
 	 */
-	private function sortByKarma($a, $b) {
+	private function sortByKarma(Map $a, Map $b) {
 		return ($a->karma - $b->karma);
 	}
 }

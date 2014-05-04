@@ -257,7 +257,7 @@ class Server implements CallbackListener {
 		if (!$dataDirectory) {
 			return null;
 		}
-		return "{$dataDirectory}Maps/";
+		return "{$dataDirectory}Maps".DIRECTORY_SEPARATOR;
 	}
 
 	/**

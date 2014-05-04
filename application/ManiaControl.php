@@ -6,7 +6,10 @@ define('LOG_NAME_USE_DATE', true); // Use current date as suffix for log file na
 define('LOG_NAME_USE_PID', true); // Use current process id as suffix for log file name in logs folder
 
 // Define base dir
-define('ManiaControlDir', __DIR__);
+define('ManiaControlDir', __DIR__ . DIRECTORY_SEPARATOR);
+
+// Enable error reporting
+error_reporting(E_ALL);
 
 // Define fatal error level
 define('E_FATAL', E_ERROR | E_CORE_ERROR | E_COMPILE_ERROR | E_RECOVERABLE_ERROR | E_USER_ERROR);
@@ -18,9 +21,9 @@ if (function_exists('date_default_timezone_get') && function_exists('date_defaul
 }
 
 // Build log file name
-$logFileName = ManiaControlDir . '/logs/';
-if (!is_dir($logFileName)) {
-	mkdir($logFileName);
+$logFileName = ManiaControlDir . 'logs' . DIRECTORY_SEPARATOR;
+if (!is_dir($logFileName) && !mkdir($logFileName)) {
+	echo "Couldn't create Logs Folder, please check the File Permissions!";
 }
 $logFileName .= 'ManiaControl';
 if (LOG_NAME_USE_DATE) {
@@ -34,7 +37,7 @@ define('LOG_FILE', $logFileName);
 
 // Delete old current log file
 if (LOG_WRITE_CURRENT_FILE) {
-	$currentLogFileName = ManiaControlDir . '/' . LOG_WRITE_CURRENT_FILE;
+	$currentLogFileName = ManiaControlDir . LOG_WRITE_CURRENT_FILE;
 	if (file_exists($currentLogFileName) && is_writable($currentLogFileName)) {
 		unlink($currentLogFileName);
 	}
@@ -73,18 +76,18 @@ if (extension_loaded('curl')) {
  * @param bool   $eol
  */
 function logMessage($message, $eol = true) {
-	$date    = date("d.M y H:i:s");
+	$date    = date('d.M y H:i:s');
 	$message = $date . ' ' . $message;
 	if ($eol) {
 		$message .= PHP_EOL;
 	}
 	if (defined('LOG_CURRENT_FILE')) {
-		if (!file_put_contents(LOG_CURRENT_FILE, $message, FILE_APPEND)) {
-			echo "Logfile not Write-able, please check your file Permissions";
+		if (!is_writable(dirname(LOG_CURRENT_FILE)) || !file_put_contents(LOG_CURRENT_FILE, $message, FILE_APPEND)) {
+			echo 'Current-Logfile not write-able, please check the File Permissions!';
 		}
 	}
-	if (!file_put_contents(LOG_FILE, $message, FILE_APPEND)) {
-		echo "Logfile not Write-able, please check your file Permissions";
+	if (!is_writable(dirname(LOG_FILE)) || !file_put_contents(LOG_FILE, $message, FILE_APPEND)) {
+		echo 'Logfile not write-able, please check the File Permissions!';
 	}
 	echo $message;
 }
@@ -95,14 +98,14 @@ spl_autoload_register(function ($className) {
 
 	// Core file
 	$classDirectoryPath = preg_replace('/ManiaControl/', 'core', $classPath, 1);
-	$filePath           = ManiaControlDir . DIRECTORY_SEPARATOR . $classDirectoryPath . '.php';
+	$filePath           = ManiaControlDir . $classDirectoryPath . '.php';
 	if (file_exists($filePath)) {
 		require_once $filePath;
 		return;
 	}
 
 	// Plugin file
-	$filePath = ManiaControlDir . DIRECTORY_SEPARATOR . 'plugins/' . $classPath . '.php';
+	$filePath = ManiaControlDir . 'plugins' . DIRECTORY_SEPARATOR . $classPath . '.php';
 	if (file_exists($filePath)) {
 		require_once $filePath;
 		return;

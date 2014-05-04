@@ -16,7 +16,7 @@ abstract class FileUtil {
 	/*
 	 * Constants
 	 */
-	const FOLDER_NAME_TEMP = '/temp/';
+	const FOLDER_NAME_TEMP = 'temp/';
 
 	/**
 	 * Load a remote file
@@ -75,7 +75,7 @@ abstract class FileUtil {
 	 * @return \SimpleXMLElement
 	 */
 	public static function loadConfig($fileName) {
-		$fileLocation = ManiaControlDir . '/configs/' . $fileName;
+		$fileLocation = ManiaControlDir . 'configs' . DIRECTORY_SEPARATOR . $fileName;
 		if (!file_exists($fileLocation)) {
 			trigger_error("Config file doesn't exist! ({$fileName})");
 			return null;
@@ -150,5 +150,48 @@ abstract class FileUtil {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Try to delete the given Plugin Files
+	 *
+	 * @param mixed $pluginFileNames
+	 */
+	public static function cleanPluginFiles($pluginFileNames) {
+		$pluginFileNames = self::buildFileNamesArray($pluginFileNames);
+		$fileNames       = array();
+		foreach ($pluginFileNames as $pluginFileName) {
+			$fileName = 'plugins' . DIRECTORY_SEPARATOR . $pluginFileName;
+			array_push($fileNames, $fileName);
+		}
+		self::cleanFiles($fileNames);
+	}
+
+	/**
+	 * Make sure we're dealing with an Array of File Names
+	 *
+	 * @param mixed $fileNamesParam
+	 * @return array
+	 */
+	private static function buildFileNamesArray($fileNamesParam) {
+		if (!is_array($fileNamesParam)) {
+			$fileNamesParam = array($fileNamesParam);
+		}
+		return $fileNamesParam;
+	}
+
+	/**
+	 * Try to delete the given Files
+	 *
+	 * @param mixed $fileNames
+	 */
+	public static function cleanFiles($fileNames) {
+		$fileNames = self::buildFileNamesArray($fileNames);
+		foreach ($fileNames as $fileName) {
+			$filePath = ManiaControlDir . $fileName;
+			if (file_exists($filePath) && is_writeable($filePath)) {
+				unlink($filePath);
+			}
+		}
 	}
 }

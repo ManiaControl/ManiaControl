@@ -214,7 +214,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 */
 	public function getNightlyBuildDate() {
 		if (!$this->currentBuildDate) {
-			$nightlyBuildDateFile = ManiaControlDir . '/core/nightly_build.txt';
+			$nightlyBuildDateFile = ManiaControlDir . 'core' . DIRECTORY_SEPARATOR . 'nightly_build.txt';
 			if (file_exists($nightlyBuildDateFile)) {
 				$this->currentBuildDate = file_get_contents($nightlyBuildDateFile);
 			}
@@ -282,7 +282,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 
 		$this->maniaControl->log("Starting Update to Version v{$this->coreUpdateData->version}...");
 
-		$directories = array('/core/', '/plugins/');
+		$directories = array('core', 'plugins');
 		if (!FileUtil::checkWritePermissions($directories)) {
 			$message = 'Update not possible: Incorrect File System Permissions!';
 			if ($player) {
@@ -303,6 +303,15 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 
 		$self = $this;
 		$this->maniaControl->fileReader->loadFile($this->coreUpdateData->url, function ($updateFileContent, $error) use (&$self, &$updateData, &$player) {
+			if (!$updateFileContent || !$error) {
+				$message = "Update failed: Couldn't load Update zip!";
+				if ($player) {
+					$self->maniaControl->chat->sendError($message, $player);
+				}
+				logMessage($message);
+				return;
+			}
+
 			$tempDir        = FileUtil::getTempFolder();
 			$updateFileName = $tempDir . basename($updateData->url);
 
@@ -353,7 +362,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 * @return bool
 	 */
 	private function setNightlyBuildDate($date) {
-		$nightlyBuildDateFile   = ManiaControlDir . '/core/nightly_build.txt';
+		$nightlyBuildDateFile   = ManiaControlDir . 'core' . DIRECTORY_SEPARATOR . 'nightly_build.txt';
 		$success                = (bool)file_put_contents($nightlyBuildDateFile, $date);
 		$this->currentBuildDate = $date;
 		return $success;

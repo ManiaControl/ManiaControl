@@ -252,9 +252,9 @@ class MapManager implements CallbackListener {
 
 				// Download the file
 				$self->maniaControl->fileReader->loadFile($mapInfo->downloadurl, function ($file, $error) use (&$self, &$login, &$mapInfo, &$update) {
-					if (!$file) {
+					if (!$file || $error) {
 						// Download error
-						$self->maniaControl->chat->sendError('Download failed!', $login);
+						$self->maniaControl->chat->sendError("Download failed: '{$error}'!", $login);
 						return;
 					}
 					$self->processMapFile($file, $mapInfo, $login, $update);
@@ -284,9 +284,9 @@ class MapManager implements CallbackListener {
 		$fileName = FileUtil::getClearedFileName($fileName);
 
 		$downloadFolderName  = $this->maniaControl->settingManager->getSetting($this, 'MapDownloadDirectory', 'MX');
-		$relativeMapFileName = $downloadFolderName . '/' . $fileName;
+		$relativeMapFileName = $downloadFolderName . DIRECTORY_SEPARATOR . $fileName;
 		$mapDir              = $this->maniaControl->client->getMapsDirectory();
-		$downloadDirectory   = $mapDir . '/' . $downloadFolderName . '/';
+		$downloadDirectory   = $mapDir . DIRECTORY_SEPARATOR . $downloadFolderName . DIRECTORY_SEPARATOR;
 		$fullMapFileName     = $downloadDirectory . $fileName;
 
 		// Check if it can get written locally

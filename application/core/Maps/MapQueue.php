@@ -82,20 +82,19 @@ class MapQueue implements CallbackListener, CommandListener {
 	/**
 	 * Clears the map-queue via admin command clearmap queue
 	 *
-	 * @param array                        $chat
-	 * @param \ManiaControl\Players\Player $admin
-	 * @internal param \ManiaControl\Players\Player $player
+	 * @param array  $chatCallback
+	 * @param Player $admin
 	 */
-	public function command_ClearMapQueue(array $chat, Player $admin) {
+	public function command_ClearMapQueue(array $chatCallback, Player $admin) {
 		$this->clearMapQueue($admin);
 	}
 
 	/**
-	 * Clears the Map Queue
+	 * Clear the Map Queue
 	 *
-	 * @param $admin
+	 * @param Player $admin
 	 */
-	public function clearMapQueue($admin) {
+	public function clearMapQueue(Player $admin) {
 		if (!$this->maniaControl->authenticationManager->checkPermission($admin, self::SETTING_PERMISSION_CLEAR_MAPQUEUE)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($admin);
 			return;
@@ -121,11 +120,11 @@ class MapQueue implements CallbackListener, CommandListener {
 	/**
 	 * Handles the mapqueue/jukebox command
 	 *
-	 * @param array  $chat
+	 * @param array  $chatCallback
 	 * @param Player $player
 	 */
-	public function command_MapQueue(array $chat, Player $player) {
-		$chatCommands = explode(' ', $chat[1][2]);
+	public function command_MapQueue(array $chatCallback, Player $player) {
+		$chatCommands = explode(' ', $chatCallback[1][2]);
 
 		if (isset($chatCommands[1])) {
 			if ($chatCommands[1] == ' ' || $chatCommands[1] == 'list') {
@@ -143,9 +142,9 @@ class MapQueue implements CallbackListener, CommandListener {
 	/**
 	 * Shows current mapqueue in the chat
 	 *
-	 * @param $player
+	 * @param Player $player
 	 */
-	public function showMapQueue($player) {
+	public function showMapQueue(Player $player) {
 		if (count($this->queuedMaps) == 0) {
 			$this->maniaControl->chat->sendError('$fa0There are no maps in the jukebox!', $player->login);
 			return;
@@ -164,9 +163,9 @@ class MapQueue implements CallbackListener, CommandListener {
 	/**
 	 * Shows current mapqueue in a manialink
 	 *
-	 * @param $player
+	 * @param Player $player
 	 */
-	public function showMapQueueManialink($player) {
+	public function showMapQueueManialink(Player $player) {
 		if (count($this->queuedMaps) == 0) {
 			$this->maniaControl->chat->sendError('$fa0There are no maps in the jukebox!', $player->login);
 			return;
@@ -192,10 +191,10 @@ class MapQueue implements CallbackListener, CommandListener {
 	/**
 	 * Adds map as first map in queue (for /replay)
 	 *
-	 * @param $player
-	 * @param $map
+	 * @param Player $player
+	 * @param Map   $map
 	 */
-	public function addFirstMapToMapQueue($player, $map) {
+	public function addFirstMapToMapQueue(Player $player, Map $map) {
 		if ($map) {
 			if (array_key_exists($map->uid, $this->queuedMaps)) {
 				unset($this->queuedMaps[$map->uid]);
@@ -208,8 +207,8 @@ class MapQueue implements CallbackListener, CommandListener {
 	/**
 	 * Adds a Map to the map-queue
 	 *
-	 * @param $login
-	 * @param $uid
+	 * @param string $login
+	 * @param string $uid
 	 */
 	public function addMapToMapQueue($login, $uid) {
 		$player = $this->maniaControl->playerManager->getPlayer($login);
@@ -270,9 +269,8 @@ class MapQueue implements CallbackListener, CommandListener {
 	/**
 	 * Revmoes a Map from the Map queue
 	 *
-	 * @param \ManiaControl\Players\Player $player
-	 * @param                              $uid
-	 * @internal param $login
+	 * @param Player $player
+	 * @param string $uid
 	 */
 	public function removeFromMapQueue(Player $player, $uid) {
 		if (!isset($this->queuedMaps[$uid])) {
@@ -360,7 +358,7 @@ class MapQueue implements CallbackListener, CommandListener {
 	/**
 	 * Returns the next Map if the next map is a queuedmap or null if it's not
 	 *
-	 * @return null
+	 * @return Map
 	 */
 	public function getNextMap() {
 		return $this->nextMap;

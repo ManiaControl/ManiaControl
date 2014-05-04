@@ -52,7 +52,7 @@ class Chat {
 	 */
 	public function sendInformation($message, $login = null, $prefix = true) {
 		$format = $this->maniaControl->settingManager->getSetting($this, self::SETTING_FORMAT_INFORMATION);
-		return $this->sendChat($format . $message, $login);
+		return $this->sendChat($format . $message, $login, $prefix);
 	}
 
 	/**
@@ -111,7 +111,7 @@ class Chat {
 	 */
 	public function sendSuccess($message, $login = null, $prefix = true) {
 		$format = $this->maniaControl->settingManager->getSetting($this, self::SETTING_FORMAT_SUCCESS);
-		return $this->sendChat($format . $message, $login);
+		return $this->sendChat($format . $message, $login, $prefix);
 	}
 
 	/**
@@ -137,7 +137,7 @@ class Chat {
 	 */
 	public function sendError($message, $login = null, $prefix = true) {
 		$format = $this->maniaControl->settingManager->getSetting($this, self::SETTING_FORMAT_ERROR);
-		return $this->sendChat($format . $message, $login);
+		return $this->sendChat($format . $message, $login, $prefix);
 	}
 
 	/**
@@ -150,6 +150,6 @@ class Chat {
 	 */
 	public function sendUsageInfo($message, $login = null, $prefix = false) {
 		$format = $this->maniaControl->settingManager->getSetting($this, self::SETTING_FORMAT_USAGEINFO);
-		return $this->sendChat($format . $message, $login);
+		return $this->sendChat($format . $message, $login, $prefix);
 	}
 }
