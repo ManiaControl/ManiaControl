@@ -155,8 +155,8 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_DEFAULT_RATIO, 0.75);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_DEFAULT_PLAYER_RATIO, 0.65);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SPECTATOR_ALLOW_VOTE, false);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SPECTATOR_ALLOW_START_VOTE, false);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_VOTE_TIME, 60);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SPECTATOR_ALLOW_START_VOTE, true);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_VOTE_TIME, 40);
 
 		//Define Votes
 		$this->defineVote("teambalance", "Vote for Team Balance");
