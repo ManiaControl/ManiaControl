@@ -329,31 +329,26 @@ class PluginManager {
 	 * @return bool
 	 */
 	public function activatePlugin($pluginClass, $adminLogin = null) {
-		if (!is_string($pluginClass)) {
-			return false;
-		}
 		if (!$this->isPluginClass($pluginClass)) {
 			return false;
 		}
 		if ($this->isPluginActive($pluginClass)) {
 			return false;
 		}
+		/** @var Plugin $plugin */
 		$plugin = new $pluginClass();
-		/**
-		 * @var Plugin $plugin
-		 */
-		$this->activePlugins[$pluginClass] = $plugin;
-		$this->savePluginStatus($pluginClass, true);
+
 		try {
 			$plugin->load($this->maniaControl);
 		} catch (\Exception $e) {
-			$this->maniaControl->chat->sendError('Error while plugin activating ' . $pluginClass . ': ' . $e->getMessage(), $adminLogin);
-			$this->maniaControl->log('Error while plugin activation: ' . $pluginClass . ': ' . $e->getMessage());
-			unset($this->activePlugins[$pluginClass]);
+			$message = "Error during Plugin Activation of '{$pluginClass}': '{$e->getMessage()}'";
+			$this->maniaControl->chat->sendError($message, $adminLogin);
+			$this->maniaControl->log($message);
 			$this->savePluginStatus($pluginClass, false);
 			return false;
 		}
 
+		$this->activePlugins[$pluginClass] = $plugin;
 		$this->savePluginStatus($pluginClass, true);
 		return true;
 	}
