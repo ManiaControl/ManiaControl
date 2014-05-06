@@ -418,9 +418,7 @@ class ManiaControl implements CommandListener, TimerListener {
 			}
 		} catch (Exception $e) {
 			// TODO remove
-			if ($this->errorHandler) {
-				$this->errorHandler->handleException($e, false);
-			}
+			$this->errorHandler->handleException($e, false);
 			$this->quit($e->getMessage());
 		}
 
@@ -430,31 +428,7 @@ class ManiaControl implements CommandListener, TimerListener {
 		// Hide old widgets
 		$this->client->sendHideManialinkPage();
 
-		// Enable script callbacks if needed
-		if ($this->server->getGameMode() != 0) {
-			return;
-		}
-
-		try {
-			$scriptSettings = $this->client->getModeScriptSettings();
-		} catch (NotInScriptModeException $e) {
-			return;
-		}
-
-		if (!array_key_exists('S_UseScriptCallbacks', $scriptSettings)) {
-			return;
-		}
-
-		$scriptSettings['S_UseScriptCallbacks'] = true;
-		try {
-			$this->client->setModeScriptSettings($scriptSettings);
-		} catch (Exception $e) {
-			// TODO temp added 19.04.2014
-			$this->errorHandler->triggerDebugNotice("Exception line 437 ManiaControl.php " . $e->getMessage());
-
-			trigger_error("Couldn't set mode script settings to enable script callbacks. " . $e->getMessage());
-			return;
-		}
-		$this->log('Script Callbacks successfully enabled!');
+		// Enable script callbacks
+		$this->server->scriptManager->enableScriptCallbacks();
 	}
 }

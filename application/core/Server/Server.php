@@ -39,6 +39,7 @@ class Server implements CallbackListener {
 	public $serverCommands = null;
 	public $usageReporter = null;
 	public $rankingManager = null;
+	public $scriptManager = null;
 
 	/*
 	 * Private Properties
@@ -58,6 +59,7 @@ class Server implements CallbackListener {
 		$this->serverCommands = new ServerCommands($maniaControl);
 		$this->usageReporter  = new UsageReporter($maniaControl);
 		$this->rankingManager = new RankingManager($maniaControl);
+		$this->scriptManager = new ScriptManager($maniaControl);
 
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_ONINIT, $this, 'onInit');
