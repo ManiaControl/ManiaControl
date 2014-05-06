@@ -61,6 +61,7 @@ class ErrorHandler {
 			$error['Type']            = 'Exception';
 			$error['Message']         = $message;
 			$error['Class']           = $exceptionClass;
+			$error['FileLine']        = $ex->getFile() . ': ' . $ex->getLine();
 			$error['Backtrace']       = $traceString;
 			$error['OperatingSystem'] = php_uname();
 			$error['PHPVersion']      = phpversion();
@@ -129,6 +130,12 @@ class ErrorHandler {
 	 * @return bool
 	 */
 	public function handleError($errorNumber, $errorString, $errorFile = null, $errorLine = -1) {
+		$userError = $this->isUserErrorNumber($errorNumber);
+
+		if (!$userError && error_reporting() === 0) {
+			return;
+		}
+
 		$errorTag = $this->getErrorTag($errorNumber);
 
 		$message     = $errorTag . ': ' . $errorString;
@@ -138,7 +145,7 @@ class ErrorHandler {
 		$logMessage = $message . PHP_EOL . 'File&Line: ' . $fileLine . PHP_EOL . 'Trace: ' . $traceString;
 		logMessage($logMessage);
 
-		if ($this->reportErrors && !$this->isUserErrorNumber($errorNumber)) {
+		if ($this->reportErrors && !$userError) {
 			$error                    = array();
 			$error['Type']            = 'Error';
 			$error['Message']         = $message;
