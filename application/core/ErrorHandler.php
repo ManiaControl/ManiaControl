@@ -67,15 +67,12 @@ class ErrorHandler {
 
 			if ($this->maniaControl->server) {
 				$error['ServerLogin'] = $this->maniaControl->server->login;
-			} else {
-				$error['ServerLogin'] = '';
 			}
 
 			if ($this->maniaControl->settingManager && $this->maniaControl->updateManager) {
 				$error['UpdateChannel']       = $this->maniaControl->settingManager->getSetting($this->maniaControl->updateManager, UpdateManager::SETTING_UPDATECHECK_CHANNEL);
-				$error['ManiaControlVersion'] = $this->maniaControl->updateManager->getNightlyBuildDate();
+				$error['ManiaControlVersion'] = ManiaControl::VERSION . ' #' . $this->maniaControl->updateManager->getNightlyBuildDate();
 			} else {
-				$error['UpdateChannel']       = '';
 				$error['ManiaControlVersion'] = ManiaControl::VERSION;
 			}
 
