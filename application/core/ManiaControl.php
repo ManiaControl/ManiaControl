@@ -276,7 +276,6 @@ class ManiaControl implements CommandListener, TimerListener {
 		if ($message) {
 			$this->log($message);
 		}
-
 		exit();
 	}
 
@@ -414,7 +413,7 @@ class ManiaControl implements CommandListener, TimerListener {
 		// Wait for server to be ready
 		try {
 			if (!$this->server->waitForStatus(4)) {
-				trigger_error("Server couldn't get ready!", E_USER_ERROR);
+				$this->quit("Server couldn't get ready!");
 			}
 		} catch (Exception $e) {
 			// TODO remove

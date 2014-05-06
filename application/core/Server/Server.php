@@ -25,9 +25,7 @@ class Server implements CallbackListener {
 	/*
 	 * Public Properties
 	 */
-	/**
-	 * @var Config $config
-	 */
+	/** @var Config $config */
 	public $config = null;
 	public $index = -1;
 	public $ip = null;
@@ -59,7 +57,7 @@ class Server implements CallbackListener {
 		$this->serverCommands = new ServerCommands($maniaControl);
 		$this->usageReporter  = new UsageReporter($maniaControl);
 		$this->rankingManager = new RankingManager($maniaControl);
-		$this->scriptManager = new ScriptManager($maniaControl);
+		$this->scriptManager  = new ScriptManager($maniaControl);
 
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_ONINIT, $this, 'onInit');
@@ -259,7 +257,7 @@ class Server implements CallbackListener {
 		if (!$dataDirectory) {
 			return null;
 		}
-		return "{$dataDirectory}Maps".DIRECTORY_SEPARATOR;
+		return "{$dataDirectory}Maps" . DIRECTORY_SEPARATOR;
 	}
 
 	/**
