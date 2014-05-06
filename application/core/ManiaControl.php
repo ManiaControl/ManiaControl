@@ -25,7 +25,6 @@ use ManiaControl\Statistics\StatisticManager;
 use ManiaControl\Update\UpdateManager;
 use Maniaplanet\DedicatedServer\Connection;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
-use Maniaplanet\DedicatedServer\Xmlrpc\NotInScriptModeException;
 use Maniaplanet\DedicatedServer\Xmlrpc\TransportException;
 
 require_once __DIR__ . '/Libs/Maniaplanet/DedicatedServer/Connection.php';
@@ -405,7 +404,8 @@ class ManiaControl implements CommandListener, TimerListener {
 		try {
 			$this->client = Connection::factory($this->server->config->host, $this->server->config->port, self::CONNECT_TIMEOUT, $this->server->config->login, $this->server->config->pass);
 		} catch (Exception $e) {
-			trigger_error("Couldn't authenticate on server with user '{$this->server->config->login}'! " . $e->getMessage(), E_USER_ERROR);
+			$message = "Couldn't authenticate on Server with User '{$this->server->config->login}' & Pass '{$this->server->config->pass}'! " . $e->getMessage();
+			$this->quit($message);
 		}
 
 		// Enable callback system
