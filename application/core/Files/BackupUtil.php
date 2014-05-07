@@ -23,21 +23,23 @@ abstract class BackupUtil {
 	 * @return bool
 	 */
 	public static function performFullBackup() {
-		$backupFolder   = self::getBackupFolder();
-		$backupFileName = $backupFolder . 'backup_' . ManiaControl::VERSION . '_' . date('y-m-d') . '_' . time() . '.zip';
+		$backupFolder = self::getBackupFolder();
+		if (!$backupFolder) {
+			return false;
+		}
+		$backupFileName = $backupFolder . 'backup_' . ManiaControl::VERSION . '_' . date('y-m-d_H-i') . '_' . time() . '.zip';
 		$backupZip      = new \ZipArchive();
 		if ($backupZip->open($backupFileName, \ZipArchive::CREATE) !== true) {
 			trigger_error("Couldn't create Backup Zip!");
 			return false;
 		}
-		$excludes   = array('.', '..', 'backup', 'logs', 'ManiaControl.log');
+		$excludes   = array('backup', 'logs', 'ManiaControl.log');
 		$pathInfo   = pathInfo(ManiaControlDir);
 		$parentPath = $pathInfo['dirname'] . DIRECTORY_SEPARATOR;
 		$dirName    = $pathInfo['basename'];
 		$backupZip->addEmptyDir($dirName);
 		self::zipDirectory($backupZip, ManiaControlDir, strlen($parentPath), $excludes);
-		$backupZip->close();
-		return true;
+		return $backupZip->close();;
 	}
 
 	/**
@@ -47,8 +49,13 @@ abstract class BackupUtil {
 	 */
 	private static function getBackupFolder() {
 		$backupFolder = ManiaControlDir . self::FOLDER_NAME_BACKUP;
-		if (!is_dir($backupFolder)) {
-			mkdir($backupFolder);
+		if (!is_dir($backupFolder) && !mkdir($backupFolder)) {
+			trigger_error("Couldn't create Backup Folder!");
+			return false;
+		}
+		if (!is_writeable($backupFolder)) {
+			trigger_error("ManiaControl doesn't have the necessary Writing Rights for the Backup Folder!");
+			return false;
 		}
 		return $backupFolder;
 	}
@@ -64,11 +71,14 @@ abstract class BackupUtil {
 	 */
 	private static function zipDirectory(\ZipArchive &$zipArchive, $folderName, $prefixLength, array $excludes = array()) {
 		$folderHandle = opendir($folderName);
-		if (!$folderHandle) {
+		if (!is_resource($folderHandle)) {
 			trigger_error("Couldn't open Folder '{$folderName}' for Backup!");
 			return false;
 		}
 		while (false !== ($file = readdir($folderHandle))) {
+			if (substr($file, 0, 1) === '.') {
+				continue;
+			}
 			if (in_array($file, $excludes)) {
 				continue;
 			}
@@ -94,20 +104,22 @@ abstract class BackupUtil {
 	 * @return bool
 	 */
 	public static function performPluginsBackup() {
-		$backupFolder   = self::getBackupFolder();
-		$backupFileName = $backupFolder . 'backup_plugins_' . date('y-m-d') . '_' . time() . '.zip';
+		$backupFolder = self::getBackupFolder();
+		if (!$backupFolder) {
+			return false;
+		}
+		$backupFileName = $backupFolder . 'backup_plugins_' . ManiaControl::VERSION . date('y-m-d_H-i') . '_' . time() . '.zip';
 		$backupZip      = new \ZipArchive();
 		if ($backupZip->open($backupFileName, \ZipArchive::CREATE) !== true) {
 			trigger_error("Couldn't create Backup Zip!");
 			return false;
 		}
-		$excludes   = array('.', '..');
+		$excludes   = array();
 		$pathInfo   = pathInfo(ManiaControlDir . 'plugins');
 		$parentPath = $pathInfo['dirname'] . DIRECTORY_SEPARATOR;
 		$dirName    = $pathInfo['basename'];
 		$backupZip->addEmptyDir($dirName);
 		self::zipDirectory($backupZip, ManiaControlDir . 'plugins', strlen($parentPath), $excludes);
-		$backupZip->close();
-		return true;
+		return $backupZip->close();;
 	}
 }
