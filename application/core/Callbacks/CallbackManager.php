@@ -120,11 +120,10 @@ class CallbackManager {
 		$removed = false;
 		foreach ($this->callbackListeners as &$listeners) {
 			foreach ($listeners as $key => &$listenerCallback) {
-				if ($listenerCallback[0] != $listener) {
-					continue;
+				if ($listenerCallback[0] === $listener) {
+					unset($listeners[$key]);
+					$removed = true;
 				}
-				unset($listeners[$key]);
-				$removed = true;
 			}
 		}
 		return $removed;
@@ -140,11 +139,10 @@ class CallbackManager {
 		$removed = false;
 		foreach ($this->scriptCallbackListener as &$listeners) {
 			foreach ($listeners as $key => &$listenerCallback) {
-				if ($listenerCallback[0] != $listener) {
-					continue;
+				if ($listenerCallback[0] === $listener) {
+					unset($listeners[$key]);
+					$removed = true;
 				}
-				unset($listeners[$key]);
-				$removed = true;
 			}
 		}
 		return $removed;
