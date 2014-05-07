@@ -127,13 +127,12 @@ class ErrorHandler {
 	 * @param string $errorString
 	 * @param string $errorFile
 	 * @param int    $errorLine
+	 * @param array  $errorContext
 	 * @return bool
 	 */
-	public function handleError($errorNumber, $errorString, $errorFile = null, $errorLine = -1) {
-		$userError = $this->isUserErrorNumber($errorNumber);
-
-		if (!$userError && error_reporting() === 0) {
-			return;
+	public function handleError($errorNumber, $errorString, $errorFile = null, $errorLine = -1, array $errorContext = array()) {
+		if (error_reporting() === 0) {
+			return false;
 		}
 
 		$errorTag = $this->getErrorTag($errorNumber);
@@ -145,7 +144,7 @@ class ErrorHandler {
 		$logMessage = $message . PHP_EOL . 'File&Line: ' . $fileLine . PHP_EOL . 'Trace: ' . $traceString;
 		logMessage($logMessage);
 
-		if ($this->reportErrors && !$userError) {
+		if ($this->reportErrors && !$this->isUserErrorNumber($errorNumber)) {
 			$error                    = array();
 			$error['Type']            = 'Error';
 			$error['Message']         = $message;
@@ -156,15 +155,12 @@ class ErrorHandler {
 
 			if ($this->maniaControl->server) {
 				$error['ServerLogin'] = $this->maniaControl->server->login;
-			} else {
-				$error['ServerLogin'] = '';
 			}
 
 			if ($this->maniaControl->settingManager && $this->maniaControl->updateManager) {
 				$error['UpdateChannel']       = $this->maniaControl->settingManager->getSetting($this->maniaControl->updateManager, UpdateManager::SETTING_UPDATECHECK_CHANNEL);
-				$error['ManiaControlVersion'] = ManiaControl::VERSION . '#' . $this->maniaControl->updateManager->getNightlyBuildDate();
+				$error['ManiaControlVersion'] = ManiaControl::VERSION . ' ' . $this->maniaControl->updateManager->getNightlyBuildDate();
 			} else {
-				$error['UpdateChannel']       = '';
 				$error['ManiaControlVersion'] = ManiaControl::VERSION;
 			}
 
@@ -173,15 +169,15 @@ class ErrorHandler {
 
 			$url     = ManiaControl::URL_WEBSERVICE . 'errorreport?error=' . urlencode($info);
 			$success = FileUtil::loadFile($url);
-
-			if (!json_decode($success)) {
-				logMessage('Error-Report failed!');
-			} else {
+			$success = json_decode($success);
+			if ($success) {
 				logMessage('Error successfully reported!');
+			} else {
+				logMessage('Error-Report failed!');
 			}
 		}
 		if ($this->shouldStopExecution($errorNumber)) {
-			logMessage('Stopping execution...');
+			logMessage('Stopping Execution...');
 			exit();
 		}
 		return false;
