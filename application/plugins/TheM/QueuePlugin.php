@@ -12,7 +12,6 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\TimerListener;
-use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
@@ -29,7 +28,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 // TODO: worst kick function
 // TODO: idlekick function (?)
 
-class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAnswerListener, TimerListener, Plugin {
+class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, TimerListener, Plugin {
 	/**
 	 * Constants
 	 */
@@ -68,7 +67,7 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 	/**
 	 * Load the plugin
 	 *
-	 * @param \ManiaControl\ManiaControl $maniaControl
+	 * @param ManiaControl $maniaControl
 	 * @return bool
 	 */
 	public function load(ManiaControl $maniaControl) {
