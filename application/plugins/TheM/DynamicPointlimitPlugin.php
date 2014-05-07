@@ -1,5 +1,7 @@
 <?php
+
 namespace TheM;
+
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
@@ -70,9 +72,6 @@ class DynamicPointlimitPlugin implements CallbackListener, CommandListener, Plug
 	 * Unload the plugin and its resources
 	 */
 	public function unload() {
-		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
-
-		unset($this->maniaControl);
 	}
 
 	/**

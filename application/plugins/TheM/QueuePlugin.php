@@ -1,4 +1,5 @@
 <?php
+
 namespace TheM;
 
 use FML\Controls\Frame;
@@ -103,23 +104,16 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 	 * Unload the plugin and its resources
 	 */
 	public function unload() {
-		$this->maniaControl->manialinkManager->unregisterManialinkPageAnswerListener($this);
-		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
-		$this->maniaControl->timerManager->unregisterTimerListenings($this);
-
 		foreach($this->spectators as $spectator) {
 			$this->maniaControl->client->forceSpectator($spectator, 3);
 			$this->maniaControl->client->forceSpectator($spectator, 0);
 		}
 
-		foreach($this->maniaControl->playerManager->getPlayers() as $player) {
-			$this->hideQueueWidget($player);
-		}
+		$this->maniaControl->manialinkManager->hideManialink(self::ML_ID);
 
 		$this->queue      = array();
 		$this->spectators = array();
 		$this->showPlay   = array();
-		unset($this->maniaControl);
 	}
 
 	/**
@@ -566,7 +560,6 @@ class QueuePlugin implements CallbackListener, CommandListener, ManialinkPageAns
 	 * @param Player $player
 	 */
 	private function hideQueueWidget(Player $player) {
-		$maniaLink = new ManiaLink(self::ML_ID);
-		$this->maniaControl->manialinkManager->sendManialink($maniaLink, $player->login);
+		$this->maniaControl->manialinkManager->hideManialink(self::ML_ID, $player);
 	}
 }

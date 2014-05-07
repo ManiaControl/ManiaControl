@@ -1,4 +1,5 @@
 <?php
+
 namespace TheM;
 
 use FML\Controls\Frame;
@@ -126,11 +127,6 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 		$this->serverData = array();
 
 		$this->maniaControl->actionsMenu->removeMenuItem(1, true);
-		$this->maniaControl->manialinkManager->unregisterManialinkPageAnswerListener($this);
-		$this->maniaControl->callbackManager->unregisterCallbackListener($this);
-		$this->maniaControl->commandManager->unregisterCommandListener($this);
-		$this->maniaControl->timerManager->unregisterTimerListenings($this);
-		unset($this->maniaControl);
 	}
 
 	/**
