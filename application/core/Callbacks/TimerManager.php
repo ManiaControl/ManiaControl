@@ -21,7 +21,7 @@ class TimerManager {
 	/**
 	 * Construct a new Timer Manager
 	 *
-	 * @param \ManiaControl\ManiaControl $maniaControl
+	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
@@ -31,8 +31,8 @@ class TimerManager {
 	 * Registers a One Time Listening
 	 *
 	 * @param TimerListener $listener
-	 * @param               $method
-	 * @param               $time
+	 * @param string        $method
+	 * @param float         $time
 	 */
 	public function registerOneTimeListening(TimerListener $listener, $method, $time) {
 		$this->registerTimerListening($listener, $method, $time, true);
@@ -41,10 +41,10 @@ class TimerManager {
 	/**
 	 * Register a Timer Listening, note < 10ms it can get inaccurate
 	 *
-	 * @param TimerListener  $listener
-	 * @param      string    $method
-	 * @param          float $time
-	 * @param bool           $oneTime
+	 * @param TimerListener $listener
+	 * @param string        $method
+	 * @param float         $time
+	 * @param bool          $oneTime
 	 * @return bool
 	 */
 	public function registerTimerListening(TimerListener $listener, $method, $time, $oneTime = false) {
@@ -74,7 +74,7 @@ class TimerManager {
 	 * Unregister a Timer Listening
 	 *
 	 * @param TimerListener $listener
-	 * @param               $method
+	 * @param string        $method
 	 * @return bool
 	 */
 	public function unregisterTimerListening(TimerListener $listener, $method) {
