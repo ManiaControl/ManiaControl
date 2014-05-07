@@ -124,7 +124,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		$this->maniaControl->fileReader->loadFile($url, function ($dataJson, $error) use (&$function) {
 			$versions = json_decode($dataJson);
 			if (!$versions || !isset($versions[0])) {
-				call_user_func($function, null);
+				call_user_func($function);
 			} else {
 				$updateData = new UpdateData($versions[0]);
 				call_user_func($function, $updateData);
@@ -147,11 +147,11 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	}
 
 	/**
-	 * Handle the fetched Update Data
+	 * Handle the fetched Update Data of the hourly Check
 	 *
 	 * @param UpdateData $updateData
 	 */
-	public function handleUpdateCheck(UpdateData $updateData) {
+	public function handleUpdateCheck(UpdateData $updateData = null) {
 		if (!$this->checkUpdateData($updateData)) {
 			// No new update available
 			return;
@@ -162,12 +162,14 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			return;
 		}
 
-		if ($this->isNightlyUpdateChannel()) {
-			$this->maniaControl->log("New Nightly Build ({$updateData->releaseDate}) available!");
-		} else {
-			$this->maniaControl->log("New ManiaControl Version {$updateData->version} available!");
+		if ($this->coreUpdateData != $updateData) {
+			if ($this->isNightlyUpdateChannel()) {
+				$this->maniaControl->log("New Nightly Build ({$updateData->releaseDate}) available!");
+			} else {
+				$this->maniaControl->log("New ManiaControl Version {$updateData->version} available!");
+			}
+			$this->setCoreUpdateData($updateData);
 		}
-		$this->setCoreUpdateData($updateData);
 
 		$this->checkAutoUpdate();
 	}
