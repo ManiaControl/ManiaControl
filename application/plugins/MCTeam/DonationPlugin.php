@@ -55,9 +55,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	/*
 	 * Private Properties
 	 */
-	/**
-	 * @var maniaControl $maniaControl
-	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 
 	/**
@@ -98,7 +96,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 * @see \ManiaControl\Plugins\Plugin::getDescription()
 	 */
 	public static function getDescription() {
-		return 'Plugin offering commands like /donate, /pay and /planets and a donation widget.';
+		return 'Plugin offering Commands like /donate, /pay and /planets and a Donation Widget.';
 	}
 
 	/**
@@ -136,9 +134,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	}
 
 	/**
-	 * Handle ManiaControl OnStartup
-	 *
-	 * @param array $callback
+	 * Display the widget
 	 */
 	public function displayWidget() {
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATE_WIDGET_ACTIVATED)) {
@@ -149,7 +145,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	/**
 	 * Displays the Donate Widget
 	 *
-	 * @param bool $login
+	 * @param string $login
 	 */
 	public function displayDonateWidget($login = false) {
 		$posX              = $this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATE_WIDGET_POSX);
@@ -273,7 +269,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 * Handles a Player Donate
 	 *
 	 * @param Player $player
-	 * @param        $value
+	 * @param int    $value
 	 */
 	private function handleDonation(Player $player, $amount, $receiver = '', $receiverName = false) {
 
@@ -313,8 +309,6 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 					break;
 			}
 		}, $player, $amount, $message);
-
-		return true;
 	}
 
 	/**
@@ -334,19 +328,18 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 *
 	 * @param array  $chatCallback
 	 * @param Player $player
-	 * @return bool
 	 */
 	public function command_Donate(array $chatCallback, Player $player) {
 		$text   = $chatCallback[1][2];
 		$params = explode(' ', $text);
 		if (count($params) < 2) {
 			$this->sendDonateUsageExample($player);
-			return false;
+			return;
 		}
 		$amount = (int)$params[1];
 		if (!$amount || $amount <= 0) {
 			$this->sendDonateUsageExample($player);
-			return false;
+			return;
 		}
 		if (count($params) >= 3) {
 			$receiver       = $params[2];
@@ -357,18 +350,17 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 			$receiverName = $this->maniaControl->client->getServerName();
 		}
 
-		return $this->handleDonation($player, $amount, $receiver, $receiverName);
+		$this->handleDonation($player, $amount, $receiver, $receiverName);
 	}
 
 	/**
 	 * Send an usage example for /donate to the player
 	 *
 	 * @param Player $player
-	 * @return boolean
 	 */
 	private function sendDonateUsageExample(Player $player) {
 		$message = "Usage Example: '/donate 100'";
-		return $this->maniaControl->chat->sendChat($message, $player->login);
+		$this->maniaControl->chat->sendChat($message, $player->login);
 	}
 
 	/**
@@ -376,23 +368,22 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 *
 	 * @param array  $chatCallback
 	 * @param Player $player
-	 * @return bool
 	 */
 	public function command_Pay(array $chatCallback, Player $player) {
 		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
-			return false;
+			return;
 		}
 		$text   = $chatCallback[1][2];
 		$params = explode(' ', $text);
 		if (count($params) < 2) {
 			$this->sendPayUsageExample($player);
-			return false;
+			return;
 		}
 		$amount = (int)$params[1];
 		if (!$amount || $amount <= 0) {
 			$this->sendPayUsageExample($player);
-			return false;
+			return;
 		}
 		if (count($params) >= 3) {
 			$receiver = $params[2];
@@ -418,19 +409,16 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 					break;
 			}
 		}, $receiver, $amount, $message);
-
-		return true;
 	}
 
 	/**
 	 * Send an usage example for /pay to the player
 	 *
 	 * @param Player $player
-	 * @return boolean
 	 */
 	private function sendPayUsageExample(Player $player) {
 		$message = "Usage Example: '/pay 100 login'";
-		return $this->maniaControl->chat->sendChat($message, $player->login);
+		$this->maniaControl->chat->sendChat($message, $player->login);
 	}
 
 	/**
@@ -438,16 +426,15 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 *
 	 * @param array  $chatCallback
 	 * @param Player $player
-	 * @return bool
 	 */
 	public function command_GetPlanets(array $chatCallback, Player $player) {
 		if (!$this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
-			return false;
+			return;
 		}
 		$planets = $this->maniaControl->client->getServerPlanets();
 		$message = "This Server has {$planets} Planets!";
-		return $this->maniaControl->chat->sendInformation($message, $player->login);
+		$this->maniaControl->chat->sendInformation($message, $player->login);
 	}
 
 	/**
@@ -461,10 +448,9 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	}
 
 	/**
-	 * Provides a ManiaLink overview with donators.
+	 * Provide an overview ManiaLink with donators
 	 *
 	 * @param Player $player
-	 * @return null
 	 */
 	private function showTopDonsList(Player $player) {
 		$stats = $this->maniaControl->statisticManager->getStatsRanking(self::STAT_PLAYER_DONATIONS);
