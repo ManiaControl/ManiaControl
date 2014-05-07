@@ -369,9 +369,7 @@ class ManiaControl implements CommandListener, TimerListener {
 			} catch (TransportException $e) {
 				$this->log("Connection interrupted!");
 				// TODO remove
-				if ($this->errorHandler) {
-					$this->errorHandler->handleException($e, false);
-				}
+				$this->errorHandler->handleException($e, false);
 				$this->quit($e->getMessage());
 			}
 
@@ -380,8 +378,7 @@ class ManiaControl implements CommandListener, TimerListener {
 
 			// Yield for next tick
 			$loopEnd = microtime(true);
-
-			$sleepTime = (int)(2000 - ($loopEnd - $loopStart) * 1000000);
+			$sleepTime = (int)(2500 - ($loopEnd - $loopStart) * 1000000);
 			if ($sleepTime > 0) {
 				usleep($sleepTime);
 			}
