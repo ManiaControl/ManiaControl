@@ -296,7 +296,7 @@ class ManiaControl implements CommandListener, TimerListener {
 				// Close the client connection
 				$this->client->delete($this->server->ip, $this->server->port);
 			} catch (TransportException $e) {
-				$this->errorHandler->triggerDebugNotice($e->getMessage() . " File: " . $e->getFile() . " Line: " . $e->getLine());
+				$this->errorHandler->handleException($e, false);
 			}
 		}
 
