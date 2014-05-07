@@ -15,7 +15,7 @@ abstract class BackupUtil {
 	/*
 	 * Constants
 	 */
-	const FOLDER_NAME_BACKUP = 'backup/';
+	const FOLDER_NAME_BACKUP = 'backup';
 
 	/**
 	 * Perform a Full Backup of ManiaControl
@@ -33,13 +33,14 @@ abstract class BackupUtil {
 			trigger_error("Couldn't create Backup Zip!");
 			return false;
 		}
-		$excludes   = array('backup', 'logs', 'ManiaControl.log');
-		$pathInfo   = pathInfo(ManiaControlDir);
-		$parentPath = $pathInfo['dirname'] . DIRECTORY_SEPARATOR;
-		$dirName    = $pathInfo['basename'];
+		$excludes      = array();
+		$baseFileNames = array('configs', 'core', 'plugins', 'ManiaControl.php');
+		$pathInfo      = pathInfo(ManiaControlDir);
+		$parentPath    = $pathInfo['dirname'] . DIRECTORY_SEPARATOR;
+		$dirName       = $pathInfo['basename'];
 		$backupZip->addEmptyDir($dirName);
-		self::zipDirectory($backupZip, ManiaControlDir, strlen($parentPath), $excludes);
-		return $backupZip->close();;
+		self::zipDirectory($backupZip, ManiaControlDir, strlen($parentPath), $excludes, $baseFileNames);
+		return $backupZip->close();
 	}
 
 	/**
@@ -48,7 +49,7 @@ abstract class BackupUtil {
 	 * @return string
 	 */
 	private static function getBackupFolder() {
-		$backupFolder = ManiaControlDir . self::FOLDER_NAME_BACKUP;
+		$backupFolder = ManiaControlDir . self::FOLDER_NAME_BACKUP . DIRECTORY_SEPARATOR;
 		if (!is_dir($backupFolder) && !mkdir($backupFolder)) {
 			trigger_error("Couldn't create Backup Folder!");
 			return false;
@@ -61,25 +62,33 @@ abstract class BackupUtil {
 	}
 
 	/**
-	 * Add a complete Directory to the ZipArchive
+	 * Add a Directory to the ZipArchive
 	 *
 	 * @param \ZipArchive $zipArchive
 	 * @param string      $folderName
 	 * @param int         $prefixLength
 	 * @param array       $excludes
+	 * @param array       $baseFileNames
 	 * @return bool
 	 */
-	private static function zipDirectory(\ZipArchive &$zipArchive, $folderName, $prefixLength, array $excludes = array()) {
+	private static function zipDirectory(\ZipArchive &$zipArchive, $folderName, $prefixLength, array $excludes = array(), array $baseFileNames = array()) {
 		$folderHandle = opendir($folderName);
 		if (!is_resource($folderHandle)) {
 			trigger_error("Couldn't open Folder '{$folderName}' for Backup!");
 			return false;
 		}
+		$useBaseFileNames = (count($baseFileNames) > 0);
 		while (false !== ($file = readdir($folderHandle))) {
 			if (substr($file, 0, 1) === '.') {
+				// Skip such .files
 				continue;
 			}
 			if (in_array($file, $excludes)) {
+				// Excluded
+				continue;
+			}
+			if ($useBaseFileNames && !in_array($file, $baseFileNames)) {
+				// Not one of the base files
 				continue;
 			}
 			$filePath  = $folderName . DIRECTORY_SEPARATOR . $file;
@@ -114,12 +123,12 @@ abstract class BackupUtil {
 			trigger_error("Couldn't create Backup Zip!");
 			return false;
 		}
-		$excludes   = array();
-		$pathInfo   = pathInfo(ManiaControlDir . 'plugins');
+		$directory  = ManiaControlDir . 'plugins';
+		$pathInfo   = pathInfo($directory);
 		$parentPath = $pathInfo['dirname'] . DIRECTORY_SEPARATOR;
 		$dirName    = $pathInfo['basename'];
 		$backupZip->addEmptyDir($dirName);
-		self::zipDirectory($backupZip, ManiaControlDir . 'plugins', strlen($parentPath), $excludes);
-		return $backupZip->close();;
+		self::zipDirectory($backupZip, $directory, strlen($parentPath));
+		return $backupZip->close();
 	}
 }
