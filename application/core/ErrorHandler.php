@@ -145,7 +145,7 @@ class ErrorHandler {
 		$logMessage = $message . PHP_EOL . 'File&Line: ' . $fileLine . PHP_EOL . 'Trace: ' . $traceString;
 		logMessage($logMessage);
 
-		if ($this->reportErrors) {
+		if ($this->reportErrors && !$userError) {
 			$error                    = array();
 			$error['Type']            = 'Error';
 			$error['Message']         = $message;
