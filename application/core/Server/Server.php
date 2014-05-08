@@ -275,10 +275,10 @@ class Server implements CallbackListener {
 	/**
 	 * Get Server Player Info
 	 *
-	 * @return \Maniaplanet\DedicatedServer\Structures\PlayerInfo
+	 * @return \Maniaplanet\DedicatedServer\Structures\PlayerDetailedInfo
 	 */
 	public function getInfo() {
-		return $this->maniaControl->client->getMainServerPlayerInfo();
+		return $this->maniaControl->client->getDetailedPlayerInfo($this->login);
 	}
 
 	/**
