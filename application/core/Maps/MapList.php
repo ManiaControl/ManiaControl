@@ -24,8 +24,7 @@ use ManiaControl\Manialinks\IconManager;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
-use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
-use Maniaplanet\DedicatedServer\Xmlrpc\NextMapException;
+use Maniaplanet\DedicatedServer\Xmlrpc\MapNotFoundException;
 use MCTeam\CustomVotesPlugin;
 use MCTeam\KarmaPlugin;
 
@@ -214,9 +213,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$frame->add($descriptionLabel);
 
 		$queuedMaps = $this->maniaControl->mapManager->mapQueue->getQueuedMapsRanking();
-		/**
-		 * @var KarmaPlugin $karmaPlugin
-		 */
+		/** @var KarmaPlugin $karmaPlugin */
 		$karmaPlugin = $this->maniaControl->pluginManager->getPlugin(self::DEFAULT_KARMA_PLUGIN);
 
 		$pageNumber      = 1 + $chunk * self::MAX_PAGES_PER_CHUNK;
@@ -226,9 +223,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$id         = 1 + $chunk * self::MAX_PAGES_PER_CHUNK * self::MAX_MAPS_PER_PAGE;
 		$y          = $height / 2 - 10;
 		$pageFrames = array();
-		/**
-		 * @var Map $map
-		 */
+		/** @var Map $map */
 		$currentMap       = $this->maniaControl->mapManager->getCurrentMap();
 		$mxIcon           = $this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON);
 		$mxIconHover      = $this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON_MOVER);
@@ -310,9 +305,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$array  = array($id => $x + 5, $mxId => $x + 10, Formatter::stripDirtyCodes($map->name) => $x + 20, $map->authorNick => $x + 68);
 			$labels = $this->maniaControl->manialinkManager->labelLine($mapFrame, $array);
 			if (isset($labels[3])) {
-				/**
-				 * @var Label $label
-				 */
+				/** @var Label $label */
 				$label       = $labels[3];
 				$description = 'Click to checkout all maps by $<' . $map->authorLogin . '$>!';
 				$label->setAction(MapCommands::ACTION_SHOW_AUTHOR . $map->authorLogin);
@@ -377,7 +370,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$eraseLabel->setText('x');
 				$eraseLabel->setTextColor('a00');
 
-				$confirmFrame = $this->buildConfirmFrame($maniaLink, $y, $id, $map->uid);
+				$confirmFrame = $this->buildConfirmFrame($maniaLink, $y, $map->uid, true);
 				$eraseLabel->addToggleFeature($confirmFrame);
 				$description = 'Remove Map: $<' . $map->name . '$>';
 				$eraseLabel->addTooltipLabelFeature($descriptionLabel, $description);
@@ -394,7 +387,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$switchLabel->setText('»');
 				$switchLabel->setTextColor('0f0');
 
-				$confirmFrame = $this->buildConfirmFrame($maniaLink, $y, $id);
+				$confirmFrame = $this->buildConfirmFrame($maniaLink, $y, $map->uid);
 				$switchLabel->addToggleFeature($confirmFrame);
 
 				$description = 'Switch Directly to Map: $<' . $map->name . '$>';
@@ -409,7 +402,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 					$switchQuad->setZ(0.2);
 					$switchQuad->setSubStyle($switchQuad::SUBSTYLE_Validate_Step2);
 					$switchQuad->setSize(3.8, 3.8);
-					$switchQuad->setAction(self::ACTION_START_SWITCH_VOTE . '.' . ($id - 1));
+					$switchQuad->setAction(self::ACTION_START_SWITCH_VOTE . '.' . $map->uid);
 					$description = 'Start Map-Switch Vote: $<' . $map->name . '$>';
 					$switchQuad->addTooltipLabelFeature($descriptionLabel, $description);
 				} else {
@@ -422,7 +415,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 					$switchLabel->setTextSize(2);
 					$switchLabel->setText('»');
 					$switchLabel->setTextColor('0f0');
-					$switchLabel->setAction(self::ACTION_START_SWITCH_VOTE . '.' . ($id - 1));
+					$switchLabel->setAction(self::ACTION_START_SWITCH_VOTE . '.' . ($map->uid));
 					$description = 'Start Map-Switch Vote: $<' . $map->name . '$>';
 					$switchLabel->addTooltipLabelFeature($descriptionLabel, $description);
 				}
@@ -491,11 +484,11 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 *
 	 * @param ManiaLink $maniaLink
 	 * @param           $y
-	 * @param           $id
 	 * @param bool      $mapUid
+	 * @param bool      $erase
 	 * @return Frame
 	 */
-	public function buildConfirmFrame(Manialink $maniaLink, $y, $id, $mapUid = false) {
+	public function buildConfirmFrame(Manialink $maniaLink, $y, $mapUid, $erase = false) {
 		$width        = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
 		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowStyle();
 		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowSubStyle();
@@ -529,8 +522,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$buttLabel->setSize(3, 3);
 		$buttLabel->setAlign(Control::CENTER, Control::CENTER);
 
-		if (!$mapUid) {
-			$quad->setAction(self::ACTION_SWITCH_MAP . '.' . ($id - 1));
+		if (!$erase) {
+			$quad->setAction(self::ACTION_SWITCH_MAP . '.' . $mapUid);
 			$buttLabel->setText('»');
 			$buttLabel->setTextColor('0f0');
 			$buttLabel->setTextSize(2);
@@ -538,7 +531,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$buttLabel->setTextSize(1);
 			$buttLabel->setText('x');
 			$buttLabel->setTextColor('a00');
-			$quad->setAction(self::ACTION_ERASE_MAP . '.' . ($id - 1) . '.' . $mapUid);
+			$quad->setAction(self::ACTION_ERASE_MAP . '.' . $mapUid);
 		}
 		return $confirmFrame;
 	}
@@ -582,29 +575,25 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$action = $actionArray[0] . '.' . $actionArray[1];
 		$login  = $callback[1][1];
 		$player = $this->maniaControl->playerManager->getPlayer($login);
-		$mapId  = (int)$actionArray[2];
+		$mapUid = $actionArray[2];
 
 		switch ($action) {
 			case self::ACTION_UPDATE_MAP:
-				$mapUid = $actionArray[2];
 				$this->maniaControl->mapManager->updateMap($player, $mapUid);
 				$this->showMapList($player);
 				break;
 			case self::ACTION_ERASE_MAP:
-				$mapUid = $actionArray[3];
 				$this->maniaControl->mapManager->removeMap($player, $mapUid);
-				$this->showMapList($player);
 				break;
 			case self::ACTION_SWITCH_MAP:
 				try {
-					$this->maniaControl->client->jumpToMapIndex($mapId);
-				} catch (Exception $e) {
-					// TODO: is it even possible that an exception other than connection errors will be thrown? - remove try-catch?
+					$this->maniaControl->client->jumpToMapIdent($mapUid);
+				} catch (MapNotFoundException $e) {
 					$this->maniaControl->chat->sendError("Error while Jumping to Map Index");
 					break;
 				}
-				$mapList = $this->maniaControl->mapManager->getMaps();
-				$map     = $mapList[$mapId];
+
+				$map = $this->maniaControl->mapManager->getMapByUid($mapUid);
 
 				$message = '$<' . $player->nickname . '$> skipped to Map $z$<' . $map->name . '$>!';
 				$this->maniaControl->chat->sendSuccess($message);
@@ -613,18 +602,12 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$this->playerCloseWidget($player);
 				break;
 			case self::ACTION_START_SWITCH_VOTE:
-				/**
-				 * @var $votesPlugin CustomVotesPlugin
-				 */
+				/** @var $votesPlugin CustomVotesPlugin */
 				$votesPlugin = $this->maniaControl->pluginManager->getPlugin(self::DEFAULT_CUSTOM_VOTE_PLUGIN);
-				$mapList     = $this->maniaControl->mapManager->getMaps();
-				$map         = $mapList[$mapId];
+				$map         = $this->maniaControl->mapManager->getMapByUid($mapUid);
 
 				$message = '$<' . $player->nickname . '$>$s started a vote to switch to $<' . $map->name . '$>!';
 
-				/**
-				 * @var Map $map
-				 */
 				$votesPlugin->defineVote('switchmap', "Goto " . $map->name, true, $message);
 
 				$self = $this;
@@ -633,18 +616,17 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 					$votesPlugin->undefineVote('switchmap');
 
 					try {
-						$index = $self->maniaControl->mapManager->getMapIndex($map);
-						$self->maniaControl->client->jumpToMapIndex($index);
-					} catch (NextMapException $e) {
+						$self->maniaControl->client->JumpToMapIdent($map->uid);
+					} catch (MapNotFoundException $e) {
 					}
 				});
 				break;
 			case self::ACTION_QUEUED_MAP:
-				$this->maniaControl->mapManager->mapQueue->addMapToMapQueue($callback[1][1], $actionArray[2]);
+				$this->maniaControl->mapManager->mapQueue->addMapToMapQueue($callback[1][1], $mapUid);
 				$this->showMapList($player);
 				break;
 			case self::ACTION_UNQUEUE_MAP:
-				$this->maniaControl->mapManager->mapQueue->removeFromMapQueue($player, $actionArray[2]);
+				$this->maniaControl->mapManager->mapQueue->removeFromMapQueue($player, $mapUid);
 				$this->showMapList($player);
 				break;
 			default:

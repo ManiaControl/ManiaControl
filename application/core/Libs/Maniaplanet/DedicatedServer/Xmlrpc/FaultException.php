@@ -43,6 +43,8 @@ class FaultException extends Exception
 				return new ServerOptionsException($faultString, $faultCode);
 			case 'the next map must be different from the current one.':
 				return new NextMapException($faultString, $faultCode);
+			case 'Map not found.':
+				return new MapNotFoundException($faultString, $faultCode);
 		}
 
 		return new self($faultString, $faultCode);
@@ -62,3 +64,4 @@ class PlayerAlreadyIgnoredException extends FaultException{}
 class PlayerNotIgnoredException extends FaultException{}
 class ServerOptionsException extends FaultException{}
 class NextMapException extends FaultException{}
+class MapNotFoundException extends FaultException{}
