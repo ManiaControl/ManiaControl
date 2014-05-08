@@ -33,7 +33,7 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 	 * Constants
 	 */
 	const ID                 = 22;
-	const VERSION            = 0.11;
+	const VERSION            = 0.12;
 	const ML_ID              = 'Queue.Widget';
 	const ML_ADDTOQUEUE      = 'Queue.Add';
 	const ML_REMOVEFROMQUEUE = 'Queue.Remove';
@@ -90,11 +90,13 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 		$maxPlayers       = $this->maniaControl->client->getMaxPlayers();
 		$this->maxPlayers = $maxPlayers['CurrentValue'];
 
-		foreach($this->maniaControl->playerManager->getPlayers() as $player) {
-			if ($player->isSpectator) {
-				$this->spectators[$player->login] = $player->login;
-				$this->maniaControl->client->forceSpectator($player->login, 1);
-				$this->showJoinQueueWidget($player);
+		if (!($this->maniaControl->client->getServerPassword() != false && $this->maniaControl->settingManager->getSetting($this, self::QUEUE_ACTIVE_ON_PASS) == false)) {
+			foreach($this->maniaControl->playerManager->getPlayers() as $player) {
+				if ($player->isSpectator) {
+					$this->spectators[$player->login] = $player->login;
+					$this->maniaControl->client->forceSpectator($player->login, 1);
+					$this->showJoinQueueWidget($player);
+				}
 			}
 		}
 	}
@@ -166,6 +168,10 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 	 * @param Player $player
 	 */
 	public function handlePlayerConnect(Player $player) {
+		if ($this->maniaControl->client->getServerPassword() != false && $this->maniaControl->settingManager->getSetting($this, self::QUEUE_ACTIVE_ON_PASS) == false) {
+			return;
+		}
+
 		$maxPlayers       = $this->maniaControl->client->getMaxPlayers();
 		$this->maxPlayers = $maxPlayers['CurrentValue'];
 
@@ -188,6 +194,10 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 	 * @param Player $player
 	 */
 	public function handlePlayerDisconnect(Player $player) {
+		if ($this->maniaControl->client->getServerPassword() != false && $this->maniaControl->settingManager->getSetting($this, self::QUEUE_ACTIVE_ON_PASS) == false) {
+			return;
+		}
+
 		$maxPlayers       = $this->maniaControl->client->getMaxPlayers();
 		$this->maxPlayers = $maxPlayers['CurrentValue'];
 
@@ -204,6 +214,10 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 	 * @param array $callback
 	 */
 	public function handlePlayerInfoChanged(array $callback) {
+		if ($this->maniaControl->client->getServerPassword() != false && $this->maniaControl->settingManager->getSetting($this, self::QUEUE_ACTIVE_ON_PASS) == false) {
+			return;
+		}
+
 		$login  = $callback[1][0]['Login'];
 		$player = $this->maniaControl->playerManager->getPlayer($login);
 
@@ -246,6 +260,10 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 	 * Function called on every second.
 	 */
 	public function handleEverySecond() {
+		if ($this->maniaControl->client->getServerPassword() != false && $this->maniaControl->settingManager->getSetting($this, self::QUEUE_ACTIVE_ON_PASS) == false) {
+			return;
+		}
+
 		if ($this->maxPlayers > (count($this->maniaControl->playerManager->players) - count($this->spectators))) {
 			$this->moveFirstPlayerToPlay();
 			$this->showQueueWidgetSpectators();
@@ -265,6 +283,10 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 	 * @param $currentMap
 	 */
 	public function handleBeginMap($currentMap) {
+		if ($this->maniaControl->client->getServerPassword() != false && $this->maniaControl->settingManager->getSetting($this, self::QUEUE_ACTIVE_ON_PASS) == false) {
+			return;
+		}
+
 		$maxPlayers       = $this->maniaControl->client->getMaxPlayers();
 		$this->maxPlayers = $maxPlayers['CurrentValue'];
 	}
