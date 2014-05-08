@@ -173,24 +173,13 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		}
 
 		/* Disable Standard Votes */
-		$array["Command"] = VoteRatio::COMMAND_BAN;
-		$array["Param"]   = "";
-		$array["Ratio"]   = (float)-1;
-		$ratioArray[]     = $array;
+		$ratioArray[] = new VoteRatio(VoteRatio::COMMAND_BAN, -1.);
+		$ratioArray[] = new VoteRatio(VoteRatio::COMMAND_KICK, -1.);
+		$ratioArray[] = new VoteRatio(VoteRatio::COMMAND_RESTART_MAP, -1.);
+		$ratioArray[] = new VoteRatio(VoteRatio::COMMAND_TEAM_BALANCE, -1.);
+		$ratioArray[] = new VoteRatio(VoteRatio::COMMAND_NEXT_MAP, -1.);
 
-		$array["Command"] = VoteRatio::COMMAND_KICK;
-		$ratioArray[]     = $array;
-
-		$array["Command"] = VoteRatio::COMMAND_RESTART_MAP;
-		$ratioArray[]     = $array;
-
-		$array["Command"] = VoteRatio::COMMAND_TEAM_BALANCE;
-		$ratioArray[]     = $array;
-
-		$array["Command"] = VoteRatio::COMMAND_NEXT_MAP;
-		$ratioArray[]     = $array;
-
-		$this->maniaControl->client->setCallVoteRatiosEx(false, $ratioArray);
+		$this->maniaControl->client->setCallVoteRatios($ratioArray, false);
 
 		$this->constructMenu();
 		return true;
@@ -386,20 +375,13 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		//Enable Standard Votes
 		$defaultRatio = $this->maniaControl->client->getCallVoteRatio();
 
-		$array["Command"] = VoteRatio::COMMAND_BAN;
-		$array["Param"]   = "";
-		$array["Ratio"]   = (float)$defaultRatio;
-		$ratioArray[]     = $array;
-		$array["Command"] = VoteRatio::COMMAND_KICK;
-		$ratioArray[]     = $array;
-		$array["Command"] = VoteRatio::COMMAND_RESTART_MAP;
-		$ratioArray[]     = $array;
-		$array["Command"] = VoteRatio::COMMAND_TEAM_BALANCE;
-		$ratioArray[]     = $array;
-		$array["Command"] = VoteRatio::COMMAND_NEXT_MAP;
-		$ratioArray[]     = $array;
+		$ratioArray[] = new VoteRatio(VoteRatio::COMMAND_BAN, $defaultRatio);
+		$ratioArray[] = new VoteRatio(VoteRatio::COMMAND_KICK, $defaultRatio);
+		$ratioArray[] = new VoteRatio(VoteRatio::COMMAND_RESTART_MAP, $defaultRatio);
+		$ratioArray[] = new VoteRatio(VoteRatio::COMMAND_TEAM_BALANCE, $defaultRatio);
+		$ratioArray[] = new VoteRatio(VoteRatio::COMMAND_NEXT_MAP, $defaultRatio);
 
-		$this->maniaControl->client->setCallVoteRatiosEx(false, $ratioArray);
+		$this->maniaControl->client->setCallVoteRatios($ratioArray, false);
 
 		$this->destroyVote();
 		$this->maniaControl->manialinkManager->hideManialink(self::MLID_ICON);
