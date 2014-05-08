@@ -72,6 +72,6 @@ class TimerListening {
 		if (!$time) {
 			$time = microtime(true);
 		}
-		return ($this->lastTrigger + $this->deltaTime > $time);
+		return ($this->lastTrigger + $this->deltaTime <= $time);
 	}
 }
