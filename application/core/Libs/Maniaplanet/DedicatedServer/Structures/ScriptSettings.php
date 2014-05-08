@@ -7,14 +7,14 @@
 
 namespace Maniaplanet\DedicatedServer\Structures;
 
-final class ScriptSettings extends AbstractStructure
+class ScriptSettings extends AbstractStructure
 {
-
+	/** @var string */
 	public $name;
+	/** @var string */
 	public $desc;
+	/** @var string */
 	public $type;
+	/** @var string */
 	public $default;
-
 }
-
-?>

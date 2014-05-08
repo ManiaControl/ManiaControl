@@ -22,9 +22,12 @@ if(extension_loaded('xmlrpc'))
 		 * @param mixed[] $args
 		 * @return string
 		 */
-		static function encode($method, $args)
+		static function encode($method, $args, $escape=true)
 		{
-			return xmlrpc_encode_request($method, $args, self::$options);
+			$opts = self::$options;
+			if(!$escape)
+				$opts['escaping'] = array();
+			return xmlrpc_encode_request($method, $args, $opts);
 		}
 
 		/**
@@ -40,7 +43,7 @@ if(extension_loaded('xmlrpc'))
 
 			if($method === null)
 			{
-				if(is_array($value) && @xmlrpc_is_fault($value))
+				if(is_array($value) && xmlrpc_is_fault($value))
 					return array('fault', $value);
 				return array('response', $value);
 			}
@@ -59,53 +62,78 @@ else
 		 * @param mixed[] $args
 		 * @return string
 		 */
-		static function encode($method, $args)
+		static function encode($method, $args, $escape=true)
 		{
-			$xml = '<?xml version="1.0" encoding="utf-8"?><methodCall><methodName><![CDATA['.$method.']]></methodName><params>';
+			$xml = '<?xml version="1.0" encoding="utf-8"?><methodCall><methodName>'.self::escape($method, $escape).'</methodName>';
+			if(!$args)
+				return $xml.'<params/></methodCall>';
+
+			$xml .= '<params>';
 			foreach($args as $arg)
-				$xml .= '<param><value>'.self::encodeValue($arg).'</value></param>';
-			$xml .= '</params></methodCall>';
-			return $xml;
+				$xml .= '<param><value>'.self::encodeValue($arg, $escape).'</value></param>';
+			return $xml.'</params></methodCall>';
 		}
 
 		/**
 		 * @param mixed $v
 		 * @return string
 		 */
-		private static function encodeValue($v)
+		private static function encodeValue($v, $escape=true)
 		{
 			switch(gettype($v))
 			{
 				case 'boolean':
-					return '<boolean><![CDATA['.((int) $v).']]></boolean>';
+					return '<boolean>'.self::escape((int) $v, $escape).'</boolean>';
 				case 'integer':
-					return '<int><![CDATA['.$v.']]></int>';
+					return '<int>'.self::escape($v, $escape).'</int>';
 				case 'double':
-					return '<double><![CDATA['.$v.']]></double>';
+					return '<double>'.self::escape($v, $escape).'</double>';
 				case 'string':
-					return '<string><![CDATA['.$v.']]></string>';
+				case 'NULL':
+					if(!$v)
+						return '<string/>';
+					return '<string>'.self::escape($v, $escape).'</string>';
 				case 'object':
 					if($v instanceof Base64)
-						return '<base64><![CDATA['.base64_encode($v->scalar).']]></base64>';
+					{
+						if(!$v->scalar)
+							return '<base64/>';
+						return '<base64>'.self::escape(base64_encode($v->scalar), $escape).'</base64>';
+					}
 					if($v instanceof \DateTime)
-						return '<dateTime.iso8601><![CDATA['.$v->format(self::DATE_FORMAT).']]></dateTime.iso8601>';
+						return '<dateTime.iso8601>'.self::escape($v->format(self::DATE_FORMAT), $escape).'</dateTime.iso8601>';
 					$v = get_object_vars($v);
-				// fallthrough
+					// fallthrough
 				case 'array':
 					$return = '';
+					// empty array case
+					if(!$v)
+						return '<array><data/></array>';
 					// pure array case
 					if(array_keys($v) === range(0, count($v) - 1))
 					{
 						foreach($v as $item)
-							$return .= '<value>'.self::encodeValue($item).'</value>';
+							$return .= '<value>'.self::encodeValue($item, $escape).'</value>';
 						return '<array><data>'.$return.'</data></array>';
 					}
 					// else it's a struct
 					foreach($v as $name => $value)
-						$return .= '<member><name><![CDATA['.$name.']]></name><value>'.self::encodeValue($value).'</value></member>';
+						$return .= '<member><name>'.self::escape($name, $escape).'</name><value>'.self::encodeValue($value, $escape).'</value></member>';
 					return '<struct>'.$return.'</struct>';
 			}
 			return '';
+		}
+
+		/**
+		 * @param string $str
+		 * @param bool $escape
+		 * @return string
+		 */
+		private static function escape($str, $escape=true)
+		{
+			if($escape)
+				return '<![CDATA['.$str.']]>';
+			return $str;
 		}
 
 		/**
@@ -142,7 +170,7 @@ else
 			switch($elt->getName())
 			{
 				case 'boolean':
-					return (bool) $elt;
+					return (bool) (int) $elt;
 				case 'i4':
 				case 'int':
 					return (int) $elt;
@@ -170,5 +198,3 @@ else
 }
 
 class ParseException extends Exception {}
-
-?>

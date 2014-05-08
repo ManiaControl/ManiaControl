@@ -8,5 +8,3 @@
 namespace Maniaplanet\DedicatedServer\Xmlrpc;
 
 class Exception extends \Exception {}
-
-?>

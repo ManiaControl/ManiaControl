@@ -4,6 +4,7 @@
  *
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL License 3
  */
+
 namespace Maniaplanet\DedicatedServer\Structures;
 
 class Bill extends AbstractStructure
@@ -14,9 +15,11 @@ class Bill extends AbstractStructure
 	const STATE_PAYED = 4;
 	const STATE_REFUSED = 5;
 	const STATE_ERROR = 6;
-	
+
+	/** @var int */
 	public $state;
+	/** @var string */
 	public $stateName;
+	/** @var int */
 	public $transactionId;
 }
-?>
