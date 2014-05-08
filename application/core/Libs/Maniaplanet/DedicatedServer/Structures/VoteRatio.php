@@ -11,8 +11,8 @@ class VoteRatio extends AbstractStructure
 {
 	const COMMAND_SCRIPT_SETTINGS = 'SetModeScriptSettingsAndCommands';
 	const COMMAND_NEXT_MAP = 'NextMap';
-	const COMMAND_JUMP_MAP = 'JumpToMapIndex';
-	const COMMAND_SET_NEXT_MAP = 'SetNextMapIndex';
+	const COMMAND_JUMP_MAP = 'JumpToMapIdent';
+	const COMMAND_SET_NEXT_MAP = 'SetNextMapIdent';
 	const COMMAND_RESTART_MAP = 'RestartMap';
 	const COMMAND_TEAM_BALANCE = 'AutoTeamBalance';
 	const COMMAND_KICK = 'Kick';
@@ -42,8 +42,8 @@ class VoteRatio extends AbstractStructure
 	function isValid()
 	{
 		return is_string($this->command)
-			&& is_string($this->param)
-			&& self::isRatio($this->ratio);
+		&& is_string($this->param)
+		&& self::isRatio($this->ratio);
 	}
 
 	/**
