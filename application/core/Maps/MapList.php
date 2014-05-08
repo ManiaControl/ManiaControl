@@ -139,6 +139,13 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$this->mapsInListShown[$player->login] = $this->maniaControl->mapManager->getMaps();
 		}
 
+		//FIXME
+		/*
+		 * not same result after map delete update (mapList contains still the removed map while mapManager->getMaps dont contain it)
+		 *	var_dump(count($mapList));
+		 *  var_dump($this->maniaControl->mapManager->getMapsCount());
+		 */
+
 		// Create ManiaLink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$script    = $maniaLink->getScript();
