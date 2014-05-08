@@ -7,10 +7,10 @@
 
 namespace Maniaplanet\DedicatedServer\Structures;
 
-class Mod extends AbstractStructure
+class Tag extends AbstractStructure
 {
-	/** var string */
-	public $env;
-	/** var string */
-	public $url;
+	/** @var string */
+	public $name;
+	/** @var string */
+	public $value;
 }

@@ -7,10 +7,14 @@
 
 namespace Maniaplanet\DedicatedServer\Structures;
 
-class Mod extends AbstractStructure
+class ForcedSkin extends AbstractStructure
 {
-	/** var string */
-	public $env;
-	/** var string */
+	/** @var string */
+	public $orig;
+	/** @var string */
+	public $name;
+	/** @var string */
+	public $checksum;
+	/** @var string */
 	public $url;
 }

@@ -7,10 +7,10 @@
 
 namespace Maniaplanet\DedicatedServer\Structures;
 
-class Mod extends AbstractStructure
+class PlayerAnswer extends Player
 {
-	/** var string */
-	public $env;
-	/** var string */
-	public $url;
+	/** @var int */
+	public $playerId;
+	/** @var int */
+	public $result;
 }

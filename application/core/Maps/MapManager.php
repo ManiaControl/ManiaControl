@@ -306,7 +306,7 @@ class MapManager implements CallbackListener {
 		} else {
 			// Write map via write file method
 			try {
-				$this->maniaControl->client->writeFileFromString($relativeMapFileName, $file);
+				$this->maniaControl->client->writeFile($relativeMapFileName, $file);
 			} catch (InvalidArgumentException $e) {
 				if ($e->getMessage() == 'data are too big') {
 					$this->maniaControl->chat->sendError("Map is too big for a remote save.", $login);
@@ -720,4 +720,4 @@ class MapManager implements CallbackListener {
 		return count($this->maps);
 	}
 	// TODO: add local map by filename
-} 
+}

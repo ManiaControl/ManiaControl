@@ -7,10 +7,10 @@
 
 namespace Maniaplanet\DedicatedServer\Structures;
 
-class Mod extends AbstractStructure
+class LadderLimits extends AbstractStructure
 {
-	/** var string */
-	public $env;
-	/** var string */
-	public $url;
+	/** @var float */
+	public $ladderServerLimitMin;
+	/** @var float */
+	public $ladderServerLimitMax;
 }

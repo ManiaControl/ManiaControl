@@ -7,10 +7,10 @@
 
 namespace Maniaplanet\DedicatedServer\Structures;
 
-class Mod extends AbstractStructure
+class PlayerBan extends Player
 {
-	/** var string */
-	public $env;
-	/** var string */
-	public $url;
+	/** @var string */
+	public $clientName;
+	/** @var string */
+	public $iPAddress;
 }

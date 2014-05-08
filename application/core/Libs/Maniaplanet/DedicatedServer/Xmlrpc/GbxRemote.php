@@ -17,7 +17,6 @@ class GbxRemote
 
 	private $socket;
 	private $timeouts = array(
-		'open' => 5,
 		'read' => 5000,
 		'write' => 5000
 	);
@@ -29,13 +28,12 @@ class GbxRemote
 	/**
 	 * @param string $host
 	 * @param int $port
-	 * @param int[string] $timeouts Override default timeouts for 'open' (in s), 'read' (in ms) and 'write' (in ms) socket operations
+	 * @param int $timeout Timeout when opening connection
 	 */
-	function __construct($host, $port, $timeouts = array())
+	function __construct($host, $port, $timeout = 5)
 	{
 		$this->requestHandle = (int) 0x80000000;
-		$this->timeouts = array_merge($this->timeouts, $timeouts);
-		$this->connect($host, $port);
+		$this->connect($host, $port, $timeout);
 	}
 
 	function __destruct()
@@ -45,10 +43,10 @@ class GbxRemote
 
 	/**
 	 * Change timeouts
-	 * @param int $read read timeout (in ms), null or 0 to leave unchanged
-	 * @param int $write write timeout (in ms), null or 0 to leave unchanged
+	 * @param int $read read timeout (in ms), 0 to leave unchanged
+	 * @param int $write write timeout (in ms), 0 to leave unchanged
 	 */
-	function setTimeouts($read=null, $write=null)
+	function setTimeouts($read=0, $write=0)
 	{
 		if($read)
 			$this->timeouts['read'] = $read;
@@ -68,12 +66,12 @@ class GbxRemote
 	/**
 	 * @param string $host
 	 * @param int $port
+	 * @param int $timeout
 	 * @throws TransportException
 	 */
-	private function connect($host, $port)
+	private function connect($host, $port, $timeout)
 	{
-		$this->socket = @fsockopen($host, $port, $errno, $errstr, $this->timeouts['open']);
-
+		$this->socket = @fsockopen($host, $port, $errno, $errstr, $timeout);
 		if(!$this->socket)
 			throw new TransportException('Cannot open socket', TransportException::NOT_INITIALIZED);
 
@@ -114,12 +112,13 @@ class GbxRemote
 
 		if(strlen($xml) > self::MAX_REQUEST_SIZE-8)
 		{
-			if($method != 'system.multicall' || count($args) < 2)
+			if($method != 'system.multicall' || count($args[0]) < 2)
 				throw new MessageException('Request too large', MessageException::REQUEST_TOO_LARGE);
 
-			$mid = count($args) >> 1;
-			$this->query('system.multicall', array_slice($args, 0, $mid));
-			$this->query('system.multicall', array_slice($args, $mid));
+			$mid = count($args[0]) >> 1;
+			$res1 = $this->query('system.multicall', array(array_slice($args[0], 0, $mid)));
+			$res2 = $this->query('system.multicall', array(array_slice($args[0], $mid)));
+			return array_merge($res1, $res2);
 		}
 
 		$this->writeMessage($xml);
@@ -151,7 +150,7 @@ class GbxRemote
 				$call = array_shift($this->multicallBuffer);
 				return $this->query($call['methodName'], $call['params']);
 			default:
-				$result = $this->query('system.multicall', $this->multicallBuffer);
+				$result = $this->query('system.multicall', array($this->multicallBuffer));
 				$this->multicallBuffer = array();
 				return $result;
 		}
@@ -185,9 +184,9 @@ class GbxRemote
 	 */
 	private function flush($waitResponse=false)
 	{
-		$r=array($this->socket);
-		$w=null;
-		$e=null;
+		$r = array($this->socket);
+		$w = null;
+		$e = null;
 		$n = @stream_select($r, $w, $e, 0);
 		while($waitResponse || $n > 0)
 		{
@@ -205,12 +204,8 @@ class GbxRemote
 					$this->callbacksBuffer[] = $value;
 			}
 
-			if(!$waitResponse){
-				$r=array($this->socket);
-				$w=null;
-				$e=null;
+			if(!$waitResponse)
 				$n = @stream_select($r, $w, $e, 0);
-			}
 		};
 	}
 
@@ -310,5 +305,3 @@ class MessageException extends Exception
 	const REQUEST_TOO_LARGE  = 1;
 	const RESPONSE_TOO_LARGE = 2;
 }
-
-?>

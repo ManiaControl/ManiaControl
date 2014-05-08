@@ -59,36 +59,29 @@ class Player {
 	public $currentTargetId = 0;
 
 	/**
-	 * Construct a player from ManiaPlanet Player structure
-	 *
-	 * @param \Maniaplanet\DedicatedServer\Structures\Player $mpPlayer
+	 * @param bool $connected
 	 */
-	public function __construct($mpPlayer) {
-		if (!$mpPlayer) {
-			$this->isConnected = false;
-			return;
-		}
+	public function __construct($connected)
+	{
+		$this->isConnected = $connected;
 
+		if ($connected) {
+			$this->joinTime = time();
+		}
+	}
+
+	/**
+	 * Update from ManiaPlanet PlayerInfo structure
+	 * @param \Maniaplanet\DedicatedServer\Structures\PlayerInfo $mpPlayer
+	 */
+	public function setInfo($mpPlayer)
+	{
 		$this->pid                      = $mpPlayer->playerId;
 		$this->login                    = $mpPlayer->login;
 		$this->nickname                 = Formatter::stripDirtyCodes($mpPlayer->nickName);
 		$this->rawNickname              = $mpPlayer->nickName;
-		$this->path                     = $mpPlayer->path;
-		$this->language                 = $mpPlayer->language;
-		$this->avatar                   = $mpPlayer->avatar['FileName'];
-		$this->allies                   = $mpPlayer->allies;
-		$this->clubLink                 = $mpPlayer->clubLink;
 		$this->teamId                   = $mpPlayer->teamId;
 		$this->isOfficial               = $mpPlayer->isInOfficialMode;
-		$this->ladderScore              = $mpPlayer->ladderStats['PlayerRankings'][0]['Score'];
-		$this->ladderRank               = $mpPlayer->ladderStats['PlayerRankings'][0]['Ranking'];
-		$this->ladderStats              = $mpPlayer->ladderStats;
-		$this->daysSinceZoneInscription = $mpPlayer->hoursSinceZoneInscription / 24;
-		$this->ipAddress                = $mpPlayer->iPAddress;
-		$this->clientVersion            = $mpPlayer->clientVersion;
-		$this->downloadRate             = $mpPlayer->downloadRate;
-		$this->uploadRate               = $mpPlayer->uploadRate;
-		$this->skins                    = $mpPlayer->skins;
 
 		//Flag Details
 		$this->forcedSpectatorState     = $mpPlayer->forceSpectator;
@@ -108,7 +101,37 @@ class Player {
 		$this->autoTarget           = $mpPlayer->autoTarget;
 		$this->currentTargetId      = $mpPlayer->currentTargetId;
 
-		$this->joinTime = time();
+		if (!$this->nickname) {
+			$this->nickname = $this->login;
+		}
+	}
+
+	/**
+	 * Update from ManiaPlanet PlayerDetailedInfo structure
+	 * @param \Maniaplanet\DedicatedServer\Structures\PlayerDetailedInfo $mpPlayer
+	 */
+	public function setDetailedInfo($mpPlayer)
+	{
+		$this->pid                      = $mpPlayer->playerId;
+		$this->login                    = $mpPlayer->login;
+		$this->nickname                 = Formatter::stripDirtyCodes($mpPlayer->nickName);
+		$this->rawNickname              = $mpPlayer->nickName;
+		$this->path                     = $mpPlayer->path;
+		$this->language                 = $mpPlayer->language;
+		$this->avatar                   = $mpPlayer->avatar->fileName;
+		$this->allies                   = $mpPlayer->allies;
+		$this->clubLink                 = $mpPlayer->clubLink;
+		$this->teamId                   = $mpPlayer->teamId;
+		$this->isOfficial               = $mpPlayer->isInOfficialMode;
+		$this->ladderScore              = $mpPlayer->ladderStats->playerRankings[0]->score;
+		$this->ladderRank               = $mpPlayer->ladderStats->playerRankings[0]->ranking;
+		$this->ladderStats              = $mpPlayer->ladderStats;
+		$this->daysSinceZoneInscription = $mpPlayer->hoursSinceZoneInscription / 24;
+		$this->ipAddress                = $mpPlayer->iPAddress;
+		$this->clientVersion            = $mpPlayer->clientVersion;
+		$this->downloadRate             = $mpPlayer->downloadRate;
+		$this->uploadRate               = $mpPlayer->uploadRate;
+		$this->skins                    = $mpPlayer->skins;
 
 		if (!$this->nickname) {
 			$this->nickname = $this->login;
