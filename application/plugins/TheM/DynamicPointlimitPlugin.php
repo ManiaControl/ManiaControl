@@ -59,14 +59,14 @@ class DynamicPointlimitPlugin implements CallbackListener, CommandListener, Plug
 	public function load(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'changePointlimit');
-		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECT, $this, 'changePointlimit');
-
 		$allowOthers = $this->maniaControl->settingManager->getSetting($this, self::ACCEPT_OTHER_MODES);
 		if (!$allowOthers && $this->maniaControl->server->titleId != 'SMStormRoyal@nadeolabs') {
 			$error = 'This plugin only supports Royal (check Settings)!';
 			throw new \Exception($error);
 		}
+
+		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'changePointlimit');
+		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECT, $this, 'changePointlimit');
 	}
 
 	/**

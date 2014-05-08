@@ -218,7 +218,8 @@ class GbxRemote
 	{
 		$header = $this->read(8);
 		if($header === false)
-			throw new TransportException('Connection interrupted while reading header', TransportException::INTERRUPTED);
+			throw new TransportException('Connection interrupted while reading header '.print_r(stream_get_meta_data($this->socket), true), TransportException::INTERRUPTED);
+			//throw new TransportException('Connection interrupted while reading header', TransportException::INTERRUPTED);
 
 		extract(unpack('Vsize/Vhandle', $header));
 		/** @var $size int */
@@ -231,7 +232,8 @@ class GbxRemote
 
 		$data = $this->read($size);
 		if($data === false)
-			throw new TransportException('Connection interrupted while reading data', TransportException::INTERRUPTED);
+			//throw new TransportException('Connection interrupted while reading data', TransportException::INTERRUPTED);
+			throw new TransportException('Connection interrupted while reading data '.print_r(stream_get_meta_data($this->socket), true), TransportException::INTERRUPTED);
 
 		$this->lastNetworkActivity = time();
 		return array($handle, $data);
@@ -245,7 +247,8 @@ class GbxRemote
 	{
 		$data = pack('V2a*', strlen($xml), ++$this->requestHandle, $xml);
 		if(!$this->write($data))
-			throw new TransportException('Connection interrupted while writing', TransportException::INTERRUPTED);
+			throw new TransportException('Connection interrupted while writing '.print_r(stream_get_meta_data($this->socket), true), TransportException::INTERRUPTED);
+			//throw new TransportException('Connection interrupted while writing', TransportException::INTERRUPTED);
 		$this->lastNetworkActivity = time();
 	}
 
