@@ -4,7 +4,6 @@
  *
  * @license     http://www.gnu.org/licenses/lgpl.html LGPL License 3
  */
-
 namespace Maniaplanet\DedicatedServer\Structures;
 
 class Status extends AbstractStructure
@@ -16,8 +15,6 @@ class Status extends AbstractStructure
 	const PLAY            = 4;
 	const EXITING         = 6;
 
-	/** @var int */
 	public $code;
-	/** @var string */
 	public $name;
 }

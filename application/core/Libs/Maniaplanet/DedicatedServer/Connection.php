@@ -13,56 +13,42 @@ namespace Maniaplanet\DedicatedServer;
  */
 class Connection
 {
-	const API_2011_08_01 = '2011-08-01';
-	const API_2011_10_06 = '2011-10-06';
-	const API_2012_06_19 = '2012-06-19';
-	const API_2013_04_16 = '2013-04-16';
+	/**
+	 * @var Connection[]
+	 */
+	static protected $instances = array();
 
-	/** @var Connection[] */
-	protected static $instances = array();
-	/** @var int[] */
-	private static $levels = array(
-		null => -1,
-		'User' => 0,
-		'Admin' => 1,
-		'SuperAdmin' => 2
-	);
-
-	/** @var Xmlrpc\GbxRemote */
+	/**
+	 * XML-RPC client instance
+	 * @var Xmlrpc\GbxRemote
+	 */
 	protected $xmlrpcClient;
-	/** @var string */
-	protected $user;
 
 	/**
 	 * @param string $host
 	 * @param int $port
-	 * @param int $timeout (in s)
+	 * @param int $timeout (in ms)
 	 * @param string $user
 	 * @param string $password
-	 * @param string $apiVersion
 	 * @return Connection
 	 */
-	static function factory($host='127.0.0.1', $port=5000, $timeout=5, $user='SuperAdmin', $password='SuperAdmin', $apiVersion=self::API_2013_04_16)
+	static function factory($host = '127.0.0.1', $port = 5000, $timeout = 50, $user = 'SuperAdmin', $password = 'SuperAdmin')
 	{
 		$key = $host.':'.$port;
 		if(!isset(self::$instances[$key]))
-			self::$instances[$key] = new self($host, $port, $timeout);
-		self::$instances[$key]->authenticate($user, $password);
-		self::$instances[$key]->setApiVersion($apiVersion);
-
+		{
+			self::$instances[$key] = new self($host, $port, $timeout, $user, $password);
+		}
 		return self::$instances[$key];
 	}
 
 	/**
-	 * @param Connection|string $hostOrConnection
+	 * @param string $host
 	 * @param int $port
 	 */
-	static function delete($hostOrConnection, $port=null)
+	static function delete($host, $port)
 	{
-		if($hostOrConnection instanceof Connection)
-			$key = array_search($hostOrConnection, self::$instances);
-		else
-			$key = $hostOrConnection.':'.$port;
+		$key = $host.':'.$port;
 		if(isset(self::$instances[$key]))
 		{
 			self::$instances[$key]->terminate();
@@ -72,8 +58,8 @@ class Connection
 
 	/**
 	 * Change client timeouts
-	 * @param int $read read timeout (in ms), 0 to leave unchanged
-	 * @param int $write write timeout (in ms), 0 to leave unchanged
+	 * @param int $read read timeout (in ms), null or 0 to leave unchanged
+	 * @param int $write write timeout (in ms), null or 0 to leave unchanged
 	 */
 	function setTimeouts($read=null, $write=null)
 	{
@@ -92,10 +78,14 @@ class Connection
 	 * @param string $host
 	 * @param int $port
 	 * @param int $timeout
+	 * @param string $user
+	 * @param string $password
 	 */
-	protected function __construct($host, $port, $timeout)
+	protected function __construct($host, $port, $timeout, $user, $password)
 	{
-		$this->xmlrpcClient = new Xmlrpc\GbxRemote($host, $port, $timeout);
+		$this->xmlrpcClient = new Xmlrpc\GbxRemote($host, $port, array('open' => $timeout));
+		$this->authenticate($user, $password);
+		$this->setApiVersion('2013-04-16');
 	}
 
 	/**
@@ -108,8 +98,9 @@ class Connection
 	}
 
 	/**
-	 * Return pending callbacks
-	 * @return mixed[]
+	 *
+	 * Read a Call back on the DedicatedServer and call the method if handle
+	 * @param array $methods if empty, every methods will be called on call back, otherwise only the method declared inside. The metho name must be the name of the interface's method
 	 */
 	function executeCallbacks()
 	{
@@ -118,68 +109,62 @@ class Connection
 
 	/**
 	 * Execute the calls in queue and return the result
-	 * @return mixed
+	 * TODO Prendre en compte les retours du mutliQuery (via un handler ?)
 	 */
 	function executeMulticall()
 	{
-		return $this->xmlrpcClient->multiquery();
+		$this->xmlrpcClient->multiquery();
 	}
 
 	/**
-	 * Add a call in queue. It will be executed by the next Call from the user to executeMulticall
+	 * Add a call in queur. It will be executed by the next Call from the user to executemulticall
 	 * @param string $methodName
-	 * @param mixed[] $params
-	 * @param bool $multicall True to queue the request or false to execute it immediately
-	 * @return mixed
+	 * @param string $authLevel
+	 * @param array $params
 	 */
-	protected function execute($methodName, $params=array(), $multicall=false)
+	protected function execute($methodName, $params = array(), $multicall = false)
 	{
 		if($multicall)
+		{
 			$this->xmlrpcClient->addCall($methodName, $params);
+		}
 		else
+		{
 			return $this->xmlrpcClient->query($methodName, $params);
+		}
 	}
 
 	/**
-	 * Allow user authentication by specifying a login and a password, to gain access to the set of functionalities corresponding to this authorization level.
-	 * @param string $user
-	 * @param string $password
-	 * @return bool
-	 * @throws InvalidArgumentException
+	 * Given the name of a method, return an array of legal signatures.
+	 * Each signature is an array of strings.
+	 * The first item of each signature is the return type, and any others items are parameter types.
+	 * @param string $methodName
+	 * @return array
 	 */
-	function authenticate($user, $password)
+	function methodSignature($methodName)
 	{
-		if(!is_string($user) || !isset(self::$levels[$user]))
-			throw new InvalidArgumentException('user = '.print_r($user, true));
-		if(self::$levels[$this->user] >= self::$levels[$user])
-			return true;
-
-		if(!is_string($password))
-			throw new InvalidArgumentException('password = '.print_r($password, true));
-
-		$res = $this->execute(ucfirst(__FUNCTION__), array($user, $password));
-		if($res)
-			$this->user = $user;
-		return $res;
+		return $this->execute('system.methodSignature', array($methodName));
 	}
 
 	/**
 	 * Change the password for the specified login/user.
-	 * Only available to SuperAdmin.
-	 * @param string $user
+	 * @param string $username
 	 * @param string $password
-	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function changeAuthPassword($user, $password, $multicall=false)
+	function changeAuthPassword($username, $password)
 	{
-		if(!is_string($user) || !isset(self::$levels[$user]))
-			throw new InvalidArgumentException('user = '.print_r($user, true));
 		if(!is_string($password))
+		{
 			throw new InvalidArgumentException('password = '.print_r($password, true));
+		}
+		if($username != 'User' && $username != 'Admin' && $username != 'SuperAdmin')
+		{
+			throw new InvalidArgumentException('username = '.print_r($username, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($user, $password), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($username, $password), false);
 	}
 
 	/**
@@ -187,14 +172,10 @@ class Connection
 	 * @param bool $enable
 	 * @param bool $multicall
 	 * @return bool
-	 * @throws InvalidArgumentException
 	 */
-	function enableCallbacks($enable, $multicall=false)
+	function enableCallbacks($enable, $multicall = false)
 	{
-		if(!is_bool($enable))
-			throw new InvalidArgumentException('enable = '.print_r($enable, true));
-
-		return $this->execute(ucfirst(__FUNCTION__), array($enable), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array((bool) $enable), $multicall);
 	}
 
 	/**
@@ -202,163 +183,230 @@ class Connection
 	 * @param string $version
 	 * @param bool $multicall
 	 * @return bool
-	 * @throws InvalidArgumentException
 	 */
-	function setApiVersion($version, $multicall=false)
+	function setApiVersion($version, $multicall = false)
 	{
-		if(!is_string($version))
-			throw new InvalidArgumentException('version = '.print_r($version, true));
-
-		return $this->execute(ucfirst(__FUNCTION__), array($version), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array((string) $version), $multicall);
 	}
 
 	/**
-	 * Returns a struct with the Name, TitleId, Version, Build and ApiVersion of the application remotely controlled.
+	 * Returns a struct with the Name, Version, Build and ApiVersion of the application remotely controled.
 	 * @return Structures\Version
+	 * @throws InvalidArgumentException
 	 */
 	function getVersion()
 	{
-		return Structures\Version::fromArray($this->execute(ucfirst(__FUNCTION__)));
+		$result = $this->execute(ucfirst(__FUNCTION__));
+		return Structures\Version::fromArray($result);
 	}
 
-	/**
-	 * Returns the current status of the server.
-	 * @return Structures\Status
-	 */
-	function getStatus()
+	function authenticate($username, $password)
 	{
-		return Structures\Status::fromArray($this->execute(ucfirst(__FUNCTION__)));
+		return $this->execute(ucfirst(__FUNCTION__), array($username, $password), false);
 	}
 
 	/**
-	 * Quit the application.
-	 * Only available to SuperAdmin.
+	 * Call a vote for a cmd. The command is a XML string corresponding to an XmlRpc request.
+	 * You can additionally specifiy specific parameters for this vote: a ratio, a time out
+	 * and who is voting. Special timeout values: a timeout of '0' means default, '1' means
+	 * indefinite; a ratio of '-1' means default; Voters values: '0' means only active players,
+	 * '1' means any player, '2' is for everybody, pure spectators included.
+	 * @param Structures\Vote $vote
+	 * @param double $ratio -1 means default, else ration should be between 0 and 1
+	 * @param int $timeout time to vote in millisecondes, '0' means default
+	 * @param int $voters Voters values: '0' means only active players, '1' means any player, '2' is for everybody, pure spectators included
 	 * @param bool $multicall
-	 * @return bool
+	 * @throws InvalidArgumentException
 	 */
-	function quitGame($multicall=false)
+	function callVote(Structures\Vote $vote, $ratio = 0.5, $timeout = 0, $voters = 1, $multicall = false)
+	{
+		if(is_null($vote))
+		{
+			throw new InvalidArgumentException('vote must be set');
+		}
+		if(!is_float($ratio))
+		{
+			throw new InvalidArgumentException('ratio = '.print_r($ratio, true));
+		}
+		if(!is_int($timeout))
+		{
+			throw new InvalidArgumentException('timeout = '.print_r($timeout, true));
+		}
+		if(!is_int($voters))
+		{
+			throw new InvalidArgumentException('voters = '.print_r($voters, true));
+		}
+		if(!is_array($vote->cmdParam))
+		{
+			throw new InvalidArgumentException('vote->cmdParam = '.print_r($vote->cmdParam, true));
+		}
+
+		$tmpCmd = Xmlrpc\Request::encode($vote->cmdName, $vote->cmdName);
+
+		return $this->execute(ucfirst(__FUNCTION__).'Ex', array($tmpCmd, $ratio, $timeout, $voters), $multicall);
+	}
+
+	/**
+	 * Call a vote to kick a player.
+	 * You can additionally specifiy specific parameters for this vote: a ratio, a time out
+	 * and who is voting. Special timeout values: a timeout of '0' means default, '1' means
+	 * indefinite; a ratio of '-1' means default; Voters values: '0' means only active players,
+	 * '1' means any player, '2' is for everybody, pure spectators included.
+	 * @param Structures\Player|string $player Structures\Player or string
+	 * @param double $ratio -1 means default, else ration should be between 0 and 1
+	 * @param int $timeout time to vote in millisecondes, '0' means default
+	 * @param int $voters Voters values: '0' means only active players, '1' means any player, '2' is for everybody, pure spectators included
+	 * @param bool $multicall
+	 * @throws InvalidArgumentException
+	 */
+	function callVoteKick($player, $ratio = 0.5, $timeout = 0, $voters = 1, $multicall = false)
+	{
+		if(!($login = $this->getLogin($player)))
+		{
+			throw new InvalidArgumentException('player must be set');
+		}
+		if(!is_float($ratio))
+		{
+			throw new InvalidArgumentException('ratio = '.print_r($ratio, true));
+		}
+		if(!is_int($timeout))
+		{
+			throw new InvalidArgumentException('timeout = '.print_r($timeout, true));
+		}
+		if(!is_int($voters))
+		{
+			throw new InvalidArgumentException('voters = '.print_r($voters, true));
+		}
+
+		$tmpCmd = Xmlrpc\Request::encode('Kick', array($login));
+
+		return $this->execute('CallVoteEx', array($tmpCmd, $ratio, $timeout, $voters), $multicall);
+	}
+
+	/**
+	 * Call a vote to ban a player.
+	 * You can additionally specifiy specific parameters for this vote: a ratio, a time out
+	 * and who is voting. Special timeout values: a timeout of '0' means default, '1' means
+	 * indefinite; a ratio of '-1' means default; Voters values: '0' means only active players,
+	 * '1' means any player, '2' is for everybody, pure spectators included.
+	 * @param Structures\Player|string $player
+	 * @param double $ratio -1 means default, else ration should be between 0 and 1
+	 * @param int $timeout time to vote in millisecondes, '0' means default
+	 * @param int $voters Voters values: '0' means only active players, '1' means any player, '2' is for everybody, pure spectators included
+	 * @param bool $multicall
+	 * @throws InvalidArgumentException
+	 */
+	function callVoteBan($player, $ratio = 0.6, $timeout = 0, $voters = 1, $multicall = false)
+	{
+		if(!($login = $this->getLogin($player)))
+		{
+			throw new InvalidArgumentException('player must be set');
+		}
+		if(!is_float($ratio))
+		{
+			throw new InvalidArgumentException('ratio = '.print_r($ratio, true));
+		}
+		if(!is_int($timeout))
+		{
+			throw new InvalidArgumentException('timeout = '.print_r($timeout, true));
+		}
+		if(!is_int($voters))
+		{
+			throw new InvalidArgumentException('voters = '.print_r($voters, true));
+		}
+
+		$tmpCmd = Xmlrpc\Request::encode('Ban', array($login));
+
+		return $this->execute('CallVoteEx', array($tmpCmd, $ratio, $timeout, $voters), $multicall);
+	}
+
+	/**
+	 * Call a vote to restart the current Map.
+	 * You can additionally specifiy specific parameters for this vote: a ratio, a time out
+	 * and who is voting. Special timeout values: a timeout of '0' means default, '1' means
+	 * indefinite; a ratio of '-1' means default; Voters values: '0' means only active players,
+	 * '1' means any player, '2' is for everybody, pure spectators included.
+	 * @param double $ratio -1 means default, else ration should be between 0 and 1
+	 * @param int $timeout time to vote in millisecondes, '0' means default
+	 * @param int $voters Voters values: '0' means only active players, '1' means any player, '2' is for everybody, pure spectators included
+	 * @param bool $multicall
+	 * @throws InvalidArgumentException
+	 */
+	function callVoteRestartMap($ratio = 0.5, $timeout = 0, $voters = 1, $multicall = false)
+	{
+		if(!is_float($ratio))
+		{
+			throw new InvalidArgumentException('ratio = '.print_r($ratio, true));
+		}
+		if(!is_int($timeout))
+		{
+			throw new InvalidArgumentException('timeout = '.print_r($timeout, true));
+		}
+		if(!is_int($voters))
+		{
+			throw new InvalidArgumentException('voters = '.print_r($voters, true));
+		}
+
+		$tmpCmd = Xmlrpc\Request::encode('RestartMap', array());
+
+		return $this->execute('CallVoteEx', array($tmpCmd, $ratio, $timeout, $voters), $multicall);
+	}
+
+	/**
+	 * Call a vote to go to the next Map.
+	 * You can additionally specifiy specific parameters for this vote: a ratio, a time out
+	 * and who is voting. Special timeout values: a timeout of '0' means default, '1' means
+	 * indefinite; a ratio of '-1' means default; Voters values: '0' means only active players,
+	 * '1' means any player, '2' is for everybody, pure spectators included.
+	 * @param double $ratio -1 means default, else ration should be between 0 and 1
+	 * @param int $timeout time to vote in millisecondes, '0' means default
+	 * @param int $voters Voters values: '0' means only active players, '1' means any player, '2' is for everybody, pure spectators included
+	 * @param bool $multicall
+	 * @throws InvalidArgumentException
+	 */
+	function callVoteNextMap($ratio = 0.5, $timeout = 0, $voters = 1, $multicall = false)
+	{
+		if(!is_float($ratio))
+		{
+			throw new InvalidArgumentException('ratio = '.print_r($ratio, true));
+		}
+		if(!is_int($timeout))
+		{
+			throw new InvalidArgumentException('timeout = '.print_r($timeout, true));
+		}
+		if(!is_int($voters))
+		{
+			throw new InvalidArgumentException('voters = '.print_r($voters, true));
+		}
+
+		$tmpCmd = Xmlrpc\Request::encode('NextMap', array());
+
+		return $this->execute('CallVoteEx', array($tmpCmd, $ratio, $timeout, $voters), $multicall);
+	}
+
+	/**
+	 * 	Used internaly by game.
+	 *  @param bool $multicall
+	 * 	@return bool
+	 */
+	protected function internalCallVote($multicall = false)
 	{
 		return $this->execute(ucfirst(__FUNCTION__), array(), $multicall);
 	}
 
 	/**
-	 * Call a vote for a command.
-	 * You can additionally supply specific parameters for this vote: a ratio, a time out and who is voting.
-	 * Only available to Admin.
-	 * @param Structures\Vote $vote
-	 * @param float $ratio In range [0,1] or -1 for default ratio
-	 * @param int $timeout In milliseconds, 0 for default timeout, 1 for indefinite
-	 * @param int $voters 0: active players, 1: any player, 2: everybody including pure spectators
-	 * @param bool $multicall
-	 * @return bool
-	 * @throws InvalidArgumentException
-	 */
-	function callVote($vote, $ratio=-1., $timeout=0, $voters=1, $multicall=false)
-	{
-		if(!($vote instanceof Structures\Vote && $vote->isValid()))
-			throw new InvalidArgumentException('vote = '.print_r($vote, true));
-		if(!Structures\VoteRatio::isRatio($ratio))
-			throw new InvalidArgumentException('ratio = '.print_r($ratio, true));
-		if(!is_int($timeout))
-			throw new InvalidArgumentException('timeout = '.print_r($timeout, true));
-		if(!is_int($voters) || $voters < 0 || $voters > 2)
-			throw new InvalidArgumentException('voters = '.print_r($voters, true));
-
-		$xml = Xmlrpc\Request::encode($vote->cmdName, $vote->cmdParam, false);
-		return $this->execute(ucfirst(__FUNCTION__).'Ex', array($xml, $ratio, $timeout, $voters), $multicall);
-	}
-
-	/**
-	 * Call a vote to kick a player.
-	 * You can additionally supply specific parameters for this vote: a ratio, a time out and who is voting.
-	 * Only available to Admin.
-	 * @param mixed $player A player object or a login
-	 * @param float $ratio In range [0,1] or -1 for default ratio
-	 * @param int $timeout In milliseconds, 0 for default timeout, 1 for indefinite
-	 * @param int $voters 0: active players, 1: any player, 2: everybody including pure spectators
-	 * @param bool $multicall
-	 * @return bool
-	 * @throws InvalidArgumentException
-	 */
-	function callVoteKick($player, $ratio=0.5, $timeout=0, $voters=1, $multicall=false)
-	{
-		$login = $this->getLogin($player);
-		if($login === false)
-			throw new InvalidArgumentException('player = '.print_r($player, true));
-
-		$vote = new Structures\Vote(Structures\VoteRatio::COMMAND_KICK, array($login));
-		return $this->callVote($vote, $ratio, $timeout, $voters, $multicall);
-	}
-
-	/**
-	 * Call a vote to ban a player.
-	 * You can additionally supply specific parameters for this vote: a ratio, a time out and who is voting.
-	 * Only available to Admin.
-	 * @param mixed $player A player object or a login
-	 * @param float $ratio In range [0,1] or -1 for default ratio
-	 * @param int $timeout In milliseconds, 0 for default timeout, 1 for indefinite
-	 * @param int $voters 0: active players, 1: any player, 2: everybody including pure spectators
-	 * @param bool $multicall
-	 * @return bool
-	 * @throws InvalidArgumentException
-	 */
-	function callVoteBan($player, $ratio=0.6, $timeout=0, $voters=1, $multicall=false)
-	{
-		$login = $this->getLogin($player);
-		if($login === false)
-			throw new InvalidArgumentException('player = '.print_r($player, true));
-
-		$vote = new Structures\Vote(Structures\VoteRatio::COMMAND_BAN, array($login));
-		return $this->callVote($vote, $ratio, $timeout, $voters, $multicall);
-	}
-
-	/**
-	 * Call a vote to restart the current map.
-	 * You can additionally supply specific parameters for this vote: a ratio, a time out and who is voting.
-	 * Only available to Admin.
-	 * @param float $ratio In range [0,1] or -1 for default ratio
-	 * @param int $timeout In milliseconds, 0 for default timeout, 1 for indefinite
-	 * @param int $voters 0: active players, 1: any player, 2: everybody including pure spectators
-	 * @param bool $multicall
-	 * @return bool
-	 * @throws InvalidArgumentException
-	 */
-	function callVoteRestartMap($ratio=0.5, $timeout=0, $voters=1, $multicall=false)
-	{
-		$vote = new Structures\Vote(Structures\VoteRatio::COMMAND_RESTART_MAP);
-		return $this->callVote($vote, $ratio, $timeout, $voters, $multicall);
-	}
-
-	/**
-	 * Call a vote to go to the next map.
-	 * You can additionally supply specific parameters for this vote: a ratio, a time out and who is voting.
-	 * Only available to Admin.
-	 * @param float $ratio In range [0,1] or -1 for default ratio
-	 * @param int $timeout In milliseconds, 0 for default timeout, 1 for indefinite
-	 * @param int $voters 0: active players, 1: any player, 2: everybody including pure spectators
-	 * @param bool $multicall
-	 * @return bool
-	 * @throws InvalidArgumentException
-	 */
-	function callVoteNextMap($ratio=0.5, $timeout=0, $voters=1, $multicall=false)
-	{
-		$vote = new Structures\Vote(Structures\VoteRatio::COMMAND_NEXT_MAP);
-		return $this->callVote($vote, $ratio, $timeout, $voters, $multicall);
-	}
-
-	/**
 	 * Cancel the current vote.
-	 * Only available to Admin.
 	 * @param bool $multicall
 	 * @return bool
 	 */
-	function cancelVote($multicall=false)
+	function cancelVote($multicall = false)
 	{
 		return $this->execute(ucfirst(__FUNCTION__), array(), $multicall);
 	}
 
 	/**
 	 * Returns the vote currently in progress.
+	 * The returned structure is { CallerLogin, CmdName, CmdParam }.
 	 * @return Structures\Vote
 	 */
 	function getCurrentCallVote()
@@ -367,24 +415,27 @@ class Connection
 	}
 
 	/**
-	 * Set a new timeout for waiting for votes.
-	 * Only available to Admin.
-	 * @param int $timeout In milliseconds, 0 to disable votes
+	 * Set a new timeout for waiting for votes. A zero value disables callvote.
+	 * Requires a map restart to be taken into account
+	 * @param int $timeout time to vote in millisecondes, '0' disables callvote
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function setCallVoteTimeOut($timeout, $multicall=false)
+	function setCallVoteTimeOut($timeout, $multicall = false)
 	{
 		if(!is_int($timeout))
+		{
 			throw new InvalidArgumentException('timeout = '.print_r($timeout, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($timeout), $multicall);
 	}
 
 	/**
 	 * Get the current and next timeout for waiting for votes.
-	 * @return int[] {int CurrentValue, int NextValue}
+	 * The struct returned contains two fields 'CurrentValue' and 'NextValue'.
+	 * @return array
 	 */
 	function getCallVoteTimeOut()
 	{
@@ -393,24 +444,26 @@ class Connection
 
 	/**
 	 * Set a new default ratio for passing a vote.
-	 * Only available to Admin.
-	 * @param float $ratio In range [0,1] or -1 to disable votes
+	 * Must lie between 0 and 1.
+	 * @param double $ratio
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function setCallVoteRatio($ratio, $multicall=false)
+	function setCallVoteRatio($ratio, $multicall = false)
 	{
-		if(!Structures\VoteRatio::isRatio($ratio))
+		if($ratio !== -1. && !(is_float($ratio) && $ratio >= 0 && $ratio <= 1))
+		{
 			throw new InvalidArgumentException('ratio = '.print_r($ratio, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($ratio), $multicall);
 	}
 
 	/**
 	 * Get the current default ratio for passing a vote.
-	 * @param bool $multicall
-	 * @return float
+	 * This value lies between 0 and 1.
+	 * @return double
 	 */
 	function getCallVoteRatio()
 	{
@@ -418,124 +471,209 @@ class Connection
 	}
 
 	/**
-	 * Set the ratios list for passing specific votes, extended version with parameters matching.
-	 * Only available to Admin.
-	 * @param Structures\VoteRatio[] $ratios
-	 * @param bool $replaceAll True to override the whole ratios list or false to modify only specified ratios
+	 * Set new ratios for passing specific votes.
+	 * The parameter is an array of associative arrays
+	 * {string votecommand, double ratio}, ratio is in [0,1] or -1. for vote disabled.
+	 * @example setCallVoteRatios(array(array('Command' => 'Kick', 'Ratio' => -1. ));
+	 * @param array $ratios
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function setCallVoteRatios($ratios, $replaceAll=true, $multicall=false)
+	function setCallVoteRatios(array $ratios, $multicall = false)
 	{
-		if(!is_array($ratios))
-			throw new InvalidArgumentException('ratios = '.print_r($ratios, true));
-		foreach($ratios as $i => &$ratio)
-		{
-			if(!($ratio instanceof Structures\VoteRatio && $ratio->isValid()))
-				throw new InvalidArgumentException('ratios['.$i.'] = '.print_r($ratios, true));
-			$ratio = $ratio->toArray();
-		}
-		if(!is_bool($replaceAll))
-			throw new InvalidArgumentException('replaceAll = '.print_r($replaceAll, true));
-
-		return $this->execute(ucfirst(__FUNCTION__).'Ex', array($replaceAll, $ratios), $multicall);
+		return $this->setCallVoteRatiosEx(true, $ratios, $multicall);
 	}
 
 	/**
-	 * @deprecated
-	 * @see setCallVoteRatios()
+	 * Get the current ratios for passing votes.
+	 * @return array
 	 */
-	function setCallVoteRatiosEx($replaceAll, $ratios, $multicall=false)
+	function getCallVoteRatios()
 	{
-		return $this->setCallVoteRatios($ratios, $replaceAll, $multicall);
+		return $this->execute(ucfirst(__FUNCTION__));
+	}
+
+	/**
+	 * Set the ratios list for passing specific votes, extended version with parameters matching.
+	 * The parameters, a boolean ReplaceAll (or else, only modify specified ratios, leaving the previous ones unmodified)
+	 * and an array of structs {string Command, string Param, double Ratio},
+	 * ratio is in [0,1] or -1 for vote disabled.
+	 * Param is matched against the vote parameters to make more specific ratios, leave empty to match all votes for the command.
+	 * Only available to Admin.
+	 * @param bool $replaceAll
+	 * @param array[array[]]|Structures\VoteRatio[] $ratios
+	 * @param bool $multicall
+	 * @return bool
+	 * @throws InvalidArgumentException
+	 */
+	function setCallVoteRatiosEx($replaceAll, array $ratios, $multicall = false)
+	{
+		if(!is_array($ratios))
+		{
+			throw new InvalidArgumentException('ratios = '.print_r($ratios, true));
+		}
+
+		foreach($ratios as $i => $ratio)
+		{
+			if($ratio instanceof Structures\VoteRatio)
+			{
+				$ratios[$i] = $ratio->toArray();
+			}
+			else
+			{
+				if(!is_array($ratio) && !array_key_exists('Command', $ratio) && !array_key_exists('Ratio', $ratio))
+				{
+					throw new InvalidArgumentException('ratios['.$i.'] = '.print_r($ratio, true));
+				}
+				if(!is_string($ratio['Command']))
+				{
+					throw new InvalidArgumentException('ratios['.$i.'][Command] = '.print_r($ratios['Command'], true));
+				}
+				if($ratio['Ratio'] !== -1. && !(is_float($ratio['Ratio']) && $ratio['Ratio'] >= 0 && $ratio['Ratio'] <= 1))
+				{
+					throw new InvalidArgumentException('ratios['.$i.'][Ratio] = '.print_r($ratio['Ratio'], true));
+				}
+				if(array_key_exists('Param', $ratio) && !is_string($ratio['Param']))
+				{
+					throw new InvalidArgumentException('ratios['.$i.'][Param] = '.print_r($ratio['Param'], true));
+				}
+				elseif(!array_key_exists('Param', $ratio))
+				{
+					$ratio['Param'] = '';
+					$ratios[$i] = $ratio;
+				}
+			}
+		}
+
+		return $this->execute(ucfirst(__FUNCTION__), array($replaceAll, $ratios), $multicall);
 	}
 
 	/**
 	 * Get the current ratios for passing votes, extended version with parameters matching.
-	 * @param bool $multicall
 	 * @return Structures\VoteRatio[]
-	 */
-	function getCallVoteRatios()
-	{
-		return Structures\VoteRatio::fromArrayOfArray($this->execute(ucfirst(__FUNCTION__).'Ex'));
-	}
-
-	/**
-	 * @deprecated
-	 * @see getCallVoteRatios()
 	 */
 	function getCallVoteRatiosEx()
 	{
-		return $this->getCallVoteRatios();
+		return Structures\VoteRatio::fromArrayOfArray($this->execute(ucfirst(__FUNCTION__)));
 	}
 
 	/**
-	 * @deprecated
-	 * @see chatSend()
-	 */
-	function chatSendServerMessage($message, $recipient=null, $multicall=false)
-	{
-		return $this->chatSend($message, $recipient, true, $multicall);
-	}
-
-	/**
-	 * @deprecated
-	 * @see chatSend()
-	 */
-	function chatSendServerMessageToLanguage($messages, $recipient=null, $multicall=false)
-	{
-		return $this->chatSend($messages, $recipient, true, $multicall);
-	}
-
-	/**
-	 * Send a text message, possibly localised to a specific login or to everyone.
-	 * Only available to Admin.
-	 * @param string|string[][] $message Single string or array of structures {Lang='xx', Text='...'}:
-	 * if no matching language is found, the last text in the array is used
-	 * @param mixed $recipient Login, player object or array; null for all
-	 * @param bool $isServerMessage False to include server login
+	 * Send a localised text message to specied clients.
+	 * The parameter is an array of structures {Lang='??', Text='...'}.
+	 * If no matching language is found, the last text in the array is used.
+	 * @param array $messages
+	 * @param Structures\Player|string|mixed[] $receiver Structures\Player(s) who will receive the message, put null to send the message to everyone
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function chatSend($message, $recipient=null, $isServerMessage=false, $multicall=false)
+	function chatSendServerMessageToLanguage(array $messages, $receiver = null, $multicall = false)
 	{
-		$logins = $this->getLogins($recipient, true);
-		if($logins === false)
-			throw new InvalidArgumentException('recipient = '.print_r($recipient, true));
-
-		$method = ucfirst(__FUNCTION__);
-		if(!is_bool($isServerMessage))
-			throw new InvalidArgumentException('isServerMessage = '.print_r($isServerMessage, true));
-		if($isServerMessage)
-			$method .= 'ServerMessage';
-
-		if(is_string($message))
+		if(!is_array($messages))
 		{
-			if($logins === '')
-				return $this->execute($method, array($message), $multicall);
-			return $this->execute($method.'ToLogin', array($message, $logins), $multicall);
+			throw new InvalidArgumentException('messages = '.print_r($messages, true));
 		}
-		if(is_array($message))
-			return $this->execute($method.'ToLanguage', array($message, $logins), $multicall);
-		// else
-		throw new InvalidArgumentException('message = '.print_r($message, true));
+		if(is_null($receiver))
+		{
+			$receiverString = '';
+		}
+		else if(!($receiverString = $this->getLogins($receiver)))
+		{
+			throw new InvalidArgumentException('receiver = '.print_r($receiver, true));
+		}
+
+		return $this->execute(ucfirst(__FUNCTION__), array($messages, $receiverString), $multicall);
 	}
 
 	/**
-	 * @deprecated
-	 * @see chatSend()
+	 * Send a text message without the server login to everyone if players is null.
+	 * Players can be a Structures\Player object or an array of Structures\Player
+	 * @param string $message
+	 * @param Structures\Player|string|mixed[] $receiver Structures\Player(s) who will receive the message, put null to send the message to everyone
+	 * @param bool $multicall
+	 * @return bool
+	 * @throws InvalidArgumentException
 	 */
-	function chatSendToLanguage($messages, $recipient=null, $multicall=false)
+	function chatSendServerMessage($message, $receiver = null, $multicall = false)
 	{
-		return $this->chatSend($messages, $recipient, false, $multicall);
+		if(!is_string($message))
+		{
+			throw new InvalidArgumentException('message = '.print_r($message, true));
+		}
+
+		$params = array($message);
+		$method = 'ChatSendServerMessage';
+		if(!is_null($receiver))
+		{
+			if(!($logins = $this->getLogins($receiver)))
+			{
+				throw new InvalidArgumentException('receiver = '.print_r($receiver, true));
+			}
+			$params[] = $logins;
+			$method .= 'ToLogin';
+		}
+
+		return $this->execute($method, $params, $multicall);
+	}
+
+	/**
+	 * Send a localised text message to selected clients.
+	 * The parameter is an array of structures {Lang='??', Text='...'}.
+	 * If no matching language is found, the last text in the array is used.
+	 * @param array $messages
+	 * @param Structures\Player|string|mixed[] $receiver Structures\Player(s) who will receive the message, put null to send the message to everyone
+	 * @param bool $multicall
+	 * @return bool
+	 * @throws InvalidArgumentException
+	 */
+	function chatSendToLanguage(array $messages, $receiver = null, $multicall = false)
+	{
+		if(!is_array($messages)) throw new InvalidArgumentException('messages = '.print_r($messages, true));
+
+		if($receiver == null)
+		{
+			$receiverString = '';
+		}
+		else if(!($receiverString = $this->getLogins($receiver)))
+		{
+			throw new InvalidArgumentException('receiver = '.print_r($receiver, true));
+		}
+
+		return $this->execute(ucfirst(__FUNCTION__), array($messages, $receiverString), $multicall);
+	}
+
+	/**
+	 * Send a text message to every Structures\Player or the a specified player(s).
+	 * If Structures\Player is null, the message will be delivered to every Structures\Player
+	 * @param string $message
+	 * @param Structures\Player|string|mixed[] $receiver Structures\Player(s) who will receive the message, put null to send the message to everyone
+	 * @param bool $multicall
+	 * @return bool
+	 * @throws InvalidArgumentException
+	 */
+	function chatSend($message, $receiver, $multicall = false)
+	{
+		if(!is_string($message)) throw new InvalidArgumentException('message = '.print_r($message, true));
+
+		$params = array($message);
+		$method = 'ChatSend';
+		if(!is_null($receiver))
+		{
+			if(!($logins = $this->getLogins($receiver)))
+			{
+				throw new InvalidArgumentException('players = '.print_r($receiver, true));
+			}
+			$params[] = $logins;
+			$method .= 'ToLogin';
+		}
+
+		return $this->execute($method, $params, $multicall);
 	}
 
 	/**
 	 * Returns the last chat lines. Maximum of 40 lines.
-	 * Only available to Admin.
-	 * @return string[]
+	 * @return array
 	 */
 	function getChatLines()
 	{
@@ -543,716 +681,808 @@ class Connection
 	}
 
 	/**
-	 * The chat messages are no longer dispatched to the players, they only go to the rpc callback and the controller has to manually forward them.
-	 * Only available to Admin.
+	 * The chat messages are no longer dispatched to the players, they only go to the rpc callback
+	 * and the controller has to manually forward them. The second (optional) parameter allows all
+	 * messages from the server to be automatically forwarded.
 	 * @param bool $enable
-	 * @param bool $excludeServer Allows all messages from the server to be automatically forwarded.
+	 * @param bool $serverAutomaticForward
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function chatEnableManualRouting($enable, $excludeServer=false, $multicall=false)
+	function chatEnableManualRouting($enable, $serverAutomaticForward = false, $multicall = false)
 	{
 		if(!is_bool($enable))
+		{
 			throw new InvalidArgumentException('enable = '.print_r($enable, true));
-		if(!is_bool($excludeServer))
-			throw new InvalidArgumentException('excludeServer = '.print_r($excludeServer, true));
+		}
+		if(!is_bool($serverAutomaticForward))
+		{
+			throw new InvalidArgumentException('serverAutomaticForward = '.print_r($serverAutomaticForward, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($enable, $excludeServer), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($enable, $serverAutomaticForward), $multicall);
 	}
 
 	/**
-	 * Send a message to the specified recipient (or everybody if empty) on behalf of sender.
+	 * (Text, SenderLogin, DestLogin) Send a text message to the specified DestLogin (or everybody if empty)
+	 * on behalf of SenderLogin. DestLogin can be a single login or a list of comma-separated logins.
 	 * Only available if manual routing is enabled.
-	 * Only available to Admin.
 	 * @param string $message
-	 * @param mixed $sender Login or player object
-	 * @param mixed $recipient Login, player object or array; empty for all
+	 * @param Structures\Player|string $sender
+	 * @param Structures\Player|string $receiver
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function chatForward($message, $sender, $recipient=null, $multicall=false)
+	function chatForwardToLogin($message, $sender, $receiver = null, $multicall = false)
 	{
 		if(!is_string($message))
+		{
 			throw new InvalidArgumentException('message = '.print_r($message, true));
+		}
+		if(!($senderLogin = $this->getLogin($sender)))
+		{
+			throw new InvalidArgumentException('sender must be set');
+		}
+		$receiverLogin = $this->getLogin($receiver) ? : '';
 
-		$senderLogin = $this->getLogin($sender);
-		if($senderLogin === false)
-			throw new InvalidArgumentException('sender = '.print_r($sender, true));
-		$recipientLogins = $this->getLogins($recipient, true);
-		if($recipientLogins === false)
-			throw new InvalidArgumentException('recipient = '.print_r($recipient, true));
-
-		return $this->execute(ucfirst(__FUNCTION__).'ToLogin', array($message, $senderLogin, $recipientLogins), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($message, $senderLogin, $receiverLogin), $multicall);
 	}
 
 	/**
-	 * @deprecated
-	 * @see chatForward()
-	 */
-	function chatForwardToLogin($message, $sender, $recipient=null, $multicall=false)
-	{
-		return $this->chatForward($message, $sender, $recipient, $multicall);
-	}
-
-	/**
-	 * Display a notice on all clients.
-	 * Only available to Admin.
-	 * @param mixed $recipient Login, player object or array; empty for all
+	 * Display a notice on the client with the specified UId.
+	 * The parameters are :
+	 * the Uid of the client to whom the notice is sent,
+	 * the text message to display,
+	 * the UId of the avatar to display next to it (or '255' for no avatar),
+	 * an optional 'max duration' in seconds (default: 3).
 	 * @param string $message
-	 * @param mixed $avatar Login or player object whose avatar will be displayed; empty for none
-	 * @param int $variant 0: normal, 1: sad, 2: happy
+	 * @param Structures\Player|string|mixed[] $receiver
+	 * @param Structures\Player|string $player
+	 * @param int $variant 0, 1 or 2
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function sendNotice($recipient, $message, $avatar=null, $variant=0, $multicall=false)
+	function sendNotice($receiver, $message, $player = null, $variant = 0, $multicall = false)
 	{
-		$logins = $this->getLogins($recipient, true);
-		if($logins === false)
-			throw new InvalidArgumentException('recipient = '.print_r($recipient, true));
 		if(!is_string($message))
+		{
 			throw new InvalidArgumentException('message = '.print_r($message, true));
-		$avatarLogin = $this->getLogin($avatar, true);
-		if($avatarLogin === false)
-			throw new InvalidArgumentException('avatar = '.print_r($avatar, true));
-		if(!is_int($variant) || $variant < 0 || $variant > 2)
-			throw new InvalidArgumentException('variant = '.print_r($variant, true));
+		}
 
-		if($logins === '')
-			return $this->execute(ucfirst(__FUNCTION__), array($message, $avatar, $variant), $multicall);
-		return $this->execute(ucfirst(__FUNCTION__).'ToLogin', array($logins, $message, $avatarLogin, $variant), $multicall);
+		$params = array();
+		$method = 'SendNotice';
+		if(!is_null($receiver))
+		{
+			if(!($login = $this->getLogins($receiver)))
+					throw new InvalidArgumentException('receiver = '.print_r($receiver, true));
+			else $params[] = $login;
+
+			$method .= 'ToLogin';
+		}
+
+		$params[] = $message;
+		$params[] = $this->getLogin($player) ? : '';
+		$params[] = $variant;
+		return $this->execute($method, $params, $multicall);
 	}
 
 	/**
-	 * Display a manialink page on all clients.
-	 * Only available to Admin.
-	 * @param mixed $recipient Login, player object or array; empty for all
-	 * @param string $manialinks XML string
-	 * @param int $timeout Seconds before autohide, 0 for permanent
-	 * @param bool $hideOnClick Hide as soon as the user clicks on a page option
+	 * Display a manialink page on the client of the specified Structures\Player(s).
+	 * The first parameter is the login of the player,
+	 * the other are identical to 'SendDisplayManialinkPage'.
+	 * The players can be an object of player Type or an array of Structures\Player object
+	 * @param null|Structures\Player|string|mixed[] $playerLogin
+	 * @param string $manialink
+	 * @param int $timeout
+	 * @param bool $hideOnClick
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function sendDisplayManialinkPage($recipient, $manialinks, $timeout=0, $hideOnClick=false, $multicall=false)
+	function sendDisplayManialinkPage($players, $manialink, $timeout, $hideOnClick, $multicall = false)
 	{
-		$logins = $this->getLogins($recipient, true);
-		if($logins === false)
-			throw new InvalidArgumentException('recipient = '.print_r($recipient, true));
-		if(!is_string($manialinks))
-			throw new InvalidArgumentException('manialinks = '.print_r($manialinks, true));
+		$params = array();
+		$method = 'SendDisplayManialinkPage';
+		if(!is_null($players))
+		{
+			if(!($login = $this->getLogins($players))) throw new InvalidArgumentException('players = '.print_r($players, true));
+			else $params[] = $login;
+
+			$method .= 'ToLogin';
+		}
+
+		if(!is_string($manialink))
+		{
+			throw new InvalidArgumentException('manialink = '.print_r($manialink, true));
+		}
 		if(!is_int($timeout))
+		{
 			throw new InvalidArgumentException('timeout = '.print_r($timeout, true));
+		}
 		if(!is_bool($hideOnClick))
+		{
 			throw new InvalidArgumentException('hideOnClick = '.print_r($hideOnClick, true));
+		}
+		$params[] = $manialink;
+		$params[] = $timeout;
+		$params[] = $hideOnClick;
 
-		if($logins === '')
-			return $this->execute(ucfirst(__FUNCTION__), array($manialinks, $timeout, $hideOnClick), $multicall);
-		return $this->execute(ucfirst(__FUNCTION__).'ToLogin', array($logins, $manialinks, $timeout, $hideOnClick), $multicall);
+		return $this->execute($method, $params, $multicall);
 	}
 
 	/**
-	 * Hide the displayed manialink page.
-	 * Only available to Admin.
-	 * @param mixed $recipient Login, player object or array; empty for all
+	 * Hide the displayed manialink page on the client with the specified login.
+	 * Login can be a single login or a list of comma-separated logins.
+	 * @param null|Structures\Player|string|mixed[] $players
 	 * @param bool $multicall
 	 * @return bool
+	 * @throws InvalidArgumentException
 	 */
-	function sendHideManialinkPage($recipient=null, $multicall=false)
+	function sendHideManialinkPage($players = null, $multicall = false)
 	{
-		$logins = $this->getLogins($recipient, true);
-		if($logins === false)
-			throw new InvalidArgumentException('recipient = '.print_r($recipient, true));
+		$params = array();
+		$method = 'SendHideManialinkPage';
+		if(!is_null($players))
+		{
+			if(!($login = $this->getLogins($players))) throw new InvalidArgumentException('players = '.print_r($players, true));
+			else $params[] = $login;
 
-		if($logins === '')
-			return $this->execute(ucfirst(__FUNCTION__), array(), $multicall);
-		return $this->execute(ucfirst(__FUNCTION__).'ToLogin', array($logins), $multicall);
+			$method .= 'ToLogin';
+		}
+
+		return $this->execute($method, $params, $multicall);
 	}
 
 	/**
-	 * Returns the latest results from the current manialink page as an array of structs {string Login, int PlayerId, int Result}:
-	 * - Result == 0 -> no answer
-	 * - Result > 0 -> answer from the player.
-	 * @param bool $multicall
-	 * @return Structures\PlayerAnswer[]
+	 * Returns the latest results from the current manialink page,
+	 * as an array of structs {string Login, int PlayerId, int Result}
+	 * Result==0 -> no answer, Result>0.... -> answer from the player.
+	 * @return array
 	 */
 	function getManialinkPageAnswers()
 	{
-		return Structures\PlayerAnswer::fromArrayOfArray($this->execute(ucfirst(__FUNCTION__)));
+		return $this->execute(ucfirst(__FUNCTION__));
 	}
 
 	/**
-	 * Opens a link in the client with the specified login.
-	 * Only available to Admin.
-	 * @param mixed $recipient Login, player object or array
-	 * @param string $link URL to open
-	 * @param int $linkType 0: in the external browser, 1: in the internal manialink browser
+	 * Opens a link in the client with the specified players.
+	 * The parameters are the login of the client to whom the link to open is sent, the link url, and the 'LinkType'
+	 * (0 in the external browser, 1 in the internal manialink browser).
+	 * Login can be a single login or a list of comma-separated logins. Only available to
+	 * @param Structures\Player|string|mixed[] $player
+	 * @param string $link
+	 * @param int $linkType
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function sendOpenLink($recipient, $link, $linkType, $multicall=false)
+	function sendOpenLink($player, $link, $linkType, $multicall = false)
 	{
-		$logins = $this->getLogins($recipient);
-		if($logins === false)
-			throw new InvalidArgumentException('recipient = '.print_r($recipient, true));
+		if(!($login = $this->getLogins($player)))
+		{
+			throw new InvalidArgumentException('player must be set');
+		}
 		if(!is_string($link))
+		{
 			throw new InvalidArgumentException('link = '.print_r($link, true));
+		}
 		if($linkType !== 0 && $linkType !== 1)
+		{
 			throw new InvalidArgumentException('linkType = '.print_r($linkType, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__).'ToLogin', array($logins, $link, $linkType), $multicall);
+		return $this->execute('SendOpenLinkToLogin', array($login, $link, $linkType), $multicall);
 	}
 
 	/**
-	 * Kick the player with the specified login, with an optional message.
-	 * Only available to Admin.
-	 * @param mixed $player Login or player object
+	 * Kick the player with an optional message.
+	 * @param Structures\Player|string $playerLogin
 	 * @param string $message
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function kick($player, $message='', $multicall=false)
+	function kick($player, $message = '', $multicall = false)
 	{
-		$login = $this->getLogin($player);
-		if($login === false)
-			throw new InvalidArgumentException('player = '.print_r($player, true));
+		if(!($login = $this->getLogin($player)))
+		{
+			throw new InvalidArgumentException('player must be set');
+		}
 		if(!is_string($message))
+		{
 			throw new InvalidArgumentException('message = '.print_r($message, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($login, $message), $multicall);
+		return $this->execute('Kick', array($login, $message), $multicall);
 	}
 
 	/**
-	 * Ban the player with the specified login, with an optional message.
-	 * Only available to Admin.
-	 * @param mixed $player Login or player object
+	 * Ban the player with an optional message.
+	 * @param Structures\Player|string $player
 	 * @param string $message
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function ban($player, $message='', $multicall=false)
+	function ban($player, $message = '', $multicall = false)
 	{
-		$login = $this->getLogin($player);
-		if($login === false)
-			throw new InvalidArgumentException('player = '.print_r($player, true));
+		if(!($login = $this->getLogin($player)))
+		{
+			throw new InvalidArgumentException('player must be set');
+		}
 		if(!is_string($message))
+		{
 			throw new InvalidArgumentException('message = '.print_r($message, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($login, $message), $multicall);
+		return $this->execute('Ban', array($login, $message), $multicall);
 	}
 
 	/**
-	 * Ban the player with the specified login, with a message.
+	 * Ban the player with a message.
 	 * Add it to the black list, and optionally save the new list.
-	 * Only available to Admin.
-	 * @param mixed $player Login or player object
+	 * @param Structures\Player|string $player
 	 * @param string $message
-	 * @param bool $save
+	 * @param bool $saveList
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function banAndBlackList($player, $message, $save=false, $multicall=false)
+	function banAndBlackList($player, $message, $saveList = false, $multicall = false)
 	{
-		$login = $this->getLogin($player);
-		if($login === false)
-			throw new InvalidArgumentException('player = '.print_r($player, true));
-		if(!is_string($message))
+		if(!($login = $this->getLogin($player)))
+		{
+			throw new InvalidArgumentException('player must be set');
+		}
+		if(!is_string($message) || !$message)
+		{
 			throw new InvalidArgumentException('message = '.print_r($message, true));
-		if(!is_bool($save))
-			throw new InvalidArgumentException('save = '.print_r($save, true));
+		}
+		if(!is_bool($saveList))
+		{
+			throw new InvalidArgumentException('saveList = '.print_r($saveList, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($player, $message, $save), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($login, $message, $saveList), $multicall);
 	}
 
 	/**
-	 * Unban the player with the specified login.
-	 * Only available to Admin.
-	 * @param mixed $player Login or player object
+	 * Unban the player
+	 * @param Structures\Player|string $player
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function unBan($player, $multicall=false)
+	function unBan($player, $multicall = false)
 	{
-		$login = $this->getLogin($player);
-		if($login === false)
-			throw new InvalidArgumentException('player = '.print_r($player, true));
+		if(!($login = $this->getLogin($player)))
+		{
+			throw new InvalidArgumentException('player must be set');
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($login), $multicall);
 	}
 
 	/**
 	 * Clean the ban list of the server.
-	 * Only available to Admin.
 	 * @param bool $multicall
 	 * @return bool
 	 */
-	function cleanBanList($multicall=false)
+	function cleanBanList($multicall = false)
 	{
 		return $this->execute(ucfirst(__FUNCTION__), array(), $multicall);
 	}
 
 	/**
-	 * Returns the list of banned players.
-	 * @param int $length Maximum number of infos to be returned
-	 * @param int $offset Starting index in the list
-	 * @return Structures\PlayerBan[]
+	 * Returns the list of banned players. This method takes two parameters.
+	 * The first parameter specifies the maximum number of infos to be returned,
+	 * the second one the starting index in the list. The list is an array of structures.
+	 * Each structure contains the following fields : Login, ClientName and IPAddress.
+	 * @param int $length specifies the maximum number of infos to be returned
+	 * @param int $offset specifies the starting index in the list
+	 * @return Structures\Player[] The list is an array of Structures\Player
 	 * @throws InvalidArgumentException
 	 */
 	function getBanList($length, $offset)
 	{
-		if(!is_int($length))
-			throw new InvalidArgumentException('length = '.print_r($length, true));
-		if(!is_int($offset))
-			throw new InvalidArgumentException('offset = '.print_r($offset, true));
+		if(!is_int($length)) throw new InvalidArgumentException('length = '.print_r($length, true));
+		if(!is_int($offset)) throw new InvalidArgumentException('offset = '.print_r($offset, true));
 
-		return Structures\PlayerBan::fromArrayOfArray($this->execute(ucfirst(__FUNCTION__), array($length, $offset)));
+		$result = $this->execute(ucfirst(__FUNCTION__), array($length, $offset));
+		return Structures\Player::fromArrayOfArray($result);
 	}
 
 	/**
-	 * Blacklist the player with the specified login.
-	 * Only available to SuperAdmin.
-	 * @param mixed $player Login or player object
+	 * Blacklist the player
+	 * @param Structures\Player|string $player
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function blackList($player, $multicall=false)
+	function blackList($player, $multicall = false)
 	{
-		$login = $this->getLogin($player);
-		if($login === false)
-			throw new InvalidArgumentException('player = '.print_r($player, true));
-
+		if(!($login = $this->getLogin($player)))
+		{
+			throw new InvalidArgumentException('player must be set');
+		}
 		return $this->execute(ucfirst(__FUNCTION__), array($login), $multicall);
 	}
 
 	/**
-	 * UnBlackList the player with the specified login.
-	 * Only available to SuperAdmin.
-	 * @param mixed $player Login or player object
+	 * UnBlackList the player
+	 * @param Structures\Player|string $player
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function unBlackList($player, $multicall=false)
+	function unBlackList($player, $multicall = false)
 	{
-		$login = $this->getLogin($player);
-		if($login === false)
-			throw new InvalidArgumentException('player = '.print_r($player, true));
-
+		if(!($login = $this->getLogin($player)))
+		{
+			throw new InvalidArgumentException('player must be set');
+		}
 		return $this->execute(ucfirst(__FUNCTION__), array($login), $multicall);
 	}
 
 	/**
 	 * Clean the blacklist of the server.
-	 * Only available to SuperAdmin.
 	 * @param bool $multicall
 	 * @return bool
 	 */
-	function cleanBlackList($multicall=false)
+	function cleanBlackList($multicall = false)
 	{
 		return $this->execute(ucfirst(__FUNCTION__), array(), $multicall);
 	}
 
 	/**
 	 * Returns the list of blacklisted players.
-	 * @param int $length Maximum number of infos to be returned
-	 * @param int $offset Starting index in the list
-	 * @return Structures\Player[]
+	 * This method takes two parameters.
+	 * The first parameter specifies the maximum number of infos to be returned,
+	 * the second one the starting index in the list. The list is an array of structures.
+	 * Each structure contains the following fields : Login.
+	 * @param int $length specifies the maximum number of infos to be returned
+	 * @param int $offset specifies the starting index in the list
+	 * @return Structures\Player[] The list is an array of structures. Each structure contains the following fields : Login.
 	 * @throws InvalidArgumentException
 	 */
 	function getBlackList($length, $offset)
 	{
-		if(!is_int($length))
-			throw new InvalidArgumentException('length = '.print_r($length, true));
-		if(!is_int($offset))
-			throw new InvalidArgumentException('offset = '.print_r($offset, true));
+		if(!is_int($length)) throw new InvalidArgumentException('length = '.print_r($length, true));
+		if(!is_int($offset)) throw new InvalidArgumentException('offset = '.print_r($offset, true));
 
-		return Structures\Player::fromArrayOfArray($this->execute(ucfirst(__FUNCTION__), array($length, $offset)));
+		$result = $this->execute(ucfirst(__FUNCTION__), array($length, $offset));
+		return Structures\Player::fromArrayOfArray($result);
 	}
 
 	/**
 	 * Load the black list file with the specified file name.
-	 * Only available to Admin.
-	 * @param string $filename
+	 * @param string $filename blackList file name
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function loadBlackList($filename, $multicall=false)
+	function loadBlackList($filename, $multicall = false)
 	{
-		if(!is_string($filename))
-			throw new InvalidArgumentException('filename = '.print_r($filename, true));
+		if(!is_string($filename)) throw new InvalidArgumentException('filename = '.print_r($filename, true));
 
 		return $this->execute(ucfirst(__FUNCTION__), array($filename), $multicall);
 	}
 
 	/**
 	 * Save the black list in the file with specified file name.
-	 * Only available to Admin.
-	 * @param string $filename
+	 * @param string $filename blackList filename
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function saveBlackList($filename, $multicall=false)
+	function saveBlackList($filename, $multicall = false)
 	{
-		if(!is_string($filename))
-			throw new InvalidArgumentException('filename = '.print_r($filename, true));
+		if(!is_string($filename)) throw new InvalidArgumentException('filename = '.print_r($filename, true));
 
 		return $this->execute(ucfirst(__FUNCTION__), array($filename), $multicall);
 	}
 
 	/**
-	 * Add the player with the specified login on the guest list.
-	 * Only available to Admin.
-	 * @param mixed $player Login or player object
+	 * Add the player to the guest list.
+	 * @param Structures\Player|string $player
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function addGuest($player, $multicall=false)
+	function addGuest($player, $multicall = false)
 	{
-		$login = $this->getLogin($player);
-		if($login === false)
-			throw new InvalidArgumentException('player = '.print_r($player, true));
-
+		if(!($login = $this->getLogin($player)))
+		{
+			throw new InvalidArgumentException('player must be set');
+		}
 		return $this->execute(ucfirst(__FUNCTION__), array($login), $multicall);
 	}
 
 	/**
-	 * Remove the player with the specified login from the guest list.
-	 * Only available to Admin.
-	 * @param mixed $player Login or player object
+	 * Remove the player from the guest list.
+	 * @param Structures\Player|string $player
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function removeGuest($player, $multicall=false)
+	function removeGuest($player, $multicall = false)
 	{
-		$login = $this->getLogin($player);
-		if($login === false)
-			throw new InvalidArgumentException('player = '.print_r($player, true));
-
+		if(!($login = $this->getLogin($player)))
+		{
+			throw new InvalidArgumentException('player must be set');
+		}
 		return $this->execute(ucfirst(__FUNCTION__), array($login), $multicall);
 	}
 
 	/**
 	 * Clean the guest list of the server.
-	 * Only available to Admin.
 	 * @param bool $multicall
 	 * @return bool
 	 */
-	function cleanGuestList($multicall=false)
+	function cleanGuestList($multicall = false)
 	{
 		return $this->execute(ucfirst(__FUNCTION__), array(), $multicall);
 	}
 
 	/**
 	 * Returns the list of players on the guest list.
-	 * @param int $length Maximum number of infos to be returned
-	 * @param int $offset Starting index in the list
-	 * @return Structures\Player[]
-	 * @return array
+	 * This method takes two parameters.
+	 * The first parameter specifies the maximum number of infos to be returned,
+	 * the second one the starting index in the list. The list is an array of structures.
+	 * Each structure contains the following fields : Login.
+	 * @param int $length specifies the maximum number of infos to be returned
+	 * @param int $offset specifies the starting index in the list
+	 * @return Structures\Player[] The list is an array of structures. Each structure contains the following fields : Login.
 	 * @throws InvalidArgumentException
 	 */
 	function getGuestList($length, $offset)
 	{
 		if(!is_int($length))
+		{
 			throw new InvalidArgumentException('length = '.print_r($length, true));
+		}
 		if(!is_int($offset))
+		{
 			throw new InvalidArgumentException('offset = '.print_r($offset, true));
+		}
 
-		return Structures\Player::fromArrayOfArray($this->execute(ucfirst(__FUNCTION__), array($length, $offset)));
+		$result = $this->execute(ucfirst(__FUNCTION__), array($length, $offset));
+		return Structures\Player::fromArrayOfArray($result);
 	}
 
 	/**
+	 *
 	 * Load the guest list file with the specified file name.
-	 * Only available to Admin.
-	 * @param string $filename
+	 * @param string $filename blackList file name
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function loadGuestList($filename, $multicall=false)
+	function loadGuestList($filename, $multicall = false)
 	{
 		if(!is_string($filename))
+		{
 			throw new InvalidArgumentException('filename = '.print_r($filename, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($filename), $multicall);
 	}
 
 	/**
 	 * Save the guest list in the file with specified file name.
-	 * Only available to Admin.
-	 * @param string $filename
+	 * @param string $filename blackList file name
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function saveGuestList($filename, $multicall=false)
+	function saveGuestList($filename, $multicall = false)
 	{
 		if(!is_string($filename))
+		{
 			throw new InvalidArgumentException('filename = '.print_r($filename, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($filename), $multicall);
 	}
 
 	/**
 	 * Sets whether buddy notifications should be sent in the chat.
-	 * Only available to Admin.
-	 * @param mixed $player Login or player object; empty for global setting
-	 * @param bool $enable
+	 * login is the login of the player, or '' for global setting,
+	 * enabled is the value.
+	 * @param null|Structures\Player|string $player the player, or null for global setting
+	 * @param bool $enable the value.
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function setBuddyNotification($player, $enable, $multicall=false)
+	function setBuddyNotification($player, $enable, $multicall = false)
 	{
-		$login = $this->getLogin($player, true);
-		if($login === false)
-			throw new InvalidArgumentException('player = '.print_r($player, true));
 		if(!is_bool($enable))
+		{
 			throw new InvalidArgumentException('enable = '.print_r($enable, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($login, $enable), $multicall);
+		$player = $this->getLogin($player) ? : '';
+
+		return $this->execute(ucfirst(__FUNCTION__), array($player, $enable), $multicall);
 	}
 
 	/**
-	 * Gets whether buddy notifications are enabled.
-	 * @param mixed $player Login or player object; empty for global setting
+	 * Gets whether buddy notifications are enabled for login, or '' to get the global setting.
+	 * @param null|Structures\Player|string $player the player, or null for global setting
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
 	function getBuddyNotification($player)
 	{
-		$login = $this->getLogin($player, true);
-		if($login === false)
-			throw new InvalidArgumentException('player = '.print_r($player, true));
+		$player = $this->getLogin($player) ? : '';
 
-		return $this->execute(ucfirst(__FUNCTION__), array($login));
+		return $this->execute(ucfirst(__FUNCTION__), array($player));
 	}
 
 	/**
-	 * Write the data to the specified file. The filename is relative to the Maps path.
-	 * Only available to Admin.
-	 * @param string $filename
-	 * @param string $data
+	 * Write the data to the specified file. The filename is relative to the Tracks path
+	 * @param string $filename The file to be written
+	 * @param string $localFilename The file to be read to obtain the data
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function writeFile($filename, $data, $multicall=false)
+	function writeFile($filename, $localFilename, $multicall = false)
 	{
 		if(!is_string($filename))
+		{
 			throw new InvalidArgumentException('filename = '.print_r($filename, true));
-		if(!is_string($data))
-			throw new InvalidArgumentException('data = '.print_r($data, true));
+		}
+		if(!file_exists($localFilename))
+		{
+			throw new InvalidArgumentException('localFilename = '.print_r($localFilename, true));
+		}
 
-		$data = new Xmlrpc\Base64($data);
+		$inputData = file_get_contents($localFilename);
+		$data = new Xmlrpc\Base64($inputData);
+
 		return $this->execute(ucfirst(__FUNCTION__), array($filename, $data), $multicall);
 	}
 
 	/**
-	 * Write the data to the specified file. The filename is relative to the Maps path.
-	 * Only available to Admin.
-	 * @param string $filename
-	 * @param string $localFilename
+	 * Write the data to the specified file. The filename is relative to the Tracks path
+	 * @param string $filename The file to be written
+	 * @param string $data the data to be written
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function writeFileFromFile($filename, $localFilename, $multicall=false)
+	function writeFileFromString($filename, $data, $multicall = false)
 	{
-		if(!file_exists($localFilename))
-			throw new InvalidArgumentException('localFilename = '.print_r($localFilename, true));
+		if(!is_string($filename))
+		{
+			throw new InvalidArgumentException('filename = '.print_r($filename, true));
+		}
 
-		$contents = file_get_contents($localFilename);
-		return $this->writeFile($filename, $contents, $multicall);
+		$data = new Xmlrpc\Base64($data);
+
+		return $this->execute('WriteFile', array($filename, $data), $multicall);
 	}
 
 	/**
-	 * Send the data to the specified player. Login can be a single login or a list of comma-separated logins.
-	 * Only available to Admin.
-	 * @param mixed $recipient Login, player object or array
+	 * Send the data to the specified player.
+	 * Login can be a single login or a list of comma-separated logins.
+	 * @param Structures\Player|string|mixed[] $players
+	 * @param string $filename
+	 * @param bool $multicall
+	 * @return bool
+	 * @throws InvalidArgumentException
+	 */
+	function tunnelSendData($players, $filename, $multicall = false)
+	{
+		if(!($login = $this->getLogins($players)))
+		{
+			throw new InvalidArgumentException('players = '.print_r($players, true));
+		}
+		if(!file_exists($filename))
+		{
+			throw new InvalidArgumentException('filename = '.print_r($filename, true));
+		}
+
+		$inputData = file_get_contents($filename);
+		$data = new Xmlrpc\Base64($inputData);
+
+		return $this->execute('TunnelSendDataToLogin', array($login, $data), $multicall);
+	}
+
+	/**
+	 * Send the data to the specified player.
+	 * Login can be a single login or a list of comma-separated logins.
+	 * @param Structures\Player|string|mixed[] $players
 	 * @param string $data
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function tunnelSendData($recipient, $data, $multicall=false)
+	function tunnelSendDataFromString($players, $data, $multicall = false)
 	{
-		$logins = $this->getLogins($recipient);
-		if($logins === false)
-			throw new InvalidArgumentException('recipient = '.print_r($recipient, true));
-		if(!is_string($data))
-			throw new InvalidArgumentException('data = '.print_r($data, true));
+		if(!($login = $this->getLogins($players)))
+		{
+			throw new InvalidArgumentException('players = '.print_r($players, true));
+		}
 
 		$data = new Xmlrpc\Base64($data);
-		return $this->execute(ucfirst(__FUNCTION__).'ToLogin', array($logins, $data), $multicall);
-	}
 
-	/**
-	 * Send the data to the specified player. Login can be a single login or a list of comma-separated logins.
-	 * Only available to Admin.
-	 * @param mixed $recipient Login or player object or array
-	 * @param string $filename
-	 * @param bool $multicall
-	 * @return bool
-	 * @throws InvalidArgumentException
-	 */
-	function tunnelSendDataFromFile($recipient, $filename, $multicall=false)
-	{
-		if(!file_exists($filename))
-			throw new InvalidArgumentException('filename = '.print_r($filename, true));
-
-		$contents = file_get_contents($filename);
-		return $this->tunnelSendData($recipient, $contents, $multicall);
+		return $this->execute('TunnelSendDataToLogin', array($login, $data), $multicall);
 	}
 
 	/**
 	 * Just log the parameters and invoke a callback.
 	 * Can be used to talk to other xmlrpc clients connected, or to make custom votes.
 	 * If used in a callvote, the first parameter will be used as the vote message on the clients.
-	 * Only available to Admin.
-	 * @param string $message
-	 * @param string $callback
+	 * @param string $message the message to log
+	 * @param string $callback optionnal callback name
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function dedicatedEcho($message, $callback='', $multicall=false)
+	function dedicatedEcho($message, $callback = '', $multicall = false)
 	{
 		if(!is_string($message))
+		{
 			throw new InvalidArgumentException('message = '.print_r($message, true));
+		}
 		if(!is_string($callback))
+		{
 			throw new InvalidArgumentException('callback = '.print_r($callback, true));
+		}
 
 		return $this->execute('Echo', array($message, $callback), $multicall);
 	}
 
 	/**
-	 * Ignore the player with the specified login.
-	 * Only available to Admin.
-	 * @param mixed $player Login or player object
+	 * Ignore the specified Structures\Player.
+	 * @param Structures\Player|string $player
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function ignore($player, $multicall=false)
+	function ignore($player, $multicall = false)
 	{
-		$login = $this->getLogin($player);
-		if($login === false)
-			throw new InvalidArgumentException('player = '.print_r($player, true));
-
+		if(!($login = $this->getLogin($player)))
+		{
+			throw new InvalidArgumentException('player must be set');
+		}
 		return $this->execute(ucfirst(__FUNCTION__), array($login), $multicall);
 	}
 
 	/**
-	 * Unignore the player with the specified login.
-	 * Only available to Admin.
-	 * @param mixed $player Login or player object
+	 * Unignore the specified player.
+	 * @param Structures\Player|string $player
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function unIgnore($player, $multicall=false)
+	function unIgnore($player, $multicall = false)
 	{
-		$login = $this->getLogin($player);
-		if($login === false)
-			throw new InvalidArgumentException('player = '.print_r($player, true));
-
+		if(!($login = $this->getLogin($player)))
+		{
+			throw new InvalidArgumentException('player must be set');
+		}
 		return $this->execute(ucfirst(__FUNCTION__), array($login), $multicall);
 	}
 
 	/**
 	 * Clean the ignore list of the server.
-	 * Only available to Admin.
 	 * @param bool $multicall
 	 * @return bool
 	 */
-	function cleanIgnoreList($multicall=false)
+	function cleanIgnoreList($multicall = false)
 	{
 		return $this->execute(ucfirst(__FUNCTION__), array(), $multicall);
 	}
 
 	/**
-	 * Returns the list of ignored players.
-	 * @param int $length Maximum number of infos to be returned
-	 * @param int $offset Starting index in the list
-	 * @return Structures\Player[]
+	 * Returns the list of ignored players. This method takes two parameters.
+	 * The first parameter specifies the maximum number of infos to be returned,
+	 * the second one the starting index in the list. The list is an array of structures.
+	 * Each structure contains the following fields : Login.
+	 * @param int $length specifies the maximum number of infos to be returned
+	 * @param int $offset specifies the starting index in the list
+	 * @return Structures\Player[] The list is an array of structures. Each structure contains the following fields : Login.
 	 * @throws InvalidArgumentException
 	 */
 	function getIgnoreList($length, $offset)
 	{
 		if(!is_int($length))
+		{
 			throw new InvalidArgumentException('length = '.print_r($length, true));
+		}
 		if(!is_int($offset))
+		{
 			throw new InvalidArgumentException('offset = '.print_r($offset, true));
+		}
 
-		return Structures\Player::fromArrayOfArray($this->execute(ucfirst(__FUNCTION__), array($length, $offset)));
+		$result = $this->execute(ucfirst(__FUNCTION__), array($length, $offset));
+		return Structures\Player::fromArrayOfArray($result);
 	}
 
 	/**
-	 * Pay planets from the server account to a player.
-	 * The creation of the transaction itself may cost planets, so you need to have planets on the server account.
-	 * Only available to Admin.
-	 * @param mixed $payee Login or player object
+	 * Pay coppers from the server account to a player, returns the BillId.
+	 * This method takes three parameters:
+	 * Login of the payee,
+	 * Coppers to pay and
+	 * Label to send with the payment.
+	 * The creation of the transaction itself may cost coppers,
+	 * so you need to have coppers on the server account.
+	 * @param Structures\Player|string $player
 	 * @param int $amount
-	 * @param string $message
+	 * @param string $label
 	 * @param bool $multicall
-	 * @return int BillId
+	 * @return int The Bill Id
 	 * @throws InvalidArgumentException
 	 */
-	function pay($payee, $amount, $message, $multicall=false)
+	function pay($player, $amount, $label, $multicall = false)
 	{
-		$login = $this->getLogin($payee);
-		if($login === false)
-			throw new InvalidArgumentException('payee = '.print_r($payee, true));
+		if(!($login = $this->getLogin($player)))
+		{
+			throw new InvalidArgumentException('player must be set');
+		}
 		if(!is_int($amount) || $amount < 1)
+		{
 			throw new InvalidArgumentException('amount = '.print_r($amount, true));
-		if(!is_string($message))
-			throw new InvalidArgumentException('message = '.print_r($message, true));
+		}
+		if(!is_string($label))
+		{
+			throw new InvalidArgumentException('label = '.print_r($label, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($login, $amount, $message), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($login, $amount, $label), $multicall);
 	}
 
 	/**
 	 * Create a bill, send it to a player, and return the BillId.
-	 * The creation of the transaction itself may cost planets, so you need to have planets on the server account.
-	 * Only available to Admin.
-	 * @param mixed $payer Login or player object
+	 * This method takes four parameters:
+	 * LoginFrom of the payer,
+	 * Coppers the player has to pay,
+	 * Label of the transaction and
+	 * optional LoginTo of the payee (if empty string, then the server account is used).
+	 * The creation of the transaction itself may cost coppers,
+	 * so you need to have coppers on the server account.
+	 * @param Structures\Player|string $fromPlayer
 	 * @param int $amount
-	 * @param string $message
-	 * @param mixed $payee Login or player object; empty for server account
+	 * @param string $label
+	 * @param Structures\Player|string|null $toPlayer
 	 * @param bool $multicall
-	 * @return int BillId
+	 * @return int
 	 * @throws InvalidArgumentException
 	 */
-	function sendBill($payer, $amount, $message, $payee, $multicall=false)
+	function sendBill($fromPlayer, $amount, $label, $toPlayer = null, $multicall = false)
 	{
-		$payerLogin = $this->getLogin($payer);
-		if($payerLogin === false)
-			throw new InvalidArgumentException('payer = '.print_r($payer, true));
-		if(!is_int($amount) || $amount < 1)
-			throw new InvalidArgumentException('amount = '.print_r($amount, true));
-		if(!is_string($message))
-			throw new InvalidArgumentException('message = '.print_r($message, true));
-		$payeeLogin = $this->getLogin($payee, true);
-		if($payeeLogin === false)
-			throw new InvalidArgumentException('payee = '.print_r($payee, true));
 
-		return $this->execute(ucfirst(__FUNCTION__), array($payerLogin, $amount, $message, $payeeLogin), $multicall);
+		if(!is_int($amount) || $amount < 1)
+		{
+			throw new InvalidArgumentException('amount = '.print_r($amount, true));
+		}
+		if(!is_string($label))
+		{
+			throw new InvalidArgumentException('label = '.print_r($label, true));
+		}
+		if(!($from = $this->getLogin($fromPlayer)))
+		{
+			throw new InvalidArgumentException('fromPlayer must be set');
+		}
+
+		$to = $this->getLogin($toPlayer) ? : '';
+
+		return $this->execute(ucfirst(__FUNCTION__), array($from, $amount, $label, $to), $multicall);
 	}
 
 	/**
 	 * Returns the current state of a bill.
+	 * This method takes one parameter, the BillId.
+	 * Returns a struct containing
+	 * State, StateName and TransactionId.
+	 * Possible enum values are: CreatingTransaction, Issued, ValidatingPayement, Payed, Refused, Error.
 	 * @param int $billId
 	 * @return Structures\Bill
 	 * @throws InvalidArgumentException
@@ -1260,9 +1490,12 @@ class Connection
 	function getBillState($billId)
 	{
 		if(!is_int($billId))
+		{
 			throw new InvalidArgumentException('billId = '.print_r($billId, true));
+		}
 
-		return Structures\Bill::fromArray($this->execute(ucfirst(__FUNCTION__), array($billId)));
+		$result = $this->execute(ucfirst(__FUNCTION__), array($billId));
+		return Structures\Bill::fromArray($result);
 	}
 
 	/**
@@ -1271,49 +1504,56 @@ class Connection
 	 */
 	function getServerPlanets()
 	{
-		return $this->execute(ucfirst(__FUNCTION__));
+		return $this->execute('GetServerPlanets');
 	}
 
 	/**
-	 * Get some system infos, including connection rates (in kbps).
+	 * Get some system infos.
+	 * Return a struct containing:
+	 * PublishedIp, Port, P2PPort, ServerLogin, ServerPlayerId
 	 * @return Structures\SystemInfos
 	 */
 	function getSystemInfo()
 	{
-		return Structures\SystemInfos::fromArray($this->execute(ucfirst(__FUNCTION__)));
+		$result = $this->execute(ucfirst(__FUNCTION__));
+		return Structures\SystemInfos::fromArray($result);
 	}
 
 	/**
-	 * Set the download and upload rates (in kbps).
-	 * @param int $downloadRate
-	 * @param int $uploadRate
+	 * Sets up- and download speed for the server in kbps.
+	 * @param int $downloadRate the download rate in kbps
+	 * @param int $uploadRate the upload rate in kbps
 	 * @param bool $multicall
 	 * @return bool
-	 * @throws InvalidArgumentException
 	 */
-	function setConnectionRates($downloadRate, $uploadRate, $multicall=false)
+	function setConnectionRates($downloadRate, $uploadRate, $multicall = false)
 	{
 		if(!is_int($downloadRate))
+		{
 			throw new InvalidArgumentException('downloadRate = '.print_r($downloadRate, true));
+		}
 		if(!is_int($uploadRate))
+		{
 			throw new InvalidArgumentException('uploadRate = '.print_r($uploadRate, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($downloadRate, $uploadRate), $multicall);
 	}
 
 	/**
 	 * Returns the list of tags and associated values set on this server.
+	 * The list is an array of structures {string Name, string Value}.
 	 * Only available to Admin.
-	 * @param bool $multicall
-	 * @return Structures\Tag[]
+	 * @return array
 	 */
 	function getServerTags()
 	{
-		return Structures\Tag::fromArrayOfArray($this->execute(ucfirst(__FUNCTION__)));
+		return $this->execute(ucfirst(__FUNCTION__));
 	}
 
 	/**
-	 * Set a tag and its value on the server.
+	 * Set a tag and its value on the server. This method takes two parameters.
+	 * The first parameter specifies the name of the tag, and the second one its value.
 	 * Only available to Admin.
 	 * @param string $key
 	 * @param string $value
@@ -1321,13 +1561,16 @@ class Connection
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function setServerTag($key, $value, $multicall=false)
+	function setServerTag($key, $value, $multicall = false)
 	{
 		if(!is_string($key))
+		{
 			throw new InvalidArgumentException('key = '.print_r($key, true));
+		}
 		if(!is_string($value))
+		{
 			throw new InvalidArgumentException('value = '.print_r($value, true));
-
+		}
 		return $this->execute(ucfirst(__FUNCTION__), array($key, $value), $multicall);
 	}
 
@@ -1339,11 +1582,12 @@ class Connection
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function unsetServerTag($key, $multicall=false)
+	function unsetServerTag($key, $multicall = false)
 	{
 		if(!is_string($key))
+		{
 			throw new InvalidArgumentException('key = '.print_r($key, true));
-
+		}
 		return $this->execute(ucfirst(__FUNCTION__), array($key), $multicall);
 	}
 
@@ -1353,25 +1597,26 @@ class Connection
 	 * @param bool $multicall
 	 * @return bool
 	 */
-	function resetServerTags($multicall=false)
+	function resetServerTags($multicall = false)
 	{
 		return $this->execute(ucfirst(__FUNCTION__), array(), $multicall);
 	}
 
 	/**
 	 * Set a new server name in utf8 format.
-	 * Only available to Admin.
-	 * @param string $name
+	 * @param string $serverName
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function setServerName($name, $multicall=false)
+	function setServerName($serverName, $multicall = false)
 	{
-		if(!is_string($name))
-			throw new InvalidArgumentException('name = '.print_r($name, true));
+		if(!is_string($serverName))
+		{
+			throw new InvalidArgumentException('serverName = '.print_r($serverName, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($name), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($serverName), $multicall);
 	}
 
 	/**
@@ -1385,18 +1630,19 @@ class Connection
 
 	/**
 	 * Set a new server comment in utf8 format.
-	 * Only available to Admin.
-	 * @param string $comment
+	 * @param string $serverComment
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function setServerComment($comment, $multicall=false)
+	function setServerComment($serverComment, $multicall = false)
 	{
-		if(!is_string($comment))
-			throw new InvalidArgumentException('comment = '.print_r($comment, true));
+		if(!is_string($serverComment))
+		{
+			throw new InvalidArgumentException('serverComment = '.print_r($serverComment, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($comment), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($serverComment), $multicall);
 	}
 
 	/**
@@ -1409,24 +1655,26 @@ class Connection
 	}
 
 	/**
-	 * Set whether the server should be hidden from the public server list.
-	 * Only available to Admin.
-	 * @param int $visibility 0: visible, 1: always hidden, 2: hidden from nations
+	 * Set whether the server should be hidden from the public server list
+	 * (0 = visible, 1 = always hidden, 2 = hidden from nations).
+	 * @param int $visibility
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function setHideServer($visibility, $multicall=false)
+	function setHideServer($visibility, $multicall = false)
 	{
-		if(!is_int($visibility) || $visibility < 0 || $visibility > 2)
+		if($visibility !== 0 && $visibility !== 1 && $visibility !== 2)
+		{
 			throw new InvalidArgumentException('visibility = '.print_r($visibility, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($visibility), $multicall);
 	}
 
 	/**
 	 * Get whether the server wants to be hidden from the public server list.
-	 * @return int
+	 * @return string
 	 */
 	function getHideServer()
 	{
@@ -1444,23 +1692,25 @@ class Connection
 
 	/**
 	 * Set a new password for the server.
-	 * Only available to Admin.
-	 * @param string $password
+	 * @param string $serverPassword
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function setServerPassword($password, $multicall=false)
+	function setServerPassword($serverPassword, $multicall = false)
 	{
-		if(!is_string($password))
-			throw new InvalidArgumentException('password = '.print_r($password, true));
+		if(!is_string($serverPassword))
+		{
+			throw new InvalidArgumentException('serverPassword = '.print_r($serverPassword, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($password), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($serverPassword), $multicall);
 	}
 
 	/**
 	 * Get the server password if called as Admin or Super Admin, else returns if a password is needed or not.
-	 * @return string|bool
+	 * Get the server name in utf8 format.
+	 * @return bool|string
 	 */
 	function getServerPassword()
 	{
@@ -1469,23 +1719,24 @@ class Connection
 
 	/**
 	 * Set a new password for the spectator mode.
-	 * Only available to Admin.
-	 * @param string $password
+	 * @param string $serverPassword
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function setServerPasswordForSpectator($password, $multicall=false)
+	function setServerPasswordForSpectator($serverPassword, $multicall = false)
 	{
-		if(!is_string($password))
-			throw new InvalidArgumentException('password = '.print_r($password, true));
+		if(!is_string($serverPassword))
+		{
+			throw new InvalidArgumentException('serverPassword = '.print_r($serverPassword, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($password), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($serverPassword), $multicall);
 	}
 
 	/**
 	 * Get the password for spectator mode if called as Admin or Super Admin, else returns if a password is needed or not.
-	 * @return string|bool
+	 * @return bool|string
 	 */
 	function getServerPasswordForSpectator()
 	{
@@ -1494,24 +1745,26 @@ class Connection
 
 	/**
 	 * Set a new maximum number of players.
-	 * Only available to Admin.
 	 * Requires a map restart to be taken into account.
 	 * @param int $maxPlayers
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function setMaxPlayers($maxPlayers, $multicall=false)
+	function setMaxPlayers($maxPlayers, $multicall = false)
 	{
 		if(!is_int($maxPlayers))
+		{
 			throw new InvalidArgumentException('maxPlayers = '.print_r($maxPlayers, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($maxPlayers), $multicall);
 	}
 
 	/**
 	 * Get the current and next maximum number of players allowed on server.
-	 * @return int[] {int CurrentValue, int NextValue}
+	 * The struct returned contains two fields CurrentValue and NextValue.
+	 * @return array
 	 */
 	function getMaxPlayers()
 	{
@@ -1520,24 +1773,26 @@ class Connection
 
 	/**
 	 * Set a new maximum number of spectators.
-	 * Only available to Admin.
 	 * Requires a map restart to be taken into account.
 	 * @param int $maxSpectators
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function setMaxSpectators($maxSpectators, $multicall=false)
+	function setMaxSpectators($maxSpectators, $multicall = false)
 	{
 		if(!is_int($maxSpectators))
-			throw new InvalidArgumentException('maxSpectators = '.print_r($maxSpectators, true));
+		{
+			throw new InvalidArgumentException('maxPlayers = '.print_r($maxSpectators, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($maxSpectators), $multicall);
 	}
 
 	/**
-	 * Get the current and next maximum number of Spectators allowed on server.
-	 * @return int[] {int CurrentValue, int NextValue}
+	 * Get the current and next maximum number of spectators allowed on server.
+	 * The struct returned contains two fields CurrentValue and NextValue.
+	 * @return array
 	 */
 	function getMaxSpectators()
 	{
@@ -1548,73 +1803,90 @@ class Connection
 	 * Declare if the server is a lobby, the number and maximum number of players currently managed by it, and the average level of the players.
 	 * Only available to Admin.
 	 * @param bool $isLobby
-	 * @param int $currentPlayers
+	 * @param int $lobbyPlayers
 	 * @param int $maxPlayers
-	 * @param float $averageLevel
+	 * @param double $lobbyPlayersLevel
 	 * @param bool $multicall
 	 * @return bool
-	 * @throws InvalidArgumentException
 	 */
-	function setLobbyInfo($isLobby, $currentPlayers, $maxPlayers, $averageLevel, $multicall=false)
+	function setLobbyInfo($isLobby, $lobbyPlayers, $maxPlayers, $lobbyPlayersLevel, $multicall = false)
 	{
 		if(!is_bool($isLobby))
+		{
 			throw new InvalidArgumentException('isLobby = '.print_r($isLobby, true));
-		if(!is_int($currentPlayers))
-			throw new InvalidArgumentException('currentPlayers = '.print_r($currentPlayers, true));
+		}
+		if(!is_int($lobbyPlayers))
+		{
+			throw new InvalidArgumentException('lobbyPlayers = '.print_r($lobbyPlayers, true));
+		}
 		if(!is_int($maxPlayers))
+		{
 			throw new InvalidArgumentException('maxPlayers = '.print_r($maxPlayers, true));
-		if(!is_float($averageLevel))
-			throw new InvalidArgumentException('averageLevel = '.print_r($averageLevel, true));
-
-		return $this->execute(ucfirst(__FUNCTION__), array($isLobby, $currentPlayers, $maxPlayers, $averageLevel), $multicall);
+		}
+		if(!is_double($lobbyPlayersLevel))
+		{
+			throw new InvalidArgumentException('lobbyPlayersLevel = '.print_r($lobbyPlayersLevel, true));
+		}
+		return $this->execute(ucfirst(__FUNCTION__), array($isLobby, $lobbyPlayers, $maxPlayers, $lobbyPlayersLevel), $multicall);
 	}
 
 	/**
 	 * Get whether the server if a lobby, the number and maximum number of players currently managed by it.
+	 * The struct returned contains 4 fields IsLobby, LobbyPlayers, LobbyMaxPlayers, and LobbyPlayersLevel.
 	 * @return Structures\LobbyInfo
 	 */
 	function getLobbyInfo()
 	{
-		return Structures\LobbyInfo::fromArray($this->execute(ucfirst(__FUNCTION__)));
+		$result = $this->execute(ucfirst(__FUNCTION__));
+		return Structures\LobbyInfo::fromArray($result);
 	}
 
 	/**
 	 * Customize the clients 'leave server' dialog box.
+	 * Parameters are: ManialinkPage, SendToServer url '#qjoin=login@title',
+	 * ProposeAddToFavorites and DelayQuitButton (in milliseconds).
 	 * Only available to Admin.
-	 * @param string $manialink
-	 * @param string $sendToServer Server URL, eg. '#qjoin=login@title'
-	 * @param bool $askFavorite
-	 * @param int $quitButtonDelay In milliseconds
+	 * @param string $manialinkPage
+	 * @param string $sendToServer
+	 * @param bool $proposeAddToFavorites
 	 * @param bool $multicall
 	 * @return bool
-	 * @throws InvalidArgumentException
 	 */
-	function customizeQuitDialog($manialink, $sendToServer, $askFavorite, $quitButtonDelay, $multicall=false)
+	function customizeQuitDialog($manialinkPage, $sendToServer, $proposeAddToFavorites, $delayQuitButton, $multicall = false)
 	{
-		if(!is_string($manialink))
-			throw new InvalidArgumentException('manialink = '.print_r($manialink, true));
+		if(!is_string($manialinkPage))
+		{
+			throw new InvalidArgumentException('manialinkPage = '.print_r($manialinkPage, true));
+		}
 		if(!is_string($sendToServer))
+		{
 			throw new InvalidArgumentException('sendToServer = '.print_r($sendToServer, true));
-		if(!is_bool($askFavorite))
-			throw new InvalidArgumentException('askFavorite = '.print_r($askFavorite, true));
-		if(!is_int($quitButtonDelay))
-			throw new InvalidArgumentException('quitButtonDelay = '.print_r($quitButtonDelay, true));
-
-		return $this->execute(ucfirst(__FUNCTION__), array($manialink, $sendToServer, $askFavorite, $quitButtonDelay), $multicall);
+		}
+		if(!is_bool($proposeAddToFavorites))
+		{
+			throw new InvalidArgumentException('proposeAddToFavorites = '.print_r($proposeAddToFavorites, true));
+		}
+		if(!is_int($delayQuitButton))
+		{
+			throw new InvalidArgumentException('delayQuitButton = '.print_r($delayQuitButton, true));
+		}
+		return $this->execute(ucfirst(__FUNCTION__), array($manialinkPage, $sendToServer, $proposeAddToFavorites, $delayQuitButton), $multicall);
 	}
 
 	/**
-	 * Set whether, when a player is switching to spectator, the server should still consider him a player and keep his player slot, or not.
-	 * Only available to Admin.
+	 * Set whether, when a player is switching to spectator, the server should still consider him a player
+	 * and keep his player slot, or not. Only available to Admin.
 	 * @param bool $keep
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function keepPlayerSlots($keep, $multicall=false)
+	function keepPlayerSlots($keep, $multicall = false)
 	{
 		if(!is_bool($keep))
+		{
 			throw new InvalidArgumentException('keep = '.print_r($keep, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($keep), $multicall);
 	}
@@ -1630,16 +1902,17 @@ class Connection
 
 	/**
 	 * Enable or disable peer-to-peer upload from server.
-	 * Only available to Admin.
 	 * @param bool $enable
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function enableP2PUpload($enable, $multicall=false)
+	function enableP2PUpload($enable, $multicall = false)
 	{
 		if(!is_bool($enable))
+		{
 			throw new InvalidArgumentException('enable = '.print_r($enable, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($enable), $multicall);
 	}
@@ -1654,23 +1927,24 @@ class Connection
 	}
 
 	/**
-	 * Enable or disable peer-to-peer download for server.
-	 * Only available to Admin.
+	 * Enable or disable peer-to-peer download from server.
 	 * @param bool $enable
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function enableP2PDownload($enable, $multicall=false)
+	function enableP2PDownload($enable, $multicall = false)
 	{
 		if(!is_bool($enable))
+		{
 			throw new InvalidArgumentException('enable = '.print_r($enable, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($enable), $multicall);
 	}
 
 	/**
-	 * Returns if the peer-to-peer download for server is enabled.
+	 * Returns if the peer-to-peer download from server is enabled.
 	 * @return bool
 	 */
 	function isP2PDownload()
@@ -1680,16 +1954,17 @@ class Connection
 
 	/**
 	 * Allow clients to download maps from the server.
-	 * Only available to Admin.
 	 * @param bool $allow
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function allowMapDownload($allow, $multicall=false)
+	function allowMapDownload($allow, $multicall = false)
 	{
 		if(!is_bool($allow))
+		{
 			throw new InvalidArgumentException('allow = '.print_r($allow, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($allow), $multicall);
 	}
@@ -1704,231 +1979,19 @@ class Connection
 	}
 
 	/**
-	 * Returns the path of the game datas directory.
-	 * Only available to Admin.
-	 * @return string
-	 */
-	function gameDataDirectory()
-	{
-		return $this->execute(ucfirst(__FUNCTION__));
-	}
-
-	/**
-	 * Returns the path of the maps directory.
-	 * Only available to Admin.
-	 * @return string
-	 */
-	function getMapsDirectory()
-	{
-		return $this->execute(ucfirst(__FUNCTION__));
-	}
-
-	/**
-	 * Returns the path of the skins directory.
-	 * Only available to Admin.
-	 * @return string
-	 */
-	function getSkinsDirectory()
-	{
-		return $this->execute(ucfirst(__FUNCTION__));
-	}
-
-	/**
-	 * @deprecated since version 2013-04-11
-	 * Set Team names and colors.
-	 * Only available to Admin.
-	 * @param string $name1
-	 * @param float $color1
-	 * @param string $path1
-	 * @param string $name2
-	 * @param float $color2
-	 * @param string $path2
-	 * @param bool $multicall
-	 * @return bool
-	 * @throws InvalidArgumentException
-	 */
-	function setTeamInfo($name1, $color1, $path1, $name2, $color2, $path2, $multicall=false)
-	{
-		if(!is_string($name1))
-			throw new InvalidArgumentException('name1 = '.print_r($name1, true));
-		if(!is_float($color1))
-			throw new InvalidArgumentException('color1 = '.print_r($color1, true));
-		if(!is_string($path1))
-			throw new InvalidArgumentException('path1 = '.print_r($path1, true));
-		if(!is_string($name2))
-			throw new InvalidArgumentException('name2 = '.print_r($name2, true));
-		if(!is_float($color2))
-			throw new InvalidArgumentException('color2 = '.print_r($color2, true));
-		if(!is_string($path2))
-			throw new InvalidArgumentException('path2 = '.print_r($path2, true));
-
-		return $this->execute(ucfirst(__FUNCTION__), array('unused', 0., 'World', $name1, $color1, $path1, $name2, $color2, $path2), $multicall);
-	}
-
-	/**
-	 * Return info for a given team.
-	 * Only available to Admin.
-	 * @param int $team 0: no clan, 1 or 2
-	 * @return Structures\Team
-	 * @throws InvalidArgumentException
-	 */
-	function getTeamInfo($team)
-	{
-		if(!is_int($team) || $team < 0 || $team > 2)
-			throw new InvalidArgumentException('team = '.print_r($team, true));
-
-		return Structures\Team::fromArray($this->execute(ucfirst(__FUNCTION__), array($team)));
-	}
-
-	/**
-	 * Set the clublinks to use for the two teams.
-	 * Only available to Admin.
-	 * @param string $team1
-	 * @param string $team2
-	 * @param bool $multicall
-	 * @return bool
-	 * @throws InvalidArgumentException
-	 */
-	function setForcedClubLinks($team1, $team2, $multicall=false)
-	{
-		if(!is_string($team1))
-			throw new InvalidArgumentException('team1 = '.print_r($team1, true));
-		if(!is_string($team2))
-			throw new InvalidArgumentException('team2 = '.print_r($team2, true));
-
-		return $this->execute(ucfirst(__FUNCTION__), array($team1, $team2), $multicall);
-	}
-
-	/**
-	 * Get the forced clublinks.
-	 * @return string[]
-	 */
-	function getForcedClubLinks()
-	{
-		return $this->execute(ucfirst(__FUNCTION__));
-	}
-
-	/**
-	 * (debug tool) Connect a fake player to the server and returns the login.
-	 * Only available to Admin.
-	 * @param bool $multicall
-	 * @return string
-	 */
-	function connectFakePlayer($multicall=false)
-	{
-		return $this->execute(ucfirst(__FUNCTION__), array(), $multicall);
-	}
-
-	/**
-	 * (debug tool) Disconnect a fake player.
-	 * Only available to Admin.
-	 * @param string $login Fake player login or '*' for all
-	 * @param bool $multicall
-	 * @return bool
-	 * @throws InvalidArgumentException
-	 */
-	function disconnectFakePlayer($login, $multicall=false)
-	{
-		if(!is_string($login))
-			throw new InvalidArgumentException('login = '.print_r($login, true));
-
-		return $this->execute(ucfirst(__FUNCTION__), array($login), $multicall);
-	}
-
-	/**
-	 * Returns the token infos for a player.
-	 * @param mixed $player Login or player object
-	 * @param bool $multicall
-	 * @return array {int TokenCost, bool CanPayToken}
-	 * @throws InvalidArgumentException
-	 */
-	function getDemoTokenInfosForPlayer($player)
-	{
-		$login = $this->getLogin($player);
-		if($login === false)
-			throw new InvalidArgumentException('player = '.print_r($player, true));
-
-		return $this->execute(ucfirst(__FUNCTION__), array($login));
-	}
-
-	/**
-	 * Disable player horns.
-	 * Only available to Admin.
-	 * @param bool $disable
-	 * @param bool $multicall
-	 * @return bool
-	 * @throws InvalidArgumentException
-	 */
-	function disableHorns($disable, $multicall=false)
-	{
-		if(!is_bool($disable))
-			throw new InvalidArgumentException('disable = '.print_r($disable, true));
-
-		return $this->execute(ucfirst(__FUNCTION__), array($disable), $multicall);
-	}
-
-	/**
-	 * Returns whether the horns are disabled.
-	 * @return bool
-	 */
-	function areHornsDisabled()
-	{
-		return $this->execute(ucfirst(__FUNCTION__));
-	}
-
-	/**
-	 * Disable the automatic mesages when a player connects/disconnects from the server.
-	 * Only available to Admin.
-	 * @param bool $disable
-	 * @param bool $multicall
-	 * @return bool
-	 * @throws InvalidArgumentException
-	 */
-	function disableServiceAnnounces($disable, $multicall=false)
-	{
-		if(!is_bool($disable))
-			throw new InvalidArgumentException('disable = '.print_r($disable, true));
-
-		return $this->execute(ucfirst(__FUNCTION__), array($disable), $multicall);
-	}
-
-	/**
-	 * Returns whether the automatic mesages are disabled.
-	 * @return bool
-	 */
-	function areServiceAnnouncesDisabled()
-	{
-		return $this->execute(ucfirst(__FUNCTION__));
-	}
-
-	/**
-	 * Enable the autosaving of all replays (vizualisable replays with all players, but not validable) on the server.
-	 * Only available to SuperAdmin.
+	 * Enable the autosaving of all replays (vizualisable replays with all players,
+	 * but not validable) on the server.
 	 * @param bool $enable
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function autoSaveReplays($enable, $multicall=false)
+	function autoSaveReplays($enable, $multicall = false)
 	{
 		if(!is_bool($enable))
+		{
 			throw new InvalidArgumentException('enable = '.print_r($enable, true));
-
-		return $this->execute(ucfirst(__FUNCTION__), array($enable), $multicall);
-	}
-
-	/**
-	 * Enable the autosaving on the server of validation replays, every time a player makes a new time.
-	 * Only available to SuperAdmin.
-	 * @param bool $enable
-	 * @param bool $multicall
-	 * @return bool
-	 * @throws InvalidArgumentException
-	 */
-	function autoSaveValidationReplays($enable, $multicall=false)
-	{
-		if(!is_bool($enable))
-			throw new InvalidArgumentException('enable = '.print_r($enable, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($enable), $multicall);
 	}
@@ -1943,6 +2006,23 @@ class Connection
 	}
 
 	/**
+	 * Enable the autosaving on the server of validation replays, every time a player makes a new time.
+	 * @param bool $enable
+	 * @param bool $multicall
+	 * @return bool
+	 * @throws InvalidArgumentException
+	 */
+	function autoSaveValidationReplays($enable, $multicall = false)
+	{
+		if(!is_bool($enable))
+		{
+			throw new InvalidArgumentException('enable = '.print_r($enable, true));
+		}
+
+		return $this->execute(ucfirst(__FUNCTION__), array($enable), $multicall);
+	}
+
+	/**
 	 * Returns if autosaving of validation replays is enabled on the server.
 	 * @return bool
 	 */
@@ -1953,75 +2033,82 @@ class Connection
 
 	/**
 	 * Saves the current replay (vizualisable replays with all players, but not validable).
-	 * Only available to Admin.
-	 * @param string $filename Empty for automatic filename
+	 * Pass a filename, or '' for an automatic filename.
+	 * @param string $filename
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function saveCurrentReplay($filename='', $multicall=false)
+	function saveCurrentReplay($filename = '', $multicall = false)
 	{
 		if(!is_string($filename))
+		{
 			throw new InvalidArgumentException('filename = '.print_r($filename, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($filename), $multicall);
 	}
 
 	/**
 	 * Saves a replay with the ghost of all the players' best race.
-	 * Only available to Admin.
-	 * @param mixed $player Login or player object; empty for all
-	 * @param string $filename Empty for automatic filename
+	 * First parameter is the player object(or null for all players),
+	 * Second parameter is the filename, or '' for an automatic filename.
+	 * @param null|Structures\Player|string $player the player (or null for all players)
+	 * @param string $filename is the filename, or '' for an automatic filename
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function saveBestGhostsReplay($player=null, $filename='', $multicall=false)
+	function saveBestGhostsReplay($player = null, $filename = '', $multicall = false)
 	{
-		$login = $this->getLogin($player, true);
-		if($login === false)
-			throw new InvalidArgumentException('player = '.print_r($player, true));
 		if(!is_string($filename))
+		{
 			throw new InvalidArgumentException('filename = '.print_r($filename, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($login, $filename), $multicall);
+		$playerLogin = $this->getLogin($player) ? : '';
+
+		return $this->execute(ucfirst(__FUNCTION__), array($playerLogin, $filename), $multicall);
 	}
 
 	/**
 	 * Returns a replay containing the data needed to validate the current best time of the player.
-	 * @param mixed $player Login or player object
+	 * The parameter is the login of the player.
+	 * @param Structures\Player|string $player
 	 * @return string
 	 * @throws InvalidArgumentException
 	 */
 	function getValidationReplay($player)
 	{
-		$login = $this->getLogin($player);
-		if($login === false)
-			throw new InvalidArgumentException('player = '.print_r($player, true));
-
+		if(!($login = $this->getLogin($player)))
+		{
+			throw new InvalidArgumentException('player must be set');
+		}
 		return $this->execute(ucfirst(__FUNCTION__), array($login))->scalar;
 	}
 
 	/**
-	 * Set a new ladder mode.
-	 * Only available to Admin.
+	 * Set a new ladder mode between ladder disabled (0) and forced (1).
 	 * Requires a map restart to be taken into account.
-	 * @param int $mode 0: disabled, 1: forced
+	 * @param int $mode
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function setLadderMode($mode, $multicall=false)
+	function setLadderMode($mode, $multicall = false)
 	{
 		if($mode !== 0 && $mode !== 1)
+		{
 			throw new InvalidArgumentException('mode = '.print_r($mode, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($mode), $multicall);
 	}
 
 	/**
 	 * Get the current and next ladder mode on server.
-	 * @return int[] {int CurrentValue, int NextValue}
+	 * The struct returned contains two fields CurrentValue and NextValue.
+	 * @return array
 	 */
 	function getLadderMode()
 	{
@@ -2030,33 +2117,36 @@ class Connection
 
 	/**
 	 * Get the ladder points limit for the players allowed on this server.
-	 * @return Structures\LadderLimits
+	 * The struct returned contains two fields LadderServerLimitMin and LadderServerLimitMax.
+	 * @return array
 	 */
 	function getLadderServerLimits()
 	{
-		return Structures\LadderLimits::fromArray($this->execute(ucfirst(__FUNCTION__)));
+		return $this->execute(ucfirst(__FUNCTION__));
 	}
 
 	/**
-	 * Set the network vehicle quality.
-	 * Only available to Admin.
+	 * Set the network vehicle quality to Fast (0) or High (1).
 	 * Requires a map restart to be taken into account.
-	 * @param int $quality 0: fast, 1: high
+	 * @param int $quality
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function setVehicleNetQuality($quality, $multicall=false)
+	function setVehicleNetQuality($quality, $multicall = false)
 	{
 		if($quality !== 0 && $quality !== 1)
+		{
 			throw new InvalidArgumentException('quality = '.print_r($quality, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($quality), $multicall);
 	}
 
 	/**
 	 * Get the current and next network vehicle quality on server.
-	 * @return int[] {int CurrentValue, int NextValue}
+	 * The struct returned contains two fields CurrentValue and NextValue.
+	 * @return array
 	 */
 	function getVehicleNetQuality()
 	{
@@ -2064,38 +2154,46 @@ class Connection
 	}
 
 	/**
-	 * Set new server options using the struct passed as parameters.
-	 * Mandatory fields:
-	 *  Name, Comment, Password, PasswordForSpectator, CallVoteRatio
-	 * Optional fields:
-	 *  NextMaxPlayers, NextMaxSpectators, IsP2PUpload, IsP2PDownload, NextLadderMode,
-	 *	NextVehicleNetQuality, NextCallVoteTimeOut, AllowMapDownload, AutoSaveReplays,
-	 *  RefereePassword, RefereeMode, AutoSaveValidationReplays, HideServer, UseChangingValidationSeed,
-	 *  ClientInputsMaxLatency, DisableHorns, DisableServiceAnnounces, KeepPlayerSlots.
+	 * Set new server options using the struct passed as parameters. This struct must contain the following fields :
+	 * Name, Comment, Password, PasswordForSpectator, NextMaxPlayers, NextMaxSpectators, IsP2PUpload, IsP2PDownload,
+	 * NextLadderMode, NextVehicleNetQuality, NextCallVoteTimeOut, CallVoteRatio, AllowMapDownload, AutoSaveReplays,
+	 *
+	 * and optionally for forever:
+	 * RefereePassword, RefereeMode, AutoSaveValidationReplays, HideServer, UseChangingValidationSeed,
+	 * ClientInputsMaxLatency, KeepPlayerSlots.
+	 *
 	 * Only available to Admin.
-	 * A change of NextMaxPlayers, NextMaxSpectators, NextLadderMode, NextVehicleNetQuality,
-	 *  NextCallVoteTimeOut or UseChangingValidationSeed requires a map restart to be taken into account.
-	 * @param struct $options
+	 * A change of NextMaxPlayers, NextMaxSpectators, NextLadderMode, NextVehicleNetQuality, NextCallVoteTimeOut
+	 * or UseChangingValidationSeed requires a map restart to be taken into account.
+	 * @param array $options
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function setServerOptions($options, $multicall=false)
+	function setServerOptions(array $options, $multicall = false)
 	{
-		if(!is_array($options)
-				|| !(isset($options['Name']) && is_string($options['Name']))
-				|| !(isset($options['Comment']) && is_string($options['Comment']))
-				|| !(isset($options['Password']) && is_string($options['Password']))
-				|| !(isset($options['PasswordForSpectator']) && is_string($options['PasswordForSpectator']))
-				|| !(isset($options['CallVoteRatio']) && Structures\VoteRatio::isRatio($options['CallVoteRatio'])))
+		if(!is_array($options) || !array_key_exists('Name', $options) || !array_key_exists('Comment', $options)
+			|| !array_key_exists('Password', $options) || !array_key_exists('PasswordForSpectator', $options)
+			|| !array_key_exists('NextCallVoteTimeOut', $options) || !array_key_exists('CallVoteRatio', $options)
+			|| (array_key_exists('IsP2PUpload', $options) xor array_key_exists('IsP2PDownload', $options))
+			|| (array_key_exists('NextMaxPlayer', $options) xor array_key_exists('NextMaxSpectator', $options))
+			|| (array_key_exists('RefereePassword', $options) xor array_key_exists('RefereeMode', $options)))
+		{
 			throw new InvalidArgumentException('options = '.print_r($options, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($options), $multicall);
 	}
 
 	/**
-	 * Returns a struct containing the server options
+	 * Returns a struct containing the server options:
+	 * Name, Comment, Password, PasswordForSpectator, CurrentMaxPlayers, NextMaxPlayers, CurrentMaxSpectators,
+	 * NextMaxSpectators, KeepPlayerSlots, IsP2PUpload, IsP2PDownload, CurrentLadderMode, NextLadderMode,
+	 * CurrentVehicleNetQuality, NextVehicleNetQuality, CurrentCallVoteTimeOut, NextCallVoteTimeOut, CallVoteRatio,
+	 * AllowMapDownload, AutoSaveReplays, RefereePassword, RefereeMode, AutoSaveValidationReplays, HideServer,
+	 * CurrentUseChangingValidationSeed, NextUseChangingValidationSeed, ClientInputsMaxLatency.
 	 * @return Structures\ServerOptions
+	 * @throws InvalidArgumentException
 	 */
 	function getServerOptions()
 	{
@@ -2110,11 +2208,12 @@ class Connection
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function setForcedTeams($enable, $multicall=false)
+	function setForcedTeams($enable, $multicall = false)
 	{
 		if(!is_bool($enable))
+		{
 			throw new InvalidArgumentException('enable = '.print_r($enable, true));
-
+		}
 		return $this->execute(ucfirst(__FUNCTION__), array($enable), $multicall);
 	}
 
@@ -2128,19 +2227,21 @@ class Connection
 	}
 
 	/**
-	 * Defines the packmask of the server.
-	 * Only maps matching the packmask will be allowed on the server, so that player connecting to it know what to expect.
+	 * Defines the packmask of the server. Can be 'United', 'Nations', 'Sunrise', 'Original',
+	 * or any of the environment names. (Only maps matching the packmask will be
+	 * allowed on the server, so that player connecting to it know what to expect.)
 	 * Only available when the server is stopped.
-	 * Only available to Admin.
 	 * @param string $packMask
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function setServerPackMask($packMask, $multicall=false)
+	function setServerPackMask($packMask, $multicall = false)
 	{
 		if(!is_string($packMask))
-			throw new InvalidArgumentException('packMask = '.print_r($enable, true));
+		{
+			throw new InvalidArgumentException('packMask = '.print_r($packMask, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($packMask), $multicall);
 	}
@@ -2155,39 +2256,40 @@ class Connection
 	}
 
 	/**
-	 * Set the mods to apply on the clients.
-	 * Only available to Admin.
+	 * Set the mods to apply on the clients. Parameters:
+	 * Override, if true even the maps with a mod will be overridden by the server setting;
+	 * Mods, an array of structures [{EnvName, Url}, ...].
 	 * Requires a map restart to be taken into account.
-	 * @param bool $override If true, even the maps with a mod will be overridden by the server setting
-	 * @param Structures\Mod|Structures\Mod[] $mods Array of structures [{string Env, string Url}, ...]
+	 * @param bool $override
+	 * @param array $mods
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function setForcedMods($override, $mods, $multicall=false)
+	function setForcedMods($override, $mods, $multicall = false)
 	{
 		if(!is_bool($override))
+		{
 			throw new InvalidArgumentException('override = '.print_r($override, true));
+		}
 		if(is_array($mods))
 		{
-			foreach($mods as $i => &$mod)
+			$modList = array();
+			foreach($mods as $mod)
 			{
-				if(!($mod instanceof Structures\Mod))
-					throw new InvalidArgumentException('mods['.$i.'] = '.print_r($mod, true));
-				$mod = $mod->toArray();
+				if(!($mod instanceof Structures\Mod)) throw new InvalidArgumentException('mods = '.print_r($mods, true));
+				else $modList[] = $mod->toArray();
 			}
 		}
-		elseif($mods instanceof Structures\Mod)
-			$mods = array($mods->toArray());
-		else
-			throw new InvalidArgumentException('mods = '.print_r($mods, true));
+		elseif($mods instanceof Structures\Mod) $modList = array($mods->toArray());
+		else throw new InvalidArgumentException('mods = '.print_r($mods, true));
 
-		return $this->execute(ucfirst(__FUNCTION__), array($override, $mods), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($override, $modList), $multicall);
 	}
 
 	/**
 	 * Get the mods settings.
-	 * @return array {bool Override, Structures\Mod[] Mods}
+	 * @return array the first value is a boolean which indicate if the mods override existing mods, the second is an array of objet of Structures\Mod type
 	 */
 	function getForcedMods()
 	{
@@ -2197,21 +2299,25 @@ class Connection
 	}
 
 	/**
-	 * Set the music to play on the clients.
-	 * Only available to Admin.
-	 * Requires a map restart to be taken into account.
-	 * @param bool $override If true, even the maps with a custom music will be overridden by the server setting
-	 * @param string $music Url or filename for the music
+	 * Set the music to play on the clients. Parameters:
+	 * Override, if true even the maps with a custom music will be overridden by the server setting,
+	 * UrlOrFileName for the music.
+	 * Requires a map restart to be taken into account
+	 * @param bool $override
+	 * @param string $music
 	 * @param bool $multicall
-	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function setForcedMusic($override, $music, $multicall=false)
+	function setForcedMusic($override, $music, $multicall = false)
 	{
 		if(!is_bool($override))
+		{
 			throw new InvalidArgumentException('override = '.print_r($override, true));
+		}
 		if(!is_string($music))
+		{
 			throw new InvalidArgumentException('music = '.print_r($music, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($override, $music), $multicall);
 	}
@@ -2226,48 +2332,58 @@ class Connection
 	}
 
 	/**
-	 * Defines a list of remappings for player skins.
+	 * Defines a list of remappings for player skins. It expects a list of structs Orig, Name, Checksum, Url.
+	 * Orig is the name of the skin to remap, or '*' for any other. Name, Checksum, Url define the skin to use.
+	 * (They are optional, you may set value '' for any of those. All 3 null means same as Orig).
 	 * Will only affect players connecting after the value is set.
-	 * Only available to Admin.
-	 * @param Structures\ForcedSkin|Structures\ForcedSkin[] $skins List of structs {Orig, Name, Checksum, Url}:
-	 * - Orig is the name of the skin to remap, or '*' for any other
-	 * - Name, Checksum, Url define the skin to use (you may set value '' for any of those, all 3 null means same as Orig).
+	 * @param Structures\Skin[] $skins
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function setForcedSkins($skins, $multicall=false)
+	function setForcedSkins(array $skins, $multicall = false)
 	{
-		if(is_array($skins))
+		if(!is_array($skins))
 		{
-			foreach($skins as $i => &$skin)
-			{
-				if(!($skin instanceof Structures\ForcedSkin))
-					throw new InvalidArgumentException('skins['.$i.'] = '.print_r($skin, true));
-				$skin = $skin->toArray();
-			}
-
-		}
-		elseif($skins instanceof Structures\ForcedSkin)
-			$skins = array($skins->toArray());
-		else
 			throw new InvalidArgumentException('skins = '.print_r($skins, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($skins), $multicall);
+		$skinParameter = array();
+		foreach($skins as $key => $skin)
+		{
+			if($skin instanceof Structures\Skin)
+			{
+				$skinParameter[$key] = array();
+				$skinParameter[$key]['Orig'] = $skin->orig;
+				$skinParameter[$key]['Name'] = $skin->name;
+				$skinParameter[$key]['Checksum'] = $skin->checksum;
+				$skinParameter[$key]['Url'] = $skin->url;
+			}
+			elseif(!is_array($skin) || !array_key_exists('Orig', $skin) && !array_key_exists('Name', $skin) && !array_key_exists('Checksum',
+					$skin) && !array_key_exists('Url', $skin))
+			{
+				throw new InvalidArgumentException('skins['.$key.'] = '.print_r($skins[$key], true));
+			}
+			else
+			{
+				$skinParameter[$key] = $skin;
+			}
+		}
+
+		return $this->execute(ucfirst(__FUNCTION__), array($skinParameter), $multicall);
 	}
 
 	/**
 	 * Get the current forced skins.
-	 * @return Structures\ForcedSkin[]
+	 * @return Structures\Skin[]
 	 */
 	function getForcedSkins()
 	{
-		return Structures\ForcedSkin::fromArrayOfArray($this->execute(ucfirst(__FUNCTION__)));
+		return Structures\Skin::fromArrayOfArray($this->execute(ucfirst(__FUNCTION__)));
 	}
 
 	/**
 	 * Returns the last error message for an internet connection.
-	 * Only available to Admin.
 	 * @return string
 	 */
 	function getLastConnectionErrorMessage()
@@ -2277,23 +2393,25 @@ class Connection
 
 	/**
 	 * Set a new password for the referee mode.
-	 * Only available to Admin.
-	 * @param string $password
+	 * @param string $refereePassword
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function setRefereePassword($password, $multicall=false)
+	function setRefereePassword($refereePassword, $multicall = false)
 	{
-		if(!is_string($password))
-			throw new InvalidArgumentException('password = '.print_r($password, true));
+		if(!is_string($refereePassword))
+		{
+			throw new InvalidArgumentException('refereePassword = '.print_r($refereePassword, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($password), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($refereePassword), $multicall);
 	}
 
 	/**
-	 * Get the password for referee mode if called as Admin or Super Admin, else returns if a password is needed or not.
-	 * @return string|bool
+	 * Get the password for referee mode if called as Admin or Super Admin,
+	 * else returns if a password is needed or not.
+	 * @return bool|string
 	 */
 	function getRefereePassword()
 	{
@@ -2301,24 +2419,25 @@ class Connection
 	}
 
 	/**
-	 * Set the referee validation mode.
-	 * Only available to Admin.
-	 * @param int $mode 0: validate the top3 players, 1: validate all players
+	 * Set the referee validation mode. 0 = validate the top3 players, 1 = validate all players. Only available to Admin.
+	 * @param int $refereeMode
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function setRefereeMode($mode, $multicall=false)
+	function setRefereeMode($refereeMode, $multicall = false)
 	{
-		if($mode !== 0 && $mode !== 1)
-			throw new InvalidArgumentException('mode = '.print_r($mode, true));
+		if($refereeMode !== 0 && $refereeMode !== 1)
+		{
+			throw new InvalidArgumentException('refereeMode = '.print_r($refereeMode, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($mode), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($refereeMode), $multicall);
 	}
 
 	/**
 	 * Get the referee validation mode.
-	 * @return int
+	 * @return bool|string
 	 */
 	function getRefereeMode()
 	{
@@ -2327,24 +2446,26 @@ class Connection
 
 	/**
 	 * Set whether the game should use a variable validation seed or not.
-	 * Only available to Admin.
 	 * Requires a map restart to be taken into account.
 	 * @param bool $enable
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function setUseChangingValidationSeed($enable, $multicall=false)
+	function setUseChangingValidationSeed($enable, $multicall = false)
 	{
 		if(!is_bool($enable))
+		{
 			throw new InvalidArgumentException('enable = '.print_r($enable, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($enable), $multicall);
 	}
 
 	/**
 	 * Get the current and next value of UseChangingValidationSeed.
-	 * @return bool[] {bool CurrentValue, bool NextValue}
+	 * The struct returned contains two fields CurrentValue and NextValue.
+	 * @return array
 	 */
 	function getUseChangingValidationSeed()
 	{
@@ -2353,24 +2474,23 @@ class Connection
 
 	/**
 	 * Set the maximum time the server must wait for inputs from the clients before dropping data, or '0' for auto-adaptation.
-	 * Only used by ShootMania.
-	 * Only available to Admin.
+	 * Only used by ShootMania. Only available to Admin.
 	 * @param int $latency
 	 * @param bool $multicall
 	 * @return bool
-	 * @throws InvalidArgumentException
 	 */
-	function setClientInputsMaxLatency($latency, $multicall=false)
+	function setClientInputsMaxLatency($latency, $multicall = false)
 	{
 		if(!is_int($latency))
+		{
 			throw new InvalidArgumentException('latency = '.print_r($latency, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($latency), $multicall);
 	}
 
 	/**
-	 * Get the current ClientInputsMaxLatency.
-	 * Only used by ShootMania.
+	 * Get the current ClientInputsMaxLatency. Only used by ShootMania.
 	 * @return int
 	 */
 	function getClientInputsMaxLatency()
@@ -2380,16 +2500,17 @@ class Connection
 
 	/**
 	 * Sets whether the server is in warm-up phase or not.
-	 * Only available to Admin.
 	 * @param bool $enable
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function setWarmUp($enable, $multicall=false)
+	function setWarmUp($enable, $multicall = false)
 	{
 		if(!is_bool($enable))
+		{
 			throw new InvalidArgumentException('enable = '.print_r($enable, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($enable), $multicall);
 	}
@@ -2404,7 +2525,8 @@ class Connection
 	}
 
 	/**
-	 * Get the current mode script.
+	 * Get the current rules script.
+	 * TODO Check if correct
 	 * @return string
 	 */
 	function getModeScriptText()
@@ -2413,23 +2535,82 @@ class Connection
 	}
 
 	/**
-	 * Set the mode script and restart.
+	 * Set the rules script and restart.
 	 * Only available to Admin.
+	 * TODO Check if correct
 	 * @param string $script
 	 * @param bool $multicall
 	 * @return bool
-	 * @throws InvalidArgumentException
 	 */
-	function setModeScriptText($script, $multicall=false)
+	function setModeScriptText($script, $multicall = false)
 	{
-		if(!is_string($script))
-			throw new InvalidArgumentException('script = '.print_r($script, true));
-
 		return $this->execute(ucfirst(__FUNCTION__), array($script), $multicall);
 	}
 
 	/**
-	 * Returns the description of the current mode script.
+	 * Get the xml-rpc variables of the mode script.
+	 * Only available to Admin.
+	 * @return array
+	 */
+	function getModeScriptVariables()
+	{
+		return $this->execute(ucfirst(__FUNCTION__));
+	}
+
+	/**
+	 * Set the variables of the rules script. Only available to Admin.
+	 * @param array $variables
+	 * @param bool $multicall
+	 */
+	function setModeScriptVariables($variables, $multicall = false)
+	{
+		return $this->execute(ucfirst(__FUNCTION__), array($variables), $multicall);
+	}
+
+	/**
+	 * Send an event to the mode script. Only available to Admin.
+	 * @param string $param1
+	 * @param string $param2
+	 * @param bool $multicall
+	 * @return bool
+	 */
+	function triggerModeScriptEvent($param1, $param2, $multicall = false)
+	{
+		if(!is_string($param1))
+		{
+			throw new InvalidArgumentException('param1 = '.print_r($param1, true));
+		}
+		if(!is_string($param2))
+		{
+			throw new InvalidArgumentException('param2 = '.print_r($param2, true));
+		}
+		return $this->execute(ucfirst(__FUNCTION__), array($param1, $param2), $multicall);
+	}
+
+	/**
+	 * Send an event to the mode script. Only available to Admin.
+	 * @param string $param1
+	 * @param mixed[] $param2
+	 * @param bool $multicall
+	 * @return bool
+	 */
+	function triggerModeScriptEventArray($param1, $param2, $multicall = false)
+	{
+		if(!is_string($param1))
+		{
+			throw new InvalidArgumentException('param1 = '.print_r($param1, true));
+		}
+		if(!is_array($param2))
+		{
+			throw new InvalidArgumentException('param2 = '.print_r($param2, true));
+		}
+		return $this->execute(ucfirst(__FUNCTION__), array($param1, $param2), $multicall);
+	}
+
+	/**
+	 * Returns the description of the current rules script,
+	 * as a structure containing: Name, CompatibleTypes,
+	 * Description and the settings available.
 	 * @return Structures\ScriptInfo
 	 */
 	function getModeScriptInfo()
@@ -2438,8 +2619,8 @@ class Connection
 	}
 
 	/**
-	 * Returns the current settings of the mode script.
-	 * @return array {mixed <setting name>, ...}
+	 * Returns the current parameters of the mode script.
+	 * @return array
 	 */
 	function getModeScriptSettings()
 	{
@@ -2447,30 +2628,24 @@ class Connection
 	}
 
 	/**
-	 * Change the settings of the mode script.
-	 * Only available to Admin.
-	 * @param mixed[] $settings {mixed <setting name>, ...}
+	 * Set the parameters of the rules script. Only available to Admin.
+	 * @param array $rules
 	 * @param bool $multicall
 	 * @return bool
-	 * @throws InvalidArgumentException
 	 */
-	function setModeScriptSettings($settings, $multicall=false)
+	function setModeScriptSettings($rules, $multicall = false)
 	{
-		if(!is_array($settings))
-			throw new InvalidArgumentException('settings = '.print_r($settings, true));
-
-		return $this->execute(ucfirst(__FUNCTION__), array($settings), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($rules), $multicall);
 	}
 
 	/**
 	 * Send commands to the mode script.
 	 * Only available to Admin.
-	 * @param mixed[] $commands
+	 * @param array $commands
 	 * @param bool $multicall
 	 * @return bool
-	 * @throws InvalidArgumentException
 	 */
-	function sendModeScriptCommands($commands, $multicall=false)
+	function sendModeScriptCommands(array $commands, $multicall = false)
 	{
 		return $this->execute(ucfirst(__FUNCTION__), array($commands), $multicall);
 	}
@@ -2478,237 +2653,176 @@ class Connection
 	/**
 	 * Change the settings and send commands to the mode script.
 	 * Only available to Admin.
-	 * @param mixed[] $settings {mixed <setting name>, ...}
-	 * @param mixed[] $commands
+	 * @param array $settings
+	 * @param array $commands
 	 * @param bool $multicall
 	 * @return bool
-	 * @throws InvalidArgumentException
 	 */
-	function setModeScriptSettingsAndCommands($settings, $commands, $multicall=false)
+	function setModeScriptSettingsAndCommands(array $settings, array $commands, $multicall = false)
 	{
 		return $this->execute(ucfirst(__FUNCTION__), array($settings, $commands), $multicall);
 	}
 
 	/**
-	 * Returns the current xml-rpc variables of the mode script.
-	 * @return array {mixed <setting name>, ...}
+	 * Restarts the map, with an optional boolean parameter DontClearCupScores (only available in cup mode).
+	 * @param bool $dontClearCupScores
+	 * @param bool $multicall
+	 * @return bool
+	 * @throws InvalidArgumentException
 	 */
-	function getModeScriptVariables()
+	function restartMap($dontClearCupScores = false, $multicall = false)
+	{
+		if(!is_bool($dontClearCupScores))
+		{
+			throw new InvalidArgumentException('dontClearCupScores = '.print_r($dontClearCupScores, true));
+		}
+
+		return $this->execute(ucfirst(__FUNCTION__), array($dontClearCupScores), $multicall);
+	}
+
+	/**
+	 * Switch to next map, with an optional boolean parameter DontClearCupScores (only available in cup mode).
+	 * @param bool $dontClearCupScores
+	 * @param bool $multicall
+	 * @return bool
+	 * @throws InvalidArgumentException
+	 */
+	function nextMap($dontClearCupScores = false, $multicall = false)
+	{
+		if(!is_bool($dontClearCupScores))
+		{
+			throw new InvalidArgumentException('dontClearCupScores = '.print_r($dontClearCupScores, true));
+		}
+
+		return $this->execute(ucfirst(__FUNCTION__), array($dontClearCupScores), $multicall);
+	}
+
+	/**
+	 * Attempt to balance teams. Only available to Admin.
+	 * @return bool
+	 */
+	function autoTeamBalance()
 	{
 		return $this->execute(ucfirst(__FUNCTION__));
 	}
 
 	/**
-	 * Set the xml-rpc variables of the mode script.
-	 * Only available to Admin.
-	 * @param mixed[] $variables
-	 * @param bool $multicall
-	 * @return bool
-	 * @throws InvalidArgumentException
-	 */
-	function setModeScriptVariables($variables, $multicall=false)
-	{
-		return $this->execute(ucfirst(__FUNCTION__), array($variables), $multicall);
-	}
-
-	/**
-	 * Send an event to the mode script.
-	 * Only available to Admin.
-	 * @param string $event
-	 * @param string $params
-	 * @param bool $multicall
-	 * @return bool
-	 * @throws InvalidArgumentException
-	 */
-	function triggerModeScriptEvent($event, $params='', $multicall=false)
-	{
-		if(!is_string($event))
-			throw new InvalidArgumentException('event = '.print_r($event, true));
-		if(!is_string($params))
-			throw new InvalidArgumentException('params = '.print_r($params, true));
-
-		return $this->execute(ucfirst(__FUNCTION__), array($event, $params), $multicall);
-	}
-
-	/**
-	 * Send an event to the mode script.
-	 * Only available to Admin.
-	 * @param string $event
-	 * @param mixed[] $params
-	 * @param bool $multicall
-	 * @return bool
-	 * @throws InvalidArgumentException
-	 */
-	function triggerModeScriptEventArray($event, $params, $multicall=false)
-	{
-		if(!is_string($event))
-			throw new InvalidArgumentException('events = '.print_r($event, true));
-		if(!is_array($params))
-			throw new InvalidArgumentException('params = '.print_r($params, true));
-
-		return $this->execute(ucfirst(__FUNCTION__), array($event, $params), $multicall);
-	}
-
-	/**
-	 * Get the script cloud variables of given object.
-	 * Only available to Admin.
-	 * @param string $arg1
-	 * @param string $arg2
-	 * @param bool $multicall
-	 * @return array
-	 * @throws InvalidArgumentException
-	 */
-	function getScriptCloudVariables($arg1, $arg2, $multicall=false)
-	{
-		if(!is_string($arg1))
-			throw new InvalidArgumentException('$arg1 = '.print_r($arg1, true));
-		if(!is_string($arg2))
-			throw new InvalidArgumentException('$arg2 = '.print_r($arg2, true));
-
-		return $this->execute(ucfirst(__FUNCTION__), array($arg1, $arg2), $multicall);
-	}
-
-	/**
-	 * Set the script cloud variables of given object. Only available to Admin.
-	 * @param string $arg1
-	 * @param string $arg2
-	 * @param struct $arg3
-	 * @param bool $multicall
-	 * @return bool
-	 * @throws InvalidArgumentException
-	 */
-	function setScriptCloudVariables($arg1, $arg2, $arg3, $multicall=false)
-	{
-		if(!is_string($arg1))
-			throw new InvalidArgumentException('$arg1 = '.print_r($arg1, true));
-		if(!is_string($arg2))
-			throw new InvalidArgumentException('$arg2 = '.print_r($arg2, true));
-		if(!is_struct($arg3))
-			throw new InvalidArgumentException('$arg3 = '.print_r($arg3, true));
-
-		return $this->execute(ucfirst(__FUNCTION__), array($arg1, $arg2, $arg3), $multicall);
-	}
-
-	/**
-	 * Restarts the map.
-	 * Only available to Admin.
-	 * @param bool $dontClearCupScores Only available in legacy cup mode
-	 * @param bool $multicall
-	 * @return bool
-	 */
-	function restartMap($dontClearCupScores=false, $multicall=false)
-	{
-		if(!is_bool($dontClearCupScores))
-			throw new InvalidArgumentException('dontClearCupScores = '.print_r($dontClearCupScores, true));
-
-		return $this->execute(ucfirst(__FUNCTION__), array($dontClearCupScores), $multicall);
-	}
-
-	/**
-	 * Switch to next map.
-	 * Only available to Admin.
-	 * @param bool $dontClearCupScores Only available in legacy cup mode
-	 * @param bool $multicall
-	 * @return bool
-	 */
-	function nextMap($dontClearCupScores=false, $multicall=false)
-	{
-		if(!is_bool($dontClearCupScores))
-			throw new InvalidArgumentException('dontClearCupScores = '.print_r($dontClearCupScores, true));
-
-		return $this->execute(ucfirst(__FUNCTION__), array($dontClearCupScores), $multicall);
-	}
-
-	/**
-	 * Attempt to balance teams.
-	 * Only available to Admin.
-	 * @param bool $multicall
-	 * @return bool
-	 */
-	function autoTeamBalance($multicall=false)
-	{
-		return $this->execute(ucfirst(__FUNCTION__), array(), $multicall);
-	}
-
-	/**
 	 * Stop the server.
-	 * Only available to SuperAdmin.
 	 * @param bool $multicall
 	 * @return bool
 	 */
-	function stopServer($multicall=false)
+	function stopServer($multicall = false)
 	{
 		return $this->execute(ucfirst(__FUNCTION__), array(), $multicall);
 	}
 
 	/**
-	 * In legacy Rounds or Laps mode, force the end of round without waiting for all players to giveup/finish.
-	 * Only available to Admin.
+	 * In Rounds or Laps mode, force the end of round without waiting for all players to giveup/finish.
 	 * @param bool $multicall
 	 * @return bool
 	 */
-	function forceEndRound($multicall=false)
+	function forceEndRound($multicall = false)
 	{
 		return $this->execute(ucfirst(__FUNCTION__), array(), $multicall);
 	}
 
 	/**
 	 * Set new game settings using the struct passed as parameters.
-	 * Only available to Admin.
+	 * This struct must contain the following fields :
+	 * GameMode, ChatTime, RoundsPointsLimit, RoundsUseNewRules, RoundsForcedLaps, TimeAttackLimit,
+	 * TimeAttackSynchStartPeriod, TeamPointsLimit, TeamMaxPoints, TeamUseNewRules, LapsNbLaps, LapsTimeLimit,
+	 * FinishTimeout, and optionally: AllWarmUpDuration, DisableRespawn, ForceShowAllOpponents, RoundsPointsLimitNewRules,
+	 * TeamPointsLimitNewRules, CupPointsLimit, CupRoundsPerMap, CupNbWinners, CupWarmUpDuration.
 	 * Requires a map restart to be taken into account.
 	 * @param Structures\GameInfos $gameInfos
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function setGameInfos($gameInfos, $multicall=false)
+	function setGameInfos(Structures\GameInfos $gameInfos, $multicall = false)
 	{
-		if(!($gameInfos instanceof Structures\GameInfos))
-			throw new InvalidArgumentException('gameInfos = '.print_r($gameInfos, true));
-
 		return $this->execute(ucfirst(__FUNCTION__), array($gameInfos->toArray()), $multicall);
 	}
 
 	/**
-	 * Returns a struct containing the current game settings.
+	 * Optional parameter for compatibility:
+	 * struct version (0 = united, 1 = forever).
+	 * Returns a struct containing the current game settings, ie:
+	 * GameMode, ChatTime, NbMap, RoundsPointsLimit, RoundsUseNewRules, RoundsForcedLaps,
+	 * TimeAttackLimit, TimeAttackSynchStartPeriod, TeamPointsLimit, TeamMaxPoints, TeamUseNewRules,
+	 * LapsNbLaps, LapsTimeLimit, FinishTimeout,
+	 * additionally for version 1: AllWarmUpDuration, DisableRespawn, ForceShowAllOpponents, RoundsPointsLimitNewRules,
+	 * TeamPointsLimitNewRules, CupPointsLimit, CupRoundsPerMap, CupNbWinners, CupWarmUpDuration.
+	 * @param int $compatibility
 	 * @return Structures\GameInfos
-	 */
-	function getCurrentGameInfo()
-	{
-		return Structures\GameInfos::fromArray($this->execute(ucfirst(__FUNCTION__)));
-	}
-
-	/**
-	 * Returns a struct containing the game settings for the next map.
-	 * @return Structures\GameInfos
-	 */
-	function getNextGameInfo()
-	{
-		return Structures\GameInfos::fromArray($this->execute(ucfirst(__FUNCTION__)));
-	}
-
-	/**
-	 * Returns a struct containing two other structures, the first containing the current game settings and the second the game settings for next map.
-	 * @return Structures\GameInfos[] {Structures\GameInfos CurrentGameInfos, Structures\GameInfos NextGameInfos}
-	 */
-	function getGameInfos()
-	{
-		return Structures\GameInfos::fromArrayOfArray($this->execute(ucfirst(__FUNCTION__)));
-	}
-
-	/**
-	 * Set a new game mode.
-	 * Only available to Admin.
-	 * Requires a map restart to be taken into account.
-	 * @param int $gameMode 0: Script, 1: Rounds, 2: TimeAttack, 3: Team, 4: Laps, 5: Cup, 6: Stunt
-	 * @param bool $multicall
-	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function setGameMode($gameMode, $multicall=false)
+	function getCurrentGameInfo($compatibility = 1)
 	{
-		if(!is_int($gameMode) || $gameMode < 0 || $gameMode > 6)
+		if($compatibility !== 1 && $compatibility != 0)
+		{
+			throw new InvalidArgumentException('compatibility = '.print_r($compatibility, true));
+		}
+
+		return Structures\GameInfos::fromArray($this->execute(ucfirst(__FUNCTION__), array($compatibility)));
+	}
+
+	/**
+	 * Optional parameter for compatibility:
+	 * struct version (0 = united, 1 = forever).
+	 * Returns a struct containing the game settings for the next map, ie:
+	 * GameMode, ChatTime, NbMap, RoundsPointsLimit, RoundsUseNewRules, RoundsForcedLaps,
+	 * TimeAttackLimit, TimeAttackSynchStartPeriod, TeamPointsLimit, TeamMaxPoints, TeamUseNewRules,
+	 * LapsNbLaps, LapsTimeLimit, FinishTimeout,
+	 * additionally for version 1: AllWarmUpDuration, DisableRespawn, ForceShowAllOpponents, RoundsPointsLimitNewRules,
+	 * TeamPointsLimitNewRules, CupPointsLimit, CupRoundsPerMap, CupNbWinners, CupWarmUpDuration.
+	 * @param int $compatibility
+	 * @return Structures\GameInfos
+	 * @throws InvalidArgumentException
+	 */
+	function getNextGameInfo($compatibility = 1)
+	{
+		if($compatibility !== 1 && $compatibility != 0)
+		{
+			throw new InvalidArgumentException('compatibility = '.print_r($compatibility, true));
+		}
+
+		return Structures\GameInfos::fromArray($this->execute(ucfirst(__FUNCTION__), array($compatibility)));
+	}
+
+	/**
+	 * Optional parameter for compatibility: struct version (0 = united, 1 = forever).
+	 * Returns a struct containing two other structures,
+	 * the first containing the current game settings and the second the game settings for next map.
+	 * The first structure is named CurrentGameInfos and the second NextGameInfos.
+	 * @param int $compatibility
+	 * @return Structures\GameInfos[]
+	 * @throws InvalidArgumentException
+	 */
+	function getGameInfos($compatibility = 1)
+	{
+		if($compatibility !== 1 && $compatibility != 0)
+		{
+			throw new InvalidArgumentException('compatibility = '.print_r($compatibility, true));
+		}
+
+		return Structures\GameInfos::fromArrayOfArray($this->execute(ucfirst(__FUNCTION__), array($compatibility)));
+	}
+
+	/**
+	 * Set a new game mode between Rounds (0), TimeAttack (1), Team (2), Laps (3), Stunts (4) and Cup (5).
+	 * Requires a map restart to be taken into account.
+	 * @param int $gameMode
+	 * @param bool $multicall
+	 * @throws InvalidArgumentException
+	 * @return bool
+	 */
+	function setGameMode($gameMode, $multicall = false)
+	{
+		if(!is_int($gameMode) && ($gameMode < 0 || $gameMode > 5))
+		{
 			throw new InvalidArgumentException('gameMode = '.print_r($gameMode, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($gameMode), $multicall);
 	}
@@ -2723,24 +2837,25 @@ class Connection
 	}
 
 	/**
-	 * Set a new chat time value (actually the duration of the podium).
-	 * Only available to Admin.
-	 * @param int $chatTime In milliseconds, 0: no podium displayed
+	 * Set a new chat time value in milliseconds (actually 'chat time' is the duration of the end race podium, 0 means no podium displayed.).
+	 * @param int $chatTime
 	 * @param bool $multicall
-	 * @return bool
 	 * @throws InvalidArgumentException
+	 * @return bool
 	 */
-	function setChatTime($chatTime, $multicall=false)
+	function setChatTime($chatTime, $multicall = false)
 	{
 		if(!is_int($chatTime))
+		{
 			throw new InvalidArgumentException('chatTime = '.print_r($chatTime, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($chatTime), $multicall);
 	}
 
 	/**
-	 * Get the current and next chat time.
-	 * @return int[] {int CurrentValue, int NextValue}
+	 * Get the current and next chat time. The struct returned contains two fields CurrentValue and NextValue.
+	 * @return array
 	 */
 	function getChatTime()
 	{
@@ -2748,25 +2863,27 @@ class Connection
 	}
 
 	/**
-	 * Set a new finish timeout value for legacy laps and rounds based modes.
-	 * Only available to Admin.
+	 * Set a new finish timeout (for rounds/laps mode) value in milliseconds.
+	 * 0 means default. 1 means adaptative to the duration of the map.
 	 * Requires a map restart to be taken into account.
-	 * @param int $timeout In milliseconds, 0: default, 1: adaptative to the map duration
+	 * @param int $finishTimeout
 	 * @param bool $multicall
-	 * @return bool
 	 * @throws InvalidArgumentException
+	 * @return bool
 	 */
-	function setFinishTimeout($timeout, $multicall=false)
+	function setFinishTimeout($finishTimeout, $multicall = false)
 	{
-		if(!is_int($timeout))
-			throw new InvalidArgumentException('timeout = '.print_r($timeout, true));
+		if(!is_int($finishTimeout))
+		{
+			throw new InvalidArgumentException('chatTime = '.print_r($finishTimeout, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($timeout), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($finishTimeout), $multicall);
 	}
 
 	/**
-	 * Get the current and next FinishTimeout.
-	 * @return int[] {int CurrentValue, int NextValue}
+	 * Get the current and next FinishTimeout. The struct returned contains two fields CurrentValue and NextValue.
+	 * @return array
 	 */
 	function getFinishTimeout()
 	{
@@ -2775,24 +2892,27 @@ class Connection
 
 	/**
 	 * Set whether to enable the automatic warm-up phase in all modes.
-	 * Only available to Admin.
+	 * 0 = no, otherwise it's the duration of the phase, expressed in number of rounds (in rounds/team mode),
+	 * or in number of times the gold medal time (other modes).
 	 * Requires a map restart to be taken into account.
-	 * @param int $duration 0: disable, number of rounds in rounds based modes, number of times the gold medal time otherwise
+	 * @param int $warmUpDuration
 	 * @param bool $multicall
-	 * @return bool
 	 * @throws InvalidArgumentException
+	 * @return bool
 	 */
-	function setAllWarmUpDuration($duration, $multicall=false)
+	function setAllWarmUpDuration($warmUpDuration, $multicall = false)
 	{
-		if(!is_int($duration))
-			throw new InvalidArgumentException('duration = '.print_r($duration, true));
+		if(!is_int($warmUpDuration))
+		{
+			throw new InvalidArgumentException('warmUpDuration = '.print_r($warmUpDuration, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($duration), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($warmUpDuration), $multicall);
 	}
 
 	/**
-	 * Get whether the automatic warm-up phase is enabled in all modes.
-	 * @return int[] {int CurrentValue, int NextValue}
+	 * Get whether the automatic warm-up phase is enabled in all modes. The struct returned contains two fields CurrentValue and NextValue.
+	 * @return array
 	 */
 	function getAllWarmUpDuration()
 	{
@@ -2801,24 +2921,25 @@ class Connection
 
 	/**
 	 * Set whether to disallow players to respawn.
-	 * Only available to Admin.
 	 * Requires a map restart to be taken into account.
-	 * @param bool $disable
+	 * @param bool $disableRespawn
 	 * @param bool $multicall
-	 * @return bool
 	 * @throws InvalidArgumentException
+	 * @return bool
 	 */
-	function setDisableRespawn($disable, $multicall=false)
+	function setDisableRespawn($disableRespawn, $multicall = false)
 	{
-		if(!is_bool($disable))
-			throw new InvalidArgumentException('disable = '.print_r($disable, true));
+		if(!is_bool($disableRespawn))
+		{
+			throw new InvalidArgumentException('disableRespawn = '.print_r($disableRespawn, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($disable), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($disableRespawn), $multicall);
 	}
 
 	/**
-	 * Get whether players are disallowed to respawn.
-	 * @return bool[] {bool CurrentValue, bool NextValue}
+	 * Get whether players are disallowed to respawn. The struct returned contains two fields CurrentValue and NextValue.
+	 * @return array
 	 */
 	function getDisableRespawn()
 	{
@@ -2826,25 +2947,27 @@ class Connection
 	}
 
 	/**
-	 * Set whether to override the players preferences and always display all opponents.
-	 * Only available to Admin.
+	 * Set whether to override the players preferences and always display all opponents
+	 * 0=no override, 1=show all, other value=minimum number of opponents.
 	 * Requires a map restart to be taken into account.
-	 * @param int $opponents 0: no override, 1: show all, else: minimum number of opponents
+	 * @param int $forceShowAllOpponents
 	 * @param bool $multicall
-	 * @return bool
 	 * @throws InvalidArgumentException
+	 * @return bool
 	 */
-	function setForceShowAllOpponents($opponents, $multicall=false)
+	function setForceShowAllOpponents($forceShowAllOpponents, $multicall = false)
 	{
-		if(!is_int($opponents))
-			throw new InvalidArgumentException('opponents = '.print_r($opponents, true));
+		if(!is_int($forceShowAllOpponents))
+		{
+			throw new InvalidArgumentException('forceShowAllOpponents = '.print_r($forceShowAllOpponents, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($opponents), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($forceShowAllOpponents), $multicall);
 	}
 
 	/**
-	 * Get whether players are forced to show all opponents.
-	 * @return int[] {int CurrentValue, int NextValue}
+	 * Get whether players are forced to show all opponents. The struct returned contains two fields CurrentValue and NextValue.
+	 * @return array
 	 */
 	function getForceShowAllOpponents()
 	{
@@ -2852,25 +2975,21 @@ class Connection
 	}
 
 	/**
-	 * Set a new mode script name for script mode.
-	 * Only available to Admin.
+	 * Set a new rules script name for script mode. Only available to Admin.
 	 * Requires a map restart to be taken into account.
-	 * @param string $script
+	 * @param string $scriptName
 	 * @param bool $multicall
 	 * @return bool
-	 * @throws InvalidArgumentException
 	 */
-	function setScriptName($script, $multicall=false)
+	function setScriptName($scriptName, $multicall = false)
 	{
-		if(!is_string($script))
-			throw new InvalidArgumentException('script = '.print_r($script, true));
-
-		return $this->execute(ucfirst(__FUNCTION__), array($script), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($scriptName), $multicall);
 	}
 
 	/**
-	 * Get the current and next mode script name for script mode.
-	 * @return string[] {string CurrentValue, string NextValue}
+	 * Get the current and next rules script name for script mode.
+	 * The struct returned contains two fields CurrentValue and NextValue.
+	 * @return array
 	 */
 	function getScriptName()
 	{
@@ -2878,25 +2997,26 @@ class Connection
 	}
 
 	/**
-	 * Set a new time limit for legacy time attack mode.
-	 * Only available to Admin.
+	 * Set a new time limit for time attack mode.
 	 * Requires a map restart to be taken into account.
-	 * @param int $limit In milliseconds
+	 * @param int $timeAttackLimit
 	 * @param bool $multicall
-	 * @return bool
 	 * @throws InvalidArgumentException
+	 * @return bool
 	 */
-	function setTimeAttackLimit($limit, $multicall=false)
+	function setTimeAttackLimit($timeAttackLimit, $multicall = false)
 	{
-		if(!is_int($limit))
-			throw new InvalidArgumentException('limit = '.print_r($limit, true));
+		if(!is_int($timeAttackLimit))
+		{
+			throw new InvalidArgumentException('timeAttackLimit = '.print_r($timeAttackLimit, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($limit), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($timeAttackLimit), $multicall);
 	}
 
 	/**
-	 * Get the current and next time limit for legacy time attack mode.
-	 * @return int[] {int CurrentValue, int NextValue}
+	 * Get the current and next time limit for time attack mode. The struct returned contains two fields CurrentValue and NextValue.
+	 * @return array
 	 */
 	function getTimeAttackLimit()
 	{
@@ -2904,25 +3024,27 @@ class Connection
 	}
 
 	/**
-	 * Set a new synchronized start period for legacy time attack mode.
-	 * Only available to Admin.
+	 * Set a new synchronized start period for time attack mode.
 	 * Requires a map restart to be taken into account.
-	 * @param int $synch
+	 * @param int $timeAttackSynchPeriod
 	 * @param bool $multicall
-	 * @return bool
 	 * @throws InvalidArgumentException
+	 * @return bool
 	 */
-	function setTimeAttackSynchStartPeriod($synch, $multicall=false)
+	function setTimeAttackSynchStartPeriod($timeAttackSynchPeriod, $multicall = false)
 	{
-		if(!is_int($synch))
-			throw new InvalidArgumentException('synch = '.print_r($synch, true));
+		if(!is_int($timeAttackSynchPeriod))
+		{
+			throw new InvalidArgumentException('timeAttackSynchPeriod = '.print_r($timeAttackSynchPeriod, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($synch), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($timeAttackSynchPeriod), $multicall);
 	}
 
 	/**
-	 * Get the current and synchronized start period for legacy time attack mode.
-	 * @return int[] {int CurrentValue, int NextValue}
+	 * Get the current and synchronized start period for time attack mode.
+	 * The struct returned contains two fields CurrentValue and NextValue.
+	 * @return array
 	 */
 	function getTimeAttackSynchStartPeriod()
 	{
@@ -2930,25 +3052,27 @@ class Connection
 	}
 
 	/**
-	 * Set a new time limit for legacy laps mode.
-	 * Only available to Admin.
+	 * Set a new time limit for laps mode.
 	 * Requires a map restart to be taken into account.
-	 * @param int $limit
+	 * @param int $lapsTimeLimit
 	 * @param bool $multicall
-	 * @return bool
 	 * @throws InvalidArgumentException
+	 * @return bool
 	 */
-	function setLapsTimeLimit($limit, $multicall=false)
+	function setLapsTimeLimit($lapsTimeLimit, $multicall = false)
 	{
-		if(!is_int($limit))
-			throw new InvalidArgumentException('limit = '.print_r($limit, true));
+		if(!is_int($lapsTimeLimit))
+		{
+			throw new InvalidArgumentException('lapsTimeLimit = '.print_r($lapsTimeLimit, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($limit), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($lapsTimeLimit), $multicall);
 	}
 
 	/**
-	 * Get the current and next time limit for legacy laps mode.
-	 * @return int[] {int CurrentValue, int NextValue}
+	 * Get the current and next time limit for laps mode.
+	 * The struct returned contains two fields CurrentValue and NextValue.
+	 * @return array
 	 */
 	function getLapsTimeLimit()
 	{
@@ -2956,25 +3080,27 @@ class Connection
 	}
 
 	/**
-	 * Set a new number of laps for legacy laps mode.
-	 * Only available to Admin.
+	 * Set a new number of laps for laps mode.
 	 * Requires a map restart to be taken into account.
-	 * @param int $laps
+	 * @param int $nbLaps
 	 * @param bool $multicall
-	 * @return bool
 	 * @throws InvalidArgumentException
+	 * @return bool
 	 */
-	function setNbLaps($laps, $multicall=false)
+	function setNbLaps($nbLaps, $multicall = false)
 	{
-		if(!is_int($laps))
-			throw new InvalidArgumentException('laps = '.print_r($laps, true));
+		if(!is_int($nbLaps))
+		{
+			throw new InvalidArgumentException('nbLaps = '.print_r($nbLaps, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($laps), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($nbLaps), $multicall);
 	}
 
 	/**
-	 * Get the current and next number of laps for legacy laps mode.
-	 * @return int[] {int CurrentValue, int NextValue}
+	 * Get the current and next number of laps for laps mode.
+	 * The struct returned contains two fields CurrentValue and NextValue.
+	 * @return array
 	 */
 	function getNbLaps()
 	{
@@ -2982,25 +3108,29 @@ class Connection
 	}
 
 	/**
-	 * Set a new number of laps for legacy rounds mode.
-	 * Only available to Admin.
+	 * Set a new number of laps for rounds mode
+	 * 0 = default, use the number of laps from the maps,
+	 * otherwise forces the number of rounds for multilaps maps.
 	 * Requires a map restart to be taken into account.
-	 * @param int $laps 0: map default
+	 * @param int $roundForcedLaps
 	 * @param bool $multicall
-	 * @return bool
 	 * @throws InvalidArgumentException
+	 * @return bool
 	 */
-	function setRoundForcedLaps($laps, $multicall=false)
+	function setRoundForcedLaps($roundForcedLaps, $multicall = false)
 	{
-		if(!is_int($laps))
-			throw new InvalidArgumentException('laps = '.print_r($laps, true));
+		if(!is_int($roundForcedLaps))
+		{
+			throw new InvalidArgumentException('roundForcedLaps = '.print_r($roundForcedLaps, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($laps), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($roundForcedLaps), $multicall);
 	}
 
 	/**
 	 * Get the current and next number of laps for rounds mode.
-	 * @return int[] {int CurrentValue, int NextValue}
+	 * The struct returned contains two fields CurrentValue and NextValue.
+	 * @return array
 	 */
 	function getRoundForcedLaps()
 	{
@@ -3008,25 +3138,27 @@ class Connection
 	}
 
 	/**
-	 * Set a new points limit for legacy rounds mode (value set depends on UseNewRulesRound).
-	 * Only available to Admin.
+	 * Set a new points limit for rounds mode (value set depends on UseNewRulesRound).
 	 * Requires a map restart to be taken into account.
-	 * @param int $limit
+	 * @param int $roundPointsLimit
 	 * @param bool $multicall
-	 * @return bool
 	 * @throws InvalidArgumentException
+	 * @return bool
 	 */
-	function setRoundPointsLimit($limit, $multicall=false)
+	function setRoundPointsLimit($roundPointsLimit, $multicall = false)
 	{
-		if(!is_int($limit))
-			throw new InvalidArgumentException('limit = '.print_r($limit, true));
+		if(!is_int($roundPointsLimit))
+		{
+			throw new InvalidArgumentException('roundPointsLimit = '.print_r($roundPointsLimit, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($limit), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($roundPointsLimit), $multicall);
 	}
 
 	/**
 	 * Get the current and next points limit for rounds mode (values returned depend on UseNewRulesRound).
-	 * @return int[] {int CurrentValue, int NextValue}
+	 * The struct returned contains two fields CurrentValue and NextValue.
+	 * @return array
 	 */
 	function getRoundPointsLimit()
 	{
@@ -3034,27 +3166,33 @@ class Connection
 	}
 
 	/**
-	 * Set the points used for the scores in legacy rounds mode.
-	 * Only available to Admin.
-	 * @param int[] $points Array of decreasing integers for the players from the first to last
-	 * @param bool $relax True to relax the constraint checking on the scores
+	 * Set the points used for the scores in rounds mode.
+	 * Points is an array of decreasing integers for the players from the first to last.
+	 * And you can add an optional boolean to relax the constraint checking on the scores.
+	 * @param array $roundCustomPoints
+	 * @param bool $relaxChecking
 	 * @param bool $multicall
-	 * @return bool
 	 * @throws InvalidArgumentException
+	 * @return bool
 	 */
-	function setRoundCustomPoints($points, $relax=false, $multicall=false)
+	function setRoundCustomPoints(array $roundCustomPoints, $relaxChecking = false, $multicall = false)
 	{
-		if(!is_array($points))
-			throw new InvalidArgumentException('points = '.print_r($points, true));
-		if(!is_bool($relax))
-			throw new InvalidArgumentException('relax = '.print_r($relax, true));
+		if(!is_array($roundCustomPoints))
+		{
+			throw new InvalidArgumentException('roundCustomPoints = '.print_r($roundCustomPoints, true));
+		}
+		if(!is_bool($relaxChecking))
+		{
+			throw new InvalidArgumentException('relaxChecking = '.print_r($relaxChecking, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($points, $relax), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($roundCustomPoints, $relaxChecking), $multicall);
 	}
 
 	/**
-	 * Gets the points used for the scores in legacy rounds mode.
-	 * @return int[]
+	 * Gets the points used for the scores in rounds mode.
+	 * @param bool $multicall
+	 * @return array
 	 */
 	function getRoundCustomPoints()
 	{
@@ -3062,25 +3200,27 @@ class Connection
 	}
 
 	/**
-	 * Set if new rules are used for legacy rounds mode.
-	 * Only available to Admin.
-	 * Requires a map restart to be taken into account.
-	 * @param bool $newRules
+	 * Set the points used for the scores in rounds mode.
+	 * Points is an array of decreasing integers for the players from the first to last.
+	 * And you can add an optional boolean to relax the constraint checking on the scores.
+	 * @param bool $useNewRulesRound
 	 * @param bool $multicall
-	 * @return bool
 	 * @throws InvalidArgumentException
+	 * @return bool
 	 */
-	function setUseNewRulesRound($newRules, $multicall=false)
+	function setUseNewRulesRound($useNewRulesRound, $multicall = false)
 	{
-		if(!is_bool($newRules))
-			throw new InvalidArgumentException('newRules = '.print_r($newRules, true));
+		if(!is_bool($useNewRulesRound))
+		{
+			throw new InvalidArgumentException('useNewRulesRound = '.print_r($useNewRulesRound, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($newRules), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($useNewRulesRound), $multicall);
 	}
 
 	/**
-	 * Get if the new rules are used for legacy rounds mode (Current and next values).
-	 * @return bool[] {bool CurrentValue, bool NextValue}
+	 * Gets the points used for the scores in rounds mode.
+	 * @return array
 	 */
 	function getUseNewRulesRound()
 	{
@@ -3089,24 +3229,26 @@ class Connection
 
 	/**
 	 * Set a new points limit for team mode (value set depends on UseNewRulesTeam).
-	 * Only available to Admin.
 	 * Requires a map restart to be taken into account.
-	 * @param int $limit
+	 * @param int $teamPointsLimit
 	 * @param bool $multicall
-	 * @return bool
 	 * @throws InvalidArgumentException
+	 * @return bool
 	 */
-	function setTeamPointsLimit($limit, $multicall=false)
+	function setTeamPointsLimit($teamPointsLimit, $multicall = false)
 	{
-		if(!is_int($limit))
-			throw new InvalidArgumentException('limit = '.print_r($limit, true));
+		if(!is_int($teamPointsLimit))
+		{
+			throw new InvalidArgumentException('teamPointsLimit = '.print_r($teamPointsLimit, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($limit), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($teamPointsLimit), $multicall);
 	}
 
 	/**
 	 * Get the current and next points limit for team mode (values returned depend on UseNewRulesTeam).
-	 * @return int[] {int CurrentValue, int NextValue}
+	 * The struct returned contains two fields CurrentValue and NextValue.
+	 * @return array
 	 */
 	function getTeamPointsLimit()
 	{
@@ -3115,24 +3257,26 @@ class Connection
 
 	/**
 	 * Set a new number of maximum points per round for team mode.
-	 * Only available to Admin.
 	 * Requires a map restart to be taken into account.
-	 * @param int $max
+	 * @param int $maxPointsTeam
 	 * @param bool $multicall
-	 * @return bool
 	 * @throws InvalidArgumentException
+	 * @return bool
 	 */
-	function setMaxPointsTeam($max, $multicall=false)
+	function setMaxPointsTeam($maxPointsTeam, $multicall = false)
 	{
-		if(!is_int($max))
-			throw new InvalidArgumentException('max = '.print_r($max, true));
+		if(!is_int($maxPointsTeam))
+		{
+			throw new InvalidArgumentException('maxPointsTeam = '.print_r($maxPointsTeam, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($max), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($maxPointsTeam), $multicall);
 	}
 
 	/**
 	 * Get the current and next number of maximum points per round for team mode.
-	 * @return int[] {int CurrentValue, int NextValue}
+	 * The struct returned contains two fields CurrentValue and NextValue.
+	 * @return array
 	 */
 	function getMaxPointsTeam()
 	{
@@ -3141,24 +3285,26 @@ class Connection
 
 	/**
 	 * Set if new rules are used for team mode.
-	 * Only available to Admin.
 	 * Requires a map restart to be taken into account.
-	 * @param bool $newRules
+	 * @param bool $useNewRulesTeam
 	 * @param bool $multicall
-	 * @return bool
 	 * @throws InvalidArgumentException
+	 * @return bool
 	 */
-	function setUseNewRulesTeam($newRules, $multicall=false)
+	function setUseNewRulesTeam($useNewRulesTeam, $multicall = false)
 	{
-		if(!is_bool($newRules))
-			throw new InvalidArgumentException('newRules = '.print_r($newRules, true));
+		if(!is_bool($useNewRulesTeam))
+		{
+			throw new InvalidArgumentException('useNewRulesTeam = '.print_r($useNewRulesTeam, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($newRules), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($useNewRulesTeam), $multicall);
 	}
 
 	/**
 	 * Get if the new rules are used for team mode (Current and next values).
-	 * @return bool[] {bool CurrentValue, bool NextValue}
+	 * The struct returned contains two fields CurrentValue and NextValue.
+	 * @return array
 	 */
 	function getUseNewRulesTeam()
 	{
@@ -3167,24 +3313,26 @@ class Connection
 
 	/**
 	 * Set the points needed for victory in Cup mode.
-	 * Only available to Admin.
 	 * Requires a map restart to be taken into account.
-	 * @param int $limit
+	 * @param int $pointsLimit
 	 * @param bool $multicall
-	 * @return bool
 	 * @throws InvalidArgumentException
+	 * @return bool
 	 */
-	function setCupPointsLimit($limit, $multicall=false)
+	function setCupPointsLimit($pointsLimit, $multicall = false)
 	{
-		if(!is_int($limit))
-			throw new InvalidArgumentException('limit = '.print_r($limit, true));
+		if(!is_int($pointsLimit))
+		{
+			throw new InvalidArgumentException('pointsLimit = '.print_r($pointsLimit, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($limit), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($pointsLimit), $multicall);
 	}
 
 	/**
 	 * Get the points needed for victory in Cup mode.
-	 * @return int[] {int CurrentValue, int NextValue}
+	 * The struct returned contains two fields CurrentValue and NextValue.
+	 * @return array
 	 */
 	function getCupPointsLimit()
 	{
@@ -3193,24 +3341,27 @@ class Connection
 
 	/**
 	 * Sets the number of rounds before going to next map in Cup mode.
-	 * Only available to Admin.
 	 * Requires a map restart to be taken into account.
-	 * @param int $rounds
+	 * @param int $roundsPerMap
 	 * @param bool $multicall
-	 * @return bool
 	 * @throws InvalidArgumentException
+	 * @return bool
 	 */
-	function setCupRoundsPerMap($rounds, $multicall=false)
+	function setCupRoundsPerMap($roundsPerMap, $multicall = false)
 	{
-		if(!is_int($rounds))
-			throw new InvalidArgumentException('rounds = '.print_r($rounds, true));
+		if(!is_int($roundsPerMap))
+		{
+			throw new InvalidArgumentException('roundsPerMap = '.print_r($roundsPerMap, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($rounds), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($roundsPerMap), $multicall);
 	}
 
 	/**
 	 * Get the number of rounds before going to next map in Cup mode.
-	 * @return int[] {int CurrentValue, int NextValue}
+	 * The struct returned contains two fields CurrentValue and NextValue.
+	 * @param bool $multicall
+	 * @return array
 	 */
 	function getCupRoundsPerMap()
 	{
@@ -3219,24 +3370,27 @@ class Connection
 
 	/**
 	 * Set whether to enable the automatic warm-up phase in Cup mode.
-	 * Only available to Admin.
+	 * 0 = no, otherwise it's the duration of the phase, expressed in number of rounds.
 	 * Requires a map restart to be taken into account.
-	 * @param int $duration Number of rounds, 0: no warm-up
+	 * @param int $warmUpDuration
 	 * @param bool $multicall
-	 * @return bool
 	 * @throws InvalidArgumentException
+	 * @return bool
 	 */
-	function setCupWarmUpDuration($duration, $multicall=false)
+	function setCupWarmUpDuration($warmUpDuration, $multicall = false)
 	{
-		if(!is_int($duration))
-			throw new InvalidArgumentException('duration = '.print_r($duration, true));
+		if(!is_int($warmUpDuration))
+		{
+			throw new InvalidArgumentException('warmUpDuration = '.print_r($warmUpDuration, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($duration), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($warmUpDuration), $multicall);
 	}
 
 	/**
 	 * Get whether the automatic warm-up phase is enabled in Cup mode.
-	 * @return int[] {int CurrentValue, int NextValue}
+	 * The struct returned contains two fields CurrentValue and NextValue.
+	 * @return array
 	 */
 	function getCupWarmUpDuration()
 	{
@@ -3245,24 +3399,26 @@ class Connection
 
 	/**
 	 * Set the number of winners to determine before the match is considered over.
-	 * Only available to Admin.
 	 * Requires a map restart to be taken into account.
-	 * @param int $winners
+	 * @param int $nbWinners
 	 * @param bool $multicall
-	 * @return bool
 	 * @throws InvalidArgumentException
+	 * @return bool
 	 */
-	function setCupNbWinners($winners, $multicall=false)
+	function setCupNbWinners($nbWinners, $multicall = false)
 	{
-		if(!is_int($winners))
-			throw new InvalidArgumentException('winners = '.print_r($winners, true));
+		if(!is_int($nbWinners))
+		{
+			throw new InvalidArgumentException('nbWinners = '.print_r($nbWinners, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($winners), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($nbWinners), $multicall);
 	}
 
 	/**
 	 * Get the number of winners to determine before the match is considered over.
-	 * @return int[] {int CurrentValue, int NextValue}
+	 * The struct returned contains two fields CurrentValue and NextValue.
+	 * @return array
 	 */
 	function getCupNbWinners()
 	{
@@ -3289,66 +3445,220 @@ class Connection
 
 	/**
 	 * Sets the map index in the selection that will be played next (unless the current one is restarted...)
-	 * @param int $index
+	 * @param int $nextMapIndex
 	 * @param bool $multicall
-	 * @return bool
 	 * @throws InvalidArgumentException
+	 * @return bool
 	 */
-	function setNextMapIndex($index, $multicall=false)
+	function setNextMapIndex($nextMapIndex, $multicall = false)
 	{
-		if(!is_int($index))
-			throw new InvalidArgumentException('index = '.print_r($index, true));
+		if(!is_int($nextMapIndex))
+		{
+			throw new InvalidArgumentException('nextMapIndex = '.print_r($nextMapIndex, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($index), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($nextMapIndex), $multicall);
 	}
 
 	/**
-	 * Sets the map in the selection that will be played next (unless the current one is restarted...)
-	 * @param string $ident
+	 * Immediately jumps to the map designated by the index in the selection
+	 * @param int $nextMapIndex
 	 * @param bool $multicall
-	 * @return bool
 	 * @throws InvalidArgumentException
+	 * @return bool
 	 */
-	function setNextMapIdent($ident, $multicall=false)
+	function jumpToMapIndex($mapIndex, $multicall = false)
 	{
-		if(!is_string($ident))
-			throw new InvalidArgumentException('ident = '.print_r($ident, true));
+		if(!is_int($mapIndex))
+		{
+			throw new InvalidArgumentException('mapIndex = '.print_r($mapIndex, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($ident), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($mapIndex), $multicall);
 	}
 
 	/**
-	 * Immediately jumps to the map designated by the index in the selection.
-	 * @param int $index
+	 * Set Team names and colors. Only available to Admin.
+	 * @param string $teamName1
+	 * @param float $teamColor1
+	 * @param string $team1Country
+	 * @param string $teamName2
+	 * @param float $teamColor2
+	 * @param string $team2Country
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
+	 * @deprecated since version 2013-04-11
 	 */
-	function jumpToMapIndex($index, $multicall=false)
+	function setTeamInfo($teamName1, $teamColor1, $team1Country, $teamName2, $teamColor2, $team2Country, $multicall = false)
 	{
-		if(!is_int($index))
-			throw new InvalidArgumentException('index = '.print_r($index, true));
-
-		return $this->execute(ucfirst(__FUNCTION__), array($index), $multicall);
+		if(!is_float($teamColor1))
+		{
+			throw new InvalidArgumentException('teamColor1 = '.print_r($teamColor1, true));
+		}
+		if(!is_float($teamColor2))
+		{
+			throw new InvalidArgumentException('teamColor2 = '.print_r($teamColor2, true));
+		}
+		if(!is_string($teamName1))
+		{
+			throw new InvalidArgumentException('teamName1 = '.print_r($teamName1, true));
+		}
+		if(!is_string($teamName2))
+		{
+			throw new InvalidArgumentException('teamName2 = '.print_r($teamName2, true));
+		}
+		return $this->execute(ucfirst(__FUNCTION__),
+				array('unused', 0., 'World', $teamName1, $teamColor1, $team1Country, $teamName2, $teamColor2, $team2Country),
+				$multicall);
 	}
 
 	/**
-	 * Immediately jumps to the map designated by its identifier (it must be in the selection).
-	 * @param string $ident
+	 * Return Team info for a given clan (0 = no clan, 1, 2).
+	 * The structure contains: name, zonePath, city, emblemUrl, huePrimary, hueSecondary, rGB, clubLinkUrl.
+	 * Only available to Admin.
+	 * @param int $teamId
+	 * @return Structures\Team
+	 * @throws InvalidArgumentException
+	 */
+	function getTeamInfo($teamId)
+	{
+		if(!is_int($teamId))
+		{
+			throw new InvalidArgumentException('teamId = '.print_r($teamId, true));
+		}
+		return Structures\Team::fromArray($this->execute(ucfirst(__FUNCTION__), array($teamId)));
+	}
+
+	/**
+	 * Set the clublinks to use for the two clans.
+	 * Only available to Admin.
+	 * @param string $team1ClubLink
+	 * @param string $team2ClubLink
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function jumpToMapIdent($ident, $multicall=false)
+	function setForcedClubLinks($team1ClubLink, $team2ClubLink, $multicall = false)
 	{
-		if(!is_string($ident))
-			throw new InvalidArgumentException('ident = '.print_r($ident, true));
+		if(!is_string($team1ClubLink))
+		{
+			throw new InvalidArgumentException('team1ClubLink = '.print_r($team1ClubLink, true));
+		}
+		if(!is_string($team2ClubLink))
+		{
+			throw new InvalidArgumentException('team2ClubLink = '.print_r($team2ClubLink, true));
+		}
+		return $this->execute(ucfirst(__FUNCTION__), array($team1ClubLink, $team2ClubLink), $multicall);
+	}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($ident), $multicall);
+	/**
+	 * Get the forced clublinks.
+	 * @return array
+	 */
+	function getForcedClubLinks()
+	{
+		return $this->execute(ucfirst(__FUNCTION__));
+	}
+
+	/**
+	 * (debug tool) Connect a fake player to the server and returns the login.
+	 * Only available to Admin.
+	 * @param bool $multicall
+	 * @return string
+	 */
+	function connectFakePlayer($multicall = false)
+	{
+		return $this->execute(ucfirst(__FUNCTION__), array(), $multicall);
+	}
+
+	/**
+	 * (debug tool) Disconnect a fake player, or all the fake players if login is '*'.
+	 * Only available to Admin.
+	 * @param string $fakePlayerLogin
+	 * @param bool $multicall
+	 * @return bool
+	 * @throws InvalidArgumentException
+	 */
+	function disconnectFakePlayer($fakePlayerLogin, $multicall = false)
+	{
+		if(!is_string($fakePlayerLogin))
+		{
+			throw new InvalidArgumentException('fakePlayerLogin = '.print_r($fakePlayerLogin, true));
+		}
+		return $this->execute(ucfirst(__FUNCTION__), array($fakePlayerLogin), $multicall);
+	}
+
+	/**
+	 * Returns the token infos for a player.
+	 * The returned structure is { TokenCost, CanPayToken }.
+	 * @param Structures\Player|string $player
+	 * @return array
+	 */
+	function getDemoTokenInfosForPlayer($player)
+	{
+		$login = $this->getLogin($player);
+		return (object) $this->execute(ucfirst(__FUNCTION__), array($login));
+	}
+
+	/**
+	 * Disable player horns. Only available to Admin.
+	 * @param bool $disable
+	 * @param bool $multicall
+	 * @return bool
+	 * @throws InvalidArgumentException
+	 */
+	function disableHorns($disable, $multicall = false)
+	{
+		if(!is_bool($disable))
+		{
+			throw new InvalidArgumentException('disable = '.print_r($disable, true));
+		}
+
+		return $this->execute(ucfirst(__FUNCTION__), array($disable), $multicall);
+	}
+
+	/**
+	 * Returns whether the horns are disabled.
+	 * @return bool
+	 */
+	function areHornsDisabled()
+	{
+		return $this->execute(ucfirst(__FUNCTION__));
+	}
+
+	/**
+	 * Disable the automatic mesages when a player connects/disconnects from the server.
+	 * Only available to Admin.
+	 * @param bool $disable
+	 * @param bool $multicall
+	 * @return bool
+	 * @throws InvalidArgumentException
+	 */
+	function disableServiceAnnounces($disable = true, $multicall = false)
+	{
+		if(!is_bool($disable))
+		{
+			throw new InvalidArgumentException('disable = '.print_r($disable, true));
+		}
+
+		return $this->execute(ucfirst(__FUNCTION__), array($disable), $multicall);
+	}
+
+	/**
+	 * Returns whether the automatic mesages are disabled.
+	 * @return bool
+	 */
+	function areServiceAnnouncesDisabled()
+	{
+		return $this->execute(ucfirst(__FUNCTION__));
 	}
 
 	/**
 	 * Returns a struct containing the infos for the current map.
+	 * The struct contains the following fields : Name, UId, FileName,
+	 * Author, Environnement, Mood, BronzeTime, SilverTime, GoldTime,
+	 * AuthorTime, CopperPrice, LapRace, NbLaps and NbCheckpoints.
 	 * @return Structures\Map
 	 */
 	function getCurrentMapInfo()
@@ -3358,6 +3668,10 @@ class Connection
 
 	/**
 	 * Returns a struct containing the infos for the next map.
+	 * The struct contains the following fields : Name, UId, FileName,
+	 * Author, Environnement, Mood, BronzeTime, SilverTime, GoldTime,
+	 * AuthorTime, CopperPrice, LapRace, NbLaps and NbCheckpoints.
+	 * (NbLaps and NbCheckpoints are also present but always set to -1)
 	 * @return Structures\Map
 	 */
 	function getNextMapInfo()
@@ -3367,6 +3681,10 @@ class Connection
 
 	/**
 	 * Returns a struct containing the infos for the map with the specified filename.
+	 * The struct contains the following fields : Name, UId, FileName,
+	 * Author, Environnement, Mood, BronzeTime, SilverTime, GoldTime,
+	 * AuthorTime, CopperPrice, LapRace, NbLaps and NbCheckpoints.
+	 * (NbLaps and NbCheckpoints are also present but always set to -1)
 	 * @param string $filename
 	 * @return Structures\Map
 	 * @throws InvalidArgumentException
@@ -3374,349 +3692,408 @@ class Connection
 	function getMapInfo($filename)
 	{
 		if(!is_string($filename))
+		{
 			throw new InvalidArgumentException('filename = '.print_r($filename, true));
+		}
 
-		return Structures\Map::fromArray($this->execute(ucfirst(__FUNCTION__), array($filename)));
+		$temp = $this->execute(ucfirst(__FUNCTION__), array($filename));
+		return Structures\Map::fromArray($temp);
 	}
 
 	/**
 	 * Returns a boolean if the map with the specified filename matches the current server settings.
 	 * @param string $filename
-	 * @param bool $multicall
 	 * @return bool
-	 * @throws InvalidArgumentException
 	 */
-	function checkMapForCurrentServerParams($filename, $multicall=false)
+	function checkMapForCurrentServerParams($filename)
 	{
 		if(!is_string($filename))
+		{
 			throw new InvalidArgumentException('filename = '.print_r($filename, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($filename), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($filename));
 	}
 
 	/**
 	 * Returns a list of maps among the current selection of the server.
-	 * @param int $length Maximum number of infos to be returned
-	 * @param int $offset Starting index in the list
-	 * @return Structures\Map[]
+	 * This method take two parameters.
+	 * The first parameter specifies the maximum number of infos to be returned,
+	 * the second one the starting index in the selection.
+	 * The list is an array of structures. Each structure contains the following fields : Name, UId, FileName, Environnement, Author, GoldTime and CopperPrice.
+	 * @param int $length specifies the maximum number of infos to be returned
+	 * @param int $offset specifies the starting index in the list
+	 * @return Structures\Map[] The list is an array of Map
 	 * @throws InvalidArgumentException
 	 */
 	function getMapList($length, $offset)
 	{
 		if(!is_int($length))
+		{
 			throw new InvalidArgumentException('length = '.print_r($length, true));
+		}
 		if(!is_int($offset))
+		{
 			throw new InvalidArgumentException('offset = '.print_r($offset, true));
+		}
 
 		return Structures\Map::fromArrayOfArray($this->execute(ucfirst(__FUNCTION__), array($length, $offset)));
 	}
 
 	/**
 	 * Add the map with the specified filename at the end of the current selection.
-	 * Only available to Admin.
 	 * @param string $filename
 	 * @param bool $multicall
-	 * @return bool
 	 * @throws InvalidArgumentException
+	 * @return bool
 	 */
-	function addMap($filename, $multicall=false)
+	function addMap($filename, $multicall = false)
 	{
 		if(!is_string($filename))
+		{
 			throw new InvalidArgumentException('filename = '.print_r($filename, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($filename), $multicall);
 	}
 
 	/**
-	 * Add the list of maps with the specified filenames at the end of the current selection.
-	 * Only available to Admin.
-	 * @param string[] $filenames
+	 * Add the list of maps with the specified filename at the end of the current selection.
+	 * @param array $filenames
 	 * @param bool $multicall
-	 * @return int
 	 * @throws InvalidArgumentException
+	 * @return int
 	 */
-	function addMapList($filenames, $multicall=false)
+	function addMapList(array $filenames, $multicall = false)
 	{
 		if(!is_array($filenames))
+		{
 			throw new InvalidArgumentException('filenames = '.print_r($filenames, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($filenames), $multicall);
 	}
 
 	/**
 	 * Remove the map with the specified filename from the current selection.
-	 * Only available to Admin.
 	 * @param string $filename
 	 * @param bool $multicall
-	 * @return bool
 	 * @throws InvalidArgumentException
+	 * @return bool
 	 */
-	function removeMap($filename, $multicall=false)
+	function removeMap($filename, $multicall = false)
 	{
 		if(!is_string($filename))
+		{
 			throw new InvalidArgumentException('filename = '.print_r($filename, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($filename), $multicall);
 	}
 
 	/**
 	 * Remove the list of maps with the specified filenames from the current selection.
-	 * Only available to Admin.
-	 * @param string[] $filenames
+	 * The list of maps to remove is an array of strings.
+	 * @param array $filenames
 	 * @param bool $multicall
-	 * @return int
 	 * @throws InvalidArgumentException
+	 * @return int
 	 */
-	function removeMapList($filenames, $multicall=false)
+	function removeMapList(array $filenames, $multicall = false)
 	{
 		if(!is_array($filenames))
+		{
 			throw new InvalidArgumentException('filenames = '.print_r($filenames, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($filenames), $multicall);
 	}
 
 	/**
 	 * Insert the map with the specified filename after the current map.
-	 * Only available to Admin.
 	 * @param string $filename
-	 * @param bool $multicall
-	 * @return bool
 	 * @throws InvalidArgumentException
+	 * @return bool
 	 */
-	function insertMap($filename, $multicall=false)
+	function insertMap($filename, $multicall = false)
 	{
 		if(!is_string($filename))
+		{
 			throw new InvalidArgumentException('filename = '.print_r($filename, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($filename), $multicall);
 	}
 
 	/**
 	 * Insert the list of maps with the specified filenames after the current map.
-	 * Only available to Admin.
-	 * @param string[] $filenames
-	 * @param bool $multicall
-	 * @return int
+	 * The list of maps to remove is an array of strings.
+	 * @param array $filenames
 	 * @throws InvalidArgumentException
+	 * @return int
 	 */
-	function insertMapList($filenames, $multicall=false)
+	function insertMapList(array $filenames, $multicall = false)
 	{
 		if(!is_array($filenames))
+		{
 			throw new InvalidArgumentException('filenames = '.print_r($filenames, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($filenames), $multicall);
 	}
 
 	/**
 	 * Set as next map the one with the specified filename, if it is present in the selection.
-	 * Only available to Admin.
 	 * @param string $filename
 	 * @param bool $multicall
-	 * @return bool
 	 * @throws InvalidArgumentException
+	 * @return bool
 	 */
-	function chooseNextMap($filename, $multicall=false)
+	function chooseNextMap($filename, $multicall = false)
 	{
 		if(!is_string($filename))
+		{
 			throw new InvalidArgumentException('filename = '.print_r($filename, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($filename), $multicall);
 	}
 
 	/**
 	 * Set as next maps the list of maps with the specified filenames, if they are present in the selection.
-	 * Only available to Admin.
+	 * The list of maps to remove is an array of strings.
 	 * @param array $filenames
 	 * @param bool $multicall
-	 * @return int
 	 * @throws InvalidArgumentException
+	 * @return int
 	 */
-	function chooseNextMapList($filenames, $multicall=false)
+	function chooseNextMapList(array $filenames, $multicall = false)
 	{
 		if(!is_array($filenames))
+		{
 			throw new InvalidArgumentException('filenames = '.print_r($filenames, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($filenames), $multicall);
 	}
 
 	/**
-	 * Set a list of maps defined in the playlist with the specified filename as the current selection of the server, and load the gameinfos from the same file.
-	 * Only available to Admin.
+	 * Set a list of maps defined in the playlist with the specified filename
+	 * as the current selection of the server, and load the gameinfos from the same file.
 	 * @param string $filename
-	 * @param bool $multicall
-	 * @return int
 	 * @throws InvalidArgumentException
+	 * @return int
 	 */
-	function loadMatchSettings($filename, $multicall=false)
+	function loadMatchSettings($filename, $multicall = false)
 	{
 		if(!is_string($filename))
+		{
 			throw new InvalidArgumentException('filename = '.print_r($filename, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($filename), $multicall);
 	}
 
 	/**
 	 * Add a list of maps defined in the playlist with the specified filename at the end of the current selection.
-	 * Only available to Admin.
 	 * @param string $filename
-	 * @param bool $multicall
-	 * @return int
 	 * @throws InvalidArgumentException
+	 * @return int
 	 */
-	function appendPlaylistFromMatchSettings($filename, $multicall=false)
+	function appendPlaylistFromMatchSettings($filename, $multicall = false)
 	{
 		if(!is_string($filename))
+		{
 			throw new InvalidArgumentException('filename = '.print_r($filename, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($filename), $multicall);
 	}
 
 	/**
 	 * Save the current selection of map in the playlist with the specified filename, as well as the current gameinfos.
-	 * Only available to Admin.
 	 * @param string $filename
 	 * @param bool $multicall
-	 * @return int
 	 * @throws InvalidArgumentException
+	 * @return int
 	 */
-	function saveMatchSettings($filename, $multicall=false)
+	function saveMatchSettings($filename, $multicall = false)
 	{
 		if(!is_string($filename))
+		{
 			throw new InvalidArgumentException('filename = '.print_r($filename, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($filename), $multicall);
 	}
 
 	/**
 	 * Insert a list of maps defined in the playlist with the specified filename after the current map.
-	 * Only available to Admin.
 	 * @param string $filename
-	 * @param bool $multicall
-	 * @return int
 	 * @throws InvalidArgumentException
+	 * @return int
 	 */
-	function insertPlaylistFromMatchSettings($filename, $multicall=false)
+	function insertPlaylistFromMatchSettings($filename, $multicall = false)
 	{
 		if(!is_string($filename))
+		{
 			throw new InvalidArgumentException('filename = '.print_r($filename, true));
+		}
 
 		return $this->execute(ucfirst(__FUNCTION__), array($filename), $multicall);
 	}
 
 	/**
-	 * Returns the list of players on the server.
-	 * @param int $length Maximum number of infos to be returned
-	 * @param int $offset Starting index in the list
-	 * @param int $compatibility 0: united, 1: forever, 2: forever including servers
-	 * @return Structures\PlayerInfo[]
+	 * Returns the list of players on the server. This method take two parameters.
+	 * The first parameter specifies the maximum number of infos to be returned,
+	 * the second one the starting index in the list,
+	 * an optional 3rd parameter is used for compatibility: struct version (0 = united, 1 = forever, 2 = forever, including the servers).
+	 * The list is an array of Structures\Player.
+	 * LadderRanking is 0 when not in official mode,
+	 * Flags = ForceSpectator(0,1,2) + IsReferee * 10 + IsPodiumReady * 100 + IsUsingStereoscopy * 1000 +
+	 * IsManagedByAnOtherServer * 10000 + IsServer * 100000 + HasPlayerSlot * 1000000
+	 * SpectatorStatus = Spectator + TemporarySpectator * 10 + PureSpectator * 100 + AutoTarget * 1000 + CurrentTargetId * 10000
+	 * @param int $length specifies the maximum number of infos to be returned
+	 * @param int $offset specifies the starting index in the list
+	 * @param int $compatibility
+	 * @return Structures\Player[] The list is an array of Structures\Player
 	 * @throws InvalidArgumentException
 	 */
-	function getPlayerList($length, $offset, $compatibility=1)
+	function getPlayerList($length, $offset, $compatibility = 1)
 	{
 		if(!is_int($length))
+		{
 			throw new InvalidArgumentException('length = '.print_r($length, true));
+		}
 		if(!is_int($offset))
+		{
 			throw new InvalidArgumentException('offset = '.print_r($offset, true));
-		if(!is_int($compatibility) || $compatibility < 0 || $compatibility > 2)
+		}
+		if(!is_int($compatibility))
+		{
 			throw new InvalidArgumentException('compatibility = '.print_r($compatibility, true));
+		}
 
-		return Structures\PlayerInfo::fromArrayOfArray($this->execute(ucfirst(__FUNCTION__), array($length, $offset, $compatibility)));
+		return Structures\Player::fromArrayOfArray($this->execute(ucfirst(__FUNCTION__), array($length, $offset, $compatibility)));
 	}
 
 	/**
-	 * Returns a struct containing the infos on the player with the specified login.
-	 * @param mixed $player Login or player object
-	 * @param int $compatibility 0: united, 1: forever
-	 * @return Structures\PlayerInfo
+	 * Returns a object of type Structures\Player containing the infos on the player with the specified login,
+	 * with an optional parameter for compatibility: struct version (0 = united, 1 = forever).
+	 * The structure is identical to the ones from GetPlayerList. Forever PlayerInfo struct is:
+	 * Login, NickName, PlayerId, TeamId, SpectatorStatus, LadderRanking, and Flags.
+	 * LadderRanking is 0 when not in official mode,
+	 * Flags = ForceSpectator(0,1,2) + IsReferee * 10 + IsPodiumReady * 100 + IsUsingStereoscopy * 1000 +
+	 * IsManagedByAnOtherServer * 10000 + IsServer * 100000 + HasPlayerSlot * 1000000
+	 * SpectatorStatus = Spectator + TemporarySpectator * 10 + PureSpectator * 100 + AutoTarget * 1000 + CurrentTargetId * 10000
+	 * @param int $playerLogin
+	 * @param int $compatibility
+	 * @return Structures\Player
 	 * @throws InvalidArgumentException
 	 */
-	function getPlayerInfo($player, $compatibility=1)
+	function getPlayerInfo($playerLogin, $compatibility = 1)
 	{
-		$login = $this->getLogin($player);
-		if($login === false)
-			throw new InvalidArgumentException('player = '.print_r($player, true));
-		if($compatibility !== 0 && $compatibility !== 1)
+		if(!is_string($playerLogin))
+		{
+			throw new InvalidArgumentException('playerLogin = '.print_r($playerLogin, true));
+		}
+		if(!is_int($compatibility))
+		{
 			throw new InvalidArgumentException('compatibility = '.print_r($compatibility, true));
+		}
 
-		return Structures\PlayerInfo::fromArray($this->execute(ucfirst(__FUNCTION__), array($login, $compatibility)));
+		return Structures\Player::fromArray($this->execute(ucfirst(__FUNCTION__), array($playerLogin, $compatibility)));
 	}
 
 	/**
-	 * Returns a struct containing the infos on the player with the specified login.
-	 * @param mixed $player Login or player object
-	 * @return Structures\PlayerDetailedInfo
+	 * Returns an object of type Structures\Player containing the infos on the player with the specified login.
+	 * The structure contains the following fields :
+	 * Login, NickName, PlayerId, TeamId, IPAddress, DownloadRate, UploadRate, Language, IsSpectator,
+	 * IsInOfficialMode, a structure named Avatar, an array of structures named Skins, a structure named LadderStats,
+	 * HoursSinceZoneInscription and OnlineRights (0: nations account, 3: united account).
+	 * Each structure of the array Skins contains two fields Environnement and a struct PackDesc.
+	 * Each structure PackDesc, as well as the struct Avatar, contains two fields FileName and Checksum.
+	 * @param int $playerLogin
+	 * @return Structures\Player
 	 * @throws InvalidArgumentException
 	 */
-	function getDetailedPlayerInfo($player)
+	function getDetailedPlayerInfo($playerLogin)
 	{
-		$login = $this->getLogin($player);
-		if($login === false)
-			throw new InvalidArgumentException('player = '.print_r($player, true));
+		if(!is_string($playerLogin))
+		{
+			throw new InvalidArgumentException('playerLogin = '.print_r($playerLogin, true));
+		}
 
-		return Structures\PlayerDetailedInfo::fromArray($this->execute(ucfirst(__FUNCTION__), array($login)));
+		return Structures\Player::fromArray($this->execute(ucfirst(__FUNCTION__), array($playerLogin)));
 	}
 
 	/**
-	 * Returns a struct containing the player infos of the game server
-	 * (ie: in case of a basic server, itself; in case of a relay server, the main server)
-	 * @param int $compatibility 0: united, 1: forever
-	 * @return Structures\PlayerInfo
+	 * Returns an object of Structures\Player type containing the infos on the player with the specified login.
+	 * The structure contains the following fields : Login, NickName, PlayerId, TeamId, IPAddress, DownloadRate, UploadRate,
+	 * Language, IsSpectator, IsInOfficialMode, a structure named Avatar, an array of structures named Skins, a structure named LadderStats,
+	 * HoursSinceZoneInscription and OnlineRights (0: nations account, 3: united account).
+	 * Each structure of the array Skins contains two fields Environnement and a struct PackDesc.
+	 * Each structure PackDesc, as well as the struct Avatar, contains two fields FileName and Checksum.
+	 * @param int $compatibility
+	 * @return Structures\Player
 	 * @throws InvalidArgumentException
 	 */
-	function getMainServerPlayerInfo($compatibility=1)
+	function getMainServerPlayerInfo($compatibility = 1)
 	{
 		if(!is_int($compatibility))
+		{
 			throw new InvalidArgumentException('compatibility = '.print_r($compatibility, true));
+		}
 
-		return Structures\PlayerInfo::fromArray($this->execute(ucfirst(__FUNCTION__), array($compatibility)));
+		return Structures\Player::fromArray($this->execute(ucfirst(__FUNCTION__), array($compatibility)));
 	}
 
 	/**
 	 * Returns the current rankings for the race in progress.
-	 * (In trackmania legacy team modes, the scores for the two teams are returned.
-	 * In other modes, it's the individual players' scores)
-	 * The ranking returned is a list of structures.
-	 * Each structure contains the following fields : Login, NickName, PlayerId and Rank.
-	 * In addition, for legacy trackmania modes it also contains BestTime, Score, NbrLapsFinished, LadderScore,
-	 * and an array BestCheckpoints that contains the checkpoint times for the best race.
-	 * @param int $length Maximum number of infos to be returned
-	 * @param int $offset Starting index in the list
-	 * @return Structures\PlayerRanking[]
+	 * (in team mode, the scores for the two teams are returned.
+	 * In other modes, it's the individual players' scores) This method take two parameters.
+	 * The first parameter specifies the maximum number of infos to be returned,
+	 * the second one the starting index in the ranking.
+	 * The ranking returned is a list of Structures\Player.
+	 * It also contains an array BestCheckpoints that contains the checkpoint times for the best race.
+	 * @param int $length specifies the maximum number of infos to be returned
+	 * @param int $offset specifies the starting index in the list
+	 * @return Structures\Player[] The list is an array of Structures\Player.
 	 * @throws InvalidArgumentException
 	 */
 	function getCurrentRanking($length, $offset)
 	{
 		if(!is_int($length))
+		{
 			throw new InvalidArgumentException('length = '.print_r($length, true));
+		}
 		if(!is_int($offset))
+		{
 			throw new InvalidArgumentException('offset = '.print_r($offset, true));
+		}
 
-		return Structures\PlayerRanking::fromArrayOfArray($this->execute(ucfirst(__FUNCTION__), array($length, $offset)));
+		return Structures\Player::fromArrayOfArray($this->execute(ucfirst(__FUNCTION__), array($length, $offset)));
 	}
 
 	/**
 	 * Returns the current ranking for the race in progressof the player with the specified login (or list of comma-separated logins).
-	 * The ranking returned is a list of structures.
-	 * Each structure contains the following fields : Login, NickName, PlayerId and Rank.
-	 * In addition, for legacy trackmania modes it also contains BestTime, Score, NbrLapsFinished, LadderScore,
-	 * and an array BestCheckpoints that contains the checkpoint times for the best race.
-	 * @param mixed $players Login, player object or array
-	 * @param bool $multicall
-	 * @return Structures\PlayerRanking[]
+	 * The ranking returned is a list of structures that contains the following fields :
+	 * Login, NickName, PlayerId, Rank, BestTime, Score, NbrLapsFinished and LadderScore.
+	 * It also contains an array BestCheckpoints that contains the checkpoint times for the best race.
+	 * @param Structures\Player|Structures\Player[] $player
 	 * @throws InvalidArgumentException
+	 * @return Structures\Player[] The list is an array of Structures\Player.
 	 */
-	function getCurrentRankingForLogin($players, $multicall=false)
+	function getCurrentRankingForLogin($player = null)
 	{
-		$logins = $this->getLogins($players);
-		if($logins === false)
-			throw new InvalidArgumentException('players = '.print_r($players, true));
+		$login = $this->getLogin($player) ? : '';
 
-		return Structures\PlayerRanking::fromArrayOfArray($this->execute(ucfirst(__FUNCTION__), array($logins), $multicall));
+		return Structures\Player::fromArrayOfArray($this->execute(ucfirst(__FUNCTION__), array($login)));
 	}
 
 	/**
 	 * Returns the current winning team for the race in progress. (-1: if not in team mode, or draw match)
-	 * @return int
+	 * @return int -1, 0 or 1
 	 */
 	function getCurrentWinnerTeam()
 	{
@@ -3724,149 +4101,154 @@ class Connection
 	}
 
 	/**
-	 * Force the scores of the current game.
-	 * Only available in rounds and team mode.
-	 * Only available to Admin/SuperAdmin.
-	 * @param int[][] $scores Array of structs {int PlayerId, int Score}
-	 * @param bool $silent True to update silently (only available for SuperAdmin)
+	 * Force the scores of the current game. Only available in rounds and team mode.
+	 * You have to pass an array of structs {int PlayerId, int Score}. And a boolean SilentMode -
+	 * if true, the scores are silently updated (only available for SuperAdmin), allowing an external controller to do its custom counting...
+	 * @param array $scores
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function forceScores($scores, $silent, $multicall=false)
+	function forceScores(array $scores, $silentMode = false, $multicall = false)
 	{
 		if(!is_array($scores))
-			throw new InvalidArgumentException('scores = '.print_r($scores, true));
-		foreach($scores as $i => $score)
 		{
-			if(!is_array($score))
-				throw new InvalidArgumentException('score['.$i.'] = '.print_r($score, true));
-			if(!isset($score['PlayerId']) || !is_int($score['PlayerId']))
-				throw new InvalidArgumentException('score['.$i.']["PlayerId"] = '.print_r($score, true));
-			if(!isset($score['Score']) || !is_int($score['Score']))
-				throw new InvalidArgumentException('score['.$i.']["Score"] = '.print_r($score, true));
+			throw new InvalidArgumentException('scores = '.print_r($scores, true));
 		}
-		if(!is_bool($silent))
-			throw new InvalidArgumentException('silent = '.print_r($silent, true));
 
-		return $this->execute(ucfirst(__FUNCTION__), array($scores, $silent), $multicall);
+		for($i = 0; $i < count($scores); $i++)
+		{
+			if(!is_int($scores[$i]['PlayerId']))
+			{
+				throw new InvalidArgumentException('score['.$i.'][\'PlayerId\'] = '.print_r($scores[$i]['PlayerId'], true));
+			}
+			if(!is_int($scores[$i]['Score']))
+			{
+				throw new InvalidArgumentException('score['.$i.'][\'Score\'] = '.print_r($scores[$i]['Score'], true));
+			}
+		}
+
+		return $this->execute(ucfirst(__FUNCTION__), array($scores, $silentMode), $multicall);
 	}
 
 	/**
-	 * Force the team of the player.
-	 * Only available in team mode.
-	 * Only available to Admin.
-	 * @param mixed $player Login or player object
-	 * @param int $team 0 or 1
+	 * Force the team of the player. Only available in team mode. You have to pass the login and the team number (0 or 1).
+	 * @param Structures\Player|string $player
+	 * @param int $teamNumber
 	 * @param bool $multicall
 	 * @return bool
-	 * @throws InvalidArgumentException
 	 */
-	function forcePlayerTeam($player, $team, $multicall=false)
+	function forcePlayerTeam($player, $teamNumber, $multicall = false)
 	{
-		$login = $this->getLogin($player);
-		if($login === false)
-			throw new InvalidArgumentException('player = '.print_r($player, true));
-		if($team !== 0 && $team !== 1)
-			throw new InvalidArgumentException('team = '.print_r($team, true));
+		if(!($login = $this->getLogin($player)))
+		{
+			throw new InvalidArgumentException('player must be set');
+		}
+		if($teamNumber !== 0 && $teamNumber !== 1)
+		{
+			throw new InvalidArgumentException('teamNumber = '.print_r($teamNumber, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($login, $team), $multicall);
+		return $this->execute('ForcePlayerTeam', array($login, $teamNumber), $multicall);
 	}
 
 	/**
 	 * Force the spectating status of the player.
+	 * You have to pass the login and the spectator mode
+	 * (0: user selectable, 1: spectator, 2: player, 3: spectator but keep selectable).
 	 * Only available to Admin.
-	 * @param mixed $player Login or player object
-	 * @param int $mode 0: user selectable, 1: spectator, 2: player, 3: spectator but keep selectable
+	 * @param Structures\Player|string $player
+	 * @param int $spectatorMode
 	 * @param bool $multicall
 	 * @return bool
-	 * @throws InvalidArgumentException
 	 */
-	function forceSpectator($player, $mode, $multicall=false)
+	function forceSpectator($player, $spectatorMode, $multicall = false)
 	{
-		$login = $this->getLogin($player);
-		if($login === false)
-			throw new InvalidArgumentException('player = '.print_r($player, true));
-		if(!is_int($mode) || $mode < 0 || $mode > 3)
-			throw new InvalidArgumentException('mode = '.print_r($mode, true));
+		if(!($login = $this->getLogin($player)))
+		{
+			throw new InvalidArgumentException('player must be set');
+		}
+		if(array_search($spectatorMode, range(0, 3), true) === false)
+		{
+			throw new InvalidArgumentException('spectatorMode = '.print_r($spectatorMode, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($login, $mode), $multicall);
+		return $this->execute('ForceSpectator', array($login, $spectatorMode), $multicall);
 	}
 
 	/**
-	 * Force spectators to look at a specific player.
-	 * Only available to Admin.
-	 * @param mixed $spectator Login or player object; empty for all
-	 * @param mixed $target Login or player object; empty for automatic
-	 * @param int $camera -1: leave unchanged, 0: replay, 1: follow, 2: free
+	 * Force spectators to look at a specific player. You have to pass the login of the spectator (or '' for all) and
+	 * the login of the target (or '' for automatic), and an integer for the camera type to use (-1 = leave unchanged, 0 = replay, 1 = follow, 2 = free).
+	 * @param Structures\Player|string $player
+	 * @param Structures\Player|string $target
+	 * @param int $cameraType
 	 * @param bool $multicall
 	 * @return bool
-	 * @throws InvalidArgumentException
 	 */
-	function forceSpectatorTarget($spectator, $target, $camera, $multicall=false)
+	function forceSpectatorTarget($player, $target, $cameraType, $multicall = false)
 	{
-		$spectatorLogin = $this->getLogin($spectator, true);
-		if($spectatorLogin === false)
-			throw new InvalidArgumentException('player = '.print_r($spectator, true));
-		$targetLogin = $this->getLogin($target, true);
-		if($targetLogin === false)
-			throw new InvalidArgumentException('target = '.print_r($target, true));
-		if(!is_int($camera) || $camera < -1 || $camera > 2)
-			throw new InvalidArgumentException('camera = '.print_r($camera, true));
+		if(!($playerLogin = $this->getLogin($player)))
+		{
+			throw new InvalidArgumentException('player must be set');
+		}
+		if(!($targetLogin = $this->getLogin($target)))
+		{
+			throw new InvalidArgumentException('target must be set');
+		}
+		if($cameraType !== -1 && $cameraType !== 0 && $cameraType !== 1 && $cameraType !== 2)
+		{
+			throw new InvalidArgumentException('cameraType = '.print_r($cameraType, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($spectatorLogin, $targetLogin, $camera), $multicall);
+		return $this->execute('ForceSpectatorTarget', array($playerLogin, $targetLogin, $cameraType), $multicall);
 	}
 
 	/**
-	 * Pass the login of the spectator.
-	 * A spectator that once was a player keeps his player slot, so that he can go back to race mode.
+	 * Pass the login of the spectator. A spectator that once was a player keeps his player slot, so that he can go back to race mode.
 	 * Calling this function frees this slot for another player to connect.
-	 * Only available to Admin.
-	 * @param mixed $player Login or player object
+	 * @param Structures\Player|string $player
 	 * @param bool $multicall
 	 * @return bool
-	 * @throws InvalidArgumentException
 	 */
-	function spectatorReleasePlayerSlot($player, $multicall=false)
+	function spectatorReleasePlayerSlot($player, $multicall = false)
 	{
-		$login = $this->getLogin($player);
-		if($login === false)
-			throw new InvalidArgumentException('player = '.print_r($player, true));
-
-		return $this->execute(ucfirst(__FUNCTION__), array($login), $multicall);
+		if(!($login = $this->getLogin($player)))
+		{
+			throw new InvalidArgumentException('player must be set');
+		}
+		return $this->execute('SpectatorReleasePlayerSlot', array($login), $multicall);
 	}
 
 	/**
 	 * Enable control of the game flow: the game will wait for the caller to validate state transitions.
-	 * Only available to Admin.
-	 * @param bool $enable
+	 * @param bool $flowControlEnable
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function manualFlowControlEnable($enable, $multicall=false)
+	function manualFlowControlEnable($flowControlEnable, $multicall = false)
 	{
-		if(!is_bool($enable))
-			throw new InvalidArgumentException('enable = '.print_r($enable, true));
+		if(!is_bool($flowControlEnable))
+		{
+			throw new InvalidArgumentException('flowControlEnable = '.print_r($flowControlEnable, true));
+		}
 
-		return $this->execute(ucfirst(__FUNCTION__), array($enable), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($flowControlEnable), $multicall);
 	}
 
 	/**
 	 * Allows the game to proceed.
-	 * Only available to Admin.
 	 * @param bool $multicall
 	 * @return bool
 	 */
-	function manualFlowControlProceed($multicall=false)
+	function manualFlowControlProceed($multicall = false)
 	{
 		return $this->execute(ucfirst(__FUNCTION__), array(), $multicall);
 	}
 
 	/**
-	 * Returns whether the manual control of the game flow is enabled.
-	 * Only available to Admin.
-	 * @return int 0: no, 1: yes by the xml-rpc client making the call, 2: yes by some other xml-rpc client
+	 * Returns whether the manual control of the game flow is enabled. 0 = no, 1 = yes by the xml-rpc client making the call, 2 = yes, by some other xml-rpc client.
+	 * @return int
 	 */
 	function manualFlowControlIsEnabled()
 	{
@@ -3874,9 +4256,7 @@ class Connection
 	}
 
 	/**
-	 * Returns the transition that is currently blocked, or '' if none.
-	 * (That's exactly the value last received by the callback.)
-	 * Only available to Admin.
+	 * Returns the transition that is currently blocked, or '' if none. (That's exactly the value last received by the callback.)
 	 * @return string
 	 */
 	function manualFlowControlGetCurTransition()
@@ -3886,7 +4266,9 @@ class Connection
 
 	/**
 	 * Returns the current match ending condition.
-	 * @return string 'Playing', 'ChangeMap' or 'Finished'
+	 * Return values are: 'Playing', 'ChangeMap' or 'Finished'.
+	 * @param bool $multicall
+	 * @return string
 	 */
 	function checkEndMatchCondition()
 	{
@@ -3894,8 +4276,10 @@ class Connection
 	}
 
 	/**
-	 * Returns a struct containing the networks stats of the server.
-	 * Only available to SuperAdmin.
+	 * Returns an object Structures\NetworkStats.
+	 * The structure contains the following fields : Uptime, NbrConnection, MeanConnectionTime, MeanNbrPlayer,
+	 * RecvNetRate, SendNetRate, TotalReceivingSize, TotalSendingSize and an array of structures named PlayerNetInfos.
+	 * Each structure of the array PlayerNetInfos is a Structures\Player object contains the following fields : Login, IPAddress, LastTransferTime, DeltaBetweenTwoLastNetState, PacketLossRate.
 	 * @return Structures\NetworkStats
 	 */
 	function getNetworkStats()
@@ -3905,73 +4289,110 @@ class Connection
 
 	/**
 	 * Start a server on lan, using the current configuration.
-	 * Only available to SuperAdmin.
 	 * @param bool $multicall
 	 * @return bool
 	 */
-	function startServerLan($multicall=false)
+	function startServerLan($multicall = false)
 	{
 		return $this->execute(ucfirst(__FUNCTION__), array(), $multicall);
 	}
 
 	/**
-	 * Start a server on internet, using the current configuration.
-	 * Only available to SuperAdmin.
+	 * Start a server on internet using the 'Login' and 'Password' specified in the struct passed as parameters.
+	 * @param array $ids
+	 * @param bool $multicall
+	 * @return bool
+	 * @throws InvalidArgumentException
+	 */
+	function startServerInternet($multicall = false)
+	{
+		return $this->execute(ucfirst(__FUNCTION__), array(), $multicall);
+	}
+
+	/**
+	 * Returns the current status of the server.
+	 * @return Structures\Status
+	 */
+	function getStatus()
+	{
+		return Structures\Status::fromArray($this->execute(ucfirst(__FUNCTION__)));
+	}
+
+	/**
+	 * Quit the application.
 	 * @param bool $multicall
 	 * @return bool
 	 */
-	function startServerInternet($multicall=false)
+	function quitGame($multicall = false)
 	{
 		return $this->execute(ucfirst(__FUNCTION__), array(), $multicall);
+	}
+
+	/**
+	 * Returns the path of the game datas directory.
+	 * @return string
+	 */
+	function gameDataDirectory()
+	{
+		return $this->execute(ucfirst(__FUNCTION__));
+	}
+
+	/**
+	 * Returns the path of the maps directory.
+	 * @return string
+	 */
+	function getMapsDirectory()
+	{
+		return $this->execute(ucfirst(__FUNCTION__));
+	}
+
+	/**
+	 * Returns the path of the skins directory.
+	 * @return string
+	 */
+	function getSkinsDirectory()
+	{
+		return $this->execute(ucfirst(__FUNCTION__));
 	}
 
 	/**
 	 * Returns the login of the given player
-	 * @param mixed $player
-	 * @return string|bool
+	 * @param mixed $player Structures\Player or string
+	 * @return string
 	 */
-	private function getLogin($player, $allowEmpty=false)
+	private function getLogin($player)
 	{
-		if(is_object($player))
-		{
-			if(property_exists($player, 'login'))
-				$player = $player->login;
-			else
-				return false;
-		}
-		if(empty($player))
-			return $allowEmpty ? '' : false;
-		if(is_string($player))
-			return $player;
-		return false;
+		if(is_string($player)) return $player;
+		if($player instanceof Structures\Player) return $player->login;
+		return null;
 	}
 
 	/**
 	 * Returns logins of given players
-	 * @param mixed $players
-	 * @return string|bool
+	 * @param mixed $player Structures\Player or string or array
+	 * @return string
 	 */
-	private function getLogins($players, $allowEmpty=false)
+	private function getLogins($players)
 	{
 		if(is_array($players))
 		{
 			$logins = array();
 			foreach($players as $player)
 			{
-				$login = $this->getLogin($player);
-				if($login === false)
-					return false;
-				else
-					$logins[] = $login;
+				if(($login = $this->getLogin($player))) $logins[] = $login;
+				else return null;
 			}
 
 			return implode(',', $logins);
 		}
-		return $this->getLogin($players, $allowEmpty);
+		return $this->getLogin($players);
 	}
+
 }
 
 /**
  * Exception Dedicated to Invalid Argument Error on Request Call
  */
 class InvalidArgumentException extends \Exception {}
+
+?>

@@ -57,3 +57,5 @@ class MapNotCompatibleOrCompleteException extends FaultException{}
 class LadderModeUnknownException extends FaultException{}
 class PlayerAlreadyIgnoredException extends FaultException{}
 class PlayerNotIgnoredException extends FaultException{}
+
+?>

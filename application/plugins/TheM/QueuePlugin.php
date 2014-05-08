@@ -276,7 +276,6 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 	 * @param Player $player
 	 */
 	public function handleManiaLinkAnswerAdd(array $chatCallback, Player $player) {
-		$this->maniaControl->log('handleManiaLinkAnswerAdd by ' . $player->login);
 		$this->addPlayerToQueue($player);
 	}
 
@@ -287,7 +286,6 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 	 * @param Player $player
 	 */
 	public function handleManiaLinkAnswerRemove(array $chatCallback, Player $player) {
-		$this->maniaControl->log('handleManiaLinkAnswerRemove by ' . $player->login);
 		$this->removePlayerFromQueue($player->login);
 		$this->showJoinQueueWidget($player);
 		$this->sendChatMessage('$<$fff' . $player->nickname . '$> has left the queue!');
