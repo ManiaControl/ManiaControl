@@ -13,6 +13,7 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 use Maniaplanet\DedicatedServer\Xmlrpc\FaultException;
+use Maniaplanet\DedicatedServer\Xmlrpc\LoginUnknownException;
 use Maniaplanet\DedicatedServer\Xmlrpc\NotInTeamModeException;
 use Maniaplanet\DedicatedServer\Xmlrpc\PlayerAlreadyIgnoredException;
 use Maniaplanet\DedicatedServer\Xmlrpc\PlayerIsNotSpectatorException;
@@ -368,7 +369,7 @@ class PlayerActions {
 			} else {
 				$this->maniaControl->client->kick($target->login, $message);
 			}
-		} catch (Exception $e) {
+		} catch (LoginUnknownException $e) {
 			$this->maniaControl->chat->sendException($e, $admin->login);
 			return;
 		}

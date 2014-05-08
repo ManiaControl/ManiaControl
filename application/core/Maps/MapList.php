@@ -25,6 +25,7 @@ use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
+use Maniaplanet\DedicatedServer\Xmlrpc\NextMapException;
 use MCTeam\CustomVotesPlugin;
 use MCTeam\KarmaPlugin;
 
@@ -633,11 +634,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 					try {
 						$index = $self->maniaControl->mapManager->getMapIndex($map);
 						$self->maniaControl->client->jumpToMapIndex($index);
-					} catch (Exception $e) {
-						// TODO temp added 19.04.2014
-						$self->maniaControl->errorHandler->triggerDebugNotice("Exception line 557 MapList.php" . $e->getMessage());
-
-						$self->maniaControl->chat->sendError("Error while Switching Map");
+					} catch (NextMapException $e) {
 					}
 				});
 				break;

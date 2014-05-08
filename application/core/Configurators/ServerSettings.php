@@ -15,7 +15,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
-use Maniaplanet\DedicatedServer\Xmlrpc\LadderModeUnknownException;
+use Maniaplanet\DedicatedServer\Xmlrpc\ServerOptionsException;
 
 /**
  * Class offering a Configurator for Server Settings
@@ -330,8 +330,8 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 
 		try {
 			$this->maniaControl->client->setServerOptions($newSettings);
-		} catch (LadderModeUnknownException $e) {
-			$this->maniaControl->chat->sendError("Unknown Ladder-Mode");
+		} catch (ServerOptionsException $e) {
+			$this->maniaControl->chat->sendError($e->getMessage());
 			return false;
 		}
 

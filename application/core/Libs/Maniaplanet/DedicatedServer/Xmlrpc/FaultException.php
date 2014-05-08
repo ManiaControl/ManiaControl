@@ -13,6 +13,7 @@ class FaultException extends Exception
 	{
 		switch($faultString)
 		{
+			case 'Login or Uid unknown.':
 			case 'Login unknown.':
 				return new LoginUnknownException($faultString, $faultCode);
 			case 'Unable to write the playlist file.':
@@ -38,7 +39,10 @@ class FaultException extends Exception
 			case 'Map not complete.':
 				return new MapNotCompatibleOrCompleteException($faultString, $faultCode);
 			case 'Ladder mode unknown.':
-				return new LadderModeUnknownException($faultString, $faultCode);
+			case 'You cannot change the max players count: AllowSpectatorRelays is activated.':
+				return new ServerOptionsException($faultString, $faultCode);
+			case 'the next map must be different from the current one.':
+				return new NextMapException($faultString, $faultCode);
 		}
 
 		return new self($faultString, $faultCode);
@@ -54,6 +58,7 @@ class PlayerIsNotSpectatorException extends FaultException {}
 class NotInTeamModeException extends FaultException {}
 class MapNotInCurrentSelectionException extends FaultException{}
 class MapNotCompatibleOrCompleteException extends FaultException{}
-class LadderModeUnknownException extends FaultException{}
 class PlayerAlreadyIgnoredException extends FaultException{}
 class PlayerNotIgnoredException extends FaultException{}
+class ServerOptionsException extends FaultException{}
+class NextMapException extends FaultException{}
