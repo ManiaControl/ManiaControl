@@ -588,6 +588,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			case self::ACTION_UPDATE_MAP:
 				$mapUid = $actionArray[2];
 				$this->maniaControl->mapManager->updateMap($player, $mapUid);
+				$this->showMapList($player);
 				break;
 			case self::ACTION_ERASE_MAP:
 				$mapUid = $actionArray[3];
