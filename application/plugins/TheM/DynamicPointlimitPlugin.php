@@ -8,6 +8,7 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
+use Maniaplanet\DedicatedServer\Xmlrpc\FaultException;
 
 /**
  * Dynamic Pointlimit plugin
@@ -148,6 +149,10 @@ class DynamicPointlimitPlugin implements CallbackListener, CommandListener, Plug
 			$pointlimit = $max_value;
 		}
 
-		$this->maniaControl->client->setModeScriptSettings(array('S_MapPointsLimit' => $pointlimit));
+		try{
+			$this->maniaControl->client->setModeScriptSettings(array('S_MapPointsLimit' => $pointlimit));
+		}catch(FaultException $e){
+		}
+
 	}
 }
