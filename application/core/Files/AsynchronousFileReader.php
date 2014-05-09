@@ -154,9 +154,9 @@ class AsynchronousFileReader {
 			->set(CURLOPT_POST, true) //post field
 			->set(CURLOPT_POSTFIELDS, $content) //post content field
 			->set(CURLOPT_HTTPHEADER, $header) //
-			//->set(CURLOPT_HTTPHEADER, array("Content-Type: " . $contentType,  "Keep-Alive: 300", "Connection: Keep-Alive")) //
 			->set(CURLOPT_USERAGENT, 'ManiaControl v' . ManiaControl::VERSION) //
-			->set(CURLOPT_RETURNTRANSFER, true)->set(CURLOPT_TIMEOUT, 10);
+			->set(CURLOPT_RETURNTRANSFER, true) //
+			->set(CURLOPT_TIMEOUT, 10);
 
 		$request->addListener('complete', function (Event $event) use (&$function) {
 			/** @var Response $response */
