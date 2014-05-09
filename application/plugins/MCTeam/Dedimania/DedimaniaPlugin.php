@@ -706,13 +706,6 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 							}
 							continue;
 						}
-
-						// Warnings and TTR
-						$errors = $methodResponse[0]['methods'][0]['errors'];
-						if ($errors) {
-							$maniaControl->errorHandler->triggerDebugNotice($errors);
-							// TODO: check if this is sufficient
-						}
 					}
 				}
 			}
