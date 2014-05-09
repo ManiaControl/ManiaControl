@@ -18,6 +18,7 @@ class TimerListening {
 	public $deltaTime = null;
 	public $oneTime = null;
 	public $lastTrigger = null;
+	public $instantCall = null;
 
 	/**
 	 * Construct a new Timer Listening
@@ -25,13 +26,17 @@ class TimerListening {
 	 * @param TimerListener $listener
 	 * @param string        $method
 	 * @param float         $deltaTime
+	 * @param bool          $instantCall
 	 */
-	public function __construct(TimerListener $listener, $method, $deltaTime, $oneTime = false) {
+	public function __construct(TimerListener $listener, $method, $deltaTime, $oneTime = false, $instantCall = true) {
 		$this->listener    = $listener;
 		$this->method      = $method;
 		$this->deltaTime   = $deltaTime / 1000.;
-		$this->lastTrigger = microtime(true);
 		$this->oneTime     = (bool)$oneTime;
+		$this->instantCall = (bool)$instantCall;
+		if (!$this->instantCall) {
+			$this->lastTrigger = microtime(true);
+		}
 	}
 
 	/**
@@ -69,6 +74,9 @@ class TimerListening {
 	 * @return bool
 	 */
 	public function isTimeReached($time = null) {
+		if ($this->lastTrigger === null) {
+			return true;
+		}
 		if (!$time) {
 			$time = microtime(true);
 		}
