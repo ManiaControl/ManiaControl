@@ -3,6 +3,7 @@
 namespace ManiaControl\Players;
 
 use ManiaControl\Formatter;
+use ManiaControl\ManiaControl;
 
 /**
  * Player Model Class
@@ -58,13 +59,20 @@ class Player {
 	public $autoTarget = false;
 	public $currentTargetId = 0;
 
+	/*
+	 * Private Properties
+	 */
+	private $maniaControl = null;
+
 	/**
+	 * Construct a new Player
+	 *
+	 * @param ManiaControl $maniaControl
 	 * @param bool $connected
 	 */
-	public function __construct($connected)
-	{
-		$this->isConnected = $connected;
-
+	public function __construct(ManiaControl $maniaControl, $connected) {
+		$this->maniaControl = $maniaControl;
+		$this->isConnected  = (bool)$connected;
 		if ($connected) {
 			$this->joinTime = time();
 		}
@@ -72,16 +80,16 @@ class Player {
 
 	/**
 	 * Update from ManiaPlanet PlayerInfo structure
+	 *
 	 * @param \Maniaplanet\DedicatedServer\Structures\PlayerInfo $mpPlayer
 	 */
-	public function setInfo($mpPlayer)
-	{
-		$this->pid                      = $mpPlayer->playerId;
-		$this->login                    = $mpPlayer->login;
-		$this->nickname                 = Formatter::stripDirtyCodes($mpPlayer->nickName);
-		$this->rawNickname              = $mpPlayer->nickName;
-		$this->teamId                   = $mpPlayer->teamId;
-		$this->isOfficial               = $mpPlayer->isInOfficialMode;
+	public function setInfo($mpPlayer) {
+		$this->pid         = $mpPlayer->playerId;
+		$this->login       = $mpPlayer->login;
+		$this->nickname    = Formatter::stripDirtyCodes($mpPlayer->nickName);
+		$this->rawNickname = $mpPlayer->nickName;
+		$this->teamId      = $mpPlayer->teamId;
+		$this->isOfficial  = $mpPlayer->isInOfficialMode;
 
 		//Flag Details
 		$this->forcedSpectatorState     = $mpPlayer->forceSpectator;
@@ -108,10 +116,10 @@ class Player {
 
 	/**
 	 * Update from ManiaPlanet PlayerDetailedInfo structure
+	 *
 	 * @param \Maniaplanet\DedicatedServer\Structures\PlayerDetailedInfo $mpPlayer
 	 */
-	public function setDetailedInfo($mpPlayer)
-	{
+	public function setDetailedInfo($mpPlayer) {
 		$this->pid                      = $mpPlayer->playerId;
 		$this->login                    = $mpPlayer->login;
 		$this->nickname                 = Formatter::stripDirtyCodes($mpPlayer->nickName);
@@ -157,6 +165,22 @@ class Player {
 	}
 
 	/**
+	 * Get the specified Part of the Path
+	 *
+	 * @param int $partNumber
+	 * @return string
+	 */
+	public function getPathPart($partNumber) {
+		$pathParts = explode('|', $this->path);
+		for ($partIndex = $partNumber; $partIndex >= 0; $partIndex--) {
+			if (isset($pathParts[$partIndex])) {
+				return $pathParts[$partIndex];
+			}
+		}
+		return $this->path;
+	}
+
+	/**
 	 * Get Country
 	 *
 	 * @return string
@@ -172,22 +196,6 @@ class Player {
 	 */
 	public function getContinent() {
 		return $this->getPathPart(1);
-	}
-
-	/**
-	 * Get the specified Part of the Path
-	 *
-	 * @param int $partNumber
-	 * @return string
-	 */
-	public function getPathPart($partNumber) {
-		$pathParts = explode('|', $this->path);
-		for ($partIndex = $partNumber; $partIndex >= 0; $partIndex--) {
-			if (isset($pathParts[$partIndex])) {
-				return $pathParts[$partIndex];
-			}
-		}
-		return $this->path;
 	}
 
 	/**

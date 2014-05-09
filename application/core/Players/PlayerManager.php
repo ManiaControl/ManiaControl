@@ -125,7 +125,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 				$this->maniaControl->server->setTeamMode(true);
 			}
 
-			$player = new Player(true);
+			$player = new Player($this->maniaControl, true);
 			$player->setInfo($playerItem);
 			$player->setDetailedInfo($detailedPlayerInfo);
 			$player->hasJoinedGame = true;
@@ -212,7 +212,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 		$login = $callback[1][0];
 		try {
 			$playerInfo = $this->maniaControl->client->getDetailedPlayerInfo($login);
-			$player     = new Player(true);
+			$player     = new Player($this->maniaControl, true);
 			$player->setDetailedInfo($playerInfo);
 
 			$this->addPlayer($player);
@@ -394,7 +394,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 			return null;
 		}
 
-		$player              = new Player(false);
+		$player              = new Player($this->maniaControl, false);
 		$player->index       = $row->index;
 		$player->login       = $row->login;
 		$player->rawNickname = $row->nickname;
@@ -479,7 +479,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 			return null;
 		}
 
-		$player              = new Player(false);
+		$player              = new Player($this->maniaControl, false);
 		$player->index       = $playerIndex;
 		$player->login       = $row->login;
 		$player->rawNickname = $row->nickname;
