@@ -169,7 +169,7 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 	/**
 	 * Handle Settings Changed Callback
 	 *
-	 * @param array $changedCallback
+	 * @param string $settingClass
 	 */
 	public function handleSettingsChangedCallback($settingClass) {
 		if ($settingClass !== get_class()) {

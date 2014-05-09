@@ -237,6 +237,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * Fetch Dedimania Records
 	 *
 	 * @param bool $reset
+	 * @return bool
 	 */
 	private function fetchDedimaniaRecords($reset = true) {
 		if (!$this->dedimaniaData || $this->dedimaniaData->sessionId == '') {
@@ -889,7 +890,8 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	/**
 	 * Inserts the given new Dedimania record at the proper position
 	 *
-	 * @param array $newRecord
+	 * @param RecordData $newRecord
+	 * @param RecordData $oldRecord
 	 * @return bool
 	 */
 	private function insertDedimaniaRecord(RecordData &$newRecord, RecordData $oldRecord) {
@@ -994,9 +996,9 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	}
 
 	/**
-	 * Updates the replay values for the given record
+	 * Update the replay values for the given record
 	 *
-	 * @param array $record
+	 * @param RecordData $record
 	 */
 	private function setRecordReplays(RecordData &$record) {
 		// Set validation replay
@@ -1055,11 +1057,6 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		if (!$records) {
 			$this->maniaControl->chat->sendInformation('There are no Dedimania records on this map!');
 			return;
-		}
-
-		$pagesId = '';
-		if (count($records) > 15) {
-			$pagesId = 'DediRecordsListPages';
 		}
 
 		//create manialink

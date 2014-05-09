@@ -122,7 +122,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		$type = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MIN_RANKING_TYPE);
 		if ($type != self::RANKING_TYPE_RECORDS && $type != self::RANKING_TYPE_POINTS && $type != self::RANKING_TYPE_RATIOS) {
 			$error = 'Ranking Type is not correct, possible values(' . self::RANKING_TYPE_RATIOS . ', ' . self::RANKING_TYPE_POINTS . ', ' . self::RANKING_TYPE_POINTS . ')';
-			throw new Exception($error);
+			throw new \Exception($error);
 		}
 
 		//Register CallbackListeners
@@ -349,23 +349,24 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 	 * Shows which Player is next ranked to you
 	 *
 	 * @param Player $player
+	 * @return bool
 	 */
 	public function showNextRank(Player $player) {
 		$rankObject = $this->getRank($player);
-
-		if ($rankObject) {
-			if ($rankObject->rank > 1) {
-				$nextRank   = $this->getNextRank($player);
-				$nextPlayer = $this->maniaControl->playerManager->getPlayerByIndex($nextRank->playerIndex);
-				$message    = '$0f3The next better ranked player is $fff' . $nextPlayer->nickname;
-			} else {
-				$message = '$0f3No better ranked player :-)';
-			}
-			$this->maniaControl->chat->sendChat($message, $player->login);
-
-			return true;
+		if (!$rankObject) {
+			return false;
 		}
-		return false;
+
+		if ($rankObject->rank > 1) {
+			$nextRank   = $this->getNextRank($player);
+			$nextPlayer = $this->maniaControl->playerManager->getPlayerByIndex($nextRank->playerIndex);
+			$message    = '$0f3The next better ranked player is $fff' . $nextPlayer->nickname;
+		} else {
+			$message = '$0f3No better ranked player :-)';
+		}
+		$this->maniaControl->chat->sendChat($message, $player->login);
+
+		return true;
 	}
 
 	/**
@@ -445,7 +446,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 	}
 
 	/**
-	 * Provides a ManiaLink window with the top ranks to the player
+	 * Provide a ManiaLink window with the top ranks to the player
 	 *
 	 * @param Player $player
 	 */
@@ -455,7 +456,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		$result = $mysqli->query($query);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error);
-			return null;
+			return;
 		}
 
 		$width  = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();

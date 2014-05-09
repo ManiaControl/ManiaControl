@@ -88,7 +88,7 @@ class DedimaniaData {
 	}
 
 	/**
-	 * Adds a Player to the Players array
+	 * Add a Player to the Players array
 	 *
 	 * @param DedimaniaPlayer $player
 	 */
@@ -98,9 +98,9 @@ class DedimaniaData {
 	}
 
 	/**
-	 * Removes a Dedimania Player by its login
+	 * Remove a Dedimania Player by its login
 	 *
-	 * @param string $player
+	 * @param string $login
 	 */
 	public function removePlayer($login) {
 		unset($this->players[$login]);

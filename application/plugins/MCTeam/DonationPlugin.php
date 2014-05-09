@@ -143,11 +143,11 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	}
 
 	/**
-	 * Displays the Donate Widget
+	 * Display the Donation Widget
 	 *
 	 * @param string $login
 	 */
-	public function displayDonateWidget($login = false) {
+	public function displayDonateWidget($login = null) {
 		$posX              = $this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATE_WIDGET_POSX);
 		$posY              = $this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATE_WIDGET_POSY);
 		$width             = $this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATE_WIDGET_WIDTH);
@@ -266,13 +266,14 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	}
 
 	/**
-	 * Handles a Player Donate
+	 * Handle a Player Donation
 	 *
 	 * @param Player $player
-	 * @param int    $value
+	 * @param int    $amount
+	 * @param string $receiver
+	 * @param string $receiverName
 	 */
-	private function handleDonation(Player $player, $amount, $receiver = '', $receiverName = false) {
-
+	private function handleDonation(Player $player, $amount, $receiver = '', $receiverName = null) {
 		if (!$receiverName) {
 			$serverName = $this->maniaControl->client->getServerName();
 			$message    = 'Donate ' . $amount . ' Planets to $<' . $serverName . '$>?';

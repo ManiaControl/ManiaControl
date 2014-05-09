@@ -537,11 +537,6 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		// get PlayerList
 		$records = $this->getLocalRecords($this->maniaControl->mapManager->getCurrentMap());
 
-		$pagesId = '';
-		if (count($records) > 15) {
-			$pagesId = 'RecordsListPages';
-		}
-
 		// create manialink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$script    = $maniaLink->getScript();

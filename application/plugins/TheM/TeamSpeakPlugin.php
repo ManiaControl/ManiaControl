@@ -11,6 +11,7 @@ use FML\ManiaLink;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
+use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
@@ -272,7 +273,7 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 		$joinbutton->setStyle($joinbutton::STYLE_CardButtonSmallWide);
 		$joinbutton->setText('Join TeamSpeak: ' . $this->maniaControl->settingManager->getSetting($this, self::TEAMSPEAK_SERVERHOST) . ':' . $this->maniaControl->settingManager->getSetting($this, self::TEAMSPEAK_SERVERPORT));
 		$joinbutton->setTextColor('fff');
-		$url = 'ts3server://' . $this->maniaControl->settingManager->getSetting($this, self::TEAMSPEAK_SERVERHOST) . '/?port=' . $this->maniaControl->settingManager->getSetting($this, self::TEAMSPEAK_SERVERPORT) . '&nickname=' . rawurlencode(\ManiaControl\Formatter::stripCodes($player->nickname));
+		$url = 'ts3server://' . $this->maniaControl->settingManager->getSetting($this, self::TEAMSPEAK_SERVERHOST) . '/?port=' . $this->maniaControl->settingManager->getSetting($this, self::TEAMSPEAK_SERVERPORT) . '&nickname=' . rawurlencode(Formatter::stripCodes($player->nickname));
 		$joinbutton->setUrl($url);
 
 		$leftlistQuad = new Quad();

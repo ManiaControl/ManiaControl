@@ -186,12 +186,13 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	}
 
 	/**
-	 * Defines a Vote
+	 * Define a Vote
 	 *
-	 * @param      $voteIndex
-	 * @param      $voteName
-	 * @param bool $idBased
-	 * @param      $neededRatio
+	 * @param int    $voteIndex
+	 * @param string $voteName
+	 * @param bool   $idBased
+	 * @param string $startText
+	 * @param float  $neededRatio
 	 */
 	public function defineVote($voteIndex, $voteName, $idBased = false, $startText = '', $neededRatio = -1) {
 		if ($neededRatio == -1) {
@@ -422,11 +423,11 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	}
 
 	/**
-	 * Starts a vote
+	 * Start a vote
 	 *
-	 * @param \ManiaControl\Players\Player $player
-	 * @param                              $voteIndex
-	 * @param                              $action
+	 * @param Player   $player
+	 * @param int      $voteIndex
+	 * @param callable $function
 	 */
 	public function startVote(Player $player, $voteIndex, $function = null) {
 		//Player is muted
