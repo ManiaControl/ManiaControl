@@ -247,12 +247,14 @@ class Player {
 	/**
 	 * Get the Cache with the given Name
 	 *
+	 * @param        $object
 	 * @param string $cacheName
 	 * @return mixed
 	 */
-	public function getCache($cacheName) {
-		if (isset($this->cache[$cacheName])) {
-			return $this->cache[$cacheName];
+	public function getCache($object, $cacheName) {
+		$className = $this->getClassName($object);
+		if (isset($this->cache[$className . $cacheName])) {
+			return $this->cache[$className . $cacheName];
 		}
 		return null;
 	}
@@ -260,11 +262,13 @@ class Player {
 	/**
 	 * Set the Cache Data for the given Name
 	 *
+	 * @param        $object
 	 * @param string $cacheName
 	 * @param mixed  $data
 	 */
-	public function setCache($cacheName, $data) {
-		$this->cache[$cacheName] = $data;
+	public function setCache($object, $cacheName, $data) {
+		$className                            = $this->getClassName($object);
+		$this->cache[$className . $cacheName] = $data;
 	}
 
 	/**
@@ -305,5 +309,24 @@ class Player {
 	 */
 	public function dump() {
 		var_dump(json_decode(json_encode($this)));
+	}
+
+
+	/**
+	 * Get Class Name of a Parameter
+	 *
+	 * @param mixed $param
+	 * @return string
+	 */
+	private function getClassName($param) {
+		//TODO move in a util or something
+		if (is_object($param)) {
+			return get_class($param);
+		}
+		if (is_string($param)) {
+			return $param;
+		}
+		trigger_error('Invalid class param. ' . $param);
+		return (string)$param;
 	}
 }
