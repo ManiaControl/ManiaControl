@@ -57,8 +57,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 * Private Properties
 	 */
 	private $maniaControl = null;
-	private $mapListShown = array();
-	private $mapsInListShown = array();
+	private $playerCurrentPage = array();
 
 	/**
 	 * Create a new MapList Instance
@@ -110,52 +109,41 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 * Display a MapList on the Screen
 	 *
 	 * @param Player $player
-	 * @param array  $maps
-	 * @param int    $chunk
-	 * @param int    $startPage
+	 * @param array  $mapList
+	 * @param int    $pageIndex
 	 */
-	public function showMapList(Player $player, $maps = null, $chunk = 0, $startPage = null) {
+	public function showMapList(Player $player, $mapList = null, $pageIndex = -1) {
 		$width  = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
 		$height = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
 
-		$this->mapListShown[$player->login] = true;
-		$queueBuffer                        = $this->maniaControl->mapManager->mapQueue->getQueueBuffer();
+		if ($pageIndex < 0) {
+			if (isset($this->playerCurrentPage[$player->login])) {
+				$pageIndex = $this->playerCurrentPage[$player->login];
+			} else {
+				$pageIndex = 0;
+			}
+		}
+		$this->playerCurrentPage[$player->login] = $pageIndex;
+		$queueBuffer                             = $this->maniaControl->mapManager->mapQueue->getQueueBuffer();
+
+		$chunkIndex     = $this->getChunkIndexFromPageNumber($pageIndex);
+		$mapsBeginIndex = $this->getChunkMapsBeginIndex($chunkIndex);
 
 		// Get Maps
-		$mapList   = null;
-		$pageCount = null;
-		if (is_array($maps)) {
-			$mapList                               = array_slice($maps, $chunk, self::MAX_PAGES_PER_CHUNK * self::MAX_MAPS_PER_PAGE);
-			$this->mapsInListShown[$player->login] = $maps;
-			$pageCount                             = ceil(count($maps) / self::MAX_MAPS_PER_PAGE);
-		} /*else if (array_key_exists($player->login, $this->mapsInListShown)) {
-			$completeList                          = $this->mapsInListShown[$player->login];
-			$this->mapsInListShown[$player->login] = $completeList;
-			$mapList                               = array_slice($completeList, $chunk * self::MAX_PAGES_PER_CHUNK * self::MAX_MAPS_PER_PAGE, self::MAX_PAGES_PER_CHUNK * self::MAX_MAPS_PER_PAGE);
-			$pageCount                             = ceil(count($completeList) / self::MAX_MAPS_PER_PAGE);
-		} */ else {
-			$mapList                               = $this->maniaControl->mapManager->getMaps($chunk * self::MAX_PAGES_PER_CHUNK * self::MAX_MAPS_PER_PAGE, self::MAX_PAGES_PER_CHUNK * self::MAX_MAPS_PER_PAGE);
-			$pageCount                             = ceil($this->maniaControl->mapManager->getMapsCount() / self::MAX_MAPS_PER_PAGE);
-			$this->mapsInListShown[$player->login] = $this->maniaControl->mapManager->getMaps();
+		if (!is_array($mapList)) {
+			$mapList = $this->maniaControl->mapManager->getMaps();
 		}
+		$mapList = array_slice($mapList, $mapsBeginIndex, self::MAX_PAGES_PER_CHUNK * self::MAX_MAPS_PER_PAGE);
 
-		//FIXME
-		/*
-		 * not same result after map delete update (mapList contains still the removed map while mapManager->getMaps dont contain it)
-		 *	var_dump(count($mapList));
-		 *  var_dump($this->maniaControl->mapManager->getMapsCount());
-		 * (failures happen in the middle else if, what is the use for the midle if?)
-		 */
-
+		$totalMapsCount = $this->maniaControl->mapManager->getMapsCount();
+		$pagesCount     = ceil($totalMapsCount / self::MAX_MAPS_PER_PAGE);
 
 		// Create ManiaLink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$script    = $maniaLink->getScript();
 		$paging    = new Paging();
 		$script->addFeature($paging);
-		if (!is_null($pageCount)) {
-			$paging->setCustomMaxPageNumber($pageCount);
-		}
+		$paging->setCustomMaxPageNumber($pagesCount);
 		$paging->setChunkActionAppendsPageNumber(true);
 		$paging->setChunkActions(self::ACTION_PAGING_CHUNKS);
 
@@ -225,11 +213,10 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		/** @var KarmaPlugin $karmaPlugin */
 		$karmaPlugin = $this->maniaControl->pluginManager->getPlugin(self::DEFAULT_KARMA_PLUGIN);
 
-		$pageNumber      = 1 + $chunk * self::MAX_PAGES_PER_CHUNK;
-		$startPageNumber = (is_int($startPage) ? $startPage : $pageNumber);
-		$paging->setStartPageNumber($startPageNumber);
+		$pageNumber = 1 + $chunkIndex * self::MAX_PAGES_PER_CHUNK;
+		$paging->setStartPageNumber($pageIndex + 1);
 
-		$id         = 1 + $chunk * self::MAX_PAGES_PER_CHUNK * self::MAX_MAPS_PER_PAGE;
+		$id         = 1 + $mapsBeginIndex;
 		$y          = $height / 2 - 10;
 		$pageFrames = array();
 		/** @var Map $map */
@@ -489,15 +476,42 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	}
 
 	/**
+	 * Get the Chunk Index with the given Page Index
+	 *
+	 * @param int $pageIndex
+	 * @return int
+	 */
+	private function getChunkIndexFromPageNumber($pageIndex) {
+		$mapsCount  = $this->maniaControl->mapManager->getMapsCount();
+		$pagesCount = ceil($mapsCount / self::MAX_MAPS_PER_PAGE);
+		if ($pageIndex > $pagesCount - 1) {
+			$pageIndex = $pagesCount - 1;
+		}
+		return floor($pageIndex / self::MAX_PAGES_PER_CHUNK);
+	}
+
+	/**
+	 * Calculate the First Map Index to show for the given Chunk
+	 *
+	 * @param int $chunkIndex
+	 * @return int
+	 */
+	private function getChunkMapsBeginIndex($chunkIndex) {
+		return $chunkIndex * self::MAX_PAGES_PER_CHUNK * self::MAX_MAPS_PER_PAGE;
+	}
+
+	/**
 	 * Builds the confirmation frame
 	 *
 	 * @param ManiaLink $maniaLink
-	 * @param           $y
+	 * @param float     $y
 	 * @param bool      $mapUid
 	 * @param bool      $erase
 	 * @return Frame
 	 */
 	public function buildConfirmFrame(Manialink $maniaLink, $y, $mapUid, $erase = false) {
+		// TODO: get rid of the confirm frame to decrease xml size & network usage
+
 		$width        = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
 		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowStyle();
 		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowSubStyle();
@@ -549,23 +563,23 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 * Unset the player if he opened another Main Widget
 	 *
 	 * @param Player $player
-	 * @param        $openedWidget
+	 * @param string $openedWidget
 	 */
 	public function handleWidgetOpened(Player $player, $openedWidget) {
 		// unset when another main widget got opened
 		if ($openedWidget != 'MapList') {
-			unset($this->mapListShown[$player->login]);
+			unset($this->playerCurrentPage[$player->login]);
 		}
 	}
 
 	/**
-	 * Closes the widget
+	 * Close the widget
 	 *
-	 * @param \ManiaControl\Players\Player $player
+	 * @param Player $player
 	 */
 	public function closeWidget(Player $player) {
-		unset($this->mapListShown[$player->login]);
-		unset($this->mapsInListShown[$player->login]);
+		// TODO: resolve duplicate with 'playerCloseWidget'
+		unset($this->playerCurrentPage[$player->login]);
 	}
 
 	/**
@@ -600,30 +614,30 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				try {
 					$this->maniaControl->client->jumpToMapIdent($mapUid);
 				} catch (MapNotFoundException $e) {
-					$this->maniaControl->chat->sendError("Error while Jumping to Map Index");
+					$this->maniaControl->chat->sendError("Error on Jumping to Map Ident!");
 					break;
 				}
 
 				$map = $this->maniaControl->mapManager->getMapByUid($mapUid);
 
-				$message = '$<' . $player->nickname . '$> skipped to Map $z$<' . $map->name . '$>!';
+				$message = $player->getEscapedNickname() . ' skipped to Map $z' . $map->getEscapedName() . '!';
 				$this->maniaControl->chat->sendSuccess($message);
 				$this->maniaControl->log($message, true);
 
 				$this->playerCloseWidget($player);
 				break;
 			case self::ACTION_START_SWITCH_VOTE:
-				/** @var $votesPlugin CustomVotesPlugin */
+				/** @var CustomVotesPlugin $votesPlugin */
 				$votesPlugin = $this->maniaControl->pluginManager->getPlugin(self::DEFAULT_CUSTOM_VOTE_PLUGIN);
 				$map         = $this->maniaControl->mapManager->getMapByUid($mapUid);
 
-				$message = '$<' . $player->nickname . '$>$s started a vote to switch to $<' . $map->name . '$>!';
+				$message = $player->getEscapedNickname() . '$s started a vote to switch to ' . $map->getEscapedName() . '!';
 
 				$votesPlugin->defineVote('switchmap', "Goto " . $map->name, true, $message);
 
 				$self = $this;
 				$votesPlugin->startVote($player, 'switchmap', function ($result) use (&$self, &$votesPlugin, &$map) {
-					$self->maniaControl->chat->sendInformation('$sVote Successfully -> Map switched!');
+					$self->maniaControl->chat->sendInformation('$sVote Successful -> Map switched!');
 					$votesPlugin->undefineVote('switchmap');
 
 					//Don't queue on Map-Change
@@ -647,21 +661,19 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				if (substr($actionId, 0, strlen(self::ACTION_PAGING_CHUNKS)) === self::ACTION_PAGING_CHUNKS) {
 					// Paging chunks
 					$neededPage = (int)substr($actionId, strlen(self::ACTION_PAGING_CHUNKS));
-					$chunk      = (int)($neededPage / self::MAX_PAGES_PER_CHUNK - 0.5);
-					$this->showMapList($player, null, $chunk, $neededPage);
+					$this->showMapList($player, null, $neededPage - 1);
 				}
 				break;
 		}
 	}
 
 	/**
-	 * Closes the widget
+	 * Close the widget for
 	 *
 	 * @param Player $player
 	 */
 	public function playerCloseWidget(Player $player) {
-		unset($this->mapListShown[$player->login]);
-		unset($this->mapsInListShown[$player->login]);
+		unset($this->playerCurrentPage[$player->login]);
 		$this->maniaControl->manialinkManager->closeWidget($player);
 	}
 
@@ -669,14 +681,12 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 * Reopen the widget on Map Begin, MapListChanged, etc.
 	 */
 	public function updateWidget() {
-		foreach ($this->mapListShown as $login => $shown) {
-			if ($shown) {
-				$player = $this->maniaControl->playerManager->getPlayer($login);
-				if ($player) {
-					$this->showMapList($player);
-				} else {
-					unset($this->mapListShown[$login]);
-				}
+		foreach ($this->playerCurrentPage as $login => $pageIndex) {
+			$player = $this->maniaControl->playerManager->getPlayer($login);
+			if ($player) {
+				$this->showMapList($player, null, $pageIndex);
+			} else {
+				unset($this->playerCurrentPage[$login]);
 			}
 		}
 	}
@@ -685,14 +695,13 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 * Reopen the widget on MapQueue changed
 	 */
 	public function updateWidgetQueue() {
-		foreach ($this->mapListShown as $login => $shown) {
-			if ($shown) {
-				$player = $this->maniaControl->playerManager->getPlayer($login);
-				if ($player) {
-					$this->showMapList($player);
-				} else {
-					unset($this->mapListShown[$login]);
-				}
+		// TODO: resolve duplicate with 'updateWidget' -> exact same coding?!
+		foreach ($this->playerCurrentPage as $login => $pageIndex) {
+			$player = $this->maniaControl->playerManager->getPlayer($login);
+			if ($player) {
+				$this->showMapList($player, null, $pageIndex);
+			} else {
+				unset($this->playerCurrentPage[$login]);
 			}
 		}
 	}

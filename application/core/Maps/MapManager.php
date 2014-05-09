@@ -192,10 +192,11 @@ class MapManager implements CallbackListener {
 	 */
 	public function removeMap(Player $admin, $uid, $eraseFile = false, $message = true) {
 		if (!isset($this->maps[$uid])) {
-			$this->maniaControl->chat->sendError("Map is not existing!", $admin->login);
+			$this->maniaControl->chat->sendError("Map does not exist!", $admin);
 			return;
 		}
 
+		/** @var Map $map */
 		$map = $this->maps[$uid];
 
 		// Unset the Map everywhere
@@ -211,6 +212,7 @@ class MapManager implements CallbackListener {
 		} catch (MapNotInCurrentSelectionException $e) {
 		}
 
+		unset($this->maps[$uid]);
 
 		if ($eraseFile) {
 			// Check if ManiaControl can even write to the maps dir
@@ -219,19 +221,17 @@ class MapManager implements CallbackListener {
 			// Delete map file
 			if (!@unlink($mapDir . $map->fileName)) {
 				trigger_error("Couldn't remove Map '{$mapDir}{$map->fileName}'.");
-				$this->maniaControl->chat->sendError("ManiaControl couldn't remove the MapFile.", $admin->login);
+				$this->maniaControl->chat->sendError("ManiaControl couldn't remove the MapFile.", $admin);
 				return;
 			}
 		}
 
 		// Show Message
 		if ($message) {
-			$message = '$<' . $admin->nickname . '$> removed $<' . $map->name . '$>!';
+			$message = $admin->getEscapedNickname() . ' removed ' . $map->getEscapedName() . '!';
 			$this->maniaControl->chat->sendSuccess($message);
 			$this->maniaControl->log($message, true);
 		}
-
-		unset($this->maps[$uid]);
 	}
 
 	/**

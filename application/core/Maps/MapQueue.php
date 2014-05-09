@@ -276,7 +276,7 @@ class MapQueue implements CallbackListener, CommandListener {
 	}
 
 	/**
-	 * Revmoes a Map from the Map queue
+	 * Remove a Map from the Map queue
 	 *
 	 * @param Player $player
 	 * @param string $uid
@@ -285,6 +285,7 @@ class MapQueue implements CallbackListener, CommandListener {
 		if (!isset($this->queuedMaps[$uid])) {
 			return;
 		}
+		/** @var Map $map */
 		$map = $this->queuedMaps[$uid][1];
 		unset($this->queuedMaps[$uid]);
 
