@@ -26,6 +26,7 @@ class TimerListening {
 	 * @param TimerListener $listener
 	 * @param string        $method
 	 * @param float         $deltaTime
+	 * @param bool          $oneTime
 	 * @param bool          $instantCall
 	 */
 	public function __construct(TimerListener $listener, $method, $deltaTime, $oneTime = false, $instantCall = true) {
