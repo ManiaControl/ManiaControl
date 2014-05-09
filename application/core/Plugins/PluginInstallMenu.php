@@ -19,7 +19,7 @@ use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 
 /**
- * Configurator for enabling and disabling Plugins
+ * Configurator for installing Plugins
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014 ManiaControl Team
@@ -29,11 +29,16 @@ class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, Manialink
 	/*
 	 * Constants
 	 */
-	const SETTING_PERMISSION_INSTALL_PLUGINS = 'Install plugins';
+	const SETTING_PERMISSION_INSTALL_PLUGINS = 'Install Plugins';
 	const ACTION_PREFIX_INSTALLPLUGIN        = 'PluginInstallMenu.Install.';
 
+	/*
+	 * Private Properties
+	 */
+	private $maniaControl = null;
+
 	/**
-	 * Create a new plugin menu instance
+	 * Create a new Plugin Install Menu
 	 *
 	 * @param ManiaControl $maniaControl
 	 */
@@ -44,22 +49,14 @@ class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, Manialink
 	}
 
 	/**
-	 * Get the Menu Title
-	 *
-	 * @return string
+	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getTitle()
 	 */
 	public function getTitle() {
 		return 'Install Plugins';
 	}
 
 	/**
-	 * Get the Configurator Menu Frame
-	 *
-	 * @param float  $width
-	 * @param float  $height
-	 * @param Script $script
-	 * @param Player $player
-	 * @return \FML\Controls\Frame
+	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getMenu()
 	 */
 	public function getMenu($width, $height, Script $script, Player $player) {
 		$paging = new Paging();
@@ -175,10 +172,7 @@ class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, Manialink
 	}
 
 	/**
-	 * Save the Config Data
-	 *
-	 * @param array  $configData
-	 * @param Player $player
+	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
 	 */
 	public function saveConfigData(array $configData, Player $player) {
 		// TODO: Implement saveConfigData() method.

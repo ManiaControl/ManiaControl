@@ -364,47 +364,46 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	 * @param array $callback
 	 */
 	public function handleManialinkPageAnswer(array $callback) {
-		$actionId    = $callback[1][2];
-		$enable      = (strpos($actionId, self::ACTION_PREFIX_ENABLEPLUGIN) === 0);
-		$disable     = (strpos($actionId, self::ACTION_PREFIX_DISABLEPLUGIN) === 0);
-		$settings    = (strpos($actionId, self::ACTION_PREFIX_SETTINGS) === 0);
-		$boolSetting = (strpos($actionId, self::ACTION_SETTING_BOOL) === 0);
-
-		if (!$enable && !$disable && !$settings && !$boolSetting) {
-			return;
-		}
 		$login  = $callback[1][1];
 		$player = $this->maniaControl->playerManager->getPlayer($login);
 		if (!$player) {
 			return;
 		}
+
+		$actionId    = $callback[1][2];
+		$enable      = (strpos($actionId, self::ACTION_PREFIX_ENABLEPLUGIN) === 0);
+		$disable     = (strpos($actionId, self::ACTION_PREFIX_DISABLEPLUGIN) === 0);
+		$settings    = (strpos($actionId, self::ACTION_PREFIX_SETTINGS) === 0);
+		$boolSetting = (strpos($actionId, self::ACTION_SETTING_BOOL) === 0);
+		if (!$enable && !$disable && !$settings && !$boolSetting) {
+			return;
+		}
+
 		if ($enable) {
 			$pluginClass = substr($actionId, strlen(self::ACTION_PREFIX_ENABLEPLUGIN));
 			/** @var Plugin $pluginClass */
 			$activated = $this->maniaControl->pluginManager->activatePlugin($pluginClass, $player->login);
 			if ($activated) {
-				$this->maniaControl->chat->sendSuccess($pluginClass::getName() . ' activated!', $player->login);
-				$this->maniaControl->configurator->showMenu($player);
-				$this->maniaControl->log(Formatter::stripCodes("{$player->login} activated '{$pluginClass}'!"));
+				$this->maniaControl->chat->sendSuccess($pluginClass::getName() . ' activated!', $player);
+				$this->maniaControl->log("{$player->login} activated '{$pluginClass}'!", true);
 			} else {
-				$this->maniaControl->chat->sendError('Error activating ' . $pluginClass::getName() . '!', $player->login);
+				$this->maniaControl->chat->sendError('Error activating ' . $pluginClass::getName() . '!', $player);
 			}
 		} else if ($disable) {
 			$pluginClass = substr($actionId, strlen(self::ACTION_PREFIX_DISABLEPLUGIN));
 			/** @var Plugin $pluginClass */
 			$deactivated = $this->maniaControl->pluginManager->deactivatePlugin($pluginClass);
 			if ($deactivated) {
-				$this->maniaControl->chat->sendSuccess($pluginClass::getName() . ' deactivated!', $player->login);
-				$this->maniaControl->configurator->showMenu($player);
-				$this->maniaControl->log(Formatter::stripCodes("{$player->login} deactivated '{$pluginClass}'!"));
+				$this->maniaControl->chat->sendSuccess($pluginClass::getName() . ' deactivated!', $player);
+				$this->maniaControl->log("{$player->login} deactivated '{$pluginClass}'!", true);
 			} else {
-				$this->maniaControl->chat->sendError('Error deactivating ' . $pluginClass::getName() . '!', $player->login);
+				$this->maniaControl->chat->sendError('Error deactivating ' . $pluginClass::getName() . '!', $player);
 			}
-		} else if ($settings) { //Open Settings Menu
+		} else if ($settings) {
+			// Open Settings Menu
 			$pluginClass         = substr($actionId, strlen(self::ACTION_PREFIX_SETTINGS));
 			$this->settingsClass = $pluginClass;
 		} else if ($boolSetting) {
-
 			$actionArray = explode(".", $actionId);
 			$setting     = $actionArray[1];
 
@@ -415,38 +414,32 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			$this->saveConfigData($callback[1], $player);
 		}
 
-		//Reopen the Menu
-
+		// Reopen the Menu
 		$menuId = $this->maniaControl->configurator->getMenuId($this->getTitle());
-
 		$this->maniaControl->configurator->reopenMenu($player, $menuId);
 	}
 
 	/**
 	 * Toggle a Boolean Value
 	 *
-	 * @param        $setting
+	 * @param int    $settingIndex
 	 * @param Player $player
 	 */
-	public function toggleBooleanSetting($setting, Player $player) {
+	public function toggleBooleanSetting($settingIndex, Player $player) {
 		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_CHANGE_PLUGIN_SETTINGS)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
 
-		$oldSetting = $this->maniaControl->settingManager->getSettingByIndex($setting);
+		$oldSetting = $this->maniaControl->settingManager->getSettingByIndex($settingIndex);
 
 		if (!isset($oldSetting)) {
-			var_dump('no setting ' . $setting);
+			var_dump('no setting with index: ' . $settingIndex);
 			return;
 		}
 
-		//Toggle value
-		if ($oldSetting->value == "1") {
-			$this->maniaControl->settingManager->setSetting($oldSetting->class, $oldSetting->setting, "0");
-		} else {
-			$this->maniaControl->settingManager->setSetting($oldSetting->class, $oldSetting->setting, "1");
-		}
+		// Toggle value
+		$this->maniaControl->settingManager->setSetting($oldSetting->class, $oldSetting->setting, !$oldSetting->value);
 	}
 
 	/**

@@ -10,7 +10,6 @@ use FML\Controls\Quads\Quad_BgRaceScore2;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Controls\Quads\Quad_UIConstruction_Buttons;
 use FML\ManiaLink;
-use FML\Script\Features\Menu;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
@@ -152,7 +151,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	 * @param Player $player
 	 * @return \FML\ManiaLink
 	 */
-	private function buildManialink($menuIdShown = 0, Player $player) {
+	private function buildManialink($menuIdShown = 0, Player $player = null) {
 		$menuPosX     = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_POSX);
 		$menuPosY     = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_POSY);
 		$menuWidth    = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_WIDTH);
@@ -191,9 +190,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$menusFrame->setX($menuWidth * -0.5 + $menuListWidth + $subMenuWidth * 0.5);
 
 		// Create script and features
-		$script     = $manialink->getScript();
-		$menuScript = new Menu();
-		$script->addFeature($menuScript);
+		$script = $manialink->getScript();
 
 		$menuItemY = $menuHeight * 0.42;
 		$menuId    = 0;
@@ -213,7 +210,6 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 			if ($menuId == $menuIdShown) {
 				$menuControl = $menu->getMenu($subMenuWidth, $subMenuHeight, $script, $player);
 				$menusFrame->add($menuControl);
-				$menuScript->addElement($menuItemLabel, $menuControl);
 			}
 
 			$menuItemY -= $menuItemHeight * 1.1;
