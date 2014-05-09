@@ -636,10 +636,10 @@ class MapManager implements CallbackListener {
 	 * Handle Script BeginMap callback
 	 *
 	 * @param string $mapUid
-	 * @param bool $restart
+	 * @param bool   $restart
 	 */
 	public function handleScriptBeginMap($mapUid, $restart) {
-		$this->beginMap($mapUid, $restart);
+		$this->beginMap($mapUid, strtolower($restart) === 'true' ? true : false);
 	}
 
 	/**
@@ -691,7 +691,7 @@ class MapManager implements CallbackListener {
 	/**
 	 * Manage the End of a Map
 	 */
-	private function endMap(){
+	private function endMap() {
 		if ($this->mapEnded) {
 			return;
 		}
