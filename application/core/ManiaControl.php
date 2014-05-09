@@ -44,13 +44,12 @@ class ManiaControl implements CommandListener, TimerListener {
 	/*
 	 * Constants
 	 */
-	const VERSION                     = 0.14;
+	const VERSION                     = '0.14';
 	const API_VERSION                 = '2013-04-16';
 	const MIN_DEDIVERSION             = '2014-04-02_18_00';
 	const OS_UNIX                     = 'Unix';
 	const OS_WIN                      = 'Windows';
-	const CONNECT_TIMEOUT             = 50;
-	const SCRIPT_TIMEOUT              = 20;
+	const SCRIPT_TIMEOUT              = 10;
 	const URL_WEBSERVICE              = 'http://ws.maniacontrol.com/';
 	const SETTING_PERMISSION_SHUTDOWN = 'Shutdown ManiaControl';
 	const SETTING_PERMISSION_RESTART  = 'Restart ManiaControl';
@@ -379,7 +378,7 @@ class ManiaControl implements CommandListener, TimerListener {
 		$this->log("Connecting to server at {$this->server->config->host}:{$this->server->config->port}...");
 
 		try {
-			$this->client = Connection::factory($this->server->config->host, $this->server->config->port, self::CONNECT_TIMEOUT, $this->server->config->login, $this->server->config->pass);
+			$this->client = Connection::factory($this->server->config->host, $this->server->config->port, self::SCRIPT_TIMEOUT, $this->server->config->login, $this->server->config->pass);
 		} catch (Exception $e) {
 			$message = "Couldn't authenticate on Server with User '{$this->server->config->login}' & Pass '{$this->server->config->pass}'! " . $e->getMessage();
 			$this->quit($message, true);
@@ -415,7 +414,7 @@ class ManiaControl implements CommandListener, TimerListener {
 	private function loop() {
 		$loopStart = microtime(true);
 
-		// Disable script timeout
+		// Extend script timeout
 		set_time_limit(self::SCRIPT_TIMEOUT);
 
 		try {
