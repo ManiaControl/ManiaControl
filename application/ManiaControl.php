@@ -4,6 +4,7 @@
 define('LOG_WRITE_CURRENT_FILE', 'ManiaControl.log'); // Write current log to extra file in base dir
 define('LOG_NAME_USE_DATE', true); // Use current date as suffix for log file name in logs folder
 define('LOG_NAME_USE_PID', true); // Use current process id as suffix for log file name in logs folder
+define('MIN_PHP_VERSION', "5.4");
 
 // Define base dir
 define('ManiaControlDir', __DIR__ . DIRECTORY_SEPARATOR);
@@ -46,6 +47,16 @@ if (LOG_WRITE_CURRENT_FILE) {
 
 logMessage('Starting ManiaControl ...');
 
+/** Check for Min PHP version */
+logMessage('Checking for minimum required PHP-Version ' . MIN_PHP_VERSION . ' ... ', false);
+if (phpversion() >= MIN_PHP_VERSION) {
+	logMessage(phpversion() . " OK!", true, false);
+} else {
+	logMessage('TOO OLD VERSION!', true, false);
+	logMessage(' -- Make sure that you install at least PHP 5.4', true, false);
+	exit();
+}
+
 /**
  * Checking if all the needed libraries are installed.
  * - MySQLi
@@ -53,19 +64,19 @@ logMessage('Starting ManiaControl ...');
  */
 logMessage('Checking for installed MySQLi ... ', false);
 if (extension_loaded('mysqli')) {
-	logMessage('FOUND!');
+	logMessage('FOUND!', true, false);
 } else {
-	logMessage('NOT FOUND!');
-	logMessage(' -- You don\'t have MySQLi installed, make sure to check: http://www.php.net/manual/en/mysqli.installation.php');
+	logMessage('NOT FOUND!', true, false);
+	logMessage(' -- You don\'t have MySQLi installed, make sure to check: http://www.php.net/manual/en/mysqli.installation.php', true, false);
 	exit();
 }
 
 logMessage('Checking for installed cURL   ... ', false);
 if (extension_loaded('curl')) {
-	logMessage('FOUND!');
+	logMessage('FOUND!', true, false);
 } else {
-	logMessage('NOT FOUND!');
-	logMessage('You don\'t have cURL installed, make sure to check: http://www.php.net/manual/en/curl.installation.php');
+	logMessage('NOT FOUND!', true, false);
+	logMessage('You don\'t have cURL installed, make sure to check: http://www.php.net/manual/en/curl.installation.php', true, false);
 	exit();
 }
 
@@ -74,13 +85,18 @@ if (extension_loaded('curl')) {
  *
  * @param string $message
  * @param bool   $eol
+ * @param bool   $date
  */
-function logMessage($message, $eol = true) {
-	$date    = date('d.M y H:i:s');
-	$message = $date . ' ' . $message;
+function logMessage($message, $eol = true, $date = true) {
+	if ($date) {
+		$date    = date('d.M y H:i:s');
+		$message = $date . ' ' . $message;
+	}
+
 	if ($eol) {
 		$message .= PHP_EOL;
 	}
+
 	if (defined('LOG_CURRENT_FILE')) {
 		if (!is_writable(dirname(LOG_CURRENT_FILE)) || !file_put_contents(LOG_CURRENT_FILE, $message, FILE_APPEND)) {
 			echo 'Current-Logfile not write-able, please check the File Permissions!';
