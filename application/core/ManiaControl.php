@@ -358,34 +358,41 @@ class ManiaControl implements CommandListener, TimerListener {
 
 		// Main loop
 		while (!$this->shutdownRequested) {
-			$loopStart = microtime(true);
-
-			// Disable script timeout
-			set_time_limit(self::SCRIPT_TIMEOUT);
-
-			try {
-				// Manager callbacks
-				$this->callbackManager->manageCallbacks();
-			} catch (TransportException $e) {
-				$this->log("Connection interrupted!");
-				// TODO remove
-				$this->errorHandler->handleException($e, false);
-				$this->quit($e->getMessage());
-			}
-
-			// Manage FileReader
-			$this->fileReader->appendData();
-
-			// Yield for next tick
-			$loopEnd = microtime(true);
-			$sleepTime = (int)(2500 - ($loopEnd - $loopStart) * 1000000);
-			if ($sleepTime > 0) {
-				usleep($sleepTime);
-			}
+			$this->loop();
 		}
 
 		// Shutdown
 		$this->quit();
+	}
+
+	/**
+	 * Perform the Main Loop
+	 */
+	private function loop() {
+		$loopStart = microtime(true);
+
+		// Disable script timeout
+		set_time_limit(self::SCRIPT_TIMEOUT);
+
+		try {
+			$this->callbackManager->manageCallbacks();
+		} catch (TransportException $e) {
+			$this->log("Connection interrupted!");
+			// TODO remove
+			$this->errorHandler->handleException($e, false);
+			$this->quit($e->getMessage());
+		}
+
+		// Manage FileReader
+		$this->fileReader->appendData();
+
+		// Yield for next tick
+		$loopEnd = microtime(true);
+		$loopDuration = $loopEnd - $loopStart;
+		$sleepTime = (int)(2500 - $loopDuration * 1000000);
+		if ($sleepTime > 0) {
+			usleep($sleepTime);
+		}
 	}
 
 	/**
