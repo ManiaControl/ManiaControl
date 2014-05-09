@@ -177,9 +177,7 @@ class CallbackManager {
 		$callbackName = $callback[0];
 		switch ($callbackName) {
 			case 'ManiaPlanet.BeginMatch':
-				if ($this->maniaControl->mapManager->getCurrentMap()->getGame() == 'sm') {
-					$this->triggerCallback($callbackName, $callback);
-				}
+				$this->triggerCallback($callbackName, $callback);
 				break;
 			case 'ManiaPlanet.BeginMap':
 				$this->maniaControl->mapManager->handleBeginMap($callback);
