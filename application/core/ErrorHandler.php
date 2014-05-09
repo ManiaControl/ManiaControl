@@ -218,6 +218,7 @@ class ErrorHandler {
 	/**
 	 * Parse the Debug Backtrace into a String for the Error Report
 	 *
+	 * @param array $backtrace
 	 * @return string
 	 */
 	private function parseBackTrace(array $backtrace) {

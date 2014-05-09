@@ -42,27 +42,21 @@ class BillManager implements CallbackListener {
 	}
 
 	/**
-	 * send a Bill to a Player
+	 * Send a Bill to a Player
 	 *
-	 * @param        $function
-	 * @param Player $player
-	 * @param        $amount
-	 * @param        $message
-	 * @param bool   $receiver
+	 * @param callable $function
+	 * @param Player   $player
+	 * @param int      $amount
+	 * @param string   $message
+	 * @param string   $receiver
 	 * @return bool
 	 */
-	public function sendBill($function, Player $player, $amount, $message, $receiver = false) {
+	public function sendBill($function, Player $player, $amount, $message, $receiver = '') {
 		if (!is_callable($function)) {
-			trigger_error("Function is not callable");
+			trigger_error("Function is not callable!");
 			return false;
 		}
-
-		if (!$receiver) {
-			$bill = $this->maniaControl->client->sendBill($player->login, $amount, $message);
-		} else {
-			$bill = $this->maniaControl->client->sendBill($player->login, $amount, $message, $receiver);
-		}
-
+		$bill                   = $this->maniaControl->client->sendBill($player->login, $amount, $message, $receiver);
 		$this->openBills[$bill] = new BillData($function, $player, $amount);
 		return true;
 	}

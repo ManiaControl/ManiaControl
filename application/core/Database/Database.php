@@ -25,7 +25,9 @@ class Database implements TimerListener {
 	private $maniaControl = null;
 
 	/**
-	 * Construct database connection
+	 * Construct a new Database Connection
+	 *
+	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;

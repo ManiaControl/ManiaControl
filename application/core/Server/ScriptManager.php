@@ -3,6 +3,7 @@
 namespace ManiaControl\Server;
 
 use ManiaControl\ManiaControl;
+use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 use Maniaplanet\DedicatedServer\Xmlrpc\NotInScriptModeException;
 
 /**
@@ -45,16 +46,17 @@ class ScriptManager {
 		}
 
 		$scriptSettings['S_UseScriptCallbacks'] = (bool)$enable;
+		$actionName                             = ($enable ? 'en' : 'dis');
 
 		try {
 			$this->maniaControl->client->setModeScriptSettings($scriptSettings);
 		} catch (Exception $e) {
 			// TODO temp added 19.04.2014
 			$this->maniaControl->errorHandler->handleException($e, false);
-			trigger_error("Couldn't set mode script settings to enable script callbacks. " . $e->getMessage());
+			trigger_error("Couldn't set Mode Script Settings to {$actionName}able Script Sallbacks. " . $e->getMessage());
 			return false;
 		}
-		$this->maniaControl->log('Script Callbacks successfully enabled!');
-		return false;
+		$this->maniaControl->log("Script Callbacks successfully {$actionName}abled!");
+		return true;
 	}
 }
