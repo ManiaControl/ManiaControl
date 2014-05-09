@@ -19,6 +19,8 @@ use Maniaplanet\DedicatedServer\Xmlrpc\MapNotCompatibleOrCompleteException;
 use Maniaplanet\DedicatedServer\Xmlrpc\MapNotInCurrentSelectionException;
 use Maniaplanet\DedicatedServer\Xmlrpc\StartIndexOutOfBoundException;
 
+// TODO: adding of local maps
+
 /**
  * Manager for Maps
  *
@@ -61,9 +63,7 @@ class MapManager implements CallbackListener {
 	 */
 	private $maniaControl = null;
 	private $maps = array();
-	/**
-	 * @var Map $currentMap
-	 */
+	/** @var Map $currentMap */
 	private $currentMap = null;
 	private $mapEnded = false;
 	private $mapBegan = false;
@@ -71,7 +71,7 @@ class MapManager implements CallbackListener {
 	/**
 	 * Construct a new Map Manager
 	 *
-	 * @param \ManiaControl\ManiaControl $maniaControl
+	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
@@ -133,8 +133,8 @@ class MapManager implements CallbackListener {
 	/**
 	 * Update a Map from Mania Exchange
 	 *
-	 * @param Player  $admin
-	 * @param  string $uid
+	 * @param Player $admin
+	 * @param string $uid
 	 */
 	public function updateMap(Player $admin, $uid) {
 		$this->updateMapTimestamp($uid);
@@ -185,10 +185,10 @@ class MapManager implements CallbackListener {
 	/**
 	 * Remove a Map
 	 *
-	 * @param \ManiaControl\Players\Player $admin
-	 * @param string                       $uid
-	 * @param bool                         $eraseFile
-	 * @param bool                         $message
+	 * @param Player $admin
+	 * @param string $uid
+	 * @param bool   $eraseFile
+	 * @param bool   $message
 	 */
 	public function removeMap(Player $admin, $uid, $eraseFile = false, $message = true) {
 		if (!isset($this->maps[$uid])) {
@@ -237,9 +237,9 @@ class MapManager implements CallbackListener {
 	/**
 	 * Adds a Map from Mania Exchange
 	 *
-	 * @param      $mapId
-	 * @param      $login
-	 * @param bool $update
+	 * @param int    $mapId
+	 * @param string $login
+	 * @param bool   $update
 	 */
 	public function addMapFromMx($mapId, $login, $update = false) {
 		if (is_numeric($mapId)) {
@@ -268,10 +268,10 @@ class MapManager implements CallbackListener {
 	/**
 	 * Process the MapFile
 	 *
-	 * @param           $file
+	 * @param string    $file
 	 * @param MXMapInfo $mapInfo
-	 * @param           $login
-	 * @param           $update
+	 * @param string    $login
+	 * @param bool      $update
 	 */
 	private function processMapFile($file, MXMapInfo $mapInfo, $login, $update) {
 		// Check if map is already on the server
@@ -437,7 +437,7 @@ class MapManager implements CallbackListener {
 	/**
 	 * Save a Map in the Database
 	 *
-	 * @param \ManiaControl\Maps\Map $map
+	 * @param Map $map
 	 * @return bool
 	 */
 	private function saveMap(Map &$map) {
@@ -623,7 +623,7 @@ class MapManager implements CallbackListener {
 	/**
 	 * Get Current Map
 	 *
-	 * @return Map currentMap
+	 * @return Map
 	 */
 	public function getCurrentMap() {
 		if (!$this->currentMap) {
@@ -640,6 +640,62 @@ class MapManager implements CallbackListener {
 	 */
 	public function handleScriptBeginMap($mapUid, $restart) {
 		$this->beginMap($mapUid, strtolower($restart) === 'true' ? true : false);
+	}
+
+	/**
+	 * Manage the Begin of a Map
+	 *
+	 * @param string $uid
+	 * @param bool   $restart
+	 */
+	private function beginMap($uid, $restart = false) {
+		//If a restart occured, first call the endMap to set variables back
+		if ($restart) {
+			$this->endMap();
+		}
+
+		if ($this->mapBegan) {
+			return;
+		}
+		$this->mapBegan = true;
+		$this->mapEnded = false;
+
+		if (array_key_exists($uid, $this->maps)) {
+			// Map already exists, only update index
+			$this->currentMap = $this->maps[$uid];
+			if (!$this->currentMap->nbCheckpoints || !$this->currentMap->nbLaps) {
+				$rpcMap                          = $this->maniaControl->client->getCurrentMapInfo();
+				$this->currentMap->nbLaps        = $rpcMap->nbLaps;
+				$this->currentMap->nbCheckpoints = $rpcMap->nbCheckpoints;
+			}
+		}
+
+		// Restructure MapList if id is over 15
+		$this->restructureMapList();
+
+		// Update the mx of the map (for update checks, etc.)
+		$this->mxManager->fetchManiaExchangeMapInformations($this->currentMap);
+
+		// Trigger own BeginMap callback (
+		//TODO remove deprecated callback later
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_BEGINMAP, $this->currentMap);
+		$this->maniaControl->callbackManager->triggerCallback(Callbacks::BEGINMAP, $this->currentMap);
+	}
+
+	/**
+	 * Manage the End of a Map
+	 */
+	private function endMap() {
+		if ($this->mapEnded) {
+			return;
+		}
+		$this->mapEnded = true;
+		$this->mapBegan = false;
+
+		// Trigger own EndMap callback
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_ENDMAP, $this->currentMap);
+		//TODO remove deprecated callback later
+		$this->maniaControl->callbackManager->triggerCallback(Callbacks::ENDMAP, $this->currentMap);
 	}
 
 	/**
@@ -685,62 +741,5 @@ class MapManager implements CallbackListener {
 	 */
 	public function getMapsCount() {
 		return count($this->maps);
-	}
-	// TODO: add local map by filename
-
-	/**
-	 * Manage the End of a Map
-	 */
-	private function endMap() {
-		if ($this->mapEnded) {
-			return;
-		}
-		$this->mapEnded = true;
-		$this->mapBegan = false;
-
-		// Trigger own EndMap callback
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_ENDMAP, $this->currentMap);
-		//TODO remove deprecated callback later
-		$this->maniaControl->callbackManager->triggerCallback(Callbacks::ENDMAP, $this->currentMap);
-	}
-
-	/**
-	 * Manage the Begin of a Map
-	 *
-	 * @param      $uid
-	 * @param bool $restart
-	 */
-	private function beginMap($uid, $restart = false) {
-		//If a restart occured, first call the endMap to set variables back
-		if ($restart) {
-			$this->endMap();
-		}
-
-		if ($this->mapBegan) {
-			return;
-		}
-		$this->mapBegan = true;
-		$this->mapEnded = false;
-
-		if (array_key_exists($uid, $this->maps)) {
-			// Map already exists, only update index
-			$this->currentMap = $this->maps[$uid];
-			if (!$this->currentMap->nbCheckpoints || !$this->currentMap->nbLaps) {
-				$rpcMap                          = $this->maniaControl->client->getCurrentMapInfo();
-				$this->currentMap->nbLaps        = $rpcMap->nbLaps;
-				$this->currentMap->nbCheckpoints = $rpcMap->nbCheckpoints;
-			}
-		}
-
-		// Restructure MapList if id is over 15
-		$this->restructureMapList();
-
-		// Update the mx of the map (for update checks, etc.)
-		$this->mxManager->fetchManiaExchangeMapInformations($this->currentMap);
-
-		// Trigger own BeginMap callback (
-		//TODO remove deprecated callback later
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_BEGINMAP, $this->currentMap);
-		$this->maniaControl->callbackManager->triggerCallback(Callbacks::BEGINMAP, $this->currentMap);
 	}
 }
