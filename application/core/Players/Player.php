@@ -274,6 +274,32 @@ class Player {
 		$this->cache = array();
 	}
 
+
+	/**
+	 * Gets the Player Data
+	 *
+	 * @param $object
+	 * @param $dataName
+	 * @param $serverIndex
+	 * @return mixed|null
+	 */
+	public function getPlayerData($object, $dataName, $serverIndex = -1) {
+		return $this->maniaControl->playerManager->playerDataManager->getPlayerData($object, $dataName, $this, $serverIndex);
+	}
+
+	/**
+	 * Sets the Player Data
+	 *
+	 * @param $object
+	 * @param $dataName
+	 * @param $value
+	 * @param $serverIndex
+	 * @return bool
+	 */
+	public function setPlayerData($object, $dataName, $value, $serverIndex = -1) {
+		return $this->maniaControl->playerManager->playerDataManager->setPlayerData($object, $dataName, $this, $value, $serverIndex);
+	}
+
 	/**
 	 * Var_Dump the Player
 	 */
