@@ -327,7 +327,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			if (isset($queuedMaps[$map->uid])) {
 				$label = new Label_Text();
 				$mapFrame->add($label);
-				$label->setX($width / 2 - 15);
+				$label->setX($width / 2 - 13);
 				$label->setAlign(Control::CENTER, Control::CENTER);
 				$label->setZ(0.2);
 				$label->setTextSize(1.5);
@@ -595,6 +595,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$this->maniaControl->mapManager->removeMap($player, $mapUid);
 				break;
 			case self::ACTION_SWITCH_MAP:
+				//Don't queue on Map-Change
+				$this->maniaControl->mapManager->mapQueue->dontQueueNextMapChange();
 				try {
 					$this->maniaControl->client->jumpToMapIdent($mapUid);
 				} catch (MapNotFoundException $e) {
@@ -623,6 +625,9 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$votesPlugin->startVote($player, 'switchmap', function ($result) use (&$self, &$votesPlugin, &$map) {
 					$self->maniaControl->chat->sendInformation('$sVote Successfully -> Map switched!');
 					$votesPlugin->undefineVote('switchmap');
+
+					//Don't queue on Map-Change
+					$this->maniaControl->mapManager->mapQueue->dontQueueNextMapChange();
 
 					try {
 						$self->maniaControl->client->JumpToMapIdent($map->uid);

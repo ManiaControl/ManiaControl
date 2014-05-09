@@ -10,6 +10,7 @@ use ManiaControl\Commands\CommandListener;
 use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
+use Maniaplanet\DedicatedServer\Xmlrpc\NextMapException;
 
 /**
  * MapQueue Class
@@ -42,6 +43,14 @@ class MapQueue implements CallbackListener, CommandListener {
 	private $queuedMaps = array();
 	private $nextMap = null;
 	private $buffer = array();
+	private $nextNoQueue = false;
+
+	/**
+	 * Don't queue on the next MapChange
+	 */
+	public function dontQueueNextMapChange() {
+		$this->nextNoQueue = true;
+	}
 
 	/**
 	 * Create a new server MapQueue
@@ -291,7 +300,13 @@ class MapQueue implements CallbackListener, CommandListener {
 	 *
 	 * @param Map $map
 	 */
-	public function endMap(Map $map) {
+	public function endMap(Map $map = null) {
+		//Don't queue next map (for example on skip to map)
+		if($this->nextNoQueue){
+			$this->nextNoQueue = false;
+			return;
+		}
+
 		$this->nextMap = null;
 		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_SKIP_MAP_ON_LEAVE) == true) {
 
@@ -333,9 +348,13 @@ class MapQueue implements CallbackListener, CommandListener {
 			return;
 		}
 		$map = $this->nextMap[1];
+		/** @var Map $map */
 		$this->maniaControl->chat->sendInformation('$fa0Next map will be $<$fff' . $map->name . '$> as requested by $<' . $this->nextMap[0]->nickname . '$>.');
 
-		$this->maniaControl->client->chooseNextMap($map->fileName);
+		try{
+			$this->maniaControl->client->setNextMapIdent($map->uid);
+		}catch (NextMapException $e){
+		}
 	}
 
 	/**

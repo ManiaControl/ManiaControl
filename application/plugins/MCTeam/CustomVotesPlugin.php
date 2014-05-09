@@ -503,7 +503,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 				case 'skipmap':
 				case 'skip':
 				case 'nextmap':
-					$this->maniaControl->client->nextMap();
+					$this->maniaControl->mapManager->mapActions->skipMap();
 					$this->maniaControl->chat->sendInformation('$f8fVote to $fffskip the map$f8f has been successfull!');
 					break;
 				case 'restartmap':

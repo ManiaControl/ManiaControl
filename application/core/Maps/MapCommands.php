@@ -192,10 +192,9 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
-		try {
-			$this->maniaControl->client->nextMap();
-		} catch (ChangeInProgressException $e) {
-		}
+
+		$this->maniaControl->mapManager->mapActions->skipMap();
+
 		$message = '$<' . $player->nickname . '$> skipped the current Map!';
 		$this->maniaControl->chat->sendSuccess($message);
 		$this->maniaControl->log($message, true);
