@@ -61,6 +61,7 @@ class ManiaControl implements CommandListener, TimerListener {
 	public $authenticationManager = null;
 	public $callbackManager = null;
 	public $chat = null;
+	/** @var \SimpleXMLElement $config */
 	public $config = null;
 	public $configurator = null;
 	/**

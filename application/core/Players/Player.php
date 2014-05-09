@@ -245,9 +245,39 @@ class Player {
 	}
 
 	/**
+	 * Get the Cache with the given Name
+	 *
+	 * @param string $cacheName
+	 * @return mixed
+	 */
+	public function getCache($cacheName) {
+		if (isset($this->cache[$cacheName])) {
+			return $this->cache[$cacheName];
+		}
+		return null;
+	}
+
+	/**
+	 * Set the Cache Data for the given Name
+	 *
+	 * @param string $cacheName
+	 * @param mixed  $data
+	 */
+	public function setCache($cacheName, $data) {
+		$this->cache[$cacheName] = data;
+	}
+
+	/**
 	 * Clear the Player's Temporary Data
 	 */
 	public function clearCache() {
 		$this->cache = array();
+	}
+
+	/**
+	 * Var_Dump the Player
+	 */
+	public function dump() {
+		var_dump(json_decode(json_encode($this)));
 	}
 }

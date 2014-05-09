@@ -17,10 +17,10 @@ use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Configurators\ConfiguratorMenu;
-use ManiaControl\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
+use ManiaControl\Settings\SettingManager;
 
 /**
  * Configurator for enabling and disabling Plugins
@@ -42,12 +42,12 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	const ACTION_PREFIX_UPDATEPLUGIN                = 'PluginMenu.Update.';
 	const ACTION_UPDATEPLUGINS                      = 'PluginMenu.Update.All';
 	const SETTING_PERMISSION_CHANGE_PLUGIN_SETTINGS = 'Change Plugin Settings';
+	const CACHE_SETTING_CLASS                       = 'PluginMenuCache.SettingClass';
 
 	/*
 	 * Private Properties
 	 */
 	private $maniaControl = null;
-	private $settingsClass = ''; //TODO needs to be improved
 
 	/**
 	 * Create a new plugin menu instance
@@ -66,8 +66,8 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	 * Returns Back to the Plugins
 	 */
 	public function backToPlugins($callback, Player $player) {
-		$this->settingsClass = ''; //TODO specify player
-		$menuId              = $this->maniaControl->configurator->getMenuId($this->getTitle());
+		unset($player->cache[self::CACHE_SETTING_CLASS]);
+		$menuId = $this->maniaControl->configurator->getMenuId($this->getTitle());
 		$this->maniaControl->configurator->reopenMenu($player, $menuId);
 	}
 
@@ -89,10 +89,9 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 		$pluginClasses = $this->maniaControl->pluginManager->getPluginClasses();
 
 		// Config
-		$pagerSize     = 9.;
-		$entryHeight   = 5.;
-		$labelTextSize = 2;
-		$pageMaxCount  = 10;
+		$pagerSize    = 9.;
+		$entryHeight  = 5.;
+		$pageMaxCount = 10;
 
 		// Pagers
 		$pagerPrev = new Quad_Icons64x64_1();
@@ -119,128 +118,14 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 
 		$paging->setLabel($pageCountLabel);
 
-		//Show Settings Menu
-		if ($this->settingsClass != '') { //TODO improve
-			/** @var  ManiaControl/SettingManager $this->maniaControl->settingManager */
-			$settings             = $this->maniaControl->settingManager->getSettingsByClass($this->settingsClass);
-			$pageFrames           = array();
-			$pageSettingsMaxCount = 12;
-			$y                    = 0;
-			$index                = 1;
-			$settingHeight        = 5.;
-			foreach ($settings as $setting) {
-				if (!isset($pageFrame)) {
-					$pageFrame = new Frame();
-					$frame->add($pageFrame);
-					if (!empty($pageFrames)) {
-						$pageFrame->setVisible(false);
-					}
-					array_push($pageFrames, $pageFrame);
-					$y = $height * 0.41;
-					$paging->addPage($pageFrame);
-				}
-
-				$settingFrame = new Frame();
-				$pageFrame->add($settingFrame);
-				$settingFrame->setY($y);
-
-				if ($index == 1) {
-					//Headline Label
-					$headLabel = new Label_Text();
-					$settingFrame->add($headLabel);
-					$headLabel->setHAlign(Control::LEFT);
-					$headLabel->setX($width * -0.46);
-					$headLabel->setSize($width * 0.6, $settingHeight);
-					$headLabel->setStyle($headLabel::STYLE_TextCardSmall);
-					$headLabel->setTextSize($labelTextSize);
-					$headLabel->setText($setting->class);
-					$headLabel->setTextColor("F00");
-
-					$y -= $settingHeight;
-
-					if ($index % $pageMaxCount == $pageMaxCount - 1) {
-						$pageFrame = new Frame();
-						$frame->add($pageFrame);
-						if (!empty($pageFrames)) {
-							$pageFrame->setVisible(false);
-						}
-						array_push($pageFrames, $pageFrame);
-						$y = $height * 0.41;
-						$paging->addPage($pageFrame);
-					}
-				}
-
-				$settingFrame = new Frame();
-				$pageFrame->add($settingFrame);
-				$settingFrame->setY($y);
-				//Headline Label finished
-
-				$nameLabel = new Label_Text();
-				$settingFrame->add($nameLabel);
-				$nameLabel->setHAlign(Control::LEFT);
-				$nameLabel->setX($width * -0.46);
-				$nameLabel->setSize($width * 0.6, $settingHeight);
-				$nameLabel->setStyle($nameLabel::STYLE_TextCardSmall);
-				$nameLabel->setTextSize($labelTextSize);
-				$nameLabel->setText($setting->setting);
-				$nameLabel->setTextColor("FFF");
-
-				$substyle = '';
-
-				$entry = new Entry();
-				$settingFrame->add($entry);
-				$entry->setStyle(Label_Text::STYLE_TextValueSmall);
-				$entry->setHAlign(Control::CENTER);
-				$entry->setX($width / 2 * 0.65);
-				$entry->setTextSize(1);
-				$entry->setSize($width * 0.3, $settingHeight * 0.9);
-				$entry->setName(self::ACTION_PREFIX_SETTING . '.' . $setting->index);
-				$entry->setDefault($setting->value);
-
-
-				if ($setting->type == "bool") {
-					if ($setting->value == "0") {
-						$substyle = Quad_Icons64x64_1::SUBSTYLE_LvlRed;
-					} else if ($setting->value == "1") {
-						$substyle = Quad_Icons64x64_1::SUBSTYLE_LvlGreen;
-					}
-
-					$quad = new Quad_Icons64x64_1();
-					$settingFrame->add($quad);
-					$quad->setX($width / 2 * 0.6);
-					$quad->setZ(-0.01);
-					$quad->setSubStyle($substyle);
-					$quad->setSize(4, 4);
-					$quad->setHAlign(Control::CENTER2);
-					$quad->setAction(self::ACTION_SETTING_BOOL . $setting->index);
-					$entry->setVisible(false);
-				}
-
-				$y -= $settingHeight;
-
-				if ($index % $pageSettingsMaxCount == $pageSettingsMaxCount - 1) {
-					unset($pageFrame);
-				}
-
-				$index++;
-			}
-
-			$quad = new Label_Button();
-			$frame->add($quad);
-			$quad->setStyle($quad::STYLE_CardMain_Quit);
-			$quad->setHAlign(Control::LEFT);
-			$quad->setScale(0.75);
-			$quad->setText("Back");
-			$quad->setPosition(-$width / 2 + 7, -$height / 2 + 7);
-			$quad->setAction(self::ACTION_BACK_TO_PLUGINS);
-
-			return $frame;
+		$settingClass = $player->getCache(self::CACHE_SETTING_CLASS);
+		if ($settingClass) {
+			// Show Settings Menu
+			return $this->getPluginSettingsMenu($frame, $width, $height, $paging, $player, $settingClass);
 		}
 
-
-		//Display normal Plugin List
+		// Display normal Plugin List
 		// Plugin pages
-		$pageFrames    = array();
 		$y             = 0.;
 		$pluginUpdates = $this->maniaControl->updateManager->pluginUpdateManager->getPluginsUpdates();
 
@@ -252,14 +137,9 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 
 		foreach ($pluginClasses as $index => $pluginClass) {
 			/** @var Plugin $pluginClass */
-			if (!isset($pageFrame)) {
+			if ($index % $pageMaxCount === 0) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
-				if (!empty($pageFrames)) {
-					$pageFrame->setVisible(false);
-				}
-
-				array_push($pageFrames, $pageFrame);
 				$paging->addPage($pageFrame);
 				$y = $height * 0.41;
 			}
@@ -286,7 +166,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			$nameLabel->setX($width * -0.4);
 			$nameLabel->setSize($width * 0.5, $entryHeight);
 			$nameLabel->setStyle($nameLabel::STYLE_TextCardSmall);
-			$nameLabel->setTextSize($labelTextSize);
+			$nameLabel->setTextSize(2);
 			$nameLabel->setText($pluginClass::getName());
 
 			$descriptionLabel = new Label();
@@ -337,9 +217,6 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			}
 
 			$y -= $entryHeight;
-			if ($index % $pageMaxCount == $pageMaxCount - 1) {
-				unset($pageFrame);
-			}
 		}
 
 		if ($pluginUpdates != false) {
@@ -354,6 +231,114 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			$updatePluginsButton->setText(count($pluginUpdates) . ' update(s)');
 			$updatePluginsButton->setAction(self::ACTION_UPDATEPLUGINS);
 		}
+
+		return $frame;
+	}
+
+	/**
+	 * Get the Frame with the Plugin Settings
+	 *
+	 * @param Frame  $frame
+	 * @param float  $width
+	 * @param float  $height
+	 * @param Paging $paging
+	 * @param Player $player
+	 * @param string $settingClass
+	 * @return Frame
+	 */
+	private function getPluginSettingsMenu(Frame $frame, $width, $height, Paging $paging, Player $player, $settingClass) {
+		$settings = $this->maniaControl->settingManager->getSettingsByClass($settingClass);
+
+		$pageSettingsMaxCount = 12;
+		$y                    = 0;
+		$index                = 0;
+		$settingHeight        = 5.;
+		foreach ($settings as $setting) {
+			if ($index % $pageSettingsMaxCount === 0) {
+				$pageFrame = new Frame();
+				$frame->add($pageFrame);
+				$paging->addPage($pageFrame);
+				$y = $height * 0.41;
+			}
+
+			$settingFrame = new Frame();
+			$pageFrame->add($settingFrame);
+			$settingFrame->setY($y);
+
+			if ($index === 0) {
+				//Headline Label
+				$headLabel = new Label_Text();
+				$settingFrame->add($headLabel);
+				$headLabel->setHAlign(Control::LEFT);
+				$headLabel->setX($width * -0.46);
+				$headLabel->setSize($width * 0.6, $settingHeight);
+				$headLabel->setStyle($headLabel::STYLE_TextCardSmall);
+				$headLabel->setTextSize(2);
+				$headLabel->setText($setting->class);
+				$headLabel->setTextColor("F00");
+
+				$y -= $settingHeight;
+			}
+
+			$settingFrame = new Frame();
+			$pageFrame->add($settingFrame);
+			$settingFrame->setY($y);
+			// Headline Label finished
+
+			$nameLabel = new Label_Text();
+			$settingFrame->add($nameLabel);
+			$nameLabel->setHAlign(Control::LEFT);
+			$nameLabel->setX($width * -0.46);
+			$nameLabel->setSize($width * 0.6, $settingHeight);
+			$nameLabel->setStyle($nameLabel::STYLE_TextCardSmall);
+			$nameLabel->setTextSize(2);
+			$nameLabel->setText($setting->setting);
+			$nameLabel->setTextColor("FFF");
+
+			$substyle = '';
+
+			$entry = new Entry();
+			$settingFrame->add($entry);
+			$entry->setStyle(Label_Text::STYLE_TextValueSmall);
+			$entry->setHAlign(Control::CENTER);
+			$entry->setX($width / 2 * 0.65);
+			$entry->setTextSize(1);
+			$entry->setSize($width * 0.3, $settingHeight * 0.9);
+			$entry->setName(self::ACTION_PREFIX_SETTING . '.' . $setting->index);
+			$entry->setDefault($setting->value);
+
+
+			if ($setting->type === SettingManager::TYPE_BOOL) {
+				if ($setting->value == "0") {
+					$substyle = Quad_Icons64x64_1::SUBSTYLE_LvlRed;
+				} else if ($setting->value == "1") {
+					$substyle = Quad_Icons64x64_1::SUBSTYLE_LvlGreen;
+				}
+
+				$quad = new Quad_Icons64x64_1();
+				$settingFrame->add($quad);
+				$quad->setX($width / 2 * 0.6);
+				$quad->setZ(-0.01);
+				$quad->setSubStyle($substyle);
+				$quad->setSize(4, 4);
+				$quad->setHAlign(Control::CENTER2);
+				$quad->setAction(self::ACTION_SETTING_BOOL . $setting->index);
+				$entry->setVisible(false);
+			}
+
+			$y -= $settingHeight;
+
+			$index++;
+		}
+
+		$quad = new Label_Button();
+		$frame->add($quad);
+		$quad->setStyle($quad::STYLE_CardMain_Quit);
+		$quad->setHAlign(Control::LEFT);
+		$quad->setScale(0.75);
+		$quad->setText("Back");
+		$quad->setPosition(-$width / 2 + 7, -$height / 2 + 7);
+		$quad->setAction(self::ACTION_BACK_TO_PLUGINS);
 
 		return $frame;
 	}
@@ -401,8 +386,8 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			}
 		} else if ($settings) {
 			// Open Settings Menu
-			$pluginClass         = substr($actionId, strlen(self::ACTION_PREFIX_SETTINGS));
-			$this->settingsClass = $pluginClass;
+			$pluginClass                              = substr($actionId, strlen(self::ACTION_PREFIX_SETTINGS));
+			$player->cache[self::CACHE_SETTING_CLASS] = $pluginClass;
 		} else if ($boolSetting) {
 			$actionArray = explode(".", $actionId);
 			$setting     = $actionArray[1];
