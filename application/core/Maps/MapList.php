@@ -128,12 +128,12 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$mapList                               = array_slice($maps, $chunk, self::MAX_PAGES_PER_CHUNK * self::MAX_MAPS_PER_PAGE);
 			$this->mapsInListShown[$player->login] = $maps;
 			$pageCount                             = ceil(count($maps) / self::MAX_MAPS_PER_PAGE);
-		} else if (array_key_exists($player->login, $this->mapsInListShown)) {
+		} /*else if (array_key_exists($player->login, $this->mapsInListShown)) {
 			$completeList                          = $this->mapsInListShown[$player->login];
 			$this->mapsInListShown[$player->login] = $completeList;
 			$mapList                               = array_slice($completeList, $chunk * self::MAX_PAGES_PER_CHUNK * self::MAX_MAPS_PER_PAGE, self::MAX_PAGES_PER_CHUNK * self::MAX_MAPS_PER_PAGE);
 			$pageCount                             = ceil(count($completeList) / self::MAX_MAPS_PER_PAGE);
-		} else {
+		} */ else {
 			$mapList                               = $this->maniaControl->mapManager->getMaps($chunk * self::MAX_PAGES_PER_CHUNK * self::MAX_MAPS_PER_PAGE, self::MAX_PAGES_PER_CHUNK * self::MAX_MAPS_PER_PAGE);
 			$pageCount                             = ceil($this->maniaControl->mapManager->getMapsCount() / self::MAX_MAPS_PER_PAGE);
 			$this->mapsInListShown[$player->login] = $this->maniaControl->mapManager->getMaps();
@@ -144,7 +144,9 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		 * not same result after map delete update (mapList contains still the removed map while mapManager->getMaps dont contain it)
 		 *	var_dump(count($mapList));
 		 *  var_dump($this->maniaControl->mapManager->getMapsCount());
+		 * (failures happen in the middle else if, what is the use for the midle if?)
 		 */
+
 
 		// Create ManiaLink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
@@ -212,7 +214,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$frame->add($headFrame);
 		$headFrame->setY($height / 2 - 5);
 		$x     = -$width / 2;
-		$array = array('Id' => $x + 5, 'Mx Id' => $x + 10, 'Map Name' => $x + 20, 'Author' => $x + 68, 'Karma' => $x + 115, 'Actions' => $width / 2 - 15);
+		$array = array('Id' => $x + 5, 'Mx Id' => $x + 10, 'Map Name' => $x + 20, 'Author' => $x + 68, 'Karma' => $x + 115, 'Actions' => $width / 2 - 16);
 		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
 
 		// Predefine description Label
@@ -346,7 +348,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				// Map-Queue-Map-Button
 				$queueLabel = new Label_Button();
 				$mapFrame->add($queueLabel);
-				$queueLabel->setX($width / 2 - 15);
+				$queueLabel->setX($width / 2 - 13);
 				$queueLabel->setZ(0.2);
 				$queueLabel->setSize(3, 3);
 				$queueLabel->setText('+');
@@ -387,7 +389,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				// Switch to map
 				$switchLabel = new Label_Button();
 				$mapFrame->add($switchLabel);
-				$switchLabel->setX($width / 2 - 10);
+				$switchLabel->setX($width / 2 - 9);
 				$switchLabel->setZ(0.2);
 				$switchLabel->setSize(3, 3);
 				$switchLabel->setTextSize(2);
@@ -405,7 +407,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 					// Switch Map Voting for Admins
 					$switchQuad = new Quad_UIConstruction_Buttons();
 					$mapFrame->add($switchQuad);
-					$switchQuad->setX($width / 2 - 20);
+					$switchQuad->setX($width / 2 - 17);
 					$switchQuad->setZ(0.2);
 					$switchQuad->setSubStyle($switchQuad::SUBSTYLE_Validate_Step2);
 					$switchQuad->setSize(3.8, 3.8);
@@ -416,7 +418,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 					// Switch Map Voting for Player
 					$switchLabel = new Label_Button();
 					$mapFrame->add($switchLabel);
-					$switchLabel->setX($width / 2 - 10);
+					$switchLabel->setX($width / 2 - 7);
 					$switchLabel->setZ(0.2);
 					$switchLabel->setSize(3, 3);
 					$switchLabel->setTextSize(2);
