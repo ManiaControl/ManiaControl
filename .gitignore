@@ -2,4 +2,4 @@
 .buildpath
 .project
 .idea
-.configs
+application/configs
