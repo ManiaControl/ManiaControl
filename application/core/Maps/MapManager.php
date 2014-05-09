@@ -635,29 +635,33 @@ class MapManager implements CallbackListener {
 	/**
 	 * Handle Script BeginMap callback
 	 *
-	 * @param int $mapNumber
+	 * @param $mapUid
+	 * @param $restart
 	 */
-	public function handleScriptBeginMap($mapNumber) {
-		$this->handleBeginMap(array());
+	public function handleScriptBeginMap($mapUid, $restart) {
+		$this->beginMap($mapUid, $restart);
 	}
 
 	/**
-	 * Handle BeginMap callback
+	 * Manage the begin Of a Map
 	 *
-	 * @param array $callback
+	 * @param      $uid
+	 * @param bool $restart
 	 */
-	public function handleBeginMap(array $callback) {
+	private function beginMap($uid, $restart = false) {
+		if ($restart) {
+			$this->handleEndMap(array());
+		}
+
 		if ($this->mapBegan) {
 			return;
 		}
 		$this->mapBegan = true;
 		$this->mapEnded = false;
 
-		if (!isset($callback[1][0]["UId"])) {
-			$this->currentMap = $this->fetchCurrentMap();
-		} else if (array_key_exists($callback[1][0]["UId"], $this->maps)) {
+		if (array_key_exists($uid, $this->maps)) {
 			// Map already exists, only update index
-			$this->currentMap = $this->maps[$callback[1][0]["UId"]];
+			$this->currentMap = $this->maps[$uid];
 			if (!$this->currentMap->nbCheckpoints || !$this->currentMap->nbLaps) {
 				$rpcMap                          = $this->maniaControl->client->getCurrentMapInfo();
 				$this->currentMap->nbLaps        = $rpcMap->nbLaps;
@@ -675,6 +679,15 @@ class MapManager implements CallbackListener {
 		//TODO remove deprecated callback later
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_BEGINMAP, $this->currentMap);
 		$this->maniaControl->callbackManager->triggerCallback(Callbacks::BEGINMAP, $this->currentMap);
+	}
+
+	/**
+	 * Handle BeginMap callback
+	 *
+	 * @param array $callback
+	 */
+	public function handleBeginMap(array $callback) {
+		$this->beginMap($callback[1][0]["UId"]);
 	}
 
 	/**

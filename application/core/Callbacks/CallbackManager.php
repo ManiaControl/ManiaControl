@@ -185,10 +185,8 @@ class CallbackManager {
 				$this->maniaControl->mapManager->handleBeginMap($callback);
 				$this->triggerCallback($callbackName, $callback);
 				break;
-			case 'ManiaPlanet.EndMatch': // TODO temporary fix
-				if ($this->maniaControl->mapManager->getCurrentMap()->getGame() == 'sm') {
-					$this->triggerCallback($callbackName, $callback);
-				}
+			case 'ManiaPlanet.EndMatch':
+				$this->triggerCallback($callbackName, $callback);
 				break;
 			case 'ManiaPlanet.EndMap':
 				$this->maniaControl->mapManager->handleEndMap($callback);

@@ -45,7 +45,7 @@ class LibXmlRpcCallbackManager implements CallbackListener {
 				break;
 			case 'BeginMap':
 			case 'LibXmlRpc_BeginMap':
-				$this->maniaControl->mapManager->handleScriptBeginMap($data[0]);
+				$this->maniaControl->mapManager->handleScriptBeginMap($data[1], $data[2]);
 				break;
 			case 'LibXmlRpc_BeginSubmatch':
 				$this->maniaControl->callbackManager->triggerCallback(Callbacks::BEGINSUBMATCH, $data[0]);
@@ -64,7 +64,7 @@ class LibXmlRpcCallbackManager implements CallbackListener {
 				break;
 			case 'EndMap':
 			case 'LibXmlRpc_EndMap':
-				$this->maniaControl->mapManager->handleScriptEndMap($data[0]);
+				$this->maniaControl->mapManager->handleScriptEndMap($data[1]);
 				break;
 			case 'LibXmlRpc_EndMatch':
 				$this->maniaControl->callbackManager->triggerCallback(Callbacks::ENDMATCH, $data[0]);
