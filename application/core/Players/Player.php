@@ -40,6 +40,7 @@ class Player {
 	public $uploadRate = -1;
 	public $skins = null;
 	public $daysSinceZoneInscription = -1;
+	public $cache = array();
 
 	//Flags details
 	public $forcedSpectatorState = 0;
@@ -241,5 +242,12 @@ class Player {
 		$this->isPureSpectator      = (bool)(intval($spectatorStatus / 100) % 10);
 		$this->autoTarget           = (bool)(intval($spectatorStatus / 1000) % 10);
 		$this->currentTargetId      = intval($spectatorStatus / 10000);
+	}
+
+	/**
+	 * Clear the Player's Temporary Data
+	 */
+	public function clearCache() {
+		$this->cache = array();
 	}
 }
