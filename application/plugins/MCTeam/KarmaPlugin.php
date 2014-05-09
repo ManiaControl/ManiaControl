@@ -384,6 +384,10 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 					$self->maniaControl->log("MX-Karma Votes successfully fetched");
 				} else {
 					$self->maniaControl->log("Error while fetching votes: " . $data->data->message);
+					if($data->data->message == "invalid session"){
+						unset($this->mxKarma['session']);
+						return;
+					}
 					// TODO remove temp trigger
 					$self->maniaControl->errorHandler->triggerDebugNotice("Error while fetching votes: " . $data->data->message . " " . KarmaPlugin::MX_KARMA_URL . KarmaPlugin::MX_KARMA_SAVEVOTES . "?sessionKey=" . urlencode($self->mxKarma['session']->sessionKey));
 				}
@@ -477,6 +481,10 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 					$self->maniaControl->log("Votes successfully permitted");
 				} else {
 					$self->maniaControl->log("Error while updating votes: " . $data->data->message);
+					if($data->data->message == "invalid session"){
+						unset($this->mxKarma['session']);
+						return;
+					}
 					// TODO remove temp trigger
 					$self->maniaControl->errorHandler->triggerDebugNotice("Error while updating votes: " . $data->data->message . " " . KarmaPlugin::MX_KARMA_URL . $self::MX_KARMA_SAVEVOTES . "?sessionKey=" . urlencode($self->mxKarma['session']->sessionKey));
 				}
