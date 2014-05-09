@@ -17,6 +17,7 @@ use ManiaControl\Maps\Map;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
+use ManiaControl\Plugins\PluginMenu;
 use ManiaControl\Settings\SettingManager;
 
 /**
@@ -159,6 +160,15 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		$this->mxKarmaOpenSession();
 		$this->mxKarma['startTime'] = time();
 
+		//Check if Karma Code got specified, and inform admin that it would be good to specifiy one
+		$serverLogin = $this->maniaControl->server->login;
+		$mxKarmaCode = $this->maniaControl->settingManager->getSetting($this, '$l[http://karma.mania-exchange.com/auth/getapikey?server=' . $serverLogin . ']MX Karma Code for ' . $serverLogin . '$l');
+
+		if ($mxKarmaCode == '') {
+			$permission = $this->maniaControl->settingManager->getSetting($this->maniaControl->authenticationManager, PluginMenu::SETTING_PERMISSION_CHANGE_PLUGIN_SETTINGS);
+			$this->maniaControl->chat->sendErrorToAdmins("Please specify a Mania-Exchange Karma Key in the Karma-Plugin settings!", $permission);
+		}
+
 		return true;
 	}
 
@@ -275,14 +285,20 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 					// Fetch the Mx Karma Votes
 					$self->getMxKarmaVotes();
 				} else {
-					$self->maniaControl->log("Error while authenticating on Mania-Exchange Karma " . $data->data->message);
-					// TODO remove temp trigger
-					$self->maniaControl->errorHandler->triggerDebugNotice("Error while authenticating on Mania-Exchange Karma " . $data->data->message . " url Query " . $query);
+					if ($data->data->message == "invalid hash") {
+						$permission = $self->maniaControl->settingManager->getSetting($this->maniaControl->authenticationManager, PluginMenu::SETTING_PERMISSION_CHANGE_PLUGIN_SETTINGS);
+						$self->maniaControl->chat->sendErrorToAdmins("Invalid Mania-Exchange Karma code in Karma Plugin specified!", $permission);
+					} else {
+						// TODO remove temp trigger
+						$self->maniaControl->errorHandler->triggerDebugNotice("Error while authenticating on Mania-Exchange Karma " . $data->data->message . " url Query " . $query);
+					}
+					$self->maniaControl->log("Error while activating Mania-Exchange Karma Session: " . $data->data->message);
 					$self->mxKarma['connectionInProgress'] = false;
+					unset($self->mxKarma['session']);
 				}
 			} else {
 				// TODO remove temp trigger
-				$self->maniaControl->errorHandler->triggerDebugNotice("Error while authenticating on Mania-Exchange Karma " . $error);
+				$self->maniaControl->errorHandler->triggerDebugNotice("Error while activating Mania-Exchange Karma Session: " . $error);
 				$self->maniaControl->log($error);
 				$self->mxKarma['connectionInProgress'] = false;
 			}

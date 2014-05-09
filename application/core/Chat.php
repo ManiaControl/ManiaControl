@@ -2,6 +2,8 @@
 
 namespace ManiaControl;
 
+use ManiaControl\Admin\AuthenticationManager;
+use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\Xmlrpc\LoginUnknownException;
 
 /**
@@ -53,6 +55,35 @@ class Chat {
 	public function sendInformation($message, $login = null, $prefix = true) {
 		$format = $this->maniaControl->settingManager->getSetting($this, self::SETTING_FORMAT_INFORMATION);
 		return $this->sendChat($format . $message, $login, $prefix);
+	}
+
+	/**
+	 * Sends a Message to all Connected Admins
+	 *
+	 * @param      $message
+	 * @param int  $minLevel (Constant from AuthenticationManager)
+	 * @param bool $prefix
+	 */
+	public function sendMessageToAdmins($message, $minLevel = AuthenticationManager::AUTH_LEVEL_MODERATOR, $prefix = true) {
+		//TODO specifiy in player or adminmanager a getAdmins() with minlevel function
+		foreach($this->maniaControl->playerManager->getPlayers() as $player){
+			/** @var Player $player */
+			if($this->maniaControl->authenticationManager->checkRight($player, $minLevel)){
+				$this->sendChat($message, $player->login, $prefix);
+			}
+		}
+	}
+
+	/**
+	 * Sends a Error Message to all Connected Admins
+	 *
+	 * @param      $message
+	 * @param int  $minLevel (Constant from AuthenticationManager)
+	 * @param bool $prefix
+	 */
+	public function sendErrorToAdmins($message, $minLevel = AuthenticationManager::AUTH_LEVEL_MODERATOR, $prefix = true) {
+		$format = $this->maniaControl->settingManager->getSetting($this, self::SETTING_FORMAT_ERROR);
+		$this->sendMessageToAdmins($format . $message, $prefix);
 	}
 
 	/**
