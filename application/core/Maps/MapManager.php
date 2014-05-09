@@ -635,22 +635,85 @@ class MapManager implements CallbackListener {
 	/**
 	 * Handle Script BeginMap callback
 	 *
-	 * @param $mapUid
-	 * @param $restart
+	 * @param string $mapUid
+	 * @param bool $restart
 	 */
 	public function handleScriptBeginMap($mapUid, $restart) {
 		$this->beginMap($mapUid, $restart);
 	}
 
 	/**
-	 * Manage the begin Of a Map
+	 * Handle BeginMap callback
+	 *
+	 * @param array $callback
+	 */
+	public function handleBeginMap(array $callback) {
+		$this->beginMap($callback[1][0]["UId"]);
+	}
+
+	/**
+	 * Handle Script EndMap Callback
+	 *
+	 * @param string $mapUid
+	 */
+	public function handleScriptEndMap($mapUid) {
+		$this->endMap();
+	}
+
+	/**
+	 * Handle EndMap Callback
+	 *
+	 * @param array $callback
+	 */
+	public function handleEndMap(array $callback) {
+		$this->endMap();
+	}
+
+	/**
+	 * Handle Maps Modified Callback
+	 *
+	 * @param array $callback
+	 */
+	public function mapsModified(array $callback) {
+		$this->updateFullMapList();
+	}
+
+	/**
+	 * Get the Number of Maps
+	 *
+	 * @return int
+	 */
+	public function getMapsCount() {
+		return count($this->maps);
+	}
+	// TODO: add local map by filename
+
+	/**
+	 * Manage the End of a Map
+	 */
+	private function endMap(){
+		if ($this->mapEnded) {
+			return;
+		}
+		$this->mapEnded = true;
+		$this->mapBegan = false;
+
+		// Trigger own EndMap callback
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_ENDMAP, $this->currentMap);
+		//TODO remove deprecated callback later
+		$this->maniaControl->callbackManager->triggerCallback(Callbacks::ENDMAP, $this->currentMap);
+	}
+
+	/**
+	 * Manage the Begin of a Map
 	 *
 	 * @param      $uid
 	 * @param bool $restart
 	 */
 	private function beginMap($uid, $restart = false) {
+		//If a restart occured, first call the endMap to set variables back
 		if ($restart) {
-			$this->handleEndMap(array());
+			$this->endMap();
 		}
 
 		if ($this->mapBegan) {
@@ -680,59 +743,4 @@ class MapManager implements CallbackListener {
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_BEGINMAP, $this->currentMap);
 		$this->maniaControl->callbackManager->triggerCallback(Callbacks::BEGINMAP, $this->currentMap);
 	}
-
-	/**
-	 * Handle BeginMap callback
-	 *
-	 * @param array $callback
-	 */
-	public function handleBeginMap(array $callback) {
-		$this->beginMap($callback[1][0]["UId"]);
-	}
-
-	/**
-	 * Handle Script EndMap Callback
-	 *
-	 * @param int $mapNumber
-	 */
-	public function handleScriptEndMap($mapNumber) {
-		$this->handleEndMap(array());
-	}
-
-	/**
-	 * Handle EndMap Callback
-	 *
-	 * @param array $callback
-	 */
-	public function handleEndMap(array $callback) {
-		if ($this->mapEnded) {
-			return;
-		}
-		$this->mapEnded = true;
-		$this->mapBegan = false;
-
-		// Trigger own EndMap callback
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_ENDMAP, $this->currentMap);
-		//TODO remove deprecated callback later
-		$this->maniaControl->callbackManager->triggerCallback(Callbacks::ENDMAP, $this->currentMap);
-	}
-
-	/**
-	 * Handle Maps Modified Callback
-	 *
-	 * @param array $callback
-	 */
-	public function mapsModified(array $callback) {
-		$this->updateFullMapList();
-	}
-
-	/**
-	 * Get the Number of Maps
-	 *
-	 * @return int
-	 */
-	public function getMapsCount() {
-		return count($this->maps);
-	}
-	// TODO: add local map by filename
 }
