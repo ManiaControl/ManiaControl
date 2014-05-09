@@ -264,7 +264,7 @@ class Player {
 	 * @param mixed  $data
 	 */
 	public function setCache($cacheName, $data) {
-		$this->cache[$cacheName] = data;
+		$this->cache[$cacheName] = $data;
 	}
 
 	/**
