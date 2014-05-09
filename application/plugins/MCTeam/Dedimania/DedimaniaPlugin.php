@@ -176,8 +176,8 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$this->maniaControl->fileReader->postData(self::DEDIMANIA_URL, function ($data, $error) use (&$self) {
 			$self->maniaControl->log("Try to connect on Dedimania");
 
-			if ($error != '') {
-				$self->maniaControl->log("Dedimania Error: " . $error);
+			if (!$data || $error) {
+				$self->maniaControl->log("Dedimania Error: '{$error}'");
 			}
 
 			$data = $self->decode($data);

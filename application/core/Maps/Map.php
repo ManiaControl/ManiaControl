@@ -71,6 +71,15 @@ class Map {
 	}
 
 	/**
+	 * Get the escaped Map Name
+	 *
+	 * @return string
+	 */
+	public function getEscapedName() {
+		return Formatter::escapeText($this->name);
+	}
+
+	/**
 	 * Get's the gameType of the Current Map
 	 *
 	 * @return string

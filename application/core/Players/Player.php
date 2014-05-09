@@ -68,7 +68,7 @@ class Player {
 	 * Construct a new Player
 	 *
 	 * @param ManiaControl $maniaControl
-	 * @param bool $connected
+	 * @param bool         $connected
 	 */
 	public function __construct(ManiaControl $maniaControl, $connected) {
 		$this->maniaControl = $maniaControl;
@@ -76,6 +76,19 @@ class Player {
 		if ($connected) {
 			$this->joinTime = time();
 		}
+	}
+
+	/**
+	 * Get the Escaped Nickname
+	 *
+	 * @return string
+	 */
+	public function getEscapedNickname() {
+		$nickname = $this->nickname;
+		if (!$nickname) {
+			$nickname = $this->login;
+		}
+		return Formatter::escapeText($nickname);
 	}
 
 	/**

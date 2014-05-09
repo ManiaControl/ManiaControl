@@ -12,6 +12,16 @@ namespace ManiaControl;
 abstract class Formatter {
 
 	/**
+	 * Return the given Text with Escaping around it
+	 *
+	 * @param string $text
+	 * @return string
+	 */
+	public static function escapeText($text) {
+		return '$<' . $text . '$>';
+	}
+
+	/**
 	 * Format the given Time (in Milliseconds)
 	 *
 	 * @param int $time
