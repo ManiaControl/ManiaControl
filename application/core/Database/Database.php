@@ -32,21 +32,24 @@ class Database implements TimerListener {
 
 		// Get mysql server information
 		$host = $this->maniaControl->config->database->xpath('host');
-		$port = $this->maniaControl->config->database->xpath('port');
-		$user = $this->maniaControl->config->database->xpath('user');
-		$pass = $this->maniaControl->config->database->xpath('pass');
-
 		if (!$host) {
-			trigger_error("Invalid database configuration (host).", E_USER_ERROR);
+			$message = "Invalid database configuration (host).";
+			$this->maniaControl->quit($message);
 		}
+		$port = $this->maniaControl->config->database->xpath('port');
 		if (!$port) {
-			trigger_error("Invalid database configuration (port).", E_USER_ERROR);
+			$message = "Invalid database configuration (port).";
+			$this->maniaControl->quit($message);
 		}
+		$user = $this->maniaControl->config->database->xpath('user');
 		if (!$user) {
-			trigger_error("Invalid database configuration (user).", E_USER_ERROR);
+			$message = "Invalid database configuration (user).";
+			$this->maniaControl->quit($message);
 		}
+		$pass = $this->maniaControl->config->database->xpath('pass');
 		if (!$pass) {
-			trigger_error("Invalid database configuration (pass).", E_USER_ERROR);
+			$message = "Invalid database configuration (pass).";
+			$this->maniaControl->quit($message);
 		}
 
 		$host = (string)$host[0];
@@ -60,7 +63,8 @@ class Database implements TimerListener {
 		// Open database connection
 		$this->mysqli = @new \mysqli($host, $user, $pass, null, $port);
 		if ($this->mysqli->connect_error) {
-			trigger_error($this->mysqli->connect_error, E_USER_ERROR);
+			$message = "Couldn't connect to Database: '{$this->mysqli->connect_error}'";
+			$this->maniaControl->quit($message);
 		}
 		$this->mysqli->set_charset("utf8");
 
@@ -161,7 +165,7 @@ class Database implements TimerListener {
 	 */
 	public function checkConnection($time) {
 		if (!$this->mysqli->ping()) {
-			$this->maniaControl->quit("The MySQL server has gone away");
+			$this->maniaControl->quit("The MySQL server has gone away!");
 		}
 	}
 
@@ -169,7 +173,7 @@ class Database implements TimerListener {
 	 * Destruct database connection
 	 */
 	public function __destruct() {
-		if ($this->mysqli) {
+		if ($this->mysqli && !$this->mysqli->connect_error) {
 			$this->mysqli->close();
 		}
 	}
