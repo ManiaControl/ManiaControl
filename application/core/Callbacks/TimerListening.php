@@ -44,7 +44,11 @@ class TimerListening {
 	 * Increase last Trigger Time
 	 */
 	public function tick() {
-		$this->lastTrigger += $this->deltaTime;
+		if ($this->lastTrigger === null) {
+			$this->lastTrigger = microtime(true);
+		} else {
+			$this->lastTrigger += $this->deltaTime;
+		}
 	}
 
 	/**
