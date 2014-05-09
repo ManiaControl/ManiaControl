@@ -33,22 +33,23 @@ class Database implements TimerListener {
 		$this->maniaControl = $maniaControl;
 
 		// Get mysql server information
-		$host = $this->maniaControl->config->database->xpath('host');
+		$databaseXmlTag = $this->maniaControl->config->database;
+		$host = $databaseXmlTag->xpath('host');
 		if (!$host) {
 			$message = "Invalid database configuration (host).";
 			$this->maniaControl->quit($message, true);
 		}
-		$port = $this->maniaControl->config->database->xpath('port');
+		$port = $databaseXmlTag->xpath('port');
 		if (!$port) {
 			$message = "Invalid database configuration (port).";
 			$this->maniaControl->quit($message, true);
 		}
-		$user = $this->maniaControl->config->database->xpath('user');
+		$user = $databaseXmlTag->xpath('user');
 		if (!$user) {
 			$message = "Invalid database configuration (user).";
 			$this->maniaControl->quit($message, true);
 		}
-		$pass = $this->maniaControl->config->database->xpath('pass');
+		$pass = $databaseXmlTag->xpath('pass');
 		if (!$pass) {
 			$message = "Invalid database configuration (pass).";
 			$this->maniaControl->quit($message, true);
