@@ -17,8 +17,8 @@ class GbxRemote
 
 	private $socket;
 	private $timeouts = array(
-		'read' => 5000,
-		'write' => 5000
+		'read' => 8000,
+		'write' => 8000
 	);
 	private $requestHandle;
 	private $callbacksBuffer = array();
