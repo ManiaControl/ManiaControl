@@ -207,7 +207,7 @@ class PlayerDataManager {
 		if (is_array($param)) {
 			return self::TYPE_ARRAY;
 		}
-		trigger_error('Unsupported setting type. ' . print_r($param, true));
+		trigger_error('Unsupported data type. ' . print_r($param, true));
 		return null;
 	}
 
@@ -358,7 +358,7 @@ class PlayerDataManager {
 		if ($type === self::TYPE_ARRAY) {
 			return explode($this->arrayDelimiter, $value);
 		}
-		trigger_error('Unsupported setting type. ' . print_r($type, true));
+		trigger_error('Unsupported data type. ' . print_r($type, true));
 		return $value;
 	}
 } 
