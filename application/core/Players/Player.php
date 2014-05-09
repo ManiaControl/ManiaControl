@@ -153,50 +153,45 @@ class Player {
 	 * @return string
 	 */
 	public function getProvince() {
-		$pathParts = explode('|', $this->path);
-		if (isset($pathParts[3])) {
-			return $pathParts[3];
-		}
-		return $this->getCountry();
+		return $this->getPathPart(3);
 	}
 
 	/**
-	 * Get country
+	 * Get Country
 	 *
 	 * @return string
 	 */
 	public function getCountry() {
-		$pathParts = explode('|', $this->path);
-		if (isset($pathParts[2])) {
-			return $pathParts[2];
-		}
-		if (isset($pathParts[1])) {
-			return $pathParts[1];
-		}
-		if (isset($pathParts[0])) {
-			return $pathParts[0];
-		}
-		return $this->path;
+		return $this->getPathPart(2);
 	}
 
 	/**
-	 * Get continent
+	 * Get Continent
 	 *
 	 * @return string
 	 */
 	public function getContinent() {
+		return $this->getPathPart(1);
+	}
+
+	/**
+	 * Get the specified Part of the Path
+	 *
+	 * @param int $partNumber
+	 * @return string
+	 */
+	public function getPathPart($partNumber) {
 		$pathParts = explode('|', $this->path);
-		if (isset($pathParts[1])) {
-			return $pathParts[1];
-		}
-		if (isset($pathParts[0])) {
-			return $pathParts[0];
+		for ($partIndex = $partNumber; $partIndex >= 0; $partIndex--) {
+			if (isset($pathParts[$partIndex])) {
+				return $pathParts[$partIndex];
+			}
 		}
 		return $this->path;
 	}
 
 	/**
-	 * Updates the Flags of the Player
+	 * Update the Flags of the Player
 	 *
 	 * @param $flags
 	 */
@@ -214,7 +209,7 @@ class Player {
 	}
 
 	/**
-	 * Updates the Spectator Status of the player
+	 * Update the Spectator Status of the player
 	 *
 	 * @param $spectatorStatus
 	 */
