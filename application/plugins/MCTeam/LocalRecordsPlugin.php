@@ -170,6 +170,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 	 * @see \ManiaControl\Plugins\Plugin::unload()
 	 */
 	public function unload() {
+		$this->maniaControl->manialinkManager->hideManialink(self::MLID_RECORDS);
 	}
 
 	/**
