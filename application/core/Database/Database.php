@@ -34,22 +34,22 @@ class Database implements TimerListener {
 		$host = $this->maniaControl->config->database->xpath('host');
 		if (!$host) {
 			$message = "Invalid database configuration (host).";
-			$this->maniaControl->quit($message);
+			$this->maniaControl->quit($message, true);
 		}
 		$port = $this->maniaControl->config->database->xpath('port');
 		if (!$port) {
 			$message = "Invalid database configuration (port).";
-			$this->maniaControl->quit($message);
+			$this->maniaControl->quit($message, true);
 		}
 		$user = $this->maniaControl->config->database->xpath('user');
 		if (!$user) {
 			$message = "Invalid database configuration (user).";
-			$this->maniaControl->quit($message);
+			$this->maniaControl->quit($message, true);
 		}
 		$pass = $this->maniaControl->config->database->xpath('pass');
 		if (!$pass) {
 			$message = "Invalid database configuration (pass).";
-			$this->maniaControl->quit($message);
+			$this->maniaControl->quit($message, true);
 		}
 
 		$host = (string)$host[0];
@@ -64,7 +64,7 @@ class Database implements TimerListener {
 		$this->mysqli = @new \mysqli($host, $user, $pass, null, $port);
 		if ($this->mysqli->connect_error) {
 			$message = "Couldn't connect to Database: '{$this->mysqli->connect_error}'";
-			$this->maniaControl->quit($message);
+			$this->maniaControl->quit($message, true);
 		}
 		$this->mysqli->set_charset("utf8");
 
@@ -86,7 +86,7 @@ class Database implements TimerListener {
 	private function initDatabase() {
 		$dbName = $this->maniaControl->config->database->xpath('db_name');
 		if (!$dbName) {
-			trigger_error("Invalid database configuration (database).", E_USER_ERROR);
+			$this->maniaControl->quit("Invalid Database Configuration (db_name).", true);
 			return false;
 		}
 		$dbName = (string)$dbName[0];
@@ -101,13 +101,13 @@ class Database implements TimerListener {
 		$databaseQuery     = "CREATE DATABASE ?;";
 		$databaseStatement = $this->mysqli->prepare($databaseQuery);
 		if ($this->mysqli->error) {
-			trigger_error($this->mysqli->error, E_USER_ERROR);
+			$this->maniaControl->quit($this->mysqli->error, true);
 			return false;
 		}
 		$databaseStatement->bind_param('s', $dbName);
 		$databaseStatement->execute();
 		if ($databaseStatement->error) {
-			trigger_error($databaseStatement->error, E_USER_ERROR);
+			$this->maniaControl->quit($databaseStatement->error, true);
 			return false;
 		}
 		$databaseStatement->close();
@@ -115,7 +115,8 @@ class Database implements TimerListener {
 		// Connect to new database
 		$this->mysqli->select_db($dbName);
 		if ($this->mysqli->error) {
-			trigger_error("Couldn't select database '{$dbName}'. " . $this->mysqli->error, E_USER_ERROR);
+			$message = "Couldn't select database '{$dbName}'. {$this->mysqli->error}";
+			$this->maniaControl->quit($message, true);
 			return false;
 		}
 		return true;
@@ -161,11 +162,11 @@ class Database implements TimerListener {
 	/**
 	 * Check if Connection still exists every 5 seconds
 	 *
-	 * @param $time
+	 * @param float $time
 	 */
-	public function checkConnection($time) {
-		if (!$this->mysqli->ping()) {
-			$this->maniaControl->quit("The MySQL server has gone away!");
+	public function checkConnection($time = null) {
+		if (!$this->mysqli || !$this->mysqli->ping()) {
+			$this->maniaControl->quit("The MySQL server has gone away!", true);
 		}
 	}
 

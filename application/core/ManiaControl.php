@@ -271,9 +271,13 @@ class ManiaControl implements CommandListener, TimerListener {
 	 * Quit ManiaControl and log the given message
 	 *
 	 * @param string $message
+	 * @param bool   $errorPrefix
 	 */
-	public function quit($message = null) {
+	public function quit($message = null, $errorPrefix = false) {
 		if ($message) {
+			if ($errorPrefix) {
+				$message = '[ERROR] ' . $message;
+			}
 			$this->log($message);
 		}
 		exit();
@@ -366,6 +370,46 @@ class ManiaControl implements CommandListener, TimerListener {
 	}
 
 	/**
+	 * Connect to ManiaPlanet server
+	 */
+	private function connect() {
+		// Load remote client
+		$this->server->loadConfig();
+
+		$this->log("Connecting to server at {$this->server->config->host}:{$this->server->config->port}...");
+
+		try {
+			$this->client = Connection::factory($this->server->config->host, $this->server->config->port, self::CONNECT_TIMEOUT, $this->server->config->login, $this->server->config->pass);
+		} catch (Exception $e) {
+			$message = "Couldn't authenticate on Server with User '{$this->server->config->login}' & Pass '{$this->server->config->pass}'! " . $e->getMessage();
+			$this->quit($message, true);
+		}
+
+		// Enable callback system
+		$this->client->enableCallbacks(true);
+
+		// Wait for server to be ready
+		try {
+			if (!$this->server->waitForStatus(4)) {
+				$this->quit("Server couldn't get ready!");
+			}
+		} catch (Exception $e) {
+			// TODO remove
+			$this->errorHandler->handleException($e, false);
+			$this->quit($e->getMessage(), true);
+		}
+
+		// Connect finished
+		$this->log("Server Connection successfully established!");
+
+		// Hide old widgets
+		$this->client->sendHideManialinkPage();
+
+		// Enable script callbacks
+		$this->server->scriptManager->enableScriptCallbacks();
+	}
+
+	/**
 	 * Perform the Main Loop
 	 */
 	private function loop() {
@@ -380,58 +424,18 @@ class ManiaControl implements CommandListener, TimerListener {
 			$this->log("Connection interrupted!");
 			// TODO remove
 			$this->errorHandler->handleException($e, false);
-			$this->quit($e->getMessage());
+			$this->quit($e->getMessage(), true);
 		}
 
 		// Manage FileReader
 		$this->fileReader->appendData();
 
 		// Yield for next tick
-		$loopEnd = microtime(true);
+		$loopEnd      = microtime(true);
 		$loopDuration = $loopEnd - $loopStart;
-		$sleepTime = (int)(2500 - $loopDuration * 1000000);
+		$sleepTime    = (int)(2500 - $loopDuration * 1000000);
 		if ($sleepTime > 0) {
 			usleep($sleepTime);
 		}
-	}
-
-	/**
-	 * Connect to ManiaPlanet server
-	 */
-	private function connect() {
-		// Load remote client
-		$this->server->loadConfig();
-
-		$this->log("Connecting to server at {$this->server->config->host}:{$this->server->config->port}...");
-
-		try {
-			$this->client = Connection::factory($this->server->config->host, $this->server->config->port, self::CONNECT_TIMEOUT, $this->server->config->login, $this->server->config->pass);
-		} catch (Exception $e) {
-			$message = "Couldn't authenticate on Server with User '{$this->server->config->login}' & Pass '{$this->server->config->pass}'! " . $e->getMessage();
-			$this->quit($message);
-		}
-
-		// Enable callback system
-		$this->client->enableCallbacks(true);
-
-		// Wait for server to be ready
-		try {
-			if (!$this->server->waitForStatus(4)) {
-				$this->quit("Server couldn't get ready!");
-			}
-		} catch (Exception $e) {
-			// TODO remove
-			$this->errorHandler->handleException($e, false);
-			$this->quit($e->getMessage());
-		}
-
-		// Connect finished
-		$this->log("Server Connection successfully established!");
-
-		// Hide old widgets
-		$this->client->sendHideManialinkPage();
-
-		// Enable script callbacks
-		$this->server->scriptManager->enableScriptCallbacks();
 	}
 }
