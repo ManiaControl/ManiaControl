@@ -317,9 +317,14 @@ class Player {
 
 	/**
 	 * Var_Dump the Player
+	 *
+	 * @param bool $dumpCache
 	 */
-	public function dump() {
+	public function dump($dumpCache = false) {
 		var_dump(json_decode(json_encode($this)));
+		if ($dumpCache) {
+			var_dump("PlayerCache:", $this->cache);
+		}
 	}
 
 
