@@ -40,7 +40,7 @@ class Player {
 	public $uploadRate = -1;
 	public $skins = null;
 	public $daysSinceZoneInscription = -1;
-	public $cache = array();
+	private $cache = array();
 
 	//Flags details
 	public $forcedSpectatorState = 0;
@@ -269,6 +269,17 @@ class Player {
 	public function setCache($object, $cacheName, $data) {
 		$className                            = $this->getClassName($object);
 		$this->cache[$className . $cacheName] = $data;
+	}
+
+	/**
+	 * Destroys a Cache
+	 *
+	 * @param $object
+	 * @param $cacheName
+	 */
+	public function destroyCache($object, $cacheName) {
+		$className = $this->getClassName($object);
+		unset($this->cache[$className . $cacheName]);
 	}
 
 	/**

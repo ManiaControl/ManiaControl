@@ -597,7 +597,8 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 				$sum     = $this->mxKarma["voteCount"] * $this->mxKarma["voteAverage"] - $oldVote + $vote * 100;
 				$modeSum = $this->mxKarma["modeVoteCount"] * $this->mxKarma["modeVoteAverage"] - $oldVote + $vote * 100;
 			}
-
+			//FIXME, how can here ever be division by zero?, a voting just happened before, and a vote of a player is set
+			//edit problem is if someone votes on one server (on a map which has no votes yet, joins another server than where same map is running and votes again)
 			$this->mxKarma["voteAverage"]           = $sum / $this->mxKarma["voteCount"];
 			$this->mxKarma["modeVoteAverage"]       = $modeSum / $this->mxKarma["modeVoteCount"];
 			$this->mxKarma["votes"][$player->login] = $vote * 100;

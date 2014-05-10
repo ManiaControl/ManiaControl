@@ -287,6 +287,8 @@ class GbxRemote
 			if($written === 0 || $written === false)
 				return false;
 
+			fflush($this->socket);
+
 			$data = substr($data, $written);
 		}
 

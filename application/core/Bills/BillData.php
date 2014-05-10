@@ -26,12 +26,12 @@ class BillData {
 	 * Construct new BillData
 	 *
 	 * @param mixed  $function
-	 * @param Player $player
+	 * @param Player/string $player
 	 * @param int    $amount
 	 * @param bool   $pay
 	 * @param string $receiverLogin
 	 */
-	public function __construct($function, Player $player, $amount, $pay = false, $receiverLogin = null) {
+	public function __construct($function, $player, $amount, $pay = false, $receiverLogin = null) {
 		$this->function      = $function;
 		$this->player        = $player;
 		$this->amount        = $amount;

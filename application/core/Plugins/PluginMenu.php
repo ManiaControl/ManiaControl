@@ -66,7 +66,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	 * Returns Back to the Plugins
 	 */
 	public function backToPlugins($callback, Player $player) {
-		unset($player->cache[self::CACHE_SETTING_CLASS]);
+		$player->destroyCache($this, self::CACHE_SETTING_CLASS);
 		$menuId = $this->maniaControl->configurator->getMenuId($this->getTitle());
 		$this->maniaControl->configurator->reopenMenu($player, $menuId);
 	}
@@ -118,7 +118,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 
 		$paging->setLabel($pageCountLabel);
 
-		$settingClass = $player->getCache(self::CACHE_SETTING_CLASS);
+		$settingClass = $player->getCache($this, self::CACHE_SETTING_CLASS);
 		if ($settingClass) {
 			// Show Settings Menu
 			return $this->getPluginSettingsMenu($frame, $width, $height, $paging, $player, $settingClass);
@@ -387,7 +387,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 		} else if ($settings) {
 			// Open Settings Menu
 			$pluginClass                              = substr($actionId, strlen(self::ACTION_PREFIX_SETTINGS));
-			$player->cache[self::CACHE_SETTING_CLASS] = $pluginClass;
+			$player->setCache($this, self::CACHE_SETTING_CLASS, $pluginClass);
 		} else if ($boolSetting) {
 			$actionArray = explode(".", $actionId);
 			$setting     = $actionArray[1];

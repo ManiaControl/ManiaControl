@@ -1235,7 +1235,7 @@ class Connection
 	 * @return int BillId
 	 * @throws InvalidArgumentException
 	 */
-	function sendBill($payer, $amount, $message, $payee, $multicall=false)
+	function sendBill($payer, $amount, $message, $payee = '', $multicall=false)
 	{
 		$payerLogin = $this->getLogin($payer);
 		if($payerLogin === false)
