@@ -71,7 +71,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$this->maniaControl->callbackManager->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_CLOSED, $this, 'closeWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_OPENED, $this, 'handleWidgetOpened');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
-		$this->maniaControl->callbackManager->registerCallbackListener(MapQueue::CB_MAPQUEUE_CHANGED, $this, 'updateWidgetQueue');
+		$this->maniaControl->callbackManager->registerCallbackListener(MapQueue::CB_MAPQUEUE_CHANGED, $this, 'updateWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_MAPS_UPDATED, $this, 'updateWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(MapManager::CB_KARMA_UPDATED, $this, 'updateWidget');
 		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::BEGINMAP, $this, 'updateWidget');
@@ -681,21 +681,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 * Reopen the widget on Map Begin, MapListChanged, etc.
 	 */
 	public function updateWidget() {
-		foreach ($this->playerCurrentPage as $login => $pageIndex) {
-			$player = $this->maniaControl->playerManager->getPlayer($login);
-			if ($player) {
-				$this->showMapList($player, null, $pageIndex);
-			} else {
-				unset($this->playerCurrentPage[$login]);
-			}
-		}
-	}
-
-	/**
-	 * Reopen the widget on MapQueue changed
-	 */
-	public function updateWidgetQueue() {
-		// TODO: resolve duplicate with 'updateWidget' -> exact same coding?!
 		foreach ($this->playerCurrentPage as $login => $pageIndex) {
 			$player = $this->maniaControl->playerManager->getPlayer($login);
 			if ($player) {
