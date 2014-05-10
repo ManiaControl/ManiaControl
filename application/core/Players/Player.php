@@ -326,7 +326,7 @@ class Player {
 	 * Dump the Players Cache
 	 */
 	public function dumpCache() {
-		var_dump("PlayerCache:", $this->cache);
+		var_dump($this->cache);
 	}
 
 	/**
