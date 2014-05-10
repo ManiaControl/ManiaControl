@@ -317,16 +317,17 @@ class Player {
 
 	/**
 	 * Var_Dump the Player
-	 *
-	 * @param bool $dumpCache
 	 */
-	public function dump($dumpCache = false) {
+	public function dump() {
 		var_dump(json_decode(json_encode($this)));
-		if ($dumpCache) {
-			var_dump("PlayerCache:", $this->cache);
-		}
 	}
 
+	/**
+	 * Dump the Players Cache
+	 */
+	public function dumpCache() {
+		var_dump("PlayerCache:", $this->cache);
+	}
 
 	/**
 	 * Get Class Name of a Parameter
