@@ -40,7 +40,6 @@ class Player {
 	public $uploadRate = -1;
 	public $skins = null;
 	public $daysSinceZoneInscription = -1;
-	private $cache = array();
 
 	//Flags details
 	public $forcedSpectatorState = 0;
@@ -64,6 +63,7 @@ class Player {
 	 * Private Properties
 	 */
 	private $maniaControl = null;
+	private $cache = array();
 
 	/**
 	 * Construct a new Player
