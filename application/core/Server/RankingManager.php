@@ -78,6 +78,8 @@ class RankingManager implements CallbackListener {
 			return;
 		}
 
+		//TODO in legacy mode, no data is in parameter -> fetch via method getCurrentRanking
+
 		$scores = explode(';', $data);
 		foreach ($scores as $player) {
 			if (strpos($player, ':') !== false) {
