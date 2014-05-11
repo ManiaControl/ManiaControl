@@ -335,7 +335,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 		$properties = array();
 
-		$gameMode = $this->maniaControl->server->getGameMode(true);
+		$gameMode = $this->maniaControl->server->matchSettingsManager->getGameMode(true);
 		if ($gameMode == 'Script') {
 			$scriptName             = $this->maniaControl->client->getScriptName();
 			$properties['gamemode'] = $scriptName["CurrentValue"];
@@ -444,7 +444,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			return;
 		}
 
-		$gameMode = $this->maniaControl->server->getGameMode(true);
+		$gameMode = $this->maniaControl->server->matchSettingsManager->getGameMode(true);
 
 		if (count($votes) == 0) {
 			return;

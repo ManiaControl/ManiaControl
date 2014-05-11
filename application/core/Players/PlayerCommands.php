@@ -9,7 +9,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
-use ManiaControl\Server\Server;
+use ManiaControl\Server\MatchSettingsManager;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
@@ -62,7 +62,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_TEAM_BALANCE, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 
 		//CallbackManager
-		$this->maniaControl->callbackManager->registerCallbackListener(Server::CB_TEAM_MODE_CHANGED, $this, 'teamStatusChanged');
+		$this->maniaControl->callbackManager->registerCallbackListener(MatchSettingsManager::CB_TEAM_MODE_CHANGED, $this, 'teamStatusChanged');
 
 		// Action Open Playerlist
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_OPEN_PLAYERLIST, $this, 'command_playerList');

@@ -135,6 +135,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			return strcmp($a::getName(), $b::getName());
 		});
 
+		$pageFrame = null;
 		foreach ($pluginClasses as $index => $pluginClass) {
 			/** @var Plugin $pluginClass */
 			if ($index % $pageMaxCount === 0) {
@@ -253,6 +254,8 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 		$y                    = 0;
 		$index                = 0;
 		$settingHeight        = 5.;
+		$pageFrame = null;
+
 		foreach ($settings as $setting) {
 			if ($index % $pageSettingsMaxCount === 0) {
 				$pageFrame = new Frame();

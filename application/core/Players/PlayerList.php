@@ -326,7 +326,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				$playerQuad->addTooltipLabelFeature($descriptionLabel, $description);
 			}
 
-			if ($this->maniaControl->server->isTeamMode()) {
+			if ($this->maniaControl->server->matchSettingsManager->isTeamMode()) {
 				if ($this->maniaControl->authenticationManager->checkPermission($player, PlayerActions::SETTING_PERMISSION_FORCE_PLAYER_TEAM)) {
 					// Force to Red-Team Quad
 					$redQuad = new Quad_Emblems();

@@ -358,7 +358,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * @return String
 	 */
 	private function getGameModeString() {
-		$gameMode           = $this->maniaControl->server->getGameMode();
+		$gameMode           = $this->maniaControl->server->matchSettingsManager->getGameMode();
 		$scriptNameResponse = $this->maniaControl->client->getScriptName();
 		$scriptName         = str_replace('.Script.txt', '', $scriptNameResponse["CurrentValue"]);
 		if ($gameMode === null) {

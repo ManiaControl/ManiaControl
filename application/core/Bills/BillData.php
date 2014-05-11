@@ -2,8 +2,6 @@
 
 namespace ManiaControl\Bills;
 
-use ManiaControl\Players\Player;
-
 /**
  * ManiaControl BillData Structure
  *
@@ -26,7 +24,7 @@ class BillData {
 	 * Construct new BillData
 	 *
 	 * @param mixed  $function
-	 * @param Player/string $player
+	 * @param        Player /string $player
 	 * @param int    $amount
 	 * @param bool   $pay
 	 * @param string $receiverLogin

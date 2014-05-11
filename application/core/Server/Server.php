@@ -19,8 +19,7 @@ class Server implements CallbackListener {
 	/*
 	 * Constants
 	 */
-	const TABLE_SERVERS        = 'mc_servers';
-	const CB_TEAM_MODE_CHANGED = 'ServerCallback.TeamModeChanged';
+	const TABLE_SERVERS = 'mc_servers';
 
 	/*
 	 * Public Properties
@@ -38,12 +37,12 @@ class Server implements CallbackListener {
 	public $usageReporter = null;
 	public $rankingManager = null;
 	public $scriptManager = null;
+	public $matchSettingsManager = null;
 
 	/*
 	 * Private Properties
 	 */
 	private $maniaControl = null;
-	private $teamMode = false;
 
 	/**
 	 * Construct a new Server
@@ -54,10 +53,11 @@ class Server implements CallbackListener {
 		$this->maniaControl = $maniaControl;
 		$this->initTables();
 
-		$this->serverCommands = new ServerCommands($maniaControl);
-		$this->usageReporter  = new UsageReporter($maniaControl);
-		$this->rankingManager = new RankingManager($maniaControl);
-		$this->scriptManager  = new ScriptManager($maniaControl);
+		$this->serverCommands       = new ServerCommands($maniaControl);
+		$this->usageReporter        = new UsageReporter($maniaControl);
+		$this->rankingManager       = new RankingManager($maniaControl);
+		$this->scriptManager        = new ScriptManager($maniaControl);
+		$this->matchSettingsManager = new MatchSettingsManager($maniaControl);
 
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_ONINIT, $this, 'onInit');
@@ -224,30 +224,6 @@ class Server implements CallbackListener {
 	}
 
 	/**
-	 * Set if the Server Runs a Team-Mode or not
-	 *
-	 * @param bool $teamMode
-	 */
-	public function setTeamMode($teamMode = true) {
-		$oldStatus      = $this->teamMode;
-		$this->teamMode = $teamMode;
-
-		// Trigger callback
-		if ($oldStatus != $this->teamMode) {
-			$this->maniaControl->callbackManager->triggerCallback(self::CB_TEAM_MODE_CHANGED, $teamMode);
-		}
-	}
-
-	/**
-	 * Check if the Server Runs a TeamMode
-	 *
-	 * @return bool
-	 */
-	public function isTeamMode() {
-		return $this->teamMode;
-	}
-
-	/**
 	 * Fetch Maps Directory
 	 *
 	 * @return string
@@ -314,7 +290,7 @@ class Server implements CallbackListener {
 
 		// Build file name
 		$map      = $this->maniaControl->mapManager->getCurrentMap();
-		$gameMode = $this->getGameMode();
+		$gameMode = $this->matchSettingsManager->getGameMode();
 		$time     = time();
 		$fileName = "GhostReplays/Ghost.{$login}.{$gameMode}.{$time}.{$map->uid}.Replay.Gbx";
 
@@ -352,42 +328,6 @@ class Server implements CallbackListener {
 	}
 
 	/**
-	 * Fetch current Game Mode
-	 *
-	 * @param bool $stringValue
-	 * @param int  $parseValue
-	 * @return int | string
-	 */
-	public function getGameMode($stringValue = false, $parseValue = null) {
-		if (is_int($parseValue)) {
-			$gameMode = $parseValue;
-		} else {
-			$gameMode = $this->maniaControl->client->getGameMode();
-		}
-		if ($stringValue) {
-			switch ($gameMode) {
-				case 0:
-					return 'Script';
-				case 1:
-					return 'Rounds';
-				case 2:
-					return 'TimeAttack';
-				case 3:
-					return 'Team';
-				case 4:
-					return 'Laps';
-				case 5:
-					return 'Cup';
-				case 6:
-					return 'Stunts';
-				default:
-					return 'Unknown';
-			}
-		}
-		return $gameMode;
-	}
-
-	/**
 	 * Wait for the Server to have the given Status
 	 *
 	 * @param int $statusCode
@@ -419,5 +359,39 @@ class Server implements CallbackListener {
 			}
 		}
 		return true;
+	}
+
+
+	/**
+	 * Set whether the Server Runs a Team-Based Mode or not
+	 *
+	 * @deprecated Use MatchSettingsManager instead
+	 * @param bool $teamMode
+	 */
+	public function setTeamMode($teamMode = true) {
+		$this->matchSettingsManager->setTeamMode($teamMode);
+	}
+
+	/**
+	 * Check if the Server Runs a Team-Based Mode
+	 *
+	 * @deprecated Use MatchSettingsManager instead
+	 * @return bool
+	 */
+	public function isTeamMode() {
+		$this->matchSettingsManager->isTeamMode();
+	}
+
+
+	/**
+	 * Fetch the current Game Mode
+	 *
+	 * @deprecated Use MatchSettingsManager instead
+	 * @param bool $stringValue
+	 * @param int  $parseValue
+	 * @return int | string
+	 */
+	public function getGameMode($stringValue = false, $parseValue = null) {
+		$this->matchSettingsManager->getGameMode($stringValue, $parseValue);
 	}
 }

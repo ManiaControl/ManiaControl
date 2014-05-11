@@ -33,6 +33,7 @@ class Database implements TimerListener {
 		$this->maniaControl = $maniaControl;
 
 		// Get mysql server information
+		/** @var \SimpleXMLElement $databaseXmlTag */
 		$databaseXmlTag = $this->maniaControl->config->database;
 		$host = $databaseXmlTag->xpath('host');
 		if (!$host) {
