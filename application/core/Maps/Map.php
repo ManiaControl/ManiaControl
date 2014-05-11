@@ -110,4 +110,11 @@ class Map {
 			return false;
 		}
 	}
+
+	/**
+	 * Var_Dump the Map
+	 */
+	public function dump() {
+		var_dump(json_decode(json_encode($this)));
+	}
 } 
