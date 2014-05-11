@@ -335,7 +335,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 		$properties = array();
 
-		$gameMode = $this->maniaControl->server->matchSettingsManager->getGameMode(true);
+		$gameMode = $this->maniaControl->server->getGameMode(true);
 		if ($gameMode == 'Script') {
 			$scriptName             = $this->maniaControl->client->getScriptName();
 			$properties['gamemode'] = $scriptName["CurrentValue"];
@@ -384,7 +384,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 					$self->maniaControl->log("MX-Karma Votes successfully fetched");
 				} else {
 					$self->maniaControl->log("Error while fetching votes: " . $data->data->message);
-					if($data->data->message == "invalid session"){
+					if ($data->data->message == "invalid session") {
 						unset($this->mxKarma['session']);
 						return;
 					}
@@ -444,7 +444,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			return;
 		}
 
-		$gameMode = $this->maniaControl->server->matchSettingsManager->getGameMode(true);
+		$gameMode = $this->maniaControl->server->getGameMode(true);
 
 		if (count($votes) == 0) {
 			return;
@@ -481,7 +481,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 					$self->maniaControl->log("Votes successfully permitted");
 				} else {
 					$self->maniaControl->log("Error while updating votes: " . $data->data->message);
-					if($data->data->message == "invalid session"){
+					if ($data->data->message == "invalid session") {
 						unset($this->mxKarma['session']);
 						return;
 					}

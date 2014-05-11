@@ -122,7 +122,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 
 			//Check if the Player is in a Team, to notify if its a TeamMode or not
 			if ($playerItem->teamId != -1) {
-				$this->maniaControl->server->matchSettingsManager->setTeamMode(true);
+				$this->maniaControl->server->setTeamMode(true);
 			}
 
 			$player = new Player($this->maniaControl, true);
@@ -321,7 +321,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 
 		//Check if the Player is in a Team, to notify if its a TeamMode or not
 		if ($player->teamId != -1) {
-			$this->maniaControl->server->matchSettingsManager->setTeamMode(true);
+			$this->maniaControl->server->setTeamMode(true);
 		}
 
 		$prevJoinState = $player->hasJoinedGame;

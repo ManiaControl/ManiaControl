@@ -16,6 +16,7 @@ class CallbackManager {
 	 * Constants
 	 */
 	// ManiaControl callbacks
+	// TODO: move into Callbacks interface
 	const CB_ONINIT     = 'ManiaControl.OnInit';
 	const CB_AFTERINIT  = 'ManiaControl.AfterInit';
 	const CB_ONSHUTDOWN = 'ManiaControl.OnShutdown';

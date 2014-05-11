@@ -39,7 +39,7 @@ class Map {
 	public $titleUid = '';
 	public $startTime = -1;
 	public $lastUpdate = 0;
-
+	public $karma = null;
 
 	/**
 	 * Create a new Map Object from Rpc Data
