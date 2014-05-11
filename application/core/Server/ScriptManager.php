@@ -4,7 +4,6 @@ namespace ManiaControl\Server;
 
 use ManiaControl\ManiaControl;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
-use Maniaplanet\DedicatedServer\Xmlrpc\NotInScriptModeException;
 
 /**
  * Manager for Game Mode Script related Stuff
@@ -18,6 +17,11 @@ class ScriptManager {
 	 * Private Properties
 	 */
 	public $maniaControl = null;
+
+	/*
+	 * Private Properties
+	 */
+	private $isScriptMode = null;
 
 	/**
 	 * Construct a new Script Manager
@@ -35,11 +39,10 @@ class ScriptManager {
 	 * @return bool
 	 */
 	public function enableScriptCallbacks($enable = true) {
-		try {
-			$scriptSettings = $this->maniaControl->client->getModeScriptSettings();
-		} catch (NotInScriptModeException $e) {
+		if (!$this->isScriptMode()) {
 			return false;
 		}
+		$scriptSettings = $this->maniaControl->client->getModeScriptSettings();
 
 		if (!array_key_exists('S_UseScriptCallbacks', $scriptSettings)) {
 			return false;
@@ -58,5 +61,18 @@ class ScriptManager {
 		}
 		$this->maniaControl->log("Script Callbacks successfully {$actionName}abled!");
 		return true;
+	}
+
+	/**
+	 * Check if the Server is running in Script Mode
+	 *
+	 * @return bool
+	 */
+	public function isScriptMode() {
+		if ($this->isScriptMode === null) {
+			$gameMode           = $this->maniaControl->client->getGameMode();
+			$this->isScriptMode = ($gameMode === 0);
+		}
+		return $this->isScriptMode;
 	}
 }
