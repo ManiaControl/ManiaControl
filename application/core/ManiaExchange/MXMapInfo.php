@@ -16,7 +16,7 @@ class MXMapInfo {
 	public $prefix, $id, $uid, $name, $userid, $author, $uploaded, $updated, $type, $maptype;
 	public $titlepack, $style, $envir, $mood, $dispcost, $lightmap, $modname, $exever;
 	public $exebld, $routes, $length, $unlimiter, $laps, $difficulty, $lbrating, $trkvalue;
-	public $replaytyp, $replayid, $replaycnt, $acomment, $awards, $comments;
+	public $replaytyp, $replayid, $replaycnt, $authorComment, $commentCount, $awards;
 	public $pageurl, $replayurl, $imageurl, $thumburl, $downloadurl, $dir;
 	public $ratingVoteCount, $ratingVoteAverage, $vehicleName;
 
@@ -75,10 +75,11 @@ class MXMapInfo {
 		$this->replaytyp   = isset($mx->ReplayTypeName) ? $mx->ReplayTypeName : '';
 		$this->replayid    = isset($mx->ReplayWRID) ? $mx->ReplayWRID : 0;
 		$this->replaycnt   = isset($mx->ReplayCount) ? $mx->ReplayCount : 0;
-		$this->acomment    = $mx->Comments;
 		$this->awards      = isset($mx->AwardCount) ? $mx->AwardCount : 0;
-		$this->comments    = $mx->CommentCount;
 		$this->vehicleName = isset($mx->VehicleName) ? $mx->VehicleName : '';
+
+		$this->authorComment = $mx->Comments;
+		$this->commentCount  = $mx->CommentCount;
 
 		$this->ratingVoteCount   = isset($mx->RatingVoteCount) ? $mx->RatingVoteCount : 0;
 		$this->ratingVoteAverage = isset($mx->RatingVoteAverage) ? $mx->RatingVoteAverage : 0;
@@ -89,14 +90,8 @@ class MXMapInfo {
 			$this->lbrating = $this->trkvalue;
 		}
 
-		$search         = array(chr(31), '[b]', '[/b]', '[i]', '[/i]', '[u]', '[/u]', '[url]', '[/url]');
-		$replace        = array('<br/>', '<b>', '</b>', '<i>', '</i>', '<u>', '</u>', '<i>', '</i>');
-		$this->acomment = str_ireplace($search, $replace, $this->acomment);
-		$this->acomment = preg_replace('/\[url=.*\]/', '<i>', $this->acomment);
-
 		$this->pageurl     = 'http://' . $this->prefix . '.mania-exchange.com/' . $this->dir . '/view/' . $this->id;
 		$this->downloadurl = 'http://' . $this->prefix . '.mania-exchange.com/' . $this->dir . '/download/' . $this->id;
-
 
 		if ($mx->HasScreenshot) {
 			$this->imageurl = 'http://' . $this->prefix . '.mania-exchange.com/' . $this->dir . '/screenshot/normal/' . $this->id;
