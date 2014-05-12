@@ -56,38 +56,53 @@ class CallbackManager {
 	 * Private Properties
 	 */
 	private $maniaControl = null;
-	private $callbackListeners = array();
-	private $scriptCallbackListener = array();
+	private $callbackListenings = array();
+	private $scriptCallbackListenings = array();
 
 	/**
 	 * Construct a new Callbacks Manager
 	 *
-	 * @param \ManiaControl\ManiaControl $maniaControl
+	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
 		$this->shootManiaCallbacks = new ShootManiaCallbacks($maniaControl, $this);
-		$this->libXmlRpcCallbacks  = new LibXmlRpcCallbackManager($maniaControl, $this);
+		$this->libXmlRpcCallbacks  = new LibXmlRpcCallbacks($maniaControl, $this);
 	}
 
 	/**
 	 * Register a new Callback Listener
 	 *
-	 * @param string                                   $callbackName
-	 * @param \ManiaControl\Callbacks\CallbackListener $listener
-	 * @param string                                   $method
+	 * @param string           $callbackName
+	 * @param CallbackListener $listener
+	 * @param string           $method
 	 * @return bool
 	 */
 	public function registerCallbackListener($callbackName, CallbackListener $listener, $method) {
-		if (!method_exists($listener, $method)) {
-			trigger_error("Given listener (" . get_class($listener) . ") can't handle callback '{$callbackName}' (no method '{$method}')!");
+		if (is_array($callbackName)) {
+			$success = true;
+			foreach ($callbackName as $callback) {
+				if (!$this->registerCallbackListener($callback, $listener, $method)) {
+					$success = false;
+				}
+			}
+			return $success;
+		}
+
+		if (!Listening::checkValidCallback($listener, $method)) {
+			$listenerClass = get_class($listener);
+			trigger_error("Given Listener '{$listenerClass}' can't handle Callback '{$callbackName}': No callable Method '{$method}'!");
 			return false;
 		}
-		if (!array_key_exists($callbackName, $this->callbackListeners)) {
-			$this->callbackListeners[$callbackName] = array();
+
+		if (!array_key_exists($callbackName, $this->callbackListenings)) {
+			$this->callbackListenings[$callbackName] = array();
 		}
-		array_push($this->callbackListeners[$callbackName], array($listener, $method));
+
+		$listening = new Listening($listener, $method);
+		array_push($this->callbackListenings[$callbackName], $listening);
+
 		return true;
 	}
 
@@ -100,29 +115,56 @@ class CallbackManager {
 	 * @return bool
 	 */
 	public function registerScriptCallbackListener($callbackName, CallbackListener $listener, $method) {
-		if (!method_exists($listener, $method)) {
-			trigger_error("Given listener (" . get_class($listener) . ") can't handle script callback '{$callbackName}' (no method '{$method}')!");
+		if (is_array($callbackName)) {
+			$success = true;
+			foreach ($callbackName as $callback) {
+				if (!$this->registerScriptCallbackListener($callback, $listener, $method)) {
+					$success = false;
+				}
+			}
+			return $success;
+		}
+
+		if (!Listening::checkValidCallback($listener, $method)) {
+			$listenerClass = get_class($listener);
+			trigger_error("Given Listener '{$listenerClass}' can't handle Script Callback '{$callbackName}': No callable Method '{$method}'!");
 			return false;
 		}
-		if (!array_key_exists($callbackName, $this->scriptCallbackListener)) {
-			$this->scriptCallbackListener[$callbackName] = array();
+
+		if (!array_key_exists($callbackName, $this->scriptCallbackListenings)) {
+			$this->scriptCallbackListenings[$callbackName] = array();
 		}
-		array_push($this->scriptCallbackListener[$callbackName], array($listener, $method));
+
+		$listening = new Listening($listener, $method);
+		array_push($this->scriptCallbackListenings[$callbackName], $listening);
+
 		return true;
 	}
 
 	/**
-	 * Remove a Callback Listener
+	 * Unregister a Callback Listener
 	 *
 	 * @param CallbackListener $listener
 	 * @return bool
 	 */
 	public function unregisterCallbackListener(CallbackListener $listener) {
+		return $this->removeCallbackListener($this->callbackListenings, $listener);
+	}
+
+	/**
+	 * Remove the Callback Listener from the given Listeners Array
+	 *
+	 * @param array            $listeningsArray
+	 * @param CallbackListener $listener
+	 * @return bool
+	 */
+	private function removeCallbackListener(array &$listeningsArray, CallbackListener $listener) {
 		$removed = false;
-		foreach ($this->callbackListeners as &$listeners) {
-			foreach ($listeners as $key => &$listenerCallback) {
-				if ($listenerCallback[0] === $listener) {
-					unset($listeners[$key]);
+		foreach ($listeningsArray as &$listenings) {
+			foreach ($listenings as $key => &$listening) {
+				/** @var Listening $listening */
+				if ($listening->listener === $listener) {
+					unset($listenings[$key]);
 					$removed = true;
 				}
 			}
@@ -131,22 +173,13 @@ class CallbackManager {
 	}
 
 	/**
-	 * Remove a Script Callback Listener
+	 * Unregister a Script Callback Listener
 	 *
 	 * @param CallbackListener $listener
 	 * @return bool
 	 */
 	public function unregisterScriptCallbackListener(CallbackListener $listener) {
-		$removed = false;
-		foreach ($this->scriptCallbackListener as &$listeners) {
-			foreach ($listeners as $key => &$listenerCallback) {
-				if ($listenerCallback[0] === $listener) {
-					unset($listeners[$key]);
-					$removed = true;
-				}
-			}
-		}
-		return $removed;
+		return $this->removeCallbackListener($this->scriptCallbackListenings, $listener);
 	}
 
 	/**
@@ -161,9 +194,8 @@ class CallbackManager {
 			return;
 		}
 
-		$callbacks = $this->maniaControl->client->executeCallbacks();
-
 		// Handle callbacks
+		$callbacks = $this->maniaControl->client->executeCallbacks();
 		foreach ($callbacks as $callback) {
 			$this->handleCallback($callback);
 		}
@@ -211,13 +243,16 @@ class CallbackManager {
 	 * @param string $callbackName
 	 */
 	public function triggerCallback($callbackName) {
-		if (!array_key_exists($callbackName, $this->callbackListeners)) {
+		if (!array_key_exists($callbackName, $this->callbackListenings)) {
 			return;
 		}
+
 		$params = func_get_args();
-		$params = array_slice($params, 1, count($params), true);
-		foreach ($this->callbackListeners[$callbackName] as $listener) {
-			call_user_func_array(array($listener[0], $listener[1]), $params);
+		$params = array_slice($params, 1, null, true);
+
+		foreach ($this->callbackListenings[$callbackName] as $listening) {
+			/** @var Listening $listening */
+			$listening->triggerCallbackWithParams($params);
 		}
 	}
 
@@ -239,13 +274,16 @@ class CallbackManager {
 	 * @param string $callbackName
 	 */
 	public function triggerScriptCallback($callbackName) {
-		if (!array_key_exists($callbackName, $this->scriptCallbackListener)) {
+		if (!array_key_exists($callbackName, $this->scriptCallbackListenings)) {
 			return;
 		}
+
 		$params = func_get_args();
-		$params = array_slice($params, 1, count($params), true);
-		foreach ($this->scriptCallbackListener[$callbackName] as $listener) {
-			call_user_func_array(array($listener[0], $listener[1]), $params);
+		$params = array_slice($params, 1, null, true);
+
+		foreach ($this->scriptCallbackListenings[$callbackName] as $listening) {
+			/** @var Listening $listening */
+			$listening->triggerCallbackWithParams($params);
 		}
 	}
 }

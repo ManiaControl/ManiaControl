@@ -40,6 +40,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 * Private Properties
 	 */
 	private $maniaControl = null;
+	// TODO: use listening class
 	private $pageAnswerListeners = array();
 	private $pageAnswerRegexListener = array();
 

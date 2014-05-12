@@ -59,8 +59,8 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	const SETTING_VOTE_TIME                  = 'Voting Time';
 	const SETTING_DEFAULT_PLAYER_RATIO       = 'Minimum Player Voters Ratio';
 	const SETTING_DEFAULT_RATIO              = 'Default Success Ratio';
-	const SETTING_SPECTATOR_ALLOW_VOTE       = 'Allow Specators to vote';
-	const SETTING_SPECTATOR_ALLOW_START_VOTE = 'Allow Specators to start a vote';
+	const SETTING_SPECTATOR_ALLOW_VOTE       = 'Allow Spectators to vote';
+	const SETTING_SPECTATOR_ALLOW_START_VOTE = 'Allow Spectators to start a vote';
 
 	const MLID_WIDGET = 'CustomVotesPlugin.WidgetId';
 	const MLID_ICON   = 'CustomVotesPlugin.IconWidgetId';
@@ -436,7 +436,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 			return;
 		}
 
-		//Specators are not allowed to start a vote
+		// Spectators are not allowed to start a vote
 		if ($player->isSpectator && !$this->maniaControl->settingManager->getSetting($this, self::SETTING_SPECTATOR_ALLOW_START_VOTE)) {
 			$this->maniaControl->chat->sendError('Spectators are not allowed to start a vote.', $player->login);
 			return;

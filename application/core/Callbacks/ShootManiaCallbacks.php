@@ -44,7 +44,7 @@ class ShootManiaCallbacks implements CallbackListener {
 	 * Handle Script Callbacks
 	 *
 	 * @param string $name
-	 * @param array $data
+	 * @param mixed  $data
 	 */
 	public function handleScriptCallbacks($name, $data) {
 		switch ($name) {

@@ -3,18 +3,16 @@
 namespace ManiaControl\Callbacks;
 
 /**
- * Model Class for a TimerListening
+ * Model Class for a Timer Listening
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class TimerListening {
+class TimerListening extends Listening {
 	/*
 	 * Public Properties
 	 */
-	public $listener = null;
-	public $method = null;
 	public $deltaTime = null;
 	public $oneTime = null;
 	public $lastTrigger = null;
@@ -24,14 +22,14 @@ class TimerListening {
 	 * Construct a new Timer Listening
 	 *
 	 * @param TimerListener $listener
-	 * @param string        $method
+	 * @param mixed         $method
 	 * @param float         $milliSeconds
 	 * @param bool          $oneTime
 	 * @param bool          $instantCall
 	 */
 	public function __construct(TimerListener $listener, $method, $milliSeconds, $oneTime = false, $instantCall = true) {
-		$this->listener    = $listener;
-		$this->method      = $method;
+		parent::__construct($listener, $method);
+
 		$this->deltaTime   = $milliSeconds / 1000.;
 		$this->oneTime     = (bool)$oneTime;
 		$this->instantCall = (bool)$instantCall;
@@ -49,27 +47,6 @@ class TimerListening {
 		} else {
 			$this->lastTrigger += $this->deltaTime;
 		}
-	}
-
-	/**
-	 * Trigger the Listener's Method
-	 *
-	 * @param float $time
-	 */
-	public function triggerCallback($time) {
-		call_user_func($this->getUserFunction(), $time);
-	}
-
-	/**
-	 * Get the Callable User Function
-	 *
-	 * @return callable
-	 */
-	public function getUserFunction() {
-		if (is_callable($this->method)) {
-			return $this->method;
-		}
-		return array($this->listener, $this->method);
 	}
 
 	/**

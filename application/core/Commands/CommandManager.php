@@ -19,6 +19,7 @@ class CommandManager implements CallbackListener {
 	 */
 	private $maniaControl = null;
 	private $helpManager = array();
+	// TODO: use listening class
 	private $adminCommandListeners = array();
 	private $commandListeners = array();
 
@@ -38,7 +39,7 @@ class CommandManager implements CallbackListener {
 	}
 
 	/**
-	 * Register a command listener
+	 * Register a Command Listener
 	 *
 	 * @param string          $commandName
 	 * @param CommandListener $listener
@@ -97,7 +98,7 @@ class CommandManager implements CallbackListener {
 	}
 
 	/**
-	 * Remove a Command Listener
+	 * Unregister a Command Listener
 	 *
 	 * @param CommandListener $listener
 	 * @return bool

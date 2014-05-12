@@ -2,17 +2,16 @@
 
 namespace ManiaControl\Callbacks;
 
-
 use ManiaControl\ManiaControl;
 
 /**
- * Class managing & converting LibXmlRpc Callbacks
+ * Class converting LibXmlRpc Callbacks
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class LibXmlRpcCallbackManager implements CallbackListener {
+class LibXmlRpcCallbacks implements CallbackListener {
 	/*
 	 * Private Properties
 	 */
@@ -26,16 +25,17 @@ class LibXmlRpcCallbackManager implements CallbackListener {
 	 */
 	public function __construct(ManiaControl $maniaControl, CallbackManager $callbackManager) {
 		$this->maniaControl = $maniaControl;
-		$callbackManager->registerCallbackListener(Callbacks::SCRIPTCALLBACK, $this, 'handleScriptCallbacks');
+
+		$callbackManager->registerCallbackListener(Callbacks::SCRIPTCALLBACK, $this, 'handleScriptCallback');
 	}
 
 	/**
-	 * Handle Script Callbacks
+	 * Handle the Script Callback
 	 *
 	 * @param string $name
 	 * @param mixed  $data
 	 */
-	public function handleScriptCallbacks($name, $data) {
+	public function handleScriptCallback($name, $data) {
 		switch ($name) {
 			case 'LibXmlRpc_BeginMatch':
 				$this->maniaControl->callbackManager->triggerCallback(Callbacks::BEGINMATCH, $data[0]);
@@ -82,7 +82,7 @@ class LibXmlRpcCallbackManager implements CallbackListener {
 	}
 
 	/**
-	 * Triggers the Ranking of a Player
+	 * Trigger the Ranking of a Player
 	 *
 	 * @param array $data
 	 */
