@@ -57,31 +57,43 @@ class CommandManager implements CallbackListener {
 			}
 			return $success;
 		}
-		$command = strtolower($commandName);
-		if (!method_exists($listener, $method)) {
-			trigger_error("Given listener can't handle command '{$command}' (no method '{$method}')!");
+
+		$command          = strtolower($commandName);
+		$listenerCallback = array($listener, $method);
+		$listenerClass    = get_class($listener);
+
+		if (!is_callable($listenerCallback)) {
+			trigger_error("Given Listener '{$listenerClass}' can't handle Command '{$command}'! No callable Method '{$method}'!");
 			return false;
 		}
+
 		if ($adminCommand) {
-			if (!array_key_exists($command, $this->adminCommandListeners) || !is_array($this->adminCommandListeners[$command])) {
-				// Init admin listeners array
-				$this->adminCommandListeners[$command] = array();
-			}
-			// Register admin command listener
-			array_push($this->adminCommandListeners[$command], array($listener, $method));
+			$this->addListenerCallback($this->adminCommandListeners, $listenerCallback, $command);
 		} else {
-			if (!array_key_exists($command, $this->commandListeners) || !is_array($this->commandListeners[$command])) {
-				// Init listeners array
-				$this->commandListeners[$command] = array();
-			}
-			// Register command listener
-			array_push($this->commandListeners[$command], array($listener, $method));
+			$this->addListenerCallback($this->commandListeners, $listenerCallback, $command);
 		}
 
 		//TODO description
 		$this->helpManager->registerCommand($command, $adminCommand, $description, get_class($listener) . '\\' . $method);
 
 		return true;
+	}
+
+	/**
+	 * Add a Listener Callback to the given Listener Array
+	 *
+	 * @param array  $listenerArray
+	 * @param array  $listenerCallback
+	 * @param string $command
+	 */
+	private function addListenerCallback(array &$listenerArray, array $listenerCallback, $command) {
+		if (!array_key_exists($command, $listenerArray) || !is_array($listenerArray[$command])) {
+			// Init listeners array
+			$listenerArray[$command] = array();
+		}
+
+		// Register command listener
+		array_push($listenerArray[$command], $listenerCallback);
 	}
 
 	/**
@@ -92,15 +104,25 @@ class CommandManager implements CallbackListener {
 	 */
 	public function unregisterCommandListener(CommandListener $listener) {
 		$removed = false;
-		foreach ($this->commandListeners as &$listeners) {
-			foreach ($listeners as $key => &$listenerCallback) {
-				if ($listenerCallback[0] == $listener) {
-					unset($listeners[$key]);
-					$removed = true;
-				}
-			}
+		if ($this->removeCommandListener($this->commandListeners, $listener)) {
+			$removed = true;
 		}
-		foreach ($this->adminCommandListeners as &$listeners) {
+		if ($this->removeCommandListener($this->adminCommandListeners, $listener)) {
+			$removed = true;
+		}
+		return $removed;
+	}
+
+	/**
+	 * Remove the Command Listener from the given Listeners Array
+	 *
+	 * @param array           $listenerArray
+	 * @param CommandListener $listener
+	 * @return bool
+	 */
+	private function removeCommandListener(array &$listenerArray, CommandListener $listener) {
+		$removed = false;
+		foreach ($listenerArray as &$listeners) {
 			foreach ($listeners as $key => &$listenerCallback) {
 				if ($listenerCallback[0] == $listener) {
 					unset($listeners[$key]);
@@ -167,8 +189,8 @@ class CommandManager implements CallbackListener {
 		}
 
 		// Inform command listeners
-		foreach ($commandListeners[$command] as $listener) {
-			call_user_func(array($listener[0], $listener[1]), $callback, $player);
+		foreach ($commandListeners[$command] as $listenerCallback) {
+			call_user_func($listenerCallback, $callback, $player);
 		}
 	}
 }
