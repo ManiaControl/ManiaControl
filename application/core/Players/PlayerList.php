@@ -140,10 +140,6 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 
 		// get PlayerList
 		$players = $this->maniaControl->playerManager->getPlayers();
-		$pagesId = '';
-		if (count($players) > self::MAX_PLAYERS_PER_PAGE) {
-			$pagesId = 'PlayerListPages';
-		}
 
 		//create manialink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
@@ -152,7 +148,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$script->addFeature($paging);
 
 		// Main frame
-		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script, $pagesId);
+		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script, $paging);
 		$maniaLink->add($frame);
 
 		// Start offsets
@@ -174,20 +170,19 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		}
 		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
 
-		$i          = 1;
-		$y          = $height / 2 - 10;
-		$pageFrames = array();
+		$i         = 1;
+		$y         = $height / 2 - 10;
+		$pageFrame = null;
+
 		foreach ($players as $listPlayer) {
 			/** @var Player $listPlayer * */
-			if (!isset($pageFrame)) {
+
+			if ($i % self::MAX_PLAYERS_PER_PAGE === 1) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
-				if (!empty($pageFrames)) {
-					$pageFrame->setVisible(false);
-				}
-				array_push($pageFrames, $pageFrame);
-				$y = $height / 2 - 10;
+
 				$paging->addPage($pageFrame);
+				$y = $height / 2 - 10;
 			}
 
 			$path        = $listPlayer->getProvince();
@@ -413,9 +408,6 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 
 			$y -= 4;
 			$i++;
-			if ($i % self::MAX_PLAYERS_PER_PAGE == 0) {
-				unset($pageFrame);
-			}
 		}
 
 		// Show advanced window
