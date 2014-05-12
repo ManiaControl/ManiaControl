@@ -25,14 +25,14 @@ class TimerListening {
 	 *
 	 * @param TimerListener $listener
 	 * @param string        $method
-	 * @param float         $deltaTime
+	 * @param float         $deltaSeconds
 	 * @param bool          $oneTime
 	 * @param bool          $instantCall
 	 */
-	public function __construct(TimerListener $listener, $method, $deltaTime, $oneTime = false, $instantCall = true) {
+	public function __construct(TimerListener $listener, $method, $deltaSeconds, $oneTime = false, $instantCall = true) {
 		$this->listener    = $listener;
 		$this->method      = $method;
-		$this->deltaTime   = $deltaTime / 1000.;
+		$this->deltaTime   = $deltaSeconds / 1000.;
 		$this->oneTime     = (bool)$oneTime;
 		$this->instantCall = (bool)$instantCall;
 		if (!$this->instantCall) {

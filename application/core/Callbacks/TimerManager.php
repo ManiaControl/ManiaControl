@@ -32,10 +32,10 @@ class TimerManager {
 	 *
 	 * @param TimerListener $listener
 	 * @param string        $method
-	 * @param float         $time
+	 * @param float         $seconds
 	 */
-	public function registerOneTimeListening(TimerListener $listener, $method, $time) {
-		$this->registerTimerListening($listener, $method, $time, true);
+	public function registerOneTimeListening(TimerListener $listener, $method, $seconds) {
+		$this->registerTimerListening($listener, $method, $seconds, true);
 	}
 
 	/**
@@ -43,18 +43,18 @@ class TimerManager {
 	 *
 	 * @param TimerListener $listener
 	 * @param string        $method
-	 * @param float         $time
+	 * @param float         $seconds
 	 * @param bool          $oneTime
 	 * @return bool
 	 */
-	public function registerTimerListening(TimerListener $listener, $method, $time, $oneTime = false) {
+	public function registerTimerListening(TimerListener $listener, $method, $seconds, $oneTime = false) {
 		if ((!is_string($method) || !method_exists($listener, $method)) && !is_callable($method)) {
 			trigger_error("Given Listener (" . get_class($listener) . ") can't handle Timer Callback (No Method '{$method}')!");
 			return false;
 		}
 
 		// Build Timer Listening
-		$listening = new TimerListening($listener, $method, $time, $oneTime);
+		$listening = new TimerListening($listener, $method, $seconds, $oneTime);
 		array_push($this->timerListenings, $listening);
 
 		return true;
