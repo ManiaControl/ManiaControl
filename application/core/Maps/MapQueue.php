@@ -7,9 +7,9 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Commands\CommandListener;
-use ManiaControl\Utils\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
+use ManiaControl\Utils\Formatter;
 use Maniaplanet\DedicatedServer\Xmlrpc\NextMapException;
 
 /**
@@ -46,13 +46,6 @@ class MapQueue implements CallbackListener, CommandListener {
 	private $nextNoQueue = false;
 
 	/**
-	 * Don't queue on the next MapChange
-	 */
-	public function dontQueueNextMapChange() {
-		$this->nextNoQueue = true;
-	}
-
-	/**
 	 * Create a new server MapQueue
 	 *
 	 * @param ManiaControl $maniaControl
@@ -78,6 +71,13 @@ class MapQueue implements CallbackListener, CommandListener {
 		$this->maniaControl->commandManager->registerCommandListener(self::ADMIN_COMMAND_CLEAR_JUKEBOX, $this, 'command_ClearMapQueue', true, 'Clears the Map-Queue.');
 		$this->maniaControl->commandManager->registerCommandListener(self::ADMIN_COMMAND_CLEAR_MAPQUEUE, $this, 'command_ClearMapQueue', true, 'Clears the Map-Queue.');
 		$this->maniaControl->commandManager->registerCommandListener(array('jb', 'jukebox', 'mapqueue'), $this, 'command_MapQueue', false, 'Shows current maps in Map-Queue.');
+	}
+
+	/**
+	 * Don't queue on the next MapChange
+	 */
+	public function dontQueueNextMapChange() {
+		$this->nextNoQueue = true;
 	}
 
 	/**
@@ -201,7 +201,7 @@ class MapQueue implements CallbackListener, CommandListener {
 	 * Adds map as first map in queue (for /replay)
 	 *
 	 * @param Player $player
-	 * @param Map   $map
+	 * @param Map    $map
 	 */
 	public function addFirstMapToMapQueue(Player $player, Map $map) {
 		if ($map) {
@@ -303,7 +303,7 @@ class MapQueue implements CallbackListener, CommandListener {
 	 */
 	public function endMap(Map $map = null) {
 		//Don't queue next map (for example on skip to map)
-		if($this->nextNoQueue){
+		if ($this->nextNoQueue) {
 			$this->nextNoQueue = false;
 			return;
 		}
@@ -316,7 +316,7 @@ class MapQueue implements CallbackListener, CommandListener {
 				$player = $queuedMap[0];
 
 				// Check if map is added via replay vote/command
-				if(isset($queuedMap[2]) && $queuedMap[2] === true) {
+				if (isset($queuedMap[2]) && $queuedMap[2] === true) {
 					break;
 				}
 
@@ -352,9 +352,9 @@ class MapQueue implements CallbackListener, CommandListener {
 		/** @var Map $map */
 		$this->maniaControl->chat->sendInformation('$fa0Next map will be $<$fff' . $map->name . '$> as requested by $<' . $this->nextMap[0]->nickname . '$>.');
 
-		try{
+		try {
 			$this->maniaControl->client->setNextMapIdent($map->uid);
-		}catch (NextMapException $e){
+		} catch (NextMapException $e) {
 		}
 	}
 
@@ -415,9 +415,9 @@ class MapQueue implements CallbackListener, CommandListener {
 	}
 
 	/**
-	 * Returns the Queuer of a Map
+	 * Return the Queuer of a Map
 	 *
-	 * @param $uid
+	 * @param string $uid
 	 * @return mixed
 	 */
 	public function getQueuer($uid) {

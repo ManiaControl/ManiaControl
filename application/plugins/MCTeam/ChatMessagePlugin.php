@@ -142,14 +142,14 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	 * Checks if a Player is in the PlayerList and returns the nickname if he is, can be called per login, pid or nickname or lj for
 	 * (last joined)
 	 *
-	 * @param $login
+	 * @param mixed $login
 	 * @return mixed
 	 */
 	private function getTarget($login) {
 		/** @var Player $player */
 		$player = null;
 		foreach ($this->maniaControl->playerManager->getPlayers() as $player) {
-			if ($login == $player->login || $login == $player->pid || $login == $player->nickname) {
+			if ($login == $player && $login == $player->login || $login == $player->pid || $login == $player->nickname) {
 				return $player->nickname;
 			}
 		}

@@ -14,12 +14,12 @@ use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
-use ManiaControl\Utils\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
+use ManiaControl\Utils\Formatter;
 
 /**
  * ManiaControl Dedimania Plugin
@@ -226,11 +226,11 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	/**
 	 * Handle xml rpc fault
 	 *
-	 * @param $fault
-	 * @param $method
+	 * @param array  $fault
+	 * @param string $method
 	 */
-	private function handleXmlRpcFault($fault, $method) {
-		trigger_error('XmlRpc Fault on ' . $method . ': ' . $fault['faultString'] . ' (' . $fault['faultCode'] . ')');
+	private function handleXmlRpcFault(array $fault, $method) {
+		trigger_error("XmlRpc Fault on '{$method}': '{$fault['faultString']} ({$fault['faultCode']})!");
 	}
 
 	/**
@@ -505,11 +505,9 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	}
 
 	/**
-	 * Check if the session is alive every minute
-	 *
-	 * @param null $callback
+	 * Handle 1 Minute Callback
 	 */
-	public function handleEveryMinute($callback = null) {
+	public function handleEveryMinute() {
 		if (!$this->init) {
 			return;
 		}
@@ -633,21 +631,17 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	}
 
 	/**
-	 * Handle Begin Map
-	 *
-	 * @param $callback
+	 * Handle Begin Map Callback
 	 */
-	public function handleBeginMap($callback) {
+	public function handleBeginMap() {
 		unset($this->dedimaniaData->records);
 		$this->fetchDedimaniaRecords(true);
 	}
 
 	/**
-	 * Handle EndMap callback
-	 *
-	 * @param $callback
+	 * Handle EndMap Callback
 	 */
-	public function handleMapEnd($callback) {
+	public function handleMapEnd() {
 		if (!$this->dedimaniaData || !$this->dedimaniaData->records) {
 			return;
 		}
@@ -714,11 +708,9 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	}
 
 	/**
-	 * Update the Playerlist every 3 Minutes
-	 *
-	 * @param $callback
+	 * Update the PlayerList every 3 Minutes
 	 */
-	public function updatePlayerList($callback) {
+	public function updatePlayerList() {
 		$serverInfo = $this->getServerInfo();
 		$playerList = $this->getPlayerList();
 		$votesInfo  = $this->getVotesInfo();
@@ -769,11 +761,11 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	}
 
 	/**
-	 * Handle PlayerCheckpoint callback
+	 * Handle PlayerCheckpoint Callback
 	 *
-	 * @param $callback
+	 * @param array $callback
 	 */
-	public function handlePlayerCheckpoint($callback) {
+	public function handlePlayerCheckpoint(array $callback) {
 		$data  = $callback[1];
 		$login = $data[1];
 		$time  = $data[2];
@@ -786,11 +778,11 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	}
 
 	/**
-	 * Player finished callback
+	 * Handle Player Finished Callback
 	 *
-	 * @param $callback
+	 * @param array $callback
 	 */
-	public function handlePlayerFinished($callback) {
+	public function handlePlayerFinished(array $callback) {
 		//var_dump($callback);
 		$data = $callback[1];
 		if ($data[0] <= 0 || $data[2] <= 0) {

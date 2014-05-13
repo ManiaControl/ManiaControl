@@ -486,8 +486,8 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	/**
 	 * Handle Standard Votes
 	 *
-	 * @param $voteName
-	 * @param $voteResult
+	 * @param string $voteName
+	 * @param float  $voteResult
 	 */
 	public function handleVoteFinished($voteName, $voteResult) {
 		if ($voteResult >= $this->currentVote->neededRatio) {
@@ -563,9 +563,9 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	}
 
 	/**
-	 * Undefines a Vote
+	 * Undefine a Vote
 	 *
-	 * @param $voteIndex
+	 * @param int $voteIndex
 	 */
 	public function undefineVote($voteIndex) {
 		unset($this->voteCommands[$voteIndex]);
@@ -600,11 +600,9 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	}
 
 	/**
-	 * Handle ManiaControl 1 Second callback
-	 *
-	 * @param $time
+	 * Handle ManiaControl 1 Second Callback
 	 */
-	public function handle1Second($time) {
+	public function handle1Second() {
 		if (!isset($this->currentVote)) {
 			return;
 		}
@@ -774,10 +772,10 @@ class VoteCommand {
 	/**
 	 * Construct a new Vote Command
 	 *
-	 * @param $index
-	 * @param $name
-	 * @param $idBased
-	 * @param $neededRatio
+	 * @param int    $index
+	 * @param string $name
+	 * @param bool   $idBased
+	 * @param float  $neededRatio
 	 */
 	public function __construct($index, $name, $idBased, $neededRatio) {
 		$this->index       = $index;

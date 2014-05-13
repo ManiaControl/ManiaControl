@@ -34,6 +34,8 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 	 */
 	const ID                 = 22;
 	const VERSION            = 0.12;
+	const AUTHOR             = 'TheM';
+	const NAME               = 'Queue Plugin';
 	const ML_ID              = 'Queue.Widget';
 	const ML_ADDTOQUEUE      = 'Queue.Add';
 	const ML_REMOVEFROMQUEUE = 'Queue.Remove';
@@ -55,65 +57,49 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 	private $maxPlayers = 0;
 
 	/**
-	 * Prepares the Plugin
-	 *
-	 * @param ManiaControl $maniaControl
-	 * @return mixed
+	 * @see \ManiaControl\Plugins\Plugin::prepare()
 	 */
 	public static function prepare(ManiaControl $maniaControl) {
 		// TODO: Implement prepare() method.
 	}
 
 	/**
-	 * Get plugin id
-	 *
-	 * @return int
+	 * @see \ManiaControl\Plugins\Plugin::getId()
 	 */
 	public static function getId() {
 		return self::ID;
 	}
 
 	/**
-	 * Get Plugin Name
-	 *
-	 * @return string
+	 * @see \ManiaControl\Plugins\Plugin::getName()
 	 */
 	public static function getName() {
-		return 'Queue Plugin';
+		return self::NAME;
 	}
 
 	/**
-	 * Get Plugin Version
-	 *
-	 * @return float
+	 * @see \ManiaControl\Plugins\Plugin::getVersion()
 	 */
 	public static function getVersion() {
 		return self::VERSION;
 	}
 
 	/**
-	 * Get Plugin Author
-	 *
-	 * @return string
+	 * @see \ManiaControl\Plugins\Plugin::getAuthor()
 	 */
 	public static function getAuthor() {
-		return 'TheM';
+		return self::AUTHOR;
 	}
 
 	/**
-	 * Get Plugin Description
-	 *
-	 * @return string
+	 * @see \ManiaControl\Plugins\Plugin::getDescription()
 	 */
 	public static function getDescription() {
 		return 'Plugin offers the known AutoQueue/SpecJam options.';
 	}
 
 	/**
-	 * Load the plugin
-	 *
-	 * @param ManiaControl $maniaControl
-	 * @return bool
+	 * @see \ManiaControl\Plugins\Plugin::load()
 	 */
 	public function load(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
@@ -156,7 +142,7 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 
 		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowStyle();
 		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowSubStyle();
-		$maxQueue    = $this->maniaControl->settingManager->getSettingValue($this, self::QUEUE_MAX);
+		$maxQueue     = $this->maniaControl->settingManager->getSettingValue($this, self::QUEUE_MAX);
 
 		// Main frame
 		$frame = new Frame();
@@ -237,7 +223,7 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 	}
 
 	/**
-	 * Unload the plugin and its resources
+	 * @see \ManiaControl\Plugins\Plugin::unload()
 	 */
 	public function unload() {
 		foreach ($this->spectators as $spectator) {
@@ -299,9 +285,9 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 	}
 
 	/**
-	 * Function removes a player from the queue.
+	 * Remove a Player from the Queue
 	 *
-	 * @param $login
+	 * @param string $login
 	 */
 	private function removePlayerFromQueue($login) {
 		$count    = 0;
@@ -317,6 +303,9 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 		$this->showQueueWidgetSpectators();
 	}
 
+	/**
+	 * Show the Queue Widgets to Spectators
+	 */
 	public function showQueueWidgetSpectators() {
 		foreach ($this->spectators as $login) {
 			$player = $this->maniaControl->playerManager->getPlayer($login);
@@ -445,7 +434,7 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 	/**
 	 * Function sends (or not depending on setting) chatmessages for the queue.
 	 *
-	 * @param $message
+	 * @param string $message
 	 */
 	private function sendChatMessage($message) {
 		if ($this->maniaControl->settingManager->getSettingValue($this, self::QUEUE_CHATMESSAGES)) {
@@ -526,10 +515,8 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 
 	/**
 	 * Checks for being of new map to retrieve maximum number of players.
-	 *
-	 * @param $currentMap
 	 */
-	public function handleBeginMap($currentMap) {
+	public function handleBeginMap() {
 		if ($this->maniaControl->client->getServerPassword() != false && $this->maniaControl->settingManager->getSettingValue($this, self::QUEUE_ACTIVE_ON_PASS) == false) {
 			return;
 		}

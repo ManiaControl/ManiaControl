@@ -1,4 +1,10 @@
 <?php
+
+namespace ManiaControl\Maps;
+
+use ManiaControl\ManiaControl;
+use Maniaplanet\DedicatedServer\Xmlrpc\ChangeInProgressException;
+
 /**
  * Map Actions Class
  *
@@ -6,12 +12,6 @@
  * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-namespace ManiaControl\Maps;
-
-
-use ManiaControl\ManiaControl;
-use Maniaplanet\DedicatedServer\Xmlrpc\ChangeInProgressException;
-
 class MapActions {
 	/*
 	 * Private Properties

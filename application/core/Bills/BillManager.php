@@ -64,22 +64,15 @@ class BillManager implements CallbackListener {
 	/**
 	 * Send Planets from the server to a Player
 	 *
-	 * @param $function
-	 * @param $receiverLogin
-	 * @param $amount
-	 * @param $message
+	 * @param callable $function
+	 * @param string $receiverLogin
+	 * @param int $amount
+	 * @param string $message
 	 * @return bool
 	 */
-	public function sendPlanets($function, $receiverLogin, $amount, $message) {
-		if (!is_callable($function)) {
-			trigger_error("Function is not callable");
-			return false;
-		}
-
+	public function sendPlanets(callable $function, $receiverLogin, $amount, $message) {
 		$bill = $this->maniaControl->client->pay($receiverLogin, $amount, $message);
-
 		$this->openBills[$bill] = new BillData($function, $receiverLogin, $amount, true);
-
 		return true;
 	}
 

@@ -340,14 +340,14 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	/**
 	 * Gets the Menu Id
 	 *
-	 * @param $name
+	 * @param string $title
 	 * @return int
 	 */
-	public function getMenuId($name) {
+	public function getMenuId($title) {
 		$i = 0;
 		foreach ($this->menus as $menu) {
 			/** @var  ConfiguratorMenu $menu */
-			if ($menu == $name || $menu->getTitle() == $name) {
+			if ($menu === $title || $menu->getTitle() === $title) {
 				return $i;
 			}
 			$i++;

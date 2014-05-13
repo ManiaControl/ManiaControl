@@ -210,12 +210,9 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 	}
 
 	/**
-	 * Check stuff each 5 seconds
-	 *
-	 * @param $timer
-	 * @return bool
+	 * Check Stuff each 5 Seconds
 	 */
-	public function each5Seconds($timer) {
+	public function each5Seconds() {
 		// Empty shutdown
 		if ($this->serverShutdownEmpty) {
 			$players = $this->maniaControl->playerManager->getPlayers();

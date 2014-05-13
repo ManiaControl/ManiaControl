@@ -19,8 +19,8 @@ class PluginManager {
 	/*
 	 * Constants
 	 */
-	const TABLE_PLUGINS = 'mc_plugins';
-	const CB_PLUGIN_LOADED = 'PluginManager.PluginLoaded';
+	const TABLE_PLUGINS      = 'mc_plugins';
+	const CB_PLUGIN_LOADED   = 'PluginManager.PluginLoaded';
 	const CB_PLUGIN_UNLOADED = 'PluginManager.PluginUnloaded';
 
 	/*
@@ -400,9 +400,9 @@ class PluginManager {
 	/**
 	 * Fetch the Plugins List from the ManiaControl Website
 	 *
-	 * @param $function
+	 * @param callable $function
 	 */
-	public function fetchPluginList($function) {
+	public function fetchPluginList(callable $function) {
 		$url = ManiaControl::URL_WEBSERVICE . 'plugins';
 
 		$this->maniaControl->fileReader->loadFile($url, function ($dataJson, $error) use (&$function) {

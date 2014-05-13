@@ -60,7 +60,7 @@ class ManiaExchangeManager {
 	/**
 	 * Unset Map by Mx Id
 	 *
-	 * @param $mxId
+	 * @param int $mxId
 	 */
 	public function unsetMap($mxId) {
 		if (isset($this->mxIdUidVector[$mxId])) {
@@ -142,7 +142,7 @@ class ManiaExchangeManager {
 	/**
 	 * Get the Whole MapList from MX by Mixed Uid and Id String fetch
 	 *
-	 * @param $string
+	 * @param string $string
 	 * @return array|null
 	 */
 	public function getMaplistByMixedUidIdString($string) {
@@ -187,11 +187,11 @@ class ManiaExchangeManager {
 	}
 
 	/**
-	 * Store Map Info from MX and store the mxid in the database and the mx info in the map object
+	 * Store MX Map Info in the Database and the MX Info in the Map Object
 	 *
-	 * @param $mxMapInfos
+	 * @param array $mxMapInfos
 	 */
-	public function updateMapObjectsWithManiaExchangeIds($mxMapInfos) {
+	public function updateMapObjectsWithManiaExchangeIds(array $mxMapInfos) {
 		$mysqli = $this->maniaControl->database->mysqli;
 		// Save map data
 		$saveMapQuery     = "UPDATE `" . MapManager::TABLE_MAPS . "`
@@ -231,11 +231,11 @@ class ManiaExchangeManager {
 	/**
 	 * Get Map Info Asynchronously
 	 *
-	 * @param $id
-	 * @param $function
+	 * @param int      $id
+	 * @param callable $function
 	 * @return bool
 	 */
-	public function getMapInfo($id, $function) {
+	public function getMapInfo($id, callable $function) {
 		// Get Title Prefix
 		$titlePrefix = $this->maniaControl->mapManager->getCurrentMap()->getGame();
 
@@ -344,9 +344,9 @@ class ManiaExchangeManager {
 	}
 
 	/**
-	 * Gets the Current Environment by String
+	 * Get the Current Environment by String
 	 *
-	 * @param $env
+	 * @param string $env
 	 * @return int
 	 */
 	private function getEnvironment($env) {

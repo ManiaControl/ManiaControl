@@ -197,15 +197,18 @@ class AuthenticationManager implements CallbackListener {
 	/**
 	 * Get a List of all Admins
 	 *
-	 * @param $authLevel
+	 * @param int $authLevel
 	 * @return array null
 	 */
-	public function getAdmins($authLevel = -1) {
+	public function getAdmins($authLevel = null) {
 		$mysqli = $this->maniaControl->database->mysqli;
-		if ($authLevel < 0) {
-			$query = "SELECT * FROM `" . PlayerManager::TABLE_PLAYERS . "` WHERE `authLevel` > 0 ORDER BY `authLevel` DESC;";
+		if ($authLevel === null) {
+			$query = "SELECT * FROM `" . PlayerManager::TABLE_PLAYERS . "`
+					WHERE `authLevel` > 0
+					ORDER BY `authLevel` DESC;";
 		} else {
-			$query = "SELECT * FROM `" . PlayerManager::TABLE_PLAYERS . "` WHERE `authLevel` = " . $authLevel . ";";
+			$query = "SELECT * FROM `" . PlayerManager::TABLE_PLAYERS . "`
+					WHERE `authLevel` = {$authLevel};";
 		}
 		$result = $mysqli->query($query);
 		if (!$result) {
@@ -289,7 +292,7 @@ class AuthenticationManager implements CallbackListener {
 	}
 
 	/**
-	 * Check if the Player has enough Rights
+	 * Check whether the Player has enough Rights
 	 *
 	 * @param Player      $player
 	 * @param int|Setting $neededAuthLevel
@@ -303,10 +306,10 @@ class AuthenticationManager implements CallbackListener {
 	}
 
 	/**
-	 * Defines a Minimum Right Level needed for an action
+	 * Define a Minimum Right Level needed for an Action
 	 *
-	 * @param $rightName
-	 * @param $authLevelNeeded
+	 * @param string $rightName
+	 * @param int    $authLevelNeeded
 	 */
 	public function definePermissionLevel($rightName, $authLevelNeeded) {
 		$this->maniaControl->settingManager->initSetting($this, $rightName, $authLevelNeeded);

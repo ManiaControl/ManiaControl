@@ -313,7 +313,7 @@ class StatisticManager {
 	/**
 	 * Return the Stat Id
 	 *
-	 * @param $statName
+	 * @param string $statName
 	 * @return int
 	 */
 	private function getStatId($statName) {

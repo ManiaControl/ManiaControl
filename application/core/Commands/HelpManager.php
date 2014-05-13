@@ -124,12 +124,12 @@ class HelpManager implements CommandListener, CallbackListener {
 	}
 
 	/**
-	 * Prepares the commands for the HelpAll ManiaLink.
+	 * Prepare the commands for the HelpAll ManiaLink.
 	 *
-	 * @param $commands
-	 * @param $player
+	 * @param array $commands
+	 * @param mixed $player
 	 */
-	private function prepareHelpAll($commands, $player) {
+	private function prepareHelpAll(array $commands, $player) {
 		$showCommands      = array();
 		$registeredMethods = array();
 		foreach (array_reverse($commands) as $command) {
@@ -157,10 +157,10 @@ class HelpManager implements CommandListener, CallbackListener {
 	/**
 	 * Shows the HelpAll list to the player.
 	 *
-	 * @param $commands
-	 * @param $player
+	 * @param array $commands
+	 * @param mixed $player
 	 */
-	private function showHelpAllList($commands, $player) {
+	private function showHelpAllList(array $commands, $player) {
 		$width  = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
 		$height = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
 

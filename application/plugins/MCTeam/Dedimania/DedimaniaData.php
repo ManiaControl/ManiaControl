@@ -3,6 +3,7 @@
 namespace MCTeam\Dedimania;
 
 use ManiaControl\ManiaControl;
+use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\Structures\Version;
 
 /**
@@ -52,6 +53,11 @@ class DedimaniaData {
 		$this->serverBuild   = $serverVersion->build;
 	}
 
+	/**
+	 * Build the Data Array
+	 *
+	 * @return array
+	 */
 	public function toArray() {
 		$array = array();
 		foreach (get_object_vars($this) as $key => $value) {
@@ -63,6 +69,11 @@ class DedimaniaData {
 		return $array;
 	}
 
+	/**
+	 * Get the Number of Records
+	 *
+	 * @return int
+	 */
 	public function getRecordCount() {
 		return count($this->records);
 	}
@@ -70,10 +81,11 @@ class DedimaniaData {
 	/**
 	 * Get Max Rank for a certain Player
 	 *
-	 * @param $login
+	 * @param mixed $login
 	 * @return int
 	 */
 	public function getPlayerMaxRank($login) {
+		$login   = Player::parseLogin($login);
 		$maxRank = $this->serverMaxRank;
 		foreach ($this->players as $player) {
 			/** @var DedimaniaPlayer $player */

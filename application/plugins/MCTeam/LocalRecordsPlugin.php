@@ -15,7 +15,6 @@ use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
-use ManiaControl\Utils\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Maps\Map;
@@ -24,6 +23,7 @@ use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
 use ManiaControl\Settings\Setting;
 use ManiaControl\Settings\SettingManager;
+use ManiaControl\Utils\Formatter;
 
 /**
  * ManiaControl Local Records Plugin
@@ -182,11 +182,9 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 	}
 
 	/**
-	 * Handle 1Second callback
-	 *
-	 * @param $time
+	 * Handle 1 Second Callback
 	 */
-	public function handle1Second($time) {
+	public function handle1Second() {
 		if (!$this->updateManialink) {
 			return;
 		}
@@ -352,12 +350,13 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 	/**
 	 * Handle PlayerCheckpoint callback
 	 *
-	 * @param $callback
+	 * @param array $callback
 	 */
-	public function handlePlayerCheckpoint($callback) {
+	public function handlePlayerCheckpoint(array $callback) {
 		$data  = $callback[1];
 		$login = $data[1];
 		$time  = $data[2];
+		// TODO: lap
 		// $lap = $data[3];
 		$cpIndex = $data[4];
 		if (!isset($this->checkpoints[$login]) || $cpIndex <= 0) {

@@ -2,8 +2,8 @@
 
 namespace ManiaControl\Maps;
 
-use ManiaControl\Utils\Formatter;
 use ManiaControl\ManiaExchange\MXMapInfo;
+use ManiaControl\Utils\Formatter;
 
 /**
  * Map Model Class

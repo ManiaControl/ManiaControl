@@ -129,10 +129,10 @@ class PlayerDataManager {
 	/**
 	 * Defines the Player-Data MetaData
 	 *
-	 * @param $object
-	 * @param $dataName
-	 * @param $default
-	 * @param $dataDescription (optional)
+	 * @param mixed  $object
+	 * @param string $dataName
+	 * @param mixed  $default
+	 * @param string $dataDescription (optional)
 	 * @return bool
 	 */
 	public function defineMetaData($object, $dataName, $default, $dataDescription = '') {
@@ -198,11 +198,11 @@ class PlayerDataManager {
 	/**
 	 * Gets the Player Data
 	 *
-	 * @param  mixed   $object
-	 * @param   string $dataName
-	 * @param Player   $player
-	 * @param     int  $serverIndex
-	 * @return mixed|null
+	 * @param mixed  $object
+	 * @param string $dataName
+	 * @param Player $player
+	 * @param int    $serverIndex
+	 * @return mixed
 	 */
 	public function getPlayerData($object, $dataName, Player $player, $serverIndex = -1) {
 		$className = ClassUtil::getClass($object);
@@ -254,11 +254,11 @@ class PlayerDataManager {
 	/**
 	 * Set a PlayerData to a specific defined statMetaData
 	 *
-	 * @param    mixed  $object
-	 * @param    string $dataName
-	 * @param Player    $player
-	 * @param     mixed $value
-	 * @param     int   $serverIndex (let it empty if its global)
+	 * @param mixed  $object
+	 * @param string $dataName
+	 * @param Player $player
+	 * @param mixed  $value
+	 * @param int    $serverIndex (empty if it's global)
 	 * @return bool
 	 */
 	public function setPlayerData($object, $dataName, Player $player, $value, $serverIndex = -1) {

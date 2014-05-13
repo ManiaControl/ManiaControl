@@ -52,11 +52,9 @@ class CustomUIManager implements CallbackListener, TimerListener {
 	}
 
 	/**
-	 * Handle 1Second
-	 *
-	 * @param $time
+	 * Handle 1 Second Callback
 	 */
-	public function handle1Second($time) {
+	public function handle1Second() {
 		if (!$this->updateManialink) {
 			return;
 		}

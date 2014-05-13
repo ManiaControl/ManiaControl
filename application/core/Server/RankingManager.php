@@ -71,7 +71,7 @@ class RankingManager implements CallbackListener {
 	/**
 	 * Update Game Rankings (never call this Method)
 	 *
-	 * @param $data
+	 * @param string $data
 	 */
 	public function updateRankings($data) {
 		if (!is_string($data)) {

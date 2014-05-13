@@ -2,9 +2,9 @@
 
 namespace ManiaControl\Players;
 
+use ManiaControl\ManiaControl;
 use ManiaControl\Utils\ClassUtil;
 use ManiaControl\Utils\Formatter;
-use ManiaControl\ManiaControl;
 
 /**
  * Player Model Class
@@ -78,6 +78,19 @@ class Player {
 		if ($connected) {
 			$this->joinTime = time();
 		}
+	}
+
+	/**
+	 * Get the Login of the Player
+	 *
+	 * @param mixed $player
+	 * @return string
+	 */
+	public static function parseLogin($player) {
+		if (is_object($player) && property_exists($player, 'login')) {
+			return (string)$player->login;
+		}
+		return (string)$player;
 	}
 
 	/**
@@ -263,7 +276,7 @@ class Player {
 	/**
 	 * Set the Cache Data for the given Name
 	 *
-	 * @param        $object
+	 * @param mixed  $object
 	 * @param string $cacheName
 	 * @param mixed  $data
 	 */
@@ -273,10 +286,10 @@ class Player {
 	}
 
 	/**
-	 * Destroys a Cache
+	 * Destroy a Cache
 	 *
-	 * @param mixed $object
-	 * @param $cacheName
+	 * @param mixed  $object
+	 * @param string $cacheName
 	 */
 	public function destroyCache($object, $cacheName) {
 		$className = ClassUtil::getClass($object);
@@ -290,14 +303,13 @@ class Player {
 		$this->cache = array();
 	}
 
-
 	/**
 	 * Gets the Player Data
 	 *
-	 * @param $object
-	 * @param $dataName
-	 * @param $serverIndex
-	 * @return mixed|null
+	 * @param mixed  $object
+	 * @param string $dataName
+	 * @param int    $serverIndex
+	 * @return mixed
 	 */
 	public function getPlayerData($object, $dataName, $serverIndex = -1) {
 		return $this->maniaControl->playerManager->playerDataManager->getPlayerData($object, $dataName, $this, $serverIndex);
@@ -306,10 +318,10 @@ class Player {
 	/**
 	 * Sets the Player Data
 	 *
-	 * @param $object
-	 * @param $dataName
-	 * @param $value
-	 * @param $serverIndex
+	 * @param mixed  $object
+	 * @param string $dataName
+	 * @param mixed  $value
+	 * @param int    $serverIndex
 	 * @return bool
 	 */
 	public function setPlayerData($object, $dataName, $value, $serverIndex = -1) {
@@ -324,7 +336,7 @@ class Player {
 	}
 
 	/**
-	 * Dump the Players Cache
+	 * Var_Dump the Players Cache
 	 */
 	public function dumpCache() {
 		var_dump($this->cache);

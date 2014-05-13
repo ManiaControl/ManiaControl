@@ -76,9 +76,9 @@ class IconManager implements CallbackListener {
 	}
 
 	/**
-	 * Get an Icon by its name
+	 * Get an Icon by its Name
 	 *
-	 * @param $iconName
+	 * @param string $iconName
 	 * @return string
 	 */
 	public function getIcon($iconName) {

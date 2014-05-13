@@ -11,7 +11,6 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\TimerListener;
-use ManiaControl\Utils\ColorUtil;
 use ManiaControl\ManiaControl;
 use ManiaControl\Maps\Map;
 use ManiaControl\Players\Player;
@@ -20,6 +19,7 @@ use ManiaControl\Plugins\Plugin;
 use ManiaControl\Plugins\PluginMenu;
 use ManiaControl\Settings\Setting;
 use ManiaControl\Settings\SettingManager;
+use ManiaControl\Utils\ColorUtil;
 
 /**
  * ManiaControl Karma Plugin
@@ -280,7 +280,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	/**
 	 * Activates the MX-Karma Session
 	 *
-	 * @param $mxKarmaCode
+	 * @param string $mxKarmaCode
 	 */
 	private function activateSession($mxKarmaCode) {
 		$hash = $this->buildActivationHash($this->mxKarma['session']->sessionSeed, $mxKarmaCode);
@@ -323,8 +323,8 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	/**
 	 * Builds a sha512 activation Hash for the MX-Karma
 	 *
-	 * @param $sessionSeed
-	 * @param $mxKey
+	 * @param string $sessionSeed
+	 * @param string $mxKey
 	 * @return string
 	 */
 	private function buildActivationHash($sessionSeed, $mxKey) {
@@ -756,11 +756,9 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	}
 
 	/**
-	 * Handle ManiaControl 1 Second callback
-	 *
-	 * @param $time
+	 * Handle ManiaControl 1 Second Callback
 	 */
-	public function handle1Second($time) {
+	public function handle1Second() {
 		if (!$this->updateManialink) {
 			return;
 		}

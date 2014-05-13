@@ -359,10 +359,10 @@ class MapManager implements CallbackListener {
 	}
 
 	/**
-	 * Returns map By UID
+	 * Get Map by UID
 	 *
-	 * @param $uid
-	 * @return Map array
+	 * @param string $uid
+	 * @return Map
 	 */
 	public function getMapByUid($uid) {
 		if (!isset($this->maps[$uid])) {
@@ -417,7 +417,7 @@ class MapManager implements CallbackListener {
 	/**
 	 * Initializes a Map
 	 *
-	 * @param $rpcMap
+	 * @param mixed $rpcMap
 	 * @return Map
 	 */
 	public function initializeMap($rpcMap) {

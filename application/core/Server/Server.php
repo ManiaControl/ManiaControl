@@ -4,8 +4,9 @@ namespace ManiaControl\Server;
 
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
-use ManiaControl\Utils\CommandLineHelper;
 use ManiaControl\ManiaControl;
+use ManiaControl\Players\Player;
+use ManiaControl\Utils\CommandLineHelper;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
@@ -260,10 +261,11 @@ class Server implements CallbackListener {
 	/**
 	 * Retrieve Validation Replay for the given Player
 	 *
-	 * @param $login
+	 * @param string $login
 	 * @return string
 	 */
 	public function getValidationReplay($login) {
+		$login = Player::parseLogin($login);
 		try {
 			$replay = $this->maniaControl->client->getValidationReplay($login);
 		} catch (Exception $e) {
@@ -279,7 +281,7 @@ class Server implements CallbackListener {
 	/**
 	 * Retrieve Ghost Replay for the given Player
 	 *
-	 * @param $login
+	 * @param string $login
 	 * @return string
 	 */
 	public function getGhostReplay($login) {
@@ -289,6 +291,7 @@ class Server implements CallbackListener {
 		}
 
 		// Build file name
+		$login    = Player::parseLogin($login);
 		$map      = $this->maniaControl->mapManager->getCurrentMap();
 		$gameMode = $this->getGameMode();
 		$time     = time();
