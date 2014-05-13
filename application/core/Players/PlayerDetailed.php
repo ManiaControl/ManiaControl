@@ -10,7 +10,7 @@ use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
 use FML\ManiaLink;
 use FML\Script\Script;
-use ManiaControl\Formatter;
+use ManiaControl\Utils\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Statistics\StatisticManager;

@@ -2,7 +2,7 @@
 
 namespace ManiaControl\Files;
 
-use ManiaControl\Formatter;
+use ManiaControl\Utils\Formatter;
 use ManiaControl\ManiaControl;
 
 /**

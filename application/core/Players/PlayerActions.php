@@ -8,7 +8,7 @@ use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\ManiaLink;
 use ManiaControl\Admin\AuthenticationManager;
-use ManiaControl\Formatter;
+use ManiaControl\Utils\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;

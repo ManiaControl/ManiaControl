@@ -4,9 +4,9 @@ namespace ManiaControl\Settings;
 
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
-use ManiaControl\ClassUtil;
 use ManiaControl\ManiaControl;
 use ManiaControl\Plugins\PluginManager;
+use ManiaControl\Utils\ClassUtil;
 
 /**
  * Class managing Settings and Configurations
@@ -132,7 +132,7 @@ class SettingManager implements CallbackListener {
 	 * @return Setting
 	 */
 	public function setSetting($object, $settingName, $value) {
-		$className = $this->getClassName($object);
+		$className = ClassUtil::getClass($object);
 
 		$setting = $this->getSetting($object, $settingName);
 		if ($setting) {

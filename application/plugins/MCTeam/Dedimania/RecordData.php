@@ -2,7 +2,7 @@
 
 namespace MCTeam\Dedimania;
 
-use ManiaControl\Formatter;
+use ManiaControl\Utils\Formatter;
 
 /**
  * ManiaControl Dedimania-Plugin Record DataStructure

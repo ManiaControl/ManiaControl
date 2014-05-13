@@ -3,7 +3,7 @@
 namespace ManiaControl\Server;
 
 use ManiaControl\Callbacks\TimerListener;
-use ManiaControl\Formatter;
+use ManiaControl\Utils\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Plugins\Plugin;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;

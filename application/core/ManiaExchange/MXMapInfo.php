@@ -2,7 +2,7 @@
 
 namespace ManiaControl\ManiaExchange;
 
-use ManiaControl\Formatter;
+use ManiaControl\Utils\Formatter;
 
 /**
  * Mania Exchange Map Info Object

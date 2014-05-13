@@ -4,7 +4,7 @@ namespace ManiaControl\Server;
 
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
-use ManiaControl\CommandLineHelper;
+use ManiaControl\Utils\CommandLineHelper;
 use ManiaControl\ManiaControl;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 

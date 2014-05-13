@@ -16,7 +16,7 @@ use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
-use ManiaControl\Settings\SettingManager;
+use ManiaControl\Settings\Setting;
 
 /**
  * Class offering a Configurator for ManiaControl Settings
@@ -173,7 +173,7 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 			$nameLabel->setText($setting->setting);
 			$nameLabel->setTextColor("FFF");
 
-			if ($setting->type === SettingManager::TYPE_BOOL) {
+			if ($setting->type === Setting::TYPE_BOOL) {
 				$quad = new Quad_Icons64x64_1();
 				$settingFrame->add($quad);
 				$quad->setX($width / 2 * 0.6);

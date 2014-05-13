@@ -20,7 +20,7 @@ use ManiaControl\Configurators\ConfiguratorMenu;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
-use ManiaControl\Settings\SettingManager;
+use ManiaControl\Settings\Setting;
 
 /**
  * Configurator for enabling and disabling Plugins
@@ -254,7 +254,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 		$y                    = 0;
 		$index                = 0;
 		$settingHeight        = 5.;
-		$pageFrame = null;
+		$pageFrame            = null;
 
 		foreach ($settings as $setting) {
 			if ($index % $pageSettingsMaxCount === 0) {
@@ -311,7 +311,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			$entry->setDefault($setting->value);
 
 
-			if ($setting->type === SettingManager::TYPE_BOOL) {
+			if ($setting->type === Setting::TYPE_BOOL) {
 				if ($setting->value == "0") {
 					$substyle = Quad_Icons64x64_1::SUBSTYLE_LvlRed;
 				} else if ($setting->value == "1") {
@@ -389,7 +389,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			}
 		} else if ($settings) {
 			// Open Settings Menu
-			$pluginClass                              = substr($actionId, strlen(self::ACTION_PREFIX_SETTINGS));
+			$pluginClass = substr($actionId, strlen(self::ACTION_PREFIX_SETTINGS));
 			$player->setCache($this, self::CACHE_SETTING_CLASS, $pluginClass);
 		} else if ($boolSetting) {
 			$actionArray = explode(".", $actionId);

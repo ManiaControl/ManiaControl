@@ -2,7 +2,7 @@
 
 namespace ManiaControl\Settings;
 
-use ManiaControl\ClassUtil;
+use ManiaControl\Utils\ClassUtil;
 
 /**
  * Model Class for a Setting

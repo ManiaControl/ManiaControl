@@ -18,7 +18,7 @@ use FML\Script\Features\KeyAction;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\TimerListener;
-use ManiaControl\ColorUtil;
+use ManiaControl\Utils\ColorUtil;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;

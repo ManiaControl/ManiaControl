@@ -6,7 +6,7 @@ use ManiaControl\Admin\AdminLists;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\TimerListener;
-use ManiaControl\Formatter;
+use ManiaControl\Utils\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Statistics\StatisticManager;
 use Maniaplanet\DedicatedServer\Xmlrpc\LoginUnknownException;

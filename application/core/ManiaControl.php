@@ -23,6 +23,8 @@ use ManiaControl\Server\Server;
 use ManiaControl\Settings\SettingManager;
 use ManiaControl\Statistics\StatisticManager;
 use ManiaControl\Update\UpdateManager;
+use ManiaControl\Utils\CommandLineHelper;
+use ManiaControl\Utils\Formatter;
 use Maniaplanet\DedicatedServer\Connection;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 use Maniaplanet\DedicatedServer\Xmlrpc\TransportException;

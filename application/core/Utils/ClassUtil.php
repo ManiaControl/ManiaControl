@@ -1,6 +1,6 @@
 <?php
 
-namespace ManiaControl;
+namespace ManiaControl\Utils;
 
 /**
  * Utility Class offering Methods related to Classes

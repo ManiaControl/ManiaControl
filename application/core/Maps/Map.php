@@ -2,7 +2,7 @@
 
 namespace ManiaControl\Maps;
 
-use ManiaControl\Formatter;
+use ManiaControl\Utils\Formatter;
 use ManiaControl\ManiaExchange\MXMapInfo;
 
 /**
@@ -53,7 +53,7 @@ class Map {
 		if (!$mpMap) {
 			return;
 		}
-		$this->name          = FORMATTER::stripDirtyCodes($mpMap->name);
+		$this->name          = Formatter::stripDirtyCodes($mpMap->name);
 		$this->rawName       = $mpMap->name;
 		$this->uid           = $mpMap->uId;
 		$this->fileName      = $mpMap->fileName;
