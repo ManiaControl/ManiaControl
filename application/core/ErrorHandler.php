@@ -44,14 +44,14 @@ class ErrorHandler {
 	/**
 	 * ManiaControl Exception Handler
 	 *
-	 * @param \Exception $ex
+	 * @param \Exception $exception
 	 * @param bool       $shutdown
 	 */
-	public function handleException(\Exception $ex, $shutdown = true) {
-		$message = "[ManiaControl EXCEPTION]: {$ex->getMessage()}";
+	public function handleException(\Exception $exception, $shutdown = true) {
+		$message = "[ManiaControl EXCEPTION]: {$exception->getMessage()}";
 
-		$exceptionClass = get_class($ex);
-		$traceString    = $ex->getTraceAsString();
+		$exceptionClass = get_class($exception);
+		$traceString    = $exception->getTraceAsString();
 
 		$logMessage = $message . PHP_EOL . 'Class: ' . $exceptionClass . PHP_EOL . 'Trace:' . PHP_EOL . $traceString;
 		logMessage($logMessage);
@@ -61,7 +61,7 @@ class ErrorHandler {
 			$error['Type']            = 'Exception';
 			$error['Message']         = $message;
 			$error['Class']           = $exceptionClass;
-			$error['FileLine']        = $ex->getFile() . ': ' . $ex->getLine();
+			$error['FileLine']        = $exception->getFile() . ': ' . $exception->getLine();
 			$error['Backtrace']       = $traceString;
 			$error['OperatingSystem'] = php_uname();
 			$error['PHPVersion']      = phpversion();

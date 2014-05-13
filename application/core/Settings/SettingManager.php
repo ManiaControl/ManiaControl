@@ -136,7 +136,7 @@ class SettingManager implements CallbackListener {
 	public function setSetting($object, $settingName, $value) {
 		$className = ClassUtil::getClass($object);
 
-		$setting = $this->getSetting($object, $settingName);
+		$setting = $this->getSettingObject($object, $settingName);
 		if ($setting) {
 			$setting->value = $value;
 			if (!$this->saveSetting($setting)) {
@@ -162,7 +162,7 @@ class SettingManager implements CallbackListener {
 	 * @param mixed  $default
 	 * @return Setting
 	 */
-	public function getSetting($object, $settingName, $default = null) {
+	public function getSettingObject($object, $settingName, $default = null) {
 		$settingClass = ClassUtil::getClass($object);
 
 		// Retrieve from Storage if possible
@@ -263,6 +263,14 @@ class SettingManager implements CallbackListener {
 	}
 
 	/**
+	 * @deprecated
+	 * @see SettingManager::getSettingValue()
+	 */
+	public function getSetting($object, $settingName, $default = null) {
+		return $this->getSettingValue($object, $settingName, $default);
+	}
+
+	/**
 	 * Get the Setting Value directly
 	 *
 	 * @param mixed  $object
@@ -271,7 +279,7 @@ class SettingManager implements CallbackListener {
 	 * @return mixed
 	 */
 	public function getSettingValue($object, $settingName, $default = null) {
-		$setting = $this->getSetting($object, $settingName, $default);
+		$setting = $this->getSettingObject($object, $settingName, $default);
 		if ($setting) {
 			return $setting->value;
 		}

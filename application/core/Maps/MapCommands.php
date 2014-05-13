@@ -105,14 +105,14 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	 * @param array  $chat
 	 * @param Player $player
 	 */
-	public function command_ShowNextMap(array $chat, Player $player) {
+	public function command_ShowNextMap(array $chatCallback, Player $player) {
 		$nextQueued = $this->maniaControl->mapManager->mapQueue->getNextQueuedMap();
 		if ($nextQueued) {
 			/** @var Player $requester */
 			$requester = $nextQueued[0];
 			/** @var Map $map */
 			$map = $nextQueued[1];
-			$this->maniaControl->chat->sendInformation("Next map is $<" . $map->name . "$> from $<" . $map->authorNick . "$> requested by $<" . $requester->nickname . "$>.", $player->login);
+			$this->maniaControl->chat->sendInformation("Next map is $<" . $map->name . "$> from $<" . $map->authorNick . "$> requested by $<" . $requester->nickname . "$>.", $player);
 		} else {
 
 			$mapIndex = $this->maniaControl->client->getNextMapIndex();
@@ -125,10 +125,10 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	/**
 	 * Handle removemap command
 	 *
-	 * @param array                        $chat
-	 * @param \ManiaControl\Players\Player $player
+	 * @param array  $chat
+	 * @param Player $player
 	 */
-	public function command_RemoveMap(array $chat, Player $player) {
+	public function command_RemoveMap(array $chatCallback, Player $player) {
 		if (!$this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_REMOVE_MAP)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
@@ -136,7 +136,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		// Get map
 		$map = $this->maniaControl->mapManager->getCurrentMap();
 		if (!$map) {
-			$this->maniaControl->chat->sendError("Couldn't remove map.", $player->login);
+			$this->maniaControl->chat->sendError("Couldn't remove map.", $player);
 			return;
 		}
 
