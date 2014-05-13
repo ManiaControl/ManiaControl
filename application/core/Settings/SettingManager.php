@@ -49,24 +49,33 @@ class SettingManager implements CallbackListener {
 	 */
 	private function initTables() {
 		$mysqli            = $this->maniaControl->database->mysqli;
-		$defaultType       = "'" . Setting::TYPE_STRING . "'";
-		$typeSet           = Setting::getTypeSet();
 		$settingTableQuery = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_SETTINGS . "` (
-				`index` int(11) NOT NULL AUTO_INCREMENT,
-				`class` varchar(100) NOT NULL,
-				`setting` varchar(150) NOT NULL,
-				`type` set({$typeSet}) NOT NULL DEFAULT {$defaultType},
-				`value` varchar(100) NOT NULL,
-				`default` varchar(100) NOT NULL,
+				`index` INT(11) NOT NULL AUTO_INCREMENT,
+				`class` VARCHAR(100) NOT NULL,
+				`setting` VARCHAR(150) NOT NULL,
+				`type` VARCHAR(50) NOT NULL,
+				`value` VARCHAR(100) NOT NULL,
+				`default` VARCHAR(100) NOT NULL,
+				`set` VARCHAR(100) NOT NULL,
 				`changed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 				PRIMARY KEY (`index`),
 				UNIQUE KEY `settingId` (`class`,`setting`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Settings and Configurations' AUTO_INCREMENT=1;";
-		$result            = $mysqli->query($settingTableQuery);
+		$result1           = $mysqli->query($settingTableQuery);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error, E_USER_ERROR);
 		}
-		return $result;
+		// TODO: remove (added in 0.143)
+		$alterTableQuery1 = "ALTER TABLE `" . self::TABLE_SETTINGS . "`
+				CHANGE `type` `type` VARCHAR(50) NOT NULL;";
+		$result2          = $mysqli->query($alterTableQuery1);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error);
+		}
+		$alterTableQuery2 = "ALTER TABLE `" . self::TABLE_SETTINGS . "`
+				ADD `set` VARCHAR(100) NOT NULL;";
+		$mysqli->query($alterTableQuery2);
+		return ($result1 && $result2);
 	}
 
 	/**
@@ -119,7 +128,7 @@ class SettingManager implements CallbackListener {
 		}
 
 		/** @var Setting $setting */
-		$setting = $result->fetch_object(Setting::CLASS_NAME, array(true));
+		$setting = $result->fetch_object(Setting::CLASS_NAME, array(false, null, null));
 		$result->close();
 
 		return $setting;
@@ -189,7 +198,7 @@ class SettingManager implements CallbackListener {
 		}
 
 		/** @var Setting $setting */
-		$setting = $result->fetch_object(Setting::CLASS_NAME, array(true));
+		$setting = $result->fetch_object(Setting::CLASS_NAME, array(false, null, null));
 		$result->free();
 
 		// Store setting
@@ -207,13 +216,8 @@ class SettingManager implements CallbackListener {
 	 * @return Setting
 	 */
 	public function initSetting($object, $settingName, $defaultValue) {
-		$setting          = new Setting();
-		$setting->class   = ClassUtil::getClass($object);
-		$setting->setting = $settingName;
-		$setting->type    = Setting::getValueType($defaultValue);
-		$setting->value   = $defaultValue;
-		$setting->default = $defaultValue;
-		$saved            = $this->saveSetting($setting);
+		$setting = new Setting($object, $settingName, $defaultValue);
+		$saved   = $this->saveSetting($setting);
 		if ($saved) {
 			return $setting;
 		}
@@ -366,7 +370,7 @@ class SettingManager implements CallbackListener {
 			return null;
 		}
 		$settings = array();
-		while ($setting = $result->fetch_object(Setting::CLASS_NAME, array(true))) {
+		while ($setting = $result->fetch_object(Setting::CLASS_NAME, array(false, null, null))) {
 			$settings[$setting->index] = $setting;
 		}
 		$result->free();
@@ -388,7 +392,7 @@ class SettingManager implements CallbackListener {
 			return null;
 		}
 		$settings = array();
-		while ($setting = $result->fetch_object(Setting::CLASS_NAME, array(true))) {
+		while ($setting = $result->fetch_object(Setting::CLASS_NAME, array(false, null, null))) {
 			$settings[$setting->index] = $setting;
 		}
 		$result->free();
