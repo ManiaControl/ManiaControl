@@ -83,11 +83,11 @@ class CommandManager implements CallbackListener {
 	/**
 	 * Add a Listener Callback to the given Listener Array
 	 *
-	 * @param array  $listenerArray
-	 * @param array  $listenerCallback
-	 * @param string $command
+	 * @param array    $listenerArray
+	 * @param callable $listenerCallback
+	 * @param string   $command
 	 */
-	private function addListenerCallback(array &$listenerArray, array $listenerCallback, $command) {
+	private function addListenerCallback(array &$listenerArray, callable $listenerCallback, $command) {
 		if (!array_key_exists($command, $listenerArray) || !is_array($listenerArray[$command])) {
 			// Init listeners array
 			$listenerArray[$command] = array();
