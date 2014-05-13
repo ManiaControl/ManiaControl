@@ -92,7 +92,7 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCHAT, $this, 'handlePlayerChatCallback');
-		$this->maniaControl->callbackManager->registerCallbackListener(SettingManager::CB_SETTINGS_CHANGED, $this, 'handleSettingsChangedCallback');
+		$this->maniaControl->callbackManager->registerCallbackListener(SettingManager::CB_SETTING_CHANGED, $this, 'handleSettingChangedCallback');
 
 		$this->buildLogFileName();
 
@@ -167,11 +167,11 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 	}
 
 	/**
-	 * Handle Settings Changed Callback
+	 * Handle Setting Changed Callback
 	 *
 	 * @param string $settingClass
 	 */
-	public function handleSettingsChangedCallback($settingClass) {
+	public function handleSettingChangedCallback($settingClass) {
 		if ($settingClass !== get_class()) {
 			return;
 		}

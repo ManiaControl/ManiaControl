@@ -22,6 +22,7 @@ use ManiaControl\Maps\Map;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
+use ManiaControl\Settings\Setting;
 use ManiaControl\Settings\SettingManager;
 
 /**
@@ -37,8 +38,8 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 	 */
 	const ID                          = 7;
 	const VERSION                     = 0.2;
-	const NAME = 'Local Records Plugin';
-	const AUTHOR = 'MCTeam';
+	const NAME                        = 'Local Records Plugin';
+	const AUTHOR                      = 'MCTeam';
 	const MLID_RECORDS                = 'ml_local_records';
 	const TABLE_RECORDS               = 'mc_localrecords';
 	const SETTING_WIDGET_TITLE        = 'Widget Title';
@@ -129,7 +130,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_TM_PLAYERFINISH, $this, 'handlePlayerFinish');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_TM_PLAYERCHECKPOINT, $this, 'handlePlayerCheckpoint');
-		$this->maniaControl->callbackManager->registerCallbackListener(SettingManager::CB_SETTINGS_CHANGED, $this, 'handleSettingsChanged');
+		$this->maniaControl->callbackManager->registerCallbackListener(SettingManager::CB_SETTING_CHANGED, $this, 'handleSettingChanged');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 		$this->maniaControl->commandManager->registerCommandListener(array('recs', 'records'), $this, 'showRecordsList', false, 'Shows a list of Local Records on the current map.');
 		$this->maniaControl->commandManager->registerCommandListener('delrec', $this, 'deleteRecord', true, 'Removes a record from the database.');
@@ -325,16 +326,26 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		return $records;
 	}
 
-	public function handleSettingsChanged($class, $settingName, $value) {
-		if (!$class = get_class()) {
+	/**
+	 * Handle Setting Changed Callback
+	 *
+	 * @param Setting $setting
+	 */
+	public function handleSettingsChanged(Setting $setting) {
+		if (!$setting->belongsToClass($this)) {
 			return;
 		}
-		if ($settingName == 'Enable Local Records Widget' && $value == true) {
-			$this->updateManialink = true;
-		} elseif ($settingName == 'Enable Local Records Widget' && $value == false) {
-			$ml     = new ManiaLink(self::MLID_RECORDS);
-			$mltext = $ml->render()->saveXML();
-			$this->maniaControl->manialinkManager->sendManialink($mltext);
+
+		switch ($setting->setting) {
+			case self::SETTING_WIDGET_ENABLE:
+			{
+				if ($setting->value) {
+					$this->updateManialink = true;
+				} else {
+					$this->maniaControl->manialinkManager->hideManialink(self::MLID_RECORDS);
+				}
+				break;
+			}
 		}
 	}
 
