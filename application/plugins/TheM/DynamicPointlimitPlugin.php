@@ -59,7 +59,7 @@ class DynamicPointlimitPlugin implements CallbackListener, CommandListener, Plug
 	public function load(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		$allowOthers = $this->maniaControl->settingManager->getSetting($this, self::ACCEPT_OTHER_MODES);
+		$allowOthers = $this->maniaControl->settingManager->getSettingValue($this, self::ACCEPT_OTHER_MODES);
 		if (!$allowOthers && $this->maniaControl->server->titleId != 'SMStormRoyal@nadeolabs') {
 			$error = 'This plugin only supports Royal (check Settings)!';
 			throw new \Exception($error);
@@ -138,10 +138,10 @@ class DynamicPointlimitPlugin implements CallbackListener, CommandListener, Plug
 			}
 		}
 
-		$pointlimit = ($numberOfPlayers * $this->maniaControl->settingManager->getSetting($this, self::DYNPNT_MULTIPLIER)) + $this->maniaControl->settingManager->getSetting($this, self::DYNPNT_OFFSET);
+		$pointlimit = ($numberOfPlayers * $this->maniaControl->settingManager->getSettingValue($this, self::DYNPNT_MULTIPLIER)) + $this->maniaControl->settingManager->getSettingValue($this, self::DYNPNT_OFFSET);
 
-		$min_value = $this->maniaControl->settingManager->getSetting($this, self::DYNPNT_MIN);
-		$max_value = $this->maniaControl->settingManager->getSetting($this, self::DYNPNT_MAX);
+		$min_value = $this->maniaControl->settingManager->getSettingValue($this, self::DYNPNT_MIN);
+		$max_value = $this->maniaControl->settingManager->getSettingValue($this, self::DYNPNT_MAX);
 		if ($pointlimit < $min_value) {
 			$pointlimit = $min_value;
 		}

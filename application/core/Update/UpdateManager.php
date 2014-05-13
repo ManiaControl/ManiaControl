@@ -60,13 +60,12 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_ENABLEUPDATECHECK, true);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_AUTO_UPDATE, true);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_UPDATECHECK_INTERVAL, 1);
+		$updateIntervalSetting = $this->maniaControl->settingManager->initSetting($this, self::SETTING_UPDATECHECK_INTERVAL, 1);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_UPDATECHECK_CHANNEL, self::CHANNEL_BETA);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_PERFORM_BACKUPS, true);
 
 		// Register for callbacks
-		$updateInterval = $this->maniaControl->settingManager->getSetting($this, self::SETTING_UPDATECHECK_INTERVAL);
-		$this->maniaControl->timerManager->registerTimerListening($this, 'hourlyUpdateCheck', 1000 * 60 * 60 * $updateInterval);
+		$this->maniaControl->timerManager->registerTimerListening($this, 'hourlyUpdateCheck', 1000 * 60 * 60 * $updateIntervalSetting->value);
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerJoined');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECT, $this, 'handlePlayerDisconnect');
 
@@ -88,7 +87,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 * @param float $time
 	 */
 	public function hourlyUpdateCheck($time) {
-		$updateCheckEnabled = $this->maniaControl->settingManager->getSetting($this, self::SETTING_ENABLEUPDATECHECK);
+		$updateCheckEnabled = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_ENABLEUPDATECHECK);
 		if (!$updateCheckEnabled) {
 			$this->setCoreUpdateData();
 			return;
@@ -138,7 +137,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 * @return string
 	 */
 	public function getCurrentUpdateChannelSetting() {
-		$updateChannel = $this->maniaControl->settingManager->getSetting($this, self::SETTING_UPDATECHECK_CHANNEL);
+		$updateChannel = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_UPDATECHECK_CHANNEL);
 		$updateChannel = strtolower($updateChannel);
 		if (!in_array($updateChannel, array(self::CHANNEL_RELEASE, self::CHANNEL_BETA, self::CHANNEL_NIGHTLY))) {
 			$updateChannel = self::CHANNEL_RELEASE;
@@ -249,7 +248,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 * Check if an automatic Update should be performed
 	 */
 	public function checkAutoUpdate() {
-		$autoUpdate = $this->maniaControl->settingManager->getSetting($this, self::SETTING_AUTO_UPDATE);
+		$autoUpdate = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_AUTO_UPDATE);
 		if (!$autoUpdate) {
 			// Auto update turned off
 			return;
@@ -294,7 +293,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			return false;
 		}
 
-		$performBackup = $this->maniaControl->settingManager->getSetting($this, self::SETTING_PERFORM_BACKUPS);
+		$performBackup = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_PERFORM_BACKUPS);
 		if ($performBackup && !BackupUtil::performFullBackup()) {
 			$message = 'Creating Backup before Update failed!';
 			if ($player) {

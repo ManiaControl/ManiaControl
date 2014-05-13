@@ -235,8 +235,8 @@ class MapQueue implements CallbackListener, CommandListener {
 			}
 		}
 
-		$maxPlayer = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAPLIMIT_PLAYER);
-		$maxAdmin  = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAPLIMIT_ADMIN);
+		$maxPlayer = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MAPLIMIT_PLAYER);
+		$maxAdmin  = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MAPLIMIT_ADMIN);
 
 		if ($admin && $maxAdmin != -1) {
 			if ($mapsForPlayer == $maxAdmin) {
@@ -309,7 +309,7 @@ class MapQueue implements CallbackListener, CommandListener {
 		}
 
 		$this->nextMap = null;
-		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_SKIP_MAP_ON_LEAVE) == true) {
+		if ($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_SKIP_MAP_ON_LEAVE) == true) {
 
 			//Skip Map if requester has left
 			foreach ($this->queuedMaps as $queuedMap) {
@@ -325,7 +325,7 @@ class MapQueue implements CallbackListener, CommandListener {
 					break;
 				}
 
-				if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_SKIP_MAPQUEUE_ADMIN) == false) {
+				if ($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_SKIP_MAPQUEUE_ADMIN) == false) {
 					//Check if the queuer is a admin
 					if ($player->authLevel > 0) {
 						break;
@@ -368,7 +368,7 @@ class MapQueue implements CallbackListener, CommandListener {
 			return;
 		}
 
-		if (count($this->buffer) >= $this->maniaControl->settingManager->getSetting($this, self::SETTING_BUFFERSIZE)) {
+		if (count($this->buffer) >= $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_BUFFERSIZE)) {
 			array_shift($this->buffer);
 		}
 

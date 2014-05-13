@@ -399,7 +399,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$mapList = array();
 			foreach ($maps as $map) {
 				if ($map instanceof Map) {
-					if ($this->maniaControl->settingManager->getSetting($karmaPlugin, $karmaPlugin::SETTING_NEWKARMA) === true) {
+					if ($this->maniaControl->settingManager->getSettingValue($karmaPlugin, $karmaPlugin::SETTING_NEWKARMA) === true) {
 						$karma      = $karmaPlugin->getMapKarma($map);
 						$map->karma = round($karma * 100.);
 					} else {

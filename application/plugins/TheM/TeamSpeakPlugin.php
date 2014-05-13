@@ -97,7 +97,7 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 	 * @throws \Exception
 	 */
 	private function checkConfig() {
-		if ($this->maniaControl->settingManager->getSetting($this, self::TEAMSPEAK_SERVERHOST) == 'ts3.somehoster.com') {
+		if ($this->maniaControl->settingManager->getSettingValue($this, self::TEAMSPEAK_SERVERHOST) == 'ts3.somehoster.com') {
 			$error = 'Missing the required serverhost, please set it up before enabling the TeamSpeak plugin!';
 			throw new \Exception($error);
 		}
@@ -271,9 +271,9 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 		$joinbutton->setWidth(150);
 		$joinbutton->setY($height / 2 - 11.5);
 		$joinbutton->setStyle($joinbutton::STYLE_CardButtonSmallWide);
-		$joinbutton->setText('Join TeamSpeak: ' . $this->maniaControl->settingManager->getSetting($this, self::TEAMSPEAK_SERVERHOST) . ':' . $this->maniaControl->settingManager->getSetting($this, self::TEAMSPEAK_SERVERPORT));
+		$joinbutton->setText('Join TeamSpeak: ' . $this->maniaControl->settingManager->getSettingValue($this, self::TEAMSPEAK_SERVERHOST) . ':' . $this->maniaControl->settingManager->getSettingValue($this, self::TEAMSPEAK_SERVERPORT));
 		$joinbutton->setTextColor('fff');
-		$url = 'ts3server://' . $this->maniaControl->settingManager->getSetting($this, self::TEAMSPEAK_SERVERHOST) . '/?port=' . $this->maniaControl->settingManager->getSetting($this, self::TEAMSPEAK_SERVERPORT) . '&nickname=' . rawurlencode(Formatter::stripCodes($player->nickname));
+		$url = 'ts3server://' . $this->maniaControl->settingManager->getSettingValue($this, self::TEAMSPEAK_SERVERHOST) . '/?port=' . $this->maniaControl->settingManager->getSettingValue($this, self::TEAMSPEAK_SERVERPORT) . '&nickname=' . rawurlencode(Formatter::stripCodes($player->nickname));
 		$joinbutton->setUrl($url);
 
 		$leftlistQuad = new Quad();
@@ -371,12 +371,13 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 		if (time() >= $this->refreshTime) {
 			$this->refreshTime = (time() + $this->refreshInterval);
 
-			$queryhost = $this->maniaControl->settingManager->getSetting($this, self::TEAMSPEAK_QUERYHOST);
-			$host      = $this->maniaControl->settingManager->getSetting($this, self::TEAMSPEAK_SERVERHOST);
+			$queryHost = $this->maniaControl->settingManager->getSettingValue($this, self::TEAMSPEAK_QUERYHOST);
+			$host      = $this->maniaControl->settingManager->getSettingValue($this, self::TEAMSPEAK_SERVERHOST);
 
-			$host = ($queryhost != '') ? $queryhost : $host;
+			$host = ($queryHost != '') ? $queryHost : $host;
+			$queryPort = $this->maniaControl->settingManager->getSettingValue($this, self::TEAMSPEAK_QUERYPORT);
 
-			$socket = fsockopen(@$host, $this->maniaControl->settingManager->getSetting($this, self::TEAMSPEAK_QUERYPORT), $errno, $errstr, 2);
+			$socket = fsockopen(@$host, $queryPort, $errno, $errstr, 2);
 			if ($socket) {
 				socket_set_timeout($socket, 2);
 				$is_ts3 = trim(fgets($socket)) == 'TS3';
@@ -384,8 +385,8 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 					trigger_error('[TeamSpeakPlugin] Server at "' . $host . '" is not a Teamspeak3-Server or you have setup a bad query-port!', E_USER_WARNING);
 				}
 
-				$queryuser = $this->maniaControl->settingManager->getSetting($this, self::TEAMSPEAK_QUERYUSER);
-				$querypass = $this->maniaControl->settingManager->getSetting($this, self::TEAMSPEAK_QUERYPASS);
+				$queryuser = $this->maniaControl->settingManager->getSettingValue($this, self::TEAMSPEAK_QUERYUSER);
+				$querypass = $this->maniaControl->settingManager->getSettingValue($this, self::TEAMSPEAK_QUERYPASS);
 				if (($queryuser != '') && !is_numeric($queryuser) && $queryuser != false && ($querypass != '') && !is_numeric($querypass) && $querypass != false) {
 					$ret = $this->ts3_sendCommand($socket, 'login client_login_name=' . $this->ts3_escape($queryuser) . ' client_login_password=' . $this->ts3_escape($querypass));
 					if (stripos($ret, "error id=0") === false) {
@@ -395,7 +396,7 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 				}
 
 				$response = '';
-				$response .= $this->ts3_sendCommand($socket, 'use sid=' . $this->maniaControl->settingManager->getSetting($this, self::TEAMSPEAK_SID));
+				$response .= $this->ts3_sendCommand($socket, 'use sid=' . $this->maniaControl->settingManager->getSettingValue($this, self::TEAMSPEAK_SID));
 				$this->ts3_sendCommand($socket, 'clientupdate client_nickname=' . $this->ts3_escape('ManiaControl Viewer'));
 				$response .= $this->ts3_sendCommand($socket, 'serverinfo');
 				$response .= $this->ts3_sendCommand($socket, 'channellist -topic -flags -voice -limits');

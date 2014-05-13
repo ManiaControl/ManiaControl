@@ -119,7 +119,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		}
 
 		//Check if the type is Correct
-		$type = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MIN_RANKING_TYPE);
+		$type = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MIN_RANKING_TYPE);
 		if ($type != self::RANKING_TYPE_RECORDS && $type != self::RANKING_TYPE_POINTS && $type != self::RANKING_TYPE_RATIOS) {
 			$error = 'Ranking Type is not correct, possible values(' . self::RANKING_TYPE_RATIOS . ', ' . self::RANKING_TYPE_POINTS . ', ' . self::RANKING_TYPE_POINTS . ')';
 			throw new \Exception($error);
@@ -163,11 +163,11 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 
 		// Erase old Average Data
 		$mysqli->query('TRUNCATE TABLE ' . self::TABLE_RANK);
-		$type = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MIN_RANKING_TYPE);
+		$type = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MIN_RANKING_TYPE);
 
 		switch ($type) {
 			case self::RANKING_TYPE_RATIOS:
-				$minHits = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MIN_HITS_RATIO_RANKING);
+				$minHits = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MIN_HITS_RATIO_RANKING);
 
 				$hits            = $this->maniaControl->statisticManager->getStatsRanking(StatisticCollector::STAT_ON_HIT, -1, $minHits);
 				$killDeathRatios = $this->maniaControl->statisticManager->getStatsRanking(StatisticManager::SPECIAL_STAT_KD_RATIO);
@@ -187,7 +187,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 
 				break;
 			case self::RANKING_TYPE_POINTS:
-				$minHits = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MIN_HITS_POINTS_RANKING);
+				$minHits = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MIN_HITS_POINTS_RANKING);
 
 				$ranks = $this->maniaControl->statisticManager->getStatsRanking(StatisticCollector::STAT_ON_HIT, -1, $minHits);
 
@@ -197,8 +197,8 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 					return;
 				}
 
-				$requiredRecords = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MIN_REQUIRED_RECORDS);
-				$maxRecords      = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAX_STORED_RECORDS);
+				$requiredRecords = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MIN_REQUIRED_RECORDS);
+				$maxRecords      = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MAX_STORED_RECORDS);
 
 				$query = 'SELECT playerIndex, COUNT(*) AS Cnt
   		          FROM ' . \MCTeam\LocalRecordsPlugin::TABLE_RECORDS . '
@@ -286,7 +286,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 	public function showRank(Player $player) {
 		$rankObj = $this->getRank($player);
 
-		$type = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MIN_RANKING_TYPE);
+		$type = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MIN_RANKING_TYPE);
 
 		$message = '';
 		if ($rankObj) {
@@ -305,16 +305,16 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		} else {
 			switch ($type) {
 				case self::RANKING_TYPE_RATIOS:
-					$minHits = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MIN_HITS_RATIO_RANKING);
+					$minHits = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MIN_HITS_RATIO_RANKING);
 					$message = '$0f3 You must make $<$fff' . $minHits . '$> Hits on this server before receiving a rank...';
 					break;
 				case self::RANKING_TYPE_POINTS:
-					$minHits = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MIN_HITS_POINTS_RANKING);
-					$message = '$0f3 You must make $<$fff' . $minHits . '$> Hits on this server before receiving a rank...';
+					$minPoints = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MIN_HITS_POINTS_RANKING);
+					$message   = '$0f3 You must make $<$fff' . $minPoints . '$> Hits on this server before receiving a rank...';
 					break;
 				case self::RANKING_TYPE_RECORDS:
-					$minHits = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MIN_REQUIRED_RECORDS);
-					$message = '$0f3 You need $<$fff' . $minHits . '$> Records on this server before receiving a rank...';
+					$minRecords = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MIN_REQUIRED_RECORDS);
+					$message    = '$0f3 You need $<$fff' . $minRecords . '$> Records on this server before receiving a rank...';
 			}
 		}
 		$this->maniaControl->chat->sendChat($message, $player->login);

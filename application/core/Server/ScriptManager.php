@@ -56,7 +56,7 @@ class ScriptManager {
 		} catch (Exception $e) {
 			// TODO temp added 19.04.2014
 			$this->maniaControl->errorHandler->handleException($e, false);
-			trigger_error("Couldn't set Mode Script Settings to {$actionName}able Script Sallbacks. " . $e->getMessage());
+			trigger_error("Couldn't set Mode Script Settings to {$actionName}able Script Callbacks. " . $e->getMessage());
 			return false;
 		}
 		$this->maniaControl->log("Script Callbacks successfully {$actionName}abled!");

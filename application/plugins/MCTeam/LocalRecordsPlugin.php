@@ -192,7 +192,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		}
 
 		$this->updateManialink = false;
-		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_ENABLE)) {
+		if ($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_ENABLE)) {
 			$manialink = $this->buildManialink();
 			$this->maniaControl->manialinkManager->sendManialink($manialink);
 		}
@@ -209,12 +209,12 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 			return null;
 		}
 
-		$title        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_TITLE);
-		$pos_x        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_POSX);
-		$pos_y        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_POSY);
-		$width        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_WIDTH);
-		$lines        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_LINESCOUNT);
-		$lineHeight   = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_LINEHEIGHT);
+		$title        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_TITLE);
+		$pos_x        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_POSX);
+		$pos_y        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_POSY);
+		$width        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_WIDTH);
+		$lines        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_LINESCOUNT);
+		$lineHeight   = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_LINEHEIGHT);
 		$labelStyle   = $this->maniaControl->manialinkManager->styleManager->getDefaultLabelStyle();
 		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
 		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
@@ -233,7 +233,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$backgroundQuad = new Quad();
 		$frame->add($backgroundQuad);
 		$backgroundQuad->setVAlign(Control::TOP);
-		$adjustOuterBorder = $this->maniaControl->settingManager->getSetting($this, self::SETTING_ADJUST_OUTER_BORDER);
+		$adjustOuterBorder = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_ADJUST_OUTER_BORDER);
 		$height            = 7. + ($adjustOuterBorder ? count($records) : $lines) * $lineHeight;
 		$backgroundQuad->setSize($width * 1.05, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
@@ -448,8 +448,8 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		// Announce record
 		$newRecord = $this->getLocalRecord($map, $player);
 
-		$notifyOnlyDriver      = $this->maniaControl->settingManager->getSetting($this, self::SETTING_NOTIFY_ONLY_DRIVER);
-		$notifyOnlyBestRecords = $this->maniaControl->settingManager->getSetting($this, self::SETTING_NOTIFY_BEST_RECORDS);
+		$notifyOnlyDriver      = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_NOTIFY_ONLY_DRIVER);
+		$notifyOnlyBestRecords = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_NOTIFY_BEST_RECORDS);
 		if ($notifyOnlyDriver || $notifyOnlyBestRecords > 0 && $newRecord->rank > $notifyOnlyBestRecords) {
 			$improvement = ((!$oldRecord || $newRecord->rank < $oldRecord->rank) ? 'gained the' : 'improved your');
 			$message     = 'You ' . $improvement . ' $<$ff0' . $newRecord->rank . '.$> Local Record: $<$fff' . Formatter::formatTime($newRecord->time) . '$>';

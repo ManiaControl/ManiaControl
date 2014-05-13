@@ -109,7 +109,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$this->maniaControl->commandManager->registerCommandListener('donate', $this, 'command_Donate', false, 'Donate some planets to the server.');
 		$this->maniaControl->commandManager->registerCommandListener('pay', $this, 'command_Pay', true, 'Pays planets from the server to a player.');
 		$this->maniaControl->commandManager->registerCommandListener('planets', $this, 'command_GetPlanets', true, 'Checks the planets-balance of the server.');
-		$this->maniaControl->commandManager->registerCommandListener('topdons', $this, 'command_TopDons', false, 'Provides an overview of who dontated the most planets.');
+		$this->maniaControl->commandManager->registerCommandListener('topdons', $this, 'command_TopDons', false, 'Provides an overview of who donated the most planets.');
 
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
@@ -137,7 +137,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 * Display the widget
 	 */
 	public function displayWidget() {
-		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATE_WIDGET_ACTIVATED)) {
+		if ($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_DONATE_WIDGET_ACTIVATED)) {
 			$this->displayDonateWidget();
 		}
 	}
@@ -148,11 +148,11 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 * @param string $login
 	 */
 	public function displayDonateWidget($login = null) {
-		$posX              = $this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATE_WIDGET_POSX);
-		$posY              = $this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATE_WIDGET_POSY);
-		$width             = $this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATE_WIDGET_WIDTH);
-		$height            = $this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATE_WIDGET_HEIGHT);
-		$values            = $this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATION_VALUES);
+		$posX              = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_DONATE_WIDGET_POSX);
+		$posY              = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_DONATE_WIDGET_POSY);
+		$width             = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_DONATE_WIDGET_WIDTH);
+		$height            = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_DONATE_WIDGET_HEIGHT);
+		$values            = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_DONATION_VALUES);
 		$shootManiaOffset  = $this->maniaControl->manialinkManager->styleManager->getDefaultIconOffsetSM();
 		$quadStyle         = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
 		$quadSubstyle      = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
@@ -286,7 +286,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$this->maniaControl->billManager->sendBill(function ($data, $status) use (&$self, &$player, $amount, $receiver) {
 			switch ($status) {
 				case BillManager::DONATED_TO_SERVER:
-					if ($self->maniaControl->settingManager->getSetting($self, DonationPlugin::SETTING_ANNOUNCE_SERVERDONATION, true) && $amount >= $self->maniaControl->settingManager->getSetting($self, DonationPlugin::SETTING_MIN_AMOUNT_SHOWN, true)) {
+					if ($self->maniaControl->settingManager->getSettingValue($self, DonationPlugin::SETTING_ANNOUNCE_SERVERDONATION, true) && $amount >= $self->maniaControl->settingManager->getSettingValue($self, DonationPlugin::SETTING_MIN_AMOUNT_SHOWN, true)) {
 						$login   = null;
 						$message = '$<' . $player->nickname . '$> donated ' . $amount . ' Planets! Thanks.';
 					} else {
@@ -319,7 +319,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 */
 	public function handlePlayerConnect(Player $player) {
 		// Display Map Widget
-		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_DONATE_WIDGET_ACTIVATED)) {
+		if ($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_DONATE_WIDGET_ACTIVATED)) {
 			$this->displayDonateWidget($player->login);
 		}
 	}

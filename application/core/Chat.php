@@ -53,7 +53,7 @@ class Chat {
 	 * @return bool
 	 */
 	public function sendInformation($message, $login = null, $prefix = true) {
-		$format = $this->maniaControl->settingManager->getSetting($this, self::SETTING_FORMAT_INFORMATION);
+		$format = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_FORMAT_INFORMATION);
 		return $this->sendChat($format . $message, $login, $prefix);
 	}
 
@@ -82,7 +82,7 @@ class Chat {
 	 * @param bool $prefix
 	 */
 	public function sendErrorToAdmins($message, $minLevel = AuthenticationManager::AUTH_LEVEL_MODERATOR, $prefix = true) {
-		$format = $this->maniaControl->settingManager->getSetting($this, self::SETTING_FORMAT_ERROR);
+		$format = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_FORMAT_ERROR);
 		$this->sendMessageToAdmins($format . $message, $prefix);
 	}
 
@@ -102,14 +102,14 @@ class Chat {
 		if (!$login) {
 			$prefix      = $this->getPrefix($prefix);
 			$chatMessage = '$<$z$ff0' . str_replace(' ', '', $prefix) . $prefix . $message . '$>';
-			$this->maniaControl->client->chatSendServerMessage($chatMessage);
+			$this->maniaControl->client->chatSend($chatMessage, null, true);
 		} else {
 			$chatMessage = '$<$z$ff0' . $this->getPrefix($prefix) . $message . '$>';
 			if (is_object($login) && property_exists($login, 'login')) {
 				$login = $login->login;
 			}
 			try {
-				$this->maniaControl->client->chatSendServerMessage($chatMessage, $login);
+				$this->maniaControl->client->chatSend($chatMessage, $login, true);
 			} catch (LoginUnknownException $e) {
 			}
 		}
@@ -127,7 +127,7 @@ class Chat {
 			return $prefix;
 		}
 		if ($prefix === true) {
-			return $this->maniaControl->settingManager->getSetting($this, self::SETTING_PREFIX);
+			return $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_PREFIX);
 		}
 		return '';
 	}
@@ -141,7 +141,7 @@ class Chat {
 	 * @return bool
 	 */
 	public function sendSuccess($message, $login = null, $prefix = true) {
-		$format = $this->maniaControl->settingManager->getSetting($this, self::SETTING_FORMAT_SUCCESS);
+		$format = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_FORMAT_SUCCESS);
 		return $this->sendChat($format . $message, $login, $prefix);
 	}
 
@@ -167,7 +167,7 @@ class Chat {
 	 * @return bool
 	 */
 	public function sendError($message, $login = null, $prefix = true) {
-		$format = $this->maniaControl->settingManager->getSetting($this, self::SETTING_FORMAT_ERROR);
+		$format = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_FORMAT_ERROR);
 		return $this->sendChat($format . $message, $login, $prefix);
 	}
 
@@ -180,7 +180,7 @@ class Chat {
 	 * @return bool
 	 */
 	public function sendUsageInfo($message, $login = null, $prefix = false) {
-		$format = $this->maniaControl->settingManager->getSetting($this, self::SETTING_FORMAT_USAGEINFO);
+		$format = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_FORMAT_USAGEINFO);
 		return $this->sendChat($format . $message, $login, $prefix);
 	}
 }

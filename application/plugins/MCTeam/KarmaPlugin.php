@@ -176,10 +176,10 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		//Check if Karma Code got specified, and inform admin that it would be good to specifiy one
 		$serverLogin      = $this->maniaControl->server->login;
 		$karmaSettingName = self::buildKarmaSettingName($serverLogin);
-		$mxKarmaCode      = $this->maniaControl->settingManager->getSetting($this, $karmaSettingName);
+		$mxKarmaCode      = $this->maniaControl->settingManager->getSettingValue($this, $karmaSettingName);
 
-		if ($mxKarmaCode == '') {
-			$permission = $this->maniaControl->settingManager->getSetting($this->maniaControl->authenticationManager, PluginMenu::SETTING_PERMISSION_CHANGE_PLUGIN_SETTINGS);
+		if (!$mxKarmaCode) {
+			$permission = $this->maniaControl->settingManager->getSettingValue($this->maniaControl->authenticationManager, PluginMenu::SETTING_PERMISSION_CHANGE_PLUGIN_SETTINGS);
 			$this->maniaControl->chat->sendErrorToAdmins("Please specify a Mania-Exchange Karma Key in the Karma-Plugin settings!", $permission);
 		}
 
@@ -210,7 +210,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		// Migrate settings
 		$this->maniaControl->database->migrationHelper->transferSettings('KarmaPlugin', $this);
 
-		if (!$this->maniaControl->settingManager->getSetting($this, self::SETTING_MX_KARMA_ACTIVATED)) {
+		if (!$this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MX_KARMA_ACTIVATED)) {
 			return;
 		}
 
@@ -233,13 +233,13 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	 * Open a Mx Karma Session
 	 */
 	private function mxKarmaOpenSession() {
-		if (!$this->maniaControl->settingManager->getSetting($this, self::SETTING_MX_KARMA_ACTIVATED)) {
+		if (!$this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MX_KARMA_ACTIVATED)) {
 			return;
 		}
 
 		$serverLogin      = $this->maniaControl->server->login;
 		$karmaSettingName = self::buildKarmaSettingName($serverLogin);
-		$mxKarmaCode      = $this->maniaControl->settingManager->getSetting($this, $karmaSettingName);
+		$mxKarmaCode      = $this->maniaControl->settingManager->getSettingValue($this, $karmaSettingName);
 
 		if ($mxKarmaCode == '') {
 			return;
@@ -301,7 +301,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 					$self->getMxKarmaVotes();
 				} else {
 					if ($data->data->message == "invalid hash") {
-						$permission = $self->maniaControl->settingManager->getSetting($this->maniaControl->authenticationManager, PluginMenu::SETTING_PERMISSION_CHANGE_PLUGIN_SETTINGS);
+						$permission = $self->maniaControl->settingManager->getSettingValue($this->maniaControl->authenticationManager, PluginMenu::SETTING_PERMISSION_CHANGE_PLUGIN_SETTINGS);
 						$self->maniaControl->chat->sendErrorToAdmins("Invalid Mania-Exchange Karma code in Karma Plugin specified!", $permission);
 					} else {
 						// TODO remove temp trigger
@@ -335,7 +335,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	 * Fetch the mxKarmaVotes for the current map
 	 */
 	public function getMxKarmaVotes(Player $player = null) {
-		if (!$this->maniaControl->settingManager->getSetting($this, self::SETTING_MX_KARMA_ACTIVATED)) {
+		if (!$this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MX_KARMA_ACTIVATED)) {
 			return;
 		}
 
@@ -580,7 +580,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	 */
 	private function handleVote(Player $player, $vote) {
 		// Check vote
-		$votesSetting = $this->maniaControl->settingManager->getSetting($this, self::SETTING_AVAILABLE_VOTES);
+		$votesSetting = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_AVAILABLE_VOTES);
 		$votes        = explode(',', $votesSetting);
 		$voteLow      = intval($votes[0]);
 		$voteHigh     = $voteLow + 2;
@@ -600,7 +600,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		$map = $this->maniaControl->mapManager->getCurrentMap();
 
 		// Update vote in MX karma array
-		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_MX_KARMA_ACTIVATED) && isset($this->mxKarma["session"])) {
+		if ($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MX_KARMA_ACTIVATED) && isset($this->mxKarma["session"])) {
 			if (!isset($this->mxKarma["votes"][$player->login])) {
 				$sum = $this->mxKarma["voteCount"] * $this->mxKarma["voteAverage"] + $vote * 100;
 				$this->mxKarma["voteCount"]++;
@@ -765,7 +765,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			return;
 		}
 
-		$displayMxKarma = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_DISPLAY_MX);
+		$displayMxKarma = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_DISPLAY_MX);
 
 		// Get players
 		$players = $this->updateManialink;
@@ -777,7 +777,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		// Get map karma
 		$map = $this->maniaControl->mapManager->getCurrentMap();
 
-		// Display the mx Karma if the setting is choosen and the MX session is available
+		// Display the mx Karma if the setting is chosen and the MX session is available
 		if ($displayMxKarma && isset($this->mxKarma['session']) && isset($this->mxKarma['voteCount'])) {
 			$karma     = $this->mxKarma['modeVoteAverage'] / 100;
 			$voteCount = $this->mxKarma['modeVoteCount'];
@@ -787,7 +787,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			$voteCount = $votes['count'];
 		}
 
-		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_ENABLE)) {
+		if ($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_ENABLE)) {
 			// Build karma manialink
 			$this->buildManialink();
 
@@ -893,11 +893,11 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			return;
 		}
 
-		$title        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_TITLE);
-		$pos_x        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_POSX);
-		$pos_y        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_POSY);
-		$width        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_WIDTH);
-		$height       = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_HEIGHT);
+		$title        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_TITLE);
+		$pos_x        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_POSX);
+		$pos_y        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_POSY);
+		$width        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_WIDTH)->value;
+		$height       = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_HEIGHT)->value;
 		$labelStyle   = $this->maniaControl->manialinkManager->styleManager->getDefaultLabelStyle();
 		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
 		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
@@ -951,11 +951,11 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	 * @param Map $map
 	 */
 	public function importMxKarmaVotes(Map $map) {
-		if (!$this->maniaControl->settingManager->getSetting($this, self::SETTING_MX_KARMA_ACTIVATED)) {
+		if (!$this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MX_KARMA_ACTIVATED)) {
 			return;
 		}
 
-		if (!$this->maniaControl->settingManager->getSetting($this, self::SETTING_MX_KARMA_IMPORTING)) {
+		if (!$this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MX_KARMA_IMPORTING)) {
 			return;
 		}
 
@@ -1008,7 +1008,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	 * Save Mx Karma Votes at Mapend
 	 */
 	public function sendMxKarmaVotes(Map $map) {
-		if (!$this->maniaControl->settingManager->getSetting($this, self::SETTING_MX_KARMA_ACTIVATED)) {
+		if (!$this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MX_KARMA_ACTIVATED)) {
 			return;
 		}
 

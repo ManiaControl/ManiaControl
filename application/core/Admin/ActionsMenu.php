@@ -113,9 +113,9 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	 * @return ManiaLink
 	 */
 	private function buildMenuIconsManialink(Player $player) {
-		$posX              = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_POSX);
-		$posY              = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_POSY);
-		$itemSize          = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_ITEMSIZE);
+		$posX              = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MENU_POSX);
+		$posY              = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MENU_POSY);
+		$itemSize          = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MENU_ITEMSIZE);
 		$shootManiaOffset  = $this->maniaControl->manialinkManager->styleManager->getDefaultIconOffsetSM();
 		$quadStyle         = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
 		$quadSubstyle      = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();

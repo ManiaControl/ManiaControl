@@ -9,7 +9,7 @@ use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Plugins\Plugin;
-use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
+use Maniaplanet\DedicatedServer\Xmlrpc\NotInScriptModeException;
 
 /**
  * ManiaControl Obstacle Plugin
@@ -110,7 +110,7 @@ class ObstaclePlugin implements CallbackListener, CommandListener, Plugin {
 	 * @return bool
 	 */
 	public function command_JumpTo(array $chatCallback, Player $player) {
-		$authLevel = $this->maniaControl->settingManager->getSetting($this, self::SETTING_JUMPTOAUTHLEVEL);
+		$authLevel = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_JUMPTOAUTHLEVEL);
 		if (!$this->maniaControl->authenticationManager->checkRight($player, $authLevel)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
@@ -120,12 +120,7 @@ class ObstaclePlugin implements CallbackListener, CommandListener, Plugin {
 		$param  = $player->login . ";" . $params[1] . ";";
 		try {
 			$this->maniaControl->client->triggerModeScriptEvent(self::CB_JUMPTO, $param);
-		} catch (Exception $e) {
-			if ($e->getMessage() == 'Not in script mode.') {
-				trigger_error("Couldn't send jump callback for '{$player->login}'. " . $e->getMessage());
-				return;
-			}
-			throw $e;
+		} catch (NotInScriptModeException $e) {
 		}
 	}
 

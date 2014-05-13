@@ -7,6 +7,7 @@ use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
+use ManiaControl\Settings\Setting;
 
 /**
  * Class managing Authentication Levels
@@ -283,18 +284,21 @@ class AuthenticationManager implements CallbackListener {
 	 * @return bool
 	 */
 	public function checkPermission(Player $player, $rightName) {
-		$right = $this->maniaControl->settingManager->getSetting($this, $rightName);
+		$right = $this->maniaControl->settingManager->getSettingValue($this, $rightName);
 		return $this->checkRight($player, $right);
 	}
 
 	/**
 	 * Check if the Player has enough Rights
 	 *
-	 * @param Player $player
-	 * @param int    $neededAuthLevel
+	 * @param Player      $player
+	 * @param int|Setting $neededAuthLevel
 	 * @return bool
 	 */
 	public static function checkRight(Player $player, $neededAuthLevel) {
+		if ($neededAuthLevel instanceof Setting) {
+			$neededAuthLevel = $neededAuthLevel->value;
+		}
 		return ($player->authLevel >= $neededAuthLevel);
 	}
 

@@ -261,6 +261,22 @@ class SettingManager implements CallbackListener {
 	}
 
 	/**
+	 * Get the Setting Value directly
+	 *
+	 * @param mixed  $object
+	 * @param string $settingName
+	 * @param mixed  $default
+	 * @return mixed
+	 */
+	public function getSettingValue($object, $settingName, $default = null) {
+		$setting = $this->getSetting($object, $settingName, $default);
+		if ($setting) {
+			return $setting->value;
+		}
+		return null;
+	}
+
+	/**
 	 * Reset a Setting to its Default Value
 	 *
 	 * @param mixed  $object

@@ -109,7 +109,7 @@ class StatisticCollector implements CallbackListener {
 	 */
 	public function onEndMap(array $callback) {
 		//Check for Minimum PlayerCount
-		if (count($this->maniaControl->playerManager->getPlayers()) < $this->maniaControl->settingManager->getSetting($this, self::SETTING_COLLECT_STATS_MINPLAYERS)) {
+		if (count($this->maniaControl->playerManager->getPlayers()) < $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_COLLECT_STATS_MINPLAYERS)) {
 			return;
 		}
 
@@ -128,7 +128,7 @@ class StatisticCollector implements CallbackListener {
 	 */
 	public function onPlayerDisconnect(Player $player) {
 		// Check if Stat Collecting is enabled
-		if (!$this->maniaControl->settingManager->getSetting($this, self::SETTING_COLLECT_STATS_ENABLED)) {
+		if (!$this->maniaControl->settingManager->getSettingValue($this, self::SETTING_COLLECT_STATS_ENABLED)) {
 			return;
 		}
 
@@ -146,14 +146,15 @@ class StatisticCollector implements CallbackListener {
 	 *
 	 * @param array $callback
 	 */
-	public function handleCallbacks(array $callback) { //TODO survivals
+	public function handleCallbacks(array $callback) {
+		//TODO survivals
 		//Check if Stat Collecting is enabled
-		if (!$this->maniaControl->settingManager->getSetting($this, self::SETTING_COLLECT_STATS_ENABLED)) {
+		if (!$this->maniaControl->settingManager->getSettingValue($this, self::SETTING_COLLECT_STATS_ENABLED)) {
 			return;
 		}
 
 		//Check for Minimum PlayerCount
-		if (count($this->maniaControl->playerManager->getPlayers()) < $this->maniaControl->settingManager->getSetting($this, self::SETTING_COLLECT_STATS_MINPLAYERS)) {
+		if (count($this->maniaControl->playerManager->getPlayers()) < $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_COLLECT_STATS_MINPLAYERS)) {
 			return;
 		}
 
@@ -277,7 +278,7 @@ class StatisticCollector implements CallbackListener {
 		}
 
 		//Write Shoot Data into database
-		if (array_sum($this->onShootArray[$login]) > $this->maniaControl->settingManager->getSetting($this, self::SETTING_ON_SHOOT_PRESTORE)) {
+		if (array_sum($this->onShootArray[$login]) > $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_ON_SHOOT_PRESTORE)) {
 			$player = $this->maniaControl->playerManager->getPlayer($login);
 
 			$rocketShots  = $this->onShootArray[$login][self::WEAPON_ROCKET];

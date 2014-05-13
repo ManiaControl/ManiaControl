@@ -156,7 +156,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			$packMask = substr($this->maniaControl->server->titleId, 2);
 		}
 
-		$dedimaniaCode = $this->maniaControl->settingManager->getSetting($this, self::SETTING_DEDIMANIA_CODE . $serverInfo->login . '$l');
+		$dedimaniaCode = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_DEDIMANIA_CODE . $serverInfo->login . '$l');
 		if ($dedimaniaCode == '') {
 			throw new \Exception("No Dedimania Code Specified, check the settings!");
 		}
@@ -403,7 +403,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 		$this->updateManialink = false;
 
-		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_ENABLE)) {
+		if ($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_ENABLE)) {
 			$manialink = $this->buildManialink();
 			$this->maniaControl->manialinkManager->sendManialink($manialink);
 		}
@@ -420,12 +420,12 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		}
 		$records = $this->dedimaniaData->records;
 
-		$title        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_TITLE);
-		$pos_x        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_POSX);
-		$pos_y        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_POSY);
-		$width        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_WIDTH);
-		$lines        = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_LINESCOUNT);
-		$lineHeight   = $this->maniaControl->settingManager->getSetting($this, self::SETTING_WIDGET_LINEHEIGHT);
+		$title        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_TITLE);
+		$pos_x        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_POSX);
+		$pos_y        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_POSY);
+		$width        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_WIDTH);
+		$lines        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_LINESCOUNT);
+		$lineHeight   = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_LINEHEIGHT);
 		$labelStyle   = $this->maniaControl->manialinkManager->styleManager->getDefaultLabelStyle();
 		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
 		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
@@ -582,7 +582,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 							$self->fetchDedimaniaRecords(true);
 						}
 					}
-					if ($self->maniaControl->settingManager->getSetting($self, self::SETTING_WIDGET_ENABLE)) {
+					if ($self->maniaControl->settingManager->getSettingValue($self, self::SETTING_WIDGET_ENABLE)) {
 						$manialink = $self->buildManialink();
 						$self->maniaControl->manialinkManager->sendManialink($manialink, $player->login);
 					}
@@ -754,7 +754,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	}
 
 	/**
-	 * Build votes info struct for callbacks
+	 * Build Votes Info Array for Callbacks
 	 */
 	private function getVotesInfo() {
 		$map = $this->maniaControl->mapManager->getCurrentMap();
@@ -786,7 +786,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	}
 
 	/**
-	 * Plyer finished callback
+	 * Player finished callback
 	 *
 	 * @param $callback
 	 */

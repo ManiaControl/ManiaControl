@@ -246,7 +246,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 		$logMessage = "Player left: {$player->login} / {$player->nickname} Playtime: {$played}";
 		$this->maniaControl->log(Formatter::stripCodes($logMessage));
 
-		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES)) {
+		if ($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_JOIN_LEAVE_MESSAGES)) {
 			$this->maniaControl->chat->sendChat('$0f0$<$fff' . $player->nickname . '$> has left the game');
 		}
 
@@ -332,7 +332,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 		//Check if Player finished joining the game
 		if ($player->hasJoinedGame && !$prevJoinState) {
 
-			if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES) && !$player->isFakePlayer()) {
+			if ($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_JOIN_LEAVE_MESSAGES) && !$player->isFakePlayer()) {
 				$string      = array(0 => '$0f0Player', 1 => '$0f0Moderator', 2 => '$0f0Admin', 3 => '$0f0SuperAdmin', 4 => '$0f0MasterAdmin');
 				$chatMessage = '$0f0' . $string[$player->authLevel] . ' $<$fff' . $player->nickname . '$> Nation: $<$fff' . $player->getCountry() . '$> joined!';
 				$this->maniaControl->chat->sendChat($chatMessage);

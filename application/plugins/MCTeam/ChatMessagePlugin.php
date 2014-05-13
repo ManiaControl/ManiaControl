@@ -399,7 +399,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		$msg = '$ff0[$<' . $player->nickname . '$>] $ff0$iAway From Keyboard!';
 		$this->maniaControl->chat->sendChat($msg, null, false);
 
-		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_AFK_FORCE_SPEC)) {
+		if ($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_AFK_FORCE_SPEC)) {
 			if ($player->isSpectator) {
 				return;
 			}

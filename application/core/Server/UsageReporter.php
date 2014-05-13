@@ -3,10 +3,10 @@
 namespace ManiaControl\Server;
 
 use ManiaControl\Callbacks\TimerListener;
-use ManiaControl\Utils\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Plugins\Plugin;
-use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
+use ManiaControl\Utils\Formatter;
+use Maniaplanet\DedicatedServer\Xmlrpc\NotInScriptModeException;
 
 /**
  * Class reporting ManiaControl Usage for the Server
@@ -46,7 +46,7 @@ class UsageReporter implements TimerListener {
 	 * @param float $time
 	 */
 	public function reportUsage($time) {
-		if (!$this->maniaControl->settingManager->getSetting($this, self::SETTING_REPORT_USAGE)) {
+		if (!$this->maniaControl->settingManager->getSettingValue($this, self::SETTING_REPORT_USAGE)) {
 			return;
 		}
 
@@ -69,12 +69,8 @@ class UsageReporter implements TimerListener {
 		try {
 			$scriptName               = $this->maniaControl->client->getScriptName();
 			$properties['ScriptName'] = $scriptName['CurrentValue'];
-		} catch (Exception $e) {
-			if ($e->getMessage() == 'Not in script mode.') {
-				$properties['ScriptName'] = '';
-			} else {
-				throw $e;
-			}
+		} catch (NotInScriptModeException $e) {
+			$properties['ScriptName'] = '';
 		}
 
 		$activePlugins = array();

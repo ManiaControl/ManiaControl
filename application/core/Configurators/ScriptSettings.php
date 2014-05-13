@@ -149,7 +149,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 * @param Map $map
 	 */
 	public function onBeginMap(Map $map) {
-		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_LOAD_DEFAULT_SETTINGS_MAP_BEGIN)) {
+		if ($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_LOAD_DEFAULT_SETTINGS_MAP_BEGIN)) {
 			$this->loadSettingsFromDatabase();
 		}
 	}

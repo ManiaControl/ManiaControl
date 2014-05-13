@@ -272,6 +272,7 @@ class MapManager implements CallbackListener {
 	 * @param MXMapInfo $mapInfo
 	 * @param string    $login
 	 * @param bool      $update
+	 * @throws InvalidArgumentException
 	 */
 	private function processMapFile($file, MXMapInfo $mapInfo, $login, $update) {
 		// Check if map is already on the server
@@ -285,7 +286,7 @@ class MapManager implements CallbackListener {
 		$fileName = $mapInfo->id . '_' . $mapInfo->name . '.Map.Gbx';
 		$fileName = FileUtil::getClearedFileName($fileName);
 
-		$downloadFolderName  = $this->maniaControl->settingManager->getSetting($this, 'MapDownloadDirectory', 'MX');
+		$downloadFolderName  = $this->maniaControl->settingManager->getSettingValue($this, 'MapDownloadDirectory', 'MX');
 		$relativeMapFileName = $downloadFolderName . DIRECTORY_SEPARATOR . $fileName;
 		$mapDir              = $this->maniaControl->client->getMapsDirectory();
 		$downloadDirectory   = $mapDir . DIRECTORY_SEPARATOR . $downloadFolderName . DIRECTORY_SEPARATOR;
@@ -403,9 +404,10 @@ class MapManager implements CallbackListener {
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_MAPS_UPDATED);
 
 		// Write MapList
-		if ($this->maniaControl->settingManager->getSetting($this, self::SETTING_AUTOSAVE_MAPLIST)) {
+		if ($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_AUTOSAVE_MAPLIST)) {
+			$matchSettingsFileName = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MAPLIST_FILE);
 			try {
-				$this->maniaControl->client->saveMatchSettings($this->maniaControl->settingManager->getSetting($this, self::SETTING_MAPLIST_FILE));
+				$this->maniaControl->client->saveMatchSettings($matchSettingsFileName);
 			} catch (CouldNotWritePlaylistFileException $e) {
 				$this->maniaControl->log("Unable to write the playlist file, please checkout your MX-Folders File permissions!");
 			}
@@ -649,7 +651,7 @@ class MapManager implements CallbackListener {
 	 * @param bool   $restart
 	 */
 	private function beginMap($uid, $restart = false) {
-		//If a restart occured, first call the endMap to set variables back
+		//If a restart occurred, first call the endMap to set variables back
 		if ($restart) {
 			$this->endMap();
 		}

@@ -123,7 +123,7 @@ spl_autoload_register(function ($className) {
 	// Plugin file
 	$filePath = ManiaControlDir . 'plugins' . DIRECTORY_SEPARATOR . $classPath . '.php';
 	if (file_exists($filePath)) {
-		require_once $filePath;
+		include_once $filePath;
 		return;
 	}
 });

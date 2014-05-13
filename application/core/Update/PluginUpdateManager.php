@@ -178,7 +178,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 		}
 		$this->maniaControl->log($message);
 
-		$performBackup = $this->maniaControl->settingManager->getSetting($this->maniaControl->updateManager, UpdateManager::SETTING_PERFORM_BACKUPS);
+		$performBackup = $this->maniaControl->settingManager->getSettingValue($this->maniaControl->updateManager, UpdateManager::SETTING_PERFORM_BACKUPS);
 		if ($performBackup && !BackupUtil::performPluginsBackup()) {
 			$message = 'Creating Backup before Plugins Update failed!';
 			if ($player) {

@@ -103,7 +103,7 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 	 * Build the Log File Name and Folder
 	 */
 	private function buildLogFileName() {
-		$folderName = $this->maniaControl->settingManager->getSetting($this, self::SETTING_FOLDERNAME);
+		$folderName = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_FOLDERNAME);
 		$folderName = FileUtil::getClearedFileName($folderName);
 		$folderDir  = ManiaControlDir . $folderName;
 		if (!is_dir($folderDir)) {
@@ -112,9 +112,9 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 				trigger_error("Couldn't create ChatlogPlugin Log-Folder '{$folderName}'!");
 			}
 		}
-		$fileName = $this->maniaControl->settingManager->getSetting($this, self::SETTING_FILENAME);
+		$fileName = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_FILENAME);
 		$fileName = FileUtil::getClearedFileName($fileName);
-		$usePId   = $this->maniaControl->settingManager->getSetting($this, self::SETTING_USEPID);
+		$usePId   = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_USEPID);
 		if ($usePId) {
 			$dotIndex = strripos($fileName, '.');
 			$pIdPart  = '_' . getmypid();
@@ -142,7 +142,7 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 		$data = $chatCallback[1];
 		if ($data[0] <= 0) {
 			// Server message
-			$logServerMessages = $this->maniaControl->settingManager->getSetting($this, self::SETTING_LOGSERVERMESSAGES);
+			$logServerMessages = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_LOGSERVERMESSAGES);
 			if (!$logServerMessages) {
 				// Skip it
 				return;

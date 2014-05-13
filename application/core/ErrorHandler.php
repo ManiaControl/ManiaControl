@@ -71,7 +71,7 @@ class ErrorHandler {
 			}
 
 			if ($this->maniaControl->settingManager && $this->maniaControl->updateManager) {
-				$error['UpdateChannel']       = $this->maniaControl->settingManager->getSetting($this->maniaControl->updateManager, UpdateManager::SETTING_UPDATECHECK_CHANNEL);
+				$error['UpdateChannel']       = $this->maniaControl->settingManager->getSettingValue($this->maniaControl->updateManager, UpdateManager::SETTING_UPDATECHECK_CHANNEL);
 				$error['ManiaControlVersion'] = ManiaControl::VERSION . ' #' . $this->maniaControl->updateManager->getNightlyBuildDate();
 			} else {
 				$error['ManiaControlVersion'] = ManiaControl::VERSION;
@@ -107,7 +107,7 @@ class ErrorHandler {
 		if (!$this->maniaControl || !$this->maniaControl->settingManager) {
 			return false;
 		}
-		$setting = $this->maniaControl->settingManager->getSetting($this, self::SETTING_RESTART_ON_EXCEPTION, true);
+		$setting = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_RESTART_ON_EXCEPTION, true);
 		return $setting;
 	}
 
@@ -158,7 +158,7 @@ class ErrorHandler {
 			}
 
 			if ($this->maniaControl->settingManager && $this->maniaControl->updateManager) {
-				$error['UpdateChannel']       = $this->maniaControl->settingManager->getSetting($this->maniaControl->updateManager, UpdateManager::SETTING_UPDATECHECK_CHANNEL);
+				$error['UpdateChannel']       = $this->maniaControl->settingManager->getSettingValue($this->maniaControl->updateManager, UpdateManager::SETTING_UPDATECHECK_CHANNEL);
 				$error['ManiaControlVersion'] = ManiaControl::VERSION . ' ' . $this->maniaControl->updateManager->getNightlyBuildDate();
 			} else {
 				$error['ManiaControlVersion'] = ManiaControl::VERSION;

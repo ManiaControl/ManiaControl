@@ -152,12 +152,12 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	 * @return \FML\ManiaLink
 	 */
 	private function buildManialink($menuIdShown = 0, Player $player = null) {
-		$menuPosX     = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_POSX);
-		$menuPosY     = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_POSY);
-		$menuWidth    = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_WIDTH);
-		$menuHeight   = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_HEIGHT);
-		$quadStyle    = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_STYLE);
-		$quadSubstyle = $this->maniaControl->settingManager->getSetting($this, self::SETTING_MENU_SUBSTYLE);
+		$menuPosX     = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MENU_POSX);
+		$menuPosY     = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MENU_POSY);
+		$menuWidth    = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MENU_WIDTH);
+		$menuHeight   = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MENU_HEIGHT);
+		$quadStyle    = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MENU_STYLE);
+		$quadSubstyle = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MENU_SUBSTYLE);
 
 		$menuListWidth  = $menuWidth * 0.3;
 		$menuItemHeight = 10.;

@@ -67,7 +67,7 @@ class StyleManager {
 	 * @return string
 	 */
 	public function getDefaultIconOffsetSM() {
-		return $this->maniaControl->settingManager->getSetting($this, self::SETTING_ICON_DEFAULT_OFFSET_SM);
+		return $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_ICON_DEFAULT_OFFSET_SM);
 	}
 
 	/**
@@ -76,7 +76,7 @@ class StyleManager {
 	 * @return string
 	 */
 	public function getDefaultLabelStyle() {
-		return $this->maniaControl->settingManager->getSetting($this, self::SETTING_LABEL_DEFAULT_STYLE);
+		return $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_LABEL_DEFAULT_STYLE);
 	}
 
 	/**
@@ -85,7 +85,7 @@ class StyleManager {
 	 * @return string
 	 */
 	public function getDefaultQuadStyle() {
-		return $this->maniaControl->settingManager->getSetting($this, self::SETTING_QUAD_DEFAULT_STYLE);
+		return $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_QUAD_DEFAULT_STYLE);
 	}
 
 	/**
@@ -94,7 +94,7 @@ class StyleManager {
 	 * @return string
 	 */
 	public function getDefaultQuadSubstyle() {
-		return $this->maniaControl->settingManager->getSetting($this, self::SETTING_QUAD_DEFAULT_SUBSTYLE);
+		return $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_QUAD_DEFAULT_SUBSTYLE);
 	}
 
 	/**
@@ -123,7 +123,7 @@ class StyleManager {
 	 * @return string
 	 */
 	public function getListWidgetsWidth() {
-		return $this->maniaControl->settingManager->getSetting($this, self::SETTING_LIST_WIDGETS_WIDTH);
+		return $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_LIST_WIDGETS_WIDTH);
 	}
 
 	/**
@@ -132,7 +132,7 @@ class StyleManager {
 	 * @return string
 	 */
 	public function getListWidgetsHeight() {
-		return $this->maniaControl->settingManager->getSetting($this, self::SETTING_LIST_WIDGETS_HEIGHT);
+		return $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_LIST_WIDGETS_HEIGHT);
 	}
 
 	/**
@@ -216,7 +216,7 @@ class StyleManager {
 	 * @return string
 	 */
 	public function getDefaultMainWindowStyle() {
-		return $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAIN_WIDGET_DEFAULT_STYLE);
+		return $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MAIN_WIDGET_DEFAULT_STYLE);
 	}
 
 	/**
@@ -225,6 +225,6 @@ class StyleManager {
 	 * @return string
 	 */
 	public function getDefaultMainWindowSubStyle() {
-		return $this->maniaControl->settingManager->getSetting($this, self::SETTING_MAIN_WIDGET_DEFAULT_SUBSTYLE);
+		return $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MAIN_WIDGET_DEFAULT_SUBSTYLE);
 	}
 }
