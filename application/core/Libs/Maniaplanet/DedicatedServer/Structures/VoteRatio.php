@@ -42,8 +42,8 @@ class VoteRatio extends AbstractStructure
 	function isValid()
 	{
 		return is_string($this->command)
-		&& is_string($this->param)
-		&& self::isRatio($this->ratio);
+			&& is_string($this->param)
+			&& self::isRatio($this->ratio);
 	}
 
 	/**

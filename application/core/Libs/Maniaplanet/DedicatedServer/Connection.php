@@ -56,6 +56,7 @@ class Connection
 	/**
 	 * @param Connection|string $hostOrConnection
 	 * @param int $port
+	 * @return bool
 	 */
 	static function delete($hostOrConnection, $port=null)
 	{
@@ -67,7 +68,9 @@ class Connection
 		{
 			self::$instances[$key]->terminate();
 			unset(self::$instances[$key]);
+			return true;
 		}
+		return false;
 	}
 
 	/**
@@ -189,7 +192,7 @@ class Connection
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function enableCallbacks($enable, $multicall=false)
+	function enableCallbacks($enable=true, $multicall=false)
 	{
 		if(!is_bool($enable))
 			throw new InvalidArgumentException('enable = '.print_r($enable, true));
@@ -471,21 +474,40 @@ class Connection
 	}
 
 	/**
-	 * @deprecated
-	 * @see chatSend()
+	 * Send a text message, possibly localised to a specific login or to everyone, without the server login.
+	 * Only available to Admin.
+	 * @param string|string[][] $message Single string or array of structures {Lang='xx', Text='...'}:
+	 * if no matching language is found, the last text in the array is used
+	 * @param mixed $recipient Login, player object or array; null for all
+	 * @param bool $multicall
+	 * @return bool
+	 * @throws InvalidArgumentException
 	 */
 	function chatSendServerMessage($message, $recipient=null, $multicall=false)
 	{
-		return $this->chatSend($message, $recipient, true, $multicall);
+		$logins = $this->getLogins($recipient, true);
+		if($logins === false)
+			throw new InvalidArgumentException('recipient = '.print_r($recipient, true));
+
+		if(is_array($message))
+			return $this->execute(ucfirst(__FUNCTION__).'ToLanguage', array($message, $logins), $multicall);
+		if(is_string($message))
+		{
+			if($logins)
+				return $this->execute(ucfirst(__FUNCTION__).'ToLogin', array($message, $logins), $multicall);
+			return $this->execute(ucfirst(__FUNCTION__), array($message), $multicall);
+		}
+		// else
+		throw new InvalidArgumentException('message = '.print_r($message, true));
 	}
 
 	/**
 	 * @deprecated
-	 * @see chatSend()
+	 * @see chatSendServerMessage()
 	 */
 	function chatSendServerMessageToLanguage($messages, $recipient=null, $multicall=false)
 	{
-		return $this->chatSend($messages, $recipient, true, $multicall);
+		return $this->chatSendServerMessage($messages, $recipient, $multicall);
 	}
 
 	/**
@@ -494,31 +516,24 @@ class Connection
 	 * @param string|string[][] $message Single string or array of structures {Lang='xx', Text='...'}:
 	 * if no matching language is found, the last text in the array is used
 	 * @param mixed $recipient Login, player object or array; null for all
-	 * @param bool $isServerMessage False to include server login
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function chatSend($message, $recipient=null, $isServerMessage=false, $multicall=false)
+	function chatSend($message, $recipient=null, $multicall=false)
 	{
 		$logins = $this->getLogins($recipient, true);
 		if($logins === false)
 			throw new InvalidArgumentException('recipient = '.print_r($recipient, true));
 
-		$method = ucfirst(__FUNCTION__);
-		if(!is_bool($isServerMessage))
-			throw new InvalidArgumentException('isServerMessage = '.print_r($isServerMessage, true));
-		if($isServerMessage)
-			$method .= 'ServerMessage';
-
+		if(is_array($message))
+			return $this->execute(ucfirst(__FUNCTION__).'ToLanguage', array($message, $logins), $multicall);
 		if(is_string($message))
 		{
-			if($logins === '')
-				return $this->execute($method, array($message), $multicall);
-			return $this->execute($method.'ToLogin', array($message, $logins), $multicall);
+			if($logins)
+				return $this->execute(ucfirst(__FUNCTION__).'ToLogin', array($message, $logins), $multicall);
+			return $this->execute(ucfirst(__FUNCTION__), array($message), $multicall);
 		}
-		if(is_array($message))
-			return $this->execute($method.'ToLanguage', array($message, $logins), $multicall);
 		// else
 		throw new InvalidArgumentException('message = '.print_r($message, true));
 	}
@@ -529,7 +544,7 @@ class Connection
 	 */
 	function chatSendToLanguage($messages, $recipient=null, $multicall=false)
 	{
-		return $this->chatSend($messages, $recipient, false, $multicall);
+		return $this->chatSend($messages, $recipient, $multicall);
 	}
 
 	/**
@@ -551,7 +566,7 @@ class Connection
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function chatEnableManualRouting($enable, $excludeServer=false, $multicall=false)
+	function chatEnableManualRouting($enable=true, $excludeServer=false, $multicall=false)
 	{
 		if(!is_bool($enable))
 			throw new InvalidArgumentException('enable = '.print_r($enable, true));
@@ -620,9 +635,9 @@ class Connection
 		if(!is_int($variant) || $variant < 0 || $variant > 2)
 			throw new InvalidArgumentException('variant = '.print_r($variant, true));
 
-		if($logins === '')
-			return $this->execute(ucfirst(__FUNCTION__), array($message, $avatar, $variant), $multicall);
-		return $this->execute(ucfirst(__FUNCTION__).'ToLogin', array($logins, $message, $avatarLogin, $variant), $multicall);
+		if($logins)
+			return $this->execute(ucfirst(__FUNCTION__).'ToLogin', array($logins, $message, $avatarLogin, $variant), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($message, $avatar, $variant), $multicall);
 	}
 
 	/**
@@ -648,9 +663,9 @@ class Connection
 		if(!is_bool($hideOnClick))
 			throw new InvalidArgumentException('hideOnClick = '.print_r($hideOnClick, true));
 
-		if($logins === '')
-			return $this->execute(ucfirst(__FUNCTION__), array($manialinks, $timeout, $hideOnClick), $multicall);
-		return $this->execute(ucfirst(__FUNCTION__).'ToLogin', array($logins, $manialinks, $timeout, $hideOnClick), $multicall);
+		if($logins)
+			return $this->execute(ucfirst(__FUNCTION__).'ToLogin', array($logins, $manialinks, $timeout, $hideOnClick), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array($manialinks, $timeout, $hideOnClick), $multicall);
 	}
 
 	/**
@@ -666,9 +681,9 @@ class Connection
 		if($logins === false)
 			throw new InvalidArgumentException('recipient = '.print_r($recipient, true));
 
-		if($logins === '')
-			return $this->execute(ucfirst(__FUNCTION__), array(), $multicall);
-		return $this->execute(ucfirst(__FUNCTION__).'ToLogin', array($logins), $multicall);
+		if($logins)
+			return $this->execute(ucfirst(__FUNCTION__).'ToLogin', array($logins), $multicall);
+		return $this->execute(ucfirst(__FUNCTION__), array(), $multicall);
 	}
 
 	/**
@@ -757,7 +772,7 @@ class Connection
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function banAndBlackList($player, $message, $save=false, $multicall=false)
+	function banAndBlackList($player, $message='', $save=false, $multicall=false)
 	{
 		$login = $this->getLogin($player);
 		if($login === false)
@@ -805,7 +820,7 @@ class Connection
 	 * @return Structures\PlayerBan[]
 	 * @throws InvalidArgumentException
 	 */
-	function getBanList($length, $offset)
+	function getBanList($length=-1, $offset=0)
 	{
 		if(!is_int($length))
 			throw new InvalidArgumentException('length = '.print_r($length, true));
@@ -867,7 +882,7 @@ class Connection
 	 * @return Structures\Player[]
 	 * @throws InvalidArgumentException
 	 */
-	function getBlackList($length, $offset)
+	function getBlackList($length=-1, $offset=0)
 	{
 		if(!is_int($length))
 			throw new InvalidArgumentException('length = '.print_r($length, true));
@@ -880,12 +895,12 @@ class Connection
 	/**
 	 * Load the black list file with the specified file name.
 	 * Only available to Admin.
-	 * @param string $filename
+	 * @param string $filename Empty for default filename (blacklist.txt)
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function loadBlackList($filename, $multicall=false)
+	function loadBlackList($filename='', $multicall=false)
 	{
 		if(!is_string($filename))
 			throw new InvalidArgumentException('filename = '.print_r($filename, true));
@@ -896,12 +911,12 @@ class Connection
 	/**
 	 * Save the black list in the file with specified file name.
 	 * Only available to Admin.
-	 * @param string $filename
+	 * @param string $filename Empty for default filename (blacklist.txt)
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function saveBlackList($filename, $multicall=false)
+	function saveBlackList($filename='', $multicall=false)
 	{
 		if(!is_string($filename))
 			throw new InvalidArgumentException('filename = '.print_r($filename, true));
@@ -962,7 +977,7 @@ class Connection
 	 * @return array
 	 * @throws InvalidArgumentException
 	 */
-	function getGuestList($length, $offset)
+	function getGuestList($length=-1, $offset=0)
 	{
 		if(!is_int($length))
 			throw new InvalidArgumentException('length = '.print_r($length, true));
@@ -975,12 +990,12 @@ class Connection
 	/**
 	 * Load the guest list file with the specified file name.
 	 * Only available to Admin.
-	 * @param string $filename
+	 * @param string $filename Empty for default filename (guestlist.txt)
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function loadGuestList($filename, $multicall=false)
+	function loadGuestList($filename='', $multicall=false)
 	{
 		if(!is_string($filename))
 			throw new InvalidArgumentException('filename = '.print_r($filename, true));
@@ -991,12 +1006,12 @@ class Connection
 	/**
 	 * Save the guest list in the file with specified file name.
 	 * Only available to Admin.
-	 * @param string $filename
+	 * @param string $filename Empty for default filename (guestlist.txt)
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function saveGuestList($filename, $multicall=false)
+	function saveGuestList($filename='', $multicall=false)
 	{
 		if(!is_string($filename))
 			throw new InvalidArgumentException('filename = '.print_r($filename, true));
@@ -1030,7 +1045,7 @@ class Connection
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function getBuddyNotification($player)
+	function getBuddyNotification($player=null)
 	{
 		$login = $this->getLogin($player, true);
 		if($login === false)
@@ -1040,9 +1055,9 @@ class Connection
 	}
 
 	/**
-	 * Write the data to the specified file. The filename is relative to the Maps path.
+	 * Write the data to the specified file.
 	 * Only available to Admin.
-	 * @param string $filename
+	 * @param string $filename Relative to the Maps path
 	 * @param string $data
 	 * @param bool $multicall
 	 * @return bool
@@ -1060,9 +1075,9 @@ class Connection
 	}
 
 	/**
-	 * Write the data to the specified file. The filename is relative to the Maps path.
+	 * Write the data to the specified file.
 	 * Only available to Admin.
-	 * @param string $filename
+	 * @param string $filename Relative to the Maps path
 	 * @param string $localFilename
 	 * @param bool $multicall
 	 * @return bool
@@ -1189,7 +1204,7 @@ class Connection
 	 * @return Structures\Player[]
 	 * @throws InvalidArgumentException
 	 */
-	function getIgnoreList($length, $offset)
+	function getIgnoreList($length=-1, $offset=0)
 	{
 		if(!is_int($length))
 			throw new InvalidArgumentException('length = '.print_r($length, true));
@@ -1210,7 +1225,7 @@ class Connection
 	 * @return int BillId
 	 * @throws InvalidArgumentException
 	 */
-	function pay($payee, $amount, $message, $multicall=false)
+	function pay($payee, $amount, $message='', $multicall=false)
 	{
 		$login = $this->getLogin($payee);
 		if($login === false)
@@ -1235,7 +1250,7 @@ class Connection
 	 * @return int BillId
 	 * @throws InvalidArgumentException
 	 */
-	function sendBill($payer, $amount, $message, $payee = '', $multicall=false)
+	function sendBill($payer, $amount, $message='', $payee=null, $multicall=false)
 	{
 		$payerLogin = $this->getLogin($payer);
 		if($payerLogin === false)
@@ -1589,7 +1604,7 @@ class Connection
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function customizeQuitDialog($manialink, $sendToServer, $askFavorite, $quitButtonDelay, $multicall=false)
+	function customizeQuitDialog($manialink, $sendToServer='', $askFavorite=true, $quitButtonDelay=0, $multicall=false)
 	{
 		if(!is_string($manialink))
 			throw new InvalidArgumentException('manialink = '.print_r($manialink, true));
@@ -1611,7 +1626,7 @@ class Connection
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function keepPlayerSlots($keep, $multicall=false)
+	function keepPlayerSlots($keep=true, $multicall=false)
 	{
 		if(!is_bool($keep))
 			throw new InvalidArgumentException('keep = '.print_r($keep, true));
@@ -1636,7 +1651,7 @@ class Connection
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function enableP2PUpload($enable, $multicall=false)
+	function enableP2PUpload($enable=true, $multicall=false)
 	{
 		if(!is_bool($enable))
 			throw new InvalidArgumentException('enable = '.print_r($enable, true));
@@ -1661,7 +1676,7 @@ class Connection
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function enableP2PDownload($enable, $multicall=false)
+	function enableP2PDownload($enable=true, $multicall=false)
 	{
 		if(!is_bool($enable))
 			throw new InvalidArgumentException('enable = '.print_r($enable, true));
@@ -1686,7 +1701,7 @@ class Connection
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function allowMapDownload($allow, $multicall=false)
+	function allowMapDownload($allow=true, $multicall=false)
 	{
 		if(!is_bool($allow))
 			throw new InvalidArgumentException('allow = '.print_r($allow, true));
@@ -1839,7 +1854,7 @@ class Connection
 	 * Returns the token infos for a player.
 	 * @param mixed $player Login or player object
 	 * @param bool $multicall
-	 * @return array {int TokenCost, bool CanPayToken}
+	 * @return Structures\TokenInfos
 	 * @throws InvalidArgumentException
 	 */
 	function getDemoTokenInfosForPlayer($player)
@@ -1848,7 +1863,7 @@ class Connection
 		if($login === false)
 			throw new InvalidArgumentException('player = '.print_r($player, true));
 
-		return $this->execute(ucfirst(__FUNCTION__), array($login));
+		return Structures\TokenInfos::fromArray($this->execute(ucfirst(__FUNCTION__), array($login)));
 	}
 
 	/**
@@ -1859,7 +1874,7 @@ class Connection
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function disableHorns($disable, $multicall=false)
+	function disableHorns($disable=true, $multicall=false)
 	{
 		if(!is_bool($disable))
 			throw new InvalidArgumentException('disable = '.print_r($disable, true));
@@ -1884,7 +1899,7 @@ class Connection
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function disableServiceAnnounces($disable, $multicall=false)
+	function disableServiceAnnounces($disable=true, $multicall=false)
 	{
 		if(!is_bool($disable))
 			throw new InvalidArgumentException('disable = '.print_r($disable, true));
@@ -1909,7 +1924,7 @@ class Connection
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function autoSaveReplays($enable, $multicall=false)
+	function autoSaveReplays($enable=true, $multicall=false)
 	{
 		if(!is_bool($enable))
 			throw new InvalidArgumentException('enable = '.print_r($enable, true));
@@ -1925,7 +1940,7 @@ class Connection
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function autoSaveValidationReplays($enable, $multicall=false)
+	function autoSaveValidationReplays($enable=true, $multicall=false)
 	{
 		if(!is_bool($enable))
 			throw new InvalidArgumentException('enable = '.print_r($enable, true));
@@ -2131,6 +2146,7 @@ class Connection
 	 * Defines the packmask of the server.
 	 * Only maps matching the packmask will be allowed on the server, so that player connecting to it know what to expect.
 	 * Only available when the server is stopped.
+	 * Only available in 2011-08-01 API version.
 	 * Only available to Admin.
 	 * @param string $packMask
 	 * @param bool $multicall
@@ -2140,13 +2156,14 @@ class Connection
 	function setServerPackMask($packMask, $multicall=false)
 	{
 		if(!is_string($packMask))
-			throw new InvalidArgumentException('packMask = '.print_r($enable, true));
+			throw new InvalidArgumentException('packMask = '.print_r($packMask, true));
 
 		return $this->execute(ucfirst(__FUNCTION__), array($packMask), $multicall);
 	}
 
 	/**
 	 * Get the packmask of the server.
+	 * Only available in 2011-08-01 API version.
 	 * @return string
 	 */
 	function getServerPackMask()
@@ -2456,7 +2473,7 @@ class Connection
 	 */
 	function setModeScriptSettings($settings, $multicall=false)
 	{
-		if(!is_array($settings))
+		if(!is_array($settings) || !$settings)
 			throw new InvalidArgumentException('settings = '.print_r($settings, true));
 
 		return $this->execute(ucfirst(__FUNCTION__), array($settings), $multicall);
@@ -2465,13 +2482,16 @@ class Connection
 	/**
 	 * Send commands to the mode script.
 	 * Only available to Admin.
-	 * @param mixed[] $commands
+	 * @param mixed[] $commands {mixed <command name>, ...}
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
 	function sendModeScriptCommands($commands, $multicall=false)
 	{
+		if(!is_array($commands) || !$commands)
+			throw new InvalidArgumentException('commands = '.print_r($commands, true));
+
 		return $this->execute(ucfirst(__FUNCTION__), array($commands), $multicall);
 	}
 
@@ -2479,19 +2499,24 @@ class Connection
 	 * Change the settings and send commands to the mode script.
 	 * Only available to Admin.
 	 * @param mixed[] $settings {mixed <setting name>, ...}
-	 * @param mixed[] $commands
+	 * @param mixed[] $commands {mixed <command name>, ...}
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
 	function setModeScriptSettingsAndCommands($settings, $commands, $multicall=false)
 	{
+		if(!is_array($settings) || !$settings)
+			throw new InvalidArgumentException('settings = '.print_r($settings, true));
+		if(!is_array($commands) || !$commands)
+			throw new InvalidArgumentException('commands = '.print_r($commands, true));
+
 		return $this->execute(ucfirst(__FUNCTION__), array($settings, $commands), $multicall);
 	}
 
 	/**
 	 * Returns the current xml-rpc variables of the mode script.
-	 * @return array {mixed <setting name>, ...}
+	 * @return array {mixed <variable name>, ...}
 	 */
 	function getModeScriptVariables()
 	{
@@ -2501,13 +2526,16 @@ class Connection
 	/**
 	 * Set the xml-rpc variables of the mode script.
 	 * Only available to Admin.
-	 * @param mixed[] $variables
+	 * @param mixed[] $variables {mixed <variable name>, ...}
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
 	function setModeScriptVariables($variables, $multicall=false)
 	{
+		if(!is_array($variables) || !$variables)
+			throw new InvalidArgumentException('variables = '.print_r($variables, true));
+
 		return $this->execute(ucfirst(__FUNCTION__), array($variables), $multicall);
 	}
 
@@ -2515,7 +2543,7 @@ class Connection
 	 * Send an event to the mode script.
 	 * Only available to Admin.
 	 * @param string $event
-	 * @param string $params
+	 * @param string|string[] $params
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
@@ -2524,29 +2552,22 @@ class Connection
 	{
 		if(!is_string($event))
 			throw new InvalidArgumentException('event = '.print_r($event, true));
-		if(!is_string($params))
-			throw new InvalidArgumentException('params = '.print_r($params, true));
 
-		return $this->execute(ucfirst(__FUNCTION__), array($event, $params), $multicall);
+		if(is_string($params))
+			return $this->execute(ucfirst(__FUNCTION__), array($event, $params), $multicall);
+		if(is_array($params))
+			return $this->execute(ucfirst(__FUNCTION__).'Array', array($event, $params), $multicall);
+		// else
+		throw new InvalidArgumentException('params = '.print_r($params, true));
 	}
 
 	/**
-	 * Send an event to the mode script.
-	 * Only available to Admin.
-	 * @param string $event
-	 * @param mixed[] $params
-	 * @param bool $multicall
-	 * @return bool
-	 * @throws InvalidArgumentException
+	 * @deprecated
+	 * @see triggerModeScriptEvent()
 	 */
-	function triggerModeScriptEventArray($event, $params, $multicall=false)
+	function triggerModeScriptEventArray($event, $params=array(), $multicall=false)
 	{
-		if(!is_string($event))
-			throw new InvalidArgumentException('events = '.print_r($event, true));
-		if(!is_array($params))
-			throw new InvalidArgumentException('params = '.print_r($params, true));
-
-		return $this->execute(ucfirst(__FUNCTION__), array($event, $params), $multicall);
+		return $this->triggerModeScriptEvent($event, $params, $multicall);
 	}
 
 	/**
@@ -2569,7 +2590,8 @@ class Connection
 	}
 
 	/**
-	 * Set the script cloud variables of given object. Only available to Admin.
+	 * Set the script cloud variables of given object.
+	 * Only available to Admin.
 	 * @param string $arg1
 	 * @param string $arg2
 	 * @param struct $arg3
@@ -3367,7 +3389,7 @@ class Connection
 
 	/**
 	 * Returns a struct containing the infos for the map with the specified filename.
-	 * @param string $filename
+	 * @param string $filename Relative to the Maps path
 	 * @return Structures\Map
 	 * @throws InvalidArgumentException
 	 */
@@ -3381,7 +3403,7 @@ class Connection
 
 	/**
 	 * Returns a boolean if the map with the specified filename matches the current server settings.
-	 * @param string $filename
+	 * @param string $filename Relative to the Maps path
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
@@ -3401,7 +3423,7 @@ class Connection
 	 * @return Structures\Map[]
 	 * @throws InvalidArgumentException
 	 */
-	function getMapList($length, $offset)
+	function getMapList($length=-1, $offset=0)
 	{
 		if(!is_int($length))
 			throw new InvalidArgumentException('length = '.print_r($length, true));
@@ -3414,14 +3436,14 @@ class Connection
 	/**
 	 * Add the map with the specified filename at the end of the current selection.
 	 * Only available to Admin.
-	 * @param string $filename
+	 * @param string $filename Relative to the Maps path
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
 	function addMap($filename, $multicall=false)
 	{
-		if(!is_string($filename))
+		if(!is_string($filename) || !strlen($filename))
 			throw new InvalidArgumentException('filename = '.print_r($filename, true));
 
 		return $this->execute(ucfirst(__FUNCTION__), array($filename), $multicall);
@@ -3430,9 +3452,9 @@ class Connection
 	/**
 	 * Add the list of maps with the specified filenames at the end of the current selection.
 	 * Only available to Admin.
-	 * @param string[] $filenames
+	 * @param string[] $filenames Relative to the Maps path
 	 * @param bool $multicall
-	 * @return int
+	 * @return int Number of maps actually added
 	 * @throws InvalidArgumentException
 	 */
 	function addMapList($filenames, $multicall=false)
@@ -3446,14 +3468,14 @@ class Connection
 	/**
 	 * Remove the map with the specified filename from the current selection.
 	 * Only available to Admin.
-	 * @param string $filename
+	 * @param string $filename Relative to the Maps path
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
 	function removeMap($filename, $multicall=false)
 	{
-		if(!is_string($filename))
+		if(!is_string($filename) || !strlen($filename))
 			throw new InvalidArgumentException('filename = '.print_r($filename, true));
 
 		return $this->execute(ucfirst(__FUNCTION__), array($filename), $multicall);
@@ -3462,9 +3484,9 @@ class Connection
 	/**
 	 * Remove the list of maps with the specified filenames from the current selection.
 	 * Only available to Admin.
-	 * @param string[] $filenames
+	 * @param string[] $filenames Relative to the Maps path
 	 * @param bool $multicall
-	 * @return int
+	 * @return int Number of maps actually removed
 	 * @throws InvalidArgumentException
 	 */
 	function removeMapList($filenames, $multicall=false)
@@ -3478,14 +3500,14 @@ class Connection
 	/**
 	 * Insert the map with the specified filename after the current map.
 	 * Only available to Admin.
-	 * @param string $filename
+	 * @param string $filename Relative to the Maps path
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
 	function insertMap($filename, $multicall=false)
 	{
-		if(!is_string($filename))
+		if(!is_string($filename) || !strlen($filename))
 			throw new InvalidArgumentException('filename = '.print_r($filename, true));
 
 		return $this->execute(ucfirst(__FUNCTION__), array($filename), $multicall);
@@ -3494,9 +3516,9 @@ class Connection
 	/**
 	 * Insert the list of maps with the specified filenames after the current map.
 	 * Only available to Admin.
-	 * @param string[] $filenames
+	 * @param string[] $filenames Relative to the Maps path
 	 * @param bool $multicall
-	 * @return int
+	 * @return int Number of maps actually inserted
 	 * @throws InvalidArgumentException
 	 */
 	function insertMapList($filenames, $multicall=false)
@@ -3510,14 +3532,14 @@ class Connection
 	/**
 	 * Set as next map the one with the specified filename, if it is present in the selection.
 	 * Only available to Admin.
-	 * @param string $filename
+	 * @param string $filename Relative to the Maps path
 	 * @param bool $multicall
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
 	function chooseNextMap($filename, $multicall=false)
 	{
-		if(!is_string($filename))
+		if(!is_string($filename) || !strlen($filename))
 			throw new InvalidArgumentException('filename = '.print_r($filename, true));
 
 		return $this->execute(ucfirst(__FUNCTION__), array($filename), $multicall);
@@ -3526,9 +3548,9 @@ class Connection
 	/**
 	 * Set as next maps the list of maps with the specified filenames, if they are present in the selection.
 	 * Only available to Admin.
-	 * @param array $filenames
+	 * @param array $filenames Relative to the Maps path
 	 * @param bool $multicall
-	 * @return int
+	 * @return int Number of maps actually chosen
 	 * @throws InvalidArgumentException
 	 */
 	function chooseNextMapList($filenames, $multicall=false)
@@ -3542,14 +3564,14 @@ class Connection
 	/**
 	 * Set a list of maps defined in the playlist with the specified filename as the current selection of the server, and load the gameinfos from the same file.
 	 * Only available to Admin.
-	 * @param string $filename
+	 * @param string $filename Relative to the Maps path
 	 * @param bool $multicall
-	 * @return int
+	 * @return int Number of maps in the new list
 	 * @throws InvalidArgumentException
 	 */
 	function loadMatchSettings($filename, $multicall=false)
 	{
-		if(!is_string($filename))
+		if(!is_string($filename) || !strlen($filename))
 			throw new InvalidArgumentException('filename = '.print_r($filename, true));
 
 		return $this->execute(ucfirst(__FUNCTION__), array($filename), $multicall);
@@ -3558,14 +3580,14 @@ class Connection
 	/**
 	 * Add a list of maps defined in the playlist with the specified filename at the end of the current selection.
 	 * Only available to Admin.
-	 * @param string $filename
+	 * @param string $filename Relative to the Maps path
 	 * @param bool $multicall
-	 * @return int
+	 * @return int Number of maps actually added
 	 * @throws InvalidArgumentException
 	 */
 	function appendPlaylistFromMatchSettings($filename, $multicall=false)
 	{
-		if(!is_string($filename))
+		if(!is_string($filename) || !strlen($filename))
 			throw new InvalidArgumentException('filename = '.print_r($filename, true));
 
 		return $this->execute(ucfirst(__FUNCTION__), array($filename), $multicall);
@@ -3574,14 +3596,14 @@ class Connection
 	/**
 	 * Save the current selection of map in the playlist with the specified filename, as well as the current gameinfos.
 	 * Only available to Admin.
-	 * @param string $filename
+	 * @param string $filename Relative to the Maps path
 	 * @param bool $multicall
-	 * @return int
+	 * @return int Number of maps in the saved playlist
 	 * @throws InvalidArgumentException
 	 */
 	function saveMatchSettings($filename, $multicall=false)
 	{
-		if(!is_string($filename))
+		if(!is_string($filename) || !strlen($filename))
 			throw new InvalidArgumentException('filename = '.print_r($filename, true));
 
 		return $this->execute(ucfirst(__FUNCTION__), array($filename), $multicall);
@@ -3590,14 +3612,14 @@ class Connection
 	/**
 	 * Insert a list of maps defined in the playlist with the specified filename after the current map.
 	 * Only available to Admin.
-	 * @param string $filename
+	 * @param string $filename Relative to the Maps path
 	 * @param bool $multicall
-	 * @return int
+	 * @return int Number of maps actually inserted
 	 * @throws InvalidArgumentException
 	 */
 	function insertPlaylistFromMatchSettings($filename, $multicall=false)
 	{
-		if(!is_string($filename))
+		if(!is_string($filename) || !strlen($filename))
 			throw new InvalidArgumentException('filename = '.print_r($filename, true));
 
 		return $this->execute(ucfirst(__FUNCTION__), array($filename), $multicall);
@@ -3611,7 +3633,7 @@ class Connection
 	 * @return Structures\PlayerInfo[]
 	 * @throws InvalidArgumentException
 	 */
-	function getPlayerList($length, $offset, $compatibility=1)
+	function getPlayerList($length=-1, $offset=0, $compatibility=1)
 	{
 		if(!is_int($length))
 			throw new InvalidArgumentException('length = '.print_r($length, true));
@@ -3672,19 +3694,16 @@ class Connection
 	}
 
 	/**
-	 * Returns the current rankings for the race in progress.
-	 * (In trackmania legacy team modes, the scores for the two teams are returned.
-	 * In other modes, it's the individual players' scores)
-	 * The ranking returned is a list of structures.
-	 * Each structure contains the following fields : Login, NickName, PlayerId and Rank.
-	 * In addition, for legacy trackmania modes it also contains BestTime, Score, NbrLapsFinished, LadderScore,
-	 * and an array BestCheckpoints that contains the checkpoint times for the best race.
+	 * Returns the current rankings for the match in progress.
+	 * In script modes, scores aren't returned.
+	 * In team modes, the scores for the two teams are returned.
+	 * In other modes, it's the individual players' scores.
 	 * @param int $length Maximum number of infos to be returned
 	 * @param int $offset Starting index in the list
 	 * @return Structures\PlayerRanking[]
 	 * @throws InvalidArgumentException
 	 */
-	function getCurrentRanking($length, $offset)
+	function getCurrentRanking($length=-1, $offset=0)
 	{
 		if(!is_int($length))
 			throw new InvalidArgumentException('length = '.print_r($length, true));
@@ -3695,11 +3714,9 @@ class Connection
 	}
 
 	/**
-	 * Returns the current ranking for the race in progressof the player with the specified login (or list of comma-separated logins).
-	 * The ranking returned is a list of structures.
-	 * Each structure contains the following fields : Login, NickName, PlayerId and Rank.
-	 * In addition, for legacy trackmania modes it also contains BestTime, Score, NbrLapsFinished, LadderScore,
-	 * and an array BestCheckpoints that contains the checkpoint times for the best race.
+	 * Returns the current ranking of the player with the specified login (or list of comma-separated logins) for the match in progress.
+	 * In script modes, scores aren't returned.
+	 * In other modes, it's the individual players' scores.
 	 * @param mixed $players Login, player object or array
 	 * @param bool $multicall
 	 * @return Structures\PlayerRanking[]
@@ -3715,8 +3732,8 @@ class Connection
 	}
 
 	/**
-	 * Returns the current winning team for the race in progress. (-1: if not in team mode, or draw match)
-	 * @return int
+	 * Returns the current winning team for the race in progress.
+	 * @return int -1: if not in team mode or draw match, 0 or 1 otherwise
 	 */
 	function getCurrentWinnerTeam()
 	{
@@ -3819,7 +3836,7 @@ class Connection
 
 	/**
 	 * Pass the login of the spectator.
-	 * A spectator that once was a player keeps his player slot, so that he can go back to race mode.
+	 * A spectator that once was a player keeps his player slot, so that he can go back to player mode.
 	 * Calling this function frees this slot for another player to connect.
 	 * Only available to Admin.
 	 * @param mixed $player Login or player object
@@ -3844,7 +3861,7 @@ class Connection
 	 * @return bool
 	 * @throws InvalidArgumentException
 	 */
-	function manualFlowControlEnable($enable, $multicall=false)
+	function manualFlowControlEnable($enable=true, $multicall=false)
 	{
 		if(!is_bool($enable))
 			throw new InvalidArgumentException('enable = '.print_r($enable, true));
@@ -3961,8 +3978,7 @@ class Connection
 				$login = $this->getLogin($player);
 				if($login === false)
 					return false;
-				else
-					$logins[] = $login;
+				$logins[] = $login;
 			}
 
 			return implode(',', $logins);
