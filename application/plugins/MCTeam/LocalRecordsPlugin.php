@@ -329,7 +329,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 	 *
 	 * @param Setting $setting
 	 */
-	public function handleSettingsChanged(Setting $setting) {
+	public function handleSettingChanged(Setting $setting) {
 		if (!$setting->belongsToClass($this)) {
 			return;
 		}

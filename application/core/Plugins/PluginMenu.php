@@ -312,10 +312,10 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 
 
 			if ($setting->type === Setting::TYPE_BOOL) {
-				if ($setting->value == "0") {
-					$substyle = Quad_Icons64x64_1::SUBSTYLE_LvlRed;
-				} else if ($setting->value == "1") {
+				if ($setting->value) {
 					$substyle = Quad_Icons64x64_1::SUBSTYLE_LvlGreen;
+				} else {
+					$substyle = Quad_Icons64x64_1::SUBSTYLE_LvlRed;
 				}
 
 				$quad = new Quad_Icons64x64_1();

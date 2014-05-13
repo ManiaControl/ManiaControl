@@ -401,9 +401,9 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 		$frame = new Frame();
 		$maniaLink->add($frame);
 		$frame->setSize(60, 6);
-		$xPosSetting = $this->maniaControl->settingManager->getSettingValue($this, self::QUEUE_WIDGET_POS_X);
-		$yPosSetting = $this->maniaControl->settingManager->getSettingValue($this, self::QUEUE_WIDGET_POS_Y);
-		$frame->setPosition($xPosSetting->value, $yPosSetting->value, 0);
+		$xPos = $this->maniaControl->settingManager->getSettingValue($this, self::QUEUE_WIDGET_POS_X);
+		$yPos = $this->maniaControl->settingManager->getSettingValue($this, self::QUEUE_WIDGET_POS_Y);
+		$frame->setPosition($xPos, $yPos, 0);
 
 		// Background
 		$backgroundQuad = new Quad();

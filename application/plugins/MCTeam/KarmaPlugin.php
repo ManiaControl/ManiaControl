@@ -894,8 +894,8 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		$title        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_TITLE);
 		$pos_x        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_POSX);
 		$pos_y        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_POSY);
-		$width        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_WIDTH)->value;
-		$height       = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_HEIGHT)->value;
+		$width        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_WIDTH);
+		$height       = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_HEIGHT);
 		$labelStyle   = $this->maniaControl->manialinkManager->styleManager->getDefaultLabelStyle();
 		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
 		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
