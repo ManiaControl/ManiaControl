@@ -335,7 +335,9 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	}
 
 	/**
-	 * Build map info struct for dedimania requests
+	 * Build Map Info Array for Dedimania Requests
+	 *
+	 * @return array
 	 */
 	private function getMapInfo() {
 		$map = $this->maniaControl->mapManager->getCurrentMap();

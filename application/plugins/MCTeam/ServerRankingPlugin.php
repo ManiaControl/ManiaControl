@@ -130,8 +130,8 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::ENDMAP, $this, 'handleEndMap');
 
 		//Register CommandListener
-		$this->maniaControl->commandManager->registerCommandListener('rank', $this, 'command_showRank', false, 'Shows your current serverrank.');
-		$this->maniaControl->commandManager->registerCommandListener('nextrank', $this, 'command_nextRank', false, 'Shows the person in front of you in the serverranking.');
+		$this->maniaControl->commandManager->registerCommandListener('rank', $this, 'command_showRank', false, 'Shows your current ServerRank.');
+		$this->maniaControl->commandManager->registerCommandListener('nextrank', $this, 'command_nextRank', false, 'Shows the person in front of you in the ServerRanking.');
 		$this->maniaControl->commandManager->registerCommandListener(array('topranks', 'top100'), $this, 'command_topRanks', false, 'Shows an overview of the best-ranked 100 players.');
 
 		$this->resetRanks(); //TODO only update records count
@@ -148,7 +148,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		           `Avg` float NOT NULL default 0,
 		           KEY `PlayerIndex` (`PlayerIndex`),
 		           UNIQUE `Rank` (`Rank`)
-				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Mania Control Serverranking';";
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Mania Control ServerRanking';";
 		$mysqli->query($query);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error, E_USER_ERROR);

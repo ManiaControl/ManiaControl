@@ -449,7 +449,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	}
 
 	/**
-	 * Provide an overview ManiaLink with donators
+	 * Provide an Overview ManiaLink with Donators
 	 *
 	 * @param Player $player
 	 */

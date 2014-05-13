@@ -364,11 +364,9 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		if (!$player) {
 			$properties['getvotesonly'] = false;
 			$properties['playerlogins'] = array();
-			foreach ($this->maniaControl->playerManager->getPlayers() as $plyr) {
-				/**
-				 * @var Player $player
-				 */
-				$properties['playerlogins'][] = $plyr->login;
+			foreach ($this->maniaControl->playerManager->getPlayers() as $loopPlayer) {
+				/** @var Player $loopPlayer */
+				$properties['playerlogins'][] = $loopPlayer->login;
 			}
 		} else {
 			$properties['getvotesonly'] = true;
@@ -1003,7 +1001,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	}
 
 	/**
-	 * Save Mx Karma Votes at Mapend
+	 * Save Mx Karma Votes at MapEnd
 	 */
 	public function sendMxKarmaVotes(Map $map) {
 		if (!$this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MX_KARMA_ACTIVATED)) {

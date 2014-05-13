@@ -754,7 +754,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		// Set status to target player login
 		$this->playersListShown[$caller->login] = $login;
 
-		// Reopen playerlist
+		// Reopen PlayerList
 		$this->showPlayerList($caller);
 	}
 

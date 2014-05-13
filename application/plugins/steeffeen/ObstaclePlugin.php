@@ -74,7 +74,7 @@ class ObstaclePlugin implements CallbackListener, CommandListener, Plugin {
 	 * @see \ManiaControl\Plugins\Plugin::getDescription()
 	 */
 	public static function getDescription() {
-		return "Plugin offering CP Jumping and Local Records Support for the ShootManie Gamemode 'Obstacle'.";
+		return "Plugin offering CP Jumping and Local Records Support for the ShootMania GameMode 'Obstacle'.";
 	}
 
 	/**

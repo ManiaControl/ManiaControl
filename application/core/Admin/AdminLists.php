@@ -56,7 +56,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 		$itemQuad = new Quad_UIConstruction_Buttons();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Author);
 		$itemQuad->setAction(self::ACTION_OPEN_ADMINLISTS);
-		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 50, 'Open Adminlist');
+		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 50, 'Open AdminList');
 	}
 
 	/**

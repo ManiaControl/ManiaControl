@@ -58,7 +58,7 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_ONINIT, $this, 'handleOnInit');
 
 		// Register for commands
-		$this->maniaControl->commandManager->registerCommandListener('setservername', $this, 'command_SetServerName', true, 'Sets the servername.');
+		$this->maniaControl->commandManager->registerCommandListener('setservername', $this, 'command_SetServerName', true, 'Sets the ServerName.');
 		$this->maniaControl->commandManager->registerCommandListener('setpwd', $this, 'command_SetPwd', true, 'Sets play password.');
 		$this->maniaControl->commandManager->registerCommandListener('setspecpwd', $this, 'command_SetSpecPwd', true, 'Sets spectator password.');
 		$this->maniaControl->commandManager->registerCommandListener('setmaxplayers', $this, 'command_SetMaxPlayers', true, 'Sets the maximum number of players.');

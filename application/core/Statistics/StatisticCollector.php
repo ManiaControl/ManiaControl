@@ -20,8 +20,8 @@ class StatisticCollector implements CallbackListener {
 	 * Constants
 	 */
 	const SETTING_COLLECT_STATS_ENABLED    = 'Collect Stats Enabled';
-	const SETTING_COLLECT_STATS_MINPLAYERS = 'Minimum Playercount for Collecting Stats';
-	const SETTING_ON_SHOOT_PRESTORE        = 'Prestore Shoots before insert into Database';
+	const SETTING_COLLECT_STATS_MINPLAYERS = 'Minimum Player Count for Collecting Stats';
+	const SETTING_ON_SHOOT_PRESTORE        = 'Prestore Shots before Insert into Database';
 	/*
 	 * Statistics
 	 */

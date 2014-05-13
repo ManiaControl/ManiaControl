@@ -1,7 +1,9 @@
 <?php
+
 namespace ManiaControl\Callbacks;
 
 	//TODO method class for all the libxmlrpc get Methods, to fetch the callback asnyc
+
 /**
  * Callbacks Interface
  *
@@ -10,35 +12,41 @@ namespace ManiaControl\Callbacks;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 interface Callbacks {
-	//Common Callbacks
+	/** Script Callback: CallbackName, CallbackData */
 	const SCRIPTCALLBACK = 'Callbacks.ScriptCallback';
-	/** BeginMatch Callback, param1 MatchNumber */
-	const BEGINMATCH = "Callbacks.BeginMatch";
-	/** LoadingMap Callback, Number of Map */
-	const LOADINGMAP = "Callbacks.LoadingMap";
-	/** BeginMap Callback, triggered by MapManager, param1 Map Object */
-	const BEGINMAP = "Callbacks.BeginMap";
-	/** BeginSubMatch Callback, param1 Number of Submatch */
-	const BEGINSUBMATCH = "Callbacks.BeginSubmatch";
-	/** BeginRound Callback, param1 Number of Round */
-	const BEGINROUND = "Callbacks.BeginRound";
-	/** BeginTurn Callback, param1 Number of Turn */
-	const BEGINTURN = "Callbacks.BeginTurn";
-	/** EndTurn Callback, param1 Number of Turn */
-	const ENDTURN = "Callbacks.EndTurn";
-	/** EndRound Callback, param1 Number of Round */
-	const ENDROUND = "Callbacks.EndRound";
-	/** EndSubMatch Callback, param1 Number of Submatch */
-	const ENDSUBMATCH = "Callbacks.EndSubmatch";
-	/** BeginMap Callback, triggered by MapManager, param1 Map Object */
-	const ENDMAP = "Callbacks.EndMap";
-	/** EndMatch Callback, param1 MatchNumber */
-	const ENDMATCH = "Callbacks.EndMatch";
-	/** BeginWarmup Callback, no parameters */
-	const BEGINWARMUP = "Callbacks.BeginWarmUp";
-	/** EndWarmup Callback, no parameters */
-	const ENDWARMUP = "Callbacks.EndWarmUp";
-	/** PlayerRanking callback, returned after LibXmlRpc_PlayerRanking
+
+	/*
+	 * Common Callbacks
+	 */
+	/** BeginMatch Callback: MatchNumber */
+	const BEGINMATCH = 'Callbacks.BeginMatch';
+	/** LoadingMap Callback: MapNumber */
+	const LOADINGMAP = 'Callbacks.LoadingMap';
+	/** BeginMap Callback: Map */
+	const BEGINMAP = 'Callbacks.BeginMap';
+	/** BeginSubMatch Callback: SubmatchNumber */
+	const BEGINSUBMATCH = 'Callbacks.BeginSubmatch';
+	/** BeginRound Callback: RoundNumber */
+	const BEGINROUND = 'Callbacks.BeginRound';
+	/** BeginTurn Callback: TurnNumber */
+	const BEGINTURN = 'Callbacks.BeginTurn';
+	/** EndTurn Callback: TurnNumber */
+	const ENDTURN = 'Callbacks.EndTurn';
+	/** EndRound Callback: RoundNumber */
+	const ENDROUND = 'Callbacks.EndRound';
+	/** EndSubmatch Callback: SubmatchNumber */
+	const ENDSUBMATCH = 'Callbacks.EndSubmatch';
+	/** EndMap Callback: Map */
+	const ENDMAP = 'Callbacks.EndMap';
+	/** EndMatch Callback: MatchNumber */
+	const ENDMATCH = 'Callbacks.EndMatch';
+
+	/** BeginWarmup Callback */
+	const BEGINWARMUP = 'Callbacks.BeginWarmUp';
+	/** EndWarmup Callback */
+	const ENDWARMUP = 'Callbacks.EndWarmUp';
+
+	/** PlayerRanking Callback, returned after LibXmlRpc_PlayerRanking
 	 * try to avoid to use this, just use the Get function of the RankingsManager instead
 	 * param1 Player $player
 	 * param2 int $rank
@@ -46,13 +54,16 @@ interface Callbacks {
 	 * param4 int AFKStatus */
 	const PLAYERRANKING = 'Callbacks.PlayerRanking';
 
-	//ShootMania Callbacks
-	/** RankingsUpdated Callback, param1 Sorted Rankings */
+	/*
+	 * ShootMania Callbacks
+	 */
+	/** RankingsUpdated Callback: SortedRankings */
 	const RANKINGSUPDATED = 'Callbacks.RankingsUpdated';
-	/** RankingsUpdated Callback, returned after LibXmlRpc_PlayerRanking param1 Scores */
+	/** Scores Callback (returned after LibXmlRpc_PlayerRanking): Scores */
 	const SCORES = 'Callbacks.Scores';
+
 	/** Returns the AFKStatus of an Player, returned after  param1 Scores */ //returned after TODO
 	const AFKSTATUS = 'Callbacks.AfkStatus';
 	/** Returns if the GameMode has Warmup activated, returned after  param1 Scores */ //returned after TODO
 	const WARMUPSTATUS = 'Callbacks.WarmupStatus';
-} 
+}
