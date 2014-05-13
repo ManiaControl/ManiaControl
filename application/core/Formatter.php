@@ -1,6 +1,6 @@
 <?php
 
-namespace ManiaControl\Utils;
+namespace ManiaControl;
 
 /**
  * Class offering Methods to format Texts and Values

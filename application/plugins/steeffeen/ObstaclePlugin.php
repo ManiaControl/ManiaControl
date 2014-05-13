@@ -9,7 +9,7 @@ use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Plugins\Plugin;
-use Maniaplanet\DedicatedServer\Xmlrpc\NotInScriptModeException;
+use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
 
 /**
  * ManiaControl Obstacle Plugin
@@ -120,7 +120,7 @@ class ObstaclePlugin implements CallbackListener, CommandListener, Plugin {
 		$param  = $player->login . ";" . $params[1] . ";";
 		try {
 			$this->maniaControl->client->triggerModeScriptEvent(self::CB_JUMPTO, $param);
-		} catch (NotInScriptModeException $e) {
+		} catch (GameModeException $e) {
 		}
 	}
 

@@ -10,8 +10,8 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
-use Maniaplanet\DedicatedServer\Xmlrpc\LoginUnknownException;
-use Maniaplanet\DedicatedServer\Xmlrpc\NotInScriptModeException;
+use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
+use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
 
 /**
  * Manialink Manager Class
@@ -215,7 +215,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 
 				return $success;
 			}
-		} catch (LoginUnknownException $e) {
+		} catch (UnknownPlayerException $e) {
 			return false;
 		}
 
@@ -250,7 +250,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	public function disableAltMenu(Player $player) {
 		try {
 			$success = $this->maniaControl->client->triggerModeScriptEvent('LibXmlRpc_DisableAltMenu', $player->login);
-		} catch (NotInScriptModeException $e) {
+		} catch (GameModeException $e) {
 			return false;
 		}
 		return $success;
@@ -295,7 +295,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	public function enableAltMenu(Player $player) {
 		try {
 			$success = $this->maniaControl->client->triggerModeScriptEvent('LibXmlRpc_EnableAltMenu', $player->login);
-		} catch (NotInScriptModeException $e) {
+		} catch (GameModeException $e) {
 			return false;
 		}
 		return $success;

@@ -6,7 +6,7 @@ use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Plugins\Plugin;
 use ManiaControl\Utils\Formatter;
-use Maniaplanet\DedicatedServer\Xmlrpc\NotInScriptModeException;
+use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
 
 /**
  * Class reporting ManiaControl Usage for the Server
@@ -69,7 +69,7 @@ class UsageReporter implements TimerListener {
 		try {
 			$scriptName               = $this->maniaControl->client->getScriptName();
 			$properties['ScriptName'] = $scriptName['CurrentValue'];
-		} catch (NotInScriptModeException $e) {
+		} catch (GameModeException $e) {
 			$properties['ScriptName'] = '';
 		}
 

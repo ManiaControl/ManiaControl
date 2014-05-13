@@ -118,7 +118,7 @@ class StyleManager {
 	}
 
 	/**
-	 * Get the default list widget width
+	 * Get the Default List Widgets Width
 	 *
 	 * @return string
 	 */

@@ -5,7 +5,7 @@ namespace ManiaControl\ManiaExchange;
 use ManiaControl\ManiaControl;
 use ManiaControl\Maps\Map;
 use ManiaControl\Maps\MapManager;
-use Maniaplanet\DedicatedServer\Xmlrpc\NotInScriptModeException;
+use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
 
 /**
  * Mania Exchange Info Searcher Class
@@ -306,7 +306,7 @@ class ManiaExchangeManager {
 			$scriptInfos = $this->maniaControl->client->getModeScriptInfo();
 			$mapTypes    = $scriptInfos->compatibleMapTypes;
 			$url .= '&mtype=' . $mapTypes;
-		} catch (NotInScriptModeException $e) {
+		} catch (GameModeException $e) {
 		}
 
 		$success = $this->maniaControl->fileReader->loadFile($url, function ($mapInfo, $error) use (&$function, $titlePrefix) {

@@ -18,12 +18,12 @@ use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\TimerListener;
-use ManiaControl\Utils\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
-use Maniaplanet\DedicatedServer\Xmlrpc\LoginUnknownException;
-use Maniaplanet\DedicatedServer\Xmlrpc\PlayerIsNotSpectatorException;
+use ManiaControl\Utils\Formatter;
+use Maniaplanet\DedicatedServer\Xmlrpc\PlayerStateException;
+use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
 use MCTeam\CustomVotesPlugin;
 
 /**
@@ -641,7 +641,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				try {
 					$this->maniaControl->client->forceSpectator($adminLogin, PlayerActions::SPECTATOR_BUT_KEEP_SELECTABLE);
 					$this->maniaControl->client->forceSpectatorTarget($adminLogin, $targetLogin, 1);
-				} catch (PlayerIsNotSpectatorException $e) {
+				} catch (PlayerStateException $e) {
 				}
 				break;
 			case self::ACTION_OPEN_PLAYER_DETAILED:
@@ -713,7 +713,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 					try {
 						$self->maniaControl->client->forceSpectator($target->login, PlayerActions::SPECTATOR_BUT_KEEP_SELECTABLE);
 						$self->maniaControl->client->spectatorReleasePlayerSlot($target->login);
-					} catch (PlayerIsNotSpectatorException $e) {
+					} catch (PlayerStateException $e) {
 					}
 				});
 				break;
@@ -737,7 +737,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 					$message = '$39F You got kicked due a Public vote!$z ';
 					try {
 						$self->maniaControl->client->kick($target->login, $message);
-					} catch (LoginUnknownException $e) {
+					} catch (UnknownPlayerException $e) {
 					}
 				});
 				break;
@@ -745,10 +745,10 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 	}
 
 	/**
-	 * Displays the Advanced Player Window
+	 * Display the Advanced Player Window
 	 *
 	 * @param Player $caller
-	 * @param        $login
+	 * @param string $login
 	 */
 	public function advancedPlayerWidget(Player $caller, $login) {
 		// Set status to target player login

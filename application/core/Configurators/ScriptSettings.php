@@ -18,7 +18,7 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Maps\Map;
 use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
-use Maniaplanet\DedicatedServer\Xmlrpc\NotInScriptModeException;
+use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
 
 /**
  * Class offering a Configurator for Script Settings
@@ -108,7 +108,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	public function loadSettingsFromDatabase() {
 		try {
 			$scriptSettings = $this->maniaControl->client->getModeScriptSettings();
-		} catch (NotInScriptModeException $e) {
+		} catch (GameModeException $e) {
 			return false;
 		}
 
@@ -164,7 +164,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 
 		try {
 			$scriptInfo = $this->maniaControl->client->getModeScriptInfo();
-		} catch (NotInScriptModeException $e) {
+		} catch (GameModeException $e) {
 			$label = new Label();
 			$frame->add($label);
 			$label->setText($e->getMessage());
@@ -175,8 +175,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 
 		try {
 			$scriptSettings = $this->maniaControl->client->getModeScriptSettings();
-		} catch (NotInScriptModeException $e) {
-			//do nothing
+		} catch (GameModeException $e) {
 		}
 
 		// Config
@@ -328,7 +327,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	public function toggleBooleanSetting($setting, Player $player) {
 		try {
 			$scriptSettings = $this->maniaControl->client->getModeScriptSettings();
-		} catch (NotInScriptModeException $e) {
+		} catch (GameModeException $e) {
 			return;
 		}
 
@@ -442,7 +441,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 
 		try {
 			$scriptSettings = $this->maniaControl->client->getModeScriptSettings();
-		} catch (NotInScriptModeException $e) {
+		} catch (GameModeException $e) {
 			return;
 		}
 

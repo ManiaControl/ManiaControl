@@ -298,8 +298,6 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			$nameLabel->setText($setting->setting);
 			$nameLabel->setTextColor("FFF");
 
-			$substyle = '';
-
 			$entry = new Entry();
 			$settingFrame->add($entry);
 			$entry->setStyle(Label_Text::STYLE_TextValueSmall);

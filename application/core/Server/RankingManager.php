@@ -6,7 +6,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\ManiaControl;
-use Maniaplanet\DedicatedServer\Xmlrpc\NotInScriptModeException;
+use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
 
 /**
  * Class managing Rankings
@@ -42,7 +42,7 @@ class RankingManager implements CallbackListener {
 	public function onInit() {
 		try {
 			$this->maniaControl->client->triggerModeScriptEvent('LibXmlRpc_GetRankings', '');
-		} catch (NotInScriptModeException $e) {
+		} catch (GameModeException $e) {
 		}
 	}
 

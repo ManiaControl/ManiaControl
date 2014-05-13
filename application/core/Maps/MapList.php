@@ -17,14 +17,14 @@ use FML\Script\Features\Paging;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
-use ManiaControl\Utils\ColorUtil;
-use ManiaControl\Utils\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\IconManager;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
-use Maniaplanet\DedicatedServer\Xmlrpc\MapNotFoundException;
+use ManiaControl\Utils\ColorUtil;
+use ManiaControl\Utils\Formatter;
+use Maniaplanet\DedicatedServer\Xmlrpc\NotInListException;
 use MCTeam\CustomVotesPlugin;
 use MCTeam\KarmaPlugin;
 
@@ -613,7 +613,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$this->maniaControl->mapManager->mapQueue->dontQueueNextMapChange();
 				try {
 					$this->maniaControl->client->jumpToMapIdent($mapUid);
-				} catch (MapNotFoundException $e) {
+				} catch (NotInListException $e) {
 					$this->maniaControl->chat->sendError("Error on Jumping to Map Ident!");
 					break;
 				}
@@ -645,7 +645,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 					try {
 						$self->maniaControl->client->JumpToMapIdent($map->uid);
-					} catch (MapNotFoundException $e) {
+					} catch (NotInListException $e) {
 					}
 				});
 				break;

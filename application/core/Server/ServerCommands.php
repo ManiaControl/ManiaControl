@@ -13,7 +13,7 @@ use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
-use Maniaplanet\DedicatedServer\Xmlrpc\NotInScriptModeException;
+use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
 
 /**
  * Class offering various Commands related to the Dedicated Server
@@ -106,7 +106,7 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 		//Check if Pause exists in current GameMode
 		try {
 			$scriptInfos = $this->maniaControl->client->getModeScriptInfo();
-		} catch (NotInScriptModeException $e) {
+		} catch (GameModeException $e) {
 			return;
 		}
 		$pauseExists = false;
@@ -161,7 +161,7 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 
 		try {
 			$this->maniaControl->client->triggerModeScriptEvent('WarmUp_Extend', '10');
-		} catch (NotInScriptModeException $e) {
+		} catch (GameModeException $e) {
 			return;
 		}
 
@@ -182,7 +182,7 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 
 		try {
 			$this->maniaControl->client->triggerModeScriptEvent('WarmUp_Stop', '');
-		} catch (NotInScriptModeException $e) {
+		} catch (GameModeException $e) {
 			return;
 		}
 
@@ -202,7 +202,7 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 		}
 		try {
 			$this->maniaControl->client->sendModeScriptCommands(array('Command_ForceWarmUp' => true));
-		} catch (NotInScriptModeException $e) {
+		} catch (GameModeException $e) {
 			return;
 		}
 

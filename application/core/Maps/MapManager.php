@@ -13,11 +13,11 @@ use ManiaControl\ManiaExchange\ManiaExchangeManager;
 use ManiaControl\ManiaExchange\MXMapInfo;
 use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\InvalidArgumentException;
-use Maniaplanet\DedicatedServer\Xmlrpc\CouldNotWritePlaylistFileException;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
-use Maniaplanet\DedicatedServer\Xmlrpc\MapNotCompatibleOrCompleteException;
-use Maniaplanet\DedicatedServer\Xmlrpc\MapNotInCurrentSelectionException;
-use Maniaplanet\DedicatedServer\Xmlrpc\StartIndexOutOfBoundException;
+use Maniaplanet\DedicatedServer\Xmlrpc\FileException;
+use Maniaplanet\DedicatedServer\Xmlrpc\IndexOutOfBoundException;
+use Maniaplanet\DedicatedServer\Xmlrpc\InvalidMapException;
+use Maniaplanet\DedicatedServer\Xmlrpc\NotInListException;
 
 // TODO: adding of local maps
 
@@ -209,7 +209,7 @@ class MapManager implements CallbackListener {
 		// Remove map
 		try {
 			$this->maniaControl->client->removeMap($map->fileName);
-		} catch (MapNotInCurrentSelectionException $e) {
+		} catch (NotInListException $e) {
 		}
 
 		unset($this->maps[$uid]);
@@ -322,7 +322,7 @@ class MapManager implements CallbackListener {
 		// Check for valid map
 		try {
 			$this->maniaControl->client->checkMapForCurrentServerParams($relativeMapFileName);
-		} catch (MapNotCompatibleOrCompleteException $e) {
+		} catch (InvalidMapException $e) {
 			trigger_error("Couldn't check if map is valid ('{$relativeMapFileName}'). " . $e->getMessage());
 			$this->maniaControl->chat->sendError('Wrong MapType or not validated!', $login);
 			return;
@@ -394,7 +394,7 @@ class MapManager implements CallbackListener {
 
 				$i += 150;
 			}
-		} catch (StartIndexOutOfBoundException $e) {
+		} catch (IndexOutOfBoundException $e) {
 		}
 
 		// restore Sorted MapList
@@ -408,7 +408,7 @@ class MapManager implements CallbackListener {
 			$matchSettingsFileName = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MAPLIST_FILE);
 			try {
 				$this->maniaControl->client->saveMatchSettings($matchSettingsFileName);
-			} catch (CouldNotWritePlaylistFileException $e) {
+			} catch (FileException $e) {
 				$this->maniaControl->log("Unable to write the playlist file, please checkout your MX-Folders File permissions!");
 			}
 		}

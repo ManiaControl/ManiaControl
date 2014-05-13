@@ -8,16 +8,16 @@ use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\ManiaLink;
 use ManiaControl\Admin\AuthenticationManager;
-use ManiaControl\Utils\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
+use ManiaControl\Utils\Formatter;
+use Maniaplanet\DedicatedServer\Xmlrpc\AlreadyInListException;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 use Maniaplanet\DedicatedServer\Xmlrpc\FaultException;
-use Maniaplanet\DedicatedServer\Xmlrpc\LoginUnknownException;
-use Maniaplanet\DedicatedServer\Xmlrpc\NotInTeamModeException;
-use Maniaplanet\DedicatedServer\Xmlrpc\PlayerAlreadyIgnoredException;
-use Maniaplanet\DedicatedServer\Xmlrpc\PlayerIsNotSpectatorException;
-use Maniaplanet\DedicatedServer\Xmlrpc\PlayerNotIgnoredException;
+use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
+use Maniaplanet\DedicatedServer\Xmlrpc\NotInListException;
+use Maniaplanet\DedicatedServer\Xmlrpc\PlayerStateException;
+use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
 
 /**
  * Player Actions Class
@@ -95,7 +95,7 @@ class PlayerActions {
 
 		try {
 			$this->maniaControl->client->forcePlayerTeam($target->login, $teamId);
-		} catch (NotInTeamModeException $e) {
+		} catch (GameModeException $e) {
 			$this->forcePlayerToPlay($adminLogin, $targetLogin);
 			return;
 		}
@@ -194,7 +194,7 @@ class PlayerActions {
 			// Free player slot
 			try {
 				$this->maniaControl->client->spectatorReleasePlayerSlot($target->login);
-			} catch (PlayerIsNotSpectatorException $e) {
+			} catch (PlayerStateException $e) {
 			}
 		}
 	}
@@ -220,7 +220,7 @@ class PlayerActions {
 
 		try {
 			$this->maniaControl->client->unIgnore($targetLogin);
-		} catch (PlayerNotIgnoredException $e) {
+		} catch (NotInListException $e) {
 			$this->maniaControl->chat->sendError("Player is not ignored!");
 			return;
 		}
@@ -252,7 +252,7 @@ class PlayerActions {
 
 		try {
 			$this->maniaControl->client->ignore($targetLogin);
-		} catch (PlayerAlreadyIgnoredException $e) {
+		} catch (AlreadyInListException $e) {
 			$this->maniaControl->chat->sendError("Player already ignored!");
 			return;
 		}
@@ -369,7 +369,7 @@ class PlayerActions {
 			} else {
 				$this->maniaControl->client->kick($target->login, $message);
 			}
-		} catch (LoginUnknownException $e) {
+		} catch (UnknownPlayerException $e) {
 			$this->maniaControl->chat->sendException($e, $admin->login);
 			return;
 		}

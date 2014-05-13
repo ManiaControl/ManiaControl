@@ -7,7 +7,7 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Plugins\Plugin;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
-use Maniaplanet\DedicatedServer\Xmlrpc\LoginUnknownException;
+use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
 
 /**
  * ManiaControl Chat-Message Plugin
@@ -384,7 +384,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		$message = '$39F Thanks for Playing, please come back soon!$z ';
 		try {
 			$this->maniaControl->client->kick($player->login, $message);
-		} catch (LoginUnknownException $e) {
+		} catch (UnknownPlayerException $e) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player);
 		}
 	}

@@ -1,6 +1,6 @@
 <?php
 
-namespace ManiaControl\Utils;
+namespace ManiaControl;
 
 /**
  * Command Line Helper Class

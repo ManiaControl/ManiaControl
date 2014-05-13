@@ -6,10 +6,10 @@ use ManiaControl\Admin\AdminLists;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\TimerListener;
-use ManiaControl\Utils\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Statistics\StatisticManager;
-use Maniaplanet\DedicatedServer\Xmlrpc\LoginUnknownException;
+use ManiaControl\Utils\Formatter;
+use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
 
 /**
  * Class managing Players
@@ -216,7 +216,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 			$player->setDetailedInfo($playerInfo);
 
 			$this->addPlayer($player);
-		} catch (LoginUnknownException $e) {
+		} catch (UnknownPlayerException $e) {
 		}
 	}
 
