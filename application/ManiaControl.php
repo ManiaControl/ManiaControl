@@ -4,7 +4,6 @@
 define('LOG_WRITE_CURRENT_FILE', 'ManiaControl.log'); // Write current log to extra file in base dir
 define('LOG_NAME_USE_DATE', true); // Use current date as suffix for log file name in logs folder
 define('LOG_NAME_USE_PID', true); // Use current process id as suffix for log file name in logs folder
-define('MIN_PHP_VERSION', "5.4");
 
 // Define base dir
 define('ManiaControlDir', __DIR__ . DIRECTORY_SEPARATOR);
@@ -48,6 +47,7 @@ if (LOG_WRITE_CURRENT_FILE) {
 logMessage('Starting ManiaControl ...');
 
 /** Check for Min PHP version */
+define('MIN_PHP_VERSION', '5.4');
 logMessage('Checking for minimum required PHP-Version ' . MIN_PHP_VERSION . ' ... ', false);
 if (phpversion() >= MIN_PHP_VERSION) {
 	logMessage(phpversion() . " OK!", true, false);
