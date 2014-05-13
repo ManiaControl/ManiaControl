@@ -4,6 +4,7 @@ namespace ManiaControl\Players;
 
 
 use ManiaControl\ManiaControl;
+use ManiaControl\Utils\ClassUtil;
 
 /**
  * Player Data Manager
@@ -136,7 +137,7 @@ class PlayerDataManager {
 	 */
 	public function defineMetaData($object, $dataName, $default, $dataDescription = '') {
 		$mysqli    = $this->maniaControl->database->mysqli;
-		$className = $this->getClassName($object);
+		$className = ClassUtil::getClass($object);
 
 		$query     = "INSERT INTO `" . self::TABLE_PLAYERDATAMETADATA . "` (
 				`class`,
@@ -166,23 +167,6 @@ class PlayerDataManager {
 		}
 		$statement->close();
 		return true;
-	}
-
-	/**
-	 * Get Class Name of a Parameter
-	 *
-	 * @param mixed $param
-	 * @return string
-	 */
-	private function getClassName($param) {
-		if (is_object($param)) {
-			return get_class($param);
-		}
-		if (is_string($param)) {
-			return $param;
-		}
-		trigger_error('Invalid class param. ' . $param);
-		return (string)$param;
 	}
 
 	/**
@@ -221,7 +205,7 @@ class PlayerDataManager {
 	 * @return mixed|null
 	 */
 	public function getPlayerData($object, $dataName, Player $player, $serverIndex = -1) {
-		$className = $this->getClassName($object);
+		$className = ClassUtil::getClass($object);
 
 		$meta = $this->metaData[$className . $dataName];
 
@@ -278,7 +262,7 @@ class PlayerDataManager {
 	 * @return bool
 	 */
 	public function setPlayerData($object, $dataName, Player $player, $value, $serverIndex = -1) {
-		$className = $this->getClassName($object);
+		$className = ClassUtil::getClass($object);
 		if (!$player) {
 			return false;
 		}

@@ -2,6 +2,7 @@
 
 namespace ManiaControl\Players;
 
+use ManiaControl\Utils\ClassUtil;
 use ManiaControl\Utils\Formatter;
 use ManiaControl\ManiaControl;
 
@@ -252,7 +253,7 @@ class Player {
 	 * @return mixed
 	 */
 	public function getCache($object, $cacheName) {
-		$className = $this->getClassName($object);
+		$className = ClassUtil::getClass($object);
 		if (isset($this->cache[$className . $cacheName])) {
 			return $this->cache[$className . $cacheName];
 		}
@@ -267,18 +268,18 @@ class Player {
 	 * @param mixed  $data
 	 */
 	public function setCache($object, $cacheName, $data) {
-		$className                            = $this->getClassName($object);
+		$className                            = ClassUtil::getClass($object);
 		$this->cache[$className . $cacheName] = $data;
 	}
 
 	/**
 	 * Destroys a Cache
 	 *
-	 * @param $object
+	 * @param mixed $object
 	 * @param $cacheName
 	 */
 	public function destroyCache($object, $cacheName) {
-		$className = $this->getClassName($object);
+		$className = ClassUtil::getClass($object);
 		unset($this->cache[$className . $cacheName]);
 	}
 
@@ -327,23 +328,5 @@ class Player {
 	 */
 	public function dumpCache() {
 		var_dump($this->cache);
-	}
-
-	/**
-	 * Get Class Name of a Parameter
-	 *
-	 * @param mixed $param
-	 * @return string
-	 */
-	private function getClassName($param) {
-		//TODO move in a util or something
-		if (is_object($param)) {
-			return get_class($param);
-		}
-		if (is_string($param)) {
-			return $param;
-		}
-		trigger_error('Invalid class param. ' . $param);
-		return (string)$param;
 	}
 }
