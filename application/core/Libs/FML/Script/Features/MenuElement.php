@@ -3,13 +3,14 @@
 namespace FML\Script\Features;
 
 use FML\Controls\Control;
+use FML\Types\Scriptable;
 
 /**
  * An Element for the Menu Feature
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class MenuElement {
 	/*
@@ -21,7 +22,7 @@ class MenuElement {
 	/**
 	 * Create a new Menu Element
 	 *
-	 * @param Control $item (optional) Item Control in the Menu Bar
+	 * @param Control $item    (optional) Item Control in the Menu Bar
 	 * @param Control $control (optional) Toggled Menu Control
 	 */
 	public function __construct(Control $item = null, Control $control = null) {
@@ -37,7 +38,9 @@ class MenuElement {
 	 */
 	public function setItem(Control $item) {
 		$item->checkId();
-		$item->setScriptEvents(true);
+		if ($item instanceof Scriptable) {
+			$item->setScriptEvents(true);
+		}
 		$this->item = $item;
 		return $this;
 	}

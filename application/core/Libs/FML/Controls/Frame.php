@@ -2,25 +2,25 @@
 
 namespace FML\Controls;
 
-use FML\Types\Container;
-
 use FML\Elements\Format;
-
+use FML\Types\Container;
+use FML\Types\Renderable;
 use FML\Types\ScriptFeatureable;
 
 /**
  * Frame Control
  * (CMlFrame)
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Frame extends Control implements Container {
 	/*
 	 * Protected Properties
 	 */
 	protected $children = array();
+	/** @var Format $format */
 	protected $format = null;
 
 	/**
@@ -45,10 +45,9 @@ class Frame extends Control implements Container {
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Container::add()
 	 */
-	public function add(Control $child) {
+	public function add(Renderable $child) {
 		if (!in_array($child, $this->children, true)) {
 			array_push($this->children, $child);
 		}
@@ -56,7 +55,6 @@ class Frame extends Control implements Container {
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Container::removeChildren()
 	 */
 	public function removeChildren() {
@@ -65,7 +63,6 @@ class Frame extends Control implements Container {
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Container::setFormat()
 	 */
 	public function setFormat(Format $format) {
@@ -74,7 +71,6 @@ class Frame extends Control implements Container {
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Container::getFormat()
 	 */
 	public function getFormat($createIfEmpty = true) {
@@ -85,7 +81,6 @@ class Frame extends Control implements Container {
 	}
 
 	/**
-	 *
 	 * @see \FML\Controls\Control::getScriptFeatures()
 	 */
 	public function getScriptFeatures() {
@@ -99,7 +94,6 @@ class Frame extends Control implements Container {
 	}
 
 	/**
-	 *
 	 * @see \FML\Renderable::render()
 	 */
 	public function render(\DOMDocument $domDocument) {
@@ -109,6 +103,7 @@ class Frame extends Control implements Container {
 			$xmlElement->appendChild($formatXml);
 		}
 		foreach ($this->children as $child) {
+			/** @var Renderable $child */
 			$childXmlElement = $child->render($domDocument);
 			$xmlElement->appendChild($childXmlElement);
 		}

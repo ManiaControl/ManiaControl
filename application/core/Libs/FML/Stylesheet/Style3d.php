@@ -5,20 +5,20 @@ namespace FML\Stylesheet;
 /**
  * Class representing a specific Style3d
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Style3d {
 	/*
 	 * Constants
 	 */
-	const MODEL_Box = 'Box';
-	const MODEL_Button = 'Button';
+	const MODEL_Box     = 'Box';
+	const MODEL_Button  = 'Button';
 	const MODEL_ButtonH = 'ButtonH';
-	const MODEL_Title = 'Title';
-	const MODEL_Window = 'Window';
-	
+	const MODEL_Title   = 'Title';
+	const MODEL_Window  = 'Window';
+
 	/*
 	 * Protected Properties
 	 */
@@ -64,7 +64,7 @@ class Style3d {
 	 * @return \FML\Stylesheet\Style3d
 	 */
 	public function setId($id) {
-		$this->id = (string) $id;
+		$this->id = (string)$id;
 		return $this;
 	}
 
@@ -96,7 +96,7 @@ class Style3d {
 	 * @return \FML\Stylesheet\Style3d
 	 */
 	public function setModel($model) {
-		$this->model = (string) $model;
+		$this->model = (string)$model;
 		return $this;
 	}
 
@@ -107,7 +107,7 @@ class Style3d {
 	 * @return \FML\Stylesheet\Style3d
 	 */
 	public function setThickness($thickness) {
-		$this->thickness = (float) $thickness;
+		$this->thickness = (float)$thickness;
 		return $this;
 	}
 
@@ -118,7 +118,7 @@ class Style3d {
 	 * @return \FML\Stylesheet\Style3d
 	 */
 	public function setColor($color) {
-		$this->color = (string) $color;
+		$this->color = (string)$color;
 		return $this;
 	}
 
@@ -129,7 +129,7 @@ class Style3d {
 	 * @return \FML\Stylesheet\Style3d
 	 */
 	public function setFocusColor($focusColor) {
-		$this->focusColor = (string) $focusColor;
+		$this->focusColor = (string)$focusColor;
 		return $this;
 	}
 
@@ -140,7 +140,7 @@ class Style3d {
 	 * @return \FML\Stylesheet\Style3d
 	 */
 	public function setLightColor($lightColor) {
-		$this->lightColor = (string) $lightColor;
+		$this->lightColor = (string)$lightColor;
 		return $this;
 	}
 
@@ -151,7 +151,7 @@ class Style3d {
 	 * @return \FML\Stylesheet\Style3d
 	 */
 	public function setFocusLightColor($focusLightColor) {
-		$this->focusLightColor = (string) $focusLightColor;
+		$this->focusLightColor = (string)$focusLightColor;
 		return $this;
 	}
 
@@ -162,7 +162,7 @@ class Style3d {
 	 * @return \FML\Stylesheet\Style3d
 	 */
 	public function setYOffset($yOffset) {
-		$this->yOffset = (float) $yOffset;
+		$this->yOffset = (float)$yOffset;
 		return $this;
 	}
 
@@ -173,7 +173,7 @@ class Style3d {
 	 * @return \FML\Stylesheet\Style3d
 	 */
 	public function setFocusYOffset($focusYOffset) {
-		$this->focusYOffset = (float) $focusYOffset;
+		$this->focusYOffset = (float)$focusYOffset;
 		return $this;
 	}
 
@@ -184,7 +184,7 @@ class Style3d {
 	 * @return \FML\Stylesheet\Style3d
 	 */
 	public function setZOffset($zOffset) {
-		$this->zOffset = (float) $zOffset;
+		$this->zOffset = (float)$zOffset;
 		return $this;
 	}
 
@@ -195,7 +195,7 @@ class Style3d {
 	 * @return \FML\Stylesheet\Style3d
 	 */
 	public function setFocusZOffset($focusZOffset) {
-		$this->focusZOffset = (float) $focusZOffset;
+		$this->focusZOffset = (float)$focusZOffset;
 		return $this;
 	}
 

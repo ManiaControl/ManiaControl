@@ -11,20 +11,20 @@ use FML\Types\ScriptFeatureable;
 /**
  * Class representing a ManiaLink
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ManiaLink {
 	/*
 	 * Constants
 	 */
-	const BACKGROUND_0 = '0';
-	const BACKGROUND_1 = '1';
-	const BACKGROUND_STARS = 'stars';
+	const BACKGROUND_0        = '0';
+	const BACKGROUND_1        = '1';
+	const BACKGROUND_STARS    = 'stars';
 	const BACKGROUND_STATIONS = 'stations';
-	const BACKGROUND_TITLE = 'title';
-	
+	const BACKGROUND_TITLE    = 'title';
+
 	/*
 	 * Protected Properties
 	 */
@@ -36,8 +36,11 @@ class ManiaLink {
 	protected $navigable3d = 1;
 	protected $timeout = 0;
 	protected $children = array();
+	/** @var Dico $dico */
 	protected $dico = null;
+	/** @var Stylesheet $stylesheet */
 	protected $stylesheet = null;
+	/** @var Script $script */
 	protected $script = null;
 
 	/**
@@ -69,7 +72,7 @@ class ManiaLink {
 	 * @return \FML\ManiaLink
 	 */
 	public function setXmlEncoding($encoding) {
-		$this->encoding = (string) $encoding;
+		$this->encoding = (string)$encoding;
 		return $this;
 	}
 
@@ -80,7 +83,7 @@ class ManiaLink {
 	 * @return \FML\ManiaLink
 	 */
 	public function setId($id) {
-		$this->id = (string) $id;
+		$this->id = (string)$id;
 		return $this;
 	}
 
@@ -100,7 +103,7 @@ class ManiaLink {
 	 * @return \FML\ManiaLink
 	 */
 	public function setBackground($background) {
-		$this->background = (string) $background;
+		$this->background = (string)$background;
 		return $this;
 	}
 
@@ -122,7 +125,7 @@ class ManiaLink {
 	 * @return \FML\ManiaLink
 	 */
 	public function setTimeout($timeout) {
-		$this->timeout = (int) $timeout;
+		$this->timeout = (int)$timeout;
 		return $this;
 	}
 
@@ -224,14 +227,14 @@ class ManiaLink {
 	/**
 	 * Render the XML Document
 	 *
-	 * @param bool (optional) $echo If the XML Text should be echoed and the Content-Type Header should be set
-	 * @param \DOMDocument $domDocument (optional) DOMDocument for which the XML Element should be created
+	 * @param bool (optional) $echo        If the XML Text should be echoed and the Content-Type Header should be set
+	 * @param \DOMDocument    $domDocument (optional) DOMDocument for which the XML Element should be created
 	 * @return \DOMDocument
 	 */
 	public function render($echo = false, $domDocument = null) {
-		$isChild = (bool) $domDocument;
+		$isChild = (bool)$domDocument;
 		if (!$isChild) {
-			$domDocument = new \DOMDocument('1.0', $this->encoding);
+			$domDocument                = new \DOMDocument('1.0', $this->encoding);
 			$domDocument->xmlStandalone = true;
 		}
 		$maniaLink = $domDocument->createElement($this->tagName);
@@ -260,6 +263,7 @@ class ManiaLink {
 		}
 		$scriptFeatures = array();
 		foreach ($this->children as $child) {
+			/** @var Renderable $child */
 			$childXml = $child->render($domDocument, $this->getScript());
 			$maniaLink->appendChild($childXml);
 			if ($child instanceof ScriptFeatureable) {
@@ -297,7 +301,7 @@ class ManiaLink {
 	 */
 	public function __toString() {
 		$domDocument = $this->render();
-		$xmlText = $domDocument->saveXML();
+		$xmlText     = $domDocument->saveXML();
 		return $xmlText;
 	}
 }

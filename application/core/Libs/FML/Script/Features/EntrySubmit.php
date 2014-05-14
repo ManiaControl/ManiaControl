@@ -2,34 +2,32 @@
 
 namespace FML\Script\Features;
 
-
-use FML\Script\Script;
-use FML\Script\ScriptLabel;
-use FML\Script\Builder;
-
-
 use FML\Controls\Entry;
+use FML\Script\Builder;
+use FML\Script\Script;
 use FML\Script\ScriptInclude;
+use FML\Script\ScriptLabel;
 
 /**
  * Script Feature for submitting an Entry
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class EntrySubmit extends ScriptFeature {
 	/*
 	 * Protected Properties
 	 */
+	/** @var Entry $entry */
 	protected $entry = null;
 	protected $url = null;
 
 	/**
 	 * Construct a new Entry Submit Feature
 	 *
-	 * @param Entry $entry (optional) Entry Control
-	 * @param string $url (optional) Submit Url
+	 * @param Entry  $entry (optional) Entry Control
+	 * @param string $url   (optional) Submit Url
 	 */
 	public function __construct(Entry $entry = null, $url = null) {
 		$this->setEntry($entry);
@@ -56,12 +54,11 @@ class EntrySubmit extends ScriptFeature {
 	 * @return \FML\Script\Features\EntrySubmit
 	 */
 	public function setUrl($url) {
-		$this->url = (string) $url;
+		$this->url = (string)$url;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Script\Features\ScriptFeature::prepare()
 	 */
 	public function prepare(Script $script) {
@@ -76,9 +73,9 @@ class EntrySubmit extends ScriptFeature {
 	 * @return string
 	 */
 	protected function getScriptText() {
-		$controlId = $this->entry->getId(true);
-		$url = $this->buildCompatibleUrl();
-		$entryName = Builder::escapeText($this->entry->getName());
+		$controlId  = $this->entry->getId(true);
+		$url        = $this->buildCompatibleUrl();
+		$entryName  = Builder::escapeText($this->entry->getName());
 		$scriptText = "
 if (Event.Control.ControlId == \"{$controlId}\") {
 	declare Entry <=> (Event.Control as CMlEntry);
@@ -94,12 +91,11 @@ if (Event.Control.ControlId == \"{$controlId}\") {
 	 * @return string
 	 */
 	protected function buildCompatibleUrl() {
-		$url = $this->url;
+		$url         = $this->url;
 		$paramsBegin = stripos($url, '?');
 		if (!is_int($paramsBegin) || $paramsBegin < 0) {
 			$url .= '?';
-		}
-		else {
+		} else {
 			$url .= '&';
 		}
 		return $url;

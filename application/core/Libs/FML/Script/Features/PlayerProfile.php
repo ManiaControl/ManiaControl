@@ -3,31 +3,33 @@
 namespace FML\Script\Features;
 
 use FML\Controls\Control;
+use FML\Script\Builder;
 use FML\Script\Script;
 use FML\Script\ScriptLabel;
-use FML\Script\Builder;
+use FML\Types\Scriptable;
 
 /**
  * Script Feature for opening a Player Profile
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class PlayerProfile extends ScriptFeature {
 	/*
 	 * Protected Properties
 	 */
 	protected $login = null;
+	/** @var Control $control */
 	protected $control = null;
 	protected $labelName = null;
 
 	/**
 	 * Construct a new Player Profile Feature
 	 *
-	 * @param string $login (optional) Player Login
-	 * @param Control $control (optional) Action Control
-	 * @param string $labelName (optional) Script Label Name
+	 * @param string  $login     (optional) Player Login
+	 * @param Control $control   (optional) Action Control
+	 * @param string  $labelName (optional) Script Label Name
 	 */
 	public function __construct($login = null, Control $control = null, $labelName = ScriptLabel::MOUSECLICK) {
 		$this->setLogin($login);
@@ -54,7 +56,9 @@ class PlayerProfile extends ScriptFeature {
 	 */
 	public function setControl(Control $control) {
 		$control->checkId();
-		$control->setScriptEvents(true);
+		if ($control instanceof Scriptable) {
+			$control->setScriptEvents(true);
+		}
 		$this->control = $control;
 		return $this;
 	}
@@ -71,7 +75,6 @@ class PlayerProfile extends ScriptFeature {
 	}
 
 	/**
-	 *
 	 * @see \FML\Script\Features\ScriptFeature::prepare()
 	 */
 	public function prepare(Script $script) {
@@ -88,13 +91,12 @@ class PlayerProfile extends ScriptFeature {
 		$login = Builder::escapeText($this->login);
 		if ($this->control) {
 			// Control event
-			$controlId = Builder::escapeText($this->control->getId());
+			$controlId  = Builder::escapeText($this->control->getId());
 			$scriptText = "
 if (Event.Control.ControlId == \"{$controlId}\") {
 	ShowProfile(\"{$login}\");
 }";
-		}
-		else {
+		} else {
 			// Other
 			$scriptText = "
 ShowProfile(\"{$login}\");";

@@ -7,19 +7,19 @@ use FML\Script\Features\ScriptFeature;
 /**
  * Class representing the ManiaLink Script
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Script {
 	/*
 	 * Constants
 	 */
-	const TICKINTERVAL = 250;
+	const TICKINTERVAL    = 250;
 	const VAR_ScriptStart = 'FML_ScriptStart';
 	const VAR_LoopCounter = 'FML_LoopCounter';
-	const VAR_LastTick = 'FML_LastTick';
-	
+	const VAR_LastTick    = 'FML_LastTick';
+
 	/*
 	 * Protected Properties
 	 */
@@ -34,33 +34,32 @@ class Script {
 	/**
 	 * Set a Script Include
 	 *
-	 * @param string $file Include File
+	 * @param string $file      Include File
 	 * @param string $namespace Include Namespace
 	 * @return \FML\Script\Script
 	 */
 	public function setScriptInclude($file, $namespace = null) {
 		if (is_object($file) && ($file instanceof ScriptInclude)) {
 			$scriptInclude = $file;
-		}
-		else {
+		} else {
 			$scriptInclude = new ScriptInclude($file, $namespace);
 		}
-		$this->includes[$scriptInclude->getNamespace()] = $scriptInclude;
+		$namespace                  = $scriptInclude->getNamespace();
+		$this->includes[$namespace] = $scriptInclude;
 		return $this;
 	}
 
 	/**
 	 * Add a Script Constant
 	 *
-	 * @param string $name Constant Name
+	 * @param string $name  Constant Name
 	 * @param string $value Constant Value
 	 * @return \FML\Script\Script
 	 */
 	public function addScriptConstant($name, $value = null) {
 		if (is_object($name) && ($name instanceof ScriptConstant)) {
 			$scriptConstant = $name;
-		}
-		else {
+		} else {
 			$scriptConstant = new ScriptConstant($name, $value);
 		}
 		array_push($this->constants, $scriptConstant);
@@ -77,8 +76,7 @@ class Script {
 	public function addScriptFunction($name, $text = null) {
 		if (is_object($name) && ($name instanceof ScriptFunction)) {
 			$scriptFunction = $name;
-		}
-		else {
+		} else {
 			$scriptFunction = new ScriptFunction($name, $text);
 		}
 		if (!in_array($scriptFunction, $this->functions)) {
@@ -97,8 +95,7 @@ class Script {
 	public function addCustomScriptLabel($name, $text = null) {
 		if (is_object($name) && ($name instanceof ScriptLabel)) {
 			$scriptLabel = $name;
-		}
-		else {
+		} else {
 			$scriptLabel = new ScriptLabel($name, $text);
 		}
 		array_push($this->customLabels, $scriptLabel);
@@ -108,16 +105,15 @@ class Script {
 	/**
 	 * Append a generic Script Text for the next Rendering
 	 *
-	 * @param string $name Label Name
-	 * @param string $text Script Text
-	 * @param bool $isolated (optional) Whether to isolate the Label Script
+	 * @param string $name     Label Name
+	 * @param string $text     Script Text
+	 * @param bool   $isolated (optional) Whether to isolate the Label Script
 	 * @return \FML\Script\Script
 	 */
 	public function appendGenericScriptLabel($name, $text = null, $isolated = false) {
 		if (is_object($name) && ($name instanceof ScriptLabel)) {
 			$scriptLabel = $name;
-		}
-		else {
+		} else {
 			$scriptLabel = new ScriptLabel($name, $text, $isolated);
 		}
 		array_push($this->genericLabels, $scriptLabel);
@@ -205,8 +201,8 @@ class Script {
 	 */
 	public function render(\DOMDocument $domDocument) {
 		$this->loadFeatures($this->features);
-		$scriptXml = $domDocument->createElement($this->tagName);
-		$scriptText = $this->buildScriptText();
+		$scriptXml     = $domDocument->createElement($this->tagName);
+		$scriptText    = $this->buildScriptText();
 		$scriptComment = $domDocument->createComment($scriptText);
 		$scriptXml->appendChild($scriptComment);
 		return $scriptXml;
@@ -222,6 +218,7 @@ class Script {
 *		FancyManiaLinks v' . FML_VERSION . ' by steeffeen	 		*
 *	http://github.com/steeffeen/FancyManiaLinks		*
 ****************************************************/
+
 ';
 		return $headerComment;
 	}
@@ -262,7 +259,7 @@ class Script {
 	 * @return string
 	 */
 	protected function getLabels() {
-		$customLabelsText = implode(PHP_EOL, $this->customLabels);
+		$customLabelsText  = implode(PHP_EOL, $this->customLabels);
 		$genericLabelsText = implode(PHP_EOL, $this->genericLabels);
 		return $customLabelsText . $genericLabelsText;
 	}

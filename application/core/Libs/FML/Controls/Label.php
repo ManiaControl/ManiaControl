@@ -264,7 +264,7 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	 */
 	public function addClockFeature($showSeconds = true, $showFullDate = false) {
 		$clock = new Clock($this, $showSeconds, $showFullDate);
-		array_push($this->scriptFeatures, $clock);
+		$this->addScriptFeature($clock);
 		return $this;
 	}
 

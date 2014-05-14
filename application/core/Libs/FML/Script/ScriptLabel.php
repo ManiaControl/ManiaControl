@@ -5,23 +5,23 @@ namespace FML\Script;
 /**
  * Class representing a Part of the ManiaLink Script
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ScriptLabel {
 	/*
 	 * Constants
 	 */
-	const ONINIT = 'FML_OnInit';
-	const LOOP = 'FML_Loop';
-	const TICK = 'FML_Tick';
+	const ONINIT      = 'FML_OnInit';
+	const LOOP        = 'FML_Loop';
+	const TICK        = 'FML_Tick';
 	const ENTRYSUBMIT = 'FML_EntrySubmit';
-	const KEYPRESS = 'FML_KeyPress';
-	const MOUSECLICK = 'FML_MouseClick';
-	const MOUSEOUT = 'FML_MouseOut';
-	const MOUSEOVER = 'FML_MouseOver';
-	
+	const KEYPRESS    = 'FML_KeyPress';
+	const MOUSECLICK  = 'FML_MouseClick';
+	const MOUSEOUT    = 'FML_MouseOut';
+	const MOUSEOVER   = 'FML_MouseOver';
+
 	/*
 	 * Protected Properties
 	 */
@@ -32,9 +32,9 @@ class ScriptLabel {
 	/**
 	 * Construct a new ScriptLabel
 	 *
-	 * @param string $name (optional) Label Name
-	 * @param string $text (optional) Script Text
-	 * @param bool $isolated (optional) Isolate the Label Script
+	 * @param string $name     (optional) Label Name
+	 * @param string $text     (optional) Script Text
+	 * @param bool   $isolated (optional) Isolate the Label Script
 	 */
 	public function __construct($name = self::LOOP, $text = '', $isolated = false) {
 		$this->setName($name);
@@ -49,7 +49,7 @@ class ScriptLabel {
 	 * @return \FML\Script\ScriptLabel
 	 */
 	public function setName($name) {
-		$this->name = (string) $name;
+		$this->name = (string)$name;
 		return $this;
 	}
 
@@ -60,7 +60,7 @@ class ScriptLabel {
 	 * @return \FML\Script\ScriptLabel
 	 */
 	public function setText($text) {
-		$this->text = (string) $text;
+		$this->text = (string)$text;
 		return $this;
 	}
 
@@ -71,7 +71,7 @@ class ScriptLabel {
 	 * @return \FML\Script\ScriptLabel
 	 */
 	public function setIsolated($isolated) {
-		$this->isolated = (bool) $isolated;
+		$this->isolated = (bool)$isolated;
 		return $this;
 	}
 

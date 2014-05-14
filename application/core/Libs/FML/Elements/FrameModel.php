@@ -2,16 +2,15 @@
 
 namespace FML\Elements;
 
-use FML\Controls\Control;
 use FML\Types\Container;
 use FML\Types\Renderable;
 
 /**
  * Class representing a Frame Model
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class FrameModel implements Container, Renderable {
 	/*
@@ -20,6 +19,7 @@ class FrameModel implements Container, Renderable {
 	protected $tagName = 'framemodel';
 	protected $id = '';
 	protected $children = array();
+	/** @var Format $format */
 	protected $format = null;
 
 	/**
@@ -29,7 +29,7 @@ class FrameModel implements Container, Renderable {
 	 * @return \FML\Elements\FrameModel
 	 */
 	public function setId($id) {
-		$this->id = (string) $id;
+		$this->id = (string)$id;
 		return $this;
 	}
 
@@ -55,18 +55,16 @@ class FrameModel implements Container, Renderable {
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Container::add()
 	 */
-	public function add(Control $childControl) {
-		if (!in_array($childControl, $this->children, true)) {
-			array_push($this->children, $childControl);
+	public function add(Renderable $childElement) {
+		if (!in_array($childElement, $this->children, true)) {
+			array_push($this->children, $childElement);
 		}
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Container::removeChildren()
 	 */
 	public function removeChildren() {
@@ -75,7 +73,6 @@ class FrameModel implements Container, Renderable {
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Container::setFormat()
 	 */
 	public function setFormat(Format $format) {
@@ -84,7 +81,6 @@ class FrameModel implements Container, Renderable {
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Container::getFormat()
 	 */
 	public function getFormat($createIfEmpty = true) {
@@ -95,7 +91,6 @@ class FrameModel implements Container, Renderable {
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Renderable::render()
 	 */
 	public function render(\DOMDocument $domDocument) {
@@ -107,6 +102,7 @@ class FrameModel implements Container, Renderable {
 			$xmlElement->appendChild($formatXml);
 		}
 		foreach ($this->children as $child) {
+			/** @var Renderable $child */
 			$childElement = $child->render($domDocument);
 			$xmlElement->appendChild($childElement);
 		}

@@ -5,9 +5,9 @@ namespace FML;
 /**
  * Class holding several ManiaLinks at once
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ManiaLinks {
 	/*
@@ -16,6 +16,7 @@ class ManiaLinks {
 	protected $encoding = 'utf-8';
 	protected $tagName = 'manialinks';
 	protected $children = array();
+	/** @var CustomUI $customUI */
 	protected $customUI = null;
 
 	/**
@@ -41,7 +42,7 @@ class ManiaLinks {
 	 * @return \FML\ManiaLinks
 	 */
 	public function setXmlEncoding($encoding) {
-		$this->encoding = (string) $encoding;
+		$this->encoding = (string)$encoding;
 		return $this;
 	}
 
@@ -99,11 +100,12 @@ class ManiaLinks {
 	 * @return \DOMDocument
 	 */
 	public function render($echo = false) {
-		$domDocument = new \DOMDocument('1.0', $this->encoding);
+		$domDocument                = new \DOMDocument('1.0', $this->encoding);
 		$domDocument->xmlStandalone = true;
-		$maniaLinks = $domDocument->createElement($this->tagName);
+		$maniaLinks                 = $domDocument->createElement($this->tagName);
 		$domDocument->appendChild($maniaLinks);
 		foreach ($this->children as $child) {
+			/** @var ManiaLink $child */
 			$childXml = $child->render(false, $domDocument);
 			$maniaLinks->appendChild($childXml);
 		}
@@ -125,7 +127,7 @@ class ManiaLinks {
 	 */
 	public function __toString() {
 		$domDocument = $this->render();
-		$xmlText = $domDocument->saveXML();
+		$xmlText     = $domDocument->saveXML();
 		return $xmlText;
 	}
 }

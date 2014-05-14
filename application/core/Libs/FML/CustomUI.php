@@ -5,9 +5,9 @@ namespace FML;
 /**
  * Class representing a Custom_UI
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class CustomUI {
 	/*
@@ -47,7 +47,7 @@ class CustomUI {
 	 * @return \FML\CustomUI
 	 */
 	public function setXMLEncoding($encoding) {
-		$this->encoding = (string) $encoding;
+		$this->encoding = (string)$encoding;
 		return $this;
 	}
 
@@ -131,7 +131,7 @@ class CustomUI {
 	/**
 	 * Set Global Showing
 	 *
-	 * @param bool $visible Wether the UI should be disabled completely
+	 * @param bool $visible Whether the UI should be disabled completely
 	 * @return \FML\CustomUI
 	 */
 	public function setGlobalVisible($visible) {
@@ -146,9 +146,9 @@ class CustomUI {
 	 * @return \DOMDocument
 	 */
 	public function render($domDocument = null) {
-		$isChild = (bool) $domDocument;
+		$isChild = (bool)$domDocument;
 		if (!$isChild) {
-			$domDocument = new \DOMDocument('1.0', $this->encoding);
+			$domDocument                = new \DOMDocument('1.0', $this->encoding);
 			$domDocument->xmlStandalone = true;
 		}
 		$xmlElement = $domDocument->createElement($this->tagName);
@@ -157,7 +157,9 @@ class CustomUI {
 		}
 		$settings = $this->getSettings();
 		foreach ($settings as $setting => $value) {
-			if ($value === null) continue;
+			if ($value === null) {
+				continue;
+			}
 			$xmlSubElement = $domDocument->createElement($setting);
 			$xmlSubElement->setAttribute('visible', ($value ? 1 : 0));
 			$xmlElement->appendChild($xmlSubElement);
@@ -175,7 +177,7 @@ class CustomUI {
 	 */
 	public function __toString() {
 		$domDocument = $this->render();
-		$xmlText = $domDocument->saveXML();
+		$xmlText     = $domDocument->saveXML();
 		return $xmlText;
 	}
 
@@ -185,15 +187,15 @@ class CustomUI {
 	 * @return array
 	 */
 	protected function getSettings() {
-		$settings = array();
-		$settings['challenge_info'] = $this->challengeInfoVisible;
-		$settings['chat'] = $this->chatVisible;
+		$settings                    = array();
+		$settings['challenge_info']  = $this->challengeInfoVisible;
+		$settings['chat']            = $this->chatVisible;
 		$settings['checkpoint_list'] = $this->checkpointListVisible;
-		$settings['global'] = $this->globalVisible;
-		$settings['net_infos'] = $this->netInfosVisible;
-		$settings['notice'] = $this->noticeVisible;
-		$settings['round_scores'] = $this->roundScoresVisible;
-		$settings['scoretable'] = $this->scoretableVisible;
+		$settings['global']          = $this->globalVisible;
+		$settings['net_infos']       = $this->netInfosVisible;
+		$settings['notice']          = $this->noticeVisible;
+		$settings['round_scores']    = $this->roundScoresVisible;
+		$settings['scoretable']      = $this->scoretableVisible;
 		return $settings;
 	}
 }

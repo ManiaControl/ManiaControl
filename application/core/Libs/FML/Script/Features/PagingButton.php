@@ -3,13 +3,14 @@
 namespace FML\Script\Features;
 
 use FML\Controls\Control;
+use FML\Types\Scriptable;
 
 /**
  * A Button for browsing through Pages
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class PagingButton {
 	/*
@@ -21,8 +22,8 @@ class PagingButton {
 	/**
 	 * Construct a new Paging Button
 	 *
-	 * @param Control $control (optional) Browse Control
-	 * @param int $browseAction (optional) Number of browsed Pages per Click
+	 * @param Control $control      (optional) Browse Control
+	 * @param int     $browseAction (optional) Number of browsed Pages per Click
 	 */
 	public function __construct(Control $control = null, $browseAction = null) {
 		$this->setControl($control);
@@ -37,7 +38,9 @@ class PagingButton {
 	 */
 	public function setControl(Control $control) {
 		$control->checkId();
-		$control->setScriptEvents(true);
+		if ($control instanceof Scriptable) {
+			$control->setScriptEvents(true);
+		}
 		$this->control = $control;
 		return $this;
 	}
@@ -58,7 +61,7 @@ class PagingButton {
 	 * @return \FML\Script\Features\PagingButton
 	 */
 	public function setBrowseAction($browseAction) {
-		$this->browseAction = (int) $browseAction;
+		$this->browseAction = (int)$browseAction;
 		return $this;
 	}
 

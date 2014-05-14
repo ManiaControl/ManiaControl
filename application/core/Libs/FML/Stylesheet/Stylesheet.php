@@ -5,9 +5,9 @@ namespace FML\Stylesheet;
 /**
  * Class representing the ManiaLinks Stylesheet
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Stylesheet {
 	/*
@@ -15,6 +15,7 @@ class Stylesheet {
 	 */
 	protected $tagName = 'stylesheet';
 	protected $styles3d = array();
+	/** @var Mood $mood */
 	protected $mood = null;
 
 	/**
@@ -92,6 +93,7 @@ class Stylesheet {
 			$stylesXml = $domDocument->createElement('frame3dstyles');
 			$stylesheetXml->appendChild($stylesXml);
 			foreach ($this->styles3d as $style3d) {
+				/** @var Style3d $style3d */
 				$style3dXml = $style3d->render($domDocument);
 				$stylesXml->appendChild($style3dXml);
 			}

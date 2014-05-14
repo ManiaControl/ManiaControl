@@ -5,20 +5,22 @@ namespace FML\Script\Features;
 use FML\Controls\Control;
 use FML\Script\Script;
 use FML\Script\ScriptLabel;
-
+use FML\Types\Scriptable;
 
 /**
  * Script Feature for toggling Controls
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Toggle extends ScriptFeature {
 	/*
 	 * Protected Properties
 	 */
+	/** @var Control $togglingControl */
 	protected $togglingControl = null;
+	/** @var Control $toggledControl */
 	protected $toggledControl = null;
 	protected $labelName = null;
 	protected $onlyShow = null;
@@ -28,10 +30,10 @@ class Toggle extends ScriptFeature {
 	 * Construct a new Toggle Feature
 	 *
 	 * @param Control $togglingControl (optional) Toggling Control
-	 * @param Control $toggledControl (optional) Toggled Control
-	 * @param string $labelName (optional) Script Label Name
-	 * @param bool $onlyShow (optional) Whether it should only Show the Control but not toggle
-	 * @param bool $onlyHide (optional) Whether it should only Hide the Control but not toggle
+	 * @param Control $toggledControl  (optional) Toggled Control
+	 * @param string  $labelName       (optional) Script Label Name
+	 * @param bool    $onlyShow        (optional) Whether it should only Show the Control but not toggle
+	 * @param bool    $onlyHide        (optional) Whether it should only Hide the Control but not toggle
 	 */
 	public function __construct(Control $togglingControl = null, Control $toggledControl = null, $labelName = ScriptLabel::MOUSECLICK, $onlyShow = false, $onlyHide = false) {
 		$this->setTogglingControl($togglingControl);
@@ -49,7 +51,9 @@ class Toggle extends ScriptFeature {
 	 */
 	public function setTogglingControl(Control $control) {
 		$control->checkId();
-		$control->setScriptEvents(true);
+		if ($control instanceof Scriptable) {
+			$control->setScriptEvents(true);
+		}
 		$this->togglingControl = $control;
 		return $this;
 	}
@@ -73,7 +77,7 @@ class Toggle extends ScriptFeature {
 	 * @return \FML\Script\Features\Toggle
 	 */
 	public function setLabelName($labelName) {
-		$this->labelName = (string) $labelName;
+		$this->labelName = (string)$labelName;
 		return $this;
 	}
 
@@ -84,7 +88,7 @@ class Toggle extends ScriptFeature {
 	 * @return \FML\Script\Features\Toggle
 	 */
 	public function setOnlyShow($onlyShow) {
-		$this->onlyShow = (bool) $onlyShow;
+		$this->onlyShow = (bool)$onlyShow;
 		return $this;
 	}
 
@@ -95,12 +99,11 @@ class Toggle extends ScriptFeature {
 	 * @return \FML\Script\Features\Toggle
 	 */
 	public function setOnlyHide($onlyHide) {
-		$this->onlyHide = (bool) $onlyHide;
+		$this->onlyHide = (bool)$onlyHide;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Script\Features\ScriptFeature::prepare()
 	 */
 	public function prepare(Script $script) {
@@ -115,12 +118,11 @@ class Toggle extends ScriptFeature {
 	 */
 	protected function getScriptText() {
 		$togglingControlId = $this->togglingControl->getId(true);
-		$toggledControlId = $this->toggledControl->getId(true);
-		$visibility = '!ToggleControl.Visible';
+		$toggledControlId  = $this->toggledControl->getId(true);
+		$visibility        = '!ToggleControl.Visible';
 		if ($this->onlyShow) {
 			$visibility = 'True';
-		}
-		else if ($this->onlyHide) {
+		} else if ($this->onlyHide) {
 			$visibility = 'False';
 		}
 		$scriptText = "

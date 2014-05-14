@@ -3,48 +3,48 @@
 namespace FML\Script\Features;
 
 use FML\Controls\Control;
+use FML\Script\Builder;
 use FML\Script\Script;
 use FML\Script\ScriptLabel;
-use FML\Script\Builder;
-
 
 /**
  * Script Feature realising a Menu showing specific Controls for the different Item Controls
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Menu extends ScriptFeature {
 	/*
 	 * Constants
 	 */
 	const FUNCTION_UPDATE_MENU = 'FML_UpdateMenu';
-	
+
 	/*
 	 * Protected Properties
 	 */
 	protected $elements = array();
+	/** @var MenuElement $startElement */
 	protected $startElement = null;
 
 	/**
 	 * Construct a new Menu Feature
 	 *
-	 * @param Control $item (optional) Item Control in the Menu Bar
+	 * @param Control $item    (optional) Item Control in the Menu Bar
 	 * @param Control $control (optional) Toggled Menu Control
 	 */
 	public function __construct(Control $item = null, Control $control = null) {
 		if ($item && $control) {
-			$this->addNewElement($item, $control);
+			$this->addElement($item, $control);
 		}
 	}
 
 	/**
 	 * Add a new Element to the Menu
 	 *
-	 * @param Control $item Item Control in the Menu Bar
-	 * @param Control $control Toggled Menu Control
-	 * @param bool $isStartElement (optional) Whether the Menu should start with this Element
+	 * @param Control $item           Item Control in the Menu Bar
+	 * @param Control $control        Toggled Menu Control
+	 * @param bool    $isStartElement (optional) Whether the Menu should start with this Element
 	 * @return \FML\Script\Features\Menu
 	 */
 	public function addElement(Control $item, Control $control, $isStartElement = false) {
@@ -56,16 +56,15 @@ class Menu extends ScriptFeature {
 	/**
 	 * Append an Element to the Menu
 	 *
-	 * @param MenuElement $menuElement Menu Element
-	 * @param bool $isStartElement (optional) Whether the Menu should start with this Element
+	 * @param MenuElement $menuElement    Menu Element
+	 * @param bool        $isStartElement (optional) Whether the Menu should start with this Element
 	 * @return \FML\Script\Features\Menu
 	 */
 	public function appendElement(MenuElement $menuElement, $isStartElement = false) {
 		array_push($this->elements, $menuElement);
 		if ($isStartElement) {
 			$this->setStartElement($menuElement);
-		}
-		else if (count($this->elements) > 1) {
+		} else if (count($this->elements) > 1) {
 			$menuElement->getControl()->setVisible(false);
 		}
 		return $this;
@@ -86,13 +85,12 @@ class Menu extends ScriptFeature {
 	}
 
 	/**
-	 *
 	 * @see \FML\Script\Features\ScriptFeature::prepare()
 	 */
 	public function prepare(Script $script) {
 		$updateFunctionName = self::FUNCTION_UPDATE_MENU;
-		$elementsArrayText = $this->getElementsArrayText();
-		
+		$elementsArrayText  = $this->getElementsArrayText();
+
 		// OnInit
 		if ($this->startElement) {
 			$startControlId = $this->startElement->getControl()->getId(true);
@@ -100,7 +98,7 @@ class Menu extends ScriptFeature {
 {$updateFunctionName}({$elementsArrayText}, \"{$startControlId}\");";
 			$script->appendGenericScriptLabel(ScriptLabel::ONINIT, $initScriptText, true);
 		}
-		
+
 		// MouseClick
 		$scriptText = "
 declare MenuElements = {$elementsArrayText};
@@ -109,7 +107,7 @@ if (MenuElements.existskey(Event.Control.ControlId)) {
 	{$updateFunctionName}(MenuElements, ShownControlId);
 }";
 		$script->appendGenericScriptLabel(ScriptLabel::MOUSECLICK, $scriptText, true);
-		
+
 		// Update menu function
 		$updateFunctionText = "
 Void {$updateFunctionName}(Text[Text] _Elements, Text _ShownControlId) {
@@ -119,7 +117,7 @@ Void {$updateFunctionName}(Text[Text] _Elements, Text _ShownControlId) {
 	}
 }";
 		$script->addScriptFunction($updateFunctionName, $updateFunctionText);
-		
+
 		return $this;
 	}
 
@@ -131,7 +129,9 @@ Void {$updateFunctionName}(Text[Text] _Elements, Text _ShownControlId) {
 	protected function getElementsArrayText() {
 		$elements = array();
 		foreach ($this->elements as $element) {
-			$elements[$element->getItem()->getId()] = $element->getControl()->getId();
+			/** @var MenuElement $element */
+			$elementId            = $element->getItem()->getId();
+			$elements[$elementId] = $element->getControl()->getId();
 		}
 		return Builder::getArray($elements, true);
 	}

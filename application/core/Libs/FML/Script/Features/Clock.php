@@ -2,25 +2,23 @@
 
 namespace FML\Script\Features;
 
-
-use FML\Script\Script;
-use FML\Script\ScriptLabel;
-
-
 use FML\Controls\Label;
+use FML\Script\Script;
 use FML\Script\ScriptInclude;
+use FML\Script\ScriptLabel;
 
 /**
  * Script Feature showing the current Time on a Label
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Clock extends ScriptFeature {
 	/*
 	 * Protected Properties
 	 */
+	/** @var Label $label */
 	protected $label = null;
 	protected $showSeconds = null;
 	protected $showFullDate = null;
@@ -28,9 +26,9 @@ class Clock extends ScriptFeature {
 	/**
 	 * Construct a new Clock Feature
 	 *
-	 * @param Label $label (optional) Clock Label
-	 * @param bool $showSeconds (optional) Whether the Seconds should be shown
-	 * @param bool $showFullDate (optional) Whether the Date should be shown
+	 * @param Label $label        (optional) Clock Label
+	 * @param bool  $showSeconds  (optional) Whether the Seconds should be shown
+	 * @param bool  $showFullDate (optional) Whether the Date should be shown
 	 */
 	public function __construct(Label $label = null, $showSeconds = true, $showFullDate = false) {
 		$this->setLabel($label);
@@ -57,7 +55,7 @@ class Clock extends ScriptFeature {
 	 * @return \FML\Script\Features\Clock
 	 */
 	public function setShowSeconds($showSeconds) {
-		$this->showSeconds = (bool) $showSeconds;
+		$this->showSeconds = (bool)$showSeconds;
 		return $this;
 	}
 
@@ -68,12 +66,11 @@ class Clock extends ScriptFeature {
 	 * @return \FML\Script\Features\Clock
 	 */
 	public function setShowFullDate($showFullDate) {
-		$this->showFullDate = (bool) $showFullDate;
+		$this->showFullDate = (bool)$showFullDate;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Script\Features\ScriptFeature::prepare()
 	 */
 	public function prepare(Script $script) {
@@ -88,7 +85,7 @@ class Clock extends ScriptFeature {
 	 * @return string
 	 */
 	protected function getScriptText() {
-		$controlId = $this->label->getId(true);
+		$controlId  = $this->label->getId(true);
 		$scriptText = "
 declare ClockLabel <=> (Page.GetFirstChild(\"{$controlId}\") as CMlLabel);
 declare TimeText = CurrentLocalDateText;";

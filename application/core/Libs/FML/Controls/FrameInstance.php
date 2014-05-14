@@ -4,26 +4,26 @@ namespace FML\Controls;
 
 use FML\Elements\FrameModel;
 
-
 /**
  * Class representing an Instance of a Frame Model
  * (CMlFrame)
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class FrameInstance extends Control {
 	/*
 	 * Protected Properties
 	 */
 	protected $modelId = '';
+	/** @var FrameModel $model */
 	protected $model = null;
 
 	/**
 	 * Create a new Frame Instance
 	 *
-	 * @param string $modelId (optional) Frame Model Id
+	 * @param string $modelId   (optional) Frame Model Id
 	 * @param string $controlId (optional) Control Id
 	 * @return \FML\Controls\Frame
 	 */
@@ -35,7 +35,7 @@ class FrameInstance extends Control {
 	/**
 	 * Construct a new Frame Instance
 	 *
-	 * @param string $modelId (optional) Frame Model Id
+	 * @param string $modelId   (optional) Frame Model Id
 	 * @param string $controlId (optional) Control Id
 	 */
 	public function __construct($modelId = null, $controlId = null) {
@@ -53,8 +53,8 @@ class FrameInstance extends Control {
 	 * @return \FML\Controls\FrameInstance
 	 */
 	public function setModelId($modelId) {
-		$this->modelId = (string) $modelId;
-		$this->model = null;
+		$this->modelId = (string)$modelId;
+		$this->model   = null;
 		return $this;
 	}
 
@@ -65,13 +65,12 @@ class FrameInstance extends Control {
 	 * @return \FML\Controls\FrameInstance
 	 */
 	public function setModel(FrameModel $frameModel) {
-		$this->model = $frameModel;
+		$this->model   = $frameModel;
 		$this->modelId = '';
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Renderable::render()
 	 */
 	public function render(\DOMDocument $domDocument) {
@@ -79,8 +78,7 @@ class FrameInstance extends Control {
 		if ($this->model) {
 			$this->model->checkId();
 			$xmlElement->setAttribute('modelid', $this->model->getId());
-		}
-		else if ($this->modelId) {
+		} else if ($this->modelId) {
 			$xmlElement->setAttribute('modelid', $this->modelId);
 		}
 		return $xmlElement;

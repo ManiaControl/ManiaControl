@@ -2,6 +2,7 @@
 
 namespace FML\Controls;
 
+use FML\Models\CheckBoxDesign;
 use FML\Types\Actionable;
 use FML\Types\BgColorable;
 use FML\Types\Linkable;
@@ -13,9 +14,9 @@ use FML\Types\SubStyleable;
  * Quad Control
  * (CMlQuad)
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Quad extends Control implements Actionable, BgColorable, Linkable, Scriptable, Styleable, SubStyleable {
 	/*
@@ -68,7 +69,7 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	 * @return \FML\Controls\Quad
 	 */
 	public function setImage($image) {
-		$this->image = (string) $image;
+		$this->image = (string)$image;
 		return $this;
 	}
 
@@ -79,7 +80,7 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	 * @return \FML\Controls\Quad
 	 */
 	public function setImageId($imageId) {
-		$this->imageId = (string) $imageId;
+		$this->imageId = (string)$imageId;
 		return $this;
 	}
 
@@ -90,7 +91,7 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	 * @return \FML\Controls\Quad
 	 */
 	public function setImageFocus($imageFocus) {
-		$this->imageFocus = (string) $imageFocus;
+		$this->imageFocus = (string)$imageFocus;
 		return $this;
 	}
 
@@ -101,7 +102,7 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	 * @return \FML\Controls\Quad
 	 */
 	public function setImageFocusId($imageFocusId) {
-		$this->imageFocusId = (string) $imageFocusId;
+		$this->imageFocusId = (string)$imageFocusId;
 		return $this;
 	}
 
@@ -112,7 +113,7 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	 * @return \FML\Controls\Quad
 	 */
 	public function setColorize($colorize) {
-		$this->colorize = (string) $colorize;
+		$this->colorize = (string)$colorize;
 		return $this;
 	}
 
@@ -123,7 +124,7 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	 * @return \FML\Controls\Quad
 	 */
 	public function setModulizeColor($modulizeColor) {
-		$this->modulizeColor = (string) $modulizeColor;
+		$this->modulizeColor = (string)$modulizeColor;
 		return $this;
 	}
 
@@ -139,16 +140,14 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Actionable::setAction()
 	 */
 	public function setAction($action) {
-		$this->action = (string) $action;
+		$this->action = (string)$action;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Actionable::getAction()
 	 */
 	public function getAction() {
@@ -156,61 +155,54 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Actionable::setActionKey()
 	 */
 	public function setActionKey($actionKey) {
-		$this->actionKey = (int) $actionKey;
+		$this->actionKey = (int)$actionKey;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\BgColorable::setBgColor()
 	 */
 	public function setBgColor($bgColor) {
-		$this->bgColor = (string) $bgColor;
+		$this->bgColor = (string)$bgColor;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Linkable::setUrl()
 	 */
 	public function setUrl($url) {
-		$this->url = (string) $url;
+		$this->url = (string)$url;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Linkable::setUrlId()
 	 */
 	public function setUrlId($urlId) {
-		$this->urlId = (string) $urlId;
+		$this->urlId = (string)$urlId;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Linkable::setManialink()
 	 */
 	public function setManialink($manialink) {
-		$this->manialink = (string) $manialink;
+		$this->manialink = (string)$manialink;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Linkable::setManialinkId()
 	 */
 	public function setManialinkId($manialinkId) {
-		$this->manialinkId = (string) $manialinkId;
+		$this->manialinkId = (string)$manialinkId;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Scriptable::setScriptEvents()
 	 */
 	public function setScriptEvents($scriptEvents) {
@@ -219,25 +211,22 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Styleable::setStyle()
 	 */
 	public function setStyle($style) {
-		$this->style = (string) $style;
+		$this->style = (string)$style;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\SubStyleable::setSubStyle()
 	 */
 	public function setSubStyle($subStyle) {
-		$this->subStyle = (string) $subStyle;
+		$this->subStyle = (string)$subStyle;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\SubStyleable::setStyles()
 	 */
 	public function setStyles($style, $subStyle) {
@@ -247,7 +236,17 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	}
 
 	/**
+	 * Apply the given CheckBox Design
 	 *
+	 * @param CheckBoxDesign $checkBoxDesign CheckBox Design
+	 * @return \FML\Controls\Quad
+	 */
+	public function applyCheckBoxDesign(CheckBoxDesign $checkBoxDesign) {
+		$checkBoxDesign->applyToQuad($this);
+		return $this;
+	}
+
+	/**
 	 * @see \FML\Control::render()
 	 */
 	public function render(\DOMDocument $domDocument) {
