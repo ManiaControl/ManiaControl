@@ -3,6 +3,7 @@
 namespace ManiaControl;
 
 use ManiaControl\Files\FileUtil;
+use ManiaControl\Plugins\PluginManager;
 use ManiaControl\Update\UpdateManager;
 
 /**
@@ -51,7 +52,8 @@ class ErrorHandler {
 		$message = "[ManiaControl EXCEPTION]: {$exception->getMessage()}";
 
 		$exceptionClass = get_class($exception);
-		$traceString    = $exception->getTraceAsString();
+		$sourceClass    = null;
+		$traceString    = $this->parseBackTrace($exception->getTrace(), $sourceClass);
 
 		$logMessage = $message . PHP_EOL . 'Class: ' . $exceptionClass . PHP_EOL . 'Trace:' . PHP_EOL . $traceString;
 		$this->maniaControl->log($logMessage);
@@ -62,6 +64,8 @@ class ErrorHandler {
 			$error['Message']         = $message;
 			$error['Class']           = $exceptionClass;
 			$error['FileLine']        = $exception->getFile() . ': ' . $exception->getLine();
+			$error['SourceClass']     = $sourceClass;
+			$error['PluginId']        = PluginManager::getPluginId($sourceClass);
 			$error['Backtrace']       = $traceString;
 			$error['OperatingSystem'] = php_uname();
 			$error['PHPVersion']      = phpversion();
@@ -96,6 +100,72 @@ class ErrorHandler {
 			}
 			exit();
 		}
+	}
+
+	/**
+	 * Parse the Debug Backtrace into a String for the Error Report
+	 *
+	 * @param array  $backtrace
+	 * @param string $sourceClass
+	 * @return string
+	 */
+	private function parseBackTrace(array $backtrace, &$sourceClass = null) {
+		$traceString = '';
+		$stepCount   = 0;
+		foreach ($backtrace as $traceStep) {
+			$traceString .= PHP_EOL . '#' . $stepCount . ': ';
+			if (isset($traceStep['class'])) {
+				if (!$sourceClass) {
+					$sourceClass = $traceStep['class'];
+				}
+				$traceString .= $traceStep['class'];
+			}
+			if (isset($traceStep['type'])) {
+				$traceString .= $traceStep['type'];
+			}
+			if (isset($traceStep['function'])) {
+				$traceString .= $traceStep['function'] . '(';
+				if (isset($traceStep['args'])) {
+					$traceString .= $this->parseArgumentsArray($traceStep['args']);
+				}
+				$traceString .= ')';
+			}
+			if (isset($traceStep['file'])) {
+				$traceString .= ' in File ';
+				$traceString .= $traceStep['file'];
+			}
+			if (isset($traceStep['line'])) {
+				$traceString .= ' on Line ';
+				$traceString .= $traceStep['line'];
+			}
+			$stepCount++;
+		}
+		return $traceString;
+	}
+
+	/**
+	 * Build a String from an Arguments Array
+	 *
+	 * @param array $args
+	 * @return string
+	 */
+	private function parseArgumentsArray(array $args) {
+		$string    = '';
+		$argsCount = count($args);
+		foreach ($args as $index => $arg) {
+			if (is_object($arg)) {
+				$string .= 'object(' . get_class($arg) . ')';
+			} else if (is_array($arg)) {
+				$string .= 'array(' . $this->parseArgumentsArray($arg) . ')';
+			} else {
+				$type = gettype($arg);
+				$string .= $type . '(' . print_r($arg, true) . ')';
+			}
+			if ($index < $argsCount - 1) {
+				$string .= ', ';
+			}
+		}
+		return $string;
 	}
 
 	/**
@@ -135,11 +205,12 @@ class ErrorHandler {
 			return false;
 		}
 
-		$errorTag = $this->getErrorTag($errorNumber);
+		$errorTag    = $this->getErrorTag($errorNumber);
+		$sourceClass = null;
 
 		$message     = $errorTag . ': ' . $errorString;
 		$fileLine    = $errorFile . ': ' . $errorLine;
-		$traceString = $this->parseBackTrace(debug_backtrace());
+		$traceString = $this->parseBackTrace(debug_backtrace(), $sourceClass);
 
 		$logMessage = $message . PHP_EOL . 'File&Line: ' . $fileLine . PHP_EOL . 'Trace: ' . $traceString;
 		$this->maniaControl->log($logMessage);
@@ -149,6 +220,8 @@ class ErrorHandler {
 			$error['Type']            = 'Error';
 			$error['Message']         = $message;
 			$error['FileLine']        = $fileLine;
+			$error['SourceClass']     = $sourceClass;
+			$error['PluginId']        = PluginManager::getPluginId($sourceClass);
 			$error['Backtrace']       = $traceString;
 			$error['OperatingSystem'] = php_uname();
 			$error['PHPVersion']      = phpversion();
@@ -213,39 +286,6 @@ class ErrorHandler {
 				return '[ManiaControl DEBUG]';
 		}
 		return "[PHP ERROR '{$errorLevel}']";
-	}
-
-	/**
-	 * Parse the Debug Backtrace into a String for the Error Report
-	 *
-	 * @param array $backtrace
-	 * @return string
-	 */
-	private function parseBackTrace(array $backtrace) {
-		$traceString = '';
-		$stepCount   = 0;
-		foreach ($backtrace as $traceStep) {
-			$traceString .= PHP_EOL . '#' . $stepCount . ': ';
-			if (isset($traceStep['class'])) {
-				$traceString .= $traceStep['class'];
-			}
-			if (isset($traceStep['type'])) {
-				$traceString .= $traceStep['type'];
-			}
-			if (isset($traceStep['function'])) {
-				$traceString .= $traceStep['function'];
-			}
-			if (isset($traceStep['file'])) {
-				$traceString .= ' in File ';
-				$traceString .= $traceStep['file'];
-			}
-			if (isset($traceStep['line'])) {
-				$traceString .= ' on Line ';
-				$traceString .= $traceStep['line'];
-			}
-			$stepCount++;
-		}
-		return $traceString;
 	}
 
 	/**

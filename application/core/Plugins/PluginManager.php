@@ -78,6 +78,50 @@ class PluginManager {
 	}
 
 	/**
+	 * Get the Plugin Id if the given Class is a Plugin
+	 *
+	 * @param string $pluginClass
+	 * @return int
+	 */
+	public static function getPluginId($pluginClass) {
+		if (self::isPluginClass($pluginClass)) {
+			/** @var Plugin $pluginClass */
+			return $pluginClass::getId();
+		}
+		return null;
+	}
+
+	/**
+	 * Check if the given class implements the plugin interface
+	 *
+	 * @param string $pluginClass
+	 * @return bool
+	 */
+	public static function isPluginClass($pluginClass) {
+		$pluginClass = self::getClass($pluginClass);
+		if (!class_exists($pluginClass, false)) {
+			return false;
+		}
+		if (!in_array(Plugin::PLUGIN_INTERFACE, class_implements($pluginClass, false))) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Get the Class of the Object
+	 *
+	 * @param mixed $object
+	 * @return string
+	 */
+	private static function getClass($object) {
+		if (is_object($object)) {
+			return get_class($object);
+		}
+		return (string)$object;
+	}
+
+	/**
 	 * Deactivate the Plugin with the given Class
 	 *
 	 * @param string $pluginClass
@@ -131,36 +175,6 @@ class PluginManager {
 			return false;
 		}
 		return $pluginClass;
-	}
-
-	/**
-	 * Get the Class of the Object
-	 *
-	 * @param mixed $object
-	 * @return string
-	 */
-	private static function getClass($object) {
-		if (is_object($object)) {
-			return get_class($object);
-		}
-		return (string)$object;
-	}
-
-	/**
-	 * Check if the given class implements the plugin interface
-	 *
-	 * @param string $pluginClass
-	 * @return bool
-	 */
-	public static function isPluginClass($pluginClass) {
-		$pluginClass = self::getClass($pluginClass);
-		if (!class_exists($pluginClass, false)) {
-			return false;
-		}
-		if (!in_array(Plugin::PLUGIN_INTERFACE, class_implements($pluginClass, false))) {
-			return false;
-		}
-		return true;
 	}
 
 	/**
