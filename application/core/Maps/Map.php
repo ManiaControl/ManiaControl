@@ -18,25 +18,25 @@ class Map {
 	 */
 	public $index = -1;
 	public $name = 'undefined';
-	public $rawName = '';
-	public $uid = '';
-	public $fileName = '';
-	public $environment = '';
+	public $rawName = null;
+	public $uid = null;
+	public $fileName = null;
+	public $environment = null;
 	public $authorTime = -1;
 	public $goldTime = -1;
 	public $copperPrice = -1;
-	public $mapType = '';
-	public $mapStyle = '';
+	public $mapType = null;
+	public $mapStyle = null;
 	public $nbCheckpoints = -1;
 	public $nbLaps = -1;
 	/** @var MXMapInfo $mx */
 	public $mx = null;
-	public $authorLogin = '';
-	public $authorNick = '';
-	public $authorZone = '';
-	public $authorEInfo = '';
-	public $comment = '';
-	public $titleUid = '';
+	public $authorLogin = null;
+	public $authorNick = null;
+	public $authorZone = null;
+	public $authorEInfo = null;
+	public $comment = null;
+	public $titleUid = null;
 	public $startTime = -1;
 	public $lastUpdate = 0;
 	public $karma = null;
