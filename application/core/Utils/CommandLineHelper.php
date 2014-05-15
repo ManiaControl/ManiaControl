@@ -19,6 +19,9 @@ class CommandLineHelper {
 	 */
 	public static function getParameter($paramName) {
 		global $argv;
+		if (!is_array($argv)) {
+			return null;
+		}
 		$paramName = (string)$paramName;
 		foreach ($argv as $arg) {
 			$parts = explode('=', $arg, 2);
