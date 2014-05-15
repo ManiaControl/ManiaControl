@@ -110,6 +110,8 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 			$success = mkdir($folderDir);
 			if (!$success) {
 				trigger_error("Couldn't create ChatlogPlugin Log-Folder '{$folderName}'!");
+				$this->fileName = null;
+				return false;
 			}
 		}
 		$fileName = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_FILENAME);
@@ -158,6 +160,9 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 	 * @param string $login
 	 */
 	private function logText($text, $login = null) {
+		if (!$this->fileName) {
+			return;
+		}
 		$message = date(self::DATE) . ' >> ';;
 		if ($login) {
 			$message .= $login . ': ';
