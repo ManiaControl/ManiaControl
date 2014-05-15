@@ -248,6 +248,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	 * @return Frame
 	 */
 	private function getPluginSettingsMenu(Frame $frame, $width, $height, Paging $paging, Player $player, $settingClass) {
+		// TODO: use maniacontrolsettings menu
 		$settings = $this->maniaControl->settingManager->getSettingsByClass($settingClass);
 
 		$pageSettingsMaxCount = 12;

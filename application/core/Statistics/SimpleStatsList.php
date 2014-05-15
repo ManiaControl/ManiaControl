@@ -14,12 +14,12 @@ use FML\ManiaLink;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Commands\CommandListener;
-use ManiaControl\Utils\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
+use ManiaControl\Utils\Formatter;
 
 /**
  * Simple Stats List Class
@@ -214,6 +214,9 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 
 		foreach ($statRankings[$order] as $playerId => $value) {
 			$listPlayer = $this->maniaControl->playerManager->getPlayerByIndex($playerId);
+			if (!$listPlayer) {
+				continue;
+			}
 			if ($i == 15) {
 				break;
 			}
