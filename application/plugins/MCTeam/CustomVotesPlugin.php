@@ -607,13 +607,20 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 			return;
 		}
 
-		$votePercentage = $this->currentVote->positiveVotes / $this->currentVote->getVoteCount();
+		$voteCount      = $this->currentVote->getVoteCount();
+		$votePercentage = 0;
+		if ($voteCount > 0) {
+			$votePercentage = $this->currentVote->positiveVotes / floatval($voteCount);
+		}
 
 		$timeUntilExpire = $this->currentVote->expireTime - time();
 		$this->showVoteWidget($timeUntilExpire, $votePercentage);
 
 		$playerCount      = $this->maniaControl->playerManager->getPlayerCount();
-		$playersVoteRatio = (100 / $playerCount * $this->currentVote->getVoteCount()) / 100;
+		$playersVoteRatio = 0;
+		if ($playerCount > 0 && $voteCount > 0) {
+			$playersVoteRatio = floatval($voteCount) / floatval($playerCount);
+		}
 
 		//Check if vote is over
 		if ($timeUntilExpire <= 0 || (($playersVoteRatio >= $this->currentVote->neededPlayerRatio) && (($votePercentage >= $this->currentVote->neededRatio) || ($votePercentage <= 1 - $this->currentVote->neededRatio)))) {
