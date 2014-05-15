@@ -81,11 +81,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 		$height = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
 
 		// get Admins
-		$admins  = $this->maniaControl->authenticationManager->getAdmins();
-		$pagesId = '';
-		if (count($admins) > self::MAX_PLAYERS_PER_PAGE) {
-			$pagesId = 'AdminListPages';
-		}
+		$admins = $this->maniaControl->authenticationManager->getAdmins();
 
 		//Create ManiaLink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
@@ -94,7 +90,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 		$script->addFeature($paging);
 
 		// Main frame
-		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script, $pagesId);
+		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script, $paging);
 		$maniaLink->add($frame);
 
 		// Start offsets
@@ -112,21 +108,18 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 		$array = array("Id" => $x + 5, "Nickname" => $x + 18, "Login" => $x + 70, "Actions" => $x + 120);
 		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
 
-		$i          = 1;
-		$y          = $y - 10;
-		$pageFrames = array();
+		$i         = 1;
+		$y         = $y - 10;
+		$pageFrame = null;
+
 		foreach ($admins as $admin) {
-			if (!isset($pageFrame)) {
+			if ($i % self::MAX_PLAYERS_PER_PAGE === 1) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
-				if (!empty($pageFrames)) {
-					$pageFrame->setVisible(false);
-				}
-				array_push($pageFrames, $pageFrame);
-				$y = $height / 2 - 10;
-				$paging->addPage($pageFrame);
-			}
 
+				$paging->addPage($pageFrame);
+				$y = $height / 2 - 10;
+			}
 
 			$playerFrame = new Frame();
 			$pageFrame->add($playerFrame);
@@ -192,9 +185,6 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 
 			$y -= 4;
 			$i++;
-			if (($i - 1) % self::MAX_PLAYERS_PER_PAGE == 0) {
-				unset($pageFrame);
-			}
 		}
 
 		// Render and display xml
