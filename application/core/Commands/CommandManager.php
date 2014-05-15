@@ -48,7 +48,7 @@ class CommandManager implements CallbackListener {
 	 * @param string          $description
 	 * @return bool
 	 */
-	public function registerCommandListener($commandName, CommandListener $listener, $method, $adminCommand = false, $description = '') {
+	public function registerCommandListener($commandName, CommandListener $listener, $method, $adminCommand = false, $description = null) {
 		if (is_array($commandName)) {
 			$success = true;
 			foreach ($commandName as $command) {
@@ -74,8 +74,10 @@ class CommandManager implements CallbackListener {
 			$this->addListenerCallback($this->commandListeners, $listenerCallback, $command);
 		}
 
-		//TODO description
-		$this->helpManager->registerCommand($command, $adminCommand, $description, get_class($listener) . '\\' . $method);
+		// TODO: description(?)
+		if ($description) {
+			$this->helpManager->registerCommand($command, $adminCommand, $description, get_class($listener) . '\\' . $method);
+		}
 
 		return true;
 	}
