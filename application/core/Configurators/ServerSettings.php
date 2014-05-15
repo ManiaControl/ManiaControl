@@ -281,6 +281,15 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			return true;
 		}
 
+		$rewriteSettings = array('NextUseChangingValidationSeed' => 'UseChangingValidationSeed');
+		foreach ($rewriteSettings as $oldName => $newName) {
+			if (array_key_exists($oldName, $newSettings)) {
+				$setting = $newSettings[$oldName];
+				unset($newSettings[$oldName]);
+				$newSettings[$newName] = $setting;
+			}
+		}
+
 		try {
 			$this->maniaControl->client->setServerOptions($newSettings);
 		} catch (ServerOptionsException $e) {
