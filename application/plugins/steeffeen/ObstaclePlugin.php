@@ -117,7 +117,13 @@ class ObstaclePlugin implements CallbackListener, CommandListener, Plugin {
 		}
 		// Send jump callback
 		$params = explode(' ', $chatCallback[1][2], 2);
-		$param  = $player->login . ";" . $params[1] . ";";
+		if (count($params) < 2) {
+			$message = "Usage: '//jumpto login' or '//jumpto checkpointnumber'";
+			$this->maniaControl->chat->sendUsageInfo($message, $player);
+			return;
+		}
+
+		$param = $player->login . ";" . $params[1] . ";";
 		try {
 			$this->maniaControl->client->triggerModeScriptEvent(self::CB_JUMPTO, $param);
 		} catch (GameModeException $e) {
