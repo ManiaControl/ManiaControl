@@ -2,11 +2,13 @@
 
 namespace ManiaControl\Configurators;
 
+use FML\Components\CheckBox;
 use FML\Controls\Control;
 use FML\Controls\Entry;
 use FML\Controls\Frame;
 use FML\Controls\Label;
 use FML\Controls\Labels\Label_Text;
+use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Script\Features\Paging;
 use FML\Script\Script;
@@ -28,8 +30,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	/*
 	 * Constants
 	 */
-	const ACTION_PREFIX_SETTING                     = 'ServerSettings';
-	const ACTION_SETTING_BOOL                       = 'ServerSettings.ActionBoolSetting.';
+	const ACTION_PREFIX_SETTING                     = 'ServerSettings.';
 	const CB_SERVERSETTING_CHANGED                  = 'ServerSettings.SettingChanged';
 	const CB_SERVERSETTINGS_CHANGED                 = 'ServerSettings.SettingsChanged';
 	const TABLE_SERVER_SETTINGS                     = 'mc_serversettings';
@@ -50,7 +51,6 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		$this->initTables();
 
 		// Register for callbacks
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_ONINIT, $this, 'onInit');
 
 		//Permission for Change Script-Settings
@@ -141,7 +141,6 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		$pagerSize     = 9.;
 		$settingHeight = 5.;
 		$labelTextSize = 2;
-		$pageMaxCount  = 13;
 
 		// Pagers
 		$pagerPrev = new Quad_Icons64x64_1();
@@ -201,43 +200,36 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			$nameLabel->setText($name);
 			$nameLabel->setTextColor("FFF");
 
-			$substyle = '';
-			if ($value === false) {
-				$substyle = Quad_Icons64x64_1::SUBSTYLE_LvlRed;
-			} else if ($value === true) {
-				$substyle = Quad_Icons64x64_1::SUBSTYLE_LvlGreen;
-			}
+			if (is_bool($value)) {
+				// Boolean checkbox
+				$checkBox = new CheckBox(self::ACTION_PREFIX_SETTING . $name, $value);
+				$settingFrame->add($checkBox);
 
-			$entry = new Entry();
-			$settingFrame->add($entry);
-			$entry->setStyle(Label_Text::STYLE_TextValueSmall);
-			$entry->setHAlign(Control::CENTER);
-			$entry->setX($width / 2 * 0.46);
-			$entry->setTextSize(1);
-			$entry->setSize($width * 0.48, $settingHeight * 0.9);
-			$entry->setName(self::ACTION_PREFIX_SETTING . '.' . $name);
-			$entry->setDefault($value);
-
-			if ($name == "Comment") { //
-				$entry->setAutoNewLine(true);
-				$entry->setSize($width * 0.48, $settingHeight * 3 + $settingHeight * 0.9);
-				$settingFrame->setY($y - $settingHeight * 1.5);
-				// dummy:
-				$y -= $settingHeight * 3;
-				$id += 3;
-			}
-
-			if ($substyle != '') {
-				$quad = new Quad_Icons64x64_1();
-				$settingFrame->add($quad);
+				$quad = new Quad();
+				$checkBox->setQuad($quad);
 				$quad->setX($width / 2 * 0.46);
 				$quad->setZ(-0.01);
-				$quad->setSubStyle($substyle);
 				$quad->setSize(4, 4);
-				$quad->setHAlign(Control::CENTER);
-				$quad->setAction(self::ACTION_SETTING_BOOL . $name);
+			} else {
+				// Other
+				$entry = new Entry();
+				$settingFrame->add($entry);
+				$entry->setStyle(Label_Text::STYLE_TextValueSmall);
+				$entry->setHAlign(Control::CENTER);
+				$entry->setX($width / 2 * 0.46);
+				$entry->setTextSize(1);
+				$entry->setSize($width * 0.48, $settingHeight * 0.9);
+				$entry->setName(self::ACTION_PREFIX_SETTING . $name);
+				$entry->setDefault($value);
 
-				$entry->setVisible(false);
+				if ($name == "Comment") { //
+					$entry->setAutoNewLine(true);
+					$entry->setSize($width * 0.48, $settingHeight * 3 + $settingHeight * 0.9);
+					$settingFrame->setY($y - $settingHeight * 1.5);
+					// dummy:
+					$y -= $settingHeight * 3;
+					$id += 3;
+				}
 			}
 
 			$y -= $settingHeight;
@@ -245,25 +237,6 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		}
 
 		return $frame;
-	}
-
-	/**
-	 * Handle ManialinkPageAnswer Callback
-	 *
-	 * @param array $callback
-	 */
-	public function handleManialinkPageAnswer(array $callback) {
-		$actionId    = $callback[1][2];
-		$boolSetting = (strpos($actionId, self::ACTION_SETTING_BOOL) === 0);
-		if (!$boolSetting) {
-			return;
-		}
-
-		$login  = $callback[1][1];
-		$player = $this->maniaControl->playerManager->getPlayer($login);
-
-		// Save all Changes
-		$this->saveConfigData($callback[1], $player);
 	}
 
 	/**
@@ -282,22 +255,9 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 
 		$prefixLength = strlen(self::ACTION_PREFIX_SETTING);
 
-		$actionArray = explode(".", $configData[2]);
-
-		$boolSettingName = '';
-		if (isset($actionArray[2])) {
-			$boolSettingName = self::ACTION_PREFIX_SETTING . '.' . $actionArray[2];
-		}
-
 		$newSettings = array();
 		foreach ($configData[3] as $setting) {
-			// Check if it was a boolean button
-			if ($setting['Name'] == $boolSettingName) {
-				$setting['Value'] = ($setting['Value'] ? false : true);
-			}
-
-			$settingName = substr($setting['Name'], $prefixLength + 1);
-
+			$settingName               = substr($setting['Name'], $prefixLength);
 			$newSettings[$settingName] = $setting['Value'];
 			settype($newSettings[$settingName], gettype($serverSettings[$settingName]));
 		}

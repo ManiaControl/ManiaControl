@@ -178,7 +178,7 @@ declare Text[Boolean] " . self::VAR_CHECKBOX_DESIGNS . " as Designs for Quad_Che
 Designs[True] = \"{$enabledDesignString}\";
 Designs[False] = \"{$disabledDesignString}\";
 declare Boolean " . self::VAR_CHECKBOX_ENABLED . " as Enabled for Quad_CheckBox;
-Enabled = {$default};
+Enabled = !{$default};
 declare Text " . self::VAR_CHECKBOX_ENTRY_ID . " as EntryId for Quad_CheckBox;
 EntryId = \"{$entryId}\";
 " . self::FUNCTION_UPDATE_QUAD_DESIGN . "(Quad_CheckBox);
