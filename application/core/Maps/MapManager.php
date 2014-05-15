@@ -277,7 +277,6 @@ class MapManager implements CallbackListener {
 	private function processMapFile($file, MXMapInfo $mapInfo, $login, $update) {
 		// Check if map is already on the server
 		if ($this->getMapByUid($mapInfo->uid)) {
-			// Download error
 			$this->maniaControl->chat->sendError('Map is already on the server!', $login);
 			return;
 		}
@@ -323,7 +322,6 @@ class MapManager implements CallbackListener {
 		try {
 			$this->maniaControl->client->checkMapForCurrentServerParams($relativeMapFileName);
 		} catch (InvalidMapException $e) {
-			trigger_error("Couldn't check if map is valid ('{$relativeMapFileName}'). " . $e->getMessage());
 			$this->maniaControl->chat->sendError('Wrong MapType or not validated!', $login);
 			return;
 		}
@@ -336,10 +334,13 @@ class MapManager implements CallbackListener {
 		$this->maniaControl->mapManager->mxManager->updateMapObjectsWithManiaExchangeIds(array($mapInfo));
 
 		// Update last updated time
-		$map = $this->maps[$mapInfo->uid];
-		/**
-		 * @var Map $map
-		 */
+		$map = $this->getMapByUid($mapInfo->uid);
+		if (!$map) {
+			// TODO: improve this - error reports about not existing maps
+			$this->maniaControl->errorHandler->triggerDebugNotice('Map not in List after Insert!');
+			$this->maniaControl->chat->sendError('Server Error!', $login);
+			return;
+		}
 		$map->lastUpdate = time();
 
 		$player = $this->maniaControl->playerManager->getPlayer($login);
@@ -365,10 +366,10 @@ class MapManager implements CallbackListener {
 	 * @return Map
 	 */
 	public function getMapByUid($uid) {
-		if (!isset($this->maps[$uid])) {
-			return null;
+		if (isset($this->maps[$uid])) {
+			return $this->maps[$uid];
 		}
-		return $this->maps[$uid];
+		return null;
 	}
 
 	/**
@@ -386,7 +387,8 @@ class MapManager implements CallbackListener {
 					if (array_key_exists($rpcMap->uId, $this->maps)) {
 						// Map already exists, only update index
 						$tempList[$rpcMap->uId] = $this->maps[$rpcMap->uId];
-					} else { // Insert Map Object
+					} else {
+						// Insert Map Object
 						$map                 = $this->initializeMap($rpcMap);
 						$tempList[$map->uid] = $map;
 					}
