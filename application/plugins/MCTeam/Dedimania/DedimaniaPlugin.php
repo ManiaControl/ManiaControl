@@ -1078,17 +1078,14 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$array = array("Rank" => $x + 5, "Nickname" => $x + 18, "Login" => $x + 70, "Time" => $x + 101);
 		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
 
-		$i          = 0;
-		$y          = $height / 2 - 10;
-		$pageFrames = array();
+		$i         = 0;
+		$y         = $height / 2 - 10;
+		$pageFrame = null;
+
 		foreach ($records as $listRecord) {
-			if (!isset($pageFrame)) {
+			if ($i % 15 === 0) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
-				if (!empty($pageFrames)) {
-					$pageFrame->setVisible(false);
-				}
-				array_push($pageFrames, $pageFrame);
 				$y = $height / 2 - 10;
 				$paging->addPage($pageFrame);
 			}
@@ -1114,9 +1111,6 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 			$y -= 4;
 			$i++;
-			if ($i % 15 == 0) {
-				unset($pageFrame);
-			}
 		}
 
 		// Render and display xml

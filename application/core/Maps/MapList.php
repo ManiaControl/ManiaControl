@@ -216,9 +216,10 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$pageNumber = 1 + $chunkIndex * self::MAX_PAGES_PER_CHUNK;
 		$paging->setStartPageNumber($pageIndex + 1);
 
-		$id         = 1 + $mapsBeginIndex;
-		$y          = $height / 2 - 10;
-		$pageFrames = array();
+		$id        = 1 + $mapsBeginIndex;
+		$y         = $height / 2 - 10;
+		$pageFrame = null;
+
 		/** @var Map $map */
 		$currentMap       = $this->maniaControl->mapManager->getCurrentMap();
 		$mxIcon           = $this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON);
@@ -227,15 +228,10 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$mxIconGreenHover = $this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON_GREEN_MOVER);
 
 		foreach ($mapList as $map) {
-			if (!isset($pageFrame)) {
+			if ($id % self::MAX_MAPS_PER_PAGE === 0) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
-				if (!empty($pageFrames)) {
-					$pageFrame->setVisible(false);
-				}
-				array_push($pageFrames, $pageFrame);
 				$y = $height / 2 - 10;
-
 				$paging->addPage($pageFrame, $pageNumber);
 				$pageNumber++;
 			}
@@ -466,9 +462,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			}
 
 			$y -= 4;
-			if ($id % self::MAX_MAPS_PER_PAGE == 0) {
-				unset($pageFrame);
-			}
 			$id++;
 		}
 

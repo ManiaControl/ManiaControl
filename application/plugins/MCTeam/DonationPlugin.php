@@ -484,21 +484,17 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$array = array('$oId' => $x + 5, '$oNickname' => $x + 18, '$oDonated planets' => $x + 70);
 		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
 
-		$i          = 1;
-		$y          = $y - 10;
-		$pageFrames = array();
+		$i         = 1;
+		$y         = $y - 10;
+		$pageFrame = null;
+
 		foreach ($stats as $playerIndex => $donations) {
-			if (!isset($pageFrame)) {
+			if ($i % 15 === 1) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
-				if (!empty($pageFrames)) {
-					$pageFrame->setVisible(false);
-				}
-				array_push($pageFrames, $pageFrame);
 				$y = $height / 2 - 10;
 				$paging->addPage($pageFrame);
 			}
-
 
 			$playerFrame = new Frame();
 			$pageFrame->add($playerFrame);
@@ -518,9 +514,6 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 
 			$y -= 4;
 			$i++;
-			if (($i - 1) % 15 == 0) {
-				unset($pageFrame);
-			}
 
 			if ($i > 100) {
 				break;

@@ -487,21 +487,17 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		$array = array('$oRank' => $x + 5, '$oNickname' => $x + 18, '$oAverage' => $x + 70);
 		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
 
-		$i          = 1;
-		$y          = $y - 10;
-		$pageFrames = array();
+		$i         = 1;
+		$y         = $y - 10;
+		$pageFrame = null;
+
 		while ($rankedPlayer = $result->fetch_object()) {
-			if (!isset($pageFrame)) {
+			if ($i % 15 === 1) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
-				if (!empty($pageFrames)) {
-					$pageFrame->setVisible(false);
-				}
-				array_push($pageFrames, $pageFrame);
 				$y = $height / 2 - 10;
 				$paging->addPage($pageFrame);
 			}
-
 
 			$playerFrame = new Frame();
 			$pageFrame->add($playerFrame);
@@ -521,9 +517,6 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 
 			$y -= 4;
 			$i++;
-			if (($i - 1) % 15 == 0) {
-				unset($pageFrame);
-			}
 		}
 
 		// Render and display xml

@@ -16,8 +16,6 @@ use FML\ManiaLink;
 use FML\Script\Features\Paging;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
-use ManiaControl\Utils\ColorUtil;
-use ManiaControl\Utils\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\IconManager;
 use ManiaControl\Manialinks\ManialinkManager;
@@ -25,6 +23,8 @@ use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Maps\MapCommands;
 use ManiaControl\Maps\MapManager;
 use ManiaControl\Players\Player;
+use ManiaControl\Utils\ColorUtil;
+use ManiaControl\Utils\Formatter;
 
 /**
  * ManiaExchange List Widget Class
@@ -175,20 +175,17 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		$array = array('$oId' => $x + 3.5, '$oName' => $x + 12.5, '$oAuthor' => $x + 59, '$oKarma' => $x + 85, '$oType' => $x + 103, '$oMood' => $x + 118, '$oLast Update' => $x + 130);
 		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
 
-		$i          = 0;
-		$y          = $height / 2 - 16;
-		$pageFrames = array();
-		foreach ($maps as $map) { //TODO order possibilities
+		$i         = 0;
+		$y         = $height / 2 - 16;
+		$pageFrame = null;
+
+		foreach ($maps as $map) {
+			//TODO order possibilities
 			/** @var MxMapInfo $map */
-			if (!isset($pageFrame)) {
+			if ($i % self::MAX_MX_MAPS_PER_PAGE === 0) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
-				if (!empty($pageFrames)) {
-					$pageFrame->setVisible(false);
-				}
-				array_push($pageFrames, $pageFrame);
 				$y = $height / 2 - 16;
-
 				$paging->addPage($pageFrame);
 			}
 
@@ -285,9 +282,6 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 
 			$y -= 4;
 			$i++;
-			if ($i % self::MAX_MX_MAPS_PER_PAGE == 0) {
-				unset($pageFrame);
-			}
 		}
 
 		$label = new Label_Text();

@@ -169,9 +169,10 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		$paging->setLabel($pageCountLabel);
 
 		// Setting pages
-		$pageFrames = array();
-		$y          = 0.;
-		$id         = 0;
+		$y         = 0.;
+		$id        = 0;
+		$pageFrame = null;
+
 		foreach ($serverSettings as $name => $value) {
 			// Continue on CurrentMaxPlayers...
 			$pos = strpos($name, "Current"); // TODO maybe display current somewhere
@@ -179,13 +180,9 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 				continue;
 			}
 
-			if (!isset($pageFrame)) {
+			if ($id % 13 === 0) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
-				if (!empty($pageFrames)) {
-					$pageFrame->setVisible(false);
-				}
-				array_push($pageFrames, $pageFrame);
 				$y = $height * 0.41;
 				$paging->addPage($pageFrame);
 			}
@@ -244,10 +241,6 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			}
 
 			$y -= $settingHeight;
-			if ($id % $pageMaxCount == $pageMaxCount - 1) {
-				unset($pageFrame);
-			}
-
 			$id++;
 		}
 

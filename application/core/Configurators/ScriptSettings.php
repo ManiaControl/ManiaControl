@@ -182,7 +182,6 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		$pagerSize     = 9.;
 		$settingHeight = 5.;
 		$labelTextSize = 2;
-		$pageMaxCount  = 13;
 
 		// Pagers
 		$pagerPrev = new Quad_Icons64x64_1();
@@ -210,8 +209,9 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		$paging->setLabel($pageCountLabel);
 
 		// Setting pages
-		$pageFrames = array();
-		$y          = 0.;
+		$pageFrame = null;
+		$y         = 0.;
+
 		foreach ($scriptParams as $index => $scriptParam) {
 			/** @var \Maniaplanet\DedicatedServer\Structures\ScriptSettings $scriptParam */
 			$settingName = $scriptParam->name;
@@ -220,13 +220,9 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 				continue;
 			}
 
-			if (!isset($pageFrame)) {
+			if ($index % 13 === 0) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
-				if (!empty($pageFrames)) {
-					$pageFrame->setVisible(false);
-				}
-				array_push($pageFrames, $pageFrame);
 				$y = $height * 0.41;
 				$paging->addPage($pageFrame);
 			}
@@ -285,9 +281,6 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			$nameLabel->addTooltipFeature($descriptionLabel);
 
 			$y -= $settingHeight;
-			if ($index % $pageMaxCount == $pageMaxCount - 1) {
-				unset($pageFrame);
-			}
 		}
 
 		return $frame;

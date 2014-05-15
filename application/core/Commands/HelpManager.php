@@ -189,17 +189,14 @@ class HelpManager implements CommandListener, CallbackListener {
 		$array = array("Command" => $x + 5, "Description" => $x + 50);
 		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
 
-		$i          = 1;
-		$y          = $y - 10;
-		$pageFrames = array();
+		$i         = 1;
+		$y         = $y - 10;
+		$pageFrame = null;
+
 		foreach ($commands as $command) {
-			if (!isset($pageFrame)) {
+			if ($i % 15 === 1) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
-				if (!empty($pageFrames)) {
-					$pageFrame->setVisible(false);
-				}
-				array_push($pageFrames, $pageFrame);
 				$y = $height / 2 - 10;
 				$paging->addPage($pageFrame);
 			}
@@ -225,9 +222,6 @@ class HelpManager implements CommandListener, CallbackListener {
 
 			$y -= 4;
 			$i++;
-			if (($i - 1) % 15 == 0) {
-				unset($pageFrame);
-			}
 		}
 
 		// Render and display xml

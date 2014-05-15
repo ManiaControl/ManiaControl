@@ -67,9 +67,8 @@ class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, Manialink
 		$pagerSize     = 9.;
 		$entryHeight   = 5.;
 		$labelTextSize = 2;
-		$pageMaxCount  = 10;
 		$y             = 0.;
-		$pageFrames    = array();
+		$pageFrame     = null;
 
 		// Pagers
 		$pagerPrev = new Quad_Icons64x64_1();
@@ -110,14 +109,9 @@ class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, Manialink
 
 			foreach ($pluginList as $plugin) {
 				if (!in_array($plugin->id, $pluginIds)) {
-					if (!isset($pageFrame)) {
+					if ($index % 10 === 0) {
 						$pageFrame = new Frame();
 						$frame->add($pageFrame);
-						if (!empty($pageFrames)) {
-							$pageFrame->setVisible(false);
-						}
-
-						array_push($pageFrames, $pageFrame);
 						$paging->addPage($pageFrame);
 						$y = $height * 0.41;
 					}
@@ -159,10 +153,6 @@ class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, Manialink
 					$installButton->setAction(self::ACTION_PREFIX_INSTALLPLUGIN . $plugin->id);
 
 					$y -= $entryHeight;
-					if ($index % $pageMaxCount == $pageMaxCount - 1) {
-						unset($pageFrame);
-					}
-
 					$index++;
 				}
 			}
