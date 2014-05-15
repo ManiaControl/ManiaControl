@@ -257,7 +257,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			if (strstr($chatCommand[1], '.txt')) {
 				$maplist = $chatCommand[1];
 			} else {
-				$maplist = $chatCommand . '.txt';
+				$maplist = $chatCommand[1] . '.txt';
 			}
 		} else {
 			$maplist = 'maplist.txt';
