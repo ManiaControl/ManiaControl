@@ -102,7 +102,11 @@ class PluginManager {
 		if (!class_exists($pluginClass, false)) {
 			return false;
 		}
-		if (!in_array(Plugin::PLUGIN_INTERFACE, class_implements($pluginClass, false))) {
+		$interfaces = class_implements($pluginClass, false);
+		if (!$interfaces) {
+			return false;
+		}
+		if (!in_array(Plugin::PLUGIN_INTERFACE, $interfaces)) {
 			return false;
 		}
 		return true;
