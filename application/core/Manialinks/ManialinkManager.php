@@ -160,19 +160,22 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	}
 
 	/**
-	 * Hide the Manialink with the given Id
+	 * Displays a ManiaLink Widget to a certain Player (Should only be used on Main Widgets)
 	 *
-	 * @param mixed $manialinkId
-	 * @param mixed $logins
+	 * @param mixed  $maniaLink
+	 * @param mixed  $player
+	 * @param string $widgetName
 	 */
-	public function hideManialink($manialinkId, $logins = null) {
-		if (is_array($manialinkId)) {
-			foreach ($manialinkId as $mlId) {
-				$this->hideManialink($mlId, $logins);
-			}
-		} else {
-			$emptyManialink = new ManiaLink($manialinkId);
-			$this->sendManialink($emptyManialink, $logins);
+	public function displayWidget($maniaLink, $player, $widgetName = null) {
+		// render and display xml
+		$this->sendManialink($maniaLink, $player);
+
+		if ($widgetName) {
+			// TODO make check by manialinkId, getter is needed to avoid uses on non main widgets
+			$this->disableAltMenu($player);
+			// Trigger callback
+			$player = $this->maniaControl->playerManager->getPlayer($player);
+			$this->maniaControl->callbackManager->triggerCallback(self::CB_MAIN_WINDOW_OPENED, $player, $widgetName);
 		}
 	}
 
@@ -207,12 +210,11 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 			if (is_array($logins)) {
 				$success = true;
 				foreach ($logins as $login) {
-					$subSuccess = $this->maniaControl->client->sendDisplayManialinkPage($login, $manialinkText, $timeout, $hideOnClick);
+					$subSuccess = $this->sendManialink($manialinkText, $login, $timeout, $hideOnClick);
 					if (!$subSuccess) {
 						$success = false;
 					}
 				}
-
 				return $success;
 			}
 		} catch (UnknownPlayerException $e) {
@@ -223,33 +225,15 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	}
 
 	/**
-	 * Displays a ManiaLink Widget to a certain Player (Should only be used on Main Widgets)
-	 *
-	 * @param mixed  $maniaLink
-	 * @param Player $player
-	 * @param string $widgetName
-	 */
-	public function displayWidget($maniaLink, Player $player, $widgetName = '') {
-		// render and display xml
-		$this->sendManialink($maniaLink, $player->login);
-
-		if ($widgetName != '') {
-			// TODO make check by manialinkId, getter is needed to avoid uses on non main widgets
-			$this->disableAltMenu($player);
-			// Trigger callback
-			$this->maniaControl->callbackManager->triggerCallback(self::CB_MAIN_WINDOW_OPENED, $player, $widgetName);
-		}
-	}
-
-	/**
 	 * Disable the alt menu for the player
 	 *
-	 * @param Player $player
+	 * @param mixed $player
 	 * @return bool
 	 */
-	public function disableAltMenu(Player $player) {
+	public function disableAltMenu($player) {
+		$login = Player::parseLogin($player);
 		try {
-			$success = $this->maniaControl->client->triggerModeScriptEvent('LibXmlRpc_DisableAltMenu', $player->login);
+			$success = $this->maniaControl->client->triggerModeScriptEvent('LibXmlRpc_DisableAltMenu', $login);
 		} catch (GameModeException $e) {
 			return false;
 		}
@@ -269,32 +253,49 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	/**
 	 * Closes a Manialink Widget
 	 *
-	 * @param Player $player
-	 * @param bool   $widgetId
+	 * @param mixed $player
+	 * @param bool  $widgetId
 	 */
-	public function closeWidget(Player $player, $widgetId = false) {
+	public function closeWidget($player, $widgetId = false) {
 		if (!$widgetId) {
-			$emptyManialink = new ManiaLink(self::MAIN_MLID);
-			$this->sendManialink($emptyManialink, $player->login);
+			$this->hideManialink(self::MAIN_MLID);
 			$this->enableAltMenu($player);
 
 			// Trigger callback
+			$player = $this->maniaControl->playerManager->getPlayer($player);
 			$this->maniaControl->callbackManager->triggerCallback(self::CB_MAIN_WINDOW_CLOSED, $player);
 		} else {
-			$emptyManialink = new ManiaLink($widgetId);
-			$this->sendManialink($emptyManialink, $player->login);
+			$this->hideManialink($widgetId, $player);
+		}
+	}
+
+	/**
+	 * Hide the Manialink with the given Id
+	 *
+	 * @param mixed $manialinkId
+	 * @param mixed $logins
+	 */
+	public function hideManialink($manialinkId, $logins = null) {
+		if (is_array($manialinkId)) {
+			foreach ($manialinkId as $mlId) {
+				$this->hideManialink($mlId, $logins);
+			}
+		} else {
+			$emptyManialink = new ManiaLink($manialinkId);
+			$this->sendManialink($emptyManialink, $logins);
 		}
 	}
 
 	/**
 	 * Enable the alt menu for the player
 	 *
-	 * @param Player $player
+	 * @param mixed $player
 	 * @return bool
 	 */
-	public function enableAltMenu(Player $player) {
+	public function enableAltMenu($player) {
+		$login = Player::parseLogin($player);
 		try {
-			$success = $this->maniaControl->client->triggerModeScriptEvent('LibXmlRpc_EnableAltMenu', $player->login);
+			$success = $this->maniaControl->client->triggerModeScriptEvent('LibXmlRpc_EnableAltMenu', $login);
 		} catch (GameModeException $e) {
 			return false;
 		}
