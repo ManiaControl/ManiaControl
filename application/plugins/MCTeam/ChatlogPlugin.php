@@ -114,6 +114,11 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 				return false;
 			}
 		}
+		if (!is_writable($folderDir)) {
+			trigger_error("ChatlogPlugin Log-Folder isn't writable! {$folderName}'!");
+			$this->fileName = null;
+			return false;
+		}
 		$fileName = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_FILENAME);
 		$fileName = FileUtil::getClearedFileName($fileName);
 		$usePId   = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_USEPID);
