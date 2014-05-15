@@ -357,11 +357,14 @@ class PlayerManager implements CallbackListener, TimerListener {
 	/**
 	 * Get a Player by Login
 	 *
-	 * @param string $login
-	 * @param bool   $connectedPlayersOnly
+	 * @param mixed $login
+	 * @param bool  $connectedPlayersOnly
 	 * @return Player
 	 */
 	public function getPlayer($login, $connectedPlayersOnly = false) {
+		if ($login instanceof Player) {
+			return $login;
+		}
 		if (!isset($this->players[$login])) {
 			if ($connectedPlayersOnly) {
 				return null;
