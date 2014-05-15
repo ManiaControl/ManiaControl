@@ -54,7 +54,7 @@ class ErrorHandler {
 		$traceString    = $exception->getTraceAsString();
 
 		$logMessage = $message . PHP_EOL . 'Class: ' . $exceptionClass . PHP_EOL . 'Trace:' . PHP_EOL . $traceString;
-		logMessage($logMessage);
+		$this->maniaControl->log($logMessage);
 
 		if ($this->reportErrors) {
 			$error                    = array();
@@ -142,7 +142,7 @@ class ErrorHandler {
 		$traceString = $this->parseBackTrace(debug_backtrace());
 
 		$logMessage = $message . PHP_EOL . 'File&Line: ' . $fileLine . PHP_EOL . 'Trace: ' . $traceString;
-		logMessage($logMessage);
+		$this->maniaControl->log($logMessage);
 
 		if ($this->reportErrors && !$this->isUserErrorNumber($errorNumber)) {
 			$error                    = array();
@@ -255,7 +255,7 @@ class ErrorHandler {
 	 * @return bool
 	 */
 	private function isUserErrorNumber($errorNumber) {
-		return ($errorNumber === E_USER_ERROR || $errorNumber === E_USER_WARNING || $errorNumber === E_USER_NOTICE || $errorNumber === E_USER_DEPRECATED);
+		return ($errorNumber & E_USER_ERROR || $errorNumber & E_USER_WARNING || $errorNumber & E_USER_NOTICE || $errorNumber & E_USER_DEPRECATED);
 	}
 
 	/**
@@ -265,7 +265,7 @@ class ErrorHandler {
 	 * @return bool
 	 */
 	private function shouldStopExecution($errorNumber) {
-		return ($errorNumber === E_ERROR || $errorNumber === E_USER_ERROR || $errorNumber === E_FATAL);
+		return ($errorNumber & E_ERROR || $errorNumber & E_USER_ERROR || $errorNumber & E_FATAL);
 	}
 
 	/**

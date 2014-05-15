@@ -156,11 +156,27 @@ class ManiaControl implements CommandListener, TimerListener {
 		$configFileName = ($configId ? $configId : 'server.xml');
 		$this->config   = FileUtil::loadConfig($configFileName);
 		if (!$this->config) {
-			trigger_error("Error loading Configuration XML-File! ('{$configFileName}')", E_USER_ERROR);
+			$this->quit("Error loading Configuration XML-File! ('{$configFileName}')", true);
 		}
 		if (!$this->config->server->port || $this->config->server->port == 'port') {
-			trigger_error("Your Configuration File ('{$configFileName}') doesn't seem to be maintained. Please check it again!", E_USER_ERROR);
+			$this->quit("Your Configuration File ('{$configFileName}') doesn't seem to be maintained. Please check it again!", true);
 		}
+	}
+
+	/**
+	 * Quit ManiaControl and log the given message
+	 *
+	 * @param string $message
+	 * @param bool   $errorPrefix
+	 */
+	public function quit($message = null, $errorPrefix = false) {
+		if ($message) {
+			if ($errorPrefix) {
+				$message = '[ERROR] ' . $message;
+			}
+			$this->log($message);
+		}
+		exit();
 	}
 
 	/**
@@ -263,22 +279,6 @@ class ManiaControl implements CommandListener, TimerListener {
 			return;
 		}
 		$this->quit("ManiaControl Shutdown requested by '{$player->login}'!");
-	}
-
-	/**
-	 * Quit ManiaControl and log the given message
-	 *
-	 * @param string $message
-	 * @param bool   $errorPrefix
-	 */
-	public function quit($message = null, $errorPrefix = false) {
-		if ($message) {
-			if ($errorPrefix) {
-				$message = '[ERROR] ' . $message;
-			}
-			$this->log($message);
-		}
-		exit();
 	}
 
 	/**

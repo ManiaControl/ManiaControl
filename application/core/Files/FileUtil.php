@@ -2,8 +2,8 @@
 
 namespace ManiaControl\Files;
 
-use ManiaControl\Utils\Formatter;
 use ManiaControl\ManiaControl;
+use ManiaControl\Utils\Formatter;
 
 /**
  * Files Utility Class
@@ -77,11 +77,11 @@ abstract class FileUtil {
 	public static function loadConfig($fileName) {
 		$fileLocation = ManiaControlDir . 'configs' . DIRECTORY_SEPARATOR . $fileName;
 		if (!file_exists($fileLocation)) {
-			trigger_error("Config file doesn't exist! ({$fileName})");
+			logMessage("Config File doesn't exist! ({$fileName})");
 			return null;
 		}
 		if (!is_readable($fileLocation)) {
-			trigger_error("Config file isn't readable! Please check your file permissions. ({$fileName})");
+			logMessage("Config File isn't readable! Please check the File Permissions. ({$fileName})");
 			return null;
 		}
 		return simplexml_load_file($fileLocation);
