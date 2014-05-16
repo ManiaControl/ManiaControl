@@ -73,12 +73,12 @@ class Chat {
 		if (!$login) {
 			$prefix      = $this->getPrefix($prefix);
 			$chatMessage = '$<$z$ff0' . str_replace(' ', '', $prefix) . $prefix . $message . '$>';
-			$this->maniaControl->client->chatSend($chatMessage, null, true);
+			$this->maniaControl->client->chatSendServerMessage($chatMessage);
 		} else {
 			$chatMessage = '$<$z$ff0' . $this->getPrefix($prefix) . $message . '$>';
 			$login = Player::parseLogin($login);
 			try {
-				$this->maniaControl->client->chatSend($chatMessage, $login, true);
+				$this->maniaControl->client->chatSendServerMessage($chatMessage, $login);
 			} catch (UnknownPlayerException $e) {
 			}
 		}
