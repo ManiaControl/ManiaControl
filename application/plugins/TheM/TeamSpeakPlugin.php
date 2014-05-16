@@ -31,6 +31,8 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 	 */
 	const ID      = 23;
 	const VERSION = 0.11;
+	const NAME    = 'TeamSpeak Plugin';
+	const AUTHOR  = 'TheM';
 
 	const TEAMSPEAK_SID        = 'TS Server ID';
 	const TEAMSPEAK_SERVERHOST = 'TS Server host';
@@ -85,7 +87,7 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 	 * @return string
 	 */
 	public static function getName() {
-		return 'TeamSpeak Plugin';
+		return self::NAME;
 	}
 
 	/**
@@ -103,7 +105,7 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 	 * @return string
 	 */
 	public static function getAuthor() {
-		return 'TheM';
+		return self::AUTHOR;
 	}
 
 	/**
@@ -112,7 +114,7 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 	 * @return string
 	 */
 	public static function getDescription() {
-		return 'Plugin offers a connection with a TeamSpeak server (via widgets).';
+		return 'Plugin offers a Connection with a TeamSpeak Server (via Widgets).';
 	}
 
 	/**
@@ -195,7 +197,7 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 				$response .= $this->ts3_sendCommand($socket, 'channellist -topic -flags -voice -limits');
 				$response .= $this->ts3_sendCommand($socket, 'clientlist -uid -away -voice -groups');
 
-				fputs($socket, "quit\n");
+				fwrite($socket, "quit\n");
 				fclose($socket);
 
 				$lines = explode("error id=0 msg=ok\n\r", $response);
@@ -238,7 +240,7 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 	 * @return string
 	 */
 	private function ts3_sendCommand($socket, $cmd) {
-		fputs($socket, "$cmd\n");
+		@fwrite($socket, "$cmd\n");
 
 		$response = '';
 		/*while(strpos($response, 'error id=') === false) {
@@ -320,7 +322,6 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 	 */
 	public function unload() {
 		$this->serverData = array();
-
 		$this->maniaControl->actionsMenu->removeMenuItem(1, true);
 	}
 
