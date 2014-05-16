@@ -76,6 +76,29 @@ class ScriptLabel {
 	}
 
 	/**
+	 * Check if the given Label is an Event Label
+	 *
+	 * @param string $label Label Name
+	 * @return bool
+	 */
+	public static function isEventLabel($label) {
+		$eventLabels = self::getEventLabels();
+		if (in_array($label, $eventLabels)) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Get the possible Event Label Names
+	 *
+	 * @return array
+	 */
+	public static function getEventLabels() {
+		return array(self::ENTRYSUBMIT, self::KEYPRESS, self::MOUSECLICK, self::MOUSEOUT, self::MOUSEOVER);
+	}
+
+	/**
 	 * Build the full Script Label Text
 	 *
 	 * @return string

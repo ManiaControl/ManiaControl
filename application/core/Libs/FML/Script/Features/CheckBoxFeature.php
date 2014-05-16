@@ -90,6 +90,15 @@ class CheckBoxFeature extends ScriptFeature {
 	}
 
 	/**
+	 * Get the managed Entry
+	 *
+	 * @return \FML\Controls\Entry
+	 */
+	public function getEntry() {
+		return $this->entry;
+	}
+
+	/**
 	 * Set the Enabled Design
 	 *
 	 * @param CheckBoxDesign $checkBoxDesign CheckBox Design
@@ -134,6 +143,7 @@ class CheckBoxFeature extends ScriptFeature {
 Void " . self::FUNCTION_UPDATE_QUAD_DESIGN . "(CMlQuad _Quad) {
 	declare " . self::VAR_CHECKBOX_ENABLED . " as Enabled for _Quad = True;
 	Enabled = !Enabled;
+	_Quad.StyleSelected = Enabled;
 	declare " . self::VAR_CHECKBOX_DESIGNS . " as Designs for _Quad = Text[Boolean];
 	declare Design = Designs[Enabled];
 	declare DesignParts = TextLib::Split(\"|\", Design);

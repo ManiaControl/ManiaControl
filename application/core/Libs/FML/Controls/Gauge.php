@@ -8,19 +8,19 @@ use FML\Types\Styleable;
  * Gauge Control
  * (CMlGauge)
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Gauge extends Control implements Styleable {
 	/*
 	 * Constants
 	 */
-	const STYLE_BgCard = 'BgCard';
-	const STYLE_EnergyBar = 'EnergyBar';
-	const STYLE_ProgressBar = 'ProgressBar';
+	const STYLE_BgCard           = 'BgCard';
+	const STYLE_EnergyBar        = 'EnergyBar';
+	const STYLE_ProgressBar      = 'ProgressBar';
 	const STYLE_ProgressBarSmall = 'ProgressBarSmall';
-	
+
 	/*
 	 * Protected Properties
 	 */
@@ -35,6 +35,16 @@ class Gauge extends Control implements Styleable {
 	protected $style = '';
 
 	/**
+	 * Construct a new Gauge Control
+	 *
+	 * @param string $id (optional) Control Id
+	 */
+	public function __construct($id = null) {
+		parent::__construct($id);
+		$this->tagName = 'gauge';
+	}
+
+	/**
 	 * Create a new Gauge Control
 	 *
 	 * @param string $id (optional) Control Id
@@ -46,13 +56,10 @@ class Gauge extends Control implements Styleable {
 	}
 
 	/**
-	 * Construct a new Gauge Control
-	 *
-	 * @param string $id (optional) Control Id
+	 * @see \FML\Controls\Control::getManiaScriptClass()
 	 */
-	public function __construct($id = null) {
-		parent::__construct($id);
-		$this->tagName = 'gauge';
+	public function getManiaScriptClass() {
+		return 'CMlGauge';
 	}
 
 	/**
@@ -62,7 +69,7 @@ class Gauge extends Control implements Styleable {
 	 * @return \FML\Controls\Gauge
 	 */
 	public function setRatio($ratio) {
-		$this->ratio = (float) $ratio;
+		$this->ratio = (float)$ratio;
 		return $this;
 	}
 
@@ -73,7 +80,7 @@ class Gauge extends Control implements Styleable {
 	 * @return \FML\Controls\Gauge
 	 */
 	public function setGrading($grading) {
-		$this->grading = (float) $grading;
+		$this->grading = (float)$grading;
 		return $this;
 	}
 
@@ -84,7 +91,7 @@ class Gauge extends Control implements Styleable {
 	 * @return \FML\Controls\Gauge
 	 */
 	public function setColor($color) {
-		$this->color = (string) $color;
+		$this->color = (string)$color;
 		return $this;
 	}
 
@@ -95,7 +102,7 @@ class Gauge extends Control implements Styleable {
 	 * @return \FML\Controls\Gauge
 	 */
 	public function setRotation($rotation) {
-		$this->rotation = (float) $rotation;
+		$this->rotation = (float)$rotation;
 		return $this;
 	}
 
@@ -117,7 +124,7 @@ class Gauge extends Control implements Styleable {
 	 * @return \FML\Controls\Gauge
 	 */
 	public function setClan($clan) {
-		$this->clan = (int) $clan;
+		$this->clan = (int)$clan;
 		return $this;
 	}
 
@@ -144,16 +151,14 @@ class Gauge extends Control implements Styleable {
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Styleable::setStyle()
 	 */
 	public function setStyle($style) {
-		$this->style = (string) $style;
+		$this->style = (string)$style;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Control::render()
 	 */
 	public function render(\DOMDocument $domDocument) {

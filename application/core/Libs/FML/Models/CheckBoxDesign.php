@@ -122,6 +122,9 @@ class CheckBoxDesign implements Styleable, SubStyleable {
 		} else {
 			$string = $this->style . '|' . $this->subStyle;;
 		}
-		return Builder::escapeText($string);
+		if ($escaped) {
+			return Builder::escapeText($string);
+		}
+		return $string;
 	}
 }

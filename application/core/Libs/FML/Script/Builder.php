@@ -5,18 +5,18 @@ namespace FML\Script;
 /**
  * Builder Class offering Methods to build ManiaScript
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 abstract class Builder {
 
 	/**
 	 * Build a Label Implementation Block
 	 *
-	 * @param string $labelName Name of the Label
+	 * @param string $labelName          Name of the Label
 	 * @param string $implementationCode Label Implementation Coding (without declaration)
-	 * @param bool $isolate Whether the Code should be isolated in an own Block
+	 * @param bool   $isolate            Whether the Code should be isolated in an own Block
 	 * @return string
 	 */
 	public static function getLabelImplementationBlock($labelName, $implementationCode, $isolate = true) {
@@ -30,14 +30,14 @@ abstract class Builder {
 	/**
 	 * Escape dangerous Characters in the given Text
 	 *
-	 * @param string $text Text to escape
-	 * @param bool $addApostrophes (optional) Whether to add Apostrophes before and after the Text
+	 * @param string $text           Text to escape
+	 * @param bool   $addApostrophes (optional) Whether to add Apostrophes before and after the Text
 	 * @return string
 	 */
 	public static function escapeText($text, $addApostrophes = false) {
-		$dangers = array('\\', '"', "\n");
+		$dangers      = array('\\', '"', "\n");
 		$replacements = array('\\\\', '\\"', '\\n');
-		$escapedText = str_ireplace($dangers, $replacements, $text);
+		$escapedText  = str_ireplace($dangers, $replacements, $text);
 		if ($addApostrophes) {
 			$escapedText = '"' . $escapedText . '"';
 		}
@@ -51,8 +51,8 @@ abstract class Builder {
 	 * @return string
 	 */
 	public static function getReal($value) {
-		$value = (float) $value;
-		$stringVal = (string) $value;
+		$value     = (float)$value;
+		$stringVal = (string)$value;
 		if (!fmod($value, 1)) {
 			$stringVal .= '.';
 		}
@@ -66,7 +66,7 @@ abstract class Builder {
 	 * @return string
 	 */
 	public static function getBoolean($value) {
-		$bool = (bool) $value;
+		$bool = (bool)$value;
 		if ($bool) {
 			return "True";
 		}
@@ -76,28 +76,26 @@ abstract class Builder {
 	/**
 	 * Get the String-Representation of the given Array
 	 *
-	 * @param array $array Array to convert to a ManiaScript Array
-	 * @param bool $associative (optional) Whether the Array should be associative
+	 * @param array $array       Array to convert to a ManiaScript Array
+	 * @param bool  $associative (optional) Whether the Array should be associative
 	 * @return string
 	 */
 	public static function getArray(array $array, $associative = false) {
 		$arrayText = '[';
-		$index = 0;
-		$count = count($array);
+		$index     = 0;
+		$count     = count($array);
 		foreach ($array as $key => $value) {
 			if ($associative) {
 				if (is_string($key)) {
 					$arrayText .= '"' . self::escapeText($key) . '"';
-				}
-				else {
+				} else {
 					$arrayText .= $key;
 				}
 				$arrayText .= ' => ';
 			}
 			if (is_string($value)) {
 				$arrayText .= '"' . self::escapeText($value) . '"';
-			}
-			else {
+			} else {
 				$arrayText .= $value;
 			}
 			if ($index < $count - 1) {
@@ -112,7 +110,7 @@ abstract class Builder {
 	/**
 	 * Get the Include Command for the given File and Namespace
 	 *
-	 * @param string $file Include File
+	 * @param string $file      Include File
 	 * @param string $namespace Include Namespace
 	 * @return string
 	 */
@@ -124,7 +122,7 @@ abstract class Builder {
 	/**
 	 * Get the Constant Command for the given Name and Value
 	 *
-	 * @param string $name Constant Name
+	 * @param string $name  Constant Name
 	 * @param string $value Constant Value
 	 * @return string
 	 */

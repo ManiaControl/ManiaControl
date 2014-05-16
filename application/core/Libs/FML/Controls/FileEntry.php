@@ -6,15 +6,25 @@ namespace FML\Controls;
  * FileEntry Control
  * (CMlFileEntry)
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class FileEntry extends Entry {
 	/*
 	 * Protected Properties
 	 */
 	protected $folder = '';
+
+	/**
+	 * Construct a new FileEntry Control
+	 *
+	 * @param string $id (optional) Control Id
+	 */
+	public function __construct($id = null) {
+		parent::__construct($id);
+		$this->tagName = 'fileentry';
+	}
 
 	/**
 	 * Create a new FileEntry Control
@@ -28,13 +38,10 @@ class FileEntry extends Entry {
 	}
 
 	/**
-	 * Construct a new FileEntry Control
-	 *
-	 * @param string $id (optional) Control Id
+	 * @see \FML\Controls\Control::getManiaScriptClass()
 	 */
-	public function __construct($id = null) {
-		parent::__construct($id);
-		$this->tagName = 'fileentry';
+	public function getManiaScriptClass() {
+		return 'CMlFileEntry';
 	}
 
 	/**
@@ -44,12 +51,11 @@ class FileEntry extends Entry {
 	 * @return \FML\Controls\FileEntry
 	 */
 	public function setFolder($folder) {
-		$this->folder = (string) $folder;
+		$this->folder = (string)$folder;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Entry::render()
 	 */
 	public function render(\DOMDocument $domDocument) {

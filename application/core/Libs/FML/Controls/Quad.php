@@ -41,6 +41,17 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	protected $subStyle = '';
 
 	/**
+	 * Construct a new Quad Control
+	 *
+	 * @param string $id (optional) Control Id
+	 */
+	public function __construct($id = null) {
+		parent::__construct($id);
+		$this->tagName = 'quad';
+		$this->setZ(-1);
+	}
+
+	/**
 	 * Create a new Quad Control
 	 *
 	 * @param string $id (optional) Control Id
@@ -52,14 +63,10 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	}
 
 	/**
-	 * Construct a new Quad Control
-	 *
-	 * @param string $id (optional) Control Id
+	 * @see \FML\Controls\Control::getManiaScriptClass()
 	 */
-	public function __construct($id = null) {
-		parent::__construct($id);
-		$this->tagName = 'quad';
-		$this->setZ(-1);
+	public function getManiaScriptClass() {
+		return 'CMlQuad';
 	}
 
 	/**
@@ -140,18 +147,18 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	}
 
 	/**
+	 * @see \FML\Types\Actionable::getAction()
+	 */
+	public function getAction() {
+		return $this->action;
+	}
+
+	/**
 	 * @see \FML\Types\Actionable::setAction()
 	 */
 	public function setAction($action) {
 		$this->action = (string)$action;
 		return $this;
-	}
-
-	/**
-	 * @see \FML\Types\Actionable::getAction()
-	 */
-	public function getAction() {
-		return $this->action;
 	}
 
 	/**
@@ -211,6 +218,15 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	}
 
 	/**
+	 * @see \FML\Types\SubStyleable::setStyles()
+	 */
+	public function setStyles($style, $subStyle) {
+		$this->setStyle($style);
+		$this->setSubStyle($subStyle);
+		return $this;
+	}
+
+	/**
 	 * @see \FML\Types\Styleable::setStyle()
 	 */
 	public function setStyle($style) {
@@ -223,15 +239,6 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	 */
 	public function setSubStyle($subStyle) {
 		$this->subStyle = (string)$subStyle;
-		return $this;
-	}
-
-	/**
-	 * @see \FML\Types\SubStyleable::setStyles()
-	 */
-	public function setStyles($style, $subStyle) {
-		$this->setStyle($style);
-		$this->setSubStyle($subStyle);
 		return $this;
 	}
 

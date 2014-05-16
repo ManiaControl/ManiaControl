@@ -15,9 +15,7 @@ if (!defined('FML_PATH')) {
 if (!defined('FML_VERSION')) {
 	define('FML_VERSION', '1.2');
 }
-if (!defined('FML_SIMPLE_CLASSES')) {
-	define('FML_SIMPLE_CLASSES', false);
-}
+//define('FML_SIMPLE_CLASSES', true);
 
 /*
  * Autoload Function that loads FML Class Files on Demand
@@ -30,7 +28,7 @@ if (!defined('FML_AUTOLOAD_DEFINED')) {
 		if (file_exists($filePath)) {
 			// Load with FML namespace
 			require_once $filePath;
-		} else if (FML_SIMPLE_CLASSES) {
+		} else if (defined('FML_SIMPLE_CLASSES') && FML_SIMPLE_CLASSES) {
 			// Load as simple class name
 			if (!function_exists('loadSimpleClass')) {
 

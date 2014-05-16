@@ -7,6 +7,7 @@ use FML\Controls\Frame;
 use FML\Controls\Quad;
 use FML\Models\CheckBoxDesign;
 use FML\Script\Features\CheckBoxFeature;
+use FML\Script\Features\ScriptFeature;
 use FML\Types\Renderable;
 use FML\Types\ScriptFeatureable;
 
@@ -100,22 +101,6 @@ class CheckBox implements Renderable, ScriptFeatureable {
 	}
 
 	/**
-	 * Get the CheckBox Quad
-	 *
-	 * @param bool $createIfEmpty (optional) Create the Quad if it's not set
-	 * @return \FML\Controls\Quad
-	 */
-	public function getQuad($createIfEmpty = true) {
-		if (!$this->feature->getQuad() && $createIfEmpty) {
-			$quad = new Quad();
-			$quad->setSize(10, 10);
-			$quad->setScriptEvents(true);
-			$this->feature->setQuad($quad);
-		}
-		return $this->feature->getQuad();
-	}
-
-	/**
 	 * Set the CheckBox Quad
 	 *
 	 * @param Quad $quad CheckBox Quad
@@ -130,7 +115,24 @@ class CheckBox implements Renderable, ScriptFeatureable {
 	 * @see \FML\Types\ScriptFeatureable::getScriptFeatures()
 	 */
 	public function getScriptFeatures() {
-		return array($this->feature);
+		return ScriptFeature::collect($this->feature, $this->getQuad(), $this->feature->getEntry());
+	}
+
+	/**
+	 * Get the CheckBox Quad
+	 *
+	 * @param bool $createIfEmpty (optional) Create the Quad if it's not set
+	 * @return \FML\Controls\Quad
+	 */
+	public function getQuad($createIfEmpty = true) {
+		if (!$this->feature->getQuad() && $createIfEmpty) {
+			$quad = new Quad();
+			$quad->setSize(10, 10);
+			$quad->setScriptEvents(true);
+			$this->feature->setQuad($quad);
+
+		}
+		return $this->feature->getQuad();
 	}
 
 	/**

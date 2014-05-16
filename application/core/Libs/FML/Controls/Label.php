@@ -2,21 +2,21 @@
 
 namespace FML\Controls;
 
+use FML\Script\Features\Clock;
 use FML\Types\Actionable;
 use FML\Types\Linkable;
 use FML\Types\NewLineable;
 use FML\Types\Scriptable;
 use FML\Types\Styleable;
 use FML\Types\TextFormatable;
-use FML\Script\Features\Clock;
 
 /**
  * Label Control
  * (CMlLabel)
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Label extends Control implements Actionable, Linkable, NewLineable, Scriptable, Styleable, TextFormatable {
 	/*
@@ -43,17 +43,6 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	protected $focusAreaColor2 = '';
 
 	/**
-	 * Create a new Label Control
-	 *
-	 * @param string $id (optional) Control Id
-	 * @return \FML\Controls\Label
-	 */
-	public static function create($id = null) {
-		$label = new Label($id);
-		return $label;
-	}
-
-	/**
 	 * Construct a new Label Control
 	 *
 	 * @param string $id (optional) Control Id
@@ -65,13 +54,31 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	}
 
 	/**
+	 * Create a new Label Control
+	 *
+	 * @param string $id (optional) Control Id
+	 * @return \FML\Controls\Label
+	 */
+	public static function create($id = null) {
+		$label = new Label($id);
+		return $label;
+	}
+
+	/**
+	 * @see \FML\Controls\Control::getManiaScriptClass()
+	 */
+	public function getManiaScriptClass() {
+		return 'CMlLabel';
+	}
+
+	/**
 	 * Set Text
 	 *
 	 * @param string $text Text Value
 	 * @return \FML\Controls\Label
 	 */
 	public function setText($text) {
-		$this->text = (string) $text;
+		$this->text = (string)$text;
 		return $this;
 	}
 
@@ -82,7 +89,7 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	 * @return \FML\Controls\Label
 	 */
 	public function setTextId($textId) {
-		$this->textId = (string) $textId;
+		$this->textId = (string)$textId;
 		return $this;
 	}
 
@@ -93,7 +100,7 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	 * @return \FML\Controls\Label
 	 */
 	public function setTextPrefix($textPrefix) {
-		$this->textPrefix = (string) $textPrefix;
+		$this->textPrefix = (string)$textPrefix;
 		return $this;
 	}
 
@@ -126,21 +133,11 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	 * @return \FML\Controls\Label
 	 */
 	public function setMaxLines($maxLines) {
-		$this->maxLines = (int) $maxLines;
+		$this->maxLines = (int)$maxLines;
 		return $this;
 	}
 
 	/**
-	 *
-	 * @see \FML\Types\Actionable::setAction()
-	 */
-	public function setAction($action) {
-		$this->action = (string) $action;
-		return $this;
-	}
-
-	/**
-	 *
 	 * @see \FML\Types\Actionable::getAction()
 	 */
 	public function getAction() {
@@ -148,52 +145,54 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	}
 
 	/**
-	 *
+	 * @see \FML\Types\Actionable::setAction()
+	 */
+	public function setAction($action) {
+		$this->action = (string)$action;
+		return $this;
+	}
+
+	/**
 	 * @see \FML\Types\Actionable::setActionKey()
 	 */
 	public function setActionKey($actionKey) {
-		$this->actionKey = (int) $actionKey;
+		$this->actionKey = (int)$actionKey;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Linkable::setUrl()
 	 */
 	public function setUrl($url) {
-		$this->url = (string) $url;
+		$this->url = (string)$url;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Linkable::setUrlId()
 	 */
 	public function setUrlId($urlId) {
-		$this->urlId = (string) $urlId;
+		$this->urlId = (string)$urlId;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Linkable::setManialink()
 	 */
 	public function setManialink($manialink) {
-		$this->manialink = (string) $manialink;
+		$this->manialink = (string)$manialink;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Linkable::setManialinkId()
 	 */
 	public function setManialinkId($manialinkId) {
-		$this->manialinkId = (string) $manialinkId;
+		$this->manialinkId = (string)$manialinkId;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\NewLineable::setAutoNewLine()
 	 */
 	public function setAutoNewLine($autoNewLine) {
@@ -202,7 +201,6 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Scriptable::setScriptEvents()
 	 */
 	public function setScriptEvents($scriptEvents) {
@@ -211,54 +209,49 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Styleable::setStyle()
 	 */
 	public function setStyle($style) {
-		$this->style = (string) $style;
+		$this->style = (string)$style;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\TextFormatable::setTextSize()
 	 */
 	public function setTextSize($textSize) {
-		$this->textSize = (int) $textSize;
+		$this->textSize = (int)$textSize;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\TextFormatable::setTextColor()
 	 */
 	public function setTextColor($textColor) {
-		$this->textColor = (string) $textColor;
+		$this->textColor = (string)$textColor;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\TextFormatable::setAreaColor()
 	 */
 	public function setAreaColor($areaColor) {
-		$this->focusAreaColor1 = (string) $areaColor;
+		$this->focusAreaColor1 = (string)$areaColor;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\TextFormatable::setAreaFocusColor()
 	 */
 	public function setAreaFocusColor($areaFocusColor) {
-		$this->focusAreaColor2 = (string) $areaFocusColor;
+		$this->focusAreaColor2 = (string)$areaFocusColor;
 		return $this;
 	}
 
 	/**
 	 * Add a dynamic Feature showing the current Time
 	 *
-	 * @param bool $showSeconds (optional) Whether the Seconds should be shown
+	 * @param bool $showSeconds  (optional) Whether the Seconds should be shown
 	 * @param bool $showFullDate (optional) Whether the Date should be shown
 	 * @return \FML\Controls\Label
 	 */
@@ -269,7 +262,6 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	}
 
 	/**
-	 *
 	 * @see \FML\Control::render()
 	 */
 	public function render(\DOMDocument $domDocument) {

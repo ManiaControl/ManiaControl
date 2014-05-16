@@ -9,9 +9,9 @@ use FML\Types\Scriptable;
  * Video Control
  * (CMlMediaPlayer)
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Video extends Control implements Playable, Scriptable {
 	/*
@@ -26,6 +26,16 @@ class Video extends Control implements Playable, Scriptable {
 	protected $scriptEvents = 0;
 
 	/**
+	 * Construct a new Video Control
+	 *
+	 * @param string $id (optional) Control Id
+	 */
+	public function __construct($id = null) {
+		parent::__construct($id);
+		$this->tagName = 'video';
+	}
+
+	/**
 	 * Create a new Video Control
 	 *
 	 * @param string $id (optional) Control Id
@@ -37,35 +47,29 @@ class Video extends Control implements Playable, Scriptable {
 	}
 
 	/**
-	 * Construct a new Video Control
-	 *
-	 * @param string $id (optional) Control Id
+	 * @see \FML\Controls\Control::getManiaScriptClass()
 	 */
-	public function __construct($id = null) {
-		parent::__construct($id);
-		$this->tagName = 'video';
+	public function getManiaScriptClass() {
+		return 'CMlMediaPlayer';
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Playable::setData()
 	 */
 	public function setData($data) {
-		$this->data = (string) $data;
+		$this->data = (string)$data;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Playable::setDataId()
 	 */
 	public function setDataId($dataId) {
-		$this->dataId = (string) $dataId;
+		$this->dataId = (string)$dataId;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Playable::setPlay()
 	 */
 	public function setPlay($play) {
@@ -74,7 +78,6 @@ class Video extends Control implements Playable, Scriptable {
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Playable::setLooping()
 	 */
 	public function setLooping($looping) {
@@ -83,7 +86,6 @@ class Video extends Control implements Playable, Scriptable {
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Playable::setMusic()
 	 */
 	public function setMusic($music) {
@@ -92,16 +94,14 @@ class Video extends Control implements Playable, Scriptable {
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Playable::setVolume()
 	 */
 	public function setVolume($volume) {
-		$this->volume = (float) $volume;
+		$this->volume = (float)$volume;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Scriptable::setScriptEvents()
 	 */
 	public function setScriptEvents($scriptEvents) {
@@ -110,7 +110,6 @@ class Video extends Control implements Playable, Scriptable {
 	}
 
 	/**
-	 *
 	 * @see \FML\Control::render()
 	 */
 	public function render(\DOMDocument $domDocument) {

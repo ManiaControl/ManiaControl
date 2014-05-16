@@ -21,18 +21,6 @@ class FrameInstance extends Control {
 	protected $model = null;
 
 	/**
-	 * Create a new Frame Instance
-	 *
-	 * @param string $modelId   (optional) Frame Model Id
-	 * @param string $controlId (optional) Control Id
-	 * @return \FML\Controls\Frame
-	 */
-	public static function create($modelId = null, $controlId = null) {
-		$frameInstance = new FrameInstance($modelId, $controlId);
-		return $frameInstance;
-	}
-
-	/**
 	 * Construct a new Frame Instance
 	 *
 	 * @param string $modelId   (optional) Frame Model Id
@@ -56,6 +44,25 @@ class FrameInstance extends Control {
 		$this->modelId = (string)$modelId;
 		$this->model   = null;
 		return $this;
+	}
+
+	/**
+	 * Create a new Frame Instance
+	 *
+	 * @param string $modelId   (optional) Frame Model Id
+	 * @param string $controlId (optional) Control Id
+	 * @return \FML\Controls\Frame
+	 */
+	public static function create($modelId = null, $controlId = null) {
+		$frameInstance = new FrameInstance($modelId, $controlId);
+		return $frameInstance;
+	}
+
+	/**
+	 * @see \FML\Controls\Control::getManiaScriptClass()
+	 */
+	public function getManiaScriptClass() {
+		return 'CMlFrame';
 	}
 
 	/**

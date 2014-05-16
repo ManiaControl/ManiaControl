@@ -22,7 +22,6 @@ class ControlScript extends ScriptFeature {
 	protected $control = null;
 	protected $labelName = null;
 	protected $text = null;
-	protected $isolated = null;
 
 	/**
 	 * Construct a new Custom Script Text
@@ -30,13 +29,11 @@ class ControlScript extends ScriptFeature {
 	 * @param Control $control   Event Control
 	 * @param string  $text      Script Text
 	 * @param string  $labelName (optional) Script Label Name
-	 * @param bool    $isolated  (optional) Whether to isolate the Script Text
 	 */
-	public function __construct(Control $control, $text, $labelName = ScriptLabel::MOUSECLICK, $isolated = true) {
+	public function __construct(Control $control, $text, $labelName = ScriptLabel::MOUSECLICK) {
 		$this->setControl($control);
 		$this->setText($text);
 		$this->setLabelName($labelName);
-		$this->setIsolated($isolated);
 	}
 
 	/**
@@ -77,35 +74,46 @@ class ControlScript extends ScriptFeature {
 	}
 
 	/**
-	 * Set whether the Script should be isolated
-	 *
-	 * @param bool $isolated Whether to isolate the Script Text
-	 * @return \FML\Script\Features\ControlScript
-	 */
-	public function setIsolated($isolated = true) {
-		$this->isolated = (bool)$isolated;
-		return $this;
-	}
-
-	/**
 	 * @see \FML\Script\Features\ScriptFeature::prepare()
 	 */
 	public function prepare(Script $script) {
-		$script->appendGenericScriptLabel($this->labelName, $this->getEncapsulatedText(), $this->isolated);
+		$script->appendGenericScriptLabel($this->labelName, $this->buildScriptText(), true);
 		return $this;
 	}
 
 	/**
-	 * Get the Script Text encapsulated for the Control Event
+	 * Build the Script Text for the Control
 	 *
 	 * @return string
 	 */
-	protected function getEncapsulatedText() {
+	protected function buildScriptText() {
 		$controlId  = $this->control->getId(true);
-		$scriptText = "
-if (Event.ControlId == \"{$controlId}\") {
-	{$this->text}
-}";
+		$scriptText = '';
+		$closeBlock = false;
+
+		if (ScriptLabel::isEventLabel($this->labelName)) {
+			$scriptText .= '
+if (Event.ControlId == "' . $controlId . '") {
+declare Control <=> Event.Control;';
+			$closeBlock = true;
+		} else {
+			$scriptText .= '
+declare Control <=> Page.GetFirstChild("' . $controlId . '");';
+		}
+
+		$class = $this->control->getManiaScriptClass();
+		$name  = preg_replace('/^CMl/', '', $class, 1);
+		$scriptText .= '
+declare ' . $name . ' <=> (Control as ' . $class . ');
+';
+
+		$scriptText .= $this->text . '
+';
+
+		if ($closeBlock) {
+			$scriptText .= '}';
+		}
+
 		return $scriptText;
 	}
 }

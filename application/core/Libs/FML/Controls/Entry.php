@@ -33,6 +33,16 @@ class Entry extends Control implements NewLineable, Scriptable, Styleable, TextF
 	protected $autoComplete = null;
 
 	/**
+	 * Construct a new Entry Control
+	 *
+	 * @param string $id (optional) Control Id
+	 */
+	public function __construct($id = null) {
+		parent::__construct($id);
+		$this->tagName = 'entry';
+	}
+
+	/**
 	 * Create a new Entry Control
 	 *
 	 * @param string $id (optional) Control Id
@@ -44,13 +54,19 @@ class Entry extends Control implements NewLineable, Scriptable, Styleable, TextF
 	}
 
 	/**
-	 * Construct a new Entry Control
-	 *
-	 * @param string $id (optional) Control Id
+	 * @see \FML\Controls\Control::getManiaScriptClass()
 	 */
-	public function __construct($id = null) {
-		parent::__construct($id);
-		$this->tagName = 'entry';
+	public function getManiaScriptClass() {
+		return 'CMlEntry';
+	}
+
+	/**
+	 * Get the Entry Name
+	 *
+	 * @return string
+	 */
+	public function getName() {
+		return $this->name;
 	}
 
 	/**
@@ -65,12 +81,12 @@ class Entry extends Control implements NewLineable, Scriptable, Styleable, TextF
 	}
 
 	/**
-	 * Get the Entry Name
+	 * Get the Default Value
 	 *
-	 * @return string
+	 * @return mixed
 	 */
-	public function getName() {
-		return $this->name;
+	public function getDefault() {
+		return $this->default;
 	}
 
 	/**
@@ -82,15 +98,6 @@ class Entry extends Control implements NewLineable, Scriptable, Styleable, TextF
 	public function setDefault($default) {
 		$this->default = $default;
 		return $this;
-	}
-
-	/**
-	 * Get the Default Value
-	 *
-	 * @return mixed
-	 */
-	public function getDefault() {
-		return $this->default;
 	}
 
 	/**

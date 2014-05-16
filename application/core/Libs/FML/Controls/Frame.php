@@ -24,6 +24,16 @@ class Frame extends Control implements Container {
 	protected $format = null;
 
 	/**
+	 * Construct a new Frame Control
+	 *
+	 * @param string $id (optional) Control Id
+	 */
+	public function __construct($id = null) {
+		parent::__construct($id);
+		$this->tagName = 'frame';
+	}
+
+	/**
 	 * Create a new Frame Control
 	 *
 	 * @param string $id (optional) Control Id
@@ -35,13 +45,10 @@ class Frame extends Control implements Container {
 	}
 
 	/**
-	 * Construct a new Frame Control
-	 *
-	 * @param string $id (optional) Control Id
+	 * @see \FML\Controls\Control::getManiaScriptClass()
 	 */
-	public function __construct($id = null) {
-		parent::__construct($id);
-		$this->tagName = 'frame';
+	public function getManiaScriptClass() {
+		return 'CMlFrame';
 	}
 
 	/**
@@ -63,14 +70,6 @@ class Frame extends Control implements Container {
 	}
 
 	/**
-	 * @see \FML\Types\Container::setFormat()
-	 */
-	public function setFormat(Format $format) {
-		$this->format = $format;
-		return $this;
-	}
-
-	/**
 	 * @see \FML\Types\Container::getFormat()
 	 */
 	public function getFormat($createIfEmpty = true) {
@@ -78,6 +77,14 @@ class Frame extends Control implements Container {
 			$this->setFormat(new Format());
 		}
 		return $this->format;
+	}
+
+	/**
+	 * @see \FML\Types\Container::setFormat()
+	 */
+	public function setFormat(Format $format) {
+		$this->format = $format;
+		return $this;
 	}
 
 	/**

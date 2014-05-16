@@ -68,30 +68,6 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	}
 
 	/**
-	 * Get Control Id
-	 *
-	 * @param bool $escaped (optional) Whether the Id should be escaped for ManiaScript
-	 * @return string
-	 */
-	public function getId($escaped = false) {
-		if ($escaped) {
-			return Builder::escapeText($this->id);
-		}
-		return $this->id;
-	}
-
-	/**
-	 * Set Control Id
-	 *
-	 * @param string $id Control Id
-	 * @return \FML\Controls\Control
-	 */
-	public function setId($id) {
-		$this->id = (string)$id;
-		return $this;
-	}
-
-	/**
 	 * Check Id for dangerous Characters and assign a unique Id if necessary
 	 *
 	 * @param bool $forceNewId Whether to force setting a newly generated Id
@@ -117,6 +93,47 @@ abstract class Control implements Renderable, ScriptFeatureable {
 			trigger_error("Please don't use special Characters in Ids, they might cause Problems! (I stripped them for You.)");
 			$id = str_ireplace($dangerousCharacters, '', $this->getId());
 			$this->setId($id);
+		}
+		return $this;
+	}
+
+	/**
+	 * Get Control Id
+	 *
+	 * @param bool $escaped (optional) Whether the Id should be escaped for ManiaScript
+	 * @return string
+	 */
+	public function getId($escaped = false) {
+		if ($escaped) {
+			return Builder::escapeText($this->id);
+		}
+		return $this->id;
+	}
+
+	/**
+	 * Set Control Id
+	 *
+	 * @param string $id Control Id
+	 * @return \FML\Controls\Control
+	 */
+	public function setId($id) {
+		$this->id = (string)$id;
+		return $this;
+	}
+
+	/**
+	 * Set Control Position
+	 *
+	 * @param float $x Horizontal Position
+	 * @param float $y Vertical Position
+	 * @param float $z (optional) Depth
+	 * @return \FML\Controls\Control
+	 */
+	public function setPosition($x, $y, $z = null) {
+		$this->setX($x);
+		$this->setY($y);
+		if ($z !== null) {
+			$this->setZ($z);
 		}
 		return $this;
 	}
@@ -155,19 +172,15 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	}
 
 	/**
-	 * Set Control Position
+	 * Set Control Size
 	 *
-	 * @param float $x Horizontal Position
-	 * @param float $y Vertical Position
-	 * @param float $z (optional) Depth
+	 * @param float $width  Control Width
+	 * @param float $height Control Height
 	 * @return \FML\Controls\Control
 	 */
-	public function setPosition($x, $y, $z = null) {
-		$this->setX($x);
-		$this->setY($y);
-		if ($z !== null) {
-			$this->setZ($z);
-		}
+	public function setSize($width, $height) {
+		$this->setWidth($width);
+		$this->setHeight($height);
 		return $this;
 	}
 
@@ -194,15 +207,25 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	}
 
 	/**
-	 * Set Control Size
+	 * Center Alignment
 	 *
-	 * @param float $width  Control Width
-	 * @param float $height Control Height
 	 * @return \FML\Controls\Control
 	 */
-	public function setSize($width, $height) {
-		$this->setWidth($width);
-		$this->setHeight($height);
+	public function centerAlign() {
+		$this->setAlign(self::CENTER, self::CENTER2);
+		return $this;
+	}
+
+	/**
+	 * Set Horizontal and Vertical Alignment
+	 *
+	 * @param string $hAlign Horizontal Alignment
+	 * @param string $vAlign Vertical Alignment
+	 * @return \FML\Controls\Control
+	 */
+	public function setAlign($hAlign, $vAlign) {
+		$this->setHAlign($hAlign);
+		$this->setVAlign($vAlign);
 		return $this;
 	}
 
@@ -225,29 +248,6 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	 */
 	public function setVAlign($vAlign) {
 		$this->vAlign = (string)$vAlign;
-		return $this;
-	}
-
-	/**
-	 * Set Horizontal and Vertical Alignment
-	 *
-	 * @param string $hAlign Horizontal Alignment
-	 * @param string $vAlign Vertical Alignment
-	 * @return \FML\Controls\Control
-	 */
-	public function setAlign($hAlign, $vAlign) {
-		$this->setHAlign($hAlign);
-		$this->setVAlign($vAlign);
-		return $this;
-	}
-
-	/**
-	 * Center Alignment
-	 *
-	 * @return \FML\Controls\Control
-	 */
-	public function centerAlign() {
-		$this->setAlign(self::CENTER, self::CENTER2);
 		return $this;
 	}
 
@@ -307,6 +307,17 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	public function addActionTriggerFeature($actionName, $eventLabel = ScriptLabel::MOUSECLICK) {
 		$actionTrigger = new ActionTrigger($actionName, $this, $eventLabel);
 		$this->addScriptFeature($actionTrigger);
+		return $this;
+	}
+
+	/**
+	 * Add a Script Feature
+	 *
+	 * @param ScriptFeature $scriptFeature Script Feature
+	 * @return \FML\Controls\Control
+	 */
+	public function addScriptFeature(ScriptFeature $scriptFeature) {
+		array_push($this->scriptFeatures, $scriptFeature);
 		return $this;
 	}
 
@@ -398,23 +409,11 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	 *
 	 * @param string $scriptText Script Text
 	 * @param string $label      (optional) Script Label Name
-	 * @param bool   $isolated   (optional) Whether to isolate the Script Text
 	 * @return \FML\Controls\Control
 	 */
-	public function addScriptText($scriptText, $label = ScriptLabel::MOUSECLICK, $isolated = true) {
-		$customText = new ControlScript($this, $scriptText, $label, $isolated);
+	public function addScriptText($scriptText, $label = ScriptLabel::MOUSECLICK) {
+		$customText = new ControlScript($this, $scriptText, $label);
 		$this->addScriptFeature($customText);
-		return $this;
-	}
-
-	/**
-	 * Add a Script Feature
-	 *
-	 * @param ScriptFeature $scriptFeature Script Feature
-	 * @return \FML\Controls\Control
-	 */
-	public function addScriptFeature(ScriptFeature $scriptFeature) {
-		array_push($this->scriptFeatures, $scriptFeature);
 		return $this;
 	}
 
@@ -467,4 +466,11 @@ abstract class Control implements Renderable, ScriptFeatureable {
 		}
 		return $xmlElement;
 	}
+
+	/**
+	 * Get the ManiaScript Class of the Control
+	 *
+	 * @return string
+	 */
+	public abstract function getManiaScriptClass();
 }
