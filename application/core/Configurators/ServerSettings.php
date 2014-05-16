@@ -262,9 +262,14 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			settype($newSettings[$settingName], gettype($serverSettings[$settingName]));
 		}
 
-		$this->applyNewServerSettings($newSettings, $player);
+		$success = $this->applyNewServerSettings($newSettings, $player);
+		if ($success) {
+			$this->maniaControl->chat->sendSuccess('Server Settings saved!', $player);
+		} else {
+			$this->maniaControl->chat->sendSuccess('Server Settings Saving failed!', $player);
+		}
 
-		//Reopen the Menu
+		// Reopen the Menu
 		$menuId = $this->maniaControl->configurator->getMenuId($this->getTitle());
 		$this->maniaControl->configurator->reopenMenu($player, $menuId);
 	}

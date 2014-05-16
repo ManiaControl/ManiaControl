@@ -460,6 +460,8 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			$this->maniaControl->settingManager->setSetting($oldSetting->class, $oldSetting->setting, $setting['Value']);
 		}
 
+		$this->maniaControl->chat->sendSuccess('Plugin Settings saved!', $player);
+
 		//Reopen the Menu
 		$menuId = $this->maniaControl->configurator->getMenuId($this->getTitle());
 		$this->maniaControl->configurator->reopenMenu($player, $menuId);

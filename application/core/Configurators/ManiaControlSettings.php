@@ -391,6 +391,8 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 			$this->maniaControl->settingManager->setSetting($oldSetting->class, $oldSetting->setting, $setting['Value']);
 		}
 
+		$this->maniaControl->chat->sendSuccess('Settings saved!', $player);
+
 		// Reopen the Menu
 		$menuId = $this->maniaControl->configurator->getMenuId($this->getTitle());
 		$this->maniaControl->configurator->reopenMenu($player, $menuId);

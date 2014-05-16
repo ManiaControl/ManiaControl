@@ -457,7 +457,13 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			settype($newSettings[$settingName], gettype($scriptSettings[$settingName]));
 		}
 
-		$this->applyNewScriptSettings($newSettings, $player);
+		$success = $this->applyNewScriptSettings($newSettings, $player);
+		if ($success) {
+			$this->maniaControl->chat->sendSuccess('Script Settings saved!', $player);
+		} else {
+
+			$this->maniaControl->chat->sendError('Script Settings Saving failed!', $player);
+		}
 
 		//Reopen the Menu
 		$menuId = $this->maniaControl->configurator->getMenuId($this->getTitle());
