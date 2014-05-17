@@ -164,19 +164,20 @@ class DynamicPointlimitPlugin implements CallbackListener, CommandListener, Plug
 		$this->changePointlimit();
 	}
 	
-	// on player info changed, this checks to see if it is about the spectator status
 	public function checkStatus(array $callback) {
-		$specStatus  = (int)$callback[1][0]['SpectatorStatus'];
+		if(!$this->mode) return;
+		$specStatus  = $callback[1][0]["SpectatorStatus"];
 		$login  = $callback[1][0]['Login'];
+		//$this->maniaControl->chat->sendChat('$<$fffSpectatus of '.$login.'is '.$specStatus.' $>  '.$pointlimit);
 		$player = $this->maniaControl->playerManager->getPlayer($login);
-		
-		if($this->specStatus[$login] != $specStatus)
+		if(isset($this->specStatus))
 		{
-			$this->changePointlimit();
+			if($this->specStatus[$login] != $specStatus)
+			{
+				$this->changePointlimit();
+			}
 		}
-		
 	}
-
 	/**
 	 * Function called on player connect and disconnect, changing the pointlimit.
 	 *
