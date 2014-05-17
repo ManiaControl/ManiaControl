@@ -60,12 +60,13 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		// Init settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_ENABLEUPDATECHECK, true);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_AUTO_UPDATE, true);
-		$updateIntervalSetting = $this->maniaControl->settingManager->initSetting($this, self::SETTING_UPDATECHECK_INTERVAL, 1);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_UPDATECHECK_INTERVAL, 1);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_UPDATECHECK_CHANNEL, self::CHANNEL_BETA);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_PERFORM_BACKUPS, true);
 
 		// Register for callbacks
-		$this->maniaControl->timerManager->registerTimerListening($this, 'hourlyUpdateCheck', 1000 * 60 * 60 * $updateIntervalSetting->value);
+		$updateInterval = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_UPDATECHECK_INTERVAL);
+		$this->maniaControl->timerManager->registerTimerListening($this, 'hourlyUpdateCheck', 1000 * 60 * 60 * $updateInterval);
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerJoined');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECT, $this, 'handlePlayerDisconnect');
 
@@ -302,8 +303,8 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			$this->maniaControl->log($message);
 		}
 
-		$self = $this;
-		$updateData = $this->coreUpdateData;
+		$self         = $this;
+		$updateData   = $this->coreUpdateData;
 		$maniaControl = $this->maniaControl;
 		$this->maniaControl->fileReader->loadFile($updateData->url, function ($updateFileContent, $error) use (&$self, &$maniaControl, &$updateData, &$player) {
 			if (!$updateFileContent || $error) {
@@ -365,7 +366,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 * @param string $date
 	 * @return bool
 	 */
-	public  function setNightlyBuildDate($date) {
+	public function setNightlyBuildDate($date) {
 		$nightlyBuildDateFile   = ManiaControlDir . 'core' . DIRECTORY_SEPARATOR . 'nightly_build.txt';
 		$success                = (bool)file_put_contents($nightlyBuildDateFile, $date);
 		$this->currentBuildDate = $date;
@@ -414,7 +415,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			return;
 		}
 
-		$self = $this;
+		$self         = $this;
 		$maniaControl = $this->maniaControl;
 		$this->checkCoreUpdateAsync(function (UpdateData $updateData = null) use (&$self, &$maniaControl, &$player) {
 			if (!$self->checkUpdateData($updateData)) {
@@ -460,7 +461,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			return;
 		}
 
-		$self = $this;
+		$self         = $this;
 		$maniaControl = $this->maniaControl;
 		$this->checkCoreUpdateAsync(function (UpdateData $updateData = null) use (&$self, &$maniaControl, &$player) {
 			if (!$updateData) {
