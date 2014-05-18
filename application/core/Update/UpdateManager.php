@@ -61,7 +61,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_ENABLEUPDATECHECK, true);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_AUTO_UPDATE, true);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_UPDATECHECK_INTERVAL, 1);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_UPDATECHECK_CHANNEL, self::CHANNEL_BETA);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_UPDATECHECK_CHANNEL, $this->getUpdateChannels());
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_PERFORM_BACKUPS, true);
 
 		// Register for callbacks
@@ -80,6 +80,16 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 
 		// Plugin update manager
 		$this->pluginUpdateManager = new PluginUpdateManager($maniaControl);
+	}
+
+	/**
+	 * Get the possible Update Channels
+	 *
+	 * @return array
+	 */
+	public function getUpdateChannels() {
+		// TODO: change default channel on release
+		return array(self::CHANNEL_BETA, self::CHANNEL_RELEASE, self::CHANNEL_NIGHTLY);
 	}
 
 	/**
@@ -140,7 +150,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	public function getCurrentUpdateChannelSetting() {
 		$updateChannel = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_UPDATECHECK_CHANNEL);
 		$updateChannel = strtolower($updateChannel);
-		if (!in_array($updateChannel, array(self::CHANNEL_RELEASE, self::CHANNEL_BETA, self::CHANNEL_NIGHTLY))) {
+		if (!in_array($updateChannel, $this->getUpdateChannels())) {
 			$updateChannel = self::CHANNEL_RELEASE;
 		}
 		return $updateChannel;
