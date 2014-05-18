@@ -76,7 +76,7 @@ class Chat {
 			$this->maniaControl->client->chatSendServerMessage($chatMessage);
 		} else {
 			$chatMessage = '$<$z$ff0' . $this->getPrefix($prefix) . $message . '$>';
-			$login = Player::parseLogin($login);
+			$login       = Player::parseLogin($login);
 			try {
 				$this->maniaControl->client->chatSendServerMessage($chatMessage, $login);
 			} catch (UnknownPlayerException $e) {
@@ -152,7 +152,6 @@ class Chat {
 	 */
 	public function sendException(\Exception $exception, $login = null) {
 		$message = "Exception occurred: '{$exception->getMessage()}' ({$exception->getCode()})";
-		$this->maniaControl->errorHandler->triggerDebugNotice($message);
 		return $this->sendError($message, $login);
 	}
 
