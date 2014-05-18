@@ -7,9 +7,9 @@ use FML\Controls\Control;
 /**
  * A Page Control
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class PagingPage {
 	/*
@@ -21,8 +21,8 @@ class PagingPage {
 	/**
 	 * Construct a new Paging Page
 	 *
-	 * @param Control $control (optional) Page Control
-	 * @param int $pageNumber (optional) Number of the Page
+	 * @param Control $control    (optional) Page Control
+	 * @param int     $pageNumber (optional) Number of the Page
 	 */
 	public function __construct(Control $control = null, $pageNumber = 1) {
 		$this->setControl($control);
@@ -57,7 +57,7 @@ class PagingPage {
 	 * @return \FML\Script\Features\PagingPage
 	 */
 	public function setPageNumber($pageNumber) {
-		$this->number = (int) $pageNumber;
+		$this->number = (int)$pageNumber;
 		return $this;
 	}
 

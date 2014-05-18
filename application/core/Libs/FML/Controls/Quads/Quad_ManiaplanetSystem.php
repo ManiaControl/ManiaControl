@@ -7,21 +7,21 @@ use FML\Controls\Quad;
 /**
  * Quad Class for 'ManiaplanetSystem' Style
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Quad_ManiaplanetSystem extends Quad {
 	/*
 	 * Constants
 	 */
-	const STYLE = 'ManiaplanetSystem';
-	const SUBSTYLE_BgDialog = 'BgDialog';
+	const STYLE                   = 'ManiaplanetSystem';
+	const SUBSTYLE_BgDialog       = 'BgDialog';
 	const SUBSTYLE_BgDialogAnchor = 'BgDialogAnchor';
-	const SUBSTYLE_BgFloat = 'BgFloat';
-	const SUBSTYLE_Events = 'Events';
-	const SUBSTYLE_Medals = 'Medals';
-	const SUBSTYLE_Statistics = 'Statistics';
+	const SUBSTYLE_BgFloat        = 'BgFloat';
+	const SUBSTYLE_Events         = 'Events';
+	const SUBSTYLE_Medals         = 'Medals';
+	const SUBSTYLE_Statistics     = 'Statistics';
 
 	/**
 	 * Create a new Quad_ManiaplanetSystem Control

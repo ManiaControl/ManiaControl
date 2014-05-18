@@ -5,9 +5,9 @@ namespace FML\ManiaCode;
 /**
  * ManiaCode Element showing a Message
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ShowMessage implements Element {
 	/*
@@ -18,7 +18,7 @@ class ShowMessage implements Element {
 
 	/**
 	 * Create a new ShowMessage Element
-	 * 
+	 *
 	 * @param string $message (optional) Message Text
 	 * @return \FML\ManiaCode\ShowMessage
 	 */
@@ -45,16 +45,15 @@ class ShowMessage implements Element {
 	 * @return \FML\ManiaCode\ShowMessage
 	 */
 	public function setMessage($message) {
-		$this->message = (string) $message;
+		$this->message = (string)$message;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\ManiaCode\Element::render()
 	 */
 	public function render(\DOMDocument $domDocument) {
-		$xmlElement = $domDocument->createElement($this->tagName);
+		$xmlElement     = $domDocument->createElement($this->tagName);
 		$messageElement = $domDocument->createElement('message', $this->message);
 		$xmlElement->appendChild($messageElement);
 		return $xmlElement;

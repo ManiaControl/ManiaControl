@@ -7,9 +7,9 @@ use FML\Types\Renderable;
 /**
  * Include Element
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Including implements Renderable {
 	/*
@@ -46,11 +46,10 @@ class Including implements Renderable {
 	 * @param string $url Include Url
 	 */
 	public function setUrl($url) {
-		$this->url = (string) $url;
+		$this->url = (string)$url;
 	}
 
 	/**
-	 *
 	 * @see \FML\Renderable::render()
 	 */
 	public function render(\DOMDocument $domDocument) {

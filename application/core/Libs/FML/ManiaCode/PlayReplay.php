@@ -5,9 +5,9 @@ namespace FML\ManiaCode;
 /**
  * ManiaCode Element playing a Replay
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class PlayReplay implements Element {
 	/*
@@ -21,7 +21,7 @@ class PlayReplay implements Element {
 	 * Create a new PlayReplay Element
 	 *
 	 * @param string $name (optional) Replay Name
-	 * @param string $url (optional) Replay Url
+	 * @param string $url  (optional) Replay Url
 	 * @return \FML\ManiaCode\PlayReplay
 	 */
 	public static function create($name = null, $url = null) {
@@ -33,7 +33,7 @@ class PlayReplay implements Element {
 	 * Construct a new PlayReplay Element
 	 *
 	 * @param string $name (optional) Replay Name
-	 * @param string $url (optional) Replay Url
+	 * @param string $url  (optional) Replay Url
 	 */
 	public function __construct($name = null, $url = null) {
 		if ($name !== null) {
@@ -51,7 +51,7 @@ class PlayReplay implements Element {
 	 * @return \FML\ManiaCode\PlayReplay
 	 */
 	public function setName($name) {
-		$this->name = (string) $name;
+		$this->name = (string)$name;
 		return $this;
 	}
 
@@ -62,16 +62,15 @@ class PlayReplay implements Element {
 	 * @return \FML\ManiaCode\PlayReplay
 	 */
 	public function setUrl($url) {
-		$this->url = (string) $url;
+		$this->url = (string)$url;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\ManiaCode\Element::render()
 	 */
 	public function render(\DOMDocument $domDocument) {
-		$xmlElement = $domDocument->createElement($this->tagName);
+		$xmlElement  = $domDocument->createElement($this->tagName);
 		$nameElement = $domDocument->createElement('name', $this->name);
 		$xmlElement->appendChild($nameElement);
 		$urlElement = $domDocument->createElement('url', $this->url);

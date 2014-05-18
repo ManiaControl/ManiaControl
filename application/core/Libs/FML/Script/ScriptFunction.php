@@ -5,9 +5,9 @@ namespace FML\Script;
 /**
  * Class representing a Function of the ManiaLink Script
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ScriptFunction {
 	/*
@@ -34,7 +34,7 @@ class ScriptFunction {
 	 * @return \FML\Script\ScriptFunction
 	 */
 	public function setName($name) {
-		$this->name = (string) $name;
+		$this->name = (string)$name;
 		return $this;
 	}
 
@@ -45,7 +45,7 @@ class ScriptFunction {
 	 * @return \FML\Script\ScriptFunction
 	 */
 	public function setText($text) {
-		$this->text = (string) $text;
+		$this->text = (string)$text;
 		return $this;
 	}
 

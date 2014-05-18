@@ -5,9 +5,9 @@ namespace FML\ManiaCode;
 /**
  * ManiaCode Element joining a Server
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class JoinServer implements Element {
 	/*
@@ -47,28 +47,27 @@ class JoinServer implements Element {
 	 * @return \FML\ManiaCode\JoinServer
 	 */
 	public function setLogin($login) {
-		$this->login = (string) $login;
-		$this->ip = null;
-		$this->port = null;
+		$this->login = (string)$login;
+		$this->ip    = null;
+		$this->port  = null;
 		return $this;
 	}
 
 	/**
 	 * Set the Server Ip and Port
 	 *
-	 * @param string $ip Server Ip
-	 * @param int $port Server Port
+	 * @param string $ip   Server Ip
+	 * @param int    $port Server Port
 	 * @return \FML\ManiaCode\JoinServer
 	 */
 	public function setIp($ip, $port) {
-		$this->ip = (string) $ip;
-		$this->port = (int) $port;
+		$this->ip    = (string)$ip;
+		$this->port  = (int)$port;
 		$this->login = null;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\ManiaCode\Element::render()
 	 */
 	public function render(\DOMDocument $domDocument) {
@@ -76,8 +75,7 @@ class JoinServer implements Element {
 		if ($this->ip === null) {
 			$loginElement = $domDocument->createElement('login', $this->login);
 			$xmlElement->appendChild($loginElement);
-		}
-		else {
+		} else {
 			$ipElement = $domDocument->createElement('ip', $this->ip . ':' . $this->port);
 			$xmlElement->appendChild($ipElement);
 		}

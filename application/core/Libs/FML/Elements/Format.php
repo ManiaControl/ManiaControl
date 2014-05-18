@@ -10,9 +10,9 @@ use FML\Types\TextFormatable;
 /**
  * Format Element
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Format implements BgColorable, Renderable, Styleable, TextFormatable {
 	/*
@@ -43,61 +43,54 @@ class Format implements BgColorable, Renderable, Styleable, TextFormatable {
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\BgColorable::setBgColor()
 	 */
 	public function setBgColor($bgColor) {
-		$this->bgColor = (string) $bgColor;
+		$this->bgColor = (string)$bgColor;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Styleable::setStyle()
 	 */
 	public function setStyle($style) {
-		$this->style = (string) $style;
+		$this->style = (string)$style;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\TextFormatable::setTextSize()
 	 */
 	public function setTextSize($textSize) {
-		$this->textSize = (int) $textSize;
+		$this->textSize = (int)$textSize;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\TextFormatable::setTextColor()
 	 */
 	public function setTextColor($textColor) {
-		$this->textColor = (string) $textColor;
+		$this->textColor = (string)$textColor;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\TextFormatable::setAreaColor()
 	 */
 	public function setAreaColor($areaColor) {
-		$this->focusAreaColor1 = (string) $areaColor;
+		$this->focusAreaColor1 = (string)$areaColor;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\TextFormatable::setAreaFocusColor()
 	 */
 	public function setAreaFocusColor($areaFocusColor) {
-		$this->focusAreaColor2 = (string) $areaFocusColor;
+		$this->focusAreaColor2 = (string)$areaFocusColor;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Renderable::render()
 	 */
 	public function render(\DOMDocument $domDocument) {

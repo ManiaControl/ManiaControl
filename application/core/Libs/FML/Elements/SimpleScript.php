@@ -7,9 +7,9 @@ use FML\Types\Renderable;
 /**
  * Class representing a ManiaLink Script Tag with a simple Script Text
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class SimpleScript implements Renderable {
 	/*
@@ -47,12 +47,11 @@ class SimpleScript implements Renderable {
 	 * @return \FML\Script\Script
 	 */
 	public function setText($text) {
-		$this->text = (string) $text;
+		$this->text = (string)$text;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Types\Renderable::render()
 	 */
 	public function render(\DOMDocument $domDocument) {

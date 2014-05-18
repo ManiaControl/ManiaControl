@@ -5,9 +5,9 @@ namespace FML\Types;
 /**
  * Interface for Elements with SubStyle Attribute
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 interface SubStyleable {
 
@@ -22,7 +22,7 @@ interface SubStyleable {
 	/**
 	 * Set Style and SubStyle
 	 *
-	 * @param string $style Style Name
+	 * @param string $style    Style Name
 	 * @param string $subStyle SubStyle Name
 	 * @return \FML\Types\SubStyleable
 	 */

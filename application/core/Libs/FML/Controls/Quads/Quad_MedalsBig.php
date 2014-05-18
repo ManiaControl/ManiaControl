@@ -7,22 +7,22 @@ use FML\Controls\Quad;
 /**
  * Quad Class for 'MedalsBig' Style
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Quad_MedalsBig extends Quad {
 	/*
 	 * Constants
 	 */
-	const STYLE = 'MedalsBig';
-	const SUBSTYLE_MedalBronze = 'MedalBronze';
-	const SUBSTYLE_MedalGold = 'MedalGold';
-	const SUBSTYLE_MedalGoldPerspective = 'MedalGoldPerspective';
-	const SUBSTYLE_MedalNadeo = 'MedalNadeo';
+	const STYLE                          = 'MedalsBig';
+	const SUBSTYLE_MedalBronze           = 'MedalBronze';
+	const SUBSTYLE_MedalGold             = 'MedalGold';
+	const SUBSTYLE_MedalGoldPerspective  = 'MedalGoldPerspective';
+	const SUBSTYLE_MedalNadeo            = 'MedalNadeo';
 	const SUBSTYLE_MedalNadeoPerspective = 'MedalNadeoPerspective';
-	const SUBSTYLE_MedalSilver = 'MedalSilver';
-	const SUBSTYLE_MedalSlot = 'MedalSlot';
+	const SUBSTYLE_MedalSilver           = 'MedalSilver';
+	const SUBSTYLE_MedalSlot             = 'MedalSlot';
 
 	/**
 	 * Create a new Quad_MedalsBig Control

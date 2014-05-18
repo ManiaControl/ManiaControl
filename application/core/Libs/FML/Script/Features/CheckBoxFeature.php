@@ -33,6 +33,7 @@ class CheckBoxFeature extends ScriptFeature {
 	protected $quad = null;
 	/** @var Entry $entry */
 	protected $entry = null;
+	protected $default = null;
 	/** @var CheckBoxDesign $enabledDesign */
 	protected $enabledDesign = null;
 	/** @var CheckBoxDesign $disabledDesign */
@@ -44,7 +45,7 @@ class CheckBoxFeature extends ScriptFeature {
 	 * @param Quad  $quad  (optional) CheckBox Quad
 	 * @param Entry $entry (optional) Hidden Entry
 	 */
-	public function __construct(Quad $quad = null, Entry $entry = null) {
+	public function __construct(Quad $quad = null, Entry $entry = null, $default = null) {
 		$this->setQuad($quad);
 		$this->setEntry($entry);
 		$this->setEnabledDesign(CheckBoxDesign::defaultEnabledDesign());
@@ -99,9 +100,20 @@ class CheckBoxFeature extends ScriptFeature {
 	}
 
 	/**
+	 * Set the default Value
+	 *
+	 * @param bool $default Default Value
+	 * @return \FML\Script\Features\CheckBoxFeature
+	 */
+	public function setDefault($default) {
+		$this->default = (bool)$default;
+		return $this;
+	}
+
+	/**
 	 * Set the Enabled Design
 	 *
-	 * @param CheckBoxDesign $checkBoxDesign CheckBox Design
+	 * @param CheckBoxDesign $checkBoxDesign Enabled CheckBox Design
 	 * @return \FML\Script\Features\CheckBoxFeature
 	 */
 	public function setEnabledDesign(CheckBoxDesign $checkBoxDesign) {
@@ -112,7 +124,7 @@ class CheckBoxFeature extends ScriptFeature {
 	/**
 	 * Set the Disabled Design
 	 *
-	 * @param CheckBoxDesign $checkBoxDesign CheckBox Design
+	 * @param CheckBoxDesign $checkBoxDesign Disabled CheckBox Design
 	 * @return \FML\Script\Features\CheckBoxFeature
 	 */
 	public function setDisabledDesign(CheckBoxDesign $checkBoxDesign) {
@@ -126,7 +138,7 @@ class CheckBoxFeature extends ScriptFeature {
 	public function prepare(Script $script) {
 		if ($this->getQuad()) {
 			$script->setScriptInclude(ScriptInclude::TEXTLIB);
-			$script->addScriptFunction(self::FUNCTION_UPDATE_QUAD_DESIGN, $this->buildSetQuadDesignFunction());
+			$script->addScriptFunction(self::FUNCTION_UPDATE_QUAD_DESIGN, $this->buildUpdateQuadDesignFunction());
 			$script->appendGenericScriptLabel(ScriptLabel::ONINIT, $this->buildInitScriptText(), true);
 			$script->appendGenericScriptLabel(ScriptLabel::MOUSECLICK, $this->buildClickScriptText());
 		}
@@ -138,7 +150,7 @@ class CheckBoxFeature extends ScriptFeature {
 	 *
 	 * @return string
 	 */
-	protected function buildSetQuadDesignFunction() {
+	protected function buildUpdateQuadDesignFunction() {
 		$functionText = "
 Void " . self::FUNCTION_UPDATE_QUAD_DESIGN . "(CMlQuad _Quad) {
 	declare " . self::VAR_CHECKBOX_ENABLED . " as Enabled for _Quad = True;
@@ -173,13 +185,11 @@ Void " . self::FUNCTION_UPDATE_QUAD_DESIGN . "(CMlQuad _Quad) {
 	 */
 	protected function buildInitScriptText() {
 		$quadId  = $this->getQuad()->getId(true);
-		$default = true;
 		$entryId = '';
 		if ($this->entry) {
-			$default = $this->entry->getDefault();
 			$entryId = $this->entry->getId(true);
 		}
-		$default              = Builder::getBoolean($default);
+		$default              = Builder::getBoolean($this->default);
 		$enabledDesignString  = $this->enabledDesign->getDesignString();
 		$disabledDesignString = $this->disabledDesign->getDesignString();
 		$scriptText           = "

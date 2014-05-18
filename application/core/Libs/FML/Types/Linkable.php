@@ -5,9 +5,9 @@ namespace FML\Types;
 /**
  * Interface for Elements with Url Attributes
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 interface Linkable {
 
@@ -37,7 +37,7 @@ interface Linkable {
 
 	/**
 	 * Set Manialink Id to use from the Dico
-	 * 
+	 *
 	 * @param string $manialinkId Manialink Id
 	 * @return \FML\Types\Linkable
 	 */

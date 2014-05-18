@@ -7,9 +7,9 @@ use FML\Types\Renderable;
 /**
  * Music Element
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Music implements Renderable {
 	/*
@@ -47,12 +47,11 @@ class Music implements Renderable {
 	 * @return \FML\Elements\Music
 	 */
 	public function setData($data) {
-		$this->data = (string) $data;
+		$this->data = (string)$data;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\Renderable::render()
 	 */
 	public function render(\DOMDocument $domDocument) {

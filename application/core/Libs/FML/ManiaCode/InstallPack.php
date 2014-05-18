@@ -5,9 +5,9 @@ namespace FML\ManiaCode;
 /**
  * ManiaCode Element installing a Title Pack
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class InstallPack implements Element {
 	/*
@@ -23,7 +23,7 @@ class InstallPack implements Element {
 	 *
 	 * @param string $name (optional) Pack Name
 	 * @param string $file (optional) Pack File
-	 * @param string $url (optional) Pack Url
+	 * @param string $url  (optional) Pack Url
 	 * @return \FML\ManiaCode\InstallPack
 	 */
 	public static function create($name = null, $file = null, $url = null) {
@@ -36,7 +36,7 @@ class InstallPack implements Element {
 	 *
 	 * @param string $name (optional) Pack Name
 	 * @param string $file (optional) Pack File
-	 * @param string $url (optional) Pack Url
+	 * @param string $url  (optional) Pack Url
 	 */
 	public function __construct($name = null, $file = null, $url = null) {
 		if ($name !== null) {
@@ -57,7 +57,7 @@ class InstallPack implements Element {
 	 * @return \FML\ManiaCode\InstallPack
 	 */
 	public function setName($name) {
-		$this->name = (string) $name;
+		$this->name = (string)$name;
 		return $this;
 	}
 
@@ -68,7 +68,7 @@ class InstallPack implements Element {
 	 * @return \FML\ManiaCode\InstallPack
 	 */
 	public function setFile($file) {
-		$this->file = (string) $file;
+		$this->file = (string)$file;
 		return $this;
 	}
 
@@ -79,16 +79,15 @@ class InstallPack implements Element {
 	 * @return \FML\ManiaCode\InstallPack
 	 */
 	public function setUrl($url) {
-		$this->url = (string) $url;
+		$this->url = (string)$url;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\ManiaCode\Element::render()
 	 */
 	public function render(\DOMDocument $domDocument) {
-		$xmlElement = $domDocument->createElement($this->tagName);
+		$xmlElement  = $domDocument->createElement($this->tagName);
 		$nameElement = $domDocument->createElement('name', $this->name);
 		$xmlElement->appendChild($nameElement);
 		$fileElement = $domDocument->createElement('file', $this->file);

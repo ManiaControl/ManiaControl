@@ -5,9 +5,9 @@ namespace FML\Script;
 /**
  * Class representing a Constant of the ManiaLink Script
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ScriptConstant {
 	/*
@@ -19,7 +19,7 @@ class ScriptConstant {
 	/**
 	 * Construct a new Script Constant
 	 *
-	 * @param string $name (optional) Constant Name
+	 * @param string $name  (optional) Constant Name
 	 * @param string $value (optional) Constant Value
 	 */
 	public function __construct($name = null, $value = null) {

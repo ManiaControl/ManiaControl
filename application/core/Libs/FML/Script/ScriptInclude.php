@@ -5,9 +5,9 @@ namespace FML\Script;
 /**
  * Class representing an Include of the ManiaLink Script
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ScriptInclude {
 	/*
@@ -15,7 +15,7 @@ class ScriptInclude {
 	 */
 	const MATHLIB = 'MathLib';
 	const TEXTLIB = 'TextLib';
-	
+
 	/*
 	 * Protected Properties
 	 */
@@ -25,15 +25,14 @@ class ScriptInclude {
 	/**
 	 * Construct a new Script Include
 	 *
-	 * @param string $file (optional) Include File
+	 * @param string $file      (optional) Include File
 	 * @param string $namespace (optional) Include Namespace
 	 */
 	public function __construct($file = null, $namespace = null) {
 		$this->setFile($file);
 		if ($namespace) {
 			$this->setNamespace($namespace);
-		}
-		else {
+		} else {
 			$fileParts = explode('.', $file);
 			if (count($fileParts) === 1) {
 				$this->setNamespace($file);

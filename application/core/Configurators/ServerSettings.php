@@ -202,14 +202,13 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 
 			if (is_bool($value)) {
 				// Boolean checkbox
-				$checkBox = new CheckBox(self::ACTION_PREFIX_SETTING . $name, $value);
-				$settingFrame->add($checkBox);
-
 				$quad = new Quad();
-				$checkBox->setQuad($quad);
 				$quad->setX($width / 2 * 0.46);
 				$quad->setZ(-0.01);
 				$quad->setSize(4, 4);
+
+				$checkBox = new CheckBox(self::ACTION_PREFIX_SETTING . $name, $value, $quad);
+				$settingFrame->add($checkBox);
 			} else {
 				// Other
 				$entry = new Entry();
