@@ -45,9 +45,11 @@ class Setting {
 	public function __construct($object, $settingName, $defaultValue) {
 		if ($object === false) {
 			// Fetched from Database
-			$this->value     = $this->castValue($this->value);
-			$this->default   = $this->castValue($this->default);
-			$this->set       = $this->castValue($this->set);
+			$this->value   = $this->castValue($this->value);
+			$this->default = $this->castValue($this->default);
+			if ($this->set) {
+				$this->set = $this->castValue($this->set, $this->type);
+			}
 			$this->fetchTime = time();
 		} else {
 			// Created by Values
@@ -68,26 +70,30 @@ class Setting {
 	/**
 	 * Cast the Value based on the Setting Type
 	 *
-	 * @param string $value
+	 * @param mixed  $value
+	 * @param string $type
 	 * @return mixed
 	 */
-	private function castValue($value) {
-		if ($this->type === self::TYPE_INT) {
+	private static function castValue($value, $type = null) {
+		if ($type === null) {
+			$type = self::getValueType($value);
+		}
+		if ($type === self::TYPE_INT) {
 			return (int)$value;
 		}
-		if ($this->type === self::TYPE_REAL) {
+		if ($type === self::TYPE_REAL) {
 			return (float)$value;
 		}
-		if ($this->type === self::TYPE_BOOL) {
+		if ($type === self::TYPE_BOOL) {
 			return (bool)$value;
 		}
-		if ($this->type === self::TYPE_STRING) {
+		if ($type === self::TYPE_STRING) {
 			return (string)$value;
 		}
-		if ($this->type === self::TYPE_SET) {
+		if ($type === self::TYPE_SET) {
 			return explode(self::VALUE_DELIMITER, $value);
 		}
-		trigger_error("Unsupported Setting Value Type: '" . print_r($this->type, true) . "'!");
+		trigger_error("Unsupported Setting Value Type: '" . print_r($type, true) . "'!");
 		return $value;
 	}
 
@@ -97,7 +103,7 @@ class Setting {
 	 * @param mixed $value
 	 * @return string
 	 */
-	public static function getValueType($value) {
+	private static function getValueType($value) {
 		if (is_int($value)) {
 			return self::TYPE_INT;
 		}
@@ -123,20 +129,24 @@ class Setting {
 	 * @return string
 	 */
 	public function getFormattedValue() {
-		return $this->formatValue($this->value);
+		return self::formatValue($this->value);
 	}
 
 	/**
-	 * Format the given Value based on the Setting Type
+	 * Format the given Value based on the Type
 	 *
-	 * @param mixed $value
+	 * @param mixed  $value
+	 * @param string $type
 	 * @return string
 	 */
-	private function formatValue($value) {
-		if ($this->type === self::TYPE_BOOL) {
+	private static function formatValue($value, $type = null) {
+		if ($type === null) {
+			$type = self::getValueType($value);
+		}
+		if ($type === self::TYPE_BOOL) {
 			return ($value ? 1 : 0);
 		}
-		if ($this->type === self::TYPE_SET) {
+		if ($type === self::TYPE_SET) {
 			return implode(self::VALUE_DELIMITER, $value);
 		}
 		return $value;
@@ -148,7 +158,7 @@ class Setting {
 	 * @return string
 	 */
 	public function getFormattedDefault() {
-		return $this->formatValue($this->default);
+		return self::formatValue($this->default);
 	}
 
 	/**
@@ -157,7 +167,10 @@ class Setting {
 	 * @return string
 	 */
 	public function getFormattedSet() {
-		return $this->formatValue($this->set);
+		if ($this->type === self::TYPE_SET) {
+			return self::formatValue($this->set);
+		}
+		return '';
 	}
 
 	/**

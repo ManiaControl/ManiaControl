@@ -237,24 +237,31 @@ class SettingManager implements CallbackListener {
 				`setting`,
 				`type`,
 				`value`,
-				`default`
+				`default`,
+				`set`
 				) VALUES (
-				?, ?, ?,
-				@value := ?,
-				@value
+				?,
+				?,
+				?,
+				?,
+				?,
+				?
 				) ON DUPLICATE KEY UPDATE
 				`index` = LAST_INSERT_ID(`index`),
 				`type` = VALUES(`type`),
 				`value` = IF(`default` = VALUES(`default`), `value`, VALUES(`default`)),
 				`default` = VALUES(`default`),
+				`set` = VALUES(`set`),
 				`changed` = NOW();";
 		$settingStatement = $mysqli->prepare($settingQuery);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
 		}
-		$formattedValue = $setting->getFormattedValue();
-		$settingStatement->bind_param('ssss', $setting->class, $setting->setting, $setting->type, $formattedValue);
+		$formattedValue   = $setting->getFormattedValue();
+		$formattedDefault = $setting->getFormattedDefault();
+		$formattedSet     = $setting->getFormattedSet();
+		$settingStatement->bind_param('ssssss', $setting->class, $setting->setting, $setting->type, $formattedValue, $formattedDefault, $formattedSet);
 		$settingStatement->execute();
 		if ($settingStatement->error) {
 			trigger_error($settingStatement->error);
