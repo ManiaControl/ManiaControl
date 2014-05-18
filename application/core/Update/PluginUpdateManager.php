@@ -327,7 +327,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 	public function handleManialinkPageAnswer(array $callback) {
 		$actionId = $callback[1][2];
 		$update   = (strpos($actionId, PluginMenu::ACTION_PREFIX_UPDATEPLUGIN) === 0);
-		$install  = (strpos($actionId, PluginInstallMenu::ACTION_PREFIX_INSTALLPLUGIN) === 0);
+		$install  = (strpos($actionId, PluginInstallMenu::ACTION_PREFIX_INSTALL_PLUGIN) === 0);
 		if (!$update && !$install) {
 			return;
 		}
@@ -349,7 +349,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 				}
 			}
 		} else {
-			$pluginId = substr($actionId, strlen(PluginInstallMenu::ACTION_PREFIX_INSTALLPLUGIN));
+			$pluginId = substr($actionId, strlen(PluginInstallMenu::ACTION_PREFIX_INSTALL_PLUGIN));
 
 			$url  = ManiaControl::URL_WEBSERVICE . 'plugins?id=' . $pluginId;
 			$self = $this;

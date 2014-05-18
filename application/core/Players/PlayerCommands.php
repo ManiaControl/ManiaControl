@@ -46,7 +46,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 		$this->maniaControl->commandManager->registerCommandListener('kick', $this, 'command_Kick', true, 'Kicks player from the server.');
 		$this->maniaControl->commandManager->registerCommandListener('ban', $this, 'command_Ban', true, 'Bans player from the server.');
 		$this->maniaControl->commandManager->registerCommandListener(array('forcespec', 'forcespectator'), $this, 'command_ForceSpectator', true, 'Forces player into spectator.');
-		$this->maniaControl->commandManager->registerCommandListener('forceplay', $this, 'command_ForcePlay', true, 'Forces player into playmode.');
+		$this->maniaControl->commandManager->registerCommandListener('forceplay', $this, 'command_ForcePlay', true, 'Forces player into Play mode.');
 		$this->maniaControl->commandManager->registerCommandListener('forceblue', $this, 'command_ForceBlue', true, 'Forces player into blue team.');
 		$this->maniaControl->commandManager->registerCommandListener('forcered', $this, 'command_ForceRed', true, 'Forces player into red team.');
 		$this->maniaControl->commandManager->registerCommandListener(array('addbots', 'addbot'), $this, 'command_AddFakePlayers', true, 'Adds bots to the game.');
@@ -69,7 +69,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 		$itemQuad = new Quad_UIConstruction_Buttons();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Author);
 		$itemQuad->setAction(self::ACTION_OPEN_PLAYERLIST);
-		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, true, 15, 'Open Playerlist');
+		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, true, 15, 'Open PlayerList');
 	}
 
 	/**

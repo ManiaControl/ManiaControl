@@ -34,8 +34,8 @@ class ManiaExchangeManager {
 	const SEARCH_ORDER_COMMENTS_LEAST     = 11;
 	const SEARCH_ORDER_DIFFICULTY_EASIEST = 12;
 	const SEARCH_ORDER_DIFFICULTY_HARDEST = 13;
-	const SEARCH_ORDER_LENGHT_SHORTEST    = 14;
-	const SEARCH_ORDER_LENGHT_LONGEST     = 15;
+	const SEARCH_ORDER_LENGTH_SHORTEST    = 14;
+	const SEARCH_ORDER_LENGTH_LONGEST     = 15;
 
 	//Maximum Maps per request
 	const MAPS_PER_MX_FETCH = 50;
@@ -73,7 +73,7 @@ class ManiaExchangeManager {
 	 *
 	 * @param null $map
 	 */
-	public function fetchManiaExchangeMapInformations($map = null) {
+	public function fetchManiaExchangeMapInformation($map = null) {
 		if (!$map) {
 			//Fetch Information for whole MapList
 			$maps = $this->maniaControl->mapManager->getMaps();

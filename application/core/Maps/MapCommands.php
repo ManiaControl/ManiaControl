@@ -22,6 +22,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\FaultException;
  * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
+// TODO: dedicated commands for remove map and erase map
 class MapCommands implements CommandListener, ManialinkPageAnswerListener, CallbackListener {
 	/*
 	 * Constants

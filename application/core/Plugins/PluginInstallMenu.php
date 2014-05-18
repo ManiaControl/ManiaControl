@@ -30,7 +30,7 @@ class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, Manialink
 	 * Constants
 	 */
 	const SETTING_PERMISSION_INSTALL_PLUGINS = 'Install Plugins';
-	const ACTION_PREFIX_INSTALLPLUGIN        = 'PluginInstallMenu.Install.';
+	const ACTION_PREFIX_INSTALL_PLUGIN       = 'PluginInstallMenu.Install.';
 
 	/*
 	 * Private Properties
@@ -150,7 +150,7 @@ class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, Manialink
 					$installButton->setStyle($installButton::STYLE_CardButtonSmall);
 					$installButton->setTextPrefix('$f00');
 					$installButton->setText('Install');
-					$installButton->setAction(self::ACTION_PREFIX_INSTALLPLUGIN . $plugin->id);
+					$installButton->setAction(self::ACTION_PREFIX_INSTALL_PLUGIN . $plugin->id);
 
 					$y -= $entryHeight;
 					$index++;

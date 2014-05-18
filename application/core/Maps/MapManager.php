@@ -621,7 +621,7 @@ class MapManager implements CallbackListener {
 	 */
 	public function handleAfterInit() {
 		// Fetch MX infos
-		$this->mxManager->fetchManiaExchangeMapInformations();
+		$this->mxManager->fetchManiaExchangeMapInformation();
 	}
 
 	/**
@@ -678,7 +678,7 @@ class MapManager implements CallbackListener {
 		$this->restructureMapList();
 
 		// Update the mx of the map (for update checks, etc.)
-		$this->mxManager->fetchManiaExchangeMapInformations($this->currentMap);
+		$this->mxManager->fetchManiaExchangeMapInformation($this->currentMap);
 
 		// Trigger own BeginMap callback (
 		//TODO remove deprecated callback later

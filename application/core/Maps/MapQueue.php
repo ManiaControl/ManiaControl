@@ -30,7 +30,7 @@ class MapQueue implements CallbackListener, CommandListener {
 	const SETTING_MAPLIMIT_PLAYER           = 'Maximum maps per player in the Map-Queue (-1 = unlimited)';
 	const SETTING_MAPLIMIT_ADMIN            = 'Maximum maps per admin (Admin+) in the Map-Queue (-1 = unlimited)';
 	const SETTING_BUFFERSIZE                = 'Size of the Map-Queue buffer (recently played maps)';
-	const SETTING_PERMISSION_CLEAR_MAPQUEUE = 'Clear Mapqueue';
+	const SETTING_PERMISSION_CLEAR_MAPQUEUE = 'Clear MapQueue';
 	const SETTING_PERMISSION_QUEUE_BUFFER   = 'Queue maps in buffer';
 
 	const ADMIN_COMMAND_CLEAR_MAPQUEUE = 'clearmapqueue';
