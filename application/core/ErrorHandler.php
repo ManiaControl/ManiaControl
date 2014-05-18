@@ -19,12 +19,12 @@ class ErrorHandler {
 	 */
 	const MC_DEBUG_NOTICE              = 'ManiaControl.DebugNotice';
 	const SETTING_RESTART_ON_EXCEPTION = 'Automatically restart on Exceptions';
+	const LOG_SUPPRESSED_ERRORS        = false;
 
 	/*
 	 * Private Properties
 	 */
 	private $maniaControl = null;
-	private $reportErrors = true;
 
 	/**
 	 * Construct Error Handler
@@ -58,7 +58,7 @@ class ErrorHandler {
 		$logMessage = $message . PHP_EOL . 'Class: ' . $exceptionClass . PHP_EOL . 'Trace:' . PHP_EOL . $traceString;
 		$this->maniaControl->log($logMessage);
 
-		if ($this->reportErrors) {
+		if (!ManiaControl::DEBUG_MODE) {
 			$error                    = array();
 			$error['Type']            = 'Exception';
 			$error['Message']         = $message;
@@ -201,7 +201,8 @@ class ErrorHandler {
 	 * @return bool
 	 */
 	public function handleError($errorNumber, $errorString, $errorFile = null, $errorLine = -1, array $errorContext = array()) {
-		if (error_reporting() === 0) {
+		$suppressed = (error_reporting() === 0);
+		if ($suppressed && !self::LOG_SUPPRESSED_ERRORS) {
 			return false;
 		}
 
@@ -215,7 +216,7 @@ class ErrorHandler {
 		$logMessage = $message . PHP_EOL . 'File&Line: ' . $fileLine . PHP_EOL . 'Trace: ' . $traceString;
 		$this->maniaControl->log($logMessage);
 
-		if ($this->reportErrors && !$this->isUserErrorNumber($errorNumber)) {
+		if (!ManiaControl::DEBUG_MODE && !$this->isUserErrorNumber($errorNumber) && !$suppressed) {
 			$error                    = array();
 			$error['Type']            = 'Error';
 			$error['Message']         = $message;
