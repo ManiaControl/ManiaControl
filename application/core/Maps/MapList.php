@@ -52,12 +52,13 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	const MAX_PAGES_PER_CHUNK        = 2;
 	const DEFAULT_KARMA_PLUGIN       = 'MCTeam\KarmaPlugin';
 	const DEFAULT_CUSTOM_VOTE_PLUGIN = 'MCTeam\CustomVotesPlugin';
+	const CACHE_CURRENT_PAGE         = 'CurrentPage';
+	const WIDGET_NAME                = 'MapList';
 
 	/*
 	 * Private Properties
 	 */
 	private $maniaControl = null;
-	private $playerCurrentPage = array();
 
 	/**
 	 * Create a new MapList Instance
@@ -99,7 +100,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 */
 	public function checkUpdates(array $chatCallback, Player $player) {
 		// Update Mx Infos
-		$this->maniaControl->mapManager->mxManager->fetchManiaExchangeMapInformations();
+		$this->maniaControl->mapManager->mxManager->fetchManiaExchangeMapInformation();
 
 		// Reshow the Maplist
 		$this->showMapList($player);
@@ -117,14 +118,10 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$height = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
 
 		if ($pageIndex < 0) {
-			if (isset($this->playerCurrentPage[$player->login])) {
-				$pageIndex = $this->playerCurrentPage[$player->login];
-			} else {
-				$pageIndex = 0;
-			}
+			$pageIndex = (int)$player->getCache($this, self::CACHE_CURRENT_PAGE);
 		}
-		$this->playerCurrentPage[$player->login] = $pageIndex;
-		$queueBuffer                             = $this->maniaControl->mapManager->mapQueue->getQueueBuffer();
+		$player->setCache($this, self::CACHE_CURRENT_PAGE, $pageIndex);
+		$queueBuffer = $this->maniaControl->mapManager->mapQueue->getQueueBuffer();
 
 		$chunkIndex     = $this->getChunkIndexFromPageNumber($pageIndex);
 		$mapsBeginIndex = $this->getChunkMapsBeginIndex($chunkIndex);
@@ -216,7 +213,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$pageNumber = 1 + $chunkIndex * self::MAX_PAGES_PER_CHUNK;
 		$paging->setStartPageNumber($pageIndex + 1);
 
-		$index = 0;
+		$index     = 0;
 		$id        = 1 + $mapsBeginIndex;
 		$y         = $height / 2 - 10;
 		$pageFrame = null;
@@ -467,7 +464,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$index++;
 		}
 
-		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player, 'MapList');
+		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player, self::WIDGET_NAME);
 	}
 
 	/**
@@ -562,8 +559,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 */
 	public function handleWidgetOpened(Player $player, $openedWidget) {
 		// unset when another main widget got opened
-		if ($openedWidget != 'MapList') {
-			unset($this->playerCurrentPage[$player->login]);
+		if ($openedWidget !== self::WIDGET_NAME) {
+			$player->destroyCache($this, self::CACHE_CURRENT_PAGE);
 		}
 	}
 
@@ -574,7 +571,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 */
 	public function closeWidget(Player $player) {
 		// TODO: resolve duplicate with 'playerCloseWidget'
-		unset($this->playerCurrentPage[$player->login]);
+		$player->destroyCache($this, self::CACHE_CURRENT_PAGE);
 	}
 
 	/**
@@ -668,7 +665,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 * @param Player $player
 	 */
 	public function playerCloseWidget(Player $player) {
-		unset($this->playerCurrentPage[$player->login]);
+		$player->destroyCache($this, self::CACHE_CURRENT_PAGE);
 		$this->maniaControl->manialinkManager->closeWidget($player);
 	}
 
@@ -676,12 +673,12 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 * Reopen the widget on Map Begin, MapListChanged, etc.
 	 */
 	public function updateWidget() {
-		foreach ($this->playerCurrentPage as $login => $pageIndex) {
-			$player = $this->maniaControl->playerManager->getPlayer($login);
-			if ($player) {
-				$this->showMapList($player, null, $pageIndex);
-			} else {
-				unset($this->playerCurrentPage[$login]);
+		$players = $this->maniaControl->playerManager->getPlayers();
+		foreach ($players as $player) {
+			/** @var Player $player */
+			$currentPage = $player->getCache($this, self::CACHE_CURRENT_PAGE);
+			if ($currentPage !== null) {
+				$this->showMapList($player, null, $currentPage);
 			}
 		}
 	}
