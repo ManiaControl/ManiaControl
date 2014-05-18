@@ -58,7 +58,7 @@ class ErrorHandler {
 		$logMessage = $message . PHP_EOL . 'Class: ' . $exceptionClass . PHP_EOL . 'Trace:' . PHP_EOL . $traceString;
 		$this->maniaControl->log($logMessage);
 
-		if (!ManiaControl::DEBUG_MODE) {
+		if (!ManiaControl::DEV_MODE) {
 			$error                    = array();
 			$error['Type']            = 'Exception';
 			$error['Message']         = $message;
@@ -216,7 +216,7 @@ class ErrorHandler {
 		$logMessage = $message . PHP_EOL . 'File&Line: ' . $fileLine . PHP_EOL . 'Trace: ' . $traceString;
 		$this->maniaControl->log($logMessage);
 
-		if (!ManiaControl::DEBUG_MODE && !$this->isUserErrorNumber($errorNumber) && !$suppressed) {
+		if (!ManiaControl::DEV_MODE && !$this->isUserErrorNumber($errorNumber) && !$suppressed) {
 			$error                    = array();
 			$error['Type']            = 'Error';
 			$error['Message']         = $message;
