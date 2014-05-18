@@ -256,13 +256,11 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 				$quad->setZ(-0.01);
 				$quad->setSubStyle($substyle);
 				$quad->setSize(4, 4);
-				$quad->setHAlign(Control::CENTER);
 				$quad->setAction(self::ACTION_SETTING_BOOL . $settingName);
 			} else {
 				$entry = new Entry();
 				$settingFrame->add($entry);
 				$entry->setStyle(Label_Text::STYLE_TextValueSmall);
-				$entry->setHAlign(Control::CENTER);
 				$entry->setX($width / 2 * 0.55);
 				$entry->setTextSize(1);
 				$entry->setSize($width * 0.3, $settingHeight * 0.9);

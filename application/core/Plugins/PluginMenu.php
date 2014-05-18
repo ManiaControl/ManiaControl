@@ -302,7 +302,6 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			$entry = new Entry();
 			$settingFrame->add($entry);
 			$entry->setStyle(Label_Text::STYLE_TextValueSmall);
-			$entry->setHAlign(Control::CENTER);
 			$entry->setX($width / 2 * 0.65);
 			$entry->setTextSize(1);
 			$entry->setSize($width * 0.3, $settingHeight * 0.9);
@@ -323,7 +322,6 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 				$quad->setZ(-0.01);
 				$quad->setSubStyle($substyle);
 				$quad->setSize(4, 4);
-				$quad->setHAlign(Control::CENTER2);
 				$quad->setAction(self::ACTION_SETTING_BOOL . $setting->index);
 				$entry->setVisible(false);
 			}

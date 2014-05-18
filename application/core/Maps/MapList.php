@@ -309,7 +309,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$label = new Label_Text();
 				$mapFrame->add($label);
 				$label->setX($width / 2 - 13);
-				$label->setAlign(Control::CENTER, Control::CENTER);
 				$label->setZ(0.2);
 				$label->setTextSize(1.5);
 				$label->setText($queuedMaps[$map->uid]);
@@ -454,7 +453,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 					$karmaLabel->setSize(20 * 0.9, 5);
 					$karmaLabel->setTextSize(0.9);
 					$karmaLabel->setTextColor('000');
-					$karmaLabel->setAlign(Control::CENTER, Control::CENTER);
 					$karmaLabel->setText($karmaText);
 				}
 			}
@@ -525,7 +523,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 		$label = new Label_Button();
 		$confirmFrame->add($label);
-		$label->setAlign(Control::CENTER, Control::CENTER);
 		$label->setText('Sure?');
 		$label->setTextSize(1);
 		$label->setScale(0.90);
@@ -535,7 +532,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$confirmFrame->add($buttLabel);
 		$buttLabel->setPosition(3.2, 0.4, 0.2);
 		$buttLabel->setSize(3, 3);
-		$buttLabel->setAlign(Control::CENTER, Control::CENTER);
 
 		if (!$erase) {
 			$quad->setAction(self::ACTION_SWITCH_MAP . '.' . $mapUid);

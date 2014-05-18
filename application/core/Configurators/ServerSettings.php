@@ -214,7 +214,6 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 				$entry = new Entry();
 				$settingFrame->add($entry);
 				$entry->setStyle(Label_Text::STYLE_TextValueSmall);
-				$entry->setHAlign(Control::CENTER);
 				$entry->setX($width / 2 * 0.46);
 				$entry->setTextSize(1);
 				$entry->setSize($width * 0.48, $settingHeight * 0.9);

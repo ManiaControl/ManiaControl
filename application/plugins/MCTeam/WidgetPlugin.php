@@ -13,13 +13,13 @@ use FML\Script\Script;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\TimerListener;
-use ManiaControl\Utils\Formatter;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\IconManager;
 use ManiaControl\Maps\Map;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
+use ManiaControl\Utils\Formatter;
 
 /**
  * ManiaControl Widget Plugin
@@ -211,10 +211,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 
 		$label = new Label_Text();
 		$frame->add($label);
-		$label->setY(1.5);
-		$label->setX(0);
-		$label->setAlign(Control::CENTER, Control::CENTER);
-		$label->setZ(0.2);
+		$label->setPosition(0, 1.5, 0.2);
 		$label->setTextSize(1.3);
 		$label->setText(Formatter::stripDirtyCodes($map->name));
 		$label->setTextColor("FFF");
@@ -222,11 +219,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 
 		$label = new Label_Text();
 		$frame->add($label);
-		$label->setX(0);
-		$label->setY(-1.4);
-
-		$label->setAlign(Control::CENTER, Control::CENTER);
-		$label->setZ(0.2);
+		$label->setPosition(0, -1.4, 0.2);
 		$label->setTextSize(1);
 		$label->setScale(0.8);
 		$label->setText($map->authorLogin);
@@ -240,7 +233,6 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 			$quad->setImage($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON));
 			$quad->setPosition(-$width / 2 + 4, -1.5, -0.5);
 			$quad->setSize(4, 4);
-			$quad->setHAlign(Control::CENTER);
 			$quad->setUrl($map->mx->pageurl);
 		}
 
@@ -277,10 +269,8 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 
 		$label = new Label_Text();
 		$frame->add($label);
-		$label->setY(1.5);
-		$label->setX(0);
-		$label->setAlign(Control::CENTER, Control::TOP);
-		$label->setZ(0.2);
+		$label->setPosition(0, 1.5, 0.2);
+		$label->setVAlign(Control::TOP);
 		$label->setTextSize(1);
 		$label->setTextColor("FFF");
 		$label->addClockFeature(false);
@@ -339,7 +329,6 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$label = new Label_Text();
 		$frame->add($label);
 		$label->setPosition(0, 1.5, 0.2);
-		$label->setAlign(Control::CENTER, Control::CENTER);
 		$label->setSize($width - 5, $height);
 		$label->setTextSize(1.3);
 		$label->setText(Formatter::stripDirtyCodes($serverName));
@@ -349,7 +338,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$label = new Label_Text();
 		$frame->add($label);
 		$label->setPosition(-$width / 2 + 9, -1.5, 0.2);
-		$label->setAlign(Control::LEFT, Control::CENTER);
+		$label->setHAlign(Control::LEFT);
 		$label->setTextSize(1);
 		$label->setScale(0.8);
 		$label->setText($playerCount . " / " . $maxPlayers['NextValue']);
@@ -360,13 +349,12 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$quad->setSubStyle($quad::SUBSTYLE_Multiplayer);
 		$quad->setPosition(-$width / 2 + 7, -1.6, 0.2);
 		$quad->setSize(2.5, 2.5);
-		$quad->setHAlign(Control::CENTER);
 
 		// Spectator Quad / Label
 		$label = new Label_Text();
 		$frame->add($label);
 		$label->setPosition(2, -1.5, 0.2);
-		$label->setAlign(Control::LEFT, Control::CENTER);
+		$label->setHAlign(Control::LEFT);
 		$label->setTextSize(1);
 		$label->setScale(0.8);
 		$label->setText($spectatorCount . " / " . $maxSpectators['NextValue']);
@@ -377,7 +365,6 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$quad->setSubStyle($quad::SUBSTYLE_Camera);
 		$quad->setPosition(0, -1.6, 0.2);
 		$quad->setSize(3.3, 2.5);
-		$quad->setHAlign(Control::CENTER);
 
 		// Favorite quad
 		$quad = new Quad_Icons64x64_1();
@@ -385,7 +372,6 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$quad->setSubStyle($quad::SUBSTYLE_StateFavourite);
 		$quad->setPosition($width / 2 - 4, -1.5, -0.5);
 		$quad->setSize(3, 3);
-		$quad->setHAlign(Control::CENTER);
 		$quad->setManialink('mcontrol?favorite=' . urlencode($this->maniaControl->server->login));
 
 		// Send manialink
@@ -489,10 +475,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 
 		$label = new Label_Text();
 		$frame->add($label);
-		$label->setY($height / 2 - 2.3);
-		$label->setX(0);
-		$label->setAlign(Control::CENTER, Control::CENTER);
-		$label->setZ(0.2);
+		$label->setPosition(0, $height / 2 - 2.3, 0.2);
 		$label->setTextSize(1);
 		$label->setText("Next Map");
 		$label->setTextColor("FFF");
@@ -500,20 +483,14 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 
 		$label = new Label_Text();
 		$frame->add($label);
-		$label->setY($height / 2 - 5.5);
-		$label->setX(0);
-		$label->setAlign(Control::CENTER, Control::CENTER);
-		$label->setZ(0.2);
+		$label->setPosition(0, $height / 2 - 5.5, 0.2);
 		$label->setTextSize(1.3);
 		$label->setText($name);
 		$label->setTextColor("FFF");
 
 		$label = new Label_Text();
 		$frame->add($label);
-		$label->setX(0);
-		$label->setY(-$height / 2 + 4);
-
-		$label->setAlign(Control::CENTER, Control::CENTER);
+		$label->setPosition(0, -$height / 2 + 4);
 		$label->setZ(0.2);
 		$label->setTextSize(1);
 		$label->setScale(0.8);
@@ -523,10 +500,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		if ($requester) {
 			$label = new Label_Text();
 			$frame->add($label);
-			$label->setX(0);
-			$label->setY(-$height / 2 + 2);
-			$label->setAlign(Control::CENTER, Control::CENTER);
-			$label->setZ(0.2);
+			$label->setPosition(0, -$height / 2 + 2, 0.2);
 			$label->setTextSize(1);
 			$label->setScale(0.7);
 			$label->setText($author);

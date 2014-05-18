@@ -263,7 +263,6 @@ class PlayerDetailed {
 			$frame->add($label);
 			$label->setPosition($x + 40, $y);
 			$label->setText($value);
-			$label->setVAlign(Control::CENTER2);
 			$label->setTextSize(1.5);
 
 			$y -= 4;

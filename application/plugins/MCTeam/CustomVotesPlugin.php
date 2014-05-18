@@ -667,7 +667,6 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$label = new Label_Text();
 		$frame->add($label);
 		$label->setY($height / 2 - 3);
-		$label->setAlign(Control::CENTER, Control::CENTER);
 		$label->setSize($width - 5, $height);
 		$label->setTextSize(1.3);
 		$label->setText('$s ' . $this->currentVote->voteCommand->name);
@@ -676,7 +675,6 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$label = new Label_Text();
 		$frame->add($label);
 		$label->setY($height / 2 - 6);
-		$label->setAlign(Control::CENTER, Control::CENTER);
 		$label->setSize($width - 5, 2);
 		$label->setTextSize(1);
 		$label->setTextColor("F80");
@@ -700,7 +698,6 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$label = new Label_Text();
 		$frame->add($label);
 		$label->setY(0);
-		$label->setAlign(Control::CENTER, Control::CENTER);
 		$label->setSize($width - 5, $height);
 		$label->setTextSize(1.1);
 		$label->setText('$sTime left: ' . $timeUntilExpire . "s");

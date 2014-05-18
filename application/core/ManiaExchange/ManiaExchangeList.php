@@ -275,7 +275,6 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 				$karmaLabel->setSize(16.5 * 0.9, 5);
 				$karmaLabel->setTextSize(0.9);
 				$karmaLabel->setTextColor('000');
-				$karmaLabel->setAlign(Control::CENTER, Control::CENTER);
 				$karmaLabel->setText('  ' . round($karma * 100.) . '% (' . $voteCount . ')');
 			}
 

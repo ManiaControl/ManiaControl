@@ -176,7 +176,6 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 				$playerFrame->add($label);
 				$label->setX($x + 130);
 				$quad->setZ(12);
-				$label->setAlign(Control::CENTER, Control::CENTER);
 				$label->setStyle($style);
 				$label->setTextSize(1);
 				$label->setTextColor($textColor);

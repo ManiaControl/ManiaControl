@@ -488,7 +488,6 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$frame->add($label);
 		$label->setHAlign($hAlign);
 		$label->setX(0);
-		$label->setAlign(Control::CENTER, Control::CENTER);
 		$label->setY($height / 2 - 8);
 		$label->setStyle($style);
 		$label->setTextSize($textSize);
@@ -507,7 +506,6 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$label = new Label_Button();
 		$frame->add($label);
 		$label->setX(0);
-		$label->setAlign(Control::CENTER, Control::CENTER);
 		$label->setY($y);
 		$label->setStyle($style);
 		$label->setTextSize($textSize);
