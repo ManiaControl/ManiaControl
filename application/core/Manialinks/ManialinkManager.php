@@ -258,7 +258,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 */
 	public function closeWidget($player, $widgetId = false) {
 		if (!$widgetId) {
-			$this->hideManialink(self::MAIN_MLID);
+			$this->hideManialink(self::MAIN_MLID, $player);
 			$this->enableAltMenu($player);
 
 			// Trigger callback
