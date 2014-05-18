@@ -140,7 +140,7 @@ class Database implements TimerListener {
 		}
 		$count = $result->num_rows;
 		if ($count <= 0) {
-			$result->close();
+			$result->free();
 			return true;
 		}
 		$optimizeQuery = "OPTIMIZE TABLE ";
@@ -153,7 +153,7 @@ class Database implements TimerListener {
 			}
 			$index++;
 		}
-		$result->close();
+		$result->free();
 		$optimizeQuery .= ";";
 		$this->mysqli->query($optimizeQuery);
 		if ($this->mysqli->error) {

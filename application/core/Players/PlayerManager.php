@@ -391,7 +391,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 		}
 
 		$row = $result->fetch_object();
-		$result->close();
+		$result->free();
 
 		if (!isset($row)) {
 			return null;
@@ -476,7 +476,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 		}
 
 		$row = $result->fetch_object();
-		$result->close();
+		$result->free();
 
 		if (!isset($row)) {
 			return null;

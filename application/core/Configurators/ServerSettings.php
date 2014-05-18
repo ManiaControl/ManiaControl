@@ -118,7 +118,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			settype($serverSettings[$row->settingName], $oldType);
 			$applySettings = true;
 		}
-		$result->close();
+		$result->free();
 		if (!$applySettings) {
 			return true;
 		}
@@ -203,8 +203,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			if (is_bool($value)) {
 				// Boolean checkbox
 				$quad = new Quad();
-				$quad->setX($width / 2 * 0.46);
-				$quad->setZ(-0.01);
+				$quad->setPosition($width * 0.23, 0, -0.01);
 				$quad->setSize(4, 4);
 
 				$checkBox = new CheckBox(self::ACTION_PREFIX_SETTING . $name, $value, $quad);
@@ -214,7 +213,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 				$entry = new Entry();
 				$settingFrame->add($entry);
 				$entry->setStyle(Label_Text::STYLE_TextValueSmall);
-				$entry->setX($width / 2 * 0.46);
+				$entry->setX($width * 0.23);
 				$entry->setTextSize(1);
 				$entry->setSize($width * 0.48, $settingHeight * 0.9);
 				$entry->setName(self::ACTION_PREFIX_SETTING . $name);

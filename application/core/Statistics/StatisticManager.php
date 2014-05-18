@@ -124,7 +124,7 @@ class StatisticManager {
 		while ($row = $result->fetch_object()) {
 			$this->stats[$row->name] = $row;
 		}
-		$result->close();
+		$result->free();
 
 		// TODO: own model class
 
@@ -208,7 +208,7 @@ class StatisticManager {
 		}
 
 		arsort($stats);
-		$result->close();
+		$result->free();
 		return $stats;
 	}
 
@@ -488,7 +488,7 @@ class StatisticManager {
 
 		$row = $result->fetch_object();
 
-		$result->close();
+		$result->free();
 		return $row->value;
 	}
 

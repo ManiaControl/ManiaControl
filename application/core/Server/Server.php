@@ -176,7 +176,7 @@ class Server implements CallbackListener {
 		while ($row = $result->fetch_object()) {
 			array_push($servers, $row);
 		}
-		$result->close();
+		$result->free();
 
 		return $servers;
 	}

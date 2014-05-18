@@ -129,7 +129,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			$loadedSettings[$row->settingName] = $row->settingValue;
 			settype($loadedSettings[$row->settingName], gettype($scriptSettings[$row->settingName]));
 		}
-		$result->close();
+		$result->free();
 		if (!$loadedSettings) {
 			return true;
 		}

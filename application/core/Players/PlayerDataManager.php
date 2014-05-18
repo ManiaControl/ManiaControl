@@ -114,7 +114,7 @@ class PlayerDataManager {
 		while ($row = $result->fetch_object()) {
 			$this->metaData[$row->class . $row->dataName] = $row;
 		}
-		$result->close();
+		$result->free();
 	}
 
 	/**
