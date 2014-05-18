@@ -100,20 +100,49 @@ class SettingManager implements CallbackListener {
 			return false;
 		}
 		if ($result) {
-			$this->storedSettings = array();
+			$this->clearStorage();
 			return true;
 		}
 		return false;
 	}
 
 	/**
-	 * Get a Setting by its Index
+	 * Clear the Settings Storage
+	 */
+	public function clearStorage() {
+		$this->storedSettings = array();
+	}
+
+	/**
+	 * @deprecated
+	 * @see SettingManager::getSettingValueByIndex()
+	 */
+	public function getSettingByIndex($settingIndex, $defaultValue = null) {
+		return $this->getSettingValueByIndex($settingIndex, $defaultValue);
+	}
+
+	/**
+	 * Get a Setting Value by its Index
 	 *
 	 * @param int   $settingIndex
 	 * @param mixed $defaultValue
+	 * @return mixed
+	 */
+	public function getSettingValueByIndex($settingIndex, $defaultValue = null) {
+		$setting = $this->getSettingObjectByIndex($settingIndex);
+		if (!$setting) {
+			return $defaultValue;
+		}
+		return $setting->value;
+	}
+
+	/**
+	 * Get a Setting Object by its Index
+	 *
+	 * @param int $settingIndex
 	 * @return Setting
 	 */
-	public function getSettingByIndex($settingIndex, $defaultValue = null) {
+	public function getSettingObjectByIndex($settingIndex) {
 		$mysqli       = $this->maniaControl->database->mysqli;
 		$settingQuery = "SELECT * FROM `" . self::TABLE_SETTINGS . "`
 				WHERE `index` = {$settingIndex};";
@@ -123,15 +152,26 @@ class SettingManager implements CallbackListener {
 			return null;
 		}
 		if ($result->num_rows <= 0) {
-			$result->close();
-			return $defaultValue;
+			$result->free();
+			return null;
 		}
 
 		/** @var Setting $setting */
 		$setting = $result->fetch_object(Setting::CLASS_NAME, array(false, null, null));
-		$result->close();
+		$result->free();
+
+		$this->storeSetting($setting);
 
 		return $setting;
+	}
+
+	/**
+	 * Store the given Setting
+	 *
+	 * @param Setting $setting
+	 */
+	private function storeSetting(Setting $setting) {
+		$this->storedSettings[$setting->class . $setting->setting] = $setting;
 	}
 
 	/**
@@ -140,27 +180,30 @@ class SettingManager implements CallbackListener {
 	 * @param mixed  $object
 	 * @param string $settingName
 	 * @param mixed  $value
-	 * @return Setting
+	 * @return bool
 	 */
 	public function setSetting($object, $settingName, $value) {
-		$className = ClassUtil::getClass($object);
-
 		$setting = $this->getSettingObject($object, $settingName);
 		if ($setting) {
 			$setting->value = $value;
-			if (!$this->saveSetting($setting)) {
-				return null;
+			$saved          = $this->saveSetting($setting);
+			if (!$saved) {
+				return false;
 			}
 		} else {
-			$setting = $this->initSetting($object, $settingName, $value);
+			$saved = $this->initSetting($object, $settingName, $value);
+			if (!$saved) {
+				return false;
+			}
+			$setting = $this->getSettingObject($object, $settingName, $value);
 		}
 
-		$this->storedSettings[$className . $settingName] = $setting;
+		$this->storeSetting($setting);
 
 		// Trigger Settings Changed Callback
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_SETTING_CHANGED, $setting);
 
-		return $setting;
+		return true;
 	}
 
 	/**
@@ -175,8 +218,9 @@ class SettingManager implements CallbackListener {
 		$settingClass = ClassUtil::getClass($object);
 
 		// Retrieve from Storage if possible
-		if (isset($this->storedSettings[$settingClass . $settingName])) {
-			return $this->storedSettings[$settingClass . $settingName];
+		$storedSetting = $this->getStoredSetting($object, $settingName);
+		if ($storedSetting) {
+			return $storedSetting;
 		}
 
 		// Fetch setting
@@ -190,21 +234,40 @@ class SettingManager implements CallbackListener {
 			return null;
 		}
 		if ($result->num_rows <= 0) {
+			$result->free();
 			if ($default === null) {
 				return null;
 			}
-			$setting = $this->initSetting($object, $settingName, $default);
-			return $setting;
+			$saved = $this->initSetting($object, $settingName, $default);
+			if ($saved) {
+				return $this->getSettingObject($object, $settingName, $default);
+			} else {
+				return null;
+			}
 		}
 
 		/** @var Setting $setting */
 		$setting = $result->fetch_object(Setting::CLASS_NAME, array(false, null, null));
 		$result->free();
 
-		// Store setting
-		$this->storedSettings[$settingClass . $settingName] = $setting;
+		$this->storeSetting($setting);
 
 		return $setting;
+	}
+
+	/**
+	 * Retrieve a stored Setting
+	 *
+	 * @param mixed  $settingClass
+	 * @param string $settingName
+	 * @return Setting
+	 */
+	private function getStoredSetting($settingClass, $settingName) {
+		$settingClass = ClassUtil::getClass($settingClass);
+		if (isset($this->storedSettings[$settingClass . $settingName])) {
+			return $this->storedSettings[$settingClass . $settingName];
+		}
+		return null;
 	}
 
 	/**
@@ -213,25 +276,29 @@ class SettingManager implements CallbackListener {
 	 * @param mixed  $object
 	 * @param string $settingName
 	 * @param mixed  $defaultValue
-	 * @return Setting
+	 * @return bool
 	 */
 	public function initSetting($object, $settingName, $defaultValue) {
 		$setting = new Setting($object, $settingName, $defaultValue);
-		$saved   = $this->saveSetting($setting);
-		if ($saved) {
-			return $setting;
-		}
-		return null;
+		return $this->saveSetting($setting, true);
 	}
 
 	/**
 	 * Save the given Setting in the Database
 	 *
 	 * @param Setting $setting
+	 * @param bool    $init
 	 * @return bool
 	 */
-	public function saveSetting(Setting &$setting) {
-		$mysqli           = $this->maniaControl->database->mysqli;
+	public function saveSetting(Setting $setting, $init = false) {
+		$mysqli = $this->maniaControl->database->mysqli;
+		if ($init) {
+			// Init - Keep old value if the default didn't change
+			$valueUpdateString = '`value` = IF(`default` = VALUES(`default`), `value`, VALUES(`default`))';
+		} else {
+			// Set - Update value in any case
+			$valueUpdateString = '`value` = VALUES(`value`)';
+		}
 		$settingQuery     = "INSERT INTO `" . self::TABLE_SETTINGS . "` (
 				`class`,
 				`setting`,
@@ -249,7 +316,7 @@ class SettingManager implements CallbackListener {
 				) ON DUPLICATE KEY UPDATE
 				`index` = LAST_INSERT_ID(`index`),
 				`type` = VALUES(`type`),
-				`value` = IF(`default` = VALUES(`default`), `value`, VALUES(`default`)),
+				{$valueUpdateString},
 				`default` = VALUES(`default`),
 				`set` = VALUES(`set`),
 				`changed` = NOW();";
@@ -268,7 +335,6 @@ class SettingManager implements CallbackListener {
 			$settingStatement->close();
 			return false;
 		}
-		$setting->index = $settingStatement->insert_id;
 		$settingStatement->close();
 		return true;
 	}

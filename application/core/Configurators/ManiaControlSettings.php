@@ -2,6 +2,7 @@
 
 namespace ManiaControl\Configurators;
 
+use FML\Components\ValuePicker;
 use FML\Controls\Control;
 use FML\Controls\Entry;
 use FML\Controls\Frame;
@@ -126,6 +127,8 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 		$index     = 0;
 		$y         = 0;
 		foreach ($settings as $setting) {
+			/** @var Setting $setting */
+
 			if (!$pageFrame) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
@@ -162,22 +165,33 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 			$nameLabel->setText($setting->setting);
 			$nameLabel->setTextColor("FFF");
 
+			$settingName = self::ACTION_PREFIX_SETTING . $setting->index;
 			if ($setting->type === Setting::TYPE_BOOL) {
+				// TODO: implement fml checkbox
 				$quad = new Quad_Icons64x64_1();
 				$settingFrame->add($quad);
-				$quad->setX($width / 2 * 0.6);
-				$quad->setZ(-0.01);
-				$quad->setSubStyle(($setting->value ? $quad::SUBSTYLE_LvlGreen : $quad::SUBSTYLE_LvlRed));
+				$quad->setPosition($width * 0.33, 0, -0.01);
 				$quad->setSize(4, 4);
-				$quad->setAction(self::ACTION_SETTING_BOOL . $setting->index);
+				$quad->setSubStyle(($setting->value ? $quad::SUBSTYLE_LvlGreen : $quad::SUBSTYLE_LvlRed));
+				$quad->setAction($settingName);
+			} else if ($setting->type === Setting::TYPE_SET) {
+				// SET value picker
+				$label = new Label_Text();
+				$label->setX($width * 0.33);
+				$label->setSize($width * 0.3, $settingHeight * 0.9);
+				$label->setStyle($label::STYLE_TextValueSmall);
+				$label->setTextSize(1);
+				$valuePicker = new ValuePicker($settingName, $setting->set, $setting->value, $label);
+				$settingFrame->add($valuePicker);
 			} else {
+				// Standard entry
 				$entry = new Entry();
 				$settingFrame->add($entry);
-				$entry->setStyle(Label_Text::STYLE_TextValueSmall);
-				$entry->setX($width / 2 * 0.65);
-				$entry->setTextSize(1);
+				$entry->setX($width * 0.33);
 				$entry->setSize($width * 0.3, $settingHeight * 0.9);
-				$entry->setName(self::ACTION_PREFIX_SETTING . $setting->index);
+				$entry->setStyle(Label_Text::STYLE_TextValueSmall);
+				$entry->setTextSize(1);
+				$entry->setName($settingName);
 				$entry->setDefault($setting->value);
 			}
 
@@ -364,19 +378,17 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 			return;
 		}
 
-		$maniaControlSettings = $this->maniaControl->settingManager->getSettings();
-
 		$prefixLength = strlen(self::ACTION_PREFIX_SETTING);
+		foreach ($configData[3] as $settingData) {
+			$settingIndex = substr($settingData['Name'], $prefixLength);
 
-		foreach ($configData[3] as $setting) {
-			$settingName = substr($setting['Name'], $prefixLength);
-
-			$oldSetting = $maniaControlSettings[$settingName];
-			if ($setting['Value'] == $oldSetting->value || $oldSetting->type == 'bool') {
+			$setting = $this->maniaControl->settingManager->getSettingObjectByIndex($settingIndex);
+			if (!$setting || $settingData['Value'] == $setting->value || $setting->type === Setting::TYPE_BOOL) {
 				continue;
 			}
 
-			$this->maniaControl->settingManager->setSetting($oldSetting->class, $oldSetting->setting, $setting['Value']);
+			$setting->value = $settingData['Value'];
+			$this->maniaControl->settingManager->saveSetting($setting);
 		}
 
 		$this->maniaControl->chat->sendSuccess('Settings saved!', $player);

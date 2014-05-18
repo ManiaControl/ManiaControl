@@ -51,6 +51,29 @@ class ValuePickerFeature extends ScriptFeature {
 	}
 
 	/**
+	 * Set the possible Values
+	 *
+	 * @param array $values Possible Values
+	 * @return \FML\Script\Features\ValuePickerFeature
+	 */
+	public function setValues(array $values) {
+		$this->values = array();
+		foreach ($values as $value) {
+			array_push($this->values, (string)$value);
+		}
+		return $this;
+	}
+
+	/**
+	 * Get the ValuePicker Label
+	 *
+	 * @return \FML\Controls\Label
+	 */
+	public function getLabel() {
+		return $this->label;
+	}
+
+	/**
 	 * Set the ValuePicker Label
 	 *
 	 * @param Label $label ValuePicker Label
@@ -66,12 +89,12 @@ class ValuePickerFeature extends ScriptFeature {
 	}
 
 	/**
-	 * Get the ValuePicker Label
+	 * Get the hidden Entry
 	 *
-	 * @return \FML\Controls\Label
+	 * @return \FML\Controls\Entry
 	 */
-	public function getLabel() {
-		return $this->label;
+	public function getEntry() {
+		return $this->entry;
 	}
 
 	/**
@@ -89,54 +112,6 @@ class ValuePickerFeature extends ScriptFeature {
 	}
 
 	/**
-	 * Get the hidden Entry
-	 *
-	 * @return \FML\Controls\Entry
-	 */
-	public function getEntry() {
-		return $this->entry;
-	}
-
-	/**
-	 * Set the possible Values
-	 *
-	 * @param array $values Possible Values
-	 * @return \FML\Script\Features\ValuePickerFeature
-	 */
-	public function setValues(array $values) {
-		$this->values = array();
-		foreach ($values as $value) {
-			array_push($this->values, (string)$value);
-		}
-		return $this;
-	}
-
-	/**
-	 * Set the default Value
-	 *
-	 * @param string $default Default Value
-	 * @return \FML\Script\Features\ValuePickerFeature
-	 */
-	public function setDefault($default) {
-		$this->default = (string)$default;
-	}
-
-	/**
-	 * Get the default Value
-	 *
-	 * @return string
-	 */
-	public function getDefault() {
-		if ($this->default) {
-			return $this->default;
-		}
-		if ($this->values) {
-			return reset($this->values);
-		}
-		return null;
-	}
-
-	/**
 	 * @see \FML\Script\Features\ScriptFeature::prepare()
 	 */
 	public function prepare(Script $script) {
@@ -144,7 +119,7 @@ class ValuePickerFeature extends ScriptFeature {
 			$script->setScriptInclude(ScriptInclude::TEXTLIB);
 			$script->addScriptFunction(self::FUNCTION_UPDATE_PICKER_VALUE, $this->buildUpdatePickerValueFunction());
 			$script->appendGenericScriptLabel(ScriptLabel::ONINIT, $this->buildInitScriptText(), true);
-			$script->appendGenericScriptLabel(ScriptLabel::ONINIT, $this->buildClickScriptText());
+			$script->appendGenericScriptLabel(ScriptLabel::MOUSECLICK, $this->buildClickScriptText());
 		}
 		return $this;
 	}
@@ -158,12 +133,14 @@ class ValuePickerFeature extends ScriptFeature {
 		$functionText = "
 Void " . self::FUNCTION_UPDATE_PICKER_VALUE . "(CMlLabel _Label) {
 	declare " . self::VAR_PICKER_VALUES . " as Values for _Label = Text[];
-	declare NewValueIndex = 0;
-	if (Values.exists(_Label.Value) {
-		declare ValueIndex = _Label.keyof(_Label.Value);
+	declare NewValueIndex = -1;
+	if (Values.exists(_Label.Value)) {
+		declare ValueIndex = Values.keyof(_Label.Value);
 		ValueIndex += 1;
 		if (Values.existskey(ValueIndex)) {
 			NewValueIndex = ValueIndex;
+		} else {
+			NewValueIndex = 0;
 		}
 	}
 	declare NewValue = \"\";
@@ -207,6 +184,31 @@ EntryId = \"{$entryId}\";
 " . self::FUNCTION_UPDATE_PICKER_VALUE . "(Label_Picker);
 ";
 		return $scriptText;
+	}
+
+	/**
+	 * Get the default Value
+	 *
+	 * @return string
+	 */
+	public function getDefault() {
+		if ($this->default) {
+			return $this->default;
+		}
+		if ($this->values) {
+			return reset($this->values);
+		}
+		return null;
+	}
+
+	/**
+	 * Set the default Value
+	 *
+	 * @param string $default Default Value
+	 * @return \FML\Script\Features\ValuePickerFeature
+	 */
+	public function setDefault($default) {
+		$this->default = (string)$default;
 	}
 
 	/**

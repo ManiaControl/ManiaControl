@@ -124,6 +124,15 @@ class Setting {
 	}
 
 	/**
+	 * Get whether the Setting has been persisted at some point
+	 *
+	 * @return bool
+	 */
+	public function isPersisted() {
+		return ($this->index > 0);
+	}
+
+	/**
 	 * Get the Formatted Value of the Setting
 	 *
 	 * @return string
