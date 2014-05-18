@@ -15,7 +15,6 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
-use ManiaControl\Players\PlayerManager;
 use ManiaControl\Settings\Setting;
 
 /**
@@ -35,12 +34,12 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 	const ACTION_SETTINGCLASS_BACK              = 'MCSettingClassBack';
 	const ACTION_SETTING_BOOL                   = 'MCSettings.ActionBoolSetting.';
 	const SETTING_PERMISSION_CHANGE_MC_SETTINGS = 'Change ManiaControl Settings';
+	const CACHE_CLASS_OPENED                    = 'ClassOpened';
 
 	/*
 	 * Private Properties
 	 */
 	private $maniaControl = null;
-	private $playersSettingCategoryOpened = array();
 
 	/**
 	 * Create a new Script Settings Instance
@@ -52,29 +51,19 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
-		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECT, $this, 'handlePlayerDisconnect');
 
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_CHANGE_MC_SETTINGS, AuthenticationManager::AUTH_LEVEL_ADMIN);
-	}
-
-	/**
-	 * Handle Player Disconnect Callback
-	 *
-	 * @param Player $player
-	 */
-	public function handlePlayerDisconnect(Player $player) {
-		unset($this->playersSettingCategoryOpened[$player->login]);
 	}
 
 	/**
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getMenu()
 	 */
 	public function getMenu($width, $height, Script $script, Player $player) {
-		if (isset($this->playersSettingCategoryOpened[$player->login]) && strlen($this->playersSettingCategoryOpened[$player->login]) > 0) {
-			return $this->getMenuSettingsForClass($this->playersSettingCategoryOpened[$player->login], $width, $height, $script, $player);
-		} else {
-			return $this->getMenuSettingClasses($width, $height, $script, $player);
+		$openedClass = $player->getCache($this, self::CACHE_CLASS_OPENED);
+		if ($openedClass) {
+			return $this->getMenuSettingsForClass($openedClass, $width, $height, $script, $player);
 		}
+		return $this->getMenuSettingClasses($width, $height, $script, $player);
 	}
 
 	/**
@@ -302,7 +291,7 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 			// Back to classes list
 			$login  = $callback[1][1];
 			$player = $this->maniaControl->playerManager->getPlayer($login);
-			unset($this->playersSettingCategoryOpened[$player->login]);
+			$player->destroyCache($this, self::CACHE_CLASS_OPENED);
 			$menuId = $this->maniaControl->configurator->getMenuId($this);
 			$this->maniaControl->configurator->showMenu($player, $menuId);
 		} else if (strpos($actionId, self::ACTION_SETTING_BOOL) === 0) {
@@ -329,8 +318,7 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 
 			$login  = $callback[1][1];
 			$player = $this->maniaControl->playerManager->getPlayer($login);
-
-			$this->playersSettingCategoryOpened[$player->login] = $settingClass;
+			$player->setCache($this, self::CACHE_CLASS_OPENED, $settingClass);
 
 			$menuId = $this->maniaControl->configurator->getMenuId($this);
 			$this->maniaControl->configurator->showMenu($player, $menuId);
