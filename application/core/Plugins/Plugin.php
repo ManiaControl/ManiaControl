@@ -41,7 +41,7 @@ interface Plugin {
 	/**
 	 * Get Plugin Version
 	 *
-	 * @return string
+	 * @return float
 	 */
 	public static function getVersion();
 
