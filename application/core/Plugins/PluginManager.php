@@ -109,9 +109,6 @@ class PluginManager {
 		if (!in_array(Plugin::PLUGIN_INTERFACE, $interfaces)) {
 			return false;
 		}
-		if (ManiaControl::DEV_MODE && $pluginClass === 'MCTeam\\SamplePlugin') {
-			return false;
-		}
 		return true;
 	}
 
