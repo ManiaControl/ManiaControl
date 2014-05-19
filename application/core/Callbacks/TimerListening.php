@@ -30,8 +30,11 @@ class TimerListening extends Listening {
 	public function __construct(TimerListener $listener, $method, $milliSeconds, $oneTime = false, $instantCall = true) {
 		parent::__construct($listener, $method);
 
-		$this->deltaTime   = $milliSeconds / 1000.;
-		$this->oneTime     = (bool)$oneTime;
+		$this->deltaTime = $milliSeconds / 1000.;
+		$this->oneTime   = (bool)$oneTime;
+		if ($this->oneTime) {
+			$this->lastTrigger = time(true);
+		}
 		$this->instantCall = (bool)$instantCall;
 		if (!$this->instantCall) {
 			$this->lastTrigger = microtime(true);

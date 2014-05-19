@@ -55,9 +55,18 @@ class TimerManager {
 
 		// Build Timer Listening
 		$listening = new TimerListening($listener, $method, $milliSeconds, $oneTime);
-		array_push($this->timerListenings, $listening);
+		$this->addTimerListening($listening);
 
 		return true;
+	}
+
+	/**
+	 * Add a Listening to the current List of managed Timers
+	 *
+	 * @param TimerListening $timerListening
+	 */
+	public function addTimerListening(TimerListening $timerListening) {
+		array_push($this->timerListenings, $timerListening);
 	}
 
 	/**
