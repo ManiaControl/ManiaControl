@@ -19,6 +19,8 @@ use ManiaControl\Settings\SettingManager;
  * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
+// TODO: command to enable/disable dynamic point limit updating on-the-fly
+// TODO: command to set a temporary static point limit
 class DynamicPointLimitPlugin implements CallbackListener, CommandListener, Plugin {
 	/*
 	 * Constants
