@@ -3,12 +3,15 @@
 namespace TheM;
 
 use ManiaControl\Callbacks\CallbackListener;
+use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
 use Maniaplanet\DedicatedServer\Xmlrpc\FaultException;
+use ManiaControl\Settings\SettingManager;
 
 /**
  * Dynamic Pointlimit plugin
@@ -48,6 +51,8 @@ class DynamicPointlimitPlugin implements CallbackListener, CommandListener, Plug
 	 */
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
+	// Added to check if status of player changed
+	private $specStatus = array();
 
 	/**
 	 * Load the plugin
@@ -67,6 +72,23 @@ class DynamicPointlimitPlugin implements CallbackListener, CommandListener, Plug
 
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'changePointlimit');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECT, $this, 'changePointlimit');
+		// added to check if player enters or leaves specmode
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERINFOCHANGED, $this, 'checkStatus');
+		// added to check if scriptsettings have changed and act on it.
+		$this->maniaControl->callbackManager->registerCallbackListener(SettingManager::CB_SETTING_CHANGED, $this, 'handleSettingChangedCallback');
+		// Added to add additional pointslimit check on beginning of the round.
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_MODESCRIPTCALLBACK, $this, 'handleCallbacks');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_MODESCRIPTCALLBACKARRAY, $this, 'handleCallbacks');
+		
+		// Added to fill variable with current player status
+		foreach($this->maniaControl->playerManager->getPlayers() as $player) {
+			if ($player->isSpectator) {
+				$this->specStatus[$player->login]=1;
+			} else {
+				$this->specStatus[$player->login]=0;
+			}
+		}
+		$this->changePointlimit();
 	}
 
 	/**
@@ -119,22 +141,61 @@ class DynamicPointlimitPlugin implements CallbackListener, CommandListener, Plug
 	public static function getDescription() {
 		return 'Plugin offers a dynamic pointlimit according to the amount of players on the server.';
 	}
+	
+	// Handle Beginround
+	public function handleCallbacks(array $callback) {
+		$callbackName = $callback[1][0];
+		switch($callbackName) {
+			
+			// ROYAL
+		case 'LibXmlRpc_BeginRound':	
+		
+			$this->changePointlimit();
+		break;
+		}
+		
+	}
 
+	// handle scriptsettings changes
+	public function handleSettingChangedCallback($settingClass) {
+		if ($settingClass !== get_class()) {
+			return;
+		}
+		$this->changePointlimit();
+	}
+	
+	public function checkStatus(array $callback) {
+		if(!$this->mode) return;
+		$specStatus  = $callback[1][0]["SpectatorStatus"];
+		$login  = $callback[1][0]['Login'];
+		//$this->maniaControl->chat->sendChat('$<$fffSpectatus of '.$login.'is '.$specStatus.' $>  '.$pointlimit);
+		$player = $this->maniaControl->playerManager->getPlayer($login);
+		if(isset($this->specStatus))
+		{
+			if($this->specStatus[$login] != $specStatus)
+			{
+				$this->changePointlimit();
+			}
+		}
+	}
 	/**
 	 * Function called on player connect and disconnect, changing the pointlimit.
 	 *
 	 * @param Player $player
 	 */
-	public function changePointlimit(Player $player) {
+	public function changePointlimit() {
 		$numberOfPlayers    = 0;
 		$numberOfSpectators = 0;
+		
 
 		/** @var  Player $player */
 		foreach($this->maniaControl->playerManager->getPlayers() as $player) {
 			if ($player->isSpectator) {
+				$this->specStatus[$player->login]=1; // used for player status changes
 				$numberOfSpectators++;
 			} else {
 				$numberOfPlayers++;
+				$this->specStatus[$player->login]=0; // used for player status changes
 			}
 		}
 
@@ -148,10 +209,18 @@ class DynamicPointlimitPlugin implements CallbackListener, CommandListener, Plug
 		if ($pointlimit > $max_value) {
 			$pointlimit = $max_value;
 		}
-
-		try{
-			$this->maniaControl->client->setModeScriptSettings(array('S_MapPointsLimit' => $pointlimit));
-		}catch(FaultException $e){
+		// added to only change the pointlimit if it needs changing
+		$setting = $this->maniaControl->client->getModeScriptSettings(); // get current pointlimit
+		$old = $setting['S_MapPointsLimit'];
+		
+		if ( $old != $pointlimit)
+		{
+			try{
+				$this->maniaControl->client->setModeScriptSettings(array('S_MapPointsLimit' => $pointlimit));
+			}catch(FaultException $e){
+			}
+	
+			$this->maniaControl->chat->sendChat('$<$fffPointlimit changed to : $> '.$pointlimit ." (was $old)"); // notice about pointlimit change
 		}
 
 	}
