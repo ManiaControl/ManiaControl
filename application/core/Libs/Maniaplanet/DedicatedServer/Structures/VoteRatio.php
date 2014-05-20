@@ -37,6 +37,7 @@ class VoteRatio extends AbstractStructure
 	}
 
 	/**
+	 * @internal
 	 * @return bool
 	 */
 	function isValid()
@@ -47,6 +48,7 @@ class VoteRatio extends AbstractStructure
 	}
 
 	/**
+	 * @internal
 	 * @param float $ratio
 	 * @return bool
 	 */

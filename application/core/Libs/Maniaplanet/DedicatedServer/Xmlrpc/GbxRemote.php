@@ -16,10 +16,8 @@ class GbxRemote
 	public static $sent;
 
 	private $socket;
-	private $timeouts = array(
-		'read' => 8000,
-		'write' => 8000
-	);
+	private $readTimeout = array('sec' => 5, 'usec' => 0);
+	private $writeTimeout = array('sec' => 5, 'usec' => 0);
 	private $requestHandle;
 	private $callbacksBuffer = array();
 	private $multicallBuffer = array();
@@ -49,9 +47,15 @@ class GbxRemote
 	function setTimeouts($read=0, $write=0)
 	{
 		if($read)
-			$this->timeouts['read'] = $read;
+		{
+			$this->readTimeout['sec'] = (int) ($read / 1000);
+			$this->readTimeout['usec'] = ($read % 1000) * 1000;
+		}
 		if($write)
-			$this->timeouts['write'] = $write;
+		{
+			$this->writeTimeout['sec'] = (int) ($write / 1000);
+			$this->writeTimeout['usec'] = ($write % 1000) * 1000;
+		}
 	}
 
 	/**
@@ -75,12 +79,13 @@ class GbxRemote
 		if(!$this->socket)
 			throw new TransportException('Cannot open socket', TransportException::NOT_INITIALIZED);
 
+		stream_set_read_buffer($this->socket, 0);
 		stream_set_write_buffer($this->socket, 0);
 
 		// handshake
 		$header = $this->read(15);
 		if($header === false)
-			throw new TransportException('Connection interrupted during handshake', TransportException::INTERRUPTED);
+			$this->onIoFailure('during handshake');
 
 		extract(unpack('Vsize/a*protocol', $header));
 		/** @var $size int */
@@ -185,10 +190,7 @@ class GbxRemote
 	private function flush($waitResponse=false)
 	{
 		$r = array($this->socket);
-		$w = null;
-		$e = null;
-		$n = @stream_select($r, $w, $e, 0);
-		while($waitResponse || $n > 0)
+		while($waitResponse || @stream_select($r, $w, $e, 0) > 0)
 		{
 			list($handle, $xml) = $this->readMessage();
 			list($type, $value) = Request::decode($xml);
@@ -203,10 +205,7 @@ class GbxRemote
 				case 'call':
 					$this->callbacksBuffer[] = $value;
 			}
-
-			if(!$waitResponse)
-				$n = @stream_select($r, $w, $e, 0);
-		};
+		}
 	}
 
 	/**
@@ -218,8 +217,7 @@ class GbxRemote
 	{
 		$header = $this->read(8);
 		if($header === false)
-			throw new TransportException('Connection interrupted while reading header '.print_r(stream_get_meta_data($this->socket), true), TransportException::INTERRUPTED);
-			//throw new TransportException('Connection interrupted while reading header', TransportException::INTERRUPTED);
+			$this->onIoFailure('while reading header');
 
 		extract(unpack('Vsize/Vhandle', $header));
 		/** @var $size int */
@@ -232,8 +230,7 @@ class GbxRemote
 
 		$data = $this->read($size);
 		if($data === false)
-			//throw new TransportException('Connection interrupted while reading data', TransportException::INTERRUPTED);
-			throw new TransportException('Connection interrupted while reading data '.print_r(stream_get_meta_data($this->socket), true), TransportException::INTERRUPTED);
+			$this->onIoFailure('while reading data');
 
 		$this->lastNetworkActivity = time();
 		return array($handle, $data);
@@ -245,10 +242,11 @@ class GbxRemote
 	 */
 	private function writeMessage($xml)
 	{
-		$data = pack('V2a*', strlen($xml), ++$this->requestHandle, $xml);
+		if($this->requestHandle == (int) 0xffffffff)
+			$this->requestHandle = (int) 0x80000000;
+		$data = pack('V2', strlen($xml), ++$this->requestHandle).$xml;
 		if(!$this->write($data))
-			throw new TransportException('Connection interrupted while writing '.print_r(stream_get_meta_data($this->socket), true), TransportException::INTERRUPTED);
-			//throw new TransportException('Connection interrupted while writing', TransportException::INTERRUPTED);
+			$this->onIoFailure('while writing');
 		$this->lastNetworkActivity = time();
 	}
 
@@ -258,7 +256,7 @@ class GbxRemote
 	 */
 	private function read($size)
 	{
-		@stream_set_timeout($this->socket, 0, $this->timeouts['read'] * 1000);
+		@stream_set_timeout($this->socket, $this->readTimeout['sec'], $this->readTimeout['usec']);
 
 		$data = '';
 		while(strlen($data) < $size)
@@ -279,7 +277,8 @@ class GbxRemote
 	 */
 	private function write($data)
 	{
-		@stream_set_timeout($this->socket, 0, $this->timeouts['write'] * 1000);
+		@stream_set_timeout($this->socket, $this->writeTimeout['sec'], $this->writeTimeout['usec']);
+		self::$sent += strlen($data);
 
 		while(strlen($data) > 0)
 		{
@@ -287,13 +286,22 @@ class GbxRemote
 			if($written === 0 || $written === false)
 				return false;
 
-			fflush($this->socket);
-
 			$data = substr($data, $written);
 		}
 
-		self::$sent += strlen($data);
 		return true;
+	}
+
+	/**
+	 * @param string $when
+	 * @throws TransportException
+	 */
+	private function onIoFailure($when)
+	{
+		$meta = stream_get_meta_data($this->socket);
+		if($meta['timed_out'])
+			throw new TransportException('Connection timed out '.$when, TransportException::TIMED_OUT);
+		throw new TransportException('Connection interrupted '.$when, TransportException::INTERRUPTED);
 	}
 }
 
@@ -301,8 +309,9 @@ class TransportException extends Exception
 {
 	const NOT_INITIALIZED = 1;
 	const INTERRUPTED     = 2;
-	const WRONG_PROTOCOL  = 3;
-	const PROTOCOL_ERROR  = 4;
+	const TIMED_OUT       = 3;
+	const WRONG_PROTOCOL  = 4;
+	const PROTOCOL_ERROR  = 5;
 }
 
 class MessageException extends Exception

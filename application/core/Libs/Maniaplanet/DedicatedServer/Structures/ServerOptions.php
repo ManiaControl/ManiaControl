@@ -71,4 +71,35 @@ class ServerOptions extends AbstractStructure
 	public $disableHorns;
 	/** @var bool */
 	public $disableServiceAnnounces;
+
+	/**
+	 * @internal
+	 * @return bool
+	 */
+	function isValid()
+	{
+		return is_string($this->name)
+			&& is_string($this->comment)
+			&& is_string($this->password)
+			&& is_string($this->passwordForSpectator)
+			&& VoteRatio::isRatio($this->callVoteRatio);
+	}
+
+	/**
+	 * @internal
+	 * @return mixed[]
+	 */
+	function toSetterArray()
+	{
+		$out = array();
+		foreach(get_object_vars($this) as $key => $value)
+		{
+			if(substr($key, 0, 7) == 'current' || $value === null)
+				continue;
+			if($key == 'nextUseChangingValidationSeed')
+				$key = 'useChangingValidationSeed';
+			$out[ucfirst($key)] = $value;
+		}
+		return $out;
+	}
 }

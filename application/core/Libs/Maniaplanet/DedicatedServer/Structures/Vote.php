@@ -34,6 +34,7 @@ class Vote extends AbstractStructure
 	}
 
 	/**
+	 * @internal
 	 * @return bool
 	 */
 	function isValid()

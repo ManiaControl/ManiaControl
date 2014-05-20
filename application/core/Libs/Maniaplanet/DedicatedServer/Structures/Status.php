@@ -15,6 +15,7 @@ class Status extends AbstractStructure
 	const SYNCHRONIZATION = 3;
 	const PLAY            = 4;
 	const EXITING         = 6;
+	const LOCAL           = 7;
 
 	/** @var int */
 	public $code;
