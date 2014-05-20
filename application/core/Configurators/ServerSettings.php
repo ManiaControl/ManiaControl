@@ -123,7 +123,11 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			return true;
 		}
 
-		$this->maniaControl->client->setServerOptions($serverSettings);
+		try {
+			$this->maniaControl->client->setServerOptions($serverSettings);
+		} catch (ServerOptionsException $exception) {
+			$this->maniaControl->chat->sendExceptionToAdmins($exception);
+		}
 		return true;
 	}
 

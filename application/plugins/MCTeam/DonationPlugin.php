@@ -108,7 +108,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		// Register for commands
 		$this->maniaControl->commandManager->registerCommandListener('donate', $this, 'command_Donate', false, 'Donate some planets to the server.');
 		$this->maniaControl->commandManager->registerCommandListener('pay', $this, 'command_Pay', true, 'Pays planets from the server to a player.');
-		$this->maniaControl->commandManager->registerCommandListener('planets', $this, 'command_GetPlanets', true, 'Checks the planets-balance of the server.');
+		$this->maniaControl->commandManager->registerCommandListener(array('getplanets', 'planets'), $this, 'command_GetPlanets', true, 'Checks the planets-balance of the server.');
 		$this->maniaControl->commandManager->registerCommandListener('topdons', $this, 'command_TopDons', false, 'Provides an overview of who donated the most planets.');
 
 		// Register for callbacks

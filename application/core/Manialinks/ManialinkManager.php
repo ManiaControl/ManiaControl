@@ -104,7 +104,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 			$this->pageAnswerRegexListener[$actionIdRegex] = array();
 		}
 
-		// Register page answer reg exlistener
+		// Register page answer regex listener
 		array_push($this->pageAnswerRegexListener[$actionIdRegex], array($listener, $method));
 
 		return true;

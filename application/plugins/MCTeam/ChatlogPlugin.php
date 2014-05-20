@@ -101,6 +101,8 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 
 	/**
 	 * Build the Log File Name and Folder
+	 *
+	 * @return bool
 	 */
 	private function buildLogFileName() {
 		$folderName = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_FOLDERNAME);
@@ -132,6 +134,7 @@ class ChatlogPlugin implements CallbackListener, Plugin {
 			}
 		}
 		$this->fileName = $folderDir . DIRECTORY_SEPARATOR . $fileName;
+		return true;
 	}
 
 	/**

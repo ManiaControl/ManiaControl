@@ -44,7 +44,7 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 	const QUEUE_WIDGET_POS_X   = 'X position of the widget';
 	const QUEUE_WIDGET_POS_Y   = 'Y position of the widget';
 	const QUEUE_ACTIVE_ON_PASS = 'Activate queue when there is a play password';
-	const QUEUE_CHATMESSAGES   = 'Activate chatmessages on queue join/leave/move to play';
+	const QUEUE_CHATMESSAGES   = 'Activate chat messages on queue join/leave/move to play';
 
 	/**
 	 * Private properties
@@ -432,7 +432,7 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 	}
 
 	/**
-	 * Function sends (or not depending on setting) chatmessages for the queue.
+	 * Function sends (or not depending on setting) chat messages for the queue.
 	 *
 	 * @param string $message
 	 */

@@ -96,7 +96,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		$this->maniaControl->commandManager->registerCommandListener('afk', $this, 'chat_afk', false, 'Writes an away from keyboard message to the chat.');
 		$this->maniaControl->commandManager->registerCommandListener(array('bm', 'bootme'), $this, 'chat_bootme', false, 'Gets you away from this server quickly!');
 		$this->maniaControl->commandManager->registerCommandListener(array('rq', 'ragequit'), $this, 'chat_ragequit', false, 'Gets you away from this server in rage!');
-		//TODO block commandlistener for muted people
+		//TODO block command listener for muted people
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_AFK_FORCE_SPEC, true);
 
 		return true;

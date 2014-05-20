@@ -351,9 +351,8 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 			return;
 		}
 
-		$oldSetting = $this->maniaControl->settingManager->getSettingByIndex($settingIndex);
-
-		if (!isset($oldSetting)) {
+		$oldSetting = $this->maniaControl->settingManager->getSettingObjectByIndex($settingIndex);
+		if (!$oldSetting) {
 			var_dump('no setting ' . $settingIndex);
 			return;
 		}

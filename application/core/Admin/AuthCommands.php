@@ -149,7 +149,7 @@ class AuthCommands implements CommandListener {
 	}
 
 	/**
-	 * Send usage example for //addop command
+	 * Send usage example for //addmod command
 	 *
 	 * @param Player $player
 	 * @return bool

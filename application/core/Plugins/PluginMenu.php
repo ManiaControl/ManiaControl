@@ -248,7 +248,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	 * @return Frame
 	 */
 	private function getPluginSettingsMenu(Frame $frame, $width, $height, Paging $paging, Player $player, $settingClass) {
-		// TODO: use maniacontrolsettings menu
+		// TODO: use maniacontrol settings menu
 		$settings = $this->maniaControl->settingManager->getSettingsByClass($settingClass);
 
 		$pageSettingsMaxCount = 12;
@@ -416,9 +416,8 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			return;
 		}
 
-		$oldSetting = $this->maniaControl->settingManager->getSettingByIndex($settingIndex);
-
-		if (!isset($oldSetting)) {
+		$oldSetting = $this->maniaControl->settingManager->getSettingObjectByIndex($settingIndex);
+		if (!$oldSetting) {
 			var_dump('no setting with index: ' . $settingIndex);
 			return;
 		}

@@ -64,7 +64,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 		//CallbackManager
 		$this->maniaControl->callbackManager->registerCallbackListener(Server::CB_TEAM_MODE_CHANGED, $this, 'teamStatusChanged');
 
-		// Action Open Playerlist
+		// Action Open PlayerList
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_OPEN_PLAYERLIST, $this, 'command_playerList');
 		$itemQuad = new Quad_UIConstruction_Buttons();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Author);

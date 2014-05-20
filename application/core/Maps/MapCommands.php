@@ -103,7 +103,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	/**
 	 * Shows which map is the next
 	 *
-	 * @param array  $chat
+	 * @param array  $chatCallback
 	 * @param Player $player
 	 */
 	public function command_ShowNextMap(array $chatCallback, Player $player) {
@@ -126,7 +126,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	/**
 	 * Handle removemap command
 	 *
-	 * @param array  $chat
+	 * @param array  $chatCallback
 	 * @param Player $player
 	 */
 	public function command_RemoveMap(array $chatCallback, Player $player) {
