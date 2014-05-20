@@ -7,7 +7,7 @@ use FML\Elements\Format;
 /**
  * Interface for Element being able to contain other Controls
  *
- * @author    steeffeen
+ * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */

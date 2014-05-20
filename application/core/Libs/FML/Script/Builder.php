@@ -5,7 +5,7 @@ namespace FML\Script;
 /**
  * Builder Class offering Methods to build ManiaScript
  *
- * @author    steeffeen
+ * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
@@ -111,11 +111,18 @@ abstract class Builder {
 	 * Get the Include Command for the given File and Namespace
 	 *
 	 * @param string $file      Include File
-	 * @param string $namespace Include Namespace
+	 * @param string $namespace (optional) Include Namespace
 	 * @return string
 	 */
-	public static function getInclude($file, $namespace) {
-		$includeText = "#Include	\"{$file}\"	as {$namespace}" . PHP_EOL;
+	public static function getInclude($file, $namespace = null) {
+		if (!$namespace && stripos($file, '.') === false) {
+			$namespace = $file;
+		}
+		$includeText = "#Include	\"{$file}\"";
+		if ($namespace) {
+			$includeText .= "	as {$namespace}";
+		}
+		$includeText .= PHP_EOL;
 		return $includeText;
 	}
 

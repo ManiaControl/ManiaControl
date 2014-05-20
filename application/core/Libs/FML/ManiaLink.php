@@ -11,7 +11,7 @@ use FML\Types\ScriptFeatureable;
 /**
  * Class representing a ManiaLink
  *
- * @author    steeffeen
+ * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */

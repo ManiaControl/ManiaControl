@@ -1,5 +1,4 @@
 <?php
-// TODO: add entry styles
 
 namespace FML\Controls;
 
@@ -13,7 +12,7 @@ use FML\Types\TextFormatable;
  * Entry Control
  * (CMlEntry)
  *
- * @author    steeffeen
+ * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */

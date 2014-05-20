@@ -12,7 +12,7 @@ use FML\Script\ScriptLabel;
 /**
  * Script Feature for creating a ValuePicker Behavior
  *
- * @author    steeffeen
+ * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
@@ -51,29 +51,6 @@ class ValuePickerFeature extends ScriptFeature {
 	}
 
 	/**
-	 * Set the possible Values
-	 *
-	 * @param array $values Possible Values
-	 * @return \FML\Script\Features\ValuePickerFeature
-	 */
-	public function setValues(array $values) {
-		$this->values = array();
-		foreach ($values as $value) {
-			array_push($this->values, (string)$value);
-		}
-		return $this;
-	}
-
-	/**
-	 * Get the ValuePicker Label
-	 *
-	 * @return \FML\Controls\Label
-	 */
-	public function getLabel() {
-		return $this->label;
-	}
-
-	/**
 	 * Set the ValuePicker Label
 	 *
 	 * @param Label $label ValuePicker Label
@@ -89,12 +66,12 @@ class ValuePickerFeature extends ScriptFeature {
 	}
 
 	/**
-	 * Get the hidden Entry
+	 * Get the ValuePicker Label
 	 *
-	 * @return \FML\Controls\Entry
+	 * @return \FML\Controls\Label
 	 */
-	public function getEntry() {
-		return $this->entry;
+	public function getLabel() {
+		return $this->label;
 	}
 
 	/**
@@ -109,6 +86,54 @@ class ValuePickerFeature extends ScriptFeature {
 		}
 		$this->entry = $entry;
 		return $this;
+	}
+
+	/**
+	 * Get the hidden Entry
+	 *
+	 * @return \FML\Controls\Entry
+	 */
+	public function getEntry() {
+		return $this->entry;
+	}
+
+	/**
+	 * Set the possible Values
+	 *
+	 * @param array $values Possible Values
+	 * @return \FML\Script\Features\ValuePickerFeature
+	 */
+	public function setValues(array $values) {
+		$this->values = array();
+		foreach ($values as $value) {
+			array_push($this->values, (string)$value);
+		}
+		return $this;
+	}
+
+	/**
+	 * Set the default Value
+	 *
+	 * @param string $default Default Value
+	 * @return \FML\Script\Features\ValuePickerFeature
+	 */
+	public function setDefault($default) {
+		$this->default = (string)$default;
+	}
+
+	/**
+	 * Get the default Value
+	 *
+	 * @return string
+	 */
+	public function getDefault() {
+		if ($this->default) {
+			return $this->default;
+		}
+		if ($this->values) {
+			return reset($this->values);
+		}
+		return null;
 	}
 
 	/**
@@ -184,31 +209,6 @@ EntryId = \"{$entryId}\";
 " . self::FUNCTION_UPDATE_PICKER_VALUE . "(Label_Picker);
 ";
 		return $scriptText;
-	}
-
-	/**
-	 * Get the default Value
-	 *
-	 * @return string
-	 */
-	public function getDefault() {
-		if ($this->default) {
-			return $this->default;
-		}
-		if ($this->values) {
-			return reset($this->values);
-		}
-		return null;
-	}
-
-	/**
-	 * Set the default Value
-	 *
-	 * @param string $default Default Value
-	 * @return \FML\Script\Features\ValuePickerFeature
-	 */
-	public function setDefault($default) {
-		$this->default = (string)$default;
 	}
 
 	/**

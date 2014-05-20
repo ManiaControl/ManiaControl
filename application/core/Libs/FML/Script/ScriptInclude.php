@@ -30,14 +30,7 @@ class ScriptInclude {
 	 */
 	public function __construct($file = null, $namespace = null) {
 		$this->setFile($file);
-		if ($namespace) {
-			$this->setNamespace($namespace);
-		} else {
-			$fileParts = explode('.', $file);
-			if (count($fileParts) === 1) {
-				$this->setNamespace($file);
-			}
-		}
+		$this->setNamespace($namespace);
 	}
 
 	/**
@@ -47,7 +40,7 @@ class ScriptInclude {
 	 * @return \FML\Script\ScriptInclude
 	 */
 	public function setFile($file) {
-		$this->file = $file;
+		$this->file = (string)$file;
 		return $this;
 	}
 
@@ -58,7 +51,7 @@ class ScriptInclude {
 	 * @return \FML\Script\ScriptInclude
 	 */
 	public function setNamespace($namespace) {
-		$this->namespace = $namespace;
+		$this->namespace = (string)$namespace;
 		return $this;
 	}
 

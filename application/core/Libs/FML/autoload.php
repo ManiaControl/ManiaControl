@@ -3,7 +3,7 @@
 /**
  * FancyManiaLinks - Automatic ManiaLink Generator Framework
  *
- * @author    steeffeen
+ * @author    steeffeen <mail@steeffeen.com>
  * @version   1.2
  * @link      http://github.com/steeffeen/FancyManiaLinks
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder

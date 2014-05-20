@@ -44,10 +44,8 @@ class ControlScript extends ScriptFeature {
 	 */
 	public function setControl(Control $control) {
 		$control->checkId();
-		if ($control instanceof Scriptable) {
-			$control->setScriptEvents(true);
-		}
 		$this->control = $control;
+		$this->updateScriptEvents();
 		return $this;
 	}
 
@@ -70,14 +68,31 @@ class ControlScript extends ScriptFeature {
 	 */
 	public function setLabelName($labelName) {
 		$this->labelName = $labelName;
+		$this->updateScriptEvents();
 		return $this;
+	}
+
+	/**
+	 * Enable Script Events on the Control if needed
+	 */
+	protected function updateScriptEvents() {
+		if (!$this->control) {
+			return;
+		}
+		if (!ScriptLabel::isEventLabel($this->labelName)) {
+			return;
+		}
+		if ($this->control instanceof Scriptable) {
+			$this->control->setScriptEvents(true);
+		}
 	}
 
 	/**
 	 * @see \FML\Script\Features\ScriptFeature::prepare()
 	 */
 	public function prepare(Script $script) {
-		$script->appendGenericScriptLabel($this->labelName, $this->buildScriptText(), true);
+		$isolated = !ScriptLabel::isEventLabel($this->labelName);
+		$script->appendGenericScriptLabel($this->labelName, $this->buildScriptText(), $isolated);
 		return $this;
 	}
 

@@ -63,7 +63,8 @@ class EntrySubmit extends ScriptFeature {
 	 */
 	public function prepare(Script $script) {
 		$script->setScriptInclude(ScriptInclude::TEXTLIB);
-		$script->appendGenericScriptLabel(ScriptLabel::ENTRYSUBMIT, $this->getScriptText());
+		$controlScript = new ControlScript($this->entry, $this->getScriptText(), ScriptLabel::ENTRYSUBMIT);
+		$controlScript->prepare($script);
 		return $this;
 	}
 
@@ -73,15 +74,12 @@ class EntrySubmit extends ScriptFeature {
 	 * @return string
 	 */
 	protected function getScriptText() {
-		$controlId  = $this->entry->getId(true);
 		$url        = $this->buildCompatibleUrl();
 		$entryName  = Builder::escapeText($this->entry->getName());
 		$scriptText = "
-if (Event.Control.ControlId == \"{$controlId}\") {
-	declare Entry <=> (Event.Control as CMlEntry);
-	declare Value = TextLib::URLEncode(Entry.Value);
-	OpenLink(\"{$url}{$entryName}=\"^Value, CMlScript::LinkType::Goto);
-}";
+declare Value = TextLib::URLEncode(Entry.Value);
+OpenLink(\"{$url}{$entryName}=\"^Value, CMlScript::LinkType::Goto);
+";
 		return $scriptText;
 	}
 

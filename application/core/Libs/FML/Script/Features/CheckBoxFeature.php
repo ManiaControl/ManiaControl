@@ -42,12 +42,14 @@ class CheckBoxFeature extends ScriptFeature {
 	/**
 	 * Construct a new CheckBox Feature
 	 *
-	 * @param Quad  $quad  (optional) CheckBox Quad
-	 * @param Entry $entry (optional) Hidden Entry
+	 * @param Quad  $quad    (optional) CheckBox Quad
+	 * @param Entry $entry   (optional) Hidden Entry
+	 * @param bool  $default (optional) Default Value
 	 */
 	public function __construct(Quad $quad = null, Entry $entry = null, $default = null) {
 		$this->setQuad($quad);
 		$this->setEntry($entry);
+		$this->setDefault($default);
 		$this->setEnabledDesign(CheckBoxDesign::defaultEnabledDesign());
 		$this->setDisabledDesign(CheckBoxDesign::defaultDisabledDesign());
 	}
