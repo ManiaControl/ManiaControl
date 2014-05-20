@@ -6,7 +6,7 @@ The newly designed and easy to use ManiaPlanet Server Controller.
 http://www.maniacontrol.com
 
 
-# SETUP:
+## SETUP:
 
 1.	Copy all files into the desired directory.
 
@@ -24,14 +24,14 @@ http://www.maniacontrol.com
 4.	Enjoy!
 
 
-# INFORMATION:
+## INFORMATION:
 
 - ManiaControl is mainly tested on UNIX machines.
-	- Even though it might run properly on Windows we can't promise it will work all cases.
-	- In order to run ManiaControl on Windows you have to alter the file 'ManiaControl.bat' and enter the path to your php.exe!
+- Even though it might run properly on Windows we can't promise it will work all cases.
+- In order to run ManiaControl on Windows you have to alter the file 'ManiaControl.bat' and enter the path to your php.exe!
 
 
-# REQUIREMENTS:
+## REQUIREMENTS:
 - MySQL Database
 - PHP 5.4+
 - Needed extensions:
@@ -40,7 +40,7 @@ http://www.maniacontrol.com
 	- php_xmlrpc (TM only)
 
 
-# How to report bugs or request features?:
+### How to report bugs or request features?:
 - Write a mail to bugs(at)maniacontrol(dot)com
 - Open an issue on GitHub.com/ManiaControl/ManiaControl
 - Post in the ManiaPlanet Forum
