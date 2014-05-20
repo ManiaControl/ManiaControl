@@ -137,8 +137,8 @@ class PlayerActions {
 		try {
 			$this->maniaControl->client->forceSpectator($target->login, self::SPECTATOR_PLAYER);
 		} catch (FaultException $e) {
-			//TODO exception 'There are too many players' appeared 28.04.2014, wait for more before add to faultexception
-			$this->maniaControl->chat->sendException($e, $admin->login);
+			//TODO exception 'There are too many players' appeared 28.04.2014, wait for more before add to fault exception
+			$this->maniaControl->chat->sendException($e, $admin);
 			return;
 		}
 
@@ -146,7 +146,7 @@ class PlayerActions {
 			try {
 				$this->maniaControl->client->forceSpectator($target->login, self::SPECTATOR_USER_SELECTABLE);
 			} catch (Exception $e) {
-				$this->maniaControl->chat->sendException($e, $admin->login);
+				$this->maniaControl->chat->sendException($e, $admin);
 				return;
 			}
 		}

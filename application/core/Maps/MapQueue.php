@@ -89,7 +89,7 @@ class MapQueue implements CallbackListener, CommandListener {
 	}
 
 	/**
-	 * Clears the map-queue via admin command clearmap queue
+	 * Clears the map-queue via admin command clear map queue
 	 *
 	 * @param array  $chatCallback
 	 * @param Player $admin

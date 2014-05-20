@@ -55,7 +55,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	 */
 	const SETTING_WIDGET_DISPLAY_MX  = 'Display MX-Karma in Widget';
 	const SETTING_MX_KARMA_ACTIVATED = 'Activate MX-Karma';
-	const SETTING_MX_KARMA_IMPORTING = 'Import old MX-Karmas';
+	const SETTING_MX_KARMA_IMPORTING = 'Import old MX-Karma';
 	const MX_IMPORT_TABLE            = 'mc_karma_mximport';
 	const MX_KARMA_URL               = 'http://karma.mania-exchange.com/api2/';
 	const MX_KARMA_STARTSESSION      = 'startSession';

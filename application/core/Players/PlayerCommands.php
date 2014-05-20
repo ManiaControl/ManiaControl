@@ -52,7 +52,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 		$this->maniaControl->commandManager->registerCommandListener(array('addbots', 'addbot'), $this, 'command_AddFakePlayers', true, 'Adds bots to the game.');
 		$this->maniaControl->commandManager->registerCommandListener(array('removebot', 'removebots'), $this, 'command_RemoveFakePlayers', true, 'Removes bots from the game.');
 		$this->maniaControl->commandManager->registerCommandListener('mute', $this, 'command_MutePlayer', true, 'Mutes a player (prevents player from chatting).');
-		$this->maniaControl->commandManager->registerCommandListener('unmute', $this, 'command_UnmutePlayer', true, 'Unmutes a player (enables player to chat again).');
+		$this->maniaControl->commandManager->registerCommandListener('unmute', $this, 'command_UnmutePlayer', true, 'Unmute a player (enables player to chat again).');
 
 		// Register for player chat commands
 		$this->maniaControl->commandManager->registerCommandListener(array('player', 'players'), $this, 'command_playerList', false, 'Shows players currently on the server.');

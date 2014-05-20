@@ -17,6 +17,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
+use Maniaplanet\DedicatedServer\Structures\ServerOptions;
 use Maniaplanet\DedicatedServer\Xmlrpc\ServerOptionsException;
 
 /**
@@ -107,15 +108,16 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			trigger_error($mysqli->error);
 			return false;
 		}
-		$serverSettings = $this->maniaControl->client->getServerOptions()->toArray();
+		$serverSettings = $this->maniaControl->client->getServerOptions();
 		$applySettings  = false;
 		while ($row = $result->fetch_object()) {
-			if (!isset($serverSettings[$row->settingName])) {
+			$settingName = $row->settingName;
+			if (!property_exists($serverSettings, $settingName)) {
 				continue;
 			}
-			$oldType                           = gettype($serverSettings[$row->settingName]);
-			$serverSettings[$row->settingName] = $row->settingValue;
-			settype($serverSettings[$row->settingName], $oldType);
+			$oldType                      = gettype($serverSettings->$settingName);
+			$serverSettings->$settingName = $row->settingValue;
+			settype($serverSettings->$settingName, $oldType);
 			$applySettings = true;
 		}
 		$result->free();
@@ -278,22 +280,13 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	/**
 	 * Apply the Array of new Server Settings
 	 *
-	 * @param array  $newSettings
-	 * @param Player $player
+	 * @param ServerOptions $newSettings
+	 * @param Player        $player
 	 * @return bool
 	 */
-	private function applyNewServerSettings(array $newSettings, Player $player) {
+	private function applyNewServerSettings(ServerOptions $newSettings, Player $player) {
 		if (!$newSettings) {
 			return true;
-		}
-
-		$rewriteSettings = array('NextUseChangingValidationSeed' => 'UseChangingValidationSeed');
-		foreach ($rewriteSettings as $oldName => $newName) {
-			if (array_key_exists($oldName, $newSettings)) {
-				$setting = $newSettings[$oldName];
-				unset($newSettings[$oldName]);
-				$newSettings[$newName] = $setting;
-			}
 		}
 
 		try {
@@ -320,7 +313,8 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			return false;
 		}
 
-		foreach ($newSettings as $setting => $value) {
+		$settingsArray = $newSettings->toArray();
+		foreach ($settingsArray as $setting => $value) {
 			if ($value === null) {
 				continue;
 			}
