@@ -76,7 +76,9 @@ class Chat {
 			$this->maniaControl->client->chatSendServerMessage($chatMessage);
 		} else {
 			$chatMessage = '$<$z$ff0' . $this->getPrefix($prefix) . $message . '$>';
-			$login       = Player::parseLogin($login);
+			if (!is_array($login)) {
+				$login = Player::parseLogin($login);
+			}
 			try {
 				$this->maniaControl->client->chatSendServerMessage($chatMessage, $login);
 			} catch (UnknownPlayerException $e) {
@@ -102,32 +104,27 @@ class Chat {
 	}
 
 	/**
-	 * Sends a Error Message to all Connected Admins
+	 * Send an Error Message to all Connected Admins
 	 *
-	 * @param      $message
-	 * @param int  $minLevel (Constant from AuthenticationManager)
-	 * @param bool $prefix
+	 * @param string $message
+	 * @param int    $minLevel
+	 * @param bool   $prefix
 	 */
 	public function sendErrorToAdmins($message, $minLevel = AuthenticationManager::AUTH_LEVEL_MODERATOR, $prefix = true) {
 		$format = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_FORMAT_ERROR);
-		$this->sendMessageToAdmins($format . $message, $prefix);
+		$this->sendMessageToAdmins($format . $message, $minLevel, $prefix);
 	}
 
 	/**
 	 * Sends a Message to all Connected Admins
 	 *
-	 * @param      $message
-	 * @param int  $minLevel (Constant from AuthenticationManager)
-	 * @param bool $prefix
+	 * @param string      $message
+	 * @param int         $minLevel
+	 * @param bool|string $prefix
 	 */
 	public function sendMessageToAdmins($message, $minLevel = AuthenticationManager::AUTH_LEVEL_MODERATOR, $prefix = true) {
-		//TODO specifiy in player or adminmanager a getAdmins() with minlevel function
-		foreach ($this->maniaControl->playerManager->getPlayers() as $player) {
-			/** @var Player $player */
-			if ($this->maniaControl->authenticationManager->checkRight($player, $minLevel)) {
-				$this->sendChat($message, $player->login, $prefix);
-			}
-		}
+		$admins = $this->maniaControl->authenticationManager->getConnectedAdmins($minLevel);
+		$this->sendChat($message, $admins, $prefix);
 	}
 
 	/**
@@ -135,7 +132,7 @@ class Chat {
 	 *
 	 * @param string      $message
 	 * @param string      $login
-	 * @param string|bool $prefix
+	 * @param bool|string $prefix
 	 * @return bool
 	 */
 	public function sendSuccess($message, $login = null, $prefix = true) {
@@ -166,6 +163,19 @@ class Chat {
 	public function sendError($message, $login = null, $prefix = true) {
 		$format = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_FORMAT_ERROR);
 		return $this->sendChat($format . $message, $login, $prefix);
+	}
+
+	/**
+	 * Send a Exception Message to all Connected Admins
+	 *
+	 * @param \Exception  $exception
+	 * @param int         $minLevel
+	 * @param bool|string $prefix
+	 */
+	public function sendExceptionToAdmins(\Exception $exception, $minLevel = AuthenticationManager::AUTH_LEVEL_MODERATOR, $prefix = true) {
+		$format  = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_FORMAT_ERROR);
+		$message = $format . "Exception: '{$exception->getMessage()}' ({$exception->getCode()})";
+		$this->sendMessageToAdmins($message, $minLevel, $prefix);
 	}
 
 	/**

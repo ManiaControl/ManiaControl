@@ -195,21 +195,48 @@ class AuthenticationManager implements CallbackListener {
 	}
 
 	/**
+	 * Get all connected Players with at least the given Auth Level
+	 *
+	 * @param int $authLevel
+	 * @return array
+	 */
+	public function getConnectedAdmins($authLevel = self::AUTH_LEVEL_MODERATOR) {
+		$players = $this->maniaControl->playerManager->getPlayers();
+		$admins  = array();
+		foreach ($players as $player) {
+			if (self::checkRight($player, $authLevel)) {
+				array_push($admins, $player);
+			}
+		}
+		return $admins;
+	}
+
+	/**
+	 * Check whether the Player has enough Rights
+	 *
+	 * @param Player      $player
+	 * @param int|Setting $neededAuthLevel
+	 * @return bool
+	 */
+	public static function checkRight(Player $player, $neededAuthLevel) {
+		if ($neededAuthLevel instanceof Setting) {
+			$neededAuthLevel = $neededAuthLevel->value;
+		}
+		return ($player->authLevel >= $neededAuthLevel);
+	}
+
+	/**
 	 * Get a List of all Admins
 	 *
 	 * @param int $authLevel
 	 * @return array null
 	 */
-	public function getAdmins($authLevel = null) {
+	public function getAdmins($authLevel = self::AUTH_LEVEL_MODERATOR) {
+		// TODO: return Player objects
 		$mysqli = $this->maniaControl->database->mysqli;
-		if ($authLevel === null) {
-			$query = "SELECT * FROM `" . PlayerManager::TABLE_PLAYERS . "`
-					WHERE `authLevel` > 0
-					ORDER BY `authLevel` DESC;";
-		} else {
-			$query = "SELECT * FROM `" . PlayerManager::TABLE_PLAYERS . "`
-					WHERE `authLevel` = {$authLevel};";
-		}
+		$query  = "SELECT * FROM `" . PlayerManager::TABLE_PLAYERS . "`
+				WHERE `authLevel` > " . $authLevel . "
+				ORDER BY `authLevel` DESC;";
 		$result = $mysqli->query($query);
 		if (!$result) {
 			trigger_error($mysqli->error);
@@ -219,6 +246,7 @@ class AuthenticationManager implements CallbackListener {
 		while ($row = $result->fetch_object()) {
 			array_push($admins, $row);
 		}
+		$result->free();
 		return $admins;
 	}
 
@@ -289,20 +317,6 @@ class AuthenticationManager implements CallbackListener {
 	public function checkPermission(Player $player, $rightName) {
 		$right = $this->maniaControl->settingManager->getSettingValue($this, $rightName);
 		return $this->checkRight($player, $right);
-	}
-
-	/**
-	 * Check whether the Player has enough Rights
-	 *
-	 * @param Player      $player
-	 * @param int|Setting $neededAuthLevel
-	 * @return bool
-	 */
-	public static function checkRight(Player $player, $neededAuthLevel) {
-		if ($neededAuthLevel instanceof Setting) {
-			$neededAuthLevel = $neededAuthLevel->value;
-		}
-		return ($player->authLevel >= $neededAuthLevel);
 	}
 
 	/**
