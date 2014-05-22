@@ -248,9 +248,9 @@ class ManiaExchangeManager {
 				trigger_error($error);
 			} else {
 				$mxMapList = json_decode($mapInfo);
-				if ($mxMapList === null) {
+				if (!is_array($mxMapList)) {
 					trigger_error('Cannot decode searched JSON data from ' . $url);
-				} else {
+				} else if (count($mxMapList) > 0) {
 					$mxMapInfo = new MXMapInfo($titlePrefix, $mxMapList[0]);
 				}
 			}
