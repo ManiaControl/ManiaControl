@@ -15,9 +15,16 @@ class RecordCallback extends BaseCallback {
 	 */
 	const CHECKPOINT = 'RecordCallback.Checkpoint';
 	const FINISH     = 'RecordCallback.Finish';
+	const LAPFINISH  = 'RecordCallback.LapFinish';
 
 	/*
 	 * Public Properties
 	 */
+	public $isEndRace = null;
+	public $isEndLap = null;
 	public $time = null;
+	public $lapTime = null;
+	public $checkpoint = null;
+	public $lapCheckpoint = null;
+	public $blockId = null;
 }

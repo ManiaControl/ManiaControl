@@ -55,6 +55,7 @@ class CallbackManager {
 	 */
 	public $libXmlRpcCallbacks = null;
 	public $shootManiaCallbacks = null;
+	public $trackManiaCallbacks = null;
 
 	/*
 	 * Private Properties
@@ -71,8 +72,9 @@ class CallbackManager {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		$this->shootManiaCallbacks = new ShootManiaCallbacks($maniaControl, $this);
 		$this->libXmlRpcCallbacks  = new LibXmlRpcCallbacks($maniaControl, $this);
+		$this->shootManiaCallbacks = new ShootManiaCallbacks($maniaControl, $this);
+		$this->trackManiaCallbacks = new TrackManiaCallbacks($maniaControl, $this);
 	}
 
 	/**
