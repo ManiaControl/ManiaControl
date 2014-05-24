@@ -4,6 +4,7 @@ namespace ManiaControl\Callbacks;
 
 use ManiaControl\Callbacks\Models\RecordCallback;
 use ManiaControl\ManiaControl;
+use ManiaControl\Utils\Formatter;
 
 /**
  * Class handling and parsing TrackMania Callbacks
@@ -52,11 +53,11 @@ class TrackManiaCallbacks implements CallbackListener {
 		$wayPointCallback->blockId       = $callback[1];
 		$wayPointCallback->time          = (int)$callback[2];
 		$wayPointCallback->checkpoint    = (int)$callback[3];
-		$wayPointCallback->isEndRace     = (bool)$callback[4];
+		$wayPointCallback->isEndRace     = Formatter::parseBoolean($callback[4]);
 		$wayPointCallback->lapTime       = (int)$callback[5];
 		$wayPointCallback->lapCheckpoint = (int)$callback[6];
 		$wayPointCallback->lap           = 0;
-		$wayPointCallback->isEndLap      = (bool)$callback[7];
+		$wayPointCallback->isEndLap      = Formatter::parseBoolean($callback[7]);
 
 		if ($wayPointCallback->checkpoint > 0) {
 			$currentMap = $this->maniaControl->mapManager->getCurrentMap();
@@ -87,8 +88,10 @@ class TrackManiaCallbacks implements CallbackListener {
 			return;
 		}
 
+		// Build checkpoint callback
 		$checkpointCallback                   = new RecordCallback();
 		$checkpointCallback->isLegacyCallback = true;
+		$checkpointCallback->rawCallback      = $callback;
 		$checkpointCallback->setPlayer($player);
 		$checkpointCallback->time          = (int)$data[2];
 		$checkpointCallback->lap           = (int)$data[3];
@@ -122,9 +125,11 @@ class TrackManiaCallbacks implements CallbackListener {
 			return;
 		}
 
+		// Build finish callback
 		$finishCallback                   = new RecordCallback();
 		$finishCallback->name             = $finishCallback::FINISH;
 		$finishCallback->isLegacyCallback = true;
+		$finishCallback->rawCallback      = $callback;
 		$finishCallback->setPlayer($player);
 		$finishCallback->time = (int)$data[2];
 
