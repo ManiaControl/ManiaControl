@@ -3,7 +3,7 @@
 namespace ManiaControl\Server;
 
 use ManiaControl\Callbacks\CallbackListener;
-use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Utils\CommandLineHelper;
@@ -61,7 +61,7 @@ class Server implements CallbackListener {
 		$this->scriptManager  = new ScriptManager($maniaControl);
 
 		// Register for callbacks
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_ONINIT, $this, 'onInit');
+		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::ONINIT, $this, 'onInit');
 	}
 
 	/**

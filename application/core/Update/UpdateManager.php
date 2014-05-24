@@ -23,7 +23,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	/*
 	 * Constants
 	 */
-	const SETTING_ENABLEUPDATECHECK      = 'Enable Automatic Core Update Check';
+	const SETTING_ENABLE_UPDATECHECK     = 'Enable Automatic Core Update Check';
 	const SETTING_UPDATECHECK_INTERVAL   = 'Core Update Check Interval (Hours)';
 	const SETTING_UPDATECHECK_CHANNEL    = 'Core Update Channel (release, beta, nightly)';
 	const SETTING_PERFORM_BACKUPS        = 'Perform Backup before Updating';
@@ -58,7 +58,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		$this->maniaControl = $maniaControl;
 
 		// Init settings
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_ENABLEUPDATECHECK, true);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_ENABLE_UPDATECHECK, true);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_AUTO_UPDATE, true);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_UPDATECHECK_INTERVAL, 1);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_UPDATECHECK_CHANNEL, $this->getUpdateChannels());
@@ -98,7 +98,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 * @param float $time
 	 */
 	public function hourlyUpdateCheck($time) {
-		$updateCheckEnabled = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_ENABLEUPDATECHECK);
+		$updateCheckEnabled = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_ENABLE_UPDATECHECK);
 		if (!$updateCheckEnabled) {
 			$this->setCoreUpdateData();
 			return;

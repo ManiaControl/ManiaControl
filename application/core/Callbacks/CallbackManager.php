@@ -17,9 +17,12 @@ class CallbackManager {
 	 */
 	// ManiaControl callbacks
 	// TODO: move into Callbacks interface
-	const CB_ONINIT     = 'ManiaControl.OnInit';
-	const CB_AFTERINIT  = 'ManiaControl.AfterInit';
-	const CB_ONSHUTDOWN = 'ManiaControl.OnShutdown';
+	/** @deprecated Use Callbacks Interface */
+	const CB_ONINIT = 'Callbacks.OnInit';
+	/** @deprecated Use Callbacks Interface */
+	const CB_AFTERINIT = 'Callbacks.AfterInit';
+	/** @deprecated Use Callbacks Interface */
+	const CB_ONSHUTDOWN = 'Callbacks.OnShutdown';
 
 	// ManiaPlanet callbacks
 	const CB_MP_SERVERSTART               = 'ManiaPlanet.ServerStart';
@@ -49,8 +52,8 @@ class CallbackManager {
 	/*
 	 * Public Properties
 	 */
-	public $shootManiaCallbacks = null;
 	public $libXmlRpcCallbacks = null;
+	public $shootManiaCallbacks = null;
 
 	/*
 	 * Private Properties

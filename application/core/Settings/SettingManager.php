@@ -3,7 +3,7 @@
 namespace ManiaControl\Settings;
 
 use ManiaControl\Callbacks\CallbackListener;
-use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\ManiaControl;
 use ManiaControl\Plugins\PluginManager;
 use ManiaControl\Utils\ClassUtil;
@@ -39,7 +39,7 @@ class SettingManager implements CallbackListener {
 		$this->maniaControl = $maniaControl;
 		$this->initTables();
 
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_AFTERINIT, $this, 'handleAfterInit');
+		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::AFTERINIT, $this, 'handleAfterInit');
 	}
 
 	/**

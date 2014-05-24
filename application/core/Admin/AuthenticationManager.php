@@ -3,7 +3,7 @@
 namespace ManiaControl\Admin;
 
 use ManiaControl\Callbacks\CallbackListener;
-use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
@@ -51,7 +51,7 @@ class AuthenticationManager implements CallbackListener {
 		$this->maniaControl = $maniaControl;
 		$this->authCommands = new AuthCommands($maniaControl);
 
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_ONINIT, $this, 'handleOnInit');
+		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::ONINIT, $this, 'handleOnInit');
 	}
 
 	/**

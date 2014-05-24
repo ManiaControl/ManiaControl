@@ -14,7 +14,7 @@ use FML\Script\Features\Paging;
 use FML\Script\Script;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
-use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\Structures\ServerOptions;
@@ -52,7 +52,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		$this->initTables();
 
 		// Register for callbacks
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_ONINIT, $this, 'onInit');
+		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::ONINIT, $this, 'onInit');
 
 		//Permission for Change Script-Settings
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_CHANGE_SERVER_SETTINGS, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
@@ -258,11 +258,11 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 
 		$prefixLength = strlen(self::ACTION_PREFIX_SETTING);
 
-		$newSettings = array();
+		$newSettings = new ServerOptions();
 		foreach ($configData[3] as $setting) {
 			$settingName               = substr($setting['Name'], $prefixLength);
-			$newSettings[$settingName] = $setting['Value'];
-			settype($newSettings[$settingName], gettype($serverSettings[$settingName]));
+			$newSettings->$settingName = $setting['Value'];
+			settype($newSettings->$settingName, gettype($serverSettings[$settingName]));
 		}
 
 		$success = $this->applyNewServerSettings($newSettings, $player);

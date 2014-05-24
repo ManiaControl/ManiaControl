@@ -12,6 +12,13 @@ namespace ManiaControl\Callbacks;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 interface Callbacks {
+	/*
+	 * ManiaControl Callbacks
+	 */
+	const ONINIT     = 'Callbacks.OnInit';
+	const AFTERINIT  = 'Callbacks.AfterInit';
+	const ONSHUTDOWN = 'Callbacks.OnShutdown';
+
 	/** Script Callback: CallbackName, CallbackData */
 	const SCRIPTCALLBACK = 'Callbacks.ScriptCallback';
 
@@ -48,6 +55,8 @@ interface Callbacks {
 	const ENDPODIUM = 'Callbacks.EndPodium';
 	/** UnloadingMap Callback */
 	const UNLOADINGMAP = 'Callbacks.UnloadingMap';
+	/** EndMatch Callback: MatchNumber */
+	const ENDMATCH = 'Callbacks.EndMatch';
 
 	/** BeginWarmup Callback */
 	const BEGINWARMUP = 'Callbacks.BeginWarmUp';

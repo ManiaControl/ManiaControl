@@ -7,7 +7,7 @@ use FML\Controls\Quads\Quad_Icons128x32_1;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
-use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
@@ -55,7 +55,7 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 
 		// Register for callbacks
 		$this->maniaControl->timerManager->registerTimerListening($this, 'each5Seconds', 5000);
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_ONINIT, $this, 'handleOnInit');
+		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::ONINIT, $this, 'handleOnInit');
 
 		// Register for commands
 		$this->maniaControl->commandManager->registerCommandListener('setservername', $this, 'command_SetServerName', true, 'Sets the ServerName.');

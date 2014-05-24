@@ -6,6 +6,7 @@ use ManiaControl\Admin\ActionsMenu;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Bills\BillManager;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Callbacks\TimerManager;
 use ManiaControl\Commands\CommandListener;
@@ -221,7 +222,7 @@ class ManiaControl implements CommandListener, TimerListener {
 	 */
 	public function restart($message = null) {
 		// Shutdown callback
-		$this->callbackManager->triggerCallback(CallbackManager::CB_ONSHUTDOWN);
+		$this->callbackManager->triggerCallback(Callbacks::ONSHUTDOWN);
 
 		// Announce restart
 		$this->chat->sendInformation('Restarting ManiaControl...');
@@ -287,7 +288,7 @@ class ManiaControl implements CommandListener, TimerListener {
 	 */
 	public function handleShutdown() {
 		// OnShutdown callback
-		$this->callbackManager->triggerCallback(CallbackManager::CB_ONSHUTDOWN);
+		$this->callbackManager->triggerCallback(Callbacks::ONSHUTDOWN);
 
 		// Announce quit
 		$this->chat->sendInformation('ManiaControl shutting down.');
@@ -336,14 +337,14 @@ class ManiaControl implements CommandListener, TimerListener {
 		}
 
 		// OnInit callback
-		$this->callbackManager->triggerCallback(CallbackManager::CB_ONINIT);
+		$this->callbackManager->triggerCallback(Callbacks::ONINIT);
 
 		// Load plugins
 		$this->pluginManager->loadPlugins();
 		$this->updateManager->pluginUpdateManager->checkPluginsUpdate();
 
 		// AfterInit callback
-		$this->callbackManager->triggerCallback(CallbackManager::CB_AFTERINIT);
+		$this->callbackManager->triggerCallback(Callbacks::AFTERINIT);
 
 		// Enable Garbage Collecting
 		gc_enable();

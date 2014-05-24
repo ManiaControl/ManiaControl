@@ -32,11 +32,7 @@ class MapManager implements CallbackListener {
 	/*
 	 * Constants
 	 */
-	const TABLE_MAPS = 'mc_maps';
-	/**  @deprecated CB_BEGINMAP */
-	const CB_BEGINMAP = 'MapManager.BeginMap';
-	/**  @deprecated CB_ENDMAP */
-	const CB_ENDMAP                       = 'MapManager.EndMap';
+	const TABLE_MAPS                      = 'mc_maps';
 	const CB_MAPS_UPDATED                 = 'MapManager.MapsUpdated';
 	const CB_KARMA_UPDATED                = 'MapManager.KarmaUpdated';
 	const SETTING_PERMISSION_ADD_MAP      = 'Add Maps';
@@ -47,6 +43,11 @@ class MapManager implements CallbackListener {
 	const SETTING_PERMISSION_RESTART_MAP  = 'Restart Map';
 	const SETTING_AUTOSAVE_MAPLIST        = 'Autosave Maplist file';
 	const SETTING_MAPLIST_FILE            = 'File to write Maplist in';
+
+	/**  @deprecated Use Callbacks Interface */
+	const CB_BEGINMAP = 'Callbacks.BeginMap';
+	/**  @deprecated Use Callbacks Interface */
+	const CB_ENDMAP = 'Callbacks.EndMap';
 
 	/*
 	 * Public Properties
@@ -86,8 +87,8 @@ class MapManager implements CallbackListener {
 		$this->mapActions  = new MapActions($maniaControl);
 
 		// Register for callbacks
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_ONINIT, $this, 'handleOnInit');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_AFTERINIT, $this, 'handleAfterInit');
+		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::ONINIT, $this, 'handleOnInit');
+		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::AFTERINIT, $this, 'handleAfterInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_MAPLISTMODIFIED, $this, 'mapsModified');
 
 		// Define Rights
@@ -680,9 +681,7 @@ class MapManager implements CallbackListener {
 		// Update the mx of the map (for update checks, etc.)
 		$this->mxManager->fetchManiaExchangeMapInformation($this->currentMap);
 
-		// Trigger own BeginMap callback (
-		//TODO remove deprecated callback later
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_BEGINMAP, $this->currentMap);
+		// Trigger own BeginMap callback
 		$this->maniaControl->callbackManager->triggerCallback(Callbacks::BEGINMAP, $this->currentMap);
 	}
 
@@ -697,8 +696,6 @@ class MapManager implements CallbackListener {
 		$this->mapBegan = false;
 
 		// Trigger own EndMap callback
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_ENDMAP, $this->currentMap);
-		//TODO remove deprecated callback later
 		$this->maniaControl->callbackManager->triggerCallback(Callbacks::ENDMAP, $this->currentMap);
 	}
 
