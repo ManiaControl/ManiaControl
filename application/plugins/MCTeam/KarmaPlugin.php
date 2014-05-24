@@ -207,9 +207,6 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			trigger_error($mysqli->error, E_USER_ERROR);
 		}
 
-		// Migrate settings
-		$this->maniaControl->database->migrationHelper->transferSettings('KarmaPlugin', $this);
-
 		if (!$this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MX_KARMA_ACTIVATED)) {
 			return;
 		}

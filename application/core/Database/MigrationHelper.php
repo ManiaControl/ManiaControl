@@ -4,6 +4,7 @@ namespace ManiaControl\Database;
 
 use ManiaControl\ManiaControl;
 use ManiaControl\Settings\SettingManager;
+use ManiaControl\Utils\ClassUtil;
 
 /**
  * Database Migration Assistant
@@ -35,8 +36,8 @@ class MigrationHelper {
 	 * @return bool
 	 */
 	public function transferSettings($sourceClass, $targetClass) {
-		$sourceClass = $this->getClass($sourceClass);
-		$targetClass = $this->getClass($targetClass);
+		$sourceClass = ClassUtil::getClass($sourceClass);
+		$targetClass = ClassUtil::getClass($targetClass);
 
 		$mysqli = $this->maniaControl->database->mysqli;
 
@@ -59,18 +60,5 @@ class MigrationHelper {
 		}
 		$statement->close();
 		return $success;
-	}
-
-	/**
-	 * Get the Class of the given Object
-	 *
-	 * @param mixed $class
-	 * @return string
-	 */
-	private function getClass($class) {
-		if (is_object($class)) {
-			return get_class($class);
-		}
-		return (string)$class;
 	}
 }

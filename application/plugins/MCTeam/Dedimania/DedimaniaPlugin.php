@@ -74,9 +74,6 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * @see \ManiaControl\Plugins\Plugin::prepare()
 	 */
 	public static function prepare(ManiaControl $maniaControl) {
-		$maniaControl->database->migrationHelper->transferSettings('Dedimania\Dedimania', get_class());
-		$maniaControl->database->migrationHelper->transferSettings('Dedimania\DedimaniaPlugin', get_class());
-
 		$servers = $maniaControl->server->getAllServers();
 		foreach ($servers as $server) {
 			$maniaControl->settingManager->initSetting(get_class(), self::SETTING_DEDIMANIA_CODE . $server->login . '$l', '');
