@@ -84,13 +84,13 @@ class ErrorHandler {
 			$json = json_encode($report);
 			$info = base64_encode($json);
 
-			$url     = ManiaControl::URL_WEBSERVICE . 'errorreport?error=' . urlencode($info);
-			$success = FileUtil::loadFile($url);
-
-			if (!json_decode($success)) {
-				logMessage('Exception-Report failed!');
-			} else {
+			$url      = ManiaControl::URL_WEBSERVICE . 'errorreport?error=' . urlencode($info);
+			$response = FileUtil::loadFile($url);
+			$success  = json_decode($response);
+			if ($success) {
 				logMessage('Exception successfully reported!');
+			} else {
+				logMessage('Exception-Report failed! ' . print_r($response, true));
 			}
 		}
 
@@ -249,13 +249,13 @@ class ErrorHandler {
 			$json = json_encode($report);
 			$info = base64_encode($json);
 
-			$url     = ManiaControl::URL_WEBSERVICE . 'errorreport?error=' . urlencode($info);
-			$success = FileUtil::loadFile($url);
-			$success = json_decode($success);
+			$url      = ManiaControl::URL_WEBSERVICE . 'errorreport?error=' . urlencode($info);
+			$response = FileUtil::loadFile($url);
+			$success  = json_decode($response);
 			if ($success) {
 				logMessage('Error successfully reported!');
 			} else {
-				logMessage('Error-Report failed!');
+				logMessage('Error-Report failed! ' . print_r($response, true));
 			}
 		}
 		if ($this->shouldStopExecution($errorNumber)) {
