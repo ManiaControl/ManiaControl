@@ -7,7 +7,7 @@ use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\Structures\Version;
 
 /**
- * ManiaControl Dedimania Plugin DataStructure
+ * ManiaControl Dedimania Plugin Data Structure
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014 ManiaControl Team
@@ -105,7 +105,6 @@ class DedimaniaData {
 	 * @param DedimaniaPlayer $player
 	 */
 	public function addPlayer(DedimaniaPlayer $player) {
-		/** @var DedimaniaPlayer $player */
 		$this->players[$player->login] = $player;
 	}
 

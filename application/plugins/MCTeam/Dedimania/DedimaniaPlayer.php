@@ -3,7 +3,7 @@
 namespace MCTeam\Dedimania;
 
 /**
- * ManiaControl Dedimania-Plugin Player DataStructure
+ * ManiaControl Dedimania Plugin Player Data Structure
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014 ManiaControl Team
@@ -21,28 +21,16 @@ class DedimaniaPlayer {
 
 	/**
 	 * Construct a new Dedimania Player Model
-	 * @param mixed$player
+	 *
+	 * @param mixed $player
 	 */
 	public function __construct($player) {
-		if (!$player) {
-			return;
-		}
-
 		$this->login          = $player['Login'];
 		$this->maxRank        = $player['MaxRank'];
-		$this->banned         = $player['Banned'];
-		$this->optionsEnabled = $player['OptionsEnabled'];
-		$this->options        = $player['Options'];
-	}
-
-	/**
-	 * Construct a new Player by its login and maxRank
-	 *
-	 * @param string $login
-	 * @param int $maxRank
-	 */
-	public function constructNewPlayer($login, $maxRank) {
-		$this->login   = $login;
-		$this->maxRank = $maxRank;
+		if (isset($player['Banned'])) {
+			$this->banned         = $player['Banned'];
+			$this->optionsEnabled = $player['OptionsEnabled'];
+			$this->options        = $player['Options'];
+		}
 	}
 } 

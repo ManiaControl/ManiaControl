@@ -5,7 +5,7 @@ namespace MCTeam\Dedimania;
 use ManiaControl\Utils\Formatter;
 
 /**
- * ManiaControl Dedimania-Plugin Record DataStructure
+ * ManiaControl Dedimania Plugin Record Data Structure
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014 ManiaControl Team
