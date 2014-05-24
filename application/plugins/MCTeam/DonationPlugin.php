@@ -418,7 +418,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 * @param Player $player
 	 */
 	private function sendPayUsageExample(Player $player) {
-		$message = "Usage Example: '/pay 100 login'";
+		$message = "Usage Example: '//pay 100 login'";
 		$this->maniaControl->chat->sendChat($message, $player->login);
 	}
 
