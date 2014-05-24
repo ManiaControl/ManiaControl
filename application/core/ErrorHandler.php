@@ -353,7 +353,7 @@ class ErrorHandler {
 	 */
 	public function handleShutdown() {
 		$error = error_get_last();
-		if ($error) {
+		if ($error && ($error['type'] & E_FATAL)) {
 			$this->handleError($error['type'], $error['message'], $error['file'], $error['line']);
 		}
 	}
