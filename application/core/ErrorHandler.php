@@ -305,7 +305,7 @@ class ErrorHandler {
 		}
 		$filePath  = substr($errorFile, strlen(ManiaControlDir));
 		$filePath  = str_replace('plugins' . DIRECTORY_SEPARATOR, '', $filePath);
-		$filePath  = str_replace('core' . DIRECTORY_SEPARATOR, '', $filePath);
+		$filePath  = str_replace('core' . DIRECTORY_SEPARATOR, 'ManiaControl\\', $filePath);
 		$className = str_replace('.php', '', $filePath);
 		$className = str_replace(DIRECTORY_SEPARATOR, '\\', $className);
 		if (!class_exists($className, false)) {

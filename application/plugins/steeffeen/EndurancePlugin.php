@@ -37,7 +37,6 @@ class EndurancePlugin implements CallbackListener, Plugin {
 	 * @see \ManiaControl\Plugins\Plugin::prepare()
 	 */
 	public static function prepare(ManiaControl $maniaControl) {
-		//do nothing
 	}
 
 	/**
