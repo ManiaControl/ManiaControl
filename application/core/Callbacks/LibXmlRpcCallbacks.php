@@ -85,13 +85,28 @@ class LibXmlRpcCallbacks implements CallbackListener {
 				$this->maniaControl->callbackManager->triggerCallback(Callbacks::ENDMATCH, $data[0]);
 				break;
 			case 'LibXmlRpc_BeginWarmUp':
-				$this->maniaControl->callbackManager->triggerCallback(Callbacks::BEGINWARMUP);
+				$this->maniaControl->callbackManager->triggerCallback(Callbacks::BEGINWARMUP, $data[0]);
 				break;
 			case 'LibXmlRpc_EndWarmUp':
-				$this->maniaControl->callbackManager->triggerCallback(Callbacks::ENDWARMUP);
+				$this->maniaControl->callbackManager->triggerCallback(Callbacks::ENDWARMUP, $data[0]);
 				break;
 			case 'LibXmlRpc_PlayerRanking': //TODO really useful? what does it have what RankingsManager not have?
 				$this->triggerPlayerRanking($data[0]);
+				break;
+			case 'LibXmlRpc_OnStartLine':
+				$this->maniaControl->callbackManager->triggerCallback(Callbacks::ONSTARTLINE, $data[0]);
+				break;
+			case 'LibXmlRpc_OnWayPoint':
+				$this->maniaControl->callbackManager->triggerCallback(Callbacks::ONWAYPOINT, $data[0]);
+				break;
+			case 'LibXmlRpc_OnGiveUp':
+				$this->maniaControl->callbackManager->triggerCallback(Callbacks::ONGIVEUP, $data[0]);
+				break;
+			case 'LibXmlRpc_OnRespawn':
+				$this->maniaControl->callbackManager->triggerCallback(Callbacks::ONRESPAWN, $data[0]);
+				break;
+			case 'LibXmlRpc_OnStunt':
+				$this->maniaControl->callbackManager->triggerCallback(Callbacks::ONSTUNT, $data[0]);
 				break;
 		}
 	}

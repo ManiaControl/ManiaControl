@@ -78,4 +78,14 @@ interface Callbacks {
 	/*
 	 * TrackMania Callbacks
 	 */
+	/** OnStartLine Callback */
+	const ONSTARTLINE = 'Callbacks.OnStartLine';
+	/** OnWayPoint Callback */
+	const ONWAYPOINT = 'Callbacks.OnWayPoint';
+	/** OnGiveUp Callback */
+	const ONGIVEUP = 'Callbacks.OnGiveUp';
+	/** OnRespawn Callback */
+	const ONRESPAWN = 'Callbacks.OnRespawn';
+	/** OnStunt Callback */
+	const ONSTUNT = 'Callbacks.OnStunt';
 }
