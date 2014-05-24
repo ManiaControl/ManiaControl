@@ -88,7 +88,6 @@ class TrackManiaCallbacks implements CallbackListener {
 		}
 
 		$checkpointCallback                   = new RecordCallback();
-		$checkpointCallback->name             = $checkpointCallback::CHECKPOINT;
 		$checkpointCallback->isLegacyCallback = true;
 		$checkpointCallback->setPlayer($player);
 		$checkpointCallback->time          = (int)$data[2];
@@ -99,6 +98,12 @@ class TrackManiaCallbacks implements CallbackListener {
 		if ($checkpointCallback->lap > 0) {
 			$currentMap = $this->maniaControl->mapManager->getCurrentMap();
 			$checkpointCallback->lapCheckpoint -= $checkpointCallback->lap * $currentMap->nbCheckpoints;
+		}
+
+		if ($checkpointCallback->lapCheckpoint === 0) {
+			$checkpointCallback->name = $checkpointCallback::LAPFINISH;
+		} else {
+			$checkpointCallback->name = $checkpointCallback::CHECKPOINT;
 		}
 
 		$this->maniaControl->callbackManager->triggerCallback($checkpointCallback);
