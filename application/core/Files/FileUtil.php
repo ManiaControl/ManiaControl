@@ -13,17 +13,12 @@ use ManiaControl\Utils\Formatter;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 abstract class FileUtil {
-	/*
-	 * Constants
-	 */
-	const FOLDER_NAME_TEMP = 'temp/';
-
 	/**
 	 * Load a remote file
 	 *
 	 * @param string $url
 	 * @param string $contentType
-	 * @return string || null
+	 * @return string
 	 */
 	public static function loadFile($url, $contentType = 'UTF-8') {
 		if (!$url) {
@@ -31,7 +26,7 @@ abstract class FileUtil {
 		}
 		$urlData  = parse_url($url);
 		$port     = (isset($urlData['port']) ? $urlData['port'] : 80);
-		$urlQuery = isset($urlData['query']) ? "?" . $urlData['query'] : "";
+		$urlQuery = (isset($urlData['query']) ? '?' . $urlData['query'] : '');
 
 		$fsock = fsockopen($urlData['host'], $port);
 		stream_set_timeout($fsock, 3);
@@ -55,12 +50,11 @@ abstract class FileUtil {
 		if ($info['timed_out'] || !$buffer) {
 			return null;
 		}
-		if (substr($buffer, 9, 3) != "200") {
+		if (substr($buffer, 9, 3) != '200') {
 			return null;
 		}
 
 		$result = explode("\r\n\r\n", $buffer, 2);
-
 		if (count($result) < 2) {
 			return null;
 		}
@@ -117,7 +111,7 @@ abstract class FileUtil {
 	 * @return string
 	 */
 	public static function getTempFolder($createIfNecessary = true) {
-		$tempFolder = ManiaControlDir . self::FOLDER_NAME_TEMP;
+		$tempFolder = ManiaControlDir . 'temp' . DIRECTORY_SEPARATOR;
 		if ($createIfNecessary && !is_dir($tempFolder)) {
 			mkdir($tempFolder);
 		}
