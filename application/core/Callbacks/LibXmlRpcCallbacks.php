@@ -54,10 +54,10 @@ class LibXmlRpcCallbacks implements CallbackListener {
 				$this->maniaControl->callbackManager->triggerCallback(Callbacks::BEGINTURN, $data[0]);
 				break;
 			case 'LibXmlRpc_BeginPlaying':
-				$this->maniaControl->callbackManager->triggerCallback(Callbacks::BEGINPLAYING, $data[0]);
+				$this->maniaControl->callbackManager->triggerCallback(Callbacks::BEGINPLAYING);
 				break;
 			case 'LibXmlRpc_EndPlaying':
-				$this->maniaControl->callbackManager->triggerCallback(Callbacks::ENDPLAYING, $data[0]);
+				$this->maniaControl->callbackManager->triggerCallback(Callbacks::ENDPLAYING);
 				break;
 			case 'LibXmlRpc_EndTurn':
 				$this->maniaControl->callbackManager->triggerCallback(Callbacks::ENDTURN, $data[0]);
@@ -73,10 +73,10 @@ class LibXmlRpcCallbacks implements CallbackListener {
 				$this->maniaControl->mapManager->handleScriptEndMap($data[1]);
 				break;
 			case 'LibXmlRpc_BeginPodium':
-				$this->maniaControl->callbackManager->triggerCallback(Callbacks::BEGINPODIUM, $data[0]);
+				$this->maniaControl->callbackManager->triggerCallback(Callbacks::BEGINPODIUM);
 				break;
 			case 'LibXmlRpc_EndPodium':
-				$this->maniaControl->callbackManager->triggerCallback(Callbacks::ENDPODIUM, $data[0]);
+				$this->maniaControl->callbackManager->triggerCallback(Callbacks::ENDPODIUM);
 				break;
 			case 'LibXmlRpc_UnloadingMap':
 				$this->maniaControl->callbackManager->triggerCallback(Callbacks::UNLOADINGMAP, $data[0]);
@@ -85,19 +85,20 @@ class LibXmlRpcCallbacks implements CallbackListener {
 				$this->maniaControl->callbackManager->triggerCallback(Callbacks::ENDMATCH, $data[0]);
 				break;
 			case 'LibXmlRpc_BeginWarmUp':
-				$this->maniaControl->callbackManager->triggerCallback(Callbacks::BEGINWARMUP, $data[0]);
+				$this->maniaControl->callbackManager->triggerCallback(Callbacks::BEGINWARMUP);
 				break;
 			case 'LibXmlRpc_EndWarmUp':
-				$this->maniaControl->callbackManager->triggerCallback(Callbacks::ENDWARMUP, $data[0]);
+				$this->maniaControl->callbackManager->triggerCallback(Callbacks::ENDWARMUP);
 				break;
-			case 'LibXmlRpc_PlayerRanking': //TODO really useful? what does it have what RankingsManager not have?
+			case 'LibXmlRpc_PlayerRanking':
+				//TODO really useful? what does it have what RankingsManager not have?
 				$this->triggerPlayerRanking($data[0]);
 				break;
 			case 'LibXmlRpc_OnStartLine':
 				$this->maniaControl->callbackManager->triggerCallback(Callbacks::ONSTARTLINE, $data[0]);
 				break;
 			case 'LibXmlRpc_OnWayPoint':
-				$this->maniaControl->callbackManager->triggerCallback(Callbacks::ONWAYPOINT, $data[0]);
+				$this->maniaControl->callbackManager->triggerCallback(Callbacks::ONWAYPOINT, $data);
 				break;
 			case 'LibXmlRpc_OnGiveUp':
 				$this->maniaControl->callbackManager->triggerCallback(Callbacks::ONGIVEUP, $data[0]);
@@ -106,7 +107,7 @@ class LibXmlRpcCallbacks implements CallbackListener {
 				$this->maniaControl->callbackManager->triggerCallback(Callbacks::ONRESPAWN, $data[0]);
 				break;
 			case 'LibXmlRpc_OnStunt':
-				$this->maniaControl->callbackManager->triggerCallback(Callbacks::ONSTUNT, $data[0]);
+				$this->maniaControl->callbackManager->triggerCallback(Callbacks::ONSTUNT, $data);
 				break;
 		}
 	}
