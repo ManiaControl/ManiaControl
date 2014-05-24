@@ -2,6 +2,7 @@
 
 namespace ManiaControl\Callbacks;
 
+use ManiaControl\Callbacks\Models\BaseCallback;
 use ManiaControl\ManiaControl;
 
 /**
@@ -243,15 +244,22 @@ class CallbackManager {
 	/**
 	 * Trigger a specific Callback
 	 *
-	 * @param string $callbackName
+	 * @param mixed $callback
 	 */
-	public function triggerCallback($callbackName) {
+	public function triggerCallback($callback) {
+		if ($callback instanceof BaseCallback) {
+			$callbackName = $callback->name;
+		} else {
+			$callbackName = $callback;
+		}
 		if (!array_key_exists($callbackName, $this->callbackListenings)) {
 			return;
 		}
 
 		$params = func_get_args();
-		$params = array_slice($params, 1, null, true);
+		if (!($callback instanceof BaseCallback)) {
+			$params = array_slice($params, 1, null, true);
+		}
 
 		foreach ($this->callbackListenings[$callbackName] as $listening) {
 			/** @var Listening $listening */

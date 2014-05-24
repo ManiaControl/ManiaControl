@@ -4,7 +4,7 @@ namespace steeffeen;
 
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
-use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Callbacks\Models\RecordCallback;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
@@ -20,14 +20,14 @@ class ObstaclePlugin implements CallbackListener, CommandListener, Plugin {
 	/*
 	 * Constants
 	 */
-	const ID                      = 24;
-	const VERSION                 = 0.2;
-	const NAME                    = 'Obstacle Plugin';
-	const AUTHOR                  = 'steeffeen';
-	const CB_JUMPTO               = 'Obstacle.JumpTo';
-	const SCB_ONFINISH            = 'OnFinish';
-	const SCB_ONCHECKPOINT        = 'OnCheckpoint';
-	const SETTING_JUMPTOAUTHLEVEL = 'Authentication level for JumpTo commands';
+	const ID                       = 24;
+	const VERSION                  = 0.2;
+	const NAME                     = 'Obstacle Plugin';
+	const AUTHOR                   = 'steeffeen';
+	const CB_JUMPTO                = 'Obstacle.JumpTo';
+	const SCB_ONFINISH             = 'OnFinish';
+	const SCB_ONCHECKPOINT         = 'OnCheckpoint';
+	const SETTING_JUMPTO_AUTHLEVEL = 'Authentication level for JumpTo commands';
 
 	/**
 	 * Private Properties
@@ -83,10 +83,10 @@ class ObstaclePlugin implements CallbackListener, CommandListener, Plugin {
 		$this->maniaControl = $maniaControl;
 
 		// Init settings
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_JUMPTOAUTHLEVEL, AuthenticationManager::AUTH_LEVEL_MODERATOR);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_JUMPTO_AUTHLEVEL, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 
 		// Register for commands
-		$this->maniaControl->commandManager->registerCommandListener('jumpto', $this, 'command_JumpTo');
+		$this->maniaControl->commandManager->registerCommandListener('jumpto', $this, 'command_JumpTo', true);
 
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerScriptCallbackListener(self::SCB_ONFINISH, $this, 'callback_OnFinish');
@@ -109,7 +109,7 @@ class ObstaclePlugin implements CallbackListener, CommandListener, Plugin {
 	 * @return bool
 	 */
 	public function command_JumpTo(array $chatCallback, Player $player) {
-		$authLevel = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_JUMPTOAUTHLEVEL);
+		$authLevel = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_JUMPTO_AUTHLEVEL);
 		if (!$this->maniaControl->authenticationManager->checkRight($player, $authLevel)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
@@ -140,10 +140,15 @@ class ObstaclePlugin implements CallbackListener, CommandListener, Plugin {
 		if (!$player) {
 			return;
 		}
-		$time = $data->Run->Time;
-		// Trigger trackmania player finish callback
-		$finishCallback = array($player->pid, $player->login, $time);
-		$this->maniaControl->callbackManager->triggerCallback(CallbackManager::CB_TM_PLAYERFINISH, array(CallbackManager::CB_TM_PLAYERFINISH, $finishCallback));
+
+		// Trigger finish callback
+		$finishCallback              = new RecordCallback();
+		$finishCallback->rawCallback = $callback;
+		$finishCallback->name        = $finishCallback::FINISH;
+		$finishCallback->setPlayer($player);
+		$finishCallback->time = $data->Run->Time;
+
+		$this->maniaControl->callbackManager->triggerCallback($finishCallback);
 	}
 
 	/**
@@ -154,12 +159,17 @@ class ObstaclePlugin implements CallbackListener, CommandListener, Plugin {
 	public function callback_OnCheckpoint(array $callback) {
 		$data   = json_decode($callback[1]);
 		$player = $this->maniaControl->playerManager->getPlayer($data->Player->Login);
-		$time   = $data->Run->Time;
-		if (!$player || $time <= 0) {
+		if (!$player) {
 			return;
 		}
-		// Trigger Trackmania player checkpoint callback
-		$checkpointCallback = array($player->pid, $player->login, $time, 0, 0);
-		$this->maniaControl->callbackManager->triggerCallback(CallbackManager::CB_TM_PLAYERCHECKPOINT, array(CallbackManager::CB_TM_PLAYERCHECKPOINT, $checkpointCallback));
+
+		// Trigger checkpoint callback
+		$checkpointCallback              = new RecordCallback();
+		$checkpointCallback->rawCallback = $callback;
+		$checkpointCallback->name        = $checkpointCallback::CHECKPOINT;
+		$checkpointCallback->setPlayer($player);
+		$checkpointCallback->time = $data->Run->Time;
+
+		$this->maniaControl->callbackManager->triggerCallback($checkpointCallback);
 	}
 }

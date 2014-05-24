@@ -2,6 +2,7 @@
 
 namespace ManiaControl\Callbacks;
 
+use ManiaControl\Callbacks\Models\RecordCallback;
 use ManiaControl\ManiaControl;
 
 /**
@@ -15,10 +16,10 @@ class ShootManiaCallbacks implements CallbackListener {
 	/*
 	 * Constants
 	 */
-	const SCB_TIMEATTACK_ONSTART      = 'TimeAttack_OnStart';
-	const SCB_TIMEATTACK_ONRESTART    = 'TimeAttack_OnRestart';
-	const SCB_TIMEATTACK_ONCHECKPOINT = 'TimeAttack_OnCheckpoint';
-	const SCB_TIMEATTACK_ONFINISH     = 'TimeAttack_OnFinish';
+	const CB_TIMEATTACK_ONSTART      = 'TimeAttack_OnStart';
+	const CB_TIMEATTACK_ONRESTART    = 'TimeAttack_OnRestart';
+	const CB_TIMEATTACK_ONCHECKPOINT = 'TimeAttack_OnCheckpoint';
+	const CB_TIMEATTACK_ONFINISH     = 'TimeAttack_OnFinish';
 
 	/*
 	 * Private Properties
@@ -36,8 +37,6 @@ class ShootManiaCallbacks implements CallbackListener {
 
 		// Register for script callbacks
 		$callbackManager->registerCallbackListener(Callbacks::SCRIPTCALLBACK, $this, 'handleScriptCallbacks');
-		$callbackManager->registerScriptCallbackListener(self::SCB_TIMEATTACK_ONCHECKPOINT, $this, 'callback_TimeAttack_OnCheckpoint');
-		$callbackManager->registerScriptCallbackListener(self::SCB_TIMEATTACK_ONFINISH, $this, 'callback_TimeAttack_OnFinish');
 	}
 
 	/**
@@ -52,10 +51,16 @@ class ShootManiaCallbacks implements CallbackListener {
 				$this->maniaControl->server->rankingManager->updateRankings($data[0]);
 				break;
 			case 'LibXmlRpc_Scores':
-				$this->maniaControl->callbackManager->triggerCallback(Callbacks::AFKSTATUS, $data[0]);
+				$this->maniaControl->callbackManager->triggerCallback(Callbacks::SCORES, $data[0]);
 				break;
 			case 'LibAFK_IsAFK':
 				$this->triggerAfkStatus($data[0]);
+				break;
+			case self::CB_TIMEATTACK_ONCHECKPOINT:
+				$this->handleTimeAttackOnCheckpoint($name, $data);
+				break;
+			case self::CB_TIMEATTACK_ONFINISH:
+				$this->handleTimeAttackOnFinish($name, $data);
 				break;
 		}
 	}
@@ -71,36 +76,48 @@ class ShootManiaCallbacks implements CallbackListener {
 	}
 
 	/**
-	 * Handle TimeAttack OnCheckpoint Script Callback
+	 * Handle TimeAttack OnCheckpoint Callback
 	 *
-	 * @param array $callback
+	 * @param string $name
+	 * @param array  $data
 	 */
-	public function callback_TimeAttack_OnCheckpoint(array $callback) {
-		$login  = $callback[1][0];
-		$time   = (int)$callback[1][1];
+	public function handleTimeAttackOnCheckpoint($name, array $data) {
+		$login  = $data[0];
 		$player = $this->maniaControl->playerManager->getPlayer($login);
-		if (!$player || $time <= 0) {
+		if (!$player) {
 			return;
 		}
-		// Trigger trackmania player checkpoint callback
-		$checkpointCallback = array($player->pid, $player->login, $time, 0, 0);
-		$this->maniaControl->callbackManager->triggerCallback(CallbackManager::CB_TM_PLAYERCHECKPOINT, array(CallbackManager::CB_TM_PLAYERCHECKPOINT, $checkpointCallback));
+
+		// Trigger checkpoint callback
+		$checkpointCallback              = new RecordCallback();
+		$checkpointCallback->rawCallback = array($name, $data);
+		$checkpointCallback->name        = $checkpointCallback::CHECKPOINT;
+		$checkpointCallback->setPlayer($player);
+		$checkpointCallback->time = (int)$data[1];
+
+		$this->maniaControl->callbackManager->triggerCallback($checkpointCallback);
 	}
 
 	/**
-	 * Handle TimeAttack OnFinish Script Callback
+	 * Handle TimeAttack OnFinish Callback
 	 *
-	 * @param array $callback
+	 * @param string $name
+	 * @param array  $data
 	 */
-	public function callback_TimeAttack_OnFinish(array $callback) {
-		$login  = $callback[1][0];
-		$time   = (int)$callback[1][1];
+	public function handleTimeAttackOnFinish($name, array $data) {
+		$login  = $data[0];
 		$player = $this->maniaControl->playerManager->getPlayer($login);
-		if (!$player || $time <= 0) {
+		if (!$player) {
 			return;
 		}
-		// Trigger trackmania player finish callback
-		$finishCallback = array($player->pid, $player->login, $time);
-		$this->maniaControl->callbackManager->triggerCallback(CallbackManager::CB_TM_PLAYERFINISH, array(CallbackManager::CB_TM_PLAYERFINISH, $finishCallback));
+
+		// Trigger finish callback
+		$finishCallback              = new RecordCallback();
+		$finishCallback->rawCallback = array($name, $data);
+		$finishCallback->name        = $finishCallback::FINISH;
+		$finishCallback->setPlayer($player);
+		$finishCallback->time = (int)$data[1];
+
+		$this->maniaControl->callbackManager->triggerCallback($finishCallback);
 	}
 }

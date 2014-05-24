@@ -201,7 +201,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 			return;
 		}
 
-		$action      = $actionArray[0] . "." . $actionArray[1];
+		$action      = $actionArray[0] . '.' . $actionArray[1];
 		$adminLogin  = $callback[1][1];
 		$targetLogin = $actionArray[2];
 
