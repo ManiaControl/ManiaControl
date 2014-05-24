@@ -16,8 +16,8 @@ define('E_FATAL', E_ERROR | E_CORE_ERROR | E_COMPILE_ERROR | E_RECOVERABLE_ERROR
 
 // Set process settings
 ini_set('memory_limit', '64M');
-if (function_exists('date_default_timezone_get') && function_exists('date_default_timezone_set')) {
-	date_default_timezone_set(@date_default_timezone_get());
+if (!ini_get('date.timezone') && function_exists('date_default_timezone_set')) {
+	date_default_timezone_set('UTC');
 }
 
 // Build log file name
