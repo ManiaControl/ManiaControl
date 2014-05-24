@@ -40,6 +40,8 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	const SETTING_MENU_STYLE                   = 'Menu Widget BackgroundQuad Style';
 	const SETTING_MENU_SUBSTYLE                = 'Menu Widget BackgroundQuad Substyle';
 	const SETTING_PERMISSION_OPEN_CONFIGURATOR = 'Open Configurator';
+	const CACHE_MENU_SHOWN                     = 'MenuShown';
+	const MENU_NAME                            = 'Configurator';
 
 	/*
 	 * Private Properties
@@ -49,7 +51,6 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	private $serverSettings = null;
 	private $maniaControlSettings = null;
 	private $menus = array();
-	private $playersMenuShown = array();
 
 	/**
 	 * Create a new Configurator
@@ -76,7 +77,6 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_SAVECONFIG, $this, 'handleSaveConfigAction');
 
 		// Register for callbacks
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERDISCONNECT, $this, 'handlePlayerDisconnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 		$this->maniaControl->callbackManager->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_OPENED, $this, 'handleWidgetOpened');
 		$this->maniaControl->callbackManager->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_CLOSED, $this, 'closeWidget');
@@ -140,8 +140,8 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	 */
 	public function showMenu(Player $player, $menuId = 0) {
 		$manialink = $this->buildManialink($menuId, $player);
-		$this->maniaControl->manialinkManager->displayWidget($manialink, $player, "Configurator");
-		$this->playersMenuShown[$player->login] = true;
+		$this->maniaControl->manialinkManager->displayWidget($manialink, $player, self::MENU_NAME);
+		$player->setCache($this, self::CACHE_MENU_SHOWN, true);
 	}
 
 	/**
@@ -275,7 +275,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	 * @param Player $player
 	 */
 	public function toggleMenu(Player $player) {
-		if (isset($this->playersMenuShown[$player->login])) {
+		if ($player->getCache($this, self::CACHE_MENU_SHOWN)) {
 			$this->hideMenu($player);
 		} else {
 			$this->showMenu($player);
@@ -288,7 +288,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	 * @param Player $player
 	 */
 	public function hideMenu(Player $player) {
-		unset($this->playersMenuShown[$player->login]);
+		$player->destroyCache($this, self::CACHE_MENU_SHOWN);
 		$this->maniaControl->manialinkManager->closeWidget($player);
 	}
 
@@ -305,15 +305,6 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		}
 	}
 
-	/**
-	 * Handle PlayerDisconnect callback
-	 *
-	 * @param array $callback
-	 */
-	public function handlePlayerDisconnect(array $callback) {
-		$login = $callback[1][0];
-		unset($this->playersMenuShown[$login]);
-	}
 
 	/**
 	 * Unset the player if he opened another Main Widget
@@ -322,19 +313,18 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	 * @param        $openedWidget
 	 */
 	public function handleWidgetOpened(Player $player, $openedWidget) {
-		//unset when another main widget got opened
-		if ($openedWidget != 'Configurator') {
-			unset($this->playersMenuShown[$player->login]);
+		if ($openedWidget !== self::MENU_NAME) {
+			$player->destroyCache($this, self::CACHE_MENU_SHOWN);
 		}
 	}
 
 	/**
 	 * Widget get closed -> unset player
 	 *
-	 * @param \ManiaControl\Players\Player $player
+	 * @param Player $player
 	 */
 	public function closeWidget(Player $player) {
-		unset($this->playersMenuShown[$player->login]);
+		$player->destroyCache($this, self::CACHE_MENU_SHOWN);
 	}
 
 	/**
