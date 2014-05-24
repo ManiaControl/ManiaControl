@@ -12,6 +12,7 @@ use FML\Script\Features\Paging;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
+use ManiaControl\Callbacks\Models\RecordCallback;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
@@ -135,11 +136,13 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::BEGINMAP, $this, 'handleBeginMap');
 		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::ENDMAP, $this, 'handleMapEnd');
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECT, $this, 'handlePlayerDisconnect');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_TM_PLAYERCHECKPOINT, $this, 'handlePlayerCheckpoint');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_TM_PLAYERFINISH, $this, 'handlePlayerFinished');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
+		$this->maniaControl->callbackManager->registerCallbackListener(RecordCallback::CHECKPOINT, $this, 'handleCheckpointCallback');
+		$this->maniaControl->callbackManager->registerCallbackListener(RecordCallback::LAPFINISH, $this, 'handleLapFinishCallback');
+		$this->maniaControl->callbackManager->registerCallbackListener(RecordCallback::FINISH, $this, 'handleFinishCallback');
+
 		$this->maniaControl->timerManager->registerTimerListening($this, 'updateEverySecond', 1000);
 		$this->maniaControl->timerManager->registerTimerListening($this, 'handleEveryMinute', 1000 * 60);
 		$this->maniaControl->timerManager->registerTimerListening($this, 'updatePlayerList', 1000 * 60 * 3);
@@ -245,7 +248,6 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		if ($reset) {
 			$this->dedimaniaData->records = array();
 		}
-
 
 		$serverInfo = $this->getServerInfo();
 		$playerInfo = $this->getPlayerList();
@@ -760,51 +762,54 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	}
 
 	/**
-	 * Handle PlayerCheckpoint Callback
+	 * Handle Checkpoint Callback
 	 *
-	 * @param array $callback
+	 * @param RecordCallback $callback
 	 */
-	public function handlePlayerCheckpoint(array $callback) {
-		$data  = $callback[1];
-		$login = $data[1];
-		$time  = $data[2];
-		//$lap     = $data[3];
-		$cpIndex = $data[4];
-		if (!isset($this->checkpoints[$login]) || $cpIndex <= 0) {
-			$this->checkpoints[$login] = array();
+	public function handleCheckpointCallback(RecordCallback $callback) {
+		if ($callback->isLegacyCallback) {
+			return;
 		}
-		$this->checkpoints[$login][$cpIndex] = $time;
+		if (!isset($this->checkpoints[$callback->login])) {
+			$this->checkpoints[$callback->login] = array();
+		}
+		$this->checkpoints[$callback->login][$callback->lapCheckpoint] = $callback->lapTime;
 	}
 
 	/**
-	 * Handle Player Finished Callback
+	 * Handle LapFinish Callback
 	 *
-	 * @param array $callback
+	 * @param RecordCallback $callback
 	 */
-	public function handlePlayerFinished(array $callback) {
-		//var_dump($callback);
-		$data = $callback[1];
-		if ($data[0] <= 0 || $data[2] <= 0) {
+	public function handleLapFinishCallback(RecordCallback $callback) {
+		$this->handleFinishCallback($callback);
+	}
+
+	/**
+	 * Handle Finish Callback
+	 *
+	 * @param RecordCallback $callback
+	 */
+	public function handleFinishCallback(RecordCallback $callback) {
+		if ($callback->isLegacyCallback) {
+			return;
+		}
+		if ($callback->time <= 0) {
+			// Invalid time
 			return;
 		}
 
-		$login = $data[1];
-		$time  = $data[2];
-		$map   = $this->maniaControl->mapManager->getCurrentMap();
+		$map = $this->maniaControl->mapManager->getCurrentMap();
 		if (!$map) {
 			return;
 		}
 
-
-		$oldRecord = $this->getDedimaniaRecord($login);
-		if ($oldRecord->nullRecord || $oldRecord && $oldRecord->best > $time) {
-			$player = $this->maniaControl->playerManager->getPlayer($login);
-
+		$oldRecord = $this->getDedimaniaRecord($callback->login);
+		if ($oldRecord->nullRecord || $oldRecord && $oldRecord->best > $callback->lapTime) {
 			// Save time
 			$newRecord = new RecordData(null);
-			$newRecord->constructNewRecord($login, $player->nickname, $data[2], $this->getCheckpoints($login), true);
+			$newRecord->constructNewRecord($callback->login, $callback->player->nickname, $callback->lapTime, $this->getCheckpoints($callback->login), true);
 			if ($this->insertDedimaniaRecord($newRecord, $oldRecord)) {
-
 				// Get newly saved record
 				foreach ($this->dedimaniaData->records as &$record) {
 					/** @var RecordData $record */
@@ -825,9 +830,9 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 					// Only improved time
 					$improvement = 'improved his/her';
 				}
-				$message = '$390$<$fff' . $player->nickname . '$> ' . $improvement . ' $<$ff0' . $newRecord->rank . '.$> Dedimania Record: $<$fff' . Formatter::formatTime($newRecord->best) . '$>';
+				$message = '$390$<$fff' . $callback->player->nickname . '$> ' . $improvement . ' $<$ff0' . $newRecord->rank . '.$> Dedimania Record: $<$fff' . Formatter::formatTime($newRecord->best) . '$>';
 				if (!$oldRecord->nullRecord) {
-					$message .= ' ($<$ff0' . $oldRecord->rank . '.$> $<$fff-' . Formatter::formatTime(($oldRecord->best - $time)) . '$>)';
+					$message .= ' ($<$ff0' . $oldRecord->rank . '.$> $<$fff-' . Formatter::formatTime(($oldRecord->best - $callback->lapTime)) . '$>)';
 				}
 				$this->maniaControl->chat->sendInformation($message . '!');
 
