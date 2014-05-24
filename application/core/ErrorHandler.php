@@ -206,12 +206,16 @@ class ErrorHandler {
 			return false;
 		}
 
-		$errorTag    = $this->getErrorTag($errorNumber);
-		$sourceClass = null;
+		$errorTag         = $this->getErrorTag($errorNumber);
+		$traceSourceClass = null;
 
 		$message     = $errorTag . ': ' . $errorString;
 		$fileLine    = $errorFile . ': ' . $errorLine;
-		$traceString = $this->parseBackTrace(debug_backtrace(), $sourceClass);
+		$traceString = $this->parseBackTrace(array_slice(debug_backtrace(), 1), $traceSourceClass);
+		$sourceClass = $this->getSourceClass($errorFile);
+		if (!$sourceClass) {
+			$sourceClass = $traceSourceClass;
+		}
 
 		$logMessage = $message . PHP_EOL . 'File&Line: ' . $fileLine . PHP_EOL . 'Trace: ' . $traceString;
 		$this->maniaControl->log($logMessage);
@@ -290,6 +294,27 @@ class ErrorHandler {
 	}
 
 	/**
+	 * Get the Source Class via the Error File
+	 *
+	 * @param string $errorFile
+	 * @return string
+	 */
+	private function getSourceClass($errorFile) {
+		if (!$errorFile) {
+			return null;
+		}
+		$filePath  = substr($errorFile, strlen(ManiaControlDir));
+		$filePath  = str_replace('plugins' . DIRECTORY_SEPARATOR, '', $filePath);
+		$filePath  = str_replace('core' . DIRECTORY_SEPARATOR, '', $filePath);
+		$className = str_replace('.php', '', $filePath);
+		$className = str_replace(DIRECTORY_SEPARATOR, '\\', $className);
+		if (!class_exists($className, false)) {
+			return null;
+		}
+		return $className;
+	}
+
+	/**
 	 * Check if the given Error Number is a User Error
 	 *
 	 * @param int $errorNumber
@@ -314,7 +339,7 @@ class ErrorHandler {
 	 */
 	public function handleShutdown() {
 		$error = error_get_last();
-		if ($error && ($error['type'] & E_FATAL)) {
+		if ($error) {
 			$this->handleError($error['type'], $error['message'], $error['file'], $error['line']);
 		}
 	}
