@@ -314,7 +314,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$label->setText($queuedMaps[$map->uid]);
 				$label->setTextColor('fff');
 
-				// Checks if the Player who openend the Widget has queued the map
+				// Checks if the Player who opened the Widget has queued the map
 				$queuer = $this->maniaControl->mapManager->mapQueue->getQueuer($map->uid);
 				if ($queuer->login == $player->login) {
 					$description = 'Remove $<' . $map->name . '$> from the Map Queue';

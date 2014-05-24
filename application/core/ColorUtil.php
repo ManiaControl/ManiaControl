@@ -29,8 +29,8 @@ abstract class ColorUtil {
 		if ($value > 0.5) {
 			$red = 2. * (1. - $value);
 		}
-		$red   = ColorUtil::floatToCode($red);
-		$green = ColorUtil::floatToCode($green);
+		$red   = self::floatToCode($red);
+		$green = self::floatToCode($green);
 		return $red . $green . '0';
 	}
 

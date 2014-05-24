@@ -242,7 +242,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$itemQuad = new Quad_Icons64x64_1();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ArrowFastNext);
 		$itemQuad->setAction(self::ACTION_START_VOTE . 'skipmap');
-		$this->addVoteMenuItem($itemQuad, 15, 'Vote for a Mapskip');
+		$this->addVoteMenuItem($itemQuad, 15, 'Vote for a Map Skip');
 
 		if ($this->maniaControl->server->isTeamMode()) {
 			//Menu TeamBalance

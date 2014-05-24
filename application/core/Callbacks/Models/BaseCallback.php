@@ -21,6 +21,7 @@ abstract class BaseCallback {
 
 	public $pid = null;
 	public $login = null;
+	/** @var Player $player */
 	public $player = null;
 
 	/**

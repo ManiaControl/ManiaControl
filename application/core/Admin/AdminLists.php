@@ -28,9 +28,9 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 	/*
 	 * Constants
 	 */
-	const ACTION_OPEN_ADMINLISTS = "AdminList.OpenAdminLists";
-	const ACTION_REVOKE_RIGHTS   = "AdminList.RevokeRights";
-	const MAX_PLAYERS_PER_PAGE   = 15;
+	const ACTION_OPEN_ADMINLIST = 'AdminList.OpenAdminList';
+	const ACTION_REVOKE_RIGHTS  = 'AdminList.RevokeRights';
+	const MAX_PLAYERS_PER_PAGE  = 15;
 
 	/*
 	 * Private Properties
@@ -51,10 +51,10 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 		$this->maniaControl->callbackManager->registerCallbackListener(AuthenticationManager::CB_AUTH_LEVEL_CHANGED, $this, 'updateWidget');
 
 		// Menu Entry AdminList
-		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_OPEN_ADMINLISTS, $this, 'openAdminList');
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_OPEN_ADMINLIST, $this, 'openAdminList');
 		$itemQuad = new Quad_UIConstruction_Buttons();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Author);
-		$itemQuad->setAction(self::ACTION_OPEN_ADMINLISTS);
+		$itemQuad->setAction(self::ACTION_OPEN_ADMINLIST);
 		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 50, 'Open AdminList');
 	}
 
