@@ -207,6 +207,7 @@ class ErrorHandler {
 		}
 
 		$errorTag         = $this->getErrorTag($errorNumber);
+		$userError        = $this->isUserErrorNumber($errorNumber);
 		$traceSourceClass = null;
 
 		$message     = $errorTag . ': ' . $errorString;
@@ -217,10 +218,13 @@ class ErrorHandler {
 			$sourceClass = $traceSourceClass;
 		}
 
-		$logMessage = $message . PHP_EOL . 'File&Line: ' . $fileLine . PHP_EOL . 'Trace: ' . $traceString;
+		$logMessage = $message . PHP_EOL . 'File&Line: ' . $fileLine;
+		if (!$userError) {
+			$logMessage .= PHP_EOL . 'Trace: ' . $traceString;
+		}
 		$this->maniaControl->log($logMessage);
 
-		if (!ManiaControl::DEV_MODE && !$this->isUserErrorNumber($errorNumber) && !$suppressed) {
+		if (!ManiaControl::DEV_MODE && !$userError && !$suppressed) {
 			$error                    = array();
 			$error['Type']            = 'Error';
 			$error['Message']         = $message;
@@ -294,6 +298,16 @@ class ErrorHandler {
 	}
 
 	/**
+	 * Check if the given Error Number is a User Error
+	 *
+	 * @param int $errorNumber
+	 * @return bool
+	 */
+	private function isUserErrorNumber($errorNumber) {
+		return ($errorNumber & E_USER_ERROR || $errorNumber & E_USER_WARNING || $errorNumber & E_USER_NOTICE || $errorNumber & E_USER_DEPRECATED);
+	}
+
+	/**
 	 * Get the Source Class via the Error File
 	 *
 	 * @param string $errorFile
@@ -312,16 +326,6 @@ class ErrorHandler {
 			return null;
 		}
 		return $className;
-	}
-
-	/**
-	 * Check if the given Error Number is a User Error
-	 *
-	 * @param int $errorNumber
-	 * @return bool
-	 */
-	private function isUserErrorNumber($errorNumber) {
-		return ($errorNumber & E_USER_ERROR || $errorNumber & E_USER_WARNING || $errorNumber & E_USER_NOTICE || $errorNumber & E_USER_DEPRECATED);
 	}
 
 	/**
