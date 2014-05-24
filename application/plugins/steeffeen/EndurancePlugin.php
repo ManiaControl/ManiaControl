@@ -3,10 +3,8 @@
 namespace steeffeen;
 
 use ManiaControl\Callbacks\CallbackListener;
-use ManiaControl\Callbacks\CallbackManager;
-use ManiaControl\Callbacks\Callbacks;
+use ManiaControl\Callbacks\Models\RecordCallback;
 use ManiaControl\ManiaControl;
-use ManiaControl\Maps\Map;
 use ManiaControl\Plugins\Plugin;
 
 /**
@@ -29,9 +27,6 @@ class EndurancePlugin implements CallbackListener, Plugin {
 	 */
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
-	/** @var Map $currentMap */
-	private $currentMap = null;
-	private $playerLapTimes = array();
 
 	/**
 	 * @see \ManiaControl\Plugins\Plugin::prepare()
@@ -81,9 +76,7 @@ class EndurancePlugin implements CallbackListener, Plugin {
 		$this->maniaControl = $maniaControl;
 
 		// Register for callbacks
-		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::ONINIT, $this, 'callback_OnInit');
-		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::BEGINMAP, $this, 'callback_BeginMap');
-		$this->maniaControl->callbackManager->registerScriptCallbackListener(self::CB_CHECKPOINT, $this, 'callback_Checkpoint');
+		$this->maniaControl->callbackManager->registerScriptCallbackListener(self::CB_CHECKPOINT, $this, 'handleEnduranceCheckpointCallback');
 
 		return true;
 	}
@@ -95,50 +88,37 @@ class EndurancePlugin implements CallbackListener, Plugin {
 	}
 
 	/**
-	 * Handle ManiaControl OnInit callback
+	 * Handle Endurance Checkpoint Callback
 	 *
 	 * @param array $callback
 	 */
-	public function callback_OnInit(array $callback) {
-		$this->currentMap     = $this->maniaControl->mapManager->getCurrentMap();
-		$this->playerLapTimes = array();
-	}
-
-	/**
-	 * Handle BeginMap callback
-	 *
-	 * @param Map $map
-	 */
-	public function callback_BeginMap(Map $map) {
-		$this->currentMap     = $map;
-		$this->playerLapTimes = array();
-	}
-
-	/**
-	 * Handle Endurance Checkpoint callback
-	 *
-	 * @param array $callback
-	 */
-	public function callback_Checkpoint(array $callback) {
+	public function handleEnduranceCheckpointCallback(array $callback) {
 		$callbackData = json_decode($callback[1]);
-		if (!$this->currentMap->nbCheckpoints || $callbackData->Checkpoint % $this->currentMap->nbCheckpoints != 0) {
-			return;
-		}
-		$player = $this->maniaControl->playerManager->getPlayer($callbackData->Login);
+		$player       = $this->maniaControl->playerManager->getPlayer($callbackData->Login);
 		if (!$player) {
+			// Invalid player
 			return;
 		}
-		$time = $callbackData->Time;
-		if ($time <= 0) {
-			return;
+
+		// Build callback
+		$enduranceCallback              = new RecordCallback();
+		$enduranceCallback->rawCallback = $callback;
+		$enduranceCallback->setPlayer($player);
+		$enduranceCallback->isEndLap      = $callbackData->EndLap;
+		$enduranceCallback->isEndRace     = $callbackData->EndRace;
+		$enduranceCallback->time          = $callbackData->Time;
+		$enduranceCallback->lapTime       = $callbackData->LapTime;
+		$enduranceCallback->checkpoint    = $callbackData->Checkpoint;
+		$enduranceCallback->lapCheckpoint = $callbackData->CheckpointInLap;
+
+		if ($enduranceCallback->isEndLap) {
+			$enduranceCallback->name = $enduranceCallback::LAPFINISH;
+		} else if (($enduranceCallback->isEndRace)) {
+			$enduranceCallback->name = $enduranceCallback::FINISH;
+		} else {
+			$enduranceCallback->name = $enduranceCallback::CHECKPOINT;
 		}
-		if (isset($this->playerLapTimes[$player->login])) {
-			$time -= $this->playerLapTimes[$player->login];
-		}
-		$this->playerLapTimes[$player->login] = $callbackData->Time;
-		// Trigger trackmania player finish callback
-		$finishCallback = array($player->pid, $player->login, $time);
-		$finishCallback = array(CallbackManager::CB_TM_PLAYERFINISH, $finishCallback);
-		$this->maniaControl->callbackManager->triggerCallback(CallbackManager::CB_TM_PLAYERFINISH, $finishCallback);
+
+		$this->maniaControl->callbackManager->triggerCallback($enduranceCallback);
 	}
 }
