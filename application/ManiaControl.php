@@ -1,5 +1,8 @@
 <?php
 
+// Enable error reporting
+error_reporting(E_ALL);
+
 // Run configuration
 define('LOG_WRITE_CURRENT_FILE', 'ManiaControl.log'); // Write current log to extra file in base dir
 define('LOG_NAME_USE_DATE', true); // Use current date as suffix for log file name in logs folder
@@ -8,9 +11,6 @@ define('DEV_MODE', false); // Development mode to not send error reports etc.
 
 // Define base dir
 define('ManiaControlDir', __DIR__ . DIRECTORY_SEPARATOR);
-
-// Enable error reporting
-error_reporting(E_ALL);
 
 // Define fatal error level
 define('E_FATAL', E_ERROR | E_CORE_ERROR | E_COMPILE_ERROR | E_RECOVERABLE_ERROR | E_USER_ERROR);
@@ -35,19 +35,46 @@ if (LOG_NAME_USE_PID) {
 }
 $logFileName .= '.log';
 define('LOG_FILE', $logFileName);
+@file_put_contents(LOG_FILE, '');
 
 // Delete old current log file
 if (LOG_WRITE_CURRENT_FILE) {
 	$currentLogFileName = ManiaControlDir . LOG_WRITE_CURRENT_FILE;
-	if (file_exists($currentLogFileName) && is_writable($currentLogFileName)) {
-		unlink($currentLogFileName);
-	}
 	define('LOG_CURRENT_FILE', $currentLogFileName);
+	@file_put_contents(LOG_CURRENT_FILE, '');
+}
+
+/**
+ * Log and echo the given text
+ *
+ * @param string $message
+ * @param bool   $eol
+ * @param bool   $date
+ */
+function logMessage($message, $eol = true, $date = true) {
+	if ($date) {
+		$date    = date('d.M y H:i:s');
+		$message = $date . ' ' . $message;
+	}
+	if ($eol) {
+		$message .= PHP_EOL;
+	}
+	if (defined('LOG_CURRENT_FILE')) {
+		if (!is_writable(LOG_CURRENT_FILE) || !file_put_contents(LOG_CURRENT_FILE, $message, FILE_APPEND)) {
+			echo 'Current-Logfile not write-able, please check the File Permissions!';
+		}
+	}
+	if (!is_writable(LOG_FILE) || !file_put_contents(LOG_FILE, $message, FILE_APPEND)) {
+		echo 'Logfile not write-able, please check the File Permissions!';
+	}
+	echo $message;
 }
 
 logMessage('Starting ManiaControl ...');
 
-/** Check for Min PHP version */
+/**
+ * Check for Min PHP version
+ */
 define('MIN_PHP_VERSION', '5.4');
 logMessage('Checking for minimum required PHP-Version ' . MIN_PHP_VERSION . ' ... ', false);
 if (phpversion() >= MIN_PHP_VERSION) {
@@ -79,34 +106,6 @@ if (extension_loaded('curl')) {
 	logMessage('NOT FOUND!', true, false);
 	logMessage('You don\'t have cURL installed, make sure to check: http://www.php.net/manual/en/curl.installation.php', true, false);
 	exit();
-}
-
-/**
- * Log and echo the given text
- *
- * @param string $message
- * @param bool   $eol
- * @param bool   $date
- */
-function logMessage($message, $eol = true, $date = true) {
-	if ($date) {
-		$date    = date('d.M y H:i:s');
-		$message = $date . ' ' . $message;
-	}
-
-	if ($eol) {
-		$message .= PHP_EOL;
-	}
-
-	if (defined('LOG_CURRENT_FILE')) {
-		if (!is_writable(dirname(LOG_CURRENT_FILE)) || !file_put_contents(LOG_CURRENT_FILE, $message, FILE_APPEND)) {
-			echo 'Current-Logfile not write-able, please check the File Permissions!';
-		}
-	}
-	if (!is_writable(dirname(LOG_FILE)) || !file_put_contents(LOG_FILE, $message, FILE_APPEND)) {
-		echo 'Logfile not write-able, please check the File Permissions!';
-	}
-	echo $message;
 }
 
 // Autoload Function that loads ManiaControl Class Files on Demand
