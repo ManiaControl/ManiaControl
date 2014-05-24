@@ -30,6 +30,10 @@ interface Callbacks {
 	const BEGINROUND = 'Callbacks.BeginRound';
 	/** BeginTurn Callback: TurnNumber */
 	const BEGINTURN = 'Callbacks.BeginTurn';
+	/** BeginPlaying Callback */
+	const BEGINPLAYING = 'Callbacks.BeginPlaying';
+	/** EndPlaying Callback */
+	const ENDPLAYING = 'Callbacks.EndPlaying';
 	/** EndTurn Callback: TurnNumber */
 	const ENDTURN = 'Callbacks.EndTurn';
 	/** EndRound Callback: RoundNumber */
@@ -38,8 +42,12 @@ interface Callbacks {
 	const ENDSUBMATCH = 'Callbacks.EndSubmatch';
 	/** EndMap Callback: Map */
 	const ENDMAP = 'Callbacks.EndMap';
-	/** EndMatch Callback: MatchNumber */
-	const ENDMATCH = 'Callbacks.EndMatch';
+	/** BeginPodium Callback */
+	const BEGINPODIUM = 'Callbacks.BeginPodium';
+	/** EndPodium Callback */
+	const ENDPODIUM = 'Callbacks.EndPodium';
+	/** UnloadingMap Callback */
+	const UNLOADINGMAP = 'Callbacks.UnloadingMap';
 
 	/** BeginWarmup Callback */
 	const BEGINWARMUP = 'Callbacks.BeginWarmUp';
@@ -66,4 +74,8 @@ interface Callbacks {
 	const AFKSTATUS = 'Callbacks.AfkStatus';
 	/** Returns if the GameMode has Warmup activated, returned after  param1 Scores */ //returned after TODO
 	const WARMUPSTATUS = 'Callbacks.WarmupStatus';
+
+	/*
+	 * TrackMania Callbacks
+	 */
 }
