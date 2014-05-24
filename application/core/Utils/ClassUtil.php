@@ -23,7 +23,7 @@ abstract class ClassUtil {
 		if (is_string($object)) {
 			return $object;
 		}
-		trigger_error("Invalid class param: '{$object}'!");
+		trigger_error("Invalid class param: '" . print_r($object, true) . "'!");
 		return (string)$object;
 	}
 }

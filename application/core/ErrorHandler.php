@@ -138,6 +138,11 @@ class ErrorHandler {
 				$traceString .= ' on Line ';
 				$traceString .= $traceStep['line'];
 			}
+			if (strlen($traceString) > 1300) {
+				// Too long...
+				$traceString .= '...';
+				break;
+			}
 			$stepCount++;
 		}
 		return $traceString;
@@ -163,6 +168,11 @@ class ErrorHandler {
 			}
 			if ($index < $argsCount - 1) {
 				$string .= ', ';
+			}
+			if (strlen($string) > 100) {
+				// Too long...
+				$string .= '...';
+				break;
 			}
 		}
 		return $string;
