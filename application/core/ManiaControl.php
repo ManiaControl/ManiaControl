@@ -291,6 +291,7 @@ class ManiaControl implements CommandListener, TimerListener {
 		$this->callbackManager->triggerCallback(Callbacks::ONSHUTDOWN);
 
 		// Announce quit
+		// TODO: skip client-related actions on transport exception (e.g. server down)
 		$this->chat->sendInformation('ManiaControl shutting down.');
 
 		if ($this->client) {

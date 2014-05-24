@@ -13,6 +13,7 @@ use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
+use ManiaControl\Callbacks\Models\RecordCallback;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
@@ -125,13 +126,17 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 
 		// Register for callbacks
 		$this->maniaControl->timerManager->registerTimerListening($this, 'handle1Second', 1000);
+
 		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::AFTERINIT, $this, 'handleAfterInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::BEGINMAP, $this, 'handleMapBegin');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_TM_PLAYERFINISH, $this, 'handlePlayerFinish');
-		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_TM_PLAYERCHECKPOINT, $this, 'handlePlayerCheckpoint');
 		$this->maniaControl->callbackManager->registerCallbackListener(SettingManager::CB_SETTING_CHANGED, $this, 'handleSettingChanged');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
+
+		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
+		$this->maniaControl->callbackManager->registerCallbackListener(RecordCallback::CHECKPOINT, $this, 'handleCheckpointCallback');
+		$this->maniaControl->callbackManager->registerCallbackListener(RecordCallback::LAPFINISH, $this, 'handleLapFinishCallback');
+		$this->maniaControl->callbackManager->registerCallbackListener(RecordCallback::FINISH, $this, 'handleFinishCallback');
+
 		$this->maniaControl->commandManager->registerCommandListener(array('recs', 'records'), $this, 'showRecordsList', false, 'Shows a list of Local Records on the current map.');
 		$this->maniaControl->commandManager->registerCommandListener('delrec', $this, 'deleteRecord', true, 'Removes a record from the database.');
 
@@ -348,75 +353,60 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 	}
 
 	/**
-	 * Handle PlayerCheckpoint callback
+	 * Handle Checkpoint Callback
 	 *
-	 * @param array $callback
+	 * @param RecordCallback $callback
 	 */
-	public function handlePlayerCheckpoint(array $callback) {
-		$data  = $callback[1];
-		$login = $data[1];
-		$time  = $data[2];
-		// TODO: lap
-		// $lap = $data[3];
-		$cpIndex = $data[4];
-		if (!isset($this->checkpoints[$login]) || $cpIndex <= 0) {
-			$this->checkpoints[$login] = array();
+	public function handleCheckpointCallback(RecordCallback $callback) {
+		if ($callback->isLegacyCallback) {
+			return;
 		}
-		$this->checkpoints[$login][$cpIndex] = $time;
+		if (!isset($this->checkpoints[$callback->login])) {
+			$this->checkpoints[$callback->login] = array();
+		}
+		$this->checkpoints[$callback->login][$callback->lapCheckpoint] = $callback->lapTime;
 	}
 
 	/**
-	 * Handle PlayerConnect callback
+	 * Handle LapFinish Callback
 	 *
-	 * @param Player $player
+	 * @param RecordCallback $callback
 	 */
-	public function handlePlayerConnect(Player $player) {
-		$this->updateManialink = true;
+	public function handleLapFinishCallback(RecordCallback $callback) {
+		$this->handleFinishCallback($callback);
 	}
 
 	/**
-	 * Handle BeginMap callback
+	 * Handle Finish Callback
 	 *
-	 * @param Map $map
+	 * @param RecordCallback $callback
 	 */
-	public function handleMapBegin(Map $map) {
-		$this->updateManialink = true;
-	}
-
-	/**
-	 * Handle PlayerFinish callback
-	 *
-	 * @param array $callback
-	 */
-	public function handlePlayerFinish(array $callback) {
-		$data = $callback[1];
-		if ($data[0] <= 0 || $data[2] <= 0) {
-			// Invalid player or time
+	public function handleFinishCallback(RecordCallback $callback) {
+		if ($callback->isLegacyCallback) {
+			return;
+		}
+		if ($callback->time <= 0) {
+			// Invalid time
 			return;
 		}
 
-		$login  = $data[1];
-		$player = $this->maniaControl->playerManager->getPlayer($login);
-		if (!$player) {
-			// Invalid player
-			return;
-		}
+		$map = $this->maniaControl->mapManager->getCurrentMap();
 
-		$time = $data[2];
-		$map  = $this->maniaControl->mapManager->getCurrentMap();
+		$checkpointsString                   = $this->getCheckpoints($callback->player->login);
+		$this->checkpoints[$callback->login] = array();
 
 		// Check old record of the player
-		$oldRecord = $this->getLocalRecord($map, $player);
+		$oldRecord = $this->getLocalRecord($map, $callback->player);
 		$oldRank   = -1;
 		if ($oldRecord) {
 			$oldRank = $oldRecord->rank;
-			if ($oldRecord->time < $time) {
+			if ($oldRecord->time < $callback->time) {
 				// Not improved
 				return;
 			}
-			if ($oldRecord->time == $time) {
+			if ($oldRecord->time == $callback->time) {
 				// Same time
-				$message = '$<$fff' . $player->nickname . '$> equalized his/her $<$ff0' . $oldRecord->rank . '.$> Local Record: $<$fff' . Formatter::formatTime($oldRecord->time) . '$>!';
+				$message = '$<$fff' . $callback->player->nickname . '$> equalized his/her $<$ff0' . $oldRecord->rank . '.$> Local Record: $<$fff' . Formatter::formatTime($oldRecord->time) . '$>!';
 				$this->maniaControl->chat->sendInformation('$3c0' . $message);
 				return;
 			}
@@ -431,9 +421,9 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 				`checkpoints`
 				) VALUES (
 				{$map->index},
-				{$player->index},
-				{$time},
-				'{$this->getCheckpoints($player->login)}'
+				{$callback->player->index},
+				{$callback->time},
+				'{$checkpointsString}'
 				) ON DUPLICATE KEY UPDATE
 				`time` = VALUES(`time`),
 				`checkpoints` = VALUES(`checkpoints`);";
@@ -445,7 +435,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$this->updateManialink = true;
 
 		// Announce record
-		$newRecord = $this->getLocalRecord($map, $player);
+		$newRecord = $this->getLocalRecord($map, $callback->player);
 
 		$notifyOnlyDriver      = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_NOTIFY_ONLY_DRIVER);
 		$notifyOnlyBestRecords = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_NOTIFY_BEST_RECORDS);
@@ -458,10 +448,10 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 			if ($oldRecord) {
 				$message .= ' ($<$ff0' . $oldRank . '$>$<$fff-' . Formatter::formatTime(($oldRecord->time - $newRecord->time)) . '$>!';
 			}
-			$this->maniaControl->chat->sendInformation('$3c0' . $message . '!', $player->login);
+			$this->maniaControl->chat->sendInformation('$3c0' . $message . '!', $callback->player->login);
 		} else {
 			$improvement = ((!$oldRecord || $newRecord->rank < $oldRecord->rank) ? 'gained the' : 'improved the');
-			$message     = '$<$fff' . $player->nickname . '$> ' . $improvement . ' $<$ff0' . $newRecord->rank . '.$> Local Record: $<$fff' . Formatter::formatTime($newRecord->time) . '$>';
+			$message     = '$<$fff' . $callback->player->nickname . '$> ' . $improvement . ' $<$ff0' . $newRecord->rank . '.$> Local Record: $<$fff' . Formatter::formatTime($newRecord->time) . '$>';
 			if ($oldRecord) {
 				$oldRank = ($improvement == 'improved the') ? '' : $oldRecord->rank . '. ';
 			}
@@ -472,6 +462,27 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		}
 
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_LOCALRECORDS_CHANGED, $newRecord);
+	}
+
+	/**
+	 * Get current checkpoint string for dedimania record
+	 *
+	 * @param string $login
+	 * @return string
+	 */
+	private function getCheckpoints($login) {
+		if (!$login || !isset($this->checkpoints[$login])) {
+			return null;
+		}
+		$string = '';
+		$count  = count($this->checkpoints[$login]);
+		foreach ($this->checkpoints[$login] as $index => $check) {
+			$string .= $check;
+			if ($index < $count - 1) {
+				$string .= ',';
+			}
+		}
+		return $string;
 	}
 
 	/**
@@ -499,24 +510,21 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 	}
 
 	/**
-	 * Get current checkpoint string for dedimania record
+	 * Handle PlayerConnect callback
 	 *
-	 * @param string $login
-	 * @return string
+	 * @param Player $player
 	 */
-	private function getCheckpoints($login) {
-		if (!$login || !isset($this->checkpoints[$login])) {
-			return null;
-		}
-		$string = '';
-		$count  = count($this->checkpoints[$login]);
-		foreach ($this->checkpoints[$login] as $index => $check) {
-			$string .= $check;
-			if ($index < $count - 1) {
-				$string .= ',';
-			}
-		}
-		return $string;
+	public function handlePlayerConnect(Player $player) {
+		$this->updateManialink = true;
+	}
+
+	/**
+	 * Handle BeginMap callback
+	 *
+	 * @param Map $map
+	 */
+	public function handleMapBegin(Map $map) {
+		$this->updateManialink = true;
 	}
 
 	/**
@@ -530,7 +538,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$login  = $callback[1][1];
 		$player = $this->maniaControl->playerManager->getPlayer($login);
 
-		if ($actionId == self::ACTION_SHOW_RECORDSLIST) {
+		if ($actionId === self::ACTION_SHOW_RECORDSLIST) {
 			$this->showRecordsList(array(), $player);
 		}
 	}
@@ -626,26 +634,27 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 
 		$chatCommand = explode(' ', $chat[1][2]);
 		$recordId    = (int)$chatCommand[1];
-		if (is_integer($recordId)) {
-			$currentMap = $this->maniaControl->mapManager->getCurrentMap();
-			$records    = $this->getLocalRecords($currentMap);
-			if (count($records) < $recordId) {
-				$this->maniaControl->chat->sendError('Cannot remove record $<$fff' . $recordId . '$>!', $player);
-				return;
-			}
-
-			$mysqli = $this->maniaControl->database->mysqli;
-			$query  = "DELETE FROM `" . self::TABLE_RECORDS . "` WHERE `mapIndex` = " . $currentMap->index . " AND `playerIndex` = " . $player->index . "";
-			$mysqli->query($query);
-			if ($mysqli->error) {
-				trigger_error($mysqli->error);
-				return;
-			}
-
-			$this->maniaControl->callbackManager->triggerCallback(self::CB_LOCALRECORDS_CHANGED, null);
-			$this->maniaControl->chat->sendInformation('Record no. $<$fff' . $recordId . '$> has been removed!');
-		} else {
-			$this->maniaControl->chat->sendError('Cannot remove record $<$fff' . $recordId . '$>, because it\'s not an integer!', $player);
+		if ($recordId <= 0) {
+			$this->maniaControl->chat->sendError('No Record ID given!', $player);
+			return;
 		}
+
+		$currentMap = $this->maniaControl->mapManager->getCurrentMap();
+		$records    = $this->getLocalRecords($currentMap);
+		if (count($records) < $recordId) {
+			$this->maniaControl->chat->sendError('Cannot remove record $<$fff' . $recordId . '$>!', $player);
+			return;
+		}
+
+		$mysqli = $this->maniaControl->database->mysqli;
+		$query  = "DELETE FROM `" . self::TABLE_RECORDS . "` WHERE `mapIndex` = " . $currentMap->index . " AND `playerIndex` = " . $player->index . "";
+		$mysqli->query($query);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error);
+			return;
+		}
+
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_LOCALRECORDS_CHANGED, null);
+		$this->maniaControl->chat->sendInformation('Record no. $<$fff' . $recordId . '$> has been removed!');
 	}
 }
