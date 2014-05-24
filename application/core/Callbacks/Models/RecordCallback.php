@@ -26,5 +26,6 @@ class RecordCallback extends BaseCallback {
 	public $lapTime = null;
 	public $checkpoint = null;
 	public $lapCheckpoint = null;
+	public $lap = null;
 	public $blockId = null;
 }

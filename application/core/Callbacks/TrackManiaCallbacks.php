@@ -29,6 +29,8 @@ class TrackManiaCallbacks implements CallbackListener {
 
 		// Register for callbacks
 		$callbackManager->registerCallbackListener(Callbacks::ONWAYPOINT, $this, 'handleOnWayPointCallback');
+		$callbackManager->registerCallbackListener(CallbackManager::CB_TM_PLAYERCHECKPOINT, $this, 'handlePlayerCheckpointCallback');
+		$callbackManager->registerCallbackListener(CallbackManager::CB_TM_PLAYERFINISH, $this, 'handlePlayerFinishCallback');
 	}
 
 	/**
@@ -44,25 +46,83 @@ class TrackManiaCallbacks implements CallbackListener {
 		}
 
 		// Build callback
-		$checkpointCallback              = new RecordCallback();
-		$checkpointCallback->rawCallback = $callback;
-		$checkpointCallback->setPlayer($player);
-		$checkpointCallback->blockId       = $callback[1];
-		$checkpointCallback->time          = (int)$callback[2];
-		$checkpointCallback->checkpoint    = (int)$callback[3];
-		$checkpointCallback->isEndRace     = (bool)$callback[4];
-		$checkpointCallback->lapTime       = (int)$callback[5];
-		$checkpointCallback->lapCheckpoint = (int)$callback[6];
-		$checkpointCallback->isEndLap      = (bool)$callback[7];
+		$wayPointCallback              = new RecordCallback();
+		$wayPointCallback->rawCallback = $callback;
+		$wayPointCallback->setPlayer($player);
+		$wayPointCallback->blockId       = $callback[1];
+		$wayPointCallback->time          = (int)$callback[2];
+		$wayPointCallback->checkpoint    = (int)$callback[3];
+		$wayPointCallback->isEndRace     = (bool)$callback[4];
+		$wayPointCallback->lapTime       = (int)$callback[5];
+		$wayPointCallback->lapCheckpoint = (int)$callback[6];
+		$wayPointCallback->lap           = 0;
+		$wayPointCallback->isEndLap      = (bool)$callback[7];
 
-		if ($checkpointCallback->isEndRace) {
-			$checkpointCallback->name = $checkpointCallback::FINISH;
-		} else if ($checkpointCallback->isEndLap) {
-			$checkpointCallback->name = $checkpointCallback::LAPFINISH;
+		if ($wayPointCallback->checkpoint > 0) {
+			$currentMap = $this->maniaControl->mapManager->getCurrentMap();
+			$wayPointCallback->lap += $wayPointCallback->checkpoint / $currentMap->nbCheckpoints;
+		}
+
+		if ($wayPointCallback->isEndRace) {
+			$wayPointCallback->name = $wayPointCallback::FINISH;
+		} else if ($wayPointCallback->isEndLap) {
+			$wayPointCallback->name = $wayPointCallback::LAPFINISH;
 		} else {
-			$checkpointCallback->name = $checkpointCallback::CHECKPOINT;
+			$wayPointCallback->name = $wayPointCallback::CHECKPOINT;
+		}
+
+		$this->maniaControl->callbackManager->triggerCallback($wayPointCallback);
+	}
+
+	/**
+	 * Handle Hard-Coded Player Checkpoint Callback
+	 *
+	 * @param array $callback
+	 */
+	public function handlePlayerCheckpointCallback(array $callback) {
+		$data   = $callback[1];
+		$login  = $data[1];
+		$player = $this->maniaControl->playerManager->getPlayer($login);
+		if (!$player) {
+			return;
+		}
+
+		$checkpointCallback                   = new RecordCallback();
+		$checkpointCallback->name             = $checkpointCallback::CHECKPOINT;
+		$checkpointCallback->isLegacyCallback = true;
+		$checkpointCallback->setPlayer($player);
+		$checkpointCallback->time          = (int)$data[2];
+		$checkpointCallback->lap           = (int)$data[3];
+		$checkpointCallback->checkpoint    = (int)$data[4];
+		$checkpointCallback->lapCheckpoint = $checkpointCallback->checkpoint;
+
+		if ($checkpointCallback->lap > 0) {
+			$currentMap = $this->maniaControl->mapManager->getCurrentMap();
+			$checkpointCallback->lapCheckpoint -= $checkpointCallback->lap * $currentMap->nbCheckpoints;
 		}
 
 		$this->maniaControl->callbackManager->triggerCallback($checkpointCallback);
+	}
+
+	/**
+	 * Handle Hard-Coded Player Finish Callback
+	 *
+	 * @param array $callback
+	 */
+	public function handlePlayerFinishCallback(array $callback) {
+		$data   = $callback[1];
+		$login  = $data[1];
+		$player = $this->maniaControl->playerManager->getPlayer($login);
+		if (!$player) {
+			return;
+		}
+
+		$finishCallback                   = new RecordCallback();
+		$finishCallback->name             = $finishCallback::FINISH;
+		$finishCallback->isLegacyCallback = true;
+		$finishCallback->setPlayer($player);
+		$finishCallback->time = (int)$data[2];
+
+		$this->maniaControl->callbackManager->triggerCallback($finishCallback);
 	}
 }

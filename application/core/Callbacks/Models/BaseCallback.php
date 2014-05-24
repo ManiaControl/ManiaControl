@@ -17,6 +17,7 @@ abstract class BaseCallback {
 	 */
 	public $name = null;
 	public $rawCallback = null;
+	public $isLegacyCallback = null;
 
 	public $pid = null;
 	public $login = null;
