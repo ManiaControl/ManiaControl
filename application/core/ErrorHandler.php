@@ -59,29 +59,29 @@ class ErrorHandler {
 		$this->maniaControl->log($logMessage);
 
 		if (!DEV_MODE) {
-			$error                    = array();
-			$error['Type']            = 'Exception';
-			$error['Message']         = $message;
-			$error['Class']           = $exceptionClass;
-			$error['FileLine']        = $exception->getFile() . ': ' . $exception->getLine();
-			$error['SourceClass']     = $sourceClass;
-			$error['PluginId']        = PluginManager::getPluginId($sourceClass);
-			$error['Backtrace']       = $traceString;
-			$error['OperatingSystem'] = php_uname();
-			$error['PHPVersion']      = phpversion();
+			$report                    = array();
+			$report['Type']            = 'Exception';
+			$report['Message']         = iconv('UTF-8', 'UTF-8//TRANSLIT', $message);
+			$report['Class']           = $exceptionClass;
+			$report['FileLine']        = $exception->getFile() . ': ' . $exception->getLine();
+			$report['SourceClass']     = $sourceClass;
+			$report['PluginId']        = PluginManager::getPluginId($sourceClass);
+			$report['Backtrace']       = iconv('UTF-8', 'UTF-8//TRANSLIT', $traceString);
+			$report['OperatingSystem'] = php_uname();
+			$report['PHPVersion']      = phpversion();
 
 			if ($this->maniaControl->server) {
-				$error['ServerLogin'] = $this->maniaControl->server->login;
+				$report['ServerLogin'] = $this->maniaControl->server->login;
 			}
 
 			if ($this->maniaControl->settingManager && $this->maniaControl->updateManager) {
-				$error['UpdateChannel']       = $this->maniaControl->settingManager->getSettingValue($this->maniaControl->updateManager, UpdateManager::SETTING_UPDATECHECK_CHANNEL);
-				$error['ManiaControlVersion'] = ManiaControl::VERSION . ' #' . $this->maniaControl->updateManager->getNightlyBuildDate();
+				$report['UpdateChannel']       = $this->maniaControl->settingManager->getSettingValue($this->maniaControl->updateManager, UpdateManager::SETTING_UPDATECHECK_CHANNEL);
+				$report['ManiaControlVersion'] = ManiaControl::VERSION . ' #' . $this->maniaControl->updateManager->getNightlyBuildDate();
 			} else {
-				$error['ManiaControlVersion'] = ManiaControl::VERSION;
+				$report['ManiaControlVersion'] = ManiaControl::VERSION;
 			}
 
-			$json = json_encode($error);
+			$json = json_encode($report);
 			$info = base64_encode($json);
 
 			$url     = ManiaControl::URL_WEBSERVICE . 'errorreport?error=' . urlencode($info);
@@ -225,28 +225,28 @@ class ErrorHandler {
 		$this->maniaControl->log($logMessage);
 
 		if (!DEV_MODE && !$userError && !$suppressed) {
-			$error                    = array();
-			$error['Type']            = 'Error';
-			$error['Message']         = $message;
-			$error['FileLine']        = $fileLine;
-			$error['SourceClass']     = $sourceClass;
-			$error['PluginId']        = PluginManager::getPluginId($sourceClass);
-			$error['Backtrace']       = $traceString;
-			$error['OperatingSystem'] = php_uname();
-			$error['PHPVersion']      = phpversion();
+			$report                    = array();
+			$report['Type']            = 'Error';
+			$report['Message']         = iconv('UTF-8', 'UTF-8//TRANSLIT', $message);
+			$report['FileLine']        = $fileLine;
+			$report['SourceClass']     = $sourceClass;
+			$report['PluginId']        = PluginManager::getPluginId($sourceClass);
+			$report['Backtrace']       = iconv('UTF-8', 'UTF-8//TRANSLIT', $traceString);
+			$report['OperatingSystem'] = php_uname();
+			$report['PHPVersion']      = phpversion();
 
 			if ($this->maniaControl->server) {
-				$error['ServerLogin'] = $this->maniaControl->server->login;
+				$report['ServerLogin'] = $this->maniaControl->server->login;
 			}
 
 			if ($this->maniaControl->settingManager && $this->maniaControl->updateManager) {
-				$error['UpdateChannel']       = $this->maniaControl->settingManager->getSettingValue($this->maniaControl->updateManager, UpdateManager::SETTING_UPDATECHECK_CHANNEL);
-				$error['ManiaControlVersion'] = ManiaControl::VERSION . ' ' . $this->maniaControl->updateManager->getNightlyBuildDate();
+				$report['UpdateChannel']       = $this->maniaControl->settingManager->getSettingValue($this->maniaControl->updateManager, UpdateManager::SETTING_UPDATECHECK_CHANNEL);
+				$report['ManiaControlVersion'] = ManiaControl::VERSION . ' ' . $this->maniaControl->updateManager->getNightlyBuildDate();
 			} else {
-				$error['ManiaControlVersion'] = ManiaControl::VERSION;
+				$report['ManiaControlVersion'] = ManiaControl::VERSION;
 			}
 
-			$json = json_encode($error);
+			$json = json_encode($report);
 			$info = base64_encode($json);
 
 			$url     = ManiaControl::URL_WEBSERVICE . 'errorreport?error=' . urlencode($info);
