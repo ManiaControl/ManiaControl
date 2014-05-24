@@ -53,7 +53,6 @@ class ManiaControl implements CommandListener, TimerListener {
 	const OS_UNIX                     = 'Unix';
 	const OS_WIN                      = 'Windows';
 	const SCRIPT_TIMEOUT              = 10;
-	const DEV_MODE                    = false;
 	const URL_WEBSERVICE              = 'http://ws.maniacontrol.com/';
 	const SETTING_PERMISSION_SHUTDOWN = 'Shutdown ManiaControl';
 	const SETTING_PERMISSION_RESTART  = 'Restart ManiaControl';

@@ -4,6 +4,7 @@
 define('LOG_WRITE_CURRENT_FILE', 'ManiaControl.log'); // Write current log to extra file in base dir
 define('LOG_NAME_USE_DATE', true); // Use current date as suffix for log file name in logs folder
 define('LOG_NAME_USE_PID', true); // Use current process id as suffix for log file name in logs folder
+define('DEV_MODE', false); // Development mode to not send error reports etc.
 
 // Define base dir
 define('ManiaControlDir', __DIR__ . DIRECTORY_SEPARATOR);

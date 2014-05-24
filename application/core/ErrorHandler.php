@@ -58,7 +58,7 @@ class ErrorHandler {
 		$logMessage = $message . PHP_EOL . 'Class: ' . $exceptionClass . PHP_EOL . 'Trace:' . PHP_EOL . $traceString;
 		$this->maniaControl->log($logMessage);
 
-		if (!ManiaControl::DEV_MODE) {
+		if (!DEV_MODE) {
 			$error                    = array();
 			$error['Type']            = 'Exception';
 			$error['Message']         = $message;
@@ -224,7 +224,7 @@ class ErrorHandler {
 		}
 		$this->maniaControl->log($logMessage);
 
-		if (!ManiaControl::DEV_MODE && !$userError && !$suppressed) {
+		if (!DEV_MODE && !$userError && !$suppressed) {
 			$error                    = array();
 			$error['Type']            = 'Error';
 			$error['Message']         = $message;
@@ -335,7 +335,7 @@ class ErrorHandler {
 	 * @return bool
 	 */
 	private function shouldStopExecution($errorNumber) {
-		return ($errorNumber & E_ERROR || $errorNumber & E_USER_ERROR || $errorNumber & E_FATAL);
+		return ($errorNumber & E_FATAL);
 	}
 
 	/**

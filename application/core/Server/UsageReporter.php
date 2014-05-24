@@ -46,7 +46,7 @@ class UsageReporter implements TimerListener {
 	 * @param float $time
 	 */
 	public function reportUsage($time) {
-		if (ManiaControl::DEV_MODE || !$this->maniaControl->settingManager->getSettingValue($this, self::SETTING_REPORT_USAGE)) {
+		if (DEV_MODE || !$this->maniaControl->settingManager->getSettingValue($this, self::SETTING_REPORT_USAGE)) {
 			return;
 		}
 
