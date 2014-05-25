@@ -117,7 +117,8 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 
 		$backLabel = new Label_Button();
 		$frame->add($backLabel);
-		$backLabel->setPosition($width * -0.49, $height * -0.44);
+		$backLabel->setStyle($backLabel::STYLE_CardMain_Quit);
+		$backLabel->setPosition(-$width / 2 + 7, -$height / 2 + 7);
 		$backLabel->setHAlign($backLabel::LEFT);
 		$backLabel->setTextSize(2);
 		$backLabel->setText('Back');

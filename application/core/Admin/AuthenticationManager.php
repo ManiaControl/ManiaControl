@@ -335,7 +335,7 @@ class AuthenticationManager implements CallbackListener {
 	 * @param $authLevelNeeded
 	 * @return array
 	 */
-	public function getPermissionLevelNameArray($authLevelNeeded) {
+	private function getPermissionLevelNameArray($authLevelNeeded) {
 		switch ($authLevelNeeded) {
 			case self::AUTH_LEVEL_MODERATOR:
 				return array(self::AUTH_NAME_MODERATOR, self::AUTH_NAME_ADMIN, self::AUTH_NAME_SUPERADMIN, self::AUTH_NAME_MASTERADMIN);
