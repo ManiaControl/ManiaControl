@@ -316,7 +316,7 @@ class AuthenticationManager implements CallbackListener {
 	 */
 	public function checkPermission(Player $player, $rightName) {
 		$right = $this->maniaControl->settingManager->getSettingValue($this, $rightName);
-		return $this->checkRight($player, $right);
+		return $this->checkRight($player, $this->getAuthLevel($right));
 	}
 
 	/**
