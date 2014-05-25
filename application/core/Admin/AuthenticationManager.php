@@ -326,6 +326,26 @@ class AuthenticationManager implements CallbackListener {
 	 * @param int    $authLevelNeeded
 	 */
 	public function definePermissionLevel($rightName, $authLevelNeeded) {
-		$this->maniaControl->settingManager->initSetting($this, $rightName, $authLevelNeeded);
+		$this->maniaControl->settingManager->initSetting($this, $rightName, $this->getPermissionLevelNameArray($authLevelNeeded));
+	}
+
+	/**
+	 * Get the PermissionLevelNameArray
+	 *
+	 * @param $authLevelNeeded
+	 * @return array
+	 */
+	public function getPermissionLevelNameArray($authLevelNeeded) {
+		switch ($authLevelNeeded) {
+			case self::AUTH_LEVEL_MODERATOR:
+				return array(self::AUTH_NAME_MODERATOR, self::AUTH_NAME_ADMIN, self::AUTH_NAME_SUPERADMIN, self::AUTH_NAME_MASTERADMIN);
+			case self::AUTH_LEVEL_ADMIN:
+				return array(self::AUTH_NAME_ADMIN, self::AUTH_NAME_SUPERADMIN, self::AUTH_NAME_MASTERADMIN, self::AUTH_NAME_MODERATOR);
+			case self::AUTH_LEVEL_SUPERADMIN:
+				return array(self::AUTH_NAME_SUPERADMIN, self::AUTH_NAME_MASTERADMIN, self::AUTH_NAME_MODERATOR, self::AUTH_NAME_ADMIN);
+			case self::AUTH_LEVEL_MASTERADMIN:
+				return array(self::AUTH_NAME_MASTERADMIN, self::AUTH_NAME_MODERATOR, self::AUTH_NAME_ADMIN, self::AUTH_NAME_SUPERADMIN);
+		}
+		return array("-");
 	}
 }
