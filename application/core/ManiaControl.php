@@ -47,7 +47,7 @@ class ManiaControl implements CommandListener, TimerListener {
 	/*
 	 * Constants
 	 */
-	const VERSION                     = '0.15';
+	const VERSION                     = '0.151';
 	const API_VERSION                 = '2013-04-16';
 	const MIN_DEDIVERSION             = '2014-04-02_18_00';
 	const OS_UNIX                     = 'Unix';
