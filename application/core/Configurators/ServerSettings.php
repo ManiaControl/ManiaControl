@@ -258,11 +258,13 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 
 		$prefixLength = strlen(self::ACTION_PREFIX_SETTING);
 
+
 		$newSettings = new ServerOptions();
 		foreach ($configData[3] as $setting) {
-			$settingName               = substr($setting['Name'], $prefixLength);
-			$newSettings->$settingName = $setting['Value'];
-			settype($newSettings->$settingName, gettype($serverSettings[$settingName]));
+			$settingName                      = substr($setting['Name'], $prefixLength);
+			$dynamicSettingName               = lcfirst($settingName);
+			$newSettings->$dynamicSettingName = $setting['Value'];
+			settype($newSettings->$dynamicSettingName, gettype($serverSettings[$settingName]));
 		}
 
 		$success = $this->applyNewServerSettings($newSettings, $player);
