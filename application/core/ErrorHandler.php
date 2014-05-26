@@ -61,12 +61,12 @@ class ErrorHandler {
 		if (!DEV_MODE) {
 			$report                    = array();
 			$report['Type']            = 'Exception';
-			$report['Message']         = iconv('UTF-8', 'UTF-8//TRANSLIT', $message);
+			$report['Message']         = $message;
 			$report['Class']           = $exceptionClass;
 			$report['FileLine']        = $exception->getFile() . ': ' . $exception->getLine();
 			$report['SourceClass']     = $sourceClass;
 			$report['PluginId']        = PluginManager::getPluginId($sourceClass);
-			$report['Backtrace']       = iconv('UTF-8', 'UTF-8//TRANSLIT', $traceString);
+			$report['Backtrace']       = $traceString;
 			$report['OperatingSystem'] = php_uname();
 			$report['PHPVersion']      = phpversion();
 
@@ -237,11 +237,11 @@ class ErrorHandler {
 		if (!DEV_MODE && !$userError && !$suppressed) {
 			$report                    = array();
 			$report['Type']            = 'Error';
-			$report['Message']         = iconv('UTF-8', 'UTF-8//TRANSLIT', $message);
+			$report['Message']         = $message;
 			$report['FileLine']        = $fileLine;
 			$report['SourceClass']     = $sourceClass;
 			$report['PluginId']        = PluginManager::getPluginId($sourceClass);
-			$report['Backtrace']       = iconv('UTF-8', 'UTF-8//TRANSLIT', $traceString);
+			$report['Backtrace']       = $traceString;
 			$report['OperatingSystem'] = php_uname();
 			$report['PHPVersion']      = phpversion();
 
