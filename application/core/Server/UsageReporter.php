@@ -89,11 +89,12 @@ class UsageReporter implements TimerListener {
 		$json = json_encode($properties);
 		$info = base64_encode($json);
 
+		$url  = ManiaControl::URL_WEBSERVICE . '/usagereport?info=' . urlencode($info);
 		$self = $this;
-		$this->maniaControl->fileReader->loadFile(ManiaControl::URL_WEBSERVICE . '/usagereport?info=' . urlencode($info), function ($response, $error) use (&$self) {
+		$this->maniaControl->fileReader->loadFile($url, function ($response, $error) use (&$self) {
 			$response = json_decode($response);
 			if ($error || !$response) {
-				$self->maniaControl->log('Error while Sending data: ' . $error);
+				$self->maniaControl->log('Error while Sending data: ' . print_r($error, true));
 			}
 		});
 	}
