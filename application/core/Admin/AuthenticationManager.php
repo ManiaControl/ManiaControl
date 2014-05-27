@@ -206,7 +206,7 @@ class AuthenticationManager implements CallbackListener {
 	 * Get all connected Players with at least the given Auth Level
 	 *
 	 * @param int $authLevel
-	 * @return array
+	 * @return Player[]
 	 */
 	public function getConnectedAdmins($authLevel = self::AUTH_LEVEL_MODERATOR) {
 		$players = $this->maniaControl->playerManager->getPlayers();
@@ -237,12 +237,11 @@ class AuthenticationManager implements CallbackListener {
 	 * Get a List of all Admins
 	 *
 	 * @param int $authLevel
-	 * @return array null
+	 * @return Player[]
 	 */
 	public function getAdmins($authLevel = self::AUTH_LEVEL_MODERATOR) {
-		// TODO: return Player objects
 		$mysqli = $this->maniaControl->database->mysqli;
-		$query  = "SELECT * FROM `" . PlayerManager::TABLE_PLAYERS . "`
+		$query  = "SELECT `login` FROM `" . PlayerManager::TABLE_PLAYERS . "`
 				WHERE `authLevel` > " . $authLevel . "
 				ORDER BY `authLevel` DESC;";
 		$result = $mysqli->query($query);
@@ -252,7 +251,10 @@ class AuthenticationManager implements CallbackListener {
 		}
 		$admins = array();
 		while ($row = $result->fetch_object()) {
-			array_push($admins, $row);
+			$player = $this->maniaControl->playerManager->getPlayer($row->login, false);
+			if ($player) {
+				array_push($admins, $player);
+			}
 		}
 		$result->free();
 		return $admins;
@@ -341,7 +343,7 @@ class AuthenticationManager implements CallbackListener {
 	 * Get the PermissionLevelNameArray
 	 *
 	 * @param $authLevelNeeded
-	 * @return array
+	 * @return array[]
 	 */
 	private function getPermissionLevelNameArray($authLevelNeeded) {
 		switch ($authLevelNeeded) {

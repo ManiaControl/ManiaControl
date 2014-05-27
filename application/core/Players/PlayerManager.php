@@ -384,7 +384,8 @@ class PlayerManager implements CallbackListener, TimerListener {
 	private function getPlayerFromDatabaseByLogin($playerLogin) {
 		$mysqli = $this->maniaControl->database->mysqli;
 
-		$query  = "SELECT * FROM `" . self::TABLE_PLAYERS . "` WHERE `login` LIKE '" . $mysqli->escape_string($playerLogin) . "';";
+		$query  = "SELECT * FROM `" . self::TABLE_PLAYERS . "`
+				WHERE `login` LIKE '" . $mysqli->escape_string($playerLogin) . "';";
 		$result = $mysqli->query($query);
 		if (!$result) {
 			trigger_error($mysqli->error);
