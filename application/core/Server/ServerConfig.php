@@ -9,7 +9,7 @@ namespace ManiaControl\Server;
  * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class Config {
+class ServerConfig {
 	/*
 	 * Public Properties
 	 */
@@ -42,13 +42,10 @@ class Config {
 	 * @return bool
 	 */
 	public function validate() {
-		$invalid = false;
-		if (!$this->host) {
-			$invalid = true;
-		} else if (!$this->port || $this->port === 'port') {
-			$invalid = true;
+		if (!$this->host || !$this->port || !$this->login || !$this->pass) {
+			return false;
 		}
-		if ($invalid) {
+		if ($this->port === 'port') {
 			return false;
 		}
 		return true;

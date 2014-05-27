@@ -26,7 +26,7 @@ class Server implements CallbackListener {
 	/*
 	 * Public Properties
 	 */
-	/** @var Config $config */
+	/** @var ServerConfig $config */
 	public $config = null;
 	public $index = -1;
 	public $ip = null;
@@ -117,35 +117,35 @@ class Server implements CallbackListener {
 		// Host
 		$hostElements = $serverElement->xpath('host');
 		if (!$hostElements) {
-			trigger_error("Invalid server configuration (host).", E_USER_ERROR);
+			trigger_error("Invalid server configuration (Host).", E_USER_ERROR);
 		}
 		$host = (string)$hostElements[0];
 
 		// Port
 		$portElements = $serverElement->xpath('port');
 		if (!$portElements) {
-			trigger_error("Invalid server configuration (port).", E_USER_ERROR);
+			trigger_error("Invalid server configuration (Port).", E_USER_ERROR);
 		}
 		$port = (string)$portElements[0];
 
 		// Login
 		$loginElements = $serverElement->xpath('login');
 		if (!$loginElements) {
-			trigger_error("Invalid server configuration (login).", E_USER_ERROR);
+			trigger_error("Invalid server configuration (Login).", E_USER_ERROR);
 		}
 		$login = (string)$loginElements[0];
 
 		// Password
 		$passElements = $serverElement->xpath('pass');
 		if (!$passElements) {
-			trigger_error("Invalid server configuration (password).", E_USER_ERROR);
+			trigger_error("Invalid server configuration (Pass).", E_USER_ERROR);
 		}
 		$pass = (string)$passElements[0];
 
 		// Create config object
-		$config = new Config($serverId, $host, $port, $login, $pass);
+		$config = new ServerConfig($serverId, $host, $port, $login, $pass);
 		if (!$config->validate()) {
-			$this->maniaControl->quit("Your Configuration File doesn't seem to be maintained properly. Please check it again!", true);
+			$this->maniaControl->quit("Your config file doesn't seem to be maintained properly. Please check the server configuration again!", true);
 		}
 		$this->config = $config;
 	}
