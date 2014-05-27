@@ -146,6 +146,13 @@ class AuthenticationManager implements CallbackListener {
 	 * @return bool
 	 */
 	private function updateMasterAdmins() {
+		$masterAdminsElements = $this->maniaControl->config->xpath('masteradmins');
+		if (!$masterAdminsElements) {
+			$this->maniaControl->log("Missing MasterAdmins configuration!", true);
+			return false;
+		}
+		$masterAdminsElement = $masterAdminsElements[0];
+
 		$mysqli = $this->maniaControl->database->mysqli;
 
 		// Remove all MasterAdmins
@@ -166,8 +173,8 @@ class AuthenticationManager implements CallbackListener {
 		}
 		$adminStatement->close();
 
-		// Set MasterAdmins
-		$masterAdmins   = $this->maniaControl->config->masteradmins->xpath('login');
+		// Set configured MasterAdmins
+		$loginElements  = $masterAdminsElement->xpath('login');
 		$adminQuery     = "INSERT INTO `" . PlayerManager::TABLE_PLAYERS . "` (
 				`login`,
 				`authLevel`
@@ -181,8 +188,8 @@ class AuthenticationManager implements CallbackListener {
 			return false;
 		}
 		$success = true;
-		foreach ($masterAdmins as $masterAdmin) {
-			$login = (string)$masterAdmin;
+		foreach ($loginElements as $loginElement) {
+			$login = (string)$loginElement;
 			$adminStatement->bind_param('si', $login, $masterAdminLevel);
 			$adminStatement->execute();
 			if ($adminStatement->error) {
@@ -191,6 +198,7 @@ class AuthenticationManager implements CallbackListener {
 			}
 		}
 		$adminStatement->close();
+
 		return $success;
 	}
 
