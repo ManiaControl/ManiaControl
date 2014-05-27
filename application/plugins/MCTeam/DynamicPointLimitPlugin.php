@@ -139,17 +139,17 @@ class DynamicPointLimitPlugin implements CallbackListener, CommandListener, Plug
 		}
 		$pointLimit = (int)$pointLimit;
 
-		if ($this->lastPointLimit != $pointLimit) {
-			$newSettings = array('S_MapPointsLimit' => $pointLimit);
-			$this->maniaControl->client->setModeScriptSettings($newSettings);
-
-			$message = "Dynamic PointLimit changed to: {$pointLimit}!";
-			if ($this->lastPointLimit !== null) {
-				$message .= " (From {$this->lastPointLimit})";
+		if ($this->lastPointLimit !== $pointLimit) {
+			try {
+				$this->maniaControl->client->setModeScriptSettings(array('S_MapPointsLimit' => $pointLimit));
+				$message = "Dynamic PointLimit changed to: {$pointLimit}!";
+				if ($this->lastPointLimit !== null) {
+					$message .= " (From {$this->lastPointLimit})";
+				}
+				$this->maniaControl->chat->sendInformation($message);
+				$this->lastPointLimit = $pointLimit;
+			} catch (GameModeException $exception) {
 			}
-			$this->maniaControl->chat->sendChat($message);
-
-			$this->lastPointLimit = $pointLimit;
 		}
 	}
 
