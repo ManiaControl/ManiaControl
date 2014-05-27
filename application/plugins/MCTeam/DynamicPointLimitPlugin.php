@@ -44,7 +44,8 @@ class DynamicPointLimitPlugin implements CallbackListener, CommandListener, Plug
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	private $lastPointLimit = null;
-
+	// Dynamic or fixed mode
+	private $mode = true;
 	/**
 	 * @see \ManiaControl\Plugins\Plugin::prepare()
 	 */
@@ -109,14 +110,45 @@ class DynamicPointLimitPlugin implements CallbackListener, CommandListener, Plug
 
 		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::BEGINROUND, $this, 'updatePointLimit');
 		$this->maniaControl->callbackManager->registerCallbackListener(SettingManager::CB_SETTING_CHANGED, $this, 'handleSettingChangedCallback');
+		// chatcommand
+		$this->maniaControl->commandManager->registerCommandListener('setpointlimit', $this, 'cmd_setPointlimit',true,'Setpointlimit XXX or auto');
 
 		$this->updatePointLimit();
 	}
 
 	/**
+	 * set pointlimit mode
+	 */
+	public function cmd_setPointlimit(array $chat, Player $player) {
+		$arg = substr($chat[1][2], 16);
+		if ($arg=="auto")
+		{
+			$this->mode=true;
+			$this->maniaControl->chat->sendChat('$fffPointlimit changed to : Dynamic');
+			$this->updatePointLimit();
+			return;
+		}
+		else 
+		{
+			if (is_numeric($arg) && $arg >> 0)
+			{
+				$this->mode=false;
+				$this->maniaControl->chat->sendChat('$fffPointlimit changed to : Fixed ('.$arg.')');
+				try{
+					$this->maniaControl->client->setModeScriptSettings(array('S_MapPointsLimit' => (int)($arg)));
+				}catch(FaultException $e){
+				}
+				
+			}
+		}
+	}
+
+
+	/**
 	 * Update Point Limit
 	 */
 	public function updatePointLimit() {
+		if(!$this->mode) return;
 		$numberOfPlayers = $this->maniaControl->playerManager->getPlayerCount();
 
 		$multiplier = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_POINT_LIMIT_MULTIPLIER);
@@ -159,6 +191,7 @@ class DynamicPointLimitPlugin implements CallbackListener, CommandListener, Plug
 	 * @param Setting $setting
 	 */
 	public function handleSettingChangedCallback(Setting $setting) {
+		if(!$this->mode) return;
 		if (!$setting->belongsToClass($this)) {
 			return;
 		}
@@ -178,6 +211,7 @@ class DynamicPointLimitPlugin implements CallbackListener, CommandListener, Plug
 			return;
 		}
 		$player->setCache($this, self::CACHE_SPEC_STATUS, $newSpecStatus);
+		if(!$this->mode) return;
 		$this->updatePointLimit();
 	}
 }
