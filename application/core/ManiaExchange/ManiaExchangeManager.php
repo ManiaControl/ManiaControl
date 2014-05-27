@@ -143,7 +143,7 @@ class ManiaExchangeManager {
 	 * Get the Whole MapList from MX by Mixed Uid and Id String fetch
 	 *
 	 * @param string $string
-	 * @return array|null
+	 * @return bool
 	 */
 	public function getMaplistByMixedUidIdString($string) {
 		// Get Title Prefix
@@ -155,18 +155,17 @@ class ManiaExchangeManager {
 		$thisRef = $this;
 		$success = $this->maniaControl->fileReader->loadFile($url, function ($mapInfo, $error) use ($thisRef, $titlePrefix, $url) {
 			if ($error) {
-				trigger_error($error . " " . $url);
-				return null;
+				trigger_error("Error: '{$error}' for Url '{$url}'");
+				return;
 			}
-
 			if (!$mapInfo) {
-				return null;
+				return;
 			}
 
 			$mxMapList = json_decode($mapInfo);
 			if ($mxMapList === null) {
-				trigger_error('Cannot decode searched JSON data from ' . $url);
-				return null;
+				trigger_error("Can't decode searched JSON Data from Url '{$url}'");
+				return;
 			}
 
 			$maps = array();
@@ -180,7 +179,6 @@ class ManiaExchangeManager {
 			}
 
 			$thisRef->updateMapObjectsWithManiaExchangeIds($maps);
-			return true;
 		}, "application/json");
 
 		return $success;
