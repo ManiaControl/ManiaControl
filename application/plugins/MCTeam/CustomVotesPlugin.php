@@ -38,7 +38,6 @@ use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
  * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-// TODO: create dedicated files for used classes
 class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkPageAnswerListener, TimerListener, Plugin {
 	/*
 	 * Constants
@@ -766,6 +765,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 /**
  * Vote Command Model Class
  */
+// TODO: extract classes to own files
 class VoteCommand {
 	public $index = '';
 	public $name = '';

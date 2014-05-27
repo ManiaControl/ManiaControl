@@ -527,6 +527,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 /**
  * Rank Structure
  */
+// TODO: extract class to own file
 class Rank extends AbstractStructure {
 	public $playerIndex;
 	public $rank;
