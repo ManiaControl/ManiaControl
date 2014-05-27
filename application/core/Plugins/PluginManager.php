@@ -230,7 +230,7 @@ class PluginManager {
 	/**
 	 * Load complete Plugins Directory and start all configured Plugins
 	 *
-	 * @return array
+	 * @return string[]
 	 */
 	public function loadPlugins() {
 		$pluginsDirectory = ManiaControlDir . 'plugins' . DIRECTORY_SEPARATOR;
@@ -402,16 +402,32 @@ class PluginManager {
 	/**
 	 * Get all declared plugin class names
 	 *
-	 * @return array
+	 * @return string[]
 	 */
 	public function getPluginClasses() {
 		return $this->pluginClasses;
 	}
 
 	/**
-	 * Get all active plugins
+	 * Get the Ids of all active Plugins
 	 *
-	 * @return array
+	 * @return string[]
+	 */
+	public function getActivePluginsIds() {
+		$pluginsIds = array();
+		foreach ($this->getActivePlugins() as $plugin) {
+			$pluginId = $plugin::getId();
+			if (is_numeric($pluginId)) {
+				array_push($pluginsIds, $pluginId);
+			}
+		}
+		return $pluginsIds;
+	}
+
+	/**
+	 * Get all active Plugins
+	 *
+	 * @return Plugin[]
 	 */
 	public function getActivePlugins() {
 		return $this->activePlugins;

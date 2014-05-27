@@ -4,7 +4,6 @@ namespace ManiaControl\Server;
 
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\ManiaControl;
-use ManiaControl\Plugins\Plugin;
 use ManiaControl\Utils\Formatter;
 use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
 
@@ -73,18 +72,7 @@ class UsageReporter implements TimerListener {
 			$properties['ScriptName'] = '';
 		}
 
-		$activePlugins = array();
-
-		if (is_array($this->maniaControl->pluginManager->getActivePlugins())) {
-			foreach ($this->maniaControl->pluginManager->getActivePlugins() as $plugin) {
-				/** @var Plugin $plugin */
-				if (!is_null($plugin::getId()) && is_numeric($plugin::getId())) {
-					$activePlugins[] = $plugin::getId();
-				}
-			}
-		}
-
-		$properties['ActivePlugins'] = $activePlugins;
+		$properties['ActivePlugins'] = $this->maniaControl->pluginManager->getActivePluginsIds();
 
 		$json = json_encode($properties);
 		$info = base64_encode($json);

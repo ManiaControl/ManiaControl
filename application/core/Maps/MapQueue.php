@@ -190,7 +190,7 @@ class MapQueue implements CallbackListener, CommandListener {
 	/**
 	 * Returns the current queue buffer
 	 *
-	 * @return array
+	 * @return string[]
 	 */
 	public function getQueueBuffer() {
 		return $this->buffer;
