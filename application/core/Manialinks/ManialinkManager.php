@@ -308,7 +308,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 * @param Frame $frame
 	 * @param array $labelStrings
 	 * @param array $properties
-	 * @return array Returns the labels (to add special Properties later)
+	 * @return Label_Text[]
 	 */
 	public function labelLine(Frame $frame, array $labelStrings, array $properties = array()) {
 		// define standard properties
@@ -333,7 +333,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 				$label->addPlayerProfileFeature($profile);
 			}
 
-			$labels[] = $label; // add Label to the labels array
+			array_push($labels, $label);
 		}
 
 		return $labels;
