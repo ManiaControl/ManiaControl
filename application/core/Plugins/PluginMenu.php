@@ -36,7 +36,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	const ACTION_PREFIX_ENABLEPLUGIN                = 'PluginMenu.Enable.';
 	const ACTION_PREFIX_DISABLEPLUGIN               = 'PluginMenu.Disable.';
 	const ACTION_PREFIX_SETTINGS                    = 'PluginMenu.Settings.';
-	const ACTION_PREFIX_SETTING                     = 'PluginMenuSetting';
+	const ACTION_PREFIX_SETTING                     = 'PluginMenuSetting.';
 	const ACTION_SETTING_BOOL                       = 'PluginMenuActionBoolSetting.';
 	const ACTION_BACK_TO_PLUGINS                    = 'PluginMenu.BackToPlugins';
 	const ACTION_PREFIX_UPDATEPLUGIN                = 'PluginMenu.Update.';
@@ -305,9 +305,8 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			$entry->setX($width / 2 * 0.65);
 			$entry->setTextSize(1);
 			$entry->setSize($width * 0.3, $settingHeight * 0.9);
-			$entry->setName(self::ACTION_PREFIX_SETTING . '.' . $setting->index);
+			$entry->setName(self::ACTION_PREFIX_SETTING . $setting->index);
 			$entry->setDefault($setting->value);
-
 
 			if ($setting->type === Setting::TYPE_BOOL) {
 				if ($setting->value) {
@@ -438,23 +437,22 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			return;
 		}
 
-		$maniaControlSettings = $this->maniaControl->settingManager->getSettings();
-
 		$prefixLength = strlen(self::ACTION_PREFIX_SETTING);
 
 		foreach ($configData[3] as $setting) {
-			$settingName = substr($setting['Name'], $prefixLength + 1);
+			$settingIndex = (int)substr($setting['Name'], $prefixLength);
 
-			if (!isset($maniaControlSettings[$settingName])) {
+			$settingObject = $this->maniaControl->settingManager->getSettingObjectByIndex($settingIndex);
+			if (!$settingObject) {
 				continue;
 			}
 
-			$oldSetting = $maniaControlSettings[$settingName];
-			if ($setting['Value'] == $oldSetting->value || $oldSetting->type == 'bool') {
+			if ($setting['Value'] == $settingObject->value || $settingObject->type === $setting::TYPE_BOOL) {
 				continue;
 			}
 
-			$this->maniaControl->settingManager->setSetting($oldSetting->class, $oldSetting->setting, $setting['Value']);
+			$settingObject->value = $setting['Value'];
+			$this->maniaControl->settingManager->saveSetting($settingObject);
 		}
 
 		$this->maniaControl->chat->sendSuccess('Plugin Settings saved!', $player);
