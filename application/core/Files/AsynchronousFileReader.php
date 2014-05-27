@@ -89,11 +89,10 @@ class AsynchronousFileReader {
 			->set(CURLOPT_RETURNTRANSFER, true);
 
 		$request->addListener('complete', function (Event $event) use (&$function) {
-			/** @var Response $response */
 			$response = $event->response;
 
-			$error   = "";
-			$content = "";
+			$error   = null;
+			$content = null;
 			if ($response->hasError()) {
 				$error = $response->getError()->getMessage();
 			} else {
