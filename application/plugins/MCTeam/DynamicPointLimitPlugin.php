@@ -161,7 +161,7 @@ class DynamicPointLimitPlugin implements CallbackListener, CommandListener, Plug
 	 */
 	public function commandSetPointlimit(array $chatCallback, Player $player) {
 		$commandParts = explode(' ', $chatCallback[1][2]);
-		if ($commandParts < 2) {
+		if (count($commandParts) < 2) {
 			$this->maniaControl->chat->sendUsageInfo('Example: //setpointlimit auto', $player);
 			return;
 		}
@@ -179,10 +179,14 @@ class DynamicPointLimitPlugin implements CallbackListener, CommandListener, Plug
 				}
 				try {
 					$this->maniaControl->client->setModeScriptSettings(array('S_MapPointsLimit' => $value));
-					$this->staticMode = true;
+					$this->staticMode     = true;
+					$this->lastPointLimit = $value;
 					$this->maniaControl->chat->sendInformation("PointLimit changed to: {$value} (Fixed)");
-				} catch (GameModeException $e) {
+				} catch (GameModeException $exception) {
+					$this->maniaControl->chat->sendException($exception, $player);
 				}
+			} else {
+				$this->maniaControl->chat->sendUsageInfo('Example: //setpointlimit 150', $player);
 			}
 		}
 	}
