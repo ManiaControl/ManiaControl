@@ -306,25 +306,13 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$backgroundQuad->setSize($width, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 
-		$maxPlayers = $this->maniaControl->client->getMaxPlayers();
-
-		$maxSpectators = $this->maniaControl->client->getMaxSpectators();
-
 		$serverName = $this->maniaControl->client->getServerName();
 
-		$players        = $this->maniaControl->playerManager->getPlayers();
-		$playerCount    = 0;
-		$spectatorCount = 0;
-		/**
-		 * @var Player $player
-		 */
-		foreach ($players as $player) {
-			if ($player->isSpectator) {
-				$spectatorCount++;
-			} else {
-				$playerCount++;
-			}
-		}
+		$playerCount = $this->maniaControl->playerManager->getPlayerCount(true);
+		$maxPlayers  = $this->maniaControl->client->getMaxPlayers();
+
+		$spectatorCount = $this->maniaControl->playerManager->getSpectatorCount();
+		$maxSpectators  = $this->maniaControl->client->getMaxSpectators();
 
 		$label = new Label_Text();
 		$frame->add($label);

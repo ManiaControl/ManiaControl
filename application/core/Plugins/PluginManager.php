@@ -29,7 +29,9 @@ class PluginManager {
 	private $maniaControl = null;
 	private $pluginMenu = null;
 	private $pluginInstallMenu = null;
+	/** @var Plugin[] $activePlugins */
 	private $activePlugins = array();
+	/** @var string[] $pluginClasses */
 	private $pluginClasses = array();
 
 	/**

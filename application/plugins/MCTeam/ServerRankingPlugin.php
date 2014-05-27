@@ -400,7 +400,6 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		$this->resetRanks();
 
 		foreach ($this->maniaControl->playerManager->getPlayers() as $player) {
-			/** @var Player $player */
 			if ($player->isFakePlayer()) {
 				continue;
 			}

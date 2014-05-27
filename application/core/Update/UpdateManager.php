@@ -268,7 +268,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			// No update available
 			return;
 		}
-		if (count($this->maniaControl->playerManager->getPlayers()) > 0) {
+		if ($this->maniaControl->playerManager->getPlayerCount(false) > 0) {
 			// Server not empty
 			return;
 		}

@@ -40,6 +40,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 	public $playerDetailed = null;
 	public $playerList = null;
 	public $adminLists = null;
+	/** @var Player[] $players */
 	public $players = array();
 
 	/*
@@ -296,10 +297,12 @@ class PlayerManager implements CallbackListener, TimerListener {
 	 * @return int
 	 */
 	public function getPlayerCount($withoutSpectators = true) {
+		if (!$withoutSpectators) {
+			return count($this->players);
+		}
 		$count = 0;
 		foreach ($this->players as $player) {
-			/** @var Player $player */
-			if (!$player->isSpectator || !$withoutSpectators) {
+			if (!$player->isSpectator) {
 				$count++;
 			}
 		}
@@ -413,7 +416,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 	/**
 	 * Get all Players
 	 *
-	 * @return array
+	 * @return Player[]
 	 */
 	public function getPlayers() {
 		return $this->players;
@@ -427,7 +430,6 @@ class PlayerManager implements CallbackListener, TimerListener {
 	public function getSpectatorCount() {
 		$count = 0;
 		foreach ($this->players as $player) {
-			/** @var Player $player */
 			if ($player->isSpectator) {
 				$count++;
 			}
@@ -436,15 +438,14 @@ class PlayerManager implements CallbackListener, TimerListener {
 	}
 
 	/**
-	 * Gets a Player by his index
+	 * Gets a Player by his Index
 	 *
 	 * @param int  $index
 	 * @param bool $connectedPlayersOnly
-	 * @return Player|null
+	 * @return Player
 	 */
 	public function getPlayerByIndex($index, $connectedPlayersOnly = false) {
 		foreach ($this->players as $player) {
-			/** @var Player $player */
 			if ($player->index == $index) {
 				return $player;
 			}

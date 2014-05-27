@@ -362,7 +362,6 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			$properties['getvotesonly'] = false;
 			$properties['playerlogins'] = array();
 			foreach ($this->maniaControl->playerManager->getPlayers() as $loopPlayer) {
-				/** @var Player $loopPlayer */
 				$properties['playerlogins'][] = $loopPlayer->login;
 			}
 		} else {

@@ -305,7 +305,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			return null;
 		}
 
-		if (count($this->maniaControl->playerManager->getPlayers()) == 0) {
+		if ($this->maniaControl->playerManager->getPlayerCount(false) <= 0) {
 			return null;
 		}
 
@@ -326,7 +326,6 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		}
 		$playerInfo = array();
 		foreach ($players as $player) {
-			/** @var Player $player */
 			array_push($playerInfo, array('Login' => $player->login, 'IsSpec' => $player->isSpectator));
 		}
 		return $playerInfo;

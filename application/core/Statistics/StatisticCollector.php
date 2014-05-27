@@ -110,7 +110,7 @@ class StatisticCollector implements CallbackListener {
 	 */
 	public function onEndMap(array $callback) {
 		//Check for Minimum PlayerCount
-		if (count($this->maniaControl->playerManager->getPlayers()) < $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_COLLECT_STATS_MINPLAYERS)) {
+		if ($this->maniaControl->playerManager->getPlayerCount() < $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_COLLECT_STATS_MINPLAYERS)) {
 			return;
 		}
 
@@ -149,13 +149,13 @@ class StatisticCollector implements CallbackListener {
 	 */
 	public function handleCallbacks(array $callback) {
 		//TODO survivals
-		//Check if Stat Collecting is enabled
+		// Check if Stat Collecting is enabled
 		if (!$this->maniaControl->settingManager->getSettingValue($this, self::SETTING_COLLECT_STATS_ENABLED)) {
 			return;
 		}
 
-		//Check for Minimum PlayerCount
-		if (count($this->maniaControl->playerManager->getPlayers()) < $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_COLLECT_STATS_MINPLAYERS)) {
+		// Check for Minimum PlayerCount
+		if ($this->maniaControl->playerManager->getPlayerCount() < $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_COLLECT_STATS_MINPLAYERS)) {
 			return;
 		}
 

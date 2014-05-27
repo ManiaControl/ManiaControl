@@ -671,7 +671,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	public function updateWidget() {
 		$players = $this->maniaControl->playerManager->getPlayers();
 		foreach ($players as $player) {
-			/** @var Player $player */
 			$currentPage = $player->getCache($this, self::CACHE_CURRENT_PAGE);
 			if ($currentPage !== null) {
 				$this->showMapList($player, null, $currentPage);

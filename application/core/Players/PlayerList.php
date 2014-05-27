@@ -175,8 +175,6 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$pageFrame = null;
 
 		foreach ($players as $listPlayer) {
-			/** @var Player $listPlayer * */
-
 			if ($i % self::MAX_PLAYERS_PER_PAGE === 1) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
