@@ -166,7 +166,6 @@ class MapManager implements CallbackListener {
 				mxid = 0,
 				changed = NOW()
 				WHERE 'uid' = ?";
-
 		$mapStatement = $mysqli->prepare($mapQuery);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error);
