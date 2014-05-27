@@ -110,7 +110,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 * Display a MapList on the Screen
 	 *
 	 * @param Player $player
-	 * @param array  $mapList
+	 * @param Map[]  $mapList
 	 * @param int    $pageIndex
 	 */
 	public function showMapList(Player $player, $mapList = null, $pageIndex = -1) {

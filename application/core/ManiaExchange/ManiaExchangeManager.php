@@ -71,15 +71,15 @@ class ManiaExchangeManager {
 	/**
 	 * Fetch Map Information from Mania Exchange
 	 *
-	 * @param null $map
+	 * @param mixed $maps
 	 */
-	public function fetchManiaExchangeMapInformation($map = null) {
-		if (!$map) {
+	public function fetchManiaExchangeMapInformation($maps = null) {
+		if (!$maps) {
 			//Fetch Information for whole MapList
 			$maps = $this->maniaControl->mapManager->getMaps();
 		} else {
 			//Fetch Information for a single map
-			$maps[] = $map;
+			$maps = (array)$maps;
 		}
 
 		$mysqli      = $this->maniaControl->database->mysqli;

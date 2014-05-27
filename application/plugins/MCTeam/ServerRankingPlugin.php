@@ -193,7 +193,9 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 
 				break;
 			case self::RANKING_TYPE_RECORDS: //TODO verify workable status
-				if (!$this->maniaControl->pluginManager->isPluginActive(__NAMESPACE__ . '\LocalRecordsPlugin')) {
+				/** @var LocalRecordsPlugin $localRecordsPlugin */
+				$localRecordsPlugin = $this->maniaControl->pluginManager->getPlugin(__NAMESPACE__ . '\LocalRecordsPlugin');
+				if (!$localRecordsPlugin) {
 					return;
 				}
 
@@ -212,9 +214,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 				}
 				$result->free_result();
 
-				/** @var LocalRecordsPlugin $localRecordsPlugin */
-				$localRecordsPlugin = $this->maniaControl->pluginManager->getPlugin(__NAMESPACE__ . '\LocalRecordsPlugin');
-				$maps               = $this->maniaControl->mapManager->getMaps();
+				$maps = $this->maniaControl->mapManager->getMaps();
 				foreach ($maps as $map) {
 					$records = $localRecordsPlugin->getLocalRecords($map, $maxRecords);
 

@@ -581,8 +581,7 @@ class MapManager implements CallbackListener {
 	 * Returns the MapIndex of a given map
 	 *
 	 * @param Map $map
-	 * @internal param $uid
-	 * @return mixed
+	 * @return int
 	 */
 	public function getMapIndex(Map $map) {
 		$maps = $this->getMaps();
@@ -594,7 +593,7 @@ class MapManager implements CallbackListener {
 	 *
 	 * @param int $offset
 	 * @param int $length
-	 * @return array
+	 * @return Map[]
 	 */
 	public function getMaps($offset = null, $length = null) {
 		if ($offset === null) {
