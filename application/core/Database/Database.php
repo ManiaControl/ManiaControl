@@ -23,6 +23,8 @@ class Database implements TimerListener {
 	 * Private Properties
 	 */
 	private $maniaControl = null;
+	/** @var DatabaseConfig $config */
+	private $config = null;
 
 	/**
 	 * Construct a new Database Connection
@@ -32,40 +34,12 @@ class Database implements TimerListener {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		// Get mysql server information
-		/** @var \SimpleXMLElement $databaseXmlTag */
-		$databaseXmlTag = $this->maniaControl->config->database;
-		$host = $databaseXmlTag->xpath('host');
-		if (!$host) {
-			$message = "Invalid database configuration (host).";
-			$this->maniaControl->quit($message, true);
-		}
-		$port = $databaseXmlTag->xpath('port');
-		if (!$port) {
-			$message = "Invalid database configuration (port).";
-			$this->maniaControl->quit($message, true);
-		}
-		$user = $databaseXmlTag->xpath('user');
-		if (!$user) {
-			$message = "Invalid database configuration (user).";
-			$this->maniaControl->quit($message, true);
-		}
-		$pass = $databaseXmlTag->xpath('pass');
-		if (!$pass) {
-			$message = "Invalid database configuration (pass).";
-			$this->maniaControl->quit($message, true);
-		}
-
-		$host = (string)$host[0];
-		$port = (int)$port[0];
-		$user = (string)$user[0];
-		$pass = (string)$pass[0];
-
 		// Enable mysqli Reconnect
 		ini_set('mysqli.reconnect', 'on');
 
 		// Open database connection
-		$this->mysqli = @new \mysqli($host, $user, $pass, null, $port);
+		$this->loadConfig();
+		$this->mysqli = @new \mysqli($this->config->host, $this->config->user, $this->config->pass, null, $this->config->port);
 		if ($this->mysqli->connect_error) {
 			$message = "Couldn't connect to Database: '{$this->mysqli->connect_error}'";
 			$this->maniaControl->quit($message, true);
@@ -83,51 +57,95 @@ class Database implements TimerListener {
 	}
 
 	/**
-	 * Connect to the defined database (create it if needed)
+	 * Load the Database Config
+	 */
+	private function loadConfig() {
+		$databaseElements = $this->maniaControl->config->xpath('database');
+		if (!$databaseElements) {
+			trigger_error('No Database configured!', E_USER_ERROR);
+		}
+		$databaseElement = $databaseElements[0];
+
+		// Host
+		$hostElements = $databaseElement->xpath('host');
+		if (!$hostElements) {
+			trigger_error("Invalid database configuration (Host).", E_USER_ERROR);
+		}
+		$host = (string)$hostElements[0];
+
+		// Port
+		$portElements = $databaseElement->xpath('port');
+		if (!$portElements) {
+			trigger_error("Invalid database configuration (Port).", E_USER_ERROR);
+		}
+		$port = (string)$portElements[0];
+
+		// User
+		$userElements = $databaseElement->xpath('user');
+		if (!$userElements) {
+			trigger_error("Invalid database configuration (User).", E_USER_ERROR);
+		}
+		$user = (string)$userElements[0];
+
+		// Pass
+		$passElements = $databaseElement->xpath('pass');
+		if (!$passElements) {
+			trigger_error("Invalid database configuration (Pass).", E_USER_ERROR);
+		}
+		$pass = (string)$passElements[0];
+
+		// Name
+		$nameElements = $databaseElement->xpath('name');
+		if (!$nameElements) {
+			$nameElements = $databaseElement->xpath('db_name');
+		}
+		if (!$nameElements) {
+			trigger_error("Invalid database configuration (Name).", E_USER_ERROR);
+		}
+		$name = (string)$nameElements[0];
+
+		// Create config object
+		$config = new DatabaseConfig($host, $port, $user, $pass, $name);
+		if (!$config->validate()) {
+			$this->maniaControl->quit("Your config file doesn't seem to be maintained properly. Please check the database configuration again!", true);
+		}
+		$this->config = $config;
+	}
+
+	/**
+	 * Connect to the defined Database
 	 *
 	 * @return bool
 	 */
 	private function initDatabase() {
-		$dbName = $this->maniaControl->config->database->xpath('db_name');
-		if (!$dbName) {
-			$this->maniaControl->quit("Invalid Database Configuration (db_name).", true);
-			return false;
-		}
-		$dbName = (string)$dbName[0];
-
 		// Try to connect
-		$result = $this->mysqli->select_db($dbName);
+		$result = $this->mysqli->select_db($this->config->name);
 		if ($result) {
 			return true;
 		}
+		$this->maniaControl->log("Database '{$this->config->name}' doesn't exit! Trying to create it...");
 
 		// Create database
-		$databaseQuery     = "CREATE DATABASE ?;";
-		$databaseStatement = $this->mysqli->prepare($databaseQuery);
+		$databaseQuery = "CREATE DATABASE '" . $this->mysqli->escape_string($this->config->name) . "';";
+		$this->mysqli->query($databaseQuery);
 		if ($this->mysqli->error) {
 			$this->maniaControl->quit($this->mysqli->error, true);
 			return false;
 		}
-		$databaseStatement->bind_param('s', $dbName);
-		$databaseStatement->execute();
-		if ($databaseStatement->error) {
-			$this->maniaControl->quit($databaseStatement->error, true);
-			return false;
-		}
-		$databaseStatement->close();
 
 		// Connect to new database
-		$this->mysqli->select_db($dbName);
+		$this->mysqli->select_db($this->config->name);
 		if ($this->mysqli->error) {
-			$message = "Couldn't select database '{$dbName}'. {$this->mysqli->error}";
+			$message = "Couldn't select database '{$this->config->name}'. {$this->mysqli->error}";
 			$this->maniaControl->quit($message, true);
 			return false;
 		}
+
 		return true;
 	}
 
 	/**
-	 * Optimize all existing tables
+	 * Optimize all existing Tables
 	 *
 	 * @return bool
 	 */
@@ -164,18 +182,16 @@ class Database implements TimerListener {
 	}
 
 	/**
-	 * Check if Connection still exists every 5 seconds
-	 *
-	 * @param float $time
+	 * Check whether the Database Connection is still open
 	 */
-	public function checkConnection($time = null) {
+	public function checkConnection() {
 		if (!$this->mysqli || !$this->mysqli->ping()) {
-			$this->maniaControl->quit("The MySQL server has gone away!", true);
+			$this->maniaControl->quit('The MySQL Server has gone away!', true);
 		}
 	}
 
 	/**
-	 * Destruct database connection
+	 * Destruct Database Connection
 	 */
 	public function __destruct() {
 		if ($this->mysqli && !$this->mysqli->connect_error) {

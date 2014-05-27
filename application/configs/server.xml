@@ -26,7 +26,7 @@
 		<pass>mysql_password</pass>
 
 		<!-- Database Name -->
-		<db_name>database_name</db_name>
+		<name>database_name</name>
 
 	</database>
 
