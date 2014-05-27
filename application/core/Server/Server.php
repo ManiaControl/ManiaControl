@@ -98,64 +98,56 @@ class Server implements CallbackListener {
 		// Server id parameter
 		$serverId = CommandLineHelper::getParameter('-id');
 
-		// Xml server tag with given id
-		$serverTag = null;
+		// Server xml element with given id
+		$serverElement = null;
 		if ($serverId) {
-			$serverTags = $this->maniaControl->config->xpath("server[@id='{$serverId}']");
-			if ($serverTags) {
-				$serverTag = $serverTags[0];
-			}
-			if (!$serverTag) {
+			$serverElements = $this->maniaControl->config->xpath("server[@id='{$serverId}']");
+			if (!$serverElements) {
 				trigger_error("No Server configured with the ID '{$serverId}'!", E_USER_ERROR);
 			}
+			$serverElement = $serverElements[0];
 		} else {
-			$serverTags = $this->maniaControl->config->xpath('server');
-			if ($serverTags) {
-				$serverTag = $serverTags[0];
-			}
-			if (!$serverTag) {
+			$serverElements = $this->maniaControl->config->xpath('server');
+			if (!$serverElements) {
 				trigger_error('No Server configured!', E_USER_ERROR);
 			}
+			$serverElement = $serverElements[0];
 		}
 
 		// Host
-		$host = $serverTag->xpath('host');
-		if ($host) {
-			$host = (string)$host[0];
-		}
-		if (!$host) {
+		$hostElements = $serverElement->xpath('host');
+		if (!$hostElements) {
 			trigger_error("Invalid server configuration (host).", E_USER_ERROR);
 		}
+		$host = (string)$hostElements[0];
 
 		// Port
-		$port = $serverTag->xpath('port');
-		if ($port) {
-			$port = (string)$port[0];
-		}
-		if (!$port) {
+		$portElements = $serverElement->xpath('port');
+		if (!$portElements) {
 			trigger_error("Invalid server configuration (port).", E_USER_ERROR);
 		}
+		$port = (string)$portElements[0];
 
 		// Login
-		$login = $serverTag->xpath('login');
-		if ($login) {
-			$login = (string)$login[0];
-		}
-		if (!$login) {
+		$loginElements = $serverElement->xpath('login');
+		if (!$loginElements) {
 			trigger_error("Invalid server configuration (login).", E_USER_ERROR);
 		}
+		$login = (string)$loginElements[0];
 
 		// Password
-		$pass = $serverTag->xpath('pass');
-		if ($pass) {
-			$pass = (string)$pass[0];
-		}
-		if (!$pass) {
+		$passElements = $serverElement->xpath('pass');
+		if (!$passElements) {
 			trigger_error("Invalid server configuration (password).", E_USER_ERROR);
 		}
+		$pass = (string)$passElements[0];
 
 		// Create config object
-		$this->config = new Config($serverId, $host, $port, $login, $pass);
+		$config = new Config($serverId, $host, $port, $login, $pass);
+		if (!$config->validate()) {
+			$this->maniaControl->quit("Your Configuration File doesn't seem to be maintained properly. Please check it again!", true);
+		}
+		$this->config = $config;
 	}
 
 	/**

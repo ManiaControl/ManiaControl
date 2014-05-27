@@ -159,8 +159,8 @@ class ManiaControl implements CommandListener, TimerListener {
 		if (!$this->config) {
 			$this->quit("Error loading Configuration XML-File! ('{$configFileName}')", true);
 		}
-		if (!$this->config->server->port || $this->config->server->port == 'port') {
-			$this->quit("Your Configuration File ('{$configFileName}') doesn't seem to be maintained. Please check it again!", true);
+		if ($this->config->count() < 3) {
+			$this->quit("Your Configuration File ('{$configFileName}') doesn't seem to be maintained properly. Please check it again!", true);
 		}
 	}
 

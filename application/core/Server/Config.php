@@ -29,10 +29,28 @@ class Config {
 	 * @param string $pass  XmlRpc Password
 	 */
 	public function __construct($id = null, $host = null, $port = null, $login = null, $pass = null) {
-		$this->id    = $id;
-		$this->host  = $host;
-		$this->port  = $port;
-		$this->login = $login;
-		$this->pass  = $pass;
+		$this->id    = (string)$id;
+		$this->host  = (string)$host;
+		$this->port  = (int)$port;
+		$this->login = (string)$login;
+		$this->pass  = (string)$pass;
+	}
+
+	/**
+	 * Validate the Config Data
+	 *
+	 * @return bool
+	 */
+	public function validate() {
+		$invalid = false;
+		if (!$this->host) {
+			$invalid = true;
+		} else if (!$this->port || $this->port === 'port') {
+			$invalid = true;
+		}
+		if ($invalid) {
+			return false;
+		}
+		return true;
 	}
 }
