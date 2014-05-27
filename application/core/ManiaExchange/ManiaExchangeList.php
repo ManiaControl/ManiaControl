@@ -131,7 +131,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 
 		// search for matching maps
 		$self = $this;
-		$this->maniaControl->mapManager->mxManager->getMapsAsync(function ($maps) use (&$self, &$player) {
+		$this->maniaControl->mapManager->mxManager->getMapsAsync(function (array $maps) use (&$self, &$player) {
 			if (!$maps) {
 				$self->maniaControl->chat->sendError('No maps found, or MX is down!', $player->login);
 				return;
@@ -143,11 +143,11 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 	/**
 	 * Display the Mania Exchange List
 	 *
-	 * @param        $maps
-	 * @param Player $player
+	 * @param MXMapInfo[] $maps
+	 * @param Player      $player
 	 * @internal param array $chatCallback
 	 */
-	private function showManiaExchangeList($maps, Player $player) {
+	private function showManiaExchangeList(array $maps, Player $player) {
 		// Start offsets
 		$width  = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
 		$height = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
@@ -181,7 +181,6 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 
 		foreach ($maps as $map) {
 			//TODO order possibilities
-			/** @var MxMapInfo $map */
 			if ($i % self::MAX_MX_MAPS_PER_PAGE === 0) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
@@ -201,11 +200,9 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 				$lineQuad->setZ(0.001);
 			}
 
-			/** @var MxMapInfo $map */
-			$time   = Formatter::time_elapsed_string(strtotime($map->updated));
-			$array  = array('$s' . $map->id => $x + 3.5, '$s' . $map->name => $x + 12.5, '$s' . $map->author => $x + 59, '$s' . str_replace("Arena", "", $map->maptype) => $x + 103, '$s' . $map->mood => $x + 118, '$s' . $time => $x + 130);
-			$labels = $this->maniaControl->manialinkManager->labelLine($mapFrame, $array);
-			/** @var  Label_Text $authorLabel */
+			$time        = Formatter::time_elapsed_string(strtotime($map->updated));
+			$array       = array('$s' . $map->id => $x + 3.5, '$s' . $map->name => $x + 12.5, '$s' . $map->author => $x + 59, '$s' . str_replace("Arena", "", $map->maptype) => $x + 103, '$s' . $map->mood => $x + 118, '$s' . $time => $x + 130);
+			$labels      = $this->maniaControl->manialinkManager->labelLine($mapFrame, $array);
 			$authorLabel = $labels[2];
 			$authorLabel->setAction(self::ACTION_GET_MAPS_FROM_AUTHOR . '.' . $map->author);
 

@@ -310,21 +310,21 @@ class ManiaExchangeManager {
 		$success = $this->maniaControl->fileReader->loadFile($url, function ($mapInfo, $error) use (&$function, $titlePrefix) {
 			if ($error) {
 				trigger_error($error);
-				return null;
+				return;
 			}
 
 			$mxMapList = json_decode($mapInfo);
 
 			if (!isset($mxMapList->results)) {
 				trigger_error('Cannot decode searched JSON data');
-				return null;
+				return;
 			}
 
 			$mxMapList = $mxMapList->results;
 
 			if ($mxMapList === null) {
 				trigger_error('Cannot decode searched JSON data');
-				return null;
+				return;
 			}
 
 			$maps = array();
@@ -335,7 +335,6 @@ class ManiaExchangeManager {
 			}
 
 			call_user_func($function, $maps);
-			return true;
 		}, "application/json");
 
 		return $success;
