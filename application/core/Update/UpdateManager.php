@@ -85,7 +85,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	/**
 	 * Get the possible Update Channels
 	 *
-	 * @return array
+	 * @return string[]
 	 */
 	public function getUpdateChannels() {
 		// TODO: change default channel on release

@@ -113,7 +113,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$requester = $nextQueued[0];
 			/** @var Map $map */
 			$map = $nextQueued[1];
-			$this->maniaControl->chat->sendInformation("Next Map is $<{$map->nam}$> from $<{$map->authorNick}$> requested by $<{$requester->nickname}$>.", $player);
+			$this->maniaControl->chat->sendInformation("Next Map is $<{$map->name}$> from $<{$map->authorNick}$> requested by $<{$requester->nickname}$>.", $player);
 		} else {
 			$mapIndex = $this->maniaControl->client->getNextMapIndex();
 			$maps     = $this->maniaControl->mapManager->getMaps();

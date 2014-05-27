@@ -429,7 +429,7 @@ class SettingManager implements CallbackListener {
 	 * Get all Settings for the given Class
 	 *
 	 * @param mixed $object
-	 * @return array
+	 * @return Setting[]
 	 */
 	public function getSettingsByClass($object) {
 		$className = ClassUtil::getClass($object);
@@ -453,7 +453,7 @@ class SettingManager implements CallbackListener {
 	/**
 	 * Get all Settings
 	 *
-	 * @return array
+	 * @return Setting[]
 	 */
 	public function getSettings() {
 		$mysqli = $this->maniaControl->database->mysqli;
@@ -476,7 +476,7 @@ class SettingManager implements CallbackListener {
 	 * Get all Setting Classes
 	 *
 	 * @param bool $hidePluginClasses
-	 * @return array
+	 * @return string[]
 	 */
 	public function getSettingClasses($hidePluginClasses = false) {
 		$mysqli = $this->maniaControl->database->mysqli;

@@ -153,7 +153,7 @@ class Server implements CallbackListener {
 	/**
 	 * Gets all Servers from the Database
 	 *
-	 * @return array
+	 * @return \stdClass[]
 	 */
 	public function getAllServers() {
 		$mysqli = $this->maniaControl->database->mysqli;

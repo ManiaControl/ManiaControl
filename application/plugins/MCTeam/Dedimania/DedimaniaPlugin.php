@@ -1123,11 +1123,10 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * @return array|RecordData
 	 */
 	public function getDedimaniaRecords() {
-		if (!$this->dedimaniaData->records) {
-			return null;
+		if ($this->dedimaniaData->records) {
+			return $this->dedimaniaData->records;
 		}
-		$records = $this->dedimaniaData->records;
-		return $records;
+		return null;
 	}
 
 	/**
