@@ -152,7 +152,7 @@ abstract class FileUtil {
 	 * @param mixed $pluginFileNames
 	 */
 	public static function cleanPluginFiles($pluginFileNames) {
-		$pluginFileNames = self::buildFileNamesArray($pluginFileNames);
+		$pluginFileNames = (array)$pluginFileNames;
 		$fileNames       = array();
 		foreach ($pluginFileNames as $pluginFileName) {
 			$fileName = 'plugins' . DIRECTORY_SEPARATOR . $pluginFileName;
@@ -162,25 +162,12 @@ abstract class FileUtil {
 	}
 
 	/**
-	 * Make sure we're dealing with an Array of File Names
-	 *
-	 * @param mixed $fileNamesParam
-	 * @return array
-	 */
-	private static function buildFileNamesArray($fileNamesParam) {
-		if (!is_array($fileNamesParam)) {
-			$fileNamesParam = array($fileNamesParam);
-		}
-		return $fileNamesParam;
-	}
-
-	/**
 	 * Try to delete the given Files
 	 *
 	 * @param mixed $fileNames
 	 */
 	public static function cleanFiles($fileNames) {
-		$fileNames = self::buildFileNamesArray($fileNames);
+		$fileNames = (array)$fileNames;
 		foreach ($fileNames as $fileName) {
 			$filePath = ManiaControlDir . $fileName;
 			if (file_exists($filePath) && is_writeable($filePath)) {
