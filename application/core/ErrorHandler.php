@@ -269,8 +269,7 @@ class ErrorHandler {
 			}
 		}
 		if ($this->shouldStopExecution($errorNumber)) {
-			logMessage('Stopping Execution...');
-			exit();
+			$this->maniaControl->quit('Stopping Execution...');
 		}
 		return false;
 	}
