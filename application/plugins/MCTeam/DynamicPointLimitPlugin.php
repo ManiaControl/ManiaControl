@@ -26,7 +26,7 @@ class DynamicPointLimitPlugin implements CallbackListener, CommandListener, Plug
 	 * Constants
 	 */
 	const ID      = 21;
-	const VERSION = 0.2;
+	const VERSION = 0.3;
 	const NAME    = 'Dynamic Point Limit Plugin';
 	const AUTHOR  = 'MCTeam';
 
@@ -109,6 +109,7 @@ class DynamicPointLimitPlugin implements CallbackListener, CommandListener, Plug
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERINFOCHANGED, $this, 'handlePlayerInfoChangedCallback');
 
 		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::BEGINROUND, $this, 'updatePointLimit');
+		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::BEGINMAP, $this, 'handleBeginMap');
 		$this->maniaControl->callbackManager->registerCallbackListener(SettingManager::CB_SETTING_CHANGED, $this, 'handleSettingChangedCallback');
 
 		$this->maniaControl->commandManager->registerCommandListener('setpointlimit', $this, 'commandSetPointlimit', true, 'Setpointlimit XXX or auto');
@@ -210,6 +211,24 @@ class DynamicPointLimitPlugin implements CallbackListener, CommandListener, Plug
 	}
 
 	/**
+	 * Handle BeginMap Callback
+	 *
+	 * @param Setting $setting
+	 */
+	public function handleBeginMap() {
+		if ($this->staticMode)
+		{
+			
+			$this->maniaControl->chat->sendChat('$fffPointlimit fixed at '.$this->lastPointLimit.'.');
+			try{
+			$this->maniaControl->client->setModeScriptSettings(array('S_MapPointsLimit' => (int)($this->lastPointLimit)));
+			}catch(FaultException $e){
+			}
+		}
+	}
+
+
+	/**
 	 * Handle Player Info Changed Callback
 	 *
 	 * @param Player $player
@@ -224,3 +243,4 @@ class DynamicPointLimitPlugin implements CallbackListener, CommandListener, Plug
 		$this->updatePointLimit();
 	}
 }
+?>
