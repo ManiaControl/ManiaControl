@@ -177,7 +177,16 @@ class ManiaControl implements CommandListener, TimerListener {
 			}
 			$this->log($message);
 		}
+		$this->disconnect();
 		exit();
+	}
+
+	/**
+	 * Close the Client Connection
+	 */
+	public function disconnect() {
+		Connection::delete($this->client);
+		$this->client = null;
 	}
 
 	/**
@@ -294,7 +303,7 @@ class ManiaControl implements CommandListener, TimerListener {
 		// Check if the version of the server is high enough
 		$version = $this->client->getVersion();
 		if ($version->build < self::MIN_DEDIVERSION) {
-			trigger_error("The Server has Version '{$version->build}', while at least '" . self::MIN_DEDIVERSION . "' is required!", E_USER_ERROR);
+			$this->quit("The Server has Version '{$version->build}', while at least '" . self::MIN_DEDIVERSION . "' is required!", true);
 		}
 
 		// OnInit callback
@@ -307,12 +316,10 @@ class ManiaControl implements CommandListener, TimerListener {
 		// AfterInit callback
 		$this->callbackManager->triggerCallback(Callbacks::AFTERINIT);
 
-		// Announce ManiaControl
-		$this->chat->sendInformation('ManiaControl v' . self::VERSION . ' successfully started!');
-
 		// Loading finished
 		$this->log('Loading completed!');
 		$this->log('Link: maniaplanet://#join=' . $this->server->login . '@' . $this->server->titleId);
+		$this->chat->sendInformation('ManiaControl v' . self::VERSION . ' successfully started!');
 
 		// Main loop
 		while (!$this->shutdownRequested) {
@@ -330,7 +337,7 @@ class ManiaControl implements CommandListener, TimerListener {
 		// Load remote client
 		$this->server->loadConfig();
 
-		$this->log("Connecting to server at {$this->server->config->host}:{$this->server->config->port}...");
+		$this->log("Connecting to Server at {$this->server->config->host}:{$this->server->config->port}...");
 
 		try {
 			$this->client = Connection::factory($this->server->config->host, $this->server->config->port, self::SCRIPT_TIMEOUT, $this->server->config->login, $this->server->config->pass);

@@ -6,7 +6,6 @@ use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Files\FileUtil;
 use ManiaControl\Plugins\PluginManager;
 use ManiaControl\Update\UpdateManager;
-use Maniaplanet\DedicatedServer\Connection;
 
 /**
  * Error and Exception Manager Class
@@ -301,10 +300,7 @@ class ErrorHandler {
 
 		if ($this->maniaControl->client) {
 			try {
-				// Hide manialinks
 				$this->maniaControl->client->sendHideManialinkPage();
-				// Close the client connection
-				Connection::delete($this->maniaControl->client);
 			} catch (TransportException $e) {
 				$this->handleException($e, false);
 			}
