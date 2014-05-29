@@ -351,7 +351,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 		} else {
 			$pluginId = substr($actionId, strlen(PluginInstallMenu::ACTION_PREFIX_INSTALL_PLUGIN));
 
-			$url  = ManiaControl::URL_WEBSERVICE . 'plugins?id=' . $pluginId;
+			$url  = ManiaControl::URL_WEBSERVICE . 'plugins/' . $pluginId;
 			$self = $this;
 			$this->maniaControl->fileReader->loadFile($url, function ($data, $error) use (&$self, &$player) {
 				if ($error || !$data) {
@@ -383,7 +383,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 		 * @var Plugin $pluginClass
 		 */
 		$pluginId       = $pluginClass::getId();
-		$url            = ManiaControl::URL_WEBSERVICE . 'plugins?id=' . $pluginId;
+		$url            = ManiaControl::URL_WEBSERVICE . 'plugins/' . $pluginId;
 		$dataJson       = FileUtil::loadFile($url);
 		$pluginVersions = json_decode($dataJson);
 		if (!$pluginVersions || !isset($pluginVersions[0])) {
