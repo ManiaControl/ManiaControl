@@ -121,6 +121,8 @@ class ManiaControl implements CommandListener, TimerListener {
 		$this->pluginManager         = new PluginManager($this);
 		$this->updateManager         = new UpdateManager($this);
 
+		$this->errorHandler->init();
+
 		// Define Permission Levels
 		$this->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_SHUTDOWN, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
 		$this->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_RESTART, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
@@ -132,8 +134,6 @@ class ManiaControl implements CommandListener, TimerListener {
 
 		// Check connection every 30 seconds
 		$this->timerManager->registerTimerListening($this, 'checkConnection', 1000 * 30);
-
-		$this->errorHandler->init();
 	}
 
 	/**
@@ -283,49 +283,10 @@ class ManiaControl implements CommandListener, TimerListener {
 	}
 
 	/**
-	 * Handle PHP Process Shutdown
-	 */
-	public function handleShutdown() {
-		// OnShutdown callback
-		$this->callbackManager->triggerCallback(Callbacks::ONSHUTDOWN);
-
-		// Announce quit
-		// TODO: skip client-related actions on transport exception (e.g. server down)
-		$this->chat->sendInformation('ManiaControl shutting down.');
-
-		if ($this->client) {
-			try {
-				// Hide manialinks
-				$this->client->sendHideManialinkPage();
-				// Close the client connection
-				$this->client->delete($this->server->ip, $this->server->port);
-			} catch (TransportException $e) {
-				$this->errorHandler->handleException($e, false);
-			}
-		}
-
-		$this->errorHandler->handleShutdown();
-
-		$this->log('Quitting ManiaControl!');
-		exit();
-	}
-
-	/**
-	 * Collect Garbage
-	 */
-	public function collectGarbage() {
-		// TODO: remove after a check of the influence
-		// gc_collect_cycles();
-	}
-
-	/**
 	 * Run ManiaControl
 	 */
 	public function run() {
 		$this->log('Starting ManiaControl v' . self::VERSION . '!');
-
-		// Register shutdown handler
-		register_shutdown_function(array($this, 'handleShutdown'));
 
 		// Connect to server
 		$this->connect();
@@ -345,10 +306,6 @@ class ManiaControl implements CommandListener, TimerListener {
 
 		// AfterInit callback
 		$this->callbackManager->triggerCallback(Callbacks::AFTERINIT);
-
-		// Enable Garbage Collecting
-		gc_enable();
-		$this->timerManager->registerTimerListening($this, 'collectGarbage', 1000 * 60);
 
 		// Announce ManiaControl
 		$this->chat->sendInformation('ManiaControl v' . self::VERSION . ' successfully started!');

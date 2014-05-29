@@ -108,6 +108,9 @@ if (extension_loaded('curl')) {
 	exit();
 }
 
+// Make sure garbage collection is enabled
+gc_enable();
+
 // Autoload Function that loads ManiaControl Class Files on Demand
 spl_autoload_register(function ($className) {
 	$classPath = str_replace('\\', DIRECTORY_SEPARATOR, $className);
