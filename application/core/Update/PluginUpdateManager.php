@@ -210,9 +210,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 		$updates       = array();
 		$pluginClasses = $this->maniaControl->pluginManager->getPluginClasses();
 		foreach ($pluginClasses as $pluginClass) {
-			/**
-			 * @var Plugin $pluginClass
-			 */
+			/** @var Plugin $pluginClass */
 			$pluginId = $pluginClass::getId();
 			if (isset($pluginsUpdates[$pluginId])) {
 				/** @var PluginUpdateData $pluginUpdateData */
@@ -379,19 +377,17 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 	 */
 	public function getPluginUpdate($pluginClass) {
 		$pluginClass = PluginManager::getPluginClass($pluginClass);
-		/**
-		 * @var Plugin $pluginClass
-		 */
-		$pluginId       = $pluginClass::getId();
-		$url            = ManiaControl::URL_WEBSERVICE . 'plugins/' . $pluginId;
-		$dataJson       = FileUtil::loadFile($url);
-		$pluginVersions = json_decode($dataJson);
-		if (!$pluginVersions || !isset($pluginVersions[0])) {
+		/** @var Plugin $pluginClass */
+		$pluginId      = $pluginClass::getId();
+		$url           = ManiaControl::URL_WEBSERVICE . 'plugins/' . $pluginId;
+		$dataJson      = FileUtil::loadFile($url);
+		$pluginVersion = json_decode($dataJson);
+		if (!$pluginVersion) {
 			return false;
 		}
-		$pluginUpdateData = new PluginUpdateData($pluginVersions[0]);
-		$pluginVersion    = $pluginClass::getVersion();
-		if ($pluginUpdateData->isNewerThan($pluginVersion)) {
+		$pluginUpdateData = new PluginUpdateData($pluginVersion);
+		$version          = $pluginClass::getVersion();
+		if ($pluginUpdateData->isNewerThan($version)) {
 			return $pluginUpdateData;
 		}
 		return false;
