@@ -487,7 +487,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			if (!$error) {
 				$data = json_decode($data);
 				if ($data->success) {
-					$self->maniaControl->log("Votes successfully permitted");
+					$self->maniaControl->log("Votes successfully submitted");
 				} else {
 					$self->maniaControl->log("Error while updating votes: " . $data->data->message);
 					if ($data->data->message == "invalid session") {
