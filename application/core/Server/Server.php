@@ -415,4 +415,13 @@ class Server implements CallbackListener {
 	public function isTeamMode() {
 		return $this->teamMode;
 	}
+
+	/**
+	 * Check if the Servers is empty
+	 *
+	 * @return bool
+	 */
+	public function isEmpty() {
+		return ($this->maniaControl->playerManager->getPlayerCount(false) === 0);
+	}
 }
