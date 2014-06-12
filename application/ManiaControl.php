@@ -14,6 +14,9 @@ define('ManiaControlDir', __DIR__ . DIRECTORY_SEPARATOR);
 // Define fatal error level
 define('E_FATAL', E_ERROR | E_CORE_ERROR | E_COMPILE_ERROR | E_RECOVERABLE_ERROR | E_USER_ERROR);
 
+// Min PHP Version
+define('MIN_PHP_VERSION', '5.4');
+
 // Set process settings
 ini_set('memory_limit', '64M');
 if (!ini_get('date.timezone') && function_exists('date_default_timezone_set')) {
@@ -62,7 +65,6 @@ logMessage('Starting ManiaControl...');
  */
 function checkRequirements() {
 	// Check for min PHP version
-	define('MIN_PHP_VERSION', '5.4');
 	$phpVersion = phpversion();
 	$message    = 'Checking for minimum required PHP-Version' . MIN_PHP_VERSION . ' ...';
 	if ($phpVersion < MIN_PHP_VERSION) {
