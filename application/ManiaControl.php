@@ -62,19 +62,18 @@ logMessage('Starting ManiaControl...');
  */
 function checkRequirements() {
 	// Check for min PHP version
-	$minPhpVersion = '5.4';
-	$phpVersion    = phpversion();
-	$message       = "Checking for minimum required PHP-Version '{$minPhpVersion}'... ";
-	if ($phpVersion < $minPhpVersion) {
-		$message .= "{$minPhpVersion} TOO OLD VERSION!";
-		logMessage($message);
-		logMessage(" -- Make sure that you install at least PHP {$minPhpVersion}!");
+	define('MIN_PHP_VERSION', '5.4');
+	$phpVersion = phpversion();
+	$message    = 'Checking for minimum required PHP-Version' . MIN_PHP_VERSION . ' ...';
+	if ($phpVersion < MIN_PHP_VERSION) {
+		logMessage($message . $phpVersion . ' TOO OLD VERSION!');
+		logMessage(' -- Make sure that you install at least PHP ' . MIN_PHP_VERSION . '!');
 		exit();
 	}
-	logMessage($message . "'{$minPhpVersion}' OK!");
+	logMessage($message . MIN_PHP_VERSION . ' OK!');
 
 	// Check for MySQLi
-	$message = 'Checking for installed MySQLi... ';
+	$message = 'Checking for installed MySQLi ... ';
 	if (!extension_loaded('mysqli')) {
 		logMessage($message . 'NOT FOUND!');
 		logMessage(" -- You don't have MySQLi installed! Check: http://www.php.net/manual/en/mysqli.installation.php");
@@ -83,7 +82,7 @@ function checkRequirements() {
 	logMessage($message . 'FOUND!');
 
 	// Check for cURL
-	$message = 'Checking for installed cURL... ';
+	$message = 'Checking for installed cURL ... ';
 	if (!extension_loaded('curl')) {
 		logMessage($message . 'NOT FOUND!');
 		logMessage(" -- You don't have cURL installed! Check: http://www.php.net/manual/en/curl.installation.php");
