@@ -25,14 +25,19 @@ abstract class FileUtil {
 			return null;
 		}
 		$urlData  = parse_url($url);
+		$host     = $urlData['host'];
 		$port     = (isset($urlData['port']) ? $urlData['port'] : 80);
 		$urlQuery = (isset($urlData['query']) ? '?' . $urlData['query'] : '');
 
-		$fsock = fsockopen($urlData['host'], $port);
+		$fsock = fsockopen($host, $port);
+		if (!is_resource($fsock)) {
+			trigger_error("Couldn't open socket connection to '{$host}' on port '{$port}'!");
+			return null;
+		}
 		stream_set_timeout($fsock, 3);
 
 		$query = 'GET ' . $urlData['path'] . $urlQuery . ' HTTP/1.0' . PHP_EOL;
-		$query .= 'Host: ' . $urlData['host'] . PHP_EOL;
+		$query .= 'Host: ' . $host . PHP_EOL;
 		$query .= 'Content-Type: ' . $contentType . PHP_EOL;
 		$query .= 'User-Agent: ManiaControl v' . ManiaControl::VERSION . PHP_EOL;
 		$query .= PHP_EOL;
