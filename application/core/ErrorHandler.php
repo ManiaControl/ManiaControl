@@ -27,6 +27,7 @@ class ErrorHandler {
 	 * Private Properties
 	 */
 	private $maniaControl = null;
+	private $handlingError = null;
 
 	/**
 	 * Construct Error Handler
@@ -73,6 +74,13 @@ class ErrorHandler {
 			return false;
 		}
 
+		if (!$this->handlingError) {
+			// Reset error handler for safety
+			$this->handlingError = true;
+			set_error_handler(array(&$this, 'handleError'), -1);
+		}
+
+		// Build log message
 		$errorTag         = $this->getErrorTag($errorNumber);
 		$userError        = $this->isUserErrorNumber($errorNumber);
 		$traceSourceClass = null;
@@ -92,6 +100,7 @@ class ErrorHandler {
 		$this->maniaControl->log($logMessage);
 
 		if (!DEV_MODE && !$userError && !$suppressed) {
+			// Report error
 			$report                = array();
 			$report['Type']        = 'Error';
 			$report['Message']     = $message;
@@ -131,6 +140,9 @@ class ErrorHandler {
 		if ($this->isFatalError($errorNumber)) {
 			$this->maniaControl->quit('Quitting ManiaControl after Fatal Error.');
 		}
+
+		// Disable safety state
+		$this->handlingError = false;
 
 		return false;
 	}
