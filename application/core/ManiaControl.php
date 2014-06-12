@@ -252,7 +252,9 @@ class ManiaControl implements CommandListener, TimerListener {
 			$command = escapeshellarg(ManiaControlDir . "ManiaControl.bat");
 			system($command); // TODO, windows stucks here as long controller is running
 		}
-		exit();
+
+		// Quit the old instance
+		$this->quit('Quitting ManiaControl to restart.');
 	}
 
 	/**

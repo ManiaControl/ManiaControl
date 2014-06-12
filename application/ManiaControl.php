@@ -4,7 +4,6 @@
 error_reporting(E_ALL);
 
 // Run configuration
-define('LOG_WRITE_CURRENT_FILE', 'ManiaControl.log'); // Write current log to extra file in base dir
 define('LOG_NAME_USE_DATE', true); // Use current date as suffix for log file name in logs folder
 define('LOG_NAME_USE_PID', true); // Use current process id as suffix for log file name in logs folder
 define('DEV_MODE', false); // Development mode to not send error reports etc.
@@ -35,14 +34,8 @@ if (LOG_NAME_USE_PID) {
 }
 $logFileName .= '.log';
 define('LOG_FILE', $logFileName);
+ini_set('error_log', LOG_FILE);
 @file_put_contents(LOG_FILE, '');
-
-// Delete old current log file
-if (LOG_WRITE_CURRENT_FILE) {
-	$currentLogFileName = ManiaControlDir . LOG_WRITE_CURRENT_FILE;
-	define('LOG_CURRENT_FILE', $currentLogFileName);
-	@file_put_contents(LOG_CURRENT_FILE, '');
-}
 
 /**
  * Log and echo the given text

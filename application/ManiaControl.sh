@@ -1,3 +1,3 @@
 #!/bin/sh
-php ManiaControl.php 2>&1 &
+php ManiaControl.php >ManiaControl.log 2>&1 &
 echo $! > ManiaControl.pid
