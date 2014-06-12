@@ -126,9 +126,11 @@ class ErrorHandler {
 				logMessage('Error-Report failed! ' . print_r($response, true));
 			}
 		}
-		if ($this->shouldStopExecution($errorNumber)) {
-			$this->maniaControl->quit('Stopping Execution...');
+
+		if ($this->isFatalError($errorNumber)) {
+			$this->maniaControl->quit('Quitting ManiaControl after Fatal Error.');
 		}
+
 		return false;
 	}
 
@@ -237,7 +239,13 @@ class ErrorHandler {
 				$string .= 'array(' . $this->parseArgumentsArray($arg) . ')';
 			} else {
 				$type = gettype($arg);
-				$string .= $type . '(' . print_r($arg, true) . ')';
+				$string .= $type . '(';
+				if (is_string($arg)) {
+					print_r(substr($arg, 0, 50), true);
+				} else {
+					print_r($arg, true);
+				}
+				$string .= ')';
 			}
 			if ($index < $argsCount - 1) {
 				$string .= ', ';
@@ -273,12 +281,12 @@ class ErrorHandler {
 	}
 
 	/**
-	 * Test if ManiaControl should stop its Execution
+	 * Test whether the given Error Number represents a Fatal Error
 	 *
 	 * @param int $errorNumber
 	 * @return bool
 	 */
-	private function shouldStopExecution($errorNumber) {
+	private function isFatalError($errorNumber) {
 		return ($errorNumber & E_FATAL);
 	}
 
@@ -371,7 +379,7 @@ class ErrorHandler {
 			if ($this->shouldRestart()) {
 				$this->maniaControl->restart();
 			}
-			exit();
+			$this->maniaControl->quit('Quitting ManiaControl after Exception.');
 		}
 	}
 
