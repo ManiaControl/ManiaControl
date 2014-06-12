@@ -14,7 +14,10 @@ class Skin extends AbstractStructure
 	/** @var FileDesc */
 	public $packDesc;
 
-	static function fromArray($array)
+	/**
+	 * @return Skin
+	 */
+	public static function fromArray($array)
 	{
 		$object = parent::fromArray($array);
 		$object->packDesc = FileDesc::fromArray($object->packDesc);

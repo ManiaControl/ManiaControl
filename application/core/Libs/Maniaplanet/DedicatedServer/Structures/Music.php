@@ -15,4 +15,14 @@ class Music extends AbstractStructure
 	public $url;
 	/** var string */
 	public $file;
+
+	/**
+	 * @return Music
+	 */
+	public static function fromArray($array)
+	{
+		$object = parent::fromArray($array);
+		$object->file = str_replace("\xEF\xBB\xBF", '', $object->file);
+		return $object;
+	}
 }

@@ -150,12 +150,17 @@ class GbxRemote
 		switch(count($this->multicallBuffer))
 		{
 			case 0:
-				return;
+				return array();
 			case 1:
 				$call = array_shift($this->multicallBuffer);
-				return $this->query($call['methodName'], $call['params']);
+				return array($this->query($call['methodName'], $call['params']));
 			default:
 				$result = $this->query('system.multicall', array($this->multicallBuffer));
+				foreach($result as &$value)
+					if(isset($value['faultCode']))
+						$value = FaultException::create($value['faultString'], $value['faultCode']);
+					else
+						$value = $value[0];
 				$this->multicallBuffer = array();
 				return $result;
 		}

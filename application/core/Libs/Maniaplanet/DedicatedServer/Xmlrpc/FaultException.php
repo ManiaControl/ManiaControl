@@ -34,35 +34,26 @@ class FaultException extends Exception
 				return new LockedFeatureException($faultString, $faultCode);
 			case 'Login or Uid unknown.':
 			case 'Login unknown.':
-				return new LoginUnknownException($faultString, $faultCode); //@todo remove this line
-				//return new UnknownPlayerException($faultString, $faultCode);
+				return new UnknownPlayerException($faultString, $faultCode);
 			case 'The player is not a spectator':
 			case 'The player is not a spectator.':
-				return new PlayerIsNotSpectatorException($faultString, $faultCode); //@todo remove this line
 			case 'Not a network player.':
 			case 'Player is not a fake player':
 				return new PlayerStateException($faultString, $faultCode);
 			case 'Player already ignored.':
-				return new PlayerAlreadyIgnoredException($faultString, $faultCode); //@todo remove this line
 			case 'Player already black listed.':
 			case 'Player already on guest list.':
 			case 'Map already added.':
 				return new AlreadyInListException($faultString, $faultCode);
 			case 'Login not banned.':
-				return new NotInListException($faultString, $faultCode); //@todo remove this line
 			case 'Player not ignored.':
-				return new PlayerNotIgnoredException($faultString, $faultCode); //@todo remove this line
 			case 'Player not black listed.':
 			case 'Player not on guest list.':
-				return new NotInListException($faultString, $faultCode); //@todo remove this line
 			case 'Map not in the selection.':
 			case 'The map isn\'t in the current selection.':
-				return new MapNotInCurrentSelectionException($faultString, $faultCode); //@todo remove this line
 			case 'Map not found.':
-				return new MapNotFoundException($faultString, $faultCode); //@todo remove this line
-				//return new NotInListException($faultString, $faultCode);
+				return new NotInListException($faultString, $faultCode);
 			case 'Start index out of bound.':
-				return new StartIndexOutOfBoundException($faultString, $faultCode); //@todo remove this line
 			case 'invalid index':
 				return new IndexOutOfBoundException($faultString, $faultCode);
 			case 'the next map must be different from the current one.':
@@ -71,7 +62,6 @@ class FaultException extends Exception
 				return new ChangeInProgressException($faultString, $faultCode);
 			case 'Incompatible map type.':
 			case 'Map not complete.':
-				return new MapNotCompatibleOrCompleteException($faultString, $faultCode); //@todo remove this line
 			case 'The map doesn\'t match the server packmask.':
 				return new InvalidMapException($faultString, $faultCode);
 			case 'Ladder mode unknown.':
@@ -80,19 +70,14 @@ class FaultException extends Exception
 				return new ServerOptionsException($faultString, $faultCode);
 			case 'New mode unknown.':
 			case 'You need to stop the server to change to/from script mode.':
-				return new GameModeException($faultString, $faultCode); //@todo remove this line
 			case 'Not in script mode.':
-				return new NotInScriptModeException($faultString, $faultCode); //@todo remove this line
 			case 'Not in Team mode.':
-				return new NotInTeamModeException($faultString, $faultCode); //@todo remove this line
 			case 'Not in Rounds or Laps mode.':
 			case 'The scores must be decreasing.':
 				return new GameModeException($faultString, $faultCode);
 			case 'Unable to write the black list file.':
 			case 'Unable to write the guest list file.':
-				return new FileException($faultString, $faultCode); //@todo remove this line
 			case 'Unable to write the playlist file.':
-				return new CouldNotWritePlaylistFileException($faultString, $faultCode); //@todo remove this line
 			case 'Could not save file.':
 			case 'Map unknown.':
 			case 'The playlist file does not exist.':
@@ -123,59 +108,3 @@ class InvalidMapException extends FaultException{}
 class GameModeException extends FaultException {}
 class ServerOptionsException extends FaultException {}
 class FileException extends FaultException {}
-
-/**
- * @deprecated
- * @see UnknownPlayerException
- */
-class LoginUnknownException extends UnknownPlayerException {}
-/**
- * @deprecated
- * @see FileException
- */
-class CouldNotWritePlaylistFileException extends FileException {}
-/**
- * @deprecated
- * @see IndexOutOfBoundException
- */
-class StartIndexOutOfBoundException extends IndexOutOfBoundException {}
-/**
- * @deprecated
- * @see GameModeException
- */
-class NotInScriptModeException extends GameModeException {}
-/**
- * @deprecated
- * @see PlayerStateException
- */
-class PlayerIsNotSpectatorException extends PlayerStateException {}
-/**
- * @deprecated
- * @see AlreadyInListException
- */
-class PlayerAlreadyIgnoredException extends AlreadyInListException {}
-/**
- * @deprecated
- * @see NotInListException
- */
-class PlayerNotIgnoredException extends NotInListException {}
-/**
- * @deprecated
- * @see GameModeException
- */
-class NotInTeamModeException extends GameModeException {}
-/**
- * @deprecated
- * @see NotInListException
- */
-class MapNotInCurrentSelectionException extends NotInListException {}
-/**
- * @deprecated
- * @see InvalidMapException
- */
-class MapNotCompatibleOrCompleteException extends InvalidMapException {}
-/**
- * @deprecated
- * @see NotInListException
- */
-class MapNotFoundException extends NotInListException {}

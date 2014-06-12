@@ -13,7 +13,7 @@ if(extension_loaded('xmlrpc'))
 	{
 		private static $options = array(
 			'encoding' => 'utf-8',
-			'escaping' => 'cdata',
+			'escaping' => 'markup',
 			'verbosity' => 'no_white_space'
 		);
 
@@ -83,11 +83,11 @@ else
 			switch(gettype($v))
 			{
 				case 'boolean':
-					return '<boolean>'.self::escape((int) $v, $escape).'</boolean>';
+					return '<boolean>'.((int) $v).'</boolean>';
 				case 'integer':
-					return '<int>'.self::escape($v, $escape).'</int>';
+					return '<int>'.$v.'</int>';
 				case 'double':
-					return '<double>'.self::escape($v, $escape).'</double>';
+					return '<double>'.$v.'</double>';
 				case 'string':
 				case 'NULL':
 					if(!$v)
@@ -98,17 +98,17 @@ else
 					{
 						if(!$v->scalar)
 							return '<base64/>';
-						return '<base64>'.self::escape(base64_encode($v->scalar), $escape).'</base64>';
+						return '<base64>'.base64_encode($v->scalar).'</base64>';
 					}
 					if($v instanceof \DateTime)
-						return '<dateTime.iso8601>'.self::escape($v->format(self::DATE_FORMAT), $escape).'</dateTime.iso8601>';
+						return '<dateTime.iso8601>'.$v->format(self::DATE_FORMAT).'</dateTime.iso8601>';
 					$v = get_object_vars($v);
 					// fallthrough
 				case 'array':
-					$return = '';
 					// empty array case
 					if(!$v)
 						return '<array><data/></array>';
+					$return = '';
 					// pure array case
 					if(array_keys($v) === range(0, count($v) - 1))
 					{
@@ -132,7 +132,7 @@ else
 		private static function escape($str, $escape=true)
 		{
 			if($escape)
-				return '<![CDATA['.$str.']]>';
+				return '<![CDATA['.str_replace(']]>', ']]]]><![CDATA[>', $str).']]>';
 			return $str;
 		}
 

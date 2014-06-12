@@ -41,4 +41,14 @@ class Map extends AbstractStructure
 	public $mapType;
 	/** var string */
 	public $mapStyle;
+
+	/**
+	 * @return Map
+	 */
+	public static function fromArray($array)
+	{
+		$object = parent::fromArray($array);
+		$object->fileName = str_replace("\xEF\xBB\xBF", '', $object->fileName);
+		return $object;
+	}
 }

@@ -13,4 +13,14 @@ class FileDesc extends AbstractStructure
 	public $fileName;
 	/** @var string */
 	public $checksum;
+
+	/**
+	 * @return FileDesc
+	 */
+	public static function fromArray($array)
+	{
+		$object = parent::fromArray($array);
+		$object->fileName = str_replace("\xEF\xBB\xBF", '', $object->fileName);
+		return $object;
+	}
 }
