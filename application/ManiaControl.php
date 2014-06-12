@@ -66,7 +66,7 @@ logMessage('Starting ManiaControl...');
 function checkRequirements() {
 	// Check for min PHP version
 	$phpVersion = phpversion();
-	$message    = 'Checking for minimum required PHP-Version' . MIN_PHP_VERSION . ' ...';
+	$message    = 'Checking for minimum required PHP-Version ' . MIN_PHP_VERSION . ' ... ';
 	if ($phpVersion < MIN_PHP_VERSION) {
 		logMessage($message . $phpVersion . ' TOO OLD VERSION!');
 		logMessage(' -- Make sure that you install at least PHP ' . MIN_PHP_VERSION . '!');
