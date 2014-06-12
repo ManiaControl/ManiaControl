@@ -173,7 +173,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		$this->mxKarmaOpenSession();
 		$this->mxKarma['startTime'] = time();
 
-		//Check if Karma Code got specified, and inform admin that it would be good to specifiy one
+		//Check if Karma Code got specified, and inform admin that it would be good to specify one
 		$serverLogin      = $this->maniaControl->server->login;
 		$karmaSettingName = self::buildKarmaSettingName($serverLogin);
 		$mxKarmaCode      = $this->maniaControl->settingManager->getSettingValue($this, $karmaSettingName);

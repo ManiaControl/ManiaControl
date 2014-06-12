@@ -360,7 +360,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$quad->setSubStyle($quad::SUBSTYLE_StateFavourite);
 		$quad->setPosition($width / 2 - 4, -1.5, -0.5);
 		$quad->setSize(3, 3);
-		$quad->setManialink('mcontrol?favorite=' . urlencode($this->maniaControl->server->login));
+		$quad->setManialink('maniacontrol?favorite=' . urlencode($this->maniaControl->server->login));
 
 		// Send manialink
 		$this->maniaControl->manialinkManager->sendManialink($maniaLink, $login);

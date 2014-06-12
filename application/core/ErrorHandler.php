@@ -6,6 +6,7 @@ use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Files\FileUtil;
 use ManiaControl\Plugins\PluginManager;
 use ManiaControl\Update\UpdateManager;
+use Maniaplanet\DedicatedServer\Xmlrpc\TransportException;
 
 /**
  * Error and Exception Manager Class
