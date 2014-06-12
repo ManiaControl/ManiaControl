@@ -1,7 +1,8 @@
-/.settings
+/.settings/
 /.buildpath
 /.project
-/.idea
-/application/configs
+/.idea/
+/application/configs/
 /application/logs/
 /application/ManiaControl.log
+/application/ManiaControl.pid

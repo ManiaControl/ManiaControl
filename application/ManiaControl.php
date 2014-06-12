@@ -20,20 +20,26 @@ if (!ini_get('date.timezone') && function_exists('date_default_timezone_set')) {
 	date_default_timezone_set('UTC');
 }
 
-// Build log file name
-$logFileName = ManiaControlDir . 'logs' . DIRECTORY_SEPARATOR;
-if (!is_dir($logFileName) && !mkdir($logFileName)) {
-	echo "Couldn't create Logs Folder, please check the File Permissions!";
+/*
+ * Build log file name
+ */
+function buildLogFileName() {
+	$logFileName = ManiaControlDir . 'logs' . DIRECTORY_SEPARATOR;
+	if (!is_dir($logFileName) && !mkdir($logFileName)) {
+		echo "Couldn't create Logs Folder, please check the File Permissions!";
+	}
+	$logFileName .= 'ManiaControl';
+	if (LOG_NAME_USE_DATE) {
+		$logFileName .= '_' . date('Y-m-d');
+	}
+	if (LOG_NAME_USE_PID) {
+		$logFileName .= '_' . getmypid();
+	}
+	$logFileName .= '.log';
+	ini_set('error_log', $logFileName);
 }
-$logFileName .= 'ManiaControl';
-if (LOG_NAME_USE_DATE) {
-	$logFileName .= '_' . date('Y-m-d');
-}
-if (LOG_NAME_USE_PID) {
-	$logFileName .= '_' . getmypid();
-}
-$logFileName .= '.log';
-ini_set('error_log', $logFileName);
+
+buildLogFileName();
 
 /**
  * Log and echo the given text
@@ -43,46 +49,50 @@ ini_set('error_log', $logFileName);
  */
 function logMessage($message, $eol = true) {
 	error_log($message);
-	echo $message . ($eol ? PHP_EOL : '');
+	if ($eol) {
+		$message = '[' . date('d-M-Y H:i:s e') . '] ' . $message . PHP_EOL;
+	}
+	echo $message;
 }
 
 logMessage('Starting ManiaControl...');
 
 /**
- * Check for Min PHP version
+ * Check for the requirements to run ManiaControl
  */
-define('MIN_PHP_VERSION', '5.4');
-logMessage('Checking for minimum required PHP-Version ' . MIN_PHP_VERSION . ' ... ', false);
-if (phpversion() >= MIN_PHP_VERSION) {
-	logMessage(phpversion() . " OK!", true);
-} else {
-	logMessage('TOO OLD VERSION!', true);
-	logMessage(' -- Make sure that you install at least PHP 5.4', true);
-	exit();
+function checkRequirements() {
+	// Check for min PHP version
+	$minPhpVersion = '5.4';
+	$phpVersion    = phpversion();
+	$message       = "Checking for minimum required PHP-Version '{$minPhpVersion}'... ";
+	if ($phpVersion < $minPhpVersion) {
+		$message .= "{$minPhpVersion} TOO OLD VERSION!";
+		logMessage($message);
+		logMessage(" -- Make sure that you install at least PHP {$minPhpVersion}!");
+		exit();
+	}
+	logMessage($message . "'{$minPhpVersion}' OK!");
+
+	// Check for MySQLi
+	$message = 'Checking for installed MySQLi... ';
+	if (!extension_loaded('mysqli')) {
+		logMessage($message . 'NOT FOUND!');
+		logMessage(" -- You don't have MySQLi installed! Check: http://www.php.net/manual/en/mysqli.installation.php");
+		exit();
+	}
+	logMessage($message . 'FOUND!');
+
+	// Check for cURL
+	$message = 'Checking for installed cURL... ';
+	if (!extension_loaded('curl')) {
+		logMessage($message . 'NOT FOUND!');
+		logMessage(" -- You don't have cURL installed! Check: http://www.php.net/manual/en/curl.installation.php");
+		exit();
+	}
+	logMessage($message . 'FOUND!');
 }
 
-/**
- * Checking if all the needed libraries are installed.
- * - MySQLi
- * - cURL
- */
-logMessage('Checking for installed MySQLi ... ', false);
-if (extension_loaded('mysqli')) {
-	logMessage('FOUND!', true);
-} else {
-	logMessage('NOT FOUND!', true);
-	logMessage(' -- You don\'t have MySQLi installed, make sure to check: http://www.php.net/manual/en/mysqli.installation.php', true);
-	exit();
-}
-
-logMessage('Checking for installed cURL   ... ', false);
-if (extension_loaded('curl')) {
-	logMessage('FOUND!', true);
-} else {
-	logMessage('NOT FOUND!', true);
-	logMessage('You don\'t have cURL installed, make sure to check: http://www.php.net/manual/en/curl.installation.php', true);
-	exit();
-}
+checkRequirements();
 
 // Make sure garbage collection is enabled
 gc_enable();
