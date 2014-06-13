@@ -16,38 +16,74 @@ class ServerConfig {
 	public $id = null;
 	public $host = null;
 	public $port = null;
-	public $login = null;
+	public $user = null;
 	public $pass = null;
 
 	/**
 	 * Create a new Server Config Instance
 	 *
-	 * @param string $id    Config Id
-	 * @param string $host  Server Ip
-	 * @param string $port  Server Port
-	 * @param string $login XmlRpc Login
-	 * @param string $pass  XmlRpc Password
+	 * @param mixed $id   Config Id
+	 * @param mixed $host Server Ip
+	 * @param mixed $port Server Port
+	 * @param mixed $user XmlRpc User
+	 * @param mixed $pass XmlRpc Password
 	 */
-	public function __construct($id = null, $host = null, $port = null, $login = null, $pass = null) {
-		$this->id    = (string)$id;
-		$this->host  = (string)$host;
-		$this->port  = (int)$port;
-		$this->login = (string)$login;
-		$this->pass  = (string)$pass;
+	public function __construct($id = null, $host = null, $port = null, $user = null, $pass = null) {
+		$this->id   = $this->extractConfigData($id);
+		$this->host = $this->extractConfigData($host);
+		$this->port = $this->extractConfigData($port);
+		$this->user = $this->extractConfigData($user);
+		$this->pass = $this->extractConfigData($pass);
+	}
+
+	/**
+	 * Extract the actual Data from the given Config Param
+	 *
+	 * @param mixed $configParam
+	 * @return string
+	 */
+	private function extractConfigData($configParam) {
+		if (is_array($configParam)) {
+			return (string)reset($configParam);
+		}
+		return (string)$configParam;
 	}
 
 	/**
 	 * Validate the Config Data
 	 *
+	 * @param string $message
 	 * @return bool
 	 */
-	public function validate() {
-		if (!$this->host || !$this->port || !$this->login || !$this->pass) {
+	public function validate(&$message = null) {
+		// Host
+		if (!$this->host) {
+			$message = 'Missing Host!';
 			return false;
 		}
-		if ($this->port === 'port') {
+
+		// Port
+		if (!$this->port || $this->port === 'port') {
+			$message = 'Missing Port!';
 			return false;
 		}
+
+		// User
+		if (!$this->user) {
+			$message = 'Missing User!';
+			return false;
+		}
+		if (!in_array($this->user, array('SuperAdmin', 'Admin', 'User'))) {
+			$message = 'Invalid User!';
+			return false;
+		}
+
+		// Pass
+		if (!$this->pass) {
+			$message = 'Missing Pass!';
+			return false;
+		}
+
 		return true;
 	}
 }

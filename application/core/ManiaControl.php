@@ -345,9 +345,9 @@ class ManiaControl implements CommandListener, TimerListener {
 		$this->log("Connecting to Server at {$this->server->config->host}:{$this->server->config->port}...");
 
 		try {
-			$this->client = Connection::factory($this->server->config->host, $this->server->config->port, self::SCRIPT_TIMEOUT, $this->server->config->login, $this->server->config->pass, self::API_VERSION);
+			$this->client = Connection::factory($this->server->config->host, $this->server->config->port, self::SCRIPT_TIMEOUT, $this->server->config->user, $this->server->config->pass, self::API_VERSION);
 		} catch (AuthenticationException $e) {
-			$message = "Couldn't authenticate on Server with User '{$this->server->config->login}' & Pass '{$this->server->config->pass}'! " . $e->getMessage();
+			$message = "Couldn't authenticate on Server with User '{$this->server->config->user}' & Pass '{$this->server->config->pass}'! " . $e->getMessage();
 			$this->quit($message, true);
 		}
 

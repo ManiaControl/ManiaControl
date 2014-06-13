@@ -114,44 +114,20 @@ class Server implements CallbackListener {
 			$serverElement = $serverElements[0];
 		}
 
-		// Host
+		// Get config elements
 		$hostElements = $serverElement->xpath('host');
-		if (!$hostElements) {
-			$this->maniaControl->quit('Invalid server configuration (Missing Host).', true);
-		}
-		$host = (string)$hostElements[0];
-
-		// Port
 		$portElements = $serverElement->xpath('port');
-		if (!$portElements) {
-			$this->maniaControl->quit('Invalid server configuration (Missing Port).', true);
-		}
-		$port = (string)$portElements[0];
-
-		// Login
 		$userElements = $serverElement->xpath('user');
 		if (!$userElements) {
 			$userElements = $serverElement->xpath('login');
 		}
-		if (!$userElements) {
-			$this->maniaControl->quit('Invalid server configuration (Missing User).', true);
-		}
-		$user = (string)$userElements[0];
-		if (!in_array($user, array('SuperAdmin', 'Admin', 'User'))) {
-			$this->maniaControl->quit('Invalid server configuration (Invalid User).', true);
-		}
-
-		// Password
 		$passElements = $serverElement->xpath('pass');
-		if (!$passElements) {
-			$this->maniaControl->quit('Invalid server configuration (Pass).', true);
-		}
-		$pass = (string)$passElements[0];
 
 		// Create config object
-		$config = new ServerConfig($serverId, $host, $port, $user, $pass);
-		if (!$config->validate()) {
-			$this->maniaControl->quit("Your config file doesn't seem to be maintained properly. Please check the server configuration again!", true);
+		$config  = new ServerConfig($serverId, $hostElements, $portElements, $userElements, $passElements);
+		$message = null;
+		if (!$config->validate($message)) {
+			$this->maniaControl->quit("Your config file doesn't seem to be maintained properly. Please check the server configuration again! {$message}", true);
 		}
 		$this->config = $config;
 	}
