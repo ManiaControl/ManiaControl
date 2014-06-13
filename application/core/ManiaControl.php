@@ -128,9 +128,9 @@ class ManiaControl implements CommandListener, TimerListener {
 		$this->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_RESTART, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
 
 		// Register for commands
-		$this->commandManager->registerCommandListener('version', $this, 'command_Version', false, 'Shows ManiaControl version.');
-		$this->commandManager->registerCommandListener('restart', $this, 'command_Restart', true, 'Restarts ManiaControl.');
-		$this->commandManager->registerCommandListener('shutdown', $this, 'command_Shutdown', true, 'Shuts ManiaControl down.');
+		$this->commandManager->registerCommandListener('version', $this, 'commandVersion', false, 'Shows ManiaControl version.');
+		$this->commandManager->registerCommandListener('restart', $this, 'commandRestart', true, 'Restarts ManiaControl.');
+		$this->commandManager->registerCommandListener('shutdown', $this, 'commandShutdown', true, 'Shuts ManiaControl down.');
 
 		// Check connection every 30 seconds
 		$this->timerManager->registerTimerListening($this, 'checkConnection', 1000 * 30);
@@ -204,7 +204,7 @@ class ManiaControl implements CommandListener, TimerListener {
 	 * @param array  $chatCallback
 	 * @param Player $player
 	 */
-	public function command_Version(array $chatCallback, Player $player) {
+	public function commandVersion(array $chatCallback, Player $player) {
 		$message = 'This server is using ManiaControl v' . ManiaControl::VERSION . '!';
 		$this->chat->sendInformation($message, $player->login);
 	}
@@ -215,7 +215,7 @@ class ManiaControl implements CommandListener, TimerListener {
 	 * @param array  $chatCallback
 	 * @param Player $player
 	 */
-	public function command_Restart(array $chatCallback, Player $player) {
+	public function commandRestart(array $chatCallback, Player $player) {
 		if (!$this->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_RESTART)) {
 			$this->authenticationManager->sendNotAllowed($player);
 			return;
@@ -263,7 +263,7 @@ class ManiaControl implements CommandListener, TimerListener {
 	 * Get the Operating System on which ManiaControl is running
 	 *
 	 * @param string $compareOS
-	 * @return string
+	 * @return string|bool
 	 */
 	public function getOS($compareOS = null) {
 		$windows = defined('PHP_WINDOWS_VERSION_MAJOR');
@@ -282,12 +282,12 @@ class ManiaControl implements CommandListener, TimerListener {
 	}
 
 	/**
-	 * Handle //shutdown command
+	 * Handle Shutdown Command
 	 *
 	 * @param array  $chat
 	 * @param Player $player
 	 */
-	public function command_Shutdown(array $chat, Player $player) {
+	public function commandShutdown(array $chat, Player $player) {
 		if (!$this->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_SHUTDOWN)) {
 			$this->authenticationManager->sendNotAllowed($player);
 			return;
@@ -344,7 +344,7 @@ class ManiaControl implements CommandListener, TimerListener {
 		$this->log("Connecting to Server at {$this->server->config->host}:{$this->server->config->port}...");
 
 		try {
-			$this->client = Connection::factory($this->server->config->host, $this->server->config->port, self::SCRIPT_TIMEOUT, $this->server->config->login, $this->server->config->pass);
+			$this->client = Connection::factory($this->server->config->host, $this->server->config->port, self::SCRIPT_TIMEOUT, $this->server->config->login, $this->server->config->pass, self::API_VERSION);
 		} catch (Exception $e) {
 			$message = "Couldn't authenticate on Server with User '{$this->server->config->login}' & Pass '{$this->server->config->pass}'! " . $e->getMessage();
 			$this->quit($message, true);
