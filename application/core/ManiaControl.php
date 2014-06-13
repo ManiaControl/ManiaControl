@@ -239,7 +239,9 @@ class ManiaControl implements CommandListener, TimerListener {
 		}
 
 		// Hide widgets
-		$this->client->sendHideManialinkPage();
+		if ($this->client) {
+			$this->client->sendHideManialinkPage();
+		}
 
 		$this->log('Restarting ManiaControl!');
 
