@@ -68,22 +68,37 @@ abstract class FileUtil {
 	}
 
 	/**
-	 * Load config xml-file
+	 * Load the Config XML-File with the given Name
 	 *
 	 * @param string $fileName
-	 * @return \SimpleXMLElement
+	 * @return \DOMElement
 	 */
 	public static function loadConfig($fileName) {
 		$fileLocation = ManiaControlDir . 'configs' . DIRECTORY_SEPARATOR . $fileName;
 		if (!file_exists($fileLocation)) {
-			logMessage("Config File doesn't exist! ({$fileName})");
+			logMessage("Config file doesn't exist! ('{$fileName}')");
 			return null;
 		}
 		if (!is_readable($fileLocation)) {
-			logMessage("Config File isn't readable! Please check the File Permissions. ({$fileName})");
+			logMessage("Config file isn't readable! Please check the file permissions. ('{$fileName}')");
 			return null;
 		}
-		return simplexml_load_file($fileLocation);
+		$configFileContent = @file_get_contents($fileLocation);
+		if (!$configFileContent) {
+			trigger_error("Couldn't load config file! ('{$fileName}')");
+			return null;
+		}
+		$domDocument = new \DOMDocument();
+		if (!@$domDocument->loadXML($configFileContent)) {
+			$message = "Config file isn't maintained properly! ('{$fileName}')";
+			$error   = error_get_last();
+			if ($error && stripos($error['message'], 'DOMDocument::loadXML()') === 0) {
+				$message .= PHP_EOL . $error['message'];
+			}
+			trigger_error($message);
+			return null;
+		}
+		return $domDocument->firstChild;
 	}
 
 	/**

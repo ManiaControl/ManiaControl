@@ -65,7 +65,7 @@ class ManiaControl implements CommandListener, TimerListener {
 	public $authenticationManager = null;
 	public $callbackManager = null;
 	public $chat = null;
-	/** @var \SimpleXMLElement $config */
+	/** @var \DOMElement $config */
 	public $config = null;
 	public $configurator = null;
 	/** @var Connection $client */
@@ -160,7 +160,7 @@ class ManiaControl implements CommandListener, TimerListener {
 		if (!$this->config) {
 			$this->quit("Error loading Configuration XML-File! ('{$configFileName}')", true);
 		}
-		if ($this->config->count() < 3) {
+		if ($this->config->childNodes->length < 3) {
 			$this->quit("Your Configuration File ('{$configFileName}') doesn't seem to be maintained properly. Please check it again!", true);
 		}
 	}
