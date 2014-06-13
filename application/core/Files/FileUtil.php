@@ -83,7 +83,12 @@ abstract class FileUtil {
 			logMessage("Config File isn't readable! Please check the File Permissions. ({$fileName})");
 			return null;
 		}
-		return simplexml_load_file($fileLocation);
+		$configXml = @simplexml_load_file($fileLocation);
+		if (!$configXml) {
+			logMessage("Config file isn't maintained properly! ({$fileName})");
+			return null;
+		}
+		return $configXml;
 	}
 
 	/**
