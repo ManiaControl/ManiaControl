@@ -27,6 +27,7 @@ use ManiaControl\Update\UpdateManager;
 use ManiaControl\Utils\CommandLineHelper;
 use ManiaControl\Utils\Formatter;
 use Maniaplanet\DedicatedServer\Connection;
+use Maniaplanet\DedicatedServer\Xmlrpc\AuthenticationException;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 use Maniaplanet\DedicatedServer\Xmlrpc\TransportException;
 
@@ -345,7 +346,7 @@ class ManiaControl implements CommandListener, TimerListener {
 
 		try {
 			$this->client = Connection::factory($this->server->config->host, $this->server->config->port, self::SCRIPT_TIMEOUT, $this->server->config->login, $this->server->config->pass, self::API_VERSION);
-		} catch (Exception $e) {
+		} catch (AuthenticationException $e) {
 			$message = "Couldn't authenticate on Server with User '{$this->server->config->login}' & Pass '{$this->server->config->pass}'! " . $e->getMessage();
 			$this->quit($message, true);
 		}

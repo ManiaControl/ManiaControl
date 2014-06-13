@@ -9,7 +9,7 @@
 		<port>port</port>
 
 		<!-- XmlRpc Login Details -->
-		<login>SuperAdmin</login>
+		<user>SuperAdmin</user>
 		<pass>password</pass>
 
 	</server>
