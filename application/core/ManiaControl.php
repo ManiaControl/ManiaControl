@@ -26,6 +26,7 @@ use ManiaControl\Statistics\StatisticManager;
 use ManiaControl\Update\UpdateManager;
 use ManiaControl\Utils\CommandLineHelper;
 use ManiaControl\Utils\Formatter;
+use ManiaControl\Utils\SystemUtil;
 use Maniaplanet\DedicatedServer\Connection;
 use Maniaplanet\DedicatedServer\Xmlrpc\AuthenticationException;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
@@ -51,8 +52,6 @@ class ManiaControl implements CommandListener, TimerListener {
 	const VERSION                     = '0.151';
 	const API_VERSION                 = '2013-04-16';
 	const MIN_DEDIVERSION             = '2014-04-02_18_00';
-	const OS_UNIX                     = 'Unix';
-	const OS_WIN                      = 'Windows';
 	const SCRIPT_TIMEOUT              = 10;
 	const URL_WEBSERVICE              = 'http://ws.maniacontrol.com/';
 	const SETTING_PERMISSION_SHUTDOWN = 'Shutdown ManiaControl';
@@ -248,7 +247,7 @@ class ManiaControl implements CommandListener, TimerListener {
 
 		// Execute start script in background
 		// TODO: restart the .php script itself ($_SERVER['scriptname'] or something + $argv)
-		if ($this->getOS() === self::OS_UNIX) {
+		if (SystemUtil::isUnix()) {
 			$command = 'sh ' . escapeshellarg(ManiaControlDir . 'ManiaControl.sh') . ' > /dev/null &';
 			exec($command);
 		} else {
@@ -258,18 +257,6 @@ class ManiaControl implements CommandListener, TimerListener {
 
 		// Quit the old instance
 		$this->quit('Quitting ManiaControl to restart.');
-	}
-
-	/**
-	 * Get the Operating System on which ManiaControl is running
-	 *
-	 * @return string
-	 */
-	public function getOS() {
-		if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
-			return self::OS_WIN;
-		}
-		return self::OS_UNIX;
 	}
 
 	/**
