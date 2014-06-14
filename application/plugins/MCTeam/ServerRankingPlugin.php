@@ -345,10 +345,10 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 	}
 
 	/**
-	 * Gets A Rank As Object with properties Avg PlayerIndex and Rank
+	 * Get the Rank Object for the given Player
 	 *
 	 * @param Player $player
-	 * @return Rank $rank
+	 * @return Rank
 	 */
 	private function getRank(Player $player) {
 		//TODO setting global from db or local
@@ -372,7 +372,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 	}
 
 	/**
-	 * Shows which Player is next ranked to you
+	 * Show which Player is next ranked to you
 	 *
 	 * @param Player $player
 	 * @return bool
