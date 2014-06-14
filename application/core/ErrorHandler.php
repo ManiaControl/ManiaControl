@@ -202,7 +202,7 @@ class ErrorHandler {
 		foreach ($backtrace as $traceStep) {
 			$traceString .= '#' . $stepCount . ': ';
 			if (isset($traceStep['class'])) {
-				if (!$sourceClass) {
+				if (!$sourceClass && strpos($traceStep['class'], '\\FaultException') === false) {
 					$sourceClass = $traceStep['class'];
 				}
 				$traceString .= $traceStep['class'];
