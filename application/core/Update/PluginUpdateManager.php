@@ -357,13 +357,15 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 					$self->maniaControl->chat->sendError($message, $player);
 					return;
 				}
+
 				$data = json_decode($data);
-				if (!isset($data[0])) {
+				if (!$data) {
 					$message = "Error loading Plugin Install Data! {$error}";
 					$self->maniaControl->chat->sendError($message, $player);
 					return;
 				}
-				$pluginUpdateData = new PluginUpdateData($data[0]);
+
+				$pluginUpdateData = new PluginUpdateData($data);
 				$self->installPlugin($pluginUpdateData, $player);
 			});
 		}
