@@ -397,15 +397,14 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 
 		// Check old record of the player
 		$oldRecord = $this->getLocalRecord($map, $callback->player);
-		$oldRank   = -1;
 		if ($oldRecord) {
-			$oldRank = $oldRecord->rank;
 			if ($oldRecord->time < $callback->time) {
 				// Not improved
 				return;
 			}
 			if ($oldRecord->time == $callback->time) {
 				// Same time
+				// TODO: respect notify-settings
 				$message = '$<$fff' . $callback->player->nickname . '$> equalized his/her $<$ff0' . $oldRecord->rank . '.$> Local Record: $<$fff' . Formatter::formatTime($oldRecord->time) . '$>!';
 				$this->maniaControl->chat->sendInformation('$3c0' . $message);
 				return;
