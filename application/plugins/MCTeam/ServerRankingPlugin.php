@@ -144,15 +144,15 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 	private function initTables() {
 		$mysqli = $this->maniaControl->database->mysqli;
 		$query  = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_RANK . "` (
-		           `PlayerIndex` mediumint(9) NOT NULL default 0,
-		           `Rank` mediumint(9) NOT NULL default 0,
-		           `Avg` float NOT NULL default 0,
-		           KEY `PlayerIndex` (`PlayerIndex`),
-		           UNIQUE `Rank` (`Rank`)
-				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Mania Control ServerRanking';";
+				`PlayerIndex` int(11) NOT NULL,
+				`Rank` int(11) NOT NULL,
+				`Avg` float NOT NULL,
+				KEY `PlayerIndex` (`PlayerIndex`),
+				UNIQUE `Rank` (`Rank`)
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='ServerRanking';";
 		$mysqli->query($query);
 		if ($mysqli->error) {
-			trigger_error($mysqli->error, E_USER_ERROR);
+			throw new \Exception($mysqli->error);
 		}
 	}
 
@@ -182,7 +182,12 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		$mysqli = $this->maniaControl->database->mysqli;
 
 		// Erase old Average Data
-		$mysqli->query('TRUNCATE TABLE ' . self::TABLE_RANK);
+		$query = "TRUNCATE TABLE `" . self::TABLE_RANK . "`;";
+		$mysqli->query($query);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error);
+		}
+
 		$type = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MIN_RANKING_TYPE);
 
 		switch ($type) {
@@ -199,18 +204,14 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 						continue;
 					}
 					$ranks[$player] = $killDeathRatios[$player] * $accuracies[$player] * 1000;
-
 				}
 
 				arsort($ranks);
 
-
 				break;
 			case self::RANKING_TYPE_POINTS:
 				$minHits = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MIN_HITS_POINTS_RANKING);
-
-				$ranks = $this->maniaControl->statisticManager->getStatsRanking(StatisticCollector::STAT_ON_HIT, -1, $minHits);
-
+				$ranks   = $this->maniaControl->statisticManager->getStatsRanking(StatisticCollector::STAT_ON_HIT, -1, $minHits);
 				break;
 			case self::RANKING_TYPE_RECORDS: //TODO verify workable status
 				/** @var LocalRecordsPlugin $localRecordsPlugin */
@@ -223,9 +224,9 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 				$maxRecords      = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MAX_STORED_RECORDS);
 
 				$query = 'SELECT playerIndex, COUNT(*) AS Cnt
-  		          FROM ' . LocalRecordsPlugin::TABLE_RECORDS . '
-  		          GROUP BY PlayerIndex
-  		          HAVING Cnt >=' . $requiredRecords;
+						FROM ' . LocalRecordsPlugin::TABLE_RECORDS . '
+						GROUP BY PlayerIndex
+						HAVING Cnt >=' . $requiredRecords;
 
 				$result  = $mysqli->query($query);
 				$players = array();
@@ -238,13 +239,13 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 				foreach ($maps as $map) {
 					$records = $localRecordsPlugin->getLocalRecords($map, $maxRecords);
 
-					$i = 1;
+					$index = 1;
 					foreach ($records as $record) {
 						if (isset($players[$record->playerIndex])) {
-							$players[$record->playerIndex][0] += $i;
+							$players[$record->playerIndex][0] += $index;
 							$players[$record->playerIndex][1]++;
 						}
-						$i++;
+						$index++;
 					}
 				}
 
@@ -270,16 +271,19 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		$this->recordCount = count($ranks);
 
 		//Compute each player's new average score
-		$query = "INSERT INTO " . self::TABLE_RANK . " VALUES ";
-		$i     = 1;
+		$query = "INSERT INTO `" . self::TABLE_RANK . "` VALUES ";
+		$index = 1;
 
 		foreach ($ranks as $player => $rankValue) {
-			$query .= '(' . $player . ',' . $i . ',' . $rankValue . '),';
-			$i++;
+			$query .= '(' . $player . ',' . $index . ',' . $rankValue . '),';
+			$index++;
 		}
 		$query = substr($query, 0, strlen($query) - 1); // strip trailing ','
 
 		$mysqli->query($query);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error);
+		}
 	}
 
 	/**
@@ -350,7 +354,9 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		//TODO setting global from db or local
 		$mysqli = $this->maniaControl->database->mysqli;
 
-		$result = $mysqli->query('SELECT * FROM ' . self::TABLE_RANK . ' WHERE PlayerIndex=' . $player->index);
+		$query  = "SELECT * FROM `" . self::TABLE_RANK . "`
+				WHERE `PlayerIndex` = {$player->index};";
+		$result = $mysqli->query($query);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error);
 			return null;
@@ -400,15 +406,21 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		$rankObject = $this->getRank($player);
 		$nextRank   = $rankObject->rank - 1;
 
-		$result = $mysqli->query('SELECT * FROM ' . self::TABLE_RANK . ' WHERE Rank=' . $nextRank);
-		if ($result->num_rows > 0) {
-			$row = $result->fetch_array();
-			$result->free_result();
-			return Rank::fromArray($row);
-		} else {
-			$result->free_result();
+		$query  = "SELECT * FROM `" . self::TABLE_RANK . "`
+				WHERE `Rank` = {$nextRank}";
+		$result = $mysqli->query($query);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error);
 			return null;
 		}
+		if ($result->num_rows <= 0) {
+			$result->free();
+			return null;
+		}
+
+		$row = $result->fetch_array();
+		$result->free();
+		return Rank::fromArray($row);
 	}
 
 	/**
