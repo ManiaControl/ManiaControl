@@ -602,8 +602,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$this->maniaControl->mapManager->mapQueue->dontQueueNextMapChange();
 				try {
 					$this->maniaControl->client->jumpToMapIdent($mapUid);
-				} catch (NextMapException $e) {
-					$this->maniaControl->chat->sendError('Error on Jumping to Map Ident!', $player);
+				} catch (NextMapException $exception) {
+					$this->maniaControl->chat->sendError('Error on Jumping to Map Ident: ' . $exception->getMessage(), $player);
 					break;
 				}
 
