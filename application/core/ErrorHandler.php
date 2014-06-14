@@ -412,4 +412,4 @@ class ErrorHandler {
 		$setting = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_RESTART_ON_EXCEPTION, true);
 		return $setting;
 	}
-} 
+}

@@ -75,12 +75,12 @@ class ManiaExchangeManager {
 	 * @param mixed $maps
 	 */
 	public function fetchManiaExchangeMapInformation($maps = null) {
-		if (!$maps) {
-			//Fetch Information for whole MapList
-			$maps = $this->maniaControl->mapManager->getMaps();
+		if ($maps) {
+			// Fetch Information for a single map
+			$maps = array($maps);
 		} else {
-			//Fetch Information for a single map
-			$maps = (array)$maps;
+			// Fetch Information for whole MapList
+			$maps = $this->maniaControl->mapManager->getMaps();
 		}
 
 		$mysqli      = $this->maniaControl->database->mysqli;
@@ -99,7 +99,7 @@ class ManiaExchangeManager {
 		foreach ($maps as $map) {
 			if (!$map) {
 				// TODO: remove after resolving of error report about "non-object"
-				$this->maniaControl->errorHandler->triggerDebugNotice('Non-Object-Map: ' . print_r($map, true));
+				$this->maniaControl->errorHandler->triggerDebugNotice('Non-Object-Map', $map, $maps);
 				continue;
 			}
 			/** @var Map $map */
