@@ -246,11 +246,20 @@ class ManiaControl implements CommandListener, TimerListener {
 		$this->log('Restarting ManiaControl!');
 
 		// Execute start script in background
-		// TODO: restart the .php script itself ($_SERVER['scriptname'] or something + $argv)
 		if (SystemUtil::isUnix()) {
+			// Unix
+			if (!SystemUtil::checkFunctionAvailability('exec')) {
+				$this->log("Can't restart ManiaControl because the function 'exec' is disabled!");
+				return;
+			}
 			$command = 'sh ' . escapeshellarg(ManiaControlDir . 'ManiaControl.sh') . ' > /dev/null &';
 			exec($command);
 		} else {
+			// Windows
+			if (!SystemUtil::checkFunctionAvailability('system')) {
+				$this->log("Can't restart ManiaControl because the function 'system' is disabled!");
+				return;
+			}
 			$command = escapeshellarg(ManiaControlDir . "ManiaControl.bat");
 			system($command); // TODO: windows gets stuck here as long controller is running
 		}

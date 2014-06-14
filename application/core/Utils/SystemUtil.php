@@ -45,4 +45,24 @@ class SystemUtil {
 	public static function isUnix() {
 		return (self::getOS() === self::OS_UNIX);
 	}
+
+	/**
+	 * Check whether the given Function is available
+	 *
+	 * @param string $functionName
+	 * @return bool
+	 */
+	public static function checkFunctionAvailability($functionName) {
+		return (function_exists($functionName) && !in_array($functionName, self::getDisabledFunctions()));
+	}
+
+	/**
+	 * Get the Array of Disabled Functions
+	 *
+	 * @return array
+	 */
+	public static function getDisabledFunctions() {
+		$disabledText = ini_get('disable_functions');
+		return explode(',', $disabledText);
+	}
 }
