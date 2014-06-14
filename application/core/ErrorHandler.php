@@ -254,7 +254,8 @@ class ErrorHandler {
 				$type = gettype($arg);
 				$string .= $type . '(';
 				if (is_string($arg)) {
-					$string .= print_r(substr($arg, 0, 20), true);
+					$param = iconv('UTF-8', 'UTF-8//IGNORE', substr($arg, 0, 20));
+					$string .= print_r($param, true);
 				} else {
 					$string .= print_r($arg, true);
 				}
