@@ -120,9 +120,13 @@ class PlayerManager implements CallbackListener, TimerListener {
 			if ($playerItem->playerId <= 0) {
 				continue;
 			}
-			$detailedPlayerInfo = $this->maniaControl->client->getDetailedPlayerInfo($playerItem->login);
+			try {
+				$detailedPlayerInfo = $this->maniaControl->client->getDetailedPlayerInfo($playerItem->login);
+			} catch (UnknownPlayerException $exception) {
+				continue;
+			}
 
-			//Check if the Player is in a Team, to notify if its a TeamMode or not
+			// Check if the Player is in a Team, to notify if its a TeamMode or not
 			if ($playerItem->teamId >= 0) {
 				$this->maniaControl->server->setTeamMode(true);
 			}
