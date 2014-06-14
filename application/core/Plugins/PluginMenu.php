@@ -445,7 +445,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 				continue;
 			}
 
-			if ($setting['Value'] == $settingObject->value || $settingObject->type === $setting::TYPE_BOOL) {
+			if ($setting['Value'] == $settingObject->value || $settingObject->type === $settingObject::TYPE_BOOL) {
 				continue;
 			}
 
