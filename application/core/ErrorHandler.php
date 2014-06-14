@@ -254,7 +254,10 @@ class ErrorHandler {
 				$type = gettype($arg);
 				$string .= $type . '(';
 				if (is_string($arg)) {
-					$param = iconv('UTF-8', 'UTF-8//IGNORE', substr($arg, 0, 20));
+					$param = iconv('UTF-8', 'UTF-8//IGNORE', $arg);
+					if (strlen($param) > 20) {
+						$param = substr($param, 0, 20) . '..';
+					}
 					$string .= print_r($param, true);
 				} else {
 					$string .= print_r($arg, true);
