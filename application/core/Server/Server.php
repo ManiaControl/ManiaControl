@@ -34,7 +34,7 @@ class Server implements CallbackListener {
 	public $p2pPort = -1;
 	public $login = null;
 	public $titleId = null;
-	public $dataDirectory = '';
+	public $dataDirectory = null;
 	public $serverCommands = null;
 	public $usageReporter = null;
 	public $rankingManager = null;
@@ -199,25 +199,22 @@ class Server implements CallbackListener {
 	}
 
 	/**
-	 * Fetch Maps Directory
+	 * Get Maps Directory
 	 *
 	 * @return string
 	 */
 	public function getMapsDirectory() {
 		$dataDirectory = $this->getDataDirectory();
-		if (!$dataDirectory) {
-			return null;
-		}
-		return "{$dataDirectory}Maps" . DIRECTORY_SEPARATOR;
+		return $dataDirectory . 'Maps' . DIRECTORY_SEPARATOR;
 	}
 
 	/**
-	 * Fetch Game Data Directory
+	 * Get Game Data Directory
 	 *
 	 * @return string
 	 */
 	public function getDataDirectory() {
-		if ($this->dataDirectory == '') {
+		if (!$this->dataDirectory) {
 			$this->dataDirectory = $this->maniaControl->client->gameDataDirectory();
 		}
 		return $this->dataDirectory;
@@ -245,7 +242,6 @@ class Server implements CallbackListener {
 		} catch (Exception $e) {
 			// TODO temp added 19.04.2014
 			$this->maniaControl->errorHandler->triggerDebugNotice("Exception line 330 Server.php" . $e->getMessage());
-
 			trigger_error("Couldn't get validation replay of '{$login}'. " . $e->getMessage());
 			return null;
 		}
@@ -292,7 +288,7 @@ class Server implements CallbackListener {
 	}
 
 	/**
-	 * Checks if ManiaControl has Access to the given Directory
+	 * Check if ManiaControl has Access to the given Directory
 	 *
 	 * @param string $directory
 	 * @return bool

@@ -161,8 +161,8 @@ class MapManager implements CallbackListener {
 	 * @return bool
 	 */
 	private function updateMapTimestamp($uid) {
-		$mysqli   = $this->maniaControl->database->mysqli;
-		$mapQuery = "UPDATE `" . self::TABLE_MAPS . "` SET
+		$mysqli       = $this->maniaControl->database->mysqli;
+		$mapQuery     = "UPDATE `" . self::TABLE_MAPS . "` SET
 				mxid = 0,
 				changed = NOW()
 				WHERE 'uid' = ?";
@@ -288,11 +288,11 @@ class MapManager implements CallbackListener {
 		$downloadFolderName  = $this->maniaControl->settingManager->getSettingValue($this, 'MapDownloadDirectory', 'MX');
 		$relativeMapFileName = $downloadFolderName . DIRECTORY_SEPARATOR . $fileName;
 		$mapDir              = $this->maniaControl->client->getMapsDirectory();
-		$downloadDirectory   = $mapDir . DIRECTORY_SEPARATOR . $downloadFolderName . DIRECTORY_SEPARATOR;
+		$downloadDirectory   = $mapDir . $downloadFolderName . DIRECTORY_SEPARATOR;
 		$fullMapFileName     = $downloadDirectory . $fileName;
 
 		// Check if it can get written locally
-		if (is_dir($mapDir) && is_writable($mapDir)) {
+		if ($this->maniaControl->server->checkAccess($mapDir)) {
 			// Create download directory if necessary
 			if (!is_dir($downloadDirectory) && !mkdir($downloadDirectory)) {
 				trigger_error("ManiaControl doesn't have to rights to save maps in '{$downloadDirectory}'.");
