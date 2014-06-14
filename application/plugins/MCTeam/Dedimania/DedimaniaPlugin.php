@@ -598,11 +598,14 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	}
 
 	/**
-	 * Handle PlayerDisconnect callback
+	 * Handle Player Disconnect Callback
 	 *
-	 * @param \ManiaControl\Players\Player $player
+	 * @param Player $player
 	 */
 	public function handlePlayerDisconnect(Player $player) {
+		if (!$this->dedimaniaData) {
+			return;
+		}
 		$this->dedimaniaData->removePlayer($player->login);
 
 		// Send Dedimania request
