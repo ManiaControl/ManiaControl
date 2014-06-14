@@ -17,7 +17,6 @@ class CallbackManager {
 	 * Constants
 	 */
 	// ManiaControl callbacks
-	// TODO: move into Callbacks interface
 	/** @deprecated Use Callbacks Interface */
 	const CB_ONINIT = 'Callbacks.OnInit';
 	/** @deprecated Use Callbacks Interface */
@@ -30,6 +29,8 @@ class CallbackManager {
 	const CB_MP_SERVERSTOP                = 'ManiaPlanet.ServerStop';
 	const CB_MP_BEGINMATCH                = 'ManiaPlanet.BeginMatch';
 	const CB_MP_ENDMATCH                  = 'ManiaPlanet.EndMatch';
+	const CB_MP_BEGINMAP                  = 'ManiaPlanet.BeginMap';
+	const CB_MP_ENDMAP                    = 'ManiaPlanet.EndMap';
 	const CB_MP_MAPLISTMODIFIED           = 'ManiaPlanet.MapListModified';
 	const CB_MP_ECHO                      = 'ManiaPlanet.Echo';
 	const CB_MP_BILLUPDATED               = 'ManiaPlanet.BillUpdated';
@@ -215,17 +216,17 @@ class CallbackManager {
 	private function handleCallback(array $callback) {
 		$callbackName = $callback[0];
 		switch ($callbackName) {
-			case 'ManiaPlanet.BeginMatch':
+			case self::CB_MP_BEGINMATCH:
 				$this->triggerCallback($callbackName, $callback);
 				break;
-			case 'ManiaPlanet.BeginMap':
+			case self::CB_MP_BEGINMAP:
 				$this->maniaControl->mapManager->handleBeginMap($callback);
 				$this->triggerCallback($callbackName, $callback);
 				break;
-			case 'ManiaPlanet.EndMatch':
+			case self::CB_MP_ENDMATCH:
 				$this->triggerCallback($callbackName, $callback);
 				break;
-			case 'ManiaPlanet.EndMap':
+			case self::CB_MP_ENDMAP:
 				$this->maniaControl->mapManager->handleEndMap($callback);
 				$this->triggerCallback($callbackName, $callback);
 				break;

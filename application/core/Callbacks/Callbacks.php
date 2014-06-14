@@ -1,8 +1,8 @@
 <?php
 
-namespace ManiaControl\Callbacks;
+// TODO: method class for all the libxmlrpc get Methods, to fetch the callback asnyc
 
-	//TODO method class for all the libxmlrpc get Methods, to fetch the callback asnyc
+namespace ManiaControl\Callbacks;
 
 /**
  * Callbacks Interface
