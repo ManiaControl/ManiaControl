@@ -17,6 +17,11 @@ use ManiaControl\ManiaControl;
  */
 class AsynchronousFileReader {
 	/*
+	 * Constants
+	 */
+	const CONTENT_TYPE_JSON = 'application/json';
+
+	/*
 	 * Private Properties
 	 */
 	private $maniaControl = null;
@@ -52,53 +57,46 @@ class AsynchronousFileReader {
 	}
 
 	/**
-	 * Load a remote file
+	 * Load a Remote File
 	 *
-	 * @param string      $url
-	 * @param    callable $function
-	 * @param string      $contentType
-	 * @param int         $keepAlive
+	 * @param string   $url
+	 * @param callable $function
+	 * @param string   $contentType
+	 * @param int      $keepAlive
 	 * @return bool
 	 */
-	public function loadFile($url, $function, $contentType = 'UTF-8', $keepAlive = 0) {
-		if (!is_callable($function)) {
-			$this->maniaControl->log("Function is not callable");
-			return false;
-		}
-
+	public function loadFile($url, callable $function, $contentType = 'UTF-8', $keepAlive = 0) {
 		if (!$url) {
-			$this->maniaControl->log("Url is empty");
+			$this->maniaControl->log('Missing URL!');
 			return false;
 		}
 
+		$headers = array('Content-Type: ' . $contentType);
 		if ($keepAlive) {
-			$header = array("Content-Type: " . $contentType, "Keep-Alive: " . $keepAlive, "Connection: Keep-Alive");
-		} else {
-			$header = array("Content-Type: " . $contentType);
+			array_push($headers, 'Keep-Alive: ' . $keepAlive);
+			array_push($headers, 'Connection: Keep-Alive');
 		}
 
 		$request = new Request($url);
-
-		$request->getOptions()->set(CURLOPT_TIMEOUT, 10) //
-			->set(CURLOPT_HEADER, false) //don't display response header
-			->set(CURLOPT_CRLF, true) //linux linefeed
-			->set(CURLOPT_ENCODING, '')//accept encoding
-			->set(CURLOPT_AUTOREFERER, true)//accept link reference
-			->set(CURLOPT_HTTPHEADER, $header) //
-			->set(CURLOPT_USERAGENT, 'ManiaControl v' . ManiaControl::VERSION) //
+		$request->getOptions() // request options
+			->set(CURLOPT_TIMEOUT, 10) // timeout
+			->set(CURLOPT_HEADER, false) // don't display response header
+			->set(CURLOPT_CRLF, true) // linux linefeed
+			->set(CURLOPT_ENCODING, '') // accept encoding
+			->set(CURLOPT_AUTOREFERER, true) // accept link reference
+			->set(CURLOPT_HTTPHEADER, $headers) // headers
+			->set(CURLOPT_USERAGENT, 'ManiaControl v' . ManiaControl::VERSION) // user-agent
 			->set(CURLOPT_RETURNTRANSFER, true);
 
 		$request->addListener('complete', function (Event $event) use (&$function) {
 			$response = $event->response;
-
-			$error   = null;
-			$content = null;
+			$error    = null;
+			$content  = null;
 			if ($response->hasError()) {
 				$error = $response->getError()->getMessage();
 			} else {
 				$content = $response->getContent();
 			}
-
 			call_user_func($function, $content, $error);
 		});
 

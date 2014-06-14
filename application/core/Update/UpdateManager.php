@@ -94,16 +94,14 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 
 	/**
 	 * Perform Hourly Update Check
-	 *
-	 * @param float $time
 	 */
-	public function hourlyUpdateCheck($time) {
+	public function hourlyUpdateCheck() {
 		$updateCheckEnabled = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_ENABLE_UPDATECHECK);
 		if (!$updateCheckEnabled) {
 			$this->setCoreUpdateData();
-			return;
+		} else {
+			$this->checkUpdate();
 		}
-		$this->checkUpdate();
 	}
 
 	/**
@@ -132,6 +130,10 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		$url           = ManiaControl::URL_WEBSERVICE . 'versions?current=1&channel=' . $updateChannel;
 
 		$this->maniaControl->fileReader->loadFile($url, function ($dataJson, $error) use (&$function) {
+			if ($error) {
+				$this->maniaControl->log('Error on UpdateCheck: ' . $error);
+				return;
+			}
 			$versions = json_decode($dataJson);
 			if (!$versions || !isset($versions[0])) {
 				call_user_func($function);

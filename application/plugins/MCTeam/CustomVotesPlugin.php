@@ -343,18 +343,16 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$itemQuad->addToggleFeature($popoutFrame);
 
 		// Add items
-		$x = -1;
+		$posX = -1;
 		foreach ($this->voteMenuItems as $menuItems) {
 			foreach ($menuItems as $menuItem) {
+				/** @var Quad $menuQuad */
 				$menuQuad = $menuItem[0];
-				/**
-				 * @var Quad $menuQuad
-				 */
 				$popoutFrame->add($menuQuad);
 				$menuQuad->setSize($itemSize, $itemSize);
-				$menuQuad->setX($x);
-				$menuQuad->setHAlign(Control::RIGHT);
-				$x -= $itemSize * 1.05;
+				$menuQuad->setX($posX);
+				$menuQuad->setHAlign($menuQuad::RIGHT);
+				$posX -= $itemSize * 1.05;
 
 				if ($menuItem[1]) {
 					$menuQuad->removeScriptFeatures();
@@ -474,11 +472,8 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 	/**
 	 * Destroy the Vote on Canceled Callback
-	 *
-	 * @param Player $player
 	 */
-	public function handleVoteCanceled(Player $player) {
-		//reset vote
+	public function handleVoteCanceled() {
 		$this->destroyVote();
 	}
 
@@ -638,8 +633,8 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 * @param float $votePercentage
 	 */
 	private function showVoteWidget($timeUntilExpire, $votePercentage) {
-		$pos_x   = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_POSX);
-		$pos_y   = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_POSY);
+		$posX    = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_POSX);
+		$posY    = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_POSY);
 		$width   = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_WIDTH);
 		$height  = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_HEIGHT);
 		$maxTime = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_VOTE_TIME);
@@ -654,7 +649,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$frame = new Frame();
 		$maniaLink->add($frame);
 		$frame->setSize($width, $height);
-		$frame->setPosition($pos_x, $pos_y, 30);
+		$frame->setPosition($posX, $posY, 30);
 
 		// Background Quad
 		$backgroundQuad = new Quad();
@@ -676,7 +671,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$label->setY($height / 2 - 6);
 		$label->setSize($width - 5, 2);
 		$label->setTextSize(1);
-		$label->setTextColor("F80");
+		$label->setTextColor('F80');
 		$label->setText('$sStarted by ' . $this->currentVote->voter->nickname);
 
 		//Time Gauge
@@ -700,7 +695,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$label->setSize($width - 5, $height);
 		$label->setTextSize(1.1);
 		$label->setText('$sTime left: ' . $timeUntilExpire . "s");
-		$label->setTextColor("FFF");
+		$label->setTextColor('FFF');
 
 		//Vote Gauge
 		$voteGauge = new Gauge();
@@ -712,10 +707,10 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$gaugeColor = ColorUtil::floatToStatusColor($votePercentage);
 		$voteGauge->setColor($gaugeColor . '6');
 
-		$y         = -4.4;
+		$posY      = -4.4;
 		$voteLabel = new Label();
 		$frame->add($voteLabel);
-		$voteLabel->setY($y);
+		$voteLabel->setY($posY);
 		$voteLabel->setSize($width * 0.65, 12);
 		$voteLabel->setStyle($labelStyle);
 		$voteLabel->setTextSize(1);
@@ -724,18 +719,18 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 		$positiveQuad = new Quad_BgsPlayerCard();
 		$frame->add($positiveQuad);
-		$positiveQuad->setPosition(-$width / 2 + 6, $y);
+		$positiveQuad->setPosition(-$width / 2 + 6, $posY);
 		$positiveQuad->setSubStyle($positiveQuad::SUBSTYLE_BgPlayerCardBig);
 		$positiveQuad->setSize(5, 5);
 
 		$positiveLabel = new Label_Button();
 		$frame->add($positiveLabel);
-		$positiveLabel->setPosition(-$width / 2 + 6, $y);
+		$positiveLabel->setPosition(-$width / 2 + 6, $posY);
 		$positiveLabel->setStyle($labelStyle);
 		$positiveLabel->setTextSize(1);
 		$positiveLabel->setSize(3, 3);
-		$positiveLabel->setTextColor("0F0");
-		$positiveLabel->setText("F1");
+		$positiveLabel->setTextColor('0F0');
+		$positiveLabel->setText('F1');
 
 		$negativeQuad = clone $positiveQuad;
 		$frame->add($negativeQuad);
@@ -744,8 +739,8 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$negativeLabel = clone $positiveLabel;
 		$frame->add($negativeLabel);
 		$negativeLabel->setX($width / 2 - 6);
-		$negativeLabel->setTextColor("F00");
-		$negativeLabel->setText("F2");
+		$negativeLabel->setTextColor('F00');
+		$negativeLabel->setText('F2');
 
 		// Voting Actions
 		$positiveQuad->addActionTriggerFeature(self::ACTION_POSITIVE_VOTE);

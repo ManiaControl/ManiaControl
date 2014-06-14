@@ -433,7 +433,9 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 				}
 			}
 
-			usort($mapList, array($this, 'sortByKarma'));
+			usort($mapList, function (Map $mapA, Map $mapB) {
+				return ($mapA->karma - $mapB->karma);
+			});
 			if ($best) {
 				$mapList = array_reverse($mapList);
 			}
@@ -453,10 +455,9 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	private function showMapListDate($newest, Player $player) {
 		$maps = $this->maniaControl->mapManager->getMaps();
 
-		usort($maps, function ($a, $b) {
-			return ($a->index - $b->index);
+		usort($maps, function (Map $mapA, Map $mapB) {
+			return ($mapA->index - $mapB->index);
 		});
-
 		if ($newest) {
 			$maps = array_reverse($maps);
 		}
@@ -472,16 +473,5 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	 */
 	public function command_xList(array $chatCallback, Player $player) {
 		$this->maniaControl->mapManager->mxList->showList($chatCallback, $player);
-	}
-
-	/**
-	 * Helper Function to sort Maps by Karma
-	 *
-	 * @param Map $a
-	 * @param Map $b
-	 * @return mixed
-	 */
-	private function sortByKarma(Map $a, Map $b) {
-		return ($a->karma - $b->karma);
 	}
 }

@@ -11,6 +11,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\TimerListener;
+use ManiaControl\Files\AsynchronousFileReader;
 use ManiaControl\ManiaControl;
 use ManiaControl\Maps\Map;
 use ManiaControl\Players\Player;
@@ -271,7 +272,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 				$self->maniaControl->errorHandler->triggerDebugNotice("Error while authenticating on Mania-Exchange Karma " . $error);
 				$self->mxKarma['connectionInProgress'] = false;
 			}
-		}, "application/json", 1000);
+		}, AsynchronousFileReader::CONTENT_TYPE_JSON, 1000);
 	}
 
 	/**
@@ -280,6 +281,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	 * @param string $mxKarmaCode
 	 */
 	private function activateSession($mxKarmaCode) {
+		// TODO: unused private method! remove?
 		$hash = $this->buildActivationHash($this->mxKarma['session']->sessionSeed, $mxKarmaCode);
 
 		$query = self::MX_KARMA_URL . self::MX_KARMA_ACTIVATESESSION;
@@ -314,7 +316,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 				$self->maniaControl->log($error);
 				$self->mxKarma['connectionInProgress'] = false;
 			}
-		}, "application/json", 1000);
+		}, AsynchronousFileReader::CONTENT_TYPE_JSON, 1000);
 	}
 
 	/**
@@ -398,12 +400,12 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 						return;
 					}
 					// TODO remove temp trigger
-					$self->maniaControl->errorHandler->triggerDebugNotice("Error while fetching votes: " . $data->data->message . " " . KarmaPlugin::MX_KARMA_URL . KarmaPlugin::MX_KARMA_SAVEVOTES . "?sessionKey=" . urlencode($self->mxKarma['session']->sessionKey));
+					$self->maniaControl->errorHandler->triggerDebugNotice("Error while fetching votes: '{$data->data->message}' " . KarmaPlugin::MX_KARMA_URL . KarmaPlugin::MX_KARMA_SAVEVOTES . "?sessionKey=" . urlencode($self->mxKarma['session']->sessionKey));
 				}
 			} else {
 				$self->maniaControl->log($error);
 			}
-		}, $content, false, 'application/json');
+		}, $content, false, AsynchronousFileReader::CONTENT_TYPE_JSON);
 	}
 
 	/**
@@ -414,11 +416,9 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	}
 
 	/**
-	 * Handle BeginMap ManiaControl callback
-	 *
-	 * @param Map $map
+	 * Handle Begin Map Callback
 	 */
-	public function handleBeginMap(Map $map) {
+	public function handleBeginMap() {
 		// send Map Karma to MX from previous Map
 		if (isset($this->mxKarma['map'])) {
 			$votes = array();
@@ -500,7 +500,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			} else {
 				$self->maniaControl->log($error);
 			}
-		}, $content, false, 'application/json');
+		}, $content, false, AsynchronousFileReader::CONTENT_TYPE_JSON);
 	}
 
 	/**
@@ -703,13 +703,14 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 		$votes = array();
 		while ($vote = $result->fetch_object()) {
-			$player  = $this->maniaControl->playerManager->getPlayerByIndex($vote->playerIndex);
-			$karma   = $vote->vote;
-			$votes[] = array('player' => $player, 'karma' => $karma);
+			$player    = $this->maniaControl->playerManager->getPlayerByIndex($vote->playerIndex);
+			$karma     = $vote->vote;
+			$voteArray = array('player' => $player, 'karma' => $karma);
+			array_push($votes, $voteArray);
 		}
 
-		usort($votes, function ($a, $b) {
-			return $a['karma'] - $b['karma'];
+		usort($votes, function ($paramA, $paramB) {
+			return $paramA['karma'] - $paramB['karma'];
 		});
 		$votes = array_reverse($votes);
 
@@ -876,7 +877,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	}
 
 	/**
-	 * Build karma voting manialink if necessary
+	 * Build Karma Voting Manialink if necessary
 	 *
 	 * @param bool $forceBuild
 	 */
@@ -886,8 +887,8 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		}
 
 		$title        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_TITLE);
-		$pos_x        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_POSX);
-		$pos_y        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_POSY);
+		$posX         = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_POSX);
+		$posY         = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_POSY);
 		$width        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_WIDTH);
 		$height       = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_HEIGHT);
 		$labelStyle   = $this->maniaControl->manialinkManager->styleManager->getDefaultLabelStyle();
@@ -898,7 +899,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 		$frame = new Frame();
 		$manialink->add($frame);
-		$frame->setPosition($pos_x, $pos_y);
+		$frame->setPosition($posX, $posY);
 
 		$backgroundQuad = new Quad();
 		$frame->add($backgroundQuad);

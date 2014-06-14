@@ -244,22 +244,21 @@ class MapManager implements CallbackListener {
 	public function addMapFromMx($mapId, $login, $update = false) {
 		if (is_numeric($mapId)) {
 			// Check if map exists
-			$self = $this;
-			$this->maniaControl->mapManager->mxManager->getMapInfo($mapId, function (MXMapInfo $mapInfo) use (&$self, &$login, &$update) {
+			$this->maniaControl->mapManager->mxManager->getMapInfo($mapId, function (MXMapInfo $mapInfo) use (&$login, &$update) {
 				if (!$mapInfo || !isset($mapInfo->uploaded)) {
 					// Invalid id
-					$self->maniaControl->chat->sendError('Invalid MX-Id!', $login);
+					$this->maniaControl->chat->sendError('Invalid MX-Id!', $login);
 					return;
 				}
 
 				// Download the file
-				$self->maniaControl->fileReader->loadFile($mapInfo->downloadurl, function ($file, $error) use (&$self, &$login, &$mapInfo, &$update) {
+				$this->maniaControl->fileReader->loadFile($mapInfo->downloadurl, function ($file, $error) use (&$login, &$mapInfo, &$update) {
 					if (!$file || $error) {
 						// Download error
-						$self->maniaControl->chat->sendError("Download failed: '{$error}'!", $login);
+						$this->maniaControl->chat->sendError("Download failed: '{$error}'!", $login);
 						return;
 					}
-					$self->processMapFile($file, $mapInfo, $login, $update);
+					$this->processMapFile($file, $mapInfo, $login, $update);
 				});
 			});
 		}
@@ -379,9 +378,9 @@ class MapManager implements CallbackListener {
 		$tempList = array();
 
 		try {
-			$i = 0;
-			while (true) {
-				$maps = $this->maniaControl->client->getMapList(150, $i);
+			$offset = 0;
+			while ($this->maniaControl->client) {
+				$maps = $this->maniaControl->client->getMapList(150, $offset);
 
 				foreach ($maps as $rpcMap) {
 					if (array_key_exists($rpcMap->uId, $this->maps)) {
@@ -394,7 +393,7 @@ class MapManager implements CallbackListener {
 					}
 				}
 
-				$i += 150;
+				$offset += 150;
 			}
 		} catch (IndexOutOfBoundException $e) {
 		}
@@ -554,14 +553,14 @@ class MapManager implements CallbackListener {
 		$lowerMapArray  = array();
 		$higherMapArray = array();
 
-		$i = 0;
+		$index = 0;
 		foreach ($this->maps as $map) {
-			if ($i < $currentIndex) {
+			if ($index < $currentIndex) {
 				$lowerMapArray[] = $map->fileName;
 			} else {
 				$higherMapArray[] = $map->fileName;
 			}
-			$i++;
+			$index++;
 		}
 
 		$mapArray = array_merge($higherMapArray, $lowerMapArray);
@@ -708,10 +707,8 @@ class MapManager implements CallbackListener {
 
 	/**
 	 * Handle Script EndMap Callback
-	 *
-	 * @param string $mapUid
 	 */
-	public function handleScriptEndMap($mapUid) {
+	public function handleScriptEndMap() {
 		$this->endMap();
 	}
 

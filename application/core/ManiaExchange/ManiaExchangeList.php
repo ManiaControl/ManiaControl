@@ -152,8 +152,8 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		// Start offsets
 		$width  = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
 		$height = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
-		$x      = -$width / 2;
-		$y      = $height / 2;
+		$posX   = -$width / 2;
+		$posY   = $height / 2;
 
 		//Create ManiaLink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
@@ -172,20 +172,20 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		// Headline
 		$headFrame = new Frame();
 		$frame->add($headFrame);
-		$headFrame->setY($y - 12);
-		$array = array('$oId' => $x + 3.5, '$oName' => $x + 12.5, '$oAuthor' => $x + 59, '$oKarma' => $x + 85, '$oType' => $x + 103, '$oMood' => $x + 118, '$oLast Update' => $x + 130);
+		$headFrame->setY($posY - 12);
+		$array = array('$oId' => $posX + 3.5, '$oName' => $posX + 12.5, '$oAuthor' => $posX + 59, '$oKarma' => $posX + 85, '$oType' => $posX + 103, '$oMood' => $posX + 118, '$oLast Update' => $posX + 130);
 		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
 
-		$i         = 0;
-		$y         = $height / 2 - 16;
+		$index     = 0;
+		$posY      = $height / 2 - 16;
 		$pageFrame = null;
 
 		foreach ($maps as $map) {
 			//TODO order possibilities
-			if ($i % self::MAX_MX_MAPS_PER_PAGE === 0) {
+			if ($index % self::MAX_MX_MAPS_PER_PAGE === 0) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
-				$y = $height / 2 - 16;
+				$posY = $height / 2 - 16;
 				$paging->addPage($pageFrame);
 			}
 
@@ -193,7 +193,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 			$mapFrame = new Frame();
 			$pageFrame->add($mapFrame);
 
-			if ($i % 2 === 0) {
+			if ($index % 2 === 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
 				$mapFrame->add($lineQuad);
 				$lineQuad->setSize($width, 4);
@@ -202,19 +202,19 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 			}
 
 			$time        = Formatter::time_elapsed_string(strtotime($map->updated));
-			$array       = array('$s' . $map->id => $x + 3.5, '$s' . $map->name => $x + 12.5, '$s' . $map->author => $x + 59, '$s' . str_replace('Arena', '', $map->maptype) => $x + 103, '$s' . $map->mood => $x + 118, '$s' . $time => $x + 130);
+			$array       = array('$s' . $map->id => $posX + 3.5, '$s' . $map->name => $posX + 12.5, '$s' . $map->author => $posX + 59, '$s' . str_replace('Arena', '', $map->maptype) => $posX + 103, '$s' . $map->mood => $posX + 118, '$s' . $time => $posX + 130);
 			$labels      = $this->maniaControl->manialinkManager->labelLine($mapFrame, $array);
 			$authorLabel = $labels[2];
 			$authorLabel->setAction(self::ACTION_GET_MAPS_FROM_AUTHOR . '.' . $map->author);
 
-			$mapFrame->setY($y);
+			$mapFrame->setY($posY);
 
 			$mxQuad = new Quad();
 			$mapFrame->add($mxQuad);
 			$mxQuad->setSize(3, 3);
 			$mxQuad->setImage($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON));
 			$mxQuad->setImageFocus($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON_MOVER));
-			$mxQuad->setX($x + 56);
+			$mxQuad->setX($posX + 56);
 			$mxQuad->setUrl($map->pageurl);
 			$mxQuad->setZ(0.01);
 			$description = 'View $<' . $map->name . '$> on Mania-Exchange';
@@ -223,7 +223,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 			if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
 				$addQuad = new Quad_Icons64x64_1();
 				$mapFrame->add($addQuad);
-				$addQuad->setX($x + 53);
+				$addQuad->setX($posX + 53);
 				$addQuad->setZ(-0.1);
 				$addQuad->setSubStyle($addQuad::SUBSTYLE_Add);
 				$addQuad->setSize(4, 4);
@@ -240,12 +240,12 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 				$mapFrame->add($awardQuad);
 				$awardQuad->setSize(3, 3);
 				$awardQuad->setSubStyle($awardQuad::SUBSTYLE_OfficialRace);
-				$awardQuad->setX($x + 97);
+				$awardQuad->setX($posX + 97);
 				$awardQuad->setZ(0.01);
 
 				$awardLabel = new Label_Text();
 				$mapFrame->add($awardLabel);
-				$awardLabel->setX($x + 98.5);
+				$awardLabel->setX($posX + 98.5);
 				$awardLabel->setHAlign(Control::LEFT);
 				$awardLabel->setText($map->awards);
 				$awardLabel->setTextSize(1.3);
@@ -258,7 +258,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 				$karmaGauge = new Gauge();
 				$mapFrame->add($karmaGauge);
 				$karmaGauge->setZ(2);
-				$karmaGauge->setX($x + 89);
+				$karmaGauge->setX($posX + 89);
 				$karmaGauge->setSize(16.5, 9);
 				$karmaGauge->setDrawBg(false);
 				$karma = floatval($karma);
@@ -269,7 +269,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 				$karmaLabel = new Label();
 				$mapFrame->add($karmaLabel);
 				$karmaLabel->setZ(2);
-				$karmaLabel->setX($x + 89);
+				$karmaLabel->setX($posX + 89);
 				$karmaLabel->setSize(16.5 * 0.9, 5);
 				$karmaLabel->setTextSize(0.9);
 				$karmaLabel->setTextColor('000');
@@ -277,8 +277,8 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 			}
 
 
-			$y -= 4;
-			$i++;
+			$posY -= 4;
+			$index++;
 		}
 
 		$label = new Label_Text();

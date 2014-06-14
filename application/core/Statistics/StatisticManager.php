@@ -515,6 +515,7 @@ class StatisticManager {
 	 * @return bool
 	 */
 	public function insertStat($statName, Player $player, $serverIndex = -1, $value, $statType = self::STAT_TYPE_INT) {
+		// TODO: statType isn't used
 		if (!$player) {
 			return false;
 		}

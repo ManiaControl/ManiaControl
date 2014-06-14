@@ -409,12 +409,12 @@ class MapQueue implements CallbackListener, CommandListener {
 	 * @return array
 	 */
 	public function getQueuedMapsRanking() {
-		$i          = 1;
+		$index      = 1;
 		$queuedMaps = array();
 		foreach ($this->queuedMaps as $queuedMap) {
 			$map                   = $queuedMap[1];
-			$queuedMaps[$map->uid] = $i;
-			$i++;
+			$queuedMaps[$map->uid] = $index;
+			$index++;
 		}
 		return $queuedMaps;
 	}

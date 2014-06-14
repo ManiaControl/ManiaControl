@@ -54,6 +54,18 @@ class DedimaniaData {
 	}
 
 	/**
+	 * Sort the Records
+	 */
+	public function sortRecords() {
+		usort($this->records, function (RecordData $first, RecordData $second) {
+			if ($first->best == $second->best) {
+				return ($first->rank - $second->rank);
+			}
+			return ($first->best - $second->best);
+		});
+	}
+
+	/**
 	 * Build the Data Array
 	 *
 	 * @return array

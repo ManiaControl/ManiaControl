@@ -15,7 +15,6 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\ManiaControl;
-use ManiaControl\Maps\Map;
 use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
@@ -144,11 +143,9 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	}
 
 	/**
-	 * Handle OnBegin Map Callback
-	 *
-	 * @param Map $map
+	 * Handle Begin Map Callback
 	 */
-	public function onBeginMap(Map $map) {
+	public function onBeginMap() {
 		if ($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_LOAD_DEFAULT_SETTINGS_MAP_BEGIN)) {
 			$this->loadSettingsFromDatabase();
 		}
@@ -210,7 +207,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 
 		// Setting pages
 		$pageFrame = null;
-		$y         = 0.;
+		$posY      = 0.;
 
 		foreach ($scriptParams as $index => $scriptParam) {
 			/** @var \Maniaplanet\DedicatedServer\Structures\ScriptSettings $scriptParam */
@@ -223,13 +220,13 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			if ($index % 13 === 0) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
-				$y = $height * 0.41;
+				$posY = $height * 0.41;
 				$paging->addPage($pageFrame);
 			}
 
 			$settingFrame = new Frame();
 			$pageFrame->add($settingFrame);
-			$settingFrame->setY($y);
+			$settingFrame->setY($posY);
 
 			$nameLabel = new Label_Text();
 			$settingFrame->add($nameLabel);
@@ -278,7 +275,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			$descriptionLabel->setText($scriptParam->desc);
 			$nameLabel->addTooltipFeature($descriptionLabel);
 
-			$y -= $settingHeight;
+			$posY -= $settingHeight;
 		}
 
 		return $frame;

@@ -322,17 +322,17 @@ class PlayerActions {
 		$label->setText('Administrative Warning');
 		$label->setTextColor('f00');
 
-		$y = $height / 2 - 15;
+		$posY = $height / 2 - 15;
 		foreach ($message as $line) {
 			// Message lines
 			$label = new Label_Text();
 			$frame->add($label);
-			$label->setY($y);
-			$label->setStyle(Label_Text::STYLE_TextCardMedium);
+			$label->setY($posY);
+			$label->setStyle($label::STYLE_TextCardMedium);
 			$label->setText($line);
 			$label->setTextColor('ff0');
 			$label->setTextSize(1.3);
-			$y -= 4;
+			$posY -= 4;
 		}
 
 		// Display manialink

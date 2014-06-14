@@ -2,6 +2,7 @@
 
 namespace ManiaControl\ManiaExchange;
 
+use ManiaControl\Files\AsynchronousFileReader;
 use ManiaControl\ManiaControl;
 use ManiaControl\Maps\Map;
 use ManiaControl\Maps\MapManager;
@@ -94,7 +95,7 @@ class ManiaExchangeManager {
 			return;
 		}
 
-		$id = 0;
+		$index = 0;
 		foreach ($maps as $map) {
 			/** @var Map $map */
 			$fetchMapStatement->bind_param('i', $map->index);
@@ -119,10 +120,10 @@ class ManiaExchangeManager {
 				$appendString = $map->uid . ',';
 			}
 
-			$id++;
+			$index++;
 
 			//If Max Maplimit is reached, or string gets too long send the request
-			if ($id % self::MAPS_PER_MX_FETCH === 0) {
+			if ($index % self::MAPS_PER_MX_FETCH === 0) {
 				$mapIdString = substr($mapIdString, 0, -1);
 				$this->getMaplistByMixedUidIdString($mapIdString);
 				$mapIdString = '';
@@ -179,7 +180,7 @@ class ManiaExchangeManager {
 			}
 
 			$thisRef->updateMapObjectsWithManiaExchangeIds($maps);
-		}, "application/json");
+		}, AsynchronousFileReader::CONTENT_TYPE_JSON);
 
 		return $success;
 	}
@@ -229,16 +230,16 @@ class ManiaExchangeManager {
 	/**
 	 * Get Map Info Asynchronously
 	 *
-	 * @param int      $id
+	 * @param int      $mapId
 	 * @param callable $function
 	 * @return bool
 	 */
-	public function getMapInfo($id, callable $function) {
+	public function getMapInfo($mapId, callable $function) {
 		// Get Title Prefix
 		$titlePrefix = $this->maniaControl->mapManager->getCurrentMap()->getGame();
 
 		// compile search URL
-		$url = 'http://api.mania-exchange.com/' . $titlePrefix . '/maps/?ids=' . $id;
+		$url = 'http://api.mania-exchange.com/' . $titlePrefix . '/maps/?ids=' . $mapId;
 
 		return $this->maniaControl->fileReader->loadFile($url, function ($mapInfo, $error) use (&$function, $titlePrefix, $url) {
 			$mxMapInfo = null;
@@ -248,31 +249,26 @@ class ManiaExchangeManager {
 				$mxMapList = json_decode($mapInfo);
 				if (!is_array($mxMapList)) {
 					trigger_error('Cannot decode searched JSON data from ' . $url);
-				} else if (count($mxMapList) > 0) {
+				} else if (!empty($mxMapList)) {
 					$mxMapInfo = new MXMapInfo($titlePrefix, $mxMapList[0]);
 				}
 			}
 			call_user_func($function, $mxMapInfo);
-		}, "application/json");
+		}, AsynchronousFileReader::CONTENT_TYPE_JSON);
 	}
 
 	/**
 	 * Fetch a MapList Asynchronously
 	 *
-	 * @param        $function
-	 * @param string $name
-	 * @param string $author
-	 * @param string $env
-	 * @param int    $maxMapsReturned
-	 * @param int    $searchOrder
+	 * @param callable $function
+	 * @param string   $name
+	 * @param string   $author
+	 * @param string   $env
+	 * @param int      $maxMapsReturned
+	 * @param int      $searchOrder
 	 * @return bool
 	 */
-	public function getMapsAsync($function, $name = '', $author = '', $env = '', $maxMapsReturned = 100, $searchOrder = self::SEARCH_ORDER_UPDATED_NEWEST) {
-		if (!is_callable($function)) {
-			$this->maniaControl->log("Function is not callable");
-			return false;
-		}
-
+	public function getMapsAsync(callable $function, $name = '', $author = '', $env = '', $maxMapsReturned = 100, $searchOrder = self::SEARCH_ORDER_UPDATED_NEWEST) {
 		// TODO: remove $env because it's not really used?
 
 		// Get Title Id
@@ -337,7 +333,7 @@ class ManiaExchangeManager {
 			}
 
 			call_user_func($function, $maps);
-		}, "application/json");
+		}, AsynchronousFileReader::CONTENT_TYPE_JSON);
 
 		return $success;
 	}

@@ -40,11 +40,9 @@ class UsageReporter implements TimerListener {
 	}
 
 	/**
-	 * Report Usage every xx Minutes
-	 *
-	 * @param float $time
+	 * Report Usage of ManiaControl on the current Server
 	 */
-	public function reportUsage($time) {
+	public function reportUsage() {
 		if (DEV_MODE || !$this->maniaControl->settingManager->getSettingValue($this, self::SETTING_REPORT_USAGE)) {
 			return;
 		}

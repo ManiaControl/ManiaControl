@@ -93,8 +93,8 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 		$maniaLink->add($frame);
 
 		// Start offsets
-		$x = -$width / 2;
-		$y = $height / 2;
+		$posX = -$width / 2;
+		$posY = $height / 2;
 
 		//Predefine description Label
 		$descriptionLabel = $this->maniaControl->manialinkManager->styleManager->getDefaultDescriptionLabel();
@@ -103,28 +103,28 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 		// Headline
 		$headFrame = new Frame();
 		$frame->add($headFrame);
-		$headFrame->setY($y - 5);
-		$array = array("Id" => $x + 5, "Nickname" => $x + 18, "Login" => $x + 70, "Actions" => $x + 120);
+		$headFrame->setY($posY - 5);
+		$array = array("Id" => $posX + 5, "Nickname" => $posX + 18, "Login" => $posX + 70, "Actions" => $posX + 120);
 		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
 
-		$i         = 1;
-		$y         = $y - 10;
+		$index = 1;
+		$posY -= 10;
 		$pageFrame = null;
 
 		foreach ($admins as $admin) {
-			if ($i % self::MAX_PLAYERS_PER_PAGE === 1) {
+			if ($index % self::MAX_PLAYERS_PER_PAGE === 1) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
 
 				$paging->addPage($pageFrame);
-				$y = $height / 2 - 10;
+				$posY = $height / 2 - 10;
 			}
 
 			$playerFrame = new Frame();
 			$pageFrame->add($playerFrame);
-			$playerFrame->setY($y);
+			$playerFrame->setY($posY);
 
-			if ($i % 2 !== 0) {
+			if ($index % 2 !== 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
 				$playerFrame->add($lineQuad);
 				$lineQuad->setSize($width, 4);
@@ -132,21 +132,21 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 				$lineQuad->setZ(0.001);
 			}
 
-			$array = array($i => $x + 5, $admin->nickname => $x + 18, $admin->login => $x + 70);
+			$array = array($index => $posX + 5, $admin->nickname => $posX + 18, $admin->login => $posX + 70);
 			$this->maniaControl->manialinkManager->labelLine($playerFrame, $array);
 
 
 			// Level Quad
 			$rightQuad = new Quad_BgRaceScore2();
 			$playerFrame->add($rightQuad);
-			$rightQuad->setX($x + 13);
+			$rightQuad->setX($posX + 13);
 			$rightQuad->setZ(5);
 			$rightQuad->setSubStyle($rightQuad::SUBSTYLE_CupFinisher);
 			$rightQuad->setSize(7, 3.5);
 
 			$rightLabel = new Label_Text();
 			$playerFrame->add($rightLabel);
-			$rightLabel->setX($x + 13.9);
+			$rightLabel->setX($posX + 13.9);
 			$rightLabel->setTextSize(0.8);
 			$rightLabel->setZ(10);
 			$rightLabel->setText($this->maniaControl->authenticationManager->getAuthLevelAbbreviation($admin));
@@ -165,7 +165,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 				$quad = new Quad_BgsPlayerCard();
 				$playerFrame->add($quad);
 				$quad->setZ(11);
-				$quad->setX($x + 130);
+				$quad->setX($posX + 130);
 				$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
 				$quad->setSize($quadWidth, $quadHeight);
 				$quad->setAction(self::ACTION_REVOKE_RIGHTS . "." . $admin->login);
@@ -173,7 +173,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 				//Label
 				$label = new Label_Button();
 				$playerFrame->add($label);
-				$label->setX($x + 130);
+				$label->setX($posX + 130);
 				$quad->setZ(12);
 				$label->setStyle($style);
 				$label->setTextSize(1);
@@ -181,8 +181,8 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 				$label->setText("Revoke Rights");
 			}
 
-			$y -= 4;
-			$i++;
+			$posY -= 4;
+			$index++;
 		}
 
 		// Render and display xml

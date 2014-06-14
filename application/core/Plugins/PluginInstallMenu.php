@@ -67,7 +67,7 @@ class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, Manialink
 		$pagerSize     = 9.;
 		$entryHeight   = 5.;
 		$labelTextSize = 2;
-		$y             = 0.;
+		$posY          = 0.;
 		$pageFrame     = null;
 
 		// Pagers
@@ -113,12 +113,12 @@ class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, Manialink
 						$pageFrame = new Frame();
 						$frame->add($pageFrame);
 						$paging->addPage($pageFrame);
-						$y = $height * 0.41;
+						$posY = $height * 0.41;
 					}
 
 					$pluginFrame = new Frame();
 					$pageFrame->add($pluginFrame);
-					$pluginFrame->setY($y);
+					$pluginFrame->setY($posY);
 
 					$nameLabel = new Label_Text();
 					$pluginFrame->add($nameLabel);
@@ -152,7 +152,7 @@ class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, Manialink
 					$installButton->setText('Install');
 					$installButton->setAction(self::ACTION_PREFIX_INSTALL_PLUGIN . $plugin->id);
 
-					$y -= $entryHeight;
+					$posY -= $entryHeight;
 					$index++;
 				}
 			}

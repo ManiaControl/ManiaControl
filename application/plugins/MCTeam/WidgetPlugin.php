@@ -15,7 +15,6 @@ use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\IconManager;
-use ManiaControl\Maps\Map;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
@@ -183,8 +182,8 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	 * @param string $login
 	 */
 	public function displayMapWidget($login = null) {
-		$pos_x        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MAP_WIDGET_POSX);
-		$pos_y        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MAP_WIDGET_POSY);
+		$posX         = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MAP_WIDGET_POSX);
+		$posY         = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MAP_WIDGET_POSY);
 		$width        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MAP_WIDGET_WIDTH);
 		$height       = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MAP_WIDGET_HEIGHT);
 		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
@@ -198,7 +197,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$frame = new Frame();
 		$maniaLink->add($frame);
 		$frame->setSize($width, $height);
-		$frame->setPosition($pos_x, $pos_y);
+		$frame->setPosition($posX, $posY);
 
 		// Background Quad
 		$backgroundQuad = new Quad();
@@ -246,8 +245,8 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	 * @param bool $login
 	 */
 	public function displayClockWidget($login = false) {
-		$pos_x        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_CLOCK_WIDGET_POSX);
-		$pos_y        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_CLOCK_WIDGET_POSY);
+		$posX         = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_CLOCK_WIDGET_POSX);
+		$posY         = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_CLOCK_WIDGET_POSY);
 		$width        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_CLOCK_WIDGET_WIDTH);
 		$height       = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_CLOCK_WIDGET_HEIGHT);
 		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
@@ -259,7 +258,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$frame = new Frame();
 		$maniaLink->add($frame);
 		$frame->setSize($width, $height);
-		$frame->setPosition($pos_x, $pos_y);
+		$frame->setPosition($posX, $posY);
 
 		// Background Quad
 		$backgroundQuad = new Quad();
@@ -285,8 +284,8 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	 * @param string $login
 	 */
 	public function displayServerInfoWidget($login = null) {
-		$pos_x        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_SERVERINFO_WIDGET_POSX);
-		$pos_y        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_SERVERINFO_WIDGET_POSY);
+		$posX         = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_SERVERINFO_WIDGET_POSX);
+		$posY         = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_SERVERINFO_WIDGET_POSY);
 		$width        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_SERVERINFO_WIDGET_WIDTH);
 		$height       = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_SERVERINFO_WIDGET_HEIGHT);
 		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
@@ -298,7 +297,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$frame = new Frame();
 		$maniaLink->add($frame);
 		$frame->setSize($width, $height);
-		$frame->setPosition($pos_x, $pos_y);
+		$frame->setPosition($posX, $posY);
 
 		// Background Quad
 		$backgroundQuad = new Quad();
@@ -390,12 +389,9 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	}
 
 	/**
-	 * Handle on Begin Map
-	 *
-	 * @param Map $map
+	 * Handle Begin Map Callback
 	 */
-	public function handleOnBeginMap(Map $map) {
-		// Display Map Widget
+	public function handleOnBeginMap() {
 		if ($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MAP_WIDGET_ACTIVATED)) {
 			$this->displayMapWidget();
 		}
@@ -403,12 +399,9 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	}
 
 	/**
-	 * Handle on End Map
-	 *
-	 * @param Map $map
+	 * Handle End Map Callback
 	 */
-	public function handleOnEndMap(Map $map) {
-		// Display Map Widget
+	public function handleOnEndMap() {
 		if ($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_NEXTMAP_WIDGET_ACTIVATED)) {
 			$this->displayNextMapWidget();
 		}
@@ -420,8 +413,8 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	 * @param string $login
 	 */
 	public function displayNextMapWidget($login = null) {
-		$pos_x        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_NEXTMAP_WIDGET_POSX);
-		$pos_y        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_NEXTMAP_WIDGET_POSY);
+		$posX         = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_NEXTMAP_WIDGET_POSX);
+		$posY         = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_NEXTMAP_WIDGET_POSY);
 		$width        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_NEXTMAP_WIDGET_WIDTH);
 		$height       = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_NEXTMAP_WIDGET_HEIGHT);
 		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
@@ -434,7 +427,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$frame = new Frame();
 		$maniaLink->add($frame);
 		$frame->setSize($width, $height);
-		$frame->setPosition($pos_x, $pos_y);
+		$frame->setPosition($posX, $posY);
 
 		// Background Quad
 		$backgroundQuad = new Quad();
@@ -519,11 +512,9 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	}
 
 	/**
-	 * Handle PlayerConnect callback
-	 *
-	 * @param Player $player
+	 * Handle PlayerDisconnect Callback
 	 */
-	public function handlePlayerDisconnect(Player $player) {
+	public function handlePlayerDisconnect() {
 		if ($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_SERVERINFO_WIDGET_ACTIVATED)) {
 			$this->displayServerInfoWidget();
 		}

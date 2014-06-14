@@ -70,7 +70,7 @@ class LibXmlRpcCallbacks implements CallbackListener {
 				break;
 			case 'EndMap':
 			case 'LibXmlRpc_EndMap':
-				$this->maniaControl->mapManager->handleScriptEndMap($data[1]);
+				$this->maniaControl->mapManager->handleScriptEndMap();
 				break;
 			case 'LibXmlRpc_BeginPodium':
 				$this->maniaControl->callbackManager->triggerCallback(Callbacks::BEGINPODIUM);

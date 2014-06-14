@@ -113,7 +113,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * @see \ManiaControl\Plugins\Plugin::getDescription()
 	 */
 	public static function getDescription() {
-		return "Dedimania Plugin for TrackMania";
+		return 'Dedimania Plugin for TrackMania';
 	}
 
 	/**
@@ -264,7 +264,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$self = $this;
 		$this->maniaControl->fileReader->postData(self::DEDIMANIA_URL, function ($data, $error) use (&$self) {
 			if ($error) {
-				$self->maniaControl->log("Dedimania Error: " . $error);
+				$self->maniaControl->log('Dedimania Error: ' . $error);
 			}
 
 			$data = $self->decode($data);
@@ -422,8 +422,8 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$records = $this->dedimaniaData->records;
 
 		$title        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_TITLE);
-		$pos_x        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_POSX);
-		$pos_y        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_POSY);
+		$posX         = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_POSX);
+		$posY         = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_POSY);
 		$width        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_WIDTH);
 		$lines        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_LINESCOUNT);
 		$lineHeight   = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_LINEHEIGHT);
@@ -435,7 +435,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$manialink = new ManiaLink(self::MLID_DEDIMANIA);
 		$frame     = new Frame();
 		$manialink->add($frame);
-		$frame->setPosition($pos_x, $pos_y);
+		$frame->setPosition($posX, $posY);
 
 		$backgroundQuad = new Quad();
 		$frame->add($backgroundQuad);
@@ -977,9 +977,8 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			$this->maniaControl->callbackManager->triggerCallback(self::CB_DEDIMANIA_UPDATED, $this->dedimaniaData->records);
 			return;
 		}
-		//TODO move into class dedimania data
-		// Sort records
-		usort($this->dedimaniaData->records, array($this, 'compareRecords'));
+
+		$this->dedimaniaData->sortRecords();
 
 		// Update ranks
 		$rank = 1;
@@ -1066,8 +1065,8 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$maniaLink->add($frame);
 
 		// Start offsets
-		$x = -$width / 2;
-		$y = $height / 2;
+		$posX = -$width / 2;
+		$posY = $height / 2;
 
 		// Predefine Description Label
 		$descriptionLabel = $this->maniaControl->manialinkManager->styleManager->getDefaultDescriptionLabel();
@@ -1076,26 +1075,26 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		// Headline
 		$headFrame = new Frame();
 		$frame->add($headFrame);
-		$headFrame->setY($y - 5);
-		$array = array("Rank" => $x + 5, "Nickname" => $x + 18, "Login" => $x + 70, "Time" => $x + 101);
+		$headFrame->setY($posY - 5);
+		$array = array("Rank" => $posX + 5, "Nickname" => $posX + 18, "Login" => $posX + 70, "Time" => $posX + 101);
 		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
 
-		$i         = 0;
-		$y         = $height / 2 - 10;
+		$index     = 0;
+		$posY      = $height / 2 - 10;
 		$pageFrame = null;
 
 		foreach ($records as $listRecord) {
-			if ($i % 15 === 0) {
+			if ($index % 15 === 0) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
-				$y = $height / 2 - 10;
+				$posY = $height / 2 - 10;
 				$paging->addPage($pageFrame);
 			}
 
 			$recordFrame = new Frame();
 			$pageFrame->add($recordFrame);
 
-			if ($i % 2 !== 0) {
+			if ($index % 2 !== 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
 				$recordFrame->add($lineQuad);
 				$lineQuad->setSize($width, 4);
@@ -1106,13 +1105,13 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			if (strlen($listRecord->nickName) < 2) {
 				$listRecord->nickName = $listRecord->login;
 			}
-			$array = array($listRecord->rank => $x + 5, '$fff' . $listRecord->nickName => $x + 18, $listRecord->login => $x + 70, Formatter::formatTime($listRecord->best) => $x + 101);
+			$array = array($listRecord->rank => $posX + 5, '$fff' . $listRecord->nickName => $posX + 18, $listRecord->login => $posX + 70, Formatter::formatTime($listRecord->best) => $posX + 101);
 			$this->maniaControl->manialinkManager->labelLine($recordFrame, $array);
 
-			$recordFrame->setY($y);
+			$recordFrame->setY($posY);
 
-			$y -= 4;
-			$i++;
+			$posY -= 4;
+			$index++;
 		}
 
 		// Render and display xml
@@ -1135,27 +1134,5 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * @see \ManiaControl\Plugins\Plugin::unload()
 	 */
 	public function unload() {
-	}
-
-	/**
-	 * Compare function for sorting dedimania records
-	 *
-	 * @param \MCTeam\Dedimania\RecordData $first
-	 * @param \MCTeam\Dedimania\RecordData $second
-	 * @return int
-	 */
-	private function compareRecords(RecordData $first, RecordData $second) {
-		//TODO move into class dedimania data
-		if ($first->best < $second->best) {
-			return -1;
-		} else if ($first->best > $second->best) {
-			return 1;
-		} else {
-			if ($first->rank < $second->rank) {
-				return -1;
-			} else {
-				return 1;
-			}
-		}
 	}
 }

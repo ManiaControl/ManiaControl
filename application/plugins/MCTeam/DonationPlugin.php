@@ -221,11 +221,11 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$descriptionLabel->setTextColor("0F0");
 
 		// Add items
-		$x = -2;
+		$posX = -2;
 		foreach (array_reverse($valueArray) as $value) {
 			$label = new Label_Button();
 			$popoutFrame->add($label);
-			$label->setX($x);
+			$label->setX($posX);
 			$label->setHAlign(Control::RIGHT);
 			$label->setText('$s$FFF' . $value . '$09FP');
 			$label->setTextSize(1.2);
@@ -234,7 +234,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 			$description = "Donate {$value} Planets";
 			$label->addTooltipLabelFeature($descriptionLabel, $description);
 
-			$x -= strlen($value) * 2 + 1.7;
+			$posX -= strlen($value) * 2 + 1.7;
 		}
 
 		// Send manialink
@@ -470,8 +470,8 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$maniaLink->add($frame);
 
 		// Start offsets
-		$x = -$width / 2;
-		$y = $height / 2;
+		$posX = -$width / 2;
+		$posY = $height / 2;
 
 		//Predefine description Label
 		$descriptionLabel = $this->maniaControl->manialinkManager->styleManager->getDefaultDescriptionLabel();
@@ -480,27 +480,27 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		// Headline
 		$headFrame = new Frame();
 		$frame->add($headFrame);
-		$headFrame->setY($y - 5);
-		$array = array('$oId' => $x + 5, '$oNickname' => $x + 18, '$oDonated planets' => $x + 70);
+		$headFrame->setY($posY - 5);
+		$array = array('$oId' => $posX + 5, '$oNickname' => $posX + 18, '$oDonated planets' => $posX + 70);
 		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
 
-		$i         = 1;
-		$y         = $y - 10;
+		$index     = 1;
+		$posY      = $posY - 10;
 		$pageFrame = null;
 
 		foreach ($stats as $playerIndex => $donations) {
-			if ($i % 15 === 1) {
+			if ($index % 15 === 1) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
-				$y = $height / 2 - 10;
+				$posY = $height / 2 - 10;
 				$paging->addPage($pageFrame);
 			}
 
 			$playerFrame = new Frame();
 			$pageFrame->add($playerFrame);
-			$playerFrame->setY($y);
+			$playerFrame->setY($posY);
 
-			if ($i % 2 !== 0) {
+			if ($index % 2 !== 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
 				$playerFrame->add($lineQuad);
 				$lineQuad->setSize($width, 4);
@@ -509,13 +509,13 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 			}
 
 			$donatingPlayer = $this->maniaControl->playerManager->getPlayerByIndex($playerIndex);
-			$array          = array($i => $x + 5, $donatingPlayer->nickname => $x + 18, $donations => $x + 70);
+			$array          = array($index => $posX + 5, $donatingPlayer->nickname => $posX + 18, $donations => $posX + 70);
 			$this->maniaControl->manialinkManager->labelLine($playerFrame, $array);
 
-			$y -= 4;
-			$i++;
+			$posY -= 4;
+			$index++;
 
-			if ($i > 100) {
+			if ($index > 100) {
 				break;
 			}
 		}

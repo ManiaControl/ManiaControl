@@ -28,9 +28,7 @@ abstract class Formatter {
 	 * @return string
 	 */
 	public static function formatTime($time) {
-		if (!is_int($time)) {
-			$time = (int)$time;
-		}
+		$time         = (int)$time;
 		$milliseconds = $time % 1000;
 		$seconds      = floor($time / 1000);
 		$minutes      = floor($seconds / 60);
@@ -70,6 +68,7 @@ abstract class Formatter {
 	 * @return string
 	 */
 	public static function time_elapsed_string($ptime) {
+		// TODO: refactor code: camelCase!
 		$etime = time() - $ptime;
 
 		if ($etime < 1) {

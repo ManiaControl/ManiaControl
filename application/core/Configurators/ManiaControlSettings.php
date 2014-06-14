@@ -221,7 +221,7 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 		$pagerSize     = 9.;
 		$settingHeight = 5.;
 		$pageMaxCount  = 13;
-		$y             = 0;
+		$posY          = 0;
 
 		// Pagers
 		$pagerPrev = new Quad_Icons64x64_1();
@@ -254,7 +254,7 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 			if ($index % $pageMaxCount === 0) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
-				$y = $height * 0.41;
+				$posY = $height * 0.41;
 				$paging->addPage($pageFrame);
 			}
 
@@ -269,7 +269,7 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 
 			$pageFrame->add($classLabel);
 			$classLabel->setHAlign($classLabel::LEFT);
-			$classLabel->setPosition($width * -0.45, $y);
+			$classLabel->setPosition($width * -0.45, $posY);
 			$classLabel->setSize($width * 0.9, $settingHeight * 0.9);
 			$classLabel->setStyle($classLabel::STYLE_TextCardSmall);
 			$classLabel->setTextSize(2);
@@ -277,7 +277,7 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 			$classLabel->setTextColor('fff');
 			$classLabel->setAction(self::ACTION_PREFIX_SETTINGCLASS . $settingClass);
 
-			$y -= $settingHeight;
+			$posY -= $settingHeight;
 			$index++;
 		}
 

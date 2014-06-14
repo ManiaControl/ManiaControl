@@ -19,6 +19,7 @@ use ManiaControl\Players\Player;
  * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
+// TODO: refactor code - i see duplicated code all over the place..
 class HelpManager implements CommandListener, CallbackListener {
 	/*
 	 * Private Properties
@@ -69,8 +70,8 @@ class HelpManager implements CommandListener, CallbackListener {
 			}
 		}
 
-		usort($showCommands, function ($a, $b) {
-			return strcmp($a["Name"], $b["Name"]);
+		usort($showCommands, function ($commandA, $commandB) {
+			return strcmp($commandA['Name'], $commandB['Name']);
 		});
 
 		$message = 'Supported Admin Commands: ';
@@ -100,8 +101,8 @@ class HelpManager implements CommandListener, CallbackListener {
 			}
 		}
 
-		usort($showCommands, function ($a, $b) {
-			return strcmp($a["Name"], $b["Name"]);
+		usort($showCommands, function ($commandA, $commandB) {
+			return strcmp($commandA['Name'], $commandB['Name']);
 		});
 
 		$message = 'Supported Player Commands: ';
@@ -146,8 +147,8 @@ class HelpManager implements CommandListener, CallbackListener {
 			}
 		}
 
-		usort($showCommands, function ($a, $b) {
-			return strcmp($a["Name"], $b["Name"]);
+		usort($showCommands, function ($commandA, $commandB) {
+			return strcmp($commandA['Name'], $commandB['Name']);
 		});
 
 		$this->showHelpAllList($showCommands, $player);
@@ -174,8 +175,8 @@ class HelpManager implements CommandListener, CallbackListener {
 		$maniaLink->add($frame);
 
 		// Start offsets
-		$x = -$width / 2;
-		$y = $height / 2;
+		$posX = -$width / 2;
+		$posY = $height / 2;
 
 		//Predefine description Label
 		$descriptionLabel = $this->maniaControl->manialinkManager->styleManager->getDefaultDescriptionLabel();
@@ -184,27 +185,27 @@ class HelpManager implements CommandListener, CallbackListener {
 		// Headline
 		$headFrame = new Frame();
 		$frame->add($headFrame);
-		$headFrame->setY($y - 5);
-		$array = array("Command" => $x + 5, "Description" => $x + 50);
+		$headFrame->setY($posY - 5);
+		$array = array('Command' => $posX + 5, 'Description' => $posX + 50);
 		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
 
-		$i         = 1;
-		$y         = $y - 10;
+		$index = 1;
+		$posY -= 10;
 		$pageFrame = null;
 
 		foreach ($commands as $command) {
-			if ($i % 15 === 1) {
+			if ($index % 15 === 1) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
-				$y = $height / 2 - 10;
+				$posY = $height / 2 - 10;
 				$paging->addPage($pageFrame);
 			}
 
 			$playerFrame = new Frame();
 			$pageFrame->add($playerFrame);
-			$playerFrame->setY($y);
+			$playerFrame->setY($posY);
 
-			if ($i % 2 !== 0) {
+			if ($index % 2 !== 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
 				$playerFrame->add($lineQuad);
 				$lineQuad->setSize($width, 4);
@@ -212,14 +213,14 @@ class HelpManager implements CommandListener, CallbackListener {
 				$lineQuad->setZ(0.001);
 			}
 
-			$array  = array($command['Name'] => $x + 5, $command['Description'] => $x + 50);
+			$array  = array($command['Name'] => $posX + 5, $command['Description'] => $posX + 50);
 			$labels = $this->maniaControl->manialinkManager->labelLine($playerFrame, $array);
 
 			$label = $labels[0];
 			$label->setWidth(40);
 
-			$y -= 4;
-			$i++;
+			$posY -= 4;
+			$index++;
 		}
 
 		// Render and display xml

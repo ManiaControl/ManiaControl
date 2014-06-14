@@ -77,7 +77,7 @@ abstract class BackupUtil {
 			trigger_error("Couldn't open Folder '{$folderName}' for Backup!");
 			return false;
 		}
-		$useBaseFileNames = (count($baseFileNames) > 0);
+		$useBaseFileNames = !empty($baseFileNames);
 		while (false !== ($file = readdir($folderHandle))) {
 			if (substr($file, 0, 1) === '.') {
 				// Skip such .files

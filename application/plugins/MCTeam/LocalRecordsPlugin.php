@@ -213,8 +213,8 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		}
 
 		$title        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_TITLE);
-		$pos_x        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_POSX);
-		$pos_y        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_POSY);
+		$posX         = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_POSX);
+		$posY         = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_POSY);
 		$width        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_WIDTH);
 		$lines        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_LINESCOUNT);
 		$lineHeight   = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_LINEHEIGHT);
@@ -231,7 +231,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$manialink = new ManiaLink(self::MLID_RECORDS);
 		$frame     = new Frame();
 		$manialink->add($frame);
-		$frame->setPosition($pos_x, $pos_y);
+		$frame->setPosition($posX, $posY);
 
 		$backgroundQuad = new Quad();
 		$frame->add($backgroundQuad);
@@ -513,20 +513,16 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 	}
 
 	/**
-	 * Handle PlayerConnect callback
-	 *
-	 * @param Player $player
+	 * Handle Player Connect Callback
 	 */
-	public function handlePlayerConnect(Player $player) {
+	public function handlePlayerConnect() {
 		$this->updateManialink = true;
 	}
 
 	/**
-	 * Handle BeginMap callback
-	 *
-	 * @param Map $map
+	 * Handle Begin Map Callback
 	 */
-	public function handleMapBegin(Map $map) {
+	public function handleMapBegin() {
 		$this->updateManialink = true;
 	}
 
@@ -570,8 +566,8 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$maniaLink->add($frame);
 
 		// Start offsets
-		$x = -$width / 2;
-		$y = $height / 2;
+		$posX = -$width / 2;
+		$posY = $height / 2;
 
 		// Predefine Description Label
 		$descriptionLabel = $this->maniaControl->manialinkManager->styleManager->getDefaultDescriptionLabel();
@@ -580,26 +576,26 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		// Headline
 		$headFrame = new Frame();
 		$frame->add($headFrame);
-		$headFrame->setY($y - 5);
-		$array = array("Rank" => $x + 5, "Nickname" => $x + 18, "Login" => $x + 70, "Time" => $x + 101);
+		$headFrame->setY($posY - 5);
+		$array = array('Rank' => $posX + 5, 'Nickname' => $posX + 18, 'Login' => $posX + 70, 'Time' => $posX + 101);
 		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
 
-		$i         = 0;
-		$y         = $height / 2 - 10;
+		$index     = 0;
+		$posY      = $height / 2 - 10;
 		$pageFrame = null;
 
 		foreach ($records as $listRecord) {
-			if ($i % 15 === 0) {
+			if ($index % 15 === 0) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
-				$y = $height / 2 - 10;
+				$posY = $height / 2 - 10;
 				$paging->addPage($pageFrame);
 			}
 
 			$recordFrame = new Frame();
 			$pageFrame->add($recordFrame);
 
-			if ($i % 2 !== 0) {
+			if ($index % 2 !== 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
 				$recordFrame->add($lineQuad);
 				$lineQuad->setSize($width, 4);
@@ -610,13 +606,13 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 			if (strlen($listRecord->nickname) < 2) {
 				$listRecord->nickname = $listRecord->login;
 			}
-			$array = array($listRecord->rank => $x + 5, '$fff' . $listRecord->nickname => $x + 18, $listRecord->login => $x + 70, Formatter::formatTime($listRecord->time) => $x + 101);
+			$array = array($listRecord->rank => $posX + 5, '$fff' . $listRecord->nickname => $posX + 18, $listRecord->login => $posX + 70, Formatter::formatTime($listRecord->time) => $posX + 101);
 			$this->maniaControl->manialinkManager->labelLine($recordFrame, $array);
 
-			$recordFrame->setY($y);
+			$recordFrame->setY($posY);
 
-			$y -= 4;
-			$i++;
+			$posY -= 4;
+			$index++;
 		}
 
 		// Render and display xml

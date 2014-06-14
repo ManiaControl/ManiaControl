@@ -129,10 +129,10 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 		$posY          = 0.;
 		$pluginUpdates = $this->maniaControl->updateManager->pluginUpdateManager->getPluginsUpdates();
 
-		usort($pluginClasses, function ($a, $b) {
-			/** @var Plugin $a */
-			/** @var Plugin $b */
-			return strcmp($a::getName(), $b::getName());
+		usort($pluginClasses, function ($pluginClassA, $pluginClassB) {
+			/** @var Plugin $pluginClassA */
+			/** @var Plugin $pluginClassB */
+			return strcmp($pluginClassA::getName(), $pluginClassB::getName());
 		});
 
 		$pageFrame = null;
@@ -250,7 +250,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 		$settings = $this->maniaControl->settingManager->getSettingsByClass($settingClass);
 
 		$pageSettingsMaxCount = 12;
-		$y                    = 0;
+		$posY                 = 0;
 		$index                = 0;
 		$settingHeight        = 5.;
 		$pageFrame            = null;
@@ -260,12 +260,12 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
 				$paging->addPage($pageFrame);
-				$y = $height * 0.41;
+				$posY = $height * 0.41;
 			}
 
 			$settingFrame = new Frame();
 			$pageFrame->add($settingFrame);
-			$settingFrame->setY($y);
+			$settingFrame->setY($posY);
 
 			if ($index === 0) {
 				//Headline Label
@@ -279,12 +279,12 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 				$headLabel->setText($setting->class);
 				$headLabel->setTextColor("F00");
 
-				$y -= $settingHeight;
+				$posY -= $settingHeight;
 			}
 
 			$settingFrame = new Frame();
 			$pageFrame->add($settingFrame);
-			$settingFrame->setY($y);
+			$settingFrame->setY($posY);
 			// Headline Label finished
 
 			$nameLabel = new Label_Text();
@@ -323,7 +323,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 				$entry->setVisible(false);
 			}
 
-			$y -= $settingHeight;
+			$posY -= $settingHeight;
 
 			$index++;
 		}

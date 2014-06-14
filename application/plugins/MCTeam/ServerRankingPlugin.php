@@ -157,6 +157,25 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 	}
 
 	/**
+	 * Check if the given Ranking Type is valid
+	 *
+	 * @param string $rankingType
+	 * @return bool
+	 */
+	private function isValidRankingType($rankingType) {
+		return in_array($rankingType, $this->getRankingTypes());
+	}
+
+	/**
+	 * Get the possible Ranking Types
+	 *
+	 * @return string[]
+	 */
+	private function getRankingTypes() {
+		return array(self::RANKING_TYPE_POINTS, self::RANKING_TYPE_RATIOS, self::RANKING_TYPE_RECORDS);
+	}
+
+	/**
 	 * Resets and rebuilds the Ranking
 	 */
 	private function resetRanks() {
@@ -473,8 +492,8 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		$maniaLink->add($frame);
 
 		// Start offsets
-		$x = -$width / 2;
-		$y = $height / 2;
+		$posX = -$width / 2;
+		$posY = $height / 2;
 
 		//Predefine description Label
 		$descriptionLabel = $this->maniaControl->manialinkManager->styleManager->getDefaultDescriptionLabel();
@@ -483,27 +502,27 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		// Headline
 		$headFrame = new Frame();
 		$frame->add($headFrame);
-		$headFrame->setY($y - 5);
-		$array = array('$oRank' => $x + 5, '$oNickname' => $x + 18, '$oAverage' => $x + 70);
+		$headFrame->setY($posY - 5);
+		$array = array('$oRank' => $posX + 5, '$oNickname' => $posX + 18, '$oAverage' => $posX + 70);
 		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
 
-		$i         = 1;
-		$y         = $y - 10;
+		$index = 1;
+		$posY -= 10;
 		$pageFrame = null;
 
 		while ($rankedPlayer = $result->fetch_object()) {
-			if ($i % 15 === 1) {
+			if ($index % 15 === 1) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
-				$y = $height / 2 - 10;
+				$posY = $height / 2 - 10;
 				$paging->addPage($pageFrame);
 			}
 
 			$playerFrame = new Frame();
 			$pageFrame->add($playerFrame);
-			$playerFrame->setY($y);
+			$playerFrame->setY($posY);
 
-			if ($i % 2 !== 0) {
+			if ($index % 2 !== 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
 				$playerFrame->add($lineQuad);
 				$lineQuad->setSize($width, 4);
@@ -512,34 +531,15 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 			}
 
 			$playerObject = $this->maniaControl->playerManager->getPlayerByIndex($rankedPlayer->PlayerIndex);
-			$array        = array($rankedPlayer->Rank => $x + 5, $playerObject->nickname => $x + 18, (string)round($rankedPlayer->Avg, 2) => $x + 70);
+			$array        = array($rankedPlayer->Rank => $posX + 5, $playerObject->nickname => $posX + 18, (string)round($rankedPlayer->Avg, 2) => $posX + 70);
 			$this->maniaControl->manialinkManager->labelLine($playerFrame, $array);
 
-			$y -= 4;
-			$i++;
+			$posY -= 4;
+			$index++;
 		}
 
 		// Render and display xml
 		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player, 'TopRanks');
-	}
-
-	/**
-	 * Get the possible Ranking Types
-	 *
-	 * @return string[]
-	 */
-	private function getRankingTypes() {
-		return array(self::RANKING_TYPE_POINTS, self::RANKING_TYPE_RATIOS, self::RANKING_TYPE_RECORDS);
-	}
-
-	/**
-	 * Check if the given Ranking Type is valid
-	 *
-	 * @param string $rankingType
-	 * @return bool
-	 */
-	private function isValidRankingType($rankingType) {
-		return in_array($rankingType, $this->getRankingTypes());
 	}
 }
 

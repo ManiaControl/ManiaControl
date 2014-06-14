@@ -198,8 +198,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$headFrame = new Frame();
 		$frame->add($headFrame);
 		$headFrame->setY($height / 2 - 5);
-		$x     = -$width / 2;
-		$array = array('Id' => $x + 5, 'Mx Id' => $x + 10, 'Map Name' => $x + 20, 'Author' => $x + 68, 'Karma' => $x + 115, 'Actions' => $width / 2 - 16);
+		$posX  = -$width / 2;
+		$array = array('Id' => $posX + 5, 'Mx Id' => $posX + 10, 'Map Name' => $posX + 20, 'Author' => $posX + 68, 'Karma' => $posX + 115, 'Actions' => $width / 2 - 16);
 		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
 
 		// Predefine description Label
@@ -214,11 +214,10 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$paging->setStartPageNumber($pageIndex + 1);
 
 		$index     = 0;
-		$id        = 1 + $mapsBeginIndex;
-		$y         = $height / 2 - 10;
+		$mapListId = 1 + $mapsBeginIndex;
+		$posY      = $height / 2 - 10;
 		$pageFrame = null;
 
-		/** @var Map $map */
 		$currentMap       = $this->maniaControl->mapManager->getCurrentMap();
 		$mxIcon           = $this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON);
 		$mxIconHover      = $this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON_MOVER);
@@ -226,10 +225,11 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$mxIconGreenHover = $this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON_GREEN_MOVER);
 
 		foreach ($mapList as $map) {
+			/** @var Map $map */
 			if ($index % self::MAX_MAPS_PER_PAGE === 0) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
-				$y = $height / 2 - 10;
+				$posY = $height / 2 - 10;
 				$paging->addPage($pageFrame, $pageNumber);
 				$pageNumber++;
 			}
@@ -237,10 +237,10 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			// Map Frame
 			$mapFrame = new Frame();
 			$pageFrame->add($mapFrame);
+			$mapFrame->setY($posY);
 			$mapFrame->setZ(0.1);
-			$mapFrame->setY($y);
 
-			if ($id % 2 !== 0) {
+			if ($mapListId % 2 !== 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
 				$mapFrame->add($lineQuad);
 				$lineQuad->setSize($width, 4);
@@ -251,7 +251,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			if ($currentMap === $map) {
 				$currentQuad = new Quad_Icons64x64_1();
 				$mapFrame->add($currentQuad);
-				$currentQuad->setX($x + 3.5);
+				$currentQuad->setX($posX + 3.5);
 				$currentQuad->setZ(0.2);
 				$currentQuad->setSize(4, 4);
 				$currentQuad->setSubStyle($currentQuad::SUBSTYLE_ArrowBlue);
@@ -266,7 +266,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$mxQuad->setSize(3, 3);
 				$mxQuad->setImage($mxIcon);
 				$mxQuad->setImageFocus($mxIconHover);
-				$mxQuad->setX($x + 65);
+				$mxQuad->setX($posX + 65);
 				$mxQuad->setUrl($map->mx->pageurl);
 				$mxQuad->setZ(0.01);
 				$description = 'View $<' . $map->name . '$> on Mania-Exchange';
@@ -278,7 +278,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 					$mxQuad->setSize(3, 3);
 					$mxQuad->setImage($mxIconGreen);
 					$mxQuad->setImageFocus($mxIconGreenHover);
-					$mxQuad->setX($x + 62);
+					$mxQuad->setX($posX + 62);
 					$mxQuad->setUrl($map->mx->pageurl);
 					$mxQuad->setZ(0.01);
 					$description = 'Update for $<' . $map->name . '$> available on Mania-Exchange!';
@@ -292,7 +292,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			}
 
 			// Display Maps
-			$array  = array($id => $x + 5, $mxId => $x + 10, Formatter::stripDirtyCodes($map->name) => $x + 20, $map->authorNick => $x + 68);
+			$array  = array($mapListId => $posX + 5, $mxId => $posX + 10, Formatter::stripDirtyCodes($map->name) => $posX + 20, $map->authorNick => $posX + 68);
 			$labels = $this->maniaControl->manialinkManager->labelLine($mapFrame, $array);
 			if (isset($labels[3])) {
 				/** @var Label $label */
@@ -359,7 +359,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$eraseLabel->setText('x');
 				$eraseLabel->setTextColor('a00');
 
-				$confirmFrame = $this->buildConfirmFrame($maniaLink, $y, $map->uid, true);
+				$confirmFrame = $this->buildConfirmFrame($maniaLink, $posY, $map->uid, true);
 				$eraseLabel->addToggleFeature($confirmFrame);
 				$description = 'Remove Map: $<' . $map->name . '$>';
 				$eraseLabel->addTooltipLabelFeature($descriptionLabel, $description);
@@ -376,7 +376,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$switchLabel->setText('»');
 				$switchLabel->setTextColor('0f0');
 
-				$confirmFrame = $this->buildConfirmFrame($maniaLink, $y, $map->uid);
+				$confirmFrame = $this->buildConfirmFrame($maniaLink, $posY, $map->uid);
 				$switchLabel->addToggleFeature($confirmFrame);
 
 				$description = 'Switch Directly to Map: $<' . $map->name . '$>';
@@ -438,7 +438,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 					$karmaGauge = new Gauge();
 					$mapFrame->add($karmaGauge);
 					$karmaGauge->setZ(2);
-					$karmaGauge->setX($x + 120);
+					$karmaGauge->setX($posX + 120);
 					$karmaGauge->setSize(20, 9);
 					$karmaGauge->setDrawBg(false);
 					$karma = floatval($karma);
@@ -449,7 +449,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 					$karmaLabel = new Label();
 					$mapFrame->add($karmaLabel);
 					$karmaLabel->setZ(2);
-					$karmaLabel->setX($x + 120);
+					$karmaLabel->setX($posX + 120);
 					$karmaLabel->setSize(20 * 0.9, 5);
 					$karmaLabel->setTextSize(0.9);
 					$karmaLabel->setTextColor('000');
@@ -457,8 +457,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				}
 			}
 
-			$y -= 4;
-			$id++;
+			$posY -= 4;
+			$mapListId++;
 			$index++;
 		}
 
@@ -494,12 +494,12 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 * Builds the confirmation frame
 	 *
 	 * @param ManiaLink $maniaLink
-	 * @param float     $y
+	 * @param float     $posY
 	 * @param bool      $mapUid
 	 * @param bool      $erase
 	 * @return Frame
 	 */
-	public function buildConfirmFrame(Manialink $maniaLink, $y, $mapUid, $erase = false) {
+	public function buildConfirmFrame(Manialink $maniaLink, $posY, $mapUid, $erase = false) {
 		// TODO: get rid of the confirm frame to decrease xml size & network usage
 
 		$width        = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
@@ -508,7 +508,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 		$confirmFrame = new Frame();
 		$maniaLink->add($confirmFrame);
-		$confirmFrame->setPosition($width / 2 + 6, $y);
+		$confirmFrame->setPosition($width / 2 + 6, $posY);
 		$confirmFrame->setVisible(false);
 
 		$quad = new Quad();

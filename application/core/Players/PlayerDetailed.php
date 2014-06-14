@@ -70,13 +70,13 @@ class PlayerDetailed {
 		$script = new Script();
 		$maniaLink->setScript($script);
 
-		$y = $this->height / 2 - 7;
+		$posY = $this->height / 2 - 7;
 
 		//Nation Quad
 		$countryQuad = new Quad();
 		$frame->add($countryQuad);
 		$countryQuad->setImage("file://ZoneFlags/Login/{$targetLogin}/country");
-		$countryQuad->setPosition(-$this->width / 2 + 10, $y);
+		$countryQuad->setPosition(-$this->width / 2 + 10, $posY);
 		$countryQuad->setSize(5, 5);
 		$countryQuad->setZ(-0.1);
 		$countryQuad->setHAlign(Control::LEFT);
@@ -84,111 +84,111 @@ class PlayerDetailed {
 		//Nickname
 		$label = new Label_Text();
 		$frame->add($label);
-		$label->setPosition(-$this->width / 2 + 15, $y);
+		$label->setPosition(-$this->width / 2 + 15, $posY);
 		$label->setText($target->nickname);
 		$label->setHAlign(Control::LEFT);
 
 
 		//Define MainLabel (Login)
-		$y -= 8;
+		$posY -= 8;
 		$mainLabel = new Label_Text();
 		$frame->add($mainLabel);
-		$mainLabel->setPosition(-$this->width / 2 + 10, $y);
+		$mainLabel->setPosition(-$this->width / 2 + 10, $posY);
 		$mainLabel->setTextSize(1.2);
 		$mainLabel->setHAlign(Control::LEFT);
 		$mainLabel->setText("Login:");
 
-		$y -= 5;
+		$posY -= 5;
 		$label = clone $mainLabel;
 		$frame->add($label);
-		$label->setY($y);
+		$label->setY($posY);
 		$label->setText("Nation: ");
 
-		$y -= 5;
+		$posY -= 5;
 		$label = clone $mainLabel;
 		$frame->add($label);
-		$label->setY($y);
+		$label->setY($posY);
 		$label->setText("Province:");
 
-		$y -= 5;
+		$posY -= 5;
 		$label = clone $mainLabel;
 		$frame->add($label);
-		$label->setY($y);
+		$label->setY($posY);
 		$label->setText("Authorization:");
 
-		$y -= 5;
+		$posY -= 5;
 		$label = clone $mainLabel;
 		$frame->add($label);
-		$label->setY($y);
+		$label->setY($posY);
 		$label->setText("Ladder Rank:");
 
-		$y -= 5;
+		$posY -= 5;
 		$label = clone $mainLabel;
 		$frame->add($label);
-		$label->setY($y);
+		$label->setY($posY);
 		$label->setText("Ladder Score:");
 
-		$y -= 5;
+		$posY -= 5;
 		$label = clone $mainLabel;
 		$frame->add($label);
-		$label->setY($y);
+		$label->setY($posY);
 		$label->setText("Inscribed Zone:");
 
-		$y -= 5;
+		$posY -= 5;
 		$label = clone $mainLabel;
 		$frame->add($label);
-		$label->setY($y);
+		$label->setY($posY);
 		$label->setText('Avatar');
 
 		//Login
-		$y         = $this->height / 2 - 15;
+		$posY      = $this->height / 2 - 15;
 		$mainLabel = new Label_Text();
 		$frame->add($mainLabel);
-		$mainLabel->setPosition(-$this->width / 2 + 30, $y);
+		$mainLabel->setPosition(-$this->width / 2 + 30, $posY);
 		$mainLabel->setText($target->login);
 		$mainLabel->setTextSize(1.2);
 		$mainLabel->setHAlign(Control::LEFT);
 
 		//Country
-		$y -= 5;
+		$posY -= 5;
 		$label = clone $mainLabel;
 		$frame->add($label);
-		$label->setY($y);
+		$label->setY($posY);
 		$label->setText($target->getCountry());
 
 		//Province
-		$y -= 5;
+		$posY -= 5;
 		$label = clone $mainLabel;
 		$frame->add($label);
-		$label->setY($y);
+		$label->setY($posY);
 		$label->setText($target->getProvince());
 
 		//AuthLevel
-		$y -= 5;
+		$posY -= 5;
 		$label = clone $mainLabel;
 		$frame->add($label);
-		$label->setY($y);
+		$label->setY($posY);
 		$label->setText($this->maniaControl->authenticationManager->getAuthLevelName($target->authLevel));
 
 		//LadderRank
-		$y -= 5;
+		$posY -= 5;
 		$label = clone $mainLabel;
 		$frame->add($label);
-		$label->setY($y);
+		$label->setY($posY);
 		$label->setText($target->ladderRank);
 
 		//LadderScore
-		$y -= 5;
+		$posY -= 5;
 		$label = clone $mainLabel;
 		$frame->add($label);
-		$label->setY($y);
+		$label->setY($posY);
 		$label->setText(round($target->ladderScore, 2));
 
 		//Played Since
-		$y -= 5;
+		$posY -= 5;
 		$label = clone $mainLabel;
 		$frame->add($label);
-		$label->setY($y);
+		$label->setY($posY);
 		$label->setText(date("d M Y", time() - 3600 * 24 * $target->daysSinceZoneInscription));
 
 		$quad = new Quad();
@@ -227,7 +227,7 @@ class PlayerDetailed {
 		$playerStats = $this->maniaControl->statisticManager->getAllPlayerStats($player);
 		$posY        = $this->height / 2 - 15;
 		$posX        = -$this->width / 2 + 52;
-		$id          = 1;
+		$index       = 1;
 
 		foreach ($playerStats as $stat) {
 			$value = (float)$stat[1];
@@ -242,7 +242,7 @@ class PlayerDetailed {
 				$value = round($value, 2);
 			}
 
-			if ($id % 2 !== 0) {
+			if ($index % 2 !== 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
 				$frame->add($lineQuad);
 				$lineQuad->setSize(49, 4);
@@ -265,12 +265,12 @@ class PlayerDetailed {
 			$label->setTextSize(1.5);
 
 			$posY -= 4;
-			$id++;
+			$index++;
 
-			if ($id > self::STATS_PER_COLUMN) {
+			if ($index > self::STATS_PER_COLUMN) {
 				$posY = $this->height / 2 - 15;
 				$posX += 47;
-				$id = 0;
+				$index = 0;
 			}
 		}
 		return $frame;
