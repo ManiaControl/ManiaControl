@@ -224,15 +224,19 @@ class StatisticCollector implements CallbackListener {
 				break;
 			case 'OnHit':
 				$paramsObject = json_decode($callback[1][1]);
-				$shooter      = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Shooter->Login);
-				$victim       = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Victim->Login);
-				$weapon       = $paramsObject->Event->WeaponNum;
-				if ($shooter) {
-					$this->maniaControl->statisticManager->incrementStat($this->getWeaponStat(intval($weapon), false), $shooter);
-					$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_HIT, $shooter);
+				$weapon       = (int)$paramsObject->Event->WeaponNum;
+				if (isset($paramsObject->Event->Shooter)) {
+					$shooter = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Shooter->Login);
+					if ($shooter) {
+						$this->maniaControl->statisticManager->incrementStat($this->getWeaponStat($weapon, false), $shooter);
+						$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_HIT, $shooter);
+					}
 				}
-				if ($victim) {
-					$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_GOT_HIT, $victim);
+				if (isset($paramsObject->Event->Victim)) {
+					$victim = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Victim->Login);
+					if ($victim) {
+						$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_GOT_HIT, $victim);
+					}
 				}
 				break;
 			case 'OnArmorEmpty':
