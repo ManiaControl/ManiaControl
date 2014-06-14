@@ -123,7 +123,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		$itemMarginFactorY = 1.2;
 
 		// If game is shootmania lower the icons position by 20
-		if ($this->maniaControl->mapManager->getCurrentMap()->getGame() == 'sm') {
+		if ($this->maniaControl->mapManager->getCurrentMap()->getGame() === 'sm') {
 			$posY -= $shootManiaOffset;
 		}
 

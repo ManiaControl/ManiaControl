@@ -124,7 +124,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 			$pageFrame->add($playerFrame);
 			$playerFrame->setY($y);
 
-			if ($i % 2 != 0) {
+			if ($i % 2 !== 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
 				$playerFrame->add($lineQuad);
 				$lineQuad->setSize($width, 4);
@@ -247,7 +247,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 	 */
 	public function handleWidgetOpened(Player $player, $openedWidget) {
 		//unset when another main widget got opened
-		if ($openedWidget != 'AdminList') {
+		if ($openedWidget !== 'AdminList') {
 			unset($this->adminListShown[$player->login]);
 		}
 	}

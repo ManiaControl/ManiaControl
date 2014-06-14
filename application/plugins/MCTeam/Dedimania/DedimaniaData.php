@@ -61,7 +61,7 @@ class DedimaniaData {
 	public function toArray() {
 		$array = array();
 		foreach (get_object_vars($this) as $key => $value) {
-			if ($key == 'records' || $key == 'sessionId' || $key == 'directoryAccessChecked' || $key == 'serverMaxRank' || $key == 'players') {
+			if ($key === 'records' || $key === 'sessionId' || $key === 'directoryAccessChecked' || $key === 'serverMaxRank' || $key === 'players') {
 				continue;
 			}
 			$array[ucfirst($key)] = $value;

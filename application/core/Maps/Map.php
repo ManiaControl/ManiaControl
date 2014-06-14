@@ -80,21 +80,20 @@ class Map {
 	}
 
 	/**
-	 * Get's the gameType of the Current Map
+	 * Get the Game Type of the Map
 	 *
 	 * @return string
 	 */
 	public function getGame() {
 		switch ($this->environment) {
 			case 'Storm':
-				return "sm";
+				return 'sm';
 			case 'Canyon':
 			case 'Stadium':
 			case 'Valley':
-				return "tm";
-			default:
-				return "";
+				return 'tm';
 		}
+		return null;
 	}
 
 	/**
@@ -104,7 +103,7 @@ class Map {
 	 */
 	public function updateAvailable() {
 
-		if ($this->mx && ($this->lastUpdate < strtotime($this->mx->updated) || $this->uid != $this->mx->uid)) {
+		if ($this->mx && ($this->lastUpdate < strtotime($this->mx->updated) || $this->uid !== $this->mx->uid)) {
 			return true;
 		} else {
 			return false;

@@ -55,7 +55,7 @@ abstract class FileUtil {
 		if ($info['timed_out'] || !$buffer) {
 			return null;
 		}
-		if (substr($buffer, 9, 3) != '200') {
+		if (substr($buffer, 9, 3) !== '200') {
 			return null;
 		}
 

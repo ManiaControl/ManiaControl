@@ -335,7 +335,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 
 		if ($update) {
 			$pluginClass = substr($actionId, strlen(PluginMenu::ACTION_PREFIX_UPDATEPLUGIN));
-			if ($pluginClass == 'All') {
+			if ($pluginClass === 'All') {
 				$this->performPluginsUpdate($player);
 			} else {
 				$pluginUpdateData = $this->getPluginUpdate($pluginClass);

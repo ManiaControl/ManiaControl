@@ -308,7 +308,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 	 */
 	public function getLocalRecords(Map $map, $limit = -1) {
 		$mysqli = $this->maniaControl->database->mysqli;
-		$limit  = ($limit > 0 ? "LIMIT " . $limit : "");
+		$limit  = ($limit > 0 ? 'LIMIT ' . $limit : '');
 		$query  = "SELECT * FROM (
 					SELECT recs.*, @rank := @rank + 1 as `rank` FROM `" . self::TABLE_RECORDS . "` recs, (SELECT @rank := 0) ra
 					WHERE recs.`mapIndex` = {$map->index}
@@ -435,30 +435,34 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$this->updateManialink = true;
 
 		// Announce record
-		$newRecord = $this->getLocalRecord($map, $callback->player);
+		$newRecord    = $this->getLocalRecord($map, $callback->player);
+		$improvedRank = (!$oldRecord || $newRecord->rank < $oldRecord->rank);
 
 		$notifyOnlyDriver      = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_NOTIFY_ONLY_DRIVER);
 		$notifyOnlyBestRecords = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_NOTIFY_BEST_RECORDS);
-		if ($notifyOnlyDriver || $notifyOnlyBestRecords > 0 && $newRecord->rank > $notifyOnlyBestRecords) {
-			$improvement = ((!$oldRecord || $newRecord->rank < $oldRecord->rank) ? 'gained the' : 'improved your');
-			$message     = 'You ' . $improvement . ' $<$ff0' . $newRecord->rank . '.$> Local Record: $<$fff' . Formatter::formatTime($newRecord->time) . '$>';
-			if ($oldRecord) {
-				$oldRank = ($improvement == 'improved your') ? '' : $oldRecord->rank . '. ';
-			}
-			if ($oldRecord) {
-				$message .= ' ($<$ff0' . $oldRank . '$>$<$fff-' . Formatter::formatTime(($oldRecord->time - $newRecord->time)) . '$>!';
-			}
-			$this->maniaControl->chat->sendInformation('$3c0' . $message . '!', $callback->player->login);
+
+		$message = '$3c0';
+		if ($notifyOnlyDriver) {
+			$message .= 'You';
 		} else {
-			$improvement = ((!$oldRecord || $newRecord->rank < $oldRecord->rank) ? 'gained the' : 'improved the');
-			$message     = '$<$fff' . $callback->player->nickname . '$> ' . $improvement . ' $<$ff0' . $newRecord->rank . '.$> Local Record: $<$fff' . Formatter::formatTime($newRecord->time) . '$>';
-			if ($oldRecord) {
-				$oldRank = ($improvement == 'improved the') ? '' : $oldRecord->rank . '. ';
+			$message .= '$<$fff' . $callback->player->nickname . '$>';
+		}
+		$message .= ' ' . ($improvedRank ? 'gained' : 'improved') . ' the';
+		$message .= ' $<$ff0' . $newRecord->rank . '.$> Local Record:';
+		$message .= ' $<$fff' . Formatter::formatTime($newRecord->time) . '$>!';
+		if ($oldRecord) {
+			$message .= ' (';
+			if ($improvedRank) {
+				$message .= '$<$ff0' . $oldRecord->rank . '.$> ';
 			}
-			if ($oldRecord) {
-				$message .= ' ($<$ff0' . $oldRank . '$>$<$fff-' . Formatter::formatTime(($oldRecord->time - $newRecord->time)) . '$>)';
-			}
-			$this->maniaControl->chat->sendInformation('$3c0' . $message . '!');
+			$timeDiff = $oldRecord->time - $newRecord->time;
+			$message .= '$<$fff-' . Formatter::formatTime($timeDiff) . '$>)';
+		}
+
+		if ($notifyOnlyDriver) {
+			$this->maniaControl->chat->sendInformation($message, $callback->player);
+		} else if (!$notifyOnlyBestRecords || $newRecord->rank <= $notifyOnlyBestRecords) {
+			$this->maniaControl->chat->sendInformation($message);
 		}
 
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_LOCALRECORDS_CHANGED, $newRecord);
@@ -596,7 +600,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 			$recordFrame = new Frame();
 			$pageFrame->add($recordFrame);
 
-			if ($i % 2 != 0) {
+			if ($i % 2 !== 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
 				$recordFrame->add($lineQuad);
 				$lineQuad->setSize($width, 4);
@@ -647,7 +651,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		}
 
 		$mysqli = $this->maniaControl->database->mysqli;
-		$query  = "DELETE FROM `" . self::TABLE_RECORDS . "` WHERE `mapIndex` = " . $currentMap->index . " AND `playerIndex` = " . $player->index . "";
+		$query  = "DELETE FROM `" . self::TABLE_RECORDS . "` WHERE `mapIndex` = {$currentMap->index} AND `playerIndex` = {$player->index};";
 		$mysqli->query($query);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error);

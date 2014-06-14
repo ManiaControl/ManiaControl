@@ -123,7 +123,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 			$detailedPlayerInfo = $this->maniaControl->client->getDetailedPlayerInfo($playerItem->login);
 
 			//Check if the Player is in a Team, to notify if its a TeamMode or not
-			if ($playerItem->teamId != -1) {
+			if ($playerItem->teamId >= 0) {
 				$this->maniaControl->server->setTeamMode(true);
 			}
 
@@ -324,7 +324,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 		$player->teamId     = $callback[1][0]["TeamId"];
 
 		//Check if the Player is in a Team, to notify if its a TeamMode or not
-		if ($player->teamId != -1) {
+		if ($player->teamId >= 0) {
 			$this->maniaControl->server->setTeamMode(true);
 		}
 
@@ -446,7 +446,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 	 */
 	public function getPlayerByIndex($index, $connectedPlayersOnly = false) {
 		foreach ($this->players as $player) {
-			if ($player->index == $index) {
+			if ($player->index === $index) {
 				return $player;
 			}
 		}

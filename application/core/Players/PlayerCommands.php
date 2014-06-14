@@ -223,12 +223,9 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 
 		$type = 2;
 		if (isset($params[2]) && is_numeric($params[2])) {
-			$type = intval($params[2]);
+			$type = (int)$params[2];
 		}
-		$selectable = false;
-		if ($type == 2) {
-			$selectable = true;
-		}
+		$selectable = ($type === 2);
 
 		$this->maniaControl->playerManager->playerActions->forcePlayerToPlay($player->login, $targetLogin, $selectable);
 	}

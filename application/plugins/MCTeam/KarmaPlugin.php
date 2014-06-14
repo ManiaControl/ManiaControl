@@ -238,7 +238,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		$karmaSettingName = self::buildKarmaSettingName($serverLogin);
 		$mxKarmaCode      = $this->maniaControl->settingManager->getSettingValue($this, $karmaSettingName);
 
-		if ($mxKarmaCode == '') {
+		if (!$mxKarmaCode) {
 			return;
 		}
 
@@ -297,7 +297,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 					// Fetch the Mx Karma Votes
 					$self->getMxKarmaVotes();
 				} else {
-					if ($data->data->message == "invalid hash") {
+					if ($data->data->message === "invalid hash") {
 						$permission = $self->maniaControl->settingManager->getSettingValue($this->maniaControl->authenticationManager, PluginMenu::SETTING_PERMISSION_CHANGE_PLUGIN_SETTINGS);
 						$self->maniaControl->chat->sendErrorToAdmins("Invalid Mania-Exchange Karma code in Karma Plugin specified!", $permission);
 					} else {
@@ -348,7 +348,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		$properties = array();
 
 		$gameMode = $this->maniaControl->server->getGameMode(true);
-		if ($gameMode == 'Script') {
+		if ($gameMode === 'Script') {
 			$scriptName             = $this->maniaControl->client->getScriptName();
 			$properties['gamemode'] = $scriptName["CurrentValue"];
 		} else {
@@ -393,7 +393,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 					$self->maniaControl->log("MX-Karma Votes successfully fetched");
 				} else {
 					$self->maniaControl->log("Error while fetching votes: " . $data->data->message);
-					if ($data->data->message == "invalid session") {
+					if ($data->data->message === 'invalid session') {
 						unset($this->mxKarma['session']);
 						return;
 					}
@@ -455,12 +455,12 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 		$gameMode = $this->maniaControl->server->getGameMode(true);
 
-		if (count($votes) == 0) {
+		if (empty($votes)) {
 			return;
 		}
 
 		$properties = array();
-		if ($gameMode == 'Script') {
+		if ($gameMode === 'Script') {
 			$scriptName             = $this->maniaControl->client->getScriptName();
 			$properties['gamemode'] = $scriptName["CurrentValue"];
 		} else {
@@ -490,7 +490,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 					$self->maniaControl->log("Votes successfully submitted");
 				} else {
 					$self->maniaControl->log("Error while updating votes: " . $data->data->message);
-					if ($data->data->message == "invalid session") {
+					if ($data->data->message === "invalid session") {
 						unset($this->mxKarma['session']);
 						return;
 					}
@@ -967,7 +967,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		}
 		$vote = $result->fetch_object();
 
-		if ($result->field_count == 0 || !$vote) {
+		if (!$result->field_count || !$vote) {
 			$query   = "SELECT vote, login, nickname FROM `" . self::TABLE_KARMA . "` k LEFT JOIN `" . PlayerManager::TABLE_PLAYERS . "` p ON  (k.playerIndex=p.index) WHERE mapIndex = {$map->index}";
 			$result2 = $mysqli->query($query);
 			if ($mysqli->error) {
@@ -1011,7 +1011,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			return;
 		}
 
-		if (!isset($this->mxKarma['votes']) || count($this->mxKarma['votes']) == 0) {
+		if (!isset($this->mxKarma['votes']) || empty($this->mxKarma['votes'])) {
 			return;
 		}
 

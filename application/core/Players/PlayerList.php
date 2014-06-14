@@ -104,7 +104,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 	 */
 	public function handleWidgetOpened(Player $player, $openedWidget) {
 		//unset when another main widget got opened
-		if ($openedWidget != 'PlayerList') {
+		if ($openedWidget !== 'PlayerList') {
 			unset($this->playersListShown[$player->login]);
 		}
 	}
@@ -187,7 +187,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 			$playerFrame = new Frame();
 			$pageFrame->add($playerFrame);
 
-			if ($i % 2 != 0) {
+			if ($i % 2 !== 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
 				$playerFrame->add($lineQuad);
 				$lineQuad->setSize($width, 4);
@@ -200,8 +200,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 
 			$playerFrame->setY($y);
 
-			//Show current Player Arrow
-			if ($listPlayer->index == $player->index) {
+			// Show current Player Arrow
+			if ($listPlayer->index === $player->index) {
 				$currentQuad = new Quad_Icons64x64_1();
 				$playerFrame->add($currentQuad);
 				$currentQuad->setX($x + 3.5);
@@ -238,14 +238,14 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 			}
 
 			$countryCode = Formatter::mapCountry($listPlayer->getCountry());
-			if ($countryCode != 'OTH') {
+			if ($countryCode !== 'OTH') {
 				// Nation Quad
 				$countryQuad = new Quad();
 				$playerFrame->add($countryQuad);
 				$countryQuad->setImage("file://ZoneFlags/Login/{$listPlayer->login}/country");
 				$countryQuad->setX($x + 98);
-				$countryQuad->setSize(4, 4);
 				$countryQuad->setZ(1);
+				$countryQuad->setSize(4, 4);
 
 				$countryQuad->addTooltipLabelFeature($descriptionLabel, '$<' . $listPlayer->nickname . '$> from ' . $listPlayer->path);
 			}
@@ -255,15 +255,15 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 			$playerFrame->add($rightQuad);
 			$rightQuad->setX($x + 13);
 			$rightQuad->setZ(3);
-			$rightQuad->setSubStyle($rightQuad::SUBSTYLE_CupFinisher);
 			$rightQuad->setSize(7, 3.5);
+			$rightQuad->setSubStyle($rightQuad::SUBSTYLE_CupFinisher);
 
 			$rightLabel = new Label_Text();
 			$playerFrame->add($rightLabel);
 			$rightLabel->setX($x + 13.9);
-			$rightLabel->setTextSize(0.8);
 			$rightLabel->setZ(3.1);
 			$rightLabel->setText($this->maniaControl->authenticationManager->getAuthLevelAbbreviation($listPlayer->authLevel));
+			$rightLabel->setTextSize(0.8);
 			$rightLabel->setTextColor("fff");
 
 			$description = $this->maniaControl->authenticationManager->getAuthLevelName($listPlayer) . " " . $listPlayer->nickname;
@@ -274,8 +274,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 			$playerFrame->add($playerQuad);
 			$playerQuad->setX($x + 61);
 			$playerQuad->setZ(3);
-			$playerQuad->setSubStyle($playerQuad::SUBSTYLE_TrackInfo);
 			$playerQuad->setSize(2.7, 2.7);
+			$playerQuad->setSubStyle($playerQuad::SUBSTYLE_TrackInfo);
 			$playerQuad->setAction(self::ACTION_OPEN_PLAYER_DETAILED . "." . $listPlayer->login);
 			$description = 'View Statistics of $<' . $listPlayer->nickname . '$>';
 			$playerQuad->addTooltipLabelFeature($descriptionLabel, $description);
@@ -285,8 +285,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 			$playerFrame->add($playerQuad);
 			$playerQuad->setX($x + 64.5);
 			$playerQuad->setZ(3);
-			$playerQuad->setSubStyle($playerQuad::SUBSTYLE_Camera);
 			$playerQuad->setSize(3.8, 3.8);
+			$playerQuad->setSubStyle($playerQuad::SUBSTYLE_Camera);
 			$description = 'Spectate $<' . $listPlayer->nickname . '$>';
 			$playerQuad->addTooltipLabelFeature($descriptionLabel, $description);
 			$playerQuad->setAction(self::ACTION_SPECTATE_PLAYER . "." . $listPlayer->login);
@@ -296,8 +296,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 			$playerFrame->add($playerQuad);
 			$playerQuad->setX($x + 68);
 			$playerQuad->setZ(3);
-			$playerQuad->setSubStyle($playerQuad::SUBSTYLE_Author);
 			$playerQuad->setSize(3.8, 3.8);
+			$playerQuad->setSubStyle($playerQuad::SUBSTYLE_Author);
 			$playerQuad->addPlayerProfileFeature($listPlayer->login);
 
 			// Description Label
@@ -310,8 +310,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				$playerFrame->add($playerQuad);
 				$playerQuad->setX($x + 132);
 				$playerQuad->setZ(0.1);
-				$playerQuad->setSubStyle($playerQuad::SUBSTYLE_Buddy);
 				$playerQuad->setSize(3.8, 3.8);
+				$playerQuad->setSubStyle($playerQuad::SUBSTYLE_Buddy);
 				$playerQuad->setAction(self::ACTION_PLAYER_ADV . "." . $listPlayer->login);
 
 				// Description Label
@@ -326,9 +326,9 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 					$playerFrame->add($redQuad);
 					$redQuad->setX($x + 145);
 					$redQuad->setZ(0.1);
-					$redQuad->setSubStyle($redQuad::SUBSTYLE_2);
 					$redQuad->setSize(3.8, 3.8);
-					$redQuad->setAction(self::ACTION_FORCE_RED . "." . $listPlayer->login);
+					$redQuad->setSubStyle($redQuad::SUBSTYLE_2);
+					$redQuad->setAction(self::ACTION_FORCE_RED . '.' . $listPlayer->login);
 
 					// Force to Red-Team Description Label
 					$description = 'Force $<' . $listPlayer->nickname . '$> to Red Team!';
@@ -339,9 +339,9 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 					$playerFrame->add($blueQuad);
 					$blueQuad->setX($x + 141);
 					$blueQuad->setZ(0.1);
-					$blueQuad->setSubStyle($blueQuad::SUBSTYLE_1);
 					$blueQuad->setSize(3.8, 3.8);
-					$blueQuad->setAction(self::ACTION_FORCE_BLUE . "." . $listPlayer->login);
+					$blueQuad->setSubStyle($blueQuad::SUBSTYLE_1);
+					$blueQuad->setAction(self::ACTION_FORCE_BLUE . '.' . $listPlayer->login);
 
 					// Force to Blue-Team Description Label
 					$description = 'Force $<' . $listPlayer->nickname . '$> to Blue Team!';
@@ -353,9 +353,9 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 					$playerFrame->add($kickQuad);
 					$kickQuad->setX($x + 141);
 					$kickQuad->setZ(0.1);
-					$kickQuad->setSubStyle($kickQuad::SUBSTYLE_Validate_Step2);
 					$kickQuad->setSize(3.8, 3.8);
-					$kickQuad->setAction(self::ACTION_KICK_PLAYER_VOTE . "." . $listPlayer->login);
+					$kickQuad->setSubStyle($kickQuad::SUBSTYLE_Validate_Step2);
+					$kickQuad->setAction(self::ACTION_KICK_PLAYER_VOTE . '.' . $listPlayer->login);
 
 					$description = 'Start a Kick Vote on $<' . $listPlayer->nickname . '$>!';
 					$kickQuad->addTooltipLabelFeature($descriptionLabel, $description);
@@ -367,9 +367,9 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 					$playerFrame->add($playQuad);
 					$playQuad->setX($x + 143);
 					$playQuad->setZ(0.1);
-					$playQuad->setSubStyle($playQuad::SUBSTYLE_2);
 					$playQuad->setSize(3.8, 3.8);
-					$playQuad->setAction(self::ACTION_FORCE_PLAY . "." . $listPlayer->login);
+					$playQuad->setSubStyle($playQuad::SUBSTYLE_2);
+					$playQuad->setAction(self::ACTION_FORCE_PLAY . '.' . $listPlayer->login);
 
 					$description = 'Force $<' . $listPlayer->nickname . '$> to Play!';
 					$playQuad->addTooltipLabelFeature($descriptionLabel, $description);
@@ -382,9 +382,9 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				$playerFrame->add($spectatorQuad);
 				$spectatorQuad->setX($x + 137);
 				$spectatorQuad->setZ(0.1);
-				$spectatorQuad->setSubStyle($spectatorQuad::SUBSTYLE_Spectator);
 				$spectatorQuad->setSize(3.8, 3.8);
-				$spectatorQuad->setAction(self::ACTION_FORCE_SPEC . "." . $listPlayer->login);
+				$spectatorQuad->setSubStyle($spectatorQuad::SUBSTYLE_Spectator);
+				$spectatorQuad->setAction(self::ACTION_FORCE_SPEC . '.' . $listPlayer->login);
 
 				// Force to Spectator Description Label
 				$description = 'Force $<' . $listPlayer->nickname . '$> to Spectator!';
@@ -395,9 +395,9 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				$playerFrame->add($spectatorQuad);
 				$spectatorQuad->setX($x + 137);
 				$spectatorQuad->setZ(0.1);
-				$spectatorQuad->setSubStyle($spectatorQuad::SUBSTYLE_Spectator);
 				$spectatorQuad->setSize(3.8, 3.8);
-				$spectatorQuad->setAction(self::ACTION_FORCE_SPEC_VOTE . "." . $listPlayer->login);
+				$spectatorQuad->setSubStyle($spectatorQuad::SUBSTYLE_Spectator);
+				$spectatorQuad->setAction(self::ACTION_FORCE_SPEC_VOTE . '.' . $listPlayer->login);
 
 				// Force to Spectator Description Label
 				$description = 'Start a Vote to force $<' . $listPlayer->nickname . '$> to Spectator!';
@@ -409,8 +409,9 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		}
 
 		// Show advanced window
-		if ($this->playersListShown[$player->login] && $this->playersListShown[$player->login] != self::SHOWN_MAIN_WINDOW) {
-			$frame = $this->showAdvancedPlayerWidget($player, $this->playersListShown[$player->login]);
+		$listShownValue = $this->playersListShown[$player->login];
+		if ($listShownValue && $listShownValue !== self::SHOWN_MAIN_WINDOW) {
+			$frame = $this->showAdvancedPlayerWidget($player, $listShownValue);
 			$maniaLink->add($frame);
 		}
 
@@ -773,7 +774,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 			}
 
 			// Reopen widget
-			if ($shown != self::SHOWN_MAIN_WINDOW) {
+			if ($shown !== self::SHOWN_MAIN_WINDOW) {
 				$this->playersListShown[$login] = false;
 			}
 			$this->showPlayerList($player);

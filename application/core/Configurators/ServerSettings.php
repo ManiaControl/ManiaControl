@@ -211,7 +211,6 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 				$quad = new Quad();
 				$quad->setPosition($width * 0.23, 0, -0.01);
 				$quad->setSize(4, 4);
-
 				$checkBox = new CheckBox(self::ACTION_PREFIX_SETTING . $name, $value, $quad);
 				$settingFrame->add($checkBox);
 			} else {
@@ -225,11 +224,12 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 				$entry->setName(self::ACTION_PREFIX_SETTING . $name);
 				$entry->setDefault($value);
 
-				if ($name == "Comment") { //
+				if ($name === 'Comment') {
 					$entry->setAutoNewLine(true);
 					$entry->setSize($width * 0.48, $settingHeight * 3 + $settingHeight * 0.9);
 					$settingFrame->setY($y - $settingHeight * 1.5);
 					// dummy:
+					// TODO: "dummy:" what? remove?
 					$y -= $settingHeight * 3;
 					$id += 3;
 				}

@@ -182,11 +182,11 @@ class StatisticManager {
 		$mysqli = $this->maniaControl->database->mysqli;
 		$statId = $this->getStatId($statName);
 
-		if ($minValue == -1) {
-			$query = "SELECT playerId, serverIndex, value FROM `" . self::TABLE_STATISTICS . "` WHERE statId = " . $statId . " ORDER BY value DESC;";
-		} else {
-			$query = "SELECT playerId, serverIndex, value FROM `" . self::TABLE_STATISTICS . "` WHERE statId = " . $statId . " AND value >= " . $minValue . " ORDER BY value DESC;";
+		$query = "SELECT playerId, serverIndex, value FROM `" . self::TABLE_STATISTICS . "` WHERE statId = {$statId}";
+		if ($minValue >= 0) {
+			$query .= " AND value >= {$minValue}";
 		}
+		$query .= " ORDER BY value DESC;";
 
 		$result = $mysqli->query($query);
 		if (!$result) {
@@ -196,7 +196,7 @@ class StatisticManager {
 
 		$stats = array();
 		while ($row = $result->fetch_object()) {
-			if ($serverIndex == -1) {
+			if ($serverIndex < 0) {
 				if (!isset($stats[$row->playerId])) {
 					$stats[$row->playerId] = $row->value;
 				} else {
@@ -206,9 +206,9 @@ class StatisticManager {
 				$stats[$row->playerId] = $row->value;
 			}
 		}
+		$result->free();
 
 		arsort($stats);
-		$result->free();
 		return $stats;
 	}
 
@@ -229,7 +229,7 @@ class StatisticManager {
 					return array();
 				}
 				foreach ($deaths as $key => $death) {
-					if ($death == 0 || !isset($kills[$key])) {
+					if (!$death || !isset($kills[$key])) {
 						continue;
 					}
 					$statsArray[$key] = intval($kills[$key]) / intval($death);
@@ -243,7 +243,7 @@ class StatisticManager {
 					return array();
 				}
 				foreach ($times as $key => $time) {
-					if ($time == 0 || !isset($hits[$key])) {
+					if (!$time || !isset($hits[$key])) {
 						continue;
 					}
 					$statsArray[$key] = intval($hits[$key]) / (intval($time) / 3600);
@@ -257,7 +257,7 @@ class StatisticManager {
 					return array();
 				}
 				foreach ($shots as $key => $shot) {
-					if ($shot == 0 || !isset($hits[$key])) {
+					if (!$shot || !isset($hits[$key])) {
 						continue;
 					}
 					$statsArray[$key] = intval($hits[$key]) / (intval($shot));
@@ -271,7 +271,7 @@ class StatisticManager {
 					return array();
 				}
 				foreach ($shots as $key => $shot) {
-					if ($shot == 0 || !isset($hits[$key])) {
+					if (!$shot || !isset($hits[$key])) {
 						continue;
 					}
 					$statsArray[$key] = intval($hits[$key]) / (intval($shot));
@@ -285,7 +285,7 @@ class StatisticManager {
 					return array();
 				}
 				foreach ($shots as $key => $shot) {
-					if ($shot == 0 || !isset($hits[$key])) {
+					if (!$shot || !isset($hits[$key])) {
 						continue;
 					}
 					$statsArray[$key] = intval($hits[$key]) / (intval($shot));
@@ -299,7 +299,7 @@ class StatisticManager {
 					return array();
 				}
 				foreach ($shots as $key => $shot) {
-					if ($shot == 0 || !isset($hits[$key])) {
+					if (!$shot || !isset($hits[$key])) {
 						continue;
 					}
 					$statsArray[$key] = intval($hits[$key]) / (intval($shot));
@@ -347,7 +347,7 @@ class StatisticManager {
 					}
 					$kills  = intval($playerStats[StatisticCollector::STAT_ON_KILL][1]);
 					$deaths = intval($playerStats[StatisticCollector::STAT_ON_DEATH][1]);
-					if ($deaths == 0) {
+					if (!$deaths) {
 						continue;
 					}
 					$playerStats[$stat->name] = array($stat, $kills / $deaths);
@@ -358,7 +358,7 @@ class StatisticManager {
 					}
 					$hits = intval($playerStats[StatisticCollector::STAT_ON_HIT][1]);
 					$time = intval($playerStats[StatisticCollector::STAT_PLAYTIME][1]);
-					if ($time == 0) {
+					if (!$time) {
 						continue;
 					}
 					$playerStats[$stat->name] = array($stat, $hits / ($time / 3600));
@@ -369,7 +369,7 @@ class StatisticManager {
 					}
 					$hits  = intval($playerStats[StatisticCollector::STAT_ARROW_HIT][1]);
 					$shots = intval($playerStats[StatisticCollector::STAT_ARROW_SHOT][1]);
-					if ($shots == 0) {
+					if (!$shots) {
 						continue;
 					}
 					$playerStats[$stat->name] = array($stat, $hits / $shots);
@@ -380,7 +380,7 @@ class StatisticManager {
 					}
 					$hits  = intval($playerStats[StatisticCollector::STAT_LASER_HIT][1]);
 					$shots = intval($playerStats[StatisticCollector::STAT_LASER_SHOT][1]);
-					if ($shots == 0) {
+					if (!$shots) {
 						continue;
 					}
 					$playerStats[$stat->name] = array($stat, $hits / $shots);
@@ -391,7 +391,7 @@ class StatisticManager {
 					}
 					$hits  = intval($playerStats[StatisticCollector::STAT_ROCKET_HIT][1]);
 					$shots = intval($playerStats[StatisticCollector::STAT_ROCKET_SHOT][1]);
-					if ($shots == 0) {
+					if (!$shots) {
 						continue;
 					}
 					$playerStats[$stat->name] = array($stat, $hits / $shots);
@@ -402,7 +402,7 @@ class StatisticManager {
 					}
 					$hits  = intval($playerStats[StatisticCollector::STAT_NUCLEUS_HIT][1]);
 					$shots = intval($playerStats[StatisticCollector::STAT_NUCLEUS_SHOT][1]);
-					if ($shots == 0) {
+					if (!$shots) {
 						continue;
 					}
 					$playerStats[$stat->name] = array($stat, (float)($hits / $shots));
@@ -426,42 +426,42 @@ class StatisticManager {
 			case self::SPECIAL_STAT_KD_RATIO:
 				$kills  = $this->getStatisticData(StatisticCollector::STAT_ON_KILL, $playerId, $serverIndex);
 				$deaths = $this->getStatisticData(StatisticCollector::STAT_ON_DEATH, $playerId, $serverIndex);
-				if ($deaths == 0) {
+				if (!$deaths) {
 					return -1;
 				}
 				return intval($kills) / intval($deaths);
 			case self::SPECIAL_STAT_HITS_PH:
 				$hits = $this->getStatisticData(StatisticCollector::STAT_ON_HIT, $playerId, $serverIndex);
 				$time = $this->getStatisticData(StatisticCollector::STAT_PLAYTIME, $playerId, $serverIndex);
-				if ($time == 0) {
+				if (!$time) {
 					return -1;
 				}
 				return intval($hits) / (intval($time) / 3600);
 			case self::SPECIAL_STAT_ARROW_ACC:
 				$hits  = $this->getStatisticData(StatisticCollector::STAT_ARROW_HIT, $playerId, $serverIndex);
 				$shots = $this->getStatisticData(StatisticCollector::STAT_ARROW_SHOT, $playerId, $serverIndex);
-				if ($shots == 0) {
+				if (!$shots) {
 					return -1;
 				}
 				return intval($hits) / intval($shots);
 			case self::SPECIAL_STAT_LASER_ACC:
 				$hits  = $this->getStatisticData(StatisticCollector::STAT_LASER_HIT, $playerId, $serverIndex);
 				$shots = $this->getStatisticData(StatisticCollector::STAT_LASER_SHOT, $playerId, $serverIndex);
-				if ($shots == 0) {
+				if (!$shots) {
 					return -1;
 				}
 				return intval($hits) / intval($shots);
 			case self::SPECIAL_STAT_NUCLEUS_ACC:
 				$hits  = $this->getStatisticData(StatisticCollector::STAT_NUCLEUS_HIT, $playerId, $serverIndex);
 				$shots = $this->getStatisticData(StatisticCollector::STAT_NUCLEUS_SHOT, $playerId, $serverIndex);
-				if ($shots == 0) {
+				if (!$shots) {
 					return -1;
 				}
 				return intval($hits) / intval($shots);
 			case self::SPECIAL_STAT_ROCKET_ACC:
 				$hits  = $this->getStatisticData(StatisticCollector::STAT_ROCKET_HIT, $playerId, $serverIndex);
 				$shots = $this->getStatisticData(StatisticCollector::STAT_ROCKET_SHOT, $playerId, $serverIndex);
-				if ($shots == 0) {
+				if (!$shots) {
 					return -1;
 				}
 				return intval($hits) / intval($shots);
@@ -474,7 +474,7 @@ class StatisticManager {
 			return -1;
 		}
 
-		if ($serverIndex == -1) {
+		if ($serverIndex < 0) {
 			$query = "SELECT SUM(value) as value FROM `" . self::TABLE_STATISTICS . "` WHERE `statId` = " . $statId . " AND `playerId` = " . $playerId . ";";
 		} else {
 			$query = "SELECT value FROM `" . self::TABLE_STATISTICS . "` WHERE `statId` = " . $statId . " AND `playerId` = " . $playerId . " AND `serverIndex` = '" . $serverIndex . "';";
@@ -529,7 +529,7 @@ class StatisticManager {
 			return false;
 		}
 
-		if ($serverIndex == -1) {
+		if ($serverIndex) {
 			$serverIndex = $this->maniaControl->server->index;
 		}
 

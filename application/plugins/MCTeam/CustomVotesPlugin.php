@@ -195,7 +195,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 * @param float  $neededRatio
 	 */
 	public function defineVote($voteIndex, $voteName, $idBased = false, $startText = '', $neededRatio = -1) {
-		if ($neededRatio == -1) {
+		if ($neededRatio < 0) {
 			$neededRatio = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_DEFAULT_RATIO);
 		}
 		$voteCommand                    = new VoteCommand($voteIndex, $voteName, $idBased, $neededRatio);
@@ -221,7 +221,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 			$pauseExists = false;
 			foreach ($scriptInfos->commandDescs as $param) {
-				if ($param->name == "Command_ForceWarmUp") {
+				if ($param->name === "Command_ForceWarmUp") {
 					$pauseExists = true;
 					break;
 				}
@@ -286,7 +286,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$itemMarginFactorY = 1.2;
 
 		//If game is shootmania lower the icons position by 20
-		if ($this->maniaControl->mapManager->getCurrentMap()->getGame() == 'sm') {
+		if ($this->maniaControl->mapManager->getCurrentMap()->getGame() === 'sm') {
 			$posY -= $shootManiaOffset;
 		}
 
@@ -463,7 +463,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$this->currentVote->neededPlayerRatio = floatval($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_DEFAULT_PLAYER_RATIO));
 		$this->currentVote->function          = $function;
 
-		if ($this->currentVote->voteCommand->startText != '') {
+		if ($this->currentVote->voteCommand->startText) {
 			$message = $this->currentVote->voteCommand->startText;
 		} else {
 			$message = '$fff$<' . $player->nickname . '$>$s$f8f started a $fff$<' . $this->currentVote->voteCommand->name . '$>$f8f!';

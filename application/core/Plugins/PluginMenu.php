@@ -126,7 +126,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 
 		// Display normal Plugin List
 		// Plugin pages
-		$y             = 0.;
+		$posY          = 0.;
 		$pluginUpdates = $this->maniaControl->updateManager->pluginUpdateManager->getPluginsUpdates();
 
 		usort($pluginClasses, function ($a, $b) {
@@ -142,14 +142,14 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
 				$paging->addPage($pageFrame);
-				$y = $height * 0.41;
+				$posY = $height * 0.41;
 			}
 
 			$active = $this->maniaControl->pluginManager->isPluginActive($pluginClass);
 
 			$pluginFrame = new Frame();
 			$pageFrame->add($pluginFrame);
-			$pluginFrame->setY($y);
+			$pluginFrame->setY($posY);
 
 			$activeQuad = new Quad_Icons64x64_1();
 			$pluginFrame->add($activeQuad);
@@ -207,7 +207,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 				$statusChangeButton->setAction(self::ACTION_PREFIX_ENABLEPLUGIN . $pluginClass);
 			}
 
-			if ($pluginUpdates != false && array_key_exists($pluginClass::getId(), $pluginUpdates)) {
+			if ($pluginUpdates && array_key_exists($pluginClass::getId(), $pluginUpdates)) {
 				$quadUpdate = new Quad_Icons128x128_1();
 				$pluginFrame->add($quadUpdate);
 				$quadUpdate->setSubStyle($quadUpdate::SUBSTYLE_ProfileVehicle);
@@ -217,16 +217,14 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 				$quadUpdate->setAction(self::ACTION_PREFIX_UPDATEPLUGIN . $pluginClass);
 			}
 
-			$y -= $entryHeight;
+			$posY -= $entryHeight;
 		}
 
-		if ($pluginUpdates != false) {
+		if ($pluginUpdates) {
 			$updatePluginsButton = new Label_Button();
 			$frame->add($updatePluginsButton);
 			$updatePluginsButton->setHAlign(Control::RIGHT);
-			$updatePluginsButton->setX($width * 0.5);
-			$updatePluginsButton->setY(-29);
-			$updatePluginsButton->setZ(2);
+			$updatePluginsButton->setPosition($width * 0.5, -29, 2);
 			$updatePluginsButton->setWidth(10);
 			$updatePluginsButton->setStyle($updatePluginsButton::STYLE_CardButtonSmallS);
 			$updatePluginsButton->setText(count($pluginUpdates) . ' update(s)');

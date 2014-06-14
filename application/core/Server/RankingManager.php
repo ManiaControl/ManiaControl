@@ -111,7 +111,7 @@ class RankingManager implements CallbackListener {
 		$leaders = array();
 		$prev    = -1;
 		foreach ($this->rankings as $score) {
-			if ($prev != -1 && $prev < $score) {
+			if ($prev !== -1 && $prev < $score) {
 				return $leaders;
 			}
 			array_push($leaders, $leader);

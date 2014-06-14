@@ -102,9 +102,9 @@ class PlayerActions {
 
 		$chatMessage = false;
 		$title       = $this->maniaControl->authenticationManager->getAuthLevelName($admin->authLevel);
-		if ($teamId == self::TEAM_BLUE) {
+		if ($teamId === self::TEAM_BLUE) {
 			$chatMessage = $title . ' $<' . $admin->nickname . '$> forced $<' . $target->nickname . '$> into the Blue-Team!';
-		} else if ($teamId == self::TEAM_RED) {
+		} else if ($teamId === self::TEAM_RED) {
 			$chatMessage = $title . ' $<' . $admin->nickname . '$> forced $<' . $target->nickname . '$> into the Red-Team!';
 		}
 		if (!$chatMessage) {
@@ -497,7 +497,7 @@ class PlayerActions {
 	public function isPlayerMuted($login) {
 		$ignoreList = $this->maniaControl->client->getIgnoreList(100, 0);
 		foreach ($ignoreList as $ignoredPlayers) {
-			if ($ignoredPlayers->login == $login) {
+			if ($ignoredPlayers->login === $login) {
 				return true;
 			}
 		}

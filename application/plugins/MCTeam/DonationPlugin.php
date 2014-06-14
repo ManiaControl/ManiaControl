@@ -160,7 +160,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$itemMarginFactorY = 1.2;
 
 		//If game is shootmania lower the icons position by 20
-		if ($this->maniaControl->mapManager->getCurrentMap()->getGame() == 'sm') {
+		if ($this->maniaControl->mapManager->getCurrentMap()->getGame() === 'sm') {
 			$posY -= $shootManiaOffset;
 		}
 
@@ -500,7 +500,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 			$pageFrame->add($playerFrame);
 			$playerFrame->setY($y);
 
-			if ($i % 2 != 0) {
+			if ($i % 2 !== 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
 				$playerFrame->add($lineQuad);
 				$lineQuad->setSize($width, 4);

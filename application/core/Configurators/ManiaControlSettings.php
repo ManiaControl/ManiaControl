@@ -128,11 +128,11 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 		$index     = 0;
 		$y         = 0;
 		foreach ($settings as $setting) {
-			if (!$pageFrame) {
+			if ($index % $pageMaxCount === 0) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
-				$y = $height * 0.41;
 				$paging->addPage($pageFrame);
+				$y = $height * 0.41;
 			}
 
 			$settingFrame = new Frame();
@@ -195,10 +195,6 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 			}
 
 			$y -= $settingHeight;
-			if ($index % $pageMaxCount == $pageMaxCount - 1) {
-				$pageFrame = null;
-			}
-
 			$index++;
 		}
 
@@ -255,7 +251,7 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 		$pageFrame = null;
 		$index     = 0;
 		foreach ($settingClasses as $settingClass) {
-			if (!$pageFrame) {
+			if ($index % $pageMaxCount === 0) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
 				$y = $height * 0.41;
@@ -265,9 +261,9 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 			$classLabel = new Label_Text();
 
 			$settingClassArray = explode('\\', $settingClass);
-			$className         = "";
+			$className         = '';
 			for ($i = 1; $i < count($settingClassArray); $i++) {
-				$className .= $settingClassArray[$i] . " - ";
+				$className .= $settingClassArray[$i] . ' - ';
 			}
 			$className = substr($className, 0, -3);
 
@@ -282,11 +278,6 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 			$classLabel->setAction(self::ACTION_PREFIX_SETTINGCLASS . $settingClass);
 
 			$y -= $settingHeight;
-
-			if ($index % $pageMaxCount == $pageMaxCount - 1) {
-				$pageFrame = null;
-			}
-
 			$index++;
 		}
 

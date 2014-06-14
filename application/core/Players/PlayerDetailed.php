@@ -225,52 +225,51 @@ class PlayerDetailed {
 		$frame = new Frame();
 
 		$playerStats = $this->maniaControl->statisticManager->getAllPlayerStats($player);
-		$y           = $this->height / 2 - 15;
-		$x           = -$this->width / 2 + 52;
+		$posY        = $this->height / 2 - 15;
+		$posX        = -$this->width / 2 + 52;
 		$id          = 1;
 
 		foreach ($playerStats as $stat) {
-			$statProperties = $stat[0];
-			$value          = $stat[1];
-
-			if (floatval($value) == 0) {
+			$value = (float)$stat[1];
+			if (!$value) {
 				continue;
 			}
 
-			if ($statProperties->type == StatisticManager::STAT_TYPE_TIME) {
+			$statProperties = $stat[0];
+			if ($statProperties->type === StatisticManager::STAT_TYPE_TIME) {
 				$value = Formatter::formatTimeHMS($value);
-			} else if ($statProperties->type == StatisticManager::STAT_TYPE_FLOAT) {
-				$value = round(floatval($value), 2);
+			} else if ($statProperties->type === StatisticManager::STAT_TYPE_FLOAT) {
+				$value = round($value, 2);
 			}
 
-			if ($id % 2 != 0) {
+			if ($id % 2 !== 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
 				$frame->add($lineQuad);
 				$lineQuad->setSize(49, 4);
 				$lineQuad->setSubStyle($lineQuad::SUBSTYLE_BgPlayerCardBig);
-				$lineQuad->setPosition($x, $y, 0.001);
+				$lineQuad->setPosition($posX, $posY, 0.001);
 				$lineQuad->setHAlign(Control::LEFT);
 			}
 
 			$label = new Label_Text();
 			$frame->add($label);
-			$label->setPosition($x + 4, $y);
+			$label->setPosition($posX + 4, $posY);
 			$label->setText($statProperties->name);
 			$label->setHAlign(Control::LEFT);
 			$label->setTextSize(1.5);
 
 			$label = new Label_Text();
 			$frame->add($label);
-			$label->setPosition($x + 40, $y);
+			$label->setPosition($posX + 40, $posY);
 			$label->setText($value);
 			$label->setTextSize(1.5);
 
-			$y -= 4;
+			$posY -= 4;
 			$id++;
 
 			if ($id > self::STATS_PER_COLUMN) {
-				$y = $this->height / 2 - 15;
-				$x += 47;
+				$posY = $this->height / 2 - 15;
+				$posX += 47;
 				$id = 0;
 			}
 		}

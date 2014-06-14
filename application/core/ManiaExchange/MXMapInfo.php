@@ -34,7 +34,7 @@ class MXMapInfo {
 			return;
 		}
 
-		if ($this->prefix == 'tm') {
+		if ($this->prefix === 'tm') {
 			$this->dir = 'tracks';
 			$this->id  = $mx->TrackID;
 			$this->uid = isset($mx->TrackUID) ? $mx->TrackUID : '';
@@ -44,7 +44,7 @@ class MXMapInfo {
 			$this->uid = isset($mx->MapUID) ? $mx->MapUID : '';
 		}
 
-		if (!isset($mx->GbxMapName) || $mx->GbxMapName == '?') {
+		if (!isset($mx->GbxMapName) || $mx->GbxMapName === '?') {
 			$this->name = $mx->Name;
 		} else {
 			$this->name = Formatter::stripDirtyCodes($mx->GbxMapName);
@@ -84,9 +84,9 @@ class MXMapInfo {
 		$this->ratingVoteCount   = isset($mx->RatingVoteCount) ? $mx->RatingVoteCount : 0;
 		$this->ratingVoteAverage = isset($mx->RatingVoteAverage) ? $mx->RatingVoteAverage : 0;
 
-		if ($this->trkvalue == 0 && $this->lbrating > 0) {
+		if (!$this->trkvalue && $this->lbrating > 0) {
 			$this->trkvalue = $this->lbrating;
-		} elseif ($this->lbrating == 0 && $this->trkvalue > 0) {
+		} elseif (!$this->lbrating && $this->trkvalue > 0) {
 			$this->lbrating = $this->trkvalue;
 		}
 
@@ -105,7 +105,7 @@ class MXMapInfo {
 			$this->thumburl = '';
 		}
 
-		if ($this->prefix == 'tm' && $this->replayid > 0) {
+		if ($this->prefix === 'tm' && $this->replayid > 0) {
 			$this->replayurl = 'http://' . $this->prefix . '.mania-exchange.com/replays/download/' . $this->replayid;
 		} else {
 			$this->replayurl = '';

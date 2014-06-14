@@ -207,7 +207,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 			$menuItemLabel->setAction(self::ACTION_SELECTMENU . '.' . $menuId);
 
 			//Show a Menu
-			if ($menuId == $menuIdShown) {
+			if ($menuId === $menuIdShown) {
 				$menuControl = $menu->getMenu($subMenuWidth, $subMenuHeight, $script, $player);
 				$menusFrame->add($menuControl);
 			}

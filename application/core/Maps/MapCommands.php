@@ -342,11 +342,11 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		/** @var Map $map */
 		foreach ($maps as $map) {
 			if ($map->authorLogin == $author) {
-				$mapList[] = $map;
+				array_push($mapList, $map);
 			}
 		}
 
-		if (count($mapList) == 0) {
+		if (empty($mapList)) {
 			$this->maniaControl->chat->sendError('There are no maps to show!', $player->login);
 			return;
 		}
@@ -363,23 +363,32 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	public function command_List(array $chatCallback, Player $player) {
 		$chatCommands = explode(' ', $chatCallback[1][2]);
 		$this->maniaControl->mapManager->mapList->playerCloseWidget($player);
+
 		if (isset($chatCommands[1])) {
-			if ($chatCommands[1] == ' ' || $chatCommands[1] == 'all') {
-				$this->maniaControl->mapManager->mapList->showMapList($player);
-			} elseif ($chatCommands[1] == 'best') {
-				$this->showMapListKarma(true, $player);
-			} elseif ($chatCommands[1] == 'worst') {
-				$this->showMapListKarma(false, $player);
-			} elseif ($chatCommands[1] == 'newest') {
-				$this->showMapListDate(true, $player);
-			} elseif ($chatCommands[1] == 'oldest') {
-				$this->showMapListDate(false, $player);
-			} elseif ($chatCommands[1] == 'author') {
-				if (isset($chatCommands[2])) {
-					$this->showMaplistAuthor($chatCommands[2], $player);
-				} else {
-					$this->maniaControl->chat->sendError('There are no maps to show!', $player->login);
-				}
+			$listParam = strtolower($chatCommands[1]);
+			switch ($listParam) {
+				case 'best':
+					$this->showMapListKarma(true, $player);
+					break;
+				case 'worst':
+					$this->showMapListKarma(false, $player);
+					break;
+				case 'newest':
+					$this->showMapListDate(true, $player);
+					break;
+				case 'oldest':
+					$this->showMapListDate(false, $player);
+					break;
+				case 'author':
+					if (isset($chatCommands[2])) {
+						$this->showMaplistAuthor($chatCommands[2], $player);
+					} else {
+						$this->maniaControl->chat->sendError('Missing Author Login!', $player->login);
+					}
+					break;
+				default:
+					$this->maniaControl->mapManager->mapList->showMapList($player);
+					break;
 			}
 		} else {
 			$this->maniaControl->mapManager->mapList->showMapList($player);
@@ -409,7 +418,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 						$plus  = 0;
 						foreach ($votes as $vote) {
 							if (isset($vote->vote)) {
-								if ($vote->vote != 0.5) {
+								if ($vote->vote !== 0.5) {
 									if ($vote->vote < 0.5) {
 										$min = $min + $vote->count;
 									} else {

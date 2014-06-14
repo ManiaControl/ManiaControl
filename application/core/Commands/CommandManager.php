@@ -127,7 +127,7 @@ class CommandManager implements CallbackListener {
 		$removed = false;
 		foreach ($listenerArray as &$listeners) {
 			foreach ($listeners as $key => &$listenerCallback) {
-				if ($listenerCallback[0] == $listener) {
+				if ($listenerCallback[0] === $listener) {
 					unset($listeners[$key]);
 					$removed = true;
 				}
@@ -162,11 +162,11 @@ class CommandManager implements CallbackListener {
 			return;
 		}
 
-		if (substr($message, 0, 2) == '//' || $command == 'admin') {
+		if (substr($message, 0, 2) === '//' || $command === 'admin') {
 			// Admin command
 			$commandListeners = $this->adminCommandListeners;
 
-			if ($command == 'admin') {
+			if ($command === 'admin') {
 				// Strip 'admin' keyword
 				if (isset($commandArray[1])) {
 					$command = $commandArray[1];

@@ -153,7 +153,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 			}
 		}
 
-		if ($player && $login == 'lj') {
+		if ($player && strtolower($login) === 'lj') {
 			return $player->nickname;
 		}
 
@@ -417,7 +417,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 			try {
 				$this->maniaControl->client->spectatorReleasePlayerSlot($player->login);
 			} catch (Exception $e) {
-				if ($e->getMessage() != 'The player is not a spectator') {
+				if ($e->getMessage() !== 'The player is not a spectator') {
 					$this->maniaControl->errorHandler->triggerDebugNotice("ChatMessagePlugin Debug Line " . $e->getLine() . ": " . $e->getMessage());
 					// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
 					//to nothing

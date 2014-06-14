@@ -111,7 +111,7 @@ class ManiaExchangeManager {
 			//Set changed time into the map object
 			$map->lastUpdate = strtotime($changed);
 
-			if ($mxId != 0) {
+			if ($mxId) {
 				$appendString = $mxId . ',';
 				//Set the mx id to the mxidmapvektor
 				$this->mxIdUidVector[$mxId] = $map->uid;
@@ -122,7 +122,7 @@ class ManiaExchangeManager {
 			$id++;
 
 			//If Max Maplimit is reached, or string gets too long send the request
-			if ($id % self::MAPS_PER_MX_FETCH == 0) {
+			if ($id % self::MAPS_PER_MX_FETCH === 0) {
 				$mapIdString = substr($mapIdString, 0, -1);
 				$this->getMaplistByMixedUidIdString($mapIdString);
 				$mapIdString = '';
@@ -131,7 +131,7 @@ class ManiaExchangeManager {
 			$mapIdString .= $appendString;
 		}
 
-		if ($mapIdString != '') {
+		if ($mapIdString) {
 			$mapIdString = substr($mapIdString, 0, -1);
 			$this->getMaplistByMixedUidIdString($mapIdString);
 		}
@@ -273,6 +273,8 @@ class ManiaExchangeManager {
 			return false;
 		}
 
+		// TODO: remove $env because it's not really used?
+
 		// Get Title Id
 		$titleId     = $this->maniaControl->server->titleId;
 		$titlePrefix = $this->maniaControl->mapManager->getCurrentMap()->getGame();
@@ -282,20 +284,20 @@ class ManiaExchangeManager {
 
 		$game      = explode('@', $titleId);
 		$envNumber = $this->getEnvironment($game[0]);
-		if ($env != '' || $envNumber != -1) {
+		if ($env || $envNumber > -1) {
 			$url .= '&environments=' . $envNumber;
 		}
-		if ($name != '') {
+		if ($name) {
 			$url .= '&trackname=' . str_replace(" ", "%20", $name);
 		}
-		if ($author != '') {
+		if ($author) {
 			$url .= '&author=' . $author;
 		}
 
 		$url .= '&priord=' . $searchOrder;
 		$url .= '&limit=' . $maxMapsReturned;
 
-		if ($titlePrefix != "tm") {
+		if ($titlePrefix !== "tm") {
 			$url .= '&minexebuild=' . self::MIN_EXE_BUILD;
 		}
 

@@ -111,7 +111,7 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 		}
 		$pauseExists = false;
 		foreach ($scriptInfos->commandDescs as $param) {
-			if ($param->name == "Command_ForceWarmUp") {
+			if ($param->name === 'Command_ForceWarmUp') {
 				$pauseExists = true;
 				break;
 			}
@@ -269,7 +269,7 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 		$params = explode(' ', $chat[1][2]);
 		if (count($params) >= 2) {
 			$param = $params[1];
-			if ($param == 'empty') {
+			if (strtolower($param) === 'empty') {
 				$this->serverShutdownEmpty = !$this->serverShutdownEmpty;
 				if ($this->serverShutdownEmpty) {
 					$this->maniaControl->chat->sendInformation("The server will shutdown as soon as it's empty!", $player->login);

@@ -249,7 +249,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 				$substyle = Quad_Icons64x64_1::SUBSTYLE_LvlGreen;
 			}
 
-			if ($substyle != '') {
+			if ($substyle) {
 				$quad = new Quad_Icons64x64_1();
 				$settingFrame->add($quad);
 				$quad->setX($width / 2 * 0.545);

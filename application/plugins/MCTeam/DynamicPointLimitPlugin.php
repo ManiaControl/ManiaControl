@@ -99,7 +99,7 @@ class DynamicPointLimitPlugin implements CallbackListener, CommandListener, Plug
 		$this->maniaControl = $maniaControl;
 
 		$allowOthers = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_ACCEPT_OTHER_MODES);
-		if (!$allowOthers && $this->maniaControl->server->titleId != 'SMStormRoyal@nadeolabs') {
+		if (!$allowOthers && $this->maniaControl->server->titleId !== 'SMStormRoyal@nadeolabs') {
 			$error = 'This plugin only supports Royal (check Settings)!';
 			throw new \Exception($error);
 		}

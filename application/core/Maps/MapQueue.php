@@ -108,7 +108,7 @@ class MapQueue implements CallbackListener, CommandListener {
 			return;
 		}
 
-		if (count($this->queuedMaps) == 0) {
+		if (empty($this->queuedMaps)) {
 			$this->maniaControl->chat->sendError('$fa0There are no maps in the jukebox!', $admin->login);
 			return;
 		}
@@ -135,12 +135,20 @@ class MapQueue implements CallbackListener, CommandListener {
 		$chatCommands = explode(' ', $chatCallback[1][2]);
 
 		if (isset($chatCommands[1])) {
-			if ($chatCommands[1] == ' ' || $chatCommands[1] == 'list') {
-				$this->showMapQueue($player);
-			} elseif ($chatCommands[1] == 'display') {
-				$this->showMapQueueManialink($player);
-			} elseif ($chatCommands[1] == 'clear') {
-				$this->clearMapQueue($player);
+			$listParam = strtolower($chatCommands[1]);
+			switch ($listParam) {
+				case 'list':
+					$this->showMapQueue($player);
+					break;
+				case 'display':
+					$this->showMapQueueManialink($player);
+					break;
+				case 'clear':
+					$this->clearMapQueue($player);
+					break;
+				default:
+					$this->showMapQueue($player);
+					break;
 			}
 		} else {
 			$this->showMapQueue($player);
@@ -153,7 +161,7 @@ class MapQueue implements CallbackListener, CommandListener {
 	 * @param Player $player
 	 */
 	public function showMapQueue(Player $player) {
-		if (count($this->queuedMaps) == 0) {
+		if (empty($this->queuedMaps)) {
 			$this->maniaControl->chat->sendError('$fa0There are no maps in the jukebox!', $player->login);
 			return;
 		}
@@ -174,14 +182,14 @@ class MapQueue implements CallbackListener, CommandListener {
 	 * @param Player $player
 	 */
 	public function showMapQueueManialink(Player $player) {
-		if (count($this->queuedMaps) == 0) {
-			$this->maniaControl->chat->sendError('$fa0There are no maps in the jukebox!', $player->login);
+		if (empty($this->queuedMaps)) {
+			$this->maniaControl->chat->sendError('There are no Maps in the Jukebox!', $player);
 			return;
 		}
 
 		$maps = array();
 		foreach ($this->queuedMaps as $queuedMap) {
-			$maps[] = $queuedMap[1];
+			array_push($maps, $queuedMap[1]);
 		}
 
 		$this->maniaControl->mapManager->mapList->showMapList($player, $maps);
@@ -220,12 +228,12 @@ class MapQueue implements CallbackListener, CommandListener {
 	 */
 	public function addMapToMapQueue($login, $uid) {
 		$player = $this->maniaControl->playerManager->getPlayer($login);
+		if (!$player) {
+			return;
+		}
 
 		//Check if player is allowed to add (another) map
-		$admin = false;
-		if ($this->maniaControl->authenticationManager->checkRight($player, 2) || $this->maniaControl->authenticationManager->checkRight($player, 3) || $this->maniaControl->authenticationManager->checkRight($player, 4)) {
-			$admin = true;
-		}
+		$isModerator = $this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 
 		$mapsForPlayer = 0;
 		foreach ($this->queuedMaps as $queuedMap) {
@@ -234,16 +242,15 @@ class MapQueue implements CallbackListener, CommandListener {
 			}
 		}
 
-		$maxPlayer = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MAPLIMIT_PLAYER);
-		$maxAdmin  = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MAPLIMIT_ADMIN);
-
-		if ($admin && $maxAdmin != -1) {
-			if ($mapsForPlayer == $maxAdmin) {
+		if ($isModerator) {
+			$maxAdmin = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MAPLIMIT_ADMIN);
+			if ($maxAdmin >= 0 && $mapsForPlayer >= $maxAdmin) {
 				$this->maniaControl->chat->sendError('You already have $<$fff' . $maxAdmin . '$> map(s) in the Map-Queue!', $login);
 				return;
 			}
-		} elseif (!$admin && $maxPlayer != -1) {
-			if ($mapsForPlayer == $maxPlayer) {
+		} else {
+			$maxPlayer = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MAPLIMIT_PLAYER);
+			if ($maxPlayer >= 0 && $mapsForPlayer >= $maxPlayer) {
 				$this->maniaControl->chat->sendError('You already have $<$fff' . $maxPlayer . '$> map(s) in the Map-Queue!', $login);
 				return;
 			}
@@ -308,9 +315,8 @@ class MapQueue implements CallbackListener, CommandListener {
 		}
 
 		$this->nextMap = null;
-		if ($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_SKIP_MAP_ON_LEAVE) == true) {
-
-			//Skip Map if requester has left
+		if ($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_SKIP_MAP_ON_LEAVE)) {
+			// Skip Map if requester has left
 			foreach ($this->queuedMaps as $queuedMap) {
 				$player = $queuedMap[0];
 
@@ -324,7 +330,7 @@ class MapQueue implements CallbackListener, CommandListener {
 					break;
 				}
 
-				if ($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_SKIP_MAPQUEUE_ADMIN) == false) {
+				if (!$this->maniaControl->settingManager->getSettingValue($this, self::SETTING_SKIP_MAPQUEUE_ADMIN)) {
 					//Check if the queuer is a admin
 					if ($player->authLevel > 0) {
 						break;

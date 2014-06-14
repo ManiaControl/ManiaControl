@@ -108,21 +108,22 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		$environment                        = '';
 		if (count($params) >= 1) {
 			foreach ($params as $param) {
-				if ($param == '/xlist' || $param == MapCommands::ACTION_OPEN_XLIST) {
+				if ($param === '/xlist' || $param === MapCommands::ACTION_OPEN_XLIST) {
 					continue;
 				}
-				if ($param == self::ACTION_SEARCH_MAPNAME) {
+				if ($param === self::ACTION_SEARCH_MAPNAME) {
 					$searchString = $chatCallback[1][3][0]['Value'];
-				} else if ($param == self::ACTION_SEARCH_AUTHOR) {
+				} else if ($param === self::ACTION_SEARCH_AUTHOR) {
 					$author = $chatCallback[1][3][0]['Value'];
-				} else if (strtolower(substr($param, 0, 5)) == 'auth:') {
+				} else if (strtolower(substr($param, 0, 5)) === 'auth:') {
 					$author = substr($param, 5);
-				} else if (strtolower(substr($param, 0, 4)) == 'env:') {
+				} else if (strtolower(substr($param, 0, 4)) === 'env:') {
 					$environment = substr($param, 4);
 				} else {
-					if ($searchString == '') {
+					if (!$searchString) {
 						$searchString = $param;
-					} else { // concatenate words in name
+					} else {
+						// concatenate words in name
 						$searchString .= '%20' . $param;
 					}
 				}
@@ -192,7 +193,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 			$mapFrame = new Frame();
 			$pageFrame->add($mapFrame);
 
-			if ($i % 2 == 0) {
+			if ($i % 2 === 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
 				$mapFrame->add($lineQuad);
 				$lineQuad->setSize($width, 4);
@@ -201,7 +202,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 			}
 
 			$time        = Formatter::time_elapsed_string(strtotime($map->updated));
-			$array       = array('$s' . $map->id => $x + 3.5, '$s' . $map->name => $x + 12.5, '$s' . $map->author => $x + 59, '$s' . str_replace("Arena", "", $map->maptype) => $x + 103, '$s' . $map->mood => $x + 118, '$s' . $time => $x + 130);
+			$array       = array('$s' . $map->id => $x + 3.5, '$s' . $map->name => $x + 12.5, '$s' . $map->author => $x + 59, '$s' . str_replace('Arena', '', $map->maptype) => $x + 103, '$s' . $map->mood => $x + 118, '$s' . $time => $x + 130);
 			$labels      = $this->maniaControl->manialinkManager->labelLine($mapFrame, $array);
 			$authorLabel = $labels[2];
 			$authorLabel->setAction(self::ACTION_GET_MAPS_FROM_AUTHOR . '.' . $map->author);
@@ -337,7 +338,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 	 */
 	public function handleWidgetOpened(Player $player, $openedWidget) {
 		//unset when another main widget got opened
-		if ($openedWidget != 'ManiaExchangeList') {
+		if ($openedWidget !== 'ManiaExchangeList') {
 			unset($this->mapListShown[$player->login]);
 		}
 	}

@@ -27,7 +27,7 @@ use Maniaplanet\DedicatedServer\Structures\AbstractStructure;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
-	/**
+	/*
 	 * Constants
 	 */
 	const PLUGIN_ID                       = 6;
@@ -109,10 +109,10 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 
 		$script = $this->maniaControl->client->getScriptName();
 
-		if ($this->maniaControl->mapManager->getCurrentMap()->getGame() == 'tm') {
+		if ($this->maniaControl->mapManager->getCurrentMap()->getGame() === 'tm') {
 			//TODO also add obstacle here as default
 			$maniaControl->settingManager->initSetting($this, self::SETTING_MIN_RANKING_TYPE, self::RANKING_TYPE_RECORDS);
-		} else if ($script["CurrentValue"] == "InstaDM.Script.txt") {
+		} else if ($script["CurrentValue"] === 'InstaDM.Script.txt') {
 			$maniaControl->settingManager->initSetting($this, self::SETTING_MIN_RANKING_TYPE, self::RANKING_TYPE_RATIOS);
 		} else {
 			$maniaControl->settingManager->initSetting($this, self::SETTING_MIN_RANKING_TYPE, self::RANKING_TYPE_POINTS);
@@ -120,7 +120,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 
 		//Check if the type is Correct
 		$type = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MIN_RANKING_TYPE);
-		if ($type != self::RANKING_TYPE_RECORDS && $type != self::RANKING_TYPE_POINTS && $type != self::RANKING_TYPE_RATIOS) {
+		if (!$this->isValidRankingType($type)) {
 			$error = 'Ranking Type is not correct, possible values(' . self::RANKING_TYPE_RATIOS . ', ' . self::RANKING_TYPE_POINTS . ', ' . self::RANKING_TYPE_POINTS . ')';
 			throw new \Exception($error);
 		}
@@ -134,7 +134,8 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		$this->maniaControl->commandManager->registerCommandListener('nextrank', $this, 'command_nextRank', false, 'Shows the person in front of you in the ServerRanking.');
 		$this->maniaControl->commandManager->registerCommandListener(array('topranks', 'top100'), $this, 'command_topRanks', false, 'Shows an overview of the best-ranked 100 players.');
 
-		$this->resetRanks(); //TODO only update records count
+		// TODO: only update records count
+		$this->resetRanks();
 	}
 
 	/**
@@ -502,7 +503,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 			$pageFrame->add($playerFrame);
 			$playerFrame->setY($y);
 
-			if ($i % 2 != 0) {
+			if ($i % 2 !== 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
 				$playerFrame->add($lineQuad);
 				$lineQuad->setSize($width, 4);
@@ -520,6 +521,25 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 
 		// Render and display xml
 		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player, 'TopRanks');
+	}
+
+	/**
+	 * Get the possible Ranking Types
+	 *
+	 * @return string[]
+	 */
+	private function getRankingTypes() {
+		return array(self::RANKING_TYPE_POINTS, self::RANKING_TYPE_RATIOS, self::RANKING_TYPE_RECORDS);
+	}
+
+	/**
+	 * Check if the given Ranking Type is valid
+	 *
+	 * @param string $rankingType
+	 * @return bool
+	 */
+	private function isValidRankingType($rankingType) {
+		return in_array($rankingType, $this->getRankingTypes());
 	}
 }
 

@@ -150,7 +150,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 
 		// Start offsets
 		$xStart = -$width / 2;
-		$y      = $height / 2;
+		$posY   = $height / 2;
 
 		// Predefine Description Label
 		$descriptionLabel = new Label();
@@ -164,22 +164,22 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		// Headline
 		$headFrame = new Frame();
 		$frame->add($headFrame);
-		$headFrame->setY($y - 5);
+		$headFrame->setY($posY - 5);
 
-		$x                   = $xStart;
-		$array['$oId']       = $x + 5;
-		$array['$oNickname'] = $x + 14;
+		$posX                = $xStart;
+		$array['$oId']       = $posX + 5;
+		$array['$oNickname'] = $posX + 14;
 
 
 		//Compute Headline
-		$x            = $xStart + 55;
+		$posX         = $xStart + 55;
 		$statRankings = array();
 		foreach ($this->statArray as $key => $stat) {
 			$ranking = $this->maniaControl->statisticManager->getStatsRanking($stat["Name"]);
 			if (!empty($ranking)) {
 				$statRankings[$stat["Name"]]  = $ranking;
-				$array[$stat['HeadShortCut']] = $x;
-				$x += $stat["Width"];
+				$array[$stat['HeadShortCut']] = $posX;
+				$posX += $stat["Width"];
 			} else {
 				unset($this->statArray[$key]);
 			}
@@ -188,18 +188,18 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		$labels = $this->maniaControl->manialinkManager->labelLine($headFrame, $array);
 
 		//Description Label
-		$i = 2;
+		$index = 2;
 		foreach ($this->statArray as $statArray) {
-			if (!isset($labels[$i])) {
+			if (!isset($labels[$index])) {
 				break;
 			}
 
 			/** @var Label_Text $label [] */
-			$label = $labels[$i];
+			$label = $labels[$index];
 
 			$label->setAction(self::ACTION_SORT_STATS . '.' . $statArray["Name"]);
 			$label->addTooltipLabelFeature($descriptionLabel, '$o ' . $statArray["Name"]);
-			$i++;
+			$index++;
 		}
 
 		// define standard properties
@@ -207,8 +207,8 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		$style     = Label_Text::STYLE_TextCardSmall;
 		$textSize  = 1.5;
 		$textColor = 'FFF';
-		$i         = 1;
-		$y -= 10;
+		$index     = 1;
+		$posY -= 10;
 
 		if (!isset($statRankings[$order])) {
 			return;
@@ -219,7 +219,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 			if (!$listPlayer) {
 				continue;
 			}
-			if ($i == 15) {
+			if ($index === 15) {
 				break;
 			}
 
@@ -252,28 +252,28 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 			}
 
 
-			$array = array($i => $xStart + 5, $listPlayer->nickname => $xStart + 14);
+			$array = array($index => $xStart + 5, $listPlayer->nickname => $xStart + 14);
 			$this->maniaControl->manialinkManager->labelLine($playerFrame, $array);
 
 
-			$x = $xStart + 55;
+			$posX = $xStart + 55;
 			foreach ($displayArray as $key => $array) {
 				$label = new Label_Text();
 				$playerFrame->add($label);
 				$label->setHAlign($hAlign);
-				$label->setX($x);
+				$label->setX($posX);
 				$label->setStyle($style);
 				$label->setTextSize($textSize);
 				$label->setText($array['Value']);
 				$label->setTextColor($textColor);
 				$label->addTooltipLabelFeature($descriptionLabel, '$o ' . $key);
-				$x += $array['Width'];
+				$posX += $array['Width'];
 			}
 
 
-			$playerFrame->setY($y);
+			$playerFrame->setY($posY);
 
-			if ($i % 2 != 0) {
+			if ($index % 2 !== 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
 				$playerFrame->add($lineQuad);
 				$lineQuad->setSize($width, 4);
@@ -282,8 +282,8 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 			}
 
 
-			$i++;
-			$y -= 4;
+			$index++;
+			$posY -= 4;
 		}
 
 		// Render and display xml

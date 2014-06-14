@@ -248,7 +248,7 @@ class ManiaControl implements CommandListener, TimerListener {
 
 		// Execute start script in background
 		// TODO: restart the .php script itself ($_SERVER['scriptname'] or something + $argv)
-		if ($this->getOS(self::OS_UNIX)) {
+		if ($this->getOS() === self::OS_UNIX) {
 			$command = 'sh ' . escapeshellarg(ManiaControlDir . 'ManiaControl.sh') . ' > /dev/null &';
 			exec($command);
 		} else {
@@ -263,20 +263,10 @@ class ManiaControl implements CommandListener, TimerListener {
 	/**
 	 * Get the Operating System on which ManiaControl is running
 	 *
-	 * @param string $compareOS
-	 * @return string|bool
+	 * @return string
 	 */
-	public function getOS($compareOS = null) {
-		$windows = defined('PHP_WINDOWS_VERSION_MAJOR');
-		if ($compareOS) {
-			// Return bool whether OS equals $compareOS
-			if ($compareOS == self::OS_WIN) {
-				return $windows;
-			}
-			return !$windows;
-		}
-		// Return OS
-		if ($windows) {
+	public function getOS() {
+		if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
 			return self::OS_WIN;
 		}
 		return self::OS_UNIX;

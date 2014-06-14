@@ -240,7 +240,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$mapFrame->setZ(0.1);
 			$mapFrame->setY($y);
 
-			if ($id % 2 != 0) {
+			if ($id % 2 !== 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
 				$mapFrame->add($lineQuad);
 				$lineQuad->setSize($width, 4);
@@ -422,7 +422,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 						$plus = 0;
 						foreach ($votes as $vote) {
 							if (isset($vote->vote)) {
-								if ($vote->vote != 0.5) {
+								if ($vote->vote !== 0.5) {
 									if ($vote->vote < 0.5) {
 										$min = $min + $vote->count;
 									} else {

@@ -42,7 +42,7 @@ class AsynchronousFileReader {
 					$request->socketSelect();
 				}
 			} catch (Exception $e) {
-				if ($e->getMessage() == "Cannot perform if there are no requests in queue.") {
+				if ($e->getMessage() === 'Cannot perform if there are no requests in queue.') {
 					unset($this->requests[$key]);
 				} else {
 					throw $e;
@@ -82,7 +82,7 @@ class AsynchronousFileReader {
 		$request->getOptions()->set(CURLOPT_TIMEOUT, 10) //
 			->set(CURLOPT_HEADER, false) //don't display response header
 			->set(CURLOPT_CRLF, true) //linux linefeed
-			->set(CURLOPT_ENCODING, "")//accept encoding
+			->set(CURLOPT_ENCODING, '')//accept encoding
 			->set(CURLOPT_AUTOREFERER, true)//accept link reference
 			->set(CURLOPT_HTTPHEADER, $header) //
 			->set(CURLOPT_USERAGENT, 'ManiaControl v' . ManiaControl::VERSION) //
@@ -148,7 +148,7 @@ class AsynchronousFileReader {
 		$request = new Request($url);
 		$request->getOptions()->set(CURLOPT_HEADER, false) //don't display response header
 			->set(CURLOPT_CRLF, true) //linux linefeed
-			->set(CURLOPT_ENCODING, "")//accept encoding
+			->set(CURLOPT_ENCODING, '')//accept encoding
 			//->set(CURLOPT_AUTOREFERER, true)//accept link reference
 			->set(CURLOPT_POST, true) //post field
 			->set(CURLOPT_POSTFIELDS, $content) //post content field
@@ -160,8 +160,8 @@ class AsynchronousFileReader {
 		$request->addListener('complete', function (Event $event) use (&$function) {
 			/** @var Response $response */
 			$response = $event->response;
-			$error    = "";
-			$content  = "";
+			$error    = null;
+			$content  = null;
 			if ($response->hasError()) {
 				$error = $response->getError()->getMessage();
 			} else {

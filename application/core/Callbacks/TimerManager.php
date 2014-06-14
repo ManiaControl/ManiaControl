@@ -79,7 +79,7 @@ class TimerManager {
 	public function unregisterTimerListening(TimerListener $listener, $method) {
 		$removed = false;
 		foreach ($this->timerListenings as $key => &$listening) {
-			if ($listening->listener === $listener && $listening->method == $method) {
+			if ($listening->listener === $listener && $listening->method === $method) {
 				unset($this->timerListenings[$key]);
 				$removed = true;
 			}
