@@ -97,6 +97,11 @@ class ManiaExchangeManager {
 
 		$index = 0;
 		foreach ($maps as $map) {
+			if (!$map) {
+				// TODO: remove after resolving of error report about "non-object"
+				$this->maniaControl->errorHandler->triggerDebugNotice('Non-Object-Map: ' . print_r($map, true));
+				continue;
+			}
 			/** @var Map $map */
 			$fetchMapStatement->bind_param('i', $map->index);
 			$fetchMapStatement->execute();
