@@ -11,7 +11,6 @@ use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
-use ManiaControl\Maps\Map;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
@@ -402,10 +401,13 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 	 * @return Rank
 	 */
 	private function getNextRank(Player $player) {
-		$mysqli     = $this->maniaControl->database->mysqli;
 		$rankObject = $this->getRank($player);
-		$nextRank   = $rankObject->rank - 1;
+		if (!$rankObject) {
+			return null;
+		}
+		$nextRank = $rankObject->rank - 1;
 
+		$mysqli = $this->maniaControl->database->mysqli;
 		$query  = "SELECT * FROM `" . self::TABLE_RANK . "`
 				WHERE `Rank` = {$nextRank}";
 		$result = $mysqli->query($query);
@@ -424,11 +426,9 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 	}
 
 	/**
-	 * Shows Ranks on endMap
-	 *
-	 * @param Map $map
+	 * Show Ranks on Map End
 	 */
-	public function handleEndMap(Map $map) {
+	public function handleEndMap() {
 		$this->resetRanks();
 
 		foreach ($this->maniaControl->playerManager->getPlayers() as $player) {
