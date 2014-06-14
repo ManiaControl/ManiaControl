@@ -292,7 +292,7 @@ class MapManager implements CallbackListener {
 		$fullMapFileName     = $downloadDirectory . $fileName;
 
 		// Check if it can get written locally
-		if (is_dir($mapDir)) {
+		if (is_dir($mapDir) && is_writable($mapDir)) {
 			// Create download directory if necessary
 			if (!is_dir($downloadDirectory) && !mkdir($downloadDirectory)) {
 				trigger_error("ManiaControl doesn't have to rights to save maps in '{$downloadDirectory}'.");
