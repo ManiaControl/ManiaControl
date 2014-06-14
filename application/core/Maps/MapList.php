@@ -24,6 +24,7 @@ use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 use ManiaControl\Utils\ColorUtil;
 use ManiaControl\Utils\Formatter;
+use Maniaplanet\DedicatedServer\Xmlrpc\NextMapException;
 use Maniaplanet\DedicatedServer\Xmlrpc\NotInListException;
 use MCTeam\CustomVotesPlugin;
 use MCTeam\KarmaPlugin;
@@ -597,12 +598,12 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$this->maniaControl->mapManager->removeMap($player, $mapUid);
 				break;
 			case self::ACTION_SWITCH_MAP:
-				//Don't queue on Map-Change
+				// Don't queue on Map-Change
 				$this->maniaControl->mapManager->mapQueue->dontQueueNextMapChange();
 				try {
 					$this->maniaControl->client->jumpToMapIdent($mapUid);
-				} catch (NotInListException $e) {
-					$this->maniaControl->chat->sendError("Error on Jumping to Map Ident!");
+				} catch (NextMapException $e) {
+					$this->maniaControl->chat->sendError('Error on Jumping to Map Ident!', $player);
 					break;
 				}
 
