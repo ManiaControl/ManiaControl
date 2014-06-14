@@ -273,10 +273,11 @@ class StatisticCollector implements CallbackListener {
 	private function handleOnShoot($login, $weaponNumber) {
 		if (!isset($this->onShootArray[$login])) {
 			$this->onShootArray[$login] = array(self::WEAPON_ROCKET => 0, self::WEAPON_ARROW => 0, self::WEAPON_NUCLEUS => 0, self::WEAPON_LASER => 0);
-			$this->onShootArray[$login][$weaponNumber]++;
-		} else {
-			$this->onShootArray[$login][$weaponNumber]++;
 		}
+		if (!isset($this->onShootArray[$login][$weaponNumber])) {
+			$this->onShootArray[$login][$weaponNumber] = 0;
+		}
+		$this->onShootArray[$login][$weaponNumber]++;
 
 		//Write Shoot Data into database
 		if (array_sum($this->onShootArray[$login]) > $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_ON_SHOOT_PRESTORE)) {
