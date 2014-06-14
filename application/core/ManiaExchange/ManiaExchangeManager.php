@@ -233,13 +233,13 @@ class ManiaExchangeManager {
 	}
 
 	/**
-	 * Get Map Info Asynchronously
+	 * Fetch Map Info asynchronously
 	 *
 	 * @param int      $mapId
 	 * @param callable $function
 	 * @return bool
 	 */
-	public function getMapInfo($mapId, callable $function) {
+	public function fetchMapInfo($mapId, callable $function) {
 		// Get Title Prefix
 		$titlePrefix = $this->maniaControl->mapManager->getCurrentMap()->getGame();
 

@@ -356,7 +356,7 @@ class ManiaControl implements CommandListener, TimerListener {
 		}
 
 		// Connect finished
-		$this->log("Server Connection successfully established!");
+		$this->log('Server Connection successfully established!');
 
 		// Hide old widgets
 		$this->client->sendHideManialinkPage();
