@@ -88,7 +88,7 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 		$pagerSize     = 9.;
 		$settingHeight = 5.;
 		$labelTextSize = 2;
-		$pageMaxCount  = 13;
+		$pageMaxCount  = 11;
 
 		// Pagers
 		$pagerPrev = new Quad_Icons64x64_1();
@@ -124,35 +124,30 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 		$backLabel->setText('Back');
 		$backLabel->setAction(self::ACTION_SETTINGCLASS_BACK);
 
+		$headLabel = new Label_Text();
+		$frame->add($headLabel);
+		$headLabel->setHAlign($headLabel::LEFT);
+		$headLabel->setPosition($width * -0.46, $height * 0.41);
+		$headLabel->setSize($width * 0.6, $settingHeight);
+		$headLabel->setStyle($headLabel::STYLE_TextCardSmall);
+		$headLabel->setTextSize(3);
+		$headLabel->setText($settingClass);
+		$headLabel->setTextColor('ff0');
+
 		$pageFrame = null;
 		$index     = 0;
-		$y         = 0;
+		$posY      = 0;
 		foreach ($settings as $setting) {
 			if ($index % $pageMaxCount === 0) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
 				$paging->addPage($pageFrame);
-				$y = $height * 0.41;
+				$posY = $height * 0.41 - $settingHeight * 1.5;
 			}
 
 			$settingFrame = new Frame();
 			$pageFrame->add($settingFrame);
-			$settingFrame->setY($y);
-
-			// TODO: display currently select setting class
-
-			// Headline Label
-			if (false) {
-				$headLabel = new Label_Text();
-				$settingFrame->add($headLabel);
-				$headLabel->setHAlign(Control::LEFT);
-				$headLabel->setX($width * -0.46);
-				$headLabel->setSize($width * 0.6, $settingHeight);
-				$headLabel->setStyle($headLabel::STYLE_TextCardSmall);
-				$headLabel->setTextSize($labelTextSize);
-				$headLabel->setText($setting->class);
-				$headLabel->setTextColor("F00");
-			} // Headline
+			$settingFrame->setY($posY);
 
 			$nameLabel = new Label_Text();
 			$settingFrame->add($nameLabel);
@@ -194,7 +189,7 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 				$entry->setDefault($setting->value);
 			}
 
-			$y -= $settingHeight;
+			$posY -= $settingHeight;
 			$index++;
 		}
 
