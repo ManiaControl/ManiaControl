@@ -631,13 +631,13 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 			return;
 		}
 
-		$chatCommand = explode(' ', $chat[1][2]);
-		$recordId    = (int)$chatCommand[1];
-		if ($recordId <= 0) {
-			$this->maniaControl->chat->sendError('No Record ID given!', $player);
+		$commandParts = explode(' ', $chat[1][2]);
+		if (count($commandParts) < 2) {
+			$this->maniaControl->chat->sendUsageInfo('Missing Record ID! (Example: //delrec 3)', $player);
 			return;
 		}
 
+		$recordId = (int)$commandParts[1];
 		$currentMap = $this->maniaControl->mapManager->getCurrentMap();
 		$records    = $this->getLocalRecords($currentMap);
 		if (count($records) < $recordId) {
@@ -646,7 +646,9 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		}
 
 		$mysqli = $this->maniaControl->database->mysqli;
-		$query  = "DELETE FROM `" . self::TABLE_RECORDS . "` WHERE `mapIndex` = {$currentMap->index} AND `playerIndex` = {$player->index};";
+		$query  = "DELETE FROM `" . self::TABLE_RECORDS . "`
+				WHERE `mapIndex` = {$currentMap->index}
+				AND `playerIndex` = {$player->index};";
 		$mysqli->query($query);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error);
