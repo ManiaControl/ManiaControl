@@ -254,7 +254,7 @@ class ErrorHandler {
 				$type = gettype($arg);
 				$string .= $type . '(';
 				if (is_string($arg)) {
-					print_r(substr($arg, 0, 50), true);
+					print_r(substr($arg, 0, 20), true);
 				} else {
 					print_r($arg, true);
 				}
