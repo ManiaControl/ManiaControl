@@ -18,6 +18,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\FileException;
 use Maniaplanet\DedicatedServer\Xmlrpc\IndexOutOfBoundException;
 use Maniaplanet\DedicatedServer\Xmlrpc\InvalidMapException;
 use Maniaplanet\DedicatedServer\Xmlrpc\NotInListException;
+use Maniaplanet\DedicatedServer\Xmlrpc\UnavailableFeatureException;
 
 // TODO: adding of local maps
 
@@ -525,7 +526,11 @@ class MapManager implements CallbackListener {
 	 * @return Map
 	 */
 	private function fetchCurrentMap() {
-		$rpcMap = $this->maniaControl->client->getCurrentMapInfo();
+		try {
+			$rpcMap = $this->maniaControl->client->getCurrentMapInfo();
+		} catch (UnavailableFeatureException $exception) {
+			return null;
+		}
 
 		if (array_key_exists($rpcMap->uId, $this->maps)) {
 			$this->currentMap                = $this->maps[$rpcMap->uId];
