@@ -28,6 +28,7 @@ abstract class Formatter {
 	 * @return string
 	 */
 	public static function formatTime($time) {
+		// TODO: use gmdate()
 		$time         = (int)$time;
 		$milliseconds = $time % 1000;
 		$seconds      = floor($time / 1000);
@@ -40,25 +41,6 @@ abstract class Formatter {
 		$format .= ($seconds < 10 ? '0' : '') . $seconds . ':';
 		$format .= ($milliseconds < 100 ? '0' : '') . ($milliseconds < 10 ? '0' : '') . $milliseconds;
 		return $format;
-	}
-
-	/**
-	 * Format a Time to H:M:S
-	 *
-	 * @param int $seconds
-	 * @return string
-	 */
-	public static function formatTimeHMS($seconds) {
-		$minutes = floor($seconds / 60);
-		$hours   = floor($minutes / 60);
-		$minutes -= $hours * 60;
-		$seconds -= ($hours * 3600 + $minutes * 60);
-
-		$hours   = ($hours < 10 ? '0' : '') . $hours;
-		$minutes = ($minutes < 10 ? '0' : '') . $minutes;;
-		$seconds = ($seconds < 10 ? '0' : '') . $seconds;;
-
-		return $hours . ":" . $minutes . ":" . $seconds;
 	}
 
 	/**
@@ -94,7 +76,7 @@ abstract class Formatter {
 	 * @return string
 	 */
 	public static function formatTimeH($seconds) {
-		return date("H:i:s", $seconds);
+		return gmdate('H:i:s', $seconds);
 	}
 
 	/**
@@ -104,7 +86,7 @@ abstract class Formatter {
 	 * @return string
 	 */
 	public static function formatTimestamp($seconds) {
-		return date("Y-m-d H:i:s", $seconds);
+		return date('Y-m-d H:i:s', $seconds);
 	}
 
 	/**

@@ -237,7 +237,7 @@ class PlayerDetailed {
 
 			$statProperties = $stat[0];
 			if ($statProperties->type === StatisticManager::STAT_TYPE_TIME) {
-				$value = Formatter::formatTimeHMS($value);
+				$value = Formatter::formatTimeH($value);
 			} else if ($statProperties->type === StatisticManager::STAT_TYPE_FLOAT) {
 				$value = round($value, 2);
 			}

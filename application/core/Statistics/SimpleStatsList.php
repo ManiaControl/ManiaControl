@@ -243,7 +243,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 				if (isset($statRankings[$stat['Name']][$playerId])) {
 					$statValue = $statRankings[$stat['Name']][$playerId];
 					if ($stat['Format'] == StatisticManager::STAT_TYPE_TIME) {
-						$statValue = Formatter::formatTimeHMS($statValue);
+						$statValue = Formatter::formatTimeH($statValue);
 					} else if ($stat['Format'] == StatisticManager::STAT_TYPE_FLOAT) {
 						$statValue = round(floatval($statValue), 2);
 					}
