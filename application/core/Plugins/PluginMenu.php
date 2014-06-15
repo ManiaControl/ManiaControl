@@ -3,6 +3,7 @@
 namespace ManiaControl\Plugins;
 
 use FML\Components\CheckBox;
+use FML\Components\ValuePicker;
 use FML\Controls\Control;
 use FML\Controls\Entry;
 use FML\Controls\Frame;
@@ -296,14 +297,23 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 				$quad->setSize(4, 4);
 				$checkBox = new CheckBox(self::ACTION_PREFIX_SETTING . $setting->index, $setting->value, $quad);
 				$settingFrame->add($checkBox);
+			} else if ($setting->type === Setting::TYPE_SET) {
+				// SET value picker
+				$label = new Label_Text();
+				$label->setX($width * 0.33);
+				$label->setSize($width * 0.3, $settingHeight * 0.9);
+				$label->setStyle($label::STYLE_TextValueSmall);
+				$label->setTextSize(1);
+				$valuePicker = new ValuePicker(self::ACTION_PREFIX_SETTING . $setting->index, $setting->set, $setting->value, $label);
+				$settingFrame->add($valuePicker);
 			} else {
 				// Value entry
 				$entry = new Entry();
 				$settingFrame->add($entry);
-				$entry->setStyle(Label_Text::STYLE_TextValueSmall);
-				$entry->setX($width / 2 * 0.65);
-				$entry->setTextSize(1);
+				$entry->setX($width * 0.33);
 				$entry->setSize($width * 0.3, $settingHeight * 0.9);
+				$entry->setTextSize(1);
+				$entry->setStyle(Label_Text::STYLE_TextValueSmall);
 				$entry->setName(self::ACTION_PREFIX_SETTING . $setting->index);
 				$entry->setDefault($setting->value);
 			}
@@ -390,25 +400,24 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 
 		$prefixLength = strlen(self::ACTION_PREFIX_SETTING);
 
-		foreach ($configData[3] as $setting) {
-			$settingIndex = (int)substr($setting['Name'], $prefixLength);
-
+		foreach ($configData[3] as $settingData) {
+			$settingIndex  = (int)substr($settingData['Name'], $prefixLength);
 			$settingObject = $this->maniaControl->settingManager->getSettingObjectByIndex($settingIndex);
 			if (!$settingObject) {
 				continue;
 			}
 
-			if ($setting['Value'] == $settingObject->value) {
+			if (!$settingData || $settingData['Value'] == $settingObject->value) {
 				continue;
 			}
 
-			$settingObject->value = $setting['Value'];
+			$settingObject->value = $settingData['Value'];
 			$this->maniaControl->settingManager->saveSetting($settingObject);
 		}
 
 		$this->maniaControl->chat->sendSuccess('Plugin Settings saved!', $player);
 
-		//Reopen the Menu
+		// Reopen the Menu
 		$menuId = $this->maniaControl->configurator->getMenuId($this->getTitle());
 		$this->maniaControl->configurator->reopenMenu($player, $menuId);
 	}

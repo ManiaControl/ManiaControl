@@ -307,10 +307,7 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 	}
 
 	/**
-	 * Save the Config Data
-	 *
-	 * @param array  $configData
-	 * @param Player $player
+	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
 	 */
 	public function saveConfigData(array $configData, Player $player) {
 		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_CHANGE_MC_SETTINGS)) {
@@ -322,16 +319,20 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 		}
 
 		$prefixLength = strlen(self::ACTION_PREFIX_SETTING);
-		foreach ($configData[3] as $settingData) {
-			$settingIndex = substr($settingData['Name'], $prefixLength);
-			$setting      = $this->maniaControl->settingManager->getSettingObjectByIndex($settingIndex);
 
-			if (!$setting || $settingData['Value'] == $setting->value) {
+		foreach ($configData[3] as $settingData) {
+			$settingIndex  = (int)substr($settingData['Name'], $prefixLength);
+			$settingObject = $this->maniaControl->settingManager->getSettingObjectByIndex($settingIndex);
+			if (!$settingObject) {
 				continue;
 			}
 
-			$setting->value = $settingData['Value'];
-			$this->maniaControl->settingManager->saveSetting($setting);
+			if (!$settingData || $settingData['Value'] == $settingObject->value) {
+				continue;
+			}
+
+			$settingObject->value = $settingData['Value'];
+			$this->maniaControl->settingManager->saveSetting($settingObject);
 		}
 
 		$this->maniaControl->chat->sendSuccess('Settings saved!', $player);
@@ -342,9 +343,7 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 	}
 
 	/**
-	 * Get the Menu Title
-	 *
-	 * @return string
+	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getTitle()
 	 */
 	public function getTitle() {
 		return self::TITLE;
