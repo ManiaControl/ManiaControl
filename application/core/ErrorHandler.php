@@ -81,33 +81,45 @@ class ErrorHandler {
 		}
 
 		// Build log message
-		$errorTag         = $this->getErrorTag($errorNumber);
-		$userError        = $this->isUserErrorNumber($errorNumber);
-		$traceSourceClass = null;
+		$errorTag  = $this->getErrorTag($errorNumber);
+		$userError = $this->isUserErrorNumber($errorNumber);
 
-		$message     = $errorTag . ': ' . $errorString;
-		$fileLine    = $errorFile . ': ' . $errorLine;
-		$traceString = $this->parseBackTrace(array_slice(debug_backtrace(), 1), $traceSourceClass);
-		$sourceClass = $this->getSourceClass($errorFile);
-		if (!$sourceClass) {
+		$traceString      = null;
+		$sourceClass      = null;
+		$traceSourceClass = null;
+		$fileLine         = null;
+
+		$message = $errorTag . ': ' . $errorString;
+		if (!$onShutdown) {
+			$traceString = $this->parseBackTrace(array_slice(debug_backtrace(), 1), $traceSourceClass);
+		}
+		if ($errorFile) {
+			$fileLine    = $errorFile . ': ' . $errorLine;
+			$sourceClass = $this->getSourceClass($errorFile);
+		}
+		if (!$sourceClass && $traceSourceClass) {
 			$sourceClass = $traceSourceClass;
 		}
 
 		$logMessage = $message . PHP_EOL . 'File&Line: ' . $fileLine;
-		if (!$userError && !$onShutdown) {
+		if (!$userError && $traceString) {
 			$logMessage .= PHP_EOL . 'Trace: ' . PHP_EOL . $traceString;
 		}
 		$this->maniaControl->log($logMessage);
 
 		if (!DEV_MODE && !$userError && !$suppressed) {
 			// Report error
-			$report                = array();
-			$report['Type']        = 'Error';
-			$report['Message']     = $message;
-			$report['FileLine']    = $fileLine;
-			$report['SourceClass'] = $sourceClass;
-			$report['PluginId']    = PluginManager::getPluginId($sourceClass);
-			if (!$onShutdown) {
+			$report            = array();
+			$report['Type']    = 'Error';
+			$report['Message'] = $message;
+			if ($fileLine) {
+				$report['FileLine'] = $fileLine;
+			}
+			if ($sourceClass) {
+				$report['SourceClass'] = $sourceClass;
+				$report['PluginId']    = PluginManager::getPluginId($sourceClass);
+			}
+			if ($traceString) {
 				$report['Backtrace'] = $traceString;
 			}
 			$report['OperatingSystem'] = php_uname();
