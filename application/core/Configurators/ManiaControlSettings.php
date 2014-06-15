@@ -2,12 +2,14 @@
 
 namespace ManiaControl\Configurators;
 
+use FML\Components\CheckBox;
 use FML\Components\ValuePicker;
 use FML\Controls\Control;
 use FML\Controls\Entry;
 use FML\Controls\Frame;
 use FML\Controls\Labels\Label_Button;
 use FML\Controls\Labels\Label_Text;
+use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Script\Features\Paging;
 use FML\Script\Script;
@@ -33,7 +35,6 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 	const ACTION_PREFIX_SETTING                 = 'MCSetting.';
 	const ACTION_PREFIX_SETTINGCLASS            = 'MCSettingClass.';
 	const ACTION_SETTINGCLASS_BACK              = 'MCSettingClassBack';
-	const ACTION_SETTING_BOOL                   = 'MCSettings.ActionBoolSetting.';
 	const SETTING_PERMISSION_CHANGE_MC_SETTINGS = 'Change ManiaControl Settings';
 	const CACHE_CLASS_OPENED                    = 'ClassOpened';
 
@@ -161,13 +162,12 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 
 			$settingName = self::ACTION_PREFIX_SETTING . $setting->index;
 			if ($setting->type === Setting::TYPE_BOOL) {
-				// TODO: implement fml checkbox
-				$quad = new Quad_Icons64x64_1();
-				$settingFrame->add($quad);
+				// Boolean checkbox
+				$quad = new Quad();
 				$quad->setPosition($width * 0.33, 0, -0.01);
 				$quad->setSize(4, 4);
-				$quad->setSubStyle(($setting->value ? $quad::SUBSTYLE_LvlGreen : $quad::SUBSTYLE_LvlRed));
-				$quad->setAction($settingName);
+				$checkBox = new CheckBox($settingName, $setting->value, $quad);
+				$settingFrame->add($checkBox);
 			} else if ($setting->type === Setting::TYPE_SET) {
 				// SET value picker
 				$label = new Label_Text();
@@ -293,24 +293,6 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 			$player->destroyCache($this, self::CACHE_CLASS_OPENED);
 			$menuId = $this->maniaControl->configurator->getMenuId($this);
 			$this->maniaControl->configurator->showMenu($player, $menuId);
-		} else if (strpos($actionId, self::ACTION_SETTING_BOOL) === 0) {
-			// Bool setting change
-			$settingIndex = (int)substr($actionId, strlen(self::ACTION_SETTING_BOOL));
-
-			$login  = $callback[1][1];
-			$player = $this->maniaControl->playerManager->getPlayer($login);
-
-			// Toggle the Boolean Setting
-			$this->toggleBooleanSetting($settingIndex, $player);
-
-			if ($callback[1][3]) {
-				// Save all Changes
-				$this->saveConfigData($callback[1], $player);
-			} else {
-				// Reopen menu directly
-				$menuId = $this->maniaControl->configurator->getMenuId($this);
-				$this->maniaControl->configurator->reopenMenu($player, $menuId);
-			}
 		} else if (strpos($actionId, self::ACTION_PREFIX_SETTINGCLASS) === 0) {
 			// Setting class selected
 			$settingClass = substr($actionId, strlen(self::ACTION_PREFIX_SETTINGCLASS));
@@ -325,28 +307,6 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 	}
 
 	/**
-	 * Toggles a Boolean Value
-	 *
-	 * @param int    $settingIndex
-	 * @param Player $player
-	 */
-	public function toggleBooleanSetting($settingIndex, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_CHANGE_MC_SETTINGS)) {
-			$this->maniaControl->authenticationManager->sendNotAllowed($player);
-			return;
-		}
-
-		$oldSetting = $this->maniaControl->settingManager->getSettingObjectByIndex($settingIndex);
-		if (!$oldSetting) {
-			var_dump('no setting ' . $settingIndex);
-			return;
-		}
-
-		// Toggle value
-		$this->maniaControl->settingManager->setSetting($oldSetting->class, $oldSetting->setting, !$oldSetting->value);
-	}
-
-	/**
 	 * Save the Config Data
 	 *
 	 * @param array  $configData
@@ -358,16 +318,15 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 			return;
 		}
 		if (!$configData[3] || strpos($configData[3][0]['Name'], self::ACTION_PREFIX_SETTING) !== 0) {
-			// TODO: improve needed, this won't save configData passed by boolean setting change
 			return;
 		}
 
 		$prefixLength = strlen(self::ACTION_PREFIX_SETTING);
 		foreach ($configData[3] as $settingData) {
 			$settingIndex = substr($settingData['Name'], $prefixLength);
+			$setting      = $this->maniaControl->settingManager->getSettingObjectByIndex($settingIndex);
 
-			$setting = $this->maniaControl->settingManager->getSettingObjectByIndex($settingIndex);
-			if (!$setting || $settingData['Value'] == $setting->value || $setting->type === Setting::TYPE_BOOL) {
+			if (!$setting || $settingData['Value'] == $setting->value) {
 				continue;
 			}
 

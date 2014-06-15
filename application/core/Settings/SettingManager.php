@@ -307,12 +307,7 @@ class SettingManager implements CallbackListener {
 				`default`,
 				`set`
 				) VALUES (
-				?,
-				?,
-				?,
-				?,
-				?,
-				?
+				?, ?, ?, ?, ?, ?
 				) ON DUPLICATE KEY UPDATE
 				`index` = LAST_INSERT_ID(`index`),
 				`type` = VALUES(`type`),
