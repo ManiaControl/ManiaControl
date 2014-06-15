@@ -7,12 +7,12 @@ use FML\Controls\Entry;
 use FML\Controls\Frame;
 use FML\Controls\Label;
 use FML\Controls\Labels\Label_Text;
+use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Script\Features\Paging;
 use FML\Script\Script;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
-use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
@@ -30,8 +30,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	/*
 	 * Constants
 	 */
-	const ACTION_PREFIX_SETTING                     = 'ScriptSetting';
-	const ACTION_SETTING_BOOL                       = 'ScriptSetting.ActionBoolSetting.';
+	const ACTION_PREFIX_SETTING                     = 'ScriptSetting.';
 	const CB_SCRIPTSETTING_CHANGED                  = 'ScriptSettings.SettingChanged';
 	const CB_SCRIPTSETTINGS_CHANGED                 = 'ScriptSettings.SettingsChanged';
 	const TABLE_SCRIPT_SETTINGS                     = 'mc_scriptsettings';
@@ -50,13 +49,12 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
+		$this->initTables();
 
 		// Register for callbacks
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::ONINIT, $this, 'onInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::BEGINMAP, $this, 'onBeginMap');
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_LOAD_DEFAULT_SETTINGS_MAP_BEGIN, true);
-		$this->initTables();
 
 		//Permission for Change Script-Settings
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_CHANGE_SCRIPT_SETTINGS, AuthenticationManager::AUTH_LEVEL_ADMIN);
@@ -230,7 +228,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 
 			$nameLabel = new Label_Text();
 			$settingFrame->add($nameLabel);
-			$nameLabel->setHAlign(Control::LEFT);
+			$nameLabel->setHAlign($nameLabel::LEFT);
 			$nameLabel->setX($width * -0.46);
 			$nameLabel->setSize($width * 0.4, $settingHeight);
 			$nameLabel->setStyle($nameLabel::STYLE_TextCardSmall);
@@ -239,29 +237,22 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 
 			$settingValue = $scriptSettings[$settingName];
 
-			$substyle = '';
-			if ($settingValue === false) {
-				$substyle = Quad_Icons64x64_1::SUBSTYLE_LvlRed;
-			} else if ($settingValue === true) {
-				$substyle = Quad_Icons64x64_1::SUBSTYLE_LvlGreen;
-			}
-
-			if ($substyle) {
-				$quad = new Quad_Icons64x64_1();
-				$settingFrame->add($quad);
+			if (is_bool($settingValue)) {
+				// Boolean checkbox
+				$quad = new Quad();
 				$quad->setX($width / 2 * 0.545);
-				$quad->setZ(-0.01);
-				$quad->setSubStyle($substyle);
 				$quad->setSize(4, 4);
-				$quad->setAction(self::ACTION_SETTING_BOOL . $settingName);
+				$checkBox = new CheckBox(self::ACTION_PREFIX_SETTING . $settingName, $settingValue, $quad);
+				$settingFrame->add($checkBox);
 			} else {
+				// Value entry
 				$entry = new Entry();
 				$settingFrame->add($entry);
 				$entry->setStyle(Label_Text::STYLE_TextValueSmall);
 				$entry->setX($width / 2 * 0.55);
 				$entry->setTextSize(1);
 				$entry->setSize($width * 0.3, $settingHeight * 0.9);
-				$entry->setName(self::ACTION_PREFIX_SETTING . '.' . $settingName);
+				$entry->setName(self::ACTION_PREFIX_SETTING . $settingName);
 				$entry->setDefault($settingValue);
 			}
 
@@ -282,52 +273,52 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	}
 
 	/**
-	 * Handle ManialinkPageAnswer Callback
-	 *
-	 * @param array $callback
+	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
 	 */
-	public function handleManialinkPageAnswer(array $callback) {
-		$actionId    = $callback[1][2];
-		$boolSetting = (strpos($actionId, self::ACTION_SETTING_BOOL) === 0);
-		if (!$boolSetting) {
+	public function saveConfigData(array $configData, Player $player) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_CHANGE_SCRIPT_SETTINGS)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+			return;
+		}
+		if (!$configData[3] || strpos($configData[3][0]['Name'], self::ACTION_PREFIX_SETTING) !== 0) {
 			return;
 		}
 
-		$actionArray = explode(".", $actionId);
-		$setting     = $actionArray[2];
-
-		$login  = $callback[1][1];
-		$player = $this->maniaControl->playerManager->getPlayer($login);
-
-		// Toggle the Boolean Setting
-		$this->toggleBooleanSetting($setting, $player);
-
-		// Save all Changes
-		$this->saveConfigData($callback[1], $player);
-	}
-
-	/**
-	 * Toggle a Boolean Setting
-	 *
-	 * @param Player $player
-	 * @param        $setting
-	 */
-	public function toggleBooleanSetting($setting, Player $player) {
 		try {
 			$scriptSettings = $this->maniaControl->client->getModeScriptSettings();
 		} catch (GameModeException $e) {
 			return;
 		}
 
-		if (!isset($scriptSettings[$setting])) {
-			var_dump('no setting ' . $setting);
-			return;
+		$prefixLength = strlen(self::ACTION_PREFIX_SETTING);
+
+		$newSettings = array();
+		foreach ($configData[3] as $setting) {
+			$settingName = substr($setting['Name'], $prefixLength);
+			if (!isset($scriptSettings[$settingName])) {
+				var_dump('no setting ' . $settingName);
+				continue;
+			}
+
+			if ($setting['Value'] == $scriptSettings[$settingName]) {
+				// Not changed
+				continue;
+			}
+
+			$newSettings[$settingName] = $setting['Value'];
+			settype($newSettings[$settingName], gettype($scriptSettings[$settingName]));
 		}
 
-		$newSettings           = array();
-		$newSettings[$setting] = ($scriptSettings[$setting] ? false : true);
+		$success = $this->applyNewScriptSettings($newSettings, $player);
+		if ($success) {
+			$this->maniaControl->chat->sendSuccess('Script Settings saved!', $player);
+		} else {
+			$this->maniaControl->chat->sendError('Script Settings Saving failed!', $player);
+		}
 
-		$this->applyNewScriptSettings($newSettings, $player);
+		//Reopen the Menu
+		$menuId = $this->maniaControl->configurator->getMenuId($this->getTitle());
+		$this->maniaControl->configurator->reopenMenu($player, $menuId);
 	}
 
 	/**
@@ -335,7 +326,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 *
 	 * @param array  $newSettings
 	 * @param Player $player
-	 * @return        bool
+	 * @return bool
 	 */
 	private function applyNewScriptSettings(array $newSettings, Player $player) {
 		if (!$newSettings) {
@@ -346,8 +337,8 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			$this->maniaControl->client->setModeScriptSettings($newSettings);
 		} catch (Exception $e) {
 			//TODO temp added 19.04.2014
-			$this->maniaControl->errorHandler->triggerDebugNotice("Exception line 416 ScriptSettings.php" . $e->getMessage());
-			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
+			$this->maniaControl->errorHandler->triggerDebugNotice("Exception line 416 ScriptSettings.php" . $e->getMessage(), $e);
+			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player);
 			return false;
 		}
 
@@ -370,7 +361,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		// Notifications
 		$settingsCount = count($newSettings);
 		$settingIndex  = 0;
-		$title         = $this->maniaControl->authenticationManager->getAuthLevelName($player->authLevel);
+		$title         = $this->maniaControl->authenticationManager->getAuthLevelName($player);
 		$chatMessage   = '$ff0' . $title . ' $<' . $player->nickname . '$> set ScriptSetting' . ($settingsCount > 1 ? 's' : '') . ' ';
 		foreach ($newSettings as $setting => $value) {
 			$chatMessage .= '$<' . '$fff' . preg_replace('/^S_/', '', $setting) . '$z$s$ff0 ';
@@ -413,56 +404,6 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			return ($value ? 'True' : 'False');
 		}
 		return (string)$value;
-	}
-
-	/**
-	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
-	 */
-	public function saveConfigData(array $configData, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_CHANGE_SCRIPT_SETTINGS)) {
-			$this->maniaControl->authenticationManager->sendNotAllowed($player);
-			return;
-		}
-		if (!$configData[3] || strpos($configData[3][0]['Name'], self::ACTION_PREFIX_SETTING) !== 0) {
-			return;
-		}
-
-		try {
-			$scriptSettings = $this->maniaControl->client->getModeScriptSettings();
-		} catch (GameModeException $e) {
-			return;
-		}
-
-		$prefixLength = strlen(self::ACTION_PREFIX_SETTING);
-
-		$newSettings = array();
-		foreach ($configData[3] as $setting) {
-			$settingName = substr($setting['Name'], $prefixLength + 1);
-			if (!isset($scriptSettings[$settingName])) {
-				var_dump('no setting ' . $settingName);
-				continue;
-			}
-
-			if ($setting['Value'] == $scriptSettings[$settingName]) {
-				// Not changed
-				continue;
-			}
-
-			$newSettings[$settingName] = $setting['Value'];
-			settype($newSettings[$settingName], gettype($scriptSettings[$settingName]));
-		}
-
-		$success = $this->applyNewScriptSettings($newSettings, $player);
-		if ($success) {
-			$this->maniaControl->chat->sendSuccess('Script Settings saved!', $player);
-		} else {
-
-			$this->maniaControl->chat->sendError('Script Settings Saving failed!', $player);
-		}
-
-		//Reopen the Menu
-		$menuId = $this->maniaControl->configurator->getMenuId($this->getTitle());
-		$this->maniaControl->configurator->reopenMenu($player, $menuId);
 	}
 
 	/**
