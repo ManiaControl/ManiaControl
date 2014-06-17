@@ -131,7 +131,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		}
 
 		// search for matching maps
-		$this->maniaControl->mapManager->mxManager->getMapsAsync(function (array $maps) use (&$player) {
+		$this->maniaControl->mapManager->mxManager->fetchMapsAsync(function (array $maps) use (&$player) {
 			if (!$maps) {
 				$this->maniaControl->chat->sendError('No maps found, or MX is down!', $player->login);
 				return;

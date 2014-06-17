@@ -130,7 +130,7 @@ class ManiaExchangeManager {
 			//If Max Maplimit is reached, or string gets too long send the request
 			if ($index % self::MAPS_PER_MX_FETCH === 0) {
 				$mapIdString = substr($mapIdString, 0, -1);
-				$this->getMaplistByMixedUidIdString($mapIdString);
+				$this->fetchMaplistByMixedUidIdString($mapIdString);
 				$mapIdString = '';
 			}
 
@@ -139,27 +139,25 @@ class ManiaExchangeManager {
 
 		if ($mapIdString) {
 			$mapIdString = substr($mapIdString, 0, -1);
-			$this->getMaplistByMixedUidIdString($mapIdString);
+			$this->fetchMaplistByMixedUidIdString($mapIdString);
 		}
 
 		$fetchMapStatement->close();
 	}
 
 	/**
-	 * Get the Whole MapList from MX by Mixed Uid and Id String fetch
+	 * Fetch the whole Map List from MX via mixed Uid and Id Strings
 	 *
 	 * @param string $string
-	 * @return bool
 	 */
-	public function getMaplistByMixedUidIdString($string) {
+	public function fetchMaplistByMixedUidIdString($string) {
 		// Get Title Prefix
 		$titlePrefix = $this->maniaControl->mapManager->getCurrentMap()->getGame();
 
 		// compile search URL
-		$url = 'http://api.mania-exchange.com/' . $titlePrefix . '/maps/?ids=' . $string;
+		$url = "http://api.mania-exchange.com/{$titlePrefix}/maps/?ids={$string}";
 
-		$thisRef = $this;
-		$success = $this->maniaControl->fileReader->loadFile($url, function ($mapInfo, $error) use ($thisRef, $titlePrefix, $url) {
+		$this->maniaControl->fileReader->loadFile($url, function ($mapInfo, $error) use ($titlePrefix, $url) {
 			if ($error) {
 				trigger_error("Error: '{$error}' for Url '{$url}'");
 				return;
@@ -184,10 +182,8 @@ class ManiaExchangeManager {
 				}
 			}
 
-			$thisRef->updateMapObjectsWithManiaExchangeIds($maps);
+			$this->updateMapObjectsWithManiaExchangeIds($maps);
 		}, AsynchronousFileReader::CONTENT_TYPE_JSON);
-
-		return $success;
 	}
 
 	/**
@@ -233,6 +229,15 @@ class ManiaExchangeManager {
 	}
 
 	/**
+	 * @deprecated
+	 * @see \ManiaControl\ManiaExchange\ManiaExchangeManager::fetchMaplistByMixedUidIdString()
+	 */
+	public function getMaplistByMixedUidIdString($string) {
+		$this->fetchMaplistByMixedUidIdString($string);
+		return true;
+	}
+
+	/**
 	 * Fetch Map Info asynchronously
 	 *
 	 * @param int      $mapId
@@ -263,6 +268,15 @@ class ManiaExchangeManager {
 	}
 
 	/**
+	 * @deprecated
+	 * @see \ManiaControl\ManiaExchange\ManiaExchangeManager::fetchMapsAsync()
+	 */
+	public function getMapsAsync(callable $function, $name = '', $author = '', $env = '', $maxMapsReturned = 100, $searchOrder = self::SEARCH_ORDER_UPDATED_NEWEST) {
+		$this->fetchMapsAsync($function, $name, $author, $env, $maxMapsReturned, $searchOrder);
+		return true;
+	}
+
+	/**
 	 * Fetch a MapList Asynchronously
 	 *
 	 * @param callable $function
@@ -271,9 +285,8 @@ class ManiaExchangeManager {
 	 * @param string   $env
 	 * @param int      $maxMapsReturned
 	 * @param int      $searchOrder
-	 * @return bool
 	 */
-	public function getMapsAsync(callable $function, $name = '', $author = '', $env = '', $maxMapsReturned = 100, $searchOrder = self::SEARCH_ORDER_UPDATED_NEWEST) {
+	public function fetchMapsAsync(callable $function, $name = '', $author = '', $env = '', $maxMapsReturned = 100, $searchOrder = self::SEARCH_ORDER_UPDATED_NEWEST) {
 		// TODO: remove $env because it's not really used?
 
 		// Get Title Id
@@ -310,7 +323,7 @@ class ManiaExchangeManager {
 		} catch (GameModeException $e) {
 		}
 
-		$success = $this->maniaControl->fileReader->loadFile($url, function ($mapInfo, $error) use (&$function, $titlePrefix) {
+		$this->maniaControl->fileReader->loadFile($url, function ($mapInfo, $error) use (&$function, $titlePrefix) {
 			if ($error) {
 				trigger_error($error);
 				return;
@@ -339,8 +352,6 @@ class ManiaExchangeManager {
 
 			call_user_func($function, $maps);
 		}, AsynchronousFileReader::CONTENT_TYPE_JSON);
-
-		return $success;
 	}
 
 	/**
