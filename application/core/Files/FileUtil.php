@@ -2,6 +2,7 @@
 
 namespace ManiaControl\Files;
 
+use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Utils\Formatter;
 
@@ -76,16 +77,16 @@ abstract class FileUtil {
 	public static function loadConfig($fileName) {
 		$fileLocation = ManiaControlDir . 'configs' . DIRECTORY_SEPARATOR . $fileName;
 		if (!file_exists($fileLocation)) {
-			logMessage("Config File doesn't exist! ({$fileName})");
+			Logger::log("Config File doesn't exist! ({$fileName})");
 			return null;
 		}
 		if (!is_readable($fileLocation)) {
-			logMessage("Config File isn't readable! Please check the File Permissions. ({$fileName})");
+			Logger::log("Config File isn't readable! Please check the File Permissions. ({$fileName})");
 			return null;
 		}
 		$configXml = @simplexml_load_file($fileLocation);
 		if (!$configXml) {
-			logMessage("Config file isn't maintained properly! ({$fileName})");
+			Logger::log("Config file isn't maintained properly! ({$fileName})");
 			return null;
 		}
 		return $configXml;
@@ -147,7 +148,7 @@ abstract class FileUtil {
 				}
 				if (!is_writable($fileName)) {
 					$message = "Write-Access missing for File '{$fileName}'!";
-					logMessage($message);
+					Logger::log($message);
 					return false;
 				}
 			}

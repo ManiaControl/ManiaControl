@@ -144,9 +144,9 @@ class ErrorHandler {
 			$response = FileUtil::loadFile($url);
 			$success  = json_decode($response);
 			if ($success) {
-				logMessage('Error-Report successful!');
+				Logger::log('Error-Report successful!');
 			} else {
-				logMessage('Error-Report failed! ' . print_r($response, true));
+				Logger::log('Error-Report failed! ' . print_r($response, true));
 			}
 		}
 
@@ -399,9 +399,9 @@ class ErrorHandler {
 			$response = FileUtil::loadFile($url);
 			$success  = json_decode($response);
 			if ($success) {
-				logMessage('Exception successfully reported!');
+				Logger::log('Exception successfully reported!');
 			} else {
-				logMessage('Exception-Report failed! ' . print_r($response, true));
+				Logger::log('Exception-Report failed! ' . print_r($response, true));
 			}
 		}
 

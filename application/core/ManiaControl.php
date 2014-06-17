@@ -146,7 +146,7 @@ class ManiaControl implements CommandListener, TimerListener {
 		if ($stripCodes) {
 			$message = Formatter::stripCodes($message);
 		}
-		logMessage($message);
+		Logger::log($message);
 	}
 
 	/**
