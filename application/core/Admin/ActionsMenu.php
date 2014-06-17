@@ -174,18 +174,16 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 			$itemQuad->addToggleFeature($popoutFrame);
 
 			// Add items
-			$x = -1;
+			$itemPosX = -1;
 			foreach ($this->adminMenuItems as $menuItems) {
 				foreach ($menuItems as $menuItem) {
 					$menuQuad = $menuItem[0];
-					/**
-					 * @var Quad $menuQuad
-					 */
+					/** @var Quad $menuQuad */
 					$popoutFrame->add($menuQuad);
 					$menuQuad->setSize($itemSize, $itemSize);
-					$menuQuad->setX($x);
+					$menuQuad->setX($itemPosX);
 					$menuQuad->setHAlign(Control::RIGHT);
-					$x -= $itemSize * 1.05;
+					$itemPosX -= $itemSize * 1.05;
 
 					if ($menuItem[1]) {
 						$menuQuad->removeScriptFeatures();
@@ -240,18 +238,16 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		$itemQuad->addToggleFeature($popoutFrame);
 
 		// Add items
-		$x = -1;
+		$itemPosX = -1;
 		foreach ($this->playerMenuItems as $menuItems) {
 			foreach ($menuItems as $menuItem) {
 				$menuQuad = $menuItem[0];
-				/**
-				 * @var Quad $menuQuad
-				 */
+				/** @var Quad $menuQuad */
 				$popoutFrame->add($menuQuad);
 				$menuQuad->setSize($itemSize, $itemSize);
-				$menuQuad->setX($x);
+				$menuQuad->setX($itemPosX);
 				$menuQuad->setHAlign(Control::RIGHT);
-				$x -= $itemSize * 1.05;
+				$itemPosX -= $itemSize * 1.05;
 
 				if ($menuItem[1]) {
 					$menuQuad->removeScriptFeatures();

@@ -167,10 +167,10 @@ class MapQueue implements CallbackListener, CommandListener {
 		}
 
 		$message = '$fa0Upcoming maps in the Map-Queue:';
-		$i       = 1;
+		$index   = 1;
 		foreach ($this->queuedMaps as $queuedMap) {
-			$message .= ' $<$fff' . $i . '$>. [$<$fff' . Formatter::stripCodes($queuedMap[1]->name) . '$>]';
-			$i++;
+			$message .= ' $<$fff' . $index . '$>. [$<$fff' . Formatter::stripCodes($queuedMap[1]->name) . '$>]';
+			$index++;
 		}
 
 		$this->maniaControl->chat->sendInformation($message, $player->login);

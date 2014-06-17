@@ -198,11 +198,11 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 				$accuracies      = $this->maniaControl->statisticManager->getStatsRanking(StatisticManager::SPECIAL_STAT_LASER_ACC);
 
 				$ranks = array();
-				foreach ($hits as $player => $hitCount) {
-					if (!isset($killDeathRatios[$player]) || !isset($accuracies[$player])) {
+				foreach ($hits as $login => $hitCount) {
+					if (!isset($killDeathRatios[$login]) || !isset($accuracies[$login])) {
 						continue;
 					}
-					$ranks[$player] = $killDeathRatios[$player] * $accuracies[$player] * 1000;
+					$ranks[$login] = $killDeathRatios[$login] * $accuracies[$login] * 1000;
 				}
 
 				arsort($ranks);
@@ -212,7 +212,8 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 				$minHits = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MIN_HITS_POINTS_RANKING);
 				$ranks   = $this->maniaControl->statisticManager->getStatsRanking(StatisticCollector::STAT_ON_HIT, -1, $minHits);
 				break;
-			case self::RANKING_TYPE_RECORDS: //TODO verify workable status
+			case self::RANKING_TYPE_RECORDS:
+				// TODO: verify workable status
 				/** @var LocalRecordsPlugin $localRecordsPlugin */
 				$localRecordsPlugin = $this->maniaControl->pluginManager->getPlugin(__NAMESPACE__ . '\LocalRecordsPlugin');
 				if (!$localRecordsPlugin) {
@@ -252,11 +253,11 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 
 				//compute each players new average score
 				$ranks = array();
-				foreach ($players as $player => $val) {
+				foreach ($players as $playerIndex => $val) {
 					$sum = $val[0];
 					$cnt = $val[1];
 					// ranked maps sum + $maxRecs rank for all remaining maps
-					$ranks[$player] = ($sum + ($mapCount - $cnt) * $maxRecords) / $mapCount;
+					$ranks[$playerIndex] = ($sum + ($mapCount - $cnt) * $maxRecords) / $mapCount;
 				}
 
 				asort($ranks);
@@ -273,8 +274,8 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		$query = "INSERT INTO `" . self::TABLE_RANK . "` VALUES ";
 		$index = 1;
 
-		foreach ($ranks as $player => $rankValue) {
-			$query .= '(' . $player . ',' . $index . ',' . $rankValue . '),';
+		foreach ($ranks as $playerIndex => $rankValue) {
+			$query .= '(' . $playerIndex . ',' . $index . ',' . $rankValue . '),';
 			$index++;
 		}
 		$query = substr($query, 0, strlen($query) - 1); // strip trailing ','
@@ -315,9 +316,9 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		if ($rankObj) {
 			switch ($type) {
 				case self::RANKING_TYPE_RATIOS:
-					$kd      = $this->maniaControl->statisticManager->getStatisticData(StatisticManager::SPECIAL_STAT_KD_RATIO, $player->index);
-					$acc     = $this->maniaControl->statisticManager->getStatisticData(StatisticManager::SPECIAL_STAT_LASER_ACC, $player->index);
-					$message = '$0f3Your Server rank is $<$ff3' . $rankObj->rank . '$> / $<$fff' . $this->recordCount . '$> (K/D: $<$fff' . round($kd, 2) . '$> Acc: $<$fff' . round($acc * 100) . '%$>)';
+					$killDeathRatio = $this->maniaControl->statisticManager->getStatisticData(StatisticManager::SPECIAL_STAT_KD_RATIO, $player->index);
+					$accuracy       = $this->maniaControl->statisticManager->getStatisticData(StatisticManager::SPECIAL_STAT_LASER_ACC, $player->index);
+					$message        = '$0f3Your Server rank is $<$ff3' . $rankObj->rank . '$> / $<$fff' . $this->recordCount . '$> (K/D: $<$fff' . round($killDeathRatio, 2) . '$> Acc: $<$fff' . round($accuracy * 100) . '%$>)';
 					break;
 				case self::RANKING_TYPE_POINTS:
 					$message = '$0f3Your Server rank is $<$ff3' . $rankObj->rank . '$> / $<$fff' . $this->recordCount . '$> Points: $fff' . $rankObj->avg;

@@ -625,6 +625,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$votesPlugin->defineVote('switchmap', "Goto " . $map->name, true, $message);
 
 				$votesPlugin->startVote($player, 'switchmap', function ($result) use (&$votesPlugin, &$map) {
+					// TODO: $result isn't used -> bug? does it skip even if vote is not successful?
 					$this->maniaControl->chat->sendInformation('$sVote Successful -> Map switched!');
 					$votesPlugin->undefineVote('switchmap');
 

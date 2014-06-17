@@ -174,27 +174,27 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		$paging->setLabel($pageCountLabel);
 
 		// Setting pages
-		$y         = 0.;
-		$id        = 0;
+		$posY      = 0.;
+		$index     = 0;
 		$pageFrame = null;
 
 		foreach ($serverSettings as $name => $value) {
 			// Continue on CurrentMaxPlayers...
-			$pos = strpos($name, "Current"); // TODO maybe display current somewhere
+			$pos = strpos($name, 'Current'); // TODO maybe display current somewhere
 			if ($pos !== false) {
 				continue;
 			}
 
-			if ($id % 13 === 0) {
+			if ($index % 13 === 0) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
-				$y = $height * 0.41;
+				$posY = $height * 0.41;
 				$paging->addPage($pageFrame);
 			}
 
 			$settingFrame = new Frame();
 			$pageFrame->add($settingFrame);
-			$settingFrame->setY($y);
+			$settingFrame->setY($posY);
 
 			$nameLabel = new Label_Text();
 			$settingFrame->add($nameLabel);
@@ -227,16 +227,16 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 				if ($name === 'Comment') {
 					$entry->setAutoNewLine(true);
 					$entry->setSize($width * 0.48, $settingHeight * 3 + $settingHeight * 0.9);
-					$settingFrame->setY($y - $settingHeight * 1.5);
+					$settingFrame->setY($posY - $settingHeight * 1.5);
 					// dummy:
 					// TODO: "dummy:" what? remove?
-					$y -= $settingHeight * 3;
-					$id += 3;
+					$posY -= $settingHeight * 3;
+					$index += 3;
 				}
 			}
 
-			$y -= $settingHeight;
-			$id++;
+			$posY -= $settingHeight;
+			$index++;
 		}
 
 		return $frame;
