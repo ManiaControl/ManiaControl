@@ -6,6 +6,7 @@ use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Files\FileUtil;
 use ManiaControl\Plugins\PluginManager;
 use ManiaControl\Update\UpdateManager;
+use ManiaControl\Utils\Formatter;
 use Maniaplanet\DedicatedServer\Xmlrpc\TransportException;
 
 /**
@@ -111,7 +112,7 @@ class ErrorHandler {
 			// Report error
 			$report            = array();
 			$report['Type']    = 'Error';
-			$report['Message'] = $message;
+			$report['Message'] = Formatter::utf8($message);
 			if ($fileLine) {
 				$report['FileLine'] = $fileLine;
 			}
@@ -266,7 +267,7 @@ class ErrorHandler {
 				$type = gettype($arg);
 				$string .= $type . '(';
 				if (is_string($arg)) {
-					$param = iconv('UTF-8', 'UTF-8//IGNORE', $arg);
+					$param = Formatter::utf8($arg);
 					if (strlen($param) > 20) {
 						$param = substr($param, 0, 20) . '..';
 					}

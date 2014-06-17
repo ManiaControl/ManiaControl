@@ -171,4 +171,23 @@ abstract class Formatter {
 		$bool = filter_var($value, FILTER_VALIDATE_BOOLEAN);
 		return $bool;
 	}
+
+	/**
+	 * Make sure the given Text is encoded in UTF-8
+	 *
+	 * @param string $text
+	 * @return string
+	 */
+	public static function utf8($text) {
+		if (!$text) {
+			return $text;
+		}
+		$value = @iconv('UTF-8', 'UTF-8//IGNORE', $text);
+		if (!$value) {
+			// Prevent bugged iconv() of some systems
+			$text  = preg_replace('/[^[:print:]]/', '', $text);
+			$value = iconv('UTF-8', 'UTF-8//IGNORE', $text);
+		}
+		return $value;
+	}
 }
