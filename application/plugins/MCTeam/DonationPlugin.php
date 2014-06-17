@@ -34,13 +34,13 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	/*
 	 * Constants
 	 */
-	const ID                              = 3;
-	const VERSION                         = 0.1;
-	const AUTHOR                          = 'MCTeam';
-	const NAME                            = 'Donation Plugin';
-	const SETTING_ANNOUNCE_SERVERDONATION = 'Enable Server-Donation Announcements';
-	const STAT_PLAYER_DONATIONS           = 'Donated Planets';
-	const ACTION_DONATE_VALUE             = 'Donate.DonateValue';
+	const ID                               = 3;
+	const VERSION                          = 0.1;
+	const AUTHOR                           = 'MCTeam';
+	const NAME                             = 'Donation Plugin';
+	const SETTING_ANNOUNCE_SERVER_DONATION = 'Enable Server-Donation Announcements';
+	const STAT_PLAYER_DONATIONS            = 'Donated Planets';
+	const ACTION_DONATE_VALUE              = 'Donate.DonateValue';
 
 	// DonateWidget Properties
 	const MLID_DONATE_WIDGET              = 'DonationPlugin.DonateWidget';
@@ -285,7 +285,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$this->maniaControl->billManager->sendBill(function ($data, $status) use (&$player, $amount, $receiver) {
 			switch ($status) {
 				case BillManager::DONATED_TO_SERVER:
-					if ($this->maniaControl->settingManager->getSettingValue($this, DonationPlugin::SETTING_ANNOUNCE_SERVERDONATION, true) && $amount >= $this->maniaControl->settingManager->getSettingValue($this, DonationPlugin::SETTING_MIN_AMOUNT_SHOWN, true)) {
+					if ($this->maniaControl->settingManager->getSettingValue($this, DonationPlugin::SETTING_ANNOUNCE_SERVER_DONATION, true) && $amount >= $this->maniaControl->settingManager->getSettingValue($this, DonationPlugin::SETTING_MIN_AMOUNT_SHOWN, true)) {
 						$login   = null;
 						$message = '$<' . $player->nickname . '$> donated ' . $amount . ' Planets! Thanks.';
 					} else {

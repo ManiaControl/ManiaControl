@@ -59,10 +59,10 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	const SETTING_MX_KARMA_IMPORTING = 'Import old MX-Karma';
 	const MX_IMPORT_TABLE            = 'mc_karma_mximport';
 	const MX_KARMA_URL               = 'http://karma.mania-exchange.com/api2/';
-	const MX_KARMA_STARTSESSION      = 'startSession';
-	const MX_KARMA_ACTIVATESESSION   = 'activateSession';
-	const MX_KARMA_SAVEVOTES         = 'saveVotes';
-	const MX_KARMA_GETMAPRATING      = 'getMapRating';
+	const MX_KARMA_START_SESSION     = 'startSession';
+	const MX_KARMA_ACTIVATE_SESSION  = 'activateSession';
+	const MX_KARMA_SAVE_VOTES        = 'saveVotes';
+	const MX_KARMA_GET_MAP_RATING    = 'getMapRating';
 
 	/*
 	 * Private Properties
@@ -246,7 +246,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		$applicationIdentifier = 'ManiaControl v' . ManiaControl::VERSION;
 		$testMode              = 'true';
 
-		$query = self::MX_KARMA_URL . self::MX_KARMA_STARTSESSION;
+		$query = self::MX_KARMA_URL . self::MX_KARMA_START_SESSION;
 		$query .= '?serverLogin=' . $serverLogin;
 		$query .= '&applicationIdentifier=' . urlencode($applicationIdentifier);
 		$query .= '&testMode=' . $testMode;
@@ -283,7 +283,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		// TODO: unused private method! remove?
 		$hash = $this->buildActivationHash($this->mxKarma['session']->sessionSeed, $mxKarmaCode);
 
-		$query = self::MX_KARMA_URL . self::MX_KARMA_ACTIVATESESSION;
+		$query = self::MX_KARMA_URL . self::MX_KARMA_ACTIVATE_SESSION;
 		$query .= '?sessionKey=' . urlencode($this->mxKarma['session']->sessionKey);
 		$query .= '&activationHash=' . urlencode($hash);
 
@@ -370,7 +370,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		}
 
 		$content = json_encode($properties);
-		$this->maniaControl->fileReader->postData(self::MX_KARMA_URL . self::MX_KARMA_GETMAPRATING . "?sessionKey=" . urlencode($this->mxKarma['session']->sessionKey), function ($data, $error) use (&$player) {
+		$this->maniaControl->fileReader->postData(self::MX_KARMA_URL . self::MX_KARMA_GET_MAP_RATING . "?sessionKey=" . urlencode($this->mxKarma['session']->sessionKey), function ($data, $error) use (&$player) {
 			if (!$error) {
 				$data = json_decode($data);
 				if ($data->success) {
@@ -397,7 +397,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 						return;
 					}
 					// TODO remove temp trigger
-					$this->maniaControl->errorHandler->triggerDebugNotice("Error while fetching votes: '{$data->data->message}' " . KarmaPlugin::MX_KARMA_URL . KarmaPlugin::MX_KARMA_SAVEVOTES . "?sessionKey=" . urlencode($this->mxKarma['session']->sessionKey));
+					$this->maniaControl->errorHandler->triggerDebugNotice("Error while fetching votes: '{$data->data->message}' " . KarmaPlugin::MX_KARMA_URL . KarmaPlugin::MX_KARMA_SAVE_VOTES . "?sessionKey=" . urlencode($this->mxKarma['session']->sessionKey));
 				}
 			} else {
 				$this->maniaControl->log($error);
@@ -479,7 +479,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 		$content = json_encode($properties);
 
-		$this->maniaControl->fileReader->postData(self::MX_KARMA_URL . self::MX_KARMA_SAVEVOTES . "?sessionKey=" . urlencode($this->mxKarma['session']->sessionKey), function ($data, $error) {
+		$this->maniaControl->fileReader->postData(self::MX_KARMA_URL . self::MX_KARMA_SAVE_VOTES . "?sessionKey=" . urlencode($this->mxKarma['session']->sessionKey), function ($data, $error) {
 			if (!$error) {
 				$data = json_decode($data);
 				if ($data->success) {
@@ -491,7 +491,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 						return;
 					}
 					// TODO remove temp trigger
-					$this->maniaControl->errorHandler->triggerDebugNotice("Error while updating votes: " . $data->data->message . " " . KarmaPlugin::MX_KARMA_URL . self::MX_KARMA_SAVEVOTES . "?sessionKey=" . urlencode($this->mxKarma['session']->sessionKey));
+					$this->maniaControl->errorHandler->triggerDebugNotice("Error while updating votes: " . $data->data->message . " " . KarmaPlugin::MX_KARMA_URL . self::MX_KARMA_SAVE_VOTES . "?sessionKey=" . urlencode($this->mxKarma['session']->sessionKey));
 				}
 			} else {
 				$this->maniaControl->log($error);

@@ -37,7 +37,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	const PLUGIN_AUTHOR  = 'kremsy';
 
 	// MapWidget Properties
-	const MLID_MAPWIDGET               = 'WidgetPlugin.MapWidget';
+	const MLID_MAP_WIDGET              = 'WidgetPlugin.MapWidget';
 	const SETTING_MAP_WIDGET_ACTIVATED = 'Map-Widget Activated';
 	const SETTING_MAP_WIDGET_POSX      = 'Map-Widget-Position: X';
 	const SETTING_MAP_WIDGET_POSY      = 'Map-Widget-Position: Y';
@@ -45,7 +45,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	const SETTING_MAP_WIDGET_HEIGHT    = 'Map-Widget-Size: Height';
 
 	// ClockWidget Properties
-	const MLID_CLOCKWIDGET               = 'WidgetPlugin.ClockWidget';
+	const MLID_CLOCK_WIDGET              = 'WidgetPlugin.ClockWidget';
 	const SETTING_CLOCK_WIDGET_ACTIVATED = 'Clock-Widget Activated';
 	const SETTING_CLOCK_WIDGET_POSX      = 'Clock-Widget-Position: X';
 	const SETTING_CLOCK_WIDGET_POSY      = 'Clock-Widget-Position: Y';
@@ -53,7 +53,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	const SETTING_CLOCK_WIDGET_HEIGHT    = 'Clock-Widget-Size: Height';
 
 	// NextMapWidget Properties
-	const MLID_NEXTMAPWIDGET               = 'WidgetPlugin.NextMapWidget';
+	const MLID_NEXTMAP_WIDGET              = 'WidgetPlugin.NextMapWidget';
 	const SETTING_NEXTMAP_WIDGET_ACTIVATED = 'Nextmap-Widget Activated';
 	const SETTING_NEXTMAP_WIDGET_POSX      = 'Nextmap-Widget-Position: X';
 	const SETTING_NEXTMAP_WIDGET_POSY      = 'Nextmap-Widget-Position: Y';
@@ -61,7 +61,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	const SETTING_NEXTMAP_WIDGET_HEIGHT    = 'Nextmap-Widget-Size: Height';
 
 	// ServerInfoWidget Properties
-	const MLID_SERVERINFOWIDGET               = 'WidgetPlugin.ServerInfoWidget';
+	const MLID_SERVERINFO_WIDGET              = 'WidgetPlugin.ServerInfoWidget';
 	const SETTING_SERVERINFO_WIDGET_ACTIVATED = 'ServerInfo-Widget Activated';
 	const SETTING_SERVERINFO_WIDGET_POSX      = 'ServerInfo-Widget-Position: X';
 	const SETTING_SERVERINFO_WIDGET_POSY      = 'ServerInfo-Widget-Position: Y';
@@ -189,7 +189,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
 		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
 
-		$maniaLink = new ManiaLink(self::MLID_MAPWIDGET);
+		$maniaLink = new ManiaLink(self::MLID_MAP_WIDGET);
 		$script    = new Script();
 		$maniaLink->setScript($script);
 
@@ -252,7 +252,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
 		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
 
-		$maniaLink = new ManiaLink(self::MLID_CLOCKWIDGET);
+		$maniaLink = new ManiaLink(self::MLID_CLOCK_WIDGET);
 
 		// mainframe
 		$frame = new Frame();
@@ -291,7 +291,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
 		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
 
-		$maniaLink = new ManiaLink(self::MLID_SERVERINFOWIDGET);
+		$maniaLink = new ManiaLink(self::MLID_SERVERINFO_WIDGET);
 
 		// mainframe
 		$frame = new Frame();
@@ -372,10 +372,10 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		//Restore Siege Progression Layer
 		$this->maniaControl->client->triggerModeScriptEvent("Siege_SetProgressionLayerPosition", array("160.", "90.", "0."));
 
-		$this->closeWidget(self::MLID_CLOCKWIDGET);
-		$this->closeWidget(self::MLID_SERVERINFOWIDGET);
-		$this->closeWidget(self::MLID_MAPWIDGET);
-		$this->closeWidget(self::MLID_NEXTMAPWIDGET);
+		$this->closeWidget(self::MLID_CLOCK_WIDGET);
+		$this->closeWidget(self::MLID_SERVERINFO_WIDGET);
+		$this->closeWidget(self::MLID_MAP_WIDGET);
+		$this->closeWidget(self::MLID_NEXTMAP_WIDGET);
 	}
 
 	/**
@@ -395,7 +395,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		if ($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MAP_WIDGET_ACTIVATED)) {
 			$this->displayMapWidget();
 		}
-		$this->closeWidget(self::MLID_NEXTMAPWIDGET);
+		$this->closeWidget(self::MLID_NEXTMAP_WIDGET);
 	}
 
 	/**
@@ -421,7 +421,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
 		$labelStyle   = $this->maniaControl->manialinkManager->styleManager->getDefaultLabelStyle();
 
-		$maniaLink = new ManiaLink(self::MLID_NEXTMAPWIDGET);
+		$maniaLink = new ManiaLink(self::MLID_NEXTMAP_WIDGET);
 
 		// mainframe
 		$frame = new Frame();

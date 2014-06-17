@@ -33,32 +33,32 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	/*
 	 * Constants
 	 */
-	const ID                            = 8;
-	const VERSION                       = 0.1;
-	const AUTHOR                        = 'MCTeam';
-	const NAME                          = 'Dedimania Plugin';
-	const MLID_DEDIMANIA                = 'Dedimania.ManialinkId';
-	const XMLRPC_MULTICALL              = 'system.multicall';
-	const DEDIMANIA_URL                 = 'http://dedimania.net:8081/Dedimania';
-	const DEDIMANIA_OPENSESSION         = 'dedimania.OpenSession';
-	const DEDIMANIA_CHECKSESSION        = 'dedimania.CheckSession';
-	const DEDIMANIA_GETRECORDS          = 'dedimania.GetChallengeRecords';
-	const DEDIMANIA_PLAYERCONNECT       = 'dedimania.PlayerConnect';
-	const DEDIMANIA_PLAYERDISCONNECT    = 'dedimania.PlayerDisconnect';
-	const DEDIMANIA_UPDATESERVERPLAYERS = 'dedimania.UpdateServerPlayers';
-	const DEDIMANIA_SETCHALLENGETIMES   = 'dedimania.SetChallengeTimes';
-	const DEDIMANIA_WARNINGSANDTTR2     = 'dedimania.WarningsAndTTR2';
-	const SETTING_WIDGET_ENABLE         = 'Enable Dedimania Widget';
-	const SETTING_WIDGET_TITLE          = 'Widget Title';
-	const SETTING_WIDGET_POSX           = 'Widget Position: X';
-	const SETTING_WIDGET_POSY           = 'Widget Position: Y';
-	const SETTING_WIDGET_WIDTH          = 'Widget Width';
-	const SETTING_WIDGET_LINESCOUNT     = 'Widget Displayed Lines Count';
-	const SETTING_WIDGET_LINEHEIGHT     = 'Widget Line Height';
-	const SETTING_DEDIMANIA_CODE        = '$l[http://dedimania.net/tm2stats/?do=register]Dedimania Code for ';
-	const CB_DEDIMANIA_CHANGED          = 'Dedimania.Changed';
-	const CB_DEDIMANIA_UPDATED          = 'Dedimania.Updated';
-	const ACTION_SHOW_DEDIRECORDSLIST   = 'Dedimania.ShowDediRecordsList';
+	const ID                              = 8;
+	const VERSION                         = 0.1;
+	const AUTHOR                          = 'MCTeam';
+	const NAME                            = 'Dedimania Plugin';
+	const MLID_DEDIMANIA                  = 'Dedimania.ManialinkId';
+	const XMLRPC_MULTICALL                = 'system.multicall';
+	const DEDIMANIA_URL                   = 'http://dedimania.net:8081/Dedimania';
+	const DEDIMANIA_OPEN_SESSION          = 'dedimania.OpenSession';
+	const DEDIMANIA_CHECK_SESSION         = 'dedimania.CheckSession';
+	const DEDIMANIA_GET_RECORDS           = 'dedimania.GetChallengeRecords';
+	const DEDIMANIA_PLAYERCONNECT         = 'dedimania.PlayerConnect';
+	const DEDIMANIA_PLAYERDISCONNECT      = 'dedimania.PlayerDisconnect';
+	const DEDIMANIA_UPDATE_SERVER_PLAYERS = 'dedimania.UpdateServerPlayers';
+	const DEDIMANIA_SET_CHALLENGE_TIMES   = 'dedimania.SetChallengeTimes';
+	const DEDIMANIA_WARNINGSANDTTR2       = 'dedimania.WarningsAndTTR2';
+	const SETTING_WIDGET_ENABLE           = 'Enable Dedimania Widget';
+	const SETTING_WIDGET_TITLE            = 'Widget Title';
+	const SETTING_WIDGET_POSX             = 'Widget Position: X';
+	const SETTING_WIDGET_POSY             = 'Widget Position: Y';
+	const SETTING_WIDGET_WIDTH            = 'Widget Width';
+	const SETTING_WIDGET_LINE_COUNT       = 'Widget Displayed Lines Count';
+	const SETTING_WIDGET_LINE_HEIGHT      = 'Widget Line Height';
+	const SETTING_DEDIMANIA_CODE          = '$l[http://dedimania.net/tm2stats/?do=register]Dedimania Code for ';
+	const CB_DEDIMANIA_CHANGED            = 'Dedimania.Changed';
+	const CB_DEDIMANIA_UPDATED            = 'Dedimania.Updated';
+	const ACTION_SHOW_DEDIRECORDSLIST     = 'Dedimania.ShowDediRecordsList';
 
 	/*
 	 * Private Properties
@@ -131,8 +131,8 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSX, -139);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSY, 7);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_WIDTH, 40);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_LINEHEIGHT, 4);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_LINESCOUNT, 12);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_LINE_HEIGHT, 4);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_LINE_COUNT, 12);
 
 		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::BEGINMAP, $this, 'handleBeginMap');
 		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::ENDMAP, $this, 'handleMapEnd');
@@ -171,7 +171,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * Opens the Dedimania Session
 	 */
 	private function openDedimaniaSession() {
-		$content = $this->encode_request(self::DEDIMANIA_OPENSESSION, array($this->dedimaniaData->toArray()));
+		$content = $this->encode_request(self::DEDIMANIA_OPEN_SESSION, array($this->dedimaniaData->toArray()));
 
 		$this->maniaControl->fileReader->postData(self::DEDIMANIA_URL, function ($data, $error) {
 			$this->maniaControl->log("Try to connect on Dedimania");
@@ -187,7 +187,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 			$methodResponse = $data[0];
 			if (xmlrpc_is_fault($methodResponse)) {
-				$this->handleXmlRpcFault($methodResponse, self::DEDIMANIA_OPENSESSION);
+				$this->handleXmlRpcFault($methodResponse, self::DEDIMANIA_OPEN_SESSION);
 				return;
 			}
 
@@ -261,7 +261,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		}
 
 		$data    = array($this->dedimaniaData->sessionId, $mapInfo, $gameMode, $serverInfo, $playerInfo);
-		$content = $this->encode_request(self::DEDIMANIA_GETRECORDS, $data);
+		$content = $this->encode_request(self::DEDIMANIA_GET_RECORDS, $data);
 
 		$this->maniaControl->fileReader->postData(self::DEDIMANIA_URL, function ($data, $error) {
 			if ($error) {
@@ -275,7 +275,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 			$methodResponse = $data[0];
 			if (xmlrpc_is_fault($methodResponse)) {
-				$this->handleXmlRpcFault($methodResponse, self::DEDIMANIA_GETRECORDS);
+				$this->handleXmlRpcFault($methodResponse, self::DEDIMANIA_GET_RECORDS);
 				return;
 			}
 
@@ -426,8 +426,8 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$posX         = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_POSX);
 		$posY         = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_POSY);
 		$width        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_WIDTH);
-		$lines        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_LINESCOUNT);
-		$lineHeight   = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_LINEHEIGHT);
+		$lines        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_LINE_COUNT);
+		$lineHeight   = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_LINE_HEIGHT);
 		$labelStyle   = $this->maniaControl->manialinkManager->styleManager->getDefaultLabelStyle();
 		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
 		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
@@ -525,7 +525,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			return;
 		}
 
-		$content = $this->encode_request(self::DEDIMANIA_CHECKSESSION, array($this->dedimaniaData->sessionId));
+		$content = $this->encode_request(self::DEDIMANIA_CHECK_SESSION, array($this->dedimaniaData->sessionId));
 
 		$this->maniaControl->fileReader->postData(self::DEDIMANIA_URL, function ($data, $error) {
 			if ($error) {
@@ -539,7 +539,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 			$methodResponse = $data[0];
 			if (xmlrpc_is_fault($methodResponse)) {
-				$this->handleXmlRpcFault($methodResponse, self::DEDIMANIA_CHECKSESSION);
+				$this->handleXmlRpcFault($methodResponse, self::DEDIMANIA_CHECK_SESSION);
 				return;
 			}
 
@@ -675,7 +675,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		//var_dump($replays);
 		$data = array($this->dedimaniaData->sessionId, $this->getMapInfo(), $gameMode, $times, $replays);
 		//var_dump($data);
-		$content = $this->encode_request(self::DEDIMANIA_SETCHALLENGETIMES, $data);
+		$content = $this->encode_request(self::DEDIMANIA_SET_CHALLENGE_TIMES, $data);
 
 		$this->maniaControl->fileReader->postData(self::DEDIMANIA_URL, function ($data, $error) {
 			if ($error) {
@@ -689,7 +689,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 			$methodResponse = $data[0];
 			if (xmlrpc_is_fault($methodResponse)) {
-				$this->handleXmlRpcFault($methodResponse, self::DEDIMANIA_SETCHALLENGETIMES);
+				$this->handleXmlRpcFault($methodResponse, self::DEDIMANIA_SET_CHALLENGE_TIMES);
 				return;
 			}
 
@@ -713,7 +713,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 		// Send Dedimania request
 		$data    = array($this->dedimaniaData->sessionId, $serverInfo, $votesInfo, $playerList);
-		$content = $this->encode_request(self::DEDIMANIA_UPDATESERVERPLAYERS, $data);
+		$content = $this->encode_request(self::DEDIMANIA_UPDATE_SERVER_PLAYERS, $data);
 
 		$this->maniaControl->fileReader->postData(self::DEDIMANIA_URL, function ($data, $error) {
 			if ($error) {
@@ -727,7 +727,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 			$methodResponse = $data[0];
 			if (xmlrpc_is_fault($methodResponse)) {
-				$this->handleXmlRpcFault($methodResponse, self::DEDIMANIA_UPDATESERVERPLAYERS);
+				$this->handleXmlRpcFault($methodResponse, self::DEDIMANIA_UPDATE_SERVER_PLAYERS);
 			}
 		}, $content, true);
 	}
