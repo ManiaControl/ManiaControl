@@ -98,25 +98,9 @@ checkRequirements();
 // Make sure garbage collection is enabled
 gc_enable();
 
-// Autoload Function that loads ManiaControl Class Files on Demand
-spl_autoload_register(function ($className) {
-	$classPath = str_replace('\\', DIRECTORY_SEPARATOR, $className);
-
-	// Core file
-	$classDirectoryPath = preg_replace('/ManiaControl/', 'core', $classPath, 1);
-	$filePath           = ManiaControlDir . $classDirectoryPath . '.php';
-	if (file_exists($filePath)) {
-		require_once $filePath;
-		return;
-	}
-
-	// Plugin file
-	$filePath = ManiaControlDir . 'plugins' . DIRECTORY_SEPARATOR . $classPath . '.php';
-	if (file_exists($filePath)) {
-		include_once $filePath;
-		return;
-	}
-});
+// Register AutoLoader
+require_once ManiaControlDir . 'core' . DIRECTORY_SEPARATOR . 'AutoLoader.php';
+\ManiaControl\AutoLoader::register();
 
 // Start ManiaControl
 $maniaControl = new \ManiaControl\ManiaControl();
