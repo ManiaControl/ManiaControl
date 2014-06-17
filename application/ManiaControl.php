@@ -34,20 +34,14 @@ require_once ManiaControlDir . 'core' . DIRECTORY_SEPARATOR . 'AutoLoader.php';
 \ManiaControl\Logger::setup();
 
 /**
- * Log and echo the given text
- *
- * @param string $message
- * @param bool   $eol
+ * @deprecated
+ * @see \ManiaControl\Logger::log()
  */
 function logMessage($message, $eol = true) {
-	error_log($message);
-	if ($eol) {
-		$message = '[' . date('d-M-Y H:i:s e') . '] ' . $message . PHP_EOL;
-	}
-	echo $message;
+	\ManiaControl\Logger::log($message, $eol);
 }
 
-logMessage('Starting ManiaControl...');
+\ManiaControl\Logger::log('Starting ManiaControl...');
 
 // Check requirements
 \ManiaControl\Utils\SystemUtil::checkRequirements();

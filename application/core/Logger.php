@@ -29,4 +29,43 @@ class Logger {
 		$logFileName .= '.log';
 		ini_set('error_log', $logFileName);
 	}
+
+	/**
+	 * Log and echo the given Error Message
+	 *
+	 * @param string $message
+	 * @param bool   $eol
+	 * @param bool   $output
+	 */
+	public static function logError($message, $eol = true, $output = true) {
+		$message = '[ERROR] ' . $message;
+		self::log($message, $eol, $output);
+	}
+
+	/**
+	 * Log and output the given Message
+	 *
+	 * @param string $message
+	 * @param bool   $eol
+	 * @param bool   $output
+	 */
+	public static function log($message, $eol = true, $output = true) {
+		error_log($message);
+		if ($output) {
+			self::output($message, $eol);
+		}
+	}
+
+	/**
+	 * Echo the given Message
+	 *
+	 * @param string $message
+	 * @param bool   $eol
+	 */
+	public static function output($message, $eol = true) {
+		if ($eol) {
+			$message = '[' . date('d-M-Y H:i:s e') . '] ' . $message . PHP_EOL;
+		}
+		echo $message;
+	}
 }
