@@ -23,26 +23,15 @@ if (!ini_get('date.timezone') && function_exists('date_default_timezone_set')) {
 	date_default_timezone_set('UTC');
 }
 
-/*
- * Build log file name
- */
-function buildLogFileName() {
-	$logFileName = ManiaControlDir . 'logs' . DIRECTORY_SEPARATOR;
-	if (!is_dir($logFileName) && !mkdir($logFileName)) {
-		echo "Couldn't create Logs Folder, please check the File Permissions!";
-	}
-	$logFileName .= 'ManiaControl';
-	if (LOG_NAME_USE_DATE) {
-		$logFileName .= '_' . date('Y-m-d');
-	}
-	if (LOG_NAME_USE_PID) {
-		$logFileName .= '_' . getmypid();
-	}
-	$logFileName .= '.log';
-	ini_set('error_log', $logFileName);
-}
+// Make sure garbage collection is enabled
+gc_enable();
 
-buildLogFileName();
+// Register AutoLoader
+require_once ManiaControlDir . 'core' . DIRECTORY_SEPARATOR . 'AutoLoader.php';
+\ManiaControl\AutoLoader::register();
+
+// Setup Logger
+\ManiaControl\Logger::setup();
 
 /**
  * Log and echo the given text
@@ -94,13 +83,6 @@ function checkRequirements() {
 }
 
 checkRequirements();
-
-// Make sure garbage collection is enabled
-gc_enable();
-
-// Register AutoLoader
-require_once ManiaControlDir . 'core' . DIRECTORY_SEPARATOR . 'AutoLoader.php';
-\ManiaControl\AutoLoader::register();
 
 // Start ManiaControl
 $maniaControl = new \ManiaControl\ManiaControl();
