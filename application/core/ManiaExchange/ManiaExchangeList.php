@@ -131,13 +131,12 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		}
 
 		// search for matching maps
-		$self = $this;
-		$this->maniaControl->mapManager->mxManager->getMapsAsync(function (array $maps) use (&$self, &$player) {
+		$this->maniaControl->mapManager->mxManager->getMapsAsync(function (array $maps) use (&$player) {
 			if (!$maps) {
-				$self->maniaControl->chat->sendError('No maps found, or MX is down!', $player->login);
+				$this->maniaControl->chat->sendError('No maps found, or MX is down!', $player->login);
 				return;
 			}
-			$self->showManiaExchangeList($maps, $player);
+			$this->showManiaExchangeList($maps, $player);
 		}, $searchString, $author, $environment);
 	}
 

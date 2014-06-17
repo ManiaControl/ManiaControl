@@ -85,9 +85,8 @@ class CustomUIManager implements CallbackListener, TimerListener {
 
 		//TODO: validate necessity
 		//send it again after 500ms
-		$self = $this;
-		$this->maniaControl->timerManager->registerOneTimeListening($this, function ($time) use (&$self, &$player) {
-			$self->updateManialink($player);
+		$this->maniaControl->timerManager->registerOneTimeListening($this, function () use (&$player) {
+			$this->updateManialink($player);
 		}, 500);
 	}
 

@@ -624,16 +624,15 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 				$votesPlugin->defineVote('switchmap', "Goto " . $map->name, true, $message);
 
-				$self = $this;
-				$votesPlugin->startVote($player, 'switchmap', function ($result) use (&$self, &$votesPlugin, &$map) {
-					$self->maniaControl->chat->sendInformation('$sVote Successful -> Map switched!');
+				$votesPlugin->startVote($player, 'switchmap', function ($result) use (&$votesPlugin, &$map) {
+					$this->maniaControl->chat->sendInformation('$sVote Successful -> Map switched!');
 					$votesPlugin->undefineVote('switchmap');
 
 					//Don't queue on Map-Change
 					$this->maniaControl->mapManager->mapQueue->dontQueueNextMapChange();
 
 					try {
-						$self->maniaControl->client->JumpToMapIdent($map->uid);
+						$this->maniaControl->client->JumpToMapIdent($map->uid);
 					} catch (NotInListException $e) {
 					}
 				});

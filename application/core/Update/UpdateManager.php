@@ -315,16 +315,14 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			$this->maniaControl->log($message);
 		}
 
-		$self         = $this;
-		$updateData   = $this->coreUpdateData;
-		$maniaControl = $this->maniaControl;
-		$this->maniaControl->fileReader->loadFile($updateData->url, function ($updateFileContent, $error) use (&$self, &$maniaControl, &$updateData, &$player) {
+		$updateData = $this->coreUpdateData;
+		$this->maniaControl->fileReader->loadFile($updateData->url, function ($updateFileContent, $error) use ($updateData, &$player) {
 			if (!$updateFileContent || $error) {
 				$message = "Update failed: Couldn't load Update zip! {$error}";
 				if ($player) {
-					$maniaControl->chat->sendError($message, $player);
+					$this->maniaControl->chat->sendError($message, $player);
 				}
-				$maniaControl->log($message);
+				$this->maniaControl->log($message);
 				return;
 			}
 
@@ -335,9 +333,9 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			if (!$bytes || $bytes <= 0) {
 				$message = "Update failed: Couldn't save Update zip!";
 				if ($player) {
-					$maniaControl->chat->sendError($message, $player);
+					$this->maniaControl->chat->sendError($message, $player);
 				}
-				$maniaControl->log($message);
+				$this->maniaControl->log($message);
 				return;
 			}
 
@@ -346,9 +344,9 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			if ($result !== true) {
 				$message = "Update failed: Couldn't open Update Zip. ({$result})";
 				if ($player) {
-					$maniaControl->chat->sendError($message, $player);
+					$this->maniaControl->chat->sendError($message, $player);
 				}
-				$maniaControl->log($message);
+				$this->maniaControl->log($message);
 				return;
 			}
 
@@ -358,15 +356,15 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			FileUtil::removeTempFolder();
 
 			// Set the Nightly Build Date
-			$self->setNightlyBuildDate($updateData->releaseDate);
+			$this->setNightlyBuildDate($updateData->releaseDate);
 
 			$message = 'Update finished!';
 			if ($player) {
-				$maniaControl->chat->sendSuccess($message, $player);
+				$this->maniaControl->chat->sendSuccess($message, $player);
 			}
-			$maniaControl->log($message);
+			$this->maniaControl->log($message);
 
-			$maniaControl->restart();
+			$this->maniaControl->restart();
 		});
 
 		return true;
@@ -427,37 +425,35 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			return;
 		}
 
-		$self         = $this;
-		$maniaControl = $this->maniaControl;
-		$this->checkCoreUpdateAsync(function (UpdateData $updateData = null) use (&$self, &$maniaControl, &$player) {
-			if (!$self->checkUpdateData($updateData)) {
-				$maniaControl->chat->sendInformation('No Update available!', $player->login);
+		$this->checkCoreUpdateAsync(function (UpdateData $updateData = null) use (&$player) {
+			if (!$this->checkUpdateData($updateData)) {
+				$this->maniaControl->chat->sendInformation('No Update available!', $player->login);
 				return;
 			}
 
-			if (!$self->checkUpdateDataBuildVersion($updateData)) {
-				$maniaControl->chat->sendError("Please update Your Server to '{$updateData->minDedicatedBuild}' in order to receive further Updates!", $player->login);
+			if (!$this->checkUpdateDataBuildVersion($updateData)) {
+				$this->maniaControl->chat->sendError("Please update Your Server to '{$updateData->minDedicatedBuild}' in order to receive further Updates!", $player->login);
 				return;
 			}
 
-			$isNightly = $self->isNightlyUpdateChannel();
+			$isNightly = $this->isNightlyUpdateChannel();
 			if ($isNightly) {
-				$buildDate = $self->getNightlyBuildDate();
+				$buildDate = $this->getNightlyBuildDate();
 				if ($buildDate) {
 					if ($updateData->isNewerThan($buildDate)) {
-						$maniaControl->chat->sendInformation("No new Build available! (Current Build: '{$buildDate}')", $player->login);
+						$this->maniaControl->chat->sendInformation("No new Build available! (Current Build: '{$buildDate}')", $player->login);
 						return;
 					} else {
-						$maniaControl->chat->sendSuccess("New Nightly Build ({$updateData->releaseDate}) available! (Current Build: '{$buildDate}')", $player->login);
+						$this->maniaControl->chat->sendSuccess("New Nightly Build ({$updateData->releaseDate}) available! (Current Build: '{$buildDate}')", $player->login);
 					}
 				} else {
-					$maniaControl->chat->sendSuccess("New Nightly Build ('{$updateData->releaseDate}') available!", $player->login);
+					$this->maniaControl->chat->sendSuccess("New Nightly Build ('{$updateData->releaseDate}') available!", $player->login);
 				}
 			} else {
-				$maniaControl->chat->sendSuccess('Update for Version ' . $updateData->version . ' available!', $player->login);
+				$this->maniaControl->chat->sendSuccess('Update for Version ' . $updateData->version . ' available!', $player->login);
 			}
 
-			$self->coreUpdateData = $updateData;
+			$this->coreUpdateData = $updateData;
 		});
 	}
 
@@ -473,21 +469,19 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			return;
 		}
 
-		$self         = $this;
-		$maniaControl = $this->maniaControl;
-		$this->checkCoreUpdateAsync(function (UpdateData $updateData = null) use (&$self, &$maniaControl, &$player) {
+		$this->checkCoreUpdateAsync(function (UpdateData $updateData = null) use (&$player) {
 			if (!$updateData) {
-				$maniaControl->chat->sendError('Update is currently not possible!', $player);
+				$this->maniaControl->chat->sendError('Update is currently not possible!', $player);
 				return;
 			}
-			if (!$self->checkUpdateDataBuildVersion($updateData)) {
-				$maniaControl->chat->sendError("The Next ManiaControl Update requires a newer Dedicated Server Version!", $player);
+			if (!$this->checkUpdateDataBuildVersion($updateData)) {
+				$this->maniaControl->chat->sendError("The Next ManiaControl Update requires a newer Dedicated Server Version!", $player);
 				return;
 			}
 
-			$self->coreUpdateData = $updateData;
+			$this->coreUpdateData = $updateData;
 
-			$self->performCoreUpdate($player);
+			$this->performCoreUpdate($player);
 		});
 	}
 }

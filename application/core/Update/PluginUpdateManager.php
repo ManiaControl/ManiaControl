@@ -71,20 +71,18 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 		}
 		$this->maniaControl->log($message);
 
-		$self         = $this;
-		$maniaControl = $this->maniaControl;
-		$this->maniaControl->pluginManager->fetchPluginList(function ($data, $error) use (&$self, &$maniaControl, &$player) {
+		$this->maniaControl->pluginManager->fetchPluginList(function ($data, $error) use (&$player) {
 			if (!$data || $error) {
 				$message = 'Error while checking Plugins for newer Versions!';
 				if ($player) {
-					$maniaControl->chat->sendError($message, $player);
+					$this->maniaControl->chat->sendError($message, $player);
 				}
-				$maniaControl->log($message);
+				$this->maniaControl->log($message);
 				return;
 			}
 
-			$pluginsData   = $self->parsePluginsData($data);
-			$pluginClasses = $maniaControl->pluginManager->getPluginClasses();
+			$pluginsData   = $this->parsePluginsData($data);
+			$pluginClasses = $this->maniaControl->pluginManager->getPluginClasses();
 			$pluginUpdates = array();
 
 			foreach ($pluginClasses as $pluginClass) {
@@ -100,25 +98,25 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 					$pluginUpdates[$pluginId] = $pluginData;
 					$message                  = "There is an Update of '{$pluginData->pluginName}' available! ('{$pluginClass}' - Version {$pluginData->version})";
 					if ($player) {
-						$maniaControl->chat->sendSuccess($message, $player);
+						$this->maniaControl->chat->sendSuccess($message, $player);
 					}
-					$maniaControl->log($message);
+					$this->maniaControl->log($message);
 				}
 			}
 
 			if (empty($pluginUpdates)) {
 				$message = 'Plugins Update Check completed: All Plugins are up-to-date!';
 				if ($player) {
-					$maniaControl->chat->sendSuccess($message, $player);
+					$this->maniaControl->chat->sendSuccess($message, $player);
 				}
-				$maniaControl->log($message);
+				$this->maniaControl->log($message);
 			} else {
 				$updatesCount = count($pluginUpdates);
 				$message      = "Plugins Update Check completed: There are {$updatesCount} Updates available!";
 				if ($player) {
-					$maniaControl->chat->sendSuccess($message, $player);
+					$this->maniaControl->chat->sendSuccess($message, $player);
 				}
-				$maniaControl->log($message);
+				$this->maniaControl->log($message);
 			}
 		});
 	}
@@ -236,25 +234,25 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 	 * @param bool             $update
 	 */
 	private function installPlugin(PluginUpdateData $pluginUpdateData, Player $player = null, $update = false) {
-		$self = $this;
-		$this->maniaControl->fileReader->loadFile($pluginUpdateData->url, function ($updateFileContent, $error) use (&$self, &$pluginUpdateData, &$player, &$update) {
+		$this->maniaControl->fileReader->loadFile($pluginUpdateData->url, function ($updateFileContent, $error) use (&$pluginUpdateData, &$player, &$update) {
 			if (!$updateFileContent || $error) {
 				$message = "Error loading Update Data for '{$pluginUpdateData->pluginName}': {$error}!";
 				if ($player) {
-					$self->maniaControl->chat->sendInformation($message, $player);
+					$this->maniaControl->chat->sendInformation($message, $player);
 				}
-				$self->maniaControl->log($message);
+				$this->maniaControl->log($message);
 				return;
 			}
+
 			$actionNoun     = ($update ? 'Update' : 'Install');
 			$actionVerb     = ($update ? 'Updating' : 'Installing');
 			$actionVerbDone = ($update ? 'updated' : 'installed');
 
 			$message = "Now {$actionVerb} '{$pluginUpdateData->pluginName}'...";
 			if ($player) {
-				$self->maniaControl->chat->sendInformation($message, $player);
+				$this->maniaControl->chat->sendInformation($message, $player);
 			}
-			$self->maniaControl->log($message);
+			$this->maniaControl->log($message);
 
 			$tempDir        = FileUtil::getTempFolder();
 			$updateFileName = $tempDir . $pluginUpdateData->zipfile;
@@ -263,7 +261,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 			if (!$bytes || $bytes <= 0) {
 				$message = "Plugin {$actionNoun} failed: Couldn't save {$actionNoun} Zip!";
 				if ($player) {
-					$self->maniaControl->chat->sendError($message, $player);
+					$this->maniaControl->chat->sendError($message, $player);
 				}
 				trigger_error($message);
 				return;
@@ -274,7 +272,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 			if ($result !== true) {
 				$message = "Plugin {$actionNoun} failed: Couldn't open {$actionNoun} Zip! ({$result})";
 				if ($player) {
-					$self->maniaControl->chat->sendError($message, $player);
+					$this->maniaControl->chat->sendError($message, $player);
 				}
 				trigger_error($message);
 				return;
@@ -291,27 +289,27 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 			}
 			$message = "Successfully {$actionVerbDone} '{$pluginUpdateData->pluginName}'!{$messageExtra}";
 			if ($player) {
-				$self->maniaControl->chat->sendSuccess($message, $player);
+				$this->maniaControl->chat->sendSuccess($message, $player);
 			}
-			$self->maniaControl->log($message);
+			$this->maniaControl->log($message);
 
 			if (!$update) {
-				$newPluginClasses = $self->maniaControl->pluginManager->loadPlugins();
+				$newPluginClasses = $this->maniaControl->pluginManager->loadPlugins();
 				if (empty($newPluginClasses)) {
 					$message = "Loading fresh installed Plugin '{$pluginUpdateData->pluginName}' failed!";
 					if ($player) {
-						$self->maniaControl->chat->sendError($message, $player);
+						$this->maniaControl->chat->sendError($message, $player);
 					}
-					$self->maniaControl->log($message);
+					$this->maniaControl->log($message);
 				} else {
 					$message = "Successfully loaded fresh installed Plugin '{$pluginUpdateData->pluginName}'!";
 					if ($player) {
-						$self->maniaControl->chat->sendSuccess($message, $player);
+						$this->maniaControl->chat->sendSuccess($message, $player);
 					}
-					$self->maniaControl->log($message);
+					$this->maniaControl->log($message);
 
-					$menuId = $self->maniaControl->configurator->getMenuId('Install Plugins');
-					$self->maniaControl->configurator->reopenMenu($player, $menuId);
+					$menuId = $this->maniaControl->configurator->getMenuId('Install Plugins');
+					$this->maniaControl->configurator->reopenMenu($player, $menuId);
 				}
 			}
 		});
@@ -349,24 +347,23 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 		} else {
 			$pluginId = substr($actionId, strlen(PluginInstallMenu::ACTION_PREFIX_INSTALL_PLUGIN));
 
-			$url  = ManiaControl::URL_WEBSERVICE . 'plugins/' . $pluginId;
-			$self = $this;
-			$this->maniaControl->fileReader->loadFile($url, function ($data, $error) use (&$self, &$player) {
+			$url = ManiaControl::URL_WEBSERVICE . 'plugins/' . $pluginId;
+			$this->maniaControl->fileReader->loadFile($url, function ($data, $error) use (&$player) {
 				if ($error || !$data) {
 					$message = "Error loading Plugin Install Data! {$error}";
-					$self->maniaControl->chat->sendError($message, $player);
+					$this->maniaControl->chat->sendError($message, $player);
 					return;
 				}
 
 				$data = json_decode($data);
 				if (!$data) {
 					$message = "Error loading Plugin Install Data! {$error}";
-					$self->maniaControl->chat->sendError($message, $player);
+					$this->maniaControl->chat->sendError($message, $player);
 					return;
 				}
 
 				$pluginUpdateData = new PluginUpdateData($data);
-				$self->installPlugin($pluginUpdateData, $player);
+				$this->installPlugin($pluginUpdateData, $player);
 			});
 		}
 	}

@@ -263,9 +263,9 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 			$rightLabel->setZ(3.1);
 			$rightLabel->setText($this->maniaControl->authenticationManager->getAuthLevelAbbreviation($listPlayer->authLevel));
 			$rightLabel->setTextSize(0.8);
-			$rightLabel->setTextColor("fff");
+			$rightLabel->setTextColor('fff');
 
-			$description = $this->maniaControl->authenticationManager->getAuthLevelName($listPlayer) . " " . $listPlayer->nickname;
+			$description = $this->maniaControl->authenticationManager->getAuthLevelName($listPlayer) . ' ' . $listPlayer->nickname;
 			$rightLabel->addTooltipLabelFeature($descriptionLabel, $description);
 
 			// Player Statistics
@@ -275,7 +275,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 			$playerQuad->setZ(3);
 			$playerQuad->setSize(2.7, 2.7);
 			$playerQuad->setSubStyle($playerQuad::SUBSTYLE_TrackInfo);
-			$playerQuad->setAction(self::ACTION_OPEN_PLAYER_DETAILED . "." . $listPlayer->login);
+			$playerQuad->setAction(self::ACTION_OPEN_PLAYER_DETAILED . '.' . $listPlayer->login);
 			$description = 'View Statistics of $<' . $listPlayer->nickname . '$>';
 			$playerQuad->addTooltipLabelFeature($descriptionLabel, $description);
 
@@ -288,7 +288,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 			$playerQuad->setSubStyle($playerQuad::SUBSTYLE_Camera);
 			$description = 'Spectate $<' . $listPlayer->nickname . '$>';
 			$playerQuad->addTooltipLabelFeature($descriptionLabel, $description);
-			$playerQuad->setAction(self::ACTION_SPECTATE_PLAYER . "." . $listPlayer->login);
+			$playerQuad->setAction(self::ACTION_SPECTATE_PLAYER . '.' . $listPlayer->login);
 
 			// Player Profile Quad
 			$playerQuad = new Quad_UIConstruction_Buttons();
@@ -311,7 +311,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				$playerQuad->setZ(0.1);
 				$playerQuad->setSize(3.8, 3.8);
 				$playerQuad->setSubStyle($playerQuad::SUBSTYLE_Buddy);
-				$playerQuad->setAction(self::ACTION_PLAYER_ADV . "." . $listPlayer->login);
+				$playerQuad->setAction(self::ACTION_PLAYER_ADV . '.' . $listPlayer->login);
 
 				// Description Label
 				$description = 'Advanced Player Actions for $<' . $listPlayer->nickname . '$>';
@@ -478,7 +478,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$label->setY($height / 2 - 5);
 		$label->setStyle($style);
 		$label->setTextSize($textSize);
-		$label->setText("Advanced Actions");
+		$label->setText('Advanced Actions');
 		$label->setTextColor($textColor);
 
 		// Show Nickname
@@ -510,11 +510,11 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$label->setTextColor($textColor);
 
 		if (!$this->maniaControl->playerManager->playerActions->isPlayerMuted($login)) {
-			$label->setText("Mute");
-			$quad->setAction(self::ACTION_MUTE_PLAYER . "." . $login);
+			$label->setText('Mute');
+			$quad->setAction(self::ACTION_MUTE_PLAYER . '.' . $login);
 		} else {
-			$label->setText("UnMute");
-			$quad->setAction(self::ACTION_UNMUTE_PLAYER . "." . $login);
+			$label->setText('UnMute');
+			$quad->setAction(self::ACTION_UNMUTE_PLAYER . '.' . $login);
 		}
 
 		// Warn Player
@@ -522,12 +522,12 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$quad = clone $quad;
 		$frame->add($quad);
 		$quad->setY($posY);
-		$quad->setAction(self::ACTION_WARN_PLAYER . "." . $login);
+		$quad->setAction(self::ACTION_WARN_PLAYER . '.' . $login);
 
 		$label = clone $label;
 		$frame->add($label);
 		$label->setY($posY);
-		$label->setText("Warn");
+		$label->setText('Warn');
 		$label->setTextColor($textColor);
 
 		$posY -= 5;
@@ -536,40 +536,38 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$quad = clone $quad;
 		$frame->add($quad);
 		$quad->setY($posY);
-		$quad->setAction(self::ACTION_KICK_PLAYER . "." . $login);
+		$quad->setAction(self::ACTION_KICK_PLAYER . '.' . $login);
 
 		$label = clone $label;
 		$frame->add($label);
 		$label->setY($posY);
-		$label->setText("Kick");
-		$label->setTextColor("F90");
+		$label->setText('Kick');
+		$label->setTextColor('f90');
 
 		$posY -= 5;
 		// Show Ban
 		$quad = clone $quad;
 		$frame->add($quad);
 		$quad->setY($posY);
-		$quad->setAction(self::ACTION_BAN_PLAYER . "." . $login);
+		$quad->setAction(self::ACTION_BAN_PLAYER . '.' . $login);
 
 		$label = clone $label;
 		$frame->add($label);
 		$label->setY($posY);
-		$label->setText("Ban");
-		$label->setTextColor("700");
+		$label->setText('Ban');
+		$label->setTextColor('700');
 
 		$posY -= 10;
 		// Show Add as Master-Admin
 		$quad = clone $quad;
 		$frame->add($quad);
 		$quad->setY($posY);
-		$quad->setAction(self::ACTION_ADD_AS_MASTER . "." . $login);
+		$quad->setAction(self::ACTION_ADD_AS_MASTER . '.' . $login);
 
 		$label = clone $label;
 		$frame->add($label);
 		$label->setY($posY);
-
-		$label->setText("Set SuperAdmin");
-
+		$label->setText('Set SuperAdmin');
 		$label->setTextColor($textColor);
 
 		$posY -= 5;
@@ -577,12 +575,12 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$quad = clone $quad;
 		$frame->add($quad);
 		$quad->setY($posY);
-		$quad->setAction(self::ACTION_ADD_AS_ADMIN . "." . $login);
+		$quad->setAction(self::ACTION_ADD_AS_ADMIN . '.' . $login);
 
 		$label = clone $label;
 		$frame->add($label);
 		$label->setY($posY);
-		$label->setText("Set Admin");
+		$label->setText('Set Admin');
 		$label->setTextColor($textColor);
 
 		$posY -= 5;
@@ -590,12 +588,12 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$quad = clone $quad;
 		$frame->add($quad);
 		$quad->setY($posY);
-		$quad->setAction(self::ACTION_ADD_AS_MOD . "." . $login);
+		$quad->setAction(self::ACTION_ADD_AS_MOD . '.' . $login);
 
 		$label = clone $label;
 		$frame->add($label);
 		$label->setY($posY);
-		$label->setText("Set Moderator");
+		$label->setText('Set Moderator');
 		$label->setTextColor($textColor);
 
 		if ($player->authLevel > 0 && $this->maniaControl->authenticationManager->checkRight($admin, $player->authLevel + 1)) {
@@ -604,13 +602,13 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 			$quad = clone $quad;
 			$frame->add($quad);
 			$quad->setY($posY);
-			$quad->setAction(self::ACTION_REVOKE_RIGHTS . "." . $login);
+			$quad->setAction(self::ACTION_REVOKE_RIGHTS . '.' . $login);
 
 			$label = clone $label;
 			$frame->add($label);
 			$label->setY($posY);
-			$label->setText("Revoke Rights");
-			$label->setTextColor("700");
+			$label->setText('Revoke Rights');
+			$label->setTextColor('700');
 		}
 
 		return $frame;
@@ -628,7 +626,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 			return;
 		}
 
-		$action      = $actionArray[0] . "." . $actionArray[1];
+		$action      = $actionArray[0] . '.' . $actionArray[1];
 		$adminLogin  = $callback[1][1];
 		$targetLogin = $actionArray[2];
 
@@ -699,16 +697,15 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 
 				$startMessage = '$<' . $admin->nickname . '$>$s started a vote to force $<' . $target->nickname . '$> into spectator!';
 
-				$votesPlugin->defineVote('forcespec', "Force $<" . $target->nickname . "$> Spec", true, $startMessage);
+				$votesPlugin->defineVote('forcespec', 'Force $<' . $target->nickname . '$> Spec', true, $startMessage);
 
-				$self = $this;
-				$votesPlugin->startVote($admin, 'forcespec', function ($result) use (&$self, &$votesPlugin, &$target) {
-					$self->maniaControl->chat->sendInformation('$sVote Successfully -> Player $<' . $target->nickname . '$> forced to Spectator!');
+				$votesPlugin->startVote($admin, 'forcespec', function ($result) use (&$votesPlugin, &$target) {
+					$this->maniaControl->chat->sendInformation('$sVote Successful -> Player $<' . $target->nickname . '$> forced to Spectator!');
 					$votesPlugin->undefineVote('forcespec');
 
 					try {
-						$self->maniaControl->client->forceSpectator($target->login, PlayerActions::SPECTATOR_BUT_KEEP_SELECTABLE);
-						$self->maniaControl->client->spectatorReleasePlayerSlot($target->login);
+						$this->maniaControl->client->forceSpectator($target->login, PlayerActions::SPECTATOR_BUT_KEEP_SELECTABLE);
+						$this->maniaControl->client->spectatorReleasePlayerSlot($target->login);
 					} catch (PlayerStateException $e) {
 					}
 				});
@@ -723,16 +720,15 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				$startMessage = '$<' . $admin->nickname . '$>$s started a vote to kick $<' . $target->nickname . '$>!';
 
 
-				$votesPlugin->defineVote('kick', "Kick $<" . $target->nickname . "$>", true, $startMessage);
+				$votesPlugin->defineVote('kick', 'Kick $<' . $target->nickname . '$>', true, $startMessage);
 
-				$self = $this;
-				$votesPlugin->startVote($admin, 'kick', function ($result) use (&$self, &$votesPlugin, &$target) {
-					$self->maniaControl->chat->sendInformation('$sVote Successfully -> $<' . $target->nickname . '$> got Kicked!');
+				$votesPlugin->startVote($admin, 'kick', function ($result) use (&$votesPlugin, &$target) {
+					$this->maniaControl->chat->sendInformation('$sVote Successful -> $<' . $target->nickname . '$> got Kicked!');
 					$votesPlugin->undefineVote('kick');
 
-					$message = '$39F You got kicked due a Public vote!$z ';
+					$message = '$39F You got kicked due to a Public Vote!$z ';
 					try {
-						$self->maniaControl->client->kick($target->login, $message);
+						$this->maniaControl->client->kick($target->login, $message);
 					} catch (UnknownPlayerException $e) {
 					}
 				});

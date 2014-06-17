@@ -100,21 +100,21 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 
 		$this->initTables();
 
-		$maniaControl->settingManager->initSetting($this, self::SETTING_MIN_HITS_RATIO_RANKING, 100);
-		$maniaControl->settingManager->initSetting($this, self::SETTING_MIN_HITS_POINTS_RANKING, 15);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MIN_HITS_RATIO_RANKING, 100);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MIN_HITS_POINTS_RANKING, 15);
 
-		$maniaControl->settingManager->initSetting($this, self::SETTING_MIN_REQUIRED_RECORDS, 3);
-		$maniaControl->settingManager->initSetting($this, self::SETTING_MAX_STORED_RECORDS, 50);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MIN_REQUIRED_RECORDS, 3);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAX_STORED_RECORDS, 50);
 
 		$script = $this->maniaControl->client->getScriptName();
 
 		if ($this->maniaControl->mapManager->getCurrentMap()->getGame() === 'tm') {
 			//TODO also add obstacle here as default
-			$maniaControl->settingManager->initSetting($this, self::SETTING_MIN_RANKING_TYPE, self::RANKING_TYPE_RECORDS);
+			$this->maniaControl->settingManager->initSetting($this, self::SETTING_MIN_RANKING_TYPE, self::RANKING_TYPE_RECORDS);
 		} else if ($script["CurrentValue"] === 'InstaDM.Script.txt') {
-			$maniaControl->settingManager->initSetting($this, self::SETTING_MIN_RANKING_TYPE, self::RANKING_TYPE_RATIOS);
+			$this->maniaControl->settingManager->initSetting($this, self::SETTING_MIN_RANKING_TYPE, self::RANKING_TYPE_RATIOS);
 		} else {
-			$maniaControl->settingManager->initSetting($this, self::SETTING_MIN_RANKING_TYPE, self::RANKING_TYPE_POINTS);
+			$this->maniaControl->settingManager->initSetting($this, self::SETTING_MIN_RANKING_TYPE, self::RANKING_TYPE_POINTS);
 		}
 
 		//Check if the type is Correct
