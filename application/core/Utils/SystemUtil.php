@@ -61,8 +61,51 @@ class SystemUtil {
 	 *
 	 * @return array
 	 */
-	public static function getDisabledFunctions() {
+	protected static function getDisabledFunctions() {
 		$disabledText = ini_get('disable_functions');
 		return explode(',', $disabledText);
+	}
+
+	/**
+	 * Check for the Requirements to run ManiaControl
+	 */
+	public static function checkRequirements() {
+		$success = true;
+
+		// Check for min PHP version
+		$phpVersion = phpversion();
+		$message    = 'Checking for minimum required PHP-Version ' . MIN_PHP_VERSION . ' ... ';
+		if ($phpVersion < MIN_PHP_VERSION) {
+			logMessage($message . $phpVersion . ' TOO OLD VERSION!');
+			logMessage(' -- Make sure that you install at least PHP ' . MIN_PHP_VERSION . '!');
+			$success = false;
+		} else {
+			logMessage($message . MIN_PHP_VERSION . ' OK!');
+		}
+
+		// Check for MySQLi
+		$message = 'Checking for installed MySQLi ... ';
+		if (!extension_loaded('mysqli')) {
+			logMessage($message . 'NOT FOUND!');
+			logMessage(" -- You don't have MySQLi installed! Check: http://www.php.net/manual/en/mysqli.installation.php");
+			$success = false;
+		} else {
+			logMessage($message . 'FOUND!');
+		}
+
+		// Check for cURL
+		$message = 'Checking for installed cURL ... ';
+		if (!extension_loaded('curl')) {
+			logMessage($message . 'NOT FOUND!');
+			logMessage(" -- You don't have cURL installed! Check: http://www.php.net/manual/en/curl.installation.php");
+			$success = false;
+		} else {
+			logMessage($message . 'FOUND!');
+		}
+
+		if (!$success) {
+			// Missing requirements
+			exit;
+		}
 	}
 }
