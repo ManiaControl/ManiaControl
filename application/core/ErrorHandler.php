@@ -213,9 +213,10 @@ class ErrorHandler {
 		$traceString = '';
 		$stepCount   = 0;
 		foreach ($backtrace as $traceStep) {
+			$skipStep = $this->shouldSkipTraceStep($traceStep);
 			$traceString .= '#' . $stepCount . ': ';
 			if (isset($traceStep['class'])) {
-				if (!$sourceClass && strpos($traceStep['class'], '\\FaultException') === false && strpos($traceStep['class'], '\\ErrorHandler') === false) {
+				if (!$skipStep && !$this->isIgnoredSourceClass($traceStep['class'])) {
 					$sourceClass = $traceStep['class'];
 				}
 				$traceString .= $traceStep['class'];
@@ -225,16 +226,16 @@ class ErrorHandler {
 			}
 			if (isset($traceStep['function'])) {
 				$traceString .= $traceStep['function'] . '(';
-				if (isset($traceStep['args'])) {
+				if (isset($traceStep['args']) && !$skipStep) {
 					$traceString .= $this->parseArgumentsArray($traceStep['args']);
 				}
 				$traceString .= ')';
 			}
-			if (isset($traceStep['file'])) {
+			if (isset($traceStep['file']) && !$skipStep) {
 				$traceString .= ' in File ';
 				$traceString .= $traceStep['file'];
 			}
-			if (isset($traceStep['line'])) {
+			if (isset($traceStep['line']) && !$skipStep) {
 				$traceString .= ' on Line ';
 				$traceString .= $traceStep['line'];
 			}
@@ -247,6 +248,35 @@ class ErrorHandler {
 			$stepCount++;
 		}
 		return $traceString;
+	}
+
+	/**
+	 * Check if the given Trace Step should be skipped
+	 *
+	 * @param array $traceStep
+	 * @return bool
+	 */
+	private function shouldSkipTraceStep(array $traceStep) {
+		if (isset($traceStep['class'])) {
+			$skippedClasses = array('Symfony', 'cURL');
+			foreach ($skippedClasses as $skippedClass) {
+				if (strpos($traceStep['class'], $skippedClass) !== false) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Check if the given Class Name should be ignored as possible Error Source Class
+	 *
+	 * @param string $class
+	 * @return bool
+	 */
+	private function isIgnoredSourceClass($class) {
+		return (!$class || strpos($class, '\\FaultException') !== false || strpos($class, '\\ErrorHandler') !== false);
+
 	}
 
 	/**
