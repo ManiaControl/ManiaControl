@@ -258,9 +258,17 @@ class ErrorHandler {
 	 */
 	private function shouldSkipTraceStep(array $traceStep) {
 		if (isset($traceStep['class'])) {
-			$skippedClasses = array('Symfony', 'cURL');
+			$skippedClasses = array('Symfony\\Component\\EventDispatcher\\EventDispatcher', 'cURL\\Request');
 			foreach ($skippedClasses as $skippedClass) {
-				if (strpos($traceStep['class'], $skippedClass) !== false) {
+				if ($traceStep['class'] === $skippedClass) {
+					return true;
+				}
+			}
+		}
+		if (isset($traceStep['file'])) {
+			$skippedFiles = array('Symfony', 'curl-easy');
+			foreach ($skippedFiles as $skippedFile) {
+				if (strpos($traceStep['file'], $skippedFile)) {
 					return true;
 				}
 			}
