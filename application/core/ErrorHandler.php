@@ -69,7 +69,8 @@ class ErrorHandler {
 	 * @param bool   $onShutdown
 	 * @return bool
 	 */
-	public function handleError($errorNumber, $errorString, $errorFile = null, $errorLine = -1, array $errorContext = array(), $onShutdown = false) {
+	public function handleError($errorNumber, $errorString, $errorFile = null, $errorLine = -1, array $errorContext = array(),
+	                            $onShutdown = false) {
 		$suppressed = (error_reporting() === 0);
 		if ($suppressed && !self::LOG_SUPPRESSED_ERRORS) {
 			return false;
@@ -150,7 +151,7 @@ class ErrorHandler {
 			}
 		}
 
-		if ($this->isFatalError($errorNumber)) {
+		if (self::isFatalError($errorNumber)) {
 			$this->maniaControl->quit('Quitting ManiaControl after Fatal Error.');
 		}
 
@@ -168,24 +169,26 @@ class ErrorHandler {
 	 */
 	public function getErrorTag($errorLevel) {
 		switch ($errorLevel) {
-			case E_NOTICE:
-				return '[PHP NOTICE]';
-			case E_WARNING:
-				return '[PHP WARNING]';
 			case E_ERROR:
 				return '[PHP ERROR]';
+			case E_WARNING:
+				return '[PHP WARNING]';
+			case E_PARSE:
+				return '[PHP PARSE ERROR]';
+			case E_NOTICE:
+				return '[PHP NOTICE]';
 			case E_CORE_ERROR:
 				return '[PHP CORE ERROR]';
 			case E_COMPILE_ERROR:
 				return '[PHP COMPILE ERROR]';
-			case E_RECOVERABLE_ERROR:
-				return '[PHP RECOVERABLE ERROR]';
-			case E_USER_NOTICE:
-				return '[ManiaControl NOTICE]';
-			case E_USER_WARNING:
-				return '[ManiaControl WARNING]';
 			case E_USER_ERROR:
 				return '[ManiaControl ERROR]';
+			case E_USER_WARNING:
+				return '[ManiaControl WARNING]';
+			case E_USER_NOTICE:
+				return '[ManiaControl NOTICE]';
+			case E_RECOVERABLE_ERROR:
+				return '[PHP RECOVERABLE ERROR]';
 			case self::MC_DEBUG_NOTICE:
 				return '[ManiaControl DEBUG]';
 		}
@@ -199,7 +202,8 @@ class ErrorHandler {
 	 * @return bool
 	 */
 	private function isUserErrorNumber($errorNumber) {
-		return ($errorNumber & E_USER_ERROR || $errorNumber & E_USER_WARNING || $errorNumber & E_USER_NOTICE || $errorNumber & E_USER_DEPRECATED);
+		return ($errorNumber & E_USER_ERROR || $errorNumber & E_USER_WARNING || $errorNumber & E_USER_NOTICE
+		        || $errorNumber & E_USER_DEPRECATED);
 	}
 
 	/**
@@ -283,8 +287,13 @@ class ErrorHandler {
 	 * @return bool
 	 */
 	private function isIgnoredSourceClass($class) {
-		return (!$class || strpos($class, '\\FaultException') !== false || strpos($class, '\\ErrorHandler') !== false);
-
+		$ignoredClasses = array('\\ErrorHandler', '\\FaultException');
+		foreach ($ignoredClasses as $ignoredClass) {
+			if (strpos($class, $ignoredClass) !== false) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -354,8 +363,9 @@ class ErrorHandler {
 	 * @param int $errorNumber
 	 * @return bool
 	 */
-	private function isFatalError($errorNumber) {
-		return ($errorNumber & E_FATAL);
+	public static function isFatalError($errorNumber) {
+		$fatalError = (E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR);
+		return ($errorNumber & $fatalError);
 	}
 
 	/**
@@ -384,7 +394,7 @@ class ErrorHandler {
 
 		// Check if the Shutdown was caused by a Fatal Error and report it
 		$error = error_get_last();
-		if ($error && ($error['type'] & E_FATAL)) {
+		if ($error && self::isFatalError($error['type'])) {
 			$this->handleError($error['type'], $error['message'], $error['file'], $error['line'], array(), true);
 		}
 

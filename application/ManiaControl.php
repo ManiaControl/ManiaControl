@@ -11,9 +11,6 @@ define('LOG_NAME_USE_PID', true); // Use current process id as suffix for log fi
 // Define base dir
 define('ManiaControlDir', __DIR__ . DIRECTORY_SEPARATOR);
 
-// Define fatal error level
-define('E_FATAL', E_ERROR | E_CORE_ERROR | E_COMPILE_ERROR | E_RECOVERABLE_ERROR | E_USER_ERROR);
-
 // Min PHP Version
 define('MIN_PHP_VERSION', '5.4');
 
