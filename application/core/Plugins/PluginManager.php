@@ -387,6 +387,22 @@ class PluginManager {
 	}
 
 	/**
+	 * Check if the Plugin with the given ID is already installed and loaded
+	 *
+	 * @param int $pluginId
+	 * @return bool
+	 */
+	public function isPluginIdInstalled($pluginId) {
+		foreach ($this->pluginClasses as $pluginClass) {
+			/** @var Plugin $pluginClass */
+			if ($pluginClass::getId() == $pluginId) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Returns a Plugin if it is activated
 	 *
 	 * @param string $pluginClass

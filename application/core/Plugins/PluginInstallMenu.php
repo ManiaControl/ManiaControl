@@ -2,7 +2,6 @@
 
 namespace ManiaControl\Plugins;
 
-use FML\Controls\Control;
 use FML\Controls\Frame;
 use FML\Controls\Label;
 use FML\Controls\Labels\Label_Button;
@@ -11,7 +10,6 @@ use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Script\Features\Paging;
 use FML\Script\Script;
 use ManiaControl\Admin\AuthenticationManager;
-use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Configurators\ConfiguratorMenu;
 use ManiaControl\Files\FileUtil;
 use ManiaControl\ManiaControl;
@@ -25,12 +23,13 @@ use ManiaControl\Players\Player;
  * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAnswerListener {
+class PluginInstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 	/*
 	 * Constants
 	 */
 	const SETTING_PERMISSION_INSTALL_PLUGINS = 'Install Plugins';
 	const ACTION_PREFIX_INSTALL_PLUGIN       = 'PluginInstallMenu.Install.';
+	const ACTION_REFRESH_LIST                = 'PluginInstallMenu.RefreshList';
 
 	/*
 	 * Private Properties
@@ -46,13 +45,7 @@ class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, Manialink
 		$this->maniaControl = $maniaControl;
 
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_INSTALL_PLUGINS, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
-	}
-
-	/**
-	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getTitle()
-	 */
-	public function getTitle() {
-		return 'Install Plugins';
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_REFRESH_LIST, $this, 'handleRefreshListAction');
 	}
 
 	/**
@@ -64,97 +57,119 @@ class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, Manialink
 		$frame = new Frame();
 
 		// Config
-		$pagerSize     = 9.;
-		$entryHeight   = 5.;
-		$labelTextSize = 2;
-		$posY          = 0.;
-		$pageFrame     = null;
-
-		// Pagers
-		$pagerPrev = new Quad_Icons64x64_1();
-		$frame->add($pagerPrev);
-		$pagerPrev->setPosition($width * 0.39, $height * -0.44, 2);
-		$pagerPrev->setSize($pagerSize, $pagerSize);
-		$pagerPrev->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowPrev);
-
-		$pagerNext = new Quad_Icons64x64_1();
-		$frame->add($pagerNext);
-		$pagerNext->setPosition($width * 0.45, $height * -0.44, 2);
-		$pagerNext->setSize($pagerSize, $pagerSize);
-		$pagerNext->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowNext);
-
-		$paging->addButton($pagerNext);
-		$paging->addButton($pagerPrev);
-
-		$pageCountLabel = new Label_Text();
-		$frame->add($pageCountLabel);
-		$pageCountLabel->setHAlign(Control::RIGHT);
-		$pageCountLabel->setPosition($width * 0.35, $height * -0.44, 1);
-		$pageCountLabel->setStyle($pageCountLabel::STYLE_TextTitle1);
-		$pageCountLabel->setTextSize(2);
-
-		$paging->setLabel($pageCountLabel);
+		$pagerSize   = 9.;
+		$entryHeight = 5.;
+		$posY        = 0.;
+		$pageFrame   = null;
 
 		$url        = ManiaControl::URL_WEBSERVICE . 'plugins';
 		$dataJson   = FileUtil::loadFile($url);
 		$pluginList = json_decode($dataJson);
 		$index      = 0;
-		if ($pluginList && isset($pluginList[0])) {
-			$pluginClasses = $this->maniaControl->pluginManager->getPluginClasses();
-			$pluginIds     = array();
-			/** @var Plugin $class */
-			foreach ($pluginClasses as $class) {
-				$pluginIds[] = $class::getId();
-			}
 
+		if (!is_array($pluginList)) {
+			// Error text
+			$errorFrame = $this->getErrorFrame();
+			$frame->add($errorFrame);
+		} else if (empty($pluginList)) {
+			// Empty text
+			$emptyFrame = $this->getEmptyFrame();
+			$frame->add($emptyFrame);
+		} else {
+			// Build plugin list
+			// Pagers
+			$pagerPrev = new Quad_Icons64x64_1();
+			$frame->add($pagerPrev);
+			$pagerPrev->setPosition($width * 0.39, $height * -0.44, 2)
+			          ->setSize($pagerSize, $pagerSize)
+			          ->setSubStyle($pagerPrev::SUBSTYLE_ArrowPrev);
+
+			$pagerNext = clone $pagerPrev;
+			$frame->add($pagerNext);
+			$pagerNext->setX($width * 0.45);
+
+			$pageCountLabel = new Label_Text();
+			$frame->add($pageCountLabel);
+			$pageCountLabel->setHAlign($pageCountLabel::RIGHT)
+			               ->setPosition($width * 0.35, $height * -0.44, 1)
+			               ->setStyle($pageCountLabel::STYLE_TextTitle1)
+			               ->setTextSize(2);
+
+			$paging->addButton($pagerNext)
+			       ->addButton($pagerPrev)
+			       ->setLabel($pageCountLabel);
+
+			// Info tooltip
+			$infoTooltipLabel = new Label();
+			$frame->add($infoTooltipLabel);
+			$infoTooltipLabel->setAlign($infoTooltipLabel::LEFT, $infoTooltipLabel::TOP)
+			                 ->setPosition($width * -0.45, $height * -0.22)
+			                 ->setSize($width * 0.7, $entryHeight)
+			                 ->setTextSize(1)
+			                 ->setTranslate(true)
+			                 ->setVisible(false)
+			                 ->setAutoNewLine(true)
+			                 ->setMaxLines(5);
+
+			// List plugins
 			foreach ($pluginList as $plugin) {
-				if (!in_array($plugin->id, $pluginIds)) {
-					if ($index % 10 === 0) {
-						$pageFrame = new Frame();
-						$frame->add($pageFrame);
-						$paging->addPage($pageFrame);
-						$posY = $height * 0.41;
+				if ($this->maniaControl->pluginManager->isPluginIdInstalled($plugin->id)) {
+					// Already installed -> Skip
+					continue;
+				}
+
+				if ($index % 10 === 0) {
+					// New page
+					$pageFrame = new Frame();
+					$frame->add($pageFrame);
+					$paging->addPage($pageFrame);
+					$posY = $height * 0.41;
+				}
+
+				$pluginFrame = new Frame();
+				$pageFrame->add($pluginFrame);
+				$pluginFrame->setY($posY);
+
+				$nameLabel = new Label_Text();
+				$pluginFrame->add($nameLabel);
+				$nameLabel->setHAlign($nameLabel::LEFT)
+				          ->setX($width * -0.46)
+				          ->setSize($width * 0.6, $entryHeight)
+				          ->setStyle($nameLabel::STYLE_TextCardSmall)
+				          ->setTextSize(2)
+				          ->setText($plugin->name);
+
+				$description = "Author: {$plugin->author}\nVersion: {$plugin->currentVersion->version}\nDesc: {$plugin->description}";
+				$nameLabel->addTooltipLabelFeature($infoTooltipLabel, $description);
+
+				if (!$this->isPluginCompatible($plugin)) {
+					// Incompatibility label
+					$infoLabel = new Label_Text();
+					$pluginFrame->add($infoLabel);
+					$infoLabel->setHAlign($infoLabel::RIGHT)
+					          ->setX($width * 0.45)
+					          ->setSize($width * 0.3, $entryHeight)
+					          ->setTextSize(1)
+					          ->setTextColor('f30');
+					if ($plugin->currentVersion->min_mc_version > ManiaControl::VERSION) {
+						$infoLabel->setText("Needs at least MC-Version '{$plugin->currentVersion->min_mc_version}'");
+					} else {
+						$infoLabel->setText("Needs at most MC-Version '{$plugin->currentVersion->max_mc_version}'");
 					}
-
-					$pluginFrame = new Frame();
-					$pageFrame->add($pluginFrame);
-					$pluginFrame->setY($posY);
-
-					$nameLabel = new Label_Text();
-					$pluginFrame->add($nameLabel);
-					$nameLabel->setHAlign(Control::LEFT);
-					$nameLabel->setX($width * -0.4);
-					$nameLabel->setSize($width * 0.5, $entryHeight);
-					$nameLabel->setStyle($nameLabel::STYLE_TextCardSmall);
-					$nameLabel->setTextSize($labelTextSize);
-					$nameLabel->setText($plugin->name);
-
-					$descriptionLabel = new Label();
-					$pageFrame->add($descriptionLabel);
-					$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
-					$descriptionLabel->setPosition($width * -0.45, $height * -0.22);
-					$descriptionLabel->setSize($width * 0.7, $entryHeight);
-					$descriptionLabel->setTextSize(2);
-					$descriptionLabel->setTranslate(true);
-					$descriptionLabel->setVisible(false);
-					$descriptionLabel->setAutoNewLine(true);
-					$descriptionLabel->setMaxLines(5);
-					$description = "Author: {$plugin->author}\nVersion: {$plugin->currentVersion->version}\nDesc: {$plugin->description}";
-					$descriptionLabel->setText($description);
-					$nameLabel->addTooltipFeature($descriptionLabel);
-
+				} else {
+					// Install button
 					$installButton = new Label_Button();
 					$pluginFrame->add($installButton);
-					$installButton->setHAlign(Control::RIGHT);
-					$installButton->setX($width * 0.45);
-					$installButton->setStyle($installButton::STYLE_CardButtonSmall);
-					$installButton->setTextPrefix('$f00');
-					$installButton->setText('Install');
-					$installButton->setAction(self::ACTION_PREFIX_INSTALL_PLUGIN . $plugin->id);
-
-					$posY -= $entryHeight;
-					$index++;
+					$installButton->setHAlign($installButton::RIGHT)
+					              ->setX($width * 0.45)
+					              ->setStyle($installButton::STYLE_CardButtonSmall)
+					              ->setText('Install')
+					              ->setTranslate(true)
+					              ->setAction(self::ACTION_PREFIX_INSTALL_PLUGIN . $plugin->id);
 				}
+
+				$posY -= $entryHeight;
+				$index++;
 			}
 		}
 
@@ -162,9 +177,90 @@ class PluginInstallMenu implements CallbackListener, ConfiguratorMenu, Manialink
 	}
 
 	/**
+	 * Build the Frame to display when an Error occurred
+	 *
+	 * @return Frame
+	 */
+	private function getErrorFrame() {
+		$frame = new Frame();
+
+		$infoLabel = new Label_Text();
+		$frame->add($infoLabel);
+		$infoLabel->setVAlign($infoLabel::BOTTOM)
+		          ->setY(2)
+		          ->setSize(100, 25)
+		          ->setTextColor('f30')
+		          ->setTranslate(true)
+		          ->setText('An error occurred. Please try again later.');
+
+		$refreshQuad = new Quad_Icons64x64_1();
+		$frame->add($refreshQuad);
+		$refreshQuad->setY(-4)
+		            ->setSize(8, 8)
+		            ->setSubStyle($refreshQuad::SUBSTYLE_Refresh)
+		            ->setAction(self::ACTION_REFRESH_LIST);
+
+		return $frame;
+	}
+
+	/**
+	 * Build the Frame to display when no Plugins are left to install
+	 *
+	 * @return Frame
+	 */
+	private function getEmptyFrame() {
+		$frame = new Frame();
+
+		$infoLabel = new Label_Text();
+		$frame->add($infoLabel);
+		$infoLabel->setSize(100, 50)
+		          ->setTextColor('0f3')
+		          ->setTranslate(true)
+		          ->setText('No other plugins available.');
+
+		return $frame;
+	}
+
+	/**
+	 * Check if the given Plugin can be installed without Issues
+	 *
+	 * @param object $plugin
+	 * @return bool
+	 */
+	private function isPluginCompatible($plugin) {
+		if ($plugin->currentVersion->min_mc_version > 0 && $plugin->currentVersion->min_mc_version > ManiaControl::VERSION) {
+			// ManiaControl needs to be updated
+			return false;
+		}
+		if ($plugin->currentVersion->max_mc_version > 0 && $plugin->currentVersion->max_mc_version < ManiaControl::VERSION) {
+			// Plugin is outdated
+			return false;
+		}
+		return true;
+	}
+
+	/**
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
 	 */
 	public function saveConfigData(array $configData, Player $player) {
 		// TODO: Implement saveConfigData() method.
+	}
+
+	/**
+	 * Handle the Refresh MLAction
+	 *
+	 * @param array  $actionCallback
+	 * @param Player $player
+	 */
+	public function handleRefreshListAction(array $actionCallback, Player $player) {
+		$menuId = $this->maniaControl->configurator->getMenuId(self::getTitle());
+		$this->maniaControl->configurator->reopenMenu($player, $menuId);
+	}
+
+	/**
+	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getTitle()
+	 */
+	public function getTitle() {
+		return 'Install Plugins';
 	}
 }
