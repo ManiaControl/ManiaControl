@@ -22,7 +22,7 @@ class Logger {
 	 * Set the Error Log File Name
 	 */
 	private static function setupErrorLogFileName() {
-		$logsFolder = self::createLogsFolder();
+		$logsFolder = self::getLogsFolder();
 		if ($logsFolder) {
 			$logFileName = $logsFolder . 'ManiaControl';
 			if (LOG_NAME_USE_DATE) {
