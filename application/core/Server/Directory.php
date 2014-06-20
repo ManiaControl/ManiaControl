@@ -12,7 +12,6 @@ use ManiaControl\ManiaControl;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Directory {
-
 	/**
 	 * Private Properties
 	 */
@@ -25,15 +24,6 @@ class Directory {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
-	}
-
-	/**
-	 * Retrieve the Game Data Folder Path
-	 *
-	 * @return string
-	 */
-	public function getGameDataFolder() {
-		return $this->maniaControl->client->gameDataDirectory();
 	}
 
 	/**
@@ -52,5 +42,32 @@ class Directory {
 	 */
 	public function getSkinsFolder() {
 		return $this->maniaControl->client->getSkinsDirectory();
+	}
+
+	/**
+	 * Retrieve the Logs Folder Path
+	 *
+	 * @return string
+	 */
+	public function getLogsFolder() {
+		return $this->getGameDataFolder() . '..' . DIRECTORY_SEPARATOR . 'Logs' . DIRECTORY_SEPARATOR;
+	}
+
+	/**
+	 * Retrieve the Game Data Folder Path
+	 *
+	 * @return string
+	 */
+	public function getGameDataFolder() {
+		return $this->maniaControl->client->gameDataDirectory();
+	}
+
+	/**
+	 * Retrieve the Cache Folder Path
+	 *
+	 * @return string
+	 */
+	public function getCacheFolder() {
+		return $this->getGameDataFolder() . '..' . DIRECTORY_SEPARATOR . 'CommonData' . DIRECTORY_SEPARATOR . 'Cache' . DIRECTORY_SEPARATOR;
 	}
 }
