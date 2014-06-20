@@ -24,10 +24,10 @@ http://www.maniacontrol.com
 4.	Enjoy!
 
 
-## INFORMATION:
+## WINDOWS:
 
 - ManiaControl is mainly tested on UNIX machines.
-- Even though it might run properly on Windows we can't promise it will work all cases.
+- Even though it might run properly on Windows we can't promise it will work in all cases.
 - In order to run ManiaControl on Windows you have to alter the file 'ManiaControl.bat' and enter the path to your php.exe!
 
 
