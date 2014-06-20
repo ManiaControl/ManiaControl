@@ -107,17 +107,44 @@ abstract class FileUtil {
 	}
 
 	/**
-	 * Delete the Temporary Folder if it's empty
+	 * Delete the temporary folder if it's empty
 	 *
 	 * @return bool
 	 */
-	public static function removeTempFolder() {
-		$tempFolder = self::getTempFolder();
-		return @rmdir($tempFolder);
+	public static function deleteTempFolder() {
+		return self::deleteFolder(self::getTempFolder());
 	}
 
 	/**
-	 * Get the Temporary Folder and create it if necessary
+	 * Delete the given folder if it's empty
+	 *
+	 * @param string $folderPath
+	 * @param bool   $onlyIfEmpty
+	 * @return bool
+	 */
+	public static function deleteFolder($folderPath, $onlyIfEmpty = true) {
+		if ($onlyIfEmpty && !self::isFolderEmpty($folderPath)) {
+			return false;
+		}
+		return rmdir($folderPath);
+	}
+
+	/**
+	 * Check if the given folder is empty
+	 *
+	 * @param string $folderPath
+	 * @return bool
+	 */
+	public static function isFolderEmpty($folderPath) {
+		if (!is_readable($folderPath) || !is_dir($folderPath)) {
+			return false;
+		}
+		$files = scandir($folderPath);
+		return (count($files) <= 2);
+	}
+
+	/**
+	 * Get the temporary folder and create it if necessary
 	 *
 	 * @return string|bool
 	 */
@@ -156,7 +183,6 @@ abstract class FileUtil {
 				}
 			}
 		}
-
 		return true;
 	}
 
@@ -176,7 +202,8 @@ abstract class FileUtil {
 		if (!is_resource($dirHandle)) {
 			return false;
 		}
-		$time = time();
+		$directory = self::appendDirectorySeparator($directory);
+		$time      = time();
 		while ($fileName = readdir($dirHandle)) {
 			$filePath = $directory . $fileName;
 			if (!is_readable($filePath)) {
@@ -199,5 +226,18 @@ abstract class FileUtil {
 		}
 		closedir($dirHandle);
 		return true;
+	}
+
+	/**
+	 * Append the directory separator to the given path if necessary
+	 *
+	 * @param string $path
+	 * @return string
+	 */
+	public static function appendDirectorySeparator($path) {
+		if (substr($path, -1, 1) !== DIRECTORY_SEPARATOR) {
+			$path .= DIRECTORY_SEPARATOR;
+		}
+		return $path;
 	}
 }

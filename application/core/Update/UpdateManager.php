@@ -353,7 +353,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			$zip->extractTo(ManiaControlDir);
 			$zip->close();
 			unlink($updateFileName);
-			FileUtil::removeTempFolder();
+			FileUtil::deleteTempFolder();
 
 			// Set the Nightly Build Date
 			$this->setNightlyBuildDate($updateData->releaseDate);
