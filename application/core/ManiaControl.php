@@ -5,6 +5,7 @@ namespace ManiaControl;
 use ManiaControl\Admin\ActionsMenu;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Bills\BillManager;
+use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\TimerListener;
@@ -45,7 +46,7 @@ require_once __DIR__ . '/Libs/curl-easy/autoload.php';
  * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class ManiaControl implements CommandListener, TimerListener {
+class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	/*
 	 * Constants
 	 */
@@ -297,6 +298,9 @@ class ManiaControl implements CommandListener, TimerListener {
 			$this->quit("The Server has Version '{$version->build}', while at least '" . self::MIN_DEDIVERSION . "' is required!", true);
 		}
 
+		// Listen for shutdown
+		$this->callbackManager->registerCallbackListener(CallbackManager::CB_MP_SERVERSTOP, $this, 'handleServerStopCallback');
+
 		// OnInit callback
 		$this->callbackManager->triggerCallback(Callbacks::ONINIT);
 
@@ -389,5 +393,14 @@ class ManiaControl implements CommandListener, TimerListener {
 		if ($sleepTime > 0) {
 			usleep($sleepTime);
 		}
+	}
+
+	/**
+	 * Handle Server Stop Callback
+	 *
+	 * @param array $callback
+	 */
+	public function handleServerStopCallback(array $callback) {
+		$this->quit('The Server has been shut down!');
 	}
 }
