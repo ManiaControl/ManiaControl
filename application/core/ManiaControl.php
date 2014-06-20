@@ -89,7 +89,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	/*
 	 * Private Properties
 	 */
-	private $shutdownRequested = false;
+	private $requestQuitMessage = null;
 
 	/**
 	 * Construct ManiaControl
@@ -280,7 +280,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 			$this->authenticationManager->sendNotAllowed($player);
 			return;
 		}
-		$this->quit("ManiaControl Shutdown requested by '{$player->login}'!");
+		$this->requestQuit("ManiaControl Shutdown requested by '{$player->login}'!");
 	}
 
 	/**
@@ -317,12 +317,12 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 		$this->chat->sendInformation('ManiaControl v' . self::VERSION . ' successfully started!');
 
 		// Main loop
-		while (!$this->shutdownRequested) {
+		while (!$this->requestQuitMessage) {
 			$this->loop();
 		}
 
 		// Shutdown
-		$this->quit();
+		$this->quit($this->requestQuitMessage);
 	}
 
 	/**
@@ -399,6 +399,15 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	 * Handle Server Stop Callback
 	 */
 	public function handleServerStopCallback() {
-		$this->quit('The Server has been shut down!');
+		$this->requestQuit('The Server has been shut down!');
+	}
+
+	/**
+	 * Request ManiaControl to quit
+	 *
+	 * @param mixed $message
+	 */
+	public function requestQuit($message = true) {
+		$this->requestQuitMessage = $message;
 	}
 }

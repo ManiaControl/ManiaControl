@@ -233,9 +233,9 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 	 *
 	 * @param string $login
 	 */
-	private function shutdownServer($login = '#') {
+	private function shutdownServer($login = '-') {
+		$this->maniaControl->log("Server shutdown requested by '{$login}'!");
 		$this->maniaControl->client->stopServer();
-		$this->maniaControl->quit("Server shutdown requested by '{$login}'");
 	}
 
 	/**
