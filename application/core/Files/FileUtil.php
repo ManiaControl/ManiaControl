@@ -70,7 +70,7 @@ abstract class FileUtil {
 	}
 
 	/**
-	 * Load config xml-file
+	 * Load Config XML File
 	 *
 	 * @param string $fileName
 	 * @return \SimpleXMLElement
@@ -78,11 +78,11 @@ abstract class FileUtil {
 	public static function loadConfig($fileName) {
 		$fileLocation = ManiaControlDir . 'configs' . DIRECTORY_SEPARATOR . $fileName;
 		if (!file_exists($fileLocation)) {
-			Logger::log("Config File doesn't exist! ({$fileName})");
+			Logger::log("Config file doesn't exist! ({$fileName})");
 			return null;
 		}
 		if (!is_readable($fileLocation)) {
-			Logger::log("Config File isn't readable! Please check the File Permissions. ({$fileName})");
+			Logger::log("Config file isn't readable! Please check the file permissions. ({$fileName})");
 			return null;
 		}
 		$configXml = @simplexml_load_file($fileLocation);
@@ -112,20 +112,24 @@ abstract class FileUtil {
 	 * @return bool
 	 */
 	public static function removeTempFolder() {
-		$tempFolder = self::getTempFolder(false);
+		$tempFolder = self::getTempFolder();
 		return @rmdir($tempFolder);
 	}
 
 	/**
 	 * Get the Temporary Folder and create it if necessary
 	 *
-	 * @param bool $createIfNecessary
-	 * @return string
+	 * @return string|bool
 	 */
-	public static function getTempFolder($createIfNecessary = true) {
+	public static function getTempFolder() {
 		$tempFolder = ManiaControlDir . 'temp' . DIRECTORY_SEPARATOR;
-		if ($createIfNecessary && !is_dir($tempFolder)) {
-			mkdir($tempFolder);
+		if (!is_dir($tempFolder) && !mkdir($tempFolder)) {
+			trigger_error("Couldn't create the temp folder!");
+			return false;
+		}
+		if (!is_writeable($tempFolder)) {
+			trigger_error("ManiaControl doesn't have the necessary write rights for the temp folder!");
+			return false;
 		}
 		return $tempFolder;
 	}
@@ -140,7 +144,6 @@ abstract class FileUtil {
 		if (!is_array($directories)) {
 			$directories = array($directories);
 		}
-
 		foreach ($directories as $directory) {
 			$dir = new \RecursiveDirectoryIterator(ManiaControlDir . $directory);
 			foreach (new \RecursiveIteratorIterator($dir) as $fileName => $file) {
@@ -148,8 +151,7 @@ abstract class FileUtil {
 					continue;
 				}
 				if (!is_writable($fileName)) {
-					$message = "Write-Access missing for File '{$fileName}'!";
-					Logger::log($message);
+					Logger::log("Write access missing for file '{$fileName}'!");
 					return false;
 				}
 			}
@@ -165,7 +167,7 @@ abstract class FileUtil {
 	 * @return bool
 	 */
 	public static function deleteOldLogFiles($maxFileAgeInDays = 10.) {
-		$logsFolderPath = Logger::getLogsFolderPath();
+		$logsFolderPath = Logger::getLogsFolder();
 		if (!is_readable($logsFolderPath)) {
 			return false;
 		}

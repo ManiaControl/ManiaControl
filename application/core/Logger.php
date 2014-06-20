@@ -37,39 +37,21 @@ class Logger {
 	}
 
 	/**
-	 * Create the Logs Folder and return its Path if successful
+	 * Get the Logs Folder and create it if necessary
 	 *
-	 * @return bool|string
+	 * @return string|bool
 	 */
-	private static function createLogsFolder() {
-		$logsFolderPath = self::getLogsFolderPath();
-		if (!is_dir($logsFolderPath) && !mkdir($logsFolderPath)) {
-			self::output("Couldn't create Logs Folder, please check the File Permissions!");
+	public static function getLogsFolder() {
+		$logsFolder = ManiaControlDir . 'logs' . DIRECTORY_SEPARATOR;
+		if (!is_dir($logsFolder) && !mkdir($logsFolder)) {
+			trigger_error("Couldn't create the logs folder!");
 			return false;
 		}
-		return $logsFolderPath;
-	}
-
-	/**
-	 * Build the Logs Folder Path
-	 *
-	 * @return string
-	 */
-	public static function getLogsFolderPath() {
-		return ManiaControlDir . 'logs' . DIRECTORY_SEPARATOR;
-	}
-
-	/**
-	 * Echo the given Message
-	 *
-	 * @param string $message
-	 * @param bool   $eol
-	 */
-	public static function output($message, $eol = true) {
-		if ($eol) {
-			$message = '[' . date('d-M-Y H:i:s e') . '] ' . $message . PHP_EOL;
+		if (!is_writeable($logsFolder)) {
+			trigger_error("ManiaControl doesn't have the necessary write rights for the logs folder!");
+			return false;
 		}
-		echo $message;
+		return $logsFolder;
 	}
 
 	/**
@@ -96,6 +78,19 @@ class Logger {
 		if ($output) {
 			self::output($message, $eol);
 		}
+	}
+
+	/**
+	 * Echo the given Message
+	 *
+	 * @param string $message
+	 * @param bool   $eol
+	 */
+	public static function output($message, $eol = true) {
+		if ($eol) {
+			$message = '[' . date('d-M-Y H:i:s e') . '] ' . $message . PHP_EOL;
+		}
+		echo $message;
 	}
 
 	/**

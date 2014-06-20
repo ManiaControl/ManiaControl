@@ -9,7 +9,7 @@ namespace ManiaControl;
  * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class AutoLoader {
+abstract class AutoLoader {
 
 	/**
 	 * Register the Auto Loader
@@ -17,6 +17,7 @@ class AutoLoader {
 	public static function register() {
 		spl_autoload_register(array(get_class(), 'autoload'));
 	}
+
 	/**
 	 * Try to autoload the Class with the given Name
 	 *

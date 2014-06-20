@@ -12,10 +12,6 @@ use ManiaControl\ManiaControl;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 abstract class BackupUtil {
-	/*
-	 * Constants
-	 */
-	const FOLDER_NAME_BACKUP = 'backup';
 
 	/**
 	 * Perform a Full Backup of ManiaControl
@@ -30,7 +26,7 @@ abstract class BackupUtil {
 		$backupFileName = $backupFolder . 'backup_' . ManiaControl::VERSION . '_' . date('y-m-d_H-i') . '_' . time() . '.zip';
 		$backupZip      = new \ZipArchive();
 		if ($backupZip->open($backupFileName, \ZipArchive::CREATE) !== true) {
-			trigger_error("Couldn't create Backup Zip!");
+			trigger_error("Couldn't create backup zip!");
 			return false;
 		}
 		$excludes      = array();
@@ -46,16 +42,16 @@ abstract class BackupUtil {
 	/**
 	 * Get the Backup Folder Path and create it if necessary
 	 *
-	 * @return string
+	 * @return string|bool
 	 */
 	private static function getBackupFolder() {
-		$backupFolder = ManiaControlDir . self::FOLDER_NAME_BACKUP . DIRECTORY_SEPARATOR;
+		$backupFolder = ManiaControlDir . 'backup' . DIRECTORY_SEPARATOR;
 		if (!is_dir($backupFolder) && !mkdir($backupFolder)) {
-			trigger_error("Couldn't create Backup Folder!");
+			trigger_error("Couldn't create backup folder!");
 			return false;
 		}
 		if (!is_writeable($backupFolder)) {
-			trigger_error("ManiaControl doesn't have the necessary Writing Rights for the Backup Folder!");
+			trigger_error("ManiaControl doesn't have the necessary write rights for the backup folder!");
 			return false;
 		}
 		return $backupFolder;
@@ -71,10 +67,11 @@ abstract class BackupUtil {
 	 * @param array       $baseFileNames
 	 * @return bool
 	 */
-	private static function zipDirectory(\ZipArchive &$zipArchive, $folderName, $prefixLength, array $excludes = array(), array $baseFileNames = array()) {
+	private static function zipDirectory(\ZipArchive &$zipArchive, $folderName, $prefixLength, array $excludes = array(),
+	                                     array $baseFileNames = array()) {
 		$folderHandle = opendir($folderName);
 		if (!is_resource($folderHandle)) {
-			trigger_error("Couldn't open Folder '{$folderName}' for Backup!");
+			trigger_error("Couldn't open folder '{$folderName}' for backup!");
 			return false;
 		}
 		$useBaseFileNames = !empty($baseFileNames);
@@ -120,7 +117,7 @@ abstract class BackupUtil {
 		$backupFileName = $backupFolder . 'backup_plugins_' . ManiaControl::VERSION . date('y-m-d_H-i') . '_' . time() . '.zip';
 		$backupZip      = new \ZipArchive();
 		if ($backupZip->open($backupFileName, \ZipArchive::CREATE) !== true) {
-			trigger_error("Couldn't create Backup Zip!");
+			trigger_error("Couldn't create backup zip!");
 			return false;
 		}
 		$directory  = ManiaControlDir . 'plugins';
