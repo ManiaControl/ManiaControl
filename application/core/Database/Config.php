@@ -9,7 +9,7 @@ namespace ManiaControl\Database;
  * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class DatabaseConfig {
+class Config {
 	/*
 	 * Public Properties
 	 */
@@ -20,13 +20,13 @@ class DatabaseConfig {
 	public $name = null;
 
 	/**
-	 * Create a new Server Config Instance
+	 * Create a new Database Config Instance
 	 *
-	 * @param string $host Server Ip
-	 * @param string $port Server Port
-	 * @param string $user User
-	 * @param string $pass Password
-	 * @param string $name Name
+	 * @param string $host
+	 * @param string $port
+	 * @param string $user
+	 * @param string $pass
+	 * @param string $name
 	 */
 	public function __construct($host = null, $port = null, $user = null, $pass = null, $name = null) {
 		$this->host = (string)$host;

@@ -23,7 +23,7 @@ class Database implements TimerListener {
 	 * Private Properties
 	 */
 	private $maniaControl = null;
-	/** @var DatabaseConfig $config */
+	/** @var Config $config */
 	private $config = null;
 
 	/**
@@ -105,7 +105,7 @@ class Database implements TimerListener {
 		$name = (string)$nameElements[0];
 
 		// Create config object
-		$config = new DatabaseConfig($host, $port, $user, $pass, $name);
+		$config = new Config($host, $port, $user, $pass, $name);
 		if (!$config->validate()) {
 			$this->maniaControl->quit("Your config file doesn't seem to be maintained properly. Please check the database configuration again!", true);
 		}
