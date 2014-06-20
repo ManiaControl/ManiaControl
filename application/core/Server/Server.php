@@ -34,7 +34,7 @@ class Server implements CallbackListener {
 	public $p2pPort = -1;
 	public $login = null;
 	public $titleId = null;
-	public $dataDirectory = null;
+	public $directory = null;
 	public $serverCommands = null;
 	public $usageReporter = null;
 	public $rankingManager = null;
@@ -55,6 +55,7 @@ class Server implements CallbackListener {
 		$this->maniaControl = $maniaControl;
 		$this->initTables();
 
+		$this->directory      = new Directory($maniaControl);
 		$this->serverCommands = new ServerCommands($maniaControl);
 		$this->usageReporter  = new UsageReporter($maniaControl);
 		$this->rankingManager = new RankingManager($maniaControl);
@@ -199,28 +200,6 @@ class Server implements CallbackListener {
 	}
 
 	/**
-	 * Get Maps Directory
-	 *
-	 * @return string
-	 */
-	public function getMapsDirectory() {
-		$dataDirectory = $this->getDataDirectory();
-		return $dataDirectory . 'Maps' . DIRECTORY_SEPARATOR;
-	}
-
-	/**
-	 * Get Game Data Directory
-	 *
-	 * @return string
-	 */
-	public function getDataDirectory() {
-		if (!$this->dataDirectory) {
-			$this->dataDirectory = $this->maniaControl->client->gameDataDirectory();
-		}
-		return $this->dataDirectory;
-	}
-
-	/**
 	 * Get Server Player Info
 	 *
 	 * @return \Maniaplanet\DedicatedServer\Structures\PlayerDetailedInfo
@@ -255,7 +234,7 @@ class Server implements CallbackListener {
 	 * @return string
 	 */
 	public function getGhostReplay($login) {
-		$dataDir = $this->getDataDirectory();
+		$dataDir = $this->directory->getGameDataFolder();
 		if (!$this->checkAccess($dataDir)) {
 			return null;
 		}
