@@ -2,6 +2,9 @@
 
 namespace ManiaControl\Server;
 
+use ManiaControl\Callbacks\CallbackListener;
+use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Files\FileUtil;
 use ManiaControl\ManiaControl;
 
 /**
@@ -11,7 +14,7 @@ use ManiaControl\ManiaControl;
  * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class Directory {
+class Directory implements CallbackListener {
 	/**
 	 * Private Properties
 	 */
@@ -24,6 +27,8 @@ class Directory {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
+
+		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_SERVERSTOP, $this, 'handleServerStopCallback');
 	}
 
 	/**
@@ -45,6 +50,23 @@ class Directory {
 	}
 
 	/**
+	 * Handle Server Stop Callback
+	 */
+	public function handleServerStopCallback() {
+		$this->cleanLogsFolder();
+		$this->cleanCacheFolder();
+	}
+
+	/**
+	 * Clean the server logs folder
+	 *
+	 * @return bool
+	 */
+	private function cleanLogsFolder() {
+		return FileUtil::cleanDirectory($this->getLogsFolder());
+	}
+
+	/**
 	 * Retrieve the Logs Folder Path
 	 *
 	 * @return string
@@ -54,12 +76,10 @@ class Directory {
 	}
 
 	/**
-	 * Retrieve the Game Data Folder Path
-	 *
-	 * @return string
+	 * @return bool
 	 */
-	public function getGameDataFolder() {
-		return $this->maniaControl->client->gameDataDirectory();
+	private function cleanCacheFolder() {
+		return FileUtil::cleanDirectory($this->getCacheFolder(), 50);
 	}
 
 	/**
@@ -69,5 +89,14 @@ class Directory {
 	 */
 	public function getCacheFolder() {
 		return $this->getGameDataFolder() . '..' . DIRECTORY_SEPARATOR . 'CommonData' . DIRECTORY_SEPARATOR . 'Cache' . DIRECTORY_SEPARATOR;
+	}
+
+	/**
+	 * Retrieve the Game Data Folder Path
+	 *
+	 * @return string
+	 */
+	public function getGameDataFolder() {
+		return $this->maniaControl->client->gameDataDirectory();
 	}
 }
