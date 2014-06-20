@@ -16,6 +16,15 @@ class AutoLoader {
 	 */
 	public static function register() {
 		spl_autoload_register(array(get_class(), 'autoload'));
+		self::registerClassAliases();
+	}
+
+	/**
+	 * Register the Class Aliases needed to keep compatibility
+	 */
+	private function registerClassAliases() {
+		class_alias('ManiaControl\\Utils\\Formatter', 'ManiaControl\\Formatter');
+		class_alias('ManiaControl\\Utils\\ColorUtil', 'ManiaControl\\ColorUtil');
 	}
 
 	/**
