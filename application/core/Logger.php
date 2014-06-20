@@ -2,6 +2,8 @@
 
 namespace ManiaControl;
 
+use ManiaControl\Files\FileUtil;
+
 /**
  * ManiaControl Logger Class
  *
@@ -16,6 +18,7 @@ class Logger {
 	 */
 	public static function setup() {
 		self::setupErrorLogFileName();
+		self::cleanLogsFolder();
 	}
 
 	/**
@@ -52,6 +55,16 @@ class Logger {
 			return false;
 		}
 		return $logsFolder;
+	}
+
+	/**
+	 * Delete old ManiaControl Log Files
+	 *
+	 * @return bool
+	 */
+	private static function cleanLogsFolder() {
+		$logsFolderPath = self::getLogsFolder();
+		return FileUtil::cleanDirectory($logsFolderPath);
 	}
 
 	/**

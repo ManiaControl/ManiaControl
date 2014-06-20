@@ -161,30 +161,40 @@ abstract class FileUtil {
 	}
 
 	/**
-	 * Delete old ManiaControl Log Files
+	 * Clean the given directory by deleting old files
 	 *
-	 * @param float $maxFileAgeInDays
+	 * @param string $directory
+	 * @param float  $maxFileAgeInDays
+	 * @param bool   $recursive
 	 * @return bool
 	 */
-	public static function deleteOldLogFiles($maxFileAgeInDays = 10.) {
-		$logsFolderPath = Logger::getLogsFolder();
-		if (!is_readable($logsFolderPath)) {
+	public static function cleanDirectory($directory, $maxFileAgeInDays = 10., $recursive = false) {
+		if (!is_dir($directory) || !is_readable($directory)) {
 			return false;
 		}
-		$dirHandle = opendir($logsFolderPath);
+		$dirHandle = opendir($directory);
 		if (!is_resource($dirHandle)) {
 			return false;
 		}
 		$time = time();
 		while ($fileName = readdir($dirHandle)) {
-			$filePath = $logsFolderPath . $fileName;
+			$filePath = $directory . $fileName;
 			if (!is_readable($filePath)) {
 				continue;
 			}
-			$fileModTime   = filemtime($filePath);
-			$timeDeltaDays = ($time - $fileModTime) / (24. * 3600.);
-			if ($timeDeltaDays > $maxFileAgeInDays) {
-				unlink($filePath);
+			if (is_dir($filePath) && $recursive) {
+				// Directory
+				self::cleanDirectory($filePath . DIRECTORY_SEPARATOR, $maxFileAgeInDays, $recursive);
+			} else if (is_file($filePath)) {
+				// File
+				if (!is_writable($filePath)) {
+					continue;
+				}
+				$fileModTime   = filemtime($filePath);
+				$timeDeltaDays = ($time - $fileModTime) / (24. * 3600.);
+				if ($timeDeltaDays > $maxFileAgeInDays) {
+					unlink($filePath);
+				}
 			}
 		}
 		closedir($dirHandle);
