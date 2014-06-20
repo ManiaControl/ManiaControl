@@ -68,4 +68,28 @@ class Logger {
 		}
 		echo $message;
 	}
+
+	/**
+	 * Log and echo the given Info Message
+	 *
+	 * @param string $message
+	 * @param bool   $eol
+	 * @param bool   $output
+	 */
+	public static function logInfo($message, $eol = true, $output = true) {
+		$message = '[INFO] ' . $message;
+		self::log($message, $eol, $output);
+	}
+
+	/**
+	 * Log and echo the given Warning Message
+	 *
+	 * @param string $message
+	 * @param bool   $eol
+	 * @param bool   $output
+	 */
+	public static function logWarning($message, $eol = true, $output = true) {
+		$message = '[WARNING] ' . $message;
+		self::log($message, $eol, $output);
+	}
 }
