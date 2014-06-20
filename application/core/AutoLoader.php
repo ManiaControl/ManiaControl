@@ -22,7 +22,7 @@ class AutoLoader {
 	/**
 	 * Register the Class Aliases needed to keep compatibility
 	 */
-	private function registerClassAliases() {
+	private static function registerClassAliases() {
 		class_alias('ManiaControl\\Utils\\Formatter', 'ManiaControl\\Formatter');
 		class_alias('ManiaControl\\Utils\\ColorUtil', 'ManiaControl\\ColorUtil');
 	}

@@ -191,10 +191,10 @@ abstract class FileUtil {
 	/**
 	 * Delete old ManiaControl Log Files
 	 *
-	 * @param int $maxFileAgeInDays
+	 * @param float $maxFileAgeInDays
 	 * @return bool
 	 */
-	public static function deleteOldLogFiles($maxFileAgeInDays = 14) {
+	public static function deleteOldLogFiles($maxFileAgeInDays = 10.) {
 		$logsFolderPath = Logger::getLogsFolderPath();
 		if (!is_readable($logsFolderPath)) {
 			return false;
@@ -210,7 +210,7 @@ abstract class FileUtil {
 				continue;
 			}
 			$fileModTime   = filemtime($filePath);
-			$timeDeltaDays = ($time - $fileModTime) / (24 * 3600);
+			$timeDeltaDays = ($time - $fileModTime) / (24. * 3600.);
 			if ($timeDeltaDays > $maxFileAgeInDays) {
 				unlink($filePath);
 			}
