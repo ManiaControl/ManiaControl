@@ -9,7 +9,7 @@ namespace ManiaControl\Server;
  * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class ServerConfig {
+class Config {
 	/*
 	 * Public Properties
 	 */
@@ -22,11 +22,11 @@ class ServerConfig {
 	/**
 	 * Create a new Server Config Instance
 	 *
-	 * @param mixed $id   Config Id
-	 * @param mixed $host Server Ip
-	 * @param mixed $port Server Port
-	 * @param mixed $user XmlRpc User
-	 * @param mixed $pass XmlRpc Password
+	 * @param mixed $id
+	 * @param mixed $host
+	 * @param mixed $port
+	 * @param mixed $user
+	 * @param mixed $pass
 	 */
 	public function __construct($id = null, $host = null, $port = null, $user = null, $pass = null) {
 		$this->id   = $this->extractConfigData($id);

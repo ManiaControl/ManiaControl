@@ -26,7 +26,7 @@ class Server implements CallbackListener {
 	/*
 	 * Public Properties
 	 */
-	/** @var ServerConfig $config */
+	/** @var Config $config */
 	public $config = null;
 	public $index = -1;
 	public $ip = null;
@@ -125,7 +125,7 @@ class Server implements CallbackListener {
 		$passElements = $serverElement->xpath('pass');
 
 		// Create config object
-		$config  = new ServerConfig($serverId, $hostElements, $portElements, $userElements, $passElements);
+		$config  = new Config($serverId, $hostElements, $portElements, $userElements, $passElements);
 		$message = null;
 		if (!$config->validate($message)) {
 			$this->maniaControl->quit("Your config file doesn't seem to be maintained properly. Please check the server configuration again! {$message}", true);
