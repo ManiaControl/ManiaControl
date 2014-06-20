@@ -2,6 +2,8 @@
 
 namespace ManiaControl;
 
+use ManiaControl\Files\FileUtil;
+
 /**
  * ManiaControl Logger Class
  *
@@ -15,19 +17,62 @@ class Logger {
 	 * Setup the Logging Mechanism
 	 */
 	public static function setup() {
-		$logFileName = ManiaControlDir . 'logs' . DIRECTORY_SEPARATOR;
-		if (!is_dir($logFileName) && !mkdir($logFileName)) {
-			echo "Couldn't create Logs Folder, please check the File Permissions!";
+		self::setupErrorLogFileName();
+		FileUtil::deleteOldLogFiles();
+	}
+
+	/**
+	 * Set the Error Log File Name
+	 */
+	private function setupErrorLogFileName() {
+		$logsFolder = self::createLogsFolder();
+		if ($logsFolder) {
+			$logFileName = $logsFolder . 'ManiaControl';
+			if (LOG_NAME_USE_DATE) {
+				$logFileName .= '_' . date('Y-m-d');
+			}
+			if (LOG_NAME_USE_PID) {
+				$logFileName .= '_' . getmypid();
+			}
+			$logFileName .= '.log';
+			ini_set('error_log', $logFileName);
 		}
-		$logFileName .= 'ManiaControl';
-		if (LOG_NAME_USE_DATE) {
-			$logFileName .= '_' . date('Y-m-d');
+	}
+
+	/**
+	 * Create the Logs Folder and return its Path if successful
+	 *
+	 * @return bool|string
+	 */
+	private static function createLogsFolder() {
+		$logsFolderPath = self::getLogsFolderPath();
+		if (!is_dir($logsFolderPath) && !mkdir($logsFolderPath)) {
+			self::output("Couldn't create Logs Folder, please check the File Permissions!");
+			return false;
 		}
-		if (LOG_NAME_USE_PID) {
-			$logFileName .= '_' . getmypid();
+		return $logsFolderPath;
+	}
+
+	/**
+	 * Build the Logs Folder Path
+	 *
+	 * @return string
+	 */
+	public static function getLogsFolderPath() {
+		return ManiaControlDir . 'logs' . DIRECTORY_SEPARATOR;
+	}
+
+	/**
+	 * Echo the given Message
+	 *
+	 * @param string $message
+	 * @param bool   $eol
+	 */
+	public static function output($message, $eol = true) {
+		if ($eol) {
+			$message = '[' . date('d-M-Y H:i:s e') . '] ' . $message . PHP_EOL;
 		}
-		$logFileName .= '.log';
-		ini_set('error_log', $logFileName);
+		echo $message;
 	}
 
 	/**
@@ -54,19 +99,6 @@ class Logger {
 		if ($output) {
 			self::output($message, $eol);
 		}
-	}
-
-	/**
-	 * Echo the given Message
-	 *
-	 * @param string $message
-	 * @param bool   $eol
-	 */
-	public static function output($message, $eol = true) {
-		if ($eol) {
-			$message = '[' . date('d-M-Y H:i:s e') . '] ' . $message . PHP_EOL;
-		}
-		echo $message;
 	}
 
 	/**

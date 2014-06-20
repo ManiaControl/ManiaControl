@@ -14,6 +14,7 @@ use ManiaControl\Utils\Formatter;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 abstract class FileUtil {
+
 	/**
 	 * Load a remote file
 	 *
@@ -185,5 +186,36 @@ abstract class FileUtil {
 				unlink($filePath);
 			}
 		}
+	}
+
+	/**
+	 * Delete old ManiaControl Log Files
+	 *
+	 * @param int $maxFileAgeInDays
+	 * @return bool
+	 */
+	public static function deleteOldLogFiles($maxFileAgeInDays = 14) {
+		$logsFolderPath = Logger::getLogsFolderPath();
+		if (!is_readable($logsFolderPath)) {
+			return false;
+		}
+		$dirHandle = opendir($logsFolderPath);
+		if (!is_resource($dirHandle)) {
+			return false;
+		}
+		$time = time();
+		while ($fileName = readdir($dirHandle)) {
+			$filePath = $logsFolderPath . $fileName;
+			if (!is_readable($filePath)) {
+				continue;
+			}
+			$fileModTime   = filemtime($filePath);
+			$timeDeltaDays = ($time - $fileModTime) / (24 * 3600);
+			if ($timeDeltaDays > $maxFileAgeInDays) {
+				unlink($filePath);
+			}
+		}
+		closedir($dirHandle);
+		return true;
 	}
 }
