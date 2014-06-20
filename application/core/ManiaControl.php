@@ -397,10 +397,8 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 
 	/**
 	 * Handle Server Stop Callback
-	 *
-	 * @param array $callback
 	 */
-	public function handleServerStopCallback(array $callback) {
+	public function handleServerStopCallback() {
 		$this->quit('The Server has been shut down!');
 	}
 }
