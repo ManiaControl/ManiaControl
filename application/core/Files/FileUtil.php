@@ -159,36 +159,6 @@ abstract class FileUtil {
 	}
 
 	/**
-	 * Try to delete the given Plugin Files
-	 *
-	 * @param mixed $pluginFileNames
-	 */
-	public static function cleanPluginFiles($pluginFileNames) {
-		$pluginFileNames = (array)$pluginFileNames;
-		$fileNames       = array();
-		foreach ($pluginFileNames as $pluginFileName) {
-			$fileName = 'plugins' . DIRECTORY_SEPARATOR . $pluginFileName;
-			array_push($fileNames, $fileName);
-		}
-		self::cleanFiles($fileNames);
-	}
-
-	/**
-	 * Try to delete the given Files
-	 *
-	 * @param mixed $fileNames
-	 */
-	public static function cleanFiles($fileNames) {
-		$fileNames = (array)$fileNames;
-		foreach ($fileNames as $fileName) {
-			$filePath = ManiaControlDir . $fileName;
-			if (file_exists($filePath) && is_writeable($filePath)) {
-				unlink($filePath);
-			}
-		}
-	}
-
-	/**
 	 * Delete old ManiaControl Log Files
 	 *
 	 * @param float $maxFileAgeInDays
