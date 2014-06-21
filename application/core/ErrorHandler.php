@@ -115,7 +115,7 @@ class ErrorHandler {
 			$report['Type']    = 'Error';
 			$report['Message'] = Formatter::utf8($message);
 			if ($fileLine) {
-				$report['FileLine'] = $fileLine;
+				$report['FileLine'] = $this->stripBaseDir($fileLine);
 			}
 			if ($sourceClass) {
 				$report['SourceClass'] = $sourceClass;
@@ -237,7 +237,7 @@ class ErrorHandler {
 			}
 			if (isset($traceStep['file']) && !$skipStep) {
 				$traceString .= ' in File ';
-				$traceString .= $traceStep['file'];
+				$traceString .= $this->stripBaseDir($traceStep['file']);
 			}
 			if (isset($traceStep['line']) && !$skipStep) {
 				$traceString .= ' on Line ';
@@ -334,6 +334,16 @@ class ErrorHandler {
 			}
 		}
 		return $string;
+	}
+
+	/**
+	 * Strip the ManiaControlDir from the given Path to ensure privacy
+	 *
+	 * @param string $path
+	 * @return string
+	 */
+	private function stripBaseDir($path) {
+		return str_replace(ManiaControlDir, '', $path);
 	}
 
 	/**
