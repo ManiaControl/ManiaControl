@@ -322,7 +322,7 @@ class MapManager implements CallbackListener {
 		try {
 			$this->maniaControl->client->checkMapForCurrentServerParams($relativeMapFileName);
 		} catch (InvalidMapException $e) {
-			$this->maniaControl->chat->sendError('Wrong MapType or not validated!', $login);
+			$this->maniaControl->chat->sendException($e, $login);
 			return;
 		}
 
