@@ -6,7 +6,7 @@ use FML\Controls\Control;
 use FML\Types\Scriptable;
 
 /**
- * A Button for browsing through Pages
+ * Paging Button for browsing through Pages
  *
  * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
@@ -14,8 +14,9 @@ use FML\Types\Scriptable;
  */
 class PagingButton {
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
+	/** @var Control $control */
 	protected $control = null;
 	protected $browseAction = null;
 
@@ -26,15 +27,19 @@ class PagingButton {
 	 * @param int     $browseAction (optional) Number of browsed Pages per Click
 	 */
 	public function __construct(Control $control = null, $browseAction = null) {
-		$this->setControl($control);
-		$this->setBrowseAction($browseAction);
+		if (!is_null($control)) {
+			$this->setControl($control);
+		}
+		if (!is_null($browseAction)) {
+			$this->setBrowseAction($browseAction);
+		}
 	}
 
 	/**
 	 * Set the Button Control
 	 *
 	 * @param Control $control Browse Control
-	 * @return \FML\Script\Features\PagingButton
+	 * @return \FML\Script\Features\PagingButton|static
 	 */
 	public function setControl(Control $control) {
 		$control->checkId();
@@ -55,10 +60,10 @@ class PagingButton {
 	}
 
 	/**
-	 * Set the Browse Action
+	 * Set the browse action
 	 *
-	 * @param int $browseAction Number of browsed Pages per Click
-	 * @return \FML\Script\Features\PagingButton
+	 * @param int $browseAction Number of browsed Pages per click
+	 * @return \FML\Script\Features\PagingButton|static
 	 */
 	public function setBrowseAction($browseAction) {
 		$this->browseAction = (int)$browseAction;
@@ -66,7 +71,7 @@ class PagingButton {
 	}
 
 	/**
-	 * Get the Browse Action
+	 * Get the browse action
 	 *
 	 * @return int
 	 */

@@ -3,7 +3,7 @@
 namespace FML\Types;
 
 /**
- * Interface for Elements with Formatable Text
+ * Interface for Elements with formatable text
  *
  * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
@@ -12,34 +12,34 @@ namespace FML\Types;
 interface TextFormatable {
 
 	/**
-	 * Set Text Size
+	 * Set text size
 	 *
-	 * @param int $textSize Text Size
-	 * @return \FML\Types\TextFormatable
+	 * @param int $textSize Text size
+	 * @return \FML\Types\TextFormatable|static
 	 */
 	public function setTextSize($textSize);
 
 	/**
-	 * Set Text Color
+	 * Set text color
 	 *
-	 * @param string $textColor Text Color
-	 * @return \FML\Types\TextFormatable
+	 * @param string $textColor Text color
+	 * @return \FML\Types\TextFormatable|static
 	 */
 	public function setTextColor($textColor);
 
 	/**
-	 * Set Area Color
+	 * Set area color
 	 *
-	 * @param string $areaColor Area Color
-	 * @return \FML\Types\TextFormatable
+	 * @param string $areaColor Area color
+	 * @return \FML\Types\TextFormatable|static
 	 */
 	public function setAreaColor($areaColor);
 
 	/**
-	 * Set Area Focus Color
+	 * Set area focus color
 	 *
-	 * @param string $areaFocusColor Area Focus Color
-	 * @return \FML\Types\TextFormatable
+	 * @param string $areaFocusColor Area focus color
+	 * @return \FML\Types\TextFormatable|static
 	 */
 	public function setAreaFocusColor($areaFocusColor);
 }

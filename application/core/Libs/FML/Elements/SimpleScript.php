@@ -5,7 +5,7 @@ namespace FML\Elements;
 use FML\Types\Renderable;
 
 /**
- * Class representing a ManiaLink Script Tag with a simple Script Text
+ * Class representing a ManiaLink script tag with a simple script text
  *
  * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
@@ -13,38 +13,37 @@ use FML\Types\Renderable;
  */
 class SimpleScript implements Renderable {
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	protected $tagName = 'script';
-	protected $text = '';
+	protected $text = null;
 
 	/**
-	 * Create a new SimpleScript Element
+	 * Create a new SimpleScript object
 	 *
-	 * @param string $text (optional) Script Text
-	 * @return \FML\Elements\SimpleScript
+	 * @param string $text (optional) Script text
+	 * @return \FML\Elements\SimpleScript|static
 	 */
 	public static function create($text = null) {
-		$simpleScript = new SimpleScript($text);
-		return $simpleScript;
+		return new static($text);
 	}
 
 	/**
-	 * Construct a new SimpleScript Element
+	 * Construct a new SimpleScript object
 	 *
-	 * @param string $text (optional) Script Text
+	 * @param string $text (optional) Script text
 	 */
 	public function __construct($text = null) {
-		if ($text !== null) {
+		if (!is_null($text)) {
 			$this->setText($text);
 		}
 	}
 
 	/**
-	 * Set Script Text
+	 * Set script text
 	 *
-	 * @param string $text The Complete Script Text
-	 * @return \FML\Script\Script
+	 * @param string $text Complete script text
+	 * @return \FML\Script\Script|static
 	 */
 	public function setText($text) {
 		$this->text = (string)$text;

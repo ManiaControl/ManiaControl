@@ -5,7 +5,7 @@ namespace FML\Controls\Quads;
 use FML\Controls\Quad;
 
 /**
- * Quad Class for 'Icons128x128_1' Style
+ * Quad class for 'Icons128x128_1' styles
  *
  * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
@@ -81,24 +81,8 @@ class Quad_Icons128x128_1 extends Quad {
 	const SUBSTYLE_Upload           = 'Upload';
 	const SUBSTYLE_Vehicles         = 'Vehicles';
 
-	/**
-	 * Create a new Quad_Icons128x128_1 Control
-	 *
-	 * @param string $id (optional) Control Id
-	 * @return \FML\Controls\Quads\Quad_Icons128x128_1
+	/*
+	 * Protected properties
 	 */
-	public static function create($id = null) {
-		$quadIcons128x128_1 = new Quad_Icons128x128_1($id);
-		return $quadIcons128x128_1;
-	}
-
-	/**
-	 * Construct a new Quad_Icons128x128_1 Control
-	 *
-	 * @param string $id (optional) Control Id
-	 */
-	public function __construct($id = null) {
-		parent::__construct($id);
-		$this->setStyle(self::STYLE);
-	}
+	protected $style = self::STYLE;
 }

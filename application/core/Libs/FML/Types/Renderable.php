@@ -12,9 +12,9 @@ namespace FML\Types;
 interface Renderable {
 
 	/**
-	 * Render the XML Element
+	 * Render the XML element
 	 *
-	 * @param \DOMDocument $domDocument DomDocument for which the XML Element should be rendered
+	 * @param \DOMDocument $domDocument DOMDocument for which the XML element should be rendered
 	 * @return \DOMElement
 	 */
 	public function render(\DOMDocument $domDocument);

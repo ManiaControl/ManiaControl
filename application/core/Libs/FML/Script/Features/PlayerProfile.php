@@ -9,7 +9,7 @@ use FML\Script\ScriptLabel;
 use FML\Types\Scriptable;
 
 /**
- * Script Feature for opening a Player Profile
+ * Script Feature for opening a player profile
  *
  * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
@@ -17,7 +17,7 @@ use FML\Types\Scriptable;
  */
 class PlayerProfile extends ScriptFeature {
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	protected $login = null;
 	/** @var Control $control */
@@ -27,21 +27,23 @@ class PlayerProfile extends ScriptFeature {
 	/**
 	 * Construct a new Player Profile Feature
 	 *
-	 * @param string  $login     (optional) Player Login
+	 * @param string  $login     (optional) Player login
 	 * @param Control $control   (optional) Action Control
-	 * @param string  $labelName (optional) Script Label Name
+	 * @param string  $labelName (optional) Script Label name
 	 */
 	public function __construct($login = null, Control $control = null, $labelName = ScriptLabel::MOUSECLICK) {
 		$this->setLogin($login);
-		$this->setControl($control);
+		if (!is_null($control)) {
+			$this->setControl($control);
+		}
 		$this->setLabelName($labelName);
 	}
 
 	/**
-	 * Set the Login of the Player
+	 * Set the login of the opened player
 	 *
-	 * @param string $login Player Login
-	 * @return \FML\Script\Features\PlayerProfile
+	 * @param string $login Player login
+	 * @return \FML\Script\Features\PlayerProfile|static
 	 */
 	public function setLogin($login) {
 		$this->login = $login;
@@ -52,7 +54,7 @@ class PlayerProfile extends ScriptFeature {
 	 * Set the Control
 	 *
 	 * @param Control $control Profile Control
-	 * @return \FML\Script\Features\PlayerProfile
+	 * @return \FML\Script\Features\PlayerProfile|static
 	 */
 	public function setControl(Control $control) {
 		$control->checkId();
@@ -64,13 +66,13 @@ class PlayerProfile extends ScriptFeature {
 	}
 
 	/**
-	 * Set the Label Name
+	 * Set the label name
 	 *
-	 * @param string $labelName Script Label Name
-	 * @return \FML\Script\Features\PlayerProfile
+	 * @param string $labelName Script Label name
+	 * @return \FML\Script\Features\PlayerProfile|static
 	 */
 	public function setLabelName($labelName) {
-		$this->labelName = $labelName;
+		$this->labelName = (string)$labelName;
 		return $this;
 	}
 
@@ -83,23 +85,23 @@ class PlayerProfile extends ScriptFeature {
 	}
 
 	/**
-	 * Get the Script Text
+	 * Get the script text
 	 *
 	 * @return string
 	 */
 	protected function getScriptText() {
-		$login = Builder::escapeText($this->login);
+		$login = Builder::escapeText($this->login, true);
 		if ($this->control) {
 			// Control event
-			$controlId  = Builder::escapeText($this->control->getId());
+			$controlId  = Builder::escapeText($this->control->getId(), true);
 			$scriptText = "
-if (Event.Control.ControlId == \"{$controlId}\") {
-	ShowProfile(\"{$login}\");
+if (Event.Control.ControlId == {$controlId}) {
+	ShowProfile({$login});
 }";
 		} else {
 			// Other
 			$scriptText = "
-ShowProfile(\"{$login}\");";
+ShowProfile({$login});";
 		}
 		return $scriptText;
 	}

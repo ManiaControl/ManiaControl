@@ -11,7 +11,7 @@ namespace FML\Script;
  */
 class ScriptFunction {
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	protected $name = null;
 	protected $text = null;
@@ -19,8 +19,8 @@ class ScriptFunction {
 	/**
 	 * Construct a new Script Function
 	 *
-	 * @param string $name (optional) Function Name
-	 * @param string $text (optional) Function Text
+	 * @param string $name (optional) Function name
+	 * @param string $text (optional) Function text
 	 */
 	public function __construct($name = null, $text = null) {
 		$this->setName($name);
@@ -28,10 +28,10 @@ class ScriptFunction {
 	}
 
 	/**
-	 * Set the Name
+	 * Set the name
 	 *
-	 * @param string $name Function Name
-	 * @return \FML\Script\ScriptFunction
+	 * @param string $name Function name
+	 * @return \FML\Script\ScriptFunction|static
 	 */
 	public function setName($name) {
 		$this->name = (string)$name;
@@ -39,10 +39,10 @@ class ScriptFunction {
 	}
 
 	/**
-	 * Set the Text
+	 * Set the text
 	 *
-	 * @param string $text Function Text
-	 * @return \FML\Script\ScriptFunction
+	 * @param string $text Function text
+	 * @return \FML\Script\ScriptFunction|static
 	 */
 	public function setText($text) {
 		$this->text = (string)$text;
@@ -50,7 +50,7 @@ class ScriptFunction {
 	}
 
 	/**
-	 * Get the Script Function Text
+	 * Get the Script Function text
 	 *
 	 * @return string
 	 */

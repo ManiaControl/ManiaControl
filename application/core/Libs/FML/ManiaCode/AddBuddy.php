@@ -3,58 +3,56 @@
 namespace FML\ManiaCode;
 
 /**
- * ManiaCode Element adding a Buddy
+ * ManiaCode Element adding a buddy
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class AddBuddy implements Element {
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	protected $tagName = 'add_buddy';
-	protected $login = '';
+	protected $login = null;
 
 	/**
-	 * Construct a new AddBuddy Element
+	 * Create a new AddBuddy Element
 	 *
-	 * @param string $login (optional) Buddy Login
-	 * @return \FML\ManiaCode\AddBuddy
+	 * @param string $login (optional) Buddy login
+	 * @return \FML\ManiaCode\AddBuddy|static
 	 */
 	public static function create($login = null) {
-		$addBuddy = new AddBuddy($login);
-		return $addBuddy;
+		return new static($login);
 	}
 
 	/**
 	 * Construct a new AddBuddy Element
 	 *
-	 * @param string $login (optional) Buddy Login
+	 * @param string $login (optional) Buddy login
 	 */
 	public function __construct($login = null) {
-		if ($login !== null) {
+		if (!is_null($login)) {
 			$this->setLogin($login);
 		}
 	}
 
 	/**
-	 * Set the Buddy Login
+	 * Set the buddy login
 	 *
-	 * @param string $login Buddy Login
-	 * @return \FML\ManiaCode\AddBuddy
+	 * @param string $login Buddy login
+	 * @return \FML\ManiaCode\AddBuddy|static
 	 */
 	public function setLogin($login) {
-		$this->login = (string) $login;
+		$this->login = (string)$login;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\ManiaCode\Element::render()
 	 */
 	public function render(\DOMDocument $domDocument) {
-		$xmlElement = $domDocument->createElement($this->tagName);
+		$xmlElement   = $domDocument->createElement($this->tagName);
 		$loginElement = $domDocument->createElement('login', $this->login);
 		$xmlElement->appendChild($loginElement);
 		return $xmlElement;

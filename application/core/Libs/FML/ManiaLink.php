@@ -26,15 +26,16 @@ class ManiaLink {
 	const BACKGROUND_TITLE    = 'title';
 
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	protected $encoding = 'utf-8';
 	protected $tagName = 'manialink';
-	protected $id = '';
+	protected $maniaLinkId = null;
 	protected $version = 1;
-	protected $background = '';
+	protected $background = null;
 	protected $navigable3d = 1;
 	protected $timeout = 0;
+	/** @var Renderable[] $children */
 	protected $children = array();
 	/** @var Dico $dico */
 	protected $dico = null;
@@ -44,32 +45,31 @@ class ManiaLink {
 	protected $script = null;
 
 	/**
-	 * Create a new ManiaLink Object
+	 * Create a new ManiaLink object
 	 *
-	 * @param string $id (optional) ManiaLink Id
-	 * @return \FML\ManiaLink
+	 * @param string $maniaLinkId (optional) ManiaLink id
+	 * @return \FML\ManiaLink|static
 	 */
-	public static function create($id = null) {
-		$maniaLink = new ManiaLink($id);
-		return $maniaLink;
+	public static function create($maniaLinkId = null) {
+		return new static($maniaLinkId);
 	}
 
 	/**
-	 * Construct a new ManiaLink Object
+	 * Construct a new ManiaLink object
 	 *
-	 * @param string $id (optional) ManiaLink Id
+	 * @param string $maniaLinkId (optional) ManiaLink id
 	 */
-	public function __construct($id = null) {
-		if ($id !== null) {
-			$this->setId($id);
+	public function __construct($maniaLinkId = null) {
+		if (!is_null($maniaLinkId)) {
+			$this->setId($maniaLinkId);
 		}
 	}
 
 	/**
-	 * Set XML Encoding
+	 * Set XML encoding
 	 *
-	 * @param string $encoding XML Encoding
-	 * @return \FML\ManiaLink
+	 * @param string $encoding XML encoding
+	 * @return \FML\ManiaLink|static
 	 */
 	public function setXmlEncoding($encoding) {
 		$this->encoding = (string)$encoding;
@@ -77,30 +77,30 @@ class ManiaLink {
 	}
 
 	/**
-	 * Set ManiaLink Id
+	 * Set ManiaLink id
 	 *
-	 * @param string $id ManiaLink Id
-	 * @return \FML\ManiaLink
+	 * @param string $maniaLinkId ManiaLink id
+	 * @return \FML\ManiaLink|static
 	 */
-	public function setId($id) {
-		$this->id = (string)$id;
+	public function setId($maniaLinkId) {
+		$this->maniaLinkId = (string)$maniaLinkId;
 		return $this;
 	}
 
 	/**
-	 * Get ManiaLink Id
+	 * Get ManiaLink id
 	 *
 	 * @return string
 	 */
 	public function getId() {
-		return $this->id;
+		return $this->maniaLinkId;
 	}
 
 	/**
-	 * Set Background
+	 * Set background
 	 *
-	 * @param string $background Background Value
-	 * @return \FML\ManiaLink
+	 * @param string $background Background value
+	 * @return \FML\ManiaLink|static
 	 */
 	public function setBackground($background) {
 		$this->background = (string)$background;
@@ -108,10 +108,10 @@ class ManiaLink {
 	}
 
 	/**
-	 * Set Navigable3d
+	 * Set navigable3d
 	 *
 	 * @param bool $navigable3d Whether the manialink should be 3d navigable
-	 * @return \FML\ManiaLink
+	 * @return \FML\ManiaLink|static
 	 */
 	public function setNavigable3d($navigable3d) {
 		$this->navigable3d = ($navigable3d ? 1 : 0);
@@ -119,10 +119,10 @@ class ManiaLink {
 	}
 
 	/**
-	 * Set Timeout
+	 * Set timeout
 	 *
-	 * @param int $timeout Timeout Duration
-	 * @return \FML\ManiaLink
+	 * @param int $timeout Timeout duration
+	 * @return \FML\ManiaLink|static
 	 */
 	public function setTimeout($timeout) {
 		$this->timeout = (int)$timeout;
@@ -130,10 +130,10 @@ class ManiaLink {
 	}
 
 	/**
-	 * Add an Element to the ManiaLink
+	 * Add an element to the ManiaLink
 	 *
-	 * @param Renderable $child Child Element to add
-	 * @return \FML\ManiaLink
+	 * @param Renderable $child Child element to add
+	 * @return \FML\ManiaLink|static
 	 */
 	public function add(Renderable $child) {
 		if (!in_array($child, $this->children, true)) {
@@ -143,9 +143,9 @@ class ManiaLink {
 	}
 
 	/**
-	 * Remove all Elements from the ManiaLinks
+	 * Remove all elements from the ManiaLink
 	 *
-	 * @return \FML\ManiaLink
+	 * @return \FML\ManiaLink|static
 	 */
 	public function removeChildren() {
 		$this->children = array();
@@ -155,7 +155,7 @@ class ManiaLink {
 	/**
 	 * Set the Dictionary of the ManiaLink
 	 *
-	 * @param Dico $dico The Dictionary to use
+	 * @param Dico $dico Dictionary for the ManiaLink
 	 * @return \FML\ManiaLink
 	 */
 	public function setDico(Dico $dico) {
@@ -164,9 +164,9 @@ class ManiaLink {
 	}
 
 	/**
-	 * Get the current Dictionary of the ManiaLink
+	 * Get the Dictionary of the ManiaLink
 	 *
-	 * @param bool $createIfEmpty (optional) Whether the Dico Object should be created if it's not set yet
+	 * @param bool $createIfEmpty (optional) Whether the Dico object should be created if it's not set
 	 * @return \FML\Elements\Dico
 	 */
 	public function getDico($createIfEmpty = true) {
@@ -179,8 +179,8 @@ class ManiaLink {
 	/**
 	 * Set the Stylesheet of the ManiaLink
 	 *
-	 * @param Stylesheet $stylesheet Stylesheet Object
-	 * @return \FML\ManiaLink
+	 * @param Stylesheet $stylesheet Stylesheet for the ManiaLink
+	 * @return \FML\ManiaLink|static
 	 */
 	public function setStylesheet(Stylesheet $stylesheet) {
 		$this->stylesheet = $stylesheet;
@@ -190,7 +190,7 @@ class ManiaLink {
 	/**
 	 * Get the Stylesheet of the ManiaLink
 	 *
-	 * @param bool $createIfEmpty (optional) Whether the Script Object should be created if it's not set yet
+	 * @param bool $createIfEmpty (optional) Whether the Stylesheet object should be created if it's not set
 	 * @return \FML\Stylesheet\Stylesheet
 	 */
 	public function getStylesheet($createIfEmpty = true) {
@@ -203,8 +203,8 @@ class ManiaLink {
 	/**
 	 * Set the Script of the ManiaLink
 	 *
-	 * @param Script $script The Script for the ManiaLink
-	 * @return \FML\ManiaLink
+	 * @param Script $script Script for the ManiaLink
+	 * @return \FML\ManiaLink|static
 	 */
 	public function setScript(Script $script) {
 		$this->script = $script;
@@ -214,7 +214,7 @@ class ManiaLink {
 	/**
 	 * Get the current Script of the ManiaLink
 	 *
-	 * @param bool $createIfEmpty (optional) Whether the Script Object should be created if it's not set yet
+	 * @param bool $createIfEmpty (optional) Whether the Script object should be created if it's not set
 	 * @return \FML\Script\Script
 	 */
 	public function getScript($createIfEmpty = true) {
@@ -225,10 +225,10 @@ class ManiaLink {
 	}
 
 	/**
-	 * Render the XML Document
+	 * Render the XML document
 	 *
-	 * @param bool (optional) $echo        If the XML Text should be echoed and the Content-Type Header should be set
-	 * @param \DOMDocument    $domDocument (optional) DOMDocument for which the XML Element should be created
+	 * @param bool         $echo        (optional) If the XML text should be echoed and the Content-Type header should be set
+	 * @param \DOMDocument $domDocument (optional) DOMDocument for which the XML element should be created
 	 * @return \DOMDocument
 	 */
 	public function render($echo = false, $domDocument = null) {
@@ -241,8 +241,8 @@ class ManiaLink {
 		if (!$isChild) {
 			$domDocument->appendChild($maniaLink);
 		}
-		if (strlen($this->id) > 0) {
-			$maniaLink->setAttribute('id', $this->id);
+		if (strlen($this->maniaLinkId) > 0) {
+			$maniaLink->setAttribute('id', $this->maniaLinkId);
 		}
 		if ($this->version) {
 			$maniaLink->setAttribute('version', $this->version);
@@ -263,7 +263,6 @@ class ManiaLink {
 		}
 		$scriptFeatures = array();
 		foreach ($this->children as $child) {
-			/** @var Renderable $child */
 			$childXml = $child->render($domDocument, $this->getScript());
 			$maniaLink->appendChild($childXml);
 			if ($child instanceof ScriptFeatureable) {
@@ -295,13 +294,11 @@ class ManiaLink {
 	}
 
 	/**
-	 * Get String Representation
+	 * Get string representation
 	 *
 	 * @return string
 	 */
 	public function __toString() {
-		$domDocument = $this->render();
-		$xmlText     = $domDocument->saveXML();
-		return $xmlText;
+		return $this->render()->saveXML();
 	}
 }

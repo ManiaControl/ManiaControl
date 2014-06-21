@@ -9,7 +9,7 @@ use FML\Script\ScriptLabel;
 use FML\Types\Scriptable;
 
 /**
- * Script Feature for triggering a Page Action
+ * Script Feature for triggering a manialink page action
  *
  * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
@@ -17,7 +17,7 @@ use FML\Types\Scriptable;
  */
 class ActionTrigger extends ScriptFeature {
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	protected $actionName = null;
 	/** @var Control $control */
@@ -27,24 +27,30 @@ class ActionTrigger extends ScriptFeature {
 	/**
 	 * Construct a new Action Trigger Feature
 	 *
-	 * @param string  $actionName (optional) Triggered Action
+	 * @param string  $actionName (optional) Triggered action
 	 * @param Control $control    (optional) Action Control
-	 * @param string  $labelName  (optional) Script Label Name
+	 * @param string  $labelName  (optional) Script Label name
 	 */
 	public function __construct($actionName = null, Control $control = null, $labelName = ScriptLabel::MOUSECLICK) {
-		$this->setActionName($actionName);
-		$this->setControl($control);
-		$this->setLabelName($labelName);
+		if (!is_null($actionName)) {
+			$this->setActionName($actionName);
+		}
+		if (!is_null($control)) {
+			$this->setControl($control);
+		}
+		if (!is_null($labelName)) {
+			$this->setLabelName($labelName);
+		}
 	}
 
 	/**
-	 * Set the Action to trigger
+	 * Set the action to trigger
 	 *
 	 * @param string $actionName
-	 * @return \FML\Script\Features\ActionTrigger
+	 * @return \FML\Script\Features\ActionTrigger|static
 	 */
 	public function setActionName($actionName) {
-		$this->actionName = $actionName;
+		$this->actionName = (string)$actionName;
 		return $this;
 	}
 
@@ -52,7 +58,7 @@ class ActionTrigger extends ScriptFeature {
 	 * Set the Control
 	 *
 	 * @param Control $control Action Control
-	 * @return \FML\Script\Features\ActionTrigger
+	 * @return \FML\Script\Features\ActionTrigger|static
 	 */
 	public function setControl(Control $control) {
 		$control->checkId();
@@ -64,13 +70,13 @@ class ActionTrigger extends ScriptFeature {
 	}
 
 	/**
-	 * Set the Label Name
+	 * Set the label name
 	 *
-	 * @param string $labelName Script Label Name
-	 * @return \FML\Script\Features\ActionTrigger
+	 * @param string $labelName Script Label name
+	 * @return \FML\Script\Features\ActionTrigger|static
 	 */
 	public function setLabelName($labelName) {
-		$this->labelName = $labelName;
+		$this->labelName = (string)$labelName;
 		return $this;
 	}
 
@@ -83,23 +89,23 @@ class ActionTrigger extends ScriptFeature {
 	}
 
 	/**
-	 * Get the Script Text
+	 * Get the script text
 	 *
 	 * @return string
 	 */
 	protected function getScriptText() {
-		$actionName = Builder::escapeText($this->actionName);
+		$actionName = Builder::escapeText($this->actionName, true);
 		if ($this->control) {
 			// Control event
-			$controlId  = Builder::escapeText($this->control->getId());
+			$controlId  = Builder::escapeText($this->control->getId(), true);
 			$scriptText = "
-if (Event.Control.ControlId == \"{$controlId}\") {
-	TriggerPageAction(\"{$actionName}\");
+if (Event.Control.ControlId == {$controlId}) {
+	TriggerPageAction({$actionName});
 }";
 		} else {
 			// Other
 			$scriptText = "
-TriggerPageAction(\"{$actionName}\");";
+TriggerPageAction({$actionName});";
 		}
 		return $scriptText;
 	}

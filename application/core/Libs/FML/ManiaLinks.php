@@ -15,31 +15,25 @@ class ManiaLinks {
 	 */
 	protected $encoding = 'utf-8';
 	protected $tagName = 'manialinks';
+	/** @var ManiaLink[] $children */
 	protected $children = array();
 	/** @var CustomUI $customUI */
 	protected $customUI = null;
 
 	/**
-	 * Create a new ManiaLinks Object
+	 * Create a new ManiaLinks object
 	 *
-	 * @return \FML\ManiaLinks
+	 * @return \FML\ManiaLinks|static
 	 */
 	public static function create() {
-		$maniaLinks = new ManiaLinks();
-		return $maniaLinks;
+		return new static();
 	}
 
 	/**
-	 * Construct a new ManiaLinks Object
-	 */
-	public function __construct() {
-	}
-
-	/**
-	 * Set XML Encoding
+	 * Set XML encoding
 	 *
-	 * @param string $encoding XML Encoding
-	 * @return \FML\ManiaLinks
+	 * @param string $encoding XML encoding
+	 * @return \FML\ManiaLinks|static
 	 */
 	public function setXmlEncoding($encoding) {
 		$this->encoding = (string)$encoding;
@@ -47,7 +41,7 @@ class ManiaLinks {
 	}
 
 	/**
-	 * Add a Child ManiaLink
+	 * Add a child ManiaLink
 	 *
 	 * @param ManiaLink $child Child ManiaLink
 	 * @return \FML\ManiaLinks
@@ -60,9 +54,9 @@ class ManiaLinks {
 	}
 
 	/**
-	 * Remove all Child ManiaLinks
+	 * Remove all child ManiaLinks
 	 *
-	 * @return \FML\ManiaLinks
+	 * @return \FML\ManiaLinks|static
 	 */
 	public function removeChildren() {
 		$this->children = array();
@@ -72,8 +66,8 @@ class ManiaLinks {
 	/**
 	 * Set the CustomUI
 	 *
-	 * @param CustomUI $customUI The CustomUI Object
-	 * @return \FML\ManiaLinks
+	 * @param CustomUI $customUI CustomUI object
+	 * @return \FML\ManiaLinks|static
 	 */
 	public function setCustomUI(CustomUI $customUI) {
 		$this->customUI = $customUI;
@@ -81,9 +75,9 @@ class ManiaLinks {
 	}
 
 	/**
-	 * Get the current CustomUI
+	 * Get the CustomUI
 	 *
-	 * @param bool $createIfEmpty (optional) Whether the CustomUI Object should be created if it's not set yet
+	 * @param bool $createIfEmpty (optional) Whether the CustomUI object should be created if it's not set
 	 * @return \FML\CustomUI
 	 */
 	public function getCustomUI($createIfEmpty = true) {
@@ -94,9 +88,9 @@ class ManiaLinks {
 	}
 
 	/**
-	 * Render the XML Document
+	 * Render the XML document
 	 *
-	 * @param bool (optional) $echo Whether the XML Text should be echoed and the Content-Type Header should be set
+	 * @param bool (optional) $echo Whether the XML text should be echoed and the Content-Type header should be set
 	 * @return \DOMDocument
 	 */
 	public function render($echo = false) {
@@ -105,7 +99,6 @@ class ManiaLinks {
 		$maniaLinks                 = $domDocument->createElement($this->tagName);
 		$domDocument->appendChild($maniaLinks);
 		foreach ($this->children as $child) {
-			/** @var ManiaLink $child */
 			$childXml = $child->render(false, $domDocument);
 			$maniaLinks->appendChild($childXml);
 		}
@@ -121,13 +114,11 @@ class ManiaLinks {
 	}
 
 	/**
-	 * Get String Representation
+	 * Get string representation
 	 *
 	 * @return string
 	 */
 	public function __toString() {
-		$domDocument = $this->render();
-		$xmlText     = $domDocument->saveXML();
-		return $xmlText;
+		return $this->render()->saveXML();
 	}
 }

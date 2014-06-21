@@ -13,40 +13,41 @@ use FML\Types\Renderable;
  */
 class Including implements Renderable {
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	protected $tagName = 'include';
-	protected $url = '';
+	protected $url = null;
 
 	/**
-	 * Construct a new Include Element
+	 * Create a new Include object
 	 *
-	 * @param string $url (optional) Include Url
-	 * @return \FML\Elements\Including
+	 * @param string $url (optional) Include url
+	 * @return \FML\Elements\Including|static
 	 */
 	public static function create($url = null) {
-		$including = new Including($url);
-		return $including;
+		return new static($url);
 	}
 
 	/**
-	 * Construct a new Include Element
+	 * Construct a new Include object
 	 *
-	 * @param string $url (optional) Include Url
+	 * @param string $url (optional) Include url
 	 */
 	public function __construct($url = null) {
-		if ($url !== null) {
+		if (!is_null($url)) {
 			$this->setUrl($url);
 		}
 	}
 
 	/**
-	 * Set Url
+	 * Set url
 	 *
-	 * @param string $url Include Url
+	 * @param string $url Include url
+	 * @return \FML\Elements\Including|static
 	 */
 	public function setUrl($url) {
 		$this->url = (string)$url;
+		return $this;
 	}
 
 	/**

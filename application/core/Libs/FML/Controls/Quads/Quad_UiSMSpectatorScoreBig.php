@@ -5,7 +5,7 @@ namespace FML\Controls\Quads;
 use FML\Controls\Quad;
 
 /**
- * Quad Class for 'UiSMSpectatorScoreBig' Style
+ * Quad class for 'UiSMSpectatorScoreBig' styles
  *
  * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
@@ -38,24 +38,8 @@ class Quad_UiSMSpectatorScoreBig extends Quad {
 	CONST SUBSTYLE_UIRange1Bg         = 'UIRange1Bg';
 	CONST SUBSTYLE_UIRange2Bg         = 'UIRange2Bg';
 
-	/**
-	 * Create a new Quad_UiSMSpectatorScoreBig Control
-	 *
-	 * @param string $id (optional) Control Id
-	 * @return \FML\Controls\Quads\Quad_UiSMSpectatorScoreBig
+	/*
+	 * Protected properties
 	 */
-	public static function create($id = null) {
-		$quadUiSMSpectatorScoreBig = new Quad_UiSMSpectatorScoreBig($id);
-		return $quadUiSMSpectatorScoreBig;
-	}
-
-	/**
-	 * Construct a new Quad_UiSMSpectatorScoreBig Control
-	 *
-	 * @param string $id (optional) Control Id
-	 */
-	public function __construct($id = null) {
-		parent::__construct($id);
-		$this->setStyle(self::STYLE);
-	}
+	protected $style = self::STYLE;
 }

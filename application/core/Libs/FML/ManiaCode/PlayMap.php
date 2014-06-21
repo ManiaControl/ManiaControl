@@ -3,7 +3,7 @@
 namespace FML\ManiaCode;
 
 /**
- * ManiaCode Element playing a Map
+ * ManiaCode Element for playing a map
  *
  * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
@@ -11,44 +11,43 @@ namespace FML\ManiaCode;
  */
 class PlayMap implements Element {
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	protected $tagName = 'play_map';
-	protected $name = '';
-	protected $url = '';
+	protected $name = null;
+	protected $url = null;
 
 	/**
-	 * Create a new PlayMap Element
+	 * Create a new PlayMap object
 	 *
-	 * @param string $name (optional) Map Name
-	 * @param string $url  (optional) Map Url
-	 * @return \FML\ManiaCode\PlayMap
+	 * @param string $name (optional) Map name
+	 * @param string $url  (optional) Map url
+	 * @return \FML\ManiaCode\PlayMap|static
 	 */
 	public static function create($name = null, $url = null) {
-		$playMap = new PlayMap($name, $url);
-		return $playMap;
+		return new static($name, $url);
 	}
 
 	/**
-	 * Construct a new PlayMap Element
+	 * Construct a new PlayMap object
 	 *
-	 * @param string $name (optional) Map Name
-	 * @param string $url  (optional) Map Url
+	 * @param string $name (optional) Map name
+	 * @param string $url  (optional) Map url
 	 */
 	public function __construct($name = null, $url = null) {
-		if ($name !== null) {
+		if (!is_null($name)) {
 			$this->setName($name);
 		}
-		if ($url !== null) {
+		if (!is_null($url)) {
 			$this->setUrl($url);
 		}
 	}
 
 	/**
-	 * Set the Name of the Map
+	 * Set the name of the map
 	 *
-	 * @param string $name Map Name
-	 * @return \FML\ManiaCode\PlayMap
+	 * @param string $name Map name
+	 * @return \FML\ManiaCode\PlayMap|static
 	 */
 	public function setName($name) {
 		$this->name = (string)$name;
@@ -56,10 +55,10 @@ class PlayMap implements Element {
 	}
 
 	/**
-	 * Set the Url of the Map
+	 * Set the url of the map
 	 *
-	 * @param string $url Map Url
-	 * @return \FML\ManiaCode\PlayMap
+	 * @param string $url Map url
+	 * @return \FML\ManiaCode\PlayMap|static
 	 */
 	public function setUrl($url) {
 		$this->url = (string)$url;

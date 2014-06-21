@@ -9,7 +9,7 @@ use FML\Script\ScriptLabel;
 use FML\Types\Scriptable;
 
 /**
- * Script Feature for playing an UI Sound
+ * Script Feature for playing a UISound
  *
  * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
@@ -50,7 +50,7 @@ class UISound extends ScriptFeature {
 	const Warning          = 'Warning';
 
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	protected $soundName = null;
 	/** @var Control $control */
@@ -62,23 +62,27 @@ class UISound extends ScriptFeature {
 	/**
 	 * Construct a new UISound Feature
 	 *
-	 * @param string  $soundName (optional) Played Sound
+	 * @param string  $soundName (optional) Played sound
 	 * @param Control $control   (optional) Action Control
-	 * @param int     $variant   (optional) Sound Variant
-	 * @param string  $labelName (optional) Script Label Name
+	 * @param int     $variant   (optional) Sound variant
+	 * @param string  $labelName (optional) Script Label name
 	 */
 	public function __construct($soundName = null, Control $control = null, $variant = 0, $labelName = ScriptLabel::MOUSECLICK) {
-		$this->setSoundName($soundName);
-		$this->setControl($control);
+		if (!is_null($soundName)) {
+			$this->setSoundName($soundName);
+		}
+		if (!is_null($control)) {
+			$this->setControl($control);
+		}
 		$this->setVariant($variant);
 		$this->setLabelName($labelName);
 	}
 
 	/**
-	 * Set the Sound to play
+	 * Set the sound to play
 	 *
-	 * @param string $soundName Sound Name
-	 * @return \FML\Script\Features\UISound
+	 * @param string $soundName Sound name
+	 * @return \FML\Script\Features\UISound|static
 	 */
 	public function setSoundName($soundName) {
 		$this->soundName = (string)$soundName;
@@ -89,7 +93,7 @@ class UISound extends ScriptFeature {
 	 * Set the Control
 	 *
 	 * @param Control $control Action Control
-	 * @return \FML\Script\Features\UISound
+	 * @return \FML\Script\Features\UISound|static
 	 */
 	public function setControl(Control $control) {
 		$control->checkId();
@@ -101,10 +105,10 @@ class UISound extends ScriptFeature {
 	}
 
 	/**
-	 * Set the Sound Variant
+	 * Set the sound variant
 	 *
-	 * @param int $variant Sound Variant
-	 * @return \FML\Script\Features\UISound
+	 * @param int $variant Sound variant
+	 * @return \FML\Script\Features\UISound|static
 	 */
 	public function setVariant($variant) {
 		$this->variant = (int)$variant;
@@ -112,10 +116,10 @@ class UISound extends ScriptFeature {
 	}
 
 	/**
-	 * Set the Volume
+	 * Set the volume
 	 *
-	 * @param float $volume Sound Volume
-	 * @return \FML\Script\Features\UISound
+	 * @param float $volume Sound volume
+	 * @return \FML\Script\Features\UISound|static
 	 */
 	public function setVolume($volume) {
 		$this->volume = (float)$volume;
@@ -123,10 +127,10 @@ class UISound extends ScriptFeature {
 	}
 
 	/**
-	 * Set the Label Name
+	 * Set the label name
 	 *
-	 * @param string $labelName Script Label Name
-	 * @return \FML\Script\Features\UISound
+	 * @param string $labelName Script Label name
+	 * @return \FML\Script\Features\UISound|static
 	 */
 	public function setLabelName($labelName) {
 		$this->labelName = (string)$labelName;
@@ -142,16 +146,16 @@ class UISound extends ScriptFeature {
 	}
 
 	/**
-	 * Get the Script Text
+	 * Get the script text
 	 *
 	 * @return string
 	 */
 	protected function getScriptText() {
 		if ($this->control) {
 			// Control event
-			$controlId  = Builder::escapeText($this->control->getId());
+			$controlId  = Builder::escapeText($this->control->getId(), true);
 			$scriptText = "
-if (Event.Control.ControlId == \"{$controlId}\") {
+if (Event.Control.ControlId == {$controlId}) {
 	PlayUiSound(CMlScriptIngame::EUISound::{$this->soundName}, {$this->variant}, {$this->volume});
 }";
 		} else {

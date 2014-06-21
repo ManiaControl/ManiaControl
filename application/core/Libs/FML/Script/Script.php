@@ -21,7 +21,7 @@ class Script {
 	const VAR_LastTick    = 'FML_LastTick';
 
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	protected $tagName = 'script';
 	protected $features = array();
@@ -34,9 +34,9 @@ class Script {
 	/**
 	 * Set a Script Include
 	 *
-	 * @param string $file      Include File
-	 * @param string $namespace Include Namespace
-	 * @return \FML\Script\Script
+	 * @param string $file      Include file
+	 * @param string $namespace Include namespace
+	 * @return \FML\Script\Script|static
 	 */
 	public function setScriptInclude($file, $namespace = null) {
 		if (is_object($file) && ($file instanceof ScriptInclude)) {
@@ -44,17 +44,16 @@ class Script {
 		} else {
 			$scriptInclude = new ScriptInclude($file, $namespace);
 		}
-		$namespace                  = $scriptInclude->getNamespace();
-		$this->includes[$namespace] = $scriptInclude;
+		$this->includes[$scriptInclude->getNamespace()] = $scriptInclude;
 		return $this;
 	}
 
 	/**
 	 * Add a Script Constant
 	 *
-	 * @param string $name  Constant Name
-	 * @param string $value Constant Value
-	 * @return \FML\Script\Script
+	 * @param string $name  Constant name
+	 * @param string $value Constant value
+	 * @return \FML\Script\Script|static
 	 */
 	public function addScriptConstant($name, $value = null) {
 		if (is_object($name) && ($name instanceof ScriptConstant)) {
@@ -62,16 +61,18 @@ class Script {
 		} else {
 			$scriptConstant = new ScriptConstant($name, $value);
 		}
-		array_push($this->constants, $scriptConstant);
+		if (!in_array($scriptConstant, $this->constants)) {
+			array_push($this->constants, $scriptConstant);
+		}
 		return $this;
 	}
 
 	/**
 	 * Add a Script Function
 	 *
-	 * @param string $name Function Name
-	 * @param string $text Function Text
-	 * @return \FML\Script\Script
+	 * @param string $name Function name
+	 * @param string $text Function text
+	 * @return \FML\Script\Script|static
 	 */
 	public function addScriptFunction($name, $text = null) {
 		if (is_object($name) && ($name instanceof ScriptFunction)) {
@@ -86,11 +87,11 @@ class Script {
 	}
 
 	/**
-	 * Add a custom Script Text
+	 * Add a custom Script text
 	 *
-	 * @param string $name Label Name
-	 * @param string $text Script Text
-	 * @return \FML\Script\Script
+	 * @param string $name Label name
+	 * @param string $text Script text
+	 * @return \FML\Script\Script|static
 	 */
 	public function addCustomScriptLabel($name, $text = null) {
 		if (is_object($name) && ($name instanceof ScriptLabel)) {
@@ -103,12 +104,12 @@ class Script {
 	}
 
 	/**
-	 * Append a generic Script Text for the next Rendering
+	 * Append a generic Script text for the next rendering
 	 *
-	 * @param string $name     Label Name
-	 * @param string $text     Script Text
+	 * @param string $name     Label name
+	 * @param string $text     Script text
 	 * @param bool   $isolated (optional) Whether to isolate the Label Script
-	 * @return \FML\Script\Script
+	 * @return \FML\Script\Script|static
 	 */
 	public function appendGenericScriptLabel($name, $text = null, $isolated = false) {
 		if (is_object($name) && ($name instanceof ScriptLabel)) {
@@ -121,9 +122,9 @@ class Script {
 	}
 
 	/**
-	 * Remove all generic Script Texts
+	 * Remove all generic Script texts
 	 *
-	 * @return \FML\Script\Script
+	 * @return \FML\Script\Script|static
 	 */
 	public function resetGenericScriptLabels() {
 		$this->genericLabels = array();
@@ -131,13 +132,15 @@ class Script {
 	}
 
 	/**
-	 * Add an own Script Feature
+	 * Add a Script Feature
 	 *
 	 * @param ScriptFeature $feature Script Feature
-	 * @return \FML\Script\Script
+	 * @return \FML\Script\Script|static
 	 */
 	public function addFeature(ScriptFeature $feature) {
-		array_push($this->features, $feature);
+		if (!in_array($feature, $this->features, true)) {
+			array_push($this->features, $feature);
+		}
 		return $this;
 	}
 
@@ -145,7 +148,7 @@ class Script {
 	 * Load the given Script Feature
 	 *
 	 * @param ScriptFeature $scriptFeature Script Feature to load
-	 * @return \FML\Script\Script
+	 * @return \FML\Script\Script|static
 	 */
 	public function loadFeature(ScriptFeature $scriptFeature) {
 		$scriptFeature->prepare($this);
@@ -155,8 +158,8 @@ class Script {
 	/**
 	 * Load the given Script Features
 	 *
-	 * @param array $scriptFeatures Script Features to load
-	 * @return \FML\Script\Script
+	 * @param ScriptFeature[] $scriptFeatures Script Features to load
+	 * @return \FML\Script\Script|static
 	 */
 	public function loadFeatures(array $scriptFeatures) {
 		foreach ($scriptFeatures as $scriptFeature) {
@@ -166,7 +169,7 @@ class Script {
 	}
 
 	/**
-	 * Check if the Script has Stuff so that it needs to be rendered
+	 * Check if the Script has content so that it needs to be rendered
 	 *
 	 * @return bool
 	 */
@@ -178,7 +181,7 @@ class Script {
 	}
 
 	/**
-	 * Build the complete Script Text
+	 * Build the complete Script text
 	 *
 	 * @return string
 	 */
@@ -194,9 +197,9 @@ class Script {
 	}
 
 	/**
-	 * Create the Script XML Tag
+	 * Build the Script XML element
 	 *
-	 * @param \DOMDocument $domDocument DOMDocument for which the XML Element should be created
+	 * @param \DOMDocument $domDocument DOMDocument for which the XML element should be created
 	 * @return \DOMElement
 	 */
 	public function render(\DOMDocument $domDocument) {
@@ -209,7 +212,7 @@ class Script {
 	}
 
 	/**
-	 * Get the Header Comment
+	 * Get the header comment
 	 *
 	 * @return string
 	 */
@@ -224,7 +227,7 @@ class Script {
 	}
 
 	/**
-	 * Get the Includes
+	 * Get the Includes text
 	 *
 	 * @return string
 	 */
@@ -234,7 +237,7 @@ class Script {
 	}
 
 	/**
-	 * Get the Constants
+	 * Get the Constants text
 	 *
 	 * @return string
 	 */
@@ -244,7 +247,7 @@ class Script {
 	}
 
 	/**
-	 * Get the Functions
+	 * Get the Functions text
 	 *
 	 * @return string
 	 */
@@ -254,7 +257,7 @@ class Script {
 	}
 
 	/**
-	 * Get the Labels
+	 * Get the Labels text
 	 *
 	 * @return string
 	 */
@@ -265,7 +268,7 @@ class Script {
 	}
 
 	/**
-	 * Get the Main Function
+	 * Get the main function text
 	 *
 	 * @return string
 	 */

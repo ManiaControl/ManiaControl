@@ -3,7 +3,7 @@
 namespace FML\ManiaCode;
 
 /**
- * ManiaCode Element installing a Map
+ * ManiaCode Element installing a map
  *
  * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
@@ -11,44 +11,43 @@ namespace FML\ManiaCode;
  */
 class InstallMap implements Element {
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	protected $tagName = 'install_map';
-	protected $name = '';
-	protected $url = '';
+	protected $name = null;
+	protected $url = null;
 
 	/**
-	 * Create a new InstallMap Element
+	 * Create a new InstallMap object
 	 *
-	 * @param string $name (optional) Map Name
-	 * @param string $url  (optional) Map Url
-	 * @return \FML\ManiaCode\InstallMap
+	 * @param string $name (optional) Map name
+	 * @param string $url  (optional) Map url
+	 * @return \FML\ManiaCode\InstallMap|static
 	 */
 	public static function create($name = null, $url = null) {
-		$installMap = new InstallMap($name, $url);
-		return $installMap;
+		return new static($name, $url);
 	}
 
 	/**
-	 * Construct a new InstallMap Element
+	 * Construct a new InstallMap object
 	 *
-	 * @param string $name (optional) Map Name
-	 * @param string $url  (optional) Map Url
+	 * @param string $name (optional) Map name
+	 * @param string $url  (optional) Map url
 	 */
 	public function __construct($name = null, $url = null) {
-		if ($name !== null) {
+		if (!is_null($name)) {
 			$this->setName($name);
 		}
-		if ($url !== null) {
+		if (!is_null($url)) {
 			$this->setUrl($url);
 		}
 	}
 
 	/**
-	 * Set the Name of the Map
+	 * Set the name of the map
 	 *
-	 * @param string $name Map Name
-	 * @return \FML\ManiaCode\InstallMap
+	 * @param string $name Map name
+	 * @return \FML\ManiaCode\InstallMap|static
 	 */
 	public function setName($name) {
 		$this->name = (string)$name;
@@ -56,10 +55,10 @@ class InstallMap implements Element {
 	}
 
 	/**
-	 * Set the Url of the Map
+	 * Set the url of the map
 	 *
-	 * @param string $url Map Url
-	 * @return \FML\ManiaCode\InstallMap
+	 * @param string $url Map url
+	 * @return \FML\ManiaCode\InstallMap|static
 	 */
 	public function setUrl($url) {
 		$this->url = (string)$url;

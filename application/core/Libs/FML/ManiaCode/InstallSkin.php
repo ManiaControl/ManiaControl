@@ -3,7 +3,7 @@
 namespace FML\ManiaCode;
 
 /**
- * ManiaCode Element installing a Skin
+ * ManiaCode Element installing a skin
  *
  * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
@@ -11,50 +11,49 @@ namespace FML\ManiaCode;
  */
 class InstallSkin implements Element {
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	protected $tagName = 'install_skin';
-	protected $name = '';
-	protected $file = '';
-	protected $url = '';
+	protected $name = null;
+	protected $file = null;
+	protected $url = null;
 
 	/**
-	 * Create a new InstallSkin Element
+	 * Create a new InstallSkin object
 	 *
-	 * @param string $name (optional) Skin Name
-	 * @param string $file (optional) Skin File
-	 * @param string $url  (optional) Skin Url
-	 * @return \FML\ManiaCode\InstallSkin
+	 * @param string $name (optional) Skin name
+	 * @param string $file (optional) Skin file
+	 * @param string $url  (optional) Skin url
+	 * @return \FML\ManiaCode\InstallSkin|static
 	 */
 	public static function create($name = null, $file = null, $url = null) {
-		$installSkin = new InstallSkin($name, $file, $url);
-		return $installSkin;
+		return new static($name, $file, $url);
 	}
 
 	/**
-	 * Construct a new InstallSkin Element
+	 * Construct a new InstallSkin object
 	 *
-	 * @param string $name (optional) Skin Name
-	 * @param string $file (optional) Skin File
-	 * @param string $url  (optional) Skin Url
+	 * @param string $name (optional) Skin name
+	 * @param string $file (optional) Skin file
+	 * @param string $url  (optional) Skin url
 	 */
 	public function __construct($name = null, $file = null, $url = null) {
-		if ($name !== null) {
+		if (!is_null($name)) {
 			$this->setName($name);
 		}
-		if ($file !== null) {
+		if (!is_null($file)) {
 			$this->setFile($file);
 		}
-		if ($url !== null) {
+		if (!is_null($url)) {
 			$this->setUrl($url);
 		}
 	}
 
 	/**
-	 * Set the Name of the Skin
+	 * Set the name of the skin
 	 *
-	 * @param string $name Skin Name
-	 * @return \FML\ManiaCode\InstallSkin
+	 * @param string $name Skin name
+	 * @return \FML\ManiaCode\InstallSkin|static
 	 */
 	public function setName($name) {
 		$this->name = (string)$name;
@@ -62,10 +61,10 @@ class InstallSkin implements Element {
 	}
 
 	/**
-	 * Set the File of the Skin
+	 * Set the file of the skin
 	 *
-	 * @param string $file Skin File
-	 * @return \FML\ManiaCode\InstallSkin
+	 * @param string $file Skin file
+	 * @return \FML\ManiaCode\InstallSkin|static
 	 */
 	public function setFile($file) {
 		$this->file = (string)$file;
@@ -73,10 +72,10 @@ class InstallSkin implements Element {
 	}
 
 	/**
-	 * Set the Url of the Skin
+	 * Set the url of the skin
 	 *
-	 * @param string $url Skin Url
-	 * @return \FML\ManiaCode\InstallSkin
+	 * @param string $url Skin url
+	 * @return \FML\ManiaCode\InstallSkin|static
 	 */
 	public function setUrl($url) {
 		$this->url = (string)$url;

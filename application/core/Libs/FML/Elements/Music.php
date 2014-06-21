@@ -13,38 +13,37 @@ use FML\Types\Renderable;
  */
 class Music implements Renderable {
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	protected $tagName = 'music';
-	protected $data = '';
+	protected $data = null;
 
 	/**
-	 * Create a new Music Element
+	 * Create a new Music object
 	 *
-	 * @param string $data (optional) Media Url
-	 * @return \FML\Elements\Music
+	 * @param string $data (optional) Media url
+	 * @return \FML\Elements\Music|static
 	 */
 	public static function create($data = null) {
-		$music = new Music($data);
-		return $music;
+		return new static($data);
 	}
 
 	/**
-	 * Construct a new Music Element
+	 * Construct a new Music object
 	 *
-	 * @param string $data (optional) Media Url
+	 * @param string $data (optional) Media url
 	 */
 	public function __construct($data = null) {
-		if ($data !== null) {
+		if (!is_null($data)) {
 			$this->setData($data);
 		}
 	}
 
 	/**
-	 * Set Data Url
+	 * Set data url
 	 *
-	 * @param string $data Media Url
-	 * @return \FML\Elements\Music
+	 * @param string $data Data url
+	 * @return \FML\Elements\Music|static
 	 */
 	public function setData($data) {
 		$this->data = (string)$data;

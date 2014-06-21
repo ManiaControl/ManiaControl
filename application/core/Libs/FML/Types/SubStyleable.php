@@ -3,7 +3,7 @@
 namespace FML\Types;
 
 /**
- * Interface for Elements with SubStyle Attribute
+ * Interface for Elements with substyle attribute
  *
  * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
@@ -12,19 +12,19 @@ namespace FML\Types;
 interface SubStyleable {
 
 	/**
-	 * Set SubStyle
+	 * Set sub style
 	 *
-	 * @param string $subStyle SubStyle Name
-	 * @return \FML\Types\SubStyleable
+	 * @param string $subStyle SubStyle name
+	 * @return \FML\Types\SubStyleable|static
 	 */
 	public function setSubStyle($subStyle);
 
 	/**
-	 * Set Style and SubStyle
+	 * Set style and sub style
 	 *
-	 * @param string $style    Style Name
-	 * @param string $subStyle SubStyle Name
-	 * @return \FML\Types\SubStyleable
+	 * @param string $style    Style name
+	 * @param string $subStyle SubStyle name
+	 * @return \FML\Types\SubStyleable|static
 	 */
 	public function setStyles($style, $subStyle);
 }

@@ -3,7 +3,7 @@
 namespace FML\ManiaCode;
 
 /**
- * ManiaCode Element viewing a Replay
+ * ManiaCode Element for viewing a replay
  *
  * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
@@ -11,44 +11,43 @@ namespace FML\ManiaCode;
  */
 class ViewReplay implements Element {
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	protected $tagName = 'view_replay';
-	protected $name = '';
-	protected $url = '';
+	protected $name = null;
+	protected $url = null;
 
 	/**
-	 * Create a new ViewReplay Element
+	 * Create a new ViewReplay object
 	 *
-	 * @param string $name (optional) Replay Name
-	 * @param string $url  (optional) Replay Url
-	 * @return \FML\ManiaCode\ViewReplay
+	 * @param string $name (optional) Replay name
+	 * @param string $url  (optional) Replay url
+	 * @return \FML\ManiaCode\ViewReplay|static
 	 */
 	public static function create($name = null, $url = null) {
-		$viewReplay = new ViewReplay($name, $url);
-		return $viewReplay;
+		return new static($name, $url);
 	}
 
 	/**
-	 * Construct a new ViewReplay Element
+	 * Construct a new ViewReplay object
 	 *
-	 * @param string $name (optional) Replay Name
-	 * @param string $url  (optional) Replay Url
+	 * @param string $name (optional) Replay name
+	 * @param string $url  (optional) Replay url
 	 */
 	public function __construct($name = null, $url = null) {
-		if ($name !== null) {
+		if (!is_null($name)) {
 			$this->setName($name);
 		}
-		if ($url !== null) {
+		if (!is_null($url)) {
 			$this->setUrl($url);
 		}
 	}
 
 	/**
-	 * Set the Name of the Replay
+	 * Set the name of the replay
 	 *
-	 * @param string $name Replay Name
-	 * @return \FML\ManiaCode\ViewReplay
+	 * @param string $name Replay name
+	 * @return \FML\ManiaCode\ViewReplay|static
 	 */
 	public function setName($name) {
 		$this->name = (string)$name;
@@ -56,10 +55,10 @@ class ViewReplay implements Element {
 	}
 
 	/**
-	 * Set the Url of the Replay
+	 * Set the url of the replay
 	 *
-	 * @param string $url Replay Url
-	 * @return \FML\ManiaCode\ViewReplay
+	 * @param string $url Replay url
+	 * @return \FML\ManiaCode\ViewReplay|static
 	 */
 	public function setUrl($url) {
 		$this->url = (string)$url;

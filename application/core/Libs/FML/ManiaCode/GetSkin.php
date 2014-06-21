@@ -3,92 +3,90 @@
 namespace FML\ManiaCode;
 
 /**
- * ManiaCode Element downloading a Skin
+ * ManiaCode Element downloading a skin
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class GetSkin implements Element {
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	protected $tagName = 'get_skin';
-	protected $name = '';
-	protected $file = '';
-	protected $url = '';
+	protected $name = null;
+	protected $file = null;
+	protected $url = null;
 
 	/**
-	 * Create a new GetSkin Element
+	 * Create a new GetSkin object
 	 *
-	 * @param string $name (optional) Skin Name
-	 * @param string $file (optional) Skin File
-	 * @param string $url (optional) Skin Url
-	 * @return \FML\ManiaCode\GetSkin
+	 * @param string $name (optional) Skin name
+	 * @param string $file (optional) Skin file
+	 * @param string $url  (optional) Skin url
+	 * @return \FML\ManiaCode\GetSkin|static
 	 */
 	public static function create($name = null, $file = null, $url = null) {
-		$getSkin = new GetSkin($name, $file, $url);
-		return $getSkin;
+		return new static($name, $file, $url);
 	}
 
 	/**
-	 * Construct a new GetSkin Element
+	 * Construct a new GetSkin object
 	 *
-	 * @param string $name (optional) Skin Name
-	 * @param string $file (optional) Skin File
-	 * @param string $url (optional) Skin Url
+	 * @param string $name (optional) Skin name
+	 * @param string $file (optional) Skin file
+	 * @param string $url  (optional) Skin url
 	 */
 	public function __construct($name = null, $file = null, $url = null) {
-		if ($name !== null) {
+		if (!is_null($name)) {
 			$this->setName($name);
 		}
-		if ($file !== null) {
+		if (!is_null($file)) {
 			$this->setFile($file);
 		}
-		if ($url !== null) {
+		if (!is_null($url)) {
 			$this->setUrl($url);
 		}
 	}
 
 	/**
-	 * Set the Name of the Skin
+	 * Set the name of the skin
 	 *
-	 * @param string $name Skin Name
-	 * @return \FML\ManiaCode\GetSkin
+	 * @param string $name Skin name
+	 * @return \FML\ManiaCode\GetSkin|static
 	 */
 	public function setName($name) {
-		$this->name = (string) $name;
+		$this->name = (string)$name;
 		return $this;
 	}
 
 	/**
-	 * Set the File of the Skin
+	 * Set the file of the skin
 	 *
-	 * @param string $file Skin File
-	 * @return \FML\ManiaCode\GetSkin
+	 * @param string $file Skin file
+	 * @return \FML\ManiaCode\GetSkin|static
 	 */
 	public function setFile($file) {
-		$this->file = (string) $file;
+		$this->file = (string)$file;
 		return $this;
 	}
 
 	/**
-	 * Set the Url of the Skin
+	 * Set the url of the skin
 	 *
-	 * @param string $url Skin Url
-	 * @return \FML\ManiaCode\GetSkin
+	 * @param string $url Skin url
+	 * @return \FML\ManiaCode\GetSkin|static
 	 */
 	public function setUrl($url) {
-		$this->url = (string) $url;
+		$this->url = (string)$url;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\ManiaCode\Element::render()
 	 */
 	public function render(\DOMDocument $domDocument) {
-		$xmlElement = $domDocument->createElement($this->tagName);
+		$xmlElement  = $domDocument->createElement($this->tagName);
 		$nameElement = $domDocument->createElement('name', $this->name);
 		$xmlElement->appendChild($nameElement);
 		$fileElement = $domDocument->createElement('file', $this->file);

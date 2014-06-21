@@ -19,7 +19,7 @@ use FML\Types\ScriptFeatureable;
  */
 class ValuePicker implements Renderable, ScriptFeatureable {
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	protected $name = null;
 	protected $feature = null;
@@ -27,10 +27,10 @@ class ValuePicker implements Renderable, ScriptFeatureable {
 	/**
 	 * Create a new ValuePicker Component
 	 *
-	 * @param string $name    (optional) CheckBox Name
-	 * @param array  $values  (optional) Possible Values
-	 * @param bool   $default (optional) Default Value
-	 * @param Label  $label   (optional) ValuePicker Label
+	 * @param string $name    (optional) CheckBox name
+	 * @param array  $values  (optional) Possible values
+	 * @param bool   $default (optional) Default value
+	 * @param Label  $label   (optional) ValuePicker label
 	 */
 	public function __construct($name = null, array $values = array(), $default = null, Label $label = null) {
 		$this->feature = new ValuePickerFeature();
@@ -41,10 +41,10 @@ class ValuePicker implements Renderable, ScriptFeatureable {
 	}
 
 	/**
-	 * Set the Name
+	 * Set Name
 	 *
-	 * @param string $name ValuePicker Name
-	 * @return \FML\Components\ValuePicker
+	 * @param string $name ValuePicker name
+	 * @return \FML\Components\ValuePicker|static
 	 */
 	public function setName($name) {
 		$this->name = (string)$name;
@@ -52,10 +52,10 @@ class ValuePicker implements Renderable, ScriptFeatureable {
 	}
 
 	/**
-	 * Set the possible Values
+	 * Set the possible values
 	 *
-	 * @param array $values Possible Values
-	 * @return \FML\Components\ValuePicker
+	 * @param array $values Possible values
+	 * @return \FML\Components\ValuePicker|static
 	 */
 	public function setValues(array $values) {
 		$this->feature->setValues($values);
@@ -63,10 +63,10 @@ class ValuePicker implements Renderable, ScriptFeatureable {
 	}
 
 	/**
-	 * Set the Default Value
+	 * Set the default value
 	 *
-	 * @param bool $default Default Value
-	 * @return \FML\Components\ValuePicker
+	 * @param bool $default Default value
+	 * @return \FML\Components\ValuePicker|static
 	 */
 	public function setDefault($default) {
 		$this->feature->setDefault($default);
@@ -77,7 +77,7 @@ class ValuePicker implements Renderable, ScriptFeatureable {
 	 * Set the ValuePicker Label
 	 *
 	 * @param Label $label ValuePicker Label
-	 * @return \FML\Components\ValuePicker
+	 * @return \FML\Components\ValuePicker|static
 	 */
 	public function setLabel(Label $label = null) {
 		$this->feature->setLabel($label);
@@ -128,8 +128,7 @@ class ValuePicker implements Renderable, ScriptFeatureable {
 	 */
 	protected function buildEntry() {
 		$entry = new Entry();
-		$entry->setVisible(false);
-		$entry->setName($this->name);
+		$entry->setVisible(false)->setName($this->name);
 		return $entry;
 	}
 }

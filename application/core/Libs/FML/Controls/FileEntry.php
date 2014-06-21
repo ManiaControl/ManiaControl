@@ -12,30 +12,10 @@ namespace FML\Controls;
  */
 class FileEntry extends Entry {
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
-	protected $folder = '';
-
-	/**
-	 * Construct a new FileEntry Control
-	 *
-	 * @param string $id (optional) Control Id
-	 */
-	public function __construct($id = null) {
-		parent::__construct($id);
-		$this->tagName = 'fileentry';
-	}
-
-	/**
-	 * Create a new FileEntry Control
-	 *
-	 * @param string $id (optional) Control Id
-	 * @return \FML\Controls\FileEntry
-	 */
-	public static function create($id = null) {
-		$fileEntry = new FileEntry($id);
-		return $fileEntry;
-	}
+	protected $tagName = 'fileentry';
+	protected $folder = null;
 
 	/**
 	 * @see \FML\Controls\Control::getManiaScriptClass()
@@ -45,10 +25,10 @@ class FileEntry extends Entry {
 	}
 
 	/**
-	 * Set Folder
+	 * Set the base folder
 	 *
-	 * @param string $folder Base Folder
-	 * @return \FML\Controls\FileEntry
+	 * @param string $folder Base folder
+	 * @return \FML\Controls\FileEntry|static
 	 */
 	public function setFolder($folder) {
 		$this->folder = (string)$folder;

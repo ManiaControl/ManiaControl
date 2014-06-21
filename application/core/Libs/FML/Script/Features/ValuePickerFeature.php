@@ -10,7 +10,7 @@ use FML\Script\ScriptInclude;
 use FML\Script\ScriptLabel;
 
 /**
- * Script Feature for creating a ValuePicker Behavior
+ * Script Feature for creating a ValuePicker behavior
  *
  * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
@@ -26,13 +26,13 @@ class ValuePickerFeature extends ScriptFeature {
 	const VAR_PICKER_ENTRY_ID          = 'FML_Picker_EntryId';
 
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	/** @var Label $label */
 	protected $label = null;
 	/** @var Entry $entry */
 	protected $entry = null;
-	protected $values = null;
+	protected $values = array();
 	protected $default = null;
 
 	/**
@@ -40,28 +40,32 @@ class ValuePickerFeature extends ScriptFeature {
 	 *
 	 * @param Label  $label   (optional) ValuePicker Label
 	 * @param Entry  $entry   (optional) Hidden Entry
-	 * @param array  $values  (optional) Possible Values
-	 * @param string $default (optional) Default Value
+	 * @param array  $values  (optional) Possible values
+	 * @param string $default (optional) Default value
 	 */
 	public function __construct(Label $label = null, Entry $entry = null, array $values = array(), $default = null) {
-		$this->setLabel($label);
-		$this->setEntry($entry);
-		$this->setValues($values);
-		$this->setDefault($default);
+		if (!is_null($label)) {
+			$this->setLabel($label);
+		}
+		if (!is_null($entry)) {
+			$this->setEntry($entry);
+		}
+		if (!empty($values)) {
+			$this->setValues($values);
+		}
+		if (!is_null($default)) {
+			$this->setDefault($default);
+		}
 	}
 
 	/**
 	 * Set the ValuePicker Label
 	 *
 	 * @param Label $label ValuePicker Label
-	 * @return \FML\Script\Features\ValuePickerFeature
+	 * @return \FML\Script\Features\ValuePickerFeature|static
 	 */
-	public function setLabel(Label $label = null) {
-		if ($label) {
-			$label->checkId();
-			$label->setScriptEvents(true);
-		}
-		$this->label = $label;
+	public function setLabel(Label $label) {
+		$this->label = $label->checkId()->setScriptEvents(true);
 		return $this;
 	}
 
@@ -78,13 +82,10 @@ class ValuePickerFeature extends ScriptFeature {
 	 * Set the hidden Entry
 	 *
 	 * @param Entry $entry Hidden Entry
-	 * @return \FML\Script\Features\ValuePickerFeature
+	 * @return \FML\Script\Features\ValuePickerFeature|static
 	 */
-	public function setEntry(Entry $entry = null) {
-		if ($entry) {
-			$entry->checkId();
-		}
-		$this->entry = $entry;
+	public function setEntry(Entry $entry) {
+		$this->entry = $entry->checkId();
 		return $this;
 	}
 
@@ -98,10 +99,10 @@ class ValuePickerFeature extends ScriptFeature {
 	}
 
 	/**
-	 * Set the possible Values
+	 * Set the possible values
 	 *
-	 * @param array $values Possible Values
-	 * @return \FML\Script\Features\ValuePickerFeature
+	 * @param array $values Possible values
+	 * @return \FML\Script\Features\ValuePickerFeature|static
 	 */
 	public function setValues(array $values) {
 		$this->values = array();
@@ -112,17 +113,17 @@ class ValuePickerFeature extends ScriptFeature {
 	}
 
 	/**
-	 * Set the default Value
+	 * Set the default value
 	 *
-	 * @param string $default Default Value
-	 * @return \FML\Script\Features\ValuePickerFeature
+	 * @param string $default Default value
+	 * @return \FML\Script\Features\ValuePickerFeature|static
 	 */
 	public function setDefault($default) {
 		$this->default = (string)$default;
 	}
 
 	/**
-	 * Get the default Value
+	 * Get the default value
 	 *
 	 * @return string
 	 */
@@ -130,7 +131,7 @@ class ValuePickerFeature extends ScriptFeature {
 		if ($this->default) {
 			return $this->default;
 		}
-		if ($this->values) {
+		if (!empty($this->values)) {
 			return reset($this->values);
 		}
 		return null;
@@ -150,12 +151,12 @@ class ValuePickerFeature extends ScriptFeature {
 	}
 
 	/**
-	 * Build the Function Text
+	 * Build the function text
 	 *
 	 * @return string
 	 */
 	protected function buildUpdatePickerValueFunction() {
-		$functionText = "
+		return "
 Void " . self::FUNCTION_UPDATE_PICKER_VALUE . "(CMlLabel _Label) {
 	declare " . self::VAR_PICKER_VALUES . " as Values for _Label = Text[];
 	declare NewValueIndex = -1;
@@ -168,61 +169,58 @@ Void " . self::FUNCTION_UPDATE_PICKER_VALUE . "(CMlLabel _Label) {
 			NewValueIndex = 0;
 		}
 	}
-	declare NewValue = \"\";
+	declare NewValue = " . Builder::EMPTY_STRING . ";
 	if (Values.existskey(NewValueIndex)) {
 		NewValue = Values[NewValueIndex];
 	} else {
-		declare " . self::VAR_PICKER_DEFAULT_VALUE . " as Default for _Label = \"\";
+		declare " . self::VAR_PICKER_DEFAULT_VALUE . " as Default for _Label = " . Builder::EMPTY_STRING . ";
 		NewValue = Default;
 	}
 	_Label.Value = NewValue;
-	declare " . self::VAR_PICKER_ENTRY_ID . " as EntryId for _Label = \"\";
-	if (EntryId != \"\") {
+	declare " . self::VAR_PICKER_ENTRY_ID . " as EntryId for _Label = " . Builder::EMPTY_STRING . ";
+	if (EntryId != " . Builder::EMPTY_STRING . ") {
 		declare Entry <=> (Page.GetFirstChild(EntryId) as CMlEntry);
 		Entry.Value = NewValue;
 	}
 }";
-		return $functionText;
 	}
 
 	/**
-	 * Build the Init Script Text
+	 * Build the init script text
 	 *
 	 * @return string
 	 */
 	protected function buildInitScriptText() {
-		$labelId = $this->label->getId(true);
-		$entryId = '';
+		$labelId = $this->label->getId(true, true);
+		$entryId = '""';
 		if ($this->entry) {
-			$entryId = $this->entry->getId(true);
+			$entryId = $this->entry->getId(true, true);
 		}
-		$values     = Builder::getArray($this->values);
-		$default    = $this->getDefault();
-		$scriptText = "
-declare Label_Picker <=> (Page.GetFirstChild(\"{$labelId}\") as CMlLabel);
+		$values  = Builder::getArray($this->values);
+		$default = Builder::escapeText($this->getDefault(), true);
+		return "
+declare Label_Picker <=> (Page.GetFirstChild({$labelId}) as CMlLabel);
 declare Text[] " . self::VAR_PICKER_VALUES . " as Values for Label_Picker;
 Values = {$values};
 declare Text " . self::VAR_PICKER_DEFAULT_VALUE . " as Default for Label_Picker;
-Default = \"{$default}\";
+Default = {$default};
 declare Text " . self::VAR_PICKER_ENTRY_ID . " as EntryId for Label_Picker;
-EntryId = \"{$entryId}\";
+EntryId = {$entryId};
 " . self::FUNCTION_UPDATE_PICKER_VALUE . "(Label_Picker);
 ";
-		return $scriptText;
 	}
 
 	/**
-	 * Build the Script Text for Label Clicks
+	 * Build the script text for Label clicks
 	 *
 	 * @return string
 	 */
 	protected function buildClickScriptText() {
-		$labelId    = $this->label->getId(true);
-		$scriptText = "
-if (Event.ControlId == \"{$labelId}\") {
+		$labelId = $this->label->getId(true, true);
+		return "
+if (Event.ControlId == {$labelId}) {
 	declare Label_Picker <=> (Event.Control as CMlLabel);
 	" . self::FUNCTION_UPDATE_PICKER_VALUE . "(Label_Picker);
 }";
-		return $scriptText;
 	}
 }

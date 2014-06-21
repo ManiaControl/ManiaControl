@@ -6,7 +6,7 @@ use FML\Controls\Control;
 use FML\Types\Scriptable;
 
 /**
- * An Element for the Menu Feature
+ * Menu Element for the Menu Feature
  *
  * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
@@ -14,7 +14,7 @@ use FML\Types\Scriptable;
  */
 class MenuElement {
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	protected $item = null;
 	protected $control = null;
@@ -22,19 +22,23 @@ class MenuElement {
 	/**
 	 * Create a new Menu Element
 	 *
-	 * @param Control $item    (optional) Item Control in the Menu Bar
+	 * @param Control $item    (optional) Item Control in the Menu bar
 	 * @param Control $control (optional) Toggled Menu Control
 	 */
 	public function __construct(Control $item = null, Control $control = null) {
-		$this->setItem($item);
-		$this->setControl($control);
+		if (!is_null($item)) {
+			$this->setItem($item);
+		}
+		if (!is_null($control)) {
+			$this->setControl($control);
+		}
 	}
 
 	/**
 	 * Set the Item Control
 	 *
-	 * @param Control $item Item Control in the Menu Bar
-	 * @return \FML\Script\Features\MenuElement
+	 * @param Control $item Item Control in the Menu bar
+	 * @return \FML\Script\Features\MenuElement|static
 	 */
 	public function setItem(Control $item) {
 		$item->checkId();
@@ -58,11 +62,10 @@ class MenuElement {
 	 * Set the Menu Control
 	 *
 	 * @param Control $control Toggled Menu Control
-	 * @return \FML\Script\Features\MenuElement
+	 * @return \FML\Script\Features\MenuElement|static
 	 */
 	public function setControl(Control $control) {
-		$control->checkId();
-		$this->control = $control;
+		$this->control = $control->checkId();
 		return $this;
 	}
 

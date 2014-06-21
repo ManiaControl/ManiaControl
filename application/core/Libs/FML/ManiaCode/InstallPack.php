@@ -3,7 +3,7 @@
 namespace FML\ManiaCode;
 
 /**
- * ManiaCode Element installing a Title Pack
+ * ManiaCode Element installing a title pack
  *
  * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
@@ -11,50 +11,49 @@ namespace FML\ManiaCode;
  */
 class InstallPack implements Element {
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	protected $tagName = 'install_pack';
-	protected $name = '';
-	protected $file = '';
-	protected $url = '';
+	protected $name = null;
+	protected $file = null;
+	protected $url = null;
 
 	/**
-	 * Create a new InstallPack Element
+	 * Create a new InstallPack object
 	 *
-	 * @param string $name (optional) Pack Name
-	 * @param string $file (optional) Pack File
-	 * @param string $url  (optional) Pack Url
-	 * @return \FML\ManiaCode\InstallPack
+	 * @param string $name (optional) Pack name
+	 * @param string $file (optional) Pack file
+	 * @param string $url  (optional) Pack url
+	 * @return \FML\ManiaCode\InstallPack|static
 	 */
 	public static function create($name = null, $file = null, $url = null) {
-		$installPack = new InstallPack($name, $file, $url);
-		return $installPack;
+		return new static($name, $file, $url);
 	}
 
 	/**
-	 * Construct a new InstallPack Element
+	 * Construct a new InstallPack object
 	 *
-	 * @param string $name (optional) Pack Name
-	 * @param string $file (optional) Pack File
-	 * @param string $url  (optional) Pack Url
+	 * @param string $name (optional) Pack name
+	 * @param string $file (optional) Pack file
+	 * @param string $url  (optional) Pack url
 	 */
 	public function __construct($name = null, $file = null, $url = null) {
-		if ($name !== null) {
+		if (!is_null($name)) {
 			$this->setName($name);
 		}
-		if ($file !== null) {
+		if (!is_null($file)) {
 			$this->setFile($file);
 		}
-		if ($url !== null) {
+		if (!is_null($url)) {
 			$this->setUrl($url);
 		}
 	}
 
 	/**
-	 * Set the Name of the Pack
+	 * Set the name of the pack
 	 *
-	 * @param string $name Pack Name
-	 * @return \FML\ManiaCode\InstallPack
+	 * @param string $name Pack name
+	 * @return \FML\ManiaCode\InstallPack|static
 	 */
 	public function setName($name) {
 		$this->name = (string)$name;
@@ -62,10 +61,10 @@ class InstallPack implements Element {
 	}
 
 	/**
-	 * Set the File of the Pack
+	 * Set the file of the pack
 	 *
-	 * @param string $file Pack File
-	 * @return \FML\ManiaCode\InstallPack
+	 * @param string $file Pack file
+	 * @return \FML\ManiaCode\InstallPack|static
 	 */
 	public function setFile($file) {
 		$this->file = (string)$file;
@@ -73,10 +72,10 @@ class InstallPack implements Element {
 	}
 
 	/**
-	 * Set the Url of the Pack
+	 * Set the url of the pack
 	 *
-	 * @param string $url Pack Url
-	 * @return \FML\ManiaCode\InstallPack
+	 * @param string $url Pack url
+	 * @return \FML\ManiaCode\InstallPack|static
 	 */
 	public function setUrl($url) {
 		$this->url = (string)$url;

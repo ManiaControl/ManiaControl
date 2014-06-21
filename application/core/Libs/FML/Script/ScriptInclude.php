@@ -17,7 +17,7 @@ class ScriptInclude {
 	const TEXTLIB = 'TextLib';
 
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	protected $file = null;
 	protected $namespace = null;
@@ -25,8 +25,8 @@ class ScriptInclude {
 	/**
 	 * Construct a new Script Include
 	 *
-	 * @param string $file      (optional) Include File
-	 * @param string $namespace (optional) Include Namespace
+	 * @param string $file      (optional) Include file
+	 * @param string $namespace (optional) Include namespace
 	 */
 	public function __construct($file = null, $namespace = null) {
 		$this->setFile($file);
@@ -34,10 +34,10 @@ class ScriptInclude {
 	}
 
 	/**
-	 * Set the File
+	 * Set the file
 	 *
-	 * @param string $file Include File
-	 * @return \FML\Script\ScriptInclude
+	 * @param string $file Include file
+	 * @return \FML\Script\ScriptInclude|static
 	 */
 	public function setFile($file) {
 		$this->file = (string)$file;
@@ -45,10 +45,10 @@ class ScriptInclude {
 	}
 
 	/**
-	 * Set the Namespace
+	 * Set the namespace
 	 *
-	 * @param string $namespace Include Namespace
-	 * @return \FML\Script\ScriptInclude
+	 * @param string $namespace Include namespace
+	 * @return \FML\Script\ScriptInclude|static
 	 */
 	public function setNamespace($namespace) {
 		$this->namespace = (string)$namespace;
@@ -56,7 +56,7 @@ class ScriptInclude {
 	}
 
 	/**
-	 * Get the Namespace
+	 * Get the namespace
 	 *
 	 * @return string
 	 */
@@ -65,12 +65,11 @@ class ScriptInclude {
 	}
 
 	/**
-	 * Build the Script Include Text
+	 * Build the Script Include text
 	 *
 	 * @return string
 	 */
 	public function __toString() {
-		$scriptText = Builder::getInclude($this->file, $this->namespace);
-		return $scriptText;
+		return Builder::getInclude($this->file, $this->namespace);
 	}
 }

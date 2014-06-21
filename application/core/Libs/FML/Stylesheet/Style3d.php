@@ -2,8 +2,10 @@
 
 namespace FML\Stylesheet;
 
+use FML\UniqueID;
+
 /**
- * Class representing a specific Style3d
+ * Class representing a Style3d
  *
  * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
@@ -20,10 +22,10 @@ class Style3d {
 	const MODEL_Window  = 'Window';
 
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	protected $tagName = 'style3d';
-	protected $id = null;
+	protected $styleId = null;
 	protected $model = self::MODEL_Box;
 	protected $thickness = null;
 	protected $color = null;
@@ -36,64 +38,63 @@ class Style3d {
 	protected $focusZOffset = null;
 
 	/**
-	 * Create a new Style3d Object
+	 * Create a new Style3d object
 	 *
-	 * @param string $id (optional) Style Id
-	 * @return \FML\Stylesheet\Style3d
+	 * @param string $styleId (optional) Style id
+	 * @return \FML\Stylesheet\Style3d|static
 	 */
-	public static function create($id = null) {
-		$style3d = new Style3d($id);
-		return $style3d;
+	public static function create($styleId = null) {
+		return new static($styleId);
 	}
 
 	/**
-	 * Construct a new Style3d Object
+	 * Construct a new Style3d object
 	 *
-	 * @param string $id (optional) Style Id
+	 * @param string $styleId (optional) Style id
 	 */
-	public function __construct($id = null) {
-		if ($id !== null) {
-			$this->setId($id);
+	public function __construct($styleId = null) {
+		if (!is_null($styleId)) {
+			$this->setId($styleId);
 		}
 	}
 
 	/**
-	 * Set Style Id
+	 * Set style id
 	 *
-	 * @param string $id Style Id
-	 * @return \FML\Stylesheet\Style3d
+	 * @param string $styleId Style id
+	 * @return \FML\Stylesheet\Style3d|static
 	 */
-	public function setId($id) {
-		$this->id = (string)$id;
+	public function setId($styleId) {
+		$this->styleId = (string)$styleId;
 		return $this;
 	}
 
 	/**
-	 * Check for Id and assign one if necessary
+	 * Check for id and assign one if necessary
 	 *
-	 * @return \FML\Stylesheet\Style3d
+	 * @return \FML\Stylesheet\Style3d|static
 	 */
 	public function checkId() {
-		if (!$this->id) {
-			$this->id = uniqid();
+		if (!$this->styleId) {
+			$this->setId(new UniqueID());
 		}
 		return $this;
 	}
 
 	/**
-	 * Get Style Id
+	 * Get style id
 	 *
 	 * @return string
 	 */
 	public function getId() {
-		return $this->id;
+		return $this->styleId;
 	}
 
 	/**
-	 * Set Model
+	 * Set model
 	 *
-	 * @param string $model Style Model
-	 * @return \FML\Stylesheet\Style3d
+	 * @param string $model Style model
+	 * @return \FML\Stylesheet\Style3d|static
 	 */
 	public function setModel($model) {
 		$this->model = (string)$model;
@@ -101,10 +102,10 @@ class Style3d {
 	}
 
 	/**
-	 * Set Thickness
+	 * Set thickness
 	 *
-	 * @param float $thickness Style Thickness
-	 * @return \FML\Stylesheet\Style3d
+	 * @param float $thickness Style thickness
+	 * @return \FML\Stylesheet\Style3d|static
 	 */
 	public function setThickness($thickness) {
 		$this->thickness = (float)$thickness;
@@ -112,10 +113,10 @@ class Style3d {
 	}
 
 	/**
-	 * Set Color
+	 * Set color
 	 *
-	 * @param string $color Style Color
-	 * @return \FML\Stylesheet\Style3d
+	 * @param string $color Style color
+	 * @return \FML\Stylesheet\Style3d|static
 	 */
 	public function setColor($color) {
 		$this->color = (string)$color;
@@ -123,10 +124,10 @@ class Style3d {
 	}
 
 	/**
-	 * Set Focus Color
+	 * Set focus color
 	 *
-	 * @param string $focusColor Style Focus Color
-	 * @return \FML\Stylesheet\Style3d
+	 * @param string $focusColor Style focus color
+	 * @return \FML\Stylesheet\Style3d|static
 	 */
 	public function setFocusColor($focusColor) {
 		$this->focusColor = (string)$focusColor;
@@ -134,10 +135,10 @@ class Style3d {
 	}
 
 	/**
-	 * Set Light Color
+	 * Set light color
 	 *
-	 * @param string $lightColor Light Color
-	 * @return \FML\Stylesheet\Style3d
+	 * @param string $lightColor Light color
+	 * @return \FML\Stylesheet\Style3d|static
 	 */
 	public function setLightColor($lightColor) {
 		$this->lightColor = (string)$lightColor;
@@ -145,10 +146,10 @@ class Style3d {
 	}
 
 	/**
-	 * Set Focus Light Color
+	 * Set focus light color
 	 *
-	 * @param string $focusLightColor Focus Light Color
-	 * @return \FML\Stylesheet\Style3d
+	 * @param string $focusLightColor Focus light color
+	 * @return \FML\Stylesheet\Style3d|static
 	 */
 	public function setFocusLightColor($focusLightColor) {
 		$this->focusLightColor = (string)$focusLightColor;
@@ -156,10 +157,10 @@ class Style3d {
 	}
 
 	/**
-	 * Set Y-Offset
+	 * Set Y-offset
 	 *
-	 * @param float $yOffset Y-Offset
-	 * @return \FML\Stylesheet\Style3d
+	 * @param float $yOffset Y-offset
+	 * @return \FML\Stylesheet\Style3d|static
 	 */
 	public function setYOffset($yOffset) {
 		$this->yOffset = (float)$yOffset;
@@ -167,10 +168,10 @@ class Style3d {
 	}
 
 	/**
-	 * Set Focus Y-Offset
+	 * Set focus Y-offset
 	 *
-	 * @param float $focusYOffset Focus Y-Offset
-	 * @return \FML\Stylesheet\Style3d
+	 * @param float $focusYOffset Focus Y-offset
+	 * @return \FML\Stylesheet\Style3d|static
 	 */
 	public function setFocusYOffset($focusYOffset) {
 		$this->focusYOffset = (float)$focusYOffset;
@@ -178,10 +179,10 @@ class Style3d {
 	}
 
 	/**
-	 * Set Z-Offset
+	 * Set Z-offset
 	 *
-	 * @param float $zOffset Z-Offset
-	 * @return \FML\Stylesheet\Style3d
+	 * @param float $zOffset Z-offset
+	 * @return \FML\Stylesheet\Style3d|static
 	 */
 	public function setZOffset($zOffset) {
 		$this->zOffset = (float)$zOffset;
@@ -189,10 +190,10 @@ class Style3d {
 	}
 
 	/**
-	 * Set Focus Z-Offset
+	 * Set focus Z-offset
 	 *
-	 * @param float $focusZOffset Focus Z-Offset
-	 * @return \FML\Stylesheet\Style3d
+	 * @param float $focusZOffset Focus Z-offset
+	 * @return \FML\Stylesheet\Style3d|static
 	 */
 	public function setFocusZOffset($focusZOffset) {
 		$this->focusZOffset = (float)$focusZOffset;
@@ -200,16 +201,16 @@ class Style3d {
 	}
 
 	/**
-	 * Render the Style3d XML Element
+	 * Render the Style3d XML element
 	 *
-	 * @param \DOMDocument $domDocument DomDocument for which the Style3d XML Element should be rendered
+	 * @param \DOMDocument $domDocument DOMDocument for which the Style3d XML element should be rendered
 	 * @return \DOMElement
 	 */
 	public function render(\DOMDocument $domDocument) {
 		$style3dXml = $domDocument->createElement($this->tagName);
 		$this->checkId();
-		if ($this->id) {
-			$style3dXml->setAttribute('id', $this->id);
+		if ($this->styleId) {
+			$style3dXml->setAttribute('id', $this->styleId);
 		}
 		if ($this->model) {
 			$style3dXml->setAttribute('model', $this->model);

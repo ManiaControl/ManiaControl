@@ -3,58 +3,56 @@
 namespace FML\ManiaCode;
 
 /**
- * ManiaCode Element going to a Link
+ * ManiaCode Element for going to a link
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Go_To implements Element {
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	protected $tagName = 'goto';
-	protected $link = '';
+	protected $link = null;
 
 	/**
-	 * Create a new Go_To Element
+	 * Create a new Go_To object
 	 *
-	 * @param string $link (optional) Goto Link
-	 * @return \FML\ManiaCode\Go_To
+	 * @param string $link (optional) Goto link
+	 * @return \FML\ManiaCode\Go_To|static
 	 */
 	public static function create($link = null) {
-		$goTo = new Go_To($link);
-		return $goTo;
+		return new static($link);
 	}
 
 	/**
-	 * Construct a new Go_To Element
+	 * Construct a new Go_To object
 	 *
-	 * @param string $link (optional) Goto Link
+	 * @param string $link (optional) Goto link
 	 */
 	public function __construct($link = null) {
-		if ($link !== null) {
+		if (!is_null($link)) {
 			$this->setLink($link);
 		}
 	}
 
 	/**
-	 * Set the Goto Link
+	 * Set link
 	 *
-	 * @param string $link Goto Link
-	 * @return \FML\ManiaCode\Go_To
+	 * @param string $link Goto link
+	 * @return \FML\ManiaCode\Go_To|static
 	 */
 	public function setLink($link) {
-		$this->link = (string) $link;
+		$this->link = (string)$link;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\ManiaCode\Element::render()
 	 */
 	public function render(\DOMDocument $domDocument) {
-		$xmlElement = $domDocument->createElement($this->tagName);
+		$xmlElement  = $domDocument->createElement($this->tagName);
 		$linkElement = $domDocument->createElement('link', $this->link);
 		$xmlElement->appendChild($linkElement);
 		return $xmlElement;

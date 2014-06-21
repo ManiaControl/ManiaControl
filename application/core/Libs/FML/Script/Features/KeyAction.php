@@ -7,7 +7,7 @@ use FML\Script\Script;
 use FML\Script\ScriptLabel;
 
 /**
- * Script Feature for triggering a Page Action on Key Press
+ * Script Feature for triggering a manialink page action on key press
  *
  * @author    steeffeen
  * @link      http://destroflyer.mania-community.de/maniascript/keycharid_table.php
@@ -16,7 +16,7 @@ use FML\Script\ScriptLabel;
  */
 class KeyAction extends ScriptFeature {
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	protected $actionName = null;
 	protected $keyName = null;
@@ -26,23 +26,23 @@ class KeyAction extends ScriptFeature {
 	/**
 	 * Construct a new Key Action Feature
 	 *
-	 * @param string $actionName  (optional) Triggered Action
-	 * @param string $keyName     (optional) Key Name
-	 * @param int    $keyCode     (optional) Key Code
-	 * @param string $charPressed (optional) Pressed Char
+	 * @param string $actionName (optional) Triggered action
+	 * @param string $keyName    (optional) Key name
 	 */
-	public function __construct($actionName = null, $keyName = null, $keyCode = null, $charPressed = null) {
-		$this->setActionName($actionName);
-		$this->setKeyName($keyName);
-		$this->setKeyCode($keyCode);
-		$this->setCharPressed($charPressed);
+	public function __construct($actionName = null, $keyName = null) {
+		if (!is_null($actionName)) {
+			$this->setActionName($actionName);
+		}
+		if (!is_null($keyName)) {
+			$this->setKeyName($keyName);
+		}
 	}
 
 	/**
-	 * Set the Action to trigger
+	 * Set the action to trigger
 	 *
-	 * @param string $actionName Triggered Action
-	 * @return \FML\Script\Features\KeyAction
+	 * @param string $actionName Triggered action
+	 * @return \FML\Script\Features\KeyAction|static
 	 */
 	public function setActionName($actionName) {
 		$this->actionName = (string)$actionName;
@@ -50,35 +50,41 @@ class KeyAction extends ScriptFeature {
 	}
 
 	/**
-	 * Set the Key Name for triggering the Action
+	 * Set the key name for triggering the action
 	 *
 	 * @param string $keyName Key Name
-	 * @return \FML\Script\Features\KeyAction
+	 * @return \FML\Script\Features\KeyAction|static
 	 */
 	public function setKeyName($keyName) {
-		$this->keyName = (string)$keyName;
+		$this->keyName     = (string)$keyName;
+		$this->keyCode     = null;
+		$this->charPressed = null;
 		return $this;
 	}
 
 	/**
-	 * Set the Key Code for triggering the Action
+	 * Set the key code for triggering the action
 	 *
 	 * @param int $keyCode Key Code
-	 * @return \FML\Script\Features\KeyAction
+	 * @return \FML\Script\Features\KeyAction|static
 	 */
 	public function setKeyCode($keyCode) {
-		$this->keyCode = $keyCode;
+		$this->keyCode     = (int)$keyCode;
+		$this->keyName     = null;
+		$this->charPressed = null;
 		return $this;
 	}
 
 	/**
-	 * Set the Char to press for triggering the Action
+	 * Set the char to press for triggering the action
 	 *
-	 * @param string $charPressed Pressed Char
-	 * @return \FML\Script\Features\KeyAction
+	 * @param string $charPressed Pressed char
+	 * @return \FML\Script\Features\KeyAction|static
 	 */
 	public function setCharPressed($charPressed) {
-		$this->charPressed = $charPressed;
+		$this->charPressed = (string)$charPressed;
+		$this->keyName     = null;
+		$this->keyCode     = null;
 		return $this;
 	}
 
@@ -91,25 +97,28 @@ class KeyAction extends ScriptFeature {
 	}
 
 	/**
-	 * Get the Script Text
+	 * Get the script text
 	 *
 	 * @return string
 	 */
 	protected function getScriptText() {
-		$actionName = Builder::escapeText($this->actionName);
-		$key        = 'KeyName';
-		$value      = $this->keyName;
-		if ($this->keyCode !== null) {
+		$actionName = Builder::escapeText($this->actionName, true);
+		$key        = null;
+		$value      = null;
+		if (!is_null($this->keyName)) {
+			$key   = 'KeyName';
+			$value = $this->keyName;
+		} else if (!is_null($this->keyCode)) {
 			$key   = 'KeyCode';
-			$value = (int)$this->keyCode;
-		} else if ($this->charPressed !== null) {
+			$value = $this->keyCode;
+		} else if (!is_null($this->charPressed)) {
 			$key   = 'CharPressed';
-			$value = (string)$this->charPressed;
+			$value = $this->charPressed;
 		}
-		$scriptText = "
-if (Event.{$key} == \"{$value}\") {
-	TriggerPageAction(\"{$actionName}\");
+		$value = Builder::escapeText($value, true);
+		return "
+if (Event.{$key} == {$value}) {
+	TriggerPageAction({$actionName});
 }";
-		return $scriptText;
 	}
 }

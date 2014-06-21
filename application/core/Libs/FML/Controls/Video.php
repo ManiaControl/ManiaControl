@@ -15,36 +15,16 @@ use FML\Types\Scriptable;
  */
 class Video extends Control implements Playable, Scriptable {
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
-	protected $data = '';
-	protected $dataId = '';
-	protected $play = 0;
-	protected $looping = 0;
-	protected $music = 0;
+	protected $tagName = 'video';
+	protected $data = null;
+	protected $dataId = null;
+	protected $play = null;
+	protected $looping = true;
+	protected $music = null;
 	protected $volume = 1.;
-	protected $scriptEvents = 0;
-
-	/**
-	 * Construct a new Video Control
-	 *
-	 * @param string $id (optional) Control Id
-	 */
-	public function __construct($id = null) {
-		parent::__construct($id);
-		$this->tagName = 'video';
-	}
-
-	/**
-	 * Create a new Video Control
-	 *
-	 * @param string $id (optional) Control Id
-	 * @return \FML\Controls\Video
-	 */
-	public static function create($id = null) {
-		$video = new Video($id);
-		return $video;
-	}
+	protected $scriptEvents = null;
 
 	/**
 	 * @see \FML\Controls\Control::getManiaScriptClass()
@@ -110,7 +90,7 @@ class Video extends Control implements Playable, Scriptable {
 	}
 
 	/**
-	 * @see \FML\Control::render()
+	 * @see \FML\Types\Renderable::render()
 	 */
 	public function render(\DOMDocument $domDocument) {
 		$xmlElement = parent::render($domDocument);

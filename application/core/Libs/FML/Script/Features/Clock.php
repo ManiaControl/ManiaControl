@@ -8,7 +8,7 @@ use FML\Script\ScriptInclude;
 use FML\Script\ScriptLabel;
 
 /**
- * Script Feature showing the current Time on a Label
+ * Script Feature showing the current time on a Label
  *
  * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
@@ -16,7 +16,7 @@ use FML\Script\ScriptLabel;
  */
 class Clock extends ScriptFeature {
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	/** @var Label $label */
 	protected $label = null;
@@ -27,11 +27,13 @@ class Clock extends ScriptFeature {
 	 * Construct a new Clock Feature
 	 *
 	 * @param Label $label        (optional) Clock Label
-	 * @param bool  $showSeconds  (optional) Whether the Seconds should be shown
-	 * @param bool  $showFullDate (optional) Whether the Date should be shown
+	 * @param bool  $showSeconds  (optional) Whether the seconds should be shown
+	 * @param bool  $showFullDate (optional) Whether the date should be shown
 	 */
 	public function __construct(Label $label = null, $showSeconds = true, $showFullDate = false) {
-		$this->setLabel($label);
+		if (!is_null($label)) {
+			$this->setLabel($label);
+		}
 		$this->setShowSeconds($showSeconds);
 		$this->setShowFullDate($showFullDate);
 	}
@@ -40,19 +42,18 @@ class Clock extends ScriptFeature {
 	 * Set the Label
 	 *
 	 * @param Label $label Clock Label
-	 * @return \FML\Script\Features\Clock
+	 * @return \FML\Script\Features\Clock|static
 	 */
 	public function setLabel(Label $label) {
-		$label->checkId();
-		$this->label = $label;
+		$this->label = $label->checkId();
 		return $this;
 	}
 
 	/**
-	 * Set whether the Seconds should be shown
+	 * Set whether seconds should be shown
 	 *
-	 * @param bool $showSeconds Whether the Seconds should be shown
-	 * @return \FML\Script\Features\Clock
+	 * @param bool $showSeconds Whether seconds should be shown
+	 * @return \FML\Script\Features\Clock|static
 	 */
 	public function setShowSeconds($showSeconds) {
 		$this->showSeconds = (bool)$showSeconds;
@@ -60,10 +61,10 @@ class Clock extends ScriptFeature {
 	}
 
 	/**
-	 * Set whether the Full Date should be shown
+	 * Set whether the full date should be shown
 	 *
-	 * @param bool $showFullDate Whether the Full Date should be shown
-	 * @return \FML\Script\Features\Clock
+	 * @param bool $showFullDate Whether the full date should be shown
+	 * @return \FML\Script\Features\Clock|static
 	 */
 	public function setShowFullDate($showFullDate) {
 		$this->showFullDate = (bool)$showFullDate;
@@ -80,14 +81,14 @@ class Clock extends ScriptFeature {
 	}
 
 	/**
-	 * Get the Script Text
+	 * Get the script text
 	 *
 	 * @return string
 	 */
 	protected function getScriptText() {
-		$controlId  = $this->label->getId(true);
+		$controlId  = $this->label->getId(true, true);
 		$scriptText = "
-declare ClockLabel <=> (Page.GetFirstChild(\"{$controlId}\") as CMlLabel);
+declare ClockLabel <=> (Page.GetFirstChild({$controlId}) as CMlLabel);
 declare TimeText = CurrentLocalDateText;";
 		if (!$this->showSeconds) {
 			$scriptText .= "

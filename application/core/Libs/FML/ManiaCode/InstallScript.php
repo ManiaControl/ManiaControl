@@ -3,7 +3,7 @@
 namespace FML\ManiaCode;
 
 /**
- * ManiaCode Element installing a Script
+ * ManiaCode Element installing a script
  *
  * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
@@ -11,50 +11,49 @@ namespace FML\ManiaCode;
  */
 class InstallScript implements Element {
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	protected $tagName = 'install_script';
-	protected $name = '';
-	protected $file = '';
-	protected $url = '';
+	protected $name = null;
+	protected $file = null;
+	protected $url = null;
 
 	/**
-	 * Create a new InstallScript Element
+	 * Create a new InstallScript object
 	 *
-	 * @param string $name (optional) Script Name
-	 * @param string $file (optional) Script File
-	 * @param string $url  (optional) Script Url
-	 * @return \FML\ManiaCode\InstallScript
+	 * @param string $name (optional) Script name
+	 * @param string $file (optional) Script file
+	 * @param string $url  (optional) Script url
+	 * @return \FML\ManiaCode\InstallScript|static
 	 */
 	public static function create($name = null, $file = null, $url = null) {
-		$installScript = new InstallScript($name, $file, $url);
-		return $installScript;
+		return new static($name, $file, $url);
 	}
 
 	/**
-	 * Construct a new InstallScript Element
+	 * Construct a new InstallScript object
 	 *
-	 * @param string $name (optional) Script Name
-	 * @param string $file (optional) Script File
-	 * @param string $url  (optional) Script Url
+	 * @param string $name (optional) Script name
+	 * @param string $file (optional) Script file
+	 * @param string $url  (optional) Script url
 	 */
 	public function __construct($name = null, $file = null, $url = null) {
-		if ($name !== null) {
+		if (!is_null($name)) {
 			$this->setName($name);
 		}
-		if ($file !== null) {
+		if (!is_null($file)) {
 			$this->setFile($file);
 		}
-		if ($url !== null) {
+		if (!is_null($url)) {
 			$this->setUrl($url);
 		}
 	}
 
 	/**
-	 * Set the Name of the Script
+	 * Set the name of the script
 	 *
-	 * @param string $name Script Name
-	 * @return \FML\ManiaCode\InstallScript
+	 * @param string $name Script name
+	 * @return \FML\ManiaCode\InstallScript|static
 	 */
 	public function setName($name) {
 		$this->name = (string)$name;
@@ -62,10 +61,10 @@ class InstallScript implements Element {
 	}
 
 	/**
-	 * Set the File of the Script
+	 * Set the file of the script
 	 *
-	 * @param string $file Script File
-	 * @return \FML\ManiaCode\InstallScript
+	 * @param string $file Script file
+	 * @return \FML\ManiaCode\InstallScript|static
 	 */
 	public function setFile($file) {
 		$this->file = (string)$file;
@@ -73,10 +72,10 @@ class InstallScript implements Element {
 	}
 
 	/**
-	 * Set the Url of the Script
+	 * Set the url of the script
 	 *
-	 * @param string $url Script Url
-	 * @return \FML\ManiaCode\InstallScript
+	 * @param string $url Script url
+	 * @return \FML\ManiaCode\InstallScript|static
 	 */
 	public function setUrl($url) {
 		$this->url = (string)$url;

@@ -3,7 +3,7 @@
 namespace FML\Types;
 
 /**
- * Interface for Elements with ScriptEvents Attribute
+ * Interface for Elements with scriptevents attribute
  *
  * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
@@ -12,10 +12,10 @@ namespace FML\Types;
 interface Scriptable {
 
 	/**
-	 * Set ScriptEvents
+	 * Set script events
 	 *
-	 * @param bool $scriptEvents Whether Script Events should be enabled
-	 * @return \FML\Types\Scriptable
+	 * @param bool $scriptEvents Whether script events should be enabled
+	 * @return \FML\Types\Scriptable|static
 	 */
 	public function setScriptEvents($scriptEvents);
 }

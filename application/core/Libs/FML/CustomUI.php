@@ -11,7 +11,7 @@ namespace FML;
  */
 class CustomUI {
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	protected $encoding = 'utf-8';
 	protected $tagName = 'custom_ui';
@@ -25,26 +25,19 @@ class CustomUI {
 	protected $globalVisible = null;
 
 	/**
-	 * Create a new CustomUI Object
+	 * Create a new CustomUI object
 	 *
-	 * @return \FML\CustomUI
+	 * @return \FML\CustomUI|static
 	 */
 	public static function create() {
-		$customUI = new CustomUI();
-		return $customUI;
+		return new static();
 	}
 
 	/**
-	 * Construct a new CustomUI Object
-	 */
-	public function __construct() {
-	}
-
-	/**
-	 * Set XML Encoding
+	 * Set XML encoding
 	 *
-	 * @param string $encoding XML Encoding
-	 * @return \FML\CustomUI
+	 * @param string $encoding XML encoding
+	 * @return \FML\CustomUI|static
 	 */
 	public function setXMLEncoding($encoding) {
 		$this->encoding = (string)$encoding;
@@ -52,10 +45,10 @@ class CustomUI {
 	}
 
 	/**
-	 * Set Showing of Notices
+	 * Set showing of notices
 	 *
-	 * @param bool $visible Whether Notices should be shown
-	 * @return \FML\CustomUI
+	 * @param bool $visible Whether notices should be shown
+	 * @return \FML\CustomUI|static
 	 */
 	public function setNoticeVisible($visible) {
 		$this->noticeVisible = $visible;
@@ -63,10 +56,10 @@ class CustomUI {
 	}
 
 	/**
-	 * Set Showing of the Challenge Info
+	 * Set showing of the challenge info
 	 *
-	 * @param bool $visible Whether the Challenge Info should be shown
-	 * @return \FML\CustomUI
+	 * @param bool $visible Whether the challenge info should be shown
+	 * @return \FML\CustomUI|static
 	 */
 	public function setChallengeInfoVisible($visible) {
 		$this->challengeInfoVisible = $visible;
@@ -74,10 +67,10 @@ class CustomUI {
 	}
 
 	/**
-	 * Set Showing of the Net Infos
+	 * Set showing of the net infos
 	 *
-	 * @param bool $visible Whether the Net Infos should be shown
-	 * @return \FML\CustomUI
+	 * @param bool $visible Whether the net infos should be shown
+	 * @return \FML\CustomUI|static
 	 */
 	public function setNetInfosVisible($visible) {
 		$this->netInfosVisible = $visible;
@@ -85,10 +78,10 @@ class CustomUI {
 	}
 
 	/**
-	 * Set Showing of the Chat
+	 * Set showing of the chat
 	 *
-	 * @param bool $visible Whether the Chat should be shown
-	 * @return \FML\CustomUI
+	 * @param bool $visible Whether the chat should be shown
+	 * @return \FML\CustomUI|static
 	 */
 	public function setChatVisible($visible) {
 		$this->chatVisible = $visible;
@@ -96,10 +89,10 @@ class CustomUI {
 	}
 
 	/**
-	 * Set Showing of the Checkpoint List
+	 * Set showing of the checkpoint list
 	 *
-	 * @param bool $visible Whether the Checkpoint should be shown
-	 * @return \FML\CustomUI
+	 * @param bool $visible Whether the checkpoint should be shown
+	 * @return \FML\CustomUI|static
 	 */
 	public function setCheckpointListVisible($visible) {
 		$this->checkpointListVisible = $visible;
@@ -107,10 +100,10 @@ class CustomUI {
 	}
 
 	/**
-	 * Set Showing of Round Scores
+	 * Set showing of round scores
 	 *
-	 * @param bool $visible Whether the Round Scores should be shown
-	 * @return \FML\CustomUI
+	 * @param bool $visible Whether the round scores should be shown
+	 * @return \FML\CustomUI|static
 	 */
 	public function setRoundScoresVisible($visible) {
 		$this->roundScoresVisible = $visible;
@@ -118,10 +111,10 @@ class CustomUI {
 	}
 
 	/**
-	 * Set Showing of the Scoretable
+	 * Set showing of the scoretable
 	 *
-	 * @param bool $visible Whether the Scoretable should be shown
-	 * @return \FML\CustomUI
+	 * @param bool $visible Whether the scoretable should be shown
+	 * @return \FML\CustomUI|static
 	 */
 	public function setScoretableVisible($visible) {
 		$this->scoretableVisible = $visible;
@@ -129,10 +122,10 @@ class CustomUI {
 	}
 
 	/**
-	 * Set Global Showing
+	 * Set global showing
 	 *
 	 * @param bool $visible Whether the UI should be disabled completely
-	 * @return \FML\CustomUI
+	 * @return \FML\CustomUI|static
 	 */
 	public function setGlobalVisible($visible) {
 		$this->globalVisible = $visible;
@@ -140,9 +133,9 @@ class CustomUI {
 	}
 
 	/**
-	 * Render the XML Document
+	 * Render the XML document
 	 *
-	 * @param \DOMDocument $domDocument (optional) DomDocument for which the XML Element should be rendered
+	 * @param \DOMDocument $domDocument (optional) DOMDocument for which the XML element should be rendered
 	 * @return \DOMDocument
 	 */
 	public function render($domDocument = null) {
@@ -157,7 +150,7 @@ class CustomUI {
 		}
 		$settings = $this->getSettings();
 		foreach ($settings as $setting => $value) {
-			if ($value === null) {
+			if (is_null($value)) {
 				continue;
 			}
 			$xmlSubElement = $domDocument->createElement($setting);
@@ -171,18 +164,16 @@ class CustomUI {
 	}
 
 	/**
-	 * Get String Representation
+	 * Get string representation
 	 *
 	 * @return string
 	 */
 	public function __toString() {
-		$domDocument = $this->render();
-		$xmlText     = $domDocument->saveXML();
-		return $xmlText;
+		return $this->render()->saveXML();
 	}
 
 	/**
-	 * Get associative Array of all CustomUI Settings
+	 * Get associative array of all CustomUI settings
 	 *
 	 * @return array
 	 */

@@ -11,174 +11,167 @@ namespace FML\Elements;
  */
 class Dico {
 	/**
-	 * Czech Language
+	 * Czech language
 	 *
 	 * @var string
 	 */
 	const LANG_CZECH = 'cz';
 
 	/**
-	 * Danish Language
+	 * Danish language
 	 *
 	 * @var string
 	 */
 	const LANG_DANISH = 'da';
 
 	/**
-	 * German Language
+	 * German language
 	 *
 	 * @var string
 	 */
 	const LANG_GERMAN = 'de';
 
 	/**
-	 * English Language
+	 * English language
 	 *
 	 * @var string
 	 */
 	const LANG_ENGLISH = 'en';
 
 	/**
-	 * Spanish Language
+	 * Spanish language
 	 *
 	 * @var string
 	 */
 	const LANG_SPANISH = 'es';
 
 	/**
-	 * French Language
+	 * French language
 	 *
 	 * @var string
 	 */
 	const LANG_FRENCH = 'fr';
 
 	/**
-	 * Hungarian Language
+	 * Hungarian language
 	 *
 	 * @var string
 	 */
 	const LANG_HUNGARIAN = 'hu';
 
 	/**
-	 * Italian Language
+	 * Italian language
 	 *
 	 * @var string
 	 */
 	const LANG_ITALIAN = 'it';
 
 	/**
-	 * Japanese Language
+	 * Japanese language
 	 *
 	 * @var string
 	 */
 	const LANG_JAPANESE = 'jp';
 
 	/**
-	 * Korean Language
+	 * Korean language
 	 *
 	 * @var string
 	 */
 	const LANG_KOREAN = 'kr';
 
 	/**
-	 * Norwegian Language
+	 * Norwegian language
 	 *
 	 * @var string
 	 */
 	const LANG_NORWEGIAN = 'nb';
 
 	/**
-	 * Dutch Language
+	 * Dutch language
 	 *
 	 * @var string
 	 */
 	const LANG_DUTCH = 'nl';
 
 	/**
-	 * Polish Language
+	 * Polish language
 	 *
 	 * @var string
 	 */
 	const LANG_POLISH = 'pl';
 
 	/**
-	 * Portuguese Language
+	 * Portuguese language
 	 *
 	 * @var string
 	 */
 	const LANG_PORTUGUESE = 'pt';
 
 	/**
-	 * Brazilian Portuguese Language
+	 * Brazilian Portuguese language
 	 *
 	 * @var string
 	 */
 	const LANG_BRAZILIAN_PORTUGUESE = 'pt_BR';
 
 	/**
-	 * Romanian Language
+	 * Romanian language
 	 *
 	 * @var string
 	 */
 	const LANG_ROMANIAN = 'ro';
 
 	/**
-	 * Russian Language
+	 * Russian language
 	 *
 	 * @var string
 	 */
 	const LANG_RUSSIAN = 'ru';
 
 	/**
-	 * Slovak Language
+	 * Slovak language
 	 *
 	 * @var string
 	 */
 	const LANG_SLOVAK = 'sk';
 
 	/**
-	 * Turkish Language
+	 * Turkish language
 	 *
 	 * @var string
 	 */
 	const LANG_TURKISH = 'tr';
 
 	/**
-	 * Chinese Language
+	 * Chinese language
 	 *
 	 * @var string
 	 */
 	const LANG_CHINESE = 'zh';
 
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	protected $tagName = 'dico';
 	protected $entries = array();
 
 	/**
-	 * Create a new Dictionary Object
+	 * Create a new Dictionary object
 	 *
-	 * @return \FML\Elements\Dico
+	 * @return \FML\Elements\Dico|static
 	 */
 	public static function create() {
-		$dico = new Dico();
-		return $dico;
+		return new static();
 	}
 
 	/**
-	 * Construct a new Dictionary Object
-	 */
-	public function __construct() {
-	}
-
-	/**
-	 * Set the translatable Entry for the specific Language
+	 * Set the translatable entry for the specific language
 	 *
-	 * @param string $language   Language Id
-	 * @param string $entryId    Entry Id
-	 * @param string $entryValue Translated Entry Value
-	 * @return \FML\Elements\Dico
+	 * @param string $language   Language id
+	 * @param string $entryId    Entry id
+	 * @param string $entryValue Translated entry value
+	 * @return \FML\Elements\Dico|static
 	 */
 	public function setEntry($language, $entryId, $entryValue) {
 		$language   = (string)$language;
@@ -198,11 +191,11 @@ class Dico {
 	}
 
 	/**
-	 * Remove Entries of the given Id
+	 * Remove entries of the given id
 	 *
-	 * @param string $entryId  Entry Id that should be removed
-	 * @param string $language (optional) Only remove Entries of the given Language
-	 * @return \FML\Elements\Dico
+	 * @param string $entryId  Entry id that should be removed
+	 * @param string $language (optional) Only remove entries of the given language
+	 * @return \FML\Elements\Dico|static
 	 */
 	public function removeEntry($entryId, $language = null) {
 		$entryId = (string)$entryId;
@@ -222,11 +215,11 @@ class Dico {
 	}
 
 	/**
-	 * Remove Entries of the given Language
+	 * Remove entries of the given language
 	 *
-	 * @param string $language Language of which all Entries should be removed
-	 * @param string $entryId  (optional) Only remove the given Entry Id
-	 * @return \FML\Elements\Dico
+	 * @param string $language Language which entries should be removed
+	 * @param string $entryId  (optional) Only remove the given entry id
+	 * @return \FML\Elements\Dico|static
 	 */
 	public function removeLanguage($language, $entryId = null) {
 		$language = (string)$language;
@@ -242,9 +235,9 @@ class Dico {
 	}
 
 	/**
-	 * Remove all Entries from the Dictionary
+	 * Remove all entries from the Dictionary
 	 *
-	 * @return \FML\Elements\Dico
+	 * @return \FML\Elements\Dico|static
 	 */
 	public function removeEntries() {
 		$this->entries = array();
@@ -252,9 +245,9 @@ class Dico {
 	}
 
 	/**
-	 * Render the Dico XML Element
+	 * Render the Dico XML element
 	 *
-	 * @param \DOMDocument $domDocument DomDocument for which the Dico XML Element should be rendered
+	 * @param \DOMDocument $domDocument DOMDocument for which the Dico XML element should be rendered
 	 * @return \DOMElement
 	 */
 	public function render(\DOMDocument $domDocument) {

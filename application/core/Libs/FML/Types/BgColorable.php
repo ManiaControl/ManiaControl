@@ -3,19 +3,19 @@
 namespace FML\Types;
 
 /**
- * Interface for Elements with Background Color Attribute
+ * Interface for Elements with background color attribute
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 interface BgColorable {
 
 	/**
-	 * Set Background Color
+	 * Set background color
 	 *
-	 * @param string $bgColor Background Color
-	 * @return \FML\Types\BgColorable
+	 * @param string $bgColor Background color
+	 * @return \FML\Types\BgColorable|static
 	 */
 	public function setBgColor($bgColor);
 }

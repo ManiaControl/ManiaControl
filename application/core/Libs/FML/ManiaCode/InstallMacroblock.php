@@ -3,91 +3,89 @@
 namespace FML\ManiaCode;
 
 /**
- * ManiaCode Element installing a Macroblock
+ * ManiaCode Element installing a macroblock
  *
- * @author steeffeen
+ * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
- * @license http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class InstallMacroblock implements Element {
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	protected $tagName = 'install_macroblock';
-	protected $name = '';
-	protected $file = '';
-	protected $url = '';
+	protected $name = null;
+	protected $file = null;
+	protected $url = null;
 
 	/**
-	 * Create a new InstallMacroblock Element
+	 * Create a new InstallMacroblock object
 	 *
-	 * @param string $name (optional) Macroblock Name
-	 * @param string $url (optional) Macroblock Url
-	 * @return \FML\ManiaCode\InstallMacroblock
+	 * @param string $name (optional) Macroblock name
+	 * @param string $url  (optional) Macroblock url
+	 * @return \FML\ManiaCode\InstallMacroblock|static
 	 */
 	public static function create($name = null, $url = null) {
-		$installMacroblock = new InstallMacroblock($name, $url);
-		return $installMacroblock;
+		return new static($name, $url);
 	}
 
 	/**
-	 * Construct a new InstallMacroblock Element
+	 * Construct a new InstallMacroblock object
 	 *
-	 * @param string $name (optional) Macroblock Name
-	 * @param string $file (optional) Macroblock File
-	 * @param string $url (optional) Macroblock Url
+	 * @param string $name (optional) Macroblock name
+	 * @param string $file (optional) Macroblock file
+	 * @param string $url  (optional) Macroblock url
 	 */
 	public function __construct($name = null, $file = null, $url = null) {
-		if ($name !== null) {
+		if (!is_null($name)) {
 			$this->setName($name);
 		}
-		if ($file !== null) {
+		if (!is_null($file)) {
 			$this->setFile($file);
 		}
-		if ($url !== null) {
+		if (!is_null($url)) {
 			$this->setUrl($url);
 		}
 	}
 
 	/**
-	 * Set the Name of the Macroblock
+	 * Set the name of the macroblock
 	 *
-	 * @param string $name Macroblock Name
-	 * @return \FML\ManiaCode\InstallMacroblock
+	 * @param string $name Macroblock name
+	 * @return \FML\ManiaCode\InstallMacroblock|static
 	 */
 	public function setName($name) {
-		$this->name = (string) $name;
+		$this->name = (string)$name;
 		return $this;
 	}
 
 	/**
-	 * Set the File of the Macroblock
+	 * Set the file of the macroblock
 	 *
-	 * @param string $file Macroblock File
-	 * @return \FML\ManiaCode\InstallMacroblock
+	 * @param string $file Macroblock file
+	 * @return \FML\ManiaCode\InstallMacroblock|static
 	 */
 	public function setFile($file) {
-		$this->file = (string) $file;
+		$this->file = (string)$file;
 		return $this;
 	}
 
 	/**
-	 * Set the Url of the Macroblock
+	 * Set the url of the macroblock
 	 *
-	 * @param string $url Macroblock Url
-	 * @return \FML\ManiaCode\InstallMacroblock
+	 * @param string $url Macroblock url
+	 * @return \FML\ManiaCode\InstallMacroblock|static
 	 */
 	public function setUrl($url) {
-		$this->url = (string) $url;
+		$this->url = (string)$url;
 		return $this;
 	}
 
 	/**
-	 *
 	 * @see \FML\ManiaCode\Element::render()
 	 */
 	public function render(\DOMDocument $domDocument) {
-		$xmlElement = $domDocument->createElement($this->tagName);
+		$xmlElement  = $domDocument->createElement($this->tagName);
 		$nameElement = $domDocument->createElement('name', $this->name);
 		$xmlElement->appendChild($nameElement);
 		$fileElement = $domDocument->createElement('file', $this->file);

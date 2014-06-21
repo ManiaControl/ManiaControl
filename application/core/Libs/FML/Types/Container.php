@@ -14,33 +14,33 @@ use FML\Elements\Format;
 interface Container {
 
 	/**
-	 * Add a new Child Element
+	 * Add a new child Element
 	 *
-	 * @param Renderable $child The Child Control to add
-	 * @return \FML\Types\Container
+	 * @param Renderable $child Child Control to add
+	 * @return \FML\Types\Container|static
 	 */
 	public function add(Renderable $child);
 
 	/**
-	 * Remove all Children
+	 * Remove all children
 	 *
-	 * @return \FML\Types\Container
+	 * @return \FML\Types\Container|static
 	 */
 	public function removeChildren();
 
 	/**
-	 * Set the Format Object of the Container
+	 * Set the Format object of the Container
 	 *
-	 * @param Format $format New Format Object
-	 * @return \FML\Types\Container
+	 * @param Format $format New Format object
+	 * @return \FML\Types\Container|static
 	 */
 	public function setFormat(Format $format);
 
 	/**
-	 * Get the Format Object of the Container
+	 * Get the Format object of the Container
 	 *
-	 * @param bool $createIfEmpty (optional) Whether the Format Object should be created if it's not set yet
-	 * @return \FML\Elements\Format
+	 * @param bool $createIfEmpty (optional) Whether the Format object should be created if it's not set
+	 * @return \FML\Elements\Format|static
 	 */
 	public function getFormat($createIfEmpty = true);
 }

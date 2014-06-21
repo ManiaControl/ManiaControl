@@ -17,40 +17,38 @@ use FML\Types\SubStyleable;
  */
 class CheckBoxDesign implements Styleable, SubStyleable {
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	protected $url = null;
 	protected $style = null;
 	protected $subStyle = null;
 
 	/**
-	 * Create the Default Enabled Design
+	 * Create the default enabled Design
 	 *
-	 * @return \FML\Models\CheckBoxDesign
+	 * @return \FML\Models\CheckBoxDesign|static
 	 */
 	public static function defaultEnabledDesign() {
-		$checkBoxDesign = new CheckBoxDesign(Quad_Icons64x64_1::STYLE, Quad_Icons64x64_1::SUBSTYLE_LvlGreen);
-		return $checkBoxDesign;
+		return new static(Quad_Icons64x64_1::STYLE, Quad_Icons64x64_1::SUBSTYLE_Check);
 	}
 
 	/**
-	 * Create the Default Disabled Design
+	 * Create the default disabled Design
 	 *
-	 * @return \FML\Models\CheckBoxDesign
+	 * @return \FML\Models\CheckBoxDesign|static
 	 */
 	public static function defaultDisabledDesign() {
-		$checkBoxDesign = new CheckBoxDesign(Quad_Icons64x64_1::STYLE, Quad_Icons64x64_1::SUBSTYLE_LvlRed);
-		return $checkBoxDesign;
+		return new static(Quad_Icons64x64_1::STYLE, Quad_Icons64x64_1::SUBSTYLE_Check);
 	}
 
 	/**
-	 * Create a new CheckBox Design
+	 * Construct a new CheckBox Design object
 	 *
-	 * @param string $style    Style Name or Image Url
-	 * @param string $subStyle SubStyle Name
+	 * @param string $style    Style name or image url
+	 * @param string $subStyle (optional) SubStyle name
 	 */
 	public function __construct($style, $subStyle = null) {
-		if ($subStyle === null) {
+		if (is_null($subStyle)) {
 			$this->setImageUrl($style);
 		} else {
 			$this->setStyle($style);
@@ -59,10 +57,10 @@ class CheckBoxDesign implements Styleable, SubStyleable {
 	}
 
 	/**
-	 * Set the Image Url
+	 * Set the image url
 	 *
-	 * @param string $url Image Url
-	 * @return \FML\Models\CheckBoxDesign
+	 * @param string $url Image url
+	 * @return \FML\Models\CheckBoxDesign|static
 	 */
 	public function setImageUrl($url) {
 		$this->url      = (string)$url;
@@ -102,7 +100,7 @@ class CheckBoxDesign implements Styleable, SubStyleable {
 	 * Apply the Design to the given Quad
 	 *
 	 * @param Quad $quad CheckBox Quad
-	 * @return \FML\Models\CheckBoxDesign
+	 * @return \FML\Models\CheckBoxDesign|static
 	 */
 	public function applyToQuad(Quad $quad) {
 		$quad->setImage($this->url);
@@ -111,19 +109,20 @@ class CheckBoxDesign implements Styleable, SubStyleable {
 	}
 
 	/**
-	 * Get the CheckBox Design String
+	 * Get the CheckBox Design string
 	 *
-	 * @param bool $escaped (optional) Whether the String should be escaped for the Script
+	 * @param bool $escaped        (optional) Whether the string should be escaped for the Script
+	 * @param bool $addApostrophes (optional) Whether to add apostrophes before and after the text
 	 * @return string
 	 */
-	public function getDesignString($escaped = true) {
-		if ($this->url !== null) {
+	public function getDesignString($escaped = true, $addApostrophes = true) {
+		if (!is_null($this->url)) {
 			$string = $this->url;
 		} else {
 			$string = $this->style . '|' . $this->subStyle;;
 		}
 		if ($escaped) {
-			return Builder::escapeText($string);
+			return Builder::escapeText($string, $addApostrophes);
 		}
 		return $string;
 	}

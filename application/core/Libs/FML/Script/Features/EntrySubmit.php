@@ -17,7 +17,7 @@ use FML\Script\ScriptLabel;
  */
 class EntrySubmit extends ScriptFeature {
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	/** @var Entry $entry */
 	protected $entry = null;
@@ -27,10 +27,12 @@ class EntrySubmit extends ScriptFeature {
 	 * Construct a new Entry Submit Feature
 	 *
 	 * @param Entry  $entry (optional) Entry Control
-	 * @param string $url   (optional) Submit Url
+	 * @param string $url   (optional) Submit url
 	 */
 	public function __construct(Entry $entry = null, $url = null) {
-		$this->setEntry($entry);
+		if (!is_null($entry)) {
+			$this->setEntry($entry);
+		}
 		$this->setUrl($url);
 	}
 
@@ -38,20 +40,18 @@ class EntrySubmit extends ScriptFeature {
 	 * Set the Entry
 	 *
 	 * @param Entry $entry Entry Control
-	 * @return \FML\Script\Features\EntrySubmit
+	 * @return \FML\Script\Features\EntrySubmit|static
 	 */
 	public function setEntry(Entry $entry) {
-		$entry->checkId();
-		$entry->setScriptEvents(true);
-		$this->entry = $entry;
+		$this->entry = $entry->checkId()->setScriptEvents(true);
 		return $this;
 	}
 
 	/**
-	 * Set the Submit Url
+	 * Set the submit url
 	 *
-	 * @param string $url Submit Url
-	 * @return \FML\Script\Features\EntrySubmit
+	 * @param string $url Submit url
+	 * @return \FML\Script\Features\EntrySubmit|static
 	 */
 	public function setUrl($url) {
 		$this->url = (string)$url;
@@ -69,22 +69,22 @@ class EntrySubmit extends ScriptFeature {
 	}
 
 	/**
-	 * Get the Script Text
+	 * Get the script text
 	 *
 	 * @return string
 	 */
 	protected function getScriptText() {
-		$url        = $this->buildCompatibleUrl();
-		$entryName  = Builder::escapeText($this->entry->getName());
-		$scriptText = "
+		$url       = $this->buildCompatibleUrl();
+		$entryName = $this->entry->getName();
+		$link      = Builder::escapeText($entryName . $url . '=', true);
+		return "
 declare Value = TextLib::URLEncode(Entry.Value);
-OpenLink(\"{$url}{$entryName}=\"^Value, CMlScript::LinkType::Goto);
+OpenLink({$link}^Value, CMlScript::LinkType::Goto);
 ";
-		return $scriptText;
 	}
 
 	/**
-	 * Build the Submit Url compatible for the Entry Parameter
+	 * Build the submit url compatible for the Entry parameter
 	 *
 	 * @return string
 	 */

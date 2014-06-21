@@ -3,7 +3,7 @@
 namespace FML\Stylesheet;
 
 /**
- * Class representing the ManiaLinks Stylesheet
+ * Class representing a ManiaLink Stylesheet
  *
  * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
@@ -11,34 +11,28 @@ namespace FML\Stylesheet;
  */
 class Stylesheet {
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	protected $tagName = 'stylesheet';
+	/** @var Style3d[] $styles3d */
 	protected $styles3d = array();
 	/** @var Mood $mood */
 	protected $mood = null;
 
 	/**
-	 * Create a new Stylesheet Object
+	 * Create a new Stylesheet object
 	 *
-	 * @return \FML\Stylesheet\Stylesheet
+	 * @return \FML\Stylesheet\Stylesheet|static
 	 */
 	public static function create() {
-		$stylesheet = new Stylesheet();
-		return $stylesheet;
-	}
-
-	/**
-	 * Construct a new Stylesheet Object
-	 */
-	public function __construct() {
+		return new static();
 	}
 
 	/**
 	 * Add a new Style3d
 	 *
-	 * @param Style3d $style3d The Style3d to add
-	 * @return \FML\Stylesheet\Stylesheet
+	 * @param Style3d $style3d Style3d object
+	 * @return \FML\Stylesheet\Stylesheet|static
 	 */
 	public function addStyle3d(Style3d $style3d) {
 		if (!in_array($style3d, $this->styles3d, true)) {
@@ -48,9 +42,9 @@ class Stylesheet {
 	}
 
 	/**
-	 * Remove all Styles
+	 * Remove all Style3ds
 	 *
-	 * @return \FML\Stylesheet\Stylesheet
+	 * @return \FML\Stylesheet\Stylesheet|static
 	 */
 	public function removeStyles() {
 		$this->styles3d = array();
@@ -58,10 +52,10 @@ class Stylesheet {
 	}
 
 	/**
-	 * Set the Mood Object of the Stylesheet
+	 * Set the Mood object of the Stylesheet
 	 *
-	 * @param Mood $mood Mood Object
-	 * @return \FML\Stylesheet\Stylesheet
+	 * @param Mood $mood Mood object
+	 * @return \FML\Stylesheet\Stylesheet|static
 	 */
 	public function setMood(Mood $mood) {
 		$this->mood = $mood;
@@ -69,9 +63,9 @@ class Stylesheet {
 	}
 
 	/**
-	 * Get the Mood Object
+	 * Get the Mood object
 	 *
-	 * @param bool $createIfEmpty (optional) Whether the Mood Object should be created if it's not set yet
+	 * @param bool $createIfEmpty (optional) Whether the Mood object should be created if it's not set
 	 * @return \FML\Stylesheet\Mood
 	 */
 	public function getMood($createIfEmpty = true) {
@@ -82,9 +76,9 @@ class Stylesheet {
 	}
 
 	/**
-	 * Render the Stylesheet XML Element
+	 * Render the Stylesheet XML element
 	 *
-	 * @param \DOMDocument $domDocument DomDocument for which the Stylesheet XML Element should be rendered
+	 * @param \DOMDocument $domDocument DOMDocument for which the Stylesheet XML element should be rendered
 	 * @return \DOMElement
 	 */
 	public function render(\DOMDocument $domDocument) {
@@ -93,7 +87,6 @@ class Stylesheet {
 			$stylesXml = $domDocument->createElement('frame3dstyles');
 			$stylesheetXml->appendChild($stylesXml);
 			foreach ($this->styles3d as $style3d) {
-				/** @var Style3d $style3d */
 				$style3dXml = $style3d->render($domDocument);
 				$stylesXml->appendChild($style3dXml);
 			}

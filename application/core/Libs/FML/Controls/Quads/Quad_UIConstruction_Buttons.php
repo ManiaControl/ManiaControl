@@ -5,7 +5,7 @@ namespace FML\Controls\Quads;
 use FML\Controls\Quad;
 
 /**
- * Quad Class for 'UIConstruction_Buttons' Style
+ * Quad class for 'UIConstruction_Buttons' styles
  *
  * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
@@ -73,24 +73,8 @@ class Quad_UIConstruction_Buttons extends Quad {
 	const SUBSTYLE_Validate_Step2       = 'Validate_Step2';
 	const SUBSTYLE_Validate_Step3       = 'Validate_Step3';
 
-	/**
-	 * Create a new Quad_UIConstruction_Buttons Control
-	 *
-	 * @param string $id (optional) Control Id
-	 * @return \FML\Controls\Quads\Quad_UIConstruction_Buttons
+	/*
+	 * Protected properties
 	 */
-	public static function create($id = null) {
-		$quadUIConstructionButtons = new Quad_UIConstruction_Buttons($id);
-		return $quadUIConstructionButtons;
-	}
-
-	/**
-	 * Construct a new Quad_UIConstruction_Buttons Control
-	 *
-	 * @param string $id (optional) Control Id
-	 */
-	public function __construct($id = null) {
-		parent::__construct($id);
-		$this->setStyle(self::STYLE);
-	}
+	protected $style = self::STYLE;
 }

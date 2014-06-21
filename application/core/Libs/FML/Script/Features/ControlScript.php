@@ -8,7 +8,7 @@ use FML\Script\ScriptLabel;
 use FML\Types\Scriptable;
 
 /**
- * Script Feature for a Control-related Script
+ * Script Feature for a Control related script
  *
  * @author    steeffeen
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
@@ -16,7 +16,7 @@ use FML\Types\Scriptable;
  */
 class ControlScript extends ScriptFeature {
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	/** @var Control $control */
 	protected $control = null;
@@ -24,11 +24,11 @@ class ControlScript extends ScriptFeature {
 	protected $text = null;
 
 	/**
-	 * Construct a new Custom Script Text
+	 * Construct a new Control Script
 	 *
 	 * @param Control $control   Event Control
-	 * @param string  $text      Script Text
-	 * @param string  $labelName (optional) Script Label Name
+	 * @param string  $text      Script text
+	 * @param string  $labelName (optional) Script Label name
 	 */
 	public function __construct(Control $control, $text, $labelName = ScriptLabel::MOUSECLICK) {
 		$this->setControl($control);
@@ -39,21 +39,20 @@ class ControlScript extends ScriptFeature {
 	/**
 	 * Set the Control
 	 *
-	 * @param Control $control Custom Control
-	 * @return \FML\Script\Features\ControlScript
+	 * @param Control $control Event Control
+	 * @return \FML\Script\Features\ControlScript|static
 	 */
 	public function setControl(Control $control) {
-		$control->checkId();
-		$this->control = $control;
+		$this->control = $control->checkId();
 		$this->updateScriptEvents();
 		return $this;
 	}
 
 	/**
-	 * Set the Script Text
+	 * Set the script text
 	 *
-	 * @param string $text Script Text
-	 * @return \FML\Script\Features\ControlScript
+	 * @param string $text Script text
+	 * @return \FML\Script\Features\ControlScript|static
 	 */
 	public function setText($text) {
 		$this->text = (string)$text;
@@ -61,13 +60,13 @@ class ControlScript extends ScriptFeature {
 	}
 
 	/**
-	 * Set the Label Name
+	 * Set the label name
 	 *
-	 * @param string $labelName Script Label Name
-	 * @return \FML\Script\Features\ControlScript
+	 * @param string $labelName Script Label name
+	 * @return \FML\Script\Features\ControlScript|static
 	 */
 	public function setLabelName($labelName) {
-		$this->labelName = $labelName;
+		$this->labelName = (string)$labelName;
 		$this->updateScriptEvents();
 		return $this;
 	}
@@ -76,10 +75,7 @@ class ControlScript extends ScriptFeature {
 	 * Enable Script Events on the Control if needed
 	 */
 	protected function updateScriptEvents() {
-		if (!$this->control) {
-			return;
-		}
-		if (!ScriptLabel::isEventLabel($this->labelName)) {
+		if (!$this->control || !ScriptLabel::isEventLabel($this->labelName)) {
 			return;
 		}
 		if ($this->control instanceof Scriptable) {
@@ -97,7 +93,7 @@ class ControlScript extends ScriptFeature {
 	}
 
 	/**
-	 * Build the Script Text for the Control
+	 * Build the script text for the Control
 	 *
 	 * @return string
 	 */
@@ -105,7 +101,6 @@ class ControlScript extends ScriptFeature {
 		$controlId  = $this->control->getId(true);
 		$scriptText = '';
 		$closeBlock = false;
-
 		if (ScriptLabel::isEventLabel($this->labelName)) {
 			$scriptText .= '
 if (Event.ControlId == "' . $controlId . '") {
@@ -115,20 +110,16 @@ declare Control <=> Event.Control;';
 			$scriptText .= '
 declare Control <=> Page.GetFirstChild("' . $controlId . '");';
 		}
-
 		$class = $this->control->getManiaScriptClass();
 		$name  = preg_replace('/^CMl/', '', $class, 1);
 		$scriptText .= '
 declare ' . $name . ' <=> (Control as ' . $class . ');
 ';
-
 		$scriptText .= $this->text . '
 ';
-
 		if ($closeBlock) {
 			$scriptText .= '}';
 		}
-
 		return $scriptText;
 	}
 }

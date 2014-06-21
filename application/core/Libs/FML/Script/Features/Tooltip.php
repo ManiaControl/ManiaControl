@@ -10,7 +10,7 @@ use FML\Script\ScriptLabel;
 use FML\Types\Scriptable;
 
 /**
- * Script Feature for Showing Tooltips
+ * Script Feature for showing Tooltips
  *
  * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
@@ -18,7 +18,7 @@ use FML\Types\Scriptable;
  */
 class Tooltip extends ScriptFeature {
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	/** @var Control $hoverControl */
 	protected $hoverControl = null;
@@ -33,23 +33,29 @@ class Tooltip extends ScriptFeature {
 	 *
 	 * @param Control $hoverControl   (optional) Hover Control
 	 * @param Control $tooltipControl (optional) Tooltip Control
-	 * @param bool    $stayOnClick    (optional) Whether the Tooltip should stay on Click
-	 * @param bool    $invert         (optional) Whether the Visibility Toggling should be inverted
-	 * @param string  $text           (optional) The Text to display if the TooltipControl is a Label
+	 * @param bool    $stayOnClick    (optional) Whether the Tooltip should stay on click
+	 * @param bool    $invert         (optional) Whether the visibility toggling should be inverted
+	 * @param string  $text           (optional) Text to display if the TooltipControl is a Label
 	 */
 	public function __construct(Control $hoverControl = null, Control $tooltipControl = null, $stayOnClick = false, $invert = false, $text = null) {
-		$this->setHoverControl($hoverControl);
-		$this->setTooltipControl($tooltipControl);
+		if (!is_null($hoverControl)) {
+			$this->setHoverControl($hoverControl);
+		}
+		if (!is_null($tooltipControl)) {
+			$this->setTooltipControl($tooltipControl);
+		}
 		$this->setStayOnClick($stayOnClick);
 		$this->setInvert($invert);
-		$this->setText($text);
+		if (!is_null($text)) {
+			$this->setText($text);
+		}
 	}
 
 	/**
 	 * Set the Hover Control
 	 *
 	 * @param Control $hoverControl Hover Control
-	 * @return \FML\Script\Features\Tooltip
+	 * @return \FML\Script\Features\Tooltip|static
 	 */
 	public function setHoverControl(Control $hoverControl) {
 		$hoverControl->checkId();
@@ -64,20 +70,18 @@ class Tooltip extends ScriptFeature {
 	 * Set the Tooltip Control
 	 *
 	 * @param Control $tooltipControl Tooltip Control
-	 * @return \FML\Script\Features\Tooltip
+	 * @return \FML\Script\Features\Tooltip|static
 	 */
 	public function setTooltipControl(Control $tooltipControl) {
-		$tooltipControl->checkId();
-		$tooltipControl->setVisible(false);
-		$this->tooltipControl = $tooltipControl;
+		$this->tooltipControl = $tooltipControl->checkId()->setVisible(false);
 		return $this;
 	}
 
 	/**
-	 * Set only Show
+	 * Set to only show
 	 *
-	 * @param bool $stayOnClick (optional) Whether the Tooltip should stay on Click
-	 * @return \FML\Script\Features\Tooltip
+	 * @param bool $stayOnClick (optional) Whether the Tooltip should stay on click
+	 * @return \FML\Script\Features\Tooltip|static
 	 */
 	public function setStayOnClick($stayOnClick) {
 		$this->stayOnClick = (bool)$stayOnClick;
@@ -85,10 +89,10 @@ class Tooltip extends ScriptFeature {
 	}
 
 	/**
-	 * Set only Hide
+	 * Set to only hide
 	 *
-	 * @param bool $invert (optional) Whether the Visibility Toggling should be inverted
-	 * @return \FML\Script\Features\Tooltip
+	 * @param bool $invert (optional) Whether the visibility toggling should be inverted
+	 * @return \FML\Script\Features\Tooltip|static
 	 */
 	public function setInvert($invert) {
 		$this->invert = (bool)$invert;
@@ -96,13 +100,13 @@ class Tooltip extends ScriptFeature {
 	}
 
 	/**
-	 * Set Text
+	 * Set text
 	 *
-	 * @param string $text (optional) The Text to display if the TooltipControl is a Label
-	 * @return \FML\Script\Features\Tooltip
+	 * @param string $text (optional) Text to display if the TooltipControl is a Label
+	 * @return \FML\Script\Features\Tooltip|static
 	 */
 	public function setText($text) {
-		$this->text = $text;
+		$this->text = (string)$text;
 		return $this;
 	}
 
@@ -110,20 +114,20 @@ class Tooltip extends ScriptFeature {
 	 * @see \FML\Script\Features\ScriptFeature::prepare()
 	 */
 	public function prepare(Script $script) {
-		$hoverControlId   = $this->hoverControl->getId(true);
-		$tooltipControlId = $this->tooltipControl->getId(true);
+		$hoverControlId   = $this->hoverControl->getId(true, true);
+		$tooltipControlId = $this->tooltipControl->getId(true, true);
 
 		// MouseOver
 		$visibility = ($this->invert ? 'False' : 'True');
 		$scriptText = "
-if (Event.Control.ControlId == \"{$hoverControlId}\") {
-	declare TooltipControl = Page.GetFirstChild(\"{$tooltipControlId}\");
+if (Event.Control.ControlId == {$hoverControlId}) {
+	declare TooltipControl = Page.GetFirstChild({$tooltipControlId});
 	TooltipControl.Visible = {$visibility};";
 		if (is_string($this->text) && ($this->tooltipControl instanceof Label)) {
-			$tooltipText = Builder::escapeText($this->text);
+			$tooltipText = Builder::escapeText($this->text, true);
 			$scriptText .= "
 	declare TooltipLabel = (TooltipControl as CMlLabel);
-	TooltipLabel.Value = \"{$tooltipText}\";";
+	TooltipLabel.Value = {$tooltipText};";
 		}
 		$scriptText .= "
 }";
@@ -132,8 +136,8 @@ if (Event.Control.ControlId == \"{$hoverControlId}\") {
 		// MouseOut
 		$visibility = ($this->invert ? 'True' : 'False');
 		$scriptText = "
-if (Event.Control.ControlId == \"{$hoverControlId}\") {
-	declare TooltipControl = Page.GetFirstChild(\"{$tooltipControlId}\");";
+if (Event.Control.ControlId == {$hoverControlId}) {
+	declare TooltipControl = Page.GetFirstChild({$tooltipControlId});";
 		if ($this->stayOnClick) {
 			$scriptText .= "
 	declare FML_Clicked for Event.Control = False;
@@ -147,7 +151,7 @@ if (Event.Control.ControlId == \"{$hoverControlId}\") {
 		// MouseClick
 		if ($this->stayOnClick) {
 			$scriptText = "
-if (Event.Control.ControlId == \"{$hoverControlId}\") {
+if (Event.Control.ControlId == {$hoverControlId}) {
 	declare FML_Clicked for Event.Control = False;
 	FML_Clicked = !FML_Clicked;
 }";

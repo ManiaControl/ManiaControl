@@ -20,7 +20,7 @@ use FML\Types\ScriptFeatureable;
  */
 class CheckBox implements Renderable, ScriptFeatureable {
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	protected $name = null;
 	protected $feature = null;
@@ -28,9 +28,9 @@ class CheckBox implements Renderable, ScriptFeatureable {
 	/**
 	 * Create a new CheckBox Component
 	 *
-	 * @param string $name    (optional) CheckBox Name
-	 * @param bool   $default (optional) Default Value
-	 * @param Quad   $quad    (optional) CheckBox Quad
+	 * @param string $name    (optional) CheckBox name
+	 * @param bool   $default (optional) Default value
+	 * @param Quad   $quad    (optional) CheckBox quad
 	 */
 	public function __construct($name = null, $default = null, Quad $quad = null) {
 		$this->feature = new CheckBoxFeature();
@@ -40,10 +40,10 @@ class CheckBox implements Renderable, ScriptFeatureable {
 	}
 
 	/**
-	 * Set the Name
+	 * Set the name
 	 *
-	 * @param string $name CheckBox Name
-	 * @return \FML\Components\CheckBox
+	 * @param string $name CheckBox name
+	 * @return \FML\Components\CheckBox|static
 	 */
 	public function setName($name) {
 		$this->name = (string)$name;
@@ -51,10 +51,10 @@ class CheckBox implements Renderable, ScriptFeatureable {
 	}
 
 	/**
-	 * Set the Default Value
+	 * Set the default value
 	 *
-	 * @param bool $default Default Value
-	 * @return \FML\Components\CheckBox
+	 * @param bool $default Default value
+	 * @return \FML\Components\CheckBox|static
 	 */
 	public function setDefault($default) {
 		$this->feature->setDefault($default);
@@ -62,28 +62,36 @@ class CheckBox implements Renderable, ScriptFeatureable {
 	}
 
 	/**
-	 * Set the Enabled Design
+	 * Set the enabled Design
 	 *
-	 * @param string $style    Style Name or Image Url
-	 * @param string $subStyle SubStyle Name
-	 * @return \FML\Components\CheckBox
+	 * @param string $style    Style name or image url
+	 * @param string $subStyle SubStyle name
+	 * @return \FML\Components\CheckBox|static
 	 */
 	public function setEnabledDesign($style, $subStyle = null) {
-		$checkBoxDesign = new CheckBoxDesign($style, $subStyle);
-		$this->feature->setEnabledDesign($checkBoxDesign);
+		if (is_object($style) && ($style instanceof CheckBoxDesign)) {
+			$this->feature->setEnabledDesign($style);
+		} else {
+			$checkBoxDesign = new CheckBoxDesign($style, $subStyle);
+			$this->feature->setEnabledDesign($checkBoxDesign);
+		}
 		return $this;
 	}
 
 	/**
-	 * Set the Disabled Design
+	 * Set the disabled Design
 	 *
-	 * @param string $style    Style Name or Image Url
-	 * @param string $subStyle SubStyle Name
-	 * @return \FML\Components\CheckBox
+	 * @param string $style    Style name or image url
+	 * @param string $subStyle SubStyle name
+	 * @return \FML\Components\CheckBox|static
 	 */
 	public function setDisabledDesign($style, $subStyle = null) {
-		$checkBoxDesign = new CheckBoxDesign($style, $subStyle);
-		$this->feature->setDisabledDesign($checkBoxDesign);
+		if (is_object($style) && ($style instanceof CheckBoxDesign)) {
+			$this->feature->setDisabledDesign($style);
+		} else {
+			$checkBoxDesign = new CheckBoxDesign($style, $subStyle);
+			$this->feature->setDisabledDesign($checkBoxDesign);
+		}
 		return $this;
 	}
 
@@ -91,7 +99,7 @@ class CheckBox implements Renderable, ScriptFeatureable {
 	 * Set the CheckBox Quad
 	 *
 	 * @param Quad $quad CheckBox Quad
-	 * @return \FML\Components\CheckBox
+	 * @return \FML\Components\CheckBox|static
 	 */
 	public function setQuad(Quad $quad = null) {
 		$this->feature->setQuad($quad);
@@ -143,8 +151,7 @@ class CheckBox implements Renderable, ScriptFeatureable {
 	 */
 	protected function buildEntry() {
 		$entry = new Entry();
-		$entry->setVisible(false);
-		$entry->setName($this->name);
+		$entry->setVisible(false)->setName($this->name);
 		return $entry;
 	}
 }

@@ -11,7 +11,7 @@ namespace FML\Script;
  */
 class ScriptConstant {
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	protected $name = null;
 	protected $value = null;
@@ -19,8 +19,8 @@ class ScriptConstant {
 	/**
 	 * Construct a new Script Constant
 	 *
-	 * @param string $name  (optional) Constant Name
-	 * @param string $value (optional) Constant Value
+	 * @param string $name  (optional) Constant name
+	 * @param string $value (optional) Constant value
 	 */
 	public function __construct($name = null, $value = null) {
 		$this->setName($name);
@@ -28,21 +28,21 @@ class ScriptConstant {
 	}
 
 	/**
-	 * Set the Name
+	 * Set the name
 	 *
-	 * @param string $name Constant Name
-	 * @return \FML\Script\ScriptConstant
+	 * @param string $name Constant name
+	 * @return \FML\Script\ScriptConstant|static
 	 */
 	public function setName($name) {
-		$this->name = $name;
+		$this->name = (string)$name;
 		return $this;
 	}
 
 	/**
-	 * Set the Value
+	 * Set the value
 	 *
-	 * @param string $value Constant Value
-	 * @return \FML\Script\ScriptConstant
+	 * @param string $value Constant value
+	 * @return \FML\Script\ScriptConstant|static
 	 */
 	public function setValue($value) {
 		$this->value = $value;
@@ -50,12 +50,11 @@ class ScriptConstant {
 	}
 
 	/**
-	 * Build the Script Constant Text
+	 * Build the Script Constant text
 	 *
 	 * @return string
 	 */
 	public function __toString() {
-		$scriptText = Builder::getConstant($this->name, $this->value);
-		return $scriptText;
+		return Builder::getConstant($this->name, $this->value);
 	}
 }

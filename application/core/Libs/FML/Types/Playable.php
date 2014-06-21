@@ -3,7 +3,7 @@
 namespace FML\Types;
 
 /**
- * Interface for Elements with Media Attributes
+ * Interface for Elements with media attributes
  *
  * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
@@ -12,50 +12,50 @@ namespace FML\Types;
 interface Playable {
 
 	/**
-	 * Set Data
+	 * Set data
 	 *
-	 * @param string $data Media Url
-	 * @return \FML\Types\Playable
+	 * @param string $data Media url
+	 * @return \FML\Types\Playable|static
 	 */
 	public function setData($data);
 
 	/**
-	 * Set Data Id to use from the Dico
+	 * Set data id to use from Dico
 	 *
-	 * @param string $dataId
-	 * @return \FML\Types\Playable
+	 * @param string $dataId Data id
+	 * @return \FML\Types\Playable|static
 	 */
 	public function setDataId($dataId);
 
 	/**
-	 * Set Play
+	 * Set play
 	 *
 	 * @param bool $play Whether the Control should start playing automatically
-	 * @return \FML\Types\Playable
+	 * @return \FML\Types\Playable|static
 	 */
 	public function setPlay($play);
 
 	/**
-	 * Set Looping
+	 * Set looping
 	 *
 	 * @param bool $looping Whether the Control should play looping
-	 * @return \FML\Types\Playable
+	 * @return \FML\Types\Playable|static
 	 */
 	public function setLooping($looping);
 
 	/**
-	 * Set Music
+	 * Set music
 	 *
-	 * @param bool $music Whether the Control represents Background Music
-	 * @return \FML\Types\Playable
+	 * @param bool $music Whether the Control represents background music
+	 * @return \FML\Types\Playable|static
 	 */
 	public function setMusic($music);
 
 	/**
-	 * Set Volume
+	 * Set volume
 	 *
-	 * @param float $volume Media Volume
-	 * @return \FML\Types\Playable
+	 * @param float $volume Media volume
+	 * @return \FML\Types\Playable|static
 	 */
 	public function setVolume($volume);
 }

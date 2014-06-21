@@ -3,7 +3,7 @@
 namespace FML\Types;
 
 /**
- * Interface for Elements supporting Script Features
+ * Interface for Elements supporting ScriptFeatures
  *
  * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
@@ -14,7 +14,7 @@ interface ScriptFeatureable {
 	/**
 	 * Get the assigned Script Features of the Element
 	 *
-	 * @return array
+	 * @return \FML\Script\Features\ScriptFeature[]
 	 */
 	public function getScriptFeatures();
 }

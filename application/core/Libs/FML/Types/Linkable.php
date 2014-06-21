@@ -3,7 +3,7 @@
 namespace FML\Types;
 
 /**
- * Interface for Elements with Url Attributes
+ * Interface for Elements with url attributes
  *
  * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
@@ -12,34 +12,34 @@ namespace FML\Types;
 interface Linkable {
 
 	/**
-	 * Set Url
+	 * Set url
 	 *
-	 * @param string $url Link Url
-	 * @return \FML\Types\Linkable
+	 * @param string $url Link url
+	 * @return \FML\Types\Linkable|static
 	 */
 	public function setUrl($url);
 
 	/**
-	 * Set Url Id to use from the Dico
+	 * Set url id to use from Dico
 	 *
-	 * @param string $urlId
-	 * @return \FML\Types\Linkable
+	 * @param string $urlId Url id
+	 * @return \FML\Types\Linkable|static
 	 */
 	public function setUrlId($urlId);
 
 	/**
-	 * Set Manialink
+	 * Set manialink
 	 *
-	 * @param string $manialink Manialink Name
-	 * @return \FML\Types\Linkable
+	 * @param string $manialink Manialink name
+	 * @return \FML\Types\Linkable|static
 	 */
 	public function setManialink($manialink);
 
 	/**
-	 * Set Manialink Id to use from the Dico
+	 * Set manialink id to use from Dico
 	 *
-	 * @param string $manialinkId Manialink Id
-	 * @return \FML\Types\Linkable
+	 * @param string $manialinkId Manialink id
+	 * @return \FML\Types\Linkable|static
 	 */
 	public function setManialinkId($manialinkId);
 }

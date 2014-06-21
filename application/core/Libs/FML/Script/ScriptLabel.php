@@ -3,7 +3,7 @@
 namespace FML\Script;
 
 /**
- * Class representing a Part of the ManiaLink Script
+ * Class representing a part of the ManiaLink Script
  *
  * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
@@ -23,7 +23,7 @@ class ScriptLabel {
 	const MOUSEOVER   = 'FML_MouseOver';
 
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
 	protected $name = null;
 	protected $text = null;
@@ -32,21 +32,21 @@ class ScriptLabel {
 	/**
 	 * Construct a new ScriptLabel
 	 *
-	 * @param string $name     (optional) Label Name
-	 * @param string $text     (optional) Script Text
+	 * @param string $name     (optional) Label name
+	 * @param string $text     (optional) Script text
 	 * @param bool   $isolated (optional) Isolate the Label Script
 	 */
-	public function __construct($name = self::LOOP, $text = '', $isolated = false) {
+	public function __construct($name = self::LOOP, $text = null, $isolated = false) {
 		$this->setName($name);
 		$this->setText($text);
 		$this->setIsolated($isolated);
 	}
 
 	/**
-	 * Set the Name
+	 * Set the name
 	 *
-	 * @param string $name Label Name
-	 * @return \FML\Script\ScriptLabel
+	 * @param string $name Label name
+	 * @return \FML\Script\ScriptLabel|static
 	 */
 	public function setName($name) {
 		$this->name = (string)$name;
@@ -54,10 +54,10 @@ class ScriptLabel {
 	}
 
 	/**
-	 * Set the Text
+	 * Set the text
 	 *
-	 * @param string $text Script Text
-	 * @return \FML\Script\ScriptLabel
+	 * @param string $text Script text
+	 * @return \FML\Script\ScriptLabel|static
 	 */
 	public function setText($text) {
 		$this->text = (string)$text;
@@ -65,10 +65,10 @@ class ScriptLabel {
 	}
 
 	/**
-	 * Set Isolation
+	 * Set isolation
 	 *
-	 * @param bool $isolated Whether the Code should be isolated in an own Block
-	 * @return \FML\Script\ScriptLabel
+	 * @param bool $isolated Whether the code should be isolated in an own block
+	 * @return \FML\Script\ScriptLabel|static
 	 */
 	public function setIsolated($isolated) {
 		$this->isolated = (bool)$isolated;
@@ -76,35 +76,33 @@ class ScriptLabel {
 	}
 
 	/**
-	 * Check if the given Label is an Event Label
+	 * Check if the given label is an event label
 	 *
-	 * @param string $label Label Name
+	 * @param string $label Label name
 	 * @return bool
 	 */
 	public static function isEventLabel($label) {
-		$eventLabels = self::getEventLabels();
-		if (in_array($label, $eventLabels)) {
+		if (in_array($label, static::getEventLabels())) {
 			return true;
 		}
 		return false;
 	}
 
 	/**
-	 * Get the possible Event Label Names
+	 * Get the possible event label names
 	 *
-	 * @return array
+	 * @return string[]
 	 */
 	public static function getEventLabels() {
 		return array(self::ENTRYSUBMIT, self::KEYPRESS, self::MOUSECLICK, self::MOUSEOUT, self::MOUSEOVER);
 	}
 
 	/**
-	 * Build the full Script Label Text
+	 * Build the full Script Label text
 	 *
 	 * @return string
 	 */
 	public function __toString() {
-		$scriptText = Builder::getLabelImplementationBlock($this->name, $this->text, $this->isolated);
-		return $scriptText;
+		return Builder::getLabelImplementationBlock($this->name, $this->text, $this->isolated);
 	}
 }

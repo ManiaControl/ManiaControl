@@ -5,7 +5,7 @@ namespace FML\Script\Features;
 use FML\Controls\Control;
 
 /**
- * A Page Control
+ * Paging Page
  *
  * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
@@ -13,8 +13,9 @@ use FML\Controls\Control;
  */
 class PagingPage {
 	/*
-	 * Protected Properties
+	 * Protected properties
 	 */
+	/** @var Control $control */
 	protected $control = null;
 	protected $number = null;
 
@@ -25,7 +26,9 @@ class PagingPage {
 	 * @param int     $pageNumber (optional) Number of the Page
 	 */
 	public function __construct(Control $control = null, $pageNumber = 1) {
-		$this->setControl($control);
+		if (!is_null($control)) {
+			$this->setControl($control);
+		}
 		$this->setPageNumber($pageNumber);
 	}
 
@@ -33,11 +36,10 @@ class PagingPage {
 	 * Set the Page Control
 	 *
 	 * @param Control $control Page Control
-	 * @return \FML\Script\Features\PagingPage
+	 * @return \FML\Script\Features\PagingPage|static
 	 */
 	public function setControl(Control $control) {
-		$control->checkId();
-		$this->control = $control;
+		$this->control = $control->checkId();
 		return $this;
 	}
 
@@ -51,10 +53,10 @@ class PagingPage {
 	}
 
 	/**
-	 * Set the Page Number
+	 * Set the Page number
 	 *
 	 * @param int $pageNumber Number of the Page
-	 * @return \FML\Script\Features\PagingPage
+	 * @return \FML\Script\Features\PagingPage|static
 	 */
 	public function setPageNumber($pageNumber) {
 		$this->number = (int)$pageNumber;
@@ -62,7 +64,7 @@ class PagingPage {
 	}
 
 	/**
-	 * Get the Page Number
+	 * Get the Page number
 	 *
 	 * @return int
 	 */

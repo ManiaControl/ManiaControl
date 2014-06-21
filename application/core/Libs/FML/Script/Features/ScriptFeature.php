@@ -13,15 +13,13 @@ use FML\Types\ScriptFeatureable;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 abstract class ScriptFeature {
-
 	/**
-	 * Collect the Script Features of the given Objects
+	 * Collect the Script Features of the given objects
 	 *
-	 * @param object $scriptFeatureable ScriptFeatureable Object
-	 * @param object $_                 (optional) Various Amount of additional Objects
-	 * @return array
+	 * @param ScriptFeatureable $objects (optional) Various amount of ScriptFeatureable objects
+	 * @return ScriptFeature[]
 	 */
-	public static function collect($scriptFeatureable, $_ = null) {
+	public static function collect() {
 		$params         = func_get_args();
 		$scriptFeatures = array();
 		foreach ($params as $object) {
@@ -35,10 +33,10 @@ abstract class ScriptFeature {
 	}
 
 	/**
-	 * Prepare the given Script for Rendering by adding the needed Labels, etc.
+	 * Prepare the given Script for rendering by adding the needed Labels, etc.
 	 *
 	 * @param Script $script Script to prepare
-	 * @return \FML\Script\Features\ScriptFeature
+	 * @return \FML\Script\Features\ScriptFeature|static
 	 */
 	public abstract function prepare(Script $script);
 }
