@@ -12,9 +12,7 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Utils\Formatter;
 use Maniaplanet\DedicatedServer\Xmlrpc\AlreadyInListException;
-use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 use Maniaplanet\DedicatedServer\Xmlrpc\FaultException;
-use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
 use Maniaplanet\DedicatedServer\Xmlrpc\NotInListException;
 use Maniaplanet\DedicatedServer\Xmlrpc\PlayerStateException;
 use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
@@ -89,13 +87,20 @@ class PlayerActions {
 			return;
 		}
 
-		if ($target->isSpectator && !$this->forcePlayerToPlay($adminLogin, $targetLogin, true, false)) {
-			return;
+		if ($target->isSpectator) {
+			try {
+				if (!$this->forcePlayerToPlay($adminLogin, $targetLogin, true, false)) {
+					return;
+				}
+			} catch (FaultException $exception) {
+				$this->maniaControl->chat->sendException($exception, $admin);
+			}
 		}
 
 		try {
 			$this->maniaControl->client->forcePlayerTeam($target->login, $teamId);
-		} catch (GameModeException $e) {
+		} catch (FaultException $exception) {
+			// TODO: replace by more specific exception "there are too many ..."
 			$this->forcePlayerToPlay($adminLogin, $targetLogin);
 			return;
 		}
@@ -136,17 +141,18 @@ class PlayerActions {
 
 		try {
 			$this->maniaControl->client->forceSpectator($target->login, self::SPECTATOR_PLAYER);
-		} catch (FaultException $e) {
-			//TODO exception 'There are too many players' appeared 28.04.2014, wait for more before add to fault exception
-			$this->maniaControl->chat->sendException($e, $admin);
+		} catch (FaultException $exception) {
+			// TODO: replace by more specific exception "there are too many ..."
+			$this->maniaControl->chat->sendException($exception, $admin);
 			return false;
 		}
 
 		if ($userIsAbleToSelect) {
 			try {
 				$this->maniaControl->client->forceSpectator($target->login, self::SPECTATOR_USER_SELECTABLE);
-			} catch (Exception $e) {
-				$this->maniaControl->chat->sendException($e, $admin);
+			} catch (FaultException $exception) {
+				// TODO: replace by more specific exception "there are too many ..."
+				$this->maniaControl->chat->sendException($exception, $admin);
 				return;
 			}
 		}
@@ -183,8 +189,9 @@ class PlayerActions {
 
 		try {
 			$this->maniaControl->client->forceSpectator($target->login, $spectatorState);
-		} catch (Exception $e) {
-			$this->maniaControl->chat->sendException($e, $admin->login);
+		} catch (FaultException $exception) {
+			// TODO: replace by more specific exception "There are too many spectators"
+			$this->maniaControl->chat->sendException($exception, $admin->login);
 			return;
 		}
 
