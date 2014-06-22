@@ -40,7 +40,7 @@ class Chat {
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_PREFIX, '» ');
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_FORMAT_INFORMATION, '$fff');
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_FORMAT_SUCCESS, '$0f0');
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_FORMAT_ERROR, '$f00');
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_FORMAT_ERROR, '$f30');
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_FORMAT_USAGEINFO, '$f80');
 	}
 
