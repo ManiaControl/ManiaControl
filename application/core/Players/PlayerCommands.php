@@ -10,7 +10,7 @@ use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Server\Server;
-use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
+use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
 
 /**
  * Class offering various Admin Commands related to Players
@@ -103,14 +103,12 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 
 		try {
 			$this->maniaControl->client->autoTeamBalance();
-		} catch (Exception $e) {
-			$this->maniaControl->errorHandler->triggerDebugNotice("PlayerCommands Debug Line 112: " . $e->getMessage());
-			// TODO: only catch 'not in team mode' exception - throw others (like connection error)
-			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
+		} catch (GameModeException $exception) {
+			$this->maniaControl->chat->sendException($exception, $player);
 			return;
 		}
 
-		$this->maniaControl->chat->sendInformation('$<' . $player->nickname . '$> balanced Teams!');
+		$this->maniaControl->chat->sendInformation($player->getEscapedNickname() . ' balanced Teams!');
 	}
 
 	/**

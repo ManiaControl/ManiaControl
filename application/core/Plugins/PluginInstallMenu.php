@@ -243,7 +243,6 @@ class PluginInstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
 	 */
 	public function saveConfigData(array $configData, Player $player) {
-		// TODO: Implement saveConfigData() method.
 	}
 
 	/**
