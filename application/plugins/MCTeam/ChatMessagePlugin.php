@@ -6,7 +6,6 @@ use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Plugins\Plugin;
-use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
 
 /**
@@ -362,11 +361,8 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		$message = '$39F Thanks for Playing, see you around!$z';
 		try {
 			$this->maniaControl->client->kick($player->login, $message);
-		} catch (Exception $e) {
-			$this->maniaControl->errorHandler->triggerDebugNotice("ChatMessagePlugin Debug Line 316: " . $e->getMessage());
-			// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
-			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
-			return;
+		} catch (UnknownPlayerException $exception) {
+			$this->maniaControl->chat->sendException($exception, $player);
 		}
 	}
 
@@ -377,12 +373,11 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	 * @param Player $player
 	 */
 	public function chat_ragequit(array $chat, Player $player) {
-		$msg = '$i$ff0 $<' . $player->nickname . '$>$s$f00 said: "@"#!" and ragequitted!';
-		$this->maniaControl->chat->sendChat($msg, null, true);
-
-		$message = '$39F Thanks for Playing, please come back soon!$z ';
 		try {
+			$message = '$39F Thanks for Playing, please come back soon!$z ';
 			$this->maniaControl->client->kick($player->login, $message);
+			$msg = '$i$ff0 $<' . $player->nickname . '$>$s$f00 said: "@"#!" and ragequitted!';
+			$this->maniaControl->chat->sendChat($msg, null, true);
 		} catch (UnknownPlayerException $e) {
 			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player);
 		}
@@ -398,31 +393,21 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		$msg = '$ff0[$<' . $player->nickname . '$>] $ff0$iAway From Keyboard!';
 		$this->maniaControl->chat->sendChat($msg, null, false);
 
-		if ($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_AFK_FORCE_SPEC)) {
-			if ($player->isSpectator) {
-				return;
-			}
+		if (!$this->maniaControl->settingManager->getSettingValue($this, self::SETTING_AFK_FORCE_SPEC)) {
+			return;
+		}
+		if ($player->isSpectator) {
+			return;
+		}
 
-			// force into spec
-			try {
-				$this->maniaControl->client->forceSpectator($player->login, 3);
-			} catch (Exception $e) {
-				$this->maniaControl->errorHandler->triggerDebugNotice("ChatMessagePlugin Debug Line " . $e->getLine() . ": " . $e->getMessage());
-				// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
-				$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player->login);
-				return;
-			}
-
-			// free player slot
-			try {
-				$this->maniaControl->client->spectatorReleasePlayerSlot($player->login);
-			} catch (Exception $e) {
-				if ($e->getMessage() !== 'The player is not a spectator') {
-					$this->maniaControl->errorHandler->triggerDebugNotice("ChatMessagePlugin Debug Line " . $e->getLine() . ": " . $e->getMessage());
-					// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
-					//to nothing
-				}
-			}
+		try {
+			// Force into spec
+			$this->maniaControl->client->forceSpectator($player->login, 3);
+			// Free player slot
+			$this->maniaControl->client->spectatorReleasePlayerSlot($player->login);
+		} catch (UnknownPlayerException $exception) {
+			$this->maniaControl->chat->sendException($exception, $player);
+			return;
 		}
 	}
 }
