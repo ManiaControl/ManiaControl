@@ -61,21 +61,11 @@ class SettingManager implements CallbackListener {
 				PRIMARY KEY (`index`),
 				UNIQUE KEY `settingId` (`class`,`setting`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Settings and Configurations' AUTO_INCREMENT=1;";
-		$result1           = $mysqli->query($settingTableQuery);
+		$result            = $mysqli->query($settingTableQuery);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error, E_USER_ERROR);
 		}
-		// TODO: remove (added in 0.143)
-		$alterTableQuery1 = "ALTER TABLE `" . self::TABLE_SETTINGS . "`
-				CHANGE `type` `type` VARCHAR(50) NOT NULL;";
-		$result2          = $mysqli->query($alterTableQuery1);
-		if ($mysqli->error) {
-			trigger_error($mysqli->error);
-		}
-		$alterTableQuery2 = "ALTER TABLE `" . self::TABLE_SETTINGS . "`
-				ADD `set` VARCHAR(100) NOT NULL;";
-		$mysqli->query($alterTableQuery2);
-		return ($result1 && $result2);
+		return $result;
 	}
 
 	/**
