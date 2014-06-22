@@ -149,6 +149,7 @@ class DynamicPointLimitPlugin implements CallbackListener, CommandListener, Plug
 				$this->maniaControl->chat->sendInformation($message);
 				$this->lastPointLimit = $pointLimit;
 			} catch (GameModeException $exception) {
+				$this->maniaControl->chat->sendExceptionToAdmins($exception);
 			}
 		}
 	}
