@@ -154,16 +154,16 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			// Clear Map-Queue
 			$label = new Label_Button();
 			$frame->add($label);
-			$label->setText("Clear Map-Queue");
+			$label->setText('Clear Map-Queue');
 			$label->setTextSize(1);
 			$label->setPosition($width / 2 - 8, -$height / 2 + 9);
-			$label->setHAlign(Control::RIGHT);
+			$label->setHAlign($label::RIGHT);
 
 			$quad = new Quad_BgsPlayerCard();
 			$frame->add($quad);
 			$quad->setPosition($width / 2 - 5, -$height / 2 + 9, 0.01);
 			$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
-			$quad->setHAlign(Control::RIGHT);
+			$quad->setHAlign($quad::RIGHT);
 			$quad->setSize(29, 4);
 			$quad->setAction(self::ACTION_CLEAR_MAPQUEUE);
 		}
@@ -172,16 +172,16 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			// Check Update
 			$label = new Label_Button();
 			$frame->add($label);
-			$label->setText("Check MX Updates");
+			$label->setText('Check MX for Updates');
 			$label->setTextSize(1);
 			$label->setPosition($width / 2 - 41, -$height / 2 + 9, 0.01);
-			$label->setHAlign(Control::RIGHT);
+			$label->setHAlign($label::RIGHT);
 
 			$quad = new Quad_BgsPlayerCard();
 			$frame->add($quad);
 			$quad->setPosition($width / 2 - 37, -$height / 2 + 9, 0.01);
 			$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
-			$quad->setHAlign(Control::RIGHT);
+			$quad->setHAlign($quad::RIGHT);
 			$quad->setSize(35, 4);
 			$quad->setAction(self::ACTION_CHECK_UPDATE);
 

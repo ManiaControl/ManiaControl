@@ -321,7 +321,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 		$descriptionLabel = new Label();
 		$descriptionFrame->add($descriptionLabel);
-		$descriptionLabel->setAlign(Control::RIGHT, Control::TOP);
+		$descriptionLabel->setAlign($descriptionLabel::RIGHT, $descriptionLabel::TOP);
 		$descriptionLabel->setSize(40, 4);
 		$descriptionLabel->setTextSize(1.4);
 		$descriptionLabel->setTextColor('fff');
@@ -330,13 +330,13 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$popoutFrame = new Frame();
 		$maniaLink->add($popoutFrame);
 		$popoutFrame->setPosition($posX - $itemSize * 0.5, $posY);
-		$popoutFrame->setHAlign(Control::RIGHT);
+		$popoutFrame->setHAlign($popoutFrame::RIGHT);
 		$popoutFrame->setSize(4 * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
 		$popoutFrame->setVisible(false);
 
 		$backgroundQuad = new Quad();
 		$popoutFrame->add($backgroundQuad);
-		$backgroundQuad->setHAlign(Control::RIGHT);
+		$backgroundQuad->setHAlign($backgroundQuad::RIGHT);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 		$backgroundQuad->setSize($menuEntries * $itemSize * 1.15 + 2, $itemSize * $itemMarginFactorY);
 

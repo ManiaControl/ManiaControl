@@ -108,7 +108,7 @@ class StyleManager {
 
 		// Predefine Description Label
 		$descriptionLabel = new Label();
-		$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
+		$descriptionLabel->setAlign($descriptionLabel::LEFT, $descriptionLabel::TOP);
 		$descriptionLabel->setPosition(-$width / 2 + 10, -$height / 2 + 5);
 		$descriptionLabel->setSize($width * 0.7, 4);
 		$descriptionLabel->setTextSize(2);
@@ -198,7 +198,7 @@ class StyleManager {
 
 			$pageCountLabel = new Label_Text();
 			$frame->add($pageCountLabel);
-			$pageCountLabel->setHAlign(Control::RIGHT);
+			$pageCountLabel->setHAlign($pageCountLabel::RIGHT);
 			$pageCountLabel->setPosition($width * 0.40, $height * -0.44, 1);
 			$pageCountLabel->setStyle($pageCountLabel::STYLE_TextTitle1);
 			$pageCountLabel->setTextSize(1.3);

@@ -79,14 +79,14 @@ class PlayerDetailed {
 		$countryQuad->setPosition(-$this->width / 2 + 10, $posY);
 		$countryQuad->setSize(5, 5);
 		$countryQuad->setZ(-0.1);
-		$countryQuad->setHAlign(Control::LEFT);
+		$countryQuad->setHAlign($countryQuad::LEFT);
 
 		//Nickname
 		$label = new Label_Text();
 		$frame->add($label);
 		$label->setPosition(-$this->width / 2 + 15, $posY);
 		$label->setText($target->nickname);
-		$label->setHAlign(Control::LEFT);
+		$label->setHAlign($label::LEFT);
 
 
 		//Define MainLabel (Login)
@@ -95,26 +95,26 @@ class PlayerDetailed {
 		$frame->add($mainLabel);
 		$mainLabel->setPosition(-$this->width / 2 + 10, $posY);
 		$mainLabel->setTextSize(1.2);
-		$mainLabel->setHAlign(Control::LEFT);
-		$mainLabel->setText("Login:");
+		$mainLabel->setHAlign($mainLabel::LEFT);
+		$mainLabel->setText('Login: ');
 
 		$posY -= 5;
 		$label = clone $mainLabel;
 		$frame->add($label);
 		$label->setY($posY);
-		$label->setText("Nation: ");
+		$label->setText('Nation: ');
 
 		$posY -= 5;
 		$label = clone $mainLabel;
 		$frame->add($label);
 		$label->setY($posY);
-		$label->setText("Province:");
+		$label->setText('Province: ');
 
 		$posY -= 5;
 		$label = clone $mainLabel;
 		$frame->add($label);
 		$label->setY($posY);
-		$label->setText("Authorization:");
+		$label->setText('Authorization: ');
 
 		$posY -= 5;
 		$label = clone $mainLabel;
@@ -126,13 +126,13 @@ class PlayerDetailed {
 		$label = clone $mainLabel;
 		$frame->add($label);
 		$label->setY($posY);
-		$label->setText("Ladder Score:");
+		$label->setText('Ladder Score: ');
 
 		$posY -= 5;
 		$label = clone $mainLabel;
 		$frame->add($label);
 		$label->setY($posY);
-		$label->setText("Inscribed Zone:");
+		$label->setText('Inscribed Zone: ');
 
 		$posY -= 5;
 		$label = clone $mainLabel;
@@ -147,7 +147,7 @@ class PlayerDetailed {
 		$mainLabel->setPosition(-$this->width / 2 + 30, $posY);
 		$mainLabel->setText($target->login);
 		$mainLabel->setTextSize(1.2);
-		$mainLabel->setHAlign(Control::LEFT);
+		$mainLabel->setHAlign($mainLabel::LEFT);
 
 		//Country
 		$posY -= 5;
@@ -189,13 +189,13 @@ class PlayerDetailed {
 		$label = clone $mainLabel;
 		$frame->add($label);
 		$label->setY($posY);
-		$label->setText(date("d M Y", time() - 3600 * 24 * $target->daysSinceZoneInscription));
+		$label->setText(date('d M Y', time() - 3600 * 24 * $target->daysSinceZoneInscription));
 
 		$quad = new Quad();
 		$frame->add($quad);
 		$quad->setImage('file://Avatars/' . $targetLogin . "/default");
 		$quad->setPosition(-$this->width / 2 + 50, -$this->height / 2 + 34);
-		$quad->setAlign(Control::RIGHT, Control::TOP);
+		$quad->setAlign($quad::RIGHT, $quad::TOP);
 		$quad->setSize(20, 20);
 
 		//Statistics
@@ -205,9 +205,9 @@ class PlayerDetailed {
 		$quad = new Label_Button();
 		$frame->add($quad);
 		$quad->setStyle($quad::STYLE_CardMain_Quit);
-		$quad->setHAlign(Control::LEFT);
+		$quad->setHAlign($quad::LEFT);
 		$quad->setScale(0.75);
-		$quad->setText("Back");
+		$quad->setText('Back');
 		$quad->setPosition(-$this->width / 2 + 7, -$this->height / 2 + 7);
 		$quad->setAction(PlayerCommands::ACTION_OPEN_PLAYERLIST);
 
@@ -248,14 +248,14 @@ class PlayerDetailed {
 				$lineQuad->setSize(49, 4);
 				$lineQuad->setSubStyle($lineQuad::SUBSTYLE_BgPlayerCardBig);
 				$lineQuad->setPosition($posX, $posY, 0.001);
-				$lineQuad->setHAlign(Control::LEFT);
+				$lineQuad->setHAlign($lineQuad::LEFT);
 			}
 
 			$label = new Label_Text();
 			$frame->add($label);
 			$label->setPosition($posX + 4, $posY);
 			$label->setText($statProperties->name);
-			$label->setHAlign(Control::LEFT);
+			$label->setHAlign($label::LEFT);
 			$label->setTextSize(1.5);
 
 			$label = new Label_Text();

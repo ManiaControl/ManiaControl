@@ -152,13 +152,13 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 
 			$nameLabel = new Label_Text();
 			$settingFrame->add($nameLabel);
-			$nameLabel->setHAlign(Control::LEFT);
+			$nameLabel->setHAlign($nameLabel::LEFT);
 			$nameLabel->setX($width * -0.46);
 			$nameLabel->setSize($width * 0.6, $settingHeight);
 			$nameLabel->setStyle($nameLabel::STYLE_TextCardSmall);
 			$nameLabel->setTextSize($labelTextSize);
 			$nameLabel->setText($setting->setting);
-			$nameLabel->setTextColor("FFF");
+			$nameLabel->setTextColor('fff');
 
 			$settingName = self::ACTION_PREFIX_SETTING . $setting->index;
 			if ($setting->type === Setting::TYPE_BOOL) {

@@ -2,7 +2,6 @@
 
 namespace ManiaControl\Statistics;
 
-use FML\Controls\Control;
 use FML\Controls\Frame;
 use FML\Controls\Label;
 use FML\Controls\Labels\Label_Text;
@@ -155,7 +154,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		// Predefine Description Label
 		$descriptionLabel = new Label();
 		$frame->add($descriptionLabel);
-		$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
+		$descriptionLabel->setAlign($descriptionLabel::LEFT, $descriptionLabel::TOP);
 		$descriptionLabel->setPosition($xStart + 10, -$height / 2 + 5);
 		$descriptionLabel->setSize($width * 0.7, 4);
 		$descriptionLabel->setTextSize(2);
@@ -203,10 +202,8 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		}
 
 		// define standard properties
-		$hAlign    = Control::LEFT;
-		$style     = Label_Text::STYLE_TextCardSmall;
 		$textSize  = 1.5;
-		$textColor = 'FFF';
+		$textColor = 'fff';
 		$index     = 1;
 		$posY -= 10;
 
@@ -260,9 +257,9 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 			foreach ($displayArray as $key => $array) {
 				$label = new Label_Text();
 				$playerFrame->add($label);
-				$label->setHAlign($hAlign);
+				$label->setHAlign($label::LEFT);
 				$label->setX($posX);
-				$label->setStyle($style);
+				$label->setStyle($label::STYLE_TextCardSmall);
 				$label->setTextSize($textSize);
 				$label->setText($array['Value']);
 				$label->setTextColor($textColor);

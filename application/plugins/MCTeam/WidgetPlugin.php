@@ -269,9 +269,9 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$label = new Label_Text();
 		$frame->add($label);
 		$label->setPosition(0, 1.5, 0.2);
-		$label->setVAlign(Control::TOP);
+		$label->setVAlign($label::TOP);
 		$label->setTextSize(1);
-		$label->setTextColor("FFF");
+		$label->setTextColor('fff');
 		$label->addClockFeature(false);
 
 		// Send manialink
@@ -319,17 +319,18 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$label->setSize($width - 5, $height);
 		$label->setTextSize(1.3);
 		$label->setText(Formatter::stripDirtyCodes($serverName));
-		$label->setTextColor("FFF");
+		$label->setTextColor('fff');
 		//$label->setAutoNewLine(true);
+
 		// Player Quad / Label
 		$label = new Label_Text();
 		$frame->add($label);
 		$label->setPosition(-$width / 2 + 9, -1.5, 0.2);
-		$label->setHAlign(Control::LEFT);
+		$label->setHAlign($label::LEFT);
 		$label->setTextSize(1);
 		$label->setScale(0.8);
 		$label->setText($playerCount . " / " . $maxPlayers['NextValue']);
-		$label->setTextColor("FFF");
+		$label->setTextColor('fff');
 
 		$quad = new Quad_Icons128x128_1();
 		$frame->add($quad);
@@ -341,11 +342,11 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$label = new Label_Text();
 		$frame->add($label);
 		$label->setPosition(2, -1.5, 0.2);
-		$label->setHAlign(Control::LEFT);
+		$label->setHAlign($label::LEFT);
 		$label->setTextSize(1);
 		$label->setScale(0.8);
 		$label->setText($spectatorCount . " / " . $maxSpectators['NextValue']);
-		$label->setTextColor("FFF");
+		$label->setTextColor('fff');
 
 		$quad = new Quad_Icons64x64_1();
 		$frame->add($quad);

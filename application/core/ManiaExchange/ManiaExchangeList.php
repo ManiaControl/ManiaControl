@@ -245,7 +245,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 				$awardLabel = new Label_Text();
 				$mapFrame->add($awardLabel);
 				$awardLabel->setX($posX + 98.5);
-				$awardLabel->setHAlign(Control::LEFT);
+				$awardLabel->setHAlign($awardLabel::LEFT);
 				$awardLabel->setText($map->awards);
 				$awardLabel->setTextSize(1.3);
 			}
@@ -283,14 +283,14 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		$label = new Label_Text();
 		$frame->add($label);
 		$label->setPosition(-$width / 2 + 5, $height / 2 - 5);
-		$label->setHAlign(Control::LEFT);
+		$label->setHAlign($label::LEFT);
 		$label->setTextSize(1.3);
-		$label->setText("Search:");
+		$label->setText('Search: ');
 
 		$entry = new Entry();
 		$frame->add($entry);
 		$entry->setStyle(Label_Text::STYLE_TextValueSmall);
-		$entry->setHAlign(Control::LEFT);
+		$entry->setHAlign($entry::LEFT);
 		$entry->setPosition(-$width / 2 + 15, $height / 2 - 5);
 		$entry->setTextSize(1);
 		$entry->setSize($width * 0.25, 4);
@@ -301,7 +301,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		$label = new Label_Button();
 		$frame->add($label);
 		$label->setPosition(-$width / 2 + 63, $height / 2 - 5);
-		$label->setText("MapName");
+		$label->setText('MapName');
 		$label->setTextSize(1.3);
 
 		$quad = new Quad_BgsPlayerCard();
@@ -315,7 +315,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		$label = new Label_Button();
 		$frame->add($label);
 		$label->setPosition(-$width / 2 + 82, $height / 2 - 5);
-		$label->setText("Author");
+		$label->setText('Author');
 		$label->setTextSize(1.3);
 
 		$quad = new Quad_BgsPlayerCard();

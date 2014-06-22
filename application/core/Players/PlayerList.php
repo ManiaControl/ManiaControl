@@ -2,7 +2,6 @@
 
 namespace ManiaControl\Players;
 
-use FML\Controls\Control;
 use FML\Controls\Frame;
 use FML\Controls\Labels\Label_Button;
 use FML\Controls\Labels\Label_Text;
@@ -436,10 +435,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$posX      = $width / 2 + 2.5;
 		$width     = 35;
 		$height    = $height * 0.75;
-		$hAlign    = Control::LEFT;
-		$style     = Label_Text::STYLE_TextCardSmall;
 		$textSize  = 1.5;
-		$textColor = 'FFF';
+		$textColor = 'fff';
 		$quadWidth = $width - 7;
 
 		// mainframe
@@ -452,7 +449,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$frame->add($closeQuad);
 		$closeQuad->setPosition($width * 0.4, $height * 0.43, 3);
 		$closeQuad->setSize(6, 6);
-		$closeQuad->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_QuitRace);
+		$closeQuad->setSubStyle($closeQuad::SUBSTYLE_QuitRace);
 		$closeQuad->setAction(self::ACTION_CLOSE_PLAYER_ADV);
 
 		// Background Quad
@@ -473,10 +470,10 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		// Show headline
 		$label = new Label_Text();
 		$frame->add($label);
-		$label->setHAlign($hAlign);
+		$label->setHAlign($label::LEFT);
 		$label->setX(-$width / 2 + 5);
 		$label->setY($height / 2 - 5);
-		$label->setStyle($style);
+		$label->setStyle($label::STYLE_TextCardSmall);
 		$label->setTextSize($textSize);
 		$label->setText('Advanced Actions');
 		$label->setTextColor($textColor);
@@ -484,10 +481,10 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		// Show Nickname
 		$label = new Label_Text();
 		$frame->add($label);
-		$label->setHAlign($hAlign);
+		$label->setHAlign($label::LEFT);
 		$label->setX(0);
 		$label->setY($height / 2 - 8);
-		$label->setStyle($style);
+		$label->setStyle($label::STYLE_TextCardSmall);
 		$label->setTextSize($textSize);
 		$label->setText($player->nickname);
 		$label->setTextColor($textColor);
@@ -505,7 +502,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$frame->add($label);
 		$label->setX(0);
 		$label->setY($posY);
-		$label->setStyle($style);
+		$label->setStyle($label::STYLE_TextCardSmall);
 		$label->setTextSize($textSize);
 		$label->setTextColor($textColor);
 

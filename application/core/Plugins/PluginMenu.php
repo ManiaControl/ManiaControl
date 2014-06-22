@@ -4,7 +4,6 @@ namespace ManiaControl\Plugins;
 
 use FML\Components\CheckBox;
 use FML\Components\ValuePicker;
-use FML\Controls\Control;
 use FML\Controls\Entry;
 use FML\Controls\Frame;
 use FML\Controls\Label;
@@ -113,7 +112,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 
 		$pageCountLabel = new Label_Text();
 		$frame->add($pageCountLabel);
-		$pageCountLabel->setHAlign(Control::RIGHT);
+		$pageCountLabel->setHAlign($pageCountLabel::RIGHT);
 		$pageCountLabel->setPosition($width * 0.35, $height * -0.44, 1);
 		$pageCountLabel->setStyle($pageCountLabel::STYLE_TextTitle1);
 		$pageCountLabel->setTextSize(2);
@@ -165,7 +164,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 
 			$nameLabel = new Label_Text();
 			$pluginFrame->add($nameLabel);
-			$nameLabel->setHAlign(Control::LEFT);
+			$nameLabel->setHAlign($nameLabel::LEFT);
 			$nameLabel->setX($width * -0.4);
 			$nameLabel->setSize($width * 0.5, $entryHeight);
 			$nameLabel->setStyle($nameLabel::STYLE_TextCardSmall);
@@ -174,7 +173,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 
 			$descriptionLabel = new Label();
 			$pageFrame->add($descriptionLabel);
-			$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
+			$descriptionLabel->setAlign($descriptionLabel::LEFT, $descriptionLabel::TOP);
 			$descriptionLabel->setPosition($width * -0.45, $height * -0.22);
 			$descriptionLabel->setSize($width * 0.7, $entryHeight);
 			$descriptionLabel->setTextSize(2);
@@ -196,7 +195,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 
 			$statusChangeButton = new Label_Button();
 			$pluginFrame->add($statusChangeButton);
-			$statusChangeButton->setHAlign(Control::RIGHT);
+			$statusChangeButton->setHAlign($statusChangeButton::RIGHT);
 			$statusChangeButton->setX($width * 0.45);
 			$statusChangeButton->setStyle($statusChangeButton::STYLE_CardButtonSmall);
 			if ($active) {
@@ -225,7 +224,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 		if ($pluginUpdates) {
 			$updatePluginsButton = new Label_Button();
 			$frame->add($updatePluginsButton);
-			$updatePluginsButton->setHAlign(Control::RIGHT);
+			$updatePluginsButton->setHAlign($updatePluginsButton::RIGHT);
 			$updatePluginsButton->setPosition($width * 0.5, -29, 2);
 			$updatePluginsButton->setWidth(10);
 			$updatePluginsButton->setStyle($updatePluginsButton::STYLE_CardButtonSmallS);
@@ -282,13 +281,13 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 
 			$nameLabel = new Label_Text();
 			$settingFrame->add($nameLabel);
-			$nameLabel->setHAlign(Control::LEFT);
+			$nameLabel->setHAlign($nameLabel::LEFT);
 			$nameLabel->setX($width * -0.46);
 			$nameLabel->setSize($width * 0.6, $settingHeight);
 			$nameLabel->setStyle($nameLabel::STYLE_TextCardSmall);
 			$nameLabel->setTextSize(2);
 			$nameLabel->setText($setting->setting);
-			$nameLabel->setTextColor("FFF");
+			$nameLabel->setTextColor('fff');
 
 			if ($setting->type === Setting::TYPE_BOOL) {
 				// Boolean checkbox
@@ -323,14 +322,14 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			$index++;
 		}
 
-		$quad = new Label_Button();
-		$frame->add($quad);
-		$quad->setStyle($quad::STYLE_CardMain_Quit);
-		$quad->setHAlign(Control::LEFT);
-		$quad->setScale(0.75);
-		$quad->setText("Back");
-		$quad->setPosition(-$width / 2 + 7, -$height / 2 + 7);
-		$quad->setAction(self::ACTION_BACK_TO_PLUGINS);
+		$backButton = new Label_Button();
+		$frame->add($backButton);
+		$backButton->setStyle($backButton::STYLE_CardMain_Quit);
+		$backButton->setHAlign($backButton::LEFT);
+		$backButton->setScale(0.75);
+		$backButton->setText('Back');
+		$backButton->setPosition(-$width / 2 + 7, -$height / 2 + 7);
+		$backButton->setAction(self::ACTION_BACK_TO_PLUGINS);
 
 		return $frame;
 	}

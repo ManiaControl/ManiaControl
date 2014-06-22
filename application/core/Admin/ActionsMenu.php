@@ -152,7 +152,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 			$descriptionLabel = new Label();
 			$manialink->add($descriptionLabel);
 			$descriptionLabel->setPosition($posX - count($this->adminMenuItems) * $itemSize * 1.15 - 6, $posY);
-			$descriptionLabel->setAlign(Control::RIGHT, Control::TOP);
+			$descriptionLabel->setAlign($descriptionLabel::RIGHT, $descriptionLabel::TOP);
 			$descriptionLabel->setSize(40, 4);
 			$descriptionLabel->setTextSize(1.4);
 			$descriptionLabel->setTextColor('fff');
@@ -161,13 +161,13 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 			$popoutFrame = new Frame();
 			$manialink->add($popoutFrame);
 			$popoutFrame->setPosition($posX - $itemSize * 0.5, $posY);
-			$popoutFrame->setHAlign(Control::RIGHT);
+			$popoutFrame->setHAlign($popoutFrame::RIGHT);
 			$popoutFrame->setSize(4 * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
 			$popoutFrame->setVisible(false);
 
 			$backgroundQuad = new Quad();
 			$popoutFrame->add($backgroundQuad);
-			$backgroundQuad->setHAlign(Control::RIGHT);
+			$backgroundQuad->setHAlign($backgroundQuad::RIGHT);
 			$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 			$backgroundQuad->setSize(count($this->adminMenuItems) * $itemSize * 1.15 + 2, $itemSize * $itemMarginFactorY);
 
@@ -182,7 +182,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 					$popoutFrame->add($menuQuad);
 					$menuQuad->setSize($itemSize, $itemSize);
 					$menuQuad->setX($itemPosX);
-					$menuQuad->setHAlign(Control::RIGHT);
+					$menuQuad->setHAlign($menuQuad::RIGHT);
 					$itemPosX -= $itemSize * 1.05;
 
 					if ($menuItem[1]) {
@@ -216,7 +216,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		$descriptionLabel = new Label();
 		$manialink->add($descriptionLabel);
 		$descriptionLabel->setPosition($posX - count($this->playerMenuItems) * $itemSize * 1.15 - 6, $posY - $itemSize * $itemMarginFactorY);
-		$descriptionLabel->setAlign(Control::RIGHT, Control::TOP);
+		$descriptionLabel->setAlign($descriptionLabel::RIGHT, $descriptionLabel::TOP);
 		$descriptionLabel->setSize(40, 4);
 		$descriptionLabel->setTextSize(1.4);
 		$descriptionLabel->setTextColor('fff');
@@ -225,13 +225,13 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		$popoutFrame = new Frame();
 		$manialink->add($popoutFrame);
 		$popoutFrame->setPosition($posX - $itemSize * 0.5, $posY - $itemSize * $itemMarginFactorY);
-		$popoutFrame->setHAlign(Control::RIGHT);
+		$popoutFrame->setHAlign($popoutFrame::RIGHT);
 		$popoutFrame->setSize(4 * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
 		$popoutFrame->setVisible(false);
 
 		$backgroundQuad = new Quad();
 		$popoutFrame->add($backgroundQuad);
-		$backgroundQuad->setHAlign(Control::RIGHT);
+		$backgroundQuad->setHAlign($backgroundQuad::RIGHT);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 		$backgroundQuad->setSize(count($this->playerMenuItems) * $itemSize * 1.15 + 2, $itemSize * $itemMarginFactorY);
 
@@ -246,7 +246,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 				$popoutFrame->add($menuQuad);
 				$menuQuad->setSize($itemSize, $itemSize);
 				$menuQuad->setX($itemPosX);
-				$menuQuad->setHAlign(Control::RIGHT);
+				$menuQuad->setHAlign($menuQuad::RIGHT);
 				$itemPosX -= $itemSize * 1.05;
 
 				if ($menuItem[1]) {

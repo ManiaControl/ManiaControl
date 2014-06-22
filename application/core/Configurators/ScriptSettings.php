@@ -3,7 +3,6 @@
 namespace ManiaControl\Configurators;
 
 use FML\Components\CheckBox;
-use FML\Controls\Control;
 use FML\Controls\Entry;
 use FML\Controls\Frame;
 use FML\Controls\Label;
@@ -178,22 +177,22 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		$frame->add($pagerPrev);
 		$pagerPrev->setPosition($width * 0.39, $height * -0.44, 2);
 		$pagerPrev->setSize($pagerSize, $pagerSize);
-		$pagerPrev->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowPrev);
+		$pagerPrev->setSubStyle($pagerPrev::SUBSTYLE_ArrowPrev);
 
 		$pagerNext = new Quad_Icons64x64_1();
 		$frame->add($pagerNext);
 		$pagerNext->setPosition($width * 0.45, $height * -0.44, 2);
 		$pagerNext->setSize($pagerSize, $pagerSize);
-		$pagerNext->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowNext);
+		$pagerNext->setSubStyle($pagerNext::SUBSTYLE_ArrowNext);
 
 		$paging->addButton($pagerNext);
 		$paging->addButton($pagerPrev);
 
-		$pageCountLabel = new Label();
+		$pageCountLabel = new Label_Text();
 		$frame->add($pageCountLabel);
-		$pageCountLabel->setHAlign(Control::RIGHT);
+		$pageCountLabel->setHAlign($pageCountLabel::RIGHT);
 		$pageCountLabel->setPosition($width * 0.35, $height * -0.44, 1);
-		$pageCountLabel->setStyle('TextTitle1');
+		$pageCountLabel->setStyle($pageCountLabel::STYLE_TextTitle1);
 		$pageCountLabel->setTextSize(2);
 
 		$paging->setLabel($pageCountLabel);
@@ -253,7 +252,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 
 			$descriptionLabel = new Label();
 			$pageFrame->add($descriptionLabel);
-			$descriptionLabel->setHAlign(Control::LEFT);
+			$descriptionLabel->setHAlign($descriptionLabel::LEFT);
 			$descriptionLabel->setPosition($width * -0.45, $height * -0.44);
 			$descriptionLabel->setSize($width * 0.7, $settingHeight);
 			$descriptionLabel->setTextSize($labelTextSize);

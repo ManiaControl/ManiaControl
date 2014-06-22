@@ -2,10 +2,8 @@
 
 namespace MCTeam;
 
-use FML\Controls\Control;
 use FML\Controls\Frame;
 use FML\Controls\Label;
-use FML\Controls\Labels\Label_Button;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
@@ -160,7 +158,9 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$itemMarginFactorY = 1.2;
 
 		//If game is shootmania lower the icons position by 20
-		if ($this->maniaControl->mapManager->getCurrentMap()->getGame() === 'sm') {
+		if ($this->maniaControl->mapManager->getCurrentMap()
+		                                   ->getGame() === 'sm'
+		) {
 			$posY -= $shootManiaOffset;
 		}
 
@@ -187,19 +187,19 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$itemQuad->setSize($itemSize, $itemSize);
 		$iconFrame->add($itemQuad);
 
-		$valueArray = explode(",", $values);
+		$valueArray = explode(',', $values);
 
 		// Values Menu
 		$popoutFrame = new Frame();
 		$maniaLink->add($popoutFrame);
 		$popoutFrame->setPosition($posX - $itemSize * 0.5, $posY);
-		$popoutFrame->setHAlign(Control::RIGHT);
+		$popoutFrame->setHAlign($popoutFrame::RIGHT);
 		$popoutFrame->setSize(4 * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
 		$popoutFrame->setVisible(false);
 
 		$quad = new Quad();
 		$popoutFrame->add($quad);
-		$quad->setHAlign(Control::RIGHT);
+		$quad->setHAlign($quad::RIGHT);
 		$quad->setStyles($quadStyle, $quadSubstyle);
 		$quad->setSize(strlen($values) * 2 + count($valueArray) * 1, $itemSize * $itemMarginFactorY);
 
@@ -210,27 +210,27 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$descriptionFrame = new Frame();
 		$maniaLink->add($descriptionFrame);
 		$descriptionFrame->setPosition($posX - 50, $posY - 5);
-		$descriptionFrame->setHAlign(Control::RIGHT);
+		$descriptionFrame->setHAlign($descriptionFrame::RIGHT);
 
 		$descriptionLabel = new Label();
 		$descriptionFrame->add($descriptionLabel);
-		$descriptionLabel->setAlign(Control::LEFT, Control::TOP);
+		$descriptionLabel->setAlign($descriptionLabel::LEFT, $descriptionLabel::TOP);
 		$descriptionLabel->setSize(40, 4);
 		$descriptionLabel->setTextSize(2);
 		$descriptionLabel->setVisible(true);
-		$descriptionLabel->setTextColor("0F0");
+		$descriptionLabel->setTextColor('0f0');
 
 		// Add items
 		$posX = -2;
 		foreach (array_reverse($valueArray) as $value) {
-			$label = new Label_Button();
+			$label = new Label_Text();
 			$popoutFrame->add($label);
 			$label->setX($posX);
-			$label->setHAlign(Control::RIGHT);
+			$label->setHAlign($label::RIGHT);
 			$label->setText('$s$FFF' . $value . '$09FP');
 			$label->setTextSize(1.2);
 			$label->setAction(self::ACTION_DONATE_VALUE . "." . $value);
-			$label->setStyle(Label_Text::STYLE_TextCardSmall);
+			$label->setStyle($label::STYLE_TextCardSmall);
 			$description = "Donate {$value} Planets";
 			$label->addTooltipLabelFeature($descriptionLabel, $description);
 

@@ -440,7 +440,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 		$backgroundQuad = new Quad();
 		$frame->add($backgroundQuad);
-		$backgroundQuad->setVAlign(Control::TOP);
+		$backgroundQuad->setVAlign($backgroundQuad::TOP);
 		$height = 7. + $lines * $lineHeight;
 		$backgroundQuad->setSize($width * 1.05, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
@@ -474,7 +474,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			//Rank
 			$rankLabel = new Label();
 			$recordFrame->add($rankLabel);
-			$rankLabel->setHAlign(Control::LEFT);
+			$rankLabel->setHAlign($rankLabel::LEFT);
 			$rankLabel->setX($width * -0.47);
 			$rankLabel->setSize($width * 0.06, $lineHeight);
 			$rankLabel->setTextSize(1);
@@ -485,7 +485,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			//Name
 			$nameLabel = new Label();
 			$recordFrame->add($nameLabel);
-			$nameLabel->setHAlign(Control::LEFT);
+			$nameLabel->setHAlign($nameLabel::LEFT);
 			$nameLabel->setX($width * -0.4);
 			$nameLabel->setSize($width * 0.6, $lineHeight);
 			$nameLabel->setTextSize(1);
@@ -495,7 +495,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			//Time
 			$timeLabel = new Label();
 			$recordFrame->add($timeLabel);
-			$timeLabel->setHAlign(Control::RIGHT);
+			$timeLabel->setHAlign($timeLabel::RIGHT);
 			$timeLabel->setX($width * 0.47);
 			$timeLabel->setSize($width * 0.25, $lineHeight);
 			$timeLabel->setTextSize(1);

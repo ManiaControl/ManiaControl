@@ -3,10 +3,8 @@
 namespace ManiaControl\Configurators;
 
 use FML\Components\CheckBox;
-use FML\Controls\Control;
 use FML\Controls\Entry;
 use FML\Controls\Frame;
-use FML\Controls\Label;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_Icons64x64_1;
@@ -141,7 +139,8 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		$script->addFeature($paging);
 		$frame = new Frame();
 
-		$serverSettings = $this->maniaControl->client->getServerOptions()->toArray();
+		$serverSettings = $this->maniaControl->client->getServerOptions()
+		                                             ->toArray();
 
 		// Config
 		$pagerSize     = 9.;
@@ -164,11 +163,11 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		$paging->addButton($pagerNext);
 		$paging->addButton($pagerPrev);
 
-		$pageCountLabel = new Label();
+		$pageCountLabel = new Label_Text();
 		$frame->add($pageCountLabel);
-		$pageCountLabel->setHAlign(Control::RIGHT);
+		$pageCountLabel->setHAlign($pageCountLabel::RIGHT);
 		$pageCountLabel->setPosition($width * 0.35, $height * -0.44, 1);
-		$pageCountLabel->setStyle('TextTitle1');
+		$pageCountLabel->setStyle($pageCountLabel::STYLE_TextTitle1);
 		$pageCountLabel->setTextSize(2);
 
 		$paging->setLabel($pageCountLabel);
@@ -198,13 +197,13 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 
 			$nameLabel = new Label_Text();
 			$settingFrame->add($nameLabel);
-			$nameLabel->setHAlign(Control::LEFT);
+			$nameLabel->setHAlign($nameLabel::LEFT);
 			$nameLabel->setX($width * -0.46);
 			$nameLabel->setSize($width * 0.4, $settingHeight);
 			$nameLabel->setStyle($nameLabel::STYLE_TextCardSmall);
 			$nameLabel->setTextSize($labelTextSize);
 			$nameLabel->setText($name);
-			$nameLabel->setTextColor("FFF");
+			$nameLabel->setTextColor('fff');
 
 			if (is_bool($value)) {
 				// Boolean checkbox
@@ -254,7 +253,8 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			return;
 		}
 
-		$serverSettings = $this->maniaControl->client->getServerOptions()->toArray();
+		$serverSettings = $this->maniaControl->client->getServerOptions()
+		                                             ->toArray();
 
 		$prefixLength = strlen(self::ACTION_PREFIX_SETTING);
 
