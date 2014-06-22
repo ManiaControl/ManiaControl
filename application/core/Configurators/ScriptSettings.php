@@ -17,7 +17,6 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
-use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
 
 /**
@@ -110,10 +109,11 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			return false;
 		}
 
-		$mysqli   = $this->maniaControl->database->mysqli;
-		$serverId = $this->maniaControl->server->index;
-		$query    = "SELECT * FROM `" . self::TABLE_SCRIPT_SETTINGS . "` WHERE serverIndex = " . $serverId . ";";
-		$result   = $mysqli->query($query);
+		$mysqli      = $this->maniaControl->database->mysqli;
+		$serverIndex = $this->maniaControl->server->index;
+		$query       = "SELECT * FROM `" . self::TABLE_SCRIPT_SETTINGS . "`
+				WHERE serverIndex = {$serverIndex};";
+		$result      = $mysqli->query($query);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
@@ -128,17 +128,11 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			settype($loadedSettings[$row->settingName], gettype($scriptSettings[$row->settingName]));
 		}
 		$result->free();
-		if (!$loadedSettings) {
+		if (empty($loadedSettings)) {
 			return true;
 		}
 
-		try {
-			$this->maniaControl->client->setModeScriptSettings($loadedSettings);
-		} catch (Exception $e) {
-			trigger_error('Error occurred: ' . $e->getMessage());
-			return false;
-		}
-		return true;
+		return $this->maniaControl->client->setModeScriptSettings($loadedSettings);
 	}
 
 	/**
@@ -330,18 +324,11 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 * @return bool
 	 */
 	private function applyNewScriptSettings(array $newSettings, Player $player) {
-		if (!$newSettings) {
+		if (empty($newSettings)) {
 			return true;
 		}
 
-		try {
-			$this->maniaControl->client->setModeScriptSettings($newSettings);
-		} catch (Exception $e) {
-			//TODO temp added 19.04.2014
-			$this->maniaControl->errorHandler->triggerDebugNotice("Exception line 416 ScriptSettings.php" . $e->getMessage(), $e);
-			$this->maniaControl->chat->sendError('Error occurred: ' . $e->getMessage(), $player);
-			return false;
-		}
+		$this->maniaControl->client->setModeScriptSettings($newSettings);
 
 		// Save Settings into Database
 		$mysqli    = $this->maniaControl->database->mysqli;
@@ -358,6 +345,9 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			trigger_error($mysqli->error);
 			return false;
 		}
+		$settingName  = null;
+		$settingValue = null;
+		$statement->bind_param('iss', $this->maniaControl->server->index, $settingName, $settingValue);
 
 		// Notifications
 		$settingsCount = count($newSettings);
@@ -373,7 +363,8 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			}
 
 			// Add To Database
-			$statement->bind_param('iss', $this->maniaControl->server->index, $setting, $value);
+			$settingName  = $setting;
+			$settingValue = $value;
 			$statement->execute();
 			if ($statement->error) {
 				trigger_error($statement->error);
