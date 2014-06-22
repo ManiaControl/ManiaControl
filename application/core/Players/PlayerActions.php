@@ -89,8 +89,8 @@ class PlayerActions {
 			return;
 		}
 
-		if ($target->isSpectator) {
-			$this->forcePlayerToPlay($adminLogin, $targetLogin, true, false);
+		if ($target->isSpectator && !$this->forcePlayerToPlay($adminLogin, $targetLogin, true, false)) {
+			return;
 		}
 
 		try {
@@ -121,17 +121,17 @@ class PlayerActions {
 	 * @param string $targetLogin
 	 * @param bool   $userIsAbleToSelect
 	 * @param bool   $displayAnnouncement
-	 * @internal param int $type
+	 * @return bool
 	 */
 	public function forcePlayerToPlay($adminLogin, $targetLogin, $userIsAbleToSelect = true, $displayAnnouncement = true) {
 		$admin = $this->maniaControl->playerManager->getPlayer($adminLogin);
 		if (!$this->maniaControl->authenticationManager->checkPermission($admin, self::SETTING_PERMISSION_FORCE_PLAYER_PLAY)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($admin);
-			return;
+			return false;
 		}
 		$target = $this->maniaControl->playerManager->getPlayer($targetLogin);
 		if (!$target) {
-			return;
+			return false;
 		}
 
 		try {
@@ -139,7 +139,7 @@ class PlayerActions {
 		} catch (FaultException $e) {
 			//TODO exception 'There are too many players' appeared 28.04.2014, wait for more before add to fault exception
 			$this->maniaControl->chat->sendException($e, $admin);
-			return;
+			return false;
 		}
 
 		if ($userIsAbleToSelect) {
@@ -156,6 +156,8 @@ class PlayerActions {
 			$chatMessage = '$<' . $admin->nickname . '$> forced $<' . $target->nickname . '$> to Play!';
 			$this->maniaControl->chat->sendInformation($chatMessage);
 		}
+
+		return true;
 	}
 
 	/**
@@ -166,7 +168,8 @@ class PlayerActions {
 	 * @param int    $spectatorState
 	 * @param bool   $releaseSlot
 	 */
-	public function forcePlayerToSpectator($adminLogin, $targetLogin, $spectatorState = self::SPECTATOR_BUT_KEEP_SELECTABLE, $releaseSlot = true) {
+	public function forcePlayerToSpectator($adminLogin, $targetLogin, $spectatorState = self::SPECTATOR_BUT_KEEP_SELECTABLE,
+	                                       $releaseSlot = true) {
 		$admin = $this->maniaControl->playerManager->getPlayer($adminLogin);
 		if (!$this->maniaControl->authenticationManager->checkPermission($admin, self::SETTING_PERMISSION_FORCE_PLAYER_SPEC)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($admin);
