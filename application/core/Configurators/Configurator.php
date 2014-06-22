@@ -50,6 +50,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	private $scriptSettings = null;
 	private $serverSettings = null;
 	private $maniaControlSettings = null;
+	/** @var ConfiguratorMenu[] $menus */
 	private $menus = array();
 
 	/**
@@ -173,6 +174,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 
 		$backgroundQuad = new Quad();
 		$frame->add($backgroundQuad);
+		$backgroundQuad->setZ(-10);
 		$backgroundQuad->setSize($menuWidth, $menuHeight);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 
@@ -182,6 +184,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 
 		$itemsBackgroundQuad = new Quad();
 		$menuItemsFrame->add($itemsBackgroundQuad);
+		$backgroundQuad->setZ(-9);
 		$itemsBackgroundQuad->setSize($menuListWidth, $menuHeight);
 		$itemsBackgroundQuad->setStyles($quadStyle, $quadSubstyle);
 
@@ -195,8 +198,6 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$menuItemY = $menuHeight * 0.42;
 		$menuId    = 0;
 		foreach ($this->menus as $menu) {
-			/** @var ConfiguratorMenu $menu */
-
 			// Add title
 			$menuItemLabel = new Label();
 			$menuItemsFrame->add($menuItemLabel);
