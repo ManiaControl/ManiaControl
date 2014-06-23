@@ -389,7 +389,6 @@ class MapQueue implements CallbackListener, CommandListener {
 		return $this->nextMap;
 	}
 
-
 	/**
 	 * Returns the first Queued Map
 	 *

@@ -14,6 +14,7 @@ use ManiaControl\ManiaExchange\MXMapInfo;
 use ManiaControl\Players\Player;
 use ManiaControl\Utils\Formatter;
 use Maniaplanet\DedicatedServer\InvalidArgumentException;
+use Maniaplanet\DedicatedServer\Xmlrpc\AlreadyInListException;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 use Maniaplanet\DedicatedServer\Xmlrpc\FileException;
 use Maniaplanet\DedicatedServer\Xmlrpc\IndexOutOfBoundException;
@@ -292,14 +293,14 @@ class MapManager implements CallbackListener {
 
 		$downloadFolderName  = $this->maniaControl->settingManager->getSettingValue($this, 'MapDownloadDirectory', 'MX');
 		$relativeMapFileName = $downloadFolderName . DIRECTORY_SEPARATOR . $fileName;
-		$mapDir              = $this->maniaControl->client->getMapsDirectory();
+		$mapDir              = $this->maniaControl->server->directory->getMapsFolder();
 		$downloadDirectory   = $mapDir . $downloadFolderName . DIRECTORY_SEPARATOR;
 		$fullMapFileName     = $downloadDirectory . $fileName;
 
 		// Check if it can get written locally
 		if ($this->maniaControl->server->checkAccess($mapDir)) {
 			// Create download directory if necessary
-			if (!is_dir($downloadDirectory) && !mkdir($downloadDirectory)) {
+			if (!is_dir($downloadDirectory) && !mkdir($downloadDirectory) || !is_writable($downloadDirectory)) {
 				trigger_error("ManiaControl doesn't have to rights to save maps in '{$downloadDirectory}'.");
 				$this->maniaControl->chat->sendError("ManiaControl doesn't have the rights to save maps.", $login);
 				return;
@@ -326,13 +327,18 @@ class MapManager implements CallbackListener {
 		// Check for valid map
 		try {
 			$this->maniaControl->client->checkMapForCurrentServerParams($relativeMapFileName);
-		} catch (InvalidMapException $e) {
-			$this->maniaControl->chat->sendException($e, $login);
+		} catch (InvalidMapException $exception) {
+			$this->maniaControl->chat->sendException($exception, $login);
 			return;
 		}
 
 		// Add map to map list
-		$this->maniaControl->client->insertMap($relativeMapFileName);
+		try {
+			$this->maniaControl->client->insertMap($relativeMapFileName);
+		} catch (AlreadyInListException $exception) {
+			$this->maniaControl->chat->sendException($exception, $login);
+			return;
+		}
 		$this->updateFullMapList();
 
 		// Update Mx MapInfo

@@ -19,7 +19,7 @@ class MapActions {
 	private $maniaControl = null;
 
 	/**
-	 * Create a MapActions Instance
+	 * Construct a Map Actions Instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */
@@ -43,4 +43,4 @@ class MapActions {
 		} catch (ChangeInProgressException $e) {
 		}
 	}
-} 
+}
