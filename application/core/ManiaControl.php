@@ -284,6 +284,15 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	}
 
 	/**
+	 * Request ManiaControl to quit
+	 *
+	 * @param mixed $message
+	 */
+	public function requestQuit($message = true) {
+		$this->requestQuitMessage = $message;
+	}
+
+	/**
 	 * Run ManiaControl
 	 */
 	public function run() {
@@ -336,8 +345,11 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 
 		try {
 			$this->client = Connection::factory($this->server->config->host, $this->server->config->port, self::SCRIPT_TIMEOUT, $this->server->config->user, $this->server->config->pass, self::API_VERSION);
-		} catch (AuthenticationException $e) {
-			$message = "Couldn't authenticate on Server with User '{$this->server->config->user}' & Pass '{$this->server->config->pass}'! " . $e->getMessage();
+		} catch (TransportException $exception) {
+			$message = "Couldn't connect to the server: '{$exception->getMessage()}'";
+			$this->quit($message, true);
+		} catch (AuthenticationException $exception) {
+			$message = "Couldn't authenticate on Server with User '{$this->server->config->user}' & Pass '{$this->server->config->pass}'! " . $exception->getMessage();
 			$this->quit($message, true);
 		}
 
@@ -400,14 +412,5 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	 */
 	public function handleServerStopCallback() {
 		$this->requestQuit('The Server has been shut down!');
-	}
-
-	/**
-	 * Request ManiaControl to quit
-	 *
-	 * @param mixed $message
-	 */
-	public function requestQuit($message = true) {
-		$this->requestQuitMessage = $message;
 	}
 }
