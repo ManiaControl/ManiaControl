@@ -6,6 +6,7 @@ use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Plugins\Plugin;
+use Maniaplanet\DedicatedServer\Xmlrpc\PlayerStateException;
 use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
 
 /**
@@ -407,7 +408,7 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 			$this->maniaControl->client->spectatorReleasePlayerSlot($player->login);
 		} catch (UnknownPlayerException $exception) {
 			$this->maniaControl->chat->sendException($exception, $player);
-			return;
+		} catch (PlayerStateException $exception) {
 		}
 	}
 }
