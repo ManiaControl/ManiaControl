@@ -3,7 +3,6 @@
 namespace ManiaControl\Players;
 
 use FML\Controls\Frame;
-use FML\Controls\Labels\Label_Button;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_BgRaceScore2;
@@ -498,7 +497,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
 		$quad->setSize($quadWidth, 5);
 
-		$label = new Label_Button();
+		$label = new Label_Text();
 		$frame->add($label);
 		$label->setX(0);
 		$label->setY($posY);
