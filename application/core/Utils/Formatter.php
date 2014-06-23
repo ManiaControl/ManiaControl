@@ -168,8 +168,7 @@ abstract class Formatter {
 		if (is_string($value)) {
 			$value = strtolower($value);
 		}
-		$bool = filter_var($value, FILTER_VALIDATE_BOOLEAN);
-		return $bool;
+		return filter_var($value, FILTER_VALIDATE_BOOLEAN);
 	}
 
 	/**

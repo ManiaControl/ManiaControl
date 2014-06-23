@@ -45,6 +45,9 @@ class LibXmlRpcCallbacks implements CallbackListener {
 				break;
 			case 'BeginMap':
 			case 'LibXmlRpc_BeginMap':
+				if (!isset($data[2])) {
+					$data[2] = 'False';
+				}
 				$this->maniaControl->mapManager->handleScriptBeginMap($data[1], $data[2]);
 				break;
 			case 'LibXmlRpc_BeginSubmatch':

@@ -12,6 +12,7 @@ use ManiaControl\ManiaExchange\ManiaExchangeList;
 use ManiaControl\ManiaExchange\ManiaExchangeManager;
 use ManiaControl\ManiaExchange\MXMapInfo;
 use ManiaControl\Players\Player;
+use ManiaControl\Utils\Formatter;
 use Maniaplanet\DedicatedServer\InvalidArgumentException;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 use Maniaplanet\DedicatedServer\Xmlrpc\FileException;
@@ -245,7 +246,9 @@ class MapManager implements CallbackListener {
 	public function addMapFromMx($mapId, $login, $update = false) {
 		if (is_numeric($mapId)) {
 			// Check if map exists
-			$this->maniaControl->mapManager->mxManager->fetchMapInfo($mapId, function (MXMapInfo $mapInfo = null) use (&$login, &$update) {
+			$this->maniaControl->mapManager->mxManager->fetchMapInfo($mapId, function (MXMapInfo $mapInfo = null) use (
+				&$login, &$update
+			) {
 				if (!$mapInfo || !isset($mapInfo->uploaded)) {
 					// Invalid id
 					$this->maniaControl->chat->sendError('Invalid MX-Id!', $login);
@@ -253,7 +256,9 @@ class MapManager implements CallbackListener {
 				}
 
 				// Download the file
-				$this->maniaControl->fileReader->loadFile($mapInfo->downloadurl, function ($file, $error) use (&$login, &$mapInfo, &$update) {
+				$this->maniaControl->fileReader->loadFile($mapInfo->downloadurl, function ($file, $error) use (
+					&$login, &$mapInfo, &$update
+				) {
 					if (!$file || $error) {
 						// Download error
 						$this->maniaControl->chat->sendError("Download failed: '{$error}'!", $login);
@@ -643,10 +648,10 @@ class MapManager implements CallbackListener {
 	 * Handle Script BeginMap callback
 	 *
 	 * @param string $mapUid
-	 * @param bool   $restart
+	 * @param string $restart
 	 */
 	public function handleScriptBeginMap($mapUid, $restart) {
-		$this->beginMap($mapUid, strtolower($restart) === 'true' ? true : false);
+		$this->beginMap($mapUid, Formatter::parseBoolean($restart));
 	}
 
 	/**
