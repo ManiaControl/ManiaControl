@@ -23,6 +23,7 @@ use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 use ManiaControl\Utils\ColorUtil;
 use ManiaControl\Utils\Formatter;
+use Maniaplanet\DedicatedServer\Xmlrpc\ChangeInProgressException;
 use Maniaplanet\DedicatedServer\Xmlrpc\NextMapException;
 use Maniaplanet\DedicatedServer\Xmlrpc\NotInListException;
 use MCTeam\CustomVotesPlugin;
@@ -632,9 +633,12 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 					try {
 						$this->maniaControl->client->JumpToMapIdent($map->uid);
-					} catch (NextMapException $e) {
+					} catch (NextMapException $exception) {
 						return;
-					} catch (NotInListException $e) {
+					} catch (NotInListException $exception) {
+						return;
+					} catch (ChangeInProgressException $exception) {
+						// TODO: delay skip if change is in progress
 						return;
 					}
 
