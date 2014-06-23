@@ -38,6 +38,8 @@ class DynamicPointLimitPlugin implements CallbackListener, CommandListener, Plug
 
 	const CACHE_SPEC_STATUS = 'SpecStatus';
 
+	const SCRIPT_SETTING_MAP_POINTS_LIMIT = 'S_MapPointsLimit';
+
 	/*
 	 * Private Properties
 	 */
@@ -142,7 +144,7 @@ class DynamicPointLimitPlugin implements CallbackListener, CommandListener, Plug
 
 		if ($this->lastPointLimit !== $pointLimit) {
 			try {
-				$this->maniaControl->client->setModeScriptSettings(array('S_MapPointsLimit' => $pointLimit));
+				$this->maniaControl->client->setModeScriptSettings(array(self::SCRIPT_SETTING_MAP_POINTS_LIMIT => $pointLimit));
 				$message = "Dynamic PointLimit changed to: {$pointLimit}!";
 				if ($this->lastPointLimit !== null) {
 					$message .= " (From {$this->lastPointLimit})";
@@ -180,7 +182,7 @@ class DynamicPointLimitPlugin implements CallbackListener, CommandListener, Plug
 					return;
 				}
 				try {
-					$this->maniaControl->client->setModeScriptSettings(array('S_MapPointsLimit' => $value));
+					$this->maniaControl->client->setModeScriptSettings(array(self::SCRIPT_SETTING_MAP_POINTS_LIMIT => $value));
 					$this->staticMode     = true;
 					$this->lastPointLimit = $value;
 					$this->maniaControl->chat->sendInformation("PointLimit changed to: {$value} (Fixed)");
@@ -213,17 +215,16 @@ class DynamicPointLimitPlugin implements CallbackListener, CommandListener, Plug
 
 	/**
 	 * Handle BeginMap Callback
-	 *
-	 * @param Setting $setting
 	 */
 	public function handleBeginMap() {
-		if ($this->staticMode)
-		{
-			
-			$this->maniaControl->chat->sendChat('$fffPointlimit fixed at '.$this->lastPointLimit.'.');
-			try{
-			$this->maniaControl->client->setModeScriptSettings(array('S_MapPointsLimit' => (int)($this->lastPointLimit)));
-			}catch(FaultException $e){
+		if ($this->staticMode && !is_null($this->lastPointLimit)) {
+			// Refresh static point limit in case it has been reset
+			try {
+				$this->maniaControl->client->setModeScriptSettings(array(self::SCRIPT_SETTING_MAP_POINTS_LIMIT => $this->lastPointLimit));
+				$message = "PointLimit fixed at {$this->lastPointLimit}.";
+				$this->maniaControl->chat->sendInformation($message);
+			} catch (GameModeException $e) {
+				$this->lastPointLimit = null;
 			}
 		}
 	}
@@ -244,4 +245,3 @@ class DynamicPointLimitPlugin implements CallbackListener, CommandListener, Plug
 		$this->updatePointLimit();
 	}
 }
-?>
