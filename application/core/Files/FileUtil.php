@@ -103,6 +103,7 @@ abstract class FileUtil {
 		$fileName = Formatter::stripCodes($fileName);
 		$fileName = str_replace(array(DIRECTORY_SEPARATOR, '\\', '/', ':', '*', '?', '"', '<', '>', '|'), '_', $fileName);
 		$fileName = preg_replace('/[^[:print:]]/', '', $fileName);
+		$fileName = Formatter::utf8($fileName);
 		return $fileName;
 	}
 
