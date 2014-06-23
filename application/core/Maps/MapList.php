@@ -2,7 +2,6 @@
 
 namespace ManiaControl\Maps;
 
-use FML\Controls\Control;
 use FML\Controls\Frame;
 use FML\Controls\Gauge;
 use FML\Controls\Label;
@@ -626,7 +625,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 				$votesPlugin->startVote($player, 'switchmap', function ($result) use (&$votesPlugin, &$map) {
 					// TODO: $result isn't used -> bug? does it skip even if vote is not successful?
-					$this->maniaControl->chat->sendInformation('$sVote Successful -> Map switched!');
 					$votesPlugin->undefineVote('switchmap');
 
 					//Don't queue on Map-Change
@@ -634,8 +632,13 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 					try {
 						$this->maniaControl->client->JumpToMapIdent($map->uid);
+					} catch (NextMapException $e) {
+						return;
 					} catch (NotInListException $e) {
+						return;
 					}
+
+					$this->maniaControl->chat->sendInformation('$sVote Successful -> Map switched!');
 				});
 				break;
 			case self::ACTION_QUEUED_MAP:
