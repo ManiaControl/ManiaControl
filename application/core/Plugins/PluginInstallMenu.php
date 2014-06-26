@@ -11,10 +11,10 @@ use FML\Script\Features\Paging;
 use FML\Script\Script;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Configurators\ConfiguratorMenu;
-use ManiaControl\Files\FileUtil;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
+use ManiaControl\Utils\WebReader;
 
 /**
  * Configurator for installing Plugins
@@ -63,7 +63,8 @@ class PluginInstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener
 		$pageFrame   = null;
 
 		$url        = ManiaControl::URL_WEBSERVICE . 'plugins';
-		$dataJson   = FileUtil::loadFile($url);
+		$response   = WebReader::loadUrl($url);
+		$dataJson   = $response->getContent();
 		$pluginList = json_decode($dataJson);
 		$index      = 0;
 

@@ -3,10 +3,10 @@
 namespace ManiaControl;
 
 use ManiaControl\Callbacks\Callbacks;
-use ManiaControl\Files\FileUtil;
 use ManiaControl\Plugins\PluginManager;
 use ManiaControl\Update\UpdateManager;
 use ManiaControl\Utils\Formatter;
+use ManiaControl\Utils\WebReader;
 use Maniaplanet\DedicatedServer\Xmlrpc\TransportException;
 
 /**
@@ -142,12 +142,13 @@ class ErrorHandler {
 			$info = base64_encode($json);
 
 			$url      = ManiaControl::URL_WEBSERVICE . 'errorreport?error=' . urlencode($info);
-			$response = FileUtil::loadFile($url);
-			$success  = json_decode($response);
+			$response = WebReader::loadUrl($url);
+			$content  = $response->getContent();
+			$success  = json_decode($content);
 			if ($success) {
 				Logger::log('Error-Report successful!');
 			} else {
-				Logger::log('Error-Report failed! ' . print_r($response, true));
+				Logger::log('Error-Report failed! ' . print_r($content, true));
 			}
 		}
 
@@ -454,12 +455,13 @@ class ErrorHandler {
 			$info = base64_encode($json);
 
 			$url      = ManiaControl::URL_WEBSERVICE . 'errorreport?error=' . urlencode($info);
-			$response = FileUtil::loadFile($url);
-			$success  = json_decode($response);
+			$response = WebReader::loadUrl($url);
+			$content  = $response->getContent();
+			$success  = json_decode($content);
 			if ($success) {
 				Logger::log('Exception successfully reported!');
 			} else {
-				Logger::log('Exception-Report failed! ' . print_r($response, true));
+				Logger::log('Exception-Report failed! ' . print_r($content, true));
 			}
 		}
 

@@ -153,7 +153,7 @@ class PlayerActions {
 			} catch (FaultException $exception) {
 				// TODO: replace by more specific exception "there are too many ..."
 				$this->maniaControl->chat->sendException($exception, $admin);
-				return;
+				return false;
 			}
 		}
 

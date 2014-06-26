@@ -14,6 +14,7 @@ use ManiaControl\Plugins\Plugin;
 use ManiaControl\Plugins\PluginInstallMenu;
 use ManiaControl\Plugins\PluginManager;
 use ManiaControl\Plugins\PluginMenu;
+use ManiaControl\Utils\WebReader;
 
 /**
  * Manager checking for ManiaControl Plugin Updates
@@ -197,7 +198,8 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 	 */
 	public function getPluginsUpdates() {
 		$url        = ManiaControl::URL_WEBSERVICE . 'plugins';
-		$dataJson   = FileUtil::loadFile($url);
+		$response   = WebReader::loadUrl($url);
+		$dataJson   = $response->getContent();
 		$pluginData = json_decode($dataJson);
 		if (!$pluginData || empty($pluginData)) {
 			return false;
@@ -234,7 +236,9 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 	 * @param bool             $update
 	 */
 	private function installPlugin(PluginUpdateData $pluginUpdateData, Player $player = null, $update = false) {
-		$this->maniaControl->fileReader->loadFile($pluginUpdateData->url, function ($updateFileContent, $error) use (&$pluginUpdateData, &$player, &$update) {
+		$this->maniaControl->fileReader->loadFile($pluginUpdateData->url, function ($updateFileContent, $error) use (
+			&$pluginUpdateData, &$player, &$update
+		) {
 			if (!$updateFileContent || $error) {
 				$message = "Error loading Update Data for '{$pluginUpdateData->pluginName}': {$error}!";
 				if ($player) {
@@ -379,7 +383,8 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 		/** @var Plugin $pluginClass */
 		$pluginId      = $pluginClass::getId();
 		$url           = ManiaControl::URL_WEBSERVICE . 'plugins/' . $pluginId;
-		$dataJson      = FileUtil::loadFile($url);
+		$response      = WebReader::loadUrl($url);
+		$dataJson      = $response->getContent();
 		$pluginVersion = json_decode($dataJson);
 		if (!$pluginVersion) {
 			return false;
