@@ -113,7 +113,7 @@ class ErrorHandler {
 			// Report error
 			$report            = array();
 			$report['Type']    = 'Error';
-			$report['Message'] = Formatter::utf8($message);
+			$report['Message'] = $message;
 			if ($fileLine) {
 				$report['FileLine'] = $this->stripBaseDir($fileLine);
 			}
@@ -138,7 +138,7 @@ class ErrorHandler {
 				$report['ManiaControlVersion'] = ManiaControl::VERSION;
 			}
 
-			$json = json_encode($report);
+			$json = json_encode(Formatter::utf8($report));
 			$info = base64_encode($json);
 
 			$url      = ManiaControl::URL_WEBSERVICE . 'errorreport?error=' . urlencode($info);
@@ -314,7 +314,7 @@ class ErrorHandler {
 				$type = gettype($arg);
 				$string .= $type . '(';
 				if (is_string($arg)) {
-					$param = Formatter::utf8($arg);
+					$param = $arg;
 					if (strlen($param) > 20) {
 						$param = substr($param, 0, 20) . '..';
 					}
@@ -430,7 +430,7 @@ class ErrorHandler {
 		if (!DEV_MODE) {
 			$report                    = array();
 			$report['Type']            = 'Exception';
-			$report['Message']         = Formatter::utf8($message);
+			$report['Message']         = $message;
 			$report['Class']           = $exceptionClass;
 			$report['FileLine']        = $exception->getFile() . ': ' . $exception->getLine();
 			$report['SourceClass']     = $sourceClass;
@@ -450,7 +450,7 @@ class ErrorHandler {
 				$report['ManiaControlVersion'] = ManiaControl::VERSION;
 			}
 
-			$json = json_encode($report);
+			$json = json_encode(Formatter::utf8($report));
 			$info = base64_encode($json);
 
 			$url      = ManiaControl::URL_WEBSERVICE . 'errorreport?error=' . urlencode($info);
