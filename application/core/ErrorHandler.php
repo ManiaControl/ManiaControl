@@ -430,7 +430,7 @@ class ErrorHandler {
 		if (!DEV_MODE) {
 			$report                    = array();
 			$report['Type']            = 'Exception';
-			$report['Message']         = $message;
+			$report['Message']         = Formatter::utf8($message);
 			$report['Class']           = $exceptionClass;
 			$report['FileLine']        = $exception->getFile() . ': ' . $exception->getLine();
 			$report['SourceClass']     = $sourceClass;
