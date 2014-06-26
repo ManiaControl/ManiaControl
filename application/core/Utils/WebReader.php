@@ -66,7 +66,8 @@ abstract class WebReader {
 		$request->getOptions()
 		        ->set(CURLOPT_POST, true); // post method
 		if ($content) {
-			$request->set(CURLOPT_POSTFIELDS, $content); // post content field
+			$request->getOptions()
+			        ->set(CURLOPT_POSTFIELDS, $content); // post content field
 		}
 		$response = $request->send();
 		if (!is_null($function)) {
