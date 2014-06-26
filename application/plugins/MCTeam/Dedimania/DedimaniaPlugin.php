@@ -559,6 +559,10 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * @param Player $player
 	 */
 	public function handlePlayerConnect(Player $player) {
+		if (!isset($this->dedimaniaData)) {
+			return;
+		}
+
 		// Send Dedimania request
 		$data    = array($this->dedimaniaData->sessionId, $player->login, $player->rawNickname, $player->path, $player->isSpectator);
 		$content = $this->encode_request(self::DEDIMANIA_PLAYERCONNECT, $data);
