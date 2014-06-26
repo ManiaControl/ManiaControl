@@ -181,7 +181,11 @@ abstract class Formatter {
 		if (is_array($text)) {
 			$newArray = array();
 			foreach ($text as $key => $value) {
-				$newArray[$key] = self::utf8($value);
+				if (is_string($value)) {
+					$newArray[$key] = self::utf8($value);
+				} else {
+					$newArray[$key] = $value;
+				}
 			}
 			return $newArray;
 		}
