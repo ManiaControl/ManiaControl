@@ -10,6 +10,7 @@ namespace ManiaControl\Utils;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 abstract class ClassUtil {
+
 	/**
 	 * Get the Class Name of the given Object
 	 *

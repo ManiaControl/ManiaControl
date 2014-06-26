@@ -95,10 +95,9 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	 * Construct ManiaControl
 	 */
 	public function __construct() {
-		// Construct Error Handler
-		$this->errorHandler = new ErrorHandler($this);
-
 		$this->log('Loading ManiaControl v' . self::VERSION . ' ...');
+
+		$this->errorHandler = new ErrorHandler($this);
 
 		$this->loadConfig();
 

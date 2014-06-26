@@ -15,7 +15,7 @@ class CommandLineHelper {
 	 * Get the Command Line Parameter with the given Name
 	 *
 	 * @param string $paramName
-	 * @return mixed
+	 * @return string
 	 */
 	public static function getParameter($paramName) {
 		global $argv;
