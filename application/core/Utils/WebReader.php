@@ -62,8 +62,9 @@ abstract class WebReader {
 	 * @return Response
 	 */
 	public static function postUrl($url, $content = null, callable $function = null) {
-		$request = static::newRequest($url)
-		                 ->set(CURLOPT_POST, true); // post method
+		$request = static::newRequest($url);
+		$request->getOptions()
+		        ->set(CURLOPT_POST, true); // post method
 		if ($content) {
 			$request->set(CURLOPT_POSTFIELDS, $content); // post content field
 		}
