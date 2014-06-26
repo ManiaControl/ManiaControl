@@ -2,7 +2,6 @@
 
 namespace ManiaControl\ManiaExchange;
 
-use FML\Controls\Control;
 use FML\Controls\Entry;
 use FML\Controls\Frame;
 use FML\Controls\Gauge;

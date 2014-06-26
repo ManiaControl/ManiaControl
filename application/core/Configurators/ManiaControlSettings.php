@@ -4,7 +4,6 @@ namespace ManiaControl\Configurators;
 
 use FML\Components\CheckBox;
 use FML\Components\ValuePicker;
-use FML\Controls\Control;
 use FML\Controls\Entry;
 use FML\Controls\Frame;
 use FML\Controls\Labels\Label_Button;

@@ -2,7 +2,6 @@
 
 namespace MCTeam;
 
-use FML\Controls\Control;
 use FML\Controls\Frame;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;

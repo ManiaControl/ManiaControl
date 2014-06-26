@@ -2,7 +2,6 @@
 
 namespace MCTeam\Dedimania;
 
-use FML\Controls\Control;
 use FML\Controls\Frame;
 use FML\Controls\Label;
 use FML\Controls\Quad;

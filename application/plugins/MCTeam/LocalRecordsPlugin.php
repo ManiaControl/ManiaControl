@@ -2,7 +2,6 @@
 
 namespace MCTeam;
 
-use FML\Controls\Control;
 use FML\Controls\Frame;
 use FML\Controls\Label;
 use FML\Controls\Quad;
@@ -637,7 +636,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 			return;
 		}
 
-		$recordId = (int)$commandParts[1];
+		$recordId   = (int)$commandParts[1];
 		$currentMap = $this->maniaControl->mapManager->getCurrentMap();
 		$records    = $this->getLocalRecords($currentMap);
 		if (count($records) < $recordId) {

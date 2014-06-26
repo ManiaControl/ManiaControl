@@ -2,7 +2,6 @@
 
 namespace ManiaControl\Manialinks;
 
-use FML\Controls\Control;
 use FML\Controls\Frame;
 use FML\Controls\Label;
 use FML\Controls\Labels\Label_Text;
