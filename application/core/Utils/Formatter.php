@@ -178,15 +178,6 @@ abstract class Formatter {
 	 * @return string
 	 */
 	public static function utf8($text) {
-		if (!$text) {
-			return $text;
-		}
-		$value = @iconv('UTF-8', 'UTF-8//IGNORE', $text);
-		if (!$value) {
-			// Prevent bugged iconv() of some systems
-			$text  = preg_replace('/[^[:print:]]/', '', $text);
-			$value = iconv('UTF-8', 'UTF-8//IGNORE', $text);
-		}
-		return $value;
+		return mb_convert_encoding($text, 'UTF-8');
 	}
 }
