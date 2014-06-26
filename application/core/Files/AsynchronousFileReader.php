@@ -5,7 +5,6 @@ namespace ManiaControl\Files;
 use cURL\Event;
 use cURL\Exception;
 use cURL\Request;
-use cURL\Response;
 use ManiaControl\ManiaControl;
 
 /**
@@ -25,10 +24,11 @@ class AsynchronousFileReader {
 	 * Private Properties
 	 */
 	private $maniaControl = null;
+	/** @var Request[] $requests */
 	private $requests = array();
 
 	/**
-	 * Construct FileReader
+	 * Construct a new Asynchronous File Reader Instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */
@@ -37,11 +37,10 @@ class AsynchronousFileReader {
 	}
 
 	/**
-	 * Appends the Data
+	 * Append available Data of active Requests
 	 */
 	public function appendData() {
 		foreach ($this->requests as $key => $request) {
-			/** @var Request $request */
 			try {
 				if ($request->socketPerform()) {
 					$request->socketSelect();
@@ -71,31 +70,26 @@ class AsynchronousFileReader {
 			return false;
 		}
 
-		$headers = array('Content-Type: ' . $contentType);
+		$headers = array();
+		array_push($headers, 'Content-Type: ' . $contentType);
 		if ($keepAlive) {
 			array_push($headers, 'Keep-Alive: ' . $keepAlive);
 			array_push($headers, 'Connection: Keep-Alive');
 		}
 
 		$request = new Request($url);
-		$request->getOptions() // request options
-			->set(CURLOPT_TIMEOUT, 10) // timeout
-			->set(CURLOPT_HEADER, false) // don't display response header
-			->set(CURLOPT_CRLF, true) // linux linefeed
-			->set(CURLOPT_ENCODING, '') // accept encoding
-			->set(CURLOPT_AUTOREFERER, true) // accept link reference
-			->set(CURLOPT_HTTPHEADER, $headers) // headers
-			->set(CURLOPT_USERAGENT, 'ManiaControl v' . ManiaControl::VERSION) // user-agent
-			->set(CURLOPT_RETURNTRANSFER, true);
+		$this->prepareOptions($request->getOptions())
+		     ->set(CURLOPT_AUTOREFERER, true) // accept link reference
+		     ->set(CURLOPT_HTTPHEADER, $headers); // headers
 
 		$request->addListener('complete', function (Event $event) use (&$function) {
-			$response = $event->response;
-			$error    = null;
-			$content  = null;
-			if ($response->hasError()) {
-				$error = $response->getError()->getMessage();
+			$error   = null;
+			$content = null;
+			if ($event->response->hasError()) {
+				$error = $event->response->getError()
+				                         ->getMessage();
 			} else {
-				$content = $response->getContent();
+				$content = $event->response->getContent();
 			}
 			call_user_func($function, $content, $error);
 		});
@@ -105,7 +99,23 @@ class AsynchronousFileReader {
 	}
 
 	/**
-	 * Adds a Request to the queue
+	 * Prepare the cURL Options
+	 *
+	 * @param Options $options
+	 * @return Options
+	 */
+	private function prepareOptions(Options $options) {
+		$options->set(CURLOPT_TIMEOUT, 10)
+		        ->set(CURLOPT_HEADER, false) // don't display response header
+		        ->set(CURLOPT_CRLF, true) // linux line feed
+		        ->set(CURLOPT_ENCODING, '') // accept encoding
+		        ->set(CURLOPT_USERAGENT, 'ManiaControl v' . ManiaControl::VERSION)
+		        ->set(CURLOPT_RETURNTRANSFER, true);
+		return $options;
+	}
+
+	/**
+	 * Add a Request to the queue
 	 *
 	 * @param Request $request
 	 */
@@ -116,61 +126,51 @@ class AsynchronousFileReader {
 	/**
 	 * Send Data via POST Method
 	 *
-	 * @param    string     $url
-	 * @param      callable $function
-	 * @param   string      $content
-	 * @param bool          $compression
-	 * @param string        $contentType
+	 * @param string   $url
+	 * @param callable $function
+	 * @param string   $content
+	 * @param bool     $compression
+	 * @param string   $contentType
 	 * @return bool
 	 */
-	public function postData($url, $function, $content, $compression = false, $contentType = 'text/xml; charset=UTF-8') {
-		if (!is_callable($function)) {
-			$this->maniaControl->log("Function is not callable");
-			return false;
-		}
-
+	public function postData($url, callable $function, $content, $compression = false,
+	                         $contentType = 'text/xml; charset=UTF-8;') {
 		if (!$url) {
 			$this->maniaControl->log("Url is empty");
 			return false;
 		}
 
 		$content = str_replace(array("\r", "\n"), '', $content);
+
+		$headers = array();
+		array_push($headers, 'Content-Type: ' . $contentType);
+		array_push($headers, 'Keep-Alive: 300');
+		array_push($headers, 'Connection: Keep-Alive');
+
 		if ($compression) {
 			$content = zlib_encode($content, 31);
-			$header  = array("Content-Type: " . $contentType, "Keep-Alive: 300", "Connection: Keep-Alive", "Content-Encoding: gzip");
-		} else {
-			$header = array("Content-Type: " . $contentType, "Keep-Alive: 300", "Connection: Keep-Alive");
+			array_push($headers, 'Content-Encoding: gzip');
 		}
 
-
 		$request = new Request($url);
-		$request->getOptions()->set(CURLOPT_HEADER, false) //don't display response header
-			->set(CURLOPT_CRLF, true) //linux linefeed
-			->set(CURLOPT_ENCODING, '')//accept encoding
-			//->set(CURLOPT_AUTOREFERER, true)//accept link reference
-			->set(CURLOPT_POST, true) //post field
-			->set(CURLOPT_POSTFIELDS, $content) //post content field
-			->set(CURLOPT_HTTPHEADER, $header) //
-			->set(CURLOPT_USERAGENT, 'ManiaControl v' . ManiaControl::VERSION) //
-			->set(CURLOPT_RETURNTRANSFER, true) //
-			->set(CURLOPT_TIMEOUT, 10);
+		$this->prepareOptions($request->getOptions())
+		     ->set(CURLOPT_POST, true) // post method
+		     ->set(CURLOPT_POSTFIELDS, $content) // post content field
+		     ->set(CURLOPT_HTTPHEADER, $headers); // headers
 
 		$request->addListener('complete', function (Event $event) use (&$function) {
-			/** @var Response $response */
-			$response = $event->response;
-			$error    = null;
-			$content  = null;
-			if ($response->hasError()) {
-				$error = $response->getError()->getMessage();
+			$error   = null;
+			$content = null;
+			if ($event->response->hasError()) {
+				$error = $event->response->getError()
+				                         ->getMessage();
 			} else {
-				$content = $response->getContent();
+				$content = $event->response->getContent();
 			}
-
 			call_user_func($function, $content, $error);
 		});
 
 		$this->addRequest($request);
-
 		return true;
 	}
 }
