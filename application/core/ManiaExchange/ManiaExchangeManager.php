@@ -152,7 +152,8 @@ class ManiaExchangeManager {
 	 */
 	public function fetchMaplistByMixedUidIdString($string) {
 		// Get Title Prefix
-		$titlePrefix = $this->maniaControl->mapManager->getCurrentMap()->getGame();
+		$titlePrefix = $this->maniaControl->mapManager->getCurrentMap()
+		                                              ->getGame();
 
 		// compile search URL
 		$url = "http://api.mania-exchange.com/{$titlePrefix}/maps/?ids={$string}";
@@ -242,16 +243,16 @@ class ManiaExchangeManager {
 	 *
 	 * @param int      $mapId
 	 * @param callable $function
-	 * @return bool
 	 */
 	public function fetchMapInfo($mapId, callable $function) {
 		// Get Title Prefix
-		$titlePrefix = $this->maniaControl->mapManager->getCurrentMap()->getGame();
+		$titlePrefix = $this->maniaControl->mapManager->getCurrentMap()
+		                                              ->getGame();
 
 		// compile search URL
 		$url = 'http://api.mania-exchange.com/' . $titlePrefix . '/maps/?ids=' . $mapId;
 
-		return $this->maniaControl->fileReader->loadFile($url, function ($mapInfo, $error) use (&$function, $titlePrefix, $url) {
+		$this->maniaControl->fileReader->loadFile($url, function ($mapInfo, $error) use (&$function, $titlePrefix, $url) {
 			$mxMapInfo = null;
 			if ($error) {
 				trigger_error($error);
@@ -271,7 +272,8 @@ class ManiaExchangeManager {
 	 * @deprecated
 	 * @see \ManiaControl\ManiaExchange\ManiaExchangeManager::fetchMapsAsync()
 	 */
-	public function getMapsAsync(callable $function, $name = '', $author = '', $env = '', $maxMapsReturned = 100, $searchOrder = self::SEARCH_ORDER_UPDATED_NEWEST) {
+	public function getMapsAsync(callable $function, $name = '', $author = '', $env = '', $maxMapsReturned = 100,
+	                             $searchOrder = self::SEARCH_ORDER_UPDATED_NEWEST) {
 		$this->fetchMapsAsync($function, $name, $author, $env, $maxMapsReturned, $searchOrder);
 		return true;
 	}
@@ -286,12 +288,14 @@ class ManiaExchangeManager {
 	 * @param int      $maxMapsReturned
 	 * @param int      $searchOrder
 	 */
-	public function fetchMapsAsync(callable $function, $name = '', $author = '', $env = '', $maxMapsReturned = 100, $searchOrder = self::SEARCH_ORDER_UPDATED_NEWEST) {
+	public function fetchMapsAsync(callable $function, $name = '', $author = '', $env = '', $maxMapsReturned = 100,
+	                               $searchOrder = self::SEARCH_ORDER_UPDATED_NEWEST) {
 		// TODO: remove $env because it's not really used?
 
 		// Get Title Id
 		$titleId     = $this->maniaControl->server->titleId;
-		$titlePrefix = $this->maniaControl->mapManager->getCurrentMap()->getGame();
+		$titlePrefix = $this->maniaControl->mapManager->getCurrentMap()
+		                                              ->getGame();
 
 		// compile search URL
 		$url = 'http://' . $titlePrefix . '.mania-exchange.com/tracksearch2/search?api=on';
