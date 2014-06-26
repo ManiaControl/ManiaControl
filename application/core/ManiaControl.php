@@ -34,7 +34,6 @@ use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 use Maniaplanet\DedicatedServer\Xmlrpc\TransportException;
 
 require_once __DIR__ . '/Libs/Maniaplanet/DedicatedServer/Connection.php';
-require_once __DIR__ . '/Libs/GbxDataFetcher/gbxdatafetcher.inc.php';
 require_once __DIR__ . '/Libs/FML/autoload.php';
 require_once __DIR__ . '/Libs/Symfony/autoload.php';
 require_once __DIR__ . '/Libs/curl-easy/autoload.php';
