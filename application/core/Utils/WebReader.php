@@ -1,6 +1,6 @@
 <?php
 
-namespace ManiaControl\Files;
+namespace ManiaControl\Utils;
 
 use cURL\Request;
 use cURL\Response;

@@ -4,6 +4,7 @@ namespace ManiaControl\Files;
 
 use ManiaControl\Logger;
 use ManiaControl\Utils\Formatter;
+use ManiaControl\Utils\WebReader;
 
 /**
  * Files Utility Class
@@ -16,7 +17,7 @@ abstract class FileUtil {
 
 	/**
 	 * @deprecated
-	 * @see \ManiaControl\Files\WebReader
+	 * @see \ManiaControl\Utils\WebReader::loadUrl()
 	 */
 	public static function loadFile($url) {
 		$response = WebReader::loadUrl($url);
