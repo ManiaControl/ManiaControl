@@ -330,6 +330,9 @@ class MapManager implements CallbackListener {
 		} catch (InvalidMapException $exception) {
 			$this->maniaControl->chat->sendException($exception, $login);
 			return;
+		} catch (FileException $exception) {
+			$this->maniaControl->chat->sendException($exception, $login);
+			return;
 		}
 
 		// Add map to map list
