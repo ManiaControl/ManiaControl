@@ -58,6 +58,7 @@ class MapManager implements CallbackListener {
 	public $mapQueue = null;
 	public $mapCommands = null;
 	public $mapList = null;
+	public $directoryBrowser = null;
 	public $mxList = null;
 	public $mxManager = null;
 	public $mapActions = null;
@@ -82,12 +83,13 @@ class MapManager implements CallbackListener {
 		$this->initTables();
 
 		// Create map commands instance
-		$this->mxManager   = new ManiaExchangeManager($this->maniaControl);
-		$this->mapList     = new MapList($this->maniaControl);
-		$this->mxList      = new ManiaExchangeList($this->maniaControl);
-		$this->mapCommands = new MapCommands($maniaControl);
-		$this->mapQueue    = new MapQueue($this->maniaControl);
-		$this->mapActions  = new MapActions($maniaControl);
+		$this->mxManager        = new ManiaExchangeManager($this->maniaControl);
+		$this->mapList          = new MapList($this->maniaControl);
+		$this->directoryBrowser = new DirectoryBrowser($this->maniaControl);
+		$this->mxList           = new ManiaExchangeList($this->maniaControl);
+		$this->mapCommands      = new MapCommands($maniaControl);
+		$this->mapQueue         = new MapQueue($this->maniaControl);
+		$this->mapActions       = new MapActions($maniaControl);
 
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::ONINIT, $this, 'handleOnInit');
