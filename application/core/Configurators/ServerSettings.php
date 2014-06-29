@@ -100,35 +100,36 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	public function loadSettingsFromDatabase() {
 		$serverId = $this->maniaControl->server->index;
 		$mysqli   = $this->maniaControl->database->mysqli;
-		$query    = "SELECT * FROM `" . self::TABLE_SERVER_SETTINGS . "` WHERE serverIndex = " . $serverId . ";";
+		$query    = "SELECT * FROM `" . self::TABLE_SERVER_SETTINGS . "`
+				WHERE serverIndex = {$serverId};";
 		$result   = $mysqli->query($query);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
 		}
 		$serverSettings = $this->maniaControl->client->getServerOptions();
-		$applySettings  = false;
+		$savedSettings  = array();
 		while ($row = $result->fetch_object()) {
-			$settingName = $row->settingName;
+			$settingName = lcfirst($row->settingName);
 			if (!property_exists($serverSettings, $settingName)) {
 				continue;
 			}
-			$oldType                      = gettype($serverSettings->$settingName);
-			$serverSettings->$settingName = $row->settingValue;
-			settype($serverSettings->$settingName, $oldType);
-			$applySettings = true;
+			$settingValue = $row->settingValue;
+			settype($settingValue, gettype($serverSettings->$settingName));
+			$savedSettings[$settingName] = $settingValue;
 		}
 		$result->free();
-		if (!$applySettings) {
+		if (empty($savedSettings)) {
 			return true;
 		}
 
 		try {
-			$this->maniaControl->client->setServerOptions($serverSettings);
+			$serverOptions = ServerOptions::fromArray($savedSettings);
+			$success       = $this->maniaControl->client->setServerOptions($serverOptions);
 		} catch (ServerOptionsException $exception) {
 			$this->maniaControl->chat->sendExceptionToAdmins($exception);
 		}
-		return true;
+		return $success;
 	}
 
 	/**
