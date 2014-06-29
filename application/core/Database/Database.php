@@ -126,7 +126,7 @@ class Database implements TimerListener {
 		$this->maniaControl->log("Database '{$this->config->name}' doesn't exit! Trying to create it...");
 
 		// Create database
-		$databaseQuery = "CREATE DATABASE '" . $this->mysqli->escape_string($this->config->name) . "';";
+		$databaseQuery = "CREATE DATABASE " . $this->mysqli->escape_string($this->config->name) . ";";
 		$this->mysqli->query($databaseQuery);
 		if ($this->mysqli->error) {
 			$this->maniaControl->quit($this->mysqli->error, true);
