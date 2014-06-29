@@ -56,9 +56,9 @@ abstract class FileUtil {
 	 */
 	public static function getClearedFileName($fileName) {
 		$fileName = Formatter::stripCodes($fileName);
-		$fileName = str_replace(array(DIRECTORY_SEPARATOR, '\\', '/', ':', '*', '?', '"', '<', '>', '|'), '_', $fileName);
-		$fileName = preg_replace('/[^[:print:]]/', '', $fileName);
 		$fileName = Formatter::utf8($fileName);
+		$fileName = preg_replace('/[^0-9A-Za-z\-\+\.\_\ ]/', null, $fileName);
+		$fileName = preg_replace('/ /', '_', $fileName);
 		return $fileName;
 	}
 
