@@ -195,6 +195,22 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$mxQuad->setAction(self::ACTION_CHECK_UPDATE);
 		}
 
+		if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
+			// Directory browser
+			$browserButton = new Label_Button();
+			$frame->add($browserButton);
+			$browserButton->setPosition($width / -2 + 20, -$height / 2 + 9, 0.01);
+			$browserButton->setTextSize(1);
+			$browserButton->setText('Directory Browser');
+
+			$browserQuad = new Quad_BgsPlayerCard();
+			$frame->add($browserQuad);
+			$browserQuad->setPosition($width / -2 + 20, -$height / 2 + 9, 0.01);
+			$browserQuad->setSubStyle($browserQuad::SUBSTYLE_BgPlayerCardBig);
+			$browserQuad->setSize(35, 4);
+			$browserQuad->setAction(DirectoryBrowser::ACTION_SHOW);
+		}
+
 		// Headline
 		$headFrame = new Frame();
 		$frame->add($headFrame);
