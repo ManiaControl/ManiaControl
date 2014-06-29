@@ -251,7 +251,12 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 				$this->log("Can't restart ManiaControl because the function 'exec' is disabled!");
 				return;
 			}
-			$command = 'sh ' . escapeshellarg(ManiaControlDir . 'ManiaControl.sh') . ' > /dev/null &';
+			$fileName = ManiaControlDir . 'ManiaControl.sh';
+			if (!is_readable($fileName)) {
+				$this->log("Can't restart ManiaControl because the file 'ManiaControl.sh' doesn't exist or isn't readable!");
+				return;
+			}
+			$command = 'sh ' . escapeshellarg($fileName) . ' > /dev/null &';
 			exec($command);
 		} else {
 			// Windows
