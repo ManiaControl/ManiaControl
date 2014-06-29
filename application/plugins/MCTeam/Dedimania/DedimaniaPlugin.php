@@ -279,6 +279,11 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			}
 
 			$responseData                       = $methodResponse[0];
+			if (!isset($responseData['Players']) || !isset($responseData['Records'])) {
+				$this->maniaControl->errorHandler->triggerDebugNotice('Invalid Dedimania response!', $responseData);
+				return;
+			}
+
 			$this->dedimaniaData->serverMaxRank = $responseData['ServerMaxRank'];
 
 			foreach ($responseData['Players'] as $player) {
