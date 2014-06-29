@@ -72,6 +72,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	private $updateManialink = false;
 	/** @var ManiaLink $manialink */
 	private $manialink = null;
+	// TODO: use some sort of model class instead of various array keys that you can't remember
 	private $mxKarma = array();
 
 	/**
@@ -370,17 +371,21 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		}
 
 		$content = json_encode($properties);
-		$this->maniaControl->fileReader->postData(self::MX_KARMA_URL . self::MX_KARMA_GET_MAP_RATING . "?sessionKey=" . urlencode($this->mxKarma['session']->sessionKey), function ($data, $error) use (&$player) {
+		$this->maniaControl->fileReader->postData(self::MX_KARMA_URL . self::MX_KARMA_GET_MAP_RATING . "?sessionKey=" . urlencode($this->mxKarma['session']->sessionKey), function ($data,
+		                                                                                                                                                                            $error) use
+		(
+			&$player
+		) {
 			if (!$error) {
 				$data = json_decode($data);
 				if ($data->success) {
 
 					// Fetch averages if its for the whole server
 					if (!$player) {
-						$this->mxKarma["voteCount"]       = $data->data->votecount;
-						$this->mxKarma["voteAverage"]     = $data->data->voteaverage;
-						$this->mxKarma["modeVoteCount"]   = $data->data->modevotecount;
-						$this->mxKarma["modeVoteAverage"] = $data->data->modevoteaverage;
+						$this->mxKarma['voteCount']       = $data->data->votecount;
+						$this->mxKarma['voteAverage']     = $data->data->voteaverage;
+						$this->mxKarma['modeVoteCount']   = $data->data->modevotecount;
+						$this->mxKarma['modeVoteAverage'] = $data->data->modevoteaverage;
 					}
 
 					foreach ($data->data->votes as $votes) {
@@ -479,7 +484,8 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 		$content = json_encode($properties);
 
-		$this->maniaControl->fileReader->postData(self::MX_KARMA_URL . self::MX_KARMA_SAVE_VOTES . "?sessionKey=" . urlencode($this->mxKarma['session']->sessionKey), function ($data, $error) {
+		$this->maniaControl->fileReader->postData(self::MX_KARMA_URL . self::MX_KARMA_SAVE_VOTES . "?sessionKey=" . urlencode($this->mxKarma['session']->sessionKey), function ($data,
+		                                                                                                                                                                        $error) {
 			if (!$error) {
 				$data = json_decode($data);
 				if ($data->success) {
@@ -590,23 +596,35 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		$map = $this->maniaControl->mapManager->getCurrentMap();
 
 		// Update vote in MX karma array
-		if ($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MX_KARMA_ACTIVATED) && isset($this->mxKarma["session"])) {
-			if (!isset($this->mxKarma["votes"][$player->login])) {
-				$sum = $this->mxKarma["voteCount"] * $this->mxKarma["voteAverage"] + $vote * 100;
-				$this->mxKarma["voteCount"]++;
+		if ($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MX_KARMA_ACTIVATED) && isset($this->mxKarma['session'])) {
+			if (!isset($this->mxKarma['votes'][$player->login])) {
+				if (!isset($this->mxKarma['voteCount'])) {
+					$this->mxKarma['voteCount'] = 0;
+				}
+				if (!isset($this->mxKarma['voteAverage'])) {
+					$this->mxKarma['voteAverage'] = 0.;
+				}
+				$sum = $this->mxKarma['voteCount'] * $this->mxKarma['voteAverage'] + $vote * 100;
+				$this->mxKarma['voteCount']++;
 
-				$modeSum = $this->mxKarma["modeVoteCount"] * $this->mxKarma["modeVoteAverage"] + $vote * 100;
-				$this->mxKarma["modeVoteCount"]++;
+				if (!isset($this->mxKarma['modeVoteCount'])) {
+					$this->mxKarma['modeVoteCount'] = 0;
+				}
+				if (!isset($this->mxKarma['modeVoteAverage'])) {
+					$this->mxKarma['modeVoteAverage'] = 0;
+				}
+				$modeSum = $this->mxKarma['modeVoteCount'] * $this->mxKarma['modeVoteAverage'] + $vote * 100;
+				$this->mxKarma['modeVoteCount']++;
 			} else {
-				$oldVote = $this->mxKarma["votes"][$player->login];
-				$sum     = $this->mxKarma["voteCount"] * $this->mxKarma["voteAverage"] - $oldVote + $vote * 100;
-				$modeSum = $this->mxKarma["modeVoteCount"] * $this->mxKarma["modeVoteAverage"] - $oldVote + $vote * 100;
+				$oldVote = $this->mxKarma['votes'][$player->login];
+				$sum     = $this->mxKarma['voteCount'] * $this->mxKarma['voteAverage'] - $oldVote + $vote * 100;
+				$modeSum = $this->mxKarma['modeVoteCount'] * $this->mxKarma['modeVoteAverage'] - $oldVote + $vote * 100;
 			}
 			//FIXME, how can here ever be division by zero?, a voting just happened before, and a vote of a player is set
 			//edit problem is if someone votes on one server (on a map which has no votes yet, joins another server than where same map is running and votes again)
-			$this->mxKarma["voteAverage"]           = $sum / $this->mxKarma["voteCount"];
-			$this->mxKarma["modeVoteAverage"]       = $modeSum / $this->mxKarma["modeVoteCount"];
-			$this->mxKarma["votes"][$player->login] = $vote * 100;
+			$this->mxKarma['voteAverage']           = $sum / $this->mxKarma['voteCount'];
+			$this->mxKarma['modeVoteAverage']       = $modeSum / $this->mxKarma['modeVoteCount'];
+			$this->mxKarma['votes'][$player->login] = $vote * 100;
 		}
 
 		$voted = $this->getPlayerVote($player, $map);
