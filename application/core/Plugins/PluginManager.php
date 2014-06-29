@@ -269,6 +269,9 @@ class PluginManager {
 	 * @param string $directory
 	 */
 	public function loadPluginFiles($directory = '') {
+		if (!is_readable($directory) || !is_dir($directory)) {
+			return;
+		}
 		$pluginFiles = scandir($directory);
 		foreach ($pluginFiles as $pluginFile) {
 			if (stripos($pluginFile, '.') === 0) {
