@@ -562,10 +562,7 @@ class MapManager implements CallbackListener {
 	 * Restructures the Maplist
 	 */
 	public function restructureMapList() {
-		$currentIndex = 0;
-		if ($this->currentMap) {
-			$currentIndex = $this->getMapIndex($this->currentMap);
-		}
+		$currentIndex = $this->getMapIndex($this->getCurrentMap());
 
 		// No RestructureNeeded
 		if ($currentIndex < Maplist::MAX_MAPS_PER_PAGE - 1) {
@@ -626,6 +623,18 @@ class MapManager implements CallbackListener {
 	}
 
 	/**
+	 * Get Current Map
+	 *
+	 * @return Map
+	 */
+	public function getCurrentMap() {
+		if (!$this->currentMap) {
+			return $this->fetchCurrentMap();
+		}
+		return $this->currentMap;
+	}
+
+	/**
 	 * Handle OnInit callback
 	 */
 	public function handleOnInit() {
@@ -642,18 +651,6 @@ class MapManager implements CallbackListener {
 	public function handleAfterInit() {
 		// Fetch MX infos
 		$this->mxManager->fetchManiaExchangeMapInformation();
-	}
-
-	/**
-	 * Get Current Map
-	 *
-	 * @return Map
-	 */
-	public function getCurrentMap() {
-		if (!$this->currentMap) {
-			return $this->fetchCurrentMap();
-		}
-		return $this->currentMap;
 	}
 
 	/**
