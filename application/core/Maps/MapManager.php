@@ -562,7 +562,10 @@ class MapManager implements CallbackListener {
 	 * Restructures the Maplist
 	 */
 	public function restructureMapList() {
-		$currentIndex = $this->getMapIndex($this->currentMap);
+		$currentIndex = 0;
+		if ($this->currentMap) {
+			$currentIndex = $this->getMapIndex($this->currentMap);
+		}
 
 		// No RestructureNeeded
 		if ($currentIndex < Maplist::MAX_MAPS_PER_PAGE - 1) {
