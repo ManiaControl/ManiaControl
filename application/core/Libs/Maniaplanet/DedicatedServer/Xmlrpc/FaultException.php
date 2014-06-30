@@ -68,6 +68,8 @@ class FaultException extends Exception
 			case 'Ladder mode unknown.':
 			case 'You cannot change the max players count: AllowSpectatorRelays is activated.':
 			case 'You cannot change the max spectators count: AllowSpectatorRelays is activated.':
+			case 'There are too many players':
+			case 'There are too many spectators':
 				return new ServerOptionsException($faultString, $faultCode);
 			case 'New mode unknown.':
 			case 'You need to stop the server to change to/from script mode.':
