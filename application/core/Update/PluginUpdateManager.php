@@ -11,7 +11,7 @@ use ManiaControl\Files\FileUtil;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Plugins\Plugin;
-use ManiaControl\Plugins\PluginInstallMenu;
+use ManiaControl\Plugins\InstallMenu;
 use ManiaControl\Plugins\PluginManager;
 use ManiaControl\Plugins\PluginMenu;
 use ManiaControl\Utils\WebReader;
@@ -327,7 +327,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 	public function handleManialinkPageAnswer(array $callback) {
 		$actionId = $callback[1][2];
 		$update   = (strpos($actionId, PluginMenu::ACTION_PREFIX_UPDATEPLUGIN) === 0);
-		$install  = (strpos($actionId, PluginInstallMenu::ACTION_PREFIX_INSTALL_PLUGIN) === 0);
+		$install  = (strpos($actionId, InstallMenu::ACTION_PREFIX_INSTALL_PLUGIN) === 0);
 		if (!$update && !$install) {
 			return;
 		}
@@ -349,7 +349,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 				}
 			}
 		} else {
-			$pluginId = substr($actionId, strlen(PluginInstallMenu::ACTION_PREFIX_INSTALL_PLUGIN));
+			$pluginId = substr($actionId, strlen(InstallMenu::ACTION_PREFIX_INSTALL_PLUGIN));
 
 			$url = ManiaControl::URL_WEBSERVICE . 'plugins/' . $pluginId;
 			$this->maniaControl->fileReader->loadFile($url, function ($data, $error) use (&$player) {

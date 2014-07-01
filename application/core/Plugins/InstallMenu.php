@@ -23,7 +23,7 @@ use ManiaControl\Utils\WebReader;
  * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class PluginInstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
+class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 	/*
 	 * Constants
 	 */

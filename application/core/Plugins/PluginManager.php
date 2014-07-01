@@ -46,7 +46,7 @@ class PluginManager {
 		$this->pluginMenu = new PluginMenu($maniaControl);
 		$this->maniaControl->configurator->addMenu($this->pluginMenu);
 
-		$this->pluginInstallMenu = new PluginInstallMenu($maniaControl);
+		$this->pluginInstallMenu = new InstallMenu($maniaControl);
 		$this->maniaControl->configurator->addMenu($this->pluginInstallMenu);
 	}
 
