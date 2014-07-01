@@ -135,7 +135,7 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 				$pluginFrame->add($nameLabel);
 				$nameLabel->setHAlign($nameLabel::LEFT)
 				          ->setX($width * -0.46)
-				          ->setSize($width * 0.6, $entryHeight)
+				          ->setSize($width * 0.62, $entryHeight)
 				          ->setStyle($nameLabel::STYLE_TextCardSmall)
 				          ->setTextSize(2)
 				          ->setText($plugin->name);
@@ -148,8 +148,8 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 					$infoLabel = new Label_Text();
 					$pluginFrame->add($infoLabel);
 					$infoLabel->setHAlign($infoLabel::RIGHT)
-					          ->setX($width * 0.45)
-					          ->setSize($width * 0.3, $entryHeight)
+					          ->setX($width * 0.47)
+					          ->setSize($width * 0.33, $entryHeight)
 					          ->setTextSize(1)
 					          ->setTextColor('f30');
 					if ($plugin->currentVersion->min_mc_version > ManiaControl::VERSION) {
@@ -162,11 +162,20 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 					$installButton = new Label_Button();
 					$pluginFrame->add($installButton);
 					$installButton->setHAlign($installButton::RIGHT)
-					              ->setX($width * 0.45)
+					              ->setX($width * 0.47)
 					              ->setStyle($installButton::STYLE_CardButtonSmall)
 					              ->setText('Install')
 					              ->setTranslate(true)
 					              ->setAction(self::ACTION_PREFIX_INSTALL_PLUGIN . $plugin->id);
+				}
+
+				if ($plugin->currentVersion->verified > 0) {
+					// Suggested quad
+					$suggestedQuad = new Quad_Icons64x64_1();
+					$pluginFrame->add($suggestedQuad);
+					$suggestedQuad->setPosition($width * 0.45, $entryHeight * 0.12, 2)
+					              ->setSize(4, 4)
+					              ->setSubStyle($suggestedQuad::SUBSTYLE_StateSuggested);
 				}
 
 				$posY -= $entryHeight;
