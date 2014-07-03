@@ -9,7 +9,7 @@ namespace FML\ManiaCode;
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class InstallSkin implements Element {
+class InstallSkin extends Element {
 	/*
 	 * Protected properties
 	 */
@@ -24,7 +24,7 @@ class InstallSkin implements Element {
 	 * @param string $name (optional) Skin name
 	 * @param string $file (optional) Skin file
 	 * @param string $url  (optional) Skin url
-	 * @return \FML\ManiaCode\InstallSkin|static
+	 * @return static
 	 */
 	public static function create($name = null, $file = null, $url = null) {
 		return new static($name, $file, $url);
@@ -53,7 +53,7 @@ class InstallSkin implements Element {
 	 * Set the name of the skin
 	 *
 	 * @param string $name Skin name
-	 * @return \FML\ManiaCode\InstallSkin|static
+	 * @return static
 	 */
 	public function setName($name) {
 		$this->name = (string)$name;
@@ -64,7 +64,7 @@ class InstallSkin implements Element {
 	 * Set the file of the skin
 	 *
 	 * @param string $file Skin file
-	 * @return \FML\ManiaCode\InstallSkin|static
+	 * @return static
 	 */
 	public function setFile($file) {
 		$this->file = (string)$file;
@@ -75,7 +75,7 @@ class InstallSkin implements Element {
 	 * Set the url of the skin
 	 *
 	 * @param string $url Skin url
-	 * @return \FML\ManiaCode\InstallSkin|static
+	 * @return static
 	 */
 	public function setUrl($url) {
 		$this->url = (string)$url;
@@ -86,7 +86,7 @@ class InstallSkin implements Element {
 	 * @see \FML\ManiaCode\Element::render()
 	 */
 	public function render(\DOMDocument $domDocument) {
-		$xmlElement  = $domDocument->createElement($this->tagName);
+		$xmlElement  = parent::render($domDocument);
 		$nameElement = $domDocument->createElement('name', $this->name);
 		$xmlElement->appendChild($nameElement);
 		$fileElement = $domDocument->createElement('file', $this->file);

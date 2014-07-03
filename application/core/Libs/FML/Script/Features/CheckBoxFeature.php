@@ -64,7 +64,7 @@ class CheckBoxFeature extends ScriptFeature {
 	 * Set the CheckBox Quad
 	 *
 	 * @param Quad $quad CheckBox Quad
-	 * @return \FML\Script\Features\CheckBoxFeature|static
+	 * @return static
 	 */
 	public function setQuad(Quad $quad) {
 		$this->quad = $quad->checkId()->setScriptEvents(true);
@@ -84,7 +84,7 @@ class CheckBoxFeature extends ScriptFeature {
 	 * Set the CheckBox Entry
 	 *
 	 * @param Entry $entry CheckBox Entry
-	 * @return \FML\Script\Features\CheckBoxFeature|static
+	 * @return static
 	 */
 	public function setEntry(Entry $entry) {
 		$this->entry = $entry->checkId();
@@ -104,7 +104,7 @@ class CheckBoxFeature extends ScriptFeature {
 	 * Set the default value
 	 *
 	 * @param bool $default Default value
-	 * @return \FML\Script\Features\CheckBoxFeature|static
+	 * @return static
 	 */
 	public function setDefault($default) {
 		$this->default = (bool)$default;
@@ -115,7 +115,7 @@ class CheckBoxFeature extends ScriptFeature {
 	 * Set the enabled Design
 	 *
 	 * @param CheckBoxDesign $checkBoxDesign Enabled CheckBox Design
-	 * @return \FML\Script\Features\CheckBoxFeature|static
+	 * @return static
 	 */
 	public function setEnabledDesign(CheckBoxDesign $checkBoxDesign) {
 		$this->enabledDesign = $checkBoxDesign;
@@ -126,7 +126,7 @@ class CheckBoxFeature extends ScriptFeature {
 	 * Set the disabled Design
 	 *
 	 * @param CheckBoxDesign $checkBoxDesign Disabled CheckBox Design
-	 * @return \FML\Script\Features\CheckBoxFeature|static
+	 * @return static
 	 */
 	public function setDisabledDesign(CheckBoxDesign $checkBoxDesign) {
 		$this->disabledDesign = $checkBoxDesign;

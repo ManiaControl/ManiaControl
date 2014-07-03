@@ -52,7 +52,7 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	 * Set image url
 	 *
 	 * @param string $image Image url
-	 * @return \FML\Controls\Quad|static
+	 * @return static
 	 */
 	public function setImage($image) {
 		$this->image = (string)$image;
@@ -63,7 +63,7 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	 * Set image id to use from Dico
 	 *
 	 * @param string $imageId Image id
-	 * @return \FML\Controls\Quad|static
+	 * @return static
 	 */
 	public function setImageId($imageId) {
 		$this->imageId = (string)$imageId;
@@ -74,7 +74,7 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	 * Set focus image url
 	 *
 	 * @param string $imageFocus Focus image url
-	 * @return \FML\Controls\Quad|static
+	 * @return static
 	 */
 	public function setImageFocus($imageFocus) {
 		$this->imageFocus = (string)$imageFocus;
@@ -85,7 +85,7 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	 * Set focus image id to use from Dico
 	 *
 	 * @param string $imageFocusId Focus image id
-	 * @return \FML\Controls\Quad|static
+	 * @return static
 	 */
 	public function setImageFocusId($imageFocusId) {
 		$this->imageFocusId = (string)$imageFocusId;
@@ -96,7 +96,7 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	 * Set colorization
 	 *
 	 * @param string $colorize Colorize value
-	 * @return \FML\Controls\Quad|static
+	 * @return static
 	 */
 	public function setColorize($colorize) {
 		$this->colorize = (string)$colorize;
@@ -107,7 +107,7 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	 * Set modulization
 	 *
 	 * @param string $modulizeColor Modulize value
-	 * @return \FML\Controls\Quad|static
+	 * @return static
 	 */
 	public function setModulizeColor($modulizeColor) {
 		$this->modulizeColor = (string)$modulizeColor;
@@ -118,7 +118,7 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	 * Disable the automatic image scaling
 	 *
 	 * @param bool $autoScale Whether the image should scale automatically
-	 * @return \FML\Controls\Quad|static
+	 * @return static
 	 */
 	public function setAutoScale($autoScale) {
 		$this->autoScale = ($autoScale ? 1 : 0);
@@ -225,7 +225,7 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	 * Apply the given CheckBox Design
 	 *
 	 * @param CheckBoxDesign $checkBoxDesign CheckBox Design
-	 * @return \FML\Controls\Quad|static
+	 * @return static
 	 */
 	public function applyCheckBoxDesign(CheckBoxDesign $checkBoxDesign) {
 		$checkBoxDesign->applyToQuad($this);

@@ -35,7 +35,7 @@ class Mood {
 	/**
 	 * Create a new Mood object
 	 *
-	 * @return \FML\Stylesheet\Mood|static
+	 * @return static
 	 */
 	public static function create() {
 		return new static();
@@ -47,7 +47,7 @@ class Mood {
 	 * @param float $red   Red color value
 	 * @param float $green Green color value
 	 * @param float $blue  Blue color value
-	 * @return \FML\Stylesheet\Mood|static
+	 * @return static
 	 */
 	public function setLightAmbientColor($red, $green, $blue) {
 		$this->lAmbient_LinearRgb = floatval($red) . ' ' . floatval($green) . ' ' . floatval($blue);
@@ -60,7 +60,7 @@ class Mood {
 	 * @param float $red   Red color value
 	 * @param float $green Green color value
 	 * @param float $blue  Blue color value
-	 * @return \FML\Stylesheet\Mood|static
+	 * @return static
 	 */
 	public function setCloudsColorMin($red, $green, $blue) {
 		$this->cloudsRgbMinLinear = floatval($red) . ' ' . floatval($green) . ' ' . floatval($blue);
@@ -73,7 +73,7 @@ class Mood {
 	 * @param float $red   Red color value
 	 * @param float $green Green color value
 	 * @param float $blue  Blue color value
-	 * @return \FML\Stylesheet\Mood|static
+	 * @return static
 	 */
 	public function setCloudsColorMax($red, $green, $blue) {
 		$this->cloudsRgbMaxLinear = floatval($red) . ' ' . floatval($green) . ' ' . floatval($blue);
@@ -86,7 +86,7 @@ class Mood {
 	 * @param float $red   Red color value
 	 * @param float $green Green color value
 	 * @param float $blue  Blue color value
-	 * @return \FML\Stylesheet\Mood|static
+	 * @return static
 	 */
 	public function setLight0Color($red, $green, $blue) {
 		$this->lDir0_LinearRgb = floatval($red) . ' ' . floatval($green) . ' ' . floatval($blue);
@@ -97,7 +97,7 @@ class Mood {
 	 * Set intensity of light source 0
 	 *
 	 * @param float $intensity Light intensity
-	 * @return \FML\Stylesheet\Mood|static
+	 * @return static
 	 */
 	public function setLight0Intensity($intensity) {
 		$this->lDir0_Intens = (float)$intensity;
@@ -108,7 +108,7 @@ class Mood {
 	 * Set phi angle of light source 0
 	 *
 	 * @param float $phiAngle Phi angle
-	 * @return \FML\Stylesheet\Mood|static
+	 * @return static
 	 */
 	public function setLight0PhiAngle($phiAngle) {
 		$this->lDir0_DirPhi = (float)$phiAngle;
@@ -119,7 +119,7 @@ class Mood {
 	 * Set theta angle of light source 0
 	 *
 	 * @param float $thetaAngle Theta angle
-	 * @return \FML\Stylesheet\Mood|static
+	 * @return static
 	 */
 	public function setLight0ThetaAngle($thetaAngle) {
 		$this->lDir0_DirTheta = (float)$thetaAngle;
@@ -132,7 +132,7 @@ class Mood {
 	 * @param float $red   Red color value
 	 * @param float $green Green color value
 	 * @param float $blue  Blue color value
-	 * @return \FML\Stylesheet\Mood|static
+	 * @return static
 	 */
 	public function setLightBallColor($red, $green, $blue) {
 		$this->lBall_LinearRgb = floatval($red) . ' ' . floatval($green) . ' ' . floatval($blue);
@@ -143,7 +143,7 @@ class Mood {
 	 * Set light ball intensity
 	 *
 	 * @param float $intensity Light ball intensity
-	 * @return \FML\Stylesheet\Mood|static
+	 * @return static
 	 */
 	public function setLightBallIntensity($intensity) {
 		$this->lBall_Intensity = (float)$intensity;
@@ -154,7 +154,7 @@ class Mood {
 	 * Set light ball radius
 	 *
 	 * @param float $radius Light ball radius
-	 * @return \FML\Stylesheet\Mood|static
+	 * @return static
 	 */
 	public function setLightBallRadius($radius) {
 		$this->lBall_Radius = (float)$radius;
@@ -167,7 +167,7 @@ class Mood {
 	 * @param float $red   Red color value
 	 * @param float $green Green color value
 	 * @param float $blue  Blue color value
-	 * @return \FML\Stylesheet\Mood|static
+	 * @return static
 	 */
 	public function setFogColor($red, $green, $blue) {
 		$this->fogColorSrgb = floatval($red) . ' ' . floatval($green) . ' ' . floatval($blue);
@@ -180,7 +180,7 @@ class Mood {
 	 * @param float $red   Red color value
 	 * @param float $green Green color value
 	 * @param float $blue  Blue color value
-	 * @return \FML\Stylesheet\Mood|static
+	 * @return static
 	 */
 	public function setSelfIllumColor($red, $green, $blue) {
 		$this->selfIllumColor = floatval($red) . ' ' . floatval($green) . ' ' . floatval($blue);
@@ -191,7 +191,7 @@ class Mood {
 	 * Set sky gradient scale
 	 *
 	 * @param float $scale Gradient scale
-	 * @return \FML\Stylesheet\Mood|static
+	 * @return static
 	 */
 	public function setSkyGradientScale($scale) {
 		$this->skyGradientV_Scale = (float)$scale;
@@ -203,7 +203,7 @@ class Mood {
 	 *
 	 * @param float  $gradientX Scale value
 	 * @param string $color     Gradient color
-	 * @return \FML\Stylesheet\Mood|static
+	 * @return static
 	 */
 	public function addSkyGradientKey($gradientX, $color) {
 		$gradientX   = (float)$gradientX;
@@ -216,7 +216,7 @@ class Mood {
 	/**
 	 * Remove all sky gradient keys
 	 *
-	 * @return \FML\Stylesheet\Mood|static
+	 * @return static
 	 */
 	public function removeSkyGradientKeys() {
 		$this->skyGradientKeys = array();

@@ -55,7 +55,7 @@ class Tooltip extends ScriptFeature {
 	 * Set the Hover Control
 	 *
 	 * @param Control $hoverControl Hover Control
-	 * @return \FML\Script\Features\Tooltip|static
+	 * @return static
 	 */
 	public function setHoverControl(Control $hoverControl) {
 		$hoverControl->checkId();
@@ -70,7 +70,7 @@ class Tooltip extends ScriptFeature {
 	 * Set the Tooltip Control
 	 *
 	 * @param Control $tooltipControl Tooltip Control
-	 * @return \FML\Script\Features\Tooltip|static
+	 * @return static
 	 */
 	public function setTooltipControl(Control $tooltipControl) {
 		$this->tooltipControl = $tooltipControl->checkId()->setVisible(false);
@@ -81,7 +81,7 @@ class Tooltip extends ScriptFeature {
 	 * Set to only show
 	 *
 	 * @param bool $stayOnClick (optional) Whether the Tooltip should stay on click
-	 * @return \FML\Script\Features\Tooltip|static
+	 * @return static
 	 */
 	public function setStayOnClick($stayOnClick) {
 		$this->stayOnClick = (bool)$stayOnClick;
@@ -92,7 +92,7 @@ class Tooltip extends ScriptFeature {
 	 * Set to only hide
 	 *
 	 * @param bool $invert (optional) Whether the visibility toggling should be inverted
-	 * @return \FML\Script\Features\Tooltip|static
+	 * @return static
 	 */
 	public function setInvert($invert) {
 		$this->invert = (bool)$invert;
@@ -103,7 +103,7 @@ class Tooltip extends ScriptFeature {
 	 * Set text
 	 *
 	 * @param string $text (optional) Text to display if the TooltipControl is a Label
-	 * @return \FML\Script\Features\Tooltip|static
+	 * @return static
 	 */
 	public function setText($text) {
 		$this->text = (string)$text;

@@ -31,7 +31,7 @@ class ScriptConstant {
 	 * Set the name
 	 *
 	 * @param string $name Constant name
-	 * @return \FML\Script\ScriptConstant|static
+	 * @return static
 	 */
 	public function setName($name) {
 		$this->name = (string)$name;
@@ -42,7 +42,7 @@ class ScriptConstant {
 	 * Set the value
 	 *
 	 * @param string $value Constant value
-	 * @return \FML\Script\ScriptConstant|static
+	 * @return static
 	 */
 	public function setValue($value) {
 		$this->value = $value;

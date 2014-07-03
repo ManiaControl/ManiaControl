@@ -43,7 +43,7 @@ class PlayerProfile extends ScriptFeature {
 	 * Set the login of the opened player
 	 *
 	 * @param string $login Player login
-	 * @return \FML\Script\Features\PlayerProfile|static
+	 * @return static
 	 */
 	public function setLogin($login) {
 		$this->login = $login;
@@ -54,7 +54,7 @@ class PlayerProfile extends ScriptFeature {
 	 * Set the Control
 	 *
 	 * @param Control $control Profile Control
-	 * @return \FML\Script\Features\PlayerProfile|static
+	 * @return static
 	 */
 	public function setControl(Control $control) {
 		$control->checkId();
@@ -69,7 +69,7 @@ class PlayerProfile extends ScriptFeature {
 	 * Set the label name
 	 *
 	 * @param string $labelName Script Label name
-	 * @return \FML\Script\Features\PlayerProfile|static
+	 * @return static
 	 */
 	public function setLabelName($labelName) {
 		$this->labelName = (string)$labelName;

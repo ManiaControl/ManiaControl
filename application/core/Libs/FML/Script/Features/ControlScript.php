@@ -40,7 +40,7 @@ class ControlScript extends ScriptFeature {
 	 * Set the Control
 	 *
 	 * @param Control $control Event Control
-	 * @return \FML\Script\Features\ControlScript|static
+	 * @return static
 	 */
 	public function setControl(Control $control) {
 		$this->control = $control->checkId();
@@ -52,7 +52,7 @@ class ControlScript extends ScriptFeature {
 	 * Set the script text
 	 *
 	 * @param string $text Script text
-	 * @return \FML\Script\Features\ControlScript|static
+	 * @return static
 	 */
 	public function setText($text) {
 		$this->text = (string)$text;
@@ -63,7 +63,7 @@ class ControlScript extends ScriptFeature {
 	 * Set the label name
 	 *
 	 * @param string $labelName Script Label name
-	 * @return \FML\Script\Features\ControlScript|static
+	 * @return static
 	 */
 	public function setLabelName($labelName) {
 		$this->labelName = (string)$labelName;

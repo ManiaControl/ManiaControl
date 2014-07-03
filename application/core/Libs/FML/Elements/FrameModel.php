@@ -28,7 +28,7 @@ class FrameModel implements Container, Renderable {
 	 * Set Model id
 	 *
 	 * @param string $modelId Model id
-	 * @return \FML\Elements\FrameModel|static
+	 * @return static
 	 */
 	public function setId($modelId) {
 		$this->modelId = (string)$modelId;
@@ -51,7 +51,7 @@ class FrameModel implements Container, Renderable {
 	 */
 	public function checkId() {
 		if (!$this->modelId) {
-			$this->setId(new UniqueID());
+			$this->setId(UniqueID::create());
 		}
 		return $this;
 	}

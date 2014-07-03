@@ -46,7 +46,7 @@ class Menu extends ScriptFeature {
 	 * @param Control $item           Item Control in the Menu bar
 	 * @param Control $control        Toggled Menu Control
 	 * @param bool    $isStartElement (optional) Whether the Menu should start with this Element
-	 * @return \FML\Script\Features\Menu|static
+	 * @return static
 	 */
 	public function addElement(Control $item, Control $control, $isStartElement = false) {
 		$menuElement = new MenuElement($item, $control);
@@ -59,7 +59,7 @@ class Menu extends ScriptFeature {
 	 *
 	 * @param MenuElement $menuElement    Menu Element
 	 * @param bool        $isStartElement (optional) Whether the Menu should start with this Element
-	 * @return \FML\Script\Features\Menu|static
+	 * @return static
 	 */
 	public function appendElement(MenuElement $menuElement, $isStartElement = false) {
 		if (!in_array($menuElement, $this->elements, true)) {
@@ -77,7 +77,7 @@ class Menu extends ScriptFeature {
 	 * Set the Element to start with
 	 *
 	 * @param MenuElement $startElement Starting Element
-	 * @return \FML\Script\Features\Menu|static
+	 * @return static
 	 */
 	public function setStartElement(MenuElement $startElement) {
 		$this->startElement = $startElement;

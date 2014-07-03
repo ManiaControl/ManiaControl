@@ -9,7 +9,7 @@ namespace FML\ManiaCode;
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class InstallMacroblock implements Element {
+class InstallMacroblock extends Element {
 	/*
 	 * Protected properties
 	 */
@@ -23,7 +23,7 @@ class InstallMacroblock implements Element {
 	 *
 	 * @param string $name (optional) Macroblock name
 	 * @param string $url  (optional) Macroblock url
-	 * @return \FML\ManiaCode\InstallMacroblock|static
+	 * @return static
 	 */
 	public static function create($name = null, $url = null) {
 		return new static($name, $url);
@@ -52,7 +52,7 @@ class InstallMacroblock implements Element {
 	 * Set the name of the macroblock
 	 *
 	 * @param string $name Macroblock name
-	 * @return \FML\ManiaCode\InstallMacroblock|static
+	 * @return static
 	 */
 	public function setName($name) {
 		$this->name = (string)$name;
@@ -63,7 +63,7 @@ class InstallMacroblock implements Element {
 	 * Set the file of the macroblock
 	 *
 	 * @param string $file Macroblock file
-	 * @return \FML\ManiaCode\InstallMacroblock|static
+	 * @return static
 	 */
 	public function setFile($file) {
 		$this->file = (string)$file;
@@ -74,7 +74,7 @@ class InstallMacroblock implements Element {
 	 * Set the url of the macroblock
 	 *
 	 * @param string $url Macroblock url
-	 * @return \FML\ManiaCode\InstallMacroblock|static
+	 * @return static
 	 */
 	public function setUrl($url) {
 		$this->url = (string)$url;
@@ -85,7 +85,7 @@ class InstallMacroblock implements Element {
 	 * @see \FML\ManiaCode\Element::render()
 	 */
 	public function render(\DOMDocument $domDocument) {
-		$xmlElement  = $domDocument->createElement($this->tagName);
+		$xmlElement  = parent::render($domDocument);
 		$nameElement = $domDocument->createElement('name', $this->name);
 		$xmlElement->appendChild($nameElement);
 		$fileElement = $domDocument->createElement('file', $this->file);

@@ -82,7 +82,7 @@ class UISound extends ScriptFeature {
 	 * Set the sound to play
 	 *
 	 * @param string $soundName Sound name
-	 * @return \FML\Script\Features\UISound|static
+	 * @return static
 	 */
 	public function setSoundName($soundName) {
 		$this->soundName = (string)$soundName;
@@ -93,7 +93,7 @@ class UISound extends ScriptFeature {
 	 * Set the Control
 	 *
 	 * @param Control $control Action Control
-	 * @return \FML\Script\Features\UISound|static
+	 * @return static
 	 */
 	public function setControl(Control $control) {
 		$control->checkId();
@@ -108,7 +108,7 @@ class UISound extends ScriptFeature {
 	 * Set the sound variant
 	 *
 	 * @param int $variant Sound variant
-	 * @return \FML\Script\Features\UISound|static
+	 * @return static
 	 */
 	public function setVariant($variant) {
 		$this->variant = (int)$variant;
@@ -119,7 +119,7 @@ class UISound extends ScriptFeature {
 	 * Set the volume
 	 *
 	 * @param float $volume Sound volume
-	 * @return \FML\Script\Features\UISound|static
+	 * @return static
 	 */
 	public function setVolume($volume) {
 		$this->volume = (float)$volume;
@@ -130,7 +130,7 @@ class UISound extends ScriptFeature {
 	 * Set the label name
 	 *
 	 * @param string $labelName Script Label name
-	 * @return \FML\Script\Features\UISound|static
+	 * @return static
 	 */
 	public function setLabelName($labelName) {
 		$this->labelName = (string)$labelName;

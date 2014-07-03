@@ -52,7 +52,7 @@ class Toggle extends ScriptFeature {
 	 * Set the toggling Control
 	 *
 	 * @param Control $control Toggling Control
-	 * @return \FML\Script\Features\Toggle|static
+	 * @return static
 	 */
 	public function setTogglingControl(Control $control) {
 		$control->checkId();
@@ -67,7 +67,7 @@ class Toggle extends ScriptFeature {
 	 * Set the toggled Control
 	 *
 	 * @param Control $control Toggling Control
-	 * @return \FML\Script\Features\Toggle|static
+	 * @return static
 	 */
 	public function setToggledControl(Control $control) {
 		$this->toggledControl = $control->checkId();
@@ -78,7 +78,7 @@ class Toggle extends ScriptFeature {
 	 * Set the label name
 	 *
 	 * @param string $labelName Script Label Name
-	 * @return \FML\Script\Features\Toggle|static
+	 * @return static
 	 */
 	public function setLabelName($labelName) {
 		$this->labelName = (string)$labelName;
@@ -89,7 +89,7 @@ class Toggle extends ScriptFeature {
 	 * Set to only show
 	 *
 	 * @param bool $onlyShow Whether it should only show the Control but not toggle
-	 * @return \FML\Script\Features\Toggle|static
+	 * @return static
 	 */
 	public function setOnlyShow($onlyShow) {
 		$this->onlyShow = (bool)$onlyShow;
@@ -100,7 +100,7 @@ class Toggle extends ScriptFeature {
 	 * Set to only hide
 	 *
 	 * @param bool $onlyHide Whether it should only hide the Control but not toggle
-	 * @return \FML\Script\Features\Toggle|static
+	 * @return static
 	 */
 	public function setOnlyHide($onlyHide) {
 		$this->onlyHide = (bool)$onlyHide;

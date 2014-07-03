@@ -23,7 +23,7 @@ class ManiaLinks {
 	/**
 	 * Create a new ManiaLinks object
 	 *
-	 * @return \FML\ManiaLinks|static
+	 * @return static
 	 */
 	public static function create() {
 		return new static();
@@ -33,7 +33,7 @@ class ManiaLinks {
 	 * Set XML encoding
 	 *
 	 * @param string $encoding XML encoding
-	 * @return \FML\ManiaLinks|static
+	 * @return static
 	 */
 	public function setXmlEncoding($encoding) {
 		$this->encoding = (string)$encoding;
@@ -44,7 +44,7 @@ class ManiaLinks {
 	 * Add a child ManiaLink
 	 *
 	 * @param ManiaLink $child Child ManiaLink
-	 * @return \FML\ManiaLinks
+	 * @return static
 	 */
 	public function add(ManiaLink $child) {
 		if (!in_array($child, $this->children, true)) {
@@ -56,7 +56,7 @@ class ManiaLinks {
 	/**
 	 * Remove all child ManiaLinks
 	 *
-	 * @return \FML\ManiaLinks|static
+	 * @return static
 	 */
 	public function removeChildren() {
 		$this->children = array();
@@ -67,7 +67,7 @@ class ManiaLinks {
 	 * Set the CustomUI
 	 *
 	 * @param CustomUI $customUI CustomUI object
-	 * @return \FML\ManiaLinks|static
+	 * @return static
 	 */
 	public function setCustomUI(CustomUI $customUI) {
 		$this->customUI = $customUI;

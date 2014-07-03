@@ -22,7 +22,7 @@ class Stylesheet {
 	/**
 	 * Create a new Stylesheet object
 	 *
-	 * @return \FML\Stylesheet\Stylesheet|static
+	 * @return static
 	 */
 	public static function create() {
 		return new static();
@@ -32,7 +32,7 @@ class Stylesheet {
 	 * Add a new Style3d
 	 *
 	 * @param Style3d $style3d Style3d object
-	 * @return \FML\Stylesheet\Stylesheet|static
+	 * @return static
 	 */
 	public function addStyle3d(Style3d $style3d) {
 		if (!in_array($style3d, $this->styles3d, true)) {
@@ -44,7 +44,7 @@ class Stylesheet {
 	/**
 	 * Remove all Style3ds
 	 *
-	 * @return \FML\Stylesheet\Stylesheet|static
+	 * @return static
 	 */
 	public function removeStyles() {
 		$this->styles3d = array();
@@ -55,7 +55,7 @@ class Stylesheet {
 	 * Set the Mood object of the Stylesheet
 	 *
 	 * @param Mood $mood Mood object
-	 * @return \FML\Stylesheet\Stylesheet|static
+	 * @return static
 	 */
 	public function setMood(Mood $mood) {
 		$this->mood = $mood;

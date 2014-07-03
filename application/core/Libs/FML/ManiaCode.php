@@ -39,7 +39,7 @@ class ManiaCode {
 	/**
 	 * Create a new ManiaCode object
 	 *
-	 * @return \FML\ManiaCode|static
+	 * @return static
 	 */
 	public static function create() {
 		return new static();
@@ -49,7 +49,7 @@ class ManiaCode {
 	 * Set XML encoding
 	 *
 	 * @param string $encoding XML encoding
-	 * @return \FML\ManiaCode|static
+	 * @return static
 	 */
 	public function setXmlEncoding($encoding) {
 		$this->encoding = (string)$encoding;
@@ -60,7 +60,7 @@ class ManiaCode {
 	 * Disable the showing of the confirmation at the end of the ManiaCode
 	 *
 	 * @param bool $disable Whether the confirmation should be shown
-	 * @return \FML\ManiaCode|static
+	 * @return static
 	 */
 	public function disableConfirmation($disable) {
 		$this->noConfirmation = ($disable ? 1 : 0);
@@ -71,7 +71,7 @@ class ManiaCode {
 	 * Show a message
 	 *
 	 * @param string $message Message text
-	 * @return \FML\ManiaCode|static
+	 * @return static
 	 */
 	public function addShowMessage($message) {
 		$messageElement = new ShowMessage($message);
@@ -85,7 +85,7 @@ class ManiaCode {
 	 * @param string $name Macroblock name
 	 * @param string $file Macroblock file
 	 * @param string $url  Macroblock url
-	 * @return \FML\ManiaCode|static
+	 * @return static
 	 */
 	public function addInstallMacroblock($name, $file, $url) {
 		$macroblockElement = new InstallMacroblock($name, $file, $url);
@@ -98,7 +98,7 @@ class ManiaCode {
 	 *
 	 * @param string $name Map name
 	 * @param string $url  Map url
-	 * @return \FML\ManiaCode|static
+	 * @return static
 	 */
 	public function addInstallMap($name, $url) {
 		$mapElement = new InstallMap($name, $url);
@@ -111,7 +111,7 @@ class ManiaCode {
 	 *
 	 * @param string $name Map name
 	 * @param string $url  Map url
-	 * @return \FML\ManiaCode|static
+	 * @return static
 	 */
 	public function addPlayMap($name, $url) {
 		$mapElement = new PlayMap($name, $url);
@@ -124,7 +124,7 @@ class ManiaCode {
 	 *
 	 * @param string $name Replay name
 	 * @param string $url  Replay url
-	 * @return \FML\ManiaCode|static
+	 * @return static
 	 */
 	public function addInstallReplay($name, $url) {
 		$replayElement = new InstallReplay($name, $url);
@@ -137,7 +137,7 @@ class ManiaCode {
 	 *
 	 * @param string $name Replay name
 	 * @param string $url  Replay url
-	 * @return \FML\ManiaCode|static
+	 * @return static
 	 */
 	public function addViewReplay($name, $url) {
 		$replayElement = new ViewReplay($name, $url);
@@ -150,7 +150,7 @@ class ManiaCode {
 	 *
 	 * @param string $name Replay name
 	 * @param string $url  Replay url
-	 * @return \FML\ManiaCode|static
+	 * @return static
 	 */
 	public function addPlayReplay($name, $url) {
 		$replayElement = new PlayReplay($name, $url);
@@ -164,7 +164,7 @@ class ManiaCode {
 	 * @param string $name Skin name
 	 * @param string $file Skin file
 	 * @param string $url  Skin url
-	 * @return \FML\ManiaCode|static
+	 * @return static
 	 */
 	public function addInstallSkin($name, $file, $url) {
 		$skinElement = new InstallSkin($name, $file, $url);
@@ -178,7 +178,7 @@ class ManiaCode {
 	 * @param string $name Skin name
 	 * @param string $file Skin file
 	 * @param string $url  Skin url
-	 * @return \FML\ManiaCode|static
+	 * @return static
 	 */
 	public function addGetSkin($name, $file, $url) {
 		$skinElement = new GetSkin($name, $file, $url);
@@ -190,7 +190,7 @@ class ManiaCode {
 	 * Add a buddy
 	 *
 	 * @param string $login Buddy login
-	 * @return \FML\ManiaCode|static
+	 * @return static
 	 */
 	public function addAddBuddy($login) {
 		$buddyElement = new AddBuddy($login);
@@ -202,7 +202,7 @@ class ManiaCode {
 	 * Go to a link
 	 *
 	 * @param string $link Goto link
-	 * @return \FML\ManiaCode|static
+	 * @return static
 	 */
 	public function addGoto($link) {
 		$gotoElement = new Go_To($link);
@@ -214,7 +214,7 @@ class ManiaCode {
 	 * Join a server
 	 *
 	 * @param string $login Server login
-	 * @return \FML\ManiaCode|static
+	 * @return static
 	 */
 	public function addJoinServer($login) {
 		$serverElement = new JoinServer($login);
@@ -226,7 +226,7 @@ class ManiaCode {
 	 * Add a server as favorite
 	 *
 	 * @param string $login Server login
-	 * @return \FML\ManiaCode|static
+	 * @return static
 	 */
 	public function addAddFavorite($login) {
 		$favoriteElement = new AddFavorite($login);
@@ -240,7 +240,7 @@ class ManiaCode {
 	 * @param string $name Script name
 	 * @param string $file Script file
 	 * @param string $url  Script url
-	 * @return \FML\ManiaCode|static
+	 * @return static
 	 */
 	public function addInstallScript($name, $file, $url) {
 		$scriptElement = new InstallScript($name, $file, $url);
@@ -254,7 +254,7 @@ class ManiaCode {
 	 * @param string $name Pack name
 	 * @param string $file Pack file
 	 * @param string $url  Pack url
-	 * @return \FML\ManiaCode|static
+	 * @return static
 	 */
 	public function addInstallPack($name, $file, $url) {
 		$packElement = new InstallPack($name, $file, $url);
@@ -266,7 +266,7 @@ class ManiaCode {
 	 * Add a ManiaCode element
 	 *
 	 * @param Element $element Element to add
-	 * @return \FML\ManiaCode|static
+	 * @return static
 	 */
 	public function addElement(Element $element) {
 		array_push($this->elements, $element);
@@ -276,7 +276,7 @@ class ManiaCode {
 	/**
 	 * Remove all elements from the ManiaCode
 	 *
-	 * @return \FML\ManiaCode|static
+	 * @return static
 	 */
 	public function removeElements() {
 		$this->elements = array();

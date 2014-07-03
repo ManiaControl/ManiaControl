@@ -46,7 +46,7 @@ class ScriptLabel {
 	 * Set the name
 	 *
 	 * @param string $name Label name
-	 * @return \FML\Script\ScriptLabel|static
+	 * @return static
 	 */
 	public function setName($name) {
 		$this->name = (string)$name;
@@ -57,7 +57,7 @@ class ScriptLabel {
 	 * Set the text
 	 *
 	 * @param string $text Script text
-	 * @return \FML\Script\ScriptLabel|static
+	 * @return static
 	 */
 	public function setText($text) {
 		$this->text = (string)$text;
@@ -68,7 +68,7 @@ class ScriptLabel {
 	 * Set isolation
 	 *
 	 * @param bool $isolated Whether the code should be isolated in an own block
-	 * @return \FML\Script\ScriptLabel|static
+	 * @return static
 	 */
 	public function setIsolated($isolated) {
 		$this->isolated = (bool)$isolated;

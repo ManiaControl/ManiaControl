@@ -59,7 +59,7 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	 * Create a new Control object
 	 *
 	 * @param string $controlId (optional) Control id
-	 * @return \FML\Controls\Control|static
+	 * @return static
 	 */
 	public static function create($controlId = null) {
 		return new static($controlId);
@@ -80,7 +80,7 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	 * Check Id for dangerous characters and assign a new unique id if necessary
 	 *
 	 * @param bool $forceNewId (optional) Whether to force setting a newly generated id
-	 * @return \FML\Controls\Control|static
+	 * @return static
 	 */
 	public function checkId($forceNewId = false) {
 		if ($forceNewId || !$this->getId()) {
@@ -123,7 +123,7 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	 * Set Control id
 	 *
 	 * @param string $controlId Control id
-	 * @return \FML\Controls\Control|static
+	 * @return static
 	 */
 	public function setId($controlId) {
 		$this->controlId = (string)$controlId;
@@ -136,7 +136,7 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	 * @param float $posX Horizontal position
 	 * @param float $posY Vertical position
 	 * @param float $posZ (optional) Depth
-	 * @return \FML\Controls\Control|static
+	 * @return static
 	 */
 	public function setPosition($posX, $posY, $posZ = null) {
 		$this->setX($posX);
@@ -151,7 +151,7 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	 * Set X position
 	 *
 	 * @param float $posX Horizontal position
-	 * @return \FML\Controls\Control|static
+	 * @return static
 	 */
 	public function setX($posX) {
 		$this->posX = (float)$posX;
@@ -162,7 +162,7 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	 * Set Y position
 	 *
 	 * @param float $posY Vertical position
-	 * @return \FML\Controls\Control|static
+	 * @return static
 	 */
 	public function setY($posY) {
 		$this->posY = (float)$posY;
@@ -173,7 +173,7 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	 * Set Z position
 	 *
 	 * @param float $posZ Depth
-	 * @return \FML\Controls\Control|static
+	 * @return static
 	 */
 	public function setZ($posZ) {
 		$this->posZ = (float)$posZ;
@@ -185,7 +185,7 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	 *
 	 * @param float $width  Control width
 	 * @param float $height Control height
-	 * @return \FML\Controls\Control|static
+	 * @return static
 	 */
 	public function setSize($width, $height) {
 		$this->setWidth($width);
@@ -197,7 +197,7 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	 * Set Control width
 	 *
 	 * @param float $width Control width
-	 * @return \FML\Controls\Control|static
+	 * @return static
 	 */
 	public function setWidth($width) {
 		$this->width = (float)$width;
@@ -208,7 +208,7 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	 * Set Control height
 	 *
 	 * @param float $height Control height
-	 * @return \FML\Controls\Control|static
+	 * @return static
 	 */
 	public function setHeight($height) {
 		$this->height = (float)$height;
@@ -218,7 +218,7 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	/**
 	 * Center alignment
 	 *
-	 * @return \FML\Controls\Control|static
+	 * @return static
 	 */
 	public function centerAlign() {
 		$this->setAlign(self::CENTER, self::CENTER2);
@@ -230,7 +230,7 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	 *
 	 * @param string $hAlign Horizontal alignment
 	 * @param string $vAlign Vertical alignment
-	 * @return \FML\Controls\Control|static
+	 * @return static
 	 */
 	public function setAlign($hAlign, $vAlign) {
 		$this->setHAlign($hAlign);
@@ -242,7 +242,7 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	 * Set horizontal alignment
 	 *
 	 * @param string $hAlign Horizontal alignment
-	 * @return \FML\Controls\Control|static
+	 * @return static
 	 */
 	public function setHAlign($hAlign) {
 		$this->hAlign = (string)$hAlign;
@@ -253,7 +253,7 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	 * Set vertical alignment
 	 *
 	 * @param string $vAlign Vertical alignment
-	 * @return \FML\Controls\Control|static
+	 * @return static
 	 */
 	public function setVAlign($vAlign) {
 		$this->vAlign = (string)$vAlign;
@@ -263,7 +263,7 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	/**
 	 * Reset alignment
 	 *
-	 * @return \FML\Controls\Control|static
+	 * @return static
 	 */
 	public function resetAlign() {
 		$this->setAlign(null, null);
@@ -274,7 +274,7 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	 * Set Control scale
 	 *
 	 * @param float $scale Control scale
-	 * @return \FML\Controls\Control|static
+	 * @return static
 	 */
 	public function setScale($scale) {
 		$this->scale = (float)$scale;
@@ -285,7 +285,7 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	 * Set visibility
 	 *
 	 * @param bool $visible Whether the Control should be visible
-	 * @return \FML\Controls\Control|static
+	 * @return static
 	 */
 	public function setVisible($visible = true) {
 		$this->hidden = ($visible ? 0 : 1);
@@ -295,8 +295,8 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	/**
 	 * Set Control rotation
 	 *
-	 * @param float $rotation
-	 * @return \FML\Controls\Control|static
+	 * @param float $rotation Control rotation
+	 * @return static
 	 */
 	public function setRotation($rotation) {
 		$this->rotation = (float)$rotation;
@@ -307,7 +307,7 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	 * Add a new class name
 	 *
 	 * @param string $class Class name
-	 * @return \FML\Controls\Control|static
+	 * @return static
 	 */
 	public function addClass($class) {
 		$class = (string)$class;
@@ -322,7 +322,7 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	 *
 	 * @param string $actionName Action to trigger
 	 * @param string $eventLabel (optional) Event on which the action is triggered
-	 * @return \FML\Controls\Control|static
+	 * @return static
 	 */
 	public function addActionTriggerFeature($actionName, $eventLabel = ScriptLabel::MOUSECLICK) {
 		if (is_object($actionName) && ($actionName instanceof ActionTrigger)) {
@@ -338,7 +338,7 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	 * Add a new Script Feature
 	 *
 	 * @param ScriptFeature $scriptFeature Script Feature
-	 * @return \FML\Controls\Control|static
+	 * @return static
 	 */
 	public function addScriptFeature(ScriptFeature $scriptFeature) {
 		if (!in_array($scriptFeature, $this->scriptFeatures, true)) {
@@ -351,7 +351,7 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	 * Add a dynamic Feature opening the current map info
 	 *
 	 * @param string $eventLabel (optional) Event on which the map info will be opened
-	 * @return \FML\Controls\Control|static
+	 * @return static
 	 */
 	public function addMapInfoFeature($eventLabel = ScriptLabel::MOUSECLICK) {
 		$mapInfo = new MapInfo($this, $eventLabel);
@@ -364,7 +364,7 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	 *
 	 * @param string $login      Login of the player
 	 * @param string $eventLabel (optional) Event on which the player profile will be opened
-	 * @return \FML\Controls\Control|static
+	 * @return static
 	 */
 	public function addPlayerProfileFeature($login, $eventLabel = ScriptLabel::MOUSECLICK) {
 		$playerProfile = new PlayerProfile($login, $this, $eventLabel);
@@ -378,7 +378,7 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	 * @param string $soundName  UISound name
 	 * @param int    $variant    (optional) Sound variant
 	 * @param string $eventLabel (optional) Event on which the sound will be played
-	 * @return \FML\Controls\Control|static
+	 * @return static
 	 */
 	public function addUISoundFeature($soundName, $variant = 0, $eventLabel = ScriptLabel::MOUSECLICK) {
 		$uiSound = new UISound($soundName, $this, $variant, $eventLabel);
@@ -393,7 +393,7 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	 * @param string  $labelName      (optional) Script label name
 	 * @param bool    $onlyShow       (optional) Whether it should only show the Control but not toggle
 	 * @param bool    $onlyHide       (optional) Whether it should only hide the Control but not toggle
-	 * @return \FML\Controls\Control|static
+	 * @return static
 	 */
 	public function addToggleFeature(Control $toggledControl, $labelName = Scriptlabel::MOUSECLICK, $onlyShow = false, $onlyHide = false) {
 		$toggle = new Toggle($this, $toggledControl, $labelName, $onlyShow, $onlyHide);
@@ -407,7 +407,7 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	 * @param Control $tooltipControl Tooltip Control
 	 * @param bool    $stayOnClick    (optional) Whether the Tooltip should stay on click
 	 * @param bool    $invert         (optional) Whether the visibility toggling should be inverted
-	 * @return \FML\Controls\Control|static
+	 * @return static
 	 */
 	public function addTooltipFeature(Control $tooltipControl, $stayOnClick = false, $invert = false) {
 		$tooltip = new Tooltip($this, $tooltipControl, $stayOnClick, $invert);
@@ -422,7 +422,7 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	 * @param string $text           Text to display on the Tooltip Label
 	 * @param bool   $stayOnClick    (optional) Whether the Tooltip should stay on click
 	 * @param bool   $invert         (optional) Whether the visibility toggling should be inverted
-	 * @return \FML\Controls\Control|static
+	 * @return static
 	 */
 	public function addTooltipLabelFeature(Label $tooltipControl, $text, $stayOnClick = false, $invert = false) {
 		$tooltip = new Tooltip($this, $tooltipControl, $stayOnClick, $invert, $text);
@@ -435,7 +435,7 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	 *
 	 * @param string $scriptText Script text
 	 * @param string $label      (optional) Script label name
-	 * @return \FML\Controls\Control|static
+	 * @return static
 	 */
 	public function addScriptText($scriptText, $label = ScriptLabel::MOUSECLICK) {
 		$customText = new ControlScript($this, $scriptText, $label);
@@ -446,7 +446,7 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	/**
 	 * Remove all Script Features
 	 *
-	 * @return \FML\Controls\Control|static
+	 * @return static
 	 */
 	public function removeScriptFeatures() {
 		$this->scriptFeatures = array();

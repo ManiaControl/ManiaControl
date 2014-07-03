@@ -26,7 +26,7 @@ class FrameInstance extends Control {
 	 *
 	 * @param string $modelId   (optional) Frame Model id
 	 * @param string $controlId (optional) Frame id
-	 * @return \FML\Controls\FrameInstance|static
+	 * @return static
 	 */
 	public static function create($modelId = null, $controlId = null) {
 		return new static($modelId, $controlId);
@@ -49,7 +49,7 @@ class FrameInstance extends Control {
 	 * Set Frame Model id
 	 *
 	 * @param string $modelId Frame Model id
-	 * @return \FML\Controls\FrameInstance|static
+	 * @return static
 	 */
 	public function setModelId($modelId) {
 		$this->modelId = (string)$modelId;
@@ -61,7 +61,7 @@ class FrameInstance extends Control {
 	 * Set Frame Model
 	 *
 	 * @param FrameModel $frameModel Frame Model
-	 * @return \FML\Controls\FrameInstance|static
+	 * @return static
 	 */
 	public function setModel(FrameModel $frameModel) {
 		$this->model   = $frameModel;

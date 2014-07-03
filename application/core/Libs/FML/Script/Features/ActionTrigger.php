@@ -47,7 +47,7 @@ class ActionTrigger extends ScriptFeature {
 	 * Set the action to trigger
 	 *
 	 * @param string $actionName
-	 * @return \FML\Script\Features\ActionTrigger|static
+	 * @return static
 	 */
 	public function setActionName($actionName) {
 		$this->actionName = (string)$actionName;
@@ -58,7 +58,7 @@ class ActionTrigger extends ScriptFeature {
 	 * Set the Control
 	 *
 	 * @param Control $control Action Control
-	 * @return \FML\Script\Features\ActionTrigger|static
+	 * @return static
 	 */
 	public function setControl(Control $control) {
 		$control->checkId();
@@ -73,7 +73,7 @@ class ActionTrigger extends ScriptFeature {
 	 * Set the label name
 	 *
 	 * @param string $labelName Script Label name
-	 * @return \FML\Script\Features\ActionTrigger|static
+	 * @return static
 	 */
 	public function setLabelName($labelName) {
 		$this->labelName = (string)$labelName;

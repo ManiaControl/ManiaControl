@@ -34,6 +34,7 @@ class ManiaLink {
 	protected $version = 1;
 	protected $background = null;
 	protected $navigable3d = 1;
+	protected $name = null;
 	protected $timeout = 0;
 	/** @var Renderable[] $children */
 	protected $children = array();
@@ -48,7 +49,7 @@ class ManiaLink {
 	 * Create a new ManiaLink object
 	 *
 	 * @param string $maniaLinkId (optional) ManiaLink id
-	 * @return \FML\ManiaLink|static
+	 * @return static
 	 */
 	public static function create($maniaLinkId = null) {
 		return new static($maniaLinkId);
@@ -69,7 +70,7 @@ class ManiaLink {
 	 * Set XML encoding
 	 *
 	 * @param string $encoding XML encoding
-	 * @return \FML\ManiaLink|static
+	 * @return static
 	 */
 	public function setXmlEncoding($encoding) {
 		$this->encoding = (string)$encoding;
@@ -80,7 +81,7 @@ class ManiaLink {
 	 * Set ManiaLink id
 	 *
 	 * @param string $maniaLinkId ManiaLink id
-	 * @return \FML\ManiaLink|static
+	 * @return static
 	 */
 	public function setId($maniaLinkId) {
 		$this->maniaLinkId = (string)$maniaLinkId;
@@ -100,7 +101,7 @@ class ManiaLink {
 	 * Set background
 	 *
 	 * @param string $background Background value
-	 * @return \FML\ManiaLink|static
+	 * @return static
 	 */
 	public function setBackground($background) {
 		$this->background = (string)$background;
@@ -111,7 +112,7 @@ class ManiaLink {
 	 * Set navigable3d
 	 *
 	 * @param bool $navigable3d Whether the manialink should be 3d navigable
-	 * @return \FML\ManiaLink|static
+	 * @return static
 	 */
 	public function setNavigable3d($navigable3d) {
 		$this->navigable3d = ($navigable3d ? 1 : 0);
@@ -119,10 +120,21 @@ class ManiaLink {
 	}
 
 	/**
+	 * Set the ManiaLink Name
+	 *
+	 * @param string $name
+	 * @return static
+	 */
+	public function setName($name) {
+		$this->name = (string)$name;
+		return $this;
+	}
+
+	/**
 	 * Set timeout
 	 *
 	 * @param int $timeout Timeout duration
-	 * @return \FML\ManiaLink|static
+	 * @return static
 	 */
 	public function setTimeout($timeout) {
 		$this->timeout = (int)$timeout;
@@ -133,7 +145,7 @@ class ManiaLink {
 	 * Add an element to the ManiaLink
 	 *
 	 * @param Renderable $child Child element to add
-	 * @return \FML\ManiaLink|static
+	 * @return static
 	 */
 	public function add(Renderable $child) {
 		if (!in_array($child, $this->children, true)) {
@@ -145,7 +157,7 @@ class ManiaLink {
 	/**
 	 * Remove all elements from the ManiaLink
 	 *
-	 * @return \FML\ManiaLink|static
+	 * @return static
 	 */
 	public function removeChildren() {
 		$this->children = array();
@@ -156,7 +168,7 @@ class ManiaLink {
 	 * Set the Dictionary of the ManiaLink
 	 *
 	 * @param Dico $dico Dictionary for the ManiaLink
-	 * @return \FML\ManiaLink
+	 * @return static
 	 */
 	public function setDico(Dico $dico) {
 		$this->dico = $dico;
@@ -180,7 +192,7 @@ class ManiaLink {
 	 * Set the Stylesheet of the ManiaLink
 	 *
 	 * @param Stylesheet $stylesheet Stylesheet for the ManiaLink
-	 * @return \FML\ManiaLink|static
+	 * @return static
 	 */
 	public function setStylesheet(Stylesheet $stylesheet) {
 		$this->stylesheet = $stylesheet;
@@ -204,7 +216,7 @@ class ManiaLink {
 	 * Set the Script of the ManiaLink
 	 *
 	 * @param Script $script Script for the ManiaLink
-	 * @return \FML\ManiaLink|static
+	 * @return static
 	 */
 	public function setScript(Script $script) {
 		$this->script = $script;
@@ -252,6 +264,9 @@ class ManiaLink {
 		}
 		if (!$this->navigable3d) {
 			$maniaLink->setAttribute('navigable3d', $this->navigable3d);
+		}
+		if ($this->name) {
+			$maniaLink->setAttribute('name', $this->name);
 		}
 		if ($this->timeout) {
 			$timeoutXml = $domDocument->createElement('timeout', $this->timeout);

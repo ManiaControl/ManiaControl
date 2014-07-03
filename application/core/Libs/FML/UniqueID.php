@@ -28,7 +28,7 @@ class UniqueID {
 	/**
 	 * Create a new Unique ID object
 	 *
-	 * @return \FML\UniqueID|static
+	 * @return static
 	 */
 	public static function create() {
 		return new static();

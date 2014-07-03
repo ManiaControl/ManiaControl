@@ -40,7 +40,7 @@ class EntrySubmit extends ScriptFeature {
 	 * Set the Entry
 	 *
 	 * @param Entry $entry Entry Control
-	 * @return \FML\Script\Features\EntrySubmit|static
+	 * @return static
 	 */
 	public function setEntry(Entry $entry) {
 		$this->entry = $entry->checkId()->setScriptEvents(true);
@@ -51,7 +51,7 @@ class EntrySubmit extends ScriptFeature {
 	 * Set the submit url
 	 *
 	 * @param string $url Submit url
-	 * @return \FML\Script\Features\EntrySubmit|static
+	 * @return static
 	 */
 	public function setUrl($url) {
 		$this->url = (string)$url;

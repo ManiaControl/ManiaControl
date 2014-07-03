@@ -15,7 +15,7 @@ interface Linkable {
 	 * Set url
 	 *
 	 * @param string $url Link url
-	 * @return \FML\Types\Linkable|static
+	 * @return static
 	 */
 	public function setUrl($url);
 
@@ -23,7 +23,7 @@ interface Linkable {
 	 * Set url id to use from Dico
 	 *
 	 * @param string $urlId Url id
-	 * @return \FML\Types\Linkable|static
+	 * @return static
 	 */
 	public function setUrlId($urlId);
 
@@ -31,7 +31,7 @@ interface Linkable {
 	 * Set manialink
 	 *
 	 * @param string $manialink Manialink name
-	 * @return \FML\Types\Linkable|static
+	 * @return static
 	 */
 	public function setManialink($manialink);
 
@@ -39,7 +39,7 @@ interface Linkable {
 	 * Set manialink id to use from Dico
 	 *
 	 * @param string $manialinkId Manialink id
-	 * @return \FML\Types\Linkable|static
+	 * @return static
 	 */
 	public function setManialinkId($manialinkId);
 }

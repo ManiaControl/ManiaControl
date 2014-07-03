@@ -31,7 +31,7 @@ class ScriptFunction {
 	 * Set the name
 	 *
 	 * @param string $name Function name
-	 * @return \FML\Script\ScriptFunction|static
+	 * @return static
 	 */
 	public function setName($name) {
 		$this->name = (string)$name;
@@ -42,7 +42,7 @@ class ScriptFunction {
 	 * Set the text
 	 *
 	 * @param string $text Function text
-	 * @return \FML\Script\ScriptFunction|static
+	 * @return static
 	 */
 	public function setText($text) {
 		$this->text = (string)$text;

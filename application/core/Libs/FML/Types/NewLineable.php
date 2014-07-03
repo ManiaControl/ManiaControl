@@ -15,7 +15,7 @@ interface NewLineable {
 	 * Set auto new line
 	 *
 	 * @param bool $autoNewLine Whether the Control should insert new lines automatically
-	 * @return \FML\Types\NewLineable|static
+	 * @return static
 	 */
 	public function setAutoNewLine($autoNewLine);
 }

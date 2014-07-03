@@ -38,7 +38,7 @@ class MenuElement {
 	 * Set the Item Control
 	 *
 	 * @param Control $item Item Control in the Menu bar
-	 * @return \FML\Script\Features\MenuElement|static
+	 * @return static
 	 */
 	public function setItem(Control $item) {
 		$item->checkId();
@@ -62,7 +62,7 @@ class MenuElement {
 	 * Set the Menu Control
 	 *
 	 * @param Control $control Toggled Menu Control
-	 * @return \FML\Script\Features\MenuElement|static
+	 * @return static
 	 */
 	public function setControl(Control $control) {
 		$this->control = $control->checkId();

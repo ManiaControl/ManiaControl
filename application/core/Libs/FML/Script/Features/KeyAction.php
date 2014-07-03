@@ -42,7 +42,7 @@ class KeyAction extends ScriptFeature {
 	 * Set the action to trigger
 	 *
 	 * @param string $actionName Triggered action
-	 * @return \FML\Script\Features\KeyAction|static
+	 * @return static
 	 */
 	public function setActionName($actionName) {
 		$this->actionName = (string)$actionName;
@@ -53,7 +53,7 @@ class KeyAction extends ScriptFeature {
 	 * Set the key name for triggering the action
 	 *
 	 * @param string $keyName Key Name
-	 * @return \FML\Script\Features\KeyAction|static
+	 * @return static
 	 */
 	public function setKeyName($keyName) {
 		$this->keyName     = (string)$keyName;
@@ -66,7 +66,7 @@ class KeyAction extends ScriptFeature {
 	 * Set the key code for triggering the action
 	 *
 	 * @param int $keyCode Key Code
-	 * @return \FML\Script\Features\KeyAction|static
+	 * @return static
 	 */
 	public function setKeyCode($keyCode) {
 		$this->keyCode     = (int)$keyCode;
@@ -79,7 +79,7 @@ class KeyAction extends ScriptFeature {
 	 * Set the char to press for triggering the action
 	 *
 	 * @param string $charPressed Pressed char
-	 * @return \FML\Script\Features\KeyAction|static
+	 * @return static
 	 */
 	public function setCharPressed($charPressed) {
 		$this->charPressed = (string)$charPressed;

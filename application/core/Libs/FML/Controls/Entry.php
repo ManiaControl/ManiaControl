@@ -52,7 +52,7 @@ class Entry extends Control implements NewLineable, Scriptable, Styleable, TextF
 	 * Set Entry name
 	 *
 	 * @param string $name Entry name
-	 * @return \FML\Controls\Entry
+	 * @return static
 	 */
 	public function setName($name) {
 		$this->name = (string)$name;
@@ -72,7 +72,7 @@ class Entry extends Control implements NewLineable, Scriptable, Styleable, TextF
 	 * Set default value
 	 *
 	 * @param string $default Default value
-	 * @return \FML\Controls\Entry|static
+	 * @return static
 	 */
 	public function setDefault($default) {
 		$this->default = $default;
@@ -139,7 +139,7 @@ class Entry extends Control implements NewLineable, Scriptable, Styleable, TextF
 	 * Set auto completion
 	 *
 	 * @param bool $autoComplete Whether the default value should be automatically completed based on the current request parameters
-	 * @return \FML\Controls\Entry|static
+	 * @return static
 	 */
 	public function setAutoComplete($autoComplete) {
 		$this->autoComplete = (bool)$autoComplete;
@@ -150,7 +150,7 @@ class Entry extends Control implements NewLineable, Scriptable, Styleable, TextF
 	 * Add a dynamic Feature submitting the Entry
 	 *
 	 * @param string $url Submit url
-	 * @return \FML\Controls\Entry|static
+	 * @return static
 	 */
 	public function addSubmitFeature($url) {
 		$entrySubmit = new EntrySubmit($this, $url);
@@ -159,7 +159,7 @@ class Entry extends Control implements NewLineable, Scriptable, Styleable, TextF
 	}
 
 	/**
-	 * @see \FML\Control::render()
+	 * @see \FML\Types\Renderable::render()
 	 */
 	public function render(\DOMDocument $domDocument) {
 		$xmlElement = parent::render($domDocument);

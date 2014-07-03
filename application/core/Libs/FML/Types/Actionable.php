@@ -36,7 +36,7 @@ interface Actionable {
 	 * Set action
 	 *
 	 * @param string $action Action name
-	 * @return \FML\Types\Actionable|static
+	 * @return static
 	 */
 	public function setAction($action);
 
@@ -51,7 +51,7 @@ interface Actionable {
 	 * Set action key
 	 *
 	 * @param int $actionKey Action key
-	 * @return \FML\Types\Actionable|static
+	 * @return static
 	 */
 	public function setActionKey($actionKey);
 }

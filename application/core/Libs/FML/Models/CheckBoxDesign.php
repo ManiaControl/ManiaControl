@@ -26,7 +26,7 @@ class CheckBoxDesign implements Styleable, SubStyleable {
 	/**
 	 * Create the default enabled Design
 	 *
-	 * @return \FML\Models\CheckBoxDesign|static
+	 * @return static
 	 */
 	public static function defaultEnabledDesign() {
 		return new static(Quad_Icons64x64_1::STYLE, Quad_Icons64x64_1::SUBSTYLE_Check);
@@ -35,7 +35,7 @@ class CheckBoxDesign implements Styleable, SubStyleable {
 	/**
 	 * Create the default disabled Design
 	 *
-	 * @return \FML\Models\CheckBoxDesign|static
+	 * @return static
 	 */
 	public static function defaultDisabledDesign() {
 		return new static(Quad_Icons64x64_1::STYLE, Quad_Icons64x64_1::SUBSTYLE_Check);
@@ -60,7 +60,7 @@ class CheckBoxDesign implements Styleable, SubStyleable {
 	 * Set the image url
 	 *
 	 * @param string $url Image url
-	 * @return \FML\Models\CheckBoxDesign|static
+	 * @return static
 	 */
 	public function setImageUrl($url) {
 		$this->url      = (string)$url;
@@ -100,7 +100,7 @@ class CheckBoxDesign implements Styleable, SubStyleable {
 	 * Apply the Design to the given Quad
 	 *
 	 * @param Quad $quad CheckBox Quad
-	 * @return \FML\Models\CheckBoxDesign|static
+	 * @return static
 	 */
 	public function applyToQuad(Quad $quad) {
 		$quad->setImage($this->url);

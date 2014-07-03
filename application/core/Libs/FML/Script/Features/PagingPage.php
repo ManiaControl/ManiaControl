@@ -36,7 +36,7 @@ class PagingPage {
 	 * Set the Page Control
 	 *
 	 * @param Control $control Page Control
-	 * @return \FML\Script\Features\PagingPage|static
+	 * @return static
 	 */
 	public function setControl(Control $control) {
 		$this->control = $control->checkId();
@@ -56,7 +56,7 @@ class PagingPage {
 	 * Set the Page number
 	 *
 	 * @param int $pageNumber Number of the Page
-	 * @return \FML\Script\Features\PagingPage|static
+	 * @return static
 	 */
 	public function setPageNumber($pageNumber) {
 		$this->number = (int)$pageNumber;

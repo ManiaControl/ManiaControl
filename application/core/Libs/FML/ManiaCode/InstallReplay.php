@@ -9,7 +9,7 @@ namespace FML\ManiaCode;
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class InstallReplay implements Element {
+class InstallReplay extends Element {
 	/*
 	 * Protected properties
 	 */
@@ -22,7 +22,7 @@ class InstallReplay implements Element {
 	 *
 	 * @param string $name (optional) Replay name
 	 * @param string $url  (optional) Replay url
-	 * @return \FML\ManiaCode\InstallReplay|static
+	 * @return static
 	 */
 	public static function create($name = null, $url = null) {
 		return new static($name, $url);
@@ -47,7 +47,7 @@ class InstallReplay implements Element {
 	 * Set the name of the replay
 	 *
 	 * @param string $name Replay name
-	 * @return \FML\ManiaCode\InstallReplay|static
+	 * @return static
 	 */
 	public function setName($name) {
 		$this->name = (string)$name;
@@ -58,7 +58,7 @@ class InstallReplay implements Element {
 	 * Set the url of the replay
 	 *
 	 * @param string $url Replay url
-	 * @return \FML\ManiaCode\InstallReplay|static
+	 * @return static
 	 */
 	public function setUrl($url) {
 		$this->url = (string)$url;
@@ -69,7 +69,7 @@ class InstallReplay implements Element {
 	 * @see \FML\ManiaCode\Element::render()
 	 */
 	public function render(\DOMDocument $domDocument) {
-		$xmlElement  = $domDocument->createElement($this->tagName);
+		$xmlElement  = parent::render($domDocument);
 		$nameElement = $domDocument->createElement('name', $this->name);
 		$xmlElement->appendChild($nameElement);
 		$urlElement = $domDocument->createElement('url', $this->url);

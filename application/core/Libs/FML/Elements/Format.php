@@ -29,7 +29,7 @@ class Format implements BgColorable, Renderable, Styleable, TextFormatable {
 	/**
 	 * Create a new Format Element
 	 *
-	 * @return \FML\Elements\Format|static
+	 * @return static
 	 */
 	public static function create() {
 		return new static();
@@ -84,7 +84,7 @@ class Format implements BgColorable, Renderable, Styleable, TextFormatable {
 	}
 
 	/**
-	 * @see \FML\Renderable::render()
+	 * @see \FML\Types\Renderable::render()
 	 */
 	public function render(\DOMDocument $domDocument) {
 		$formatXmlElement = $domDocument->createElement($this->tagName);

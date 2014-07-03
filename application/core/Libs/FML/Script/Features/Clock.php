@@ -42,7 +42,7 @@ class Clock extends ScriptFeature {
 	 * Set the Label
 	 *
 	 * @param Label $label Clock Label
-	 * @return \FML\Script\Features\Clock|static
+	 * @return static
 	 */
 	public function setLabel(Label $label) {
 		$this->label = $label->checkId();
@@ -53,7 +53,7 @@ class Clock extends ScriptFeature {
 	 * Set whether seconds should be shown
 	 *
 	 * @param bool $showSeconds Whether seconds should be shown
-	 * @return \FML\Script\Features\Clock|static
+	 * @return static
 	 */
 	public function setShowSeconds($showSeconds) {
 		$this->showSeconds = (bool)$showSeconds;
@@ -64,7 +64,7 @@ class Clock extends ScriptFeature {
 	 * Set whether the full date should be shown
 	 *
 	 * @param bool $showFullDate Whether the full date should be shown
-	 * @return \FML\Script\Features\Clock|static
+	 * @return static
 	 */
 	public function setShowFullDate($showFullDate) {
 		$this->showFullDate = (bool)$showFullDate;

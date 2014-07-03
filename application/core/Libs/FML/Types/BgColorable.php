@@ -15,7 +15,7 @@ interface BgColorable {
 	 * Set background color
 	 *
 	 * @param string $bgColor Background color
-	 * @return \FML\Types\BgColorable|static
+	 * @return static
 	 */
 	public function setBgColor($bgColor);
 }

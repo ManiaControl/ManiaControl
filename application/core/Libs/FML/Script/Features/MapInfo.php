@@ -38,7 +38,7 @@ class MapInfo extends ScriptFeature {
 	 * Set the Control
 	 *
 	 * @param Control $control Map Info Control
-	 * @return \FML\Script\Features\MapInfo|static
+	 * @return static
 	 */
 	public function setControl(Control $control) {
 		$control->checkId();
@@ -53,7 +53,7 @@ class MapInfo extends ScriptFeature {
 	 * Set the label name
 	 *
 	 * @param string $labelName Script Label name
-	 * @return \FML\Script\Features\MapInfo|static
+	 * @return static
 	 */
 	public function setLabelName($labelName) {
 		$this->labelName = (string)$labelName;

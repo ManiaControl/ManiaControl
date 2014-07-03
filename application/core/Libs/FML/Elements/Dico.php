@@ -159,7 +159,7 @@ class Dico {
 	/**
 	 * Create a new Dictionary object
 	 *
-	 * @return \FML\Elements\Dico|static
+	 * @return static
 	 */
 	public static function create() {
 		return new static();
@@ -171,7 +171,7 @@ class Dico {
 	 * @param string $language   Language id
 	 * @param string $entryId    Entry id
 	 * @param string $entryValue Translated entry value
-	 * @return \FML\Elements\Dico|static
+	 * @return static
 	 */
 	public function setEntry($language, $entryId, $entryValue) {
 		$language   = (string)$language;
@@ -195,7 +195,7 @@ class Dico {
 	 *
 	 * @param string $entryId  Entry id that should be removed
 	 * @param string $language (optional) Only remove entries of the given language
-	 * @return \FML\Elements\Dico|static
+	 * @return static
 	 */
 	public function removeEntry($entryId, $language = null) {
 		$entryId = (string)$entryId;
@@ -219,7 +219,7 @@ class Dico {
 	 *
 	 * @param string $language Language which entries should be removed
 	 * @param string $entryId  (optional) Only remove the given entry id
-	 * @return \FML\Elements\Dico|static
+	 * @return static
 	 */
 	public function removeLanguage($language, $entryId = null) {
 		$language = (string)$language;
@@ -237,7 +237,7 @@ class Dico {
 	/**
 	 * Remove all entries from the Dictionary
 	 *
-	 * @return \FML\Elements\Dico|static
+	 * @return static
 	 */
 	public function removeEntries() {
 		$this->entries = array();

@@ -54,7 +54,7 @@ class Paging extends ScriptFeature {
 	 *
 	 * @param Control $pageControl Page Control
 	 * @param string  $pageNumber  (optional) Page number
-	 * @return \FML\Script\Features\Paging|static
+	 * @return static
 	 */
 	public function addPage(Control $pageControl, $pageNumber = null) {
 		if (is_null($pageNumber)) {
@@ -69,7 +69,7 @@ class Paging extends ScriptFeature {
 	 * Append a Page
 	 *
 	 * @param PagingPage $page Paging Page
-	 * @return \FML\Script\Features\Paging|static
+	 * @return static
 	 */
 	public function appendPage(PagingPage $page) {
 		if (!in_array($page, $this->pages, true)) {
@@ -83,7 +83,7 @@ class Paging extends ScriptFeature {
 	 *
 	 * @param Control $buttonControl Button used for browsing
 	 * @param int     $browseAction  (optional) Number of browsed Pages per click
-	 * @return \FML\Script\Features\Paging|static
+	 * @return static
 	 */
 	public function addButton(Control $buttonControl, $browseAction = null) {
 		if (is_null($browseAction)) {
@@ -103,7 +103,7 @@ class Paging extends ScriptFeature {
 	 * Append a Button to browse through Pages
 	 *
 	 * @param PagingButton $button Paging Button
-	 * @return \FML\Script\Features\Paging|static
+	 * @return static
 	 */
 	public function appendButton(PagingButton $button) {
 		if (!in_array($button, $this->buttons, true)) {
@@ -116,7 +116,7 @@ class Paging extends ScriptFeature {
 	 * Set the Label showing the Page number
 	 *
 	 * @param Label $label Page number Label
-	 * @return \FML\Script\Features\Paging|static
+	 * @return static
 	 */
 	public function setLabel(Label $label) {
 		$this->label = $label->checkId();
@@ -127,7 +127,7 @@ class Paging extends ScriptFeature {
 	 * Set the Start Page number
 	 *
 	 * @param int $startPageNumber Page number to start with
-	 * @return \FML\Script\Features\Paging|static
+	 * @return static
 	 */
 	public function setStartPageNumber($startPageNumber) {
 		$this->startPageNumber = (int)$startPageNumber;
@@ -137,7 +137,7 @@ class Paging extends ScriptFeature {
 	 * Set a custom maximum Page number for using chunks
 	 *
 	 * @param int $maxPageNumber Custom maximum Page number
-	 * @return \FML\Script\Features\Paging|static
+	 * @return static
 	 */
 	public function setCustomMaxPageNumber($maxPageNumber) {
 		$this->customMaxPageNumber = (int)$maxPageNumber;
@@ -148,7 +148,7 @@ class Paging extends ScriptFeature {
 	 * Set the action triggered when the previous chunk is needed
 	 *
 	 * @param string $previousChunkAction Triggered action
-	 * @return \FML\Script\Features\Paging|static
+	 * @return static
 	 */
 	public function setPreviousChunkAction($previousChunkAction) {
 		$this->previousChunkAction = (string)$previousChunkAction;
@@ -159,7 +159,7 @@ class Paging extends ScriptFeature {
 	 * Set the action triggered when the next chunk is needed
 	 *
 	 * @param string $nextChunkAction Triggered action
-	 * @return \FML\Script\Features\Paging|static
+	 * @return static
 	 */
 	public function setNextChunkAction($nextChunkAction) {
 		$this->nextChunkAction = (string)$nextChunkAction;
@@ -170,7 +170,7 @@ class Paging extends ScriptFeature {
 	 * Set the actions triggered when another chunk is needed
 	 *
 	 * @param string $chunkAction Triggered action
-	 * @return \FML\Script\Features\Paging|static
+	 * @return static
 	 */
 	public function setChunkActions($chunkAction) {
 		$this->setNextChunkAction($chunkAction);
@@ -182,7 +182,7 @@ class Paging extends ScriptFeature {
 	 * Set if the chunk action should get the needed Page number appended
 	 *
 	 * @param bool $appendPageNumber Whether to append the needed Page number
-	 * @return \FML\Script\Features\Paging|static
+	 * @return static
 	 */
 	public function setChunkActionAppendsPageNumber($appendPageNumber) {
 		$this->chunkActionAppendsPageNumber = (bool)$appendPageNumber;

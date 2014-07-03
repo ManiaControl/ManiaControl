@@ -17,14 +17,14 @@ interface Container {
 	 * Add a new child Element
 	 *
 	 * @param Renderable $child Child Control to add
-	 * @return \FML\Types\Container|static
+	 * @return static
 	 */
 	public function add(Renderable $child);
 
 	/**
 	 * Remove all children
 	 *
-	 * @return \FML\Types\Container|static
+	 * @return static
 	 */
 	public function removeChildren();
 
@@ -32,7 +32,7 @@ interface Container {
 	 * Set the Format object of the Container
 	 *
 	 * @param Format $format New Format object
-	 * @return \FML\Types\Container|static
+	 * @return static
 	 */
 	public function setFormat(Format $format);
 
@@ -40,7 +40,7 @@ interface Container {
 	 * Get the Format object of the Container
 	 *
 	 * @param bool $createIfEmpty (optional) Whether the Format object should be created if it's not set
-	 * @return \FML\Elements\Format|static
+	 * @return \FML\Elements\Format
 	 */
 	public function getFormat($createIfEmpty = true);
 }

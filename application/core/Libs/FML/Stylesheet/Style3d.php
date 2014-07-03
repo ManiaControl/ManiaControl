@@ -41,7 +41,7 @@ class Style3d {
 	 * Create a new Style3d object
 	 *
 	 * @param string $styleId (optional) Style id
-	 * @return \FML\Stylesheet\Style3d|static
+	 * @return static
 	 */
 	public static function create($styleId = null) {
 		return new static($styleId);
@@ -62,7 +62,7 @@ class Style3d {
 	 * Set style id
 	 *
 	 * @param string $styleId Style id
-	 * @return \FML\Stylesheet\Style3d|static
+	 * @return static
 	 */
 	public function setId($styleId) {
 		$this->styleId = (string)$styleId;
@@ -72,7 +72,7 @@ class Style3d {
 	/**
 	 * Check for id and assign one if necessary
 	 *
-	 * @return \FML\Stylesheet\Style3d|static
+	 * @return static
 	 */
 	public function checkId() {
 		if (!$this->styleId) {
@@ -94,7 +94,7 @@ class Style3d {
 	 * Set model
 	 *
 	 * @param string $model Style model
-	 * @return \FML\Stylesheet\Style3d|static
+	 * @return static
 	 */
 	public function setModel($model) {
 		$this->model = (string)$model;
@@ -105,7 +105,7 @@ class Style3d {
 	 * Set thickness
 	 *
 	 * @param float $thickness Style thickness
-	 * @return \FML\Stylesheet\Style3d|static
+	 * @return static
 	 */
 	public function setThickness($thickness) {
 		$this->thickness = (float)$thickness;
@@ -116,7 +116,7 @@ class Style3d {
 	 * Set color
 	 *
 	 * @param string $color Style color
-	 * @return \FML\Stylesheet\Style3d|static
+	 * @return static
 	 */
 	public function setColor($color) {
 		$this->color = (string)$color;
@@ -127,7 +127,7 @@ class Style3d {
 	 * Set focus color
 	 *
 	 * @param string $focusColor Style focus color
-	 * @return \FML\Stylesheet\Style3d|static
+	 * @return static
 	 */
 	public function setFocusColor($focusColor) {
 		$this->focusColor = (string)$focusColor;
@@ -138,7 +138,7 @@ class Style3d {
 	 * Set light color
 	 *
 	 * @param string $lightColor Light color
-	 * @return \FML\Stylesheet\Style3d|static
+	 * @return static
 	 */
 	public function setLightColor($lightColor) {
 		$this->lightColor = (string)$lightColor;
@@ -149,7 +149,7 @@ class Style3d {
 	 * Set focus light color
 	 *
 	 * @param string $focusLightColor Focus light color
-	 * @return \FML\Stylesheet\Style3d|static
+	 * @return static
 	 */
 	public function setFocusLightColor($focusLightColor) {
 		$this->focusLightColor = (string)$focusLightColor;
@@ -160,7 +160,7 @@ class Style3d {
 	 * Set Y-offset
 	 *
 	 * @param float $yOffset Y-offset
-	 * @return \FML\Stylesheet\Style3d|static
+	 * @return static
 	 */
 	public function setYOffset($yOffset) {
 		$this->yOffset = (float)$yOffset;
@@ -171,7 +171,7 @@ class Style3d {
 	 * Set focus Y-offset
 	 *
 	 * @param float $focusYOffset Focus Y-offset
-	 * @return \FML\Stylesheet\Style3d|static
+	 * @return static
 	 */
 	public function setFocusYOffset($focusYOffset) {
 		$this->focusYOffset = (float)$focusYOffset;
@@ -182,7 +182,7 @@ class Style3d {
 	 * Set Z-offset
 	 *
 	 * @param float $zOffset Z-offset
-	 * @return \FML\Stylesheet\Style3d|static
+	 * @return static
 	 */
 	public function setZOffset($zOffset) {
 		$this->zOffset = (float)$zOffset;
@@ -193,7 +193,7 @@ class Style3d {
 	 * Set focus Z-offset
 	 *
 	 * @param float $focusZOffset Focus Z-offset
-	 * @return \FML\Stylesheet\Style3d|static
+	 * @return static
 	 */
 	public function setFocusZOffset($focusZOffset) {
 		$this->focusZOffset = (float)$focusZOffset;

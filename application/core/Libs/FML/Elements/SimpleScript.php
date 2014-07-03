@@ -22,7 +22,7 @@ class SimpleScript implements Renderable {
 	 * Create a new SimpleScript object
 	 *
 	 * @param string $text (optional) Script text
-	 * @return \FML\Elements\SimpleScript|static
+	 * @return static
 	 */
 	public static function create($text = null) {
 		return new static($text);
@@ -43,7 +43,7 @@ class SimpleScript implements Renderable {
 	 * Set script text
 	 *
 	 * @param string $text Complete script text
-	 * @return \FML\Script\Script|static
+	 * @return static
 	 */
 	public function setText($text) {
 		$this->text = (string)$text;

@@ -28,7 +28,7 @@ class FileEntry extends Entry {
 	 * Set the base folder
 	 *
 	 * @param string $folder Base folder
-	 * @return \FML\Controls\FileEntry|static
+	 * @return static
 	 */
 	public function setFolder($folder) {
 		$this->folder = (string)$folder;
@@ -36,7 +36,7 @@ class FileEntry extends Entry {
 	}
 
 	/**
-	 * @see \FML\Entry::render()
+	 * @see \FML\Types\Renderable::render()
 	 */
 	public function render(\DOMDocument $domDocument) {
 		$xmlElement = parent::render($domDocument);

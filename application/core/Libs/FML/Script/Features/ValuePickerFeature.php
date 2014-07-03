@@ -62,7 +62,7 @@ class ValuePickerFeature extends ScriptFeature {
 	 * Set the ValuePicker Label
 	 *
 	 * @param Label $label ValuePicker Label
-	 * @return \FML\Script\Features\ValuePickerFeature|static
+	 * @return static
 	 */
 	public function setLabel(Label $label) {
 		$this->label = $label->checkId()->setScriptEvents(true);
@@ -82,7 +82,7 @@ class ValuePickerFeature extends ScriptFeature {
 	 * Set the hidden Entry
 	 *
 	 * @param Entry $entry Hidden Entry
-	 * @return \FML\Script\Features\ValuePickerFeature|static
+	 * @return static
 	 */
 	public function setEntry(Entry $entry) {
 		$this->entry = $entry->checkId();
@@ -102,7 +102,7 @@ class ValuePickerFeature extends ScriptFeature {
 	 * Set the possible values
 	 *
 	 * @param array $values Possible values
-	 * @return \FML\Script\Features\ValuePickerFeature|static
+	 * @return static
 	 */
 	public function setValues(array $values) {
 		$this->values = array();
@@ -116,7 +116,7 @@ class ValuePickerFeature extends ScriptFeature {
 	 * Set the default value
 	 *
 	 * @param string $default Default value
-	 * @return \FML\Script\Features\ValuePickerFeature|static
+	 * @return static
 	 */
 	public function setDefault($default) {
 		$this->default = (string)$default;

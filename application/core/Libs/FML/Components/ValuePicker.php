@@ -44,7 +44,7 @@ class ValuePicker implements Renderable, ScriptFeatureable {
 	 * Set Name
 	 *
 	 * @param string $name ValuePicker name
-	 * @return \FML\Components\ValuePicker|static
+	 * @return static
 	 */
 	public function setName($name) {
 		$this->name = (string)$name;
@@ -55,7 +55,7 @@ class ValuePicker implements Renderable, ScriptFeatureable {
 	 * Set the possible values
 	 *
 	 * @param array $values Possible values
-	 * @return \FML\Components\ValuePicker|static
+	 * @return static
 	 */
 	public function setValues(array $values) {
 		$this->feature->setValues($values);
@@ -66,7 +66,7 @@ class ValuePicker implements Renderable, ScriptFeatureable {
 	 * Set the default value
 	 *
 	 * @param bool $default Default value
-	 * @return \FML\Components\ValuePicker|static
+	 * @return static
 	 */
 	public function setDefault($default) {
 		$this->feature->setDefault($default);
@@ -77,7 +77,7 @@ class ValuePicker implements Renderable, ScriptFeatureable {
 	 * Set the ValuePicker Label
 	 *
 	 * @param Label $label ValuePicker Label
-	 * @return \FML\Components\ValuePicker|static
+	 * @return static
 	 */
 	public function setLabel(Label $label = null) {
 		$this->feature->setLabel($label);
@@ -106,7 +106,7 @@ class ValuePicker implements Renderable, ScriptFeatureable {
 	}
 
 	/**
-	 * @see \ManiaControl\Types\Renderable::render()
+	 * @see \FML\Types\Renderable::render()
 	 */
 	public function render(\DOMDocument $domDocument) {
 		$frame = new Frame();
@@ -124,7 +124,7 @@ class ValuePicker implements Renderable, ScriptFeatureable {
 	/**
 	 * Build the hidden Entry
 	 *
-	 * @return Entry
+	 * @return \FML\Controls\Entry
 	 */
 	protected function buildEntry() {
 		$entry = new Entry();

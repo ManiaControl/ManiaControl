@@ -43,7 +43,7 @@ class CheckBox implements Renderable, ScriptFeatureable {
 	 * Set the name
 	 *
 	 * @param string $name CheckBox name
-	 * @return \FML\Components\CheckBox|static
+	 * @return static
 	 */
 	public function setName($name) {
 		$this->name = (string)$name;
@@ -54,7 +54,7 @@ class CheckBox implements Renderable, ScriptFeatureable {
 	 * Set the default value
 	 *
 	 * @param bool $default Default value
-	 * @return \FML\Components\CheckBox|static
+	 * @return static
 	 */
 	public function setDefault($default) {
 		$this->feature->setDefault($default);
@@ -66,7 +66,7 @@ class CheckBox implements Renderable, ScriptFeatureable {
 	 *
 	 * @param string $style    Style name or image url
 	 * @param string $subStyle SubStyle name
-	 * @return \FML\Components\CheckBox|static
+	 * @return static
 	 */
 	public function setEnabledDesign($style, $subStyle = null) {
 		if (is_object($style) && ($style instanceof CheckBoxDesign)) {
@@ -83,7 +83,7 @@ class CheckBox implements Renderable, ScriptFeatureable {
 	 *
 	 * @param string $style    Style name or image url
 	 * @param string $subStyle SubStyle name
-	 * @return \FML\Components\CheckBox|static
+	 * @return static
 	 */
 	public function setDisabledDesign($style, $subStyle = null) {
 		if (is_object($style) && ($style instanceof CheckBoxDesign)) {
@@ -99,7 +99,7 @@ class CheckBox implements Renderable, ScriptFeatureable {
 	 * Set the CheckBox Quad
 	 *
 	 * @param Quad $quad CheckBox Quad
-	 * @return \FML\Components\CheckBox|static
+	 * @return static
 	 */
 	public function setQuad(Quad $quad = null) {
 		$this->feature->setQuad($quad);
@@ -129,7 +129,7 @@ class CheckBox implements Renderable, ScriptFeatureable {
 	}
 
 	/**
-	 * @see \ManiaControl\Types\Renderable::render()
+	 * @see \FML\Types\Renderable::render()
 	 */
 	public function render(\DOMDocument $domDocument) {
 		$frame = new Frame();
@@ -147,7 +147,7 @@ class CheckBox implements Renderable, ScriptFeatureable {
 	/**
 	 * Build the hidden Entry
 	 *
-	 * @return Entry
+	 * @return \FML\Controls\Entry
 	 */
 	protected function buildEntry() {
 		$entry = new Entry();

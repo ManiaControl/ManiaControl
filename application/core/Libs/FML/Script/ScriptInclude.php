@@ -37,7 +37,7 @@ class ScriptInclude {
 	 * Set the file
 	 *
 	 * @param string $file Include file
-	 * @return \FML\Script\ScriptInclude|static
+	 * @return static
 	 */
 	public function setFile($file) {
 		$this->file = (string)$file;
@@ -48,7 +48,7 @@ class ScriptInclude {
 	 * Set the namespace
 	 *
 	 * @param string $namespace Include namespace
-	 * @return \FML\Script\ScriptInclude|static
+	 * @return static
 	 */
 	public function setNamespace($namespace) {
 		$this->namespace = (string)$namespace;

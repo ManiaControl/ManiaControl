@@ -82,7 +82,7 @@ class Frame extends Control implements Container {
 	}
 
 	/**
-	 * @see \FML\Renderable::render()
+	 * @see \FML\Types\Renderable::render()
 	 */
 	public function render(\DOMDocument $domDocument) {
 		$xmlElement = parent::render($domDocument);

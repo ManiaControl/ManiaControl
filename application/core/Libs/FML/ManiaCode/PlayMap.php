@@ -9,7 +9,7 @@ namespace FML\ManiaCode;
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class PlayMap implements Element {
+class PlayMap extends Element {
 	/*
 	 * Protected properties
 	 */
@@ -22,7 +22,7 @@ class PlayMap implements Element {
 	 *
 	 * @param string $name (optional) Map name
 	 * @param string $url  (optional) Map url
-	 * @return \FML\ManiaCode\PlayMap|static
+	 * @return static
 	 */
 	public static function create($name = null, $url = null) {
 		return new static($name, $url);
@@ -47,7 +47,7 @@ class PlayMap implements Element {
 	 * Set the name of the map
 	 *
 	 * @param string $name Map name
-	 * @return \FML\ManiaCode\PlayMap|static
+	 * @return static
 	 */
 	public function setName($name) {
 		$this->name = (string)$name;
@@ -58,7 +58,7 @@ class PlayMap implements Element {
 	 * Set the url of the map
 	 *
 	 * @param string $url Map url
-	 * @return \FML\ManiaCode\PlayMap|static
+	 * @return static
 	 */
 	public function setUrl($url) {
 		$this->url = (string)$url;
@@ -69,7 +69,7 @@ class PlayMap implements Element {
 	 * @see \FML\ManiaCode\Element::render()
 	 */
 	public function render(\DOMDocument $domDocument) {
-		$xmlElement  = $domDocument->createElement($this->tagName);
+		$xmlElement  = parent::render($domDocument);
 		$nameElement = $domDocument->createElement('name', $this->name);
 		$xmlElement->appendChild($nameElement);
 		$urlElement = $domDocument->createElement('url', $this->url);

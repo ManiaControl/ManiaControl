@@ -46,7 +46,7 @@ class Gauge extends Control implements Styleable {
 	 * Set ratio
 	 *
 	 * @param float $ratio Ratio value
-	 * @return \FML\Controls\Gauge|static
+	 * @return static
 	 */
 	public function setRatio($ratio) {
 		$this->ratio = (float)$ratio;
@@ -57,7 +57,7 @@ class Gauge extends Control implements Styleable {
 	 * Set grading
 	 *
 	 * @param float $grading Grading value
-	 * @return \FML\Controls\Gauge|static
+	 * @return static
 	 */
 	public function setGrading($grading) {
 		$this->grading = (float)$grading;
@@ -68,7 +68,7 @@ class Gauge extends Control implements Styleable {
 	 * Set color
 	 *
 	 * @param string $color Gauge color
-	 * @return \FML\Controls\Gauge|static
+	 * @return static
 	 */
 	public function setColor($color) {
 		$this->color = (string)$color;
@@ -79,7 +79,7 @@ class Gauge extends Control implements Styleable {
 	 * Set rotation
 	 *
 	 * @param float $rotation Gauge rotation
-	 * @return \FML\Controls\Gauge|static
+	 * @return static
 	 */
 	public function setRotation($rotation) {
 		$this->rotation = (float)$rotation;
@@ -90,7 +90,7 @@ class Gauge extends Control implements Styleable {
 	 * Set centered
 	 *
 	 * @param bool $centered Whether the Gauge is centered
-	 * @return \FML\Controls\Gauge|static
+	 * @return static
 	 */
 	public function setCentered($centered) {
 		$this->centered = ($centered ? 1 : 0);
@@ -101,7 +101,7 @@ class Gauge extends Control implements Styleable {
 	 * Set clan
 	 *
 	 * @param int $clan Clan number
-	 * @return \FML\Controls\Gauge|static
+	 * @return static
 	 */
 	public function setClan($clan) {
 		$this->clan = (int)$clan;
@@ -112,7 +112,7 @@ class Gauge extends Control implements Styleable {
 	 * Set draw background
 	 *
 	 * @param bool $drawBg Whether the Gauges background should be drawn
-	 * @return \FML\Controls\Gauge|static
+	 * @return static
 	 */
 	public function setDrawBg($drawBg) {
 		$this->drawBg = ($drawBg ? 1 : 0);
@@ -123,7 +123,7 @@ class Gauge extends Control implements Styleable {
 	 * Set draw block background
 	 *
 	 * @param bool $drawBlockBg Whether the Gauges block background should be drawn
-	 * @return \FML\Controls\Gauge|static
+	 * @return static
 	 */
 	public function setDrawBlockBg($drawBlockBg) {
 		$this->drawBlockBg = ($drawBlockBg ? 1 : 0);

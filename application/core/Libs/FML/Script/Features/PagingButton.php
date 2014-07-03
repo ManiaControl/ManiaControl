@@ -39,7 +39,7 @@ class PagingButton {
 	 * Set the Button Control
 	 *
 	 * @param Control $control Browse Control
-	 * @return \FML\Script\Features\PagingButton|static
+	 * @return static
 	 */
 	public function setControl(Control $control) {
 		$control->checkId();
@@ -63,7 +63,7 @@ class PagingButton {
 	 * Set the browse action
 	 *
 	 * @param int $browseAction Number of browsed Pages per click
-	 * @return \FML\Script\Features\PagingButton|static
+	 * @return static
 	 */
 	public function setBrowseAction($browseAction) {
 		$this->browseAction = (int)$browseAction;

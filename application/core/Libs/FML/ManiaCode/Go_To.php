@@ -9,7 +9,7 @@ namespace FML\ManiaCode;
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class Go_To implements Element {
+class Go_To extends Element {
 	/*
 	 * Protected properties
 	 */
@@ -20,7 +20,7 @@ class Go_To implements Element {
 	 * Create a new Go_To object
 	 *
 	 * @param string $link (optional) Goto link
-	 * @return \FML\ManiaCode\Go_To|static
+	 * @return static
 	 */
 	public static function create($link = null) {
 		return new static($link);
@@ -41,7 +41,7 @@ class Go_To implements Element {
 	 * Set link
 	 *
 	 * @param string $link Goto link
-	 * @return \FML\ManiaCode\Go_To|static
+	 * @return static
 	 */
 	public function setLink($link) {
 		$this->link = (string)$link;
@@ -52,7 +52,7 @@ class Go_To implements Element {
 	 * @see \FML\ManiaCode\Element::render()
 	 */
 	public function render(\DOMDocument $domDocument) {
-		$xmlElement  = $domDocument->createElement($this->tagName);
+		$xmlElement  = parent::render($domDocument);
 		$linkElement = $domDocument->createElement('link', $this->link);
 		$xmlElement->appendChild($linkElement);
 		return $xmlElement;

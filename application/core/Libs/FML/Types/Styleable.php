@@ -15,7 +15,7 @@ interface Styleable {
 	 * Set style
 	 *
 	 * @param string $style Style name
-	 * @return \FML\Types\Styleable|static
+	 * @return static
 	 */
 	public function setStyle($style);
 }

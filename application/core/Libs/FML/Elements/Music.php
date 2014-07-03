@@ -22,7 +22,7 @@ class Music implements Renderable {
 	 * Create a new Music object
 	 *
 	 * @param string $data (optional) Media url
-	 * @return \FML\Elements\Music|static
+	 * @return static
 	 */
 	public static function create($data = null) {
 		return new static($data);
@@ -43,7 +43,7 @@ class Music implements Renderable {
 	 * Set data url
 	 *
 	 * @param string $data Data url
-	 * @return \FML\Elements\Music|static
+	 * @return static
 	 */
 	public function setData($data) {
 		$this->data = (string)$data;
@@ -51,7 +51,7 @@ class Music implements Renderable {
 	}
 
 	/**
-	 * @see \FML\Renderable::render()
+	 * @see \FML\Types\Renderable::render()
 	 */
 	public function render(\DOMDocument $domDocument) {
 		$xmlElement = $domDocument->createElement($this->tagName);

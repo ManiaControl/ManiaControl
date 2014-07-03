@@ -36,7 +36,7 @@ class Script {
 	 *
 	 * @param string $file      Include file
 	 * @param string $namespace Include namespace
-	 * @return \FML\Script\Script|static
+	 * @return static
 	 */
 	public function setScriptInclude($file, $namespace = null) {
 		if (is_object($file) && ($file instanceof ScriptInclude)) {
@@ -53,7 +53,7 @@ class Script {
 	 *
 	 * @param string $name  Constant name
 	 * @param string $value Constant value
-	 * @return \FML\Script\Script|static
+	 * @return static
 	 */
 	public function addScriptConstant($name, $value = null) {
 		if (is_object($name) && ($name instanceof ScriptConstant)) {
@@ -72,7 +72,7 @@ class Script {
 	 *
 	 * @param string $name Function name
 	 * @param string $text Function text
-	 * @return \FML\Script\Script|static
+	 * @return static
 	 */
 	public function addScriptFunction($name, $text = null) {
 		if (is_object($name) && ($name instanceof ScriptFunction)) {
@@ -91,7 +91,7 @@ class Script {
 	 *
 	 * @param string $name Label name
 	 * @param string $text Script text
-	 * @return \FML\Script\Script|static
+	 * @return static
 	 */
 	public function addCustomScriptLabel($name, $text = null) {
 		if (is_object($name) && ($name instanceof ScriptLabel)) {
@@ -109,7 +109,7 @@ class Script {
 	 * @param string $name     Label name
 	 * @param string $text     Script text
 	 * @param bool   $isolated (optional) Whether to isolate the Label Script
-	 * @return \FML\Script\Script|static
+	 * @return static
 	 */
 	public function appendGenericScriptLabel($name, $text = null, $isolated = false) {
 		if (is_object($name) && ($name instanceof ScriptLabel)) {
@@ -124,7 +124,7 @@ class Script {
 	/**
 	 * Remove all generic Script texts
 	 *
-	 * @return \FML\Script\Script|static
+	 * @return static
 	 */
 	public function resetGenericScriptLabels() {
 		$this->genericLabels = array();
@@ -135,7 +135,7 @@ class Script {
 	 * Add a Script Feature
 	 *
 	 * @param ScriptFeature $feature Script Feature
-	 * @return \FML\Script\Script|static
+	 * @return static
 	 */
 	public function addFeature(ScriptFeature $feature) {
 		if (!in_array($feature, $this->features, true)) {
@@ -148,7 +148,7 @@ class Script {
 	 * Load the given Script Feature
 	 *
 	 * @param ScriptFeature $scriptFeature Script Feature to load
-	 * @return \FML\Script\Script|static
+	 * @return static
 	 */
 	public function loadFeature(ScriptFeature $scriptFeature) {
 		$scriptFeature->prepare($this);
@@ -159,7 +159,7 @@ class Script {
 	 * Load the given Script Features
 	 *
 	 * @param ScriptFeature[] $scriptFeatures Script Features to load
-	 * @return \FML\Script\Script|static
+	 * @return static
 	 */
 	public function loadFeatures(array $scriptFeatures) {
 		foreach ($scriptFeatures as $scriptFeature) {

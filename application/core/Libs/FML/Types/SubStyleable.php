@@ -15,7 +15,7 @@ interface SubStyleable {
 	 * Set sub style
 	 *
 	 * @param string $subStyle SubStyle name
-	 * @return \FML\Types\SubStyleable|static
+	 * @return static
 	 */
 	public function setSubStyle($subStyle);
 
@@ -24,7 +24,7 @@ interface SubStyleable {
 	 *
 	 * @param string $style    Style name
 	 * @param string $subStyle SubStyle name
-	 * @return \FML\Types\SubStyleable|static
+	 * @return static
 	 */
 	public function setStyles($style, $subStyle);
 }

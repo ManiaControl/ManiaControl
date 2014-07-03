@@ -55,7 +55,7 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	 * Set text
 	 *
 	 * @param string $text Text value
-	 * @return \FML\Controls\Label|static
+	 * @return static
 	 */
 	public function setText($text) {
 		$this->text = (string)$text;
@@ -66,7 +66,7 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	 * Set text id to use from Dico
 	 *
 	 * @param string $textId Text id
-	 * @return \FML\Controls\Label|static
+	 * @return static
 	 */
 	public function setTextId($textId) {
 		$this->textId = (string)$textId;
@@ -77,7 +77,7 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	 * Set text prefix
 	 *
 	 * @param string $textPrefix Text prefix
-	 * @return \FML\Controls\Label|static
+	 * @return static
 	 */
 	public function setTextPrefix($textPrefix) {
 		$this->textPrefix = (string)$textPrefix;
@@ -88,7 +88,7 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	 * Set text emboss
 	 *
 	 * @param bool $textEmboss Whether the text should be embossed
-	 * @return \FML\Controls\Label|static
+	 * @return static
 	 */
 	public function setTextEmboss($textEmboss) {
 		$this->textEmboss = ($textEmboss ? 1 : 0);
@@ -99,7 +99,7 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	 * Set translate
 	 *
 	 * @param bool $translate Whether the text should be translated
-	 * @return \FML\Controls\Label|static
+	 * @return static
 	 */
 	public function setTranslate($translate) {
 		$this->translate = ($translate ? 1 : 0);
@@ -110,7 +110,7 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	 * Set max lines count
 	 *
 	 * @param int $maxLines Max lines count
-	 * @return \FML\Controls\Label|static
+	 * @return static
 	 */
 	public function setMaxLines($maxLines) {
 		$this->maxLines = (int)$maxLines;
@@ -233,7 +233,7 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	 *
 	 * @param bool $showSeconds  (optional) Whether the seconds should be shown
 	 * @param bool $showFullDate (optional) Whether the date should be shown
-	 * @return \FML\Controls\Label|static
+	 * @return static
 	 */
 	public function addClockFeature($showSeconds = true, $showFullDate = false) {
 		$clock = new Clock($this, $showSeconds, $showFullDate);

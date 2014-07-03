@@ -27,7 +27,7 @@ class CustomUI {
 	/**
 	 * Create a new CustomUI object
 	 *
-	 * @return \FML\CustomUI|static
+	 * @return static
 	 */
 	public static function create() {
 		return new static();
@@ -37,7 +37,7 @@ class CustomUI {
 	 * Set XML encoding
 	 *
 	 * @param string $encoding XML encoding
-	 * @return \FML\CustomUI|static
+	 * @return static
 	 */
 	public function setXMLEncoding($encoding) {
 		$this->encoding = (string)$encoding;
@@ -48,7 +48,7 @@ class CustomUI {
 	 * Set showing of notices
 	 *
 	 * @param bool $visible Whether notices should be shown
-	 * @return \FML\CustomUI|static
+	 * @return static
 	 */
 	public function setNoticeVisible($visible) {
 		$this->noticeVisible = $visible;
@@ -59,7 +59,7 @@ class CustomUI {
 	 * Set showing of the challenge info
 	 *
 	 * @param bool $visible Whether the challenge info should be shown
-	 * @return \FML\CustomUI|static
+	 * @return static
 	 */
 	public function setChallengeInfoVisible($visible) {
 		$this->challengeInfoVisible = $visible;
@@ -70,7 +70,7 @@ class CustomUI {
 	 * Set showing of the net infos
 	 *
 	 * @param bool $visible Whether the net infos should be shown
-	 * @return \FML\CustomUI|static
+	 * @return static
 	 */
 	public function setNetInfosVisible($visible) {
 		$this->netInfosVisible = $visible;
@@ -81,7 +81,7 @@ class CustomUI {
 	 * Set showing of the chat
 	 *
 	 * @param bool $visible Whether the chat should be shown
-	 * @return \FML\CustomUI|static
+	 * @return static
 	 */
 	public function setChatVisible($visible) {
 		$this->chatVisible = $visible;
@@ -92,7 +92,7 @@ class CustomUI {
 	 * Set showing of the checkpoint list
 	 *
 	 * @param bool $visible Whether the checkpoint should be shown
-	 * @return \FML\CustomUI|static
+	 * @return static
 	 */
 	public function setCheckpointListVisible($visible) {
 		$this->checkpointListVisible = $visible;
@@ -103,7 +103,7 @@ class CustomUI {
 	 * Set showing of round scores
 	 *
 	 * @param bool $visible Whether the round scores should be shown
-	 * @return \FML\CustomUI|static
+	 * @return static
 	 */
 	public function setRoundScoresVisible($visible) {
 		$this->roundScoresVisible = $visible;
@@ -114,7 +114,7 @@ class CustomUI {
 	 * Set showing of the scoretable
 	 *
 	 * @param bool $visible Whether the scoretable should be shown
-	 * @return \FML\CustomUI|static
+	 * @return static
 	 */
 	public function setScoretableVisible($visible) {
 		$this->scoretableVisible = $visible;
@@ -125,7 +125,7 @@ class CustomUI {
 	 * Set global showing
 	 *
 	 * @param bool $visible Whether the UI should be disabled completely
-	 * @return \FML\CustomUI|static
+	 * @return static
 	 */
 	public function setGlobalVisible($visible) {
 		$this->globalVisible = $visible;

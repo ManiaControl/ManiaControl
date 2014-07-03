@@ -22,7 +22,7 @@ class Including implements Renderable {
 	 * Create a new Include object
 	 *
 	 * @param string $url (optional) Include url
-	 * @return \FML\Elements\Including|static
+	 * @return static
 	 */
 	public static function create($url = null) {
 		return new static($url);
@@ -43,7 +43,7 @@ class Including implements Renderable {
 	 * Set url
 	 *
 	 * @param string $url Include url
-	 * @return \FML\Elements\Including|static
+	 * @return static
 	 */
 	public function setUrl($url) {
 		$this->url = (string)$url;
@@ -51,7 +51,7 @@ class Including implements Renderable {
 	}
 
 	/**
-	 * @see \FML\Renderable::render()
+	 * @see \FML\Types\Renderable::render()
 	 */
 	public function render(\DOMDocument $domDocument) {
 		$xmlElement = $domDocument->createElement($this->tagName);
