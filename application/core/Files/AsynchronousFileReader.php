@@ -100,7 +100,7 @@ class AsynchronousFileReader {
 	protected function newRequest($url) {
 		$request = new Request($url);
 		$request->getOptions()
-		        ->set(CURLOPT_TIMEOUT, 10)
+		        ->set(CURLOPT_TIMEOUT, 60)
 		        ->set(CURLOPT_HEADER, false) // don't display response header
 		        ->set(CURLOPT_CRLF, true) // linux line feed
 		        ->set(CURLOPT_ENCODING, '') // accept encoding
