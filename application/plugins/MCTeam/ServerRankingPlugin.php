@@ -37,7 +37,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 	const RANKING_TYPE_RECORDS            = 'Records';
 	const RANKING_TYPE_RATIOS             = 'Ratios';
 	const RANKING_TYPE_POINTS             = 'Points';
-	const SETTING_MIN_RANKING_TYPE        = 'ServerRankings Type Records/Points/Ratios';
+	const SETTING_RANKING_TYPE            = 'ServerRankings Type Records/Points/Ratios';
 	const SETTING_MIN_HITS_RATIO_RANKING  = 'Min Hits on Ratio Rankings';
 	const SETTING_MIN_HITS_POINTS_RANKING = 'Min Hits on Points Rankings';
 	const SETTING_MIN_REQUIRED_RECORDS    = 'Minimum amount of records required on Records Ranking';
@@ -106,23 +106,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MIN_REQUIRED_RECORDS, 3);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAX_STORED_RECORDS, 50);
 
-		$script = $this->maniaControl->client->getScriptName();
-
-		if ($this->maniaControl->mapManager->getCurrentMap()->getGame() === 'tm') {
-			//TODO also add obstacle here as default
-			$this->maniaControl->settingManager->initSetting($this, self::SETTING_MIN_RANKING_TYPE, self::RANKING_TYPE_RECORDS);
-		} else if ($script["CurrentValue"] === 'InstaDM.Script.txt') {
-			$this->maniaControl->settingManager->initSetting($this, self::SETTING_MIN_RANKING_TYPE, self::RANKING_TYPE_RATIOS);
-		} else {
-			$this->maniaControl->settingManager->initSetting($this, self::SETTING_MIN_RANKING_TYPE, self::RANKING_TYPE_POINTS);
-		}
-
-		//Check if the type is Correct
-		$type = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MIN_RANKING_TYPE);
-		if (!$this->isValidRankingType($type)) {
-			$error = 'Ranking Type is not correct, possible values(' . self::RANKING_TYPE_RATIOS . ', ' . self::RANKING_TYPE_POINTS . ', ' . self::RANKING_TYPE_POINTS . ')';
-			throw new \Exception($error);
-		}
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_RANKING_TYPE, $this->getRankingsTypeArray());
 
 		//Register CallbackListeners
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
@@ -135,6 +119,27 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 
 		// TODO: only update records count
 		$this->resetRanks();
+	}
+
+
+	/**
+	 * Get the RankingsTypeArray
+	 *
+	 * @return array[]
+	 */
+	private function getRankingsTypeArray() {
+		$script = $this->maniaControl->client->getScriptName();
+
+		if ($this->maniaControl->mapManager->getCurrentMap()
+		                                   ->getGame() === 'tm'
+		) {
+			//TODO also add obstacle here as default
+			return array(self::RANKING_TYPE_RECORDS, self::RANKING_TYPE_POINTS, self::RANKING_TYPE_RATIOS);
+		} else if ($script["CurrentValue"] === 'InstaDM.Script.txt') {
+			return array(self::RANKING_TYPE_RATIOS, self::RANKING_TYPE_POINTS, self::RANKING_TYPE_RECORDS);
+		} else {
+			return array(self::RANKING_TYPE_POINTS, self::RANKING_TYPE_RATIOS, self::RANKING_TYPE_RECORDS);
+		}
 	}
 
 	/**
@@ -156,25 +161,6 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 	}
 
 	/**
-	 * Check if the given Ranking Type is valid
-	 *
-	 * @param string $rankingType
-	 * @return bool
-	 */
-	private function isValidRankingType($rankingType) {
-		return in_array($rankingType, $this->getRankingTypes());
-	}
-
-	/**
-	 * Get the possible Ranking Types
-	 *
-	 * @return string[]
-	 */
-	private function getRankingTypes() {
-		return array(self::RANKING_TYPE_POINTS, self::RANKING_TYPE_RATIOS, self::RANKING_TYPE_RECORDS);
-	}
-
-	/**
 	 * Resets and rebuilds the Ranking
 	 */
 	private function resetRanks() {
@@ -187,7 +173,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 			trigger_error($mysqli->error);
 		}
 
-		$type = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MIN_RANKING_TYPE);
+		$type = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_RANKING_TYPE);
 
 		switch ($type) {
 			case self::RANKING_TYPE_RATIOS:
@@ -310,7 +296,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 	public function showRank(Player $player) {
 		$rankObj = $this->getRank($player);
 
-		$type = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MIN_RANKING_TYPE);
+		$type = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_RANKING_TYPE);
 
 		$message = '';
 		if ($rankObj) {
