@@ -158,6 +158,26 @@ class CallbackManager {
 		return $this->removeCallbackListener($this->callbackListenings, $listener);
 	}
 
+	//TODO better name (used only in customvotesPlugin)
+	/**
+	 * Unregister a single Callback Listening from an Callback Listener
+	 *
+	 * @param String $callbackName
+	 * @param CallbackListener $listener
+	 * @return bool
+	 */
+	public function unregisterCallbackListening($callbackName, CallbackListener $listener){
+		foreach($this->callbackListenings as &$listenings){
+			foreach ($listenings as $key => &$listening) {
+				if($key == $callbackName && $listening->listener === $listener){
+					unset($listenings[$key]);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Remove the Callback Listener from the given Listeners Array
 	 *

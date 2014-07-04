@@ -17,6 +17,7 @@ use FML\ManiaLink;
 use FML\Script\Features\KeyAction;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
@@ -161,11 +162,16 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 		//Define Votes
 		$this->defineVote("teambalance", "Vote for Team Balance");
-		$this->defineVote("skipmap", "Vote for Skip Map");
-		$this->defineVote("nextmap", "Vote for Skip Map");
-		$this->defineVote("skip", "Vote for Skip Map");
-		$this->defineVote("restartmap", "Vote for Restart Map");
-		$this->defineVote("restart", "Vote for Restart Map");
+		$this->defineVote("skipmap", "Vote for Skip Map")
+		     ->setStopCallback(Callbacks::ENDMAP);
+		$this->defineVote("nextmap", "Vote for Skip Map")
+		     ->setStopCallback(Callbacks::ENDMAP);
+		$this->defineVote("skip", "Vote for Skip Map")
+		     ->setStopCallback(Callbacks::ENDMAP);
+		$this->defineVote("restartmap", "Vote for Restart Map")
+		     ->setStopCallback(Callbacks::ENDMAP);
+		$this->defineVote("restart", "Vote for Restart Map")
+		     ->setStopCallback(Callbacks::ENDMAP);
 		$this->defineVote("pausegame", "Vote for Pause Game");
 		$this->defineVote("replay", "Vote to replay current map");
 
@@ -194,6 +200,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 * @param bool   $idBased
 	 * @param string $startText
 	 * @param float  $neededRatio
+	 * @return \MCTeam\VoteCommand
 	 */
 	public function defineVote($voteIndex, $voteName, $idBased = false, $startText = '', $neededRatio = -1) {
 		if ($neededRatio < 0) {
@@ -202,6 +209,8 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$voteCommand                    = new VoteCommand($voteIndex, $voteName, $idBased, $neededRatio);
 		$voteCommand->startText         = $startText;
 		$this->voteCommands[$voteIndex] = $voteCommand;
+
+		return $voteCommand;
 	}
 
 	/**
@@ -396,6 +405,11 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$emptyManialink = new ManiaLink(self::MLID_WIDGET);
 		$this->maniaControl->manialinkManager->sendManialink($emptyManialink);
 
+		//Remove the Listener for the Stop Callback if a stop callback is defined
+		if ($this->currentVote && $this->currentVote->stopCallback) {
+			$this->maniaControl->callbackManager->unregisterCallbackListening($this->currentVote->stopCallback, $this);
+		}
+
 		unset($this->currentVote);
 	}
 
@@ -428,7 +442,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 *
 	 * @param Player   $player
 	 * @param int      $voteIndex
-	 * @param callable $function
+	 * @param callable $function (Get's only called if the vote is successfull and returns as Parameter the Voting-Results
 	 */
 	public function startVote(Player $player, $voteIndex, $function = null) {
 		//Player is muted
@@ -457,12 +471,18 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 		$maxTime = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_VOTE_TIME);
 
-		$this->currentVote = $this->voteCommands[$voteIndex];
+		/** @var VoteCommand $voteCommand */
+		$voteCommand = $this->voteCommands[$voteIndex];
 
-		$this->currentVote                    = new CurrentVote($this->voteCommands[$voteIndex], $player, time() + $maxTime);
+		$this->currentVote                    = new CurrentVote($voteCommand, $player, time() + $maxTime);
 		$this->currentVote->neededRatio       = floatval($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_DEFAULT_RATIO));
 		$this->currentVote->neededPlayerRatio = floatval($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_DEFAULT_PLAYER_RATIO));
 		$this->currentVote->function          = $function;
+
+		if ($voteCommand->getStopCallback()) {
+			$this->maniaControl->callbackManager->registerCallbackListener($voteCommand->getStopCallback(), $this, 'handleStopCallback');
+			$this->currentVote->stopCallback = $voteCommand->getStopCallback();
+		}
 
 		if ($this->currentVote->voteCommand->startText) {
 			$message = $this->currentVote->voteCommand->startText;
@@ -471,6 +491,13 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		}
 
 		$this->maniaControl->chat->sendSuccess($message);
+	}
+
+	/**
+	 * Destroys the Vote on the Stop Callback
+	 */
+	public function handleStopCallback() {
+		$this->destroyVote();
 	}
 
 	/**
@@ -777,6 +804,8 @@ class VoteCommand {
 	public $idBased = false;
 	public $startText = '';
 
+	private $stopCallback = '';
+
 	/**
 	 * Construct a new Vote Command
 	 *
@@ -791,6 +820,25 @@ class VoteCommand {
 		$this->idBased     = $idBased;
 		$this->neededRatio = $neededRatio;
 	}
+
+	/**
+	 * Defines a Stop Callback
+	 *
+	 * @param $stopCallback
+	 */
+	public function setStopCallback($stopCallback) {
+		$this->stopCallback = $stopCallback;
+	}
+
+	/**
+	 * Gets the Stop Callback
+	 *
+	 * @return string
+	 */
+	public function getStopCallback() {
+		return $this->stopCallback;
+	}
+
 }
 
 /**
@@ -809,6 +857,7 @@ class CurrentVote {
 	public $map = null;
 	public $player = null;
 	public $function = null;
+	public $stopCallback = "";
 
 	private $playersVoted = array();
 

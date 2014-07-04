@@ -622,10 +622,9 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 				$message = $player->getEscapedNickname() . '$s started a vote to switch to ' . $map->getEscapedName() . '!';
 
-				$votesPlugin->defineVote('switchmap', "Goto " . $map->name, true, $message);
+				$votesPlugin->defineVote('switchmap', "Goto " . $map->name, true, $message)->setStopCallback(Callbacks::ENDMAP);
 
 				$votesPlugin->startVote($player, 'switchmap', function ($result) use (&$votesPlugin, &$map) {
-					// TODO: $result isn't used -> bug? does it skip even if vote is not successful?
 					$votesPlugin->undefineVote('switchmap');
 
 					//Don't queue on Map-Change
