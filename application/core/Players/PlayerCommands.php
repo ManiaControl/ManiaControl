@@ -11,6 +11,7 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Server\Server;
 use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
+use Maniaplanet\DedicatedServer\Xmlrpc\UnavailableFeatureException;
 
 /**
  * Class offering various Admin Commands related to Players
@@ -286,10 +287,15 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 		if (isset($messageParts[1]) && is_numeric($messageParts[1])) {
 			$amount = intval($messageParts[1]);
 		}
-		for ($i = 0; $i < $amount; $i++) {
-			$this->maniaControl->client->connectFakePlayer();
+
+		try {
+			for ($i = 0; $i < $amount; $i++) {
+				$this->maniaControl->client->connectFakePlayer();
+			}
+			$this->maniaControl->chat->sendSuccess('Fake players connected!', $player->login);
+		} catch (UnavailableFeatureException $e) {
+			$this->maniaControl->chat->sendSuccess('Error while connecting a Fake-Player.', $player->login);
 		}
-		$this->maniaControl->chat->sendSuccess('Fake players connected!', $player->login);
 	}
 
 	/**
