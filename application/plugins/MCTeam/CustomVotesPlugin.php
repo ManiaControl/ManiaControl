@@ -442,7 +442,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 *
 	 * @param Player   $player
 	 * @param int      $voteIndex
-	 * @param callable $function (Get's only called if the vote is successfull and returns as Parameter the Voting-Results
+	 * @param callable $function calls the given function only if the vote is successful and returns as Parameter the Voting-Results
 	 */
 	public function startVote(Player $player, $voteIndex, $function = null) {
 		//Player is muted
