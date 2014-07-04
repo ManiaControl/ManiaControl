@@ -502,6 +502,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 */
 	public function buildConfirmFrame(Manialink $maniaLink, $posY, $mapUid, $erase = false) {
 		// TODO: get rid of the confirm frame to decrease xml size & network usage
+		// SUGGESTION: just send them as own manialink again on clicking?
 
 		$width        = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
 		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowStyle();
