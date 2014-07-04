@@ -321,7 +321,9 @@ class SettingManager implements CallbackListener {
 		$settingStatement->close();
 
 		// Trigger Settings Changed Callback
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_SETTING_CHANGED, $setting);
+		if(!$init){
+			$this->maniaControl->callbackManager->triggerCallback(self::CB_SETTING_CHANGED, $setting);
+		}
 		return true;
 	}
 
