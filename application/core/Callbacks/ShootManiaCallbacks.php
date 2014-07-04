@@ -56,6 +56,9 @@ class ShootManiaCallbacks implements CallbackListener {
 			case 'LibAFK_IsAFK':
 				$this->triggerAfkStatus($data[0]);
 				break;
+			case 'WarmUp_Status':
+				$this->maniaControl->callbackManager->triggerCallback(Callbacks::WARMUPSTATUS, $data[0]);
+				break;
 			case self::CB_TIMEATTACK_ONCHECKPOINT:
 				$this->handleTimeAttackOnCheckpoint($name, $data);
 				break;

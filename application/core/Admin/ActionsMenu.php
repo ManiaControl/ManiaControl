@@ -123,7 +123,9 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		$itemMarginFactorY = 1.2;
 
 		// If game is shootmania lower the icons position by 20
-		if ($this->maniaControl->mapManager->getCurrentMap()->getGame() === 'sm') {
+		if ($this->maniaControl->mapManager->getCurrentMap()
+		                                   ->getGame() === 'sm'
+		) {
 			$posY -= $shootManiaOffset;
 		}
 
@@ -284,9 +286,13 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	 */
 	public function removeMenuItem($order, $playerAction = true) {
 		if ($playerAction) {
-			unset($this->playerMenuItems[$order]);
+			if ($this->playerMenuItems[$order]) {
+				unset($this->playerMenuItems[$order]);
+			}
 		} else {
-			unset($this->adminMenuItems[$order]);
+			if ($this->playerMenuItems[$order]) {
+				unset($this->adminMenuItems[$order]);
+			}
 		}
 		$this->rebuildAndShowMenu();
 	}

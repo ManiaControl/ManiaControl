@@ -56,6 +56,8 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 		// Register for callbacks
 		$this->maniaControl->timerManager->registerTimerListening($this, 'each5Seconds', 5000);
 		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::ONINIT, $this, 'handleOnInit');
+		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::WARMUPSTATUS, $this, 'handleWarmUpStatus');
+
 
 		// Register for commands
 		$this->maniaControl->commandManager->registerCommandListener('setservername', $this, 'command_SetServerName', true, 'Sets the ServerName.');
@@ -82,19 +84,9 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_CANCEL_VOTE, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_HANDLE_WARMUP, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 
-		// Extend WarmUp
-		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_EXTEND_WARMUP, $this, 'command_extendWarmup');
-		$itemQuad = new Quad_BgRaceScore2();
-		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_SendScore);
-		$itemQuad->setAction(self::ACTION_EXTEND_WARMUP);
-		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 14, 'Extend Warmup');
-
-		// Stop WarmUp
-		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_END_WARMUP, $this, 'command_endWarmup');
-		$itemQuad = new Quad_Icons64x64_1();
-		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ArrowGreen);
-		$itemQuad->setAction(self::ACTION_END_WARMUP);
-		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 15, 'End Warmup');
+		//Check if there is WarmUp Enabled in this Mode
+		//TODO handle the Modescriptevents + answer by an own callback class (answer via closure or dunno)
+		$this->maniaControl->client->triggerModeScriptEvent("WarmUp_GetStatus");
 
 		// Action cancel Vote
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_CANCEL_VOTE, $this, 'command_cancelVote');
@@ -126,6 +118,31 @@ class ServerCommands implements CallbackListener, CommandListener, ManialinkPage
 		}
 	}
 
+	/**
+	 * Handeling the WarmupStatus Callback, and removes or adds the Menu Items for extending / Stopping warmup
+	 *
+	 * @param $warmupEnabled
+	 */
+	public function handleWarmUpStatus($warmupEnabled) {
+		if ($warmupEnabled) {
+			// Extend WarmUp
+			$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_EXTEND_WARMUP, $this, 'command_extendWarmup');
+			$itemQuad = new Quad_BgRaceScore2();
+			$itemQuad->setSubStyle($itemQuad::SUBSTYLE_SendScore);
+			$itemQuad->setAction(self::ACTION_EXTEND_WARMUP);
+			$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 14, 'Extend Warmup');
+
+			// Stop WarmUp
+			$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_END_WARMUP, $this, 'command_endWarmup');
+			$itemQuad = new Quad_Icons64x64_1();
+			$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ArrowGreen);
+			$itemQuad->setAction(self::ACTION_END_WARMUP);
+			$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 15, 'End Warmup');
+		} else {
+			$this->maniaControl->actionsMenu->removeMenuItem(14, false);
+			$this->maniaControl->actionsMenu->removeMenuItem(15, false);
+		}
+	}
 
 	/**
 	 * Handle //cancelvote command
