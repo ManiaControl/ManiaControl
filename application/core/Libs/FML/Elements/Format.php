@@ -22,6 +22,7 @@ class Format implements BgColorable, Renderable, Styleable, TextFormatable {
 	protected $bgColor = null;
 	protected $style = null;
 	protected $textSize = -1;
+	protected $textFont = null;
 	protected $textColor = null;
 	protected $focusAreaColor1 = null;
 	protected $focusAreaColor2 = null;
@@ -56,6 +57,14 @@ class Format implements BgColorable, Renderable, Styleable, TextFormatable {
 	 */
 	public function setTextSize($textSize) {
 		$this->textSize = (int)$textSize;
+		return $this;
+	}
+
+	/**
+	 * @see \FML\Types\TextFormatable::setTextFont()
+	 */
+	public function setTextFont($textFont) {
+		$this->textFont = (string)$textFont;
 		return $this;
 	}
 
@@ -96,6 +105,9 @@ class Format implements BgColorable, Renderable, Styleable, TextFormatable {
 		}
 		if ($this->textSize >= 0) {
 			$formatXmlElement->setAttribute('textsize', $this->textSize);
+		}
+		if ($this->textFont) {
+			$formatXmlElement->setAttribute('textfont', $this->textFont);
 		}
 		if ($this->textColor) {
 			$formatXmlElement->setAttribute('textcolor', $this->textColor);

@@ -40,6 +40,7 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	protected $scriptEvents = null;
 	protected $style = null;
 	protected $textSize = -1;
+	protected $textFont = null;
 	protected $textColor = null;
 	protected $focusAreaColor1 = null;
 	protected $focusAreaColor2 = null;
@@ -205,6 +206,14 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 	}
 
 	/**
+	 * @see \FML\Types\TextFormatable::setTextFont()
+	 */
+	public function setTextFont($textFont) {
+		$this->textFont = (string)$textFont;
+		return $this;
+	}
+
+	/**
 	 * @see \FML\Types\TextFormatable::setTextColor()
 	 */
 	public function setTextColor($textColor) {
@@ -290,6 +299,9 @@ class Label extends Control implements Actionable, Linkable, NewLineable, Script
 		}
 		if ($this->textSize >= 0) {
 			$xmlElement->setAttribute('textsize', $this->textSize);
+		}
+		if ($this->textFont) {
+			$xmlElement->setAttribute('textfont', $this->textFont);
 		}
 		if ($this->textColor) {
 			$xmlElement->setAttribute('textcolor', $this->textColor);

@@ -20,6 +20,13 @@ use FML\Types\SubStyleable;
  */
 class Quad extends Control implements Actionable, BgColorable, Linkable, Scriptable, Styleable, SubStyleable {
 	/*
+	 * Constants
+	 */
+	const KEEP_RATIO_INACTIVE = 'inactive';
+	const KEEP_RATIO_CLIP     = 'Clip';
+	const KEEP_RATIO_FIT      = 'Fit';
+
+	/*
 	 * Protected properties
 	 */
 	protected $tagName = 'quad';
@@ -30,6 +37,7 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	protected $colorize = null;
 	protected $modulizeColor = null;
 	protected $autoScale = 1;
+	protected $keepRatio = null;
 	protected $action = null;
 	protected $actionKey = -1;
 	protected $bgColor = null;
@@ -40,6 +48,8 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	protected $scriptEvents = null;
 	protected $style = null;
 	protected $subStyle = null;
+	protected $styleSelected = null;
+	protected $opacity = null;
 
 	/**
 	 * @see \FML\Controls\Control::getManiaScriptClass()
@@ -122,6 +132,17 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	 */
 	public function setAutoScale($autoScale) {
 		$this->autoScale = ($autoScale ? 1 : 0);
+		return $this;
+	}
+
+	/**
+	 * Set Keep Ratio Mode
+	 *
+	 * @param string $keepRatio Keep Ratio Mode
+	 * @return static
+	 */
+	public function setKeepRatio($keepRatio) {
+		$this->keepRatio = (string)$keepRatio;
 		return $this;
 	}
 
@@ -222,6 +243,28 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 	}
 
 	/**
+	 * Set selected mode
+	 *
+	 * @param bool $styleSelected
+	 * @return static
+	 */
+	public function setStyleSelected($styleSelected) {
+		$this->styleSelected = ($styleSelected ? 1 : 0);
+		return $this;
+	}
+
+	/**
+	 * Set opacity
+	 *
+	 * @param float $opacity
+	 * @return static
+	 */
+	public function setOpacity($opacity) {
+		$this->opacity = (float)$opacity;
+		return $this;
+	}
+
+	/**
 	 * Apply the given CheckBox Design
 	 *
 	 * @param CheckBoxDesign $checkBoxDesign CheckBox Design
@@ -258,6 +301,9 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 		if (!$this->autoScale) {
 			$xmlElement->setAttribute('autoscale', $this->autoScale);
 		}
+		if ($this->keepRatio) {
+			$xmlElement->setAttribute('keepratio', $this->keepRatio);
+		}
 		if (strlen($this->action) > 0) {
 			$xmlElement->setAttribute('action', $this->action);
 		}
@@ -281,6 +327,12 @@ class Quad extends Control implements Actionable, BgColorable, Linkable, Scripta
 		}
 		if ($this->subStyle) {
 			$xmlElement->setAttribute('substyle', $this->subStyle);
+		}
+		if ($this->styleSelected) {
+			$xmlElement->setAttribute('styleselected', $this->styleSelected);
+		}
+		if ($this->opacity !== 1.) {
+			$xmlElement->setAttribute('opacity', $this->opacity);
 		}
 		return $xmlElement;
 	}

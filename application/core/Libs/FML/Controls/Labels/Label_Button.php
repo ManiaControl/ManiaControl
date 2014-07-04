@@ -33,4 +33,6 @@ class Label_Button extends Label {
 	const STYLE_CardButtonSmallXXXL  = 'CardButtonSmallXXXL';
 	const STYLE_CardMain_Quit        = 'CardMain_Quit';
 	const STYLE_CardMain_Tool        = 'CardMain_Tool';
+	const STYLE_CardMain_Tool_NoBg   = 'CardMain_Tool_NoBg';
+	const STYLE_CardMain_Tool_NoBg2  = 'CardMain_Tool_NoBg2';
 }

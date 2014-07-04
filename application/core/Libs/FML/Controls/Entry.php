@@ -28,6 +28,7 @@ class Entry extends Control implements NewLineable, Scriptable, Styleable, TextF
 	protected $style = null;
 	protected $textColor = null;
 	protected $textSize = -1;
+	protected $textFont = null;
 	protected $focusAreaColor1 = null;
 	protected $focusAreaColor2 = null;
 	protected $autoComplete = null;
@@ -120,6 +121,14 @@ class Entry extends Control implements NewLineable, Scriptable, Styleable, TextF
 	}
 
 	/**
+	 * @see \FML\Types\TextFormatable::setTextFont()
+	 */
+	public function setTextFont($textFont) {
+		$this->textFont = (string)$textFont;
+		return $this;
+	}
+
+	/**
 	 * @see \FML\Types\TextFormatable::setAreaColor()
 	 */
 	public function setAreaColor($areaColor) {
@@ -193,6 +202,9 @@ class Entry extends Control implements NewLineable, Scriptable, Styleable, TextF
 		}
 		if ($this->textSize >= 0.) {
 			$xmlElement->setAttribute('textsize', $this->textSize);
+		}
+		if ($this->textFont) {
+			$xmlElement->setAttribute('textfont', $this->textFont);
 		}
 		if ($this->focusAreaColor1) {
 			$xmlElement->setAttribute('focusareacolor1', $this->focusAreaColor1);

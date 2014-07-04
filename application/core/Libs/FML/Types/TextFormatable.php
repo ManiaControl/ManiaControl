@@ -20,6 +20,14 @@ interface TextFormatable {
 	public function setTextSize($textSize);
 
 	/**
+	 * Set text font
+	 *
+	 * @param string $textFont
+	 * @return static
+	 */
+	public function setTextFont($textFont);
+
+	/**
 	 * Set text color
 	 *
 	 * @param string $textColor Text color
