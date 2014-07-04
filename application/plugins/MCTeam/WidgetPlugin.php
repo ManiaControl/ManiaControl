@@ -17,6 +17,8 @@ use ManiaControl\Manialinks\IconManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
+use ManiaControl\Settings\Setting;
+use ManiaControl\Settings\SettingManager;
 use ManiaControl\Utils\Formatter;
 
 /**
@@ -129,6 +131,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECT, $this, 'updateWidgets');
 		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERINFOCHANGED, $this, 'updateWidgets');
+		$this->maniaControl->callbackManager->registerCallbackListener(SettingManager::CB_SETTING_CHANGED, $this, 'updateSettings');
 
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED, true);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAP_WIDGET_POSX, 160 - 20);
@@ -509,6 +512,17 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		}
 		if ($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_SERVERINFO_WIDGET_ACTIVATED)) {
 			$this->displayServerInfoWidget();
+		}
+	}
+
+	/**
+	 * Update Widgets on Setting Changes
+	 *
+	 * @param Setting $setting
+	 */
+	public function updateSettings(Setting $setting){
+		if($setting->belongsToClass($this)){
+			$this->displayWIdgets();
 		}
 	}
 

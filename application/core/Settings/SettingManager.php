@@ -173,6 +173,7 @@ class SettingManager implements CallbackListener {
 	 * @return bool
 	 */
 	public function setSetting($object, $settingName, $value) {
+		//TODO nowhere used, everywhere saveSettings used, is it depreciated?
 		$setting = $this->getSettingObject($object, $settingName);
 		if ($setting) {
 			$setting->value = $value;
@@ -189,9 +190,6 @@ class SettingManager implements CallbackListener {
 		}
 
 		$this->storeSetting($setting);
-
-		// Trigger Settings Changed Callback
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_SETTING_CHANGED, $setting);
 
 		return true;
 	}
@@ -321,6 +319,9 @@ class SettingManager implements CallbackListener {
 			return false;
 		}
 		$settingStatement->close();
+
+		// Trigger Settings Changed Callback
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_SETTING_CHANGED, $setting);
 		return true;
 	}
 
