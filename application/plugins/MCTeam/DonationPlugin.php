@@ -6,8 +6,8 @@ use FML\Controls\Frame;
 use FML\Controls\Label;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;
+use FML\Controls\Quads\Quad_BgRaceScore2;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
-use FML\Controls\Quads\Quad_Icons128x128_1;
 use FML\ManiaLink;
 use FML\Script\Features\Paging;
 use ManiaControl\Admin\AuthenticationManager;
@@ -182,8 +182,8 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$frame->add($iconFrame);
 
 		$iconFrame->setSize($itemSize, $itemSize);
-		$itemQuad = new Quad_Icons128x128_1();
-		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Coppers);
+		$itemQuad = new Quad_BgRaceScore2();
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Points);
 		$itemQuad->setSize($itemSize, $itemSize);
 		$iconFrame->add($itemQuad);
 
