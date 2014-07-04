@@ -28,6 +28,7 @@ use ManiaControl\Server\Server;
 use ManiaControl\Server\ServerCommands;
 use ManiaControl\Utils\ColorUtil;
 use Maniaplanet\DedicatedServer\Structures\VoteRatio;
+use Maniaplanet\DedicatedServer\Xmlrpc\ChangeInProgressException;
 use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
 
 
@@ -286,7 +287,9 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$itemMarginFactorY = 1.2;
 
 		//If game is shootmania lower the icons position by 20
-		if ($this->maniaControl->mapManager->getCurrentMap()->getGame() === 'sm') {
+		if ($this->maniaControl->mapManager->getCurrentMap()
+		                                   ->getGame() === 'sm'
+		) {
 			$posY -= $shootManiaOffset;
 		}
 
@@ -499,11 +502,17 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 				case 'skipmap':
 				case 'skip':
 				case 'nextmap':
-					$this->maniaControl->mapManager->mapActions->skipMap();
+					try {
+						$this->maniaControl->mapManager->mapActions->skipMap();
+					} catch (ChangeInProgressException $e) {
+					}
 					$this->maniaControl->chat->sendInformation('$f8fVote to $fffskip the Map$f8f has been successful!');
 					break;
 				case 'restartmap':
-					$this->maniaControl->client->restartMap();
+					try {
+						$this->maniaControl->client->restartMap();
+					} catch (ChangeInProgressException $e) {
+					}
 					$this->maniaControl->chat->sendInformation('$f8fVote to $fffrestart the Map$f8f has been successful!');
 					break;
 				case 'pausegame':
