@@ -41,17 +41,11 @@ class AsynchronousFileReader {
 	 */
 	public function appendData() {
 		foreach ($this->requests as $key => $request) {
-			try {
 				if ($request->socketPerform()) {
 					$request->socketSelect();
-				}
-			} catch (Exception $e) {
-				if ($e->getMessage() === 'Cannot perform if there are no requests in queue.') {
+				}else{
 					unset($this->requests[$key]);
-				} else {
-					throw $e;
 				}
-			}
 		}
 	}
 
