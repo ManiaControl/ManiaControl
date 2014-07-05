@@ -80,16 +80,33 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 	 * @param mixed  $nextFolder
 	 */
 	public function showManiaLink(Player $player, $nextFolder = null) {
-		$oldFolderPath = $player->getCache($this, self::CACHE_FOLDER_PATH);
+		$oldFolderPath  = $player->getCache($this, self::CACHE_FOLDER_PATH);
+		$isInMapsFolder = false;
 		if (!$oldFolderPath) {
-			$oldFolderPath = $this->maniaControl->server->directory->getMapsFolder();
+			$oldFolderPath  = $this->maniaControl->server->directory->getMapsFolder();
+			$isInMapsFolder = true;
 		}
 		$folderPath = $oldFolderPath;
 		if (is_string($nextFolder)) {
-			$newFolderPath = $oldFolderPath . $nextFolder . DIRECTORY_SEPARATOR;
-			$realPath      = realpath($newFolderPath);
-			if ($realPath) {
-				$folderPath = $realPath . DIRECTORY_SEPARATOR;
+			$newFolderPath = realpath($oldFolderPath . $nextFolder);
+			if ($newFolderPath) {
+				$folderPath = $newFolderPath . DIRECTORY_SEPARATOR;
+				$folderName = basename($newFolderPath);
+				switch ($folderName) {
+					case 'Maps':
+						$mapsDir        = dirname($this->maniaControl->server->directory->getMapsFolder());
+						$folderDir      = dirname($folderPath);
+						$isInMapsFolder = ($mapsDir === $folderDir);
+						break;
+					case 'UserData':
+						$dataDir   = dirname($this->maniaControl->server->directory->getGameDataFolder());
+						$folderDir = dirname($folderPath);
+						if ($dataDir === $folderDir) {
+							// Prevent navigation out of maps directory
+							return;
+						}
+						break;
+				}
 			}
 		}
 		$player->setCache($this, self::CACHE_FOLDER_PATH, $folderPath);
@@ -111,15 +128,18 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 		$frame->add($navigateRootQuad);
 		$navigateRootQuad->setPosition($width * -0.47, $height * 0.45)
 		                 ->setSize(4, 4)
-		                 ->setSubStyle($navigateRootQuad::SUBSTYLE_ToolRoot)
-		                 ->setAction(self::ACTION_NAVIGATE_ROOT);
+		                 ->setSubStyle($navigateRootQuad::SUBSTYLE_ToolRoot);
 
 		$navigateUpQuad = new Quad_Icons64x64_1();
 		$frame->add($navigateUpQuad);
 		$navigateUpQuad->setPosition($width * -0.44, $height * 0.45)
 		               ->setSize(4, 4)
-		               ->setSubStyle($navigateUpQuad::SUBSTYLE_ToolUp)
-		               ->setAction(self::ACTION_NAVIGATE_UP);
+		               ->setSubStyle($navigateUpQuad::SUBSTYLE_ToolUp);
+
+		if (!$isInMapsFolder) {
+			$navigateRootQuad->setAction(self::ACTION_NAVIGATE_ROOT);
+			$navigateUpQuad->setAction(self::ACTION_NAVIGATE_UP);
+		}
 
 		$directoryLabel = new Label_Text();
 		$frame->add($directoryLabel);
