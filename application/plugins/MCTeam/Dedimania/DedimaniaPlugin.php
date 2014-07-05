@@ -938,7 +938,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 		$insert = false;
 
-		var_dump($newRecord);
+		//var_dump($newRecord);
 		// Get max possible rank
 		$maxRank = $this->dedimaniaData->getPlayerMaxRank($newRecord->login);
 
