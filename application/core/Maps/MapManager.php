@@ -447,16 +447,6 @@ class MapManager implements CallbackListener {
 	public function initializeMap($rpcMap) {
 		$map = new Map($rpcMap);
 		$this->saveMap($map);
-
-		/*$mapsDirectory = $this->maniaControl->server->getMapsDirectory();
-		if (is_readable($mapsDirectory . $map->fileName)) {
-			$mapFetcher = new \GBXChallMapFetcher(true);
-			$mapFetcher->processFile($mapsDirectory . $map->fileName);
-			$map->authorNick = FORMATTER::stripDirtyCodes($mapFetcher->authorNick);
-			$map->authorEInfo = $mapFetcher->authorEInfo;
-			$map->authorZone = $mapFetcher->authorZone;
-			$map->comment = $mapFetcher->comment;
-		}*/
 		return $map;
 	}
 
@@ -721,6 +711,14 @@ class MapManager implements CallbackListener {
 
 		// Trigger own EndMap callback
 		$this->maniaControl->callbackManager->triggerCallback(Callbacks::ENDMAP, $this->currentMap);
+	}
+
+	public function fetchMapByFileName($relativeFileName) {
+		$mapInfo = $this->maniaControl->client->getMapInfo($relativeFileName);
+		if (!$mapInfo) {
+			return false;
+		}
+		return $this->initializeMap($mapInfo);
 	}
 
 	/**

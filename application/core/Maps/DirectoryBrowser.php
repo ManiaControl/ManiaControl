@@ -15,6 +15,9 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
+use Maniaplanet\DedicatedServer\Xmlrpc\AlreadyInListException;
+use Maniaplanet\DedicatedServer\Xmlrpc\FileException;
+use Maniaplanet\DedicatedServer\Xmlrpc\InvalidMapException;
 
 /**
  * Maps Directory Browser
@@ -362,8 +365,45 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 	public function handleAddFile(array $actionCallback, Player $player) {
 		$actionName = $actionCallback[1][2];
 		$fileName   = substr($actionName, strlen(self::ACTION_ADD_FILE));
-		// TODO: add map
-		var_dump($fileName);
+		$folderPath = $player->getCache($this, self::CACHE_FOLDER_PATH);
+		$filePath   = $folderPath . $fileName;
+
+		$mapsFolder       = $this->maniaControl->server->directory->getMapsFolder();
+		$relativeFilePath = substr($filePath, strlen($mapsFolder));
+
+		// Check for valid map
+		try {
+			$this->maniaControl->client->checkMapForCurrentServerParams($relativeFilePath);
+		} catch (InvalidMapException $exception) {
+			$this->maniaControl->chat->sendException($exception, $player);
+			return;
+		} catch (FileException $exception) {
+			$this->maniaControl->chat->sendException($exception, $player);
+			return;
+		}
+
+		// Add map to map list
+		try {
+			$this->maniaControl->client->insertMap($relativeFilePath);
+		} catch (AlreadyInListException $exception) {
+			$this->maniaControl->chat->sendException($exception, $player);
+			return;
+		}
+		$map = $this->maniaControl->mapManager->fetchMapByFileName($relativeFilePath);
+		if (!$map) {
+			$this->maniaControl->chat->sendError('Error occurred.', $player);
+			return;
+		}
+
+		// Message
+		$message = $player->getEscapedNickname() . ' added ' . $map->getEscapedName() . '!';
+		$this->maniaControl->chat->sendSuccess($message);
+		$this->maniaControl->log($message, true);
+
+		// Queue requested Map
+		$this->maniaControl->mapManager->mapQueue->addMapToMapQueue($player, $map);
+
+		$this->showManiaLink($player);
 	}
 
 	/**

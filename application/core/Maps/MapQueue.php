@@ -256,7 +256,12 @@ class MapQueue implements CallbackListener, CommandListener {
 			}
 		}
 
-		//Check if the map is already juked
+		// Check if the map is already juked
+		$map = null;
+		if ($uid instanceof Map) {
+			$map = $uid;
+			$uid = $map->uid;
+		}
 		if (array_key_exists($uid, $this->queuedMaps)) {
 			$this->maniaControl->chat->sendError('That map is already in the Map-Queue!', $login);
 			return;
@@ -271,7 +276,9 @@ class MapQueue implements CallbackListener, CommandListener {
 			}
 		}
 
-		$map = $this->maniaControl->mapManager->getMapByUid($uid);
+		if (!$map) {
+			$map = $this->maniaControl->mapManager->getMapByUid($uid);
+		}
 
 		$this->queuedMaps[$uid] = array($player, $map);
 
