@@ -3,6 +3,7 @@
 namespace ManiaControl\Maps;
 
 use FML\Controls\Frame;
+use FML\Controls\Label;
 use FML\Controls\Labels\Label_Button;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
@@ -154,75 +155,91 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 		$mapFiles = $this->scanMapFiles($folderPath);
 
 		if (is_array($mapFiles)) {
-			foreach ($mapFiles as $filePath => $fileName) {
-				$shortFilePath = substr($filePath, strlen($folderPath));
+			if (empty($mapFiles)) {
+				$emptyLabel = new Label();
+				$frame->add($emptyLabel);
+				$emptyLabel->setY(20)
+				           ->setTextColor('aaa')
+				           ->setText('No files found.')
+				           ->setTranslate(true);
+			} else {
+				foreach ($mapFiles as $filePath => $fileName) {
+					$shortFilePath = substr($filePath, strlen($folderPath));
 
-				if ($index % 15 === 0) {
-					// New Page
-					$pageFrame = new Frame();
-					$frame->add($pageFrame);
-					$posY = $height / 2 - 10;
-					$paging->addPage($pageFrame);
-				}
-
-				// Map Frame
-				$mapFrame = new Frame();
-				$pageFrame->add($mapFrame);
-				$mapFrame->setY($posY);
-
-				if ($index % 2 === 0) {
-					// Striped background line
-					$lineQuad = new Quad_BgsPlayerCard();
-					$mapFrame->add($lineQuad);
-					$lineQuad->setSize($width, 4)
-					         ->setSubStyle($lineQuad::SUBSTYLE_BgPlayerCardBig);
-				}
-
-				// File name Label
-				$nameLabel = new Label_Text();
-				$mapFrame->add($nameLabel);
-				$nameLabel->setX($width * -0.48)
-				          ->setSize($width * 0.8, 4)
-				          ->setHAlign($nameLabel::LEFT)
-				          ->setTextSize(1)
-				          ->setText($fileName)
-				          ->setAreaColor('f00')
-				          ->setAreaFocusColor('0f0');
-
-				if (is_dir($filePath)) {
-					// Folder
-					$folderAction = self::ACTION_OPEN_FOLDER . substr($shortFilePath, 0, -1);
-					$nameLabel->setAction($folderAction);
-				} else {
-					// File
-					if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
-						// 'Add' button
-						$addButton = new Label_Button();
-						$mapFrame->add($addButton);
-						$addButton->setPosition($width / 2 - 9, 0, 0.2)
-						          ->setSize(3, 3)
-						          ->setTextSize(2)
-						          ->setText('Add')
-						          ->setAction(self::ACTION_ADD_FILE);
+					if ($index % 15 === 0) {
+						// New Page
+						$pageFrame = new Frame();
+						$frame->add($pageFrame);
+						$posY = $height / 2 - 10;
+						$paging->addPage($pageFrame);
 					}
 
-					if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ERASE_MAP)) {
-						// 'Erase' button
-						$eraseButton = new Label_Button();
-						$mapFrame->add($eraseButton);
-						$eraseButton->setPosition($width / 2 - 9, 0, 0.2)
-						            ->setSize(3, 3)
-						            ->setTextSize(2)
-						            ->setText('Erase')
-						            ->setAction(self::ACTION_ERASE_FILE);
-					}
-				}
+					// Map Frame
+					$mapFrame = new Frame();
+					$pageFrame->add($mapFrame);
+					$mapFrame->setY($posY);
 
-				$posY -= 4;
-				$index++;
+					if ($index % 2 === 0) {
+						// Striped background line
+						$lineQuad = new Quad_BgsPlayerCard();
+						$mapFrame->add($lineQuad);
+						$lineQuad->setSize($width, 4)
+						         ->setSubStyle($lineQuad::SUBSTYLE_BgPlayerCardBig);
+					}
+
+					// File name Label
+					$nameLabel = new Label_Text();
+					$mapFrame->add($nameLabel);
+					$nameLabel->setX($width * -0.48)
+					          ->setSize($width * 0.8, 4)
+					          ->setHAlign($nameLabel::LEFT)
+					          ->setTextSize(1)
+					          ->setText($fileName)
+					          ->setAreaColor('f00')
+					          ->setAreaFocusColor('0f0');
+
+					if (is_dir($filePath)) {
+						// Folder
+						$folderAction = self::ACTION_OPEN_FOLDER . substr($shortFilePath, 0, -1);
+						$nameLabel->setAction($folderAction);
+					} else {
+						// File
+						if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
+							// 'Add' button
+							$addButton = new Label_Button();
+							$mapFrame->add($addButton);
+							$addButton->setPosition($width / 2 - 9, 0, 0.2)
+							          ->setSize(3, 3)
+							          ->setTextSize(2)
+							          ->setText('Add')
+							          ->setTranslate(true)
+							          ->setAction(self::ACTION_ADD_FILE);
+						}
+
+						if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ERASE_MAP)) {
+							// 'Erase' button
+							$eraseButton = new Label_Button();
+							$mapFrame->add($eraseButton);
+							$eraseButton->setPosition($width / 2 - 9, 0, 0.2)
+							            ->setSize(3, 3)
+							            ->setTextSize(2)
+							            ->setText('Erase')
+							            ->setTranslate(true)
+							            ->setAction(self::ACTION_ERASE_FILE);
+						}
+					}
+
+					$posY -= 4;
+					$index++;
+				}
 			}
 		} else {
-			// TODO: show error label
+			$errorLabel = new Label();
+			$frame->add($errorLabel);
+			$errorLabel->setY(20)
+			           ->setTextColor('f30')
+			           ->setText('No access to the directory.')
+			           ->setTranslate(true);
 		}
 
 		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player, self::WIDGET_NAME);
