@@ -6,6 +6,7 @@ use FML\Controls\Frame;
 use FML\Controls\Labels\Label_Button;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
+use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\ManiaLink;
 use FML\Script\Features\Paging;
 use ManiaControl\ManiaControl;
@@ -24,10 +25,14 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 	/*
 	 * Constants
 	 */
-	const ACTION_SHOW       = 'Maps.DirectoryBrowser.Show';
-	const ACTION_ADD_FILE   = 'Maps.DirectoryBrowser.AddFile.';
-	const ACTION_ERASE_FILE = 'Maps.DirectoryBrowser.EraseFile';
-	const WIDGET_NAME       = 'Maps.DirectoryBrowser.Widget';
+	const ACTION_SHOW          = 'Maps.DirectoryBrowser.Show';
+	const ACTION_OPEN_FOLDER   = 'Maps.DirectoryBrowser.OpenFolder.';
+	const ACTION_NAVIGATE_UP   = 'Maps.DirectoryBrowser.NavigateUp';
+	const ACTION_NAVIGATE_ROOT = 'Maps.DirectoryBrowser.NavigateRoot';
+	const ACTION_ADD_FILE      = 'Maps.DirectoryBrowser.AddFile.';
+	const ACTION_ERASE_FILE    = 'Maps.DirectoryBrowser.EraseFile';
+	const WIDGET_NAME          = 'Maps.DirectoryBrowser.Widget';
+	const CACHE_FOLDER_PATH    = 'FolderPath';
 
 	/*
 	 * Private properties
@@ -44,10 +49,22 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 
 		// Register for ManiaLink Actions
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_SHOW, $this, 'handleActionShow');
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_NAVIGATE_UP, $this, 'handleNavigateUp');
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_NAVIGATE_ROOT, $this, 'handleNavigateRoot');
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerRegexListener($this->buildOpenFolderActionRegex(), $this, 'handleOpenFolder');
 	}
 
 	/**
-	 * Handle 'Show' Page Action
+	 * Build the regex to register for 'OpenFolder' action
+	 *
+	 * @return string
+	 */
+	private function buildOpenFolderActionRegex() {
+		return '/' . self::ACTION_OPEN_FOLDER . '*/';
+	}
+
+	/**
+	 * Handle 'Show' action
 	 *
 	 * @param array  $actionCallback
 	 * @param Player $player
@@ -60,8 +77,23 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 	 * Build and show the Browser ManiaLink to the given Player
 	 *
 	 * @param Player $player
+	 * @param mixed  $nextFolder
 	 */
-	public function showManiaLink(Player $player) {
+	public function showManiaLink(Player $player, $nextFolder = null) {
+		$oldFolderPath = $player->getCache($this, self::CACHE_FOLDER_PATH);
+		if (!$oldFolderPath) {
+			$oldFolderPath = $this->maniaControl->server->directory->getMapsFolder();
+		}
+		$folderPath = $oldFolderPath;
+		if (is_string($nextFolder)) {
+			$newFolderPath = $oldFolderPath . $nextFolder . DIRECTORY_SEPARATOR;
+			$realPath      = realpath($newFolderPath);
+			if ($realPath) {
+				$folderPath = $realPath . DIRECTORY_SEPARATOR;
+			}
+		}
+		$player->setCache($this, self::CACHE_FOLDER_PATH, $folderPath);
+
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$script    = $maniaLink->getScript();
 		$paging    = new Paging();
@@ -69,98 +101,112 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script, $paging);
 		$maniaLink->add($frame);
 
-		$mapFiles = $this->getFilteredMapFiles();
-
 		$width     = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
 		$height    = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
 		$index     = 0;
 		$posY      = $height / 2 - 10;
 		$pageFrame = null;
 
-		foreach ($mapFiles as $fileName) {
-			if ($index % 15 === 0) {
-				// New Page
-				$pageFrame = new Frame();
-				$frame->add($pageFrame);
-				$posY = $height / 2 - 10;
-				$paging->addPage($pageFrame);
+		$navigateRootQuad = new Quad_Icons64x64_1();
+		$frame->add($navigateRootQuad);
+		$navigateRootQuad->setPosition($width * -0.47, $height * 0.45)
+		                 ->setSize(4, 4)
+		                 ->setSubStyle($navigateRootQuad::SUBSTYLE_ToolRoot)
+		                 ->setAction(self::ACTION_NAVIGATE_ROOT);
+
+		$navigateUpQuad = new Quad_Icons64x64_1();
+		$frame->add($navigateUpQuad);
+		$navigateUpQuad->setPosition($width * -0.44, $height * 0.45)
+		               ->setSize(4, 4)
+		               ->setSubStyle($navigateUpQuad::SUBSTYLE_ToolUp)
+		               ->setAction(self::ACTION_NAVIGATE_UP);
+
+		$directoryLabel = new Label_Text();
+		$frame->add($directoryLabel);
+		$dataFolder    = $this->maniaControl->server->directory->getGameDataFolder();
+		$directoryText = substr($folderPath, strlen($dataFolder));
+		$directoryLabel->setPosition($width * -0.41, $height * 0.45)
+		               ->setSize($width * 0.85, 4)
+		               ->setHAlign($directoryLabel::LEFT)
+		               ->setText($directoryText)
+		               ->setTextSize(2);
+
+		$mapFiles = $this->scanMapFiles($folderPath);
+
+		if (is_array($mapFiles)) {
+			foreach ($mapFiles as $filePath => $fileName) {
+				$shortFilePath = substr($filePath, strlen($folderPath));
+
+				if ($index % 15 === 0) {
+					// New Page
+					$pageFrame = new Frame();
+					$frame->add($pageFrame);
+					$posY = $height / 2 - 10;
+					$paging->addPage($pageFrame);
+				}
+
+				// Map Frame
+				$mapFrame = new Frame();
+				$pageFrame->add($mapFrame);
+				$mapFrame->setY($posY);
+
+				if ($index % 2 !== 0) {
+					// Striped background line
+					$lineQuad = new Quad_BgsPlayerCard();
+					$mapFrame->add($lineQuad);
+					$lineQuad->setSize($width, 4)
+					         ->setSubStyle($lineQuad::SUBSTYLE_BgPlayerCardBig);
+				}
+
+				// File name Label
+				$nameLabel = new Label_Text();
+				$mapFrame->add($nameLabel);
+				$nameLabel->setX($width * -0.48)
+				          ->setSize($width * 0.8, 4)
+				          ->setHAlign($nameLabel::LEFT)
+				          ->setTextSize(1)
+				          ->setText($fileName)
+				          ->setAreaColor('f00')
+				          ->setAreaFocusColor('0f0');
+
+				if (is_dir($filePath)) {
+					// Folder
+					$folderAction = self::ACTION_OPEN_FOLDER . substr($shortFilePath, 0, -1);
+					$nameLabel->setAction($folderAction);
+				} else {
+					// File
+
+					if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
+						// Add file button
+						$addButton = new Label_Button();
+						$mapFrame->add($addButton);
+						$addButton->setPosition($width / 2 - 9, 0, 0.2)
+						          ->setSize(3, 3)
+						          ->setTextSize(2)
+						          ->setText('Add')
+						          ->setAction(self::ACTION_ADD_FILE);
+					}
+
+					if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_REMOVE_MAP)) {
+						// Erase file button
+						$eraseButton = new Label_Button();
+						$mapFrame->add($eraseButton);
+						$eraseButton->setPosition($width / 2 - 9, 0, 0.2)
+						            ->setSize(3, 3)
+						            ->setTextSize(2)
+						            ->setText('Erase')
+						            ->setAction(self::ACTION_ERASE_FILE);
+					}
+				}
+
+				$posY -= 4;
+				$index++;
 			}
-
-			// Map Frame
-			$mapFrame = new Frame();
-			$pageFrame->add($mapFrame);
-			$mapFrame->setPosition(0, $posY, 0.1);
-
-			if ($index % 2 !== 0) {
-				// Striped background line
-				$lineQuad = new Quad_BgsPlayerCard();
-				$mapFrame->add($lineQuad);
-				$lineQuad->setSize($width, 4);
-				$lineQuad->setSubStyle($lineQuad::SUBSTYLE_BgPlayerCardBig);
-				$lineQuad->setZ(0.001);
-			}
-
-			// File name Label
-			$nameLabel = new Label_Text();
-			$mapFrame->add($nameLabel);
-			$nameLabel->setX($width * -0.2);
-			$nameLabel->setText($fileName);
-
-			if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
-				// Add file button
-				$addButton = new Label_Button();
-				$mapFrame->add($addButton);
-				$addButton->setPosition($width / 2 - 9, 0, 0.2);
-				$addButton->setSize(3, 3);
-				$addButton->setTextSize(2);
-				$addButton->setText('Add');
-				$addButton->setAction(self::ACTION_ADD_FILE);
-			}
-
-			if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_REMOVE_MAP)) {
-				// Erase file button
-				$eraseButton = new Label_Button();
-				$mapFrame->add($eraseButton);
-				$eraseButton->setPosition($width / 2 - 9, 0, 0.2);
-				$eraseButton->setSize(3, 3);
-				$eraseButton->setTextSize(2);
-				$eraseButton->setText('Add');
-				$eraseButton->setAction(self::ACTION_ERASE_FILE);
-			}
-
-			$posY -= 4;
-			$index++;
+		} else {
+			// TODO: show error label
 		}
 
 		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player, self::WIDGET_NAME);
-	}
-
-	/**
-	 * Get the list of not yet added Map files
-	 *
-	 * @return array|bool
-	 */
-	protected function getFilteredMapFiles() {
-		$mapFiles = $this->getMapFiles();
-		if (!is_array($mapFiles)) {
-			return false;
-		}
-		$filteredMapFiles = array();
-		foreach ($mapFiles as $mapFile) {
-			// TODO: filter already added maps
-			array_push($filteredMapFiles, $mapFile);
-		}
-		return $filteredMapFiles;
-	}
-
-	/**
-	 * Get the list of Map files
-	 *
-	 * @return array|bool
-	 */
-	protected function getMapFiles() {
-		$mapsDirectory = $this->maniaControl->server->directory->getMapsFolder();
-		return $this->scanMapFiles($mapsDirectory);
 	}
 
 	/**
@@ -180,15 +226,15 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 				continue;
 			}
 			$fullFileName = $directory . $fileName;
+			if (!is_readable($fullFileName)) {
+				continue;
+			}
 			if (is_dir($fullFileName)) {
-				$subDirectory = $fullFileName . DIRECTORY_SEPARATOR;
-				$subMapFiles  = $this->scanMapFiles($subDirectory);
-				if (is_array($subMapFiles)) {
-					$mapFiles = array_merge($mapFiles, $subMapFiles);
-				}
+				$mapFiles[$fullFileName . DIRECTORY_SEPARATOR] = $fileName . DIRECTORY_SEPARATOR;
+				continue;
 			} else {
 				if ($this->isMapFileName($fileName)) {
-					array_push($mapFiles, $fullFileName);
+					$mapFiles[$fullFileName] = $fileName;
 				}
 			}
 		}
@@ -205,5 +251,38 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 		$mapFileNameEnding = '.map.gbx';
 		$fileNameEnding    = strtolower(substr($fileName, -strlen($mapFileNameEnding)));
 		return ($fileNameEnding === $mapFileNameEnding);
+	}
+
+	/**
+	 * Handle 'NavigateRoot' action
+	 *
+	 * @param array  $actionCallback
+	 * @param Player $player
+	 */
+	public function handleNavigateRoot(array $actionCallback, Player $player) {
+		$player->destroyCache($this, self::CACHE_FOLDER_PATH);
+		$this->showManiaLink($player);
+	}
+
+	/**
+	 * Handle 'NavigateUp' action
+	 *
+	 * @param array  $actionCallback
+	 * @param Player $player
+	 */
+	public function handleNavigateUp(array $actionCallback, Player $player) {
+		$this->showManiaLink($player, '..');
+	}
+
+	/**
+	 * Handle 'OpenFolder' Page Action
+	 *
+	 * @param array  $actionCallback
+	 * @param Player $player
+	 */
+	public function handleOpenFolder(array $actionCallback, Player $player) {
+		$actionName = $actionCallback[1][2];
+		$folderName = substr($actionName, strlen(self::ACTION_OPEN_FOLDER));
+		$this->showManiaLink($player, $folderName);
 	}
 }
