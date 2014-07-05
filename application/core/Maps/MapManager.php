@@ -713,10 +713,16 @@ class MapManager implements CallbackListener {
 		$this->maniaControl->callbackManager->triggerCallback(Callbacks::ENDMAP, $this->currentMap);
 	}
 
+	/**
+	 * Fetch a map by its file path
+	 *
+	 * @param string $relativeFileName
+	 * @return Map
+	 */
 	public function fetchMapByFileName($relativeFileName) {
 		$mapInfo = $this->maniaControl->client->getMapInfo($relativeFileName);
 		if (!$mapInfo) {
-			return false;
+			return null;
 		}
 		return $this->initializeMap($mapInfo);
 	}

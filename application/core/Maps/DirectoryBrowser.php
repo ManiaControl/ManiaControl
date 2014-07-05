@@ -402,8 +402,6 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 
 		// Queue requested Map
 		$this->maniaControl->mapManager->mapQueue->addMapToMapQueue($player, $map);
-
-		$this->showManiaLink($player);
 	}
 
 	/**
@@ -415,7 +413,13 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 	public function handleEraseFile(array $actionCallback, Player $player) {
 		$actionName = $actionCallback[1][2];
 		$fileName   = substr($actionName, strlen(self::ACTION_ERASE_FILE));
-		// TODO: erase map
-		var_dump($fileName);
+		$folderPath = $player->getCache($this, self::CACHE_FOLDER_PATH);
+		$filePath   = $folderPath . $fileName;
+		if (@unlink($filePath)) {
+			$this->maniaControl->chat->sendSuccess("Erased {$fileName}!");
+			$this->showManiaLink($player);
+		} else {
+			$this->maniaControl->chat->sendError("Couldn't erase {$fileName}!");
+		}
 	}
 }
