@@ -170,7 +170,7 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 				$pageFrame->add($mapFrame);
 				$mapFrame->setY($posY);
 
-				if ($index % 2 !== 0) {
+				if ($index % 2 === 0) {
 					// Striped background line
 					$lineQuad = new Quad_BgsPlayerCard();
 					$mapFrame->add($lineQuad);
@@ -195,9 +195,8 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 					$nameLabel->setAction($folderAction);
 				} else {
 					// File
-
 					if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
-						// Add file button
+						// 'Add' button
 						$addButton = new Label_Button();
 						$mapFrame->add($addButton);
 						$addButton->setPosition($width / 2 - 9, 0, 0.2)
@@ -207,8 +206,8 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 						          ->setAction(self::ACTION_ADD_FILE);
 					}
 
-					if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_REMOVE_MAP)) {
-						// Erase file button
+					if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ERASE_MAP)) {
+						// 'Erase' button
 						$eraseButton = new Label_Button();
 						$mapFrame->add($eraseButton);
 						$eraseButton->setPosition($width / 2 - 9, 0, 0.2)

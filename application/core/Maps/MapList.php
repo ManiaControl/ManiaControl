@@ -41,7 +41,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 * Constants
 	 */
 	const ACTION_UPDATE_MAP          = 'MapList.UpdateMap';
-	const ACTION_ERASE_MAP           = 'MapList.EraseMap';
+	const ACTION_REMOVE_MAP          = 'MapList.RemoveMap';
 	const ACTION_SWITCH_MAP          = 'MapList.SwitchMap';
 	const ACTION_START_SWITCH_VOTE   = 'MapList.StartMapSwitchVote';
 	const ACTION_QUEUED_MAP          = 'MapList.QueueMap';
@@ -366,24 +366,24 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			}
 
 			if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_REMOVE_MAP)) {
-				// erase map quad
-				$eraseLabel = new Label_Button();
-				$mapFrame->add($eraseLabel);
-				$eraseLabel->setX($width / 2 - 5);
-				$eraseLabel->setZ(0.2);
-				$eraseLabel->setSize(3, 3);
-				$eraseLabel->setTextSize(1);
-				$eraseLabel->setText('x');
-				$eraseLabel->setTextColor('a00');
+				// remove map button
+				$removeButton = new Label_Button();
+				$mapFrame->add($removeButton);
+				$removeButton->setX($width / 2 - 5);
+				$removeButton->setZ(0.2);
+				$removeButton->setSize(3, 3);
+				$removeButton->setTextSize(1);
+				$removeButton->setText('x');
+				$removeButton->setTextColor('a00');
 
 				$confirmFrame = $this->buildConfirmFrame($maniaLink, $posY, $map->uid, true);
-				$eraseLabel->addToggleFeature($confirmFrame);
+				$removeButton->addToggleFeature($confirmFrame);
 				$description = 'Remove Map: $<' . $map->name . '$>';
-				$eraseLabel->addTooltipLabelFeature($descriptionLabel, $description);
+				$removeButton->addTooltipLabelFeature($descriptionLabel, $description);
 			}
 
 			if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
-				// Switch to map
+				// Switch to button
 				$switchLabel = new Label_Button();
 				$mapFrame->add($switchLabel);
 				$switchLabel->setX($width / 2 - 9);
@@ -513,10 +513,10 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 * @param ManiaLink $maniaLink
 	 * @param float     $posY
 	 * @param bool      $mapUid
-	 * @param bool      $erase
+	 * @param bool      $remove
 	 * @return Frame
 	 */
-	public function buildConfirmFrame(Manialink $maniaLink, $posY, $mapUid, $erase = false) {
+	public function buildConfirmFrame(Manialink $maniaLink, $posY, $mapUid, $remove = false) {
 		// TODO: get rid of the confirm frame to decrease xml size & network usage
 		// SUGGESTION: just send them as own manialink again on clicking?
 
@@ -551,16 +551,16 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$buttLabel->setPosition(3.2, 0.4, 0.2);
 		$buttLabel->setSize(3, 3);
 
-		if (!$erase) {
-			$quad->setAction(self::ACTION_SWITCH_MAP . '.' . $mapUid);
-			$buttLabel->setText('»');
-			$buttLabel->setTextColor('0f0');
-			$buttLabel->setTextSize(2);
-		} else {
+		if ($remove) {
 			$buttLabel->setTextSize(1);
-			$buttLabel->setText('x');
 			$buttLabel->setTextColor('a00');
-			$quad->setAction(self::ACTION_ERASE_MAP . '.' . $mapUid);
+			$buttLabel->setText('x');
+			$quad->setAction(self::ACTION_REMOVE_MAP . '.' . $mapUid);
+		} else {
+			$buttLabel->setTextSize(2);
+			$buttLabel->setTextColor('0f0');
+			$buttLabel->setText('»');
+			$quad->setAction(self::ACTION_SWITCH_MAP . '.' . $mapUid);
 		}
 		return $confirmFrame;
 	}
@@ -611,7 +611,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$this->maniaControl->mapManager->updateMap($player, $mapUid);
 				$this->showMapList($player);
 				break;
-			case self::ACTION_ERASE_MAP:
+			case self::ACTION_REMOVE_MAP:
 				$this->maniaControl->mapManager->removeMap($player, $mapUid);
 				break;
 			case self::ACTION_SWITCH_MAP:
@@ -639,7 +639,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 				$message = $player->getEscapedNickname() . '$s started a vote to switch to ' . $map->getEscapedName() . '!';
 
-				$votesPlugin->defineVote('switchmap', "Goto " . $map->name, true, $message)->setStopCallback(Callbacks::ENDMAP);
+				$votesPlugin->defineVote('switchmap', "Goto " . $map->name, true, $message)
+				            ->setStopCallback(Callbacks::ENDMAP);
 
 				$votesPlugin->startVote($player, 'switchmap', function ($result) use (&$votesPlugin, &$map) {
 					$votesPlugin->undefineVote('switchmap');

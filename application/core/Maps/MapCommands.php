@@ -23,7 +23,6 @@ use Maniaplanet\DedicatedServer\Xmlrpc\FaultException;
  * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-// TODO: dedicated commands for remove map and erase map
 class MapCommands implements CommandListener, ManialinkPageAnswerListener, CallbackListener {
 	/*
 	 * Constants
@@ -53,7 +52,8 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		$this->maniaControl->commandManager->registerCommandListener(array('restartmap', 'resmap', 'res'), $this, 'command_RestartMap', true, 'Restarts the current map.');
 		$this->maniaControl->commandManager->registerCommandListener(array('replaymap', 'replay'), $this, 'command_ReplayMap', true, 'Replays the current map (after the end of the map).');
 		$this->maniaControl->commandManager->registerCommandListener(array('addmap', 'add'), $this, 'command_AddMap', true, 'Adds map from ManiaExchange.');
-		$this->maniaControl->commandManager->registerCommandListener(array('removemap', 'removethis', 'erasemap', 'erasethis'), $this, 'command_RemoveMap', true, 'Removes the current map.');
+		$this->maniaControl->commandManager->registerCommandListener(array('removemap', 'removethis'), $this, 'command_RemoveMap', true, 'Removes the current map.');
+		$this->maniaControl->commandManager->registerCommandListener(array('erasemap', 'erasethis'), $this, 'command_EraseMap', true, 'Erases the current map.');
 		$this->maniaControl->commandManager->registerCommandListener(array('shufflemaps', 'shuffle'), $this, 'command_ShuffleMaps', true, 'Shuffles the maplist.');
 		$this->maniaControl->commandManager->registerCommandListener(array('writemaplist', 'wml'), $this, 'command_WriteMapList', true, 'Writes the current maplist to a file.');
 		$this->maniaControl->commandManager->registerCommandListener(array('readmaplist', 'rml'), $this, 'command_ReadMapList', true, 'Loads a maplist into the server.');
@@ -124,7 +124,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	}
 
 	/**
-	 * Handle removemap command
+	 * Handle //removemap command
 	 *
 	 * @param array  $chatCallback
 	 * @param Player $player
@@ -141,8 +141,30 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			return;
 		}
 
-		//RemoveMap
+		// Remove map
 		$this->maniaControl->mapManager->removeMap($player, $map->uid);
+	}
+
+	/**
+	 * Handle //erasemap command
+	 *
+	 * @param array  $chatCallback
+	 * @param Player $player
+	 */
+	public function command_EraseMap(array $chatCallback, Player $player) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ERASE_MAP)) {
+			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+			return;
+		}
+		// Get map
+		$map = $this->maniaControl->mapManager->getCurrentMap();
+		if (!$map) {
+			$this->maniaControl->chat->sendError("Couldn't erase map.", $player);
+			return;
+		}
+
+		// Erase map
+		$this->maniaControl->mapManager->removeMap($player, $map->uid, true);
 	}
 
 	/**

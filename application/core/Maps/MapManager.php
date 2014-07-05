@@ -40,6 +40,7 @@ class MapManager implements CallbackListener {
 	const CB_KARMA_UPDATED                = 'MapManager.KarmaUpdated';
 	const SETTING_PERMISSION_ADD_MAP      = 'Add Maps';
 	const SETTING_PERMISSION_REMOVE_MAP   = 'Remove Maps';
+	const SETTING_PERMISSION_ERASE_MAP    = 'Erase Maps';
 	const SETTING_PERMISSION_SHUFFLE_MAPS = 'Shuffle Maps';
 	const SETTING_PERMISSION_CHECK_UPDATE = 'Check Map Update';
 	const SETTING_PERMISSION_SKIP_MAP     = 'Skip Map';
@@ -99,6 +100,7 @@ class MapManager implements CallbackListener {
 		// Define Rights
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_ADD_MAP, AuthenticationManager::AUTH_LEVEL_ADMIN);
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_REMOVE_MAP, AuthenticationManager::AUTH_LEVEL_ADMIN);
+		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_ERASE_MAP, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_SHUFFLE_MAPS, AuthenticationManager::AUTH_LEVEL_ADMIN);
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_CHECK_UPDATE, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_SKIP_MAP, AuthenticationManager::AUTH_LEVEL_MODERATOR);
@@ -222,18 +224,22 @@ class MapManager implements CallbackListener {
 		if ($eraseFile) {
 			// Check if ManiaControl can even write to the maps dir
 			$mapDir = $this->maniaControl->client->getMapsDirectory();
-
-			// Delete map file
-			if (!@unlink($mapDir . $map->fileName)) {
-				trigger_error("Couldn't remove Map '{$mapDir}{$map->fileName}'.");
-				$this->maniaControl->chat->sendError("ManiaControl couldn't remove the MapFile.", $admin);
-				return;
+			if ($this->maniaControl->server->checkAccess($mapDir)) {
+				// Delete map file
+				if (!@unlink($mapDir . $map->fileName)) {
+					$this->maniaControl->chat->sendError("Couldn't erase the map file.", $admin);
+					$eraseFile = false;
+				}
+			} else {
+				$this->maniaControl->chat->sendError("Couldn't erase the map file (no access).", $admin);
+				$eraseFile = false;
 			}
 		}
 
 		// Show Message
 		if ($message) {
-			$message = $admin->getEscapedNickname() . ' removed ' . $map->getEscapedName() . '!';
+			$action  = ($eraseFile ? 'erased' : 'removed');
+			$message = $admin->getEscapedNickname() . ' ' . $action . ' ' . $map->getEscapedName() . '!';
 			$this->maniaControl->chat->sendSuccess($message);
 			$this->maniaControl->log($message, true);
 		}
