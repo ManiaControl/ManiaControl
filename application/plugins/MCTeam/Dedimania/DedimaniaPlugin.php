@@ -14,6 +14,7 @@ use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\Models\RecordCallback;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
+use ManiaControl\Files\AsynchronousFileReader;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Players\Player;
@@ -70,6 +71,8 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	private $updateManialink = false;
 	private $checkpoints = array();
 	private $init = false;
+
+	private $request = null;
 
 	/**
 	 * @see \ManiaControl\Plugins\Plugin::prepare()
@@ -162,6 +165,9 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			throw new \Exception("No Dedimania Code Specified, check the settings!");
 		}
 
+		$this->request = AsynchronousFileReader::newRequestTest(self::DEDIMANIA_URL);
+
+
 		$this->dedimaniaData = new DedimaniaData($serverInfo->login, $dedimaniaCode, $serverInfo->path, $packMask, $serverVersion);
 
 		$this->openDedimaniaSession();
@@ -183,6 +189,8 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			var_dump($content);
 		}
 
+
+		//$this->maniaControl->fileReader->postDataTest($this->request, self::DEDIMANIA_URL, function ($data, $error) {
 		$this->maniaControl->fileReader->postData(self::DEDIMANIA_URL, function ($data, $error) {
 			$this->maniaControl->log("Try to connect on Dedimania");
 
@@ -280,7 +288,8 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 		$data    = array($this->dedimaniaData->sessionId, $mapInfo, $gameMode, $serverInfo, $playerInfo);
 		$content = $this->encode_request(self::DEDIMANIA_GET_RECORDS, $data);
-
+		//var_dump("get recs");
+		//$this->maniaControl->fileReader->postDataTest($this->request,self::DEDIMANIA_URL, function ($data, $error) {
 		$this->maniaControl->fileReader->postData(self::DEDIMANIA_URL, function ($data, $error) {
 			if ($error) {
 				$this->maniaControl->log('Dedimania Error: ' . $error);
@@ -555,7 +564,8 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		}
 
 		$content = $this->encode_request(self::DEDIMANIA_CHECK_SESSION, array($this->dedimaniaData->sessionId));
-
+		//var_dump("check session"); //TODO remove
+		//$this->maniaControl->fileReader->postDataTest($this->request, self::DEDIMANIA_URL, function ($data, $error) {
 		$this->maniaControl->fileReader->postData(self::DEDIMANIA_URL, function ($data, $error) {
 			if ($error) {
 				$this->maniaControl->log("Dedimania Error: " . $error);
@@ -938,7 +948,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 		$insert = false;
 
-		//var_dump($newRecord);
+		var_dump($newRecord);
 		// Get max possible rank
 		$maxRank = $this->dedimaniaData->getPlayerMaxRank($newRecord->login);
 
