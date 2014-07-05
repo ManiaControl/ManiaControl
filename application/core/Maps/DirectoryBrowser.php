@@ -4,10 +4,11 @@ namespace ManiaControl\Maps;
 
 use FML\Controls\Frame;
 use FML\Controls\Label;
-use FML\Controls\Labels\Label_Button;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
 use FML\Controls\Quads\Quad_Icons64x64_1;
+use FML\Controls\Quads\Quad_UIConstruction_Buttons;
+use FML\Controls\Quads\Quad_UIConstructionBullet_Buttons;
 use FML\ManiaLink;
 use FML\Script\Features\Paging;
 use ManiaControl\ManiaControl;
@@ -26,13 +27,14 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 	/*
 	 * Constants
 	 */
-	const ACTION_SHOW          = 'Maps.DirectoryBrowser.Show';
-	const ACTION_OPEN_FOLDER   = 'Maps.DirectoryBrowser.OpenFolder.';
-	const ACTION_NAVIGATE_UP   = 'Maps.DirectoryBrowser.NavigateUp';
-	const ACTION_NAVIGATE_ROOT = 'Maps.DirectoryBrowser.NavigateRoot';
-	const ACTION_ADD_FILE      = 'Maps.DirectoryBrowser.AddFile.';
-	const ACTION_ERASE_FILE    = 'Maps.DirectoryBrowser.EraseFile';
-	const WIDGET_NAME          = 'Maps.DirectoryBrowser.Widget';
+	const ACTION_SHOW          = 'MapsDirBrowser.Show';
+	const ACTION_NAVIGATE_UP   = 'MapsDirBrowser.NavigateUp';
+	const ACTION_NAVIGATE_ROOT = 'MapsDirBrowser.NavigateRoot';
+	const ACTION_OPEN_FOLDER   = 'MapsDirBrowser.OpenFolder.';
+	const ACTION_INSPECT_FILE  = 'MapsDirBrowser.InspectFile.';
+	const ACTION_ADD_FILE      = 'MapsDirBrowser.AddFile.';
+	const ACTION_ERASE_FILE    = 'MapsDirBrowser.EraseFile.';
+	const WIDGET_NAME          = 'MapsDirBrowser.Widget';
 	const CACHE_FOLDER_PATH    = 'FolderPath';
 
 	/*
@@ -52,16 +54,20 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_SHOW, $this, 'handleActionShow');
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_NAVIGATE_UP, $this, 'handleNavigateUp');
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_NAVIGATE_ROOT, $this, 'handleNavigateRoot');
-		$this->maniaControl->manialinkManager->registerManialinkPageAnswerRegexListener($this->buildOpenFolderActionRegex(), $this, 'handleOpenFolder');
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerRegexListener($this->buildActionRegex(self::ACTION_OPEN_FOLDER), $this, 'handleOpenFolder');
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerRegexListener($this->buildActionRegex(self::ACTION_INSPECT_FILE), $this, 'handleInspectFile');
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerRegexListener($this->buildActionRegex(self::ACTION_ADD_FILE), $this, 'handleAddFile');
+		$this->maniaControl->manialinkManager->registerManialinkPageAnswerRegexListener($this->buildActionRegex(self::ACTION_ERASE_FILE), $this, 'handleEraseFile');
 	}
 
 	/**
-	 * Build the regex to register for 'OpenFolder' action
+	 * Build the regex to register for the given action
 	 *
+	 * @param string $actionName
 	 * @return string
 	 */
-	private function buildOpenFolderActionRegex() {
-		return '/' . self::ACTION_OPEN_FOLDER . '*/';
+	private function buildActionRegex($actionName) {
+		return '/' . $actionName . '*/';
 	}
 
 	/**
@@ -152,6 +158,14 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 		               ->setText($directoryText)
 		               ->setTextSize(2);
 
+		$tooltipLabel = new Label();
+		$frame->add($tooltipLabel);
+		$tooltipLabel->setPosition($width * -0.48, $height * -0.44)
+		             ->setSize($width * 0.8, 5)
+		             ->setHAlign($tooltipLabel::LEFT)
+		             ->setTextSize(1)
+		             ->setText('tooltip');
+
 		$mapFiles = $this->scanMapFiles($folderPath);
 
 		if (is_array($mapFiles)) {
@@ -197,40 +211,39 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 					$nameLabel->setX($width * -0.48)
 					          ->setSize($width * 0.79, 4)
 					          ->setHAlign($nameLabel::LEFT)
+					          ->setStyle($nameLabel::STYLE_TextCardRaceRank)
 					          ->setTextSize(1)
-					          ->setText($fileName)
-					          ->setAction('test');
+					          ->setText($fileName);
 
 					if (is_dir($filePath)) {
 						// Folder
-						$folderAction = self::ACTION_OPEN_FOLDER . substr($shortFilePath, 0, -1);
-						$nameLabel->setAction($folderAction);
+						$nameLabel->setAction(self::ACTION_OPEN_FOLDER . substr($shortFilePath, 0, -1))
+						          ->addTooltipLabelFeature($tooltipLabel, 'Open folder ' . $fileName);
 					} else {
 						// File
+						$nameLabel->setAction(self::ACTION_INSPECT_FILE . $fileName)
+						          ->addTooltipLabelFeature($tooltipLabel, 'Inspect file ' . $fileName);
+
 						if ($canAddMaps) {
 							// 'Add' button
-							$addButton = new Label_Button();
+							$addButton = new Quad_UIConstructionBullet_Buttons();
 							$mapFrame->add($addButton);
-							$addButton->setX($width * 0.36)
-							          ->setSize($width * 0.07, 4)
-							          ->setTextSize(2)
-							          ->setTextColor('4f0')
-							          ->setText('Add')
-							          ->setTranslate(true)
-							          ->setAction(self::ACTION_ADD_FILE);
+							$addButton->setX($width * 0.42)
+							          ->setSize(4, 4)
+							          ->setSubStyle($addButton::SUBSTYLE_NewBullet)
+							          ->setAction(self::ACTION_ADD_FILE . $fileName)
+							          ->addTooltipLabelFeature($tooltipLabel, 'Add map ' . $fileName);
 						}
 
 						if ($canEraseMaps) {
 							// 'Erase' button
-							$eraseButton = new Label_Button();
+							$eraseButton = new Quad_UIConstruction_Buttons();
 							$mapFrame->add($eraseButton);
-							$eraseButton->setX($width * 0.44)
-							            ->setSize($width * 0.07, 4)
-							            ->setTextSize(2)
-							            ->setTextColor('f40')
-							            ->setText('Erase')
-							            ->setTranslate(true)
-							            ->setAction(self::ACTION_ERASE_FILE);
+							$eraseButton->setX($width * 0.46)
+							            ->setSize(4, 4)
+							            ->setSubStyle($eraseButton::SUBSTYLE_Erase)
+							            ->setAction(self::ACTION_ERASE_FILE . $fileName)
+							            ->addTooltipLabelFeature($tooltipLabel, 'Erase file ' . $fileName);
 						}
 					}
 
@@ -316,7 +329,7 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 	}
 
 	/**
-	 * Handle 'OpenFolder' Page Action
+	 * Handle 'OpenFolder' page action
 	 *
 	 * @param array  $actionCallback
 	 * @param Player $player
@@ -325,5 +338,44 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 		$actionName = $actionCallback[1][2];
 		$folderName = substr($actionName, strlen(self::ACTION_OPEN_FOLDER));
 		$this->showManiaLink($player, $folderName);
+	}
+
+	/**
+	 * Handle 'InspectFile' page action
+	 *
+	 * @param array  $actionCallback
+	 * @param Player $player
+	 */
+	public function handleInspectFile(array $actionCallback, Player $player) {
+		$actionName = $actionCallback[1][2];
+		$fileName   = substr($actionName, strlen(self::ACTION_INSPECT_FILE));
+		// TODO: show inspect file view
+		var_dump($fileName);
+	}
+
+	/**
+	 * Handle 'AddFile' page action
+	 *
+	 * @param array  $actionCallback
+	 * @param Player $player
+	 */
+	public function handleAddFile(array $actionCallback, Player $player) {
+		$actionName = $actionCallback[1][2];
+		$fileName   = substr($actionName, strlen(self::ACTION_ADD_FILE));
+		// TODO: add map
+		var_dump($fileName);
+	}
+
+	/**
+	 * Handle 'EraseFile' page action
+	 *
+	 * @param array  $actionCallback
+	 * @param Player $player
+	 */
+	public function handleEraseFile(array $actionCallback, Player $player) {
+		$actionName = $actionCallback[1][2];
+		$fileName   = substr($actionName, strlen(self::ACTION_ERASE_FILE));
+		// TODO: erase map
+		var_dump($fileName);
 	}
 }
