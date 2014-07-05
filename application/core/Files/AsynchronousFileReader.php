@@ -131,7 +131,7 @@ class AsynchronousFileReader {
 	                         $contentType = 'text/xml; charset=UTF-8;') {
 		$headers = array();
 		array_push($headers, 'Content-Type: ' . $contentType);
-		array_push($headers, 'Keep-Alive: 300');
+		array_push($headers, 'Keep-Alive: 600');
 		array_push($headers, 'Connection: Keep-Alive');
 
 		$content = str_replace(array("\r", "\n"), '', $content);

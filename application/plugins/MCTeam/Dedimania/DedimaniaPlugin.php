@@ -58,6 +58,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	const CB_DEDIMANIA_CHANGED            = 'Dedimania.Changed';
 	const CB_DEDIMANIA_UPDATED            = 'Dedimania.Updated';
 	const ACTION_SHOW_DEDIRECORDSLIST     = 'Dedimania.ShowDediRecordsList';
+	const DEDIMANIA_DEBUG                 = false;
 
 	/*
 	 * Private Properties
@@ -170,7 +171,17 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * Opens the Dedimania Session
 	 */
 	private function openDedimaniaSession() {
+		if (self::DEDIMANIA_DEBUG) {
+			var_dump("Dedi Debug: DedimaniaData before Connecting");
+			var_dump($this->dedimaniaData);
+		}
+
 		$content = $this->encode_request(self::DEDIMANIA_OPEN_SESSION, array($this->dedimaniaData->toArray()));
+
+		if (self::DEDIMANIA_DEBUG) {
+			var_dump("Dedi Debug: XML-RPC Content on Connecting");
+			var_dump($content);
+		}
 
 		$this->maniaControl->fileReader->postData(self::DEDIMANIA_URL, function ($data, $error) {
 			$this->maniaControl->log("Try to connect on Dedimania");
@@ -198,6 +209,14 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 				$this->init = true;
 			} else {
 				$this->maniaControl->log("Error while opening Dedimania Connection");
+			}
+
+			if (self::DEDIMANIA_DEBUG) {
+				var_dump("Dedi Debug: Connect Method Response");
+				var_dump($methodResponse);
+
+				var_dump("Dedi Debug: DedimaniaData after Startup");
+				var_dump($this->dedimaniaData);
 			}
 		}, $content, true);
 	}
@@ -278,7 +297,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 				return;
 			}
 
-			$responseData                       = $methodResponse[0];
+			$responseData = $methodResponse[0];
 			if (!isset($responseData['Players']) || !isset($responseData['Records'])) {
 				$this->maniaControl->errorHandler->triggerDebugNotice('Invalid Dedimania response!', $responseData);
 				return;
@@ -292,6 +311,10 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			}
 			foreach ($responseData['Records'] as $key => $record) {
 				$this->dedimaniaData->records[$key] = new RecordData($record);
+			}
+
+			if (self::DEDIMANIA_DEBUG) {
+				var_dump("Dedimania Records Fetched");
 			}
 
 			$this->updateManialink = true;
@@ -404,10 +427,15 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * Handle 1 Second Callback
 	 */
 	public function updateEverySecond() {
-		if (!$this->updateManialink || !$this->dedimaniaData->records) {
+		if (!$this->updateManialink) {
 			return;
 		}
 		$this->updateManialink = false;
+
+		if (self::DEDIMANIA_DEBUG) {
+			var_dump($this->dedimaniaData);
+			var_dump("Dedimania Debug: Update Manialink");
+		}
 
 		if ($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_ENABLE)) {
 			$manialink = $this->buildManialink();
@@ -421,9 +449,6 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * @return \FML\ManiaLink
 	 */
 	private function buildManialink() {
-		if (!$this->dedimaniaData->records) {
-			return null;
-		}
 		$records = $this->dedimaniaData->records;
 
 		$title        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_TITLE);
@@ -552,6 +577,11 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 				if (!$responseData) {
 					$this->openDedimaniaSession();
 				}
+			}
+
+			if (self::DEDIMANIA_DEBUG) {
+				var_dump("Dedi Debug: Session Check ResponseData ");
+				var_dump($responseData);
 			}
 		}, $content, true);
 		return;
@@ -685,9 +715,18 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		//var_dump($data);
 		$content = $this->encode_request(self::DEDIMANIA_SET_CHALLENGE_TIMES, $data);
 
+		if (self::DEDIMANIA_DEBUG) {
+			var_dump("Dedimania Debug: Submitting Times at End-Map", $content);
+		}
+
 		$this->maniaControl->fileReader->postData(self::DEDIMANIA_URL, function ($data, $error) {
 			if ($error) {
 				$this->maniaControl->log("Dedimania Error: " . $error);
+			}
+
+			if (self::DEDIMANIA_DEBUG) {
+				var_dump("Dedimania Debug: Submit Data Response");
+				var_dump($data);
 			}
 
 			$data = $this->decode($data);
@@ -704,6 +743,13 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			// Called method response
 			if (!$methodResponse[0]) {
 				trigger_error("Records Plugin: Submitting dedimania records failed.");
+			}
+
+			if (self::DEDIMANIA_DEBUG) {
+				var_dump("Dedimania Debug: endMap response");
+				var_dump($methodResponse);
+				var_dump("Dedimania Data");
+				var_dump($this->dedimaniaData);
 			}
 		}, $content, false);
 	}
@@ -761,7 +807,9 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * @param RecordCallback $callback
 	 */
 	public function handleCheckpointCallback(RecordCallback $callback) {
-		if ($callback->isLegacyCallback) {
+		//var_dump($callback->lapTime); //FIXME, dedimania needs Finish as LastCp, or NbOfCheckpoints wrong?
+
+		if ($callback->isLegacyCallback || !$callback->lapTime) {
 			return;
 		}
 		if (!isset($this->checkpoints[$callback->login])) {
@@ -890,6 +938,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 		$insert = false;
 
+		var_dump($newRecord);
 		// Get max possible rank
 		$maxRank = $this->dedimaniaData->getPlayerMaxRank($newRecord->login);
 
