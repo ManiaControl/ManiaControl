@@ -168,7 +168,7 @@ class StyleManager {
 		// Background Quad
 		$backgroundQuad = new Quad();
 		$frame->add($backgroundQuad);
-		$backgroundQuad->setZ(-1)
+		$backgroundQuad->setZ(-2)
 		               ->setSize($width, $height)
 		               ->setStyles($quadStyle, $quadSubstyle);
 

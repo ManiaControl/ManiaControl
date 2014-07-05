@@ -163,6 +163,9 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 				           ->setText('No files found.')
 				           ->setTranslate(true);
 			} else {
+				$canAddMaps   = $this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP);
+				$canEraseMaps = $this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ERASE_MAP);
+
 				foreach ($mapFiles as $filePath => $fileName) {
 					$shortFilePath = substr($filePath, strlen($folderPath));
 
@@ -183,7 +186,8 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 						// Striped background line
 						$lineQuad = new Quad_BgsPlayerCard();
 						$mapFrame->add($lineQuad);
-						$lineQuad->setSize($width, 4)
+						$lineQuad->setZ(-1)
+						         ->setSize($width, 4)
 						         ->setSubStyle($lineQuad::SUBSTYLE_BgPlayerCardBig);
 					}
 
@@ -191,12 +195,11 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 					$nameLabel = new Label_Text();
 					$mapFrame->add($nameLabel);
 					$nameLabel->setX($width * -0.48)
-					          ->setSize($width * 0.8, 4)
+					          ->setSize($width * 0.79, 4)
 					          ->setHAlign($nameLabel::LEFT)
 					          ->setTextSize(1)
 					          ->setText($fileName)
-					          ->setAreaColor('f00')
-					          ->setAreaFocusColor('0f0');
+					          ->setAction('test');
 
 					if (is_dir($filePath)) {
 						// Folder
@@ -204,25 +207,27 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 						$nameLabel->setAction($folderAction);
 					} else {
 						// File
-						if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
+						if ($canAddMaps) {
 							// 'Add' button
 							$addButton = new Label_Button();
 							$mapFrame->add($addButton);
-							$addButton->setPosition($width / 2 - 9, 0, 0.2)
-							          ->setSize(3, 3)
+							$addButton->setX($width * 0.36)
+							          ->setSize($width * 0.07, 4)
 							          ->setTextSize(2)
+							          ->setTextColor('4f0')
 							          ->setText('Add')
 							          ->setTranslate(true)
 							          ->setAction(self::ACTION_ADD_FILE);
 						}
 
-						if ($this->maniaControl->authenticationManager->checkPermission($player, MapManager::SETTING_PERMISSION_ERASE_MAP)) {
+						if ($canEraseMaps) {
 							// 'Erase' button
 							$eraseButton = new Label_Button();
 							$mapFrame->add($eraseButton);
-							$eraseButton->setPosition($width / 2 - 9, 0, 0.2)
-							            ->setSize(3, 3)
+							$eraseButton->setX($width * 0.44)
+							            ->setSize($width * 0.07, 4)
 							            ->setTextSize(2)
+							            ->setTextColor('f40')
 							            ->setText('Erase')
 							            ->setTranslate(true)
 							            ->setAction(self::ACTION_ERASE_FILE);
