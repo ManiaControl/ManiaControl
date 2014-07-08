@@ -376,6 +376,7 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 				}
 			}
 
+			$this->maniaControl->errorHandler->triggerDebugNotice("Smallest Team " . $smallestTeam . " Smallest Size " . $smallestSize . " Teamcount " . count($teams));
 			try {
 				if ($smallestTeam) {
 					$this->maniaControl->client->forcePlayerTeam($player->login, $smallestTeam);
