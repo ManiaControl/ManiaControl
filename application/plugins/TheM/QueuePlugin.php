@@ -15,6 +15,7 @@ use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
+use ManiaControl\Players\PlayerActions;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
@@ -330,13 +331,14 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 	 * @param Player $player
 	 */
 	private function forcePlayerToPlay(Player $player) {
+		//FIXME players get sometimes forced into bigger team
 		if ($this->maniaControl->client->getServerPassword() != false && $this->maniaControl->settingManager->getSettingValue($this, self::QUEUE_ACTIVE_ON_PASS) == false) {
 			return;
 		}
 
-		if ($this->maxPlayers > (count($this->maniaControl->playerManager->players) - count($this->spectators))) {
+		if ($this->maxPlayers > $this->maniaControl->playerManager->getPlayerCount(true)) {
 			try {
-				$this->maniaControl->client->forceSpectator($player->login, 2);
+				$this->maniaControl->client->forceSpectator($player->login, PlayerActions::SPECTATOR_PLAYER);
 			} catch (Exception $e) {
 				// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
 				$this->maniaControl->chat->sendError("Error while leaving the Queue", $player->login);
@@ -344,7 +346,7 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 			}
 
 			try {
-				$this->maniaControl->client->forceSpectator($player->login, 0);
+				$this->maniaControl->client->forceSpectator($player->login, PlayerActions::SPECTATOR_USER_SELECTABLE);
 			} catch (Exception $e) {
 				// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
 			}
@@ -376,9 +378,8 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 				}
 			}
 
-			$this->maniaControl->errorHandler->triggerDebugNotice("Smallest Team " . $smallestTeam . " Smallest Size " . $smallestSize . " Teamcount " . count($teams));
 			try {
-				if ($smallestTeam) {
+				if ($smallestTeam !== null) {
 					$this->maniaControl->client->forcePlayerTeam($player->login, $smallestTeam);
 				}
 			} catch (Exception $e) {
