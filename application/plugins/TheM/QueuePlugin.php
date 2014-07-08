@@ -372,7 +372,7 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 			}
 
 			try {
-				if ($smallestTeam != -1) {
+				if ($smallestTeam) {
 					$this->maniaControl->client->forcePlayerTeam($player->login, $smallestTeam);
 				}
 			} catch (Exception $e) {
