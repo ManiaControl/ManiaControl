@@ -351,7 +351,10 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 
 			$teams = array();
 			/** @var  Player $playerObj */
-			foreach ($this->maniaControl->playerManager->players as $playerObj) {
+			foreach ($this->maniaControl->playerManager->getPlayers() as $playerObj) {
+				if($playerObj->isSpectator)
+					continue;
+
 				if (!isset($teams[$playerObj->teamId])) {
 					$teams[$playerObj->teamId] = 1;
 				} else {
