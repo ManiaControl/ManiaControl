@@ -331,7 +331,6 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 	 * @param Player $player
 	 */
 	private function forcePlayerToPlay(Player $player) {
-		//FIXME players get sometimes forced into bigger team
 		if ($this->maniaControl->client->getServerPassword() != false && $this->maniaControl->settingManager->getSettingValue($this, self::QUEUE_ACTIVE_ON_PASS) == false) {
 			return;
 		}
