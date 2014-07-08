@@ -350,6 +350,11 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 			}
 
 			$teams = array();
+
+			//Initialize at least two teams with 0 players
+			$teams[0] = 0;
+			$teams[1] = 0;
+
 			/** @var  Player $playerObj */
 			foreach ($this->maniaControl->playerManager->getPlayers() as $playerObj) {
 				if($playerObj->isSpectator)
@@ -376,7 +381,7 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 					$this->maniaControl->client->forcePlayerTeam($player->login, $smallestTeam);
 				}
 			} catch (Exception $e) {
-				// TODO: only possible valid exceptions should be "wrong login" or "not in team mode" - throw others (like connection error)
+				$this->maniaControl->errorHandler->triggerDebugNotice("QueuePlugin line 383 Exception");
 			}
 
 			if (isset($this->spectators[$player->login])) {
