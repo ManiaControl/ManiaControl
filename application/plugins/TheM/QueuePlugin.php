@@ -381,7 +381,7 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 					$this->maniaControl->client->forcePlayerTeam($player->login, $smallestTeam);
 				}
 			} catch (Exception $e) {
-				$this->maniaControl->errorHandler->triggerDebugNotice("QueuePlugin line 383 Exception");
+				$this->maniaControl->errorHandler->triggerDebugNotice("QueuePlugin line 383 Exception" . $e->getTraceAsString());
 			}
 
 			if (isset($this->spectators[$player->login])) {
