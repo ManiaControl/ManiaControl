@@ -123,8 +123,13 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			return true;
 		}
 
+		$serverOptions = ServerOptions::fromArray($savedSettings);
+		if (!$serverOptions->isValid()) {
+			$message = "Couldn't load server settings from database because of their invalid state.";
+			$this->maniaControl->chat->sendErrorToAdmins($message);
+			return false;
+		}
 		try {
-			$serverOptions = ServerOptions::fromArray($savedSettings);
 			return $this->maniaControl->client->setServerOptions($serverOptions);
 		} catch (ServerOptionsException $exception) {
 			$this->maniaControl->chat->sendExceptionToAdmins($exception);
