@@ -552,6 +552,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 					break;
 			}
 		} else {
+			//FIXME bugreport, no fail message on vote fail sometimes
 			$this->maniaControl->chat->sendError('Vote Failed!');
 		}
 	}
