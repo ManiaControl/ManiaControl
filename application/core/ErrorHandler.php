@@ -433,7 +433,7 @@ class ErrorHandler {
 			$report['Type']            = 'Exception';
 			$report['Message']         = $message;
 			$report['Class']           = $exceptionClass;
-			$report['FileLine']        = $exception->getFile() . ': ' . $exception->getLine();
+			$report['FileLine']        = $this->stripBaseDir($exception->getFile()) . ': ' . $exception->getLine();
 			$report['SourceClass']     = $sourceClass;
 			$report['PluginId']        = PluginManager::getPluginId($sourceClass);
 			$report['Backtrace']       = $traceString;
