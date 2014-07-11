@@ -62,7 +62,9 @@ class CallbackManager {
 	 * Private Properties
 	 */
 	private $maniaControl = null;
+	/** @var Listening[][] $callbackListenings */
 	private $callbackListenings = array();
+	/** @var Listening[][] $scriptCallbackListenings */
 	private $scriptCallbackListenings = array();
 
 	/**
@@ -88,10 +90,10 @@ class CallbackManager {
 	 */
 	public function registerCallbackListener($callbackName, CallbackListener $listener, $method) {
 		if (is_array($callbackName)) {
-			$success = true;
+			$success = false;
 			foreach ($callbackName as $callback) {
-				if (!$this->registerCallbackListener($callback, $listener, $method)) {
-					$success = false;
+				if ($this->registerCallbackListener($callback, $listener, $method)) {
+					$success = true;
 				}
 			}
 			return $success;
@@ -123,10 +125,10 @@ class CallbackManager {
 	 */
 	public function registerScriptCallbackListener($callbackName, CallbackListener $listener, $method) {
 		if (is_array($callbackName)) {
-			$success = true;
+			$success = false;
 			foreach ($callbackName as $callback) {
-				if (!$this->registerScriptCallbackListener($callback, $listener, $method)) {
-					$success = false;
+				if ($this->registerScriptCallbackListener($callback, $listener, $method)) {
+					$success = true;
 				}
 			}
 			return $success;
@@ -159,29 +161,11 @@ class CallbackManager {
 	}
 
 	//TODO better name (used only in customvotesPlugin)
-	/**
-	 * Unregister a single Callback Listening from an Callback Listener
-	 *
-	 * @param String $callbackName
-	 * @param CallbackListener $listener
-	 * @return bool
-	 */
-	public function unregisterCallbackListening($callbackName, CallbackListener $listener){
-		foreach($this->callbackListenings as &$listenings){
-			foreach ($listenings as $key => &$listening) {
-				if($key == $callbackName && $listening->listener === $listener){
-					unset($listenings[$key]);
-					return true;
-				}
-			}
-		}
-		return false;
-	}
 
 	/**
 	 * Remove the Callback Listener from the given Listeners Array
 	 *
-	 * @param array            $listeningsArray
+	 * @param Listening[]      $listeningsArray
 	 * @param CallbackListener $listener
 	 * @return bool
 	 */
@@ -189,8 +173,27 @@ class CallbackManager {
 		$removed = false;
 		foreach ($listeningsArray as &$listenings) {
 			foreach ($listenings as $key => &$listening) {
-				/** @var Listening $listening */
 				if ($listening->listener === $listener) {
+					unset($listenings[$key]);
+					$removed = true;
+				}
+			}
+		}
+		return $removed;
+	}
+
+	/**
+	 * Unregister a single Callback Listening from an Callback Listener
+	 *
+	 * @param String           $callbackName
+	 * @param CallbackListener $listener
+	 * @return bool
+	 */
+	public function unregisterCallbackListening($callbackName, CallbackListener $listener) {
+		$removed = false;
+		foreach ($this->callbackListenings as &$listenings) {
+			foreach ($listenings as $key => &$listening) {
+				if ($key === $callbackName && $listening->listener === $listener) {
 					unset($listenings[$key]);
 					$removed = true;
 				}
@@ -285,7 +288,6 @@ class CallbackManager {
 		}
 
 		foreach ($this->callbackListenings[$callbackName] as $listening) {
-			/** @var Listening $listening */
 			$listening->triggerCallbackWithParams($params);
 		}
 	}
@@ -316,7 +318,6 @@ class CallbackManager {
 		$params = array_slice($params, 1, null, true);
 
 		foreach ($this->scriptCallbackListenings[$callbackName] as $listening) {
-			/** @var Listening $listening */
 			$listening->triggerCallbackWithParams($params);
 		}
 	}
