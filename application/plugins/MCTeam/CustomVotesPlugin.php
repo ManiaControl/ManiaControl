@@ -410,7 +410,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 			$this->maniaControl->callbackManager->unregisterCallbackListening($this->currentVote->stopCallback, $this);
 		}
 
-		unset($this->currentVote);
+		$this->currentVote = null;
 	}
 
 	/**
