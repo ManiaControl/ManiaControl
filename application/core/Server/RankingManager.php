@@ -114,6 +114,7 @@ class RankingManager implements CallbackListener {
 			if ($prev !== -1 && $prev < $score) {
 				return $leaders;
 			}
+			// FIXME: $leader doesn't exist
 			array_push($leaders, $leader);
 			$prev = $score;
 		}
