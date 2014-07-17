@@ -146,7 +146,7 @@ class CommandManager implements CallbackListener {
 	 */
 	public function handleChatCallback(array $callback) {
 		// Check for command
-		if (!$callback[1][3]) {
+		if (!$this->isCommandMessage($callback)) {
 			return;
 		}
 
