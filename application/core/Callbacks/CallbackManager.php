@@ -288,6 +288,7 @@ class CallbackManager {
 		}
 
 		foreach ($this->callbackListenings[$callbackName] as $listening) {
+			/** @var Listening $listening */
 			$listening->triggerCallbackWithParams($params);
 		}
 	}
@@ -318,6 +319,7 @@ class CallbackManager {
 		$params = array_slice($params, 1, null, true);
 
 		foreach ($this->scriptCallbackListenings[$callbackName] as $listening) {
+			/** @var Listening $listening */
 			$listening->triggerCallbackWithParams($params);
 		}
 	}
