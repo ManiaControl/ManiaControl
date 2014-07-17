@@ -40,14 +40,13 @@ class PlayerManager implements CallbackListener, TimerListener {
 	public $playerDetailed = null;
 	public $playerList = null;
 	public $adminLists = null;
-	/** @var Player[] $players */
-	/** @deprecated Use getPlayers() */
-	public $players = array();
 
 	/*
 	 * Private Properties
 	 */
 	private $maniaControl = null;
+	/** @var Player[] $players */
+	private $players = array();
 
 	/**
 	 * Construct a new Player Manager

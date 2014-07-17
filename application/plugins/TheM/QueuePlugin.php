@@ -509,7 +509,7 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 			return;
 		}
 
-		if ($this->maxPlayers > (count($this->maniaControl->playerManager->players) - count($this->spectators))) {
+		if ($this->maxPlayers > ($this->maniaControl->playerManager->getPlayerCount() - count($this->spectators))) {
 			$this->moveFirstPlayerToPlay();
 			$this->showQueueWidgetSpectators();
 		}
