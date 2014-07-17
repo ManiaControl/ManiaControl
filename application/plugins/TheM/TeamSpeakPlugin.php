@@ -368,25 +368,25 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 		$closeQuad->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_QuitRace);
 		$closeQuad->setAction(ManialinkManager::ACTION_CLOSEWIDGET);
 
-		$servername = new Label_Text();
-		$frame->add($servername);
-		$servername->setY($height / 2 - 4);
-		$servername->setX(-70);
-		$servername->setStyle($servername::STYLE_TextCardMedium);
-		$servername->setHAlign('left');
-		$servername->setTextSize(1);
-		$servername->setText('$oServername:$o ' . $this->serverData['server']['virtualserver_name']);
-		$servername->setTextColor('fff');
+		$serverName = new Label_Text();
+		$frame->add($serverName);
+		$serverName->setY($height / 2 - 4);
+		$serverName->setX(-70);
+		$serverName->setStyle($serverName::STYLE_TextCardMedium);
+		$serverName->setHAlign('left');
+		$serverName->setTextSize(1);
+		$serverName->setText('$oServername:$o ' . $this->serverData['server']['virtualserver_name']);
+		$serverName->setTextColor('fff');
 
-		$serverversion = new Label_Text();
-		$frame->add($serverversion);
-		$serverversion->setY($height / 2 - 4);
-		$serverversion->setX(2);
-		$serverversion->setStyle($serverversion::STYLE_TextCardMedium);
-		$serverversion->setHAlign('left');
-		$serverversion->setTextSize(1);
-		$serverversion->setText('$oServerversion:$o ' . $this->serverData['server']['virtualserver_version']);
-		$serverversion->setTextColor('fff');
+		$serverVersion = new Label_Text();
+		$frame->add($serverVersion);
+		$serverVersion->setY($height / 2 - 4);
+		$serverVersion->setX(2);
+		$serverVersion->setStyle($serverVersion::STYLE_TextCardMedium);
+		$serverVersion->setHAlign('left');
+		$serverVersion->setTextSize(1);
+		$serverVersion->setText('$oServerversion:$o ' . $this->serverData['server']['virtualserver_version']);
+		$serverVersion->setTextColor('fff');
 
 		$clients = new Label_Text();
 		$frame->add($clients);
@@ -405,50 +405,50 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 		$channels->setStyle($channels::STYLE_TextCardMedium);
 		$channels->setHAlign('left');
 		$channels->setTextSize(1);
-		$nochannels = 0;
+		$noChannels = 0;
 		foreach ($this->serverData['channels'] as $channel) {
 			if ($channel['channel_maxclients'] == 0 || strpos($channel['channel_name'], 'spacer') > 0) {
 				continue;
 			}
-			$nochannels++;
+			$noChannels++;
 		}
-		$channels->setText('$oChannels:$o ' . $nochannels);
+		$channels->setText('$oChannels:$o ' . $noChannels);
 		$channels->setTextColor('fff');
 
 		// Join button
-		$joinbutton = new Label_Button();
-		$frame->add($joinbutton);
-		$joinbutton->setWidth(150);
-		$joinbutton->setY($height / 2 - 11.5);
-		$joinbutton->setStyle($joinbutton::STYLE_CardButtonSmallWide);
-		$joinbutton->setText('Join TeamSpeak: ' . $this->maniaControl->settingManager->getSettingValue($this, self::TEAMSPEAK_SERVERHOST) . ':' . $this->maniaControl->settingManager->getSettingValue($this, self::TEAMSPEAK_SERVERPORT));
-		$joinbutton->setTextColor('fff');
+		$joinButton = new Label_Button();
+		$frame->add($joinButton);
+		$joinButton->setWidth(150);
+		$joinButton->setY($height / 2 - 11.5);
+		$joinButton->setStyle($joinButton::STYLE_CardButtonSmallWide);
+		$joinButton->setText('Join TeamSpeak: ' . $this->maniaControl->settingManager->getSettingValue($this, self::TEAMSPEAK_SERVERHOST) . ':' . $this->maniaControl->settingManager->getSettingValue($this, self::TEAMSPEAK_SERVERPORT));
+		$joinButton->setTextColor('fff');
 		$url = 'ts3server://' . $this->maniaControl->settingManager->getSettingValue($this, self::TEAMSPEAK_SERVERHOST) . '/?port=' . $this->maniaControl->settingManager->getSettingValue($this, self::TEAMSPEAK_SERVERPORT) . '&nickname=' . rawurlencode(Formatter::stripCodes($player->nickname));
-		$joinbutton->setUrl($url);
+		$joinButton->setUrl($url);
 
-		$leftlistQuad = new Quad();
-		$frame->add($leftlistQuad);
-		$leftlistQuad->setSize((($width / 2) - 5), ($height - 18));
-		$leftlistQuad->setX(-36);
-		$leftlistQuad->setY($height / 2 - 46);
-		$leftlistQuad->setStyles($quadStyle, $quadSubstyle);
+		$leftListQuad = new Quad();
+		$frame->add($leftListQuad);
+		$leftListQuad->setSize((($width / 2) - 5), ($height - 18));
+		$leftListQuad->setX(-36);
+		$leftListQuad->setY($height / 2 - 46);
+		$leftListQuad->setStyles($quadStyle, $quadSubstyle);
 
 		$channels = array();
 		$users    = array();
-		$userid   = 0;
-		$i        = 0;
-		$startx   = -69.5;
+		$userId   = 0;
+		$index    = 0;
+		$startX   = -69.5;
 		foreach ($this->serverData['channels'] as $channel) {
 			if ($channel['channel_maxclients'] == 0 || strpos($channel['channel_name'], 'spacer') > 0) {
 				continue;
 			}
 			$channelLabel = new Label_Text();
 			$frame->add($channelLabel);
-			$y = 17.5 + ($i * 2.5);
+			$y = 17.5 + ($index * 2.5);
 			$channelLabel->setY($height / 2 - $y);
-			$x = $startx;
+			$x = $startX;
 			if ($channel['pid'] != 0) {
-				$x = $startx + 5;
+				$x = $startX + 5;
 			}
 			$channelLabel->setX($x);
 			$channelLabel->setStyle($channelLabel::STYLE_TextCardMedium);
@@ -461,19 +461,19 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 			$channelLabel->setText('$o' . $channel['channel_name'] . '$o (' . $channel['total_clients'] . ')');
 			$channelLabel->setTextColor('fff');
 
-			$channels[$i] = $channelLabel;
+			$channels[$index] = $channelLabel;
 
-			$i++;
+			$index++;
 			foreach ($this->serverData['users'] as $user) {
 				if ($user['cid'] == $channel['cid']) {
 					$userLabel = new Label_Text();
 					$frame->add($userLabel);
-					$y = 17.5 + ($i * 2.5);
+					$y = 17.5 + ($index * 2.5);
 					$userLabel->setY($height / 2 - $y);
 					if ($channel['pid'] != 0) {
-						$x = $startx + 7;
+						$x = $startX + 7;
 					} else {
-						$x = $startx + 2;
+						$x = $startX + 2;
 					}
 					$userLabel->setX($x);
 					$userLabel->setStyle($userLabel::STYLE_TextCardMedium);
@@ -482,21 +482,21 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 					$userLabel->setScale(0.9);
 					$userLabel->setText($user['client_nickname']);
 					$userLabel->setTextColor('fff');
-					$users[$userid] = $userLabel;
+					$users[$userId] = $userLabel;
 
-					$userid++;
-					$i++;
+					$userId++;
+					$index++;
 
-					if ($i > 22) {
-						$i      = 0;
-						$startx = 2.5;
+					if ($index > 22) {
+						$index  = 0;
+						$startX = 2.5;
 					}
 				}
 			}
 
-			if ($i > 22) {
-				$i      = 0;
-				$startx = 2.5;
+			if ($index > 22) {
+				$index  = 0;
+				$startX = 2.5;
 			}
 		}
 
