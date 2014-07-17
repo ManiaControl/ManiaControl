@@ -3,7 +3,6 @@
 namespace ManiaControl\Files;
 
 use cURL\Event;
-use cURL\Exception;
 use cURL\Request;
 use ManiaControl\ManiaControl;
 
@@ -36,16 +35,28 @@ class AsynchronousFileReader {
 		$this->maniaControl = $maniaControl;
 	}
 
+	public static function newRequestTest($url) {
+		$request = new Request($url);
+		$request->getOptions()
+		        ->set(CURLOPT_TIMEOUT, 60)
+		        ->set(CURLOPT_HEADER, false) // don't display response header
+		        ->set(CURLOPT_CRLF, true) // linux line feed
+		        ->set(CURLOPT_ENCODING, '') // accept encoding
+		        ->set(CURLOPT_USERAGENT, 'ManiaControl v' . ManiaControl::VERSION) // user-agent
+		        ->set(CURLOPT_RETURNTRANSFER, true); // return instead of output content
+		return $request;
+	}
+
 	/**
 	 * Append available Data of active Requests
 	 */
 	public function appendData() {
 		foreach ($this->requests as $key => $request) {
-				if ($request->socketPerform()) {
-					$request->socketSelect();
-				}else{
-					unset($this->requests[$key]);
-				}
+			if ($request->socketPerform()) {
+				$request->socketSelect();
+			} else {
+				unset($this->requests[$key]);
+			}
 		}
 	}
 
@@ -103,6 +114,8 @@ class AsynchronousFileReader {
 		return $request;
 	}
 
+	//TODO remove, they are just for testing dedimania
+
 	/**
 	 * Add a Request to the queue
 	 *
@@ -110,19 +123,6 @@ class AsynchronousFileReader {
 	 */
 	protected function addRequest(Request $request) {
 		array_push($this->requests, $request);
-	}
-
-	//TODO remove, they are just for testing dedimania
-	public static function newRequestTest($url){
-		$request = new Request($url);
-		$request->getOptions()
-		        ->set(CURLOPT_TIMEOUT, 60)
-		        ->set(CURLOPT_HEADER, false) // don't display response header
-		        ->set(CURLOPT_CRLF, true) // linux line feed
-		        ->set(CURLOPT_ENCODING, '') // accept encoding
-		        ->set(CURLOPT_USERAGENT, 'ManiaControl v' . ManiaControl::VERSION) // user-agent
-		        ->set(CURLOPT_RETURNTRANSFER, true); // return instead of output content
-		return $request;
 	}
 
 	public function postDataTest(Request $request, $url, callable $function, $content, $compression = false,
@@ -189,7 +189,7 @@ class AsynchronousFileReader {
 		        ->set(CURLOPT_POST, true) // post method
 		        ->set(CURLOPT_POSTFIELDS, $content) // post content field
 		        ->set(CURLOPT_HTTPHEADER, $headers) // headers
-				;
+		;
 		$request->addListener('complete', function (Event $event) use (&$function) {
 			$error   = null;
 			$content = null;
