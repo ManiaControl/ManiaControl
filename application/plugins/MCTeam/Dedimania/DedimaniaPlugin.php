@@ -594,7 +594,6 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 				var_dump($responseData);
 			}
 		}, $content, true);
-		return;
 	}
 
 	/**
@@ -939,13 +938,12 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * @return bool
 	 */
 	private function insertDedimaniaRecord(RecordData &$newRecord, RecordData $oldRecord) {
-		if ($newRecord->nullRecord) {
+		if (!$this->dedimaniaData || !$this->dedimaniaData->records || $newRecord->nullRecord) {
 			return false;
 		}
 
 		$insert = false;
 
-		var_dump($newRecord);
 		// Get max possible rank
 		$maxRank = $this->dedimaniaData->getPlayerMaxRank($newRecord->login);
 
@@ -1167,10 +1165,10 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	/**
 	 * Function to retrieve the dedimania records on the current map
 	 *
-	 * @return array|RecordData
+	 * @return RecordData[]
 	 */
 	public function getDedimaniaRecords() {
-		if ($this->dedimaniaData->records) {
+		if ($this->dedimaniaData && $this->dedimaniaData->records) {
 			return $this->dedimaniaData->records;
 		}
 		return null;
