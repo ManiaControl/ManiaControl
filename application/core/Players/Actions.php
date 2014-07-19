@@ -15,6 +15,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\AlreadyInListException;
 use Maniaplanet\DedicatedServer\Xmlrpc\FaultException;
 use Maniaplanet\DedicatedServer\Xmlrpc\NotInListException;
 use Maniaplanet\DedicatedServer\Xmlrpc\PlayerStateException;
+use Maniaplanet\DedicatedServer\Xmlrpc\ServerOptionsException;
 use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
 
 /**
@@ -189,8 +190,7 @@ class Actions {
 
 		try {
 			$this->maniaControl->client->forceSpectator($target->login, $spectatorState);
-		} catch (FaultException $exception) {
-			// TODO: replace by more specific exception "There are too many spectators"
+		} catch (ServerOptionsException $exception) {
 			$this->maniaControl->chat->sendException($exception, $admin->login);
 			return;
 		}
@@ -205,6 +205,7 @@ class Actions {
 			try {
 				$this->maniaControl->client->spectatorReleasePlayerSlot($target->login);
 			} catch (PlayerStateException $e) {
+			} catch (UnknownPlayerException $e) {
 			}
 		}
 	}
