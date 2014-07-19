@@ -25,7 +25,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
  * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class Actions {
+class PlayerActions {
 	/*
 	 * Constants
 	 */
@@ -53,7 +53,7 @@ class Actions {
 	private $maniaControl = null;
 
 	/**
-	 * Create a new Player Actions Instance
+	 * Create a PlayerActions Instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */

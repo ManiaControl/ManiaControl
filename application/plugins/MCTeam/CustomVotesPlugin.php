@@ -446,7 +446,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 */
 	public function startVote(Player $player, $voteIndex, $function = null) {
 		//Player is muted
-		if ($this->maniaControl->playerManager->actions->isPlayerMuted($player)) {
+		if ($this->maniaControl->playerManager->playerActions->isPlayerMuted($player)) {
 			$this->maniaControl->chat->sendError('Muted Players are not allowed to start a vote.', $player->login);
 			return;
 		}

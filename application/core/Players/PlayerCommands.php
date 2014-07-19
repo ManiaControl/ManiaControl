@@ -119,7 +119,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 	 * @param Player $player
 	 */
 	public function command_Kick(array $chat, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkPermission($player, Actions::SETTING_PERMISSION_KICK_PLAYER)) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($player, PlayerActions::SETTING_PERMISSION_KICK_PLAYER)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
@@ -133,7 +133,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 		if (isset($params[2])) {
 			$message = $params[2];
 		}
-		$this->maniaControl->playerManager->actions->kickPlayer($player->login, $targetLogin, $message);
+		$this->maniaControl->playerManager->playerActions->kickPlayer($player->login, $targetLogin, $message);
 	}
 
 	/**
@@ -143,7 +143,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 	 * @param Player $player
 	 */
 	public function command_Ban(array $chat, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkPermission($player, Actions::SETTING_PERMISSION_BAN_PLAYER)) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($player, PlayerActions::SETTING_PERMISSION_BAN_PLAYER)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
@@ -157,7 +157,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 		if (isset($params[2])) {
 			$message = $params[2];
 		}
-		$this->maniaControl->playerManager->actions->banPlayer($player->login, $targetLogin, $message);
+		$this->maniaControl->playerManager->playerActions->banPlayer($player->login, $targetLogin, $message);
 	}
 
 	/**
@@ -173,7 +173,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 			return;
 		}
 		$targetLogin = $params[1];
-		$this->maniaControl->playerManager->actions->warnPlayer($player->login, $targetLogin);
+		$this->maniaControl->playerManager->playerActions->warnPlayer($player->login, $targetLogin);
 	}
 
 	/**
@@ -183,7 +183,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 	 * @param Player $player
 	 */
 	public function command_ForceSpectator(array $chat, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkPermission($player, Actions::SETTING_PERMISSION_FORCE_PLAYER_SPEC)) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($player, PlayerActions::SETTING_PERMISSION_FORCE_PLAYER_SPEC)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
@@ -196,9 +196,9 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 
 		if (isset($params[2]) && is_numeric($params[2])) {
 			$type = (int)$params[2];
-			$this->maniaControl->playerManager->actions->forcePlayerToSpectator($player->login, $targetLogin, $type);
+			$this->maniaControl->playerManager->playerActions->forcePlayerToSpectator($player->login, $targetLogin, $type);
 		} else {
-			$this->maniaControl->playerManager->actions->forcePlayerToSpectator($player->login, $targetLogin);
+			$this->maniaControl->playerManager->playerActions->forcePlayerToSpectator($player->login, $targetLogin);
 		}
 	}
 
@@ -209,7 +209,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 	 * @param Player $player
 	 */
 	public function command_ForcePlay(array $chat, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkPermission($player, Actions::SETTING_PERMISSION_FORCE_PLAYER_PLAY)) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($player, PlayerActions::SETTING_PERMISSION_FORCE_PLAYER_PLAY)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
@@ -226,7 +226,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 		}
 		$selectable = ($type === 2);
 
-		$this->maniaControl->playerManager->actions->forcePlayerToPlay($player->login, $targetLogin, $selectable);
+		$this->maniaControl->playerManager->playerActions->forcePlayerToPlay($player->login, $targetLogin, $selectable);
 	}
 
 	/**
@@ -236,7 +236,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 	 * @param Player $player
 	 */
 	public function command_ForceBlue(array $chat, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkPermission($player, Actions::SETTING_PERMISSION_FORCE_PLAYER_TEAM)) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($player, PlayerActions::SETTING_PERMISSION_FORCE_PLAYER_TEAM)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
@@ -247,7 +247,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 		}
 		$targetLogin = $params[1];
 
-		$this->maniaControl->playerManager->actions->forcePlayerToTeam($player->login, $targetLogin, Actions::TEAM_BLUE);
+		$this->maniaControl->playerManager->playerActions->forcePlayerToTeam($player->login, $targetLogin, PlayerActions::TEAM_BLUE);
 	}
 
 	/**
@@ -257,7 +257,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 	 * @param Player $player
 	 */
 	public function command_ForceRed(array $chat, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkPermission($player, Actions::SETTING_PERMISSION_FORCE_PLAYER_TEAM)) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($player, PlayerActions::SETTING_PERMISSION_FORCE_PLAYER_TEAM)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
@@ -268,7 +268,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 		}
 		$targetLogin = $params[1];
 
-		$this->maniaControl->playerManager->actions->forcePlayerToTeam($player->login, $targetLogin, Actions::TEAM_RED);
+		$this->maniaControl->playerManager->playerActions->forcePlayerToTeam($player->login, $targetLogin, PlayerActions::TEAM_RED);
 	}
 
 	/**
@@ -326,7 +326,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 			return;
 		}
 		$targetLogin = $commandParts[1];
-		$this->maniaControl->playerManager->actions->mutePlayer($admin->login, $targetLogin);
+		$this->maniaControl->playerManager->playerActions->mutePlayer($admin->login, $targetLogin);
 	}
 
 	/**
@@ -342,7 +342,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 			return;
 		}
 		$targetLogin = $commandParts[1];
-		$this->maniaControl->playerManager->actions->unMutePlayer($admin->login, $targetLogin);
+		$this->maniaControl->playerManager->playerActions->unMutePlayer($admin->login, $targetLogin);
 	}
 
 	/**

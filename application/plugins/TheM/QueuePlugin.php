@@ -15,7 +15,7 @@ use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
-use ManiaControl\Players\Actions;
+use ManiaControl\Players\PlayerActions;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
@@ -337,7 +337,7 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 
 		if ($this->maxPlayers > $this->maniaControl->playerManager->getPlayerCount(true)) {
 			try {
-				$this->maniaControl->client->forceSpectator($player->login, Actions::SPECTATOR_PLAYER);
+				$this->maniaControl->client->forceSpectator($player->login, PlayerActions::SPECTATOR_PLAYER);
 			} catch (Exception $e) {
 				// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
 				$this->maniaControl->chat->sendError("Error while leaving the Queue", $player->login);
@@ -345,7 +345,7 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 			}
 
 			try {
-				$this->maniaControl->client->forceSpectator($player->login, Actions::SPECTATOR_USER_SELECTABLE);
+				$this->maniaControl->client->forceSpectator($player->login, PlayerActions::SPECTATOR_USER_SELECTABLE);
 			} catch (Exception $e) {
 				// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
 			}
