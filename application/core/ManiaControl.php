@@ -30,7 +30,6 @@ use ManiaControl\Utils\Formatter;
 use ManiaControl\Utils\SystemUtil;
 use Maniaplanet\DedicatedServer\Connection;
 use Maniaplanet\DedicatedServer\Xmlrpc\AuthenticationException;
-use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 use Maniaplanet\DedicatedServer\Xmlrpc\TransportException;
 
 require_once __DIR__ . '/Libs/Maniaplanet/DedicatedServer/Connection.php';
@@ -302,7 +301,11 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 		$this->log('Starting ManiaControl v' . self::VERSION . '!');
 
 		// Connect to server
-		$this->connect();
+		try {
+			$this->connect();
+		} catch (TransportException $e) {
+			$this->quit($e->getMessage(), true);
+		}
 
 		// Check if the version of the server is high enough
 		$version = $this->client->getVersion();
@@ -360,14 +363,8 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 		$this->client->enableCallbacks(true);
 
 		// Wait for server to be ready
-		try {
-			if (!$this->server->waitForStatus(4)) {
-				$this->quit("Server couldn't get ready!");
-			}
-		} catch (Exception $e) {
-			// TODO remove
-			$this->errorHandler->handleException($e, false);
-			$this->quit($e->getMessage(), true);
+		if (!$this->server->waitForStatus(4)) {
+			$this->quit("Server couldn't get ready!");
 		}
 
 		// Connect finished
