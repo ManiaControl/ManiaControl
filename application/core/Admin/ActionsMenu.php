@@ -281,7 +281,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	/**
 	 * Removes a Menu Item
 	 *
-	 * @param      $order
+	 * @param int  $order
 	 * @param bool $playerAction
 	 */
 	public function removeMenuItem($order, $playerAction = true) {
