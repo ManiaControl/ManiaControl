@@ -35,7 +35,7 @@ class Server implements CallbackListener {
 	public $login = null;
 	public $titleId = null;
 	public $directory = null;
-	public $serverCommands = null;
+	public $commands = null;
 	public $usageReporter = null;
 	public $rankingManager = null;
 	public $scriptManager = null;
@@ -56,7 +56,7 @@ class Server implements CallbackListener {
 		$this->initTables();
 
 		$this->directory      = new Directory($maniaControl);
-		$this->serverCommands = new ServerCommands($maniaControl);
+		$this->commands       = new Commands($maniaControl);
 		$this->usageReporter  = new UsageReporter($maniaControl);
 		$this->rankingManager = new RankingManager($maniaControl);
 		$this->scriptManager  = new ScriptManager($maniaControl);

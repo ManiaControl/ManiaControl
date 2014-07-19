@@ -26,7 +26,7 @@ use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
 use ManiaControl\Server\Server;
-use ManiaControl\Server\ServerCommands;
+use ManiaControl\Server\Commands;
 use ManiaControl\Utils\ColorUtil;
 use Maniaplanet\DedicatedServer\Structures\VoteRatio;
 use Maniaplanet\DedicatedServer\Xmlrpc\ChangeInProgressException;
@@ -134,7 +134,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 		$this->maniaControl->commandManager->registerCommandListener('vote', $this, 'chat_vote', false, 'Starts a new vote.');
 		$this->maniaControl->timerManager->registerTimerListening($this, 'handle1Second', 1000);
-		$this->maniaControl->callbackManager->registerCallbackListener(ServerCommands::CB_VOTE_CANCELED, $this, 'handleVoteCanceled');
+		$this->maniaControl->callbackManager->registerCallbackListener(Commands::CB_VOTE_CANCELED, $this, 'handleVoteCanceled');
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_POSITIVE_VOTE, $this, 'handlePositiveVote');
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_NEGATIVE_VOTE, $this, 'handleNegativeVote');
 
