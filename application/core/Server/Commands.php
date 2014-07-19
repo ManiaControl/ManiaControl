@@ -22,7 +22,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
  * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class ServerCommands implements CallbackListener, CommandListener, ManialinkPageAnswerListener, TimerListener {
+class Commands implements CallbackListener, CommandListener, ManialinkPageAnswerListener, TimerListener {
 	/*
 	 * Constants
 	 */

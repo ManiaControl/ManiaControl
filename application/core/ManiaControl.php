@@ -392,9 +392,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 		try {
 			$this->callbackManager->manageCallbacks();
 		} catch (TransportException $e) {
-			$this->log("Connection interrupted!");
-			// TODO remove
-			$this->errorHandler->handleException($e, false);
+			$this->log('Connection interrupted!');
 			$this->quit($e->getMessage(), true);
 		}
 
