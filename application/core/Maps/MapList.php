@@ -622,6 +622,10 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				} catch (NextMapException $exception) {
 					$this->maniaControl->chat->sendError('Error on Jumping to Map Ident: ' . $exception->getMessage(), $player);
 					break;
+				} catch (NotInListException $exception) {
+					// TODO: "Map not found." -> how is that possible?
+					$this->maniaControl->chat->sendError('Error on Jumping to Map Ident: ' . $exception->getMessage(), $player);
+					break;
 				}
 
 				$map = $this->maniaControl->mapManager->getMapByUid($mapUid);
