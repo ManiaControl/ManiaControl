@@ -603,7 +603,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * @param Player $player
 	 */
 	public function handlePlayerConnect(Player $player) {
-		if (!isset($this->dedimaniaData)) {
+		if (!$this->dedimaniaData) {
 			return;
 		}
 
