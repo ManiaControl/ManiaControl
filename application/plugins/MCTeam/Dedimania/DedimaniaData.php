@@ -27,7 +27,9 @@ class DedimaniaData {
 	public $login;
 	public $code;
 	public $sessionId = '';
+	/** @var RecordData[] $records */
 	public $records = array();
+	/** @var DedimaniaPlayer[] $players */
 	public $players = array();
 	public $directoryAccessChecked = false;
 	public $serverMaxRank = 30;

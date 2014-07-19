@@ -696,7 +696,6 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$times    = array();
 		$replays  = array();
 		foreach ($this->dedimaniaData->records as $record) {
-			/** @var RecordData $record */
 			if ($record->rank > $this->dedimaniaData->serverMaxRank) {
 				break;
 			}
@@ -864,7 +863,6 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			if ($this->insertDedimaniaRecord($newRecord, $oldRecord)) {
 				// Get newly saved record
 				foreach ($this->dedimaniaData->records as &$record) {
-					/** @var RecordData $record */
 					if ($record->login !== $newRecord->login) {
 						continue;
 					}
@@ -900,12 +898,11 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * @return RecordData $record
 	 */
 	private function getDedimaniaRecord($login) {
-		if (!$this->dedimaniaData->records) {
+		if (!$this->dedimaniaData || !$this->dedimaniaData->records) {
 			return new RecordData(null);
 		}
 		$records = $this->dedimaniaData->records;
 		foreach ($records as &$record) {
-			/** @var RecordData $record */
 			if ($record->login === $login) {
 				return $record;
 			}
@@ -954,7 +951,6 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 		// Loop through existing records
 		foreach ($this->dedimaniaData->records as $key => &$record) {
-			/** @var RecordData $record */
 			if ($record->rank > $maxRank) {
 				// Max rank reached
 				return false;
@@ -983,7 +979,6 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			if ($oldRecord) {
 				// Remove old record
 				foreach ($this->dedimaniaData->records as $key2 => $record2) {
-					/** @var RecordData $record2 */
 					if ($record2->login !== $oldRecord->login) {
 						continue;
 					}
@@ -1035,7 +1030,6 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		// Update ranks
 		$rank = 1;
 		foreach ($this->dedimaniaData->records as &$record) {
-			/** @var RecordData $record */
 			$record->rank = $rank;
 			$rank++;
 		}
