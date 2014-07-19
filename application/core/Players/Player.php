@@ -180,7 +180,7 @@ class Player {
 	 * @return bool
 	 */
 	public function isFakePlayer() {
-		return ($this->pid <= 0 || !$this->path);
+		return ($this->pid <= 0 || substr($this->login, 0, 1) === '*');
 	}
 
 	/**

@@ -387,7 +387,7 @@ class PlayerActions {
 
 		// Announce kick
 		$title       = $this->maniaControl->authenticationManager->getAuthLevelName($admin->authLevel);
-		$chatMessage = $title . ' $<' . $admin->nickname . '$> kicked $<' . $target->nickname . '$>!';
+		$chatMessage = $title . ' ' . $admin->getEscapedNickname() . ' kicked ' . $target->getEscapedNickname() . '!';
 		$this->maniaControl->chat->sendInformation($chatMessage);
 		$this->maniaControl->log(Formatter::stripCodes($chatMessage));
 	}
