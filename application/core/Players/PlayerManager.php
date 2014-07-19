@@ -35,7 +35,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 	/*
 	 * Public Properties
 	 */
-	public $playerActions = null;
+	public $actions = null;
 	public $playerCommands = null;
 	public $playerDetailed = null;
 	public $playerList = null;
@@ -58,7 +58,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 		$this->initTables();
 
 		$this->playerCommands    = new PlayerCommands($maniaControl);
-		$this->playerActions     = new PlayerActions($maniaControl);
+		$this->actions           = new Actions($maniaControl);
 		$this->playerDetailed    = new PlayerDetailed($maniaControl);
 		$this->playerDataManager = new PlayerDataManager($maniaControl);
 		$this->playerList        = new PlayerList($maniaControl);

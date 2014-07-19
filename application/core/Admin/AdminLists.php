@@ -207,7 +207,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 
 		switch ($action) {
 			case self::ACTION_REVOKE_RIGHTS:
-				$this->maniaControl->playerManager->playerActions->revokeAuthLevel($adminLogin, $targetLogin);
+				$this->maniaControl->playerManager->actions->revokeAuthLevel($adminLogin, $targetLogin);
 				break;
 		}
 	}
