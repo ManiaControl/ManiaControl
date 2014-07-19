@@ -66,6 +66,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 */
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
+	// TODO: there are several spots where $dedimaniaData is null - fix those (look for !$this->dedimaniaData)
 	/** @var DedimaniaData $dedimaniaData */
 	private $dedimaniaData = null;
 	private $updateManialink = false;
@@ -841,6 +842,9 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * @param RecordCallback $callback
 	 */
 	public function handleFinishCallback(RecordCallback $callback) {
+		if (!$this->dedimaniaData || !$this->dedimaniaData->records) {
+			return;
+		}
 		if ($callback->isLegacyCallback) {
 			return;
 		}
