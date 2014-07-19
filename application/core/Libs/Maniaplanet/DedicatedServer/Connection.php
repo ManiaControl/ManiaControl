@@ -2176,7 +2176,7 @@ class Connection
 	/**
 	 * Set new server options using the struct passed as parameters.
 	 * Mandatory fields:
-	 *  Name, Comment, Password, PasswordForSpectator and CallVoteRatio.
+	 *  Name, Comment, Password, PasswordForSpectator, NextCallVoteTimeOut and CallVoteRatio.
 	 * Ignored fields:
 	 *  LadderServerLimitMin, LadderServerLimitMax and those starting with Current.
 	 * All other fields are optional and can be set to null to be ignored.
