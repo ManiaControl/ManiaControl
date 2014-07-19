@@ -274,6 +274,13 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 * @param string $receiverName
 	 */
 	private function handleDonation(Player $player, $amount, $receiver = '', $receiverName = null) {
+		if ($amount > 1000000) {
+			// Prevent too huge donation amounts that would cause xmlrpc parsing errors
+			$message = "You can only donate 1.000.000 Planets at a time!";
+			$this->maniaControl->chat->sendError($message, $player);
+			return;
+		}
+
 		if (!$receiverName) {
 			$serverName = $this->maniaControl->client->getServerName();
 			$message    = 'Donate ' . $amount . ' Planets to $<' . $serverName . '$>?';
