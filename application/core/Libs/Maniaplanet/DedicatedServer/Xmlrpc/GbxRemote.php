@@ -266,7 +266,7 @@ class GbxRemote
 		$data = '';
 		while(strlen($data) < $size)
 		{
-			$buf = fread($this->socket, $size - strlen($data));
+			$buf = @fread($this->socket, $size - strlen($data));
 			if($buf === '' || $buf === false)
 				return false;
 			$data .= $buf;
@@ -287,7 +287,7 @@ class GbxRemote
 
 		while(strlen($data) > 0)
 		{
-			$written = fwrite($this->socket, $data);
+			$written = @fwrite($this->socket, $data);
 			if($written === 0 || $written === false)
 				return false;
 
