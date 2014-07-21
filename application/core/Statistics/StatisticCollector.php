@@ -210,51 +210,63 @@ class StatisticCollector implements CallbackListener {
 				break;
 			case 'OnShoot':
 				$paramsObject = json_decode($callback[1][1]);
-				$this->handleOnShoot($paramsObject->Event->Shooter->Login, $paramsObject->Event->WeaponNum);
+				if ($paramsObject && isset($paramsObject->Event)) {
+					$this->handleOnShoot($paramsObject->Event->Shooter->Login, $paramsObject->Event->WeaponNum);
+				}
 				break;
 			case 'OnNearMiss':
 				$paramsObject = json_decode($callback[1][1]);
-				$player       = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Shooter->Login);
-				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_NEARMISS, $player);
+				if ($paramsObject && isset($paramsObject->Event)) {
+					$player = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Shooter->Login);
+					$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_NEARMISS, $player);
+				}
 				break;
 			case 'OnCapture':
 				$paramsObject = json_decode($callback[1][1]);
-				$player       = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Player->Login);
-				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_CAPTURE, $player);
+				if ($paramsObject && isset($paramsObject->Event)) {
+					$player = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Player->Login);
+					$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_CAPTURE, $player);
+				}
 				break;
 			case 'OnHit':
 				$paramsObject = json_decode($callback[1][1]);
-				$weapon       = (int)$paramsObject->Event->WeaponNum;
-				if (isset($paramsObject->Event->Shooter)) {
-					$shooter = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Shooter->Login);
-					if ($shooter) {
-						$this->maniaControl->statisticManager->incrementStat($this->getWeaponStat($weapon, false), $shooter);
-						$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_HIT, $shooter);
+				if ($paramsObject && isset($paramsObject->Event)) {
+					$weapon = (int)$paramsObject->Event->WeaponNum;
+					if (isset($paramsObject->Event->Shooter)) {
+						$shooter = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Shooter->Login);
+						if ($shooter) {
+							$this->maniaControl->statisticManager->incrementStat($this->getWeaponStat($weapon, false), $shooter);
+							$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_HIT, $shooter);
+						}
 					}
-				}
-				if (isset($paramsObject->Event->Victim)) {
-					$victim = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Victim->Login);
-					if ($victim) {
-						$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_GOT_HIT, $victim);
+					if (isset($paramsObject->Event->Victim)) {
+						$victim = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Victim->Login);
+						if ($victim) {
+							$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_GOT_HIT, $victim);
+						}
 					}
 				}
 				break;
 			case 'OnArmorEmpty':
 				$paramsObject = json_decode($callback[1][1]);
-				$victim       = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Victim->Login);
-				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_DEATH, $victim);
-				if (isset($paramsObject->Event->Shooter->Login)) {
-					$shooter = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Shooter->Login);
-					if ($shooter) {
+				if ($paramsObject && isset($paramsObject->Event)) {
+					$victim = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Victim->Login);
+					$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_DEATH, $victim);
+					if (isset($paramsObject->Event->Shooter->Login)) {
+						$shooter = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Shooter->Login);
+						if ($shooter) {
+							$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_KILL, $shooter);
+						}
 						$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_KILL, $shooter);
 					}
-					$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_KILL, $shooter);
 				}
 				break;
 			case 'OnRequestRespawn':
 				$paramsObject = json_decode($callback[1][1]);
-				$player       = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Player->Login);
-				$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_PLAYER_REQUEST_RESPAWN, $player);
+				if ($paramsObject && isset($paramsObject->Event)) {
+					$player = $this->maniaControl->playerManager->getPlayer($paramsObject->Event->Player->Login);
+					$this->maniaControl->statisticManager->incrementStat(self::STAT_ON_PLAYER_REQUEST_RESPAWN, $player);
+				}
 				break;
 			case 'EndTurn': //TODO make it for other modes working
 				$paramsObject = json_decode($callback[1][1]);
