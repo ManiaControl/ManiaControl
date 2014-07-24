@@ -86,6 +86,13 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	}
 
 	/**
+	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getTitle()
+	 */
+	public static function getTitle() {
+		return 'Server Settings';
+	}
+
+	/**
 	 * Handle OnInit callback
 	 */
 	public function onInit() {
@@ -145,8 +152,8 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		$script->addFeature($paging);
 		$frame = new Frame();
 
-		$serverSettings = $this->maniaControl->client->getServerOptions()
-		                                             ->toArray();
+		$serverOptions  = $this->maniaControl->client->getServerOptions();
+		$serverSettings = $serverOptions->toArray();
 
 		// Config
 		$pagerSize     = 9.;
@@ -156,27 +163,26 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		// Pagers
 		$pagerPrev = new Quad_Icons64x64_1();
 		$frame->add($pagerPrev);
-		$pagerPrev->setPosition($width * 0.39, $height * -0.44, 2);
-		$pagerPrev->setSize($pagerSize, $pagerSize);
-		$pagerPrev->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowPrev);
+		$pagerPrev->setPosition($width * 0.39, $height * -0.44, 2)
+		          ->setSize($pagerSize, $pagerSize)
+		          ->setSubStyle($pagerPrev::SUBSTYLE_ArrowPrev);
 
 		$pagerNext = new Quad_Icons64x64_1();
 		$frame->add($pagerNext);
-		$pagerNext->setPosition($width * 0.45, $height * -0.44, 2);
-		$pagerNext->setSize($pagerSize, $pagerSize);
-		$pagerNext->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowNext);
-
-		$paging->addButton($pagerNext);
-		$paging->addButton($pagerPrev);
+		$pagerNext->setPosition($width * 0.45, $height * -0.44, 2)
+		          ->setSize($pagerSize, $pagerSize)
+		          ->setSubStyle($pagerNext::SUBSTYLE_ArrowNext);
 
 		$pageCountLabel = new Label_Text();
 		$frame->add($pageCountLabel);
-		$pageCountLabel->setHAlign($pageCountLabel::RIGHT);
-		$pageCountLabel->setPosition($width * 0.35, $height * -0.44, 1);
-		$pageCountLabel->setStyle($pageCountLabel::STYLE_TextTitle1);
-		$pageCountLabel->setTextSize(2);
+		$pageCountLabel->setHAlign($pageCountLabel::RIGHT)
+		               ->setPosition($width * 0.35, $height * -0.44, 1)
+		               ->setStyle($pageCountLabel::STYLE_TextTitle1)
+		               ->setTextSize(2);
 
-		$paging->setLabel($pageCountLabel);
+		$paging->addButton($pagerNext)
+		       ->addButton($pagerPrev)
+		       ->setLabel($pageCountLabel);
 
 		// Setting pages
 		$posY      = 0.;
@@ -185,7 +191,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 
 		foreach ($serverSettings as $name => $value) {
 			// Continue on CurrentMaxPlayers...
-			$pos = strpos($name, 'Current'); // TODO maybe display current somewhere
+			$pos = strpos($name, 'Current'); // TODO: display 'Current...' somewhere
 			if ($pos !== false) {
 				continue;
 			}
@@ -203,39 +209,37 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 
 			$nameLabel = new Label_Text();
 			$settingFrame->add($nameLabel);
-			$nameLabel->setHAlign($nameLabel::LEFT);
-			$nameLabel->setX($width * -0.46);
-			$nameLabel->setSize($width * 0.4, $settingHeight);
-			$nameLabel->setStyle($nameLabel::STYLE_TextCardSmall);
-			$nameLabel->setTextSize($labelTextSize);
-			$nameLabel->setText($name);
-			$nameLabel->setTextColor('fff');
+			$nameLabel->setHAlign($nameLabel::LEFT)
+			          ->setX($width * -0.46)
+			          ->setSize($width * 0.4, $settingHeight)
+			          ->setStyle($nameLabel::STYLE_TextCardSmall)
+			          ->setTextSize($labelTextSize)
+			          ->setText($name)
+			          ->setTextColor('fff');
 
 			if (is_bool($value)) {
 				// Boolean checkbox
 				$quad = new Quad();
-				$quad->setPosition($width * 0.23, 0, -0.01);
-				$quad->setSize(4, 4);
+				$quad->setPosition($width * 0.23, 0, -0.01)
+				     ->setSize(4, 4);
 				$checkBox = new CheckBox(self::ACTION_PREFIX_SETTING . $name, $value, $quad);
 				$settingFrame->add($checkBox);
 			} else {
 				// Other
 				$entry = new Entry();
 				$settingFrame->add($entry);
-				$entry->setStyle(Label_Text::STYLE_TextValueSmall);
-				$entry->setX($width * 0.23);
-				$entry->setTextSize(1);
-				$entry->setSize($width * 0.48, $settingHeight * 0.9);
-				$entry->setName(self::ACTION_PREFIX_SETTING . $name);
-				$entry->setDefault($value);
+				$entry->setStyle(Label_Text::STYLE_TextValueSmall)
+				      ->setX($width * 0.23)
+				      ->setTextSize(1)
+				      ->setSize($width * 0.48, $settingHeight * 0.9)
+				      ->setName(self::ACTION_PREFIX_SETTING . $name)
+				      ->setDefault($value);
 
 				if ($name === 'Comment') {
-					$entry->setAutoNewLine(true);
-					$entry->setSize($width * 0.48, $settingHeight * 3 + $settingHeight * 0.9);
+					$entry->setSize($width * 0.48, $settingHeight * 3. + $settingHeight * 0.9)
+					      ->setAutoNewLine(true);
 					$settingFrame->setY($posY - $settingHeight * 1.5);
-					// dummy:
-					// TODO: "dummy:" what? remove?
-					$posY -= $settingHeight * 3;
+					$posY -= $settingHeight * 3.;
 					$index += 3;
 				}
 			}
@@ -259,8 +263,8 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			return;
 		}
 
-		$serverSettings = $this->maniaControl->client->getServerOptions()
-		                                             ->toArray();
+		$serverOptions  = $this->maniaControl->client->getServerOptions();
+		$serverSettings = $serverOptions->toArray();
 
 		$prefixLength = strlen(self::ACTION_PREFIX_SETTING);
 
@@ -277,12 +281,11 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		if ($success) {
 			$this->maniaControl->chat->sendSuccess('Server Settings saved!', $player);
 		} else {
-			$this->maniaControl->chat->sendSuccess('Server Settings Saving failed!', $player);
+			$this->maniaControl->chat->sendSuccess('Server Settings saving failed!', $player);
 		}
 
 		// Reopen the Menu
-		$menuId = $this->maniaControl->configurator->getMenuId($this->getTitle());
-		$this->maniaControl->configurator->reopenMenu($player, $menuId);
+		$this->maniaControl->configurator->showMenu($player, $this);
 	}
 
 	/**
@@ -293,20 +296,29 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	 * @return bool
 	 */
 	private function applyNewServerSettings(ServerOptions $newSettings, Player $player) {
-		if (!$newSettings) {
-			return true;
-		}
-
 		try {
 			$this->maniaControl->client->setServerOptions($newSettings);
-		} catch (ServerOptionsException $e) {
-			$this->maniaControl->chat->sendError($e->getMessage());
+		} catch (ServerOptionsException $exception) {
+			$this->maniaControl->chat->sendException($exception, $player);
 			return false;
 		}
 
-		// Save Settings into Database
-		$mysqli = $this->maniaControl->database->mysqli;
+		$this->saveServerOptions($newSettings, true);
 
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_SERVERSETTINGS_CHANGED, array(self::CB_SERVERSETTINGS_CHANGED));
+
+		return true;
+	}
+
+	/**
+	 * Save the given server options in the database
+	 *
+	 * @param ServerOptions $serverOptions
+	 * @param bool          $triggerCallbacks
+	 * @return bool
+	 */
+	private function saveServerOptions(ServerOptions $serverOptions, $triggerCallbacks = false) {
+		$mysqli    = $this->maniaControl->database->mysqli;
 		$query     = "INSERT INTO `" . self::TABLE_SERVER_SETTINGS . "` (
 				`serverIndex`,
 				`settingName`,
@@ -321,13 +333,16 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			return false;
 		}
 
-		$settingsArray = $newSettings->toArray();
-		foreach ($settingsArray as $setting => $value) {
-			if ($value === null) {
+		$settingName  = null;
+		$settingValue = null;
+		$statement->bind_param('iss', $this->maniaControl->server->index, $settingName, $settingValue);
+
+		$settingsArray = $serverOptions->toArray();
+		foreach ($settingsArray as $settingName => $settingValue) {
+			if ($settingValue === null) {
 				continue;
 			}
 
-			$statement->bind_param('iss', $this->maniaControl->server->index, $setting, $value);
 			$statement->execute();
 			if ($statement->error) {
 				trigger_error($statement->error);
@@ -335,21 +350,12 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 				return false;
 			}
 
-			// Trigger own callback
-			$this->maniaControl->callbackManager->triggerCallback(self::CB_SERVERSETTING_CHANGED, array(self::CB_SERVERSETTING_CHANGED, $setting, $value));
+			if ($triggerCallbacks) {
+				$this->maniaControl->callbackManager->triggerCallback(self::CB_SERVERSETTING_CHANGED, array(self::CB_SERVERSETTING_CHANGED, $settingName, $settingValue));
+			}
 		}
 
 		$statement->close();
-
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_SERVERSETTINGS_CHANGED, array(self::CB_SERVERSETTINGS_CHANGED));
-
 		return true;
-	}
-
-	/**
-	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getTitle()
-	 */
-	public function getTitle() {
-		return 'Server Settings';
 	}
 }
