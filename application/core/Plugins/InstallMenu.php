@@ -49,6 +49,13 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 	}
 
 	/**
+	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getTitle()
+	 */
+	public static function getTitle() {
+		return 'Install Plugins';
+	}
+
+	/**
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getMenu()
 	 */
 	public function getMenu($width, $height, Script $script, Player $player) {
@@ -262,14 +269,6 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 	 * @param Player $player
 	 */
 	public function handleRefreshListAction(array $actionCallback, Player $player) {
-		$menuId = $this->maniaControl->configurator->getMenuId(self::getTitle());
-		$this->maniaControl->configurator->reopenMenu($player, $menuId);
-	}
-
-	/**
-	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getTitle()
-	 */
-	public function getTitle() {
-		return 'Install Plugins';
+		$this->maniaControl->configurator->showMenu($player, $this);
 	}
 }

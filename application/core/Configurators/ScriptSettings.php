@@ -90,6 +90,13 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	}
 
 	/**
+	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getTitle()
+	 */
+	public static function getTitle() {
+		return 'Script Settings';
+	}
+
+	/**
 	 * Handle OnInit callback
 	 */
 	public function onInit() {
@@ -310,9 +317,8 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			$this->maniaControl->chat->sendError('Script Settings Saving failed!', $player);
 		}
 
-		//Reopen the Menu
-		$menuId = $this->maniaControl->configurator->getMenuId($this->getTitle());
-		$this->maniaControl->configurator->reopenMenu($player, $menuId);
+		// Reopen the Menu
+		$this->maniaControl->configurator->showMenu($player, $this);
 	}
 
 	/**
@@ -395,12 +401,5 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			return ($value ? 'True' : 'False');
 		}
 		return (string)$value;
-	}
-
-	/**
-	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getTitle()
-	 */
-	public function getTitle() {
-		return 'Script Settings';
 	}
 }

@@ -57,6 +57,13 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 	}
 
 	/**
+	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getTitle()
+	 */
+	public static function getTitle() {
+		return self::TITLE;
+	}
+
+	/**
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getMenu()
 	 */
 	public function getMenu($width, $height, Script $script, Player $player) {
@@ -337,14 +344,6 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 		$this->maniaControl->chat->sendSuccess('Settings saved!', $player);
 
 		// Reopen the Menu
-		$menuId = $this->maniaControl->configurator->getMenuId($this->getTitle());
-		$this->maniaControl->configurator->reopenMenu($player, $menuId);
-	}
-
-	/**
-	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getTitle()
-	 */
-	public function getTitle() {
-		return self::TITLE;
+		$this->maniaControl->configurator->showMenu($player, $this);
 	}
 }

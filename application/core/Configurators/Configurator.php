@@ -269,17 +269,6 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	}
 
 	/**
-	 * Reopen the Menu
-	 *
-	 * @param Player $player
-	 * @param int    $menuId
-	 */
-	public function reopenMenu(Player $player, $menuId = 0) {
-		// TODO: improve "reopen" to not need the $menuId param by saving the last shown menu
-		$this->showMenu($player, $menuId);
-	}
-
-	/**
 	 * Handle toggle menu action
 	 *
 	 * @param array  $callback

@@ -64,19 +64,21 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	}
 
 	/**
-	 * Returns Back to the Plugins
+	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getTitle()
 	 */
-	public function backToPlugins($callback, Player $player) {
-		$player->destroyCache($this, self::CACHE_SETTING_CLASS);
-		$menuId = $this->maniaControl->configurator->getMenuId($this->getTitle());
-		$this->maniaControl->configurator->reopenMenu($player, $menuId);
+	public static function getTitle() {
+		return 'Plugins';
 	}
 
 	/**
-	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getTitle()
+	 * Return back to the Plugins
+	 *
+	 * @param array  $callback
+	 * @param Player $player
 	 */
-	public function getTitle() {
-		return 'Plugins';
+	public function backToPlugins($callback, Player $player) {
+		$player->destroyCache($this, self::CACHE_SETTING_CLASS);
+		$this->maniaControl->configurator->showMenu($player, $this);
 	}
 
 	/**
@@ -381,8 +383,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 		}
 
 		// Reopen the Menu
-		$menuId = $this->maniaControl->configurator->getMenuId($this->getTitle());
-		$this->maniaControl->configurator->reopenMenu($player, $menuId);
+		$this->maniaControl->configurator->showMenu($player, $this);
 	}
 
 	/**
@@ -417,7 +418,6 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 		$this->maniaControl->chat->sendSuccess('Plugin Settings saved!', $player);
 
 		// Reopen the Menu
-		$menuId = $this->maniaControl->configurator->getMenuId($this->getTitle());
-		$this->maniaControl->configurator->reopenMenu($player, $menuId);
+		$this->maniaControl->configurator->showMenu($player, $this);
 	}
 }

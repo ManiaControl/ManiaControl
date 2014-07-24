@@ -19,7 +19,7 @@ interface ConfiguratorMenu {
 	 *
 	 * @return string
 	 */
-	public function getTitle();
+	public static function getTitle();
 
 	/**
 	 * Get the Configurator Menu Frame

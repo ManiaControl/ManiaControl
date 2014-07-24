@@ -10,8 +10,8 @@ use ManiaControl\Files\BackupUtil;
 use ManiaControl\Files\FileUtil;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
-use ManiaControl\Plugins\Plugin;
 use ManiaControl\Plugins\InstallMenu;
+use ManiaControl\Plugins\Plugin;
 use ManiaControl\Plugins\PluginManager;
 use ManiaControl\Plugins\PluginMenu;
 use ManiaControl\Utils\WebReader;
@@ -312,8 +312,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 					}
 					$this->maniaControl->log($message);
 
-					$menuId = $this->maniaControl->configurator->getMenuId('Install Plugins');
-					$this->maniaControl->configurator->reopenMenu($player, $menuId);
+					$this->maniaControl->configurator->showMenu($player, InstallMenu::getTitle());
 				}
 			}
 		});
