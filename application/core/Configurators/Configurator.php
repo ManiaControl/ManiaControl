@@ -17,6 +17,7 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
+use ManiaControl\Server\ServerOptionsMenu;
 
 /**
  * Class managing ingame ManiaControl Configuration
@@ -47,7 +48,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	 */
 	private $maniaControl = null;
 	private $scriptSettings = null;
-	private $serverSettings = null;
+	private $serverOptionsMenu = null;
 	private $maniaControlSettings = null;
 	/** @var ConfiguratorMenu[] $menus */
 	private $menus = array();
@@ -81,10 +82,9 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$this->maniaControl->callbackManager->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_OPENED, $this, 'handleWidgetOpened');
 		$this->maniaControl->callbackManager->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_CLOSED, $this, 'closeWidget');
 
-
 		// Create server settings
-		$this->serverSettings = new ServerSettings($maniaControl);
-		$this->addMenu($this->serverSettings);
+		$this->serverOptionsMenu = new ServerOptionsMenu($maniaControl);
+		$this->addMenu($this->serverOptionsMenu);
 
 		// Create script settings
 		$this->scriptSettings = new ScriptSettings($maniaControl);

@@ -1,6 +1,6 @@
 <?php
 
-namespace ManiaControl\Configurators;
+namespace ManiaControl\Server;
 
 use FML\Components\CheckBox;
 use FML\Controls\Entry;
@@ -13,27 +13,32 @@ use FML\Script\Script;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\Callbacks;
+use ManiaControl\Configurators\ConfiguratorMenu;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\Structures\ServerOptions;
 use Maniaplanet\DedicatedServer\Xmlrpc\ServerOptionsException;
 
 /**
- * Class offering a Configurator for Server Settings
+ * Class offering a Configurator Menu for Server Options
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class ServerSettings implements ConfiguratorMenu, CallbackListener {
+class ServerOptionsMenu implements ConfiguratorMenu, CallbackListener {
 	/*
 	 * Constants
 	 */
-	const ACTION_PREFIX_SETTING                     = 'ServerSettings.';
-	const CB_SERVERSETTING_CHANGED                  = 'ServerSettings.SettingChanged';
-	const CB_SERVERSETTINGS_CHANGED                 = 'ServerSettings.SettingsChanged';
-	const TABLE_SERVER_SETTINGS                     = 'mc_serversettings';
-	const SETTING_PERMISSION_CHANGE_SERVER_SETTINGS = 'Change Server-Settings';
+	const CB_SERVER_OPTION_CHANGED  = 'ServerOptionsMenu.OptionChanged';
+	const CB_SERVER_OPTIONS_CHANGED = 'ServerOptionsMenu.OptionsChanged';
+	/** @deprecated */
+	const CB_SERVERSETTING_CHANGED = 'ServerOptionsMenu.OptionChanged';
+	/** @deprecated */
+	const CB_SERVERSETTINGS_CHANGED                = 'ServerOptionsMenu.OptionsChanged';
+	const SETTING_PERMISSION_CHANGE_SERVER_OPTIONS = 'Change Server Options';
+	const TABLE_SERVER_OPTIONS                     = 'mc_server_options';
+	const ACTION_PREFIX_OPTION                     = 'ServerOptionsMenu.';
 
 	/*
 	 * Private Properties
@@ -41,7 +46,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	private $maniaControl = null;
 
 	/**
-	 * Create a new Server Settings Instance
+	 * Create a new Server Options Instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */
@@ -49,11 +54,11 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		$this->maniaControl = $maniaControl;
 		$this->initTables();
 
-		// Register for callbacks
+		// Callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::ONINIT, $this, 'onInit');
 
-		//Permission for Change Script-Settings
-		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_CHANGE_SERVER_SETTINGS, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
+		// Permissions
+		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_CHANGE_SERVER_OPTIONS, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
 	}
 
 	/**
@@ -63,14 +68,14 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	 */
 	private function initTables() {
 		$mysqli    = $this->maniaControl->database->mysqli;
-		$query     = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_SERVER_SETTINGS . "` (
+		$query     = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_SERVER_OPTIONS . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
 				`serverIndex` int(11) NOT NULL,
-				`settingName` varchar(100) NOT NULL,
-				`settingValue` varchar(500) NOT NULL,
+				`optionName` varchar(100) NOT NULL,
+				`optionValue` varchar(500) NOT NULL,
 				PRIMARY KEY (`index`),
-				UNIQUE KEY `setting` (`serverIndex`, `settingName`)
-				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Server Settings' AUTO_INCREMENT=1;";
+				UNIQUE KEY `option` (`serverIndex`, `optionName`)
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Server Options' AUTO_INCREMENT=1;";
 		$statement = $mysqli->prepare($query);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error, E_USER_ERROR);
@@ -89,24 +94,24 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getTitle()
 	 */
 	public static function getTitle() {
-		return 'Server Settings';
+		return 'Server Options';
 	}
 
 	/**
 	 * Handle OnInit callback
 	 */
 	public function onInit() {
-		$this->loadSettingsFromDatabase();
+		$this->loadOptionsFromDatabase();
 	}
 
 	/**
-	 * Load Settings from Database
+	 * Load options from database
 	 *
 	 * @return bool
 	 */
-	public function loadSettingsFromDatabase() {
+	public function loadOptionsFromDatabase() {
 		$mysqli = $this->maniaControl->database->mysqli;
-		$query  = "SELECT * FROM `" . self::TABLE_SERVER_SETTINGS . "`
+		$query  = "SELECT * FROM `" . self::TABLE_SERVER_OPTIONS . "`
 				WHERE serverIndex = {$this->maniaControl->server->index};";
 		$result = $mysqli->query($query);
 		if ($mysqli->error) {
@@ -118,12 +123,12 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		$newServerOptions = new ServerOptions();
 
 		while ($row = $result->fetch_object()) {
-			$settingName = lcfirst($row->settingName);
-			if (!property_exists($oldServerOptions, $settingName)) {
+			$optionName = lcfirst($row->optionName);
+			if (!property_exists($oldServerOptions, $optionName)) {
 				continue;
 			}
-			$newServerOptions->$settingName = $row->settingValue;
-			settype($newServerOptions->$settingName, gettype($oldServerOptions->$settingName));
+			$newServerOptions->$optionName = $row->optionValue;
+			settype($newServerOptions->$optionName, gettype($oldServerOptions->$optionName));
 		}
 		$result->free();
 
@@ -135,23 +140,23 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		} catch (ServerOptionsException $exception) {
 			$this->maniaControl->chat->sendExceptionToAdmins($exception);
 		}
-		$message = ($loaded ? 'Server Settings successfully loaded!' : 'Error loading Server Settings!');
+		$message = ($loaded ? 'Server Options successfully loaded!' : 'Error loading Server Options!');
 		$this->maniaControl->chat->sendSuccessToAdmins($message);
 		return $loaded;
 	}
 
 	/**
-	 * Fill up the new server options object with the necessary settings based on the old options object
+	 * Fill up the new server options object with the necessary options based on the old options object
 	 *
 	 * @param ServerOptions $newServerOptions
 	 * @param ServerOptions $oldServerOptions
 	 * @return ServerOptions
 	 */
 	private function fillUpMandatoryOptions(ServerOptions &$newServerOptions, ServerOptions $oldServerOptions) {
-		$mandatorySettings = array('name', 'comment', 'password', 'passwordForSpectator', 'nextCallVoteTimeOut', 'callVoteRatio');
-		foreach ($mandatorySettings as $settingName) {
-			if (!isset($newServerOptions->$settingName) && isset($oldServerOptions->$settingName)) {
-				$newServerOptions->$settingName = $oldServerOptions->$settingName;
+		$mandatoryOptions = array('name', 'comment', 'password', 'passwordForSpectator', 'nextCallVoteTimeOut', 'callVoteRatio');
+		foreach ($mandatoryOptions as $optionName) {
+			if (!isset($newServerOptions->$optionName) && isset($oldServerOptions->$optionName)) {
+				$newServerOptions->$optionName = $oldServerOptions->$optionName;
 			}
 		}
 		return $newServerOptions;
@@ -165,12 +170,12 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		$script->addFeature($paging);
 		$frame = new Frame();
 
-		$serverOptions  = $this->maniaControl->client->getServerOptions();
-		$serverSettings = $serverOptions->toArray();
+		$serverOptions      = $this->maniaControl->client->getServerOptions();
+		$serverOptionsArray = $serverOptions->toArray();
 
 		// Config
 		$pagerSize     = 9.;
-		$settingHeight = 5.;
+		$optionHeight  = 5.;
 		$labelTextSize = 2;
 
 		// Pagers
@@ -197,12 +202,12 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 		       ->addButton($pagerPrev)
 		       ->setLabel($pageCountLabel);
 
-		// Setting pages
+		// Pages
 		$posY      = 0.;
 		$index     = 0;
 		$pageFrame = null;
 
-		foreach ($serverSettings as $name => $value) {
+		foreach ($serverOptionsArray as $name => $value) {
 			// Continue on CurrentMaxPlayers...
 			$pos = strpos($name, 'Current'); // TODO: display 'Current...' somewhere
 			if ($pos !== false) {
@@ -216,15 +221,15 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 				$paging->addPage($pageFrame);
 			}
 
-			$settingFrame = new Frame();
-			$pageFrame->add($settingFrame);
-			$settingFrame->setY($posY);
+			$optionsFrame = new Frame();
+			$pageFrame->add($optionsFrame);
+			$optionsFrame->setY($posY);
 
 			$nameLabel = new Label_Text();
-			$settingFrame->add($nameLabel);
+			$optionsFrame->add($nameLabel);
 			$nameLabel->setHAlign($nameLabel::LEFT)
 			          ->setX($width * -0.46)
-			          ->setSize($width * 0.4, $settingHeight)
+			          ->setSize($width * 0.4, $optionHeight)
 			          ->setStyle($nameLabel::STYLE_TextCardSmall)
 			          ->setTextSize($labelTextSize)
 			          ->setText($name)
@@ -235,29 +240,29 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 				$quad = new Quad();
 				$quad->setPosition($width * 0.23, 0, -0.01)
 				     ->setSize(4, 4);
-				$checkBox = new CheckBox(self::ACTION_PREFIX_SETTING . $name, $value, $quad);
-				$settingFrame->add($checkBox);
+				$checkBox = new CheckBox(self::ACTION_PREFIX_OPTION . $name, $value, $quad);
+				$optionsFrame->add($checkBox);
 			} else {
 				// Other
 				$entry = new Entry();
-				$settingFrame->add($entry);
+				$optionsFrame->add($entry);
 				$entry->setStyle(Label_Text::STYLE_TextValueSmall)
 				      ->setX($width * 0.23)
 				      ->setTextSize(1)
-				      ->setSize($width * 0.48, $settingHeight * 0.9)
-				      ->setName(self::ACTION_PREFIX_SETTING . $name)
+				      ->setSize($width * 0.48, $optionHeight * 0.9)
+				      ->setName(self::ACTION_PREFIX_OPTION . $name)
 				      ->setDefault($value);
 
 				if ($name === 'Comment') {
-					$entry->setSize($width * 0.48, $settingHeight * 3. + $settingHeight * 0.9)
+					$entry->setSize($width * 0.48, $optionHeight * 3. + $optionHeight * 0.9)
 					      ->setAutoNewLine(true);
-					$settingFrame->setY($posY - $settingHeight * 1.5);
-					$posY -= $settingHeight * 3.;
+					$optionsFrame->setY($posY - $optionHeight * 1.5);
+					$posY -= $optionHeight * 3.;
 					$index += 3;
 				}
 			}
 
-			$posY -= $settingHeight;
+			$posY -= $optionHeight;
 			$index++;
 		}
 
@@ -268,32 +273,32 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
 	 */
 	public function saveConfigData(array $configData, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_CHANGE_SERVER_SETTINGS)) {
+		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_CHANGE_SERVER_OPTIONS)) {
 			$this->maniaControl->authenticationManager->sendNotAllowed($player);
 			return;
 		}
-		if (!$configData[3] || strpos($configData[3][0]['Name'], self::ACTION_PREFIX_SETTING) !== 0) {
+		if (!$configData[3] || strpos($configData[3][0]['Name'], self::ACTION_PREFIX_OPTION) !== 0) {
 			return;
 		}
 
-		$prefixLength = strlen(self::ACTION_PREFIX_SETTING);
+		$prefixLength = strlen(self::ACTION_PREFIX_OPTION);
 
 		$oldServerOptions = $this->maniaControl->client->getServerOptions();
 		$newServerOptions = new ServerOptions();
 
-		foreach ($configData[3] as $setting) {
-			$settingName                    = lcfirst(substr($setting['Name'], $prefixLength));
-			$newServerOptions->$settingName = $setting['Value'];
-			settype($newServerOptions->$settingName, gettype($oldServerOptions->$settingName));
+		foreach ($configData[3] as $option) {
+			$optionName                    = lcfirst(substr($option['Name'], $prefixLength));
+			$newServerOptions->$optionName = $option['Value'];
+			settype($newServerOptions->$optionName, gettype($oldServerOptions->$optionName));
 		}
 
 		$this->fillUpMandatoryOptions($newServerOptions, $oldServerOptions);
 
 		$success = $this->applyNewServerOptions($newServerOptions, $player);
 		if ($success) {
-			$this->maniaControl->chat->sendSuccess('Server Settings saved!', $player);
+			$this->maniaControl->chat->sendSuccess('Server Options saved!', $player);
 		} else {
-			$this->maniaControl->chat->sendSuccess('Server Settings saving failed!', $player);
+			$this->maniaControl->chat->sendError('Server Options saving failed!', $player);
 		}
 
 		// Reopen the Menu
@@ -301,7 +306,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	}
 
 	/**
-	 * Apply the Array of new Server Settings
+	 * Apply the array of new Server Options
 	 *
 	 * @param ServerOptions $newServerOptions
 	 * @param Player        $player
@@ -317,7 +322,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 
 		$this->saveServerOptions($newServerOptions, true);
 
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_SERVERSETTINGS_CHANGED, array(self::CB_SERVERSETTINGS_CHANGED));
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_SERVER_OPTIONS_CHANGED, array(self::CB_SERVER_OPTIONS_CHANGED));
 
 		return true;
 	}
@@ -331,27 +336,27 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	 */
 	private function saveServerOptions(ServerOptions $serverOptions, $triggerCallbacks = false) {
 		$mysqli    = $this->maniaControl->database->mysqli;
-		$query     = "INSERT INTO `" . self::TABLE_SERVER_SETTINGS . "` (
+		$query     = "INSERT INTO `" . self::TABLE_SERVER_OPTIONS . "` (
 				`serverIndex`,
-				`settingName`,
-				`settingValue`
+				`optionName`,
+				`optionValue`
 				) VALUES (
 				?, ?, ?
 				) ON DUPLICATE KEY UPDATE
-				`settingValue` = VALUES(`settingValue`);";
+				`optionValue` = VALUES(`optionValue`);";
 		$statement = $mysqli->prepare($query);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
 		}
 
-		$settingName  = null;
-		$settingValue = null;
-		$statement->bind_param('iss', $this->maniaControl->server->index, $settingName, $settingValue);
+		$optionName  = null;
+		$optionValue = null;
+		$statement->bind_param('iss', $this->maniaControl->server->index, $optionName, $optionValue);
 
-		$settingsArray = $serverOptions->toArray();
-		foreach ($settingsArray as $settingName => $settingValue) {
-			if ($settingValue === null) {
+		$serverOptionsArray = $serverOptions->toArray();
+		foreach ($serverOptionsArray as $optionName => $optionValue) {
+			if ($optionValue === null) {
 				continue;
 			}
 
@@ -363,7 +368,7 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			}
 
 			if ($triggerCallbacks) {
-				$this->maniaControl->callbackManager->triggerCallback(self::CB_SERVERSETTING_CHANGED, array(self::CB_SERVERSETTING_CHANGED, $settingName, $settingValue));
+				$this->maniaControl->callbackManager->triggerCallback(self::CB_SERVER_OPTION_CHANGED, array(self::CB_SERVER_OPTION_CHANGED, $optionName, $optionValue));
 			}
 		}
 
