@@ -6,7 +6,7 @@ use ManiaControl\ManiaExchange\MXMapInfo;
 use ManiaControl\Utils\Formatter;
 
 /**
- * Map Model Class
+ * ManiaControl Map Model Class
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014 ManiaControl Team
@@ -14,7 +14,7 @@ use ManiaControl\Utils\Formatter;
  */
 class Map {
 	/*
-	 * Public Properties
+	 * Public properties
 	 */
 	public $index = -1;
 	public $name = 'undefined';
@@ -42,10 +42,9 @@ class Map {
 	public $karma = null;
 
 	/**
-	 * Create a new Map Object from Rpc Data
+	 * Construct a new map instance from xmlrpc data
 	 *
 	 * @param \Maniaplanet\DedicatedServer\Structures\Map $mpMap
-	 * @internal param \ManiaControl\ManiaControl $maniaControl
 	 */
 	public function __construct($mpMap = null) {
 		$this->startTime = time();
@@ -71,7 +70,7 @@ class Map {
 	}
 
 	/**
-	 * Get the escaped Map Name
+	 * Get the escaped map name
 	 *
 	 * @return string
 	 */
@@ -80,7 +79,7 @@ class Map {
 	}
 
 	/**
-	 * Get the Game Type of the Map
+	 * Get the game type of the map
 	 *
 	 * @return string
 	 */
@@ -97,17 +96,12 @@ class Map {
 	}
 
 	/**
-	 * Checks if a map Update is available
+	 * Check whether a map update is available
 	 *
 	 * @return bool
 	 */
 	public function updateAvailable() {
-
-		if ($this->mx && ($this->lastUpdate < strtotime($this->mx->updated) || $this->uid !== $this->mx->uid)) {
-			return true;
-		} else {
-			return false;
-		}
+		return ($this->mx && ($this->lastUpdate < strtotime($this->mx->updated) || $this->uid !== $this->mx->uid));
 	}
 
 	/**
@@ -116,4 +110,4 @@ class Map {
 	public function dump() {
 		var_dump(json_decode(json_encode($this)));
 	}
-} 
+}

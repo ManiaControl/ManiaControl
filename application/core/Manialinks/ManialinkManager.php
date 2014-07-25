@@ -30,14 +30,17 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	const CB_MAIN_WINDOW_OPENED = 'ManialinkManagerCallback.MainWindowOpened';
 
 	/*
-	 * Public Properties
+	 * Public properties
 	 */
+	/** @var StyleManager $styleManager */
 	public $styleManager = null;
+	/** @var CustomUIManager $customUIManager */
 	public $customUIManager = null;
+	/** @var IconManager $iconManager */
 	public $iconManager = null;
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
 	private $maniaControl = null;
 	// TODO: use listening class
@@ -45,17 +48,19 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	private $pageAnswerRegexListener = array();
 
 	/**
-	 * Create a new manialink manager
+	 * Construct a new manialink manager instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl    = $maniaControl;
+
+		// Children
 		$this->styleManager    = new StyleManager($maniaControl);
 		$this->customUIManager = new CustomUIManager($maniaControl);
 		$this->iconManager     = new IconManager($maniaControl);
 
-		// Register for callbacks
+		// Callbacks
 		$this->registerManialinkPageAnswerListener(self::ACTION_CLOSEWIDGET, $this, 'closeWidgetCallback');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 	}
@@ -83,6 +88,33 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 		array_push($this->pageAnswerListeners[$actionId], array($listener, $method));
 
 		return true;
+	}
+
+	/**
+	 * Return the style manager
+	 *
+	 * @return StyleManager
+	 */
+	public function getStyleManager() {
+		return $this->styleManager;
+	}
+
+	/**
+	 * Return the custom UI manager
+	 *
+	 * @return CustomUIManager
+	 */
+	public function getCustomUIManager() {
+		return $this->customUIManager;
+	}
+
+	/**
+	 * Return the icon manager
+	 *
+	 * @return IconManager
+	 */
+	public function getIconManager() {
+		return $this->iconManager;
 	}
 
 	/**

@@ -14,13 +14,15 @@ use ManiaControl\ManiaControl;
  */
 class Database implements TimerListener {
 	/*
-	 * Public Properties
+	 * Public properties
 	 */
+	/** @var \mysqli $mysqli */
 	public $mysqli = null;
+	/** @var MigrationHelper $migrationHelper */
 	public $migrationHelper = null;
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
 	private $maniaControl = null;
 	/** @var Config $config */
@@ -179,6 +181,33 @@ class Database implements TimerListener {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Return the database config
+	 *
+	 * @return Config
+	 */
+	public function getConfig() {
+		return $this->config;
+	}
+
+	/**
+	 * Return the migration helper
+	 *
+	 * @return MigrationHelper
+	 */
+	public function getMigrationHelper() {
+		return $this->migrationHelper;
+	}
+
+	/**
+	 * Return the mysqli instance
+	 *
+	 * @return \mysqli
+	 */
+	public function getMysqli() {
+		return $this->mysqli;
 	}
 
 	/**

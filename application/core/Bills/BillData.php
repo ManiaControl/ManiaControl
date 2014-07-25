@@ -2,6 +2,8 @@
 
 namespace ManiaControl\Bills;
 
+use ManiaControl\Players\Player;
+
 /**
  * ManiaControl BillData Structure
  *
@@ -10,8 +12,9 @@ namespace ManiaControl\Bills;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class BillData {
+
 	/*
-	 * Public Properties
+	 * Public properties
 	 */
 	public $function = null;
 	public $pay = false;
@@ -21,13 +24,13 @@ class BillData {
 	public $creationTime = -1;
 
 	/**
-	 * Construct new BillData
+	 * Construct new Bill Data Model
 	 *
-	 * @param mixed  $function
-	 * @param        Player /string $player
-	 * @param int    $amount
-	 * @param bool   $pay
-	 * @param string $receiverLogin
+	 * @param mixed         $function
+	 * @param Player|string $player
+	 * @param int           $amount
+	 * @param bool          $pay
+	 * @param string        $receiverLogin
 	 */
 	public function __construct($function, $player, $amount, $pay = false, $receiverLogin = null) {
 		$this->function      = $function;
@@ -37,5 +40,4 @@ class BillData {
 		$this->receiverLogin = $receiverLogin;
 		$this->creationTime  = time();
 	}
-
-} 
+}

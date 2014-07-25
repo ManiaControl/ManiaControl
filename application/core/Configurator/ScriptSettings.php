@@ -37,12 +37,12 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	const SETTING_PERMISSION_CHANGE_SCRIPT_SETTINGS = 'Change Script-Settings';
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
 	private $maniaControl = null;
 
 	/**
-	 * Create a new Script Settings Instance
+	 * Construct a new script settings instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */
@@ -50,17 +50,17 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		$this->maniaControl = $maniaControl;
 		$this->initTables();
 
-		// Register for callbacks
+		// Callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::ONINIT, $this, 'onInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::BEGINMAP, $this, 'onBeginMap');
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_LOAD_DEFAULT_SETTINGS_MAP_BEGIN, true);
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_LOAD_DEFAULT_SETTINGS_MAP_BEGIN, false);
 
-		//Permission for Change Script-Settings
+		// Permissions
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_CHANGE_SCRIPT_SETTINGS, AuthenticationManager::AUTH_LEVEL_ADMIN);
 	}
 
 	/**
-	 * Create all necessary Database Tables
+	 * Create all necessary database tables
 	 *
 	 * @return boolean
 	 */

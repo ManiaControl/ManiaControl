@@ -33,10 +33,10 @@ class StyleManager {
 	const SETTING_LIST_WIDGETS_WIDTH           = 'List Widgets Width';
 	const SETTING_LIST_WIDGETS_HEIGHT          = 'List Widgets Height';
 
-	const SETTING_ICON_DEFAULT_OFFSET_SM = 'Default Icon Offset in Shootmania';
+	const SETTING_ICON_DEFAULT_OFFSET_SM = 'Default Icon Offset in ShootMania';
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
 	private $maniaControl = null;
 

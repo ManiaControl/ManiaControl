@@ -24,10 +24,12 @@ class PluginManager {
 	const CB_PLUGIN_UNLOADED = 'PluginManager.PluginUnloaded';
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
 	private $maniaControl = null;
+	/** @var PluginMenu $pluginMenu */
 	private $pluginMenu = null;
+	/** @var InstallMenu $pluginInstallMenu */
 	private $pluginInstallMenu = null;
 	/** @var Plugin[] $activePlugins */
 	private $activePlugins = array();
@@ -35,9 +37,9 @@ class PluginManager {
 	private $pluginClasses = array();
 
 	/**
-	 * Construct plugin manager
+	 * Construct a new plugin manager instance
 	 *
-	 * @param \ManiaControl\ManiaControl $maniaControl
+	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
@@ -459,7 +461,6 @@ class PluginManager {
 	 */
 	public function fetchPluginList(callable $function) {
 		$url = ManiaControl::URL_WEBSERVICE . 'plugins';
-
 		$this->maniaControl->fileReader->loadFile($url, function ($dataJson, $error) use (&$function) {
 			$data = json_decode($dataJson);
 			call_user_func($function, $data, $error);

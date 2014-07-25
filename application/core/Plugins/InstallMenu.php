@@ -32,12 +32,12 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 	const ACTION_REFRESH_LIST                = 'PluginInstallMenu.RefreshList';
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
 	private $maniaControl = null;
 
 	/**
-	 * Create a new Plugin Install Menu
+	 * Create a new plugin install menu instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */

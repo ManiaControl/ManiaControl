@@ -16,9 +16,10 @@ use ManiaControl\ManiaControl;
  */
 class CommandManager implements CallbackListener {
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
 	private $maniaControl = null;
+	/** @var HelpManager $helpManager */
 	private $helpManager = array();
 	/** @var Listening[][] $commandListenings */
 	private $commandListenings = array();
@@ -33,11 +34,20 @@ class CommandManager implements CallbackListener {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		// Create help manager instance
+		// Children
 		$this->helpManager = new HelpManager($this->maniaControl);
 
-		// Register for callback
+		// Callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCHAT, $this, 'handleChatCallback');
+	}
+
+	/**
+	 * Return the help manager instance
+	 *
+	 * @return HelpManager
+	 */
+	public function getHelpManager() {
+		return $this->helpManager;
 	}
 
 	/**

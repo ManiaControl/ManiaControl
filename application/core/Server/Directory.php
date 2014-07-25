@@ -16,12 +16,12 @@ use ManiaControl\ManiaControl;
  */
 class Directory implements CallbackListener {
 	/**
-	 * Private Properties
+	 * Private properties
 	 */
 	private $maniaControl = null;
 
 	/**
-	 * Create new Server Directory Object
+	 * Create new server directory instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */
@@ -76,6 +76,15 @@ class Directory implements CallbackListener {
 	}
 
 	/**
+	 * Retrieve the Game Data Folder Path
+	 *
+	 * @return string
+	 */
+	public function getGameDataFolder() {
+		return $this->maniaControl->client->gameDataDirectory();
+	}
+
+	/**
 	 * @return bool
 	 */
 	private function cleanCacheFolder() {
@@ -89,14 +98,5 @@ class Directory implements CallbackListener {
 	 */
 	public function getCacheFolder() {
 		return $this->getGameDataFolder() . '..' . DIRECTORY_SEPARATOR . 'CommonData' . DIRECTORY_SEPARATOR . 'Cache' . DIRECTORY_SEPARATOR;
-	}
-
-	/**
-	 * Retrieve the Game Data Folder Path
-	 *
-	 * @return string
-	 */
-	public function getGameDataFolder() {
-		return $this->maniaControl->client->gameDataDirectory();
 	}
 }

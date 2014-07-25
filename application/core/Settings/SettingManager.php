@@ -9,7 +9,7 @@ use ManiaControl\Plugins\PluginManager;
 use ManiaControl\Utils\ClassUtil;
 
 /**
- * Class managing Settings and Configurations
+ * Class managing ManiaControl Settings and Configurations
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014 ManiaControl Team
@@ -22,16 +22,16 @@ class SettingManager implements CallbackListener {
 	const TABLE_SETTINGS     = 'mc_settings';
 	const CB_SETTING_CHANGED = 'SettingManager.SettingChanged';
 	/** @deprecated Use CB_SETTING_CHANGED */
-	const CB_SETTINGS_CHANGED = 'SettingManager.SettingsChanged';
+	const CB_SETTINGS_CHANGED = 'SettingManager.SettingChanged';
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
 	private $maniaControl = null;
 	private $storedSettings = array();
 
 	/**
-	 * Construct a new Setting Manager
+	 * Construct a new setting manager instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */
@@ -39,11 +39,12 @@ class SettingManager implements CallbackListener {
 		$this->maniaControl = $maniaControl;
 		$this->initTables();
 
+		// Callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::AFTERINIT, $this, 'handleAfterInit');
 	}
 
 	/**
-	 * Initialize the necessary Database Tables
+	 * Initialize the necessary database tables
 	 *
 	 * @return bool
 	 */
@@ -321,7 +322,7 @@ class SettingManager implements CallbackListener {
 		$settingStatement->close();
 
 		// Trigger Settings Changed Callback
-		if(!$init){
+		if (!$init) {
 			$this->maniaControl->callbackManager->triggerCallback(self::CB_SETTING_CHANGED, $setting);
 		}
 		return true;

@@ -11,7 +11,7 @@ namespace ManiaControl\Server;
  */
 class Config {
 	/*
-	 * Public Properties
+	 * Public properties
 	 */
 	public $id = null;
 	public $host = null;
@@ -20,7 +20,7 @@ class Config {
 	public $pass = null;
 
 	/**
-	 * Create a new Server Config Instance
+	 * Create a new server config instance
 	 *
 	 * @param mixed $id
 	 * @param mixed $host

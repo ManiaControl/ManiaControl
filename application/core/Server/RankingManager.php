@@ -17,14 +17,14 @@ use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
  */
 class RankingManager implements CallbackListener {
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
 	private $rankings = array();
 
 	/**
-	 * Construct player manager
+	 * Construct a new ranking manager instance
 	 *
-	 * @param \ManiaControl\ManiaControl $maniaControl
+	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
@@ -37,7 +37,7 @@ class RankingManager implements CallbackListener {
 	}
 
 	/**
-	 *    Initialize the Rankings (never call this Method)
+	 * Initialize the Rankings (never call this Method)
 	 */
 	public function onInit() {
 		try {
@@ -124,4 +124,4 @@ class RankingManager implements CallbackListener {
 	public function getPlayerRanking() {
 		//TODO complete this
 	}
-} 
+}

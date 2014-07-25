@@ -22,10 +22,8 @@ use Maniaplanet\DedicatedServer\Xmlrpc\InvalidMapException;
 use Maniaplanet\DedicatedServer\Xmlrpc\NotInListException;
 use Maniaplanet\DedicatedServer\Xmlrpc\UnavailableFeatureException;
 
-// TODO: adding of local maps
-
 /**
- * Manager for Maps
+ * ManiaControl Map Manager Class
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014 ManiaControl Team
@@ -54,20 +52,29 @@ class MapManager implements CallbackListener {
 	const CB_ENDMAP = 'Callbacks.EndMap';
 
 	/*
-	 * Public Properties
+	 * Public properties
 	 */
+	/** @var MapQueue $mapQueue */
 	public $mapQueue = null;
+	/** @var MapCommands $mapCommands */
 	public $mapCommands = null;
-	public $mapList = null;
-	public $directoryBrowser = null;
-	public $mxList = null;
-	public $mxManager = null;
+	/** @var MapActions $mapActions */
 	public $mapActions = null;
+	/** @var MapList $mapList */
+	public $mapList = null;
+	/** @var DirectoryBrowser $directoryBrowser */
+	public $directoryBrowser = null;
+	/** @var ManiaExchangeList $mxList */
+	public $mxList = null;
+	/** @var ManiaExchangeManager $mxManager */
+	public $mxManager = null;
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
+	/** @var Map[] $maps */
 	private $maps = array();
 	/** @var Map $currentMap */
 	private $currentMap = null;
@@ -75,7 +82,7 @@ class MapManager implements CallbackListener {
 	private $mapBegan = false;
 
 	/**
-	 * Construct a new Map Manager
+	 * Construct a new map manager instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */
@@ -83,7 +90,7 @@ class MapManager implements CallbackListener {
 		$this->maniaControl = $maniaControl;
 		$this->initTables();
 
-		// Create map commands instance
+		// Children
 		$this->mxManager        = new ManiaExchangeManager($this->maniaControl);
 		$this->mapList          = new MapList($this->maniaControl);
 		$this->directoryBrowser = new DirectoryBrowser($this->maniaControl);
@@ -92,12 +99,12 @@ class MapManager implements CallbackListener {
 		$this->mapQueue         = new MapQueue($this->maniaControl);
 		$this->mapActions       = new MapActions($maniaControl);
 
-		// Register for callbacks
+		// Callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::ONINIT, $this, 'handleOnInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::AFTERINIT, $this, 'handleAfterInit');
 		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_MAPLISTMODIFIED, $this, 'mapsModified');
 
-		// Define Rights
+		// Permissions
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_ADD_MAP, AuthenticationManager::AUTH_LEVEL_ADMIN);
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_REMOVE_MAP, AuthenticationManager::AUTH_LEVEL_ADMIN);
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_ERASE_MAP, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
@@ -106,12 +113,13 @@ class MapManager implements CallbackListener {
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_SKIP_MAP, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_RESTART_MAP, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 
+		// Settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_AUTOSAVE_MAPLIST, true);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAPLIST_FILE, "MatchSettings/tracklist.txt");
 	}
 
 	/**
-	 * Initialize necessary Database Tables
+	 * Initialize necessary database tables
 	 *
 	 * @return bool
 	 */
@@ -136,6 +144,69 @@ class MapManager implements CallbackListener {
 			return false;
 		}
 		return $result;
+	}
+
+	/**
+	 * Return the map queue
+	 *
+	 * @return MapQueue
+	 */
+	public function getMapQueue() {
+		return $this->mapQueue;
+	}
+
+	/**
+	 * Return the map commands
+	 *
+	 * @return MapCommands
+	 */
+	public function getMapCommands() {
+		return $this->mapCommands;
+	}
+
+	/**
+	 * Return the map actions
+	 *
+	 * @return MapActions
+	 */
+	public function getMapActions() {
+		return $this->mapActions;
+	}
+
+	/**
+	 * Return the map list
+	 *
+	 * @return MapList
+	 */
+	public function getMapList() {
+		return $this->mapList;
+	}
+
+	/**
+	 * Return the directory browser
+	 *
+	 * @return DirectoryBrowser
+	 */
+	public function getDirectoryBrowser() {
+		return $this->directoryBrowser;
+	}
+
+	/**
+	 * Return the mx list
+	 *
+	 * @return ManiaExchangeList
+	 */
+	public function getMXList() {
+		return $this->mxList;
+	}
+
+	/**
+	 * Return the mx manager
+	 *
+	 * @return ManiaExchangeManager
+	 */
+	public function getMXManager() {
+		return $this->mxManager;
 	}
 
 	/**

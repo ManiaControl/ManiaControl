@@ -6,7 +6,7 @@ use ManiaControl\ManiaControl;
 use Maniaplanet\DedicatedServer\Xmlrpc\ChangeInProgressException;
 
 /**
- * Map Actions Class
+ * ManiaControl Map Actions Class
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014 ManiaControl Team
@@ -14,12 +14,12 @@ use Maniaplanet\DedicatedServer\Xmlrpc\ChangeInProgressException;
  */
 class MapActions {
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
 	private $maniaControl = null;
 
 	/**
-	 * Construct a Map Actions Instance
+	 * Construct a map actions instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */
@@ -28,7 +28,7 @@ class MapActions {
 	}
 
 	/**
-	 * Skips the current Map
+	 * Skip the current Map
 	 */
 	public function skipMap() {
 		//Force a EndMap on the MapQueue to set the next Map

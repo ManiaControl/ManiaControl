@@ -25,12 +25,12 @@ use ManiaControl\Utils\WebReader;
  */
 class PluginUpdateManager implements CallbackListener, CommandListener, TimerListener {
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
 	private $maniaControl = null;
 
 	/**
-	 * Create a new Plugin Update Manager
+	 * Create a new plugin update manager instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */

@@ -3,7 +3,7 @@
 namespace ManiaControl\Update;
 
 /**
- * Update Data Structure
+ * ManiaControl Update Data Model Class
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014 ManiaControl Team
@@ -11,7 +11,7 @@ namespace ManiaControl\Update;
  */
 class UpdateData {
 	/*
-	 * Public Properties
+	 * Public properties
 	 */
 	public $version = null;
 	public $channel = null;
@@ -20,7 +20,7 @@ class UpdateData {
 	public $minDedicatedBuild = null;
 
 	/**
-	 * Construct new Update Data
+	 * Construct new update data instance
 	 *
 	 * @param object $updateData
 	 */
@@ -33,7 +33,7 @@ class UpdateData {
 	}
 
 	/**
-	 * Check if the Update Data is newer than the given Date
+	 * Check if the update data is newer than the given date
 	 *
 	 * @param string $compareDate
 	 * @return bool

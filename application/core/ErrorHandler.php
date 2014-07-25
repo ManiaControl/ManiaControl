@@ -31,7 +31,7 @@ class ErrorHandler {
 	private $handlingError = null;
 
 	/**
-	 * Construct Error Handler
+	 * Construct a new error handler instance
 	 *
 	 * @param ManiaControl @maniaControl
 	 */
@@ -43,7 +43,7 @@ class ErrorHandler {
 	}
 
 	/**
-	 * Initialize other Error Handler Features
+	 * Initialize error handler features
 	 */
 	public function init() {
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_RESTART_ON_EXCEPTION, true);

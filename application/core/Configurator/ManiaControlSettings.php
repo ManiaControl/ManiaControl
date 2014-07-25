@@ -38,12 +38,12 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 	const CACHE_CLASS_OPENED                    = 'ClassOpened';
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
 	private $maniaControl = null;
 
 	/**
-	 * Create a new Script Settings Instance
+	 * Create a new ManiaControl Settings Instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */

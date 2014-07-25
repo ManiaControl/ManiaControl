@@ -26,7 +26,7 @@ class IconManager implements CallbackListener {
 	const PRELOAD_MLID    = 'IconManager.Preload.MLID';
 
 	/**
-	 * Some Default icons
+	 * Default icons
 	 */
 	const MX_ICON       = 'ManiaExchange.png';
 	const MX_ICON_MOVER = 'ManiaExchange_logo_press.png';
@@ -35,13 +35,13 @@ class IconManager implements CallbackListener {
 	const MX_ICON_GREEN_MOVER = 'ManiaExchange_logo_pressGreen.png';
 
 	/**
-	 * Private Properties
+	 * Private properties
 	 */
 	private $maniaControl = null;
 	private $icons = array();
 
 	/**
-	 * Create a new Icon Manager
+	 * Construct a new icon manager instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */
@@ -55,14 +55,13 @@ class IconManager implements CallbackListener {
 	}
 
 	/**
-	 * Add the Set of default Icons
+	 * Add the set of default icons
 	 */
 	private function addDefaultIcons() {
 		$this->addIcon(self::MX_ICON);
 		$this->addIcon(self::MX_ICON_MOVER);
 		$this->addIcon(self::MX_ICON_GREEN);
 		$this->addIcon(self::MX_ICON_GREEN_MOVER);
-
 	}
 
 	/**

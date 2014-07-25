@@ -41,7 +41,7 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 	const COMMAND_FORCE_WARMUP                     = 'Command_ForceWarmUp';
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
 	private $maniaControl = null;
 	private $serverShutdownTime = -1;

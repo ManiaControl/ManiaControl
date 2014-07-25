@@ -12,7 +12,7 @@ use ManiaControl\Utils\Formatter;
 use Maniaplanet\DedicatedServer\Xmlrpc\NextMapException;
 
 /**
- * MapQueue Class
+ * ManiaControl Map Queue Class
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014 ManiaControl Team
@@ -36,7 +36,7 @@ class MapQueue implements CallbackListener, CommandListener {
 	const ADMIN_COMMAND_CLEAR_JUKEBOX  = 'clearjukebox';
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
 	private $maniaControl = null;
 	private $queuedMaps = array();
@@ -45,7 +45,7 @@ class MapQueue implements CallbackListener, CommandListener {
 	private $nextNoQueue = false;
 
 	/**
-	 * Create a new server MapQueue
+	 * Construct a new map queue instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */
@@ -80,7 +80,7 @@ class MapQueue implements CallbackListener, CommandListener {
 	}
 
 	/**
-	 * Adds current map to buffer on startup
+	 * Add current map to buffer on startup
 	 */
 	public function handleAfterInit() {
 		$currentMap     = $this->maniaControl->mapManager->getCurrentMap();
@@ -88,7 +88,7 @@ class MapQueue implements CallbackListener, CommandListener {
 	}
 
 	/**
-	 * Clears the map-queue via admin command clear map queue
+	 * Clear the map-queue via admin command clear map queue
 	 *
 	 * @param array  $chatCallback
 	 * @param Player $admin
@@ -126,7 +126,7 @@ class MapQueue implements CallbackListener, CommandListener {
 	}
 
 	/**
-	 * Handles the mapqueue/jukebox command
+	 * Handle the mapqueue/jukebox command
 	 *
 	 * @param array  $chatCallback
 	 * @param Player $player
@@ -156,7 +156,7 @@ class MapQueue implements CallbackListener, CommandListener {
 	}
 
 	/**
-	 * Shows current mapqueue in the chat
+	 * Show current mapqueue in the chat
 	 *
 	 * @param Player $player
 	 */
@@ -177,7 +177,7 @@ class MapQueue implements CallbackListener, CommandListener {
 	}
 
 	/**
-	 * Shows current mapqueue in a manialink
+	 * Show current mapqueue in a manialink
 	 *
 	 * @param Player $player
 	 */
@@ -196,7 +196,7 @@ class MapQueue implements CallbackListener, CommandListener {
 	}
 
 	/**
-	 * Returns the current queue buffer
+	 * Return the current queue buffer
 	 *
 	 * @return string[]
 	 */
@@ -205,7 +205,7 @@ class MapQueue implements CallbackListener, CommandListener {
 	}
 
 	/**
-	 * Adds map as first map in queue (for /replay)
+	 * Add map as first map in queue (for /replay)
 	 *
 	 * @param Player $player
 	 * @param Map    $map
@@ -221,7 +221,7 @@ class MapQueue implements CallbackListener, CommandListener {
 	}
 
 	/**
-	 * Adds a Map to the map-queue
+	 * Add a Map to the map-queue
 	 *
 	 * @param string $login
 	 * @param string $uid
@@ -308,7 +308,6 @@ class MapQueue implements CallbackListener, CommandListener {
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_MAPQUEUE_CHANGED, array('remove', $map));
 	}
 
-
 	/**
 	 * Called on endmap
 	 *
@@ -388,7 +387,7 @@ class MapQueue implements CallbackListener, CommandListener {
 	}
 
 	/**
-	 * Returns the next Map if the next map is a queuedmap or null if it's not
+	 * Return the next Map if the next map is a queuedmap or null if it's not
 	 *
 	 * @return Map
 	 */
@@ -397,7 +396,7 @@ class MapQueue implements CallbackListener, CommandListener {
 	}
 
 	/**
-	 * Returns the first Queued Map
+	 * Return the first Queued Map
 	 *
 	 * @return array(Player $player, Map $map)
 	 */
@@ -410,7 +409,7 @@ class MapQueue implements CallbackListener, CommandListener {
 	}
 
 	/**
-	 * Returns a list with the indexes of the queued maps
+	 * Return a list with the indexes of the queued maps
 	 *
 	 * @return array
 	 */

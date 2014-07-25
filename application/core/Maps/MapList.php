@@ -57,12 +57,12 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	const WIDGET_NAME                = 'MapList';
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
 	private $maniaControl = null;
 
 	/**
-	 * Create a new MapList Instance
+	 * Construct a new map list instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */
@@ -83,7 +83,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	}
 
 	/**
-	 * Clears the Map Queue
+	 * Clear the Map Queue
 	 *
 	 * @param array  $chatCallback
 	 * @param Player $player

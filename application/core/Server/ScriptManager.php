@@ -15,15 +15,11 @@ class ScriptManager {
 	/*
 	 * Private Properties
 	 */
-	public $maniaControl = null;
-
-	/*
-	 * Private Properties
-	 */
+	private $maniaControl = null;
 	private $isScriptMode = null;
 
 	/**
-	 * Construct a new Script Manager
+	 * Construct a new script manager instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */
@@ -32,7 +28,7 @@ class ScriptManager {
 	}
 
 	/**
-	 * Enable Script Callbacks
+	 * Enable script callbacks
 	 *
 	 * @param bool $enable
 	 * @return bool
@@ -56,7 +52,7 @@ class ScriptManager {
 	}
 
 	/**
-	 * Check if the Server is running in Script Mode
+	 * Check whether the Server is running in Script Mode
 	 *
 	 * @return bool
 	 */

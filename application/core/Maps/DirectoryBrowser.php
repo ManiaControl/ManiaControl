@@ -46,7 +46,7 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 	private $maniaControl = null;
 
 	/**
-	 * Create a new Directory Browser Instance
+	 * Create a new directory browser instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */

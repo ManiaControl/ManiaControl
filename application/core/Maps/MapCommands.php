@@ -34,14 +34,14 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	const ACTION_SHOW_AUTHOR  = 'MapList.ShowAuthorList.';
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
 	private $maniaControl = null;
 
 	/**
-	 * Create MapCommands instance
+	 * Construct a new map commands instance
 	 *
-	 * @param \ManiaControl\ManiaControl $maniaControl
+	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
@@ -102,7 +102,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	}
 
 	/**
-	 * Shows which map is the next
+	 * Show which map is the next
 	 *
 	 * @param array  $chatCallback
 	 * @param Player $player

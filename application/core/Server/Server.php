@@ -10,7 +10,7 @@ use ManiaControl\Utils\CommandLineHelper;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
 /**
- * Class providing Access to the connected ManiaPlanet Server
+ * Class providing access to the connected ManiaPlanet Server
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014 ManiaControl Team
@@ -24,7 +24,7 @@ class Server implements CallbackListener {
 	const CB_TEAM_MODE_CHANGED = 'Server.TeamModeChanged';
 
 	/*
-	 * Public Properties
+	 * Public properties
 	 */
 	/** @var Config $config */
 	public $config = null;
@@ -34,10 +34,15 @@ class Server implements CallbackListener {
 	public $p2pPort = -1;
 	public $login = null;
 	public $titleId = null;
+	/** @var Directory $directory */
 	public $directory = null;
+	/** @var Commands $commands */
 	public $commands = null;
+	/** @var UsageReporter $usageReporter */
 	public $usageReporter = null;
+	/** @var RankingManager $rankingManager */
 	public $rankingManager = null;
+	/** @var ScriptManager $scriptManager */
 	public $scriptManager = null;
 
 	/*
@@ -90,6 +95,51 @@ class Server implements CallbackListener {
 		}
 		$statement->close();
 		return true;
+	}
+
+	/**
+	 * Return the server config
+	 *
+	 * @return Config
+	 */
+	public function getConfig() {
+		return $this->config;
+	}
+
+	/**
+	 * Return the server directory
+	 *
+	 * @return Directory
+	 */
+	public function getDirectory() {
+		return $this->directory;
+	}
+
+	/**
+	 * Return the server commands
+	 *
+	 * @return Commands
+	 */
+	public function getCommands() {
+		return $this->commands;
+	}
+
+	/**
+	 * Return the usage reporter
+	 *
+	 * @return UsageReporter
+	 */
+	public function getUsageReporter() {
+		return $this->usageReporter;
+	}
+
+	/**
+	 * Return the script manager
+	 *
+	 * @return ScriptManager
+	 */
+	public function getScriptManager() {
+		return $this->scriptManager;
 	}
 
 	/**

@@ -44,17 +44,20 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	const MENU_NAME                            = 'Configurator';
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
 	private $maniaControl = null;
+	/** @var ScriptSettings $scriptSettings */
 	private $scriptSettings = null;
+	/** @var ServerOptionsMenu $serverOptionsMenu */
 	private $serverOptionsMenu = null;
+	/** @var ManiaControlSettings $maniaControlSettings */
 	private $maniaControlSettings = null;
 	/** @var ConfiguratorMenu[] $menus */
 	private $menus = array();
 
 	/**
-	 * Create a new Configurator
+	 * Create a new configurator instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */

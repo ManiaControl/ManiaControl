@@ -15,12 +15,12 @@ use ManiaControl\Utils\ClassUtil;
  */
 class MigrationHelper {
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
 	private $maniaControl = null;
 
 	/**
-	 * Construct Migration Helper
+	 * Construct a new migration helper instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */

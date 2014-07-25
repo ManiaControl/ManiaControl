@@ -13,7 +13,7 @@ use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Players\Player;
 
 /**
- * Help Manager
+ * ManiaControl Help Manager Class
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014 ManiaControl Team
@@ -31,12 +31,12 @@ class HelpManager implements CommandListener, CallbackListener {
 	/**
 	 * Construct a new Commands Manager
 	 *
-	 * @param \ManiaControl\ManiaControl $maniaControl
+	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		// Register for callbacks
+		// Callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::ONINIT, $this, 'handleOnInit');
 	}
 
@@ -44,7 +44,6 @@ class HelpManager implements CommandListener, CallbackListener {
 	 * Handle ManiaControl OnInit Callback
 	 */
 	public function handleOnInit() {
-		//Register the help command
 		$this->maniaControl->commandManager->registerCommandListener('help', $this, 'command_playerHelp', false, 'Shows all commands in chat.');
 		$this->maniaControl->commandManager->registerCommandListener('helpall', $this, 'command_playerHelpAll', false, 'Shows all commands in ManiaLink with description.');
 		$this->maniaControl->commandManager->registerCommandListener('help', $this, 'command_adminHelp', true, 'Shows all admin commands in chat.');
@@ -52,7 +51,7 @@ class HelpManager implements CommandListener, CallbackListener {
 	}
 
 	/**
-	 * Shows a list of Admin Commands
+	 * Show a list of Admin Commands
 	 *
 	 * @param array  $chatCallback
 	 * @param Player $player
@@ -83,7 +82,7 @@ class HelpManager implements CommandListener, CallbackListener {
 	}
 
 	/**
-	 * Shows a list of Player Commands
+	 * Show a list of Player Commands
 	 *
 	 * @param array  $chatCallback
 	 * @param Player $player
@@ -114,7 +113,7 @@ class HelpManager implements CommandListener, CallbackListener {
 	}
 
 	/**
-	 * Shows a ManiaLink list of Player Commands
+	 * Show a ManiaLink list of Player Commands
 	 *
 	 * @param array  $chatCallback
 	 * @param Player $player
@@ -155,7 +154,7 @@ class HelpManager implements CommandListener, CallbackListener {
 	}
 
 	/**
-	 * Shows the HelpAll list to the player.
+	 * Show the HelpAll list to the player.
 	 *
 	 * @param array $commands
 	 * @param mixed $player
@@ -228,7 +227,7 @@ class HelpManager implements CommandListener, CallbackListener {
 	}
 
 	/**
-	 * Shows a ManiaLink list of Admin Commands
+	 * Show a ManiaLink list of Admin Commands
 	 *
 	 * @param array  $chatCallback
 	 * @param Player $player
@@ -238,12 +237,12 @@ class HelpManager implements CommandListener, CallbackListener {
 	}
 
 	/**
-	 * Registers a new Command
+	 * Register a new Command
 	 *
-	 * @param        $name
+	 * @param string $name
 	 * @param bool   $adminCommand
 	 * @param string $description
-	 * @param        $method
+	 * @param string $method
 	 */
 	public function registerCommand($name, $adminCommand = false, $description = '', $method) {
 		if ($adminCommand) {

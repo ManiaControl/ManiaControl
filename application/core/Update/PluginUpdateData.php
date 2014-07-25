@@ -3,7 +3,7 @@
 namespace ManiaControl\Update;
 
 /**
- * Plugin Update Data Structure
+ * Plugin Update Data Model Class
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014 ManiaControl Team
@@ -11,7 +11,7 @@ namespace ManiaControl\Update;
  */
 class PluginUpdateData {
 	/*
-	 * Public Properties
+	 * Public properties
 	 */
 	public $pluginId = null;
 	public $pluginName = null;
@@ -23,7 +23,7 @@ class PluginUpdateData {
 	public $url = null;
 
 	/**
-	 * Construct new Plugin Update Data
+	 * Construct new plugin update data instance
 	 *
 	 * @param object $updateData
 	 */
@@ -41,7 +41,7 @@ class PluginUpdateData {
 	}
 
 	/**
-	 * Check if the Plugin Update Data is newer than the given Plugin Version
+	 * Check if the plugin update data is newer than the given plugin version
 	 *
 	 * @param float $version
 	 * @return bool

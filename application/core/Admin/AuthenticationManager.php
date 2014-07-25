@@ -33,14 +33,10 @@ class AuthenticationManager implements CallbackListener {
 	const CB_AUTH_LEVEL_CHANGED  = 'AuthenticationManager.AuthLevelChanged';
 
 	/*
-	 * Public Properties
-	 */
-	public $authCommands = null;
-
-	/*
 	 * Private Properties
 	 */
 	private $maniaControl = null;
+	private $authCommands = null;
 
 	/**
 	 * Construct a new Authentication Manager

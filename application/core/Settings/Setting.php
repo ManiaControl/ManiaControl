@@ -5,7 +5,7 @@ namespace ManiaControl\Settings;
 use ManiaControl\Utils\ClassUtil;
 
 /**
- * Model Class for a Setting
+ * ManiaControl Setting Model Class
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014 ManiaControl Team
@@ -24,7 +24,7 @@ class Setting {
 	const VALUE_DELIMITER = ';;';
 
 	/*
-	 * Public Properties
+	 * Public properties
 	 */
 	public $index = null;
 	public $class = null;
@@ -36,7 +36,7 @@ class Setting {
 	public $fetchTime = null;
 
 	/**
-	 * Construct a new Setting
+	 * Construct a new setting instance
 	 *
 	 * @param mixed  $object
 	 * @param string $settingName

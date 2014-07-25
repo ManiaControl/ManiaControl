@@ -62,7 +62,7 @@ interface Plugin {
 	/**
 	 * Load the plugin
 	 *
-	 * @param \ManiaControl\ManiaControl $maniaControl
+	 * @param ManiaControl $maniaControl
 	 * @return bool
 	 */
 	public function load(ManiaControl $maniaControl);

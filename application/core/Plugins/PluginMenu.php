@@ -46,12 +46,12 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	const CACHE_SETTING_CLASS                       = 'PluginMenuCache.SettingClass';
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
 	private $maniaControl = null;
 
 	/**
-	 * Create a new Plugin Menu Instance
+	 * Create a new plugin menu instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */
@@ -71,7 +71,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	}
 
 	/**
-	 * Return back to the Plugins
+	 * Return back to the plugins overview page
 	 *
 	 * @param array  $callback
 	 * @param Player $player

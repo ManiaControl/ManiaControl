@@ -9,7 +9,7 @@ use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\Structures\Bill;
 
 /**
- * ManiaControl Bill-Manager
+ * ManiaControl Bill Manager Class
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014 ManiaControl Team
@@ -26,15 +26,15 @@ class BillManager implements CallbackListener {
 	const ERROR_WHILE_TRANSACTION = 5;
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
 	private $maniaControl = null;
 	private $openBills = array();
 
 	/**
-	 * Construct a new Bill Manager
+	 * Construct a new Bill Manager Instance
 	 *
-	 * @param \ManiaControl\ManiaControl $maniaControl
+	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
@@ -65,13 +65,13 @@ class BillManager implements CallbackListener {
 	 * Send Planets from the server to a Player
 	 *
 	 * @param callable $function
-	 * @param string $receiverLogin
-	 * @param int $amount
-	 * @param string $message
+	 * @param string   $receiverLogin
+	 * @param int      $amount
+	 * @param string   $message
 	 * @return bool
 	 */
 	public function sendPlanets(callable $function, $receiverLogin, $amount, $message) {
-		$bill = $this->maniaControl->client->pay($receiverLogin, $amount, $message);
+		$bill                   = $this->maniaControl->client->pay($receiverLogin, $amount, $message);
 		$this->openBills[$bill] = new BillData($function, $receiverLogin, $amount, true);
 		return true;
 	}

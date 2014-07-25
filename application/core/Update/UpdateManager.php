@@ -35,22 +35,22 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	const CHANNEL_NIGHTLY                = 'nightly';
 
 	/*
-	 * Public Properties
+	 * Public properties
 	 */
 	/** @var PluginUpdateManager $pluginUpdateManager */
 	public $pluginUpdateManager = null;
-	/** @var UpdateData $coreUpdateData */
-	public $coreUpdateData = null;
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	private $currentBuildDate = null;
+	/** @var UpdateData $coreUpdateData */
+	private $coreUpdateData = null;
 
 	/**
-	 * Create a new Update Manager
+	 * Create a new update manager instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */
@@ -83,13 +83,22 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	}
 
 	/**
-	 * Get the possible Update Channels
+	 * Get the possible update channels
 	 *
 	 * @return string[]
 	 */
 	public function getUpdateChannels() {
 		// TODO: change default channel on release
 		return array(self::CHANNEL_BETA, self::CHANNEL_RELEASE, self::CHANNEL_NIGHTLY);
+	}
+
+	/**
+	 * Return the plugin update manager
+	 *
+	 * @return PluginUpdateManager
+	 */
+	public function getPluginUpdateManager() {
+		return $this->pluginUpdateManager;
 	}
 
 	/**
@@ -316,7 +325,9 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		}
 
 		$updateData = $this->coreUpdateData;
-		$this->maniaControl->fileReader->loadFile($updateData->url, function ($updateFileContent, $error) use ($updateData, &$player) {
+		$this->maniaControl->fileReader->loadFile($updateData->url, function ($updateFileContent, $error) use (
+			$updateData, &$player
+		) {
 			if (!$updateFileContent || $error) {
 				$message = "Update failed: Couldn't load Update zip! {$error}";
 				if ($player) {
