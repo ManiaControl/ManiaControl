@@ -13,6 +13,7 @@ use FML\Script\Script;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\Callbacks;
+use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Configurator\ConfiguratorMenu;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
@@ -26,7 +27,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\ServerOptionsException;
  * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class ServerOptionsMenu implements ConfiguratorMenu, CallbackListener {
+class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerListener {
 	/*
 	 * Constants
 	 */
@@ -42,12 +43,12 @@ class ServerOptionsMenu implements ConfiguratorMenu, CallbackListener {
 	const CB_SERVERSETTINGS_CHANGED = self::CB_SERVER_OPTIONS_CHANGED;
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
 	private $maniaControl = null;
 
 	/**
-	 * Create a new Server Options Instance
+	 * Construct a new server options menu instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */
@@ -57,6 +58,7 @@ class ServerOptionsMenu implements ConfiguratorMenu, CallbackListener {
 
 		// Callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::ONINIT, $this, 'onInit');
+		$this->maniaControl->timerManager->registerTimerListening($this, 'saveCurrentServerOptions', 6 * 3600 * 1000);
 
 		// Permissions
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_CHANGE_SERVER_OPTIONS, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
@@ -74,6 +76,7 @@ class ServerOptionsMenu implements ConfiguratorMenu, CallbackListener {
 				`serverIndex` int(11) NOT NULL,
 				`optionName` varchar(100) NOT NULL,
 				`optionValue` varchar(500) NOT NULL,
+				`changed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 				PRIMARY KEY (`index`),
 				UNIQUE KEY `option` (`serverIndex`, `optionName`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Server Options' AUTO_INCREMENT=1;";
@@ -99,6 +102,65 @@ class ServerOptionsMenu implements ConfiguratorMenu, CallbackListener {
 	}
 
 	/**
+	 * Save the current server options in case they have been changed by an external tool
+	 *
+	 * @return bool
+	 */
+	public function saveCurrentServerOptions() {
+		$serverOptions = $this->maniaControl->client->getServerOptions();
+		return $this->saveServerOptions($serverOptions);
+	}
+
+	/**
+	 * Save the given server options in the database
+	 *
+	 * @param ServerOptions $serverOptions
+	 * @param bool          $triggerCallbacks
+	 * @return bool
+	 */
+	private function saveServerOptions(ServerOptions $serverOptions, $triggerCallbacks = false) {
+		$mysqli    = $this->maniaControl->database->mysqli;
+		$query     = "INSERT INTO `" . self::TABLE_SERVER_OPTIONS . "` (
+				`serverIndex`,
+				`optionName`,
+				`optionValue`
+				) VALUES (
+				?, ?, ?
+				) ON DUPLICATE KEY UPDATE
+				`optionValue` = VALUES(`optionValue`);";
+		$statement = $mysqli->prepare($query);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error);
+			return false;
+		}
+
+		$optionName  = null;
+		$optionValue = null;
+		$statement->bind_param('iss', $this->maniaControl->server->index, $optionName, $optionValue);
+
+		$serverOptionsArray = $serverOptions->toArray();
+		foreach ($serverOptionsArray as $optionName => $optionValue) {
+			if ($optionValue === null) {
+				continue;
+			}
+
+			$statement->execute();
+			if ($statement->error) {
+				trigger_error($statement->error);
+				$statement->close();
+				return false;
+			}
+
+			if ($triggerCallbacks) {
+				$this->maniaControl->callbackManager->triggerCallback(self::CB_SERVER_OPTION_CHANGED, array(self::CB_SERVER_OPTION_CHANGED, $optionName, $optionValue));
+			}
+		}
+
+		$statement->close();
+		return true;
+	}
+
+	/**
 	 * Handle OnInit callback
 	 */
 	public function onInit() {
@@ -113,7 +175,7 @@ class ServerOptionsMenu implements ConfiguratorMenu, CallbackListener {
 	public function loadOptionsFromDatabase() {
 		$mysqli = $this->maniaControl->database->mysqli;
 		$query  = "SELECT * FROM `" . self::TABLE_SERVER_OPTIONS . "`
-				WHERE serverIndex = {$this->maniaControl->server->index};";
+				WHERE `serverIndex` = {$this->maniaControl->server->index};";
 		$result = $mysqli->query($query);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error);
@@ -141,8 +203,13 @@ class ServerOptionsMenu implements ConfiguratorMenu, CallbackListener {
 		} catch (ServerOptionsException $exception) {
 			$this->maniaControl->chat->sendExceptionToAdmins($exception);
 		}
-		$message = ($loaded ? 'Server Options successfully loaded!' : 'Error loading Server Options!');
-		$this->maniaControl->chat->sendSuccessToAdmins($message);
+
+		if ($loaded) {
+			$this->maniaControl->chat->sendSuccessToAdmins('Server Options successfully loaded!');
+		} else {
+			$this->maniaControl->chat->sendErrorToAdmins('Error loading Server Options!');
+		}
+
 		return $loaded;
 	}
 
@@ -325,55 +392,6 @@ class ServerOptionsMenu implements ConfiguratorMenu, CallbackListener {
 
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_SERVER_OPTIONS_CHANGED, array(self::CB_SERVER_OPTIONS_CHANGED));
 
-		return true;
-	}
-
-	/**
-	 * Save the given server options in the database
-	 *
-	 * @param ServerOptions $serverOptions
-	 * @param bool          $triggerCallbacks
-	 * @return bool
-	 */
-	private function saveServerOptions(ServerOptions $serverOptions, $triggerCallbacks = false) {
-		$mysqli    = $this->maniaControl->database->mysqli;
-		$query     = "INSERT INTO `" . self::TABLE_SERVER_OPTIONS . "` (
-				`serverIndex`,
-				`optionName`,
-				`optionValue`
-				) VALUES (
-				?, ?, ?
-				) ON DUPLICATE KEY UPDATE
-				`optionValue` = VALUES(`optionValue`);";
-		$statement = $mysqli->prepare($query);
-		if ($mysqli->error) {
-			trigger_error($mysqli->error);
-			return false;
-		}
-
-		$optionName  = null;
-		$optionValue = null;
-		$statement->bind_param('iss', $this->maniaControl->server->index, $optionName, $optionValue);
-
-		$serverOptionsArray = $serverOptions->toArray();
-		foreach ($serverOptionsArray as $optionName => $optionValue) {
-			if ($optionValue === null) {
-				continue;
-			}
-
-			$statement->execute();
-			if ($statement->error) {
-				trigger_error($statement->error);
-				$statement->close();
-				return false;
-			}
-
-			if ($triggerCallbacks) {
-				$this->maniaControl->callbackManager->triggerCallback(self::CB_SERVER_OPTION_CHANGED, array(self::CB_SERVER_OPTION_CHANGED, $optionName, $optionValue));
-			}
-		}
-
-		$statement->close();
 		return true;
 	}
 }
