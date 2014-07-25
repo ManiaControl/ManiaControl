@@ -18,6 +18,7 @@ use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 use ManiaControl\Server\ServerOptionsMenu;
+use ManiaControl\Server\VoteRatiosMenu;
 
 /**
  * Class managing ingame ManiaControl Configuration
@@ -47,10 +48,12 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	 * Private properties
 	 */
 	private $maniaControl = null;
-	/** @var ScriptSettings $scriptSettings */
-	private $scriptSettings = null;
 	/** @var ServerOptionsMenu $serverOptionsMenu */
 	private $serverOptionsMenu = null;
+	/** @var ScriptSettings $scriptSettings */
+	private $scriptSettings = null;
+	/** @var VoteRatiosMenu $voteRatiosMenu */
+	private $voteRatiosMenu = null;
 	/** @var ManiaControlSettings $maniaControlSettings */
 	private $maniaControlSettings = null;
 	/** @var ConfiguratorMenu[] $menus */
@@ -73,7 +76,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_STYLE, Quad_BgRaceScore2::STYLE);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MENU_SUBSTYLE, Quad_BgRaceScore2::SUBSTYLE_HandleSelectable);
 
-		//Permission for opening
+		// Permission for opening
 		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_OPEN_CONFIGURATOR, AuthenticationManager::AUTH_LEVEL_ADMIN);
 
 		// Register for page answers
@@ -85,13 +88,17 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$this->maniaControl->callbackManager->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_OPENED, $this, 'handleWidgetOpened');
 		$this->maniaControl->callbackManager->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_CLOSED, $this, 'closeWidget');
 
-		// Create server settings
+		// Create server options menu
 		$this->serverOptionsMenu = new ServerOptionsMenu($maniaControl);
 		$this->addMenu($this->serverOptionsMenu);
 
 		// Create script settings
 		$this->scriptSettings = new ScriptSettings($maniaControl);
 		$this->addMenu($this->scriptSettings);
+
+		// Create vote ratios menu
+		$this->voteRatiosMenu = new VoteRatiosMenu($maniaControl);
+		$this->addMenu($this->voteRatiosMenu);
 
 		// Create Mania Control Settings
 		$this->maniaControlSettings = new ManiaControlSettings($maniaControl);
@@ -231,7 +238,11 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 			// Show the menu
 			if ($menuId === $menuIdShown) {
 				$menuControl = $menu->getMenu($subMenuWidth, $subMenuHeight, $script, $player);
-				$menusFrame->add($menuControl);
+				if ($menuControl) {
+					$menusFrame->add($menuControl);
+				} else {
+					$this->maniaControl->chat->sendError('Error loading Menu!', $player);
+				}
 			}
 
 			$menuItemY -= $menuItemHeight * 1.1;
