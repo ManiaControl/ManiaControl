@@ -15,6 +15,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Configurator\ConfiguratorMenu;
+use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\Structures\ServerOptions;
@@ -205,9 +206,9 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 		}
 
 		if ($loaded) {
-			$this->maniaControl->chat->sendSuccessToAdmins('Server Options successfully loaded!');
+			Logger::logInfo('Server Options successfully loaded!');
 		} else {
-			$this->maniaControl->chat->sendErrorToAdmins('Error loading Server Options!');
+			Logger::logError('Error loading Server Options!');
 		}
 
 		return $loaded;
