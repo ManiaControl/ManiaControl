@@ -11,7 +11,7 @@ use ManiaControl\Files\FileUtil;
  * @copyright 2014 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class Logger {
+abstract class Logger {
 
 	/**
 	 * Setup the Logging Mechanism
