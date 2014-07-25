@@ -105,43 +105,56 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	 * @return bool
 	 */
 	public function loadSettingsFromDatabase() {
-		$serverId = $this->maniaControl->server->index;
-		$mysqli   = $this->maniaControl->database->mysqli;
-		$query    = "SELECT * FROM `" . self::TABLE_SERVER_SETTINGS . "`
-				WHERE serverIndex = {$serverId};";
-		$result   = $mysqli->query($query);
+		$mysqli = $this->maniaControl->database->mysqli;
+		$query  = "SELECT * FROM `" . self::TABLE_SERVER_SETTINGS . "`
+				WHERE serverIndex = {$this->maniaControl->server->index};";
+		$result = $mysqli->query($query);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
 		}
-		$serverSettings = $this->maniaControl->client->getServerOptions();
-		$savedSettings  = array();
+
+		$oldServerOptions = $this->maniaControl->client->getServerOptions();
+		$newServerOptions = new ServerOptions();
+
 		while ($row = $result->fetch_object()) {
 			$settingName = lcfirst($row->settingName);
-			if (!property_exists($serverSettings, $settingName)) {
+			if (!property_exists($oldServerOptions, $settingName)) {
 				continue;
 			}
-			$settingValue = $row->settingValue;
-			settype($settingValue, gettype($serverSettings->$settingName));
-			$savedSettings[$settingName] = $settingValue;
+			$newServerOptions->$settingName = $row->settingValue;
+			settype($newServerOptions->$settingName, gettype($oldServerOptions->$settingName));
 		}
 		$result->free();
-		if (empty($savedSettings)) {
-			return true;
-		}
 
-		$serverOptions = ServerOptions::fromArray($savedSettings);
-		if (!$serverOptions->isValid()) {
-			$message = "Couldn't load server settings from database because of their invalid state.";
-			$this->maniaControl->chat->sendErrorToAdmins($message);
-			return false;
-		}
+		$this->fillUpMandatoryOptions($newServerOptions, $oldServerOptions);
+
+		$loaded = false;
 		try {
-			return $this->maniaControl->client->setServerOptions($serverOptions);
+			$loaded = $this->maniaControl->client->setServerOptions($newServerOptions);
 		} catch (ServerOptionsException $exception) {
 			$this->maniaControl->chat->sendExceptionToAdmins($exception);
 		}
-		return false;
+		$message = ($loaded ? 'Server Settings successfully loaded!' : 'Error loading Server Settings!');
+		$this->maniaControl->chat->sendSuccessToAdmins($message);
+		return $loaded;
+	}
+
+	/**
+	 * Fill up the new server options object with the necessary settings based on the old options object
+	 *
+	 * @param ServerOptions $newServerOptions
+	 * @param ServerOptions $oldServerOptions
+	 * @return ServerOptions
+	 */
+	private function fillUpMandatoryOptions(ServerOptions &$newServerOptions, ServerOptions $oldServerOptions) {
+		$mandatorySettings = array('name', 'comment', 'password', 'passwordForSpectator', 'nextCallVoteTimeOut', 'callVoteRatio');
+		foreach ($mandatorySettings as $settingName) {
+			if (!isset($newServerOptions->$settingName) && isset($oldServerOptions->$settingName)) {
+				$newServerOptions->$settingName = $oldServerOptions->$settingName;
+			}
+		}
+		return $newServerOptions;
 	}
 
 	/**
@@ -263,21 +276,20 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 			return;
 		}
 
-		$serverOptions  = $this->maniaControl->client->getServerOptions();
-		$serverSettings = $serverOptions->toArray();
-
 		$prefixLength = strlen(self::ACTION_PREFIX_SETTING);
 
+		$oldServerOptions = $this->maniaControl->client->getServerOptions();
+		$newServerOptions = new ServerOptions();
 
-		$newSettings = new ServerOptions();
 		foreach ($configData[3] as $setting) {
-			$settingName                      = substr($setting['Name'], $prefixLength);
-			$dynamicSettingName               = lcfirst($settingName);
-			$newSettings->$dynamicSettingName = $setting['Value'];
-			settype($newSettings->$dynamicSettingName, gettype($serverSettings[$settingName]));
+			$settingName                    = lcfirst(substr($setting['Name'], $prefixLength));
+			$newServerOptions->$settingName = $setting['Value'];
+			settype($newServerOptions->$settingName, gettype($oldServerOptions->$settingName));
 		}
 
-		$success = $this->applyNewServerSettings($newSettings, $player);
+		$this->fillUpMandatoryOptions($newServerOptions, $oldServerOptions);
+
+		$success = $this->applyNewServerOptions($newServerOptions, $player);
 		if ($success) {
 			$this->maniaControl->chat->sendSuccess('Server Settings saved!', $player);
 		} else {
@@ -291,19 +303,19 @@ class ServerSettings implements ConfiguratorMenu, CallbackListener {
 	/**
 	 * Apply the Array of new Server Settings
 	 *
-	 * @param ServerOptions $newSettings
+	 * @param ServerOptions $newServerOptions
 	 * @param Player        $player
 	 * @return bool
 	 */
-	private function applyNewServerSettings(ServerOptions $newSettings, Player $player) {
+	private function applyNewServerOptions(ServerOptions $newServerOptions, Player $player) {
 		try {
-			$this->maniaControl->client->setServerOptions($newSettings);
+			$this->maniaControl->client->setServerOptions($newServerOptions);
 		} catch (ServerOptionsException $exception) {
 			$this->maniaControl->chat->sendException($exception, $player);
 			return false;
 		}
 
-		$this->saveServerOptions($newSettings, true);
+		$this->saveServerOptions($newServerOptions, true);
 
 		$this->maniaControl->callbackManager->triggerCallback(self::CB_SERVERSETTINGS_CHANGED, array(self::CB_SERVERSETTINGS_CHANGED));
 
