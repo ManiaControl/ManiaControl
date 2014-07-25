@@ -1,6 +1,6 @@
 <?php
 
-namespace ManiaControl\Configurators;
+namespace ManiaControl\Configurator;
 
 use FML\Controls\Frame;
 use FML\Controls\Labels\Label_Text;

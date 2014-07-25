@@ -13,7 +13,7 @@ use FML\Script\Script;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\Callbacks;
-use ManiaControl\Configurators\ConfiguratorMenu;
+use ManiaControl\Configurator\ConfiguratorMenu;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\Structures\ServerOptions;

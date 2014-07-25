@@ -10,7 +10,7 @@ use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Script\Features\Paging;
 use FML\Script\Script;
 use ManiaControl\Admin\AuthenticationManager;
-use ManiaControl\Configurators\ConfiguratorMenu;
+use ManiaControl\Configurator\ConfiguratorMenu;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;

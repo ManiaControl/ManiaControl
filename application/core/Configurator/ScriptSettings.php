@@ -1,6 +1,6 @@
 <?php
 
-namespace ManiaControl\Configurators;
+namespace ManiaControl\Configurator;
 
 use FML\Components\CheckBox;
 use FML\Controls\Entry;

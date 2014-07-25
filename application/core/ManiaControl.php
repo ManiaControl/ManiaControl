@@ -12,7 +12,7 @@ use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Callbacks\TimerManager;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\Commands\CommandManager;
-use ManiaControl\Configurators\Configurator;
+use ManiaControl\Configurator\Configurator;
 use ManiaControl\Database\Database;
 use ManiaControl\Files\AsynchronousFileReader;
 use ManiaControl\Files\FileUtil;
