@@ -116,15 +116,16 @@ class Chat {
 	}
 
 	/**
-	 * Sends a Message to all Connected Admins
+	 * Send a Message to all connected Admins
 	 *
 	 * @param string      $message
 	 * @param int         $minLevel
 	 * @param bool|string $prefix
+	 * @return bool
 	 */
 	public function sendMessageToAdmins($message, $minLevel = AuthenticationManager::AUTH_LEVEL_MODERATOR, $prefix = true) {
 		$admins = $this->maniaControl->authenticationManager->getConnectedAdmins($minLevel);
-		$this->sendChat($message, $admins, $prefix);
+		return $this->sendChat($message, $admins, $prefix);
 	}
 
 	/**
@@ -138,6 +139,19 @@ class Chat {
 	public function sendSuccess($message, $login = null, $prefix = true) {
 		$format = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_FORMAT_SUCCESS);
 		return $this->sendChat($format . $message, $login, $prefix);
+	}
+
+	/**
+	 * Sends a Success Message to all connected Admins
+	 *
+	 * @param string      $message
+	 * @param int         $minLevel
+	 * @param bool|string $prefix
+	 * @return bool
+	 */
+	public function sendSuccessToAdmins($message, $minLevel = AuthenticationManager::AUTH_LEVEL_MODERATOR, $prefix = true) {
+		$format = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_FORMAT_SUCCESS);
+		return $this->sendMessageToAdmins($format . $message, $minLevel, $prefix);
 	}
 
 	/**
@@ -172,7 +186,8 @@ class Chat {
 	 * @param int         $minLevel
 	 * @param bool|string $prefix
 	 */
-	public function sendExceptionToAdmins(\Exception $exception, $minLevel = AuthenticationManager::AUTH_LEVEL_MODERATOR, $prefix = true) {
+	public function sendExceptionToAdmins(\Exception $exception, $minLevel = AuthenticationManager::AUTH_LEVEL_MODERATOR,
+	                                      $prefix = true) {
 		$format  = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_FORMAT_ERROR);
 		$message = $format . "Exception: '{$exception->getMessage()}' ({$exception->getCode()})";
 		$this->sendMessageToAdmins($message, $minLevel, $prefix);
