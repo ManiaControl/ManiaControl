@@ -479,7 +479,7 @@ class ErrorHandler {
 	 * @return bool
 	 */
 	private function shouldRestart() {
-		if (!$this->maniaControl || !$this->maniaControl->settingManager) {
+		if (!$this->maniaControl || !$this->maniaControl->settingManager || DEV_MODE) {
 			return false;
 		}
 		$setting = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_RESTART_ON_EXCEPTION, true);
