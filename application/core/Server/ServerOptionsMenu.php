@@ -30,15 +30,16 @@ class ServerOptionsMenu implements ConfiguratorMenu, CallbackListener {
 	/*
 	 * Constants
 	 */
-	const CB_SERVER_OPTION_CHANGED  = 'ServerOptionsMenu.OptionChanged';
-	const CB_SERVER_OPTIONS_CHANGED = 'ServerOptionsMenu.OptionsChanged';
-	/** @deprecated */
-	const CB_SERVERSETTING_CHANGED = 'ServerOptionsMenu.OptionChanged';
-	/** @deprecated */
-	const CB_SERVERSETTINGS_CHANGED                = 'ServerOptionsMenu.OptionsChanged';
+	const CB_SERVER_OPTION_CHANGED                 = 'ServerOptionsMenu.OptionChanged';
+	const CB_SERVER_OPTIONS_CHANGED                = 'ServerOptionsMenu.OptionsChanged';
 	const SETTING_PERMISSION_CHANGE_SERVER_OPTIONS = 'Change Server Options';
 	const TABLE_SERVER_OPTIONS                     = 'mc_server_options';
 	const ACTION_PREFIX_OPTION                     = 'ServerOptionsMenu.';
+
+	/** @deprecated */
+	const CB_SERVERSETTING_CHANGED = self::CB_SERVER_OPTION_CHANGED;
+	/** @deprecated */
+	const CB_SERVERSETTINGS_CHANGED = self::CB_SERVER_OPTIONS_CHANGED;
 
 	/*
 	 * Private Properties
