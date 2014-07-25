@@ -21,13 +21,13 @@ class SettingManager implements CallbackListener {
 	 */
 	const TABLE_SETTINGS     = 'mc_settings';
 	const CB_SETTING_CHANGED = 'SettingManager.SettingChanged';
-	/** @deprecated Use CB_SETTING_CHANGED */
-	const CB_SETTINGS_CHANGED = 'SettingManager.SettingChanged';
 
 	/*
 	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
+	/** @var Setting[] $storedSettings */
 	private $storedSettings = array();
 
 	/**

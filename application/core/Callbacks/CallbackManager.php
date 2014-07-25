@@ -16,14 +16,6 @@ class CallbackManager {
 	/*
 	 * Constants
 	 */
-	// ManiaControl callbacks
-	/** @deprecated Use Callbacks Interface */
-	const CB_ONINIT = 'Callbacks.OnInit';
-	/** @deprecated Use Callbacks Interface */
-	const CB_AFTERINIT = 'Callbacks.AfterInit';
-	/** @deprecated Use Callbacks Interface */
-	const CB_ONSHUTDOWN = 'Callbacks.OnShutdown';
-
 	// ManiaPlanet callbacks
 	const CB_MP_SERVERSTART               = 'ManiaPlanet.ServerStart';
 	const CB_MP_SERVERSTOP                = 'ManiaPlanet.ServerStop';
@@ -52,15 +44,16 @@ class CallbackManager {
 	const CB_TM_PLAYERINCOHERENCE = 'TrackMania.PlayerIncoherence';
 
 	/*
-	 * Public Properties
+	 * Public properties
 	 */
 	public $libXmlRpcCallbacks = null;
 	public $shootManiaCallbacks = null;
 	public $trackManiaCallbacks = null;
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	/** @var Listening[][] $callbackListenings */
 	private $callbackListenings = array();
@@ -68,7 +61,7 @@ class CallbackManager {
 	private $scriptCallbackListenings = array();
 
 	/**
-	 * Construct a new Callbacks Manager
+	 * Construct a new callbacks manager instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */

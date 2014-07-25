@@ -46,11 +46,6 @@ class MapManager implements CallbackListener {
 	const SETTING_AUTOSAVE_MAPLIST        = 'Autosave Maplist file';
 	const SETTING_MAPLIST_FILE            = 'File to write Maplist in';
 
-	/**  @deprecated Use Callbacks Interface */
-	const CB_BEGINMAP = 'Callbacks.BeginMap';
-	/**  @deprecated Use Callbacks Interface */
-	const CB_ENDMAP = 'Callbacks.EndMap';
-
 	/*
 	 * Public properties
 	 */
