@@ -56,15 +56,16 @@ class VoteRatiosMenu implements CallbackListener, ConfiguratorMenu, TimerListene
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getMenu()
 	 */
 	public function getMenu($width, $height, Script $script, Player $player) {
-		$voteRatioCommands = $this->getAllVoteRatioCommands();
+		$voteRatioCommands = VoteRatio::getCommands();
 		$voteRatios        = $this->maniaControl->client->getCallVoteRatios();
 
 		$frame = new Frame();
 
 		$posY       = $height * 0.41;
 		$lineHeight = 5.;
+		$index      = 0;
 
-		foreach ($voteRatioCommands as $index => $voteRatioCommand) {
+		foreach ($voteRatioCommands as $voteRatioCommand => $voteRatioDescription) {
 			$voteRatioFrame = new Frame();
 			$frame->add($voteRatioFrame);
 			$voteRatioFrame->setY($posY);
@@ -75,7 +76,8 @@ class VoteRatiosMenu implements CallbackListener, ConfiguratorMenu, TimerListene
 			          ->setX($width * -0.46)
 			          ->setSize($width * 0.7, $lineHeight)
 			          ->setTextSize(2)
-			          ->setText($voteRatioCommand);
+			          ->setTranslate(true)
+			          ->setText($voteRatioDescription);
 
 			$entry = new Entry();
 			$voteRatioFrame->add($entry);
@@ -94,18 +96,10 @@ class VoteRatiosMenu implements CallbackListener, ConfiguratorMenu, TimerListene
 			if ($index === 0) {
 				$posY -= $lineHeight;
 			}
+			$index++;
 		}
 
 		return $frame;
-	}
-
-	/**
-	 * Return an array of all available vote ratio commands
-	 *
-	 * @return string[]
-	 */
-	private function getAllVoteRatioCommands() {
-		return array('*', VoteRatio::COMMAND_RESTART_MAP, VoteRatio::COMMAND_NEXT_MAP, VoteRatio::COMMAND_SET_NEXT_MAP, VoteRatio::COMMAND_JUMP_MAP, VoteRatio::COMMAND_TEAM_BALANCE, VoteRatio::COMMAND_SCRIPT_SETTINGS, VoteRatio::COMMAND_KICK, VoteRatio::COMMAND_BAN);
 	}
 
 	/**
