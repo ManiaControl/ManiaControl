@@ -25,8 +25,8 @@ use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
-use ManiaControl\Server\Server;
 use ManiaControl\Server\Commands;
+use ManiaControl\Server\Server;
 use ManiaControl\Utils\ColorUtil;
 use Maniaplanet\DedicatedServer\Structures\VoteRatio;
 use Maniaplanet\DedicatedServer\Xmlrpc\ChangeInProgressException;
@@ -134,7 +134,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 		$this->maniaControl->commandManager->registerCommandListener('vote', $this, 'chat_vote', false, 'Starts a new vote.');
 		$this->maniaControl->timerManager->registerTimerListening($this, 'handle1Second', 1000);
-		$this->maniaControl->callbackManager->registerCallbackListener(Commands::CB_VOTE_CANCELED, $this, 'handleVoteCanceled');
+		$this->maniaControl->callbackManager->registerCallbackListener(Commands::CB_VOTE_CANCELLED, $this, 'handleVoteCancelled');
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_POSITIVE_VOTE, $this, 'handlePositiveVote');
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_NEGATIVE_VOTE, $this, 'handleNegativeVote');
 
@@ -501,9 +501,9 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	}
 
 	/**
-	 * Destroy the Vote on Canceled Callback
+	 * Destroy the Vote on Cancelled Callback
 	 */
-	public function handleVoteCanceled() {
+	public function handleVoteCancelled() {
 		$this->destroyVote();
 	}
 
@@ -823,21 +823,21 @@ class VoteCommand {
 	}
 
 	/**
-	 * Defines a Stop Callback
-	 *
-	 * @param $stopCallback
-	 */
-	public function setStopCallback($stopCallback) {
-		$this->stopCallback = $stopCallback;
-	}
-
-	/**
 	 * Gets the Stop Callback
 	 *
 	 * @return string
 	 */
 	public function getStopCallback() {
 		return $this->stopCallback;
+	}
+
+	/**
+	 * Defines a Stop Callback
+	 *
+	 * @param $stopCallback
+	 */
+	public function setStopCallback($stopCallback) {
+		$this->stopCallback = $stopCallback;
 	}
 
 }

@@ -30,7 +30,7 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 	const ACTION_EXTEND_WARMUP                     = 'ServerCommands.ExtendWarmup';
 	const ACTION_END_WARMUP                        = 'ServerCommands.EndWarmup';
 	const ACTION_CANCEL_VOTE                       = 'ServerCommands.CancelVote';
-	const CB_VOTE_CANCELED                         = 'ServerCommands.VoteCanceled';
+	const CB_VOTE_CANCELLED                        = 'ServerCommands.VoteCancelled';
 	const SETTING_PERMISSION_CANCEL_VOTE           = 'Cancel Vote';
 	const SETTING_PERMISSION_SET_PAUSE             = 'Set Pause';
 	const SETTING_PERMISSION_HANDLE_WARMUP         = 'Handle Warmup';
@@ -167,8 +167,8 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 		}
 
 		if ($this->maniaControl->client->cancelVote()) {
-			$this->maniaControl->chat->sendInformation($player->getEscapedNickname() . ' canceled the Vote!');
-			$this->maniaControl->callbackManager->triggerCallback(self::CB_VOTE_CANCELED, $player);
+			$this->maniaControl->chat->sendInformation($player->getEscapedNickname() . ' cancelled the Vote!');
+			$this->maniaControl->callbackManager->triggerCallback(self::CB_VOTE_CANCELLED, $player);
 		} else {
 			$this->maniaControl->chat->sendInformation("There's no vote running currently!", $player);
 		}
