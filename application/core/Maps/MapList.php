@@ -421,8 +421,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 					$switchLabel->setTextSize(2);
 					$switchLabel->setText('»');
 					$switchLabel->setTextColor('0f0');
-					$switchLabel->setAction(self::ACTION_START_SWITCH_VOTE . '.' . ($map->uid));
-					$description = 'Start Map-Switch Vote: $<' . $map->name . '$>';
+					$switchLabel->setAction(self::ACTION_START_SWITCH_VOTE . '.' . $map->uid);
+					$description = 'Start Map-Switch Vote: ' . $map->getEscapedName();
 					$switchLabel->addTooltipLabelFeature($descriptionLabel, $description);
 				}
 			}
@@ -596,7 +596,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	public function handleManialinkPageAnswer(array $callback) {
 		$actionId    = $callback[1][2];
 		$actionArray = explode('.', $actionId);
-
 		if (count($actionArray) <= 2) {
 			return;
 		}

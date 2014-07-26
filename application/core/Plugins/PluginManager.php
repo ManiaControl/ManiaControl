@@ -276,7 +276,7 @@ class PluginManager {
 		}
 		$pluginFiles = scandir($directory);
 		foreach ($pluginFiles as $pluginFile) {
-			if (stripos($pluginFile, '.') === 0) {
+			if (substr($pluginFile, 0, 1) === '.') {
 				continue;
 			}
 

@@ -169,8 +169,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		$array['$oId']       = $posX + 5;
 		$array['$oNickname'] = $posX + 14;
 
-
-		//Compute Headline
+		// Headline
 		$posX         = $xStart + 55;
 		$statRankings = array();
 		foreach ($this->statArray as $key => $stat) {
@@ -186,14 +185,14 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 
 		$labels = $this->maniaControl->manialinkManager->labelLine($headFrame, $array);
 
-		//Description Label
+		// Description Label
 		$index = 2;
 		foreach ($this->statArray as $statArray) {
 			if (!isset($labels[$index])) {
 				break;
 			}
 
-			/** @var Label_Text $label [] */
+			/** @var Label_Text $label */
 			$label = $labels[$index];
 
 			$label->setAction(self::ACTION_SORT_STATS . '.' . $statArray["Name"]);
@@ -223,7 +222,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 			$playerFrame = new Frame();
 			$frame->add($playerFrame);
 
-			//Show current Player Arrow
+			// Show current Player Arrow
 			if ($playerId == $player->index) {
 				$currentQuad = new Quad_Icons64x64_1();
 				$playerFrame->add($currentQuad);
@@ -245,13 +244,11 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 						$statValue = round(floatval($statValue), 2);
 					}
 				}
-				$displayArray[$stat['Name']] = array("Value" => strval($statValue), "Width" => $stat['Width']);
+				$displayArray[$stat['Name']] = array('Value' => strval($statValue), 'Width' => $stat['Width']);
 			}
-
 
 			$array = array($index => $xStart + 5, $listPlayer->nickname => $xStart + 14);
 			$this->maniaControl->manialinkManager->labelLine($playerFrame, $array);
-
 
 			$posX = $xStart + 55;
 			foreach ($displayArray as $key => $array) {
@@ -267,7 +264,6 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 				$posX += $array['Width'];
 			}
 
-
 			$playerFrame->setY($posY);
 
 			if ($index % 2 !== 0) {
@@ -278,12 +274,10 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 				$lineQuad->setZ(0.001);
 			}
 
-
 			$index++;
 			$posY -= 4;
 		}
 
-		// Render and display xml
 		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player, 'SimpleStatsList');
 	}
 
@@ -299,7 +293,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 			return;
 		}
 
-		$action = $actionArray[0] . "." . $actionArray[1];
+		$action = $actionArray[0] . '.' . $actionArray[1];
 
 		switch ($action) {
 			case self::ACTION_SORT_STATS:
@@ -309,4 +303,4 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 				break;
 		}
 	}
-} 
+}

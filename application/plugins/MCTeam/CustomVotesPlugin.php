@@ -917,5 +917,4 @@ class CurrentVote {
 	public function getVoteCount() {
 		return count($this->playersVoted);
 	}
-
 }
