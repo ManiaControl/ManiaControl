@@ -56,15 +56,13 @@ class VoteRatiosMenu implements CallbackListener, ConfiguratorMenu, TimerListene
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getMenu()
 	 */
 	public function getMenu($width, $height, Script $script, Player $player) {
-		$voteRatioCommands = VoteRatio::getCommands();
-		$voteRatios        = $this->maniaControl->client->getCallVoteRatios();
-
-		$frame = new Frame();
-
+		$frame      = new Frame();
 		$posY       = $height * 0.41;
 		$lineHeight = 5.;
 		$index      = 0;
 
+		$voteRatioCommands = $this->getVoteCommands();
+		$voteRatios        = $this->maniaControl->client->getCallVoteRatios();
 		foreach ($voteRatioCommands as $voteRatioCommand => $voteRatioDescription) {
 			$voteRatioFrame = new Frame();
 			$frame->add($voteRatioFrame);
@@ -100,6 +98,15 @@ class VoteRatiosMenu implements CallbackListener, ConfiguratorMenu, TimerListene
 		}
 
 		return $frame;
+	}
+
+	/**
+	 * Get the list of available vote commands
+	 *
+	 * @return string[]
+	 */
+	private function getVoteCommands() {
+		return array(VoteRatio::COMMAND_DEFAULT => 'Default', VoteRatio::COMMAND_RESTART_MAP => 'Restart Map', VoteRatio::COMMAND_NEXT_MAP => 'Skip Map', VoteRatio::COMMAND_SET_NEXT_MAP => 'Set next Map', VoteRatio::COMMAND_JUMP_MAP => 'Jump to Map', VoteRatio::COMMAND_TEAM_BALANCE => 'Balance Teams', VoteRatio::COMMAND_SCRIPT_SETTINGS => 'Change Script Settings and Commands', VoteRatio::COMMAND_KICK => 'Kick Players', VoteRatio::COMMAND_BAN => 'Ban Players');
 	}
 
 	/**
