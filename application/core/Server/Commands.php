@@ -168,10 +168,11 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 
 		if ($this->maniaControl->client->cancelVote()) {
 			$this->maniaControl->chat->sendInformation($player->getEscapedNickname() . ' cancelled the Vote!');
-			$this->maniaControl->callbackManager->triggerCallback(self::CB_VOTE_CANCELLED, $player);
 		} else {
 			$this->maniaControl->chat->sendInformation("There's no vote running currently!", $player);
 		}
+
+		$this->maniaControl->callbackManager->triggerCallback(self::CB_VOTE_CANCELLED, $player);
 	}
 
 
