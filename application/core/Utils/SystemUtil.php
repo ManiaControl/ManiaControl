@@ -15,8 +15,9 @@ class SystemUtil {
 	/*
 	 * Constants
 	 */
-	const OS_UNIX = 'Unix';
-	const OS_WIN  = 'Windows';
+	const OS_UNIX         = 'Unix';
+	const OS_WIN          = 'Windows';
+	const MIN_PHP_VERSION = '5.4';
 
 	/**
 	 * Get whether ManiaControl is running on Windows
@@ -76,13 +77,13 @@ class SystemUtil {
 
 		// Check for min PHP version
 		$phpVersion = phpversion();
-		$message    = 'Checking for minimum required PHP-Version ' . MIN_PHP_VERSION . ' ... ';
-		if ($phpVersion < MIN_PHP_VERSION) {
+		$message    = 'Checking for minimum required PHP-Version ' . self::MIN_PHP_VERSION . ' ... ';
+		if ($phpVersion < self::MIN_PHP_VERSION) {
 			Logger::log($message . $phpVersion . ' TOO OLD VERSION!');
-			Logger::log(' -- Make sure that you install at least PHP ' . MIN_PHP_VERSION . '!');
+			Logger::log(' -- Make sure that you install at least PHP ' . self::MIN_PHP_VERSION . '!');
 			$success = false;
 		} else {
-			Logger::log($message . MIN_PHP_VERSION . ' OK!');
+			Logger::log($message . self::MIN_PHP_VERSION . ' OK!');
 		}
 
 		// Check for MySQLi

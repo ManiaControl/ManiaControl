@@ -11,9 +11,6 @@ define('LOG_NAME_USE_PID', true); // Use current process id as suffix for log fi
 // Define base dir
 define('ManiaControlDir', __DIR__ . DIRECTORY_SEPARATOR);
 
-// Min PHP Version
-define('MIN_PHP_VERSION', '5.4');
-
 // Set process settings
 ini_set('memory_limit', '64M');
 if (!ini_get('date.timezone') && function_exists('date_default_timezone_set')) {
