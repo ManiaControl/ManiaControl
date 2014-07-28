@@ -209,11 +209,9 @@ class PlayerDataManager {
 
 		$meta = $this->metaData[$className . $dataName];
 
-		//Check if data is already in the ram
-		if (isset($this->storedData[$player->index])) {
-			if (isset($this->storedData[$player->index][$meta->dataId])) {
-				return $this->storedData[$player->index][$meta->dataId];
-			}
+		// Check if data is already in the ram
+		if (isset($this->storedData[$player->index]) && isset($this->storedData[$player->index][$meta->dataId])) {
+			return $this->storedData[$player->index][$meta->dataId];
 		}
 
 		$mysqli        = $this->maniaControl->database->mysqli;
@@ -296,10 +294,11 @@ class PlayerDataManager {
 		}
 		$statement->close();
 
-		//FIXME store changed value
-		if (isset($this->storedData[$player->index]) && isset($this->storedData[$player->index][$dataId])) {
-			unset($this->storedData[$player->index][$dataId]);
+		// Store changed value
+		if (!isset($this->storedData[$player->index])) {
+			$this->storedData[$player->index] = array();
 		}
+		$this->storedData[$player->index][$dataId] = $value;
 
 		return true;
 	}
@@ -345,4 +344,4 @@ class PlayerDataManager {
 		trigger_error('Unsupported data type. ' . print_r($type, true));
 		return $value;
 	}
-} 
+}
