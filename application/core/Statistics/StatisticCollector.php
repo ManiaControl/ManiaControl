@@ -270,11 +270,12 @@ class StatisticCollector implements CallbackListener {
 				break;
 			case 'EndTurn': //TODO make it for other modes working
 				$paramsObject = json_decode($callback[1][1]);
-				$durationTime = (int)(($paramsObject->EndTime - $paramsObject->StartTime) / 1000);
-				$scoresTable  = $paramsObject->ScoresTable;
-				foreach ($scoresTable as $score) {
-					$player = $this->maniaControl->playerManager->getPlayer($score->Login);
-					$this->maniaControl->statisticManager->insertStat(self::STAT_PLAYTIME, $player, -1, $durationTime);
+				if ($paramsObject && is_array($paramsObject->ScoresTable)) {
+					$durationTime = (int)(($paramsObject->EndTime - $paramsObject->StartTime) / 1000);
+					foreach ($paramsObject->ScoresTable as $score) {
+						$player = $this->maniaControl->playerManager->getPlayer($score->Login);
+						$this->maniaControl->statisticManager->insertStat(self::STAT_PLAYTIME, $player, -1, $durationTime);
+					}
 				}
 				break;
 		}
