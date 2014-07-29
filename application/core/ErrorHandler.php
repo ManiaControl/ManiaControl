@@ -83,8 +83,9 @@ class ErrorHandler {
 		}
 
 		// Build log message
-		$errorTag  = $this->getErrorTag($errorNumber);
-		$userError = $this->isUserErrorNumber($errorNumber);
+		$errorTag     = $this->getErrorTag($errorNumber);
+		$isUserError  = self::isUserErrorNumber($errorNumber);
+		$isFatalError = self::isFatalError($errorNumber);
 
 		$traceString      = null;
 		$sourceClass      = null;
@@ -104,22 +105,28 @@ class ErrorHandler {
 		}
 
 		$logMessage = $message . PHP_EOL . 'File&Line: ' . $fileLine;
-		if (!$userError && $traceString) {
+		if (!$isUserError && $traceString) {
 			$logMessage .= PHP_EOL . 'Trace: ' . PHP_EOL . $traceString;
 		}
 		$this->maniaControl->log($logMessage);
 
-		if (!DEV_MODE && !$userError && !$suppressed) {
+		if (!DEV_MODE && !$isUserError && !$suppressed) {
 			// Report error
 			$report            = array();
 			$report['Type']    = 'Error';
 			$report['Message'] = $message;
 			if ($fileLine) {
-				$report['FileLine'] = $this->stripBaseDir($fileLine);
+				$report['FileLine'] = self::stripBaseDir($fileLine);
 			}
 			if ($sourceClass) {
 				$report['SourceClass'] = $sourceClass;
-				$report['PluginId']    = PluginManager::getPluginId($sourceClass);
+				$pluginId              = PluginManager::getPluginId($sourceClass);
+				if ($pluginId > 0) {
+					$report['PluginId'] = $pluginId;
+					if ($isFatalError) {
+						$this->maniaControl->pluginManager->deactivatePlugin($sourceClass);
+					}
+				}
 			}
 			if ($traceString) {
 				$report['Backtrace'] = $traceString;
@@ -152,7 +159,7 @@ class ErrorHandler {
 			}
 		}
 
-		if (self::isFatalError($errorNumber)) {
+		if ($isFatalError) {
 			$this->maniaControl->quit('Quitting ManiaControl after Fatal Error.');
 		}
 
@@ -202,9 +209,20 @@ class ErrorHandler {
 	 * @param int $errorNumber
 	 * @return bool
 	 */
-	private function isUserErrorNumber($errorNumber) {
+	private static function isUserErrorNumber($errorNumber) {
 		return ($errorNumber & E_USER_ERROR || $errorNumber & E_USER_WARNING || $errorNumber & E_USER_NOTICE
 		        || $errorNumber & E_USER_DEPRECATED);
+	}
+
+	/**
+	 * Test whether the given Error Number represents a Fatal Error
+	 *
+	 * @param int $errorNumber
+	 * @return bool
+	 */
+	public static function isFatalError($errorNumber) {
+		$fatalError = (E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR);
+		return ($errorNumber & $fatalError);
 	}
 
 	/**
@@ -238,7 +256,7 @@ class ErrorHandler {
 			}
 			if (isset($traceStep['file']) && !$skipStep) {
 				$traceString .= ' in File ';
-				$traceString .= $this->stripBaseDir($traceStep['file']);
+				$traceString .= self::stripBaseDir($traceStep['file']);
 			}
 			if (isset($traceStep['line']) && !$skipStep) {
 				$traceString .= ' on Line ';
@@ -343,7 +361,7 @@ class ErrorHandler {
 	 * @param string $path
 	 * @return string
 	 */
-	private function stripBaseDir($path) {
+	private static function stripBaseDir($path) {
 		return str_replace(ManiaControlDir, '', $path);
 	}
 
@@ -366,17 +384,6 @@ class ErrorHandler {
 			return null;
 		}
 		return $className;
-	}
-
-	/**
-	 * Test whether the given Error Number represents a Fatal Error
-	 *
-	 * @param int $errorNumber
-	 * @return bool
-	 */
-	public static function isFatalError($errorNumber) {
-		$fatalError = (E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR);
-		return ($errorNumber & $fatalError);
 	}
 
 	/**
@@ -433,7 +440,7 @@ class ErrorHandler {
 			$report['Type']            = 'Exception';
 			$report['Message']         = $message;
 			$report['Class']           = $exceptionClass;
-			$report['FileLine']        = $this->stripBaseDir($exception->getFile()) . ': ' . $exception->getLine();
+			$report['FileLine']        = self::stripBaseDir($exception->getFile()) . ': ' . $exception->getLine();
 			$report['SourceClass']     = $sourceClass;
 			$report['PluginId']        = PluginManager::getPluginId($sourceClass);
 			$report['Backtrace']       = $traceString;
