@@ -239,7 +239,7 @@ class ErrorHandler {
 			$skipStep = $this->shouldSkipTraceStep($traceStep);
 			$traceString .= '#' . $stepCount . ': ';
 			if (isset($traceStep['class'])) {
-				if (!$skipStep && !$this->isIgnoredSourceClass($traceStep['class'])) {
+				if (!$sourceClass && !$skipStep && !$this->isIgnoredSourceClass($traceStep['class'])) {
 					$sourceClass = $traceStep['class'];
 				}
 				$traceString .= $traceStep['class'];
@@ -306,7 +306,7 @@ class ErrorHandler {
 	 * @return bool
 	 */
 	private function isIgnoredSourceClass($class) {
-		$ignoredClasses = array('\\ErrorHandler', '\\FaultException');
+		$ignoredClasses = array('Maniaplanet\\', '\\ErrorHandler');
 		foreach ($ignoredClasses as $ignoredClass) {
 			if (strpos($class, $ignoredClass) !== false) {
 				return true;
