@@ -17,6 +17,7 @@ class Database implements TimerListener {
 	 * Public properties
 	 */
 	/** @var \mysqli $mysqli */
+	/** @deprecated see getMysqli() */
 	public $mysqli = null;
 
 	/*
@@ -43,19 +44,19 @@ class Database implements TimerListener {
 		// Open database connection
 		$this->loadConfig();
 		$this->mysqli = @new \mysqli($this->config->host, $this->config->user, $this->config->pass, null, $this->config->port);
-		if ($this->mysqli->connect_error) {
-			$message = "Couldn't connect to Database: '{$this->mysqli->connect_error}'";
+		if ($connectError = $this->getMysqli()->connect_error) {
+			$message = "Couldn't connect to Database: '{$connectError}'";
 			$this->maniaControl->quit($message, true);
 		}
-		$this->mysqli->set_charset("utf8");
+		$this->getMysqli()->set_charset("utf8");
 
 		$this->initDatabase();
 		$this->optimizeTables();
 
 		// Register Method which checks the Database Connection every 5 seconds
-		$this->maniaControl->timerManager->registerTimerListening($this, 'checkConnection', 5000);
+		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'checkConnection', 5000);
 
-		// Create migration helper
+		// Children
 		$this->migrationHelper = new MigrationHelper($maniaControl);
 	}
 
@@ -63,7 +64,7 @@ class Database implements TimerListener {
 	 * Load the Database Config
 	 */
 	private function loadConfig() {
-		$databaseElements = $this->maniaControl->config->xpath('database');
+		$databaseElements = $this->maniaControl->getConfig()->xpath('database');
 		if (!$databaseElements) {
 			trigger_error('No Database configured!', E_USER_ERROR);
 		}
@@ -122,24 +123,24 @@ class Database implements TimerListener {
 	 */
 	private function initDatabase() {
 		// Try to connect
-		$result = $this->mysqli->select_db($this->config->name);
+		$result = $this->getMysqli()->select_db($this->config->name);
 		if ($result) {
 			return true;
 		}
 		$this->maniaControl->log("Database '{$this->config->name}' doesn't exist! Trying to create it...");
 
 		// Create database
-		$databaseQuery = "CREATE DATABASE " . $this->mysqli->escape_string($this->config->name) . ";";
-		$this->mysqli->query($databaseQuery);
-		if ($this->mysqli->error) {
-			$this->maniaControl->quit($this->mysqli->error, true);
+		$databaseQuery = "CREATE DATABASE " . $this->getMysqli()->escape_string($this->config->name) . ";";
+		$this->getMysqli()->query($databaseQuery);
+		if ($this->getMysqli()->error) {
+			$this->maniaControl->quit($this->getMysqli()->error, true);
 			return false;
 		}
 
 		// Connect to new database
-		$this->mysqli->select_db($this->config->name);
-		if ($this->mysqli->error) {
-			$message = "Couldn't select database '{$this->config->name}'. {$this->mysqli->error}";
+		$this->getMysqli()->select_db($this->config->name);
+		if ($error = $this->getMysqli()->error) {
+			$message = "Couldn't select database '{$this->config->name}'. {$error}";
 			$this->maniaControl->quit($message, true);
 			return false;
 		}
@@ -153,10 +154,10 @@ class Database implements TimerListener {
 	 * @return bool
 	 */
 	private function optimizeTables() {
-		$showQuery = "SHOW TABLES;";
-		$result    = $this->mysqli->query($showQuery);
-		if ($this->mysqli->error) {
-			trigger_error($this->mysqli->error);
+		$showQuery = 'SHOW TABLES;';
+		$result    = $this->getMysqli()->query($showQuery);
+		if ($error = $this->getMysqli()->error) {
+			trigger_error($error);
 			return false;
 		}
 		$count = $result->num_rows;
@@ -164,24 +165,33 @@ class Database implements TimerListener {
 			$result->free();
 			return true;
 		}
-		$optimizeQuery = "OPTIMIZE TABLE ";
+		$optimizeQuery = 'OPTIMIZE TABLE ';
 		$index         = 0;
 		while ($row = $result->fetch_row()) {
 			$tableName = $row[0];
 			$optimizeQuery .= "`{$tableName}`";
 			if ($index < $count - 1) {
-				$optimizeQuery .= ", ";
+				$optimizeQuery .= ',';
 			}
 			$index++;
 		}
 		$result->free();
-		$optimizeQuery .= ";";
-		$this->mysqli->query($optimizeQuery);
-		if ($this->mysqli->error) {
-			trigger_error($this->mysqli->error);
+		$optimizeQuery .= ';';
+		$this->getMysqli()->query($optimizeQuery);
+		if ($error = $this->getMysqli()->error) {
+			trigger_error($error);
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Return the mysqli instance
+	 *
+	 * @return \mysqli
+	 */
+	public function getMysqli() {
+		return $this->mysqli;
 	}
 
 	/**
@@ -203,19 +213,10 @@ class Database implements TimerListener {
 	}
 
 	/**
-	 * Return the mysqli instance
-	 *
-	 * @return \mysqli
-	 */
-	public function getMysqli() {
-		return $this->mysqli;
-	}
-
-	/**
 	 * Check whether the Database Connection is still open
 	 */
 	public function checkConnection() {
-		if (!$this->mysqli || !$this->mysqli->ping()) {
+		if (!$this->getMysqli() || !$this->getMysqli()->ping()) {
 			$this->maniaControl->quit('The MySQL Server has gone away!', true);
 		}
 	}
@@ -224,8 +225,8 @@ class Database implements TimerListener {
 	 * Destruct Database Connection
 	 */
 	public function __destruct() {
-		if ($this->mysqli && !$this->mysqli->connect_error) {
-			$this->mysqli->close();
+		if ($this->getMysqli() && !$this->getMysqli()->connect_error) {
+			$this->getMysqli()->close();
 		}
 	}
 }

@@ -47,10 +47,10 @@ class PluginManager {
 		$this->initTables();
 
 		$this->pluginMenu = new PluginMenu($maniaControl);
-		$this->maniaControl->configurator->addMenu($this->pluginMenu);
+		$this->maniaControl->getConfigurator()->addMenu($this->pluginMenu);
 
 		$this->pluginInstallMenu = new InstallMenu($maniaControl);
-		$this->maniaControl->configurator->addMenu($this->pluginInstallMenu);
+		$this->maniaControl->getConfigurator()->addMenu($this->pluginInstallMenu);
 	}
 
 	/**
@@ -59,7 +59,7 @@ class PluginManager {
 	 * @return bool
 	 */
 	private function initTables() {
-		$mysqli            = $this->maniaControl->database->mysqli;
+		$mysqli            = $this->maniaControl->getDatabase()->getMysqli();
 		$pluginsTableQuery = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_PLUGINS . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
 				`className` varchar(100) NOT NULL,
@@ -152,22 +152,22 @@ class PluginManager {
 		$plugin->unload();
 
 		if ($plugin instanceof CallbackListener) {
-			$this->maniaControl->callbackManager->unregisterCallbackListener($plugin);
-			$this->maniaControl->callbackManager->unregisterScriptCallbackListener($plugin);
+			$this->maniaControl->getCallbackManager()->unregisterCallbackListener($plugin);
+			$this->maniaControl->getCallbackManager()->unregisterScriptCallbackListener($plugin);
 		}
 		if ($plugin instanceof CommandListener) {
-			$this->maniaControl->commandManager->unregisterCommandListener($plugin);
+			$this->maniaControl->getCommandManager()->unregisterCommandListener($plugin);
 		}
 		if ($plugin instanceof ManialinkPageAnswerListener) {
-			$this->maniaControl->manialinkManager->unregisterManialinkPageAnswerListener($plugin);
+			$this->maniaControl->getManialinkManager()->unregisterManialinkPageAnswerListener($plugin);
 		}
 		if ($plugin instanceof TimerListener) {
-			$this->maniaControl->timerManager->unregisterTimerListenings($plugin);
+			$this->maniaControl->getTimerManager()->unregisterTimerListenings($plugin);
 		}
 
 		$this->savePluginStatus($pluginClass, false);
 
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLUGIN_UNLOADED, $pluginClass, $plugin);
+		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_PLUGIN_UNLOADED, $pluginClass, $plugin);
 
 		return true;
 	}
@@ -205,7 +205,7 @@ class PluginManager {
 	 * @return bool
 	 */
 	private function savePluginStatus($className, $active) {
-		$mysqli            = $this->maniaControl->database->mysqli;
+		$mysqli            = $this->maniaControl->getDatabase()->getMysqli();
 		$pluginStatusQuery = "INSERT INTO `" . self::TABLE_PLUGINS . "` (
 				`className`,
 				`active`
@@ -327,7 +327,7 @@ class PluginManager {
 	 * @return bool
 	 */
 	public function getSavedPluginStatus($className) {
-		$mysqli            = $this->maniaControl->database->mysqli;
+		$mysqli            = $this->maniaControl->getDatabase()->getMysqli();
 		$pluginStatusQuery = "SELECT `active` FROM `" . self::TABLE_PLUGINS . "`
 				WHERE `className` = ?;";
 		$pluginStatement   = $mysqli->prepare($pluginStatusQuery);
@@ -378,7 +378,7 @@ class PluginManager {
 			$plugin->load($this->maniaControl);
 		} catch (\Exception $e) {
 			$message = "Error during Plugin Activation of '{$pluginClass}': '{$e->getMessage()}'";
-			$this->maniaControl->chat->sendError($message, $adminLogin);
+			$this->maniaControl->getChat()->sendError($message, $adminLogin);
 			$this->maniaControl->log($message);
 			$this->savePluginStatus($pluginClass, false);
 			return false;
@@ -387,7 +387,7 @@ class PluginManager {
 		$this->activePlugins[$pluginClass] = $plugin;
 		$this->savePluginStatus($pluginClass, true);
 
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_PLUGIN_LOADED, $pluginClass, $plugin);
+		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_PLUGIN_LOADED, $pluginClass, $plugin);
 
 		return true;
 	}
@@ -462,7 +462,7 @@ class PluginManager {
 	 */
 	public function fetchPluginList(callable $function) {
 		$url = ManiaControl::URL_WEBSERVICE . 'plugins';
-		$this->maniaControl->fileReader->loadFile($url, function ($dataJson, $error) use (&$function) {
+		$this->maniaControl->getFileReader()->loadFile($url, function ($dataJson, $error) use (&$function) {
 			$data = json_decode($dataJson);
 			call_user_func($function, $data, $error);
 		});

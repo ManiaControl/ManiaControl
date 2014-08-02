@@ -39,7 +39,7 @@ class CommandManager implements CallbackListener {
 		$this->helpManager = new HelpManager($this->maniaControl);
 
 		// Callbacks
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERCHAT, $this, 'handleChatCallback');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_PLAYERCHAT, $this, 'handleChatCallback');
 	}
 
 	/**
@@ -163,7 +163,7 @@ class CommandManager implements CallbackListener {
 
 		// Check for valid player
 		$login  = $callback[1][1];
-		$player = $this->maniaControl->playerManager->getPlayer($login);
+		$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
 		if (!$player) {
 			return;
 		}

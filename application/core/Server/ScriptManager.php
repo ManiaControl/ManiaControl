@@ -38,7 +38,7 @@ class ScriptManager {
 		if (!$this->isScriptMode()) {
 			return false;
 		}
-		$scriptSettings = $this->maniaControl->client->getModeScriptSettings();
+		$scriptSettings = $this->maniaControl->getClient()->getModeScriptSettings();
 
 		if (!array_key_exists('S_UseScriptCallbacks', $scriptSettings)) {
 			return false;
@@ -47,7 +47,7 @@ class ScriptManager {
 		$scriptSettings['S_UseScriptCallbacks'] = (bool)$enable;
 		$actionName                             = ($enable ? 'en' : 'dis');
 
-		$this->maniaControl->client->setModeScriptSettings($scriptSettings);
+		$this->maniaControl->getClient()->setModeScriptSettings($scriptSettings);
 		$this->maniaControl->log("Script Callbacks successfully {$actionName}abled!");
 		return true;
 	}
@@ -59,7 +59,7 @@ class ScriptManager {
 	 */
 	public function isScriptMode() {
 		if (is_null($this->isScriptMode)) {
-			$gameMode           = $this->maniaControl->client->getGameMode();
+			$gameMode           = $this->maniaControl->getClient()->getGameMode();
 			$this->isScriptMode = ($gameMode === 0);
 		}
 		return $this->isScriptMode;

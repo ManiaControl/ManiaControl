@@ -22,14 +22,15 @@ class Directory implements CallbackListener {
 	private $maniaControl = null;
 
 	/**
-	 * Create new server directory instance
+	 * Construct new server directory instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_SERVERSTOP, $this, 'handleServerStopCallback');
+		// Callbacks
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_SERVERSTOP, $this, 'handleServerStopCallback');
 	}
 
 	/**
@@ -38,7 +39,7 @@ class Directory implements CallbackListener {
 	 * @return string
 	 */
 	public function getMapsFolder() {
-		return $this->maniaControl->client->getMapsDirectory();
+		return $this->maniaControl->getClient()->getMapsDirectory();
 	}
 
 	/**
@@ -47,7 +48,7 @@ class Directory implements CallbackListener {
 	 * @return string
 	 */
 	public function getSkinsFolder() {
-		return $this->maniaControl->client->getSkinsDirectory();
+		return $this->maniaControl->getClient()->getSkinsDirectory();
 	}
 
 	/**
@@ -82,7 +83,7 @@ class Directory implements CallbackListener {
 	 * @return string
 	 */
 	public function getGameDataFolder() {
-		return $this->maniaControl->client->gameDataDirectory();
+		return $this->maniaControl->getClient()->gameDataDirectory();
 	}
 
 	/**

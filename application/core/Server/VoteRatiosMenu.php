@@ -43,7 +43,7 @@ class VoteRatiosMenu implements CallbackListener, ConfiguratorMenu, TimerListene
 		$this->maniaControl = $maniaControl;
 
 		// Permissions
-		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_CHANGE_VOTE_RATIOS, AuthenticationManager::AUTH_LEVEL_ADMIN);
+		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_CHANGE_VOTE_RATIOS, AuthenticationManager::AUTH_LEVEL_ADMIN);
 	}
 
 	/**
@@ -63,7 +63,7 @@ class VoteRatiosMenu implements CallbackListener, ConfiguratorMenu, TimerListene
 		$index      = 0;
 
 		$voteRatioCommands = $this->getVoteCommands();
-		$voteRatios        = $this->maniaControl->client->getCallVoteRatios();
+		$voteRatios        = $this->maniaControl->getClient()->getCallVoteRatios();
 		foreach ($voteRatioCommands as $voteRatioCommand => $voteRatioDescription) {
 			$voteRatioFrame = new Frame();
 			$frame->add($voteRatioFrame);
@@ -130,8 +130,8 @@ class VoteRatiosMenu implements CallbackListener, ConfiguratorMenu, TimerListene
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
 	 */
 	public function saveConfigData(array $configData, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_CHANGE_VOTE_RATIOS)) {
-			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_CHANGE_VOTE_RATIOS)) {
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
 		if (!$configData[3] || strpos($configData[3][0]['Name'], self::ACTION_PREFIX_VOTE_RATIO) !== 0) {
@@ -162,15 +162,15 @@ class VoteRatiosMenu implements CallbackListener, ConfiguratorMenu, TimerListene
 			array_push($newVoteRatios, $voteRatio);
 		}
 
-		$success = $this->maniaControl->client->setCallVoteRatios($newVoteRatios);
+		$success = $this->maniaControl->getClient()->setCallVoteRatios($newVoteRatios);
 		if ($success) {
-			$this->maniaControl->chat->sendSuccess('Vote Ratios saved!', $player);
+			$this->maniaControl->getChat()->sendSuccess('Vote Ratios saved!', $player);
 		} else {
-			$this->maniaControl->chat->sendError('Vote Ratios saving failed!', $player);
+			$this->maniaControl->getChat()->sendError('Vote Ratios saving failed!', $player);
 		}
 
 		// Reopen the Menu
-		$this->maniaControl->configurator->showMenu($player, $this);
+		$this->maniaControl->getConfigurator()->showMenu($player, $this);
 	}
 
 	/**
@@ -180,6 +180,6 @@ class VoteRatiosMenu implements CallbackListener, ConfiguratorMenu, TimerListene
 	 * @param string $commandName
 	 */
 	private function sendInvalidValueError(Player $player, $commandName) {
-		$this->maniaControl->chat->sendError("Invalid Value given for '{$commandName}'!", $player);
+		$this->maniaControl->getChat()->sendError("Invalid Value given for '{$commandName}'!", $player);
 	}
 }

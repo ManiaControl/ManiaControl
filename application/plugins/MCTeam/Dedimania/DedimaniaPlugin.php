@@ -79,9 +79,9 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * @see \ManiaControl\Plugins\Plugin::prepare()
 	 */
 	public static function prepare(ManiaControl $maniaControl) {
-		$servers = $maniaControl->server->getAllServers();
+		$servers = $maniaControl->getServer()->getAllServers();
 		foreach ($servers as $server) {
-			$maniaControl->settingManager->initSetting(get_class(), self::SETTING_DEDIMANIA_CODE . $server->login . '$l', '');
+			$maniaControl->getSettingManager()->initSetting(get_class(), self::SETTING_DEDIMANIA_CODE . $server->login . '$l', '');
 		}
 	}
 
@@ -130,38 +130,40 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			throw new \Exception("You need to activate the PHP extension xmlrpc to run this Plugin!");
 		}
 
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_ENABLE, true);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_TITLE, 'Dedimania');
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSX, -139);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_POSY, 7);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_WIDTH, 40);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_LINE_HEIGHT, 4);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WIDGET_LINE_COUNT, 12);
+		// Settings
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_ENABLE, true);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_TITLE, 'Dedimania');
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_POSX, -139);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_POSY, 7);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_WIDTH, 40);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_LINE_HEIGHT, 4);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_LINE_COUNT, 12);
 
-		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::BEGINMAP, $this, 'handleBeginMap');
-		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::ENDMAP, $this, 'handleMapEnd');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
-		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
-		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECT, $this, 'handlePlayerDisconnect');
-		$this->maniaControl->callbackManager->registerCallbackListener(RecordCallback::CHECKPOINT, $this, 'handleCheckpointCallback');
-		$this->maniaControl->callbackManager->registerCallbackListener(RecordCallback::LAPFINISH, $this, 'handleLapFinishCallback');
-		$this->maniaControl->callbackManager->registerCallbackListener(RecordCallback::FINISH, $this, 'handleFinishCallback');
+		// Callbacks
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::BEGINMAP, $this, 'handleBeginMap');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::ENDMAP, $this, 'handleMapEnd');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECT, $this, 'handlePlayerDisconnect');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(RecordCallback::CHECKPOINT, $this, 'handleCheckpointCallback');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(RecordCallback::LAPFINISH, $this, 'handleLapFinishCallback');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(RecordCallback::FINISH, $this, 'handleFinishCallback');
 
-		$this->maniaControl->timerManager->registerTimerListening($this, 'updateEverySecond', 1000);
-		$this->maniaControl->timerManager->registerTimerListening($this, 'handleEveryMinute', 1000 * 60);
-		$this->maniaControl->timerManager->registerTimerListening($this, 'updatePlayerList', 1000 * 60 * 3);
+		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'updateEverySecond', 1000);
+		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'handleEveryMinute', 1000 * 60);
+		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'updatePlayerList', 1000 * 60 * 3);
 
-		$this->maniaControl->commandManager->registerCommandListener(array('dedirecs', 'dedirecords'), $this, 'showDediRecordsList', false, 'Shows a list of Dedimania records of the current map.');
+		$this->maniaControl->getCommandManager()->registerCommandListener(array('dedirecs', 'dedirecords'), $this, 'showDediRecordsList', false, 'Shows a list of Dedimania records of the current map.');
 
 		// Open session
-		$serverInfo    = $this->maniaControl->server->getInfo();
-		$serverVersion = $this->maniaControl->client->getVersion();
-		$packMask      = $this->maniaControl->server->titleId;
+		$serverInfo    = $this->maniaControl->getServer()->getInfo();
+		$packMask      = $this->maniaControl->getServer()->titleId;
+		$serverVersion = $this->maniaControl->getClient()->getVersion();
 		if ($packMask !== 'Trackmania_2@nadeolabs') {
-			$packMask = substr($this->maniaControl->server->titleId, 2);
+			$packMask = substr($this->maniaControl->getServer()->titleId, 2);
 		}
 
-		$dedimaniaCode = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_DEDIMANIA_CODE . $serverInfo->login . '$l');
+		$dedimaniaCode = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_DEDIMANIA_CODE . $serverInfo->login . '$l');
 		if (!$dedimaniaCode) {
 			throw new \Exception("No Dedimania Code Specified, check the settings!");
 		}
@@ -192,7 +194,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 
 		//$this->maniaControl->fileReader->postDataTest($this->request, self::DEDIMANIA_URL, function ($data, $error) {
-		$this->maniaControl->fileReader->postData(self::DEDIMANIA_URL, function ($data, $error) {
+		$this->maniaControl->getFileReader()->postData(self::DEDIMANIA_URL, function ($data, $error) {
 			$this->maniaControl->log("Try to connect on Dedimania");
 
 			if (!$data || $error) {
@@ -291,7 +293,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$content = $this->encode_request(self::DEDIMANIA_GET_RECORDS, $data);
 		//var_dump("get recs");
 		//$this->maniaControl->fileReader->postDataTest($this->request,self::DEDIMANIA_URL, function ($data, $error) {
-		$this->maniaControl->fileReader->postData(self::DEDIMANIA_URL, function ($data, $error) {
+		$this->maniaControl->getFileReader()->postData(self::DEDIMANIA_URL, function ($data, $error) {
 			if ($error) {
 				$this->maniaControl->log('Dedimania Error: ' . $error);
 			}
@@ -309,7 +311,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 			$responseData = $methodResponse[0];
 			if (!isset($responseData['Players']) || !isset($responseData['Records'])) {
-				$this->maniaControl->errorHandler->triggerDebugNotice('Invalid Dedimania response!', $responseData);
+				$this->maniaControl->getErrorHandler()->triggerDebugNotice('Invalid Dedimania response!', $responseData);
 				return;
 			}
 
@@ -328,7 +330,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			}
 
 			$this->updateManialink = true;
-			$this->maniaControl->callbackManager->triggerCallback(self::CB_DEDIMANIA_UPDATED, $this->dedimaniaData->records);
+			$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_DEDIMANIA_UPDATED, $this->dedimaniaData->records);
 		}, $content, true);
 
 		return true;
@@ -338,17 +340,17 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * Build server info Structure for callbacks
 	 */
 	private function getServerInfo() {
-		$server = $this->maniaControl->client->getServerOptions();
+		$server = $this->maniaControl->getClient()->getServerOptions();
 		if (!$server) {
 			return null;
 		}
 
-		if ($this->maniaControl->playerManager->getPlayerCount(false) <= 0) {
+		if ($this->maniaControl->getPlayerManager()->getPlayerCount(false) <= 0) {
 			return null;
 		}
 
-		$playerCount    = $this->maniaControl->playerManager->getPlayerCount();
-		$spectatorCount = $this->maniaControl->playerManager->getSpectatorCount();
+		$playerCount    = $this->maniaControl->getPlayerManager()->getPlayerCount();
+		$spectatorCount = $this->maniaControl->getPlayerManager()->getSpectatorCount();
 
 		return array('SrvName' => $server->name, 'Comment' => $server->comment, 'Private' => (strlen($server->password) > 0), 'NumPlayers' => $playerCount, 'MaxPlayers' => $server->currentMaxPlayers, 'NumSpecs' => $spectatorCount, 'MaxSpecs' => $server->currentMaxSpectators);
 	}
@@ -357,7 +359,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * Build simple player list for callbacks
 	 */
 	private function getPlayerList() {
-		$players = $this->maniaControl->playerManager->getPlayers();
+		$players = $this->maniaControl->getPlayerManager()->getPlayers();
 
 		if (empty($players)) {
 			return null;
@@ -375,7 +377,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * @return array
 	 */
 	private function getMapInfo() {
-		$map = $this->maniaControl->mapManager->getCurrentMap();
+		$map = $this->maniaControl->getMapManager()->getCurrentMap();
 		if (!$map) {
 			return null;
 		}
@@ -395,7 +397,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * @return String
 	 */
 	private function getGameModeString() {
-		$gameMode = $this->maniaControl->server->getGameMode();
+		$gameMode = $this->maniaControl->getServer()->getGameMode();
 		if ($gameMode === null) {
 			trigger_error("Couldn't retrieve game mode.");
 			return null;
@@ -403,7 +405,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		switch ($gameMode) {
 			case 0:
 			{
-				$scriptNameResponse = $this->maniaControl->client->getScriptName();
+				$scriptNameResponse = $this->maniaControl->getClient()->getScriptName();
 				$scriptName         = str_replace('.Script.txt', '', $scriptNameResponse['CurrentValue']);
 				switch ($scriptName) {
 					case 'Rounds':
@@ -447,9 +449,9 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			var_dump("Dedimania Debug: Update Manialink");
 		}
 
-		if ($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_ENABLE)) {
+		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_ENABLE)) {
 			$manialink = $this->buildManialink();
-			$this->maniaControl->manialinkManager->sendManialink($manialink);
+			$this->maniaControl->getManialinkManager()->sendManialink($manialink);
 		}
 	}
 
@@ -461,15 +463,15 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	private function buildManialink() {
 		$records = $this->dedimaniaData->records;
 
-		$title        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_TITLE);
-		$posX         = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_POSX);
-		$posY         = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_POSY);
-		$width        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_WIDTH);
-		$lines        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_LINE_COUNT);
-		$lineHeight   = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_LINE_HEIGHT);
-		$labelStyle   = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultLabelStyle();
-		$quadStyle    = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultQuadStyle();
-		$quadSubstyle = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultQuadSubstyle();
+		$title        = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_TITLE);
+		$posX         = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_POSX);
+		$posY         = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_POSY);
+		$width        = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_WIDTH);
+		$lines        = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_LINE_COUNT);
+		$lineHeight   = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_LINE_HEIGHT);
+		$labelStyle   = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultLabelStyle();
+		$quadStyle    = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadStyle();
+		$quadSubstyle = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadSubstyle();
 
 
 		$manialink = new ManiaLink(self::MLID_DEDIMANIA);
@@ -567,7 +569,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$content = $this->encode_request(self::DEDIMANIA_CHECK_SESSION, array($this->dedimaniaData->sessionId));
 		//var_dump("check session"); //TODO remove
 		//$this->maniaControl->fileReader->postDataTest($this->request, self::DEDIMANIA_URL, function ($data, $error) {
-		$this->maniaControl->fileReader->postData(self::DEDIMANIA_URL, function ($data, $error) {
+		$this->maniaControl->getFileReader()->postData(self::DEDIMANIA_URL, function ($data, $error) {
 			if ($error) {
 				$this->maniaControl->log("Dedimania Error: " . $error);
 			}
@@ -611,7 +613,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$data    = array($this->dedimaniaData->sessionId, $player->login, $player->rawNickname, $player->path, $player->isSpectator);
 		$content = $this->encode_request(self::DEDIMANIA_PLAYERCONNECT, $data);
 
-		$this->maniaControl->fileReader->postData(self::DEDIMANIA_URL, function ($data, $error) use (&$player) {
+		$this->maniaControl->getFileReader()->postData(self::DEDIMANIA_URL, function ($data, $error) use (&$player) {
 			if ($error) {
 				$this->maniaControl->log("Dedimania Error: " . $error);
 			}
@@ -632,13 +634,13 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			$this->dedimaniaData->addPlayer($dediPlayer);
 
 			// Fetch records if he is the first who joined the server
-			if ($this->maniaControl->playerManager->getPlayerCount(false) === 1) {
+			if ($this->maniaControl->getPlayerManager()->getPlayerCount(false) === 1) {
 				$this->fetchDedimaniaRecords(true);
 			}
 
-			if ($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_ENABLE)) {
+			if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_ENABLE)) {
 				$manialink = $this->buildManialink();
-				$this->maniaControl->manialinkManager->sendManialink($manialink, $player->login);
+				$this->maniaControl->getManialinkManager()->sendManialink($manialink, $player->login);
 			}
 		}, $content, true);
 	}
@@ -658,7 +660,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$data    = array($this->dedimaniaData->sessionId, $player->login, '');
 		$content = $this->encode_request(self::DEDIMANIA_PLAYERDISCONNECT, $data);
 
-		$this->maniaControl->fileReader->postData(self::DEDIMANIA_URL, function ($data, $error) {
+		$this->maniaControl->getFileReader()->postData(self::DEDIMANIA_URL, function ($data, $error) {
 			if ($error) {
 				$this->maniaControl->log("Dedimania Error: " . $error);
 			}
@@ -728,7 +730,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			var_dump("Dedimania Debug: Submitting Times at End-Map", $content);
 		}
 
-		$this->maniaControl->fileReader->postData(self::DEDIMANIA_URL, function ($data, $error) {
+		$this->maniaControl->getFileReader()->postData(self::DEDIMANIA_URL, function ($data, $error) {
 			if ($error) {
 				$this->maniaControl->log("Dedimania Error: " . $error);
 			}
@@ -778,7 +780,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$data    = array($this->dedimaniaData->sessionId, $serverInfo, $votesInfo, $playerList);
 		$content = $this->encode_request(self::DEDIMANIA_UPDATE_SERVER_PLAYERS, $data);
 
-		$this->maniaControl->fileReader->postData(self::DEDIMANIA_URL, function ($data, $error) {
+		$this->maniaControl->getFileReader()->postData(self::DEDIMANIA_URL, function ($data, $error) {
 			if ($error) {
 				$this->maniaControl->log("Dedimania Error: " . $error);
 			}
@@ -799,7 +801,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * Build Votes Info Array for Callbacks
 	 */
 	private function getVotesInfo() {
-		$map = $this->maniaControl->mapManager->getCurrentMap();
+		$map = $this->maniaControl->getMapManager()->getCurrentMap();
 		if (!$map) {
 			return null;
 		}
@@ -853,7 +855,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			return;
 		}
 
-		$map = $this->maniaControl->mapManager->getCurrentMap();
+		$map = $this->maniaControl->getMapManager()->getCurrentMap();
 		if (!$map) {
 			return;
 		}
@@ -873,7 +875,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 					break;
 				}
 
-				$this->maniaControl->callbackManager->triggerCallback(self::CB_DEDIMANIA_CHANGED, $newRecord);
+				$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_DEDIMANIA_CHANGED, $newRecord);
 
 				// Announce record
 				if ($oldRecord->nullRecord || $newRecord->rank < $oldRecord->rank) {
@@ -887,7 +889,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 				if (!$oldRecord->nullRecord) {
 					$message .= ' ($<$ff0' . $oldRecord->rank . '.$> $<$fff-' . Formatter::formatTime(($oldRecord->best - $callback->lapTime)) . '$>)';
 				}
-				$this->maniaControl->chat->sendInformation($message . '!');
+				$this->maniaControl->getChat()->sendInformation($message . '!');
 
 				$this->updateManialink = true;
 			}
@@ -1023,7 +1025,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 */
 	private function updateDedimaniaRecordRanks() {
 		if ($this->dedimaniaData->getRecordCount() === 0) {
-			$this->maniaControl->callbackManager->triggerCallback(self::CB_DEDIMANIA_UPDATED, $this->dedimaniaData->records);
+			$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_DEDIMANIA_UPDATED, $this->dedimaniaData->records);
 			return;
 		}
 
@@ -1035,7 +1037,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			$record->rank = $rank;
 			$rank++;
 		}
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_DEDIMANIA_UPDATED, $this->dedimaniaData->records);
+		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_DEDIMANIA_UPDATED, $this->dedimaniaData->records);
 	}
 
 	/**
@@ -1045,23 +1047,23 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 */
 	private function setRecordReplays(RecordData &$record) {
 		// Set validation replay
-		$validationReplay = $this->maniaControl->server->getValidationReplay($record->login);
+		$validationReplay = $this->maniaControl->getServer()->getValidationReplay($record->login);
 		if ($validationReplay) {
 			$record->vReplay = $validationReplay;
 		}
 
 		// Set ghost replay
 		if ($record->rank <= 1) {
-			$dataDirectory = $this->maniaControl->server->getDirectory()->getGameDataFolder();
+			$dataDirectory = $this->maniaControl->getServer()->getDirectory()->getGameDataFolder();
 			if (!isset($this->dedimaniaData->directoryAccessChecked)) {
-				$access = $this->maniaControl->server->checkAccess($dataDirectory);
+				$access = $this->maniaControl->getServer()->checkAccess($dataDirectory);
 				if (!$access) {
 					trigger_error("No access to the servers data directory. Can't retrieve ghost replays.");
 				}
 				$this->dedimaniaData->directoryAccessChecked = $access;
 			}
 			if ($this->dedimaniaData->directoryAccessChecked) {
-				$ghostReplay = $this->maniaControl->server->getGhostReplay($record->login);
+				$ghostReplay = $this->maniaControl->getServer()->getGhostReplay($record->login);
 				if ($ghostReplay) {
 					$record->top1GReplay = $ghostReplay;
 				}
@@ -1078,7 +1080,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$actionId = $callback[1][2];
 
 		$login  = $callback[1][1];
-		$player = $this->maniaControl->playerManager->getPlayer($login);
+		$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
 
 		if ($actionId === self::ACTION_SHOW_DEDIRECORDSLIST) {
 			$this->showDediRecordsList(array(), $player);
@@ -1092,13 +1094,13 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * @param Player $player
 	 */
 	public function showDediRecordsList(array $chat, Player $player) {
-		$width  = $this->maniaControl->manialinkManager->getStyleManager()->getListWidgetsWidth();
-		$height = $this->maniaControl->manialinkManager->getStyleManager()->getListWidgetsHeight();
+		$width  = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsWidth();
+		$height = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsHeight();
 
 		// get PlayerList
 		$records = $this->dedimaniaData->records;
 		if (!$records) {
-			$this->maniaControl->chat->sendInformation('There are no Dedimania records on this map!');
+			$this->maniaControl->getChat()->sendInformation('There are no Dedimania records on this map!');
 			return;
 		}
 
@@ -1109,7 +1111,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$script->addFeature($paging);
 
 		// Main frame
-		$frame = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultListFrame($script, $paging);
+		$frame = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultListFrame($script, $paging);
 		$maniaLink->add($frame);
 
 		// Start offsets
@@ -1117,15 +1119,15 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$posY = $height / 2;
 
 		// Predefine Description Label
-		$descriptionLabel = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultDescriptionLabel();
+		$descriptionLabel = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultDescriptionLabel();
 		$frame->add($descriptionLabel);
 
 		// Headline
 		$headFrame = new Frame();
 		$frame->add($headFrame);
 		$headFrame->setY($posY - 5);
-		$array = array("Rank" => $posX + 5, "Nickname" => $posX + 18, "Login" => $posX + 70, "Time" => $posX + 101);
-		$this->maniaControl->manialinkManager->labelLine($headFrame, $array);
+		$array = array('Rank' => $posX + 5, 'Nickname' => $posX + 18, 'Login' => $posX + 70, 'Time' => $posX + 101);
+		$this->maniaControl->getManialinkManager()->labelLine($headFrame, $array);
 
 		$index     = 0;
 		$posY      = $height / 2 - 10;
@@ -1154,7 +1156,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 				$listRecord->nickName = $listRecord->login;
 			}
 			$array = array($listRecord->rank => $posX + 5, '$fff' . $listRecord->nickName => $posX + 18, $listRecord->login => $posX + 70, Formatter::formatTime($listRecord->best) => $posX + 101);
-			$this->maniaControl->manialinkManager->labelLine($recordFrame, $array);
+			$this->maniaControl->getManialinkManager()->labelLine($recordFrame, $array);
 
 			$recordFrame->setY($posY);
 
@@ -1163,7 +1165,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		}
 
 		// Render and display xml
-		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player, 'DediRecordsList');
+		$this->maniaControl->getManialinkManager()->displayWidget($maniaLink, $player, 'DediRecordsList');
 	}
 
 	/**

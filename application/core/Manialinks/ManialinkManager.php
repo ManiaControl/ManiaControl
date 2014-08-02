@@ -66,7 +66,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 
 		// Callbacks
 		$this->registerManialinkPageAnswerListener(self::ACTION_CLOSEWIDGET, $this, 'closeWidgetCallback');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 	}
 
 	/**
@@ -175,7 +175,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	public function handleManialinkPageAnswer(array $callback) {
 		$actionId = $callback[1][2];
 		$login    = $callback[1][1];
-		$player   = $this->maniaControl->playerManager->getPlayer($login);
+		$player   = $this->maniaControl->getPlayerManager()->getPlayer($login);
 
 		if (array_key_exists($actionId, $this->pageAnswerListeners) && is_array($this->pageAnswerListeners[$actionId])) {
 			// Inform page answer listeners
@@ -210,8 +210,8 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 			// TODO make check by manialinkId, getter is needed to avoid uses on non main widgets
 			$this->disableAltMenu($player);
 			// Trigger callback
-			$player = $this->maniaControl->playerManager->getPlayer($player);
-			$this->maniaControl->callbackManager->triggerCallback(self::CB_MAIN_WINDOW_OPENED, $player, $widgetName);
+			$player = $this->maniaControl->getPlayerManager()->getPlayer($player);
+			$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_MAIN_WINDOW_OPENED, $player, $widgetName);
 		}
 	}
 
@@ -233,14 +233,14 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 
 		try {
 			if (!$logins) {
-				return $this->maniaControl->client->sendDisplayManialinkPage(null, $manialinkText, $timeout, $hideOnClick);
+				return $this->maniaControl->getClient()->sendDisplayManialinkPage(null, $manialinkText, $timeout, $hideOnClick);
 			}
 			if (is_string($logins)) {
-				$success = $this->maniaControl->client->sendDisplayManialinkPage($logins, $manialinkText, $timeout, $hideOnClick);
+				$success = $this->maniaControl->getClient()->sendDisplayManialinkPage($logins, $manialinkText, $timeout, $hideOnClick);
 				return $success;
 			}
 			if ($logins instanceof Player) {
-				$success = $this->maniaControl->client->sendDisplayManialinkPage($logins->login, $manialinkText, $timeout, $hideOnClick);
+				$success = $this->maniaControl->getClient()->sendDisplayManialinkPage($logins->login, $manialinkText, $timeout, $hideOnClick);
 				return $success;
 			}
 			if (is_array($logins)) {
@@ -269,7 +269,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	public function disableAltMenu($player) {
 		$login = Player::parseLogin($player);
 		try {
-			$success = $this->maniaControl->client->triggerModeScriptEvent('LibXmlRpc_DisableAltMenu', $login);
+			$success = $this->maniaControl->getClient()->triggerModeScriptEvent('LibXmlRpc_DisableAltMenu', $login);
 		} catch (GameModeException $e) {
 			return false;
 		}
@@ -298,8 +298,8 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 			$this->enableAltMenu($player);
 
 			// Trigger callback
-			$player = $this->maniaControl->playerManager->getPlayer($player);
-			$this->maniaControl->callbackManager->triggerCallback(self::CB_MAIN_WINDOW_CLOSED, $player);
+			$player = $this->maniaControl->getPlayerManager()->getPlayer($player);
+			$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_MAIN_WINDOW_CLOSED, $player);
 		} else {
 			$this->hideManialink($widgetId, $player);
 		}
@@ -331,7 +331,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	public function enableAltMenu($player) {
 		$login = Player::parseLogin($player);
 		try {
-			$success = $this->maniaControl->client->triggerModeScriptEvent('LibXmlRpc_EnableAltMenu', $login);
+			$success = $this->maniaControl->getClient()->triggerModeScriptEvent('LibXmlRpc_EnableAltMenu', $login);
 		} catch (GameModeException $e) {
 			return false;
 		}

@@ -38,6 +38,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 * Public properties
 	 */
 	/** @var PluginUpdateManager $pluginUpdateManager */
+	/** @deprecated see getPluginUpdateManager() */
 	public $pluginUpdateManager = null;
 
 	/*
@@ -50,35 +51,35 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	private $coreUpdateData = null;
 
 	/**
-	 * Create a new update manager instance
+	 * Construct a new update manager instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		// Init settings
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_ENABLE_UPDATECHECK, true);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_AUTO_UPDATE, true);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_UPDATECHECK_INTERVAL, 1);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_UPDATECHECK_CHANNEL, $this->getUpdateChannels());
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_PERFORM_BACKUPS, true);
+		// Settings
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_ENABLE_UPDATECHECK, true);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_AUTO_UPDATE, true);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_UPDATECHECK_INTERVAL, 1);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_UPDATECHECK_CHANNEL, $this->getUpdateChannels());
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_PERFORM_BACKUPS, true);
 
-		// Register for callbacks
-		$updateInterval = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_UPDATECHECK_INTERVAL);
-		$this->maniaControl->timerManager->registerTimerListening($this, 'hourlyUpdateCheck', 1000 * 60 * 60 * $updateInterval);
-		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerJoined');
-		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECT, $this, 'handlePlayerDisconnect');
+		// Callbacks
+		$updateInterval = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_UPDATECHECK_INTERVAL);
+		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'hourlyUpdateCheck', 1000 * 60 * 60 * $updateInterval);
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerJoined');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECT, $this, 'handlePlayerDisconnect');
 
-		// define Permissions
-		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_UPDATE, AuthenticationManager::AUTH_LEVEL_ADMIN);
-		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_UPDATECHECK, AuthenticationManager::AUTH_LEVEL_MODERATOR);
+		// Permissions
+		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_UPDATE, AuthenticationManager::AUTH_LEVEL_ADMIN);
+		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_UPDATECHECK, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 
-		// Register for chat commands
-		$this->maniaControl->commandManager->registerCommandListener('checkupdate', $this, 'handle_CheckUpdate', true, 'Checks if there is a core update.');
-		$this->maniaControl->commandManager->registerCommandListener('coreupdate', $this, 'handle_CoreUpdate', true, 'Performs the core update.');
+		// Chat commands
+		$this->maniaControl->getCommandManager()->registerCommandListener('checkupdate', $this, 'handle_CheckUpdate', true, 'Checks if there is a core update.');
+		$this->maniaControl->getCommandManager()->registerCommandListener('coreupdate', $this, 'handle_CoreUpdate', true, 'Performs the core update.');
 
-		// Plugin update manager
+		// Children
 		$this->pluginUpdateManager = new PluginUpdateManager($maniaControl);
 	}
 
@@ -105,7 +106,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 * Perform Hourly Update Check
 	 */
 	public function hourlyUpdateCheck() {
-		$updateCheckEnabled = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_ENABLE_UPDATECHECK);
+		$updateCheckEnabled = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_ENABLE_UPDATECHECK);
 		if (!$updateCheckEnabled) {
 			$this->setCoreUpdateData();
 		} else {
@@ -138,7 +139,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		$updateChannel = $this->getCurrentUpdateChannelSetting();
 		$url           = ManiaControl::URL_WEBSERVICE . 'versions?current=1&channel=' . $updateChannel;
 
-		$this->maniaControl->fileReader->loadFile($url, function ($dataJson, $error) use (&$function) {
+		$this->maniaControl->getFileReader()->loadFile($url, function ($dataJson, $error) use (&$function) {
 			if ($error) {
 				$this->maniaControl->log('Error on UpdateCheck: ' . $error);
 				return;
@@ -159,7 +160,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 * @return string
 	 */
 	public function getCurrentUpdateChannelSetting() {
-		$updateChannel = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_UPDATECHECK_CHANNEL);
+		$updateChannel = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_UPDATECHECK_CHANNEL);
 		$updateChannel = strtolower($updateChannel);
 		if (!in_array($updateChannel, $this->getUpdateChannels())) {
 			$updateChannel = self::CHANNEL_RELEASE;
@@ -257,7 +258,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			return false;
 		}
 
-		$version = $this->maniaControl->client->getVersion();
+		$version = $this->maniaControl->getClient()->getVersion();
 		if ($updateData->minDedicatedBuild > $version->build) {
 			// Server not compatible
 			return false;
@@ -270,7 +271,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 * Check if an automatic Update should be performed
 	 */
 	public function checkAutoUpdate() {
-		$autoUpdate = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_AUTO_UPDATE);
+		$autoUpdate = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_AUTO_UPDATE);
 		if (!$autoUpdate) {
 			// Auto update turned off
 			return;
@@ -279,7 +280,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			// No update available
 			return;
 		}
-		if ($this->maniaControl->playerManager->getPlayerCount(false) > 0) {
+		if ($this->maniaControl->getPlayerManager()->getPlayerCount(false) > 0) {
 			// Server not empty
 			return;
 		}
@@ -297,7 +298,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		if (!$this->coreUpdateData) {
 			$message = 'Update failed: No update Data available!';
 			if ($player) {
-				$this->maniaControl->chat->sendError($message, $player);
+				$this->maniaControl->getChat()->sendError($message, $player);
 			}
 			$this->maniaControl->log($message);
 			return false;
@@ -309,29 +310,29 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		if (!FileUtil::checkWritePermissions($directories)) {
 			$message = 'Update not possible: Incorrect File System Permissions!';
 			if ($player) {
-				$this->maniaControl->chat->sendError($message, $player);
+				$this->maniaControl->getChat()->sendError($message, $player);
 			}
 			$this->maniaControl->log($message);
 			return false;
 		}
 
-		$performBackup = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_PERFORM_BACKUPS);
+		$performBackup = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_PERFORM_BACKUPS);
 		if ($performBackup && !BackupUtil::performFullBackup()) {
 			$message = 'Creating Backup before Update failed!';
 			if ($player) {
-				$this->maniaControl->chat->sendError($message, $player);
+				$this->maniaControl->getChat()->sendError($message, $player);
 			}
 			$this->maniaControl->log($message);
 		}
 
 		$updateData = $this->coreUpdateData;
-		$this->maniaControl->fileReader->loadFile($updateData->url, function ($updateFileContent, $error) use (
+		$this->maniaControl->getFileReader()->loadFile($updateData->url, function ($updateFileContent, $error) use (
 			$updateData, &$player
 		) {
 			if (!$updateFileContent || $error) {
 				$message = "Update failed: Couldn't load Update zip! {$error}";
 				if ($player) {
-					$this->maniaControl->chat->sendError($message, $player);
+					$this->maniaControl->getChat()->sendError($message, $player);
 				}
 				$this->maniaControl->log($message);
 				return;
@@ -344,7 +345,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			if (!$bytes || $bytes <= 0) {
 				$message = "Update failed: Couldn't save Update zip!";
 				if ($player) {
-					$this->maniaControl->chat->sendError($message, $player);
+					$this->maniaControl->getChat()->sendError($message, $player);
 				}
 				$this->maniaControl->log($message);
 				return;
@@ -355,7 +356,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			if ($result !== true) {
 				$message = "Update failed: Couldn't open Update Zip. ({$result})";
 				if ($player) {
-					$this->maniaControl->chat->sendError($message, $player);
+					$this->maniaControl->getChat()->sendError($message, $player);
 				}
 				$this->maniaControl->log($message);
 				return;
@@ -371,7 +372,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 
 			$message = 'Update finished!';
 			if ($player) {
-				$this->maniaControl->chat->sendSuccess($message, $player);
+				$this->maniaControl->getChat()->sendSuccess($message, $player);
 			}
 			$this->maniaControl->log($message);
 
@@ -404,14 +405,14 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			return;
 		}
 		// Announce available update
-		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_UPDATE)) {
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_UPDATE)) {
 			return;
 		}
 
 		if ($this->isNightlyUpdateChannel()) {
-			$this->maniaControl->chat->sendSuccess('New Nightly Build (' . $this->coreUpdateData->releaseDate . ') available!', $player->login);
+			$this->maniaControl->getChat()->sendSuccess('New Nightly Build (' . $this->coreUpdateData->releaseDate . ') available!', $player->login);
 		} else {
-			$this->maniaControl->chat->sendInformation('New ManiaControl Version ' . $this->coreUpdateData->version . ' available!', $player->login);
+			$this->maniaControl->getChat()->sendInformation('New ManiaControl Version ' . $this->coreUpdateData->version . ' available!', $player->login);
 		}
 	}
 
@@ -431,19 +432,19 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 * @param Player $player
 	 */
 	public function handle_CheckUpdate(array $chatCallback, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_UPDATECHECK)) {
-			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_UPDATECHECK)) {
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
 
 		$this->checkCoreUpdateAsync(function (UpdateData $updateData = null) use (&$player) {
 			if (!$this->checkUpdateData($updateData)) {
-				$this->maniaControl->chat->sendInformation('No Update available!', $player->login);
+				$this->maniaControl->getChat()->sendInformation('No Update available!', $player->login);
 				return;
 			}
 
 			if (!$this->checkUpdateDataBuildVersion($updateData)) {
-				$this->maniaControl->chat->sendError("Please update Your Server to '{$updateData->minDedicatedBuild}' in order to receive further Updates!", $player->login);
+				$this->maniaControl->getChat()->sendError("Please update Your Server to '{$updateData->minDedicatedBuild}' in order to receive further Updates!", $player->login);
 				return;
 			}
 
@@ -452,16 +453,16 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 				$buildDate = $this->getNightlyBuildDate();
 				if ($buildDate) {
 					if ($updateData->isNewerThan($buildDate)) {
-						$this->maniaControl->chat->sendInformation("No new Build available! (Current Build: '{$buildDate}')", $player->login);
+						$this->maniaControl->getChat()->sendInformation("No new Build available! (Current Build: '{$buildDate}')", $player->login);
 						return;
 					} else {
-						$this->maniaControl->chat->sendSuccess("New Nightly Build ({$updateData->releaseDate}) available! (Current Build: '{$buildDate}')", $player->login);
+						$this->maniaControl->getChat()->sendSuccess("New Nightly Build ({$updateData->releaseDate}) available! (Current Build: '{$buildDate}')", $player->login);
 					}
 				} else {
-					$this->maniaControl->chat->sendSuccess("New Nightly Build ('{$updateData->releaseDate}') available!", $player->login);
+					$this->maniaControl->getChat()->sendSuccess("New Nightly Build ('{$updateData->releaseDate}') available!", $player->login);
 				}
 			} else {
-				$this->maniaControl->chat->sendSuccess('Update for Version ' . $updateData->version . ' available!', $player->login);
+				$this->maniaControl->getChat()->sendSuccess('Update for Version ' . $updateData->version . ' available!', $player->login);
 			}
 
 			$this->coreUpdateData = $updateData;
@@ -475,18 +476,18 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 * @param Player $player
 	 */
 	public function handle_CoreUpdate(array $chatCallback, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_UPDATE)) {
-			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_UPDATE)) {
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
 
 		$this->checkCoreUpdateAsync(function (UpdateData $updateData = null) use (&$player) {
 			if (!$updateData) {
-				$this->maniaControl->chat->sendError('Update is currently not possible!', $player);
+				$this->maniaControl->getChat()->sendError('Update is currently not possible!', $player);
 				return;
 			}
 			if (!$this->checkUpdateDataBuildVersion($updateData)) {
-				$this->maniaControl->chat->sendError("The Next ManiaControl Update requires a newer Dedicated Server Version!", $player);
+				$this->maniaControl->getChat()->sendError("The Next ManiaControl Update requires a newer Dedicated Server Version!", $player);
 				return;
 			}
 

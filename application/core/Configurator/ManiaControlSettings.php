@@ -44,17 +44,18 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 	private $maniaControl = null;
 
 	/**
-	 * Create a new ManiaControl Settings Instance
+	 * Construct a new ManiaControl Settings instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		// Register for callbacks
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
+		// Callbacks
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 
-		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_CHANGE_MC_SETTINGS, AuthenticationManager::AUTH_LEVEL_ADMIN);
+		// Permissions
+		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_CHANGE_MC_SETTINGS, AuthenticationManager::AUTH_LEVEL_ADMIN);
 	}
 
 	/**
@@ -86,7 +87,7 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 	 * @return \FML\Controls\Frame
 	 */
 	private function getMenuSettingsForClass($settingClass, $width, $height, Script $script, Player $player) {
-		$settings = $this->maniaControl->settingManager->getSettingsByClass($settingClass);
+		$settings = $this->maniaControl->getSettingManager()->getSettingsByClass($settingClass);
 
 		$paging = new Paging();
 		$script->addFeature($paging);
@@ -213,7 +214,7 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 	 * @return \FML\Controls\Frame
 	 */
 	private function getMenuSettingClasses($width, $height, Script $script, Player $player) {
-		$settingClasses = $this->maniaControl->settingManager->getSettingClasses(true);
+		$settingClasses = $this->maniaControl->getSettingManager()->getSettingClasses(true);
 
 		$paging = new Paging();
 		$script->addFeature($paging);
@@ -296,20 +297,20 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 		if ($actionId === self::ACTION_SETTINGCLASS_BACK) {
 			// Back to classes list
 			$login  = $callback[1][1];
-			$player = $this->maniaControl->playerManager->getPlayer($login);
+			$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
 			$player->destroyCache($this, self::CACHE_CLASS_OPENED);
-			$menuId = $this->maniaControl->configurator->getMenuId($this);
-			$this->maniaControl->configurator->showMenu($player, $menuId);
+			$menuId = $this->maniaControl->getConfigurator()->getMenuId($this);
+			$this->maniaControl->getConfigurator()->showMenu($player, $menuId);
 		} else if (strpos($actionId, self::ACTION_PREFIX_SETTINGCLASS) === 0) {
 			// Setting class selected
 			$settingClass = substr($actionId, strlen(self::ACTION_PREFIX_SETTINGCLASS));
 
 			$login  = $callback[1][1];
-			$player = $this->maniaControl->playerManager->getPlayer($login);
+			$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
 			$player->setCache($this, self::CACHE_CLASS_OPENED, $settingClass);
 
-			$menuId = $this->maniaControl->configurator->getMenuId($this);
-			$this->maniaControl->configurator->showMenu($player, $menuId);
+			$menuId = $this->maniaControl->getConfigurator()->getMenuId($this);
+			$this->maniaControl->getConfigurator()->showMenu($player, $menuId);
 		}
 	}
 
@@ -317,8 +318,8 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
 	 */
 	public function saveConfigData(array $configData, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_CHANGE_MC_SETTINGS)) {
-			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_CHANGE_MC_SETTINGS)) {
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
 		if (!$configData[3] || strpos($configData[3][0]['Name'], self::ACTION_PREFIX_SETTING) !== 0) {
@@ -329,7 +330,7 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 
 		foreach ($configData[3] as $settingData) {
 			$settingIndex  = (int)substr($settingData['Name'], $prefixLength);
-			$settingObject = $this->maniaControl->settingManager->getSettingObjectByIndex($settingIndex);
+			$settingObject = $this->maniaControl->getSettingManager()->getSettingObjectByIndex($settingIndex);
 			if (!$settingObject) {
 				continue;
 			}
@@ -339,12 +340,12 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 			}
 
 			$settingObject->value = $settingData['Value'];
-			$this->maniaControl->settingManager->saveSetting($settingObject);
+			$this->maniaControl->getSettingManager()->saveSetting($settingObject);
 		}
 
-		$this->maniaControl->chat->sendSuccess('Settings saved!', $player);
+		$this->maniaControl->getChat()->sendSuccess('Settings saved!', $player);
 
 		// Reopen the Menu
-		$this->maniaControl->configurator->showMenu($player, $this);
+		$this->maniaControl->getConfigurator()->showMenu($player, $this);
 	}
 }

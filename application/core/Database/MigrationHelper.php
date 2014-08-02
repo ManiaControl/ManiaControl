@@ -40,7 +40,7 @@ class MigrationHelper {
 		$sourceClass = ClassUtil::getClass($sourceClass);
 		$targetClass = ClassUtil::getClass($targetClass);
 
-		$mysqli = $this->maniaControl->database->mysqli;
+		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
 
 		$query     = "INSERT IGNORE INTO `" . SettingManager::TABLE_SETTINGS . "`
 				(`class`, `setting`, `type`, `value`, `default`)

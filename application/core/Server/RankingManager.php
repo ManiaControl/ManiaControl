@@ -29,10 +29,10 @@ class RankingManager implements CallbackListener {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		//Register Callbacks
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_MODESCRIPTCALLBACK, $this, 'handleCallbacks');
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_MODESCRIPTCALLBACKARRAY, $this, 'handleCallbacks');
-		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::ONINIT, $this, 'onInit');
+		// Callbacks
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_MODESCRIPTCALLBACK, $this, 'handleCallbacks');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_MODESCRIPTCALLBACKARRAY, $this, 'handleCallbacks');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::ONINIT, $this, 'onInit');
 		//TODO won message at end of the map (disable as setting) (and public announce only all %50 (setting) players)
 	}
 
@@ -41,7 +41,7 @@ class RankingManager implements CallbackListener {
 	 */
 	public function onInit() {
 		try {
-			$this->maniaControl->client->triggerModeScriptEvent('LibXmlRpc_GetRankings', '');
+			$this->maniaControl->getClient()->triggerModeScriptEvent('LibXmlRpc_GetRankings', '');
 		} catch (GameModeException $e) {
 		}
 	}
@@ -90,7 +90,7 @@ class RankingManager implements CallbackListener {
 		array_multisort($this->rankings, SORT_DESC, SORT_NUMERIC);
 
 		//TODO if Local Records activated-> sort asc
-		$this->maniaControl->callbackManager->triggerCallback(Callbacks::RANKINGSUPDATED, $this->getRankings());
+		$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::RANKINGSUPDATED, $this->getRankings());
 	}
 
 	/**

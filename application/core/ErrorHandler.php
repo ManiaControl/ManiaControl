@@ -47,7 +47,7 @@ class ErrorHandler {
 	 * Initialize error handler features
 	 */
 	public function init() {
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_RESTART_ON_EXCEPTION, true);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_RESTART_ON_EXCEPTION, true);
 	}
 
 	/**
@@ -125,7 +125,7 @@ class ErrorHandler {
 				if ($pluginId > 0) {
 					$report['PluginId'] = $pluginId;
 					if ($isFatalError) {
-						$this->maniaControl->pluginManager->deactivatePlugin($sourceClass);
+						$this->maniaControl->getPluginManager()->deactivatePlugin($sourceClass);
 					}
 				}
 			}
@@ -135,13 +135,13 @@ class ErrorHandler {
 			$report['OperatingSystem'] = php_uname();
 			$report['PHPVersion']      = phpversion();
 
-			if ($this->maniaControl->server) {
-				$report['ServerLogin'] = $this->maniaControl->server->login;
+			if ($this->maniaControl->getServer()) {
+				$report['ServerLogin'] = $this->maniaControl->getServer()->login;
 			}
 
-			if ($this->maniaControl->settingManager && $this->maniaControl->updateManager) {
-				$report['UpdateChannel']       = $this->maniaControl->settingManager->getSettingValue($this->maniaControl->updateManager, UpdateManager::SETTING_UPDATECHECK_CHANNEL);
-				$report['ManiaControlVersion'] = ManiaControl::VERSION . ' ' . $this->maniaControl->updateManager->getNightlyBuildDate();
+			if ($this->maniaControl->getSettingManager() && $this->maniaControl->getUpdateManager()) {
+				$report['UpdateChannel']       = $this->maniaControl->getSettingManager()->getSettingValue($this->maniaControl->getUpdateManager(), UpdateManager::SETTING_UPDATECHECK_CHANNEL);
+				$report['ManiaControlVersion'] = ManiaControl::VERSION . ' ' . $this->maniaControl->getUpdateManager()->getNightlyBuildDate();
 			} else {
 				$report['ManiaControlVersion'] = ManiaControl::VERSION;
 			}
@@ -393,19 +393,19 @@ class ErrorHandler {
 	public function handleShutdown() {
 		// TODO: skip client-related actions on transport exception (e.g. server down)
 
-		if ($this->maniaControl->callbackManager) {
+		if ($this->maniaControl->getCallbackManager()) {
 			// OnShutdown callback
-			$this->maniaControl->callbackManager->triggerCallback(Callbacks::ONSHUTDOWN);
+			$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ONSHUTDOWN);
 		}
 
-		if ($this->maniaControl->chat) {
+		if ($this->maniaControl->getChat()) {
 			// Announce quit
-			$this->maniaControl->chat->sendInformation('ManiaControl shutting down.');
+			$this->maniaControl->getChat()->sendInformation('ManiaControl shutting down.');
 		}
 
-		if ($this->maniaControl->client) {
+		if ($this->maniaControl->getClient()) {
 			try {
-				$this->maniaControl->client->sendHideManialinkPage();
+				$this->maniaControl->getClient()->sendHideManialinkPage();
 			} catch (TransportException $e) {
 				$this->handleException($e, false);
 			}
@@ -448,13 +448,13 @@ class ErrorHandler {
 			$report['OperatingSystem'] = php_uname();
 			$report['PHPVersion']      = phpversion();
 
-			if ($this->maniaControl->server) {
-				$report['ServerLogin'] = $this->maniaControl->server->login;
+			if ($this->maniaControl->getServer()) {
+				$report['ServerLogin'] = $this->maniaControl->getServer()->login;
 			}
 
-			if ($this->maniaControl->settingManager && $this->maniaControl->updateManager) {
-				$report['UpdateChannel']       = $this->maniaControl->settingManager->getSettingValue($this->maniaControl->updateManager, UpdateManager::SETTING_UPDATECHECK_CHANNEL);
-				$report['ManiaControlVersion'] = ManiaControl::VERSION . ' #' . $this->maniaControl->updateManager->getNightlyBuildDate();
+			if ($this->maniaControl->getSettingManager() && $this->maniaControl->getUpdateManager()) {
+				$report['UpdateChannel']       = $this->maniaControl->getSettingManager()->getSettingValue($this->maniaControl->getUpdateManager(), UpdateManager::SETTING_UPDATECHECK_CHANNEL);
+				$report['ManiaControlVersion'] = ManiaControl::VERSION . ' #' . $this->maniaControl->getUpdateManager()->getNightlyBuildDate();
 			} else {
 				$report['ManiaControlVersion'] = ManiaControl::VERSION;
 			}
@@ -487,10 +487,10 @@ class ErrorHandler {
 	 * @return bool
 	 */
 	private function shouldRestart() {
-		if (!$this->maniaControl || !$this->maniaControl->settingManager || DEV_MODE) {
+		if (!$this->maniaControl || !$this->maniaControl->getSettingManager() || DEV_MODE) {
 			return false;
 		}
-		$setting = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_RESTART_ON_EXCEPTION, true);
+		$setting = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_RESTART_ON_EXCEPTION, true);
 		return $setting;
 	}
 }

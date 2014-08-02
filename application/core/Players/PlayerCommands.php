@@ -43,35 +43,35 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		// Register for admin commands
-		$this->maniaControl->commandManager->registerCommandListener(array('balance', 'teambalance', 'autoteambalance'), $this, 'command_TeamBalance', true, 'Balances the teams.');
-		$this->maniaControl->commandManager->registerCommandListener('kick', $this, 'command_Kick', true, 'Kicks player from the server.');
-		$this->maniaControl->commandManager->registerCommandListener('ban', $this, 'command_Ban', true, 'Bans player from the server.');
-		$this->maniaControl->commandManager->registerCommandListener(array('forcespec', 'forcespectator'), $this, 'command_ForceSpectator', true, 'Forces player into spectator.');
-		$this->maniaControl->commandManager->registerCommandListener('forceplay', $this, 'command_ForcePlay', true, 'Forces player into Play mode.');
-		$this->maniaControl->commandManager->registerCommandListener('forceblue', $this, 'command_ForceBlue', true, 'Forces player into blue team.');
-		$this->maniaControl->commandManager->registerCommandListener('forcered', $this, 'command_ForceRed', true, 'Forces player into red team.');
-		$this->maniaControl->commandManager->registerCommandListener(array('addbots', 'addbot'), $this, 'command_AddFakePlayers', true, 'Adds bots to the game.');
-		$this->maniaControl->commandManager->registerCommandListener(array('removebot', 'removebots'), $this, 'command_RemoveFakePlayers', true, 'Removes bots from the game.');
-		$this->maniaControl->commandManager->registerCommandListener('mute', $this, 'command_MutePlayer', true, 'Mutes a player (prevents player from chatting).');
-		$this->maniaControl->commandManager->registerCommandListener('unmute', $this, 'command_UnmutePlayer', true, 'Unmute a player (enables player to chat again).');
+		// Admin commands
+		$this->maniaControl->getCommandManager()->registerCommandListener(array('balance', 'teambalance', 'autoteambalance'), $this, 'command_TeamBalance', true, 'Balances the teams.');
+		$this->maniaControl->getCommandManager()->registerCommandListener('kick', $this, 'command_Kick', true, 'Kicks player from the server.');
+		$this->maniaControl->getCommandManager()->registerCommandListener('ban', $this, 'command_Ban', true, 'Bans player from the server.');
+		$this->maniaControl->getCommandManager()->registerCommandListener(array('forcespec', 'forcespectator'), $this, 'command_ForceSpectator', true, 'Forces player into spectator.');
+		$this->maniaControl->getCommandManager()->registerCommandListener('forceplay', $this, 'command_ForcePlay', true, 'Forces player into Play mode.');
+		$this->maniaControl->getCommandManager()->registerCommandListener('forceblue', $this, 'command_ForceBlue', true, 'Forces player into blue team.');
+		$this->maniaControl->getCommandManager()->registerCommandListener('forcered', $this, 'command_ForceRed', true, 'Forces player into red team.');
+		$this->maniaControl->getCommandManager()->registerCommandListener(array('addbots', 'addbot'), $this, 'command_AddFakePlayers', true, 'Adds bots to the game.');
+		$this->maniaControl->getCommandManager()->registerCommandListener(array('removebot', 'removebots'), $this, 'command_RemoveFakePlayers', true, 'Removes bots from the game.');
+		$this->maniaControl->getCommandManager()->registerCommandListener('mute', $this, 'command_MutePlayer', true, 'Mutes a player (prevents player from chatting).');
+		$this->maniaControl->getCommandManager()->registerCommandListener('unmute', $this, 'command_UnmutePlayer', true, 'Unmute a player (enables player to chat again).');
 
-		// Register for player chat commands
-		$this->maniaControl->commandManager->registerCommandListener(array('player', 'players'), $this, 'command_playerList', false, 'Shows players currently on the server.');
+		// Player commands
+		$this->maniaControl->getCommandManager()->registerCommandListener(array('player', 'players'), $this, 'command_playerList', false, 'Shows players currently on the server.');
 
-		//Define Rights
-		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_ADD_BOT, AuthenticationManager::AUTH_LEVEL_MODERATOR);
-		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_TEAM_BALANCE, AuthenticationManager::AUTH_LEVEL_MODERATOR);
+		// Permissions
+		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_ADD_BOT, AuthenticationManager::AUTH_LEVEL_MODERATOR);
+		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_TEAM_BALANCE, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 
-		//CallbackManager
-		$this->maniaControl->callbackManager->registerCallbackListener(Server::CB_TEAM_MODE_CHANGED, $this, 'teamStatusChanged');
+		// Callbacks
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Server::CB_TEAM_MODE_CHANGED, $this, 'teamStatusChanged');
 
 		// Action Open PlayerList
-		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_OPEN_PLAYERLIST, $this, 'command_playerList');
+		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_OPEN_PLAYERLIST, $this, 'command_playerList');
 		$itemQuad = new Quad_UIConstruction_Buttons();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Author);
 		$itemQuad->setAction(self::ACTION_OPEN_PLAYERLIST);
-		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, true, 15, 'Open PlayerList');
+		$this->maniaControl->getActionsMenu()->addMenuItem($itemQuad, true, 15, 'Open PlayerList');
 	}
 
 	/**
@@ -83,11 +83,11 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 		//Add Balance Team Icon if it's a teamMode
 		if ($teamMode) {
 			// Action Balance Teams
-			$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_BALANCE_TEAMS, $this, 'command_TeamBalance');
+			$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_BALANCE_TEAMS, $this, 'command_TeamBalance');
 			$itemQuad = new Quad_Icons128x32_1();
 			$itemQuad->setSubStyle($itemQuad::SUBSTYLE_RT_Team);
 			$itemQuad->setAction(self::ACTION_BALANCE_TEAMS);
-			$this->maniaControl->actionsMenu->addMenuItem($itemQuad, false, 40, 'Balance Teams');
+			$this->maniaControl->getActionsMenu()->addMenuItem($itemQuad, false, 40, 'Balance Teams');
 		}
 	}
 
@@ -98,19 +98,19 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 	 * @param Player $player
 	 */
 	public function command_TeamBalance(array $chatCallback, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_TEAM_BALANCE)) {
-			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_TEAM_BALANCE)) {
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
 
 		try {
-			$this->maniaControl->client->autoTeamBalance();
+			$this->maniaControl->getClient()->autoTeamBalance();
 		} catch (GameModeException $exception) {
-			$this->maniaControl->chat->sendException($exception, $player);
+			$this->maniaControl->getChat()->sendException($exception, $player);
 			return;
 		}
 
-		$this->maniaControl->chat->sendInformation($player->getEscapedNickname() . ' balanced Teams!');
+		$this->maniaControl->getChat()->sendInformation($player->getEscapedNickname() . ' balanced Teams!');
 	}
 
 	/**
@@ -120,13 +120,13 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 	 * @param Player $player
 	 */
 	public function command_Kick(array $chat, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkPermission($player, PlayerActions::SETTING_PERMISSION_KICK_PLAYER)) {
-			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, PlayerActions::SETTING_PERMISSION_KICK_PLAYER)) {
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
 		$params = explode(' ', $chat[1][2], 3);
 		if (count($params) <= 1) {
-			$this->maniaControl->chat->sendUsageInfo("No Login given! Example: '//kick login'", $player->login);
+			$this->maniaControl->getChat()->sendUsageInfo("No Login given! Example: '//kick login'", $player->login);
 			return;
 		}
 		$targetLogin = $params[1];
@@ -134,7 +134,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 		if (isset($params[2])) {
 			$message = $params[2];
 		}
-		$this->maniaControl->playerManager->getPlayerActions()->kickPlayer($player->login, $targetLogin, $message);
+		$this->maniaControl->getPlayerManager()->getPlayerActions()->kickPlayer($player->login, $targetLogin, $message);
 	}
 
 	/**
@@ -144,13 +144,13 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 	 * @param Player $player
 	 */
 	public function command_Ban(array $chat, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkPermission($player, PlayerActions::SETTING_PERMISSION_BAN_PLAYER)) {
-			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, PlayerActions::SETTING_PERMISSION_BAN_PLAYER)) {
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
 		$params = explode(' ', $chat[1][2], 3);
 		if (count($params) <= 1) {
-			$this->maniaControl->chat->sendUsageInfo("No Login given! Example: '//ban login'", $player->login);
+			$this->maniaControl->getChat()->sendUsageInfo("No Login given! Example: '//ban login'", $player->login);
 			return;
 		}
 		$targetLogin = $params[1];
@@ -158,7 +158,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 		if (isset($params[2])) {
 			$message = $params[2];
 		}
-		$this->maniaControl->playerManager->getPlayerActions()->banPlayer($player->login, $targetLogin, $message);
+		$this->maniaControl->getPlayerManager()->getPlayerActions()->banPlayer($player->login, $targetLogin, $message);
 	}
 
 	/**
@@ -170,11 +170,11 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 	public function command_Warn(array $chatCallback, Player $player) {
 		$params = explode(' ', $chatCallback[1][2], 3);
 		if (count($params) <= 1) {
-			$this->maniaControl->chat->sendUsageInfo("No Login given! Example: '//warn login'", $player->login);
+			$this->maniaControl->getChat()->sendUsageInfo("No Login given! Example: '//warn login'", $player->login);
 			return;
 		}
 		$targetLogin = $params[1];
-		$this->maniaControl->playerManager->getPlayerActions()->warnPlayer($player->login, $targetLogin);
+		$this->maniaControl->getPlayerManager()->getPlayerActions()->warnPlayer($player->login, $targetLogin);
 	}
 
 	/**
@@ -184,22 +184,22 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 	 * @param Player $player
 	 */
 	public function command_ForceSpectator(array $chat, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkPermission($player, PlayerActions::SETTING_PERMISSION_FORCE_PLAYER_SPEC)) {
-			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, PlayerActions::SETTING_PERMISSION_FORCE_PLAYER_SPEC)) {
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
 		$params = explode(' ', $chat[1][2]);
 		if (count($params) <= 1) {
-			$this->maniaControl->chat->sendUsageInfo("No Login given! Example: '//forcespec login'", $player->login);
+			$this->maniaControl->getChat()->sendUsageInfo("No Login given! Example: '//forcespec login'", $player->login);
 			return;
 		}
 		$targetLogin = $params[1];
 
 		if (isset($params[2]) && is_numeric($params[2])) {
 			$type = (int)$params[2];
-			$this->maniaControl->playerManager->getPlayerActions()->forcePlayerToSpectator($player->login, $targetLogin, $type);
+			$this->maniaControl->getPlayerManager()->getPlayerActions()->forcePlayerToSpectator($player->login, $targetLogin, $type);
 		} else {
-			$this->maniaControl->playerManager->getPlayerActions()->forcePlayerToSpectator($player->login, $targetLogin);
+			$this->maniaControl->getPlayerManager()->getPlayerActions()->forcePlayerToSpectator($player->login, $targetLogin);
 		}
 	}
 
@@ -210,13 +210,13 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 	 * @param Player $player
 	 */
 	public function command_ForcePlay(array $chat, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkPermission($player, PlayerActions::SETTING_PERMISSION_FORCE_PLAYER_PLAY)) {
-			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, PlayerActions::SETTING_PERMISSION_FORCE_PLAYER_PLAY)) {
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
 		$params = explode(' ', $chat[1][2]);
 		if (!isset($params[1])) {
-			$this->maniaControl->chat->sendUsageInfo("No Login given! Example: '//forceplay login'", $player->login);
+			$this->maniaControl->getChat()->sendUsageInfo("No Login given! Example: '//forceplay login'", $player->login);
 			return;
 		}
 		$targetLogin = $params[1];
@@ -227,7 +227,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 		}
 		$selectable = ($type === 2);
 
-		$this->maniaControl->playerManager->getPlayerActions()->forcePlayerToPlay($player->login, $targetLogin, $selectable);
+		$this->maniaControl->getPlayerManager()->getPlayerActions()->forcePlayerToPlay($player->login, $targetLogin, $selectable);
 	}
 
 	/**
@@ -237,18 +237,18 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 	 * @param Player $player
 	 */
 	public function command_ForceBlue(array $chat, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkPermission($player, PlayerActions::SETTING_PERMISSION_FORCE_PLAYER_TEAM)) {
-			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, PlayerActions::SETTING_PERMISSION_FORCE_PLAYER_TEAM)) {
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
 		$params = explode(' ', $chat[1][2]);
 		if (!isset($params[1])) {
-			$this->maniaControl->chat->sendUsageInfo("No Login given! Example: '//forceblue login'", $player->login);
+			$this->maniaControl->getChat()->sendUsageInfo("No Login given! Example: '//forceblue login'", $player->login);
 			return;
 		}
 		$targetLogin = $params[1];
 
-		$this->maniaControl->playerManager->getPlayerActions()->forcePlayerToTeam($player->login, $targetLogin, PlayerActions::TEAM_BLUE);
+		$this->maniaControl->getPlayerManager()->getPlayerActions()->forcePlayerToTeam($player->login, $targetLogin, PlayerActions::TEAM_BLUE);
 	}
 
 	/**
@@ -258,18 +258,18 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 	 * @param Player $player
 	 */
 	public function command_ForceRed(array $chat, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkPermission($player, PlayerActions::SETTING_PERMISSION_FORCE_PLAYER_TEAM)) {
-			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, PlayerActions::SETTING_PERMISSION_FORCE_PLAYER_TEAM)) {
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
 		$params = explode(' ', $chat[1][2]);
 		if (!isset($params[1])) {
-			$this->maniaControl->chat->sendUsageInfo("No Login given! Example: '//forcered login'", $player->login);
+			$this->maniaControl->getChat()->sendUsageInfo("No Login given! Example: '//forcered login'", $player->login);
 			return;
 		}
 		$targetLogin = $params[1];
 
-		$this->maniaControl->playerManager->getPlayerActions()->forcePlayerToTeam($player->login, $targetLogin, PlayerActions::TEAM_RED);
+		$this->maniaControl->getPlayerManager()->getPlayerActions()->forcePlayerToTeam($player->login, $targetLogin, PlayerActions::TEAM_RED);
 	}
 
 	/**
@@ -279,8 +279,8 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 	 * @param Player $player
 	 */
 	public function command_AddFakePlayers(array $chatCallback, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_ADD_BOT)) {
-			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_ADD_BOT)) {
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
 		$amount       = 1;
@@ -291,11 +291,11 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 
 		try {
 			for ($i = 0; $i < $amount; $i++) {
-				$this->maniaControl->client->connectFakePlayer();
+				$this->maniaControl->getClient()->connectFakePlayer();
 			}
-			$this->maniaControl->chat->sendSuccess('Fake players connected!', $player->login);
+			$this->maniaControl->getChat()->sendSuccess('Fake players connected!', $player);
 		} catch (UnavailableFeatureException $e) {
-			$this->maniaControl->chat->sendSuccess('Error while connecting a Fake-Player.', $player->login);
+			$this->maniaControl->getChat()->sendSuccess('Error while connecting a Fake-Player.', $player);
 		}
 	}
 
@@ -306,12 +306,12 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 	 * @param Player $player
 	 */
 	public function command_RemoveFakePlayers(array $chatCallback, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_ADD_BOT)) {
-			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_ADD_BOT)) {
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
-		$this->maniaControl->client->disconnectFakePlayer('*');
-		$this->maniaControl->chat->sendSuccess('Fake players disconnected!', $player->login);
+		$this->maniaControl->getClient()->disconnectFakePlayer('*');
+		$this->maniaControl->getChat()->sendSuccess('Fake players disconnected!', $player);
 	}
 
 	/**
@@ -323,11 +323,11 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 	public function command_MutePlayer(array $chatCallback, Player $admin) {
 		$commandParts = explode(' ', $chatCallback[1][2]);
 		if (count($commandParts) <= 1) {
-			$this->maniaControl->chat->sendUsageInfo("No login specified! Example: '//mute login'");
+			$this->maniaControl->getChat()->sendUsageInfo("No login specified! Example: '//mute login'", $admin);
 			return;
 		}
 		$targetLogin = $commandParts[1];
-		$this->maniaControl->playerManager->getPlayerActions()->mutePlayer($admin->login, $targetLogin);
+		$this->maniaControl->getPlayerManager()->getPlayerActions()->mutePlayer($admin->login, $targetLogin);
 	}
 
 	/**
@@ -339,11 +339,11 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 	public function command_UnmutePlayer(array $chatCallback, Player $admin) {
 		$commandParts = explode(' ', $chatCallback[1][2]);
 		if (count($commandParts) <= 1) {
-			$this->maniaControl->chat->sendUsageInfo("No login specified! Example: '//unmute login'");
+			$this->maniaControl->getChat()->sendUsageInfo("No login specified! Example: '//unmute login'", $admin);
 			return;
 		}
 		$targetLogin = $commandParts[1];
-		$this->maniaControl->playerManager->getPlayerActions()->unMutePlayer($admin->login, $targetLogin);
+		$this->maniaControl->getPlayerManager()->getPlayerActions()->unMutePlayer($admin->login, $targetLogin);
 	}
 
 	/**
@@ -353,7 +353,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 	 * @param Player $player
 	 */
 	public function command_playerList(array $chatCallback, Player $player) {
-		$this->maniaControl->playerManager->getPlayerList()->addPlayerToShownList($player, PlayerList::SHOWN_MAIN_WINDOW);
-		$this->maniaControl->playerManager->getPlayerList()->showPlayerList($player);
+		$this->maniaControl->getPlayerManager()->getPlayerList()->addPlayerToShownList($player, PlayerList::SHOWN_MAIN_WINDOW);
+		$this->maniaControl->getPlayerManager()->getPlayerList()->showPlayerList($player);
 	}
 }

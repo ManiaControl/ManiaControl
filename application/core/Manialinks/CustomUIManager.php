@@ -40,9 +40,9 @@ class CustomUIManager implements CallbackListener, TimerListener {
 		$this->maniaControl = $maniaControl;
 		$this->prepareManialink();
 
-		// Register for callbacks
-		$this->maniaControl->timerManager->registerTimerListening($this, 'handle1Second', 1000);
-		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerJoined');
+		// Callbacks
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerJoined');
+		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'handle1Second', 1000);
 	}
 
 	/**
@@ -70,10 +70,10 @@ class CustomUIManager implements CallbackListener, TimerListener {
 	 */
 	public function updateManialink(Player $player = null) {
 		if ($player) {
-			$this->maniaControl->manialinkManager->sendManialink($this->customUI, $player);
+			$this->maniaControl->getManialinkManager()->sendManialink($this->customUI, $player);
 			return;
 		}
-		$this->maniaControl->manialinkManager->sendManialink($this->customUI);
+		$this->maniaControl->getManialinkManager()->sendManialink($this->customUI);
 	}
 
 	/**
@@ -86,7 +86,7 @@ class CustomUIManager implements CallbackListener, TimerListener {
 
 		//TODO: validate necessity
 		//send it again after 500ms
-		$this->maniaControl->timerManager->registerOneTimeListening($this, function () use (&$player) {
+		$this->maniaControl->getTimerManager()->registerOneTimeListening($this, function () use (&$player) {
 			$this->updateManialink($player);
 		}, 500);
 	}

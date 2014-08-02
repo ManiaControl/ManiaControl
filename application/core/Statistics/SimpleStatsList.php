@@ -44,31 +44,31 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 	private $statsWidth = 0;
 
 	/**
-	 * Create a PlayerList Instance
+	 * Construct a new simple stats list instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		$this->maniaControl->callbackManager->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
-		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::ONINIT, $this, 'handleOnInit');
+		// Callbacks
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::ONINIT, $this, 'handleOnInit');
 	}
 
 	/**
 	 * Add the menu entry
 	 */
 	public function handleOnInit() {
-		$this->maniaControl->commandManager->registerCommandListener('stats', $this, 'command_ShowStatsList', false, 'Shows statistics.');
+		$this->maniaControl->getCommandManager()->registerCommandListener('stats', $this, 'command_ShowStatsList', false, 'Shows statistics.');
 
 		// Action Open StatsList
-		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_OPEN_STATSLIST, $this, 'command_ShowStatsList');
-
+		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_OPEN_STATSLIST, $this, 'command_ShowStatsList');
 
 		$itemQuad = new Quad_UIConstruction_Buttons();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Stats);
 		$itemQuad->setAction(self::ACTION_OPEN_STATSLIST);
-		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, true, 14, 'Open Statistics');
+		$this->maniaControl->getActionsMenu()->addMenuItem($itemQuad, true, 14, 'Open Statistics');
 
 		//TODO settings if a stat get shown
 		$this->registerStat(PlayerManager::STAT_SERVERTIME, 10, "ST", 20, StatisticManager::STAT_TYPE_TIME);
@@ -119,9 +119,9 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 	 * @param string $order
 	 */
 	public function showStatsList(Player $player, $order = PlayerManager::STAT_SERVERTIME) {
-		$height       = $this->maniaControl->manialinkManager->getStyleManager()->getListWidgetsHeight();
-		$quadStyle    = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultMainWindowStyle();
-		$quadSubstyle = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultMainWindowSubStyle();
+		$height       = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsHeight();
+		$quadStyle    = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultMainWindowStyle();
+		$quadSubstyle = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultMainWindowSubStyle();
 
 
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
@@ -174,7 +174,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		$posX         = $xStart + 55;
 		$statRankings = array();
 		foreach ($this->statArray as $key => $stat) {
-			$ranking = $this->maniaControl->statisticManager->getStatsRanking($stat["Name"]);
+			$ranking = $this->maniaControl->getStatisticManager()->getStatsRanking($stat["Name"]);
 			if (!empty($ranking)) {
 				$statRankings[$stat["Name"]]  = $ranking;
 				$array[$stat['HeadShortCut']] = $posX;
@@ -184,7 +184,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 			}
 		}
 
-		$labels = $this->maniaControl->manialinkManager->labelLine($headFrame, $array);
+		$labels = $this->maniaControl->getManialinkManager()->labelLine($headFrame, $array);
 
 		// Description Label
 		$index = 2;
@@ -212,7 +212,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		}
 
 		foreach ($statRankings[$order] as $playerId => $value) {
-			$listPlayer = $this->maniaControl->playerManager->getPlayerByIndex($playerId);
+			$listPlayer = $this->maniaControl->getPlayerManager()->getPlayerByIndex($playerId);
 			if (!$listPlayer) {
 				continue;
 			}
@@ -249,7 +249,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 			}
 
 			$array = array($index => $xStart + 5, $listPlayer->nickname => $xStart + 14);
-			$this->maniaControl->manialinkManager->labelLine($playerFrame, $array);
+			$this->maniaControl->getManialinkManager()->labelLine($playerFrame, $array);
 
 			$posX = $xStart + 55;
 			foreach ($displayArray as $key => $array) {
@@ -279,7 +279,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 			$posY -= 4;
 		}
 
-		$this->maniaControl->manialinkManager->displayWidget($maniaLink, $player, 'SimpleStatsList');
+		$this->maniaControl->getManialinkManager()->displayWidget($maniaLink, $player, 'SimpleStatsList');
 	}
 
 	/**
@@ -299,7 +299,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		switch ($action) {
 			case self::ACTION_SORT_STATS:
 				$playerLogin = $callback[1][1];
-				$player      = $this->maniaControl->playerManager->getPlayer($playerLogin);
+				$player      = $this->maniaControl->getPlayerManager()->getPlayer($playerLogin);
 				$this->showStatsList($player, $actionArray[2]);
 				break;
 		}

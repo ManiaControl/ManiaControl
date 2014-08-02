@@ -59,11 +59,11 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 		$this->initTables();
 
 		// Callbacks
-		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::ONINIT, $this, 'onInit');
-		$this->maniaControl->timerManager->registerTimerListening($this, 'saveCurrentServerOptions', 6 * 3600 * 1000);
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::ONINIT, $this, 'onInit');
+		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'saveCurrentServerOptions', 6 * 3600 * 1000);
 
 		// Permissions
-		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_CHANGE_SERVER_OPTIONS, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
+		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_CHANGE_SERVER_OPTIONS, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
 	}
 
 	/**
@@ -72,7 +72,7 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 	 * @return bool
 	 */
 	private function initTables() {
-		$mysqli    = $this->maniaControl->database->mysqli;
+		$mysqli    = $this->maniaControl->getDatabase()->getMysqli();
 		$query     = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_SERVER_OPTIONS . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
 				`serverIndex` int(11) NOT NULL,
@@ -109,7 +109,7 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 	 * @return bool
 	 */
 	public function saveCurrentServerOptions() {
-		$serverOptions = $this->maniaControl->client->getServerOptions();
+		$serverOptions = $this->maniaControl->getClient()->getServerOptions();
 		return $this->saveServerOptions($serverOptions);
 	}
 
@@ -121,7 +121,7 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 	 * @return bool
 	 */
 	private function saveServerOptions(ServerOptions $serverOptions, $triggerCallbacks = false) {
-		$mysqli    = $this->maniaControl->database->mysqli;
+		$mysqli    = $this->maniaControl->getDatabase()->getMysqli();
 		$query     = "INSERT INTO `" . self::TABLE_SERVER_OPTIONS . "` (
 				`serverIndex`,
 				`optionName`,
@@ -138,7 +138,7 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 
 		$optionName  = null;
 		$optionValue = null;
-		$statement->bind_param('iss', $this->maniaControl->server->index, $optionName, $optionValue);
+		$statement->bind_param('iss', $this->maniaControl->getServer()->index, $optionName, $optionValue);
 
 		$serverOptionsArray = $serverOptions->toArray();
 		foreach ($serverOptionsArray as $optionName => $optionValue) {
@@ -154,7 +154,7 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 			}
 
 			if ($triggerCallbacks) {
-				$this->maniaControl->callbackManager->triggerCallback(self::CB_SERVER_OPTION_CHANGED, array(self::CB_SERVER_OPTION_CHANGED, $optionName, $optionValue));
+				$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_SERVER_OPTION_CHANGED, array(self::CB_SERVER_OPTION_CHANGED, $optionName, $optionValue));
 			}
 		}
 
@@ -175,16 +175,17 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 	 * @return bool
 	 */
 	public function loadOptionsFromDatabase() {
-		$mysqli = $this->maniaControl->database->mysqli;
+		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
+		$serverIndex = $this->maniaControl->getServer()->index;
 		$query  = "SELECT * FROM `" . self::TABLE_SERVER_OPTIONS . "`
-				WHERE `serverIndex` = {$this->maniaControl->server->index};";
+				WHERE `serverIndex` = {$serverIndex};";
 		$result = $mysqli->query($query);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error);
 			return false;
 		}
 
-		$oldServerOptions = $this->maniaControl->client->getServerOptions();
+		$oldServerOptions = $this->maniaControl->getClient()->getServerOptions();
 		$newServerOptions = new ServerOptions();
 
 		while ($row = $result->fetch_object()) {
@@ -201,9 +202,9 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 
 		$loaded = false;
 		try {
-			$loaded = $this->maniaControl->client->setServerOptions($newServerOptions);
+			$loaded = $this->maniaControl->getClient()->setServerOptions($newServerOptions);
 		} catch (ServerOptionsException $exception) {
-			$this->maniaControl->chat->sendExceptionToAdmins($exception);
+			$this->maniaControl->getChat()->sendExceptionToAdmins($exception);
 		}
 
 		if ($loaded) {
@@ -240,7 +241,7 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 		$script->addFeature($paging);
 		$frame = new Frame();
 
-		$serverOptions      = $this->maniaControl->client->getServerOptions();
+		$serverOptions      = $this->maniaControl->getClient()->getServerOptions();
 		$serverOptionsArray = $serverOptions->toArray();
 
 		// Config
@@ -343,8 +344,8 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
 	 */
 	public function saveConfigData(array $configData, Player $player) {
-		if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_CHANGE_SERVER_OPTIONS)) {
-			$this->maniaControl->authenticationManager->sendNotAllowed($player);
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_CHANGE_SERVER_OPTIONS)) {
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
 		if (!$configData[3] || strpos($configData[3][0]['Name'], self::ACTION_PREFIX_OPTION) !== 0) {
@@ -353,7 +354,7 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 
 		$prefixLength = strlen(self::ACTION_PREFIX_OPTION);
 
-		$oldServerOptions = $this->maniaControl->client->getServerOptions();
+		$oldServerOptions = $this->maniaControl->getClient()->getServerOptions();
 		$newServerOptions = new ServerOptions();
 
 		foreach ($configData[3] as $option) {
@@ -366,13 +367,13 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 
 		$success = $this->applyNewServerOptions($newServerOptions, $player);
 		if ($success) {
-			$this->maniaControl->chat->sendSuccess('Server Options saved!', $player);
+			$this->maniaControl->getChat()->sendSuccess('Server Options saved!', $player);
 		} else {
-			$this->maniaControl->chat->sendError('Server Options saving failed!', $player);
+			$this->maniaControl->getChat()->sendError('Server Options saving failed!', $player);
 		}
 
 		// Reopen the Menu
-		$this->maniaControl->configurator->showMenu($player, $this);
+		$this->maniaControl->getConfigurator()->showMenu($player, $this);
 	}
 
 	/**
@@ -384,15 +385,15 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 	 */
 	private function applyNewServerOptions(ServerOptions $newServerOptions, Player $player) {
 		try {
-			$this->maniaControl->client->setServerOptions($newServerOptions);
+			$this->maniaControl->getClient()->setServerOptions($newServerOptions);
 		} catch (ServerOptionsException $exception) {
-			$this->maniaControl->chat->sendException($exception, $player);
+			$this->maniaControl->getChat()->sendException($exception, $player);
 			return false;
 		}
 
 		$this->saveServerOptions($newServerOptions, true);
 
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_SERVER_OPTIONS_CHANGED, array(self::CB_SERVER_OPTIONS_CHANGED));
+		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_SERVER_OPTIONS_CHANGED, array(self::CB_SERVER_OPTIONS_CHANGED));
 
 		return true;
 	}

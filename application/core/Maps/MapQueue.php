@@ -53,24 +53,26 @@ class MapQueue implements CallbackListener, CommandListener {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::ENDMAP, $this, 'endMap');
-		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::BEGINMAP, $this, 'beginMap');
-		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::AFTERINIT, $this, 'handleAfterInit');
+		// Callbacks
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::ENDMAP, $this, 'endMap');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::BEGINMAP, $this, 'beginMap');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::AFTERINIT, $this, 'handleAfterInit');
 
-		// Init settings
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SKIP_MAP_ON_LEAVE, true);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_SKIP_MAPQUEUE_ADMIN, false);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAPLIMIT_PLAYER, 1);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAPLIMIT_ADMIN, -1);
-		$this->maniaControl->settingManager->initSetting($this, self::SETTING_BUFFERSIZE, 10);
+		// Settings
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_SKIP_MAP_ON_LEAVE, true);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_SKIP_MAPQUEUE_ADMIN, false);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAPLIMIT_PLAYER, 1);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAPLIMIT_ADMIN, -1);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_BUFFERSIZE, 10);
 
-		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_CLEAR_MAPQUEUE, AuthenticationManager::AUTH_LEVEL_MODERATOR);
-		$this->maniaControl->authenticationManager->definePermissionLevel(self::SETTING_PERMISSION_QUEUE_BUFFER, AuthenticationManager::AUTH_LEVEL_ADMIN);
+		// Permissions
+		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_CLEAR_MAPQUEUE, AuthenticationManager::AUTH_LEVEL_MODERATOR);
+		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_QUEUE_BUFFER, AuthenticationManager::AUTH_LEVEL_ADMIN);
 
-		//Register Admin Commands
-		$this->maniaControl->commandManager->registerCommandListener(self::ADMIN_COMMAND_CLEAR_JUKEBOX, $this, 'command_ClearMapQueue', true, 'Clears the Map-Queue.');
-		$this->maniaControl->commandManager->registerCommandListener(self::ADMIN_COMMAND_CLEAR_MAPQUEUE, $this, 'command_ClearMapQueue', true, 'Clears the Map-Queue.');
-		$this->maniaControl->commandManager->registerCommandListener(array('jb', 'jukebox', 'mapqueue'), $this, 'command_MapQueue', false, 'Shows current maps in Map-Queue.');
+		// Admin Commands
+		$this->maniaControl->getCommandManager()->registerCommandListener(self::ADMIN_COMMAND_CLEAR_JUKEBOX, $this, 'command_ClearMapQueue', true, 'Clears the Map-Queue.');
+		$this->maniaControl->getCommandManager()->registerCommandListener(self::ADMIN_COMMAND_CLEAR_MAPQUEUE, $this, 'command_ClearMapQueue', true, 'Clears the Map-Queue.');
+		$this->maniaControl->getCommandManager()->registerCommandListener(array('jb', 'jukebox', 'mapqueue'), $this, 'command_MapQueue', false, 'Shows current maps in Map-Queue.');
 	}
 
 	/**
@@ -84,7 +86,7 @@ class MapQueue implements CallbackListener, CommandListener {
 	 * Add current map to buffer on startup
 	 */
 	public function handleAfterInit() {
-		$currentMap     = $this->maniaControl->mapManager->getCurrentMap();
+		$currentMap     = $this->maniaControl->getMapManager()->getCurrentMap();
 		$this->buffer[] = $currentMap->uid;
 	}
 
@@ -104,26 +106,26 @@ class MapQueue implements CallbackListener, CommandListener {
 	 * @param Player $admin
 	 */
 	public function clearMapQueue(Player $admin) {
-		if (!$this->maniaControl->authenticationManager->checkPermission($admin, self::SETTING_PERMISSION_CLEAR_MAPQUEUE)) {
-			$this->maniaControl->authenticationManager->sendNotAllowed($admin);
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_CLEAR_MAPQUEUE)) {
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($admin);
 			return;
 		}
 
 		if (empty($this->queuedMaps)) {
-			$this->maniaControl->chat->sendError('$fa0There are no maps in the jukebox!', $admin->login);
+			$this->maniaControl->getChat()->sendError('$fa0There are no maps in the jukebox!', $admin->login);
 			return;
 		}
 
-		$title = $this->maniaControl->authenticationManager->getAuthLevelName($admin->authLevel);
+		$title = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($admin->authLevel);
 
 		//Destroy map - queue list
 		$this->queuedMaps = array();
 
-		$this->maniaControl->chat->sendInformation('$fa0' . $title . ' $<$fff' . $admin->nickname . '$> cleared the Queued-Map list!');
+		$this->maniaControl->getChat()->sendInformation('$fa0' . $title . ' $<$fff' . $admin->nickname . '$> cleared the Queued-Map list!');
 		$this->maniaControl->log($title . ' ' . Formatter::stripCodes($admin->nickname) . ' cleared the Queued-Map list!');
 
 		// Trigger callback
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_MAPQUEUE_CHANGED, array('clear'));
+		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_MAPQUEUE_CHANGED, array('clear'));
 	}
 
 	/**
@@ -163,7 +165,7 @@ class MapQueue implements CallbackListener, CommandListener {
 	 */
 	public function showMapQueue(Player $player) {
 		if (empty($this->queuedMaps)) {
-			$this->maniaControl->chat->sendError('$fa0There are no maps in the jukebox!', $player->login);
+			$this->maniaControl->getChat()->sendError('$fa0There are no maps in the jukebox!', $player->login);
 			return;
 		}
 
@@ -174,7 +176,7 @@ class MapQueue implements CallbackListener, CommandListener {
 			$index++;
 		}
 
-		$this->maniaControl->chat->sendInformation($message, $player->login);
+		$this->maniaControl->getChat()->sendInformation($message, $player);
 	}
 
 	/**
@@ -184,7 +186,7 @@ class MapQueue implements CallbackListener, CommandListener {
 	 */
 	public function showMapQueueManialink(Player $player) {
 		if (empty($this->queuedMaps)) {
-			$this->maniaControl->chat->sendError('There are no Maps in the Jukebox!', $player);
+			$this->maniaControl->getChat()->sendError('There are no Maps in the Jukebox!', $player);
 			return;
 		}
 
@@ -193,7 +195,7 @@ class MapQueue implements CallbackListener, CommandListener {
 			array_push($maps, $queuedMap[1]);
 		}
 
-		$this->maniaControl->mapManager->getMapList()->showMapList($player, $maps);
+		$this->maniaControl->getMapManager()->getMapList()->showMapList($player, $maps);
 	}
 
 	/**
@@ -228,13 +230,13 @@ class MapQueue implements CallbackListener, CommandListener {
 	 * @param string $uid
 	 */
 	public function addMapToMapQueue($login, $uid) {
-		$player = $this->maniaControl->playerManager->getPlayer($login);
+		$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
 		if (!$player) {
 			return;
 		}
 
 		//Check if player is allowed to add (another) map
-		$isModerator = $this->maniaControl->authenticationManager->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR);
+		$isModerator = $this->maniaControl->getAuthenticationManager()->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 
 		$mapsForPlayer = 0;
 		foreach ($this->queuedMaps as $queuedMap) {
@@ -244,15 +246,15 @@ class MapQueue implements CallbackListener, CommandListener {
 		}
 
 		if ($isModerator) {
-			$maxAdmin = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MAPLIMIT_ADMIN);
+			$maxAdmin = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MAPLIMIT_ADMIN);
 			if ($maxAdmin >= 0 && $mapsForPlayer >= $maxAdmin) {
-				$this->maniaControl->chat->sendError('You already have $<$fff' . $maxAdmin . '$> map(s) in the Map-Queue!', $login);
+				$this->maniaControl->getChat()->sendError('You already have $<$fff' . $maxAdmin . '$> map(s) in the Map-Queue!', $login);
 				return;
 			}
 		} else {
-			$maxPlayer = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MAPLIMIT_PLAYER);
+			$maxPlayer = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MAPLIMIT_PLAYER);
 			if ($maxPlayer >= 0 && $mapsForPlayer >= $maxPlayer) {
-				$this->maniaControl->chat->sendError('You already have $<$fff' . $maxPlayer . '$> map(s) in the Map-Queue!', $login);
+				$this->maniaControl->getChat()->sendError('You already have $<$fff' . $maxPlayer . '$> map(s) in the Map-Queue!', $login);
 				return;
 			}
 		}
@@ -264,29 +266,29 @@ class MapQueue implements CallbackListener, CommandListener {
 			$uid = $map->uid;
 		}
 		if (array_key_exists($uid, $this->queuedMaps)) {
-			$this->maniaControl->chat->sendError('That map is already in the Map-Queue!', $login);
+			$this->maniaControl->getChat()->sendError('That map is already in the Map-Queue!', $login);
 			return;
 		}
 
 		//TODO recently maps not able to add to queue-amps setting, and management
 		// Check if map is in the buffer
 		if (in_array($uid, $this->buffer)) {
-			$this->maniaControl->chat->sendError('That map has recently been played!', $login);
-			if (!$this->maniaControl->authenticationManager->checkPermission($player, self::SETTING_PERMISSION_CLEAR_MAPQUEUE)) {
+			$this->maniaControl->getChat()->sendError('That map has recently been played!', $login);
+			if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_CLEAR_MAPQUEUE)) {
 				return;
 			}
 		}
 
 		if (!$map) {
-			$map = $this->maniaControl->mapManager->getMapByUid($uid);
+			$map = $this->maniaControl->getMapManager()->getMapByUid($uid);
 		}
 
 		$this->queuedMaps[$uid] = array($player, $map);
 
-		$this->maniaControl->chat->sendInformation('$fa0$<$fff' . $map->name . '$> has been added to the Map-Queue by $<$fff' . $player->nickname . '$>.');
+		$this->maniaControl->getChat()->sendInformation('$fa0$<$fff' . $map->name . '$> has been added to the Map-Queue by $<$fff' . $player->nickname . '$>.');
 
 		// Trigger callback
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_MAPQUEUE_CHANGED, array('add', $this->queuedMaps[$uid]));
+		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_MAPQUEUE_CHANGED, array('add', $this->queuedMaps[$uid]));
 	}
 
 	/**
@@ -303,10 +305,10 @@ class MapQueue implements CallbackListener, CommandListener {
 		$map = $this->queuedMaps[$uid][1];
 		unset($this->queuedMaps[$uid]);
 
-		$this->maniaControl->chat->sendInformation('$fa0$<$fff' . $map->name . '$> is removed from the Map-Queue by $<$fff' . $player->nickname . '$>.');
+		$this->maniaControl->getChat()->sendInformation('$fa0$<$fff' . $map->name . '$> is removed from the Map-Queue by $<$fff' . $player->nickname . '$>.');
 
 		// Trigger callback
-		$this->maniaControl->callbackManager->triggerCallback(self::CB_MAPQUEUE_CHANGED, array('remove', $map));
+		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_MAPQUEUE_CHANGED, array('remove', $map));
 	}
 
 	/**
@@ -322,7 +324,7 @@ class MapQueue implements CallbackListener, CommandListener {
 		}
 
 		$this->nextMap = null;
-		if ($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_SKIP_MAP_ON_LEAVE)) {
+		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SKIP_MAP_ON_LEAVE)) {
 			// Skip Map if requester has left
 			foreach ($this->queuedMaps as $queuedMap) {
 				$player = $queuedMap[0];
@@ -333,11 +335,11 @@ class MapQueue implements CallbackListener, CommandListener {
 				}
 
 				//found player, so play this map
-				if ($this->maniaControl->playerManager->getPlayer($player->login)) {
+				if ($this->maniaControl->getPlayerManager()->getPlayer($player->login)) {
 					break;
 				}
 
-				if (!$this->maniaControl->settingManager->getSettingValue($this, self::SETTING_SKIP_MAPQUEUE_ADMIN)) {
+				if (!$this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SKIP_MAPQUEUE_ADMIN)) {
 					//Check if the queuer is a admin
 					if ($player->authLevel > 0) {
 						break;
@@ -345,12 +347,12 @@ class MapQueue implements CallbackListener, CommandListener {
 				}
 
 				// Trigger callback
-				$this->maniaControl->callbackManager->triggerCallback(self::CB_MAPQUEUE_CHANGED, array('skip', $queuedMap[0]));
+				$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_MAPQUEUE_CHANGED, array('skip', $queuedMap[0]));
 
 				//Player not found, so remove the map from the mapqueue
 				array_shift($this->queuedMaps);
 
-				$this->maniaControl->chat->sendInformation('$fa0$<$fff' . $queuedMap[0]->name . '$> is skipped because $<' . $player->nickname . '$> left the game!');
+				$this->maniaControl->getChat()->sendInformation('$fa0$<$fff' . $queuedMap[0]->name . '$> is skipped because $<' . $player->nickname . '$> left the game!');
 			}
 		}
 
@@ -362,10 +364,10 @@ class MapQueue implements CallbackListener, CommandListener {
 		}
 		$map = $this->nextMap[1];
 		/** @var Map $map */
-		$this->maniaControl->chat->sendInformation('$fa0Next map will be $<$fff' . $map->name . '$> as requested by $<' . $this->nextMap[0]->nickname . '$>.');
+		$this->maniaControl->getChat()->sendInformation('$fa0Next map will be $<$fff' . $map->name . '$> as requested by $<' . $this->nextMap[0]->nickname . '$>.');
 
 		try {
-			$this->maniaControl->client->setNextMapIdent($map->uid);
+			$this->maniaControl->getClient()->setNextMapIdent($map->uid);
 		} catch (NextMapException $e) {
 		}
 	}
@@ -380,7 +382,7 @@ class MapQueue implements CallbackListener, CommandListener {
 			return;
 		}
 
-		if (count($this->buffer) >= $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_BUFFERSIZE)) {
+		if (count($this->buffer) >= $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_BUFFERSIZE)) {
 			array_shift($this->buffer);
 		}
 

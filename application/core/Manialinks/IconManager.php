@@ -50,9 +50,9 @@ class IconManager implements CallbackListener {
 		$this->maniaControl = $maniaControl;
 		$this->addDefaultIcons();
 
-		// Register for callbacks
-		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::AFTERINIT, $this, 'handleAfterInit');
-		$this->maniaControl->callbackManager->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
+		// Callbacks
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::AFTERINIT, $this, 'handleAfterInit');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
 	}
 
 	/**
@@ -114,7 +114,7 @@ class IconManager implements CallbackListener {
 		}
 
 		// Send manialink
-		$this->maniaControl->manialinkManager->sendManialink($maniaLink, $player);
+		$this->maniaControl->getManialinkManager()->sendManialink($maniaLink, $player);
 	}
 
 	/**
