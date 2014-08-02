@@ -76,8 +76,8 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 	public function showAdminLists(Player $player) {
 		$this->adminListShown[$player->login] = true;
 
-		$width  = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
-		$height = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
+		$width  = $this->maniaControl->manialinkManager->getStyleManager()->getListWidgetsWidth();
+		$height = $this->maniaControl->manialinkManager->getStyleManager()->getListWidgetsHeight();
 
 		// get Admins
 		$admins = $this->maniaControl->authenticationManager->getAdmins();
@@ -89,7 +89,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 		$script->addFeature($paging);
 
 		// Main frame
-		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script, $paging);
+		$frame = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultListFrame($script, $paging);
 		$maniaLink->add($frame);
 
 		// Start offsets
@@ -97,7 +97,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 		$posY = $height / 2;
 
 		//Predefine description Label
-		$descriptionLabel = $this->maniaControl->manialinkManager->styleManager->getDefaultDescriptionLabel();
+		$descriptionLabel = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultDescriptionLabel();
 		$frame->add($descriptionLabel);
 
 		// Headline
@@ -207,7 +207,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 
 		switch ($action) {
 			case self::ACTION_REVOKE_RIGHTS:
-				$this->maniaControl->playerManager->playerActions->revokeAuthLevel($adminLogin, $targetLogin);
+				$this->maniaControl->playerManager->getPlayerActions()->revokeAuthLevel($adminLogin, $targetLogin);
 				break;
 		}
 	}

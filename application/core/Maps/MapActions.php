@@ -16,6 +16,7 @@ class MapActions {
 	/*
 	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 
 	/**
@@ -32,10 +33,10 @@ class MapActions {
 	 */
 	public function skipMap() {
 		//Force a EndMap on the MapQueue to set the next Map
-		$this->maniaControl->mapManager->mapQueue->endMap(null);
+		$this->maniaControl->mapManager->getMapQueue()->endMap(null);
 
 		//ignore EndMap on MapQueue
-		$this->maniaControl->mapManager->mapQueue->dontQueueNextMapChange();
+		$this->maniaControl->mapManager->getMapQueue()->dontQueueNextMapChange();
 
 		//Switch The Map
 		try {

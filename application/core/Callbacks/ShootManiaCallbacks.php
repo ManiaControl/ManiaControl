@@ -22,8 +22,9 @@ class ShootManiaCallbacks implements CallbackListener {
 	const CB_TIMEATTACK_ONFINISH     = 'TimeAttack_OnFinish';
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 
 	/**
@@ -48,7 +49,7 @@ class ShootManiaCallbacks implements CallbackListener {
 	public function handleScriptCallbacks($name, $data) {
 		switch ($name) {
 			case 'LibXmlRpc_Rankings':
-				$this->maniaControl->server->rankingManager->updateRankings($data[0]);
+				$this->maniaControl->server->getRankingManager()->updateRankings($data[0]);
 				break;
 			case 'LibXmlRpc_Scores':
 				$this->maniaControl->callbackManager->triggerCallback(Callbacks::SCORES, $data[0]);

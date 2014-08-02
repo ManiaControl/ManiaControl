@@ -25,15 +25,16 @@ class ErrorHandler {
 	const LOG_SUPPRESSED_ERRORS        = false;
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	private $handlingError = null;
 
 	/**
 	 * Construct a new error handler instance
 	 *
-	 * @param ManiaControl @maniaControl
+	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;

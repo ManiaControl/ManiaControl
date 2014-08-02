@@ -48,6 +48,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	/*
 	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 
 	/**

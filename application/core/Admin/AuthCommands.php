@@ -17,6 +17,7 @@ class AuthCommands implements CommandListener {
 	/*
 	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 
 	/**

@@ -33,15 +33,19 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 * Public properties
 	 */
 	/** @var StyleManager $styleManager */
+	/** @deprecated see getStyleManager() */
 	public $styleManager = null;
 	/** @var CustomUIManager $customUIManager */
+	/** @deprecated see getCustomUIManager() */
 	public $customUIManager = null;
 	/** @var IconManager $iconManager */
+	/** @deprecated see getIconManager() */
 	public $iconManager = null;
 
 	/*
 	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	// TODO: use listening class
 	private $pageAnswerListeners = array();
@@ -53,7 +57,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
-		$this->maniaControl    = $maniaControl;
+		$this->maniaControl = $maniaControl;
 
 		// Children
 		$this->styleManager    = new StyleManager($maniaControl);

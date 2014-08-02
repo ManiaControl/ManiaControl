@@ -34,6 +34,7 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 	/*
 	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 
 	/**

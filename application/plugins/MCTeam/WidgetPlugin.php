@@ -70,7 +70,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	const SETTING_SERVERINFO_WIDGET_HEIGHT    = 'ServerInfo-Widget-Size: Height';
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
@@ -123,7 +123,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$this->maniaControl = $maniaControl;
 
 		// Set CustomUI Setting
-		$this->maniaControl->manialinkManager->customUIManager->setChallengeInfoVisible(false);
+		$this->maniaControl->manialinkManager->getCustomUIManager()->setChallengeInfoVisible(false);
 
 		// Register for callbacks
 		$this->maniaControl->callbackManager->registerCallbackListener(Callbacks::BEGINMAP, $this, 'handleOnBeginMap');
@@ -189,8 +189,8 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$posY         = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MAP_WIDGET_POSY);
 		$width        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MAP_WIDGET_WIDTH);
 		$height       = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MAP_WIDGET_HEIGHT);
-		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
-		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
+		$quadStyle    = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultQuadStyle();
+		$quadSubstyle = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultQuadSubstyle();
 
 		$maniaLink = new ManiaLink(self::MLID_MAP_WIDGET);
 		$script    = new Script();
@@ -231,8 +231,8 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		if (isset($map->mx->pageurl)) {
 			$quad = new Quad();
 			$frame->add($quad);
-			$quad->setImageFocus($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON_MOVER));
-			$quad->setImage($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON));
+			$quad->setImageFocus($this->maniaControl->manialinkManager->getIconManager()->getIcon(IconManager::MX_ICON_MOVER));
+			$quad->setImage($this->maniaControl->manialinkManager->getIconManager()->getIcon(IconManager::MX_ICON));
 			$quad->setPosition(-$width / 2 + 4, -1.5, -0.5);
 			$quad->setSize(4, 4);
 			$quad->setUrl($map->mx->pageurl);
@@ -252,8 +252,8 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$posY         = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_CLOCK_WIDGET_POSY);
 		$width        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_CLOCK_WIDGET_WIDTH);
 		$height       = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_CLOCK_WIDGET_HEIGHT);
-		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
-		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
+		$quadStyle    = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultQuadStyle();
+		$quadSubstyle = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultQuadSubstyle();
 
 		$maniaLink = new ManiaLink(self::MLID_CLOCK_WIDGET);
 
@@ -291,8 +291,8 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$posY         = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_SERVERINFO_WIDGET_POSY);
 		$width        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_SERVERINFO_WIDGET_WIDTH);
 		$height       = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_SERVERINFO_WIDGET_HEIGHT);
-		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
-		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
+		$quadStyle    = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultQuadStyle();
+		$quadSubstyle = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultQuadSubstyle();
 
 		$maniaLink = new ManiaLink(self::MLID_SERVERINFO_WIDGET);
 
@@ -421,9 +421,9 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$posY         = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_NEXTMAP_WIDGET_POSY);
 		$width        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_NEXTMAP_WIDGET_WIDTH);
 		$height       = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_NEXTMAP_WIDGET_HEIGHT);
-		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
-		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
-		$labelStyle   = $this->maniaControl->manialinkManager->styleManager->getDefaultLabelStyle();
+		$quadStyle    = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultQuadStyle();
+		$quadSubstyle = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultQuadSubstyle();
+		$labelStyle   = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultLabelStyle();
 
 		$maniaLink = new ManiaLink(self::MLID_NEXTMAP_WIDGET);
 
@@ -440,7 +440,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 
 		// Check if the Next Map is a queued Map
-		$queuedMap = $this->maniaControl->mapManager->mapQueue->getNextMap();
+		$queuedMap = $this->maniaControl->mapManager->getMapQueue()->getNextMap();
 
 		/**
 		 * @var Player $requester

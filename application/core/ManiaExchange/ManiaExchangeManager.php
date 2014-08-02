@@ -44,8 +44,9 @@ class ManiaExchangeManager {
 	const MIN_EXE_BUILD = "2014-04-01_00_00";
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	private $mxIdUidVector = array();
 

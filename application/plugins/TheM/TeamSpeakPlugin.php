@@ -26,7 +26,7 @@ use ManiaControl\Utils\Formatter;
  * @author TheM
  */
 class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPageAnswerListener, TimerListener, Plugin {
-	/**
+	/*
 	 * Constants
 	 */
 	const ID      = 23;
@@ -47,7 +47,7 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 	const TS_ICON       = 'Teamspeak.png';
 	const TS_ICON_MOVER = 'Teamspeak_logo_press.png';
 
-	/**
+	/*
 	 * Private properties
 	 */
 	/** @var ManiaControl $maniaControl */
@@ -129,8 +129,8 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 
 		$this->refreshTime = time();
 
-		$this->maniaControl->manialinkManager->iconManager->addIcon(self::TS_ICON);
-		$this->maniaControl->manialinkManager->iconManager->addIcon(self::TS_ICON_MOVER);
+		$this->maniaControl->manialinkManager->getIconManager()->addIcon(self::TS_ICON);
+		$this->maniaControl->manialinkManager->getIconManager()->addIcon(self::TS_ICON_MOVER);
 
 		$this->maniaControl->timerManager->registerTimerListening($this, 'ts3_queryServer', 1000);
 
@@ -311,8 +311,8 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 	private function addToMenu() {
 		$this->maniaControl->manialinkManager->registerManialinkPageAnswerListener(self::ACTION_OPEN_TSVIEWER, $this, 'command_tsViewer');
 		$itemQuad = new Quad();
-		$itemQuad->setImage($this->maniaControl->manialinkManager->iconManager->getIcon(self::TS_ICON));
-		$itemQuad->setImageFocus($this->maniaControl->manialinkManager->iconManager->getIcon(self::TS_ICON_MOVER));
+		$itemQuad->setImage($this->maniaControl->manialinkManager->getIconManager()->getIcon(self::TS_ICON));
+		$itemQuad->setImageFocus($this->maniaControl->manialinkManager->getIconManager()->getIcon(self::TS_ICON_MOVER));
 		$itemQuad->setAction(self::ACTION_OPEN_TSVIEWER);
 		$this->maniaControl->actionsMenu->addMenuItem($itemQuad, true, 1, 'Open TeamSpeak Viewer');
 	}
@@ -341,10 +341,10 @@ class TeamSpeakPlugin implements CallbackListener, CommandListener, ManialinkPag
 	 * @param mixed $player
 	 */
 	private function showWidget($player) {
-		$width        = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
-		$height       = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
-		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowStyle();
-		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowSubStyle();
+		$width        = $this->maniaControl->manialinkManager->getStyleManager()->getListWidgetsWidth();
+		$height       = $this->maniaControl->manialinkManager->getStyleManager()->getListWidgetsHeight();
+		$quadStyle    = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultMainWindowStyle();
+		$quadSubstyle = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultMainWindowSubStyle();
 
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 

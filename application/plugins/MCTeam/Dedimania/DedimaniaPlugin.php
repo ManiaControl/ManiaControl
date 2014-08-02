@@ -62,7 +62,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	const DEDIMANIA_DEBUG                 = false;
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
@@ -467,9 +467,9 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$width        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_WIDTH);
 		$lines        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_LINE_COUNT);
 		$lineHeight   = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_LINE_HEIGHT);
-		$labelStyle   = $this->maniaControl->manialinkManager->styleManager->getDefaultLabelStyle();
-		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
-		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
+		$labelStyle   = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultLabelStyle();
+		$quadStyle    = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultQuadStyle();
+		$quadSubstyle = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultQuadSubstyle();
 
 
 		$manialink = new ManiaLink(self::MLID_DEDIMANIA);
@@ -1052,7 +1052,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 		// Set ghost replay
 		if ($record->rank <= 1) {
-			$dataDirectory = $this->maniaControl->server->directory->getGameDataFolder();
+			$dataDirectory = $this->maniaControl->server->getDirectory()->getGameDataFolder();
 			if (!isset($this->dedimaniaData->directoryAccessChecked)) {
 				$access = $this->maniaControl->server->checkAccess($dataDirectory);
 				if (!$access) {
@@ -1092,8 +1092,8 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * @param Player $player
 	 */
 	public function showDediRecordsList(array $chat, Player $player) {
-		$width  = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
-		$height = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
+		$width  = $this->maniaControl->manialinkManager->getStyleManager()->getListWidgetsWidth();
+		$height = $this->maniaControl->manialinkManager->getStyleManager()->getListWidgetsHeight();
 
 		// get PlayerList
 		$records = $this->dedimaniaData->records;
@@ -1109,7 +1109,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$script->addFeature($paging);
 
 		// Main frame
-		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script, $paging);
+		$frame = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultListFrame($script, $paging);
 		$maniaLink->add($frame);
 
 		// Start offsets
@@ -1117,7 +1117,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$posY = $height / 2;
 
 		// Predefine Description Label
-		$descriptionLabel = $this->maniaControl->manialinkManager->styleManager->getDefaultDescriptionLabel();
+		$descriptionLabel = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultDescriptionLabel();
 		$frame->add($descriptionLabel);
 
 		// Headline

@@ -22,8 +22,9 @@ use ManiaControl\Players\Player;
 // TODO: refactor code - i see duplicated code all over the place..
 class HelpManager implements CommandListener, CallbackListener {
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	private $playerCommands = array();
 	private $adminCommands = array();
@@ -160,8 +161,8 @@ class HelpManager implements CommandListener, CallbackListener {
 	 * @param mixed $player
 	 */
 	private function showHelpAllList(array $commands, $player) {
-		$width  = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
-		$height = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
+		$width  = $this->maniaControl->manialinkManager->getStyleManager()->getListWidgetsWidth();
+		$height = $this->maniaControl->manialinkManager->getStyleManager()->getListWidgetsHeight();
 
 		// create manialink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
@@ -170,7 +171,7 @@ class HelpManager implements CommandListener, CallbackListener {
 		$script->addFeature($paging);
 
 		// Main frame
-		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script, $paging);
+		$frame = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultListFrame($script, $paging);
 		$maniaLink->add($frame);
 
 		// Start offsets
@@ -178,7 +179,7 @@ class HelpManager implements CommandListener, CallbackListener {
 		$posY = $height / 2;
 
 		//Predefine description Label
-		$descriptionLabel = $this->maniaControl->manialinkManager->styleManager->getDefaultDescriptionLabel();
+		$descriptionLabel = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultDescriptionLabel();
 		$frame->add($descriptionLabel);
 
 		// Headline

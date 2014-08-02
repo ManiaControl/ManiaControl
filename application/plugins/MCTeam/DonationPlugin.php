@@ -51,7 +51,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	const SETTING_MIN_AMOUNT_SHOWN        = 'Minimum Donation amount to get shown';
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
@@ -125,7 +125,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MIN_AMOUNT_SHOWN, 100);
 
 		// Register Stat in Simple StatsList
-		$this->maniaControl->statisticManager->simpleStatsList->registerStat(self::STAT_PLAYER_DONATIONS, 90, "DP", 15);
+		$this->maniaControl->statisticManager->getSimpleStatsList()->registerStat(self::STAT_PLAYER_DONATIONS, 90, "DP", 15);
 
 		$this->displayWidget();
 		return true;
@@ -151,9 +151,9 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$width             = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_DONATE_WIDGET_WIDTH);
 		$height            = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_DONATE_WIDGET_HEIGHT);
 		$values            = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_DONATION_VALUES);
-		$shootManiaOffset  = $this->maniaControl->manialinkManager->styleManager->getDefaultIconOffsetSM();
-		$quadStyle         = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
-		$quadSubstyle      = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
+		$shootManiaOffset  = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultIconOffsetSM();
+		$quadStyle         = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultQuadStyle();
+		$quadSubstyle      = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultQuadSubstyle();
 		$itemMarginFactorX = 1.3;
 		$itemMarginFactorY = 1.2;
 
@@ -461,8 +461,8 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	private function showTopDonsList(Player $player) {
 		$stats = $this->maniaControl->statisticManager->getStatsRanking(self::STAT_PLAYER_DONATIONS);
 
-		$width  = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
-		$height = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
+		$width  = $this->maniaControl->manialinkManager->getStyleManager()->getListWidgetsWidth();
+		$height = $this->maniaControl->manialinkManager->getStyleManager()->getListWidgetsHeight();
 
 		// create manialink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
@@ -471,7 +471,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$script->addFeature($paging);
 
 		// Main frame
-		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script, $paging);
+		$frame = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultListFrame($script, $paging);
 		$maniaLink->add($frame);
 
 		// Start offsets
@@ -479,7 +479,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$posY = $height / 2;
 
 		//Predefine description Label
-		$descriptionLabel = $this->maniaControl->manialinkManager->styleManager->getDefaultDescriptionLabel();
+		$descriptionLabel = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultDescriptionLabel();
 		$frame->add($descriptionLabel);
 
 		// Headline

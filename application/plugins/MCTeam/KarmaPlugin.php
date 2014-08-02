@@ -65,7 +65,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	const MX_KARMA_GET_MAP_RATING    = 'getMapRating';
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
@@ -167,7 +167,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		$this->maniaControl->statisticManager->defineStatMetaData(self::STAT_PLAYER_MAPVOTES);
 
 		// Register Stat in Simple StatsList
-		$this->maniaControl->statisticManager->simpleStatsList->registerStat(self::STAT_PLAYER_MAPVOTES, 100, "VM");
+		$this->maniaControl->statisticManager->getSimpleStatsList()->registerStat(self::STAT_PLAYER_MAPVOTES, 100, "VM");
 
 		$this->updateManialink = true;
 
@@ -909,9 +909,9 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		$posY         = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_POSY);
 		$width        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_WIDTH);
 		$height       = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_HEIGHT);
-		$labelStyle   = $this->maniaControl->manialinkManager->styleManager->getDefaultLabelStyle();
-		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
-		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
+		$labelStyle   = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultLabelStyle();
+		$quadStyle    = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultQuadStyle();
+		$quadSubstyle = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultQuadSubstyle();
 
 		$manialink = new ManiaLink(self::MLID_KARMA);
 

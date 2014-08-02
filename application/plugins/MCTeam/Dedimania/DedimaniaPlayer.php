@@ -11,7 +11,7 @@ namespace MCTeam\Dedimania;
  */
 class DedimaniaPlayer {
 	/*
-	 * Public Properties
+	 * Public properties
 	 */
 	public $login = '';
 	public $maxRank = -1;

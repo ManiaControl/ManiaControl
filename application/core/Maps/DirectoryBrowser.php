@@ -43,10 +43,11 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 	/*
 	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 
 	/**
-	 * Create a new directory browser instance
+	 * Construct a new directory browser instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */
@@ -93,7 +94,7 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 		$oldFolderPath  = $player->getCache($this, self::CACHE_FOLDER_PATH);
 		$isInMapsFolder = false;
 		if (!$oldFolderPath) {
-			$oldFolderPath  = $this->maniaControl->server->directory->getMapsFolder();
+			$oldFolderPath  = $this->maniaControl->server->getDirectory()->getMapsFolder();
 			$isInMapsFolder = true;
 		}
 		$folderPath = $oldFolderPath;
@@ -104,12 +105,12 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 				$folderName = basename($newFolderPath);
 				switch ($folderName) {
 					case 'Maps':
-						$mapsDir        = dirname($this->maniaControl->server->directory->getMapsFolder());
+						$mapsDir        = dirname($this->maniaControl->server->getDirectory()->getMapsFolder());
 						$folderDir      = dirname($folderPath);
 						$isInMapsFolder = ($mapsDir === $folderDir);
 						break;
 					case 'UserData':
-						$dataDir   = dirname($this->maniaControl->server->directory->getGameDataFolder());
+						$dataDir   = dirname($this->maniaControl->server->getDirectory()->getGameDataFolder());
 						$folderDir = dirname($folderPath);
 						if ($dataDir === $folderDir) {
 							// Prevent navigation out of maps directory
@@ -125,11 +126,11 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 		$script    = $maniaLink->getScript();
 		$paging    = new Paging();
 		$script->addFeature($paging);
-		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script, $paging);
+		$frame = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultListFrame($script, $paging);
 		$maniaLink->add($frame);
 
-		$width     = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
-		$height    = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
+		$width     = $this->maniaControl->manialinkManager->getStyleManager()->getListWidgetsWidth();
+		$height    = $this->maniaControl->manialinkManager->getStyleManager()->getListWidgetsHeight();
 		$index     = 0;
 		$posY      = $height / 2 - 10;
 		$pageFrame = null;
@@ -153,7 +154,7 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 
 		$directoryLabel = new Label_Text();
 		$frame->add($directoryLabel);
-		$dataFolder    = $this->maniaControl->server->directory->getGameDataFolder();
+		$dataFolder    = $this->maniaControl->server->getDirectory()->getGameDataFolder();
 		$directoryText = substr($folderPath, strlen($dataFolder));
 		$directoryLabel->setPosition($width * -0.41, $height * 0.45)
 		               ->setSize($width * 0.85, 4)
@@ -368,7 +369,7 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 		$folderPath = $player->getCache($this, self::CACHE_FOLDER_PATH);
 		$filePath   = $folderPath . $fileName;
 
-		$mapsFolder       = $this->maniaControl->server->directory->getMapsFolder();
+		$mapsFolder       = $this->maniaControl->server->getDirectory()->getMapsFolder();
 		$relativeFilePath = substr($filePath, strlen($mapsFolder));
 
 		// Check for valid map
@@ -401,7 +402,7 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 		$this->maniaControl->log($message, true);
 
 		// Queue requested Map
-		$this->maniaControl->mapManager->mapQueue->addMapToMapQueue($player, $map);
+		$this->maniaControl->mapManager->getMapQueue()->addMapToMapQueue($player, $map);
 	}
 
 	/**

@@ -11,7 +11,7 @@ namespace ManiaControl\Database;
  */
 class Config {
 	/*
-	 * Public Properties
+	 * Public properties
 	 */
 	public $host = null;
 	public $port = null;

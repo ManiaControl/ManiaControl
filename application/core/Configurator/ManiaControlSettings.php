@@ -40,6 +40,7 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 	/*
 	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 
 	/**

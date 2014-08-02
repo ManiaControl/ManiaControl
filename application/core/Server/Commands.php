@@ -43,6 +43,7 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 	/*
 	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	private $serverShutdownTime = -1;
 	private $serverShutdownEmpty = false;

@@ -24,8 +24,9 @@ class Chat {
 	const SETTING_FORMAT_USAGEINFO   = 'UsageInfo Format';
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 
 	/**

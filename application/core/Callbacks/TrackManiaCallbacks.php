@@ -15,8 +15,9 @@ use ManiaControl\Utils\Formatter;
  */
 class TrackManiaCallbacks implements CallbackListener {
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 
 	/**

@@ -15,9 +15,10 @@ use ManiaControl\ManiaControl;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Directory implements CallbackListener {
-	/**
+	/*
 	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 
 	/**

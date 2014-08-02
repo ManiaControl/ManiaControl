@@ -38,6 +38,7 @@ class MapQueue implements CallbackListener, CommandListener {
 	/*
 	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	private $queuedMaps = array();
 	private $nextMap = null;
@@ -192,7 +193,7 @@ class MapQueue implements CallbackListener, CommandListener {
 			array_push($maps, $queuedMap[1]);
 		}
 
-		$this->maniaControl->mapManager->mapList->showMapList($player, $maps);
+		$this->maniaControl->mapManager->getMapList()->showMapList($player, $maps);
 	}
 
 	/**

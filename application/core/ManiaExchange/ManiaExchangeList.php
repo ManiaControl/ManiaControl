@@ -43,8 +43,9 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 	const MAX_MX_MAPS_PER_PAGE        = 14;
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	private $mapListShown = array();
 
@@ -130,7 +131,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		}
 
 		// search for matching maps
-		$this->maniaControl->mapManager->mxManager->fetchMapsAsync(function (array $maps) use (&$player) {
+		$this->maniaControl->mapManager->getMXManager()->fetchMapsAsync(function (array $maps) use (&$player) {
 			if (!$maps) {
 				$this->maniaControl->chat->sendError('No maps found, or MX is down!', $player->login);
 				return;
@@ -148,8 +149,8 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 	 */
 	private function showManiaExchangeList(array $maps, Player $player) {
 		// Start offsets
-		$width  = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
-		$height = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
+		$width  = $this->maniaControl->manialinkManager->getStyleManager()->getListWidgetsWidth();
+		$height = $this->maniaControl->manialinkManager->getStyleManager()->getListWidgetsHeight();
 		$posX   = -$width / 2;
 		$posY   = $height / 2;
 
@@ -160,11 +161,11 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		$script->addFeature($paging);
 
 		// Main frame
-		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script, $paging);
+		$frame = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultListFrame($script, $paging);
 		$maniaLink->add($frame);
 
 		//Predefine description Label
-		$descriptionLabel = $this->maniaControl->manialinkManager->styleManager->getDefaultDescriptionLabel();
+		$descriptionLabel = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultDescriptionLabel();
 		$frame->add($descriptionLabel);
 
 		// Headline
@@ -210,8 +211,8 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 			$mxQuad = new Quad();
 			$mapFrame->add($mxQuad);
 			$mxQuad->setSize(3, 3);
-			$mxQuad->setImage($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON));
-			$mxQuad->setImageFocus($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON_MOVER));
+			$mxQuad->setImage($this->maniaControl->manialinkManager->getIconManager()->getIcon(IconManager::MX_ICON));
+			$mxQuad->setImageFocus($this->maniaControl->manialinkManager->getIconManager()->getIcon(IconManager::MX_ICON_MOVER));
 			$mxQuad->setX($posX + 56);
 			$mxQuad->setUrl($map->pageurl);
 			$mxQuad->setZ(0.01);

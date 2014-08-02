@@ -56,7 +56,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 	const ACTION_SHOW_RECORDSLIST     = 'LocalRecords.ShowRecordsList';
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
@@ -217,9 +217,9 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$width        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_WIDTH);
 		$lines        = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_LINESCOUNT);
 		$lineHeight   = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_LINEHEIGHT);
-		$labelStyle   = $this->maniaControl->manialinkManager->styleManager->getDefaultLabelStyle();
-		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
-		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
+		$labelStyle   = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultLabelStyle();
+		$quadStyle    = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultQuadStyle();
+		$quadSubstyle = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultQuadSubstyle();
 
 		$records = $this->getLocalRecords($map);
 		if (!is_array($records)) {
@@ -548,8 +548,8 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 	 * @param Player $player
 	 */
 	public function showRecordsList(array $chat, Player $player) {
-		$width  = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
-		$height = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
+		$width  = $this->maniaControl->manialinkManager->getStyleManager()->getListWidgetsWidth();
+		$height = $this->maniaControl->manialinkManager->getStyleManager()->getListWidgetsHeight();
 
 		// get PlayerList
 		$records = $this->getLocalRecords($this->maniaControl->mapManager->getCurrentMap());
@@ -561,7 +561,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$script->addFeature($paging);
 
 		// Main frame
-		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script, $paging);
+		$frame = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultListFrame($script, $paging);
 		$maniaLink->add($frame);
 
 		// Start offsets
@@ -569,7 +569,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$posY = $height / 2;
 
 		// Predefine Description Label
-		$descriptionLabel = $this->maniaControl->manialinkManager->styleManager->getDefaultDescriptionLabel();
+		$descriptionLabel = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultDescriptionLabel();
 		$frame->add($descriptionLabel);
 
 		// Headline

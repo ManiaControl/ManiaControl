@@ -15,14 +15,14 @@ use ManiaControl\Players\Player;
 interface ConfiguratorMenu {
 
 	/**
-	 * Get the Menu Title
+	 * Get the menu title
 	 *
 	 * @return string
 	 */
 	public static function getTitle();
 
 	/**
-	 * Get the Configurator Menu Frame
+	 * Get the configurator menu frame
 	 *
 	 * @param float  $width
 	 * @param float  $height
@@ -33,7 +33,7 @@ interface ConfiguratorMenu {
 	public function getMenu($width, $height, Script $script, Player $player);
 
 	/**
-	 * Save the Config Data
+	 * Save the config data
 	 *
 	 * @param array  $configData
 	 * @param Player $player

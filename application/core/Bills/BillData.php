@@ -12,7 +12,6 @@ use ManiaControl\Players\Player;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class BillData {
-
 	/*
 	 * Public properties
 	 */

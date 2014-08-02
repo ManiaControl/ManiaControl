@@ -13,7 +13,7 @@ use ManiaControl\Utils\Formatter;
  */
 class RecordData {
 	/*
-	 * Public Properties
+	 * Public properties
 	 */
 	public $nullRecord = false;
 	public $login = '';

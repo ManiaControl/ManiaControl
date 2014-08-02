@@ -22,8 +22,9 @@ class UsageReporter implements TimerListener {
 	const SETTING_REPORT_USAGE = 'Report Usage to $lManiaControl.com$l';
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 
 	/**

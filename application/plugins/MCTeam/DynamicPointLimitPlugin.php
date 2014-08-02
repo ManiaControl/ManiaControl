@@ -41,7 +41,7 @@ class DynamicPointLimitPlugin implements CallbackListener, CommandListener, Plug
 	const SCRIPT_SETTING_MAP_POINTS_LIMIT = 'S_MapPointsLimit';
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;

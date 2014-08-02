@@ -53,8 +53,9 @@ class StatisticCollector implements CallbackListener {
 	const WEAPON_ARROW   = 5;
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	private $onShootArray = array();
 
@@ -114,7 +115,7 @@ class StatisticCollector implements CallbackListener {
 			return;
 		}
 
-		$leaders = $this->maniaControl->server->rankingManager->getLeaders();
+		$leaders = $this->maniaControl->server->getRankingManager()->getLeaders();
 
 		foreach ($leaders as $leaderLogin) {
 			$leader = $this->maniaControl->playerManager->getPlayer($leaderLogin);

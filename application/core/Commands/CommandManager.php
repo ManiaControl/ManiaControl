@@ -18,6 +18,7 @@ class CommandManager implements CallbackListener {
 	/*
 	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	/** @var HelpManager $helpManager */
 	private $helpManager = array();

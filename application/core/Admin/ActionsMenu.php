@@ -34,15 +34,16 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	const ACTION_OPEN_PLAYER_MENU = 'ActionsMenu.OpenPlayerMenu';
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	private $adminMenuItems = array();
 	private $playerMenuItems = array();
 	private $initCompleted = false;
 
 	/**
-	 * Create a new Actions Menu
+	 * Construct a new Actions Menu instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */
@@ -116,9 +117,9 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		$posX              = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MENU_POSX);
 		$posY              = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MENU_POSY);
 		$itemSize          = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MENU_ITEMSIZE);
-		$shootManiaOffset  = $this->maniaControl->manialinkManager->styleManager->getDefaultIconOffsetSM();
-		$quadStyle         = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
-		$quadSubstyle      = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
+		$shootManiaOffset  = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultIconOffsetSM();
+		$quadStyle         = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultQuadStyle();
+		$quadSubstyle      = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultQuadSubstyle();
 		$itemMarginFactorX = 1.3;
 		$itemMarginFactorY = 1.2;
 

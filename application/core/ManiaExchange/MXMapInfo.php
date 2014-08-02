@@ -13,6 +13,9 @@ use ManiaControl\Utils\Formatter;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class MXMapInfo {
+	/*
+	 * Public properties
+	 */
 	public $prefix, $id, $uid, $name, $userid, $author, $uploaded, $updated, $type, $maptype;
 	public $titlepack, $style, $envir, $mood, $dispcost, $lightmap, $modname, $exever;
 	public $exebld, $routes, $length, $unlimiter, $laps, $difficulty, $lbrating, $trkvalue;

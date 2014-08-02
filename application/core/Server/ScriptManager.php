@@ -13,8 +13,9 @@ use ManiaControl\ManiaControl;
  */
 class ScriptManager {
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	private $isScriptMode = null;
 

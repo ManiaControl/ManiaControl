@@ -28,6 +28,7 @@ class BillManager implements CallbackListener {
 	/*
 	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	private $openBills = array();
 

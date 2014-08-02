@@ -27,6 +27,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 	/*
 	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 
 	/**

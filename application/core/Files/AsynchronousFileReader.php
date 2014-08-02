@@ -20,8 +20,9 @@ class AsynchronousFileReader {
 	const CONTENT_TYPE_JSON = 'application/json';
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	/** @var Request[] $requests */
 	private $requests = array();

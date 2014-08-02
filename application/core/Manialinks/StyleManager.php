@@ -38,10 +38,11 @@ class StyleManager {
 	/*
 	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 
 	/**
-	 * Create a new style manager instance
+	 * Construct a new style manager instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */

@@ -18,15 +18,16 @@ class Database implements TimerListener {
 	 */
 	/** @var \mysqli $mysqli */
 	public $mysqli = null;
-	/** @var MigrationHelper $migrationHelper */
-	public $migrationHelper = null;
 
 	/*
 	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	/** @var Config $config */
 	private $config = null;
+	/** @var MigrationHelper $migrationHelper */
+	private $migrationHelper = null;
 
 	/**
 	 * Construct a new Database Connection

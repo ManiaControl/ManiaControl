@@ -61,8 +61,9 @@ class Player {
 	public $currentTargetId = 0;
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	private $cache = array();
 

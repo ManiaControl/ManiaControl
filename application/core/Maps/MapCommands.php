@@ -36,6 +36,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	/*
 	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 
 	/**
@@ -77,8 +78,8 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	private function initActionsMenuButtons() {
 		// Menu Open xList
 		$itemQuad = new Quad();
-		$itemQuad->setImage($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON));
-		$itemQuad->setImageFocus($this->maniaControl->manialinkManager->iconManager->getIcon(IconManager::MX_ICON_MOVER));
+		$itemQuad->setImage($this->maniaControl->manialinkManager->getIconManager()->getIcon(IconManager::MX_ICON));
+		$itemQuad->setImageFocus($this->maniaControl->manialinkManager->getIconManager()->getIcon(IconManager::MX_ICON_MOVER));
 		$itemQuad->setAction(self::ACTION_OPEN_XLIST);
 		$this->maniaControl->actionsMenu->addPlayerMenuItem($itemQuad, 5, 'Open MX List');
 
@@ -108,7 +109,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	 * @param Player $player
 	 */
 	public function command_ShowNextMap(array $chatCallback, Player $player) {
-		$nextQueued = $this->maniaControl->mapManager->mapQueue->getNextQueuedMap();
+		$nextQueued = $this->maniaControl->mapManager->getMapQueue()->getNextQueuedMap();
 		if ($nextQueued) {
 			/** @var Player $requester */
 			$requester = $nextQueued[0];
@@ -216,7 +217,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			return;
 		}
 
-		$this->maniaControl->mapManager->mapActions->skipMap();
+		$this->maniaControl->mapManager->getMapActions()->skipMap();
 
 		$message = '$<' . $player->nickname . '$> skipped the current Map!';
 		$this->maniaControl->chat->sendSuccess($message);
@@ -260,7 +261,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		$this->maniaControl->chat->sendSuccess($message);
 		$this->maniaControl->log($message, true);
 
-		$this->maniaControl->mapManager->mapQueue->addFirstMapToMapQueue($player, $this->maniaControl->mapManager->getCurrentMap());
+		$this->maniaControl->mapManager->getMapQueue()->addFirstMapToMapQueue($player, $this->maniaControl->mapManager->getCurrentMap());
 	}
 
 	/**
@@ -347,7 +348,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 
 		if (strstr($actionId, self::ACTION_SHOW_AUTHOR)) {
 			$login = str_replace(self::ACTION_SHOW_AUTHOR, '', $actionId);
-			$this->maniaControl->mapManager->mapList->playerCloseWidget($player);
+			$this->maniaControl->mapManager->getMapList()->playerCloseWidget($player);
 			$this->showMapListAuthor($login, $player);
 		}
 	}
@@ -373,7 +374,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			return;
 		}
 
-		$this->maniaControl->mapManager->mapList->showMapList($player, $mapList);
+		$this->maniaControl->mapManager->getMapList()->showMapList($player, $mapList);
 	}
 
 	/**
@@ -384,7 +385,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	 */
 	public function command_List(array $chatCallback, Player $player) {
 		$chatCommands = explode(' ', $chatCallback[1][2]);
-		$this->maniaControl->mapManager->mapList->playerCloseWidget($player);
+		$this->maniaControl->mapManager->getMapList()->playerCloseWidget($player);
 
 		if (isset($chatCommands[1])) {
 			$listParam = strtolower($chatCommands[1]);
@@ -409,11 +410,11 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 					}
 					break;
 				default:
-					$this->maniaControl->mapManager->mapList->showMapList($player);
+					$this->maniaControl->mapManager->getMapList()->showMapList($player);
 					break;
 			}
 		} else {
-			$this->maniaControl->mapManager->mapList->showMapList($player);
+			$this->maniaControl->mapManager->getMapList()->showMapList($player);
 		}
 	}
 
@@ -462,7 +463,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 				$mapList = array_reverse($mapList);
 			}
 
-			$this->maniaControl->mapManager->mapList->showMapList($player, $mapList);
+			$this->maniaControl->mapManager->getMapList()->showMapList($player, $mapList);
 		} else {
 			$this->maniaControl->chat->sendError('KarmaPlugin is not enabled!', $player->login);
 		}
@@ -484,7 +485,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$maps = array_reverse($maps);
 		}
 
-		$this->maniaControl->mapManager->mapList->showMapList($player, $maps);
+		$this->maniaControl->mapManager->getMapList()->showMapList($player, $maps);
 	}
 
 	/**
@@ -494,6 +495,6 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	 * @param Player $player
 	 */
 	public function command_xList(array $chatCallback, Player $player) {
-		$this->maniaControl->mapManager->mxList->showList($chatCallback, $player);
+		$this->maniaControl->mapManager->getMXList()->showList($chatCallback, $player);
 	}
 }

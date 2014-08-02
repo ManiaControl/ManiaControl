@@ -57,7 +57,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	const SETTING_PERMISSION_RESTART  = 'Restart ManiaControl';
 
 	/*
-	 * Public Properties
+	 * Public properties
 	 */
 	public $actionsMenu = null;
 	public $authenticationManager = null;
@@ -85,12 +85,12 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	public $billManager = null;
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
 	private $requestQuitMessage = null;
 
 	/**
-	 * Construct ManiaControl
+	 * Construct a new ManiaControl instance
 	 */
 	public function __construct() {
 		$this->log('Loading ManiaControl v' . self::VERSION . ' ...');
@@ -339,7 +339,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 		$this->client->sendHideManialinkPage();
 
 		// Enable script callbacks
-		$this->server->scriptManager->enableScriptCallbacks();
+		$this->server->getScriptManager()->enableScriptCallbacks();
 	}
 
 	/**

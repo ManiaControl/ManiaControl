@@ -33,17 +33,31 @@ class PlayerManager implements CallbackListener, TimerListener {
 	const STAT_SERVERTIME             = 'Servertime';
 
 	/*
-	 * Public Properties
+	 * Public properties
 	 */
+	/** @var PlayerActions $playerActions */
+	/** @deprecated see getPlayerActions() */
 	public $playerActions = null;
+	/** @var PlayerCommands $playerCommands */
+	/** @deprecated see getPlayerCommands() */
 	public $playerCommands = null;
+	/** @var PlayerDetailed $playerDetailed */
+	/** @deprecated see getPlayerDetailed() */
 	public $playerDetailed = null;
+	/** @var PlayerDataManager $playerDataManager */
+	/** @deprecated see getPlayerDataManager() */
+	public $playerDataManager = null;
+	/** @var PlayerList $playerList */
+	/** @deprecated see getPlayerList() */
 	public $playerList = null;
+	/** @var AdminLists $adminLists */
+	/** @deprecated see getAdminLists() */
 	public $adminLists = null;
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	/** @var Player[] $players */
 	private $players = array();
@@ -111,6 +125,51 @@ class PlayerManager implements CallbackListener, TimerListener {
 	}
 
 	/**
+	 * Get player actions
+	 *
+	 * @return PlayerActions
+	 */
+	public function getPlayerActions() {
+		return $this->playerActions;
+	}
+
+	/**
+	 * Get player commands
+	 *
+	 * @return PlayerCommands
+	 */
+	public function getPlayerCommands() {
+		return $this->playerCommands;
+	}
+
+	/**
+	 * Get player detailed
+	 *
+	 * @return PlayerDetailed
+	 */
+	public function getPlayerDetailed() {
+		return $this->playerDetailed;
+	}
+
+	/**
+	 * Get player list
+	 *
+	 * @return PlayerList
+	 */
+	public function getPlayerList() {
+		return $this->playerList;
+	}
+
+	/**
+	 * Get admin lists
+	 *
+	 * @return AdminLists
+	 */
+	public function getAdminLists() {
+		return $this->adminLists;
+	}
+
+	/**
 	 * Handle OnInit callback
 	 */
 	public function onInit() {
@@ -152,7 +211,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 	}
 
 	/**
-	 * Save player in Database and fill up Object Properties
+	 * Save player in database and fill up properties
 	 *
 	 * @param Player $player
 	 * @return bool
@@ -295,7 +354,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 	}
 
 	/**
-	 * Get the Count of all Player
+	 * Get the count of all Players
 	 *
 	 * @param bool $withoutSpectators
 	 * @return int
@@ -363,7 +422,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 	}
 
 	/**
-	 * Get a Player by Login
+	 * Get a Player by login
 	 *
 	 * @param mixed $login
 	 * @param bool  $connectedPlayersOnly
@@ -383,7 +442,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 	}
 
 	/**
-	 * Get a Player from the Database
+	 * Get a Player from the database
 	 *
 	 * @param string $playerLogin
 	 * @return Player
@@ -427,7 +486,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 	}
 
 	/**
-	 * Gets the Count of all Spectators
+	 * Get the count of all spectators
 	 *
 	 * @return int
 	 */
@@ -442,7 +501,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 	}
 
 	/**
-	 * Gets a Player by his Index
+	 * Get a Player by index
 	 *
 	 * @param int  $index
 	 * @param bool $connectedPlayersOnly
@@ -455,27 +514,28 @@ class PlayerManager implements CallbackListener, TimerListener {
 			}
 		}
 
-		if ($connectedPlayersOnly) {
-			return null;
+		// Player is not online - Get Player from Database
+		if (!$connectedPlayersOnly) {
+			return $this->getPlayerFromDatabaseByIndex($index);
 		}
-		//Player is not online -> get Player from Database
-		return $this->getPlayerFromDatabaseByIndex($index);
+
+		return null;
 	}
 
 	/**
 	 * Get a Player out of the database
 	 *
 	 * @param int $playerIndex
-	 * @return Player $player
+	 * @return Player
 	 */
 	private function getPlayerFromDatabaseByIndex($playerIndex) {
-		$mysqli = $this->maniaControl->database->mysqli;
-
 		if (!is_numeric($playerIndex)) {
 			return null;
 		}
 
-		$query  = "SELECT * FROM `" . self::TABLE_PLAYERS . "` WHERE `index` = " . $playerIndex . ";";
+		$mysqli = $this->maniaControl->database->mysqli;
+		$query  = "SELECT * FROM `" . self::TABLE_PLAYERS . "`
+				WHERE `index` = {$playerIndex};";
 		$result = $mysqli->query($query);
 		if (!$result) {
 			trigger_error($mysqli->error);
@@ -485,7 +545,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 		$row = $result->fetch_object();
 		$result->free();
 
-		if (!isset($row)) {
+		if (!$row) {
 			return null;
 		}
 

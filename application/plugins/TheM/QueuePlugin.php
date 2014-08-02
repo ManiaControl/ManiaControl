@@ -30,7 +30,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 // TODO: idlekick function (?)
 
 class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, TimerListener, Plugin {
-	/**
+	/*
 	 * Constants
 	 */
 	const ID                 = 22;
@@ -47,7 +47,7 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 	const QUEUE_ACTIVE_ON_PASS = 'Activate queue when there is a play password';
 	const QUEUE_CHATMESSAGES   = 'Activate chat messages on queue join/leave/move to play';
 
-	/**
+	/*
 	 * Private properties
 	 */
 	/** @var ManiaControl $maniaControl */
@@ -141,8 +141,8 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 	private function showJoinQueueWidget(Player $player) {
 		$maniaLink = new ManiaLink(self::ML_ID);
 
-		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowStyle();
-		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowSubStyle();
+		$quadStyle    = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultMainWindowStyle();
+		$quadSubstyle = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultMainWindowSubStyle();
 		$maxQueue     = $this->maniaControl->settingManager->getSettingValue($this, self::QUEUE_MAX);
 
 		// Main frame
@@ -403,8 +403,8 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 	private function showPlayWidget(Player $player) {
 		$maniaLink = new ManiaLink(self::ML_ID);
 
-		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowStyle();
-		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowSubStyle();
+		$quadStyle    = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultMainWindowStyle();
+		$quadSubstyle = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultMainWindowSubStyle();
 
 		// Main frame
 		$frame = new Frame();

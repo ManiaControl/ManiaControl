@@ -31,6 +31,7 @@ class VoteRatiosMenu implements CallbackListener, ConfiguratorMenu, TimerListene
 	/*
 	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 
 	/**

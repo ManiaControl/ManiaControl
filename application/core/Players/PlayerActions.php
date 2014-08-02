@@ -48,8 +48,9 @@ class PlayerActions {
 	const SETTING_PERMISSION_BAN_PLAYER        = 'Ban Player';
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 
 	/**
@@ -302,8 +303,8 @@ class PlayerActions {
 		// Build Manialink
 		$width        = 80;
 		$height       = 50;
-		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowStyle();
-		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowSubStyle();
+		$quadStyle    = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultMainWindowStyle();
+		$quadSubstyle = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultMainWindowSubStyle();
 
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$frame     = new Frame();

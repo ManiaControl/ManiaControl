@@ -25,7 +25,7 @@ class IconManager implements CallbackListener {
 	const DEFAULT_IMG_URL = 'http://images.maniacontrol.com/icons/';
 	const PRELOAD_MLID    = 'IconManager.Preload.MLID';
 
-	/**
+	/*
 	 * Default icons
 	 */
 	const MX_ICON       = 'ManiaExchange.png';
@@ -34,9 +34,10 @@ class IconManager implements CallbackListener {
 	const MX_ICON_GREEN       = 'ManiaExchangeGreen.png';
 	const MX_ICON_GREEN_MOVER = 'ManiaExchange_logo_pressGreen.png';
 
-	/**
+	/*
 	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	private $icons = array();
 

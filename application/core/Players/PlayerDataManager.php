@@ -21,12 +21,13 @@ class PlayerDataManager {
 	const TYPE_REAL                = 'real';
 	const TYPE_BOOL                = 'bool';
 	const TYPE_ARRAY               = 'array';
+	const ARRAY_DELIMITER          = ';;';
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
-	private $arrayDelimiter = ';;';
 	private $metaData = array();
 	private $storedData = array();
 
@@ -339,7 +340,7 @@ class PlayerDataManager {
 			return (string)$value;
 		}
 		if ($type === self::TYPE_ARRAY) {
-			return explode($this->arrayDelimiter, $value);
+			return explode(self::ARRAY_DELIMITER, $value);
 		}
 		trigger_error('Unsupported data type. ' . print_r($type, true));
 		return $value;

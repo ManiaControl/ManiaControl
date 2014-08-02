@@ -35,19 +35,25 @@ class Server implements CallbackListener {
 	public $login = null;
 	public $titleId = null;
 	/** @var Directory $directory */
+	/** @deprecated see getDirectory() */
 	public $directory = null;
 	/** @var Commands $commands */
+	/** @deprecated see getCommands() */
 	public $commands = null;
 	/** @var UsageReporter $usageReporter */
+	/** @deprecated see getUsageReporter() */
 	public $usageReporter = null;
 	/** @var RankingManager $rankingManager */
+	/** @deprecated see getRankingManager() */
 	public $rankingManager = null;
 	/** @var ScriptManager $scriptManager */
+	/** @deprecated see getScriptManager() */
 	public $scriptManager = null;
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	private $teamMode = null;
 
@@ -131,6 +137,15 @@ class Server implements CallbackListener {
 	 */
 	public function getUsageReporter() {
 		return $this->usageReporter;
+	}
+
+	/**
+	 * Return the ranking manager
+	 *
+	 * @return RankingManager
+	 */
+	public function getRankingManager() {
+		return $this->rankingManager;
 	}
 
 	/**
@@ -284,7 +299,7 @@ class Server implements CallbackListener {
 	 * @return string
 	 */
 	public function getGhostReplay($login) {
-		$dataDir = $this->directory->getGameDataFolder();
+		$dataDir = $this->getDirectory()->getGameDataFolder();
 		if (!$this->checkAccess($dataDir)) {
 			return null;
 		}

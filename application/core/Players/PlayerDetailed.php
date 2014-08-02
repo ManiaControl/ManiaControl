@@ -28,8 +28,9 @@ class PlayerDetailed {
 	const STATS_PER_COLUMN = 13;
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 
 	/**
@@ -41,10 +42,10 @@ class PlayerDetailed {
 		$this->maniaControl = $maniaControl;
 
 		// settings
-		$this->width        = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
-		$this->height       = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
-		$this->quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowStyle();
-		$this->quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowSubStyle();
+		$this->width        = $this->maniaControl->manialinkManager->getStyleManager()->getListWidgetsWidth();
+		$this->height       = $this->maniaControl->manialinkManager->getStyleManager()->getListWidgetsHeight();
+		$this->quadStyle    = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultMainWindowStyle();
+		$this->quadSubstyle = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultMainWindowSubStyle();
 	}
 
 	/**
@@ -62,7 +63,7 @@ class PlayerDetailed {
 		$script    = $maniaLink->getScript();
 
 		// Main frame
-		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script);
+		$frame = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultListFrame($script);
 		$maniaLink->add($frame);
 
 		// Create script and features

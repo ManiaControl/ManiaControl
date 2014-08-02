@@ -47,6 +47,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	/*
 	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	/** @var ServerOptionsMenu $serverOptionsMenu */
 	private $serverOptionsMenu = null;

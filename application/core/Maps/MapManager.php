@@ -51,18 +51,25 @@ class MapManager implements CallbackListener {
 	 * Public properties
 	 */
 	/** @var MapQueue $mapQueue */
+	/** @deprecated see getMapQueue() */
 	public $mapQueue = null;
 	/** @var MapCommands $mapCommands */
+	/** @deprecated see getMapCommands() */
 	public $mapCommands = null;
 	/** @var MapActions $mapActions */
+	/** @deprecated see getMapActions() */
 	public $mapActions = null;
 	/** @var MapList $mapList */
+	/** @deprecated see getMapList() */
 	public $mapList = null;
 	/** @var DirectoryBrowser $directoryBrowser */
+	/** @deprecated see getDirectoryBrowser() */
 	public $directoryBrowser = null;
 	/** @var ManiaExchangeList $mxList */
+	/** @deprecated see getMXList() */
 	public $mxList = null;
 	/** @var ManiaExchangeManager $mxManager */
+	/** @deprecated see getMXManager() */
 	public $mxManager = null;
 
 	/*
@@ -275,10 +282,10 @@ class MapManager implements CallbackListener {
 		$map = $this->maps[$uid];
 
 		// Unset the Map everywhere
-		$this->mapQueue->removeFromMapQueue($admin, $map->uid);
+		$this->getMapQueue()->removeFromMapQueue($admin, $map->uid);
 
 		if ($map->mx) {
-			$this->mxManager->unsetMap($map->mx->id);
+			$this->getMXManager()->unsetMap($map->mx->id);
 		}
 
 		// Remove map
@@ -323,7 +330,7 @@ class MapManager implements CallbackListener {
 	public function addMapFromMx($mapId, $login, $update = false) {
 		if (is_numeric($mapId)) {
 			// Check if map exists
-			$this->maniaControl->mapManager->mxManager->fetchMapInfo($mapId, function (MXMapInfo $mapInfo = null) use (
+			$this->maniaControl->mapManager->getMXManager()->fetchMapInfo($mapId, function (MXMapInfo $mapInfo = null) use (
 				&$login, &$update
 			) {
 				if (!$mapInfo || !isset($mapInfo->uploaded)) {
@@ -369,7 +376,8 @@ class MapManager implements CallbackListener {
 
 		$downloadFolderName  = $this->maniaControl->settingManager->getSettingValue($this, 'MapDownloadDirectory', 'MX');
 		$relativeMapFileName = $downloadFolderName . DIRECTORY_SEPARATOR . $fileName;
-		$mapDir              = $this->maniaControl->server->directory->getMapsFolder();
+		$mapDir              = $this->maniaControl->server->getDirectory()
+		                                                  ->getMapsFolder();
 		$downloadDirectory   = $mapDir . $downloadFolderName . DIRECTORY_SEPARATOR;
 		$fullMapFileName     = $downloadDirectory . $fileName;
 
@@ -421,7 +429,7 @@ class MapManager implements CallbackListener {
 		$this->updateFullMapList();
 
 		// Update Mx MapInfo
-		$this->maniaControl->mapManager->mxManager->updateMapObjectsWithManiaExchangeIds(array($mapInfo));
+		$this->maniaControl->mapManager->getMXManager()->updateMapObjectsWithManiaExchangeIds(array($mapInfo));
 
 		// Update last updated time
 		$map = $this->getMapByUid($mapInfo->uid);
@@ -441,7 +449,7 @@ class MapManager implements CallbackListener {
 			$this->maniaControl->chat->sendSuccess($message);
 			$this->maniaControl->log($message, true);
 			// Queue requested Map
-			$this->maniaControl->mapManager->mapQueue->addMapToMapQueue($login, $mapInfo->uid);
+			$this->maniaControl->mapManager->getMapQueue()->addMapToMapQueue($login, $mapInfo->uid);
 		} else {
 			$message = '$<' . $player->nickname . '$> updated $<' . $mapInfo->name . '$>!';
 			$this->maniaControl->chat->sendSuccess($message);
@@ -721,7 +729,7 @@ class MapManager implements CallbackListener {
 	 */
 	public function handleAfterInit() {
 		// Fetch MX infos
-		$this->mxManager->fetchManiaExchangeMapInformation();
+		$this->getMXManager()->fetchManiaExchangeMapInformation();
 	}
 
 	/**
@@ -766,7 +774,7 @@ class MapManager implements CallbackListener {
 		$this->restructureMapList();
 
 		// Update the mx of the map (for update checks, etc.)
-		$this->mxManager->fetchManiaExchangeMapInformation($this->currentMap);
+		$this->getMXManager()->fetchManiaExchangeMapInformation($this->currentMap);
 
 		// Trigger own BeginMap callback
 		$this->maniaControl->callbackManager->triggerCallback(Callbacks::BEGINMAP, $this->currentMap);

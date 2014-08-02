@@ -36,8 +36,9 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 	const ACTION_SORT_STATS     = 'SimpleStatsList.SortStats';
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	private $statArray = array();
 	private $statsWidth = 0;
@@ -118,9 +119,9 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 	 * @param string $order
 	 */
 	public function showStatsList(Player $player, $order = PlayerManager::STAT_SERVERTIME) {
-		$height       = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
-		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowStyle();
-		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultMainWindowSubStyle();
+		$height       = $this->maniaControl->manialinkManager->getStyleManager()->getListWidgetsHeight();
+		$quadStyle    = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultMainWindowStyle();
+		$quadSubstyle = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultMainWindowSubStyle();
 
 
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);

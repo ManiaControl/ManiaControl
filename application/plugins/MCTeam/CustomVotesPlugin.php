@@ -76,9 +76,9 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	const CB_CUSTOM_VOTE_FINISHED = 'CustomVotesPlugin.CustomVoteFinished';
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
-	/** @var maniaControl $maniaControl */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	private $voteCommands = array();
 	private $voteMenuItems = array();
@@ -289,9 +289,9 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$posY              = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_VOTE_ICON_POSY);
 		$width             = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_VOTE_ICON_WIDTH);
 		$height            = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_VOTE_ICON_HEIGHT);
-		$shootManiaOffset  = $this->maniaControl->manialinkManager->styleManager->getDefaultIconOffsetSM();
-		$quadStyle         = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
-		$quadSubstyle      = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
+		$shootManiaOffset  = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultIconOffsetSM();
+		$quadStyle         = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultQuadStyle();
+		$quadSubstyle      = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultQuadSubstyle();
 		$itemMarginFactorX = 1.3;
 		$itemMarginFactorY = 1.2;
 
@@ -446,7 +446,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 */
 	public function startVote(Player $player, $voteIndex, $function = null) {
 		//Player is muted
-		if ($this->maniaControl->playerManager->playerActions->isPlayerMuted($player)) {
+		if ($this->maniaControl->playerManager->getPlayerActions()->isPlayerMuted($player)) {
 			$this->maniaControl->chat->sendError('Muted Players are not allowed to start a vote.', $player->login);
 			return;
 		}
@@ -530,7 +530,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 				case 'skip':
 				case 'nextmap':
 					try {
-						$this->maniaControl->mapManager->mapActions->skipMap();
+						$this->maniaControl->mapManager->getMapActions()->skipMap();
 					} catch (ChangeInProgressException $e) {
 					}
 					$this->maniaControl->chat->sendInformation('$f8fVote to $fffskip the Map$f8f has been successful!');
@@ -547,7 +547,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 					$this->maniaControl->chat->sendInformation('$f8fVote to $fffpause the current Game$f8f has been successful!');
 					break;
 				case 'replay':
-					$this->maniaControl->mapManager->mapQueue->addFirstMapToMapQueue($this->currentVote->voter, $this->maniaControl->mapManager->getCurrentMap());
+					$this->maniaControl->mapManager->getMapQueue()->addFirstMapToMapQueue($this->currentVote->voter, $this->maniaControl->mapManager->getCurrentMap());
 					$this->maniaControl->chat->sendInformation('$f8fVote to $fffreplay the Map$f8f has been successful!');
 					break;
 			}
@@ -676,9 +676,9 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$height  = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WIDGET_HEIGHT);
 		$maxTime = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_VOTE_TIME);
 
-		$quadStyle    = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadStyle();
-		$quadSubstyle = $this->maniaControl->manialinkManager->styleManager->getDefaultQuadSubstyle();
-		$labelStyle   = $this->maniaControl->manialinkManager->styleManager->getDefaultLabelStyle();
+		$quadStyle    = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultQuadStyle();
+		$quadSubstyle = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultQuadSubstyle();
+		$labelStyle   = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultLabelStyle();
 
 		$maniaLink = new ManiaLink(self::MLID_WIDGET);
 

@@ -44,8 +44,8 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 	const SETTING_MAX_STORED_RECORDS      = 'Maximum number of records per map for calculations';
 	const CB_RANK_BUILT                   = 'ServerRankingPlugin.RankBuilt';
 
-	/**
-	 * Private Properties
+	/*
+	 * Private properties
 	 */
 	/** @var ManiaControl $maniaControl * */
 	private $maniaControl = null;
@@ -477,8 +477,8 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 			return;
 		}
 
-		$width  = $this->maniaControl->manialinkManager->styleManager->getListWidgetsWidth();
-		$height = $this->maniaControl->manialinkManager->styleManager->getListWidgetsHeight();
+		$width  = $this->maniaControl->manialinkManager->getStyleManager()->getListWidgetsWidth();
+		$height = $this->maniaControl->manialinkManager->getStyleManager()->getListWidgetsHeight();
 
 		// create manialink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
@@ -487,7 +487,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		$script->addFeature($paging);
 
 		// Main frame
-		$frame = $this->maniaControl->manialinkManager->styleManager->getDefaultListFrame($script, $paging);
+		$frame = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultListFrame($script, $paging);
 		$maniaLink->add($frame);
 
 		// Start offsets
@@ -495,7 +495,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		$posY = $height / 2;
 
 		//Predefine description Label
-		$descriptionLabel = $this->maniaControl->manialinkManager->styleManager->getDefaultDescriptionLabel();
+		$descriptionLabel = $this->maniaControl->manialinkManager->getStyleManager()->getDefaultDescriptionLabel();
 		$frame->add($descriptionLabel);
 
 		// Headline

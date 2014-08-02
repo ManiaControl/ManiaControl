@@ -46,6 +46,7 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 	/*
 	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 
 	/**

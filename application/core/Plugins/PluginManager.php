@@ -26,6 +26,7 @@ class PluginManager {
 	/*
 	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	/** @var PluginMenu $pluginMenu */
 	private $pluginMenu = null;

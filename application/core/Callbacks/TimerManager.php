@@ -13,9 +13,11 @@ use ManiaControl\ManiaControl;
  */
 class TimerManager {
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
+	/** @var TimerListening[] $timerListenings */
 	private $timerListenings = array();
 
 	/**

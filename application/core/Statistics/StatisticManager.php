@@ -30,22 +30,27 @@ class StatisticManager {
 	const SPECIAL_STAT_ARROW_ACC   = 'Arrow Accuracy';
 
 	/*
-	 * Public Properties
+	 * Public properties
 	 */
+	/** @var StatisticCollector $statisticCollector */
+	/** @deprecated see getStatisticCollector() */
 	public $statisticCollector = null;
+	/** @var SimpleStatsList $simpleStatsList */
+	/** @deprecated see getSimpleStatsList() */
 	public $simpleStatsList = null;
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	private $stats = array();
 	private $specialStats = array();
 
 	/**
-	 * Construct player manager
+	 * Construct a new statistic manager instance
 	 *
-	 * @param \ManiaControl\ManiaControl $maniaControl
+	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
@@ -163,6 +168,24 @@ class StatisticManager {
 		$stat->name                                        = self::SPECIAL_STAT_ROCKET_ACC;
 		$stat->type                                        = self::STAT_TYPE_FLOAT;
 		$this->specialStats[self::SPECIAL_STAT_ROCKET_ACC] = $stat;
+	}
+
+	/**
+	 * Return the statistic collector
+	 *
+	 * @return StatisticCollector
+	 */
+	public function getStatisticCollector() {
+		return $this->statisticCollector;
+	}
+
+	/**
+	 * Return the simple stats list
+	 *
+	 * @return SimpleStatsList
+	 */
+	public function getSimpleStatsList() {
+		return $this->simpleStatsList;
 	}
 
 	/**

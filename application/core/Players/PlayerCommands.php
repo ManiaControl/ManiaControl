@@ -30,8 +30,9 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 	const SETTING_PERMISSION_TEAM_BALANCE = 'Balance Teams';
 
 	/*
-	 * Private Properties
+	 * Private properties
 	 */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 
 	/**
@@ -133,7 +134,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 		if (isset($params[2])) {
 			$message = $params[2];
 		}
-		$this->maniaControl->playerManager->playerActions->kickPlayer($player->login, $targetLogin, $message);
+		$this->maniaControl->playerManager->getPlayerActions()->kickPlayer($player->login, $targetLogin, $message);
 	}
 
 	/**
@@ -157,7 +158,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 		if (isset($params[2])) {
 			$message = $params[2];
 		}
-		$this->maniaControl->playerManager->playerActions->banPlayer($player->login, $targetLogin, $message);
+		$this->maniaControl->playerManager->getPlayerActions()->banPlayer($player->login, $targetLogin, $message);
 	}
 
 	/**
@@ -173,7 +174,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 			return;
 		}
 		$targetLogin = $params[1];
-		$this->maniaControl->playerManager->playerActions->warnPlayer($player->login, $targetLogin);
+		$this->maniaControl->playerManager->getPlayerActions()->warnPlayer($player->login, $targetLogin);
 	}
 
 	/**
@@ -196,9 +197,9 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 
 		if (isset($params[2]) && is_numeric($params[2])) {
 			$type = (int)$params[2];
-			$this->maniaControl->playerManager->playerActions->forcePlayerToSpectator($player->login, $targetLogin, $type);
+			$this->maniaControl->playerManager->getPlayerActions()->forcePlayerToSpectator($player->login, $targetLogin, $type);
 		} else {
-			$this->maniaControl->playerManager->playerActions->forcePlayerToSpectator($player->login, $targetLogin);
+			$this->maniaControl->playerManager->getPlayerActions()->forcePlayerToSpectator($player->login, $targetLogin);
 		}
 	}
 
@@ -226,7 +227,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 		}
 		$selectable = ($type === 2);
 
-		$this->maniaControl->playerManager->playerActions->forcePlayerToPlay($player->login, $targetLogin, $selectable);
+		$this->maniaControl->playerManager->getPlayerActions()->forcePlayerToPlay($player->login, $targetLogin, $selectable);
 	}
 
 	/**
@@ -247,7 +248,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 		}
 		$targetLogin = $params[1];
 
-		$this->maniaControl->playerManager->playerActions->forcePlayerToTeam($player->login, $targetLogin, PlayerActions::TEAM_BLUE);
+		$this->maniaControl->playerManager->getPlayerActions()->forcePlayerToTeam($player->login, $targetLogin, PlayerActions::TEAM_BLUE);
 	}
 
 	/**
@@ -268,7 +269,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 		}
 		$targetLogin = $params[1];
 
-		$this->maniaControl->playerManager->playerActions->forcePlayerToTeam($player->login, $targetLogin, PlayerActions::TEAM_RED);
+		$this->maniaControl->playerManager->getPlayerActions()->forcePlayerToTeam($player->login, $targetLogin, PlayerActions::TEAM_RED);
 	}
 
 	/**
@@ -326,7 +327,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 			return;
 		}
 		$targetLogin = $commandParts[1];
-		$this->maniaControl->playerManager->playerActions->mutePlayer($admin->login, $targetLogin);
+		$this->maniaControl->playerManager->getPlayerActions()->mutePlayer($admin->login, $targetLogin);
 	}
 
 	/**
@@ -342,7 +343,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 			return;
 		}
 		$targetLogin = $commandParts[1];
-		$this->maniaControl->playerManager->playerActions->unMutePlayer($admin->login, $targetLogin);
+		$this->maniaControl->playerManager->getPlayerActions()->unMutePlayer($admin->login, $targetLogin);
 	}
 
 	/**
@@ -352,7 +353,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 	 * @param Player $player
 	 */
 	public function command_playerList(array $chatCallback, Player $player) {
-		$this->maniaControl->playerManager->playerList->addPlayerToShownList($player, PlayerList::SHOWN_MAIN_WINDOW);
-		$this->maniaControl->playerManager->playerList->showPlayerList($player);
+		$this->maniaControl->playerManager->getPlayerList()->addPlayerToShownList($player, PlayerList::SHOWN_MAIN_WINDOW);
+		$this->maniaControl->playerManager->getPlayerList()->showPlayerList($player);
 	}
 }
