@@ -12,19 +12,16 @@ namespace ManiaControl\Utils;
 class CommandLineHelper {
 
 	/**
-	 * Get the Command Line Parameter with the given Name
+	 * Get the command line parameter value with the given name
 	 *
 	 * @param string $paramName
 	 * @return string
 	 */
 	public static function getParameter($paramName) {
-		global $argv;
-		if (!is_array($argv)) {
-			return null;
-		}
 		$paramName = (string)$paramName;
-		foreach ($argv as $arg) {
-			$parts = explode('=', $arg, 2);
+		$params    = self::getAllParameters();
+		foreach ($params as $param) {
+			$parts = explode('=', $param, 2);
 			if (count($parts) < 2) {
 				continue;
 			}
@@ -34,5 +31,15 @@ class CommandLineHelper {
 			return $parts[1];
 		}
 		return null;
+	}
+
+	/**
+	 * Get all command line parameters
+	 *
+	 * @return array
+	 */
+	public static function getAllParameters() {
+		global $argv;
+		return (array)$argv;
 	}
 }

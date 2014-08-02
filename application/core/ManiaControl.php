@@ -169,26 +169,13 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	 * @param bool   $errorPrefix
 	 */
 	public function quit($message = null, $errorPrefix = false) {
-		if ($message) {
-			if ($errorPrefix) {
-				$message = '[ERROR] ' . $message;
-			}
-			$this->log($message);
-		}
-		$this->disconnect();
-		exit();
-	}
-
-	/**
-	 * Close the Client Connection
-	 */
-	public function disconnect() {
 		Connection::delete($this->client);
 		$this->client = null;
+		SystemUtil::quit($message, $errorPrefix);
 	}
 
 	/**
-	 * Check Connection
+	 * Check connection
 	 */
 	public function checkConnection() {
 		if ($this->client->getIdleTime() > 180) {
@@ -231,43 +218,21 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 		$this->callbackManager->triggerCallback(Callbacks::ONSHUTDOWN);
 
 		// Announce restart
-		$this->chat->sendInformation('Restarting ManiaControl...');
 		if ($message) {
 			$this->log($message);
 		}
+		$this->chat->sendInformation('Restarting ManiaControl...');
+		$this->log('Restarting ManiaControl!');
 
 		// Hide widgets
 		if ($this->client) {
 			$this->client->sendHideManialinkPage();
 		}
 
-		$this->log('Restarting ManiaControl!');
+		// Start new instance
+		SystemUtil::restart();
 
-		// Execute start script in background
-		if (SystemUtil::isUnix()) {
-			// Unix
-			if (!SystemUtil::checkFunctionAvailability('exec')) {
-				$this->log("Can't restart ManiaControl because the function 'exec' is disabled!");
-				return;
-			}
-			$fileName = ManiaControlDir . 'ManiaControl.sh';
-			if (!is_readable($fileName)) {
-				$this->log("Can't restart ManiaControl because the file 'ManiaControl.sh' doesn't exist or isn't readable!");
-				return;
-			}
-			$command = 'sh ' . escapeshellarg($fileName) . ' > /dev/null &';
-			exec($command);
-		} else {
-			// Windows
-			if (!SystemUtil::checkFunctionAvailability('system')) {
-				$this->log("Can't restart ManiaControl because the function 'system' is disabled!");
-				return;
-			}
-			$command = escapeshellarg(ManiaControlDir . "ManiaControl.bat");
-			system($command); // TODO: windows gets stuck here as long controller is running
-		}
-
-		// Quit the old instance
+		// Quit old instance
 		$this->quit('Quitting ManiaControl to restart.');
 	}
 

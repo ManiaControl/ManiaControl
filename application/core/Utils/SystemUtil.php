@@ -41,36 +41,7 @@ class SystemUtil {
 	}
 
 	/**
-	 * Get whether ManiaControl is running on Unix
-	 *
-	 * @return bool
-	 */
-	public static function isUnix() {
-		return (self::getOS() === self::OS_UNIX);
-	}
-
-	/**
-	 * Check whether the given Function is available
-	 *
-	 * @param string $functionName
-	 * @return bool
-	 */
-	public static function checkFunctionAvailability($functionName) {
-		return (function_exists($functionName) && !in_array($functionName, self::getDisabledFunctions()));
-	}
-
-	/**
-	 * Get the Array of Disabled Functions
-	 *
-	 * @return array
-	 */
-	protected static function getDisabledFunctions() {
-		$disabledText = ini_get('disable_functions');
-		return explode(',', $disabledText);
-	}
-
-	/**
-	 * Check for the Requirements to run ManiaControl
+	 * Check for the requirements to run ManiaControl
 	 */
 	public static function checkRequirements() {
 		$success = true;
@@ -108,7 +79,92 @@ class SystemUtil {
 
 		if (!$success) {
 			// Missing requirements
-			exit;
+			self::quit();
 		}
+	}
+
+	/**
+	 * Stop ManiaControl immediately
+	 *
+	 * @param string $message
+	 * @param bool   $errorPrefix
+	 */
+	public static function quit($message = null, $errorPrefix = false) {
+		if ($message) {
+			if ($errorPrefix) {
+				$message = '[ERROR] ' . $message;
+			}
+			Logger::log($message);
+		}
+		exit;
+	}
+
+	/**
+	 * Restart ManiaControl immediately
+	 */
+	public static function restart() {
+		if (SystemUtil::isUnix()) {
+			self::restartUnix();
+		} else {
+			self::restartWindows();
+		}
+	}
+
+	/**
+	 * Get whether ManiaControl is running on Unix
+	 *
+	 * @return bool
+	 */
+	public static function isUnix() {
+		return (self::getOS() === self::OS_UNIX);
+	}
+
+	/**
+	 * Perform restart on Unix
+	 */
+	private static function restartUnix() {
+		if (!SystemUtil::checkFunctionAvailability('exec')) {
+			Logger::log("Can't restart ManiaControl because the function 'exec' is disabled!");
+			return;
+		}
+		$fileName = ManiaControlDir . 'ManiaControl.sh';
+		if (!is_readable($fileName)) {
+			Logger::log("Can't restart ManiaControl because the file 'ManiaControl.sh' doesn't exist or isn't readable!");
+			return;
+		}
+		$command = 'sh ' . escapeshellarg($fileName) . ' > /dev/null &';
+		exec($command);
+	}
+
+	/**
+	 * Check whether the given function is available
+	 *
+	 * @param string $functionName
+	 * @return bool
+	 */
+	public static function checkFunctionAvailability($functionName) {
+		return (function_exists($functionName) && !in_array($functionName, self::getDisabledFunctions()));
+	}
+
+	/**
+	 * Get the array of disabled functions
+	 *
+	 * @return array
+	 */
+	protected static function getDisabledFunctions() {
+		$disabledText = ini_get('disable_functions');
+		return explode(',', $disabledText);
+	}
+
+	/**
+	 * Perform restart on Windows
+	 */
+	private static function restartWindows() {
+		if (!SystemUtil::checkFunctionAvailability('system')) {
+			Logger::log("Can't restart ManiaControl because the function 'system' is disabled!");
+			return;
+		}
+		$command = escapeshellarg(ManiaControlDir . "ManiaControl.bat");
+		system($command); // TODO: windows gets stuck here as long controller is running
 	}
 }
