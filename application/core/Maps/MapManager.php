@@ -45,6 +45,7 @@ class MapManager implements CallbackListener {
 	const SETTING_PERMISSION_RESTART_MAP  = 'Restart Map';
 	const SETTING_AUTOSAVE_MAPLIST        = 'Autosave Maplist file';
 	const SETTING_MAPLIST_FILE            = 'File to write Maplist in';
+	const SETTING_WRITE_OWN_MAPLIST_FILE  = 'Write a own Maplist File for every Server called serverlogin.txt';
 
 	/*
 	 * Public properties
@@ -111,6 +112,7 @@ class MapManager implements CallbackListener {
 		// Settings
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_AUTOSAVE_MAPLIST, true);
 		$this->maniaControl->settingManager->initSetting($this, self::SETTING_MAPLIST_FILE, "MatchSettings/tracklist.txt");
+		$this->maniaControl->settingManager->initSetting($this, self::SETTING_WRITE_OWN_MAPLIST_FILE, false);
 	}
 
 	/**
@@ -495,7 +497,12 @@ class MapManager implements CallbackListener {
 
 		// Write MapList
 		if ($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_AUTOSAVE_MAPLIST)) {
-			$matchSettingsFileName = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MAPLIST_FILE);
+			if ($this->maniaControl->settingManager->getSettingValue($this, self::SETTING_WRITE_OWN_MAPLIST_FILE)) {
+				$matchSettingsFileName = "MatchSettings/{$this->maniaControl->server->login}.txt";
+			} else {
+				$matchSettingsFileName = $this->maniaControl->settingManager->getSettingValue($this, self::SETTING_MAPLIST_FILE);
+			}
+
 			try {
 				$this->maniaControl->client->saveMatchSettings($matchSettingsFileName);
 			} catch (FileException $e) {
