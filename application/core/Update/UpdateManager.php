@@ -339,6 +339,14 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			}
 
 			$tempDir        = FileUtil::getTempFolder();
+			if (!$tempDir) {
+				$message = "Update failed: Can't save Update zip!";
+				if ($player) {
+					$this->maniaControl->getChat()->sendError($message, $player);
+				}
+				$this->maniaControl->log($message);
+				return;
+			}
 			$updateFileName = $tempDir . basename($updateData->url);
 
 			$bytes = file_put_contents($updateFileName, $updateFileContent);
@@ -359,6 +367,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 					$this->maniaControl->getChat()->sendError($message, $player);
 				}
 				$this->maniaControl->log($message);
+				unlink($updateFileName);
 				return;
 			}
 
