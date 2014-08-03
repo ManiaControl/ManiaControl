@@ -10,6 +10,7 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Utils\Formatter;
 use Maniaplanet\DedicatedServer\Xmlrpc\NextMapException;
+use Maniaplanet\DedicatedServer\Xmlrpc\NotInListException;
 
 /**
  * ManiaControl Map Queue Class
@@ -334,7 +335,7 @@ class MapQueue implements CallbackListener, CommandListener {
 					break;
 				}
 
-				//found player, so play this map
+				// Player found, so play this map
 				if ($this->maniaControl->getPlayerManager()->getPlayer($player->login)) {
 					break;
 				}
@@ -349,7 +350,7 @@ class MapQueue implements CallbackListener, CommandListener {
 				// Trigger callback
 				$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_MAPQUEUE_CHANGED, array('skip', $queuedMap[0]));
 
-				//Player not found, so remove the map from the mapqueue
+				// Player not found, so remove the map from the mapqueue
 				array_shift($this->queuedMaps);
 
 				$this->maniaControl->getChat()->sendInformation('$fa0$<$fff' . $queuedMap[0]->name . '$> is skipped because $<' . $player->nickname . '$> left the game!');
@@ -369,6 +370,7 @@ class MapQueue implements CallbackListener, CommandListener {
 		try {
 			$this->maniaControl->getClient()->setNextMapIdent($map->uid);
 		} catch (NextMapException $e) {
+		} catch (NotInListException $e) {
 		}
 	}
 

@@ -24,6 +24,7 @@ use ManiaControl\Players\Player;
 use ManiaControl\Utils\ColorUtil;
 use ManiaControl\Utils\Formatter;
 use Maniaplanet\DedicatedServer\Xmlrpc\ChangeInProgressException;
+use Maniaplanet\DedicatedServer\Xmlrpc\FileException;
 use Maniaplanet\DedicatedServer\Xmlrpc\NextMapException;
 use Maniaplanet\DedicatedServer\Xmlrpc\NotInListException;
 use MCTeam\CustomVotesPlugin;
@@ -629,7 +630,11 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$this->showMapList($player);
 				break;
 			case self::ACTION_REMOVE_MAP:
-				$this->maniaControl->getMapManager()->removeMap($player, $mapUid);
+				try {
+					$this->maniaControl->getMapManager()->removeMap($player, $mapUid);
+				} catch (FileException $e) {
+					$this->maniaControl->getChat()->sendException($e, $player);
+				}
 				break;
 			case self::ACTION_SWITCH_MAP:
 				// Don't queue on Map-Change
