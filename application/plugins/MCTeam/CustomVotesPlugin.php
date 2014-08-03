@@ -546,8 +546,11 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 					$this->maniaControl->getChat()->sendInformation('$f8fVote to $fffrestart the Map$f8f has been successful!');
 					break;
 				case 'pausegame':
-					$this->maniaControl->getClient()->sendModeScriptCommands(array('Command_ForceWarmUp' => true));
-					$this->maniaControl->getChat()->sendInformation('$f8fVote to $fffpause the current Game$f8f has been successful!');
+					try {
+						$this->maniaControl->getClient()->sendModeScriptCommands(array('Command_ForceWarmUp' => true));
+						$this->maniaControl->getChat()->sendInformation('$f8fVote to $fffpause the current Game$f8f has been successful!');
+					} catch (GameModeException $ex) {
+					}
 					break;
 				case 'replay':
 					$this->maniaControl->getMapManager()->getMapQueue()->addFirstMapToMapQueue($this->currentVote->voter, $this->maniaControl->getMapManager()->getCurrentMap());
