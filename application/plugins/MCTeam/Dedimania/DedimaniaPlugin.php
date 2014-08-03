@@ -15,6 +15,7 @@ use ManiaControl\Callbacks\Models\RecordCallback;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\Files\AsynchronousFileReader;
+use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Players\Player;
@@ -399,7 +400,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	private function getGameModeString() {
 		$gameMode = $this->maniaControl->getServer()->getGameMode();
 		if ($gameMode === null) {
-			trigger_error("Couldn't retrieve game mode.");
+			Logger::logError("Couldn't retrieve game mode.");
 			return null;
 		}
 		switch ($gameMode) {
@@ -753,7 +754,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 			// Called method response
 			if (!$methodResponse[0]) {
-				trigger_error("Records Plugin: Submitting dedimania records failed.");
+				Logger::logError("Records Plugin: Submitting dedimania records failed.");
 			}
 
 			if (self::DEDIMANIA_DEBUG) {

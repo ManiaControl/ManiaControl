@@ -8,6 +8,7 @@ use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\Files\BackupUtil;
 use ManiaControl\Files\FileUtil;
+use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Plugins\InstallMenu;
@@ -268,7 +269,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 				if ($player) {
 					$this->maniaControl->getChat()->sendError($message, $player);
 				}
-				trigger_error($message);
+				Logger::logError($message);
 				return;
 			}
 
@@ -279,7 +280,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 				if ($player) {
 					$this->maniaControl->getChat()->sendError($message, $player);
 				}
-				trigger_error($message);
+				Logger::logError($message);
 				return;
 			}
 

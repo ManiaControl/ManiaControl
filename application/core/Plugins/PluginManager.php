@@ -5,6 +5,7 @@ namespace ManiaControl\Plugins;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
+use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 
@@ -288,7 +289,7 @@ class PluginManager {
 				}
 				$success = include_once $filePath;
 				if (!$success) {
-					trigger_error("Error loading File '{$filePath}'!");
+					Logger::logError("Couldn't load file '{$filePath}'!");
 				}
 				continue;
 			}

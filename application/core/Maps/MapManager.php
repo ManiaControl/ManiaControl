@@ -223,8 +223,7 @@ class MapManager implements CallbackListener {
 		$this->updateMapTimestamp($uid);
 
 		if (!isset($uid) || !isset($this->maps[$uid])) {
-			trigger_error("Error while updating Map, unknown UID: " . $uid);
-			$this->maniaControl->getChat()->sendError("Error while updating Map.", $admin);
+			$this->maniaControl->getChat()->sendError("Error updating Map: Unknown UID '{$uid}'!", $admin);
 			return;
 		}
 
@@ -385,8 +384,7 @@ class MapManager implements CallbackListener {
 		if ($this->maniaControl->getServer()->checkAccess($mapDir)) {
 			// Create download directory if necessary
 			if (!is_dir($downloadDirectory) && !mkdir($downloadDirectory) || !is_writable($downloadDirectory)) {
-				trigger_error("ManiaControl doesn't have to rights to save maps in '{$downloadDirectory}'.");
-				$this->maniaControl->getChat()->sendError("ManiaControl doesn't have the rights to save maps.", $login);
+				$this->maniaControl->getChat()->sendError("ManiaControl doesn't have to rights to save maps in '{$downloadDirectory}'.", $login);
 				return;
 			}
 
@@ -586,9 +584,7 @@ class MapManager implements CallbackListener {
 		$mapArray = array();
 
 		foreach ($shuffledMaps as $map) {
-			/**
-			 * @var Map $map
-			 */
+			/** @var Map $map */
 			$mapArray[] = $map->fileName;
 		}
 
@@ -668,7 +664,7 @@ class MapManager implements CallbackListener {
 		try {
 			$this->maniaControl->getClient()->chooseNextMapList($mapArray);
 		} catch (Exception $e) {
-			trigger_error("Error while restructuring the Maplist. " . $e->getMessage());
+			trigger_error("Error restructuring the Maplist. " . $e->getMessage());
 			return false;
 		}
 		return true;

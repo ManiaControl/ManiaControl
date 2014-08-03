@@ -66,35 +66,35 @@ class Database implements TimerListener {
 	private function loadConfig() {
 		$databaseElements = $this->maniaControl->getConfig()->xpath('database');
 		if (!$databaseElements) {
-			trigger_error('No Database configured!', E_USER_ERROR);
+			Logger::logError('No Database configured!', E_USER_ERROR);
 		}
 		$databaseElement = $databaseElements[0];
 
 		// Host
 		$hostElements = $databaseElement->xpath('host');
 		if (!$hostElements) {
-			trigger_error("Invalid database configuration (Host).", E_USER_ERROR);
+			Logger::logError("Invalid database configuration (Host).", E_USER_ERROR);
 		}
 		$host = (string)$hostElements[0];
 
 		// Port
 		$portElements = $databaseElement->xpath('port');
 		if (!$portElements) {
-			trigger_error("Invalid database configuration (Port).", E_USER_ERROR);
+			Logger::logError("Invalid database configuration (Port).", E_USER_ERROR);
 		}
 		$port = (string)$portElements[0];
 
 		// User
 		$userElements = $databaseElement->xpath('user');
 		if (!$userElements) {
-			trigger_error("Invalid database configuration (User).", E_USER_ERROR);
+			Logger::logError("Invalid database configuration (User).", E_USER_ERROR);
 		}
 		$user = (string)$userElements[0];
 
 		// Pass
 		$passElements = $databaseElement->xpath('pass');
 		if (!$passElements) {
-			trigger_error("Invalid database configuration (Pass).", E_USER_ERROR);
+			Logger::logError("Invalid database configuration (Pass).", E_USER_ERROR);
 		}
 		$pass = (string)$passElements[0];
 
@@ -104,7 +104,7 @@ class Database implements TimerListener {
 			$nameElements = $databaseElement->xpath('db_name');
 		}
 		if (!$nameElements) {
-			trigger_error("Invalid database configuration (Name).", E_USER_ERROR);
+			Logger::logError("Invalid database configuration (Name).", E_USER_ERROR);
 		}
 		$name = (string)$nameElements[0];
 
@@ -157,7 +157,7 @@ class Database implements TimerListener {
 		$showQuery = 'SHOW TABLES;';
 		$result    = $this->getMysqli()->query($showQuery);
 		if ($error = $this->getMysqli()->error) {
-			trigger_error($error);
+			Logger::logError($error);
 			return false;
 		}
 		$count = $result->num_rows;
@@ -179,7 +179,7 @@ class Database implements TimerListener {
 		$optimizeQuery .= ';';
 		$this->getMysqli()->query($optimizeQuery);
 		if ($error = $this->getMysqli()->error) {
-			trigger_error($error);
+			Logger::logError($error);
 			return false;
 		}
 		return true;

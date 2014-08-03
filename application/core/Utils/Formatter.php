@@ -2,6 +2,8 @@
 
 namespace ManiaControl\Utils;
 
+use ManiaControl\Logger;
+
 /**
  * Class offering Methods to format Texts and Values
  *
@@ -153,7 +155,7 @@ abstract class Formatter {
 			return $nations[$country];
 		}
 		if ($country) {
-			trigger_error("Couldn't map Country: '{$country}'!");
+			Logger::logWarning("Couldn't map Country: '{$country}'!");
 		}
 		return 'OTH';
 	}

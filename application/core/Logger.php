@@ -47,11 +47,11 @@ abstract class Logger {
 	public static function getLogsFolder() {
 		$logsFolder = ManiaControlDir . 'logs' . DIRECTORY_SEPARATOR;
 		if (!is_dir($logsFolder) && !mkdir($logsFolder)) {
-			trigger_error("Couldn't create the logs folder!");
+			self::logError("Couldn't create the logs folder!");
 			return false;
 		}
 		if (!is_writeable($logsFolder)) {
-			trigger_error("ManiaControl doesn't have the necessary write rights for the logs folder!");
+			self::logError("ManiaControl doesn't have the necessary write rights for the logs folder!");
 			return false;
 		}
 		return $logsFolder;

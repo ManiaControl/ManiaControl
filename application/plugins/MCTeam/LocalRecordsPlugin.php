@@ -15,6 +15,7 @@ use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\Models\RecordCallback;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
+use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Maps\Map;
@@ -223,7 +224,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 
 		$records = $this->getLocalRecords($map);
 		if (!is_array($records)) {
-			trigger_error("Couldn't fetch player records.");
+			Logger::logError("Couldn't fetch player records.");
 			return null;
 		}
 
