@@ -62,6 +62,7 @@ class FaultException extends Exception
 				return new ChangeInProgressException($faultString, $faultCode);
 			case 'Incompatible map type.':
 			case 'Map not complete.':
+			case 'Map corrupted.':
 			case 'Map lightmap is not up to date.':
 			case 'The map doesn\'t match the server packmask.':
 				return new InvalidMapException($faultString, $faultCode);
