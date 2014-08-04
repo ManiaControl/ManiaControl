@@ -3,6 +3,7 @@
 namespace ManiaControl;
 
 use ManiaControl\Files\FileUtil;
+use ManiaControl\Utils\Formatter;
 
 /**
  * ManiaControl Logger Class
@@ -73,10 +74,11 @@ abstract class Logger {
 	 * @param string $message
 	 * @param bool   $eol
 	 * @param bool   $output
+	 * @param bool   $stripCodes
 	 */
-	public static function logError($message, $eol = true, $output = true) {
+	public static function logError($message, $eol = true, $output = true, $stripCodes = false) {
 		$message = '[ERROR] ' . $message;
-		self::log($message, $eol, $output);
+		self::log($message, $eol, $output, $stripCodes);
 	}
 
 	/**
@@ -85,8 +87,12 @@ abstract class Logger {
 	 * @param string $message
 	 * @param bool   $eol
 	 * @param bool   $output
+	 * @param bool   $stripCodes
 	 */
-	public static function log($message, $eol = true, $output = true) {
+	public static function log($message, $eol = true, $output = true, $stripCodes = false) {
+		if ($stripCodes) {
+			$message = Formatter::stripCodes($message);
+		}
 		error_log($message);
 		if ($output) {
 			self::output($message, $eol);
@@ -112,10 +118,11 @@ abstract class Logger {
 	 * @param string $message
 	 * @param bool   $eol
 	 * @param bool   $output
+	 * @param bool   $stripCodes
 	 */
-	public static function logInfo($message, $eol = true, $output = true) {
+	public static function logInfo($message, $eol = true, $output = true, $stripCodes = false) {
 		$message = '[INFO] ' . $message;
-		self::log($message, $eol, $output);
+		self::log($message, $eol, $output, $stripCodes);
 	}
 
 	/**
@@ -124,9 +131,10 @@ abstract class Logger {
 	 * @param string $message
 	 * @param bool   $eol
 	 * @param bool   $output
+	 * @param bool   $stripCodes
 	 */
-	public static function logWarning($message, $eol = true, $output = true) {
+	public static function logWarning($message, $eol = true, $output = true, $stripCodes = false) {
 		$message = '[WARNING] ' . $message;
-		self::log($message, $eol, $output);
+		self::log($message, $eol, $output, $stripCodes);
 	}
 }
