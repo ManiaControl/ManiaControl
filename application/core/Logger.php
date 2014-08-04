@@ -29,10 +29,10 @@ abstract class Logger {
 		$logsFolder = self::getLogsFolder();
 		if ($logsFolder) {
 			$logFileName = $logsFolder . 'ManiaControl';
-			if (LOG_NAME_USE_DATE) {
+			if (!defined('LOG_NAME_USE_DATE') || LOG_NAME_USE_DATE) {
 				$logFileName .= '_' . date('Y-m-d');
 			}
-			if (LOG_NAME_USE_PID) {
+			if (!defined('LOG_NAME_USE_PID') || LOG_NAME_USE_PID) {
 				$logFileName .= '_' . getmypid();
 			}
 			$logFileName .= '.log';
