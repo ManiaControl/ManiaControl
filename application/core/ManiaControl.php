@@ -178,12 +178,11 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	 *
 	 * @param string $message
 	 * @param bool   $stripCodes
+	 * @deprecated
+	 * @see Logger::log()
 	 */
 	public function log($message, $stripCodes = false) {
-		if ($stripCodes) {
-			$message = Formatter::stripCodes($message);
-		}
-		Logger::log($message);
+		Logger::log($message, true, true, $stripCodes);
 	}
 
 	/**
