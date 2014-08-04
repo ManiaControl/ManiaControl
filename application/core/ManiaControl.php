@@ -26,7 +26,6 @@ use ManiaControl\Settings\SettingManager;
 use ManiaControl\Statistics\StatisticManager;
 use ManiaControl\Update\UpdateManager;
 use ManiaControl\Utils\CommandLineHelper;
-use ManiaControl\Utils\Formatter;
 use ManiaControl\Utils\SystemUtil;
 use Maniaplanet\DedicatedServer\Connection;
 use Maniaplanet\DedicatedServer\Xmlrpc\AuthenticationException;
