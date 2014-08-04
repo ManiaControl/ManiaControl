@@ -73,12 +73,11 @@ abstract class Logger {
 	 *
 	 * @param string $message
 	 * @param bool   $eol
-	 * @param bool   $output
 	 * @param bool   $stripCodes
 	 */
-	public static function logError($message, $eol = true, $output = true, $stripCodes = false) {
+	public static function logError($message, $eol = true, $stripCodes = false) {
 		$message = '[ERROR] ' . $message;
-		self::log($message, $eol, $output, $stripCodes);
+		self::log($message, $eol, $stripCodes);
 	}
 
 	/**
@@ -86,17 +85,14 @@ abstract class Logger {
 	 *
 	 * @param string $message
 	 * @param bool   $eol
-	 * @param bool   $output
 	 * @param bool   $stripCodes
 	 */
-	public static function log($message, $eol = true, $output = true, $stripCodes = false) {
+	public static function log($message, $eol = true, $stripCodes = false) {
 		if ($stripCodes) {
 			$message = Formatter::stripCodes($message);
 		}
 		error_log($message);
-		if ($output) {
-			self::output($message, $eol);
-		}
+		self::output($message, $eol);
 	}
 
 	/**
@@ -105,7 +101,7 @@ abstract class Logger {
 	 * @param string $message
 	 * @param bool   $eol
 	 */
-	public static function output($message, $eol = true) {
+	private static function output($message, $eol = true) {
 		if ($eol) {
 			$message = '[' . date('d-M-Y H:i:s e') . '] ' . $message . PHP_EOL;
 		}
@@ -117,12 +113,11 @@ abstract class Logger {
 	 *
 	 * @param string $message
 	 * @param bool   $eol
-	 * @param bool   $output
 	 * @param bool   $stripCodes
 	 */
-	public static function logInfo($message, $eol = true, $output = true, $stripCodes = false) {
+	public static function logInfo($message, $eol = true, $stripCodes = false) {
 		$message = '[INFO] ' . $message;
-		self::log($message, $eol, $output, $stripCodes);
+		self::log($message, $eol, $stripCodes);
 	}
 
 	/**
@@ -130,11 +125,10 @@ abstract class Logger {
 	 *
 	 * @param string $message
 	 * @param bool   $eol
-	 * @param bool   $output
 	 * @param bool   $stripCodes
 	 */
-	public static function logWarning($message, $eol = true, $output = true, $stripCodes = false) {
+	public static function logWarning($message, $eol = true, $stripCodes = false) {
 		$message = '[WARNING] ' . $message;
-		self::log($message, $eol, $output, $stripCodes);
+		self::log($message, $eol, $stripCodes);
 	}
 }
