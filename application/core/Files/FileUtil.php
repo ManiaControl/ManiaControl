@@ -151,7 +151,7 @@ abstract class FileUtil {
 	 * @return bool
 	 */
 	public static function cleanDirectory($directory, $maxFileAgeInDays = 10., $recursive = false) {
-		if (!is_dir($directory) || !is_readable($directory)) {
+		if (!$directory || !is_dir($directory) || !is_readable($directory)) {
 			return false;
 		}
 		$dirHandle = opendir($directory);
