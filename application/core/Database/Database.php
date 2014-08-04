@@ -3,6 +3,7 @@
 namespace ManiaControl\Database;
 
 use ManiaControl\Callbacks\TimerListener;
+use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 
 /**
