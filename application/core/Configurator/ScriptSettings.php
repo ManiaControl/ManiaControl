@@ -14,6 +14,7 @@ use FML\Script\Script;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\Callbacks;
+use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
@@ -389,7 +390,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 
 		$chatMessage .= '!';
 		$this->maniaControl->getChat()->sendInformation($chatMessage);
-		$this->maniaControl->log($chatMessage, true);
+		Logger::logInfo($chatMessage, true, true, true);
 		return true;
 	}
 

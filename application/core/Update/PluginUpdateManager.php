@@ -72,7 +72,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 		if ($player) {
 			$this->maniaControl->getChat()->sendInformation($message, $player);
 		}
-		$this->maniaControl->log($message);
+		Logger::log($message);
 
 		$this->maniaControl->getPluginManager()->fetchPluginList(function ($data, $error) use (&$player) {
 			if (!$data || $error) {
@@ -80,7 +80,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 				if ($player) {
 					$this->maniaControl->getChat()->sendError($message, $player);
 				}
-				$this->maniaControl->log($message);
+				Logger::logError($message);
 				return;
 			}
 
@@ -103,7 +103,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 					if ($player) {
 						$this->maniaControl->getChat()->sendSuccess($message, $player);
 					}
-					$this->maniaControl->log($message);
+					Logger::log($message);
 				}
 			}
 
@@ -112,14 +112,14 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 				if ($player) {
 					$this->maniaControl->getChat()->sendSuccess($message, $player);
 				}
-				$this->maniaControl->log($message);
+				Logger::log($message);
 			} else {
 				$updatesCount = count($pluginUpdates);
 				$message      = "Plugins Update Check completed: There are {$updatesCount} Updates available!";
 				if ($player) {
 					$this->maniaControl->getChat()->sendSuccess($message, $player);
 				}
-				$this->maniaControl->log($message);
+				Logger::log($message);
 			}
 		});
 	}
@@ -169,7 +169,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 			if ($player) {
 				$this->maniaControl->getChat()->sendInformation($message, $player);
 			}
-			$this->maniaControl->log($message);
+			Logger::log($message);
 			return;
 		}
 
@@ -177,7 +177,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 		if ($player) {
 			$this->maniaControl->getChat()->sendInformation($message, $player);
 		}
-		$this->maniaControl->log($message);
+		Logger::log($message);
 
 		$performBackup = $this->maniaControl->getSettingManager()->getSettingValue($this->maniaControl->getUpdateManager(), UpdateManager::SETTING_PERFORM_BACKUPS);
 		if ($performBackup && !BackupUtil::performPluginsBackup()) {
@@ -185,7 +185,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 			if ($player) {
 				$this->maniaControl->getChat()->sendError($message, $player);
 			}
-			$this->maniaControl->log($message);
+			Logger::logError($message);
 		}
 
 		foreach ($pluginsUpdates as $pluginUpdateData) {
@@ -246,7 +246,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 				if ($player) {
 					$this->maniaControl->getChat()->sendInformation($message, $player);
 				}
-				$this->maniaControl->log($message);
+				Logger::logError($message);
 				return;
 			}
 
@@ -258,7 +258,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 			if ($player) {
 				$this->maniaControl->getChat()->sendInformation($message, $player);
 			}
-			$this->maniaControl->log($message);
+			Logger::log($message);
 
 			$tempDir        = FileUtil::getTempFolder();
 			$updateFileName = $tempDir . $pluginUpdateData->zipfile;
@@ -297,7 +297,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 			if ($player) {
 				$this->maniaControl->getChat()->sendSuccess($message, $player);
 			}
-			$this->maniaControl->log($message);
+			Logger::log($message);
 
 			if (!$update) {
 				$newPluginClasses = $this->maniaControl->getPluginManager()->loadPlugins();
@@ -306,13 +306,13 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 					if ($player) {
 						$this->maniaControl->getChat()->sendError($message, $player);
 					}
-					$this->maniaControl->log($message);
+					Logger::log($message);
 				} else {
 					$message = "Successfully loaded fresh installed Plugin '{$pluginUpdateData->pluginName}'!";
 					if ($player) {
 						$this->maniaControl->getChat()->sendSuccess($message, $player);
 					}
-					$this->maniaControl->log($message);
+					Logger::log($message);
 
 					$this->maniaControl->getConfigurator()->showMenu($player, InstallMenu::getTitle());
 				}

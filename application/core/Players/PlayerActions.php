@@ -8,6 +8,7 @@ use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\ManiaLink;
 use ManiaControl\Admin\AuthenticationManager;
+use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Utils\Formatter;
@@ -101,8 +102,7 @@ class PlayerActions {
 
 		try {
 			$this->maniaControl->getClient()->forcePlayerTeam($target->login, $teamId);
-		} catch (FaultException $exception) {
-			// TODO: replace by more specific exception "there are too many ..."
+		} catch (ServerOptionsException $exception) {
 			$this->forcePlayerToPlay($adminLogin, $targetLogin);
 			return;
 		}
@@ -118,7 +118,7 @@ class PlayerActions {
 			return;
 		}
 		$this->maniaControl->getChat()->sendInformation($chatMessage);
-		$this->maniaControl->log($chatMessage, true);
+		Logger::logInfo($chatMessage, true, true, true);
 	}
 
 	/**
@@ -197,7 +197,7 @@ class PlayerActions {
 		$title       = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($admin->authLevel);
 		$chatMessage = $title . ' ' . $admin->getEscapedNickname(). ' forced ' . $target->getEscapedNickname(). ' to Spectator!';
 		$this->maniaControl->getChat()->sendInformation($chatMessage);
-		$this->maniaControl->log($chatMessage, true);
+		Logger::logInfo($chatMessage, true, true, true);
 
 		if ($releaseSlot) {
 			// Free player slot
@@ -238,7 +238,7 @@ class PlayerActions {
 		$title       = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($admin->authLevel);
 		$chatMessage = $title . ' ' . $admin->getEscapedNickname() . ' un-muted ' . $target->getEscapedNickname(). '!';
 		$this->maniaControl->getChat()->sendInformation($chatMessage);
-		$this->maniaControl->log($chatMessage, true);
+		Logger::logInfo($chatMessage, true, true, true);
 	}
 
 	/**
@@ -270,7 +270,7 @@ class PlayerActions {
 		$title       = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($admin->authLevel);
 		$chatMessage = $title . ' ' . $admin->getEscapedNickname(). ' muted ' . $target->getEscapedNickname(). '!';
 		$this->maniaControl->getChat()->sendInformation($chatMessage);
-		$this->maniaControl->log($chatMessage, true);
+		Logger::logInfo($chatMessage, true, true, true);
 	}
 
 	/**
@@ -352,7 +352,7 @@ class PlayerActions {
 		$title       = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($admin->authLevel);
 		$chatMessage = $title . ' ' . $admin->getEscapedNickname(). ' warned ' . $target->getEscapedNickname(). '!';
 		$this->maniaControl->getChat()->sendInformation($chatMessage);
-		$this->maniaControl->log($chatMessage, true);
+		Logger::log($chatMessage, true, true);
 	}
 
 	/**
@@ -388,7 +388,7 @@ class PlayerActions {
 		$title       = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($admin->authLevel);
 		$chatMessage = $title . ' ' . $admin->getEscapedNickname() . ' kicked ' . $target->getEscapedNickname() . '!';
 		$this->maniaControl->getChat()->sendInformation($chatMessage);
-		$this->maniaControl->log(Formatter::stripCodes($chatMessage));
+		Logger::logInfo($chatMessage, true, true, true);
 	}
 
 	/**
@@ -420,7 +420,7 @@ class PlayerActions {
 		$title       = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($admin->authLevel);
 		$chatMessage = $title . ' ' . $admin->getEscapedNickname(). ' banned ' . $target->getEscapedNickname(). '!';
 		$this->maniaControl->getChat()->sendInformation($chatMessage);
-		$this->maniaControl->log($chatMessage, true);
+		Logger::logInfo($chatMessage, true, true, true);
 	}
 
 	/**
@@ -458,7 +458,7 @@ class PlayerActions {
 		$title       = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($admin->authLevel);
 		$chatMessage = $title . ' ' . $admin->getEscapedNickname(). ' added ' . $target->getEscapedNickname(). ' as $< ' . $authLevelName . '$>!';
 		$this->maniaControl->getChat()->sendInformation($chatMessage);
-		$this->maniaControl->log($chatMessage, true);
+		Logger::logInfo($chatMessage, true, true, true);
 	}
 
 	/**
@@ -495,7 +495,7 @@ class PlayerActions {
 		$title       = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($admin->authLevel);
 		$chatMessage = $title . ' ' . $admin->getEscapedNickname(). ' revoked the Rights of ' . $target->getEscapedNickname(). '!';
 		$this->maniaControl->getChat()->sendInformation($chatMessage);
-		$this->maniaControl->log($chatMessage, true);
+		Logger::logInfo($chatMessage, true, true, true);
 	}
 
 	/**

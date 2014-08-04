@@ -10,6 +10,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
+use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
@@ -259,7 +260,7 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 	 * @param string $login
 	 */
 	private function shutdownServer($login = '-') {
-		$this->maniaControl->log("Server shutdown requested by '{$login}'!");
+		Logger::logInfo("Server shutdown requested by '{$login}'!");
 		$this->maniaControl->getClient()->stopServer();
 	}
 

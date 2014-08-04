@@ -128,7 +128,7 @@ class Database implements TimerListener {
 		if ($result) {
 			return true;
 		}
-		$this->maniaControl->log("Database '{$this->config->name}' doesn't exist! Trying to create it...");
+		Logger::logInfo("Database '{$this->config->name}' doesn't exist! Trying to create it...");
 
 		// Create database
 		$databaseQuery = "CREATE DATABASE " . $this->getMysqli()->escape_string($this->config->name) . ";";

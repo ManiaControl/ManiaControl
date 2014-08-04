@@ -196,10 +196,10 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 		//$this->maniaControl->fileReader->postDataTest($this->request, self::DEDIMANIA_URL, function ($data, $error) {
 		$this->maniaControl->getFileReader()->postData(self::DEDIMANIA_URL, function ($data, $error) {
-			$this->maniaControl->log("Try to connect on Dedimania");
+			Logger::log("Try to connect on Dedimania");
 
 			if (!$data || $error) {
-				$this->maniaControl->log("Dedimania Error: '{$error}'");
+				Logger::logError("Dedimania Error: '{$error}'");
 			}
 
 			$data = $this->decode($data);
@@ -216,11 +216,11 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			$responseData                   = $methodResponse[0];
 			$this->dedimaniaData->sessionId = $responseData['SessionId'];
 			if ($this->dedimaniaData->sessionId) {
-				$this->maniaControl->log("Dedimania connection successfully established.");
+				Logger::log("Dedimania connection successfully established.");
 				$this->fetchDedimaniaRecords();
 				$this->init = true;
 			} else {
-				$this->maniaControl->log("Error while opening Dedimania Connection");
+				Logger::logError("Error while opening Dedimania Connection");
 			}
 
 			if (self::DEDIMANIA_DEBUG) {
@@ -296,7 +296,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		//$this->maniaControl->fileReader->postDataTest($this->request,self::DEDIMANIA_URL, function ($data, $error) {
 		$this->maniaControl->getFileReader()->postData(self::DEDIMANIA_URL, function ($data, $error) {
 			if ($error) {
-				$this->maniaControl->log('Dedimania Error: ' . $error);
+				Logger::logError('Dedimania Error: ' . $error);
 			}
 
 			$data = $this->decode($data);
@@ -572,7 +572,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		//$this->maniaControl->fileReader->postDataTest($this->request, self::DEDIMANIA_URL, function ($data, $error) {
 		$this->maniaControl->getFileReader()->postData(self::DEDIMANIA_URL, function ($data, $error) {
 			if ($error) {
-				$this->maniaControl->log("Dedimania Error: " . $error);
+				Logger::logError("Dedimania Error: " . $error);
 			}
 
 			$data = $this->decode($data);
@@ -616,7 +616,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 		$this->maniaControl->getFileReader()->postData(self::DEDIMANIA_URL, function ($data, $error) use (&$player) {
 			if ($error) {
-				$this->maniaControl->log("Dedimania Error: " . $error);
+				Logger::logError("Dedimania Error: " . $error);
 			}
 
 			$data = $this->decode($data);
@@ -663,7 +663,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 		$this->maniaControl->getFileReader()->postData(self::DEDIMANIA_URL, function ($data, $error) {
 			if ($error) {
-				$this->maniaControl->log("Dedimania Error: " . $error);
+				Logger::logError("Dedimania Error: " . $error);
 			}
 
 			$data = $this->decode($data);
@@ -733,7 +733,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 		$this->maniaControl->getFileReader()->postData(self::DEDIMANIA_URL, function ($data, $error) {
 			if ($error) {
-				$this->maniaControl->log("Dedimania Error: " . $error);
+				Logger::logError("Dedimania Error: " . $error);
 			}
 
 			if (self::DEDIMANIA_DEBUG) {
@@ -783,7 +783,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 		$this->maniaControl->getFileReader()->postData(self::DEDIMANIA_URL, function ($data, $error) {
 			if ($error) {
-				$this->maniaControl->log("Dedimania Error: " . $error);
+				Logger::logError("Dedimania Error: " . $error);
 			}
 
 			$data = $this->decode($data);

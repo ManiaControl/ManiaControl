@@ -11,6 +11,7 @@ use FML\Controls\Quads\Quad_UIConstruction_Buttons;
 use FML\Controls\Quads\Quad_UIConstructionBullet_Buttons;
 use FML\ManiaLink;
 use FML\Script\Features\Paging;
+use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
@@ -399,7 +400,7 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 		// Message
 		$message = $player->getEscapedNickname() . ' added ' . $map->getEscapedName() . '!';
 		$this->maniaControl->getChat()->sendSuccess($message);
-		$this->maniaControl->log($message, true);
+		Logger::logInfo($message, true, true, true);
 
 		// Queue requested Map
 		$this->maniaControl->getMapManager()->getMapQueue()->addMapToMapQueue($player, $map);

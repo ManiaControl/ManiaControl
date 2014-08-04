@@ -16,6 +16,7 @@ use FML\Script\Features\Paging;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
+use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\IconManager;
 use ManiaControl\Manialinks\ManialinkManager;
@@ -654,7 +655,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 				$message = $player->getEscapedNickname() . ' skipped to Map $z' . $map->getEscapedName() . '!';
 				$this->maniaControl->getChat()->sendSuccess($message);
-				$this->maniaControl->log($message, true);
+				Logger::logInfo($message, true, true, true);
 
 				$this->playerCloseWidget($player);
 				break;

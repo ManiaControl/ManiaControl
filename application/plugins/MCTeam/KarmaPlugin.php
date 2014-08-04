@@ -12,6 +12,7 @@ use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Files\AsynchronousFileReader;
+use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Maps\Map;
 use ManiaControl\Players\Player;
@@ -265,7 +266,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 				$this->mxKarma['session'] = $data->data;
 				$this->activateSession($mxKarmaCode);
 			} else {
-				$this->maniaControl->log("Error while authenticating on Mania-Exchange Karma");
+				Logger::logError("Error while authenticating on Mania-Exchange Karma");
 				// TODO remove temp trigger
 				$this->maniaControl->getErrorHandler()->triggerDebugNotice('auth error', $data->data->message);
 				$this->mxKarma['connectionInProgress'] = false;
@@ -297,7 +298,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 				return;
 			}
 			if ($data->success && $data->data->activated) {
-				$this->maniaControl->log('Successfully authenticated on Mania-Exchange Karma');
+				Logger::log('Successfully authenticated on Mania-Exchange Karma');
 
 				// Fetch the Mx Karma Votes
 				$this->getMxKarmaVotes();
@@ -308,7 +309,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 				} else {
 					$this->maniaControl->getErrorHandler()->triggerDebugNotice('auth error', $data->data->message, $query);
 				}
-				$this->maniaControl->log("Error while activating Mania-Exchange Karma Session: " . $data->data->message);
+				Logger::logError("Error while activating Mania-Exchange Karma Session: " . $data->data->message);
 				unset($this->mxKarma['session']);
 			}
 		}, AsynchronousFileReader::CONTENT_TYPE_JSON, 1000);
@@ -397,10 +398,10 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 				$this->updateManialink = true;
 				$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_KARMA_MXUPDATED, $this->mxKarma);
-				$this->maniaControl->log('MX-Karma Votes successfully fetched!');
+				Logger::logInfo('MX-Karma Votes successfully fetched!');
 			} else {
 				// Problem occurred
-				$this->maniaControl->log('Error while fetching votes: ' . $data->data->message);
+				Logger::logError('Error while fetching votes: ' . $data->data->message);
 				if ($data->data->message === 'invalid session') {
 					unset($this->mxKarma['session']);
 				} else {
@@ -496,10 +497,10 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 				return;
 			}
 			if ($data->success) {
-				$this->maniaControl->log('Votes successfully submitted!');
+				Logger::logInfo('Votes successfully submitted!');
 			} else {
 				// Problem occurred
-				$this->maniaControl->log("Error while updating votes: '{$data->data->message}'");
+				Logger::logError("Error while updating votes: '{$data->data->message}'");
 				if ($data->data->message === "invalid session") {
 					unset($this->mxKarma['session']);
 				} else {

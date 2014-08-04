@@ -8,6 +8,7 @@ use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\Files\BackupUtil;
 use ManiaControl\Files\FileUtil;
+use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
@@ -141,7 +142,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 
 		$this->maniaControl->getFileReader()->loadFile($url, function ($dataJson, $error) use (&$function) {
 			if ($error) {
-				$this->maniaControl->log('Error on UpdateCheck: ' . $error);
+				Logger::logError('Error on UpdateCheck: ' . $error);
 				return;
 			}
 			$versions = json_decode($dataJson);
@@ -180,15 +181,15 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		}
 		if (!$this->checkUpdateDataBuildVersion($updateData)) {
 			// Server incompatible
-			$this->maniaControl->log("Please update Your Server to '{$updateData->minDedicatedBuild}' in order to receive further Updates!");
+			Logger::logError("Please update Your Server to '{$updateData->minDedicatedBuild}' in order to receive further Updates!");
 			return;
 		}
 
 		if ($this->coreUpdateData != $updateData) {
 			if ($this->isNightlyUpdateChannel()) {
-				$this->maniaControl->log("New Nightly Build ({$updateData->releaseDate}) available!");
+				Logger::log("New Nightly Build ({$updateData->releaseDate}) available!");
 			} else {
-				$this->maniaControl->log("New ManiaControl Version {$updateData->version} available!");
+				Logger::log("New ManiaControl Version {$updateData->version} available!");
 			}
 			$this->setCoreUpdateData($updateData);
 		}
@@ -300,11 +301,11 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			if ($player) {
 				$this->maniaControl->getChat()->sendError($message, $player);
 			}
-			$this->maniaControl->log($message);
+			Logger::logError($message);
 			return false;
 		}
 
-		$this->maniaControl->log("Starting Update to Version v{$this->coreUpdateData->version}...");
+		Logger::log("Starting Update to Version v{$this->coreUpdateData->version}...");
 
 		$directories = array('core', 'plugins');
 		if (!FileUtil::checkWritePermissions($directories)) {
@@ -312,7 +313,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			if ($player) {
 				$this->maniaControl->getChat()->sendError($message, $player);
 			}
-			$this->maniaControl->log($message);
+			Logger::logError($message);
 			return false;
 		}
 
@@ -322,7 +323,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			if ($player) {
 				$this->maniaControl->getChat()->sendError($message, $player);
 			}
-			$this->maniaControl->log($message);
+			Logger::logError($message);
 		}
 
 		$updateData = $this->coreUpdateData;
@@ -334,7 +335,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 				if ($player) {
 					$this->maniaControl->getChat()->sendError($message, $player);
 				}
-				$this->maniaControl->log($message);
+				Logger::logError($message);
 				return;
 			}
 
@@ -344,7 +345,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 				if ($player) {
 					$this->maniaControl->getChat()->sendError($message, $player);
 				}
-				$this->maniaControl->log($message);
+				Logger::logError($message);
 				return;
 			}
 			$updateFileName = $tempDir . basename($updateData->url);
@@ -355,7 +356,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 				if ($player) {
 					$this->maniaControl->getChat()->sendError($message, $player);
 				}
-				$this->maniaControl->log($message);
+				Logger::logError($message);
 				return;
 			}
 
@@ -366,7 +367,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 				if ($player) {
 					$this->maniaControl->getChat()->sendError($message, $player);
 				}
-				$this->maniaControl->log($message);
+				Logger::logError($message);
 				unlink($updateFileName);
 				return;
 			}
@@ -383,7 +384,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			if ($player) {
 				$this->maniaControl->getChat()->sendSuccess($message, $player);
 			}
-			$this->maniaControl->log($message);
+			Logger::log($message);
 
 			$this->maniaControl->restart();
 		});

@@ -4,6 +4,7 @@ namespace ManiaControl\Admin;
 
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\Callbacks;
+use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
@@ -147,7 +148,7 @@ class AuthenticationManager implements CallbackListener {
 	private function updateMasterAdmins() {
 		$masterAdminsElements = $this->maniaControl->getConfig()->xpath('masteradmins');
 		if (!$masterAdminsElements) {
-			$this->maniaControl->log('Missing MasterAdmins configuration!', true);
+			Logger::logError('Missing MasterAdmins configuration!');
 			return false;
 		}
 		$masterAdminsElement = $masterAdminsElements[0];

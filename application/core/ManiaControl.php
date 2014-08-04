@@ -131,7 +131,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	 * Construct a new ManiaControl instance
 	 */
 	public function __construct() {
-		$this->log('Loading ManiaControl v' . self::VERSION . ' ...');
+		Logger::log('Loading ManiaControl v' . self::VERSION . ' ...');
 
 		$this->errorHandler = new ErrorHandler($this);
 
@@ -446,10 +446,10 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 
 		// Announce restart
 		if ($message) {
-			$this->log($message);
+			Logger::log($message);
 		}
 		$this->getChat()->sendInformation('Restarting ManiaControl...');
-		$this->log('Restarting ManiaControl!');
+		Logger::log('Restarting ManiaControl!');
 
 		// Hide widgets
 		if ($this->getClient()) {
@@ -490,7 +490,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	 * Run ManiaControl
 	 */
 	public function run() {
-		$this->log('Starting ManiaControl v' . self::VERSION . '!');
+		Logger::log('Starting ManiaControl v' . self::VERSION . '!');
 
 		// Connect to server
 		try {
@@ -519,8 +519,8 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 		$this->getCallbackManager()->triggerCallback(Callbacks::AFTERINIT);
 
 		// Loading finished
-		$this->log('Loading completed!');
-		$this->log('Link: '.$this->getServer()->getJoinLink());
+		Logger::log('Loading completed!');
+		Logger::log('Link: '.$this->getServer()->getJoinLink());
 		$this->getChat()->sendInformation('ManiaControl v' . self::VERSION . ' successfully started!');
 
 		// Main loop
@@ -539,7 +539,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 		// Load remote client
 		$serverConfig = $this->getServer()->loadConfig();
 
-		$this->log("Connecting to Server at {$serverConfig->host}:{$serverConfig->port}...");
+		Logger::log("Connecting to Server at {$serverConfig->host}:{$serverConfig->port}...");
 
 		try {
 			$this->client = Connection::factory($serverConfig->host, $serverConfig->port, self::SCRIPT_TIMEOUT, $serverConfig->user, $serverConfig->pass, self::API_VERSION);
@@ -560,7 +560,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 		}
 
 		// Connect finished
-		$this->log('Server Connection successfully established!');
+		Logger::log('Server Connection successfully established!');
 
 		// Hide old widgets
 		$this->getClient()->sendHideManialinkPage();
@@ -582,7 +582,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 		try {
 			$this->getCallbackManager()->manageCallbacks();
 		} catch (TransportException $e) {
-			$this->log('Connection interrupted!');
+			Logger::logError('Connection interrupted!');
 			$this->quit($e->getMessage(), true);
 		}
 

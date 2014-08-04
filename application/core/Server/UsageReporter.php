@@ -3,6 +3,7 @@
 namespace ManiaControl\Server;
 
 use ManiaControl\Callbacks\TimerListener;
+use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Utils\Formatter;
 use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
@@ -80,7 +81,7 @@ class UsageReporter implements TimerListener {
 		$this->maniaControl->getFileReader()->loadFile($url, function ($response, $error) {
 			$response = json_decode($response);
 			if ($error || !$response) {
-				$this->maniaControl->log('Error while Sending data: ' . print_r($error, true));
+				Logger::logError('Error while Sending data: ' . print_r($error, true));
 			}
 		});
 	}

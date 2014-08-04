@@ -19,6 +19,7 @@ use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Configurator\ConfiguratorMenu;
+use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
@@ -366,7 +367,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			$activated = $this->maniaControl->getPluginManager()->activatePlugin($pluginClass, $player->login);
 			if ($activated) {
 				$this->maniaControl->getChat()->sendSuccess($pluginClass::getName() . ' activated!', $player);
-				$this->maniaControl->log("{$player->login} activated '{$pluginClass}'!", true);
+				Logger::logInfo("{$player->login} activated '{$pluginClass}'!", true, true, true);
 			} else {
 				$this->maniaControl->getChat()->sendError('Error activating ' . $pluginClass::getName() . '!', $player);
 			}
@@ -376,7 +377,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			$deactivated = $this->maniaControl->getPluginManager()->deactivatePlugin($pluginClass);
 			if ($deactivated) {
 				$this->maniaControl->getChat()->sendSuccess($pluginClass::getName() . ' deactivated!', $player);
-				$this->maniaControl->log("{$player->login} deactivated '{$pluginClass}'!", true);
+				Logger::logInfo("{$player->login} deactivated '{$pluginClass}'!", true, true, true);
 			} else {
 				$this->maniaControl->getChat()->sendError('Error deactivating ' . $pluginClass::getName() . '!', $player);
 			}

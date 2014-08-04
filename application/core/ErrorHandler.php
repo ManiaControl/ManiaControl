@@ -109,7 +109,7 @@ class ErrorHandler {
 		if (!$isUserError && $traceString) {
 			$logMessage .= PHP_EOL . 'Trace: ' . PHP_EOL . $traceString;
 		}
-		$this->maniaControl->log($logMessage);
+		Logger::log($logMessage);
 
 		if (!DEV_MODE && !$isUserError && !$suppressed) {
 			// Report error
@@ -434,7 +434,7 @@ class ErrorHandler {
 		$traceString    = $this->parseBackTrace($exception->getTrace(), $sourceClass);
 
 		$logMessage = $message . PHP_EOL . 'Class: ' . $exceptionClass . PHP_EOL . 'Trace:' . PHP_EOL . $traceString;
-		$this->maniaControl->log($logMessage);
+		Logger::log($logMessage);
 
 		if (!DEV_MODE) {
 			$report                    = array();

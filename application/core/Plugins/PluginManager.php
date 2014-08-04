@@ -380,7 +380,7 @@ class PluginManager {
 		} catch (\Exception $e) {
 			$message = "Error during Plugin Activation of '{$pluginClass}': '{$e->getMessage()}'";
 			$this->maniaControl->getChat()->sendError($message, $adminLogin);
-			$this->maniaControl->log($message);
+			Logger::logError($message);
 			$this->savePluginStatus($pluginClass, false);
 			return false;
 		}

@@ -4,6 +4,7 @@ namespace ManiaControl\Server;
 
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\Callbacks;
+use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Utils\CommandLineHelper;
@@ -399,18 +400,18 @@ class Server implements CallbackListener {
 		$waitBegin   = time();
 		$maxWaitTime = 50;
 		$lastStatus  = $response->name;
-		$this->maniaControl->log("Waiting for server to reach status {$statusCode}...");
-		$this->maniaControl->log("Current Status: {$lastStatus}");
+		Logger::log("Waiting for server to reach status {$statusCode}...");
+		Logger::log("Current Status: {$lastStatus}");
 		while ($response->code !== 4) {
 			sleep(1);
 			$response = $this->maniaControl->getClient()->getStatus();
 			if ($lastStatus !== $response->name) {
-				$this->maniaControl->log("New Status: {$response->name}");
+				Logger::log("New Status: {$response->name}");
 				$lastStatus = $response->name;
 			}
 			if (time() - $maxWaitTime > $waitBegin) {
 				// It took too long to reach the status
-				trigger_error("Server couldn't reach status {$statusCode} after {$maxWaitTime} seconds! ");
+				Logger::logError("Server couldn't reach status {$statusCode} after {$maxWaitTime} seconds! ");
 				return false;
 			}
 		}

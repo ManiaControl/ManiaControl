@@ -9,6 +9,7 @@ use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Commands\CommandListener;
+use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\IconManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
@@ -221,7 +222,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 
 		$message = $player->getEscapedNickname() . ' skipped the current Map!';
 		$this->maniaControl->getChat()->sendSuccess($message);
-		$this->maniaControl->log($message, true);
+		Logger::logInfo($message, true, true, true);
 	}
 
 	/**
@@ -237,7 +238,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		}
 		$message = $player->getEscapedNickname() . ' restarted the current Map!';
 		$this->maniaControl->getChat()->sendSuccess($message);
-		$this->maniaControl->log($message, true);
+		Logger::logInfo($message, true, true, true);
 
 		try {
 			$this->maniaControl->getClient()->restartMap();
@@ -259,7 +260,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		}
 		$message = $player->getEscapedNickname() . ' replays the current Map!';
 		$this->maniaControl->getChat()->sendSuccess($message);
-		$this->maniaControl->log($message, true);
+		Logger::logInfo($message, true, true, true);
 
 		$this->maniaControl->getMapManager()->getMapQueue()->addFirstMapToMapQueue($player, $this->maniaControl->getMapManager()->getCurrentMap());
 	}
@@ -293,7 +294,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 
 			$message = 'Maplist $<$fff' . $maplist . '$> written.';
 			$this->maniaControl->getChat()->sendSuccess($message, $player);
-			$this->maniaControl->log($message, true);
+			Logger::logInfo($message, true, true, true);
 		} catch (FaultException $e) {
 			$this->maniaControl->getChat()->sendError('Cannot write maplist $<$fff' . $maplist . '$>!', $player);
 		}
@@ -329,7 +330,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$message = 'Maplist $<$fff' . $maplist . '$> loaded.';
 			$this->maniaControl->getMapManager()->restructureMapList();
 			$this->maniaControl->getChat()->sendSuccess($message, $player);
-			$this->maniaControl->log($message, true);
+			Logger::logInfo($message, true, true, true);
 		} catch (FaultException $e) {
 			$this->maniaControl->getChat()->sendError('Cannot load maplist $<$fff' . $maplist . '$>!', $player);
 		}

@@ -7,6 +7,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Files\FileUtil;
+use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\ManiaExchange\ManiaExchangeList;
 use ManiaControl\ManiaExchange\ManiaExchangeManager;
@@ -315,7 +316,7 @@ class MapManager implements CallbackListener {
 			$action  = ($eraseFile ? 'erased' : 'removed');
 			$message = $admin->getEscapedNickname() . ' ' . $action . ' ' . $map->getEscapedName() . '!';
 			$this->maniaControl->getChat()->sendSuccess($message);
-			$this->maniaControl->log($message, true);
+			Logger::logInfo($message, true, true, true);
 		}
 	}
 
@@ -445,13 +446,13 @@ class MapManager implements CallbackListener {
 			// Message
 			$message = $player->getEscapedNickname() . ' added $<' . $mapInfo->name . '$>!';
 			$this->maniaControl->getChat()->sendSuccess($message);
-			$this->maniaControl->log($message, true);
+			Logger::logInfo($message, true, true, true);
 			// Queue requested Map
 			$this->maniaControl->getMapManager()->getMapQueue()->addMapToMapQueue($login, $mapInfo->uid);
 		} else {
 			$message = $player->getEscapedNickname() . ' updated $<' . $mapInfo->name . '$>!';
 			$this->maniaControl->getChat()->sendSuccess($message);
-			$this->maniaControl->log($message, true);
+			Logger::logInfo($message, true, true, true);
 		}
 	}
 
@@ -513,7 +514,7 @@ class MapManager implements CallbackListener {
 			try {
 				$this->maniaControl->getClient()->saveMatchSettings($matchSettingsFileName);
 			} catch (FileException $e) {
-				$this->maniaControl->log("Unable to write the playlist file, please checkout your MX-Folders File permissions!");
+				Logger::logError("Unable to write the playlist file, please checkout your MX-Folders File permissions!");
 			}
 		}
 	}
@@ -602,7 +603,7 @@ class MapManager implements CallbackListener {
 		if ($admin) {
 			$message = $admin->getEscapedNickname() . ' shuffled the Maplist!';
 			$this->maniaControl->getChat()->sendSuccess($message);
-			$this->maniaControl->log($message, true);
+			Logger::logInfo($message, true, true, true);
 		}
 
 		// Restructure if needed

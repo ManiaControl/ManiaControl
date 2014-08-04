@@ -2,6 +2,7 @@
 
 namespace ManiaControl\Server;
 
+use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 
 /**
@@ -48,7 +49,7 @@ class ScriptManager {
 		$actionName                             = ($enable ? 'en' : 'dis');
 
 		$this->maniaControl->getClient()->setModeScriptSettings($scriptSettings);
-		$this->maniaControl->log("Script Callbacks successfully {$actionName}abled!");
+		Logger::logInfo("Script Callbacks successfully {$actionName}abled!");
 		return true;
 	}
 

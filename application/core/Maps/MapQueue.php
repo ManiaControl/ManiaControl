@@ -6,6 +6,7 @@ use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Commands\CommandListener;
+use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Utils\Formatter;
@@ -122,8 +123,9 @@ class MapQueue implements CallbackListener, CommandListener {
 		//Destroy map - queue list
 		$this->queuedMaps = array();
 
-		$this->maniaControl->getChat()->sendInformation('$fa0' . $title . ' $<$fff' . $admin->nickname . '$> cleared the Queued-Map list!');
-		$this->maniaControl->log($title . ' ' . Formatter::stripCodes($admin->nickname) . ' cleared the Queued-Map list!');
+		$message = '$fa0' . $title . ' $<$fff' . $admin->nickname . '$> cleared the Map-Queue!';
+		$this->maniaControl->getChat()->sendInformation($message);
+		Logger::logInfo($message, true, true, true);
 
 		// Trigger callback
 		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_MAPQUEUE_CHANGED, array('clear'));
