@@ -67,35 +67,35 @@ class Database implements TimerListener {
 	private function loadConfig() {
 		$databaseElements = $this->maniaControl->getConfig()->xpath('database');
 		if (!$databaseElements) {
-			Logger::logError('No Database configured!', E_USER_ERROR);
+			$this->maniaControl->quit('No Database configured!', true);
 		}
 		$databaseElement = $databaseElements[0];
 
 		// Host
 		$hostElements = $databaseElement->xpath('host');
 		if (!$hostElements) {
-			Logger::logError("Invalid database configuration (Host).", E_USER_ERROR);
+			$this->maniaControl->quit("Invalid database configuration (Host).", true);
 		}
 		$host = (string)$hostElements[0];
 
 		// Port
 		$portElements = $databaseElement->xpath('port');
 		if (!$portElements) {
-			Logger::logError("Invalid database configuration (Port).", E_USER_ERROR);
+			$this->maniaControl->quit("Invalid database configuration (Port).", true);
 		}
 		$port = (string)$portElements[0];
 
 		// User
 		$userElements = $databaseElement->xpath('user');
 		if (!$userElements) {
-			Logger::logError("Invalid database configuration (User).", E_USER_ERROR);
+			$this->maniaControl->quit("Invalid database configuration (User).", true);
 		}
 		$user = (string)$userElements[0];
 
 		// Pass
 		$passElements = $databaseElement->xpath('pass');
 		if (!$passElements) {
-			Logger::logError("Invalid database configuration (Pass).", E_USER_ERROR);
+			$this->maniaControl->quit("Invalid database configuration (Pass).", true);
 		}
 		$pass = (string)$passElements[0];
 
@@ -105,7 +105,7 @@ class Database implements TimerListener {
 			$nameElements = $databaseElement->xpath('db_name');
 		}
 		if (!$nameElements) {
-			Logger::logError("Invalid database configuration (Name).", E_USER_ERROR);
+			$this->maniaControl->quit("Invalid database configuration (Name).", true);
 		}
 		$name = (string)$nameElements[0];
 
