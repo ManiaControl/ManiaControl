@@ -92,9 +92,10 @@ class SystemUtil {
 	public static function quit($message = null, $errorPrefix = false) {
 		if ($message) {
 			if ($errorPrefix) {
-				$message = '[ERROR] ' . $message;
+				Logger::logError($message);
+			} else{
+				Logger::log($message);
 			}
-			Logger::log($message);
 		}
 		exit;
 	}
