@@ -25,8 +25,8 @@ class DedimaniaPlayer {
 	 * @param mixed $player
 	 */
 	public function __construct($player) {
-		$this->login          = $player['Login'];
-		$this->maxRank        = $player['MaxRank'];
+		$this->login   = $player['Login'];
+		$this->maxRank = $player['MaxRank'];
 		if (isset($player['Banned'])) {
 			$this->banned         = $player['Banned'];
 			$this->optionsEnabled = $player['OptionsEnabled'];

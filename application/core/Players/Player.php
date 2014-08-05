@@ -313,7 +313,9 @@ class Player {
 	 * @return mixed
 	 */
 	public function getPlayerData($object, $dataName, $serverIndex = -1) {
-		return $this->maniaControl->getPlayerManager()->getPlayerDataManager()->getPlayerData($object, $dataName, $this, $serverIndex);
+		return $this->maniaControl->getPlayerManager()
+		                          ->getPlayerDataManager()
+		                          ->getPlayerData($object, $dataName, $this, $serverIndex);
 	}
 
 	/**
@@ -326,7 +328,9 @@ class Player {
 	 * @return bool
 	 */
 	public function setPlayerData($object, $dataName, $value, $serverIndex = -1) {
-		return $this->maniaControl->getPlayerManager()->getPlayerDataManager()->setPlayerData($object, $dataName, $this, $value, $serverIndex);
+		return $this->maniaControl->getPlayerManager()
+		                          ->getPlayerDataManager()
+		                          ->setPlayerData($object, $dataName, $this, $value, $serverIndex);
 	}
 
 	/**

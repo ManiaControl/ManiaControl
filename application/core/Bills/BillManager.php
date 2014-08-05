@@ -41,7 +41,8 @@ class BillManager implements CallbackListener {
 		$this->maniaControl = $maniaControl;
 
 		// Callbacks
-		$this->maniaControl->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_BILLUPDATED, $this, 'handleBillUpdated');
+		$this->maniaControl->getCallbackManager()
+		                   ->registerCallbackListener(CallbackManager::CB_MP_BILLUPDATED, $this, 'handleBillUpdated');
 	}
 
 	/**
@@ -55,7 +56,8 @@ class BillManager implements CallbackListener {
 	 * @return bool
 	 */
 	public function sendBill(callable $function, Player $player, $amount, $message, $receiver = '') {
-		$bill                   = $this->maniaControl->getClient()->sendBill($player->login, $amount, $message, $receiver);
+		$bill                   = $this->maniaControl->getClient()
+		                                             ->sendBill($player->login, $amount, $message, $receiver);
 		$this->openBills[$bill] = new BillData($function, $player, $amount);
 		return true;
 	}
@@ -70,7 +72,8 @@ class BillManager implements CallbackListener {
 	 * @return bool
 	 */
 	public function sendPlanets(callable $function, $receiverLogin, $amount, $message) {
-		$bill                   = $this->maniaControl->getClient()->pay($receiverLogin, $amount, $message);
+		$bill                   = $this->maniaControl->getClient()
+		                                             ->pay($receiverLogin, $amount, $message);
 		$this->openBills[$bill] = new BillData($function, $receiverLogin, $amount, true);
 		return true;
 	}

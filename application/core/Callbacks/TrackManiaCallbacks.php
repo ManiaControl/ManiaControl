@@ -42,7 +42,8 @@ class TrackManiaCallbacks implements CallbackListener {
 	 */
 	public function handleOnWayPointCallback(array $callback) {
 		$login  = $callback[0];
-		$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
+		$player = $this->maniaControl->getPlayerManager()
+		                             ->getPlayer($login);
 		if (!$player) {
 			return;
 		}
@@ -61,7 +62,8 @@ class TrackManiaCallbacks implements CallbackListener {
 		$wayPointCallback->isEndLap      = Formatter::parseBoolean($callback[7]);
 
 		if ($wayPointCallback->checkpoint > 0) {
-			$currentMap = $this->maniaControl->getMapManager()->getCurrentMap();
+			$currentMap = $this->maniaControl->getMapManager()
+			                                 ->getCurrentMap();
 			$wayPointCallback->lap += $wayPointCallback->checkpoint / $currentMap->nbCheckpoints;
 		}
 
@@ -73,7 +75,8 @@ class TrackManiaCallbacks implements CallbackListener {
 			$wayPointCallback->name = $wayPointCallback::CHECKPOINT;
 		}
 
-		$this->maniaControl->getCallbackManager()->triggerCallback($wayPointCallback);
+		$this->maniaControl->getCallbackManager()
+		                   ->triggerCallback($wayPointCallback);
 	}
 
 	/**
@@ -84,7 +87,8 @@ class TrackManiaCallbacks implements CallbackListener {
 	public function handlePlayerCheckpointCallback(array $callback) {
 		$data   = $callback[1];
 		$login  = $data[1];
-		$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
+		$player = $this->maniaControl->getPlayerManager()
+		                             ->getPlayer($login);
 		if (!$player) {
 			return;
 		}
@@ -100,7 +104,8 @@ class TrackManiaCallbacks implements CallbackListener {
 		$checkpointCallback->lapCheckpoint = $checkpointCallback->checkpoint;
 
 		if ($checkpointCallback->lap > 0) {
-			$currentMap = $this->maniaControl->getMapManager()->getCurrentMap();
+			$currentMap = $this->maniaControl->getMapManager()
+			                                 ->getCurrentMap();
 			$checkpointCallback->lapCheckpoint -= $checkpointCallback->lap * $currentMap->nbCheckpoints;
 		}
 
@@ -110,7 +115,8 @@ class TrackManiaCallbacks implements CallbackListener {
 			$checkpointCallback->name = $checkpointCallback::CHECKPOINT;
 		}
 
-		$this->maniaControl->getCallbackManager()->triggerCallback($checkpointCallback);
+		$this->maniaControl->getCallbackManager()
+		                   ->triggerCallback($checkpointCallback);
 	}
 
 	/**
@@ -121,7 +127,8 @@ class TrackManiaCallbacks implements CallbackListener {
 	public function handlePlayerFinishCallback(array $callback) {
 		$data   = $callback[1];
 		$login  = $data[1];
-		$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
+		$player = $this->maniaControl->getPlayerManager()
+		                             ->getPlayer($login);
 		if (!$player) {
 			return;
 		}
@@ -134,6 +141,7 @@ class TrackManiaCallbacks implements CallbackListener {
 		$finishCallback->setPlayer($player);
 		$finishCallback->time = (int)$data[2];
 
-		$this->maniaControl->getCallbackManager()->triggerCallback($finishCallback);
+		$this->maniaControl->getCallbackManager()
+		                   ->triggerCallback($finishCallback);
 	}
 }

@@ -42,10 +42,18 @@ class PlayerDetailed {
 		$this->maniaControl = $maniaControl;
 
 		// Settings
-		$this->width        = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsWidth();
-		$this->height       = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsHeight();
-		$this->quadStyle    = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultMainWindowStyle();
-		$this->quadSubstyle = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultMainWindowSubStyle();
+		$this->width        = $this->maniaControl->getManialinkManager()
+		                                         ->getStyleManager()
+		                                         ->getListWidgetsWidth();
+		$this->height       = $this->maniaControl->getManialinkManager()
+		                                         ->getStyleManager()
+		                                         ->getListWidgetsHeight();
+		$this->quadStyle    = $this->maniaControl->getManialinkManager()
+		                                         ->getStyleManager()
+		                                         ->getDefaultMainWindowStyle();
+		$this->quadSubstyle = $this->maniaControl->getManialinkManager()
+		                                         ->getStyleManager()
+		                                         ->getDefaultMainWindowSubStyle();
 	}
 
 	/**
@@ -56,14 +64,17 @@ class PlayerDetailed {
 	 */
 	public function showPlayerDetailed(Player $player, $targetLogin) {
 		/** @var Player $target */
-		$target = $this->maniaControl->getPlayerManager()->getPlayer($targetLogin);
+		$target = $this->maniaControl->getPlayerManager()
+		                             ->getPlayer($targetLogin);
 
 		// Create ManiaLink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$script    = $maniaLink->getScript();
 
 		// Main frame
-		$frame = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultListFrame($script);
+		$frame = $this->maniaControl->getManialinkManager()
+		                            ->getStyleManager()
+		                            ->getDefaultListFrame($script);
 		$maniaLink->add($frame);
 
 		// Create script and features
@@ -168,7 +179,8 @@ class PlayerDetailed {
 		$label = clone $mainLabel;
 		$frame->add($label);
 		$label->setY($posY);
-		$label->setText($this->maniaControl->getAuthenticationManager()->getAuthLevelName($target->authLevel));
+		$label->setText($this->maniaControl->getAuthenticationManager()
+		                                   ->getAuthLevelName($target->authLevel));
 
 		//LadderRank
 		$posY -= 5;
@@ -212,7 +224,8 @@ class PlayerDetailed {
 		$quad->setAction(PlayerCommands::ACTION_OPEN_PLAYERLIST);
 
 		// render and display xml
-		$this->maniaControl->getManialinkManager()->displayWidget($maniaLink, $player, 'PlayerDetailed');
+		$this->maniaControl->getManialinkManager()
+		                   ->displayWidget($maniaLink, $player, 'PlayerDetailed');
 	}
 
 	/**
@@ -224,7 +237,8 @@ class PlayerDetailed {
 	public function statisticsFrame(Player $player) {
 		$frame = new Frame();
 
-		$playerStats = $this->maniaControl->getStatisticManager()->getAllPlayerStats($player);
+		$playerStats = $this->maniaControl->getStatisticManager()
+		                                  ->getAllPlayerStats($player);
 		$posY        = $this->height / 2 - 15;
 		$posX        = -$this->width / 2 + 52;
 		$index       = 1;

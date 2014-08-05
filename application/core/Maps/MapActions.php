@@ -33,14 +33,19 @@ class MapActions {
 	 */
 	public function skipMap() {
 		// Force an EndMap on the MapQueue to set the next Map
-		$this->maniaControl->getMapManager()->getMapQueue()->endMap(null);
+		$this->maniaControl->getMapManager()
+		                   ->getMapQueue()
+		                   ->endMap(null);
 
 		// Ignore EndMap on MapQueue
-		$this->maniaControl->getMapManager()->getMapQueue()->dontQueueNextMapChange();
+		$this->maniaControl->getMapManager()
+		                   ->getMapQueue()
+		                   ->dontQueueNextMapChange();
 
 		// Switch The Map
 		try {
-			$this->maniaControl->getClient()->nextMap();
+			$this->maniaControl->getClient()
+			                   ->nextMap();
 		} catch (ChangeInProgressException $e) {
 		}
 	}

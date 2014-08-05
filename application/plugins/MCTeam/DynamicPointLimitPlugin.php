@@ -52,11 +52,16 @@ class DynamicPointLimitPlugin implements CallbackListener, CommandListener, Plug
 	 * @see \ManiaControl\Plugins\Plugin::prepare()
 	 */
 	public static function prepare(ManiaControl $maniaControl) {
-		$maniaControl->getSettingManager()->initSetting(get_class(), self::SETTING_POINT_LIMIT_MULTIPLIER, 10);
-		$maniaControl->getSettingManager()->initSetting(get_class(), self::SETTING_POINT_LIMIT_OFFSET, 0);
-		$maniaControl->getSettingManager()->initSetting(get_class(), self::SETTING_MIN_POINT_LIMIT, 30);
-		$maniaControl->getSettingManager()->initSetting(get_class(), self::SETTING_MAX_POINT_LIMIT, 200);
-		$maniaControl->getSettingManager()->initSetting(get_class(), self::SETTING_ACCEPT_OTHER_MODES, false);
+		$maniaControl->getSettingManager()
+		             ->initSetting(get_class(), self::SETTING_POINT_LIMIT_MULTIPLIER, 10);
+		$maniaControl->getSettingManager()
+		             ->initSetting(get_class(), self::SETTING_POINT_LIMIT_OFFSET, 0);
+		$maniaControl->getSettingManager()
+		             ->initSetting(get_class(), self::SETTING_MIN_POINT_LIMIT, 30);
+		$maniaControl->getSettingManager()
+		             ->initSetting(get_class(), self::SETTING_MAX_POINT_LIMIT, 200);
+		$maniaControl->getSettingManager()
+		             ->initSetting(get_class(), self::SETTING_ACCEPT_OTHER_MODES, false);
 	}
 
 	/**
@@ -100,21 +105,29 @@ class DynamicPointLimitPlugin implements CallbackListener, CommandListener, Plug
 	public function load(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		$allowOthers = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_ACCEPT_OTHER_MODES);
+		$allowOthers = $this->maniaControl->getSettingManager()
+		                                  ->getSettingValue($this, self::SETTING_ACCEPT_OTHER_MODES);
 		if (!$allowOthers && $this->maniaControl->getServer()->titleId !== 'SMStormRoyal@nadeolabs') {
 			$error = 'This plugin only supports Royal (check Settings)!';
 			throw new \Exception($error);
 		}
 
-		$this->maniaControl->getCallbackManager()->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'updatePointLimit');
-		$this->maniaControl->getCallbackManager()->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECT, $this, 'updatePointLimit');
-		$this->maniaControl->getCallbackManager()->registerCallbackListener(PlayerManager::CB_PLAYERINFOCHANGED, $this, 'handlePlayerInfoChangedCallback');
+		$this->maniaControl->getCallbackManager()
+		                   ->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'updatePointLimit');
+		$this->maniaControl->getCallbackManager()
+		                   ->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECT, $this, 'updatePointLimit');
+		$this->maniaControl->getCallbackManager()
+		                   ->registerCallbackListener(PlayerManager::CB_PLAYERINFOCHANGED, $this, 'handlePlayerInfoChangedCallback');
 
-		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::BEGINROUND, $this, 'updatePointLimit');
-		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::BEGINMAP, $this, 'handleBeginMap');
-		$this->maniaControl->getCallbackManager()->registerCallbackListener(SettingManager::CB_SETTING_CHANGED, $this, 'handleSettingChangedCallback');
+		$this->maniaControl->getCallbackManager()
+		                   ->registerCallbackListener(Callbacks::BEGINROUND, $this, 'updatePointLimit');
+		$this->maniaControl->getCallbackManager()
+		                   ->registerCallbackListener(Callbacks::BEGINMAP, $this, 'handleBeginMap');
+		$this->maniaControl->getCallbackManager()
+		                   ->registerCallbackListener(SettingManager::CB_SETTING_CHANGED, $this, 'handleSettingChangedCallback');
 
-		$this->maniaControl->getCommandManager()->registerCommandListener('setpointlimit', $this, 'commandSetPointlimit', true, 'Setpointlimit XXX or auto');
+		$this->maniaControl->getCommandManager()
+		                   ->registerCommandListener('setpointlimit', $this, 'commandSetPointlimit', true, 'Setpointlimit XXX or auto');
 
 		$this->updatePointLimit();
 	}
@@ -126,12 +139,17 @@ class DynamicPointLimitPlugin implements CallbackListener, CommandListener, Plug
 		if ($this->staticMode) {
 			return;
 		}
-		$numberOfPlayers = $this->maniaControl->getPlayerManager()->getPlayerCount();
+		$numberOfPlayers = $this->maniaControl->getPlayerManager()
+		                                      ->getPlayerCount();
 
-		$multiplier = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_POINT_LIMIT_MULTIPLIER);
-		$offset     = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_POINT_LIMIT_OFFSET);
-		$minValue   = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MIN_POINT_LIMIT);
-		$maxValue   = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MAX_POINT_LIMIT);
+		$multiplier = $this->maniaControl->getSettingManager()
+		                                 ->getSettingValue($this, self::SETTING_POINT_LIMIT_MULTIPLIER);
+		$offset     = $this->maniaControl->getSettingManager()
+		                                 ->getSettingValue($this, self::SETTING_POINT_LIMIT_OFFSET);
+		$minValue   = $this->maniaControl->getSettingManager()
+		                                 ->getSettingValue($this, self::SETTING_MIN_POINT_LIMIT);
+		$maxValue   = $this->maniaControl->getSettingManager()
+		                                 ->getSettingValue($this, self::SETTING_MAX_POINT_LIMIT);
 
 		$pointLimit = $offset + $numberOfPlayers * $multiplier;
 		if ($pointLimit < $minValue) {
@@ -144,15 +162,18 @@ class DynamicPointLimitPlugin implements CallbackListener, CommandListener, Plug
 
 		if ($this->lastPointLimit !== $pointLimit) {
 			try {
-				$this->maniaControl->getClient()->setModeScriptSettings(array(self::SCRIPT_SETTING_MAP_POINTS_LIMIT => $pointLimit));
+				$this->maniaControl->getClient()
+				                   ->setModeScriptSettings(array(self::SCRIPT_SETTING_MAP_POINTS_LIMIT => $pointLimit));
 				$message = "Dynamic PointLimit changed to: {$pointLimit}!";
 				if ($this->lastPointLimit !== null) {
 					$message .= " (From {$this->lastPointLimit})";
 				}
-				$this->maniaControl->getChat()->sendInformation($message);
+				$this->maniaControl->getChat()
+				                   ->sendInformation($message);
 				$this->lastPointLimit = $pointLimit;
 			} catch (GameModeException $exception) {
-				$this->maniaControl->getChat()->sendExceptionToAdmins($exception);
+				$this->maniaControl->getChat()
+				                   ->sendExceptionToAdmins($exception);
 			}
 		}
 	}
@@ -166,31 +187,38 @@ class DynamicPointLimitPlugin implements CallbackListener, CommandListener, Plug
 	public function commandSetPointlimit(array $chatCallback, Player $player) {
 		$commandParts = explode(' ', $chatCallback[1][2]);
 		if (count($commandParts) < 2) {
-			$this->maniaControl->getChat()->sendUsageInfo('Example: //setpointlimit auto', $player);
+			$this->maniaControl->getChat()
+			                   ->sendUsageInfo('Example: //setpointlimit auto', $player);
 			return;
 		}
 		$value = strtolower($commandParts[1]);
 		if ($value === "auto") {
 			$this->staticMode = false;
-			$this->maniaControl->getChat()->sendInformation('Enabled Dynamic PointLimit!');
+			$this->maniaControl->getChat()
+			                   ->sendInformation('Enabled Dynamic PointLimit!');
 			$this->updatePointLimit();
 		} else {
 			if (is_numeric($value)) {
 				$value = (int)$value;
 				if ($value <= 0) {
-					$this->maniaControl->getChat()->sendError('PointLimit needs to be greater than Zero.', $player);
+					$this->maniaControl->getChat()
+					                   ->sendError('PointLimit needs to be greater than Zero.', $player);
 					return;
 				}
 				try {
-					$this->maniaControl->getClient()->setModeScriptSettings(array(self::SCRIPT_SETTING_MAP_POINTS_LIMIT => $value));
+					$this->maniaControl->getClient()
+					                   ->setModeScriptSettings(array(self::SCRIPT_SETTING_MAP_POINTS_LIMIT => $value));
 					$this->staticMode     = true;
 					$this->lastPointLimit = $value;
-					$this->maniaControl->getChat()->sendInformation("PointLimit changed to: {$value} (Fixed)");
+					$this->maniaControl->getChat()
+					                   ->sendInformation("PointLimit changed to: {$value} (Fixed)");
 				} catch (GameModeException $exception) {
-					$this->maniaControl->getChat()->sendException($exception, $player);
+					$this->maniaControl->getChat()
+					                   ->sendException($exception, $player);
 				}
 			} else {
-				$this->maniaControl->getChat()->sendUsageInfo('Example: //setpointlimit 150', $player);
+				$this->maniaControl->getChat()
+				                   ->sendUsageInfo('Example: //setpointlimit 150', $player);
 			}
 		}
 	}
@@ -220,9 +248,11 @@ class DynamicPointLimitPlugin implements CallbackListener, CommandListener, Plug
 		if ($this->staticMode && !is_null($this->lastPointLimit)) {
 			// Refresh static point limit in case it has been reset
 			try {
-				$this->maniaControl->getClient()->setModeScriptSettings(array(self::SCRIPT_SETTING_MAP_POINTS_LIMIT => $this->lastPointLimit));
+				$this->maniaControl->getClient()
+				                   ->setModeScriptSettings(array(self::SCRIPT_SETTING_MAP_POINTS_LIMIT => $this->lastPointLimit));
 				$message = "PointLimit fixed at {$this->lastPointLimit}.";
-				$this->maniaControl->getChat()->sendInformation($message);
+				$this->maniaControl->getChat()
+				                   ->sendInformation($message);
 			} catch (GameModeException $e) {
 				$this->lastPointLimit = null;
 			}

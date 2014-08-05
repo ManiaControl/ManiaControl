@@ -50,7 +50,8 @@ class PlayerDataManager {
 	 * @return bool
 	 */
 	private function initTables() {
-		$mysqli      = $this->maniaControl->getDatabase()->getMysqli();
+		$mysqli      = $this->maniaControl->getDatabase()
+		                                  ->getMysqli();
 		$defaultType = "'" . self::TYPE_STRING . "'";
 		$typeSet     = $defaultType . ",'" . self::TYPE_INT . "','" . self::TYPE_REAL . "','" . self::TYPE_BOOL . "','" . self::TYPE_ARRAY . "'";
 		$query       = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_PLAYERDATAMETADATA . "` (
@@ -103,7 +104,8 @@ class PlayerDataManager {
 	 * Store Meta Data from the Database in the Ram
 	 */
 	private function storeMetaData() {
-		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
+		$mysqli = $this->maniaControl->getDatabase()
+		                             ->getMysqli();
 
 		$query  = "SELECT * FROM `" . self::TABLE_PLAYERDATAMETADATA . "`;";
 		$result = $mysqli->query($query);
@@ -137,7 +139,8 @@ class PlayerDataManager {
 	 * @return bool
 	 */
 	public function defineMetaData($object, $dataName, $default, $dataDescription = '') {
-		$mysqli    = $this->maniaControl->getDatabase()->getMysqli();
+		$mysqli    = $this->maniaControl->getDatabase()
+		                                ->getMysqli();
 		$className = ClassUtil::getClass($object);
 
 		$query     = "INSERT INTO `" . self::TABLE_PLAYERDATAMETADATA . "` (
@@ -215,7 +218,8 @@ class PlayerDataManager {
 			return $this->storedData[$player->index][$meta->dataId];
 		}
 
-		$mysqli        = $this->maniaControl->getDatabase()->getMysqli();
+		$mysqli        = $this->maniaControl->getDatabase()
+		                                    ->getMysqli();
 		$dataQuery     = "SELECT `value` FROM `" . self::TABLE_PLAYERDATA . "`
 				WHERE `dataId` = ?
 				AND `playerId` = ?
@@ -271,7 +275,8 @@ class PlayerDataManager {
 			return false;
 		}
 
-		$mysqli    = $this->maniaControl->getDatabase()->getMysqli();
+		$mysqli    = $this->maniaControl->getDatabase()
+		                                ->getMysqli();
 		$query     = "INSERT INTO `" . self::TABLE_PLAYERDATA . "` (
 				`serverIndex`,
 				`playerId`,

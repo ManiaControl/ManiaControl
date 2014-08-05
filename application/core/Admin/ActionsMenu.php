@@ -51,14 +51,20 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		$this->maniaControl = $maniaControl;
 
 		// Settings
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MENU_POSX, 156.);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MENU_POSY, -17.);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MENU_ITEMSIZE, 6.);
+		$this->maniaControl->getSettingManager()
+		                   ->initSetting($this, self::SETTING_MENU_POSX, 156.);
+		$this->maniaControl->getSettingManager()
+		                   ->initSetting($this, self::SETTING_MENU_POSY, -17.);
+		$this->maniaControl->getSettingManager()
+		                   ->initSetting($this, self::SETTING_MENU_ITEMSIZE, 6.);
 
 		// Callbacks
-		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::AFTERINIT, $this, 'handleAfterInit');
-		$this->maniaControl->getCallbackManager()->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerJoined');
-		$this->maniaControl->getCallbackManager()->registerCallbackListener(AuthenticationManager::CB_AUTH_LEVEL_CHANGED, $this, 'handlePlayerJoined');
+		$this->maniaControl->getCallbackManager()
+		                   ->registerCallbackListener(Callbacks::AFTERINIT, $this, 'handleAfterInit');
+		$this->maniaControl->getCallbackManager()
+		                   ->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerJoined');
+		$this->maniaControl->getCallbackManager()
+		                   ->registerCallbackListener(AuthenticationManager::CB_AUTH_LEVEL_CHANGED, $this, 'handlePlayerJoined');
 	}
 
 	/**
@@ -100,10 +106,12 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		if (!$this->initCompleted) {
 			return;
 		}
-		$players = $this->maniaControl->getPlayerManager()->getPlayers();
+		$players = $this->maniaControl->getPlayerManager()
+		                              ->getPlayers();
 		foreach ($players as $player) {
 			$manialink = $this->buildMenuIconsManialink($player);
-			$this->maniaControl->getManialinkManager()->sendManialink($manialink, $player->login);
+			$this->maniaControl->getManialinkManager()
+			                   ->sendManialink($manialink, $player->login);
 		}
 	}
 
@@ -114,18 +122,28 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	 * @return ManiaLink
 	 */
 	private function buildMenuIconsManialink(Player $player) {
-		$posX              = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MENU_POSX);
-		$posY              = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MENU_POSY);
-		$itemSize          = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MENU_ITEMSIZE);
-		$shootManiaOffset  = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultIconOffsetSM();
-		$quadStyle         = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadStyle();
-		$quadSubstyle      = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadSubstyle();
+		$posX              = $this->maniaControl->getSettingManager()
+		                                        ->getSettingValue($this, self::SETTING_MENU_POSX);
+		$posY              = $this->maniaControl->getSettingManager()
+		                                        ->getSettingValue($this, self::SETTING_MENU_POSY);
+		$itemSize          = $this->maniaControl->getSettingManager()
+		                                        ->getSettingValue($this, self::SETTING_MENU_ITEMSIZE);
+		$shootManiaOffset  = $this->maniaControl->getManialinkManager()
+		                                        ->getStyleManager()
+		                                        ->getDefaultIconOffsetSM();
+		$quadStyle         = $this->maniaControl->getManialinkManager()
+		                                        ->getStyleManager()
+		                                        ->getDefaultQuadStyle();
+		$quadSubstyle      = $this->maniaControl->getManialinkManager()
+		                                        ->getStyleManager()
+		                                        ->getDefaultQuadSubstyle();
 		$itemMarginFactorX = 1.3;
 		$itemMarginFactorY = 1.2;
 
 		// If game is shootmania lower the icons position by 20
-		if ($this->maniaControl->getMapManager()->getCurrentMap()
-		                                   ->getGame() === 'sm'
+		if ($this->maniaControl->getMapManager()
+		                       ->getCurrentMap()
+		                       ->getGame() === 'sm'
 		) {
 			$posY -= $shootManiaOffset;
 		}
@@ -135,7 +153,9 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		/*
 		 * Admin Menu
 		 */
-		if ($this->maniaControl->getAuthenticationManager()->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
+		if ($this->maniaControl->getAuthenticationManager()
+		                       ->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)
+		) {
 			// Admin Menu Icon Frame
 			$iconFrame = new Frame();
 			$manialink->add($iconFrame);
@@ -313,6 +333,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	 */
 	public function handlePlayerJoined(Player $player) {
 		$maniaLink = $this->buildMenuIconsManialink($player);
-		$this->maniaControl->getManialinkManager()->sendManialink($maniaLink, $player);
+		$this->maniaControl->getManialinkManager()
+		                   ->sendManialink($maniaLink, $player);
 	}
 }

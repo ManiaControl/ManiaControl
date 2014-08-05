@@ -93,7 +93,7 @@ class SystemUtil {
 		if ($message) {
 			if ($errorPrefix) {
 				Logger::logError($message);
-			} else{
+			} else {
 				Logger::log($message);
 			}
 		}

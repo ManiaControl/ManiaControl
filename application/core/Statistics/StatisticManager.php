@@ -69,7 +69,8 @@ class StatisticManager {
 	 * @return bool
 	 */
 	private function initTables() {
-		$mysqli    = $this->maniaControl->getDatabase()->getMysqli();
+		$mysqli    = $this->maniaControl->getDatabase()
+		                                ->getMysqli();
 		$query     = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_STATMETADATA . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
 				`name` varchar(100) NOT NULL,
@@ -117,7 +118,8 @@ class StatisticManager {
 	 * Store Stats Meta Data from the Database
 	 */
 	private function storeStatMetaData() {
-		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
+		$mysqli = $this->maniaControl->getDatabase()
+		                             ->getMysqli();
 
 		$query  = "SELECT * FROM `" . self::TABLE_STATMETADATA . "`;";
 		$result = $mysqli->query($query);
@@ -202,7 +204,8 @@ class StatisticManager {
 			return $this->getStatsRankingOfSpecialStat($statName, $serverIndex);
 		}
 
-		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
+		$mysqli = $this->maniaControl->getDatabase()
+		                             ->getMysqli();
 		$statId = $this->getStatId($statName);
 
 		$query = "SELECT `playerId`, `serverIndex`, `value` FROM `" . self::TABLE_STATISTICS . "`
@@ -491,7 +494,8 @@ class StatisticManager {
 				return intval($hits) / intval($shots);
 		}
 
-		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
+		$mysqli = $this->maniaControl->getDatabase()
+		                             ->getMysqli();
 		$statId = $this->getStatId($statName);
 
 		if (!$statId) {
@@ -563,7 +567,8 @@ class StatisticManager {
 			$serverIndex = $this->maniaControl->getServer()->index;
 		}
 
-		$mysqli    = $this->maniaControl->getDatabase()->getMysqli();
+		$mysqli    = $this->maniaControl->getDatabase()
+		                                ->getMysqli();
 		$query     = "INSERT INTO `" . self::TABLE_STATISTICS . "` (
 				`serverIndex`,
 				`playerId`,
@@ -598,7 +603,8 @@ class StatisticManager {
 	 * @return bool
 	 */
 	public function defineStatMetaData($statName, $type = self::STAT_TYPE_INT, $statDescription = '') {
-		$mysqli    = $this->maniaControl->getDatabase()->getMysqli();
+		$mysqli    = $this->maniaControl->getDatabase()
+		                                ->getMysqli();
 		$query     = "INSERT INTO `" . self::TABLE_STATMETADATA . "` (
 				`name`,
 				`type`,

@@ -46,17 +46,23 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 		$this->maniaControl = $maniaControl;
 
 		// Callbacks
-		$this->maniaControl->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
-		$this->maniaControl->getCallbackManager()->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_CLOSED, $this, 'closeWidget');
-		$this->maniaControl->getCallbackManager()->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_OPENED, $this, 'handleWidgetOpened');
-		$this->maniaControl->getCallbackManager()->registerCallbackListener(AuthenticationManager::CB_AUTH_LEVEL_CHANGED, $this, 'updateWidget');
+		$this->maniaControl->getCallbackManager()
+		                   ->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
+		$this->maniaControl->getCallbackManager()
+		                   ->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_CLOSED, $this, 'closeWidget');
+		$this->maniaControl->getCallbackManager()
+		                   ->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_OPENED, $this, 'handleWidgetOpened');
+		$this->maniaControl->getCallbackManager()
+		                   ->registerCallbackListener(AuthenticationManager::CB_AUTH_LEVEL_CHANGED, $this, 'updateWidget');
 
 		// Menu Entry AdminList
-		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_OPEN_ADMIN_LIST, $this, 'openAdminList');
+		$this->maniaControl->getManialinkManager()
+		                   ->registerManialinkPageAnswerListener(self::ACTION_OPEN_ADMIN_LIST, $this, 'openAdminList');
 		$itemQuad = new Quad_UIConstruction_Buttons();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Author);
 		$itemQuad->setAction(self::ACTION_OPEN_ADMIN_LIST);
-		$this->maniaControl->getActionsMenu()->addMenuItem($itemQuad, false, 50, 'Open AdminList');
+		$this->maniaControl->getActionsMenu()
+		                   ->addMenuItem($itemQuad, false, 50, 'Open AdminList');
 	}
 
 	/**
@@ -77,11 +83,16 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 	public function showAdminLists(Player $player) {
 		$this->adminListShown[$player->login] = true;
 
-		$width  = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsWidth();
-		$height = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsHeight();
+		$width  = $this->maniaControl->getManialinkManager()
+		                             ->getStyleManager()
+		                             ->getListWidgetsWidth();
+		$height = $this->maniaControl->getManialinkManager()
+		                             ->getStyleManager()
+		                             ->getListWidgetsHeight();
 
 		// get Admins
-		$admins = $this->maniaControl->getAuthenticationManager()->getAdmins();
+		$admins = $this->maniaControl->getAuthenticationManager()
+		                             ->getAdmins();
 
 		//Create ManiaLink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
@@ -90,7 +101,9 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 		$script->addFeature($paging);
 
 		// Main frame
-		$frame = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultListFrame($script, $paging);
+		$frame = $this->maniaControl->getManialinkManager()
+		                            ->getStyleManager()
+		                            ->getDefaultListFrame($script, $paging);
 		$maniaLink->add($frame);
 
 		// Start offsets
@@ -98,7 +111,9 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 		$posY = $height / 2;
 
 		//Predefine description Label
-		$descriptionLabel = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultDescriptionLabel();
+		$descriptionLabel = $this->maniaControl->getManialinkManager()
+		                                       ->getStyleManager()
+		                                       ->getDefaultDescriptionLabel();
 		$frame->add($descriptionLabel);
 
 		// Headline
@@ -106,7 +121,8 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 		$frame->add($headFrame);
 		$headFrame->setY($posY - 5);
 		$array = array('Id' => $posX + 5, 'Nickname' => $posX + 18, 'Login' => $posX + 70, 'Actions' => $posX + 120);
-		$this->maniaControl->getManialinkManager()->labelLine($headFrame, $array);
+		$this->maniaControl->getManialinkManager()
+		                   ->labelLine($headFrame, $array);
 
 		$index = 1;
 		$posY -= 10;
@@ -134,7 +150,8 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 			}
 
 			$array = array($index => $posX + 5, $admin->nickname => $posX + 18, $admin->login => $posX + 70);
-			$this->maniaControl->getManialinkManager()->labelLine($playerFrame, $array);
+			$this->maniaControl->getManialinkManager()
+			                   ->labelLine($playerFrame, $array);
 
 
 			// Level Quad
@@ -150,12 +167,17 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 			$rightLabel->setX($posX + 13.9);
 			$rightLabel->setTextSize(0.8);
 			$rightLabel->setZ(10);
-			$rightLabel->setText($this->maniaControl->getAuthenticationManager()->getAuthLevelAbbreviation($admin));
-			$description = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($admin) . " " . $admin->nickname;
+			$rightLabel->setText($this->maniaControl->getAuthenticationManager()
+			                                        ->getAuthLevelAbbreviation($admin));
+			$description = $this->maniaControl->getAuthenticationManager()
+			                                  ->getAuthLevelName($admin) . " " . $admin->nickname;
 			$rightLabel->addTooltipLabelFeature($descriptionLabel, $description);
 
 			//Revoke Button
-			if ($admin->authLevel > 0 && $this->maniaControl->getAuthenticationManager()->checkRight($player, $admin->authLevel + 1)) {
+			if ($admin->authLevel > 0
+			    && $this->maniaControl->getAuthenticationManager()
+			                          ->checkRight($player, $admin->authLevel + 1)
+			) {
 				//Settings
 				$style      = Label_Text::STYLE_TextCardSmall;
 				$textColor  = 'FFF';
@@ -187,7 +209,8 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 		}
 
 		// Render and display xml
-		$this->maniaControl->getManialinkManager()->displayWidget($maniaLink, $player, 'AdminList');
+		$this->maniaControl->getManialinkManager()
+		                   ->displayWidget($maniaLink, $player, 'AdminList');
 	}
 
 	/**
@@ -208,7 +231,9 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 
 		switch ($action) {
 			case self::ACTION_REVOKE_RIGHTS:
-				$this->maniaControl->getPlayerManager()->getPlayerActions()->revokeAuthLevel($adminLogin, $targetLogin);
+				$this->maniaControl->getPlayerManager()
+				                   ->getPlayerActions()
+				                   ->revokeAuthLevel($adminLogin, $targetLogin);
 				break;
 		}
 	}
@@ -221,7 +246,8 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 	public function updateWidget(Player $player) {
 		foreach ($this->adminListShown as $login => $shown) {
 			if ($shown) {
-				$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
+				$player = $this->maniaControl->getPlayerManager()
+				                             ->getPlayer($login);
 				if ($player) {
 					$this->showAdminLists($player);
 				} else {

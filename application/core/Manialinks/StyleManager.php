@@ -50,16 +50,24 @@ class StyleManager {
 		$this->maniaControl = $maniaControl;
 
 		// Settings
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_LABEL_DEFAULT_STYLE, Label_Text::STYLE_TextTitle1);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_QUAD_DEFAULT_STYLE, Quad_Bgs1InRace::STYLE);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_QUAD_DEFAULT_SUBSTYLE, Quad_Bgs1InRace::SUBSTYLE_BgTitleShadow);
+		$this->maniaControl->getSettingManager()
+		                   ->initSetting($this, self::SETTING_LABEL_DEFAULT_STYLE, Label_Text::STYLE_TextTitle1);
+		$this->maniaControl->getSettingManager()
+		                   ->initSetting($this, self::SETTING_QUAD_DEFAULT_STYLE, Quad_Bgs1InRace::STYLE);
+		$this->maniaControl->getSettingManager()
+		                   ->initSetting($this, self::SETTING_QUAD_DEFAULT_SUBSTYLE, Quad_Bgs1InRace::SUBSTYLE_BgTitleShadow);
 
 		// Main Widget
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAIN_WIDGET_DEFAULT_STYLE, Quad_BgRaceScore2::STYLE);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAIN_WIDGET_DEFAULT_SUBSTYLE, Quad_BgRaceScore2::SUBSTYLE_HandleSelectable);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_LIST_WIDGETS_WIDTH, 150.);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_LIST_WIDGETS_HEIGHT, 80.);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_ICON_DEFAULT_OFFSET_SM, 20.);
+		$this->maniaControl->getSettingManager()
+		                   ->initSetting($this, self::SETTING_MAIN_WIDGET_DEFAULT_STYLE, Quad_BgRaceScore2::STYLE);
+		$this->maniaControl->getSettingManager()
+		                   ->initSetting($this, self::SETTING_MAIN_WIDGET_DEFAULT_SUBSTYLE, Quad_BgRaceScore2::SUBSTYLE_HandleSelectable);
+		$this->maniaControl->getSettingManager()
+		                   ->initSetting($this, self::SETTING_LIST_WIDGETS_WIDTH, 150.);
+		$this->maniaControl->getSettingManager()
+		                   ->initSetting($this, self::SETTING_LIST_WIDGETS_HEIGHT, 80.);
+		$this->maniaControl->getSettingManager()
+		                   ->initSetting($this, self::SETTING_ICON_DEFAULT_OFFSET_SM, 20.);
 	}
 
 	/**
@@ -68,7 +76,8 @@ class StyleManager {
 	 * @return float
 	 */
 	public function getDefaultIconOffsetSM() {
-		return $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_ICON_DEFAULT_OFFSET_SM);
+		return $this->maniaControl->getSettingManager()
+		                          ->getSettingValue($this, self::SETTING_ICON_DEFAULT_OFFSET_SM);
 	}
 
 	/**
@@ -77,7 +86,8 @@ class StyleManager {
 	 * @return string
 	 */
 	public function getDefaultLabelStyle() {
-		return $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_LABEL_DEFAULT_STYLE);
+		return $this->maniaControl->getSettingManager()
+		                          ->getSettingValue($this, self::SETTING_LABEL_DEFAULT_STYLE);
 	}
 
 	/**
@@ -86,7 +96,8 @@ class StyleManager {
 	 * @return string
 	 */
 	public function getDefaultQuadStyle() {
-		return $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_QUAD_DEFAULT_STYLE);
+		return $this->maniaControl->getSettingManager()
+		                          ->getSettingValue($this, self::SETTING_QUAD_DEFAULT_STYLE);
 	}
 
 	/**
@@ -95,7 +106,8 @@ class StyleManager {
 	 * @return string
 	 */
 	public function getDefaultQuadSubstyle() {
-		return $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_QUAD_DEFAULT_SUBSTYLE);
+		return $this->maniaControl->getSettingManager()
+		                          ->getSettingValue($this, self::SETTING_QUAD_DEFAULT_SUBSTYLE);
 	}
 
 	/**
@@ -124,7 +136,8 @@ class StyleManager {
 	 * @return float
 	 */
 	public function getListWidgetsWidth() {
-		return $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_LIST_WIDGETS_WIDTH);
+		return $this->maniaControl->getSettingManager()
+		                          ->getSettingValue($this, self::SETTING_LIST_WIDGETS_WIDTH);
 	}
 
 	/**
@@ -133,7 +146,8 @@ class StyleManager {
 	 * @return float
 	 */
 	public function getListWidgetsHeight() {
-		return $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_LIST_WIDGETS_HEIGHT);
+		return $this->maniaControl->getSettingManager()
+		                          ->getSettingValue($this, self::SETTING_LIST_WIDGETS_HEIGHT);
 	}
 
 	/**
@@ -218,7 +232,8 @@ class StyleManager {
 	 * @return string
 	 */
 	public function getDefaultMainWindowStyle() {
-		return $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MAIN_WIDGET_DEFAULT_STYLE);
+		return $this->maniaControl->getSettingManager()
+		                          ->getSettingValue($this, self::SETTING_MAIN_WIDGET_DEFAULT_STYLE);
 	}
 
 	/**
@@ -227,6 +242,7 @@ class StyleManager {
 	 * @return string
 	 */
 	public function getDefaultMainWindowSubStyle() {
-		return $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MAIN_WIDGET_DEFAULT_SUBSTYLE);
+		return $this->maniaControl->getSettingManager()
+		                          ->getSettingValue($this, self::SETTING_MAIN_WIDGET_DEFAULT_SUBSTYLE);
 	}
 }

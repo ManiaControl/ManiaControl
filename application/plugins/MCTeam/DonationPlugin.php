@@ -104,28 +104,44 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$this->maniaControl = $maniaControl;
 
 		// Register for commands
-		$this->maniaControl->getCommandManager()->registerCommandListener('donate', $this, 'command_Donate', false, 'Donate some planets to the server.');
-		$this->maniaControl->getCommandManager()->registerCommandListener('pay', $this, 'command_Pay', true, 'Pays planets from the server to a player.');
-		$this->maniaControl->getCommandManager()->registerCommandListener(array('getplanets', 'planets'), $this, 'command_GetPlanets', true, 'Checks the planets-balance of the server.');
-		$this->maniaControl->getCommandManager()->registerCommandListener('topdons', $this, 'command_TopDons', false, 'Provides an overview of who donated the most planets.');
+		$this->maniaControl->getCommandManager()
+		                   ->registerCommandListener('donate', $this, 'command_Donate', false, 'Donate some planets to the server.');
+		$this->maniaControl->getCommandManager()
+		                   ->registerCommandListener('pay', $this, 'command_Pay', true, 'Pays planets from the server to a player.');
+		$this->maniaControl->getCommandManager()
+		                   ->registerCommandListener(array('getplanets', 'planets'), $this, 'command_GetPlanets', true, 'Checks the planets-balance of the server.');
+		$this->maniaControl->getCommandManager()
+		                   ->registerCommandListener('topdons', $this, 'command_TopDons', false, 'Provides an overview of who donated the most planets.');
 
 		// Register for callbacks
-		$this->maniaControl->getCallbackManager()->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
-		$this->maniaControl->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
+		$this->maniaControl->getCallbackManager()
+		                   ->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
+		$this->maniaControl->getCallbackManager()
+		                   ->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 
 		// Define player stats
-		$this->maniaControl->getStatisticManager()->defineStatMetaData(self::STAT_PLAYER_DONATIONS);
+		$this->maniaControl->getStatisticManager()
+		                   ->defineStatMetaData(self::STAT_PLAYER_DONATIONS);
 
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_DONATE_WIDGET_ACTIVATED, true);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_DONATE_WIDGET_POSX, 156.);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_DONATE_WIDGET_POSY, -31.4);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_DONATE_WIDGET_WIDTH, 6);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_DONATE_WIDGET_HEIGHT, 6);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_DONATION_VALUES, "20,50,100,500,1000,2000");
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MIN_AMOUNT_SHOWN, 100);
+		$this->maniaControl->getSettingManager()
+		                   ->initSetting($this, self::SETTING_DONATE_WIDGET_ACTIVATED, true);
+		$this->maniaControl->getSettingManager()
+		                   ->initSetting($this, self::SETTING_DONATE_WIDGET_POSX, 156.);
+		$this->maniaControl->getSettingManager()
+		                   ->initSetting($this, self::SETTING_DONATE_WIDGET_POSY, -31.4);
+		$this->maniaControl->getSettingManager()
+		                   ->initSetting($this, self::SETTING_DONATE_WIDGET_WIDTH, 6);
+		$this->maniaControl->getSettingManager()
+		                   ->initSetting($this, self::SETTING_DONATE_WIDGET_HEIGHT, 6);
+		$this->maniaControl->getSettingManager()
+		                   ->initSetting($this, self::SETTING_DONATION_VALUES, "20,50,100,500,1000,2000");
+		$this->maniaControl->getSettingManager()
+		                   ->initSetting($this, self::SETTING_MIN_AMOUNT_SHOWN, 100);
 
 		// Register Stat in Simple StatsList
-		$this->maniaControl->getStatisticManager()->getSimpleStatsList()->registerStat(self::STAT_PLAYER_DONATIONS, 90, "DP", 15);
+		$this->maniaControl->getStatisticManager()
+		                   ->getSimpleStatsList()
+		                   ->registerStat(self::STAT_PLAYER_DONATIONS, 90, "DP", 15);
 
 		$this->displayWidget();
 		return true;
@@ -135,7 +151,9 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 * Display the widget
 	 */
 	public function displayWidget() {
-		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_DONATE_WIDGET_ACTIVATED)) {
+		if ($this->maniaControl->getSettingManager()
+		                       ->getSettingValue($this, self::SETTING_DONATE_WIDGET_ACTIVATED)
+		) {
 			$this->displayDonateWidget();
 		}
 	}
@@ -146,20 +164,32 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 * @param string $login
 	 */
 	public function displayDonateWidget($login = null) {
-		$posX              = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_DONATE_WIDGET_POSX);
-		$posY              = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_DONATE_WIDGET_POSY);
-		$width             = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_DONATE_WIDGET_WIDTH);
-		$height            = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_DONATE_WIDGET_HEIGHT);
-		$values            = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_DONATION_VALUES);
-		$shootManiaOffset  = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultIconOffsetSM();
-		$quadStyle         = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadStyle();
-		$quadSubstyle      = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadSubstyle();
+		$posX              = $this->maniaControl->getSettingManager()
+		                                        ->getSettingValue($this, self::SETTING_DONATE_WIDGET_POSX);
+		$posY              = $this->maniaControl->getSettingManager()
+		                                        ->getSettingValue($this, self::SETTING_DONATE_WIDGET_POSY);
+		$width             = $this->maniaControl->getSettingManager()
+		                                        ->getSettingValue($this, self::SETTING_DONATE_WIDGET_WIDTH);
+		$height            = $this->maniaControl->getSettingManager()
+		                                        ->getSettingValue($this, self::SETTING_DONATE_WIDGET_HEIGHT);
+		$values            = $this->maniaControl->getSettingManager()
+		                                        ->getSettingValue($this, self::SETTING_DONATION_VALUES);
+		$shootManiaOffset  = $this->maniaControl->getManialinkManager()
+		                                        ->getStyleManager()
+		                                        ->getDefaultIconOffsetSM();
+		$quadStyle         = $this->maniaControl->getManialinkManager()
+		                                        ->getStyleManager()
+		                                        ->getDefaultQuadStyle();
+		$quadSubstyle      = $this->maniaControl->getManialinkManager()
+		                                        ->getStyleManager()
+		                                        ->getDefaultQuadSubstyle();
 		$itemMarginFactorX = 1.3;
 		$itemMarginFactorY = 1.2;
 
 		//If game is shootmania lower the icons position by 20
-		if ($this->maniaControl->getMapManager()->getCurrentMap()
-		                                   ->getGame() === 'sm'
+		if ($this->maniaControl->getMapManager()
+		                       ->getCurrentMap()
+		                       ->getGame() === 'sm'
 		) {
 			$posY -= $shootManiaOffset;
 		}
@@ -238,14 +268,16 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		}
 
 		// Send manialink
-		$this->maniaControl->getManialinkManager()->sendManialink($maniaLink, $login);
+		$this->maniaControl->getManialinkManager()
+		                   ->sendManialink($maniaLink, $login);
 	}
 
 	/**
 	 * @see \ManiaControl\Plugins\Plugin::unload()
 	 */
 	public function unload() {
-		$this->maniaControl->getManialinkManager()->hideManialink(self::MLID_DONATE_WIDGET);
+		$this->maniaControl->getManialinkManager()
+		                   ->hideManialink(self::MLID_DONATE_WIDGET);
 	}
 
 	/**
@@ -260,7 +292,8 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 			return;
 		}
 		$login       = $callback[1][1];
-		$player      = $this->maniaControl->getPlayerManager()->getPlayer($login);
+		$player      = $this->maniaControl->getPlayerManager()
+		                                  ->getPlayer($login);
 		$actionArray = explode(".", $callback[1][2]);
 		$this->handleDonation($player, intval($actionArray[2]));
 	}
@@ -277,42 +310,54 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		if ($amount > 1000000) {
 			// Prevent too huge donation amounts that would cause xmlrpc parsing errors
 			$message = "You can only donate 1.000.000 Planets at a time!";
-			$this->maniaControl->getChat()->sendError($message, $player);
+			$this->maniaControl->getChat()
+			                   ->sendError($message, $player);
 			return;
 		}
 
 		if (!$receiverName) {
-			$serverName = $this->maniaControl->getClient()->getServerName();
+			$serverName = $this->maniaControl->getClient()
+			                                 ->getServerName();
 			$message    = 'Donate ' . $amount . ' Planets to $<' . $serverName . '$>?';
 		} else {
 			$message = 'Donate ' . $amount . ' Planets to $<' . $receiverName . '$>?';
 		}
 
 		//Send and Handle the Bill
-		$this->maniaControl->getBillManager()->sendBill(function ($data, $status) use (&$player, $amount, $receiver) {
+		$this->maniaControl->getBillManager()
+		                   ->sendBill(function ($data, $status) use (&$player, $amount, $receiver) {
 			switch ($status) {
 				case BillManager::DONATED_TO_SERVER:
-					if ($this->maniaControl->getSettingManager()->getSettingValue($this, DonationPlugin::SETTING_ANNOUNCE_SERVER_DONATION, true) && $amount >= $this->maniaControl->getSettingManager()->getSettingValue($this, DonationPlugin::SETTING_MIN_AMOUNT_SHOWN, true)) {
+					if ($this->maniaControl->getSettingManager()
+					                       ->getSettingValue($this, DonationPlugin::SETTING_ANNOUNCE_SERVER_DONATION, true)
+					    && $amount >= $this->maniaControl->getSettingManager()
+					                                     ->getSettingValue($this, DonationPlugin::SETTING_MIN_AMOUNT_SHOWN, true)
+					) {
 						$login   = null;
 						$message = $player->getEscapedNickname() . ' donated ' . $amount . ' Planets! Thanks.';
 					} else {
 						$login   = $player->login;
 						$message = 'Donation successful! Thanks.';
 					}
-					$this->maniaControl->getChat()->sendSuccess($message, $login);
-					$this->maniaControl->getStatisticManager()->insertStat(DonationPlugin::STAT_PLAYER_DONATIONS, $player, $this->maniaControl->getServer()->index, $amount);
+					$this->maniaControl->getChat()
+					                   ->sendSuccess($message, $login);
+					$this->maniaControl->getStatisticManager()
+					                   ->insertStat(DonationPlugin::STAT_PLAYER_DONATIONS, $player, $this->maniaControl->getServer()->index, $amount);
 					break;
 				case BillManager::DONATED_TO_RECEIVER:
 					$message = "Successfully donated {$amount} to '{$receiver}'!";
-					$this->maniaControl->getChat()->sendSuccess($message, $player);
+					$this->maniaControl->getChat()
+					                   ->sendSuccess($message, $player);
 					break;
 				case BillManager::PLAYER_REFUSED_DONATION:
 					$message = 'Transaction cancelled.';
-					$this->maniaControl->getChat()->sendError($message, $player);
+					$this->maniaControl->getChat()
+					                   ->sendError($message, $player);
 					break;
 				case BillManager::ERROR_WHILE_TRANSACTION:
 					$message = $data;
-					$this->maniaControl->getChat()->sendError($message, $player);
+					$this->maniaControl->getChat()
+					                   ->sendError($message, $player);
 					break;
 			}
 		}, $player, $amount, $message);
@@ -325,7 +370,9 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 */
 	public function handlePlayerConnect(Player $player) {
 		// Display Map Widget
-		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_DONATE_WIDGET_ACTIVATED)) {
+		if ($this->maniaControl->getSettingManager()
+		                       ->getSettingValue($this, self::SETTING_DONATE_WIDGET_ACTIVATED)
+		) {
 			$this->displayDonateWidget($player->login);
 		}
 	}
@@ -350,11 +397,13 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		}
 		if (count($params) >= 3) {
 			$receiver       = $params[2];
-			$receiverPlayer = $this->maniaControl->getPlayerManager()->getPlayer($receiver);
+			$receiverPlayer = $this->maniaControl->getPlayerManager()
+			                                     ->getPlayer($receiver);
 			$receiverName   = ($receiverPlayer ? $receiverPlayer->nickname : $receiver);
 		} else {
 			$receiver     = '';
-			$receiverName = $this->maniaControl->getClient()->getServerName();
+			$receiverName = $this->maniaControl->getClient()
+			                                   ->getServerName();
 		}
 
 		$this->handleDonation($player, $amount, $receiver, $receiverName);
@@ -367,7 +416,8 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 */
 	private function sendDonateUsageExample(Player $player) {
 		$message = "Usage Example: '/donate 100'";
-		$this->maniaControl->getChat()->sendChat($message, $player);
+		$this->maniaControl->getChat()
+		                   ->sendChat($message, $player);
 	}
 
 	/**
@@ -377,8 +427,11 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 * @param Player $player
 	 */
 	public function command_Pay(array $chatCallback, Player $player) {
-		if (!$this->maniaControl->getAuthenticationManager()->checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)) {
-			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
+		if (!$this->maniaControl->getAuthenticationManager()
+		                        ->checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)
+		) {
+			$this->maniaControl->getAuthenticationManager()
+			                   ->sendNotAllowed($player);
 			return;
 		}
 		$text   = $chatCallback[1][2];
@@ -397,21 +450,26 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		} else {
 			$receiver = $player->login;
 		}
-		$message = 'Payout from $<' . $this->maniaControl->getClient()->getServerName() . '$>.';
+		$message = 'Payout from $<' . $this->maniaControl->getClient()
+		                                                 ->getServerName() . '$>.';
 
-		$this->maniaControl->getBillManager()->sendPlanets(function ($data, $status) use (&$player, $amount, $receiver) {
+		$this->maniaControl->getBillManager()
+		                   ->sendPlanets(function ($data, $status) use (&$player, $amount, $receiver) {
 			switch ($status) {
 				case BillManager::PAYED_FROM_SERVER:
 					$message = "Successfully payed out {$amount} to '{$receiver}'!";
-					$this->maniaControl->getChat()->sendSuccess($message, $player);
+					$this->maniaControl->getChat()
+					                   ->sendSuccess($message, $player);
 					break;
 				case BillManager::PLAYER_REFUSED_DONATION:
 					$message = 'Transaction cancelled.';
-					$this->maniaControl->getChat()->sendError($message, $player);
+					$this->maniaControl->getChat()
+					                   ->sendError($message, $player);
 					break;
 				case BillManager::ERROR_WHILE_TRANSACTION:
 					$message = $data;
-					$this->maniaControl->getChat()->sendError($message, $player);
+					$this->maniaControl->getChat()
+					                   ->sendError($message, $player);
 					break;
 			}
 		}, $receiver, $amount, $message);
@@ -424,7 +482,8 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 */
 	private function sendPayUsageExample(Player $player) {
 		$message = "Usage Example: '//pay 100 login'";
-		$this->maniaControl->getChat()->sendChat($message, $player);
+		$this->maniaControl->getChat()
+		                   ->sendChat($message, $player);
 	}
 
 	/**
@@ -434,13 +493,18 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 * @param Player $player
 	 */
 	public function command_GetPlanets(array $chatCallback, Player $player) {
-		if (!$this->maniaControl->getAuthenticationManager()->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
-			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
+		if (!$this->maniaControl->getAuthenticationManager()
+		                        ->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)
+		) {
+			$this->maniaControl->getAuthenticationManager()
+			                   ->sendNotAllowed($player);
 			return;
 		}
-		$planets = $this->maniaControl->getClient()->getServerPlanets();
+		$planets = $this->maniaControl->getClient()
+		                              ->getServerPlanets();
 		$message = "This Server has {$planets} Planets!";
-		$this->maniaControl->getChat()->sendInformation($message, $player);
+		$this->maniaControl->getChat()
+		                   ->sendInformation($message, $player);
 	}
 
 	/**
@@ -459,10 +523,15 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 * @param Player $player
 	 */
 	private function showTopDonsList(Player $player) {
-		$stats = $this->maniaControl->getStatisticManager()->getStatsRanking(self::STAT_PLAYER_DONATIONS);
+		$stats = $this->maniaControl->getStatisticManager()
+		                            ->getStatsRanking(self::STAT_PLAYER_DONATIONS);
 
-		$width  = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsWidth();
-		$height = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsHeight();
+		$width  = $this->maniaControl->getManialinkManager()
+		                             ->getStyleManager()
+		                             ->getListWidgetsWidth();
+		$height = $this->maniaControl->getManialinkManager()
+		                             ->getStyleManager()
+		                             ->getListWidgetsHeight();
 
 		// create manialink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
@@ -471,7 +540,9 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$script->addFeature($paging);
 
 		// Main frame
-		$frame = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultListFrame($script, $paging);
+		$frame = $this->maniaControl->getManialinkManager()
+		                            ->getStyleManager()
+		                            ->getDefaultListFrame($script, $paging);
 		$maniaLink->add($frame);
 
 		// Start offsets
@@ -479,7 +550,9 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$posY = $height / 2;
 
 		//Predefine description Label
-		$descriptionLabel = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultDescriptionLabel();
+		$descriptionLabel = $this->maniaControl->getManialinkManager()
+		                                       ->getStyleManager()
+		                                       ->getDefaultDescriptionLabel();
 		$frame->add($descriptionLabel);
 
 		// Headline
@@ -487,7 +560,8 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$frame->add($headFrame);
 		$headFrame->setY($posY - 5);
 		$array = array('$oId' => $posX + 5, '$oNickname' => $posX + 18, '$oDonated planets' => $posX + 70);
-		$this->maniaControl->getManialinkManager()->labelLine($headFrame, $array);
+		$this->maniaControl->getManialinkManager()
+		                   ->labelLine($headFrame, $array);
 
 		$index     = 1;
 		$posY      = $posY - 10;
@@ -513,9 +587,11 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 				$lineQuad->setZ(0.001);
 			}
 
-			$donatingPlayer = $this->maniaControl->getPlayerManager()->getPlayerByIndex($playerIndex);
+			$donatingPlayer = $this->maniaControl->getPlayerManager()
+			                                     ->getPlayerByIndex($playerIndex);
 			$array          = array($index => $posX + 5, $donatingPlayer->nickname => $posX + 18, $donations => $posX + 70);
-			$this->maniaControl->getManialinkManager()->labelLine($playerFrame, $array);
+			$this->maniaControl->getManialinkManager()
+			                   ->labelLine($playerFrame, $array);
 
 			$posY -= 4;
 			$index++;
@@ -526,6 +602,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		}
 
 		// Render and display xml
-		$this->maniaControl->getManialinkManager()->displayWidget($maniaLink, $player, 'TopDons');
+		$this->maniaControl->getManialinkManager()
+		                   ->displayWidget($maniaLink, $player, 'TopDons');
 	}
 }

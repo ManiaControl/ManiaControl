@@ -80,17 +80,24 @@ class PlayerManager implements CallbackListener, TimerListener {
 		$this->adminLists        = new AdminLists($maniaControl);
 
 		// Settings
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES, true);
+		$this->maniaControl->getSettingManager()
+		                   ->initSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES, true);
 
 		// Callbacks
-		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::ONINIT, $this, 'onInit');
-		$this->maniaControl->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_PLAYERCONNECT, $this, 'playerConnect');
-		$this->maniaControl->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_PLAYERDISCONNECT, $this, 'playerDisconnect');
-		$this->maniaControl->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_PLAYERINFOCHANGED, $this, 'playerInfoChanged');
+		$this->maniaControl->getCallbackManager()
+		                   ->registerCallbackListener(Callbacks::ONINIT, $this, 'onInit');
+		$this->maniaControl->getCallbackManager()
+		                   ->registerCallbackListener(CallbackManager::CB_MP_PLAYERCONNECT, $this, 'playerConnect');
+		$this->maniaControl->getCallbackManager()
+		                   ->registerCallbackListener(CallbackManager::CB_MP_PLAYERDISCONNECT, $this, 'playerDisconnect');
+		$this->maniaControl->getCallbackManager()
+		                   ->registerCallbackListener(CallbackManager::CB_MP_PLAYERINFOCHANGED, $this, 'playerInfoChanged');
 
 		// Player stats
-		$this->maniaControl->getStatisticManager()->defineStatMetaData(self::STAT_JOIN_COUNT);
-		$this->maniaControl->getStatisticManager()->defineStatMetaData(self::STAT_SERVERTIME, StatisticManager::STAT_TYPE_TIME);
+		$this->maniaControl->getStatisticManager()
+		                   ->defineStatMetaData(self::STAT_JOIN_COUNT);
+		$this->maniaControl->getStatisticManager()
+		                   ->defineStatMetaData(self::STAT_SERVERTIME, StatisticManager::STAT_TYPE_TIME);
 	}
 
 	/**
@@ -99,7 +106,8 @@ class PlayerManager implements CallbackListener, TimerListener {
 	 * @return bool
 	 */
 	private function initTables() {
-		$mysqli               = $this->maniaControl->getDatabase()->getMysqli();
+		$mysqli               = $this->maniaControl->getDatabase()
+		                                           ->getMysqli();
 		$playerTableQuery     = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_PLAYERS . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
 				`login` varchar(100) NOT NULL,
@@ -184,20 +192,23 @@ class PlayerManager implements CallbackListener, TimerListener {
 	 */
 	public function onInit() {
 		// Add all players
-		$players = $this->maniaControl->getClient()->getPlayerList(300, 0, 2);
+		$players = $this->maniaControl->getClient()
+		                              ->getPlayerList(300, 0, 2);
 		foreach ($players as $playerItem) {
 			if ($playerItem->playerId <= 0) {
 				continue;
 			}
 			try {
-				$detailedPlayerInfo = $this->maniaControl->getClient()->getDetailedPlayerInfo($playerItem->login);
+				$detailedPlayerInfo = $this->maniaControl->getClient()
+				                                         ->getDetailedPlayerInfo($playerItem->login);
 			} catch (UnknownPlayerException $exception) {
 				continue;
 			}
 
 			// Check if the Player is in a Team, to notify if its a TeamMode or not
 			if ($playerItem->teamId >= 0) {
-				$this->maniaControl->getServer()->setTeamMode(true);
+				$this->maniaControl->getServer()
+				                   ->setTeamMode(true);
 			}
 
 			$player = new Player($this->maniaControl, true);
@@ -227,7 +238,8 @@ class PlayerManager implements CallbackListener, TimerListener {
 	 * @return bool
 	 */
 	private function savePlayer(Player &$player) {
-		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
+		$mysqli = $this->maniaControl->getDatabase()
+		                             ->getMysqli();
 
 		// Save player
 		$playerQuery     = "INSERT INTO `" . self::TABLE_PLAYERS . "` (
@@ -286,7 +298,8 @@ class PlayerManager implements CallbackListener, TimerListener {
 	public function playerConnect(array $callback) {
 		$login = $callback[1][0];
 		try {
-			$playerInfo = $this->maniaControl->getClient()->getDetailedPlayerInfo($login);
+			$playerInfo = $this->maniaControl->getClient()
+			                                 ->getDetailedPlayerInfo($login);
 			$player     = new Player($this->maniaControl, true);
 			$player->setDetailedInfo($playerInfo);
 
@@ -308,9 +321,11 @@ class PlayerManager implements CallbackListener, TimerListener {
 		}
 
 		// Trigger own callbacks
-		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_PLAYERDISCONNECT, $player);
+		$this->maniaControl->getCallbackManager()
+		                   ->triggerCallback(self::CB_PLAYERDISCONNECT, $player);
 		if ($this->getPlayerCount(false) <= 0) {
-			$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_SERVER_EMPTY);
+			$this->maniaControl->getCallbackManager()
+			                   ->triggerCallback(self::CB_SERVER_EMPTY);
 		}
 
 		if ($player->isFakePlayer()) {
@@ -321,12 +336,16 @@ class PlayerManager implements CallbackListener, TimerListener {
 		$logMessage = "Player left: {$player->login} / {$player->nickname} Playtime: {$played}";
 		Logger::logInfo($logMessage, true);
 
-		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_JOIN_LEAVE_MESSAGES)) {
-			$this->maniaControl->getChat()->sendChat('$0f0$<$fff' . $player->nickname . '$> has left the game');
+		if ($this->maniaControl->getSettingManager()
+		                       ->getSettingValue($this, self::SETTING_JOIN_LEAVE_MESSAGES)
+		) {
+			$this->maniaControl->getChat()
+			                   ->sendChat('$0f0$<$fff' . $player->nickname . '$> has left the game');
 		}
 
 		//Destroys stored PlayerData, after all Disconnect Callbacks got Handled
-		$this->getPlayerDataManager()->destroyPlayerData($player);
+		$this->getPlayerDataManager()
+		     ->destroyPlayerData($player);
 	}
 
 	/**
@@ -360,7 +379,8 @@ class PlayerManager implements CallbackListener, TimerListener {
 		}
 		$playedTime = time() - $player->joinTime;
 
-		return $this->maniaControl->getStatisticManager()->insertStat(self::STAT_SERVERTIME, $player, $this->maniaControl->getServer()->index, $playedTime);
+		return $this->maniaControl->getStatisticManager()
+		                          ->insertStat(self::STAT_SERVERTIME, $player, $this->maniaControl->getServer()->index, $playedTime);
 	}
 
 	/**
@@ -398,7 +418,8 @@ class PlayerManager implements CallbackListener, TimerListener {
 
 		//Check if the Player is in a Team, to notify if its a TeamMode or not
 		if ($player->teamId >= 0) {
-			$this->maniaControl->getServer()->setTeamMode(true);
+			$this->maniaControl->getServer()
+			                   ->setTeamMode(true);
 		}
 
 		$prevJoinState = $player->hasJoinedGame;
@@ -409,25 +430,33 @@ class PlayerManager implements CallbackListener, TimerListener {
 		//Check if Player finished joining the game
 		if ($player->hasJoinedGame && !$prevJoinState) {
 
-			if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_JOIN_LEAVE_MESSAGES) && !$player->isFakePlayer()) {
+			if ($this->maniaControl->getSettingManager()
+			                       ->getSettingValue($this, self::SETTING_JOIN_LEAVE_MESSAGES)
+			    && !$player->isFakePlayer()
+			) {
 				$string      = array(0 => '$0f0Player', 1 => '$0f0Moderator', 2 => '$0f0Admin', 3 => '$0f0SuperAdmin', 4 => '$0f0MasterAdmin');
 				$chatMessage = '$0f0' . $string[$player->authLevel] . ' $<$fff' . $player->nickname . '$> Nation: $<$fff' . $player->getCountry() . '$> joined!';
-				$this->maniaControl->getChat()->sendChat($chatMessage);
-				$this->maniaControl->getChat()->sendInformation('This server uses ManiaControl v' . ManiaControl::VERSION . '!', $player->login);
+				$this->maniaControl->getChat()
+				                   ->sendChat($chatMessage);
+				$this->maniaControl->getChat()
+				                   ->sendInformation('This server uses ManiaControl v' . ManiaControl::VERSION . '!', $player->login);
 			}
 
 			$logMessage = "Player joined: {$player->login} / {$player->nickname} Nation: " . $player->getCountry() . " IP: {$player->ipAddress}";
 			Logger::logInfo($logMessage, true);
 
 			// Increment the Player Join Count
-			$this->maniaControl->getStatisticManager()->incrementStat(self::STAT_JOIN_COUNT, $player, $this->maniaControl->getServer()->index);
+			$this->maniaControl->getStatisticManager()
+			                   ->incrementStat(self::STAT_JOIN_COUNT, $player, $this->maniaControl->getServer()->index);
 
 			// Trigger own PlayerJoined callback
-			$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_PLAYERCONNECT, $player);
+			$this->maniaControl->getCallbackManager()
+			                   ->triggerCallback(self::CB_PLAYERCONNECT, $player);
 		}
 
 		// Trigger own callback
-		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_PLAYERINFOCHANGED, $player);
+		$this->maniaControl->getCallbackManager()
+		                   ->triggerCallback(self::CB_PLAYERINFOCHANGED, $player);
 	}
 
 	/**
@@ -457,7 +486,8 @@ class PlayerManager implements CallbackListener, TimerListener {
 	 * @return Player
 	 */
 	private function getPlayerFromDatabaseByLogin($playerLogin) {
-		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
+		$mysqli = $this->maniaControl->getDatabase()
+		                             ->getMysqli();
 
 		$query  = "SELECT * FROM `" . self::TABLE_PLAYERS . "`
 				WHERE `login` LIKE '" . $mysqli->escape_string($playerLogin) . "';";
@@ -542,7 +572,8 @@ class PlayerManager implements CallbackListener, TimerListener {
 			return null;
 		}
 
-		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
+		$mysqli = $this->maniaControl->getDatabase()
+		                             ->getMysqli();
 		$query  = "SELECT * FROM `" . self::TABLE_PLAYERS . "`
 				WHERE `index` = {$playerIndex};";
 		$result = $mysqli->query($query);

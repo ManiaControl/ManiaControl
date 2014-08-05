@@ -46,10 +46,12 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 		$this->maniaControl = $maniaControl;
 
 		// Permissions
-		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_INSTALL_PLUGINS, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
+		$this->maniaControl->getAuthenticationManager()
+		                   ->definePermissionLevel(self::SETTING_PERMISSION_INSTALL_PLUGINS, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
 
 		// Callbacks
-		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_REFRESH_LIST, $this, 'handleRefreshListAction');
+		$this->maniaControl->getManialinkManager()
+		                   ->registerManialinkPageAnswerListener(self::ACTION_REFRESH_LIST, $this, 'handleRefreshListAction');
 	}
 
 	/**
@@ -125,7 +127,9 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 
 			// List plugins
 			foreach ($pluginList as $plugin) {
-				if ($this->maniaControl->getPluginManager()->isPluginIdInstalled($plugin->id)) {
+				if ($this->maniaControl->getPluginManager()
+				                       ->isPluginIdInstalled($plugin->id)
+				) {
 					// Already installed -> Skip
 					continue;
 				}
@@ -273,6 +277,7 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 	 * @param Player $player
 	 */
 	public function handleRefreshListAction(array $actionCallback, Player $player) {
-		$this->maniaControl->getConfigurator()->showMenu($player, $this);
+		$this->maniaControl->getConfigurator()
+		                   ->showMenu($player, $this);
 	}
 }

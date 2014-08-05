@@ -80,25 +80,43 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		$this->maniaControl = $maniaControl;
 
 		// Chat commands
-		$this->maniaControl->getCommandManager()->registerCommandListener('me', $this, 'chat_me', false, 'Can be used to express your feelings/ideas.');
-		$this->maniaControl->getCommandManager()->registerCommandListener('hi', $this, 'chat_hi', false, 'Writes an hello message to the chat.');
-		$this->maniaControl->getCommandManager()->registerCommandListener(array('bb', 'bye'), $this, 'chat_bye', false, 'Writes a goodbye message to the chat.');
-		$this->maniaControl->getCommandManager()->registerCommandListener('thx', $this, 'chat_thx', false, 'Writes a thanks message to the chat.');
-		$this->maniaControl->getCommandManager()->registerCommandListener('gg', $this, 'chat_gg', false, 'Writes a good game message to the chat.');
-		$this->maniaControl->getCommandManager()->registerCommandListener('gl', $this, 'chat_gl', false, 'Writes a good luck message to the chat.');
-		$this->maniaControl->getCommandManager()->registerCommandListener('hf', $this, 'chat_hf', false, 'Writes an have fun message to the chat.');
-		$this->maniaControl->getCommandManager()->registerCommandListener('glhf', $this, 'chat_glhf', false, 'Writes a good luck, have fun message to the chat.');
-		$this->maniaControl->getCommandManager()->registerCommandListener('ns', $this, 'chat_ns', false, 'Writes a nice shot message to the chat.');
-		$this->maniaControl->getCommandManager()->registerCommandListener('n1', $this, 'chat_n1', false, 'Writes a nice one message to the chat.');
-		$this->maniaControl->getCommandManager()->registerCommandListener('lol', $this, 'chat_lol', false, 'Writes a lol message to the chat.');
-		$this->maniaControl->getCommandManager()->registerCommandListener('lool', $this, 'chat_lool', false, 'Writes a lool message to the chat.');
-		$this->maniaControl->getCommandManager()->registerCommandListener('brb', $this, 'chat_brb', false, 'Writes a be right back message to the chat.');
-		$this->maniaControl->getCommandManager()->registerCommandListener('bgm', $this, 'chat_bgm', false, 'Writes a bad game for me message to the chat.');
-		$this->maniaControl->getCommandManager()->registerCommandListener('afk', $this, 'chat_afk', false, 'Writes an away from keyboard message to the chat.');
-		$this->maniaControl->getCommandManager()->registerCommandListener(array('bm', 'bootme'), $this, 'chat_bootme', false, 'Gets you away from this server quickly!');
-		$this->maniaControl->getCommandManager()->registerCommandListener(array('rq', 'ragequit'), $this, 'chat_ragequit', false, 'Gets you away from this server in rage!');
+		$this->maniaControl->getCommandManager()
+		                   ->registerCommandListener('me', $this, 'chat_me', false, 'Can be used to express your feelings/ideas.');
+		$this->maniaControl->getCommandManager()
+		                   ->registerCommandListener('hi', $this, 'chat_hi', false, 'Writes an hello message to the chat.');
+		$this->maniaControl->getCommandManager()
+		                   ->registerCommandListener(array('bb', 'bye'), $this, 'chat_bye', false, 'Writes a goodbye message to the chat.');
+		$this->maniaControl->getCommandManager()
+		                   ->registerCommandListener('thx', $this, 'chat_thx', false, 'Writes a thanks message to the chat.');
+		$this->maniaControl->getCommandManager()
+		                   ->registerCommandListener('gg', $this, 'chat_gg', false, 'Writes a good game message to the chat.');
+		$this->maniaControl->getCommandManager()
+		                   ->registerCommandListener('gl', $this, 'chat_gl', false, 'Writes a good luck message to the chat.');
+		$this->maniaControl->getCommandManager()
+		                   ->registerCommandListener('hf', $this, 'chat_hf', false, 'Writes an have fun message to the chat.');
+		$this->maniaControl->getCommandManager()
+		                   ->registerCommandListener('glhf', $this, 'chat_glhf', false, 'Writes a good luck, have fun message to the chat.');
+		$this->maniaControl->getCommandManager()
+		                   ->registerCommandListener('ns', $this, 'chat_ns', false, 'Writes a nice shot message to the chat.');
+		$this->maniaControl->getCommandManager()
+		                   ->registerCommandListener('n1', $this, 'chat_n1', false, 'Writes a nice one message to the chat.');
+		$this->maniaControl->getCommandManager()
+		                   ->registerCommandListener('lol', $this, 'chat_lol', false, 'Writes a lol message to the chat.');
+		$this->maniaControl->getCommandManager()
+		                   ->registerCommandListener('lool', $this, 'chat_lool', false, 'Writes a lool message to the chat.');
+		$this->maniaControl->getCommandManager()
+		                   ->registerCommandListener('brb', $this, 'chat_brb', false, 'Writes a be right back message to the chat.');
+		$this->maniaControl->getCommandManager()
+		                   ->registerCommandListener('bgm', $this, 'chat_bgm', false, 'Writes a bad game for me message to the chat.');
+		$this->maniaControl->getCommandManager()
+		                   ->registerCommandListener('afk', $this, 'chat_afk', false, 'Writes an away from keyboard message to the chat.');
+		$this->maniaControl->getCommandManager()
+		                   ->registerCommandListener(array('bm', 'bootme'), $this, 'chat_bootme', false, 'Gets you away from this server quickly!');
+		$this->maniaControl->getCommandManager()
+		                   ->registerCommandListener(array('rq', 'ragequit'), $this, 'chat_ragequit', false, 'Gets you away from this server in rage!');
 		//TODO block command listener for muted people
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_AFK_FORCE_SPEC, true);
+		$this->maniaControl->getSettingManager()
+		                   ->initSetting($this, self::SETTING_AFK_FORCE_SPEC, true);
 
 		return true;
 	}
@@ -119,7 +137,8 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		$message = substr($chat[1][2], 4);
 
 		$msg = '$<' . $player->nickname . '$>$s$i$fa0 ' . $message;
-		$this->maniaControl->getChat()->sendChat($msg, null, false);
+		$this->maniaControl->getChat()
+		                   ->sendChat($msg, null, false);
 	}
 
 	/**
@@ -136,7 +155,8 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		} else {
 			$msg = '$ff0[$<' . $player->nickname . '$>] $ff0$iHello All!';
 		}
-		$this->maniaControl->getChat()->sendChat($msg, null, false);
+		$this->maniaControl->getChat()
+		                   ->sendChat($msg, null, false);
 	}
 
 	/**
@@ -148,7 +168,8 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	 */
 	private function getTarget($login) {
 		$player = null;
-		foreach ($this->maniaControl->getPlayerManager()->getPlayers() as $player) {
+		foreach ($this->maniaControl->getPlayerManager()
+		                            ->getPlayers() as $player) {
 			if ($login == $player || $login == $player->login || $login == $player->pid || $login == $player->nickname) {
 				return $player->nickname;
 			}
@@ -177,7 +198,8 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 			$msg = '$ff0[$<' . $player->nickname . '$>] $ff0$iI have to go... Bye All!';
 		}
 
-		$this->maniaControl->getChat()->sendChat($msg, null, false);
+		$this->maniaControl->getChat()
+		                   ->sendChat($msg, null, false);
 	}
 
 	/**
@@ -195,7 +217,8 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 			$msg = '$ff0[$<' . $player->nickname . '$>] $ff0$iThanks All!';
 		}
 
-		$this->maniaControl->getChat()->sendChat($msg, null, false);
+		$this->maniaControl->getChat()
+		                   ->sendChat($msg, null, false);
 	}
 
 	/**
@@ -208,12 +231,13 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		$command = explode(" ", $chat[1][2]);
 
 		if (isset($command[1])) {
-			$msg = '$ff0[' . $player->getEscapedNickname(). '] $ff0$iGood Game $z$<' . $this->getTarget($command[1]) . '$>$i!';
+			$msg = '$ff0[' . $player->getEscapedNickname() . '] $ff0$iGood Game $z$<' . $this->getTarget($command[1]) . '$>$i!';
 		} else {
 			$msg = '$ff0[' . $player->getEscapedNickname() . '] $ff0$iGood Game All!';
 		}
 
-		$this->maniaControl->getChat()->sendChat($msg, null, false);
+		$this->maniaControl->getChat()
+		                   ->sendChat($msg, null, false);
 	}
 
 	/**
@@ -231,7 +255,8 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 			$msg = '$ff0[$<' . $player->nickname . '$>] $ff0$iGood Luck All!';
 		}
 
-		$this->maniaControl->getChat()->sendChat($msg, null, false);
+		$this->maniaControl->getChat()
+		                   ->sendChat($msg, null, false);
 	}
 
 	/**
@@ -244,12 +269,13 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		$command = explode(" ", $chat[1][2]);
 
 		if (isset($command[1])) {
-			$msg = '$ff0[' . $player->getEscapedNickname(). '] $ff0$iHave Fun $z$<' . $this->getTarget($command[1]) . '$>$i!';
+			$msg = '$ff0[' . $player->getEscapedNickname() . '] $ff0$iHave Fun $z$<' . $this->getTarget($command[1]) . '$>$i!';
 		} else {
-			$msg = '$ff0[' . $player->getEscapedNickname(). '] $ff0$iHave Fun All!';
+			$msg = '$ff0[' . $player->getEscapedNickname() . '] $ff0$iHave Fun All!';
 		}
 
-		$this->maniaControl->getChat()->sendChat($msg, null, false);
+		$this->maniaControl->getChat()
+		                   ->sendChat($msg, null, false);
 	}
 
 	/**
@@ -267,7 +293,8 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 			$msg = '$ff0[$<' . $player->nickname . '$>] $ff0$iGood Luck and Have Fun All!';
 		}
 
-		$this->maniaControl->getChat()->sendChat($msg, null, false);
+		$this->maniaControl->getChat()
+		                   ->sendChat($msg, null, false);
 	}
 
 	/**
@@ -285,7 +312,8 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 			$msg = '$ff0[$<' . $player->nickname . '$>] $ff0$iNice Shot!';
 		}
 
-		$this->maniaControl->getChat()->sendChat($msg, null, false);
+		$this->maniaControl->getChat()
+		                   ->sendChat($msg, null, false);
 	}
 
 	/**
@@ -303,7 +331,8 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 			$msg = '$ff0[$<' . $player->nickname . '$>] $ff0$iNice One!';
 		}
 
-		$this->maniaControl->getChat()->sendChat($msg, null, false);
+		$this->maniaControl->getChat()
+		                   ->sendChat($msg, null, false);
 	}
 
 	/**
@@ -314,7 +343,8 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	 */
 	public function chat_lol(array $chat, Player $player) {
 		$msg = '$ff0[$<' . $player->nickname . '$>] $ff0$iLoL!';
-		$this->maniaControl->getChat()->sendChat($msg, null, false);
+		$this->maniaControl->getChat()
+		                   ->sendChat($msg, null, false);
 	}
 
 	/**
@@ -325,7 +355,8 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	 */
 	public function chat_lool(array $chat, Player $player) {
 		$msg = '$ff0[$<' . $player->nickname . '$>] $ff0$iLooOOooL!';
-		$this->maniaControl->getChat()->sendChat($msg, null, false);
+		$this->maniaControl->getChat()
+		                   ->sendChat($msg, null, false);
 	}
 
 	/**
@@ -336,7 +367,8 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	 */
 	public function chat_brb(array $chat, Player $player) {
 		$msg = '$ff0[$<' . $player->nickname . '$>] $ff0$iBe Right Back!';
-		$this->maniaControl->getChat()->sendChat($msg, null, false);
+		$this->maniaControl->getChat()
+		                   ->sendChat($msg, null, false);
 	}
 
 	/**
@@ -347,7 +379,8 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	 */
 	public function chat_bgm(array $chat, Player $player) {
 		$msg = '$ff0[$<' . $player->nickname . '$>] $ff0$iBad Game for me :(';
-		$this->maniaControl->getChat()->sendChat($msg, null, false);
+		$this->maniaControl->getChat()
+		                   ->sendChat($msg, null, false);
 	}
 
 	/**
@@ -358,13 +391,16 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	 */
 	public function chat_bootme(array $chat, Player $player) {
 		$msg = '$i$ff0 $<' . $player->nickname . '$>$s$39f chooses to boot back to the real world!';
-		$this->maniaControl->getChat()->sendChat($msg, null, true);
+		$this->maniaControl->getChat()
+		                   ->sendChat($msg, null, true);
 
 		$message = '$39F Thanks for Playing, see you around!$z';
 		try {
-			$this->maniaControl->getClient()->kick($player->login, $message);
+			$this->maniaControl->getClient()
+			                   ->kick($player->login, $message);
 		} catch (UnknownPlayerException $exception) {
-			$this->maniaControl->getChat()->sendException($exception, $player);
+			$this->maniaControl->getChat()
+			                   ->sendException($exception, $player);
 		}
 	}
 
@@ -377,11 +413,14 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	public function chat_ragequit(array $chat, Player $player) {
 		try {
 			$message = '$39F Thanks for Playing, please come back soon!$z ';
-			$this->maniaControl->getClient()->kick($player->login, $message);
+			$this->maniaControl->getClient()
+			                   ->kick($player->login, $message);
 			$msg = '$i$ff0 $<' . $player->nickname . '$>$s$f00 said: "@"#!" and ragequitted!';
-			$this->maniaControl->getChat()->sendChat($msg, null, true);
+			$this->maniaControl->getChat()
+			                   ->sendChat($msg, null, true);
 		} catch (UnknownPlayerException $e) {
-			$this->maniaControl->getChat()->sendError('Error occurred: ' . $e->getMessage(), $player);
+			$this->maniaControl->getChat()
+			                   ->sendError('Error occurred: ' . $e->getMessage(), $player);
 		}
 	}
 
@@ -393,9 +432,12 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 	 */
 	public function chat_afk(array $chat, Player $player) {
 		$msg = '$ff0[$<' . $player->nickname . '$>] $ff0$iAway From Keyboard!';
-		$this->maniaControl->getChat()->sendChat($msg, null, false);
+		$this->maniaControl->getChat()
+		                   ->sendChat($msg, null, false);
 
-		if (!$this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_AFK_FORCE_SPEC)) {
+		if (!$this->maniaControl->getSettingManager()
+		                        ->getSettingValue($this, self::SETTING_AFK_FORCE_SPEC)
+		) {
 			return;
 		}
 		if ($player->isSpectator) {
@@ -404,11 +446,14 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 
 		try {
 			// Force into spec
-			$this->maniaControl->getClient()->forceSpectator($player->login, 3);
+			$this->maniaControl->getClient()
+			                   ->forceSpectator($player->login, 3);
 			// Free player slot
-			$this->maniaControl->getClient()->spectatorReleasePlayerSlot($player->login);
+			$this->maniaControl->getClient()
+			                   ->spectatorReleasePlayerSlot($player->login);
 		} catch (UnknownPlayerException $exception) {
-			$this->maniaControl->getChat()->sendException($exception, $player);
+			$this->maniaControl->getChat()
+			                   ->sendException($exception, $player);
 		} catch (PlayerStateException $exception) {
 		}
 	}
