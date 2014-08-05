@@ -15,7 +15,7 @@ use ManiaControl\Utils\Formatter;
 abstract class Logger {
 
 	/**
-	 * Setup the Logging Mechanism
+	 * Setup the logging mechanism
 	 */
 	public static function setup() {
 		self::setupErrorLogFileName();
@@ -23,7 +23,7 @@ abstract class Logger {
 	}
 
 	/**
-	 * Set the Error Log File Name
+	 * Set the error log file name
 	 */
 	private static function setupErrorLogFileName() {
 		$logsFolder = self::getLogsFolder();
@@ -41,25 +41,25 @@ abstract class Logger {
 	}
 
 	/**
-	 * Get the Logs Folder and create it if necessary
+	 * Get the logs folder and create it if necessary
 	 *
-	 * @return string|bool
+	 * @return string
 	 */
 	public static function getLogsFolder() {
 		$logsFolder = ManiaControlDir . 'logs' . DIRECTORY_SEPARATOR;
 		if (!is_dir($logsFolder) && !mkdir($logsFolder)) {
 			self::logError("Couldn't create the logs folder!");
-			return false;
+			return null;
 		}
 		if (!is_writeable($logsFolder)) {
 			self::logError("ManiaControl doesn't have the necessary write rights for the logs folder!");
-			return false;
+			return null;
 		}
 		return $logsFolder;
 	}
 
 	/**
-	 * Delete old ManiaControl Log Files
+	 * Delete old ManiaControl log files
 	 *
 	 * @return bool
 	 */
@@ -69,25 +69,25 @@ abstract class Logger {
 	}
 
 	/**
-	 * Log and echo the given Error Message
+	 * Log and output the given Error message
 	 *
 	 * @param string $message
-	 * @param bool   $eol
 	 * @param bool   $stripCodes
+	 * @param bool   $eol
 	 */
-	public static function logError($message, $eol = true, $stripCodes = false) {
+	public static function logError($message, $stripCodes = false, $eol = true) {
 		$message = '[ERROR] ' . $message;
-		self::log($message, $eol, $stripCodes);
+		self::log($message, $stripCodes, $eol);
 	}
 
 	/**
-	 * Log and output the given Message
+	 * Log and output the given message
 	 *
 	 * @param string $message
-	 * @param bool   $eol
 	 * @param bool   $stripCodes
+	 * @param bool   $eol
 	 */
-	public static function log($message, $eol = true, $stripCodes = false) {
+	public static function log($message, $stripCodes = false, $eol = true) {
 		if ($stripCodes) {
 			$message = Formatter::stripCodes($message);
 		}
@@ -96,7 +96,7 @@ abstract class Logger {
 	}
 
 	/**
-	 * Echo the given Message
+	 * Echo the given message
 	 *
 	 * @param string $message
 	 * @param bool   $eol
@@ -109,26 +109,26 @@ abstract class Logger {
 	}
 
 	/**
-	 * Log and echo the given Info Message
+	 * Log and output the given Info message
 	 *
 	 * @param string $message
-	 * @param bool   $eol
 	 * @param bool   $stripCodes
+	 * @param bool   $eol
 	 */
-	public static function logInfo($message, $eol = true, $stripCodes = false) {
+	public static function logInfo($message, $stripCodes = false, $eol = true) {
 		$message = '[INFO] ' . $message;
-		self::log($message, $eol, $stripCodes);
+		self::log($message, $stripCodes, $eol);
 	}
 
 	/**
-	 * Log and echo the given Warning Message
+	 * Log and output the given Warning message
 	 *
 	 * @param string $message
-	 * @param bool   $eol
 	 * @param bool   $stripCodes
+	 * @param bool   $eol
 	 */
-	public static function logWarning($message, $eol = true, $stripCodes = false) {
+	public static function logWarning($message, $stripCodes = false, $eol = true) {
 		$message = '[WARNING] ' . $message;
-		self::log($message, $eol, $stripCodes);
+		self::log($message, $stripCodes, $eol);
 	}
 }
