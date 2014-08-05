@@ -655,7 +655,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 				$message = $player->getEscapedNickname() . ' skipped to Map $z' . $map->getEscapedName() . '!';
 				$this->maniaControl->getChat()->sendSuccess($message);
-				Logger::logInfo($message, true, true, true);
+				Logger::logInfo($message, true);
 
 				$this->playerCloseWidget($player);
 				break;

@@ -319,7 +319,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 
 		$played     = Formatter::formatTimeH(time() - $player->joinTime);
 		$logMessage = "Player left: {$player->login} / {$player->nickname} Playtime: {$played}";
-		Logger::logInfo($logMessage, true, true, true);
+		Logger::logInfo($logMessage, true);
 
 		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_JOIN_LEAVE_MESSAGES)) {
 			$this->maniaControl->getChat()->sendChat('$0f0$<$fff' . $player->nickname . '$> has left the game');
@@ -417,7 +417,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 			}
 
 			$logMessage = "Player joined: {$player->login} / {$player->nickname} Nation: " . $player->getCountry() . " IP: {$player->ipAddress}";
-			Logger::logInfo($logMessage, true, true, true);
+			Logger::logInfo($logMessage, true);
 
 			// Increment the Player Join Count
 			$this->maniaControl->getStatisticManager()->incrementStat(self::STAT_JOIN_COUNT, $player, $this->maniaControl->getServer()->index);

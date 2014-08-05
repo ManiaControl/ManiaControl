@@ -390,7 +390,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 
 		$chatMessage .= '!';
 		$this->maniaControl->getChat()->sendInformation($chatMessage);
-		Logger::logInfo($chatMessage, true, true, true);
+		Logger::logInfo($chatMessage, true);
 		return true;
 	}
 

@@ -316,7 +316,7 @@ class MapManager implements CallbackListener {
 			$action  = ($eraseFile ? 'erased' : 'removed');
 			$message = $admin->getEscapedNickname() . ' ' . $action . ' ' . $map->getEscapedName() . '!';
 			$this->maniaControl->getChat()->sendSuccess($message);
-			Logger::logInfo($message, true, true, true);
+			Logger::logInfo($message, true);
 		}
 	}
 
@@ -446,13 +446,13 @@ class MapManager implements CallbackListener {
 			// Message
 			$message = $player->getEscapedNickname() . ' added $<' . $mapInfo->name . '$>!';
 			$this->maniaControl->getChat()->sendSuccess($message);
-			Logger::logInfo($message, true, true, true);
+			Logger::logInfo($message, true);
 			// Queue requested Map
 			$this->maniaControl->getMapManager()->getMapQueue()->addMapToMapQueue($login, $mapInfo->uid);
 		} else {
 			$message = $player->getEscapedNickname() . ' updated $<' . $mapInfo->name . '$>!';
 			$this->maniaControl->getChat()->sendSuccess($message);
-			Logger::logInfo($message, true, true, true);
+			Logger::logInfo($message, true);
 		}
 	}
 
@@ -603,7 +603,7 @@ class MapManager implements CallbackListener {
 		if ($admin) {
 			$message = $admin->getEscapedNickname() . ' shuffled the Maplist!';
 			$this->maniaControl->getChat()->sendSuccess($message);
-			Logger::logInfo($message, true, true, true);
+			Logger::logInfo($message, true);
 		}
 
 		// Restructure if needed

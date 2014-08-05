@@ -222,7 +222,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 
 		$message = $player->getEscapedNickname() . ' skipped the current Map!';
 		$this->maniaControl->getChat()->sendSuccess($message);
-		Logger::logInfo($message, true, true, true);
+		Logger::logInfo($message, true);
 	}
 
 	/**
@@ -238,7 +238,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		}
 		$message = $player->getEscapedNickname() . ' restarted the current Map!';
 		$this->maniaControl->getChat()->sendSuccess($message);
-		Logger::logInfo($message, true, true, true);
+		Logger::logInfo($message, true);
 
 		try {
 			$this->maniaControl->getClient()->restartMap();
@@ -260,7 +260,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		}
 		$message = $player->getEscapedNickname() . ' replays the current Map!';
 		$this->maniaControl->getChat()->sendSuccess($message);
-		Logger::logInfo($message, true, true, true);
+		Logger::logInfo($message, true);
 
 		$this->maniaControl->getMapManager()->getMapQueue()->addFirstMapToMapQueue($player, $this->maniaControl->getMapManager()->getCurrentMap());
 	}
@@ -294,7 +294,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 
 			$message = 'Maplist $<$fff' . $maplist . '$> written.';
 			$this->maniaControl->getChat()->sendSuccess($message, $player);
-			Logger::logInfo($message, true, true, true);
+			Logger::logInfo($message, true);
 		} catch (FaultException $e) {
 			$this->maniaControl->getChat()->sendError('Cannot write maplist $<$fff' . $maplist . '$>!', $player);
 		}
@@ -330,7 +330,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$message = 'Maplist $<$fff' . $maplist . '$> loaded.';
 			$this->maniaControl->getMapManager()->restructureMapList();
 			$this->maniaControl->getChat()->sendSuccess($message, $player);
-			Logger::logInfo($message, true, true, true);
+			Logger::logInfo($message, true);
 		} catch (FaultException $e) {
 			$this->maniaControl->getChat()->sendError('Cannot load maplist $<$fff' . $maplist . '$>!', $player);
 		}

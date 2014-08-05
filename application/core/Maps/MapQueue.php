@@ -125,7 +125,7 @@ class MapQueue implements CallbackListener, CommandListener {
 
 		$message = '$fa0' . $title . ' $<$fff' . $admin->nickname . '$> cleared the Map-Queue!';
 		$this->maniaControl->getChat()->sendInformation($message);
-		Logger::logInfo($message, true, true, true);
+		Logger::logInfo($message, true);
 
 		// Trigger callback
 		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_MAPQUEUE_CHANGED, array('clear'));

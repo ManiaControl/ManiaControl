@@ -400,7 +400,7 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 		// Message
 		$message = $player->getEscapedNickname() . ' added ' . $map->getEscapedName() . '!';
 		$this->maniaControl->getChat()->sendSuccess($message);
-		Logger::logInfo($message, true, true, true);
+		Logger::logInfo($message, true);
 
 		// Queue requested Map
 		$this->maniaControl->getMapManager()->getMapQueue()->addMapToMapQueue($player, $map);

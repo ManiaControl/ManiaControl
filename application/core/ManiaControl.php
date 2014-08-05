@@ -181,7 +181,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	 * @see Logger::log()
 	 */
 	public function log($message, $stripCodes = false) {
-		Logger::log($message, true, true, $stripCodes);
+		Logger::log($message, $stripCodes);
 	}
 
 	/**
