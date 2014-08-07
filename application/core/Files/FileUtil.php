@@ -196,4 +196,15 @@ abstract class FileUtil {
 		}
 		return $path;
 	}
+
+	/**
+	 * Check whether the given file name is a PHP file
+	 *
+	 * @param string $fileName
+	 * @return bool
+	 */
+	public static function isPhpFileName($fileName) {
+		$extension = substr($fileName, -4);
+		return (strtolower($extension) === '.php');
+	}
 }

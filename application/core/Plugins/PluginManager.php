@@ -5,6 +5,7 @@ namespace ManiaControl\Plugins;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
+use ManiaControl\Files\FileUtil;
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
@@ -294,7 +295,7 @@ class PluginManager {
 
 			$filePath = $directory . $pluginFile;
 			if (is_file($filePath)) {
-				if (!stripos($pluginFile, '.php')) {
+				if (!FileUtil::isPhpFileName($pluginFile)) {
 					continue;
 				}
 				$success = include_once $filePath;
@@ -478,8 +479,8 @@ class PluginManager {
 		$url = ManiaControl::URL_WEBSERVICE . 'plugins';
 		$this->maniaControl->getFileReader()
 		                   ->loadFile($url, function ($dataJson, $error) use (&$function) {
-			$data = json_decode($dataJson);
-			call_user_func($function, $data, $error);
-		});
+			                   $data = json_decode($dataJson);
+			                   call_user_func($function, $data, $error);
+		                   });
 	}
 }
