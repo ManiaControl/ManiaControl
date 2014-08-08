@@ -128,7 +128,7 @@ class SystemUtil {
 			Logger::log("Can't restart ManiaControl because the function 'exec' is disabled!");
 			return;
 		}
-		$fileName = ManiaControlDir . 'ManiaControl.sh';
+		$fileName = MANIACONTROL_PATH . 'ManiaControl.sh';
 		if (!is_readable($fileName)) {
 			Logger::log("Can't restart ManiaControl because the file 'ManiaControl.sh' doesn't exist or isn't readable!");
 			return;
@@ -165,7 +165,7 @@ class SystemUtil {
 			Logger::log("Can't restart ManiaControl because the function 'system' is disabled!");
 			return;
 		}
-		$command = escapeshellarg(ManiaControlDir . "ManiaControl.bat");
+		$command = escapeshellarg(MANIACONTROL_PATH . "ManiaControl.bat");
 		system($command); // TODO: windows gets stuck here as long controller is running
 	}
 }

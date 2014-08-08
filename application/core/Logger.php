@@ -46,7 +46,7 @@ abstract class Logger {
 	 * @return string
 	 */
 	public static function getLogsFolder() {
-		$logsFolder = ManiaControlDir . 'logs' . DIRECTORY_SEPARATOR;
+		$logsFolder = MANIACONTROL_PATH . 'logs' . DIRECTORY_SEPARATOR;
 		if (!is_dir($logsFolder) && !mkdir($logsFolder)) {
 			self::logError("Couldn't create the logs folder!");
 			return null;

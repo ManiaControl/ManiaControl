@@ -9,7 +9,9 @@ define('LOG_NAME_USE_DATE', true); // Use current date as suffix for log file na
 define('LOG_NAME_USE_PID', true); // Use current process id as suffix for log file name in logs folder
 
 // Define base dir
-define('ManiaControlDir', __DIR__ . DIRECTORY_SEPARATOR);
+define('MANIACONTROL_PATH', __DIR__ . DIRECTORY_SEPARATOR);
+/** @deprecated Use MANIACONTROL_PATH */
+define('ManiaControlDir', MANIACONTROL_PATH);
 
 // Set process settings
 ini_set('memory_limit', '64M');
@@ -21,7 +23,7 @@ if (!ini_get('date.timezone') && function_exists('date_default_timezone_set')) {
 gc_enable();
 
 // Register AutoLoader
-require_once ManiaControlDir . 'core' . DIRECTORY_SEPARATOR . 'AutoLoader.php';
+require_once MANIACONTROL_PATH . 'core' . DIRECTORY_SEPARATOR . 'AutoLoader.php';
 \ManiaControl\AutoLoader::register();
 
 // Setup Logger

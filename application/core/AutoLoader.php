@@ -28,21 +28,21 @@ abstract class AutoLoader {
 
 		// Core file
 		$coreClassPath = preg_replace('/ManiaControl/', 'core', $classPath, 1);
-		$coreFilePath  = ManiaControlDir . $coreClassPath . '.php';
+		$coreFilePath  = MANIACONTROL_PATH . $coreClassPath . '.php';
 		if (file_exists($coreFilePath)) {
 			include_once $coreFilePath;
 			return;
 		}
 
 		// Plugin file
-		$pluginFilePath = ManiaControlDir . 'plugins' . DIRECTORY_SEPARATOR . $classPath . '.php';
+		$pluginFilePath = MANIACONTROL_PATH . 'plugins' . DIRECTORY_SEPARATOR . $classPath . '.php';
 		if (file_exists($pluginFilePath)) {
 			include_once $pluginFilePath;
 			return;
 		}
 
 		// Lib file
-		$libFilePath = ManiaControlDir . 'libs' . DIRECTORY_SEPARATOR . $classPath . '.php';
+		$libFilePath = MANIACONTROL_PATH . 'libs' . DIRECTORY_SEPARATOR . $classPath . '.php';
 		if (file_exists($libFilePath)) {
 			include_once $libFilePath;
 			return;

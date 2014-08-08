@@ -32,11 +32,11 @@ abstract class BackupUtil {
 		}
 		$excludes      = array();
 		$baseFileNames = array('configs', 'core', 'plugins', 'ManiaControl.php');
-		$pathInfo      = pathInfo(ManiaControlDir);
+		$pathInfo      = pathInfo(MANIACONTROL_PATH);
 		$parentPath    = $pathInfo['dirname'] . DIRECTORY_SEPARATOR;
 		$dirName       = $pathInfo['basename'];
 		$backupZip->addEmptyDir($dirName);
-		self::zipDirectory($backupZip, ManiaControlDir, strlen($parentPath), $excludes, $baseFileNames);
+		self::zipDirectory($backupZip, MANIACONTROL_PATH, strlen($parentPath), $excludes, $baseFileNames);
 		return $backupZip->close();
 	}
 
@@ -46,7 +46,7 @@ abstract class BackupUtil {
 	 * @return string|bool
 	 */
 	private static function getBackupFolder() {
-		$backupFolder = ManiaControlDir . 'backup' . DIRECTORY_SEPARATOR;
+		$backupFolder = MANIACONTROL_PATH . 'backup' . DIRECTORY_SEPARATOR;
 		if (!is_dir($backupFolder) && !mkdir($backupFolder)) {
 			Logger::logError("Couldn't create backup folder!");
 			return false;
@@ -121,7 +121,7 @@ abstract class BackupUtil {
 			Logger::logError("Couldn't create backup zip!");
 			return false;
 		}
-		$directory  = ManiaControlDir . 'plugins';
+		$directory  = MANIACONTROL_PATH . 'plugins';
 		$pathInfo   = pathInfo($directory);
 		$parentPath = $pathInfo['dirname'] . DIRECTORY_SEPARATOR;
 		$dirName    = $pathInfo['basename'];

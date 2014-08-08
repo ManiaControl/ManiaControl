@@ -321,7 +321,7 @@ class ErrorHandler {
 	}
 
 	/**
-	 * Build a String from an Arguments Array
+	 * Build a string from an arguments array
 	 *
 	 * @param array $args
 	 * @return string
@@ -361,17 +361,17 @@ class ErrorHandler {
 	}
 
 	/**
-	 * Strip the ManiaControlDir from the given Path to ensure privacy
+	 * Strip the ManiaControl path from the given path to ensure privacy
 	 *
 	 * @param string $path
 	 * @return string
 	 */
 	private static function stripBaseDir($path) {
-		return str_replace(ManiaControlDir, '', $path);
+		return str_replace(MANIACONTROL_PATH, '', $path);
 	}
 
 	/**
-	 * Get the Source Class via the Error File
+	 * Get the source class via the error file
 	 *
 	 * @param string $errorFile
 	 * @return string
@@ -380,7 +380,7 @@ class ErrorHandler {
 		if (!$errorFile) {
 			return null;
 		}
-		$filePath  = substr($errorFile, strlen(ManiaControlDir));
+		$filePath  = substr($errorFile, strlen(MANIACONTROL_PATH));
 		$filePath  = str_replace('plugins' . DIRECTORY_SEPARATOR, '', $filePath);
 		$filePath  = str_replace('core' . DIRECTORY_SEPARATOR, 'ManiaControl\\', $filePath);
 		$className = str_replace('.php', '', $filePath);

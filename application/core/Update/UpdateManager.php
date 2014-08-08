@@ -255,7 +255,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 */
 	public function getNightlyBuildDate() {
 		if (!$this->currentBuildDate) {
-			$nightlyBuildDateFile = ManiaControlDir . 'core' . DIRECTORY_SEPARATOR . 'nightly_build.txt';
+			$nightlyBuildDateFile = MANIACONTROL_PATH . 'core' . DIRECTORY_SEPARATOR . 'nightly_build.txt';
 			if (file_exists($nightlyBuildDateFile)) {
 				$this->currentBuildDate = file_get_contents($nightlyBuildDateFile);
 			}
@@ -401,7 +401,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 				return;
 			}
 
-			$zip->extractTo(ManiaControlDir);
+			$zip->extractTo(MANIACONTROL_PATH);
 			$zip->close();
 			unlink($updateFileName);
 			FileUtil::deleteTempFolder();
@@ -429,7 +429,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 * @return bool
 	 */
 	public function setNightlyBuildDate($date) {
-		$nightlyBuildDateFile   = ManiaControlDir . 'core' . DIRECTORY_SEPARATOR . 'nightly_build.txt';
+		$nightlyBuildDateFile   = MANIACONTROL_PATH . 'core' . DIRECTORY_SEPARATOR . 'nightly_build.txt';
 		$success                = (bool)file_put_contents($nightlyBuildDateFile, $date);
 		$this->currentBuildDate = $date;
 		return $success;

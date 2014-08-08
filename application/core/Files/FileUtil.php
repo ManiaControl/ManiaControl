@@ -31,7 +31,7 @@ abstract class FileUtil {
 	 * @return \SimpleXMLElement
 	 */
 	public static function loadConfig($fileName) {
-		$fileLocation = ManiaControlDir . 'configs' . DIRECTORY_SEPARATOR . $fileName;
+		$fileLocation = MANIACONTROL_PATH . 'configs' . DIRECTORY_SEPARATOR . $fileName;
 		if (!file_exists($fileLocation)) {
 			Logger::log("Config file doesn't exist! ({$fileName})");
 			return null;
@@ -105,7 +105,7 @@ abstract class FileUtil {
 	 * @return string|bool
 	 */
 	public static function getTempFolder() {
-		$tempFolder = ManiaControlDir . 'temp' . DIRECTORY_SEPARATOR;
+		$tempFolder = MANIACONTROL_PATH . 'temp' . DIRECTORY_SEPARATOR;
 		if (!is_dir($tempFolder) && !mkdir($tempFolder)) {
 			trigger_error("Couldn't create the temp folder!");
 			return false;
@@ -128,7 +128,7 @@ abstract class FileUtil {
 			$directories = array($directories);
 		}
 		foreach ($directories as $directory) {
-			$dir = new \RecursiveDirectoryIterator(ManiaControlDir . $directory);
+			$dir = new \RecursiveDirectoryIterator(MANIACONTROL_PATH . $directory);
 			foreach (new \RecursiveIteratorIterator($dir) as $fileName => $file) {
 				if (substr($fileName, 0, 1) === '.') {
 					continue;

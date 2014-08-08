@@ -248,7 +248,7 @@ class PluginManager {
 	 * @return string[]
 	 */
 	public function loadPlugins() {
-		$pluginsDirectory = ManiaControlDir . 'plugins' . DIRECTORY_SEPARATOR;
+		$pluginsDirectory = MANIACONTROL_PATH . 'plugins' . DIRECTORY_SEPARATOR;
 
 		$classesBefore = get_declared_classes();
 		$this->loadPluginFiles($pluginsDirectory);
