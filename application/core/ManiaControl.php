@@ -31,8 +31,6 @@ use Maniaplanet\DedicatedServer\Connection;
 use Maniaplanet\DedicatedServer\Xmlrpc\AuthenticationException;
 use Maniaplanet\DedicatedServer\Xmlrpc\TransportException;
 
-require_once ManiaControlDir . '/libs/Maniaplanet/DedicatedServer/Connection.php';
-require_once ManiaControlDir . '/libs/FML/autoload.php';
 require_once ManiaControlDir . '/libs/Symfony/autoload.php';
 require_once ManiaControlDir . '/libs/curl-easy/autoload.php';
 

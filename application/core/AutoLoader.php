@@ -27,17 +27,24 @@ abstract class AutoLoader {
 		$classPath = str_replace('\\', DIRECTORY_SEPARATOR, $className);
 
 		// Core file
-		$classDirectoryPath = preg_replace('/ManiaControl/', 'core', $classPath, 1);
-		$filePath           = ManiaControlDir . $classDirectoryPath . '.php';
-		if (file_exists($filePath)) {
-			require_once $filePath;
+		$coreClassPath = preg_replace('/ManiaControl/', 'core', $classPath, 1);
+		$coreFilePath  = ManiaControlDir . $coreClassPath . '.php';
+		if (file_exists($coreFilePath)) {
+			include_once $coreFilePath;
 			return;
 		}
 
 		// Plugin file
-		$filePath = ManiaControlDir . 'plugins' . DIRECTORY_SEPARATOR . $classPath . '.php';
-		if (file_exists($filePath)) {
-			include_once $filePath;
+		$pluginFilePath = ManiaControlDir . 'plugins' . DIRECTORY_SEPARATOR . $classPath . '.php';
+		if (file_exists($pluginFilePath)) {
+			include_once $pluginFilePath;
+			return;
+		}
+
+		// Lib file
+		$libFilePath = ManiaControlDir . 'libs' . DIRECTORY_SEPARATOR . $classPath . '.php';
+		if (file_exists($libFilePath)) {
+			include_once $libFilePath;
 			return;
 		}
 	}
