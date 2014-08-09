@@ -13,6 +13,7 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use Maniaplanet\DedicatedServer\Xmlrpc\AlreadyInListException;
 use Maniaplanet\DedicatedServer\Xmlrpc\FaultException;
+use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
 use Maniaplanet\DedicatedServer\Xmlrpc\NotInListException;
 use Maniaplanet\DedicatedServer\Xmlrpc\PlayerStateException;
 use Maniaplanet\DedicatedServer\Xmlrpc\ServerOptionsException;
@@ -117,6 +118,9 @@ class PlayerActions {
 			                   ->forcePlayerTeam($target->login, $teamId);
 		} catch (ServerOptionsException $exception) {
 			$this->forcePlayerToPlay($adminLogin, $targetLogin);
+			return;
+		} catch (GameModeException $exception) {
+			$this->maniaControl->getChat()->sendException($exception, $admin);
 			return;
 		}
 
