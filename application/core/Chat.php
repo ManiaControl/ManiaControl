@@ -71,42 +71,42 @@ class Chat {
 			return false;
 		}
 
-		if (!$login) {
-			if ($prefix === true) {
-				//use double prefix
-				$prefix      = $this->getPrefix($prefix);
-				$chatMessage = '$<$z$ff0' . str_replace(' ', '', $prefix) . $prefix . $message . '$>';
-			} else {
-				//don't use double Prefix, when a custom Prefix is set
-				$prefix      = $this->getPrefix($prefix);
-				$chatMessage = '$<$z$ff0' . $prefix . $message . '$>';
-			}
-			$this->maniaControl->getClient()->chatSendServerMessage($chatMessage);
-		} else {
-			$chatMessage = '$<$z$ff0' . $this->getPrefix($prefix) . $message . '$>';
+		$prefix      = $this->buildPrefix($prefix, $login);
+		$chatMessage = '$<$z$ff0' . $prefix . $message . '$>';
+
+		if ($login) {
 			if (!is_array($login)) {
 				$login = Player::parseLogin($login);
 			}
 			try {
-				$this->maniaControl->getClient()->chatSendServerMessage($chatMessage, $login);
+				return $this->maniaControl->getClient()->chatSendServerMessage($chatMessage, $login);
 			} catch (UnknownPlayerException $e) {
+				return false;
 			}
 		}
-		return true;
+
+		return $this->maniaControl->getClient()->chatSendServerMessage($chatMessage);
 	}
 
 	/**
-	 * Get prefix
+	 * Build the chat message prefix
 	 *
-	 * @param string|bool $prefix
+	 * @param string|bool  $prefixParam
+	 * @param string|array $login
 	 * @return string
 	 */
-	private function getPrefix($prefix) {
-		if (is_string($prefix)) {
-			return $prefix;
+	private function buildPrefix($prefixParam, $login = null) {
+		if (is_string($prefixParam)) {
+			return $prefixParam;
 		}
-		if ($prefix === true) {
-			return $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_PREFIX);
+		if ($prefixParam === true) {
+			$prefix = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_PREFIX);
+			if ($login) {
+				// Private - Doubled default prefix
+				$prefix .= $prefix;
+				// TODO: validate whether to use specific private & public prefixes instead of just doubling a default one
+			}
+			return $prefix;
 		}
 		return '';
 	}
