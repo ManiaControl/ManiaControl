@@ -68,10 +68,10 @@ class UISound extends ScriptFeature {
 	 * @param string  $labelName (optional) Script Label name
 	 */
 	public function __construct($soundName = null, Control $control = null, $variant = 0, $labelName = ScriptLabel::MOUSECLICK) {
-		if (!is_null($soundName)) {
+		if ($soundName !== null) {
 			$this->setSoundName($soundName);
 		}
-		if (!is_null($control)) {
+		if ($control !== null) {
 			$this->setControl($control);
 		}
 		$this->setVariant($variant);

@@ -21,6 +21,7 @@ class Quad_BgsButtons extends Quad {
 	const SUBSTYLE_BgButtonMediumSelector = 'BgButtonMediumSelector';
 	const SUBSTYLE_BgButtonMediumSpecial  = 'BgButtonMediumSpecial';
 	const SUBSTYLE_BgButtonSmall          = 'BgButtonSmall';
+	const SUBSTYLE_BgButtonSmall2         = 'BgButtonSmall2';
 	const SUBSTYLE_BgButtonXSmall         = 'BgButtonXSmall';
 
 	/*

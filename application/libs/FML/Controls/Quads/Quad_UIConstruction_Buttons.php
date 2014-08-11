@@ -35,6 +35,7 @@ class Quad_UIConstruction_Buttons extends Quad {
 	const SUBSTYLE_Down                 = 'Down';
 	const SUBSTYLE_Drive                = 'Drive';
 	const SUBSTYLE_Erase                = 'Erase';
+	const SUBSTYLE_FreeItems            = 'FreeItems';
 	const SUBSTYLE_GhostBlocks          = 'GhostBlocks';
 	const SUBSTYLE_Help                 = 'Help';
 	const SUBSTYLE_Item                 = 'Item';

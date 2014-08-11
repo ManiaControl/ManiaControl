@@ -38,15 +38,15 @@ class Tooltip extends ScriptFeature {
 	 * @param string  $text           (optional) Text to display if the TooltipControl is a Label
 	 */
 	public function __construct(Control $hoverControl = null, Control $tooltipControl = null, $stayOnClick = false, $invert = false, $text = null) {
-		if (!is_null($hoverControl)) {
+		if ($hoverControl !== null) {
 			$this->setHoverControl($hoverControl);
 		}
-		if (!is_null($tooltipControl)) {
+		if ($tooltipControl !== null) {
 			$this->setTooltipControl($tooltipControl);
 		}
 		$this->setStayOnClick($stayOnClick);
 		$this->setInvert($invert);
-		if (!is_null($text)) {
+		if ($text !== null) {
 			$this->setText($text);
 		}
 	}

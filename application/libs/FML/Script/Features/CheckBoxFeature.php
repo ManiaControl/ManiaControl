@@ -47,13 +47,13 @@ class CheckBoxFeature extends ScriptFeature {
 	 * @param bool  $default (optional) Default value
 	 */
 	public function __construct(Quad $quad = null, Entry $entry = null, $default = null) {
-		if (!is_null($quad)) {
+		if ($quad !== null) {
 			$this->setQuad($quad);
 		}
-		if (!is_null($entry)) {
+		if ($entry !== null) {
 			$this->setEntry($entry);
 		}
-		if (!is_null($default)) {
+		if ($default !== null) {
 			$this->setDefault($default);
 		}
 		$this->setEnabledDesign(CheckBoxDesign::defaultEnabledDesign());

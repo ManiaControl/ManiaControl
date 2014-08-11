@@ -28,7 +28,6 @@ class Gauge extends Control implements Styleable {
 	protected $ratio = 0.;
 	protected $grading = 1.;
 	protected $color = null;
-	protected $rotation = 0.;
 	protected $centered = null;
 	protected $clan = null;
 	protected $drawBg = 1;
@@ -72,17 +71,6 @@ class Gauge extends Control implements Styleable {
 	 */
 	public function setColor($color) {
 		$this->color = (string)$color;
-		return $this;
-	}
-
-	/**
-	 * Set rotation
-	 *
-	 * @param float $rotation Gauge rotation
-	 * @return static
-	 */
-	public function setRotation($rotation) {
-		$this->rotation = (float)$rotation;
 		return $this;
 	}
 
@@ -151,9 +139,6 @@ class Gauge extends Control implements Styleable {
 		}
 		if ($this->color) {
 			$xmlElement->setAttribute('color', $this->color);
-		}
-		if ($this->rotation) {
-			$xmlElement->setAttribute('rotation', $this->rotation);
 		}
 		if ($this->centered) {
 			$xmlElement->setAttribute('centered', $this->centered);

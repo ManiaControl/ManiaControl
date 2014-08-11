@@ -71,7 +71,7 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	 * @param string $controlId (optional) Control id
 	 */
 	public function __construct($controlId = null) {
-		if (!is_null($controlId)) {
+		if ($controlId !== null) {
 			$this->setId($controlId);
 		}
 	}
@@ -141,7 +141,7 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	public function setPosition($posX, $posY, $posZ = null) {
 		$this->setX($posX);
 		$this->setY($posY);
-		if (!is_null($posZ)) {
+		if ($posZ !== null) {
 			$this->setZ($posZ);
 		}
 		return $this;
@@ -325,7 +325,7 @@ abstract class Control implements Renderable, ScriptFeatureable {
 	 * @return static
 	 */
 	public function addActionTriggerFeature($actionName, $eventLabel = ScriptLabel::MOUSECLICK) {
-		if (is_object($actionName) && ($actionName instanceof ActionTrigger)) {
+		if ($actionName instanceof ActionTrigger) {
 			$this->addScriptFeature($actionName);
 		} else {
 			$actionTrigger = new ActionTrigger($actionName, $this, $eventLabel);

@@ -27,10 +27,10 @@ class PagingButton {
 	 * @param int     $browseAction (optional) Number of browsed Pages per Click
 	 */
 	public function __construct(Control $control = null, $browseAction = null) {
-		if (!is_null($control)) {
+		if ($control !== null) {
 			$this->setControl($control);
 		}
-		if (!is_null($browseAction)) {
+		if ($browseAction !== null) {
 			$this->setBrowseAction($browseAction);
 		}
 	}

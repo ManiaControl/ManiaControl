@@ -44,6 +44,7 @@ class Quad_Bgs1InRace extends Quad {
 	const SUBSTYLE_BgColorContour      = 'BgColorContour';
 	const SUBSTYLE_BgDialogBlur        = 'BgDialogBlur';
 	const SUBSTYLE_BgEmpty             = 'BgEmpty';
+	const SUBSTYLE_BgGlow2             = 'BgGlow2';
 	const SUBSTYLE_BgGradBottom        = 'BgGradBottom';
 	const SUBSTYLE_BgGradLeft          = 'BgGradLeft';
 	const SUBSTYLE_BgGradRight         = 'BgGradRight';
@@ -53,11 +54,13 @@ class Quad_Bgs1InRace extends Quad {
 	const SUBSTYLE_BgIconBorder        = 'BgIconBorder';
 	const SUBSTYLE_BgList              = 'BgList';
 	const SUBSTYLE_BgListLine          = 'BgListLine';
+	const SUBSTYLE_BgMetalBar          = 'BgMetalBar';
 	const SUBSTYLE_BgPager             = 'BgPager';
 	const SUBSTYLE_BgProgressBar       = 'BgProgressBar';
 	const SUBSTYLE_BgShadow            = 'BgShadow';
 	const SUBSTYLE_BgSlider            = 'BgSlider';
 	const SUBSTYLE_BgSystemBar         = 'BgSystemBar';
+	const SUBSTYLE_BgTitle             = 'BgTitle';
 	const SUBSTYLE_BgTitle2            = 'BgTitle2';
 	const SUBSTYLE_BgTitle3            = 'BgTitle3';
 	const SUBSTYLE_BgTitle3_1          = 'BgTitle3_1';

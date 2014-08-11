@@ -37,10 +37,10 @@ class Toggle extends ScriptFeature {
 	 */
 	public function __construct(Control $togglingControl = null, Control $toggledControl = null, $labelName = ScriptLabel::MOUSECLICK,
 	                            $onlyShow = false, $onlyHide = false) {
-		if (!is_null($togglingControl)) {
+		if ($togglingControl !== null) {
 			$this->setTogglingControl($togglingControl);
 		}
-		if (!is_null($toggledControl)) {
+		if ($toggledControl !== null) {
 			$this->setToggledControl($toggledControl);
 		}
 		$this->setLabelName($labelName);

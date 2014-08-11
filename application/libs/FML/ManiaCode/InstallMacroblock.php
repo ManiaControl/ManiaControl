@@ -37,13 +37,13 @@ class InstallMacroblock extends Element {
 	 * @param string $url  (optional) Macroblock url
 	 */
 	public function __construct($name = null, $file = null, $url = null) {
-		if (!is_null($name)) {
+		if ($name !== null) {
 			$this->setName($name);
 		}
-		if (!is_null($file)) {
+		if ($file !== null) {
 			$this->setFile($file);
 		}
-		if (!is_null($url)) {
+		if ($url !== null) {
 			$this->setUrl($url);
 		}
 	}

@@ -69,7 +69,7 @@ class CheckBox implements Renderable, ScriptFeatureable {
 	 * @return static
 	 */
 	public function setEnabledDesign($style, $subStyle = null) {
-		if (is_object($style) && ($style instanceof CheckBoxDesign)) {
+		if ($style instanceof CheckBoxDesign) {
 			$this->feature->setEnabledDesign($style);
 		} else {
 			$checkBoxDesign = new CheckBoxDesign($style, $subStyle);
@@ -86,7 +86,7 @@ class CheckBox implements Renderable, ScriptFeatureable {
 	 * @return static
 	 */
 	public function setDisabledDesign($style, $subStyle = null) {
-		if (is_object($style) && ($style instanceof CheckBoxDesign)) {
+		if ($style instanceof CheckBoxDesign) {
 			$this->feature->setDisabledDesign($style);
 		} else {
 			$checkBoxDesign = new CheckBoxDesign($style, $subStyle);

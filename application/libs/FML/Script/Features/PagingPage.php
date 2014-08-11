@@ -26,7 +26,7 @@ class PagingPage {
 	 * @param int     $pageNumber (optional) Number of the Page
 	 */
 	public function __construct(Control $control = null, $pageNumber = 1) {
-		if (!is_null($control)) {
+		if ($control !== null) {
 			$this->setControl($control);
 		}
 		$this->setPageNumber($pageNumber);

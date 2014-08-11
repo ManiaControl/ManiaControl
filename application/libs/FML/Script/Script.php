@@ -39,7 +39,7 @@ class Script {
 	 * @return static
 	 */
 	public function setScriptInclude($file, $namespace = null) {
-		if (is_object($file) && ($file instanceof ScriptInclude)) {
+		if ($file instanceof ScriptInclude) {
 			$scriptInclude = $file;
 		} else {
 			$scriptInclude = new ScriptInclude($file, $namespace);
@@ -56,7 +56,7 @@ class Script {
 	 * @return static
 	 */
 	public function addScriptConstant($name, $value = null) {
-		if (is_object($name) && ($name instanceof ScriptConstant)) {
+		if ($name instanceof ScriptConstant) {
 			$scriptConstant = $name;
 		} else {
 			$scriptConstant = new ScriptConstant($name, $value);
@@ -75,7 +75,7 @@ class Script {
 	 * @return static
 	 */
 	public function addScriptFunction($name, $text = null) {
-		if (is_object($name) && ($name instanceof ScriptFunction)) {
+		if ($name instanceof ScriptFunction) {
 			$scriptFunction = $name;
 		} else {
 			$scriptFunction = new ScriptFunction($name, $text);
@@ -94,7 +94,7 @@ class Script {
 	 * @return static
 	 */
 	public function addCustomScriptLabel($name, $text = null) {
-		if (is_object($name) && ($name instanceof ScriptLabel)) {
+		if ($name instanceof ScriptLabel) {
 			$scriptLabel = $name;
 		} else {
 			$scriptLabel = new ScriptLabel($name, $text);
@@ -112,7 +112,7 @@ class Script {
 	 * @return static
 	 */
 	public function appendGenericScriptLabel($name, $text = null, $isolated = false) {
-		if (is_object($name) && ($name instanceof ScriptLabel)) {
+		if ($name instanceof ScriptLabel) {
 			$scriptLabel = $name;
 		} else {
 			$scriptLabel = new ScriptLabel($name, $text, $isolated);
@@ -218,7 +218,11 @@ class Script {
 	 */
 	protected function getHeaderComment() {
 		$headerComment = '/****************************************************
-*		FancyManiaLinks v' . FML_VERSION . ' by steeffeen	 		*
+*		FancyManiaLinks';
+		if (defined('FML_VERSION')) {
+			$headerComment .= ' v' . FML_VERSION;
+		}
+		$headerComment .= ' by steeffeen	 		*
 *	http://github.com/steeffeen/FancyManiaLinks		*
 ****************************************************/
 

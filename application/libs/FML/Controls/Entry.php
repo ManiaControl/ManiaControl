@@ -175,7 +175,7 @@ class Entry extends Control implements NewLineable, Scriptable, Styleable, TextF
 		if ($this->name) {
 			$xmlElement->setAttribute('name', $this->name);
 		}
-		if (!is_null($this->default)) {
+		if ($this->default !== null) {
 			$xmlElement->setAttribute('default', $this->default);
 		} else if ($this->autoComplete) {
 			$value = null;

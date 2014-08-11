@@ -44,16 +44,16 @@ class ValuePickerFeature extends ScriptFeature {
 	 * @param string $default (optional) Default value
 	 */
 	public function __construct(Label $label = null, Entry $entry = null, array $values = array(), $default = null) {
-		if (!is_null($label)) {
+		if ($label !== null) {
 			$this->setLabel($label);
 		}
-		if (!is_null($entry)) {
+		if ($entry !== null) {
 			$this->setEntry($entry);
 		}
 		if (!empty($values)) {
 			$this->setValues($values);
 		}
-		if (!is_null($default)) {
+		if ($default !== null) {
 			$this->setDefault($default);
 		}
 	}

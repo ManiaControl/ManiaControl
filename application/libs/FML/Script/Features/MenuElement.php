@@ -26,10 +26,10 @@ class MenuElement {
 	 * @param Control $control (optional) Toggled Menu Control
 	 */
 	public function __construct(Control $item = null, Control $control = null) {
-		if (!is_null($item)) {
+		if ($item !== null) {
 			$this->setItem($item);
 		}
-		if (!is_null($control)) {
+		if ($control !== null) {
 			$this->setControl($control);
 		}
 	}

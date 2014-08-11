@@ -34,7 +34,7 @@ class Including implements Renderable {
 	 * @param string $url (optional) Include url
 	 */
 	public function __construct($url = null) {
-		if (!is_null($url)) {
+		if ($url !== null) {
 			$this->setUrl($url);
 		}
 	}

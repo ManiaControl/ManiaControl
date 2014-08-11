@@ -33,7 +33,7 @@ class PlayerProfile extends ScriptFeature {
 	 */
 	public function __construct($login = null, Control $control = null, $labelName = ScriptLabel::MOUSECLICK) {
 		$this->setLogin($login);
-		if (!is_null($control)) {
+		if ($control !== null) {
 			$this->setControl($control);
 		}
 		$this->setLabelName($labelName);

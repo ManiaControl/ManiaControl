@@ -53,7 +53,7 @@ class Style3d {
 	 * @param string $styleId (optional) Style id
 	 */
 	public function __construct($styleId = null) {
-		if (!is_null($styleId)) {
+		if ($styleId !== null) {
 			$this->setId($styleId);
 		}
 	}

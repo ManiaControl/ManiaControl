@@ -31,7 +31,7 @@ class Clock extends ScriptFeature {
 	 * @param bool  $showFullDate (optional) Whether the date should be shown
 	 */
 	public function __construct(Label $label = null, $showSeconds = true, $showFullDate = false) {
-		if (!is_null($label)) {
+		if ($label !== null) {
 			$this->setLabel($label);
 		}
 		$this->setShowSeconds($showSeconds);

@@ -34,7 +34,7 @@ class SimpleScript implements Renderable {
 	 * @param string $text (optional) Script text
 	 */
 	public function __construct($text = null) {
-		if (!is_null($text)) {
+		if ($text !== null) {
 			$this->setText($text);
 		}
 	}

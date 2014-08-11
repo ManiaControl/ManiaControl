@@ -40,7 +40,7 @@ class FrameInstance extends Control {
 	 */
 	public function __construct($modelId = null, $controlId = null) {
 		parent::__construct($controlId);
-		if (!is_null($modelId)) {
+		if ($modelId !== null) {
 			$this->setModelId($modelId);
 		}
 	}

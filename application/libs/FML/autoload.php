@@ -4,16 +4,16 @@
  * FancyManiaLinks - Automatic ManiaLink Generator Framework
  *
  * @author    steeffeen <mail@steeffeen.com>
- * @version   1.3
+ * @version   1.4
  * @link      http://github.com/steeffeen/FancyManiaLinks
  * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 if (!defined('FML_PATH')) {
-	define('FML_PATH', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
+	define('FML_PATH', dirname(__DIR__) . DIRECTORY_SEPARATOR);
 }
 if (!defined('FML_VERSION')) {
-	define('FML_VERSION', '1.3');
+	define('FML_VERSION', '1.4');
 }
 
 /*

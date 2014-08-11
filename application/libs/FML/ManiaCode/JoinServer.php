@@ -34,7 +34,7 @@ class JoinServer extends Element {
 	 * @param string $login (optional) Server login
 	 */
 	public function __construct($login = null) {
-		if (!is_null($login)) {
+		if ($login !== null) {
 			$this->setLogin($login);
 		}
 	}
@@ -71,7 +71,7 @@ class JoinServer extends Element {
 	 */
 	public function render(\DOMDocument $domDocument) {
 		$xmlElement = parent::render($domDocument);
-		if (is_null($this->serverIp)) {
+		if ($this->serverIp === null) {
 			$loginElement = $domDocument->createElement('login', $this->login);
 			$xmlElement->appendChild($loginElement);
 		} else {

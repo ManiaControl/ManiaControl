@@ -44,7 +44,7 @@ class Paging extends ScriptFeature {
 	 * @param Label $label (optional) Page number Label
 	 */
 	public function __construct(Label $label = null) {
-		if (!is_null($label)) {
+		if ($label !== null) {
 			$this->setLabel($label);
 		}
 	}
@@ -57,7 +57,7 @@ class Paging extends ScriptFeature {
 	 * @return static
 	 */
 	public function addPage(Control $pageControl, $pageNumber = null) {
-		if (is_null($pageNumber)) {
+		if ($pageNumber === null) {
 			$pageNumber = count($this->pages) + 1;
 		}
 		$page = new PagingPage($pageControl, $pageNumber);
@@ -86,7 +86,7 @@ class Paging extends ScriptFeature {
 	 * @return static
 	 */
 	public function addButton(Control $buttonControl, $browseAction = null) {
-		if (is_null($browseAction)) {
+		if ($browseAction === null) {
 			$buttonCount = count($this->buttons);
 			if ($buttonCount % 2 === 0) {
 				$browseAction = $buttonCount / 2 + 1;
@@ -288,7 +288,7 @@ Void {$updatePageFunction}(Text _PagingId, Text _PageLabelId, Integer _BrowseAct
 		$minPage       = null;
 		foreach ($this->pages as $page) {
 			$pageNumber = $page->getPageNumber();
-			if (is_null($minPageNumber) || $pageNumber < $minPageNumber) {
+			if ($minPageNumber === null || $pageNumber < $minPageNumber) {
 				$minPageNumber = $pageNumber;
 				$minPage       = $page;
 			}
@@ -306,7 +306,7 @@ Void {$updatePageFunction}(Text _PagingId, Text _PageLabelId, Integer _BrowseAct
 		$maxPage       = null;
 		foreach ($this->pages as $page) {
 			$pageNumber = $page->getPageNumber();
-			if (is_null($maxPageNumber) || $pageNumber > $maxPageNumber) {
+			if ($maxPageNumber === null || $pageNumber > $maxPageNumber) {
 				$maxPageNumber = $pageNumber;
 				$maxPage       = $page;
 			}

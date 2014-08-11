@@ -30,10 +30,10 @@ class KeyAction extends ScriptFeature {
 	 * @param string $keyName    (optional) Key name
 	 */
 	public function __construct($actionName = null, $keyName = null) {
-		if (!is_null($actionName)) {
+		if ($actionName !== null) {
 			$this->setActionName($actionName);
 		}
-		if (!is_null($keyName)) {
+		if ($keyName !== null) {
 			$this->setKeyName($keyName);
 		}
 	}
@@ -105,13 +105,13 @@ class KeyAction extends ScriptFeature {
 		$actionName = Builder::escapeText($this->actionName, true);
 		$key        = null;
 		$value      = null;
-		if (!is_null($this->keyName)) {
+		if ($this->keyName !== null) {
 			$key   = 'KeyName';
 			$value = $this->keyName;
-		} else if (!is_null($this->keyCode)) {
+		} else if ($this->keyCode !== null) {
 			$key   = 'KeyCode';
 			$value = $this->keyCode;
-		} else if (!is_null($this->charPressed)) {
+		} else if ($this->charPressed !== null) {
 			$key   = 'CharPressed';
 			$value = $this->charPressed;
 		}

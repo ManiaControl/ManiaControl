@@ -20,7 +20,7 @@ class UniqueID {
 	 */
 	protected static $currentIndex = 0;
 
-	/**
+	/*
 	 * Protected properties
 	 */
 	protected $index = null;

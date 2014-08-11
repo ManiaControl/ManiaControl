@@ -32,13 +32,13 @@ class ActionTrigger extends ScriptFeature {
 	 * @param string  $labelName  (optional) Script Label name
 	 */
 	public function __construct($actionName = null, Control $control = null, $labelName = ScriptLabel::MOUSECLICK) {
-		if (!is_null($actionName)) {
+		if ($actionName !== null) {
 			$this->setActionName($actionName);
 		}
-		if (!is_null($control)) {
+		if ($control !== null) {
 			$this->setControl($control);
 		}
-		if (!is_null($labelName)) {
+		if ($labelName !== null) {
 			$this->setLabelName($labelName);
 		}
 	}

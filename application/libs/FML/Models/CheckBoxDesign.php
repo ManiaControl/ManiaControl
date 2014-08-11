@@ -48,7 +48,7 @@ class CheckBoxDesign implements Styleable, SubStyleable {
 	 * @param string $subStyle (optional) SubStyle name
 	 */
 	public function __construct($style, $subStyle = null) {
-		if (is_null($subStyle)) {
+		if ($subStyle === null) {
 			$this->setImageUrl($style);
 		} else {
 			$this->setStyle($style);
@@ -116,7 +116,7 @@ class CheckBoxDesign implements Styleable, SubStyleable {
 	 * @return string
 	 */
 	public function getDesignString($escaped = true, $addApostrophes = true) {
-		if (!is_null($this->url)) {
+		if ($this->url !== null) {
 			$string = $this->url;
 		} else {
 			$string = $this->style . '|' . $this->subStyle;;

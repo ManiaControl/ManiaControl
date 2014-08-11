@@ -150,7 +150,7 @@ class CustomUI {
 		}
 		$settings = $this->getSettings();
 		foreach ($settings as $setting => $value) {
-			if (is_null($value)) {
+			if ($value === null) {
 				continue;
 			}
 			$xmlSubElement = $domDocument->createElement($setting);
