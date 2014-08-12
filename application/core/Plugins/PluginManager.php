@@ -9,6 +9,7 @@ use ManiaControl\Files\FileUtil;
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
+use ManiaControl\Utils\ClassUtil;
 
 /**
  * Class managing Plugins
@@ -108,7 +109,7 @@ class PluginManager {
 	 * @return bool
 	 */
 	public static function isPluginClass($pluginClass) {
-		$pluginClass = self::getClass($pluginClass);
+		$pluginClass = ClassUtil::getClass($pluginClass);
 		if (!class_exists($pluginClass, false)) {
 			return false;
 		}
@@ -120,19 +121,6 @@ class PluginManager {
 			return false;
 		}
 		return true;
-	}
-
-	/**
-	 * Get the Class of the Object
-	 *
-	 * @param mixed $object
-	 * @return string
-	 */
-	private static function getClass($object) {
-		if (is_object($object)) {
-			return get_class($object);
-		}
-		return (string)$object;
 	}
 
 	/**
@@ -190,9 +178,9 @@ class PluginManager {
 	 * @return string
 	 */
 	public static function getPluginClass($pluginClass) {
-		$pluginClass = self::getClass($pluginClass);
+		$pluginClass = ClassUtil::getClass($pluginClass);
 		if (!self::isPluginClass($pluginClass)) {
-			return false;
+			return null;
 		}
 		return $pluginClass;
 	}
@@ -258,8 +246,16 @@ class PluginManager {
 
 		$newClasses = array_diff($classesAfter, $classesBefore);
 		foreach ($newClasses as $className) {
-			if (!$this->isPluginClass($className)) {
+			if (!self::isPluginClass($className)) {
 				continue;
+			}
+			if (!self::validatePluginClass($className)) {
+				$message = "The plugin class '{$className}' isn't correctly implemented: You need to return a proper ID by registering it on maniacontrol.com!";
+				Logger::logWarning($message);
+				if (!DEV_MODE) {
+					$message = 'Fix the plugin or turn on DEV_MODE!';
+					$this->maniaControl->quit($message, true);
+				}
 			}
 
 			if (!$this->addPluginClass($className)) {
@@ -311,6 +307,20 @@ class PluginManager {
 				continue;
 			}
 		}
+	}
+
+	/**
+	 * Validate that the given class is a correctly implemented plugin class
+	 *
+	 * @param string $pluginClass
+	 * @return bool
+	 */
+	private static function validatePluginClass($pluginClass) {
+		if (!self::isPluginClass($pluginClass)) {
+			return false;
+		}
+		/** @var Plugin $pluginClass */
+		return ($pluginClass::getId() > 0);
 	}
 
 	/**
