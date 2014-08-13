@@ -133,76 +133,48 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$this->maniaControl = $maniaControl;
 
 		// Commands
-		$this->maniaControl->getCommandManager()
-		                   ->registerCommandListener('vote', $this, 'chat_vote', false, 'Starts a new vote.');
+		$this->maniaControl->getCommandManager()->registerCommandListener('vote', $this, 'chat_vote', false, 'Starts a new vote.');
 
 		// Callbacks
-		$this->maniaControl->getManialinkManager()
-		                   ->registerManialinkPageAnswerListener(self::ACTION_POSITIVE_VOTE, $this, 'handlePositiveVote');
-		$this->maniaControl->getManialinkManager()
-		                   ->registerManialinkPageAnswerListener(self::ACTION_NEGATIVE_VOTE, $this, 'handleNegativeVote');
-		$this->maniaControl->getTimerManager()
-		                   ->registerTimerListening($this, 'handle1Second', 1000);
-		$this->maniaControl->getCallbackManager()
-		                   ->registerCallbackListener(Commands::CB_VOTE_CANCELLED, $this, 'handleVoteCancelled');
+		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_POSITIVE_VOTE, $this, 'handlePositiveVote');
+		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_NEGATIVE_VOTE, $this, 'handleNegativeVote');
+		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'handle1Second', 1000);
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Commands::CB_VOTE_CANCELLED, $this, 'handleVoteCancelled');
 
-		$this->maniaControl->getCallbackManager()
-		                   ->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
-		$this->maniaControl->getCallbackManager()
-		                   ->registerCallbackListener(self::CB_CUSTOM_VOTE_FINISHED, $this, 'handleVoteFinished');
-		$this->maniaControl->getCallbackManager()
-		                   ->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
-		$this->maniaControl->getCallbackManager()
-		                   ->registerCallbackListener(Server::CB_TEAM_MODE_CHANGED, $this, 'constructMenu');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(self::CB_CUSTOM_VOTE_FINISHED, $this, 'handleVoteFinished');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Server::CB_TEAM_MODE_CHANGED, $this, 'constructMenu');
 
 		// Settings
-		$this->maniaControl->getSettingManager()
-		                   ->initSetting($this, self::SETTING_VOTE_ICON_POSX, 156.);
-		$this->maniaControl->getSettingManager()
-		                   ->initSetting($this, self::SETTING_VOTE_ICON_POSY, -38.6);
-		$this->maniaControl->getSettingManager()
-		                   ->initSetting($this, self::SETTING_VOTE_ICON_WIDTH, 6);
-		$this->maniaControl->getSettingManager()
-		                   ->initSetting($this, self::SETTING_VOTE_ICON_HEIGHT, 6);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_VOTE_ICON_POSX, 156.);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_VOTE_ICON_POSY, -38.6);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_VOTE_ICON_WIDTH, 6);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_VOTE_ICON_HEIGHT, 6);
 
-		$this->maniaControl->getSettingManager()
-		                   ->initSetting($this, self::SETTING_WIDGET_POSX, -80); //160 -15
-		$this->maniaControl->getSettingManager()
-		                   ->initSetting($this, self::SETTING_WIDGET_POSY, 80); //-15
-		$this->maniaControl->getSettingManager()
-		                   ->initSetting($this, self::SETTING_WIDGET_WIDTH, 50); //30
-		$this->maniaControl->getSettingManager()
-		                   ->initSetting($this, self::SETTING_WIDGET_HEIGHT, 20); //25
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_POSX, -80); //160 -15
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_POSY, 80); //-15
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_WIDTH, 50); //30
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_HEIGHT, 20); //25
 
-		$this->maniaControl->getSettingManager()
-		                   ->initSetting($this, self::SETTING_DEFAULT_RATIO, 0.75);
-		$this->maniaControl->getSettingManager()
-		                   ->initSetting($this, self::SETTING_DEFAULT_PLAYER_RATIO, 0.65);
-		$this->maniaControl->getSettingManager()
-		                   ->initSetting($this, self::SETTING_SPECTATOR_ALLOW_VOTE, false);
-		$this->maniaControl->getSettingManager()
-		                   ->initSetting($this, self::SETTING_SPECTATOR_ALLOW_START_VOTE, true);
-		$this->maniaControl->getSettingManager()
-		                   ->initSetting($this, self::SETTING_VOTE_TIME, 40);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_DEFAULT_RATIO, 0.75);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_DEFAULT_PLAYER_RATIO, 0.65);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_SPECTATOR_ALLOW_VOTE, false);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_SPECTATOR_ALLOW_START_VOTE, true);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_VOTE_TIME, 40);
 
 		//Define Votes
 		$this->defineVote("teambalance", "Vote for Team Balance");
-		$this->defineVote("skipmap", "Vote for Skip Map")
-		     ->setStopCallback(Callbacks::ENDMAP);
-		$this->defineVote("nextmap", "Vote for Skip Map")
-		     ->setStopCallback(Callbacks::ENDMAP);
-		$this->defineVote("skip", "Vote for Skip Map")
-		     ->setStopCallback(Callbacks::ENDMAP);
-		$this->defineVote("restartmap", "Vote for Restart Map")
-		     ->setStopCallback(Callbacks::ENDMAP);
-		$this->defineVote("restart", "Vote for Restart Map")
-		     ->setStopCallback(Callbacks::ENDMAP);
+		$this->defineVote("skipmap", "Vote for Skip Map")->setStopCallback(Callbacks::ENDMAP);
+		$this->defineVote("nextmap", "Vote for Skip Map")->setStopCallback(Callbacks::ENDMAP);
+		$this->defineVote("skip", "Vote for Skip Map")->setStopCallback(Callbacks::ENDMAP);
+		$this->defineVote("restartmap", "Vote for Restart Map")->setStopCallback(Callbacks::ENDMAP);
+		$this->defineVote("restart", "Vote for Restart Map")->setStopCallback(Callbacks::ENDMAP);
 		$this->defineVote("pausegame", "Vote for Pause Game");
 		$this->defineVote("replay", "Vote to replay current map");
 
 		foreach ($this->voteCommands as $name => $voteCommand) {
-			$this->maniaControl->getCommandManager()
-			                   ->registerCommandListener($name, $this, 'handleChatVote', false, $voteCommand->name);
+			$this->maniaControl->getCommandManager()->registerCommandListener($name, $this, 'handleChatVote', false, $voteCommand->name);
 		}
 
 		/* Disable Standard Votes */
@@ -212,8 +184,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$ratioArray[] = new VoteRatio(VoteRatio::COMMAND_TEAM_BALANCE, -1.);
 		$ratioArray[] = new VoteRatio(VoteRatio::COMMAND_NEXT_MAP, -1.);
 
-		$this->maniaControl->getClient()
-		                   ->setCallVoteRatios($ratioArray, false);
+		$this->maniaControl->getClient()->setCallVoteRatios($ratioArray, false);
 
 		$this->constructMenu();
 		return true;
@@ -231,8 +202,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 */
 	public function defineVote($voteIndex, $voteName, $idBased = false, $startText = '', $neededRatio = -1) {
 		if ($neededRatio < 0) {
-			$neededRatio = $this->maniaControl->getSettingManager()
-			                                  ->getSettingValue($this, self::SETTING_DEFAULT_RATIO);
+			$neededRatio = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_DEFAULT_RATIO);
 		}
 		$voteCommand                    = new VoteCommand($voteIndex, $voteName, $idBased, $neededRatio);
 		$voteCommand->startText         = $startText;
@@ -255,8 +225,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 		//Check if Pause exists in current GameMode
 		try {
-			$scriptInfos = $this->maniaControl->getClient()
-			                                  ->getModeScriptInfo();
+			$scriptInfos = $this->maniaControl->getClient()->getModeScriptInfo();
 
 			$pauseExists = false;
 			foreach ($scriptInfos->commandDescs as $param) {
@@ -282,8 +251,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$itemQuad->setAction(self::ACTION_START_VOTE . 'skipmap');
 		$this->addVoteMenuItem($itemQuad, 15, 'Vote for a Map Skip');
 
-		if ($this->maniaControl->getServer()
-		                       ->isTeamMode()
+		if ($this->maniaControl->getServer()->isTeamMode()
 		) {
 			//Menu TeamBalance
 			$itemQuad = new Quad_Icons128x32_1();
@@ -316,30 +284,18 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 * @param bool $login
 	 */
 	private function showIcon($login = false) {
-		$posX              = $this->maniaControl->getSettingManager()
-		                                        ->getSettingValue($this, self::SETTING_VOTE_ICON_POSX);
-		$posY              = $this->maniaControl->getSettingManager()
-		                                        ->getSettingValue($this, self::SETTING_VOTE_ICON_POSY);
-		$width             = $this->maniaControl->getSettingManager()
-		                                        ->getSettingValue($this, self::SETTING_VOTE_ICON_WIDTH);
-		$height            = $this->maniaControl->getSettingManager()
-		                                        ->getSettingValue($this, self::SETTING_VOTE_ICON_HEIGHT);
-		$shootManiaOffset  = $this->maniaControl->getManialinkManager()
-		                                        ->getStyleManager()
-		                                        ->getDefaultIconOffsetSM();
-		$quadStyle         = $this->maniaControl->getManialinkManager()
-		                                        ->getStyleManager()
-		                                        ->getDefaultQuadStyle();
-		$quadSubstyle      = $this->maniaControl->getManialinkManager()
-		                                        ->getStyleManager()
-		                                        ->getDefaultQuadSubstyle();
+		$posX              = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_VOTE_ICON_POSX);
+		$posY              = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_VOTE_ICON_POSY);
+		$width             = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_VOTE_ICON_WIDTH);
+		$height            = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_VOTE_ICON_HEIGHT);
+		$shootManiaOffset  = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultIconOffsetSM();
+		$quadStyle         = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadStyle();
+		$quadSubstyle      = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadSubstyle();
 		$itemMarginFactorX = 1.3;
 		$itemMarginFactorY = 1.2;
 
 		//If game is shootmania lower the icons position by 20
-		if ($this->maniaControl->getMapManager()
-		                       ->getCurrentMap()
-		                       ->getGame() === 'sm'
+		if ($this->maniaControl->getMapManager()->getCurrentMap()->getGame() === 'sm'
 		) {
 			$posY -= $shootManiaOffset;
 		}
@@ -418,8 +374,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 
 		// Send manialink
-		$this->maniaControl->getManialinkManager()
-		                   ->sendManialink($maniaLink, $login);
+		$this->maniaControl->getManialinkManager()->sendManialink($maniaLink, $login);
 	}
 
 	/**
@@ -427,8 +382,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 */
 	public function unload() {
 		//Enable Standard Votes
-		$defaultRatio = $this->maniaControl->getClient()
-		                                   ->getCallVoteRatio();
+		$defaultRatio = $this->maniaControl->getClient()->getCallVoteRatio();
 
 		$ratioArray[] = new VoteRatio(VoteRatio::COMMAND_BAN, $defaultRatio);
 		$ratioArray[] = new VoteRatio(VoteRatio::COMMAND_KICK, $defaultRatio);
@@ -436,12 +390,10 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$ratioArray[] = new VoteRatio(VoteRatio::COMMAND_TEAM_BALANCE, $defaultRatio);
 		$ratioArray[] = new VoteRatio(VoteRatio::COMMAND_NEXT_MAP, $defaultRatio);
 
-		$this->maniaControl->getClient()
-		                   ->setCallVoteRatios($ratioArray, false);
+		$this->maniaControl->getClient()->setCallVoteRatios($ratioArray, false);
 
 		$this->destroyVote();
-		$this->maniaControl->getManialinkManager()
-		                   ->hideManialink(self::MLID_ICON);
+		$this->maniaControl->getManialinkManager()->hideManialink(self::MLID_ICON);
 	}
 
 	/**
@@ -449,13 +401,11 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 */
 	private function destroyVote() {
 		$emptyManialink = new ManiaLink(self::MLID_WIDGET);
-		$this->maniaControl->getManialinkManager()
-		                   ->sendManialink($emptyManialink);
+		$this->maniaControl->getManialinkManager()->sendManialink($emptyManialink);
 
 		// Remove the Listener for the Stop Callback if a stop callback is defined
 		if ($this->currentVote && $this->currentVote->stopCallback) {
-			$this->maniaControl->getCallbackManager()
-			                   ->unregisterCallbackListening($this->currentVote->stopCallback, $this);
+			$this->maniaControl->getCallbackManager()->unregisterCallbackListening($this->currentVote->stopCallback, $this);
 		}
 
 		$this->currentVote = null;
@@ -494,55 +444,44 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 */
 	public function startVote(Player $player, $voteIndex, $function = null) {
 		//Player is muted
-		if ($this->maniaControl->getPlayerManager()
-		                       ->getPlayerActions()
-		                       ->isPlayerMuted($player)
+		if ($this->maniaControl->getPlayerManager()->getPlayerActions()->isPlayerMuted($player)
 		) {
-			$this->maniaControl->getChat()
-			                   ->sendError('Muted Players are not allowed to start a vote.', $player);
+			$this->maniaControl->getChat()->sendError('Muted Players are not allowed to start a vote.', $player);
 			return;
 		}
 
 		// Spectators are not allowed to start a vote
 		if ($player->isSpectator
-		    && !$this->maniaControl->getSettingManager()
-		                           ->getSettingValue($this, self::SETTING_SPECTATOR_ALLOW_START_VOTE)
+		    && !$this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SPECTATOR_ALLOW_START_VOTE)
 		) {
-			$this->maniaControl->getChat()
-			                   ->sendError('Spectators are not allowed to start a vote.', $player);
+			$this->maniaControl->getChat()->sendError('Spectators are not allowed to start a vote.', $player);
 			return;
 		}
 
 		//Vote does not exist
 		if (!isset($this->voteCommands[$voteIndex])) {
-			$this->maniaControl->getChat()
-			                   ->sendError('Undefined vote.', $player);
+			$this->maniaControl->getChat()->sendError('Undefined vote.', $player);
 			return;
 		}
 
 		//A vote is currently running
 		if (isset($this->currentVote)) {
-			$this->maniaControl->getChat()
-			                   ->sendError('There is currently another vote running.', $player);
+			$this->maniaControl->getChat()->sendError('There is currently another vote running.', $player);
 			return;
 		}
 
-		$maxTime = $this->maniaControl->getSettingManager()
-		                              ->getSettingValue($this, self::SETTING_VOTE_TIME);
+		$maxTime = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_VOTE_TIME);
 
 		/** @var VoteCommand $voteCommand */
 		$voteCommand = $this->voteCommands[$voteIndex];
 
 		$this->currentVote                    = new CurrentVote($voteCommand, $player, time() + $maxTime);
-		$this->currentVote->neededRatio       = floatval($this->maniaControl->getSettingManager()
-		                                                                    ->getSettingValue($this, self::SETTING_DEFAULT_RATIO));
-		$this->currentVote->neededPlayerRatio = floatval($this->maniaControl->getSettingManager()
-		                                                                    ->getSettingValue($this, self::SETTING_DEFAULT_PLAYER_RATIO));
+		$this->currentVote->neededRatio       = floatval($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_DEFAULT_RATIO));
+		$this->currentVote->neededPlayerRatio = floatval($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_DEFAULT_PLAYER_RATIO));
 		$this->currentVote->function          = $function;
 
 		if ($voteCommand->getStopCallback()) {
-			$this->maniaControl->getCallbackManager()
-			                   ->registerCallbackListener($voteCommand->getStopCallback(), $this, 'handleStopCallback');
+			$this->maniaControl->getCallbackManager()->registerCallbackListener($voteCommand->getStopCallback(), $this, 'handleStopCallback');
 			$this->currentVote->stopCallback = $voteCommand->getStopCallback();
 		}
 
@@ -552,8 +491,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 			$message = '$fff' . $player->getEscapedNickname() . '$s$f8f started a $fff$<' . $this->currentVote->voteCommand->name . '$>$f8f!';
 		}
 
-		$this->maniaControl->getChat()
-		                   ->sendSuccess($message);
+		$this->maniaControl->getChat()->sendSuccess($message);
 	}
 
 	/**
@@ -586,54 +524,40 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 			switch ($voteName) {
 				case 'teambalance':
-					$this->maniaControl->getClient()
-					                   ->autoTeamBalance();
-					$this->maniaControl->getChat()
-					                   ->sendInformation('$f8fVote to $fffbalance the Teams$f8f has been successful!');
+					$this->maniaControl->getClient()->autoTeamBalance();
+					$this->maniaControl->getChat()->sendInformation('$f8fVote to $fffbalance the Teams$f8f has been successful!');
 					break;
 				case 'skipmap':
 				case 'skip':
 				case 'nextmap':
 					try {
-						$this->maniaControl->getMapManager()
-						                   ->getMapActions()
-						                   ->skipMap();
+						$this->maniaControl->getMapManager()->getMapActions()->skipMap();
 					} catch (ChangeInProgressException $e) {
 					}
-					$this->maniaControl->getChat()
-					                   ->sendInformation('$f8fVote to $fffskip the Map$f8f has been successful!');
+					$this->maniaControl->getChat()->sendInformation('$f8fVote to $fffskip the Map$f8f has been successful!');
 					break;
 				case 'restartmap':
 					try {
-						$this->maniaControl->getClient()
-						                   ->restartMap();
+						$this->maniaControl->getClient()->restartMap();
 					} catch (ChangeInProgressException $e) {
 					}
-					$this->maniaControl->getChat()
-					                   ->sendInformation('$f8fVote to $fffrestart the Map$f8f has been successful!');
+					$this->maniaControl->getChat()->sendInformation('$f8fVote to $fffrestart the Map$f8f has been successful!');
 					break;
 				case 'pausegame':
 					try {
-						$this->maniaControl->getClient()
-						                   ->sendModeScriptCommands(array('Command_ForceWarmUp' => true));
-						$this->maniaControl->getChat()
-						                   ->sendInformation('$f8fVote to $fffpause the current Game$f8f has been successful!');
+						$this->maniaControl->getClient()->sendModeScriptCommands(array('Command_ForceWarmUp' => true));
+						$this->maniaControl->getChat()->sendInformation('$f8fVote to $fffpause the current Game$f8f has been successful!');
 					} catch (GameModeException $ex) {
 					}
 					break;
 				case 'replay':
-					$this->maniaControl->getMapManager()
-					                   ->getMapQueue()
-					                   ->addFirstMapToMapQueue($this->currentVote->voter, $this->maniaControl->getMapManager()
-					                                                                                         ->getCurrentMap());
-					$this->maniaControl->getChat()
-					                   ->sendInformation('$f8fVote to $fffreplay the Map$f8f has been successful!');
+					$this->maniaControl->getMapManager()->getMapQueue()->addFirstMapToMapQueue($this->currentVote->voter, $this->maniaControl->getMapManager()->getCurrentMap());
+					$this->maniaControl->getChat()->sendInformation('$f8fVote to $fffreplay the Map$f8f has been successful!');
 					break;
 			}
 		} else {
 			//FIXME bugreport, no fail message on vote fail sometimes
-			$this->maniaControl->getChat()
-			                   ->sendError('Vote Failed!');
+			$this->maniaControl->getChat()->sendError('Vote Failed!');
 		}
 	}
 
@@ -652,8 +576,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$voteIndex = $actionArray[2];
 		if (isset($this->voteCommands[$voteIndex])) {
 			$login  = $callback[1][1];
-			$player = $this->maniaControl->getPlayerManager()
-			                             ->getPlayer($login);
+			$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
 			$this->startVote($player, $voteIndex);
 		}
 	}
@@ -692,8 +615,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	public function handlePositiveVote(array $callback, Player $player) {
 		if (!isset($this->currentVote)
 		    || $player->isSpectator
-		       && !$this->maniaControl->getSettingManager()
-		                              ->getSettingValue($this, self::SETTING_SPECTATOR_ALLOW_VOTE)
+		       && !$this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SPECTATOR_ALLOW_VOTE)
 		) {
 			return;
 		}
@@ -710,8 +632,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	public function handleNegativeVote(array $callback, Player $player) {
 		if (!isset($this->currentVote)
 		    || $player->isSpectator
-		       && !$this->maniaControl->getSettingManager()
-		                              ->getSettingValue($this, self::SETTING_SPECTATOR_ALLOW_VOTE)
+		       && !$this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SPECTATOR_ALLOW_VOTE)
 		) {
 			return;
 		}
@@ -736,8 +657,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$timeUntilExpire = $this->currentVote->expireTime - time();
 		$this->showVoteWidget($timeUntilExpire, $votePercentage);
 
-		$playerCount      = $this->maniaControl->getPlayerManager()
-		                                       ->getPlayerCount();
+		$playerCount      = $this->maniaControl->getPlayerManager()->getPlayerCount();
 		$playersVoteRatio = 0;
 		if ($playerCount > 0 && $voteCount > 0) {
 			$playersVoteRatio = floatval($voteCount) / floatval($playerCount);
@@ -746,8 +666,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		//Check if vote is over
 		if ($timeUntilExpire <= 0 || (($playersVoteRatio >= $this->currentVote->neededPlayerRatio) && (($votePercentage >= $this->currentVote->neededRatio) || ($votePercentage <= 1 - $this->currentVote->neededRatio)))) {
 			// Trigger callback
-			$this->maniaControl->getCallbackManager()
-			                   ->triggerCallback(self::CB_CUSTOM_VOTE_FINISHED, $this->currentVote->voteCommand->index, $votePercentage);
+			$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_CUSTOM_VOTE_FINISHED, $this->currentVote->voteCommand->index, $votePercentage);
 
 			//reset vote
 			$this->destroyVote();
@@ -761,26 +680,15 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 * @param float $votePercentage
 	 */
 	private function showVoteWidget($timeUntilExpire, $votePercentage) {
-		$posX    = $this->maniaControl->getSettingManager()
-		                              ->getSettingValue($this, self::SETTING_WIDGET_POSX);
-		$posY    = $this->maniaControl->getSettingManager()
-		                              ->getSettingValue($this, self::SETTING_WIDGET_POSY);
-		$width   = $this->maniaControl->getSettingManager()
-		                              ->getSettingValue($this, self::SETTING_WIDGET_WIDTH);
-		$height  = $this->maniaControl->getSettingManager()
-		                              ->getSettingValue($this, self::SETTING_WIDGET_HEIGHT);
-		$maxTime = $this->maniaControl->getSettingManager()
-		                              ->getSettingValue($this, self::SETTING_VOTE_TIME);
+		$posX    = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_POSX);
+		$posY    = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_POSY);
+		$width   = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_WIDTH);
+		$height  = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_HEIGHT);
+		$maxTime = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_VOTE_TIME);
 
-		$quadStyle    = $this->maniaControl->getManialinkManager()
-		                                   ->getStyleManager()
-		                                   ->getDefaultQuadStyle();
-		$quadSubstyle = $this->maniaControl->getManialinkManager()
-		                                   ->getStyleManager()
-		                                   ->getDefaultQuadSubstyle();
-		$labelStyle   = $this->maniaControl->getManialinkManager()
-		                                   ->getStyleManager()
-		                                   ->getDefaultLabelStyle();
+		$quadStyle    = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadStyle();
+		$quadSubstyle = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadSubstyle();
+		$labelStyle   = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultLabelStyle();
 
 		$maniaLink = new ManiaLink(self::MLID_WIDGET);
 
@@ -892,8 +800,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$script->addFeature($keyActionNegative);
 
 		// Send manialink
-		$this->maniaControl->getManialinkManager()
-		                   ->sendManialink($maniaLink);
+		$this->maniaControl->getManialinkManager()->sendManialink($maniaLink);
 	}
 }
 
