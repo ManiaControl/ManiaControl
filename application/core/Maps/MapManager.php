@@ -471,6 +471,21 @@ class MapManager implements CallbackListener {
 	}
 
 	/**
+	 * Get's a Map by it's Mania-Exchange Id
+	 *
+	 * @param $mxId
+	 * @return Map
+	 */
+	public function getMapByMxId($mxId) {
+		foreach ($this->maps as $map) {
+			if ($map->mx->id == $mxId) {
+				return $map;
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Updates the full Map list, needed on Init, addMap and on ShuffleMaps
 	 */
 	private function updateFullMapList() {
