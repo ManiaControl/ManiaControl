@@ -49,20 +49,16 @@ class ShootManiaCallbacks implements CallbackListener {
 	public function handleScriptCallbacks($name, $data) {
 		switch ($name) {
 			case 'LibXmlRpc_Rankings':
-				$this->maniaControl->getServer()
-				                   ->getRankingManager()
-				                   ->updateRankings($data[0]);
+				$this->maniaControl->getServer()->getRankingManager()->updateRankings($data[0]);
 				break;
 			case 'LibXmlRpc_Scores':
-				$this->maniaControl->getCallbackManager()
-				                   ->triggerCallback(Callbacks::SCORES, $data[0]);
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SCORES, $data[0]);
 				break;
 			case 'LibAFK_IsAFK':
 				$this->triggerAfkStatus($data[0]);
 				break;
 			case 'WarmUp_Status':
-				$this->maniaControl->getCallbackManager()
-				                   ->triggerCallback(Callbacks::WARMUPSTATUS, $data[0]);
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::WARMUPSTATUS, $data[0]);
 				break;
 			case self::CB_TIMEATTACK_ONCHECKPOINT:
 				$this->handleTimeAttackOnCheckpoint($name, $data);
@@ -79,10 +75,8 @@ class ShootManiaCallbacks implements CallbackListener {
 	 * @param string $login
 	 */
 	private function triggerAfkStatus($login) {
-		$player = $this->maniaControl->getPlayerManager()
-		                             ->getPlayer($login);
-		$this->maniaControl->getCallbackManager()
-		                   ->triggerCallback(Callbacks::AFKSTATUS, $player);
+		$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
+		$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::AFKSTATUS, $player);
 	}
 
 	/**
@@ -93,8 +87,7 @@ class ShootManiaCallbacks implements CallbackListener {
 	 */
 	public function handleTimeAttackOnCheckpoint($name, array $data) {
 		$login  = $data[0];
-		$player = $this->maniaControl->getPlayerManager()
-		                             ->getPlayer($login);
+		$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
 		if (!$player) {
 			return;
 		}
@@ -106,8 +99,7 @@ class ShootManiaCallbacks implements CallbackListener {
 		$checkpointCallback->setPlayer($player);
 		$checkpointCallback->time = (int)$data[1];
 
-		$this->maniaControl->getCallbackManager()
-		                   ->triggerCallback($checkpointCallback);
+		$this->maniaControl->getCallbackManager()->triggerCallback($checkpointCallback);
 	}
 
 	/**
@@ -118,8 +110,7 @@ class ShootManiaCallbacks implements CallbackListener {
 	 */
 	public function handleTimeAttackOnFinish($name, array $data) {
 		$login  = $data[0];
-		$player = $this->maniaControl->getPlayerManager()
-		                             ->getPlayer($login);
+		$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
 		if (!$player) {
 			return;
 		}
@@ -131,7 +122,6 @@ class ShootManiaCallbacks implements CallbackListener {
 		$finishCallback->setPlayer($player);
 		$finishCallback->time = (int)$data[1];
 
-		$this->maniaControl->getCallbackManager()
-		                   ->triggerCallback($finishCallback);
+		$this->maniaControl->getCallbackManager()->triggerCallback($finishCallback);
 	}
 }

@@ -53,18 +53,14 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		$this->initTables();
 
 		// Callbacks
-		$this->maniaControl->getCallbackManager()
-		                   ->registerCallbackListener(Callbacks::ONINIT, $this, 'onInit');
-		$this->maniaControl->getCallbackManager()
-		                   ->registerCallbackListener(Callbacks::BEGINMAP, $this, 'onBeginMap');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::ONINIT, $this, 'onInit');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::BEGINMAP, $this, 'onBeginMap');
 
 		// Settings
-		$this->maniaControl->getSettingManager()
-		                   ->initSetting($this, self::SETTING_LOAD_DEFAULT_SETTINGS_MAP_BEGIN, false);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_LOAD_DEFAULT_SETTINGS_MAP_BEGIN, false);
 
 		// Permissions
-		$this->maniaControl->getAuthenticationManager()
-		                   ->definePermissionLevel(self::SETTING_PERMISSION_CHANGE_SCRIPT_SETTINGS, AuthenticationManager::AUTH_LEVEL_ADMIN);
+		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_CHANGE_SCRIPT_SETTINGS, AuthenticationManager::AUTH_LEVEL_ADMIN);
 	}
 
 	/**
@@ -73,8 +69,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 * @return boolean
 	 */
 	private function initTables() {
-		$mysqli = $this->maniaControl->getDatabase()
-		                             ->getMysqli();
+		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
 		$query  = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_SCRIPT_SETTINGS . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
 				`serverIndex` int(11) NOT NULL,
@@ -119,14 +114,12 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 */
 	public function loadSettingsFromDatabase() {
 		try {
-			$scriptSettings = $this->maniaControl->getClient()
-			                                     ->getModeScriptSettings();
+			$scriptSettings = $this->maniaControl->getClient()->getModeScriptSettings();
 		} catch (GameModeException $e) {
 			return false;
 		}
 
-		$mysqli      = $this->maniaControl->getDatabase()
-		                                  ->getMysqli();
+		$mysqli      = $this->maniaControl->getDatabase()->getMysqli();
 		$serverIndex = $this->maniaControl->getServer()->index;
 		$query       = "SELECT * FROM `" . self::TABLE_SCRIPT_SETTINGS . "`
 				WHERE serverIndex = {$serverIndex};";
@@ -149,16 +142,14 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			return true;
 		}
 
-		return $this->maniaControl->getClient()
-		                          ->setModeScriptSettings($loadedSettings);
+		return $this->maniaControl->getClient()->setModeScriptSettings($loadedSettings);
 	}
 
 	/**
 	 * Handle Begin Map Callback
 	 */
 	public function onBeginMap() {
-		if ($this->maniaControl->getSettingManager()
-		                       ->getSettingValue($this, self::SETTING_LOAD_DEFAULT_SETTINGS_MAP_BEGIN)
+		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_LOAD_DEFAULT_SETTINGS_MAP_BEGIN)
 		) {
 			$this->loadSettingsFromDatabase();
 		}
@@ -173,8 +164,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		$frame = new Frame();
 
 		try {
-			$scriptInfo = $this->maniaControl->getClient()
-			                                 ->getModeScriptInfo();
+			$scriptInfo = $this->maniaControl->getClient()->getModeScriptInfo();
 		} catch (GameModeException $e) {
 			$label = new Label();
 			$frame->add($label);
@@ -185,8 +175,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		$scriptParams = $scriptInfo->paramDescs;
 
 		try {
-			$scriptSettings = $this->maniaControl->getClient()
-			                                     ->getModeScriptSettings();
+			$scriptSettings = $this->maniaControl->getClient()->getModeScriptSettings();
 		} catch (GameModeException $e) {
 		}
 
@@ -293,11 +282,9 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
 	 */
 	public function saveConfigData(array $configData, Player $player) {
-		if (!$this->maniaControl->getAuthenticationManager()
-		                        ->checkPermission($player, self::SETTING_PERMISSION_CHANGE_SCRIPT_SETTINGS)
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_CHANGE_SCRIPT_SETTINGS)
 		) {
-			$this->maniaControl->getAuthenticationManager()
-			                   ->sendNotAllowed($player);
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
 		if (!$configData[3] || strpos($configData[3][0]['Name'], self::ACTION_PREFIX_SETTING) !== 0) {
@@ -305,8 +292,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		}
 
 		try {
-			$scriptSettings = $this->maniaControl->getClient()
-			                                     ->getModeScriptSettings();
+			$scriptSettings = $this->maniaControl->getClient()->getModeScriptSettings();
 		} catch (GameModeException $e) {
 			return;
 		}
@@ -332,16 +318,13 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 
 		$success = $this->applyNewScriptSettings($newSettings, $player);
 		if ($success) {
-			$this->maniaControl->getChat()
-			                   ->sendSuccess('Script Settings saved!', $player);
+			$this->maniaControl->getChat()->sendSuccess('Script Settings saved!', $player);
 		} else {
-			$this->maniaControl->getChat()
-			                   ->sendError('Script Settings Saving failed!', $player);
+			$this->maniaControl->getChat()->sendError('Script Settings Saving failed!', $player);
 		}
 
 		// Reopen the Menu
-		$this->maniaControl->getConfigurator()
-		                   ->showMenu($player, $this);
+		$this->maniaControl->getConfigurator()->showMenu($player, $this);
 	}
 
 	/**
@@ -356,12 +339,10 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			return true;
 		}
 
-		$this->maniaControl->getClient()
-		                   ->setModeScriptSettings($newSettings);
+		$this->maniaControl->getClient()->setModeScriptSettings($newSettings);
 
 		// Save Settings into Database
-		$mysqli    = $this->maniaControl->getDatabase()
-		                                ->getMysqli();
+		$mysqli    = $this->maniaControl->getDatabase()->getMysqli();
 		$query     = "INSERT INTO `" . self::TABLE_SCRIPT_SETTINGS . "` (
 				`serverIndex`,
 				`settingName`,
@@ -382,8 +363,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		// Notifications
 		$settingsCount = count($newSettings);
 		$settingIndex  = 0;
-		$title         = $this->maniaControl->getAuthenticationManager()
-		                                    ->getAuthLevelName($player);
+		$title         = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($player);
 		$chatMessage   = '$ff0' . $title . ' ' . $player->getEscapedNickname() . ' set ScriptSetting' . ($settingsCount > 1 ? 's' : '') . ' ';
 		foreach ($newSettings as $setting => $value) {
 			$chatMessage .= '$<' . '$fff' . preg_replace('/^S_/', '', $setting) . '$z$s$ff0 ';
@@ -402,19 +382,16 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 			}
 
 			// Trigger own callback
-			$this->maniaControl->getCallbackManager()
-			                   ->triggerCallback(self::CB_SCRIPTSETTING_CHANGED, $setting, $value);
+			$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_SCRIPTSETTING_CHANGED, $setting, $value);
 
 			$settingIndex++;
 		}
 		$statement->close();
 
-		$this->maniaControl->getCallbackManager()
-		                   ->triggerCallback(self::CB_SCRIPTSETTINGS_CHANGED);
+		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_SCRIPTSETTINGS_CHANGED);
 
 		$chatMessage .= '!';
-		$this->maniaControl->getChat()
-		                   ->sendInformation($chatMessage);
+		$this->maniaControl->getChat()->sendInformation($chatMessage);
 		Logger::logInfo($chatMessage, true);
 		return true;
 	}

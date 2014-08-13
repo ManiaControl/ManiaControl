@@ -61,14 +61,11 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 		$this->maniaControl = $maniaControl;
 
 		// Callbacks
-		$this->maniaControl->getCallbackManager()
-		                   ->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
-		$this->maniaControl->getManialinkManager()
-		                   ->registerManialinkPageAnswerListener(self::ACTION_BACK_TO_PLUGINS, $this, 'backToPlugins');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
+		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_BACK_TO_PLUGINS, $this, 'backToPlugins');
 
 		// Permissions
-		$this->maniaControl->getAuthenticationManager()
-		                   ->definePermissionLevel(self::SETTING_PERMISSION_CHANGE_PLUGIN_SETTINGS, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
+		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_CHANGE_PLUGIN_SETTINGS, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
 	}
 
 	/**
@@ -86,8 +83,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	 */
 	public function backToPlugins($callback, Player $player) {
 		$player->destroyCache($this, self::CACHE_SETTING_CLASS);
-		$this->maniaControl->getConfigurator()
-		                   ->showMenu($player, $this);
+		$this->maniaControl->getConfigurator()->showMenu($player, $this);
 	}
 
 	/**
@@ -98,8 +94,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 		$script->addFeature($paging);
 		$frame = new Frame();
 
-		$pluginClasses = $this->maniaControl->getPluginManager()
-		                                    ->getPluginClasses();
+		$pluginClasses = $this->maniaControl->getPluginManager()->getPluginClasses();
 
 		// Config
 		$pagerSize    = 9.;
@@ -140,9 +135,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 		// Display normal Plugin List
 		// Plugin pages
 		$posY          = 0.;
-		$pluginUpdates = $this->maniaControl->getUpdateManager()
-		                                    ->getPluginUpdateManager()
-		                                    ->getPluginsUpdates();
+		$pluginUpdates = $this->maniaControl->getUpdateManager()->getPluginUpdateManager()->getPluginsUpdates();
 
 		usort($pluginClasses, function ($pluginClassA, $pluginClassB) {
 			/** @var Plugin $pluginClassA */
@@ -160,8 +153,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 				$posY = $height * 0.41;
 			}
 
-			$active = $this->maniaControl->getPluginManager()
-			                             ->isPluginActive($pluginClass);
+			$active = $this->maniaControl->getPluginManager()->isPluginActive($pluginClass);
 
 			$pluginFrame = new Frame();
 			$pageFrame->add($pluginFrame);
@@ -263,8 +255,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	 */
 	private function getPluginSettingsMenu(Frame $frame, $width, $height, Paging $paging, Player $player, $settingClass) {
 		// TODO: centralize menu code to use by mc settings and plugin settings
-		$settings = $this->maniaControl->getSettingManager()
-		                               ->getSettingsByClass($settingClass);
+		$settings = $this->maniaControl->getSettingManager()->getSettingsByClass($settingClass);
 
 		$pageSettingsMaxCount = 11;
 		$posY                 = 0;
@@ -357,8 +348,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	 */
 	public function handleManialinkPageAnswer(array $callback) {
 		$login  = $callback[1][1];
-		$player = $this->maniaControl->getPlayerManager()
-		                             ->getPlayer($login);
+		$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
 		if (!$player) {
 			return;
 		}
@@ -374,28 +364,22 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 		if ($enable) {
 			$pluginClass = substr($actionId, strlen(self::ACTION_PREFIX_ENABLEPLUGIN));
 			/** @var Plugin $pluginClass */
-			$activated = $this->maniaControl->getPluginManager()
-			                                ->activatePlugin($pluginClass, $player->login);
+			$activated = $this->maniaControl->getPluginManager()->activatePlugin($pluginClass, $player->login);
 			if ($activated) {
-				$this->maniaControl->getChat()
-				                   ->sendSuccess($pluginClass::getName() . ' activated!', $player);
+				$this->maniaControl->getChat()->sendSuccess($pluginClass::getName() . ' activated!', $player);
 				Logger::logInfo("{$player->login} activated '{$pluginClass}'!", true);
 			} else {
-				$this->maniaControl->getChat()
-				                   ->sendError('Error activating ' . $pluginClass::getName() . '!', $player);
+				$this->maniaControl->getChat()->sendError('Error activating ' . $pluginClass::getName() . '!', $player);
 			}
 		} else if ($disable) {
 			$pluginClass = substr($actionId, strlen(self::ACTION_PREFIX_DISABLEPLUGIN));
 			/** @var Plugin $pluginClass */
-			$deactivated = $this->maniaControl->getPluginManager()
-			                                  ->deactivatePlugin($pluginClass);
+			$deactivated = $this->maniaControl->getPluginManager()->deactivatePlugin($pluginClass);
 			if ($deactivated) {
-				$this->maniaControl->getChat()
-				                   ->sendSuccess($pluginClass::getName() . ' deactivated!', $player);
+				$this->maniaControl->getChat()->sendSuccess($pluginClass::getName() . ' deactivated!', $player);
 				Logger::logInfo("{$player->login} deactivated '{$pluginClass}'!", true);
 			} else {
-				$this->maniaControl->getChat()
-				                   ->sendError('Error deactivating ' . $pluginClass::getName() . '!', $player);
+				$this->maniaControl->getChat()->sendError('Error deactivating ' . $pluginClass::getName() . '!', $player);
 			}
 		} else if ($settings) {
 			// Open Settings Menu
@@ -404,19 +388,16 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 		}
 
 		// Reopen the Menu
-		$this->maniaControl->getConfigurator()
-		                   ->showMenu($player, $this);
+		$this->maniaControl->getConfigurator()->showMenu($player, $this);
 	}
 
 	/**
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
 	 */
 	public function saveConfigData(array $configData, Player $player) {
-		if (!$this->maniaControl->getAuthenticationManager()
-		                        ->checkPermission($player, self::SETTING_PERMISSION_CHANGE_PLUGIN_SETTINGS)
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_CHANGE_PLUGIN_SETTINGS)
 		) {
-			$this->maniaControl->getAuthenticationManager()
-			                   ->sendNotAllowed($player);
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
 		if (!$configData[3] || strpos($configData[3][0]['Name'], self::ACTION_PREFIX_SETTING) !== 0) {
@@ -427,8 +408,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 
 		foreach ($configData[3] as $settingData) {
 			$settingIndex  = (int)substr($settingData['Name'], $prefixLength);
-			$settingObject = $this->maniaControl->getSettingManager()
-			                                    ->getSettingObjectByIndex($settingIndex);
+			$settingObject = $this->maniaControl->getSettingManager()->getSettingObjectByIndex($settingIndex);
 			if (!$settingObject) {
 				continue;
 			}
@@ -438,15 +418,12 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			}
 
 			$settingObject->value = $settingData['Value'];
-			$this->maniaControl->getSettingManager()
-			                   ->saveSetting($settingObject);
+			$this->maniaControl->getSettingManager()->saveSetting($settingObject);
 		}
 
-		$this->maniaControl->getChat()
-		                   ->sendSuccess('Plugin Settings saved!', $player);
+		$this->maniaControl->getChat()->sendSuccess('Plugin Settings saved!', $player);
 
 		// Reopen the Menu
-		$this->maniaControl->getConfigurator()
-		                   ->showMenu($player, $this);
+		$this->maniaControl->getConfigurator()->showMenu($player, $this);
 	}
 }

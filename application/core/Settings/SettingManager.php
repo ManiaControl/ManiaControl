@@ -40,8 +40,7 @@ class SettingManager implements CallbackListener {
 		$this->initTables();
 
 		// Callbacks
-		$this->maniaControl->getCallbackManager()
-		                   ->registerCallbackListener(Callbacks::AFTERINIT, $this, 'handleAfterInit');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::AFTERINIT, $this, 'handleAfterInit');
 	}
 
 	/**
@@ -50,8 +49,7 @@ class SettingManager implements CallbackListener {
 	 * @return bool
 	 */
 	private function initTables() {
-		$mysqli            = $this->maniaControl->getDatabase()
-		                                        ->getMysqli();
+		$mysqli            = $this->maniaControl->getDatabase()->getMysqli();
 		$settingTableQuery = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_SETTINGS . "` (
 				`index` INT(11) NOT NULL AUTO_INCREMENT,
 				`class` VARCHAR(100) NOT NULL,
@@ -84,8 +82,7 @@ class SettingManager implements CallbackListener {
 	 * @return bool
 	 */
 	private function deleteUnusedSettings() {
-		$mysqli       = $this->maniaControl->getDatabase()
-		                                   ->getMysqli();
+		$mysqli       = $this->maniaControl->getDatabase()->getMysqli();
 		$settingQuery = "DELETE FROM `" . self::TABLE_SETTINGS . "`
 				WHERE `changed` < NOW() - INTERVAL 1 HOUR;";
 		$result       = $mysqli->query($settingQuery);
@@ -137,8 +134,7 @@ class SettingManager implements CallbackListener {
 	 * @return Setting
 	 */
 	public function getSettingObjectByIndex($settingIndex) {
-		$mysqli       = $this->maniaControl->getDatabase()
-		                                   ->getMysqli();
+		$mysqli       = $this->maniaControl->getDatabase()->getMysqli();
 		$settingQuery = "SELECT * FROM `" . self::TABLE_SETTINGS . "`
 				WHERE `index` = {$settingIndex};";
 		$result       = $mysqli->query($settingQuery);
@@ -217,8 +213,7 @@ class SettingManager implements CallbackListener {
 		}
 
 		// Fetch setting
-		$mysqli       = $this->maniaControl->getDatabase()
-		                                   ->getMysqli();
+		$mysqli       = $this->maniaControl->getDatabase()->getMysqli();
 		$settingQuery = "SELECT * FROM `" . self::TABLE_SETTINGS . "`
 				WHERE `class` = '" . $mysqli->escape_string($settingClass) . "'
 				AND `setting` = '" . $mysqli->escape_string($settingName) . "';";
@@ -285,8 +280,7 @@ class SettingManager implements CallbackListener {
 	 * @return bool
 	 */
 	public function saveSetting(Setting $setting, $init = false) {
-		$mysqli = $this->maniaControl->getDatabase()
-		                             ->getMysqli();
+		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
 		if ($init) {
 			// Init - Keep old value if the default didn't change
 			$valueUpdateString = '`value` = IF(`default` = VALUES(`default`), `value`, VALUES(`default`))';
@@ -329,8 +323,7 @@ class SettingManager implements CallbackListener {
 
 		// Trigger Settings Changed Callback
 		if (!$init) {
-			$this->maniaControl->getCallbackManager()
-			                   ->triggerCallback(self::CB_SETTING_CHANGED, $setting);
+			$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_SETTING_CHANGED, $setting);
 		}
 		return true;
 	}
@@ -373,8 +366,7 @@ class SettingManager implements CallbackListener {
 		} else {
 			$className = ClassUtil::getClass($object);
 		}
-		$mysqli       = $this->maniaControl->getDatabase()
-		                                   ->getMysqli();
+		$mysqli       = $this->maniaControl->getDatabase()->getMysqli();
 		$settingQuery = "UPDATE `" . self::TABLE_SETTINGS . "`
 				SET `value` = `default`
 				WHERE `class` = '" . $mysqli->escape_string($className) . "'
@@ -405,8 +397,7 @@ class SettingManager implements CallbackListener {
 			$className = ClassUtil::getClass($object);
 		}
 
-		$mysqli       = $this->maniaControl->getDatabase()
-		                                   ->getMysqli();
+		$mysqli       = $this->maniaControl->getDatabase()->getMysqli();
 		$settingQuery = "DELETE FROM `" . self::TABLE_SETTINGS . "`
 				WHERE `class` = '" . $mysqli->escape_string($className) . "'
 				AND `setting` = '" . $mysqli->escape_string($settingName) . "';";
@@ -431,8 +422,7 @@ class SettingManager implements CallbackListener {
 	 */
 	public function getSettingsByClass($object) {
 		$className = ClassUtil::getClass($object);
-		$mysqli    = $this->maniaControl->getDatabase()
-		                                ->getMysqli();
+		$mysqli    = $this->maniaControl->getDatabase()->getMysqli();
 		$query     = "SELECT * FROM `" . self::TABLE_SETTINGS . "`
 				WHERE `class` = '" . $mysqli->escape_string($className) . "'
 				ORDER BY `setting` ASC;";
@@ -455,8 +445,7 @@ class SettingManager implements CallbackListener {
 	 * @return Setting[]
 	 */
 	public function getSettings() {
-		$mysqli = $this->maniaControl->getDatabase()
-		                             ->getMysqli();
+		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
 		$query  = "SELECT * FROM `" . self::TABLE_SETTINGS . "`
 				ORDER BY `class` ASC, `setting` ASC;";
 		$result = $mysqli->query($query);
@@ -479,8 +468,7 @@ class SettingManager implements CallbackListener {
 	 * @return string[]
 	 */
 	public function getSettingClasses($hidePluginClasses = false) {
-		$mysqli = $this->maniaControl->getDatabase()
-		                             ->getMysqli();
+		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
 		$query  = "SELECT DISTINCT `class` FROM `" . self::TABLE_SETTINGS . "`
 				ORDER BY `class` ASC;";
 		$result = $mysqli->query($query);

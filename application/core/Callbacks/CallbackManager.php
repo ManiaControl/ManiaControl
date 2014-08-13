@@ -210,8 +210,7 @@ class CallbackManager {
 	 */
 	public function manageCallbacks() {
 		// Manage Timings
-		$this->maniaControl->getTimerManager()
-		                   ->manageTimings();
+		$this->maniaControl->getTimerManager()->manageTimings();
 
 		// Server Callbacks
 		if (!$this->maniaControl->getClient()) {
@@ -219,8 +218,7 @@ class CallbackManager {
 		}
 
 		// Handle callbacks
-		$callbacks = $this->maniaControl->getClient()
-		                                ->executeCallbacks();
+		$callbacks = $this->maniaControl->getClient()->executeCallbacks();
 		foreach ($callbacks as $callback) {
 			$this->handleCallback($callback);
 		}
@@ -238,16 +236,14 @@ class CallbackManager {
 				$this->triggerCallback($callbackName, $callback);
 				break;
 			case self::CB_MP_BEGINMAP:
-				$this->maniaControl->getMapManager()
-				                   ->handleBeginMap($callback);
+				$this->maniaControl->getMapManager()->handleBeginMap($callback);
 				$this->triggerCallback($callbackName, $callback);
 				break;
 			case self::CB_MP_ENDMATCH:
 				$this->triggerCallback($callbackName, $callback);
 				break;
 			case self::CB_MP_ENDMAP:
-				$this->maniaControl->getMapManager()
-				                   ->handleEndMap($callback);
+				$this->maniaControl->getMapManager()->handleEndMap($callback);
 				$this->triggerCallback($callbackName, $callback);
 				break;
 			case self::CB_MP_MODESCRIPTCALLBACK:

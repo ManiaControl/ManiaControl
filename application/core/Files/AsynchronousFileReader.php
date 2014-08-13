@@ -38,9 +38,7 @@ class AsynchronousFileReader {
 
 	public static function newRequestTest($url) {
 		$request = new Request($url);
-		$request->getOptions()
-		        ->set(CURLOPT_TIMEOUT, 60)
-		        ->set(CURLOPT_HEADER, false) // don't display response header
+		$request->getOptions()->set(CURLOPT_TIMEOUT, 60)->set(CURLOPT_HEADER, false) // don't display response header
 		        ->set(CURLOPT_CRLF, true) // linux line feed
 		        ->set(CURLOPT_ENCODING, '') // accept encoding
 		        ->set(CURLOPT_USERAGENT, 'ManiaControl v' . ManiaControl::VERSION) // user-agent
@@ -78,16 +76,14 @@ class AsynchronousFileReader {
 		}
 
 		$request = $this->newRequest($url);
-		$request->getOptions()
-		        ->set(CURLOPT_AUTOREFERER, true) // accept link reference
+		$request->getOptions()->set(CURLOPT_AUTOREFERER, true) // accept link reference
 		        ->set(CURLOPT_HTTPHEADER, $headers); // headers
 
 		$request->addListener('complete', function (Event $event) use (&$function) {
 			$error   = null;
 			$content = null;
 			if ($event->response->hasError()) {
-				$error = $event->response->getError()
-				                         ->getMessage();
+				$error = $event->response->getError()->getMessage();
 			} else {
 				$content = $event->response->getContent();
 			}
@@ -105,9 +101,7 @@ class AsynchronousFileReader {
 	 */
 	protected function newRequest($url) {
 		$request = new Request($url);
-		$request->getOptions()
-		        ->set(CURLOPT_TIMEOUT, 60)
-		        ->set(CURLOPT_HEADER, false) // don't display response header
+		$request->getOptions()->set(CURLOPT_TIMEOUT, 60)->set(CURLOPT_HEADER, false) // don't display response header
 		        ->set(CURLOPT_CRLF, true) // linux line feed
 		        ->set(CURLOPT_ENCODING, '') // accept encoding
 		        ->set(CURLOPT_USERAGENT, 'ManiaControl v' . ManiaControl::VERSION) // user-agent
@@ -140,8 +134,7 @@ class AsynchronousFileReader {
 			array_push($headers, 'Content-Encoding: gzip');
 		}
 
-		$request->getOptions()
-		        ->set(CURLOPT_POST, true) // post method
+		$request->getOptions()->set(CURLOPT_POST, true) // post method
 		        ->set(CURLOPT_POSTFIELDS, $content) // post content field
 		        ->set(CURLOPT_HTTPHEADER, $headers) // headers
 		;
@@ -149,8 +142,7 @@ class AsynchronousFileReader {
 			$error   = null;
 			$content = null;
 			if ($event->response->hasError()) {
-				$error = $event->response->getError()
-				                         ->getMessage();
+				$error = $event->response->getError()->getMessage();
 			} else {
 				$content = $event->response->getContent();
 			}
@@ -186,8 +178,7 @@ class AsynchronousFileReader {
 		}
 
 		$request = $this->newRequest($url);
-		$request->getOptions()
-		        ->set(CURLOPT_POST, true) // post method
+		$request->getOptions()->set(CURLOPT_POST, true) // post method
 		        ->set(CURLOPT_POSTFIELDS, $content) // post content field
 		        ->set(CURLOPT_HTTPHEADER, $headers) // headers
 		;
@@ -195,8 +186,7 @@ class AsynchronousFileReader {
 			$error   = null;
 			$content = null;
 			if ($event->response->hasError()) {
-				$error = $event->response->getError()
-				                         ->getMessage();
+				$error = $event->response->getError()->getMessage();
 			} else {
 				$content = $event->response->getContent();
 			}

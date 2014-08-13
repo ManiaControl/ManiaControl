@@ -58,17 +58,12 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		$this->maniaControl = $maniaControl;
 
 		// Callbacks
-		$this->maniaControl->getCallbackManager()
-		                   ->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_CLOSED, $this, 'closeWidget');
-		$this->maniaControl->getCallbackManager()
-		                   ->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_OPENED, $this, 'handleWidgetOpened');
-		$this->maniaControl->getCallbackManager()
-		                   ->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_CLOSED, $this, 'closeWidget');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_OPENED, $this, 'handleWidgetOpened');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 
-		$this->maniaControl->getManialinkManager()
-		                   ->registerManialinkPageAnswerListener(self::ACTION_SEARCH_MAPNAME, $this, 'showList');
-		$this->maniaControl->getManialinkManager()
-		                   ->registerManialinkPageAnswerListener(self::ACTION_SEARCH_AUTHOR, $this, 'showList');
+		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_SEARCH_MAPNAME, $this, 'showList');
+		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_SEARCH_AUTHOR, $this, 'showList');
 	}
 
 	/**
@@ -85,8 +80,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 
 		$action = $actionArray[0] . '.' . $actionArray[1];
 		$login  = $callback[1][1];
-		$player = $this->maniaControl->getPlayerManager()
-		                             ->getPlayer($login);
+		$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
 		$mapId  = (int)$actionArray[2];
 
 		switch ($action) {
@@ -95,8 +89,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 				$this->showList($callback, $player);
 				break;
 			case self::ACTION_ADD_MAP:
-				$this->maniaControl->getMapManager()
-				                   ->addMapFromMx($mapId, $player->login);
+				$this->maniaControl->getMapManager()->addMapFromMx($mapId, $player->login);
 				break;
 		}
 	}
@@ -138,16 +131,13 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		}
 
 		// search for matching maps
-		$this->maniaControl->getMapManager()
-		                   ->getMXManager()
-		                   ->fetchMapsAsync(function (array $maps) use (&$player) {
-			if (!$maps) {
-				$this->maniaControl->getChat()
-				                   ->sendError('No maps found, or MX is down!', $player->login);
-				return;
-			}
-			$this->showManiaExchangeList($maps, $player);
-		}, $searchString, $author, $environment);
+		$this->maniaControl->getMapManager()->getMXManager()->fetchMapsAsync(function (array $maps) use (&$player) {
+			                                                    if (!$maps) {
+				                                                    $this->maniaControl->getChat()->sendError('No maps found, or MX is down!', $player->login);
+				                                                    return;
+			                                                    }
+			                                                    $this->showManiaExchangeList($maps, $player);
+		                                                    }, $searchString, $author, $environment);
 	}
 
 	/**
@@ -159,12 +149,8 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 	 */
 	private function showManiaExchangeList(array $maps, Player $player) {
 		// Start offsets
-		$width  = $this->maniaControl->getManialinkManager()
-		                             ->getStyleManager()
-		                             ->getListWidgetsWidth();
-		$height = $this->maniaControl->getManialinkManager()
-		                             ->getStyleManager()
-		                             ->getListWidgetsHeight();
+		$width  = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsWidth();
+		$height = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsHeight();
 		$posX   = -$width / 2;
 		$posY   = $height / 2;
 
@@ -175,15 +161,11 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		$script->addFeature($paging);
 
 		// Main frame
-		$frame = $this->maniaControl->getManialinkManager()
-		                            ->getStyleManager()
-		                            ->getDefaultListFrame($script, $paging);
+		$frame = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultListFrame($script, $paging);
 		$maniaLink->add($frame);
 
 		//Predefine description Label
-		$descriptionLabel = $this->maniaControl->getManialinkManager()
-		                                       ->getStyleManager()
-		                                       ->getDefaultDescriptionLabel();
+		$descriptionLabel = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultDescriptionLabel();
 		$frame->add($descriptionLabel);
 
 		// Headline
@@ -191,8 +173,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		$frame->add($headFrame);
 		$headFrame->setY($posY - 12);
 		$array = array('$oId' => $posX + 3.5, '$oName' => $posX + 12.5, '$oAuthor' => $posX + 59, '$oKarma' => $posX + 85, '$oType' => $posX + 103, '$oMood' => $posX + 118, '$oLast Update' => $posX + 130);
-		$this->maniaControl->getManialinkManager()
-		                   ->labelLine($headFrame, $array);
+		$this->maniaControl->getManialinkManager()->labelLine($headFrame, $array);
 
 		$index     = 0;
 		$posY      = $height / 2 - 16;
@@ -221,8 +202,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 
 			$time        = Formatter::time_elapsed_string(strtotime($map->updated));
 			$array       = array('$s' . $map->id => $posX + 3.5, '$s' . $map->name => $posX + 12.5, '$s' . $map->author => $posX + 59, '$s' . str_replace('Arena', '', $map->maptype) => $posX + 103, '$s' . $map->mood => $posX + 118, '$s' . $time => $posX + 130);
-			$labels      = $this->maniaControl->getManialinkManager()
-			                                  ->labelLine($mapFrame, $array);
+			$labels      = $this->maniaControl->getManialinkManager()->labelLine($mapFrame, $array);
 			$authorLabel = $labels[2];
 			$authorLabel->setAction(self::ACTION_GET_MAPS_FROM_AUTHOR . '.' . $map->author);
 
@@ -231,20 +211,15 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 			$mxQuad = new Quad();
 			$mapFrame->add($mxQuad);
 			$mxQuad->setSize(3, 3);
-			$mxQuad->setImage($this->maniaControl->getManialinkManager()
-			                                     ->getIconManager()
-			                                     ->getIcon(IconManager::MX_ICON));
-			$mxQuad->setImageFocus($this->maniaControl->getManialinkManager()
-			                                          ->getIconManager()
-			                                          ->getIcon(IconManager::MX_ICON_MOVER));
+			$mxQuad->setImage($this->maniaControl->getManialinkManager()->getIconManager()->getIcon(IconManager::MX_ICON));
+			$mxQuad->setImageFocus($this->maniaControl->getManialinkManager()->getIconManager()->getIcon(IconManager::MX_ICON_MOVER));
 			$mxQuad->setX($posX + 56);
 			$mxQuad->setUrl($map->pageurl);
 			$mxQuad->setZ(0.01);
 			$description = 'View $<' . $map->name . '$> on Mania-Exchange';
 			$mxQuad->addTooltipLabelFeature($descriptionLabel, $description);
 
-			if ($this->maniaControl->getAuthenticationManager()
-			                       ->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)
+			if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)
 			) {
 				$addQuad = new Quad_Icons64x64_1();
 				$mapFrame->add($addQuad);
@@ -352,8 +327,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		$quad->setAction(self::ACTION_SEARCH_AUTHOR);
 
 		// render and display xml
-		$this->maniaControl->getManialinkManager()
-		                   ->displayWidget($maniaLink, $player, 'ManiaExchangeList');
+		$this->maniaControl->getManialinkManager()->displayWidget($maniaLink, $player, 'ManiaExchangeList');
 	}
 
 	/**

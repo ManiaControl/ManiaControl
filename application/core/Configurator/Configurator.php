@@ -70,36 +70,24 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$this->addActionsMenuItem();
 
 		// Settings
-		$this->maniaControl->getSettingManager()
-		                   ->initSetting($this, self::SETTING_MENU_POSX, 0.);
-		$this->maniaControl->getSettingManager()
-		                   ->initSetting($this, self::SETTING_MENU_POSY, 3.);
-		$this->maniaControl->getSettingManager()
-		                   ->initSetting($this, self::SETTING_MENU_WIDTH, 170.);
-		$this->maniaControl->getSettingManager()
-		                   ->initSetting($this, self::SETTING_MENU_HEIGHT, 81.);
-		$this->maniaControl->getSettingManager()
-		                   ->initSetting($this, self::SETTING_MENU_STYLE, Quad_BgRaceScore2::STYLE);
-		$this->maniaControl->getSettingManager()
-		                   ->initSetting($this, self::SETTING_MENU_SUBSTYLE, Quad_BgRaceScore2::SUBSTYLE_HandleSelectable);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MENU_POSX, 0.);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MENU_POSY, 3.);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MENU_WIDTH, 170.);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MENU_HEIGHT, 81.);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MENU_STYLE, Quad_BgRaceScore2::STYLE);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MENU_SUBSTYLE, Quad_BgRaceScore2::SUBSTYLE_HandleSelectable);
 
 		// Permissions
-		$this->maniaControl->getAuthenticationManager()
-		                   ->definePermissionLevel(self::SETTING_PERMISSION_OPEN_CONFIGURATOR, AuthenticationManager::AUTH_LEVEL_ADMIN);
+		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_OPEN_CONFIGURATOR, AuthenticationManager::AUTH_LEVEL_ADMIN);
 
 		// Page answers
-		$this->maniaControl->getManialinkManager()
-		                   ->registerManialinkPageAnswerListener(self::ACTION_TOGGLEMENU, $this, 'handleToggleMenuAction');
-		$this->maniaControl->getManialinkManager()
-		                   ->registerManialinkPageAnswerListener(self::ACTION_SAVECONFIG, $this, 'handleSaveConfigAction');
+		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_TOGGLEMENU, $this, 'handleToggleMenuAction');
+		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_SAVECONFIG, $this, 'handleSaveConfigAction');
 
 		// Callbacks
-		$this->maniaControl->getCallbackManager()
-		                   ->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
-		$this->maniaControl->getCallbackManager()
-		                   ->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_OPENED, $this, 'handleWidgetOpened');
-		$this->maniaControl->getCallbackManager()
-		                   ->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_CLOSED, $this, 'closeWidget');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_OPENED, $this, 'handleWidgetOpened');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_CLOSED, $this, 'closeWidget');
 
 		// Create server options menu
 		$this->serverOptionsMenu = new ServerOptionsMenu($maniaControl);
@@ -118,8 +106,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$this->addMenu($this->maniaControlSettings);
 
 		// Chat commands
-		$this->maniaControl->getCommandManager()
-		                   ->registerCommandListener('config', $this, 'handleConfigCommand', true, 'Loads Config panel.');
+		$this->maniaControl->getCommandManager()->registerCommandListener('config', $this, 'handleConfigCommand', true, 'Loads Config panel.');
 	}
 
 	/**
@@ -127,10 +114,8 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	 */
 	private function addActionsMenuItem() {
 		$itemQuad = new Quad_UIConstruction_Buttons();
-		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Tools)
-		         ->setAction(self::ACTION_TOGGLEMENU);
-		$this->maniaControl->getActionsMenu()
-		                   ->addAdminMenuItem($itemQuad, 100, 'Settings');
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Tools)->setAction(self::ACTION_TOGGLEMENU);
+		$this->maniaControl->getActionsMenu()->addAdminMenuItem($itemQuad, 100, 'Settings');
 	}
 
 	/**
@@ -149,11 +134,9 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	 * @param Player $player
 	 */
 	public function handleConfigCommand(array $callback, Player $player) {
-		if (!$this->maniaControl->getAuthenticationManager()
-		                        ->checkPermission($player, self::SETTING_PERMISSION_OPEN_CONFIGURATOR)
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_OPEN_CONFIGURATOR)
 		) {
-			$this->maniaControl->getAuthenticationManager()
-			                   ->sendNotAllowed($player);
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
 
@@ -171,8 +154,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 			$menuId = $this->getMenuId($menuId->getTitle());
 		}
 		$manialink = $this->buildManialink($menuId, $player);
-		$this->maniaControl->getManialinkManager()
-		                   ->displayWidget($manialink, $player, self::MENU_NAME);
+		$this->maniaControl->getManialinkManager()->displayWidget($manialink, $player, self::MENU_NAME);
 		$player->setCache($this, self::CACHE_MENU_SHOWN, true);
 	}
 
@@ -201,18 +183,12 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	 * @return \FML\ManiaLink
 	 */
 	private function buildManialink($menuIdShown = 0, Player $player = null) {
-		$menuPosX     = $this->maniaControl->getSettingManager()
-		                                   ->getSettingValue($this, self::SETTING_MENU_POSX);
-		$menuPosY     = $this->maniaControl->getSettingManager()
-		                                   ->getSettingValue($this, self::SETTING_MENU_POSY);
-		$menuWidth    = $this->maniaControl->getSettingManager()
-		                                   ->getSettingValue($this, self::SETTING_MENU_WIDTH);
-		$menuHeight   = $this->maniaControl->getSettingManager()
-		                                   ->getSettingValue($this, self::SETTING_MENU_HEIGHT);
-		$quadStyle    = $this->maniaControl->getSettingManager()
-		                                   ->getSettingValue($this, self::SETTING_MENU_STYLE);
-		$quadSubstyle = $this->maniaControl->getSettingManager()
-		                                   ->getSettingValue($this, self::SETTING_MENU_SUBSTYLE);
+		$menuPosX     = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MENU_POSX);
+		$menuPosY     = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MENU_POSY);
+		$menuWidth    = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MENU_WIDTH);
+		$menuHeight   = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MENU_HEIGHT);
+		$quadStyle    = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MENU_STYLE);
+		$quadSubstyle = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MENU_SUBSTYLE);
 
 		$menuListWidth  = $menuWidth * 0.3;
 		$menuItemHeight = 10.;
@@ -227,9 +203,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 
 		$backgroundQuad = new Quad();
 		$frame->add($backgroundQuad);
-		$backgroundQuad->setZ(-10)
-		               ->setSize($menuWidth, $menuHeight)
-		               ->setStyles($quadStyle, $quadSubstyle);
+		$backgroundQuad->setZ(-10)->setSize($menuWidth, $menuHeight)->setStyles($quadStyle, $quadSubstyle);
 
 		$menuItemsFrame = new Frame();
 		$frame->add($menuItemsFrame);
@@ -238,8 +212,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$itemsBackgroundQuad = new Quad();
 		$menuItemsFrame->add($itemsBackgroundQuad);
 		$backgroundQuad->setZ(-9);
-		$itemsBackgroundQuad->setSize($menuListWidth, $menuHeight)
-		                    ->setStyles($quadStyle, $quadSubstyle);
+		$itemsBackgroundQuad->setSize($menuListWidth, $menuHeight)->setStyles($quadStyle, $quadSubstyle);
 
 		$menusFrame = new Frame();
 		$frame->add($menusFrame);
@@ -254,11 +227,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 			// Add title
 			$menuItemLabel = new Label_Text();
 			$menuItemsFrame->add($menuItemLabel);
-			$menuItemLabel->setY($menuItemY)
-			              ->setSize($menuListWidth * 0.9, $menuItemHeight * 0.9)
-			              ->setStyle($menuItemLabel::STYLE_TextCardRaceRank)
-			              ->setText($menu->getTitle())
-			              ->setAction(self::ACTION_SELECTMENU . $menuId);
+			$menuItemLabel->setY($menuItemY)->setSize($menuListWidth * 0.9, $menuItemHeight * 0.9)->setStyle($menuItemLabel::STYLE_TextCardRaceRank)->setText($menu->getTitle())->setAction(self::ACTION_SELECTMENU . $menuId);
 
 			// Show the menu
 			if ($menuId === $menuIdShown) {
@@ -266,8 +235,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 				if ($menuControl) {
 					$menusFrame->add($menuControl);
 				} else {
-					$this->maniaControl->getChat()
-					                   ->sendError('Error loading Menu!', $player);
+					$this->maniaControl->getChat()->sendError('Error loading Menu!', $player);
 				}
 			}
 
@@ -278,32 +246,17 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		// Add Close Quad (X)
 		$closeQuad = new Quad_Icons64x64_1();
 		$frame->add($closeQuad);
-		$closeQuad->setPosition($menuWidth * 0.483, $menuHeight * 0.467, 3)
-		          ->setSize(6, 6)
-		          ->setSubStyle($closeQuad::SUBSTYLE_QuitRace)
-		          ->setAction(ManialinkManager::ACTION_CLOSEWIDGET);
+		$closeQuad->setPosition($menuWidth * 0.483, $menuHeight * 0.467, 3)->setSize(6, 6)->setSubStyle($closeQuad::SUBSTYLE_QuitRace)->setAction(ManialinkManager::ACTION_CLOSEWIDGET);
 
 		// Add close button
 		$closeButton = new Label_Text();
 		$frame->add($closeButton);
-		$closeButton->setPosition($menuWidth * -0.5 + $menuListWidth * 0.29, $menuHeight * -0.43)
-		            ->setSize($menuListWidth * 0.3, $menuListWidth * 0.1)
-		            ->setStyle($closeButton::STYLE_TextButtonNavBack)
-		            ->setTextPrefix('$999')
-		            ->setTranslate(true)
-		            ->setText('Close')
-		            ->setAction(self::ACTION_TOGGLEMENU);
+		$closeButton->setPosition($menuWidth * -0.5 + $menuListWidth * 0.29, $menuHeight * -0.43)->setSize($menuListWidth * 0.3, $menuListWidth * 0.1)->setStyle($closeButton::STYLE_TextButtonNavBack)->setTextPrefix('$999')->setTranslate(true)->setText('Close')->setAction(self::ACTION_TOGGLEMENU);
 
 		// Add save button
 		$saveButton = new Label_Text();
 		$frame->add($saveButton);
-		$saveButton->setPosition($menuWidth * -0.5 + $menuListWidth * 0.71, $menuHeight * -0.43)
-		           ->setSize($menuListWidth * 0.3, $menuListWidth * 0.1)
-		           ->setStyle($saveButton::STYLE_TextButtonNavBack)
-		           ->setTextPrefix('$0f5')
-		           ->setTranslate(true)
-		           ->setText('Save')
-		           ->setAction(self::ACTION_SAVECONFIG);
+		$saveButton->setPosition($menuWidth * -0.5 + $menuListWidth * 0.71, $menuHeight * -0.43)->setSize($menuListWidth * 0.3, $menuListWidth * 0.1)->setStyle($saveButton::STYLE_TextButtonNavBack)->setTextPrefix('$0f5')->setTranslate(true)->setText('Save')->setAction(self::ACTION_SAVECONFIG);
 
 		return $manialink;
 	}
@@ -338,8 +291,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	 */
 	public function hideMenu(Player $player) {
 		$this->closeWidget($player);
-		$this->maniaControl->getManialinkManager()
-		                   ->closeWidget($player);
+		$this->maniaControl->getManialinkManager()->closeWidget($player);
 	}
 
 	/**
@@ -388,8 +340,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		}
 
 		$login  = $callback[1][1];
-		$player = $this->maniaControl->getPlayerManager()
-		                             ->getPlayer($login);
+		$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
 
 		if ($player) {
 			$actionArray = explode('.', $callback[1][2]);

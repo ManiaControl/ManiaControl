@@ -29,12 +29,9 @@ class AuthCommands implements CommandListener {
 		$this->maniaControl = $maniaControl;
 
 		// Commands
-		$this->maniaControl->getCommandManager()
-		                   ->registerCommandListener('addsuperadmin', $this, 'command_AddSuperAdmin', true, 'Add Player to the AdminList as SuperAdmin.');
-		$this->maniaControl->getCommandManager()
-		                   ->registerCommandListener('addadmin', $this, 'command_AddAdmin', true, 'Add Player to the AdminList as Admin.');
-		$this->maniaControl->getCommandManager()
-		                   ->registerCommandListener('addmod', $this, 'command_AddModerator', true, 'Add Player to the AdminList as Moderator.');
+		$this->maniaControl->getCommandManager()->registerCommandListener('addsuperadmin', $this, 'command_AddSuperAdmin', true, 'Add Player to the AdminList as SuperAdmin.');
+		$this->maniaControl->getCommandManager()->registerCommandListener('addadmin', $this, 'command_AddAdmin', true, 'Add Player to the AdminList as Admin.');
+		$this->maniaControl->getCommandManager()->registerCommandListener('addmod', $this, 'command_AddModerator', true, 'Add Player to the AdminList as Moderator.');
 	}
 
 	/**
@@ -45,8 +42,7 @@ class AuthCommands implements CommandListener {
 	 */
 	public function command_AddSuperAdmin(array $chatCallback, Player $player) {
 		if (!AuthenticationManager::checkRight($player, AuthenticationManager::AUTH_LEVEL_MASTERADMIN)) {
-			$this->maniaControl->getAuthenticationManager()
-			                   ->sendNotAllowed($player);
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
 		$text         = $chatCallback[1][2];
@@ -55,23 +51,18 @@ class AuthCommands implements CommandListener {
 			$this->sendAddSuperAdminUsageInfo($player);
 			return;
 		}
-		$target = $this->maniaControl->getPlayerManager()
-		                             ->getPlayer($commandParts[1]);
+		$target = $this->maniaControl->getPlayerManager()->getPlayer($commandParts[1]);
 		if (!$target) {
-			$this->maniaControl->getChat()
-			                   ->sendError("Player '{$commandParts[1]}' not found!", $player);
+			$this->maniaControl->getChat()->sendError("Player '{$commandParts[1]}' not found!", $player);
 			return;
 		}
-		$success = $this->maniaControl->getAuthenticationManager()
-		                              ->grantAuthLevel($target, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
+		$success = $this->maniaControl->getAuthenticationManager()->grantAuthLevel($target, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
 		if (!$success) {
-			$this->maniaControl->getChat()
-			                   ->sendError('Error occurred.', $player);
+			$this->maniaControl->getChat()->sendError('Error occurred.', $player);
 			return;
 		}
 		$message = $player->getEscapedNickname() . ' added ' . $target->getEscapedNickname() . ' as SuperAdmin!';
-		$this->maniaControl->getChat()
-		                   ->sendSuccess($message);
+		$this->maniaControl->getChat()->sendSuccess($message);
 	}
 
 	/**
@@ -82,8 +73,7 @@ class AuthCommands implements CommandListener {
 	 */
 	private function sendAddSuperAdminUsageInfo(Player $player) {
 		$message = "Usage Example: '//addsuperadmin login'";
-		return $this->maniaControl->getChat()
-		                          ->sendUsageInfo($message, $player);
+		return $this->maniaControl->getChat()->sendUsageInfo($message, $player);
 	}
 
 	/**
@@ -94,8 +84,7 @@ class AuthCommands implements CommandListener {
 	 */
 	public function command_AddAdmin(array $chatCallback, Player $player) {
 		if (!AuthenticationManager::checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)) {
-			$this->maniaControl->getAuthenticationManager()
-			                   ->sendNotAllowed($player);
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
 		$text         = $chatCallback[1][2];
@@ -104,23 +93,18 @@ class AuthCommands implements CommandListener {
 			$this->sendAddAdminUsageInfo($player);
 			return;
 		}
-		$target = $this->maniaControl->getPlayerManager()
-		                             ->getPlayer($commandParts[1]);
+		$target = $this->maniaControl->getPlayerManager()->getPlayer($commandParts[1]);
 		if (!$target) {
-			$this->maniaControl->getChat()
-			                   ->sendError("Player '{$commandParts[1]}' not found!", $player);
+			$this->maniaControl->getChat()->sendError("Player '{$commandParts[1]}' not found!", $player);
 			return;
 		}
-		$success = $this->maniaControl->getAuthenticationManager()
-		                              ->grantAuthLevel($target, AuthenticationManager::AUTH_LEVEL_ADMIN);
+		$success = $this->maniaControl->getAuthenticationManager()->grantAuthLevel($target, AuthenticationManager::AUTH_LEVEL_ADMIN);
 		if (!$success) {
-			$this->maniaControl->getChat()
-			                   ->sendError('Error occurred.', $player);
+			$this->maniaControl->getChat()->sendError('Error occurred.', $player);
 			return;
 		}
 		$message = $player->getEscapedNickname() . ' added ' . $target->getEscapedNickname() . ' as Admin!';
-		$this->maniaControl->getChat()
-		                   ->sendSuccess($message);
+		$this->maniaControl->getChat()->sendSuccess($message);
 	}
 
 	/**
@@ -131,8 +115,7 @@ class AuthCommands implements CommandListener {
 	 */
 	private function sendAddAdminUsageInfo(Player $player) {
 		$message = "Usage Example: '//addadmin login'";
-		return $this->maniaControl->getChat()
-		                          ->sendUsageInfo($message, $player);
+		return $this->maniaControl->getChat()->sendUsageInfo($message, $player);
 	}
 
 	/**
@@ -143,8 +126,7 @@ class AuthCommands implements CommandListener {
 	 */
 	public function command_AddModerator(array $chatCallback, Player $player) {
 		if (!AuthenticationManager::checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
-			$this->maniaControl->getAuthenticationManager()
-			                   ->sendNotAllowed($player);
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
 		$text         = $chatCallback[1][2];
@@ -153,23 +135,18 @@ class AuthCommands implements CommandListener {
 			$this->sendAddModeratorUsageInfo($player);
 			return;
 		}
-		$target = $this->maniaControl->getPlayerManager()
-		                             ->getPlayer($commandParts[1]);
+		$target = $this->maniaControl->getPlayerManager()->getPlayer($commandParts[1]);
 		if (!$target) {
-			$this->maniaControl->getChat()
-			                   ->sendError("Player '{$commandParts[1]}' not found!", $player);
+			$this->maniaControl->getChat()->sendError("Player '{$commandParts[1]}' not found!", $player);
 			return;
 		}
-		$success = $this->maniaControl->getAuthenticationManager()
-		                              ->grantAuthLevel($target, AuthenticationManager::AUTH_LEVEL_MODERATOR);
+		$success = $this->maniaControl->getAuthenticationManager()->grantAuthLevel($target, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 		if (!$success) {
-			$this->maniaControl->getChat()
-			                   ->sendError('Error occurred.', $player);
+			$this->maniaControl->getChat()->sendError('Error occurred.', $player);
 			return;
 		}
 		$message = $player->getEscapedNickname() . ' added ' . $target->getEscapedNickname() . ' as Moderator!';
-		$this->maniaControl->getChat()
-		                   ->sendSuccess($message);
+		$this->maniaControl->getChat()->sendSuccess($message);
 	}
 
 	/**
@@ -180,7 +157,6 @@ class AuthCommands implements CommandListener {
 	 */
 	private function sendAddModeratorUsageInfo(Player $player) {
 		$message = "Usage Example: '//addmod login'";
-		return $this->maniaControl->getChat()
-		                          ->sendUsageInfo($message, $player);
+		return $this->maniaControl->getChat()->sendUsageInfo($message, $player);
 	}
 }

@@ -38,22 +38,17 @@ class HelpManager implements CommandListener, CallbackListener {
 		$this->maniaControl = $maniaControl;
 
 		// Callbacks
-		$this->maniaControl->getCallbackManager()
-		                   ->registerCallbackListener(Callbacks::ONINIT, $this, 'handleOnInit');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::ONINIT, $this, 'handleOnInit');
 	}
 
 	/**
 	 * Handle ManiaControl OnInit Callback
 	 */
 	public function handleOnInit() {
-		$this->maniaControl->getCommandManager()
-		                   ->registerCommandListener('help', $this, 'command_playerHelp', false, 'Shows all commands in chat.');
-		$this->maniaControl->getCommandManager()
-		                   ->registerCommandListener('helpall', $this, 'command_playerHelpAll', false, 'Shows all commands in ManiaLink with description.');
-		$this->maniaControl->getCommandManager()
-		                   ->registerCommandListener('help', $this, 'command_adminHelp', true, 'Shows all admin commands in chat.');
-		$this->maniaControl->getCommandManager()
-		                   ->registerCommandListener('helpall', $this, 'command_adminHelpAll', true, 'Shows all admin commands in ManiaLink with description.');
+		$this->maniaControl->getCommandManager()->registerCommandListener('help', $this, 'command_playerHelp', false, 'Shows all commands in chat.');
+		$this->maniaControl->getCommandManager()->registerCommandListener('helpall', $this, 'command_playerHelpAll', false, 'Shows all commands in ManiaLink with description.');
+		$this->maniaControl->getCommandManager()->registerCommandListener('help', $this, 'command_adminHelp', true, 'Shows all admin commands in chat.');
+		$this->maniaControl->getCommandManager()->registerCommandListener('helpall', $this, 'command_adminHelpAll', true, 'Shows all admin commands in ManiaLink with description.');
 	}
 
 	/**
@@ -84,8 +79,7 @@ class HelpManager implements CommandListener, CallbackListener {
 			$message .= $command['Name'] . ',';
 		}
 		$message = substr($message, 0, -1);
-		$this->maniaControl->getChat()
-		                   ->sendChat($message, $player);
+		$this->maniaControl->getChat()->sendChat($message, $player);
 	}
 
 	/**
@@ -116,8 +110,7 @@ class HelpManager implements CommandListener, CallbackListener {
 			$message .= $command['Name'] . ',';
 		}
 		$message = substr($message, 0, -1);
-		$this->maniaControl->getChat()
-		                   ->sendChat($message, $player);
+		$this->maniaControl->getChat()->sendChat($message, $player);
 	}
 
 	/**
@@ -168,12 +161,8 @@ class HelpManager implements CommandListener, CallbackListener {
 	 * @param mixed $player
 	 */
 	private function showHelpAllList(array $commands, $player) {
-		$width  = $this->maniaControl->getManialinkManager()
-		                             ->getStyleManager()
-		                             ->getListWidgetsWidth();
-		$height = $this->maniaControl->getManialinkManager()
-		                             ->getStyleManager()
-		                             ->getListWidgetsHeight();
+		$width  = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsWidth();
+		$height = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsHeight();
 
 		// create manialink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
@@ -182,9 +171,7 @@ class HelpManager implements CommandListener, CallbackListener {
 		$script->addFeature($paging);
 
 		// Main frame
-		$frame = $this->maniaControl->getManialinkManager()
-		                            ->getStyleManager()
-		                            ->getDefaultListFrame($script, $paging);
+		$frame = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultListFrame($script, $paging);
 		$maniaLink->add($frame);
 
 		// Start offsets
@@ -192,9 +179,7 @@ class HelpManager implements CommandListener, CallbackListener {
 		$posY = $height / 2;
 
 		//Predefine description Label
-		$descriptionLabel = $this->maniaControl->getManialinkManager()
-		                                       ->getStyleManager()
-		                                       ->getDefaultDescriptionLabel();
+		$descriptionLabel = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultDescriptionLabel();
 		$frame->add($descriptionLabel);
 
 		// Headline
@@ -202,8 +187,7 @@ class HelpManager implements CommandListener, CallbackListener {
 		$frame->add($headFrame);
 		$headFrame->setY($posY - 5);
 		$array = array('Command' => $posX + 5, 'Description' => $posX + 50);
-		$this->maniaControl->getManialinkManager()
-		                   ->labelLine($headFrame, $array);
+		$this->maniaControl->getManialinkManager()->labelLine($headFrame, $array);
 
 		$index = 1;
 		$posY -= 10;
@@ -230,8 +214,7 @@ class HelpManager implements CommandListener, CallbackListener {
 			}
 
 			$array  = array($command['Name'] => $posX + 5, $command['Description'] => $posX + 50);
-			$labels = $this->maniaControl->getManialinkManager()
-			                             ->labelLine($playerFrame, $array);
+			$labels = $this->maniaControl->getManialinkManager()->labelLine($playerFrame, $array);
 
 			$label = $labels[0];
 			$label->setWidth(40);
@@ -241,8 +224,7 @@ class HelpManager implements CommandListener, CallbackListener {
 		}
 
 		// Render and display xml
-		$this->maniaControl->getManialinkManager()
-		                   ->displayWidget($maniaLink, $player, 'HelpAllList');
+		$this->maniaControl->getManialinkManager()->displayWidget($maniaLink, $player, 'HelpAllList');
 	}
 
 	/**

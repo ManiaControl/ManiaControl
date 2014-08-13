@@ -50,24 +50,16 @@ class StyleManager {
 		$this->maniaControl = $maniaControl;
 
 		// Settings
-		$this->maniaControl->getSettingManager()
-		                   ->initSetting($this, self::SETTING_LABEL_DEFAULT_STYLE, Label_Text::STYLE_TextTitle1);
-		$this->maniaControl->getSettingManager()
-		                   ->initSetting($this, self::SETTING_QUAD_DEFAULT_STYLE, Quad_Bgs1InRace::STYLE);
-		$this->maniaControl->getSettingManager()
-		                   ->initSetting($this, self::SETTING_QUAD_DEFAULT_SUBSTYLE, Quad_Bgs1InRace::SUBSTYLE_BgTitleShadow);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_LABEL_DEFAULT_STYLE, Label_Text::STYLE_TextTitle1);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_QUAD_DEFAULT_STYLE, Quad_Bgs1InRace::STYLE);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_QUAD_DEFAULT_SUBSTYLE, Quad_Bgs1InRace::SUBSTYLE_BgTitleShadow);
 
 		// Main Widget
-		$this->maniaControl->getSettingManager()
-		                   ->initSetting($this, self::SETTING_MAIN_WIDGET_DEFAULT_STYLE, Quad_BgRaceScore2::STYLE);
-		$this->maniaControl->getSettingManager()
-		                   ->initSetting($this, self::SETTING_MAIN_WIDGET_DEFAULT_SUBSTYLE, Quad_BgRaceScore2::SUBSTYLE_HandleSelectable);
-		$this->maniaControl->getSettingManager()
-		                   ->initSetting($this, self::SETTING_LIST_WIDGETS_WIDTH, 150.);
-		$this->maniaControl->getSettingManager()
-		                   ->initSetting($this, self::SETTING_LIST_WIDGETS_HEIGHT, 80.);
-		$this->maniaControl->getSettingManager()
-		                   ->initSetting($this, self::SETTING_ICON_DEFAULT_OFFSET_SM, 20.);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAIN_WIDGET_DEFAULT_STYLE, Quad_BgRaceScore2::STYLE);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAIN_WIDGET_DEFAULT_SUBSTYLE, Quad_BgRaceScore2::SUBSTYLE_HandleSelectable);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_LIST_WIDGETS_WIDTH, 150.);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_LIST_WIDGETS_HEIGHT, 80.);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_ICON_DEFAULT_OFFSET_SM, 20.);
 	}
 
 	/**
@@ -76,8 +68,7 @@ class StyleManager {
 	 * @return float
 	 */
 	public function getDefaultIconOffsetSM() {
-		return $this->maniaControl->getSettingManager()
-		                          ->getSettingValue($this, self::SETTING_ICON_DEFAULT_OFFSET_SM);
+		return $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_ICON_DEFAULT_OFFSET_SM);
 	}
 
 	/**
@@ -86,8 +77,7 @@ class StyleManager {
 	 * @return string
 	 */
 	public function getDefaultLabelStyle() {
-		return $this->maniaControl->getSettingManager()
-		                          ->getSettingValue($this, self::SETTING_LABEL_DEFAULT_STYLE);
+		return $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_LABEL_DEFAULT_STYLE);
 	}
 
 	/**
@@ -96,8 +86,7 @@ class StyleManager {
 	 * @return string
 	 */
 	public function getDefaultQuadStyle() {
-		return $this->maniaControl->getSettingManager()
-		                          ->getSettingValue($this, self::SETTING_QUAD_DEFAULT_STYLE);
+		return $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_QUAD_DEFAULT_STYLE);
 	}
 
 	/**
@@ -106,8 +95,7 @@ class StyleManager {
 	 * @return string
 	 */
 	public function getDefaultQuadSubstyle() {
-		return $this->maniaControl->getSettingManager()
-		                          ->getSettingValue($this, self::SETTING_QUAD_DEFAULT_SUBSTYLE);
+		return $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_QUAD_DEFAULT_SUBSTYLE);
 	}
 
 	/**
@@ -121,11 +109,7 @@ class StyleManager {
 
 		// Predefine Description Label
 		$descriptionLabel = new Label();
-		$descriptionLabel->setAlign($descriptionLabel::LEFT, $descriptionLabel::TOP)
-		                 ->setPosition($width * -0.5 + 10, $height * -0.5 + 5)
-		                 ->setSize($width * 0.7, 4)
-		                 ->setTextSize(2)
-		                 ->setVisible(false);
+		$descriptionLabel->setAlign($descriptionLabel::LEFT, $descriptionLabel::TOP)->setPosition($width * -0.5 + 10, $height * -0.5 + 5)->setSize($width * 0.7, 4)->setTextSize(2)->setVisible(false);
 
 		return $descriptionLabel;
 	}
@@ -136,8 +120,7 @@ class StyleManager {
 	 * @return float
 	 */
 	public function getListWidgetsWidth() {
-		return $this->maniaControl->getSettingManager()
-		                          ->getSettingValue($this, self::SETTING_LIST_WIDGETS_WIDTH);
+		return $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_LIST_WIDGETS_WIDTH);
 	}
 
 	/**
@@ -146,8 +129,7 @@ class StyleManager {
 	 * @return float
 	 */
 	public function getListWidgetsHeight() {
-		return $this->maniaControl->getSettingManager()
-		                          ->getSettingValue($this, self::SETTING_LIST_WIDGETS_HEIGHT);
+		return $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_LIST_WIDGETS_HEIGHT);
 	}
 
 	/**
@@ -177,49 +159,34 @@ class StyleManager {
 
 		// mainframe
 		$frame = new Frame();
-		$frame->setSize($width, $height)
-		      ->setZ(35); //TODO place before scoreboards
+		$frame->setSize($width, $height)->setZ(35); //TODO place before scoreboards
 
 		// Background Quad
 		$backgroundQuad = new Quad();
 		$frame->add($backgroundQuad);
-		$backgroundQuad->setZ(-2)
-		               ->setSize($width, $height)
-		               ->setStyles($quadStyle, $quadSubstyle);
+		$backgroundQuad->setZ(-2)->setSize($width, $height)->setStyles($quadStyle, $quadSubstyle);
 
 		// Add Close Quad (X)
 		$closeQuad = new Quad_Icons64x64_1();
 		$frame->add($closeQuad);
-		$closeQuad->setPosition($width * 0.483, $height * 0.467, 3)
-		          ->setSize(6, 6)
-		          ->setSubStyle($closeQuad::SUBSTYLE_QuitRace)
-		          ->setAction(ManialinkManager::ACTION_CLOSEWIDGET);
+		$closeQuad->setPosition($width * 0.483, $height * 0.467, 3)->setSize(6, 6)->setSubStyle($closeQuad::SUBSTYLE_QuitRace)->setAction(ManialinkManager::ACTION_CLOSEWIDGET);
 
 		if ($script) {
 			$pagerSize = 6.;
 			$pagerPrev = new Quad_Icons64x64_1();
 			$frame->add($pagerPrev);
-			$pagerPrev->setPosition($width * 0.42, $height * -0.44, 2)
-			          ->setSize($pagerSize, $pagerSize)
-			          ->setSubStyle($pagerPrev::SUBSTYLE_ArrowPrev);
+			$pagerPrev->setPosition($width * 0.42, $height * -0.44, 2)->setSize($pagerSize, $pagerSize)->setSubStyle($pagerPrev::SUBSTYLE_ArrowPrev);
 
 			$pagerNext = new Quad_Icons64x64_1();
 			$frame->add($pagerNext);
-			$pagerNext->setPosition($width * 0.45, $height * -0.44, 2)
-			          ->setSize($pagerSize, $pagerSize)
-			          ->setSubStyle($pagerNext::SUBSTYLE_ArrowNext);
+			$pagerNext->setPosition($width * 0.45, $height * -0.44, 2)->setSize($pagerSize, $pagerSize)->setSubStyle($pagerNext::SUBSTYLE_ArrowNext);
 
 			$pageCountLabel = new Label_Text();
 			$frame->add($pageCountLabel);
-			$pageCountLabel->setHAlign($pageCountLabel::RIGHT)
-			               ->setPosition($width * 0.40, $height * -0.44, 1)
-			               ->setStyle($pageCountLabel::STYLE_TextTitle1)
-			               ->setTextSize(1.3);
+			$pageCountLabel->setHAlign($pageCountLabel::RIGHT)->setPosition($width * 0.40, $height * -0.44, 1)->setStyle($pageCountLabel::STYLE_TextTitle1)->setTextSize(1.3);
 
 			if ($paging) {
-				$paging->addButton($pagerNext)
-				       ->addButton($pagerPrev)
-				       ->setLabel($pageCountLabel);
+				$paging->addButton($pagerNext)->addButton($pagerPrev)->setLabel($pageCountLabel);
 			}
 		}
 
@@ -232,8 +199,7 @@ class StyleManager {
 	 * @return string
 	 */
 	public function getDefaultMainWindowStyle() {
-		return $this->maniaControl->getSettingManager()
-		                          ->getSettingValue($this, self::SETTING_MAIN_WIDGET_DEFAULT_STYLE);
+		return $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MAIN_WIDGET_DEFAULT_STYLE);
 	}
 
 	/**
@@ -242,7 +208,6 @@ class StyleManager {
 	 * @return string
 	 */
 	public function getDefaultMainWindowSubStyle() {
-		return $this->maniaControl->getSettingManager()
-		                          ->getSettingValue($this, self::SETTING_MAIN_WIDGET_DEFAULT_SUBSTYLE);
+		return $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MAIN_WIDGET_DEFAULT_SUBSTYLE);
 	}
 }

@@ -59,14 +59,11 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 		$this->initTables();
 
 		// Callbacks
-		$this->maniaControl->getCallbackManager()
-		                   ->registerCallbackListener(Callbacks::ONINIT, $this, 'onInit');
-		$this->maniaControl->getTimerManager()
-		                   ->registerTimerListening($this, 'saveCurrentServerOptions', 6 * 3600 * 1000);
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::ONINIT, $this, 'onInit');
+		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'saveCurrentServerOptions', 6 * 3600 * 1000);
 
 		// Permissions
-		$this->maniaControl->getAuthenticationManager()
-		                   ->definePermissionLevel(self::SETTING_PERMISSION_CHANGE_SERVER_OPTIONS, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
+		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_CHANGE_SERVER_OPTIONS, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
 	}
 
 	/**
@@ -75,8 +72,7 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 	 * @return bool
 	 */
 	private function initTables() {
-		$mysqli    = $this->maniaControl->getDatabase()
-		                                ->getMysqli();
+		$mysqli    = $this->maniaControl->getDatabase()->getMysqli();
 		$query     = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_SERVER_OPTIONS . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
 				`serverIndex` int(11) NOT NULL,
@@ -113,8 +109,7 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 	 * @return bool
 	 */
 	public function saveCurrentServerOptions() {
-		$serverOptions = $this->maniaControl->getClient()
-		                                    ->getServerOptions();
+		$serverOptions = $this->maniaControl->getClient()->getServerOptions();
 		return $this->saveServerOptions($serverOptions);
 	}
 
@@ -126,8 +121,7 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 	 * @return bool
 	 */
 	private function saveServerOptions(ServerOptions $serverOptions, $triggerCallbacks = false) {
-		$mysqli    = $this->maniaControl->getDatabase()
-		                                ->getMysqli();
+		$mysqli    = $this->maniaControl->getDatabase()->getMysqli();
 		$query     = "INSERT INTO `" . self::TABLE_SERVER_OPTIONS . "` (
 				`serverIndex`,
 				`optionName`,
@@ -160,8 +154,7 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 			}
 
 			if ($triggerCallbacks) {
-				$this->maniaControl->getCallbackManager()
-				                   ->triggerCallback(self::CB_SERVER_OPTION_CHANGED, array(self::CB_SERVER_OPTION_CHANGED, $optionName, $optionValue));
+				$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_SERVER_OPTION_CHANGED, array(self::CB_SERVER_OPTION_CHANGED, $optionName, $optionValue));
 			}
 		}
 
@@ -182,8 +175,7 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 	 * @return bool
 	 */
 	public function loadOptionsFromDatabase() {
-		$mysqli      = $this->maniaControl->getDatabase()
-		                                  ->getMysqli();
+		$mysqli      = $this->maniaControl->getDatabase()->getMysqli();
 		$serverIndex = $this->maniaControl->getServer()->index;
 		$query       = "SELECT * FROM `" . self::TABLE_SERVER_OPTIONS . "`
 				WHERE `serverIndex` = {$serverIndex};";
@@ -193,8 +185,7 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 			return false;
 		}
 
-		$oldServerOptions = $this->maniaControl->getClient()
-		                                       ->getServerOptions();
+		$oldServerOptions = $this->maniaControl->getClient()->getServerOptions();
 		$newServerOptions = new ServerOptions();
 
 		while ($row = $result->fetch_object()) {
@@ -211,11 +202,9 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 
 		$loaded = false;
 		try {
-			$loaded = $this->maniaControl->getClient()
-			                             ->setServerOptions($newServerOptions);
+			$loaded = $this->maniaControl->getClient()->setServerOptions($newServerOptions);
 		} catch (ServerOptionsException $exception) {
-			$this->maniaControl->getChat()
-			                   ->sendExceptionToAdmins($exception);
+			$this->maniaControl->getChat()->sendExceptionToAdmins($exception);
 		}
 
 		if ($loaded) {
@@ -252,8 +241,7 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 		$script->addFeature($paging);
 		$frame = new Frame();
 
-		$serverOptions      = $this->maniaControl->getClient()
-		                                         ->getServerOptions();
+		$serverOptions      = $this->maniaControl->getClient()->getServerOptions();
 		$serverOptionsArray = $serverOptions->toArray();
 
 		// Config
@@ -264,26 +252,17 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 		// Pagers
 		$pagerPrev = new Quad_Icons64x64_1();
 		$frame->add($pagerPrev);
-		$pagerPrev->setPosition($width * 0.39, $height * -0.44, 2)
-		          ->setSize($pagerSize, $pagerSize)
-		          ->setSubStyle($pagerPrev::SUBSTYLE_ArrowPrev);
+		$pagerPrev->setPosition($width * 0.39, $height * -0.44, 2)->setSize($pagerSize, $pagerSize)->setSubStyle($pagerPrev::SUBSTYLE_ArrowPrev);
 
 		$pagerNext = new Quad_Icons64x64_1();
 		$frame->add($pagerNext);
-		$pagerNext->setPosition($width * 0.45, $height * -0.44, 2)
-		          ->setSize($pagerSize, $pagerSize)
-		          ->setSubStyle($pagerNext::SUBSTYLE_ArrowNext);
+		$pagerNext->setPosition($width * 0.45, $height * -0.44, 2)->setSize($pagerSize, $pagerSize)->setSubStyle($pagerNext::SUBSTYLE_ArrowNext);
 
 		$pageCountLabel = new Label_Text();
 		$frame->add($pageCountLabel);
-		$pageCountLabel->setHAlign($pageCountLabel::RIGHT)
-		               ->setPosition($width * 0.35, $height * -0.44, 1)
-		               ->setStyle($pageCountLabel::STYLE_TextTitle1)
-		               ->setTextSize(2);
+		$pageCountLabel->setHAlign($pageCountLabel::RIGHT)->setPosition($width * 0.35, $height * -0.44, 1)->setStyle($pageCountLabel::STYLE_TextTitle1)->setTextSize(2);
 
-		$paging->addButton($pagerNext)
-		       ->addButton($pagerPrev)
-		       ->setLabel($pageCountLabel);
+		$paging->addButton($pagerNext)->addButton($pagerPrev)->setLabel($pageCountLabel);
 
 		// Pages
 		$posY      = 0.;
@@ -310,35 +289,22 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 
 			$nameLabel = new Label_Text();
 			$optionsFrame->add($nameLabel);
-			$nameLabel->setHAlign($nameLabel::LEFT)
-			          ->setX($width * -0.46)
-			          ->setSize($width * 0.4, $optionHeight)
-			          ->setStyle($nameLabel::STYLE_TextCardSmall)
-			          ->setTextSize($labelTextSize)
-			          ->setText($name)
-			          ->setTextColor('fff');
+			$nameLabel->setHAlign($nameLabel::LEFT)->setX($width * -0.46)->setSize($width * 0.4, $optionHeight)->setStyle($nameLabel::STYLE_TextCardSmall)->setTextSize($labelTextSize)->setText($name)->setTextColor('fff');
 
 			if (is_bool($value)) {
 				// Boolean checkbox
 				$quad = new Quad();
-				$quad->setPosition($width * 0.23, 0, -0.01)
-				     ->setSize(4, 4);
+				$quad->setPosition($width * 0.23, 0, -0.01)->setSize(4, 4);
 				$checkBox = new CheckBox(self::ACTION_PREFIX_OPTION . $name, $value, $quad);
 				$optionsFrame->add($checkBox);
 			} else {
 				// Other
 				$entry = new Entry();
 				$optionsFrame->add($entry);
-				$entry->setStyle(Label_Text::STYLE_TextValueSmall)
-				      ->setX($width * 0.23)
-				      ->setTextSize(1)
-				      ->setSize($width * 0.48, $optionHeight * 0.9)
-				      ->setName(self::ACTION_PREFIX_OPTION . $name)
-				      ->setDefault($value);
+				$entry->setStyle(Label_Text::STYLE_TextValueSmall)->setX($width * 0.23)->setTextSize(1)->setSize($width * 0.48, $optionHeight * 0.9)->setName(self::ACTION_PREFIX_OPTION . $name)->setDefault($value);
 
 				if ($name === 'Comment') {
-					$entry->setSize($width * 0.48, $optionHeight * 3. + $optionHeight * 0.9)
-					      ->setAutoNewLine(true);
+					$entry->setSize($width * 0.48, $optionHeight * 3. + $optionHeight * 0.9)->setAutoNewLine(true);
 					$optionsFrame->setY($posY - $optionHeight * 1.5);
 					$posY -= $optionHeight * 3.;
 					$index += 3;
@@ -356,11 +322,9 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
 	 */
 	public function saveConfigData(array $configData, Player $player) {
-		if (!$this->maniaControl->getAuthenticationManager()
-		                        ->checkPermission($player, self::SETTING_PERMISSION_CHANGE_SERVER_OPTIONS)
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_CHANGE_SERVER_OPTIONS)
 		) {
-			$this->maniaControl->getAuthenticationManager()
-			                   ->sendNotAllowed($player);
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
 		if (!$configData[3] || strpos($configData[3][0]['Name'], self::ACTION_PREFIX_OPTION) !== 0) {
@@ -369,8 +333,7 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 
 		$prefixLength = strlen(self::ACTION_PREFIX_OPTION);
 
-		$oldServerOptions = $this->maniaControl->getClient()
-		                                       ->getServerOptions();
+		$oldServerOptions = $this->maniaControl->getClient()->getServerOptions();
 		$newServerOptions = new ServerOptions();
 
 		foreach ($configData[3] as $option) {
@@ -383,16 +346,13 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 
 		$success = $this->applyNewServerOptions($newServerOptions, $player);
 		if ($success) {
-			$this->maniaControl->getChat()
-			                   ->sendSuccess('Server Options saved!', $player);
+			$this->maniaControl->getChat()->sendSuccess('Server Options saved!', $player);
 		} else {
-			$this->maniaControl->getChat()
-			                   ->sendError('Server Options saving failed!', $player);
+			$this->maniaControl->getChat()->sendError('Server Options saving failed!', $player);
 		}
 
 		// Reopen the Menu
-		$this->maniaControl->getConfigurator()
-		                   ->showMenu($player, $this);
+		$this->maniaControl->getConfigurator()->showMenu($player, $this);
 	}
 
 	/**
@@ -404,18 +364,15 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 	 */
 	private function applyNewServerOptions(ServerOptions $newServerOptions, Player $player) {
 		try {
-			$this->maniaControl->getClient()
-			                   ->setServerOptions($newServerOptions);
+			$this->maniaControl->getClient()->setServerOptions($newServerOptions);
 		} catch (ServerOptionsException $exception) {
-			$this->maniaControl->getChat()
-			                   ->sendException($exception, $player);
+			$this->maniaControl->getChat()->sendException($exception, $player);
 			return false;
 		}
 
 		$this->saveServerOptions($newServerOptions, true);
 
-		$this->maniaControl->getCallbackManager()
-		                   ->triggerCallback(self::CB_SERVER_OPTIONS_CHANGED, array(self::CB_SERVER_OPTIONS_CHANGED));
+		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_SERVER_OPTIONS_CHANGED, array(self::CB_SERVER_OPTIONS_CHANGED));
 
 		return true;
 	}

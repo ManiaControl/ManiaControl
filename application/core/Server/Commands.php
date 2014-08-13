@@ -58,40 +58,25 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 		$this->maniaControl = $maniaControl;
 
 		// Callbacks
-		$this->maniaControl->getTimerManager()
-		                   ->registerTimerListening($this, 'each5Seconds', 5000);
-		$this->maniaControl->getCallbackManager()
-		                   ->registerCallbackListener(Callbacks::ONINIT, $this, 'handleOnInit');
-		$this->maniaControl->getCallbackManager()
-		                   ->registerCallbackListener(Callbacks::WARMUPSTATUS, $this, 'handleWarmUpStatus');
+		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'each5Seconds', 5000);
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::ONINIT, $this, 'handleOnInit');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::WARMUPSTATUS, $this, 'handleWarmUpStatus');
 
 		// Chat commands
-		$this->maniaControl->getCommandManager()
-		                   ->registerCommandListener('setservername', $this, 'commandSetServerName', true, 'Sets the ServerName.');
-		$this->maniaControl->getCommandManager()
-		                   ->registerCommandListener('setpwd', $this, 'commandSetPwd', true, 'Sets play password.');
-		$this->maniaControl->getCommandManager()
-		                   ->registerCommandListener('setspecpwd', $this, 'commandSetSpecPwd', true, 'Sets spectator password.');
-		$this->maniaControl->getCommandManager()
-		                   ->registerCommandListener('setmaxplayers', $this, 'commandSetMaxPlayers', true, 'Sets the maximum number of players.');
-		$this->maniaControl->getCommandManager()
-		                   ->registerCommandListener('setmaxspectators', $this, 'commandSetMaxSpectators', true, 'Sets the maximum number of spectators.');
-		$this->maniaControl->getCommandManager()
-		                   ->registerCommandListener('shutdownserver', $this, 'commandShutdownServer', true, 'Shuts down the ManiaPlanet server.');
-		$this->maniaControl->getCommandManager()
-		                   ->registerCommandListener('systeminfo', $this, 'commandSystemInfo', true, 'Shows system information.');
-		$this->maniaControl->getCommandManager()
-		                   ->registerCommandListener('cancel', $this, 'commandCancelVote', true, 'Cancels the current vote.');
+		$this->maniaControl->getCommandManager()->registerCommandListener('setservername', $this, 'commandSetServerName', true, 'Sets the ServerName.');
+		$this->maniaControl->getCommandManager()->registerCommandListener('setpwd', $this, 'commandSetPwd', true, 'Sets play password.');
+		$this->maniaControl->getCommandManager()->registerCommandListener('setspecpwd', $this, 'commandSetSpecPwd', true, 'Sets spectator password.');
+		$this->maniaControl->getCommandManager()->registerCommandListener('setmaxplayers', $this, 'commandSetMaxPlayers', true, 'Sets the maximum number of players.');
+		$this->maniaControl->getCommandManager()->registerCommandListener('setmaxspectators', $this, 'commandSetMaxSpectators', true, 'Sets the maximum number of spectators.');
+		$this->maniaControl->getCommandManager()->registerCommandListener('shutdownserver', $this, 'commandShutdownServer', true, 'Shuts down the ManiaPlanet server.');
+		$this->maniaControl->getCommandManager()->registerCommandListener('systeminfo', $this, 'commandSystemInfo', true, 'Shows system information.');
+		$this->maniaControl->getCommandManager()->registerCommandListener('cancel', $this, 'commandCancelVote', true, 'Cancels the current vote.');
 
 		// Page actions
-		$this->maniaControl->getManialinkManager()
-		                   ->registerManialinkPageAnswerListener(self::ACTION_SET_PAUSE, $this, 'setPause');
-		$this->maniaControl->getManialinkManager()
-		                   ->registerManialinkPageAnswerListener(self::ACTION_EXTEND_WARMUP, $this, 'commandExtendWarmup');
-		$this->maniaControl->getManialinkManager()
-		                   ->registerManialinkPageAnswerListener(self::ACTION_END_WARMUP, $this, 'commandEndWarmup');
-		$this->maniaControl->getManialinkManager()
-		                   ->registerManialinkPageAnswerListener(self::ACTION_CANCEL_VOTE, $this, 'commandCancelVote');
+		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_SET_PAUSE, $this, 'setPause');
+		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_EXTEND_WARMUP, $this, 'commandExtendWarmup');
+		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_END_WARMUP, $this, 'commandEndWarmup');
+		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_CANCEL_VOTE, $this, 'commandCancelVote');
 	}
 
 	/**
@@ -99,18 +84,12 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 	 */
 	public function handleOnInit() {
 		// Permissions
-		$this->maniaControl->getAuthenticationManager()
-		                   ->definePermissionLevel(self::SETTING_PERMISSION_SHUTDOWN_SERVER, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
-		$this->maniaControl->getAuthenticationManager()
-		                   ->definePermissionLevel(self::SETTING_PERMISSION_SHOW_SYSTEMINFO, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
-		$this->maniaControl->getAuthenticationManager()
-		                   ->definePermissionLevel(self::SETTING_PERMISSION_CHANGE_SERVERSETTINGS, AuthenticationManager::AUTH_LEVEL_ADMIN);
-		$this->maniaControl->getAuthenticationManager()
-		                   ->definePermissionLevel(self::SETTING_PERMISSION_SET_PAUSE, AuthenticationManager::AUTH_LEVEL_MODERATOR);
-		$this->maniaControl->getAuthenticationManager()
-		                   ->definePermissionLevel(self::SETTING_PERMISSION_CANCEL_VOTE, AuthenticationManager::AUTH_LEVEL_MODERATOR);
-		$this->maniaControl->getAuthenticationManager()
-		                   ->definePermissionLevel(self::SETTING_PERMISSION_HANDLE_WARMUP, AuthenticationManager::AUTH_LEVEL_MODERATOR);
+		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_SHUTDOWN_SERVER, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
+		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_SHOW_SYSTEMINFO, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
+		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_CHANGE_SERVERSETTINGS, AuthenticationManager::AUTH_LEVEL_ADMIN);
+		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_SET_PAUSE, AuthenticationManager::AUTH_LEVEL_MODERATOR);
+		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_CANCEL_VOTE, AuthenticationManager::AUTH_LEVEL_MODERATOR);
+		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_HANDLE_WARMUP, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 
 		$this->updateCancelVoteMenuItem();
 		$this->updateWarmUpMenuItems();
@@ -123,8 +102,7 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 		$itemQuad = new Quad_Icons64x64_1();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ArrowRed);
 		$itemQuad->setAction(self::ACTION_CANCEL_VOTE);
-		$this->maniaControl->getActionsMenu()
-		                   ->addMenuItem($itemQuad, false, 30, 'Cancel Vote');
+		$this->maniaControl->getActionsMenu()->addMenuItem($itemQuad, false, 30, 'Cancel Vote');
 	}
 
 	/**
@@ -133,16 +111,14 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 	private function updateWarmUpMenuItems() {
 		$pauseExists = false;
 		try {
-			$scriptInfos = $this->maniaControl->getClient()
-			                                  ->getModeScriptInfo();
+			$scriptInfos = $this->maniaControl->getClient()->getModeScriptInfo();
 			foreach ($scriptInfos->commandDescs as $param) {
 				if ($param->name === self::COMMAND_FORCE_WARMUP) {
 					$pauseExists = true;
 					break;
 				}
 			}
-			$this->maniaControl->getClient()
-			                   ->triggerModeScriptEvent("WarmUp_GetStatus");
+			$this->maniaControl->getClient()->triggerModeScriptEvent("WarmUp_GetStatus");
 		} catch (GameModeException $e) {
 		}
 
@@ -151,8 +127,7 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 			$itemQuad = new Quad_Icons128x32_1();
 			$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ManiaLinkSwitch);
 			$itemQuad->setAction(self::ACTION_SET_PAUSE);
-			$this->maniaControl->getActionsMenu()
-			                   ->addAdminMenuItem($itemQuad, 13, 'Pause the current game');
+			$this->maniaControl->getActionsMenu()->addAdminMenuItem($itemQuad, 13, 'Pause the current game');
 		}
 
 	}
@@ -168,20 +143,16 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 			$itemQuad = new Quad_BgRaceScore2();
 			$itemQuad->setSubStyle($itemQuad::SUBSTYLE_SendScore);
 			$itemQuad->setAction(self::ACTION_EXTEND_WARMUP);
-			$this->maniaControl->getActionsMenu()
-			                   ->addMenuItem($itemQuad, false, 14, 'Extend Warmup');
+			$this->maniaControl->getActionsMenu()->addMenuItem($itemQuad, false, 14, 'Extend Warmup');
 
 			// Stop WarmUp menu item
 			$itemQuad = new Quad_Icons64x64_1();
 			$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ArrowGreen);
 			$itemQuad->setAction(self::ACTION_END_WARMUP);
-			$this->maniaControl->getActionsMenu()
-			                   ->addMenuItem($itemQuad, false, 15, 'End Warmup');
+			$this->maniaControl->getActionsMenu()->addMenuItem($itemQuad, false, 15, 'End Warmup');
 		} else {
-			$this->maniaControl->getActionsMenu()
-			                   ->removeMenuItem(14, false);
-			$this->maniaControl->getActionsMenu()
-			                   ->removeMenuItem(15, false);
+			$this->maniaControl->getActionsMenu()->removeMenuItem(14, false);
+			$this->maniaControl->getActionsMenu()->removeMenuItem(15, false);
 		}
 	}
 
@@ -192,26 +163,20 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 	 * @param Player $player
 	 */
 	public function commandCancelVote(array $chatCallback, Player $player) {
-		if (!$this->maniaControl->getAuthenticationManager()
-		                        ->checkPermission($player, self::SETTING_PERMISSION_CANCEL_VOTE)
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_CANCEL_VOTE)
 		) {
-			$this->maniaControl->getAuthenticationManager()
-			                   ->sendNotAllowed($player);
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
 
-		if ($this->maniaControl->getClient()
-		                       ->cancelVote()
+		if ($this->maniaControl->getClient()->cancelVote()
 		) {
-			$this->maniaControl->getChat()
-			                   ->sendInformation($player->getEscapedNickname() . ' cancelled the Vote!');
+			$this->maniaControl->getChat()->sendInformation($player->getEscapedNickname() . ' cancelled the Vote!');
 		} else {
-			$this->maniaControl->getChat()
-			                   ->sendInformation("There's no vote running currently!", $player);
+			$this->maniaControl->getChat()->sendInformation("There's no vote running currently!", $player);
 		}
 
-		$this->maniaControl->getCallbackManager()
-		                   ->triggerCallback(self::CB_VOTE_CANCELLED, $player);
+		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_VOTE_CANCELLED, $player);
 	}
 
 
@@ -222,19 +187,15 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 	 * @param Player $player
 	 */
 	public function commandExtendWarmup(array $callback, Player $player) {
-		if (!$this->maniaControl->getAuthenticationManager()
-		                        ->checkPermission($player, self::SETTING_PERMISSION_HANDLE_WARMUP)
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_HANDLE_WARMUP)
 		) {
-			$this->maniaControl->getAuthenticationManager()
-			                   ->sendNotAllowed($player);
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
 
 		try {
-			$this->maniaControl->getClient()
-			                   ->triggerModeScriptEvent('WarmUp_Extend', '10');
-			$this->maniaControl->getChat()
-			                   ->sendInformation($player->getEscapedNickname() . ' extended the WarmUp by 10 seconds!');
+			$this->maniaControl->getClient()->triggerModeScriptEvent('WarmUp_Extend', '10');
+			$this->maniaControl->getChat()->sendInformation($player->getEscapedNickname() . ' extended the WarmUp by 10 seconds!');
 		} catch (GameModeException $e) {
 		}
 	}
@@ -246,19 +207,15 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 	 * @param Player $player
 	 */
 	public function commandEndWarmup(array $callback, Player $player) {
-		if (!$this->maniaControl->getAuthenticationManager()
-		                        ->checkPermission($player, self::SETTING_PERMISSION_HANDLE_WARMUP)
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_HANDLE_WARMUP)
 		) {
-			$this->maniaControl->getAuthenticationManager()
-			                   ->sendNotAllowed($player);
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
 
 		try {
-			$this->maniaControl->getClient()
-			                   ->triggerModeScriptEvent('WarmUp_Stop', '');
-			$this->maniaControl->getChat()
-			                   ->sendInformation($player->getEscapedNickname() . ' stopped the WarmUp!');
+			$this->maniaControl->getClient()->triggerModeScriptEvent('WarmUp_Stop', '');
+			$this->maniaControl->getChat()->sendInformation($player->getEscapedNickname() . ' stopped the WarmUp!');
 		} catch (GameModeException $e) {
 		}
 	}
@@ -270,18 +227,14 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 	 * @param Player $player
 	 */
 	public function setPause(array $callback, Player $player) {
-		if (!$this->maniaControl->getAuthenticationManager()
-		                        ->checkPermission($player, self::SETTING_PERMISSION_SET_PAUSE)
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_SET_PAUSE)
 		) {
-			$this->maniaControl->getAuthenticationManager()
-			                   ->sendNotAllowed($player);
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
 		try {
-			$this->maniaControl->getClient()
-			                   ->sendModeScriptCommands(array('Command_ForceWarmUp' => true));
-			$this->maniaControl->getChat()
-			                   ->sendInformation($player->getEscapedNickname() . ' paused the Game!');
+			$this->maniaControl->getClient()->sendModeScriptCommands(array('Command_ForceWarmUp' => true));
+			$this->maniaControl->getChat()->sendInformation($player->getEscapedNickname() . ' paused the Game!');
 		} catch (GameModeException $e) {
 		}
 	}
@@ -293,8 +246,7 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 		// TODO: move empty & delayed shutdown code into server class
 		// Empty shutdown
 		if ($this->serverShutdownEmpty) {
-			if ($this->maniaControl->getPlayerManager()
-			                       ->getPlayerCount(false) <= 0
+			if ($this->maniaControl->getPlayerManager()->getPlayerCount(false) <= 0
 			) {
 				$this->shutdownServer('empty');
 			}
@@ -315,8 +267,7 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 	 */
 	private function shutdownServer($login = '-') {
 		Logger::logInfo("Server shutdown requested by '{$login}'!");
-		$this->maniaControl->getClient()
-		                   ->stopServer();
+		$this->maniaControl->getClient()->stopServer();
 	}
 
 	/**
@@ -326,18 +277,14 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 	 * @param Player $player
 	 */
 	public function commandSystemInfo(array $chat, Player $player) {
-		if (!$this->maniaControl->getAuthenticationManager()
-		                        ->checkPermission($player, self::SETTING_PERMISSION_SHOW_SYSTEMINFO)
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_SHOW_SYSTEMINFO)
 		) {
-			$this->maniaControl->getAuthenticationManager()
-			                   ->sendNotAllowed($player);
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
-		$systemInfo = $this->maniaControl->getClient()
-		                                 ->getSystemInfo();
+		$systemInfo = $this->maniaControl->getClient()->getSystemInfo();
 		$message    = 'SystemInfo: ip=' . $systemInfo->publishedIp . ', port=' . $systemInfo->port . ', p2pPort=' . $systemInfo->p2PPort . ', title=' . $systemInfo->titleId . ', login=' . $systemInfo->serverLogin . '.';
-		$this->maniaControl->getChat()
-		                   ->sendInformation($message, $player->login);
+		$this->maniaControl->getChat()->sendInformation($message, $player->login);
 	}
 
 	/**
@@ -347,11 +294,9 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 	 * @param Player $player
 	 */
 	public function commandShutdownServer(array $chat, Player $player) {
-		if (!$this->maniaControl->getAuthenticationManager()
-		                        ->checkPermission($player, self::SETTING_PERMISSION_SHUTDOWN_SERVER)
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_SHUTDOWN_SERVER)
 		) {
-			$this->maniaControl->getAuthenticationManager()
-			                   ->sendNotAllowed($player);
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
 		// Check for delayed shutdown
@@ -361,26 +306,22 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 			if (strtolower($param) === 'empty') {
 				$this->serverShutdownEmpty = !$this->serverShutdownEmpty;
 				if ($this->serverShutdownEmpty) {
-					$this->maniaControl->getChat()
-					                   ->sendInformation("The server will shutdown as soon as it's empty!", $player);
+					$this->maniaControl->getChat()->sendInformation("The server will shutdown as soon as it's empty!", $player);
 					return;
 				}
-				$this->maniaControl->getChat()
-				                   ->sendInformation("Empty-shutdown cancelled!", $player);
+				$this->maniaControl->getChat()->sendInformation("Empty-shutdown cancelled!", $player);
 				return;
 			}
 			$delay = (int)$param;
 			if ($delay <= 0) {
 				// Cancel shutdown
 				$this->serverShutdownTime = -1;
-				$this->maniaControl->getChat()
-				                   ->sendInformation("Delayed shutdown cancelled!", $player);
+				$this->maniaControl->getChat()->sendInformation("Delayed shutdown cancelled!", $player);
 				return;
 			}
 			// Trigger delayed shutdown
 			$this->serverShutdownTime = time() + $delay * 60.;
-			$this->maniaControl->getChat()
-			                   ->sendInformation("The server will shut down in {$delay} minutes!", $player);
+			$this->maniaControl->getChat()->sendInformation("The server will shut down in {$delay} minutes!", $player);
 			return;
 		}
 		$this->shutdownServer($player->login);
@@ -393,24 +334,19 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 	 * @param Player $player
 	 */
 	public function commandSetServerName(array $chat, Player $player) {
-		if (!$this->maniaControl->getAuthenticationManager()
-		                        ->checkPermission($player, self::SETTING_PERMISSION_CHANGE_SERVERSETTINGS)
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_CHANGE_SERVERSETTINGS)
 		) {
-			$this->maniaControl->getAuthenticationManager()
-			                   ->sendNotAllowed($player);
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
 		$params = explode(' ', $chat[1][2], 2);
 		if (count($params) < 2) {
-			$this->maniaControl->getChat()
-			                   ->sendUsageInfo('Usage example: //setservername ManiaPlanet Server', $player);
+			$this->maniaControl->getChat()->sendUsageInfo('Usage example: //setservername ManiaPlanet Server', $player);
 			return;
 		}
 		$serverName = $params[1];
-		$this->maniaControl->getClient()
-		                   ->setServerName($serverName);
-		$this->maniaControl->getChat()
-		                   ->sendSuccess("Server name changed to: '{$serverName}'!", $player);
+		$this->maniaControl->getClient()->setServerName($serverName);
+		$this->maniaControl->getChat()->sendSuccess("Server name changed to: '{$serverName}'!", $player);
 	}
 
 	/**
@@ -420,11 +356,9 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 	 * @param Player $player
 	 */
 	public function commandSetPwd(array $chatCallback, Player $player) {
-		if (!$this->maniaControl->getAuthenticationManager()
-		                        ->checkPermission($player, self::SETTING_PERMISSION_CHANGE_SERVERSETTINGS)
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_CHANGE_SERVERSETTINGS)
 		) {
-			$this->maniaControl->getAuthenticationManager()
-			                   ->sendNotAllowed($player);
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
 		$messageParts   = explode(' ', $chatCallback[1][2], 2);
@@ -434,10 +368,8 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 			$password       = $messageParts[1];
 			$successMessage = "Password changed to: '{$password}'!";
 		}
-		$this->maniaControl->getClient()
-		                   ->setServerPassword($password);
-		$this->maniaControl->getChat()
-		                   ->sendSuccess($successMessage, $player);
+		$this->maniaControl->getClient()->setServerPassword($password);
+		$this->maniaControl->getChat()->sendSuccess($successMessage, $player);
 	}
 
 	/**
@@ -447,11 +379,9 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 	 * @param Player $player
 	 */
 	public function commandSetSpecPwd(array $chatCallback, Player $player) {
-		if (!$this->maniaControl->getAuthenticationManager()
-		                        ->checkPermission($player, self::SETTING_PERMISSION_CHANGE_SERVERSETTINGS)
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_CHANGE_SERVERSETTINGS)
 		) {
-			$this->maniaControl->getAuthenticationManager()
-			                   ->sendNotAllowed($player);
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
 		$messageParts   = explode(' ', $chatCallback[1][2], 2);
@@ -461,10 +391,8 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 			$password       = $messageParts[1];
 			$successMessage = "Spectator password changed to: '{$password}'!";
 		}
-		$this->maniaControl->getClient()
-		                   ->setServerPasswordForSpectator($password);
-		$this->maniaControl->getChat()
-		                   ->sendSuccess($successMessage, $player);
+		$this->maniaControl->getClient()->setServerPasswordForSpectator($password);
+		$this->maniaControl->getChat()->sendSuccess($successMessage, $player);
 	}
 
 	/**
@@ -474,23 +402,19 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 	 * @param Player $player
 	 */
 	public function commandSetMaxPlayers(array $chatCallback, Player $player) {
-		if (!$this->maniaControl->getAuthenticationManager()
-		                        ->checkPermission($player, self::SETTING_PERMISSION_CHANGE_SERVERSETTINGS)
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_CHANGE_SERVERSETTINGS)
 		) {
-			$this->maniaControl->getAuthenticationManager()
-			                   ->sendNotAllowed($player);
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
 		$messageParts = explode(' ', $chatCallback[1][2], 2);
 		if (!isset($messageParts[1])) {
-			$this->maniaControl->getChat()
-			                   ->sendUsageInfo('Usage example: //setmaxplayers 16', $player);
+			$this->maniaControl->getChat()->sendUsageInfo('Usage example: //setmaxplayers 16', $player);
 			return;
 		}
 		$amount = $messageParts[1];
 		if (!is_numeric($amount)) {
-			$this->maniaControl->getChat()
-			                   ->sendUsageInfo('Usage example: //setmaxplayers 16', $player);
+			$this->maniaControl->getChat()->sendUsageInfo('Usage example: //setmaxplayers 16', $player);
 			return;
 		}
 		$amount = (int)$amount;
@@ -498,10 +422,8 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 			$amount = 0;
 		}
 
-		$this->maniaControl->getClient()
-		                   ->setMaxPlayers($amount);
-		$this->maniaControl->getChat()
-		                   ->sendSuccess("Changed max players to: {$amount}", $player);
+		$this->maniaControl->getClient()->setMaxPlayers($amount);
+		$this->maniaControl->getChat()->sendSuccess("Changed max players to: {$amount}", $player);
 	}
 
 	/**
@@ -511,23 +433,19 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 	 * @param Player $player
 	 */
 	public function commandSetMaxSpectators(array $chatCallback, Player $player) {
-		if (!$this->maniaControl->getAuthenticationManager()
-		                        ->checkPermission($player, self::SETTING_PERMISSION_CHANGE_SERVERSETTINGS)
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_CHANGE_SERVERSETTINGS)
 		) {
-			$this->maniaControl->getAuthenticationManager()
-			                   ->sendNotAllowed($player);
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
 		$messageParts = explode(' ', $chatCallback[1][2], 2);
 		if (!isset($messageParts[1])) {
-			$this->maniaControl->getChat()
-			                   ->sendUsageInfo('Usage example: //setmaxspectators 16', $player);
+			$this->maniaControl->getChat()->sendUsageInfo('Usage example: //setmaxspectators 16', $player);
 			return;
 		}
 		$amount = $messageParts[1];
 		if (!is_numeric($amount)) {
-			$this->maniaControl->getChat()
-			                   ->sendUsageInfo('Usage example: //setmaxspectators 16', $player);
+			$this->maniaControl->getChat()->sendUsageInfo('Usage example: //setmaxspectators 16', $player);
 			return;
 		}
 		$amount = (int)$amount;
@@ -535,9 +453,7 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 			$amount = 0;
 		}
 
-		$this->maniaControl->getClient()
-		                   ->setMaxSpectators($amount);
-		$this->maniaControl->getChat()
-		                   ->sendSuccess("Changed max spectators to: {$amount}", $player);
+		$this->maniaControl->getClient()->setMaxSpectators($amount);
+		$this->maniaControl->getChat()->sendSuccess("Changed max spectators to: {$amount}", $player);
 	}
 }

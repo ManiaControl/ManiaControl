@@ -27,8 +27,7 @@ abstract class WebReader {
 		$response = $request->send();
 		if (!is_null($function)) {
 			$content = $response->getContent();
-			$error   = $response->getError()
-			                    ->getMessage();
+			$error   = $response->getError()->getMessage();
 			call_user_func($function, $content, $error);
 		}
 		return $response;
@@ -42,9 +41,7 @@ abstract class WebReader {
 	 */
 	protected static function newRequest($url) {
 		$request = new Request($url);
-		$request->getOptions()
-		        ->set(CURLOPT_TIMEOUT, 10)
-		        ->set(CURLOPT_HEADER, false) // don't display response header
+		$request->getOptions()->set(CURLOPT_TIMEOUT, 10)->set(CURLOPT_HEADER, false) // don't display response header
 		        ->set(CURLOPT_CRLF, true) // linux line feed
 		        ->set(CURLOPT_ENCODING, '') // accept encoding
 		        ->set(CURLOPT_USERAGENT, 'ManiaControl v' . ManiaControl::VERSION) // user-agent
@@ -63,17 +60,14 @@ abstract class WebReader {
 	 */
 	public static function postUrl($url, $content = null, callable $function = null) {
 		$request = static::newRequest($url);
-		$request->getOptions()
-		        ->set(CURLOPT_POST, true); // post method
+		$request->getOptions()->set(CURLOPT_POST, true); // post method
 		if ($content) {
-			$request->getOptions()
-			        ->set(CURLOPT_POSTFIELDS, $content); // post content field
+			$request->getOptions()->set(CURLOPT_POSTFIELDS, $content); // post content field
 		}
 		$response = $request->send();
 		if (!is_null($function)) {
 			$content = $response->getContent();
-			$error   = $response->getError()
-			                    ->getMessage();
+			$error   = $response->getError()->getMessage();
 			call_user_func($function, $content, $error);
 		}
 		return $response;

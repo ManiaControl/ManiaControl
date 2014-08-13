@@ -46,12 +46,10 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 		$this->maniaControl = $maniaControl;
 
 		// Permissions
-		$this->maniaControl->getAuthenticationManager()
-		                   ->definePermissionLevel(self::SETTING_PERMISSION_INSTALL_PLUGINS, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
+		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_INSTALL_PLUGINS, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
 
 		// Callbacks
-		$this->maniaControl->getManialinkManager()
-		                   ->registerManialinkPageAnswerListener(self::ACTION_REFRESH_LIST, $this, 'handleRefreshListAction');
+		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_REFRESH_LIST, $this, 'handleRefreshListAction');
 	}
 
 	/**
@@ -94,9 +92,7 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 			// Pagers
 			$pagerPrev = new Quad_Icons64x64_1();
 			$frame->add($pagerPrev);
-			$pagerPrev->setPosition($width * 0.39, $height * -0.44, 2)
-			          ->setSize($pagerSize, $pagerSize)
-			          ->setSubStyle($pagerPrev::SUBSTYLE_ArrowPrev);
+			$pagerPrev->setPosition($width * 0.39, $height * -0.44, 2)->setSize($pagerSize, $pagerSize)->setSubStyle($pagerPrev::SUBSTYLE_ArrowPrev);
 
 			$pagerNext = clone $pagerPrev;
 			$frame->add($pagerNext);
@@ -104,31 +100,18 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 
 			$pageCountLabel = new Label_Text();
 			$frame->add($pageCountLabel);
-			$pageCountLabel->setHAlign($pageCountLabel::RIGHT)
-			               ->setPosition($width * 0.35, $height * -0.44, 1)
-			               ->setStyle($pageCountLabel::STYLE_TextTitle1)
-			               ->setTextSize(2);
+			$pageCountLabel->setHAlign($pageCountLabel::RIGHT)->setPosition($width * 0.35, $height * -0.44, 1)->setStyle($pageCountLabel::STYLE_TextTitle1)->setTextSize(2);
 
-			$paging->addButton($pagerNext)
-			       ->addButton($pagerPrev)
-			       ->setLabel($pageCountLabel);
+			$paging->addButton($pagerNext)->addButton($pagerPrev)->setLabel($pageCountLabel);
 
 			// Info tooltip
 			$infoTooltipLabel = new Label();
 			$frame->add($infoTooltipLabel);
-			$infoTooltipLabel->setAlign($infoTooltipLabel::LEFT, $infoTooltipLabel::TOP)
-			                 ->setPosition($width * -0.45, $height * -0.22)
-			                 ->setSize($width * 0.7, $entryHeight)
-			                 ->setTextSize(1)
-			                 ->setTranslate(true)
-			                 ->setVisible(false)
-			                 ->setAutoNewLine(true)
-			                 ->setMaxLines(5);
+			$infoTooltipLabel->setAlign($infoTooltipLabel::LEFT, $infoTooltipLabel::TOP)->setPosition($width * -0.45, $height * -0.22)->setSize($width * 0.7, $entryHeight)->setTextSize(1)->setTranslate(true)->setVisible(false)->setAutoNewLine(true)->setMaxLines(5);
 
 			// List plugins
 			foreach ($pluginList as $plugin) {
-				if ($this->maniaControl->getPluginManager()
-				                       ->isPluginIdInstalled($plugin->id)
+				if ($this->maniaControl->getPluginManager()->isPluginIdInstalled($plugin->id)
 				) {
 					// Already installed -> Skip
 					continue;
@@ -148,12 +131,7 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 
 				$nameLabel = new Label_Text();
 				$pluginFrame->add($nameLabel);
-				$nameLabel->setHAlign($nameLabel::LEFT)
-				          ->setX($width * -0.46)
-				          ->setSize($width * 0.62, $entryHeight)
-				          ->setStyle($nameLabel::STYLE_TextCardSmall)
-				          ->setTextSize(2)
-				          ->setText($plugin->name);
+				$nameLabel->setHAlign($nameLabel::LEFT)->setX($width * -0.46)->setSize($width * 0.62, $entryHeight)->setStyle($nameLabel::STYLE_TextCardSmall)->setTextSize(2)->setText($plugin->name);
 
 				$description = "Author: {$plugin->author}\nVersion: {$plugin->currentVersion->version}\nDesc: {$plugin->description}";
 				$nameLabel->addTooltipLabelFeature($infoTooltipLabel, $description);
@@ -162,11 +140,7 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 					// Incompatibility label
 					$infoLabel = new Label_Text();
 					$pluginFrame->add($infoLabel);
-					$infoLabel->setHAlign($infoLabel::RIGHT)
-					          ->setX($width * 0.47)
-					          ->setSize($width * 0.33, $entryHeight)
-					          ->setTextSize(1)
-					          ->setTextColor('f30');
+					$infoLabel->setHAlign($infoLabel::RIGHT)->setX($width * 0.47)->setSize($width * 0.33, $entryHeight)->setTextSize(1)->setTextColor('f30');
 					if ($plugin->currentVersion->min_mc_version > ManiaControl::VERSION) {
 						$infoLabel->setText("Needs at least MC-Version '{$plugin->currentVersion->min_mc_version}'");
 					} else {
@@ -176,21 +150,14 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 					// Install button
 					$installButton = new Label_Button();
 					$pluginFrame->add($installButton);
-					$installButton->setHAlign($installButton::RIGHT)
-					              ->setX($width * 0.47)
-					              ->setStyle($installButton::STYLE_CardButtonSmall)
-					              ->setText('Install')
-					              ->setTranslate(true)
-					              ->setAction(self::ACTION_PREFIX_INSTALL_PLUGIN . $plugin->id);
+					$installButton->setHAlign($installButton::RIGHT)->setX($width * 0.47)->setStyle($installButton::STYLE_CardButtonSmall)->setText('Install')->setTranslate(true)->setAction(self::ACTION_PREFIX_INSTALL_PLUGIN . $plugin->id);
 				}
 
 				if ($plugin->currentVersion->verified > 0) {
 					// Suggested quad
 					$suggestedQuad = new Quad_Icons64x64_1();
 					$pluginFrame->add($suggestedQuad);
-					$suggestedQuad->setPosition($width * 0.45, $entryHeight * 0.12, 2)
-					              ->setSize(4, 4)
-					              ->setSubStyle($suggestedQuad::SUBSTYLE_StateSuggested);
+					$suggestedQuad->setPosition($width * 0.45, $entryHeight * 0.12, 2)->setSize(4, 4)->setSubStyle($suggestedQuad::SUBSTYLE_StateSuggested);
 				}
 
 				$posY -= $entryHeight;
@@ -211,19 +178,11 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 
 		$infoLabel = new Label_Text();
 		$frame->add($infoLabel);
-		$infoLabel->setVAlign($infoLabel::BOTTOM)
-		          ->setY(2)
-		          ->setSize(100, 25)
-		          ->setTextColor('f30')
-		          ->setTranslate(true)
-		          ->setText('An error occurred. Please try again later.');
+		$infoLabel->setVAlign($infoLabel::BOTTOM)->setY(2)->setSize(100, 25)->setTextColor('f30')->setTranslate(true)->setText('An error occurred. Please try again later.');
 
 		$refreshQuad = new Quad_Icons64x64_1();
 		$frame->add($refreshQuad);
-		$refreshQuad->setY(-4)
-		            ->setSize(8, 8)
-		            ->setSubStyle($refreshQuad::SUBSTYLE_Refresh)
-		            ->setAction(self::ACTION_REFRESH_LIST);
+		$refreshQuad->setY(-4)->setSize(8, 8)->setSubStyle($refreshQuad::SUBSTYLE_Refresh)->setAction(self::ACTION_REFRESH_LIST);
 
 		return $frame;
 	}
@@ -238,10 +197,7 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 
 		$infoLabel = new Label_Text();
 		$frame->add($infoLabel);
-		$infoLabel->setSize(100, 50)
-		          ->setTextColor('0f3')
-		          ->setTranslate(true)
-		          ->setText('No other plugins available.');
+		$infoLabel->setSize(100, 50)->setTextColor('0f3')->setTranslate(true)->setText('No other plugins available.');
 
 		return $frame;
 	}
@@ -277,7 +233,6 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 	 * @param Player $player
 	 */
 	public function handleRefreshListAction(array $actionCallback, Player $player) {
-		$this->maniaControl->getConfigurator()
-		                   ->showMenu($player, $this);
+		$this->maniaControl->getConfigurator()->showMenu($player, $this);
 	}
 }

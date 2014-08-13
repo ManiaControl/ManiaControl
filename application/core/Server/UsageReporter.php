@@ -36,11 +36,9 @@ class UsageReporter implements TimerListener {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		$this->maniaControl->getSettingManager()
-		                   ->initSetting($this, self::SETTING_REPORT_USAGE, true);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_REPORT_USAGE, true);
 
-		$this->maniaControl->getTimerManager()
-		                   ->registerTimerListening($this, 'reportUsage', 1000 * 60 * self::UPDATE_MINUTE_COUNT);
+		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'reportUsage', 1000 * 60 * self::UPDATE_MINUTE_COUNT);
 	}
 
 	/**
@@ -48,8 +46,7 @@ class UsageReporter implements TimerListener {
 	 */
 	public function reportUsage() {
 		if (DEV_MODE
-		    || !$this->maniaControl->getSettingManager()
-		                           ->getSettingValue($this, self::SETTING_REPORT_USAGE)
+		    || !$this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_REPORT_USAGE)
 		) {
 			return;
 		}
@@ -60,41 +57,34 @@ class UsageReporter implements TimerListener {
 		$properties['PHPVersion']          = phpversion();
 		$properties['ServerLogin']         = $this->maniaControl->getServer()->login;
 		$properties['TitleId']             = $this->maniaControl->getServer()->titleId;
-		$properties['ServerName']          = Formatter::stripDirtyCodes($this->maniaControl->getClient()
-		                                                                                   ->getServerName());
-		$properties['UpdateChannel']       = $this->maniaControl->getUpdateManager()
-		                                                        ->getCurrentUpdateChannelSetting();
+		$properties['ServerName']          = Formatter::stripDirtyCodes($this->maniaControl->getClient()->getServerName());
+		$properties['UpdateChannel']       = $this->maniaControl->getUpdateManager()->getCurrentUpdateChannelSetting();
 
-		$properties['PlayerCount']     = $this->maniaControl->getPlayerManager()
-		                                                    ->getPlayerCount();
+		$properties['PlayerCount']     = $this->maniaControl->getPlayerManager()->getPlayerCount();
 		$properties['MemoryUsage']     = memory_get_usage();
 		$properties['MemoryPeakUsage'] = memory_get_peak_usage();
 
-		$maxPlayers               = $this->maniaControl->getClient()
-		                                               ->getMaxPlayers();
+		$maxPlayers               = $this->maniaControl->getClient()->getMaxPlayers();
 		$properties['MaxPlayers'] = $maxPlayers['CurrentValue'];
 
 		try {
-			$scriptName               = $this->maniaControl->getClient()
-			                                               ->getScriptName();
+			$scriptName               = $this->maniaControl->getClient()->getScriptName();
 			$properties['ScriptName'] = $scriptName['CurrentValue'];
 		} catch (GameModeException $e) {
 			$properties['ScriptName'] = '';
 		}
 
-		$properties['ActivePlugins'] = $this->maniaControl->getPluginManager()
-		                                                  ->getActivePluginsIds();
+		$properties['ActivePlugins'] = $this->maniaControl->getPluginManager()->getActivePluginsIds();
 
 		$json = json_encode($properties);
 		$info = base64_encode($json);
 
 		$url = ManiaControl::URL_WEBSERVICE . '/usagereport?info=' . urlencode($info);
-		$this->maniaControl->getFileReader()
-		                   ->loadFile($url, function ($response, $error) {
-			$response = json_decode($response);
-			if ($error || !$response) {
-				Logger::logError('Error while Sending data: ' . print_r($error, true));
-			}
-		});
+		$this->maniaControl->getFileReader()->loadFile($url, function ($response, $error) {
+			                                    $response = json_decode($response);
+			                                    if ($error || !$response) {
+				                                    Logger::logError('Error while Sending data: ' . print_r($error, true));
+			                                    }
+		                                    });
 	}
 }
