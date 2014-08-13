@@ -105,28 +105,29 @@ class MapQueue implements CallbackListener, CommandListener {
 	/**
 	 * Clear the Map Queue
 	 *
-	 * @param Player $admin
+	 * @param Player $admin |null
 	 */
-	public function clearMapQueue(Player $admin) {
-		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_CLEAR_MAPQUEUE)
+	public function clearMapQueue(Player $admin = null) {
+		if ($admin && !$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_CLEAR_MAPQUEUE)
 		) {
 			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($admin);
 			return;
 		}
 
-		if (empty($this->queuedMaps)) {
+		if ($admin && empty($this->queuedMaps)) {
 			$this->maniaControl->getChat()->sendError('$fa0There are no maps in the jukebox!', $admin->login);
 			return;
 		}
 
-		$title = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($admin->authLevel);
-
 		//Destroy map - queue list
 		$this->queuedMaps = array();
 
-		$message = '$fa0' . $title . ' $<$fff' . $admin->nickname . '$> cleared the Map-Queue!';
-		$this->maniaControl->getChat()->sendInformation($message);
-		Logger::logInfo($message, true);
+		if ($admin) {
+			$title   = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($admin->authLevel);
+			$message = '$fa0' . $title . ' $<$fff' . $admin->nickname . '$> cleared the Map-Queue!';
+			$this->maniaControl->getChat()->sendInformation($message);
+			Logger::logInfo($message, true);
+		}
 
 		// Trigger callback
 		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_MAPQUEUE_CHANGED, array('clear'));
@@ -225,6 +226,23 @@ class MapQueue implements CallbackListener, CommandListener {
 
 			array_unshift($this->queuedMaps, array($player, $map, true));
 		}
+	}
+
+	public function serverAddMapToMapQueue($uid) {
+		$map = $this->maniaControl->getMapManager()->getMapByUid($uid);
+
+		if (!$map) {
+			return false;
+		}
+
+		$this->queuedMaps[$uid] = array(null, $map);
+
+		$this->maniaControl->getChat()->sendInformation('$fa0$<$fff' . $map->name . '$> has been added to the Map-Queue by the Server.');
+
+		// Trigger callback
+		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_MAPQUEUE_CHANGED, array('add', $this->queuedMaps[$uid]));
+
+		return true;
 	}
 
 	/**
@@ -340,14 +358,12 @@ class MapQueue implements CallbackListener, CommandListener {
 					break;
 				}
 
-				// Player found, so play this map
-				if ($this->maniaControl->getPlayerManager()->getPlayer($player->login)
-				) {
+				// Player found, so play this map (or if it got juked by the server)
+				if ($player == null || $this->maniaControl->getPlayerManager()->getPlayer($player->login)) {
 					break;
 				}
 
-				if (!$this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SKIP_MAPQUEUE_ADMIN)
-				) {
+				if (!$this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SKIP_MAPQUEUE_ADMIN)) {
 					//Check if the queuer is a admin
 					if ($player->authLevel > 0) {
 						break;
@@ -371,8 +387,12 @@ class MapQueue implements CallbackListener, CommandListener {
 			return;
 		}
 		$map = $this->nextMap[1];
-		/** @var Map $map */
-		$this->maniaControl->getChat()->sendInformation('$fa0Next map will be $<$fff' . $map->name . '$> as requested by $<' . $this->nextMap[0]->nickname . '$>.');
+
+		//Message only if it's juked by a player (not by the server)
+		if ($this->nextMap[0]) {
+			/** @var Map $map */
+			$this->maniaControl->getChat()->sendInformation('$fa0Next map will be $<$fff' . $map->name . '$> as requested by $<' . $this->nextMap[0]->nickname . '$>.');
+		}
 
 		try {
 			$this->maniaControl->getClient()->setNextMapIdent($map->uid);

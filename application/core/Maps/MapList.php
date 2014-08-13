@@ -340,7 +340,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 				// Checks if the Player who opened the Widget has queued the map
 				$queuer = $this->maniaControl->getMapManager()->getMapQueue()->getQueuer($map->uid);
-				if ($queuer->login == $player->login) {
+				if ($queuer && $queuer->login == $player->login) {
 					$description = 'Remove ' . $map->getEscapedName() . ' from the Map Queue';
 					$label->addTooltipLabelFeature($descriptionLabel, $description);
 					$label->setAction(self::ACTION_UNQUEUE_MAP . '.' . $map->uid);
