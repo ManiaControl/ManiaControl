@@ -228,6 +228,12 @@ class MapQueue implements CallbackListener, CommandListener {
 		}
 	}
 
+	/**
+	 * Adds a Map to the Map-Queue from Plugins or whatever
+	 *
+	 * @param $uid
+	 * @return bool
+	 */
 	public function serverAddMapToMapQueue($uid) {
 		$map = $this->maniaControl->getMapManager()->getMapByUid($uid);
 
