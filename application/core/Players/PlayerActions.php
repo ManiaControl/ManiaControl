@@ -238,7 +238,7 @@ class PlayerActions {
 		try {
 			$this->maniaControl->getClient()->unIgnore($targetLogin);
 		} catch (NotInListException $e) {
-			$this->maniaControl->getChat()->sendError('Player is not ignored!');
+			$this->maniaControl->getChat()->sendError('Player is not ignored!', $adminLogin);
 			return;
 		}
 
@@ -271,7 +271,7 @@ class PlayerActions {
 		try {
 			$this->maniaControl->getClient()->ignore($targetLogin);
 		} catch (AlreadyInListException $e) {
-			$this->maniaControl->getChat()->sendError("Player already ignored!");
+			$this->maniaControl->getChat()->sendError("Player already ignored!", $adminLogin);
 			return;
 		}
 
