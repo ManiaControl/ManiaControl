@@ -24,14 +24,15 @@ class PlayerManager implements CallbackListener, TimerListener {
 	/*
 	 * Constants
 	 */
-	const CB_PLAYERCONNECT            = 'PlayerManagerCallback.PlayerConnect';
-	const CB_PLAYERDISCONNECT         = 'PlayerManagerCallback.PlayerDisconnect';
-	const CB_PLAYERINFOCHANGED        = 'PlayerManagerCallback.PlayerInfoChanged';
-	const CB_SERVER_EMPTY             = 'PlayerManagerCallback.ServerEmpty';
-	const TABLE_PLAYERS               = 'mc_players';
-	const SETTING_JOIN_LEAVE_MESSAGES = 'Enable Join & Leave Messages';
-	const STAT_JOIN_COUNT             = 'Joins';
-	const STAT_SERVERTIME             = 'Servertime';
+	const CB_PLAYERCONNECT                      = 'PlayerManagerCallback.PlayerConnect';
+	const CB_PLAYERDISCONNECT                   = 'PlayerManagerCallback.PlayerDisconnect';
+	const CB_PLAYERINFOCHANGED                  = 'PlayerManagerCallback.PlayerInfoChanged';
+	const CB_SERVER_EMPTY                       = 'PlayerManagerCallback.ServerEmpty';
+	const TABLE_PLAYERS                         = 'mc_players';
+	const SETTING_JOIN_LEAVE_MESSAGES           = 'Enable Join & Leave Messages';
+	const SETTING_JOIN_LEAVE_MESSAGES_SPECTATOR = 'Enable Join & Leave Messages for Spectators';
+	const STAT_JOIN_COUNT                       = 'Joins';
+	const STAT_SERVERTIME                       = 'Servertime';
 
 	/*
 	 * Public properties
@@ -81,6 +82,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 
 		// Settings
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES, true);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES_SPECTATOR, true);
 
 		// Callbacks
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::ONINIT, $this, 'onInit');
@@ -321,7 +323,8 @@ class PlayerManager implements CallbackListener, TimerListener {
 		$logMessage = "Player left: {$player->login} / {$player->nickname} Playtime: {$played}";
 		Logger::logInfo($logMessage, true);
 
-		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_JOIN_LEAVE_MESSAGES)
+		if (!$player->isSpectator && $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_JOIN_LEAVE_MESSAGES) && !$player->isFakePlayer()
+		    || $player->isSpectator && $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_JOIN_LEAVE_MESSAGES_SPECTATOR)
 		) {
 			$this->maniaControl->getChat()->sendChat('$0f0$<$fff' . $player->nickname . '$> has left the game');
 		}
@@ -410,14 +413,18 @@ class PlayerManager implements CallbackListener, TimerListener {
 		//Check if Player finished joining the game
 		if ($player->hasJoinedGame && !$prevJoinState) {
 
-			if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_JOIN_LEAVE_MESSAGES)
-			    && !$player->isFakePlayer()
+			if (!$player->isSpectator && $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_JOIN_LEAVE_MESSAGES) && !$player->isFakePlayer()
 			) {
 				$string      = array(0 => '$0f0Player', 1 => '$0f0Moderator', 2 => '$0f0Admin', 3 => '$0f0SuperAdmin', 4 => '$0f0MasterAdmin');
 				$chatMessage = '$0f0' . $string[$player->authLevel] . ' $<$fff' . $player->nickname . '$> Nation: $<$fff' . $player->getCountry() . '$> joined!';
 				$this->maniaControl->getChat()->sendChat($chatMessage);
-				$this->maniaControl->getChat()->sendInformation('This server uses ManiaControl v' . ManiaControl::VERSION . '!', $player->login);
+			} else if ($player->isSpectator && $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_JOIN_LEAVE_MESSAGES_SPECTATOR)) {
+				$string      = array(0 => '$0f0Player', 1 => '$0f0Moderator', 2 => '$0f0Admin', 3 => '$0f0SuperAdmin', 4 => '$0f0MasterAdmin');
+				$chatMessage = '$0f0' . $string[$player->authLevel] . ' $<$fff' . $player->nickname . '$> Nation: $<$fff' . $player->getCountry() . '$> joined as Spectator!';
+				$this->maniaControl->getChat()->sendChat($chatMessage);
 			}
+
+			$this->maniaControl->getChat()->sendInformation('This server uses ManiaControl v' . ManiaControl::VERSION . '!', $player->login);
 
 			$logMessage = "Player joined: {$player->login} / {$player->nickname} Nation: " . $player->getCountry() . " IP: {$player->ipAddress}";
 			Logger::logInfo($logMessage, true);
