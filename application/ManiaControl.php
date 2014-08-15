@@ -29,6 +29,9 @@ require_once MANIACONTROL_PATH . 'core' . DIRECTORY_SEPARATOR . 'AutoLoader.php'
 // Setup Logger
 \ManiaControl\Logger::setup();
 
+// Load libs
+require_once MANIACONTROL_PATH . '/libs/curl-easy/autoload.php';
+
 /**
  * @deprecated
  * @see \ManiaControl\Logger::log()

@@ -31,9 +31,6 @@ use Maniaplanet\DedicatedServer\Connection;
 use Maniaplanet\DedicatedServer\Xmlrpc\AuthenticationException;
 use Maniaplanet\DedicatedServer\Xmlrpc\TransportException;
 
-require_once MANIACONTROL_PATH . '/libs/Symfony/autoload.php';
-require_once MANIACONTROL_PATH . '/libs/curl-easy/autoload.php';
-
 /**
  * ManiaControl Server Controller for ManiaPlanet Server
  *
