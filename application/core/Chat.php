@@ -150,6 +150,20 @@ class Chat {
 	}
 
 	/**
+	 * Sends a Information Message to all connected Admins
+	 *
+	 * @param string      $message
+	 * @param int         $minLevel
+	 * @param bool|string $prefix
+	 * @return bool
+	 */
+	public function sendInformationToAdmins($message, $minLevel = AuthenticationManager::AUTH_LEVEL_MODERATOR, $prefix = true) {
+		$format = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_FORMAT_INFORMATION);
+		return $this->sendMessageToAdmins($format . $message, $minLevel, $prefix);
+	}
+
+
+	/**
 	 * Sends a Success Message to all connected Admins
 	 *
 	 * @param string      $message
