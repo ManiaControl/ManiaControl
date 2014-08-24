@@ -21,6 +21,7 @@ use ManiaControl\Plugins\Plugin;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
 use Maniaplanet\DedicatedServer\Xmlrpc\ServerOptionsException;
+use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
 
 /**
  * Queue plugin
@@ -474,7 +475,14 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 		if (!is_null($player)) {
 			if ($player->isSpectator) {
 				if (!isset($this->spectators[$player->login])) {
-					$this->maniaControl->client->forceSpectator($player->login, 1);
+					try {
+						$this->maniaControl->getClient()->forceSpectator($player->login, 1);
+					} catch (UnknownPlayerException $e) {
+						//Player is not on the server anymore
+						unset($this->spectators[$player->login]);
+						return;
+					}
+
 					$this->spectators[$player->login] = $player->login;
 					$this->showJoinQueueWidget($player);
 					$this->showQueueWidgetSpectators();
