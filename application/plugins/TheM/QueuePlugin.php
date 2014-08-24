@@ -19,6 +19,8 @@ use ManiaControl\Players\PlayerActions;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
+use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
+use Maniaplanet\DedicatedServer\Xmlrpc\ServerOptionsException;
 
 /**
  * Queue plugin
@@ -331,13 +333,13 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 	 * @param Player $player
 	 */
 	private function forcePlayerToPlay(Player $player) {
-		if ($this->maniaControl->client->getServerPassword() != false && $this->maniaControl->settingManager->getSettingValue($this, self::QUEUE_ACTIVE_ON_PASS) == false) {
+		if ($this->maniaControl->getClient()->getServerPassword() != false && $this->maniaControl->settingManager->getSettingValue($this, self::QUEUE_ACTIVE_ON_PASS) == false) {
 			return;
 		}
 
 		if ($this->maxPlayers > $this->maniaControl->playerManager->getPlayerCount(true)) {
 			try {
-				$this->maniaControl->client->forceSpectator($player->login, PlayerActions::SPECTATOR_PLAYER);
+				$this->maniaControl->getClient()->forceSpectator($player->login, PlayerActions::SPECTATOR_PLAYER);
 			} catch (Exception $e) {
 				// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
 				$this->maniaControl->chat->sendError("Error while leaving the Queue", $player->login);
@@ -345,7 +347,7 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 			}
 
 			try {
-				$this->maniaControl->client->forceSpectator($player->login, PlayerActions::SPECTATOR_USER_SELECTABLE);
+				$this->maniaControl->getClient()->forceSpectator($player->login, PlayerActions::SPECTATOR_USER_SELECTABLE);
 			} catch (Exception $e) {
 				// TODO: only possible valid exception should be "wrong login" - throw others (like connection error)
 			}
@@ -378,12 +380,16 @@ class QueuePlugin implements CallbackListener, ManialinkPageAnswerListener, Time
 				}
 			}
 
-			try {
-				if ($smallestTeam !== null) {
-					$this->maniaControl->client->forcePlayerTeam($player->login, $smallestTeam);
+			if ($smallestTeam !== null) {
+				try {
+					$this->maniaControl->getClient()->forcePlayerTeam($player->login, $smallestTeam);
+				} catch (GameModeException $e) {
+					try {
+						$this->maniaControl->getClient()->forceSpectator($player->login, PlayerActions::SPECTATOR_PLAYER);
+						$this->maniaControl->getClient()->forceSpectator($player->login, PlayerActions::SPECTATOR_USER_SELECTABLE);
+					} catch (ServerOptionsException $e) {
+					}
 				}
-			} catch (Exception $e) {
-				$this->maniaControl->errorHandler->triggerDebugNotice("QueuePlugin line 383 Exception" . $e->getTraceAsString());
 			}
 
 			if (isset($this->spectators[$player->login])) {
