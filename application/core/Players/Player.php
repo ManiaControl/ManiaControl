@@ -317,7 +317,7 @@ class Player {
 	}
 
 	/**
-	 * Sets the Player Data
+	 * Sets the Player Data and stores it in the Database
 	 *
 	 * @param mixed  $object
 	 * @param string $dataName
@@ -327,6 +327,21 @@ class Player {
 	 */
 	public function setPlayerData($object, $dataName, $value, $serverIndex = -1) {
 		return $this->maniaControl->getPlayerManager()->getPlayerDataManager()->setPlayerData($object, $dataName, $this, $value, $serverIndex);
+	}
+
+	/*
+	 * Check if a Player is muted
+	 *
+	 * @return bool
+	 */
+	public function isMuted() {
+		$ignoreList = $this->maniaControl->getClient()->getIgnoreList(100, 0);
+		foreach ($ignoreList as $ignoredPlayers) {
+			if ($ignoredPlayers->login === $this->login) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**

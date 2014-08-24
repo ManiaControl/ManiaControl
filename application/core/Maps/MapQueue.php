@@ -263,6 +263,12 @@ class MapQueue implements CallbackListener, CommandListener {
 			return;
 		}
 
+		// Check if the Player is muted
+		if ($player->isMuted()) {
+			$this->maniaControl->getChat()->sendError('Muted Players are not allowed to queue a map.', $player);
+			return;
+		}
+
 		//Check if player is allowed to add (another) map
 		$isModerator = $this->maniaControl->getAuthenticationManager()->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 

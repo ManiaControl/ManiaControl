@@ -516,16 +516,9 @@ class PlayerActions {
 	/**
 	 * Check if a Player is muted
 	 *
-	 * @param string $login
-	 * @return bool
+	 * @deprecated see Player/isMuted()
 	 */
 	public function isPlayerMuted($login) {
-		$ignoreList = $this->maniaControl->getClient()->getIgnoreList(100, 0);
-		foreach ($ignoreList as $ignoredPlayers) {
-			if ($ignoredPlayers->login === $login) {
-				return true;
-			}
-		}
-		return false;
+		return $this->maniaControl->getPlayerManager()->getPlayer($login)->isMuted();
 	}
 }

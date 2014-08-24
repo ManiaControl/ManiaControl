@@ -515,8 +515,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$label->setTextSize($textSize);
 		$label->setTextColor($textColor);
 
-		if (!$this->maniaControl->getPlayerManager()->getPlayerActions()->isPlayerMuted($login)
-		) {
+		if (!$player->isMuted()) {
 			$label->setText('Mute');
 			$quad->setAction(self::ACTION_MUTE_PLAYER . '.' . $login);
 		} else {
