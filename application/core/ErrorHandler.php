@@ -390,26 +390,6 @@ class ErrorHandler {
 	 * Handle PHP Process Shutdown
 	 */
 	public function handleShutdown() {
-		// TODO: skip client-related actions on transport exception (e.g. server down)
-
-		if ($this->maniaControl->getCallbackManager()) {
-			// OnShutdown callback
-			$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ONSHUTDOWN);
-		}
-
-		if ($this->maniaControl->getChat()) {
-			// Announce quit
-			$this->maniaControl->getChat()->sendInformation('ManiaControl shutting down.');
-		}
-
-		if ($this->maniaControl->getClient()) {
-			try {
-				$this->maniaControl->getClient()->sendHideManialinkPage();
-			} catch (TransportException $e) {
-				$this->handleException($e, false);
-			}
-		}
-
 		// Check if the Shutdown was caused by a Fatal Error and report it
 		$error = error_get_last();
 		if ($error && self::isFatalError($error['type'])) {

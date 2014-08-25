@@ -211,8 +211,27 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	 * @param bool   $errorPrefix
 	 */
 	public function quit($message = null, $errorPrefix = false) {
+		if ($this->getCallbackManager()) {
+			// OnShutdown callback
+			$this->getCallbackManager()->triggerCallback(Callbacks::ONSHUTDOWN);
+		}
+
+		if ($this->getChat()) {
+			// Announce quit
+			$this->getChat()->sendInformation('ManiaControl shutting down.');
+		}
+
+		if ($this->getClient()) {
+			try {
+				$this->getClient()->sendHideManialinkPage();
+			} catch (TransportException $e) {
+				$this->getErrorHandler()->handleException($e, false);
+			}
+		}
+
 		Connection::delete($this->getClient());
 		$this->client = null;
+
 		SystemUtil::quit($message, $errorPrefix);
 	}
 
@@ -451,8 +470,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	 * @param Player $player
 	 */
 	public function commandShutdown(array $chat, Player $player) {
-		if (!$this->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_SHUTDOWN)
-		) {
+		if (!$this->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_SHUTDOWN)) {
 			$this->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
