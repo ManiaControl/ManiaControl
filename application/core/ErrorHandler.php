@@ -263,7 +263,7 @@ class ErrorHandler {
 				$traceString .= $traceStep['line'];
 			}
 			$traceString .= PHP_EOL;
-			if (strlen($traceString) > 1300) {
+			if (strlen($traceString) > 2500) {
 				// Too long...
 				$traceString .= '...';
 				break;
@@ -334,8 +334,8 @@ class ErrorHandler {
 				$string .= $type . '(';
 				if (is_string($arg)) {
 					$param = $arg;
-					if (strlen($param) > 20) {
-						$param = substr($param, 0, 20) . '..';
+					if (strlen($param) > 40) {
+						$param = substr($param, 0, 40) . '..';
 					}
 					$string .= print_r($param, true);
 				} else {
@@ -346,7 +346,7 @@ class ErrorHandler {
 			if ($index < $argsCount - 1) {
 				$string .= ', ';
 			}
-			if (strlen($string) > 100) {
+			if (strlen($string) > 150) {
 				// Too long...
 				$string .= '...';
 				break;
