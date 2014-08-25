@@ -152,15 +152,6 @@ class MapManager implements CallbackListener {
 	}
 
 	/**
-	 * Return the map queue
-	 *
-	 * @return MapQueue
-	 */
-	public function getMapQueue() {
-		return $this->mapQueue;
-	}
-
-	/**
 	 * Return the map commands
 	 *
 	 * @return MapCommands
@@ -203,15 +194,6 @@ class MapManager implements CallbackListener {
 	 */
 	public function getMXList() {
 		return $this->mxList;
-	}
-
-	/**
-	 * Return the mx manager
-	 *
-	 * @return ManiaExchangeManager
-	 */
-	public function getMXManager() {
-		return $this->mxManager;
 	}
 
 	/**
@@ -322,6 +304,24 @@ class MapManager implements CallbackListener {
 	}
 
 	/**
+	 * Return the map queue
+	 *
+	 * @return MapQueue
+	 */
+	public function getMapQueue() {
+		return $this->mapQueue;
+	}
+
+	/**
+	 * Return the mx manager
+	 *
+	 * @return ManiaExchangeManager
+	 */
+	public function getMXManager() {
+		return $this->mxManager;
+	}
+
+	/**
 	 * Adds a Map from Mania Exchange
 	 *
 	 * @param int    $mapId
@@ -382,8 +382,7 @@ class MapManager implements CallbackListener {
 		$fullMapFileName     = $downloadDirectory . $fileName;
 
 		// Check if it can get written locally
-		if ($this->maniaControl->getServer()->checkAccess($mapDir)
-		) {
+		if ($this->maniaControl->getServer()->checkAccess($mapDir)) {
 			// Create download directory if necessary
 			if (!is_dir($downloadDirectory) && !mkdir($downloadDirectory) || !is_writable($downloadDirectory)) {
 				$this->maniaControl->getChat()->sendError("ManiaControl doesn't have to rights to save maps in '{$downloadDirectory}'.", $login);
@@ -466,21 +465,6 @@ class MapManager implements CallbackListener {
 	public function getMapByUid($uid) {
 		if (isset($this->maps[$uid])) {
 			return $this->maps[$uid];
-		}
-		return null;
-	}
-
-	/**
-	 * Get's a Map by it's Mania-Exchange Id
-	 *
-	 * @param $mxId
-	 * @return Map
-	 */
-	public function getMapByMxId($mxId) {
-		foreach ($this->maps as $map) {
-			if ($map->mx->id == $mxId) {
-				return $map;
-			}
 		}
 		return null;
 	}
@@ -588,6 +572,21 @@ class MapManager implements CallbackListener {
 		$map->index = $mapStatement->insert_id;
 		$mapStatement->close();
 		return true;
+	}
+
+	/**
+	 * Get's a Map by it's Mania-Exchange Id
+	 *
+	 * @param $mxId
+	 * @return Map
+	 */
+	public function getMapByMxId($mxId) {
+		foreach ($this->maps as $map) {
+			if ($map->mx->id == $mxId) {
+				return $map;
+			}
+		}
+		return null;
 	}
 
 	/**
