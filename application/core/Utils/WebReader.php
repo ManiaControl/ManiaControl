@@ -25,10 +25,8 @@ abstract class WebReader {
 	public static function loadUrl($url, callable $function = null) {
 		$request  = static::newRequest($url);
 		$response = $request->send();
-		if (!is_null($function)) {
-			$content = $response->getContent();
-			$error   = $response->getError()->getMessage();
-			call_user_func($function, $content, $error);
+		if ($function) {
+			static::performCallback($response, $function);
 		}
 		return $response;
 	}
@@ -41,13 +39,27 @@ abstract class WebReader {
 	 */
 	protected static function newRequest($url) {
 		$request = new Request($url);
-		$request->getOptions()->set(CURLOPT_TIMEOUT, 10)->set(CURLOPT_HEADER, false) // don't display response header
+		$options = $request->getOptions();
+		$options->set(CURLOPT_TIMEOUT, 5) // timeout
+		        ->set(CURLOPT_HEADER, false) // don't display response header
 		        ->set(CURLOPT_CRLF, true) // linux line feed
 		        ->set(CURLOPT_ENCODING, '') // accept encoding
 		        ->set(CURLOPT_USERAGENT, 'ManiaControl v' . ManiaControl::VERSION) // user-agent
 		        ->set(CURLOPT_RETURNTRANSFER, true) // return instead of output content
 		        ->set(CURLOPT_AUTOREFERER, true); // follow redirects
 		return $request;
+	}
+
+	/**
+	 * Perform the given callback function with the response
+	 *
+	 * @param Response $response
+	 * @param callable $function
+	 */
+	protected static function performCallback(Response $response, callable $function) {
+		$content = $response->getContent();
+		$error   = $response->getError()->getMessage();
+		call_user_func($function, $content, $error);
 	}
 
 	/**
@@ -65,10 +77,8 @@ abstract class WebReader {
 			$request->getOptions()->set(CURLOPT_POSTFIELDS, $content); // post content field
 		}
 		$response = $request->send();
-		if (!is_null($function)) {
-			$content = $response->getContent();
-			$error   = $response->getError()->getMessage();
-			call_user_func($function, $content, $error);
+		if ($function) {
+			static::performCallback($response, $function);
 		}
 		return $response;
 	}
