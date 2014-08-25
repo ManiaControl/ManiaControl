@@ -168,18 +168,6 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	}
 
 	/**
-	 * Print a message to console and log
-	 *
-	 * @param string $message
-	 * @param bool   $stripCodes
-	 * @deprecated
-	 * @see Logger::log()
-	 */
-	public function log($message, $stripCodes = false) {
-		Logger::log($message, $stripCodes);
-	}
-
-	/**
 	 * Load the Config XML-File
 	 */
 	private function loadConfig() {
@@ -208,12 +196,21 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	}
 
 	/**
-	 * Return the actions menu
+	 * Return the client
 	 *
-	 * @return ActionsMenu
+	 * @return Connection
 	 */
-	public function getActionsMenu() {
-		return $this->actionsMenu;
+	public function getClient() {
+		return $this->client;
+	}
+
+	/**
+	 * Return the error handler
+	 *
+	 * @return ErrorHandler
+	 */
+	public function getErrorHandler() {
+		return $this->errorHandler;
 	}
 
 	/**
@@ -226,21 +223,42 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	}
 
 	/**
-	 * Return the callback manager
+	 * Return the command manager
 	 *
-	 * @return CallbackManager
+	 * @return CommandManager
 	 */
-	public function getCallbackManager() {
-		return $this->callbackManager;
+	public function getCommandManager() {
+		return $this->commandManager;
 	}
 
 	/**
-	 * Return the chat
+	 * Return the timer manager
 	 *
-	 * @return Chat
+	 * @return TimerManager
 	 */
-	public function getChat() {
-		return $this->chat;
+	public function getTimerManager() {
+		return $this->timerManager;
+	}
+
+	/**
+	 * Print a message to console and log
+	 *
+	 * @param string $message
+	 * @param bool   $stripCodes
+	 * @deprecated
+	 * @see Logger::log()
+	 */
+	public function log($message, $stripCodes = false) {
+		Logger::log($message, $stripCodes);
+	}
+
+	/**
+	 * Return the actions menu
+	 *
+	 * @return ActionsMenu
+	 */
+	public function getActionsMenu() {
+		return $this->actionsMenu;
 	}
 
 	/**
@@ -259,24 +277,6 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	 */
 	public function getConfigurator() {
 		return $this->configurator;
-	}
-
-	/**
-	 * Return the client
-	 *
-	 * @return Connection
-	 */
-	public function getClient() {
-		return $this->client;
-	}
-
-	/**
-	 * Return the command manager
-	 *
-	 * @return CommandManager
-	 */
-	public function getCommandManager() {
-		return $this->commandManager;
 	}
 
 	/**
@@ -316,24 +316,6 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	}
 
 	/**
-	 * Return the plugin manager
-	 *
-	 * @return PluginManager
-	 */
-	public function getPluginManager() {
-		return $this->pluginManager;
-	}
-
-	/**
-	 * Return the server
-	 *
-	 * @return Server
-	 */
-	public function getServer() {
-		return $this->server;
-	}
-
-	/**
 	 * Return the setting manager
 	 *
 	 * @return SettingManager
@@ -349,42 +331,6 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	 */
 	public function getStatisticManager() {
 		return $this->statisticManager;
-	}
-
-	/**
-	 * Return the update manager
-	 *
-	 * @return UpdateManager
-	 */
-	public function getUpdateManager() {
-		return $this->updateManager;
-	}
-
-	/**
-	 * Return the error handler
-	 *
-	 * @return ErrorHandler
-	 */
-	public function getErrorHandler() {
-		return $this->errorHandler;
-	}
-
-	/**
-	 * Return the timer manager
-	 *
-	 * @return TimerManager
-	 */
-	public function getTimerManager() {
-		return $this->timerManager;
-	}
-
-	/**
-	 * Return the file reader
-	 *
-	 * @return AsynchronousFileReader
-	 */
-	public function getFileReader() {
-		return $this->fileReader;
 	}
 
 	/**
@@ -418,6 +364,15 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	}
 
 	/**
+	 * Return the chat
+	 *
+	 * @return Chat
+	 */
+	public function getChat() {
+		return $this->chat;
+	}
+
+	/**
 	 * Handle Restart AdminCommand
 	 *
 	 * @param array  $chatCallback
@@ -445,19 +400,27 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 		if ($message) {
 			Logger::log($message);
 		}
-		$this->getChat()->sendInformation('Restarting ManiaControl...');
-		Logger::log('Restarting ManiaControl!');
-
-		// Hide widgets
-		if ($this->getClient()) {
+		try {
+			$this->getChat()->sendInformation('Restarting ManiaControl...');
 			$this->getClient()->sendHideManialinkPage();
+		} catch (TransportException $exception) {
 		}
+		Logger::log('Restarting ManiaControl!');
 
 		// Start new instance
 		SystemUtil::restart();
 
 		// Quit old instance
 		$this->quit('Quitting ManiaControl to restart.');
+	}
+
+	/**
+	 * Return the callback manager
+	 *
+	 * @return CallbackManager
+	 */
+	public function getCallbackManager() {
+		return $this->callbackManager;
 	}
 
 	/**
@@ -569,6 +532,33 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	}
 
 	/**
+	 * Return the server
+	 *
+	 * @return Server
+	 */
+	public function getServer() {
+		return $this->server;
+	}
+
+	/**
+	 * Return the plugin manager
+	 *
+	 * @return PluginManager
+	 */
+	public function getPluginManager() {
+		return $this->pluginManager;
+	}
+
+	/**
+	 * Return the update manager
+	 *
+	 * @return UpdateManager
+	 */
+	public function getUpdateManager() {
+		return $this->updateManager;
+	}
+
+	/**
 	 * Perform the Main Loop
 	 */
 	private function loop() {
@@ -594,6 +584,15 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 		if ($sleepTime > 0) {
 			usleep($sleepTime);
 		}
+	}
+
+	/**
+	 * Return the file reader
+	 *
+	 * @return AsynchronousFileReader
+	 */
+	public function getFileReader() {
+		return $this->fileReader;
 	}
 
 	/**
