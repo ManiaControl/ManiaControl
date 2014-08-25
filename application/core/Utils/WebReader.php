@@ -22,13 +22,24 @@ abstract class WebReader {
 	 * @param callable $function
 	 * @return Response
 	 */
-	public static function loadUrl($url, callable $function = null) {
+	public static function getUrl($url, callable $function = null) {
 		$request  = static::newRequest($url);
 		$response = $request->send();
 		if ($function) {
 			static::performCallback($response, $function);
 		}
 		return $response;
+	}
+
+	/**
+	 * @deprecated
+	 * @see WebReader::getUrl()
+	 */
+	public static function loadUrl($url, callable $function = null) {
+		if ($function) {
+			return static::getUrl($url, $function);
+		}
+		return static::getUrl($url);
 	}
 
 	/**
