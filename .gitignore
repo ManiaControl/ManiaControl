@@ -2,6 +2,7 @@
 /.buildpath
 /.project
 /.idea/
+/application/configs/server.xml
 /application/logs/
 /application/ManiaControl.log
 /application/ManiaControl.pid
