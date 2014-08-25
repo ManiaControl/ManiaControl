@@ -128,12 +128,18 @@ class SystemUtil {
 			Logger::log("Can't restart ManiaControl because the function 'exec' is disabled!");
 			return;
 		}
-		$fileName = MANIACONTROL_PATH . 'ManiaControl.sh';
-		if (!is_readable($fileName)) {
-			Logger::log("Can't restart ManiaControl because the file 'ManiaControl.sh' doesn't exist or isn't readable!");
+		$fileName = null;
+		if ($scriptName = CommandLineHelper::getParameter('-sh')) {
+			$fileName = $scriptName;
+		} else {
+			$fileName = 'ManiaControl.sh';
+		}
+		$filePath = MANIACONTROL_PATH . $fileName;
+		if (!is_readable($filePath)) {
+			Logger::log("Can't restart ManiaControl because the file '{$fileName}' doesn't exist or isn't readable!");
 			return;
 		}
-		$command = 'sh ' . escapeshellarg($fileName) . ' > /dev/null &';
+		$command = 'sh ' . escapeshellarg($filePath) . ' > /dev/null &';
 		exec($command);
 	}
 
@@ -165,7 +171,18 @@ class SystemUtil {
 			Logger::log("Can't restart ManiaControl because the function 'system' is disabled!");
 			return;
 		}
-		$command = escapeshellarg(MANIACONTROL_PATH . "ManiaControl.bat");
-		system($command); // TODO: windows gets stuck here as long controller is running
+		$fileName = null;
+		if ($scriptName = CommandLineHelper::getParameter('-bat')) {
+			$fileName = $scriptName;
+		} else {
+			$fileName = 'ManiaControl.bat';
+		}
+		$filePath = MANIACONTROL_PATH . $fileName;
+		if (!is_readable($filePath)) {
+			Logger::log("Can't restart ManiaControl because the file '{$fileName}' doesn't exist or isn't readable!");
+			return;
+		}
+		$command = escapeshellarg($filePath);
+		system($command); // TODO: windows stops here as long as controller is running
 	}
 }
