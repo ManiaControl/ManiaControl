@@ -159,32 +159,32 @@ class ManiaExchangeManager {
 		$url = "http://api.mania-exchange.com/{$titlePrefix}/maps/?ids={$string}";
 
 		$this->maniaControl->getFileReader()->loadFile($url, function ($mapInfo, $error) use ($titlePrefix, $url) {
-			                                    if ($error) {
-				                                    trigger_error("Error: '{$error}' for Url '{$url}'");
-				                                    return;
-			                                    }
-			                                    if (!$mapInfo) {
-				                                    return;
-			                                    }
+			if ($error) {
+				trigger_error("Error: '{$error}' for Url '{$url}'");
+				return;
+			}
+			if (!$mapInfo) {
+				return;
+			}
 
-			                                    $mxMapList = json_decode($mapInfo);
-			                                    if ($mxMapList === null) {
-				                                    trigger_error("Can't decode searched JSON Data from Url '{$url}'");
-				                                    return;
-			                                    }
+			$mxMapList = json_decode($mapInfo);
+			if ($mxMapList === null) {
+				trigger_error("Can't decode searched JSON Data from Url '{$url}'");
+				return;
+			}
 
-			                                    $maps = array();
-			                                    foreach ($mxMapList as $map) {
-				                                    if ($map) {
-					                                    $mxMapObject = new MXMapInfo($titlePrefix, $map);
-					                                    if ($mxMapObject) {
-						                                    array_push($maps, $mxMapObject);
-					                                    }
-				                                    }
-			                                    }
+			$maps = array();
+			foreach ($mxMapList as $map) {
+				if ($map) {
+					$mxMapObject = new MXMapInfo($titlePrefix, $map);
+					if ($mxMapObject) {
+						array_push($maps, $mxMapObject);
+					}
+				}
+			}
 
-			                                    $this->updateMapObjectsWithManiaExchangeIds($maps);
-		                                    }, AsynchronousFileReader::CONTENT_TYPE_JSON);
+			$this->updateMapObjectsWithManiaExchangeIds($maps);
+		}, AsynchronousFileReader::CONTENT_TYPE_JSON);
 	}
 
 	/**
@@ -252,27 +252,26 @@ class ManiaExchangeManager {
 		$url = 'http://api.mania-exchange.com/' . $titlePrefix . '/maps/?ids=' . $mapId;
 
 		$this->maniaControl->getFileReader()->loadFile($url, function ($mapInfo, $error) use (&$function, $titlePrefix, $url) {
-			                                    $mxMapInfo = null;
-			                                    if ($error) {
-				                                    trigger_error($error);
-			                                    } else {
-				                                    $mxMapList = json_decode($mapInfo);
-				                                    if (!is_array($mxMapList)) {
-					                                    trigger_error('Cannot decode searched JSON data from ' . $url);
-				                                    } else if (!empty($mxMapList)) {
-					                                    $mxMapInfo = new MXMapInfo($titlePrefix, $mxMapList[0]);
-				                                    }
-			                                    }
-			                                    call_user_func($function, $mxMapInfo);
-		                                    }, AsynchronousFileReader::CONTENT_TYPE_JSON);
+			$mxMapInfo = null;
+			if ($error) {
+				trigger_error($error);
+			} else {
+				$mxMapList = json_decode($mapInfo);
+				if (!is_array($mxMapList)) {
+					trigger_error('Cannot decode searched JSON data from ' . $url);
+				} else if (!empty($mxMapList)) {
+					$mxMapInfo = new MXMapInfo($titlePrefix, $mxMapList[0]);
+				}
+			}
+			call_user_func($function, $mxMapInfo);
+		}, AsynchronousFileReader::CONTENT_TYPE_JSON);
 	}
 
 	/**
 	 * @deprecated
 	 * @see \ManiaControl\ManiaExchange\ManiaExchangeManager::fetchMapsAsync()
 	 */
-	public function getMapsAsync(callable $function, $name = '', $author = '', $env = '', $maxMapsReturned = 100,
-	                             $searchOrder = self::SEARCH_ORDER_UPDATED_NEWEST) {
+	public function getMapsAsync(callable $function, $name = '', $author = '', $env = '', $maxMapsReturned = 100, $searchOrder = self::SEARCH_ORDER_UPDATED_NEWEST) {
 		$this->fetchMapsAsync($function, $name, $author, $env, $maxMapsReturned, $searchOrder);
 		return true;
 	}
@@ -287,8 +286,7 @@ class ManiaExchangeManager {
 	 * @param int      $maxMapsReturned
 	 * @param int      $searchOrder
 	 */
-	public function fetchMapsAsync(callable $function, $name = '', $author = '', $env = '', $maxMapsReturned = 100,
-	                               $searchOrder = self::SEARCH_ORDER_UPDATED_NEWEST) {
+	public function fetchMapsAsync(callable $function, $name = '', $author = '', $env = '', $maxMapsReturned = 100, $searchOrder = self::SEARCH_ORDER_UPDATED_NEWEST) {
 		// TODO: remove $env because it's not really used?
 
 		// Get Title Id
@@ -326,34 +324,34 @@ class ManiaExchangeManager {
 		}
 
 		$this->maniaControl->getFileReader()->loadFile($url, function ($mapInfo, $error) use (&$function, $titlePrefix) {
-			                                    if ($error) {
-				                                    trigger_error($error);
-				                                    return;
-			                                    }
+			if ($error) {
+				trigger_error($error);
+				return;
+			}
 
-			                                    $mxMapList = json_decode($mapInfo);
+			$mxMapList = json_decode($mapInfo);
 
-			                                    if (!isset($mxMapList->results)) {
-				                                    trigger_error('Cannot decode searched JSON data');
-				                                    return;
-			                                    }
+			if (!isset($mxMapList->results)) {
+				trigger_error('Cannot decode searched JSON data');
+				return;
+			}
 
-			                                    $mxMapList = $mxMapList->results;
+			$mxMapList = $mxMapList->results;
 
-			                                    if ($mxMapList === null) {
-				                                    trigger_error('Cannot decode searched JSON data');
-				                                    return;
-			                                    }
+			if ($mxMapList === null) {
+				trigger_error('Cannot decode searched JSON data');
+				return;
+			}
 
-			                                    $maps = array();
-			                                    foreach ($mxMapList as $map) {
-				                                    if (!empty($map)) {
-					                                    array_push($maps, new MXMapInfo($titlePrefix, $map));
-				                                    }
-			                                    }
+			$maps = array();
+			foreach ($mxMapList as $map) {
+				if (!empty($map)) {
+					array_push($maps, new MXMapInfo($titlePrefix, $map));
+				}
+			}
 
-			                                    call_user_func($function, $maps);
-		                                    }, AsynchronousFileReader::CONTENT_TYPE_JSON);
+			call_user_func($function, $maps);
+		}, AsynchronousFileReader::CONTENT_TYPE_JSON);
 	}
 
 	/**

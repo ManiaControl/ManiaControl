@@ -68,8 +68,7 @@ abstract class BackupUtil {
 	 * @param array       $baseFileNames
 	 * @return bool
 	 */
-	private static function zipDirectory(\ZipArchive &$zipArchive, $folderName, $prefixLength, array $excludes = array(),
-	                                     array $baseFileNames = array()) {
+	private static function zipDirectory(\ZipArchive &$zipArchive, $folderName, $prefixLength, array $excludes = array(), array $baseFileNames = array()) {
 		$folderHandle = opendir($folderName);
 		if (!is_resource($folderHandle)) {
 			Logger::logError("Couldn't open folder '{$folderName}' for backup!");

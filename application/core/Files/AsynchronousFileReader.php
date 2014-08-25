@@ -120,8 +120,7 @@ class AsynchronousFileReader {
 		array_push($this->requests, $request);
 	}
 
-	public function postDataTest(Request $request, $url, callable $function, $content, $compression = false,
-	                             $contentType = 'text/xml; charset=UTF-8;') {
+	public function postDataTest(Request $request, $url, callable $function, $content, $compression = false, $contentType = 'text/xml; charset=UTF-8;') {
 
 		$headers = array();
 		array_push($headers, 'Content-Type: ' . $contentType);
@@ -163,8 +162,7 @@ class AsynchronousFileReader {
 	 * @param bool     $compression
 	 * @param string   $contentType
 	 */
-	public function postData($url, callable $function, $content, $compression = false,
-	                         $contentType = 'text/xml; charset=UTF-8;') {
+	public function postData($url, callable $function, $content, $compression = false, $contentType = 'text/xml; charset=UTF-8;') {
 
 		$headers = array();
 		array_push($headers, 'Content-Type: ' . $contentType);

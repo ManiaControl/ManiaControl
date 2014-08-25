@@ -179,8 +179,7 @@ class PlayerActions {
 	 * @param int    $spectatorState
 	 * @param bool   $releaseSlot
 	 */
-	public function forcePlayerToSpectator($adminLogin, $targetLogin, $spectatorState = self::SPECTATOR_BUT_KEEP_SELECTABLE,
-	                                       $releaseSlot = true) {
+	public function forcePlayerToSpectator($adminLogin, $targetLogin, $spectatorState = self::SPECTATOR_BUT_KEEP_SELECTABLE, $releaseSlot = true) {
 		$admin = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
 		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_FORCE_PLAYER_SPEC)
 		) {

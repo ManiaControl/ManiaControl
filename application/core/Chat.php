@@ -208,8 +208,7 @@ class Chat {
 	 * @param int         $minLevel
 	 * @param bool|string $prefix
 	 */
-	public function sendExceptionToAdmins(\Exception $exception, $minLevel = AuthenticationManager::AUTH_LEVEL_MODERATOR,
-	                                      $prefix = true) {
+	public function sendExceptionToAdmins(\Exception $exception, $minLevel = AuthenticationManager::AUTH_LEVEL_MODERATOR, $prefix = true) {
 		$format  = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_FORMAT_ERROR);
 		$message = $format . "Exception: '{$exception->getMessage()}' ({$exception->getCode()})";
 		$this->sendMessageToAdmins($message, $minLevel, $prefix);

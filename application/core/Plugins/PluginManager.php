@@ -475,8 +475,8 @@ class PluginManager {
 	public function fetchPluginList(callable $function) {
 		$url = ManiaControl::URL_WEBSERVICE . 'plugins';
 		$this->maniaControl->getFileReader()->loadFile($url, function ($dataJson, $error) use (&$function) {
-			                                    $data = json_decode($dataJson);
-			                                    call_user_func($function, $data, $error);
-		                                    });
+			$data = json_decode($dataJson);
+			call_user_func($function, $data, $error);
+		});
 	}
 }

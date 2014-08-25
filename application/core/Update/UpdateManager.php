@@ -141,18 +141,18 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		$url           = ManiaControl::URL_WEBSERVICE . 'versions?current=1&channel=' . $updateChannel;
 
 		$this->maniaControl->getFileReader()->loadFile($url, function ($dataJson, $error) use (&$function) {
-			                                    if ($error) {
-				                                    Logger::logError('Error on UpdateCheck: ' . $error);
-				                                    return;
-			                                    }
-			                                    $versions = json_decode($dataJson);
-			                                    if (!$versions || !isset($versions[0])) {
-				                                    call_user_func($function);
-			                                    } else {
-				                                    $updateData = new UpdateData($versions[0]);
-				                                    call_user_func($function, $updateData);
-			                                    }
-		                                    });
+			if ($error) {
+				Logger::logError('Error on UpdateCheck: ' . $error);
+				return;
+			}
+			$versions = json_decode($dataJson);
+			if (!$versions || !isset($versions[0])) {
+				call_user_func($function);
+			} else {
+				$updateData = new UpdateData($versions[0]);
+				call_user_func($function, $updateData);
+			}
+		});
 	}
 
 	/**
@@ -329,66 +329,66 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 
 		$updateData = $this->coreUpdateData;
 		$this->maniaControl->getFileReader()->loadFile($updateData->url, function ($updateFileContent, $error) use (
-			                                    $updateData, &$player
-		                                    ) {
-			                                    if (!$updateFileContent || $error) {
-				                                    $message = "Update failed: Couldn't load Update zip! {$error}";
-				                                    if ($player) {
-					                                    $this->maniaControl->getChat()->sendError($message, $player);
-				                                    }
-				                                    Logger::logError($message);
-				                                    return;
-			                                    }
+			$updateData, &$player
+		) {
+			if (!$updateFileContent || $error) {
+				$message = "Update failed: Couldn't load Update zip! {$error}";
+				if ($player) {
+					$this->maniaControl->getChat()->sendError($message, $player);
+				}
+				Logger::logError($message);
+				return;
+			}
 
-			                                    $tempDir = FileUtil::getTempFolder();
-			                                    if (!$tempDir) {
-				                                    $message = "Update failed: Can't save Update zip!";
-				                                    if ($player) {
-					                                    $this->maniaControl->getChat()->sendError($message, $player);
-				                                    }
-				                                    Logger::logError($message);
-				                                    return;
-			                                    }
-			                                    $updateFileName = $tempDir . basename($updateData->url);
+			$tempDir = FileUtil::getTempFolder();
+			if (!$tempDir) {
+				$message = "Update failed: Can't save Update zip!";
+				if ($player) {
+					$this->maniaControl->getChat()->sendError($message, $player);
+				}
+				Logger::logError($message);
+				return;
+			}
+			$updateFileName = $tempDir . basename($updateData->url);
 
-			                                    $bytes = file_put_contents($updateFileName, $updateFileContent);
-			                                    if (!$bytes || $bytes <= 0) {
-				                                    $message = "Update failed: Couldn't save Update zip!";
-				                                    if ($player) {
-					                                    $this->maniaControl->getChat()->sendError($message, $player);
-				                                    }
-				                                    Logger::logError($message);
-				                                    return;
-			                                    }
+			$bytes = file_put_contents($updateFileName, $updateFileContent);
+			if (!$bytes || $bytes <= 0) {
+				$message = "Update failed: Couldn't save Update zip!";
+				if ($player) {
+					$this->maniaControl->getChat()->sendError($message, $player);
+				}
+				Logger::logError($message);
+				return;
+			}
 
-			                                    $zip    = new \ZipArchive();
-			                                    $result = $zip->open($updateFileName);
-			                                    if ($result !== true) {
-				                                    $message = "Update failed: Couldn't open Update Zip. ({$result})";
-				                                    if ($player) {
-					                                    $this->maniaControl->getChat()->sendError($message, $player);
-				                                    }
-				                                    Logger::logError($message);
-				                                    unlink($updateFileName);
-				                                    return;
-			                                    }
+			$zip    = new \ZipArchive();
+			$result = $zip->open($updateFileName);
+			if ($result !== true) {
+				$message = "Update failed: Couldn't open Update Zip. ({$result})";
+				if ($player) {
+					$this->maniaControl->getChat()->sendError($message, $player);
+				}
+				Logger::logError($message);
+				unlink($updateFileName);
+				return;
+			}
 
-			                                    $zip->extractTo(MANIACONTROL_PATH);
-			                                    $zip->close();
-			                                    unlink($updateFileName);
-			                                    FileUtil::deleteTempFolder();
+			$zip->extractTo(MANIACONTROL_PATH);
+			$zip->close();
+			unlink($updateFileName);
+			FileUtil::deleteTempFolder();
 
-			                                    // Set the Nightly Build Date
-			                                    $this->setNightlyBuildDate($updateData->releaseDate);
+			// Set the Nightly Build Date
+			$this->setNightlyBuildDate($updateData->releaseDate);
 
-			                                    $message = 'Update finished!';
-			                                    if ($player) {
-				                                    $this->maniaControl->getChat()->sendSuccess($message, $player);
-			                                    }
-			                                    Logger::log($message);
+			$message = 'Update finished!';
+			if ($player) {
+				$this->maniaControl->getChat()->sendSuccess($message, $player);
+			}
+			Logger::log($message);
 
-			                                    $this->maniaControl->restart();
-		                                    });
+			$this->maniaControl->restart();
+		});
 
 		return true;
 	}
