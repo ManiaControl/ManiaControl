@@ -20,7 +20,7 @@ abstract class FileUtil {
 	 * @see \ManiaControl\Utils\WebReader::loadUrl()
 	 */
 	public static function loadFile($url) {
-		$response = WebReader::loadUrl($url);
+		$response = WebReader::getUrl($url);
 		return $response->getContent();
 	}
 

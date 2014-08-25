@@ -202,7 +202,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 	 */
 	public function getPluginsUpdates() {
 		$url        = ManiaControl::URL_WEBSERVICE . 'plugins';
-		$response   = WebReader::loadUrl($url);
+		$response   = WebReader::getUrl($url);
 		$dataJson   = $response->getContent();
 		$pluginData = json_decode($dataJson);
 		if (!$pluginData || empty($pluginData)) {
@@ -386,7 +386,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 		/** @var Plugin $pluginClass */
 		$pluginId      = $pluginClass::getId();
 		$url           = ManiaControl::URL_WEBSERVICE . 'plugins/' . $pluginId;
-		$response      = WebReader::loadUrl($url);
+		$response      = WebReader::getUrl($url);
 		$dataJson      = $response->getContent();
 		$pluginVersion = json_decode($dataJson);
 		if (!$pluginVersion) {

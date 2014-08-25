@@ -149,7 +149,7 @@ class ErrorHandler {
 			$info = base64_encode($json);
 
 			$url      = ManiaControl::URL_WEBSERVICE . 'errorreport?error=' . urlencode($info);
-			$response = WebReader::loadUrl($url);
+			$response = WebReader::getUrl($url);
 			$content  = $response->getContent();
 			$success  = json_decode($content);
 			if ($success) {
