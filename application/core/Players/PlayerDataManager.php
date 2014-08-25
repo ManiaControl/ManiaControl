@@ -14,6 +14,9 @@ use ManiaControl\Utils\ClassUtil;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class PlayerDataManager {
+	/*
+	 * Constants
+	 */
 	const TABLE_PLAYERDATAMETADATA = 'mc_playerdata_metadata';
 	const TABLE_PLAYERDATA         = 'mc_playerdata';
 	const TYPE_STRING              = 'string';
@@ -32,9 +35,9 @@ class PlayerDataManager {
 	private $storedData = array();
 
 	/**
-	 * Construct player manager
+	 * Construct a new player manager instance
 	 *
-	 * @param \ManiaControl\ManiaControl $maniaControl
+	 * @param ManiaControl $maniaControl
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
@@ -234,7 +237,7 @@ class PlayerDataManager {
 		$dataStatement->store_result();
 		if ($dataStatement->num_rows <= 0) {
 			$this->setPlayerData($object, $dataName, $player, $meta->defaultValue, $serverIndex);
-			return $meta->default;
+			return $meta->defaultValue;
 		}
 		$dataStatement->bind_result($value);
 		$dataStatement->fetch();
@@ -242,11 +245,12 @@ class PlayerDataManager {
 		$dataStatement->close();
 		$data = $this->castSetting($meta->type, $value);
 
-		//Store setting in the ram
+		// Store setting in the ram
 		if (!isset($this->storedData[$player->index])) {
 			$this->storedData[$player->index] = array();
 		}
 		$this->storedData[$player->index][$meta->dataId] = $data;
+
 		return $data;
 	}
 
