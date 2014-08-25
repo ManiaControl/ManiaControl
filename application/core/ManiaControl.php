@@ -53,68 +53,89 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	/*
 	 * Public properties
 	 */
-	/** @var ActionsMenu $actionsMenu */
-	/** @deprecated see getActionsMenu() */
+	/** @var ActionsMenu $actionsMenu
+	 * @deprecated see getActionsMenu()
+	 */
 	public $actionsMenu = null;
-	/** @var AuthenticationManager $authenticationManager */
-	/** @deprecated see getAuthenticationManager() */
+	/** @var AuthenticationManager $authenticationManager
+	 * @deprecated see getAuthenticationManager()
+	 */
 	public $authenticationManager = null;
-	/** @var CallbackManager $callbackManager */
-	/** @deprecated see getCallbackManager() */
+	/** @var CallbackManager $callbackManager
+	 * @deprecated see getCallbackManager()
+	 */
 	public $callbackManager = null;
-	/** @var Chat $chat */
-	/** @deprecated see getChat() */
+	/** @var Chat $chat
+	 * @deprecated see getChat()
+	 */
 	public $chat = null;
-	/** @var \SimpleXMLElement $config */
-	/** @deprecated see getConfig() */
+	/** @var \SimpleXMLElement $config
+	 * @deprecated see getConfig()
+	 */
 	public $config = null;
-	/** @var Configurator $configurator */
-	/** @deprecated see getConfigurator() */
+	/** @var Configurator $configurator
+	 * @deprecated see getConfigurator()
+	 */
 	public $configurator = null;
-	/** @var Connection $client */
-	/** @deprecated see getClient() */
+	/** @var Connection $client
+	 * @deprecated see getClient()
+	 */
 	public $client = null;
-	/** @var CommandManager $commandManager */
-	/** @deprecated see getCommandManager() */
+	/** @var CommandManager $commandManager
+	 * @deprecated see getCommandManager()
+	 */
 	public $commandManager = null;
-	/** @var Database $database */
-	/** @deprecated see getDatabase() */
+	/** @var Database $database
+	 * @deprecated see getDatabase()
+	 */
 	public $database = null;
-	/** @var ManialinkManager $manialinkManager */
-	/** @deprecated see getManialinkManager */
+	/** @var ManialinkManager $manialinkManager
+	 * @deprecated see getManialinkManager
+	 */
 	public $manialinkManager = null;
-	/** @var MapManager $mapManager */
-	/** @deprecated see getMapManager() */
+	/** @var MapManager $mapManager
+	 * @deprecated see getMapManager()
+	 */
 	public $mapManager = null;
-	/** @var PlayerManager $playerManager */
-	/** @deprecated see getPlayerManager() */
+	/** @var PlayerManager $playerManager
+	 * @deprecated see getPlayerManager()
+	 */
 	public $playerManager = null;
-	/** @var PluginManager $pluginManager */
-	/** @deprecated see getPluginManager() */
+	/** @var PluginManager $pluginManager
+	 * @deprecated see getPluginManager()
+	 */
 	public $pluginManager = null;
-	/** @var Server $server */
-	/** @deprecated see getServer() */
+	/** @var Server $server
+	 * @deprecated see getServer()
+	 */
 	public $server = null;
-	/** @var SettingManager $settingManager */
-	/** @deprecated see getSettingManager() */
+	/** @var SettingManager $settingManager
+	 * @deprecated see getSettingManager()
+	 */
 	public $settingManager = null;
-	/** @var StatisticManager $statisticManager */
-	/** @deprecated see getStatisticManager() */
+	/** @var StatisticManager $statisticManager
+	 * @deprecated see getStatisticManager()
+	 */
 	public $statisticManager = null;
-	/** @var UpdateManager $updateManager */
-	/** @deprecated see getUpdateManager() */
+	/** @var UpdateManager $updateManager
+	 * @deprecated see getUpdateManager()
+	 */
 	public $updateManager = null;
-	/** @var ErrorHandler $errorHandler */
-	/** @deprecated see getErrorHandler() */
+	/** @var ErrorHandler $errorHandler
+	 * @deprecated see getErrorHandler()
+	 */
 	public $errorHandler = null;
-	/** @var TimerManager $timerManager */
-	/** @deprecated see getTimerManager() */
+	/** @var TimerManager $timerManager
+	 * @deprecated see getTimerManager()
+	 */
 	public $timerManager = null;
-	/** @var AsynchronousFileReader $fileReader */
-	/** @deprecated see getFileReader() */
+	/** @var AsynchronousFileReader $fileReader
+	 * @deprecated see getFileReader()
+	 */
 	public $fileReader = null;
-	/** @var BillManager $billManager */
-	/** @deprecated see getBillManager() */
+	/** @var BillManager $billManager
+	 * @deprecated see getBillManager()
+	 */
 	public $billManager = null;
 
 	/*
