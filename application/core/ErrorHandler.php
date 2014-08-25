@@ -70,8 +70,7 @@ class ErrorHandler {
 	 * @param bool   $onShutdown
 	 * @return bool
 	 */
-	public function handleError($errorNumber, $errorString, $errorFile = null, $errorLine = -1, array $errorContext = array(),
-	                            $onShutdown = false) {
+	public function handleError($errorNumber, $errorString, $errorFile = null, $errorLine = -1, array $errorContext = array(), $onShutdown = false) {
 		$suppressed = (error_reporting() === 0);
 		if ($suppressed && !self::LOG_SUPPRESSED_ERRORS) {
 			return false;
@@ -459,11 +458,10 @@ class ErrorHandler {
 				$report['ManiaControlVersion'] = ManiaControl::VERSION;
 			}
 
-			$json = json_encode(Formatter::utf8($report));
-			$info = base64_encode($json);
+			$errorReport = json_encode(Formatter::utf8($report));
 
-			$url      = ManiaControl::URL_WEBSERVICE . 'errorreport?error=' . urlencode($info);
-			$response = WebReader::loadUrl($url);
+			$url      = ManiaControl::URL_WEBSERVICE . 'errorreport';
+			$response = WebReader::postUrl($url, $errorReport);
 			$content  = $response->getContent();
 			$success  = json_decode($content);
 			if ($success) {
