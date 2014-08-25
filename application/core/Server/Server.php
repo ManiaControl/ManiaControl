@@ -342,9 +342,6 @@ class Server implements CallbackListener {
 	 * @return bool
 	 */
 	public function checkAccess($directory) {
-		if (!$directory) {
-			return false;
-		}
 		return (is_dir($directory) && is_writable($directory));
 	}
 
