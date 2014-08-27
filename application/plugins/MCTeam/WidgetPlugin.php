@@ -211,7 +211,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$frame->add($backgroundQuad);
 		$backgroundQuad->setSize($width, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-		$backgroundQuad->addMapInfoFeature();
+		//$backgroundQuad->addMapInfoFeature();
 
 		$map = $this->maniaControl->getMapManager()->getCurrentMap();
 
