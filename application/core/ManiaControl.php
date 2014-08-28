@@ -211,26 +211,24 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	 * @param bool   $errorPrefix
 	 */
 	public function quit($message = null, $errorPrefix = false) {
-		if ($this->getCallbackManager()) {
-			// OnShutdown callback
-			$this->getCallbackManager()->triggerCallback(Callbacks::ONSHUTDOWN);
-		}
-
-		if ($this->getChat()) {
-			// Announce quit
-			$this->getChat()->sendInformation('ManiaControl shutting down.');
-		}
-
 		if ($this->getClient()) {
-			try {
-				$this->getClient()->sendHideManialinkPage();
-			} catch (TransportException $e) {
-				$this->getErrorHandler()->handleException($e, false);
+			if ($this->getCallbackManager()) {
+				// OnShutdown callback
+				$this->getCallbackManager()->triggerCallback(Callbacks::ONSHUTDOWN);
 			}
-		}
 
-		Connection::delete($this->getClient());
-		$this->client = null;
+			if ($this->getChat()) {
+				// Announce quit
+				$this->getChat()->sendInformation('ManiaControl shutting down.');
+			}
+
+			// Hide UI
+			$this->getClient()->sendHideManialinkPage();
+
+			// Delete client
+			Connection::delete($this->getClient());
+			$this->client = null;
+		}
 
 		SystemUtil::quit($message, $errorPrefix);
 	}
@@ -242,6 +240,24 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	 */
 	public function getClient() {
 		return $this->client;
+	}
+
+	/**
+	 * Return the callback manager
+	 *
+	 * @return CallbackManager
+	 */
+	public function getCallbackManager() {
+		return $this->callbackManager;
+	}
+
+	/**
+	 * Return the chat
+	 *
+	 * @return Chat
+	 */
+	public function getChat() {
+		return $this->chat;
 	}
 
 	/**
@@ -386,8 +402,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	 * Check connection
 	 */
 	public function checkConnection() {
-		if ($this->getClient()->getIdleTime() > 180
-		) {
+		if ($this->getClient()->getIdleTime() > 180) {
 			$this->getClient()->getServerName();
 		}
 	}
@@ -404,23 +419,13 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	}
 
 	/**
-	 * Return the chat
-	 *
-	 * @return Chat
-	 */
-	public function getChat() {
-		return $this->chat;
-	}
-
-	/**
 	 * Handle Restart AdminCommand
 	 *
 	 * @param array  $chatCallback
 	 * @param Player $player
 	 */
 	public function commandRestart(array $chatCallback, Player $player) {
-		if (!$this->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_RESTART)
-		) {
+		if (!$this->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_RESTART)) {
 			$this->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
@@ -433,34 +438,15 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	 * @param string $message
 	 */
 	public function restart($message = null) {
-		// Shutdown callback
-		$this->getCallbackManager()->triggerCallback(Callbacks::ONSHUTDOWN);
-
 		// Announce restart
-		if ($message) {
-			Logger::log($message);
-		}
-		try {
-			$this->getChat()->sendInformation('Restarting ManiaControl...');
-			$this->getClient()->sendHideManialinkPage();
-		} catch (TransportException $exception) {
-		}
-		Logger::log('Restarting ManiaControl!');
+		$this->getChat()->sendInformation('Restarting ManiaControl...');
+		Logger::log('Restarting ManiaControl... ' . $message);
 
 		// Start new instance
 		SystemUtil::restart();
 
 		// Quit old instance
 		$this->quit('Quitting ManiaControl to restart.');
-	}
-
-	/**
-	 * Return the callback manager
-	 *
-	 * @return CallbackManager
-	 */
-	public function getCallbackManager() {
-		return $this->callbackManager;
 	}
 
 	/**
@@ -492,44 +478,47 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	public function run() {
 		Logger::log('Starting ManiaControl v' . self::VERSION . '!');
 
-		// Connect to server
 		try {
+			// Connect to server
 			$this->connect();
-		} catch (TransportException $e) {
-			$this->quit($e->getMessage(), true);
+
+			// Check if the version of the server is high enough
+			$version = $this->getClient()->getVersion();
+			if ($version->build < self::MIN_DEDIVERSION) {
+				$this->quit("The Server has Version '{$version->build}', while at least '" . self::MIN_DEDIVERSION . "' is required!", true);
+			}
+
+			// Listen for shutdown
+			$this->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_SERVERSTOP, $this, 'handleServerStopCallback');
+
+			// OnInit callback
+			$this->getCallbackManager()->triggerCallback(Callbacks::ONINIT);
+
+			// Load plugins
+			$this->getPluginManager()->loadPlugins();
+			$this->getUpdateManager()->getPluginUpdateManager()->checkPluginsUpdate();
+
+			// AfterInit callback
+			$this->getCallbackManager()->triggerCallback(Callbacks::AFTERINIT);
+
+			// Loading finished
+			Logger::log('Loading completed!');
+			Logger::log('Link: ' . $this->getServer()->getJoinLink());
+			$this->getChat()->sendInformation('ManiaControl v' . self::VERSION . ' successfully started!');
+
+			// Main loop
+			while (!$this->requestQuitMessage) {
+				$this->loop();
+			}
+
+			// Shutdown
+			$this->quit($this->requestQuitMessage);
+
+		} catch (TransportException $exception) {
+			Logger::logError('Connection interrupted!');
+			$this->getErrorHandler()->handleException($exception);
+			SystemUtil::quit($exception->getMessage(), true);
 		}
-
-		// Check if the version of the server is high enough
-		$version = $this->getClient()->getVersion();
-		if ($version->build < self::MIN_DEDIVERSION) {
-			$this->quit("The Server has Version '{$version->build}', while at least '" . self::MIN_DEDIVERSION . "' is required!", true);
-		}
-
-		// Listen for shutdown
-		$this->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_SERVERSTOP, $this, 'handleServerStopCallback');
-
-		// OnInit callback
-		$this->getCallbackManager()->triggerCallback(Callbacks::ONINIT);
-
-		// Load plugins
-		$this->getPluginManager()->loadPlugins();
-		$this->getUpdateManager()->getPluginUpdateManager()->checkPluginsUpdate();
-
-		// AfterInit callback
-		$this->getCallbackManager()->triggerCallback(Callbacks::AFTERINIT);
-
-		// Loading finished
-		Logger::log('Loading completed!');
-		Logger::log('Link: ' . $this->getServer()->getJoinLink());
-		$this->getChat()->sendInformation('ManiaControl v' . self::VERSION . ' successfully started!');
-
-		// Main loop
-		while (!$this->requestQuitMessage) {
-			$this->loop();
-		}
-
-		// Shutdown
-		$this->quit($this->requestQuitMessage);
 	}
 
 	/**
@@ -555,8 +544,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 		$this->getClient()->enableCallbacks(true);
 
 		// Wait for server to be ready
-		if (!$this->getServer()->waitForStatus(4)
-		) {
+		if (!$this->getServer()->waitForStatus(4)) {
 			$this->quit("Server couldn't get ready!");
 		}
 
@@ -606,14 +594,10 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 		// Extend script timeout
 		set_time_limit(self::SCRIPT_TIMEOUT);
 
-		try {
-			$this->getCallbackManager()->manageCallbacks();
-		} catch (TransportException $e) {
-			Logger::logError('Connection interrupted!');
-			$this->quit($e->getMessage(), true);
-		}
+		// Manage callbacks
+		$this->getCallbackManager()->manageCallbacks();
 
-		// Manage FileReader
+		// Manage async file reader
 		$this->getFileReader()->appendData();
 
 		// Yield for next tick
