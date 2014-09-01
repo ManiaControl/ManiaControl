@@ -217,13 +217,19 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 				$this->getCallbackManager()->triggerCallback(Callbacks::ONSHUTDOWN);
 			}
 
-			if ($this->getChat()) {
+			if ($chat = $this->getChat()) {
 				// Announce quit
-				$this->getChat()->sendInformation('ManiaControl shutting down.');
+				try {
+					$chat->sendInformation('ManiaControl shutting down.');
+				} catch (TransportException $e) {
+				}
 			}
 
 			// Hide UI
-			$this->getClient()->sendHideManialinkPage();
+			try {
+				$this->getClient()->sendHideManialinkPage();
+			} catch (TransportException $e) {
+			}
 
 			// Delete client
 			Connection::delete($this->getClient());
@@ -439,7 +445,10 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	 */
 	public function restart($message = null) {
 		// Announce restart
-		$this->getChat()->sendInformation('Restarting ManiaControl...');
+		try {
+			$this->getChat()->sendInformation('Restarting ManiaControl...');
+		} catch (TransportException $e) {
+		}
 		Logger::log('Restarting ManiaControl... ' . $message);
 
 		// Start new instance

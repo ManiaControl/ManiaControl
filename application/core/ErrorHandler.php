@@ -2,7 +2,6 @@
 
 namespace ManiaControl;
 
-use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Plugins\PluginManager;
 use ManiaControl\Update\UpdateManager;
 use ManiaControl\Utils\Formatter;
@@ -140,7 +139,7 @@ class ErrorHandler {
 
 			if ($this->maniaControl->getSettingManager() && $this->maniaControl->getUpdateManager()) {
 				$report['UpdateChannel']       = $this->maniaControl->getSettingManager()->getSettingValue($this->maniaControl->getUpdateManager(), UpdateManager::SETTING_UPDATECHECK_CHANNEL);
-				$report['ManiaControlVersion'] = ManiaControl::VERSION . ' ' . $this->maniaControl->getUpdateManager()->getNightlyBuildDate();
+				$report['ManiaControlVersion'] = ManiaControl::VERSION . ' ' . $this->maniaControl->getUpdateManager()->getBuildDate();
 			} else {
 				$report['ManiaControlVersion'] = ManiaControl::VERSION;
 			}
@@ -427,13 +426,13 @@ class ErrorHandler {
 			$report['OperatingSystem'] = php_uname();
 			$report['PHPVersion']      = phpversion();
 
-			if ($this->maniaControl->getServer()) {
-				$report['ServerLogin'] = $this->maniaControl->getServer()->login;
+			if ($server = $this->maniaControl->getServer()) {
+				$report['ServerLogin'] = $server->login;
 			}
 
-			if ($this->maniaControl->getSettingManager() && $this->maniaControl->getUpdateManager()) {
-				$report['UpdateChannel']       = $this->maniaControl->getSettingManager()->getSettingValue($this->maniaControl->getUpdateManager(), UpdateManager::SETTING_UPDATECHECK_CHANNEL);
-				$report['ManiaControlVersion'] = ManiaControl::VERSION . ' #' . $this->maniaControl->getUpdateManager()->getNightlyBuildDate();
+			if ($settingManager = $this->maniaControl->getSettingManager() && $updateManager = $this->maniaControl->getUpdateManager()) {
+				$report['UpdateChannel']       = $settingManager->getSettingValue($updateManager, UpdateManager::SETTING_UPDATECHECK_CHANNEL);
+				$report['ManiaControlVersion'] = ManiaControl::VERSION . ' #' . $updateManager->getBuildDate();
 			} else {
 				$report['ManiaControlVersion'] = ManiaControl::VERSION;
 			}
@@ -455,7 +454,10 @@ class ErrorHandler {
 			if ($this->shouldRestart()) {
 				$this->maniaControl->restart();
 			}
-			$this->maniaControl->quit('Quitting ManiaControl after Exception.');
+			try {
+				$this->maniaControl->quit('Quitting ManiaControl after Exception.');
+			} catch (TransportException $e) {
+			}
 		}
 	}
 
