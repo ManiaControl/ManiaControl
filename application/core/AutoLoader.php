@@ -34,18 +34,14 @@ abstract class AutoLoader {
 			return;
 		}
 
-		// Plugin file
-		$pluginFilePath = MANIACONTROL_PATH . 'plugins' . DIRECTORY_SEPARATOR . $classPath . '.php';
-		if (file_exists($pluginFilePath)) {
-			include_once $pluginFilePath;
-			return;
-		}
-
-		// Lib file
-		$libFilePath = MANIACONTROL_PATH . 'libs' . DIRECTORY_SEPARATOR . $classPath . '.php';
-		if (file_exists($libFilePath)) {
-			include_once $libFilePath;
-			return;
+		// Other file
+		$paths = array('plugins', 'libs', 'libs' . DIRECTORY_SEPARATOR . 'curl-easy');
+		foreach ($paths as $path) {
+			$filePath = MANIACONTROL_PATH . $path . DIRECTORY_SEPARATOR . $classPath . '.php';
+			if (file_exists($filePath)) {
+				include_once $filePath;
+				return;
+			}
 		}
 	}
 }
