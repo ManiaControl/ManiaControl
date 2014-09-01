@@ -24,6 +24,9 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	/*
 	 * Constants
 	 */
+	const CHANNEL_RELEASE                = 'release';
+	const CHANNEL_BETA                   = 'beta';
+	const CHANNEL_NIGHTLY                = 'nightly';
 	const SETTING_ENABLE_UPDATECHECK     = 'Enable Automatic Core Update Check';
 	const SETTING_UPDATECHECK_INTERVAL   = 'Core Update Check Interval (Hours)';
 	const SETTING_UPDATECHECK_CHANNEL    = 'Core Update Channel (release, beta, nightly)';
@@ -31,15 +34,14 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	const SETTING_AUTO_UPDATE            = 'Perform update automatically';
 	const SETTING_PERMISSION_UPDATE      = 'Update Core';
 	const SETTING_PERMISSION_UPDATECHECK = 'Check Core Update';
-	const CHANNEL_RELEASE                = 'release';
-	const CHANNEL_BETA                   = 'beta';
-	const CHANNEL_NIGHTLY                = 'nightly';
+	const BUILD_DATE_FILE_NAME           = 'build_date.txt';
 
 	/*
 	 * Public properties
 	 */
-	/** @var PluginUpdateManager $pluginUpdateManager */
-	/** @deprecated see getPluginUpdateManager() */
+	/** @var PluginUpdateManager $pluginUpdateManager
+	 * @deprecated see getPluginUpdateManager()
+	 */
 	public $pluginUpdateManager = null;
 
 	/*
@@ -210,7 +212,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		}
 
 		$isNightly = $this->isNightlyUpdateChannel();
-		$buildDate = $this->getNightlyBuildDate();
+		$buildDate = $this->getBuildDate();
 
 		if ($isNightly || $buildDate) {
 			return $updateData->isNewerThan($buildDate);
@@ -233,13 +235,13 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	}
 
 	/**
-	 * Get the Build Date of the local Nightly Build Version
+	 * Get the build date of the local version
 	 *
 	 * @return string
 	 */
-	public function getNightlyBuildDate() {
+	public function getBuildDate() {
 		if (!$this->currentBuildDate) {
-			$nightlyBuildDateFile = MANIACONTROL_PATH . 'core' . DIRECTORY_SEPARATOR . 'nightly_build.txt';
+			$nightlyBuildDateFile = MANIACONTROL_PATH . 'core' . DIRECTORY_SEPARATOR . self::BUILD_DATE_FILE_NAME;
 			if (file_exists($nightlyBuildDateFile)) {
 				$this->currentBuildDate = file_get_contents($nightlyBuildDateFile);
 			}
@@ -378,8 +380,8 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			unlink($updateFileName);
 			FileUtil::deleteTempFolder();
 
-			// Set the Nightly Build Date
-			$this->setNightlyBuildDate($updateData->releaseDate);
+			// Set the build date
+			$this->setBuildDate($updateData->releaseDate);
 
 			$message = 'Update finished!';
 			if ($player) {
@@ -394,13 +396,13 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	}
 
 	/**
-	 * Set the Build Date of the local Nightly Build Version
+	 * Set the build date version
 	 *
 	 * @param string $date
 	 * @return bool
 	 */
-	public function setNightlyBuildDate($date) {
-		$nightlyBuildDateFile   = MANIACONTROL_PATH . 'core' . DIRECTORY_SEPARATOR . 'nightly_build.txt';
+	public function setBuildDate($date) {
+		$nightlyBuildDateFile   = MANIACONTROL_PATH . 'core' . DIRECTORY_SEPARATOR . self::BUILD_DATE_FILE_NAME;
 		$success                = (bool)file_put_contents($nightlyBuildDateFile, $date);
 		$this->currentBuildDate = $date;
 		return $success;
@@ -463,7 +465,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 
 			$isNightly = $this->isNightlyUpdateChannel();
 			if ($isNightly) {
-				$buildDate = $this->getNightlyBuildDate();
+				$buildDate = $this->getBuildDate();
 				if ($buildDate) {
 					if ($updateData->isNewerThan($buildDate)) {
 						$this->maniaControl->getChat()->sendInformation("No new Build available! (Current Build: '{$buildDate}')", $player->login);
