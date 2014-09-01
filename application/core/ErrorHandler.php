@@ -430,8 +430,8 @@ class ErrorHandler {
 				$report['ServerLogin'] = $server->login;
 			}
 
-			if ($settingManager = $this->maniaControl->getSettingManager() && $updateManager = $this->maniaControl->getUpdateManager()) {
-				$report['UpdateChannel']       = $settingManager->getSettingValue($updateManager, UpdateManager::SETTING_UPDATECHECK_CHANNEL);
+			if (($settingManager = $this->maniaControl->getSettingManager()) && ($updateManager = $this->maniaControl->getUpdateManager())) {
+				$report['UpdateChannel']       = $settingManager->getSettingValue($updateManager, $updateManager::SETTING_UPDATECHECK_CHANNEL);
 				$report['ManiaControlVersion'] = ManiaControl::VERSION . ' #' . $updateManager->getBuildDate();
 			} else {
 				$report['ManiaControlVersion'] = ManiaControl::VERSION;
