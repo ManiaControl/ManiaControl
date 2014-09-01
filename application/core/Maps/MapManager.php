@@ -274,6 +274,7 @@ class MapManager implements CallbackListener {
 		try {
 			$this->maniaControl->getClient()->removeMap($map->fileName);
 		} catch (NotInListException $e) {
+		} catch (FileException $e) {
 		}
 
 		unset($this->maps[$uid]);
