@@ -578,12 +578,12 @@ class MapManager implements CallbackListener {
 	/**
 	 * Get's a Map by it's Mania-Exchange Id
 	 *
-	 * @param $mxId
+	 * @param int $mxId
 	 * @return Map
 	 */
 	public function getMapByMxId($mxId) {
 		foreach ($this->maps as $map) {
-			if ($map->mx->id == $mxId) {
+			if ($map->mx && $map->mx->id == $mxId) {
 				return $map;
 			}
 		}
