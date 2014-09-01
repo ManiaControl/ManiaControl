@@ -644,6 +644,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 					$this->maniaControl->getClient()->forceSpectator($adminLogin, PlayerActions::SPECTATOR_BUT_KEEP_SELECTABLE);
 					$this->maniaControl->getClient()->forceSpectatorTarget($adminLogin, $targetLogin, 1);
 				} catch (PlayerStateException $e) {
+				} catch (UnknownPlayerException $e) {
 				}
 				break;
 			case self::ACTION_OPEN_PLAYER_DETAILED:
