@@ -30,10 +30,11 @@ class BillManager implements CallbackListener {
 	 */
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
+	/** @var BillData[] $openBills */
 	private $openBills = array();
 
 	/**
-	 * Construct a new Bill Manager Instance
+	 * Construct a new Bill Manager instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */
@@ -45,7 +46,7 @@ class BillManager implements CallbackListener {
 	}
 
 	/**
-	 * Send a Bill to a Player
+	 * Send a bill to a player
 	 *
 	 * @param callable $function
 	 * @param Player   $player
@@ -55,13 +56,13 @@ class BillManager implements CallbackListener {
 	 * @return bool
 	 */
 	public function sendBill(callable $function, Player $player, $amount, $message, $receiver = '') {
-		$bill                   = $this->maniaControl->getClient()->sendBill($player->login, $amount, $message, $receiver);
-		$this->openBills[$bill] = new BillData($function, $player, $amount);
+		$billId                   = $this->maniaControl->getClient()->sendBill($player->login, $amount, $message, $receiver);
+		$this->openBills[$billId] = new BillData($function, $player, $amount);
 		return true;
 	}
 
 	/**
-	 * Send Planets from the server to a Player
+	 * Send planets from the server to a player
 	 *
 	 * @param callable $function
 	 * @param string   $receiverLogin
@@ -70,8 +71,8 @@ class BillManager implements CallbackListener {
 	 * @return bool
 	 */
 	public function sendPlanets(callable $function, $receiverLogin, $amount, $message) {
-		$bill                   = $this->maniaControl->getClient()->pay($receiverLogin, $amount, $message);
-		$this->openBills[$bill] = new BillData($function, $receiverLogin, $amount, true);
+		$billId                   = $this->maniaControl->getClient()->pay($receiverLogin, $amount, $message);
+		$this->openBills[$billId] = new BillData($function, $receiverLogin, $amount, true);
 		return true;
 	}
 
@@ -83,12 +84,11 @@ class BillManager implements CallbackListener {
 	 */
 	public function handleBillUpdated(array $callback) {
 		$billId = $callback[1][0];
-		if (!array_key_exists($billId, $this->openBills)) {
+		if (!isset($this->openBills[$billId])) {
 			return;
 		}
 		$billData = $this->openBills[$billId];
 
-		/** @var BillData $billData */
 		switch ($callback[1][1]) {
 			case Bill::STATE_PAYED:
 				if ($billData->pay) {
