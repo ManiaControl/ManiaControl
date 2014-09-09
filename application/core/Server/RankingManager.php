@@ -6,6 +6,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\ManiaControl;
+use ManiaControl\Maps\Map;
 use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
 
 /**
@@ -33,6 +34,7 @@ class RankingManager implements CallbackListener {
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_MODESCRIPTCALLBACK, $this, 'handleCallbacks');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_MODESCRIPTCALLBACKARRAY, $this, 'handleCallbacks');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::ONINIT, $this, 'onInit');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::BEGINMAP, $this, 'handleBeginMap');
 		//TODO won message at end of the map (disable as setting) (and public announce only all %50 (setting) players)
 	}
 
@@ -66,6 +68,15 @@ class RankingManager implements CallbackListener {
 				$this->updateRankings($callback[1]);
 				break;
 		}
+	}
+
+	/**
+	 * Clear the rankings on the Begin of a Map
+	 *
+	 * @param Map $map
+	 */
+	public function handleBeginMap(Map $map) {
+		$this->rankings = array();
 	}
 
 	/**
