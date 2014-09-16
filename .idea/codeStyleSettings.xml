@@ -16,8 +16,9 @@
           </value>
         </option>
         <option name="LINE_SEPARATOR" value="&#10;" />
-        <option name="RIGHT_MARGIN" value="130" />
+        <option name="RIGHT_MARGIN" value="200" />
         <PHPCodeStyleSettings>
+          <option name="ALIGN_KEY_VALUE_PAIRS" value="true" />
           <option name="ALIGN_PHPDOC_PARAM_NAMES" value="true" />
           <option name="ALIGN_PHPDOC_COMMENTS" value="true" />
           <option name="ALIGN_ASSIGNMENTS" value="true" />
@@ -26,6 +27,8 @@
           <option name="LOWER_CASE_BOOLEAN_CONST" value="true" />
           <option name="LOWER_CASE_NULL_CONST" value="true" />
           <option name="KEEP_RPAREN_AND_LBRACE_ON_ONE_LINE" value="true" />
+          <option name="ALIGN_CLASS_CONSTANTS" value="true" />
+          <option name="PHPDOC_USE_FQCN" value="true" />
         </PHPCodeStyleSettings>
         <XML>
           <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
@@ -48,6 +51,8 @@
           <option name="ALIGN_MULTILINE_BINARY_OPERATION" value="true" />
           <option name="ALIGN_MULTILINE_EXTENDS_LIST" value="true" />
           <option name="ALIGN_MULTILINE_ARRAY_INITIALIZER_EXPRESSION" value="true" />
+          <option name="ALIGN_GROUP_FIELD_DECLARATIONS" value="true" />
+          <option name="SPACE_AFTER_TYPE_CAST" value="true" />
           <option name="BINARY_OPERATION_SIGN_ON_NEXT_LINE" value="true" />
           <option name="IF_BRACE_FORCE" value="3" />
           <option name="DOWHILE_BRACE_FORCE" value="3" />
@@ -57,161 +62,11 @@
             <option name="USE_TAB_CHARACTER" value="true" />
             <option name="SMART_TABS" value="true" />
           </indentOptions>
-          <arrangement>
-            <groups>
-              <group>
-                <type>GETTERS_AND_SETTERS</type>
-                <order>KEEP</order>
-              </group>
-              <group>
-                <type>DEPENDENT_METHODS</type>
-                <order>DEPTH_FIRST</order>
-              </group>
-            </groups>
-            <rules>
-              <rule>
-                <match>
-                  <CONST />
-                </match>
-              </rule>
-              <rule>
-                <match>
-                  <AND>
-                    <FIELD />
-                    <PUBLIC />
-                    <STATIC />
-                  </AND>
-                </match>
-              </rule>
-              <rule>
-                <match>
-                  <AND>
-                    <FIELD />
-                    <PROTECTED />
-                    <STATIC />
-                  </AND>
-                </match>
-              </rule>
-              <rule>
-                <match>
-                  <AND>
-                    <FIELD />
-                    <PRIVATE />
-                    <STATIC />
-                  </AND>
-                </match>
-              </rule>
-              <rule>
-                <match>
-                  <AND>
-                    <FIELD />
-                    <PUBLIC />
-                  </AND>
-                </match>
-              </rule>
-              <rule>
-                <match>
-                  <AND>
-                    <FIELD />
-                    <PROTECTED />
-                  </AND>
-                </match>
-              </rule>
-              <rule>
-                <match>
-                  <AND>
-                    <FIELD />
-                    <PRIVATE />
-                  </AND>
-                </match>
-              </rule>
-              <rule>
-                <match>
-                  <CONSTRUCTOR />
-                </match>
-              </rule>
-              <rule>
-                <match>
-                  <AND>
-                    <METHOD />
-                    <PUBLIC />
-                    <STATIC />
-                  </AND>
-                </match>
-              </rule>
-              <rule>
-                <match>
-                  <AND>
-                    <METHOD />
-                    <PROTECTED />
-                    <STATIC />
-                  </AND>
-                </match>
-              </rule>
-              <rule>
-                <match>
-                  <AND>
-                    <METHOD />
-                    <PRIVATE />
-                    <STATIC />
-                  </AND>
-                </match>
-              </rule>
-              <rule>
-                <match>
-                  <AND>
-                    <METHOD />
-                    <PUBLIC />
-                  </AND>
-                </match>
-              </rule>
-              <rule>
-                <match>
-                  <AND>
-                    <METHOD />
-                    <PROTECTED />
-                  </AND>
-                </match>
-              </rule>
-              <rule>
-                <match>
-                  <AND>
-                    <METHOD />
-                    <PRIVATE />
-                  </AND>
-                </match>
-              </rule>
-              <rule>
-                <match>
-                  <TRAIT />
-                </match>
-              </rule>
-              <rule>
-                <match>
-                  <INTERFACE />
-                </match>
-              </rule>
-              <rule>
-                <match>
-                  <CLASS />
-                </match>
-              </rule>
-            </rules>
-          </arrangement>
         </codeStyleSettings>
         <codeStyleSettings language="XML">
           <indentOptions>
             <option name="USE_TAB_CHARACTER" value="true" />
           </indentOptions>
-          <arrangement>
-            <rules>
-              <rule>
-                <match>
-                  <NAME>xmlns:.*</NAME>
-                </match>
-              </rule>
-            </rules>
-          </arrangement>
         </codeStyleSettings>
       </value>
     </option>
