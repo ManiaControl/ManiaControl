@@ -1,5 +1,5 @@
 /.idea/
-/application/configs/server.xml
-/application/logs/
-/application/ManiaControl.log
-/application/ManiaControl.pid
+/configs/server.xml
+/logs/
+/ManiaControl.log
+/ManiaControl.pid
