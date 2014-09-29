@@ -1,6 +1,3 @@
-/.settings/
-/.buildpath
-/.project
 /.idea/
 /application/configs/server.xml
 /application/logs/
