@@ -125,7 +125,7 @@ class LibXmlRpcCallbacks implements CallbackListener {
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ONHIT, new PlayerHitStructure($this->maniaControl, $data));
 				break;
 			case 'LibXmlRpc_OnNearMiss':
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ONHIT, new NearMissStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ONNEARMISS, new NearMissStructure($this->maniaControl, $data));
 				break;
 			case 'LibXmlRpc_OnArmorEmpty':
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ONARMOREMPTY, new ArmorEmptyStructure($this->maniaControl, $data));

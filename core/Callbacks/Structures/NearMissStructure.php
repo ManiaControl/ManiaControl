@@ -16,6 +16,7 @@ class NearMissStructure {
 	private $maniaControl;
 
 	public function __construct(ManiaControl $maniaControl, $data) {
+		$this->maniaControl = $maniaControl;
 		$this->shooter  = $data[0];
 		$this->victim   = $data[1];
 		$this->weapon   = $data[2];
