@@ -84,6 +84,13 @@ interface Callbacks {
 	/** Returns if the GameMode has Warmup activated, returned after  param1 Scores */ //returned after TODO
 	const WARMUPSTATUS = 'Callbacks.WarmupStatus';
 
+	const ONSHOOT = 'Callbacks.OnShoot';
+
+	/** OnShoot Callback: PlayerHitStructure */
+	const ONHIT = 'Callbacks.OnHit';
+	/** OnNearMiss Callback: NearMissStructure */
+	const ONNEARMISS = 'Callbacks.OnNearMiss';
+
 	/*
 	 * TrackMania Callbacks
 	 */

@@ -2,6 +2,7 @@
 
 namespace ManiaControl\Callbacks;
 
+use ManiaControl\Callbacks\Structures\PlayerHitStructure;
 use ManiaControl\ManiaControl;
 
 /**
@@ -37,6 +38,7 @@ class LibXmlRpcCallbacks implements CallbackListener {
 	 * @param mixed  $data
 	 */
 	public function handleScriptCallback($name, $data) {
+		var_dump($name);
 		switch ($name) {
 			case 'LibXmlRpc_BeginMatch':
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::BEGINMATCH, $data[0]);
@@ -113,8 +115,16 @@ class LibXmlRpcCallbacks implements CallbackListener {
 			case 'LibXmlRpc_OnStunt':
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ONSTUNT, $data);
 				break;
+			case 'LibXmlRpc_OnShoot': //TODO testing
+				$player = $this->maniaControl->getPlayerManager()->getPlayer($data[0]);
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ONSHOOT, $player, $data[1]);
+				break;
+			case 'LibXmlRpc_OnHit':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ONHIT, new PlayerHitStructure($this->maniaControl, $data));
+				break;
 		}
 	}
+
 
 	/**
 	 * Trigger the Ranking of a Player
