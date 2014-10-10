@@ -6,7 +6,7 @@ namespace ManiaControl\Callbacks\Structures;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 
-class PlayerHitStructure {
+class ArmorEmptyStructure {
 	private $shooter;
 	private $victim;
 	private $damage;
@@ -24,7 +24,7 @@ class PlayerHitStructure {
 	}
 
 	/**
-	 * @return Player|null
+	 * @return Player
 	 */
 	public function getShooter() {
 		$shooter = $this->maniaControl->getPlayerManager()->getPlayer($this->shooter);
@@ -32,7 +32,7 @@ class PlayerHitStructure {
 	}
 
 	/**
-	 * @return Player|null
+	 * @return Player
 	 */
 	public function getVictim() {
 		$victim = $this->maniaControl->getPlayerManager()->getPlayer($this->victim);

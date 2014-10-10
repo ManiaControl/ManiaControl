@@ -23,7 +23,7 @@ class NearMissStructure {
 	}
 
 	/**
-	 * @return Player
+	 * @return Player|null
 	 */
 	public function getShooter() {
 		$shooter = $this->maniaControl->getPlayerManager()->getPlayer($this->shooter);
@@ -31,7 +31,7 @@ class NearMissStructure {
 	}
 
 	/**
-	 * @return Player
+	 * @return Player|null
 	 */
 	public function getVictim() {
 		$victim = $this->maniaControl->getPlayerManager()->getPlayer($this->victim);
