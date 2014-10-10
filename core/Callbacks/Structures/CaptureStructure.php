@@ -3,13 +3,17 @@
 namespace ManiaControl\Callbacks\Structures;
 
 
+use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 
 class CaptureStructure {
 	private $playerArray;
+	/** @var ManiaControl $maniaControl */
+	private $maniaControl;
 
-	public function __construct($maniaControl, $data) {
-		$this->playerArray = $data;
+	public function __construct(ManiaControl $maniaControl, $data) {
+		$this->maniaControl = $maniaControl;
+		$this->playerArray  = $data;
 	}
 
 	/**
@@ -23,7 +27,10 @@ class CaptureStructure {
 	 * @return Player[]
 	 */
 	public function getPlayerArray() {
-		//TODO build array with player objects
-		return $this->playerArray;
+		$playerArray = array();
+		foreach ($this->playerArray as $login) {
+			$playerArray[$login] = $this->maniaControl->getPlayerManager()->getPlayer($this->playerArray);
+		}
+		return $playerArray;
 	}
 }
