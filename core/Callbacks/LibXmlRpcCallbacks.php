@@ -41,7 +41,6 @@ class LibXmlRpcCallbacks implements CallbackListener {
 	 * @param mixed  $data
 	 */
 	public function handleScriptCallback($name, $data) {
-		var_dump($name);
 		switch ($name) {
 			case 'LibXmlRpc_BeginMatch':
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::BEGINMATCH, $data[0]);
