@@ -49,7 +49,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 	 */
 	/** @var ManiaControl $maniaControl * */
 	private $maniaControl = null;
-	private $recordCount = 0;
+	private $recordCount  = 0;
 
 	/**
 	 * @see \ManiaControl\Plugins\Plugin::prepare()
@@ -121,6 +121,23 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		$this->resetRanks();
 	}
 
+	/**
+	 * Create necessary database tables
+	 */
+	private function initTables() {
+		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
+		$query  = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_RANK . "` (
+				`PlayerIndex` int(11) NOT NULL,
+				`Rank` int(11) NOT NULL,
+				`Avg` float NOT NULL,
+				KEY `PlayerIndex` (`PlayerIndex`),
+				UNIQUE `Rank` (`Rank`)
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='ServerRanking';";
+		$mysqli->query($query);
+		if ($mysqli->error) {
+			throw new \Exception($mysqli->error);
+		}
+	}
 
 	/**
 	 * Get the RankingsTypeArray
@@ -138,24 +155,6 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 			return array(self::RANKING_TYPE_RATIOS, self::RANKING_TYPE_POINTS, self::RANKING_TYPE_RECORDS);
 		} else {
 			return array(self::RANKING_TYPE_POINTS, self::RANKING_TYPE_RATIOS, self::RANKING_TYPE_RECORDS);
-		}
-	}
-
-	/**
-	 * Create necessary database tables
-	 */
-	private function initTables() {
-		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
-		$query  = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_RANK . "` (
-				`PlayerIndex` int(11) NOT NULL,
-				`Rank` int(11) NOT NULL,
-				`Avg` float NOT NULL,
-				KEY `PlayerIndex` (`PlayerIndex`),
-				UNIQUE `Rank` (`Rank`)
-				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='ServerRanking';";
-		$mysqli->query($query);
-		if ($mysqli->error) {
-			throw new \Exception($mysqli->error);
 		}
 	}
 
@@ -368,12 +367,18 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 			return false;
 		}
 
+		$nextPlayer = null;
 		if ($rankObject->rank > 1) {
-			$nextRank   = $this->getNextRank($player);
-			$nextPlayer = $this->maniaControl->getPlayerManager()->getPlayerByIndex($nextRank->playerIndex);
-			$message    = '$0f3The next better ranked player is $fff' . $nextPlayer->nickname;
+			$nextRank = $this->getNextRank($player);
+			if ($nextRank) {
+				$nextPlayer = $this->maniaControl->getPlayerManager()->getPlayerByIndex($nextRank->playerIndex);
+			}
+		}
+
+		if ($nextPlayer) {
+			$message = '$0f3The next better ranked player is $fff' . $nextPlayer->getEscapedNickname() . '!';
 		} else {
-			$message = '$0f3No better ranked player :-)';
+			$message = '$0f3No better ranked player.';
 		}
 		$this->maniaControl->getChat()->sendChat($message, $player);
 
@@ -530,7 +535,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 			}
 
 			$playerObject = $this->maniaControl->getPlayerManager()->getPlayerByIndex($rankedPlayer->PlayerIndex);
-			$array        = array($rankedPlayer->Rank => $posX + 5, $playerObject->nickname => $posX + 18, (string)round($rankedPlayer->Avg, 2) => $posX + 70);
+			$array        = array($rankedPlayer->Rank => $posX + 5, $playerObject->nickname => $posX + 18, (string) round($rankedPlayer->Avg, 2) => $posX + 70);
 			$this->maniaControl->getManialinkManager()->labelLine($playerFrame, $array);
 
 			$posY -= 4;
