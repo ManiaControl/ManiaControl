@@ -20,6 +20,7 @@ use ManiaControl\Plugins\Plugin;
 use ManiaControl\Settings\Setting;
 use ManiaControl\Settings\SettingManager;
 use ManiaControl\Utils\Formatter;
+use Maniaplanet\DedicatedServer\Xmlrpc\FaultException;
 
 /**
  * ManiaControl Widget Plugin
@@ -447,20 +448,25 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		// Check if the Next Map is a queued Map
 		$queuedMap = $this->maniaControl->getMapManager()->getMapQueue()->getNextMap();
 
-		/**
-		 * @var Player $requester
-		 */
+		/** @var Player $requester */
 		$requester = null;
+		$map       = null;
+		$name      = '-';
+		$author    = '-';
 		// if the nextmap is not a queued map, get it from map info
-		if (!$queuedMap) {
-			$map    = $this->maniaControl->getClient()->getNextMapInfo();
-			$name   = Formatter::stripDirtyCodes($map->name);
-			$author = $map->author;
-		} else {
+		if ($queuedMap) {
 			$requester = $queuedMap[0];
 			$map       = $queuedMap[1];
-			$name      = $map->name;
-			$author    = $map->authorLogin;
+			$name      = Formatter::stripDirtyCodes($map->name);
+			$author    = $map->author;
+		} else {
+			try {
+				$map    = $this->maniaControl->getClient()->getNextMapInfo();
+				$name   = $map->name;
+				$author = $map->authorLogin;
+			} catch (FaultException $exception) {
+				// TODO: replace by more specific exception as soon as it's available (No next map currently defined.)
+			}
 		}
 
 		$label = new Label_Text();
