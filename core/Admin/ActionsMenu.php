@@ -37,10 +37,10 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	 * Private properties
 	 */
 	/** @var ManiaControl $maniaControl */
-	private $maniaControl = null;
-	private $adminMenuItems = array();
+	private $maniaControl    = null;
+	private $adminMenuItems  = array();
 	private $playerMenuItems = array();
-	private $initCompleted = false;
+	private $initCompleted   = false;
 
 	/**
 	 * Construct a new Actions Menu instance
@@ -134,8 +134,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		/*
 		 * Admin Menu
 		 */
-		if ($this->maniaControl->getAuthenticationManager()->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)
-		) {
+		if ($this->maniaControl->getAuthenticationManager()->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
 			// Admin Menu Icon Frame
 			$iconFrame = new Frame();
 			$manialink->add($iconFrame);
@@ -287,11 +286,11 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 	 */
 	public function removeMenuItem($order, $playerAction = true) {
 		if ($playerAction) {
-			if ($this->playerMenuItems[$order]) {
+			if (isset($this->playerMenuItems[$order])) {
 				unset($this->playerMenuItems[$order]);
 			}
 		} else {
-			if ($this->playerMenuItems[$order]) {
+			if (isset($this->playerMenuItems[$order])) {
 				unset($this->adminMenuItems[$order]);
 			}
 		}
