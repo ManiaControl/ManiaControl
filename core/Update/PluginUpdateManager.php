@@ -265,7 +265,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 			$tempDir        = FileUtil::getTempFolder();
 			$updateFileName = $tempDir . $pluginUpdateData->zipfile;
 
-			$bytes = file_put_contents($updateFileName, $updateFileContent);
+			$bytes = @file_put_contents($updateFileName, $updateFileContent);
 			if (!$bytes || $bytes <= 0) {
 				$message = "Plugin {$actionNoun} failed: Couldn't save {$actionNoun} Zip!";
 				if ($player) {
@@ -288,7 +288,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 
 			$zip->extractTo(MANIACONTROL_PATH . 'plugins' . DIRECTORY_SEPARATOR);
 			$zip->close();
-			unlink($updateFileName);
+			@unlink($updateFileName);
 			FileUtil::deleteTempFolder();
 
 			$messageExtra = '';

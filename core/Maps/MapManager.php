@@ -404,7 +404,7 @@ class MapManager implements CallbackListener {
 				return;
 			}
 
-			if (!file_put_contents($fullMapFileName, $file)) {
+			if (!@file_put_contents($fullMapFileName, $file)) {
 				// Save error
 				$this->maniaControl->getChat()->sendError('Saving map failed!', $login);
 				return;
