@@ -17,8 +17,10 @@ class Database implements TimerListener {
 	/*
 	 * Public properties
 	 */
-	/** @var \mysqli $mysqli */
-	/** @deprecated see getMysqli() */
+	/** @var \mysqli $mysqli
+	 * @deprecated
+	 * @see Database::getMysqli()
+	 */
 	public $mysqli = null;
 
 	/*
@@ -76,28 +78,28 @@ class Database implements TimerListener {
 		if (!$hostElements) {
 			$this->maniaControl->quit("Invalid database configuration (Host).", true);
 		}
-		$host = (string)$hostElements[0];
+		$host = (string) $hostElements[0];
 
 		// Port
 		$portElements = $databaseElement->xpath('port');
 		if (!$portElements) {
 			$this->maniaControl->quit("Invalid database configuration (Port).", true);
 		}
-		$port = (string)$portElements[0];
+		$port = (string) $portElements[0];
 
 		// User
 		$userElements = $databaseElement->xpath('user');
 		if (!$userElements) {
 			$this->maniaControl->quit("Invalid database configuration (User).", true);
 		}
-		$user = (string)$userElements[0];
+		$user = (string) $userElements[0];
 
 		// Pass
 		$passElements = $databaseElement->xpath('pass');
 		if (!$passElements) {
 			$this->maniaControl->quit("Invalid database configuration (Pass).", true);
 		}
-		$pass = (string)$passElements[0];
+		$pass = (string) $passElements[0];
 
 		// Name
 		$nameElements = $databaseElement->xpath('name');
@@ -107,7 +109,7 @@ class Database implements TimerListener {
 		if (!$nameElements) {
 			$this->maniaControl->quit("Invalid database configuration (Name).", true);
 		}
-		$name = (string)$nameElements[0];
+		$name = (string) $nameElements[0];
 
 		// Create config object
 		$config = new Config($host, $port, $user, $pass, $name);
@@ -115,6 +117,15 @@ class Database implements TimerListener {
 			$this->maniaControl->quit("Your config file doesn't seem to be maintained properly. Please check the database configuration again!", true);
 		}
 		$this->config = $config;
+	}
+
+	/**
+	 * Return the mysqli instance
+	 *
+	 * @return \mysqli
+	 */
+	public function getMysqli() {
+		return $this->mysqli;
 	}
 
 	/**
@@ -187,15 +198,6 @@ class Database implements TimerListener {
 	}
 
 	/**
-	 * Return the mysqli instance
-	 *
-	 * @return \mysqli
-	 */
-	public function getMysqli() {
-		return $this->mysqli;
-	}
-
-	/**
 	 * Return the database config
 	 *
 	 * @return Config
@@ -217,9 +219,7 @@ class Database implements TimerListener {
 	 * Check whether the Database Connection is still open
 	 */
 	public function checkConnection() {
-		if (!$this->getMysqli()
-		    || !$this->getMysqli()->ping()
-		) {
+		if (!$this->getMysqli() || !$this->getMysqli()->ping()) {
 			$this->maniaControl->quit('The MySQL Server has gone away!', true);
 		}
 	}

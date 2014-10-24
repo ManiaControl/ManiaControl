@@ -40,7 +40,8 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 * Public properties
 	 */
 	/** @var PluginUpdateManager $pluginUpdateManager
-	 * @deprecated see getPluginUpdateManager()
+	 * @deprecated
+	 * @see getPluginUpdateManager()
 	 */
 	public $pluginUpdateManager = null;
 
@@ -48,7 +49,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 * Private properties
 	 */
 	/** @var ManiaControl $maniaControl */
-	private $maniaControl = null;
+	private $maniaControl     = null;
 	private $currentBuildDate = null;
 	/** @var UpdateData $coreUpdateData */
 	private $coreUpdateData = null;
@@ -403,7 +404,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 */
 	public function setBuildDate($date) {
 		$nightlyBuildDateFile   = MANIACONTROL_PATH . 'core' . DIRECTORY_SEPARATOR . self::BUILD_DATE_FILE_NAME;
-		$success                = (bool)file_put_contents($nightlyBuildDateFile, $date);
+		$success                = (bool) file_put_contents($nightlyBuildDateFile, $date);
 		$this->currentBuildDate = $date;
 		return $success;
 	}

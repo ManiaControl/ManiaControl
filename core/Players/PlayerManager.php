@@ -37,23 +37,35 @@ class PlayerManager implements CallbackListener, TimerListener {
 	/*
 	 * Public properties
 	 */
-	/** @var PlayerActions $playerActions */
-	/** @deprecated see getPlayerActions() */
+	/** @var PlayerActions $playerActions
+	 * @deprecated
+	 * @see getPlayerActions()
+	 */
 	public $playerActions = null;
-	/** @var PlayerCommands $playerCommands */
-	/** @deprecated see getPlayerCommands() */
+	/** @var PlayerCommands $playerCommands
+	 * @deprecated
+	 * @see getPlayerCommands()
+	 */
 	public $playerCommands = null;
-	/** @var PlayerDetailed $playerDetailed */
-	/** @deprecated see getPlayerDetailed() */
+	/** @var PlayerDetailed $playerDetailed
+	 * @deprecated
+	 * @see getPlayerDetailed()
+	 */
 	public $playerDetailed = null;
-	/** @var PlayerDataManager $playerDataManager */
-	/** @deprecated see getPlayerDataManager() */
+	/** @var PlayerDataManager $playerDataManager
+	 * @deprecated
+	 * @see getPlayerDataManager()
+	 */
 	public $playerDataManager = null;
-	/** @var PlayerList $playerList */
-	/** @deprecated see getPlayerList() */
+	/** @var PlayerList $playerList
+	 * @deprecated
+	 * @see getPlayerList()
+	 */
 	public $playerList = null;
-	/** @var AdminLists $adminLists */
-	/** @deprecated see getAdminLists() */
+	/** @var AdminLists $adminLists
+	 * @deprecated
+	 * @see getAdminLists()
+	 */
 	public $adminLists = null;
 
 	/*
@@ -152,15 +164,6 @@ class PlayerManager implements CallbackListener, TimerListener {
 	 */
 	public function getPlayerDetailed() {
 		return $this->playerDetailed;
-	}
-
-	/**
-	 * Return the player data manager
-	 *
-	 * @return PlayerDataManager
-	 */
-	public function getPlayerDataManager() {
-		return $this->playerDataManager;
 	}
 
 	/**
@@ -384,6 +387,15 @@ class PlayerManager implements CallbackListener, TimerListener {
 			}
 		}
 		return $count;
+	}
+
+	/**
+	 * Return the player data manager
+	 *
+	 * @return PlayerDataManager
+	 */
+	public function getPlayerDataManager() {
+		return $this->playerDataManager;
 	}
 
 	/**

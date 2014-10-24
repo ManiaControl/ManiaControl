@@ -33,13 +33,19 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 * Public properties
 	 */
 	/** @var StyleManager $styleManager */
-	/** @deprecated see getStyleManager() */
+	/** @deprecated
+	 * @see getStyleManager()
+	 */
 	public $styleManager = null;
 	/** @var CustomUIManager $customUIManager */
-	/** @deprecated see getCustomUIManager() */
+	/** @deprecated
+	 * @see getCustomUIManager()
+	 */
 	public $customUIManager = null;
 	/** @var IconManager $iconManager */
-	/** @deprecated see getIconManager() */
+	/** @deprecated
+	 * @see getIconManager()
+	 */
 	public $iconManager = null;
 
 	/*
@@ -48,7 +54,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	// TODO: use listening class
-	private $pageAnswerListeners = array();
+	private $pageAnswerListeners     = array();
 	private $pageAnswerRegexListener = array();
 
 	/**
@@ -225,7 +231,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 * @return bool
 	 */
 	public function sendManialink($manialinkText, $logins = null, $timeout = 0, $hideOnClick = false) {
-		$manialinkText = (string)$manialinkText;
+		$manialinkText = (string) $manialinkText;
 
 		if (!$manialinkText) {
 			return true;

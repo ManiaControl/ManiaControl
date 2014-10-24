@@ -28,27 +28,37 @@ class Server implements CallbackListener {
 	 * Public properties
 	 */
 	/** @var Config $config */
-	public $config = null;
-	public $index = -1;
-	public $ip = null;
-	public $port = -1;
+	public $config  = null;
+	public $index   = -1;
+	public $ip      = null;
+	public $port    = -1;
 	public $p2pPort = -1;
-	public $login = null;
+	public $login   = null;
 	public $titleId = null;
-	/** @var Directory $directory */
-	/** @deprecated see getDirectory() */
+	/** @var Directory $directory
+	 * @deprecated
+	 * @see getDirectory()
+	 */
 	public $directory = null;
-	/** @var Commands $commands */
-	/** @deprecated see getCommands() */
+	/** @var Commands $commands
+	 * @deprecated
+	 * @see getCommands()
+	 */
 	public $commands = null;
-	/** @var UsageReporter $usageReporter */
-	/** @deprecated see getUsageReporter() */
+	/** @var UsageReporter $usageReporter
+	 * @deprecated
+	 * @see getUsageReporter()
+	 */
 	public $usageReporter = null;
-	/** @var RankingManager $rankingManager */
-	/** @deprecated see getRankingManager() */
+	/** @var RankingManager $rankingManager
+	 * @deprecated
+	 * @see getRankingManager()
+	 */
 	public $rankingManager = null;
-	/** @var ScriptManager $scriptManager */
-	/** @deprecated see getScriptManager() */
+	/** @var ScriptManager $scriptManager
+	 * @deprecated
+	 * @see getScriptManager()
+	 */
 	public $scriptManager = null;
 
 	/*
@@ -56,7 +66,7 @@ class Server implements CallbackListener {
 	 */
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
-	private $teamMode = null;
+	private $teamMode     = null;
 
 	/**
 	 * Construct a new Server
@@ -111,15 +121,6 @@ class Server implements CallbackListener {
 	 */
 	public function getConfig() {
 		return $this->config;
-	}
-
-	/**
-	 * Return the server directory
-	 *
-	 * @return Directory
-	 */
-	public function getDirectory() {
-		return $this->directory;
 	}
 
 	/**
@@ -336,6 +337,15 @@ class Server implements CallbackListener {
 	}
 
 	/**
+	 * Return the server directory
+	 *
+	 * @return Directory
+	 */
+	public function getDirectory() {
+		return $this->directory;
+	}
+
+	/**
 	 * Check if ManiaControl has Access to the given Directory
 	 *
 	 * @param string $directory
@@ -422,7 +432,7 @@ class Server implements CallbackListener {
 	 */
 	public function setTeamMode($teamMode = true) {
 		$oldStatus      = $this->teamMode;
-		$this->teamMode = (bool)$teamMode;
+		$this->teamMode = (bool) $teamMode;
 
 		// Trigger callback
 		if ($oldStatus !== $this->teamMode | $oldStatus === null) {

@@ -22,7 +22,7 @@ class StatisticManager {
 	const STAT_TYPE_TIME     = '1';
 	const STAT_TYPE_FLOAT    = '2';
 
-	const SPECIAL_STAT_KD_RATIO = 'Kill Death Ratio'; //TODO dynamic later
+	const SPECIAL_STAT_KD_RATIO    = 'Kill Death Ratio'; //TODO dynamic later
 	const SPECIAL_STAT_HITS_PH     = 'Hits Per Hour';
 	const SPECIAL_STAT_LASER_ACC   = 'Laser Accuracy';
 	const SPECIAL_STAT_NUCLEUS_ACC = 'Nucleus Accuracy';
@@ -32,11 +32,15 @@ class StatisticManager {
 	/*
 	 * Public properties
 	 */
-	/** @var StatisticCollector $statisticCollector */
-	/** @deprecated see getStatisticCollector() */
+	/** @var StatisticCollector $statisticCollector
+	 * @deprecated
+	 * @see getStatisticCollector()
+	 */
 	public $statisticCollector = null;
-	/** @var SimpleStatsList $simpleStatsList */
-	/** @deprecated see getSimpleStatsList() */
+	/** @var SimpleStatsList $simpleStatsList
+	 * @deprecated
+	 * @see getSimpleStatsList()
+	 */
 	public $simpleStatsList = null;
 
 	/*
@@ -44,7 +48,7 @@ class StatisticManager {
 	 */
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
-	private $stats = array();
+	private $stats        = array();
 	private $specialStats = array();
 
 	/**
@@ -343,7 +347,7 @@ class StatisticManager {
 	private function getStatId($statName) {
 		if (isset($this->stats[$statName])) {
 			$stat = $this->stats[$statName];
-			return (int)$stat->index;
+			return (int) $stat->index;
 		}
 		return null;
 	}
@@ -429,7 +433,7 @@ class StatisticManager {
 					if (!$shots) {
 						continue;
 					}
-					$playerStats[$stat->name] = array($stat, (float)($hits / $shots));
+					$playerStats[$stat->name] = array($stat, (float) ($hits / $shots));
 					break;
 			}
 		}

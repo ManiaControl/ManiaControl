@@ -51,26 +51,40 @@ class MapManager implements CallbackListener {
 	/*
 	 * Public properties
 	 */
-	/** @var MapQueue $mapQueue */
-	/** @deprecated see getMapQueue() */
+	/** @var MapQueue $mapQueue
+	 * @deprecated
+	 * @see getMapQueue()
+	 */
 	public $mapQueue = null;
-	/** @var MapCommands $mapCommands */
-	/** @deprecated see getMapCommands() */
+	/** @var MapCommands $mapCommands
+	 * @deprecated
+	 * @see getMapCommands()
+	 */
 	public $mapCommands = null;
-	/** @var MapActions $mapActions */
-	/** @deprecated see getMapActions() */
+	/** @var MapActions $mapActions
+	 * @deprecated
+	 * @see getMapActions()
+	 */
 	public $mapActions = null;
-	/** @var MapList $mapList */
-	/** @deprecated see getMapList() */
+	/** @var MapList $mapList
+	 * @deprecated
+	 * @see getMapList()
+	 */
 	public $mapList = null;
-	/** @var DirectoryBrowser $directoryBrowser */
-	/** @deprecated see getDirectoryBrowser() */
+	/** @var DirectoryBrowser $directoryBrowser
+	 * @deprecated
+	 * @see getDirectoryBrowser()
+	 */
 	public $directoryBrowser = null;
-	/** @var ManiaExchangeList $mxList */
-	/** @deprecated see getMXList() */
+	/** @var ManiaExchangeList $mxList
+	 * @deprecated
+	 * @see getMXList()
+	 */
 	public $mxList = null;
-	/** @var ManiaExchangeManager $mxManager */
-	/** @deprecated see getMXManager() */
+	/** @var ManiaExchangeManager $mxManager
+	 * @deprecated
+	 * @see getMXManager()
+	 */
 	public $mxManager = null;
 
 	/*
@@ -82,8 +96,8 @@ class MapManager implements CallbackListener {
 	private $maps = array();
 	/** @var Map $currentMap */
 	private $currentMap = null;
-	private $mapEnded = false;
-	private $mapBegan = false;
+	private $mapEnded   = false;
+	private $mapBegan   = false;
 
 	/**
 	 * Construct a new map manager instance

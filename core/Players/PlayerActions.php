@@ -515,9 +515,13 @@ class PlayerActions {
 	/**
 	 * Check if a Player is muted
 	 *
-	 * @deprecated see Player/isMuted()
+	 * @deprecated
+	 * @see Player::isMuted()
 	 */
 	public function isPlayerMuted($login) {
-		return $this->maniaControl->getPlayerManager()->getPlayer($login)->isMuted();
+		if ($player = $this->maniaControl->getPlayerManager()->getPlayer($login)) {
+			return $player->isMuted();
+		}
+		return false;
 	}
 }

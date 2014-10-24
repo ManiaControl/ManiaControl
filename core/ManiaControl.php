@@ -54,87 +54,108 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	 * Public properties
 	 */
 	/** @var ActionsMenu $actionsMenu
-	 * @deprecated see getActionsMenu()
+	 * @deprecated
+	 * @see getActionsMenu()
 	 */
 	public $actionsMenu = null;
 	/** @var AuthenticationManager $authenticationManager
-	 * @deprecated see getAuthenticationManager()
+	 * @deprecated
+	 * @see getAuthenticationManager()
 	 */
 	public $authenticationManager = null;
 	/** @var CallbackManager $callbackManager
-	 * @deprecated see getCallbackManager()
+	 * @deprecated
+	 * @see getCallbackManager()
 	 */
 	public $callbackManager = null;
 	/** @var Chat $chat
-	 * @deprecated see getChat()
+	 * @deprecated
+	 * @see getChat()
 	 */
 	public $chat = null;
 	/** @var \SimpleXMLElement $config
-	 * @deprecated see getConfig()
+	 * @deprecated
+	 * @see getConfig()
 	 */
 	public $config = null;
 	/** @var Configurator $configurator
-	 * @deprecated see getConfigurator()
+	 * @deprecated
+	 * @see getConfigurator()
 	 */
 	public $configurator = null;
 	/** @var Connection $client
-	 * @deprecated see getClient()
+	 * @deprecated
+	 * @see getClient()
 	 */
 	public $client = null;
 	/** @var CommandManager $commandManager
-	 * @deprecated see getCommandManager()
+	 * @deprecated
+	 * @see getCommandManager()
 	 */
 	public $commandManager = null;
 	/** @var Database $database
-	 * @deprecated see getDatabase()
+	 * @deprecated
+	 * @see getDatabase()
 	 */
 	public $database = null;
 	/** @var ManialinkManager $manialinkManager
-	 * @deprecated see getManialinkManager
+	 * @deprecated
+	 * @see getManialinkManager
 	 */
 	public $manialinkManager = null;
 	/** @var MapManager $mapManager
-	 * @deprecated see getMapManager()
+	 * @deprecated
+	 * @see getMapManager()
 	 */
 	public $mapManager = null;
 	/** @var PlayerManager $playerManager
-	 * @deprecated see getPlayerManager()
+	 * @deprecated
+	 * @see getPlayerManager()
 	 */
 	public $playerManager = null;
 	/** @var PluginManager $pluginManager
-	 * @deprecated see getPluginManager()
+	 * @deprecated
+	 * @see getPluginManager()
 	 */
 	public $pluginManager = null;
 	/** @var Server $server
-	 * @deprecated see getServer()
+	 * @deprecated
+	 * @see getServer()
 	 */
 	public $server = null;
 	/** @var SettingManager $settingManager
-	 * @deprecated see getSettingManager()
+	 * @deprecated
+	 * @see getSettingManager()
 	 */
 	public $settingManager = null;
 	/** @var StatisticManager $statisticManager
-	 * @deprecated see getStatisticManager()
+	 * @deprecated
+	 * @see getStatisticManager()
 	 */
 	public $statisticManager = null;
 	/** @var UpdateManager $updateManager
-	 * @deprecated see getUpdateManager()
+	 * @deprecated
+	 * @see getUpdateManager()
 	 */
 	public $updateManager = null;
 	/** @var ErrorHandler $errorHandler
-	 * @deprecated see getErrorHandler()
+	 * @deprecated
+	 * @see getErrorHandler()
 	 */
 	public $errorHandler = null;
 	/** @var TimerManager $timerManager
-	 * @deprecated see getTimerManager()
+	 * @deprecated
+	 * @see getTimerManager()
 	 */
 	public $timerManager = null;
 	/** @var AsynchronousFileReader $fileReader
-	 * @deprecated see getFileReader()
+	 * @deprecated
+	 * @see getFileReader()
 	 */
 	public $fileReader = null;
 	/** @var BillManager $billManager
-	 * @deprecated see getBillManager()
+	 * @deprecated
+	 * @see getBillManager()
 	 */
 	public $billManager = null;
 
@@ -612,7 +633,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 		// Yield for next tick
 		$loopEnd      = microtime(true);
 		$loopDuration = $loopEnd - $loopStart;
-		$sleepTime    = (int)(2500 - $loopDuration * 1000000);
+		$sleepTime    = (int) (2500 - $loopDuration * 1000000);
 		if ($sleepTime > 0) {
 			usleep($sleepTime);
 		}
