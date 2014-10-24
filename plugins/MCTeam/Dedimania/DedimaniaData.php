@@ -30,9 +30,9 @@ class DedimaniaData {
 	/** @var RecordData[] $records */
 	public $records = array();
 	/** @var DedimaniaPlayer[] $players */
-	public $players = array();
+	public $players                = array();
 	public $directoryAccessChecked = false;
-	public $serverMaxRank = 30;
+	public $serverMaxRank          = 30;
 
 	/**
 	 * Construct a new Dedimania Data Model
@@ -44,11 +44,11 @@ class DedimaniaData {
 	 * @param Version $serverVersion
 	 */
 	public function __construct($serverLogin, $dedimaniaCode, $path, $packmask, Version $serverVersion) {
-		$this->game          = "TM2";
+		$this->game          = 'TM2';
 		$this->login         = $serverLogin;
 		$this->code          = $dedimaniaCode;
 		$this->version       = ManiaControl::VERSION;
-		$this->tool          = "ManiaControl";
+		$this->tool          = 'ManiaControl';
 		$this->path          = $path;
 		$this->packmask      = $packmask;
 		$this->serverVersion = $serverVersion->version;
@@ -102,7 +102,6 @@ class DedimaniaData {
 		$login   = Player::parseLogin($login);
 		$maxRank = $this->serverMaxRank;
 		foreach ($this->players as $player) {
-			/** @var DedimaniaPlayer $player */
 			if ($player->login === $login) {
 				if ($player->maxRank > $maxRank) {
 					$maxRank = $player->maxRank;
@@ -130,4 +129,4 @@ class DedimaniaData {
 	public function removePlayer($login) {
 		unset($this->players[$login]);
 	}
-} 
+}

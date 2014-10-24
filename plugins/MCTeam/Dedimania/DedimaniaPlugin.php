@@ -706,7 +706,6 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			if ($record->rank > $this->dedimaniaData->serverMaxRank) {
 				break;
 			}
-
 			if (!$record->newRecord) {
 				continue;
 			}
