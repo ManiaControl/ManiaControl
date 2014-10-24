@@ -81,7 +81,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		$action = $actionArray[0] . '.' . $actionArray[1];
 		$login  = $callback[1][1];
 		$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
-		$mapId  = (int)$actionArray[2];
+		$mapId  = (int) $actionArray[2];
 
 		switch ($action) {
 			case self::ACTION_GET_MAPS_FROM_AUTHOR:

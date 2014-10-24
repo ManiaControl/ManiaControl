@@ -236,7 +236,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 	/**
 	 * Closes the widget
 	 *
-	 * @param \ManiaControl\Players\Player $player
+	 * @param Player $player
 	 */
 	public function closeWidget(Player $player) {
 		unset($this->adminListShown[$player->login]);
@@ -246,7 +246,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 	 * Unset the player if he opened another Main Widget
 	 *
 	 * @param Player $player
-	 * @param        $openedWidget
+	 * @param string $openedWidget
 	 */
 	public function handleWidgetOpened(Player $player, $openedWidget) {
 		//unset when another main widget got opened

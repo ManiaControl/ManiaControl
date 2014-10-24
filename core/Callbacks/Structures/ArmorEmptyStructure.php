@@ -2,11 +2,13 @@
 
 namespace ManiaControl\Callbacks\Structures;
 
-
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 
 class ArmorEmptyStructure {
+	/*
+	 * Private properties
+	 */
 	private $shooter;
 	private $victim;
 	private $damage;
@@ -15,8 +17,14 @@ class ArmorEmptyStructure {
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl;
 
-	public function __construct(ManiaControl $maniaControl, $data) {
-		$this->maniaControl = $maniaControl;
+	/**
+	 * Construct a new Armor Empty Structure
+	 *
+	 * @param ManiaControl $maniaControl
+	 * @param array        $data
+	 */
+	public function __construct(ManiaControl $maniaControl, array $data) {
+		$this->maniaControl  = $maniaControl;
 		$this->shooter       = $data[0];
 		$this->victim        = $data[1];
 		$this->damage        = $data[2];
@@ -25,22 +33,26 @@ class ArmorEmptyStructure {
 	}
 
 	/**
+	 * Get the shooter
+	 *
 	 * @return Player
 	 */
 	public function getShooter() {
-		$shooter = $this->maniaControl->getPlayerManager()->getPlayer($this->shooter);
-		return $shooter;
+		return $this->maniaControl->getPlayerManager()->getPlayer($this->shooter);
 	}
 
 	/**
+	 * Get the victim
+	 *
 	 * @return Player
 	 */
 	public function getVictim() {
-		$victim = $this->maniaControl->getPlayerManager()->getPlayer($this->victim);
-		return $victim;
+		return $this->maniaControl->getPlayerManager()->getPlayer($this->victim);
 	}
 
 	/**
+	 * Get the damage
+	 *
 	 * @return int
 	 */
 	public function getDamage() {
@@ -48,6 +60,8 @@ class ArmorEmptyStructure {
 	}
 
 	/**
+	 * Get the shooter points
+	 *
 	 * @return int
 	 */
 	public function getShooterPoints() {
@@ -55,9 +69,12 @@ class ArmorEmptyStructure {
 	}
 
 	/**
+	 * Get the weapon
+	 *
 	 * @return int
 	 */
-	public function getWeapon() { //TODO any way of returning type "Weapon?"
+	public function getWeapon() {
+		// TODO: any way of returning type "Weapon?"
 		return $this->weapon;
 	}
 }
