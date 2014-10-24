@@ -219,7 +219,7 @@ class Database implements TimerListener {
 	 * Check whether the Database Connection is still open
 	 */
 	public function checkConnection() {
-		if (!$this->getMysqli() || !$this->getMysqli()->ping()) {
+		if (!$this->getMysqli() || !@$this->getMysqli()->ping()) {
 			$this->maniaControl->quit('The MySQL Server has gone away!', true);
 		}
 	}
