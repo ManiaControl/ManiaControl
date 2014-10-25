@@ -457,13 +457,13 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		if ($queuedMap) {
 			$requester = $queuedMap[0];
 			$map       = $queuedMap[1];
-			$name      = Formatter::stripDirtyCodes($map->name);
-			$author    = $map->author;
+			$name      = $map->name;
+			$author    = $map->authorLogin;
 		} else {
 			try {
 				$map    = $this->maniaControl->getClient()->getNextMapInfo();
-				$name   = $map->name;
-				$author = $map->authorLogin;
+				$name   = Formatter::stripDirtyCodes($map->name);
+				$author = $map->author;
 			} catch (FaultException $exception) {
 				// TODO: replace by more specific exception as soon as it's available (No next map currently defined.)
 			}
