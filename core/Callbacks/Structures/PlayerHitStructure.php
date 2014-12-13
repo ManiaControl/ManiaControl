@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * Player Hit Structure
+ *
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ */
 namespace ManiaControl\Callbacks\Structures;
 
 use ManiaControl\ManiaControl;
@@ -14,6 +20,8 @@ class PlayerHitStructure {
 	private $damage;
 	private $shooterPoints;
 	private $weapon;
+	private $hitDistance = 0;
+
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl;
 
@@ -30,6 +38,11 @@ class PlayerHitStructure {
 		$this->damage        = $data[2];
 		$this->weapon        = $data[3];
 		$this->shooterPoints = $data[4];
+
+		//TODO remove key check in some months (hitDistance got implemented 2014-10-16)
+		if (array_key_exists(5, $data)) {
+			$this->hitDistance = $data[5];
+		}
 	}
 
 	/**
@@ -76,5 +89,14 @@ class PlayerHitStructure {
 	public function getWeapon() {
 		// TODO: any way of returning type "Weapon?"
 		return $this->weapon;
+	}
+
+	/**
+	 * Get The Hit Distance
+	 *
+	 * @return int
+	 */
+	public function getHitDistance() {
+		return $this->hitDistance;
 	}
 }
