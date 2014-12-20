@@ -3,6 +3,7 @@
 namespace ManiaControl\Callbacks;
 
 use ManiaControl\Callbacks\Models\RecordCallback;
+use ManiaControl\Callbacks\Structures\EliteBeginTurnStructure;
 use ManiaControl\ManiaControl;
 
 /**
@@ -59,6 +60,12 @@ class ShootManiaCallbacks implements CallbackListener {
 				break;
 			case 'WarmUp_Status':
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::WARMUPSTATUS, $data[0]);
+				break;
+			case 'Elite_BeginTurn':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ELITE_ONBEGINTURN, new EliteBeginTurnStructure($this->maniaControl, $data));
+				break;
+			case 'Elite_EndTurn':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ELITE_ONENDTURN, $data[0]);
 				break;
 			case self::CB_TIMEATTACK_ONCHECKPOINT:
 				$this->handleTimeAttackOnCheckpoint($name, $data);

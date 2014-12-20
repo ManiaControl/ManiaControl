@@ -61,6 +61,9 @@ class LibXmlRpcCallbacks implements CallbackListener {
 			case 'LibXmlRpc_BeginTurn':
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::BEGINTURN, $data[0]);
 				break;
+			case 'LibXmlRpc_BeginRound':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::BEGINROUND, $data[0]);
+				break;
 			case 'LibXmlRpc_BeginPlaying':
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::BEGINPLAYING);
 				break;
@@ -71,6 +74,7 @@ class LibXmlRpcCallbacks implements CallbackListener {
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ENDTURN, $data[0]);
 				break;
 			case 'LibXmlRpc_EndRound':
+				var_dump("test");
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ENDROUND, $data[0]);
 				break;
 			case 'LibXmlRpc_EndSubmatch':
@@ -131,11 +135,11 @@ class LibXmlRpcCallbacks implements CallbackListener {
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ONARMOREMPTY, new ArmorEmptyStructure($this->maniaControl, $data));
 				break;
 			case 'LibXmlRpc_OnCapture':
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ONARMOREMPTY, new CaptureStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ONCAPTURE, new CaptureStructure($this->maniaControl, $data));
 				break;
 			case 'LibXmlRpc_OnPlayerRequestRespawn':
 				$player = $this->maniaControl->getPlayerManager()->getPlayer($data[0]);
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ONARMOREMPTY, $player);
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ONPLAYERREQUESTRESPAWN, $player);
 				break;
 		}
 	}

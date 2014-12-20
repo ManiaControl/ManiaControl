@@ -98,6 +98,11 @@ interface Callbacks {
 	/** OnPlayerRequestRespawn Callback: Player */
 	const ONPLAYERREQUESTRESPAWN = 'Callbacks.OnPlayerRequestRespawn';
 
+	/** Elite OnBeginTurn Callback: EliteBeginTurnStructure */
+	const ELITE_ONBEGINTURN = "Callbacks.EliteOnBeginTurn";
+	/** Elite OnEndTurn Callback: integer (VictoryTypes) */
+	const ELITE_ONENDTURN = "Callbacks.EliteOnEndTurn";
+
 	/*
 	 * TrackMania Callbacks
 	 */
@@ -111,4 +116,5 @@ interface Callbacks {
 	const ONRESPAWN = 'Callbacks.OnRespawn';
 	/** OnStunt Callback */
 	const ONSTUNT = 'Callbacks.OnStunt';
+
 }
