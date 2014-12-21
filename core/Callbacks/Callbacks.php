@@ -1,7 +1,7 @@
 <?php
 
 // TODO: method class for all the libxmlrpc get Methods, to fetch the callback asnyc
-
+// TODO implement all STOP callbacks
 namespace ManiaControl\Callbacks;
 
 /**
@@ -37,12 +37,16 @@ interface Callbacks {
 	const BEGINROUND = 'Callbacks.BeginRound';
 	/** BeginTurn Callback: TurnNumber */
 	const BEGINTURN = 'Callbacks.BeginTurn';
+	/** BeginTurnStop Callback: TurnNumber */
+	const BEGINTURNSTOP = 'Callbacks.BeginTurnStop';
 	/** BeginPlaying Callback */
 	const BEGINPLAYING = 'Callbacks.BeginPlaying';
 	/** EndPlaying Callback */
 	const ENDPLAYING = 'Callbacks.EndPlaying';
 	/** EndTurn Callback: TurnNumber */
 	const ENDTURN = 'Callbacks.EndTurn';
+	/** EndTurnStop Callback: TurnNumber */
+	const ENDTURNSTOP = 'Callbacks.EndTurnStop';
 	/** EndRound Callback: RoundNumber */
 	const ENDROUND = 'Callbacks.EndRound';
 	/** EndSubmatch Callback: SubmatchNumber */

@@ -38,7 +38,7 @@ class PlayerHitStructure {
 		$this->damage        = $data[2];
 		$this->weapon        = $data[3];
 		$this->shooterPoints = $data[4];
-
+		
 		//TODO remove key check in some months (hitDistance got implemented 2014-10-16)
 		if (array_key_exists(5, $data)) {
 			$this->hitDistance = $data[5];
@@ -69,7 +69,7 @@ class PlayerHitStructure {
 	 * @return int
 	 */
 	public function getDamage() {
-		return $this->damage;
+		return intval($this->damage);
 	}
 
 	/**
@@ -78,7 +78,7 @@ class PlayerHitStructure {
 	 * @return int
 	 */
 	public function getShooterPoints() {
-		return $this->shooterPoints;
+		return intval($this->shooterPoints);
 	}
 
 	/**
@@ -94,9 +94,9 @@ class PlayerHitStructure {
 	/**
 	 * Get The Hit Distance
 	 *
-	 * @return int
+	 * @return double
 	 */
 	public function getHitDistance() {
-		return $this->hitDistance;
+		return doubleval($this->hitDistance);
 	}
 }

@@ -41,7 +41,10 @@ class CaptureStructure {
 	public function getPlayerArray() {
 		$playerArray = array();
 		foreach ($this->playerArray as $login) {
-			$playerArray[$login] = $this->maniaControl->getPlayerManager()->getPlayer($this->playerArray);
+			$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
+			if($player){
+				$playerArray[$login] = $player;
+			}
 		}
 		return $playerArray;
 	}

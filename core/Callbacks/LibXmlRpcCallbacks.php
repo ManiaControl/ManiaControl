@@ -61,6 +61,9 @@ class LibXmlRpcCallbacks implements CallbackListener {
 			case 'LibXmlRpc_BeginTurn':
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::BEGINTURN, $data[0]);
 				break;
+			case 'LibXmlRpc_BeginTurnStop':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::BEGINTURNSTOP, $data[0]);
+				break;
 			case 'LibXmlRpc_BeginRound':
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::BEGINROUND, $data[0]);
 				break;
@@ -73,8 +76,10 @@ class LibXmlRpcCallbacks implements CallbackListener {
 			case 'LibXmlRpc_EndTurn':
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ENDTURN, $data[0]);
 				break;
+			case 'LibXmlRpc_EndTurnStop':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ENDTURNSTOP, $data[0]);
+				break;
 			case 'LibXmlRpc_EndRound':
-				var_dump("test");
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ENDROUND, $data[0]);
 				break;
 			case 'LibXmlRpc_EndSubmatch':

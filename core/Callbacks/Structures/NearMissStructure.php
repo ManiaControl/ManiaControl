@@ -51,10 +51,10 @@ class NearMissStructure {
 	/**
 	 * Get the distance
 	 *
-	 * @return float
+	 * @return double
 	 */
 	public function getDistance() {
-		return $this->distance;
+		return doubleval($this->distance);
 	}
 
 	/**
