@@ -106,6 +106,9 @@ class PlayerActions {
 		} catch (ServerOptionsException $exception) {
 			$this->forcePlayerToPlay($adminLogin, $targetLogin);
 			return;
+		} catch (UnknownPlayerException $exception) {
+			$this->maniaControl->getChat()->sendException($exception, $admin);
+			return;
 		} catch (GameModeException $exception) {
 			$this->maniaControl->getChat()->sendException($exception, $admin);
 			return;
