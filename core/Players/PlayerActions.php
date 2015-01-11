@@ -449,21 +449,17 @@ class PlayerActions {
 			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($admin);
 			return;
 		}
-		$target = $this->maniaControl->getPlayerManager()->getPlayer($targetLogin);
-		if (!$target) {
+
+		try {
+			$this->maniaControl->getClient()->unBan($targetLogin);
+		} catch (NotInListException $e) {
+			$this->maniaControl->getChat()->sendError('This player is not Banned!', $admin);
 			return;
 		}
-
-		if ($target->isFakePlayer()) {
-			$this->maniaControl->getChat()->sendError('It is not possible to Un-Ban a bot', $admin);
-			return;
-		}
-
-		$this->maniaControl->getClient()->unBan($target->login);
 
 		// Announce ban
 		$title       = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($admin->authLevel);
-		$chatMessage = $title . ' ' . $admin->getEscapedNickname() . ' unbanned ' . $target->getEscapedNickname() . '!';
+		$chatMessage = $title . ' ' . $admin->getEscapedNickname() . ' unbanned ' . $targetLogin . '!';
 		$this->maniaControl->getChat()->sendInformation($chatMessage);
 		Logger::logInfo($chatMessage, true);
 	}
