@@ -437,6 +437,38 @@ class PlayerActions {
 	}
 
 	/**
+	 * Unbans a Player
+	 *
+	 * @param string $adminLogin
+	 * @param string $targetLogin
+	 */
+	public function unBanPlayer($adminLogin, $targetLogin) {
+		$admin = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_BAN_PLAYER)
+		) {
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($admin);
+			return;
+		}
+		$target = $this->maniaControl->getPlayerManager()->getPlayer($targetLogin);
+		if (!$target) {
+			return;
+		}
+
+		if ($target->isFakePlayer()) {
+			$this->maniaControl->getChat()->sendError('It is not possible to Un-Ban a bot', $admin);
+			return;
+		}
+
+		$this->maniaControl->getClient()->unBan($target->login);
+
+		// Announce ban
+		$title       = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($admin->authLevel);
+		$chatMessage = $title . ' ' . $admin->getEscapedNickname() . ' unbanned ' . $target->getEscapedNickname() . '!';
+		$this->maniaControl->getChat()->sendInformation($chatMessage);
+		Logger::logInfo($chatMessage, true);
+	}
+
+	/**
 	 * Grands the Player an Authorization Level
 	 *
 	 * @param string $adminLogin

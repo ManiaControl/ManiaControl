@@ -46,7 +46,8 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 		// Admin commands
 		$this->maniaControl->getCommandManager()->registerCommandListener(array('balance', 'teambalance', 'autoteambalance'), $this, 'command_TeamBalance', true, 'Balances the teams.');
 		$this->maniaControl->getCommandManager()->registerCommandListener('kick', $this, 'command_Kick', true, 'Kicks player from the server.');
-		$this->maniaControl->getCommandManager()->registerCommandListener('ban', $this, 'command_Ban', true, 'Bans player from the server.');
+		$this->maniaControl->getCommandManager()->registerCommandListener('ban', $this, 'command_Ban', true, 'Bans a player from the server.');
+		$this->maniaControl->getCommandManager()->registerCommandListener('unban', $this, 'command_UnBan', true, 'Unbans a player from the server.');
 		$this->maniaControl->getCommandManager()->registerCommandListener(array('forcespec', 'forcespectator'), $this, 'command_ForceSpectator', true, 'Forces player into spectator.');
 		$this->maniaControl->getCommandManager()->registerCommandListener('forceplay', $this, 'command_ForcePlay', true, 'Forces player into Play mode.');
 		$this->maniaControl->getCommandManager()->registerCommandListener('forceblue', $this, 'command_ForceBlue', true, 'Forces player into blue team.');
@@ -165,6 +166,27 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 	}
 
 	/**
+	 * Handle //unban command
+	 *
+	 * @param array  $chat
+	 * @param Player $player
+	 */
+	public function command_UnBan(array $chat, Player $player) {
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, PlayerActions::SETTING_PERMISSION_BAN_PLAYER)
+		) {
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
+			return;
+		}
+		$params = explode(' ', $chat[1][2], 3);
+		if (count($params) <= 1) {
+			$this->maniaControl->getChat()->sendUsageInfo("No Login given! Example: '//ban login'", $player->login);
+			return;
+		}
+		$targetLogin = $params[1];
+		$this->maniaControl->getPlayerManager()->getPlayerActions()->unBanPlayer($player->login, $targetLogin);
+	}
+
+	/**
 	 * Handle //warn Command
 	 *
 	 * @param array  $chatCallback
@@ -200,7 +222,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 		$targetLogin = $params[1];
 
 		if (isset($params[2]) && is_numeric($params[2])) {
-			$type = (int)$params[2];
+			$type = (int) $params[2];
 			$this->maniaControl->getPlayerManager()->getPlayerActions()->forcePlayerToSpectator($player->login, $targetLogin, $type);
 		} else {
 			$this->maniaControl->getPlayerManager()->getPlayerActions()->forcePlayerToSpectator($player->login, $targetLogin);
@@ -228,7 +250,7 @@ class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, Ca
 
 		$type = 2;
 		if (isset($params[2]) && is_numeric($params[2])) {
-			$type = (int)$params[2];
+			$type = (int) $params[2];
 		}
 		$selectable = ($type === 2);
 
