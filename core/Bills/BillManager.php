@@ -24,7 +24,7 @@ class BillManager implements CallbackListener {
 	const PAYED_FROM_SERVER       = 3;
 	const PLAYER_REFUSED_DONATION = 4;
 	const ERROR_WHILE_TRANSACTION = 5;
-	const CB_BILL_PAYED           = 'Billmanager.BillPayed';
+	const CB_BILL_PAID           = 'Billmanager.BillPaid';
 
 	/*
 	 * Private properties
@@ -104,7 +104,7 @@ class BillManager implements CallbackListener {
 					} else {
 						call_user_func($billData->function, $billData, self::DONATED_TO_SERVER);
 						//Trigger a Callback for external Plugins
-						$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_BILL_PAYED, self::DONATED_TO_SERVER, $billData);
+						$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_BILL_PAID, self::DONATED_TO_SERVER, $billData);
 					}
 				}
 				unset($this->openBills[$billId]);
