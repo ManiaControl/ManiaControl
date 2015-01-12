@@ -17,11 +17,11 @@ class MXMapInfo {
 	 * Public properties
 	 */
 	public $prefix, $id, $uid, $name, $userid, $author, $uploaded, $updated, $type, $maptype;
-	public $titlepack, $style, $envir, $mood, $dispcost, $lightmap, $modname, $exever;
-	public $exebld, $routes, $length, $unlimiter, $laps, $difficulty, $lbrating, $trkvalue;
-	public $replaytyp, $replayid, $replaycnt, $authorComment, $commentCount, $awards;
-	public $pageurl, $replayurl, $imageurl, $thumburl, $downloadurl, $dir;
-	public $ratingVoteCount, $ratingVoteAverage, $vehicleName;
+	public                                                                          $titlepack, $style, $envir, $mood, $dispcost, $lightmap, $modname, $exever;
+	public                                                                          $exebld, $routes, $length, $unlimiter, $laps, $difficulty, $lbrating, $trkvalue;
+	public                                                                          $replaytyp, $replayid, $replaycnt, $authorComment, $commentCount, $awards;
+	public                                                                          $pageurl, $replayurl, $imageurl, $thumburl, $downloadurl, $dir;
+	public                                                                          $ratingVoteCount, $ratingVoteAverage, $vehicleName;
 
 	/**
 	 * Returns map object with all available data from MX map data
@@ -103,7 +103,7 @@ class MXMapInfo {
 		}
 
 		if ($mx->HasThumbnail) {
-			$this->thumburl = 'http://' . $this->prefix . '.mania-exchange.com/' . $this->dir . '/screenshot/small/' . $this->id;
+			$this->thumburl = 'http://' . $this->prefix . '.mania-exchange.com/' . $this->dir . '/thumbnail/' . $this->id;
 		} else {
 			$this->thumburl = '';
 		}
