@@ -439,7 +439,11 @@ class MapManager implements CallbackListener {
 		} catch (AlreadyInListException $exception) {
 			$this->maniaControl->getChat()->sendException($exception, $login);
 			return;
+		} catch (InvalidMapException $exception) {
+			$this->maniaControl->getChat()->sendException($exception, $login);
+			return;
 		}
+
 		$this->updateFullMapList();
 
 		// Update Mx MapInfo
