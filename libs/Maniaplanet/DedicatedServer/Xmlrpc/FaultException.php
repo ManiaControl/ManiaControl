@@ -7,12 +7,9 @@
 
 namespace Maniaplanet\DedicatedServer\Xmlrpc;
 
-class FaultException extends Exception
-{
-	static function create($faultString, $faultCode)
-	{
-		switch($faultString)
-		{
+class FaultException extends Exception {
+	static function create($faultString, $faultCode) {
+		switch ($faultString) {
 			case 'Password incorrect.':
 			case 'Permission denied.':
 				return new AuthenticationException($faultString, $faultCode);
@@ -57,6 +54,7 @@ class FaultException extends Exception
 			case 'invalid index':
 				return new IndexOutOfBoundException($faultString, $faultCode);
 			case 'the next map must be different from the current one.':
+			case 'No next map currently defined.':
 				return new NextMapException($faultString, $faultCode);
 			case 'Change in progress.':
 				return new ChangeInProgressException($faultString, $faultCode);
@@ -89,26 +87,55 @@ class FaultException extends Exception
 			case 'Invalid url.':
 				return new FileException($faultString, $faultCode);
 		}
-		if(preg_match('~^Unknown setting \'.*\'\.$~iu', $faultString))
+		if (preg_match('~^Unknown setting \'.*\'\.$~iu', $faultString)) {
 			return new GameModeException($faultString, $faultCode);
-		if(preg_match('~^Couldn\'t load \'.*\'\.$~iu', $faultString))
+		}
+		if (preg_match('~^Couldn\'t load \'.*\'\.$~iu', $faultString)) {
 			return new FileException($faultString, $faultCode);
+		}
 
 		return new self($faultString, $faultCode);
 	}
 }
 
-class AuthenticationException extends FaultException {}
-class UnavailableFeatureException extends FaultException {}
-class LockedFeatureException extends FaultException {}
-class UnknownPlayerException extends FaultException {}
-class PlayerStateException extends FaultException {}
-class AlreadyInListException extends FaultException {}
-class NotInListException extends FaultException {}
-class IndexOutOfBoundException extends FaultException {}
-class NextMapException extends FaultException{}
-class ChangeInProgressException extends FaultException {}
-class InvalidMapException extends FaultException{}
-class GameModeException extends FaultException {}
-class ServerOptionsException extends FaultException {}
-class FileException extends FaultException {}
+class AuthenticationException extends FaultException {
+}
+
+class UnavailableFeatureException extends FaultException {
+}
+
+class LockedFeatureException extends FaultException {
+}
+
+class UnknownPlayerException extends FaultException {
+}
+
+class PlayerStateException extends FaultException {
+}
+
+class AlreadyInListException extends FaultException {
+}
+
+class NotInListException extends FaultException {
+}
+
+class IndexOutOfBoundException extends FaultException {
+}
+
+class NextMapException extends FaultException {
+}
+
+class ChangeInProgressException extends FaultException {
+}
+
+class InvalidMapException extends FaultException {
+}
+
+class GameModeException extends FaultException {
+}
+
+class ServerOptionsException extends FaultException {
+}
+
+class FileException extends FaultException {
+}
