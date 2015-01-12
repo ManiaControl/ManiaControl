@@ -427,7 +427,13 @@ class PlayerActions {
 			return;
 		}
 
-		$this->maniaControl->getClient()->ban($target->login, $message);
+		try {
+			$this->maniaControl->getClient()->ban($target->login, $message);
+		} catch (UnknownPlayerException $e) {
+			$this->maniaControl->getChat()->sendError('Unknown player!', $admin);
+			return;
+		}
+
 
 		// Announce ban
 		$title       = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($admin->authLevel);
