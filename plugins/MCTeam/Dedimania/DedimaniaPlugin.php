@@ -272,7 +272,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * @return bool
 	 */
 	private function fetchDedimaniaRecords($reset = true) {
-		if ($this->dedimaniaData == null || !$this->dedimaniaData->sessionId) {
+		if (!isset($this->dedimaniaData) || !$this->dedimaniaData->sessionId) {
 			return false;
 		}
 
@@ -605,7 +605,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * @param Player $player
 	 */
 	public function handlePlayerConnect(Player $player) {
-		if ($this->dedimaniaData == null) {
+		if (!isset($this->dedimaniaData)) {
 			return;
 		}
 
@@ -653,7 +653,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * @param Player $player
 	 */
 	public function handlePlayerDisconnect(Player $player) {
-		if ($this->dedimaniaData == null) {
+		if (!isset($this->dedimaniaData)) {
 			return;
 		}
 		$this->dedimaniaData->removePlayer($player->login);
@@ -691,7 +691,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * Handle EndMap Callback
 	 */
 	public function handleMapEnd() {
-		if ($this->dedimaniaData == null || !$this->dedimaniaData->records) {
+		if (!isset($this->dedimaniaData) || !$this->dedimaniaData->records) {
 			return;
 		}
 
@@ -845,7 +845,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * @param RecordCallback $callback
 	 */
 	public function handleFinishCallback(RecordCallback $callback) {
-		if ($this->dedimaniaData == null || !$this->dedimaniaData->records) {
+		if (!isset($this->dedimaniaData) || !$this->dedimaniaData->records) {
 			return;
 		}
 		if ($callback->isLegacyCallback) {
@@ -904,7 +904,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * @return RecordData $record
 	 */
 	private function getDedimaniaRecord($login) {
-		if ($this->dedimaniaData == null || !$this->dedimaniaData->records) {
+		if (!isset($this->dedimaniaData) || !$this->dedimaniaData->records) {
 			return new RecordData(null);
 		}
 		$records = $this->dedimaniaData->records;
@@ -945,7 +945,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * @return bool
 	 */
 	private function insertDedimaniaRecord(RecordData &$newRecord, RecordData $oldRecord) {
-		if ($this->dedimaniaData == null || !$this->dedimaniaData->records || $newRecord->nullRecord) {
+		if (!isset($this->dedimaniaData) || !$this->dedimaniaData->records || $newRecord->nullRecord) {
 			return false;
 		}
 
