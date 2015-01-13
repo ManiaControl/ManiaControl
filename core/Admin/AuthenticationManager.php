@@ -242,7 +242,7 @@ class AuthenticationManager implements CallbackListener {
 	public function getAdmins($authLevel = self::AUTH_LEVEL_MODERATOR) {
 		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
 		$query  = "SELECT `login` FROM `" . PlayerManager::TABLE_PLAYERS . "`
-				WHERE `authLevel` > " . $authLevel . "
+				WHERE `authLevel` >= " . $authLevel . "
 				ORDER BY `authLevel` DESC;";
 		$result = $mysqli->query($query);
 		if (!$result) {
