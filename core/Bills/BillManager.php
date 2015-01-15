@@ -95,12 +95,12 @@ class BillManager implements CallbackListener {
 				if ($billData->pay) {
 					call_user_func($billData->function, $billData, self::PAYED_FROM_SERVER);
 					//Trigger a Callback for external Plugins
-					$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_BILL_PAYED, self::PAYED_FROM_SERVER, $billData);
+					$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_BILL_PAID, self::PAYED_FROM_SERVER, $billData);
 				} else {
 					if ($billData->receiverLogin) {
 						call_user_func($billData->function, $billData, self::DONATED_TO_RECEIVER);
 						//Trigger a Callback for external Plugins
-						$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_BILL_PAYED, self::DONATED_TO_RECEIVER, $billData);
+						$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_BILL_PAID, self::DONATED_TO_RECEIVER, $billData);
 					} else {
 						call_user_func($billData->function, $billData, self::DONATED_TO_SERVER);
 						//Trigger a Callback for external Plugins
