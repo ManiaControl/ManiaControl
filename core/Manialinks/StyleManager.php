@@ -159,7 +159,7 @@ class StyleManager {
 
 		// mainframe
 		$frame = new Frame();
-		$frame->setSize($width, $height)->setZ(35); //TODO place before scoreboards
+		$frame->setSize($width, $height)->setZ(45); //TODO place before scoreboards
 
 		// Background Quad
 		$backgroundQuad = new Quad();
