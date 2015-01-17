@@ -10,6 +10,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
+use Maniaplanet\DedicatedServer\Xmlrpc\FaultException;
 use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
 use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
 
@@ -260,6 +261,10 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 				return $success;
 			}
 		} catch (UnknownPlayerException $e) {
+			return false;
+		} catch (FaultException $e){
+			//TODO added 17.01.2015, remove later:
+			$this->maniaControl->getErrorHandler()->triggerDebugNotice("Fault Exception: ManiaLink Manager, Message: " . $e->getMessage());
 			return false;
 		}
 
