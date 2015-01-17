@@ -290,34 +290,34 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 
 		//Send and Handle the Bill
 		$this->maniaControl->getBillManager()->sendBill(function ($data, $status) use (&$player, $amount, $receiver) {
-			                                     switch ($status) {
-				                                     case BillManager::DONATED_TO_SERVER:
-					                                     if ($this->maniaControl->getSettingManager()->getSettingValue($this, DonationPlugin::SETTING_ANNOUNCE_SERVER_DONATION, true)
-					                                         && $amount >= $this->maniaControl->getSettingManager()->getSettingValue($this, DonationPlugin::SETTING_MIN_AMOUNT_SHOWN, true)
-					                                     ) {
-						                                     $login   = null;
-						                                     $message = $player->getEscapedNickname() . ' donated ' . $amount . ' Planets! Thanks.';
-					                                     } else {
-						                                     $login   = $player->login;
-						                                     $message = 'Donation successful! Thanks.';
-					                                     }
-					                                     $this->maniaControl->getChat()->sendSuccess($message, $login);
-					                                     $this->maniaControl->getStatisticManager()->insertStat(DonationPlugin::STAT_PLAYER_DONATIONS, $player, $this->maniaControl->getServer()->index, $amount);
-					                                     break;
-				                                     case BillManager::DONATED_TO_RECEIVER:
-					                                     $message = "Successfully donated {$amount} to '{$receiver}'!";
-					                                     $this->maniaControl->getChat()->sendSuccess($message, $player);
-					                                     break;
-				                                     case BillManager::PLAYER_REFUSED_DONATION:
-					                                     $message = 'Transaction cancelled.';
-					                                     $this->maniaControl->getChat()->sendError($message, $player);
-					                                     break;
-				                                     case BillManager::ERROR_WHILE_TRANSACTION:
-					                                     $message = $data;
-					                                     $this->maniaControl->getChat()->sendError($message, $player);
-					                                     break;
-			                                     }
-		                                     }, $player, $amount, $message);
+			switch ($status) {
+				case BillManager::DONATED_TO_SERVER:
+					if ($this->maniaControl->getSettingManager()->getSettingValue($this, DonationPlugin::SETTING_ANNOUNCE_SERVER_DONATION, true)
+					    && $amount >= $this->maniaControl->getSettingManager()->getSettingValue($this, DonationPlugin::SETTING_MIN_AMOUNT_SHOWN, true)
+					) {
+						$login   = null;
+						$message = $player->getEscapedNickname() . ' donated ' . $amount . ' Planets! Thanks.';
+					} else {
+						$login   = $player->login;
+						$message = 'Donation successful! Thanks.';
+					}
+					$this->maniaControl->getChat()->sendSuccess($message, $login);
+					$this->maniaControl->getStatisticManager()->insertStat(DonationPlugin::STAT_PLAYER_DONATIONS, $player, $this->maniaControl->getServer()->index, $amount);
+					break;
+				case BillManager::DONATED_TO_RECEIVER:
+					$message = "Successfully donated {$amount} to '{$receiver}'!";
+					$this->maniaControl->getChat()->sendSuccess($message, $player);
+					break;
+				case BillManager::PLAYER_REFUSED_DONATION:
+					$message = 'Transaction cancelled.';
+					$this->maniaControl->getChat()->sendError($message, $player);
+					break;
+				case BillManager::ERROR_WHILE_TRANSACTION:
+					$message = $data;
+					$this->maniaControl->getChat()->sendError($message, $player);
+					break;
+			}
+		}, $player, $amount, $message);
 	}
 
 	/**
@@ -346,7 +346,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 			$this->sendDonateUsageExample($player);
 			return;
 		}
-		$amount = (int)$params[1];
+		$amount = (int) $params[1];
 		if (!$amount || $amount <= 0) {
 			$this->sendDonateUsageExample($player);
 			return;
@@ -391,7 +391,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 			$this->sendPayUsageExample($player);
 			return;
 		}
-		$amount = (int)$params[1];
+		$amount = (int) $params[1];
 		if (!$amount || $amount <= 0) {
 			$this->sendPayUsageExample($player);
 			return;
@@ -404,21 +404,21 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$message = 'Payout from $<' . $this->maniaControl->getClient()->getServerName() . '$>.';
 
 		$this->maniaControl->getBillManager()->sendPlanets(function ($data, $status) use (&$player, $amount, $receiver) {
-			                                     switch ($status) {
-				                                     case BillManager::PAYED_FROM_SERVER:
-					                                     $message = "Successfully payed out {$amount} to '{$receiver}'!";
-					                                     $this->maniaControl->getChat()->sendSuccess($message, $player);
-					                                     break;
-				                                     case BillManager::PLAYER_REFUSED_DONATION:
-					                                     $message = 'Transaction cancelled.';
-					                                     $this->maniaControl->getChat()->sendError($message, $player);
-					                                     break;
-				                                     case BillManager::ERROR_WHILE_TRANSACTION:
-					                                     $message = $data;
-					                                     $this->maniaControl->getChat()->sendError($message, $player);
-					                                     break;
-			                                     }
-		                                     }, $receiver, $amount, $message);
+			switch ($status) {
+				case BillManager::PAYED_FROM_SERVER:
+					$message = "Successfully payed out {$amount} to '{$receiver}'!";
+					$this->maniaControl->getChat()->sendSuccess($message, $player);
+					break;
+				case BillManager::PLAYER_REFUSED_DONATION:
+					$message = 'Transaction cancelled.';
+					$this->maniaControl->getChat()->sendError($message, $player);
+					break;
+				case BillManager::ERROR_WHILE_TRANSACTION:
+					$message = $data;
+					$this->maniaControl->getChat()->sendError($message, $player);
+					break;
+			}
+		}, $receiver, $amount, $message);
 	}
 
 	/**
@@ -491,7 +491,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$headFrame = new Frame();
 		$frame->add($headFrame);
 		$headFrame->setY($posY - 5);
-		$array = array('$oId' => $posX + 5, '$oNickname' => $posX + 18, '$oDonated planets' => $posX + 70);
+		$array = array('$oId' => $posX + 5, '$oNickname' => $posX + 18, '$oLogin' => $posX + 70, '$oDonated planets' => $posX + 110);
 		$this->maniaControl->getManialinkManager()->labelLine($headFrame, $array);
 
 		$index     = 1;
@@ -519,7 +519,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 			}
 
 			$donatingPlayer = $this->maniaControl->getPlayerManager()->getPlayerByIndex($playerIndex);
-			$array          = array($index => $posX + 5, $donatingPlayer->nickname => $posX + 18, $donations => $posX + 70);
+			$array          = array($index => $posX + 5, $donatingPlayer->nickname => $posX + 18, $donatingPlayer->login => $posX + 70, $donations => $posX + 110);
 			$this->maniaControl->getManialinkManager()->labelLine($playerFrame, $array);
 
 			$posY -= 4;
