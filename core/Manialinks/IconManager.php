@@ -39,7 +39,7 @@ class IconManager implements CallbackListener {
 	 */
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
-	private $icons = array();
+	private $icons        = array();
 
 	/**
 	 * Construct a new icon manager instance
@@ -73,6 +73,16 @@ class IconManager implements CallbackListener {
 	 */
 	public function addIcon($iconName, $iconLink = self::DEFAULT_IMG_URL) {
 		$this->icons[$iconName] = $iconLink . '/' . $iconName;
+	}
+
+	/**
+	 * Adds an Icon by it's full URL
+	 *
+	 * @param $iconName
+	 * @param $iconUrl
+	 */
+	public function addIconFullUrl($iconName, $iconUrl) {
+		$this->icons[$iconName] = $iconUrl;
 	}
 
 	/**
