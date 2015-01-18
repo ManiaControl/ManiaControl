@@ -483,6 +483,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$label->setTextSize(1.3);
 		$label->setText($name);
 		$label->setTextColor('fff');
+		$label->setSize($width - 5, $height);
 
 		$label = new Label_Text();
 		$frame->add($label);
