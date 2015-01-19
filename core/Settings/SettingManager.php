@@ -12,7 +12,7 @@ use ManiaControl\Utils\ClassUtil;
  * Class managing ManiaControl Settings and Configurations
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014 ManiaControl Team
+ * @copyright 2014-2015 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class SettingManager implements CallbackListener {

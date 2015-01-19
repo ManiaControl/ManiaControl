@@ -12,7 +12,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\TransportException;
  * Error and Exception Manager Class
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014 ManiaControl Team
+ * @copyright 2014-2015 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ErrorHandler {

@@ -13,7 +13,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
  * Class managing Rankings
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014 ManiaControl Team
+ * @copyright 2014-2015 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class RankingManager implements CallbackListener {
