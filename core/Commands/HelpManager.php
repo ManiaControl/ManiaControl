@@ -19,7 +19,7 @@ use ManiaControl\Players\Player;
  * @copyright 2014-2015 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-// TODO: refactor code - i see duplicated code all over the place..
+
 class HelpManager implements CommandListener, CallbackListener {
 	/*
 	 * Private properties
@@ -58,28 +58,14 @@ class HelpManager implements CommandListener, CallbackListener {
 	 * @param Player $player
 	 */
 	public function command_adminHelp(array $chatCallback, Player $player) {
-		$showCommands      = array();
-		$registeredMethods = array();
-		foreach (array_reverse($this->adminCommands) as $command) {
-			if (array_key_exists($command['Method'], $registeredMethods) && $showCommands[$registeredMethods[$command['Method']]]['Description'] === $command['Description']) {
-				$name = $registeredMethods[$command['Method']];
-				$showCommands[$name]['Name'] .= '|' . $command['Name'];
-			} else {
-				$showCommands[$command['Name']]        = $command;
-				$registeredMethods[$command['Method']] = $command['Name'];
-			}
-		}
-
-		usort($showCommands, function ($commandA, $commandB) {
-			return strcmp($commandA['Name'], $commandB['Name']);
-		});
-
-		$message = 'Supported Admin Commands: ';
-		foreach ($showCommands as $command) {
-			$message .= $command['Name'] . ',';
-		}
-		$message = substr($message, 0, -1);
-		$this->maniaControl->getChat()->sendChat($message, $player);
+        // Parse list from array
+        $message = $this->parseHelpList($this->adminCommands);
+        
+        // Show message when it's not empty
+        if($message != NULL){
+            $message = 'Supported Admin Commands: ' . $message;
+            $this->maniaControl->getChat()->sendChat($message, $player);
+        }
 	}
 
 	/**
@@ -89,28 +75,14 @@ class HelpManager implements CommandListener, CallbackListener {
 	 * @param Player $player
 	 */
 	public function command_playerHelp(array $chatCallback, Player $player) {
-		$showCommands      = array();
-		$registeredMethods = array();
-		foreach (array_reverse($this->playerCommands) as $command) {
-			if (array_key_exists($command['Method'], $registeredMethods) && $showCommands[$registeredMethods[$command['Method']]]['Description'] === $command['Description']) {
-				$name = $registeredMethods[$command['Method']];
-				$showCommands[$name]['Name'] .= '|' . $command['Name'];
-			} else {
-				$showCommands[$command['Name']]        = $command;
-				$registeredMethods[$command['Method']] = $command['Name'];
-			}
-		}
-
-		usort($showCommands, function ($commandA, $commandB) {
-			return strcmp($commandA['Name'], $commandB['Name']);
-		});
-
-		$message = 'Supported Player Commands: ';
-		foreach ($showCommands as $command) {
-			$message .= $command['Name'] . ',';
-		}
-		$message = substr($message, 0, -1);
-		$this->maniaControl->getChat()->sendChat($message, $player);
+        // Parse list from array
+		$message = $this->parseHelpList($this->playerCommands);
+        
+        // Show message when it's not empty
+        if($message != NULL){
+            $message = 'Supported Player Commands: ' . $message;
+            $this->maniaControl->getChat()->sendChat($message, $player);
+        }
 	}
 
 	/**
@@ -120,21 +92,23 @@ class HelpManager implements CommandListener, CallbackListener {
 	 * @param Player $player
 	 */
 	public function command_playerHelpAll(array $chatCallback, Player $player) {
-		$this->prepareHelpAll($this->playerCommands, $player);
+        $this->parseHelpList($this->playerCommands, true, $player);
 	}
 
 	/**
-	 * Prepare the commands for the HelpAll ManiaLink.
-	 *
-	 * @param array $commands
-	 * @param mixed $player
-	 */
-	private function prepareHelpAll(array $commands, $player) {
+     * Parse list with commands from array
+     * @param array     $commands
+     * @param bool      $isHelpAll
+     * @param Player    $player
+     * @return string|void
+     */
+	private function parseHelpList(array $commands, $isHelpAll = false, Player $player = null) {
 		$showCommands      = array();
 		$registeredMethods = array();
+        $message           = '';
 		foreach (array_reverse($commands) as $command) {
 			if (array_key_exists($command['Method'], $registeredMethods)) {
-				if ($showCommands[$registeredMethods[$command['Method']]]['Description'] === $command['Description']) {
+				if($showCommands[$registeredMethods[$command['Method']]]['Description'] === $command['Description']) {
 					$name = $registeredMethods[$command['Method']];
 					$showCommands[$name]['Name'] .= '|' . $command['Name'];
 				} else {
@@ -151,7 +125,20 @@ class HelpManager implements CommandListener, CallbackListener {
 			return strcmp($commandA['Name'], $commandB['Name']);
 		});
 
-		$this->showHelpAllList($showCommands, $player);
+		if(!$isHelpAll){
+			foreach ($showCommands as $command) {
+				$message .= $command['Name'] . ',';
+			}
+			$message = substr($message, 0, -1);
+
+			return $message;
+		}else{
+			if($player != NULL){
+				$this->showHelpAllList($showCommands, $player);
+			}
+		}
+        
+        return;
 	}
 
 	/**
@@ -234,7 +221,7 @@ class HelpManager implements CommandListener, CallbackListener {
 	 * @param Player $player
 	 */
 	public function command_adminHelpAll(array $chatCallback, Player $player) {
-		$this->prepareHelpAll($this->adminCommands, $player);
+        $this->parseHelpList($this->adminCommands, true, $player);
 	}
 
 	/**
