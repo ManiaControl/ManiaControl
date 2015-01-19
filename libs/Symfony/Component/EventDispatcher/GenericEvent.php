@@ -118,7 +118,7 @@ class GenericEvent extends Event implements \ArrayAccess, \IteratorAggregate
      *
      * @param string $key Key of arguments array.
      *
-     * @return boolean
+     * @return bool
      */
     public function hasArgument($key)
     {
@@ -167,7 +167,7 @@ class GenericEvent extends Event implements \ArrayAccess, \IteratorAggregate
      *
      * @param string $key Array key.
      *
-     * @return boolean
+     * @return bool
      */
     public function offsetExists($key)
     {
@@ -175,7 +175,7 @@ class GenericEvent extends Event implements \ArrayAccess, \IteratorAggregate
     }
 
     /**
-     * IteratorAggregate for iterating over the object like an array
+     * IteratorAggregate for iterating over the object like an array.
      *
      * @return \ArrayIterator
      */
