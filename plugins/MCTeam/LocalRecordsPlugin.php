@@ -107,6 +107,8 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 
 	/**
 	 * @see \ManiaControl\Plugins\Plugin::load()
+	 * @param \ManiaControl\ManiaControl $maniaControl
+	 * @return bool
 	 */
 	public function load(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
