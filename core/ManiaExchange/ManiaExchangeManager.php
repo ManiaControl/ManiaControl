@@ -19,7 +19,7 @@ class ManiaExchangeManager {
 	/*
 	 * Constants
 	 */
-	//Search others
+	//Search orders (prior parameter) http://api.mania-exchange.com/documents/enums#orderings
 	const SEARCH_ORDER_NONE               = -1;
 	const SEARCH_ORDER_TRACK_NAME         = 0;
 	const SEARCH_ORDER_AUTHOR             = 1;
@@ -37,6 +37,24 @@ class ManiaExchangeManager {
 	const SEARCH_ORDER_DIFFICULTY_HARDEST = 13;
 	const SEARCH_ORDER_LENGTH_SHORTEST    = 14;
 	const SEARCH_ORDER_LENGTH_LONGEST     = 15;
+	const SEARCH_ORDER_TRACK_VALUE_LTH    = 24;
+	const SEARCH_ORDER_TRACK_VALUE_HTL    = 25;
+	const SEARCH_ORDER_ONLINE_RATING_LTH  = 26;
+	const SEARCH_ORDER_ONLINE_RATING_HTL  = 27;
+
+	//Special Search Orders (mode parameter): http://api.mania-exchange.com/documents/enums#modes
+	const SEARCH_ORDER_SPECIAL_DEFAULT                  = 0;
+	const SEARCH_ORDER_SPECIAL_USER_TRACKS              = 1;
+	const SEARCH_ORDER_SPECIAL_LATEST_TRACKS            = 2;
+	const SEARCH_ORDER_SPECIAL_RECENTLY_AWARDED         = 3;
+	const SEARCH_ORDER_SPECIAL_BEST_OF_WEEK_AWARDS      = 4;
+	const SEARCH_ORDER_SPECIAL_BEST_OF_MONTH_AWARDS     = 5;
+	const SEARCH_ORDER_SPECIAL_MX_SUPPORTER_TRACKS      = 10;
+	const SEARCH_ORDER_SPECIAL_DUO_ACCOUNT_TRACKS       = 11;
+	const SEARCH_ORDER_SPECIAL_MOST_COMPETITIVE_WEEK    = 19;
+	const SEARCH_ORDER_SPECIAL_MOST_COMPETITIVE_MONTH   = 20;
+	const SEARCH_ORDER_SPECIAL_BEST_ONLINE_RATING_WEEK  = 21;
+	const SEARCH_ORDER_SPECIAL_BEST_ONLINE_RATING_MONTH = 22;
 
 	//Maximum Maps per request
 	const MAPS_PER_MX_FETCH = 50;
@@ -47,7 +65,7 @@ class ManiaExchangeManager {
 	 * Private properties
 	 */
 	/** @var ManiaControl $maniaControl */
-	private $maniaControl = null;
+	private $maniaControl  = null;
 	private $mxIdUidVector = array();
 
 	/**
