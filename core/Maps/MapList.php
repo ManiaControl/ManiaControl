@@ -122,7 +122,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$height = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsHeight();
 
 		if ($pageIndex < 0) {
-			$pageIndex = (int)$player->getCache($this, self::CACHE_CURRENT_PAGE);
+			$pageIndex = (int) $player->getCache($this, self::CACHE_CURRENT_PAGE);
 		}
 		$player->setCache($this, self::CACHE_CURRENT_PAGE, $pageIndex);
 		$queueBuffer = $this->maniaControl->getMapManager()->getMapQueue()->getQueueBuffer();
@@ -441,8 +441,19 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 			// Display Karma bar
 			if ($karmaPlugin) {
-				$karma = $karmaPlugin->getMapKarma($map);
-				$votes = $karmaPlugin->getMapVotes($map);
+				$displayMxKarma = $this->maniaControl->getSettingManager()->getSettingValue($karmaPlugin, $karmaPlugin::SETTING_WIDGET_DISPLAY_MX);
+
+				//Display Mx Karma
+				if ($displayMxKarma && $map->mx) {
+					$karma = $map->mx->ratingVoteAverage / 100;
+					$votes = array("count" => $map->mx->ratingVoteCount);
+
+					//Display Local Karma
+				} else {
+					$karma = $karmaPlugin->getMapKarma($map);
+					$votes = $karmaPlugin->getMapVotes($map);
+				}
+
 				if (is_numeric($karma)) {
 					if ($this->maniaControl->getSettingManager()->getSettingValue($karmaPlugin, $karmaPlugin::SETTING_NEWKARMA)
 					) {
@@ -692,7 +703,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			default:
 				if (substr($actionId, 0, strlen(self::ACTION_PAGING_CHUNKS)) === self::ACTION_PAGING_CHUNKS) {
 					// Paging chunks
-					$neededPage = (int)substr($actionId, strlen(self::ACTION_PAGING_CHUNKS));
+					$neededPage = (int) substr($actionId, strlen(self::ACTION_PAGING_CHUNKS));
 					$this->showMapList($player, null, $neededPage - 1);
 				}
 				break;
