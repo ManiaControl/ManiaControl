@@ -51,7 +51,8 @@ class ManiaExchangeMapSearch {
 	const SEARCH_ORDER_SPECIAL_BEST_ONLINE_RATING_MONTH = 22;
 
 	//Private Properties
-	private $url = "";
+	private $url         = "";
+	private $titlePrefix = "";
 
 	private $mode              = null;
 	private $trackName         = null;
@@ -82,6 +83,10 @@ class ManiaExchangeMapSearch {
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 
+	//TODO test class
+	//TODO test booleans
+	//TODO use class by maniaexchangemanager and mxlist
+
 	/**
 	 * Construct map manager
 	 *
@@ -91,14 +96,17 @@ class ManiaExchangeMapSearch {
 		$this->maniaControl = $maniaControl;
 
 
-		$titleId     = $this->maniaControl->getServer()->titleId;
-		$titlePrefix = $this->maniaControl->getMapManager()->getCurrentMap()->getGame();
+		$titleId           = $this->maniaControl->getServer()->titleId;
+		$this->titlePrefix = $this->maniaControl->getMapManager()->getCurrentMap()->getGame();
 
-		$this->url = 'http://' . $titlePrefix . '.mania-exchange.com/tracksearch2/search?api=on';
+		$this->url = 'http://' . $this->titlePrefix . '.mania-exchange.com/tracksearch2/search?api=on';
 
 		//Set some defaults:
+		$this->limit         = 100;
+		$this->priorityOrder = self::SEARCH_ORDER_UPDATED_NEWEST;
+
 		//Set Min Exe Build Default for games which are not Trackmania
-		if ($titlePrefix !== "tm") {
+		if ($this->titlePrefix !== "tm") {
 			$this->minExeBuild = ManiaExchangeManager::MIN_EXE_BUILD;
 		}
 
@@ -116,10 +124,6 @@ class ManiaExchangeMapSearch {
 		if ($envNumber > -1) {
 			$this->environments = $envNumber;
 		}
-
-		//More Defaults:
-		$this->limit         = 100;
-		$this->priorityOrder = self::SEARCH_ORDER_UPDATED_NEWEST;
 	}
 
 	/**
@@ -128,16 +132,86 @@ class ManiaExchangeMapSearch {
 	 * @param callable $function
 	 */
 	public function fetchMapsAsync(callable $function) {
-		$titlePrefix = $this->maniaControl->getMapManager()->getCurrentMap()->getGame();
-
 		// compile search URL
 		$parameters = "";
 
-		//TODO ALl Parameters
-		//$url .= "&..."; //TODO
-		
+		if ($this->mode) {
+			$parameters .= "&mode=" . $this->mode;
+		}
+		if ($this->trackName) {
+			$parameters .= "&trackname=" . str_replace(" ", "%20", $this->trackName); //TODO test without the str_replace (URLENCODE)
+		}
+		if ($this->authorName) {
+			$parameters .= "&author=" . $this->authorName;
+		}
+		if ($this->mod) {
+			$parameters .= "&mod=" . $this->mod;
+		}
+		if ($this->authorId) {
+			$parameters .= "&authorid= " . $this->authorId;
+		}
+		if ($this->maniaScriptType) {
+			$parameters .= "&mtype=" . $this->maniaScriptType;
+		}
+		if ($this->titlePack) {
+			$parameters .= "&tpack=" . $this->titlePack;
+		}
+		if ($this->replayType) {
+			$parameters .= "&rytpe=" . $this->replayType;
+		}
+		if ($this->style) {
+			$parameters .= "&style=" . $this->style;
+		}
+		if ($this->length) {
+			$parameters .= "&length=" . $this->length;
+		}
+		if ($this->lengthOperator) {
+			$parameters .= "&lengthop=" . $this->lengthOperator;
+		}
+		if ($this->priorityOrder) {
+			$parameters .= "&priord=" . $this->priorityOrder;
+		}
+		if ($this->secondaryOrder) {
+			$parameters .= "&secord=" . $this->secondaryOrder;
+		}
+		if ($this->environments) {
+			$parameters .= "&environemtns=" . $this->environments;
+		}
+		if ($this->vehicles) {
+			$parameters .= "&vehicles=" . $this->vehicles;
+		}
+		if ($this->page) {
+			$parameters .= "&page=" . $this->page;
+		}
+		if ($this->limit) {
+			$parameters .= "&limit=" . $this->limit;
+		}
+		if (isset($this->unreleased)) {
+			$parameters .= "&unreleased=" . $this->unreleased;
+		}
+		if ($this->mapGroup) {
+			$parameters .= "&mapgroup=" . $this->mapGroup;
+		}
+		if ($this->commentsMinLength) {
+			$parameters .= "&commentsminlength=" . $this->commentsMinLength;
+		}
+		if (isset($this->customScreenshot)) {
+			$parameters .= "&customscreenshot=" . $this->customScreenshot;
+		}
+		if ($this->minExeBuild) {
+			$parameters .= "&minexebuild=" . $this->minExeBuild;
+		}
+		if (isset($this->envMix)) {
+			$parameters .= "&envmix=" . (int) $this->envMix;
+		}
+		if (isset($this->ghostBlocks)) {
+			$parameters .= "&ghostblocks=" . (int) $this->ghostBlocks;
+		}
+		if (isset($this->embeddedObjects)) {
+			$parameters .= "&embeddedObjects" . (int) $this->embeddedObjects;
+		}
 
-		$this->maniaControl->getFileReader()->loadFile($this->url . $parameters, function ($mapInfo, $error) use (&$function, $titlePrefix) {
+		$this->maniaControl->getFileReader()->loadFile($this->url . $parameters, function ($mapInfo, $error) use (&$function) {
 			if ($error) {
 				trigger_error($error);
 				return;
@@ -160,7 +234,7 @@ class ManiaExchangeMapSearch {
 			$maps = array();
 			foreach ($mxMapList as $map) {
 				if (!empty($map)) {
-					array_push($maps, new MXMapInfo($titlePrefix, $map));
+					array_push($maps, new MXMapInfo($this->titlePrefix, $map));
 				}
 			}
 
