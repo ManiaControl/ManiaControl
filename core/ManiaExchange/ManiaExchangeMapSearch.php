@@ -209,7 +209,6 @@ class ManiaExchangeMapSearch {
 			$parameters .= "&embeddedobjects=" . (int) $this->embeddedObjects;
 		}
 
-		var_dump($this->url . $parameters);
 		$this->maniaControl->getFileReader()->loadFile($this->url . $parameters, function ($mapInfo, $error) use (&$function) {
 			if ($error) {
 				trigger_error($error);
