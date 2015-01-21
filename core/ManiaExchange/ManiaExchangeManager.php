@@ -272,7 +272,7 @@ class ManiaExchangeManager {
 	 * @deprecated
 	 * @see \ManiaControl\ManiaExchange\ManiaExchangeManager::fetchMapsAsync()
 	 */
-	public function getMapsAsync(callable $function, $name = '', $author = '', $env = '', $maxMapsReturned = 100, $searchOrder = self::SEARCH_ORDER_UPDATED_NEWEST) {
+	public function getMapsAsync(callable $function, $name = '', $author = '', $env = '', $maxMapsReturned = 100, $searchOrder = ManiaExchangeMapSearch::SEARCH_ORDER_UPDATED_NEWEST) {
 		$this->fetchMapsAsync($function, $name, $author, $env, $maxMapsReturned, $searchOrder);
 		return true;
 	}
@@ -286,74 +286,22 @@ class ManiaExchangeManager {
 	 * @param string   $env
 	 * @param int      $maxMapsReturned
 	 * @param int      $searchOrder
+	 *
+	 * @deprecated
+	 * @see \ManiaControl\ManiaExchange\ManiaExchangeMapSearch
 	 */
-	public function fetchMapsAsync(callable $function, $name = '', $author = '', $env = '', $maxMapsReturned = 100, $searchOrder = self::SEARCH_ORDER_UPDATED_NEWEST) {
-		//TODO provide additional parameters as array, generally new structure
-		// TODO: remove $env because it's not really used?
+	public function fetchMapsAsync(callable $function, $name = '', $author = '', $env = '', $maxMapsReturned = 100, $sortOrder = ManiaExchangeMapSearch::SEARCH_ORDER_UPDATED_NEWEST) {
+		$mapSearch = new ManiaExchangeMapSearch($this->maniaControl);
+		$mapSearch->setMapName($name);
+		$mapSearch->setAuthorName($author);
+		$mapSearch->setMapLimit($maxMapsReturned);
+		$mapSearch->setPrioritySortOrder($sortOrder);
 
-		// Get Title Id
-		$titleId     = $this->maniaControl->getServer()->titleId;
-		$titlePrefix = $this->maniaControl->getMapManager()->getCurrentMap()->getGame();
-
-		// compile search URL
-		$url = 'http://' . $titlePrefix . '.mania-exchange.com/tracksearch2/search?api=on';
-
-		$game      = explode('@', $titleId);
-		$envNumber = $this->getEnvironment($game[0]);
-		if ($env || $envNumber > -1) {
-			$url .= '&environments=' . $envNumber;
-		}
-		if ($name) {
-			$url .= '&trackname=' . str_replace(" ", "%20", $name);
-		}
-		if ($author) {
-			$url .= '&author=' . $author;
+		if($env){
+			$mapSearch->setEnvironments($env);
 		}
 
-		$url .= '&priord=' . $searchOrder;
-		$url .= '&limit=' . $maxMapsReturned;
-
-		if ($titlePrefix !== "tm") {
-			$url .= '&minexebuild=' . self::MIN_EXE_BUILD;
-		}
-
-		// Get MapTypes
-		try {
-			$scriptInfos = $this->maniaControl->getClient()->getModeScriptInfo();
-			$mapTypes    = $scriptInfos->compatibleMapTypes;
-			$url .= '&mtype=' . $mapTypes;
-		} catch (GameModeException $e) {
-		}
-
-		$this->maniaControl->getFileReader()->loadFile($url, function ($mapInfo, $error) use (&$function, $titlePrefix) {
-			if ($error) {
-				trigger_error($error);
-				return;
-			}
-
-			$mxMapList = json_decode($mapInfo);
-
-			if (!isset($mxMapList->results)) {
-				trigger_error('Cannot decode searched JSON data');
-				return;
-			}
-
-			$mxMapList = $mxMapList->results;
-
-			if ($mxMapList === null) {
-				trigger_error('Cannot decode searched JSON data');
-				return;
-			}
-
-			$maps = array();
-			foreach ($mxMapList as $map) {
-				if (!empty($map)) {
-					array_push($maps, new MXMapInfo($titlePrefix, $map));
-				}
-			}
-
-			call_user_func($function, $maps);
-		}, AsynchronousFileReader::CONTENT_TYPE_JSON);
+		$mapSearch->fetchMapsAsync($function);
 	}
 
 	/**

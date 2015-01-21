@@ -55,7 +55,7 @@ class ManiaExchangeMapSearch {
 	private $titlePrefix = "";
 
 	private $mode              = null;
-	private $trackName         = null;
+	private $mapName           = null;
 	private $authorName        = null;
 	private $mod               = null;
 	private $authorId          = null;
@@ -70,7 +70,7 @@ class ManiaExchangeMapSearch {
 	private $environments      = null;
 	private $vehicles          = null;
 	private $page              = null;
-	private $limit             = null;
+	private $mapLimit          = null;
 	private $unreleased        = null;
 	private $mapGroup          = null;
 	private $commentsMinLength = null;
@@ -83,9 +83,7 @@ class ManiaExchangeMapSearch {
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 
-	//TODO test class
-	//TODO test booleans
-	//TODO use class by maniaexchangemanager and mxlist
+	//TODO use class by mxlist
 
 	/**
 	 * Construct map manager
@@ -138,23 +136,23 @@ class ManiaExchangeMapSearch {
 		if ($this->mode) {
 			$parameters .= "&mode=" . $this->mode;
 		}
-		if ($this->trackName) {
-			$parameters .= "&trackname=" . str_replace(" ", "%20", $this->trackName); //TODO test without the str_replace (URLENCODE)
+		if ($this->mapName) {
+			$parameters .= "&trackname=" . urlencode($this->mapName);
 		}
 		if ($this->authorName) {
-			$parameters .= "&author=" . $this->authorName;
+			$parameters .= "&author=" . urlencode($this->authorName);
 		}
 		if ($this->mod) {
-			$parameters .= "&mod=" . $this->mod;
+			$parameters .= "&mod=" . urlencode($this->mod);
 		}
 		if ($this->authorId) {
 			$parameters .= "&authorid= " . $this->authorId;
 		}
 		if ($this->maniaScriptType) {
-			$parameters .= "&mtype=" . $this->maniaScriptType;
+			$parameters .= "&mtype=" . urlencode($this->maniaScriptType);
 		}
 		if ($this->titlePack) {
-			$parameters .= "&tpack=" . $this->titlePack;
+			$parameters .= "&tpack=" . urlencode($this->titlePack);
 		}
 		if ($this->replayType) {
 			$parameters .= "&rytpe=" . $this->replayType;
@@ -183,11 +181,11 @@ class ManiaExchangeMapSearch {
 		if ($this->page) {
 			$parameters .= "&page=" . $this->page;
 		}
-		if ($this->limit) {
-			$parameters .= "&limit=" . $this->limit;
+		if ($this->mapLimit) {
+			$parameters .= "&limit=" . $this->mapLimit;
 		}
 		if (isset($this->unreleased)) {
-			$parameters .= "&unreleased=" . $this->unreleased;
+			$parameters .= "&unreleased=" . (int) $this->unreleased;
 		}
 		if ($this->mapGroup) {
 			$parameters .= "&mapgroup=" . $this->mapGroup;
@@ -199,7 +197,7 @@ class ManiaExchangeMapSearch {
 			$parameters .= "&customscreenshot=" . $this->customScreenshot;
 		}
 		if ($this->minExeBuild) {
-			$parameters .= "&minexebuild=" . $this->minExeBuild;
+			$parameters .= "&minexebuild=" . urlencode($this->minExeBuild);
 		}
 		if (isset($this->envMix)) {
 			$parameters .= "&envmix=" . (int) $this->envMix;
@@ -211,6 +209,7 @@ class ManiaExchangeMapSearch {
 			$parameters .= "&embeddedobjects=" . (int) $this->embeddedObjects;
 		}
 
+		var_dump($this->url . $parameters);
 		$this->maniaControl->getFileReader()->loadFile($this->url . $parameters, function ($mapInfo, $error) use (&$function) {
 			if ($error) {
 				trigger_error($error);
@@ -270,10 +269,10 @@ class ManiaExchangeMapSearch {
 	}
 
 	/**
-	 * @param string $trackName
+	 * @param string $mapName
 	 */
-	public function setTrackName($trackName) {
-		$this->trackName = $trackName;
+	public function setMapName($mapName) {
+		$this->mapName = $mapName;
 	}
 
 	/**
@@ -342,14 +341,14 @@ class ManiaExchangeMapSearch {
 	/**
 	 * @param int $secondaryOrder
 	 */
-	public function setSecondaryOrder($secondaryOrder) {
+	public function setSecondarySortOrder($secondaryOrder) {
 		$this->secondaryOrder = $secondaryOrder;
 	}
 
 	/**
 	 * @param int $priorityOrder
 	 */
-	public function setPriorityOrder($priorityOrder) {
+	public function setPrioritySortOrder($priorityOrder) {
 		$this->priorityOrder = $priorityOrder;
 	}
 
@@ -428,5 +427,12 @@ class ManiaExchangeMapSearch {
 	 */
 	public function setEmbeddedObjects($embeddedObjects) {
 		$this->embeddedObjects = $embeddedObjects;
+	}
+
+	/**
+	 * @param null $mapLimit
+	 */
+	public function setMapLimit($mapLimit) {
+		$this->mapLimit = $mapLimit;
 	}
 }
