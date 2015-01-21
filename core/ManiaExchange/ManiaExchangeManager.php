@@ -305,6 +305,7 @@ class ManiaExchangeManager {
 	 * @param int      $searchOrder
 	 */
 	public function fetchMapsAsync(callable $function, $name = '', $author = '', $env = '', $maxMapsReturned = 100, $searchOrder = self::SEARCH_ORDER_UPDATED_NEWEST) {
+		//TODO provide additional parameters as array, generally new structure
 		// TODO: remove $env because it's not really used?
 
 		// Get Title Id
