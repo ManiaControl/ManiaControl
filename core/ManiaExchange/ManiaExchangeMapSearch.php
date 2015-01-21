@@ -208,7 +208,7 @@ class ManiaExchangeMapSearch {
 			$parameters .= "&ghostblocks=" . (int) $this->ghostBlocks;
 		}
 		if (isset($this->embeddedObjects)) {
-			$parameters .= "&embeddedObjects" . (int) $this->embeddedObjects;
+			$parameters .= "&embeddedobjects=" . (int) $this->embeddedObjects;
 		}
 
 		$this->maniaControl->getFileReader()->loadFile($this->url . $parameters, function ($mapInfo, $error) use (&$function) {
