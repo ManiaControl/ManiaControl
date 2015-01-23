@@ -49,6 +49,8 @@ interface Callbacks {
 	const ENDTURNSTOP = 'Callbacks.EndTurnStop';
 	/** EndRound Callback: RoundNumber */
 	const ENDROUND = 'Callbacks.EndRound';
+	/** EndRound Callback: RoundNumber */
+	const ENDROUNDSTOP = 'Callbacks.EndRoundStop';
 	/** EndSubmatch Callback: SubmatchNumber */
 	const ENDSUBMATCH = 'Callbacks.EndSubmatch';
 	/** EndMap Callback: Map */
