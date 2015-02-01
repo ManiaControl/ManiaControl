@@ -467,14 +467,14 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$backgroundQuad->setSize($width, $height);
 		$backgroundQuad->setImage('https://dl.dropboxusercontent.com/u/105352981/Stuff/CAM%20SM%20BORDER%20PNG.png'); //TODO just a test
 		//$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-		$backgroundQuad->setZ(0.2);
+		$backgroundQuad->setZ(-0.3);
 
 		// Background Quad
 		$backgroundQuad = new Quad();
 		$frame->add($backgroundQuad);
 		$backgroundQuad->setSize($width - 2, $height - 2);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-		$backgroundQuad->setZ(0.1);
+		$backgroundQuad->setZ(-0.4);
 
 		// Show headline
 		$label = new Label_Text();
