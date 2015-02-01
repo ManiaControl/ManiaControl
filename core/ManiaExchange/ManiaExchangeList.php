@@ -130,14 +130,18 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 			}
 		}
 
-		// search for matching maps
-		$this->maniaControl->getMapManager()->getMXManager()->fetchMapsAsync(function (array $maps) use (&$player) {
+		//Search the Maps
+		$mxSearch = new ManiaExchangeMapSearch($this->maniaControl);
+		$mxSearch->setAuthorName($author);
+		$mxSearch->setEnvironments($environment);
+		$mxSearch->setMapName($searchString);
+		$mxSearch->fetchMapsAsync(function (array $maps) use (&$player) {
 			if (!$maps) {
 				$this->maniaControl->getChat()->sendError('No maps found, or MX is down!', $player->login);
 				return;
 			}
 			$this->showManiaExchangeList($maps, $player);
-		}, $searchString, $author, $environment);
+		});
 	}
 
 	/**

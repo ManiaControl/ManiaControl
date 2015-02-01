@@ -454,7 +454,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 					$votes = $karmaPlugin->getMapVotes($map);
 				}
 
-				if (is_numeric($karma)) {
+				if (is_numeric($karma) && $votes['count'] > 0) {
 					if ($this->maniaControl->getSettingManager()->getSettingValue($karmaPlugin, $karmaPlugin::SETTING_NEWKARMA)
 					) {
 						$karmaText = '  ' . round($karma * 100.) . '% (' . $votes['count'] . ')';

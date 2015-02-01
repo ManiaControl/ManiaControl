@@ -270,7 +270,7 @@ class ManiaExchangeManager {
 
 	/**
 	 * @deprecated
-	 * @see \ManiaControl\ManiaExchange\ManiaExchangeManager::fetchMapsAsync()
+	 * @see \ManiaControl\ManiaExchange\ManiaExchangeMapSearch
 	 */
 	public function getMapsAsync(callable $function, $name = '', $author = '', $env = '', $maxMapsReturned = 100, $searchOrder = ManiaExchangeMapSearch::SEARCH_ORDER_UPDATED_NEWEST) {
 		$this->fetchMapsAsync($function, $name, $author, $env, $maxMapsReturned, $searchOrder);
