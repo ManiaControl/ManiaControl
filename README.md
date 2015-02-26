@@ -37,7 +37,7 @@ http://www.maniacontrol.com
 - Needed extensions (on ManiaControl startup you will see if you have them activated):
 	- php_mysqli
 	- php_curl
-	- php_xmlrpc (TM only, recommended for SM)
+	- php_xmlrpc (TM only, recomended for SM)
 	- php_zlib
 
 ### How to report bugs or request features?:
