@@ -24,7 +24,7 @@ class BillManager implements CallbackListener {
 	const PAYED_FROM_SERVER       = 3;
 	const PLAYER_REFUSED_DONATION = 4;
 	const ERROR_WHILE_TRANSACTION = 5;
-	const CB_BILL_PAID           = 'Billmanager.BillPaid';
+	const CB_BILL_PAID            = 'Billmanager.BillPaid';
 
 	/*
 	 * Private properties
@@ -73,7 +73,7 @@ class BillManager implements CallbackListener {
 	 */
 	public function sendPlanets(callable $function, $receiverLogin, $amount, $message) {
 		$billId                   = $this->maniaControl->getClient()->pay($receiverLogin, $amount, $message);
-		$this->openBills[$billId] = new BillData($function, $receiverLogin, $amount, true);
+		$this->openBills[$billId] = new BillData($function, $receiverLogin, $amount, true, $receiverLogin);
 		return true;
 	}
 
