@@ -15,12 +15,13 @@ class BillData {
 	/*
 	 * Public properties
 	 */
-	public $function = null;
-	public $pay = false;
-	public $player = null;
+	public $function      = null;
+	public $pay           = false;
+	public $player        = null;
 	public $receiverLogin = null;
-	public $amount = 0;
-	public $creationTime = -1;
+	public $amount        = 0;
+	public $creationTime  = -1;
+	public $message       = "";
 
 	/**
 	 * Construct new Bill Data Model
@@ -30,13 +31,15 @@ class BillData {
 	 * @param int           $amount
 	 * @param bool          $pay
 	 * @param string        $receiverLogin
+	 * @param string        $message
 	 */
-	public function __construct(callable $function, $player, $amount, $pay = false, $receiverLogin = null) {
+	public function __construct(callable $function, $player, $amount, $pay = false, $receiverLogin = null, $message = '') {
 		$this->function      = $function;
 		$this->player        = $player;
 		$this->amount        = $amount;
 		$this->pay           = $pay;
 		$this->receiverLogin = $receiverLogin;
+		$this->message       = $message;
 		$this->creationTime  = time();
 	}
 }
