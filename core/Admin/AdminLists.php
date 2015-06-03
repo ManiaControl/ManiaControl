@@ -133,9 +133,9 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 				$lineQuad->setZ(0.001);
 			}
 
-			$array = array($index => $posX + 5, $admin->nickname => $posX + 18, $admin->login => $posX + 70);
-			$this->maniaControl->getManialinkManager()->labelLine($playerFrame, $array);
-
+			$positions = array($posX + 5, $posX + 18, $posX + 70);
+			$texts     = array($index, $admin->nickname, $admin->login);
+			$this->maniaControl->getManialinkManager()->labelLine($playerFrame, array($positions, $texts));
 
 			// Level Quad
 			$rightQuad = new Quad_BgRaceScore2();

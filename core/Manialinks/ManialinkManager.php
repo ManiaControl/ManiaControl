@@ -352,15 +352,15 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 
 	/**
 	 * Adds a line of labels
-	 * NOTE ALWAYS SET posIsKey Manually to true
+	 * LabelLine should be an array with the following structure: array(array(positions), array(texts))
+	 * or array($text1 => $pos1, $text2 => $pos2 ...)
 	 *
-	 * @param Frame   $frame
-	 * @param array   $labelStrings if(posIsKey) array($pos => $value)
-	 * @param array   $properties
-	 * @param boolean $posIsKey
+	 * @param Frame $frame
+	 * @param array $labelStrings
+	 * @param array $properties
 	 * @return Label_Text[]
 	 */
-	public function labelLine(Frame $frame, array $labelStrings, array $properties = array(), $posIsKey = false) {
+	public function labelLine(Frame $frame, array $labelStrings, array $properties = array()) {
 		// define standard properties
 		$hAlign    = (isset($properties['hAlign']) ? $properties['hAlign'] : Control::LEFT);
 		$style     = (isset($properties['style']) ? $properties['style'] : Label_Text::STYLE_TextCardSmall);
@@ -369,29 +369,49 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 		$profile   = (isset($properties['profile']) ? $properties['profile'] : false);
 
 		$labels = array();
-		foreach ($labelStrings as $key => $value) {
-			if ($posIsKey) {
-				$x    = $key;
-				$text = $value;
-			} else {
-				$x    = $value;
-				$text = $key;
+
+		//If you call LabelLine with array(array(positions), array(texts))
+		if (count($labelStrings) == 2 && array_key_exists(0, $labelStrings) && array_key_exists(1, $labelStrings) && array_key_exists(0, $labelStrings[0]) && array_key_exists(0, $labelStrings[1])) {
+			$positions = $labelStrings[0];
+			$texts     = $labelStrings[1];
+
+			if (count($positions) != count($texts)) {
+				trigger_error("LabelLine Position length is not equal to Text Length", E_USER_ERROR);
 			}
 
-			$label = new Label_Text();
-			$frame->add($label);
-			$label->setHAlign($hAlign);
-			$label->setX($x);
-			$label->setStyle($style);
-			$label->setTextSize($textSize);
-			$label->setText($text);
-			$label->setTextColor($textColor);
+			foreach ($positions as $key => $x) {
+				$label = new Label_Text();
+				$frame->add($label);
+				$label->setHAlign($hAlign);
+				$label->setX($x);
+				$label->setStyle($style);
+				$label->setTextSize($textSize);
+				$label->setText($texts[$key]);
+				$label->setTextColor($textColor);
 
-			if ($profile) {
-				$label->addPlayerProfileFeature($profile);
+				if ($profile) {
+					$label->addPlayerProfileFeature($profile);
+				}
+
+				array_push($labels, $label);
 			}
+		} else {
+			foreach ($labelStrings as $text => $x) {
+				$label = new Label_Text();
+				$frame->add($label);
+				$label->setHAlign($hAlign);
+				$label->setX($x);
+				$label->setStyle($style);
+				$label->setTextSize($textSize);
+				$label->setText($text);
+				$label->setTextColor($textColor);
 
-			array_push($labels, $label);
+				if ($profile) {
+					$label->addPlayerProfileFeature($profile);
+				}
+
+				array_push($labels, $label);
+			}
 		}
 
 		return $labels;

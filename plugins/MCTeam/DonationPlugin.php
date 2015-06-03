@@ -281,6 +281,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 			return;
 		}
 
+		//FIXME if you write "/donate 50 hallo" than comes Message: Donate to Hallo
 		if (!$receiverName) {
 			$serverName = $this->maniaControl->getClient()->getServerName();
 			$message    = 'Donate ' . $amount . ' Planets to $<' . $serverName . '$>?';
@@ -519,8 +520,10 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 			}
 
 			$donatingPlayer = $this->maniaControl->getPlayerManager()->getPlayerByIndex($playerIndex);
-			$array          = array($index => $posX + 5, $donatingPlayer->nickname => $posX + 18, $donatingPlayer->login => $posX + 70, $donations => $posX + 110);
-			$this->maniaControl->getManialinkManager()->labelLine($playerFrame, $array);
+
+			$positions = array($posX + 5, $posX + 18, $posX + 70, $posX + 110);
+			$texts     = array($index, $donatingPlayer->nickname, $donatingPlayer->login, $donations);
+			$this->maniaControl->getManialinkManager()->labelLine($playerFrame, array($positions, $texts));
 
 			$posY -= 4;
 			$index++;
