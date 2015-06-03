@@ -62,7 +62,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 	 * Private properties
 	 */
 	/** @var ManiaControl $maniaControl */
-	private $maniaControl = null;
+	private $maniaControl     = null;
 	private $playersListShown = array();
 
 	/**
@@ -163,6 +163,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$headFrame = new Frame();
 		$frame->add($headFrame);
 		$headFrame->setY($posY - 5);
+
 		$labelLineArray = array('Id' => $posX + 5, 'Nickname' => $posX + 18, 'Login' => $posX + 70, 'Location' => $posX + 101);
 		if ($this->maniaControl->getAuthenticationManager()->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)
 		) {
@@ -195,8 +196,9 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				$lineQuad->setZ(0.001);
 			}
 
-			$array = array($index => $posX + 5, $listPlayer->nickname => $posX + 18, $listPlayer->login => $posX + 70, $path => $posX + 101);
-			$this->maniaControl->getManialinkManager()->labelLine($playerFrame, $array);
+			$positions = array($posX + 5, $posX + 18, $posX + 70, $posX + 101);
+			$texts     = array($index, $listPlayer->nickname, $listPlayer->login, $path);
+			$this->maniaControl->getManialinkManager()->labelLine($playerFrame, array($positions, $texts));
 
 			$playerFrame->setY($posY);
 
