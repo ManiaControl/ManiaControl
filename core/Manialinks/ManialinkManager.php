@@ -262,7 +262,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 			}
 		} catch (UnknownPlayerException $e) {
 			return false;
-		} catch (FaultException $e){
+		} catch (FaultException $e) {
 			//TODO added 17.01.2015, remove later:
 			$this->maniaControl->getErrorHandler()->triggerDebugNotice("Fault Exception: ManiaLink Manager, Message: " . $e->getMessage());
 			return false;
@@ -349,15 +349,18 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 		return $success;
 	}
 
+
 	/**
 	 * Adds a line of labels
+	 * NOTE ALWAYS SET posIsKey Manually to true
 	 *
-	 * @param Frame $frame
-	 * @param array $labelStrings
-	 * @param array $properties
+	 * @param Frame   $frame
+	 * @param array   $labelStrings if(posIsKey) array($pos => $value)
+	 * @param array   $properties
+	 * @param boolean $posIsKey
 	 * @return Label_Text[]
 	 */
-	public function labelLine(Frame $frame, array $labelStrings, array $properties = array()) {
+	public function labelLine(Frame $frame, array $labelStrings, array $properties = array(), $posIsKey = false) {
 		// define standard properties
 		$hAlign    = (isset($properties['hAlign']) ? $properties['hAlign'] : Control::LEFT);
 		$style     = (isset($properties['style']) ? $properties['style'] : Label_Text::STYLE_TextCardSmall);
@@ -366,7 +369,15 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 		$profile   = (isset($properties['profile']) ? $properties['profile'] : false);
 
 		$labels = array();
-		foreach ($labelStrings as $text => $x) {
+		foreach ($labelStrings as $key => $value) {
+			if ($posIsKey) {
+				$x    = $key;
+				$text = $value;
+			} else {
+				$x    = $value;
+				$text = $key;
+			}
+
 			$label = new Label_Text();
 			$frame->add($label);
 			$label->setHAlign($hAlign);
