@@ -58,7 +58,7 @@ class BillManager implements CallbackListener {
 	 */
 	public function sendBill(callable $function, Player $player, $amount, $message, $receiver = '') {
 		$billId                   = $this->maniaControl->getClient()->sendBill($player->login, $amount, $message, $receiver);
-		$this->openBills[$billId] = new BillData($function, $player, $amount, false, $receiver);
+		$this->openBills[$billId] = new BillData($function, $player, $amount, false, $receiver, $message);
 		return true;
 	}
 
@@ -73,7 +73,7 @@ class BillManager implements CallbackListener {
 	 */
 	public function sendPlanets(callable $function, $receiverLogin, $amount, $message) {
 		$billId                   = $this->maniaControl->getClient()->pay($receiverLogin, $amount, $message);
-		$this->openBills[$billId] = new BillData($function, $receiverLogin, $amount, true, $receiverLogin);
+		$this->openBills[$billId] = new BillData($function, $receiverLogin, $amount, true, $receiverLogin, $message);
 		return true;
 	}
 
