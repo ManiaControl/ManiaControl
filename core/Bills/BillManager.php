@@ -6,6 +6,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
+use Maniaplanet\DedicatedServer\InvalidArgumentException;
 use Maniaplanet\DedicatedServer\Structures\Bill;
 
 /**
@@ -57,7 +58,12 @@ class BillManager implements CallbackListener {
 	 * @return bool
 	 */
 	public function sendBill(callable $function, Player $player, $amount, $message, $receiver = '') {
-		$billId                   = $this->maniaControl->getClient()->sendBill($player->login, $amount, $message, $receiver);
+		try {
+			$billId = $this->maniaControl->getClient()->sendBill($player->login, intval($amount), $message, $receiver);
+		} catch (InvalidArgumentException $e) {
+			//TODO better error handling, maybe call the user func with ERROR_WHILE_TRANSACTION
+			return false;
+		}
 		$this->openBills[$billId] = new BillData($function, $player, $amount, false, $receiver, $message);
 		return true;
 	}
@@ -72,7 +78,11 @@ class BillManager implements CallbackListener {
 	 * @return bool
 	 */
 	public function sendPlanets(callable $function, $receiverLogin, $amount, $message) {
-		$billId                   = $this->maniaControl->getClient()->pay($receiverLogin, $amount, $message);
+		try {
+			$billId = $this->maniaControl->getClient()->pay($receiverLogin, intval($amount), $message);
+		} catch (InvalidArgumentException $e) {
+			return false;
+		}
 		$this->openBills[$billId] = new BillData($function, $receiverLogin, $amount, true, $receiverLogin, $message);
 		return true;
 	}
