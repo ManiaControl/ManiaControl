@@ -226,6 +226,30 @@ class Server implements CallbackListener {
 		return $servers;
 	}
 
+	/** Get Server Login by Index
+	 *
+	 * @param int $index
+	 * @return string
+	 */
+	public function getServerLoginByIndex($index) {
+		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
+		$query  = "SELECT * FROM `" . self::TABLE_SERVERS . "` WHERE `index`=" . $index . ";";
+		$result = $mysqli->query($query);
+
+		if (!$result) {
+			trigger_error($mysqli->error);
+			return "";
+		}
+
+		if ($result->num_rows != 1) {
+			return "";
+		}
+
+		$row = $result->fetch_object();
+
+		return $row->login;
+	}
+
 	/**
 	 * Handle OnInit Callback
 	 */
