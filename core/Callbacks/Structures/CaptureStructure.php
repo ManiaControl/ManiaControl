@@ -5,6 +5,13 @@ namespace ManiaControl\Callbacks\Structures;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 
+/**
+ * Structure Class for the Capture Callback
+ *
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014-2015 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ */
 class CaptureStructure {
 	/*
 	 * Private properties
@@ -42,7 +49,7 @@ class CaptureStructure {
 		$playerArray = array();
 		foreach ($this->playerArray as $login) {
 			$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
-			if($player){
+			if ($player) {
 				$playerArray[$login] = $player;
 			}
 		}

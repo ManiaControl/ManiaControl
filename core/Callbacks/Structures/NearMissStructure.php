@@ -5,6 +5,13 @@ namespace ManiaControl\Callbacks\Structures;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 
+/**
+ * Structure Class for the NearMiss Callback
+ *
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014-2015 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ */
 class NearMissStructure {
 	/*
 	 * Private properties
