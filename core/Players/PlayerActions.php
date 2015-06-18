@@ -385,15 +385,21 @@ class PlayerActions {
 			return;
 		}
 
-		try {
-			if ($target->isFakePlayer()) {
+
+		if ($target->isFakePlayer()) {
+			try {
 				$this->maniaControl->getClient()->disconnectFakePlayer($target->login);
-			} else {
-				$this->maniaControl->getClient()->kick($target->login, $message);
+			} catch (PlayerStateException $e) {
+				$this->maniaControl->getChat()->sendException($e, $admin);
+				return;
 			}
-		} catch (UnknownPlayerException $e) {
-			$this->maniaControl->getChat()->sendException($e, $admin);
-			return;
+		} else {
+			try {
+				$this->maniaControl->getClient()->kick($target->login, $message);
+			} catch (UnknownPlayerException $e) {
+				$this->maniaControl->getChat()->sendException($e, $admin);
+				return;
+			}
 		}
 
 		// Announce kick
@@ -560,5 +566,5 @@ class PlayerActions {
 			return $player->isMuted();
 		}
 		return false;
+		}
 	}
-}
