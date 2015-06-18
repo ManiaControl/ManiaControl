@@ -8,6 +8,7 @@ use ManiaControl\Bills\BillManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
+use ManiaControl\Callbacks\EchoManager;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Callbacks\TimerManager;
 use ManiaControl\Commands\CommandListener;
@@ -164,6 +165,9 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	 */
 	private $requestQuitMessage = null;
 
+	/** @var EchoManager $echoManager */
+	private $echoManager = null;
+
 	/**
 	 * Construct a new ManiaControl instance
 	 */
@@ -176,6 +180,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 
 		// Load ManiaControl Modules
 		$this->callbackManager       = new CallbackManager($this);
+		$this->echoManager           = new EchoManager($this);
 		$this->timerManager          = new TimerManager($this);
 		$this->database              = new Database($this);
 		$this->fileReader            = new AsynchronousFileReader($this);
@@ -193,6 +198,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 		$this->configurator          = new Configurator($this);
 		$this->pluginManager         = new PluginManager($this);
 		$this->updateManager         = new UpdateManager($this);
+
 
 		$this->getErrorHandler()->init();
 
@@ -276,6 +282,15 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	 */
 	public function getCallbackManager() {
 		return $this->callbackManager;
+	}
+
+	/**
+	 * Return the echo manager
+	 *
+	 * @return EchoManager
+	 */
+	public function getEchoManager() {
+		return $this->echoManager;
 	}
 
 	/**
