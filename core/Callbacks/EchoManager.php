@@ -1,0 +1,135 @@
+<?php
+
+namespace ManiaControl\Callbacks;
+
+
+use ManiaControl\ManiaControl;
+
+/**
+ * Class for managing Echo Callbacks
+ *
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014-2015 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ */
+class EchoManager implements CallbackListener, EchoListener {
+	/*
+	 * Private properties
+	 */
+	/** @var ManiaControl $maniaControl */
+	private $maniaControl = null;
+	/** @var Listening[] $echoListenings */
+	private $echoListenings = array();
+
+	/**
+	 * Create a new Echo Handler Instance
+	 *
+	 * @param ManiaControl $maniaControl
+	 */
+	public function __construct(ManiaControl $maniaControl) {
+		$this->maniaControl = $maniaControl;
+
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_ECHO, $this, 'handleEchos');
+	}
+
+	/**
+	 * Register a new Echo Listener
+	 *
+	 * @param string       $callbackName
+	 * @param EchoListener $listener
+	 * @param string       $method
+	 * @return bool
+	 */
+	public function registerEchoListener($echoName, EchoListener $listener, $method) {
+		if (!Listening::checkValidCallback($listener, $method)) {
+			$listenerClass = get_class($listener);
+			trigger_error("Given Listener '{$listenerClass}' can't handle Callback '{$echoName}': No callable Method '{$method}'!");
+			return false;
+		}
+
+		if (!array_key_exists($echoName, $this->echoListenings)) {
+			$this->echoListenings[$echoName] = array();
+		}
+
+		$listening = new Listening($listener, $method);
+		array_push($this->echoListenings[$echoName], $listening);
+		return true;
+	}
+
+	/**
+	 * Unregister a Echo Listener
+	 *
+	 * @param EchoListener $listener
+	 * @return bool
+	 */
+	public function unregisterEchoListener(EchoListener $listener) {
+		return $this->removeEchoListener($this->echoListenings, $listener);
+	}
+
+	/**
+	 * Remove the Echo Listener from the given Listeners Array
+	 *
+	 * @param Listening[]  $listeningsArray
+	 * @param EchoListener $listener
+	 * @return bool
+	 */
+	private function removeEchoListener(array &$listeningsArray, EchoListener $listener) {
+		$removed = false;
+		foreach ($listeningsArray as &$listenings) {
+			foreach ($listenings as $key => &$listening) {
+				if ($listening->listener === $listener) {
+					unset($listenings[$key]);
+					$removed = true;
+				}
+			}
+		}
+		return $removed;
+	}
+
+
+	/**
+	 * Trigger a specific Callback
+	 *
+	 * @param mixed $callback
+	 */
+	public function triggerEchoCallback($callbackName) {
+		if (!array_key_exists($callbackName, $this->echoListenings)) {
+			return;
+		}
+
+
+		$params = func_get_args();
+		$params = array_slice($params, 1, null, true);
+
+		var_dump($params);
+		foreach ($this->echoListenings[$callbackName] as $listening) {
+			/** @var Listening $listening */
+			$listening->triggerCallbackWithParams($params);
+		}
+	}
+
+	//TODO temporary testmethod, remove
+	public function test() {
+		//		$this->maniaControl->getEchoManager()->test();
+		$msg = json_encode(array("player" => "abc"));
+		//$callback = array("test1", "test2");
+		$this->maniaControl->getClient()->dedicatedEcho($msg, "ManiaControl.PlayerManager.WarnPlayer");
+	}
+
+	/**
+	 * Handle the given Callback
+	 *
+	 * @param array $callback
+	 */
+	public function handleEchos($param) {
+		$name    = $param[1][0];
+		$message = json_decode($param[1][1]);
+		switch ($name) {
+			case 'ManiaControl.Restart':
+				$this->maniaControl->restart($message);
+				break;
+			default:
+				$this->triggerEchoCallback($name, $message);
+		}
+	}
+}
