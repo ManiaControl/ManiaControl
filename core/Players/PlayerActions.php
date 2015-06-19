@@ -288,9 +288,10 @@ class PlayerActions {
 	 *
 	 * @param string $adminLogin
 	 * @param string $targetLogin
+	 * @param bool   $calledByAdmin
 	 */
-	public function warnPlayer($adminLogin, $targetLogin) {
-		if ($adminLogin != 'EchoListener') {
+	public function warnPlayer($adminLogin, $targetLogin, $calledByAdmin = true) {
+		if ($calledByAdmin) {
 			$admin = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
 			if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_WARN_PLAYER)
 			) {
@@ -362,11 +363,11 @@ class PlayerActions {
 		$this->maniaControl->getManialinkManager()->displayWidget($maniaLink, $target);
 
 		// Announce warning
-		if ($adminLogin != 'EchoListener') {
+		if ($calledByAdmin) {
 			$title       = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($admin->authLevel);
 			$chatMessage = $title . ' ' . $admin->getEscapedNickname() . ' warned ' . $target->getEscapedNickname() . '!';
 		} else {
-			$chatMessage = $target->getEscapedNickname() . ' got an Administrative warning!';
+			$chatMessage = $target->getEscapedNickname() . ' got an administrative warning!';
 		}
 
 		$this->maniaControl->getChat()->sendInformation($chatMessage);

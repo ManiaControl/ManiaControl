@@ -33,6 +33,24 @@ class EchoManager implements CallbackListener, EchoListener {
 	}
 
 	/**
+	 * Sends an Echo Message
+	 *
+	 * @param string $name
+	 * @param mixed  $data (can be array, object or string)
+	 * @return bool
+	 * @throws \Maniaplanet\DedicatedServer\InvalidArgumentException
+	 */
+	public function sendEcho($name, $data) {
+		if (is_string($data)) {
+			$success = $this->maniaControl->getClient()->dedicatedEcho($data, $name);
+		} else {
+			$success = $this->maniaControl->getClient()->dedicatedEcho(json_encode($data), $name);
+		}
+
+		return $success;
+	}
+
+	/**
 	 * Register a new Echo Listener
 	 *
 	 * @param string       $callbackName
@@ -101,19 +119,11 @@ class EchoManager implements CallbackListener, EchoListener {
 		$params = func_get_args();
 		$params = array_slice($params, 1, null, true);
 
-		var_dump($params);
+		//var_dump($params);
 		foreach ($this->echoListenings[$callbackName] as $listening) {
 			/** @var Listening $listening */
 			$listening->triggerCallbackWithParams($params);
 		}
-	}
-
-	//TODO temporary testmethod, remove
-	public function test() {
-		//		$this->maniaControl->getEchoManager()->test();
-		$msg = json_encode(array("player" => "abc"));
-		//$callback = array("test1", "test2");
-		$this->maniaControl->getClient()->dedicatedEcho($msg, "ManiaControl.PlayerManager.WarnPlayer");
 	}
 
 	/**
@@ -122,8 +132,15 @@ class EchoManager implements CallbackListener, EchoListener {
 	 * @param array $callback
 	 */
 	public function handleEchos($param) {
-		$name    = $param[1][0];
-		$message = json_decode($param[1][1]);
+		$name = $param[1][0];
+		if (is_object($decode = json_decode($param[1][1]))) {
+			$message = $decode;
+		} else {
+			$message = $param[1][1];
+		}
+
+		var_dump($name);
+		var_dump($message);
 		switch ($name) {
 			case 'ManiaControl.Restart':
 				$this->maniaControl->restart($message);

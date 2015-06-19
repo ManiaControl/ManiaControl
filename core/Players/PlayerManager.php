@@ -111,7 +111,7 @@ class PlayerManager implements CallbackListener, TimerListener, EchoListener {
 
 		// Echo Warn Command (Usage: sendEcho json_encode("player" => "loginName")
 		$this->maniaControl->getEchoManager()->registerEchoListener(self::ECHO_WARN_PLAYER, $this, function ($params) {
-			$this->playerActions->warnPlayer("EchoListener", $params->player);
+			$this->playerActions->warnPlayer(null, $params->player, false);
 		});
 	}
 
