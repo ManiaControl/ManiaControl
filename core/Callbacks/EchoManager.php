@@ -139,8 +139,6 @@ class EchoManager implements CallbackListener, EchoListener {
 			$message = $param[1][1];
 		}
 
-		var_dump($name);
-		var_dump($message);
 		switch ($name) {
 			case 'ManiaControl.Restart':
 				$this->maniaControl->restart($message);
