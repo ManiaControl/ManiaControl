@@ -1,0 +1,17 @@
+###v0.16###
+
+#Additions
+- added changelog
+- added new EchoManager which handles Interactions between different Controllers
+	- It is possible to send an Echo command via the Method sendEcho, as message Parameter strings, objects or arrays can get used
+	- An EchoListener can be added, callable by closure or implicit use (like on callbacks)
+	- The Listener always returns either an Stringer or an Object back as Param (arrays get converted into objects)
+	- On sending an Echo Message from another controller you need to provide an string to the dedicated method or an json_encoded array or object
+	- 4 Echos are Implemented by ManiaControl (ManiaControl.Restart, ManiaControl.AuthenticationManager.GrandLevel, ManiaControl.AuthenticationManager.RevokeLevel, ManiaControl.PlayerManager.WarnPlayer)
+- added Method getServerLoginByIndex to Server object
+- added some missing PHP Docs
+
+#Bug Fixes
+- fixed TriggerDebugNotice Method
+- Exception fix on kicking Players
+- updated FaultException List
