@@ -2,9 +2,8 @@
 namespace cURL;
 
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Countable;
 
-class RequestsQueue extends EventDispatcher implements RequestsQueueInterface, Countable
+class RequestsQueue extends EventDispatcher implements RequestsQueueInterface, \Countable
 {
     /**
      * @var Options Default options for new Requests attached to RequestsQueue
@@ -59,7 +58,7 @@ class RequestsQueue extends EventDispatcher implements RequestsQueueInterface, C
     public function getDefaultOptions()
     {
         if (!isset($this->defaultOptions)) {
-            $this->defaultOptions = new Options;
+            $this->defaultOptions = new Options();
         }
         return $this->defaultOptions;
     }
@@ -126,7 +125,7 @@ class RequestsQueue extends EventDispatcher implements RequestsQueueInterface, C
             unset($this->running[$request->getUID()]);
             $this->detach($request);
             
-            $event = new Event;
+            $event = new Event();
             $event->request = $request;
             $event->response = new Response($request, curl_multi_getcontent($request->getHandle()));
             if ($result !== CURLE_OK) {
@@ -134,6 +133,7 @@ class RequestsQueue extends EventDispatcher implements RequestsQueueInterface, C
             }
             $event->queue = $this;
             $this->dispatch('complete', $event);
+            $request->dispatch('complete', $event);
         }
         
         return $n;
@@ -168,9 +168,11 @@ class RequestsQueue extends EventDispatcher implements RequestsQueueInterface, C
      */
     protected function getRequestsNotRunning()
     {
-        return array_diff_key($this->queue, $this->running);
+        $map = $this->queue;
+        foreach($this->running as $k => $v) unset($map[$k]);
+        return $map;
     }
-    
+
     /**
      * Download available data on socket.
      *
@@ -200,12 +202,15 @@ class RequestsQueue extends EventDispatcher implements RequestsQueueInterface, C
                 $mrc = curl_multi_exec($this->mh, $this->runningCount);
             } while ($mrc === CURLM_CALL_MULTI_PERFORM);
             $runningAfter = $this->runningCount;
-            
-            $completed = ($runningAfter < $runningBefore) ? $this->read() : 0;
+
+            if ($runningAfter < $runningBefore) {
+                $this->read();
+            }
             
             $notRunning = $this->getRequestsNotRunning();
         } while (count($notRunning) > 0);
-        
+        // Why the loop? New requests might be added at runtime on 'complete' event.
+        // So we need to attach them to curl_multi handle immediately.
         
         return $this->count() > 0;
     }
