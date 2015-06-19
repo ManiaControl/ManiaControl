@@ -2,6 +2,7 @@
 
 #Additions
 - added changelog
+- added "//removerights login" command
 - added new EchoManager which handles Interactions between different Controllers
 	- It is possible to send an Echo command via the Method sendEcho, as message Parameter strings, objects or arrays can get used
 	- An EchoListener can be added, callable by closure or implicit use (like on callbacks)
@@ -10,8 +11,18 @@
 	- 4 Echos are Implemented by ManiaControl (ManiaControl.Restart, ManiaControl.AuthenticationManager.GrandLevel, ManiaControl.AuthenticationManager.RevokeLevel, ManiaControl.PlayerManager.WarnPlayer)
 - added Method getServerLoginByIndex to Server object
 - added some missing PHP Docs
+- updated some depency libraries
 
 #Bug Fixes
 - fixed TriggerDebugNotice Method
 - Exception fix on kicking Players
 - updated FaultException List
+
+###v0.157###
+- labelline improvements
+	- new usage examples:
+			$positions = array($posX + 5, $posX + 18, $posX + 70);
+			$texts     = array($index, $admin->nickname, $admin->login);
+			$this->maniaControl->getManialinkManager()->labelLine($playerFrame, array($positions, $texts));
+- improvements on Billmanager, added receiver to the BillData
+- increased timeout time (fixes crashes on speedball)
