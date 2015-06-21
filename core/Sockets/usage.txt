@@ -1,0 +1,34 @@
+Ingame you can activate the Socket Manager and set Password and Port of it.
+
+Sample Web Implementation
+<?php
+	$errno = null;
+	$errstr = null;
+	$socket = fsockopen("xx.xxx.xx.xx", xxxxx, $errno, $errstr, 2);
+	echo "ok?" . $errno . " - " . $errstr . "\n";
+	$buff = '';
+
+	$data = array("method" => "getServerChat", "data" => "");
+
+	// Encode and Encrypt the Data
+	$data = json_encode(array("method" => "getServerChat", "data" => ""));
+	$data = openssl_encrypt($data, 'aes-192-cbc', 'YOUR_PASSWORD', OPENSSL_RAW_DATA, 'kZ2Kt0CzKUjN2MJX');
+
+	// Write the Data on the Socket
+	fwrite($socket, strlen($data) . "\n" . $data);
+
+
+	// Read Answer Data
+	$len = (int)fgets($socket);
+	echo $len;
+	while (!feof($socket) && strlen($buff) < $len) {
+		$buff .= fgets($socket, $len - strlen($buff) + 1);
+	}
+
+	// Decrypt and Decode the Response Data
+	$data = openssl_decrypt($buff, 'aes-192-cbc', 'YOUR_PASSWORD', OPENSSL_RAW_DATA, 'kZ2Kt0CzKUjN2MJX');
+	echo json_decode($data);
+
+	//Close the Socket
+	fclose($socket);
+?>

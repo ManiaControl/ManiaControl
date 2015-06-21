@@ -196,7 +196,7 @@ class SocketManager implements CallbackListener {
 					$buffer = '';
 					$connection->on('data', function ($data) use (&$buffer, &$connection) {
 						$buffer .= $data;
-						$arr = explode("\n", $buffer, 2); // much haxy.
+						$arr = explode("\n", $buffer, 2);
 						while (count($arr) == 2 && strlen($arr[1]) >= (int) $arr[0]) {
 							// received full message
 							$len    = (int) $arr[0];
