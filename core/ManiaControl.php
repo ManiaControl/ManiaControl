@@ -183,12 +183,12 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 		// Load ManiaControl Modules
 		$this->callbackManager       = new CallbackManager($this);
 		$this->echoManager           = new EchoManager($this);
+		$this->socketManager         = new SocketManager($this);
 		$this->timerManager          = new TimerManager($this);
 		$this->database              = new Database($this);
 		$this->fileReader            = new AsynchronousFileReader($this);
 		$this->billManager           = new BillManager($this);
 		$this->settingManager        = new SettingManager($this);
-		$this->socketManager         = new SocketManager($this);
 		$this->statisticManager      = new StatisticManager($this);
 		$this->manialinkManager      = new ManialinkManager($this);
 		$this->actionsMenu           = new ActionsMenu($this);
