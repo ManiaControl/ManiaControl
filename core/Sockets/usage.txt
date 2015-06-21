@@ -6,7 +6,6 @@ Sample Web Implementation
 	$errstr = null;
 	$socket = fsockopen("xx.xxx.xx.xx", xxxxx, $errno, $errstr, 2);
 	echo "ok?" . $errno . " - " . $errstr . "\n";
-	$buff = '';
 
 	$data = array("method" => "getServerChat", "data" => "");
 
@@ -21,6 +20,7 @@ Sample Web Implementation
 	// Read Answer Data
 	$len = (int)fgets($socket);
 	echo $len;
+	$buff = '';
 	while (!feof($socket) && strlen($buff) < $len) {
 		$buff .= fgets($socket, $len - strlen($buff) + 1);
 	}

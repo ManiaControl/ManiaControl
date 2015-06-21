@@ -3,7 +3,11 @@
 namespace ManiaControl;
 
 use ManiaControl\Admin\AuthenticationManager;
+use ManiaControl\Callbacks\CallbackListener;
+use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Players\Player;
+use ManiaControl\Sockets\SocketListener;
+use ManiaControl\Sockets\SocketMethods;
 use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
 
 /**
@@ -13,7 +17,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
  * @copyright 2014-2015 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class Chat {
+class Chat implements CallbackListener, SocketListener {
 	/*
 	 * Constants
 	 */
@@ -22,12 +26,13 @@ class Chat {
 	const SETTING_FORMAT_SUCCESS     = 'Success Format';
 	const SETTING_FORMAT_ERROR       = 'Error Format';
 	const SETTING_FORMAT_USAGEINFO   = 'UsageInfo Format';
-
+	const CHAT_BUFFER_SIZE           = 200;
 	/*
 	 * Private properties
 	 */
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
+	private $chatBuffer   = array();
 
 	/**
 	 * Construct chat utility
@@ -43,7 +48,16 @@ class Chat {
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_FORMAT_SUCCESS, '$0f0');
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_FORMAT_ERROR, '$f30');
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_FORMAT_USAGEINFO, '$f80');
+
+		//Callbacks
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_PLAYERCHAT, $this, 'onPlayerChat');
+
+		//Socket Listenings
+		$this->maniaControl->getSocketManager()->registerSocketListener(SocketMethods::GET_SERVER_CHAT, $this, function ($data) {
+			return $this->chatBuffer;
+		});
 	}
+
 
 	/**
 	 * Send an information message to the given login
@@ -225,5 +239,25 @@ class Chat {
 	public function sendUsageInfo($message, $login = null, $prefix = false) {
 		$format = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_FORMAT_USAGEINFO);
 		return $this->sendChat($format . $message, $login, $prefix);
+	}
+
+
+	/**
+	 * Stores the ChatMessage in the Buffer
+	 *
+	 * @param $data
+	 */
+	public function onPlayerChat($data) {
+		$login  = $data[1][1];
+		$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
+
+		$nickname = "";
+		if ($player) {
+			$nickname = $player->nickname;
+		}
+		array_push($this->chatBuffer, array("user" => $login, "nickname" => $nickname, "message" => $data[1][2]));
+		if (count($this->chatBuffer) > self::CHAT_BUFFER_SIZE) {
+			array_shift($this->chatBuffer);
+		}
 	}
 }

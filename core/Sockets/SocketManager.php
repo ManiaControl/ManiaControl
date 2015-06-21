@@ -212,7 +212,7 @@ class SocketManager implements CallbackListener {
 							} else if (!property_exists($data, "method") || !property_exists($data, "data")) {
 								$data = array("error" => true, "data" => "Invalid Message");
 							} else {
-								$answer = $this->triggerSocketCallback($data->method, $data);
+								$answer = $this->triggerSocketCallback($data->method, $data->data);
 								//Prepare Response
 								if (!$answer) {
 									$data = array("error" => true, "data" => "No listener or response on the given Message");
