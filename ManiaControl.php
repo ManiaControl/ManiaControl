@@ -21,7 +21,7 @@ define('MANIACONTROL_PATH', __DIR__ . DIRECTORY_SEPARATOR);
 define('ManiaControlDir', MANIACONTROL_PATH);
 
 // Set process settings
-ini_set('memory_limit', '64M');
+ini_set('memory_limit', '512M');
 if (!ini_get('date.timezone') && function_exists('date_default_timezone_set')) {
 	date_default_timezone_set('UTC');
 }
