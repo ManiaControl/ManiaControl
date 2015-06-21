@@ -382,15 +382,24 @@ class PlayerManager implements CallbackListener, TimerListener, EchoListener {
 	 * Get the count of all Players
 	 *
 	 * @param bool $withoutSpectators
+	 * @param bool $withoutBots
 	 * @return int
 	 */
-	public function getPlayerCount($withoutSpectators = true) {
-		if (!$withoutSpectators) {
-			return count($this->players);
-		}
+	public function getPlayerCount($withoutSpectators = true, $withoutBots = true) {
 		$count = 0;
 		foreach ($this->players as $player) {
-			if (!$player->isSpectator) {
+			$valid = true;
+			if ($withoutSpectators) {
+				if ($player->isSpectator) {
+					$valid = false;
+				}
+			}
+			if ($withoutBots) {
+				if ($player->isFakePlayer()) {
+					$valid = false;
+				}
+			}
+			if ($valid) {
 				$count++;
 			}
 		}
