@@ -2,6 +2,7 @@
 
 #Additions
 - added changelog
+- added SocketManager which acts like a webserver you can connect to and interact with ManiaControl
 - added "//removerights login" command
 - added new EchoManager which handles Interactions between different Controllers
 	- It is possible to send an Echo command via the Method sendEcho, as message Parameter strings, objects or arrays can get used
@@ -10,7 +11,9 @@
 	- On sending an Echo Message from another controller you need to provide an string to the dedicated method or an json_encoded array or object
 	- 4 Echos are Implemented by ManiaControl (ManiaControl.Restart, ManiaControl.AuthenticationManager.GrandLevel, ManiaControl.AuthenticationManager.RevokeLevel, ManiaControl.PlayerManager.WarnPlayer)
 - added Method getServerLoginByIndex to Server object
+- added Parameter withoutBots to getPlayerCount (default on true)
 - added some missing PHP Docs
+- added some depency libraries as they are used by the Socket Handler
 - updated some depency libraries
 
 #Bug Fixes
