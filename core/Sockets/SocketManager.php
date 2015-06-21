@@ -1,8 +1,13 @@
 <?php
 namespace ManiaControl\Sockets;
 
+use ManiaControl\Callbacks\CallbackListener;
+use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\Listening;
+use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
+use ManiaControl\Settings\Setting;
+use ManiaControl\Settings\SettingManager;
 use React\EventLoop\Factory;
 use React\EventLoop\LoopInterface;
 use React\Socket\Connection;
@@ -16,7 +21,7 @@ use React\Socket\Server;
  * @copyright 2014-2015 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class SocketManager {
+class SocketManager implements CallbackListener {
 
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
@@ -30,6 +35,9 @@ class SocketManager {
 	/** @var Server $socket */
 	private $socket = null;
 
+	const SETTING_SOCKET_ENABLED  = "Activate Socket";
+	const SETTING_SOCKET_PASSWORD = "Password for the Socket Connection";
+	const SETTING_SOCKET_PORT     = "Socket Port for Server ";
 
 	/**
 	 * Create a new Socket Handler Instance
@@ -39,8 +47,10 @@ class SocketManager {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		$this->createSocket();
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(SettingManager::CB_SETTING_CHANGED, $this, 'updateSettings');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::AFTERINIT, $this, 'initSocketManager');
 	}
+
 
 	/**
 	 * Register a new Socket Listener
@@ -115,68 +125,119 @@ class SocketManager {
 		return $removed;
 	}
 
+	/**
+	 * Inits the Socket Manager after ManiaControl Startup
+	 */
+	public function initSocketManager() {
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_SOCKET_ENABLED, false);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_SOCKET_PASSWORD, "");
+
+		$servers = $this->maniaControl->getServer()->getAllServers();
+		foreach ($servers as $server) {
+			$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_SOCKET_PORT . $server->login, 31500 + $server->index);
+		}
+
+
+		$this->createSocket();
+	}
+
+	/**
+	 * Update Setting
+	 *
+	 * @param Setting $setting
+	 */
+	public function updateSettings(Setting $setting) {
+		if (!$setting->belongsToClass($this)) {
+			return;
+		}
+
+		$socketEnabled = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SOCKET_ENABLED);
+
+		if ($socketEnabled && !$this->socket) {
+			$this->createSocket();
+		}
+
+		if (!$socketEnabled) {
+			unset ($this->socket);
+		}
+	}
 
 	/**
 	 * Creates The Socket
 	 */
 	private function createSocket() {
-		try {
-			$this->loop   = Factory::create();
-			$this->socket = new Server($this->loop);
+		$socketEnabled = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SOCKET_ENABLED);
+		if ($socketEnabled) {
 
-			$this->socket->on('error', function ($e) {
-				//TODO error handling
-				var_dump($e);
-			});
+			Logger::log("[SocketManager] Trying to create Socket");
 
-			$this->socket->on('connection', function (Connection $connection) {
-				$buffer = '';
-				$connection->on('data', function ($data) use (&$buffer, &$connection) {
-					$buffer .= $data;
-					$arr = explode("\n", $buffer, 2); // much haxy.
-					while (count($arr) == 2 && strlen($arr[1]) >= (int) $arr[0]) {
-						// received full message
-						$len    = (int) $arr[0];
-						$msg    = substr($arr[1], 0, $len); // clip msg
-						$buffer = substr($buffer, strlen((string) $len) + 1 /* newline */ + $len); // clip buffer
+			// Check for MySQLi
+			$message = '[SocketManager] Checking for installed openssl ... ';
+			if (!extension_loaded('openssl')) {
+				Logger::log($message . 'NOT FOUND!');
+				Logger::log(" -- You don't have openssl installed! Check: http://www.php.net/manual/en/openssl.installation.php");
+				return;
+			} else {
+				Logger::log($message . 'FOUND!');
+			}
 
-						//TODO pass and port management
-						// Decode Message
-						$data = openssl_decrypt($msg, 'aes-192-cbc', 'testpass123', OPENSSL_RAW_DATA, 'kZ2Kt0CzKUjN2MJX');
-						$data = json_decode($data);
+			$serverLogin = $this->maniaControl->getServer()->login;
+			$socketPort  = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SOCKET_PORT . $serverLogin);
 
-						if ($data == null) {
-							$data = array("error" => true, "data" => "Data is not provided as an valid AES-196-encrypted encrypted JSON");
-						} else if (!property_exists($data, "method") || !property_exists($data, "data")) {
-							$data = array("error" => true, "data" => "Invalid Message");
-						} else {
-							$answer = $this->triggerSocketCallback($data->method, $data);
-							//Prepare Response
-							if (!$answer) {
-								$data = array("error" => true, "data" => "No listener or response on the given Message");
-							} else {
-								$data = array("error" => false, "data" => $answer);
-							}
-						}
+			try {
+				$this->loop   = Factory::create();
+				$this->socket = new Server($this->loop);
 
-						//Encode, Encrypt and Send Response
-						$data = json_encode($data);
-						$data = openssl_encrypt($data, 'aes-192-cbc', 'testpass123', OPENSSL_RAW_DATA, 'kZ2Kt0CzKUjN2MJX');
-						$connection->write(strlen($data) . "\n" . $data);
-
-						// next msg
-						$arr = explode("\n", $buffer, 2);
-					}
+				$this->socket->on('error', function ($e) {
+					Logger::log("[SocketManager] Socket Error" . $e);
 				});
-			});
-			//TODO port
-			$this->socket->listen(19999, getHostByName(getHostName())); // exceptions are just thrown right? why does it not work with local ip? because you bind to your loopback adapter k
 
-			// so that aint it.. xD^^ maybe because it is not in an apache environemnt or smth
-			// this lib should never run in such an env but the periodictimer works? :O thats actually cool xD ye xD
-		} catch (ConnectionException $e) {
-			//TODO proper handling
-			var_dump($e);
+				$this->socket->on('connection', function (Connection $connection) {
+					$buffer = '';
+					$connection->on('data', function ($data) use (&$buffer, &$connection) {
+						$buffer .= $data;
+						$arr = explode("\n", $buffer, 2); // much haxy.
+						while (count($arr) == 2 && strlen($arr[1]) >= (int) $arr[0]) {
+							// received full message
+							$len    = (int) $arr[0];
+							$msg    = substr($arr[1], 0, $len); // clip msg
+							$buffer = substr($buffer, strlen((string) $len) + 1 /* newline */ + $len); // clip buffer
+
+							// Decode Message
+							$data = openssl_decrypt($msg, 'aes-192-cbc', 'testpass123', OPENSSL_RAW_DATA, 'kZ2Kt0CzKUjN2MJX');
+							$data = json_decode($data);
+
+							if ($data == null) {
+								$data = array("error" => true, "data" => "Data is not provided as an valid AES-196-encrypted encrypted JSON");
+							} else if (!property_exists($data, "method") || !property_exists($data, "data")) {
+								$data = array("error" => true, "data" => "Invalid Message");
+							} else {
+								$answer = $this->triggerSocketCallback($data->method, $data);
+								//Prepare Response
+								if (!$answer) {
+									$data = array("error" => true, "data" => "No listener or response on the given Message");
+								} else {
+									$data = array("error" => false, "data" => $answer);
+								}
+							}
+
+							//Encode, Encrypt and Send Response
+							$data = json_encode($data);
+							$data = openssl_encrypt($data, 'aes-192-cbc', 'testpass123', OPENSSL_RAW_DATA, 'kZ2Kt0CzKUjN2MJX');
+							$connection->write(strlen($data) . "\n" . $data);
+
+							// next msg
+							$arr = explode("\n", $buffer, 2);
+						}
+					});
+				});
+				//TODO check if port is closed
+				$this->socket->listen($socketPort, getHostByName(getHostName()));
+
+				Logger::log("[SocketManager] Socket " . getHostByName(getHostName()) . ":" . $this->socket->getPort() . " Successfully created!");
+			} catch (ConnectionException $e) {
+				Logger::log("[SocketManager] Exception: " . $e->getMessage());
+			}
 		}
 	}
 
@@ -185,6 +246,8 @@ class SocketManager {
 	 * Processes Data on every ManiaControl Tick, don't call this Method
 	 */
 	public function tick() {
-		$this->loop->tick();
+		if ($this->loop) {
+			$this->loop->tick();
+		}
 	}
 }
