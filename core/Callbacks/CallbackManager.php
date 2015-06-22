@@ -211,7 +211,7 @@ class CallbackManager {
 		$this->maniaControl->getTimerManager()->manageTimings();
 
 		// Manage Socket Tickets
-		$this->maniaControl->getSocketManager()->tick();
+		$this->maniaControl->getCommunicationManager()->tick();
 
 		// Server Callbacks
 		if (!$this->maniaControl->getClient()) {
