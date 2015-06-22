@@ -1,5 +1,5 @@
 <?php
-namespace ManiaControl\Sockets;
+namespace ManiaControl\Communication;
 
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\Callbacks;
@@ -21,7 +21,7 @@ use React\Socket\Server;
  * @copyright 2014-2015 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class SocketManager implements CallbackListener {
+class CommunicationManager implements CallbackListener {
 
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
@@ -29,8 +29,8 @@ class SocketManager implements CallbackListener {
 	/** @var LoopInterface $loop */
 	private $loop = null;
 
-	/** @var Listening[] $socketListenings */
-	private $socketListenings = array();
+	/** @var Listening[] $communicationListenings */
+	private $communicationListenings = array();
 
 	/** @var Server $socket */
 	private $socket = null;
@@ -40,7 +40,7 @@ class SocketManager implements CallbackListener {
 	const SETTING_SOCKET_PORT     = "Socket Port for Server ";
 
 	/**
-	 * Create a new Socket Handler Instance
+	 * Create a new Communication Handler Instance
 	 *
 	 * @param ManiaControl $maniaControl
 	 */
@@ -48,30 +48,30 @@ class SocketManager implements CallbackListener {
 		$this->maniaControl = $maniaControl;
 
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(SettingManager::CB_SETTING_CHANGED, $this, 'updateSettings');
-		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::AFTERINIT, $this, 'initSocketManager');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::AFTERINIT, $this, 'initCommunicationManager');
 	}
 
 
 	/**
-	 * Register a new Socket Listener
+	 * Register a new Communication Listener
 	 *
-	 * @param string         $callbackName
-	 * @param SocketListener $listener
-	 * @param string         $method
+	 * @param string                $callbackName
+	 * @param CommunicationListener $listener
+	 * @param string                $method
 	 * @return bool
 	 */
-	public function registerSocketListener($echoName, SocketListener $listener, $method) {
+	public function registerCommunicationListener($echoName, CommunicationListener $listener, $method) {
 		if (!Listening::checkValidCallback($listener, $method)) {
 			$listenerClass = get_class($listener);
 			trigger_error("Given Listener '{$listenerClass}' can't handle Callback '{$echoName}': No callable Method '{$method}'!");
 			return false;
 		}
 
-		if (!array_key_exists($echoName, $this->socketListenings)) {
-			$this->socketListenings[$echoName] = new Listening($listener, $method);
+		if (!array_key_exists($echoName, $this->communicationListenings)) {
+			$this->communicationListenings[$echoName] = new Listening($listener, $method);
 		} else {
 			//TODO say which is already listening and other stuff
-			trigger_error("Only one Listener can listen on a specific Socket Message");
+			trigger_error("Only one Listener can listen on a specific Communication Message");
 		}
 
 		return true;
@@ -82,39 +82,39 @@ class SocketManager implements CallbackListener {
 	 *
 	 * @param mixed $callback
 	 */
-	public function triggerSocketCallback($callbackName) {
-		if (!array_key_exists($callbackName, $this->socketListenings)) {
+	public function triggerCommuncationCallback($callbackName) {
+		if (!array_key_exists($callbackName, $this->communicationListenings)) {
 			return null;
 		}
 
 		$params = func_get_args();
 		$params = array_slice($params, 1, null, true);
 
-		$listening = $this->socketListenings[$callbackName];
+		$listening = $this->communicationListenings[$callbackName];
 		/** @var Listening $listening */
 		return $listening->triggerCallbackWithParams($params);
 	}
 
 
 	/**
-	 * Unregister a Socket Listener
+	 * Unregister a Communication Listener
 	 *
-	 * @param SocketListener $listener
+	 * @param CommunicationListener $listener
 	 * @return bool
 	 */
-	public function unregisterEchoListener(SocketListener $listener) {
-		return $this->removeSocketListener($this->socketListenings, $listener);
+	public function unregisterCommunicationListener(CommunicationListener $listener) {
+		return $this->removeCommunicationListener($this->communicationListenings, $listener);
 	}
 
 
 	/**
-	 * Remove the Socket Listener from the given Listeners Array
+	 * Remove the Communication Listener from the given Listeners Array
 	 *
-	 * @param Listening[]    $listeningsArray
-	 * @param SocketListener $listener
+	 * @param Listening[]           $listeningsArray
+	 * @param CommunicationListener $listener
 	 * @return bool
 	 */
-	private function removeSocketListener(array &$listeningsArray, SocketListener $listener) {
+	private function removeCommunicationListener(array &$listeningsArray, CommunicationListener $listener) {
 		$removed = false;
 		foreach ($listeningsArray as &$listening) {
 			if ($listening->listener === $listener) {
@@ -126,9 +126,9 @@ class SocketManager implements CallbackListener {
 	}
 
 	/**
-	 * Inits the Socket Manager after ManiaControl Startup
+	 * Inits the Communication Manager after ManiaControl Startup
 	 */
-	public function initSocketManager() {
+	public function initCommunicationManager() {
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_SOCKET_ENABLED, false);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_SOCKET_PASSWORD, "");
 
@@ -169,10 +169,10 @@ class SocketManager implements CallbackListener {
 		$socketEnabled = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SOCKET_ENABLED);
 		if ($socketEnabled) {
 
-			Logger::log("[SocketManager] Trying to create Socket");
+			Logger::log("[CommunicationManager] Trying to create Socket");
 
 			// Check for MySQLi
-			$message = '[SocketManager] Checking for installed openssl ... ';
+			$message = '[CommunicationManager] Checking for installed openssl ... ';
 			if (!extension_loaded('openssl')) {
 				Logger::log($message . 'NOT FOUND!');
 				Logger::log(" -- You don't have openssl installed! Check: http://www.php.net/manual/en/openssl.installation.php");
@@ -183,18 +183,19 @@ class SocketManager implements CallbackListener {
 
 			$serverLogin = $this->maniaControl->getServer()->login;
 			$socketPort  = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SOCKET_PORT . $serverLogin);
+			$password    = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SOCKET_PASSWORD . $serverLogin);
 
 			try {
 				$this->loop   = Factory::create();
 				$this->socket = new Server($this->loop);
 
 				$this->socket->on('error', function ($e) {
-					Logger::log("[SocketManager] Socket Error" . $e);
+					Logger::log("[CommunicationManager] Socket Error" . $e);
 				});
 
-				$this->socket->on('connection', function (Connection $connection) {
+				$this->socket->on('connection', function (Connection $connection) use ($password) {
 					$buffer = '';
-					$connection->on('data', function ($data) use (&$buffer, &$connection) {
+					$connection->on('data', function ($data) use (&$buffer, &$connection, $password) {
 						$buffer .= $data;
 						$arr = explode("\n", $buffer, 2);
 						while (count($arr) == 2 && strlen($arr[1]) >= (int) $arr[0]) {
@@ -204,7 +205,7 @@ class SocketManager implements CallbackListener {
 							$buffer = substr($buffer, strlen((string) $len) + 1 /* newline */ + $len); // clip buffer
 
 							// Decode Message
-							$data = openssl_decrypt($msg, 'aes-192-cbc', 'testpass123', OPENSSL_RAW_DATA, 'kZ2Kt0CzKUjN2MJX');
+							$data = openssl_decrypt($msg, 'aes-192-cbc', $password, OPENSSL_RAW_DATA, 'kZ2Kt0CzKUjN2MJX');
 							$data = json_decode($data);
 
 							if ($data == null) {
@@ -212,7 +213,7 @@ class SocketManager implements CallbackListener {
 							} else if (!property_exists($data, "method") || !property_exists($data, "data")) {
 								$data = array("error" => true, "data" => "Invalid Message");
 							} else {
-								$answer = $this->triggerSocketCallback($data->method, $data->data);
+								$answer = $this->triggerCommuncationCallback($data->method, $data->data);
 								//Prepare Response
 								if (!$answer) {
 									$data = array("error" => true, "data" => "No listener or response on the given Message");
@@ -223,7 +224,7 @@ class SocketManager implements CallbackListener {
 
 							//Encode, Encrypt and Send Response
 							$data = json_encode($data);
-							$data = openssl_encrypt($data, 'aes-192-cbc', 'testpass123', OPENSSL_RAW_DATA, 'kZ2Kt0CzKUjN2MJX');
+							$data = openssl_encrypt($data, 'aes-192-cbc', $password, OPENSSL_RAW_DATA, 'kZ2Kt0CzKUjN2MJX');
 							$connection->write(strlen($data) . "\n" . $data);
 
 							// next msg
@@ -234,9 +235,9 @@ class SocketManager implements CallbackListener {
 				//TODO check if port is closed
 				$this->socket->listen($socketPort, getHostByName(getHostName()));
 
-				Logger::log("[SocketManager] Socket " . getHostByName(getHostName()) . ":" . $this->socket->getPort() . " Successfully created!");
+				Logger::log("[CommunicationManager] Socket " . getHostByName(getHostName()) . ":" . $this->socket->getPort() . " Successfully created!");
 			} catch (ConnectionException $e) {
-				Logger::log("[SocketManager] Exception: " . $e->getMessage());
+				Logger::log("[CommunicationManager] Exception: " . $e->getMessage());
 			}
 		}
 	}

@@ -5,9 +5,9 @@ namespace ManiaControl;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Communication\CommunicationListener;
+use ManiaControl\Communication\CommunicationMethods;
 use ManiaControl\Players\Player;
-use ManiaControl\Sockets\SocketListener;
-use ManiaControl\Sockets\SocketMethods;
 use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
 
 /**
@@ -17,7 +17,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
  * @copyright 2014-2015 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class Chat implements CallbackListener, SocketListener {
+class Chat implements CallbackListener, CommunicationListener {
 	/*
 	 * Constants
 	 */
@@ -53,7 +53,7 @@ class Chat implements CallbackListener, SocketListener {
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_PLAYERCHAT, $this, 'onPlayerChat');
 
 		//Socket Listenings
-		$this->maniaControl->getSocketManager()->registerSocketListener(SocketMethods::GET_SERVER_CHAT, $this, function ($data) {
+		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::GET_SERVER_CHAT, $this, function ($data) {
 			return $this->chatBuffer;
 		});
 	}

@@ -24,7 +24,7 @@ use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\PluginManager;
 use ManiaControl\Server\Server;
 use ManiaControl\Settings\SettingManager;
-use ManiaControl\Sockets\SocketManager;
+use ManiaControl\Communication\CommunicationManager;
 use ManiaControl\Statistics\StatisticManager;
 use ManiaControl\Update\UpdateManager;
 use ManiaControl\Utils\CommandLineHelper;
@@ -167,8 +167,8 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	private $requestQuitMessage = null;
 
 	/** @var EchoManager $echoManager */
-	private $echoManager   = null;
-	private $socketManager = null;
+	private $echoManager          = null;
+	private $communicationManager = null;
 
 	/**
 	 * Construct a new ManiaControl instance
@@ -183,7 +183,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 		// Load ManiaControl Modules
 		$this->callbackManager       = new CallbackManager($this);
 		$this->echoManager           = new EchoManager($this);
-		$this->socketManager         = new SocketManager($this);
+		$this->communicationManager  = new CommunicationManager($this);
 		$this->timerManager          = new TimerManager($this);
 		$this->database              = new Database($this);
 		$this->fileReader            = new AsynchronousFileReader($this);
@@ -299,10 +299,10 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	/**
 	 * Return the socket manager
 	 *
-	 * @return SocketManager
+	 * @return CommunicationManager
 	 */
-	public function getSocketManager() {
-		return $this->socketManager;
+	public function getCommunicationManager() {
+		return $this->communicationManager;
 	}
 
 	/**

@@ -1,4 +1,4 @@
-Ingame you can activate the Socket Manager and set Password and Port of it.
+Ingame you can activate the Communication Manager and set Password and Port of it.
 
 Sample Web Implementation
 <?php
