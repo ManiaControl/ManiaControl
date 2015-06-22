@@ -22,6 +22,13 @@ use React\Socket\Server;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class CommunicationManager implements CallbackListener {
+	/** Constants */
+	const SETTING_SOCKET_ENABLED  = "Activate Socket";
+	const SETTING_SOCKET_PASSWORD = "Password for the Socket Connection";
+	const SETTING_SOCKET_PORT     = "Socket Port for Server ";
+
+	const ENCRYPTION_IV     = "kZ2Kt0CzKUjN2MJX";
+	const ENCRYPTION_METHOD = "aes-192-cbc";
 
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
@@ -34,10 +41,8 @@ class CommunicationManager implements CallbackListener {
 
 	/** @var Server $socket */
 	private $socket = null;
-
-	const SETTING_SOCKET_ENABLED  = "Activate Socket";
-	const SETTING_SOCKET_PASSWORD = "Password for the Socket Connection";
-	const SETTING_SOCKET_PORT     = "Socket Port for Server ";
+	/** @var Communication[] $communcations */
+	private $communications = array();
 
 	/**
 	 * Create a new Communication Handler Instance
@@ -49,8 +54,48 @@ class CommunicationManager implements CallbackListener {
 
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(SettingManager::CB_SETTING_CHANGED, $this, 'updateSettings');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::AFTERINIT, $this, 'initCommunicationManager');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::ONSHUTDOWN, $this, 'onShutDown');
 	}
 
+	/**
+	 * Creates a Communication to another ManiaControl
+	 *
+	 * @param $ip
+	 * @param $port
+	 * @return \ManiaControl\Communication\Communication
+	 */
+	public function createCommunication($ip, $port, $encryptionKey) {
+		$communication = new Communication($ip, $port, $encryptionKey);
+		$communication->createConnection();
+
+		$this->communications[] = $communication;
+		return $communication;
+	}
+
+
+	/**
+	 * Closes a opened Communication
+	 * Does not necessarily need be called, all connections get destroyed on ManiaControl Shutdown
+	 *
+	 * @param Communication $communication
+	 * @return bool
+	 */
+	public function closeCommunication($communication) {
+		$key = array_search($communication, $this->communications);
+		if (isset($this->communications[$key])) {
+			$this->communications[$key]->closeConnection();
+			unset($this->communications[$key]);
+			return true;
+		}
+		return false;
+	}
+
+	/** Close all Sockets on maniaControl Shutdown */
+	public function onShutDown() {
+		foreach ($this->communications as $communication) {
+			$this->closeCommunication($communication);
+		}
+	}
 
 	/**
 	 * Register a new Communication Listener
@@ -138,7 +183,7 @@ class CommunicationManager implements CallbackListener {
 		}
 
 
-		$this->createSocket();
+		$this->createListeningSocket();
 	}
 
 	/**
@@ -154,7 +199,7 @@ class CommunicationManager implements CallbackListener {
 		$socketEnabled = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SOCKET_ENABLED);
 
 		if ($socketEnabled && !$this->socket) {
-			$this->createSocket();
+			$this->createListeningSocket();
 		}
 
 		if (!$socketEnabled) {
@@ -165,7 +210,7 @@ class CommunicationManager implements CallbackListener {
 	/**
 	 * Creates The Socket
 	 */
-	private function createSocket() {
+	private function createListeningSocket() {
 		$socketEnabled = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SOCKET_ENABLED);
 		if ($socketEnabled) {
 
@@ -183,7 +228,7 @@ class CommunicationManager implements CallbackListener {
 
 			$serverLogin = $this->maniaControl->getServer()->login;
 			$socketPort  = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SOCKET_PORT . $serverLogin);
-			$password    = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SOCKET_PASSWORD . $serverLogin);
+			$password    = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SOCKET_PASSWORD);
 
 			try {
 				$this->loop   = Factory::create();
@@ -205,15 +250,16 @@ class CommunicationManager implements CallbackListener {
 							$buffer = substr($buffer, strlen((string) $len) + 1 /* newline */ + $len); // clip buffer
 
 							// Decode Message
-							$data = openssl_decrypt($msg, 'aes-192-cbc', $password, OPENSSL_RAW_DATA, 'kZ2Kt0CzKUjN2MJX');
+							$data = openssl_decrypt($msg, self::ENCRYPTION_METHOD, $password, OPENSSL_RAW_DATA, self::ENCRYPTION_IV);
 							$data = json_decode($data);
+
 
 							if ($data == null) {
 								$data = array("error" => true, "data" => "Data is not provided as an valid AES-196-encrypted encrypted JSON");
 							} else if (!property_exists($data, "method") || !property_exists($data, "data")) {
 								$data = array("error" => true, "data" => "Invalid Message");
 							} else {
-								$answer = $this->triggerCommuncationCallback($data->method, $data->data);
+								$answer = $this->triggerCommuncationCallback($data->method, $data->error, $data->data);
 								//Prepare Response
 								if (!$answer) {
 									$data = array("error" => true, "data" => "No listener or response on the given Message");
@@ -224,7 +270,7 @@ class CommunicationManager implements CallbackListener {
 
 							//Encode, Encrypt and Send Response
 							$data = json_encode($data);
-							$data = openssl_encrypt($data, 'aes-192-cbc', $password, OPENSSL_RAW_DATA, 'kZ2Kt0CzKUjN2MJX');
+							$data = openssl_encrypt($data, self::ENCRYPTION_METHOD, $password, OPENSSL_RAW_DATA, self::ENCRYPTION_IV);
 							$connection->write(strlen($data) . "\n" . $data);
 
 							// next msg
@@ -249,6 +295,10 @@ class CommunicationManager implements CallbackListener {
 	public function tick() {
 		if ($this->loop) {
 			$this->loop->tick();
+		}
+
+		foreach ($this->communications as $communication) {
+			$communication->tick();
 		}
 	}
 }

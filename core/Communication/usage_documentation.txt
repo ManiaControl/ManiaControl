@@ -1,7 +1,21 @@
-Ingame you can activate the Communication Manager and set Password and Port of it.
+The CommuncationListening of the Communcation Manager can be enabled in the ingame Settings.
 
-Sample Web Implementation
-<?php
+There the following settings are existing:
+-- Enable Socket Listening (Let the CommunicationManager listen for incoming calls)
+-- Passsword (Password which get used to encrypt and decrypt the messages for the openssl connection)
+-- Listening port for every server (this is the port the CommunicationManager listens at)
+
+Sample ManiaControl Implementation (for ManiaControl to ManiaControl connections)
+
+##php code begin
+	$communication = $this->maniaControl->getCommunicationManager()->createCommunication(IP/Domain, PORT, 'YOUR_PASSWORD');
+	$communication->call(function($error, $data){
+		var_dump($data);
+	}, CommunicationMethods::GET_SERVER_CHAT);
+##php code end
+
+Sample Web Implementation (to call ManiaControl from a website)
+##php code begin
 	$errno = null;
 	$errstr = null;
 	$socket = fsockopen("xx.xxx.xx.xx", xxxxx, $errno, $errstr, 2);
@@ -31,4 +45,4 @@ Sample Web Implementation
 
 	//Close the Socket
 	fclose($socket);
-?>
+##php code end
