@@ -2,7 +2,8 @@
 
 #Additions
 - added changelog
-- added SocketManager which acts like a communication interface you can connect to and interact with ManiaControl (also thanks to TGYoshi for some help)
+- added CommunicationManager which acts like a communication interface you can connect to and interact with ManiaControl (also thanks to TGYoshi for some help)
+	- You can call ManiaControl from a Website or from ManiaControl itself
 - added "//removerights login" command
 - added new EchoManager which handles Interactions between different Controllers
 	- It is possible to send an Echo command via the Method sendEcho, as message Parameter strings, objects or arrays can get used

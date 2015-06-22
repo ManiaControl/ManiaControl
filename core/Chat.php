@@ -53,7 +53,7 @@ class Chat implements CallbackListener, CommunicationListener {
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_PLAYERCHAT, $this, 'onPlayerChat');
 
 		//Socket Listenings
-		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::GET_SERVER_CHAT, $this, function ($data) {
+		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::GET_SERVER_CHAT, $this, function ($error, $data) {
 			return $this->chatBuffer;
 		});
 	}
