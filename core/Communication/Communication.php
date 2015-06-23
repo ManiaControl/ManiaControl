@@ -47,11 +47,10 @@ class Communication {
 	 * @param callable $function
 	 * @param          $method
 	 * @param string   $data
-	 * @return null
 	 */
 	public function call(callable $function, $method, $data = "") {
-		//TODO throw an exception or smth
 		if (!$this->socket) {
+			call_user_func($function, true, "You need to create an Communication before using it");
 			return null;
 		}
 
@@ -69,6 +68,11 @@ class Communication {
 	 * Process data on every Tick
 	 */
 	public function tick() {
+		//Check if the connection is enabled
+		if (!$this->socket) {
+			return;
+		}
+
 		$data = fgets($this->socket, 1024); // reads as much as possible OR nothing at all
 		if (strlen($data) > 0) { // got new data
 			$this->buffer .= $data; // append new data to buffer
