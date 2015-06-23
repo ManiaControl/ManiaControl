@@ -10,7 +10,15 @@ namespace ManiaControl\Communication;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 interface CommunicationMethods {
-	/** Returns the last 200 lines of the chat (inclusive player logins and nicknames) */
+	/** Restarts Mania Control
+	 *  Optional Params
+	 *  - message
+	 */
+	const RESTART_MANIA_CONTROL = "ManiaControl.Restart";
+
+	/** Returns the last 200 lines of the chat (inclusive player logins and nicknames)
+	 * No Params
+	 */
 	const GET_SERVER_CHAT = "Chat.GetServerChat";
 
 	/** Sends a ChatMessage to the Server

@@ -13,6 +13,9 @@ use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Callbacks\TimerManager;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\Commands\CommandManager;
+use ManiaControl\Communication\CommunicationListener;
+use ManiaControl\Communication\CommunicationManager;
+use ManiaControl\Communication\CommunicationMethods;
 use ManiaControl\Configurator\Configurator;
 use ManiaControl\Database\Database;
 use ManiaControl\Files\AsynchronousFileReader;
@@ -24,7 +27,6 @@ use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\PluginManager;
 use ManiaControl\Server\Server;
 use ManiaControl\Settings\SettingManager;
-use ManiaControl\Communication\CommunicationManager;
 use ManiaControl\Statistics\StatisticManager;
 use ManiaControl\Update\UpdateManager;
 use ManiaControl\Utils\CommandLineHelper;
@@ -40,7 +42,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\TransportException;
  * @copyright 2014-2015 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class ManiaControl implements CallbackListener, CommandListener, TimerListener {
+class ManiaControl implements CallbackListener, CommandListener, TimerListener, CommunicationListener {
 	/*
 	 * Constants
 	 */
@@ -216,6 +218,18 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 
 		// Check connection every 30 seconds
 		$this->getTimerManager()->registerTimerListening($this, 'checkConnection', 1000 * 30);
+
+		// Communication Methods
+		$this->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::RESTART_MANIA_CONTROL, $this, function ($data) {
+			//Delay Shutdown to send answer first
+			$this->getTimerManager()->registerOneTimeListening($this, function () use ($data) {
+				if (is_object($data) && property_exists($data, "message")) {
+					$this->restart($data->message);
+				}
+				$this->restart();
+			}, 5000);
+			return array("error" => false, "data" => "");
+		});
 	}
 
 	/**
