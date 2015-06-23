@@ -8,6 +8,9 @@ use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\ManiaLink;
 use ManiaControl\Admin\AuthenticationManager;
+use ManiaControl\Callbacks\EchoListener;
+use ManiaControl\Communication\CommunicationListener;
+use ManiaControl\Communication\CommunicationMethods;
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
@@ -26,7 +29,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
  * @copyright 2014-2015 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class PlayerActions {
+class PlayerActions implements EchoListener, CommunicationListener {
 	/*
 	 * Constants
 	 */
@@ -36,6 +39,7 @@ class PlayerActions {
 	const SPECTATOR_SPECTATOR           = 1;
 	const SPECTATOR_PLAYER              = 2;
 	const SPECTATOR_BUT_KEEP_SELECTABLE = 3;
+	const ECHO_WARN_PLAYER              = 'ManiaControl.PlayerManager.WarnPlayer';
 
 	/*
 	 * Permission Setting Constants
@@ -47,6 +51,7 @@ class PlayerActions {
 	const SETTING_PERMISSION_WARN_PLAYER       = 'Warn Player';
 	const SETTING_PERMISSION_KICK_PLAYER       = 'Kick Player';
 	const SETTING_PERMISSION_BAN_PLAYER        = 'Ban Player';
+
 
 	/*
 	 * Private properties
@@ -70,6 +75,50 @@ class PlayerActions {
 		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_FORCE_PLAYER_PLAY, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_FORCE_PLAYER_TEAM, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_FORCE_PLAYER_SPEC, AuthenticationManager::AUTH_LEVEL_MODERATOR);
+
+		// Echo Warn Command (Usage: sendEcho json_encode("player" => "loginName")
+		$this->maniaControl->getEchoManager()->registerEchoListener(self::ECHO_WARN_PLAYER, $this, function ($params) {
+			$this->warnPlayer(null, $params->player, false);
+		});
+
+		//Communication Manager Methods
+		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::WARN_PLAYER, $this, function ($data) {
+			if (!is_object($data) || !property_exists($data, "login")) {
+				return array("error" => true, "data" => "You have to provide a valid player Login");
+			}
+			$success = $this->warnPlayer(null, $data->login, false);
+			return array("error" => false, "data" => array("success" => $success));
+		});
+
+		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::MUTE_PLAYER, $this, function ($data) {
+			if (!is_object($data) || !property_exists($data, "login")) {
+				return array("error" => true, "data" => "You have to provide a valid player Login");
+			}
+			$success = $this->mutePlayer(null, $data->login, false);
+			return array("error" => false, "data" => array("success" => $success));
+		});
+
+		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::UNMUTE_PLAYER, $this, function ($data) {
+			if (!is_object($data) || !property_exists($data, "login")) {
+				return array("error" => true, "data" => "You have to provide a valid player Login");
+			}
+			$success = $this->unMutePlayer(null, $data->login, false);
+			return array("error" => false, "data" => array("success" => $success));
+		});
+
+		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::KICK_PLAYER, $this, function ($data) {
+			if (!is_object($data) || !property_exists($data, "login")) {
+				return array("error" => true, "data" => "You have to provide a valid player Login");
+			}
+
+			$message = "";
+			if (property_exists($data, "message")) {
+				$message = $data->message;
+			}
+
+			$success = $this->kickPlayer(null, $data->login, $message, false);
+			return array("error" => false, "data" => array("success" => $success));
+		});
 	}
 
 	/**
@@ -220,34 +269,44 @@ class PlayerActions {
 	/**
 	 * UnMute a Player
 	 *
-	 * @param string $adminLogin
-	 * @param string $targetLogin
+	 * @param      $adminLogin
+	 * @param      $targetLogin
+	 * @param bool $calledByAdmin
+	 * @return bool
 	 */
-	public function unMutePlayer($adminLogin, $targetLogin) {
-		$admin = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
-		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_MUTE_PLAYER)
-		) {
-			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($admin);
-			return;
+	public function unMutePlayer($adminLogin, $targetLogin, $calledByAdmin = true) {
+		if ($calledByAdmin) {
+			$admin = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
+			if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_MUTE_PLAYER)
+			) {
+				$this->maniaControl->getAuthenticationManager()->sendNotAllowed($admin);
+				return false;
+			}
 		}
-
 		$target = $this->maniaControl->getPlayerManager()->getPlayer($targetLogin);
 
 		if (!$target) {
-			return;
+			return false;
 		}
 
 		try {
 			$this->maniaControl->getClient()->unIgnore($targetLogin);
 		} catch (NotInListException $e) {
 			$this->maniaControl->getChat()->sendError('Player is not ignored!', $adminLogin);
-			return;
+			return false;
 		}
 
-		$title       = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($admin->authLevel);
-		$chatMessage = $title . ' ' . $admin->getEscapedNickname() . ' un-muted ' . $target->getEscapedNickname() . '!';
+		if ($calledByAdmin) {
+			$title       = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($admin->authLevel);
+			$chatMessage = $title . ' ' . $admin->getEscapedNickname() . ' un-muted ' . $target->getEscapedNickname() . '!';
+		} else {
+			$chatMessage = $target->getEscapedNickname() . ' got un-muted!';
+		}
+
 		$this->maniaControl->getChat()->sendInformation($chatMessage);
 		Logger::logInfo($chatMessage, true);
+
+		return true;
 	}
 
 	/**
@@ -255,32 +314,43 @@ class PlayerActions {
 	 *
 	 * @param string $adminLogin
 	 * @param string $targetLogin
+	 * @param bool   $calledByAdmin
+	 * @return bool
 	 */
-	public function mutePlayer($adminLogin, $targetLogin) {
-		$admin = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
-		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_MUTE_PLAYER)
-		) {
-			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($admin);
-			return;
+	public function mutePlayer($adminLogin, $targetLogin, $calledByAdmin = true) {
+		if ($calledByAdmin) {
+			$admin = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
+			if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_MUTE_PLAYER)
+			) {
+				$this->maniaControl->getAuthenticationManager()->sendNotAllowed($admin);
+				return false;
+			}
 		}
-
 		$target = $this->maniaControl->getPlayerManager()->getPlayer($targetLogin);
 
 		if (!$target) {
-			return;
+			return false;
 		}
 
 		try {
 			$this->maniaControl->getClient()->ignore($targetLogin);
 		} catch (AlreadyInListException $e) {
 			$this->maniaControl->getChat()->sendError("Player already ignored!", $adminLogin);
-			return;
+			return false;
 		}
 
-		$title       = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($admin->authLevel);
-		$chatMessage = $title . ' ' . $admin->getEscapedNickname() . ' muted ' . $target->getEscapedNickname() . '!';
+		// Announce warning
+		if ($calledByAdmin) {
+			$title       = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($admin->authLevel);
+			$chatMessage = $title . ' ' . $admin->getEscapedNickname() . ' muted ' . $target->getEscapedNickname() . '!';
+		} else {
+			$chatMessage = $target->getEscapedNickname() . ' got muted!';
+		}
+
 		$this->maniaControl->getChat()->sendInformation($chatMessage);
 		Logger::logInfo($chatMessage, true);
+
+		return true;
 	}
 
 	/**
@@ -289,6 +359,7 @@ class PlayerActions {
 	 * @param string $adminLogin
 	 * @param string $targetLogin
 	 * @param bool   $calledByAdmin
+	 * @return bool
 	 */
 	public function warnPlayer($adminLogin, $targetLogin, $calledByAdmin = true) {
 		if ($calledByAdmin) {
@@ -296,14 +367,14 @@ class PlayerActions {
 			if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_WARN_PLAYER)
 			) {
 				$this->maniaControl->getAuthenticationManager()->sendNotAllowed($admin);
-				return;
+				return false;
 			}
 		}
 
 		$target = $this->maniaControl->getPlayerManager()->getPlayer($targetLogin);
 
 		if (!$target) {
-			return;
+			return false;
 		}
 
 		// Display warning message
@@ -372,50 +443,69 @@ class PlayerActions {
 
 		$this->maniaControl->getChat()->sendInformation($chatMessage);
 		Logger::log($chatMessage, true);
+
+		return true;
 	}
+
 
 	/**
 	 * Kick a Player
 	 *
-	 * @param string $adminLogin
-	 * @param string $targetLogin
+	 * @param        $adminLogin
+	 * @param        $targetLogin
 	 * @param string $message
+	 * @param bool   $calledByAdmin
+	 * @return bool
 	 */
-	public function kickPlayer($adminLogin, $targetLogin, $message = '') {
-		$admin = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
-		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_KICK_PLAYER)
-		) {
-			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($admin);
-			return;
-		}
-		$target = $this->maniaControl->getPlayerManager()->getPlayer($targetLogin);
-		if (!$target) {
-			return;
+	public function kickPlayer($adminLogin, $targetLogin, $message = '', $calledByAdmin = true) {
+		if ($calledByAdmin) {
+			$admin = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
+			if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_KICK_PLAYER)
+			) {
+				$this->maniaControl->getAuthenticationManager()->sendNotAllowed($admin);
+				return false;
+			}
 		}
 
+		$target = $this->maniaControl->getPlayerManager()->getPlayer($targetLogin);
+		if (!$target) {
+			return false;
+		}
 
 		if ($target->isFakePlayer()) {
 			try {
 				$this->maniaControl->getClient()->disconnectFakePlayer($target->login);
 			} catch (PlayerStateException $e) {
-				$this->maniaControl->getChat()->sendException($e, $admin);
-				return;
+				if ($calledByAdmin) {
+					$this->maniaControl->getChat()->sendException($e, $admin);
+				}
+				return false;
 			}
 		} else {
 			try {
 				$this->maniaControl->getClient()->kick($target->login, $message);
 			} catch (UnknownPlayerException $e) {
-				$this->maniaControl->getChat()->sendException($e, $admin);
-				return;
+				if ($calledByAdmin) {
+					$this->maniaControl->getChat()->sendException($e, $admin);
+				}
+				return false;
 			}
 		}
 
 		// Announce kick
-		$title       = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($admin->authLevel);
-		$chatMessage = $title . ' ' . $admin->getEscapedNickname() . ' kicked ' . $target->getEscapedNickname() . '!';
+		if ($calledByAdmin) {
+			$title       = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($admin->authLevel);
+			$chatMessage = $title . ' ' . $admin->getEscapedNickname() . ' kicked ' . $target->getEscapedNickname() . '!';
+		} else {
+			$chatMessage = $target->getEscapedNickname() . ' got kicked!';
+		}
+
 		$this->maniaControl->getChat()->sendInformation($chatMessage);
 		Logger::logInfo($chatMessage, true);
+
+		return true;
 	}
+
 
 	/**
 	 * Ban a Player

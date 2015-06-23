@@ -6,8 +6,9 @@ use ManiaControl\Admin\AdminLists;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
-use ManiaControl\Callbacks\EchoListener;
 use ManiaControl\Callbacks\TimerListener;
+use ManiaControl\Communication\CommunicationListener;
+use ManiaControl\Communication\CommunicationMethods;
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Statistics\StatisticManager;
@@ -21,7 +22,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
  * @copyright 2014-2015 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class PlayerManager implements CallbackListener, TimerListener, EchoListener {
+class PlayerManager implements CallbackListener, TimerListener, CommunicationListener {
 	/*
 	 * Constants
 	 */
@@ -34,8 +35,6 @@ class PlayerManager implements CallbackListener, TimerListener, EchoListener {
 	const SETTING_JOIN_LEAVE_MESSAGES_SPECTATOR = 'Enable Join & Leave Messages for Spectators';
 	const STAT_JOIN_COUNT                       = 'Joins';
 	const STAT_SERVERTIME                       = 'Servertime';
-
-	const ECHO_WARN_PLAYER = 'ManiaControl.PlayerManager.WarnPlayer';
 
 	/*
 	 * Public properties
@@ -109,9 +108,10 @@ class PlayerManager implements CallbackListener, TimerListener, EchoListener {
 		$this->maniaControl->getStatisticManager()->defineStatMetaData(self::STAT_JOIN_COUNT);
 		$this->maniaControl->getStatisticManager()->defineStatMetaData(self::STAT_SERVERTIME, StatisticManager::STAT_TYPE_TIME);
 
-		// Echo Warn Command (Usage: sendEcho json_encode("player" => "loginName")
-		$this->maniaControl->getEchoManager()->registerEchoListener(self::ECHO_WARN_PLAYER, $this, function ($params) {
-			$this->playerActions->warnPlayer(null, $params->player, false);
+
+		// Communication Listenings
+		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::GET_PLAYER_LIST, $this, function ($data) {
+			return array("error" => false, "data" => $this->players);
 		});
 	}
 
@@ -191,6 +191,7 @@ class PlayerManager implements CallbackListener, TimerListener, EchoListener {
 	public function getAdminLists() {
 		return $this->adminLists;
 	}
+
 
 	/**
 	 * Handle OnInit callback

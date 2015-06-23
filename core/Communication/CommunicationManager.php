@@ -272,6 +272,7 @@ class CommunicationManager implements CallbackListener {
 
 							//Encode, Encrypt and Send Response
 							$data = json_encode($data);
+
 							$data = openssl_encrypt($data, self::ENCRYPTION_METHOD, $password, OPENSSL_RAW_DATA, self::ENCRYPTION_IV);
 							$connection->write(strlen($data) . "\n" . $data);
 

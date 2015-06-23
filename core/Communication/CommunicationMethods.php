@@ -16,6 +16,42 @@ interface CommunicationMethods {
 	 */
 	const RESTART_MANIA_CONTROL = "ManiaControl.Restart";
 
+	/** Gets Mania Control PlayerList
+	 *  no Parameters
+	 */
+	const GET_PLAYER_LIST = "PlayerManager.GetPlayerList";
+
+	/** Warns a Player
+	 *  Required Params
+	 *  - login
+	 */
+	const WARN_PLAYER = "PlayerActions.WarnPlayer";
+
+	/** Mutes a Player
+	 *  Required Params
+	 *  - login
+	 */
+	const MUTE_PLAYER = "PlayerActions.MutePlayer";
+
+	/** UnMutes a Player
+	 *  Required Params
+	 *  - login
+	 */
+	const UNMUTE_PLAYER = "PlayerActions.UnMutePlayer";
+
+	/** UnMutes a Player
+	 *  Required Params
+	 *  - login
+	 *  Optional Params
+	 *  - message
+	 */
+	const KICK_PLAYER = "PlayerActions.KickPlayer";
+
+	//TODO implement
+	const FORCE_PLAYER_TO_SPEC = "PlayerActions.ForcePlayerToSpec";
+	//TODO implement
+	const FORCE_PLAYER_TO_PLAY = "PlayerActions.ForcePlayerToPlay";
+
 	/** Returns the last 200 lines of the chat (inclusive player logins and nicknames)
 	 * No Params
 	 */
