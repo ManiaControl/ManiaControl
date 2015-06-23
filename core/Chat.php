@@ -53,11 +53,11 @@ class Chat implements CallbackListener, CommunicationListener {
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_PLAYERCHAT, $this, 'onPlayerChat');
 
 		//Socket Listenings
-		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::GET_SERVER_CHAT, $this, function ($error, $data) {
-			return $this->chatBuffer;
+		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::SEND_CHAT_MESSAGE, $this, "communcationSendChat");
+		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::GET_SERVER_CHAT, $this, function ($data) {
+			return array("error" => false, "data" => $this->chatBuffer);
 		});
 	}
-
 
 	/**
 	 * Send an information message to the given login
@@ -239,6 +239,74 @@ class Chat implements CallbackListener, CommunicationListener {
 	public function sendUsageInfo($message, $login = null, $prefix = false) {
 		$format = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_FORMAT_USAGEINFO);
 		return $this->sendChat($format . $message, $login, $prefix);
+	}
+
+
+	/**
+	 * Handles SendChat Communication Request
+	 *
+	 * @param $data
+	 * @return array
+	 */
+	public function communcationSendChat($data) {
+		if (!is_object($data) || !property_exists($data, "message")) {
+			return array("error" => true, "data" => "You have to provide a valid message");
+		}
+
+		$prefix = true;
+		if (property_exists($data, "prefix")) {
+			$prefix = $data->prefix;
+		}
+
+		$login = null;
+		if (property_exists($data, "login")) {
+			$login = $data->login;
+		}
+
+		$adminLevel = 0;
+		if (property_exists($data, "adminLevel")) {
+			$adminLevel = $data->adminLevel;
+		}
+
+		$type = "default";
+		if (property_exists($data, "type")) {
+			$type = $data->type;
+		}
+
+		switch ($type) {
+			case "information":
+				if ($adminLevel) {
+					$this->sendInformationToAdmins($data->message, $adminLevel, $prefix);
+				} else {
+					$this->sendInformation($data->message, $login, $prefix);
+				}
+				break;
+			case "success":
+				if ($adminLevel) {
+					$this->sendInformationToAdmins($data->message, $adminLevel, $prefix);
+				} else {
+					$this->sendSuccess($data->message, $login, $prefix);
+				}
+				break;
+			case "error":
+				if ($adminLevel) {
+					$this->sendErrorToAdmins($data->message, $adminLevel, $prefix);
+				} else {
+					$this->sendError($data->message, $login, $prefix);
+				}
+				break;
+			case "usage":
+				$this->sendUsageInfo($data->message, $login, $prefix);
+				break;
+			default:
+				if ($adminLevel) {
+					$this->sendMessageToAdmins($data->message, $adminLevel, $prefix);
+				} else {
+					$this->sendChat($data->message, $login, $prefix);
+				}
+		}
+
+		return array("error" => false, "data" => "");
 	}
 
 

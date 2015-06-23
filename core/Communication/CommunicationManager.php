@@ -259,12 +259,14 @@ class CommunicationManager implements CallbackListener {
 							} else if (!property_exists($data, "method") || !property_exists($data, "data")) {
 								$data = array("error" => true, "data" => "Invalid Message");
 							} else {
-								$answer = $this->triggerCommuncationCallback($data->method, $data->error, $data->data);
+								$answer = $this->triggerCommuncationCallback($data->method, $data->data);
 								//Prepare Response
 								if (!$answer) {
 									$data = array("error" => true, "data" => "No listener or response on the given Message");
+								} else if (!array_key_exists("error", $answer) || !array_key_exists("data", $answer)) {
+									$data = array("error" => true, "data" => "Invalid Response on the Message");
 								} else {
-									$data = array("error" => false, "data" => $answer);
+									$data = array("error" => $answer["error"], "data" => $answer["data"]);
 								}
 							}
 

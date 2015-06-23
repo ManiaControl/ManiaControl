@@ -5,11 +5,15 @@ There the following settings are existing:
 -- Passsword (Password which get used to encrypt and decrypt the messages for the openssl connection)
 -- Listening port for every server (this is the port the CommunicationManager listens at)
 
+
+For the description of the available implemented communcation Methods check the CommunicationMethods interface.
+
+
 Sample ManiaControl Implementation (for ManiaControl to ManiaControl connections)
 
 ##php code begin
 	$communication = $this->maniaControl->getCommunicationManager()->createCommunication(IP/Domain, PORT, 'YOUR_PASSWORD');
-	$communication->call(function($error, $data){
+	$communication->call(function($data){
 		var_dump($data);
 	}, CommunicationMethods::GET_SERVER_CHAT);
 ##php code end
