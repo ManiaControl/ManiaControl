@@ -203,7 +203,7 @@ class CommunicationManager implements CallbackListener {
 		}
 
 		if (!$socketEnabled) {
-			unset ($this->socket);
+			$this->socket = null;
 		}
 	}
 
@@ -281,7 +281,7 @@ class CommunicationManager implements CallbackListener {
 					});
 				});
 				//TODO check if port is closed
-				$this->socket->listen($socketPort, getHostByName(getHostName()));
+				$this->socket->listen($socketPort, $this->maniaControl->getServer()->ip);
 
 				Logger::log("[CommunicationManager] Socket " . getHostByName(getHostName()) . ":" . $this->socket->getPort() . " Successfully created!");
 			} catch (ConnectionException $e) {
