@@ -228,7 +228,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 					$this->restart($data->message);
 				}
 				$this->restart();
-			}, 5000);
+			}, 3000);
 			return new CommunicationAnswer();
 		});
 	}
@@ -507,6 +507,9 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 	 * @param string $message
 	 */
 	public function restart($message = null) {
+		// Trigger callback on Restart
+		$this->getCallbackManager()->triggerCallback(Callbacks::ONRESTART);
+
 		// Announce restart
 		try {
 			$this->getChat()->sendInformation('Restarting ManiaControl...');

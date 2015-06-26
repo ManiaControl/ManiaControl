@@ -16,6 +16,7 @@
 - added Method getSpectators() in PlayerManager
 - added some missing PHP Docs
 - added some depency libraries as they are used by the Socket Handler
+- added additional Callback which gets triggered on ManiaControl Restart
 - updated some depency libraries
 
 #Bug Fixes

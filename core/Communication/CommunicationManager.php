@@ -54,6 +54,7 @@ class CommunicationManager implements CallbackListener {
 
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(SettingManager::CB_SETTING_CHANGED, $this, 'updateSettings');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::AFTERINIT, $this, 'initCommunicationManager');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::ONRESTART, $this, 'onShutDown');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::ONSHUTDOWN, $this, 'onShutDown');
 	}
 
@@ -92,6 +93,12 @@ class CommunicationManager implements CallbackListener {
 
 	/** Close all Sockets on maniaControl Shutdown */
 	public function onShutDown() {
+		if ($this->socket && $this->socket->master) {
+			//Stop the Socket Listening
+			$this->socket->shutdown();
+			$this->socket = null;
+		}
+
 		foreach ($this->communications as $communication) {
 			$this->closeCommunication($communication);
 		}
@@ -235,6 +242,7 @@ class CommunicationManager implements CallbackListener {
 				$this->socket = new Server($this->loop);
 
 				$this->socket->on('error', function ($e) {
+					$this->maniaControl->chat->sendChat($e);
 					Logger::log("[CommunicationManager] Socket Error" . $e);
 				});
 
@@ -252,7 +260,6 @@ class CommunicationManager implements CallbackListener {
 							// Decode Message
 							$data = openssl_decrypt($msg, self::ENCRYPTION_METHOD, $password, OPENSSL_RAW_DATA, self::ENCRYPTION_IV);
 							$data = json_decode($data);
-
 
 							if ($data == null) {
 								$data = array("error" => true, "data" => "Data is not provided as an valid AES-196-encrypted encrypted JSON");
