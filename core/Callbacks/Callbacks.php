@@ -18,6 +18,7 @@ interface Callbacks {
 	const ONINIT     = 'Callbacks.OnInit';
 	const AFTERINIT  = 'Callbacks.AfterInit';
 	const ONSHUTDOWN = 'Callbacks.OnShutdown';
+	const ONRESTART  = 'Callbacks.OnRestart';
 
 	/** Script Callback: CallbackName, CallbackData */
 	const SCRIPTCALLBACK = 'Callbacks.ScriptCallback';
