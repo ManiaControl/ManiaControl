@@ -242,7 +242,6 @@ class CommunicationManager implements CallbackListener {
 				$this->socket = new Server($this->loop);
 
 				$this->socket->on('error', function ($e) {
-					$this->maniaControl->chat->sendChat($e);
 					Logger::log("[CommunicationManager] Socket Error" . $e);
 				});
 
