@@ -8,6 +8,7 @@ There the following settings are existing:
 
 For the description of the available implemented communcation Methods check the CommunicationMethods interface.
 
+If you need methods which are not implemented, or additional Parameters, feel free to contact us.
 
 Sample ManiaControl Implementation (for ManiaControl to ManiaControl connections)
 

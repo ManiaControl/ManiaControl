@@ -12,7 +12,8 @@
 	- On sending an Echo Message from another controller you need to provide an string to the dedicated method or an json_encoded array or object
 	- 4 Echos are Implemented by ManiaControl (ManiaControl.Restart, ManiaControl.AuthenticationManager.GrandLevel, ManiaControl.AuthenticationManager.RevokeLevel, ManiaControl.PlayerManager.WarnPlayer)
 - added Method getServerLoginByIndex to Server object
-- added Parameter withoutBots to getPlayerCount (default on true)
+- added to PlayerManager's Method PlayerManager the Parameter "withoutBots" (default on true)
+- added Method getSpectators() in PlayerManager
 - added some missing PHP Docs
 - added some depency libraries as they are used by the Socket Handler
 - updated some depency libraries

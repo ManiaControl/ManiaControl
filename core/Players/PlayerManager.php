@@ -536,6 +536,22 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 	}
 
 	/**
+	 * Get a List of Spectators
+	 *
+	 * @return Player[]
+	 */
+	public function getSpectators() {
+		$spectators = array();
+		foreach ($this->players as $player) {
+			if ($player->isSpectator) {
+				$spectators[] = $player;
+			}
+		}
+
+		return $spectators;
+	}
+
+	/**
 	 * Get the count of all spectators
 	 *
 	 * @return int
