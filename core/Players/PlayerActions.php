@@ -9,6 +9,7 @@ use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\ManiaLink;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\EchoListener;
+use ManiaControl\Communication\CommunicationAnswer;
 use ManiaControl\Communication\CommunicationListener;
 use ManiaControl\Communication\CommunicationMethods;
 use ManiaControl\Logger;
@@ -84,31 +85,31 @@ class PlayerActions implements EchoListener, CommunicationListener {
 		//Communication Manager Methods
 		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::WARN_PLAYER, $this, function ($data) {
 			if (!is_object($data) || !property_exists($data, "login")) {
-				return array("error" => true, "data" => "You have to provide a valid player Login");
+				return new CommunicationAnswer("You have to provide a valid player Login", true);
 			}
 			$success = $this->warnPlayer(null, $data->login, false);
-			return array("error" => false, "data" => array("success" => $success));
+			return new CommunicationAnswer(array("success" => $success));
 		});
 
 		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::MUTE_PLAYER, $this, function ($data) {
 			if (!is_object($data) || !property_exists($data, "login")) {
-				return array("error" => true, "data" => "You have to provide a valid player Login");
+				return new CommunicationAnswer("You have to provide a valid player Login", true);
 			}
 			$success = $this->mutePlayer(null, $data->login, false);
-			return array("error" => false, "data" => array("success" => $success));
+			return new CommunicationAnswer(array("success" => $success));
 		});
 
 		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::UNMUTE_PLAYER, $this, function ($data) {
 			if (!is_object($data) || !property_exists($data, "login")) {
-				return array("error" => true, "data" => "You have to provide a valid player Login");
+				return new CommunicationAnswer("You have to provide a valid player Login", true);
 			}
 			$success = $this->unMutePlayer(null, $data->login, false);
-			return array("error" => false, "data" => array("success" => $success));
+			return new CommunicationAnswer(array("success" => $success));
 		});
 
 		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::KICK_PLAYER, $this, function ($data) {
 			if (!is_object($data) || !property_exists($data, "login")) {
-				return array("error" => true, "data" => "You have to provide a valid player Login");
+				return new CommunicationAnswer("You have to provide a valid player Login", true);
 			}
 
 			$message = "";
@@ -117,7 +118,8 @@ class PlayerActions implements EchoListener, CommunicationListener {
 			}
 
 			$success = $this->kickPlayer(null, $data->login, $message, false);
-			return array("error" => false, "data" => array("success" => $success));
+
+			return new CommunicationAnswer(array("success" => $success));
 		});
 	}
 

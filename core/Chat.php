@@ -5,6 +5,7 @@ namespace ManiaControl;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Communication\CommunicationAnswer;
 use ManiaControl\Communication\CommunicationListener;
 use ManiaControl\Communication\CommunicationMethods;
 use ManiaControl\Players\Player;
@@ -55,7 +56,7 @@ class Chat implements CallbackListener, CommunicationListener {
 		//Socket Listenings
 		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::SEND_CHAT_MESSAGE, $this, "communcationSendChat");
 		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::GET_SERVER_CHAT, $this, function ($data) {
-			return array("error" => false, "data" => $this->chatBuffer);
+			return new CommunicationAnswer($this->chatBuffer);
 		});
 	}
 
@@ -250,7 +251,7 @@ class Chat implements CallbackListener, CommunicationListener {
 	 */
 	public function communcationSendChat($data) {
 		if (!is_object($data) || !property_exists($data, "message")) {
-			return array("error" => true, "data" => "You have to provide a valid message");
+			return new CommunicationAnswer("You have to provide a valid message", true);
 		}
 
 		$prefix = true;
@@ -306,7 +307,7 @@ class Chat implements CallbackListener, CommunicationListener {
 				}
 		}
 
-		return array("error" => false, "data" => "");
+		return new CommunicationAnswer();
 	}
 
 
