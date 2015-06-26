@@ -22,5 +22,4 @@ class CommunicationAnswer {
 		$this->data  = $data;
 		$this->error = $error;
 	}
-
 }

@@ -47,9 +47,18 @@ interface CommunicationMethods {
 	 */
 	const KICK_PLAYER = "PlayerActions.KickPlayer";
 
-	//TODO implement
+	/** Forces a player to Spectator
+	 *  Required Params
+	 *  - login
+	 */
 	const FORCE_PLAYER_TO_SPEC = "PlayerActions.ForcePlayerToSpec";
-	//TODO implement
+
+	/** Forces a player to Spectator
+	 *  Required Params
+	 *  - login
+	 *  Optional Params
+	 *  - teamId (id of the team the player shoudl get forced into it)
+	 */
 	const FORCE_PLAYER_TO_PLAY = "PlayerActions.ForcePlayerToPlay";
 
 	/** Returns the last 200 lines of the chat (inclusive player logins and nicknames)

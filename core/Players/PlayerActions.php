@@ -121,6 +121,30 @@ class PlayerActions implements EchoListener, CommunicationListener {
 
 			return new CommunicationAnswer(array("success" => $success));
 		});
+
+		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::FORCE_PLAYER_TO_SPEC, $this, function ($data) {
+			if (!is_object($data) || !property_exists($data, "login")) {
+				return new CommunicationAnswer("You have to provide a valid player Login", true);
+			}
+			//TODO allow parameters like spectator state
+			$success = $this->forcePlayerToSpectator(null, $data->login, self::SPECTATOR_BUT_KEEP_SELECTABLE, true, false);
+			return new CommunicationAnswer(array("success" => $success));
+		});
+
+		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::FORCE_PLAYER_TO_PLAY, $this, function ($data) {
+			if (!is_object($data) || !property_exists($data, "login")) {
+				return new CommunicationAnswer("You have to provide a valid player Login", true);
+			}
+
+			//TODO allow parameters like spectator state
+			if (property_exists($data, "teamId")) {
+				$success = $this->forcePlayerToTeam(null, $data->login, $data->teamId, false);
+			} else {
+				$success = $this->forcePlayerToPlay(null, $data->login, true, true, false);
+			}
+
+			return new CommunicationAnswer(array("success" => $success));
+		});
 	}
 
 	/**
@@ -129,26 +153,35 @@ class PlayerActions implements EchoListener, CommunicationListener {
 	 * @param string $adminLogin
 	 * @param string $targetLogin
 	 * @param int    $teamId
+	 * @param bool   $calledByAdmin
+	 * @return bool
 	 */
-	public function forcePlayerToTeam($adminLogin, $targetLogin, $teamId) {
-		$admin = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
-		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_FORCE_PLAYER_TEAM)
-		) {
-			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($admin);
-			return;
+	public function forcePlayerToTeam($adminLogin, $targetLogin, $teamId, $calledByAdmin = true) {
+		if ($calledByAdmin) {
+			$admin = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
+			if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_FORCE_PLAYER_TEAM)
+			) {
+				$this->maniaControl->getAuthenticationManager()->sendNotAllowed($admin);
+				return false;
+			}
+			if (!$admin) {
+				return false;
+			}
 		}
 		$target = $this->maniaControl->getPlayerManager()->getPlayer($targetLogin);
-		if (!$target || !$admin) {
-			return;
+		if (!$target) {
+			return false;
 		}
 
 		if ($target->isSpectator) {
 			try {
-				if (!$this->forcePlayerToPlay($adminLogin, $targetLogin, true, false)) {
-					return;
+				if (!$this->forcePlayerToPlay($adminLogin, $targetLogin, true, false, $calledByAdmin)) {
+					return false;
 				}
 			} catch (FaultException $exception) {
-				$this->maniaControl->getChat()->sendException($exception, $admin);
+				if ($calledByAdmin) {
+					$this->maniaControl->getChat()->sendException($exception, $admin);
+				}
 			}
 		}
 
@@ -156,27 +189,43 @@ class PlayerActions implements EchoListener, CommunicationListener {
 			$this->maniaControl->getClient()->forcePlayerTeam($target->login, $teamId);
 		} catch (ServerOptionsException $exception) {
 			$this->forcePlayerToPlay($adminLogin, $targetLogin);
-			return;
+			return false;
 		} catch (UnknownPlayerException $exception) {
-			$this->maniaControl->getChat()->sendException($exception, $admin);
-			return;
+			if ($calledByAdmin) {
+				$this->maniaControl->getChat()->sendException($exception, $admin);
+			}
+			return false;
 		} catch (GameModeException $exception) {
-			$this->maniaControl->getChat()->sendException($exception, $admin);
-			return;
+			if ($calledByAdmin) {
+				$this->maniaControl->getChat()->sendException($exception, $admin);
+			}
+			return false;
 		}
 
 		$chatMessage = false;
-		$title       = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($admin->authLevel);
-		if ($teamId === self::TEAM_BLUE) {
-			$chatMessage = $title . ' ' . $admin->getEscapedNickname() . ' forced ' . $target->getEscapedNickname() . ' into the Blue-Team!';
-		} else if ($teamId === self::TEAM_RED) {
-			$chatMessage = $title . ' ' . $admin->getEscapedNickname() . ' forced ' . $target->getEscapedNickname() . ' into the Red-Team!';
+
+		if ($calledByAdmin) {
+			$title = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($admin->authLevel);
+			if ($teamId === self::TEAM_BLUE) {
+				$chatMessage = $title . ' ' . $admin->getEscapedNickname() . ' forced ' . $target->getEscapedNickname() . ' into the Blue-Team!';
+			} else if ($teamId === self::TEAM_RED) {
+				$chatMessage = $title . ' ' . $admin->getEscapedNickname() . ' forced ' . $target->getEscapedNickname() . ' into the Red-Team!';
+			}
+		} else {
+			if ($teamId === self::TEAM_BLUE) {
+				$chatMessage = $target->getEscapedNickname() . ' got forced into the Blue-Team!';
+			} else if ($teamId === self::TEAM_RED) {
+				$chatMessage = $target->getEscapedNickname() . ' got forced into the Red-Team!';
+			}
 		}
+
 		if (!$chatMessage) {
-			return;
+			return false;
 		}
 		$this->maniaControl->getChat()->sendInformation($chatMessage);
 		Logger::logInfo($chatMessage, true);
+
+		return true;
 	}
 
 	/**
@@ -186,15 +235,19 @@ class PlayerActions implements EchoListener, CommunicationListener {
 	 * @param string $targetLogin
 	 * @param bool   $userIsAbleToSelect
 	 * @param bool   $displayAnnouncement
+	 * @param bool   $calledByAdmin
 	 * @return bool
 	 */
-	public function forcePlayerToPlay($adminLogin, $targetLogin, $userIsAbleToSelect = true, $displayAnnouncement = true) {
-		$admin = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
-		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_FORCE_PLAYER_PLAY)
-		) {
-			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($admin);
-			return false;
+	public function forcePlayerToPlay($adminLogin, $targetLogin, $userIsAbleToSelect = true, $displayAnnouncement = true, $calledByAdmin = true) {
+		if ($calledByAdmin) {
+			$admin = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
+			if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_FORCE_PLAYER_PLAY)
+			) {
+				$this->maniaControl->getAuthenticationManager()->sendNotAllowed($admin);
+				return false;
+			}
 		}
+
 		$target = $this->maniaControl->getPlayerManager()->getPlayer($targetLogin);
 		if (!$target) {
 			return false;
@@ -203,7 +256,9 @@ class PlayerActions implements EchoListener, CommunicationListener {
 		try {
 			$this->maniaControl->getClient()->forceSpectator($target->login, self::SPECTATOR_PLAYER);
 		} catch (ServerOptionsException $exception) {
-			$this->maniaControl->getChat()->sendException($exception, $admin);
+			if ($calledByAdmin) {
+				$this->maniaControl->getChat()->sendException($exception, $admin);
+			}
 			return false;
 		}
 
@@ -211,14 +266,22 @@ class PlayerActions implements EchoListener, CommunicationListener {
 			try {
 				$this->maniaControl->getClient()->forceSpectator($target->login, self::SPECTATOR_USER_SELECTABLE);
 			} catch (ServerOptionsException $exception) {
-				$this->maniaControl->getChat()->sendException($exception, $admin);
+				if ($calledByAdmin) {
+					$this->maniaControl->getChat()->sendException($exception, $admin);
+				}
 				return false;
 			}
 		}
 
 		// Announce force
 		if ($displayAnnouncement) {
-			$chatMessage = $admin->getEscapedNickname() . ' forced ' . $target->getEscapedNickname() . ' to Play!';
+			if ($calledByAdmin) {
+				$chatMessage = $admin->getEscapedNickname() . ' forced ' . $target->getEscapedNickname() . ' to Play!';
+			} else {
+				$chatMessage = $target->getEscapedNickname() . ' got forced to Play!';
+			}
+
+
 			$this->maniaControl->getChat()->sendInformation($chatMessage);
 		}
 
@@ -232,29 +295,44 @@ class PlayerActions implements EchoListener, CommunicationListener {
 	 * @param string $targetLogin
 	 * @param int    $spectatorState
 	 * @param bool   $releaseSlot
+	 * @param bool   $calledByAdmin
+	 * @return bool
 	 */
-	public function forcePlayerToSpectator($adminLogin, $targetLogin, $spectatorState = self::SPECTATOR_BUT_KEEP_SELECTABLE, $releaseSlot = true) {
-		$admin = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
-		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_FORCE_PLAYER_SPEC)
-		) {
-			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($admin);
-			return;
+	public function forcePlayerToSpectator($adminLogin, $targetLogin, $spectatorState = self::SPECTATOR_BUT_KEEP_SELECTABLE, $releaseSlot = true, $calledByAdmin = true) {
+		if ($calledByAdmin) {
+			$admin = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
+			if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_FORCE_PLAYER_SPEC)
+			) {
+				$this->maniaControl->getAuthenticationManager()->sendNotAllowed($admin);
+				return false;
+			}
+
+			if (!$admin) {
+				return false;
+			}
 		}
+
 		$target = $this->maniaControl->getPlayerManager()->getPlayer($targetLogin);
 
-		if (!$admin || !$target || $target->isSpectator) {
-			return;
+		if (!$target || $target->isSpectator) {
+			return false;
 		}
 
 		try {
 			$this->maniaControl->getClient()->forceSpectator($target->login, $spectatorState);
 		} catch (ServerOptionsException $exception) {
-			$this->maniaControl->getChat()->sendException($exception, $admin->login);
-			return;
+			if ($calledByAdmin) {
+				$this->maniaControl->getChat()->sendException($exception, $admin->login);
+			}
+			return false;
 		}
 
-		$title       = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($admin->authLevel);
-		$chatMessage = $title . ' ' . $admin->getEscapedNickname() . ' forced ' . $target->getEscapedNickname() . ' to Spectator!';
+		if ($calledByAdmin) {
+			$title       = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($admin->authLevel);
+			$chatMessage = $title . ' ' . $admin->getEscapedNickname() . ' forced ' . $target->getEscapedNickname() . ' to Spectator!';
+		} else {
+			$chatMessage = $target->getEscapedNickname() . ' got forced to Spectator!';
+		}
 		$this->maniaControl->getChat()->sendInformation($chatMessage);
 		Logger::logInfo($chatMessage, true);
 
@@ -266,6 +344,8 @@ class PlayerActions implements EchoListener, CommunicationListener {
 			} catch (UnknownPlayerException $e) {
 			}
 		}
+
+		return true;
 	}
 
 	/**
@@ -666,5 +746,5 @@ class PlayerActions implements EchoListener, CommunicationListener {
 			return $player->isMuted();
 		}
 		return false;
-		}
 	}
+}
