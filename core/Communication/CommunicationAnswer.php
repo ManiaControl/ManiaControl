@@ -14,6 +14,10 @@ class CommunicationAnswer {
 	public $error;
 	public $data;
 
+	/**
+	 * @param string $data
+	 * @param bool   $error
+	 */
 	public function __construct($data = "", $error = false) {
 		$this->data  = $data;
 		$this->error = $error;
