@@ -7,6 +7,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\TimerListener;
+use ManiaControl\Communication\CommunicationAnswer;
 use ManiaControl\Communication\CommunicationListener;
 use ManiaControl\Communication\CommunicationMethods;
 use ManiaControl\Logger;
@@ -111,7 +112,7 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 
 		// Communication Listenings
 		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::GET_PLAYER_LIST, $this, function ($data) {
-			return array("error" => false, "data" => $this->players);
+			return new CommunicationAnswer($this->players);
 		});
 	}
 

@@ -13,6 +13,7 @@ use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Callbacks\TimerManager;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\Commands\CommandManager;
+use ManiaControl\Communication\CommunicationAnswer;
 use ManiaControl\Communication\CommunicationListener;
 use ManiaControl\Communication\CommunicationManager;
 use ManiaControl\Communication\CommunicationMethods;
@@ -228,7 +229,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 				}
 				$this->restart();
 			}, 5000);
-			return array("error" => false, "data" => "");
+			return new CommunicationAnswer();
 		});
 	}
 

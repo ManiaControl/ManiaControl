@@ -262,11 +262,9 @@ class CommunicationManager implements CallbackListener {
 								$answer = $this->triggerCommuncationCallback($data->method, $data->data);
 								//Prepare Response
 								if (!$answer) {
-									$data = array("error" => true, "data" => "No listener or response on the given Message");
-								} else if (!array_key_exists("error", $answer) || !array_key_exists("data", $answer)) {
-									$data = array("error" => true, "data" => "Invalid Response on the Message");
+									$data = new CommunicationAnswer("No listener or response on the given Message", true);
 								} else {
-									$data = array("error" => $answer["error"], "data" => $answer["data"]);
+									$data = $answer;
 								}
 							}
 
