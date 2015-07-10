@@ -22,10 +22,12 @@ class BillData {
 	public $amount        = 0;
 	public $creationTime  = -1;
 	public $message       = "";
+	public $class         = "";
 
 	/**
 	 * Construct new Bill Data Model
 	 *
+	 * @param string        $class
 	 * @param callable      $function
 	 * @param Player|string $player
 	 * @param int           $amount
@@ -33,7 +35,8 @@ class BillData {
 	 * @param string        $receiverLogin
 	 * @param string        $message
 	 */
-	public function __construct(callable $function, $player, $amount, $pay = false, $receiverLogin = null, $message = '') {
+	public function __construct($class, callable $function, $player, $amount, $pay = false, $receiverLogin = null, $message = '') {
+		$this->class         = $class;
 		$this->function      = $function;
 		$this->player        = $player;
 		$this->amount        = $amount;
