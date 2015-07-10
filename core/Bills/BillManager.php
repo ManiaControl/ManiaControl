@@ -58,15 +58,20 @@ class BillManager implements CallbackListener {
 	 * @return bool
 	 */
 	public function sendBill(callable $function, Player $player, $amount, $message, $receiver = '') {
+		//Get the Caller Class
+		$backTrace = debug_backtrace();
+		$class     = $backTrace[1]['class'];
+
 		try {
 			$billId = $this->maniaControl->getClient()->sendBill($player->login, intval($amount), $message, $receiver);
 		} catch (InvalidArgumentException $e) {
 			//TODO better error handling, maybe call the user func with ERROR_WHILE_TRANSACTION
 			return false;
 		}
-		$this->openBills[$billId] = new BillData($function, $player, $amount, false, $receiver, $message);
+		$this->openBills[$billId] = new BillData($class, $function, $player, $amount, false, $receiver, $message);
 		return true;
 	}
+
 
 	/**
 	 * Send planets from the server to a player
@@ -78,12 +83,17 @@ class BillManager implements CallbackListener {
 	 * @return bool
 	 */
 	public function sendPlanets(callable $function, $receiverLogin, $amount, $message) {
+		//Get the Caller Class
+		$backTrace = debug_backtrace();
+		$class     = $backTrace[1]['class'];
+
 		try {
 			$billId = $this->maniaControl->getClient()->pay($receiverLogin, intval($amount), $message);
 		} catch (InvalidArgumentException $e) {
 			return false;
 		}
-		$this->openBills[$billId] = new BillData($function, $receiverLogin, $amount, true, $receiverLogin, $message);
+
+		$this->openBills[$billId] = new BillData($class, $function, $receiverLogin, $amount, true, $receiverLogin, $message);
 		return true;
 	}
 
