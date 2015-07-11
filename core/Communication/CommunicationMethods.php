@@ -11,10 +11,23 @@ namespace ManiaControl\Communication;
  */
 interface CommunicationMethods {
 	/** Restarts Mania Control
-	 *  Optional Params
-	 *  - message
+	 *   Optional Params
+	 *      - message
 	 */
 	const RESTART_MANIA_CONTROL = "ManiaControl.Restart";
+
+	/** Grands an Authentication Level on a Player
+	 *   Required Parameters
+	 *      - login (login of the player)
+	 *      - level (integer, 0-3 possible, @see AuthenticationManager)
+	 */
+	const GRANT_AUTH_LEVEL = "AuthenticationManager.GrandLevel";
+
+	/** Revokes an Authentication Level on a Player
+	 *   Required Parameters
+	 *      - login (login of the player)
+	 */
+	const REVOKE_AUTH_LEVEL = "AuthenticationManager.RevokeLevel";
 
 	/** Provides the Server Options
 	 *  no Parameters
