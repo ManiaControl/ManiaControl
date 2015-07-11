@@ -139,98 +139,8 @@ class MapManager implements CallbackListener, CommunicationListener {
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAPLIST_FILE, "MatchSettings/tracklist.txt");
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WRITE_OWN_MAPLIST_FILE, false);
 
-		// Communication Listenings
-		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::GET_CURRENT_MAP, $this, function ($data) {
-			return new CommunicationAnswer($this->getCurrentMap());
-		});
-
-		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::GET_MAP_LIST, $this, function ($data) {
-			return new CommunicationAnswer($this->getMapList());
-		});
-
-		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::GET_MAP, $this, function ($data) {
-			if (!is_object($data)) {
-				return new CommunicationAnswer("Error in provided Data", true);
-			}
-
-			if (property_exists($data, "mxId")) {
-				return new CommunicationAnswer($this->getMapByMxId($data->mxId));
-			} else if (property_exists($data, "mapUid")) {
-				return new CommunicationAnswer($this->getMapByUid($data->mxUid));
-			} else {
-				return new CommunicationAnswer("No mxId or mapUid provided.", true);
-			}
-		});
-
-		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::ADD_MAP, $this, function ($data) {
-			if (!is_object($data) || property_exists($data, "mxId")) {
-				return new CommunicationAnswer("No valid mxId provided.", true);
-			}
-
-			if (!$this->getMapByMxId($data->mxId)) {
-				return new CommunicationAnswer("Map not found.", true);
-			}
-
-			$this->addMapFromMx($data->mxId, null);
-
-			return new CommunicationAnswer();
-		});
-
-		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::REMOVE_MAP, $this, function ($data) {
-			if (!is_object($data) || property_exists($data, "mapUid")) {
-				return new CommunicationAnswer("No valid mapUid provided.", true);
-			}
-
-			$erase = false;
-			if (property_exists($data, "eraseMapFile")) {
-				$erase = $data->eraseMapFile;
-			}
-			$showMessage = true;
-			if (property_exists($data, "showChatMessage")) {
-				$showMessage = $data->showChatMessage;
-			}
-
-			$success = $this->removeMap(null, $data->mapUid, $erase, $showMessage);
-			return new CommunicationAnswer(array("success" => $success));
-		});
-
-
-		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::UPDATE_MAP, $this, function ($data) {
-			if (!is_object($data) || property_exists($data, "mapUid")) {
-				return new CommunicationAnswer("No valid mapUid provided.", true);
-			}
-
-			$this->updateMap(null, $data->mapUid);
-			return new CommunicationAnswer();
-		});
-	}
-
-	/**
-	 * Initialize necessary database tables
-	 *
-	 * @return bool
-	 */
-	private function initTables() {
-		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
-		$query  = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_MAPS . "` (
-				`index` int(11) NOT NULL AUTO_INCREMENT,
-				`mxid` int(11),
-				`uid` varchar(50) NOT NULL,
-				`name` varchar(150) NOT NULL,
-				`authorLogin` varchar(100) NOT NULL,
-				`fileName` varchar(100) NOT NULL,
-				`environment` varchar(50) NOT NULL,
-				`mapType` varchar(50) NOT NULL,
-				`changed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-				PRIMARY KEY (`index`),
-				UNIQUE KEY `uid` (`uid`)
-				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Map Data' AUTO_INCREMENT=1;";
-		$result = $mysqli->query($query);
-		if ($mysqli->error) {
-			trigger_error($mysqli->error, E_USER_ERROR);
-			return false;
-		}
-		return $result;
+		//Initlaize Communication Listenings
+		$this->initalizeCommunicationListenings();
 	}
 
 	/**
@@ -391,8 +301,12 @@ class MapManager implements CallbackListener, CommunicationListener {
 
 		// Show Message
 		if ($message) {
-			$action  = ($eraseFile ? 'erased' : 'removed');
-			$message = $admin->getEscapedNickname() . ' ' . $action . ' ' . $map->getEscapedName() . '!';
+			$action = ($eraseFile ? 'erased' : 'removed');
+			if ($admin) {
+				$message = $admin->getEscapedNickname() . ' ' . $action . ' ' . $map->getEscapedName() . '!';
+			} else {
+				$message = $map->getEscapedName() . ' got ' . $action . '!';
+			}
 			$this->maniaControl->getChat()->sendSuccess($message);
 			Logger::logInfo($message, true);
 		}
@@ -547,19 +461,21 @@ class MapManager implements CallbackListener, CommunicationListener {
 		}
 		$map->lastUpdate = time();
 
-		$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
-
-		if (!$update) {
-			// Message
-			$message = $player->getEscapedNickname() . ' added $<' . $mapInfo->name . '$>!';
-			$this->maniaControl->getChat()->sendSuccess($message);
-			Logger::logInfo($message, true);
-			// Queue requested Map
-			$this->maniaControl->getMapManager()->getMapQueue()->addMapToMapQueue($login, $mapInfo->uid);
-		} else {
-			$message = $player->getEscapedNickname() . ' updated $<' . $mapInfo->name . '$>!';
-			$this->maniaControl->getChat()->sendSuccess($message);
-			Logger::logInfo($message, true);
+		//TODO messages for communication
+		if ($login) {
+			$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
+			if (!$update) {
+				// Message
+				$message = $player->getEscapedNickname() . ' added $<' . $mapInfo->name . '$>!';
+				$this->maniaControl->getChat()->sendSuccess($message);
+				Logger::logInfo($message, true);
+				// Queue requested Map
+				$this->maniaControl->getMapManager()->getMapQueue()->addMapToMapQueue($login, $mapInfo->uid);
+			} else {
+				$message = $player->getEscapedNickname() . ' updated $<' . $mapInfo->name . '$>!';
+				$this->maniaControl->getChat()->sendSuccess($message);
+				Logger::logInfo($message, true);
+			}
 		}
 	}
 
@@ -969,5 +885,100 @@ class MapManager implements CallbackListener, CommunicationListener {
 	 */
 	public function getMapsCount() {
 		return count($this->maps);
+	}
+
+	private function initalizeCommunicationListenings() {
+		// Communication Listenings
+		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::GET_CURRENT_MAP, $this, function ($data) {
+			return new CommunicationAnswer($this->getCurrentMap());
+		});
+
+		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::GET_MAP_LIST, $this, function ($data) {
+			return new CommunicationAnswer($this->getMaps());
+		});
+
+		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::GET_MAP, $this, function ($data) {
+			if (!is_object($data)) {
+				return new CommunicationAnswer("Error in provided Data", true);
+			}
+
+			if (property_exists($data, "mxId")) {
+				return new CommunicationAnswer($this->getMapByMxId($data->mxId));
+			} else if (property_exists($data, "mapUid")) {
+				return new CommunicationAnswer($this->getMapByUid($data->mapUid));
+			} else {
+				return new CommunicationAnswer("No mxId or mapUid provided.", true);
+			}
+		});
+
+		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::ADD_MAP, $this, function ($data) {
+			if (!is_object($data) || !property_exists($data, "mxId")) {
+				return new CommunicationAnswer("No valid mxId provided.", true);
+			}
+
+			$this->addMapFromMx($data->mxId, null);
+
+			return new CommunicationAnswer();
+		});
+
+		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::REMOVE_MAP, $this, function ($data) {
+			if (!is_object($data) || !property_exists($data, "mapUid")) {
+				return new CommunicationAnswer("No valid mapUid provided.", true);
+			}
+
+			if (!$this->getMapByUid($data->mapUid)) {
+				return new CommunicationAnswer("Map not found.", true);
+			}
+
+			$erase = false;
+			if (property_exists($data, "eraseMapFile")) {
+				$erase = $data->eraseMapFile;
+			}
+			$showMessage = true;
+			if (property_exists($data, "showChatMessage")) {
+				$showMessage = $data->showChatMessage;
+			}
+
+			$success = $this->removeMap(null, $data->mapUid, $erase, $showMessage);
+			return new CommunicationAnswer(array("success" => $success));
+		});
+
+
+		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::UPDATE_MAP, $this, function ($data) {
+			if (!is_object($data) || !property_exists($data, "mapUid")) {
+				return new CommunicationAnswer("No valid mapUid provided.", true);
+			}
+
+			$this->updateMap(null, $data->mapUid);
+			return new CommunicationAnswer();
+		});
+	}
+
+	/**
+	 * Initialize necessary database tables
+	 *
+	 * @return bool
+	 */
+	private function initTables() {
+		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
+		$query  = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_MAPS . "` (
+				`index` int(11) NOT NULL AUTO_INCREMENT,
+				`mxid` int(11),
+				`uid` varchar(50) NOT NULL,
+				`name` varchar(150) NOT NULL,
+				`authorLogin` varchar(100) NOT NULL,
+				`fileName` varchar(100) NOT NULL,
+				`environment` varchar(50) NOT NULL,
+				`mapType` varchar(50) NOT NULL,
+				`changed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+				PRIMARY KEY (`index`),
+				UNIQUE KEY `uid` (`uid`)
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Map Data' AUTO_INCREMENT=1;";
+		$result = $mysqli->query($query);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error, E_USER_ERROR);
+			return false;
+		}
+		return $result;
 	}
 }
