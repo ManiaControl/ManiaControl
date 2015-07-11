@@ -16,6 +16,47 @@ interface CommunicationMethods {
 	 */
 	const RESTART_MANIA_CONTROL = "ManiaControl.Restart";
 
+	/** Adds a Map from Mania Exchange to the Server
+	 *  Required Parameters
+	 *  - mxId
+	 * (no success returning yet because of asynchronously of adding)
+	 */
+	const ADD_MAP = "MapManager.AddMap";
+
+	/** Removes a Map from the Server
+	 *  Required Parameters
+	 *  - mapUid
+	 *  Optional Parameters
+	 *  - displayMessage (default true)
+	 *  - eraseMapFile   (default false)
+	 */
+	const REMOVE_MAP = "MapManager.RemoveMap";
+
+	/** Updates a Map over Mania Exchange
+	 *  Required Parameters
+	 *  - mapUid
+	 * (no success returning yet because of asynchronously of adding)
+	 */
+	const UPDATE_MAP = "MapManager.UpdateMap";
+
+	/** Gets the current Map
+	 *  Required Parameters
+	 *   - mxId
+	 *   OR
+	 *   - mapUid
+	 */
+	const GET_CURRENT_MAP = "MapManager.GetCurrentMap";
+
+	/** Gets the specific Map
+	 *  no Parameters
+	 */
+	const GET_MAP = "MapManager.GetMap";
+
+	/** Gets the current Map List
+	 *  no Parameters
+	 */
+	const GET_MAP_LIST = "MapManager.GetMapList";
+
 	/** Gets Mania Control PlayerList
 	 *  no Parameters
 	 */
