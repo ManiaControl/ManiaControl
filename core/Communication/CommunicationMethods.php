@@ -16,6 +16,17 @@ interface CommunicationMethods {
 	 */
 	const RESTART_MANIA_CONTROL = "ManiaControl.Restart";
 
+	/** Provides the Server Options
+	 *  no Parameters
+	 */
+	const GET_SERVER_OPTIONS = "ServerOptions.GetServerOptions";
+
+	/** Set Server Options
+	 *   Required Parameter
+	 *    - scriptSettings (array(optionName1 => value1, optionName2 => value2...))
+	 */
+	const SET_SERVER_OPTIONS = "ServerOptions.SetServerOptions";
+
 	/** Provides the ModeScriptSettings
 	 *  no Parameters
 	 */
@@ -23,10 +34,10 @@ interface CommunicationMethods {
 
 	/** Set ModeScriptSettings
 	 *   Required Parameter
-	 *    - scriptSettings (array(settingName1 => Value1, settingName2 => value2...))
+	 *    - scriptSettings (array(settingName1 => value1, settingName2 => value2...))
 	 */
 	const SET_SCRIPT_SETTINGS = "ScriptSettings.SetScriptSettings";
-	
+
 	/** Restarts the Current Map
 	 *  no Parameters
 	 */

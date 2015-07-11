@@ -14,6 +14,9 @@ use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\TimerListener;
+use ManiaControl\Communication\CommunicationAnswer;
+use ManiaControl\Communication\CommunicationListener;
+use ManiaControl\Communication\CommunicationMethods;
 use ManiaControl\Configurator\ConfiguratorMenu;
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
@@ -28,7 +31,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\ServerOptionsException;
  * @copyright 2014-2015 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerListener {
+class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerListener, CommunicationListener {
 	/*
 	 * Constants
 	 */
@@ -64,6 +67,10 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 
 		// Permissions
 		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_CHANGE_SERVER_OPTIONS, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
+
+		//TODO remove to somewhere cleaner
+		//Communication Listenings
+		$this->initalizeCommunicationListenings();
 	}
 
 	/**
@@ -322,8 +329,7 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
 	 */
 	public function saveConfigData(array $configData, Player $player) {
-		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_CHANGE_SERVER_OPTIONS)
-		) {
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_CHANGE_SERVER_OPTIONS)) {
 			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
@@ -375,5 +381,44 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_SERVER_OPTIONS_CHANGED, array(self::CB_SERVER_OPTIONS_CHANGED));
 
 		return true;
+	}
+
+
+	/**
+	 * Initializes the communication Listenings
+	 */
+	private function initalizeCommunicationListenings() {
+		//Communication Listenings
+		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::GET_SERVER_OPTIONS, $this, function ($data) {
+			return new CommunicationAnswer($this->maniaControl->getClient()->getServerOptions());
+		});
+
+		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::SET_SERVER_OPTIONS, $this, function ($data) {
+			if (!is_object($data) || !property_exists($data, "serverOptions")) {
+				return new CommunicationAnswer("No valid ServerOptions provided!", true);
+			}
+
+			$oldServerOptions = $this->maniaControl->getClient()->getServerOptions();
+			$newServerOptions = new ServerOptions();
+
+			foreach ($data->serverOptions as $name => $value) {
+				$optionName                    = $name;
+				$newServerOptions->$optionName = $value;
+				settype($newServerOptions->$optionName, gettype($oldServerOptions->$optionName));
+			}
+
+			$this->fillUpMandatoryOptions($newServerOptions, $oldServerOptions);
+
+			try {
+				$success = $this->maniaControl->getClient()->setServerOptions($newServerOptions);
+			} catch (ServerOptionsException $exception) {
+				return new CommunicationAnswer($exception->getMessage(), true);
+			}
+
+			//Trigger Server Options Changed Callback
+			$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_SERVER_OPTIONS_CHANGED, array(self::CB_SERVER_OPTIONS_CHANGED));
+
+			return new CommunicationAnswer(array("success" => $success));
+		});
 	}
 }
