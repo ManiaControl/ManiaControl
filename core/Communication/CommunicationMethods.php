@@ -16,6 +16,25 @@ interface CommunicationMethods {
 	 */
 	const RESTART_MANIA_CONTROL = "ManiaControl.Restart";
 
+
+	/** Restarts the Current Map
+	 *  no Parameters
+	 */
+	const RESTART_MAP = "MapActions.RestartMap";
+
+	/** Skips the Current Map
+	 *  no Parameters
+	 */
+	const SKIP_MAP = "MapActions.SkipMap";
+
+	/** Skips to a Specific Map by MxId or MapUid
+	 *  Required Parameters
+	 *   - mxId
+	 *   OR
+	 *   - mapUid
+	 */
+	const SKIP_TO_MAP = "MapActions.SkipToMap";
+
 	/** Adds a Map from Mania Exchange to the Server
 	 *  Required Parameters
 	 *  - mxId

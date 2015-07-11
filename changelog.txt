@@ -14,6 +14,7 @@
 - added Method getServerLoginByIndex to Server object
 - added to PlayerManager's Method PlayerManager the Parameter "withoutBots" (default on true)
 - added Method getSpectators() in PlayerManager
+- added Method restartMap(), skipToMapByMxId(), skipToMapByUid() into MapActions
 - added some missing PHP Docs
 - added some depency libraries as they are used by the Socket Handler
 - added additional Callback which gets triggered on ManiaControl Restart
