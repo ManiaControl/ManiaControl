@@ -29,22 +29,22 @@ interface CommunicationMethods {
 
 	/** Skips to a Specific Map by MxId or MapUid
 	 *  Required Parameters
-	 *   - mxId
+	 *   - mxId (integer)
 	 *   OR
-	 *   - mapUid
+	 *   - mapUid (string)
 	 */
 	const SKIP_TO_MAP = "MapActions.SkipToMap";
 
 	/** Adds a Map from Mania Exchange to the Server
 	 *  Required Parameters
-	 *  - mxId
+	 *  - mxId (integer)
 	 * (no success returning yet because of asynchronously of adding)
 	 */
 	const ADD_MAP = "MapManager.AddMap";
 
 	/** Removes a Map from the Server
 	 *  Required Parameters
-	 *  - mapUid
+	 *  - mapUid (string)
 	 *  Optional Parameters
 	 *  - displayMessage (default true)
 	 *  - eraseMapFile   (default false)
@@ -60,9 +60,9 @@ interface CommunicationMethods {
 
 	/** Gets the current Map
 	 *  Required Parameters
-	 *   - mxId
+	 *   - mxId (integer)
 	 *   OR
-	 *   - mapUid
+	 *   - mapUid (string)
 	 */
 	const GET_CURRENT_MAP = "MapManager.GetCurrentMap";
 
@@ -117,7 +117,7 @@ interface CommunicationMethods {
 	 *  Required Params
 	 *  - login
 	 *  Optional Params
-	 *  - teamId (id of the team the player shoudl get forced into it)
+	 *  - teamId (integer, id of the team the player should get forced into it)
 	 */
 	const FORCE_PLAYER_TO_PLAY = "PlayerActions.ForcePlayerToPlay";
 
