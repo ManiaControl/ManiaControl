@@ -16,7 +16,17 @@ interface CommunicationMethods {
 	 */
 	const RESTART_MANIA_CONTROL = "ManiaControl.Restart";
 
+	/** Provides the ModeScriptSettings
+	 *  no Parameters
+	 */
+	const GET_SCRIPT_SETTINGS = "ScriptSettings.GetScriptSettings";
 
+	/** Set ModeScriptSettings
+	 *   Required Parameter
+	 *    - scriptSettings (array(settingName1 => Value1, settingName2 => value2...))
+	 */
+	const SET_SCRIPT_SETTINGS = "ScriptSettings.SetScriptSettings";
+	
 	/** Restarts the Current Map
 	 *  no Parameters
 	 */
