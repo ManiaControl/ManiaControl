@@ -42,10 +42,10 @@ class MapQueue implements CallbackListener, CommandListener {
 	 */
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
-	private $queuedMaps = array();
-	private $nextMap = null;
-	private $buffer = array();
-	private $nextNoQueue = false;
+	private $queuedMaps   = array();
+	private $nextMap      = null;
+	private $buffer       = array();
+	private $nextNoQueue  = false;
 
 	/**
 	 * Construct a new map queue instance
@@ -108,8 +108,7 @@ class MapQueue implements CallbackListener, CommandListener {
 	 * @param Player $admin |null
 	 */
 	public function clearMapQueue(Player $admin = null) {
-		if ($admin && !$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_CLEAR_MAPQUEUE)
-		) {
+		if ($admin && !$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_CLEAR_MAPQUEUE)) {
 			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($admin);
 			return;
 		}
@@ -308,8 +307,7 @@ class MapQueue implements CallbackListener, CommandListener {
 		// Check if map is in the buffer
 		if (in_array($uid, $this->buffer)) {
 			$this->maniaControl->getChat()->sendError('That map has recently been played!', $login);
-			if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_CLEAR_MAPQUEUE)
-			) {
+			if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_CLEAR_MAPQUEUE)) {
 				return;
 			}
 		}
@@ -329,10 +327,10 @@ class MapQueue implements CallbackListener, CommandListener {
 	/**
 	 * Remove a Map from the Map queue
 	 *
-	 * @param Player $player
-	 * @param string $uid
+	 * @param Player|null $player
+	 * @param string      $uid
 	 */
-	public function removeFromMapQueue(Player $player, $uid) {
+	public function removeFromMapQueue($player, $uid) {
 		if (!isset($this->queuedMaps[$uid])) {
 			return;
 		}
@@ -340,7 +338,9 @@ class MapQueue implements CallbackListener, CommandListener {
 		$map = $this->queuedMaps[$uid][1];
 		unset($this->queuedMaps[$uid]);
 
-		$this->maniaControl->getChat()->sendInformation('$fa0$<$fff' . $map->name . '$> is removed from the Map-Queue by $<$fff' . $player->nickname . '$>.');
+		if ($player) {
+			$this->maniaControl->getChat()->sendInformation('$fa0$<$fff' . $map->name . '$> is removed from the Map-Queue by $<$fff' . $player->nickname . '$>.');
+		}
 
 		// Trigger callback
 		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_MAPQUEUE_CHANGED, array('remove', $map));
@@ -359,8 +359,7 @@ class MapQueue implements CallbackListener, CommandListener {
 		}
 
 		$this->nextMap = null;
-		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SKIP_MAP_ON_LEAVE)
-		) {
+		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SKIP_MAP_ON_LEAVE)) {
 			// Skip Map if requester has left
 			foreach ($this->queuedMaps as $queuedMap) {
 				$player = $queuedMap[0];
@@ -423,8 +422,7 @@ class MapQueue implements CallbackListener, CommandListener {
 			return;
 		}
 
-		if (count($this->buffer) >= $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_BUFFERSIZE)
-		) {
+		if (count($this->buffer) >= $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_BUFFERSIZE)) {
 			array_shift($this->buffer);
 		}
 
