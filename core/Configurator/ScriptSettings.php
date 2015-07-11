@@ -14,6 +14,9 @@ use FML\Script\Script;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\Callbacks;
+use ManiaControl\Communication\CommunicationAnswer;
+use ManiaControl\Communication\CommunicationListener;
+use ManiaControl\Communication\CommunicationMethods;
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
@@ -26,7 +29,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
  * @copyright 2014-2015 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class ScriptSettings implements ConfiguratorMenu, CallbackListener {
+class ScriptSettings implements ConfiguratorMenu, CallbackListener, CommunicationListener {
 	/*
 	 * Constants
 	 */
@@ -61,6 +64,10 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 
 		// Permissions
 		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_CHANGE_SCRIPT_SETTINGS, AuthenticationManager::AUTH_LEVEL_ADMIN);
+
+		//TODO remove to somewhere cleaner
+		//Communication Listenings
+		$this->initalizeCommunicationListenings();
 	}
 
 	/**
@@ -149,8 +156,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 * Handle Begin Map Callback
 	 */
 	public function onBeginMap() {
-		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_LOAD_DEFAULT_SETTINGS_MAP_BEGIN)
-		) {
+		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_LOAD_DEFAULT_SETTINGS_MAP_BEGIN)) {
 			$this->loadSettingsFromDatabase();
 		}
 	}
@@ -282,8 +288,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
 	 */
 	public function saveConfigData(array $configData, Player $player) {
-		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_CHANGE_SCRIPT_SETTINGS)
-		) {
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_CHANGE_SCRIPT_SETTINGS)) {
 			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
@@ -326,6 +331,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		// Reopen the Menu
 		$this->maniaControl->getConfigurator()->showMenu($player, $this);
 	}
+
 
 	/**
 	 * Apply the Array of new Script Settings
@@ -406,6 +412,63 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener {
 		if (is_bool($value)) {
 			return ($value ? 'True' : 'False');
 		}
-		return (string)$value;
+		return (string) $value;
+	}
+
+	/**
+	 * Initializes the communication Listenings
+	 */
+	private function initalizeCommunicationListenings() {
+		//Communication Listenings
+		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::GET_SCRIPT_SETTINGS, $this, function ($data) {
+			try {
+				$scriptSettings = $this->maniaControl->getClient()->getModeScriptSettings();
+			} catch (GameModeException $e) {
+				return new CommunicationAnswer($e->getMessage(), true);
+			}
+
+			return new CommunicationAnswer($scriptSettings);
+		});
+
+		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::SET_SCRIPT_SETTINGS, $this, function ($data) {
+			if (!is_object($data) || !property_exists($data, "scriptSettings")) {
+				return new CommunicationAnswer("No valid ScriptSettings provided!", true);
+			}
+
+			try {
+				$scriptSettings = $this->maniaControl->getClient()->getModeScriptSettings();
+			} catch (GameModeException $e) {
+				return new CommunicationAnswer($e->getMessage(), true);
+			}
+
+			$newSettings = array();
+			foreach ($data->scriptSettings as $name => $value) {
+				if (!isset($scriptSettings[$name])) {
+					var_dump('no setting ' . $name);
+					continue;
+				}
+
+				if ($value == $scriptSettings[$name]) {
+					// Not changed
+					continue;
+				}
+
+				$newSettings[$name] = $value;
+				settype($newSettings[$name], gettype($scriptSettings[$name]));
+			}
+
+			//No new Settings
+			if (empty($newSettings)) {
+				return new CommunicationAnswer(array("success" => true));
+			}
+
+			//Trigger Scriptsettings Changed Callback
+			$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_SCRIPTSETTINGS_CHANGED);
+
+			//Set the Settings
+			$success = $this->maniaControl->getClient()->setModeScriptSettings($newSettings);
+
+			return new CommunicationAnswer(array("success" => $success));
+		});
 	}
 }

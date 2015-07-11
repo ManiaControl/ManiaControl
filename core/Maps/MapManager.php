@@ -887,6 +887,9 @@ class MapManager implements CallbackListener, CommunicationListener {
 		return count($this->maps);
 	}
 
+	/**
+	 * Initializes the Communication Listenings
+	 */
 	private function initalizeCommunicationListenings() {
 		// Communication Listenings
 		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::GET_CURRENT_MAP, $this, function ($data) {
