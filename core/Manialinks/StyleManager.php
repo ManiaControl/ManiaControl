@@ -164,7 +164,7 @@ class StyleManager {
 		//TODO remove: (just temporary fix for tm bug)
 		if ($this->maniaControl->getMapManager()->getCurrentMap()->getGame() === 'tm'
 		) {
-			$frame->setSize($width, $height)->setZ(30);
+			$frame->setSize($width, $height)->setZ(32);
 		}
 
 
