@@ -165,8 +165,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$headFrame->setY($posY - 5);
 
 		$labelLineArray = array('Id' => $posX + 5, 'Nickname' => $posX + 18, 'Login' => $posX + 70, 'Location' => $posX + 101);
-		if ($this->maniaControl->getAuthenticationManager()->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)
-		) {
+		if ($this->maniaControl->getAuthenticationManager()->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
 			$labelLineArray['Actions'] = $posX + 135;
 		}
 		$this->maniaControl->getManialinkManager()->labelLine($headFrame, $labelLineArray);
@@ -306,8 +305,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 			$description = 'View Player Profile of $<' . $listPlayer->nickname . '$>';
 			$playerQuad->addTooltipLabelFeature($descriptionLabel, $description);
 
-			if ($this->maniaControl->getAuthenticationManager()->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)
-			) {
+			if ($this->maniaControl->getAuthenticationManager()->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
 				// Further Player actions Quad
 				$playerQuad = new Quad_Icons64x64_1();
 				$playerFrame->add($playerQuad);
@@ -322,10 +320,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				$playerQuad->addTooltipLabelFeature($descriptionLabel, $description);
 			}
 
-			if ($this->maniaControl->getServer()->isTeamMode()
-			) {
-				if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, PlayerActions::SETTING_PERMISSION_FORCE_PLAYER_TEAM)
-				) {
+			if ($this->maniaControl->getServer()->isTeamMode()) {
+				if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, PlayerActions::SETTING_PERMISSION_FORCE_PLAYER_TEAM)) {
 					// Force to Red-Team Quad
 					$redQuad = new Quad_Emblems();
 					$playerFrame->add($redQuad);
@@ -352,8 +348,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 					$description = 'Force $<' . $listPlayer->nickname . '$> to Blue Team!';
 					$blueQuad->addTooltipLabelFeature($descriptionLabel, $description);
 
-				} else if ($this->maniaControl->getPluginManager()->isPluginActive(self::DEFAULT_CUSTOM_VOTE_PLUGIN)
-				) {
+				} else if ($this->maniaControl->getPluginManager()->isPluginActive(self::DEFAULT_CUSTOM_VOTE_PLUGIN)) {
 					// Kick Player Vote
 					$kickQuad = new Quad_UIConstruction_Buttons();
 					$playerFrame->add($kickQuad);
@@ -367,8 +362,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 					$kickQuad->addTooltipLabelFeature($descriptionLabel, $description);
 				}
 			} else {
-				if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, PlayerActions::SETTING_PERMISSION_FORCE_PLAYER_PLAY)
-				) {
+				if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, PlayerActions::SETTING_PERMISSION_FORCE_PLAYER_PLAY)) {
 					// Force to Play
 					$playQuad = new Quad_Emblems();
 					$playerFrame->add($playQuad);
@@ -383,8 +377,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				}
 			}
 
-			if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, PlayerActions::SETTING_PERMISSION_FORCE_PLAYER_SPEC)
-			) {
+			if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, PlayerActions::SETTING_PERMISSION_FORCE_PLAYER_SPEC)) {
 				// Force to Spectator Quad
 				$spectatorQuad = new Quad_BgRaceScore2();
 				$playerFrame->add($spectatorQuad);
@@ -397,8 +390,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				// Force to Spectator Description Label
 				$description = 'Force $<' . $listPlayer->nickname . '$> to Spectator!';
 				$spectatorQuad->addTooltipLabelFeature($descriptionLabel, $description);
-			} else if ($this->maniaControl->getPluginManager()->isPluginActive(self::DEFAULT_CUSTOM_VOTE_PLUGIN)
-			) {
+			} else if ($this->maniaControl->getPluginManager()->isPluginActive(self::DEFAULT_CUSTOM_VOTE_PLUGIN)) {
 				// Force to Spectator Quad
 				$spectatorQuad = new Quad_BgRaceScore2();
 				$playerFrame->add($spectatorQuad);
@@ -453,7 +445,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		// mainframe
 		$frame = new Frame();
 		$frame->setSize($width, $height);
-		$frame->setPosition($posX + $width / 2, 0);
+		$frame->setPosition($posX + $width / 2, 0, 31);
 
 		// Add Close Quad (X)
 		$closeQuad = new Quad_Icons64x64_1();
