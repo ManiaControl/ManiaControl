@@ -1,3 +1,11 @@
+###v0.16x###
+#Additions
+- added admin chatcommand //uptime which displays the time since when the server is running
+- updated playerhitstructure with new properties
+
+#Bug Fixes
+- fixed some z positions to be in front of overlays (especially in Trackmania)
+
 ###v0.16###
 
 #Additions
