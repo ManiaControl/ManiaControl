@@ -1,13 +1,13 @@
-###v0.16x###
+###v0.161###
 #Additions
 - added admin chatcommand //uptime which displays the time since when the server is running
 - updated playerhitstructure with new properties
 
 #Bug Fixes
 - fixed some z positions to be in front of overlays (especially in Trackmania)
+- fixed limit problem on maniaexchange list
 
 ###v0.16###
-
 #Additions
 - added changelog
 - added CommunicationManager which acts like a communication interface you can connect to and interact with ManiaControl (also thanks to TGYoshi for some help)

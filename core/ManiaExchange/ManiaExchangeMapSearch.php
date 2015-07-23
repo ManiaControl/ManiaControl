@@ -100,7 +100,7 @@ class ManiaExchangeMapSearch {
 		$this->url = 'http://' . $this->titlePrefix . '.mania-exchange.com/tracksearch2/search?api=on';
 
 		//Set some defaults:
-		$this->limit         = 100;
+		$this->mapLimit      = 100;
 		$this->priorityOrder = self::SEARCH_ORDER_UPDATED_NEWEST;
 
 		//Set Min Exe Build Default for games which are not Trackmania
@@ -223,7 +223,7 @@ class ManiaExchangeMapSearch {
 			}
 
 			$mxMapList = $mxMapList->results;
-
+			
 			if ($mxMapList === null) {
 				trigger_error('Cannot decode searched JSON data');
 				return;
