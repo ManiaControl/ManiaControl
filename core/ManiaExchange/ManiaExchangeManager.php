@@ -294,6 +294,7 @@ class ManiaExchangeManager {
 		$mapSearch = new ManiaExchangeMapSearch($this->maniaControl);
 		$mapSearch->setMapName($name);
 		$mapSearch->setAuthorName($author);
+		var_dump($maxMapsReturned);
 		$mapSearch->setMapLimit($maxMapsReturned);
 		$mapSearch->setPrioritySortOrder($sortOrder);
 
