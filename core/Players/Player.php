@@ -5,6 +5,7 @@ namespace ManiaControl\Players;
 use ManiaControl\ManiaControl;
 use ManiaControl\Utils\ClassUtil;
 use ManiaControl\Utils\Formatter;
+use Maniaplanet\DedicatedServer\Structures\LadderStats;
 
 /**
  * Player Model Class
@@ -17,55 +18,56 @@ class Player {
 	/*
 	 * Public Properties
 	 */
-	public $index = -1;
-	public $pid = -1;
-	public $login = null;
-	public $nickname = null;
+	public $index       = -1;
+	public $pid         = -1;
+	public $login       = null;
+	public $nickname    = null;
 	public $rawNickname = null;
-	public $path = null;
-	public $authLevel = 0;
-	public $language = null;
-	public $avatar = null;
-	public $allies = array();
-	public $clubLink = null;
-	public $teamId = -1;
-	public $isOfficial = null;
+	public $path        = null;
+	public $authLevel   = 0;
+	public $language    = null;
+	public $avatar      = null;
+	public $allies      = array();
+	public $clubLink    = null;
+	public $teamId      = -1;
+	public $isOfficial  = null;
 	public $ladderScore = -1.;
-	public $ladderRank = -1;
-	public $ladderStats = null;
-	public $joinTime = -1;
-	public $ipAddress = null;
-	public $isConnected = true;
-	public $clientVersion = null;
-	public $downloadRate = -1;
-	public $uploadRate = -1;
-	public $skins = null;
+	public $ladderRank  = -1;
+	/** @var LadderStats $ladderStats */
+	public $ladderStats              = null;
+	public $joinTime                 = -1;
+	public $ipAddress                = null;
+	public $isConnected              = true;
+	public $clientVersion            = null;
+	public $downloadRate             = -1;
+	public $uploadRate               = -1;
+	public $skins                    = null;
 	public $daysSinceZoneInscription = -1;
 
 	//Flags details
-	public $forcedSpectatorState = 0;
-	public $isReferee = false;
-	public $isPodiumReady = false;
-	public $isUsingStereoscopy = false;
+	public $forcedSpectatorState     = 0;
+	public $isReferee                = false;
+	public $isPodiumReady            = false;
+	public $isUsingStereoscopy       = false;
 	public $isManagedByAnOtherServer = false;
-	public $isServer = false;
-	public $hasPlayerSlot = false;
-	public $isBroadcasting = false;
-	public $hasJoinedGame = false;
+	public $isServer                 = false;
+	public $hasPlayerSlot            = false;
+	public $isBroadcasting           = false;
+	public $hasJoinedGame            = false;
 
 	//SpectatorStatus details
-	public $isSpectator = false;
+	public $isSpectator          = false;
 	public $isTemporarySpectator = false;
-	public $isPureSpectator = false;
-	public $autoTarget = false;
-	public $currentTargetId = 0;
+	public $isPureSpectator      = false;
+	public $autoTarget           = false;
+	public $currentTargetId      = 0;
 
 	/*
 	 * Private properties
 	 */
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
-	private $cache = array();
+	private $cache        = array();
 
 	/**
 	 * Construct a new Player
@@ -75,7 +77,7 @@ class Player {
 	 */
 	public function __construct(ManiaControl $maniaControl, $connected) {
 		$this->maniaControl = $maniaControl;
-		$this->isConnected  = (bool)$connected;
+		$this->isConnected  = (bool) $connected;
 		if ($connected) {
 			$this->joinTime = time();
 		}
@@ -89,9 +91,9 @@ class Player {
 	 */
 	public static function parseLogin($player) {
 		if (is_object($player) && property_exists($player, 'login')) {
-			return (string)$player->login;
+			return (string) $player->login;
 		}
-		return (string)$player;
+		return (string) $player;
 	}
 
 	/**
@@ -235,14 +237,14 @@ class Player {
 	public function updatePlayerFlags($flags) {
 		//Detail flags
 		$this->forcedSpectatorState     = $flags % 10; // 0, 1 or 2
-		$this->isReferee                = (bool)(intval($flags / 10) % 10);
-		$this->isPodiumReady            = (bool)(intval($flags / 100) % 10);
-		$this->isUsingStereoscopy       = (bool)(intval($flags / 1000) % 10);
-		$this->isManagedByAnOtherServer = (bool)(intval($flags / 10000) % 10);
-		$this->isServer                 = (bool)(intval($flags / 100000) % 10);
-		$this->hasPlayerSlot            = (bool)(intval($flags / 1000000) % 10);
-		$this->isBroadcasting           = (bool)(intval($flags / 10000000) % 10);
-		$this->hasJoinedGame            = (bool)(intval($flags / 100000000) % 10);
+		$this->isReferee                = (bool) (intval($flags / 10) % 10);
+		$this->isPodiumReady            = (bool) (intval($flags / 100) % 10);
+		$this->isUsingStereoscopy       = (bool) (intval($flags / 1000) % 10);
+		$this->isManagedByAnOtherServer = (bool) (intval($flags / 10000) % 10);
+		$this->isServer                 = (bool) (intval($flags / 100000) % 10);
+		$this->hasPlayerSlot            = (bool) (intval($flags / 1000000) % 10);
+		$this->isBroadcasting           = (bool) (intval($flags / 10000000) % 10);
+		$this->hasJoinedGame            = (bool) (intval($flags / 100000000) % 10);
 	}
 
 	/**
@@ -252,10 +254,10 @@ class Player {
 	 */
 	public function updateSpectatorStatus($spectatorStatus) {
 		//Details spectatorStatus
-		$this->isSpectator          = (bool)($spectatorStatus % 10);
-		$this->isTemporarySpectator = (bool)(intval($spectatorStatus / 10) % 10);
-		$this->isPureSpectator      = (bool)(intval($spectatorStatus / 100) % 10);
-		$this->autoTarget           = (bool)(intval($spectatorStatus / 1000) % 10);
+		$this->isSpectator          = (bool) ($spectatorStatus % 10);
+		$this->isTemporarySpectator = (bool) (intval($spectatorStatus / 10) % 10);
+		$this->isPureSpectator      = (bool) (intval($spectatorStatus / 100) % 10);
+		$this->autoTarget           = (bool) (intval($spectatorStatus / 1000) % 10);
 		$this->currentTargetId      = intval($spectatorStatus / 10000);
 	}
 

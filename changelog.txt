@@ -1,3 +1,7 @@
+###v0.162###
+#Additions
+- added typhinting ladderStat in Player object
+
 ###v0.161###
 #Additions
 - added admin chatcommand //uptime which displays the time since when the server is running
