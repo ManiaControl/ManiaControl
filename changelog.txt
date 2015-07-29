@@ -1,6 +1,8 @@
 ###v0.162###
 #Additions
 - added typhinting ladderStat in Player object
+- added optional AsynchronousFileReader Parameter for loadFile and postFile to set additional Headers
+- added ServerLogin header for Mania-Exchange downloads
 
 ###v0.161###
 #Additions
