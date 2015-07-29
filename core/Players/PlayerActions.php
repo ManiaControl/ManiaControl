@@ -159,8 +159,7 @@ class PlayerActions implements EchoListener, CommunicationListener {
 	public function forcePlayerToTeam($adminLogin, $targetLogin, $teamId, $calledByAdmin = true) {
 		if ($calledByAdmin) {
 			$admin = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
-			if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_FORCE_PLAYER_TEAM)
-			) {
+			if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_FORCE_PLAYER_TEAM)) {
 				$this->maniaControl->getAuthenticationManager()->sendNotAllowed($admin);
 				return false;
 			}
@@ -241,8 +240,7 @@ class PlayerActions implements EchoListener, CommunicationListener {
 	public function forcePlayerToPlay($adminLogin, $targetLogin, $userIsAbleToSelect = true, $displayAnnouncement = true, $calledByAdmin = true) {
 		if ($calledByAdmin) {
 			$admin = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
-			if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_FORCE_PLAYER_PLAY)
-			) {
+			if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_FORCE_PLAYER_PLAY)) {
 				$this->maniaControl->getAuthenticationManager()->sendNotAllowed($admin);
 				return false;
 			}
@@ -301,8 +299,7 @@ class PlayerActions implements EchoListener, CommunicationListener {
 	public function forcePlayerToSpectator($adminLogin, $targetLogin, $spectatorState = self::SPECTATOR_BUT_KEEP_SELECTABLE, $releaseSlot = true, $calledByAdmin = true) {
 		if ($calledByAdmin) {
 			$admin = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
-			if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_FORCE_PLAYER_SPEC)
-			) {
+			if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_FORCE_PLAYER_SPEC)) {
 				$this->maniaControl->getAuthenticationManager()->sendNotAllowed($admin);
 				return false;
 			}
@@ -359,8 +356,7 @@ class PlayerActions implements EchoListener, CommunicationListener {
 	public function unMutePlayer($adminLogin, $targetLogin, $calledByAdmin = true) {
 		if ($calledByAdmin) {
 			$admin = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
-			if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_MUTE_PLAYER)
-			) {
+			if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_MUTE_PLAYER)) {
 				$this->maniaControl->getAuthenticationManager()->sendNotAllowed($admin);
 				return false;
 			}
@@ -402,8 +398,7 @@ class PlayerActions implements EchoListener, CommunicationListener {
 	public function mutePlayer($adminLogin, $targetLogin, $calledByAdmin = true) {
 		if ($calledByAdmin) {
 			$admin = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
-			if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_MUTE_PLAYER)
-			) {
+			if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_MUTE_PLAYER)) {
 				$this->maniaControl->getAuthenticationManager()->sendNotAllowed($admin);
 				return false;
 			}
@@ -446,8 +441,7 @@ class PlayerActions implements EchoListener, CommunicationListener {
 	public function warnPlayer($adminLogin, $targetLogin, $calledByAdmin = true) {
 		if ($calledByAdmin) {
 			$admin = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
-			if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_WARN_PLAYER)
-			) {
+			if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_WARN_PLAYER)) {
 				$this->maniaControl->getAuthenticationManager()->sendNotAllowed($admin);
 				return false;
 			}
@@ -542,8 +536,7 @@ class PlayerActions implements EchoListener, CommunicationListener {
 	public function kickPlayer($adminLogin, $targetLogin, $message = '', $calledByAdmin = true) {
 		if ($calledByAdmin) {
 			$admin = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
-			if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_KICK_PLAYER)
-			) {
+			if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_KICK_PLAYER)) {
 				$this->maniaControl->getAuthenticationManager()->sendNotAllowed($admin);
 				return false;
 			}
@@ -598,17 +591,18 @@ class PlayerActions implements EchoListener, CommunicationListener {
 	 */
 	public function banPlayer($adminLogin, $targetLogin, $message = '') {
 		$admin = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
-		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_BAN_PLAYER)
-		) {
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_BAN_PLAYER)) {
 			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($admin);
 			return;
 		}
+
 		$target = $this->maniaControl->getPlayerManager()->getPlayer($targetLogin);
 		if (!$target) {
 			return;
 		}
 
-		if ($target->isFakePlayer()) {
+		//Todo Validate (Problem: Not connected player isFakePlayer)
+		if ($target->isOfficial && $target->isFakePlayer()) {
 			$this->maniaControl->getChat()->sendError('It is not possible to Ban a bot', $admin);
 			return;
 		}
@@ -636,8 +630,7 @@ class PlayerActions implements EchoListener, CommunicationListener {
 	 */
 	public function unBanPlayer($adminLogin, $targetLogin) {
 		$admin = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
-		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_BAN_PLAYER)
-		) {
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_BAN_PLAYER)) {
 			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($admin);
 			return;
 		}
@@ -671,14 +664,12 @@ class PlayerActions implements EchoListener, CommunicationListener {
 		}
 
 		$authLevelName = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($authLevel);
-		if (!$this->maniaControl->getAuthenticationManager()->checkRight($admin, $authLevel + 1)
-		) {
+		if (!$this->maniaControl->getAuthenticationManager()->checkRight($admin, $authLevel + 1)) {
 			$this->maniaControl->getChat()->sendError("You don't have the permission to add a {$authLevelName}!", $admin);
 			return;
 		}
 
-		if ($this->maniaControl->getAuthenticationManager()->checkRight($target, $authLevel)
-		) {
+		if ($this->maniaControl->getAuthenticationManager()->checkRight($target, $authLevel)) {
 			$this->maniaControl->getChat()->sendError("This Player is already {$authLevelName}!", $admin);
 			return;
 		}
@@ -709,15 +700,13 @@ class PlayerActions implements EchoListener, CommunicationListener {
 			return;
 		}
 
-		if (!$this->maniaControl->getAuthenticationManager()->checkRight($admin, $target->authLevel + 1)
-		) {
+		if (!$this->maniaControl->getAuthenticationManager()->checkRight($admin, $target->authLevel + 1)) {
 			$title = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($target->authLevel);
 			$this->maniaControl->getChat()->sendError("You can't revoke the Rights of a {$title}!", $admin);
 			return;
 		}
 
-		if ($this->maniaControl->getAuthenticationManager()->checkRight($target, AuthenticationManager::AUTH_LEVEL_MASTERADMIN)
-		) {
+		if ($this->maniaControl->getAuthenticationManager()->checkRight($target, AuthenticationManager::AUTH_LEVEL_MASTERADMIN)) {
 			$this->maniaControl->getChat()->sendError("MasterAdmins can't be removed!", $admin);
 			return;
 		}
