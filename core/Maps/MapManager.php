@@ -366,7 +366,7 @@ class MapManager implements CallbackListener, CommunicationListener {
 						return;
 					}
 					$this->processMapFile($file, $mapInfo, $login, $update);
-				});
+				}, 'UTF-8', 0, array("X-ManiaPlanet-ServerLogin: " . $this->maniaControl->getServer()->login));
 			});
 		}
 		return;

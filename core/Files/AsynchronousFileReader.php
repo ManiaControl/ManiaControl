@@ -38,10 +38,10 @@ class AsynchronousFileReader {
 
 	public static function newRequestTest($url) {
 		$request = new Request($url);
-		$request->getOptions()->set(CURLOPT_TIMEOUT, 60)->set(CURLOPT_HEADER, false) // don't display response header
-		        ->set(CURLOPT_CRLF, true) // linux line feed
-		        ->set(CURLOPT_ENCODING, '') // accept encoding
-		        ->set(CURLOPT_USERAGENT, 'ManiaControl v' . ManiaControl::VERSION) // user-agent
+		$request->getOptions()->set(CURLOPT_TIMEOUT, 60)->set(CURLOPT_HEADER, false)// don't display response header
+		        ->set(CURLOPT_CRLF, true)// linux line feed
+		        ->set(CURLOPT_ENCODING, '')// accept encoding
+		        ->set(CURLOPT_USERAGENT, 'ManiaControl v' . ManiaControl::VERSION)// user-agent
 		        ->set(CURLOPT_RETURNTRANSFER, true); // return instead of output content
 		return $request;
 	}
@@ -66,9 +66,9 @@ class AsynchronousFileReader {
 	 * @param callable $function
 	 * @param string   $contentType
 	 * @param int      $keepAlive
+	 * @param array    $headers Additional Headers
 	 */
-	public function loadFile($url, callable $function, $contentType = 'UTF-8', $keepAlive = 0) {
-		$headers = array();
+	public function loadFile($url, callable $function, $contentType = 'UTF-8', $keepAlive = 0, $headers = array()) {
 		array_push($headers, 'Content-Type: ' . $contentType);
 		if ($keepAlive) {
 			array_push($headers, 'Keep-Alive: ' . $keepAlive);
@@ -76,7 +76,7 @@ class AsynchronousFileReader {
 		}
 
 		$request = $this->newRequest($url);
-		$request->getOptions()->set(CURLOPT_AUTOREFERER, true) // accept link reference
+		$request->getOptions()->set(CURLOPT_AUTOREFERER, true)// accept link reference
 		        ->set(CURLOPT_HTTPHEADER, $headers); // headers
 
 		$request->addListener('complete', function (Event $event) use (&$function) {
@@ -101,10 +101,10 @@ class AsynchronousFileReader {
 	 */
 	protected function newRequest($url) {
 		$request = new Request($url);
-		$request->getOptions()->set(CURLOPT_TIMEOUT, 60)->set(CURLOPT_HEADER, false) // don't display response header
-		        ->set(CURLOPT_CRLF, true) // linux line feed
-		        ->set(CURLOPT_ENCODING, '') // accept encoding
-		        ->set(CURLOPT_USERAGENT, 'ManiaControl v' . ManiaControl::VERSION) // user-agent
+		$request->getOptions()->set(CURLOPT_TIMEOUT, 60)->set(CURLOPT_HEADER, false)// don't display response header
+		        ->set(CURLOPT_CRLF, true)// linux line feed
+		        ->set(CURLOPT_ENCODING, '')// accept encoding
+		        ->set(CURLOPT_USERAGENT, 'ManiaControl v' . ManiaControl::VERSION)// user-agent
 		        ->set(CURLOPT_RETURNTRANSFER, true); // return instead of output content
 		return $request;
 	}
@@ -133,8 +133,8 @@ class AsynchronousFileReader {
 			array_push($headers, 'Content-Encoding: gzip');
 		}
 
-		$request->getOptions()->set(CURLOPT_POST, true) // post method
-		        ->set(CURLOPT_POSTFIELDS, $content) // post content field
+		$request->getOptions()->set(CURLOPT_POST, true)// post method
+		        ->set(CURLOPT_POSTFIELDS, $content)// post content field
 		        ->set(CURLOPT_HTTPHEADER, $headers) // headers
 		;
 		$request->addListener('complete', function (Event $event) use (&$function) {
@@ -161,10 +161,9 @@ class AsynchronousFileReader {
 	 * @param string   $content
 	 * @param bool     $compression
 	 * @param string   $contentType
+	 * @param array    $headers Additional Headers
 	 */
-	public function postData($url, callable $function, $content, $compression = false, $contentType = 'text/xml; charset=UTF-8;') {
-
-		$headers = array();
+	public function postData($url, callable $function, $content, $compression = false, $contentType = 'text/xml; charset=UTF-8;', $headers = array()) {
 		array_push($headers, 'Content-Type: ' . $contentType);
 		array_push($headers, 'Keep-Alive: timeout=600, max=2000');
 		array_push($headers, 'Connection: Keep-Alive');
@@ -176,8 +175,8 @@ class AsynchronousFileReader {
 		}
 
 		$request = $this->newRequest($url);
-		$request->getOptions()->set(CURLOPT_POST, true) // post method
-		        ->set(CURLOPT_POSTFIELDS, $content) // post content field
+		$request->getOptions()->set(CURLOPT_POST, true)// post method
+		        ->set(CURLOPT_POSTFIELDS, $content)// post content field
 		        ->set(CURLOPT_HTTPHEADER, $headers) // headers
 		;
 		$request->addListener('complete', function (Event $event) use (&$function) {
