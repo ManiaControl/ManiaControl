@@ -70,6 +70,12 @@ interface Callbacks {
 	/** EndWarmup Callback */
 	const ENDWARMUP = 'Callbacks.EndWarmUp';
 
+	/** Scores Callback (returned after LibXmlRpc_PlayerRanking): Scores */
+	const SCORESREADY = 'Callbacks.ScoresReady';
+
+	/** Scores Callback (returned after LibXmlRpc_PlayerRanking in SM, or LibXmlRpc_TeamsScores in Trackmania): Scores */
+	const SCORES = 'Callbacks.Scores';
+
 	/** PlayerRanking Callback, returned after LibXmlRpc_PlayerRanking
 	 * try to avoid to use this, just use the Get function of the RankingsManager instead
 	 * param1 Player $player
@@ -83,8 +89,6 @@ interface Callbacks {
 	 */
 	/** RankingsUpdated Callback: SortedRankings */
 	const RANKINGSUPDATED = 'Callbacks.RankingsUpdated';
-	/** Scores Callback (returned after LibXmlRpc_PlayerRanking): Scores */
-	const SCORES = 'Callbacks.Scores';
 
 	/** Returns the AFKStatus of an Player, returned after  param1 Scores */ //returned after TODO
 	const AFKSTATUS = 'Callbacks.AfkStatus';
