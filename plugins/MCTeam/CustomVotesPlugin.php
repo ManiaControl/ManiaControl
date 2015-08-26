@@ -79,8 +79,8 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 * Private properties
 	 */
 	/** @var ManiaControl $maniaControl */
-	private $maniaControl = null;
-	private $voteCommands = array();
+	private $maniaControl  = null;
+	private $voteCommands  = array();
 	private $voteMenuItems = array();
 	/** @var CurrentVote $currentVote */
 	private $currentVote = null;
@@ -229,7 +229,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 			$pauseExists = false;
 			foreach ($scriptInfos->commandDescs as $param) {
-				if ($param->name === "Command_ForceWarmUp") {
+				if ($param->name === "Command_ForceWarmUp" || $param->name === "Command_SetPause") {
 					$pauseExists = true;
 					break;
 				}
@@ -251,8 +251,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$itemQuad->setAction(self::ACTION_START_VOTE . 'skipmap');
 		$this->addVoteMenuItem($itemQuad, 15, 'Vote for a Map Skip');
 
-		if ($this->maniaControl->getServer()->isTeamMode()
-		) {
+		if ($this->maniaControl->getServer()->isTeamMode()) {
 			//Menu TeamBalance
 			$itemQuad = new Quad_Icons128x32_1();
 			$itemQuad->setSubStyle($itemQuad::SUBSTYLE_RT_Team);
@@ -295,8 +294,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$itemMarginFactorY = 1.2;
 
 		//If game is shootmania lower the icons position by 20
-		if ($this->maniaControl->getMapManager()->getCurrentMap()->getGame() === 'sm'
-		) {
+		if ($this->maniaControl->getMapManager()->getCurrentMap()->getGame() === 'sm') {
 			$posY -= $shootManiaOffset;
 		}
 
@@ -544,8 +542,19 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 					break;
 				case 'pausegame':
 					try {
+						//Gamemodes like Elite, Speedball
 						$this->maniaControl->getClient()->sendModeScriptCommands(array('Command_ForceWarmUp' => true));
 						$this->maniaControl->getChat()->sendInformation('$f8fVote to $fffpause the current Game$f8f has been successful!');
+					} catch (GameModeException $ex) {
+					}
+
+					try {
+						//Chase and Combo?
+						$this->maniaControl->getClient()->sendModeScriptCommands(array('Command_SetPause' => true));
+						$this->maniaControl->getChat()->sendInformation('$f8fVote to $fffpause the current Game$f8f has been successful!');
+
+						//Especially for chase, force end of the round to reach a draw
+						$this->maniaControl->getClient()->sendModeScriptCommands(array('Command_ForceEndRound' => true));
 					} catch (GameModeException $ex) {
 					}
 					break;
@@ -808,11 +817,11 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
  */
 // TODO: extract classes to own files
 class VoteCommand {
-	public $index = '';
-	public $name = '';
+	public $index       = '';
+	public $name        = '';
 	public $neededRatio = 0;
-	public $idBased = false;
-	public $startText = '';
+	public $idBased     = false;
+	public $startText   = '';
 
 	private $stopCallback = '';
 
@@ -858,16 +867,16 @@ class CurrentVote {
 	const VOTE_FOR_ACTION     = '1';
 	const VOTE_AGAINST_ACTION = '-1';
 
-	public $voteCommand = null;
-	public $expireTime = 0;
-	public $positiveVotes = 0;
-	public $neededRatio = 0;
+	public $voteCommand       = null;
+	public $expireTime        = 0;
+	public $positiveVotes     = 0;
+	public $neededRatio       = 0;
 	public $neededPlayerRatio = 0;
-	public $voter = null;
-	public $map = null;
-	public $player = null;
-	public $function = null;
-	public $stopCallback = "";
+	public $voter             = null;
+	public $map               = null;
+	public $player            = null;
+	public $function          = null;
+	public $stopCallback      = "";
 
 	private $playersVoted = array();
 
