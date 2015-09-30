@@ -23,6 +23,34 @@ class AsyncHttpRequest {
 		$this->url          = $url;
 	}
 
+	//TODO merge loadFile / postData
+	public function getData($keepAlive = 0) {
+		array_push($this->headers, 'Content-Type: ' . $this->contentType);
+		if ($keepAlive) {
+			array_push($headers, 'Keep-Alive: ' . $keepAlive);
+			array_push($headers, 'Connection: Keep-Alive');
+		}
+
+		$fileReader = new AsynchronousFileReader($this->maniaControl);
+		$request    = $fileReader->newRequest($this->url);
+		$request->getOptions()->set(CURLOPT_AUTOREFERER, true)// accept link reference
+		        ->set(CURLOPT_HTTPHEADER, $this->headers); // headers
+
+		$request->addListener('complete', function (Event $event) use (&$function) {
+			$error   = null;
+			$content = null;
+			if ($event->response->hasError()) {
+				$error = $event->response->getError()->getMessage();
+			} else {
+				$content = $event->response->getContent();
+			}
+			call_user_func($function, $content, $error);
+		});
+
+		$fileReader->addRequest($request);
+	}
+
+
 	public function postData() {
 		array_push($this->headers, 'Content-Type: ' . $this->contentType);
 		array_push($this->headers, 'Keep-Alive: timeout=600, max=2000');
@@ -66,7 +94,7 @@ class AsyncHttpRequest {
 	}
 
 	/**
-	 * @param $function
+	 * @param callable $function
 	 * @return $this
 	 */
 	public function setCallable($function) {
