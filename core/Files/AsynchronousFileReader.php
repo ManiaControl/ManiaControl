@@ -66,38 +66,13 @@ class AsynchronousFileReader {
 	 * @param string   $contentType
 	 * @param int      $keepAlive
 	 * @param array    $headers Additional Headers
+	 * @deprecated @see ManiaControl\Files\AsyncHttpRequest
 	 */
 	public function loadFile($url, callable $function, $contentType = 'UTF-8', $keepAlive = 0, $headers = array()) {
 		$httpRequest = new AsyncHttpRequest($this->maniaControl, $url);
 		$httpRequest->setCallable($function)->setContentType($contentType)->setHeaders($headers);
 		$httpRequest->getData($keepAlive);
 	}
-
-	/**
-	 * Create a new cURL Request for the given URL, DO NOT CALL MANUALLY!
-	 *
-	 * @param string $url
-	 * @return Request
-	 */
-	public function newRequest($url) {
-		$request = new Request($url);
-		$request->getOptions()->set(CURLOPT_TIMEOUT, 60)->set(CURLOPT_HEADER, false)// don't display response header
-		        ->set(CURLOPT_CRLF, true)// linux line feed
-		        ->set(CURLOPT_ENCODING, '')// accept encoding
-		        ->set(CURLOPT_USERAGENT, 'ManiaControl v' . ManiaControl::VERSION)// user-agent
-		        ->set(CURLOPT_RETURNTRANSFER, true); // return instead of output content
-		return $request;
-	}
-
-	/**
-	 * Add a Request to the queue, DO NOT CALL MANUALLY!
-	 *
-	 * @param Request $request
-	 */
-	public function addRequest(Request $request) {
-		array_push($this->requests, $request);
-	}
-
 
 	/**
 	 * Send Data via POST Method
@@ -108,10 +83,20 @@ class AsynchronousFileReader {
 	 * @param bool     $compression
 	 * @param string   $contentType
 	 * @param array    $headers Additional Headers
+	 * @deprecated @see ManiaControl\Files\AsyncHttpRequest
 	 */
 	public function postData($url, callable $function, $content, $compression = false, $contentType = 'text/xml; charset=UTF-8;', $headers = array()) {
 		$httpRequest = new AsyncHttpRequest($this->maniaControl, $url);
 		$httpRequest->setCallable($function)->setContent($content)->setCompression($compression)->setContentType($contentType)->setHeaders($headers);
 		$httpRequest->postData();
+	}
+
+	/**
+	 * Add a Request to the queue, DO NOT CALL MANUALLY!
+	 *
+	 * @param Request $request
+	 */
+	public function addRequest(Request $request) {
+		array_push($this->requests, $request);
 	}
 }
