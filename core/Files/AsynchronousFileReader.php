@@ -94,12 +94,12 @@ class AsynchronousFileReader {
 	}
 
 	/**
-	 * Create a new cURL Request for the given URL
+	 * Create a new cURL Request for the given URL, DO NOT CALL MANUALLY!
 	 *
 	 * @param string $url
 	 * @return Request
 	 */
-	protected function newRequest($url) {
+	public function newRequest($url) {
 		$request = new Request($url);
 		$request->getOptions()->set(CURLOPT_TIMEOUT, 60)->set(CURLOPT_HEADER, false)// don't display response header
 		        ->set(CURLOPT_CRLF, true)// linux line feed
@@ -112,11 +112,11 @@ class AsynchronousFileReader {
 	//TODO remove, they are just for testing dedimania
 
 	/**
-	 * Add a Request to the queue
+	 * Add a Request to the queue, DO NOT CALL MANUALLY!
 	 *
 	 * @param Request $request
 	 */
-	protected function addRequest(Request $request) {
+	public function addRequest(Request $request) {
 		array_push($this->requests, $request);
 	}
 
