@@ -5,6 +5,7 @@
 namespace ManiaControl\Files;
 
 use cURL\Event;
+use cURL\Request;
 use ManiaControl\ManiaControl;
 
 class AsyncHttpRequest {
@@ -23,7 +24,28 @@ class AsyncHttpRequest {
 		$this->url          = $url;
 	}
 
+	/**
+	 * Create a new cURL Request for the given URL
+	 *
+	 * @param string $url
+	 * @return Request
+	 */
+	private function newRequest($url) {
+		$request = new Request($url);
+		$request->getOptions()->set(CURLOPT_TIMEOUT, 60)->set(CURLOPT_HEADER, false)// don't display response header
+		        ->set(CURLOPT_CRLF, true)// linux line feed
+		        ->set(CURLOPT_ENCODING, '')// accept encoding
+		        ->set(CURLOPT_USERAGENT, 'ManiaControl v' . ManiaControl::VERSION)// user-agent
+		        ->set(CURLOPT_RETURNTRANSFER, true); // return instead of output content
+		return $request;
+	}
+
 	//TODO merge loadFile / postData
+	/**
+	 * Carry out a GetData Request
+	 *
+	 * @param int $keepAlive
+	 */
 	public function getData($keepAlive = 0) {
 		array_push($this->headers, 'Content-Type: ' . $this->contentType);
 		if ($keepAlive) {
@@ -31,8 +53,7 @@ class AsyncHttpRequest {
 			array_push($headers, 'Connection: Keep-Alive');
 		}
 
-		$fileReader = new AsynchronousFileReader($this->maniaControl);
-		$request    = $fileReader->newRequest($this->url);
+		$request = $this->newRequest($this->url);
 		$request->getOptions()->set(CURLOPT_AUTOREFERER, true)// accept link reference
 		        ->set(CURLOPT_HTTPHEADER, $this->headers); // headers
 
@@ -47,10 +68,14 @@ class AsyncHttpRequest {
 			call_user_func($function, $content, $error);
 		});
 
+		$fileReader = new AsynchronousFileReader($this->maniaControl);
 		$fileReader->addRequest($request);
 	}
 
 
+	/**
+	 * Carry out a PostData Request
+	 */
 	public function postData() {
 		array_push($this->headers, 'Content-Type: ' . $this->contentType);
 		array_push($this->headers, 'Keep-Alive: timeout=600, max=2000');
@@ -63,9 +88,7 @@ class AsyncHttpRequest {
 		}
 
 
-		$fileReader = new AsynchronousFileReader($this->maniaControl);
-
-		$request = $fileReader->newRequest($this->url);
+		$request = $this->newRequest($this->url);
 		$request->getOptions()->set(CURLOPT_POST, true)// post method
 		        ->set(CURLOPT_POSTFIELDS, $content)// post content field
 		        ->set(CURLOPT_HTTPHEADER, $this->headers) // headers
@@ -81,6 +104,7 @@ class AsyncHttpRequest {
 			call_user_func($function, $content, $error);
 		});
 
+		$fileReader = new AsynchronousFileReader($this->maniaControl);
 		$fileReader->addRequest($request);
 	}
 
