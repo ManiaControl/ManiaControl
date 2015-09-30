@@ -1,14 +1,27 @@
 <?php
 
-//TODO documentation, finishing
-
 namespace ManiaControl\Files;
 
 use cURL\Event;
 use cURL\Request;
 use ManiaControl\ManiaControl;
 
+/**
+ * Asynchronous Http Request Class
+ *
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014-2015 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ */
 class AsyncHttpRequest {
+	/*
+	 * Constants
+	 */
+	const CONTENT_TYPE_JSON = 'application/json';
+
+	/*
+	 * Private properties
+	 */
 	/** @var  ManiaControl $maniaControl */
 	private $maniaControl;
 
@@ -40,7 +53,6 @@ class AsyncHttpRequest {
 		return $request;
 	}
 
-	//TODO merge loadFile / postData
 	/**
 	 * Carry out a GetData Request
 	 *
@@ -57,19 +69,7 @@ class AsyncHttpRequest {
 		$request->getOptions()->set(CURLOPT_AUTOREFERER, true)// accept link reference
 		        ->set(CURLOPT_HTTPHEADER, $this->headers); // headers
 
-		$request->addListener('complete', function (Event $event) use (&$function) {
-			$error   = null;
-			$content = null;
-			if ($event->response->hasError()) {
-				$error = $event->response->getError()->getMessage();
-			} else {
-				$content = $event->response->getContent();
-			}
-			call_user_func($function, $content, $error);
-		});
-
-		$fileReader = new AsynchronousFileReader($this->maniaControl);
-		$fileReader->addRequest($request);
+		$this->processRequest($request);
 	}
 
 
@@ -93,6 +93,16 @@ class AsyncHttpRequest {
 		        ->set(CURLOPT_POSTFIELDS, $content)// post content field
 		        ->set(CURLOPT_HTTPHEADER, $this->headers) // headers
 		;
+
+		$this->processRequest($request);
+	}
+
+	/**
+	 * Processes the Request
+	 *
+	 * @param Request $request
+	 */
+	private function processRequest(Request $request) {
 		$request->addListener('complete', function (Event $event) use (&$function) {
 			$error   = null;
 			$content = null;
