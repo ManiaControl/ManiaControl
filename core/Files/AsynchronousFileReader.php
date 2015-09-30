@@ -2,7 +2,6 @@
 
 namespace ManiaControl\Files;
 
-use cURL\Event;
 use cURL\Request;
 use ManiaControl\ManiaControl;
 
@@ -69,28 +68,9 @@ class AsynchronousFileReader {
 	 * @param array    $headers Additional Headers
 	 */
 	public function loadFile($url, callable $function, $contentType = 'UTF-8', $keepAlive = 0, $headers = array()) {
-		array_push($headers, 'Content-Type: ' . $contentType);
-		if ($keepAlive) {
-			array_push($headers, 'Keep-Alive: ' . $keepAlive);
-			array_push($headers, 'Connection: Keep-Alive');
-		}
-
-		$request = $this->newRequest($url);
-		$request->getOptions()->set(CURLOPT_AUTOREFERER, true)// accept link reference
-		        ->set(CURLOPT_HTTPHEADER, $headers); // headers
-
-		$request->addListener('complete', function (Event $event) use (&$function) {
-			$error   = null;
-			$content = null;
-			if ($event->response->hasError()) {
-				$error = $event->response->getError()->getMessage();
-			} else {
-				$content = $event->response->getContent();
-			}
-			call_user_func($function, $content, $error);
-		});
-
-		$this->addRequest($request);
+		$httpRequest = new AsyncHttpRequest($this->maniaControl, $url);
+		$httpRequest->setCallable($function)->setContentType($contentType)->setHeaders($headers);
+		$httpRequest->getData($keepAlive);
 	}
 
 	/**
@@ -109,8 +89,6 @@ class AsynchronousFileReader {
 		return $request;
 	}
 
-	//TODO remove, they are just for testing dedimania
-
 	/**
 	 * Add a Request to the queue, DO NOT CALL MANUALLY!
 	 *
@@ -118,38 +96,6 @@ class AsynchronousFileReader {
 	 */
 	public function addRequest(Request $request) {
 		array_push($this->requests, $request);
-	}
-
-	public function postDataTest(Request $request, $url, callable $function, $content, $compression = false, $contentType = 'text/xml; charset=UTF-8;') {
-
-		$headers = array();
-		array_push($headers, 'Content-Type: ' . $contentType);
-		array_push($headers, 'Keep-Alive: timeout=600, max=2000');
-		array_push($headers, 'Connection: Keep-Alive');
-
-		$content = str_replace(array("\r", "\n"), '', $content);
-		if ($compression) {
-			$content = zlib_encode($content, 31);
-			array_push($headers, 'Content-Encoding: gzip');
-		}
-
-		$request->getOptions()->set(CURLOPT_POST, true)// post method
-		        ->set(CURLOPT_POSTFIELDS, $content)// post content field
-		        ->set(CURLOPT_HTTPHEADER, $headers) // headers
-		;
-		$request->addListener('complete', function (Event $event) use (&$function) {
-			$error   = null;
-			$content = null;
-			if ($event->response->hasError()) {
-				$error = $event->response->getError()->getMessage();
-			} else {
-				$content = $event->response->getContent();
-			}
-
-			call_user_func($function, $content, $error);
-		});
-
-		$this->addRequest($request);
 	}
 
 
