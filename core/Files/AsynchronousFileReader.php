@@ -164,32 +164,8 @@ class AsynchronousFileReader {
 	 * @param array    $headers Additional Headers
 	 */
 	public function postData($url, callable $function, $content, $compression = false, $contentType = 'text/xml; charset=UTF-8;', $headers = array()) {
-		array_push($headers, 'Content-Type: ' . $contentType);
-		array_push($headers, 'Keep-Alive: timeout=600, max=2000');
-		array_push($headers, 'Connection: Keep-Alive');
-
-		$content = str_replace(array("\r", "\n"), '', $content);
-		if ($compression) {
-			$content = zlib_encode($content, 31);
-			array_push($headers, 'Content-Encoding: gzip');
-		}
-
-		$request = $this->newRequest($url);
-		$request->getOptions()->set(CURLOPT_POST, true)// post method
-		        ->set(CURLOPT_POSTFIELDS, $content)// post content field
-		        ->set(CURLOPT_HTTPHEADER, $headers) // headers
-		;
-		$request->addListener('complete', function (Event $event) use (&$function) {
-			$error   = null;
-			$content = null;
-			if ($event->response->hasError()) {
-				$error = $event->response->getError()->getMessage();
-			} else {
-				$content = $event->response->getContent();
-			}
-			call_user_func($function, $content, $error);
-		});
-
-		$this->addRequest($request);
+		$httpRequest = new AsyncHttpRequest($this->maniaControl, $url);
+		$httpRequest->setCallable($function)->setContent($content)->setCompression($compression)->setContentType($contentType)->setHeaders($headers);
+		$httpRequest->postData();
 	}
 }

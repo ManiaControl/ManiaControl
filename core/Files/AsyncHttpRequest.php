@@ -8,13 +8,9 @@ use cURL\Event;
 use ManiaControl\ManiaControl;
 
 class AsyncHttpRequest {
-	const TYPE_GET  = "GET";
-	const TYPE_POST = "POST";
-
 	/** @var  ManiaControl $maniaControl */
 	private $maniaControl;
 
-	private $type;
 	private $url;
 	private $function;
 	private $content;
@@ -22,9 +18,8 @@ class AsyncHttpRequest {
 	private $contentType = 'text/xml; charset=UTF-8;';
 	private $headers     = array();
 
-	public function __construct($maniaControl, $type, $url) {
+	public function __construct($maniaControl, $url) {
 		$this->maniaControl = $maniaControl;
-		$this->type         = $type;
 		$this->url          = $url;
 	}
 
@@ -125,6 +120,22 @@ class AsyncHttpRequest {
 	 */
 	public function setHeaders($headers) {
 		$this->headers = $headers;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getContentType() {
+		return $this->contentType;
+	}
+
+	/**
+	 * @param string $contentType
+	 * @return $this
+	 */
+	public function setContentType($contentType) {
+		$this->contentType = $contentType;
 		return $this;
 	}
 }
