@@ -103,7 +103,7 @@ class AsyncHttpRequest {
 	 * @param Request $request
 	 */
 	private function processRequest(Request $request) {
-		$request->addListener('complete', function (Event $event) use (&$function) {
+		$request->addListener('complete', function (Event $event) {
 			$error   = null;
 			$content = null;
 			if ($event->response->hasError()) {
@@ -111,10 +111,10 @@ class AsyncHttpRequest {
 			} else {
 				$content = $event->response->getContent();
 			}
-			call_user_func($function, $content, $error);
+			call_user_func($this->function, $content, $error);
 		});
 
-		$fileReader = new AsynchronousFileReader($this->maniaControl);
+		$fileReader = $this->maniaControl->getFileReader();
 		$fileReader->addRequest($request);
 	}
 
