@@ -63,8 +63,8 @@ class AsyncHttpRequest {
 	public function getData($keepAlive = 0) {
 		array_push($this->headers, 'Content-Type: ' . $this->contentType);
 		if ($keepAlive) {
-			array_push($headers, 'Keep-Alive: ' . $keepAlive);
-			array_push($headers, 'Connection: Keep-Alive');
+			array_push($this->headers, 'Keep-Alive: ' . $keepAlive);
+			array_push($this->headers, 'Connection: Keep-Alive');
 		}
 
 		$request = $this->newRequest($this->url);
@@ -86,7 +86,7 @@ class AsyncHttpRequest {
 		$content = str_replace(array("\r", "\n"), '', $this->content);
 		if ($this->compression) {
 			$content = zlib_encode($content, 31);
-			array_push($headers, 'Content-Encoding: gzip');
+			array_push($this->headers, 'Content-Encoding: gzip');
 		}
 
 
