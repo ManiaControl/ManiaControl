@@ -183,7 +183,9 @@ class AsyncHttpRequest {
 	 * @return $this
 	 */
 	public function setHeaders($headers) {
-		$this->headers = $headers;
+		if(is_array($headers)){
+			$this->headers = $headers;
+		}
 		return $this;
 	}
 
