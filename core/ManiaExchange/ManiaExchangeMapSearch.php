@@ -97,7 +97,7 @@ class ManiaExchangeMapSearch {
 		$titleId           = $this->maniaControl->getServer()->titleId;
 		$this->titlePrefix = $this->maniaControl->getMapManager()->getCurrentMap()->getGame();
 
-		$this->url = 'http://' . $this->titlePrefix . '.mania-exchange.com/tracksearch2/search?api=on';
+		$this->url = 'https://' . $this->titlePrefix . '.mania-exchange.com/tracksearch2/search?api=on';
 
 		//Set some defaults:
 		$this->mapLimit      = 100;
