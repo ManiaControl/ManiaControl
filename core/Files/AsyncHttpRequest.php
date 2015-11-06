@@ -49,9 +49,9 @@ class AsyncHttpRequest {
 		        ->set(CURLOPT_CRLF, true)// linux line feed
 		        ->set(CURLOPT_ENCODING, '')// accept encoding
 		        ->set(CURLOPT_USERAGENT, 'ManiaControl v' . ManiaControl::VERSION)// user-agent
-		        ->set(CURLOPT_RETURNTRANSFER, true) //
-				->set(CURLOPT_FOLLOWLOCATION, true) // support redirect
-				->set(CURLOPT_SSL_VERIFYPEER, false);
+		        ->set(CURLOPT_RETURNTRANSFER, true)//
+		        ->set(CURLOPT_FOLLOWLOCATION, true)// support redirect
+		        ->set(CURLOPT_SSL_VERIFYPEER, false);
 		return $request;
 	}
 
