@@ -1,3 +1,13 @@
+###v0.163###
+#Additions
+- completely reworked the filereader (new version, way more flexible), old methods are still working but deprecated
+- added pause command and vote command for other gamemodes than elite (especially Chase/Combo)
+- added Scriptcallbacks SCORESREADY / SCORES
+- added SSL support as well as http Redirections of the FileReader
+
+# Bug fixes
+- Banning of not connected Players now possible
+
 ###v0.162###
 #Additions
 - added typhinting ladderStat in Player object
