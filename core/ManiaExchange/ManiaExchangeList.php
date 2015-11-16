@@ -204,7 +204,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 				$lineQuad->setZ(0.001);
 			}
 
-			$time        = Formatter::time_elapsed_string(strtotime($map->updated));
+			$time        = Formatter::timeElapsedString(strtotime($map->updated));
 			$array       = array('$s' . $map->id => $posX + 3.5, '$s' . $map->name => $posX + 12.5, '$s' . $map->author => $posX + 59, '$s' . str_replace('Arena', '', $map->maptype) => $posX + 103, '$s' . $map->mood => $posX + 118, '$s' . $time => $posX + 130);
 			$labels      = $this->maniaControl->getManialinkManager()->labelLine($mapFrame, $array);
 			$authorLabel = $labels[2];
