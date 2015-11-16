@@ -20,7 +20,7 @@ class ManiaExchangeManager {
 	 * Constants
 	 * @deprecated SEARCH Constants
 	 */
-	//Search orders (prior parameter) http://api.mania-exchange.com/documents/enums#orderings
+	//Search orders (prior parameter) https://api.mania-exchange.com/documents/enums#orderings
 	const SEARCH_ORDER_NONE               = -1;
 	const SEARCH_ORDER_TRACK_NAME         = 0;
 	const SEARCH_ORDER_AUTHOR             = 1;
@@ -157,7 +157,7 @@ class ManiaExchangeManager {
 		$titlePrefix = $this->maniaControl->getMapManager()->getCurrentMap()->getGame();
 
 		// compile search URL
-		$url = "http://api.mania-exchange.com/{$titlePrefix}/maps/?ids={$string}";
+		$url = "https://api.mania-exchange.com/{$titlePrefix}/maps/?ids={$string}";
 
 		$this->maniaControl->getFileReader()->loadFile($url, function ($mapInfo, $error) use ($titlePrefix, $url) {
 			if ($error) {
@@ -250,7 +250,7 @@ class ManiaExchangeManager {
 		$titlePrefix = $this->maniaControl->getMapManager()->getCurrentMap()->getGame();
 
 		// compile search URL
-		$url = 'http://api.mania-exchange.com/' . $titlePrefix . '/maps/?ids=' . $mapId;
+		$url = 'https://api.mania-exchange.com/' . $titlePrefix . '/maps/?ids=' . $mapId;
 
 		$this->maniaControl->getFileReader()->loadFile($url, function ($mapInfo, $error) use (&$function, $titlePrefix, $url) {
 			$mxMapInfo = null;
