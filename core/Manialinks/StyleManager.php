@@ -161,6 +161,13 @@ class StyleManager {
 		$frame = new Frame();
 		$frame->setSize($width, $height)->setZ(45); //TODO place before scoreboards
 
+		//TODO remove: (just temporary fix for tm bug)
+		if ($this->maniaControl->getMapManager()->getCurrentMap()->getGame() === 'tm'
+		) {
+			$frame->setSize($width, $height)->setZ(32);
+		}
+
+
 		// Background Quad
 		$backgroundQuad = new Quad();
 		$frame->add($backgroundQuad);

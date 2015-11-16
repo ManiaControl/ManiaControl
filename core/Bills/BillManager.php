@@ -6,6 +6,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
+use Maniaplanet\DedicatedServer\InvalidArgumentException;
 use Maniaplanet\DedicatedServer\Structures\Bill;
 
 /**
@@ -24,7 +25,7 @@ class BillManager implements CallbackListener {
 	const PAYED_FROM_SERVER       = 3;
 	const PLAYER_REFUSED_DONATION = 4;
 	const ERROR_WHILE_TRANSACTION = 5;
-	const CB_BILL_PAID           = 'Billmanager.BillPaid';
+	const CB_BILL_PAID            = 'Billmanager.BillPaid';
 
 	/*
 	 * Private properties
@@ -57,10 +58,20 @@ class BillManager implements CallbackListener {
 	 * @return bool
 	 */
 	public function sendBill(callable $function, Player $player, $amount, $message, $receiver = '') {
-		$billId                   = $this->maniaControl->getClient()->sendBill($player->login, $amount, $message, $receiver);
-		$this->openBills[$billId] = new BillData($function, $player, $amount);
+		//Get the Caller Class
+		$backTrace = debug_backtrace();
+		$class     = $backTrace[1]['class'];
+
+		try {
+			$billId = $this->maniaControl->getClient()->sendBill($player->login, intval($amount), $message, $receiver);
+		} catch (InvalidArgumentException $e) {
+			//TODO better error handling, maybe call the user func with ERROR_WHILE_TRANSACTION
+			return false;
+		}
+		$this->openBills[$billId] = new BillData($class, $function, $player, $amount, false, $receiver, $message);
 		return true;
 	}
+
 
 	/**
 	 * Send planets from the server to a player
@@ -72,8 +83,17 @@ class BillManager implements CallbackListener {
 	 * @return bool
 	 */
 	public function sendPlanets(callable $function, $receiverLogin, $amount, $message) {
-		$billId                   = $this->maniaControl->getClient()->pay($receiverLogin, $amount, $message);
-		$this->openBills[$billId] = new BillData($function, $receiverLogin, $amount, true);
+		//Get the Caller Class
+		$backTrace = debug_backtrace();
+		$class     = $backTrace[1]['class'];
+
+		try {
+			$billId = $this->maniaControl->getClient()->pay($receiverLogin, intval($amount), $message);
+		} catch (InvalidArgumentException $e) {
+			return false;
+		}
+
+		$this->openBills[$billId] = new BillData($class, $function, $receiverLogin, $amount, true, $receiverLogin, $message);
 		return true;
 	}
 

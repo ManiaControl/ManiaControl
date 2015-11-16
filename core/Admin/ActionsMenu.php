@@ -290,7 +290,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 				unset($this->playerMenuItems[$order]);
 			}
 		} else {
-			if (isset($this->playerMenuItems[$order])) {
+			if (isset($this->adminMenuItems[$order])) {
 				unset($this->adminMenuItems[$order]);
 			}
 		}

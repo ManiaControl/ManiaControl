@@ -32,6 +32,8 @@ class AuthCommands implements CommandListener {
 		$this->maniaControl->getCommandManager()->registerCommandListener('addsuperadmin', $this, 'command_AddSuperAdmin', true, 'Add Player to the AdminList as SuperAdmin.');
 		$this->maniaControl->getCommandManager()->registerCommandListener('addadmin', $this, 'command_AddAdmin', true, 'Add Player to the AdminList as Admin.');
 		$this->maniaControl->getCommandManager()->registerCommandListener('addmod', $this, 'command_AddModerator', true, 'Add Player to the AdminList as Moderator.');
+
+		$this->maniaControl->getCommandManager()->registerCommandListener('removerights', $this, 'command_RemoveRights', true, 'Remove Player from the AdminList.');
 	}
 
 	/**
@@ -157,6 +159,55 @@ class AuthCommands implements CommandListener {
 	 */
 	private function sendAddModeratorUsageInfo(Player $player) {
 		$message = "Usage Example: '//addmod login'";
+		return $this->maniaControl->getChat()->sendUsageInfo($message, $player);
+	}
+
+
+	/**
+	 * Handle //removerights command
+	 *
+	 * @param array  $chatCallback
+	 * @param Player $player
+	 */
+	public function command_RemoveRights(array $chatCallback, Player $player) {
+		if (!AuthenticationManager::checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
+			return;
+		}
+		$text         = $chatCallback[1][2];
+		$commandParts = explode(' ', $text);
+		if (!array_key_exists(1, $commandParts)) {
+			$this->sendRemoveRightsUsageInfo($player);
+			return;
+		}
+		$target = $this->maniaControl->getPlayerManager()->getPlayer($commandParts[1]);
+		if (!$target) {
+			$this->maniaControl->getChat()->sendError("Player '{$commandParts[1]}' not found!", $player);
+			return;
+		}
+
+		if ($target->authLevel == AuthenticationManager::AUTH_LEVEL_MASTERADMIN) {
+			$this->maniaControl->getChat()->sendError("You can't remove an MasterAdmin from the Adminlists", $player);
+			return;
+		}
+
+		$success = $this->maniaControl->getAuthenticationManager()->grantAuthLevel($target, AuthenticationManager::AUTH_LEVEL_PLAYER);
+		if (!$success) {
+			$this->maniaControl->getChat()->sendError('Error occurred.', $player);
+			return;
+		}
+		$message = $player->getEscapedNickname() . ' removed ' . $target->getEscapedNickname() . ' from the Adminlists!';
+		$this->maniaControl->getChat()->sendSuccess($message);
+	}
+
+	/**
+	 * Send usage example for //removerights command
+	 *
+	 * @param Player $player
+	 * @return bool
+	 */
+	private function sendRemoveRightsUsageInfo(Player $player) {
+		$message = "Usage Example: '//addadmin login'";
 		return $this->maniaControl->getChat()->sendUsageInfo($message, $player);
 	}
 }

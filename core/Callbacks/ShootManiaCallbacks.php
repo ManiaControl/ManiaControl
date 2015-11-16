@@ -52,9 +52,6 @@ class ShootManiaCallbacks implements CallbackListener {
 			case 'LibXmlRpc_Rankings':
 				$this->maniaControl->getServer()->getRankingManager()->updateRankings($data[0]);
 				break;
-			case 'LibXmlRpc_Scores':
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SCORES, $data);
-				break;
 			case 'LibAFK_IsAFK':
 				$this->triggerAfkStatus($data[0]);
 				break;

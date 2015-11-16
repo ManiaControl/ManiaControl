@@ -153,8 +153,6 @@ class CallbackManager {
 		return $this->removeCallbackListener($this->callbackListenings, $listener);
 	}
 
-	//TODO better name (used only in customvotesPlugin)
-
 	/**
 	 * Remove the Callback Listener from the given Listeners Array
 	 *
@@ -211,6 +209,9 @@ class CallbackManager {
 	public function manageCallbacks() {
 		// Manage Timings
 		$this->maniaControl->getTimerManager()->manageTimings();
+
+		// Manage Socket Tickets
+		$this->maniaControl->getCommunicationManager()->tick();
 
 		// Server Callbacks
 		if (!$this->maniaControl->getClient()) {

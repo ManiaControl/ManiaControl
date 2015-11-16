@@ -1,16 +1,17 @@
 <?php
-/**
- * Player Hit Structure
- *
- * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2015 ManiaControl Team
- * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
- */
+
 namespace ManiaControl\Callbacks\Structures;
 
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 
+/**
+ * Structure Class for the Player Hit Callback
+ *
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014-2015 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ */
 class PlayerHitStructure {
 	/*
 	 * Private properties
@@ -20,7 +21,11 @@ class PlayerHitStructure {
 	private $damage;
 	private $shooterPoints;
 	private $weapon;
-	private $hitDistance = 0;
+	private $hitDistance;
+	private $shooterPosition     = 0;
+	private $victimPosition      = 0;
+	private $shooterAimDirection = 0;
+	private $victimAimDirection  = 0;
 
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl;
@@ -38,10 +43,23 @@ class PlayerHitStructure {
 		$this->damage        = $data[2];
 		$this->weapon        = $data[3];
 		$this->shooterPoints = $data[4];
-		
-		//TODO remove key check in some months (hitDistance got implemented 2014-10-16)
-		if (array_key_exists(5, $data)) {
-			$this->hitDistance = $data[5];
+		$this->hitDistance   = $data[5];
+
+		//TODO remove key check in some months (got implemented 2015-05-03)
+		if (array_key_exists(6, $data)) {
+			$this->shooterPosition = $data[6];
+		}
+
+		if (array_key_exists(7, $data)) {
+			$this->victimPosition = $data[7];
+		}
+
+		if (array_key_exists(8, $data)) {
+			$this->shooterAimDirection = $data[8];
+		}
+
+		if (array_key_exists(9, $data)) {
+			$this->victimAimDirection = $data[9];
 		}
 	}
 

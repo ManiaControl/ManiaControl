@@ -1,0 +1,53 @@
+The CommuncationListening of the Communcation Manager can be enabled in the ingame Settings.
+
+There the following settings are existing:
+-- Enable Socket Listening (Let the CommunicationManager listen for incoming calls)
+-- Passsword (Password which get used to encrypt and decrypt the messages for the openssl connection)
+-- Listening port for every server (this is the port the CommunicationManager listens at)
+
+
+For the description of the available implemented communcation Methods check the CommunicationMethods interface.
+
+If you need methods which are not implemented, or additional Parameters, feel free to contact us.
+
+Sample ManiaControl Implementation (for ManiaControl to ManiaControl connections)
+
+##php code begin
+	$communication = $this->maniaControl->getCommunicationManager()->createCommunication(IP/Domain, PORT, 'YOUR_PASSWORD');
+	$communication->call(function($data){
+		var_dump($data);
+	}, CommunicationMethods::GET_SERVER_CHAT);
+##php code end
+
+Sample Web Implementation (to call ManiaControl from a website)
+##php code begin
+	$errno = null;
+	$errstr = null;
+	$socket = fsockopen("xx.xxx.xx.xx", xxxxx, $errno, $errstr, 2);
+	echo "ok?" . $errno . " - " . $errstr . "\n";
+
+	$data = array("method" => "getServerChat", "data" => "");
+
+	// Encode and Encrypt the Data
+	$data = json_encode(array("method" => "getServerChat", "data" => ""));
+	$data = openssl_encrypt($data, 'aes-192-cbc', 'YOUR_PASSWORD', OPENSSL_RAW_DATA, 'kZ2Kt0CzKUjN2MJX');
+
+	// Write the Data on the Socket
+	fwrite($socket, strlen($data) . "\n" . $data);
+
+
+	// Read Answer Data
+	$len = (int)fgets($socket);
+	echo $len;
+	$buff = '';
+	while (!feof($socket) && strlen($buff) < $len) {
+		$buff .= fgets($socket, $len - strlen($buff) + 1);
+	}
+
+	// Decrypt and Decode the Response Data
+	$data = openssl_decrypt($buff, 'aes-192-cbc', 'YOUR_PASSWORD', OPENSSL_RAW_DATA, 'kZ2Kt0CzKUjN2MJX');
+	echo json_decode($data);
+
+	//Close the Socket
+	fclose($socket);
+##php code end

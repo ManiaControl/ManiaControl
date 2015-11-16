@@ -199,11 +199,11 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 
 		$frame = new Frame();
 		$manialink->add($frame);
-		$frame->setPosition($menuPosX, $menuPosY, 10);
+		$frame->setPosition($menuPosX, $menuPosY, 34);
 
 		$backgroundQuad = new Quad();
 		$frame->add($backgroundQuad);
-		$backgroundQuad->setZ(-10)->setSize($menuWidth, $menuHeight)->setStyles($quadStyle, $quadSubstyle);
+		$backgroundQuad->setZ(-2)->setSize($menuWidth, $menuHeight)->setStyles($quadStyle, $quadSubstyle);
 
 		$menuItemsFrame = new Frame();
 		$frame->add($menuItemsFrame);
@@ -211,7 +211,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 
 		$itemsBackgroundQuad = new Quad();
 		$menuItemsFrame->add($itemsBackgroundQuad);
-		$backgroundQuad->setZ(-9);
+		$backgroundQuad->setZ(-1);
 		$itemsBackgroundQuad->setSize($menuListWidth, $menuHeight)->setStyles($quadStyle, $quadSubstyle);
 
 		$menusFrame = new Frame();

@@ -4250,9 +4250,9 @@ class Connection
 		if(is_string($filename))
 		{
 			$filename = $this->stripBom($filename);
-			if(mb_check_encoding($filename, 'ascii'))
-				return $filename;
-			return "\xEF\xBB\xBF".$filename;
+			if(preg_match('/[^\x09\x0A\x0D\x20-\x7E]/', $filename))
+				return "\xEF\xBB\xBF".$filename;
+			return $filename;
 		}
 		return array_map(array($this, 'secureUtf8'), $filename);
 	}

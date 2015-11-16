@@ -10,7 +10,7 @@ use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 
 /**
- * Class managing the Custom UI in TrackMania
+ * Class managing the Custom UI in ManiaPlanet
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2015 ManiaControl Team
@@ -28,7 +28,7 @@ class CustomUIManager implements CallbackListener, TimerListener {
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	/** @var customUI $customUI */
-	private $customUI = null;
+	private $customUI        = null;
 	private $updateManialink = false;
 
 	/**

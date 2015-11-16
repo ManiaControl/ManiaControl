@@ -12,6 +12,7 @@
 namespace Symfony\Component\EventDispatcher\Tests\Debug;
 
 use Symfony\Component\EventDispatcher\Debug\TraceableEventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\Event;
@@ -84,6 +85,20 @@ class TraceableEventDispatcherTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(array('foo.closure' => array('event' => 'foo', 'type' => 'Closure', 'pretty' => 'closure')), $tdispatcher->getCalledListeners());
         $this->assertEquals(array(), $tdispatcher->getNotCalledListeners());
+    }
+
+    public function testGetCalledListenersNested()
+    {
+        $tdispatcher = null;
+        $dispatcher = new TraceableEventDispatcher(new EventDispatcher(), new Stopwatch());
+        $dispatcher->addListener('foo', function (Event $event, $eventName, $dispatcher) use (&$tdispatcher) {
+            $tdispatcher = $dispatcher;
+            $dispatcher->dispatch('bar');
+        });
+        $dispatcher->addListener('bar', function (Event $event) {});
+        $dispatcher->dispatch('foo');
+        $this->assertSame($dispatcher, $tdispatcher);
+        $this->assertCount(2, $dispatcher->getCalledListeners());
     }
 
     public function testLogger()
@@ -159,6 +174,19 @@ class TraceableEventDispatcherTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($nestedCall);
         $dispatcher->dispatch('foo');
         $this->assertTrue($nestedCall);
+    }
+
+    public function testListenerCanRemoveItselfWhenExecuted()
+    {
+        $eventDispatcher = new TraceableEventDispatcher(new EventDispatcher(), new Stopwatch());
+        $listener1 = function ($event, $eventName, EventDispatcherInterface $dispatcher) use (&$listener1) {
+            $dispatcher->removeListener('foo', $listener1);
+        };
+        $eventDispatcher->addListener('foo', $listener1);
+        $eventDispatcher->addListener('foo', function () {});
+        $eventDispatcher->dispatch('foo');
+
+        $this->assertCount(1, $eventDispatcher->getListeners('foo'), 'expected listener1 to be removed');
     }
 }
 

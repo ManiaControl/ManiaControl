@@ -4,6 +4,10 @@ namespace ManiaControl\Admin;
 
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\Callbacks;
+use ManiaControl\Callbacks\EchoListener;
+use ManiaControl\Communication\CommunicationAnswer;
+use ManiaControl\Communication\CommunicationListener;
+use ManiaControl\Communication\CommunicationMethods;
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
@@ -17,7 +21,7 @@ use ManiaControl\Settings\Setting;
  * @copyright 2014-2015 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class AuthenticationManager implements CallbackListener {
+class AuthenticationManager implements CallbackListener, EchoListener, CommunicationListener {
 	/*
 	 * Constants
 	 */
@@ -33,6 +37,8 @@ class AuthenticationManager implements CallbackListener {
 	const AUTH_NAME_MASTERADMIN  = 'MasterAdmin';
 	const CB_AUTH_LEVEL_CHANGED  = 'AuthenticationManager.AuthLevelChanged';
 
+	const ECHO_GRANT_LEVEL  = 'ManiaControl.AuthenticationManager.GrandLevel';
+	const ECHO_REVOKE_LEVEL = 'ManiaControl.AuthenticationManager.RevokeLevel';
 	/*
 	 * Private properties
 	 */
@@ -52,6 +58,56 @@ class AuthenticationManager implements CallbackListener {
 
 		// Callbacks
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::ONINIT, $this, 'handleOnInit');
+
+		// Echo Grant Level Command (Usage: sendEcho json_encode("player" => "loginName", "level" => "AUTH_LEVEL_NUMBER")
+		$this->maniaControl->getEchoManager()->registerEchoListener(self::ECHO_GRANT_LEVEL, $this, function ($params) {
+			if (property_exists($params, 'level') && property_exists($params, 'player')) {
+				$player = $this->maniaControl->getPlayerManager()->getPlayer($params->player);
+				if ($player) {
+					$this->grantAuthLevel($player, $params->level);
+				}
+			}
+		});
+
+		// Echo Revoke Level Command (Usage: sendEcho json_encode("player" => "loginName")
+		$this->maniaControl->getEchoManager()->registerEchoListener(self::ECHO_REVOKE_LEVEL, $this, function ($params) {
+			if (property_exists($params, 'player')) {
+				$player = $this->maniaControl->getPlayerManager()->getPlayer($params->player);
+				if ($player) {
+					$this->maniaControl->getAuthenticationManager()->grantAuthLevel($player, self::AUTH_LEVEL_PLAYER);
+				}
+			}
+		});
+
+
+		//Communication Listenings
+		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::GRANT_AUTH_LEVEL, $this, function ($data) {
+			if (!is_object($data) || !property_exists($data, 'level') || !property_exists($data, 'login')) {
+				return new CommunicationAnswer("No valid level or player login provided!", true);
+			}
+
+			$player = $this->maniaControl->getPlayerManager()->getPlayer($data->login);
+			if ($player) {
+				$success = $this->grantAuthLevel($player, $data->level);
+				return new CommunicationAnswer(array("success" => $success));
+			} else {
+				return new CommunicationAnswer("Player not found!", true);
+			}
+		});
+
+		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::REVOKE_AUTH_LEVEL, $this, function ($data) {
+			if (!is_object($data) || !property_exists($data, 'login')) {
+				return new CommunicationAnswer("No valid player login provided!", true);
+			}
+
+			$player = $this->maniaControl->getPlayerManager()->getPlayer($data->login);
+			if ($player) {
+				$success = $this->maniaControl->getAuthenticationManager()->grantAuthLevel($player, self::AUTH_LEVEL_PLAYER);
+				return new CommunicationAnswer(array("success" => $success));
+			} else {
+				return new CommunicationAnswer("Player not found!", true);
+			}
+		});
 	}
 
 	/**
@@ -83,12 +139,12 @@ class AuthenticationManager implements CallbackListener {
 	 */
 	public static function getAuthLevelInt($authLevelParam) {
 		if (is_object($authLevelParam) && property_exists($authLevelParam, 'authLevel')) {
-			return (int)$authLevelParam->authLevel;
+			return (int) $authLevelParam->authLevel;
 		}
 		if (is_string($authLevelParam)) {
 			return self::getAuthLevel($authLevelParam);
 		}
-		return (int)$authLevelParam;
+		return (int) $authLevelParam;
 	}
 
 	/**
@@ -98,7 +154,7 @@ class AuthenticationManager implements CallbackListener {
 	 * @return int
 	 */
 	public static function getAuthLevel($authLevelName) {
-		$authLevelName = (string)$authLevelName;
+		$authLevelName = (string) $authLevelName;
 		switch ($authLevelName) {
 			case self::AUTH_NAME_MASTERADMIN:
 				return self::AUTH_LEVEL_MASTERADMIN;
@@ -189,7 +245,7 @@ class AuthenticationManager implements CallbackListener {
 		}
 		$success = true;
 		foreach ($loginElements as $loginElement) {
-			$login = (string)$loginElement;
+			$login = (string) $loginElement;
 			$adminStatement->bind_param('si', $login, $masterAdminLevel);
 			$adminStatement->execute();
 			if ($adminStatement->error) {
@@ -271,7 +327,7 @@ class AuthenticationManager implements CallbackListener {
 		if (!$player || !is_numeric($authLevel)) {
 			return false;
 		}
-		$authLevel = (int)$authLevel;
+		$authLevel = (int) $authLevel;
 		if ($authLevel >= self::AUTH_LEVEL_MASTERADMIN) {
 			return false;
 		}

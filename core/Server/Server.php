@@ -4,6 +4,7 @@ namespace ManiaControl\Server;
 
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\Callbacks;
+use ManiaControl\Commands\CommandListener;
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
@@ -17,7 +18,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
  * @copyright 2014-2015 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class Server implements CallbackListener {
+class Server implements CallbackListener, CommandListener {
 	/*
 	 * Constants
 	 */
@@ -85,6 +86,30 @@ class Server implements CallbackListener {
 
 		// Callbacks
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::ONINIT, $this, 'onInit');
+
+		$this->maniaControl->getCommandManager()->registerCommandListener("uptime", $this, "chatUpTime", true, "Show how long the server is running.");
+	}
+
+	/**
+	 * Displays how long the Server is running already in the Chat
+	 *
+	 * @param array                        $chatCallback
+	 * @param \ManiaControl\Players\Player $player
+	 */
+	public function chatUpTime(array $chatCallback, Player $player) {
+		$networkStats = $this->maniaControl->getClient()->getNetworkStats();
+
+		$minutestotal = $networkStats->uptime / 60;
+		$hourstotal   = $minutestotal / 60;
+		$days         = intval($hourstotal / 24);
+		$hours        = intval($hourstotal - 24 * $days);
+		$minutes      = intval($minutestotal - 24 * 60 * $days - $hours * 60);
+
+		$days > 1 ? $dayString = 'days' : $dayString = 'day';
+		$hours > 1 ? $hourString = 'hours' : $hourString = 'hour';
+		$minutes > 1 ? $minuteString = 'minutes' : $minuteString = 'minute';
+
+		$this->maniaControl->getChat()->sendChat('Server is running since $<$fff' . $days . '$> ' . $dayString . ', $<$fff' . $hours . '$> ' . $hourString . ' and $<$fff' . $minutes . '$> ' . $minuteString, $player);
 	}
 
 	/**
@@ -224,6 +249,30 @@ class Server implements CallbackListener {
 		$result->free();
 
 		return $servers;
+	}
+
+	/** Get Server Login by Index
+	 *
+	 * @param int $index
+	 * @return string
+	 */
+	public function getServerLoginByIndex($index) {
+		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
+		$query  = "SELECT * FROM `" . self::TABLE_SERVERS . "` WHERE `index`=" . $index . ";";
+		$result = $mysqli->query($query);
+
+		if (!$result) {
+			trigger_error($mysqli->error);
+			return "";
+		}
+
+		if ($result->num_rows != 1) {
+			return "";
+		}
+
+		$row = $result->fetch_object();
+
+		return $row->login;
 	}
 
 	/**
