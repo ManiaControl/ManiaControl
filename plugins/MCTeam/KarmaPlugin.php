@@ -59,7 +59,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	const SETTING_MX_KARMA_ACTIVATED = 'Activate MX-Karma';
 	const SETTING_MX_KARMA_IMPORTING = 'Import old MX-Karma';
 	const MX_IMPORT_TABLE            = 'mc_karma_mximport';
-	const MX_KARMA_URL               = 'http://karma.mania-exchange.com/api2/';
+	const MX_KARMA_URL               = 'https://karma.mania-exchange.com/api2/';
 	const MX_KARMA_START_SESSION     = 'startSession';
 	const MX_KARMA_ACTIVATE_SESSION  = 'activateSession';
 	const MX_KARMA_SAVE_VOTES        = 'saveVotes';
