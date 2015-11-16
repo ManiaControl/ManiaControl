@@ -1,0 +1,60 @@
+###v0.163###
+#Additions
+- completely reworked the filereader (new version, way more flexible), old methods are still working but deprecated
+- added pause command and vote command for other gamemodes than elite (especially Chase/Combo)
+- added Scriptcallbacks SCORESREADY / SCORES
+- added SSL support as well as http Redirections of the FileReader
+
+# Bug fixes
+- Banning of not connected Players now possible
+
+###v0.162###
+#Additions
+- added typhinting ladderStat in Player object
+- added optional AsynchronousFileReader Parameter for loadFile and postFile to set additional Headers
+- added ServerLogin header for Mania-Exchange downloads
+
+###v0.161###
+#Additions
+- added admin chatcommand //uptime which displays the time since when the server is running
+- updated playerhitstructure with new properties
+
+#Bug Fixes
+- fixed some z positions to be in front of overlays (especially in Trackmania)
+- fixed limit problem on maniaexchange list
+
+###v0.16###
+#Additions
+- added changelog
+- added CommunicationManager which acts like a communication interface you can connect to and interact with ManiaControl (also thanks to TGYoshi for some help)
+	- You can call ManiaControl from a Website or from ManiaControl itself
+- added "//removerights login" command
+- added new EchoManager which handles Interactions between different Controllers
+	- It is possible to send an Echo command via the Method sendEcho, as message Parameter strings, objects or arrays can get used
+	- An EchoListener can be added, callable by closure or implicit use (like on callbacks)
+	- The Listener always returns either an Stringer or an Object back as Param (arrays get converted into objects)
+	- On sending an Echo Message from another controller you need to provide an string to the dedicated method or an json_encoded array or object
+	- 4 Echos are Implemented by ManiaControl (ManiaControl.Restart, ManiaControl.AuthenticationManager.GrandLevel, ManiaControl.AuthenticationManager.RevokeLevel, ManiaControl.PlayerManager.WarnPlayer)
+- added Method getServerLoginByIndex to Server object
+- added to PlayerManager's Method PlayerManager the Parameter "withoutBots" (default on true)
+- added Method getSpectators() in PlayerManager
+- added Method restartMap(), skipToMapByMxId(), skipToMapByUid() into MapActions
+- added some missing PHP Docs
+- added some depency libraries as they are used by the Socket Handler
+- added additional Callback which gets triggered on ManiaControl Restart
+- added class name to the BillData object
+- updated some depency libraries
+
+#Bug Fixes
+- fixed TriggerDebugNotice Method
+- Exception fix on kicking Players
+- updated FaultException List
+
+###v0.157###
+- labelline improvements
+	- new usage examples:
+			$positions = array($posX + 5, $posX + 18, $posX + 70);
+			$texts     = array($index, $admin->nickname, $admin->login);
+			$this->maniaControl->getManialinkManager()->labelLine($playerFrame, array($positions, $texts));
+- improvements on Billmanager, added receiver to the BillData
+- increased timeout time (fixes crashes on speedball)

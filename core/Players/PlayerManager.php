@@ -7,6 +7,9 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\TimerListener;
+use ManiaControl\Communication\CommunicationAnswer;
+use ManiaControl\Communication\CommunicationListener;
+use ManiaControl\Communication\CommunicationMethods;
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Statistics\StatisticManager;
@@ -20,7 +23,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
  * @copyright 2014-2015 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class PlayerManager implements CallbackListener, TimerListener {
+class PlayerManager implements CallbackListener, TimerListener, CommunicationListener {
 	/*
 	 * Constants
 	 */
@@ -105,6 +108,12 @@ class PlayerManager implements CallbackListener, TimerListener {
 		// Player stats
 		$this->maniaControl->getStatisticManager()->defineStatMetaData(self::STAT_JOIN_COUNT);
 		$this->maniaControl->getStatisticManager()->defineStatMetaData(self::STAT_SERVERTIME, StatisticManager::STAT_TYPE_TIME);
+
+
+		// Communication Listenings
+		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::GET_PLAYER_LIST, $this, function ($data) {
+			return new CommunicationAnswer($this->players);
+		});
 	}
 
 	/**
@@ -183,6 +192,7 @@ class PlayerManager implements CallbackListener, TimerListener {
 	public function getAdminLists() {
 		return $this->adminLists;
 	}
+
 
 	/**
 	 * Handle OnInit callback
@@ -374,15 +384,24 @@ class PlayerManager implements CallbackListener, TimerListener {
 	 * Get the count of all Players
 	 *
 	 * @param bool $withoutSpectators
+	 * @param bool $withoutBots
 	 * @return int
 	 */
-	public function getPlayerCount($withoutSpectators = true) {
-		if (!$withoutSpectators) {
-			return count($this->players);
-		}
+	public function getPlayerCount($withoutSpectators = true, $withoutBots = true) {
 		$count = 0;
 		foreach ($this->players as $player) {
-			if (!$player->isSpectator) {
+			$valid = true;
+			if ($withoutSpectators) {
+				if ($player->isSpectator) {
+					$valid = false;
+				}
+			}
+			if ($withoutBots) {
+				if ($player->isFakePlayer()) {
+					$valid = false;
+				}
+			}
+			if ($valid) {
 				$count++;
 			}
 		}
@@ -514,6 +533,22 @@ class PlayerManager implements CallbackListener, TimerListener {
 	 */
 	public function getPlayers() {
 		return $this->players;
+	}
+
+	/**
+	 * Get a List of Spectators
+	 *
+	 * @return Player[]
+	 */
+	public function getSpectators() {
+		$spectators = array();
+		foreach ($this->players as $player) {
+			if ($player->isSpectator) {
+				$spectators[] = $player;
+			}
+		}
+
+		return $spectators;
 	}
 
 	/**

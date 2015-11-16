@@ -77,6 +77,16 @@ class SystemUtil {
 			Logger::log($message . 'FOUND!');
 		}
 
+		// Check for Zlib
+		$message = 'Checking for installed Zlib ... ';
+		if (!extension_loaded('zlib')) {
+			Logger::log($message . 'NOT FOUND!');
+			Logger::log(" -- You don't have Zlib installed! Check: http://php.net/manual/de/zlib.setup.php");
+			$success = false;
+		} else {
+			Logger::log($message . 'FOUND!');
+		}
+
 		if (!$success) {
 			// Missing requirements
 			self::quit();

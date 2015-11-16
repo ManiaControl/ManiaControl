@@ -82,6 +82,9 @@ class LibXmlRpcCallbacks implements CallbackListener {
 			case 'LibXmlRpc_EndRound':
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ENDROUND, $data[0]);
 				break;
+			case 'LibXmlRpc_EndRoundStop':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ENDROUNDSTOP, $data[0]);
+				break;
 			case 'LibXmlRpc_EndSubmatch':
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ENDSUBMATCH, $data[0]);
 				break;
@@ -145,6 +148,12 @@ class LibXmlRpcCallbacks implements CallbackListener {
 			case 'LibXmlRpc_OnPlayerRequestRespawn':
 				$player = $this->maniaControl->getPlayerManager()->getPlayer($data[0]);
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ONPLAYERREQUESTRESPAWN, $player);
+				break;
+			case 'LibXmlRpc_Scores':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SCORES, $data);
+				break;
+			case 'LibXmlRpc_ScoresReady':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SCORESREADY, $data);
 				break;
 		}
 	}

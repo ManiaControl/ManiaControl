@@ -4,6 +4,7 @@ namespace ManiaControl\Server;
 
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
+use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
 
 /**
  * Manager for Game Mode Script related Stuff
@@ -39,13 +40,18 @@ class ScriptManager {
 		if (!$this->isScriptMode()) {
 			return false;
 		}
-		$scriptSettings = $this->maniaControl->getClient()->getModeScriptSettings();
+
+		try {
+			$scriptSettings = $this->maniaControl->getClient()->getModeScriptSettings();
+		} catch (GameModeException $e) {
+			return false;
+		}
 
 		if (!array_key_exists('S_UseScriptCallbacks', $scriptSettings)) {
 			return false;
 		}
 
-		$scriptSettings['S_UseScriptCallbacks'] = (bool)$enable;
+		$scriptSettings['S_UseScriptCallbacks'] = (bool) $enable;
 		$actionName                             = ($enable ? 'en' : 'dis');
 
 		$this->maniaControl->getClient()->setModeScriptSettings($scriptSettings);

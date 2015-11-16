@@ -7,6 +7,7 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Plugins\Plugin;
 use Maniaplanet\DedicatedServer\Xmlrpc\PlayerStateException;
+use Maniaplanet\DedicatedServer\Xmlrpc\ServerOptionsException;
 use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
 
 /**
@@ -407,6 +408,8 @@ class ChatMessagePlugin implements CommandListener, Plugin {
 		} catch (UnknownPlayerException $exception) {
 			$this->maniaControl->getChat()->sendException($exception, $player);
 		} catch (PlayerStateException $exception) {
+		} catch (ServerOptionsException $exception) {
+			//too many spectators
 		}
 	}
 

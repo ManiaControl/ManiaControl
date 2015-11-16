@@ -3,6 +3,7 @@
 namespace ManiaControl\Plugins;
 
 use ManiaControl\Callbacks\CallbackListener;
+use ManiaControl\Callbacks\EchoListener;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\Files\FileUtil;
@@ -141,6 +142,9 @@ class PluginManager {
 
 		$plugin->unload();
 
+		if ($plugin instanceof EchoListener) {
+			$this->maniaControl->getEchoManager()->unregisterEchoListener($plugin);
+		}
 		if ($plugin instanceof CallbackListener) {
 			$this->maniaControl->getCallbackManager()->unregisterCallbackListener($plugin);
 			$this->maniaControl->getCallbackManager()->unregisterScriptCallbackListener($plugin);

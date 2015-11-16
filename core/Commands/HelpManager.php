@@ -19,15 +19,14 @@ use ManiaControl\Players\Player;
  * @copyright 2014-2015 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-
 class HelpManager implements CommandListener, CallbackListener {
 	/*
 	 * Private properties
 	 */
 	/** @var ManiaControl $maniaControl */
-	private $maniaControl = null;
+	private $maniaControl   = null;
 	private $playerCommands = array();
-	private $adminCommands = array();
+	private $adminCommands  = array();
 
 	/**
 	 * Construct a new Commands Manager
@@ -58,14 +57,14 @@ class HelpManager implements CommandListener, CallbackListener {
 	 * @param Player $player
 	 */
 	public function command_adminHelp(array $chatCallback, Player $player) {
-        // Parse list from array
-        $message = $this->parseHelpList($this->adminCommands);
-        
-        // Show message when it's not empty
-        if($message != NULL){
-            $message = 'Supported Admin Commands: ' . $message;
-            $this->maniaControl->getChat()->sendChat($message, $player);
-        }
+		// Parse list from array
+		$message = $this->parseHelpList($this->adminCommands);
+
+		// Show message when it's not empty
+		if ($message != null) {
+			$message = 'Supported Admin Commands: ' . $message;
+			$this->maniaControl->getChat()->sendChat($message, $player);
+		}
 	}
 
 	/**
@@ -75,14 +74,14 @@ class HelpManager implements CommandListener, CallbackListener {
 	 * @param Player $player
 	 */
 	public function command_playerHelp(array $chatCallback, Player $player) {
-        // Parse list from array
+		// Parse list from array
 		$message = $this->parseHelpList($this->playerCommands);
-        
-        // Show message when it's not empty
-        if($message != NULL){
-            $message = 'Supported Player Commands: ' . $message;
-            $this->maniaControl->getChat()->sendChat($message, $player);
-        }
+
+		// Show message when it's not empty
+		if ($message != null) {
+			$message = 'Supported Player Commands: ' . $message;
+			$this->maniaControl->getChat()->sendChat($message, $player);
+		}
 	}
 
 	/**
@@ -92,23 +91,24 @@ class HelpManager implements CommandListener, CallbackListener {
 	 * @param Player $player
 	 */
 	public function command_playerHelpAll(array $chatCallback, Player $player) {
-        $this->parseHelpList($this->playerCommands, true, $player);
+		$this->parseHelpList($this->playerCommands, true, $player);
 	}
 
 	/**
-     * Parse list with commands from array
-     * @param array     $commands
-     * @param bool      $isHelpAll
-     * @param Player    $player
-     * @return string|void
-     */
+	 * Parse list with commands from array
+	 *
+	 * @param array  $commands
+	 * @param bool   $isHelpAll
+	 * @param Player $player
+	 * @return string|void
+	 */
 	private function parseHelpList(array $commands, $isHelpAll = false, Player $player = null) {
 		$showCommands      = array();
 		$registeredMethods = array();
-        $message           = '';
+		$message           = '';
 		foreach (array_reverse($commands) as $command) {
 			if (array_key_exists($command['Method'], $registeredMethods)) {
-				if($showCommands[$registeredMethods[$command['Method']]]['Description'] === $command['Description']) {
+				if ($showCommands[$registeredMethods[$command['Method']]]['Description'] === $command['Description']) {
 					$name = $registeredMethods[$command['Method']];
 					$showCommands[$name]['Name'] .= '|' . $command['Name'];
 				} else {
@@ -125,20 +125,17 @@ class HelpManager implements CommandListener, CallbackListener {
 			return strcmp($commandA['Name'], $commandB['Name']);
 		});
 
-		if(!$isHelpAll){
+		if (!$isHelpAll) {
 			foreach ($showCommands as $command) {
 				$message .= $command['Name'] . ',';
 			}
 			$message = substr($message, 0, -1);
-
-			return $message;
-		}else{
-			if($player != NULL){
+		} else {
+			if ($player != null) {
 				$this->showHelpAllList($showCommands, $player);
 			}
 		}
-        
-        return;
+		return $message;
 	}
 
 	/**
@@ -221,7 +218,7 @@ class HelpManager implements CommandListener, CallbackListener {
 	 * @param Player $player
 	 */
 	public function command_adminHelpAll(array $chatCallback, Player $player) {
-        $this->parseHelpList($this->adminCommands, true, $player);
+		$this->parseHelpList($this->adminCommands, true, $player);
 	}
 
 	/**

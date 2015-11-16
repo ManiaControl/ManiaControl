@@ -57,9 +57,10 @@ class Listening {
 	 * Trigger the Listener's Method with the given Array of Params
 	 *
 	 * @param array $params
+	 * @return mixed
 	 */
 	public function triggerCallbackWithParams(array $params) {
-		call_user_func_array($this->getUserFunction(), $params);
+		return call_user_func_array($this->getUserFunction(), $params);
 	}
 
 	/**

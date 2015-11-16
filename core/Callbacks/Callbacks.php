@@ -18,6 +18,7 @@ interface Callbacks {
 	const ONINIT     = 'Callbacks.OnInit';
 	const AFTERINIT  = 'Callbacks.AfterInit';
 	const ONSHUTDOWN = 'Callbacks.OnShutdown';
+	const ONRESTART  = 'Callbacks.OnRestart';
 
 	/** Script Callback: CallbackName, CallbackData */
 	const SCRIPTCALLBACK = 'Callbacks.ScriptCallback';
@@ -49,6 +50,8 @@ interface Callbacks {
 	const ENDTURNSTOP = 'Callbacks.EndTurnStop';
 	/** EndRound Callback: RoundNumber */
 	const ENDROUND = 'Callbacks.EndRound';
+	/** EndRound Callback: RoundNumber */
+	const ENDROUNDSTOP = 'Callbacks.EndRoundStop';
 	/** EndSubmatch Callback: SubmatchNumber */
 	const ENDSUBMATCH = 'Callbacks.EndSubmatch';
 	/** EndMap Callback: Map */
@@ -67,6 +70,12 @@ interface Callbacks {
 	/** EndWarmup Callback */
 	const ENDWARMUP = 'Callbacks.EndWarmUp';
 
+	/** Scores Callback (returned after LibXmlRpc_PlayerRanking): Scores */
+	const SCORESREADY = 'Callbacks.ScoresReady';
+
+	/** Scores Callback (returned after LibXmlRpc_PlayerRanking in SM, or LibXmlRpc_TeamsScores in Trackmania): Scores */
+	const SCORES = 'Callbacks.Scores';
+
 	/** PlayerRanking Callback, returned after LibXmlRpc_PlayerRanking
 	 * try to avoid to use this, just use the Get function of the RankingsManager instead
 	 * param1 Player $player
@@ -80,8 +89,6 @@ interface Callbacks {
 	 */
 	/** RankingsUpdated Callback: SortedRankings */
 	const RANKINGSUPDATED = 'Callbacks.RankingsUpdated';
-	/** Scores Callback (returned after LibXmlRpc_PlayerRanking): Scores */
-	const SCORES = 'Callbacks.Scores';
 
 	/** Returns the AFKStatus of an Player, returned after  param1 Scores */ //returned after TODO
 	const AFKSTATUS = 'Callbacks.AfkStatus';

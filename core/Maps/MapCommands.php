@@ -436,8 +436,18 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	 */
 	private function showMapListKarma($best, Player $player) {
 		/** @var \MCTeam\KarmaPlugin $karmaPlugin */
-		$karmaPlugin = $this->maniaControl->getPluginManager()->getPlugin(MapList::DEFAULT_KARMA_PLUGIN);
+		$karmaPlugin    = $this->maniaControl->getPluginManager()->getPlugin(MapList::DEFAULT_KARMA_PLUGIN);
+		$displayMxKarma = $this->maniaControl->getSettingManager()->getSettingValue($karmaPlugin, $karmaPlugin::SETTING_WIDGET_DISPLAY_MX);
+
 		if ($karmaPlugin) {
+			//Sort by Mx Karma in Maplist
+			if ($displayMxKarma) { //TODO
+
+				//Sort by Local Karma in Maplist
+			} else {
+
+			}
+
 			$maps    = $this->maniaControl->getMapManager()->getMaps();
 			$mapList = array();
 			foreach ($maps as $map) {

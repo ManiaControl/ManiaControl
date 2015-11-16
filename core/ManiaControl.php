@@ -8,10 +8,15 @@ use ManiaControl\Bills\BillManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
+use ManiaControl\Callbacks\EchoManager;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Callbacks\TimerManager;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\Commands\CommandManager;
+use ManiaControl\Communication\CommunicationAnswer;
+use ManiaControl\Communication\CommunicationListener;
+use ManiaControl\Communication\CommunicationManager;
+use ManiaControl\Communication\CommunicationMethods;
 use ManiaControl\Configurator\Configurator;
 use ManiaControl\Database\Database;
 use ManiaControl\Files\AsynchronousFileReader;
@@ -38,11 +43,11 @@ use Maniaplanet\DedicatedServer\Xmlrpc\TransportException;
  * @copyright 2014-2015 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class ManiaControl implements CallbackListener, CommandListener, TimerListener {
+class ManiaControl implements CallbackListener, CommandListener, TimerListener, CommunicationListener {
 	/*
 	 * Constants
 	 */
-	const VERSION                     = '0.155';
+	const VERSION                     = '0.163';
 	const API_VERSION                 = '2013-04-16';
 	const MIN_DEDIVERSION             = '2014-04-02_18_00';
 	const SCRIPT_TIMEOUT              = 10;
@@ -164,6 +169,10 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	 */
 	private $requestQuitMessage = null;
 
+	/** @var EchoManager $echoManager */
+	private $echoManager          = null;
+	private $communicationManager = null;
+
 	/**
 	 * Construct a new ManiaControl instance
 	 */
@@ -176,6 +185,8 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 
 		// Load ManiaControl Modules
 		$this->callbackManager       = new CallbackManager($this);
+		$this->echoManager           = new EchoManager($this);
+		$this->communicationManager  = new CommunicationManager($this);
 		$this->timerManager          = new TimerManager($this);
 		$this->database              = new Database($this);
 		$this->fileReader            = new AsynchronousFileReader($this);
@@ -194,6 +205,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 		$this->pluginManager         = new PluginManager($this);
 		$this->updateManager         = new UpdateManager($this);
 
+
 		$this->getErrorHandler()->init();
 
 		// Permissions
@@ -207,6 +219,18 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 
 		// Check connection every 30 seconds
 		$this->getTimerManager()->registerTimerListening($this, 'checkConnection', 1000 * 30);
+
+		// Communication Methods
+		$this->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::RESTART_MANIA_CONTROL, $this, function ($data) {
+			//Delay Shutdown to send answer first
+			$this->getTimerManager()->registerOneTimeListening($this, function () use ($data) {
+				if (is_object($data) && property_exists($data, "message")) {
+					$this->restart($data->message);
+				}
+				$this->restart();
+			}, 3000);
+			return new CommunicationAnswer();
+		});
 	}
 
 	/**
@@ -276,6 +300,24 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	 */
 	public function getCallbackManager() {
 		return $this->callbackManager;
+	}
+
+	/**
+	 * Return the echo manager
+	 *
+	 * @return EchoManager
+	 */
+	public function getEchoManager() {
+		return $this->echoManager;
+	}
+
+	/**
+	 * Return the socket manager
+	 *
+	 * @return CommunicationManager
+	 */
+	public function getCommunicationManager() {
+		return $this->communicationManager;
 	}
 
 	/**
@@ -465,6 +507,9 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener {
 	 * @param string $message
 	 */
 	public function restart($message = null) {
+		// Trigger callback on Restart
+		$this->getCallbackManager()->triggerCallback(Callbacks::ONRESTART);
+
 		// Announce restart
 		try {
 			$this->getChat()->sendInformation('Restarting ManiaControl...');

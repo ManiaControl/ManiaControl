@@ -7,12 +7,9 @@
 
 namespace Maniaplanet\DedicatedServer\Xmlrpc;
 
-class FaultException extends Exception
-{
-	static function create($faultString, $faultCode)
-	{
-		switch($faultString)
-		{
+class FaultException extends Exception {
+	static function create($faultString, $faultCode) {
+		switch ($faultString) {
 			case 'Password incorrect.':
 			case 'Permission denied.':
 				return new AuthenticationException($faultString, $faultCode);
@@ -34,6 +31,7 @@ class FaultException extends Exception
 				return new LockedFeatureException($faultString, $faultCode);
 			case 'Login or Uid unknown.':
 			case 'Login unknown.':
+			case 'Payer login unknown.':
 				return new UnknownPlayerException($faultString, $faultCode);
 			case 'The player is not a spectator':
 			case 'The player is not a spectator.':
@@ -72,6 +70,7 @@ class FaultException extends Exception
 			case 'You cannot change the max spectators count: AllowSpectatorRelays is activated.':
 			case 'There are too many players':
 			case 'There are too many spectators':
+			case 'Unknown hideserver value':
 				return new ServerOptionsException($faultString, $faultCode);
 			case 'New mode unknown.':
 			case 'You need to stop the server to change to/from script mode.':
@@ -79,6 +78,7 @@ class FaultException extends Exception
 			case 'Not in Team mode.':
 			case 'Not in Rounds or Laps mode.':
 			case 'The scores must be decreasing.':
+			case 'No current script.':
 				return new GameModeException($faultString, $faultCode);
 			case 'Unable to write the black list file.':
 			case 'Unable to write the guest list file.':
@@ -90,26 +90,55 @@ class FaultException extends Exception
 			case 'Invalid url.':
 				return new FileException($faultString, $faultCode);
 		}
-		if(preg_match('~^Unknown setting \'.*\'\.$~iu', $faultString))
+		if (preg_match('~^Unknown setting \'.*\'\.$~iu', $faultString)) {
 			return new GameModeException($faultString, $faultCode);
-		if(preg_match('~^Couldn\'t load \'.*\'\.$~iu', $faultString))
+		}
+		if (preg_match('~^Couldn\'t load \'.*\'\.$~iu', $faultString)) {
 			return new FileException($faultString, $faultCode);
+		}
 
 		return new self($faultString, $faultCode);
 	}
 }
 
-class AuthenticationException extends FaultException {}
-class UnavailableFeatureException extends FaultException {}
-class LockedFeatureException extends FaultException {}
-class UnknownPlayerException extends FaultException {}
-class PlayerStateException extends FaultException {}
-class AlreadyInListException extends FaultException {}
-class NotInListException extends FaultException {}
-class IndexOutOfBoundException extends FaultException {}
-class NextMapException extends FaultException{}
-class ChangeInProgressException extends FaultException {}
-class InvalidMapException extends FaultException{}
-class GameModeException extends FaultException {}
-class ServerOptionsException extends FaultException {}
-class FileException extends FaultException {}
+class AuthenticationException extends FaultException {
+}
+
+class UnavailableFeatureException extends FaultException {
+}
+
+class LockedFeatureException extends FaultException {
+}
+
+class UnknownPlayerException extends FaultException {
+}
+
+class PlayerStateException extends FaultException {
+}
+
+class AlreadyInListException extends FaultException {
+}
+
+class NotInListException extends FaultException {
+}
+
+class IndexOutOfBoundException extends FaultException {
+}
+
+class NextMapException extends FaultException {
+}
+
+class ChangeInProgressException extends FaultException {
+}
+
+class InvalidMapException extends FaultException {
+}
+
+class GameModeException extends FaultException {
+}
+
+class ServerOptionsException extends FaultException {
+}
+
+class FileException extends FaultException {
+}

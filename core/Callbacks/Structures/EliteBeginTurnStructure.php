@@ -5,6 +5,13 @@ namespace ManiaControl\Callbacks\Structures;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 
+/**
+ * Structure Class for the EliteBeginTurn Callback
+ *
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014-2015 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ */
 class EliteBeginTurnStructure {
 	/*
 	 * Private properties
@@ -22,8 +29,8 @@ class EliteBeginTurnStructure {
 	 * @param array        $data
 	 */
 	public function __construct(ManiaControl $maniaControl, array $data) {
-		$this->maniaControl    = $maniaControl;
-		$this->attackerLogin   = $data[0];
+		$this->maniaControl   = $maniaControl;
+		$this->attackerLogin  = $data[0];
 		$this->defenderLogins = $data[1];
 	}
 
