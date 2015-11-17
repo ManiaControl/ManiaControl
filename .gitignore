@@ -1,4 +1,6 @@
-/.idea/
+.idea
+*.iml
+
 /configs/server.xml
 /logs/
 /ManiaControl.log

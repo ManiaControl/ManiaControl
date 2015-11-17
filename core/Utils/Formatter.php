@@ -48,24 +48,36 @@ abstract class Formatter {
 	/**
 	 * Format an elapsed time String (2 days ago...) by a given timestamp
 	 *
-	 * @param int $ptime
-	 * @return string
+	 * @param int $time Input time
+	 * @param boolean $short Short version
+	 * @return string Formatted elapsed time string
 	 */
-	public static function time_elapsed_string($ptime) {
-		// TODO: refactor code: camelCase!
-		$etime = time() - $ptime;
+	public static function timeElapsedString($time, $short = false) {
+		$elapsedTime = time() - $time;
 
-		if ($etime < 1) {
-			return '0 seconds';
+		$second =   $short ? 'sec.' : 'second';
+		$minute =   $short ? 'min.' : 'minute';
+		$hour =     $short ? 'h' : 'hour';
+		$day =      $short ? 'd' : 'day';
+		$month =    $short ? 'm' : 'month';
+		$year =     $short ? 'y' : 'year';
+
+		if ($elapsedTime < 1) {
+			return $short ? '0 sec.' : '0 seconds';
 		}
 
-		$a = array(12 * 30 * 24 * 60 * 60 => 'year', 30 * 24 * 60 * 60 => 'month', 24 * 60 * 60 => 'day', 60 * 60 => 'hour', 60 => 'minute', 1 => 'second');
+		$calculateSeconds = array(12 * 30 * 24 * 60 * 60 => $year,
+		                          30 * 24 * 60 * 60 => $month,
+		                          24 * 60 * 60 => $day,
+		                          60 * 60 => $hour,
+		                          60 => $minute,
+		                          1 => $second);
 
-		foreach ($a as $secs => $str) {
-			$d = $etime / $secs;
+		foreach ($calculateSeconds as $secs => $str) {
+			$d = $elapsedTime / $secs;
 			if ($d >= 1) {
 				$r = round($d);
-				return $r . ' ' . $str . ($r > 1 ? 's' : '') . ' ago';
+				return $r . ' ' . $str . ($r > 1 ? (!$short ? 's' : '') : '') . ' ago';
 			}
 		}
 		return '';
