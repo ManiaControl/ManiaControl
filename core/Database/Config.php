@@ -42,7 +42,7 @@ class Config {
 	 * @return bool
 	 */
 	public function validate() {
-		if (!$this->host || !$this->port || !$this->user || !$this->pass || !$this->name) {
+		if (!$this->host || !$this->port || !$this->user || !$this->name) {
 			return false;
 		}
 		if ($this->user === 'mysql_user' || $this->pass === 'mysql_password') {
