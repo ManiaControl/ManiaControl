@@ -1,6 +1,8 @@
 ##v0.16x###
 # Additions
 - updated mx links to https
+# Changes
+- CommunicationMethod SET_SERVER_OPTIONS sets the changed values also in database on call
 
 ###v0.163###
 #Additions

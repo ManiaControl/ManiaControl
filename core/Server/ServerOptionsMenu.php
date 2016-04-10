@@ -368,7 +368,7 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 	 * @param Player        $player
 	 * @return bool
 	 */
-	private function applyNewServerOptions(ServerOptions $newServerOptions, Player $player) {
+	private function applyNewServerOptions(ServerOptions $newServerOptions, $player = null) {
 		try {
 			$this->maniaControl->getClient()->setServerOptions($newServerOptions);
 		} catch (ServerOptionsException $exception) {
@@ -409,8 +409,9 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 
 			$this->fillUpMandatoryOptions($newServerOptions, $oldServerOptions);
 
+
 			try {
-				$success = $this->maniaControl->getClient()->setServerOptions($newServerOptions);
+				$success = $this->applyNewServerOptions($newServerOptions);
 			} catch (ServerOptionsException $exception) {
 				return new CommunicationAnswer($exception->getMessage(), true);
 			}
