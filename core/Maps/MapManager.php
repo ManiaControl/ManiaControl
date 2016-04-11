@@ -537,7 +537,7 @@ class MapManager implements CallbackListener, CommunicationListener {
 			try {
 				$this->maniaControl->getClient()->saveMatchSettings($matchSettingsFileName);
 			} catch (FileException $e) {
-				Logger::logError("Unable to write the playlist file, please checkout your MX-Folders File permissions!");
+				Logger::logError("Unable to write the playlist file, please checkout your Matchsetting folder File permissions!");
 			}
 		}
 	}
