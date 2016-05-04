@@ -3,6 +3,7 @@
 - updated mx links to https
 # Changes
 - CommunicationMethod SET_SERVER_OPTIONS sets the changed values also in database on call
+- Changed Copyright label to 2014-2016
 
 ###v0.163###
 #Additions
