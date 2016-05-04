@@ -8,7 +8,7 @@ use ManiaControl\Players\Player;
  * Structure Class for the ArmorEmpty Callback
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2015 ManiaControl Team
+ * @copyright 2014-2016 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ArmorEmptyStructure {
