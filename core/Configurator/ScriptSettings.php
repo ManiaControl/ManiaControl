@@ -26,7 +26,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
  * Class offering a Configurator for Script Settings
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2016 ManiaControl Team
+ * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ScriptSettings implements ConfiguratorMenu, CallbackListener, CommunicationListener {
