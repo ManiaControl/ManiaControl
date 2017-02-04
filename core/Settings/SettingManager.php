@@ -55,7 +55,7 @@ class SettingManager implements CallbackListener {
 				`class` VARCHAR(100) NOT NULL,
 				`setting` VARCHAR(150) NOT NULL,
 				`type` VARCHAR(50) NOT NULL,
-				`value` VARCHAR(100) NOT NULL,
+				`value` VARCHAR(150) NOT NULL,
 				`default` VARCHAR(100) NOT NULL,
 				`set` VARCHAR(100) NOT NULL,
 				`changed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

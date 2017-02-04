@@ -335,9 +335,10 @@ class AuthenticationManager implements CallbackListener, EchoListener, Communica
 		$mysqli        = $this->maniaControl->getDatabase()->getMysqli();
 		$authQuery     = "INSERT INTO `" . PlayerManager::TABLE_PLAYERS . "` (
 				`login`,
+				`nickname`,
 				`authLevel`
 				) VALUES (
-				?, ?
+				?, ?, ?
 				) ON DUPLICATE KEY UPDATE
 				`authLevel` = VALUES(`authLevel`);";
 		$authStatement = $mysqli->prepare($authQuery);
@@ -345,7 +346,7 @@ class AuthenticationManager implements CallbackListener, EchoListener, Communica
 			trigger_error($mysqli->error, E_USER_ERROR);
 			return false;
 		}
-		$authStatement->bind_param('si', $player->login, $authLevel);
+		$authStatement->bind_param('ssi', $player->login, $player->nickname, $authLevel);
 		$authStatement->execute();
 		if ($authStatement->error) {
 			trigger_error($authStatement->error);

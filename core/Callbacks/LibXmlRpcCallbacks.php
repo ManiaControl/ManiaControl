@@ -114,6 +114,9 @@ class LibXmlRpcCallbacks implements CallbackListener {
 				//TODO really useful? what does it have what RankingsManager not have?
 				$this->triggerPlayerRanking($data[0]);
 				break;
+			case 'LibXmlRpc_Rankings':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::RANKINGS, $data[0]);
+				break;
 			case 'LibXmlRpc_OnStartLine':
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ONSTARTLINE, $data[0]);
 				break;

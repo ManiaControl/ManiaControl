@@ -76,6 +76,9 @@ interface Callbacks {
 	/** Scores Callback (returned after LibXmlRpc_PlayerRanking in SM, or LibXmlRpc_TeamsScores in Trackmania): Scores */
 	const SCORES = 'Callbacks.Scores';
 
+	/** Rankings Callback */
+	const RANKINGS = 'Callbacks.Rankings';
+
 	/** PlayerRanking Callback, returned after LibXmlRpc_PlayerRanking
 	 * try to avoid to use this, just use the Get function of the RankingsManager instead
 	 * param1 Player $player
@@ -113,6 +116,9 @@ interface Callbacks {
 	const ELITE_ONBEGINTURN = "Callbacks.EliteOnBeginTurn";
 	/** Elite OnEndTurn Callback: integer (VictoryTypes) */
 	const ELITE_ONENDTURN = "Callbacks.EliteOnEndTurn";
+
+	/** Joust Selected Players */
+	const JOUST_SELECTEDPLAYERS = "Callbacks.JoustSelectedPlayers";
 
 	/*
 	 * TrackMania Callbacks
