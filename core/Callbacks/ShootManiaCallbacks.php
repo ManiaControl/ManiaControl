@@ -64,6 +64,9 @@ class ShootManiaCallbacks implements CallbackListener {
 			case 'Elite_EndTurn':
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ELITE_ONENDTURN, $data[0]);
 				break;
+			case 'Joust_SelectedPlayers':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::JOUST_SELECTEDPLAYERS, $data);
+				break;
 			case self::CB_TIMEATTACK_ONCHECKPOINT:
 				$this->handleTimeAttackOnCheckpoint($name, $data);
 				break;
@@ -101,7 +104,7 @@ class ShootManiaCallbacks implements CallbackListener {
 		$checkpointCallback->rawCallback = array($name, $data);
 		$checkpointCallback->name        = $checkpointCallback::CHECKPOINT;
 		$checkpointCallback->setPlayer($player);
-		$checkpointCallback->time = (int)$data[1];
+		$checkpointCallback->time = (int) $data[1];
 
 		$this->maniaControl->getCallbackManager()->triggerCallback($checkpointCallback);
 	}
@@ -124,7 +127,7 @@ class ShootManiaCallbacks implements CallbackListener {
 		$finishCallback->rawCallback = array($name, $data);
 		$finishCallback->name        = $finishCallback::FINISH;
 		$finishCallback->setPlayer($player);
-		$finishCallback->time = (int)$data[1];
+		$finishCallback->time = (int) $data[1];
 
 		$this->maniaControl->getCallbackManager()->triggerCallback($finishCallback);
 	}

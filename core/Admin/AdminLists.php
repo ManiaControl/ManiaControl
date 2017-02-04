@@ -37,6 +37,9 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 	 */
 	private $adminListShown = array();
 
+	/** @var ManiaControl $maniaControl */
+	private $maniaControl;
+
 	/**
 	 * Construct a new PlayerList instance
 	 *
