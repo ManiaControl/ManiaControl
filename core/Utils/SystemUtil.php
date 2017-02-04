@@ -54,7 +54,7 @@ class SystemUtil {
 			Logger::log(' -- Make sure that you install at least PHP ' . self::MIN_PHP_VERSION . '!');
 			$success = false;
 		} else {
-			Logger::log($message . self::MIN_PHP_VERSION . ' OK!');
+			Logger::log($message . $phpVersion . ' OK!');
 		}
 
 		// Check for MySQLi
