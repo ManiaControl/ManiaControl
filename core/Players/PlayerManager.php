@@ -126,8 +126,8 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 		$playerTableQuery     = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_PLAYERS . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
 				`login` varchar(100) NOT NULL,
-				`nickname` varchar(150) NOT NULL,
-				`path` varchar(100) NOT NULL,
+				`nickname` varchar(150) NOT NULL DEFAULT '',
+				`path` varchar(100) NOT NULL DEFAULT '',
 				`authLevel` int(11) NOT NULL DEFAULT '0',
 				`changed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 				PRIMARY KEY (`index`),
