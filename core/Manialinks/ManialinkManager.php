@@ -8,10 +8,12 @@ use FML\Controls\Labels\Label_Text;
 use FML\ManiaLink;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
+use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\Xmlrpc\FaultException;
 use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
+use Maniaplanet\DedicatedServer\Xmlrpc\MessageException;
 use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
 
 /**
@@ -266,6 +268,9 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 			//TODO added 17.01.2015, remove later:
 			$this->maniaControl->getErrorHandler()->triggerDebugNotice("Fault Exception: ManiaLink Manager, Message: " . $e->getMessage());
 			return false;
+		} catch (MessageException $e) {
+			//TODO verify why this can happen
+			Logger::logError("Request too large during opening Directory Browser");
 		}
 
 		return true;

@@ -20,6 +20,7 @@ use ManiaControl\Communication\CommunicationMethods;
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
+use Maniaplanet\DedicatedServer\Xmlrpc\FaultException;
 use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
 
 /**
@@ -345,7 +346,12 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener, Communicatio
 			return true;
 		}
 
-		$this->maniaControl->getClient()->setModeScriptSettings($newSettings);
+		try {
+			$this->maniaControl->getClient()->setModeScriptSettings($newSettings);
+		} catch (FaultException $e) {
+			return false;
+		}
+
 
 		// Save Settings into Database
 		$mysqli    = $this->maniaControl->getDatabase()->getMysqli();
@@ -380,8 +386,6 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener, Communicatio
 			}
 
 			// Add To Database
-			$settingName  = $setting;
-			$settingValue = $value;
 			$statement->execute();
 			if ($statement->error) {
 				trigger_error($statement->error);

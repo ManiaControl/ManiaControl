@@ -258,6 +258,11 @@ class PlayerActions implements EchoListener, CommunicationListener {
 				$this->maniaControl->getChat()->sendException($exception, $admin);
 			}
 			return false;
+		} catch (UnknownPlayerException $exception) {
+			if ($calledByAdmin) {
+				$this->maniaControl->getChat()->sendException($exception, $admin);
+			}
+			return false;
 		}
 
 		if ($userIsAbleToSelect) {
@@ -551,6 +556,11 @@ class PlayerActions implements EchoListener, CommunicationListener {
 			try {
 				$this->maniaControl->getClient()->disconnectFakePlayer($target->login);
 			} catch (PlayerStateException $e) {
+				if ($calledByAdmin) {
+					$this->maniaControl->getChat()->sendException($e, $admin);
+				}
+				return false;
+			} catch (UnknownPlayerException $e) { //TODO check why it's actually needed, but there was a crash at this place
 				if ($calledByAdmin) {
 					$this->maniaControl->getChat()->sendException($e, $admin);
 				}
