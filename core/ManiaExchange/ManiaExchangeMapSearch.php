@@ -99,6 +99,11 @@ class ManiaExchangeMapSearch {
 
 		$this->url = 'https://' . $this->titlePrefix . '.mania-exchange.com/tracksearch2/search?api=on';
 
+		if($key = $this->maniaControl->getSettingManager()->getSettingValue($this, ManiaExchangeManager::SETTING_MX_KEY)){
+			$this->url .= "&key=" . $key;
+		}
+
+
 		//Set some defaults:
 		$this->mapLimit      = 100;
 		$this->priorityOrder = self::SEARCH_ORDER_UPDATED_NEWEST;

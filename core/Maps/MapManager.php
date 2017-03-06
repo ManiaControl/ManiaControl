@@ -354,8 +354,14 @@ class MapManager implements CallbackListener, CommunicationListener {
 					return;
 				}
 
+				$url = $mapInfo->downloadurl;
+
+				if ($key = $this->maniaControl->getSettingManager()->getSettingValue($this, ManiaExchangeManager::SETTING_MX_KEY)) {
+					$url .= "&key=" . $key;
+				}
+
 				// Download the file
-				$this->maniaControl->getFileReader()->loadFile($mapInfo->downloadurl, function ($file, $error) use (
+				$this->maniaControl->getFileReader()->loadFile($url, function ($file, $error) use (
 					&$login, &$mapInfo, &$update
 				) {
 					if (!$file || $error) {
