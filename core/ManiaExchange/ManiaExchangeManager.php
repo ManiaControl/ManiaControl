@@ -6,7 +6,6 @@ use ManiaControl\Files\AsynchronousFileReader;
 use ManiaControl\ManiaControl;
 use ManiaControl\Maps\Map;
 use ManiaControl\Maps\MapManager;
-use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
 
 /**
  * Mania Exchange Manager Class
@@ -44,6 +43,8 @@ class ManiaExchangeManager {
 
 	const MIN_EXE_BUILD = "2014-04-01_00_00";
 
+	const SETTING_MX_KEY = "Mania exchange Key";
+
 	/*
 	 * Private properties
 	 */
@@ -58,6 +59,8 @@ class ManiaExchangeManager {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
+
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MX_KEY, "");
 	}
 
 	/**
@@ -159,6 +162,10 @@ class ManiaExchangeManager {
 		// compile search URL
 		$url = "https://api.mania-exchange.com/{$titlePrefix}/maps/?ids={$string}";
 
+		if ($key = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MX_KEY)) {
+			$url .= "&key=" . $key;
+		}
+
 		$this->maniaControl->getFileReader()->loadFile($url, function ($mapInfo, $error) use ($titlePrefix, $url) {
 			if ($error) {
 				trigger_error("Error: '{$error}' for Url '{$url}'");
@@ -252,6 +259,10 @@ class ManiaExchangeManager {
 		// compile search URL
 		$url = 'https://api.mania-exchange.com/' . $titlePrefix . '/maps/?ids=' . $mapId;
 
+		if ($key = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MX_KEY)) {
+			$url .= "&key=" . $key;
+		}
+
 		$this->maniaControl->getFileReader()->loadFile($url, function ($mapInfo, $error) use (&$function, $titlePrefix, $url) {
 			$mxMapInfo = null;
 			if ($error) {
@@ -286,7 +297,6 @@ class ManiaExchangeManager {
 	 * @param string   $env
 	 * @param int      $maxMapsReturned
 	 * @param int      $searchOrder
-	 *
 	 * @deprecated
 	 * @see \ManiaControl\ManiaExchange\ManiaExchangeMapSearch
 	 */
@@ -297,7 +307,7 @@ class ManiaExchangeManager {
 		$mapSearch->setMapLimit($maxMapsReturned);
 		$mapSearch->setPrioritySortOrder($sortOrder);
 
-		if($env){
+		if ($env) {
 			$mapSearch->setEnvironments($env);
 		}
 
