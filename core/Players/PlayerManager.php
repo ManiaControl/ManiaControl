@@ -144,6 +144,30 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 			$playerTableStatement->close();
 			return false;
 		}
+
+		//TODO remove later again (added in v0.165)
+		//For Mysql 5.7 add Default Values
+		$alterQuery = "ALTER TABLE `" . self::TABLE_PLAYERS . "` CHANGE nickname nickname varchar(150) DEFAULT ''";
+		$result     = $mysqli->query($alterQuery);
+		if (!$result) {
+			trigger_error($mysqli->error);
+			return false;
+		}
+
+		$alterQuery = "ALTER TABLE `" . self::TABLE_PLAYERS . "` CHANGE path path varchar(100) DEFAULT ''";
+		$result     = $mysqli->query($alterQuery);
+		if (!$result) {
+			trigger_error($mysqli->error);
+			return false;
+		}
+
+		$alterQuery = "ALTER TABLE `" . self::TABLE_PLAYERS . "` CHANGE authLevel authLevel int(11) DEFAULT 0";
+		$result     = $mysqli->query($alterQuery);
+		if (!$result) {
+			trigger_error($mysqli->error);
+			return false;
+		}
+
 		$playerTableStatement->close();
 		return true;
 	}
@@ -444,8 +468,7 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 		//Check if Player finished joining the game
 		if ($player->hasJoinedGame && !$prevJoinState) {
 
-			if (!$player->isSpectator && $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_JOIN_LEAVE_MESSAGES) && !$player->isFakePlayer()
-			) {
+			if (!$player->isSpectator && $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_JOIN_LEAVE_MESSAGES) && !$player->isFakePlayer()) {
 				$string      = array(0 => '$0f0Player', 1 => '$0f0Moderator', 2 => '$0f0Admin', 3 => '$0f0SuperAdmin', 4 => '$0f0MasterAdmin');
 				$chatMessage = '$0f0' . $string[$player->authLevel] . ' $<$fff' . $player->nickname . '$> Nation: $<$fff' . $player->getCountry() . '$> joined!';
 				$this->maniaControl->getChat()->sendChat($chatMessage);
