@@ -81,8 +81,8 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener, Communicatio
 		$query  = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_SCRIPT_SETTINGS . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
 				`serverIndex` int(11) NOT NULL,
-				`settingName` varchar(100) NOT NULL,
-				`settingValue` varchar(500) NOT NULL,
+				`settingName` varchar(100) NOT NULL DEFAULT '',
+				`settingValue` varchar(500) NOT NULL DEFAULT '',
 				PRIMARY KEY (`index`),
 				UNIQUE KEY `setting` (`serverIndex`, `settingName`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Script Settings' AUTO_INCREMENT=1;";
@@ -97,12 +97,29 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener, Communicatio
 			trigger_error($statement->error, E_USER_ERROR);
 			return false;
 		}
+
+		//TODO remove later again (added in v0.165)
+		//For Mysql 5.7 add Default Values
+		$alterQuery = "ALTER TABLE `" . self::TABLE_SCRIPT_SETTINGS . "` CHANGE settingName settingName varchar(100) DEFAULT ''";
+		$result     = $mysqli->query($alterQuery);
+		if (!$result) {
+			trigger_error($mysqli->error);
+			return false;
+		}
+
+		$alterQuery = "ALTER TABLE `" . self::TABLE_SCRIPT_SETTINGS . "` CHANGE settingValue settingValue varchar(500) DEFAULT ''";
+		$result     = $mysqli->query($alterQuery);
+		if (!$result) {
+			trigger_error($mysqli->error);
+			return false;
+		}
+
 		$statement->close();
 		return true;
 	}
 
 	/**
-	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getTitle()
+	 * @see \ManiaControl\Configurator\ConfiguratorMenu::getTitle()
 	 */
 	public static function getTitle() {
 		return 'Script Settings';
@@ -163,7 +180,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener, Communicatio
 	}
 
 	/**
-	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getMenu()
+	 * @see \ManiaControl\Configurator\ConfiguratorMenu::getMenu()
 	 */
 	public function getMenu($width, $height, Script $script, Player $player) {
 		$paging = new Paging();
@@ -286,7 +303,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener, Communicatio
 	}
 
 	/**
-	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
+	 * @see \ManiaControl\Configurator\ConfiguratorMenu::saveConfigData()
 	 */
 	public function saveConfigData(array $configData, Player $player) {
 		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_CHANGE_SCRIPT_SETTINGS)) {
