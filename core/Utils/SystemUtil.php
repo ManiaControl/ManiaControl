@@ -77,11 +77,21 @@ class SystemUtil {
 			Logger::log($message . 'FOUND!');
 		}
 
+		// Check for ZIP
+		$message = 'Checking for installed PHP ZIP ... ';
+		if (!extension_loaded('zip')) {
+			Logger::log($message . 'NOT FOUND!');
+			Logger::log(" -- You don't have php-zip installed! Check: http://at1.php.net/manual/en/zip.installation.php");
+			$success = false;
+		} else {
+			Logger::log($message . 'FOUND!');
+		}
+
 		// Check for Zlib
 		$message = 'Checking for installed Zlib ... ';
 		if (!extension_loaded('zlib')) {
 			Logger::log($message . 'NOT FOUND!');
-			Logger::log(" -- You don't have Zlib installed! Check: http://php.net/manual/de/zlib.setup.php");
+			Logger::log(" -- You don't have Zlib installed! Check: http://php.net/manual/en/zlib.setup.php");
 			$success = false;
 		} else {
 			Logger::log($message . 'FOUND!');

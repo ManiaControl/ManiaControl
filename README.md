@@ -39,6 +39,7 @@ http://www.maniacontrol.com
 	- php_curl
 	- php_xmlrpc (TM only, recommended for SM)
 	- php_zlib
+	- php_zip
 
 ### How to report bugs or request features?:
 - Write a mail to bugs(at)maniacontrol(dot)com

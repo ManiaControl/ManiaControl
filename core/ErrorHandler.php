@@ -404,7 +404,8 @@ class ErrorHandler {
 	 * @param \Exception $exception
 	 * @param bool       $shutdown
 	 */
-	public function handleException(\Exception $exception, $shutdown = true) {
+	public function handleException($exception, $shutdown = true) {
+		//Removed error type, as php throwed the exception in a case and it was not from class Exception weiredly
 		$message = "[ManiaControl EXCEPTION]: {$exception->getMessage()}";
 
 		$exceptionClass = get_class($exception);
