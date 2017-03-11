@@ -401,7 +401,7 @@ class ErrorHandler {
 	/**
 	 * ManiaControl Exception Handler
 	 *
-	 * @param \Exception $exception
+	 * @param \Throwable $exception
 	 * @param bool       $shutdown
 	 */
 	public function handleException($exception, $shutdown = true) {
