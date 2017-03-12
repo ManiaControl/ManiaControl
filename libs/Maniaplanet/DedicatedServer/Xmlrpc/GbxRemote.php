@@ -16,8 +16,8 @@ class GbxRemote
 	public static $sent;
 
 	private $socket;
-	private $readTimeout = array('sec' => 5, 'usec' => 0);
-	private $writeTimeout = array('sec' => 5, 'usec' => 0);
+	private $readTimeout = array('sec' => 30, 'usec' => 0);
+	private $writeTimeout = array('sec' => 30, 'usec' => 0);
 	private $requestHandle;
 	private $callbacksBuffer = array();
 	private $multicallBuffer = array();
