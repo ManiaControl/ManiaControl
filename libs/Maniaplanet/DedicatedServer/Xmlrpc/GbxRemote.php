@@ -16,8 +16,8 @@ class GbxRemote
 	public static $sent;
 
 	private $socket;
-	private $readTimeout = array('sec' => 30, 'usec' => 0);
-	private $writeTimeout = array('sec' => 30, 'usec' => 0);
+	private $readTimeout = array('sec' => 5, 'usec' => 0);
+	private $writeTimeout = array('sec' => 5, 'usec' => 0);
 	private $requestHandle;
 	private $callbacksBuffer = array();
 	private $multicallBuffer = array();
@@ -85,7 +85,7 @@ class GbxRemote
 		// handshake
 		$header = $this->read(15);
 		if($header === false)
-			$this->onIoFailure('during handshake');
+			$this->onIoFailure(sprintf('during handshake (%s)', socket_strerror(socket_last_error($this->socket))));
 
 		extract(unpack('Vsize/a*protocol', $header));
 		/** @var $size int */
