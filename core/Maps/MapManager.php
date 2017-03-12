@@ -716,6 +716,21 @@ class MapManager implements CallbackListener, CommunicationListener {
 	}
 
 	/**
+	 * Returns the Map by it's given Array Index
+	 *
+	 * @param int $index The index starts at 0
+	 * @return Map|null
+	 */
+	public function getMapByIndex($index) {
+		$maps = $this->getMaps();
+		if ($index > sizeof($maps)) {
+			return null;
+		} else {
+			return $maps[$index];
+		}
+	}
+
+	/**
 	 * Returns the MapIndex of a given map
 	 *
 	 * @param Map $map
