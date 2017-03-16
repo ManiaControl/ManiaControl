@@ -22,7 +22,7 @@ class IconManager implements CallbackListener {
 	/*
 	 * Constants
 	 */
-	const DEFAULT_IMG_URL = 'https://images.maniacontrol.com/icons/';
+	const DEFAULT_IMG_URL = 'https://images.maniacontrol.com/icon/';
 	const PRELOAD_MLID    = 'IconManager.Preload.MLID';
 
 	/*
