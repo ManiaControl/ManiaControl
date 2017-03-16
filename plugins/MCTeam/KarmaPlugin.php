@@ -98,7 +98,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	 * @return string
 	 */
 	private static function buildKarmaSettingName($serverLogin) {
-		return '$l[http://karma.mania-exchange.com/auth/getapikey?server=' . $serverLogin . ']MX Karma Code for ' . $serverLogin . '$l';
+		return '$l[https://karma.mania-exchange.com/auth/getapikey?server=' . $serverLogin . ']MX Karma Code for ' . $serverLogin . '$l';
 	}
 
 	/**

@@ -3,7 +3,7 @@ ManiaControl
 
 The newly designed and easy to use ManiaPlanet Server Controller.
 
-http://www.maniacontrol.com
+https://www.maniacontrol.com
 
 
 ## SETUP:
