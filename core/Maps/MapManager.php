@@ -427,6 +427,9 @@ class MapManager implements CallbackListener, CommunicationListener {
 					return;
 				}
 				throw $e;
+			} catch(FileException $e){
+				$this->maniaControl->getChat()->sendError("Could not write file", $login);
+				return;
 			}
 		}
 

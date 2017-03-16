@@ -80,6 +80,7 @@ class FaultException extends Exception {
 			case 'The scores must be decreasing.':
 			case 'No current script.':
 				return new GameModeException($faultString, $faultCode);
+			case 'couldn\'t write file.':
 			case 'Unable to write the black list file.':
 			case 'Unable to write the guest list file.':
 			case 'Unable to write the playlist file.':
