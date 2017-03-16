@@ -22,6 +22,9 @@ class RankingManager implements CallbackListener {
 	 */
 	private $rankings = array();
 
+	/** @var ManiaControl $maniaControl */
+	private $maniaControl;
+
 	/**
 	 * Construct a new ranking manager instance
 	 *
