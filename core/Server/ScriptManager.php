@@ -47,7 +47,9 @@ class ScriptManager {
 			return false;
 		}
 
-		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.EnableCallbacks', array('true'));
+		//TODO verify that the old S_ isnt needed anymore
+
+		$this->maniaControl->getModeScriptEventManager()->enableCallbacks();
 		Logger::logInfo("Script Callbacks successfully enabled!");
 		return true;
 	}
