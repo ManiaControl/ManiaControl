@@ -2,6 +2,8 @@
 
 // TODO: method class for all the libxmlrpc get Methods, to fetch the callback asnyc
 // TODO implement all STOP callbacks
+
+// 22-3-2017 Added/Fixed TM Callback for WayPoint // Need to Add better checks eventually
 namespace ManiaControl\Callbacks;
 
 /**
@@ -124,14 +126,14 @@ interface Callbacks {
 	 * TrackMania Callbacks
 	 */
 	/** OnStartLine Callback */
-	const ONSTARTLINE = 'Callbacks.OnStartLine';
+	const STARTLINE = 'Callbacks.StartLine';
 	/** OnWayPoint Callback */
-	const ONWAYPOINT = 'Callbacks.OnWayPoint';
+	const WAYPOINT = 'Callbacks.WayPoint';
 	/** OnGiveUp Callback */
-	const ONGIVEUP = 'Callbacks.OnGiveUp';
+	const GIVEUP = 'Callbacks.GiveUp';
 	/** OnRespawn Callback */
-	const ONRESPAWN = 'Callbacks.OnRespawn';
+	const ONRESPAWN = 'Callbacks.Respawn';
 	/** OnStunt Callback */
-	const ONSTUNT = 'Callbacks.OnStunt';
+	const STUNT = 'Callbacks.Stunt';
 
 }
