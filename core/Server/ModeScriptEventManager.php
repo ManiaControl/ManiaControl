@@ -30,6 +30,13 @@ class ModeScriptEventManager {
 	 */
 	public function enableCallbacks() {
 		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.EnableCallbacks', array('true'));
+
+		$this->setApiVersion();
+
+		$this->getAllApiVersions();
+
+		$this->getCallbacksList(); //TODO verify why this does not work
+		var_dump("test");
 	}
 
 	/**
@@ -37,5 +44,25 @@ class ModeScriptEventManager {
 	 */
 	public function disableCallbacks() {
 		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.EnableCallbacks', array('false'));
+	}
+
+	/**
+	 * @param string $responseId
+	 * Triggers a Callback List Callback
+	 */
+	public function getCallbacksList($responseId = "DefaultResponseId"){
+		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.GetCallbacksList', array($responseId));
+	}
+
+	/**
+	 * Sets the Api Version
+	 * @param string $version
+	 */
+	public function setApiVersion($version = "1.2.3-beta.4.5.6+build789"){ //TODO constant of API Versions
+		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.SetApiVersion', array($version));
+	}
+
+	public function getAllApiVersions($responseId = "DefaultResponseId"){
+		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.GetAllApiVersions', array($responseId));
 	}
 }
