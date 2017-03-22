@@ -28,6 +28,12 @@ interface Callbacks {
 	/*
 	 * Common Callbacks
 	 */
+	//NEW Callbacks
+
+	const XMLRPC_CALLBACKSLIST = 'Callbacks.XmlRpcCallbacksList';
+
+
+	//OLD Callbacks
 	/** BeginMatch Callback: MatchNumber */
 	const BEGINMATCH = 'Callbacks.BeginMatch';
 	/** LoadingMap Callback: MapNumber */
@@ -126,14 +132,14 @@ interface Callbacks {
 	 * TrackMania Callbacks
 	 */
 	/** OnStartLine Callback */
-	const STARTLINE = 'Callbacks.StartLine';
+	const ONSTARTLINE = 'Callbacks.StartLine';
 	/** OnWayPoint Callback */
-	const WAYPOINT = 'Callbacks.WayPoint';
+	const ONWAYPOINT = 'Callbacks.WayPoint';
 	/** OnGiveUp Callback */
-	const GIVEUP = 'Callbacks.GiveUp';
+	const ONGIVEUP = 'Callbacks.GiveUp';
 	/** OnRespawn Callback */
 	const ONRESPAWN = 'Callbacks.Respawn';
 	/** OnStunt Callback */
-	const STUNT = 'Callbacks.Stunt';
+	const ONSTUNT = 'Callbacks.Stunt';
 
 }

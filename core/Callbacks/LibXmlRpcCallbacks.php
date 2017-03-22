@@ -4,6 +4,7 @@ namespace ManiaControl\Callbacks;
 
 use ManiaControl\Callbacks\Structures\ArmorEmptyStructure;
 use ManiaControl\Callbacks\Structures\CaptureStructure;
+use ManiaControl\Callbacks\Structures\ManiaPlanet\CallbacksListStructure;
 use ManiaControl\Callbacks\Structures\NearMissStructure;
 use ManiaControl\Callbacks\Structures\PlayerHitStructure;
 use ManiaControl\ManiaControl;
@@ -42,6 +43,11 @@ class LibXmlRpcCallbacks implements CallbackListener {
 	 */
 	public function handleScriptCallback($name, $data) {
 		switch ($name) {
+			//New callbacks
+			case 'XmlRpc.CallbacksList':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::XMLRPC_CALLBACKSLIST, new CallbacksListStructure($this->maniaControl, $data));
+				break;
+			//OLD Callbacks
 			case 'LibXmlRpc_BeginMatch':
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::BEGINMATCH, $data[0]);
 				break;
