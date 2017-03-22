@@ -26,6 +26,7 @@ use ManiaControl\Maps\MapManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\PluginManager;
+use ManiaControl\Server\ModeScriptEventManager;
 use ManiaControl\Server\Server;
 use ManiaControl\Settings\SettingManager;
 use ManiaControl\Statistics\StatisticManager;
@@ -47,11 +48,11 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 	/*
 	 * Constants
 	 */
-	const VERSION                     = '0.166';
+	const VERSION                     = '0.200';
 	const API_VERSION                 = '2013-04-16';
 	const MIN_DEDIVERSION             = '2014-04-02_18_00';
 	const SCRIPT_TIMEOUT              = 10;
-	const URL_WEBSERVICE              = 'https://ws.maniacontrol.com/';
+	const URL_WEBSERVICE              = 'http://ws.maniacontrol.com/';
 	const SETTING_PERMISSION_SHUTDOWN = 'Shutdown ManiaControl';
 	const SETTING_PERMISSION_RESTART  = 'Restart ManiaControl';
 
@@ -170,8 +171,13 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 	private $requestQuitMessage = null;
 
 	/** @var EchoManager $echoManager */
-	private $echoManager          = null;
+	private $echoManager = null;
+
+	/** @var CommunicationManager $communicationManager */
 	private $communicationManager = null;
+
+	/** @var ModeScriptEventManager $modeScriptEventManager */
+	private $modeScriptEventManager = null;
 
 	/**
 	 * Construct a new ManiaControl instance
@@ -184,26 +190,27 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 		$this->loadConfig();
 
 		// Load ManiaControl Modules
-		$this->callbackManager       = new CallbackManager($this);
-		$this->echoManager           = new EchoManager($this);
-		$this->communicationManager  = new CommunicationManager($this);
-		$this->timerManager          = new TimerManager($this);
-		$this->database              = new Database($this);
-		$this->fileReader            = new AsynchronousFileReader($this);
-		$this->billManager           = new BillManager($this);
-		$this->settingManager        = new SettingManager($this);
-		$this->statisticManager      = new StatisticManager($this);
-		$this->manialinkManager      = new ManialinkManager($this);
-		$this->actionsMenu           = new ActionsMenu($this);
-		$this->chat                  = new Chat($this);
-		$this->commandManager        = new CommandManager($this);
-		$this->server                = new Server($this);
-		$this->authenticationManager = new AuthenticationManager($this);
-		$this->playerManager         = new PlayerManager($this);
-		$this->mapManager            = new MapManager($this);
-		$this->configurator          = new Configurator($this);
-		$this->pluginManager         = new PluginManager($this);
-		$this->updateManager         = new UpdateManager($this);
+		$this->callbackManager        = new CallbackManager($this);
+		$this->modeScriptEventManager = new ModeScriptEventManager($this);
+		$this->echoManager            = new EchoManager($this);
+		$this->communicationManager   = new CommunicationManager($this);
+		$this->timerManager           = new TimerManager($this);
+		$this->database               = new Database($this);
+		$this->fileReader             = new AsynchronousFileReader($this);
+		$this->billManager            = new BillManager($this);
+		$this->settingManager         = new SettingManager($this);
+		$this->statisticManager       = new StatisticManager($this);
+		$this->manialinkManager       = new ManialinkManager($this);
+		$this->actionsMenu            = new ActionsMenu($this);
+		$this->chat                   = new Chat($this);
+		$this->commandManager         = new CommandManager($this);
+		$this->server                 = new Server($this);
+		$this->authenticationManager  = new AuthenticationManager($this);
+		$this->playerManager          = new PlayerManager($this);
+		$this->mapManager             = new MapManager($this);
+		$this->configurator           = new Configurator($this);
+		$this->pluginManager          = new PluginManager($this);
+		$this->updateManager          = new UpdateManager($this);
 
 
 		$this->getErrorHandler()->init();
@@ -468,6 +475,13 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 	}
 
 	/**
+	 * @return ModeScriptEventManager
+	 */
+	public function getModeScriptEventManager() {
+		return $this->modeScriptEventManager;
+	}
+
+	/**
 	 * Check connection
 	 */
 	public function checkConnection() {
@@ -699,4 +713,6 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 	public function handleServerStopCallback() {
 		$this->requestQuit('The Server has been shut down!');
 	}
+
+
 }
