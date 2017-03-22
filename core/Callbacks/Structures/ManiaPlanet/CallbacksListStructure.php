@@ -2,6 +2,7 @@
 
 namespace ManiaControl\Callbacks\Structures\ManiaPlanet;
 
+use ManiaControl\Callbacks\Structures\BaseStructure;
 use ManiaControl\ManiaControl;
 
 /**
@@ -11,14 +12,11 @@ use ManiaControl\ManiaControl;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class CallbacksListStructure {
+class CallbacksListStructure extends BaseStructure {
 	/** @var  string $responseId */
 	private $responseId;
 	/** @var  array $callbacks */
 	private $callbacks;
-
-	/** @var ManiaControl $maniaControl */
-	private $maniaControl;
 
 	/**
 	 * Construct a new Armor Empty Structure

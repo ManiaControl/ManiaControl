@@ -9,6 +9,8 @@
 namespace ManiaControl\Callbacks\Structures\Trackmania;
 
 
-class DefaultEventStructure {
+use ManiaControl\Callbacks\Structures\BaseStructure;
+
+class DefaultEventStructure extends BaseStructure {
 
 }
