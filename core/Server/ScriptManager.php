@@ -47,15 +47,8 @@ class ScriptManager {
 			return false;
 		}
 
-		if (!array_key_exists('S_UseScriptCallbacks', $scriptSettings)) {
-			return false;
-		}
-
-		$scriptSettings['S_UseScriptCallbacks'] = (bool) $enable;
-		$actionName                             = ($enable ? 'en' : 'dis');
-
-		$this->maniaControl->getClient()->setModeScriptSettings($scriptSettings);
-		Logger::logInfo("Script Callbacks successfully {$actionName}abled!");
+		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.EnableCallbacks', array('true'));
+		Logger::logInfo("Script Callbacks successfully enabled!");
 		return true;
 	}
 
