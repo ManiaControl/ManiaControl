@@ -36,7 +36,7 @@ class ScriptManager {
 	 * @param bool $enable
 	 * @return bool
 	 */
-	public function enableScriptCallbacks($enable = true) {
+	public function enableScriptCallbacks() {
 		if (!$this->isScriptMode()) {
 			return false;
 		}
@@ -47,7 +47,14 @@ class ScriptManager {
 			return false;
 		}
 
-		//TODO verify that the old S_ isnt needed anymore
+		//TODO remove later, than only the last 2 lines are needed in future
+		if (!array_key_exists('S_UseScriptCallbacks', $scriptSettings)) {
+			return false;
+		}
+		$scriptSettings['S_UseScriptCallbacks'] = true;
+		$this->maniaControl->getClient()->setModeScriptSettings($scriptSettings);
+
+
 
 		$this->maniaControl->getModeScriptEventManager()->enableCallbacks();
 		Logger::logInfo("Script Callbacks successfully enabled!");
