@@ -44,17 +44,15 @@ class ScriptManager {
 		try {
 			$scriptSettings = $this->maniaControl->getClient()->getModeScriptSettings();
 		} catch (GameModeException $e) {
+			var_dump("test");
 			return false;
 		}
 
 		//TODO remove later, than only the last 2 lines are needed in future
-		if (!array_key_exists('S_UseScriptCallbacks', $scriptSettings)) {
-			return false;
+		if (array_key_exists('S_UseScriptCallbacks', $scriptSettings)) {
+			$scriptSettings['S_UseScriptCallbacks'] = true;
+			$this->maniaControl->getClient()->setModeScriptSettings($scriptSettings);
 		}
-		$scriptSettings['S_UseScriptCallbacks'] = true;
-		$this->maniaControl->getClient()->setModeScriptSettings($scriptSettings);
-
-
 
 		$this->maniaControl->getModeScriptEventManager()->enableCallbacks();
 		Logger::logInfo("Script Callbacks successfully enabled!");

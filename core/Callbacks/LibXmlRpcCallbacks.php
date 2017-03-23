@@ -43,6 +43,7 @@ class LibXmlRpcCallbacks implements CallbackListener {
 	 */
 	public function handleScriptCallback($name, $data) {
 		var_dump($name);
+		//var_dump($data);
 		switch ($name) {
 			//New callbacks
 			case 'XmlRpc.CallbacksList':
