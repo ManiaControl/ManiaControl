@@ -30,8 +30,6 @@ class CallbacksListStructure extends BaseStructure {
 
 		$this->responseId = $this->getJson()->responseid;
 		$this->callbacks  = $this->getJson()->callbacks;
-
-		//$this->dump();
 	}
 
 	/**
