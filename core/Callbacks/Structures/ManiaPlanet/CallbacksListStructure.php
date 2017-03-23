@@ -14,9 +14,9 @@ use ManiaControl\ManiaControl;
  */
 class CallbacksListStructure extends BaseStructure {
 	/** @var  string $responseId */
-	private $responseId;
+	public $responseId;
 	/** @var  array $callbacks */
-	private $callbacks;
+	public $callbacks;
 
 	/**
 	 * Construct a new Armor Empty Structure
@@ -25,13 +25,13 @@ class CallbacksListStructure extends BaseStructure {
 	 * @param array        $data
 	 */
 	public function __construct(ManiaControl $maniaControl, $data) {
-		$this->maniaControl = $maniaControl;
+		parent::setManiaControl($maniaControl);
+		parent::setJson($data);
 
-		//Not tested yet, TODO test
-		$json = json_decode($data);
+		$this->responseId = $this->getJson()->responseid;
+		$this->callbacks  = $this->getJson()->callbacks;
 
-		$this->responseId = $json->responseId;
-		$this->callbacks  = $json->callbacks;
+		//$this->dump();
 	}
 
 	/**

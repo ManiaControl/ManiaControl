@@ -13,6 +13,8 @@ namespace ManiaControl\Server;
 use ManiaControl\ManiaControl;
 
 class ModeScriptEventManager {
+	const API_VERSION = "2.0.0";
+
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl;
 
@@ -31,12 +33,11 @@ class ModeScriptEventManager {
 	public function enableCallbacks() {
 		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.EnableCallbacks', array('true'));
 
-		$this->setApiVersion();
+		$this->setApiVersion(self::API_VERSION);
 
 		$this->getAllApiVersions();
 
 		$this->getCallbacksList(); //TODO verify why this does not work
-		var_dump("test");
 	}
 
 	/**
@@ -58,7 +59,7 @@ class ModeScriptEventManager {
 	 * Sets the Api Version
 	 * @param string $version
 	 */
-	public function setApiVersion($version = "1.2.3-beta.4.5.6+build789"){ //TODO constant of API Versions
+	public function setApiVersion($version = self::API_VERSION){
 		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.SetApiVersion', array($version));
 	}
 
