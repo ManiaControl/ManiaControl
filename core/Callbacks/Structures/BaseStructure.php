@@ -20,7 +20,7 @@ abstract class BaseStructure {
 		$this->maniaControl    = $maniaControl;
 		$this->plainJsonObject = json_decode($data[0]);
 	}
-	
+
 	/**
 	 * Gets the Plain Json
 	 */
