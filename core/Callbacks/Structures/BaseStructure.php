@@ -40,12 +40,12 @@ abstract class BaseStructure {
 	public function getJson() {
 		return $this->plainJson;
 	}
-	
+
 	/**
 	 * Var_Dump the Structure
 	 */
 	public function dump() {
-		var_dump($this->getJson());
+		var_dump("Class Name including Namespace: " . get_class($this));
 		var_dump(json_decode(json_encode($this)));
 	}
 }
