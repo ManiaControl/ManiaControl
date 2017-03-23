@@ -8,8 +8,8 @@ use ManiaControl\ManiaControl;
 
 class StartServerStructure extends BaseStructure {
 	public function __construct(ManiaControl $maniaControl, $data) {
-		parent::setManiaControl($maniaControl);
-		parent::setJson($data);
+		parent::__construct($maniaControl, $data);
+
 
 	}
 }

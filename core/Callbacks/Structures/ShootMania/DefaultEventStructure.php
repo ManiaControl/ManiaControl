@@ -15,8 +15,7 @@ use ManiaControl\ManiaControl;
  */
 class DefaultEventStructure extends BaseStructure {
 	public function __construct(ManiaControl $maniaControl, $data) {
-		parent::setManiaControl($maniaControl);
-		parent::setJson($data);
+		parent::__construct($maniaControl, $data);
 
 	}
 }

@@ -25,11 +25,12 @@ class CallbacksListStructure extends BaseStructure {
 	 * @param array        $data
 	 */
 	public function __construct(ManiaControl $maniaControl, $data) {
-		parent::setManiaControl($maniaControl);
-		parent::setJson($data);
+		parent::__construct($maniaControl, $data);
 
 		$this->responseId = $this->getJson()->responseid;
 		$this->callbacks  = $this->getJson()->callbacks;
+
+		$this->dump();
 	}
 
 	/**
