@@ -16,13 +16,9 @@ abstract class BaseStructure {
 	protected $maniaControl;
 	private   $plainJson;
 
-	/**
-	 * Sets ManiaControl
-	 *
-	 * @param \ManiaControl\ManiaControl $maniaControl
-	 */
-	protected function setManiaControl(ManiaControl $maniaControl) {
+	protected function __construct(ManiaControl $maniaControl, $data) {
 		$this->maniaControl = $maniaControl;
+		$this->setJson($data);
 	}
 
 	/**
@@ -45,7 +41,7 @@ abstract class BaseStructure {
 	 * Var_Dump the Structure
 	 */
 	public function dump() {
-		var_dump("Class Name including Namespace: " . get_class($this));
 		var_dump(json_decode(json_encode($this)));
+		var_dump("Class Name including Namespace: " . get_class($this));
 	}
 }
