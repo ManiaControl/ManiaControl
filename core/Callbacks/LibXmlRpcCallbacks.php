@@ -4,7 +4,7 @@ namespace ManiaControl\Callbacks;
 
 use ManiaControl\Callbacks\Structures\ArmorEmptyStructure;
 use ManiaControl\Callbacks\Structures\CaptureStructure;
-use ManiaControl\Callbacks\Structures\ManiaPlanet\CallbacksListStructure;
+use ManiaControl\Callbacks\Structures\XmlRpc\CallbacksListStructure;
 use ManiaControl\Callbacks\Structures\NearMissStructure;
 use ManiaControl\Callbacks\Structures\PlayerHitStructure;
 use ManiaControl\ManiaControl;
