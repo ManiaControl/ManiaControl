@@ -1,6 +1,6 @@
 <?php
 
-namespace ManiaControl\Callbacks\Structures\ManiaPlanet;
+namespace ManiaControl\Callbacks\Structures\XmlRpc;
 
 use ManiaControl\Callbacks\Structures\BaseStructure;
 use ManiaControl\ManiaControl;
