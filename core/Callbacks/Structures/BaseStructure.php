@@ -14,27 +14,18 @@ use ManiaControl\ManiaControl;
 abstract class BaseStructure {
 	/** @var ManiaControl $maniaControl */
 	protected $maniaControl;
-	private   $plainJson;
+	private   $plainJsonObject;
 
 	protected function __construct(ManiaControl $maniaControl, $data) {
-		$this->maniaControl = $maniaControl;
-		$this->setJson($data);
+		$this->maniaControl    = $maniaControl;
+		$this->plainJsonObject = json_decode($data[0]);
 	}
-
-	/**
-	 * Decodes the Data and Sets the Json
-	 *
-	 * @param array $data
-	 */
-	protected function setJson($data) {
-		$this->plainJson = json_decode($data[0]);
-	}
-
+	
 	/**
 	 * Gets the Plain Json
 	 */
-	public function getJson() {
-		return $this->plainJson;
+	public function getPlainJsonObject() {
+		return $this->plainJsonObject;
 	}
 
 	/**
