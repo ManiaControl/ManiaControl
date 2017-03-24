@@ -35,15 +35,15 @@ interface Callbacks {
 	const MP_STARTSERVEREND     = 'Callbacks.ManiaPlanetStartServerEnd';
 	const MP_STARTMATCHSTART    = 'Callbacks.ManiaPlanetStartMatchStart';
 	const MP_STARTMATCHEND      = 'Callbacks.ManiaPlanetStartMatchEnd';
-	const MP_STARTMAPSTART      = 'Callbacks.ManiaPlanetStartMapStart';
-	const MP_STARTMAPEND        = 'Callbacks.ManiaPlanetStartMapEnd';
+	//const MP_STARTMAPSTART      = 'Callbacks.ManiaPlanetStartMapStart';
+	//const MP_STARTMAPEND        = 'Callbacks.ManiaPlanetStartMapEnd';
 	const MP_STARTROUNDSTART    = 'Callbacks.ManiaPlanetStartRoundStart';
 	const MP_STARTROUNDEND      = 'Callbacks.ManiaPlanetStartRoundEnd';
 	const MP_STARTTURNSTART     = 'Callbacks.ManiaPlanetStartTurnStart';
 	const MP_STARTTURNEND       = 'Callbacks.ManiaPlanetStartTurnEnd';
 	const MP_STARTPLAYLOOPSTART = 'Callbacks.ManiaPlanetStartPlayLoopStart';
 	const MP_STARTPLAYLOOPEND   = 'Callbacks.ManiaPlanetStartPlayLoopEnd';
-	const MP_ENDTTURNSTART      = 'Callbacks.ManiaPlanetEndTurnStart';
+	const MP_ENDTURNSTART      = 'Callbacks.ManiaPlanetEndTurnStart';
 	const MP_ENDTURNEND         = 'Callbacks.ManiaPlanetEndTurnEnd';
 	const MP_ENDROUNDSTART      = 'Callbacks.ManiaPlanetEndRoundStart';
 	const MP_ENDROUNDEND        = 'Callbacks.ManiaPlanetEndRoundEnd';
@@ -60,13 +60,16 @@ interface Callbacks {
 	const MP_PODIUMSTART        = 'Callbacks.ManiaPlanetPodiumStart';
 	const MP_PODIUMEND          = 'Callbacks.ManiaPlanetPodiumEnd';
 
+	//ManiaControl Callbacks
+	/** BeginMap Callback: Map */
+	const BEGINMAP = 'Callbacks.BeginMap';
+
 	//OLD Callbacks
 	/** BeginMatch Callback: MatchNumber */
 	const BEGINMATCH = 'Callbacks.BeginMatch';
 	/** LoadingMap Callback: MapNumber */
 	const LOADINGMAP = 'Callbacks.LoadingMap';
-	/** BeginMap Callback: Map */
-	const BEGINMAP = 'Callbacks.BeginMap';
+
 	/** BeginSubMatch Callback: SubmatchNumber */
 	const BEGINSUBMATCH = 'Callbacks.BeginSubmatch';
 	/** BeginRound Callback: RoundNumber */

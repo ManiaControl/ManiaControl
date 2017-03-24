@@ -26,7 +26,7 @@ use ManiaControl\Maps\MapManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\PluginManager;
-use ManiaControl\Server\ModeScriptEventManager;
+use ManiaControl\Script\ModeScriptEventManager;
 use ManiaControl\Server\Server;
 use ManiaControl\Settings\SettingManager;
 use ManiaControl\Statistics\StatisticManager;

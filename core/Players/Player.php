@@ -2,6 +2,8 @@
 
 namespace ManiaControl\Players;
 
+use ManiaControl\General\Dumpable;
+use ManiaControl\General\DumpTrait;
 use ManiaControl\ManiaControl;
 use ManiaControl\Utils\ClassUtil;
 use ManiaControl\Utils\Formatter;
@@ -14,7 +16,9 @@ use Maniaplanet\DedicatedServer\Structures\LadderStats;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class Player {
+class Player implements Dumpable {
+	use DumpTrait;
+
 	/*
 	 * Public Properties
 	 */
@@ -345,14 +349,7 @@ class Player {
 		}
 		return false;
 	}
-
-	/**
-	 * Var_Dump the Player
-	 */
-	public function dump() {
-		var_dump(json_decode(json_encode($this)));
-	}
-
+	
 	/**
 	 * Var_Dump the Players Cache
 	 */

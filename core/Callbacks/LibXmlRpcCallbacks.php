@@ -60,6 +60,88 @@ class LibXmlRpcCallbacks implements CallbackListener {
 			case 'ManiaPlanet.StartMatch_Start':
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::MP_STARTMATCHSTART, new StartEndStructure($this->maniaControl, $data));
 				break;
+			case 'ManiaPlanet.StartMatch_End':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::MP_STARTMATCHEND, new StartEndStructure($this->maniaControl, $data));
+				break;
+			case 'Maniaplanet.StartMap_Start': //Use the MapManager Callback
+				//No use for this Implementation right now (as the MapManager Callback should be used
+				break;
+			case 'Maniaplanet.StartMap_End': //Use the MapManager Callback
+				$jsonData = json_decode($data[0]);
+				$this->maniaControl->getMapManager()->handleScriptBeginMap($jsonData->map->uid, 'False');
+				//TODO Test if json is correctly parsed
+				break;
+			case 'ManiaPlanet.StartRound_Start':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::MP_STARTROUNDSTART, new StartEndStructure($this->maniaControl, $data));
+				break;
+			case 'ManiaPlanet.StartRound_End':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::MP_STARTROUNDEND, new StartEndStructure($this->maniaControl, $data));
+				break;
+			case 'ManiaPlanet.StartTurn_Start':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::MP_STARTTURNSTART, new StartEndStructure($this->maniaControl, $data));
+				break;
+			case 'ManiaPlanet.StartTurn_End':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::MP_STARTTURNEND, new StartEndStructure($this->maniaControl, $data));
+				break;
+			case 'ManiaPlanet.StartPlayLoop_Start':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::MP_STARTPLAYLOOPSTART, new StartEndStructure($this->maniaControl, $data));
+				break;
+			case 'ManiaPlanet.StartPlayLoop_End':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::MP_STARTPLAYLOOPEND, new StartEndStructure($this->maniaControl, $data));
+				break;
+			case 'ManiaPlanet.EndTurn_Start':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::MP_ENDTURNSTART, new StartEndStructure($this->maniaControl, $data));
+				break;
+			case 'ManiaPlanet.EndTurn_End':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::MP_ENDTURNEND, new StartEndStructure($this->maniaControl, $data));
+				break;
+			case 'ManiaPlanet.EndRound_Start':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::MP_ENDROUNDSTART, new StartEndStructure($this->maniaControl, $data));
+				break;
+			case 'ManiaPlanet.EndRound_End':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::MP_ENDROUNDEND, new StartEndStructure($this->maniaControl, $data));
+				break;
+			case 'Maniaplanet.EndMap_Start':
+				//no need for this implementation, callback handled by Map Manager
+				break;
+			case 'Maniaplanet.EndMap_End': //Use the MapManager Callback
+				$this->maniaControl->getMapManager()->handleScriptEndMap(); //Verify if better here or at EndMap_End
+				break;
+			case 'ManiaPlanet.EndMatch_Start':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::MP_ENDMATCHSTART, new StartEndStructure($this->maniaControl, $data));
+				break;
+			case 'ManiaPlanet.EndMatch_End':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::MP_ENDMATCHEND, new StartEndStructure($this->maniaControl, $data));
+				break;
+			case 'Maniaplanet.EndServer_Start':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::MP_ENDSERVERSTART, new StartServerStructure($this->maniaControl, $data));
+				break;
+			case 'Maniaplanet.EndServer_End':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::MP_ENDSERVEREND, new StartServerStructure($this->maniaControl, $data));
+				break;
+			case 'Maniaplanet.LoadingMap_Start':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::MP_LOADINGMAPSTART);
+				break;
+			case 'Maniaplanet.LoadingMap_End':
+				$jsonData = json_decode($data[0]);
+				$map      = $this->maniaControl->getMapManager()->getMapByUid($jsonData->map->uid); //Verify Json
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::MP_LOADINGMAPEND, $map);
+				break;
+			case 'Maniaplanet.UnloadingMap_Start':
+				$jsonData = json_decode($data[0]);
+				$map      = $this->maniaControl->getMapManager()->getMapByUid($jsonData->map->uid); //Verify Json
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::MP_LOADINGMAPSTART, $map);
+				break;
+			case 'Maniaplanet.UnloadingMap_End':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::MP_LOADINGMAPEND);
+				break;
+			case 'Maniaplanet.Podium_Start':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::MP_PODIUMSTART);
+				break;
+			case 'Maniaplanet.Podium_End':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::MP_PODIUMEND);
+				break;
+
 			//OLD Callbacks
 			case 'LibXmlRpc_BeginMatch':
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::BEGINMATCH, $data[0]);
