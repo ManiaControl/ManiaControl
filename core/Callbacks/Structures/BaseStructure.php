@@ -1,16 +1,17 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Lukas
- * Date: 22. Mär. 2017
- * Time: 18:26
- */
 
 namespace ManiaControl\Callbacks\Structures;
 
 
 use ManiaControl\ManiaControl;
 
+/**
+ * Base Structure of all Callback Structures
+ *
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014-2017 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ */
 abstract class BaseStructure {
 	/** @var ManiaControl $maniaControl */
 	protected $maniaControl;

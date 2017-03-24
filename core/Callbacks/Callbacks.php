@@ -31,7 +31,8 @@ interface Callbacks {
 	//NEW Callbacks
 
 	const XMLRPC_CALLBACKSLIST = 'Callbacks.XmlRpcCallbacksList';
-
+	const MP_STARTSERVERSTART  = 'Callbacks.ManiaPlanetStartServerStart';
+	const MP_STARTSERVEREND    = 'Callbacks.ManiaPlanetStartServerStart';
 
 	//OLD Callbacks
 	/** BeginMatch Callback: MatchNumber */
