@@ -14,8 +14,27 @@ use ManiaControl\ManiaControl;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class DefaultEventStructure extends BaseStructure {
+	public $time;
+	public $type;
+
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
 
+		$this->time = $this->getPlainJsonObject()->time;
+		$this->type = $this->getPlainJsonObject()->type;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getTime() {
+		return $this->time;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getType() {
+		return $this->type;
 	}
 }

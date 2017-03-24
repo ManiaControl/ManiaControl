@@ -19,7 +19,7 @@ class CallbacksListStructure extends BaseStructure {
 	public $callbacks;
 
 	/**
-	 * Construct a new Armor Empty Structure
+	 * Construct a new Callbacks List Structure
 	 *
 	 * @param ManiaControl $maniaControl
 	 * @param array        $data

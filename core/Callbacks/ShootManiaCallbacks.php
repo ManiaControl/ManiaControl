@@ -4,6 +4,9 @@ namespace ManiaControl\Callbacks;
 
 use ManiaControl\Callbacks\Models\RecordCallback;
 use ManiaControl\Callbacks\Structures\EliteBeginTurnStructure;
+use ManiaControl\Callbacks\Structures\ShootMania\DefaultEventStructure;
+use ManiaControl\Callbacks\Structures\ShootMania\OnHitStructure;
+use ManiaControl\Callbacks\Structures\ShootMania\OnShootStructure;
 use ManiaControl\ManiaControl;
 
 /**
@@ -49,6 +52,18 @@ class ShootManiaCallbacks implements CallbackListener {
 	 */
 	public function handleScriptCallbacks($name, $data) {
 		switch ($name) {
+			//MP4 New Callbacks
+			case Callbacks::SM_EVENTDEFAULT:
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_EVENTDEFAULT, new DefaultEventStructure($this->maniaControl, $data));
+				break;
+			case Callbacks::SM_ONSHOOT:
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONSHOOT, new OnShootStructure($this->maniaControl, $data));
+				break;
+			case Callbacks::SM_ONHIT:
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONHIT, new OnHitStructure($this->maniaControl, $data));
+				break;
+
+			//Old Callbacks
 			case 'LibXmlRpc_Rankings':
 				$this->maniaControl->getServer()->getRankingManager()->updateRankings($data[0]);
 				break;
