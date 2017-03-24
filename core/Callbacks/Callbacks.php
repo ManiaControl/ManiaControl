@@ -30,11 +30,11 @@ interface Callbacks {
 	 */
 	//NEW Callbacks
 
-	const XMLRPC_CALLBACKSLIST  = 'Callbacks.XmlRpcCallbacksList';
-	const MP_STARTSERVERSTART   = 'Callbacks.ManiaPlanetStartServerStart';
-	const MP_STARTSERVEREND     = 'Callbacks.ManiaPlanetStartServerEnd';
-	const MP_STARTMATCHSTART    = 'Callbacks.ManiaPlanetStartMatchStart';
-	const MP_STARTMATCHEND      = 'Callbacks.ManiaPlanetStartMatchEnd';
+	const XMLRPC_CALLBACKSLIST = 'Callbacks.XmlRpcCallbacksList';
+	const MP_STARTSERVERSTART  = 'Callbacks.ManiaPlanetStartServerStart';
+	const MP_STARTSERVEREND    = 'Callbacks.ManiaPlanetStartServerEnd';
+	const MP_STARTMATCHSTART   = 'Callbacks.ManiaPlanetStartMatchStart';
+	const MP_STARTMATCHEND     = 'Callbacks.ManiaPlanetStartMatchEnd';
 	//const MP_STARTMAPSTART      = 'Callbacks.ManiaPlanetStartMapStart';
 	//const MP_STARTMAPEND        = 'Callbacks.ManiaPlanetStartMapEnd';
 	const MP_STARTROUNDSTART    = 'Callbacks.ManiaPlanetStartRoundStart';
@@ -43,22 +43,40 @@ interface Callbacks {
 	const MP_STARTTURNEND       = 'Callbacks.ManiaPlanetStartTurnEnd';
 	const MP_STARTPLAYLOOPSTART = 'Callbacks.ManiaPlanetStartPlayLoopStart';
 	const MP_STARTPLAYLOOPEND   = 'Callbacks.ManiaPlanetStartPlayLoopEnd';
-	const MP_ENDTURNSTART      = 'Callbacks.ManiaPlanetEndTurnStart';
+	const MP_ENDTURNSTART       = 'Callbacks.ManiaPlanetEndTurnStart';
 	const MP_ENDTURNEND         = 'Callbacks.ManiaPlanetEndTurnEnd';
 	const MP_ENDROUNDSTART      = 'Callbacks.ManiaPlanetEndRoundStart';
 	const MP_ENDROUNDEND        = 'Callbacks.ManiaPlanetEndRoundEnd';
-	const MP_ENDMAPSTART        = 'Callbacks.ManiaPlanetEndMapStart';
-	const MP_ENDMAPEND          = 'Callbacks.ManiaPlanetEndMapEnd';
-	const MP_ENDMATCHSTART      = 'Callbacks.ManiaPlanetEndMatchStart';
-	const MP_ENDMATCHEND        = 'Callbacks.ManiaPlanetEndMatchEnd';
-	const MP_ENDSERVERSTART     = 'Callbacks.ManiaPlanetEndServerStart';
-	const MP_ENDSERVEREND       = 'Callbacks.ManiaPlanetEndServerEnd';
-	const MP_LOADINGMAPSTART    = 'Callbacks.ManiaPlanetLoadingMapStart';
-	const MP_LOADINGMAPEND      = 'Callbacks.ManiaPlanetLoadingMapEnd';
-	const MP_UNLOADINGMAPSTART  = 'Callbacks.ManiaPlanetUnLoadingMapStart';
-	const MP_UNLOADINGMAPEND    = 'Callbacks.ManiaPlanetUnLoadingMapEnd';
-	const MP_PODIUMSTART        = 'Callbacks.ManiaPlanetPodiumStart';
-	const MP_PODIUMEND          = 'Callbacks.ManiaPlanetPodiumEnd';
+	//const MP_ENDMAPSTART        = 'Callbacks.ManiaPlanetEndMapStart';
+	//const MP_ENDMAPEND          = 'Callbacks.ManiaPlanetEndMapEnd';
+	const MP_ENDMATCHSTART     = 'Callbacks.ManiaPlanetEndMatchStart';
+	const MP_ENDMATCHEND       = 'Callbacks.ManiaPlanetEndMatchEnd';
+	const MP_ENDSERVERSTART    = 'Callbacks.ManiaPlanetEndServerStart';
+	const MP_ENDSERVEREND      = 'Callbacks.ManiaPlanetEndServerEnd';
+	const MP_LOADINGMAPSTART   = 'Callbacks.ManiaPlanetLoadingMapStart';
+	const MP_LOADINGMAPEND     = 'Callbacks.ManiaPlanetLoadingMapEnd';
+	const MP_UNLOADINGMAPSTART = 'Callbacks.ManiaPlanetUnLoadingMapStart';
+	const MP_UNLOADINGMAPEND   = 'Callbacks.ManiaPlanetUnLoadingMapEnd';
+	const MP_PODIUMSTART       = 'Callbacks.ManiaPlanetPodiumStart';
+	const MP_PODIUMEND         = 'Callbacks.ManiaPlanetPodiumEnd';
+
+	const SM_EVENTDEFAULT = "Shootmania.Event.Default";
+	const SM_ONSHOOT      = "Shootmania.Event.OnShoot";
+	const SM_ONHIT        = "Shootmania.Event.OnHit";
+	const SM_ONNEARMISS   = "Shootmania.Event.OnNearMiss";
+	const SM_ONARMOREMPTY = "Shootmania.Event.OnArmorEmpty";
+	const SM_ONCAPTURE    = "Shootmania.Event.OnCapture";
+	const SM_ONSHOTDENY   = "Shootmania.Event.OnShotDeny";
+	const SM_ONFALLDAMAGE = "Shootmania.Event.OnFallDamage";
+	const SM_ONCOMMAND    = "Shootmania.Event.OnCommand";
+	//Shootmania.Event.OnPlayerRemoved Shootmania.Event.OnPlayerAdded not needed yet
+	const SM_ONPLAYERREQUESTRESAWPN      = "Shootmania.Event.OnPlayerRequestRespawn";
+	const SM_ONACTIONCUSTOMEVENT         = "Shootmania.Event.OnActionCustomEvent";
+	const SM_ONACTIONEVENT               = "Shootmania.Event.OnActionEvent";
+	const SM_ONPLAYERTOUCHESOBJECT       = "Shootmania.Event.OnPlayerTouchesObject";
+	const SM_ONPLAYERTRIGGERSSECTOR      = "Shootmania.Event.OnPlayerTriggersSector";
+	const SM_ONPLAYERTHROWSOBJECT        = "Shootmania.Event.OnPlayerThrowsObject";
+	const SM_ONPLAYERREQUESTACTIONCHANGE = "Shootmania.Event.OnPlayerRequestActionChange";
 
 	//ManiaControl Callbacks
 	/** BeginMap Callback: Map */

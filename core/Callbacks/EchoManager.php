@@ -69,8 +69,8 @@ class EchoManager implements CallbackListener, EchoListener {
 			$this->echoListenings[$echoName] = array();
 		}
 
-		$listening = new Listening($listener, $method);
-		array_push($this->echoListenings[$echoName], $listening);
+		$listening                       = new Listening($listener, $method);
+		$this->echoListenings[$echoName] = $listening;
 		return true;
 	}
 
