@@ -3,6 +3,7 @@
 namespace ManiaControl\Callbacks\Structures;
 
 
+use ManiaControl\General\Dumpable;
 use ManiaControl\ManiaControl;
 
 /**
@@ -12,7 +13,7 @@ use ManiaControl\ManiaControl;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-abstract class BaseStructure {
+abstract class BaseStructure implements Dumpable {
 	/** @var ManiaControl $maniaControl */
 	protected $maniaControl;
 	private   $plainJsonObject;

@@ -6,9 +6,7 @@
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-namespace ManiaControl\Server;
-
-//TODO maybe own folder
+namespace ManiaControl\Script;
 
 use ManiaControl\ManiaControl;
 
