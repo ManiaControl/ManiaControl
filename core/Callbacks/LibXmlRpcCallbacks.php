@@ -4,9 +4,10 @@ namespace ManiaControl\Callbacks;
 
 use ManiaControl\Callbacks\Structures\ArmorEmptyStructure;
 use ManiaControl\Callbacks\Structures\CaptureStructure;
-use ManiaControl\Callbacks\Structures\XmlRpc\CallbacksListStructure;
+use ManiaControl\Callbacks\Structures\ManiaPlanet\StartServerStructure;
 use ManiaControl\Callbacks\Structures\NearMissStructure;
 use ManiaControl\Callbacks\Structures\PlayerHitStructure;
+use ManiaControl\Callbacks\Structures\XmlRpc\CallbacksListStructure;
 use ManiaControl\ManiaControl;
 
 /**
@@ -48,6 +49,12 @@ class LibXmlRpcCallbacks implements CallbackListener {
 			//New callbacks
 			case 'XmlRpc.CallbacksList':
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::XMLRPC_CALLBACKSLIST, new CallbacksListStructure($this->maniaControl, $data));
+				break;
+			case 'Maniaplanet.StartServer_Start':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::MP_STARTSERVERSTART, new StartServerStructure($this->maniaControl, $data));
+				break;
+			case 'Maniaplanet.StartServer_End':
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::MP_STARTSERVEREND, new StartServerStructure($this->maniaControl, $data));
 				break;
 			//OLD Callbacks
 			case 'LibXmlRpc_BeginMatch':
