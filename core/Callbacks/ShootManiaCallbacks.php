@@ -75,7 +75,6 @@ class ShootManiaCallbacks implements CallbackListener {
 			case Callbacks::SM_ONCAPTURE:
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONCAPTURE, new OnCaptureStructure($this->maniaControl, $data));
 				break;
-				break;
 			//Old Callbacks
 			case 'LibXmlRpc_Rankings':
 				$this->maniaControl->getServer()->getRankingManager()->updateRankings($data[0]);
