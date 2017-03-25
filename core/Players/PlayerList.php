@@ -413,7 +413,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$listShownValue = $this->playersListShown[$player->login];
 		if ($listShownValue && $listShownValue !== self::SHOWN_MAIN_WINDOW) {
 			$frame = $this->showAdvancedPlayerWidget($player, $listShownValue);
-			$manialink->addChild($frame);
+			$maniaLink->addChild($frame);
 		}
 
 		// Render and display xml
