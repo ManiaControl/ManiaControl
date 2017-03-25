@@ -46,7 +46,7 @@ class CallbackManager {
 	/*
 	 * Public properties
 	 */
-	public $libXmlRpcCallbacks = null;
+	public $libXmlRpcCallbacks  = null;
 	public $shootManiaCallbacks = null;
 	public $trackManiaCallbacks = null;
 
@@ -98,7 +98,7 @@ class CallbackManager {
 			return false;
 		}
 
-		if (!array_key_exists($callbackName, $this->callbackListenings)) {
+		if (!$this->callbackListeningExists($callbackName)) {
 			$this->callbackListenings[$callbackName] = array();
 		}
 
@@ -106,6 +106,16 @@ class CallbackManager {
 		array_push($this->callbackListenings[$callbackName], $listening);
 
 		return true;
+	}
+
+	/**
+	 * Checks if a Callback Listening exists
+	 *
+	 * @param $callbackName
+	 * @return bool
+	 */
+	public function callbackListeningExists($callbackName) {
+		return array_key_exists($callbackName, $this->callbackListenings);
 	}
 
 	/**
@@ -272,7 +282,7 @@ class CallbackManager {
 		} else {
 			$callbackName = $callback;
 		}
-		if (!array_key_exists($callbackName, $this->callbackListenings)) {
+		if (!$this->callbackListeningExists($callbackName)) {
 			return;
 		}
 

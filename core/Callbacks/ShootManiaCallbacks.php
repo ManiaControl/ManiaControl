@@ -52,6 +52,9 @@ class ShootManiaCallbacks implements CallbackListener {
 	 * @param mixed  $data
 	 */
 	public function handleScriptCallbacks($name, $data) {
+		if (!$this->maniaControl->getCallbackManager()->callbackListeningExists($name)) {
+			return;
+		}
 		switch ($name) {
 			//MP4 New Callbacks
 			case Callbacks::SM_EVENTDEFAULT:
