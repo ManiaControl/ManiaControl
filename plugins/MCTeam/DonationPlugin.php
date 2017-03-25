@@ -170,50 +170,50 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 
 		// Donate Menu Icon Frame
 		$frame = new Frame();
-		$maniaLink->add($frame);
+		$maniaLink->addChild($frame);
 		$frame->setPosition($posX, $posY);
 
 		$backgroundQuad = new Quad();
-		$frame->add($backgroundQuad);
+		$frame->addChild($backgroundQuad);
 		$backgroundQuad->setSize($width * $itemMarginFactorX, $height * $itemMarginFactorY);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 
 		$iconFrame = new Frame();
-		$frame->add($iconFrame);
+		$frame->addChild($iconFrame);
 
 		$iconFrame->setSize($itemSize, $itemSize);
 		$itemQuad = new Quad_BgRaceScore2();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Points);
 		$itemQuad->setSize($itemSize, $itemSize);
-		$iconFrame->add($itemQuad);
+		$iconFrame->addChild($itemQuad);
 
 		$valueArray = explode(',', $values);
 
 		// Values Menu
 		$popoutFrame = new Frame();
-		$maniaLink->add($popoutFrame);
+		$manialink->addChild($popoutFrame);
 		$popoutFrame->setPosition($posX - $itemSize * 0.5, $posY);
-		$popoutFrame->setHAlign($popoutFrame::RIGHT);
+		$popoutFrame->setHorizontalAlign($popoutFrame::RIGHT);
 		$popoutFrame->setSize(4 * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
 		$popoutFrame->setVisible(false);
 
 		$quad = new Quad();
-		$popoutFrame->add($quad);
-		$quad->setHAlign($quad::RIGHT);
+		$popoutFrame->addChild($quad);
+		$quad->setHorizontalAlign($quad::RIGHT);
 		$quad->setStyles($quadStyle, $quadSubstyle);
 		$quad->setSize(strlen($values) * 2 + count($valueArray) * 1, $itemSize * $itemMarginFactorY);
 
-		$popoutFrame->add($quad);
+		$popoutFrame->addChild($quad);
 		$itemQuad->addToggleFeature($popoutFrame);
 
 		// Description Label
 		$descriptionFrame = new Frame();
-		$maniaLink->add($descriptionFrame);
+		$manialink->addChild($descriptionFrame);
 		$descriptionFrame->setPosition($posX - 50, $posY - 5);
-		$descriptionFrame->setHAlign($descriptionFrame::RIGHT);
+		$descriptionFrame->setHorizontalAlign($descriptionFrame::RIGHT);
 
 		$descriptionLabel = new Label();
-		$descriptionFrame->add($descriptionLabel);
+		$descriptionFrame->addChild($descriptionLabel);
 		$descriptionLabel->setAlign($descriptionLabel::LEFT, $descriptionLabel::TOP);
 		$descriptionLabel->setSize(40, 4);
 		$descriptionLabel->setTextSize(2);
@@ -224,9 +224,9 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$posX = -2;
 		foreach (array_reverse($valueArray) as $value) {
 			$label = new Label_Text();
-			$popoutFrame->add($label);
+			$popoutFrame->addChild($label);
 			$label->setX($posX);
-			$label->setHAlign($label::RIGHT);
+			$label->setHorizontalAlign($label::RIGHT);
 			$label->setText('$s$FFF' . $value . '$09FP');
 			$label->setTextSize(1.2);
 			$label->setAction(self::ACTION_DONATE_VALUE . "." . $value);
@@ -478,7 +478,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 
 		// Main frame
 		$frame = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultListFrame($script, $paging);
-		$maniaLink->add($frame);
+		$maniaLink->addChild($frame);
 
 		// Start offsets
 		$posX = -$width / 2;
@@ -486,11 +486,11 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 
 		//Predefine description Label
 		$descriptionLabel = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultDescriptionLabel();
-		$frame->add($descriptionLabel);
+		$frame->addChild($descriptionLabel);
 
 		// Headline
 		$headFrame = new Frame();
-		$frame->add($headFrame);
+		$frame->addChild($headFrame);
 		$headFrame->setY($posY - 5);
 		$array = array('$oId' => $posX + 5, '$oNickname' => $posX + 18, '$oLogin' => $posX + 70, '$oDonated planets' => $posX + 110);
 		$this->maniaControl->getManialinkManager()->labelLine($headFrame, $array);
@@ -502,18 +502,18 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		foreach ($stats as $playerIndex => $donations) {
 			if ($index % 15 === 1) {
 				$pageFrame = new Frame();
-				$frame->add($pageFrame);
+				$frame->addChild($pageFrame);
 				$posY = $height / 2 - 10;
 				$paging->addPage($pageFrame);
 			}
 
 			$playerFrame = new Frame();
-			$pageFrame->add($playerFrame);
+			$pageFrame->addChild($playerFrame);
 			$playerFrame->setY($posY);
 
 			if ($index % 2 !== 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
-				$playerFrame->add($lineQuad);
+				$playerFrame->addChild($lineQuad);
 				$lineQuad->setSize($width, 4);
 				$lineQuad->setSubStyle($lineQuad::SUBSTYLE_BgPlayerCardBig);
 				$lineQuad->setZ(0.001);

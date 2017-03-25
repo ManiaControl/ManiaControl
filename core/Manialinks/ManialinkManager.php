@@ -237,8 +237,6 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	public function sendManialink($manialinkText, $logins = null, $timeout = 0, $hideOnClick = false) {
 		$manialinkText = (string) $manialinkText;
 
-		var_dump($manialinkText);
-
 		if (!$manialinkText) {
 			return true;
 		}
@@ -389,8 +387,8 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 
 			foreach ($positions as $key => $x) {
 				$label = new Label_Text();
-				$frame->add($label);
-				$label->setHAlign($hAlign);
+				$frame->addChild($label);
+				$label->setHorizontalAlign($hAlign);
 				$label->setX($x);
 				$label->setStyle($style);
 				$label->setTextSize($textSize);
@@ -406,8 +404,8 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 		} else {
 			foreach ($labelStrings as $text => $x) {
 				$label = new Label_Text();
-				$frame->add($label);
-				$label->setHAlign($hAlign);
+				$frame->addChild($label);
+				$label->setHorizontalAlign($hAlign);
 				$label->setX($x);
 				$label->setStyle($style);
 				$label->setTextSize($textSize);

@@ -169,17 +169,14 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	 */
 	private function displayWidgets() {
 		// Display Map Widget
-		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MAP_WIDGET_ACTIVATED)
-		) {
+		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MAP_WIDGET_ACTIVATED)) {
 			$this->maniaControl->getClient()->triggerModeScriptEvent("Siege_SetProgressionLayerPosition", array("160.", "-67.", "0."));
 			$this->displayMapWidget();
 		}
-		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_CLOCK_WIDGET_ACTIVATED)
-		) {
+		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_CLOCK_WIDGET_ACTIVATED)) {
 			$this->displayClockWidget();
 		}
-		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SERVERINFO_WIDGET_ACTIVATED)
-		) {
+		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SERVERINFO_WIDGET_ACTIVATED)) {
 			$this->displayServerInfoWidget();
 		}
 	}
@@ -203,13 +200,13 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 
 		// mainframe
 		$frame = new Frame();
-		$maniaLink->add($frame);
+		$maniaLink->addChild($frame);
 		$frame->setSize($width, $height);
 		$frame->setPosition($posX, $posY);
 
 		// Background Quad
 		$backgroundQuad = new Quad();
-		$frame->add($backgroundQuad);
+		$frame->addChild($backgroundQuad);
 		$backgroundQuad->setSize($width, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 		//$backgroundQuad->addMapInfoFeature();
@@ -217,7 +214,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$map = $this->maniaControl->getMapManager()->getCurrentMap();
 
 		$label = new Label_Text();
-		$frame->add($label);
+		$frame->addChild($label);
 		$label->setPosition(0, 1.5, 0.2);
 		$label->setTextSize(1.3);
 		$label->setText(Formatter::stripDirtyCodes($map->name));
@@ -225,7 +222,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$label->setSize($width - 5, $height);
 
 		$label = new Label_Text();
-		$frame->add($label);
+		$frame->addChild($label);
 		$label->setPosition(0, -1.4, 0.2);
 		$label->setTextSize(1);
 		$label->setScale(0.8);
@@ -235,9 +232,9 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 
 		if (isset($map->mx->pageurl)) {
 			$quad = new Quad();
-			$frame->add($quad);
-			$quad->setImageFocus($this->maniaControl->getManialinkManager()->getIconManager()->getIcon(IconManager::MX_ICON_MOVER));
-			$quad->setImage($this->maniaControl->getManialinkManager()->getIconManager()->getIcon(IconManager::MX_ICON));
+			$frame->addChild($quad);
+			$quad->setImageFocusUrl($this->maniaControl->getManialinkManager()->getIconManager()->getIcon(IconManager::MX_ICON_MOVER));
+			$quad->setImageUrl($this->maniaControl->getManialinkManager()->getIconManager()->getIcon(IconManager::MX_ICON));
 			$quad->setPosition(-$width / 2 + 4, -1.5, -0.5);
 			$quad->setSize(4, 4);
 			$quad->setUrl($map->mx->pageurl);
@@ -264,20 +261,20 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 
 		// mainframe
 		$frame = new Frame();
-		$maniaLink->add($frame);
+		$maniaLink->addChild($frame);
 		$frame->setSize($width, $height);
 		$frame->setPosition($posX, $posY);
 
 		// Background Quad
 		$backgroundQuad = new Quad();
-		$frame->add($backgroundQuad);
+		$frame->addChild($backgroundQuad);
 		$backgroundQuad->setSize($width, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 
 		$label = new Label_Text();
-		$frame->add($label);
+		$frame->addChild($label);
 		$label->setPosition(0, 1.5, 0.2);
-		$label->setVAlign($label::TOP);
+		$label->setVerticalAlign($label::TOP);
 		$label->setTextSize(1);
 		$label->setTextColor('fff');
 		$label->addClockFeature(false);
@@ -303,13 +300,13 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 
 		// mainframe
 		$frame = new Frame();
-		$maniaLink->add($frame);
+		$maniaLink->addChild($frame);
 		$frame->setSize($width, $height);
 		$frame->setPosition($posX, $posY);
 
 		// Background Quad
 		$backgroundQuad = new Quad();
-		$frame->add($backgroundQuad);
+		$frame->addChild($backgroundQuad);
 		$backgroundQuad->setSize($width, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 
@@ -322,7 +319,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$maxSpectators  = $this->maniaControl->getClient()->getMaxSpectators();
 
 		$label = new Label_Text();
-		$frame->add($label);
+		$frame->addChild($label);
 		$label->setPosition(0, 1.5, 0.2);
 		$label->setSize($width - 5, $height);
 		$label->setTextSize(1.3);
@@ -332,39 +329,39 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 
 		// Player Quad / Label
 		$label = new Label_Text();
-		$frame->add($label);
+		$frame->addChild($label);
 		$label->setPosition(-$width / 2 + 9, -1.5, 0.2);
-		$label->setHAlign($label::LEFT);
+		$label->setHorizontalAlign($label::LEFT);
 		$label->setTextSize(1);
 		$label->setScale(0.8);
 		$label->setText($playerCount . " / " . $maxPlayers['NextValue']);
 		$label->setTextColor('fff');
 
 		$quad = new Quad_Icons128x128_1();
-		$frame->add($quad);
+		$frame->addChild($quad);
 		$quad->setSubStyle($quad::SUBSTYLE_Multiplayer);
 		$quad->setPosition(-$width / 2 + 7, -1.6, 0.2);
 		$quad->setSize(2.5, 2.5);
 
 		// Spectator Quad / Label
 		$label = new Label_Text();
-		$frame->add($label);
+		$frame->addChild($label);
 		$label->setPosition(2, -1.5, 0.2);
-		$label->setHAlign($label::LEFT);
+		$label->setHorizontalAlign($label::LEFT);
 		$label->setTextSize(1);
 		$label->setScale(0.8);
 		$label->setText($spectatorCount . " / " . $maxSpectators['NextValue']);
 		$label->setTextColor('fff');
 
 		$quad = new Quad_Icons64x64_1();
-		$frame->add($quad);
+		$frame->addChild($quad);
 		$quad->setSubStyle($quad::SUBSTYLE_Camera);
 		$quad->setPosition(0, -1.6, 0.2);
 		$quad->setSize(3.3, 2.5);
 
 		// Favorite quad
 		$quad = new Quad_Icons64x64_1();
-		$frame->add($quad);
+		$frame->addChild($quad);
 		$quad->setSubStyle($quad::SUBSTYLE_StateFavourite);
 		$quad->setPosition($width / 2 - 4, -1.5, -0.5);
 		$quad->setSize(3, 3);
@@ -400,8 +397,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	 * Handle Begin Map Callback
 	 */
 	public function handleOnBeginMap() {
-		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MAP_WIDGET_ACTIVATED)
-		) {
+		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MAP_WIDGET_ACTIVATED)) {
 			$this->displayMapWidget();
 		}
 		$this->closeWidget(self::MLID_NEXTMAP_WIDGET);
@@ -411,8 +407,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	 * Handle End Map Callback
 	 */
 	public function handleOnEndMap() {
-		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_NEXTMAP_WIDGET_ACTIVATED)
-		) {
+		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_NEXTMAP_WIDGET_ACTIVATED)) {
 			$this->displayNextMapWidget();
 		}
 	}
@@ -435,13 +430,13 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 
 		// mainframe
 		$frame = new Frame();
-		$maniaLink->add($frame);
+		$maniaLink->addChild($frame);
 		$frame->setSize($width, $height);
 		$frame->setPosition($posX, $posY);
 
 		// Background Quad
 		$backgroundQuad = new Quad();
-		$frame->add($backgroundQuad);
+		$frame->addChild($backgroundQuad);
 		$backgroundQuad->setSize($width, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 
@@ -470,7 +465,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		}
 
 		$label = new Label_Text();
-		$frame->add($label);
+		$frame->addChild($label);
 		$label->setPosition(0, $height / 2 - 2.3, 0.2);
 		$label->setTextSize(1);
 		$label->setText('Next Map');
@@ -478,7 +473,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$label->setStyle($labelStyle);
 
 		$label = new Label_Text();
-		$frame->add($label);
+		$frame->addChild($label);
 		$label->setPosition(0, $height / 2 - 5.5, 0.2);
 		$label->setTextSize(1.3);
 		$label->setText($name);
@@ -486,7 +481,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$label->setSize($width - 5, $height);
 
 		$label = new Label_Text();
-		$frame->add($label);
+		$frame->addChild($label);
 		$label->setPosition(0, -$height / 2 + 4);
 		$label->setZ(0.2);
 		$label->setTextSize(1);
@@ -496,7 +491,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 
 		if ($requester) {
 			$label = new Label_Text();
-			$frame->add($label);
+			$frame->addChild($label);
 			$label->setPosition(0, -$height / 2 + 2, 0.2);
 			$label->setTextSize(1);
 			$label->setScale(0.7);
@@ -516,16 +511,13 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	 */
 	public function handlePlayerConnect(Player $player) {
 		// Display Map Widget
-		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MAP_WIDGET_ACTIVATED)
-		) {
+		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MAP_WIDGET_ACTIVATED)) {
 			$this->displayMapWidget($player->login);
 		}
-		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_CLOCK_WIDGET_ACTIVATED)
-		) {
+		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_CLOCK_WIDGET_ACTIVATED)) {
 			$this->displayClockWidget($player->login);
 		}
-		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SERVERINFO_WIDGET_ACTIVATED)
-		) {
+		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SERVERINFO_WIDGET_ACTIVATED)) {
 			$this->displayServerInfoWidget();
 		}
 	}
@@ -545,8 +537,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	 * Update Widget on certain callbacks
 	 */
 	public function updateWidgets() {
-		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SERVERINFO_WIDGET_ACTIVATED)
-		) {
+		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SERVERINFO_WIDGET_ACTIVATED)) {
 			$this->displayServerInfoWidget();
 		}
 	}

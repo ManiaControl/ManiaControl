@@ -140,6 +140,7 @@ class LibXmlRpcCallbacks implements CallbackListener {
 			case Callbacks::MP_PODIUMSTART:
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::MP_PODIUMSTART);
 				break;
+			case Callbacks::MP_PODIUMEND:
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::MP_PODIUMEND);
 				break;
 

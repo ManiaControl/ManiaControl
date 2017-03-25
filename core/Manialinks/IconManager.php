@@ -113,14 +113,14 @@ class IconManager implements CallbackListener {
 	public function preloadIcons($player = null) {
 		$maniaLink = new ManiaLink(self::PRELOAD_MLID);
 		$frame     = new Frame();
-		$maniaLink->add($frame);
+		$maniaLink->addChild($frame);
 		$frame->setPosition(500, 500);
 
 		foreach ($this->icons as $iconUrl) {
 			$iconQuad = new Quad();
-			$iconQuad->setImage($iconUrl);
+			$iconQuad->setImageUrl($iconUrl);
 			$iconQuad->setSize(1, 1);
-			$frame->add($iconQuad);
+			$frame->addChild($iconQuad);
 		}
 
 		// Send manialink

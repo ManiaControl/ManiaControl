@@ -170,27 +170,27 @@ class StyleManager {
 
 		// Background Quad
 		$backgroundQuad = new Quad();
-		$frame->add($backgroundQuad);
+		$frame->addChild($backgroundQuad);
 		$backgroundQuad->setZ(-2)->setSize($width, $height)->setStyles($quadStyle, $quadSubstyle);
 
 		// Add Close Quad (X)
 		$closeQuad = new Quad_Icons64x64_1();
-		$frame->add($closeQuad);
+		$frame->addChild($closeQuad);
 		$closeQuad->setPosition($width * 0.483, $height * 0.467, 3)->setSize(6, 6)->setSubStyle($closeQuad::SUBSTYLE_QuitRace)->setAction(ManialinkManager::ACTION_CLOSEWIDGET);
 
 		if ($script) {
 			$pagerSize = 6.;
 			$pagerPrev = new Quad_Icons64x64_1();
-			$frame->add($pagerPrev);
+			$frame->addChild($pagerPrev);
 			$pagerPrev->setPosition($width * 0.42, $height * -0.44, 2)->setSize($pagerSize, $pagerSize)->setSubStyle($pagerPrev::SUBSTYLE_ArrowPrev);
 
 			$pagerNext = new Quad_Icons64x64_1();
-			$frame->add($pagerNext);
+			$frame->addChild($pagerNext);
 			$pagerNext->setPosition($width * 0.45, $height * -0.44, 2)->setSize($pagerSize, $pagerSize)->setSubStyle($pagerNext::SUBSTYLE_ArrowNext);
 
 			$pageCountLabel = new Label_Text();
-			$frame->add($pageCountLabel);
-			$pageCountLabel->setHAlign($pageCountLabel::RIGHT)->setPosition($width * 0.40, $height * -0.44, 1)->setStyle($pageCountLabel::STYLE_TextTitle1)->setTextSize(1.3);
+			$frame->addChild($pageCountLabel);
+			$pageCountLabel->setHorizontalAlign($pageCountLabel::RIGHT)->setPosition($width * 0.40, $height * -0.44, 1)->setStyle($pageCountLabel::STYLE_TextTitle1)->setTextSize(1.3);
 
 			if ($paging) {
 				$paging->addButtonControl($pagerNext)->addButtonControl($pagerPrev)->setLabel($pageCountLabel);

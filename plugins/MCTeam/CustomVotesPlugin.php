@@ -304,31 +304,31 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 		//Custom Vote Menu Iconsframe
 		$frame = new Frame();
-		$maniaLink->add($frame);
+		$maniaLink->addChild($frame);
 		$frame->setPosition($posX, $posY);
 
 		$backgroundQuad = new Quad();
-		$frame->add($backgroundQuad);
+		$frame->addChild($backgroundQuad);
 		$backgroundQuad->setSize($width * $itemMarginFactorX, $height * $itemMarginFactorY);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 
 		$iconFrame = new Frame();
-		$frame->add($iconFrame);
+		$frame->addChild($iconFrame);
 
 		$iconFrame->setSize($itemSize, $itemSize);
 		$itemQuad = new Quad_UIConstruction_Buttons();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Add);
 		$itemQuad->setSize($itemSize, $itemSize);
-		$iconFrame->add($itemQuad);
+		$iconFrame->addChild($itemQuad);
 
 		//Define Description Label
 		$menuEntries      = count($this->voteMenuItems);
 		$descriptionFrame = new Frame();
-		$maniaLink->add($descriptionFrame);
+		$manialink->addChild($descriptionFrame);
 		$descriptionFrame->setPosition($posX - $menuEntries * $itemSize * 1.15 - 6, $posY);
 
 		$descriptionLabel = new Label();
-		$descriptionFrame->add($descriptionLabel);
+		$descriptionFrame->addChild($descriptionLabel);
 		$descriptionLabel->setAlign($descriptionLabel::RIGHT, $descriptionLabel::TOP);
 		$descriptionLabel->setSize(40, 4);
 		$descriptionLabel->setTextSize(1.4);
@@ -336,15 +336,16 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 		//Popout Frame
 		$popoutFrame = new Frame();
-		$maniaLink->add($popoutFrame);
+		$manialink->addChild($popoutFrame);
 		$popoutFrame->setPosition($posX - $itemSize * 0.5, $posY);
-		$popoutFrame->setHAlign($popoutFrame::RIGHT);
+		$popoutFrame->setHorizontalAlign($popoutFrame::RIGHT);
 		$popoutFrame->setSize(4 * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
 		$popoutFrame->setVisible(false);
 
+
 		$backgroundQuad = new Quad();
-		$popoutFrame->add($backgroundQuad);
-		$backgroundQuad->setHAlign($backgroundQuad::RIGHT);
+		$popoutFrame->addChild($backgroundQuad);
+		$backgroundQuad->setHorizontalAlign($backgroundQuad::RIGHT);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 		$backgroundQuad->setSize($menuEntries * $itemSize * 1.15 + 2, $itemSize * $itemMarginFactorY);
 
@@ -356,14 +357,14 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 			foreach ($menuItems as $menuItem) {
 				/** @var Quad $menuQuad */
 				$menuQuad = $menuItem[0];
-				$popoutFrame->add($menuQuad);
+				$popoutFrame->addChild($menuQuad);
 				$menuQuad->setSize($itemSize, $itemSize);
 				$menuQuad->setX($posX);
-				$menuQuad->setHAlign($menuQuad::RIGHT);
+				$menuQuad->setHorizontalAlign($menuQuad::RIGHT);
 				$posX -= $itemSize * 1.05;
 
 				if ($menuItem[1]) {
-					$menuQuad->removeScriptFeatures();
+					$menuQuad->removeAllScriptFeatures();
 					$description = '$s' . $menuItem[1];
 					$menuQuad->addTooltipLabelFeature($descriptionLabel, $description);
 				}
@@ -702,19 +703,19 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 		// mainframe
 		$frame = new Frame();
-		$maniaLink->add($frame);
+		$maniaLink->addChild($frame);
 		$frame->setSize($width, $height);
 		$frame->setPosition($posX, $posY, 30);
 
 		// Background Quad
 		$backgroundQuad = new Quad();
-		$frame->add($backgroundQuad);
+		$frame->addChild($backgroundQuad);
 		$backgroundQuad->setSize($width, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 
 		//Vote for label
 		$label = new Label_Text();
-		$frame->add($label);
+		$frame->addChild($label);
 		$label->setY($height / 2 - 3);
 		$label->setSize($width - 5, $height);
 		$label->setTextSize(1.3);
@@ -722,7 +723,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 		//Started by nick
 		$label = new Label_Text();
-		$frame->add($label);
+		$frame->addChild($label);
 		$label->setY($height / 2 - 6);
 		$label->setSize($width - 5, 2);
 		$label->setTextSize(1);
@@ -731,7 +732,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 		//Time Gauge
 		$timeGauge = new Gauge();
-		$frame->add($timeGauge);
+		$frame->addChild($timeGauge);
 		$timeGauge->setY(1.5);
 		$timeGauge->setSize($width * 0.95, 6);
 		$timeGauge->setDrawBg(false);
@@ -745,7 +746,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 		//Time Left
 		$label = new Label_Text();
-		$frame->add($label);
+		$frame->addChild($label);
 		$label->setY(0);
 		$label->setSize($width - 5, $height);
 		$label->setTextSize(1.1);
@@ -754,7 +755,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 		//Vote Gauge
 		$voteGauge = new Gauge();
-		$frame->add($voteGauge);
+		$frame->addChild($voteGauge);
 		$voteGauge->setY(-4);
 		$voteGauge->setSize($width * 0.65, 12);
 		$voteGauge->setDrawBg(false);
@@ -764,7 +765,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 		$posY      = -4.4;
 		$voteLabel = new Label();
-		$frame->add($voteLabel);
+		$frame->addChild($voteLabel);
 		$voteLabel->setY($posY);
 		$voteLabel->setSize($width * 0.65, 12);
 		$voteLabel->setStyle($labelStyle);
@@ -773,13 +774,13 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 
 		$positiveQuad = new Quad_BgsPlayerCard();
-		$frame->add($positiveQuad);
+		$frame->addChild($positiveQuad);
 		$positiveQuad->setPosition(-$width / 2 + 6, $posY);
 		$positiveQuad->setSubStyle($positiveQuad::SUBSTYLE_BgPlayerCardBig);
 		$positiveQuad->setSize(5, 5);
 
 		$positiveLabel = new Label_Button();
-		$frame->add($positiveLabel);
+		$frame->addChild($positiveLabel);
 		$positiveLabel->setPosition(-$width / 2 + 6, $posY);
 		$positiveLabel->setStyle($labelStyle);
 		$positiveLabel->setTextSize(1);
@@ -788,11 +789,11 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$positiveLabel->setText('F1');
 
 		$negativeQuad = clone $positiveQuad;
-		$frame->add($negativeQuad);
+		$frame->addChild($negativeQuad);
 		$negativeQuad->setX($width / 2 - 6);
 
 		$negativeLabel = clone $positiveLabel;
-		$frame->add($negativeLabel);
+		$frame->addChild($negativeLabel);
 		$negativeLabel->setX($width / 2 - 6);
 		$negativeLabel->setTextColor('F00');
 		$negativeLabel->setText('F2');

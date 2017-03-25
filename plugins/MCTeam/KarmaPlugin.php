@@ -922,17 +922,17 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		$manialink = new ManiaLink(self::MLID_KARMA);
 
 		$frame = new Frame();
-		$manialink->add($frame);
+		$manialink->addChild($frame);
 		$frame->setPosition($posX, $posY);
 
 		$backgroundQuad = new Quad();
-		$frame->add($backgroundQuad);
+		$frame->addChild($backgroundQuad);
 		$backgroundQuad->setY($height * 0.15);
 		$backgroundQuad->setSize($width, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 
 		$titleLabel = new Label();
-		$frame->add($titleLabel);
+		$frame->addChild($titleLabel);
 		$titleLabel->setY($height * 0.36);
 		$titleLabel->setWidth($width * 0.85);
 		$titleLabel->setStyle($labelStyle);
@@ -942,13 +942,13 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		$titleLabel->setText($title);
 
 		$karmaGauge = new Gauge();
-		$frame->add($karmaGauge);
+		$frame->addChild($karmaGauge);
 		$karmaGauge->setSize($width * 0.95, $height * 0.92);
-		$karmaGauge->setDrawBg(false);
+		$karmaGauge->setDrawBackground(false);
 		$manialink->karmaGauge = $karmaGauge;
 
 		$karmaLabel = new Label();
-		$frame->add($karmaLabel);
+		$frame->addChild($karmaLabel);
 		$karmaLabel->setPosition(0, -0.4, 1);
 		$karmaLabel->setSize($width * 0.9, $height * 0.9);
 		$karmaLabel->setStyle($labelStyle);
@@ -956,7 +956,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		$manialink->karmaLabel = $karmaLabel;
 
 		$votesFrame = new Frame();
-		$frame->add($votesFrame);
+		$frame->addChild($votesFrame);
 		$manialink->votesFrame = $votesFrame;
 
 		$this->manialink = $manialink;

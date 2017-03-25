@@ -493,7 +493,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 
 		// Main frame
 		$frame = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultListFrame($script, $paging);
-		$maniaLink->add($frame);
+		$maniaLink->addChild($frame);
 
 		// Start offsets
 		$posX = -$width / 2;
@@ -501,11 +501,11 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 
 		//Predefine description Label
 		$descriptionLabel = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultDescriptionLabel();
-		$frame->add($descriptionLabel);
+		$frame->addChild($descriptionLabel);
 
 		// Headline
 		$headFrame = new Frame();
-		$frame->add($headFrame);
+		$frame->addChild($headFrame);
 		$headFrame->setY($posY - 5);
 		$array = array('$oRank' => $posX + 5, '$oNickname' => $posX + 18, '$oAverage' => $posX + 70);
 		$this->maniaControl->getManialinkManager()->labelLine($headFrame, $array);
@@ -517,18 +517,18 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		while ($rankedPlayer = $result->fetch_object()) {
 			if ($index % 15 === 1) {
 				$pageFrame = new Frame();
-				$frame->add($pageFrame);
+				$frame->addChild($pageFrame);
 				$posY = $height / 2 - 10;
 				$paging->addPage($pageFrame);
 			}
 
 			$playerFrame = new Frame();
-			$pageFrame->add($playerFrame);
+			$pageFrame->addChild($playerFrame);
 			$playerFrame->setY($posY);
 
 			if ($index % 2 !== 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
-				$playerFrame->add($lineQuad);
+				$playerFrame->addChild($lineQuad);
 				$lineQuad->setSize($width, 4);
 				$lineQuad->setSubStyle($lineQuad::SUBSTYLE_BgPlayerCardBig);
 				$lineQuad->setZ(0.001);

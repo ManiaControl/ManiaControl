@@ -191,7 +191,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener, Communicatio
 			$scriptInfo = $this->maniaControl->getClient()->getModeScriptInfo();
 		} catch (GameModeException $e) {
 			$label = new Label();
-			$frame->add($label);
+			$frame->addChild($label);
 			$label->setText($e->getMessage());
 			return $frame;
 		}
@@ -210,13 +210,13 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener, Communicatio
 
 		// Pagers
 		$pagerPrev = new Quad_Icons64x64_1();
-		$frame->add($pagerPrev);
+		$frame->addChild($pagerPrev);
 		$pagerPrev->setPosition($width * 0.39, $height * -0.44, 2);
 		$pagerPrev->setSize($pagerSize, $pagerSize);
 		$pagerPrev->setSubStyle($pagerPrev::SUBSTYLE_ArrowPrev);
 
 		$pagerNext = new Quad_Icons64x64_1();
-		$frame->add($pagerNext);
+		$frame->addChild($pagerNext);
 		$pagerNext->setPosition($width * 0.45, $height * -0.44, 2);
 		$pagerNext->setSize($pagerSize, $pagerSize);
 		$pagerNext->setSubStyle($pagerNext::SUBSTYLE_ArrowNext);
@@ -225,8 +225,8 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener, Communicatio
 		$paging->addButtonControl($pagerPrev);
 
 		$pageCountLabel = new Label_Text();
-		$frame->add($pageCountLabel);
-		$pageCountLabel->setHAlign($pageCountLabel::RIGHT);
+		$frame->addChild($pageCountLabel);
+		$pageCountLabel->setHorizontalAlign($pageCountLabel::RIGHT);
 		$pageCountLabel->setPosition($width * 0.35, $height * -0.44, 1);
 		$pageCountLabel->setStyle($pageCountLabel::STYLE_TextTitle1);
 		$pageCountLabel->setTextSize(2);
@@ -247,18 +247,18 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener, Communicatio
 
 			if ($index % 13 === 0) {
 				$pageFrame = new Frame();
-				$frame->add($pageFrame);
+				$frame->addChild($pageFrame);
 				$posY = $height * 0.41;
 				$paging->addPageControl($pageFrame);
 			}
 
 			$settingFrame = new Frame();
-			$pageFrame->add($settingFrame);
+			$pageFrame->addChild($settingFrame);
 			$settingFrame->setY($posY);
 
 			$nameLabel = new Label_Text();
-			$settingFrame->add($nameLabel);
-			$nameLabel->setHAlign($nameLabel::LEFT);
+			$settingFrame->addChild($nameLabel);
+			$nameLabel->setHorizontalAlign($nameLabel::LEFT);
 			$nameLabel->setX($width * -0.46);
 			$nameLabel->setSize($width * 0.4, $settingHeight);
 			$nameLabel->setStyle($nameLabel::STYLE_TextCardSmall);
@@ -273,11 +273,11 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener, Communicatio
 				$quad->setX($width / 2 * 0.545);
 				$quad->setSize(4, 4);
 				$checkBox = new CheckBox(self::ACTION_PREFIX_SETTING . $settingName, $settingValue, $quad);
-				$settingFrame->add($checkBox);
+				$settingFrame->addChild($checkBox);
 			} else {
 				// Value entry
 				$entry = new Entry();
-				$settingFrame->add($entry);
+				$settingFrame->addChild($entry);
 				$entry->setStyle(Label_Text::STYLE_TextValueSmall);
 				$entry->setX($width / 2 * 0.55);
 				$entry->setTextSize(1);
@@ -287,8 +287,8 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener, Communicatio
 			}
 
 			$descriptionLabel = new Label();
-			$pageFrame->add($descriptionLabel);
-			$descriptionLabel->setHAlign($descriptionLabel::LEFT);
+			$pageFrame->addChild($descriptionLabel);
+			$descriptionLabel->setHorizontalAlign($descriptionLabel::LEFT);
 			$descriptionLabel->setPosition($width * -0.45, $height * -0.44);
 			$descriptionLabel->setSize($width * 0.7, $settingHeight);
 			$descriptionLabel->setTextSize($labelTextSize);

@@ -233,12 +233,12 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 
 		$manialink = new ManiaLink(self::MLID_RECORDS);
 		$frame     = new Frame();
-		$manialink->add($frame);
+		$manialink->addChild($frame);
 		$frame->setPosition($posX, $posY);
 
 		$backgroundQuad = new Quad();
-		$frame->add($backgroundQuad);
-		$backgroundQuad->setVAlign($backgroundQuad::TOP);
+		$frame->addChild($backgroundQuad);
+		$backgroundQuad->setVerticalAlign($backgroundQuad::TOP);
 		$adjustOuterBorder = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_ADJUST_OUTER_BORDER);
 		$height            = 7. + ($adjustOuterBorder ? count($records) : $lines) * $lineHeight;
 		$backgroundQuad->setSize($width * 1.05, $height);
@@ -246,7 +246,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$backgroundQuad->setAction(self::ACTION_SHOW_RECORDSLIST);
 
 		$titleLabel = new Label();
-		$frame->add($titleLabel);
+		$frame->addChild($titleLabel);
 		$titleLabel->setPosition(0, $lineHeight * -0.9);
 		$titleLabel->setWidth($width);
 		$titleLabel->setStyle($labelStyle);
@@ -263,16 +263,16 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 			$y = -8. - $index * $lineHeight;
 
 			$recordFrame = new Frame();
-			$frame->add($recordFrame);
+			$frame->addChild($recordFrame);
 			$recordFrame->setPosition(0, $y);
 
 			/*
-			 * $backgroundQuad = new Quad(); $recordFrame->add($backgroundQuad); $backgroundQuad->setSize($width * 1.04, $lineHeight * 1.4); $backgroundQuad->setStyles($quadStyle, $quadSubstyle);
+			 * $backgroundQuad = new Quad(); $recordFrame->addChild($backgroundQuad); $backgroundQuad->setSize($width * 1.04, $lineHeight * 1.4); $backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 			 */
 
 			$rankLabel = new Label();
-			$recordFrame->add($rankLabel);
-			$rankLabel->setHAlign($rankLabel::LEFT);
+			$recordFrame->addChild($rankLabel);
+			$rankLabel->setHorizontalAlign($rankLabel::LEFT);
 			$rankLabel->setX($width * -0.47);
 			$rankLabel->setSize($width * 0.06, $lineHeight);
 			$rankLabel->setTextSize(1);
@@ -281,8 +281,8 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 			$rankLabel->setTextEmboss(true);
 
 			$nameLabel = new Label();
-			$recordFrame->add($nameLabel);
-			$nameLabel->setHAlign($nameLabel::LEFT);
+			$recordFrame->addChild($nameLabel);
+			$nameLabel->setHorizontalAlign($nameLabel::LEFT);
 			$nameLabel->setX($width * -0.4);
 			$nameLabel->setSize($width * 0.6, $lineHeight);
 			$nameLabel->setTextSize(1);
@@ -290,8 +290,8 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 			$nameLabel->setTextEmboss(true);
 
 			$timeLabel = new Label();
-			$recordFrame->add($timeLabel);
-			$timeLabel->setHAlign($timeLabel::RIGHT);
+			$recordFrame->addChild($timeLabel);
+			$timeLabel->setHorizontalAlign($timeLabel::RIGHT);
 			$timeLabel->setX($width * 0.47);
 			$timeLabel->setSize($width * 0.25, $lineHeight);
 			$timeLabel->setTextSize(1);
@@ -566,7 +566,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 
 		// Main frame
 		$frame = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultListFrame($script, $paging);
-		$maniaLink->add($frame);
+		$maniaLink->addChild($frame);
 
 		// Start offsets
 		$posX = -$width / 2;
@@ -574,11 +574,11 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 
 		// Predefine Description Label
 		$descriptionLabel = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultDescriptionLabel();
-		$frame->add($descriptionLabel);
+		$frame->addChild($descriptionLabel);
 
 		// Headline
 		$headFrame = new Frame();
-		$frame->add($headFrame);
+		$frame->addChild($headFrame);
 		$headFrame->setY($posY - 5);
 		$array = array('Rank' => $posX + 5, 'Nickname' => $posX + 18, 'Login' => $posX + 70, 'Time' => $posX + 101);
 		$this->maniaControl->getManialinkManager()->labelLine($headFrame, $array);
@@ -590,17 +590,17 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		foreach ($records as $listRecord) {
 			if ($index % 15 === 0) {
 				$pageFrame = new Frame();
-				$frame->add($pageFrame);
+				$frame->addChild($pageFrame);
 				$posY = $height / 2 - 10;
 				$paging->addPage($pageFrame);
 			}
 
 			$recordFrame = new Frame();
-			$pageFrame->add($recordFrame);
+			$pageFrame->addChild($recordFrame);
 
 			if ($index % 2 !== 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
-				$recordFrame->add($lineQuad);
+				$recordFrame->addChild($lineQuad);
 				$lineQuad->setSize($width, 4);
 				$lineQuad->setSubStyle($lineQuad::SUBSTYLE_BgPlayerCardBig);
 				$lineQuad->setZ(0.001);
