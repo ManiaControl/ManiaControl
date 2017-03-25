@@ -25,7 +25,7 @@ class OnPlayerRequestRespawnStructure extends BaseStructure {
 		parent::__construct($maniaControl, $data);
 
 		$this->time   = $this->getPlainJsonObject()->time;
-		$this->player = $this->maniaControl->getPlayerManager()->getPlayer($this->getPlainJsonObject()->victim);
+		$this->player = $this->maniaControl->getPlayerManager()->getPlayer($this->getPlainJsonObject()->login);
 	}
 
 	/**

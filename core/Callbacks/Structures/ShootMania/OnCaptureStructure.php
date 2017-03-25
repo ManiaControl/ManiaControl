@@ -42,8 +42,6 @@ class OnCaptureStructure extends BaseStructure {
 		$position->setZ($jsonObj->landmark->position->z);
 
 		$this->landMark->setPosition($position);
-
-		$this->shooter = $this->maniaControl->getPlayerManager()->getPlayer($this->getPlainJsonObject()->shooter);
 	}
 
 	/** Dumps the Object with some Information */
