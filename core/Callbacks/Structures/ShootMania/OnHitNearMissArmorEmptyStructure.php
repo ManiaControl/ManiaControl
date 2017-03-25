@@ -15,12 +15,13 @@ use ManiaControl\Players\Player;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class OnHitStructure extends BaseStructure {
+class OnHitNearMissArmorEmptyStructure extends BaseStructure {
 	public $time;
 	public $weapon;
 	public $damage;
 	public $shooterPosition;
 	public $victimPosition;
+	public $distance = 0; //Note no distance on the OnHit and ArmorEmpty yet
 
 	protected $shooter;
 	protected $victim;
@@ -38,11 +39,24 @@ class OnHitStructure extends BaseStructure {
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
 
-		$this->time            = $this->getPlainJsonObject()->time;
-		$this->weapon          = $this->getPlainJsonObject()->weapon;
-		$this->damage          = $this->getPlainJsonObject()->damage;
-		$this->shooterPosition = $this->getPlainJsonObject()->shooterPosition;
-		$this->victimPosition  = $this->getPlainJsonObject()->victimPosition;
+		$jsonObj = $this->getPlainJsonObject();
+		$this->time            = $jsonObj->time;
+		$this->weapon          = $jsonObj->weapon;
+		$this->damage          = $jsonObj->damage;
+
+		$this->shooterPosition = new Position();
+		$this->shooterPosition->setX($jsonObj->shooterposition->x);
+		$this->shooterPosition->setY($jsonObj->shooterposition->y);
+		$this->shooterPosition->setZ($jsonObj->shooterposition->z);
+
+		$this->victimPosition = new Position();
+		$this->victimPosition->setX($jsonObj->victimposition->x);
+		$this->victimPosition->setY($jsonObj->victimposition->y);
+		$this->victimPosition->setZ($jsonObj->victimposition->z);
+
+		if (property_exists($this->getPlainJsonObject(), 'distance')) {
+			$this->distance = $this->getPlainJsonObject()->distance;
+		}
 
 		$this->shooter = $this->maniaControl->getPlayerManager()->getPlayer($this->getPlainJsonObject()->shooter);
 		$this->victim  = $this->maniaControl->getPlayerManager()->getPlayer($this->getPlainJsonObject()->victim);
@@ -72,7 +86,7 @@ class OnHitStructure extends BaseStructure {
 	/**
 	 * TODO Position Object
 	 *
-	 * @return Object
+	 * @return Position
 	 */
 	public function getShooterPosition() {
 		return $this->shooterPosition;
@@ -81,7 +95,7 @@ class OnHitStructure extends BaseStructure {
 	/**
 	 * TODO Position Object
 	 *
-	 * @return Object
+	 * @return Position
 	 */
 	public function getVictimPosition() {
 		return $this->victimPosition;
@@ -99,6 +113,13 @@ class OnHitStructure extends BaseStructure {
 	 */
 	public function getVictim() {
 		return $this->victim;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getDistance() {
+		return $this->distance;
 	}
 
 	/** Dumps the Object with some Information */

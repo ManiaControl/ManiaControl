@@ -5,7 +5,8 @@ namespace ManiaControl\Callbacks;
 use ManiaControl\Callbacks\Models\RecordCallback;
 use ManiaControl\Callbacks\Structures\EliteBeginTurnStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\DefaultEventStructure;
-use ManiaControl\Callbacks\Structures\ShootMania\OnHitStructure;
+use ManiaControl\Callbacks\Structures\ShootMania\OnCaptureStructure;
+use ManiaControl\Callbacks\Structures\ShootMania\OnHitNearMissArmorEmptyStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnShootStructure;
 use ManiaControl\ManiaControl;
 
@@ -60,9 +61,18 @@ class ShootManiaCallbacks implements CallbackListener {
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONSHOOT, new OnShootStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ONHIT:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONHIT, new OnHitStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONHIT, new OnHitNearMissArmorEmptyStructure($this->maniaControl, $data));
 				break;
-
+			case Callbacks::SM_ONNEARMISS:
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONNEARMISS, new OnHitNearMissArmorEmptyStructure($this->maniaControl, $data));
+				break;
+			case Callbacks::SM_ONARMOREMPTY:
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONARMOREMPTY, new OnHitNearMissArmorEmptyStructure($this->maniaControl, $data));
+				break;
+			case Callbacks::SM_ONCAPTURE:
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONCAPTURE, new OnCaptureStructure($this->maniaControl, $data));
+				break;
+				break;
 			//Old Callbacks
 			case 'LibXmlRpc_Rankings':
 				$this->maniaControl->getServer()->getRankingManager()->updateRankings($data[0]);
