@@ -191,7 +191,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 
 		// Values Menu
 		$popoutFrame = new Frame();
-		$manialink->addChild($popoutFrame);
+		$maniaLink->addChild($popoutFrame);
 		$popoutFrame->setPosition($posX - $itemSize * 0.5, $posY);
 		$popoutFrame->setHorizontalAlign($popoutFrame::RIGHT);
 		$popoutFrame->setSize(4 * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
@@ -208,7 +208,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 
 		// Description Label
 		$descriptionFrame = new Frame();
-		$manialink->addChild($descriptionFrame);
+		$maniaLink->addChild($descriptionFrame);
 		$descriptionFrame->setPosition($posX - 50, $posY - 5);
 		$descriptionFrame->setHorizontalAlign($descriptionFrame::RIGHT);
 
