@@ -80,6 +80,9 @@ interface Callbacks {
 	const SM_ONPLAYERTHROWSOBJECT        = "Shootmania.Event.OnPlayerThrowsObject";
 	const SM_ONPLAYERREQUESTACTIONCHANGE = "Shootmania.Event.OnPlayerRequestActionChange";
 
+
+	const TM_EVENTDEFAULT = "Trackmania.Event.Default";
+
 	//ManiaControl Callbacks
 	/** BeginMap Callback: Map */
 	const BEGINMAP = 'Callbacks.BeginMap';
