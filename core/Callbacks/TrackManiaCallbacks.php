@@ -3,7 +3,7 @@
 namespace ManiaControl\Callbacks;
 
 use ManiaControl\Callbacks\Models\RecordCallback;
-use ManiaControl\Callbacks\Structures\Trackmania\DefaultEventStructure;
+use ManiaControl\Callbacks\Structures\TrackMania\OnDefaultEventStructure;
 use ManiaControl\ManiaControl;
 use ManiaControl\Utils\Formatter;
 
@@ -48,12 +48,12 @@ class TrackManiaCallbacks implements CallbackListener {
 	 */
 	public function handleScriptCallbacks($name, $data) {
 		if (!$this->maniaControl->getCallbackManager()->callbackListeningExists($name)) {
-			return;
+			//return; //Leave that disabled while testing/implementing Callbacks
 		}
 		switch ($name) {
 			//MP4 New Callbacks
-			case Callbacks::TM_EVENTDEFAULT:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::TM_EVENTDEFAULT, new DefaultEventStructure($this->maniaControl, $data));
+			case Callbacks::TM_ONEVENTDEFAULT:
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::TM_ONEVENTDEFAULT, new OnDefaultEventStructure($this->maniaControl, $data));
 				break;
 		}
 	}

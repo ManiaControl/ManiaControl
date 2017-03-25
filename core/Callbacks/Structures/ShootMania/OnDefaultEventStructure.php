@@ -13,7 +13,7 @@ use ManiaControl\ManiaControl;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class DefaultEventStructure extends BaseStructure {
+class OnDefaultEventStructure extends BaseStructure {
 	public $time;
 	public $type;
 
