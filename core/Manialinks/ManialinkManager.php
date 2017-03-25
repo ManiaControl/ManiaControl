@@ -27,10 +27,11 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	/*
 	 * Constants
 	 */
-	const MAIN_MLID             = 'Main.ManiaLinkId';
-	const ACTION_CLOSEWIDGET    = 'ManiaLinkManager.CloseWidget';
-	const CB_MAIN_WINDOW_CLOSED = 'ManialinkManagerCallback.MainWindowClosed';
-	const CB_MAIN_WINDOW_OPENED = 'ManialinkManagerCallback.MainWindowOpened';
+	const MAIN_MLID              = 'Main.ManiaLinkId';
+	const ACTION_CLOSEWIDGET     = 'ManiaLinkManager.CloseWidget';
+	const CB_MAIN_WINDOW_CLOSED  = 'ManialinkManagerCallback.MainWindowClosed';
+	const CB_MAIN_WINDOW_OPENED  = 'ManialinkManagerCallback.MainWindowOpened';
+	const MAIN_MANIALINK_Z_VALUE = 10;
 
 	/*
 	 * Public properties
@@ -235,6 +236,8 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener 
 	 */
 	public function sendManialink($manialinkText, $logins = null, $timeout = 0, $hideOnClick = false) {
 		$manialinkText = (string) $manialinkText;
+
+		var_dump($manialinkText);
 
 		if (!$manialinkText) {
 			return true;

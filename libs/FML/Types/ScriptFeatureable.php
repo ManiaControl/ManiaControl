@@ -2,19 +2,23 @@
 
 namespace FML\Types;
 
+use FML\Script\Features\ScriptFeature;
+
 /**
  * Interface for Elements supporting ScriptFeatures
  *
  * @author    steeffeen <mail@steeffeen.com>
- * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @copyright FancyManiaLinks Copyright © 2017 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-interface ScriptFeatureable {
+interface ScriptFeatureable
+{
 
-	/**
-	 * Get the assigned Script Features of the Element
-	 *
-	 * @return \FML\Script\Features\ScriptFeature[]
-	 */
-	public function getScriptFeatures();
+    /**
+     * Get the Script Features
+     *
+     * @return ScriptFeature[]
+     */
+    public function getScriptFeatures();
+
 }

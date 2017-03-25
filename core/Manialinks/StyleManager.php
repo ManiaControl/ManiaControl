@@ -193,7 +193,7 @@ class StyleManager {
 			$pageCountLabel->setHAlign($pageCountLabel::RIGHT)->setPosition($width * 0.40, $height * -0.44, 1)->setStyle($pageCountLabel::STYLE_TextTitle1)->setTextSize(1.3);
 
 			if ($paging) {
-				$paging->addButton($pagerNext)->addButton($pagerPrev)->setLabel($pageCountLabel);
+				$paging->addButtonControl($pagerNext)->addButtonControl($pagerPrev)->setLabel($pageCountLabel);
 			}
 		}
 

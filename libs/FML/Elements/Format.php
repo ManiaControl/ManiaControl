@@ -2,7 +2,7 @@
 
 namespace FML\Elements;
 
-use FML\Types\BgColorable;
+use FML\Types\BackgroundColorable;
 use FML\Types\Renderable;
 use FML\Types\Styleable;
 use FML\Types\TextFormatable;
@@ -11,113 +11,205 @@ use FML\Types\TextFormatable;
  * Format Element
  *
  * @author    steeffeen <mail@steeffeen.com>
- * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @copyright FancyManiaLinks Copyright © 2017 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class Format implements BgColorable, Renderable, Styleable, TextFormatable {
-	/*
-	 * Protected properties
-	 */
-	protected $tagName = 'format';
-	protected $bgColor = null;
-	protected $style = null;
-	protected $textSize = -1;
-	protected $textFont = null;
-	protected $textColor = null;
-	protected $focusAreaColor1 = null;
-	protected $focusAreaColor2 = null;
+class Format implements BackgroundColorable, Renderable, Styleable, TextFormatable
+{
 
-	/**
-	 * Create a new Format Element
-	 *
-	 * @return static
-	 */
-	public static function create() {
-		return new static();
-	}
+    /**
+     * @var string $backgroundColor Background color
+     */
+    protected $backgroundColor = null;
 
-	/**
-	 * @see \FML\Types\BgColorable::setBgColor()
-	 */
-	public function setBgColor($bgColor) {
-		$this->bgColor = (string)$bgColor;
-		return $this;
-	}
+    /**
+     * @var string $style Style
+     */
+    protected $style = null;
 
-	/**
-	 * @see \FML\Types\Styleable::setStyle()
-	 */
-	public function setStyle($style) {
-		$this->style = (string)$style;
-		return $this;
-	}
+    /**
+     * @var int $textSize Text size
+     */
+    protected $textSize = null;
 
-	/**
-	 * @see \FML\Types\TextFormatable::setTextSize()
-	 */
-	public function setTextSize($textSize) {
-		$this->textSize = (int)$textSize;
-		return $this;
-	}
+    /**
+     * @var string $textFont Text font
+     */
+    protected $textFont = null;
 
-	/**
-	 * @see \FML\Types\TextFormatable::setTextFont()
-	 */
-	public function setTextFont($textFont) {
-		$this->textFont = (string)$textFont;
-		return $this;
-	}
+    /**
+     * @var string $textColor Text color
+     */
+    protected $textColor = null;
 
-	/**
-	 * @see \FML\Types\TextFormatable::setTextColor()
-	 */
-	public function setTextColor($textColor) {
-		$this->textColor = (string)$textColor;
-		return $this;
-	}
+    /**
+     * @var string $areaColor Area color
+     */
+    protected $areaColor = null;
 
-	/**
-	 * @see \FML\Types\TextFormatable::setAreaColor()
-	 */
-	public function setAreaColor($areaColor) {
-		$this->focusAreaColor1 = (string)$areaColor;
-		return $this;
-	}
+    /**
+     * @var string $focusAreaColor Focus area color
+     */
+    protected $focusAreaColor = null;
 
-	/**
-	 * @see \FML\Types\TextFormatable::setAreaFocusColor()
-	 */
-	public function setAreaFocusColor($areaFocusColor) {
-		$this->focusAreaColor2 = (string)$areaFocusColor;
-		return $this;
-	}
+    /**
+     * Create a new Format
+     *
+     * @api
+     * @return static
+     */
+    public static function create()
+    {
+        return new static();
+    }
 
-	/**
-	 * @see \FML\Types\Renderable::render()
-	 */
-	public function render(\DOMDocument $domDocument) {
-		$formatXmlElement = $domDocument->createElement($this->tagName);
-		if ($this->bgColor) {
-			$formatXmlElement->setAttribute('bgcolor', $this->bgColor);
-		}
-		if ($this->style) {
-			$formatXmlElement->setAttribute('style', $this->style);
-		}
-		if ($this->textSize >= 0) {
-			$formatXmlElement->setAttribute('textsize', $this->textSize);
-		}
-		if ($this->textFont) {
-			$formatXmlElement->setAttribute('textfont', $this->textFont);
-		}
-		if ($this->textColor) {
-			$formatXmlElement->setAttribute('textcolor', $this->textColor);
-		}
-		if ($this->focusAreaColor1) {
-			$formatXmlElement->setAttribute('focusareacolor1', $this->focusAreaColor1);
-		}
-		if ($this->focusAreaColor2) {
-			$formatXmlElement->setAttribute('focusareacolor2', $this->focusAreaColor2);
-		}
-		return $formatXmlElement;
-	}
+    /**
+     * @see BgColorable::getBackgroundColor()
+     */
+    public function getBackgroundColor()
+    {
+        return $this->backgroundColor;
+    }
+
+    /**
+     * @see BgColorable::setBackgroundColor()
+     */
+    public function setBackgroundColor($backgroundColor)
+    {
+        $this->backgroundColor = (string)$backgroundColor;
+        return $this;
+    }
+
+    /**
+     * @see Styleable::getStyle()
+     */
+    public function getStyle()
+    {
+        return $this->style;
+    }
+
+    /**
+     * @see Styleable::setStyle()
+     */
+    public function setStyle($style)
+    {
+        $this->style = (string)$style;
+        return $this;
+    }
+
+    /**
+     * @see TextFormatable::getTextSize()
+     */
+    public function getTextSize()
+    {
+        return $this->textSize;
+    }
+
+    /**
+     * @see TextFormatable::setTextSize()
+     */
+    public function setTextSize($textSize)
+    {
+        $this->textSize = (int)$textSize;
+        return $this;
+    }
+
+    /**
+     * @see TextFormatable::getTextFont()
+     */
+    public function getTextFont()
+    {
+        return $this->textFont;
+    }
+
+    /**
+     * @see TextFormatable::setTextFont()
+     */
+    public function setTextFont($textFont)
+    {
+        $this->textFont = (string)$textFont;
+        return $this;
+    }
+
+    /**
+     * @see TextFormatable::getTextColor()
+     */
+    public function getTextColor()
+    {
+        return $this->textColor;
+    }
+
+    /**
+     * @see TextFormatable::setTextColor()
+     */
+    public function setTextColor($textColor)
+    {
+        $this->textColor = (string)$textColor;
+        return $this;
+    }
+
+    /**
+     * @see TextFormatable::getAreaColor()
+     */
+    public function getAreaColor()
+    {
+        return $this->areaColor;
+    }
+
+    /**
+     * @see TextFormatable::setAreaColor()
+     */
+    public function setAreaColor($areaColor)
+    {
+        $this->areaColor = (string)$areaColor;
+        return $this;
+    }
+
+    /**
+     * @see TextFormatable::getAreaFocusColor()
+     */
+    public function getAreaFocusColor()
+    {
+        return $this->focusAreaColor;
+    }
+
+    /**
+     * @see TextFormatable::setAreaFocusColor()
+     */
+    public function setAreaFocusColor($areaFocusColor)
+    {
+        $this->focusAreaColor = (string)$areaFocusColor;
+        return $this;
+    }
+
+    /**
+     * @see Renderable::render()
+     */
+    public function render(\DOMDocument $domDocument)
+    {
+        $domElement = $domDocument->createElement("format");
+        if ($this->backgroundColor) {
+            $domElement->setAttribute("bgcolor", $this->backgroundColor);
+        }
+        if ($this->style) {
+            $domElement->setAttribute("style", $this->style);
+        }
+        if ($this->textSize) {
+            $domElement->setAttribute("textsize", $this->textSize);
+        }
+        if ($this->textFont) {
+            $domElement->setAttribute("textfont", $this->textFont);
+        }
+        if ($this->textColor) {
+            $domElement->setAttribute("textcolor", $this->textColor);
+        }
+        if ($this->areaColor) {
+            $domElement->setAttribute("focusareacolor1", $this->areaColor);
+        }
+        if ($this->focusAreaColor) {
+            $domElement->setAttribute("focusareacolor2", $this->focusAreaColor);
+        }
+        return $domElement;
+    }
+
 }

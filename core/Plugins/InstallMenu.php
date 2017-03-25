@@ -53,14 +53,14 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 	}
 
 	/**
-	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getTitle()
+	 * @see \ManiaControl\Configurator\ConfiguratorMenu::getTitle()
 	 */
 	public static function getTitle() {
 		return 'Install Plugins';
 	}
 
 	/**
-	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getMenu()
+	 * @see \ManiaControl\Configurator\ConfiguratorMenu::getMenu()
 	 */
 	public function getMenu($width, $height, Script $script, Player $player) {
 		$paging = new Paging();
@@ -102,7 +102,7 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 			$frame->add($pageCountLabel);
 			$pageCountLabel->setHAlign($pageCountLabel::RIGHT)->setPosition($width * 0.35, $height * -0.44, 1)->setStyle($pageCountLabel::STYLE_TextTitle1)->setTextSize(2);
 
-			$paging->addButton($pagerNext)->addButton($pagerPrev)->setLabel($pageCountLabel);
+			$paging->addButtonControl($pagerNext)->addButtonControl($pagerPrev)->setLabel($pageCountLabel);
 
 			// Info tooltip
 			$infoTooltipLabel = new Label();
@@ -121,7 +121,7 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 					// New page
 					$pageFrame = new Frame();
 					$frame->add($pageFrame);
-					$paging->addPage($pageFrame);
+					$paging->addPageControl($pageFrame);
 					$posY = $height * 0.41;
 				}
 
@@ -221,7 +221,7 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 	}
 
 	/**
-	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
+	 * @see \ManiaControl\Configurator\ConfiguratorMenu::saveConfigData()
 	 */
 	public function saveConfigData(array $configData, Player $player) {
 	}
