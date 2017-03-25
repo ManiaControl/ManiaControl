@@ -60,6 +60,8 @@ interface Callbacks {
 	const MP_PODIUMSTART       = 'Callbacks.ManiaPlanetPodiumStart';
 	const MP_PODIUMEND         = 'Callbacks.ManiaPlanetPodiumEnd';
 
+	const SM_SCORES = "Shootmania.Scores";
+
 	const SM_EVENTDEFAULT = "Shootmania.Event.Default";
 	const SM_ONSHOOT      = "Shootmania.Event.OnShoot";
 	const SM_ONHIT        = "Shootmania.Event.OnHit";
