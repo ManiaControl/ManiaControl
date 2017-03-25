@@ -258,16 +258,16 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 
 		// Pagers
 		$pagerPrev = new Quad_Icons64x64_1();
-		$frame->add($pagerPrev);
+		$frame->addChild($pagerPrev);
 		$pagerPrev->setPosition($width * 0.39, $height * -0.44, 2)->setSize($pagerSize, $pagerSize)->setSubStyle($pagerPrev::SUBSTYLE_ArrowPrev);
 
 		$pagerNext = new Quad_Icons64x64_1();
-		$frame->add($pagerNext);
+		$frame->addChild($pagerNext);
 		$pagerNext->setPosition($width * 0.45, $height * -0.44, 2)->setSize($pagerSize, $pagerSize)->setSubStyle($pagerNext::SUBSTYLE_ArrowNext);
 
 		$pageCountLabel = new Label_Text();
-		$frame->add($pageCountLabel);
-		$pageCountLabel->setHAlign($pageCountLabel::RIGHT)->setPosition($width * 0.35, $height * -0.44, 1)->setStyle($pageCountLabel::STYLE_TextTitle1)->setTextSize(2);
+		$frame->addChild($pageCountLabel);
+		$pageCountLabel->setHorizontalAlign($pageCountLabel::RIGHT)->setPosition($width * 0.35, $height * -0.44, 1)->setStyle($pageCountLabel::STYLE_TextTitle1)->setTextSize(2);
 
 		$paging->addButtonControl($pagerNext)->addButtonControl($pagerPrev)->setLabel($pageCountLabel);
 
@@ -285,29 +285,29 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 
 			if ($index % 13 === 0) {
 				$pageFrame = new Frame();
-				$frame->add($pageFrame);
+				$frame->addChild($pageFrame);
 				$posY = $height * 0.41;
 				$paging->addPageControl($pageFrame);
 			}
 
 			$optionsFrame = new Frame();
-			$pageFrame->add($optionsFrame);
+			$pageFrame->addChild($optionsFrame);
 			$optionsFrame->setY($posY);
 
 			$nameLabel = new Label_Text();
-			$optionsFrame->add($nameLabel);
-			$nameLabel->setHAlign($nameLabel::LEFT)->setX($width * -0.46)->setSize($width * 0.4, $optionHeight)->setStyle($nameLabel::STYLE_TextCardSmall)->setTextSize($labelTextSize)->setText($name)->setTextColor('fff');
+			$optionsFrame->addChild($nameLabel);
+			$nameLabel->setHorizontalAlign($nameLabel::LEFT)->setX($width * -0.46)->setSize($width * 0.4, $optionHeight)->setStyle($nameLabel::STYLE_TextCardSmall)->setTextSize($labelTextSize)->setText($name)->setTextColor('fff');
 
 			if (is_bool($value)) {
 				// Boolean checkbox
 				$quad = new Quad();
 				$quad->setPosition($width * 0.23, 0, -0.01)->setSize(4, 4);
 				$checkBox = new CheckBox(self::ACTION_PREFIX_OPTION . $name, $value, $quad);
-				$optionsFrame->add($checkBox);
+				$optionsFrame->addChild($checkBox);
 			} else {
 				// Other
 				$entry = new Entry();
-				$optionsFrame->add($entry);
+				$optionsFrame->addChild($entry);
 				$entry->setStyle(Label_Text::STYLE_TextValueSmall)->setX($width * 0.23)->setTextSize(1)->setSize($width * 0.48, $optionHeight * 0.9)->setName(self::ACTION_PREFIX_OPTION . $name)->setDefault($value);
 
 				if ($name === 'Comment') {

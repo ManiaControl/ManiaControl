@@ -96,7 +96,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 
 		// Main frame
 		$frame = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultListFrame($script, $paging);
-		$maniaLink->add($frame);
+		$maniaLink->addChild($frame);
 
 		// Start offsets
 		$posX = -$width / 2;
@@ -104,11 +104,11 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 
 		//Predefine description Label
 		$descriptionLabel = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultDescriptionLabel();
-		$frame->add($descriptionLabel);
+		$frame->addChild($descriptionLabel);
 
 		// Headline
 		$headFrame = new Frame();
-		$frame->add($headFrame);
+		$frame->addChild($headFrame);
 		$headFrame->setY($posY - 5);
 		$array = array('Id' => $posX + 5, 'Nickname' => $posX + 18, 'Login' => $posX + 70, 'Actions' => $posX + 120);
 		$this->maniaControl->getManialinkManager()->labelLine($headFrame, $array);
@@ -120,19 +120,19 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 		foreach ($admins as $admin) {
 			if ($index % self::MAX_PLAYERS_PER_PAGE === 1) {
 				$pageFrame = new Frame();
-				$frame->add($pageFrame);
+				$frame->addChild($pageFrame);
 
 				$paging->addPageControl($pageFrame);
 				$posY = $height / 2 - 10;
 			}
 
 			$playerFrame = new Frame();
-			$pageFrame->add($playerFrame);
+			$pageFrame->addChild($playerFrame);
 			$playerFrame->setY($posY);
 
 			if ($index % 2 !== 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
-				$playerFrame->add($lineQuad);
+				$playerFrame->addChild($lineQuad);
 				$lineQuad->setSize($width, 4);
 				$lineQuad->setSubStyle($lineQuad::SUBSTYLE_BgPlayerCardBig);
 				$lineQuad->setZ(0.001);
@@ -144,14 +144,14 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 
 			// Level Quad
 			$rightQuad = new Quad_BgRaceScore2();
-			$playerFrame->add($rightQuad);
+			$playerFrame->addChild($rightQuad);
 			$rightQuad->setX($posX + 13);
 			$rightQuad->setZ(5);
 			$rightQuad->setSubStyle($rightQuad::SUBSTYLE_CupFinisher);
 			$rightQuad->setSize(7, 3.5);
 
 			$rightLabel = new Label_Text();
-			$playerFrame->add($rightLabel);
+			$playerFrame->addChild($rightLabel);
 			$rightLabel->setX($posX + 13.9);
 			$rightLabel->setTextSize(0.8);
 			$rightLabel->setZ(10);
@@ -171,7 +171,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 
 				// Quad
 				$quad = new Quad_BgsPlayerCard();
-				$playerFrame->add($quad);
+				$playerFrame->addChild($quad);
 				$quad->setZ(11);
 				$quad->setX($posX + 130);
 				$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
@@ -180,7 +180,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 
 				//Label
 				$label = new Label_Button();
-				$playerFrame->add($label);
+				$playerFrame->addChild($label);
 				$label->setX($posX + 130);
 				$quad->setZ(12);
 				$label->setStyle($style);

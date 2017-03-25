@@ -166,15 +166,15 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 
 		// Main frame
 		$frame = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultListFrame($script, $paging);
-		$maniaLink->add($frame);
+		$maniaLink->addChild($frame);
 
 		//Predefine description Label
 		$descriptionLabel = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultDescriptionLabel();
-		$frame->add($descriptionLabel);
+		$frame->addChild($descriptionLabel);
 
 		// Headline
 		$headFrame = new Frame();
-		$frame->add($headFrame);
+		$frame->addChild($headFrame);
 		$headFrame->setY($posY - 12);
 		$array = array('$oId' => $posX + 3.5, '$oName' => $posX + 12.5, '$oAuthor' => $posX + 59, '$oKarma' => $posX + 85, '$oType' => $posX + 103, '$oMood' => $posX + 118, '$oLast Update' => $posX + 130);
 		$this->maniaControl->getManialinkManager()->labelLine($headFrame, $array);
@@ -187,18 +187,18 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 			//TODO order possibilities
 			if ($index % self::MAX_MX_MAPS_PER_PAGE === 0) {
 				$pageFrame = new Frame();
-				$frame->add($pageFrame);
+				$frame->addChild($pageFrame);
 				$posY = $height / 2 - 16;
 				$paging->addPageControl($pageFrame);
 			}
 
 			// Map Frame
 			$mapFrame = new Frame();
-			$pageFrame->add($mapFrame);
+			$pageFrame->addChild($mapFrame);
 
 			if ($index % 2 === 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
-				$mapFrame->add($lineQuad);
+				$mapFrame->addChild($lineQuad);
 				$lineQuad->setSize($width, 4);
 				$lineQuad->setSubStyle($lineQuad::SUBSTYLE_BgPlayerCardBig);
 				$lineQuad->setZ(0.001);
@@ -213,10 +213,10 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 			$mapFrame->setY($posY);
 
 			$mxQuad = new Quad();
-			$mapFrame->add($mxQuad);
+			$mapFrame->addChild($mxQuad);
 			$mxQuad->setSize(3, 3);
-			$mxQuad->setImage($this->maniaControl->getManialinkManager()->getIconManager()->getIcon(IconManager::MX_ICON));
-			$mxQuad->setImageFocus($this->maniaControl->getManialinkManager()->getIconManager()->getIcon(IconManager::MX_ICON_MOVER));
+			$mxQuad->setImageUrl($this->maniaControl->getManialinkManager()->getIconManager()->getIcon(IconManager::MX_ICON));
+			$mxQuad->setImageFocusUrl($this->maniaControl->getManialinkManager()->getIconManager()->getIcon(IconManager::MX_ICON_MOVER));
 			$mxQuad->setX($posX + 56);
 			$mxQuad->setUrl($map->pageurl);
 			$mxQuad->setZ(0.01);
@@ -226,7 +226,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 			if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)
 			) {
 				$addQuad = new Quad_Icons64x64_1();
-				$mapFrame->add($addQuad);
+				$mapFrame->addChild($addQuad);
 				$addQuad->setX($posX + 53);
 				$addQuad->setZ(-0.1);
 				$addQuad->setSubStyle($addQuad::SUBSTYLE_Add);
@@ -241,16 +241,16 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 			//Award Quad
 			if ($map->awards > 0) {
 				$awardQuad = new Quad_Icons64x64_1();
-				$mapFrame->add($awardQuad);
+				$mapFrame->addChild($awardQuad);
 				$awardQuad->setSize(3, 3);
 				$awardQuad->setSubStyle($awardQuad::SUBSTYLE_OfficialRace);
 				$awardQuad->setX($posX + 97);
 				$awardQuad->setZ(0.01);
 
 				$awardLabel = new Label_Text();
-				$mapFrame->add($awardLabel);
+				$mapFrame->addChild($awardLabel);
 				$awardLabel->setX($posX + 98.5);
-				$awardLabel->setHAlign($awardLabel::LEFT);
+				$awardLabel->setHorizontalAlign($awardLabel::LEFT);
 				$awardLabel->setText($map->awards);
 				$awardLabel->setTextSize(1.3);
 			}
@@ -260,18 +260,18 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 			$voteCount = $map->ratingVoteCount;
 			if (is_numeric($karma) && $voteCount > 0) {
 				$karmaGauge = new Gauge();
-				$mapFrame->add($karmaGauge);
+				$mapFrame->addChild($karmaGauge);
 				$karmaGauge->setZ(2);
 				$karmaGauge->setX($posX + 89);
 				$karmaGauge->setSize(16.5, 9);
-				$karmaGauge->setDrawBg(false);
+				$karmaGauge->setDrawBackground(false);
 				$karma = floatval($karma);
 				$karmaGauge->setRatio($karma + 0.15 - $karma * 0.15);
 				$karmaColor = ColorUtil::floatToStatusColor($karma);
 				$karmaGauge->setColor($karmaColor . '9');
 
 				$karmaLabel = new Label();
-				$mapFrame->add($karmaLabel);
+				$mapFrame->addChild($karmaLabel);
 				$karmaLabel->setZ(2);
 				$karmaLabel->setX($posX + 89);
 				$karmaLabel->setSize(16.5 * 0.9, 5);
@@ -286,16 +286,16 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		}
 
 		$label = new Label_Text();
-		$frame->add($label);
+		$frame->addChild($label);
 		$label->setPosition(-$width / 2 + 5, $height / 2 - 5);
-		$label->setHAlign($label::LEFT);
+		$label->setHorizontalAlign($label::LEFT);
 		$label->setTextSize(1.3);
 		$label->setText('Search: ');
 
 		$entry = new Entry();
-		$frame->add($entry);
+		$frame->addChild($entry);
 		$entry->setStyle(Label_Text::STYLE_TextValueSmall);
-		$entry->setHAlign($entry::LEFT);
+		$entry->setHorizontalAlign($entry::LEFT);
 		$entry->setPosition(-$width / 2 + 15, $height / 2 - 5);
 		$entry->setTextSize(1);
 		$entry->setSize($width * 0.25, 4);
@@ -304,13 +304,13 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 
 		//Search for Map-Name
 		$label = new Label_Button();
-		$frame->add($label);
+		$frame->addChild($label);
 		$label->setPosition(-$width / 2 + 63, $height / 2 - 5);
 		$label->setText('MapName');
 		$label->setTextSize(1.3);
 
 		$quad = new Quad_BgsPlayerCard();
-		$frame->add($quad);
+		$frame->addChild($quad);
 		$quad->setPosition(-$width / 2 + 63, $height / 2 - 5, 0.01);
 		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
 		$quad->setSize(18, 5);
@@ -318,13 +318,13 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 
 		//Search for Author
 		$label = new Label_Button();
-		$frame->add($label);
+		$frame->addChild($label);
 		$label->setPosition(-$width / 2 + 82, $height / 2 - 5);
 		$label->setText('Author');
 		$label->setTextSize(1.3);
 
 		$quad = new Quad_BgsPlayerCard();
-		$frame->add($quad);
+		$frame->addChild($quad);
 		$quad->setPosition(-$width / 2 + 82, $height / 2 - 5, 0.01);
 		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
 		$quad->setSize(18, 5);

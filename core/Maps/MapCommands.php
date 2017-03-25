@@ -79,8 +79,8 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	private function initActionsMenuButtons() {
 		// Menu Open xList
 		$itemQuad = new Quad();
-		$itemQuad->setImage($this->maniaControl->getManialinkManager()->getIconManager()->getIcon(IconManager::MX_ICON));
-		$itemQuad->setImageFocus($this->maniaControl->getManialinkManager()->getIconManager()->getIcon(IconManager::MX_ICON_MOVER));
+		$itemQuad->setImageUrl($this->maniaControl->getManialinkManager()->getIconManager()->getIcon(IconManager::MX_ICON));
+		$itemQuad->setImageFocusUrl($this->maniaControl->getManialinkManager()->getIconManager()->getIcon(IconManager::MX_ICON_MOVER));
 		$itemQuad->setAction(self::ACTION_OPEN_XLIST);
 		$this->maniaControl->getActionsMenu()->addPlayerMenuItem($itemQuad, 5, 'Open MX List');
 

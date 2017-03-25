@@ -137,22 +137,22 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		if ($this->maniaControl->getAuthenticationManager()->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
 			// Admin Menu Icon Frame
 			$iconFrame = new Frame();
-			$manialink->add($iconFrame);
+			$manialink->addChild($iconFrame);
 			$iconFrame->setPosition($posX, $posY);
 
 			$backgroundQuad = new Quad();
-			$iconFrame->add($backgroundQuad);
+			$iconFrame->addChild($backgroundQuad);
 			$backgroundQuad->setSize($itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
 			$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 
 			$itemQuad = new Quad_Icons64x64_1();
-			$iconFrame->add($itemQuad);
+			$iconFrame->addChild($itemQuad);
 			$itemQuad->setSubStyle($itemQuad::SUBSTYLE_IconServers);
 			$itemQuad->setSize($itemSize, $itemSize);
 
 			// Admin Menu Description
 			$descriptionLabel = new Label();
-			$manialink->add($descriptionLabel);
+			$manialink->addChild($descriptionLabel);
 			$descriptionLabel->setPosition($posX - count($this->adminMenuItems) * $itemSize * 1.15 - 6, $posY);
 			$descriptionLabel->setAlign($descriptionLabel::RIGHT, $descriptionLabel::TOP);
 			$descriptionLabel->setSize(40, 4);
@@ -161,15 +161,15 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 
 			// Admin Menu
 			$popoutFrame = new Frame();
-			$manialink->add($popoutFrame);
+			$manialink->addChild($popoutFrame);
 			$popoutFrame->setPosition($posX - $itemSize * 0.5, $posY);
-			$popoutFrame->setHAlign($popoutFrame::RIGHT);
+			$popoutFrame->setHorizontalAlign($popoutFrame::RIGHT);
 			$popoutFrame->setSize(4 * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
 			$popoutFrame->setVisible(false);
 
 			$backgroundQuad = new Quad();
-			$popoutFrame->add($backgroundQuad);
-			$backgroundQuad->setHAlign($backgroundQuad::RIGHT);
+			$popoutFrame->addChild($backgroundQuad);
+			$backgroundQuad->setHorizontalAlign($backgroundQuad::RIGHT);
 			$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 			$backgroundQuad->setSize(count($this->adminMenuItems) * $itemSize * 1.15 + 2, $itemSize * $itemMarginFactorY);
 
@@ -181,14 +181,14 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 				foreach ($menuItems as $menuItem) {
 					$menuQuad = $menuItem[0];
 					/** @var Quad $menuQuad */
-					$popoutFrame->add($menuQuad);
+					$popoutFrame->addChild($menuQuad);
 					$menuQuad->setSize($itemSize, $itemSize);
 					$menuQuad->setX($itemPosX);
-					$menuQuad->setHAlign($menuQuad::RIGHT);
+					$menuQuad->setHorizontalAlign($menuQuad::RIGHT);
 					$itemPosX -= $itemSize * 1.05;
 
 					if ($menuItem[1]) {
-						$menuQuad->removeScriptFeatures();
+						$menuQuad->removeAllScriptFeatures();
 						$description = '$s' . $menuItem[1];
 						$menuQuad->addTooltipLabelFeature($descriptionLabel, $description);
 					}
@@ -201,22 +201,22 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		 */
 		// Player Menu Icon Frame
 		$iconFrame = new Frame();
-		$manialink->add($iconFrame);
+		$manialink->addChild($iconFrame);
 		$iconFrame->setPosition($posX, $posY - $itemSize * $itemMarginFactorY);
 
 		$backgroundQuad = new Quad();
-		$iconFrame->add($backgroundQuad);
+		$iconFrame->addChild($backgroundQuad);
 		$backgroundQuad->setSize($itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 
 		$itemQuad = new Quad_Icons64x64_1();
-		$iconFrame->add($itemQuad);
+		$iconFrame->addChild($itemQuad);
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_IconPlayers);
 		$itemQuad->setSize($itemSize, $itemSize);
 
 		// Player Menu Description
 		$descriptionLabel = new Label();
-		$manialink->add($descriptionLabel);
+		$manialink->addChild($descriptionLabel);
 		$descriptionLabel->setPosition($posX - count($this->playerMenuItems) * $itemSize * 1.15 - 6, $posY - $itemSize * $itemMarginFactorY);
 		$descriptionLabel->setAlign($descriptionLabel::RIGHT, $descriptionLabel::TOP);
 		$descriptionLabel->setSize(40, 4);
@@ -225,15 +225,15 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 
 		// Player Menu
 		$popoutFrame = new Frame();
-		$manialink->add($popoutFrame);
+		$manialink->addChild($popoutFrame);
 		$popoutFrame->setPosition($posX - $itemSize * 0.5, $posY - $itemSize * $itemMarginFactorY);
-		$popoutFrame->setHAlign($popoutFrame::RIGHT);
+		$popoutFrame->setHorizontalAlign($popoutFrame::RIGHT);
 		$popoutFrame->setSize(4 * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
 		$popoutFrame->setVisible(false);
 
 		$backgroundQuad = new Quad();
-		$popoutFrame->add($backgroundQuad);
-		$backgroundQuad->setHAlign($backgroundQuad::RIGHT);
+		$popoutFrame->addChild($backgroundQuad);
+		$backgroundQuad->setHorizontalAlign($backgroundQuad::RIGHT);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 		$backgroundQuad->setSize(count($this->playerMenuItems) * $itemSize * 1.15 + 2, $itemSize * $itemMarginFactorY);
 
@@ -245,14 +245,14 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 			foreach ($menuItems as $menuItem) {
 				$menuQuad = $menuItem[0];
 				/** @var Quad $menuQuad */
-				$popoutFrame->add($menuQuad);
+				$popoutFrame->addChild($menuQuad);
 				$menuQuad->setSize($itemSize, $itemSize);
 				$menuQuad->setX($itemPosX);
-				$menuQuad->setHAlign($menuQuad::RIGHT);
+				$menuQuad->setHorizontalAlign($menuQuad::RIGHT);
 				$itemPosX -= $itemSize * 1.05;
 
 				if ($menuItem[1]) {
-					$menuQuad->removeScriptFeatures();
+					$menuQuad->removeAllScriptFeatures();
 					$description = '$s' . $menuItem[1];
 					$menuQuad->addTooltipLabelFeature($descriptionLabel, $description);
 				}

@@ -59,160 +59,160 @@ class PlayerDetailed {
 		$target = $this->maniaControl->getPlayerManager()->getPlayer($targetLogin);
 
 		// Create ManiaLink
-		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
-		$script    = $maniaLink->getScript();
+		$manialink = new ManiaLink(ManialinkManager::MAIN_MLID);
+		$script    = $manialink->getScript();
 
 		// Main frame
 		$frame = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultListFrame($script);
-		$maniaLink->add($frame);
+		$manialink->addChild($frame);
 
 		// Create script and features
 		$script = new Script();
-		$maniaLink->setScript($script);
+		$manialink->setScript($script);
 
 		$posY = $this->height / 2 - 7;
 
 		//Nation Quad
 		$countryQuad = new Quad();
-		$frame->add($countryQuad);
-		$countryQuad->setImage("file://ZoneFlags/Login/{$targetLogin}/country");
+		$frame->addChild($countryQuad);
+		$countryQuad->setImageUrl("file://ZoneFlags/Login/{$targetLogin}/country");
 		$countryQuad->setPosition(-$this->width / 2 + 10, $posY);
 		$countryQuad->setSize(5, 5);
 		$countryQuad->setZ(-0.1);
-		$countryQuad->setHAlign($countryQuad::LEFT);
+		$countryQuad->setHorizontalAlign($countryQuad::LEFT);
 
 		//Nickname
 		$label = new Label_Text();
-		$frame->add($label);
+		$frame->addChild($label);
 		$label->setPosition(-$this->width / 2 + 15, $posY);
 		$label->setText($target->nickname);
-		$label->setHAlign($label::LEFT);
+		$label->setHorizontalAlign($label::LEFT);
 
 
 		//Define MainLabel (Login)
 		$posY -= 8;
 		$mainLabel = new Label_Text();
-		$frame->add($mainLabel);
+		$frame->addChild($mainLabel);
 		$mainLabel->setPosition(-$this->width / 2 + 10, $posY);
 		$mainLabel->setTextSize(1.2);
-		$mainLabel->setHAlign($mainLabel::LEFT);
+		$mainLabel->setHorizontalAlign($mainLabel::LEFT);
 		$mainLabel->setText('Login: ');
 
 		$posY -= 5;
 		$label = clone $mainLabel;
-		$frame->add($label);
+		$frame->addChild($label);
 		$label->setY($posY);
 		$label->setText('Nation: ');
 
 		$posY -= 5;
 		$label = clone $mainLabel;
-		$frame->add($label);
+		$frame->addChild($label);
 		$label->setY($posY);
 		$label->setText('Province: ');
 
 		$posY -= 5;
 		$label = clone $mainLabel;
-		$frame->add($label);
+		$frame->addChild($label);
 		$label->setY($posY);
 		$label->setText('Authorization: ');
 
 		$posY -= 5;
 		$label = clone $mainLabel;
-		$frame->add($label);
+		$frame->addChild($label);
 		$label->setY($posY);
 		$label->setText("Ladder Rank:");
 
 		$posY -= 5;
 		$label = clone $mainLabel;
-		$frame->add($label);
+		$frame->addChild($label);
 		$label->setY($posY);
 		$label->setText('Ladder Score: ');
 
 		$posY -= 5;
 		$label = clone $mainLabel;
-		$frame->add($label);
+		$frame->addChild($label);
 		$label->setY($posY);
 		$label->setText('Inscribed Zone: ');
 
 		$posY -= 5;
 		$label = clone $mainLabel;
-		$frame->add($label);
+		$frame->addChild($label);
 		$label->setY($posY);
 		$label->setText('Avatar');
 
 		//Login
 		$posY      = $this->height / 2 - 15;
 		$mainLabel = new Label_Text();
-		$frame->add($mainLabel);
+		$frame->addChild($mainLabel);
 		$mainLabel->setPosition(-$this->width / 2 + 30, $posY);
 		$mainLabel->setText($target->login);
 		$mainLabel->setTextSize(1.2);
-		$mainLabel->setHAlign($mainLabel::LEFT);
+		$mainLabel->setHorizontalAlign($mainLabel::LEFT);
 
 		//Country
 		$posY -= 5;
 		$label = clone $mainLabel;
-		$frame->add($label);
+		$frame->addChild($label);
 		$label->setY($posY);
 		$label->setText($target->getCountry());
 
 		//Province
 		$posY -= 5;
 		$label = clone $mainLabel;
-		$frame->add($label);
+		$frame->addChild($label);
 		$label->setY($posY);
 		$label->setText($target->getProvince());
 
 		//AuthLevel
 		$posY -= 5;
 		$label = clone $mainLabel;
-		$frame->add($label);
+		$frame->addChild($label);
 		$label->setY($posY);
 		$label->setText($this->maniaControl->getAuthenticationManager()->getAuthLevelName($target->authLevel));
 
 		//LadderRank
 		$posY -= 5;
 		$label = clone $mainLabel;
-		$frame->add($label);
+		$frame->addChild($label);
 		$label->setY($posY);
 		$label->setText($target->ladderRank);
 
 		//LadderScore
 		$posY -= 5;
 		$label = clone $mainLabel;
-		$frame->add($label);
+		$frame->addChild($label);
 		$label->setY($posY);
 		$label->setText(round($target->ladderScore, 2));
 
 		//Played Since
 		$posY -= 5;
 		$label = clone $mainLabel;
-		$frame->add($label);
+		$frame->addChild($label);
 		$label->setY($posY);
 		$label->setText(date('d M Y', time() - 3600 * 24 * $target->daysSinceZoneInscription));
 
 		$quad = new Quad();
-		$frame->add($quad);
-		$quad->setImage('file://Avatars/' . $targetLogin . "/default");
+		$frame->addChild($quad);
+		$quad->setImageUrl('file://Avatars/' . $targetLogin . "/default");
 		$quad->setPosition(-$this->width / 2 + 50, -$this->height / 2 + 34);
 		$quad->setAlign($quad::RIGHT, $quad::TOP);
 		$quad->setSize(20, 20);
 
 		//Statistics
-		$frame->add($this->statisticsFrame($target));
+		$frame->addChild($this->statisticsFrame($target));
 
 
 		$quad = new Label_Button();
-		$frame->add($quad);
+		$frame->addChild($quad);
 		$quad->setStyle($quad::STYLE_CardMain_Quit);
-		$quad->setHAlign($quad::LEFT);
+		$quad->setHorizontalAlign($quad::LEFT);
 		$quad->setScale(0.75);
 		$quad->setText('Back');
 		$quad->setPosition(-$this->width / 2 + 7, -$this->height / 2 + 7);
 		$quad->setAction(PlayerCommands::ACTION_OPEN_PLAYERLIST);
 
 		// render and display xml
-		$this->maniaControl->getManialinkManager()->displayWidget($maniaLink, $player, 'PlayerDetailed');
+		$this->maniaControl->getManialinkManager()->displayWidget($manialink, $player, 'PlayerDetailed');
 	}
 
 	/**
@@ -244,22 +244,22 @@ class PlayerDetailed {
 
 			if ($index % 2 !== 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
-				$frame->add($lineQuad);
+				$frame->addChild($lineQuad);
 				$lineQuad->setSize(49, 4);
 				$lineQuad->setSubStyle($lineQuad::SUBSTYLE_BgPlayerCardBig);
 				$lineQuad->setPosition($posX, $posY, 0.001);
-				$lineQuad->setHAlign($lineQuad::LEFT);
+				$lineQuad->setHorizontalAlign($lineQuad::LEFT);
 			}
 
 			$label = new Label_Text();
-			$frame->add($label);
+			$frame->addChild($label);
 			$label->setPosition($posX + 4, $posY);
 			$label->setText($statProperties->name);
-			$label->setHAlign($label::LEFT);
+			$label->setHorizontalAlign($label::LEFT);
 			$label->setTextSize(1.5);
 
 			$label = new Label_Text();
-			$frame->add($label);
+			$frame->addChild($label);
 			$label->setPosition($posX + 40, $posY);
 			$label->setText($value);
 			$label->setTextSize(1.5);
