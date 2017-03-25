@@ -8,27 +8,24 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 
 /**
- * Structure Class for the OnShoot Structure Callback
+ * Structure Class for the OnPlayerRequestRespawnStructure Structure Callback
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class OnShootStructure extends BaseStructure {
+class OnPlayerRequestRespawnStructure extends BaseStructure {
 	public $time;
-	public $weapon;
 	/**
 	 * @var Player $shooter
 	 */
-	private $shooter;
+	private $player;
 
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
 
-		$this->time    = $this->getPlainJsonObject()->time;
-		$this->weapon  = $this->getPlainJsonObject()->weapon;
-
-		$this->shooter = $this->maniaControl->getPlayerManager()->getPlayer($this->getPlainJsonObject()->shooter);
+		$this->time   = $this->getPlainJsonObject()->time;
+		$this->player = $this->maniaControl->getPlayerManager()->getPlayer($this->getPlainJsonObject()->victim);
 	}
 
 	/**
@@ -39,22 +36,15 @@ class OnShootStructure extends BaseStructure {
 	}
 
 	/**
-	 * @return int
-	 */
-	public function getWeapon() {
-		return $this->weapon;
-	}
-
-	/**
 	 * @return Player
 	 */
-	public function getShooter() {
-		return $this->shooter;
+	public function getPlayer() {
+		return $this->player;
 	}
 
 	/** Dumps the Object with some Information */
 	public function dump() {
 		parent::dump();
-		var_dump("With getShooter() you get a Player Object");
+		var_dump("With getPlayer() you get a Player Object");
 	}
 }

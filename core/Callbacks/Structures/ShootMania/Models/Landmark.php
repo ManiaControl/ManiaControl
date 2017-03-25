@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Lukas
- * Date: 25. Mär. 2017
- * Time: 11:37
- */
 
 namespace ManiaControl\Callbacks\Structures\ShootMania\Models;
 

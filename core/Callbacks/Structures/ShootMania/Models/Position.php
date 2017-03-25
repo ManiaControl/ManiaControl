@@ -3,7 +3,7 @@
 
 namespace ManiaControl\Callbacks\Structures\ShootMania\Models;
 
-
+//TODO describtion
 class Position {
 	private $x = 0;
 	private $y = 0;

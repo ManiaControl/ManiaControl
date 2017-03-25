@@ -63,17 +63,17 @@ interface Callbacks {
 
 	const SM_SCORES = "Shootmania.Scores";
 
-	const SM_EVENTDEFAULT = "Shootmania.Event.Default";
-	const SM_ONSHOOT      = "Shootmania.Event.OnShoot";
-	const SM_ONHIT        = "Shootmania.Event.OnHit";
-	const SM_ONNEARMISS   = "Shootmania.Event.OnNearMiss";
-	const SM_ONARMOREMPTY = "Shootmania.Event.OnArmorEmpty";
-	const SM_ONCAPTURE    = "Shootmania.Event.OnCapture";
-	const SM_ONSHOTDENY   = "Shootmania.Event.OnShotDeny";
-	const SM_ONFALLDAMAGE = "Shootmania.Event.OnFallDamage";
-	const SM_ONCOMMAND    = "Shootmania.Event.OnCommand";
+	const SM_ONEVENTDEFAULT = "Shootmania.Event.Default";
+	const SM_ONSHOOT        = "Shootmania.Event.OnShoot";
+	const SM_ONHIT          = "Shootmania.Event.OnHit";
+	const SM_ONNEARMISS     = "Shootmania.Event.OnNearMiss";
+	const SM_ONARMOREMPTY   = "Shootmania.Event.OnArmorEmpty";
+	const SM_ONCAPTURE      = "Shootmania.Event.OnCapture";
+	const SM_ONSHOTDENY     = "Shootmania.Event.OnShotDeny";
+	const SM_ONFALLDAMAGE   = "Shootmania.Event.OnFallDamage";
+	const SM_ONCOMMAND      = "Shootmania.Event.OnCommand";
 	//Shootmania.Event.OnPlayerRemoved Shootmania.Event.OnPlayerAdded not needed yet
-	const SM_ONPLAYERREQUESTRESAWPN      = "Shootmania.Event.OnPlayerRequestRespawn";
+	const SM_ONPLAYERREQUESTRESPAWN      = "Shootmania.Event.OnPlayerRequestRespawn";
 	const SM_ONACTIONCUSTOMEVENT         = "Shootmania.Event.OnActionCustomEvent";
 	const SM_ONACTIONEVENT               = "Shootmania.Event.OnActionEvent";
 	const SM_ONPLAYERTOUCHESOBJECT       = "Shootmania.Event.OnPlayerTouchesObject";
@@ -82,7 +82,7 @@ interface Callbacks {
 	const SM_ONPLAYERREQUESTACTIONCHANGE = "Shootmania.Event.OnPlayerRequestActionChange";
 
 
-	const TM_EVENTDEFAULT = "Trackmania.Event.Default";
+	const TM_ONEVENTDEFAULT = "Trackmania.Event.Default";
 
 	//ManiaControl Callbacks
 	/** BeginMap Callback: Map */
