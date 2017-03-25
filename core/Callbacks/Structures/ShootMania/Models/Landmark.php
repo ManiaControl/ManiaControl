@@ -6,7 +6,7 @@
  * Time: 11:37
  */
 
-namespace ManiaControl\Callbacks\Structures\ShootMania;
+namespace ManiaControl\Callbacks\Structures\ShootMania\Models;
 
 
 class Landmark {

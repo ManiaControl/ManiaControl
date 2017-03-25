@@ -1,7 +1,7 @@
 <?php
 
 
-namespace ManiaControl\Callbacks\Structures\ShootMania;
+namespace ManiaControl\Callbacks\Structures\ShootMania\Models;
 
 
 class Position {
