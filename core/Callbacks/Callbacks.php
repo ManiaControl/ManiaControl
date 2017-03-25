@@ -30,35 +30,36 @@ interface Callbacks {
 	 */
 	//NEW Callbacks
 
-	const XMLRPC_CALLBACKSLIST = 'Callbacks.XmlRpcCallbacksList';
-	const MP_STARTSERVERSTART  = 'Callbacks.ManiaPlanetStartServerStart';
-	const MP_STARTSERVEREND    = 'Callbacks.ManiaPlanetStartServerEnd';
-	const MP_STARTMATCHSTART   = 'Callbacks.ManiaPlanetStartMatchStart';
-	const MP_STARTMATCHEND     = 'Callbacks.ManiaPlanetStartMatchEnd';
-	//const MP_STARTMAPSTART      = 'Callbacks.ManiaPlanetStartMapStart';
-	//const MP_STARTMAPEND        = 'Callbacks.ManiaPlanetStartMapEnd';
-	const MP_STARTROUNDSTART    = 'Callbacks.ManiaPlanetStartRoundStart';
-	const MP_STARTROUNDEND      = 'Callbacks.ManiaPlanetStartRoundEnd';
-	const MP_STARTTURNSTART     = 'Callbacks.ManiaPlanetStartTurnStart';
-	const MP_STARTTURNEND       = 'Callbacks.ManiaPlanetStartTurnEnd';
-	const MP_STARTPLAYLOOPSTART = 'Callbacks.ManiaPlanetStartPlayLoopStart';
-	const MP_STARTPLAYLOOPEND   = 'Callbacks.ManiaPlanetStartPlayLoopEnd';
-	const MP_ENDTURNSTART       = 'Callbacks.ManiaPlanetEndTurnStart';
-	const MP_ENDTURNEND         = 'Callbacks.ManiaPlanetEndTurnEnd';
-	const MP_ENDROUNDSTART      = 'Callbacks.ManiaPlanetEndRoundStart';
-	const MP_ENDROUNDEND        = 'Callbacks.ManiaPlanetEndRoundEnd';
-	//const MP_ENDMAPSTART        = 'Callbacks.ManiaPlanetEndMapStart';
-	//const MP_ENDMAPEND          = 'Callbacks.ManiaPlanetEndMapEnd';
-	const MP_ENDMATCHSTART     = 'Callbacks.ManiaPlanetEndMatchStart';
-	const MP_ENDMATCHEND       = 'Callbacks.ManiaPlanetEndMatchEnd';
-	const MP_ENDSERVERSTART    = 'Callbacks.ManiaPlanetEndServerStart';
-	const MP_ENDSERVEREND      = 'Callbacks.ManiaPlanetEndServerEnd';
-	const MP_LOADINGMAPSTART   = 'Callbacks.ManiaPlanetLoadingMapStart';
-	const MP_LOADINGMAPEND     = 'Callbacks.ManiaPlanetLoadingMapEnd';
-	const MP_UNLOADINGMAPSTART = 'Callbacks.ManiaPlanetUnLoadingMapStart';
-	const MP_UNLOADINGMAPEND   = 'Callbacks.ManiaPlanetUnLoadingMapEnd';
-	const MP_PODIUMSTART       = 'Callbacks.ManiaPlanetPodiumStart';
-	const MP_PODIUMEND         = 'Callbacks.ManiaPlanetPodiumEnd';
+	const XMLRPC_CALLBACKSLIST = 'XmlRpc.CallbacksList';
+
+	const MP_STARTSERVERSTART = 'Maniaplanet.StartServer_Start';
+	const MP_STARTSERVEREND   = 'Maniaplanet.StartServer_End';
+	const MP_STARTMATCHSTART  = 'Maniaplanet.StartMatch_Start';
+	const MP_STARTMATCHEND    = 'Maniaplanet.StartMatch_End';
+	//const MP_STARTMAPSTART      = 'Maniaplanet.StartMap_Start';
+	//const MP_STARTMAPEND        = 'Maniaplanet.StartMap_End';
+	const MP_STARTROUNDSTART = 'Maniaplanet.StartRound_Start';
+	const MP_STARTROUNDEND   = 'Maniaplanet.StartRound_End';
+	const MP_STARTTURNSTART  = 'Maniaplanet.StartTurn_Start';
+	const MP_STARTTURNEND    = 'Maniaplanet.StartTurn_End';
+	const MP_STARTPLAYLOOP   = 'Maniaplanet.StartPlayLoop';
+	const MP_ENDPLAYLOOP     = 'Maniaplanet.EndPlayLoop';
+	const MP_ENDTURNSTART    = 'Maniaplanet.EndTurn_Start';
+	const MP_ENDTURNEND      = 'Maniaplanet.EndTurn_End';
+	const MP_ENDROUNDSTART   = 'Maniaplanet.EndRound_Start';
+	const MP_ENDROUNDEND     = 'Maniaplanet.EndRound_End';
+	//const MP_ENDMAPSTART        = 'Maniaplanet.EndMap_Start';
+	//const MP_ENDMAPEND          = 'Maniaplanet.EndMap_End';
+	const MP_ENDMATCHSTART     = 'Maniaplanet.EndMatch_Start';
+	const MP_ENDMATCHEND       = 'Maniaplanet.EndMatch_End';
+	const MP_ENDSERVERSTART    = 'Maniaplanet.EndServer_Start';
+	const MP_ENDSERVEREND      = 'Maniaplanet.EndServer_End';
+	const MP_LOADINGMAPSTART   = 'Maniaplanet.LoadingMap_Start';
+	const MP_LOADINGMAPEND     = 'Maniaplanet.LoadingMap_End';
+	const MP_UNLOADINGMAPSTART = 'Maniaplanet.UnloadingMap_Start';
+	const MP_UNLOADINGMAPEND   = 'Maniaplanet.UnloadingMap_End';
+	const MP_PODIUMSTART       = 'Maniaplanet.Podium_Start';
+	const MP_PODIUMEND         = 'Maniaplanet.Podium_End';
 
 	const SM_SCORES = "Shootmania.Scores";
 
