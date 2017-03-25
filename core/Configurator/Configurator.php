@@ -9,6 +9,7 @@ use FML\Controls\Quads\Quad_BgRaceScore2;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Controls\Quads\Quad_UIConstruction_Buttons;
 use FML\ManiaLink;
+use FML\Script\Script;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
@@ -134,8 +135,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	 * @param Player $player
 	 */
 	public function handleConfigCommand(array $callback, Player $player) {
-		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_OPEN_CONFIGURATOR)
-		) {
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_OPEN_CONFIGURATOR)) {
 			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
@@ -199,15 +199,16 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 
 		$frame = new Frame();
 		$manialink->add($frame);
-		$frame->setPosition($menuPosX, $menuPosY, 34);
+		$frame->setPosition($menuPosX, $menuPosY, ManialinkManager::MAIN_MANIALINK_Z_VALUE);
 
 		$backgroundQuad = new Quad();
 		$frame->add($backgroundQuad);
-		$backgroundQuad->setZ(-2)->setSize($menuWidth, $menuHeight)->setStyles($quadStyle, $quadSubstyle);
+		$backgroundQuad->setZ(-1)->setSize($menuWidth, $menuHeight)->setStyles($quadStyle, $quadSubstyle);
 
 		$menuItemsFrame = new Frame();
 		$frame->add($menuItemsFrame);
 		$menuItemsFrame->setX($menuWidth * -0.5 + $menuListWidth * 0.5);
+		$menuItemsFrame->setZ(-1);
 
 		$itemsBackgroundQuad = new Quad();
 		$menuItemsFrame->add($itemsBackgroundQuad);
@@ -226,8 +227,9 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		foreach ($this->menus as $menu) {
 			// Add title
 			$menuItemLabel = new Label_Text();
-			$menuItemsFrame->add($menuItemLabel);
-			$menuItemLabel->setY($menuItemY)->setSize($menuListWidth * 0.9, $menuItemHeight * 0.9)->setStyle($menuItemLabel::STYLE_TextCardRaceRank)->setText($menu->getTitle())->setAction(self::ACTION_SELECTMENU . $menuId);
+			$frame->add($menuItemLabel);
+			$menuItemLabel->setX($menuWidth * -0.5 + $menuListWidth * 0.5);
+			$menuItemLabel->setZ(2)->setStyle(Label_Text::STYLE_TextCardRaceRank)->setY($menuItemY)->setSize($menuListWidth * 0.9, $menuItemHeight * 0.9)->setText($menu->getTitle())->setAction(self::ACTION_SELECTMENU . $menuId);
 
 			// Show the menu
 			if ($menuId === $menuIdShown) {
@@ -251,12 +253,12 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		// Add close button
 		$closeButton = new Label_Text();
 		$frame->add($closeButton);
-		$closeButton->setPosition($menuWidth * -0.5 + $menuListWidth * 0.29, $menuHeight * -0.43)->setSize($menuListWidth * 0.3, $menuListWidth * 0.1)->setStyle($closeButton::STYLE_TextButtonNavBack)->setTextPrefix('$999')->setTranslate(true)->setText('Close')->setAction(self::ACTION_TOGGLEMENU);
+		$closeButton->setPosition($menuWidth * -0.5 + $menuListWidth * 0.29, $menuHeight * -0.43)->setSize($menuListWidth * 0.3, $menuListWidth * 0.1)->setStyle($closeButton::STYLE_TextButtonNavBack)->setTextPrefix('$999')->setText('Close')->setAction(self::ACTION_TOGGLEMENU);
 
 		// Add save button
 		$saveButton = new Label_Text();
 		$frame->add($saveButton);
-		$saveButton->setPosition($menuWidth * -0.5 + $menuListWidth * 0.71, $menuHeight * -0.43)->setSize($menuListWidth * 0.3, $menuListWidth * 0.1)->setStyle($saveButton::STYLE_TextButtonNavBack)->setTextPrefix('$0f5')->setTranslate(true)->setText('Save')->setAction(self::ACTION_SAVECONFIG);
+		$saveButton->setPosition($menuWidth * -0.5 + $menuListWidth * 0.71, $menuHeight * -0.43)->setSize($menuListWidth * 0.3, $menuListWidth * 0.1)->setStyle($saveButton::STYLE_TextButtonNavBack)->setTextPrefix('$2af')->setText('Save')->setAction(self::ACTION_SAVECONFIG);
 
 		return $manialink;
 	}

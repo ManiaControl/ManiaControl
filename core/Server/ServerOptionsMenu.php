@@ -104,7 +104,7 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 	}
 
 	/**
-	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getTitle()
+	 * @see \ManiaControl\Configurator\ConfiguratorMenu::getTitle()
 	 */
 	public static function getTitle() {
 		return 'Server Options';
@@ -241,7 +241,7 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 	}
 
 	/**
-	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getMenu()
+	 * @see \ManiaControl\Configurator\ConfiguratorMenu::getMenu()
 	 */
 	public function getMenu($width, $height, Script $script, Player $player) {
 		$paging = new Paging();
@@ -269,7 +269,7 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 		$frame->add($pageCountLabel);
 		$pageCountLabel->setHAlign($pageCountLabel::RIGHT)->setPosition($width * 0.35, $height * -0.44, 1)->setStyle($pageCountLabel::STYLE_TextTitle1)->setTextSize(2);
 
-		$paging->addButton($pagerNext)->addButton($pagerPrev)->setLabel($pageCountLabel);
+		$paging->addButtonControl($pagerNext)->addButtonControl($pagerPrev)->setLabel($pageCountLabel);
 
 		// Pages
 		$posY      = 0.;
@@ -287,7 +287,7 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
 				$posY = $height * 0.41;
-				$paging->addPage($pageFrame);
+				$paging->addPageControl($pageFrame);
 			}
 
 			$optionsFrame = new Frame();
@@ -326,7 +326,7 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 	}
 
 	/**
-	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
+	 * @see \ManiaControl\Configurator\ConfiguratorMenu::saveConfigData()
 	 */
 	public function saveConfigData(array $configData, Player $player) {
 		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_CHANGE_SERVER_OPTIONS)) {

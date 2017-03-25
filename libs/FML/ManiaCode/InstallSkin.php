@@ -6,93 +6,151 @@ namespace FML\ManiaCode;
  * ManiaCode Element installing a skin
  *
  * @author    steeffeen <mail@steeffeen.com>
- * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @copyright FancyManiaLinks Copyright © 2017 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class InstallSkin extends Element {
-	/*
-	 * Protected properties
-	 */
-	protected $tagName = 'install_skin';
-	protected $name = null;
-	protected $file = null;
-	protected $url = null;
+class InstallSkin implements Element
+{
 
-	/**
-	 * Create a new InstallSkin object
-	 *
-	 * @param string $name (optional) Skin name
-	 * @param string $file (optional) Skin file
-	 * @param string $url  (optional) Skin url
-	 * @return static
-	 */
-	public static function create($name = null, $file = null, $url = null) {
-		return new static($name, $file, $url);
-	}
+    /**
+     * @var string $name Skin name
+     */
+    protected $name = null;
 
-	/**
-	 * Construct a new InstallSkin object
-	 *
-	 * @param string $name (optional) Skin name
-	 * @param string $file (optional) Skin file
-	 * @param string $url  (optional) Skin url
-	 */
-	public function __construct($name = null, $file = null, $url = null) {
-		if ($name !== null) {
-			$this->setName($name);
-		}
-		if ($file !== null) {
-			$this->setFile($file);
-		}
-		if ($url !== null) {
-			$this->setUrl($url);
-		}
-	}
+    /**
+     * @var string $file Skin file
+     */
+    protected $file = null;
 
-	/**
-	 * Set the name of the skin
-	 *
-	 * @param string $name Skin name
-	 * @return static
-	 */
-	public function setName($name) {
-		$this->name = (string)$name;
-		return $this;
-	}
+    /**
+     * @var string $url Skin url
+     */
+    protected $url = null;
 
-	/**
-	 * Set the file of the skin
-	 *
-	 * @param string $file Skin file
-	 * @return static
-	 */
-	public function setFile($file) {
-		$this->file = (string)$file;
-		return $this;
-	}
+    /**
+     * Create a new InstallSkin Element
+     *
+     * @api
+     * @param string $name (optional) Skin name
+     * @param string $file (optional) Skin file
+     * @param string $url  (optional) Skin url
+     * @return static
+     */
+    public static function create($name = null, $file = null, $url = null)
+    {
+        return new static($name, $file, $url);
+    }
 
-	/**
-	 * Set the url of the skin
-	 *
-	 * @param string $url Skin url
-	 * @return static
-	 */
-	public function setUrl($url) {
-		$this->url = (string)$url;
-		return $this;
-	}
+    /**
+     * Construct a new InstallSkin Element
+     *
+     * @api
+     * @param string $name (optional) Skin name
+     * @param string $file (optional) Skin file
+     * @param string $url  (optional) Skin url
+     */
+    public function __construct($name = null, $file = null, $url = null)
+    {
+        if ($name) {
+            $this->setName($name);
+        }
+        if ($file) {
+            $this->setFile($file);
+        }
+        if ($url) {
+            $this->setUrl($url);
+        }
+    }
 
-	/**
-	 * @see \FML\ManiaCode\Element::render()
-	 */
-	public function render(\DOMDocument $domDocument) {
-		$xmlElement  = parent::render($domDocument);
-		$nameElement = $domDocument->createElement('name', $this->name);
-		$xmlElement->appendChild($nameElement);
-		$fileElement = $domDocument->createElement('file', $this->file);
-		$xmlElement->appendChild($fileElement);
-		$urlElement = $domDocument->createElement('url', $this->url);
-		$xmlElement->appendChild($urlElement);
-		return $xmlElement;
-	}
+    /**
+     * Get the skin name
+     *
+     * @api
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set the skin name
+     *
+     * @api
+     * @param string $name Skin name
+     * @return static
+     */
+    public function setName($name)
+    {
+        $this->name = (string)$name;
+        return $this;
+    }
+
+    /**
+     * Get the skin file
+     *
+     * @api
+     * @return string
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    /**
+     * Set the skin file
+     *
+     * @api
+     * @param string $file Skin file
+     * @return static
+     */
+    public function setFile($file)
+    {
+        $this->file = (string)$file;
+        return $this;
+    }
+
+    /**
+     * Get the skin url
+     *
+     * @api
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * Set the skin url
+     *
+     * @api
+     * @param string $url Skin url
+     * @return static
+     */
+    public function setUrl($url)
+    {
+        $this->url = (string)$url;
+        return $this;
+    }
+
+    /**
+     * @see Element::render()
+     */
+    public function render(\DOMDocument $domDocument)
+    {
+        $domElement = $domDocument->createElement("install_skin");
+
+        $nameElement = $domDocument->createElement("name", $this->name);
+        $domElement->appendChild($nameElement);
+
+        $fileElement = $domDocument->createElement("file", $this->file);
+        $domElement->appendChild($fileElement);
+
+        $urlElement = $domDocument->createElement("url", $this->url);
+        $domElement->appendChild($urlElement);
+
+        return $domElement;
+    }
+
 }

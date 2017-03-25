@@ -69,7 +69,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	}
 
 	/**
-	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getTitle()
+	 * @see \ManiaControl\Configurator\ConfiguratorMenu::getTitle()
 	 */
 	public static function getTitle() {
 		return 'Plugins';
@@ -87,7 +87,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	}
 
 	/**
-	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getMenu()
+	 * @see \ManiaControl\Configurator\ConfiguratorMenu::getMenu()
 	 */
 	public function getMenu($width, $height, Script $script, Player $player) {
 		$paging = new Paging();
@@ -114,8 +114,8 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 		$pagerNext->setSize($pagerSize, $pagerSize);
 		$pagerNext->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowNext);
 
-		$paging->addButton($pagerNext);
-		$paging->addButton($pagerPrev);
+		$paging->addButtonControl($pagerNext);
+		$paging->addButtonControl($pagerPrev);
 
 		$pageCountLabel = new Label_Text();
 		$frame->add($pageCountLabel);
@@ -149,7 +149,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			if ($index % $pageMaxCount === 0) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
-				$paging->addPage($pageFrame);
+				$paging->addPageControl($pageFrame);
 				$posY = $height * 0.41;
 			}
 
@@ -186,11 +186,10 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			$descriptionLabel->setTextSize(2);
 			$descriptionLabel->setTranslate(true);
 			$descriptionLabel->setVisible(false);
-			$descriptionLabel->setAutoNewLine(true);
 			$descriptionLabel->setMaxLines(5);
+			$descriptionLabel->setLineSpacing(1);
 			$description = "Author: {$pluginClass::getAuthor()}\nVersion: {$pluginClass::getVersion()}\nDesc: {$pluginClass::getDescription()}";
-			$descriptionLabel->setText($description);
-			$nameLabel->addTooltipFeature($descriptionLabel);
+			$nameLabel->addTooltipLabelFeature($descriptionLabel,$description);
 
 			$quad = new Quad_Icons128x32_1();
 			$pluginFrame->add($quad);
@@ -278,7 +277,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			if ($index % $pageSettingsMaxCount === 0) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
-				$paging->addPage($pageFrame);
+				$paging->addPageControl($pageFrame);
 				$posY = $height * 0.41 - $settingHeight * 1.5;
 			}
 
@@ -392,7 +391,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	}
 
 	/**
-	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
+	 * @see \ManiaControl\Configurator\ConfiguratorMenu::saveConfigData()
 	 */
 	public function saveConfigData(array $configData, Player $player) {
 		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_CHANGE_PLUGIN_SETTINGS)

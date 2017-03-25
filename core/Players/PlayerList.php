@@ -179,7 +179,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
 
-				$paging->addPage($pageFrame);
+				$paging->addPageControl($pageFrame);
 				$posY = $height / 2 - 10;
 			}
 

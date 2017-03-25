@@ -6,261 +6,276 @@ namespace FML\Elements;
  * Dictionary Element
  *
  * @author    steeffeen <mail@steeffeen.com>
- * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @copyright FancyManiaLinks Copyright © 2017 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class Dico {
-	/**
-	 * Czech language
-	 *
-	 * @var string
-	 */
-	const LANG_CZECH = 'cz';
+class Dico
+{
 
-	/**
-	 * Danish language
-	 *
-	 * @var string
-	 */
-	const LANG_DANISH = 'da';
+    /**
+     * Czech language
+     *
+     * @var string
+     */
+    const LANG_CZECH = 'cz';
 
-	/**
-	 * German language
-	 *
-	 * @var string
-	 */
-	const LANG_GERMAN = 'de';
+    /**
+     * Danish language
+     *
+     * @var string
+     */
+    const LANG_DANISH = 'da';
 
-	/**
-	 * English language
-	 *
-	 * @var string
-	 */
-	const LANG_ENGLISH = 'en';
+    /**
+     * German language
+     *
+     * @var string
+     */
+    const LANG_GERMAN = 'de';
 
-	/**
-	 * Spanish language
-	 *
-	 * @var string
-	 */
-	const LANG_SPANISH = 'es';
+    /**
+     * English language
+     *
+     * @var string
+     */
+    const LANG_ENGLISH = 'en';
 
-	/**
-	 * French language
-	 *
-	 * @var string
-	 */
-	const LANG_FRENCH = 'fr';
+    /**
+     * Spanish language
+     *
+     * @var string
+     */
+    const LANG_SPANISH = 'es';
 
-	/**
-	 * Hungarian language
-	 *
-	 * @var string
-	 */
-	const LANG_HUNGARIAN = 'hu';
+    /**
+     * French language
+     *
+     * @var string
+     */
+    const LANG_FRENCH = 'fr';
 
-	/**
-	 * Italian language
-	 *
-	 * @var string
-	 */
-	const LANG_ITALIAN = 'it';
+    /**
+     * Hungarian language
+     *
+     * @var string
+     */
+    const LANG_HUNGARIAN = 'hu';
 
-	/**
-	 * Japanese language
-	 *
-	 * @var string
-	 */
-	const LANG_JAPANESE = 'jp';
+    /**
+     * Italian language
+     *
+     * @var string
+     */
+    const LANG_ITALIAN = 'it';
 
-	/**
-	 * Korean language
-	 *
-	 * @var string
-	 */
-	const LANG_KOREAN = 'kr';
+    /**
+     * Japanese language
+     *
+     * @var string
+     */
+    const LANG_JAPANESE = 'jp';
 
-	/**
-	 * Norwegian language
-	 *
-	 * @var string
-	 */
-	const LANG_NORWEGIAN = 'nb';
+    /**
+     * Korean language
+     *
+     * @var string
+     */
+    const LANG_KOREAN = 'kr';
 
-	/**
-	 * Dutch language
-	 *
-	 * @var string
-	 */
-	const LANG_DUTCH = 'nl';
+    /**
+     * Norwegian language
+     *
+     * @var string
+     */
+    const LANG_NORWEGIAN = 'nb';
 
-	/**
-	 * Polish language
-	 *
-	 * @var string
-	 */
-	const LANG_POLISH = 'pl';
+    /**
+     * Dutch language
+     *
+     * @var string
+     */
+    const LANG_DUTCH = 'nl';
 
-	/**
-	 * Portuguese language
-	 *
-	 * @var string
-	 */
-	const LANG_PORTUGUESE = 'pt';
+    /**
+     * Polish language
+     *
+     * @var string
+     */
+    const LANG_POLISH = 'pl';
 
-	/**
-	 * Brazilian Portuguese language
-	 *
-	 * @var string
-	 */
-	const LANG_BRAZILIAN_PORTUGUESE = 'pt_BR';
+    /**
+     * Portuguese language
+     *
+     * @var string
+     */
+    const LANG_PORTUGUESE = 'pt';
 
-	/**
-	 * Romanian language
-	 *
-	 * @var string
-	 */
-	const LANG_ROMANIAN = 'ro';
+    /**
+     * Brazilian Portuguese language
+     *
+     * @var string
+     */
+    const LANG_BRAZILIAN_PORTUGUESE = 'pt_BR';
 
-	/**
-	 * Russian language
-	 *
-	 * @var string
-	 */
-	const LANG_RUSSIAN = 'ru';
+    /**
+     * Romanian language
+     *
+     * @var string
+     */
+    const LANG_ROMANIAN = 'ro';
 
-	/**
-	 * Slovak language
-	 *
-	 * @var string
-	 */
-	const LANG_SLOVAK = 'sk';
+    /**
+     * Russian language
+     *
+     * @var string
+     */
+    const LANG_RUSSIAN = 'ru';
 
-	/**
-	 * Turkish language
-	 *
-	 * @var string
-	 */
-	const LANG_TURKISH = 'tr';
+    /**
+     * Slovak language
+     *
+     * @var string
+     */
+    const LANG_SLOVAK = 'sk';
 
-	/**
-	 * Chinese language
-	 *
-	 * @var string
-	 */
-	const LANG_CHINESE = 'zh';
+    /**
+     * Turkish language
+     *
+     * @var string
+     */
+    const LANG_TURKISH = 'tr';
 
-	/*
-	 * Protected properties
-	 */
-	protected $tagName = 'dico';
-	protected $entries = array();
+    /**
+     * Chinese language
+     *
+     * @var string
+     */
+    const LANG_CHINESE = 'zh';
 
-	/**
-	 * Create a new Dictionary object
-	 *
-	 * @return static
-	 */
-	public static function create() {
-		return new static();
-	}
+    /*
+     * Protected properties
+     */
+    protected $entries = array();
 
-	/**
-	 * Set the translatable entry for the specific language
-	 *
-	 * @param string $language   Language id
-	 * @param string $entryId    Entry id
-	 * @param string $entryValue Translated entry value
-	 * @return static
-	 */
-	public function setEntry($language, $entryId, $entryValue) {
-		$language   = (string)$language;
-		$entryId    = (string)$entryId;
-		$entryValue = (string)$entryValue;
-		if (!isset($this->entries[$language]) && $entryValue) {
-			$this->entries[$language] = array();
-		}
-		if ($entryValue) {
-			$this->entries[$language][$entryId] = $entryValue;
-		} else {
-			if (isset($this->entries[$language][$entryId])) {
-				unset($this->entries[$language][$entryId]);
-			}
-		}
-		return $this;
-	}
+    /**
+     * Create a new Dico
+     *
+     * @api
+     * @return static
+     */
+    public static function create()
+    {
+        return new static();
+    }
 
-	/**
-	 * Remove entries of the given id
-	 *
-	 * @param string $entryId  Entry id that should be removed
-	 * @param string $language (optional) Only remove entries of the given language
-	 * @return static
-	 */
-	public function removeEntry($entryId, $language = null) {
-		$entryId = (string)$entryId;
-		if ($language) {
-			$language = (string)$language;
-			if (isset($this->entries[$language])) {
-				unset($this->entries[$language][$entryId]);
-			}
-		} else {
-			foreach ($this->entries as $language => $entries) {
-				if (isset($entries[$entryId])) {
-					unset($entries[$language][$entryId]);
-				}
-			}
-		}
-		return $this;
-	}
+    /**
+     * Get the translatable entry
+     *
+     * @api
+     * @param string $language Language id
+     * @param string $entryId  Entry id
+     * @return string
+     */
+    public function getEntry($language, $entryId)
+    {
+        if (isset($this->entries[$language]) && isset($this->entries[$language][$entryId])) {
+            return $this->entries[$language][$entryId];
+        }
+        return null;
+    }
 
-	/**
-	 * Remove entries of the given language
-	 *
-	 * @param string $language Language which entries should be removed
-	 * @param string $entryId  (optional) Only remove the given entry id
-	 * @return static
-	 */
-	public function removeLanguage($language, $entryId = null) {
-		$language = (string)$language;
-		if (isset($this->entries[$language])) {
-			if ($entryId) {
-				$entryId = (string)$entryId;
-				unset($this->entries[$language][$entryId]);
-			} else {
-				unset($this->entries[$language]);
-			}
-		}
-		return $this;
-	}
+    /**
+     * Set the translatable entry for the specific language
+     *
+     * @api
+     * @param string $language   Language id
+     * @param string $entryId    Entry id
+     * @param string $entryValue Translated entry value
+     * @return static
+     */
+    public function setEntry($language, $entryId, $entryValue)
+    {
+        $language   = (string)$language;
+        $entryId    = (string)$entryId;
+        $entryValue = (string)$entryValue;
+        if (!isset($this->entries[$language]) && $entryValue) {
+            $this->entries[$language] = array();
+        }
+        if ($entryValue) {
+            $this->entries[$language][$entryId] = $entryValue;
+        } else {
+            if (isset($this->entries[$language][$entryId])) {
+                unset($this->entries[$language][$entryId]);
+            }
+        }
+        return $this;
+    }
 
-	/**
-	 * Remove all entries from the Dictionary
-	 *
-	 * @return static
-	 */
-	public function removeEntries() {
-		$this->entries = array();
-		return $this;
-	}
+    /**
+     * Remove entries of the given id
+     *
+     * @api
+     * @param string $entryId Entry id that should be removed
+     * @return static
+     */
+    public function removeEntry($entryId)
+    {
+        $entryId = (string)$entryId;
+        foreach ($this->entries as $language => $entries) {
+            if (isset($this->entries[$language][$entryId])) {
+                unset($this->entries[$language][$entryId]);
+            }
+        }
+        return $this;
+    }
 
-	/**
-	 * Render the Dico XML element
-	 *
-	 * @param \DOMDocument $domDocument DOMDocument for which the Dico XML element should be rendered
-	 * @return \DOMElement
-	 */
-	public function render(\DOMDocument $domDocument) {
-		$xmlElement = $domDocument->createElement($this->tagName);
-		foreach ($this->entries as $language => $entries) {
-			$languageElement = $domDocument->createElement('language');
-			$languageElement->setAttribute('id', $language);
-			foreach ($entries as $entryId => $entryValue) {
-				$entryElement = $domDocument->createElement($entryId, $entryValue);
-				$languageElement->appendChild($entryElement);
-			}
-			$xmlElement->appendChild($languageElement);
-		}
-		return $xmlElement;
-	}
+    /**
+     * Remove entries of the given language
+     *
+     * @api
+     * @param string $language Language which entries should be removed
+     * @return static
+     */
+    public function removeLanguage($language)
+    {
+        $language = (string)$language;
+        if (isset($this->entries[$language])) {
+            unset($this->entries[$language]);
+        }
+        return $this;
+    }
+
+    /**
+     * Remove all entries
+     *
+     * @api
+     * @return static
+     */
+    public function removeAllEntries()
+    {
+        $this->entries = array();
+        return $this;
+    }
+
+    /**
+     * Render the Dico
+     *
+     * @param \DOMDocument $domDocument DOMDocument for which the Dico should be rendered
+     * @return \DOMElement
+     */
+    public function render(\DOMDocument $domDocument)
+    {
+        $domElement = $domDocument->createElement("dico");
+        foreach ($this->entries as $language => $entries) {
+            $languageElement = $domDocument->createElement("language");
+            $languageElement->setAttribute("id", $language);
+            foreach ($entries as $entryId => $entryValue) {
+                $entryElement = $domDocument->createElement($entryId, $entryValue);
+                $languageElement->appendChild($entryElement);
+            }
+            $domElement->appendChild($languageElement);
+        }
+        return $domElement;
+    }
+
 }

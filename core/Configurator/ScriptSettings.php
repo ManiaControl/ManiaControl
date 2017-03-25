@@ -221,8 +221,8 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener, Communicatio
 		$pagerNext->setSize($pagerSize, $pagerSize);
 		$pagerNext->setSubStyle($pagerNext::SUBSTYLE_ArrowNext);
 
-		$paging->addButton($pagerNext);
-		$paging->addButton($pagerPrev);
+		$paging->addButtonControl($pagerNext);
+		$paging->addButtonControl($pagerPrev);
 
 		$pageCountLabel = new Label_Text();
 		$frame->add($pageCountLabel);
@@ -249,7 +249,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener, Communicatio
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
 				$posY = $height * 0.41;
-				$paging->addPage($pageFrame);
+				$paging->addPageControl($pageFrame);
 			}
 
 			$settingFrame = new Frame();
@@ -293,8 +293,7 @@ class ScriptSettings implements ConfiguratorMenu, CallbackListener, Communicatio
 			$descriptionLabel->setSize($width * 0.7, $settingHeight);
 			$descriptionLabel->setTextSize($labelTextSize);
 			$descriptionLabel->setTranslate(true);
-			$descriptionLabel->setText($scriptParam->desc);
-			$nameLabel->addTooltipFeature($descriptionLabel);
+			$nameLabel->addTooltipLabelFeature($descriptionLabel, $scriptParam->desc);
 
 			$posY -= $settingHeight;
 		}

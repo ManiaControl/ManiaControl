@@ -59,14 +59,14 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 	}
 
 	/**
-	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getTitle()
+	 * @see \ManiaControl\Configurator\ConfiguratorMenu::getTitle()
 	 */
 	public static function getTitle() {
 		return self::TITLE;
 	}
 
 	/**
-	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getMenu()
+	 * @see \ManiaControl\Configurator\ConfiguratorMenu::getMenu()
 	 */
 	public function getMenu($width, $height, Script $script, Player $player) {
 		$openedClass = $player->getCache($this, self::CACHE_CLASS_OPENED);
@@ -112,8 +112,8 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 		$pagerNext->setSize($pagerSize, $pagerSize);
 		$pagerNext->setSubStyle($pagerNext::SUBSTYLE_ArrowNext);
 
-		$paging->addButton($pagerNext);
-		$paging->addButton($pagerPrev);
+		$paging->addButtonControl($pagerNext);
+		$paging->addButtonControl($pagerPrev);
 
 		$pageCountLabel = new Label_Text();
 		$frame->add($pageCountLabel);
@@ -150,7 +150,7 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 			if ($index % $pageMaxCount === 0) {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
-				$paging->addPage($pageFrame);
+				$paging->addPageControl($pageFrame);
 				$posY = $height * 0.41 - $settingHeight * 1.5;
 			}
 
@@ -239,8 +239,8 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 		$pagerNext->setSize($pagerSize, $pagerSize);
 		$pagerNext->setSubStyle($pagerNext::SUBSTYLE_ArrowNext);
 
-		$paging->addButton($pagerNext);
-		$paging->addButton($pagerPrev);
+		$paging->addButtonControl($pagerNext);
+		$paging->addButtonControl($pagerPrev);
 
 		$pageCountLabel = new Label_Text();
 		$frame->add($pageCountLabel);
@@ -258,7 +258,7 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
 				$posY = $height * 0.41;
-				$paging->addPage($pageFrame);
+				$paging->addPageControl($pageFrame);
 			}
 
 			$classLabel = new Label_Text();

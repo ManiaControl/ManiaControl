@@ -8,67 +8,86 @@ use FML\Controls\Control;
  * Paging Page
  *
  * @author    steeffeen <mail@steeffeen.com>
- * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @copyright FancyManiaLinks Copyright © 2017 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class PagingPage {
-	/*
-	 * Protected properties
-	 */
-	/** @var Control $control */
-	protected $control = null;
-	protected $number = null;
+class PagingPage
+{
 
-	/**
-	 * Construct a new Paging Page
-	 *
-	 * @param Control $control    (optional) Page Control
-	 * @param int     $pageNumber (optional) Number of the Page
-	 */
-	public function __construct(Control $control = null, $pageNumber = 1) {
-		if ($control !== null) {
-			$this->setControl($control);
-		}
-		$this->setPageNumber($pageNumber);
-	}
+    /**
+     * @var Control $control Page Control
+     */
+    protected $control = null;
 
-	/**
-	 * Set the Page Control
-	 *
-	 * @param Control $control Page Control
-	 * @return static
-	 */
-	public function setControl(Control $control) {
-		$this->control = $control->checkId();
-		return $this;
-	}
+    /**
+     * @var int $pageNumber Page number
+     */
+    protected $pageNumber = null;
 
-	/**
-	 * Get the Page Control
-	 *
-	 * @return \FML\Controls\Control
-	 */
-	public function getControl() {
-		return $this->control;
-	}
+    /**
+     * Construct a new Paging Page
+     *
+     * @api
+     * @param Control $control    (optional) Page Control
+     * @param int     $pageNumber (optional) Number of the Page
+     */
+    public function __construct(Control $control = null, $pageNumber = null)
+    {
+        if ($control) {
+            $this->setControl($control);
+        }
+        if ($pageNumber) {
+            $this->setPageNumber($pageNumber);
+        }
+    }
 
-	/**
-	 * Set the Page number
-	 *
-	 * @param int $pageNumber Number of the Page
-	 * @return static
-	 */
-	public function setPageNumber($pageNumber) {
-		$this->number = (int)$pageNumber;
-		return $this;
-	}
+    /**
+     * Get the Page Control
+     *
+     * @api
+     * @return Control
+     */
+    public function getControl()
+    {
+        return $this->control;
+    }
 
-	/**
-	 * Get the Page number
-	 *
-	 * @return int
-	 */
-	public function getPageNumber() {
-		return $this->number;
-	}
+    /**
+     * Set the Page Control
+     *
+     * @api
+     * @param Control $control Page Control
+     * @return static
+     */
+    public function setControl(Control $control)
+    {
+        $control->checkId();
+        $this->control = $control;
+        return $this;
+    }
+
+    /**
+     * Get the Page number
+     *
+     * @api
+     * @return int
+     */
+    public function getPageNumber()
+    {
+        return $this->pageNumber;
+    }
+
+    /**
+     * Set the Page number
+     *
+     * @api
+     * @param int $pageNumber Number of the Page
+     * @return static
+     */
+    public function setPageNumber($pageNumber)
+    {
+        $this->pageNumber = (int)$pageNumber;
+        return $this;
+    }
+
 }

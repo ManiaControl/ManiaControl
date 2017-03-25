@@ -189,7 +189,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
 				$posY = $height / 2 - 16;
-				$paging->addPage($pageFrame);
+				$paging->addPageControl($pageFrame);
 			}
 
 			// Map Frame

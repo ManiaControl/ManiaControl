@@ -6,78 +6,150 @@ namespace FML\ManiaCode;
  * ManiaCode Element adding a server as favorite
  *
  * @author    steeffeen
- * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @copyright FancyManiaLinks Copyright © 2017 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class AddFavorite extends Element {
-	/*
-	 * Protected properties
-	 */
-	protected $tagName = 'add_favourite';
-	protected $login = null;
-	protected $serverIp = null;
-	protected $serverPort = null;
+class AddFavorite implements Element
+{
 
-	/**
-	 * Create a new AddFavorite object
-	 *
-	 * @param string $login (optional) Server login
-	 * @return static
-	 */
-	public static function create($login = null) {
-		return new static($login);
-	}
+    /**
+     * @var string $login Server login
+     */
+    protected $login = null;
 
-	/**
-	 * Construct a new AddFavorite object
-	 *
-	 * @param string $login (optional) Server login
-	 */
-	public function __construct($login = null) {
-		if ($login !== null) {
-			$this->setLogin($login);
-		}
-	}
+    /**
+     * @var string $ip Server ip
+     */
+    protected $ip = null;
 
-	/**
-	 * Set the server login
-	 *
-	 * @param string $login Server login
-	 * @return static
-	 */
-	public function setLogin($login) {
-		$this->login      = (string)$login;
-		$this->serverIp   = null;
-		$this->serverPort = null;
-		return $this;
-	}
+    /**
+     * @var int $port Server port
+     */
+    protected $port = null;
 
-	/**
-	 * Set the server ip and port
-	 *
-	 * @param string $serverIp   Server ip
-	 * @param int    $serverPort Server port
-	 * @return static
-	 */
-	public function setIp($serverIp, $serverPort) {
-		$this->serverIp   = (string)$serverIp;
-		$this->serverPort = (int)$serverPort;
-		$this->login      = null;
-		return $this;
-	}
+    /**
+     * Create a new AddFavorite Element
+     *
+     * @api
+     * @param string $loginOrIp (optional) Server login or ip
+     * @param int    $port      (optional) Server port
+     * @return static
+     */
+    public static function create($loginOrIp = null, $port = null)
+    {
+        return new static($loginOrIp, $port);
+    }
 
-	/**
-	 * @see \FML\ManiaCode\Element::render()
-	 */
-	public function render(\DOMDocument $domDocument) {
-		$xmlElement = parent::render($domDocument);
-		if ($this->serverIp === null) {
-			$loginElement = $domDocument->createElement('login', $this->login);
-			$xmlElement->appendChild($loginElement);
-		} else {
-			$ipElement = $domDocument->createElement('ip', $this->serverIp . ':' . $this->serverPort);
-			$xmlElement->appendChild($ipElement);
-		}
-		return $xmlElement;
-	}
+    /**
+     * Construct a new AddFavorite Element
+     *
+     * @api
+     * @param string $loginOrIp (optional) Server login or ip
+     * @param int    $port      (optional) Server port
+     */
+    public function __construct($loginOrIp = null, $port = null)
+    {
+        if ($port) {
+            $this->setIp($loginOrIp, $port);
+        } elseif ($loginOrIp) {
+            $this->setLogin($loginOrIp);
+        }
+    }
+
+    /**
+     * Get the server login
+     *
+     * @api
+     * @return string
+     */
+    public function getLogin()
+    {
+        return $this->login;
+    }
+
+    /**
+     * Set the server login
+     *
+     * @api
+     * @param string $login Server login
+     * @return static
+     */
+    public function setLogin($login)
+    {
+        $this->login = (string)$login;
+        $this->ip    = null;
+        $this->port  = null;
+        return $this;
+    }
+
+    /**
+     * Get the server ip
+     *
+     * @api
+     * @return string
+     */
+    public function getIp()
+    {
+        return $this->ip;
+    }
+
+    /**
+     * Set the server ip and port
+     *
+     * @api
+     * @param string $ip   Server ip
+     * @param int    $port (optional) Server port
+     * @return static
+     */
+    public function setIp($ip, $port = null)
+    {
+        $this->login = null;
+        $this->ip    = (string)$ip;
+        if ($port) {
+            $this->setPort($port);
+        }
+        return $this;
+    }
+
+    /**
+     * Get the server port
+     *
+     * @api
+     * @return int
+     */
+    public function getPort()
+    {
+        return $this->port;
+    }
+
+    /**
+     * Set the server port
+     *
+     * @param int $port Server port
+     * @return static
+     */
+    public function setPort($port)
+    {
+        $this->port = (int)$port;
+        return $this;
+    }
+
+    /**
+     * @see Element::render()
+     */
+    public function render(\DOMDocument $domDocument)
+    {
+        $domElement = $domDocument->createElement("add_favourite");
+
+        if ($this->login) {
+            $loginElement = $domDocument->createElement("login", $this->login);
+            $domElement->appendChild($loginElement);
+        } else {
+            $ipElement = $domDocument->createElement("ip", $this->ip . ":" . $this->port);
+            $domElement->appendChild($ipElement);
+        }
+
+        return $domElement;
+    }
+
 }

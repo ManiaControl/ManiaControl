@@ -253,7 +253,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
 				$posY = $height / 2 - 10;
-				$paging->addPage($pageFrame, $pageNumber);
+				$paging->addPageControl($pageFrame, $pageNumber);
 				$pageNumber++;
 			}
 

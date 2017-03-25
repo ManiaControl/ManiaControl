@@ -10,6 +10,7 @@ use FML\Controls\Quads\Quad_BgsPlayerCard;
 use FML\Controls\Quads\Quad_UIConstruction_Buttons;
 use FML\ManiaLink;
 use FML\Script\Features\Paging;
+use FML\Script\Script;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
@@ -88,9 +89,10 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 
 		//Create ManiaLink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
-		$script    = $maniaLink->getScript();
 		$paging    = new Paging();
+		$script = new Script();
 		$script->addFeature($paging);
+		$maniaLink->setScript($script);
 
 		// Main frame
 		$frame = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultListFrame($script, $paging);
@@ -120,7 +122,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener {
 				$pageFrame = new Frame();
 				$frame->add($pageFrame);
 
-				$paging->addPage($pageFrame);
+				$paging->addPageControl($pageFrame);
 				$posY = $height / 2 - 10;
 			}
 
