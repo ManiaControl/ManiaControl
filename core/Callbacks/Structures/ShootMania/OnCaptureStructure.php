@@ -18,8 +18,8 @@ use ManiaControl\Players\Player;
  */
 class OnCaptureStructure extends BaseStructure {
 
-	public $time;
-	public $landMark;
+	public  $time;
+	private $landMark;
 
 	private $playerArray = array();
 
@@ -46,6 +46,11 @@ class OnCaptureStructure extends BaseStructure {
 		$this->shooter = $this->maniaControl->getPlayerManager()->getPlayer($this->getPlainJsonObject()->shooter);
 	}
 
+	/** Dumps the Object with some Information */
+	public function dump() {
+		var_dump($this->landMark);
+		parent::dump();
+	}
 
 	/**
 	 * Get the logins

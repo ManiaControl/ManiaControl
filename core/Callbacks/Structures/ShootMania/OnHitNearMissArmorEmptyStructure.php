@@ -20,10 +20,10 @@ class OnHitNearMissArmorEmptyStructure extends BaseStructure {
 	public $time;
 	public $weapon;
 	public $damage;
-	public $shooterPosition;
-	public $victimPosition;
 	public $distance = 0; //Note no distance on the OnHit and ArmorEmpty yet
 
+	private   $shooterPosition;
+	private   $victimPosition;
 	protected $shooter;
 	protected $victim;
 
@@ -40,10 +40,10 @@ class OnHitNearMissArmorEmptyStructure extends BaseStructure {
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
 
-		$jsonObj = $this->getPlainJsonObject();
-		$this->time            = $jsonObj->time;
-		$this->weapon          = $jsonObj->weapon;
-		$this->damage          = $jsonObj->damage;
+		$jsonObj      = $this->getPlainJsonObject();
+		$this->time   = $jsonObj->time;
+		$this->weapon = $jsonObj->weapon;
+		$this->damage = $jsonObj->damage;
 
 		$this->shooterPosition = new Position();
 		$this->shooterPosition->setX($jsonObj->shooterposition->x);
@@ -61,6 +61,17 @@ class OnHitNearMissArmorEmptyStructure extends BaseStructure {
 
 		$this->shooter = $this->maniaControl->getPlayerManager()->getPlayer($this->getPlainJsonObject()->shooter);
 		$this->victim  = $this->maniaControl->getPlayerManager()->getPlayer($this->getPlainJsonObject()->victim);
+	}
+
+	/** Dumps the Object with some Information */
+	public function dump() {
+		var_dump("Dump of property Shooter Position");
+		var_dump($this->shooterPosition);
+		var_dump("Dump of property Victim Position");
+		var_dump($this->victimPosition);
+		parent::dump();
+		var_dump("With getShooter() you get a Player Object");
+		var_dump("With getVictim() you get a Player Object");
 	}
 
 	/**
@@ -123,10 +134,4 @@ class OnHitNearMissArmorEmptyStructure extends BaseStructure {
 		return $this->distance;
 	}
 
-	/** Dumps the Object with some Information */
-	public function dump() {
-		parent::dump();
-		var_dump("With getShooter() you get a Player Object");
-		var_dump("With getVictim() you get a Player Object");
-	}
 }
