@@ -51,18 +51,20 @@ class UsageReporter implements TimerListener {
 			return;
 		}
 
-		$properties                        = array();
-		$properties['ManiaControlVersion'] = ManiaControl::VERSION;
-		$properties['OperatingSystem']     = php_uname();
-		$properties['PHPVersion']          = phpversion();
-		$properties['ServerLogin']         = $this->maniaControl->getServer()->login;
-		$properties['TitleId']             = $this->maniaControl->getServer()->titleId;
-		$properties['ServerName']          = Formatter::stripDirtyCodes($this->maniaControl->getClient()->getServerName());
-		$properties['UpdateChannel']       = $this->maniaControl->getUpdateManager()->getCurrentUpdateChannelSetting();
+		$properties                          = array();
+		$properties['ManiaControlVersion']   = ManiaControl::VERSION;
+		$properties['OperatingSystem']       = php_uname();
+		$properties['PHPVersion']            = phpversion();
+		$properties['ServerLogin']           = $this->maniaControl->getServer()->login;
+		$properties['TitleId']               = $this->maniaControl->getServer()->titleId;
+		$properties['ServerName']            = Formatter::stripDirtyCodes($this->maniaControl->getClient()->getServerName());
+		$properties['UpdateChannel']         = $this->maniaControl->getUpdateManager()->getCurrentUpdateChannelSetting();
+		$properties['DedicatedBuildVersion'] = $this->maniaControl->getDedicatedServerBuildVersion();
 
 		$properties['PlayerCount']     = $this->maniaControl->getPlayerManager()->getPlayerCount();
 		$properties['MemoryUsage']     = memory_get_usage();
 		$properties['MemoryPeakUsage'] = memory_get_peak_usage();
+
 
 		$maxPlayers               = $this->maniaControl->getClient()->getMaxPlayers();
 		$properties['MaxPlayers'] = $maxPlayers['CurrentValue'];
