@@ -13,7 +13,7 @@ trait UsageInformationTrait {
 	/**
 	 * Gets Information about the Class, and a List of the Public Method
 	 */
-	public function getUsage() {
+	public function getUsageInformation() {
 		$reflection = new ReflectionClass(get_class($this));
 		echo $reflection->getDocComment();
 
