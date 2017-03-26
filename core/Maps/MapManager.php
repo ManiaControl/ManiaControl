@@ -37,7 +37,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\UnavailableFeatureException;
  */
 class MapManager implements CallbackListener, CommunicationListener, UsageInformationAble {
 	use UsageInformationTrait;
-	
+
 	/*
 	 * Constants
 	 */
@@ -455,8 +455,11 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 			$this->maniaControl->getChat()->sendException($exception, $login);
 			return;
 		} catch (InvalidMapException $exception) {
+
 			$this->maniaControl->getChat()->sendException($exception, $login);
-			return;
+			if ($exception->getMessage() != 'Map lightmap is not up to date. (will still load for now)') {
+				return;
+			}
 		}
 
 		$this->updateFullMapList();
