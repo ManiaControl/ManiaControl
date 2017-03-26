@@ -7,6 +7,6 @@ namespace ManiaControl\General;
  *
  * @package ManiaControl\General
  */
-interface Dumpable {
-	public function dump();
+interface UsageInformationAble {
+	public function getUsage();
 }

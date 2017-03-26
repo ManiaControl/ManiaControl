@@ -1,14 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Lukas
- * Date: 24. Mär. 2017
- * Time: 21:59
- */
 
 namespace ManiaControl\General;
 
-
+/**
+ * Class DumpTrait Trait for Implementing the Methods for the dumpable Interface
+ *
+ * @package ManiaControl\General
+ */
 trait DumpTrait {
 	/**
 	 * Var_Dump Public Properties of the Object

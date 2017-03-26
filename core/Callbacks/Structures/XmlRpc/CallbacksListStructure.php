@@ -14,9 +14,9 @@ use ManiaControl\ManiaControl;
  */
 class CallbacksListStructure extends BaseStructure {
 	/** @var  string $responseId */
-	public $responseId;
+	private $responseId;
 	/** @var  array $callbacks */
-	public $callbacks;
+	private $callbacks;
 
 	/**
 	 * Construct a new Callbacks List Structure
@@ -29,11 +29,11 @@ class CallbacksListStructure extends BaseStructure {
 
 		$this->responseId = $this->getPlainJsonObject()->responseid;
 		$this->callbacks  = $this->getPlainJsonObject()->callbacks;
-
-		$this->getUsage();
 	}
 
 	/**
+	 * Get the Response Id //TODO Trait for all Response Ids
+	 *
 	 * @return string
 	 */
 	public function getResponseId() {
@@ -41,7 +41,9 @@ class CallbacksListStructure extends BaseStructure {
 	}
 
 	/**
-	 * @return array
+	 * Get Array of the Callbacks
+	 *
+	 * @return string[]
 	 */
 	public function getCallbacks() {
 		return $this->callbacks;

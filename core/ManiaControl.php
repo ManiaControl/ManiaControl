@@ -21,6 +21,8 @@ use ManiaControl\Configurator\Configurator;
 use ManiaControl\Database\Database;
 use ManiaControl\Files\AsynchronousFileReader;
 use ManiaControl\Files\FileUtil;
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Maps\MapManager;
 use ManiaControl\Players\Player;
@@ -44,13 +46,15 @@ use Maniaplanet\DedicatedServer\Xmlrpc\TransportException;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class ManiaControl implements CallbackListener, CommandListener, TimerListener, CommunicationListener {
+class ManiaControl implements CallbackListener, CommandListener, TimerListener, CommunicationListener, UsageInformationAble {
+	use UsageInformationTrait;
+
 	/*
 	 * Constants
 	 */
 	const VERSION                     = '0.200';
 	const API_VERSION                 = '2013-04-16';
-	const MIN_DEDIVERSION             = '2014-04-02_18_00';
+	const MIN_DEDIVERSION             = '2017-03-23_18_00';
 	const SCRIPT_TIMEOUT              = 10;
 	const URL_WEBSERVICE              = 'https://ws.maniacontrol.com/';
 	const SETTING_PERMISSION_SHUTDOWN = 'Shutdown ManiaControl';
