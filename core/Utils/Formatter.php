@@ -2,6 +2,8 @@
 
 namespace ManiaControl\Utils;
 
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\Logger;
 
 /**
@@ -11,7 +13,8 @@ use ManiaControl\Logger;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-abstract class Formatter {
+abstract class Formatter implements UsageInformationAble {
+	use UsageInformationTrait;
 
 	/**
 	 * Return the given Text with Escaping around it
@@ -31,47 +34,42 @@ abstract class Formatter {
 	 */
 	public static function formatTime($time) {
 		// TODO: use gmdate()
-		$time         = (int)$time;
+		$time         = (int) $time;
 		$milliseconds = $time % 1000;
 		$seconds      = floor($time / 1000);
 		$minutes      = floor($seconds / 60);
 		$hours        = floor($minutes / 60);
-		$minutes -= $hours * 60;
-		$seconds -= $hours * 60 + $minutes * 60;
-		$format = ($hours > 0 ? $hours . ':' : '');
-		$format .= ($hours > 0 && $minutes < 10 ? '0' : '') . $minutes . ':';
-		$format .= ($seconds < 10 ? '0' : '') . $seconds . ':';
-		$format .= ($milliseconds < 100 ? '0' : '') . ($milliseconds < 10 ? '0' : '') . $milliseconds;
+		$minutes      -= $hours * 60;
+		$seconds      -= $hours * 60 + $minutes * 60;
+		$format       = ($hours > 0 ? $hours . ':' : '');
+		$format       .= ($hours > 0 && $minutes < 10 ? '0' : '') . $minutes . ':';
+		$format       .= ($seconds < 10 ? '0' : '') . $seconds . ':';
+		$format       .= ($milliseconds < 100 ? '0' : '') . ($milliseconds < 10 ? '0' : '') . $milliseconds;
 		return $format;
 	}
 
 	/**
 	 * Format an elapsed time String (2 days ago...) by a given timestamp
 	 *
-	 * @param int $time Input time
+	 * @param int     $time  Input time
 	 * @param boolean $short Short version
 	 * @return string Formatted elapsed time string
 	 */
 	public static function timeElapsedString($time, $short = false) {
 		$elapsedTime = time() - $time;
 
-		$second =   $short ? 'sec.' : 'second';
-		$minute =   $short ? 'min.' : 'minute';
-		$hour =     $short ? 'h' : 'hour';
-		$day =      $short ? 'd' : 'day';
-		$month =    $short ? 'm' : 'month';
-		$year =     $short ? 'y' : 'year';
+		$second = $short ? 'sec.' : 'second';
+		$minute = $short ? 'min.' : 'minute';
+		$hour   = $short ? 'h' : 'hour';
+		$day    = $short ? 'd' : 'day';
+		$month  = $short ? 'm' : 'month';
+		$year   = $short ? 'y' : 'year';
 
 		if ($elapsedTime < 1) {
 			return $short ? '0 sec.' : '0 seconds';
 		}
 
-		$calculateSeconds = array(12 * 30 * 24 * 60 * 60 => $year,
-		                          30 * 24 * 60 * 60 => $month,
-		                          24 * 60 * 60 => $day,
-		                          60 * 60 => $hour,
-		                          60 => $minute,
-		                          1 => $second);
+		$calculateSeconds = array(12 * 30 * 24 * 60 * 60 => $year, 30 * 24 * 60 * 60 => $month, 24 * 60 * 60 => $day, 60 * 60 => $hour, 60 => $minute, 1 => $second);
 
 		foreach ($calculateSeconds as $secs => $str) {
 			$d = $elapsedTime / $secs;
@@ -159,10 +157,35 @@ abstract class Formatter {
 	 * @return string
 	 */
 	public static function mapCountry($country) {
-		$nations = array('Afghanistan' => 'AFG', 'Albania' => 'ALB', 'Algeria' => 'ALG', 'Andorra' => 'AND', 'Angola' => 'ANG', 'Argentina' => 'ARG', 'Armenia' => 'ARM', 'Aruba' => 'ARU', 'Australia' => 'AUS', 'Austria' => 'AUT', 'Azerbaijan' => 'AZE', 'Bahamas' => 'BAH', 'Bahrain' => 'BRN', 'Bangladesh' => 'BAN', 'Barbados' => 'BAR', 'Belarus' => 'BLR', 'Belgium' => 'BEL', 'Belize' => 'BIZ', 'Benin' => 'BEN', 'Bermuda' => 'BER', 'Bhutan' => 'BHU', 'Bolivia' => 'BOL', 'Bosnia&Herzegovina' => 'BIH', 'Botswana' => 'BOT', 'Brazil' => 'BRA', 'Brunei' => 'BRU', 'Bulgaria' => 'BUL', 'Burkina Faso' => 'BUR', 'Burundi' => 'BDI', 'Cambodia' => 'CAM', 'Cameroon' => 'CAR', // actually CMR
-		                 'Canada' => 'CAN', 'Cape Verde' => 'CPV', 'Central African Republic' => 'CAF', 'Chad' => 'CHA', 'Chile' => 'CHI', 'China' => 'CHN', 'Chinese Taipei' => 'TPE', 'Colombia' => 'COL', 'Congo' => 'CGO', 'Costa Rica' => 'CRC', 'Croatia' => 'CRO', 'Cuba' => 'CUB', 'Cyprus' => 'CYP', 'Czech Republic' => 'CZE', 'Czech republic' => 'CZE', 'DR Congo' => 'COD', 'Denmark' => 'DEN', 'Djibouti' => 'DJI', 'Dominica' => 'DMA', 'Dominican Republic' => 'DOM', 'Ecuador' => 'ECU', 'Egypt' => 'EGY', 'El Salvador' => 'ESA', 'Eritrea' => 'ERI', 'Estonia' => 'EST', 'Ethiopia' => 'ETH', 'Fiji' => 'FIJ', 'Finland' => 'FIN', 'France' => 'FRA', 'Gabon' => 'GAB', 'Gambia' => 'GAM', 'Georgia' => 'GEO', 'Germany' => 'GER', 'Ghana' => 'GHA', 'Greece' => 'GRE', 'Grenada' => 'GRN', 'Guam' => 'GUM', 'Guatemala' => 'GUA', 'Guinea' => 'GUI', 'Guinea-Bissau' => 'GBS', 'Guyana' => 'GUY', 'Haiti' => 'HAI', 'Honduras' => 'HON', 'Hong Kong' => 'HKG', 'Hungary' => 'HUN', 'Iceland' => 'ISL', 'India' => 'IND', 'Indonesia' => 'INA', 'Iran' => 'IRI', 'Iraq' => 'IRQ', 'Ireland' => 'IRL', 'Israel' => 'ISR', 'Italy' => 'ITA', 'Ivory Coast' => 'CIV', 'Jamaica' => 'JAM', 'Japan' => 'JPN', 'Jordan' => 'JOR', 'Kazakhstan' => 'KAZ', 'Kenya' => 'KEN', 'Kiribati' => 'KIR', 'Korea' => 'KOR', 'Kuwait' => 'KUW', 'Kyrgyzstan' => 'KGZ', 'Laos' => 'LAO', 'Latvia' => 'LAT', 'Lebanon' => 'LIB', 'Lesotho' => 'LES', 'Liberia' => 'LBR', 'Libya' => 'LBA', 'Liechtenstein' => 'LIE', 'Lithuania' => 'LTU', 'Luxembourg' => 'LUX', 'Macedonia' => 'MKD', 'Malawi' => 'MAW', 'Malaysia' => 'MAS', 'Mali' => 'MLI', 'Malta' => 'MLT', 'Mauritania' => 'MTN', 'Mauritius' => 'MRI', 'Mexico' => 'MEX', 'Moldova' => 'MDA', 'Monaco' => 'MON', 'Mongolia' => 'MGL', 'Montenegro' => 'MNE', 'Morocco' => 'MAR', 'Mozambique' => 'MOZ', 'Myanmar' => 'MYA', 'Namibia' => 'NAM', 'Nauru' => 'NRU', 'Nepal' => 'NEP', 'Netherlands' => 'NED', 'New Zealand' => 'NZL', 'Nicaragua' => 'NCA', 'Niger' => 'NIG', 'Nigeria' => 'NGR', 'Norway' => 'NOR', 'Oman' => 'OMA', 'Other Countries' => 'OTH', 'Pakistan' => 'PAK', 'Palau' => 'PLW', 'Palestine' => 'PLE', 'Panama' => 'PAN', 'Paraguay' => 'PAR', 'Peru' => 'PER', 'Philippines' => 'PHI', 'Poland' => 'POL', 'Portugal' => 'POR', 'Puerto Rico' => 'PUR', 'Qatar' => 'QAT', 'Romania' => 'ROM', // actually ROU
-		                 'Russia' => 'RUS', 'Rwanda' => 'RWA', 'Samoa' => 'SAM', 'San Marino' => 'SMR', 'Saudi Arabia' => 'KSA', 'Senegal' => 'SEN', 'Serbia' => 'SCG', // actually SRB
-		                 'Sierra Leone' => 'SLE', 'Singapore' => 'SIN', 'Slovakia' => 'SVK', 'Slovenia' => 'SLO', 'Somalia' => 'SOM', 'South Africa' => 'RSA', 'Spain' => 'ESP', 'Sri Lanka' => 'SRI', 'Sudan' => 'SUD', 'Suriname' => 'SUR', 'Swaziland' => 'SWZ', 'Sweden' => 'SWE', 'Switzerland' => 'SUI', 'Syria' => 'SYR', 'Taiwan' => 'TWN', 'Tajikistan' => 'TJK', 'Tanzania' => 'TAN', 'Thailand' => 'THA', 'Togo' => 'TOG', 'Tonga' => 'TGA', 'Trinidad and Tobago' => 'TRI', 'Tunisia' => 'TUN', 'Turkey' => 'TUR', 'Turkmenistan' => 'TKM', 'Tuvalu' => 'TUV', 'Uganda' => 'UGA', 'Ukraine' => 'UKR', 'United Arab Emirates' => 'UAE', 'United Kingdom' => 'GBR', 'United States of America' => 'USA', 'Uruguay' => 'URU', 'Uzbekistan' => 'UZB', 'Vanuatu' => 'VAN', 'Venezuela' => 'VEN', 'Vietnam' => 'VIE', 'Yemen' => 'YEM', 'Zambia' => 'ZAM', 'Zimbabwe' => 'ZIM');
+		$nations = array('Afghanistan'              => 'AFG', 'Albania' => 'ALB', 'Algeria' => 'ALG', 'Andorra' => 'AND', 'Angola' => 'ANG', 'Argentina' => 'ARG', 'Armenia' => 'ARM', 'Aruba' => 'ARU',
+		                 'Australia'                => 'AUS', 'Austria' => 'AUT', 'Azerbaijan' => 'AZE', 'Bahamas' => 'BAH', 'Bahrain' => 'BRN', 'Bangladesh' => 'BAN', 'Barbados' => 'BAR',
+		                 'Belarus'                  => 'BLR', 'Belgium' => 'BEL', 'Belize' => 'BIZ', 'Benin' => 'BEN', 'Bermuda' => 'BER', 'Bhutan' => 'BHU', 'Bolivia' => 'BOL',
+		                 'Bosnia&Herzegovina'       => 'BIH', 'Botswana' => 'BOT', 'Brazil' => 'BRA', 'Brunei' => 'BRU', 'Bulgaria' => 'BUL', 'Burkina Faso' => 'BUR', 'Burundi' => 'BDI',
+		                 'Cambodia'                 => 'CAM', 'Cameroon' => 'CAR', // actually CMR
+		                 'Canada'                   => 'CAN', 'Cape Verde' => 'CPV', 'Central African Republic' => 'CAF', 'Chad' => 'CHA', 'Chile' => 'CHI', 'China' => 'CHN',
+		                 'Chinese Taipei'           => 'TPE', 'Colombia' => 'COL', 'Congo' => 'CGO', 'Costa Rica' => 'CRC', 'Croatia' => 'CRO', 'Cuba' => 'CUB', 'Cyprus' => 'CYP',
+		                 'Czech Republic'           => 'CZE', 'Czech republic' => 'CZE', 'DR Congo' => 'COD', 'Denmark' => 'DEN', 'Djibouti' => 'DJI', 'Dominica' => 'DMA',
+		                 'Dominican Republic'       => 'DOM', 'Ecuador' => 'ECU', 'Egypt' => 'EGY', 'El Salvador' => 'ESA', 'Eritrea' => 'ERI', 'Estonia' => 'EST', 'Ethiopia' => 'ETH',
+		                 'Fiji'                     => 'FIJ', 'Finland' => 'FIN', 'France' => 'FRA', 'Gabon' => 'GAB', 'Gambia' => 'GAM', 'Georgia' => 'GEO', 'Germany' => 'GER', 'Ghana' => 'GHA',
+		                 'Greece'                   => 'GRE', 'Grenada' => 'GRN', 'Guam' => 'GUM', 'Guatemala' => 'GUA', 'Guinea' => 'GUI', 'Guinea-Bissau' => 'GBS', 'Guyana' => 'GUY',
+		                 'Haiti'                    => 'HAI', 'Honduras' => 'HON', 'Hong Kong' => 'HKG', 'Hungary' => 'HUN', 'Iceland' => 'ISL', 'India' => 'IND', 'Indonesia' => 'INA',
+		                 'Iran'                     => 'IRI', 'Iraq' => 'IRQ', 'Ireland' => 'IRL', 'Israel' => 'ISR', 'Italy' => 'ITA', 'Ivory Coast' => 'CIV', 'Jamaica' => 'JAM', 'Japan' => 'JPN',
+		                 'Jordan'                   => 'JOR', 'Kazakhstan' => 'KAZ', 'Kenya' => 'KEN', 'Kiribati' => 'KIR', 'Korea' => 'KOR', 'Kuwait' => 'KUW', 'Kyrgyzstan' => 'KGZ', 'Laos' => 'LAO',
+		                 'Latvia'                   => 'LAT', 'Lebanon' => 'LIB', 'Lesotho' => 'LES', 'Liberia' => 'LBR', 'Libya' => 'LBA', 'Liechtenstein' => 'LIE', 'Lithuania' => 'LTU',
+		                 'Luxembourg'               => 'LUX', 'Macedonia' => 'MKD', 'Malawi' => 'MAW', 'Malaysia' => 'MAS', 'Mali' => 'MLI', 'Malta' => 'MLT', 'Mauritania' => 'MTN',
+		                 'Mauritius'                => 'MRI', 'Mexico' => 'MEX', 'Moldova' => 'MDA', 'Monaco' => 'MON', 'Mongolia' => 'MGL', 'Montenegro' => 'MNE', 'Morocco' => 'MAR',
+		                 'Mozambique'               => 'MOZ', 'Myanmar' => 'MYA', 'Namibia' => 'NAM', 'Nauru' => 'NRU', 'Nepal' => 'NEP', 'Netherlands' => 'NED', 'New Zealand' => 'NZL',
+		                 'Nicaragua'                => 'NCA', 'Niger' => 'NIG', 'Nigeria' => 'NGR', 'Norway' => 'NOR', 'Oman' => 'OMA', 'Other Countries' => 'OTH', 'Pakistan' => 'PAK',
+		                 'Palau'                    => 'PLW', 'Palestine' => 'PLE', 'Panama' => 'PAN', 'Paraguay' => 'PAR', 'Peru' => 'PER', 'Philippines' => 'PHI', 'Poland' => 'POL',
+		                 'Portugal'                 => 'POR', 'Puerto Rico' => 'PUR', 'Qatar' => 'QAT', 'Romania' => 'ROM',        // actually ROU
+		                 'Russia'                   => 'RUS', 'Rwanda' => 'RWA', 'Samoa' => 'SAM', 'San Marino' => 'SMR', 'Saudi Arabia' => 'KSA', 'Senegal' => 'SEN', 'Serbia' => 'SCG',
+		                 // actually SRB
+		                 'Sierra Leone'             => 'SLE', 'Singapore' => 'SIN', 'Slovakia' => 'SVK', 'Slovenia' => 'SLO', 'Somalia' => 'SOM', 'South Africa' => 'RSA', 'Spain' => 'ESP',
+		                 'Sri Lanka'                => 'SRI', 'Sudan' => 'SUD', 'Suriname' => 'SUR', 'Swaziland' => 'SWZ', 'Sweden' => 'SWE', 'Switzerland' => 'SUI', 'Syria' => 'SYR',
+		                 'Taiwan'                   => 'TWN', 'Tajikistan' => 'TJK', 'Tanzania' => 'TAN', 'Thailand' => 'THA', 'Togo' => 'TOG', 'Tonga' => 'TGA', 'Trinidad and Tobago' => 'TRI',
+		                 'Tunisia'                  => 'TUN', 'Turkey' => 'TUR', 'Turkmenistan' => 'TKM', 'Tuvalu' => 'TUV', 'Uganda' => 'UGA', 'Ukraine' => 'UKR', 'United Arab Emirates' => 'UAE',
+		                 'United Kingdom'           => 'GBR', 'United States of America' => 'USA', 'Uruguay' => 'URU', 'Uzbekistan' => 'UZB', 'Vanuatu' => 'VAN', 'Venezuela' => 'VEN',
+		                 'Vietnam'                  => 'VIE', 'Yemen' => 'YEM', 'Zambia' => 'ZAM', 'Zimbabwe' => 'ZIM');
 		if (array_key_exists($country, $nations)) {
 			return $nations[$country];
 		}

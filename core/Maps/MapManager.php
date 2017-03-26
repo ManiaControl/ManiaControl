@@ -10,6 +10,8 @@ use ManiaControl\Communication\CommunicationAnswer;
 use ManiaControl\Communication\CommunicationListener;
 use ManiaControl\Communication\CommunicationMethods;
 use ManiaControl\Files\FileUtil;
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\ManiaExchange\ManiaExchangeList;
@@ -33,7 +35,9 @@ use Maniaplanet\DedicatedServer\Xmlrpc\UnavailableFeatureException;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class MapManager implements CallbackListener, CommunicationListener {
+class MapManager implements CallbackListener, CommunicationListener, UsageInformationAble {
+	use UsageInformationTrait;
+	
 	/*
 	 * Constants
 	 */
@@ -427,7 +431,7 @@ class MapManager implements CallbackListener, CommunicationListener {
 					return;
 				}
 				throw $e;
-			} catch(FileException $e){
+			} catch (FileException $e) {
 				$this->maniaControl->getChat()->sendError("Could not write file", $login);
 				return;
 			}

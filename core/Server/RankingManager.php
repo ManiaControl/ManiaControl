@@ -5,6 +5,8 @@ namespace ManiaControl\Server;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
 use ManiaControl\Maps\Map;
 use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
@@ -16,7 +18,9 @@ use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class RankingManager implements CallbackListener {
+class RankingManager implements CallbackListener, UsageInformationAble {
+	use UsageInformationTrait;
+	
 	/*
 	 * Private properties
 	 */

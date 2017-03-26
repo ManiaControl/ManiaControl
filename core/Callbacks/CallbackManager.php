@@ -3,6 +3,8 @@
 namespace ManiaControl\Callbacks;
 
 use ManiaControl\Callbacks\Models\BaseCallback;
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
 
 /**
@@ -12,7 +14,9 @@ use ManiaControl\ManiaControl;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class CallbackManager {
+class CallbackManager implements UsageInformationAble {
+	use UsageInformationTrait;
+	
 	/*
 	 * Constants
 	 */

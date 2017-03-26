@@ -5,6 +5,8 @@ namespace ManiaControl\Commands;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Listening;
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
 
 /**
@@ -14,7 +16,9 @@ use ManiaControl\ManiaControl;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class CommandManager implements CallbackListener {
+class CommandManager implements CallbackListener, UsageInformationAble {
+	use UsageInformationTrait;
+	
 	/*
 	 * Private properties
 	 */
@@ -215,6 +219,6 @@ class CommandManager implements CallbackListener {
 	 * @return bool
 	 */
 	private function isCommandMessage(array $chatCallback) {
-		return (bool)$chatCallback[1][3];
+		return (bool) $chatCallback[1][3];
 	}
 }

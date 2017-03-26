@@ -118,7 +118,7 @@ class VoteRatiosMenu implements CallbackListener, ConfiguratorMenu, TimerListene
 	}
 
 	/**
-	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
+	 * @see \ManiaControl\Configurator\ConfiguratorMenu::saveConfigData()
 	 */
 	public function saveConfigData(array $configData, Player $player) {
 		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_CHANGE_VOTE_RATIOS)

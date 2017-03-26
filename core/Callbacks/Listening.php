@@ -2,6 +2,9 @@
 
 namespace ManiaControl\Callbacks;
 
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
+
 /**
  * Model Class for a Basic Listening
  *
@@ -9,12 +12,14 @@ namespace ManiaControl\Callbacks;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class Listening {
+class Listening implements UsageInformationAble {
+	use UsageInformationTrait;
+	
 	/*
 	 * Public Properties
 	 */
 	public $listener = null;
-	public $method = null;
+	public $method   = null;
 
 	/**
 	 * Construct a new Timer Listening

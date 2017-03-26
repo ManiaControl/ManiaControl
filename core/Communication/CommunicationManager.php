@@ -1,9 +1,12 @@
 <?php
+
 namespace ManiaControl\Communication;
 
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\Listening;
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Settings\Setting;
@@ -21,7 +24,9 @@ use React\Socket\Server;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class CommunicationManager implements CallbackListener {
+class CommunicationManager implements CallbackListener, UsageInformationAble {
+	use UsageInformationTrait;
+	
 	/** Constants */
 	const SETTING_SOCKET_ENABLED  = "Activate Socket";
 	const SETTING_SOCKET_PASSWORD = "Password for the Socket Connection";
@@ -249,7 +254,7 @@ class CommunicationManager implements CallbackListener {
 					$buffer = '';
 					$connection->on('data', function ($data) use (&$buffer, &$connection, $password) {
 						$buffer .= $data;
-						$arr = explode("\n", $buffer, 2);
+						$arr    = explode("\n", $buffer, 2);
 						while (count($arr) == 2 && strlen($arr[1]) >= (int) $arr[0]) {
 							// received full message
 							$len    = (int) $arr[0];

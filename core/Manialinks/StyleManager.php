@@ -11,6 +11,8 @@ use FML\Controls\Quads\Quad_Bgs1InRace;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Script\Features\Paging;
 use FML\Script\Script;
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
 
 /**
@@ -20,7 +22,9 @@ use ManiaControl\ManiaControl;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class StyleManager {
+class StyleManager implements UsageInformationAble {
+	use UsageInformationTrait;
+	
 	/*
 	 * Constants
 	 */
@@ -162,8 +166,7 @@ class StyleManager {
 		$frame->setSize($width, $height)->setZ(45); //TODO place before scoreboards
 
 		//TODO remove: (just temporary fix for tm bug)
-		if ($this->maniaControl->getMapManager()->getCurrentMap()->getGame() === 'tm'
-		) {
+		if ($this->maniaControl->getMapManager()->getCurrentMap()->getGame() === 'tm') {
 			$frame->setSize($width, $height)->setZ(32);
 		}
 

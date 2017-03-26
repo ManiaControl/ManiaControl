@@ -2,6 +2,8 @@
 
 namespace ManiaControl\Settings;
 
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\Utils\ClassUtil;
 
 /**
@@ -11,7 +13,9 @@ use ManiaControl\Utils\ClassUtil;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class Setting {
+class Setting implements UsageInformationAble {
+	use UsageInformationTrait;
+
 	/*
 	 * Constants
 	 */
@@ -26,13 +30,13 @@ class Setting {
 	/*
 	 * Public properties
 	 */
-	public $index = null;
-	public $class = null;
-	public $setting = null;
-	public $type = null;
-	public $value = null;
-	public $default = null;
-	public $set = null;
+	public $index     = null;
+	public $class     = null;
+	public $setting   = null;
+	public $type      = null;
+	public $value     = null;
+	public $default   = null;
+	public $set       = null;
 	public $fetchTime = null;
 
 	/**
@@ -54,7 +58,7 @@ class Setting {
 		} else {
 			// Created by Values
 			$this->class   = ClassUtil::getClass($object);
-			$this->setting = (string)$settingName;
+			$this->setting = (string) $settingName;
 			$this->type    = self::getValueType($defaultValue);
 			if ($this->type === self::TYPE_SET) {
 				// Save Set and use first Value as Default
@@ -79,16 +83,16 @@ class Setting {
 			$type = self::getValueType($value);
 		}
 		if ($type === self::TYPE_INT) {
-			return (int)$value;
+			return (int) $value;
 		}
 		if ($type === self::TYPE_REAL) {
-			return (float)$value;
+			return (float) $value;
 		}
 		if ($type === self::TYPE_BOOL) {
-			return (bool)$value;
+			return (bool) $value;
 		}
 		if ($type === self::TYPE_STRING) {
-			return (string)$value;
+			return (string) $value;
 		}
 		if ($type === self::TYPE_SET) {
 			return explode(self::VALUE_DELIMITER, $value);

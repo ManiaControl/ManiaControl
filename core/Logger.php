@@ -3,6 +3,8 @@
 namespace ManiaControl;
 
 use ManiaControl\Files\FileUtil;
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\Utils\Formatter;
 
 /**
@@ -12,7 +14,8 @@ use ManiaControl\Utils\Formatter;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-abstract class Logger {
+abstract class Logger implements UsageInformationAble {
+	use UsageInformationTrait;
 
 	/**
 	 * Setup the logging mechanism

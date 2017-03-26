@@ -5,6 +5,8 @@ namespace ManiaControl\Maps;
 use ManiaControl\Communication\CommunicationAnswer;
 use ManiaControl\Communication\CommunicationListener;
 use ManiaControl\Communication\CommunicationMethods;
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
 use Maniaplanet\DedicatedServer\Xmlrpc\ChangeInProgressException;
 
@@ -15,7 +17,9 @@ use Maniaplanet\DedicatedServer\Xmlrpc\ChangeInProgressException;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class MapActions implements CommunicationListener {
+class MapActions implements CommunicationListener, UsageInformationAble {
+	use UsageInformationTrait;
+	
 	/*
 	 * Private properties
 	 */
