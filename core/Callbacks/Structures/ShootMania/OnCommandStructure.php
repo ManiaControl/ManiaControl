@@ -14,9 +14,9 @@ use ManiaControl\ManiaControl;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class OnCommandStructure extends BaseStructure {
-	public $time;
-	public $name;
-	public $value;
+	private $time;
+	private $name;
+	private $value;
 
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
@@ -26,13 +26,9 @@ class OnCommandStructure extends BaseStructure {
 		$this->value = $this->getPlainJsonObject()->value;
 	}
 
-	/** Dumps the Object with some Information */
-	public function dump() {
-		parent::dump();
-		var_dump("With getShooter() you get a Player Object");
-	}
-
 	/**
+	 * < Server time when the event occured
+	 *
 	 * @return int
 	 */
 	public function getTime() {
@@ -40,14 +36,22 @@ class OnCommandStructure extends BaseStructure {
 	}
 
 	/**
-	 * @return mixed
+	 * < Name of the command
+	 *
+	 * @return string
 	 */
 	public function getName() {
 		return $this->name;
 	}
 
 	/**
-	 * @return \ManiaControl\Players\Player
+	 * < The value passed by the command
+	 * "boolean": true,
+	 * "integer": 123,
+	 * "real": 123.456,
+	 * "text": "an example value"
+	 *
+	 * @return mixed
 	 */
 	public function getValue() {
 		return $this->value;

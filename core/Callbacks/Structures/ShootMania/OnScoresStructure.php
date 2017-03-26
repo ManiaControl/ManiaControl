@@ -6,7 +6,6 @@ namespace ManiaControl\Callbacks\Structures\ShootMania;
 use ManiaControl\Callbacks\Structures\BaseStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\Models\TeamScore;
 use ManiaControl\ManiaControl;
-use ManiaControl\Players\Player;
 
 /**
  * Structure Class for the OnScores Structure Callback
@@ -16,13 +15,13 @@ use ManiaControl\Players\Player;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class OnScoresStructure extends BaseStructure {
-	public  $responseId;
-	public  $section;
-	public  $useTeams;
-	public  $winnerTeam;
-	public  $winnerPlayer;
+	private $responseId;
+	private $section;
+	private $useTeams;
+	private $winnerTeam;
+	private $winnerPlayer;
 	private $teamScores = array();
-	public  $players; //TODO implement
+	private $players; //TODO implement
 
 	//TODO test
 	public function __construct(ManiaControl $maniaControl, $data) {
@@ -51,36 +50,36 @@ class OnScoresStructure extends BaseStructure {
 		//TODO implement player
 	}
 
-	/** Dumps the Object with some Information */
-	public function dump() {
-		parent::dump();
-		var_dump("With getWinnerPlayer() you get a Player Object");
-		var_dump($this->teamScores);
-	}
-
-
 	/**
-	 * @return Player
+	 * Get the Winner Player Object
+	 *
+	 * @return \ManiaControl\Players\Player
 	 */
 	public function getWinnerPlayer() {
 		return $this->winnerPlayer;
 	}
 
 	/**
-	 * @return mixed
+	 * Get the Response Id
+	 *
+	 * @return string
 	 */
 	public function getResponseId() {
 		return $this->responseId;
 	}
 
 	/**
-	 * @return mixed
+	 *  < Current progress of the match. Can be "" | "EndRound" | "EndMap" | "EndMatch"
+	 *
+	 * @return string
 	 */
 	public function getSection() {
 		return $this->section;
 	}
 
 	/**
+	 * Returns if the GameMode uses Teams or not
+	 *
 	 * @return boolean
 	 */
 	public function getUseTeams() {
@@ -88,13 +87,17 @@ class OnScoresStructure extends BaseStructure {
 	}
 
 	/**
+	 * Get the Winner Team Id
+	 *
 	 * @return int
 	 */
-	public function getWinnerTeam() {
+	public function getWinnerTeamId() {
 		return $this->winnerTeam;
 	}
 
 	/**
+	 * Returns the TeamScores
+	 *
 	 * @return TeamScore[]
 	 */
 	public function getTeamScores() {
@@ -102,6 +105,8 @@ class OnScoresStructure extends BaseStructure {
 	}
 
 	/**
+	 * Get The Player Scores
+	 *
 	 * @return mixed
 	 */
 	public function getPlayers() {

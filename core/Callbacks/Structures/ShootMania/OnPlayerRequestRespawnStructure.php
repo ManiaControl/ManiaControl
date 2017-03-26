@@ -15,9 +15,9 @@ use ManiaControl\Players\Player;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class OnPlayerRequestRespawnStructure extends BaseStructure {
-	public $time;
+	private $time;
 	/**
-	 * @var Player $shooter
+	 * @var Player $player
 	 */
 	private $player;
 
@@ -26,9 +26,13 @@ class OnPlayerRequestRespawnStructure extends BaseStructure {
 
 		$this->time   = $this->getPlainJsonObject()->time;
 		$this->player = $this->maniaControl->getPlayerManager()->getPlayer($this->getPlainJsonObject()->login);
+
+		$this->getUsage();
 	}
 
 	/**
+	 * Returns the Time the Event Happened
+	 *
 	 * @return int
 	 */
 	public function getTime() {
@@ -36,15 +40,11 @@ class OnPlayerRequestRespawnStructure extends BaseStructure {
 	}
 
 	/**
-	 * @return Player
+	 * Gets the Player
+	 *
+	 * @return \ManiaControl\Players\Player
 	 */
 	public function getPlayer() {
 		return $this->player;
-	}
-
-	/** Dumps the Object with some Information */
-	public function dump() {
-		parent::dump();
-		var_dump("With getPlayer() you get a Player Object");
 	}
 }

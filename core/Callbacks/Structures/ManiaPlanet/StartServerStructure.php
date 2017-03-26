@@ -14,7 +14,7 @@ use ManiaControl\ManiaControl;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class StartServerStructure extends BaseStructure {
-	public $restarted;
+	private $restarted;
 
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
@@ -23,6 +23,8 @@ class StartServerStructure extends BaseStructure {
 	}
 
 	/**
+	 * Flag if the Server got Restarted
+	 *
 	 * @return mixed
 	 */
 	public function getRestarted() {

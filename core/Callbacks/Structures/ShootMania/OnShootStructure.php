@@ -29,6 +29,7 @@ class OnShootStructure extends BaseStructure {
 		$this->weapon  = $this->getPlainJsonObject()->weapon;
 
 		$this->shooter = $this->maniaControl->getPlayerManager()->getPlayer($this->getPlainJsonObject()->shooter);
+
 	}
 
 	/**

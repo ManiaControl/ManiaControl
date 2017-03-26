@@ -18,7 +18,7 @@ use ManiaControl\Players\Player;
  */
 class OnCaptureStructure extends BaseStructure {
 
-	public  $time;
+	private $time;
 	private $landMark;
 
 	private $playerArray = array();
@@ -44,23 +44,17 @@ class OnCaptureStructure extends BaseStructure {
 		$this->landMark->setPosition($position);
 	}
 
-	/** Dumps the Object with some Information */
-	public function dump() {
-		var_dump($this->landMark);
-		parent::dump();
-	}
-
 	/**
-	 * Get the logins
+	 * Get the logins as Array
 	 *
-	 * @return array
+	 * @return string[]
 	 */
 	public function getLoginArray() {
 		return $this->playerArray;
 	}
 
 	/**
-	 * Get the players
+	 * Get the Players as Player Array
 	 *
 	 * @return Player[]
 	 */
@@ -76,16 +70,11 @@ class OnCaptureStructure extends BaseStructure {
 	}
 
 	/**
-	 * @return LandMark
+	 * Returns Information about the Captured Landmark
+	 *
+	 * @return \ManiaControl\Callbacks\Structures\ShootMania\Models\LandMark
 	 */
 	public function getLandMark() {
 		return $this->landMark;
-	}
-
-	/**
-	 * @param mixed $landMark
-	 */
-	public function setLandMark(Landmark $landMark) {
-		$this->landMark = $landMark;
 	}
 }
