@@ -8,5 +8,5 @@ namespace ManiaControl\General;
  * @package ManiaControl\General
  */
 interface UsageInformationAble {
-	public function getUsage();
+	public function getUsageInformation();
 }
