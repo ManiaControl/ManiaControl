@@ -3,6 +3,7 @@
 namespace ManiaControl\Server;
 
 use ManiaControl\Callbacks\TimerListener;
+use ManiaControl\Files\AsyncHttpRequest;
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Utils\Formatter;
@@ -81,11 +82,16 @@ class UsageReporter implements TimerListener {
 		$usageReport = json_encode($properties);
 
 		$url = ManiaControl::URL_WEBSERVICE . 'usagereport';
-		$this->maniaControl->getFileReader()->postData($url, function ($response, $error) {
+
+		$asyncRequest = new AsyncHttpRequest($this->maniaControl, $url);
+		$asyncRequest->setContent($usageReport);
+		$asyncRequest->setCallable(function ($response, $error) {
 			$response = json_decode($response);
 			if ($error || !$response) {
 				Logger::logError('Error while Sending data: ' . print_r($error, true));
 			}
-		}, $usageReport);
+		});
+
+		$asyncRequest->postData();
 	}
 }

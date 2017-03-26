@@ -12,6 +12,7 @@ use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Files\AsynchronousFileReader;
+use ManiaControl\Files\AsyncHttpRequest;
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Maps\Map;
@@ -368,16 +369,23 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		}
 
 		$content = json_encode($properties);
-		$this->maniaControl->getFileReader()->postData(self::MX_KARMA_URL . self::MX_KARMA_GET_MAP_RATING . '?sessionKey=' . urlencode($this->mxKarma['session']->sessionKey), function ($json, $error) use (
+
+		$url = self::MX_KARMA_URL . self::MX_KARMA_GET_MAP_RATING . '?sessionKey=' . urlencode($this->mxKarma['session']->sessionKey);
+
+		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, $url);
+		$asyncHttpRequest->setContent($content);
+		$asyncHttpRequest->setContentType($asyncHttpRequest::CONTENT_TYPE_JSON);
+
+		$asyncHttpRequest->setCallable(function ($json, $error) use (
 			&$player
 		) {
 			if ($error) {
-				$this->maniaControl->getErrorHandler()->triggerDebugNotice('mx karma error', $error);
+				$this->maniaControl->getErrorHandler()->triggerDebugNotice('mx karma error' . $error);
 				return;
 			}
 			$data = json_decode($json);
 			if (!$data) {
-				$this->maniaControl->getErrorHandler()->triggerDebugNotice('parse error', $json, $data);
+				$this->maniaControl->getErrorHandler()->triggerDebugNotice('parse error' . $json);
 				return;
 			}
 
@@ -403,10 +411,12 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 				if ($data->data->message === 'invalid session') {
 					unset($this->mxKarma['session']);
 				} else {
-					$this->maniaControl->getErrorHandler()->triggerDebugNotice('fetch error', $data->data->message, self::MX_KARMA_GET_MAP_RATING, $this->mxKarma['session']);
+					$this->maniaControl->getErrorHandler()->triggerDebugNotice('fetch error ' . $data->data->message . self::MX_KARMA_GET_MAP_RATING . $this->mxKarma['session']);
 				}
 			}
-		}, $content, false, AsynchronousFileReader::CONTENT_TYPE_JSON);
+		});
+
+		$asyncHttpRequest->postData();
 	}
 
 	/**
@@ -483,14 +493,19 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 		$content = json_encode($properties);
 
-		$this->maniaControl->getFileReader()->postData(self::MX_KARMA_URL . self::MX_KARMA_SAVE_VOTES . "?sessionKey=" . urlencode($this->mxKarma['session']->sessionKey), function ($json, $error) {
+		$url = self::MX_KARMA_URL . self::MX_KARMA_SAVE_VOTES . "?sessionKey=" . urlencode($this->mxKarma['session']->sessionKey);
+
+		$asyncRequest = new AsyncHttpRequest($this->maniaControl, $url);
+		$asyncRequest->setContent($content);
+		$asyncRequest->setContentType($asyncRequest::CONTENT_TYPE_JSON);
+		$asyncRequest->setCallable(function ($json, $error) {
 			if ($error) {
-				$this->maniaControl->getErrorHandler()->triggerDebugNotice('mx karma error', $error);
+				$this->maniaControl->getErrorHandler()->triggerDebugNotice('mx karma error ' . $error);
 				return;
 			}
 			$data = json_decode($json);
 			if (!$data) {
-				$this->maniaControl->getErrorHandler()->triggerDebugNotice('parse error', $json, $data);
+				$this->maniaControl->getErrorHandler()->triggerDebugNotice('parse error ' . $json);
 				return;
 			}
 			if ($data->success) {
@@ -501,10 +516,12 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 				if ($data->data->message === "invalid session") {
 					unset($this->mxKarma['session']);
 				} else {
-					$this->maniaControl->getErrorHandler()->triggerDebugNotice('saving error', $data->data->message, self::MX_KARMA_SAVE_VOTES, $this->mxKarma['session']);
+					$this->maniaControl->getErrorHandler()->triggerDebugNotice('saving error ' . $data->data->message . self::MX_KARMA_SAVE_VOTES . $this->mxKarma['session']);
 				}
 			}
-		}, $content, false, AsynchronousFileReader::CONTENT_TYPE_JSON);
+		});
+
+		$asyncRequest->postData();
 	}
 
 	/**
