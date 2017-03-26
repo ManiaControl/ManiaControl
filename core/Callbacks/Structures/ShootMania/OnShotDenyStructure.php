@@ -5,7 +5,6 @@ namespace ManiaControl\Callbacks\Structures\ShootMania;
 
 use ManiaControl\Callbacks\Structures\BaseStructure;
 use ManiaControl\ManiaControl;
-use ManiaControl\Players\Player;
 
 
 /**
@@ -16,12 +15,12 @@ use ManiaControl\Players\Player;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class OnShotDenyStructure extends BaseStructure {
-	public $time;
-	public $shooterWeapon;
-	public $victimWeapon;
+	private $time;
+	private $shooterWeapon;
+	private $victimWeapon;
 
-	protected $shooter;
-	protected $victim;
+	private $shooter;
+	private $victim;
 
 	/**
 	 * Construct a new On Hit Structure
@@ -41,14 +40,9 @@ class OnShotDenyStructure extends BaseStructure {
 		$this->victim  = $this->maniaControl->getPlayerManager()->getPlayer($this->getPlainJsonObject()->victim);
 	}
 
-	/** Dumps the Object with some Information */
-	public function dump() {
-		parent::dump();
-		var_dump("With getShooter() you get a Player Object");
-		var_dump("With getVictim() you get a Player Object");
-	}
-
 	/**
+	 * ServerTime The Event Happened //TODO add Trait for the Time Property
+	 *
 	 * @return int
 	 */
 	public function getTime() {
@@ -57,14 +51,18 @@ class OnShotDenyStructure extends BaseStructure {
 
 
 	/**
-	 * @return Player
+	 * Gets the Shooter Player
+	 *
+	 * @return \ManiaControl\Players\Player
 	 */
 	public function getShooter() {
 		return $this->shooter;
 	}
 
 	/**
-	 * @return Player
+	 * Gets the Victim Player
+	 *
+	 * @return \ManiaControl\Players\Player
 	 */
 	public function getVictim() {
 		return $this->victim;
@@ -78,7 +76,10 @@ class OnShotDenyStructure extends BaseStructure {
 	}
 
 	/**
-	 * @return mixed
+	 * Get the Victim Weapon
+	 *
+	 * @see \ManiaControl\Callbacks\Structures\ShootMania\Models\Weapons
+	 * @return int
 	 */
 	public function getVictimWeapon() {
 		return $this->victimWeapon;

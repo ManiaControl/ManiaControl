@@ -14,8 +14,8 @@ use ManiaControl\ManiaControl;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class OnDefaultEventStructure extends BaseStructure {
-	public $time;
-	public $type;
+	private $time;
+	private $type;
 
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
@@ -25,6 +25,8 @@ class OnDefaultEventStructure extends BaseStructure {
 	}
 
 	/**
+	 * Returns Server time when the event occured
+	 *
 	 * @return int
 	 */
 	public function getTime() {
@@ -32,6 +34,8 @@ class OnDefaultEventStructure extends BaseStructure {
 	}
 
 	/**
+	 * Returns the type of event
+	 *
 	 * @return string
 	 */
 	public function getType() {

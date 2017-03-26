@@ -15,7 +15,7 @@ use ManiaControl\Players\Player;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class OnFallDamageStructure extends BaseStructure {
-	public $time;
+	private $time;
 	/**
 	 * @var Player $shooter
 	 */
@@ -29,6 +29,8 @@ class OnFallDamageStructure extends BaseStructure {
 	}
 
 	/**
+	 * < Server time when the event occured
+	 *
 	 * @return int
 	 */
 	public function getTime() {
@@ -36,15 +38,12 @@ class OnFallDamageStructure extends BaseStructure {
 	}
 
 	/**
+	 * < Player who fell
+	 *
 	 * @return Player
 	 */
 	public function getVictim() {
 		return $this->victim;
 	}
 
-	/** Dumps the Object with some Information */
-	public function dump() {
-		parent::dump();
-		var_dump("With getVictim() you get a Player Object");
-	}
 }

@@ -10,14 +10,14 @@ class Landmark {
 	private $position = null;
 
 	/**
-	 * @return mixed
+	 * @return string
 	 */
 	public function getTag() {
 		return $this->tag;
 	}
 
 	/**
-	 * @param mixed $tag
+	 * @param string $tag
 	 */
 	public function setTag($tag) {
 		$this->tag = $tag;
@@ -52,14 +52,14 @@ class Landmark {
 	}
 
 	/**
-	 * @return mixed
+	 * @return \ManiaControl\Callbacks\Structures\ShootMania\Models\Position
 	 */
 	public function getPosition() {
 		return $this->position;
 	}
 
 	/**
-	 * @param mixed $position
+	 * @param \ManiaControl\Callbacks\Structures\ShootMania\Models\Position $position
 	 */
 	public function setPosition(Position $position) {
 		$this->position = $position;

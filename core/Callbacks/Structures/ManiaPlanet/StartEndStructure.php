@@ -14,7 +14,7 @@ use ManiaControl\ManiaControl;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class StartEndStructure extends BaseStructure {
-	public $count;
+	private $count;
 
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
@@ -23,7 +23,9 @@ class StartEndStructure extends BaseStructure {
 	}
 
 	/**
-	 * @return mixed
+	 * Get the Count of this Section
+	 *
+	 * @return int
 	 */
 	public function getCount() {
 		return $this->count;

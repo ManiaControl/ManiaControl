@@ -17,15 +17,15 @@ use ManiaControl\Players\Player;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class OnHitNearMissArmorEmptyStructure extends BaseStructure {
-	public $time;
-	public $weapon;
-	public $damage;
-	public $distance = 0; //Note no distance on the OnHit and ArmorEmpty yet
+	private $time;
+	private $weapon;
+	private $damage;
+	private $distance = 0; //Note no distance on the OnHit and ArmorEmpty yet
 
-	private   $shooterPosition;
-	private   $victimPosition;
-	protected $shooter;
-	protected $victim;
+	private $shooterPosition;
+	private $victimPosition;
+	private $shooter;
+	private $victim;
 
 	//private $shooterPoints; (was in mp3)
 	//private $hitDistance; (was in mp3)
@@ -43,7 +43,7 @@ class OnHitNearMissArmorEmptyStructure extends BaseStructure {
 		$jsonObj      = $this->getPlainJsonObject();
 		$this->time   = $jsonObj->time;
 		$this->weapon = $jsonObj->weapon;
-		$this->damage = $jsonObj->damage;
+		$this->damage = $jsonObj->damage; //TODO does only exist on onhit -> make baseclass
 
 		$this->shooterPosition = new Position();
 		$this->shooterPosition->setX($jsonObj->shooterposition->x);
@@ -63,18 +63,9 @@ class OnHitNearMissArmorEmptyStructure extends BaseStructure {
 		$this->victim  = $this->maniaControl->getPlayerManager()->getPlayer($this->getPlainJsonObject()->victim);
 	}
 
-	/** Dumps the Object with some Information */
-	public function dump() {
-		var_dump("Dump of property Shooter Position");
-		var_dump($this->shooterPosition);
-		var_dump("Dump of property Victim Position");
-		var_dump($this->victimPosition);
-		parent::dump();
-		var_dump("With getShooter() you get a Player Object");
-		var_dump("With getVictim() you get a Player Object");
-	}
-
 	/**
+	 * < Server time when the event occured
+	 *
 	 * @return int
 	 */
 	public function getTime() {
@@ -82,6 +73,9 @@ class OnHitNearMissArmorEmptyStructure extends BaseStructure {
 	}
 
 	/**
+	 * < Id of the weapon [1-Laser, 2-Rocket, 3-Nucleus, 5-Arrow]
+	 *
+	 * @see \ManiaControl\Callbacks\Structures\ShootMania\Models\Weapons
 	 * @return int
 	 */
 	public function getWeapon() {
@@ -89,6 +83,9 @@ class OnHitNearMissArmorEmptyStructure extends BaseStructure {
 	}
 
 	/**
+	 * < Amount of Damage done by the hit (only on onHit)
+	 * TODO base class and extend properties)
+	 *
 	 * @return int
 	 */
 	public function getDamage() {
@@ -96,7 +93,7 @@ class OnHitNearMissArmorEmptyStructure extends BaseStructure {
 	}
 
 	/**
-	 * TODO Position Object
+	 * < Position of the Shooter at the time
 	 *
 	 * @return Position
 	 */
@@ -105,15 +102,17 @@ class OnHitNearMissArmorEmptyStructure extends BaseStructure {
 	}
 
 	/**
-	 * TODO Position Object
+	 * < Position of the Victim at the time
 	 *
-	 * @return Position
+	 * @return \ManiaControl\Callbacks\Structures\ShootMania\Models\Position
 	 */
 	public function getVictimPosition() {
 		return $this->victimPosition;
 	}
 
 	/**
+	 * < Shooter Player
+	 *
 	 * @return Player
 	 */
 	public function getShooter() {
@@ -121,6 +120,8 @@ class OnHitNearMissArmorEmptyStructure extends BaseStructure {
 	}
 
 	/**
+	 * < Victim Player
+	 *
 	 * @return Player
 	 */
 	public function getVictim() {
