@@ -27,7 +27,7 @@ class ErrorHandler {
 	 * Private properties
 	 */
 	/** @var ManiaControl $maniaControl */
-	private $maniaControl = null;
+	private $maniaControl  = null;
 	private $handlingError = null;
 
 	/**
@@ -144,6 +144,8 @@ class ErrorHandler {
 				$report['ManiaControlVersion'] = ManiaControl::VERSION;
 			}
 
+			$report['DedicatedBuildVersion'] = $this->maniaControl->getDedicatedServerBuildVersion();
+
 			$json = json_encode(Formatter::utf8($report));
 			$info = base64_encode($json);
 
@@ -235,7 +237,7 @@ class ErrorHandler {
 		$traceString = '';
 		$stepCount   = 0;
 		foreach ($backtrace as $traceStep) {
-			$skipStep = $this->shouldSkipTraceStep($traceStep);
+			$skipStep    = $this->shouldSkipTraceStep($traceStep);
 			$traceString .= '#' . $stepCount . ': ';
 			if (isset($traceStep['class'])) {
 				if (!$sourceClass && !$skipStep && !$this->isIgnoredSourceClass($traceStep['class'])) {
@@ -329,7 +331,7 @@ class ErrorHandler {
 			} else if (is_array($arg)) {
 				$string .= 'array(' . $this->parseArgumentsArray($arg) . ')';
 			} else {
-				$type = gettype($arg);
+				$type   = gettype($arg);
 				$string .= $type . '(';
 				if (is_string($arg)) {
 					$param = $arg;
@@ -437,6 +439,8 @@ class ErrorHandler {
 			} else {
 				$report['ManiaControlVersion'] = ManiaControl::VERSION;
 			}
+
+			$report['DedicatedBuildVersion'] = $this->maniaControl->getDedicatedServerBuildVersion();
 
 			$errorReport = json_encode(Formatter::utf8($report));
 

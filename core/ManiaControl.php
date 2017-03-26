@@ -183,6 +183,8 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 	/** @var ModeScriptEventManager $modeScriptEventManager */
 	private $modeScriptEventManager = null;
 
+	private $dedicatedServerBuildVersion = "";
+
 	/**
 	 * Construct a new ManiaControl instance
 	 */
@@ -215,7 +217,6 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 		$this->configurator           = new Configurator($this);
 		$this->pluginManager          = new PluginManager($this);
 		$this->updateManager          = new UpdateManager($this);
-
 
 		$this->getErrorHandler()->init();
 
@@ -565,6 +566,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 		$this->requestQuitMessage = $message;
 	}
 
+
 	/**
 	 * Run ManiaControl
 	 */
@@ -576,9 +578,10 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 			$this->connect();
 
 			// Check if the version of the server is high enough
-			$version = $this->getClient()->getVersion();
-			if ($version->build < self::MIN_DEDIVERSION) {
-				$this->quit("The Server has Version '{$version->build}', while at least '" . self::MIN_DEDIVERSION . "' is required!", true);
+			$version                           = $this->getClient()->getVersion();
+			$this->dedicatedServerBuildVersion = $version->build;
+			if ($this->dedicatedServerBuildVersion < self::MIN_DEDIVERSION) {
+				$this->quit("The Server has Version '{$this->dedicatedServerBuildVersion}', while at least '" . self::MIN_DEDIVERSION . "' is required!", true);
 			}
 
 			// Listen for shutdown
@@ -650,6 +653,16 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 		// Enable script callbacks
 		$this->getServer()->getScriptManager()->enableScriptCallbacks();
 	}
+
+	/**
+	 * Get The Build Version of the Dedicated Server
+	 *
+	 * @return string
+	 */
+	public function getDedicatedServerBuildVersion() {
+		return $this->dedicatedServerBuildVersion;
+	}
+
 
 	/**
 	 * Return the server
