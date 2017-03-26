@@ -469,6 +469,7 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 
 		// Update last updated time
 		$map = $this->getMapByUid($mapInfo->uid);
+
 		if (!$map) {
 			// TODO: improve this - error reports about not existing maps
 			$this->maniaControl->getErrorHandler()->triggerDebugNotice('Map not in List after Insert!');
