@@ -2,6 +2,9 @@
 
 namespace ManiaControl\Utils;
 
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
+
 /**
  * Command Line Helper Class
  *
@@ -9,7 +12,8 @@ namespace ManiaControl\Utils;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class CommandLineHelper {
+class CommandLineHelper implements UsageInformationAble {
+	use UsageInformationTrait;
 
 	/**
 	 * Get the command line parameter value with the given name
@@ -18,7 +22,7 @@ class CommandLineHelper {
 	 * @return string
 	 */
 	public static function getParameter($paramName) {
-		$paramName = (string)$paramName;
+		$paramName = (string) $paramName;
 		$params    = self::getAllParameters();
 		foreach ($params as $param) {
 			$parts = explode('=', $param, 2);
@@ -40,6 +44,6 @@ class CommandLineHelper {
 	 */
 	public static function getAllParameters() {
 		global $argv;
-		return (array)$argv;
+		return (array) $argv;
 	}
 }

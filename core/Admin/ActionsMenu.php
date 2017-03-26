@@ -10,6 +10,8 @@ use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\ManiaLink;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\Callbacks;
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
@@ -22,7 +24,9 @@ use ManiaControl\Players\PlayerManager;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
+class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, UsageInformationAble {
+	use UsageInformationTrait;
+	
 	/*
 	 * Constants
 	 */
@@ -124,8 +128,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener {
 		$itemMarginFactorY = 1.2;
 
 		// If game is shootmania lower the icons position by 20
-		if ($this->maniaControl->getMapManager()->getCurrentMap()->getGame() === 'sm'
-		) {
+		if ($this->maniaControl->getMapManager()->getCurrentMap()->getGame() === 'sm') {
 			$posY -= $shootManiaOffset;
 		}
 

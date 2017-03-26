@@ -5,6 +5,8 @@ namespace ManiaControl\Manialinks;
 use FML\CustomUI;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\TimerListener;
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
@@ -16,7 +18,9 @@ use ManiaControl\Players\PlayerManager;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class CustomUIManager implements CallbackListener, TimerListener {
+class CustomUIManager implements CallbackListener, TimerListener, UsageInformationAble {
+	use UsageInformationTrait;
+	
 	/*
 	 * Constants
 	 */

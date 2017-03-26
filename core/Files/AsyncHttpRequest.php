@@ -4,6 +4,8 @@ namespace ManiaControl\Files;
 
 use cURL\Event;
 use cURL\Request;
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
 
 /**
@@ -13,7 +15,8 @@ use ManiaControl\ManiaControl;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class AsyncHttpRequest {
+class AsyncHttpRequest implements UsageInformationAble {
+	use UsageInformationTrait;
 	/*
 	 * Constants
 	 */
@@ -183,7 +186,7 @@ class AsyncHttpRequest {
 	 * @return $this
 	 */
 	public function setHeaders($headers) {
-		if(is_array($headers)){
+		if (is_array($headers)) {
 			$this->headers = $headers;
 		}
 		return $this;

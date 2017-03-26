@@ -3,6 +3,8 @@
 namespace ManiaControl\ManiaExchange;
 
 use ManiaControl\Files\AsynchronousFileReader;
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
 use ManiaControl\Maps\Map;
 use ManiaControl\Maps\MapManager;
@@ -14,7 +16,9 @@ use ManiaControl\Maps\MapManager;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class ManiaExchangeManager {
+class ManiaExchangeManager implements UsageInformationAble {
+	use UsageInformationTrait;
+	
 	/*
 	 * Constants
 	 * @deprecated SEARCH Constants

@@ -4,6 +4,8 @@ namespace ManiaControl\Maps;
 
 use ManiaControl\General\Dumpable;
 use ManiaControl\General\DumpTrait;
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaExchange\MXMapInfo;
 use ManiaControl\Utils\Formatter;
 
@@ -14,8 +16,8 @@ use ManiaControl\Utils\Formatter;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class Map implements Dumpable {
-	use DumpTrait;
+class Map implements Dumpable, UsageInformationAble {
+	use DumpTrait, UsageInformationTrait;
 	
 	/*
 	 * Public properties

@@ -9,6 +9,7 @@ use ManiaControl\ManiaControl;
 /**
  * Reader Utility Class for efficient Web Requests
  *
+ * @see       \ManiaControl\Files\AsyncHttpRequest For Asynchron Requests
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
@@ -51,12 +52,12 @@ abstract class WebReader {
 	protected static function newRequest($url) {
 		$request = new Request($url);
 		$options = $request->getOptions();
-		$options->set(CURLOPT_TIMEOUT, 5) // timeout
-		        ->set(CURLOPT_HEADER, false) // don't display response header
-		        ->set(CURLOPT_CRLF, true) // linux line feed
-		        ->set(CURLOPT_ENCODING, '') // accept encoding
-		        ->set(CURLOPT_USERAGENT, 'ManiaControl v' . ManiaControl::VERSION) // user-agent
-		        ->set(CURLOPT_RETURNTRANSFER, true) // return instead of output content
+		$options->set(CURLOPT_TIMEOUT, 5)// timeout
+		        ->set(CURLOPT_HEADER, false)// don't display response header
+		        ->set(CURLOPT_CRLF, true)// linux line feed
+		        ->set(CURLOPT_ENCODING, '')// accept encoding
+		        ->set(CURLOPT_USERAGENT, 'ManiaControl v' . ManiaControl::VERSION)// user-agent
+		        ->set(CURLOPT_RETURNTRANSFER, true)// return instead of output content
 		        ->set(CURLOPT_AUTOREFERER, true); // follow redirects
 		return $request;
 	}

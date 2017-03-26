@@ -2,6 +2,9 @@
 
 namespace ManiaControl\Utils;
 
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
+
 /**
  * Utility Class offering Methods to convert and use ManiaPlanet Colors
  *
@@ -9,7 +12,8 @@ namespace ManiaControl\Utils;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-abstract class ColorUtil {
+abstract class ColorUtil implements UsageInformationAble {
+	use UsageInformationTrait;
 
 	/**
 	 * Convert the given float value to a color code from red to green
@@ -47,9 +51,9 @@ abstract class ColorUtil {
 			$value = 1.;
 		}
 		$value *= 15.;
-		$value = (int)round($value);
+		$value = (int) round($value);
 		if ($value < 10) {
-			return (string)$value;
+			return (string) $value;
 		}
 		$codes = array(10 => 'a', 11 => 'b', 12 => 'c', 13 => 'd', 14 => 'e', 15 => 'f');
 		return $codes[$value];

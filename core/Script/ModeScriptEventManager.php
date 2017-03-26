@@ -6,11 +6,16 @@
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
+
 namespace ManiaControl\Script;
 
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
 
-class ModeScriptEventManager {
+class ModeScriptEventManager implements UsageInformationAble {
+	use UsageInformationTrait;
+
 	const API_VERSION = "2.0.0";
 
 	/** @var ManiaControl $maniaControl */
@@ -49,19 +54,20 @@ class ModeScriptEventManager {
 	 * @param string $responseId
 	 * Triggers a Callback List Callback
 	 */
-	public function getCallbacksList($responseId = "DefaultResponseId"){
+	public function getCallbacksList($responseId = "DefaultResponseId") {
 		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.GetCallbacksList', array($responseId));
 	}
 
 	/**
 	 * Sets the Api Version
+	 *
 	 * @param string $version
 	 */
-	public function setApiVersion($version = self::API_VERSION){
+	public function setApiVersion($version = self::API_VERSION) {
 		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.SetApiVersion', array($version));
 	}
 
-	public function getAllApiVersions($responseId = "DefaultResponseId"){
+	public function getAllApiVersions($responseId = "DefaultResponseId") {
 		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.GetAllApiVersions', array($responseId));
 	}
 }

@@ -1,7 +1,10 @@
 <?php
+
 namespace ManiaControl\ManiaExchange;
 
 use ManiaControl\Files\AsynchronousFileReader;
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
 use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
 
@@ -12,7 +15,9 @@ use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class ManiaExchangeMapSearch {
+class ManiaExchangeMapSearch implements UsageInformationAble {
+	use UsageInformationTrait;
+	
 	//Search orders (prior parameter) https://api.mania-exchange.com/documents/enums#orderings
 	const SEARCH_ORDER_NONE               = -1;
 	const SEARCH_ORDER_TRACK_NAME         = 0;
@@ -99,7 +104,7 @@ class ManiaExchangeMapSearch {
 
 		$this->url = 'https://' . $this->titlePrefix . '.mania-exchange.com/tracksearch2/search?api=on';
 
-		if($key = $this->maniaControl->getSettingManager()->getSettingValue($this, ManiaExchangeManager::SETTING_MX_KEY)){
+		if ($key = $this->maniaControl->getSettingManager()->getSettingValue($this, ManiaExchangeManager::SETTING_MX_KEY)) {
 			$this->url .= "&key=" . $key;
 		}
 
@@ -228,7 +233,7 @@ class ManiaExchangeMapSearch {
 			}
 
 			$mxMapList = $mxMapList->results;
-			
+
 			if ($mxMapList === null) {
 				trigger_error('Cannot decode searched JSON data');
 				return;

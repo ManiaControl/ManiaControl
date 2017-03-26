@@ -10,6 +10,8 @@ use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Communication\CommunicationAnswer;
 use ManiaControl\Communication\CommunicationListener;
 use ManiaControl\Communication\CommunicationMethods;
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Statistics\StatisticManager;
@@ -23,7 +25,9 @@ use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class PlayerManager implements CallbackListener, TimerListener, CommunicationListener {
+class PlayerManager implements CallbackListener, TimerListener, CommunicationListener, UsageInformationAble {
+	use UsageInformationTrait;
+	
 	/*
 	 * Constants
 	 */
