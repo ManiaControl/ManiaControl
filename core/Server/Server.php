@@ -8,6 +8,7 @@ use ManiaControl\Commands\CommandListener;
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
+use ManiaControl\Script\ScriptManager;
 use ManiaControl\Utils\CommandLineHelper;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
 
@@ -56,7 +57,7 @@ class Server implements CallbackListener, CommandListener {
 	 * @see getRankingManager()
 	 */
 	public $rankingManager = null;
-	/** @var ScriptManager $scriptManager
+	/** @var \ManiaControl\Script\ScriptManager $scriptManager
 	 * @deprecated
 	 * @see getScriptManager()
 	 */
@@ -178,7 +179,7 @@ class Server implements CallbackListener, CommandListener {
 	/**
 	 * Return the script manager
 	 *
-	 * @return ScriptManager
+	 * @return \ManiaControl\Script\ScriptManager
 	 */
 	public function getScriptManager() {
 		return $this->scriptManager;
