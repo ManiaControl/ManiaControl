@@ -4,6 +4,7 @@ namespace ManiaControl\Callbacks\Structures\ShootMania;
 
 
 use ManiaControl\Callbacks\Structures\BaseStructure;
+use ManiaControl\Callbacks\Structures\ShootMania\Models\PlayerScore;
 use ManiaControl\Callbacks\Structures\ShootMania\Models\TeamScore;
 use ManiaControl\ManiaControl;
 
@@ -20,8 +21,8 @@ class OnScoresStructure extends BaseStructure {
 	private $useTeams;
 	private $winnerTeam;
 	private $winnerPlayer;
-	private $teamScores = array();
-	private $players; //TODO implement
+	private $teamScores   = array();
+	private $playerScores = array();
 
 	//TODO test
 	public function __construct(ManiaControl $maniaControl, $data) {
@@ -47,7 +48,16 @@ class OnScoresStructure extends BaseStructure {
 			$this->teamScores[$team->id] = $teamScore; //TODO verify that different teams have different ids
 		}
 
-		//TODO implement player
+		foreach ($jsonObj->players as $jsonPlayer) {
+			$playerScore = new PlayerScore();
+			$playerScore->setPlayer($this->maniaControl->getPlayerManager()->getPlayer($jsonPlayer->login));
+			$playerScore->setRank($jsonPlayer->rank);
+			$playerScore->setRoundPoints($jsonPlayer->roundpoints);
+			$playerScore->setMapPoints($jsonPlayer->mappoints);
+
+			$this->playerScores[$jsonPlayer->login] = $playerScore;
+		}
+
 	}
 
 	/**
@@ -105,12 +115,11 @@ class OnScoresStructure extends BaseStructure {
 	}
 
 	/**
-	 * Get The Player Scores
+	 * Get the Player Scores
 	 *
-	 * @return mixed
+	 * @return PlayerScore[]
 	 */
-	public function getPlayers() {
-		//TODO proper implementation
-		return $this->players;
+	public function getPlayerScores() {
+		return $this->playerScores;
 	}
 }
