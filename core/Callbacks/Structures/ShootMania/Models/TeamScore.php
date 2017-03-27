@@ -2,8 +2,19 @@
 
 namespace ManiaControl\Callbacks\Structures\ShootMania\Models;
 
-//TODO describtion
-class TeamScore {
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
+
+/**
+ * TeamScore Model
+ *
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014-2017 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ */
+class TeamScore implements UsageInformationAble {
+	use UsageInformationTrait;
+
 	private $id;
 	private $name;
 	private $roundPoints;

@@ -5,32 +5,31 @@ namespace ManiaControl\Callbacks\Structures\ShootMania;
 
 use ManiaControl\Callbacks\Structures\BaseStructure;
 use ManiaControl\ManiaControl;
-use ManiaControl\Players\Player;
 
 /**
- * Structure Class for the OnPlayerRequestRespawnStructure Structure Callback
+ * Structure Class for the OnPlayerTriggersSector Structure Callback
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class OnPlayerRequestRespawnStructure extends BaseStructure {
+class OnPlayerTriggersSectorStructure extends BaseStructure {
 	private $time;
-	/**
-	 * @var Player $player
-	 */
 	private $player;
+	private $sectorId;
+
 
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
 
-		$this->time   = $this->getPlainJsonObject()->time;
-		$this->player = $this->maniaControl->getPlayerManager()->getPlayer($this->getPlainJsonObject()->login);
+		$this->time     = $this->getPlainJsonObject()->time;
+		$this->sectorId = $this->getPlainJsonObject()->sectorid;
 
+		$this->player = $this->maniaControl->getPlayerManager()->getPlayer($this->getPlainJsonObject()->login);
 	}
 
 	/**
-	 * Returns the Time the Event Happened
+	 * Returns Server time when the event occured
 	 *
 	 * @return int
 	 */
@@ -39,11 +38,22 @@ class OnPlayerRequestRespawnStructure extends BaseStructure {
 	}
 
 	/**
-	 * Gets the Player
+	 * < player who touched the object
 	 *
 	 * @return \ManiaControl\Players\Player
 	 */
 	public function getPlayer() {
 		return $this->player;
 	}
+
+	/**
+	 * < Id of the triggered sector
+	 *
+	 * @return string
+	 */
+	public function getSectorId() {
+		return $this->sectorId;
+	}
+
+
 }

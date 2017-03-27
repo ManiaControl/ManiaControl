@@ -5,32 +5,30 @@ namespace ManiaControl\Callbacks\Structures\ShootMania;
 
 use ManiaControl\Callbacks\Structures\BaseStructure;
 use ManiaControl\ManiaControl;
-use ManiaControl\Players\Player;
 
 /**
- * Structure Class for the OnPlayerRequestRespawnStructure Structure Callback
+ * Structure Class for the OnPlayerRequestActionChange Structure Callback
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class OnPlayerRequestRespawnStructure extends BaseStructure {
+class OnPlayerRequestActionChange extends BaseStructure {
 	private $time;
-	/**
-	 * @var Player $player
-	 */
 	private $player;
+	private $actionChange;
 
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
 
-		$this->time   = $this->getPlainJsonObject()->time;
-		$this->player = $this->maniaControl->getPlayerManager()->getPlayer($this->getPlainJsonObject()->login);
+		$this->time         = $this->getPlainJsonObject()->time;
+		$this->actionChange = $this->getPlainJsonObject()->actionChange;
 
+		$this->player = $this->maniaControl->getPlayerManager()->getPlayer($this->getPlainJsonObject()->login);
 	}
 
 	/**
-	 * Returns the Time the Event Happened
+	 * Returns Server time when the event occured
 	 *
 	 * @return int
 	 */
@@ -39,11 +37,22 @@ class OnPlayerRequestRespawnStructure extends BaseStructure {
 	}
 
 	/**
-	 * Gets the Player
+	 * <  player who requested a new action
 	 *
 	 * @return \ManiaControl\Players\Player
 	 */
 	public function getPlayer() {
 		return $this->player;
 	}
+
+	/**
+	 * < Can be -1 (request previous action) or 1 (request next action)
+	 *
+	 * @return string
+	 */
+	public function getActionChange() {
+		return $this->actionChange;
+	}
+
+
 }

@@ -3,7 +3,19 @@
 namespace ManiaControl\Callbacks\Structures\ShootMania\Models;
 
 
-class Landmark {
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
+
+/**
+ * Landmark Model
+ *
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014-2017 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ */
+class Landmark implements UsageInformationAble {
+	use UsageInformationTrait;
+
 	private $tag      = "";
 	private $order    = 0;
 	private $id       = "";

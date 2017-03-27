@@ -3,8 +3,19 @@
 
 namespace ManiaControl\Callbacks\Structures\ShootMania\Models;
 
-//TODO describtion
-class Position {
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
+
+/**
+ * Position Model
+ *
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014-2017 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ */
+class Position implements UsageInformationAble {
+	use UsageInformationTrait;
+
 	private $x = 0;
 	private $y = 0;
 	private $z = 0;
