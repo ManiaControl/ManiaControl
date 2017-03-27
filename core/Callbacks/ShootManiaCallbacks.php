@@ -14,6 +14,7 @@ use ManiaControl\Callbacks\Structures\ShootMania\OnPlayerObjectStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnPlayerRequestActionChange;
 use ManiaControl\Callbacks\Structures\ShootMania\OnPlayerRequestRespawnStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnPlayerTriggersSectorStructure;
+use ManiaControl\Callbacks\Structures\ShootMania\OnScoresStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnShootStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnShotDenyStructure;
 use ManiaControl\ManiaControl;
@@ -65,6 +66,10 @@ class ShootManiaCallbacks implements CallbackListener {
 		}
 		switch ($name) {
 			//MP4 New Callbacks
+			case Callbacks::SM_SCORES:
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_SCORES, new OnScoresStructure($this->maniaControl, $data));
+				break;
+			//TODO UI Properties Later
 			case Callbacks::SM_ONEVENTDEFAULT:
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONEVENTDEFAULT, new OnDefaultEventStructure($this->maniaControl, $data));
 				break;
