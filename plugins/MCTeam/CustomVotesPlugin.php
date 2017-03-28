@@ -325,7 +325,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$menuEntries      = count($this->voteMenuItems);
 		$descriptionFrame = new Frame();
 		$maniaLink->addChild($descriptionFrame);
-		$descriptionFrame->setPosition($posX - $menuEntries * $itemSize * 1.15 - 6, $posY);
+		$descriptionFrame->setPosition($posX - $menuEntries * $itemSize * 1.05 - 5, $posY);
 
 		$descriptionLabel = new Label();
 		$descriptionFrame->addChild($descriptionLabel);
