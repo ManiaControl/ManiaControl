@@ -135,8 +135,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 * Display the widget
 	 */
 	public function displayWidget() {
-		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_DONATE_WIDGET_ACTIVATED)
-		) {
+		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_DONATE_WIDGET_ACTIVATED)) {
 			$this->displayDonateWidget();
 		}
 	}
@@ -159,8 +158,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$itemMarginFactorY = 1.2;
 
 		//If game is shootmania lower the icons position by 20
-		if ($this->maniaControl->getMapManager()->getCurrentMap()->getGame() === 'sm'
-		) {
+		if ($this->maniaControl->getMapManager()->getCurrentMap()->getGame() === 'sm') {
 			$posY -= $shootManiaOffset;
 		}
 
@@ -194,16 +192,8 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$maniaLink->addChild($popoutFrame);
 		$popoutFrame->setPosition($posX - $itemSize * 0.5, $posY);
 		$popoutFrame->setHorizontalAlign($popoutFrame::RIGHT);
-		$popoutFrame->setSize(4 * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
 		$popoutFrame->setVisible(false);
 
-		$quad = new Quad();
-		$popoutFrame->addChild($quad);
-		$quad->setHorizontalAlign($quad::RIGHT);
-		$quad->setStyles($quadStyle, $quadSubstyle);
-		$quad->setSize(strlen($values) * 2 + count($valueArray) * 1, $itemSize * $itemMarginFactorY);
-
-		$popoutFrame->addChild($quad);
 		$itemQuad->addToggleFeature($popoutFrame);
 
 		// Description Label
@@ -236,6 +226,13 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 
 			$posX -= strlen($value) * 2 + 1.7;
 		}
+
+		//Popout background
+		$quad = new Quad();
+		$popoutFrame->addChild($quad);
+		$quad->setHorizontalAlign($quad::RIGHT);
+		$quad->setStyles($quadStyle, $quadSubstyle);
+		$quad->setSize((2 - $posX), $itemSize * $itemMarginFactorY);
 
 		// Send manialink
 		$this->maniaControl->getManialinkManager()->sendManialink($maniaLink, $login);
@@ -328,8 +325,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 */
 	public function handlePlayerConnect(Player $player) {
 		// Display Map Widget
-		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_DONATE_WIDGET_ACTIVATED)
-		) {
+		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_DONATE_WIDGET_ACTIVATED)) {
 			$this->displayDonateWidget($player->login);
 		}
 	}
@@ -381,8 +377,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 * @param Player $player
 	 */
 	public function command_Pay(array $chatCallback, Player $player) {
-		if (!$this->maniaControl->getAuthenticationManager()->checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)
-		) {
+		if (!$this->maniaControl->getAuthenticationManager()->checkRight($player, AuthenticationManager::AUTH_LEVEL_SUPERADMIN)) {
 			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
@@ -439,8 +434,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 * @param Player $player
 	 */
 	public function command_GetPlanets(array $chatCallback, Player $player) {
-		if (!$this->maniaControl->getAuthenticationManager()->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)
-		) {
+		if (!$this->maniaControl->getAuthenticationManager()->checkRight($player, AuthenticationManager::AUTH_LEVEL_ADMIN)) {
 			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}

@@ -157,7 +157,7 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 
 		$tooltipLabel = new Label();
 		$frame->addChild($tooltipLabel);
-		$tooltipLabel->setPosition($width * -0.48, $height * -0.44)->setSize($width * 0.8, 5)->setHorizontalAlign($tooltipLabel::LEFT)->setTextSize(1)->setText('tooltip');
+		$tooltipLabel->setPosition($width * -0.48, $height * -0.44)->setSize($width * 0.8, 5)->setHorizontalAlign($tooltipLabel::LEFT)->setTextSize(1);
 
 		$mapFiles = $this->scanMapFiles($folderPath);
 
@@ -178,7 +178,7 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 						$pageFrame = new Frame();
 						$frame->addChild($pageFrame);
 						$posY = $height / 2 - 10;
-						$paging->addPage($pageFrame);
+						$paging->addPageControl($pageFrame);
 					}
 
 					// Map Frame

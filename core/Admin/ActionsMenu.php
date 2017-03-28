@@ -156,7 +156,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 			// Admin Menu Description
 			$descriptionLabel = new Label();
 			$manialink->addChild($descriptionLabel);
-			$descriptionLabel->setPosition($posX - count($this->adminMenuItems) * $itemSize * 1.15 - 6, $posY);
+			$descriptionLabel->setPosition($posX - count($this->adminMenuItems) * $itemSize * 1.05 - 5, $posY);
 			$descriptionLabel->setAlign($descriptionLabel::RIGHT, $descriptionLabel::TOP);
 			$descriptionLabel->setSize(40, 4);
 			$descriptionLabel->setTextSize(1.4);
@@ -167,14 +167,13 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 			$manialink->addChild($popoutFrame);
 			$popoutFrame->setPosition($posX - $itemSize * 0.5, $posY);
 			$popoutFrame->setHorizontalAlign($popoutFrame::RIGHT);
-			$popoutFrame->setSize(4 * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
 			$popoutFrame->setVisible(false);
 
 			$backgroundQuad = new Quad();
 			$popoutFrame->addChild($backgroundQuad);
 			$backgroundQuad->setHorizontalAlign($backgroundQuad::RIGHT);
 			$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-			$backgroundQuad->setSize(count($this->adminMenuItems) * $itemSize * 1.15 + 2, $itemSize * $itemMarginFactorY);
+			$backgroundQuad->setSize(count($this->adminMenuItems) * $itemSize * 1.05 + 2 , $itemSize * $itemMarginFactorY);
 
 			$itemQuad->addToggleFeature($popoutFrame);
 
@@ -220,7 +219,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 		// Player Menu Description
 		$descriptionLabel = new Label();
 		$manialink->addChild($descriptionLabel);
-		$descriptionLabel->setPosition($posX - count($this->playerMenuItems) * $itemSize * 1.15 - 6, $posY - $itemSize * $itemMarginFactorY);
+		$descriptionLabel->setPosition($posX - count($this->playerMenuItems) * $itemSize * 1.05 - 5, $posY - $itemSize * $itemMarginFactorY);
 		$descriptionLabel->setAlign($descriptionLabel::RIGHT, $descriptionLabel::TOP);
 		$descriptionLabel->setSize(40, 4);
 		$descriptionLabel->setTextSize(1.4);
@@ -231,14 +230,13 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 		$manialink->addChild($popoutFrame);
 		$popoutFrame->setPosition($posX - $itemSize * 0.5, $posY - $itemSize * $itemMarginFactorY);
 		$popoutFrame->setHorizontalAlign($popoutFrame::RIGHT);
-		$popoutFrame->setSize(4 * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
 		$popoutFrame->setVisible(false);
 
 		$backgroundQuad = new Quad();
 		$popoutFrame->addChild($backgroundQuad);
 		$backgroundQuad->setHorizontalAlign($backgroundQuad::RIGHT);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-		$backgroundQuad->setSize(count($this->playerMenuItems) * $itemSize * 1.15 + 2, $itemSize * $itemMarginFactorY);
+		$backgroundQuad->setSize(count($this->playerMenuItems) * $itemSize * 1.05 + 2, $itemSize * $itemMarginFactorY);
 
 		$itemQuad->addToggleFeature($popoutFrame);
 

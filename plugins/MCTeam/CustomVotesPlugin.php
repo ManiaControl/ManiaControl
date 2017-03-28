@@ -347,7 +347,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$popoutFrame->addChild($backgroundQuad);
 		$backgroundQuad->setHorizontalAlign($backgroundQuad::RIGHT);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-		$backgroundQuad->setSize($menuEntries * $itemSize * 1.15 + 2, $itemSize * $itemMarginFactorY);
+		$backgroundQuad->setSize($menuEntries * $itemSize * 1.05 + 2, $itemSize * $itemMarginFactorY);
 
 		$itemQuad->addToggleFeature($popoutFrame);
 
