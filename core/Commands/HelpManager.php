@@ -182,7 +182,7 @@ class HelpManager implements CommandListener, CallbackListener {
 				$pageFrame = new Frame();
 				$frame->addChild($pageFrame);
 				$posY = $height / 2 - 10;
-				$paging->addPage($pageFrame); //TODO @Jocy
+				$paging->addPageControl($pageFrame); //TODO @Jocy
 			}
 
 			$playerFrame = new Frame();
