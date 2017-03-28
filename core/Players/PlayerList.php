@@ -448,7 +448,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		// mainframe
 		$frame = new Frame();
 		$frame->setSize($width, $height);
-		$frame->setPosition($posX + $width / 2, 0, 31);
+		$frame->setPosition($posX + $width / 2, 0, ManialinkManager::MAIN_MANIALINK_Z_VALUE);
 
 		// Add Close Quad (X)
 		$closeQuad = new Quad_Icons64x64_1();
