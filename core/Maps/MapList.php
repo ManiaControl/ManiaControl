@@ -120,6 +120,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	public function showMapList(Player $player, $mapList = null, $pageIndex = -1) {
 		$width  = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsWidth();
 		$height = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsHeight();
+		$buttonY = -$height / 2 + 9;
 
 		if ($pageIndex < 0) {
 			$pageIndex = (int) $player->getCache($this, self::CACHE_CURRENT_PAGE);
@@ -160,12 +161,12 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$frame->addChild($label);
 			$label->setText('Clear Map-Queue');
 			$label->setTextSize(1);
-			$label->setPosition($width / 2 - 8, -$height / 2 + 9);
+			$label->setPosition($width / 2 - 8, $buttonY, 0.1);
 			$label->setHorizontalAlign($label::RIGHT);
 
 			$quad = new Quad_BgsPlayerCard();
 			$frame->addChild($quad);
-			$quad->setPosition($width / 2 - 5, -$height / 2 + 9, 0.01);
+			$quad->setPosition($width / 2 - 5, $buttonY, 0.01);
 			$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
 			$quad->setHorizontalAlign($quad::RIGHT);
 			$quad->setSize(29, 4);
@@ -174,29 +175,34 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 		if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, MapManager::SETTING_PERMISSION_CHECK_UPDATE)
 		) {
+			$mxCheckForUpdatesX = $width / 2 - 37;
+			$buttonWidth = 35;
+			$iconSize = 3;
 			// Check Update
 			$label = new Label_Button();
 			$frame->addChild($label);
 			$label->setText('Check MX for Updates');
+			$label->setPosition($mxCheckForUpdatesX - 1.5, $buttonY, 0.02);
 			$label->setTextSize(1);
-			$label->setPosition($width / 2 - 41, -$height / 2 + 9, 0.01);
+			$label->setWidth(30);
 			$label->setHorizontalAlign($label::RIGHT);
+
 
 			$quad = new Quad_BgsPlayerCard();
 			$frame->addChild($quad);
-			$quad->setPosition($width / 2 - 37, -$height / 2 + 9, 0.01);
+			$quad->setPosition($mxCheckForUpdatesX, $buttonY, 0.01);
 			$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
 			$quad->setHorizontalAlign($quad::RIGHT);
-			$quad->setSize(35, 4);
+			$quad->setSize($buttonWidth, 4);
 			$quad->setAction(self::ACTION_CHECK_UPDATE);
 
 			$mxQuad = new Quad();
 			$frame->addChild($mxQuad);
-			$mxQuad->setSize(3, 3);
+			$mxQuad->setSize($iconSize, $iconSize);
 			$mxQuad->setImageUrl($this->maniaControl->getManialinkManager()->getIconManager()->getIcon(IconManager::MX_ICON_GREEN));
 			$mxQuad->setImageFocusUrl($this->maniaControl->getManialinkManager()->getIconManager()->getIcon(IconManager::MX_ICON_GREEN_MOVER));
-			$mxQuad->setPosition($width / 2 - 67, -$height / 2 + 9);
-			$mxQuad->setZ(0.01);
+			$mxQuad->setPosition($mxCheckForUpdatesX - $buttonWidth + 3, $buttonY);
+			$mxQuad->setZ(0.02);
 			$mxQuad->setAction(self::ACTION_CHECK_UPDATE);
 		}
 
@@ -205,13 +211,13 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			// Directory browser
 			$browserButton = new Label_Button();
 			$frame->addChild($browserButton);
-			$browserButton->setPosition($width / -2 + 20, -$height / 2 + 9, 0.01);
+			$browserButton->setPosition($width / -2 + 20, $buttonY, 0.01);
 			$browserButton->setTextSize(1);
 			$browserButton->setText('Directory Browser');
 
 			$browserQuad = new Quad_BgsPlayerCard();
 			$frame->addChild($browserQuad);
-			$browserQuad->setPosition($width / -2 + 20, -$height / 2 + 9, 0.01);
+			$browserQuad->setPosition($width / -2 + 20, $buttonY, 0.01);
 			$browserQuad->setSubStyle($browserQuad::SUBSTYLE_BgPlayerCardBig);
 			$browserQuad->setSize(35, 4);
 			$browserQuad->setAction(DirectoryBrowser::ACTION_SHOW);
