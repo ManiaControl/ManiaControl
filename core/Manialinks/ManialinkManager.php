@@ -27,7 +27,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
  */
 class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener, UsageInformationAble {
 	use UsageInformationTrait;
-	
+
 	/*
 	 * Constants
 	 */
@@ -377,6 +377,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener,
 		$textSize  = (isset($properties['textSize']) ? $properties['textSize'] : 1.5);
 		$textColor = (isset($properties['textColor']) ? $properties['textColor'] : 'FFF');
 		$profile   = (isset($properties['profile']) ? $properties['profile'] : false);
+		$posZ      = (isset($properties['posZ']) ? $properties['posZ'] : 0);
 
 		$labels = array();
 
@@ -394,6 +395,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener,
 				$frame->addChild($label);
 				$label->setHorizontalAlign($hAlign);
 				$label->setX($x);
+				$label->setZ($posZ);
 				$label->setStyle($style);
 				$label->setTextSize($textSize);
 				$label->setText($texts[$key]);
@@ -411,6 +413,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener,
 				$frame->addChild($label);
 				$label->setHorizontalAlign($hAlign);
 				$label->setX($x);
+				$label->setZ($posZ);
 				$label->setStyle($style);
 				$label->setTextSize($textSize);
 				$label->setText($text);

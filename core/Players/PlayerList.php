@@ -155,6 +155,10 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$posX = -$width / 2;
 		$posY = $height / 2;
 
+		// Define z-values
+		$foregroundZ = 1;
+		$backgroundZ = 0.5;
+
 		// Predefine Description Label
 		$descriptionLabel = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultDescriptionLabel();
 		$frame->addChild($descriptionLabel);
@@ -192,12 +196,12 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				$playerFrame->addChild($lineQuad);
 				$lineQuad->setSize($width, 4);
 				$lineQuad->setSubStyle($lineQuad::SUBSTYLE_BgPlayerCardBig);
-				$lineQuad->setZ(0.001);
+				$lineQuad->setZ($backgroundZ);
 			}
 
 			$positions = array($posX + 5, $posX + 18, $posX + 70, $posX + 101);
 			$texts     = array($index, $listPlayer->nickname, $listPlayer->login, $path);
-			$this->maniaControl->getManialinkManager()->labelLine($playerFrame, array($positions, $texts));
+			$this->maniaControl->getManialinkManager()->labelLine($playerFrame, array($positions, $texts), array('posZ' => $foregroundZ));
 
 			$playerFrame->setY($posY);
 
@@ -206,7 +210,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				$currentQuad = new Quad_Icons64x64_1();
 				$playerFrame->addChild($currentQuad);
 				$currentQuad->setX($posX + 3.5);
-				$currentQuad->setZ(0.2);
+				$currentQuad->setZ($foregroundZ);
 				$currentQuad->setSize(4, 4);
 				$currentQuad->setSubStyle($currentQuad::SUBSTYLE_ArrowBlue);
 			}
@@ -217,7 +221,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				$teamQuad = new Quad_Emblems();
 				$playerFrame->addChild($teamQuad);
 				$teamQuad->setX($posX + 10);
-				$teamQuad->setZ(0.1);
+				$teamQuad->setZ($foregroundZ);
 				$teamQuad->setSize(3.8, 3.8);
 
 				switch ($listPlayer->teamId) {
@@ -233,7 +237,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				$specQuad = new Quad_BgRaceScore2();
 				$playerFrame->addChild($specQuad);
 				$specQuad->setX($posX + 10);
-				$specQuad->setZ(0.1);
+				$specQuad->setZ($foregroundZ);
 				$specQuad->setSubStyle($specQuad::SUBSTYLE_Spectator);
 				$specQuad->setSize(3.8, 3.8);
 			}
@@ -245,7 +249,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				$playerFrame->addChild($countryQuad);
 				$countryQuad->setImageUrl("file://ZoneFlags/Login/{$listPlayer->login}/country");
 				$countryQuad->setX($posX + 98);
-				$countryQuad->setZ(1);
+				$countryQuad->setZ($foregroundZ);
 				$countryQuad->setSize(4, 4);
 
 				$countryQuad->addTooltipLabelFeature($descriptionLabel, '$<' . $listPlayer->nickname . '$> from ' . $listPlayer->path);
@@ -255,14 +259,14 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 			$rightQuad = new Quad_BgRaceScore2();
 			$playerFrame->addChild($rightQuad);
 			$rightQuad->setX($posX + 13);
-			$rightQuad->setZ(3);
+			$rightQuad->setZ($foregroundZ);
 			$rightQuad->setSize(7, 3.5);
 			$rightQuad->setSubStyle($rightQuad::SUBSTYLE_CupFinisher);
 
 			$rightLabel = new Label_Text();
 			$playerFrame->addChild($rightLabel);
 			$rightLabel->setX($posX + 13.9);
-			$rightLabel->setZ(3.1);
+			$rightLabel->setZ($foregroundZ);
 			$rightLabel->setText($this->maniaControl->getAuthenticationManager()->getAuthLevelAbbreviation($listPlayer->authLevel));
 			$rightLabel->setTextSize(0.8);
 			$rightLabel->setTextColor('fff');
@@ -274,7 +278,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 			$playerQuad = new Quad_Icons64x64_1();
 			$playerFrame->addChild($playerQuad);
 			$playerQuad->setX($posX + 61);
-			$playerQuad->setZ(3);
+			$playerQuad->setZ($foregroundZ);
 			$playerQuad->setSize(2.7, 2.7);
 			$playerQuad->setSubStyle($playerQuad::SUBSTYLE_TrackInfo);
 			$playerQuad->setAction(self::ACTION_OPEN_PLAYER_DETAILED . '.' . $listPlayer->login);
@@ -285,7 +289,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 			$playerQuad = new Quad_UIConstruction_Buttons();
 			$playerFrame->addChild($playerQuad);
 			$playerQuad->setX($posX + 64.5);
-			$playerQuad->setZ(3);
+			$playerQuad->setZ($foregroundZ);
 			$playerQuad->setSize(3.8, 3.8);
 			$playerQuad->setSubStyle($playerQuad::SUBSTYLE_Camera);
 			$description = 'Spectate $<' . $listPlayer->nickname . '$>';
@@ -296,7 +300,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 			$playerQuad = new Quad_UIConstruction_Buttons();
 			$playerFrame->addChild($playerQuad);
 			$playerQuad->setX($posX + 68);
-			$playerQuad->setZ(3);
+			$playerQuad->setZ($foregroundZ);
 			$playerQuad->setSize(3.8, 3.8);
 			$playerQuad->setSubStyle($playerQuad::SUBSTYLE_Author);
 			$playerQuad->addPlayerProfileFeature($listPlayer->login);
@@ -310,7 +314,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				$playerQuad = new Quad_Icons64x64_1();
 				$playerFrame->addChild($playerQuad);
 				$playerQuad->setX($posX + 132);
-				$playerQuad->setZ(0.1);
+				$playerQuad->setZ($foregroundZ);
 				$playerQuad->setSize(3.8, 3.8);
 				$playerQuad->setSubStyle($playerQuad::SUBSTYLE_Buddy);
 				$playerQuad->setAction(self::ACTION_PLAYER_ADV . '.' . $listPlayer->login);
@@ -326,7 +330,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 					$redQuad = new Quad_Emblems();
 					$playerFrame->addChild($redQuad);
 					$redQuad->setX($posX + 145);
-					$redQuad->setZ(0.1);
+					$redQuad->setZ($foregroundZ);
 					$redQuad->setSize(3.8, 3.8);
 					$redQuad->setSubStyle($redQuad::SUBSTYLE_2);
 					$redQuad->setAction(self::ACTION_FORCE_RED . '.' . $listPlayer->login);
@@ -339,7 +343,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 					$blueQuad = new Quad_Emblems();
 					$playerFrame->addChild($blueQuad);
 					$blueQuad->setX($posX + 141);
-					$blueQuad->setZ(0.1);
+					$blueQuad->setZ($foregroundZ);
 					$blueQuad->setSize(3.8, 3.8);
 					$blueQuad->setSubStyle($blueQuad::SUBSTYLE_1);
 					$blueQuad->setAction(self::ACTION_FORCE_BLUE . '.' . $listPlayer->login);
@@ -353,7 +357,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 					$kickQuad = new Quad_UIConstruction_Buttons();
 					$playerFrame->addChild($kickQuad);
 					$kickQuad->setX($posX + 141);
-					$kickQuad->setZ(0.1);
+					$kickQuad->setZ($foregroundZ);
 					$kickQuad->setSize(3.8, 3.8);
 					$kickQuad->setSubStyle($kickQuad::SUBSTYLE_Validate_Step2);
 					$kickQuad->setAction(self::ACTION_KICK_PLAYER_VOTE . '.' . $listPlayer->login);
@@ -367,7 +371,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 					$playQuad = new Quad_Emblems();
 					$playerFrame->addChild($playQuad);
 					$playQuad->setX($posX + 143);
-					$playQuad->setZ(0.1);
+					$playQuad->setZ($foregroundZ);
 					$playQuad->setSize(3.8, 3.8);
 					$playQuad->setSubStyle($playQuad::SUBSTYLE_2);
 					$playQuad->setAction(self::ACTION_FORCE_PLAY . '.' . $listPlayer->login);
@@ -382,7 +386,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				$spectatorQuad = new Quad_BgRaceScore2();
 				$playerFrame->addChild($spectatorQuad);
 				$spectatorQuad->setX($posX + 137);
-				$spectatorQuad->setZ(0.1);
+				$spectatorQuad->setZ($foregroundZ);
 				$spectatorQuad->setSize(3.8, 3.8);
 				$spectatorQuad->setSubStyle($spectatorQuad::SUBSTYLE_Spectator);
 				$spectatorQuad->setAction(self::ACTION_FORCE_SPEC . '.' . $listPlayer->login);
@@ -395,7 +399,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				$spectatorQuad = new Quad_BgRaceScore2();
 				$playerFrame->addChild($spectatorQuad);
 				$spectatorQuad->setX($posX + 137);
-				$spectatorQuad->setZ(0.1);
+				$spectatorQuad->setZ($foregroundZ);
 				$spectatorQuad->setSize(3.8, 3.8);
 				$spectatorQuad->setSubStyle($spectatorQuad::SUBSTYLE_Spectator);
 				$spectatorQuad->setAction(self::ACTION_FORCE_SPEC_VOTE . '.' . $listPlayer->login);
@@ -435,9 +439,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$quadSubstyle = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultMainWindowSubStyle();
 
 		//Settings
-		$posX      = $width / 2 + 2.5;
+		$posX      = $width / 2 + 0.2;
 		$width     = 35;
-		$height    = $height * 0.75;
 		$textSize  = 1.5;
 		$textColor = 'fff';
 		$quadWidth = $width - 7;
@@ -450,7 +453,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		// Add Close Quad (X)
 		$closeQuad = new Quad_Icons64x64_1();
 		$frame->addChild($closeQuad);
-		$closeQuad->setPosition($width * 0.4, $height * 0.43, 3);
+		$closeQuad->setPosition($width / 2 - 2.5, $height / 2 - 2.5, 3);
 		$closeQuad->setSize(6, 6);
 		$closeQuad->setSubStyle($closeQuad::SUBSTYLE_QuitRace);
 		$closeQuad->setAction(self::ACTION_CLOSE_PLAYER_ADV);
@@ -459,16 +462,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$backgroundQuad = new Quad();
 		$frame->addChild($backgroundQuad);
 		$backgroundQuad->setSize($width, $height);
-		$backgroundQuad->setImageUrl('https://dl.dropboxusercontent.com/u/105352981/Stuff/CAM%20SM%20BORDER%20PNG.png'); //TODO just a test
-		//$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-		$backgroundQuad->setZ(-0.3);
-
-		// Background Quad
-		$backgroundQuad = new Quad();
-		$frame->addChild($backgroundQuad);
-		$backgroundQuad->setSize($width - 2, $height - 2);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-		$backgroundQuad->setZ(-0.4);
+		$backgroundQuad->setZ(-0.3);
 
 		// Show headline
 		$label = new Label_Text();
@@ -481,26 +476,38 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$label->setText('Advanced Actions');
 		$label->setTextColor($textColor);
 
+
+		//Nickname background
+		$quad = new Quad();
+		$frame->addChild($quad);
+		$quad->setPosition(0, $height / 2 - 10, -0.1);
+		$quad->setStyles($quadStyle, $quadSubstyle);
+		$quad->setSize($width, 5);
+
 		// Show Nickname
 		$label = new Label_Text();
 		$frame->addChild($label);
-		$label->setHorizontalAlign($label::LEFT);
-		$label->setX(0);
-		$label->setY($height / 2 - 8);
+		$label->setWidth($width * 0.9);
+		$label->setY($height / 2 - 10);
 		$label->setStyle($label::STYLE_TextCardSmall);
 		$label->setTextSize($textSize);
 		$label->setText($player->nickname);
 		$label->setTextColor($textColor);
+		$label->setHorizontalAlign($label::CENTER);
 
-		// Mute Player
-		$posY = $height / 2 - 14;
+		$buttonSpacing = 6.5;
+
+		// Background for Buttons
+		$posY = $height / 2 - 20;
 		$quad = new Quad_BgsPlayerCard();
 		$frame->addChild($quad);
 		$quad->setX(0);
 		$quad->setY($posY);
+		$quad->setZ(-0.1);
 		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
 		$quad->setSize($quadWidth, 5);
 
+		// Mute Button
 		$label = new Label_Text();
 		$frame->addChild($label);
 		$label->setX(0);
@@ -518,7 +525,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		}
 
 		// Warn Player
-		$posY -= 5;
+		$posY -= $buttonSpacing;
 		$quad = clone $quad;
 		$frame->addChild($quad);
 		$quad->setY($posY);
@@ -530,7 +537,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$label->setText('Warn');
 		$label->setTextColor($textColor);
 
-		$posY -= 5;
+		$posY -= $buttonSpacing;
 
 		// Show Kick
 		$quad = clone $quad;
@@ -544,7 +551,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$label->setText('Kick');
 		$label->setTextColor('f90');
 
-		$posY -= 5;
+		$posY -= $buttonSpacing;
 		// Show Ban
 		$quad = clone $quad;
 		$frame->addChild($quad);
@@ -557,7 +564,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$label->setText('Ban');
 		$label->setTextColor('700');
 
-		$posY -= 10;
+		$posY -= $buttonSpacing * 2;
 		// Show Add as Master-Admin
 		$quad = clone $quad;
 		$frame->addChild($quad);
@@ -570,7 +577,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$label->setText('Set SuperAdmin');
 		$label->setTextColor($textColor);
 
-		$posY -= 5;
+		$posY -= $buttonSpacing;
 		// Show Add as Admin
 		$quad = clone $quad;
 		$frame->addChild($quad);
@@ -583,7 +590,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$label->setText('Set Admin');
 		$label->setTextColor($textColor);
 
-		$posY -= 5;
+		$posY -= $buttonSpacing;
 		// Show Add as Moderator
 		$quad = clone $quad;
 		$frame->addChild($quad);
@@ -599,7 +606,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		if ($player->authLevel > 0
 		    && $this->maniaControl->getAuthenticationManager()->checkRight($admin, $player->authLevel + 1)
 		) {
-			$posY -= 5;
+			$posY -= $buttonSpacing;
 			// Revoke Rights
 			$quad = clone $quad;
 			$frame->addChild($quad);
