@@ -132,7 +132,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		$frame = new Frame();
 		$maniaLink->addChild($frame);
 		$frame->setSize($width, $height);
-		$frame->setPosition(0, 0, 10);
+		$frame->setPosition(0, 0, ManialinkManager::MAIN_MANIALINK_Z_VALUE);
 
 		// Background
 		$backgroundQuad = new Quad();
@@ -165,6 +165,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		$headFrame = new Frame();
 		$frame->addChild($headFrame);
 		$headFrame->setY($posY - 5);
+		$headFrame->setZ(1);
 
 		$posX                = $xStart;
 		$array['$oId']       = $posX + 5;
@@ -222,13 +223,13 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 
 			$playerFrame = new Frame();
 			$frame->addChild($playerFrame);
+			$playerFrame->setZ(1);
 
 			// Show current Player Arrow
 			if ($playerId == $player->index) {
 				$currentQuad = new Quad_Icons64x64_1();
 				$playerFrame->addChild($currentQuad);
 				$currentQuad->setX($xStart + 3.5);
-				$currentQuad->setZ(0.2);
 				$currentQuad->setSize(4, 4);
 				$currentQuad->setSubStyle($currentQuad::SUBSTYLE_ArrowBlue);
 			}
@@ -272,7 +273,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 				$playerFrame->addChild($lineQuad);
 				$lineQuad->setSize($width, 4);
 				$lineQuad->setSubStyle($lineQuad::SUBSTYLE_BgPlayerCardBig);
-				$lineQuad->setZ(0.001);
+				$lineQuad->setZ(-0.5);
 			}
 
 			$index++;
