@@ -376,10 +376,19 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener,
 		$style     = (isset($properties['style']) ? $properties['style'] : Label_Text::STYLE_TextCardSmall);
 		$textSize  = (isset($properties['textSize']) ? $properties['textSize'] : 1.5);
 		$textColor = (isset($properties['textColor']) ? $properties['textColor'] : 'FFF');
-		$profile   = (isset($properties['profile']) ? $properties['profile'] : false);
 		$posZ      = (isset($properties['posZ']) ? $properties['posZ'] : 0);
 
-		$labels = array();
+		$labelLine = new LabelLine($frame);
+		$labelLine->setHorizontalAlign($hAlign);
+		$labelLine->setStyle($style);
+		$labelLine->setTextSize($textSize);
+		$labelLine->setTextColor($textColor);
+		$labelLine->setPosZ($posZ);
+
+		/**
+		 * @var Label_Text $prevLabel
+		 */
+		$prevLabel = null;
 
 		//If you call LabelLine with array(array(positions), array(texts))
 		if (count($labelStrings) == 2 && array_key_exists(0, $labelStrings) && array_key_exists(1, $labelStrings) && array_key_exists(0, $labelStrings[0]) && array_key_exists(0, $labelStrings[1])) {
@@ -391,42 +400,15 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener,
 			}
 
 			foreach ($positions as $key => $x) {
-				$label = new Label_Text();
-				$frame->addChild($label);
-				$label->setHorizontalAlign($hAlign);
-				$label->setX($x);
-				$label->setZ($posZ);
-				$label->setStyle($style);
-				$label->setTextSize($textSize);
-				$label->setText($texts[$key]);
-				$label->setTextColor($textColor);
-
-				if ($profile) {
-					$label->addPlayerProfileFeature($profile);
-				}
-
-				array_push($labels, $label);
+				$labelLine->addLabelEntryText($texts[$key], $x);
 			}
 		} else {
 			foreach ($labelStrings as $text => $x) {
-				$label = new Label_Text();
-				$frame->addChild($label);
-				$label->setHorizontalAlign($hAlign);
-				$label->setX($x);
-				$label->setZ($posZ);
-				$label->setStyle($style);
-				$label->setTextSize($textSize);
-				$label->setText($text);
-				$label->setTextColor($textColor);
-
-				if ($profile) {
-					$label->addPlayerProfileFeature($profile);
-				}
-
-				array_push($labels, $label);
+				$labelLine->addLabelEntryText($text,$x);
 			}
 		}
+		$labelLine->render();
 
-		return $labels;
+		return $labelLine->getEntries();
 	}
 }
