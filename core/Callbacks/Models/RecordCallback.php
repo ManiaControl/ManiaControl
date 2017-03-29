@@ -20,12 +20,16 @@ class RecordCallback extends BaseCallback {
 	/*
 	 * Public Properties
 	 */
-	public $isEndRace = null;
-	public $isEndLap = null;
 	public $time = null;
-	public $lapTime = null;
-	public $checkpoint = null;
-	public $lapCheckpoint = null;
-	public $lap = null;
-	public $blockId = null;
+	public $player = null;
+	public $racetime = null;
+	public $laptime = null;
+	public $stuntsscore = null;
+	public $checkpointinrace = null;
+	public $checkpointinlap = null;
+	public $isendrace = null;
+	public $isendlap = null;
+	public $blockid = null;
+	public $speed = null;
+	public $distance = null;
 }

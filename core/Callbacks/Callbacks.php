@@ -81,9 +81,24 @@ interface Callbacks {
 	const SM_ONPLAYERTHROWSOBJECT        = "Shootmania.Event.OnPlayerThrowsObject";
 	const SM_ONPLAYERREQUESTACTIONCHANGE = "Shootmania.Event.OnPlayerRequestActionChange";
 
-
-	const TM_ONEVENTDEFAULT = "Trackmania.Event.Default";
-
+	// New TM Callbacks
+	
+	const TM_ONEVENTDEFAULT     = "Trackmania.Event.Default";
+	const TM_ONEVENTSTARTLINE   = "Trackmania.Event.StartLine";
+	const TM_ONCOMMAND          = "Trackmania.Event.OnCommand";
+	const TM_ONPLAYERADDED      = "Trackmania.Event.OnPlayerAdded";
+	const TM_ONPLAYERREMOVED    = "Trackmania.Event.OnPlayerRemoved";
+	const TM_ONWAYPOINT         = "Trackmania.Event.WayPoint";
+	const TM_ONGIVEUP           = "Trackmania.Event.GiveUp";
+	const TM_ONRESPAWN          = "Trackmania.Event.Respawn";
+	const TM_ONSTUNT            = "Trackmania.Event.Stunt";
+	const TM_ONSTARTCOUNTDOWN   = "Trackmania.Event.StartCountdown";
+	const TM_SCORES             = "Trackmania.Scores";
+	const TM_WARMUPSTART        = "Trackmania.WarmUp.Start";
+	const TM_WARMUPSTARTROUND   = "Trackmania.WarmUp.StartRound";
+	const TM_WARMUPENDROUND     = "Trackmania.WarmUp.EndRound";
+	const TM_WARMUPEND          = "Trackmania.WarmUp.End";
+	
 	//ManiaControl Callbacks
 	/** BeginMap Callback: Map */
 	const BEGINMAP = 'Callbacks.BeginMap';
