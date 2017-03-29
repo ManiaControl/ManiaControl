@@ -43,7 +43,6 @@ class OnHitNearMissArmorEmptyStructure extends BaseStructure {
 		$jsonObj      = $this->getPlainJsonObject();
 		$this->time   = $jsonObj->time;
 		$this->weapon = $jsonObj->weapon;
-		$this->damage = $jsonObj->damage; //TODO does only exist on onhit -> make baseclass
 
 		$this->shooterPosition = new Position();
 		$this->shooterPosition->setX($jsonObj->shooterposition->x);
@@ -57,6 +56,10 @@ class OnHitNearMissArmorEmptyStructure extends BaseStructure {
 
 		if (property_exists($this->getPlainJsonObject(), 'distance')) {
 			$this->distance = $this->getPlainJsonObject()->distance;
+		}
+
+		if (property_exists($this->getPlainJsonObject(), 'damage')) {
+			$this->damage = $this->getPlainJsonObject()->damage;
 		}
 
 		$this->shooter = $this->maniaControl->getPlayerManager()->getPlayer($this->getPlainJsonObject()->shooter);
