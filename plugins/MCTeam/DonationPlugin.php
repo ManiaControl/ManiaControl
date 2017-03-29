@@ -199,19 +199,18 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		// Description Label
 		$descriptionFrame = new Frame();
 		$maniaLink->addChild($descriptionFrame);
-		$descriptionFrame->setPosition($posX - 50, $posY - 5);
 		$descriptionFrame->setHorizontalAlign($descriptionFrame::RIGHT);
 
 		$descriptionLabel = new Label();
 		$descriptionFrame->addChild($descriptionLabel);
-		$descriptionLabel->setAlign($descriptionLabel::LEFT, $descriptionLabel::TOP);
+		$descriptionLabel->setAlign($descriptionLabel::RIGHT, $descriptionLabel::TOP);
 		$descriptionLabel->setSize(40, 4);
-		$descriptionLabel->setTextSize(2);
+		$descriptionLabel->setTextSize(1);
 		$descriptionLabel->setVisible(true);
-		$descriptionLabel->setTextColor('0f0');
 
 		// Add items
-		$posX = -2;
+		$origPosX = $posX;
+		$posX     = -2;
 		foreach (array_reverse($valueArray) as $value) {
 			$label = new Label_Text();
 			$popoutFrame->addChild($label);
@@ -226,6 +225,8 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 
 			$posX -= strlen($value) * 2 + 1.7;
 		}
+
+		$descriptionFrame->setPosition($origPosX + $posX  - $width + $itemMarginFactorX, $posY);
 
 		//Popout background
 		$quad = new Quad();
