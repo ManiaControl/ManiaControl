@@ -8,6 +8,13 @@ use FML\Controls\Labels\Label_Text;
 use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
 
+/**
+ * Class providing easy labels in a line
+ *
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014-2017 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ */
 class LabelLine implements UsageInformationAble {
 	use UsageInformationTrait;
 
@@ -19,23 +26,30 @@ class LabelLine implements UsageInformationAble {
 	private $textSize        = 1.5;
 	private $textColor       = 'FFF';
 	private $posZ            = 0;
+	private $prefix          = '';
 
 
 	public function __construct(Frame $frame) {
 		$this->frame = $frame;
 	}
 
+
 	/**
 	 * Create a new text label
 	 *
-	 * @param     $labelText
-	 * @param     $posX
-	 * @param int $width
+	 * @param        $labelText
+	 * @param        $posX
+	 * @param int    $width
+	 * @param string $action
 	 */
-	public function addLabelEntryText($labelText, $posX, $width = 0) {
+	public function addLabelEntryText($labelText, $posX, $width = 0, $action = '') {
 		$label = new Label_Text();
+		$this->frame->addChild($label);
 		$label->setText($labelText);
 		$label->setX($posX);
+		if ($action) {
+			$label->setAction($action);
+		}
 		if ($width) {
 			$label->setWidth($width);
 		}
@@ -54,6 +68,7 @@ class LabelLine implements UsageInformationAble {
 	/**
 	 *  Adds the labels to your frame
 	 */
+
 	public function render() {
 		/** @var Label $entry */
 		foreach ($this->entries as $entry) {
@@ -62,6 +77,7 @@ class LabelLine implements UsageInformationAble {
 			$entry->setTextSize($this->textSize);
 			$entry->setTextColor($this->textColor);
 			$entry->setZ($this->posZ);
+			$entry->setTextPrefix($this->prefix);
 
 			$this->frame->addChild($entry);
 		}
@@ -122,6 +138,7 @@ class LabelLine implements UsageInformationAble {
 	public function setTextColor($textColor) {
 		$this->textColor = $textColor;
 	}
+
 	/**
 	 * @return int
 	 */
@@ -141,5 +158,19 @@ class LabelLine implements UsageInformationAble {
 	 */
 	public function getEntries() {
 		return $this->entries;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getPrefix() {
+		return $this->prefix;
+	}
+
+	/**
+	 * @param string $prefix
+	 */
+	public function setPrefix($prefix) {
+		$this->prefix = $prefix;
 	}
 }
