@@ -22,7 +22,7 @@ class OnPlayerRequestActionChange extends BaseStructure {
 		parent::__construct($maniaControl, $data);
 
 		$this->time         = $this->getPlainJsonObject()->time;
-		$this->actionChange = $this->getPlainJsonObject()->actionChange;
+		$this->actionChange = $this->getPlainJsonObject()->actionchange;
 
 		$this->player = $this->maniaControl->getPlayerManager()->getPlayer($this->getPlainJsonObject()->login);
 	}

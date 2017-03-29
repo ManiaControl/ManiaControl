@@ -21,6 +21,7 @@ class AsyncHttpRequest implements UsageInformationAble {
 	 * Constants
 	 */
 	const CONTENT_TYPE_JSON = 'application/json';
+	const CONTENT_TYPE_UTF8 = 'UTF-8';
 
 	/*
 	 * Private properties

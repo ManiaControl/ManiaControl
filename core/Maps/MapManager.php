@@ -9,6 +9,7 @@ use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Communication\CommunicationAnswer;
 use ManiaControl\Communication\CommunicationListener;
 use ManiaControl\Communication\CommunicationMethods;
+use ManiaControl\Files\AsyncHttpRequest;
 use ManiaControl\Files\FileUtil;
 use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
@@ -360,12 +361,14 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 
 				$url = $mapInfo->downloadurl;
 
-				if ($key = $this->maniaControl->getSettingManager()->getSettingValue($this, ManiaExchangeManager::SETTING_MX_KEY)) {
-					$url .= "&key=" . $key;
+				if ($key = $this->maniaControl->getSettingManager()->getSettingValue($this->getMXManager(), ManiaExchangeManager::SETTING_MX_KEY)) {
+					$url .= "?key=" . $key;
 				}
 
-				// Download the file
-				$this->maniaControl->getFileReader()->loadFile($url, function ($file, $error) use (
+				$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, $url);
+				$asyncHttpRequest->setContentType(AsyncHttpRequest::CONTENT_TYPE_UTF8);
+				$asyncHttpRequest->setHeaders(array("X-ManiaPlanet-ServerLogin: " . $this->maniaControl->getServer()->login));
+				$asyncHttpRequest->setCallable(function ($file, $error) use (
 					&$login, &$mapInfo, &$update
 				) {
 					if (!$file || $error) {
@@ -376,7 +379,9 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 						return;
 					}
 					$this->processMapFile($file, $mapInfo, $login, $update);
-				}, 'UTF-8', 0, array("X-ManiaPlanet-ServerLogin: " . $this->maniaControl->getServer()->login));
+				});
+
+				$asyncHttpRequest->getData();
 			});
 		}
 		return;
@@ -455,7 +460,6 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 			$this->maniaControl->getChat()->sendException($exception, $login);
 			return;
 		} catch (InvalidMapException $exception) {
-
 			$this->maniaControl->getChat()->sendException($exception, $login);
 			if ($exception->getMessage() != 'Map lightmap is not up to date. (will still load for now)') {
 				return;
