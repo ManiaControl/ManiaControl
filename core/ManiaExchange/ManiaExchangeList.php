@@ -18,6 +18,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\IconManager;
+use ManiaControl\Manialinks\LabelLine;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Maps\MapCommands;
@@ -201,6 +202,17 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		               '$oLast Update' => $posX + 130);
 		$this->maniaControl->getManialinkManager()->labelLine($headFrame, $array);
 
+		$labelLine = new LabelLine($headFrame);
+		$labelLine->addLabelEntryText('Id', $posX + 3.5, 9);
+		$labelLine->addLabelEntryText('Name', $posX + 12.5, 38.5);
+		$labelLine->addLabelEntryText('Author', $posX + 59, 44);
+		$labelLine->addLabelEntryText('Type', $posX + 103, 15);
+		$labelLine->addLabelEntryText('Mood', $posX + 118, 12);
+		$labelLine->addLabelEntryText('Last Update', $posX + 130, $width - ($posX + 130));
+
+		$labelLine->setPrefix('$o');
+		$labelLine->render();
+
 		$index     = 0;
 		$posY      = $height / 2 - 16;
 		$pageFrame = null;
@@ -226,12 +238,17 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 				$lineQuad->setZ(0.001);
 			}
 
-			$time        = Formatter::timeElapsedString(strtotime($map->updated));
-			$array       = array('$s' . $map->id   => $posX + 3.5, '$s' . $map->name => $posX + 12.5, '$s' . $map->author => $posX + 59, '$s' . str_replace('Arena', '', $map->maptype) => $posX + 103,
-			                     '$s' . $map->mood => $posX + 118, '$s' . $time => $posX + 130);
-			$labels      = $this->maniaControl->getManialinkManager()->labelLine($mapFrame, $array);
-			$authorLabel = $labels[2];
-			$authorLabel->setAction(self::ACTION_GET_MAPS_FROM_AUTHOR . '.' . $map->author);
+			$time      = Formatter::timeElapsedString(strtotime($map->updated));
+			$labelLine = new LabelLine($mapFrame);
+			$labelLine->addLabelEntryText($map->id, $posX + 3.5, 9);
+			$labelLine->addLabelEntryText($map->name, $posX + 12.5, 38.5);
+			$labelLine->addLabelEntryText($map->author, $posX + 59, 44, self::ACTION_GET_MAPS_FROM_AUTHOR . '.' . $map->author);
+			$labelLine->addLabelEntryText(str_replace('Arena', '', $map->maptype), $posX + 103, 15);
+			$labelLine->addLabelEntryText($map->mood, $posX + 118, 12);
+			$labelLine->addLabelEntryText($time, $posX + 130, $width - ($posX + 130));
+
+			$labelLine->setPrefix('$s');
+			$labelLine->render();
 
 			$mapFrame->setY($posY);
 

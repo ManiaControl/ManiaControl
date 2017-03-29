@@ -369,6 +369,8 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener,
 	 * @param array $labelStrings
 	 * @param array $properties
 	 * @return Label_Text[]
+	 * @deprecated use \ManiaControl\Manialinks\LabelLine instead
+	 * @see \ManiaControl\Manialinks\LabelLine
 	 */
 	public function labelLine(Frame $frame, array $labelStrings, array $properties = array()) {
 		// define standard properties
