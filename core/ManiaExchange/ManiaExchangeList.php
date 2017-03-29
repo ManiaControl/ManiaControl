@@ -2,6 +2,7 @@
 
 namespace ManiaControl\ManiaExchange;
 
+use FML\Components\CheckBox;
 use FML\Controls\Entry;
 use FML\Controls\Frame;
 use FML\Controls\Gauge;
@@ -40,7 +41,9 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 	const ACTION_SEARCH_MAPNAME       = 'ManiaExchangeList.SearchMapName';
 	const ACTION_SEARCH_AUTHOR        = 'ManiaExchangeList.SearchAuthor';
 	const ACTION_GET_MAPS_FROM_AUTHOR = 'ManiaExchangeList.GetMapsFromAuthor';
+	const ACTION_TOGGLE_MP4           = 'ManiaExchangeList.ToggleMp4';
 	const MAX_MX_MAPS_PER_PAGE        = 14;
+	const CACHE_SHOWMP4ONLY           = 'ManiaExchangeList.Mp4Only';
 
 	/*
 	 * Private properties
@@ -62,8 +65,9 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(ManialinkManager::CB_MAIN_WINDOW_OPENED, $this, 'handleWidgetOpened');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 
-		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_SEARCH_MAPNAME, $this, 'showList');
-		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_SEARCH_AUTHOR, $this, 'showList');
+		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_SEARCH_MAPNAME, $this, 'showListCommand');
+		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_SEARCH_AUTHOR, $this, 'showListCommand');
+		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_TOGGLE_MP4, $this, 'toggleMP4MapsOnly');
 	}
 
 	/**
@@ -83,10 +87,11 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
 		$mapId  = (int) $actionArray[2];
 
+
 		switch ($action) {
 			case self::ACTION_GET_MAPS_FROM_AUTHOR:
 				$callback[1][2] = 'auth:' . $actionArray[2];
-				$this->showList($callback, $player);
+				$this->showListCommand($callback, $player);
 				break;
 			case self::ACTION_ADD_MAP:
 				$this->maniaControl->getMapManager()->addMapFromMx($mapId, $player->login);
@@ -100,7 +105,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 	 * @param array  $chatCallback
 	 * @param Player $player
 	 */
-	public function showList(array $chatCallback, Player $player) {
+	public function showListCommand(array $chatCallback, Player $player) {
 		$this->mapListShown[$player->login] = true;
 		$params                             = explode(' ', $chatCallback[1][2]);
 		$searchString                       = '';
@@ -130,11 +135,26 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 			}
 		}
 
+		$this->getMXMapsAndShowList($player, $author, $environment, $searchString);
+	}
+
+	/**
+	 * Gets MX Maps and displays maplist
+	 *
+	 * @param \ManiaControl\Players\Player $player
+	 * @param string                       $author
+	 * @param string                       $environment
+	 * @param string                       $searchString
+	 */
+	private function getMXMapsAndShowList(Player $player, $author = '', $environment = '', $searchString = '') {
 		//Search the Maps
 		$mxSearch = new ManiaExchangeMapSearch($this->maniaControl);
 		$mxSearch->setAuthorName($author);
 		$mxSearch->setEnvironments($environment);
 		$mxSearch->setMapName($searchString);
+		if ($player->getCache($this, self::CACHE_SHOWMP4ONLY)) {
+			$mxSearch->setMapGroup(2);
+		}
 		$mxSearch->fetchMapsAsync(function (array $maps) use (&$player) {
 			if (!$maps) {
 				$this->maniaControl->getChat()->sendError('No maps found, or MX is down!', $player->login);
@@ -143,6 +163,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 			$this->showManiaExchangeList($maps, $player);
 		});
 	}
+
 
 	/**
 	 * Display the Mania Exchange List
@@ -176,7 +197,8 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		$headFrame = new Frame();
 		$frame->addChild($headFrame);
 		$headFrame->setY($posY - 12);
-		$array = array('$oId' => $posX + 3.5, '$oName' => $posX + 12.5, '$oAuthor' => $posX + 59, '$oKarma' => $posX + 85, '$oType' => $posX + 103, '$oMood' => $posX + 118, '$oLast Update' => $posX + 130);
+		$array = array('$oId'          => $posX + 3.5, '$oName' => $posX + 12.5, '$oAuthor' => $posX + 59, '$oKarma' => $posX + 85, '$oType' => $posX + 103, '$oMood' => $posX + 118,
+		               '$oLast Update' => $posX + 130);
 		$this->maniaControl->getManialinkManager()->labelLine($headFrame, $array);
 
 		$index     = 0;
@@ -205,7 +227,8 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 			}
 
 			$time        = Formatter::timeElapsedString(strtotime($map->updated));
-			$array       = array('$s' . $map->id => $posX + 3.5, '$s' . $map->name => $posX + 12.5, '$s' . $map->author => $posX + 59, '$s' . str_replace('Arena', '', $map->maptype) => $posX + 103, '$s' . $map->mood => $posX + 118, '$s' . $time => $posX + 130);
+			$array       = array('$s' . $map->id   => $posX + 3.5, '$s' . $map->name => $posX + 12.5, '$s' . $map->author => $posX + 59, '$s' . str_replace('Arena', '', $map->maptype) => $posX + 103,
+			                     '$s' . $map->mood => $posX + 118, '$s' . $time => $posX + 130);
 			$labels      = $this->maniaControl->getManialinkManager()->labelLine($mapFrame, $array);
 			$authorLabel = $labels[2];
 			$authorLabel->setAction(self::ACTION_GET_MAPS_FROM_AUTHOR . '.' . $map->author);
@@ -223,8 +246,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 			$description = 'View $<' . $map->name . '$> on Mania-Exchange';
 			$mxQuad->addTooltipLabelFeature($descriptionLabel, $description);
 
-			if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)
-			) {
+			if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
 				$addQuad = new Quad_Icons64x64_1();
 				$mapFrame->addChild($addQuad);
 				$addQuad->setX($posX + 53);
@@ -311,10 +333,11 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 
 		$quad = new Quad_BgsPlayerCard();
 		$frame->addChild($quad);
-		$quad->setPosition(-$width / 2 + 63, $height / 2 - 5, 0.01);
+		$quad->setPosition(-$width / 2 + 63, $height / 2 - 5);
 		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
 		$quad->setSize(18, 5);
 		$quad->setAction(self::ACTION_SEARCH_MAPNAME);
+		$quad->setZ(-0.1);
 
 		//Search for Author
 		$label = new Label_Button();
@@ -325,13 +348,44 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 
 		$quad = new Quad_BgsPlayerCard();
 		$frame->addChild($quad);
-		$quad->setPosition(-$width / 2 + 82, $height / 2 - 5, 0.01);
+		$quad->setPosition(-$width / 2 + 82, $height / 2 - 5);
 		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
 		$quad->setSize(18, 5);
 		$quad->setAction(self::ACTION_SEARCH_AUTHOR);
+		$quad->setZ(-0.1);
+
+		//Seach for MP4Maps
+		$quad = new Quad();
+		$quad->setPosition($width / 2 - 30, $height / 2 - 5, -0.01)->setSize(4, 4);
+		$checkBox = new CheckBox(self::ACTION_TOGGLE_MP4, $player->getCache($this, self::CACHE_SHOWMP4ONLY), $quad);
+		$quad->setAction(self::ACTION_TOGGLE_MP4);
+		$frame->addChild($checkBox);
+
+		$label = new Label_Button();
+		$frame->addChild($label);
+		$label->setPosition($width / 2 - 28, $height / 2 - 5);
+		$label->setText('Only MP4-Maps');
+		$label->setTextSize(1.3);
+		$label->setHorizontalAlign($label::LEFT);
+
 
 		// render and display xml
 		$this->maniaControl->getManialinkManager()->displayWidget($maniaLink, $player, 'ManiaExchangeList');
+	}
+
+	/**
+	 * Toggle to view mp4 maps only for a player
+	 *
+	 * @param array                        $callback
+	 * @param \ManiaControl\Players\Player $player
+	 */
+	public function toggleMP4MapsOnly(array $callback, Player $player) {
+		if ($player->getCache($this, self::CACHE_SHOWMP4ONLY) === true) {
+			$player->setCache($this, self::CACHE_SHOWMP4ONLY, false);
+		} else {
+			$player->setCache($this, self::CACHE_SHOWMP4ONLY, true);
+		}
+		$this->getMXMapsAndShowList($player);
 	}
 
 	/**
