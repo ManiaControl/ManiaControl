@@ -2,7 +2,7 @@
 
 namespace ManiaControl\ManiaExchange;
 
-use ManiaControl\Files\AsynchronousFileReader;
+use ManiaControl\Files\AsyncHttpRequest;
 use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
@@ -17,7 +17,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
  */
 class ManiaExchangeMapSearch implements UsageInformationAble {
 	use UsageInformationTrait;
-	
+
 	//Search orders (prior parameter) https://api.mania-exchange.com/documents/enums#orderings
 	const SEARCH_ORDER_NONE               = -1;
 	const SEARCH_ORDER_TRACK_NAME         = 0;
@@ -84,6 +84,7 @@ class ManiaExchangeMapSearch implements UsageInformationAble {
 	private $envMix            = null;
 	private $ghostBlocks       = null;
 	private $embeddedObjects   = null;
+	private $key               = null;
 
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
@@ -104,7 +105,7 @@ class ManiaExchangeMapSearch implements UsageInformationAble {
 
 		$this->url = 'https://' . $this->titlePrefix . '.mania-exchange.com/tracksearch2/search?api=on';
 
-		if ($key = $this->maniaControl->getSettingManager()->getSettingValue($this, ManiaExchangeManager::SETTING_MX_KEY)) {
+		if ($key = $this->maniaControl->getSettingManager()->getSettingValue($this->maniaControl->getMapManager()->getMXManager(), ManiaExchangeManager::SETTING_MX_KEY)) {
 			$this->url .= "&key=" . $key;
 		}
 
@@ -218,8 +219,13 @@ class ManiaExchangeMapSearch implements UsageInformationAble {
 		if (isset($this->embeddedObjects)) {
 			$parameters .= "&embeddedobjects=" . (int) $this->embeddedObjects;
 		}
+		if (isset($this->key)) {
+			$parameters .= "&key=" . $this->key;
+		}
 
-		$this->maniaControl->getFileReader()->loadFile($this->url . $parameters, function ($mapInfo, $error) use (&$function) {
+		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, $this->url . $parameters);
+		$asyncHttpRequest->setContentType(AsyncHttpRequest::CONTENT_TYPE_JSON);
+		$asyncHttpRequest->setCallable(function ($mapInfo, $error) use (&$function) {
 			if ($error) {
 				trigger_error($error);
 				return;
@@ -247,7 +253,9 @@ class ManiaExchangeMapSearch implements UsageInformationAble {
 			}
 
 			call_user_func($function, $maps);
-		}, AsynchronousFileReader::CONTENT_TYPE_JSON);
+		});
+
+		$asyncHttpRequest->getData();
 	}
 
 
@@ -443,5 +451,12 @@ class ManiaExchangeMapSearch implements UsageInformationAble {
 	 */
 	public function setMapLimit($mapLimit) {
 		$this->mapLimit = $mapLimit;
+	}
+
+	/**
+	 * @param null $key
+	 */
+	public function setKey($key) {
+		$this->key = $key;
 	}
 }
