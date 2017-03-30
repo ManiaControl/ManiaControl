@@ -2,10 +2,10 @@
 
 namespace ManiaControl\Callbacks\Structures\TrackMania\Models;
 
-use ManiaControl\General\UsageInformationAble;
-use ManiaControl\General\UsageInformationTrait;
+use ManiaControl\Callbacks\Structures\Common\Models\CommonPlayerScore;
+
 use ManiaControl\Players\Player;
-//TODO proper return descriptions on getter methods
+//TODO proper return descriptions on getter methods -> use autogenerate for setter/getter + docs
 /**
  * PlayerScore Model
  *
@@ -13,33 +13,12 @@ use ManiaControl\Players\Player;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class PlayerScore implements UsageInformationAble {
-	use UsageInformationTrait;
+class PlayerScore extends CommonPlayerScore {
 
-	private $player;
-	private $rank;
-	private $roundPoints;
-	private $mapPoints;
-	private $matchPoints;
-	private $bestraceTime;
-	private $bestlapTime;
+	private $bestRaceTime;
+	private $bestLapTime;
 	private $stuntScore;
 
-	/**
-	 * Returns the Player
-	 *
-	 * @return Player
-	 */
-	public function getPlayer() {
-		return $this->player;
-	}
-
-	/**
-	 * @param \ManiaControl\Players\Player $player
-	 */
-	public function setPlayer(Player $player) {
-		$this->player = $player;
-	}
 
 	/**
 	 * Returns the Rank
@@ -59,68 +38,24 @@ class PlayerScore implements UsageInformationAble {
 		$this->rank = $rank;
 	}
 
-	/**
-	 * Gets the Round Points
-	 *
-	 * @return int
-	 */
-	public function getRoundPoints() {
-		return $this->roundPoints;
-	}
 
-	/**
-	 * Sets the RoundPoints
-	 *
-	 * @param int $roundPoints
-	 */
-	public function setRoundPoints($roundPoints) {
-		$this->roundPoints = $roundPoints;
-	}
 
-	/**
-	 * Gets the Map Points
-	 *
-	 * @return int
-	 */
-	public function getMapPoints() {
-		return $this->mapPoints;
-	}
-
-	/**
-	 * Sets the Map Points
-	 *
-	 * @param int $mapPoints
-	 */
-	public function setMapPoints($mapPoints) {
-		$this->mapPoints = $mapPoints;
-	}
-	
 	/**
 	*   Gets the bestRaceTime
 	*
 	* @param int $bestraceTime
 	*/
-	public function getbestraceTime(){
-		return $this->bestraceTime;
+	public function getBestraceTime(){
+		return $this->bestRaceTime;
 	}
 
-
-	/**
-	 * Gets the MapPoints
-	 *
-	 * @return int
-	 */
-	public function getMatchPoints(){
-		return $this->matchPoints;
-	}
-	
 	/**
 	*   Gets the bestlapTime
 	*
 	* @param int $bestlapTime
 	*/
-	public function getbestlapTime(){
-		return $this->bestlapTime;
+	public function getBestlapTime(){
+		return $this->bestLapTime;
 	}
 	
 	/**
@@ -128,8 +63,29 @@ class PlayerScore implements UsageInformationAble {
 	*
 	* @param int $bestraceTime
 	*/
-	public function getstuntScore(){
+	public function getStuntScore(){
 		return $this->stuntScore;
 	}
-	
+
+	/**
+	 * @param mixed $bestRaceTime
+	 */
+	public function setBestRaceTime($bestRaceTime) {
+		$this->bestRaceTime = $bestRaceTime;
+	}
+
+	/**
+	 * @param mixed $bestLapTime
+	 */
+	public function setBestLapTime($bestLapTime) {
+		$this->bestLapTime = $bestLapTime;
+	}
+
+	/**
+	 * @param mixed $stuntScore
+	 */
+	public function setStuntScore($stuntScore) {
+		$this->stuntScore = $stuntScore;
+	}
+
 }
