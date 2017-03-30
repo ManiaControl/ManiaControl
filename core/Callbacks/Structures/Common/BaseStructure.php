@@ -1,6 +1,6 @@
 <?php
 
-namespace ManiaControl\Callbacks\Structures;
+namespace ManiaControl\Callbacks\Structures\Common;
 
 
 use ManiaControl\General\UsageInformationAble;

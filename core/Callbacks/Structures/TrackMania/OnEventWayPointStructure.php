@@ -3,7 +3,7 @@
 namespace ManiaControl\Callbacks\Structures\TrackMania;
 
 
-use ManiaControl\Callbacks\Structures\BaseStructure;
+use ManiaControl\Callbacks\Structures\Common\BaseStructure;
 use ManiaControl\Callbacks\Models\RecordCallback;
 use ManiaControl\ManiaControl;
 use ManiaControl\Utils\Formatter;

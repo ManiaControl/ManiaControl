@@ -3,7 +3,7 @@
 namespace ManiaControl\Callbacks\Structures\ManiaPlanet;
 
 
-use ManiaControl\Callbacks\Structures\BaseStructure;
+use ManiaControl\Callbacks\Structures\Common\BaseStructure;
 use ManiaControl\ManiaControl;
 
 /**

@@ -3,7 +3,7 @@
 namespace ManiaControl\Callbacks\Structures\ShootMania;
 
 
-use ManiaControl\Callbacks\Structures\BaseStructure;
+use ManiaControl\Callbacks\Structures\Common\BaseStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\Models\Position;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
