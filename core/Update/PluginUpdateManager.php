@@ -242,7 +242,6 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 	 */
 	private function installPlugin(PluginUpdateData $pluginUpdateData, Player $player = null, $update = false) {
 		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, $pluginUpdateData->url);
-		$asyncHttpRequest->setContentType(AsyncHttpRequest::CONTENT_TYPE_JSON);
 		$asyncHttpRequest->setCallable(function ($updateFileContent, $error) use (
 			&$pluginUpdateData, &$player, &$update
 		) {
