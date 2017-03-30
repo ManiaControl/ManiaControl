@@ -52,7 +52,7 @@ class LabelLine implements UsageInformationAble {
 		}
 		if ($width) {
 			$label->setWidth($width);
-			$label->setHeight(5); //TODO verify if 5 is ok for everywhere
+			$label->setHeight(0); //TODO verify if 5 is ok for everywhere
 		}
 		$this->addLabel($label);
 	}
