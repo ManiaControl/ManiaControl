@@ -5,7 +5,7 @@ namespace ManiaControl\Callbacks\Structures\TrackMania\Models;
 use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\Players\Player;
-
+//TODO proper return descriptions on getter methods
 /**
  * PlayerScore Model
  *
@@ -103,14 +103,15 @@ class PlayerScore implements UsageInformationAble {
 	public function getbestraceTime(){
 		return $this->bestraceTime;
 	}
-	
+
+
 	/**
-	*   Gets the bestRaceTime
-	*
-	* @param int $bestraceTime
-	*/
-	public function getbestraceTime(){
-		return $this->bestraceTime;
+	 * Gets the MapPoints
+	 *
+	 * @return int
+	 */
+	public function getMatchPoints(){
+		return $this->matchPoints;
 	}
 	
 	/**
