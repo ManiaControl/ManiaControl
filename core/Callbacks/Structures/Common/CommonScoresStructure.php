@@ -3,7 +3,6 @@
 namespace ManiaControl\Callbacks\Structures\Common;
 
 
-use ManiaControl\Callbacks\Structures\BaseStructure;
 use ManiaControl\Callbacks\Structures\Common\Models\CommonPlayerScore;
 use ManiaControl\Callbacks\Structures\ShootMania\Models\TeamScore;
 use ManiaControl\ManiaControl;
