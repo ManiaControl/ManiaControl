@@ -10,17 +10,15 @@ use ManiaControl\Players\Player;
 
 
 /**
- * Structure Class for the OnHit Structure Callback
+ * Structure Base Class for the OnHit/OnNearMiss/OnArmorEmpty Structure Callback
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class OnHitNearMissArmorEmptyStructure extends BaseStructure {
+class OnHitNearMissArmorEmptyBaseStructure extends BaseStructure {
 	private $time;
 	private $weapon;
-	private $damage;
-	private $distance = 0; //Note no distance on the OnHit and ArmorEmpty yet
 
 	private $shooterPosition;
 	private $victimPosition;
@@ -54,14 +52,6 @@ class OnHitNearMissArmorEmptyStructure extends BaseStructure {
 		$this->victimPosition->setY($jsonObj->victimposition->y);
 		$this->victimPosition->setZ($jsonObj->victimposition->z);
 
-		if (property_exists($this->getPlainJsonObject(), 'distance')) {
-			$this->distance = $this->getPlainJsonObject()->distance;
-		}
-
-		if (property_exists($this->getPlainJsonObject(), 'damage')) {
-			$this->damage = $this->getPlainJsonObject()->damage;
-		}
-
 		$this->shooter = $this->maniaControl->getPlayerManager()->getPlayer($this->getPlainJsonObject()->shooter);
 		$this->victim  = $this->maniaControl->getPlayerManager()->getPlayer($this->getPlainJsonObject()->victim);
 	}
@@ -83,16 +73,6 @@ class OnHitNearMissArmorEmptyStructure extends BaseStructure {
 	 */
 	public function getWeapon() {
 		return $this->weapon;
-	}
-
-	/**
-	 * < Amount of Damage done by the hit (only on onHit)
-	 * TODO base class and extend properties)
-	 *
-	 * @return int
-	 */
-	public function getDamage() {
-		return $this->damage;
 	}
 
 	/**
@@ -131,11 +111,6 @@ class OnHitNearMissArmorEmptyStructure extends BaseStructure {
 		return $this->victim;
 	}
 
-	/**
-	 * @return mixed
-	 */
-	public function getDistance() {
-		return $this->distance;
-	}
+
 
 }

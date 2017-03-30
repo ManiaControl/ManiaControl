@@ -6,10 +6,12 @@ use ManiaControl\Callbacks\Models\RecordCallback;
 use ManiaControl\Callbacks\Structures\EliteBeginTurnStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnActionCustomEventStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnActionEvent;
+use ManiaControl\Callbacks\Structures\ShootMania\OnArmorEmptyStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnCaptureStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnCommandStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnDefaultEventStructure;
-use ManiaControl\Callbacks\Structures\ShootMania\OnHitNearMissArmorEmptyStructure;
+use ManiaControl\Callbacks\Structures\ShootMania\OnHitStructure;
+use ManiaControl\Callbacks\Structures\ShootMania\OnNearMissStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnPlayerObjectStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnPlayerRequestActionChange;
 use ManiaControl\Callbacks\Structures\ShootMania\OnPlayerRequestRespawnStructure;
@@ -77,13 +79,13 @@ class ShootManiaCallbacks implements CallbackListener {
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONSHOOT, new OnShootStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ONHIT:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONHIT, new OnHitNearMissArmorEmptyStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONHIT, new OnHitStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ONNEARMISS:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONNEARMISS, new OnHitNearMissArmorEmptyStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONNEARMISS, new OnNearMissStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ONARMOREMPTY:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONARMOREMPTY, new OnHitNearMissArmorEmptyStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONARMOREMPTY, new OnArmorEmptyStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ONCAPTURE:
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONCAPTURE, new OnCaptureStructure($this->maniaControl, $data));
