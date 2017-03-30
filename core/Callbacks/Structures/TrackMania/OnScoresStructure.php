@@ -20,18 +20,7 @@ class OnScoresStructure extends CommonScoresStructure {
 		parent::__construct($maniaControl, $data);
 
 		$jsonObj = $this->getPlainJsonObject();
-
-		foreach ($jsonObj->teams as $team) {
-			$teamScore = new TeamScore();
-			$teamScore->setId($team->id);
-			$teamScore->setName($team->name);
-			$teamScore->setRoundPoints($team->roundpoints);
-			$teamScore->setMatchPoints($team->matchpoints);
-			$teamScore->setMapPoints($team->mappoints);
-
-			$this->teamScores[$team->id] = $teamScore; //TODO verify that different teams have different ids
-		}
-
+		
 		foreach ($jsonObj->players as $jsonPlayer) {
 			$playerScore = new PlayerScore();
 			$playerScore->setPlayer($this->maniaControl->getPlayerManager()->getPlayer($jsonPlayer->login));
