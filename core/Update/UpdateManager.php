@@ -337,7 +337,6 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		$updateData = $this->coreUpdateData;
 
 		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, $updateData->url);
-		$asyncHttpRequest->setContentType(AsyncHttpRequest::CONTENT_TYPE_JSON);
 		$asyncHttpRequest->setCallable(function ($updateFileContent, $error) use (
 			$updateData, &$player
 		) {
