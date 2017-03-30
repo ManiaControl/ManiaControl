@@ -240,15 +240,17 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 
 			$time      = Formatter::timeElapsedString(strtotime($map->updated));
 			$labelLine = new LabelLine($mapFrame);
+
 			$labelLine->addLabelEntryText($map->id, $posX + 3.5, 9);
 			$labelLine->addLabelEntryText($map->name, $posX + 12.5, 38.5);
-			$labelLine->addLabelEntryText($map->author, $posX + 59, 44, self::ACTION_GET_MAPS_FROM_AUTHOR . '.' . $map->author);
+			$labelLine->addLabelEntryText($map->author, $posX + 59,-1,self::ACTION_GET_MAPS_FROM_AUTHOR . '.' . $map->author); //FIXME with > 1 disables the ml
 			$labelLine->addLabelEntryText(str_replace('Arena', '', $map->maptype), $posX + 103, 15);
 			$labelLine->addLabelEntryText($map->mood, $posX + 118, 12);
 			$labelLine->addLabelEntryText($time, $posX + 130, $width - ($posX + 130));
 
 			$labelLine->setPrefix('$s');
 			$labelLine->render();
+
 
 			$mapFrame->setY($posY);
 
