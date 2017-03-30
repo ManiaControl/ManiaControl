@@ -29,10 +29,10 @@ class CommonScoresStructure extends BaseStructure {
 
 		$jsonObj = $this->getPlainJsonObject();
 
-		$this->responseId = $jsonObj->responseId;
+		$this->responseId = $jsonObj->responseid;
 		$this->section    = $jsonObj->section;
-		$this->useTeams   = $jsonObj->useTeams;
-		$this->winnerTeam = $jsonObj->winnerTeam;
+		$this->useTeams   = $jsonObj->useteams;
+		$this->winnerTeam = $jsonObj->winnerteam;
 
 		$this->winnerPlayer = $this->maniaControl->getPlayerManager()->getPlayer($jsonObj->winnerplayer);
 
