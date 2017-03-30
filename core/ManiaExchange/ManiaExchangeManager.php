@@ -2,7 +2,7 @@
 
 namespace ManiaControl\ManiaExchange;
 
-use ManiaControl\Files\AsynchronousFileReader;
+use ManiaControl\Files\AsyncHttpRequest;
 use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
@@ -18,7 +18,7 @@ use ManiaControl\Maps\MapManager;
  */
 class ManiaExchangeManager implements UsageInformationAble {
 	use UsageInformationTrait;
-	
+
 	/*
 	 * Constants
 	 * @deprecated SEARCH Constants
@@ -170,7 +170,9 @@ class ManiaExchangeManager implements UsageInformationAble {
 			$url .= "&key=" . $key;
 		}
 
-		$this->maniaControl->getFileReader()->loadFile($url, function ($mapInfo, $error) use ($titlePrefix, $url) {
+		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, $url);
+		$asyncHttpRequest->setContentType(AsyncHttpRequest::CONTENT_TYPE_JSON);
+		$asyncHttpRequest->setCallable(function ($mapInfo, $error) use ($titlePrefix, $url) {
 			if ($error) {
 				trigger_error("Error: '{$error}' for Url '{$url}'");
 				return;
@@ -196,7 +198,9 @@ class ManiaExchangeManager implements UsageInformationAble {
 			}
 
 			$this->updateMapObjectsWithManiaExchangeIds($maps);
-		}, AsynchronousFileReader::CONTENT_TYPE_JSON);
+		});
+
+		$asyncHttpRequest->getData();
 	}
 
 	/**
@@ -267,7 +271,9 @@ class ManiaExchangeManager implements UsageInformationAble {
 			$url .= "&key=" . $key;
 		}
 
-		$this->maniaControl->getFileReader()->loadFile($url, function ($mapInfo, $error) use (&$function, $titlePrefix, $url) {
+		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, $url);
+		$asyncHttpRequest->setContentType(AsyncHttpRequest::CONTENT_TYPE_JSON);
+		$asyncHttpRequest->setCallable(function ($mapInfo, $error) use (&$function, $titlePrefix, $url) {
 			$mxMapInfo = null;
 			if ($error) {
 				trigger_error($error);
@@ -280,7 +286,9 @@ class ManiaExchangeManager implements UsageInformationAble {
 				}
 			}
 			call_user_func($function, $mxMapInfo);
-		}, AsynchronousFileReader::CONTENT_TYPE_JSON);
+		});
+
+		$asyncHttpRequest->getData();
 	}
 
 	/**

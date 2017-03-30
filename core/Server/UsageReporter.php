@@ -84,6 +84,7 @@ class UsageReporter implements TimerListener {
 		$url = ManiaControl::URL_WEBSERVICE . 'usagereport';
 
 		$asyncRequest = new AsyncHttpRequest($this->maniaControl, $url);
+		$asyncRequest->setContentType(AsyncHttpRequest::CONTENT_TYPE_JSON);
 		$asyncRequest->setContent($usageReport);
 		$asyncRequest->setCallable(function ($response, $error) {
 			$response = json_decode($response);

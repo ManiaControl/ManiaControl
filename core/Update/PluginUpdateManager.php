@@ -6,6 +6,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
+use ManiaControl\Files\AsyncHttpRequest;
 use ManiaControl\Files\BackupUtil;
 use ManiaControl\Files\FileUtil;
 use ManiaControl\Logger;
@@ -240,7 +241,9 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 	 * @param bool             $update
 	 */
 	private function installPlugin(PluginUpdateData $pluginUpdateData, Player $player = null, $update = false) {
-		$this->maniaControl->getFileReader()->loadFile($pluginUpdateData->url, function ($updateFileContent, $error) use (
+		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, $pluginUpdateData->url);
+		$asyncHttpRequest->setContentType(AsyncHttpRequest::CONTENT_TYPE_JSON);
+		$asyncHttpRequest->setCallable(function ($updateFileContent, $error) use (
 			&$pluginUpdateData, &$player, &$update
 		) {
 			if (!$updateFileContent || $error) {
@@ -320,6 +323,8 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 				}
 			}
 		});
+
+		$asyncHttpRequest->getData();
 	}
 
 	/**
@@ -355,7 +360,10 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 			$pluginId = substr($actionId, strlen(InstallMenu::ACTION_PREFIX_INSTALL_PLUGIN));
 
 			$url = ManiaControl::URL_WEBSERVICE . 'plugins/' . $pluginId;
-			$this->maniaControl->getFileReader()->loadFile($url, function ($data, $error) use (&$player) {
+
+			$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, $url);
+			$asyncHttpRequest->setContentType(AsyncHttpRequest::CONTENT_TYPE_JSON);
+			$asyncHttpRequest->setCallable(function ($data, $error) use (&$player) {
 				if ($error || !$data) {
 					$message = "Error loading Plugin Install Data! {$error}";
 					$this->maniaControl->getChat()->sendError($message, $player);
@@ -372,6 +380,8 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 				$pluginUpdateData = new PluginUpdateData($data);
 				$this->installPlugin($pluginUpdateData, $player);
 			});
+
+			$asyncHttpRequest->getData();
 		}
 	}
 

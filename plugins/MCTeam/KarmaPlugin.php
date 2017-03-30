@@ -252,7 +252,9 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 		$this->mxKarma['connectionInProgress'] = true;
 
-		$this->maniaControl->getFileReader()->loadFile($query, function ($json, $error) use ($mxKarmaCode) {
+		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, $query);
+		$asyncHttpRequest->setContentType(AsyncHttpRequest::CONTENT_TYPE_JSON);
+		$asyncHttpRequest->setCallable(function ($json, $error) use ($mxKarmaCode) {
 			$this->mxKarma['connectionInProgress'] = false;
 			if ($error) {
 				$this->maniaControl->getErrorHandler()->triggerDebugNotice('mx karma error: ' . $error);
@@ -260,7 +262,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			}
 			$data = json_decode($json);
 			if (!$data) {
-				$this->maniaControl->getErrorHandler()->triggerDebugNotice('auth error', $json, $data);
+				$this->maniaControl->getErrorHandler()->triggerDebugNotice('auth error' . $json);
 				return;
 			}
 			if ($data->success) {
@@ -272,7 +274,9 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 				$this->maniaControl->getErrorHandler()->triggerDebugNotice('auth error', $data->data->message);
 				$this->mxKarma['connectionInProgress'] = false;
 			}
-		}, AsynchronousFileReader::CONTENT_TYPE_JSON, 1000);
+		});
+
+		$asyncHttpRequest->getData(1000);
 	}
 
 	/**
@@ -287,15 +291,17 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		$query .= '?sessionKey=' . urlencode($this->mxKarma['session']->sessionKey);
 		$query .= '&activationHash=' . urlencode($hash);
 
-		$this->maniaControl->getFileReader()->loadFile($query, function ($json, $error) use ($query) {
+		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, $query);
+		$asyncHttpRequest->setContentType(AsyncHttpRequest::CONTENT_TYPE_JSON);
+		$asyncHttpRequest->setCallable(function ($json, $error) use ($query) {
 			$this->mxKarma['connectionInProgress'] = false;
 			if ($error) {
-				$this->maniaControl->getErrorHandler()->triggerDebugNotice('mx karma error', $error);
+				$this->maniaControl->getErrorHandler()->triggerDebugNotice('mx karma error' . $error);
 				return;
 			}
 			$data = json_decode($json);
 			if (!$data) {
-				$this->maniaControl->getErrorHandler()->triggerDebugNotice('parse error', $json, $data);
+				$this->maniaControl->getErrorHandler()->triggerDebugNotice('parse error' . $json);
 				return;
 			}
 			if ($data->success && $data->data->activated) {
@@ -308,12 +314,14 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 					$permission = $this->maniaControl->getSettingManager()->getSettingValue($this->maniaControl->getAuthenticationManager(), PluginMenu::SETTING_PERMISSION_CHANGE_PLUGIN_SETTINGS);
 					$this->maniaControl->getChat()->sendErrorToAdmins("Invalid Mania-Exchange Karma code in Karma Plugin specified!", $permission);
 				} else {
-					$this->maniaControl->getErrorHandler()->triggerDebugNotice('auth error', $data->data->message, $query);
+					$this->maniaControl->getErrorHandler()->triggerDebugNotice('auth error' . $data->data->message . $query);
 				}
 				Logger::logError("Error while activating Mania-Exchange Karma Session: " . $data->data->message);
 				unset($this->mxKarma['session']);
 			}
-		}, AsynchronousFileReader::CONTENT_TYPE_JSON, 1000);
+		});
+
+		$asyncHttpRequest->getData(1000);
 	}
 
 	/**
