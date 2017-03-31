@@ -55,8 +55,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 	 * @param Player $player
 	 */
 	public function handle_CheckPluginsUpdate(array $chatCallback, Player $player) {
-		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, UpdateManager::SETTING_PERMISSION_UPDATECHECK)
-		) {
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, UpdateManager::SETTING_PERMISSION_UPDATECHECK)) {
 			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
@@ -151,8 +150,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 	 * @param Player $player
 	 */
 	public function handle_PluginsUpdate(array $chatCallback, Player $player) {
-		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, UpdateManager::SETTING_PERMISSION_UPDATE)
-		) {
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, UpdateManager::SETTING_PERMISSION_UPDATE)) {
 			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
@@ -241,6 +239,24 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 	 * @param bool             $update
 	 */
 	private function installPlugin(PluginUpdateData $pluginUpdateData, Player $player = null, $update = false) {
+		if (ManiaControl::VERSION < $pluginUpdateData->minManiaControlVersion) {
+			$message = "Your ManiaControl Version v" . ManiaControl::VERSION . " is too old for this Plugin (min Required Version): ' . {$pluginUpdateData->minManiaControlVersion}!";
+			if ($player) {
+				$this->maniaControl->getChat()->sendError($message, $player);
+			}
+			Logger::logError($message);
+			return;
+		}
+
+		if ($pluginUpdateData->maxManiaControlVersion != -1 && ManiaControl::VERSION > $pluginUpdateData->maxManiaControlVersion) {
+			$message = "Your ManiaControl Version v" . ManiaControl::VERSION . " is too new for this Plugin (max Version of the Plugin: ' . {$pluginUpdateData->minManiaControlVersion}!";
+			if ($player) {
+				$this->maniaControl->getChat()->sendError($message, $player);
+			}
+			Logger::logError($message);
+			return;
+		}
+		
 		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, $pluginUpdateData->url);
 		$asyncHttpRequest->setCallable(function ($updateFileContent, $error) use (
 			&$pluginUpdateData, &$player, &$update
