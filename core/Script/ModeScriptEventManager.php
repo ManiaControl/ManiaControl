@@ -37,10 +37,6 @@ class ModeScriptEventManager implements UsageInformationAble {
 		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.EnableCallbacks', array('true'));
 
 		$this->setApiVersion(self::API_VERSION);
-
-		$this->getAllApiVersions();
-
-		$this->getCallbacksList();
 	}
 
 	/**
@@ -168,5 +164,72 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 */
 	public function setShootmaniaUIProperties($properties) {
 		$this->maniaControl->getClient()->triggerModeScriptEvent('Shootmania.GetUIProperties', array($properties));
+	}
+
+	/**
+	 * Request the current scores. This method will trigger the "Trackmania.Scores" callback.
+	 *
+	 * @param string $responseId
+	 */
+	public function getTrackmaniaScores($responseId = "DefaultResponseId") {
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Trackmania.GetScores', array($responseId));
+	}
+
+	/**
+	 * Request the current points repartition. This method will trigger the "Trackmania.PointsRepartition" callback.
+	 *
+	 * @param string $responseId
+	 */
+	public function getTrackmaniaPointsRepartition($responseId = "DefaultResponseId") {
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Trackmania.GetPointsRepartition', array($responseId));
+	}
+
+	/**
+	 * Update the points repartition.
+	 *
+	 * @param array String Array of Points
+	 */
+	public function setTrackmaniaPointsRepartition($pointArray) {
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Trackmania.GetPointsRepartition', array($pointArray));
+	}
+
+	/**
+	 * Request the current ui properties. This method will trigger the "Shootmania.UIProperties" callback.
+	 *
+	 * @param string $responseId
+	 */
+	public function getTrackmaniaUIProperties($responseId = "DefaultResponseId") {
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Trackmania.GetUIProperties', array($responseId));
+	}
+
+	/**
+	 * Update the ui properties.
+	 *
+	 * @param string Json-Encoded Xml UI Property String
+	 */
+	public function setTrackmaniaUIProperties($properties) {
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Shootmania.GetUIProperties', array($properties));
+	}
+
+	/**
+	 * Stop the whole warm up sequence.
+	 */
+	public function stopTrackmaniaWarmup() {
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Trackmania.WarmUp.Stop');
+	}
+
+	/**
+	 * Stop the current warm up round.
+	 */
+	public function stopTrackmaniaRound() {
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Trackmania.WarmUp.StopRound');
+	}
+
+
+	/**
+	 * Stop the current round. Only available in Cup, Rounds and Team modes.
+	 */
+	public function forceTrackmaniaRoundEnd() {
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Trackmania.ForceEndRound');
 	}
 }
