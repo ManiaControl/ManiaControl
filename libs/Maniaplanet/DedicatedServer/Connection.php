@@ -763,7 +763,7 @@ class Connection
 
 		return $this->execute(ucfirst(__FUNCTION__), array($link), $multicall);
 	}
-	
+
 	/**
 	 * Kick the player with the specified login, with an optional message.
 	 * Only available to Admin.
