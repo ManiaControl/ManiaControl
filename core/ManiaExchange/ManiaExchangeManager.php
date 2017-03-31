@@ -2,7 +2,9 @@
 
 namespace ManiaControl\ManiaExchange;
 
-use ManiaControl\Files\AsynchronousFileReader;
+use ManiaControl\Files\AsyncHttpRequest;
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
 use ManiaControl\Maps\Map;
 use ManiaControl\Maps\MapManager;
@@ -14,7 +16,9 @@ use ManiaControl\Maps\MapManager;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class ManiaExchangeManager {
+class ManiaExchangeManager implements UsageInformationAble {
+	use UsageInformationTrait;
+
 	/*
 	 * Constants
 	 * @deprecated SEARCH Constants
@@ -166,7 +170,9 @@ class ManiaExchangeManager {
 			$url .= "&key=" . $key;
 		}
 
-		$this->maniaControl->getFileReader()->loadFile($url, function ($mapInfo, $error) use ($titlePrefix, $url) {
+		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, $url);
+		$asyncHttpRequest->setContentType(AsyncHttpRequest::CONTENT_TYPE_JSON);
+		$asyncHttpRequest->setCallable(function ($mapInfo, $error) use ($titlePrefix, $url) {
 			if ($error) {
 				trigger_error("Error: '{$error}' for Url '{$url}'");
 				return;
@@ -192,7 +198,9 @@ class ManiaExchangeManager {
 			}
 
 			$this->updateMapObjectsWithManiaExchangeIds($maps);
-		}, AsynchronousFileReader::CONTENT_TYPE_JSON);
+		});
+
+		$asyncHttpRequest->getData();
 	}
 
 	/**
@@ -263,7 +271,9 @@ class ManiaExchangeManager {
 			$url .= "&key=" . $key;
 		}
 
-		$this->maniaControl->getFileReader()->loadFile($url, function ($mapInfo, $error) use (&$function, $titlePrefix, $url) {
+		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, $url);
+		$asyncHttpRequest->setContentType(AsyncHttpRequest::CONTENT_TYPE_JSON);
+		$asyncHttpRequest->setCallable(function ($mapInfo, $error) use (&$function, $titlePrefix, $url) {
 			$mxMapInfo = null;
 			if ($error) {
 				trigger_error($error);
@@ -276,7 +286,9 @@ class ManiaExchangeManager {
 				}
 			}
 			call_user_func($function, $mxMapInfo);
-		}, AsynchronousFileReader::CONTENT_TYPE_JSON);
+		});
+
+		$asyncHttpRequest->getData();
 	}
 
 	/**

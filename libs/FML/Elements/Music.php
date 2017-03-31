@@ -8,56 +8,76 @@ use FML\Types\Renderable;
  * Music Element
  *
  * @author    steeffeen <mail@steeffeen.com>
- * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @copyright FancyManiaLinks Copyright © 2017 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class Music implements Renderable {
-	/*
-	 * Protected properties
-	 */
-	protected $tagName = 'music';
-	protected $data = null;
+class Music implements Renderable
+{
 
-	/**
-	 * Create a new Music object
-	 *
-	 * @param string $data (optional) Media url
-	 * @return static
-	 */
-	public static function create($data = null) {
-		return new static($data);
-	}
+    /**
+     * @var string $data Media url
+     */
+    protected $data = null;
 
-	/**
-	 * Construct a new Music object
-	 *
-	 * @param string $data (optional) Media url
-	 */
-	public function __construct($data = null) {
-		if ($data !== null) {
-			$this->setData($data);
-		}
-	}
+    /**
+     * Create a new Music
+     *
+     * @api
+     * @param string $data (optional) Media url
+     * @return static
+     */
+    public static function create($data = null)
+    {
+        return new static($data);
+    }
 
-	/**
-	 * Set data url
-	 *
-	 * @param string $data Data url
-	 * @return static
-	 */
-	public function setData($data) {
-		$this->data = (string)$data;
-		return $this;
-	}
+    /**
+     * Construct a new Music
+     *
+     * @api
+     * @param string $data (optional) Media url
+     */
+    public function __construct($data = null)
+    {
+        if ($data) {
+            $this->setData($data);
+        }
+    }
 
-	/**
-	 * @see \FML\Types\Renderable::render()
-	 */
-	public function render(\DOMDocument $domDocument) {
-		$xmlElement = $domDocument->createElement($this->tagName);
-		if ($this->data) {
-			$xmlElement->setAttribute('data', $this->data);
-		}
-		return $xmlElement;
-	}
+    /**
+     * Get the media url
+     *
+     * @api
+     * @return string
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
+     * Set the media url
+     *
+     * @api
+     * @param string $data Media url
+     * @return static
+     */
+    public function setData($data)
+    {
+        $this->data = (string)$data;
+        return $this;
+    }
+
+    /**
+     * @see Renderable::render()
+     */
+    public function render(\DOMDocument $domDocument)
+    {
+        $domElement = $domDocument->createElement("music");
+        if ($this->data) {
+            $domElement->setAttribute("data", $this->data);
+        }
+        return $domElement;
+    }
+
 }

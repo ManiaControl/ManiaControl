@@ -21,6 +21,8 @@ class PluginUpdateData {
 	public $version = null;
 	public $zipfile = null;
 	public $url = null;
+	public $minManiaControlVersion = null;
+	public $maxManiaControlVersion = null;
 
 	/**
 	 * Construct new plugin update data instance
@@ -37,6 +39,9 @@ class PluginUpdateData {
 			$this->version = $updateData->currentVersion->version;
 			$this->zipfile = $updateData->currentVersion->zipfile;
 			$this->url     = $updateData->currentVersion->url;
+
+			$this->minManiaControlVersion = $updateData->currentVersion->min_mc_version;
+			$this->maxManiaControlVersion = $updateData->currentVersion->max_mc_version;
 		}
 	}
 

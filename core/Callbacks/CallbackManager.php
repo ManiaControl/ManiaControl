@@ -3,6 +3,8 @@
 namespace ManiaControl\Callbacks;
 
 use ManiaControl\Callbacks\Models\BaseCallback;
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
 
 /**
@@ -12,7 +14,9 @@ use ManiaControl\ManiaControl;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class CallbackManager {
+class CallbackManager implements UsageInformationAble {
+	use UsageInformationTrait;
+	
 	/*
 	 * Constants
 	 */
@@ -46,7 +50,7 @@ class CallbackManager {
 	/*
 	 * Public properties
 	 */
-	public $libXmlRpcCallbacks = null;
+	public $libXmlRpcCallbacks  = null;
 	public $shootManiaCallbacks = null;
 	public $trackManiaCallbacks = null;
 
@@ -98,7 +102,7 @@ class CallbackManager {
 			return false;
 		}
 
-		if (!array_key_exists($callbackName, $this->callbackListenings)) {
+		if (!$this->callbackListeningExists($callbackName)) {
 			$this->callbackListenings[$callbackName] = array();
 		}
 
@@ -106,6 +110,16 @@ class CallbackManager {
 		array_push($this->callbackListenings[$callbackName], $listening);
 
 		return true;
+	}
+
+	/**
+	 * Checks if a Callback Listening exists
+	 *
+	 * @param $callbackName
+	 * @return bool
+	 */
+	public function callbackListeningExists($callbackName) {
+		return array_key_exists($callbackName, $this->callbackListenings);
 	}
 
 	/**
@@ -272,7 +286,7 @@ class CallbackManager {
 		} else {
 			$callbackName = $callback;
 		}
-		if (!array_key_exists($callbackName, $this->callbackListenings)) {
+		if (!$this->callbackListeningExists($callbackName)) {
 			return;
 		}
 

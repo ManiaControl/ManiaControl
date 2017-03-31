@@ -8,6 +8,8 @@ use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Communication\CommunicationAnswer;
 use ManiaControl\Communication\CommunicationListener;
 use ManiaControl\Communication\CommunicationMethods;
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
 
@@ -18,7 +20,9 @@ use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class Chat implements CallbackListener, CommunicationListener {
+class Chat implements CallbackListener, CommunicationListener, UsageInformationAble {
+	use UsageInformationTrait;
+	
 	/*
 	 * Constants
 	 */

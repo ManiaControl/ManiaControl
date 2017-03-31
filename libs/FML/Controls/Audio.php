@@ -10,108 +10,262 @@ use FML\Types\Scriptable;
  * (CMlMediaPlayer)
  *
  * @author    steeffeen
- * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @copyright FancyManiaLinks Copyright © 2017 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class Audio extends Control implements Playable, Scriptable {
-	/*
-	 * Protected properties
-	 */
-	protected $tagName = 'audio';
-	protected $data = null;
-	protected $dataId = null;
-	protected $play = null;
-	protected $looping = true;
-	protected $music = null;
-	protected $volume = 1.;
-	protected $scriptEvents = null;
+class Audio extends Control implements Playable, Scriptable
+{
 
-	/**
-	 * @see \FML\Controls\Control::getManiaScriptClass()
-	 */
-	public function getManiaScriptClass() {
-		return 'CMlMediaPlayer';
-	}
+    /**
+     * @var string $data Data url
+     */
+    protected $data = null;
 
-	/**
-	 * @see \FML\Types\Playable::setData()
-	 */
-	public function setData($data) {
-		$this->data = (string)$data;
-		return $this;
-	}
+    /**
+     * @var string $dataId Data id
+     */
+    protected $dataId = null;
 
-	/**
-	 * @see \FML\Types\Playable::setDataId()
-	 */
-	public function setDataId($dataId) {
-		$this->dataId = (string)$dataId;
-		return $this;
-	}
+    /**
+     * @var bool $play Play automaticcaly
+     */
+    protected $play = null;
 
-	/**
-	 * @see \FML\Types\Playable::setPlay()
-	 */
-	public function setPlay($play) {
-		$this->play = ($play ? 1 : 0);
-		return $this;
-	}
+    /**
+     * @var bool $looping Looping
+     */
+    protected $looping = true;
 
-	/**
-	 * @see \FML\Types\Playable::setLooping()
-	 */
-	public function setLooping($looping) {
-		$this->looping = ($looping ? 1 : 0);
-		return $this;
-	}
+    /**
+     * @var bool $music Music type
+     */
+    protected $music = null;
 
-	/**
-	 * @see \FML\Types\Playable::setMusic()
-	 */
-	public function setMusic($music) {
-		$this->music = ($music ? 1 : 0);
-		return $this;
-	}
+    /**
+     * @var float $volume Volume
+     */
+    protected $volume = 1.;
 
-	/**
-	 * @see \FML\Types\Playable::setVolume()
-	 */
-	public function setVolume($volume) {
-		$this->volume = (float)$volume;
-		return $this;
-	}
+    /**
+     * @var bool $scriptEvents Script events usage
+     */
+    protected $scriptEvents = null;
 
-	/**
-	 * @see \FML\Types\Scriptable::setScriptEvents()
-	 */
-	public function setScriptEvents($scriptEvents) {
-		$this->scriptEvents = ($scriptEvents ? 1 : 0);
-		return $this;
-	}
+    /**
+     * @var string $scriptAction Script action
+     */
+    protected $scriptAction = null;
 
-	/**
-	 * @see \FML\Types\Renderable::render()
-	 */
-	public function render(\DOMDocument $domDocument) {
-		$xmlElement = parent::render($domDocument);
-		if ($this->data) {
-			$xmlElement->setAttribute('data', $this->data);
-		}
-		if ($this->play) {
-			$xmlElement->setAttribute('play', $this->play);
-		}
-		if (!$this->looping) {
-			$xmlElement->setAttribute('looping', $this->looping);
-		}
-		if ($this->music) {
-			$xmlElement->setAttribute('music', $this->music);
-		}
-		if ($this->volume != 1.) {
-			$xmlElement->setAttribute('volume', $this->volume);
-		}
-		if ($this->scriptEvents) {
-			$xmlElement->setAttribute('scriptevents', $this->scriptEvents);
-		}
-		return $xmlElement;
-	}
+    /**
+     * @var string[] $scriptActionParameters Script action parameters
+     */
+    protected $scriptActionParameters = null;
+
+    /**
+     * @see Playable::getData()
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
+     * @see Playable::setData()
+     */
+    public function setData($data)
+    {
+        $this->data = (string)$data;
+        return $this;
+    }
+
+    /**
+     * @see Playable::getDataId()
+     */
+    public function getDataId()
+    {
+        return $this->dataId;
+    }
+
+    /**
+     * @see Playable::setDataId()
+     */
+    public function setDataId($dataId)
+    {
+        $this->dataId = (string)$dataId;
+        return $this;
+    }
+
+    /**
+     * @see Playable::getPlay()
+     */
+    public function getPlay()
+    {
+        return $this->play;
+    }
+
+    /**
+     * @see Playable::setPlay()
+     */
+    public function setPlay($play)
+    {
+        $this->play = (bool)$play;
+        return $this;
+    }
+
+    /**
+     * @see Playable::getLooping()
+     */
+    public function getLooping()
+    {
+        return $this->looping;
+    }
+
+    /**
+     * @see Playable::setLooping()
+     */
+    public function setLooping($looping)
+    {
+        $this->looping = (bool)$looping;
+        return $this;
+    }
+
+    /**
+     * @see Playable::getMusic()
+     */
+    public function getMusic()
+    {
+        return $this->music;
+    }
+
+    /**
+     * @see Playable::setMusic()
+     */
+    public function setMusic($music)
+    {
+        $this->music = (bool)$music;
+        return $this;
+    }
+
+    /**
+     * @see Playable::getVolume()
+     */
+    public function getVolume()
+    {
+        return $this->volume;
+    }
+
+    /**
+     * @see Playable::setVolume()
+     */
+    public function setVolume($volume)
+    {
+        $this->volume = (float)$volume;
+        return $this;
+    }
+
+    /**
+     * @see Scriptable::getScriptEvents()
+     */
+    public function getScriptEvents()
+    {
+        return $this->scriptEvents;
+    }
+
+    /**
+     * @see Scriptable::setScriptEvents()
+     */
+    public function setScriptEvents($scriptEvents)
+    {
+        $this->scriptEvents = (bool)$scriptEvents;
+        return $this;
+    }
+
+    /**
+     * @see Scriptable::getScriptAction()
+     */
+    public function getScriptAction()
+    {
+        return $this->scriptAction;
+    }
+
+    /**
+     * @see Scriptable::setScriptAction()
+     */
+    public function setScriptAction($scriptAction, array $scriptActionParameters = null)
+    {
+        $this->scriptAction = (string)$scriptAction;
+        $this->setScriptActionParameters($scriptActionParameters);
+        return $this;
+    }
+
+    /**
+     * @see Scriptable::getScriptActionParameters()
+     */
+    public function getScriptActionParameters()
+    {
+        return $this->scriptActionParameters;
+    }
+
+    /**
+     * @see Scriptable::setScriptActionParameters()
+     */
+    public function setScriptActionParameters(array $scriptActionParameters = null)
+    {
+        $this->scriptActionParameters = $scriptActionParameters;
+        return $this;
+    }
+
+    /**
+     * @see Control::getTagName()
+     */
+    public function getTagName()
+    {
+        return "audio";
+    }
+
+    /**
+     * @see Control::getManiaScriptClass()
+     */
+    public function getManiaScriptClass()
+    {
+        return "CMlMediaPlayer";
+    }
+
+    /**
+     * @see Renderable::render()
+     */
+    public function render(\DOMDocument $domDocument)
+    {
+        $domElement = parent::render($domDocument);
+        if ($this->data) {
+            $domElement->setAttribute("data", $this->data);
+        }
+        if ($this->dataId) {
+            $domElement->setAttribute("dataid", $this->dataId);
+        }
+        if ($this->play) {
+            $domElement->setAttribute("play", 1);
+        }
+        if (!$this->looping) {
+            $domElement->setAttribute("looping", 0);
+        }
+        if ($this->music) {
+            $domElement->setAttribute("music", 1);
+        }
+        if ($this->volume != 1.) {
+            $domElement->setAttribute("volume", $this->volume);
+        }
+        if ($this->scriptEvents) {
+            $domElement->setAttribute("scriptevents", 1);
+        }
+        if ($this->scriptAction) {
+            $scriptAction = array($this->scriptAction);
+            if ($this->scriptActionParameters) {
+                $scriptAction = array_merge($scriptAction, $this->scriptActionParameters);
+            }
+            $domElement->setAttribute("scriptaction", implode("'", $scriptAction));
+        }
+        return $domElement;
+    }
+
 }

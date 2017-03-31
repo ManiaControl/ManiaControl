@@ -13,9 +13,11 @@ If you need methods which are not implemented, or additional Parameters, feel fr
 Sample ManiaControl Implementation (for ManiaControl to ManiaControl connections)
 
 ##php code begin
+	//This Sample shows just the Implementation of the Method GET_SERVER_CHAT
 	$communication = $this->maniaControl->getCommunicationManager()->createCommunication(IP/Domain, PORT, 'YOUR_PASSWORD');
 	$communication->call(function($data){
-		var_dump($data);
+		//$data includes the data sent by the Website / other Controller
+	   return new CommunicationAnswer($this->chatBuffer);
 	}, CommunicationMethods::GET_SERVER_CHAT);
 ##php code end
 

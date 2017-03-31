@@ -7,42 +7,67 @@ namespace FML\Controls;
  * (CMlFileEntry)
  *
  * @author    steeffeen <mail@steeffeen.com>
- * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @copyright FancyManiaLinks Copyright © 2017 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class FileEntry extends Entry {
-	/*
-	 * Protected properties
-	 */
-	protected $tagName = 'fileentry';
-	protected $folder = null;
+class FileEntry extends Entry
+{
 
-	/**
-	 * @see \FML\Controls\Control::getManiaScriptClass()
-	 */
-	public function getManiaScriptClass() {
-		return 'CMlFileEntry';
-	}
+    /**
+     * @var string $folder Folder
+     */
+    protected $folder = null;
 
-	/**
-	 * Set the base folder
-	 *
-	 * @param string $folder Base folder
-	 * @return static
-	 */
-	public function setFolder($folder) {
-		$this->folder = (string)$folder;
-		return $this;
-	}
+    /**
+     * Get the folder
+     *
+     * @api
+     * @return string
+     */
+    public function getFolder()
+    {
+        return $this->folder;
+    }
 
-	/**
-	 * @see \FML\Types\Renderable::render()
-	 */
-	public function render(\DOMDocument $domDocument) {
-		$xmlElement = parent::render($domDocument);
-		if ($this->folder) {
-			$xmlElement->setAttribute('folder', $this->folder);
-		}
-		return $xmlElement;
-	}
+    /**
+     * Set the folder
+     *
+     * @api
+     * @param string $folder Base folder
+     * @return static
+     */
+    public function setFolder($folder)
+    {
+        $this->folder = (string)$folder;
+        return $this;
+    }
+
+    /**
+     * @see Control::getTagName()
+     */
+    public function getTagName()
+    {
+        return "fileentry";
+    }
+
+    /**
+     * @see Control::getManiaScriptClass()
+     */
+    public function getManiaScriptClass()
+    {
+        return "CMlFileEntry";
+    }
+
+    /**
+     * @see Renderable::render()
+     */
+    public function render(\DOMDocument $domDocument)
+    {
+        $domElement = parent::render($domDocument);
+        if ($this->folder) {
+            $domElement->setAttribute("folder", $this->folder);
+        }
+        return $domElement;
+    }
+
 }

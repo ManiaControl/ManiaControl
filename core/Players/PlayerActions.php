@@ -12,6 +12,8 @@ use ManiaControl\Callbacks\EchoListener;
 use ManiaControl\Communication\CommunicationAnswer;
 use ManiaControl\Communication\CommunicationListener;
 use ManiaControl\Communication\CommunicationMethods;
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
@@ -30,7 +32,9 @@ use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class PlayerActions implements EchoListener, CommunicationListener {
+class PlayerActions implements EchoListener, CommunicationListener, UsageInformationAble {
+	use UsageInformationTrait;
+
 	/*
 	 * Constants
 	 */
@@ -472,18 +476,18 @@ class PlayerActions implements EchoListener, CommunicationListener {
 
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$frame     = new Frame();
-		$maniaLink->add($frame);
+		$maniaLink->addChild($frame);
 		$frame->setPosition(0, 10);
 
 		// Background
 		$backgroundQuad = new Quad();
-		$frame->add($backgroundQuad);
+		$frame->addChild($backgroundQuad);
 		$backgroundQuad->setSize($width, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 
 		// Close Quad (X)
 		$closeQuad = new Quad_Icons64x64_1();
-		$frame->add($closeQuad);
+		$frame->addChild($closeQuad);
 		$closeQuad->setPosition($width * 0.473, $height * 0.457, 3);
 		$closeQuad->setSize(6, 6);
 		$closeQuad->setSubStyle($closeQuad::SUBSTYLE_QuitRace);
@@ -491,7 +495,7 @@ class PlayerActions implements EchoListener, CommunicationListener {
 
 		// Headline
 		$label = new Label_Text();
-		$frame->add($label);
+		$frame->addChild($label);
 		$label->setY($height / 2 - 5);
 		$label->setStyle($label::STYLE_TextCardMedium);
 		$label->setTextSize(4);
@@ -502,7 +506,7 @@ class PlayerActions implements EchoListener, CommunicationListener {
 		foreach ($message as $line) {
 			// Message lines
 			$label = new Label_Text();
-			$frame->add($label);
+			$frame->addChild($label);
 			$label->setY($posY);
 			$label->setStyle($label::STYLE_TextCardMedium);
 			$label->setText($line);

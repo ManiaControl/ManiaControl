@@ -69,7 +69,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	}
 
 	/**
-	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getTitle()
+	 * @see \ManiaControl\Configurator\ConfiguratorMenu::getTitle()
 	 */
 	public static function getTitle() {
 		return 'Plugins';
@@ -87,7 +87,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	}
 
 	/**
-	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getMenu()
+	 * @see \ManiaControl\Configurator\ConfiguratorMenu::getMenu()
 	 */
 	public function getMenu($width, $height, Script $script, Player $player) {
 		$paging = new Paging();
@@ -103,23 +103,23 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 
 		// Pagers
 		$pagerPrev = new Quad_Icons64x64_1();
-		$frame->add($pagerPrev);
+		$frame->addChild($pagerPrev);
 		$pagerPrev->setPosition($width * 0.39, $height * -0.44, 2);
 		$pagerPrev->setSize($pagerSize, $pagerSize);
 		$pagerPrev->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowPrev);
 
 		$pagerNext = new Quad_Icons64x64_1();
-		$frame->add($pagerNext);
+		$frame->addChild($pagerNext);
 		$pagerNext->setPosition($width * 0.45, $height * -0.44, 2);
 		$pagerNext->setSize($pagerSize, $pagerSize);
 		$pagerNext->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_ArrowNext);
 
-		$paging->addButton($pagerNext);
-		$paging->addButton($pagerPrev);
+		$paging->addButtonControl($pagerNext);
+		$paging->addButtonControl($pagerPrev);
 
 		$pageCountLabel = new Label_Text();
-		$frame->add($pageCountLabel);
-		$pageCountLabel->setHAlign($pageCountLabel::RIGHT);
+		$frame->addChild($pageCountLabel);
+		$pageCountLabel->setHorizontalAlign($pageCountLabel::RIGHT);
 		$pageCountLabel->setPosition($width * 0.35, $height * -0.44, 1);
 		$pageCountLabel->setStyle($pageCountLabel::STYLE_TextTitle1);
 		$pageCountLabel->setTextSize(2);
@@ -148,19 +148,19 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			/** @var Plugin $pluginClass */
 			if ($index % $pageMaxCount === 0) {
 				$pageFrame = new Frame();
-				$frame->add($pageFrame);
-				$paging->addPage($pageFrame);
+				$frame->addChild($pageFrame);
+				$paging->addPageControl($pageFrame);
 				$posY = $height * 0.41;
 			}
 
 			$active = $this->maniaControl->getPluginManager()->isPluginActive($pluginClass);
 
 			$pluginFrame = new Frame();
-			$pageFrame->add($pluginFrame);
+			$pageFrame->addChild($pluginFrame);
 			$pluginFrame->setY($posY);
 
 			$activeQuad = new Quad_Icons64x64_1();
-			$pluginFrame->add($activeQuad);
+			$pluginFrame->addChild($activeQuad);
 			$activeQuad->setPosition($width * -0.45, -0.1, 1);
 			$activeQuad->setSize($entryHeight * 0.9, $entryHeight * 0.9);
 			if ($active) {
@@ -170,8 +170,8 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			}
 
 			$nameLabel = new Label_Text();
-			$pluginFrame->add($nameLabel);
-			$nameLabel->setHAlign($nameLabel::LEFT);
+			$pluginFrame->addChild($nameLabel);
+			$nameLabel->setHorizontalAlign($nameLabel::LEFT);
 			$nameLabel->setX($width * -0.4);
 			$nameLabel->setSize($width * 0.5, $entryHeight);
 			$nameLabel->setStyle($nameLabel::STYLE_TextCardSmall);
@@ -179,21 +179,20 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			$nameLabel->setText($pluginClass::getName());
 
 			$descriptionLabel = new Label();
-			$pageFrame->add($descriptionLabel);
+			$pageFrame->addChild($descriptionLabel);
 			$descriptionLabel->setAlign($descriptionLabel::LEFT, $descriptionLabel::TOP);
 			$descriptionLabel->setPosition($width * -0.45, $height * -0.22);
 			$descriptionLabel->setSize($width * 0.7, $entryHeight);
 			$descriptionLabel->setTextSize(2);
 			$descriptionLabel->setTranslate(true);
 			$descriptionLabel->setVisible(false);
-			$descriptionLabel->setAutoNewLine(true);
 			$descriptionLabel->setMaxLines(5);
+			$descriptionLabel->setLineSpacing(1);
 			$description = "Author: {$pluginClass::getAuthor()}\nVersion: {$pluginClass::getVersion()}\nDesc: {$pluginClass::getDescription()}";
-			$descriptionLabel->setText($description);
-			$nameLabel->addTooltipFeature($descriptionLabel);
+			$nameLabel->addTooltipLabelFeature($descriptionLabel,$description);
 
 			$quad = new Quad_Icons128x32_1();
-			$pluginFrame->add($quad);
+			$pluginFrame->addChild($quad);
 			$quad->setSubStyle($quad::SUBSTYLE_Settings);
 			$quad->setX(15);
 			$quad->setZ(1);
@@ -201,8 +200,8 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			$quad->setAction(self::ACTION_PREFIX_SETTINGS . $pluginClass);
 
 			$statusChangeButton = new Label_Button();
-			$pluginFrame->add($statusChangeButton);
-			$statusChangeButton->setHAlign($statusChangeButton::RIGHT);
+			$pluginFrame->addChild($statusChangeButton);
+			$statusChangeButton->setHorizontalAlign($statusChangeButton::RIGHT);
 			$statusChangeButton->setX($width * 0.45);
 			$statusChangeButton->setStyle($statusChangeButton::STYLE_CardButtonSmall);
 			if ($active) {
@@ -217,7 +216,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 
 			if ($pluginUpdates && array_key_exists($pluginClass::getId(), $pluginUpdates)) {
 				$quadUpdate = new Quad_Icons128x128_1();
-				$pluginFrame->add($quadUpdate);
+				$pluginFrame->addChild($quadUpdate);
 				$quadUpdate->setSubStyle($quadUpdate::SUBSTYLE_ProfileVehicle);
 				$quadUpdate->setX(56);
 				$quadUpdate->setZ(2);
@@ -230,8 +229,8 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 
 		if ($pluginUpdates) {
 			$updatePluginsButton = new Label_Button();
-			$frame->add($updatePluginsButton);
-			$updatePluginsButton->setHAlign($updatePluginsButton::RIGHT);
+			$frame->addChild($updatePluginsButton);
+			$updatePluginsButton->setHorizontalAlign($updatePluginsButton::RIGHT);
 			$updatePluginsButton->setPosition($width * 0.5, -29, 2);
 			$updatePluginsButton->setWidth(10);
 			$updatePluginsButton->setStyle($updatePluginsButton::STYLE_CardButtonSmallS);
@@ -265,8 +264,8 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 
 		//Headline Label
 		$headLabel = new Label_Text();
-		$frame->add($headLabel);
-		$headLabel->setHAlign($headLabel::LEFT);
+		$frame->addChild($headLabel);
+		$headLabel->setHorizontalAlign($headLabel::LEFT);
 		$headLabel->setPosition($width * -0.46, $height * 0.41);
 		$headLabel->setSize($width * 0.6, $settingHeight);
 		$headLabel->setStyle($headLabel::STYLE_TextCardSmall);
@@ -277,18 +276,18 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 		foreach ($settings as $setting) {
 			if ($index % $pageSettingsMaxCount === 0) {
 				$pageFrame = new Frame();
-				$frame->add($pageFrame);
-				$paging->addPage($pageFrame);
+				$frame->addChild($pageFrame);
+				$paging->addPageControl($pageFrame);
 				$posY = $height * 0.41 - $settingHeight * 1.5;
 			}
 
 			$settingFrame = new Frame();
-			$pageFrame->add($settingFrame);
+			$pageFrame->addChild($settingFrame);
 			$settingFrame->setY($posY);
 
 			$nameLabel = new Label_Text();
-			$settingFrame->add($nameLabel);
-			$nameLabel->setHAlign($nameLabel::LEFT);
+			$settingFrame->addChild($nameLabel);
+			$nameLabel->setHorizontalAlign($nameLabel::LEFT);
 			$nameLabel->setX($width * -0.46);
 			$nameLabel->setSize($width * 0.6, $settingHeight);
 			$nameLabel->setStyle($nameLabel::STYLE_TextCardSmall);
@@ -302,7 +301,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 				$quad->setPosition($width * 0.33, 0, -0.01);
 				$quad->setSize(4, 4);
 				$checkBox = new CheckBox(self::ACTION_PREFIX_SETTING . $setting->index, $setting->value, $quad);
-				$settingFrame->add($checkBox);
+				$settingFrame->addChild($checkBox);
 			} else if ($setting->type === Setting::TYPE_SET) {
 				// SET value picker
 				$label = new Label_Text();
@@ -311,11 +310,11 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 				$label->setStyle($label::STYLE_TextValueSmall);
 				$label->setTextSize(1);
 				$valuePicker = new ValuePicker(self::ACTION_PREFIX_SETTING . $setting->index, $setting->set, $setting->value, $label);
-				$settingFrame->add($valuePicker);
+				$settingFrame->addChild($valuePicker);
 			} else {
 				// Value entry
 				$entry = new Entry();
-				$settingFrame->add($entry);
+				$settingFrame->addChild($entry);
 				$entry->setX($width * 0.33);
 				$entry->setSize($width * 0.3, $settingHeight * 0.9);
 				$entry->setTextSize(1);
@@ -330,9 +329,9 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 		}
 
 		$backButton = new Label_Button();
-		$frame->add($backButton);
+		$frame->addChild($backButton);
 		$backButton->setStyle($backButton::STYLE_CardMain_Quit);
-		$backButton->setHAlign($backButton::LEFT);
+		$backButton->setHorizontalAlign($backButton::LEFT);
 		$backButton->setScale(0.75);
 		$backButton->setText('Back');
 		$backButton->setPosition(-$width / 2 + 7, -$height / 2 + 7);
@@ -392,7 +391,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	}
 
 	/**
-	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
+	 * @see \ManiaControl\Configurator\ConfiguratorMenu::saveConfigData()
 	 */
 	public function saveConfigData(array $configData, Player $player) {
 		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_CHANGE_PLUGIN_SETTINGS)

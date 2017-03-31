@@ -6,6 +6,7 @@ use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
+use ManiaControl\Files\AsyncHttpRequest;
 use ManiaControl\Files\BackupUtil;
 use ManiaControl\Files\FileUtil;
 use ManiaControl\Logger;
@@ -143,7 +144,9 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		$updateChannel = $this->getCurrentUpdateChannelSetting();
 		$url           = ManiaControl::URL_WEBSERVICE . 'versions?current=1&channel=' . $updateChannel;
 
-		$this->maniaControl->getFileReader()->loadFile($url, function ($dataJson, $error) use (&$function) {
+		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, $url);
+		$asyncHttpRequest->setContentType(AsyncHttpRequest::CONTENT_TYPE_JSON);
+		$asyncHttpRequest->setCallable(function ($dataJson, $error) use (&$function) {
 			if ($error) {
 				Logger::logError('Error on UpdateCheck: ' . $error);
 				return;
@@ -156,6 +159,8 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 				call_user_func($function, $updateData);
 			}
 		});
+
+		$asyncHttpRequest->getData();
 	}
 
 	/**
@@ -284,8 +289,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			// No update available
 			return;
 		}
-		if ($this->maniaControl->getPlayerManager()->getPlayerCount(false) > 0
-		) {
+		if ($this->maniaControl->getPlayerManager()->getPlayerCount(false) > 0) {
 			// Server not empty
 			return;
 		}
@@ -331,7 +335,9 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 		}
 
 		$updateData = $this->coreUpdateData;
-		$this->maniaControl->getFileReader()->loadFile($updateData->url, function ($updateFileContent, $error) use (
+
+		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, $updateData->url);
+		$asyncHttpRequest->setCallable(function ($updateFileContent, $error) use (
 			$updateData, &$player
 		) {
 			if (!$updateFileContent || $error) {
@@ -393,6 +399,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			$this->maniaControl->restart();
 		});
 
+		$asyncHttpRequest->getData();
 		return true;
 	}
 
@@ -419,8 +426,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			return;
 		}
 		// Announce available update
-		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_UPDATE)
-		) {
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_UPDATE)) {
 			return;
 		}
 
@@ -447,8 +453,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 * @param Player $player
 	 */
 	public function handle_CheckUpdate(array $chatCallback, Player $player) {
-		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_UPDATECHECK)
-		) {
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_UPDATECHECK)) {
 			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
@@ -492,8 +497,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	 * @param Player $player
 	 */
 	public function handle_CoreUpdate(array $chatCallback, Player $player) {
-		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_UPDATE)
-		) {
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_UPDATE)) {
 			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}

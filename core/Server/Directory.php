@@ -5,6 +5,8 @@ namespace ManiaControl\Server;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Files\FileUtil;
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
 
 /**
@@ -14,7 +16,9 @@ use ManiaControl\ManiaControl;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class Directory implements CallbackListener {
+class Directory implements CallbackListener, UsageInformationAble {
+	use UsageInformationTrait;
+
 	/*
 	 * Private properties
 	 */

@@ -6,6 +6,8 @@ use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Commands\CommandListener;
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
@@ -20,7 +22,9 @@ use Maniaplanet\DedicatedServer\Xmlrpc\NotInListException;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class MapQueue implements CallbackListener, CommandListener {
+class MapQueue implements CallbackListener, CommandListener, UsageInformationAble {
+	use UsageInformationTrait;
+	
 	/*
 	 * Constants
 	 */

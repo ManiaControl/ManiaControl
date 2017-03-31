@@ -7,6 +7,8 @@ use FML\Controls\Quad;
 use FML\ManiaLink;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\Callbacks;
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
@@ -18,7 +20,9 @@ use ManiaControl\Players\PlayerManager;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class IconManager implements CallbackListener {
+class IconManager implements CallbackListener, UsageInformationAble {
+	use UsageInformationTrait;
+	
 	/*
 	 * Constants
 	 */
@@ -113,14 +117,14 @@ class IconManager implements CallbackListener {
 	public function preloadIcons($player = null) {
 		$maniaLink = new ManiaLink(self::PRELOAD_MLID);
 		$frame     = new Frame();
-		$maniaLink->add($frame);
+		$maniaLink->addChild($frame);
 		$frame->setPosition(500, 500);
 
 		foreach ($this->icons as $iconUrl) {
 			$iconQuad = new Quad();
-			$iconQuad->setImage($iconUrl);
+			$iconQuad->setImageUrl($iconUrl);
 			$iconQuad->setSize(1, 1);
-			$frame->add($iconQuad);
+			$frame->addChild($iconQuad);
 		}
 
 		// Send manialink

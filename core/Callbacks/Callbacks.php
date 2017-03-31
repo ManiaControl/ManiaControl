@@ -2,6 +2,8 @@
 
 // TODO: method class for all the libxmlrpc get Methods, to fetch the callback asnyc
 // TODO implement all STOP callbacks
+
+// 22-3-2017 Added/Fixed TM Callback for WayPoint // Need to Add better checks eventually
 namespace ManiaControl\Callbacks;
 
 /**
@@ -26,12 +28,87 @@ interface Callbacks {
 	/*
 	 * Common Callbacks
 	 */
+	//NEW Callbacks
+
+	const XMLRPC_CALLBACKSLIST = 'XmlRpc.CallbacksList';
+
+	const MP_STARTSERVERSTART = 'Maniaplanet.StartServer_Start';
+	const MP_STARTSERVEREND   = 'Maniaplanet.StartServer_End';
+	const MP_STARTMATCHSTART  = 'Maniaplanet.StartMatch_Start';
+	const MP_STARTMATCHEND    = 'Maniaplanet.StartMatch_End';
+	//const MP_STARTMAPSTART      = 'Maniaplanet.StartMap_Start';
+	//const MP_STARTMAPEND        = 'Maniaplanet.StartMap_End';
+	const MP_STARTROUNDSTART = 'Maniaplanet.StartRound_Start';
+	const MP_STARTROUNDEND   = 'Maniaplanet.StartRound_End';
+	const MP_STARTTURNSTART  = 'Maniaplanet.StartTurn_Start';
+	const MP_STARTTURNEND    = 'Maniaplanet.StartTurn_End';
+	const MP_STARTPLAYLOOP   = 'Maniaplanet.StartPlayLoop';
+	const MP_ENDPLAYLOOP     = 'Maniaplanet.EndPlayLoop';
+	const MP_ENDTURNSTART    = 'Maniaplanet.EndTurn_Start';
+	const MP_ENDTURNEND      = 'Maniaplanet.EndTurn_End';
+	const MP_ENDROUNDSTART   = 'Maniaplanet.EndRound_Start';
+	const MP_ENDROUNDEND     = 'Maniaplanet.EndRound_End';
+	//const MP_ENDMAPSTART        = 'Maniaplanet.EndMap_Start';
+	//const MP_ENDMAPEND          = 'Maniaplanet.EndMap_End';
+	const MP_ENDMATCHSTART     = 'Maniaplanet.EndMatch_Start';
+	const MP_ENDMATCHEND       = 'Maniaplanet.EndMatch_End';
+	const MP_ENDSERVERSTART    = 'Maniaplanet.EndServer_Start';
+	const MP_ENDSERVEREND      = 'Maniaplanet.EndServer_End';
+	const MP_LOADINGMAPSTART   = 'Maniaplanet.LoadingMap_Start';
+	const MP_LOADINGMAPEND     = 'Maniaplanet.LoadingMap_End';
+	const MP_UNLOADINGMAPSTART = 'Maniaplanet.UnloadingMap_Start';
+	const MP_UNLOADINGMAPEND   = 'Maniaplanet.UnloadingMap_End';
+	const MP_PODIUMSTART       = 'Maniaplanet.Podium_Start';
+	const MP_PODIUMEND         = 'Maniaplanet.Podium_End';
+
+	const SM_SCORES = "Shootmania.Scores";
+
+	const SM_ONEVENTDEFAULT = "Shootmania.Event.Default";
+	const SM_ONSHOOT        = "Shootmania.Event.OnShoot";
+	const SM_ONHIT          = "Shootmania.Event.OnHit";
+	const SM_ONNEARMISS     = "Shootmania.Event.OnNearMiss";
+	const SM_ONARMOREMPTY   = "Shootmania.Event.OnArmorEmpty";
+	const SM_ONCAPTURE      = "Shootmania.Event.OnCapture";
+	const SM_ONSHOTDENY     = "Shootmania.Event.OnShotDeny";
+	const SM_ONFALLDAMAGE   = "Shootmania.Event.OnFallDamage";
+	const SM_ONCOMMAND      = "Shootmania.Event.OnCommand";
+	//Shootmania.Event.OnPlayerRemoved Shootmania.Event.OnPlayerAdded not needed yet
+	const SM_ONPLAYERREQUESTRESPAWN      = "Shootmania.Event.OnPlayerRequestRespawn";
+	const SM_ONACTIONCUSTOMEVENT         = "Shootmania.Event.OnActionCustomEvent";
+	const SM_ONACTIONEVENT               = "Shootmania.Event.OnActionEvent";
+	const SM_ONPLAYERTOUCHESOBJECT       = "Shootmania.Event.OnPlayerTouchesObject";
+	const SM_ONPLAYERTRIGGERSSECTOR      = "Shootmania.Event.OnPlayerTriggersSector";
+	const SM_ONPLAYERTHROWSOBJECT        = "Shootmania.Event.OnPlayerThrowsObject";
+	const SM_ONPLAYERREQUESTACTIONCHANGE = "Shootmania.Event.OnPlayerRequestActionChange";
+
+	// New TM Callbacks
+	
+	const TM_ONEVENTDEFAULT     = "Trackmania.Event.Default";
+	const TM_ONEVENTSTARTLINE   = "Trackmania.Event.StartLine";
+	const TM_ONCOMMAND          = "Trackmania.Event.OnCommand";
+	const TM_ONPLAYERADDED      = "Trackmania.Event.OnPlayerAdded";
+	const TM_ONPLAYERREMOVED    = "Trackmania.Event.OnPlayerRemoved";
+	const TM_ONWAYPOINT         = "Trackmania.Event.WayPoint";
+	const TM_ONGIVEUP           = "Trackmania.Event.GiveUp";
+	const TM_ONRESPAWN          = "Trackmania.Event.Respawn";
+	const TM_ONSTUNT            = "Trackmania.Event.Stunt";
+	const TM_ONSTARTCOUNTDOWN   = "Trackmania.Event.StartCountdown";
+	const TM_SCORES             = "Trackmania.Scores";
+	const TM_WARMUPSTART        = "Trackmania.WarmUp.Start";
+	const TM_WARMUPSTARTROUND   = "Trackmania.WarmUp.StartRound";
+	const TM_WARMUPENDROUND     = "Trackmania.WarmUp.EndRound";
+	const TM_WARMUPEND          = "Trackmania.WarmUp.End";
+	
+	//ManiaControl Callbacks
+	/** BeginMap Callback: Map */
+	const BEGINMAP = 'Callbacks.BeginMap';
+
+	//OLD Callbacks
 	/** BeginMatch Callback: MatchNumber */
 	const BEGINMATCH = 'Callbacks.BeginMatch';
 	/** LoadingMap Callback: MapNumber */
 	const LOADINGMAP = 'Callbacks.LoadingMap';
-	/** BeginMap Callback: Map */
-	const BEGINMAP = 'Callbacks.BeginMap';
+
 	/** BeginSubMatch Callback: SubmatchNumber */
 	const BEGINSUBMATCH = 'Callbacks.BeginSubmatch';
 	/** BeginRound Callback: RoundNumber */
@@ -124,14 +201,14 @@ interface Callbacks {
 	 * TrackMania Callbacks
 	 */
 	/** OnStartLine Callback */
-	const ONSTARTLINE = 'Callbacks.OnStartLine';
+	const ONSTARTLINE = 'Callbacks.StartLine';
 	/** OnWayPoint Callback */
-	const ONWAYPOINT = 'Callbacks.OnWayPoint';
+	const ONWAYPOINT = 'Callbacks.WayPoint';
 	/** OnGiveUp Callback */
-	const ONGIVEUP = 'Callbacks.OnGiveUp';
+	const ONGIVEUP = 'Callbacks.GiveUp';
 	/** OnRespawn Callback */
-	const ONRESPAWN = 'Callbacks.OnRespawn';
+	const ONRESPAWN = 'Callbacks.Respawn';
 	/** OnStunt Callback */
-	const ONSTUNT = 'Callbacks.OnStunt';
+	const ONSTUNT = 'Callbacks.Stunt';
 
 }

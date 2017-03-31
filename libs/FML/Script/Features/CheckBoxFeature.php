@@ -2,9 +2,9 @@
 
 namespace FML\Script\Features;
 
+use FML\Components\CheckBoxDesign;
 use FML\Controls\Entry;
 use FML\Controls\Quad;
-use FML\Models\CheckBoxDesign;
 use FML\Script\Builder;
 use FML\Script\Script;
 use FML\Script\ScriptInclude;
@@ -14,145 +14,213 @@ use FML\Script\ScriptLabel;
  * Script Feature for creating a CheckBox behavior
  *
  * @author    steeffeen
- * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @copyright FancyManiaLinks Copyright © 2017 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class CheckBoxFeature extends ScriptFeature {
-	/*
-	 * Constants
-	 */
-	const FUNCTION_UPDATE_QUAD_DESIGN = 'FML_UpdateQuadDesign';
-	const VAR_CHECKBOX_ENABLED        = 'FML_CheckBox_Enabled';
-	const VAR_CHECKBOX_DESIGNS        = 'FML_CheckBox_Designs';
-	const VAR_CHECKBOX_ENTRY_ID       = 'FML_CheckBox_EntryId';
+class CheckBoxFeature extends ScriptFeature
+{
 
-	/*
-	 * Protected properties
-	 */
-	/** @var Quad $quad */
-	protected $quad = null;
-	/** @var Entry $entry */
-	protected $entry = null;
-	protected $default = null;
-	/** @var CheckBoxDesign $enabledDesign */
-	protected $enabledDesign = null;
-	/** @var CheckBoxDesign $disabledDesign */
-	protected $disabledDesign = null;
+    /*
+     * Constants
+     */
+    const FUNCTION_UPDATE_QUAD_DESIGN = "FML_UpdateQuadDesign";
+    const VAR_CHECKBOX_ENABLED        = "FML_CheckBox_Enabled";
+    const VAR_CHECKBOX_DESIGNS        = "FML_CheckBox_Designs";
+    const VAR_CHECKBOX_ENTRY_ID       = "FML_CheckBox_EntryId";
 
-	/**
-	 * Construct a new CheckBox Feature
-	 *
-	 * @param Quad  $quad    (optional) CheckBox Quad
-	 * @param Entry $entry   (optional) Hidden Entry
-	 * @param bool  $default (optional) Default value
-	 */
-	public function __construct(Quad $quad = null, Entry $entry = null, $default = null) {
-		if ($quad !== null) {
-			$this->setQuad($quad);
-		}
-		if ($entry !== null) {
-			$this->setEntry($entry);
-		}
-		if ($default !== null) {
-			$this->setDefault($default);
-		}
-		$this->setEnabledDesign(CheckBoxDesign::defaultEnabledDesign());
-		$this->setDisabledDesign(CheckBoxDesign::defaultDisabledDesign());
-	}
+    /**
+     * @var Quad $quad CheckBox Quad
+     */
+    protected $quad = null;
 
-	/**
-	 * Set the CheckBox Quad
-	 *
-	 * @param Quad $quad CheckBox Quad
-	 * @return static
-	 */
-	public function setQuad(Quad $quad) {
-		$this->quad = $quad->checkId()->setScriptEvents(true);
-		return $this;
-	}
+    /**
+     * @var Entry $entry Hidden Entry for submitting the value
+     */
+    protected $entry = null;
 
-	/**
-	 * Get the CheckBox Quad
-	 *
-	 * @return \FML\Controls\Quad
-	 */
-	public function getQuad() {
-		return $this->quad;
-	}
+    /**
+     * @var bool $default Default value
+     */
+    protected $default = null;
 
-	/**
-	 * Set the CheckBox Entry
-	 *
-	 * @param Entry $entry CheckBox Entry
-	 * @return static
-	 */
-	public function setEntry(Entry $entry) {
-		$this->entry = $entry->checkId();
-		return $this;
-	}
+    /**
+     * @var CheckBoxDesign $enabledDesign Enabled Design
+     */
+    protected $enabledDesign = null;
 
-	/**
-	 * Get the managed Entry
-	 *
-	 * @return \FML\Controls\Entry
-	 */
-	public function getEntry() {
-		return $this->entry;
-	}
+    /**
+     * @var CheckBoxDesign $disabledDesign Disabled Design
+     */
+    protected $disabledDesign = null;
 
-	/**
-	 * Set the default value
-	 *
-	 * @param bool $default Default value
-	 * @return static
-	 */
-	public function setDefault($default) {
-		$this->default = (bool)$default;
-		return $this;
-	}
+    /**
+     * Construct a new CheckBox Feature
+     *
+     * @api
+     * @param Quad  $quad    (optional) CheckBox Quad
+     * @param Entry $entry   (optional) Hidden Entry
+     * @param bool  $default (optional) Default value
+     */
+    public function __construct(Quad $quad = null, Entry $entry = null, $default = null)
+    {
+        if ($quad) {
+            $this->setQuad($quad);
+        }
+        if ($entry) {
+            $this->setEntry($entry);
+        }
+        if ($default !== null) {
+            $this->setDefault($default);
+        }
+        $this->setEnabledDesign(CheckBoxDesign::defaultDesign());
+        $this->setDisabledDesign(CheckBoxDesign::defaultDesign());
+    }
 
-	/**
-	 * Set the enabled Design
-	 *
-	 * @param CheckBoxDesign $checkBoxDesign Enabled CheckBox Design
-	 * @return static
-	 */
-	public function setEnabledDesign(CheckBoxDesign $checkBoxDesign) {
-		$this->enabledDesign = $checkBoxDesign;
-		return $this;
-	}
+    /**
+     * Get the CheckBox Quad
+     *
+     * @api
+     * @return Quad
+     */
+    public function getQuad()
+    {
+        return $this->quad;
+    }
 
-	/**
-	 * Set the disabled Design
-	 *
-	 * @param CheckBoxDesign $checkBoxDesign Disabled CheckBox Design
-	 * @return static
-	 */
-	public function setDisabledDesign(CheckBoxDesign $checkBoxDesign) {
-		$this->disabledDesign = $checkBoxDesign;
-		return $this;
-	}
+    /**
+     * Set the CheckBox Quad
+     *
+     * @api
+     * @param Quad $quad CheckBox Quad
+     * @return static
+     */
+    public function setQuad(Quad $quad)
+    {
+        $quad->checkId();
+        $quad->setScriptEvents(true);
+        $this->quad = $quad;
+        return $this;
+    }
 
-	/**
-	 * @see \FML\Script\Features\ScriptFeature::prepare()
-	 */
-	public function prepare(Script $script) {
-		if ($this->getQuad()) {
-			$script->setScriptInclude(ScriptInclude::TEXTLIB);
-			$script->addScriptFunction(self::FUNCTION_UPDATE_QUAD_DESIGN, $this->buildUpdateQuadDesignFunction());
-			$script->appendGenericScriptLabel(ScriptLabel::ONINIT, $this->buildInitScriptText(), true);
-			$script->appendGenericScriptLabel(ScriptLabel::MOUSECLICK, $this->buildClickScriptText());
-		}
-		return $this;
-	}
+    /**
+     * Get the hidden Entry
+     *
+     * @api
+     * @return Entry
+     */
+    public function getEntry()
+    {
+        return $this->entry;
+    }
 
-	/**
-	 * Build the function text
-	 *
-	 * @return string
-	 */
-	protected function buildUpdateQuadDesignFunction() {
-		return "
+    /**
+     * Set the hidden Entry
+     *
+     * @api
+     * @param Entry $entry Hidden Entry
+     * @return static
+     */
+    public function setEntry(Entry $entry)
+    {
+        $entry->checkId();
+        $this->entry = $entry;
+        return $this;
+    }
+
+    /**
+     * Get the default value
+     *
+     * @api
+     * @return bool
+     */
+    public function getDefault()
+    {
+        return $this->default;
+    }
+
+    /**
+     * Set the default value
+     *
+     * @api
+     * @param bool $default Default value
+     * @return static
+     */
+    public function setDefault($default)
+    {
+        $this->default = (bool)$default;
+        return $this;
+    }
+
+    /**
+     * Get the enabled Design
+     *
+     * @api
+     * @return CheckBoxDesign
+     */
+    public function getEnabledDesign()
+    {
+        return $this->enabledDesign;
+    }
+
+    /**
+     * Set the enabled Design
+     *
+     * @api
+     * @param CheckBoxDesign $checkBoxDesign Enabled CheckBox Design
+     * @return static
+     */
+    public function setEnabledDesign(CheckBoxDesign $checkBoxDesign)
+    {
+        $this->enabledDesign = $checkBoxDesign;
+        return $this;
+    }
+
+    /**
+     * Get the disabled Design
+     *
+     * @api
+     * @return CheckBoxDesign
+     */
+    public function getDisabledDesign()
+    {
+        return $this->disabledDesign;
+    }
+
+    /**
+     * Set the disabled Design
+     *
+     * @api
+     * @param CheckBoxDesign $checkBoxDesign Disabled CheckBox Design
+     * @return static
+     */
+    public function setDisabledDesign(CheckBoxDesign $checkBoxDesign)
+    {
+        $this->disabledDesign = $checkBoxDesign;
+        return $this;
+    }
+
+    /**
+     * @see ScriptFeature::prepare()
+     */
+    public function prepare(Script $script)
+    {
+        if ($this->getQuad()) {
+            $script->setScriptInclude(ScriptInclude::TEXTLIB);
+            $script->addScriptFunction(self::FUNCTION_UPDATE_QUAD_DESIGN, $this->buildUpdateQuadDesignFunction());
+            $script->appendGenericScriptLabel(ScriptLabel::ONINIT, $this->buildInitScriptText(), true);
+            $script->appendGenericScriptLabel(ScriptLabel::MOUSECLICK, $this->buildClickScriptText());
+        }
+        return $this;
+    }
+
+    /**
+     * Build the function text
+     *
+     * @return string
+     */
+    protected function buildUpdateQuadDesignFunction()
+    {
+        return "
 Void " . self::FUNCTION_UPDATE_QUAD_DESIGN . "(CMlQuad _Quad) {
 	declare " . self::VAR_CHECKBOX_ENABLED . " as Enabled for _Quad = True;
 	Enabled = !Enabled;
@@ -160,62 +228,69 @@ Void " . self::FUNCTION_UPDATE_QUAD_DESIGN . "(CMlQuad _Quad) {
 	declare " . self::VAR_CHECKBOX_DESIGNS . " as Designs for _Quad = Text[Boolean];
 	declare Design = Designs[Enabled];
 	declare DesignParts = TextLib::Split(\"|\", Design);
-	if (DesignParts.count > 1) {
+	if (DesignParts.count == 2) {
 		_Quad.Style = DesignParts[0];
 		_Quad.Substyle = DesignParts[1];
 	} else {
 		_Quad.ImageUrl = Design;
 	}
-	declare " . self::VAR_CHECKBOX_ENTRY_ID . " as EntryId for _Quad = " . Builder::EMPTY_STRING . ";
-	if (EntryId != " . Builder::EMPTY_STRING . ") {
-		declare Value = \"0\";
-		if (Enabled) {
-			Value = \"1\";
-		}
+	declare " . self::VAR_CHECKBOX_ENTRY_ID . " as EntryId for _Quad = \"\";
+	if (EntryId != \"\") {
 		declare Entry <=> (Page.GetFirstChild(EntryId) as CMlEntry);
-		Entry.Value = Value;
+		if (Entry != Null) {
+		    if (Enabled) {
+		        Entry.Value = \"1\";
+    		} else {
+		        Entry.Value = \"0\";
+    		}
+		}
 	}
 }";
-	}
+    }
 
-	/**
-	 * Build the init script text
-	 *
-	 * @return string
-	 */
-	protected function buildInitScriptText() {
-		$quadId  = $this->getQuad()->getId(true, true);
-		$entryId = '""';
-		if ($this->entry) {
-			$entryId = $this->entry->getId(true, true);
-		}
-		$default              = Builder::getBoolean($this->default);
-		$enabledDesignString  = $this->enabledDesign->getDesignString();
-		$disabledDesignString = $this->disabledDesign->getDesignString();
-		return "
-declare Quad_CheckBox <=> (Page.GetFirstChild({$quadId}) as CMlQuad);
+    /**
+     * Build the init script text
+     *
+     * @return string
+     */
+    protected function buildInitScriptText()
+    {
+        $quadId  = Builder::getId($this->getQuad());
+        $entryId = Builder::EMPTY_STRING;
+        if ($this->entry) {
+            $entryId = Builder::getId($this->getEntry());
+        }
+
+        $default              = Builder::getBoolean($this->default);
+        $enabledDesignString  = $this->enabledDesign->getDesignString();
+        $disabledDesignString = $this->disabledDesign->getDesignString();
+
+        return "
+declare Quad_CheckBox <=> (Page.GetFirstChild(\"{$quadId}\") as CMlQuad);
 declare Text[Boolean] " . self::VAR_CHECKBOX_DESIGNS . " as Designs for Quad_CheckBox;
-Designs[True] = {$enabledDesignString};
-Designs[False] = {$disabledDesignString};
+Designs[True] = \"{$enabledDesignString}\";
+Designs[False] = \"{$disabledDesignString}\";
 declare Boolean " . self::VAR_CHECKBOX_ENABLED . " as Enabled for Quad_CheckBox;
 Enabled = !{$default};
 declare Text " . self::VAR_CHECKBOX_ENTRY_ID . " as EntryId for Quad_CheckBox;
-EntryId = {$entryId};
+EntryId = \"{$entryId}\";
 " . self::FUNCTION_UPDATE_QUAD_DESIGN . "(Quad_CheckBox);
 ";
-	}
+    }
 
-	/**
-	 * Build the script text for Quad clicks
-	 *
-	 * @return string
-	 */
-	protected function buildClickScriptText() {
-		$quadId = $this->getQuad()->getId(true, true);
-		return "
-if (Event.ControlId == {$quadId}) {
+    /**
+     * Build the script text for Quad clicks
+     *
+     * @return string
+     */
+    protected function buildClickScriptText()
+    {
+        $quadId = Builder::getId($this->getQuad());
+        return "
+if (Event.ControlId == \"{$quadId}\") {
 	declare Quad_CheckBox <=> (Event.Control as CMlQuad);
 	" . self::FUNCTION_UPDATE_QUAD_DESIGN . "(Quad_CheckBox);
 }";
-	}
+    }
+
 }

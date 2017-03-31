@@ -47,14 +47,14 @@ class VoteRatiosMenu implements CallbackListener, ConfiguratorMenu, TimerListene
 	}
 
 	/**
-	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getTitle()
+	 * @see \ManiaControl\Configurator\ConfiguratorMenu::getTitle()
 	 */
 	public static function getTitle() {
 		return 'Vote Ratios';
 	}
 
 	/**
-	 * @see \ManiaControl\Configurators\ConfiguratorMenu::getMenu()
+	 * @see \ManiaControl\Configurator\ConfiguratorMenu::getMenu()
 	 */
 	public function getMenu($width, $height, Script $script, Player $player) {
 		$frame      = new Frame();
@@ -66,15 +66,15 @@ class VoteRatiosMenu implements CallbackListener, ConfiguratorMenu, TimerListene
 		$voteRatios        = $this->maniaControl->getClient()->getCallVoteRatios();
 		foreach ($voteRatioCommands as $voteRatioCommand => $voteRatioDescription) {
 			$voteRatioFrame = new Frame();
-			$frame->add($voteRatioFrame);
+			$frame->addChild($voteRatioFrame);
 			$voteRatioFrame->setY($posY);
 
 			$nameLabel = new Label_Text();
-			$voteRatioFrame->add($nameLabel);
-			$nameLabel->setHAlign($nameLabel::LEFT)->setX($width * -0.46)->setSize($width * 0.7, $lineHeight)->setTextSize(2)->setTranslate(true)->setText($voteRatioDescription);
+			$voteRatioFrame->addChild($nameLabel);
+			$nameLabel->setHorizontalAlign($nameLabel::LEFT)->setX($width * -0.46)->setSize($width * 0.7, $lineHeight)->setTextSize(2)->setTranslate(true)->setText($voteRatioDescription);
 
 			$entry = new Entry();
-			$voteRatioFrame->add($entry);
+			$voteRatioFrame->addChild($entry);
 			$entry->setX($width * 0.35)->setSize($width * 0.14, $lineHeight * 0.9)->setStyle(Label_Text::STYLE_TextValueSmall)->setTextSize($index === 0 ? 2 : 1)->setName(self::ACTION_PREFIX_VOTE_RATIO . $voteRatioCommand);
 
 			$voteRatio = $this->getVoteRatioForCommand($voteRatios, $voteRatioCommand);
@@ -118,7 +118,7 @@ class VoteRatiosMenu implements CallbackListener, ConfiguratorMenu, TimerListene
 	}
 
 	/**
-	 * @see \ManiaControl\Configurators\ConfiguratorMenu::saveConfigData()
+	 * @see \ManiaControl\Configurator\ConfiguratorMenu::saveConfigData()
 	 */
 	public function saveConfigData(array $configData, Player $player) {
 		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_CHANGE_VOTE_RATIOS)

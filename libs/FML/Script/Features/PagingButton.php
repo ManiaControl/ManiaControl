@@ -9,73 +9,89 @@ use FML\Types\Scriptable;
  * Paging Button for browsing through Pages
  *
  * @author    steeffeen <mail@steeffeen.com>
- * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @copyright FancyManiaLinks Copyright © 2017 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class PagingButton {
-	/*
-	 * Protected properties
-	 */
-	/** @var Control $control */
-	protected $control = null;
-	protected $browseAction = null;
+class PagingButton
+{
 
-	/**
-	 * Construct a new Paging Button
-	 *
-	 * @param Control $control      (optional) Browse Control
-	 * @param int     $browseAction (optional) Number of browsed Pages per Click
-	 */
-	public function __construct(Control $control = null, $browseAction = null) {
-		if ($control !== null) {
-			$this->setControl($control);
-		}
-		if ($browseAction !== null) {
-			$this->setBrowseAction($browseAction);
-		}
-	}
+    /**
+     * @var Control $control Paging Control
+     */
+    protected $control = null;
 
-	/**
-	 * Set the Button Control
-	 *
-	 * @param Control $control Browse Control
-	 * @return static
-	 */
-	public function setControl(Control $control) {
-		$control->checkId();
-		if ($control instanceof Scriptable) {
-			$control->setScriptEvents(true);
-		}
-		$this->control = $control;
-		return $this;
-	}
+    /**
+     * @var int Paging count
+     */
+    protected $pagingCount = 1;
 
-	/**
-	 * Get the Button Control
-	 *
-	 * @return \FML\Controls\Control
-	 */
-	public function getControl() {
-		return $this->control;
-	}
+    /**
+     * Construct a new Paging Button
+     *
+     * @api
+     * @param Control $control     (optional) Paging Control
+     * @param int     $pagingCount (optional) Number of browsed pages per click
+     */
+    public function __construct(Control $control = null, $pagingCount = 1)
+    {
+        if ($control) {
+            $this->setControl($control);
+        }
+        if ($pagingCount) {
+            $this->setPagingCount($pagingCount);
+        }
+    }
 
-	/**
-	 * Set the browse action
-	 *
-	 * @param int $browseAction Number of browsed Pages per click
-	 * @return static
-	 */
-	public function setBrowseAction($browseAction) {
-		$this->browseAction = (int)$browseAction;
-		return $this;
-	}
+    /**
+     * Get the paging Control
+     *
+     * @api
+     * @return Control
+     */
+    public function getControl()
+    {
+        return $this->control;
+    }
 
-	/**
-	 * Get the browse action
-	 *
-	 * @return int
-	 */
-	public function getBrowseAction() {
-		return $this->browseAction;
-	}
+    /**
+     * Set the paging Control
+     *
+     * @api
+     * @param Control $control Paging Control
+     * @return static
+     */
+    public function setControl(Control $control)
+    {
+        $control->checkId();
+        if ($control instanceof Scriptable) {
+            $control->setScriptEvents(true);
+        }
+        $this->control = $control;
+        return $this;
+    }
+
+    /**
+     * Get the paging count
+     *
+     * @api
+     * @return int
+     */
+    public function getPagingCount()
+    {
+        return $this->pagingCount;
+    }
+
+    /**
+     * Set the paging count
+     *
+     * @api
+     * @param int $pagingCount Number of browsed pages per click
+     * @return static
+     */
+    public function setPagingCount($pagingCount)
+    {
+        $this->pagingCount = (int)$pagingCount;
+        return $this;
+    }
+
 }

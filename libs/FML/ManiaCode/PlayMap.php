@@ -6,74 +6,114 @@ namespace FML\ManiaCode;
  * ManiaCode Element for playing a map
  *
  * @author    steeffeen <mail@steeffeen.com>
- * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @copyright FancyManiaLinks Copyright © 2017 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class PlayMap extends Element {
-	/*
-	 * Protected properties
-	 */
-	protected $tagName = 'play_map';
-	protected $name = null;
-	protected $url = null;
+class PlayMap implements Element
+{
 
-	/**
-	 * Create a new PlayMap object
-	 *
-	 * @param string $name (optional) Map name
-	 * @param string $url  (optional) Map url
-	 * @return static
-	 */
-	public static function create($name = null, $url = null) {
-		return new static($name, $url);
-	}
+    /*+
+     * @var string $name Map name
+     */
+    protected $name = null;
 
-	/**
-	 * Construct a new PlayMap object
-	 *
-	 * @param string $name (optional) Map name
-	 * @param string $url  (optional) Map url
-	 */
-	public function __construct($name = null, $url = null) {
-		if ($name !== null) {
-			$this->setName($name);
-		}
-		if ($url !== null) {
-			$this->setUrl($url);
-		}
-	}
+    /**
+     * @var string $url Map url
+     */
+    protected $url = null;
 
-	/**
-	 * Set the name of the map
-	 *
-	 * @param string $name Map name
-	 * @return static
-	 */
-	public function setName($name) {
-		$this->name = (string)$name;
-		return $this;
-	}
+    /**
+     * Create a new PlayMap Element
+     *
+     * @api
+     * @param string $name (optional) Map name
+     * @param string $url  (optional) Map url
+     * @return static
+     */
+    public static function create($name = null, $url = null)
+    {
+        return new static($name, $url);
+    }
 
-	/**
-	 * Set the url of the map
-	 *
-	 * @param string $url Map url
-	 * @return static
-	 */
-	public function setUrl($url) {
-		$this->url = (string)$url;
-		return $this;
-	}
+    /**
+     * Construct a new PlayMap Element
+     *
+     * @api
+     * @param string $name (optional) Map name
+     * @param string $url  (optional) Map url
+     */
+    public function __construct($name = null, $url = null)
+    {
+        if ($name) {
+            $this->setName($name);
+        }
+        if ($url) {
+            $this->setUrl($url);
+        }
+    }
 
-	/**
-	 * @see \FML\ManiaCode\Element::render()
-	 */
-	public function render(\DOMDocument $domDocument) {
-		$xmlElement  = parent::render($domDocument);
-		$nameElement = $domDocument->createElement('name', $this->name);
-		$xmlElement->appendChild($nameElement);
-		$urlElement = $domDocument->createElement('url', $this->url);
-		$xmlElement->appendChild($urlElement);
-		return $xmlElement;
-	}
+    /**
+     * Get the map name
+     *
+     * @api
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set the map name
+     *
+     * @api
+     * @param string $name Map name
+     * @return static
+     */
+    public function setName($name)
+    {
+        $this->name = (string)$name;
+        return $this;
+    }
+
+    /**
+     * Get the map url
+     *
+     * @api
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * Set the map url
+     *
+     * @api
+     * @param string $url Map url
+     * @return static
+     */
+    public function setUrl($url)
+    {
+        $this->url = (string)$url;
+        return $this;
+    }
+
+    /**
+     * @see Element::render()
+     */
+    public function render(\DOMDocument $domDocument)
+    {
+        $domElement = $domDocument->createElement("play_map");
+
+        $nameElement = $domDocument->createElement("name", $this->name);
+        $domElement->appendChild($nameElement);
+
+        $urlElement = $domDocument->createElement("url", $this->url);
+        $domElement->appendChild($urlElement);
+
+        return $domElement;
+    }
+
 }

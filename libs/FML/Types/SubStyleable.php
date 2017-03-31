@@ -6,25 +6,37 @@ namespace FML\Types;
  * Interface for Elements with substyle attribute
  *
  * @author    steeffeen <mail@steeffeen.com>
- * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @copyright FancyManiaLinks Copyright © 2017 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-interface SubStyleable {
+interface SubStyleable
+{
 
-	/**
-	 * Set sub style
-	 *
-	 * @param string $subStyle SubStyle name
-	 * @return static
-	 */
-	public function setSubStyle($subStyle);
+    /**
+     * Get the sub style
+     *
+     * @api
+     * @return string
+     */
+    public function getSubStyle();
 
-	/**
-	 * Set style and sub style
-	 *
-	 * @param string $style    Style name
-	 * @param string $subStyle SubStyle name
-	 * @return static
-	 */
-	public function setStyles($style, $subStyle);
+    /**
+     * Set the sub style
+     *
+     * @api
+     * @param string $subStyle SubStyle name
+     * @return static
+     */
+    public function setSubStyle($subStyle);
+
+    /**
+     * Set the style and the sub style
+     *
+     * @api
+     * @param string $style    Style name
+     * @param string $subStyle SubStyle name
+     * @return static
+     */
+    public function setStyles($style, $subStyle);
+
 }

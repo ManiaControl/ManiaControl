@@ -3,6 +3,8 @@
 namespace ManiaControl\Players;
 
 
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
 use ManiaControl\Utils\ClassUtil;
 
@@ -13,7 +15,9 @@ use ManiaControl\Utils\ClassUtil;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class PlayerDataManager {
+class PlayerDataManager implements UsageInformationAble {
+	use UsageInformationTrait;
+	
 	/*
 	 * Constants
 	 */
@@ -31,8 +35,8 @@ class PlayerDataManager {
 	 */
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
-	private $metaData = array();
-	private $storedData = array();
+	private $metaData     = array();
+	private $storedData   = array();
 
 	/**
 	 * Construct a new player manager instance
@@ -318,7 +322,7 @@ class PlayerDataManager {
 	private function getMetaDataId($className, $statName) {
 		if (isset($this->metaData[$className . $statName])) {
 			$stat = $this->metaData[$className . $statName];
-			return (int)$stat->dataId;
+			return (int) $stat->dataId;
 		}
 		return null;
 	}
@@ -332,16 +336,16 @@ class PlayerDataManager {
 	 */
 	private function castSetting($type, $value) {
 		if ($type === self::TYPE_INT) {
-			return (int)$value;
+			return (int) $value;
 		}
 		if ($type === self::TYPE_REAL) {
-			return (float)$value;
+			return (float) $value;
 		}
 		if ($type === self::TYPE_BOOL) {
-			return (bool)$value;
+			return (bool) $value;
 		}
 		if ($type === self::TYPE_STRING) {
-			return (string)$value;
+			return (string) $value;
 		}
 		if ($type === self::TYPE_ARRAY) {
 			return explode(self::ARRAY_DELIMITER, $value);

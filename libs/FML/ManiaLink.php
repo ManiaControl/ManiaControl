@@ -12,317 +12,522 @@ use FML\Types\ScriptFeatureable;
  * Class representing a ManiaLink
  *
  * @author    steeffeen <mail@steeffeen.com>
- * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @copyright FancyManiaLinks Copyright © 2017 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class ManiaLink {
-	/*
-	 * Constants
-	 */
-	const BACKGROUND_0        = '0';
-	const BACKGROUND_1        = '1';
-	const BACKGROUND_STARS    = 'stars';
-	const BACKGROUND_STATIONS = 'stations';
-	const BACKGROUND_TITLE    = 'title';
+class ManiaLink
+{
 
-	/*
-	 * Protected properties
-	 */
-	protected $encoding = 'utf-8';
-	protected $tagName = 'manialink';
-	protected $maniaLinkId = null;
-	protected $version = 1;
-	protected $background = null;
-	protected $navigable3d = 1;
-	protected $name = null;
-	protected $timeout = 0;
-	/** @var Renderable[] $children */
-	protected $children = array();
-	/** @var Dico $dico */
-	protected $dico = null;
-	/** @var Stylesheet $stylesheet */
-	protected $stylesheet = null;
-	/** @var Script $script */
-	protected $script = null;
+    /*
+     * Constants
+     */
+    const MANIALINK_VERSION   = 3;
+    const BACKGROUND_0        = "0";
+    const BACKGROUND_1        = "1";
+    const BACKGROUND_STARS    = "stars";
+    const BACKGROUND_STATIONS = "stations";
+    const BACKGROUND_TITLE    = "title";
 
-	/**
-	 * Create a new ManiaLink object
-	 *
-	 * @param string $maniaLinkId   (optional) ManiaLink id
-	 * @param string $maniaLinkName (optional) ManiaLink Name
-	 * @return static
-	 */
-	public static function create($maniaLinkId = null, $maniaLinkName = null) {
-		return new static($maniaLinkId, $maniaLinkName);
-	}
+    /**
+     * @var string $maniaLinkId ManiaLink ID
+     */
+    protected $maniaLinkId = null;
 
-	/**
-	 * Construct a new ManiaLink object
-	 *
-	 * @param string $maniaLinkId   (optional) ManiaLink id
-	 * @param string $maniaLinkName (optional) ManiaLink Name
-	 */
-	public function __construct($maniaLinkId = null, $maniaLinkName = null) {
-		if ($maniaLinkId !== null) {
-			$this->setId($maniaLinkId);
-		}
-		if ($maniaLinkName !== false) {
-			if ($maniaLinkName) {
-				$this->setName($maniaLinkName);
-			} else {
-				$this->setName($maniaLinkId);
-			}
-		}
-	}
+    /**
+     * @var int $version ManiaLink version
+     */
+    protected $version = 1;
 
-	/**
-	 * Set XML encoding
-	 *
-	 * @param string $encoding XML encoding
-	 * @return static
-	 */
-	public function setXmlEncoding($encoding) {
-		$this->encoding = (string)$encoding;
-		return $this;
-	}
+    /**
+     * @var string $name ManiaLink name
+     */
+    protected $name = null;
 
-	/**
-	 * Set ManiaLink id
-	 *
-	 * @param string $maniaLinkId ManiaLink id
-	 * @return static
-	 */
-	public function setId($maniaLinkId) {
-		$this->maniaLinkId = (string)$maniaLinkId;
-		return $this;
-	}
+    /**
+     * @var string $background Background
+     */
+    protected $background = null;
 
-	/**
-	 * Get ManiaLink id
-	 *
-	 * @return string
-	 */
-	public function getId() {
-		return $this->maniaLinkId;
-	}
+    /**
+     * @var bool $navigable3d 3d navigable
+     */
+    protected $navigable3d = true;
 
-	/**
-	 * Set background
-	 *
-	 * @param string $background Background value
-	 * @return static
-	 */
-	public function setBackground($background) {
-		$this->background = (string)$background;
-		return $this;
-	}
+    /**
+     * @var int $timeout Timeout
+     */
+    protected $timeout = null;
 
-	/**
-	 * Set navigable3d
-	 *
-	 * @param bool $navigable3d Whether the manialink should be 3d navigable
-	 * @return static
-	 */
-	public function setNavigable3d($navigable3d) {
-		$this->navigable3d = ($navigable3d ? 1 : 0);
-		return $this;
-	}
+    /**
+     * @var Renderable[] $children Children
+     */
+    protected $children = array();
 
-	/**
-	 * Set the ManiaLink Name
-	 *
-	 * @param string $name
-	 * @return static
-	 */
-	public function setName($name) {
-		$this->name = (string)$name;
-		return $this;
-	}
+    /**
+     * @var Dico $dico Dictionary
+     */
+    protected $dico = null;
 
-	/**
-	 * Set timeout
-	 *
-	 * @param int $timeout Timeout duration
-	 * @return static
-	 */
-	public function setTimeout($timeout) {
-		$this->timeout = (int)$timeout;
-		return $this;
-	}
+    /**
+     * @var Stylesheet $stylesheet Style sheet
+     */
+    protected $stylesheet = null;
 
-	/**
-	 * Add an element to the ManiaLink
-	 *
-	 * @param Renderable $child Child element to add
-	 * @return static
-	 */
-	public function add(Renderable $child) {
-		if (!in_array($child, $this->children, true)) {
-			array_push($this->children, $child);
-		}
-		return $this;
-	}
+    /**
+     * @var Script $script Script
+     */
+    protected $script = null;
 
-	/**
-	 * Remove all elements from the ManiaLink
-	 *
-	 * @return static
-	 */
-	public function removeChildren() {
-		$this->children = array();
-		return $this;
-	}
+    /**
+     * Create a new ManiaLink
+     *
+     * @api
+     * @param string       $maniaLinkId (optional) ManiaLink ID
+     * @param int          $version     (optional) Version
+     * @param string       $name        (optional) Name
+     * @param Renderable[] $children    (optional) Children
+     * @return static
+     */
+    public static function create($maniaLinkId = null, $version = null, $name = null, array $children = null)
+    {
+        return new static($maniaLinkId, $version, $name, $children);
+    }
 
-	/**
-	 * Set the Dictionary of the ManiaLink
-	 *
-	 * @param Dico $dico Dictionary for the ManiaLink
-	 * @return static
-	 */
-	public function setDico(Dico $dico) {
-		$this->dico = $dico;
-		return $this;
-	}
+    /**
+     * Construct a new ManiaLink
+     *
+     * @api
+     * @param string       $maniaLinkId (optional) ManiaLink ID
+     * @param int          $version     (optional) Version
+     * @param string       $name        (optional) Name
+     * @param Renderable[] $children    (optional) Children
+     */
+    public function __construct($maniaLinkId = null, $version = null, $name = null, array $children = null)
+    {
+        if (is_string($version)) {
+            // backwards-compatibility (version has been introduced later)
+            $children = $name;
+            $name     = $version;
+            $version  = null;
+        }
+        if ($maniaLinkId) {
+            $this->setId($maniaLinkId);
+        }
+        $this->setVersion(self::MANIALINK_VERSION);
+        if ($version) {
+            $this->setVersion($version);
+        }
+        if ($name) {
+            $this->setName($name);
+        }
+        if ($children) {
+            $this->setChildren($children);
+        }
+        $this->createScript();
+    }
 
-	/**
-	 * Get the Dictionary of the ManiaLink
-	 *
-	 * @param bool $createIfEmpty (optional) Whether the Dico object should be created if it's not set
-	 * @return \FML\Elements\Dico
-	 */
-	public function getDico($createIfEmpty = true) {
-		if (!$this->dico && $createIfEmpty) {
-			$this->setDico(new Dico());
-		}
-		return $this->dico;
-	}
+    /**
+     * Get the ID
+     *
+     * @api
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->maniaLinkId;
+    }
 
-	/**
-	 * Set the Stylesheet of the ManiaLink
-	 *
-	 * @param Stylesheet $stylesheet Stylesheet for the ManiaLink
-	 * @return static
-	 */
-	public function setStylesheet(Stylesheet $stylesheet) {
-		$this->stylesheet = $stylesheet;
-		return $this;
-	}
+    /**
+     * Set the ID
+     *
+     * @api
+     * @param string $maniaLinkId ManiaLink ID
+     * @return static
+     */
+    public function setId($maniaLinkId)
+    {
+        $this->maniaLinkId = (string)$maniaLinkId;
+        if ($this->maniaLinkId && !$this->name) {
+            $this->setName($this->maniaLinkId);
+        }
+        return $this;
+    }
 
-	/**
-	 * Get the Stylesheet of the ManiaLink
-	 *
-	 * @param bool $createIfEmpty (optional) Whether the Stylesheet object should be created if it's not set
-	 * @return \FML\Stylesheet\Stylesheet
-	 */
-	public function getStylesheet($createIfEmpty = true) {
-		if (!$this->stylesheet && $createIfEmpty) {
-			$this->setStylesheet(new Stylesheet());
-		}
-		return $this->stylesheet;
-	}
+    /**
+     * Get the version
+     *
+     * @api
+     * @return int
+     */
+    public function getVersion()
+    {
+        return $this->version;
+    }
 
-	/**
-	 * Set the Script of the ManiaLink
-	 *
-	 * @param Script $script Script for the ManiaLink
-	 * @return static
-	 */
-	public function setScript(Script $script) {
-		$this->script = $script;
-		return $this;
-	}
+    /**
+     * Set the version
+     *
+     * @api
+     * @param int $version ManiaLink version
+     * @return static
+     */
+    public function setVersion($version)
+    {
+        $this->version = (int)$version;
+        return $this;
+    }
 
-	/**
-	 * Get the current Script of the ManiaLink
-	 *
-	 * @param bool $createIfEmpty (optional) Whether the Script object should be created if it's not set
-	 * @return \FML\Script\Script
-	 */
-	public function getScript($createIfEmpty = true) {
-		if (!$this->script && $createIfEmpty) {
-			$this->setScript(new Script());
-		}
-		return $this->script;
-	}
+    /**
+     * Get the name
+     *
+     * @api
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 
-	/**
-	 * Render the XML document
-	 *
-	 * @param bool         $echo        (optional) If the XML text should be echoed and the Content-Type header should be set
-	 * @param \DOMDocument $domDocument (optional) DOMDocument for which the XML element should be created
-	 * @return \DOMDocument
-	 */
-	public function render($echo = false, $domDocument = null) {
-		$isChild = (bool)$domDocument;
-		if (!$isChild) {
-			$domDocument                = new \DOMDocument('1.0', $this->encoding);
-			$domDocument->xmlStandalone = true;
-		}
-		$maniaLink = $domDocument->createElement($this->tagName);
-		if (!$isChild) {
-			$domDocument->appendChild($maniaLink);
-		}
-		if (strlen($this->maniaLinkId) > 0) {
-			$maniaLink->setAttribute('id', $this->maniaLinkId);
-		}
-		if ($this->version) {
-			$maniaLink->setAttribute('version', $this->version);
-		}
-		if (strlen($this->background) > 0) {
-			$maniaLink->setAttribute('background', $this->background);
-		}
-		if (!$this->navigable3d) {
-			$maniaLink->setAttribute('navigable3d', $this->navigable3d);
-		}
-		if ($this->name) {
-			$maniaLink->setAttribute('name', $this->name);
-		}
-		if ($this->timeout) {
-			$timeoutXml = $domDocument->createElement('timeout', $this->timeout);
-			$maniaLink->appendChild($timeoutXml);
-		}
-		if ($this->dico) {
-			$dicoXml = $this->dico->render($domDocument);
-			$maniaLink->appendChild($dicoXml);
-		}
-		$scriptFeatures = array();
-		foreach ($this->children as $child) {
-			$childXml = $child->render($domDocument, $this->getScript());
-			$maniaLink->appendChild($childXml);
-			if ($child instanceof ScriptFeatureable) {
-				$scriptFeatures = array_merge($scriptFeatures, $child->getScriptFeatures());
-			}
-		}
-		if ($scriptFeatures) {
-			$this->getScript()->loadFeatures($scriptFeatures);
-		}
-		if ($this->stylesheet) {
-			$stylesheetXml = $this->stylesheet->render($domDocument);
-			$maniaLink->appendChild($stylesheetXml);
-		}
-		if ($this->script) {
-			if ($this->script->needsRendering()) {
-				$scriptXml = $this->script->render($domDocument);
-				$maniaLink->appendChild($scriptXml);
-			}
-			$this->script->resetGenericScriptLabels();
-		}
-		if ($isChild) {
-			return $maniaLink;
-		}
-		if ($echo) {
-			header('Content-Type: application/xml; charset=utf-8;');
-			echo $domDocument->saveXML();
-		}
-		return $domDocument;
-	}
+    /**
+     * Set the name
+     *
+     * @api
+     * @param string $name ManiaLink Name
+     * @return static
+     */
+    public function setName($name)
+    {
+        $this->name = (string)$name;
+        return $this;
+    }
 
-	/**
-	 * Get string representation
-	 *
-	 * @return string
-	 */
-	public function __toString() {
-		return $this->render()->saveXML();
-	}
+    /**
+     * Get the background
+     *
+     * @api
+     * @return string
+     */
+    public function getBackground()
+    {
+        return $this->background;
+    }
+
+    /**
+     * Set the background
+     *
+     * @api
+     * @param string $background Background value
+     * @return static
+     */
+    public function setBackground($background)
+    {
+        $this->background = (string)$background;
+        return $this;
+    }
+
+    /**
+     * Get navigable3d
+     *
+     * @api
+     * @return bool
+     */
+    public function getNavigable3d()
+    {
+        return $this->navigable3d;
+    }
+
+    /**
+     * Set navigable3d
+     *
+     * @api
+     * @param bool $navigable3d If the ManiaLink should be 3d navigable
+     * @return static
+     */
+    public function setNavigable3d($navigable3d)
+    {
+        $this->navigable3d = (bool)$navigable3d;
+        return $this;
+    }
+
+    /**
+     * Get the timeout
+     *
+     * @api
+     * @return int
+     */
+    public function getTimeout()
+    {
+        return $this->timeout;
+    }
+
+    /**
+     * Set the timeout
+     *
+     * @api
+     * @param int $timeout Timeout duration
+     * @return static
+     */
+    public function setTimeout($timeout)
+    {
+        $this->timeout = (int)$timeout;
+        return $this;
+    }
+
+    /**
+     * Get children
+     *
+     * @api
+     * @return Renderable[]
+     */
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    /**
+     * Add a child
+     *
+     * @api
+     * @param Renderable $child Child Element to add
+     * @return static
+     * @deprecated use addChild() instead
+     */
+    public function add(Renderable $child)
+    {
+        return $this->addChild($child);
+    }
+
+    /**
+     * Add a child
+     *
+     * @api
+     * @param Renderable $child Child Element to add
+     * @return static
+     */
+    public function addChild(Renderable $child)
+    {
+        if (!in_array($child, $this->children, true)) {
+            array_push($this->children, $child);
+        }
+        return $this;
+    }
+
+    /**
+     * Set children
+     *
+     * @api
+     * @param Renderable[] $children Child Elements
+     * @return static
+     */
+    public function setChildren(array $children)
+    {
+        $this->children = array();
+        foreach ($children as $child) {
+            $this->addChild($child);
+        }
+        return $this;
+    }
+
+    /**
+     * Remove all children
+     *
+     * @api
+     * @return static
+     * @deprecated use removeAllChildren() instead
+     */
+    public function removeChildren()
+    {
+        return $this->removeAllChildren();
+    }
+
+    /**
+     * Remove all children
+     *
+     * @api
+     * @return static
+     */
+    public function removeAllChildren()
+    {
+        $this->children = array();
+        return $this;
+    }
+
+    /**
+     * Get the Dictionary
+     *
+     * @api
+     * @return Dico
+     */
+    public function getDico()
+    {
+        return $this->dico;
+    }
+
+    /**
+     * Set the Dictionary
+     *
+     * @api
+     * @param Dico $dico Dictionary
+     * @return static
+     */
+    public function setDico(Dico $dico = null)
+    {
+        $this->dico = $dico;
+        return $this;
+    }
+
+    /**
+     * Get the Stylesheet
+     *
+     * @api
+     * @return Stylesheet
+     */
+    public function getStylesheet()
+    {
+        return $this->stylesheet;
+    }
+
+    /**
+     * Set the Stylesheet
+     *
+     * @api
+     * @param Stylesheet $stylesheet Stylesheet
+     * @return static
+     */
+    public function setStylesheet(Stylesheet $stylesheet = null)
+    {
+        $this->stylesheet = $stylesheet;
+        return $this;
+    }
+
+    /**
+     * Get the Script
+     *
+     * @api
+     * @return Script
+     */
+    public function getScript()
+    {
+        return $this->script;
+    }
+
+    /**
+     * Set the Script
+     *
+     * @api
+     * @param Script $script Script
+     * @return static
+     */
+    public function setScript(Script $script = null)
+    {
+        $this->script = $script;
+        return $this;
+    }
+
+    /**
+     * Create and assign a new Script if necessary
+     *
+     * @api
+     * @return Script
+     */
+    public function createScript()
+    {
+        if ($this->script) {
+            return $this->script;
+        }
+        $script = new Script();
+        $this->setScript($script);
+        return $this->script;
+    }
+
+    /**
+     * Render the ManiaLink
+     *
+     * @param bool         $echo        (optional) If the XML text should be echoed and the Content-Type header should be set
+     * @param \DOMDocument $domDocument (optional) DOMDocument for which the ManiaLink should be rendered
+     * @return \DOMDocument
+     */
+    public function render($echo = false, $domDocument = null)
+    {
+        $isChild = (bool)$domDocument;
+        if (!$isChild) {
+            $domDocument                = new \DOMDocument("1.0", "utf-8");
+            $domDocument->xmlStandalone = true;
+        }
+        $maniaLink = $domDocument->createElement("manialink");
+        if (!$isChild) {
+            $domDocument->appendChild($maniaLink);
+        }
+
+        if ($this->maniaLinkId) {
+            $maniaLink->setAttribute("id", $this->maniaLinkId);
+        }
+        if ($this->version > 0) {
+            $maniaLink->setAttribute("version", $this->version);
+        }
+        if ($this->name) {
+            $maniaLink->setAttribute("name", $this->name);
+        }
+        if ($this->background) {
+            $maniaLink->setAttribute("background", $this->background);
+        }
+        if (!$this->navigable3d) {
+            $maniaLink->setAttribute("navigable3d", "0");
+        }
+        if ($this->timeout) {
+            $timeoutXml = $domDocument->createElement("timeout", $this->timeout);
+            $maniaLink->appendChild($timeoutXml);
+        }
+        if ($this->dico) {
+            $dicoXml = $this->dico->render($domDocument);
+            $maniaLink->appendChild($dicoXml);
+        }
+
+        $scriptFeatures = array();
+        foreach ($this->children as $child) {
+            $childXml = $child->render($domDocument);
+            $maniaLink->appendChild($childXml);
+            if ($child instanceof ScriptFeatureable) {
+                $scriptFeatures = array_merge($scriptFeatures, $child->getScriptFeatures());
+            }
+        }
+
+        if ($this->stylesheet) {
+            $stylesheetXml = $this->stylesheet->render($domDocument);
+            $maniaLink->appendChild($stylesheetXml);
+        }
+
+        if ($scriptFeatures) {
+            $this->createScript()
+                 ->loadFeatures($scriptFeatures);
+        }
+        if ($this->script) {
+            if ($this->script->needsRendering()) {
+                $scriptXml = $this->script->render($domDocument);
+                $maniaLink->appendChild($scriptXml);
+            }
+            $this->script->resetGenericScriptLabels();
+        }
+
+        if ($isChild) {
+            return $maniaLink;
+        }
+        if ($echo) {
+            header("Content-Type: application/xml; charset=utf-8;");
+            echo $domDocument->saveXML();
+        }
+        return $domDocument;
+    }
+
+    /**
+     * Get the string representation
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->render()
+                    ->saveXML();
+    }
+
 }

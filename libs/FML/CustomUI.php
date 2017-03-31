@@ -6,187 +6,323 @@ namespace FML;
  * Class representing a Custom_UI
  *
  * @author    steeffeen
- * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @copyright FancyManiaLinks Copyright © 2017 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class CustomUI {
-	/*
-	 * Protected properties
-	 */
-	protected $encoding = 'utf-8';
-	protected $tagName = 'custom_ui';
-	protected $noticeVisible = null;
-	protected $challengeInfoVisible = null;
-	protected $netInfosVisible = null;
-	protected $chatVisible = null;
-	protected $checkpointListVisible = null;
-	protected $roundScoresVisible = null;
-	protected $scoretableVisible = null;
-	protected $globalVisible = null;
+class CustomUI
+{
 
-	/**
-	 * Create a new CustomUI object
-	 *
-	 * @return static
-	 */
-	public static function create() {
-		return new static();
-	}
+    /**
+     * @var bool $globalVisible If the UI should be shown at all
+     */
+    protected $globalVisible = null;
 
-	/**
-	 * Set XML encoding
-	 *
-	 * @param string $encoding XML encoding
-	 * @return static
-	 */
-	public function setXMLEncoding($encoding) {
-		$this->encoding = (string)$encoding;
-		return $this;
-	}
+    /**
+     * @var bool $challengeInfoVisible If the challenge info should be shown
+     */
+    protected $challengeInfoVisible = null;
 
-	/**
-	 * Set showing of notices
-	 *
-	 * @param bool $visible Whether notices should be shown
-	 * @return static
-	 */
-	public function setNoticeVisible($visible) {
-		$this->noticeVisible = $visible;
-		return $this;
-	}
+    /**
+     * @var bool $chatVisible If the chat should be shown
+     */
+    protected $chatVisible = null;
 
-	/**
-	 * Set showing of the challenge info
-	 *
-	 * @param bool $visible Whether the challenge info should be shown
-	 * @return static
-	 */
-	public function setChallengeInfoVisible($visible) {
-		$this->challengeInfoVisible = $visible;
-		return $this;
-	}
+    /**
+     * @var bool $checkpointListVisible If the checkpoint list should be shown
+     */
+    protected $checkpointListVisible = null;
 
-	/**
-	 * Set showing of the net infos
-	 *
-	 * @param bool $visible Whether the net infos should be shown
-	 * @return static
-	 */
-	public function setNetInfosVisible($visible) {
-		$this->netInfosVisible = $visible;
-		return $this;
-	}
+    /**
+     * @var bool $netInfosVisible If the net infos should be shown
+     */
+    protected $netInfosVisible = null;
 
-	/**
-	 * Set showing of the chat
-	 *
-	 * @param bool $visible Whether the chat should be shown
-	 * @return static
-	 */
-	public function setChatVisible($visible) {
-		$this->chatVisible = $visible;
-		return $this;
-	}
+    /**
+     * @var bool $noticeVisible If notices should be shown
+     */
+    protected $noticeVisible = null;
 
-	/**
-	 * Set showing of the checkpoint list
-	 *
-	 * @param bool $visible Whether the checkpoint should be shown
-	 * @return static
-	 */
-	public function setCheckpointListVisible($visible) {
-		$this->checkpointListVisible = $visible;
-		return $this;
-	}
+    /**
+     * @var bool $roundScoresVisible If round scores should be shown
+     */
+    protected $roundScoresVisible = null;
 
-	/**
-	 * Set showing of round scores
-	 *
-	 * @param bool $visible Whether the round scores should be shown
-	 * @return static
-	 */
-	public function setRoundScoresVisible($visible) {
-		$this->roundScoresVisible = $visible;
-		return $this;
-	}
+    /**
+     * @var bool $scoretableVisible If the score table should be shown
+     */
+    protected $scoretableVisible = null;
 
-	/**
-	 * Set showing of the scoretable
-	 *
-	 * @param bool $visible Whether the scoretable should be shown
-	 * @return static
-	 */
-	public function setScoretableVisible($visible) {
-		$this->scoretableVisible = $visible;
-		return $this;
-	}
+    /**
+     * Create a new CustomUI
+     *
+     * @api
+     * @return static
+     */
+    public static function create()
+    {
+        return new static();
+    }
 
-	/**
-	 * Set global showing
-	 *
-	 * @param bool $visible Whether the UI should be disabled completely
-	 * @return static
-	 */
-	public function setGlobalVisible($visible) {
-		$this->globalVisible = $visible;
-		return $this;
-	}
+    /**
+     * Get global visibility
+     *
+     * @api
+     * @return bool
+     */
+    public function getGlobalVisible()
+    {
+        return $this->globalVisible;
+    }
 
-	/**
-	 * Render the XML document
-	 *
-	 * @param \DOMDocument $domDocument (optional) DOMDocument for which the XML element should be rendered
-	 * @return \DOMDocument
-	 */
-	public function render($domDocument = null) {
-		$isChild = (bool)$domDocument;
-		if (!$isChild) {
-			$domDocument                = new \DOMDocument('1.0', $this->encoding);
-			$domDocument->xmlStandalone = true;
-		}
-		$xmlElement = $domDocument->createElement($this->tagName);
-		if (!$isChild) {
-			$domDocument->appendChild($xmlElement);
-		}
-		$settings = $this->getSettings();
-		foreach ($settings as $setting => $value) {
-			if ($value === null) {
-				continue;
-			}
-			$xmlSubElement = $domDocument->createElement($setting);
-			$xmlSubElement->setAttribute('visible', ($value ? 1 : 0));
-			$xmlElement->appendChild($xmlSubElement);
-		}
-		if ($isChild) {
-			return $xmlElement;
-		}
-		return $domDocument;
-	}
+    /**
+     * Set global visibility
+     *
+     * @api
+     * @param bool $visible If the UI should be shown at all
+     * @return static
+     */
+    public function setGlobalVisible($visible)
+    {
+        $this->globalVisible = $visible;
+        return $this;
+    }
 
-	/**
-	 * Get string representation
-	 *
-	 * @return string
-	 */
-	public function __toString() {
-		return $this->render()->saveXML();
-	}
+    /**
+     * Get showing of the challenge info
+     *
+     * @api
+     * @return bool
+     */
+    public function getChallengeInfoVisible()
+    {
+        return $this->challengeInfoVisible;
+    }
 
-	/**
-	 * Get associative array of all CustomUI settings
-	 *
-	 * @return array
-	 */
-	protected function getSettings() {
-		$settings                    = array();
-		$settings['challenge_info']  = $this->challengeInfoVisible;
-		$settings['chat']            = $this->chatVisible;
-		$settings['checkpoint_list'] = $this->checkpointListVisible;
-		$settings['global']          = $this->globalVisible;
-		$settings['net_infos']       = $this->netInfosVisible;
-		$settings['notice']          = $this->noticeVisible;
-		$settings['round_scores']    = $this->roundScoresVisible;
-		$settings['scoretable']      = $this->scoretableVisible;
-		return $settings;
-	}
+    /**
+     * Set showing of the challenge info
+     *
+     * @api
+     * @param bool $visible If the challenge info should be shown
+     * @return static
+     */
+    public function setChallengeInfoVisible($visible)
+    {
+        $this->challengeInfoVisible = $visible;
+        return $this;
+    }
+
+    /**
+     * Get showing of the chat
+     *
+     * @api
+     * @return bool
+     */
+    public function getChatVisible()
+    {
+        return $this->chatVisible;
+    }
+
+    /**
+     * Set showing of the chat
+     *
+     * @api
+     * @param bool $visible If the chat should be shown
+     * @return static
+     */
+    public function setChatVisible($visible)
+    {
+        $this->chatVisible = $visible;
+        return $this;
+    }
+
+    /**
+     * Get showing of the checkpoint list
+     *
+     * @api
+     * @return bool
+     */
+    public function getCheckpointListVisible()
+    {
+        return $this->checkpointListVisible;
+    }
+
+    /**
+     * Set showing of the checkpoint list
+     *
+     * @api
+     * @param bool $visible If the checkpoint list should be shown
+     * @return static
+     */
+    public function setCheckpointListVisible($visible)
+    {
+        $this->checkpointListVisible = $visible;
+        return $this;
+    }
+
+    /**
+     * Get showing of the net infos
+     *
+     * @api
+     * @return bool
+     */
+    public function getNetInfosVisible()
+    {
+        return $this->netInfosVisible;
+    }
+
+    /**
+     * Set showing of the net infos
+     *
+     * @api
+     * @param bool $visible If the net infos should be shown
+     * @return static
+     */
+    public function setNetInfosVisible($visible)
+    {
+        $this->netInfosVisible = $visible;
+        return $this;
+    }
+
+    /**
+     * Get showing of notices
+     *
+     * @api
+     * @return bool
+     */
+    public function getNoticeVisible()
+    {
+        return $this->noticeVisible;
+    }
+
+    /**
+     * Set showing of notices
+     *
+     * @api
+     * @param bool $visible If notices should be shown
+     * @return static
+     */
+    public function setNoticeVisible($visible)
+    {
+        $this->noticeVisible = $visible;
+        return $this;
+    }
+
+    /**
+     * Get showing of round scores
+     *
+     * @api
+     * @return bool
+     */
+    public function getRoundScoresVisible()
+    {
+        return $this->roundScoresVisible;
+    }
+
+    /**
+     * Set showing of round scores
+     *
+     * @api
+     * @param bool $visible If round scores should be shown
+     * @return static
+     */
+    public function setRoundScoresVisible($visible)
+    {
+        $this->roundScoresVisible = $visible;
+        return $this;
+    }
+
+    /**
+     * Get showing of the score table
+     *
+     * @api
+     * @return bool
+     */
+    public function getScoretableVisible()
+    {
+        return $this->scoretableVisible;
+    }
+
+    /**
+     * Set showing of the score table
+     *
+     * @api
+     * @param bool $visible If the score table should be shown
+     * @return static
+     */
+    public function setScoretableVisible($visible)
+    {
+        $this->scoretableVisible = $visible;
+        return $this;
+    }
+
+    /**
+     * Render the CustomUI standalone
+     *
+     * @return \DOMDocument
+     */
+    public function renderStandalone()
+    {
+        $domDocument                = new \DOMDocument("1.0", "utf-8");
+        $domDocument->xmlStandalone = true;
+
+        $domElement = $this->render($domDocument);
+        $domDocument->appendChild($domElement);
+
+        return $domDocument;
+    }
+
+    /**
+     * Render the CustomUI
+     *
+     * @param \DOMDocument $domDocument DOMDocument for which the CustomUI should be rendered
+     * @return \DOMElement
+     */
+    public function render(\DOMDocument $domDocument)
+    {
+        $domElement = $domDocument->createElement("custom_ui");
+
+        $settings = $this->getSettings();
+        foreach ($settings as $setting => $value) {
+            if ($value === null) {
+                continue;
+            }
+
+            $settingDomElement = $domDocument->createElement($setting);
+            $settingDomElement->setAttribute("visible", ($value ? 1 : 0));
+            $domElement->appendChild($settingDomElement);
+        }
+
+        return $domElement;
+    }
+
+    /**
+     * Get string representation
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->renderStandalone()
+                    ->saveXML();
+    }
+
+    /**
+     * Get associative array of all CustomUI settings
+     *
+     * @return array
+     */
+    protected function getSettings()
+    {
+        return array(
+            "global" => $this->globalVisible,
+            "challenge_info" => $this->challengeInfoVisible,
+            "chat" => $this->chatVisible,
+            "checkpoint_list" => $this->checkpointListVisible,
+            "net_infos" => $this->netInfosVisible,
+            "notice" => $this->noticeVisible,
+            "round_scores" => $this->roundScoresVisible,
+            "scoretable" => $this->scoretableVisible
+        );
+    }
+
 }

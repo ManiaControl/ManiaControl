@@ -8,39 +8,61 @@ use FML\Elements\Format;
  * Interface for Element being able to contain other Controls
  *
  * @author    steeffeen <mail@steeffeen.com>
- * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @copyright FancyManiaLinks Copyright © 2017 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-interface Container {
+interface Container
+{
 
-	/**
-	 * Add a new child Element
-	 *
-	 * @param Renderable $child Child Control to add
-	 * @return static
-	 */
-	public function add(Renderable $child);
+    /**
+     * Get the children
+     *
+     * @api
+     * @return Renderable[]
+     */
+    public function getChildren();
 
-	/**
-	 * Remove all children
-	 *
-	 * @return static
-	 */
-	public function removeChildren();
+    /**
+     * Add a new child
+     *
+     * @api
+     * @param Renderable $child Child Control to add
+     * @return static
+     */
+    public function addChild(Renderable $child);
 
-	/**
-	 * Set the Format object of the Container
-	 *
-	 * @param Format $format New Format object
-	 * @return static
-	 */
-	public function setFormat(Format $format);
+    /**
+     * Add new children
+     *
+     * @api
+     * @param Renderable[] $children Child Controls to add
+     * @return static
+     */
+    public function addChildren(array $children);
 
-	/**
-	 * Get the Format object of the Container
-	 *
-	 * @param bool $createIfEmpty (optional) Whether the Format object should be created if it's not set
-	 * @return \FML\Elements\Format
-	 */
-	public function getFormat($createIfEmpty = true);
+    /**
+     * Remove all children
+     *
+     * @api
+     * @return static
+     */
+    public function removeAllChildren();
+
+    /**
+     * Get the Format
+     *
+     * @api
+     * @return Format
+     */
+    public function getFormat();
+
+    /**
+     * Set the Format
+     *
+     * @api
+     * @param Format $format New Format
+     * @return static
+     */
+    public function setFormat(Format $format = null);
+
 }

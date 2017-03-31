@@ -2,6 +2,10 @@
 
 namespace ManiaControl\Maps;
 
+use ManiaControl\General\Dumpable;
+use ManiaControl\General\DumpTrait;
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaExchange\MXMapInfo;
 use ManiaControl\Utils\Formatter;
 
@@ -12,34 +16,36 @@ use ManiaControl\Utils\Formatter;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class Map {
+class Map implements Dumpable, UsageInformationAble {
+	use DumpTrait, UsageInformationTrait;
+	
 	/*
 	 * Public properties
 	 */
-	public $index = -1;
-	public $name = 'undefined';
-	public $rawName = null;
-	public $uid = null;
-	public $fileName = null;
-	public $environment = null;
-	public $authorTime = -1;
-	public $goldTime = -1;
-	public $copperPrice = -1;
-	public $mapType = null;
-	public $mapStyle = null;
+	public $index         = -1;
+	public $name          = 'undefined';
+	public $rawName       = null;
+	public $uid           = null;
+	public $fileName      = null;
+	public $environment   = null;
+	public $authorTime    = -1;
+	public $goldTime      = -1;
+	public $copperPrice   = -1;
+	public $mapType       = null;
+	public $mapStyle      = null;
 	public $nbCheckpoints = -1;
-	public $nbLaps = -1;
+	public $nbLaps        = -1;
 	/** @var MXMapInfo $mx */
-	public $mx = null;
+	public $mx          = null;
 	public $authorLogin = null;
-	public $authorNick = null;
-	public $authorZone = null;
+	public $authorNick  = null;
+	public $authorZone  = null;
 	public $authorEInfo = null;
-	public $comment = null;
-	public $titleUid = null;
-	public $startTime = -1;
-	public $lastUpdate = 0;
-	public $karma = null;
+	public $comment     = null;
+	public $titleUid    = null;
+	public $startTime   = -1;
+	public $lastUpdate  = 0;
+	public $karma       = null;
 
 	/**
 	 * Construct a new map instance from xmlrpc data
@@ -104,10 +110,4 @@ class Map {
 		return ($this->mx && ($this->lastUpdate < strtotime($this->mx->updated) || $this->uid !== $this->mx->uid));
 	}
 
-	/**
-	 * Var_Dump the Map
-	 */
-	public function dump() {
-		var_dump(json_decode(json_encode($this)));
-	}
 }

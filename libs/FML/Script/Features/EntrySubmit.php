@@ -12,90 +12,131 @@ use FML\Script\ScriptLabel;
  * Script Feature for submitting an Entry
  *
  * @author    steeffeen
- * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @copyright FancyManiaLinks Copyright © 2017 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class EntrySubmit extends ScriptFeature {
-	/*
-	 * Protected properties
-	 */
-	/** @var Entry $entry */
-	protected $entry = null;
-	protected $url = null;
+class EntrySubmit extends ScriptFeature
+{
 
-	/**
-	 * Construct a new Entry Submit Feature
-	 *
-	 * @param Entry  $entry (optional) Entry Control
-	 * @param string $url   (optional) Submit url
-	 */
-	public function __construct(Entry $entry = null, $url = null) {
-		if ($entry !== null) {
-			$this->setEntry($entry);
-		}
-		$this->setUrl($url);
-	}
+    /**
+     * @var Entry $entry Entry
+     */
+    protected $entry = null;
 
-	/**
-	 * Set the Entry
-	 *
-	 * @param Entry $entry Entry Control
-	 * @return static
-	 */
-	public function setEntry(Entry $entry) {
-		$this->entry = $entry->checkId()->setScriptEvents(true);
-		return $this;
-	}
+    /**
+     * @var string $url Sumit url
+     */
+    protected $url = null;
 
-	/**
-	 * Set the submit url
-	 *
-	 * @param string $url Submit url
-	 * @return static
-	 */
-	public function setUrl($url) {
-		$this->url = (string)$url;
-		return $this;
-	}
+    /**
+     * Construct a new Entry Submit
+     *
+     * @api
+     * @param Entry  $entry (optional) Entry Control
+     * @param string $url   (optional) Submit url
+     */
+    public function __construct(Entry $entry = null, $url = null)
+    {
+        if ($entry) {
+            $this->setEntry($entry);
+        }
+        if ($url) {
+            $this->setUrl($url);
+        }
+    }
 
-	/**
-	 * @see \FML\Script\Features\ScriptFeature::prepare()
-	 */
-	public function prepare(Script $script) {
-		$script->setScriptInclude(ScriptInclude::TEXTLIB);
-		$controlScript = new ControlScript($this->entry, $this->getScriptText(), ScriptLabel::ENTRYSUBMIT);
-		$controlScript->prepare($script);
-		return $this;
-	}
+    /**
+     * Get the Entry
+     *
+     * @api
+     * @return Entry
+     */
+    public function getEntry()
+    {
+        return $this->entry;
+    }
 
-	/**
-	 * Get the script text
-	 *
-	 * @return string
-	 */
-	protected function getScriptText() {
-		$url       = $this->buildCompatibleUrl();
-		$entryName = $this->entry->getName();
-		$link      = Builder::escapeText($entryName . $url . '=', true);
-		return "
+    /**
+     * Set the Entry
+     *
+     * @api
+     * @param Entry $entry Entry Control
+     * @return static
+     */
+    public function setEntry(Entry $entry)
+    {
+        $entry->setScriptEvents(true)
+              ->checkId();
+        $this->entry = $entry;
+        return $this;
+    }
+
+    /**
+     * Get the submit url
+     *
+     * @api
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * Set the submit url
+     *
+     * @api
+     * @param string $url Submit url
+     * @return static
+     */
+    public function setUrl($url)
+    {
+        $this->url = (string)$url;
+        return $this;
+    }
+
+    /**
+     * @see ScriptFeature::prepare()
+     */
+    public function prepare(Script $script)
+    {
+        $script->setScriptInclude(ScriptInclude::TEXTLIB);
+        $controlScript = new ControlScript($this->entry, $this->getScriptText(), ScriptLabel::ENTRYSUBMIT);
+        $controlScript->prepare($script);
+        return $this;
+    }
+
+    /**
+     * Get the script text
+     *
+     * @return string
+     */
+    protected function getScriptText()
+    {
+        $url       = $this->buildCompatibleUrl();
+        $entryName = $this->entry->getName();
+        $link      = Builder::escapeText($entryName . $url . "=");
+        return "
 declare Value = TextLib::URLEncode(Entry.Value);
 OpenLink({$link}^Value, CMlScript::LinkType::Goto);
 ";
-	}
+    }
 
-	/**
-	 * Build the submit url compatible for the Entry parameter
-	 *
-	 * @return string
-	 */
-	protected function buildCompatibleUrl() {
-		$url         = $this->url;
-		$paramsBegin = stripos($url, '?');
-		if (!is_int($paramsBegin) || $paramsBegin < 0) {
-			$url .= '?';
-		} else {
-			$url .= '&';
-		}
-		return $url;
-	}
+    /**
+     * Build the submit url compatible for the Entry parameter
+     *
+     * @return string
+     */
+    protected function buildCompatibleUrl()
+    {
+        $url         = $this->url;
+        $paramsBegin = stripos($url, '?');
+        if (!is_int($paramsBegin) || $paramsBegin < 0) {
+            $url .= '?';
+        } else {
+            $url .= '&';
+        }
+        return $url;
+    }
+
 }
