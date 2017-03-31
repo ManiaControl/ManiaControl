@@ -6,103 +6,164 @@ namespace FML\Script;
  * Class representing a part of the ManiaLink Script
  *
  * @author    steeffeen <mail@steeffeen.com>
- * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @copyright FancyManiaLinks Copyright © 2017 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class ScriptLabel {
-	/*
-	 * Constants
-	 */
-	const ONINIT      = 'FML_OnInit';
-	const LOOP        = 'FML_Loop';
-	const TICK        = 'FML_Tick';
-	const ENTRYSUBMIT = 'FML_EntrySubmit';
-	const KEYPRESS    = 'FML_KeyPress';
-	const MOUSECLICK  = 'FML_MouseClick';
-	const MOUSEOUT    = 'FML_MouseOut';
-	const MOUSEOVER   = 'FML_MouseOver';
+class ScriptLabel
+{
 
-	/*
-	 * Protected properties
-	 */
-	protected $name = null;
-	protected $text = null;
-	protected $isolated = null;
+    /*
+     * Constants
+     */
+    const ONINIT      = 'FML_OnInit';
+    const LOOP        = 'FML_Loop';
+    const TICK        = 'FML_Tick';
+    const ENTRYSUBMIT = 'FML_EntrySubmit';
+    const KEYPRESS    = 'FML_KeyPress';
+    const MOUSECLICK  = 'FML_MouseClick';
+    const MOUSEOUT    = 'FML_MouseOut';
+    const MOUSEOVER   = 'FML_MouseOver';
 
-	/**
-	 * Construct a new ScriptLabel
-	 *
-	 * @param string $name     (optional) Label name
-	 * @param string $text     (optional) Script text
-	 * @param bool   $isolated (optional) Isolate the Label Script
-	 */
-	public function __construct($name = self::LOOP, $text = null, $isolated = false) {
-		$this->setName($name);
-		$this->setText($text);
-		$this->setIsolated($isolated);
-	}
+    /**
+     * @var string $name Label name
+     */
+    protected $name = null;
 
-	/**
-	 * Set the name
-	 *
-	 * @param string $name Label name
-	 * @return static
-	 */
-	public function setName($name) {
-		$this->name = (string)$name;
-		return $this;
-	}
+    /**
+     * @var string $text Script text
+     */
+    protected $text = null;
 
-	/**
-	 * Set the text
-	 *
-	 * @param string $text Script text
-	 * @return static
-	 */
-	public function setText($text) {
-		$this->text = (string)$text;
-		return $this;
-	}
+    /**
+     * @var bool $isolated Isolate the script
+     */
+    protected $isolated = null;
 
-	/**
-	 * Set isolation
-	 *
-	 * @param bool $isolated Whether the code should be isolated in an own block
-	 * @return static
-	 */
-	public function setIsolated($isolated) {
-		$this->isolated = (bool)$isolated;
-		return $this;
-	}
+    /**
+     * Construct a new ScriptLabel
+     *
+     * @api
+     * @param string $name     (optional) Label name
+     * @param string $text     (optional) Script text
+     * @param bool   $isolated (optional) Isolate the script
+     */
+    public function __construct($name = self::LOOP, $text = null, $isolated = null)
+    {
+        if ($name) {
+            $this->setName($name);
+        }
+        if ($text) {
+            $this->setText($text);
+        }
+        if ($isolated) {
+            $this->setIsolated($isolated);
+        }
+    }
 
-	/**
-	 * Check if the given label is an event label
-	 *
-	 * @param string $label Label name
-	 * @return bool
-	 */
-	public static function isEventLabel($label) {
-		if (in_array($label, static::getEventLabels())) {
-			return true;
-		}
-		return false;
-	}
+    /**
+     * Get the name
+     *
+     * @api
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 
-	/**
-	 * Get the possible event label names
-	 *
-	 * @return string[]
-	 */
-	public static function getEventLabels() {
-		return array(self::ENTRYSUBMIT, self::KEYPRESS, self::MOUSECLICK, self::MOUSEOUT, self::MOUSEOVER);
-	}
+    /**
+     * Set the name
+     *
+     * @api
+     * @param string $name Label name
+     * @return static
+     */
+    public function setName($name)
+    {
+        $this->name = (string)$name;
+        return $this;
+    }
 
-	/**
-	 * Build the full Script Label text
-	 *
-	 * @return string
-	 */
-	public function __toString() {
-		return Builder::getLabelImplementationBlock($this->name, $this->text, $this->isolated);
-	}
+    /**
+     * Get the text
+     *
+     * @api
+     * @return string
+     */
+    public function getText()
+    {
+        return $this->text;
+    }
+
+    /**
+     * Set the text
+     *
+     * @api
+     * @param string $text Script text
+     * @return static
+     */
+    public function setText($text)
+    {
+        $this->text = (string)$text;
+        return $this;
+    }
+
+    /**
+     * Get isolation
+     *
+     * @api
+     * @return bool
+     */
+    public function getIsolated()
+    {
+        return $this->isolated;
+    }
+
+    /**
+     * Set isolation
+     *
+     * @api
+     * @param bool $isolated If the code should be isolated in an own block
+     * @return static
+     */
+    public function setIsolated($isolated)
+    {
+        $this->isolated = (bool)$isolated;
+        return $this;
+    }
+
+    /**
+     * Build the full Script Label text
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return Builder::getLabelImplementationBlock($this->name, $this->text, $this->isolated);
+    }
+
+    /**
+     * Get the possible event label names
+     *
+     * @return string[]
+     */
+    public static function getEventLabels()
+    {
+        return array(self::ENTRYSUBMIT, self::KEYPRESS, self::MOUSECLICK, self::MOUSEOUT, self::MOUSEOVER);
+    }
+
+    /**
+     * Check if the given label name describes an event label
+     *
+     * @param string $label Label name
+     * @return bool
+     */
+    public static function isEventLabel($label)
+    {
+        if (in_array($label, static::getEventLabels())) {
+            return true;
+        }
+        return false;
+    }
+
 }

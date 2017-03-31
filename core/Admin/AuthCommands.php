@@ -3,6 +3,8 @@
 namespace ManiaControl\Admin;
 
 use ManiaControl\Commands\CommandListener;
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 
@@ -13,7 +15,9 @@ use ManiaControl\Players\Player;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class AuthCommands implements CommandListener {
+class AuthCommands implements CommandListener, UsageInformationAble {
+	use UsageInformationTrait;
+
 	/*
 	 * Private properties
 	 */

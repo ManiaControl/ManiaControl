@@ -6,55 +6,77 @@ namespace FML\ManiaCode;
  * ManiaCode Element showing a Message
  *
  * @author    steeffeen <mail@steeffeen.com>
- * @copyright FancyManiaLinks Copyright © 2014 Steffen Schröder
+ * @copyright FancyManiaLinks Copyright © 2017 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class ShowMessage extends Element {
-	/*
-	 * Protected properties
-	 */
-	protected $tagName = 'show_message';
-	protected $message = null;
+class ShowMessage implements Element
+{
 
-	/**
-	 * Create a new ShowMessage object
-	 *
-	 * @param string $message (optional) Message text
-	 * @return static
-	 */
-	public static function create($message = null) {
-		return new static($message);
-	}
+    /**
+     * @var string $message Message text
+     */
+    protected $message = null;
 
-	/**
-	 * Construct a new ShowMessage object
-	 *
-	 * @param string $message (optional) Message text
-	 */
-	public function __construct($message = null) {
-		if ($message !== null) {
-			$this->setMessage($message);
-		}
-	}
+    /**
+     * Create a new ShowMessage Element
+     *
+     * @api
+     * @param string $message (optional) Message text
+     * @return static
+     */
+    public static function create($message = null)
+    {
+        return new static($message);
+    }
 
-	/**
-	 * Set the message text
-	 *
-	 * @param string $message Message text
-	 * @return static
-	 */
-	public function setMessage($message) {
-		$this->message = (string)$message;
-		return $this;
-	}
+    /**
+     * Construct a new ShowMessage Element
+     *
+     * @api
+     * @param string $message (optional) Message text
+     */
+    public function __construct($message = null)
+    {
+        if ($message) {
+            $this->setMessage($message);
+        }
+    }
 
-	/**
-	 * @see \FML\ManiaCode\Element::render()
-	 */
-	public function render(\DOMDocument $domDocument) {
-		$xmlElement     = parent::render($domDocument);
-		$messageElement = $domDocument->createElement('message', $this->message);
-		$xmlElement->appendChild($messageElement);
-		return $xmlElement;
-	}
+    /**
+     * Get the message text
+     *
+     * @api
+     * @return string
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
+
+    /**
+     * Set the message text
+     *
+     * @api
+     * @param string $message Message text
+     * @return static
+     */
+    public function setMessage($message)
+    {
+        $this->message = (string)$message;
+        return $this;
+    }
+
+    /**
+     * @see Element::render()
+     */
+    public function render(\DOMDocument $domDocument)
+    {
+        $domElement = $domDocument->createElement("show_message");
+
+        $messageElement = $domDocument->createElement("message", $this->message);
+        $domElement->appendChild($messageElement);
+
+        return $domElement;
+    }
+
 }

@@ -747,6 +747,24 @@ class Connection
 	}
 
 	/**
+	 * Prior to loading next map, execute SendToServer url '#qjoin=login@title'
+	 * Only available to Admin.
+	 * Available since ManiaPlanet 4
+	 * @param      $link
+	 * @param bool $multicall
+	 * @return bool
+	 * @throws InvalidArgumentException
+	 */
+	function sendToServerAfterMatchEnd($link, $multicall = false){
+		if(!is_string($link))
+			throw new InvalidArgumentException('link = '.print_r($link, true));
+
+		$link = str_replace("maniaplanet://", "", $link);
+
+		return $this->execute(ucfirst(__FUNCTION__), array($link), $multicall);
+	}
+
+	/**
 	 * Kick the player with the specified login, with an optional message.
 	 * Only available to Admin.
 	 * @param mixed $player Login or player object

@@ -2,6 +2,9 @@
 
 namespace ManiaControl\Callbacks;
 
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
+
 /**
  * Model Class for a Timer Listening
  *
@@ -9,12 +12,14 @@ namespace ManiaControl\Callbacks;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class TimerListening extends Listening {
+class TimerListening extends Listening implements UsageInformationAble {
+	use UsageInformationTrait;
+
 	/*
 	 * Public Properties
 	 */
-	public $deltaTime = null;
-	public $oneTime = null;
+	public $deltaTime   = null;
+	public $oneTime     = null;
 	public $lastTrigger = null;
 	public $instantCall = null;
 
@@ -31,11 +36,11 @@ class TimerListening extends Listening {
 		parent::__construct($listener, $method);
 
 		$this->deltaTime = $milliSeconds / 1000.;
-		$this->oneTime   = (bool)$oneTime;
+		$this->oneTime   = (bool) $oneTime;
 		if ($this->oneTime) {
-			$this->lastTrigger = time(true);
+			$this->lastTrigger = microtime(true); //TODO verify before here was time()
 		}
-		$this->instantCall = (bool)$instantCall;
+		$this->instantCall = (bool) $instantCall;
 		if (!$this->instantCall) {
 			$this->lastTrigger = microtime(true);
 		}

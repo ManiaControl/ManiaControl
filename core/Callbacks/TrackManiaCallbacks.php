@@ -3,6 +3,11 @@
 namespace ManiaControl\Callbacks;
 
 use ManiaControl\Callbacks\Models\RecordCallback;
+use ManiaControl\Callbacks\Structures\TrackMania\OnDefaultEventStructure;
+use ManiaControl\Callbacks\Structures\TrackMania\OnEventStartLineStructure;
+use ManiaControl\Callbacks\Structures\TrackMania\OnCommandStructure;
+use ManiaControl\Callbacks\Structures\TrackMania\OnScoresStructure;
+use ManiaControl\Callbacks\Structures\TrackMania\OnEventWayPointStructure;
 use ManiaControl\ManiaControl;
 use ManiaControl\Utils\Formatter;
 
@@ -20,6 +25,7 @@ class TrackManiaCallbacks implements CallbackListener {
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 
+
 	/**
 	 * Create a new TrackMania Callbacks Instance
 	 *
@@ -29,11 +35,60 @@ class TrackManiaCallbacks implements CallbackListener {
 	public function __construct(ManiaControl $maniaControl, CallbackManager $callbackManager) {
 		$this->maniaControl = $maniaControl;
 
-		// Register for callbacks
-		$callbackManager->registerCallbackListener(Callbacks::ONWAYPOINT, $this, 'handleOnWayPointCallback');
-		$callbackManager->registerCallbackListener(CallbackManager::CB_TM_PLAYERCHECKPOINT, $this, 'handlePlayerCheckpointCallback');
-		$callbackManager->registerCallbackListener(CallbackManager::CB_TM_PLAYERFINISH, $this, 'handlePlayerFinishCallback');
+		// Register for script callbacks
+		$callbackManager->registerCallbackListener(Callbacks::SCRIPTCALLBACK, $this, 'handleScriptCallbacks');
 	}
+
+	/**
+	 * Handle Script Callbacks
+	 *
+	 * @param string $name
+	 * @param mixed  $data
+	 */
+	public function handleScriptCallbacks($name, $data) {
+		if (!$this->maniaControl->getCallbackManager()->callbackListeningExists($name)) {
+			//return; //Leave that disabled while testing/implementing Callbacks
+		}
+		switch ($name) {
+			//MP4 New Callbacks
+			case Callbacks::TM_SCORES:
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::TM_SCORES, new OnScoresStructure($this->maniaControl, $data));
+				break;
+			case Callbacks::TM_ONEVENTDEFAULT:
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::TM_ONEVENTDEFAULT, new OnDefaultEventStructure($this->maniaControl, $data));
+				break;
+			case Callbacks::TM_ONEVENTSTARTLINE:
+			$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::TM_ONEVENTSTARTLINE, new OnEventStartLineStructure($this->maniaControl, $data));
+				break;
+			case Callbacks::TM_ONCOMMAND:
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::TM_ONCOMMAND, new OnCommandStructure($this->maniaControl, $data));
+				break;
+			case Callbacks::TM_ONPLAYERADDED:
+				break;
+			case Callbacks::TM_ONPLAYERREMOVED:
+				break;
+			case Callbacks::TM_ONWAYPOINT:
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::TM_ONWAYPOINT, new OnEventWayPointStructure($this->maniaControl, $data));
+				break;
+			case Callbacks:: TM_ONGIVEUP:
+				break;
+			case Callbacks::TM_ONRESPAWN:
+				break;
+			case Callbacks::TM_ONSTUNT:
+				break;
+			case Callbacks::TM_ONSTARTCOUNTDOWN:
+				break;
+			case Callbacks::TM_WARMUPSTART:
+				break;
+			case Callbacks::TM_WARMUPSTARTROUND:
+				break;
+			case Callbacks::TM_WARMUPENDROUND:
+				break;
+			case Callbacks::TM_WARMUPEND:
+				break;
+		}
+	}
+
 
 	/**
 	 * Handle OnWayPoint Callback
@@ -52,16 +107,16 @@ class TrackManiaCallbacks implements CallbackListener {
 		$wayPointCallback->rawCallback = $callback;
 		$wayPointCallback->setPlayer($player);
 		$wayPointCallback->blockId       = $callback[1];
-		$wayPointCallback->time          = (int)$callback[2];
-		$wayPointCallback->checkpoint    = (int)$callback[3];
+		$wayPointCallback->time          = (int) $callback[2];
+		$wayPointCallback->checkpoint    = (int) $callback[3];
 		$wayPointCallback->isEndRace     = Formatter::parseBoolean($callback[4]);
-		$wayPointCallback->lapTime       = (int)$callback[5];
-		$wayPointCallback->lapCheckpoint = (int)$callback[6];
+		$wayPointCallback->lapTime       = (int) $callback[5];
+		$wayPointCallback->lapCheckpoint = (int) $callback[6];
 		$wayPointCallback->lap           = 0;
 		$wayPointCallback->isEndLap      = Formatter::parseBoolean($callback[7]);
 
 		if ($wayPointCallback->checkpoint > 0) {
-			$currentMap = $this->maniaControl->getMapManager()->getCurrentMap();
+			$currentMap            = $this->maniaControl->getMapManager()->getCurrentMap();
 			$wayPointCallback->lap += $wayPointCallback->checkpoint / $currentMap->nbCheckpoints;
 		}
 
@@ -94,13 +149,13 @@ class TrackManiaCallbacks implements CallbackListener {
 		$checkpointCallback->isLegacyCallback = true;
 		$checkpointCallback->rawCallback      = $callback;
 		$checkpointCallback->setPlayer($player);
-		$checkpointCallback->time          = (int)$data[2];
-		$checkpointCallback->lap           = (int)$data[3];
-		$checkpointCallback->checkpoint    = (int)$data[4];
+		$checkpointCallback->time          = (int) $data[2];
+		$checkpointCallback->lap           = (int) $data[3];
+		$checkpointCallback->checkpoint    = (int) $data[4];
 		$checkpointCallback->lapCheckpoint = $checkpointCallback->checkpoint;
 
 		if ($checkpointCallback->lap > 0) {
-			$currentMap = $this->maniaControl->getMapManager()->getCurrentMap();
+			$currentMap                        = $this->maniaControl->getMapManager()->getCurrentMap();
 			$checkpointCallback->lapCheckpoint -= $checkpointCallback->lap * $currentMap->nbCheckpoints;
 		}
 
@@ -132,7 +187,7 @@ class TrackManiaCallbacks implements CallbackListener {
 		$finishCallback->isLegacyCallback = true;
 		$finishCallback->rawCallback      = $callback;
 		$finishCallback->setPlayer($player);
-		$finishCallback->time = (int)$data[2];
+		$finishCallback->time = (int) $data[2];
 
 		$this->maniaControl->getCallbackManager()->triggerCallback($finishCallback);
 	}

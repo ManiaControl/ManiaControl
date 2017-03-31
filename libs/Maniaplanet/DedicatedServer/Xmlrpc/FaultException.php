@@ -63,6 +63,7 @@ class FaultException extends Exception {
 			case 'Map not complete.':
 			case 'Map corrupted.':
 			case 'Map lightmap is not up to date.':
+			case 'Map lightmap is not up to date. (will still load for now)':
 			case 'The map doesn\'t match the server packmask.':
 				return new InvalidMapException($faultString, $faultCode);
 			case 'Ladder mode unknown.':

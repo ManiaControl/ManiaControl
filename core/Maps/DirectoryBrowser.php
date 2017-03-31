@@ -128,7 +128,7 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 		$paging    = new Paging();
 		$script->addFeature($paging);
 		$frame = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultListFrame($script, $paging);
-		$maniaLink->add($frame);
+		$maniaLink->addChild($frame);
 
 		$width     = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsWidth();
 		$height    = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsHeight();
@@ -137,11 +137,11 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 		$pageFrame = null;
 
 		$navigateRootQuad = new Quad_Icons64x64_1();
-		$frame->add($navigateRootQuad);
+		$frame->addChild($navigateRootQuad);
 		$navigateRootQuad->setPosition($width * -0.47, $height * 0.45)->setSize(4, 4)->setSubStyle($navigateRootQuad::SUBSTYLE_ToolRoot);
 
 		$navigateUpQuad = new Quad_Icons64x64_1();
-		$frame->add($navigateUpQuad);
+		$frame->addChild($navigateUpQuad);
 		$navigateUpQuad->setPosition($width * -0.44, $height * 0.45)->setSize(4, 4)->setSubStyle($navigateUpQuad::SUBSTYLE_ToolUp);
 
 		if (!$isInMapsFolder) {
@@ -150,21 +150,21 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 		}
 
 		$directoryLabel = new Label_Text();
-		$frame->add($directoryLabel);
+		$frame->addChild($directoryLabel);
 		$dataFolder    = $this->maniaControl->getServer()->getDirectory()->getGameDataFolder();
 		$directoryText = substr($folderPath, strlen($dataFolder));
-		$directoryLabel->setPosition($width * -0.41, $height * 0.45)->setSize($width * 0.85, 4)->setHAlign($directoryLabel::LEFT)->setText($directoryText)->setTextSize(2);
+		$directoryLabel->setPosition($width * -0.41, $height * 0.45)->setSize($width * 0.85, 4)->setHorizontalAlign($directoryLabel::LEFT)->setText($directoryText)->setTextSize(2);
 
 		$tooltipLabel = new Label();
-		$frame->add($tooltipLabel);
-		$tooltipLabel->setPosition($width * -0.48, $height * -0.44)->setSize($width * 0.8, 5)->setHAlign($tooltipLabel::LEFT)->setTextSize(1)->setText('tooltip');
+		$frame->addChild($tooltipLabel);
+		$tooltipLabel->setPosition($width * -0.48, $height * -0.44)->setSize($width * 0.8, 5)->setHorizontalAlign($tooltipLabel::LEFT)->setTextSize(1);
 
 		$mapFiles = $this->scanMapFiles($folderPath);
 
 		if (is_array($mapFiles)) {
 			if (empty($mapFiles)) {
 				$emptyLabel = new Label();
-				$frame->add($emptyLabel);
+				$frame->addChild($emptyLabel);
 				$emptyLabel->setY(20)->setTextColor('aaa')->setText('No files found.')->setTranslate(true);
 			} else {
 				$canAddMaps   = $this->maniaControl->getAuthenticationManager()->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP);
@@ -176,27 +176,27 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 					if ($index % 15 === 0) {
 						// New Page
 						$pageFrame = new Frame();
-						$frame->add($pageFrame);
+						$frame->addChild($pageFrame);
 						$posY = $height / 2 - 10;
-						$paging->addPage($pageFrame);
+						$paging->addPageControl($pageFrame);
 					}
 
 					// Map Frame
 					$mapFrame = new Frame();
-					$pageFrame->add($mapFrame);
+					$pageFrame->addChild($mapFrame);
 					$mapFrame->setY($posY);
 
 					if ($index % 2 === 0) {
 						// Striped background line
 						$lineQuad = new Quad_BgsPlayerCard();
-						$mapFrame->add($lineQuad);
+						$mapFrame->addChild($lineQuad);
 						$lineQuad->setZ(-1)->setSize($width, 4)->setSubStyle($lineQuad::SUBSTYLE_BgPlayerCardBig);
 					}
 
 					// File name Label
 					$nameLabel = new Label_Text();
-					$mapFrame->add($nameLabel);
-					$nameLabel->setX($width * -0.48)->setSize($width * 0.79, 4)->setHAlign($nameLabel::LEFT)->setStyle($nameLabel::STYLE_TextCardRaceRank)->setTextSize(1)->setText($fileName);
+					$mapFrame->addChild($nameLabel);
+					$nameLabel->setX($width * -0.48)->setSize($width * 0.79, 4)->setHorizontalAlign($nameLabel::LEFT)->setStyle($nameLabel::STYLE_TextCardRaceRank)->setTextSize(1)->setText($fileName);
 
 					if (is_dir($filePath)) {
 						// Folder
@@ -208,14 +208,14 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 						if ($canAddMaps) {
 							// 'Add' button
 							$addButton = new Quad_UIConstructionBullet_Buttons();
-							$mapFrame->add($addButton);
+							$mapFrame->addChild($addButton);
 							$addButton->setX($width * 0.42)->setSize(4, 4)->setSubStyle($addButton::SUBSTYLE_NewBullet)->setAction(self::ACTION_ADD_FILE . $fileName)->addTooltipLabelFeature($tooltipLabel, 'Add map ' . $fileName);
 						}
 
 						if ($canEraseMaps) {
 							// 'Erase' button
 							$eraseButton = new Quad_UIConstruction_Buttons();
-							$mapFrame->add($eraseButton);
+							$mapFrame->addChild($eraseButton);
 							$eraseButton->setX($width * 0.46)->setSize(4, 4)->setSubStyle($eraseButton::SUBSTYLE_Erase)->setAction(self::ACTION_ERASE_FILE . $fileName)->addTooltipLabelFeature($tooltipLabel, 'Erase file ' . $fileName);
 						}
 					}
@@ -226,7 +226,7 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 			}
 		} else {
 			$errorLabel = new Label();
-			$frame->add($errorLabel);
+			$frame->addChild($errorLabel);
 			$errorLabel->setY(20)->setTextColor('f30')->setText('No access to the directory.')->setTranslate(true);
 		}
 

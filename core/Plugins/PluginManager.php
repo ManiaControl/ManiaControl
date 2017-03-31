@@ -6,6 +6,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\EchoListener;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
+use ManiaControl\Files\AsyncHttpRequest;
 use ManiaControl\Files\FileUtil;
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
@@ -478,9 +479,14 @@ class PluginManager {
 	 */
 	public function fetchPluginList(callable $function) {
 		$url = ManiaControl::URL_WEBSERVICE . 'plugins';
-		$this->maniaControl->getFileReader()->loadFile($url, function ($dataJson, $error) use (&$function) {
+
+		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, $url);
+		$asyncHttpRequest->setContentType(AsyncHttpRequest::CONTENT_TYPE_JSON);
+		$asyncHttpRequest->setCallable(function ($dataJson, $error) use (&$function) {
 			$data = json_decode($dataJson);
 			call_user_func($function, $data, $error);
 		});
+
+		$asyncHttpRequest->getData();
 	}
 }

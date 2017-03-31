@@ -3,6 +3,7 @@
 namespace ManiaControl\Server;
 
 use ManiaControl\Callbacks\TimerListener;
+use ManiaControl\Files\AsyncHttpRequest;
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Utils\Formatter;
@@ -51,18 +52,20 @@ class UsageReporter implements TimerListener {
 			return;
 		}
 
-		$properties                        = array();
-		$properties['ManiaControlVersion'] = ManiaControl::VERSION;
-		$properties['OperatingSystem']     = php_uname();
-		$properties['PHPVersion']          = phpversion();
-		$properties['ServerLogin']         = $this->maniaControl->getServer()->login;
-		$properties['TitleId']             = $this->maniaControl->getServer()->titleId;
-		$properties['ServerName']          = Formatter::stripDirtyCodes($this->maniaControl->getClient()->getServerName());
-		$properties['UpdateChannel']       = $this->maniaControl->getUpdateManager()->getCurrentUpdateChannelSetting();
+		$properties                          = array();
+		$properties['ManiaControlVersion']   = ManiaControl::VERSION;
+		$properties['OperatingSystem']       = php_uname();
+		$properties['PHPVersion']            = phpversion();
+		$properties['ServerLogin']           = $this->maniaControl->getServer()->login;
+		$properties['TitleId']               = $this->maniaControl->getServer()->titleId;
+		$properties['ServerName']            = Formatter::stripDirtyCodes($this->maniaControl->getClient()->getServerName());
+		$properties['UpdateChannel']         = $this->maniaControl->getUpdateManager()->getCurrentUpdateChannelSetting();
+		$properties['DedicatedBuildVersion'] = $this->maniaControl->getDedicatedServerBuildVersion();
 
 		$properties['PlayerCount']     = $this->maniaControl->getPlayerManager()->getPlayerCount();
 		$properties['MemoryUsage']     = memory_get_usage();
 		$properties['MemoryPeakUsage'] = memory_get_peak_usage();
+
 
 		$maxPlayers               = $this->maniaControl->getClient()->getMaxPlayers();
 		$properties['MaxPlayers'] = $maxPlayers['CurrentValue'];
@@ -79,11 +82,17 @@ class UsageReporter implements TimerListener {
 		$usageReport = json_encode($properties);
 
 		$url = ManiaControl::URL_WEBSERVICE . 'usagereport';
-		$this->maniaControl->getFileReader()->postData($url, function ($response, $error) {
+
+		$asyncRequest = new AsyncHttpRequest($this->maniaControl, $url);
+		$asyncRequest->setContentType(AsyncHttpRequest::CONTENT_TYPE_JSON);
+		$asyncRequest->setContent($usageReport);
+		$asyncRequest->setCallable(function ($response, $error) {
 			$response = json_decode($response);
 			if ($error || !$response) {
 				Logger::logError('Error while Sending data: ' . print_r($error, true));
 			}
-		}, $usageReport);
+		});
+
+		$asyncRequest->postData();
 	}
 }

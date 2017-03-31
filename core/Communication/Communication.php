@@ -4,7 +4,7 @@ namespace ManiaControl\Communication;
 
 /**
  * Class for Communicating with other ManiaControls
- * to call @see ManiaControl\Communication\CommunicationManager\createCommunication
+ * to call @see \ManiaControl\Communication\CommunicationManager::createCommunication()
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team

@@ -4,6 +4,8 @@ namespace ManiaControl\Settings;
 
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\Callbacks;
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
 use ManiaControl\Plugins\PluginManager;
 use ManiaControl\Utils\ClassUtil;
@@ -15,7 +17,9 @@ use ManiaControl\Utils\ClassUtil;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class SettingManager implements CallbackListener {
+class SettingManager implements CallbackListener, UsageInformationAble {
+	use UsageInformationTrait;
+	
 	/*
 	 * Constants
 	 */

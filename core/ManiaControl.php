@@ -21,11 +21,14 @@ use ManiaControl\Configurator\Configurator;
 use ManiaControl\Database\Database;
 use ManiaControl\Files\AsynchronousFileReader;
 use ManiaControl\Files\FileUtil;
+use ManiaControl\General\UsageInformationAble;
+use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Maps\MapManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\PluginManager;
+use ManiaControl\Script\ModeScriptEventManager;
 use ManiaControl\Server\Server;
 use ManiaControl\Settings\SettingManager;
 use ManiaControl\Statistics\StatisticManager;
@@ -43,13 +46,15 @@ use Maniaplanet\DedicatedServer\Xmlrpc\TransportException;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class ManiaControl implements CallbackListener, CommandListener, TimerListener, CommunicationListener {
+class ManiaControl implements CallbackListener, CommandListener, TimerListener, CommunicationListener, UsageInformationAble {
+	use UsageInformationTrait;
+
 	/*
 	 * Constants
 	 */
-	const VERSION                     = '0.166';
+	const VERSION                     = '0.201';
 	const API_VERSION                 = '2013-04-16';
-	const MIN_DEDIVERSION             = '2014-04-02_18_00';
+	const MIN_DEDIVERSION             = '2017-03-23_18_00';
 	const SCRIPT_TIMEOUT              = 10;
 	const URL_WEBSERVICE              = 'https://ws.maniacontrol.com/';
 	const SETTING_PERMISSION_SHUTDOWN = 'Shutdown ManiaControl';
@@ -170,8 +175,15 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 	private $requestQuitMessage = null;
 
 	/** @var EchoManager $echoManager */
-	private $echoManager          = null;
+	private $echoManager = null;
+
+	/** @var CommunicationManager $communicationManager */
 	private $communicationManager = null;
+
+	/** @var ModeScriptEventManager $modeScriptEventManager */
+	private $modeScriptEventManager = null;
+
+	private $dedicatedServerBuildVersion = "";
 
 	/**
 	 * Construct a new ManiaControl instance
@@ -184,27 +196,27 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 		$this->loadConfig();
 
 		// Load ManiaControl Modules
-		$this->callbackManager       = new CallbackManager($this);
-		$this->echoManager           = new EchoManager($this);
-		$this->communicationManager  = new CommunicationManager($this);
-		$this->timerManager          = new TimerManager($this);
-		$this->database              = new Database($this);
-		$this->fileReader            = new AsynchronousFileReader($this);
-		$this->billManager           = new BillManager($this);
-		$this->settingManager        = new SettingManager($this);
-		$this->statisticManager      = new StatisticManager($this);
-		$this->manialinkManager      = new ManialinkManager($this);
-		$this->actionsMenu           = new ActionsMenu($this);
-		$this->chat                  = new Chat($this);
-		$this->commandManager        = new CommandManager($this);
-		$this->server                = new Server($this);
-		$this->authenticationManager = new AuthenticationManager($this);
-		$this->playerManager         = new PlayerManager($this);
-		$this->mapManager            = new MapManager($this);
-		$this->configurator          = new Configurator($this);
-		$this->pluginManager         = new PluginManager($this);
-		$this->updateManager         = new UpdateManager($this);
-
+		$this->callbackManager        = new CallbackManager($this);
+		$this->modeScriptEventManager = new ModeScriptEventManager($this);
+		$this->echoManager            = new EchoManager($this);
+		$this->communicationManager   = new CommunicationManager($this);
+		$this->timerManager           = new TimerManager($this);
+		$this->database               = new Database($this);
+		$this->fileReader             = new AsynchronousFileReader($this);
+		$this->billManager            = new BillManager($this);
+		$this->settingManager         = new SettingManager($this);
+		$this->statisticManager       = new StatisticManager($this);
+		$this->manialinkManager       = new ManialinkManager($this);
+		$this->actionsMenu            = new ActionsMenu($this);
+		$this->chat                   = new Chat($this);
+		$this->commandManager         = new CommandManager($this);
+		$this->server                 = new Server($this);
+		$this->authenticationManager  = new AuthenticationManager($this);
+		$this->playerManager          = new PlayerManager($this);
+		$this->mapManager             = new MapManager($this);
+		$this->configurator           = new Configurator($this);
+		$this->pluginManager          = new PluginManager($this);
+		$this->updateManager          = new UpdateManager($this);
 
 		$this->getErrorHandler()->init();
 
@@ -468,6 +480,13 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 	}
 
 	/**
+	 * @return ModeScriptEventManager
+	 */
+	public function getModeScriptEventManager() {
+		return $this->modeScriptEventManager;
+	}
+
+	/**
 	 * Check connection
 	 */
 	public function checkConnection() {
@@ -547,6 +566,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 		$this->requestQuitMessage = $message;
 	}
 
+
 	/**
 	 * Run ManiaControl
 	 */
@@ -558,9 +578,10 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 			$this->connect();
 
 			// Check if the version of the server is high enough
-			$version = $this->getClient()->getVersion();
-			if ($version->build < self::MIN_DEDIVERSION) {
-				$this->quit("The Server has Version '{$version->build}', while at least '" . self::MIN_DEDIVERSION . "' is required!", true);
+			$version                           = $this->getClient()->getVersion();
+			$this->dedicatedServerBuildVersion = $version->build;
+			if ($this->dedicatedServerBuildVersion < self::MIN_DEDIVERSION) {
+				$this->quit("The Server has Version '{$this->dedicatedServerBuildVersion}', while at least '" . self::MIN_DEDIVERSION . "' is required!", true);
 			}
 
 			// Listen for shutdown
@@ -634,6 +655,16 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 	}
 
 	/**
+	 * Get The Build Version of the Dedicated Server
+	 *
+	 * @return string
+	 */
+	public function getDedicatedServerBuildVersion() {
+		return $this->dedicatedServerBuildVersion;
+	}
+
+
+	/**
 	 * Return the server
 	 *
 	 * @return Server
@@ -699,4 +730,6 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 	public function handleServerStopCallback() {
 		$this->requestQuit('The Server has been shut down!');
 	}
+
+
 }
