@@ -72,7 +72,7 @@ class OnHitNearMissArmorEmptyBaseStructure extends BaseStructure {
 	 * @return int
 	 */
 	public function getWeapon() {
-		return $this->weapon;
+		return intval($this->weapon);
 	}
 
 	/**
