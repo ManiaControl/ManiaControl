@@ -133,7 +133,10 @@ class PluginManager {
 		if (!$pluginClass) {
 			return false;
 		}
+
 		if (!$this->isPluginActive($pluginClass)) {
+			//If Error Occured while loading Plugin
+			$this->savePluginStatus($pluginClass, false);
 			return false;
 		}
 
@@ -388,6 +391,7 @@ class PluginManager {
 		if ($this->isPluginActive($pluginClass)) {
 			return false;
 		}
+
 		/** @var Plugin $plugin */
 		$plugin = new $pluginClass();
 

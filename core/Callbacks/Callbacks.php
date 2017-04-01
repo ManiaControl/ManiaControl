@@ -104,7 +104,7 @@ interface Callbacks {
 	const BEGINMAP = 'Callbacks.BeginMap';
 	/** EndMap Callback: Map*/
 	const ENDMAP = 'Callbacks.EndMap';
-	
+
 	//OLD Callbacks
 	/** BeginMatch Callback: MatchNumber
 	 *
