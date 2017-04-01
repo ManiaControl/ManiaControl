@@ -15,6 +15,7 @@ use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
+use ManiaControl\Manialinks\LabelLine;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
@@ -40,8 +41,8 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 	 */
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
-	private $statArray = array();
-	private $statsWidth = 0;
+	private $statArray    = array();
+	private $statsWidth   = 0;
 
 	/**
 	 * Construct a new simple stats list instance
@@ -99,7 +100,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		$this->statArray[$order]["HeadShortCut"] = '$o' . $headShortCut;
 		$this->statArray[$order]["Width"]        = $width;
 		$this->statArray[$order]["Format"]       = $format;
-		$this->statsWidth += $width;
+		$this->statsWidth                        += $width;
 	}
 
 	/**
@@ -153,13 +154,8 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		$posY   = $height / 2;
 
 		// Predefine Description Label
-		$descriptionLabel = new Label();
+		$descriptionLabel = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultDescriptionLabel();
 		$frame->addChild($descriptionLabel);
-		$descriptionLabel->setAlign($descriptionLabel::LEFT, $descriptionLabel::TOP);
-		$descriptionLabel->setPosition($xStart + 10, -$height / 2 + 5);
-		$descriptionLabel->setSize($width * 0.7, 4);
-		$descriptionLabel->setTextSize(2);
-		$descriptionLabel->setVisible(false);
 
 		// Headline
 		$headFrame = new Frame();
@@ -167,9 +163,11 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		$headFrame->setY($posY - 5);
 		$headFrame->setZ(1);
 
-		$posX                = $xStart;
-		$array['$oId']       = $posX + 5;
-		$array['$oNickname'] = $posX + 14;
+		$labelLine = new LabelLine($headFrame);
+
+		$posX = $xStart;
+		$labelLine->addLabelEntryText('Id', $posX + 5);
+		$labelLine->addLabelEntryText('Nickname', $posX + 14);
 
 		// Headline
 		$posX         = $xStart + 55;
@@ -177,36 +175,27 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		foreach ($this->statArray as $key => $stat) {
 			$ranking = $this->maniaControl->getStatisticManager()->getStatsRanking($stat["Name"]);
 			if (!empty($ranking)) {
-				$statRankings[$stat["Name"]]  = $ranking;
-				$array[$stat['HeadShortCut']] = $posX;
+				$statRankings[$stat["Name"]] = $ranking;
+
+				$label = new Label_Text();
+				$label->setText($stat['HeadShortCut']);
+				$label->setX($posX);
+				$label->setSize($stat['Width'], 0);
+				$label->setAction(self::ACTION_SORT_STATS . '.' . $stat["Name"]);
+				$label->addTooltipLabelFeature($descriptionLabel, '$o ' . $stat["Name"]);
+				$labelLine->addLabel($label);
+
 				$posX += $stat["Width"];
 			} else {
 				unset($this->statArray[$key]);
 			}
 		}
+		$labelLine->render();
 
-		$labels = $this->maniaControl->getManialinkManager()->labelLine($headFrame, $array);
-
-		// Description Label
-		$index = 2;
-		foreach ($this->statArray as $statArray) {
-			if (!isset($labels[$index])) {
-				break;
-			}
-
-			/** @var Label_Text $label */
-			$label = $labels[$index];
-
-			$label->setAction(self::ACTION_SORT_STATS . '.' . $statArray["Name"]);
-			$label->addTooltipLabelFeature($descriptionLabel, '$o ' . $statArray["Name"]);
-			$index++;
-		}
 
 		// define standard properties
-		$textSize  = 1.5;
-		$textColor = 'fff';
-		$index     = 1;
-		$posY -= 10;
+		$index = 1;
+		$posY  -= 10;
 
 		if (!isset($statRankings[$order])) {
 			return;
@@ -234,8 +223,8 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 				$currentQuad->setSubStyle($currentQuad::SUBSTYLE_ArrowBlue);
 			}
 
-			$displayArray = array();
-
+			$labelLine = new LabelLine($playerFrame);
+			$posX      = $xStart + 55;
 			foreach ($this->statArray as $stat) {
 				$statValue = 0;
 				if (isset($statRankings[$stat['Name']][$playerId])) {
@@ -246,25 +235,19 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 						$statValue = round(floatval($statValue), 2);
 					}
 				}
-				$displayArray[$stat['Name']] = array('Value' => strval($statValue), 'Width' => $stat['Width']);
-			}
 
-			$array = array($index => $xStart + 5, $listPlayer->nickname => $xStart + 14);
-			$this->maniaControl->getManialinkManager()->labelLine($playerFrame, $array);
-
-			$posX = $xStart + 55;
-			foreach ($displayArray as $key => $array) {
 				$label = new Label_Text();
-				$playerFrame->addChild($label);
-				$label->setHorizontalAlign($label::LEFT);
 				$label->setX($posX);
-				$label->setStyle($label::STYLE_TextCardSmall);
-				$label->setTextSize($textSize);
-				$label->setText($array['Value']);
-				$label->setTextColor($textColor);
-				$label->addTooltipLabelFeature($descriptionLabel, '$o ' . $key);
-				$posX += $array['Width'];
+				$label->setText(strval($statValue));
+				$label->addTooltipLabelFeature($descriptionLabel, '$o ' . $stat['Name']);
+				$labelLine->addLabel($label);
+
+				$posX += $stat['Width'];
 			}
+
+			$labelLine->addLabelEntryText($index, $xStart + 5, 9);
+			$labelLine->addLabelEntryText($listPlayer->nickname, $xStart + 14, 41);
+			$labelLine->render();
 
 			$playerFrame->setY($posY);
 

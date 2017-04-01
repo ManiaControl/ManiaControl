@@ -17,6 +17,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\ManiaControl;
+use ManiaControl\Manialinks\LabelLine;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Utils\Formatter;
@@ -168,11 +169,16 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$frame->addChild($headFrame);
 		$headFrame->setY($posY - 5);
 
-		$labelLineArray = array('Id' => $posX + 5, 'Nickname' => $posX + 18, 'Login' => $posX + 70, 'Location' => $posX + 101);
+		$labelLine = new LabelLine($headFrame);
+		$labelLine->addLabelEntryText('Id', $posX + 5);
+		$labelLine->addLabelEntryText('Nickname', $posX + 18);
+		$labelLine->addLabelEntryText('Login', $posX + 70);
+		$labelLine->addLabelEntryText('Location', $posX + 101);
 		if ($this->maniaControl->getAuthenticationManager()->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
-			$labelLineArray['Actions'] = $posX + 135;
+			$labelLine->addLabelEntryText('Actions', $posX + 135);
 		}
-		$this->maniaControl->getManialinkManager()->labelLine($headFrame, $labelLineArray);
+		$labelLine->render();
+
 
 		$index     = 1;
 		$posY      = $height / 2 - 10;
@@ -198,10 +204,15 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				$lineQuad->setSubStyle($lineQuad::SUBSTYLE_BgPlayerCardBig);
 				$lineQuad->setZ($backgroundZ);
 			}
+			$labelLine = new LabelLine($playerFrame);
 
-			$positions = array($posX + 5, $posX + 18, $posX + 70, $posX + 101);
-			$texts     = array($index, $listPlayer->nickname, $listPlayer->login, $path);
-			$this->maniaControl->getManialinkManager()->labelLine($playerFrame, array($positions, $texts), array('posZ' => $foregroundZ));
+			$labelLine->addLabelEntryText($index, $posX + 5, 13);
+			$labelLine->addLabelEntryText($listPlayer->nickname, $posX + 18, 43);
+			$labelLine->addLabelEntryText($listPlayer->login, $posX + 70, 26);
+			$labelLine->addLabelEntryText($path, $posX + 101, 27);
+
+			$labelLine->setPosZ($foregroundZ);
+			$labelLine->render();
 
 			$playerFrame->setY($posY);
 

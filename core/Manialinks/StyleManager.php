@@ -24,7 +24,7 @@ use ManiaControl\ManiaControl;
  */
 class StyleManager implements UsageInformationAble {
 	use UsageInformationTrait;
-	
+
 	/*
 	 * Constants
 	 */
@@ -113,7 +113,7 @@ class StyleManager implements UsageInformationAble {
 
 		// Predefine Description Label
 		$descriptionLabel = new Label();
-		$descriptionLabel->setAlign($descriptionLabel::LEFT, $descriptionLabel::TOP)->setPosition($width * -0.5 + 10, $height * -0.5 + 5)->setSize($width * 0.7, 4)->setTextSize(2)->setVisible(false);
+		$descriptionLabel->setAlign($descriptionLabel::LEFT, $descriptionLabel::TOP)->setPosition($width * -0.5 + 10, $height * -0.5 + 5)->setZ(1)->setSize($width * 0.7, 4)->setTextSize(2)->setVisible(false);
 
 		return $descriptionLabel;
 	}

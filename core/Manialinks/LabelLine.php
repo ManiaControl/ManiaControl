@@ -44,15 +44,15 @@ class LabelLine implements UsageInformationAble {
 	 */
 	public function addLabelEntryText($labelText, $posX, $width = 0, $action = '') {
 		$label = new Label_Text();
-		$this->frame->addChild($label);
 		$label->setText($labelText);
 		$label->setX($posX);
 		if ($action) {
 			$label->setAction($action);
 		}
+
 		if ($width) {
 			$label->setWidth($width);
-			$label->setHeight(0); //TODO verify if 5 is ok for everywhere
+			$label->setHeight(0);
 		}
 		$this->addLabel($label);
 	}
@@ -62,7 +62,7 @@ class LabelLine implements UsageInformationAble {
 	 *
 	 * @param \FML\Controls\Labels\Label_Text $label
 	 */
-	private function addLabel(Label_Text $label) {
+	public function addLabel(Label_Text $label) {
 		array_push($this->entries, $label);
 	}
 
