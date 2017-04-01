@@ -558,16 +558,19 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$maniaLink->addChild($confirmFrame);
 		$confirmFrame->setPosition($width / 2 + 6, $posY);
 		$confirmFrame->setVisible(false);
+		$confirmFrame->setZ(ManialinkManager::MAIN_MANIALINK_Z_VALUE);
 
 		$quad = new Quad();
 		$confirmFrame->addChild($quad);
 		$quad->setStyles($quadStyle, $quadSubstyle);
 		$quad->setSize(12, 4);
+		$quad->setZ(-0.5);
 
 		$quad = new Quad_BgsPlayerCard();
 		$confirmFrame->addChild($quad);
 		$quad->setSubStyle($quad::SUBSTYLE_BgCardSystem);
 		$quad->setSize(11, 3.5);
+		$quad->setZ(-0.3);
 
 		$label = new Label_Button();
 		$confirmFrame->addChild($label);
