@@ -102,7 +102,9 @@ interface Callbacks {
 	//ManiaControl Callbacks
 	/** BeginMap Callback: Map */
 	const BEGINMAP = 'Callbacks.BeginMap';
-
+	/** EndMap Callback: Map*/
+	const ENDMAP = 'Callbacks.EndMap';
+	
 	//OLD Callbacks
 	/** BeginMatch Callback: MatchNumber
 	 *
@@ -170,11 +172,7 @@ interface Callbacks {
 	 * @deprecated
 	 */
 	const ENDSUBMATCH = 'Callbacks.EndSubmatch';
-	/** EndMap Callback: Map
-	 *
-	 * @deprecated
-	 */
-	const ENDMAP = 'Callbacks.EndMap';
+
 	/** BeginPodium Callback
 	 *
 	 * @deprecated
