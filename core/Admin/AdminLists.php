@@ -16,6 +16,7 @@ use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
+use ManiaControl\Manialinks\LabelLine;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
@@ -29,7 +30,7 @@ use ManiaControl\Players\Player;
  */
 class AdminLists implements ManialinkPageAnswerListener, CallbackListener, UsageInformationAble {
 	use UsageInformationTrait;
-	
+
 	/*
 	 * Constants
 	 */
@@ -94,7 +95,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener, Usage
 		//Create ManiaLink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$paging    = new Paging();
-		$script = new Script();
+		$script    = new Script();
 		$script->addFeature($paging);
 		$maniaLink->setScript($script);
 
@@ -114,11 +115,16 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener, Usage
 		$headFrame = new Frame();
 		$frame->addChild($headFrame);
 		$headFrame->setY($posY - 5);
-		$array = array('Id' => $posX + 5, 'Nickname' => $posX + 18, 'Login' => $posX + 70, 'Actions' => $posX + 120);
-		$this->maniaControl->getManialinkManager()->labelLine($headFrame, $array);
 
-		$index = 1;
-		$posY -= 10;
+		$labelLine = new LabelLine($headFrame);
+		$labelLine->addLabelEntryText('Id', $posX + 5);
+		$labelLine->addLabelEntryText('Nickname', $posX + 18);
+		$labelLine->addLabelEntryText('Login', $posX + 70);
+		$labelLine->addLabelEntryText('Actions', $posX + 120);
+		$labelLine->render();
+
+		$index     = 1;
+		$posY      -= 10;
 		$pageFrame = null;
 
 		foreach ($admins as $admin) {
@@ -142,9 +148,11 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener, Usage
 				$lineQuad->setZ(0.001);
 			}
 
-			$positions = array($posX + 5, $posX + 18, $posX + 70);
-			$texts     = array($index, $admin->nickname, $admin->login);
-			$this->maniaControl->getManialinkManager()->labelLine($playerFrame, array($positions, $texts));
+			$labelLine = new LabelLine($playerFrame);
+			$labelLine->addLabelEntryText($index, $posX + 5, 13);
+			$labelLine->addLabelEntryText($admin->nickname, $posX + 18, 52);
+			$labelLine->addLabelEntryText($admin->login, $posX + 70, 48);
+			$labelLine->render();
 
 			// Level Quad
 			$rightQuad = new Quad_BgRaceScore2();

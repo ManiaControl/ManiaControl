@@ -9,6 +9,7 @@ use FML\Script\Features\Paging;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\ManiaControl;
+use ManiaControl\Manialinks\LabelLine;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Players\Player;
 
@@ -109,7 +110,7 @@ class HelpManager implements CommandListener, CallbackListener {
 		foreach (array_reverse($commands) as $command) {
 			if (array_key_exists($command['Method'], $registeredMethods)) {
 				if ($showCommands[$registeredMethods[$command['Method']]]['Description'] === $command['Description']) {
-					$name = $registeredMethods[$command['Method']];
+					$name                        = $registeredMethods[$command['Method']];
 					$showCommands[$name]['Name'] .= '|' . $command['Name'];
 				} else {
 					$showCommands[$command['Name']]        = $command;
@@ -170,11 +171,14 @@ class HelpManager implements CommandListener, CallbackListener {
 		$headFrame = new Frame();
 		$frame->addChild($headFrame);
 		$headFrame->setY($posY - 5);
-		$array = array('Command' => $posX + 5, 'Description' => $posX + 50);
-		$this->maniaControl->getManialinkManager()->labelLine($headFrame, $array);
 
-		$index = 1;
-		$posY -= 10;
+		$labelLine = new LabelLine($headFrame);
+		$labelLine->addLabelEntryText('Command', $posX + 5);
+		$labelLine->addLabelEntryText('Description', $posX + 50);
+		$labelLine->render();
+
+		$index     = 1;
+		$posY      -= 10;
 		$pageFrame = null;
 
 		foreach ($commands as $command) {
@@ -197,11 +201,10 @@ class HelpManager implements CommandListener, CallbackListener {
 				$lineQuad->setZ(0.001);
 			}
 
-			$array  = array($command['Name'] => $posX + 5, $command['Description'] => $posX + 50);
-			$labels = $this->maniaControl->getManialinkManager()->labelLine($playerFrame, $array);
-
-			$label = $labels[0];
-			$label->setWidth(40);
+			$labelLine = new LabelLine($playerFrame);
+			$labelLine->addLabelEntryText($command['Name'], $posX + 5, 45);
+			$labelLine->addLabelEntryText($command['Description'], $posX + 50, $width / 2 - $posX + 50);
+			$labelLine->render();
 
 			$posY -= 4;
 			$index++;

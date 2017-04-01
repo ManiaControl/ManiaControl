@@ -19,6 +19,7 @@ use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\IconManager;
+use ManiaControl\Manialinks\LabelLine;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
@@ -118,8 +119,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 * @param int    $pageIndex
 	 */
 	public function showMapList(Player $player, $mapList = null, $pageIndex = -1) {
-		$width  = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsWidth();
-		$height = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsHeight();
+		$width   = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsWidth();
+		$height  = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsHeight();
 		$buttonY = -$height / 2 + 9;
 
 		if ($pageIndex < 0) {
@@ -154,8 +155,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$maniaLink->addChild($frame);
 
 		// Admin Buttons
-		if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, MapQueue::SETTING_PERMISSION_CLEAR_MAPQUEUE)
-		) {
+		if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, MapQueue::SETTING_PERMISSION_CLEAR_MAPQUEUE)) {
 			// Clear Map-Queue
 			$label = new Label_Button();
 			$frame->addChild($label);
@@ -173,11 +173,10 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$quad->setAction(self::ACTION_CLEAR_MAPQUEUE);
 		}
 
-		if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, MapManager::SETTING_PERMISSION_CHECK_UPDATE)
-		) {
+		if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, MapManager::SETTING_PERMISSION_CHECK_UPDATE)) {
 			$mxCheckForUpdatesX = $width / 2 - 37;
-			$buttonWidth = 35;
-			$iconSize = 3;
+			$buttonWidth        = 35;
+			$iconSize           = 3;
 			// Check Update
 			$label = new Label_Button();
 			$frame->addChild($label);
@@ -206,8 +205,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$mxQuad->setAction(self::ACTION_CHECK_UPDATE);
 		}
 
-		if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)
-		) {
+		if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
 			// Directory browser
 			$browserButton = new Label_Button();
 			$frame->addChild($browserButton);
@@ -227,9 +225,15 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$headFrame = new Frame();
 		$frame->addChild($headFrame);
 		$headFrame->setY($height / 2 - 5);
-		$posX  = -$width / 2;
-		$array = array('Id' => $posX + 5, 'Mx Id' => $posX + 10, 'Map Name' => $posX + 20, 'Author' => $posX + 68, 'Karma' => $posX + 115, 'Actions' => $width / 2 - 16);
-		$this->maniaControl->getManialinkManager()->labelLine($headFrame, $array);
+		$posX = -$width / 2;
+
+		$labelLine = new LabelLine($headFrame);
+		$labelLine->addLabelEntryText('Id', $posX + 5);
+		$labelLine->addLabelEntryText('Mx Id', $posX + 10);
+		$labelLine->addLabelEntryText('Map Name', $posX + 20);
+		$labelLine->addLabelEntryText('Author', $posX + 68);
+		$labelLine->addLabelEntryText('Actions', $width / 2 - 16);
+		$labelLine->render();
 
 		// Predefine description Label
 		$descriptionLabel = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultDescriptionLabel();
@@ -314,23 +318,29 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 					$mxQuad->addTooltipLabelFeature($descriptionLabel, $description);
 
 					// Update Button
-					if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)
-					) {
+					if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
 						$mxQuad->setAction(self::ACTION_UPDATE_MAP . '.' . $map->uid);
 					}
 				}
 			}
 
 			// Display Maps
-			$array  = array($mapListId => $posX + 5, $mxId => $posX + 10, Formatter::stripDirtyCodes($map->name) => $posX + 20, $map->authorNick => $posX + 68);
-			$labels = $this->maniaControl->getManialinkManager()->labelLine($mapFrame, $array);
-			if (isset($labels[3])) {
-				/** @var Label $label */
-				$label       = $labels[3];
-				$description = 'Click to checkout all maps by $<' . $map->authorLogin . '$>!';
-				$label->setAction(MapCommands::ACTION_SHOW_AUTHOR . $map->authorLogin);
-				$label->addTooltipLabelFeature($descriptionLabel, $description);
-			}
+			$labelLine = new LabelLine($mapFrame);
+			$labelLine->addLabelEntryText($mapListId, $posX + 5, 5);
+			$labelLine->addLabelEntryText($mxId, $posX + 10, 10);
+			$labelLine->addLabelEntryText(Formatter::stripDirtyCodes($map->name), $posX + 20, 42);
+
+			$label = new Label_Text();
+			$mapFrame->addChild($label);
+			$label->setText($map->authorNick);
+			$label->setX($posX + 68);
+			$label->setSize(47, 0);
+			$label->setAction(MapCommands::ACTION_SHOW_AUTHOR . $map->authorLogin);
+			$description = 'Click to checkout all maps by $<' . $map->authorLogin . '$>!';
+			$label->addTooltipLabelFeature($descriptionLabel, $description);
+			$labelLine->addLabel($label);
+
+			$labelLine->render();
 
 			// TODO action detailed map info including mx info
 
@@ -364,8 +374,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$queueLabel->setText('+');
 
 				if (in_array($map->uid, $queueBuffer)) {
-					if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, MapQueue::SETTING_PERMISSION_CLEAR_MAPQUEUE)
-					) {
+					if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, MapQueue::SETTING_PERMISSION_CLEAR_MAPQUEUE)) {
 						$queueLabel->setAction(self::ACTION_QUEUED_MAP . '.' . $map->uid);
 					}
 					$queueLabel->setTextColor('f00');
@@ -379,8 +388,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				}
 			}
 
-			if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, MapManager::SETTING_PERMISSION_REMOVE_MAP)
-			) {
+			if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, MapManager::SETTING_PERMISSION_REMOVE_MAP)) {
 				// remove map button
 				$removeButton = new Label_Button();
 				$mapFrame->addChild($removeButton);
@@ -397,8 +405,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$removeButton->addTooltipLabelFeature($descriptionLabel, $description);
 			}
 
-			if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)
-			) {
+			if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
 				// Switch to button
 				$switchLabel = new Label_Button();
 				$mapFrame->addChild($switchLabel);
@@ -415,10 +422,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$description = 'Switch Directly to Map: ' . $map->getEscapedName();
 				$switchLabel->addTooltipLabelFeature($descriptionLabel, $description);
 			}
-			if ($this->maniaControl->getPluginManager()->isPluginActive(self::DEFAULT_CUSTOM_VOTE_PLUGIN)
-			) {
-				if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)
-				) {
+			if ($this->maniaControl->getPluginManager()->isPluginActive(self::DEFAULT_CUSTOM_VOTE_PLUGIN)) {
+				if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
 					// Switch Map Voting for Admins
 					$switchQuad = new Quad_UIConstruction_Buttons();
 					$mapFrame->addChild($switchQuad);
@@ -461,8 +466,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				}
 
 				if (is_numeric($karma) && $votes['count'] > 0) {
-					if ($this->maniaControl->getSettingManager()->getSettingValue($karmaPlugin, $karmaPlugin::SETTING_NEWKARMA)
-					) {
+					if ($this->maniaControl->getSettingManager()->getSettingValue($karmaPlugin, $karmaPlugin::SETTING_NEWKARMA)) {
 						$karmaText = '  ' . round($karma * 100.) . '% (' . $votes['count'] . ')';
 					} else {
 						$min  = 0;

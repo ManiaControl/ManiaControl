@@ -198,9 +198,6 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		$headFrame = new Frame();
 		$frame->addChild($headFrame);
 		$headFrame->setY($posY - 12);
-		$array = array('$oId'          => $posX + 3.5, '$oName' => $posX + 12.5, '$oAuthor' => $posX + 59, '$oKarma' => $posX + 85, '$oType' => $posX + 103, '$oMood' => $posX + 118,
-		               '$oLast Update' => $posX + 130);
-		$this->maniaControl->getManialinkManager()->labelLine($headFrame, $array);
 
 		$labelLine = new LabelLine($headFrame);
 		$labelLine->addLabelEntryText('Id', $posX + 3.5, 9);
@@ -210,7 +207,6 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		$labelLine->addLabelEntryText('Mood', $posX + 118, 12);
 		$labelLine->addLabelEntryText('Last Update', $posX + 130, $width - ($posX + 130));
 
-		$labelLine->setPrefix('$o');
 		$labelLine->render();
 
 		$index     = 0;
