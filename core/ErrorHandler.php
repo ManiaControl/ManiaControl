@@ -37,7 +37,7 @@ class ErrorHandler {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
-		set_error_handler(array(&$this, 'handleError'), -1);
+		set_error_handler(array(&$this, 'handleError')); //TODO before was -1 verify why
 		set_exception_handler(array(&$this, 'handleException'));
 		register_shutdown_function(array(&$this, 'handleShutdown'));
 	}
@@ -78,13 +78,15 @@ class ErrorHandler {
 		if (!$this->handlingError) {
 			// Reset error handler for safety
 			$this->handlingError = true;
-			set_error_handler(array(&$this, 'handleError'), -1);
+			set_error_handler(array(&$this, 'handleError'));
 		}
 
 		// Build log message
 		$errorTag     = $this->getErrorTag($errorNumber);
 		$isUserError  = self::isUserErrorNumber($errorNumber);
 		$isFatalError = self::isFatalError($errorNumber);
+
+		$isPluginError = false;
 
 		$traceString      = null;
 		$sourceClass      = null;
@@ -117,16 +119,22 @@ class ErrorHandler {
 			if ($fileLine) {
 				$report['FileLine'] = self::stripBaseDir($fileLine);
 			}
+
 			if ($sourceClass) {
 				$report['SourceClass'] = $sourceClass;
 				$pluginId              = PluginManager::getPluginId($sourceClass);
 				if ($pluginId > 0) {
 					$report['PluginId'] = $pluginId;
+
 					if ($isFatalError) {
 						$this->maniaControl->getPluginManager()->deactivatePlugin($sourceClass);
+						$this->maniaControl->getChat()->sendError("Plugin " . $sourceClass . " has an Error -> The Plugin will be deactivated and ManiaControl restarted");
+						Logger::logError("Plugin " . $sourceClass . " has an Error -> The Plugin will be deactivated and ManiaControl restarted");
+						$isPluginError = true;
 					}
 				}
 			}
+
 			if ($traceString) {
 				$report['Backtrace'] = $traceString;
 			}
@@ -161,11 +169,16 @@ class ErrorHandler {
 		}
 
 		if ($isFatalError) {
-			$this->maniaControl->quit('Quitting ManiaControl after Fatal Error.');
+			if ($isPluginError) {
+				$this->maniaControl->restart();
+			} else {
+				$this->maniaControl->quit('Quitting ManiaControl after Fatal Error.');
+			}
 		}
 
 		// Disable safety state
 		$this->handlingError = false;
+
 
 		return false;
 	}
@@ -381,7 +394,20 @@ class ErrorHandler {
 		$filePath  = str_replace('core' . DIRECTORY_SEPARATOR, 'ManiaControl\\', $filePath);
 		$className = str_replace('.php', '', $filePath);
 		$className = str_replace(DIRECTORY_SEPARATOR, '\\', $className);
+
+
 		if (!class_exists($className, false)) {
+			//For Classes With different Folder Namespaces
+			$splitNameSpace = explode('\\', $className);
+			if (is_array($splitNameSpace)) {
+				$className = end($splitNameSpace);
+			}
+
+			foreach (get_declared_classes() as $declared_class) {
+				if (strpos($declared_class, $className) !== false) {
+					return $declared_class;
+				}
+			}
 			return null;
 		}
 		return $className;
