@@ -82,78 +82,147 @@ interface Callbacks {
 	const SM_ONPLAYERREQUESTACTIONCHANGE = "Shootmania.Event.OnPlayerRequestActionChange";
 
 	// New TM Callbacks
-	
-	const TM_ONEVENTDEFAULT     = "Trackmania.Event.Default";
-	const TM_ONEVENTSTARTLINE   = "Trackmania.Event.StartLine";
-	const TM_ONCOMMAND          = "Trackmania.Event.OnCommand";
-	const TM_ONPLAYERADDED      = "Trackmania.Event.OnPlayerAdded";
-	const TM_ONPLAYERREMOVED    = "Trackmania.Event.OnPlayerRemoved";
-	const TM_ONWAYPOINT         = "Trackmania.Event.WayPoint";
-	const TM_ONGIVEUP           = "Trackmania.Event.GiveUp";
-	const TM_ONRESPAWN          = "Trackmania.Event.Respawn";
-	const TM_ONSTUNT            = "Trackmania.Event.Stunt";
-	const TM_ONSTARTCOUNTDOWN   = "Trackmania.Event.StartCountdown";
-	const TM_SCORES             = "Trackmania.Scores";
-	const TM_WARMUPSTART        = "Trackmania.WarmUp.Start";
-	const TM_WARMUPSTARTROUND   = "Trackmania.WarmUp.StartRound";
-	const TM_WARMUPENDROUND     = "Trackmania.WarmUp.EndRound";
-	const TM_WARMUPEND          = "Trackmania.WarmUp.End";
-	
+
+	const TM_ONEVENTDEFAULT   = "Trackmania.Event.Default";
+	const TM_ONEVENTSTARTLINE = "Trackmania.Event.StartLine";
+	const TM_ONCOMMAND        = "Trackmania.Event.OnCommand";
+	const TM_ONPLAYERADDED    = "Trackmania.Event.OnPlayerAdded";
+	const TM_ONPLAYERREMOVED  = "Trackmania.Event.OnPlayerRemoved";
+	const TM_ONWAYPOINT       = "Trackmania.Event.WayPoint";
+	const TM_ONGIVEUP         = "Trackmania.Event.GiveUp";
+	const TM_ONRESPAWN        = "Trackmania.Event.Respawn";
+	const TM_ONSTUNT          = "Trackmania.Event.Stunt";
+	const TM_ONSTARTCOUNTDOWN = "Trackmania.Event.StartCountdown";
+	const TM_SCORES           = "Trackmania.Scores";
+	const TM_WARMUPSTART      = "Trackmania.WarmUp.Start";
+	const TM_WARMUPSTARTROUND = "Trackmania.WarmUp.StartRound";
+	const TM_WARMUPENDROUND   = "Trackmania.WarmUp.EndRound";
+	const TM_WARMUPEND        = "Trackmania.WarmUp.End";
+
 	//ManiaControl Callbacks
 	/** BeginMap Callback: Map */
 	const BEGINMAP = 'Callbacks.BeginMap';
 
 	//OLD Callbacks
-	/** BeginMatch Callback: MatchNumber */
+	/** BeginMatch Callback: MatchNumber
+	 *
+	 * @deprecated
+	 */
 	const BEGINMATCH = 'Callbacks.BeginMatch';
-	/** LoadingMap Callback: MapNumber */
+	/** LoadingMap Callback: MapNumber
+	 *
+	 * @deprecated
+	 */
 	const LOADINGMAP = 'Callbacks.LoadingMap';
 
-	/** BeginSubMatch Callback: SubmatchNumber */
+	/** BeginSubMatch Callback: SubmatchNumber
+	 *
+	 * @deprecated
+	 */
 	const BEGINSUBMATCH = 'Callbacks.BeginSubmatch';
-	/** BeginRound Callback: RoundNumber */
+	/** BeginRound Callback: RoundNumber
+	 *
+	 * @deprecated
+	 */
 	const BEGINROUND = 'Callbacks.BeginRound';
-	/** BeginTurn Callback: TurnNumber */
+	/** BeginTurn Callback: TurnNumber
+	 *
+	 * @deprecated
+	 */
 	const BEGINTURN = 'Callbacks.BeginTurn';
-	/** BeginTurnStop Callback: TurnNumber */
+	/** BeginTurnStop Callback: TurnNumber
+	 *
+	 * @deprecated
+	 */
 	const BEGINTURNSTOP = 'Callbacks.BeginTurnStop';
-	/** BeginPlaying Callback */
+	/** BeginPlaying Callback
+	 *
+	 * @deprecated
+	 */
 	const BEGINPLAYING = 'Callbacks.BeginPlaying';
-	/** EndPlaying Callback */
+	/** EndPlaying Callback
+	 *
+	 * @deprecated
+	 */
 	const ENDPLAYING = 'Callbacks.EndPlaying';
-	/** EndTurn Callback: TurnNumber */
+	/** EndTurn Callback: TurnNumber
+	 *
+	 * @deprecated
+	 */
 	const ENDTURN = 'Callbacks.EndTurn';
-	/** EndTurnStop Callback: TurnNumber */
+	/** EndTurnStop Callback: TurnNumber
+	 *
+	 * @deprecated
+	 */
 	const ENDTURNSTOP = 'Callbacks.EndTurnStop';
-	/** EndRound Callback: RoundNumber */
+	/** EndRound Callback: RoundNumber
+	 *
+	 * @deprecated
+	 */
 	const ENDROUND = 'Callbacks.EndRound';
-	/** EndRound Callback: RoundNumber */
+	/** EndRound Callback: RoundNumber
+	 *
+	 * @deprecated
+	 */
 	const ENDROUNDSTOP = 'Callbacks.EndRoundStop';
-	/** EndSubmatch Callback: SubmatchNumber */
+	/** EndSubmatch Callback: SubmatchNumber
+	 *
+	 * @deprecated
+	 */
 	const ENDSUBMATCH = 'Callbacks.EndSubmatch';
-	/** EndMap Callback: Map */
+	/** EndMap Callback: Map
+	 *
+	 * @deprecated
+	 */
 	const ENDMAP = 'Callbacks.EndMap';
-	/** BeginPodium Callback */
+	/** BeginPodium Callback
+	 *
+	 * @deprecated
+	 */
 	const BEGINPODIUM = 'Callbacks.BeginPodium';
-	/** EndPodium Callback */
+	/** EndPodium Callback
+	 *
+	 * @deprecated
+	 */
 	const ENDPODIUM = 'Callbacks.EndPodium';
-	/** UnloadingMap Callback */
+	/** UnloadingMap Callback
+	 *
+	 * @deprecated
+	 */
 	const UNLOADINGMAP = 'Callbacks.UnloadingMap';
-	/** EndMatch Callback: MatchNumber */
+	/** EndMatch Callback: MatchNumber
+	 *
+	 * @deprecated
+	 */
 	const ENDMATCH = 'Callbacks.EndMatch';
 
-	/** BeginWarmup Callback */
+	/** BeginWarmup Callback
+	 *
+	 * @deprecated
+	 */
 	const BEGINWARMUP = 'Callbacks.BeginWarmUp';
-	/** EndWarmup Callback */
+	/** EndWarmup Callback
+	 *
+	 * @deprecated
+	 */
 	const ENDWARMUP = 'Callbacks.EndWarmUp';
 
-	/** Scores Callback (returned after LibXmlRpc_PlayerRanking): Scores */
+	/** Scores Callback (returned after LibXmlRpc_PlayerRanking): Scores
+	 *
+	 * @deprecated
+	 */
 	const SCORESREADY = 'Callbacks.ScoresReady';
 
-	/** Scores Callback (returned after LibXmlRpc_PlayerRanking in SM, or LibXmlRpc_TeamsScores in Trackmania): Scores */
+	/** Scores Callback (returned after LibXmlRpc_PlayerRanking in SM, or LibXmlRpc_TeamsScores in Trackmania): Scores
+	 *
+	 * @deprecated
+	 */
 	const SCORES = 'Callbacks.Scores';
 
-	/** Rankings Callback */
+	/** Rankings Callback
+	 *
+	 * @deprecated
+	 */
 	const RANKINGS = 'Callbacks.Rankings';
 
 	/** PlayerRanking Callback, returned after LibXmlRpc_PlayerRanking
@@ -161,54 +230,108 @@ interface Callbacks {
 	 * param1 Player $player
 	 * param2 int $rank
 	 * param3 int $currentPoints
-	 * param4 int AFKStatus */
+	 * param4 int AFKStatus
+	 *
+	 * @deprecated
+	 */
 	const PLAYERRANKING = 'Callbacks.PlayerRanking';
 
 	/*
 	 * ShootMania Callbacks
 	 */
-	/** RankingsUpdated Callback: SortedRankings */
+	/** RankingsUpdated Callback: SortedRankings
+	 *
+	 * @deprecated
+	 */
 	const RANKINGSUPDATED = 'Callbacks.RankingsUpdated';
 
-	/** Returns the AFKStatus of an Player, returned after  param1 Scores */ //returned after TODO
+	/** Returns the AFKStatus of an Player, returned after  param1 Scores
+	 *
+	 * @deprecated
+	 */
 	const AFKSTATUS = 'Callbacks.AfkStatus';
-	/** Returns if the GameMode has Warmup activated, returned after  param1 Scores */ //returned after TODO
+	/** Returns if the GameMode has Warmup activated, returned after  param1 Scores
+	 *
+	 * @deprecated
+	 */
 	const WARMUPSTATUS = 'Callbacks.WarmupStatus';
 
-	/** OnShoot Callback: Player, WeaponNumber (see Weapons Structure) */
+	/** OnShoot Callback: Player, WeaponNumber (see Weapons Structure)
+	 *
+	 * @deprecated
+	 */
 	const ONSHOOT = 'Callbacks.OnShoot';
 
-	/** OnHit Callback: PlayerHitStructure */
+	/** OnHit Callback: PlayerHitStructure
+	 *
+	 * @deprecated
+	 */
 	const ONHIT = 'Callbacks.OnHit';
-	/** OnNearMiss Callback: NearMissStructure */
+	/** OnNearMiss Callback: NearMissStructure
+	 *
+	 * @deprecated
+	 */
 	const ONNEARMISS = 'Callbacks.OnNearMiss';
-	/** OnArmorEmpty Callback: ArmorEmptyStructure */
+	/** OnArmorEmpty Callback: ArmorEmptyStructure
+	 *
+	 * @deprecated
+	 */
 	const ONARMOREMPTY = 'Callbacks.OnArmorEmpty';
-	/** OnCapture Callback: CaptureStructure */
+	/** OnCapture Callback: CaptureStructure
+	 *
+	 * @deprecated
+	 */
 	const ONCAPTURE = 'Callbacks.OnCapture';
-	/** OnPlayerRequestRespawn Callback: Player */
+	/** OnPlayerRequestRespawn Callback: Player
+	 *
+	 * @deprecated
+	 */
 	const ONPLAYERREQUESTRESPAWN = 'Callbacks.OnPlayerRequestRespawn';
 
-	/** Elite OnBeginTurn Callback: EliteBeginTurnStructure */
+	/** Elite OnBeginTurn Callback: EliteBeginTurnStructure
+	 *
+	 * @deprecated
+	 */
 	const ELITE_ONBEGINTURN = "Callbacks.EliteOnBeginTurn";
-	/** Elite OnEndTurn Callback: integer (VictoryTypes) */
+	/** Elite OnEndTurn Callback: integer (VictoryTypes)
+	 *
+	 * @deprecated
+	 */
 	const ELITE_ONENDTURN = "Callbacks.EliteOnEndTurn";
 
-	/** Joust Selected Players */
+	/** Joust Selected Players
+	 *
+	 * @deprecated
+	 */
 	const JOUST_SELECTEDPLAYERS = "Callbacks.JoustSelectedPlayers";
 
 	/*
 	 * TrackMania Callbacks
 	 */
-	/** OnStartLine Callback */
+	/** OnStartLine Callback
+	 *
+	 * @deprecated
+	 */
 	const ONSTARTLINE = 'Callbacks.StartLine';
-	/** OnWayPoint Callback */
+	/** OnWayPoint Callback
+	 *
+	 * @deprecated
+	 */
 	const ONWAYPOINT = 'Callbacks.WayPoint';
-	/** OnGiveUp Callback */
+	/** OnGiveUp Callback
+	 *
+	 * @deprecated
+	 */
 	const ONGIVEUP = 'Callbacks.GiveUp';
-	/** OnRespawn Callback */
+	/** OnRespawn Callback
+	 *
+	 * @deprecated
+	 */
 	const ONRESPAWN = 'Callbacks.Respawn';
-	/** OnStunt Callback */
+	/** OnStunt Callback
+	 *
+	 * @deprecated
+	 */
 	const ONSTUNT = 'Callbacks.Stunt';
 
 }
