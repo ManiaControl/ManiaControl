@@ -37,30 +37,22 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener,
 	const CB_MAIN_WINDOW_OPENED  = 'ManialinkManagerCallback.MainWindowOpened';
 	const MAIN_MANIALINK_Z_VALUE = 20;
 
-	/*
-	 * Public properties
-	 */
-	/** @var StyleManager $styleManager */
-	/** @deprecated
-	 * @see getStyleManager()
-	 */
-	public $styleManager = null;
-	/** @var CustomUIManager $customUIManager */
-	/** @deprecated
-	 * @see getCustomUIManager()
-	 */
-	public $customUIManager = null;
-	/** @var IconManager $iconManager */
-	/** @deprecated
-	 * @see getIconManager()
-	 */
-	public $iconManager = null;
 
 	/*
 	 * Private properties
 	 */
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
+
+	/** @var StyleManager $styleManager */
+	private $styleManager = null;
+
+	/** @var CustomUIManager $customUIManager */
+	private $customUIManager = null;
+
+	/** @var IconManager $iconManager */
+	private $iconManager = null;
+
 	// TODO: use listening class
 	private $pageAnswerListeners     = array();
 	private $pageAnswerRegexListener = array();
@@ -370,7 +362,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener,
 	 * @param array $properties
 	 * @return Label_Text[]
 	 * @deprecated use \ManiaControl\Manialinks\LabelLine instead
-	 * @see \ManiaControl\Manialinks\LabelLine
+	 * @see        \ManiaControl\Manialinks\LabelLine
 	 */
 	public function labelLine(Frame $frame, array $labelStrings, array $properties = array()) {
 		// define standard properties
@@ -406,7 +398,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener,
 			}
 		} else {
 			foreach ($labelStrings as $text => $x) {
-				$labelLine->addLabelEntryText($text,$x);
+				$labelLine->addLabelEntryText($text, $x);
 			}
 		}
 		$labelLine->render();
