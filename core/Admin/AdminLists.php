@@ -149,9 +149,9 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener, Usage
 			}
 
 			$labelLine = new LabelLine($playerFrame);
-			$labelLine->addLabelEntryText($index, $posX + 5, 13);
-			$labelLine->addLabelEntryText($admin->nickname, $posX + 18, 52);
-			$labelLine->addLabelEntryText($admin->login, $posX + 70, 48);
+			$labelLine->addLabelEntryText($index, $posX + 5,13);
+			$labelLine->addLabelEntryText($admin->nickname,$posX + 18,52);
+			$labelLine->addLabelEntryText($admin->login,$posX + 70,48);
 			$labelLine->render();
 
 			// Level Quad

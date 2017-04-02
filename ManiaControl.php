@@ -11,7 +11,7 @@
 error_reporting(E_ALL);
 
 // Run configuration
-define('DEV_MODE', true); // Development mode to not send error reports etc.
+define('DEV_MODE', false); // Development mode to not send error reports etc.
 define('LOG_NAME_USE_DATE', true); // Use current date as suffix for log file name in logs folder
 define('LOG_NAME_USE_PID', true); // Use current process id as suffix for log file name in logs folder
 

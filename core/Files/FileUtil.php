@@ -4,6 +4,7 @@ namespace ManiaControl\Files;
 
 use ManiaControl\Logger;
 use ManiaControl\Utils\Formatter;
+use ManiaControl\Utils\SystemUtil;
 use ManiaControl\Utils\WebReader;
 
 /**
@@ -206,5 +207,24 @@ abstract class FileUtil {
 	public static function isPhpFileName($fileName) {
 		$extension = substr($fileName, -4);
 		return (strtolower($extension) === '.php');
+	}
+
+
+	/**
+	 * Returns the file name of a path to a PHP file
+	 *
+	 * @param $path
+	 * @return string
+	 */
+	public static function getFileName($path) {
+		$className      = '';
+		$splitNameSpace = explode(DIRECTORY_SEPARATOR, $path);
+		if (is_array($splitNameSpace)) {
+			$className = end($splitNameSpace);
+		}
+
+		$className = str_replace('.php', '', $className);
+
+		return $className;
 	}
 }

@@ -123,7 +123,6 @@ class EchoManager implements CallbackListener, EchoListener, UsageInformationAbl
 		$params = func_get_args();
 		$params = array_slice($params, 1, null, true);
 
-		//var_dump($params);
 		foreach ($this->echoListenings[$callbackName] as $listening) {
 			/** @var Listening $listening */
 			$listening->triggerCallbackWithParams($params);

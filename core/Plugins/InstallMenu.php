@@ -74,7 +74,7 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 		$pageFrame   = null;
 
 		$url        = ManiaControl::URL_WEBSERVICE . 'plugins';
-		$response   = WebReader::getUrl($url);
+		$response   = WebReader::getUrl($url); //TODO async webrequest
 		$dataJson   = $response->getContent();
 		$pluginList = json_decode($dataJson);
 		$index      = 0;

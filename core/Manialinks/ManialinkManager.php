@@ -35,7 +35,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener,
 	const ACTION_CLOSEWIDGET     = 'ManiaLinkManager.CloseWidget';
 	const CB_MAIN_WINDOW_CLOSED  = 'ManialinkManagerCallback.MainWindowClosed';
 	const CB_MAIN_WINDOW_OPENED  = 'ManialinkManagerCallback.MainWindowOpened';
-	const MAIN_MANIALINK_Z_VALUE = 10;
+	const MAIN_MANIALINK_Z_VALUE = 20;
 
 	/*
 	 * Public properties

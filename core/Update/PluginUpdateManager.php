@@ -334,7 +334,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 					}
 					Logger::log($message);
 
-					$this->maniaControl->getConfigurator()->showMenu($player, InstallMenu::getTitle());
+					$this->maniaControl->getConfigurator()->showMenu($player, $this->maniaControl->getPluginManager()->getPluginInstallMenu());
 				}
 			}
 		});
