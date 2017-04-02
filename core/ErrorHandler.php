@@ -120,11 +120,13 @@ class ErrorHandler {
 				$report['FileLine'] = self::stripBaseDir($fileLine);
 			}
 
+
 			if ($sourceClass) {
 				$report['SourceClass'] = $sourceClass;
 				$pluginId              = PluginManager::getPluginId($sourceClass);
 				if ($pluginId > 0) {
 					$report['PluginId'] = $pluginId;
+
 
 					if ($isFatalError) {
 						$this->maniaControl->getPluginManager()->deactivatePlugin($sourceClass);

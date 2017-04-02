@@ -227,7 +227,7 @@ class MapQueue implements CallbackListener, CommandListener, UsageInformationAbl
 				unset($this->queuedMaps[$map->uid]);
 			}
 			array_unshift($this->queuedMaps, array($player, $map, true));
-			$this->maniaControl->callbackManager->triggerCallback(self::CB_MAPQUEUE_CHANGED, array('add', $map));
+			$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_MAPQUEUE_CHANGED, array('add', $map));
 		}
 	}
 

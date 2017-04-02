@@ -12,6 +12,7 @@ use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Utils\ClassUtil;
+use ReflectionClass;
 
 /**
  * Class managing Plugins
@@ -119,6 +120,18 @@ class PluginManager {
 		if (!in_array(Plugin::PLUGIN_INTERFACE, $interfaces)) {
 			return false;
 		}
+
+		$reflector = new ReflectionClass($pluginClass);
+		$className = $pluginClass;
+		$splitNameSpace = explode('\\', $pluginClass);
+		if (is_array($splitNameSpace)) {
+			$className = end($splitNameSpace);
+		}
+		if (FileUtil::getFileName($reflector->getFileName()) != $className) {
+			Logger::logError("Plugin ClassName does not match FileName; Plugin: " . $className);
+			return false;
+		}
+
 		return true;
 	}
 
@@ -225,6 +238,7 @@ class PluginManager {
 			return false;
 		}
 		$pluginStatement->close();
+
 		return true;
 	}
 
@@ -492,5 +506,13 @@ class PluginManager {
 		});
 
 		$asyncHttpRequest->getData();
+	}
+
+	/**
+	 * @internal
+	 * @return \ManiaControl\Plugins\InstallMenu
+	 */
+	public function getPluginInstallMenu() {
+		return $this->pluginInstallMenu;
 	}
 }
