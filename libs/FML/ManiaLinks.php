@@ -64,7 +64,8 @@ class ManiaLinks
      * @api
      * @param ManiaLink $child Child ManiaLink
      * @return static
-     * @deprecated use addChild() instead
+     * @deprecated Use addChild()
+     * @see        ManiaLinks::addChild()
      */
     public function add(ManiaLink $child)
     {
@@ -87,6 +88,21 @@ class ManiaLinks
     }
 
     /**
+     * Add child ManiaLinks
+     *
+     * @api
+     * @param ManiaLink[] $children Child ManiaLinks
+     * @return static
+     */
+    public function addChildren(array $children)
+    {
+        foreach ($children as $child) {
+            $this->addChild($child);
+        }
+        return $this;
+    }
+
+    /**
      * Set ManiaLink children
      *
      * @api
@@ -95,23 +111,8 @@ class ManiaLinks
      */
     public function setChildren(array $children)
     {
-        $this->children = array();
-        foreach ($children as $child) {
-            $this->addChild($child);
-        }
-        return $this;
-    }
-
-    /**
-     * Remove all child ManiaLinks
-     *
-     * @api
-     * @return static
-     * @deprecated use removeAllChildren instead
-     */
-    public function removeChildren()
-    {
-        return $this->removeAllChildren();
+        return $this->removeAllChildren()
+                    ->addChildren($children);
     }
 
     /**
@@ -127,13 +128,30 @@ class ManiaLinks
     }
 
     /**
+     * Remove all child ManiaLinks
+     *
+     * @api
+     * @return static
+     * @deprecated Use removeAllChildren()
+     * @see        ManiaLinks::removeAllChildren()
+     */
+    public function removeChildren()
+    {
+        return $this->removeAllChildren();
+    }
+
+    /**
      * Get the CustomUI
      *
      * @api
+     * @param bool $createIfEmpty (optional) If the Custom UI should be created if it doesn't exist yet
      * @return CustomUI
      */
-    public function getCustomUI()
+    public function getCustomUI($createIfEmpty = true)
     {
+        if (!$this->customUI && $createIfEmpty) {
+            $this->setCustomUI(new CustomUI());
+        }
         return $this->customUI;
     }
 

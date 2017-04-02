@@ -215,15 +215,19 @@ class Dico
      * Remove entries of the given id
      *
      * @api
-     * @param string $entryId Entry id that should be removed
+     * @param string $entryId  Entry id that should be removed
+     * @param string $language (optional) Only remove entry from the given language
      * @return static
      */
-    public function removeEntry($entryId)
+    public function removeEntry($entryId, $language = null)
     {
         $entryId = (string)$entryId;
-        foreach ($this->entries as $language => $entries) {
-            if (isset($this->entries[$language][$entryId])) {
-                unset($this->entries[$language][$entryId]);
+        foreach ($this->entries as $languageKey => $entries) {
+            if ($language && $language !== $languageKey) {
+                continue;
+            }
+            if (isset($this->entries[$languageKey][$entryId])) {
+                unset($this->entries[$languageKey][$entryId]);
             }
         }
         return $this;
@@ -243,6 +247,19 @@ class Dico
             unset($this->entries[$language]);
         }
         return $this;
+    }
+
+    /**
+     * Remove entries
+     *
+     * @api
+     * @return static
+     * @deprecated Use removeAllEntries()
+     * @see        Dico::removeAllEntries()
+     */
+    public function removeEntries()
+    {
+        return $this->removeAllEntries();
     }
 
     /**

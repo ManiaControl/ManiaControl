@@ -13,6 +13,11 @@ class Stylesheet
 {
 
     /**
+     * @var Style[] $styles Styles
+     */
+    protected $styles = array();
+
+    /**
      * @var Style3d[] $styles3d 3d Styles
      */
     protected $styles3d = array();
@@ -31,6 +36,44 @@ class Stylesheet
     public static function create()
     {
         return new static();
+    }
+
+    /**
+     * Get the Styles
+     *
+     * @api
+     * @return Style[]
+     */
+    public function getStyles()
+    {
+        return $this->styles;
+    }
+
+    /**
+     * Add a new Style
+     *
+     * @api
+     * @param Style $style The Style to be added
+     * @return static
+     */
+    public function addStyle(Style $style)
+    {
+        if (!in_array($style, $this->styles, true)) {
+            array_push($this->styles, $style);
+        }
+        return $this;
+    }
+
+    /**
+     * Remove all Styles
+     *
+     * @api
+     * @return static
+     */
+    public function removeAllStyles()
+    {
+        $this->styles = array();
+        return $this;
     }
 
     /**
@@ -72,13 +115,31 @@ class Stylesheet
     }
 
     /**
+     * Remove all Style3ds
+     *
+     * @api
+     * @return static
+     * @deprecated Use removeAllStyles3d()
+     * @see        Stylesheet::removeAllStyles3d()
+     */
+    public function removeStyles()
+    {
+        return $this->removeAllStyles()
+                    ->removeAllStyles3d();
+    }
+
+    /**
      * Get the Mood
      *
      * @api
+     * @param bool $createIfEmpty (optional) If the Mood should be created if it doesn't exist yet
      * @return Mood
      */
-    public function getMood()
+    public function getMood($createIfEmpty = true)
     {
+        if (!$this->mood && $createIfEmpty) {
+            $this->createMood();
+        }
         return $this->mood;
     }
 

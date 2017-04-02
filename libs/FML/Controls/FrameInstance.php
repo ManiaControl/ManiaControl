@@ -26,6 +26,34 @@ class FrameInstance extends Control
     protected $model = null;
 
     /**
+     * Create a new Frame Instance
+     *
+     * @api
+     * @param string $controlId (optional) Control Id
+     * @param string $modelId   (optional) Model Id
+     * @return static
+     */
+    public static function create($controlId = null, $modelId = null)
+    {
+        return new static($controlId, $modelId);
+    }
+
+    /**
+     * Construct a new Frame Instance
+     *
+     * @api
+     * @param string $controlId (optional) Control Id
+     * @param string $modelId   (optional) Model Id
+     */
+    public function __construct($controlId = null, $modelId = null)
+    {
+        parent::__construct($controlId);
+        if ($modelId) {
+            $this->setModelId($modelId);
+        }
+    }
+
+    /**
      * Get the FrameModel id
      *
      * @api

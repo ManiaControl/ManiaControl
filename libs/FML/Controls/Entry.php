@@ -43,8 +43,8 @@ class Entry extends Control implements NewLineable, Scriptable, Styleable, TextF
     protected $selectText = null;
 
     /**
-     * @deprecated
      * @var bool $autoNewLine Auto new line
+     * @deprecated
      */
     protected $autoNewLine = null;
 

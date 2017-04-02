@@ -2,8 +2,10 @@
 
 namespace FML\Controls;
 
+use FML\Components\CheckBoxDesign;
 use FML\Types\Actionable;
 use FML\Types\BackgroundColorable;
+use FML\Types\BgColorable;
 use FML\Types\Imageable;
 use FML\Types\Linkable;
 use FML\Types\Scriptable;
@@ -18,7 +20,7 @@ use FML\Types\SubStyleable;
  * @copyright FancyManiaLinks Copyright © 2017 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class Quad extends Control implements Actionable, BackgroundColorable, Imageable, Linkable, Scriptable, Styleable, SubStyleable
+class Quad extends Control implements Actionable, BackgroundColorable, BgColorable, Imageable, Linkable, Scriptable, Styleable, SubStyleable
 {
 
     /*
@@ -82,6 +84,11 @@ class Quad extends Control implements Actionable, BackgroundColorable, Imageable
      * @var string $backgroundColor Background color
      */
     protected $backgroundColor = null;
+
+    /**
+     * @var string $focusBackgroundColor Focus background color
+     */
+    protected $focusBackgroundColor = null;
 
     /**
      * @var string $action Action name
@@ -152,7 +159,8 @@ class Quad extends Control implements Actionable, BackgroundColorable, Imageable
     }
 
     /**
-     * @deprecated use setImageUrl() instead
+     * @deprecated Use setImageUrl()
+     * @see        Quad::setImageUrl()
      */
     public function setImage($imageUrl)
     {
@@ -204,9 +212,13 @@ class Quad extends Control implements Actionable, BackgroundColorable, Imageable
     }
 
     /**
-     * @param $imageFocusUrl
-     * @return \FML\Controls\Quad
-     * @deprecated
+     * Set the focus image url
+     *
+     * @api
+     * @param string $imageFocusUrl Focus image url
+     * @return static
+     * @deprecated Use setImageFocusUrl()
+     * @see        Quad::setImageFocusUrl()
      */
     public function setImageFocus($imageFocusUrl)
     {
@@ -403,11 +415,37 @@ class Quad extends Control implements Actionable, BackgroundColorable, Imageable
     }
 
     /**
-     * @see BackgroundColorable::setBgColor()
+     * @see BackgroundColorable::setBackgroundColor()
      */
     public function setBackgroundColor($backgroundColor)
     {
         $this->backgroundColor = (string)$backgroundColor;
+        return $this;
+    }
+
+    /**
+     * @deprecated Use setBackgroundColor()
+     * @see        Quad::setBackgroundColor()
+     */
+    public function setBgColor($bgColor)
+    {
+        return $this->setBackgroundColor($bgColor);
+    }
+
+    /**
+     * @see BackgroundColorable::getFocusBackgroundColor()
+     */
+    public function getFocusBackgroundColor()
+    {
+        return $this->focusBackgroundColor;
+    }
+
+    /**
+     * @see BackgroundColorable::setFocusBackgroundColor()
+     */
+    public function setFocusBackgroundColor($focusBackgroundColor)
+    {
+        $this->focusBackgroundColor = (string)$focusBackgroundColor;
         return $this;
     }
 
@@ -633,6 +671,19 @@ class Quad extends Control implements Actionable, BackgroundColorable, Imageable
     }
 
     /**
+     * Apply the CheckBox Design
+     *
+     * @api
+     * @param CheckBoxDesign $checkBoxDesign CheckBox Design
+     * @return static
+     */
+    public function applyCheckBoxDesign(CheckBoxDesign $checkBoxDesign)
+    {
+        $checkBoxDesign->applyToQuad($this);
+        return $this;
+    }
+
+    /**
      * @see Control::getTagName()
      */
     public function getTagName()
@@ -686,6 +737,9 @@ class Quad extends Control implements Actionable, BackgroundColorable, Imageable
         }
         if ($this->backgroundColor) {
             $domElement->setAttribute("bgcolor", $this->backgroundColor);
+        }
+        if ($this->focusBackgroundColor) {
+            $domElement->setAttribute("bgcolorfocus", $this->focusBackgroundColor);
         }
         if ($this->action) {
             $domElement->setAttribute("action", $this->action);

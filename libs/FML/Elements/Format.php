@@ -2,7 +2,9 @@
 
 namespace FML\Elements;
 
+use FML\Stylesheet\Style;
 use FML\Types\BackgroundColorable;
+use FML\Types\BgColorable;
 use FML\Types\Renderable;
 use FML\Types\Styleable;
 use FML\Types\TextFormatable;
@@ -10,17 +12,24 @@ use FML\Types\TextFormatable;
 /**
  * Format Element
  *
- * @author    steeffeen <mail@steeffeen.com>
- * @copyright FancyManiaLinks Copyright © 2017 Steffen Schröder
- * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @author     steeffeen <mail@steeffeen.com>
+ * @copyright  FancyManiaLinks Copyright © 2017 Steffen Schröder
+ * @license    http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ * @deprecated Use Style
+ * @see        Style
  */
-class Format implements BackgroundColorable, Renderable, Styleable, TextFormatable
+class Format implements BackgroundColorable, BgColorable, Renderable, Styleable, TextFormatable
 {
 
     /**
      * @var string $backgroundColor Background color
      */
     protected $backgroundColor = null;
+
+    /**
+     * @var string $focusBackgroundColor Focus background color
+     */
+    protected $focusBackgroundColor = null;
 
     /**
      * @var string $style Style
@@ -64,7 +73,7 @@ class Format implements BackgroundColorable, Renderable, Styleable, TextFormatab
     }
 
     /**
-     * @see BgColorable::getBackgroundColor()
+     * @see BackgroundColorable::getBackgroundColor()
      */
     public function getBackgroundColor()
     {
@@ -72,11 +81,37 @@ class Format implements BackgroundColorable, Renderable, Styleable, TextFormatab
     }
 
     /**
-     * @see BgColorable::setBackgroundColor()
+     * @see BackgroundColorable::setBackgroundColor()
      */
     public function setBackgroundColor($backgroundColor)
     {
         $this->backgroundColor = (string)$backgroundColor;
+        return $this;
+    }
+
+    /**
+     * @deprecated Use setBackgroundColor()
+     * @see        Format::setBackgroundColor()
+     */
+    public function setBgColor($bgColor)
+    {
+        return $this->setBackgroundColor($bgColor);
+    }
+
+    /**
+     * @see BackgroundColorable::getFocusBackgroundColor()
+     */
+    public function getFocusBackgroundColor()
+    {
+        return $this->focusBackgroundColor;
+    }
+
+    /**
+     * @see BackgroundColorable::setFocusBackgroundColor()
+     */
+    public function setFocusBackgroundColor($focusBackgroundColor)
+    {
+        $this->focusBackgroundColor = (string)$focusBackgroundColor;
         return $this;
     }
 
@@ -190,6 +225,9 @@ class Format implements BackgroundColorable, Renderable, Styleable, TextFormatab
         $domElement = $domDocument->createElement("format");
         if ($this->backgroundColor) {
             $domElement->setAttribute("bgcolor", $this->backgroundColor);
+        }
+        if ($this->focusBackgroundColor) {
+            $domElement->setAttribute("bgcolorfocus", $this->focusBackgroundColor);
         }
         if ($this->style) {
             $domElement->setAttribute("style", $this->style);

@@ -39,7 +39,7 @@ class TextEdit extends Control implements MultiLineable, Scriptable, Styleable, 
     /**
      * @var float $lineSpacing Line spacing
      */
-    protected $lineSpacing = -1.;
+    protected $lineSpacing = 1.;
 
     /**
      * @var int $maxLines Maximum number of lines
@@ -406,7 +406,7 @@ class TextEdit extends Control implements MultiLineable, Scriptable, Styleable, 
         if ($this->autoNewLine) {
             $domElement->setAttribute("autonewline", 1);
         }
-        if ($this->lineSpacing > 0) {
+        if ($this->lineSpacing !== 1.) {
             $domElement->setAttribute("linespacing", $this->lineSpacing);
         }
         if ($this->maxLines > 0) {

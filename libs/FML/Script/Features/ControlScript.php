@@ -75,6 +75,7 @@ class ControlScript extends ScriptFeature
     public function setControl(Control $control)
     {
         $control->checkId();
+        $control->addScriptFeature($this);
         $this->control = $control;
         $this->updateScriptEvents();
         return $this;
@@ -102,6 +103,20 @@ class ControlScript extends ScriptFeature
     {
         $this->scriptText = (string)$scriptText;
         return $this;
+    }
+
+    /**
+     * Set the script text
+     *
+     * @api
+     * @param string $text Text
+     * @return static
+     * @deprecated Use setScriptText()
+     * @see        ControlScript::setScriptText()
+     */
+    public function setText($text)
+    {
+        return $this->setScriptText($text);
     }
 
     /**
@@ -174,8 +189,8 @@ declare Control <=> Event.Control;";
             $scriptText .= "
 declare Control <=> Page.GetFirstChild({$controlId});";
         }
-        $class = $this->control->getManiaScriptClass();
-        $name  = preg_replace('/^CMl/', '', $class, 1);
+        $class      = $this->control->getManiaScriptClass();
+        $name       = preg_replace('/^CMl/', '', $class, 1);
         $scriptText .= "
 declare {$name} <=> (Control as {$class});
 ";
