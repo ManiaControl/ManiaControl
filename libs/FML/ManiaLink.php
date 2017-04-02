@@ -21,7 +21,10 @@ class ManiaLink
     /*
      * Constants
      */
-    const MANIALINK_VERSION   = 3;
+    const VERSION_0           = 0;
+    const VERSION_1           = 1;
+    const VERSION_2           = 2;
+    const VERSION_3           = 3;
     const BACKGROUND_0        = "0";
     const BACKGROUND_1        = "1";
     const BACKGROUND_STARS    = "stars";
@@ -36,7 +39,7 @@ class ManiaLink
     /**
      * @var int $version ManiaLink version
      */
-    protected $version = 1;
+    protected $version = 0;
 
     /**
      * @var string $name ManiaLink name
@@ -88,7 +91,7 @@ class ManiaLink
      * @param Renderable[] $children    (optional) Children
      * @return static
      */
-    public static function create($maniaLinkId = null, $version = null, $name = null, array $children = null)
+    public static function create($maniaLinkId = null, $version = ManiaLink::VERSION_1, $name = null, array $children = null)
     {
         return new static($maniaLinkId, $version, $name, $children);
     }
@@ -102,18 +105,17 @@ class ManiaLink
      * @param string       $name        (optional) Name
      * @param Renderable[] $children    (optional) Children
      */
-    public function __construct($maniaLinkId = null, $version = null, $name = null, array $children = null)
+    public function __construct($maniaLinkId = null, $version = ManiaLink::VERSION_3, $name = null, array $children = null)
     {
-        if (is_string($version)) {
+        if (is_string($version) && (!$name || is_array($name)) && !$children) {
             // backwards-compatibility (version has been introduced later)
             $children = $name;
             $name     = $version;
-            $version  = null;
+            $version  = ManiaLink::VERSION_3;
         }
         if ($maniaLinkId) {
             $this->setId($maniaLinkId);
         }
-        $this->setVersion(self::MANIALINK_VERSION);
         if ($version) {
             $this->setVersion($version);
         }
@@ -123,7 +125,6 @@ class ManiaLink
         if ($children) {
             $this->setChildren($children);
         }
-        $this->createScript();
     }
 
     /**
@@ -290,7 +291,8 @@ class ManiaLink
      * @api
      * @param Renderable $child Child Element to add
      * @return static
-     * @deprecated use addChild() instead
+     * @deprecated Use addChild()
+     * @see        ManiaLink::addChild()
      */
     public function add(Renderable $child)
     {
@@ -313,6 +315,21 @@ class ManiaLink
     }
 
     /**
+     * Add children
+     *
+     * @api
+     * @param Renderable[] $children Child Elements to add
+     * @return static
+     */
+    public function addChildren(array $children)
+    {
+        foreach ($children as $child) {
+            $this->addChild($child);
+        }
+        return $this;
+    }
+
+    /**
      * Set children
      *
      * @api
@@ -321,11 +338,8 @@ class ManiaLink
      */
     public function setChildren(array $children)
     {
-        $this->children = array();
-        foreach ($children as $child) {
-            $this->addChild($child);
-        }
-        return $this;
+        return $this->removeAllChildren()
+                    ->addChildren($children);
     }
 
     /**
@@ -333,7 +347,8 @@ class ManiaLink
      *
      * @api
      * @return static
-     * @deprecated use removeAllChildren() instead
+     * @deprecated Use removeAllChildren()
+     * @see        ManiaLink::removeAllChildren()
      */
     public function removeChildren()
     {
@@ -356,10 +371,14 @@ class ManiaLink
      * Get the Dictionary
      *
      * @api
+     * @param bool $createIfEmpty (optional) If the Dico should be created if it doesn't exist yet
      * @return Dico
      */
-    public function getDico()
+    public function getDico($createIfEmpty = true)
     {
+        if (!$this->dico && $createIfEmpty) {
+            $this->setDico(new Dico());
+        }
         return $this->dico;
     }
 
@@ -382,8 +401,11 @@ class ManiaLink
      * @api
      * @return Stylesheet
      */
-    public function getStylesheet()
+    public function getStylesheet($createIfEmpty = true)
     {
+        if (!$this->stylesheet && $createIfEmpty) {
+            return $this->createStylesheet();
+        }
         return $this->stylesheet;
     }
 
@@ -401,13 +423,33 @@ class ManiaLink
     }
 
     /**
+     * Create and assign a new Stylesheet if necessary
+     *
+     * @api
+     * @return Stylesheet
+     */
+    public function createStylesheet()
+    {
+        if ($this->stylesheet) {
+            return $this->stylesheet;
+        }
+        $stylesheet = new Stylesheet();
+        $this->setStylesheet($stylesheet);
+        return $this->stylesheet;
+    }
+
+    /**
      * Get the Script
      *
      * @api
+     * @param bool $createIfEmpty (optional) Create the script if it's not set yet
      * @return Script
      */
-    public function getScript()
+    public function getScript($createIfEmpty = true)
     {
+        if (!$this->script && $createIfEmpty) {
+            return $this->createScript();
+        }
         return $this->script;
     }
 

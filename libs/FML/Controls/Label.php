@@ -95,7 +95,7 @@ class Label extends Control implements Actionable, Linkable, NewLineable, MultiL
     /**
      * @var float $lineSpacing Line spacing
      */
-    protected $lineSpacing = -1.;
+    protected $lineSpacing = 1.;
 
     /**
      * @var bool $scriptEvents Script events usage
@@ -669,7 +669,7 @@ class Label extends Control implements Actionable, Linkable, NewLineable, MultiL
         if ($this->autoNewLine) {
             $domElement->setAttribute("autonewline", $this->autoNewLine);
         }
-        if ($this->lineSpacing) {
+        if ($this->lineSpacing !== 1.) {
             $domElement->setAttribute("linespacing", $this->lineSpacing);
         }
         if ($this->maxLines > 0) {

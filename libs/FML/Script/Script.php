@@ -18,19 +18,38 @@ class Script
      * Constants
      */
     const TICKINTERVAL    = 250;
-    const VAR_ScriptStart = 'FML_ScriptStart';
-    const VAR_LoopCounter = 'FML_LoopCounter';
-    const VAR_LastTick    = 'FML_LastTick';
+    const VAR_ScriptStart = "FML_ScriptStart";
+    const VAR_LoopCounter = "FML_LoopCounter";
+    const VAR_LastTick    = "FML_LastTick";
 
-    /*
-     * Protected properties
+    /**
+     * @var ScriptFeature[] $features Script Features
      */
-    protected $tagName = 'script';
     protected $features = array();
+
+    /**
+     * @var ScriptInclude[] $includes Script Includes
+     */
     protected $includes = array();
+
+    /**
+     * @var ScriptConstant[] $constants Script Constants
+     */
     protected $constants = array();
+
+    /**
+     * @var ScriptFunction[] $functions Script Functions
+     */
     protected $functions = array();
+
+    /**
+     * @var ScriptLabel[] $customLabels Custom Script Labels
+     */
     protected $customLabels = array();
+
+    /**
+     * @var ScriptLabel[] $genericLabels Generic Script Labels
+     */
     protected $genericLabels = array();
 
     /**
@@ -229,10 +248,13 @@ class Script
     public function render(\DOMDocument $domDocument)
     {
         $this->loadFeatures($this->features);
-        $scriptXml     = $domDocument->createElement($this->tagName);
-        $scriptText    = $this->buildScriptText();
+
+        $scriptXml  = $domDocument->createElement("script");
+        $scriptText = $this->buildScriptText();
+
         $scriptComment = $domDocument->createComment($scriptText);
         $scriptXml->appendChild($scriptComment);
+
         return $scriptXml;
     }
 

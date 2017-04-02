@@ -19,16 +19,21 @@ class Frame3d extends Frame implements Scriptable
     /*
      * Constants
      */
-    const STYLE_BaseStation = 'BaseStation';
-    const STYLE_BaseBoxCase = 'BaseBoxCase';
-    const STYLE_TitleLogo   = 'Titlelogo';
-    const STYLE_ButtonBack  = 'ButtonBack';
-    const STYLE_ButtonNav   = 'ButtonNav';
-    const STYLE_ButtonH     = 'ButtonH';
-    const STYLE_Station3x3  = 'Station3x3';
-    const STYLE_Title       = 'Title';
-    const STYLE_TitleEditor = 'TitleEditor';
-    const STYLE_Window      = 'Window';
+    const STYLE_BaseStation = "BaseStation";
+    const STYLE_BaseBoxCase = "BaseBoxCase";
+    const STYLE_TitleLogo   = "TitleLogo";
+    /**
+     * @deprecated Use STYLE_TitleLogo
+     * @see        Frame3d::STYLE_TitleLogo
+     */
+    const STYLE_Titlelogo   = "Titlelogo";
+    const STYLE_ButtonBack  = "ButtonBack";
+    const STYLE_ButtonNav   = "ButtonNav";
+    const STYLE_ButtonH     = "ButtonH";
+    const STYLE_Station3x3  = "Station3x3";
+    const STYLE_Title       = "Title";
+    const STYLE_TitleEditor = "TitleEditor";
+    const STYLE_Window      = "Window";
 
     /**
      * @var string $style3dId Style3d id

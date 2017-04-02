@@ -29,4 +29,21 @@ interface BackgroundColorable
      */
     public function setBackgroundColor($backgroundColor);
 
+    /**
+     * Get the focus background color
+     *
+     * @api
+     * @return string
+     */
+    public function getFocusBackgroundColor();
+
+    /**
+     * Set the focus background color
+     *
+     * @api
+     * @param string $focusBackgroundColor Focus background color
+     * @return static
+     */
+    public function setFocusBackgroundColor($focusBackgroundColor);
+
 }

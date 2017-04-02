@@ -232,12 +232,13 @@ class ManiaCode
      * Join a server
      *
      * @api
-     * @param string $login Server login
+     * @param string $loginOrIp (optional) Server login or ip
+     * @param int    $port      (optional) Server port
      * @return static
      */
-    public function addJoinServer($login)
+    public function addJoinServer($loginOrIp = null, $port = null)
     {
-        $serverElement = new JoinServer($login);
+        $serverElement = new JoinServer($loginOrIp, $port);
         return $this->addElement($serverElement);
     }
 
@@ -245,12 +246,13 @@ class ManiaCode
      * Add a server as favorite
      *
      * @api
-     * @param string $login Server login
+     * @param string $loginOrIp (optional) Server login or ip
+     * @param int    $port      (optional) Server port
      * @return static
      */
-    public function addAddFavorite($login)
+    public function addAddFavorite($loginOrIp = null, $port = null)
     {
-        $favoriteElement = new AddFavorite($login);
+        $favoriteElement = new AddFavorite($loginOrIp, $port);
         return $this->addElement($favoriteElement);
     }
 
@@ -311,15 +313,18 @@ class ManiaCode
     }
 
     /**
-     * Remove all ManiaCode Elements
+     * Add ManiaCode Elements
      *
      * @api
+     * @param Element[] $elements Elements to add
      * @return static
-     * @deprecated use removeAllElements() instead
      */
-    public function removeElements()
+    public function addElements(array $elements)
     {
-        return $this->removeAllElements();
+        foreach ($elements as $element) {
+            $this->addElement($element);
+        }
+        return $this;
     }
 
     /**
@@ -332,6 +337,19 @@ class ManiaCode
     {
         $this->elements = array();
         return $this;
+    }
+
+    /**
+     * Remove all ManiaCode Elements
+     *
+     * @api
+     * @return static
+     * @deprecated Use removeAllElements()
+     * @see        ManiaCode::removeAllElements()
+     */
+    public function removeElements()
+    {
+        return $this->removeAllElements();
     }
 
     /**

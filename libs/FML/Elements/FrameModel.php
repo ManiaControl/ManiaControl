@@ -2,6 +2,7 @@
 
 namespace FML\Elements;
 
+use FML\Stylesheet\Style;
 use FML\Types\Container;
 use FML\Types\Identifiable;
 use FML\Types\Renderable;
@@ -113,12 +114,21 @@ class FrameModel implements Container, Identifiable, Renderable
     /**
      * @see Container::addChild()
      */
-    public function addChild(Renderable $childElement)
+    public function addChild(Renderable $child)
     {
-        if (!in_array($childElement, $this->children, true)) {
-            array_push($this->children, $childElement);
+        if (!in_array($child, $this->children, true)) {
+            array_push($this->children, $child);
         }
         return $this;
+    }
+
+    /**
+     * @deprecated Use addChild()
+     * @see        FrameModel::addChild()
+     */
+    public function add(Renderable $child)
+    {
+        return $this->addChild($child);
     }
 
     /**
@@ -142,15 +152,29 @@ class FrameModel implements Container, Identifiable, Renderable
     }
 
     /**
-     * @see Container::getFormat()
+     * @deprecated Use removeAllChildren()
+     * @see        FrameModel::removeAllChildren()
      */
-    public function getFormat()
+    public function removeChildren()
     {
+        return $this->removeAllChildren();
+    }
+
+    /**
+     * @deprecated Use Style
+     * @see        Style
+     */
+    public function getFormat($createIfEmpty = true)
+    {
+        if (!$this->format && $createIfEmpty) {
+            $this->setFormat(new Format());
+        }
         return $this->format;
     }
 
     /**
-     * @see Container::setFormat()
+     * @deprecated Use Style
+     * @see        Style
      */
     public function setFormat(Format $format = null)
     {

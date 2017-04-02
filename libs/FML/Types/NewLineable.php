@@ -18,8 +18,9 @@ interface NewLineable
      * Get auto new line
      *
      * @api
-     * @deprecated
      * @return bool
+     * @deprecated Use MultiLineable::getAutoNewLine()
+     * @see        MultiLineable::getAutoNewLine()
      */
     public function getAutoNewLine();
 
@@ -27,9 +28,10 @@ interface NewLineable
      * Set auto new line
      *
      * @api
-     * @deprecated
      * @param bool $autoNewLine If the Element should insert new lines automatically
      * @return static
+     * @deprecated Use MultiLineable::setAutoNewLine()
+     * @see        MultiLineable::setAutoNewLine()
      */
     public function setAutoNewLine($autoNewLine);
 
