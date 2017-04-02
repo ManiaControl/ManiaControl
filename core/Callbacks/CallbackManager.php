@@ -48,15 +48,13 @@ class CallbackManager implements UsageInformationAble {
 	const CB_TM_PLAYERINCOHERENCE = 'TrackMania.PlayerIncoherence';
 
 	/*
-	 * Public properties
-	 */
-	public $libXmlRpcCallbacks  = null;
-	public $shootManiaCallbacks = null;
-	public $trackManiaCallbacks = null;
-
-	/*
 	 * Private properties
 	 */
+	private $libXmlRpcCallbacks  = null;
+	private $shootManiaCallbacks = null;
+	private $trackManiaCallbacks = null;
+
+
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	/** @var Listening[][] $callbackListenings */
