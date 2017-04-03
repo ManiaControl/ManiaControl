@@ -4,6 +4,7 @@ namespace ManiaControl\Commands;
 
 use FML\Controls\Frame;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
+use FML\Controls\Quads\Quad_UIConstruction_Buttons;
 use FML\ManiaLink;
 use FML\Script\Features\Paging;
 use ManiaControl\Callbacks\CallbackListener;
@@ -11,6 +12,7 @@ use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\LabelLine;
 use ManiaControl\Manialinks\ManialinkManager;
+use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 
 /**
@@ -20,7 +22,10 @@ use ManiaControl\Players\Player;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class HelpManager implements CommandListener, CallbackListener {
+class HelpManager implements CommandListener, CallbackListener, ManialinkPageAnswerListener {
+
+	const ACTION_OPEN_HELP_ALL = 'Helpmanager.OpenHelpall';
+
 	/*
 	 * Private properties
 	 */
@@ -36,6 +41,14 @@ class HelpManager implements CommandListener, CallbackListener {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
+
+		// Action Open StatsList
+		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_OPEN_HELP_ALL, $this, 'maniaLink_helpAll');
+
+		$itemQuad = new Quad_UIConstruction_Buttons();
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Help);
+		$itemQuad->setAction(self::ACTION_OPEN_HELP_ALL);
+		$this->maniaControl->getActionsMenu()->addMenuItem($itemQuad, true, 16, 'Available commands');
 
 		// Callbacks
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::ONINIT, $this, 'handleOnInit');
@@ -96,12 +109,22 @@ class HelpManager implements CommandListener, CallbackListener {
 	}
 
 	/**
+	 * Show a ManiaLink
+	 *
+	 * @param array                        $callback
+	 * @param \ManiaControl\Players\Player $player
+	 */
+	public function maniaLink_helpAll(array $callback, Player $player) {
+		$this->parseHelpList($this->playerCommands, true, $player);
+	}
+
+	/**
 	 * Parse list with commands from array
 	 *
 	 * @param array  $commands
 	 * @param bool   $isHelpAll
 	 * @param Player $player
-	 * @return string|void
+	 * @return string
 	 */
 	private function parseHelpList(array $commands, $isHelpAll = false, Player $player = null) {
 		$showCommands      = array();
@@ -186,7 +209,7 @@ class HelpManager implements CommandListener, CallbackListener {
 				$pageFrame = new Frame();
 				$frame->addChild($pageFrame);
 				$posY = $height / 2 - 10;
-				$paging->addPageControl($pageFrame); //TODO @Jocy
+				$paging->addPageControl($pageFrame);
 			}
 
 			$playerFrame = new Frame();
