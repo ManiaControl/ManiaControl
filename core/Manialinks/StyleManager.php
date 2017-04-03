@@ -163,7 +163,7 @@ class StyleManager implements UsageInformationAble {
 
 		// mainframe
 		$frame = new Frame();
-		$frame->setSize($width, $height)->setZ(45); //TODO place before scoreboards
+		$frame->setSize($width, $height)->setZ(ManialinkManager::MAIN_MANIALINK_Z_VALUE); //TODO place before scoreboards
 
 		//TODO remove: (just temporary fix for tm bug)
 		if ($this->maniaControl->getMapManager()->getCurrentMap()->getGame() === 'tm') {
