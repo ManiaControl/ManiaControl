@@ -223,7 +223,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 			$description = "Donate {$value} Planets";
 			$label->addTooltipLabelFeature($descriptionLabel, $description);
 
-			$posX -= strlen($value) * 2 + 1.7;
+			$posX -= strlen($value) * 1.6 + 2.5;
 		}
 
 		$descriptionFrame->setPosition($origPosX + $posX  - $width + $itemMarginFactorX, $posY);
