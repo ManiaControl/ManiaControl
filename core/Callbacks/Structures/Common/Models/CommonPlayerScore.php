@@ -3,12 +3,21 @@
 namespace ManiaControl\Callbacks\Structures\Common\Models;
 
 
+use ManiaControl\General\JsonSerializable;
+use ManiaControl\General\JsonSerializeTrait;
 use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\Players\Player;
 
-class CommonPlayerScore implements UsageInformationAble {
-	use UsageInformationTrait;
+/**
+ * Common PlayerStructure Model
+ *
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014-2017 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ */
+class CommonPlayerScore implements UsageInformationAble, JsonSerializable {
+	use UsageInformationTrait, JsonSerializeTrait;
 
 	protected $player;
 	protected $rank;

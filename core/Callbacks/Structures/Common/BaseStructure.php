@@ -3,6 +3,8 @@
 namespace ManiaControl\Callbacks\Structures\Common;
 
 
+use ManiaControl\General\JsonSerializable;
+use ManiaControl\General\JsonSerializeTrait;
 use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
@@ -14,8 +16,8 @@ use ManiaControl\ManiaControl;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-abstract class BaseStructure implements UsageInformationAble {
-	use UsageInformationTrait;
+abstract class BaseStructure implements UsageInformationAble, JsonSerializable {
+	use UsageInformationTrait, JsonSerializeTrait;
 
 	/** @var ManiaControl $maniaControl */
 	protected $maniaControl;
