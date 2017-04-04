@@ -5,6 +5,8 @@ namespace ManiaControl\Callbacks\Structures\Common;
 
 use ManiaControl\Callbacks\Structures\Common\Models\CommonPlayerScore;
 use ManiaControl\Callbacks\Structures\ShootMania\Models\TeamScore;
+use ManiaControl\General\JsonSerializable;
+use ManiaControl\General\JsonSerializeTrait;
 use ManiaControl\ManiaControl;
 
 /**
@@ -43,7 +45,7 @@ class CommonScoresStructure extends BaseStructure {
 				$teamScore = new \ManiaControl\Callbacks\Structures\ShootMania\Models\TeamScore();
 			}
 
-			$teamScore->setId($team->id);
+			$teamScore->setTeamId($team->id);
 			$teamScore->setName($team->name);
 			$teamScore->setRoundPoints($team->roundpoints);
 			$teamScore->setMatchPoints($team->matchpoints);

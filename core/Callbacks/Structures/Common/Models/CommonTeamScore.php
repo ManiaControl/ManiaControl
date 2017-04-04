@@ -2,6 +2,8 @@
 
 namespace ManiaControl\Callbacks\Structures\Common\Models;
 
+use ManiaControl\General\JsonSerializable;
+use ManiaControl\General\JsonSerializeTrait;
 use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
 
@@ -12,10 +14,10 @@ use ManiaControl\General\UsageInformationTrait;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class CommonTeamScore implements UsageInformationAble {
-	use UsageInformationTrait;
+class CommonTeamScore implements UsageInformationAble, JsonSerializable {
+	use UsageInformationTrait, JsonSerializeTrait;
 
-	private $id;
+	private $teamId;
 	private $name;
 	private $roundPoints;
 	private $mapPoints;
@@ -24,15 +26,15 @@ class CommonTeamScore implements UsageInformationAble {
 	/**
 	 * @return mixed
 	 */
-	public function getId() {
-		return $this->id;
+	public function getTeamId() {
+		return $this->teamId;
 	}
 
 	/**
 	 * @param mixed $id
 	 */
-	public function setId($id) {
-		$this->id = $id;
+	public function setTeamId($id) {
+		$this->teamId = $id;
 	}
 
 	/**
