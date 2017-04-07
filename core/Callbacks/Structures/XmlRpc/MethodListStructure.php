@@ -3,19 +3,19 @@
 namespace ManiaControl\Callbacks\Structures\XmlRpc;
 
 use ManiaControl\Callbacks\Structures\Common\BaseResponseStructure;
-use ManiaControl\Callbacks\Structures\Common\BaseStructure;
 use ManiaControl\ManiaControl;
 
 /**
- * Structure Class for the List Structure Callback
+ * Structure Class for the MethodList Structure Callback
  *
+ * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class ListStructure extends BaseResponseStructure {
+class MethodListStructure extends BaseResponseStructure {
 	/** @var  array $callbacks */
-	private $callbacks;
+	private $methods;
 
 	/**
 	 * Construct a new Callbacks List Structure
@@ -26,17 +26,18 @@ class ListStructure extends BaseResponseStructure {
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
 
-		$this->callbacks  = $this->getPlainJsonObject()->callbacks;
+		$this->methods  = $this->getPlainJsonObject()->methods;
 	}
 
 
 	/**
-	 * Get Array of the Callbacks
+	 * Get Array of the Methods
 	 *
+	 * @api
 	 * @return string[]
 	 */
-	public function getCallbacks() {
-		return $this->callbacks;
+	public function getMethods() {
+		return $this->methods;
 	}
 
 }
