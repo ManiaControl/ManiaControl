@@ -61,6 +61,10 @@ interface Callbacks {
 	const MP_PODIUMSTART       = 'Maniaplanet.Podium_Start';
 	const MP_PODIUMEND         = 'Maniaplanet.Podium_End';
 
+	const MP_WARMUP_START = 'Maniaplanet.WarmUp.Start';
+	const MP_WARMUP_END = 'Maniaplanet.WarmUp.End';
+	const MP_WARMUP_STATUS = 'Maniaplanet.WarmUp.Status';
+
 	const SM_SCORES = "Shootmania.Scores";
 
 	const SM_ONEVENTDEFAULT = "Shootmania.Event.Default";
@@ -81,8 +85,18 @@ interface Callbacks {
 	const SM_ONPLAYERTHROWSOBJECT        = "Shootmania.Event.OnPlayerThrowsObject";
 	const SM_ONPLAYERREQUESTACTIONCHANGE = "Shootmania.Event.OnPlayerRequestActionChange";
 
-	// New TM Callbacks
+	//SM GameMode Callbacks
+	const SM_COMBO_PAUSE = 'Shootmania.Combo.Pause';
+	const SM_ELITE_STARTTURN = 'Shootmania.Elite.StartTurn';
+	const SM_ELITE_ENDTURN = 'Shootmania.Elite.EndTurn';
+	const SM_JOUST_ONRELOAD = 'Shootmania.Joust.OnReload';
+	const SM_JOUST_SELECTEDPLAYERS = 'Shootmania.Joust.SelectedPlayers';
+	const SM_JOUST_ROUNDRESULT = 'Shootmania.Joust.RoundResult';
+	const SM_ROYAL_POINTS = 'Shootmania.Royal.Points';
+	const SM_ROYAL_PLAYERSPAWN = 'Shootmania.Royal.PlayerSpawn';
+	const SM_ROYAL_ROUNDWINNER = 'Shootmania.Royal.RoundWinner';
 
+	// New TM Callbacks
 	const TM_ONEVENTDEFAULT   = "Trackmania.Event.Default";
 	const TM_ONEVENTSTARTLINE = "Trackmania.Event.StartLine";
 	const TM_ONCOMMAND        = "Trackmania.Event.OnCommand";

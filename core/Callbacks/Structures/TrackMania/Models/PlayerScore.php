@@ -18,7 +18,10 @@ class PlayerScore extends CommonPlayerScore {
 	private $bestRaceTime;
 	private $bestLapTime;
 	private $stuntScore;
-
+	private $bestRaceRespawns;
+	private $bestRaceCheckpoints;
+	private $bestLapRespawns;
+	private $bestLapCheckpoints;
 
 	/**
 	 * Returns the Rank
@@ -87,5 +90,62 @@ class PlayerScore extends CommonPlayerScore {
 	public function setStuntScore($stuntScore) {
 		$this->stuntScore = $stuntScore;
 	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getBestRaceRespawns() {
+		return $this->bestRaceRespawns;
+	}
+
+	/**
+	 * @param mixed $bestRaceRespawns
+	 */
+	public function setBestRaceRespawns($bestRaceRespawns) {
+		$this->bestRaceRespawns = $bestRaceRespawns;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getBestRaceCheckpoints() {
+		return $this->bestRaceCheckpoints;
+	}
+
+	/**
+	 * @param mixed $bestRaceCheckpoints
+	 */
+	public function setBestRaceCheckpoints($bestRaceCheckpoints) {
+		$this->bestRaceCheckpoints = $bestRaceCheckpoints;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getBestLapRespawns() {
+		return $this->bestLapRespawns;
+	}
+
+	/**
+	 * @param mixed $bestLapRespawns
+	 */
+	public function setBestLapRespawns($bestLapRespawns) {
+		$this->bestLapRespawns = $bestLapRespawns;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getBestLapCheckpoints() {
+		return $this->bestLapCheckpoints;
+	}
+
+	/**
+	 * @param mixed $bestLapCheckpoints
+	 */
+	public function setBestLapCheckpoints($bestLapCheckpoints) {
+		$this->bestLapCheckpoints = $bestLapCheckpoints;
+	}
+
 
 }
