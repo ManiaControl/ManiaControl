@@ -16,8 +16,7 @@ use ManiaControl\ManiaControl;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class CommonScoresStructure extends BaseStructure {
-	protected $responseId;
+class CommonScoresStructure extends BaseResponseStructure {
 	protected $section;
 	protected $useTeams;
 	protected $winnerTeam;
@@ -62,15 +61,6 @@ class CommonScoresStructure extends BaseStructure {
 	 */
 	public function getWinnerPlayer() {
 		return $this->winnerPlayer;
-	}
-
-	/**
-	 * Get the Response Id
-	 *
-	 * @return string
-	 */
-	public function getResponseId() {
-		return $this->responseId;
 	}
 
 	/**

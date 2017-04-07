@@ -2,6 +2,7 @@
 
 namespace ManiaControl\Callbacks\Structures\XmlRpc;
 
+use ManiaControl\Callbacks\Structures\Common\BaseResponseStructure;
 use ManiaControl\Callbacks\Structures\Common\BaseStructure;
 use ManiaControl\ManiaControl;
 
@@ -12,9 +13,7 @@ use ManiaControl\ManiaControl;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class CallbacksListStructure extends BaseStructure {
-	/** @var  string $responseId */
-	private $responseId;
+class CallbacksListStructure extends BaseResponseStructure {
 	/** @var  array $callbacks */
 	private $callbacks;
 
@@ -31,14 +30,6 @@ class CallbacksListStructure extends BaseStructure {
 		$this->callbacks  = $this->getPlainJsonObject()->callbacks;
 	}
 
-	/**
-	 * Get the Response Id //TODO Trait for all Response Ids
-	 *
-	 * @return string
-	 */
-	public function getResponseId() {
-		return $this->responseId;
-	}
 
 	/**
 	 * Get Array of the Callbacks
