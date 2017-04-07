@@ -117,6 +117,34 @@ class ShootManiaCallbacks implements CallbackListener {
 			case Callbacks::SM_ONPLAYERREQUESTACTIONCHANGE:
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONPLAYERREQUESTACTIONCHANGE, new OnPlayerRequestActionChange($this->maniaControl, $data));
 				break;
+			case Callbacks::SM_COMBO_PAUSE:
+				//TODO
+				break;
+			case Callbacks::SM_ELITE_STARTTURN:
+				//TODO
+				break;
+			case Callbacks::SM_ELITE_ENDTURN:
+				//TODO
+				break;
+			case Callbacks::SM_JOUST_ONRELOAD:
+				//TODO
+				break;
+			case Callbacks::SM_JOUST_SELECTEDPLAYERS:
+				//TODO
+				break;
+			case Callbacks::SM_JOUST_ROUNDRESULT:
+				//TODO
+				break;
+			case Callbacks::SM_ROYAL_POINTS:
+				//TODO
+				break;
+			case Callbacks::SM_ROYAL_PLAYERSPAWN:
+				//TODO
+				break;
+			case Callbacks::SM_ROYAL_ROUNDWINNER:
+				//TODO
+				break;
+
 			//Old Callbacks
 			case 'LibXmlRpc_Rankings':
 				$this->maniaControl->getServer()->getRankingManager()->updateRankings($data[0]);
