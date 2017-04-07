@@ -16,6 +16,12 @@ use ManiaControl\ManiaControl;
  */
 class OnScoresStructure extends CommonScoresStructure {
 
+	/**
+	 * OnScoresStructure constructor.
+	 *
+	 * @param \ManiaControl\ManiaControl $maniaControl
+	 * @param                            $data
+	 */
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
 

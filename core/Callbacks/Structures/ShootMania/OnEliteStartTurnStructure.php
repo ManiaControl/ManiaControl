@@ -9,6 +9,7 @@ use ManiaControl\ManiaControl;
 /**
  * Structure Class for the OnEliteStartTurn Structure Callback
  *
+ * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
@@ -32,6 +33,7 @@ class OnEliteStartTurnStructure extends BaseStructure {
 	}
 
 	/**
+	 * @api
 	 * @return \ManiaControl\Players\Player
 	 */
 	public function getAttacker() {
@@ -41,6 +43,7 @@ class OnEliteStartTurnStructure extends BaseStructure {
 	/**
 	 * Returns a Login Array of the defenders
 	 *
+	 * @api
 	 * @return array
 	 */
 	public function getDefenderLogins() {
@@ -50,6 +53,7 @@ class OnEliteStartTurnStructure extends BaseStructure {
 	/**
 	 * Gets an Array of the Players
 	 *
+	 * @api
 	 * @return \ManiaControl\Players\Player[]
 	 */
 	public function getDefenders() {

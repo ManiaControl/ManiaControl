@@ -9,6 +9,7 @@ use ManiaControl\ManiaControl;
 /**
  * Structure Class for the Default Start Server Callback
  *
+ * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
@@ -16,6 +17,12 @@ use ManiaControl\ManiaControl;
 class StartServerStructure extends BaseStructure {
 	private $restarted;
 
+	/**
+	 * StartServerStructure constructor.
+	 *
+	 * @param \ManiaControl\ManiaControl $maniaControl
+	 * @param                            $data
+	 */
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
 
@@ -25,6 +32,7 @@ class StartServerStructure extends BaseStructure {
 	/**
 	 * Flag if the Server got Restarted
 	 *
+	 * @api
 	 * @return mixed
 	 */
 	public function getRestarted() {

@@ -9,6 +9,7 @@ use ManiaControl\ManiaControl;
 /**
  * Structure Class for the OnCustomEvent Structure Callback
  *
+ * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
@@ -21,6 +22,12 @@ class OnActionCustomEventStructure extends BaseStructure {
 	private $param1;
 	private $param2 = array();
 
+	/**
+	 * OnActionCustomEventStructure constructor.
+	 *
+	 * @param \ManiaControl\ManiaControl $maniaControl
+	 * @param                            $data
+	 */
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
 
@@ -37,6 +44,7 @@ class OnActionCustomEventStructure extends BaseStructure {
 	/**
 	 * Returns Server time when the event occured
 	 *
+	 * @api
 	 * @return int
 	 */
 	public function getTime() {
@@ -46,6 +54,7 @@ class OnActionCustomEventStructure extends BaseStructure {
 	/**
 	 * < Id of the action that triggered the event
 	 *
+	 * @api
 	 * @return string
 	 */
 	public function getActionId() {
@@ -55,6 +64,7 @@ class OnActionCustomEventStructure extends BaseStructure {
 	/**
 	 * < Login of the player who shot if any
 	 *
+	 * @api
 	 * @return \ManiaControl\Players\Player
 	 */
 	public function getShooter() {
@@ -64,6 +74,7 @@ class OnActionCustomEventStructure extends BaseStructure {
 	/**
 	 * < player who got hit if any
 	 *
+	 * @api
 	 * @return \ManiaControl\Players\Player
 	 */
 	public function getVictim() {
@@ -73,6 +84,7 @@ class OnActionCustomEventStructure extends BaseStructure {
 	/**
 	 * < First custom param of the event
 	 *
+	 * @api
 	 * @return string
 	 */
 	public function getParam1() {
@@ -82,6 +94,7 @@ class OnActionCustomEventStructure extends BaseStructure {
 	/**
 	 * < Second custom param of the event
 	 *
+	 * @api
 	 * @return array
 	 */
 	public function getParam2() {

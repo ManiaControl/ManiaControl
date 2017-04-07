@@ -4,11 +4,12 @@ namespace ManiaControl\Callbacks\Structures\TrackMania\Models;
 
 use ManiaControl\Callbacks\Structures\Common\Models\CommonPlayerScore;
 
-use ManiaControl\Players\Player;
 //TODO proper return descriptions on getter methods -> use autogenerate for setter/getter + docs
+
 /**
  * PlayerScore Model
  *
+ * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
@@ -26,6 +27,7 @@ class PlayerScore extends CommonPlayerScore {
 	/**
 	 * Returns the Rank
 	 *
+	 * @api
 	 * @return int
 	 */
 	public function getRank() {
@@ -35,6 +37,7 @@ class PlayerScore extends CommonPlayerScore {
 	/**
 	 * Sets the Rank
 	 *
+	 * @api
 	 * @param int $rank
 	 */
 	public function setRank($rank) {
@@ -42,35 +45,38 @@ class PlayerScore extends CommonPlayerScore {
 	}
 
 
-
 	/**
-	*   Gets the bestRaceTime
-	*
-	* @param int $bestraceTime
-	*/
-	public function getBestraceTime(){
+	 *   Gets the bestRaceTime
+	 *
+	 * @api
+	 * @param int $bestraceTime
+	 */
+	public function getBestraceTime() {
 		return $this->bestRaceTime;
 	}
 
 	/**
-	*   Gets the bestlapTime
-	*
-	* @param int $bestlapTime
-	*/
-	public function getBestlapTime(){
+	 *   Gets the bestlapTime
+	 *
+	 * @api
+	 * @param int $bestlapTime
+	 */
+	public function getBestlapTime() {
 		return $this->bestLapTime;
 	}
-	
+
 	/**
-	*   Gets the StuntScore
-	*
-	* @param int $bestraceTime
-	*/
-	public function getStuntScore(){
+	 *   Gets the StuntScore
+	 *
+	 * @api
+	 * @param int $bestraceTime
+	 */
+	public function getStuntScore() {
 		return $this->stuntScore;
 	}
 
 	/**
+	 * @api
 	 * @param mixed $bestRaceTime
 	 */
 	public function setBestRaceTime($bestRaceTime) {
@@ -78,6 +84,7 @@ class PlayerScore extends CommonPlayerScore {
 	}
 
 	/**
+	 * @api
 	 * @param mixed $bestLapTime
 	 */
 	public function setBestLapTime($bestLapTime) {
@@ -85,6 +92,7 @@ class PlayerScore extends CommonPlayerScore {
 	}
 
 	/**
+	 * @api
 	 * @param mixed $stuntScore
 	 */
 	public function setStuntScore($stuntScore) {
@@ -92,6 +100,7 @@ class PlayerScore extends CommonPlayerScore {
 	}
 
 	/**
+	 * @api
 	 * @return mixed
 	 */
 	public function getBestRaceRespawns() {
@@ -99,6 +108,7 @@ class PlayerScore extends CommonPlayerScore {
 	}
 
 	/**
+	 * @api
 	 * @param mixed $bestRaceRespawns
 	 */
 	public function setBestRaceRespawns($bestRaceRespawns) {
@@ -106,6 +116,7 @@ class PlayerScore extends CommonPlayerScore {
 	}
 
 	/**
+	 * @api
 	 * @return mixed
 	 */
 	public function getBestRaceCheckpoints() {
@@ -113,6 +124,7 @@ class PlayerScore extends CommonPlayerScore {
 	}
 
 	/**
+	 * @api
 	 * @param mixed $bestRaceCheckpoints
 	 */
 	public function setBestRaceCheckpoints($bestRaceCheckpoints) {
@@ -120,6 +132,7 @@ class PlayerScore extends CommonPlayerScore {
 	}
 
 	/**
+	 * @api
 	 * @return mixed
 	 */
 	public function getBestLapRespawns() {
@@ -134,6 +147,7 @@ class PlayerScore extends CommonPlayerScore {
 	}
 
 	/**
+	 * @api
 	 * @return mixed
 	 */
 	public function getBestLapCheckpoints() {
@@ -141,6 +155,7 @@ class PlayerScore extends CommonPlayerScore {
 	}
 
 	/**
+	 * @api
 	 * @param mixed $bestLapCheckpoints
 	 */
 	public function setBestLapCheckpoints($bestLapCheckpoints) {

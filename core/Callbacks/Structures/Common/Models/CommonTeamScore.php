@@ -10,6 +10,7 @@ use ManiaControl\General\UsageInformationTrait;
 /**
  * TeamScore Model
  *
+ * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
@@ -24,6 +25,9 @@ class CommonTeamScore implements UsageInformationAble, JsonSerializable {
 	private $matchPoints;
 
 	/**
+	 * Get the Team Id
+	 *
+	 * @api
 	 * @return mixed
 	 */
 	public function getTeamId() {
@@ -31,6 +35,9 @@ class CommonTeamScore implements UsageInformationAble, JsonSerializable {
 	}
 
 	/**
+	 * Sets the TeamId
+	 *
+	 * @api
 	 * @param mixed $id
 	 */
 	public function setTeamId($id) {
@@ -38,13 +45,19 @@ class CommonTeamScore implements UsageInformationAble, JsonSerializable {
 	}
 
 	/**
-	 * @return mixed
+	 * Gets the Name
+	 *
+	 * @api
+	 * @return string
 	 */
 	public function getName() {
 		return $this->name;
 	}
 
 	/**
+	 * Sets the Name
+	 *
+	 * @api
 	 * @param mixed $name
 	 */
 	public function setName($name) {
@@ -52,6 +65,9 @@ class CommonTeamScore implements UsageInformationAble, JsonSerializable {
 	}
 
 	/**
+	 * Gets the Round Points
+	 *
+	 * @api
 	 * @return mixed
 	 */
 	public function getRoundPoints() {
@@ -59,6 +75,9 @@ class CommonTeamScore implements UsageInformationAble, JsonSerializable {
 	}
 
 	/**
+	 * Sets the Round Points
+	 *
+	 * @api
 	 * @param mixed $roundPoints
 	 */
 	public function setRoundPoints($roundPoints) {
@@ -66,6 +85,9 @@ class CommonTeamScore implements UsageInformationAble, JsonSerializable {
 	}
 
 	/**
+	 * Gets the Map Points
+	 *
+	 * @api
 	 * @return mixed
 	 */
 	public function getMapPoints() {
@@ -73,6 +95,9 @@ class CommonTeamScore implements UsageInformationAble, JsonSerializable {
 	}
 
 	/**
+	 * Sets the Mappoints
+	 *
+	 * @api
 	 * @param mixed $mapPoints
 	 */
 	public function setMapPoints($mapPoints) {
@@ -80,6 +105,9 @@ class CommonTeamScore implements UsageInformationAble, JsonSerializable {
 	}
 
 	/**
+	 * Gets the Matchpoints
+	 *
+	 * @api
 	 * @return mixed
 	 */
 	public function getMatchPoints() {
@@ -87,6 +115,9 @@ class CommonTeamScore implements UsageInformationAble, JsonSerializable {
 	}
 
 	/**
+	 * Sets the Match Points
+	 *
+	 * @api
 	 * @param mixed $matchPoints
 	 */
 	public function setMatchPoints($matchPoints) {

@@ -12,6 +12,7 @@ use ManiaControl\ManiaControl;
 /**
  * Base Structure of all Callback Structures
  *
+ * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
@@ -23,6 +24,12 @@ abstract class BaseStructure implements UsageInformationAble, JsonSerializable {
 	protected $maniaControl;
 	private   $plainJsonObject;
 
+	/**
+	 * BaseStructure constructor.
+	 *
+	 * @param \ManiaControl\ManiaControl $maniaControl
+	 * @param                            $data
+	 */
 	protected function __construct(ManiaControl $maniaControl, $data) {
 		$this->maniaControl    = $maniaControl;
 		$this->plainJsonObject = json_decode($data[0]);
@@ -30,6 +37,8 @@ abstract class BaseStructure implements UsageInformationAble, JsonSerializable {
 
 	/**
 	 * Gets the Plain Json
+	 *
+	 * @api
 	 */
 	public function getPlainJsonObject() {
 		return $this->plainJsonObject;
