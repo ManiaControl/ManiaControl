@@ -3,14 +3,15 @@
 namespace ManiaControl\Callbacks\Structures\TrackMania;
 
 
-use ManiaControl\Callbacks\Structures\Common\BaseStructure;
 use ManiaControl\Callbacks\Models\RecordCallback;
+use ManiaControl\Callbacks\Structures\Common\BaseStructure;
 use ManiaControl\ManiaControl;
 use ManiaControl\Utils\Formatter;
 
 /**
  * Structure Class for the Default Event Structure Callback
  *
+ * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
@@ -29,22 +30,28 @@ class OnEventWayPointStructure extends BaseStructure {
 	private $speed;
 	private $distance;
 
+	/**
+	 * OnEventWayPointStructure constructor.
+	 *
+	 * @param \ManiaControl\ManiaControl $maniaControl
+	 * @param                            $data
+	 */
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
 
-		$this->time = $this->getPlainJsonObject()->time;
-		$this->player = $this->maniaControl->getPlayerManager()->getPlayer($this->getPlainJsonObject()->login);
-		$this->racetime = (int) $this->getPlainJsonObject()->racetime;
-		$this->laptime  = (int) $this->getPlainJsonObject()->laptime;
-		$this->stuntsscore = $this->getPlainJsonObject()->stuntsscore;
+		$this->time             = $this->getPlainJsonObject()->time;
+		$this->player           = $this->maniaControl->getPlayerManager()->getPlayer($this->getPlainJsonObject()->login);
+		$this->racetime         = (int) $this->getPlainJsonObject()->racetime;
+		$this->laptime          = (int) $this->getPlainJsonObject()->laptime;
+		$this->stuntsscore      = $this->getPlainJsonObject()->stuntsscore;
 		$this->checkpointinrace = (int) $this->getPlainJsonObject()->checkpointinrace;
-		$this->checkpointinlap = (int) $this->getPlainJsonObject()->checkpointinlap;
-		$this->isendrace = $this->getPlainJsonObject()->isendrace;
-		$this->isendlap = $this->getPlainJsonObject()->isendlap;
-		$this->blockid  = $this->getPlainJsonObject()->blockid;
-		$this->speed    = $this->getPlainJsonObject()->speed;
-		$this->distance = $this->getPlainJsonObject()->distance;
-		
+		$this->checkpointinlap  = (int) $this->getPlainJsonObject()->checkpointinlap;
+		$this->isendrace        = $this->getPlainJsonObject()->isendrace;
+		$this->isendlap         = $this->getPlainJsonObject()->isendlap;
+		$this->blockid          = $this->getPlainJsonObject()->blockid;
+		$this->speed            = $this->getPlainJsonObject()->speed;
+		$this->distance         = $this->getPlainJsonObject()->distance;
+
 		// Build callback
 		$wayPointCallback              = new RecordCallback();
 		$wayPointCallback->rawCallback = $data;
@@ -74,6 +81,7 @@ class OnEventWayPointStructure extends BaseStructure {
 	/**
 	 * Returns Server time when the event occured
 	 *
+	 * @api
 	 * @return int
 	 */
 	public function getTime() {
@@ -81,12 +89,13 @@ class OnEventWayPointStructure extends BaseStructure {
 	}
 
 	/**
-	* < player who triggered the action
-	*
-	* @return \ManiaControl\Players\Player
-	*/
+	 * < player who triggered the action
+	 *
+	 * @api
+	 * @return \ManiaControl\Players\Player
+	 */
 	public function getPlayer() {
 		return $this->player;
 	}
-	
+
 }

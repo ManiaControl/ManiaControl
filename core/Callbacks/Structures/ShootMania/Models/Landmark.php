@@ -9,6 +9,7 @@ use ManiaControl\General\UsageInformationTrait;
 /**
  * Landmark Model
  *
+ * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
@@ -22,6 +23,7 @@ class Landmark implements UsageInformationAble {
 	private $position = null;
 
 	/**
+	 * @api
 	 * @return string
 	 */
 	public function getTag() {
@@ -29,6 +31,7 @@ class Landmark implements UsageInformationAble {
 	}
 
 	/**
+	 * @api
 	 * @param string $tag
 	 */
 	public function setTag($tag) {
@@ -36,6 +39,7 @@ class Landmark implements UsageInformationAble {
 	}
 
 	/**
+	 * @api
 	 * @return mixed
 	 */
 	public function getOrder() {
@@ -43,6 +47,7 @@ class Landmark implements UsageInformationAble {
 	}
 
 	/**
+	 * @api
 	 * @param mixed $order
 	 */
 	public function setOrder($order) {
@@ -50,6 +55,7 @@ class Landmark implements UsageInformationAble {
 	}
 
 	/**
+	 * @api
 	 * @return mixed
 	 */
 	public function getId() {
@@ -57,6 +63,7 @@ class Landmark implements UsageInformationAble {
 	}
 
 	/**
+	 * @api
 	 * @param mixed $id
 	 */
 	public function setId($id) {
@@ -64,6 +71,7 @@ class Landmark implements UsageInformationAble {
 	}
 
 	/**
+	 * @api
 	 * @return \ManiaControl\Callbacks\Structures\ShootMania\Models\Position
 	 */
 	public function getPosition() {
@@ -71,6 +79,7 @@ class Landmark implements UsageInformationAble {
 	}
 
 	/**
+	 * @api
 	 * @param \ManiaControl\Callbacks\Structures\ShootMania\Models\Position $position
 	 */
 	public function setPosition(Position $position) {

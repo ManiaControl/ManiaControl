@@ -10,6 +10,7 @@ use ManiaControl\Players\Player;
 /**
  * Structure Class for the OnPlayerRequestRespawnStructure Structure Callback
  *
+ * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
@@ -21,6 +22,12 @@ class OnPlayerRequestRespawnStructure extends BaseStructure {
 	 */
 	private $player;
 
+	/**
+	 * OnPlayerRequestRespawnStructure constructor.
+	 *
+	 * @param \ManiaControl\ManiaControl $maniaControl
+	 * @param                            $data
+	 */
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
 
@@ -32,6 +39,7 @@ class OnPlayerRequestRespawnStructure extends BaseStructure {
 	/**
 	 * Returns the Time the Event Happened
 	 *
+	 * @api
 	 * @return int
 	 */
 	public function getTime() {
@@ -41,6 +49,7 @@ class OnPlayerRequestRespawnStructure extends BaseStructure {
 	/**
 	 * Gets the Player
 	 *
+	 * @api
 	 * @return \ManiaControl\Players\Player
 	 */
 	public function getPlayer() {

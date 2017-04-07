@@ -12,6 +12,7 @@ use ManiaControl\Players\Player;
 /**
  * Common PlayerStructure Model
  *
+ * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
@@ -27,6 +28,7 @@ class CommonPlayerScore implements UsageInformationAble, JsonSerializable {
 	/**
 	 * Returns the Player
 	 *
+	 * @api
 	 * @return \ManiaControl\Players\Player
 	 */
 	public function getPlayer() {
@@ -34,6 +36,9 @@ class CommonPlayerScore implements UsageInformationAble, JsonSerializable {
 	}
 
 	/**
+	 * Returns the Player
+	 *
+	 * @api
 	 * @param \ManiaControl\Players\Player $player
 	 */
 	public function setPlayer(Player $player) {
@@ -43,6 +48,7 @@ class CommonPlayerScore implements UsageInformationAble, JsonSerializable {
 	/**
 	 * Returns the Rank
 	 *
+	 * @api
 	 * @return int
 	 */
 	public function getRank() {
@@ -52,6 +58,7 @@ class CommonPlayerScore implements UsageInformationAble, JsonSerializable {
 	/**
 	 * Sets the Rank
 	 *
+	 * @api
 	 * @param int $rank
 	 */
 	public function setRank($rank) {
@@ -61,6 +68,7 @@ class CommonPlayerScore implements UsageInformationAble, JsonSerializable {
 	/**
 	 * Gets the Round Points
 	 *
+	 * @api
 	 * @return int
 	 */
 	public function getRoundPoints() {
@@ -70,6 +78,7 @@ class CommonPlayerScore implements UsageInformationAble, JsonSerializable {
 	/**
 	 * Sets the RoundPoints
 	 *
+	 * @api
 	 * @param int $roundPoints
 	 */
 	public function setRoundPoints($roundPoints) {
@@ -79,6 +88,7 @@ class CommonPlayerScore implements UsageInformationAble, JsonSerializable {
 	/**
 	 * Gets the Map Points
 	 *
+	 * @api
 	 * @return int
 	 */
 	public function getMapPoints() {
@@ -88,6 +98,7 @@ class CommonPlayerScore implements UsageInformationAble, JsonSerializable {
 	/**
 	 * Sets the Map Points
 	 *
+	 * @api
 	 * @param int $mapPoints
 	 */
 	public function setMapPoints($mapPoints) {

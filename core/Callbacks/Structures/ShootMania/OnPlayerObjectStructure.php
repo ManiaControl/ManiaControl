@@ -9,6 +9,7 @@ use ManiaControl\ManiaControl;
 /**
  * Structure Class for the OnPlayerTouchesObject Structure Callback
  *
+ * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
@@ -20,6 +21,12 @@ class OnPlayerObjectStructure extends BaseStructure {
 	private $modelId;
 	private $modelName;
 
+	/**
+	 * OnPlayerObjectStructure constructor.
+	 *
+	 * @param \ManiaControl\ManiaControl $maniaControl
+	 * @param                            $data
+	 */
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
 
@@ -34,6 +41,7 @@ class OnPlayerObjectStructure extends BaseStructure {
 	/**
 	 * Returns Server time when the event occured
 	 *
+	 * @api
 	 * @return int
 	 */
 	public function getTime() {
@@ -43,6 +51,7 @@ class OnPlayerObjectStructure extends BaseStructure {
 	/**
 	 * < Login of the player who touched the object
 	 *
+	 * @api
 	 * @return \ManiaControl\Players\Player
 	 */
 	public function getPlayer() {
@@ -52,6 +61,7 @@ class OnPlayerObjectStructure extends BaseStructure {
 	/**
 	 * < The id of the object
 	 *
+	 * @api
 	 * @return string
 	 */
 	public function getObjectId() {
@@ -61,6 +71,7 @@ class OnPlayerObjectStructure extends BaseStructure {
 	/**
 	 * < The id of the object model
 	 *
+	 * @api
 	 * @return string
 	 */
 	public function getModelId() {
@@ -70,11 +81,10 @@ class OnPlayerObjectStructure extends BaseStructure {
 	/**
 	 * < The name of the object model
 	 *
+	 * @api
 	 * @return string
 	 */
 	public function getModelName() {
 		return $this->modelName;
 	}
-
-
 }

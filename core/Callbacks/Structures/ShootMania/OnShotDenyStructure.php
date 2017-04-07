@@ -10,6 +10,7 @@ use ManiaControl\ManiaControl;
 /**
  * Structure Class for the OnShotDeny Structure Callback
  *
+ * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
@@ -43,6 +44,7 @@ class OnShotDenyStructure extends BaseStructure {
 	/**
 	 * ServerTime The Event Happened //TODO add Trait for the Time Property
 	 *
+	 * @api
 	 * @return int
 	 */
 	public function getTime() {
@@ -53,6 +55,7 @@ class OnShotDenyStructure extends BaseStructure {
 	/**
 	 * Gets the Shooter Player
 	 *
+	 * @api
 	 * @return \ManiaControl\Players\Player
 	 */
 	public function getShooter() {
@@ -62,6 +65,7 @@ class OnShotDenyStructure extends BaseStructure {
 	/**
 	 * Gets the Victim Player
 	 *
+	 * @api
 	 * @return \ManiaControl\Players\Player
 	 */
 	public function getVictim() {
@@ -69,7 +73,11 @@ class OnShotDenyStructure extends BaseStructure {
 	}
 
 	/**
-	 * @return mixed
+	 * Gets the Shooter Weapon
+	 *
+	 * @api
+	 * @see \ManiaControl\Callbacks\Structures\ShootMania\Models\Weapons
+	 * @return int Weapon
 	 */
 	public function getShooterWeapon() {
 		return $this->shooterWeapon;
@@ -78,6 +86,7 @@ class OnShotDenyStructure extends BaseStructure {
 	/**
 	 * Get the Victim Weapon
 	 *
+	 * @api
 	 * @see \ManiaControl\Callbacks\Structures\ShootMania\Models\Weapons
 	 * @return int
 	 */

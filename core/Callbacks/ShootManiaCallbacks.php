@@ -68,6 +68,7 @@ class ShootManiaCallbacks implements CallbackListener {
 	/**
 	 * Handle Script Callbacks
 	 *
+	 * @internal
 	 * @param string $name
 	 * @param mixed  $data
 	 */
@@ -165,15 +166,6 @@ class ShootManiaCallbacks implements CallbackListener {
 				break;
 			case 'WarmUp_Status':
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::WARMUPSTATUS, $data[0]);
-				break;
-			case 'Elite_BeginTurn':
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ELITE_ONBEGINTURN, new EliteBeginTurnStructure($this->maniaControl, $data));
-				break;
-			case 'Elite_EndTurn':
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ELITE_ONENDTURN, $data[0]);
-				break;
-			case 'Joust_SelectedPlayers':
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::JOUST_SELECTEDPLAYERS, $data);
 				break;
 			case self::CB_TIMEATTACK_ONCHECKPOINT:
 				$this->handleTimeAttackOnCheckpoint($name, $data);

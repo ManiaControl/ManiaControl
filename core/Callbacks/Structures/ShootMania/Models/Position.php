@@ -9,6 +9,7 @@ use ManiaControl\General\UsageInformationTrait;
 /**
  * Position Model
  *
+ * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
@@ -21,6 +22,7 @@ class Position implements UsageInformationAble {
 	private $z = 0;
 
 	/**
+	 * @api
 	 * @return int
 	 */
 	public function getX() {
@@ -28,6 +30,7 @@ class Position implements UsageInformationAble {
 	}
 
 	/**
+	 * @api
 	 * @param int $x
 	 */
 	public function setX($x) {
@@ -35,6 +38,7 @@ class Position implements UsageInformationAble {
 	}
 
 	/**
+	 * @api
 	 * @return int
 	 */
 	public function getZ() {
@@ -42,6 +46,7 @@ class Position implements UsageInformationAble {
 	}
 
 	/**
+	 * @api
 	 * @param int $z
 	 */
 	public function setZ($z) {
@@ -49,6 +54,7 @@ class Position implements UsageInformationAble {
 	}
 
 	/**
+	 * @api
 	 * @return int
 	 */
 	public function getY() {
@@ -56,6 +62,7 @@ class Position implements UsageInformationAble {
 	}
 
 	/**
+	 * @api
 	 * @param int $y
 	 */
 	public function setY($y) {

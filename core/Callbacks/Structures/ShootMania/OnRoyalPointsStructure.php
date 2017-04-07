@@ -9,6 +9,7 @@ use ManiaControl\ManiaControl;
 /**
  * Structure Class for the OnRoyalPoints Structure Callback
  *
+ * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
@@ -56,6 +57,7 @@ class OnRoyalPointsStructure extends BaseStructure {
 	/**
 	 * Gets the number of points scored
 	 *
+	 * @api
 	 * @return int
 	 */
 	public function getPoints() {

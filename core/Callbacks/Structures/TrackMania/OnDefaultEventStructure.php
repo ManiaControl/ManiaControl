@@ -17,6 +17,12 @@ class OnDefaultEventStructure extends BaseStructure {
 	private $time;
 	private $type;
 
+	/**
+	 * OnDefaultEventStructure constructor.
+	 *
+	 * @param \ManiaControl\ManiaControl $maniaControl
+	 * @param                            $data
+	 */
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
 

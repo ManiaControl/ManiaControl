@@ -12,6 +12,7 @@ use ManiaControl\Players\Player;
 /**
  * Structure Class for the OnCapture Structure Callback
  *
+ * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
@@ -23,6 +24,12 @@ class OnCaptureStructure extends BaseStructure {
 
 	private $playerArray = array();
 
+	/**
+	 * OnCaptureStructure constructor.
+	 *
+	 * @param \ManiaControl\ManiaControl $maniaControl
+	 * @param                            $data
+	 */
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
 
@@ -47,6 +54,7 @@ class OnCaptureStructure extends BaseStructure {
 	/**
 	 * Get the logins as Array
 	 *
+	 * @api
 	 * @return string[]
 	 */
 	public function getLoginArray() {
@@ -56,6 +64,7 @@ class OnCaptureStructure extends BaseStructure {
 	/**
 	 * Get the Players as Player Array
 	 *
+	 * @api
 	 * @return Player[]
 	 */
 	public function getPlayerArray() {
@@ -72,6 +81,7 @@ class OnCaptureStructure extends BaseStructure {
 	/**
 	 * Returns Information about the Captured Landmark
 	 *
+	 * @api
 	 * @return \ManiaControl\Callbacks\Structures\ShootMania\Models\LandMark
 	 */
 	public function getLandMark() {

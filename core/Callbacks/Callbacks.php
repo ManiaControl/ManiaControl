@@ -313,17 +313,6 @@ interface Callbacks {
 	 */
 	const ONPLAYERREQUESTRESPAWN = 'Callbacks.OnPlayerRequestRespawn';
 
-	/** Elite OnBeginTurn Callback: EliteBeginTurnStructure
-	 *
-	 * @deprecated
-	 */
-	const ELITE_ONBEGINTURN = "Callbacks.EliteOnBeginTurn";
-	/** Elite OnEndTurn Callback: integer (VictoryTypes)
-	 *
-	 * @deprecated
-	 */
-	const ELITE_ONENDTURN = "Callbacks.EliteOnEndTurn";
-
 	/** Joust Selected Players
 	 *
 	 * @deprecated

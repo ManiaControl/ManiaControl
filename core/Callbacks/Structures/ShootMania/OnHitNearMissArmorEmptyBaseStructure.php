@@ -12,6 +12,7 @@ use ManiaControl\Players\Player;
 /**
  * Structure Base Class for the OnHit/OnNearMiss/OnArmorEmpty Structure Callback
  *
+ * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
@@ -59,6 +60,7 @@ class OnHitNearMissArmorEmptyBaseStructure extends BaseStructure {
 	/**
 	 * < Server time when the event occured
 	 *
+	 * @api
 	 * @return int
 	 */
 	public function getTime() {
@@ -68,6 +70,7 @@ class OnHitNearMissArmorEmptyBaseStructure extends BaseStructure {
 	/**
 	 * < Id of the weapon [1-Laser, 2-Rocket, 3-Nucleus, 5-Arrow]
 	 *
+	 * @api
 	 * @see \ManiaControl\Callbacks\Structures\ShootMania\Models\Weapons
 	 * @return int
 	 */
@@ -78,6 +81,7 @@ class OnHitNearMissArmorEmptyBaseStructure extends BaseStructure {
 	/**
 	 * < Position of the Shooter at the time
 	 *
+	 * @api
 	 * @return Position
 	 */
 	public function getShooterPosition() {
@@ -87,6 +91,7 @@ class OnHitNearMissArmorEmptyBaseStructure extends BaseStructure {
 	/**
 	 * < Position of the Victim at the time
 	 *
+	 * @api
 	 * @return \ManiaControl\Callbacks\Structures\ShootMania\Models\Position
 	 */
 	public function getVictimPosition() {
@@ -96,6 +101,7 @@ class OnHitNearMissArmorEmptyBaseStructure extends BaseStructure {
 	/**
 	 * < Shooter Player
 	 *
+	 * @api
 	 * @return Player
 	 */
 	public function getShooter() {
@@ -105,12 +111,10 @@ class OnHitNearMissArmorEmptyBaseStructure extends BaseStructure {
 	/**
 	 * < Victim Player
 	 *
+	 * @api
 	 * @return Player
 	 */
 	public function getVictim() {
 		return $this->victim;
 	}
-
-
-
 }

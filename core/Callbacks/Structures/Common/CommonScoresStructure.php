@@ -12,6 +12,7 @@ use ManiaControl\ManiaControl;
 /**
  * Structure Class for the OnScores Structure Callback
  *
+ * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
@@ -24,7 +25,12 @@ class CommonScoresStructure extends BaseResponseStructure {
 	protected $teamScores   = array();
 	protected $playerScores = array();
 
-	//TODO test
+	/**
+	 * CommonScoresStructure constructor.
+	 *
+	 * @param \ManiaControl\ManiaControl $maniaControl
+	 * @param                            $data
+	 */
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
 
@@ -56,6 +62,7 @@ class CommonScoresStructure extends BaseResponseStructure {
 	/**
 	 * Get the Winner Player Object
 	 *
+	 * @api
 	 * @return \ManiaControl\Players\Player
 	 */
 	public function getWinnerPlayer() {
@@ -65,6 +72,7 @@ class CommonScoresStructure extends BaseResponseStructure {
 	/**
 	 *  < Current progress of the match. Can be "" | "EndRound" | "EndMap" | "EndMatch"
 	 *
+	 * @api
 	 * @return string
 	 */
 	public function getSection() {
@@ -74,6 +82,7 @@ class CommonScoresStructure extends BaseResponseStructure {
 	/**
 	 * Returns if the GameMode uses Teams or not
 	 *
+	 * @api
 	 * @return boolean
 	 */
 	public function getUseTeams() {
@@ -83,6 +92,7 @@ class CommonScoresStructure extends BaseResponseStructure {
 	/**
 	 * Get the Winner Team Id
 	 *
+	 * @api
 	 * @return int
 	 */
 	public function getWinnerTeamId() {
@@ -92,6 +102,7 @@ class CommonScoresStructure extends BaseResponseStructure {
 	/**
 	 * Returns the TeamScores
 	 *
+	 * @api
 	 * @return TeamScore[]
 	 */
 	public function getTeamScores() {
@@ -101,6 +112,7 @@ class CommonScoresStructure extends BaseResponseStructure {
 	/**
 	 * Get the Player Scores
 	 *
+	 * @api
 	 * @return CommonPlayerScore[]
 	 */
 	public function getPlayerScores() {
