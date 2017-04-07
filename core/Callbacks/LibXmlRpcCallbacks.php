@@ -8,7 +8,8 @@ use ManiaControl\Callbacks\Structures\ManiaPlanet\StartEndStructure;
 use ManiaControl\Callbacks\Structures\ManiaPlanet\StartServerStructure;
 use ManiaControl\Callbacks\Structures\NearMissStructure;
 use ManiaControl\Callbacks\Structures\PlayerHitStructure;
-use ManiaControl\Callbacks\Structures\XmlRpc\CallbacksListStructure;
+use ManiaControl\Callbacks\Structures\ShootMania\StatusCallbackStructure;
+use ManiaControl\Callbacks\Structures\XmlRpc\ListStructure;
 use ManiaControl\ManiaControl;
 
 /**
@@ -50,13 +51,13 @@ class LibXmlRpcCallbacks implements CallbackListener {
 		switch ($name) {
 			//New callbacks
 			case Callbacks::XMLRPC_CALLBACKSLIST:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::XMLRPC_CALLBACKSLIST, new CallbacksListStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::XMLRPC_CALLBACKSLIST, new ListStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::XMLRPC_ENABLEDCALLBACKS:
-				//TODO
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::XMLRPC_ENABLEDCALLBACKS, new ListStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::XMLRPC_DISABLEDCALLBACKS:
-				//TODO
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::XMLRPC_DISABLEDCALLBACKS, new ListStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::XMLRPC_APIVERSION:
 				//TODO
@@ -68,7 +69,7 @@ class LibXmlRpcCallbacks implements CallbackListener {
 				//TODO
 				break;
 			case Callbacks::XMLRPC_METHODSLIST:
-				//TODO
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::XMLRPC_METHODSLIST, new ListStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::XMLRPC_METHODHELP:
 				//TODO
@@ -170,7 +171,7 @@ class LibXmlRpcCallbacks implements CallbackListener {
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::MP_WARMUP_END);
 				break;
 			case Callbacks::MP_WARMUP_STATUS:
-				//TODO
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::MP_WARMUP_STATUS, new StatusCallbackStructure($this->maniaControl, $data));
 				break;
 
 			//OLD Callbacks

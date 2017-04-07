@@ -25,5 +25,7 @@ class BaseResponseStructure extends BaseStructure {
 
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
+
+		$this->responseId = $this->getPlainJsonObject()->responseid;
 	}
 }

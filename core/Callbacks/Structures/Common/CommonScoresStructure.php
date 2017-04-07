@@ -30,7 +30,6 @@ class CommonScoresStructure extends BaseResponseStructure {
 
 		$jsonObj = $this->getPlainJsonObject();
 
-		$this->responseId = $jsonObj->responseid;
 		$this->section    = $jsonObj->section;
 		$this->useTeams   = $jsonObj->useteams;
 		$this->winnerTeam = $jsonObj->winnerteam;
