@@ -312,13 +312,7 @@ interface Callbacks {
 	 * @deprecated
 	 */
 	const ONPLAYERREQUESTRESPAWN = 'Callbacks.OnPlayerRequestRespawn';
-
-	/** Joust Selected Players
-	 *
-	 * @deprecated
-	 */
-	const JOUST_SELECTEDPLAYERS = "Callbacks.JoustSelectedPlayers";
-
+	
 	/*
 	 * TrackMania Callbacks
 	 */
