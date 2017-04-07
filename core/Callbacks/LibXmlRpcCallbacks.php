@@ -52,6 +52,27 @@ class LibXmlRpcCallbacks implements CallbackListener {
 			case Callbacks::XMLRPC_CALLBACKSLIST:
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::XMLRPC_CALLBACKSLIST, new CallbacksListStructure($this->maniaControl, $data));
 				break;
+			case Callbacks::XMLRPC_ENABLEDCALLBACKS:
+				//TODO
+				break;
+			case Callbacks::XMLRPC_DISABLEDCALLBACKS:
+				//TODO
+				break;
+			case Callbacks::XMLRPC_APIVERSION:
+				//TODO
+				break;
+			case Callbacks::XMLRPC_ALLAPIVERSIONS:
+				//TODO
+				break;
+			case Callbacks::XMLRPC_DOCUMENTATION:
+				//TODO
+				break;
+			case Callbacks::XMLRPC_METHODSLIST:
+				//TODO
+				break;
+			case Callbacks::XMLRPC_METHODHELP:
+				//TODO
+				break;
 			case Callbacks::MP_STARTSERVERSTART:
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::MP_STARTSERVERSTART, new StartServerStructure($this->maniaControl, $data));
 				break;
