@@ -43,6 +43,7 @@ class AuthCommands implements CommandListener, UsageInformationAble {
 	/**
 	 * Handle //addsuperadmin command
 	 *
+	 * @internal
 	 * @param array  $chatCallback
 	 * @param Player $player
 	 */
@@ -85,6 +86,7 @@ class AuthCommands implements CommandListener, UsageInformationAble {
 	/**
 	 * Handle //addadmin command
 	 *
+	 * @internal
 	 * @param array  $chatCallback
 	 * @param Player $player
 	 */
@@ -127,6 +129,7 @@ class AuthCommands implements CommandListener, UsageInformationAble {
 	/**
 	 * Handle //addmod command
 	 *
+	 * @internal
 	 * @param array  $chatCallback
 	 * @param Player $player
 	 */
@@ -170,6 +173,7 @@ class AuthCommands implements CommandListener, UsageInformationAble {
 	/**
 	 * Handle //removerights command
 	 *
+	 * @internal
 	 * @param array  $chatCallback
 	 * @param Player $player
 	 */

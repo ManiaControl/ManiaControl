@@ -19,6 +19,7 @@ use ManiaControl\Settings\Setting;
 /**
  * Class managing Authentication Levels
  *
+ * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
@@ -117,6 +118,7 @@ class AuthenticationManager implements CallbackListener, EchoListener, Communica
 	/**
 	 * Get Name of the Authentication Level from Level Int
 	 *
+	 * @api
 	 * @param mixed $authLevelInt
 	 * @return string
 	 */
@@ -138,6 +140,7 @@ class AuthenticationManager implements CallbackListener, EchoListener, Communica
 	/**
 	 * Get the Authentication Level Int from the given Param
 	 *
+	 * @api
 	 * @param mixed $authLevelParam
 	 * @return int
 	 */
@@ -154,6 +157,7 @@ class AuthenticationManager implements CallbackListener, EchoListener, Communica
 	/**
 	 * Get Authentication Level Int from Level Name
 	 *
+	 * @api
 	 * @param string $authLevelName
 	 * @return int
 	 */
@@ -175,6 +179,7 @@ class AuthenticationManager implements CallbackListener, EchoListener, Communica
 	/**
 	 * Get the Abbreviation of the Authentication Level from Level Int
 	 *
+	 * @api
 	 * @param mixed $authLevelInt
 	 * @return string
 	 */
@@ -195,6 +200,8 @@ class AuthenticationManager implements CallbackListener, EchoListener, Communica
 
 	/**
 	 * Handle ManiaControl OnInit Callback
+	 *
+	 * @internal
 	 */
 	public function handleOnInit() {
 		$this->updateMasterAdmins();
@@ -265,6 +272,7 @@ class AuthenticationManager implements CallbackListener, EchoListener, Communica
 	/**
 	 * Get all connected Players with at least the given Auth Level
 	 *
+	 * @api
 	 * @param int $authLevel
 	 * @return Player[]
 	 */
@@ -282,6 +290,7 @@ class AuthenticationManager implements CallbackListener, EchoListener, Communica
 	/**
 	 * Check whether the Player has enough Rights
 	 *
+	 * @api
 	 * @param Player      $player
 	 * @param int|Setting $neededAuthLevel
 	 * @return bool
@@ -296,6 +305,7 @@ class AuthenticationManager implements CallbackListener, EchoListener, Communica
 	/**
 	 * Get a List of all Admins
 	 *
+	 * @api
 	 * @param int $authLevel
 	 * @return Player[]
 	 */
@@ -323,6 +333,7 @@ class AuthenticationManager implements CallbackListener, EchoListener, Communica
 	/**
 	 * Grant the Auth Level to the Player
 	 *
+	 * @api
 	 * @param Player $player
 	 * @param int    $authLevel
 	 * @return bool
@@ -368,6 +379,7 @@ class AuthenticationManager implements CallbackListener, EchoListener, Communica
 	/**
 	 * Send an Error Message to the Player
 	 *
+	 * @api
 	 * @param Player $player
 	 * @return bool
 	 */
@@ -381,6 +393,7 @@ class AuthenticationManager implements CallbackListener, EchoListener, Communica
 	/**
 	 * Checks the permission by a right name
 	 *
+	 * @api
 	 * @param Player $player
 	 * @param        $rightName
 	 * @return bool
@@ -393,6 +406,7 @@ class AuthenticationManager implements CallbackListener, EchoListener, Communica
 	/**
 	 * Define a Minimum Right Level needed for an Action
 	 *
+	 * @api
 	 * @param string $rightName
 	 * @param int    $authLevelNeeded
 	 */

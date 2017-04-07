@@ -7,6 +7,7 @@ use ManiaControl\Players\Player;
 /**
  * ManiaControl BillData Structure
  *
+ * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2015 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
@@ -27,6 +28,7 @@ class BillData {
 	/**
 	 * Construct new Bill Data Model
 	 *
+	 * @api
 	 * @param string        $class
 	 * @param callable      $function
 	 * @param Player|string $player
