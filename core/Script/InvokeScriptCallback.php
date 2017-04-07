@@ -45,9 +45,23 @@ class InvokeScriptCallback implements CallbackListener, UsageInformationAble {
 	 * @param  callable $function async Function to Call back
 	 */
 	public function setCallable(callable $function) {
-		$this->maniaControl->getCallbackManager()->registerCallbackListener($this->callbackName, $this, function(BaseResponseStructure $callBackData) use (&$function){
-			if($callBackData->getResponseId() == $this->responseId){
+		$this->maniaControl->getCallbackManager()->registerCallbackListener($this->callbackName, $this, function (BaseResponseStructure $callBackData) use (&$function) {
+			if ($callBackData->getResponseId() == $this->responseId) {
 				call_user_func_array($function, array($callBackData));
+			}
+		});
+	}
+
+	/**
+	 * You can set a Method in your Class to be called with this Variant
+	 *
+	 * @param \ManiaControl\Callbacks\CallbackListener $callbackListener
+	 * @param                                          $methodName
+	 */
+	public function setCallableMethod(CallbackListener $callbackListener, $methodName) {
+		$this->maniaControl->getCallbackManager()->registerCallbackListener($this->callbackName, $this, function (BaseResponseStructure $callBackData) use (&$callbackListener, &$methodName) {
+			if ($callBackData->getResponseId() == $this->responseId) {
+				call_user_func_array(array($callbackListener, $methodName), array($callBackData));
 			}
 		});
 	}
