@@ -20,19 +20,20 @@ class OnShootStructure extends BaseStructure {
 	/**
 	 * @var Player $shooter
 	 */
-	private $shooter;
+	private $shooterLogin;
 
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
 
-		$this->time    = $this->getPlainJsonObject()->time;
-		$this->weapon  = $this->getPlainJsonObject()->weapon;
-
-		$this->shooter = $this->maniaControl->getPlayerManager()->getPlayer($this->getPlainJsonObject()->shooter);
-
+		$this->time         = $this->getPlainJsonObject()->time;
+		$this->weapon       = $this->getPlainJsonObject()->weapon;
+		$this->shooterLogin = $this->getPlainJsonObject()->shooter;
 	}
 
 	/**
+	 * Gets the Time the event Happened
+	 *
+	 * @api
 	 * @return int
 	 */
 	public function getTime() {
@@ -40,6 +41,10 @@ class OnShootStructure extends BaseStructure {
 	}
 
 	/**
+	 * Gets the Weapon
+	 *
+	 * @api
+	 * @see \ManiaControl\Callbacks\Structures\ShootMania\Models\Weapons
 	 * @return int
 	 */
 	public function getWeapon() {
@@ -47,15 +52,12 @@ class OnShootStructure extends BaseStructure {
 	}
 
 	/**
+	 * Gets the Shooter
+	 *
+	 * @api
 	 * @return Player
 	 */
 	public function getShooter() {
-		return $this->shooter;
-	}
-
-	/** Dumps the Object with some Information */
-	public function dump() {
-		parent::dump();
-		var_dump("With getShooter() you get a Player Object");
+		return $this->maniaControl->getPlayerManager()->getPlayer($this->shooterLogin);
 	}
 }

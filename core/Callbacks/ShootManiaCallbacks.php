@@ -10,15 +10,24 @@ use ManiaControl\Callbacks\Structures\ShootMania\OnArmorEmptyStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnCaptureStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnCommandStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnDefaultEventStructure;
+use ManiaControl\Callbacks\Structures\ShootMania\OnEliteEndTurnStructure;
+use ManiaControl\Callbacks\Structures\ShootMania\OnEliteStartTurnStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnHitStructure;
+use ManiaControl\Callbacks\Structures\ShootMania\OnJoustReloadStructure;
+use ManiaControl\Callbacks\Structures\ShootMania\OnJoustRoundResultsStructure;
+use ManiaControl\Callbacks\Structures\ShootMania\OnJoustSelectedPlayersStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnNearMissStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnPlayerObjectStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnPlayerRequestActionChange;
 use ManiaControl\Callbacks\Structures\ShootMania\OnPlayerRequestRespawnStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnPlayerTriggersSectorStructure;
+use ManiaControl\Callbacks\Structures\ShootMania\OnRoyalPlayerSpawnStructure;
+use ManiaControl\Callbacks\Structures\ShootMania\OnRoyalPointsStructure;
+use ManiaControl\Callbacks\Structures\ShootMania\OnRoyalRoundWinnerStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnScoresStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnShootStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnShotDenyStructure;
+use ManiaControl\Callbacks\Structures\ShootMania\StatusCallbackStructure;
 use ManiaControl\ManiaControl;
 
 /**
@@ -120,31 +129,31 @@ class ShootManiaCallbacks implements CallbackListener {
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONPLAYERREQUESTACTIONCHANGE, new OnPlayerRequestActionChange($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_COMBO_PAUSESTATUS:
-				//TODO
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_COMBO_PAUSESTATUS, new StatusCallbackStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ELITE_STARTTURN:
-				//TODO
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ELITE_STARTTURN, new OnEliteStartTurnStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ELITE_ENDTURN:
-				//TODO
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ELITE_ENDTURN, new OnEliteEndTurnStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_JOUST_ONRELOAD:
-				//TODO
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_JOUST_ONRELOAD, new OnJoustReloadStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_JOUST_SELECTEDPLAYERS:
-				//TODO
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_JOUST_SELECTEDPLAYERS, new OnJoustSelectedPlayersStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_JOUST_ROUNDRESULT:
-				//TODO
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_JOUST_ROUNDRESULT, new OnJoustRoundResultsStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ROYAL_POINTS:
-				//TODO
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ROYAL_POINTS, new OnRoyalPointsStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ROYAL_PLAYERSPAWN:
-				//TODO
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ROYAL_PLAYERSPAWN, new OnRoyalPlayerSpawnStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ROYAL_ROUNDWINNER:
-				//TODO
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ROYAL_ROUNDWINNER, new OnRoyalRoundWinnerStructure($this->maniaControl, $data));
 				break;
 
 			//Old Callbacks

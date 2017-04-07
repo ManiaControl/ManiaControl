@@ -1,14 +1,14 @@
 <?php
 
-namespace ManiaControl\Callbacks\Structures;
+namespace ManiaControl\Callbacks\Structures\ShootMania\Models;
 
 /**
  * VictoryTypes Interface (only available in Elite atm)
  *
+ * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
- * @deprecated see ManiaControl\Callbacks\Structures\ShootMania\Models\VictoryTypes
  */
 interface VictoryTypes {
 	const TIME_LIMIT           = 1;

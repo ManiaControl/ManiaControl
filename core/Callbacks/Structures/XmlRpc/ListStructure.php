@@ -13,7 +13,7 @@ use ManiaControl\ManiaControl;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class CallbacksListStructure extends BaseResponseStructure {
+class ListStructure extends BaseResponseStructure {
 	/** @var  array $callbacks */
 	private $callbacks;
 
@@ -26,7 +26,6 @@ class CallbacksListStructure extends BaseResponseStructure {
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
 
-		$this->responseId = $this->getPlainJsonObject()->responseid;
 		$this->callbacks  = $this->getPlainJsonObject()->callbacks;
 	}
 
