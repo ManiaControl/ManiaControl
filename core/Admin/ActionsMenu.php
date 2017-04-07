@@ -20,13 +20,14 @@ use ManiaControl\Players\PlayerManager;
 /**
  * Class managing Actions Menus
  *
+ * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, UsageInformationAble {
 	use UsageInformationTrait;
-	
+
 	/*
 	 * Constants
 	 */
@@ -68,6 +69,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 	/**
 	 * Add a new Menu Item
 	 *
+	 * @api
 	 * @param Control $control
 	 * @param bool    $playerAction
 	 * @param int     $order
@@ -84,6 +86,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 	/**
 	 * Add a new Player Menu Item
 	 *
+	 * @api
 	 * @param Control $control
 	 * @param int     $order
 	 * @param string  $description
@@ -99,6 +102,8 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 
 	/**
 	 * Build and show the menus to everyone (if a menu get made after the init)
+	 *
+	 * @api
 	 */
 	public function rebuildAndShowMenu() {
 		if (!$this->initCompleted) {
@@ -173,7 +178,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 			$popoutFrame->addChild($backgroundQuad);
 			$backgroundQuad->setHorizontalAlign($backgroundQuad::RIGHT);
 			$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-			$backgroundQuad->setSize(count($this->adminMenuItems) * $itemSize * 1.05 + 2 , $itemSize * $itemMarginFactorY);
+			$backgroundQuad->setSize(count($this->adminMenuItems) * $itemSize * 1.05 + 2, $itemSize * $itemMarginFactorY);
 
 			$itemQuad->addToggleFeature($popoutFrame);
 
@@ -266,6 +271,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 	/**
 	 * Add a new Admin Menu Item
 	 *
+	 * @api
 	 * @param Control $control
 	 * @param int     $order
 	 * @param string  $description
@@ -282,6 +288,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 	/**
 	 * Removes a Menu Item
 	 *
+	 * @api
 	 * @param int  $order
 	 * @param bool $playerAction
 	 */
@@ -300,6 +307,8 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 
 	/**
 	 * Handle ManiaControl AfterInit callback
+	 *
+	 * @internal
 	 */
 	public function handleAfterInit() {
 		$this->initCompleted = true;
@@ -309,6 +318,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 	/**
 	 * Handle PlayerJoined callback
 	 *
+	 * @internal
 	 * @param Player $player
 	 */
 	public function handlePlayerJoined(Player $player) {

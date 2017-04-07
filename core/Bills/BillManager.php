@@ -14,13 +14,14 @@ use Maniaplanet\DedicatedServer\Structures\Bill;
 /**
  * ManiaControl Bill Manager Class
  *
+ * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class BillManager implements CallbackListener, UsageInformationAble {
 	use UsageInformationTrait;
-	
+
 	/*
 	 * Constants
 	 */
@@ -54,6 +55,7 @@ class BillManager implements CallbackListener, UsageInformationAble {
 	/**
 	 * Send a bill to a player
 	 *
+	 * @api
 	 * @param callable $function
 	 * @param Player   $player
 	 * @param int      $amount
@@ -80,6 +82,7 @@ class BillManager implements CallbackListener, UsageInformationAble {
 	/**
 	 * Send planets from the server to a player
 	 *
+	 * @api
 	 * @param callable $function
 	 * @param string   $receiverLogin
 	 * @param int      $amount
@@ -104,13 +107,14 @@ class BillManager implements CallbackListener, UsageInformationAble {
 	/**
 	 * Handle bill updated callback
 	 *
+	 * @internal
 	 * @param array $callback
 	 * @return bool
 	 */
 	public function handleBillUpdated(array $callback) {
 		$billId = $callback[1][0];
 		if (!isset($this->openBills[$billId])) {
-			return;
+			return null;
 		}
 		$billData = $this->openBills[$billId];
 
@@ -142,5 +146,6 @@ class BillManager implements CallbackListener, UsageInformationAble {
 				unset($this->openBills[$billId]);
 				break;
 		}
+		return null;
 	}
 }

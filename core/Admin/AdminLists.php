@@ -24,6 +24,7 @@ use ManiaControl\Players\Player;
 /**
  * Widget Class listing Authorized Players
  *
+ * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
@@ -71,6 +72,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener, Usage
 	/**
 	 * Open Admin List Action
 	 *
+	 * @internal
 	 * @param array  $callback
 	 * @param Player $player
 	 */
@@ -81,6 +83,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener, Usage
 	/**
 	 * Show the Admin List
 	 *
+	 * @api
 	 * @param Player $player
 	 */
 	public function showAdminLists(Player $player) {
@@ -149,9 +152,9 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener, Usage
 			}
 
 			$labelLine = new LabelLine($playerFrame);
-			$labelLine->addLabelEntryText($index, $posX + 5,13);
-			$labelLine->addLabelEntryText($admin->nickname,$posX + 18,52);
-			$labelLine->addLabelEntryText($admin->login,$posX + 70,48);
+			$labelLine->addLabelEntryText($index, $posX + 5, 13);
+			$labelLine->addLabelEntryText($admin->nickname, $posX + 18, 52);
+			$labelLine->addLabelEntryText($admin->login, $posX + 70, 48);
 			$labelLine->render();
 
 			// Level Quad
@@ -212,6 +215,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener, Usage
 	/**
 	 * Called on ManialinkPageAnswer
 	 *
+	 * @internal
 	 * @param array $callback
 	 */
 	public function handleManialinkPageAnswer(array $callback) {
@@ -235,6 +239,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener, Usage
 	/**
 	 * Reopen the widget on Map Begin, MapListChanged, etc.
 	 *
+	 * @internal
 	 * @param Player $player
 	 */
 	public function updateWidget(Player $player) {
@@ -253,6 +258,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener, Usage
 	/**
 	 * Closes the widget
 	 *
+	 * @internal
 	 * @param Player $player
 	 */
 	public function closeWidget(Player $player) {
@@ -262,6 +268,7 @@ class AdminLists implements ManialinkPageAnswerListener, CallbackListener, Usage
 	/**
 	 * Unset the player if he opened another Main Widget
 	 *
+	 * @internal
 	 * @param Player $player
 	 * @param string $openedWidget
 	 */
