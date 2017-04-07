@@ -36,7 +36,7 @@ interface Callbacks {
 	const XMLRPC_CALLBACKHELP      = 'XmlRpc.CallbackHelp';
 	const XMLRPC_METHODSLIST       = 'XmlRpc.MethodsList';
 	const XMLRPC_METHODHELP        = 'XmlRpc.MethodHelp';
-	const XMLRPC_DOCUMENTATION     = 'XmlRpc.MethodHelp';
+	const XMLRPC_DOCUMENTATION     = 'XmlRpc.Documentation';
 	const XMLRPC_APIVERSION        = 'XmlRpc.ApiVersion';
 	const XMLRPC_ALLAPIVERSIONS    = 'XmlRpc.AllApiVersions';
 

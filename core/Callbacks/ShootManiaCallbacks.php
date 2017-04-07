@@ -78,82 +78,82 @@ class ShootManiaCallbacks implements CallbackListener {
 		switch ($name) {
 			//MP4 New Callbacks
 			case Callbacks::SM_SCORES:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_SCORES, new OnScoresStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnScoresStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_UIPROPERTIES:
 				//TODO
 				break;
 			case Callbacks::SM_ONEVENTDEFAULT:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONEVENTDEFAULT, new OnDefaultEventStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnDefaultEventStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ONSHOOT:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONSHOOT, new OnShootStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnShootStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ONHIT:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONHIT, new OnHitStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnHitStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ONNEARMISS:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONNEARMISS, new OnNearMissStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnNearMissStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ONARMOREMPTY:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONARMOREMPTY, new OnArmorEmptyStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnArmorEmptyStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ONCAPTURE:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONCAPTURE, new OnCaptureStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnCaptureStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ONSHOTDENY:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONSHOTDENY, new OnShotDenyStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnShotDenyStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ONCOMMAND:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONCOMMAND, new OnCommandStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnCommandStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ONPLAYERREQUESTRESPAWN:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONPLAYERREQUESTRESPAWN, new OnPlayerRequestRespawnStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnPlayerRequestRespawnStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ONACTIONCUSTOMEVENT:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONACTIONCUSTOMEVENT, new OnActionCustomEventStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnActionCustomEventStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ONACTIONEVENT:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONACTIONEVENT, new OnActionEvent($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnActionEvent($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ONPLAYERTOUCHESOBJECT:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONPLAYERTOUCHESOBJECT, new OnPlayerObjectStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnPlayerObjectStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ONPLAYERTRIGGERSSECTOR:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONPLAYERTRIGGERSSECTOR, new OnPlayerTriggersSectorStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnPlayerTriggersSectorStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ONPLAYERTHROWSOBJECT:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONPLAYERTHROWSOBJECT, new OnPlayerObjectStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnPlayerObjectStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ONPLAYERREQUESTACTIONCHANGE:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ONPLAYERREQUESTACTIONCHANGE, new OnPlayerRequestActionChange($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnPlayerRequestActionChange($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_COMBO_PAUSESTATUS:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_COMBO_PAUSESTATUS, new StatusCallbackStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new StatusCallbackStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ELITE_STARTTURN:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ELITE_STARTTURN, new OnEliteStartTurnStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnEliteStartTurnStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ELITE_ENDTURN:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ELITE_ENDTURN, new OnEliteEndTurnStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnEliteEndTurnStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_JOUST_ONRELOAD:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_JOUST_ONRELOAD, new OnJoustReloadStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnJoustReloadStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_JOUST_SELECTEDPLAYERS:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_JOUST_SELECTEDPLAYERS, new OnJoustSelectedPlayersStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnJoustSelectedPlayersStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_JOUST_ROUNDRESULT:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_JOUST_ROUNDRESULT, new OnJoustRoundResultsStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnJoustRoundResultsStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ROYAL_POINTS:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ROYAL_POINTS, new OnRoyalPointsStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnRoyalPointsStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ROYAL_PLAYERSPAWN:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ROYAL_PLAYERSPAWN, new OnRoyalPlayerSpawnStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnRoyalPlayerSpawnStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ROYAL_ROUNDWINNER:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::SM_ROYAL_ROUNDWINNER, new OnRoyalRoundWinnerStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnRoyalRoundWinnerStructure($this->maniaControl, $data));
 				break;
 
 			//Old Callbacks

@@ -3,6 +3,7 @@
 namespace ManiaControl\Script;
 
 use ManiaControl\Callbacks\Callbacks;
+use ManiaControl\Callbacks\Structures\XmlRpc\DocumentationStructure;
 use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;

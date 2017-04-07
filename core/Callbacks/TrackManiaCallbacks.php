@@ -3,11 +3,11 @@
 namespace ManiaControl\Callbacks;
 
 use ManiaControl\Callbacks\Models\RecordCallback;
+use ManiaControl\Callbacks\Structures\TrackMania\OnCommandStructure;
 use ManiaControl\Callbacks\Structures\TrackMania\OnDefaultEventStructure;
 use ManiaControl\Callbacks\Structures\TrackMania\OnEventStartLineStructure;
-use ManiaControl\Callbacks\Structures\TrackMania\OnCommandStructure;
-use ManiaControl\Callbacks\Structures\TrackMania\OnScoresStructure;
 use ManiaControl\Callbacks\Structures\TrackMania\OnEventWayPointStructure;
+use ManiaControl\Callbacks\Structures\TrackMania\OnScoresStructure;
 use ManiaControl\ManiaControl;
 use ManiaControl\Utils\Formatter;
 
@@ -52,23 +52,23 @@ class TrackManiaCallbacks implements CallbackListener {
 		switch ($name) {
 			//MP4 New Callbacks
 			case Callbacks::TM_SCORES:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::TM_SCORES, new OnScoresStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnScoresStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::TM_ONEVENTDEFAULT:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::TM_ONEVENTDEFAULT, new OnDefaultEventStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnDefaultEventStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::TM_ONEVENTSTARTLINE:
-			$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::TM_ONEVENTSTARTLINE, new OnEventStartLineStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnEventStartLineStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::TM_ONCOMMAND:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::TM_ONCOMMAND, new OnCommandStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnCommandStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::TM_ONPLAYERADDED:
 				break;
 			case Callbacks::TM_ONPLAYERREMOVED:
 				break;
 			case Callbacks::TM_ONWAYPOINT:
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::TM_ONWAYPOINT, new OnEventWayPointStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnEventWayPointStructure($this->maniaControl, $data));
 				break;
 			case Callbacks:: TM_ONGIVEUP:
 				break;
