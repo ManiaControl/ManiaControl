@@ -8,7 +8,13 @@ use ManiaControl\Callbacks\Structures\Common\BaseResponseStructure;
 use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
 
-//TODO test
+/**
+ * Class For Invoking Callbacks on Script Methods
+ *
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014-2017 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ */
 class InvokeScriptCallback implements CallbackListener, UsageInformationAble {
 	use UsageInformationTrait;
 
@@ -40,7 +46,7 @@ class InvokeScriptCallback implements CallbackListener, UsageInformationAble {
 	 */
 	public function setCallable(callable $function) {
 		$this->maniaControl->getCallbackManager()->registerCallbackListener($this->callbackName, $this, function(BaseResponseStructure $callBackData) use (&$function){
-			if($callBackData == $this->responseId){
+			if($callBackData->getResponseId() == $this->responseId){
 				call_user_func_array($function, array($callBackData));
 			}
 		});

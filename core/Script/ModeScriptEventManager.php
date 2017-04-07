@@ -3,6 +3,7 @@
 namespace ManiaControl\Script;
 
 use ManiaControl\Callbacks\Callbacks;
+use ManiaControl\Callbacks\Structures\ShootMania\OnScoresStructure;
 use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
