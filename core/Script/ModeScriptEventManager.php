@@ -3,7 +3,6 @@
 namespace ManiaControl\Script;
 
 use ManiaControl\Callbacks\Callbacks;
-use ManiaControl\Callbacks\Structures\ShootMania\OnScoresStructure;
 use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
@@ -102,8 +101,8 @@ class ModeScriptEventManager implements UsageInformationAble {
 
 	/**
 	 * Request a list of all enabled callbacks. This method will trigger the "XmlRpc.CallbacksList_Enabled" callback.
-	 *@api
 	 *
+	 * @api
 	 * @return \ManiaControl\Script\InvokeScriptCallback You can directly set a callable on it via setCallable()
 	 */
 	public function getListOfEnabledCallbacks() {
@@ -221,6 +220,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 
 	/**
 	 *  Stop any ongoing warmup.
+	 *
 	 * @api
 	 */
 	public function stopManiaPlanetWarmup() {
@@ -382,6 +382,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 
 	/**
 	 * Update the ui properties.
+	 *
 	 * @api
 	 * @param string Json-Encoded Xml UI Property String
 	 */
@@ -391,6 +392,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 
 	/**
 	 * Stop the whole warm up sequence.
+	 *
 	 * @api
 	 */
 	public function stopTrackmaniaWarmup() {
@@ -399,6 +401,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 
 	/**
 	 * Stop the current warm up round.
+	 *
 	 * @api
 	 */
 	public function stopTrackmaniaRound() {
@@ -408,6 +411,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 
 	/**
 	 * Stop the current round. Only available in Cup, Rounds and Team modes.
+	 *
 	 * @api
 	 */
 	public function forceTrackmaniaRoundEnd() {
@@ -416,6 +420,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 
 	/**
 	 * Generates the needed Unique ResponseId
+	 *
 	 * @return string
 	 */
 	private function generateResponseId() {
