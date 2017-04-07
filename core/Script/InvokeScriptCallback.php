@@ -55,6 +55,7 @@ class InvokeScriptCallback implements CallbackListener, UsageInformationAble {
 	/**
 	 * You can set a Method in your Class to be called with this Variant
 	 *
+	 * @api
 	 * @param \ManiaControl\Callbacks\CallbackListener $callbackListener
 	 * @param                                          $methodName
 	 */
