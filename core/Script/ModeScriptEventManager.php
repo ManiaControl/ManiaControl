@@ -1,11 +1,4 @@
 <?php
-/**
- * Manager for Mode Script Events
- *
- * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2017 ManiaControl Team
- * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
- */
 
 namespace ManiaControl\Script;
 
@@ -13,6 +6,13 @@ use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
 
+/**
+ * Manager for Mode Script Events
+ *
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014-2017 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ */
 class ModeScriptEventManager implements UsageInformationAble {
 	use UsageInformationTrait;
 
@@ -53,6 +53,42 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 */
 	public function getCallbacksList($responseId = "DefaultResponseId") {
 		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.GetCallbacksList', array($responseId));
+	}
+
+	/**
+	 * Provide a Array of Callbacks you want to Block
+	 *
+	 * @param array $callbackNames
+	 */
+	public function blockCallbacks($callbackNames) {
+		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.BlockCallbacks', $callbackNames);
+	}
+
+	/**
+	 * Block a Single Callback
+	 *
+	 * @param $callbackName
+	 */
+	public function blockCallback($callbackName) {
+		$this->blockCallbacks(array($callbackName));
+	}
+
+	/**
+	 * Provide a Array of Callbacks you want to Block
+	 *
+	 * @param array $callbackNames
+	 */
+	public function unBlockCallbacks($callbackNames) {
+		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.UnblockCallbacks', $callbackNames);
+	}
+
+	/**
+	 * Block a Single Callback
+	 *
+	 * @param $callbackName
+	 */
+	public function unBlockCallback($callbackName) {
+		$this->unBlockCallbacks(array($callbackName));
 	}
 
 	/**
@@ -138,6 +174,82 @@ class ModeScriptEventManager implements UsageInformationAble {
 	public function getAllApiVersions($responseId = "DefaultResponseId") {
 		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.GetAllApiVersions', array($responseId));
 	}
+
+
+	/**
+	 * Extend the duration of any ongoing warmup.
+	 *
+	 * @param $milisec < the duration of the extension in milliseconds.
+	 */
+	public function extendManiaPlanetWarmup($milisec) {
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.WarmUp.Extend', array($milisec));
+	}
+
+	/**
+	 *  Stop any ongoing warmup.
+	 */
+	public function stopManiaPlanetWarmup() {
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.WarmUp.Stop');
+	}
+
+	/**
+	 * Get the status of the warmup.
+	 *
+	 * @param string $responseId
+	 */
+	public function getWarmupStatus($responseId = "DefaultResponseId") {
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.WarmUp.GetStatus', array($responseId));
+	}
+
+	/**
+	 * Get the status of the pause.
+	 *
+	 * @param string $responseId
+	 */
+	public function getComboPauseStatus($responseId = "DefaultResponseId") {
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Shootmania.Combo.GetPause', array($responseId));
+	}
+
+	/**
+	 * Start a Pause in Combo
+	 *
+	 * @param string $responseId
+	 */
+	public function startComboPause($responseId = "DefaultResponseId") {
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Shootmania.Combo.SetPause', array(true, $responseId));
+	}
+
+	/**
+	 * End a Pause in Combo
+	 *
+	 * @param string $responseId
+	 */
+	public function endComboPause($responseId = "DefaultResponseId") {
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Shootmania.Combo.SetPause', array(false, $responseId));
+	}
+
+	/**
+	 * Move the spectators' timers UI.
+	 *
+	 * @param $x
+	 * @param $y
+	 * @param $z
+	 */
+	public function comboSetTimerPosition($x, $y, $z) {
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Shootmania.Combo.SetTimersPosition', array(strval(floatval($x)), strval(floatval($y)), strval(floatval($z))));
+	}
+
+	/**
+	 * Move the progression UI.
+	 *
+	 * @param $x
+	 * @param $y
+	 * @param $z
+	 */
+	public function suegeSetProgressionUIPosition($x, $y, $z) {
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Shootmania.Siege.SetProgressionUIPosition', array(strval(floatval($x)), strval(floatval($y)), strval(floatval($z))));
+	}
+
 
 	/**
 	 * Request the current scores. This method will trigger the "Shootmania.Scores" callback.
