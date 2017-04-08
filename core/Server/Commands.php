@@ -92,6 +92,8 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_CANCEL_VOTE, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_HANDLE_WARMUP, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 
+		$this->handleWarmUpStatus(true); //TODO dynamic
+
 		$this->updateCancelVoteMenuItem();
 		$this->updateWarmUpMenuItems();
 	}
@@ -211,10 +213,12 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 		}
 
 		try {
-			$this->maniaControl->getClient()->triggerModeScriptEvent('WarmUp_Stop', '');
+			$this->maniaControl->getClient()->triggerModeScriptEvent('WarmUp_Stop', ''); //TODO remove
 			$this->maniaControl->getChat()->sendInformation($player->getEscapedNickname() . ' stopped the WarmUp!');
 		} catch (GameModeException $e) {
 		}
+
+		$this->maniaControl->getModeScriptEventManager()->stopManiaPlanetWarmup();
 	}
 
 	/**
