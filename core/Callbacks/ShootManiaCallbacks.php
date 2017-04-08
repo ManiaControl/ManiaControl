@@ -3,7 +3,7 @@
 namespace ManiaControl\Callbacks;
 
 use ManiaControl\Callbacks\Models\RecordCallback;
-use ManiaControl\Callbacks\Structures\EliteBeginTurnStructure;
+use ManiaControl\Callbacks\Structures\Common\StatusCallbackStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnActionCustomEventStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnActionEvent;
 use ManiaControl\Callbacks\Structures\ShootMania\OnArmorEmptyStructure;
@@ -27,7 +27,6 @@ use ManiaControl\Callbacks\Structures\ShootMania\OnRoyalRoundWinnerStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnScoresStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnShootStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnShotDenyStructure;
-use ManiaControl\Callbacks\Structures\ShootMania\StatusCallbackStructure;
 use ManiaControl\ManiaControl;
 
 /**
