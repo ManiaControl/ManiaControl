@@ -130,7 +130,6 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 * @see \ManiaControl\Plugins\Plugin::load()
 	 */
 	public function load(ManiaControl $maniaControl) {
-		var_dump("tesst");
 		$this->maniaControl = $maniaControl;
 
 		// Commands
