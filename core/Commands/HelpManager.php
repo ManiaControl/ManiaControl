@@ -24,7 +24,8 @@ use ManiaControl\Players\Player;
  */
 class HelpManager implements CommandListener, CallbackListener, ManialinkPageAnswerListener {
 
-	const ACTION_OPEN_HELP_ALL = 'Helpmanager.OpenHelpall';
+	const ACTION_OPEN_HELP_ALL = 'HelpManager.OpenHelpAll';
+	const ACTION_OPEN_ADMIN_HELP_ALL = 'HelpManager.OpenAdminHelpAll';
 
 	/*
 	 * Private properties
@@ -44,11 +45,15 @@ class HelpManager implements CommandListener, CallbackListener, ManialinkPageAns
 
 		// Action Open StatsList
 		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_OPEN_HELP_ALL, $this, 'maniaLink_helpAll');
+		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_OPEN_ADMIN_HELP_ALL,$this,'maniaLink_adminHelpAll');
 
 		$itemQuad = new Quad_UIConstruction_Buttons();
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Help);
 		$itemQuad->setAction(self::ACTION_OPEN_HELP_ALL);
-		$this->maniaControl->getActionsMenu()->addMenuItem($itemQuad, true, 16, 'Available commands');
+		$this->maniaControl->getActionsMenu()->addMenuItem($itemQuad, true, 0, 'Available commands');
+		$itemQuad = clone $itemQuad;
+		$itemQuad->setAction(self::ACTION_OPEN_ADMIN_HELP_ALL);
+		$this->maniaControl->getActionsMenu()->addAdminMenuItem($itemQuad,0,'Available admin commands');
 
 		// Callbacks
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::ONINIT, $this, 'handleOnInit');
@@ -109,13 +114,25 @@ class HelpManager implements CommandListener, CallbackListener, ManialinkPageAns
 	}
 
 	/**
-	 * Show a ManiaLink
+	 * Method for ManiaLink answer
 	 *
 	 * @param array                        $callback
 	 * @param \ManiaControl\Players\Player $player
+	 * @internal
 	 */
 	public function maniaLink_helpAll(array $callback, Player $player) {
 		$this->parseHelpList($this->playerCommands, true, $player);
+	}
+
+	/**
+	 * Method for ManiaLink answer
+	 *
+	 * @param array                        $callback
+	 * @param \ManiaControl\Players\Player $player
+	 * @internal
+	 */
+	public function maniaLink_adminHelpAll(array $callback, Player $player){
+		$this->parseHelpList($this->adminCommands,true, $player);
 	}
 
 	/**
@@ -168,7 +185,7 @@ class HelpManager implements CommandListener, CallbackListener, ManialinkPageAns
 	 * @param array $commands
 	 * @param mixed $player
 	 */
-	private function showHelpAllList(array $commands, $player) {
+	public function  showHelpAllList(array $commands, $player) {
 		$width  = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsWidth();
 		$height = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsHeight();
 
