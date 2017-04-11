@@ -13,6 +13,7 @@ use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
+use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
@@ -137,7 +138,10 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 			$posY -= $shootManiaOffset;
 		}
 
-		$manialink = new ManiaLink(self::MLID_MENU);
+		$maniaLink = new ManiaLink(self::MLID_MENU);
+		$frame = new Frame();
+		$maniaLink->addChild($frame);
+		$frame->setZ(ManialinkManager::MAIN_MANIALINK_Z_VALUE);
 
 		/*
 		 * Admin Menu
@@ -145,7 +149,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 		if ($this->maniaControl->getAuthenticationManager()->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
 			// Admin Menu Icon Frame
 			$iconFrame = new Frame();
-			$manialink->addChild($iconFrame);
+			$frame->addChild($iconFrame);
 			$iconFrame->setPosition($posX, $posY);
 
 			$backgroundQuad = new Quad();
@@ -160,7 +164,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 
 			// Admin Menu Description
 			$descriptionLabel = new Label();
-			$manialink->addChild($descriptionLabel);
+			$frame->addChild($descriptionLabel);
 			$descriptionLabel->setPosition($posX - count($this->adminMenuItems) * $itemSize * 1.05 - 5, $posY);
 			$descriptionLabel->setAlign($descriptionLabel::RIGHT, $descriptionLabel::TOP);
 			$descriptionLabel->setSize(40, 4);
@@ -169,7 +173,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 
 			// Admin Menu
 			$popoutFrame = new Frame();
-			$manialink->addChild($popoutFrame);
+			$frame->addChild($popoutFrame);
 			$popoutFrame->setPosition($posX - $itemSize * 0.5, $posY);
 			$popoutFrame->setHorizontalAlign($popoutFrame::RIGHT);
 			$popoutFrame->setVisible(false);
@@ -208,7 +212,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 		 */
 		// Player Menu Icon Frame
 		$iconFrame = new Frame();
-		$manialink->addChild($iconFrame);
+		$frame->addChild($iconFrame);
 		$iconFrame->setPosition($posX, $posY - $itemSize * $itemMarginFactorY);
 
 		$backgroundQuad = new Quad();
@@ -223,7 +227,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 
 		// Player Menu Description
 		$descriptionLabel = new Label();
-		$manialink->addChild($descriptionLabel);
+		$frame->addChild($descriptionLabel);
 		$descriptionLabel->setPosition($posX - count($this->playerMenuItems) * $itemSize * 1.05 - 5, $posY - $itemSize * $itemMarginFactorY);
 		$descriptionLabel->setAlign($descriptionLabel::RIGHT, $descriptionLabel::TOP);
 		$descriptionLabel->setSize(40, 4);
@@ -232,7 +236,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 
 		// Player Menu
 		$popoutFrame = new Frame();
-		$manialink->addChild($popoutFrame);
+		$frame->addChild($popoutFrame);
 		$popoutFrame->setPosition($posX - $itemSize * 0.5, $posY - $itemSize * $itemMarginFactorY);
 		$popoutFrame->setHorizontalAlign($popoutFrame::RIGHT);
 		$popoutFrame->setVisible(false);
@@ -265,7 +269,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 			}
 		}
 
-		return $manialink;
+		return $maniaLink;
 	}
 
 	/**
