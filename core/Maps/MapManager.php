@@ -56,48 +56,32 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 	const SETTING_MAPLIST_FILE            = 'File to write Maplist in';
 	const SETTING_WRITE_OWN_MAPLIST_FILE  = 'Write a own Maplist File for every Server called serverlogin.txt';
 
-	/*
-	 * Public properties
-	 */
-	/** @var MapQueue $mapQueue
-	 * @deprecated
-	 * @see getMapQueue()
-	 */
-	public $mapQueue = null;
-	/** @var MapCommands $mapCommands
-	 * @deprecated
-	 * @see getMapCommands()
-	 */
-	public $mapCommands = null;
-	/** @var MapActions $mapActions
-	 * @deprecated
-	 * @see getMapActions()
-	 */
-	public $mapActions = null;
-	/** @var MapList $mapList
-	 * @deprecated
-	 * @see getMapList()
-	 */
-	public $mapList = null;
-	/** @var DirectoryBrowser $directoryBrowser
-	 * @deprecated
-	 * @see getDirectoryBrowser()
-	 */
-	public $directoryBrowser = null;
-	/** @var ManiaExchangeList $mxList
-	 * @deprecated
-	 * @see getMXList()
-	 */
-	public $mxList = null;
-	/** @var ManiaExchangeManager $mxManager
-	 * @deprecated
-	 * @see getMXManager()
-	 */
-	public $mxManager = null;
 
 	/*
-	 * Private properties
+     * Private properties
 	 */
+
+	/** @var MapQueue $mapQueue */
+	private $mapQueue = null;
+
+	/** @var MapCommands $mapCommands */
+	private $mapCommands = null;
+
+	/** @var MapActions $mapActions */
+	private $mapActions = null;
+
+	/** @var MapList $mapList */
+	private $mapList = null;
+
+	/** @var DirectoryBrowser $directoryBrowser */
+	private $directoryBrowser = null;
+
+	/** @var ManiaExchangeList $mxList */
+	private $mxList = null;
+
+	/** @var ManiaExchangeManager $mxManager */
+	private $mxManager = null;
+
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	/** @var Map[] $maps */
@@ -994,21 +978,21 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 	}
 
 	/**
-	 * Searches the ManiaControl maps database
+	 * Search maps by a given String for Author and Name
 	 *
 	 * @param $searchString
 	 * @return array
 	 */
-	public function searchMaps($searchString){
-
+	public function searchMaps($searchString) {
 		$result = array();
-		foreach($this->maps as $map){
-			if(strpos($map->name,$searchString) || strpos($map->authorLogin,$searchString));{
-				array_push($result,$map);
+		foreach ($this->maps as $map) {
+			if (strpos($map->name, $searchString) || strpos($map->authorLogin, $searchString)) {
+				;
+			}
+			{
+				array_push($result, $map);
 			}
 		}
-
-
 		return $result;
 	}
 
