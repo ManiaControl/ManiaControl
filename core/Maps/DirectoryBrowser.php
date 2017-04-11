@@ -362,6 +362,11 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 			return;
 		}
 
+		//Update MX Data and ID
+		$this->maniaControl->getMapManager()->getMXManager()->fetchManiaExchangeMapInformation($map);
+
+		$map->lastUpdate = time();
+
 		// Message
 		$message = $player->getEscapedNickname() . ' added ' . $map->getEscapedName() . '!';
 		$this->maniaControl->getChat()->sendSuccess($message);
