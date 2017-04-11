@@ -18,7 +18,10 @@ use ManiaControl\Utils\Formatter;
  */
 class Map implements Dumpable, UsageInformationAble {
 	use DumpTrait, UsageInformationTrait;
-	
+
+	//Minimum Lightmap Version for the Update Check
+	const MIN_LIGHTMAP_VERSION = 7;
+
 	/*
 	 * Public properties
 	 */
@@ -107,7 +110,27 @@ class Map implements Dumpable, UsageInformationAble {
 	 * @return bool
 	 */
 	public function updateAvailable() {
-		return ($this->mx && ($this->lastUpdate < strtotime($this->mx->updated) || $this->uid !== $this->mx->uid));
+		//Check if MX Object is existing
+		if (!$this->mx) {
+			return false;
+		}
+
+		//Check if the Lightmap verison on MX surpasses the min Lightmap version
+		if ($this->mx->lightmap < self::MIN_LIGHTMAP_VERSION) {
+			return false;
+		}
+
+		//Check if last Map update is older than the MX Maptime
+		if ($this->lastUpdate < strtotime($this->mx->updated)) {
+			return true;
+		}
+
+		//Check if UIDs are different
+		if ($this->uid !== $this->mx->uid) {
+			return true;
+		}
+
+		return false;
 	}
 
 }

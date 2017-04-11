@@ -105,10 +105,10 @@ class ManiaExchangeManager implements UsageInformationAble {
 		}
 
 		$index = 0;
-		foreach ($maps as $map) {
+		foreach ($maps as &$map) {
 			if (!$map) {
 				// TODO: remove after resolving of error report about "non-object"
-				$this->maniaControl->getErrorHandler()->triggerDebugNotice('Non-Object-Map', $map, $maps);
+				$this->maniaControl->getErrorHandler()->triggerDebugNotice('Non-Object-Map ' . $map->name);
 				continue;
 			}
 			/** @var Map $map */
