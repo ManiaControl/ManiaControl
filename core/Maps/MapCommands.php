@@ -350,7 +350,6 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 
 		if (strstr($actionId, self::ACTION_SHOW_AUTHOR)) {
 			$login = str_replace(self::ACTION_SHOW_AUTHOR, '', $actionId);
-			$this->maniaControl->getMapManager()->getMapList()->playerCloseWidget($player);
 			$this->showMapListAuthor($login, $player);
 		}
 	}

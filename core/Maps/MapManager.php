@@ -993,6 +993,25 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 		});
 	}
 
+
+	/**
+	 * Searches the ManiaControl maps database
+	 *
+	 * @param $searchString
+	 * @return array
+	 */
+	public function searchMaps($searchString){
+
+		$result = array();
+		foreach($this->maps as $map){
+			if(strpos($map->name,$searchString) || strpos($map->authorLogin,$searchString));{
+				array_push($result,$map);
+			}
+		}
+
+		return $result;
+	}
+
 	/**
 	 * Initialize necessary database tables
 	 *
