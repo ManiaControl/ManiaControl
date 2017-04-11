@@ -513,6 +513,8 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$index++;
 		}
 
+		//var_dump($this->maniaControl->getMapManager()->searchMaps('nadeolabs'));
+
 		$this->maniaControl->getManialinkManager()->displayWidget($maniaLink, $player, self::WIDGET_NAME);
 	}
 
