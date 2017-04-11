@@ -993,7 +993,6 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 		});
 	}
 
-
 	/**
 	 * Searches the ManiaControl maps database
 	 *
@@ -1008,6 +1007,7 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 				array_push($result,$map);
 			}
 		}
+
 
 		return $result;
 	}
