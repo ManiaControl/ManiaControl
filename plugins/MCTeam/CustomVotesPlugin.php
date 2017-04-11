@@ -21,6 +21,7 @@ use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
+use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
@@ -306,6 +307,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$frame = new Frame();
 		$maniaLink->addChild($frame);
 		$frame->setPosition($posX, $posY);
+		$frame->setZ(ManialinkManager::MAIN_MANIALINK_Z_VALUE);
 
 		$backgroundQuad = new Quad();
 		$frame->addChild($backgroundQuad);

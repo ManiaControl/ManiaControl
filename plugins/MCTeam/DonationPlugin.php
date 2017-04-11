@@ -170,6 +170,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$frame = new Frame();
 		$maniaLink->addChild($frame);
 		$frame->setPosition($posX, $posY);
+		$frame->setZ(ManialinkManager::MAIN_MANIALINK_Z_VALUE);
 
 		$backgroundQuad = new Quad();
 		$frame->addChild($backgroundQuad);
@@ -189,8 +190,8 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 
 		// Values Menu
 		$popoutFrame = new Frame();
-		$maniaLink->addChild($popoutFrame);
-		$popoutFrame->setPosition($posX - $itemSize * 0.5, $posY);
+		$frame->addChild($popoutFrame);
+		$popoutFrame->setPosition(- $itemSize * 0.5, 0);
 		$popoutFrame->setHorizontalAlign($popoutFrame::RIGHT);
 		$popoutFrame->setVisible(false);
 
@@ -198,7 +199,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 
 		// Description Label
 		$descriptionFrame = new Frame();
-		$maniaLink->addChild($descriptionFrame);
+		$frame->addChild($descriptionFrame);
 		$descriptionFrame->setHorizontalAlign($descriptionFrame::RIGHT);
 
 		$descriptionLabel = new Label();
@@ -209,7 +210,6 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$descriptionLabel->setVisible(true);
 
 		// Add items
-		$origPosX = $posX;
 		$posX     = -2;
 		foreach (array_reverse($valueArray) as $value) {
 			$label = new Label_Text();
@@ -226,7 +226,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 			$posX -= strlen($value) * 1.6 + 2.5;
 		}
 
-		$descriptionFrame->setPosition($origPosX + $posX  - $width + $itemMarginFactorX, $posY);
+		$descriptionFrame->setPosition( $posX  - $width + $itemMarginFactorX, 0);
 
 		//Popout background
 		$quad = new Quad();
