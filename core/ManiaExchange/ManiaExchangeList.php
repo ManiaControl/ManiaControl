@@ -231,7 +231,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 				$mapFrame->addChild($lineQuad);
 				$lineQuad->setSize($width, 4);
 				$lineQuad->setSubStyle($lineQuad::SUBSTYLE_BgPlayerCardBig);
-				$lineQuad->setZ(0.001);
+				$lineQuad->setZ(-0.1);
 			}
 
 			$time      = Formatter::timeElapsedString(strtotime($map->updated));
