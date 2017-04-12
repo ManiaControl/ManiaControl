@@ -52,7 +52,9 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	const ACTION_CHECK_UPDATE        = 'MapList.CheckUpdate';
 	const ACTION_CLEAR_MAPQUEUE      = 'MapList.ClearMapQueue';
 	const ACTION_PAGING_CHUNKS       = 'MapList.PagingChunk.';
-	const MAX_MAPS_PER_PAGE          = 15;
+	const ACTION_SEARCH_MAP_NAME     = 'MapList.SearchMapName';
+	const ACTION_SEARCH_AUTHOR       = 'MapList.SearchAuthor';
+	const MAX_MAPS_PER_PAGE          = 13;
 	const MAX_PAGES_PER_CHUNK        = 2;
 	const DEFAULT_KARMA_PLUGIN       = 'MCTeam\KarmaPlugin';
 	const DEFAULT_CUSTOM_VOTE_PLUGIN = 'MCTeam\CustomVotesPlugin';
@@ -84,6 +86,9 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_CHECK_UPDATE, $this, 'checkUpdates');
 		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_CLEAR_MAPQUEUE, $this, 'clearMapQueue');
+		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_SEARCH_MAP_NAME, $this, 'searchByMapName');
+		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_SEARCH_AUTHOR, $this, 'searchByAuthor');
+
 	}
 
 	/**
@@ -186,7 +191,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$label->setWidth(30);
 			$label->setHorizontalAlign($label::RIGHT);
 
-
 			$quad = new Quad_BgsPlayerCard();
 			$frame->addChild($quad);
 			$quad->setPosition($mxCheckForUpdatesX, $buttonY, 0.01);
@@ -201,8 +205,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$mxQuad->setImageUrl($this->maniaControl->getManialinkManager()->getIconManager()->getIcon(IconManager::MX_ICON_GREEN));
 			$mxQuad->setImageFocusUrl($this->maniaControl->getManialinkManager()->getIconManager()->getIcon(IconManager::MX_ICON_GREEN_MOVER));
 			$mxQuad->setPosition($mxCheckForUpdatesX - $buttonWidth + 3, $buttonY);
-			$mxQuad->setZ(0.02);
-			$mxQuad->setAction(self::ACTION_CHECK_UPDATE);
+			$mxQuad->setZ(0.2);
 		}
 
 		if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
@@ -233,7 +236,11 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$labelLine->addLabelEntryText('Map Name', $posX + 20);
 		$labelLine->addLabelEntryText('Author', $posX + 68);
 		$labelLine->addLabelEntryText('Actions', $width / 2 - 16);
+		$labelLine->setY(-7);
 		$labelLine->render();
+
+		$searchFrame = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultMapSearch(self::ACTION_SEARCH_MAP_NAME,self::ACTION_SEARCH_AUTHOR);
+		$headFrame->addChild($searchFrame);
 
 		// Predefine description Label
 		$descriptionLabel = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultDescriptionLabel();
@@ -248,7 +255,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 		$index     = 0;
 		$mapListId = 1 + $mapsBeginIndex;
-		$posY      = $height / 2 - 10;
+		$posY      = $height / 2 - 16;
 		$pageFrame = null;
 
 		$currentMap       = $this->maniaControl->getMapManager()->getCurrentMap();
@@ -262,7 +269,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			if ($index % self::MAX_MAPS_PER_PAGE === 0) {
 				$pageFrame = new Frame();
 				$frame->addChild($pageFrame);
-				$posY = $height / 2 - 10;
+				$posY = $height / 2 - 16;
 				$paging->addPageControl($pageFrame, $pageNumber);
 				$pageNumber++;
 			}
@@ -488,9 +495,10 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 					$karmaGauge = new Gauge();
 					$mapFrame->addChild($karmaGauge);
-					$karmaGauge->setZ(2);
+					$karmaGauge->setZ(0.2);
 					$karmaGauge->setX($posX + 120);
-					$karmaGauge->setSize(20, 9);
+					$karmaGauge->setY(0.2);
+					$karmaGauge->setSize(20, 10);
 					$karmaGauge->setDrawBackground(false);
 					$karma = floatval($karma);
 					$karmaGauge->setRatio($karma + 0.15 - $karma * 0.15);
@@ -502,6 +510,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 					$karmaLabel->setZ(2);
 					$karmaLabel->setX($posX + 120);
 					$karmaLabel->setSize(20 * 0.9, 5);
+					$karmaLabel->setY(-0.2);
 					$karmaLabel->setTextSize(0.9);
 					$karmaLabel->setTextColor('000');
 					$karmaLabel->setText($karmaText);
@@ -512,8 +521,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$mapListId++;
 			$index++;
 		}
-
-		//var_dump($this->maniaControl->getMapManager()->searchMaps('nadeolabs'));
 
 		$this->maniaControl->getManialinkManager()->displayWidget($maniaLink, $player, self::WIDGET_NAME);
 	}
@@ -723,6 +730,38 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				}
 				break;
 		}
+	}
+
+	/**
+	 * Listener for search button
+	 *
+	 * @param array $callback
+	 * @internal
+	 */
+	public function searchByMapName(array $callback) {
+		$login = $callback[1][1];
+		$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
+
+		$searchString = $callback[1][3][0]['Value'];
+		$maps         = $this->maniaControl->getMapManager()->searchMapsByMapName($searchString);
+
+		$this->showMapList($player, $maps);
+	}
+
+	/**
+	 * Listener for search button
+	 *
+	 * @param array $callback
+	 * @internal
+	 */
+	public function searchByAuthor(array $callback) {
+		$login = $callback[1][1];
+		$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
+
+		$searchString = $callback[1][3][0]['Value'];
+		$maps         = $this->maniaControl->getMapManager()->searchMapsByAuthor($searchString);
+
+		$this->showMapList($player, $maps);
 	}
 
 	/**

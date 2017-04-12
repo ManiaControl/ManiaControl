@@ -377,7 +377,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener,
 		$labelLine->setStyle($style);
 		$labelLine->setTextSize($textSize);
 		$labelLine->setTextColor($textColor);
-		$labelLine->setPosZ($posZ);
+		$labelLine->setZ($posZ);
 
 		/**
 		 * @var Label_Text $prevLabel

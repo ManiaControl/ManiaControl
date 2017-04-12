@@ -2,12 +2,15 @@
 
 namespace ManiaControl\Manialinks;
 
+use FML\Controls\Entry;
 use FML\Controls\Frame;
 use FML\Controls\Label;
+use FML\Controls\Labels\Label_Button;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_BgRaceScore2;
 use FML\Controls\Quads\Quad_Bgs1InRace;
+use FML\Controls\Quads\Quad_BgsPlayerCard;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Script\Features\Paging;
 use FML\Script\Script;
@@ -116,6 +119,68 @@ class StyleManager implements UsageInformationAble {
 		$descriptionLabel->setAlign($descriptionLabel::LEFT, $descriptionLabel::TOP)->setPosition($width * -0.5 + 10, $height * -0.5 + 5)->setZ(1)->setSize($width * 0.7, 4)->setTextSize(2)->setVisible(false);
 
 		return $descriptionLabel;
+	}
+
+	/**
+	 * Gets the default buttons and textbox for a map search
+	 *
+	 * @param string $actionMapNameSearch
+	 * @param string $actionAuthorSearch
+	 * @return \FML\Controls\Frame
+	 */
+	public function getDefaultMapSearch($actionMapNameSearch, $actionAuthorSearch){
+		$width = $this->getListWidgetsWidth();
+
+		$frame = new Frame();
+
+		$label = new Label_Text();
+		$frame->addChild($label);
+		$label->setPosition(-$width / 2 + 5, 0);
+		$label->setHorizontalAlign($label::LEFT);
+		$label->setTextSize(1.3);
+		$label->setText('Search: ');
+
+		$entry = new Entry();
+		$frame->addChild($entry);
+		$entry->setStyle(Label_Text::STYLE_TextValueSmall);
+		$entry->setHorizontalAlign($entry::LEFT);
+		$entry->setPosition(-$width / 2 + 15, 0);
+		$entry->setTextSize(1);
+		$entry->setSize($width * 0.25, 4);
+		$entry->setName('SearchString');
+
+		//Search for Map-Name
+		$label = new Label_Button();
+		$frame->addChild($label);
+		$label->setPosition(-$width / 2 + 63, 0);
+		$label->setText('MapName');
+		$label->setTextSize(1.3);
+
+		$quad = new Quad_BgsPlayerCard();
+		$frame->addChild($quad);
+		$quad->setPosition(-$width / 2 + 63, 0);
+		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
+		$quad->setSize(18, 5);
+		$quad->setAction($actionMapNameSearch);
+		$quad->setZ(-0.1);
+
+		//Search for Author
+		$label = new Label_Button();
+		$frame->addChild($label);
+		$label->setPosition(-$width / 2 + 82, 0);
+		$label->setText('Author');
+		$label->setTextSize(1.3);
+
+		$quad = new Quad_BgsPlayerCard();
+		$frame->addChild($quad);
+		$quad->setPosition(-$width / 2 + 82, 0);
+		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
+		$quad->setSize(18, 5);
+		$quad->setAction($actionAuthorSearch);
+		$quad->setZ(-0.1);
+
+		return $frame;
+
 	}
 
 	/**

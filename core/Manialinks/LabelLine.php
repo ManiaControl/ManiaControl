@@ -27,6 +27,7 @@ class LabelLine implements UsageInformationAble {
 	private $textColor       = 'FFF';
 	private $posZ            = 0;
 	private $prefix          = '';
+	private $posY            = 0;
 
 
 	public function __construct(Frame $frame) {
@@ -78,6 +79,7 @@ class LabelLine implements UsageInformationAble {
 			$entry->setTextSize($this->textSize);
 			$entry->setTextColor($this->textColor);
 			$entry->setZ($this->posZ);
+			$entry->setY($this->posY);
 			$entry->setTextPrefix($this->prefix);
 
 			$this->frame->addChild($entry);
@@ -143,15 +145,29 @@ class LabelLine implements UsageInformationAble {
 	/**
 	 * @return int
 	 */
-	public function getPosZ() {
+	public function getZ() {
 		return $this->posZ;
 	}
 
 	/**
 	 * @param int $posZ
 	 */
-	public function setPosZ($posZ) {
+	public function setZ($posZ) {
 		$this->posZ = $posZ;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getY() {
+		return $this->posY;
+	}
+
+	/**
+	 * @param int $posY
+	 */
+	public function setY($posY) {
+		$this->posY = $posY;
 	}
 
 	/**
