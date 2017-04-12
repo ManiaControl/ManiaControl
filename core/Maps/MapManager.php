@@ -56,6 +56,9 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 	const SETTING_MAPLIST_FILE            = 'File to write Maplist in';
 	const SETTING_WRITE_OWN_MAPLIST_FILE  = 'Write a own Maplist File for every Server called serverlogin.txt';
 
+	const SEARCH_BY_AUTHOR   = 'Author';
+	const SEARCH_BY_MAP_NAME = 'Mapname';
+
 
 	/*
      * Private properties
@@ -977,24 +980,56 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 		});
 	}
 
+
 	/**
-	 * Search maps by a given String for Author and Name
+	 * Searches the current map list for an author
 	 *
 	 * @param $searchString
 	 * @return array
 	 */
-	public function searchMaps($searchString) {
+	public function searchMapsByAuthor($searchString){
+		return $this->searchMaps($searchString,self::SEARCH_BY_AUTHOR);
+	}
+
+
+	/**
+	 * Searches the current map list for a map name
+	 *
+	 * @param $searchString
+	 * @return array
+	 */
+	public function searchMapsByMapName($searchString){
+		return $this->searchMaps($searchString,self::SEARCH_BY_MAP_NAME);
+	}
+
+	/**
+	 * Searches the current map list
+	 *
+	 * @param        $searchString
+	 * @param string $searchBy
+	 * @return array
+	 */
+	private function searchMaps($searchString, $searchBy = self::SEARCH_BY_MAP_NAME) {
 		$result = array();
+		$searchString = strtolower($searchString);
 		foreach ($this->maps as $map) {
-			if (strpos($map->name, $searchString) || strpos($map->authorLogin, $searchString)) {
-				;
-			}
-			{
-				array_push($result, $map);
+			switch ($searchBy) {
+				case self::SEARCH_BY_MAP_NAME:
+					$mapName = strtolower(Formatter::stripCodes($map->name));
+
+					if (strpos($mapName, $searchString) !== false) {
+						array_push($result, $map);
+					}
+					break;
+				case self::SEARCH_BY_AUTHOR:
+					if (strpos(strtolower($map->authorLogin), $searchString) !== false) {
+						array_push($result, $map);
+					}
 			}
 		}
 		return $result;
 	}
+
 
 	/**
 	 * Initialize necessary database tables

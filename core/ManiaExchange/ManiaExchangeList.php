@@ -3,7 +3,6 @@
 namespace ManiaControl\ManiaExchange;
 
 use FML\Components\CheckBox;
-use FML\Controls\Entry;
 use FML\Controls\Frame;
 use FML\Controls\Gauge;
 use FML\Controls\Label;
@@ -239,7 +238,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 
 			$labelLine->addLabelEntryText($map->id, $posX + 3.5, 9);
 			$labelLine->addLabelEntryText($map->name, $posX + 12.5, 38.5);
-			$labelLine->addLabelEntryText($map->author, $posX + 59, 44, self::ACTION_GET_MAPS_FROM_AUTHOR . '.' . $map->author);
+			$labelLine->addLabelEntryText($map->author, $posX + 59, 20, self::ACTION_GET_MAPS_FROM_AUTHOR . '.' . $map->author);
 			$labelLine->addLabelEntryText(str_replace('Arena', '', $map->maptype), $posX + 103, 15);
 			$labelLine->addLabelEntryText($map->mood, $posX + 118, 12);
 			$labelLine->addLabelEntryText($time, $posX + 130, $width - ($posX + 130));
@@ -275,6 +274,7 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 			}
 
 			//Award Quad
+			$map->awards = 12; //TODO delete
 			if ($map->awards > 0) {
 				$awardQuad = new Quad_Icons64x64_1();
 				$mapFrame->addChild($awardQuad);
@@ -297,9 +297,10 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 			if (is_numeric($karma) && $voteCount > 0) {
 				$karmaGauge = new Gauge();
 				$mapFrame->addChild($karmaGauge);
-				$karmaGauge->setZ(2);
-				$karmaGauge->setX($posX + 89);
-				$karmaGauge->setSize(16.5, 9);
+				$karmaGauge->setZ(-0.05);
+				$karmaGauge->setX($posX + 87);
+				$karmaGauge->setY(0.2);
+				$karmaGauge->setSize(20, 10);
 				$karmaGauge->setDrawBackground(false);
 				$karma = floatval($karma);
 				$karmaGauge->setRatio($karma + 0.15 - $karma * 0.15);
@@ -308,9 +309,10 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 
 				$karmaLabel = new Label();
 				$mapFrame->addChild($karmaLabel);
-				$karmaLabel->setZ(2);
-				$karmaLabel->setX($posX + 89);
-				$karmaLabel->setSize(16.5 * 0.9, 5);
+				$karmaLabel->setZ(1);
+				$karmaLabel->setX($posX + 87);
+				$karmaLabel->setSize(20 * 0.9, 5);
+				$karmaLabel->setY(-0.2);
 				$karmaLabel->setTextSize(0.9);
 				$karmaLabel->setTextColor('000');
 				$karmaLabel->setText('  ' . round($karma * 100.) . '% (' . $voteCount . ')');
@@ -321,52 +323,9 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 			$index++;
 		}
 
-		$label = new Label_Text();
-		$frame->addChild($label);
-		$label->setPosition(-$width / 2 + 5, $height / 2 - 5);
-		$label->setHorizontalAlign($label::LEFT);
-		$label->setTextSize(1.3);
-		$label->setText('Search: ');
-
-		$entry = new Entry();
-		$frame->addChild($entry);
-		$entry->setStyle(Label_Text::STYLE_TextValueSmall);
-		$entry->setHorizontalAlign($entry::LEFT);
-		$entry->setPosition(-$width / 2 + 15, $height / 2 - 5);
-		$entry->setTextSize(1);
-		$entry->setSize($width * 0.25, 4);
-		$entry->setName('SearchString');
-
-
-		//Search for Map-Name
-		$label = new Label_Button();
-		$frame->addChild($label);
-		$label->setPosition(-$width / 2 + 63, $height / 2 - 5);
-		$label->setText('MapName');
-		$label->setTextSize(1.3);
-
-		$quad = new Quad_BgsPlayerCard();
-		$frame->addChild($quad);
-		$quad->setPosition(-$width / 2 + 63, $height / 2 - 5);
-		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
-		$quad->setSize(18, 5);
-		$quad->setAction(self::ACTION_SEARCH_MAPNAME);
-		$quad->setZ(-0.1);
-
-		//Search for Author
-		$label = new Label_Button();
-		$frame->addChild($label);
-		$label->setPosition(-$width / 2 + 82, $height / 2 - 5);
-		$label->setText('Author');
-		$label->setTextSize(1.3);
-
-		$quad = new Quad_BgsPlayerCard();
-		$frame->addChild($quad);
-		$quad->setPosition(-$width / 2 + 82, $height / 2 - 5);
-		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
-		$quad->setSize(18, 5);
-		$quad->setAction(self::ACTION_SEARCH_AUTHOR);
-		$quad->setZ(-0.1);
+		$searchFrame = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultMapSearch(self::ACTION_SEARCH_MAPNAME,self::ACTION_SEARCH_AUTHOR);
+		$searchFrame->setY($height / 2 - 5);
+		$frame->addChild($searchFrame);
 
 		//Seach for MP4Maps
 		$quad = new Quad();
