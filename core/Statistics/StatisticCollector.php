@@ -5,6 +5,8 @@ namespace ManiaControl\Statistics;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
+use ManiaControl\Callbacks\Structures\Common\BasePlayerTimeStructure;
+use ManiaControl\Callbacks\Structures\ManiaPlanet\StartEndStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\Models\Weapons;
 use ManiaControl\Callbacks\Structures\ShootMania\OnArmorEmptyStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnCaptureStructure;
@@ -61,6 +63,8 @@ class StatisticCollector implements CallbackListener { //TODO remove old callbac
 	private $maniaControl = null;
 	private $onShootArray = array();
 
+	private $startPlayLoopTime = -1;
+
 	/**
 	 * Construct a new statistic collector instance
 	 *
@@ -80,6 +84,14 @@ class StatisticCollector implements CallbackListener { //TODO remove old callbac
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::SM_ONNEARMISS, $this, 'onNearMissCallback');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::SM_ONCAPTURE, $this, 'onCaptureCallback');
 
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::MP_STARTPLAYLOOP, $this, 'onStartPlayLoop');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::MP_ENDPLAYLOOP, $this, 'onEndPlayLoop');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::SM_ONPLAYERREMOVED, $this, 'onPlayerRemoved');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::TM_ONPLAYERREMOVED, $this, 'onPlayerRemoved');
+
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::SM_ONCAPTURE, $this, 'onCaptureCallback');
+
+
 		// Settings
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_COLLECT_STATS_ENABLED, true);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_COLLECT_STATS_MINPLAYERS, 4);
@@ -88,6 +100,8 @@ class StatisticCollector implements CallbackListener { //TODO remove old callbac
 
 	/**
 	 * Handle ManiaControl OnInit Callback
+	 *
+	 * @internal
 	 */
 	public function onInit() {
 		// Define Stats MetaData
@@ -114,6 +128,7 @@ class StatisticCollector implements CallbackListener { //TODO remove old callbac
 	/**
 	 * Checks if the Collecting is Enabled
 	 *
+	 * @api
 	 * @return boolean
 	 */
 	public function isCollectingEnabled() {
@@ -124,6 +139,7 @@ class StatisticCollector implements CallbackListener { //TODO remove old callbac
 	/**
 	 * Check for the Minimum Amount of Players to collect
 	 *
+	 * @api
 	 * @return bool
 	 */
 	public function checkForMinimumPlayers() {
@@ -134,6 +150,7 @@ class StatisticCollector implements CallbackListener { //TODO remove old callbac
 	/**
 	 * Handles the onHitCallback
 	 *
+	 * @internal
 	 * @param \ManiaControl\Callbacks\Structures\ShootMania\OnHitStructure $structure
 	 */
 	public function onHitCallback(OnHitStructure $structure) {
@@ -153,6 +170,7 @@ class StatisticCollector implements CallbackListener { //TODO remove old callbac
 	/**
 	 * Handles the onShoot Callback
 	 *
+	 * @internal
 	 * @param \ManiaControl\Callbacks\Structures\ShootMania\OnShootStructure $structure
 	 */
 	public function onShootCallback(OnShootStructure $structure) {
@@ -166,6 +184,7 @@ class StatisticCollector implements CallbackListener { //TODO remove old callbac
 	/**
 	 * Handles the OnNearMiss Callback
 	 *
+	 * @internal
 	 * @param \ManiaControl\Callbacks\Structures\ShootMania\OnNearMissStructure $structure
 	 */
 	public function onNearMissCallback(OnNearMissStructure $structure) {
@@ -180,6 +199,7 @@ class StatisticCollector implements CallbackListener { //TODO remove old callbac
 	/**
 	 * Handles the OnCapture Callback
 	 *
+	 * @internal
 	 * @param \ManiaControl\Callbacks\Structures\ShootMania\OnCaptureStructure $structure
 	 */
 	public function onCaptureCallback(OnCaptureStructure $structure) {
@@ -195,6 +215,7 @@ class StatisticCollector implements CallbackListener { //TODO remove old callbac
 	/**
 	 * Handles the OnArmorEmpty Callback
 	 *
+	 * @internal
 	 * @param \ManiaControl\Callbacks\Structures\ShootMania\OnArmorEmptyStructure $structure
 	 */
 	public function onArmorEmptyCallback(OnArmorEmptyStructure $structure) {
@@ -212,6 +233,7 @@ class StatisticCollector implements CallbackListener { //TODO remove old callbac
 	/**
 	 * Handles the OnPlayerRequestRespawn Callback
 	 *
+	 * @internal
 	 * @param \ManiaControl\Callbacks\Structures\ShootMania\OnPlayerRequestRespawnStructure $structure
 	 */
 	public function onPlayerRequestRespawnCallback(OnPlayerRequestRespawnStructure $structure) {
@@ -226,6 +248,7 @@ class StatisticCollector implements CallbackListener { //TODO remove old callbac
 	/**
 	 * Handle EndMap
 	 *
+	 * @internal
 	 * @param array $callback
 	 */
 	public function onEndMap(array $callback) {
@@ -245,11 +268,11 @@ class StatisticCollector implements CallbackListener { //TODO remove old callbac
 	/**
 	 * Insert OnShoot Statistic when a player leaves
 	 *
+	 * @internal
 	 * @param Player $player
 	 */
 	public function onPlayerDisconnect(Player $player) {
-		// Check if Stat Collecting is enabled
-		if (!$this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_COLLECT_STATS_ENABLED)) {
+		if (!$this->isCollectingEnabled() || !$this->checkForMinimumPlayers()) {
 			return;
 		}
 
@@ -260,14 +283,76 @@ class StatisticCollector implements CallbackListener { //TODO remove old callbac
 			}
 			unset($this->onShootArray[$player->login]);
 		}
+
+	}
+
+	/**
+	 * Update PlayTime if the Player leaves
+	 *
+	 * @internal
+	 * @param \ManiaControl\Callbacks\Structures\Common\BasePlayerTimeStructure $structure
+	 */
+	public function onPlayerRemoved(BasePlayerTimeStructure $structure) {
+		if (!$this->isCollectingEnabled() || !$this->checkForMinimumPlayers()) {
+			return;
+		}
+
+		//Check if in a PlayLoop actually has been started
+		if ($this->startPlayLoopTime < 0) {
+			return;
+		}
+
+		$durationTime = ($structure->getTime() - $this->startPlayLoopTime) / 1000;
+
+		$this->maniaControl->getStatisticManager()->insertStat(self::STAT_PLAYTIME, $structure->getPlayer(), $this->maniaControl->getServer()->index, $durationTime);
+	}
+
+
+	/**
+	 * Handles the PlayerTime on Join
+	 *
+	 * @internal
+	 * @param \ManiaControl\Callbacks\Structures\ManiaPlanet\StartEndStructure $structure
+	 */
+	public function onStartPlayLoop(StartEndStructure $structure) {
+		$this->startPlayLoopTime = $structure->getTime();
+	}
+
+	/**
+	 * Handles The Playtime Statistic on EndPlayerLoop
+	 *
+	 * @internal
+	 * @param \ManiaControl\Callbacks\Structures\ManiaPlanet\StartEndStructure $structure
+	 */
+	public function onEndPlayLoop(StartEndStructure $structure) {
+		// Check if Stat Collecting is enabled
+		if (!$this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_COLLECT_STATS_ENABLED)) {
+			return;
+		}
+
+		//Check if in a PlayLoop actually has been started
+		if ($this->startPlayLoopTime < 0) {
+			return;
+		}
+
+		$durationTime = ($structure->getTime() - $this->startPlayLoopTime) / 1000;
+
+		foreach ($this->maniaControl->getPlayerManager()->getPlayers() as $player) {
+			$this->maniaControl->getStatisticManager()->insertStat(self::STAT_PLAYTIME, $player, $this->maniaControl->getServer()->index, $durationTime);
+		}
+
+		$this->startPlayLoopTime = -1;
 	}
 
 	/**
 	 * Handle stats on callbacks
 	 *
+	 * @deprecated
+	 * @internal
 	 * @param array $callback
 	 */
 	public function handleCallbacks(array $callback) {
+		//TODO remove later, only used for MP3
 		//TODO survivals
 		// Check if Stat Collecting is enabled
 		if (!$this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_COLLECT_STATS_ENABLED)) {
