@@ -798,6 +798,7 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 	 * @param string $restart
 	 */
 	public function handleScriptBeginMap($mapUid, $restart) {
+		//TODO remove parseBoolean as soon the mp3 callbacks get removed
 		$this->beginMap($mapUid, Formatter::parseBoolean($restart));
 	}
 
@@ -987,8 +988,8 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 	 * @param $searchString
 	 * @return array
 	 */
-	public function searchMapsByAuthor($searchString){
-		return $this->searchMaps($searchString,self::SEARCH_BY_AUTHOR);
+	public function searchMapsByAuthor($searchString) {
+		return $this->searchMaps($searchString, self::SEARCH_BY_AUTHOR);
 	}
 
 
@@ -998,8 +999,8 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 	 * @param $searchString
 	 * @return array
 	 */
-	public function searchMapsByMapName($searchString){
-		return $this->searchMaps($searchString,self::SEARCH_BY_MAP_NAME);
+	public function searchMapsByMapName($searchString) {
+		return $this->searchMaps($searchString, self::SEARCH_BY_MAP_NAME);
 	}
 
 	/**
@@ -1010,7 +1011,7 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 	 * @return array
 	 */
 	private function searchMaps($searchString, $searchBy = self::SEARCH_BY_MAP_NAME) {
-		$result = array();
+		$result       = array();
 		$searchString = strtolower($searchString);
 		foreach ($this->maps as $map) {
 			switch ($searchBy) {

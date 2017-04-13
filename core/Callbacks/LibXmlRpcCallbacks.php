@@ -4,11 +4,14 @@ namespace ManiaControl\Callbacks;
 
 use ManiaControl\Callbacks\Structures\ArmorEmptyStructure;
 use ManiaControl\Callbacks\Structures\CaptureStructure;
+use ManiaControl\Callbacks\Structures\Common\BaseTimeStructure;
+use ManiaControl\Callbacks\Structures\Common\StatusCallbackStructure;
+use ManiaControl\Callbacks\Structures\ManiaPlanet\LoadingUnloadingMapStructure;
+use ManiaControl\Callbacks\Structures\ManiaPlanet\ModeUseTeamsStructure;
 use ManiaControl\Callbacks\Structures\ManiaPlanet\StartEndStructure;
 use ManiaControl\Callbacks\Structures\ManiaPlanet\StartServerStructure;
 use ManiaControl\Callbacks\Structures\NearMissStructure;
 use ManiaControl\Callbacks\Structures\PlayerHitStructure;
-use ManiaControl\Callbacks\Structures\ShootMania\StatusCallbackStructure;
 use ManiaControl\Callbacks\Structures\XmlRpc\AllApiVersionsStructure;
 use ManiaControl\Callbacks\Structures\XmlRpc\ApiVersionStructure;
 use ManiaControl\Callbacks\Structures\XmlRpc\CallbackHelpStructure;
@@ -100,7 +103,7 @@ class LibXmlRpcCallbacks implements CallbackListener {
 				break;
 			case 'Maniaplanet.StartMap_End': //Use the MapManager Callback
 				$jsonData = json_decode($data[0]);
-				$this->maniaControl->getMapManager()->handleScriptBeginMap($jsonData->map->uid, 'False');
+				$this->maniaControl->getMapManager()->handleScriptBeginMap($jsonData->map->uid, $jsonData->restarted);
 				//TODO Test if json is correctly parsed
 				break;
 			case 'Maniaplanet.EndMap_Start':
@@ -117,20 +120,24 @@ class LibXmlRpcCallbacks implements CallbackListener {
 				break;
 			case Callbacks::MP_LOADINGMAPEND:
 			case Callbacks::MP_UNLOADINGMAPSTART:
-				$jsonData = json_decode($data[0]);
-				$map      = $this->maniaControl->getMapManager()->getMapByUid($jsonData->map->uid); //Verify Json
-				$this->maniaControl->getCallbackManager()->triggerCallback($name, $map);
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new LoadingUnloadingMapStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::MP_LOADINGMAPSTART:
 			case Callbacks::MP_UNLOADINGMAPEND:
 			case Callbacks::MP_PODIUMSTART:
 			case Callbacks::MP_PODIUMEND:
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new BaseTimeStructure($this->maniaControl, $data));
+				break;
 			case Callbacks::MP_WARMUP_START:
 			case Callbacks::MP_WARMUP_END:
 				$this->maniaControl->getCallbackManager()->triggerCallback($name);
 				break;
 			case Callbacks::MP_WARMUP_STATUS:
+			case Callbacks::MP_PAUSE_STATUS:
 				$this->maniaControl->getCallbackManager()->triggerCallback($name, new StatusCallbackStructure($this->maniaControl, $data));
+				break;
+			case Callbacks::MP_USES_TEAMMODE:
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new ModeUseTeamsStructure($this->maniaControl, $data));
 				break;
 
 			//OLD Callbacks

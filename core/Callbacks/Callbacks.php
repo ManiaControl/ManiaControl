@@ -73,7 +73,10 @@ interface Callbacks {
 	const MP_WARMUP_END    = 'Maniaplanet.WarmUp.End';
 	const MP_WARMUP_STATUS = 'Maniaplanet.WarmUp.Status';
 
-	const SM_UIPROPERTIES = 'Shootmania.UIProperties';
+	const MP_USES_TEAMMODE = 'Maniaplanet.Mode.UseTeams';
+	const MP_PAUSE_STATUS  = 'Maniaplanet.Pause.Status';
+
+	const SM_UIPROPERTIES = 'Shootmania.UI.Properties';
 	const SM_SCORES       = "Shootmania.Scores";
 
 	const SM_ONEVENTDEFAULT = "Shootmania.Event.Default";
@@ -95,7 +98,6 @@ interface Callbacks {
 	const SM_ONPLAYERREQUESTACTIONCHANGE = "Shootmania.Event.OnPlayerRequestActionChange";
 
 	//SM GameMode Callbacks
-	const SM_COMBO_PAUSESTATUS     = 'Shootmania.Combo.Pause';
 	const SM_ELITE_STARTTURN       = 'Shootmania.Elite.StartTurn';
 	const SM_ELITE_ENDTURN         = 'Shootmania.Elite.EndTurn';
 	const SM_JOUST_ONRELOAD        = 'Shootmania.Joust.OnReload';
@@ -122,7 +124,7 @@ interface Callbacks {
 	const TM_WARMUPENDROUND   = "Trackmania.WarmUp.EndRound";
 	const TM_WARMUPEND        = "Trackmania.WarmUp.End";
 
-	const TM_UIPROPERTIES = 'Trackmania.UIProperties';
+	const TM_UIPROPERTIES = 'Trackmania.UI.Properties';
 
 	const TM_POINTSREPARTITION = 'Trackmania.PointsRepartition';
 
@@ -312,7 +314,7 @@ interface Callbacks {
 	 * @deprecated
 	 */
 	const ONPLAYERREQUESTRESPAWN = 'Callbacks.OnPlayerRequestRespawn';
-	
+
 	/*
 	 * TrackMania Callbacks
 	 */

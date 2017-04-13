@@ -26,9 +26,7 @@ class OnHitNearMissArmorEmptyBaseStructure extends BaseStructure {
 	private $shooter;
 	private $victim;
 
-	//private $shooterPoints; (was in mp3)
-	//private $hitDistance; (was in mp3)
-
+	private $distance;
 
 	/**
 	 * Construct a new On Hit Structure
@@ -39,9 +37,10 @@ class OnHitNearMissArmorEmptyBaseStructure extends BaseStructure {
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
 
-		$jsonObj      = $this->getPlainJsonObject();
-		$this->time   = $jsonObj->time;
-		$this->weapon = $jsonObj->weapon;
+		$jsonObj        = $this->getPlainJsonObject();
+		$this->time     = $jsonObj->time;
+		$this->weapon   = $jsonObj->weapon;
+		$this->distance = $jsonObj->distance;
 
 		$this->shooterPosition = new Position();
 		$this->shooterPosition->setX($jsonObj->shooterposition->x);
@@ -116,5 +115,15 @@ class OnHitNearMissArmorEmptyBaseStructure extends BaseStructure {
 	 */
 	public function getVictim() {
 		return $this->victim;
+	}
+
+	/**
+	 * Distance Between Shooter and Victim at the time of the Event
+	 *
+	 * @api
+	 * @return float
+	 */
+	public function getDistance() {
+		return $this->distance;
 	}
 }

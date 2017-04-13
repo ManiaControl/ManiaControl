@@ -15,7 +15,7 @@ use ManiaControl\ManiaControl;
  */
 class OnHitStructure extends OnHitNearMissArmorEmptyBaseStructure {
 	private $damage;
-
+	private $shooterPoints;
 
 	/**
 	 * OnHitStructure constructor.
@@ -26,7 +26,8 @@ class OnHitStructure extends OnHitNearMissArmorEmptyBaseStructure {
 	public function __construct(ManiaControl $maniaControl, array $data) {
 		parent::__construct($maniaControl, $data);
 
-		$this->damage = $this->getPlainJsonObject()->damage;
+		$this->damage        = $this->getPlainJsonObject()->damage;
+		$this->shooterPoints = $this->getPlainJsonObject()->points;
 	}
 
 	/**
@@ -38,4 +39,15 @@ class OnHitStructure extends OnHitNearMissArmorEmptyBaseStructure {
 	public function getDamage() {
 		return $this->damage;
 	}
+
+	/**
+	 * Amount of points scored by the shooter
+	 *
+	 * @api
+	 * @return int
+	 */
+	public function getShooterPoints() {
+		return $this->shooterPoints;
+	}
+
 }

@@ -3,40 +3,48 @@
 namespace ManiaControl\Callbacks\Structures\ManiaPlanet;
 
 
-use ManiaControl\Callbacks\Structures\Common\BaseStructure;
 use ManiaControl\Callbacks\Structures\Common\BaseTimeStructure;
 use ManiaControl\ManiaControl;
 
 /**
- * Structure Class for the Default Start End Callbacks
+ * Structure Class for the Loading Map End and UnloadingMap Begin Callbacks
  *
  * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class StartEndStructure extends BaseTimeStructure {
-	private $count;
+class LoadingUnloadingMapStructure extends BaseTimeStructure {
+	private $restarted;
 
 	/**
-	 * StartEndStructure constructor.
+	 * StartServerStructure constructor.
 	 *
 	 * @param \ManiaControl\ManiaControl $maniaControl
 	 * @param                            $data
 	 */
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
-
-		$this->count = $this->getPlainJsonObject()->count;
 	}
 
 	/**
-	 * Get the Count of this Section
+	 * Flag if the Server got Restarted
 	 *
 	 * @api
-	 * @return int
+	 * @return mixed
 	 */
-	public function getCount() {
-		return $this->count;
+	public function getRestarted() {
+		return $this->restarted;
 	}
+
+	/**
+	 * Gets the Map
+	 *
+	 * @api
+	 * @return \ManiaControl\Maps\Map
+	 */
+	public function getMap() {
+		return $this->maniaControl->getMapManager()->getMapByUid($this->getPlainJsonObject()->map->uid);
+	}
+
 }

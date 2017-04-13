@@ -86,6 +86,10 @@ class TrackManiaCallbacks implements CallbackListener {
 				break;
 			case Callbacks::TM_WARMUPEND:
 				break;
+			case Callbacks::TM_UIPROPERTIES:
+				//TODO structure, but wait for further update
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, $data);
+				break;
 		}
 	}
 

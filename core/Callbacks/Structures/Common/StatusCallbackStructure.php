@@ -3,7 +3,6 @@
 namespace ManiaControl\Callbacks\Structures\Common;
 
 
-use ManiaControl\Callbacks\Structures\Common\BaseResponseStructure;
 use ManiaControl\ManiaControl;
 
 /**
@@ -16,6 +15,7 @@ use ManiaControl\ManiaControl;
  */
 class StatusCallbackStructure extends BaseResponseStructure {
 	protected $active;
+	protected $available;
 
 	/**
 	 * Construct a new On Hit Structure
@@ -26,7 +26,8 @@ class StatusCallbackStructure extends BaseResponseStructure {
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
 
-		$this->active = $this->getPlainJsonObject()->active;
+		$this->active    = $this->getPlainJsonObject()->active;
+		$this->available = $this->getPlainJsonObject()->available;
 	}
 
 	/**
@@ -37,6 +38,16 @@ class StatusCallbackStructure extends BaseResponseStructure {
 	 */
 	public function getActive() {
 		return $this->active;
+	}
+
+	/**
+	 * Checks if the Mode uses Warmup or not
+	 *
+	 * @api
+	 * @return boolean
+	 */
+	public function isAvailable() {
+		return $this->available;
 	}
 
 }

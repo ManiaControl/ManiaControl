@@ -2,6 +2,8 @@
 
 namespace ManiaControl\Callbacks\Structures\ShootMania;
 
+use ManiaControl\ManiaControl;
+
 /**
  * Structure Class for the OnArmorEmpty Structure Callback
  *
@@ -11,5 +13,4 @@ namespace ManiaControl\Callbacks\Structures\ShootMania;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class OnArmorEmptyStructure extends OnHitNearMissArmorEmptyBaseStructure {
-
 }
