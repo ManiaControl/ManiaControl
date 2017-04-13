@@ -24,6 +24,7 @@ class CommonPlayerScore implements UsageInformationAble, JsonSerializable {
 	protected $rank;
 	protected $roundPoints;
 	protected $mapPoints;
+	protected $matchPoints;
 
 	/**
 	 * Returns the Player
@@ -103,6 +104,26 @@ class CommonPlayerScore implements UsageInformationAble, JsonSerializable {
 	 */
 	public function setMapPoints($mapPoints) {
 		$this->mapPoints = $mapPoints;
+	}
+
+	/**
+	 * Gets the Match Points
+	 *
+	 * @api
+	 * @return mixed
+	 */
+	public function getMatchPoints() {
+		return $this->matchPoints;
+	}
+
+	/**
+	 * Sets the Match Points
+	 *
+	 * @api
+	 * @param mixed $matchPoints
+	 */
+	public function setMatchPoints($matchPoints) {
+		$this->matchPoints = $matchPoints;
 	}
 
 }

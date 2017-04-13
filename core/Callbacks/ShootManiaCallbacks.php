@@ -81,7 +81,8 @@ class ShootManiaCallbacks implements CallbackListener {
 				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnScoresStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_UIPROPERTIES:
-				//TODO
+				//TODO structure, but wait for further update
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, $data);
 				break;
 			case Callbacks::SM_ONEVENTDEFAULT:
 				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnDefaultEventStructure($this->maniaControl, $data));
@@ -127,9 +128,6 @@ class ShootManiaCallbacks implements CallbackListener {
 				break;
 			case Callbacks::SM_ONPLAYERREQUESTACTIONCHANGE:
 				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnPlayerRequestActionChange($this->maniaControl, $data));
-				break;
-			case Callbacks::SM_COMBO_PAUSESTATUS:
-				$this->maniaControl->getCallbackManager()->triggerCallback($name, new StatusCallbackStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ELITE_STARTTURN:
 				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnEliteStartTurnStructure($this->maniaControl, $data));

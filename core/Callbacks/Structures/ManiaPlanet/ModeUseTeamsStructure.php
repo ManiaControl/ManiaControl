@@ -3,23 +3,22 @@
 namespace ManiaControl\Callbacks\Structures\ManiaPlanet;
 
 
-use ManiaControl\Callbacks\Structures\Common\BaseStructure;
-use ManiaControl\Callbacks\Structures\Common\BaseTimeStructure;
+use ManiaControl\Callbacks\Structures\Common\BaseResponseStructure;
 use ManiaControl\ManiaControl;
 
 /**
- * Structure Class for the Default Start End Callbacks
+ * Structure Class for the Mode use  Teams Callback
  *
  * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class StartEndStructure extends BaseTimeStructure {
-	private $count;
+class ModeUseTeamsStructure extends BaseResponseStructure {
+	private $teams;
 
 	/**
-	 * StartEndStructure constructor.
+	 * StartServerStructure constructor.
 	 *
 	 * @param \ManiaControl\ManiaControl $maniaControl
 	 * @param                            $data
@@ -27,16 +26,16 @@ class StartEndStructure extends BaseTimeStructure {
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
 
-		$this->count = $this->getPlainJsonObject()->count;
+		$this->teams = $this->getPlainJsonObject()->teams;
 	}
 
 	/**
-	 * Get the Count of this Section
+	 * Returns if the Mode is using Teams
 	 *
 	 * @api
-	 * @return int
+	 * @return boolean < true if the game mode uses teams, false otherwise
 	 */
-	public function getCount() {
-		return $this->count;
+	public function modeIsUsingTeams() {
+		return $this->teams;
 	}
 }

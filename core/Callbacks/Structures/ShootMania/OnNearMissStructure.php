@@ -14,22 +14,4 @@ use ManiaControl\ManiaControl;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class OnNearMissStructure extends OnHitNearMissArmorEmptyBaseStructure {
-	private $distance;
-
-	public function __construct(ManiaControl $maniaControl, array $data) {
-		parent::__construct($maniaControl, $data);
-
-		$this->distance = $this->getPlainJsonObject()->distance;
-	}
-
-	/**
-	 * Returns the distance
-	 *
-	 *
-	 * @api
-	 * @return float
-	 */
-	public function getDistance() {
-		return $this->distance;
-	}
 }

@@ -3,7 +3,6 @@
 namespace ManiaControl\Script;
 
 use ManiaControl\Callbacks\Callbacks;
-use ManiaControl\Callbacks\Structures\XmlRpc\DocumentationStructure;
 use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
@@ -229,6 +228,24 @@ class ModeScriptEventManager implements UsageInformationAble {
 	}
 
 	/**
+	 * Blocks the End of the Warmup,
+	 *
+	 * @param int $time Timer before the end of the warmup when all players are ready. Use a negative value to prevent the warmup from ending even if all players are ready.
+	 */
+	public function blockEndWarmUp($time = -1) {
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.WarmUp.BlockEndWarmUp', array(true, $time));
+	}
+
+	/**
+	 * Blocks the End of the Warmup,
+	 *
+	 * @param int $time Timer before the end of the warmup when all players are ready. Use a negative value to prevent the warmup from ending even if all players are ready.
+	 */
+	public function unBlockEndWarmUp($time = -1) {
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.WarmUp.BlockEndWarmUp', array(false, $time));
+	}
+
+	/**
 	 * Get the status of the warmup.
 	 *
 	 * @api
@@ -246,34 +263,46 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 * @api
 	 * @return \ManiaControl\Script\InvokeScriptCallback You can directly set a callable on it via setCallable()
 	 */
-	public function getComboPauseStatus() {
+	public function getPauseStatus() {
 		$responseId = $this->generateResponseId();
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Shootmania.Combo.GetPause', array($responseId));
-		return new InvokeScriptCallback($this->maniaControl, Callbacks::SM_COMBO_PAUSESTATUS, $responseId);
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.Pause.GetStatus', array($responseId));
+		return new InvokeScriptCallback($this->maniaControl, Callbacks::MP_PAUSE_STATUS, $responseId);
 	}
 
 	/**
-	 * Start a Pause in Combo and triggers a Callback for the Pause Status
+	 * Start a Pause and triggers a Callback for the Pause Status
 	 *
 	 * @api
 	 * @return \ManiaControl\Script\InvokeScriptCallback To get The Pause Status You can directly set a callable on it via setCallable()
 	 */
-	public function startComboPause() {
+	public function startPause() {
 		$responseId = $this->generateResponseId();
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Shootmania.Combo.SetPause', array(true, $responseId));
-		return new InvokeScriptCallback($this->maniaControl, Callbacks::SM_COMBO_PAUSESTATUS, $responseId);
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.Pause.SetActive', array(true, $responseId));
+		return new InvokeScriptCallback($this->maniaControl, Callbacks::MP_PAUSE_STATUS, $responseId);
 	}
 
 	/**
-	 * End a Pause in Combo and triggers a Callback for the Pause Status
+	 * End a Pause and triggers a Callback for the Pause Status
 	 *
 	 * @api
 	 * @return \ManiaControl\Script\InvokeScriptCallback To get The Pause Status You can directly set a callable on it via setCallable()
 	 */
-	public function endComboPause() {
+	public function endPause() {
 		$responseId = $this->generateResponseId();
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Shootmania.Combo.SetPause', array(false, $responseId));
-		return new InvokeScriptCallback($this->maniaControl, Callbacks::SM_COMBO_PAUSESTATUS, $responseId);
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.Pause.SetActive', array(false, $responseId));
+		return new InvokeScriptCallback($this->maniaControl, Callbacks::MP_PAUSE_STATUS, $responseId);
+	}
+
+	/**
+	 * Returns if the GameMode is a TeamMode or not
+	 *
+	 * @api
+	 * @return \ManiaControl\Script\InvokeScriptCallback To get The TeamMode Status You can directly set a callable on it via setCallable()
+	 */
+	public function isTeamMode() {
+		$responseId = $this->generateResponseId();
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.Mode.GetUseTeams', array($responseId));
+		return new InvokeScriptCallback($this->maniaControl, Callbacks::MP_USES_TEAMMODE, $responseId);
 	}
 
 	/**
@@ -321,7 +350,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 */
 	public function getShootmaniaUIProperties() {
 		$responseId = $this->generateResponseId();
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Shootmania.GetUIProperties', array($responseId));
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Shootmania.UI.GetProperties', array($responseId));
 		return new InvokeScriptCallback($this->maniaControl, Callbacks::SM_UIPROPERTIES, $responseId);
 	}
 
@@ -332,7 +361,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 * @param string Json-Encoded Xml UI Property String
 	 */
 	public function setShootmaniaUIProperties($properties) {
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Shootmania.GetUIProperties', array($properties));
+		$this->maniaControl->getClient()->triggerModeScriptEvent(' Shootmania.UI.SetProperties', array($properties));
 	}
 
 	/**
@@ -377,7 +406,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 */
 	public function getTrackmaniaUIProperties() {
 		$responseId = $this->generateResponseId();
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Trackmania.GetUIProperties', array($responseId));
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Trackmania.UI.SetProperties', array($responseId));
 		return new InvokeScriptCallback($this->maniaControl, Callbacks::TM_SCORES, $responseId);
 	}
 
@@ -388,7 +417,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 * @param string Json-Encoded Xml UI Property String
 	 */
 	public function setTrackmaniaUIProperties($properties) {
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Shootmania.GetUIProperties', array($properties));
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Trackmania.UI.GetProperties', array($properties));
 	}
 
 	/**
