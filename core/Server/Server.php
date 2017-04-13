@@ -23,7 +23,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
  */
 class Server implements CallbackListener, CommandListener, UsageInformationAble {
 	use UsageInformationTrait;
-	
+
 	/*
 	 * Constants
 	 */
@@ -41,31 +41,21 @@ class Server implements CallbackListener, CommandListener, UsageInformationAble 
 	public $p2pPort = -1;
 	public $login   = null;
 	public $titleId = null;
-	/** @var Directory $directory
-	 * @deprecated
-	 * @see getDirectory()
-	 */
-	public $directory = null;
-	/** @var Commands $commands
-	 * @deprecated
-	 * @see getCommands()
-	 */
-	public $commands = null;
-	/** @var UsageReporter $usageReporter
-	 * @deprecated
-	 * @see getUsageReporter()
-	 */
-	public $usageReporter = null;
-	/** @var RankingManager $rankingManager
-	 * @deprecated
-	 * @see getRankingManager()
-	 */
-	public $rankingManager = null;
-	/** @var \ManiaControl\Script\ScriptManager $scriptManager
-	 * @deprecated
-	 * @see getScriptManager()
-	 */
-	public $scriptManager = null;
+
+	/** @var Directory $directory */
+	private $directory = null;
+
+	/** @var Commands $commands */
+	private $commands = null;
+
+	/** @var UsageReporter $usageReporter */
+	private $usageReporter = null;
+
+	/** @var RankingManager $rankingManager */
+	private $rankingManager = null;
+
+	/** @var \ManiaControl\Script\ScriptManager $scriptManager */
+	private $scriptManager = null;
 
 	/*
 	 * Private properties
