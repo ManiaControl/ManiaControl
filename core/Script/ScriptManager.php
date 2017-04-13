@@ -2,6 +2,7 @@
 
 namespace ManiaControl\Script;
 
+use ManiaControl\Callbacks\Structures\ManiaPlanet\ModeUseTeamsStructure;
 use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\Logger;
@@ -60,8 +61,17 @@ class ScriptManager implements UsageInformationAble {
 
 		$this->maniaControl->getModeScriptEventManager()->enableCallbacks();
 		Logger::logInfo("Script Callbacks successfully enabled!");
+
+		//Checks if the Server is currently in TeamMode and sets it
+		$this->maniaControl->getModeScriptEventManager()->isTeamMode()->setCallable(function (ModeUseTeamsStructure $structure) {
+			if ($structure->modeIsUsingTeams()) {
+				$this->maniaControl->getServer()->setTeamMode(true);
+			}
+		});
+
 		return true;
 	}
+
 
 	/**
 	 * Check whether the Server is running in Script Mode
