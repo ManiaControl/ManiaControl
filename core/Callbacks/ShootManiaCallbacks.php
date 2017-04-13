@@ -3,7 +3,7 @@
 namespace ManiaControl\Callbacks;
 
 use ManiaControl\Callbacks\Models\RecordCallback;
-use ManiaControl\Callbacks\Structures\Common\StatusCallbackStructure;
+use ManiaControl\Callbacks\Structures\Common\BasePlayerTimeStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnActionCustomEventStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnActionEvent;
 use ManiaControl\Callbacks\Structures\ShootMania\OnArmorEmptyStructure;
@@ -17,7 +17,7 @@ use ManiaControl\Callbacks\Structures\ShootMania\OnJoustReloadStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnJoustRoundResultsStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnJoustSelectedPlayersStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnNearMissStructure;
-use ManiaControl\Callbacks\Structures\ShootMania\OnPlayerObjectStructure;
+use ManiaControl\Callbacks\Structures\ShootMania\OnBasePlayerObjectTimeStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnPlayerRequestActionChange;
 use ManiaControl\Callbacks\Structures\ShootMania\OnPlayerRequestRespawnStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnPlayerTriggersSectorStructure;
@@ -87,6 +87,10 @@ class ShootManiaCallbacks implements CallbackListener {
 			case Callbacks::SM_ONEVENTDEFAULT:
 				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnDefaultEventStructure($this->maniaControl, $data));
 				break;
+			case Callbacks::SM_ONPLAYERADDED:
+			case Callbacks::SM_ONPLAYERREMOVED:
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new BasePlayerTimeStructure($this->maniaControl, $data));
+				break;
 			case Callbacks::SM_ONSHOOT:
 				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnShootStructure($this->maniaControl, $data));
 				break;
@@ -118,13 +122,13 @@ class ShootManiaCallbacks implements CallbackListener {
 				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnActionEvent($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ONPLAYERTOUCHESOBJECT:
-				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnPlayerObjectStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnBasePlayerObjectTimeStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ONPLAYERTRIGGERSSECTOR:
 				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnPlayerTriggersSectorStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ONPLAYERTHROWSOBJECT:
-				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnPlayerObjectStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnBasePlayerObjectTimeStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ONPLAYERREQUESTACTIONCHANGE:
 				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnPlayerRequestActionChange($this->maniaControl, $data));

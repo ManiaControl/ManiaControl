@@ -4,6 +4,7 @@ namespace ManiaControl\Callbacks\Structures\TrackMania;
 
 
 use ManiaControl\Callbacks\Structures\Common\BaseStructure;
+use ManiaControl\Callbacks\Structures\Common\BaseTimeStructure;
 use ManiaControl\ManiaControl;
 //TODO make a common structure between shootmania and this and extend it
 /**
@@ -14,8 +15,7 @@ use ManiaControl\ManiaControl;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class OnCommandStructure extends BaseStructure {
-	private $time;
+class OnCommandStructure extends BaseTimeStructure {
 	private $name;
 	private $value;
 
@@ -28,20 +28,10 @@ class OnCommandStructure extends BaseStructure {
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
 
-		$this->time  = $this->getPlainJsonObject()->time;
 		$this->name  = $this->getPlainJsonObject()->name;
 		$this->value = $this->getPlainJsonObject()->value;
 	}
 
-	/**
-	 * < Server time when the event occured
-	 *
-	 * @api
-	 * @return int
-	 */
-	public function getTime() {
-		return $this->time;
-	}
 
 	/**
 	 * < Name of the command

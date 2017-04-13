@@ -4,6 +4,7 @@ namespace ManiaControl\Callbacks\Structures\TrackMania;
 
 
 use ManiaControl\Callbacks\Structures\Common\BaseStructure;
+use ManiaControl\Callbacks\Structures\Common\BaseTimeStructure;
 use ManiaControl\ManiaControl;
 
 /**
@@ -13,8 +14,7 @@ use ManiaControl\ManiaControl;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class OnDefaultEventStructure extends BaseStructure {
-	private $time;
+class OnDefaultEventStructure extends BaseTimeStructure {
 	private $type;
 
 	/**
@@ -26,22 +26,14 @@ class OnDefaultEventStructure extends BaseStructure {
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
 
-		$this->time = $this->getPlainJsonObject()->time;
 		$this->type = $this->getPlainJsonObject()->type;
 	}
 
-	/**
-	 * Returns Server time when the event occured
-	 *
-	 * @return int
-	 */
-	public function getTime() {
-		return $this->time;
-	}
 
 	/**
 	 * Returns the type of event
 	 *
+	 * @api
 	 * @return string
 	 */
 	public function getType() {
