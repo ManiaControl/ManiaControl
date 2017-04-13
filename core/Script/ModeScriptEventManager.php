@@ -215,7 +215,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 * @param $seconds < the duration of the extension in seconds.
 	 */
 	public function extendManiaPlanetWarmup($seconds) {
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.WarmUp.Extend', array($seconds * 1000));
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.WarmUp.Extend', array(strval($seconds * 1000)));
 	}
 
 	/**
@@ -233,7 +233,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 * @param int $time Timer before the end of the warmup when all players are ready. Use a negative value to prevent the warmup from ending even if all players are ready.
 	 */
 	public function blockEndWarmUp($time = -1) {
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.WarmUp.BlockEndWarmUp', array(true, $time));
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.WarmUp.BlockEndWarmUp', array("True", strval($time)));
 	}
 
 	/**
@@ -242,7 +242,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 * @param int $time Timer before the end of the warmup when all players are ready. Use a negative value to prevent the warmup from ending even if all players are ready.
 	 */
 	public function unBlockEndWarmUp($time = -1) {
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.WarmUp.BlockEndWarmUp', array(false, $time));
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.WarmUp.BlockEndWarmUp', array("False", strval($time)));
 	}
 
 	/**
@@ -277,7 +277,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 */
 	public function startPause() {
 		$responseId = $this->generateResponseId();
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.Pause.SetActive', array(true, $responseId));
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.Pause.SetActive', array("True", $responseId));
 		return new InvokeScriptCallback($this->maniaControl, Callbacks::MP_PAUSE_STATUS, $responseId);
 	}
 
@@ -289,7 +289,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 */
 	public function endPause() {
 		$responseId = $this->generateResponseId();
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.Pause.SetActive', array(false, $responseId));
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.Pause.SetActive', array("False", $responseId));
 		return new InvokeScriptCallback($this->maniaControl, Callbacks::MP_PAUSE_STATUS, $responseId);
 	}
 
