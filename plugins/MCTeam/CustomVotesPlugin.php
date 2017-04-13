@@ -26,6 +26,7 @@ use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
+use ManiaControl\Script\ScriptManager;
 use ManiaControl\Server\Commands;
 use ManiaControl\Server\Server;
 use ManiaControl\Utils\ColorUtil;
@@ -146,6 +147,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(self::CB_CUSTOM_VOTE_FINISHED, $this, 'handleVoteFinished');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Server::CB_TEAM_MODE_CHANGED, $this, 'constructMenu');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(ScriptManager::CB_PAUSE_STATUS_CHANGED, $this, 'constructMenu');
 
 		// Settings
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_VOTE_ICON_POSX, 156.);
@@ -224,26 +226,11 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$itemQuad->setAction(self::ACTION_START_VOTE . 'restartmap');
 		$this->addVoteMenuItem($itemQuad, 5, 'Vote for Restart-Map');
 
-		//Check if Pause exists in current GameMode
-		try {
-			$scriptInfos = $this->maniaControl->getClient()->getModeScriptInfo();
-
-			$pauseExists = false;
-			foreach ($scriptInfos->commandDescs as $param) {
-				if ($param->name === "Command_ForceWarmUp" || $param->name === "Command_SetPause") {
-					$pauseExists = true;
-					break;
-				}
-			}
-
-			// Menu Pause
-			if ($pauseExists) {
-				$itemQuad = new Quad_Icons128x32_1();
-				$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ManiaLinkSwitch);
-				$itemQuad->setAction(self::ACTION_START_VOTE . 'pausegame');
-				$this->addVoteMenuItem($itemQuad, 10, 'Vote for a pause of Current Game');
-			}
-		} catch (GameModeException $e) {
+		if ($this->maniaControl->getServer()->getScriptManager()->modeUsesPause()) {
+			$itemQuad = new Quad_Icons128x32_1();
+			$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ManiaLinkSwitch);
+			$itemQuad->setAction(self::ACTION_START_VOTE . 'pausegame');
+			$this->addVoteMenuItem($itemQuad, 10, 'Vote for a pause of Current Game');
 		}
 
 		//Menu SkipMap
@@ -252,7 +239,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$itemQuad->setAction(self::ACTION_START_VOTE . 'skipmap');
 		$this->addVoteMenuItem($itemQuad, 15, 'Vote for a Map Skip');
 
-		if ($this->maniaControl->getServer()->isTeamMode()) {
+		if ($this->maniaControl->getServer()->getScriptManager()->modeIsTeamMode()) {
 			//Menu TeamBalance
 			$itemQuad = new Quad_Icons128x32_1();
 			$itemQuad->setSubStyle($itemQuad::SUBSTYLE_RT_Team);
@@ -551,15 +538,9 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 					} catch (GameModeException $ex) {
 					}
 
-					try {
-						//Chase and Combo?
-						$this->maniaControl->getClient()->sendModeScriptCommands(array('Command_SetPause' => true));
-						$this->maniaControl->getChat()->sendInformation('$f8fVote to $fffpause the current Game$f8f has been successful!');
-
-						//Especially for chase, force end of the round to reach a draw
-						$this->maniaControl->getClient()->sendModeScriptCommands(array('Command_ForceEndRound' => true));
-					} catch (GameModeException $ex) {
-					}
+					//TODO verify if not everything is replaced through the new pause
+					$this->maniaControl->getModeScriptEventManager()->startPause();
+					$this->maniaControl->getChat()->sendInformation('$f8fVote to $fffpause the current Game$f8f has been successful!');
 					break;
 				case 'replay':
 					$this->maniaControl->getMapManager()->getMapQueue()->addFirstMapToMapQueue($this->currentVote->voter, $this->maniaControl->getMapManager()->getCurrentMap());

@@ -212,10 +212,10 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 * Extend the duration of any ongoing warmup.
 	 *
 	 * @api
-	 * @param $milisec < the duration of the extension in milliseconds.
+	 * @param $seconds < the duration of the extension in seconds.
 	 */
-	public function extendManiaPlanetWarmup($milisec) {
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.WarmUp.Extend', array($milisec));
+	public function extendManiaPlanetWarmup($seconds) {
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.WarmUp.Extend', array($seconds * 1000));
 	}
 
 	/**

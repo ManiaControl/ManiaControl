@@ -8,6 +8,7 @@ use FML\Controls\Quads\Quad_Icons64x64_1;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\Callbacks;
+use ManiaControl\Callbacks\Structures\Common\StatusCallbackStructure;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\Logger;
@@ -38,9 +39,6 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 	const SETTING_PERMISSION_SHOW_SYSTEMINFO       = 'Show SystemInfo';
 	const SETTING_PERMISSION_SHUTDOWN_SERVER       = 'Shutdown Server';
 	const SETTING_PERMISSION_CHANGE_SERVERSETTINGS = 'Change ServerSettings';
-	const COMMAND_EXTEND_WARMUP                    = 'WarmUp_Extend';
-	const COMMAND_FORCE_WARMUP                     = 'Command_ForceWarmUp';
-	const COMMAND_SET_PAUSE                        = 'Command_SetPause';
 
 	/*
 	 * Private properties
@@ -61,7 +59,7 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 		// Callbacks
 		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'each5Seconds', 5000);
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::ONINIT, $this, 'handleOnInit');
-		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::WARMUPSTATUS, $this, 'handleWarmUpStatus');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::MP_WARMUP_STATUS, $this, 'handleWarmUpStatus');
 
 		// Chat commands
 		$this->maniaControl->getCommandManager()->registerCommandListener('setservername', $this, 'commandSetServerName', true, 'Sets the ServerName.');
@@ -92,8 +90,6 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_CANCEL_VOTE, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_HANDLE_WARMUP, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 
-		$this->handleWarmUpStatus(true); //TODO dynamic
-
 		$this->updateCancelVoteMenuItem();
 		$this->updateWarmUpMenuItems();
 	}
@@ -112,21 +108,8 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 	 * Manage the WarmUp related menu items
 	 */
 	private function updateWarmUpMenuItems() {
-		$pauseExists = false;
-		try {
-			$scriptInfos = $this->maniaControl->getClient()->getModeScriptInfo();
-			foreach ($scriptInfos->commandDescs as $param) {
-				if ($param->name === self::COMMAND_FORCE_WARMUP || $param->name === self::COMMAND_SET_PAUSE) {
-					$pauseExists = true;
-					break;
-				}
-			}
-			$this->maniaControl->getClient()->triggerModeScriptEvent("WarmUp_GetStatus");
-		} catch (GameModeException $e) {
-		}
-
 		// Add pause menu item
-		if ($pauseExists) {
+		if ($this->maniaControl->getServer()->getScriptManager()->modeUsesPause()) {
 			$itemQuad = new Quad_Icons128x32_1();
 			$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ManiaLinkSwitch);
 			$itemQuad->setAction(self::ACTION_SET_PAUSE);
@@ -140,8 +123,8 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 	 *
 	 * @param $warmupEnabled
 	 */
-	public function handleWarmUpStatus($warmupEnabled) {
-		if ($warmupEnabled) {
+	public function handleWarmUpStatus(StatusCallbackStructure $structure) {
+		if ($structure->isAvailable()) {
 			// Extend WarmUp menu item
 			$itemQuad = new Quad_BgRaceScore2();
 			$itemQuad->setSubStyle($itemQuad::SUBSTYLE_SendScore);
@@ -193,11 +176,10 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 			return;
 		}
 
-		try {
-			$this->maniaControl->getClient()->triggerModeScriptEvent('WarmUp_Extend', '10');
-			$this->maniaControl->getChat()->sendInformation($player->getEscapedNickname() . ' extended the WarmUp by 10 seconds!');
-		} catch (GameModeException $e) {
-		}
+		//TODO command paprameter for seconds
+		$this->maniaControl->getModeScriptEventManager()->extendManiaPlanetWarmup(10);
+		$this->maniaControl->getChat()->sendInformation($player->getEscapedNickname() . ' extended the WarmUp by 10 seconds!');
+
 	}
 
 	/**
@@ -212,13 +194,8 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 			return;
 		}
 
-		try {
-			$this->maniaControl->getClient()->triggerModeScriptEvent('WarmUp_Stop', ''); //TODO remove
-			$this->maniaControl->getChat()->sendInformation($player->getEscapedNickname() . ' stopped the WarmUp!');
-		} catch (GameModeException $e) {
-		}
-
 		$this->maniaControl->getModeScriptEventManager()->stopManiaPlanetWarmup();
+		$this->maniaControl->getChat()->sendInformation($player->getEscapedNickname() . ' stopped the WarmUp!');
 	}
 
 	/**
@@ -249,6 +226,11 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 			$this->maniaControl->getClient()->sendModeScriptCommands(array('Command_ForceEndRound' => true));
 		} catch (GameModeException $ex) {
 		}
+
+		//TODO verify if not everything is replaced through the new pause
+		$this->maniaControl->getModeScriptEventManager()->startPause();
+		$this->maniaControl->getChat()->sendInformation('$f8fVote to $fffpause the current Game$f8f has been successful!');
+
 	}
 
 	/**

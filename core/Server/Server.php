@@ -487,6 +487,8 @@ class Server implements CallbackListener, CommandListener, UsageInformationAble 
 	/**
 	 * Check if the Server Runs a Team-Based Mode
 	 *
+	 * @deprecated
+	 * @see ScriptManager::modeIsTeamMode()
 	 * @return bool
 	 */
 	public function isTeamMode() {
