@@ -4,7 +4,7 @@ namespace ManiaControl\Callbacks\Structures\TrackMania;
 
 
 use ManiaControl\Callbacks\Models\RecordCallback;
-use ManiaControl\Callbacks\Structures\Common\BaseStructure;
+use ManiaControl\Callbacks\Structures\Common\BasePlayerTimeStructure;
 use ManiaControl\ManiaControl;
 use ManiaControl\Utils\Formatter;
 
@@ -16,9 +16,7 @@ use ManiaControl\Utils\Formatter;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class OnEventWayPointStructure extends BaseStructure {
-	private $time;
-	private $player;
+class OnEventWayPointStructure extends BasePlayerTimeStructure {
 	private $racetime;
 	private $laptime;
 	private $stuntsscore;
@@ -39,8 +37,6 @@ class OnEventWayPointStructure extends BaseStructure {
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
 
-		$this->time             = $this->getPlainJsonObject()->time;
-		$this->player           = $this->maniaControl->getPlayerManager()->getPlayer($this->getPlainJsonObject()->login);
 		$this->racetime         = (int) $this->getPlainJsonObject()->racetime;
 		$this->laptime          = (int) $this->getPlainJsonObject()->laptime;
 		$this->stuntsscore      = $this->getPlainJsonObject()->stuntsscore;
@@ -55,7 +51,7 @@ class OnEventWayPointStructure extends BaseStructure {
 		// Build callback
 		$wayPointCallback              = new RecordCallback();
 		$wayPointCallback->rawCallback = $data;
-		$wayPointCallback->setPlayer($this->player);
+		$wayPointCallback->setPlayer($this->getPlayer());
 		$wayPointCallback->blockId       = $this->blockid;
 		$wayPointCallback->time          = $this->racetime;
 		$wayPointCallback->checkpoint    = $this->checkpointinrace;
@@ -77,25 +73,4 @@ class OnEventWayPointStructure extends BaseStructure {
 		}
 		$this->maniaControl->getCallbackManager()->triggerCallback($wayPointCallback);
 	}
-
-	/**
-	 * Returns Server time when the event occured
-	 *
-	 * @api
-	 * @return int
-	 */
-	public function getTime() {
-		return $this->time;
-	}
-
-	/**
-	 * < player who triggered the action
-	 *
-	 * @api
-	 * @return \ManiaControl\Players\Player
-	 */
-	public function getPlayer() {
-		return $this->player;
-	}
-
 }

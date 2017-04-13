@@ -4,6 +4,7 @@ namespace ManiaControl\Callbacks\Structures\ShootMania;
 
 
 use ManiaControl\Callbacks\Structures\Common\BaseStructure;
+use ManiaControl\Callbacks\Structures\Common\BaseTimeStructure;
 use ManiaControl\ManiaControl;
 
 
@@ -15,8 +16,7 @@ use ManiaControl\ManiaControl;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class OnShotDenyStructure extends BaseStructure {
-	private $time;
+class OnShotDenyStructure extends BaseTimeStructure {
 	private $shooterWeapon;
 	private $victimWeapon;
 
@@ -33,24 +33,12 @@ class OnShotDenyStructure extends BaseStructure {
 		parent::__construct($maniaControl, $data);
 
 		$jsonObj             = $this->getPlainJsonObject();
-		$this->time          = $jsonObj->time;
 		$this->shooterWeapon = $jsonObj->victim;
 		$this->victimWeapon  = $jsonObj->damage;
 
 		$this->shooter = $this->maniaControl->getPlayerManager()->getPlayer($this->getPlainJsonObject()->shooter);
 		$this->victim  = $this->maniaControl->getPlayerManager()->getPlayer($this->getPlainJsonObject()->victim);
 	}
-
-	/**
-	 * ServerTime The Event Happened //TODO add Trait for the Time Property
-	 *
-	 * @api
-	 * @return int
-	 */
-	public function getTime() {
-		return $this->time;
-	}
-
 
 	/**
 	 * Gets the Shooter Player

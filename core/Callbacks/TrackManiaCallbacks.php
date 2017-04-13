@@ -3,6 +3,7 @@
 namespace ManiaControl\Callbacks;
 
 use ManiaControl\Callbacks\Models\RecordCallback;
+use ManiaControl\Callbacks\Structures\Common\BasePlayerTimeStructure;
 use ManiaControl\Callbacks\Structures\TrackMania\OnCommandStructure;
 use ManiaControl\Callbacks\Structures\TrackMania\OnDefaultEventStructure;
 use ManiaControl\Callbacks\Structures\TrackMania\OnEventStartLineStructure;
@@ -64,8 +65,8 @@ class TrackManiaCallbacks implements CallbackListener {
 				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnCommandStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::TM_ONPLAYERADDED:
-				break;
 			case Callbacks::TM_ONPLAYERREMOVED:
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new BasePlayerTimeStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::TM_ONWAYPOINT:
 				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnEventWayPointStructure($this->maniaControl, $data));

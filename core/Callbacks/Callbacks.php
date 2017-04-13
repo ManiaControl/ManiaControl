@@ -88,7 +88,21 @@ interface Callbacks {
 	const SM_ONSHOTDENY     = "Shootmania.Event.OnShotDeny";
 	const SM_ONFALLDAMAGE   = "Shootmania.Event.OnFallDamage";
 	const SM_ONCOMMAND      = "Shootmania.Event.OnCommand";
-	//Shootmania.Event.OnPlayerRemoved Shootmania.Event.OnPlayerAdded not needed yet
+
+	/**
+	 * Use the PlayerManager Callback in favour of this
+	 *
+	 * @see \ManiaControl\Players\PlayerManager::CB_PLAYERCONNECT
+	 */
+	const SM_ONPLAYERADDED = "Shootmania.Event.OnPlayerAdded";
+
+	/**
+	 * Use the PlayerManager Callback in favour of this
+	 *
+	 * @see \ManiaControl\Players\PlayerManager::CB_PLAYERDISCONNECT
+	 */
+	const SM_ONPLAYERREMOVED = "Shootmania.Event.OnPlayerRemoved";
+
 	const SM_ONPLAYERREQUESTRESPAWN      = "Shootmania.Event.OnPlayerRequestRespawn";
 	const SM_ONACTIONCUSTOMEVENT         = "Shootmania.Event.OnActionCustomEvent";
 	const SM_ONACTIONEVENT               = "Shootmania.Event.OnActionEvent";
@@ -111,8 +125,21 @@ interface Callbacks {
 	const TM_ONEVENTDEFAULT   = "Trackmania.Event.Default";
 	const TM_ONEVENTSTARTLINE = "Trackmania.Event.StartLine";
 	const TM_ONCOMMAND        = "Trackmania.Event.OnCommand";
-	const TM_ONPLAYERADDED    = "Trackmania.Event.OnPlayerAdded";
-	const TM_ONPLAYERREMOVED  = "Trackmania.Event.OnPlayerRemoved";
+
+	/**
+	 * Use the PlayerManager Callback in favour of this
+	 *
+	 * @see \ManiaControl\Players\PlayerManager::CB_PLAYERCONNECT
+	 */
+	const TM_ONPLAYERADDED = "Trackmania.Event.OnPlayerAdded";
+
+	/**
+	 * Use the PlayerManager Callback in favour of this
+	 *
+	 * @see \ManiaControl\Players\PlayerManager::CB_PLAYERDISCONNECT
+	 */
+	const TM_ONPLAYERREMOVED = "Trackmania.Event.OnPlayerRemoved";
+
 	const TM_ONWAYPOINT       = "Trackmania.Event.WayPoint";
 	const TM_ONGIVEUP         = "Trackmania.Event.GiveUp";
 	const TM_ONRESPAWN        = "Trackmania.Event.Respawn";
