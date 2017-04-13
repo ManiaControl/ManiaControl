@@ -90,6 +90,9 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_CANCEL_VOTE, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_HANDLE_WARMUP, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 
+		//Triggers a WarmUp Status Callback
+		$this->maniaControl->getModeScriptEventManager()->getWarmupStatus();
+
 		$this->updateCancelVoteMenuItem();
 		$this->updateWarmUpMenuItems();
 	}
@@ -121,7 +124,7 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 	/**
 	 * Handle the WarmupStatus Callback, and removes or adds the Menu Items for extending / Stopping warmup
 	 *
-	 * @param $warmupEnabled
+	 * @param \ManiaControl\Callbacks\Structures\Common\StatusCallbackStructure $structure
 	 */
 	public function handleWarmUpStatus(StatusCallbackStructure $structure) {
 		if ($structure->isAvailable()) {
