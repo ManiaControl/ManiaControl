@@ -17,8 +17,6 @@ define('LOG_NAME_USE_PID', true); // Use current process id as suffix for log fi
 
 // Define base dir
 define('MANIACONTROL_PATH', __DIR__ . DIRECTORY_SEPARATOR);
-/** @deprecated Use MANIACONTROL_PATH */
-define('ManiaControlDir', MANIACONTROL_PATH);
 
 // Set process settings
 ini_set('memory_limit', '64M');
