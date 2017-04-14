@@ -36,14 +36,6 @@ require_once MANIACONTROL_PATH . 'core' . DIRECTORY_SEPARATOR . 'AutoLoader.php'
 // Setup Logger
 \ManiaControl\Logger::setup();
 
-/**
- * @deprecated
- * @see \ManiaControl\Logger::log()
- */
-function logMessage($message, $eol = true) {
-	\ManiaControl\Logger::log($message, $eol);
-}
-
 \ManiaControl\Logger::log('Starting ManiaControl...');
 
 // Check requirements
