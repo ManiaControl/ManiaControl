@@ -17,14 +17,14 @@ use ManiaControl\Utils\Formatter;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class OnEventWayPointStructure extends BasePlayerTimeStructure {
-	private $racetime;
-	private $laptime;
-	private $stuntsscore;
-	private $checkpointinrace;
-	private $checkpointinlap;
-	private $isendrace;
-	private $isendlap;
-	private $blockid;
+	private $raceTime;
+	private $lapTime;
+	private $stuntsScore;
+	private $checkPointInRace;
+	private $checkPointInLap;
+	private $isEndRace;
+	private $isEndLap;
+	private $blockId;
 	private $speed;
 	private $distance;
 
@@ -37,29 +37,29 @@ class OnEventWayPointStructure extends BasePlayerTimeStructure {
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
 
-		$this->racetime         = (int) $this->getPlainJsonObject()->racetime;
-		$this->laptime          = (int) $this->getPlainJsonObject()->laptime;
-		$this->stuntsscore      = $this->getPlainJsonObject()->stuntsscore;
-		$this->checkpointinrace = (int) $this->getPlainJsonObject()->checkpointinrace;
-		$this->checkpointinlap  = (int) $this->getPlainJsonObject()->checkpointinlap;
-		$this->isendrace        = $this->getPlainJsonObject()->isendrace;
-		$this->isendlap         = $this->getPlainJsonObject()->isendlap;
-		$this->blockid          = $this->getPlainJsonObject()->blockid;
+		$this->raceTime         = (int) $this->getPlainJsonObject()->racetime;
+		$this->lapTime          = (int) $this->getPlainJsonObject()->laptime;
+		$this->stuntsScore      = $this->getPlainJsonObject()->stuntsscore;
+		$this->checkPointInRace = (int) $this->getPlainJsonObject()->checkpointinrace;
+		$this->checkPointInLap  = (int) $this->getPlainJsonObject()->checkpointinlap;
+		$this->isEndRace        = $this->getPlainJsonObject()->isendrace;
+		$this->isEndLap         = $this->getPlainJsonObject()->isendlap;
+		$this->blockId          = $this->getPlainJsonObject()->blockid;
 		$this->speed            = $this->getPlainJsonObject()->speed;
 		$this->distance         = $this->getPlainJsonObject()->distance;
 
-		// Build callback
+		// Build callback //TODO remove the old lagacy stuff and update the uses to the new Structure
 		$wayPointCallback              = new RecordCallback();
 		$wayPointCallback->rawCallback = $data;
 		$wayPointCallback->setPlayer($this->getPlayer());
-		$wayPointCallback->blockId       = $this->blockid;
-		$wayPointCallback->time          = $this->racetime;
-		$wayPointCallback->checkpoint    = $this->checkpointinrace;
-		$wayPointCallback->isEndRace     = Formatter::parseBoolean($this->isendrace);
-		$wayPointCallback->lapTime       = $this->laptime;
-		$wayPointCallback->lapCheckpoint = $this->checkpointinlap;
+		$wayPointCallback->blockId       = $this->blockId;
+		$wayPointCallback->time          = $this->raceTime;
+		$wayPointCallback->checkpoint    = $this->checkPointInRace;
+		$wayPointCallback->isEndRace     = Formatter::parseBoolean($this->isEndRace);
+		$wayPointCallback->lapTime       = $this->lapTime;
+		$wayPointCallback->lapCheckpoint = $this->checkPointInLap;
 		$wayPointCallback->lap           = 0;
-		$wayPointCallback->isEndLap      = Formatter::parseBoolean($this->isendlap);
+		$wayPointCallback->isEndLap      = Formatter::parseBoolean($this->isEndLap);
 		if ($wayPointCallback->checkpoint > 0) {
 			$currentMap            = $this->maniaControl->getMapManager()->getCurrentMap();
 			$wayPointCallback->lap += $wayPointCallback->checkpoint / $currentMap->nbCheckpoints;
@@ -73,4 +73,85 @@ class OnEventWayPointStructure extends BasePlayerTimeStructure {
 		}
 		$this->maniaControl->getCallbackManager()->triggerCallback($wayPointCallback);
 	}
+
+	/**
+	 * @api
+	 * @return int
+	 */
+	public function getRaceTime() {
+		return $this->raceTime;
+	}
+
+	/**
+	 * @api
+	 * @return int
+	 */
+	public function getLapTime() {
+		return $this->lapTime;
+	}
+
+	/**
+	 * @api
+	 * @return mixed
+	 */
+	public function getStuntsScore() {
+		return $this->stuntsScore;
+	}
+
+	/**
+	 * @api
+	 * @return int
+	 */
+	public function getCheckPointInRace() {
+		return $this->checkPointInRace;
+	}
+
+	/**
+	 * @api
+	 * @return int
+	 */
+	public function getCheckPointInLap() {
+		return $this->checkPointInLap;
+	}
+
+	/**
+	 * @api
+	 * @return mixed
+	 */
+	public function getIsEndRace() {
+		return $this->isEndRace;
+	}
+
+	/**
+	 * @api
+	 * @return mixed
+	 */
+	public function getIsEndLap() {
+		return $this->isEndLap;
+	}
+
+	/**
+	 * @api
+	 * @return mixed
+	 */
+	public function getBlockId() {
+		return $this->blockId;
+	}
+
+	/**
+	 * @api
+	 * @return mixed
+	 */
+	public function getSpeed() {
+		return $this->speed;
+	}
+
+	/**
+	 * @api
+	 * @return mixed
+	 */
+	public function getDistance() {
+		return $this->distance;
+	}
+
 }
