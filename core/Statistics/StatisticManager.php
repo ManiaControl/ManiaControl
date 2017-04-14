@@ -10,13 +10,14 @@ use ManiaControl\Players\Player;
 /**
  * Statistic Manager Class
  *
+ * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class StatisticManager implements UsageInformationAble {
 	use UsageInformationTrait;
-	
+
 	/*
 	 * Constants
 	 */
@@ -34,26 +35,18 @@ class StatisticManager implements UsageInformationAble {
 	const SPECIAL_STAT_ARROW_ACC   = 'Arrow Accuracy';
 
 	/*
-	 * Public properties
-	 */
-	/** @var StatisticCollector $statisticCollector
-	 * @deprecated
-	 * @see getStatisticCollector()
-	 */
-	public $statisticCollector = null;
-	/** @var SimpleStatsList $simpleStatsList
-	 * @deprecated
-	 * @see getSimpleStatsList()
-	 */
-	public $simpleStatsList = null;
-
-	/*
 	 * Private properties
 	 */
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	private $stats        = array();
 	private $specialStats = array();
+
+	/** @var StatisticCollector $statisticCollector */
+	public $statisticCollector = null;
+
+	/** @var SimpleStatsList $simpleStatsList */
+	public $simpleStatsList = null;
 
 	/**
 	 * Construct a new statistic manager instance
@@ -181,6 +174,7 @@ class StatisticManager implements UsageInformationAble {
 	/**
 	 * Return the statistic collector
 	 *
+	 * @api
 	 * @return StatisticCollector
 	 */
 	public function getStatisticCollector() {
@@ -190,6 +184,7 @@ class StatisticManager implements UsageInformationAble {
 	/**
 	 * Return the simple stats list
 	 *
+	 * @api
 	 * @return SimpleStatsList
 	 */
 	public function getSimpleStatsList() {
@@ -199,6 +194,7 @@ class StatisticManager implements UsageInformationAble {
 	/**
 	 * Get All statistics ordered by an given name
 	 *
+	 * @api
 	 * @param string $statName
 	 * @param        $serverIndex
 	 * @param        $minValue
@@ -247,6 +243,7 @@ class StatisticManager implements UsageInformationAble {
 	/**
 	 * Gets The Ranking of an Special Stat
 	 *
+	 * @api
 	 * @param string $statName
 	 * @param        $serverIndex
 	 * @return array
@@ -345,6 +342,7 @@ class StatisticManager implements UsageInformationAble {
 	/**
 	 * Return the Stat Id
 	 *
+	 * @api
 	 * @param string $statName
 	 * @return int
 	 */
@@ -359,12 +357,12 @@ class StatisticManager implements UsageInformationAble {
 	/**
 	 * Get all statistics of a certain player
 	 *
+	 * @api
 	 * @param Player $player
 	 * @param int    $serverIndex
 	 * @return array
 	 */
 	public function getAllPlayerStats(Player $player, $serverIndex = -1) {
-		// TODO improve performance of the foreach
 		$playerStats = array();
 		foreach ($this->stats as $stat) {
 			$value                    = $this->getStatisticData($stat->name, $player->index, $serverIndex);
@@ -447,6 +445,7 @@ class StatisticManager implements UsageInformationAble {
 	/**
 	 * Get the value of an statistic
 	 *
+	 * @api
 	 * @param     $statName
 	 * @param     $playerId
 	 * @param int $serverIndex
@@ -532,6 +531,7 @@ class StatisticManager implements UsageInformationAble {
 	/**
 	 * Increments a Statistic by one
 	 *
+	 * @api
 	 * @param string $statName
 	 * @param Player $player
 	 * @param int    $serverIndex
@@ -544,6 +544,7 @@ class StatisticManager implements UsageInformationAble {
 	/**
 	 * Inserts a Stat into the database
 	 *
+	 * @api
 	 * @param string $statName
 	 * @param Player $player
 	 * @param int    $serverIndex
@@ -600,6 +601,7 @@ class StatisticManager implements UsageInformationAble {
 	/**
 	 * Defines a Stat
 	 *
+	 * @api
 	 * @param        $statName
 	 * @param string $type
 	 * @param string $statDescription
