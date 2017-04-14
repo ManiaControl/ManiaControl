@@ -21,13 +21,14 @@ use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
 /**
  * Class managing Players
  *
+ * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class PlayerManager implements CallbackListener, TimerListener, CommunicationListener, UsageInformationAble {
 	use UsageInformationTrait;
-	
+
 	/*
 	 * Constants
 	 */
@@ -42,46 +43,31 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 	const STAT_SERVERTIME                       = 'Servertime';
 
 	/*
-	 * Public properties
-	 */
-	/** @var PlayerActions $playerActions
-	 * @deprecated
-	 * @see getPlayerActions()
-	 */
-	public $playerActions = null;
-	/** @var PlayerCommands $playerCommands
-	 * @deprecated
-	 * @see getPlayerCommands()
-	 */
-	public $playerCommands = null;
-	/** @var PlayerDetailed $playerDetailed
-	 * @deprecated
-	 * @see getPlayerDetailed()
-	 */
-	public $playerDetailed = null;
-	/** @var PlayerDataManager $playerDataManager
-	 * @deprecated
-	 * @see getPlayerDataManager()
-	 */
-	public $playerDataManager = null;
-	/** @var PlayerList $playerList
-	 * @deprecated
-	 * @see getPlayerList()
-	 */
-	public $playerList = null;
-	/** @var AdminLists $adminLists
-	 * @deprecated
-	 * @see getAdminLists()
-	 */
-	public $adminLists = null;
-
-	/*
 	 * Private properties
 	 */
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 	/** @var Player[] $players */
 	private $players = array();
+
+	/** @var PlayerActions $playerActions */
+	private $playerActions = null;
+
+	/** @var PlayerCommands $playerCommands */
+
+	private $playerCommands = null;
+	/** @var PlayerDetailed $playerDetailed */
+
+	private $playerDetailed = null;
+
+	/** @var PlayerDataManager $playerDataManager */
+	private $playerDataManager = null;
+
+	/** @var PlayerList $playerList */
+	private $playerList = null;
+
+	/** @var AdminLists $adminLists */
+	private $adminLists = null;
 
 	/**
 	 * Construct a new Player Manager
@@ -179,6 +165,7 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 	/**
 	 * Return the player actions
 	 *
+	 * @api
 	 * @return PlayerActions
 	 */
 	public function getPlayerActions() {
@@ -188,6 +175,7 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 	/**
 	 * Return the player commands
 	 *
+	 * @api
 	 * @return PlayerCommands
 	 */
 	public function getPlayerCommands() {
@@ -197,6 +185,7 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 	/**
 	 * Return the player detailed
 	 *
+	 * @api
 	 * @return PlayerDetailed
 	 */
 	public function getPlayerDetailed() {
@@ -206,6 +195,7 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 	/**
 	 * Return the player list
 	 *
+	 * @api
 	 * @return PlayerList
 	 */
 	public function getPlayerList() {
@@ -215,6 +205,7 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 	/**
 	 * Return the admin lists
 	 *
+	 * @api
 	 * @return AdminLists
 	 */
 	public function getAdminLists() {
@@ -224,6 +215,8 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 
 	/**
 	 * Handle OnInit callback
+	 *
+	 * @internal
 	 */
 	public function onInit() {
 		// Add all players
@@ -324,6 +317,7 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 	/**
 	 * Handle PlayerConnect Callback
 	 *
+	 * @internal
 	 * @param array $callback
 	 */
 	public function playerConnect(array $callback) {
@@ -341,6 +335,7 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 	/**
 	 * Handle PlayerDisconnect callback
 	 *
+	 * @internal
 	 * @param array $callback
 	 */
 	public function playerDisconnect(array $callback) {
@@ -411,6 +406,7 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 	/**
 	 * Get the count of all Players
 	 *
+	 * @api
 	 * @param bool $withoutSpectators
 	 * @param bool $withoutBots
 	 * @return int
@@ -439,6 +435,7 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 	/**
 	 * Return the player data manager
 	 *
+	 * @api
 	 * @return PlayerDataManager
 	 */
 	public function getPlayerDataManager() {
@@ -448,6 +445,7 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 	/**
 	 * Update PlayerInfo
 	 *
+	 * @internal
 	 * @param array $callback
 	 */
 	public function playerInfoChanged(array $callback) {
@@ -501,6 +499,7 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 	/**
 	 * Get a Player by login
 	 *
+	 * @api
 	 * @param mixed $login
 	 * @param bool  $connectedPlayersOnly
 	 * @return Player
@@ -556,6 +555,7 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 	/**
 	 * Get all Players
 	 *
+	 * @api
 	 * @return Player[]
 	 */
 	public function getPlayers() {
@@ -565,6 +565,7 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 	/**
 	 * Get a List of Spectators
 	 *
+	 * @api
 	 * @return Player[]
 	 */
 	public function getSpectators() {
@@ -581,6 +582,7 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 	/**
 	 * Get the count of all spectators
 	 *
+	 * @api
 	 * @return int
 	 */
 	public function getSpectatorCount() {
@@ -596,6 +598,7 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 	/**
 	 * Get a Player by index
 	 *
+	 * @api
 	 * @param int  $index
 	 * @param bool $connectedPlayersOnly
 	 * @return Player
