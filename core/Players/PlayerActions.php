@@ -737,17 +737,5 @@ class PlayerActions implements EchoListener, CommunicationListener, UsageInforma
 		$this->maniaControl->getChat()->sendInformation($chatMessage);
 		Logger::logInfo($chatMessage, true);
 	}
-
-	/**
-	 * Check if a Player is muted
-	 *
-	 * @deprecated
-	 * @see Player::isMuted()
-	 */
-	public function isPlayerMuted($login) {
-		if ($player = $this->maniaControl->getPlayerManager()->getPlayer($login)) {
-			return $player->isMuted();
-		}
-		return false;
-	}
+	
 }

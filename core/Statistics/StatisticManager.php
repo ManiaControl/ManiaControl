@@ -43,10 +43,10 @@ class StatisticManager implements UsageInformationAble {
 	private $specialStats = array();
 
 	/** @var StatisticCollector $statisticCollector */
-	public $statisticCollector = null;
+	private $statisticCollector = null;
 
 	/** @var SimpleStatsList $simpleStatsList */
-	public $simpleStatsList = null;
+	private $simpleStatsList = null;
 
 	/**
 	 * Construct a new statistic manager instance
