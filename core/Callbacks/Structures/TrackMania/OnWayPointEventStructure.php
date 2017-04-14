@@ -16,7 +16,7 @@ use ManiaControl\Utils\Formatter;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class OnEventWayPointStructure extends BasePlayerTimeStructure {
+class OnWayPointEventStructure extends BasePlayerTimeStructure {
 	private $raceTime;
 	private $lapTime;
 	private $stuntsScore;
@@ -29,7 +29,7 @@ class OnEventWayPointStructure extends BasePlayerTimeStructure {
 	private $distance;
 
 	/**
-	 * OnEventWayPointStructure constructor.
+	 * OnWayPointEventStructure constructor.
 	 *
 	 * @param \ManiaControl\ManiaControl $maniaControl
 	 * @param                            $data
