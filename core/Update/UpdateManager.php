@@ -38,15 +38,6 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	const BUILD_DATE_FILE_NAME           = 'build_date.txt';
 
 	/*
-	 * Public properties
-	 */
-	/** @var PluginUpdateManager $pluginUpdateManager
-	 * @deprecated
-	 * @see getPluginUpdateManager()
-	 */
-	public $pluginUpdateManager = null;
-
-	/*
 	 * Private properties
 	 */
 	/** @var ManiaControl $maniaControl */
@@ -54,6 +45,9 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	private $currentBuildDate = null;
 	/** @var UpdateData $coreUpdateData */
 	private $coreUpdateData = null;
+
+	/** @var PluginUpdateManager $pluginUpdateManager	 */
+	private $pluginUpdateManager = null;
 
 	/**
 	 * Construct a new update manager instance
