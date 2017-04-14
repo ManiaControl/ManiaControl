@@ -28,6 +28,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
 /**
  * Player Actions Class
  *
+ * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
@@ -154,6 +155,7 @@ class PlayerActions implements EchoListener, CommunicationListener, UsageInforma
 	/**
 	 * Force a Player to a certain Team
 	 *
+	 * @api
 	 * @param string $adminLogin
 	 * @param string $targetLogin
 	 * @param int    $teamId
@@ -234,6 +236,7 @@ class PlayerActions implements EchoListener, CommunicationListener, UsageInforma
 	/**
 	 * Force a Player to Play
 	 *
+	 * @api
 	 * @param string $adminLogin
 	 * @param string $targetLogin
 	 * @param bool   $userIsAbleToSelect
@@ -298,6 +301,7 @@ class PlayerActions implements EchoListener, CommunicationListener, UsageInforma
 	/**
 	 * Force a Player to Spectator
 	 *
+	 * @api
 	 * @param string $adminLogin
 	 * @param string $targetLogin
 	 * @param int    $spectatorState
@@ -357,6 +361,7 @@ class PlayerActions implements EchoListener, CommunicationListener, UsageInforma
 	/**
 	 * UnMute a Player
 	 *
+	 * @api
 	 * @param      $adminLogin
 	 * @param      $targetLogin
 	 * @param bool $calledByAdmin
@@ -399,6 +404,7 @@ class PlayerActions implements EchoListener, CommunicationListener, UsageInforma
 	/**
 	 * Mute a Player
 	 *
+	 * @api
 	 * @param string $adminLogin
 	 * @param string $targetLogin
 	 * @param bool   $calledByAdmin
@@ -442,6 +448,7 @@ class PlayerActions implements EchoListener, CommunicationListener, UsageInforma
 	/**
 	 * Warn a Player
 	 *
+	 * @api
 	 * @param string $adminLogin
 	 * @param string $targetLogin
 	 * @param bool   $calledByAdmin
@@ -536,6 +543,7 @@ class PlayerActions implements EchoListener, CommunicationListener, UsageInforma
 	/**
 	 * Kick a Player
 	 *
+	 * @api
 	 * @param        $adminLogin
 	 * @param        $targetLogin
 	 * @param string $message
@@ -599,6 +607,7 @@ class PlayerActions implements EchoListener, CommunicationListener, UsageInforma
 	/**
 	 * Ban a Player
 	 *
+	 * @api
 	 * @param string $adminLogin
 	 * @param string $targetLogin
 	 * @param string $message
@@ -639,6 +648,7 @@ class PlayerActions implements EchoListener, CommunicationListener, UsageInforma
 	/**
 	 * Unbans a Player
 	 *
+	 * @api
 	 * @param string $adminLogin
 	 * @param string $targetLogin
 	 */
@@ -666,6 +676,7 @@ class PlayerActions implements EchoListener, CommunicationListener, UsageInforma
 	/**
 	 * Grands the Player an Authorization Level
 	 *
+	 * @api
 	 * @param string $adminLogin
 	 * @param string $targetLogin
 	 * @param int    $authLevel
@@ -704,6 +715,7 @@ class PlayerActions implements EchoListener, CommunicationListener, UsageInforma
 	/**
 	 * Revokes all Rights from the Player
 	 *
+	 * @api
 	 * @param string $adminLogin
 	 * @param string $targetLogin
 	 */
@@ -737,5 +749,5 @@ class PlayerActions implements EchoListener, CommunicationListener, UsageInforma
 		$this->maniaControl->getChat()->sendInformation($chatMessage);
 		Logger::logInfo($chatMessage, true);
 	}
-	
+
 }
