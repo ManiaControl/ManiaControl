@@ -231,22 +231,6 @@ class LibXmlRpcCallbacks implements CallbackListener {
 			case 'LibXmlRpc_OnStunt':
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ONSTUNT, $data);
 				break;
-			case 'LibXmlRpc_OnShoot':
-				$player = $this->maniaControl->getPlayerManager()->getPlayer($data[0]);
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ONSHOOT, $player, $data[1]);
-				break;
-			case 'LibXmlRpc_OnHit':
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ONHIT, new PlayerHitStructure($this->maniaControl, $data));
-				break;
-			case 'LibXmlRpc_OnNearMiss':
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ONNEARMISS, new NearMissStructure($this->maniaControl, $data));
-				break;
-			case 'LibXmlRpc_OnArmorEmpty':
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ONARMOREMPTY, new ArmorEmptyStructure($this->maniaControl, $data));
-				break;
-			case 'LibXmlRpc_OnCapture':
-				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ONCAPTURE, new CaptureStructure($this->maniaControl, $data));
-				break;
 			case 'LibXmlRpc_OnPlayerRequestRespawn':
 				$player = $this->maniaControl->getPlayerManager()->getPlayer($data[0]);
 				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::ONPLAYERREQUESTRESPAWN, $player);

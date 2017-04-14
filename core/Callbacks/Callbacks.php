@@ -73,9 +73,8 @@ interface Callbacks {
 	const MP_USES_TEAMMODE = 'Maniaplanet.Mode.UseTeams';
 	const MP_PAUSE_STATUS  = 'Maniaplanet.Pause.Status';
 
-	const SM_UIPROPERTIES = 'Shootmania.UI.Properties';
-	const SM_SCORES       = "Shootmania.Scores";
-
+	const SM_UIPROPERTIES   = 'Shootmania.UI.Properties';
+	const SM_SCORES         = "Shootmania.Scores";
 	const SM_ONEVENTDEFAULT = "Shootmania.Event.Default";
 	const SM_ONSHOOT        = "Shootmania.Event.OnShoot";
 	const SM_ONHIT          = "Shootmania.Event.OnHit";
@@ -135,21 +134,18 @@ interface Callbacks {
 	 *
 	 * @see \ManiaControl\Players\PlayerManager::CB_PLAYERDISCONNECT
 	 */
-	const TM_ONPLAYERREMOVED = "Trackmania.Event.OnPlayerRemoved";
-
-	const TM_ONWAYPOINT       = "Trackmania.Event.WayPoint";
-	const TM_ONGIVEUP         = "Trackmania.Event.GiveUp";
-	const TM_ONRESPAWN        = "Trackmania.Event.Respawn";
-	const TM_ONSTUNT          = "Trackmania.Event.Stunt";
-	const TM_ONSTARTCOUNTDOWN = "Trackmania.Event.StartCountdown";
-	const TM_SCORES           = "Trackmania.Scores";
-	const TM_WARMUPSTART      = "Trackmania.WarmUp.Start";
-	const TM_WARMUPSTARTROUND = "Trackmania.WarmUp.StartRound";
-	const TM_WARMUPENDROUND   = "Trackmania.WarmUp.EndRound";
-	const TM_WARMUPEND        = "Trackmania.WarmUp.End";
-
-	const TM_UIPROPERTIES = 'Trackmania.UI.Properties';
-
+	const TM_ONPLAYERREMOVED   = "Trackmania.Event.OnPlayerRemoved";
+	const TM_ONWAYPOINT        = "Trackmania.Event.WayPoint";
+	const TM_ONGIVEUP          = "Trackmania.Event.GiveUp";
+	const TM_ONRESPAWN         = "Trackmania.Event.Respawn";
+	const TM_ONSTUNT           = "Trackmania.Event.Stunt";
+	const TM_ONSTARTCOUNTDOWN  = "Trackmania.Event.StartCountdown";
+	const TM_SCORES            = "Trackmania.Scores";
+	const TM_WARMUPSTART       = "Trackmania.WarmUp.Start";
+	const TM_WARMUPSTARTROUND  = "Trackmania.WarmUp.StartRound";
+	const TM_WARMUPENDROUND    = "Trackmania.WarmUp.EndRound";
+	const TM_WARMUPEND         = "Trackmania.WarmUp.End";
+	const TM_UIPROPERTIES      = 'Trackmania.UI.Properties';
 	const TM_POINTSREPARTITION = 'Trackmania.PointsRepartition';
 
 	//ManiaControl Callbacks
@@ -301,38 +297,7 @@ interface Callbacks {
 	 * @deprecated
 	 */
 	const AFKSTATUS = 'Callbacks.AfkStatus';
-	/** Returns if the GameMode has Warmup activated, returned after  param1 Scores
-	 *
-	 * @deprecated
-	 */
-	const WARMUPSTATUS = 'Callbacks.WarmupStatus';
 
-	/** OnShoot Callback: Player, WeaponNumber (see Weapons Structure)
-	 *
-	 * @deprecated
-	 */
-	const ONSHOOT = 'Callbacks.OnShoot';
-
-	/** OnHit Callback: PlayerHitStructure
-	 *
-	 * @deprecated
-	 */
-	const ONHIT = 'Callbacks.OnHit';
-	/** OnNearMiss Callback: NearMissStructure
-	 *
-	 * @deprecated
-	 */
-	const ONNEARMISS = 'Callbacks.OnNearMiss';
-	/** OnArmorEmpty Callback: ArmorEmptyStructure
-	 *
-	 * @deprecated
-	 */
-	const ONARMOREMPTY = 'Callbacks.OnArmorEmpty';
-	/** OnCapture Callback: CaptureStructure
-	 *
-	 * @deprecated
-	 */
-	const ONCAPTURE = 'Callbacks.OnCapture';
 	/** OnPlayerRequestRespawn Callback: Player
 	 *
 	 * @deprecated

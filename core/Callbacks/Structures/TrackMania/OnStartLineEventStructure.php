@@ -13,5 +13,5 @@ use ManiaControl\Callbacks\Structures\Common\BasePlayerTimeStructure;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class OnEventStartLineStructure extends BasePlayerTimeStructure {
+class OnStartLineEventStructure extends BasePlayerTimeStructure {
 }

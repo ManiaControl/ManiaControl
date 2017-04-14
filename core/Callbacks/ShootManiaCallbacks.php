@@ -4,6 +4,7 @@ namespace ManiaControl\Callbacks;
 
 use ManiaControl\Callbacks\Models\RecordCallback;
 use ManiaControl\Callbacks\Structures\Common\BasePlayerTimeStructure;
+use ManiaControl\Callbacks\Structures\Common\UIPropertiesBaseStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnActionCustomEventStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnActionEvent;
 use ManiaControl\Callbacks\Structures\ShootMania\OnArmorEmptyStructure;
@@ -81,8 +82,7 @@ class ShootManiaCallbacks implements CallbackListener {
 				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnScoresStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_UIPROPERTIES:
-				//TODO structure, but wait for further update
-				$this->maniaControl->getCallbackManager()->triggerCallback($name, $data);
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new UIPropertiesBaseStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::SM_ONEVENTDEFAULT:
 				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnDefaultEventStructure($this->maniaControl, $data));

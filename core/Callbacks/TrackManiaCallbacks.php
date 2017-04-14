@@ -4,11 +4,16 @@ namespace ManiaControl\Callbacks;
 
 use ManiaControl\Callbacks\Models\RecordCallback;
 use ManiaControl\Callbacks\Structures\Common\BasePlayerTimeStructure;
+use ManiaControl\Callbacks\Structures\Common\UIPropertiesBaseStructure;
 use ManiaControl\Callbacks\Structures\TrackMania\OnCommandStructure;
 use ManiaControl\Callbacks\Structures\TrackMania\OnDefaultEventStructure;
-use ManiaControl\Callbacks\Structures\TrackMania\OnEventStartLineStructure;
-use ManiaControl\Callbacks\Structures\TrackMania\OnEventWayPointStructure;
+use ManiaControl\Callbacks\Structures\TrackMania\OnPointsRepartitionStructure;
+use ManiaControl\Callbacks\Structures\TrackMania\OnRespawnStructure;
 use ManiaControl\Callbacks\Structures\TrackMania\OnScoresStructure;
+use ManiaControl\Callbacks\Structures\TrackMania\OnStartLineEventStructure;
+use ManiaControl\Callbacks\Structures\TrackMania\OnStuntEventStructure;
+use ManiaControl\Callbacks\Structures\TrackMania\OnWarmupStartEndRoundStructure;
+use ManiaControl\Callbacks\Structures\TrackMania\OnWayPointEventStructure;
 use ManiaControl\ManiaControl;
 use ManiaControl\Utils\Formatter;
 
@@ -51,7 +56,6 @@ class TrackManiaCallbacks implements CallbackListener {
 			//return; //Leave that disabled while testing/implementing Callbacks
 		}
 		switch ($name) {
-			//MP4 New Callbacks
 			case Callbacks::TM_SCORES:
 				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnScoresStructure($this->maniaControl, $data));
 				break;
@@ -59,37 +63,39 @@ class TrackManiaCallbacks implements CallbackListener {
 				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnDefaultEventStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::TM_ONEVENTSTARTLINE:
-				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnEventStartLineStructure($this->maniaControl, $data));
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnStartLineEventStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::TM_ONCOMMAND:
 				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnCommandStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::TM_ONPLAYERADDED:
 			case Callbacks::TM_ONPLAYERREMOVED:
+			case Callbacks::TM_ONGIVEUP:
+			case Callbacks::TM_ONSTARTCOUNTDOWN:
 				$this->maniaControl->getCallbackManager()->triggerCallback($name, new BasePlayerTimeStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::TM_ONWAYPOINT:
-				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnEventWayPointStructure($this->maniaControl, $data));
-				break;
-			case Callbacks:: TM_ONGIVEUP:
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnWayPointEventStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::TM_ONRESPAWN:
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnRespawnStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::TM_ONSTUNT:
-				break;
-			case Callbacks::TM_ONSTARTCOUNTDOWN:
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnStuntEventStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::TM_WARMUPSTART:
+			case Callbacks::TM_WARMUPEND:
+				$this->maniaControl->getCallbackManager()->triggerCallback($name);
 				break;
 			case Callbacks::TM_WARMUPSTARTROUND:
-				break;
 			case Callbacks::TM_WARMUPENDROUND:
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnWarmupStartEndRoundStructure($this->maniaControl, $data));
 				break;
-			case Callbacks::TM_WARMUPEND:
+			case Callbacks::TM_POINTSREPARTITION:
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnPointsRepartitionStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::TM_UIPROPERTIES:
-				//TODO structure, but wait for further update
-				$this->maniaControl->getCallbackManager()->triggerCallback($name, $data);
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new UIPropertiesBaseStructure($this->maniaControl, $data));
 				break;
 		}
 	}
