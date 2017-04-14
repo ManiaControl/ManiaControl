@@ -1,8 +1,5 @@
 <?php
 
-// TODO: method class for all the libxmlrpc get Methods, to fetch the callback asnyc
-// TODO implement all STOP callbacks
-
 // 22-3-2017 Added/Fixed TM Callback for WayPoint // Need to Add better checks eventually
 namespace ManiaControl\Callbacks;
 
