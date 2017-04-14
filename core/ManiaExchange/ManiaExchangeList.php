@@ -274,7 +274,6 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 			}
 
 			//Award Quad
-			$map->awards = 12; //TODO delete
 			if ($map->awards > 0) {
 				$awardQuad = new Quad_Icons64x64_1();
 				$mapFrame->addChild($awardQuad);
