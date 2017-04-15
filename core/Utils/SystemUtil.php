@@ -117,7 +117,10 @@ class SystemUtil {
 				Logger::log($message);
 			}
 		}
-		exit;
+
+		if (!defined('PHP_UNIT_TEST')) {
+			exit;
+		}
 	}
 
 	/**

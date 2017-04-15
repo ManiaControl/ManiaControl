@@ -64,7 +64,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 	 * Public properties
 	 */
 	/** @var SettingManager $settingManager
-	 * @see getSettingManager()
+	 * @see        getSettingManager()
 	 * @deprecated use getSettingManager()
 	 */
 	public $settingManager = null;
@@ -165,6 +165,8 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 	private $dedicatedServerBuildVersion = "";
 
 	private $requestQuitMessage = null;
+
+	private $startTime = -1;
 
 	/**
 	 * Construct a new ManiaControl instance
@@ -547,11 +549,12 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 		$this->requestQuitMessage = $message;
 	}
 
-
 	/**
 	 * Run ManiaControl
+	 *
+	 * @param int $runTime Time in Seconds until its terminating (used for PHPUnit Tests)
 	 */
-	public function run() {
+	public function run($runTime = -1) {
 		Logger::log('Starting ManiaControl v' . self::VERSION . '!');
 
 		try {
@@ -583,14 +586,22 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 			Logger::log('Link: ' . $this->getServer()->getJoinLink());
 			$this->getChat()->sendInformation('ManiaControl v' . self::VERSION . ' successfully started!');
 
+			$this->startTime = time();
+
 			// Main loop
 			while (!$this->requestQuitMessage) {
 				$this->loop();
+
+				//Used for PHPUnit Tests
+				if ($runTime > 0) {
+					if (time() > ($this->startTime + $runTime)) {
+						$this->requestQuit("Run Time Exceeded");
+					}
+				}
 			}
 
 			// Shutdown
-			$this->quit($this->requestQuitMessage);
-
+				$this->quit($this->requestQuitMessage);
 		} catch (TransportException $exception) {
 			Logger::logError('Connection interrupted!');
 			$this->getErrorHandler()->handleException($exception);
@@ -679,7 +690,9 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 		$loopStart = microtime(true);
 
 		// Extend script timeout
-		set_time_limit(self::SCRIPT_TIMEOUT);
+		if(!defined('PHP_UNIT_TEST')){
+			set_time_limit(self::SCRIPT_TIMEOUT);
+		}
 
 		// Manage callbacks
 		$this->getCallbackManager()->manageCallbacks();

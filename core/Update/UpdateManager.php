@@ -145,6 +145,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 				Logger::logError('Error on UpdateCheck: ' . $error);
 				return;
 			}
+
 			$versions = json_decode($dataJson);
 			if (!$versions || !isset($versions[0])) {
 				call_user_func($function);
