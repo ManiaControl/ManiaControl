@@ -46,7 +46,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 	/** @var UpdateData $coreUpdateData */
 	private $coreUpdateData = null;
 
-	/** @var PluginUpdateManager $pluginUpdateManager	 */
+	/** @var PluginUpdateManager $pluginUpdateManager */
 	private $pluginUpdateManager = null;
 
 	/**
@@ -377,13 +377,16 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 				return;
 			}
 
-			if(!defined('PHP_UNIT_TEST')){
+			//Don't overwrite the files while testing
+			if (!defined('PHP_UNIT_TEST')) {
 				$zip->extractTo(MANIACONTROL_PATH);
-				$zip->close();
-				unlink($updateFileName);
-				FileUtil::deleteTempFolder();
 			}
-			
+			$zip->close();
+
+			unlink($updateFileName);
+			FileUtil::deleteTempFolder();
+
+
 			// Set the build date
 			$this->setBuildDate($updateData->releaseDate);
 

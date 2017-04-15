@@ -10,11 +10,15 @@ use ManiaControl\Update\UpdateManager;
 
 final class UpdateManagerTest extends \PHPUnit_Framework_TestCase {
 
+	private function getBuildDateFileName() {
+		return MANIACONTROL_PATH . "core" . DIRECTORY_SEPARATOR . UpdateManager::BUILD_DATE_FILE_NAME;
+	}
+
 	public function testBuildDate() {
 		$maniaControl  = new ManiaControl();
 		$updateManager = new UpdateManager($maniaControl);
 
-		$fileName = MANIACONTROL_PATH . "core" . DIRECTORY_SEPARATOR . UpdateManager::BUILD_DATE_FILE_NAME;
+		$fileName = $this->getBuildDateFileName();
 
 		if (!file_exists($fileName)) {
 			$this->assertTrue($updateManager->setBuildDate("BuildDateTest-6543210"));
@@ -101,6 +105,43 @@ final class UpdateManagerTest extends \PHPUnit_Framework_TestCase {
 		$updateManager->setCoreUpdateData($updateData);
 
 		//Methods should return its non closure success
-		$this->assertTrue($updateManager->performCoreUpdate());
+		$this->assertTrue($updateManager->performCoreUpdate($player));
+
+		$maniaControl->run(5);
+
+		//Check if Tempfolder got Deleted
+		$tempFolder = MANIACONTROL_PATH . 'temp' . DIRECTORY_SEPARATOR;
+		$this->assertFileNotExists($tempFolder);
+
+		//Check if UpdateFileName got Deleted
+		$updateFileName = $tempFolder . basename($updateData->url);
+		$this->assertFileNotExists($updateFileName);
+
+		$fileName = $this->getBuildDateFileName();
+		$this->assertStringEqualsFile($fileName, $updateData->releaseDate);
+		$this->assertEquals($updateData->releaseDate, $updateManager->getBuildDate());
+		$this->assertContains("Update finished!", $this->getActualOutput());
 	}
+
+	public function testPerformCoreUpdateFailUrl() {
+		$maniaControl  = new ManiaControl();
+		$updateManager = $maniaControl->getUpdateManager();
+
+		$dataJson = '[{"id":"260","version":"0.166","channel":"nightly","min_dedicated_build":"2014-04-02_18_00","release_date":"2017-03-16 21:57:40","url":"https:\/\/download.maniacontrol.com\/nightly\/ManiaControl_nightly_0-166.zip"}]';
+
+		//Create and Test Core Update Data
+		$updateData      = new UpdateData(json_decode($dataJson)[0]);
+		$updateData->url = "Invalid_URL";
+		$updateManager->setCoreUpdateData($updateData);
+
+		$updateManager->performCoreUpdate();
+
+		$maniaControl->run(5);
+
+		$player = new Player($maniaControl, true);
+		$this->assertTrue($updateManager->performCoreUpdate($player));
+		$this->assertContains("[ERROR] Update failed: Couldn't load Update zip! Could not resolve host: Invalid_URL", $this->getActualOutput());
+	}
+
+	//TODO real test with download and unpack in a certain dir
 }

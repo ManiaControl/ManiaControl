@@ -520,7 +520,9 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 		Logger::log('Restarting ManiaControl... ' . $message);
 
 		// Start new instance
-		SystemUtil::restart();
+		if (!defined('PHP_UNIT_TEST')) {
+			SystemUtil::restart();
+		}
 
 		// Quit old instance
 		$this->quit('Quitting ManiaControl to restart.');
@@ -587,7 +589,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 			$this->getChat()->sendInformation('ManiaControl v' . self::VERSION . ' successfully started!');
 
 			$this->startTime = time();
-
+			
 			// Main loop
 			while (!$this->requestQuitMessage) {
 				$this->loop();
@@ -601,7 +603,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 			}
 
 			// Shutdown
-				$this->quit($this->requestQuitMessage);
+			$this->quit($this->requestQuitMessage);
 		} catch (TransportException $exception) {
 			Logger::logError('Connection interrupted!');
 			$this->getErrorHandler()->handleException($exception);
@@ -690,7 +692,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 		$loopStart = microtime(true);
 
 		// Extend script timeout
-		if(!defined('PHP_UNIT_TEST')){
+		if (!defined('PHP_UNIT_TEST')) {
 			set_time_limit(self::SCRIPT_TIMEOUT);
 		}
 

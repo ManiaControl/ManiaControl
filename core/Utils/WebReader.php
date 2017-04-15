@@ -15,7 +15,6 @@ use ManiaControl\ManiaControl;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 abstract class WebReader {
-
 	/**
 	 * Load a URL via GET
 	 *
@@ -58,9 +57,11 @@ abstract class WebReader {
 		        ->set(CURLOPT_ENCODING, '')// accept encoding
 		        ->set(CURLOPT_USERAGENT, 'ManiaControl v' . ManiaControl::VERSION)// user-agent
 		        ->set(CURLOPT_RETURNTRANSFER, true)// return instead of output content
-		        ->set(CURLOPT_AUTOREFERER, true); // follow redirects
+		        ->set(CURLOPT_AUTOREFERER, true)// follow redirects
+		        ->set(CURLOPT_SSL_VERIFYPEER, false);
 		return $request;
 	}
+
 
 	/**
 	 * Perform the given callback function with the response
