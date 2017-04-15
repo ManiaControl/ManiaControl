@@ -377,11 +377,13 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 				return;
 			}
 
-			$zip->extractTo(MANIACONTROL_PATH);
-			$zip->close();
-			unlink($updateFileName);
-			FileUtil::deleteTempFolder();
-
+			if(!defined('PHP_UNIT_TEST')){
+				$zip->extractTo(MANIACONTROL_PATH);
+				$zip->close();
+				unlink($updateFileName);
+				FileUtil::deleteTempFolder();
+			}
+			
 			// Set the build date
 			$this->setBuildDate($updateData->releaseDate);
 

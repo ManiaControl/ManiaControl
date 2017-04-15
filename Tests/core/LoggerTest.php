@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Lukas
- * Date: 14. Apr. 2017
- * Time: 22:41
- */
 
 use ManiaControl\Logger;
 
