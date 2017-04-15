@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<phpunit bootstrap="autoload.php" colors="true" verbose="true" debug="true"
+		 beStrictAboutTestsThatDoNotTestAnything="true" beStrictAboutChangesToGlobalState="true">
+	<testsuites>
+		<testsuite name="ManiaControl">
+			<directory>core</directory>
+		</testsuite>
+	</testsuites>
+	<filter>
+		<whitelist>
+			<directory suffix=".php">../core</directory>
+		</whitelist>
+	</filter>
+	<logging>
+		<log type="coverage-html" target="build/logs/coverage.html"/>
+		<log type="coverage-clover" target="build/logs/clover.xml"/>
+	</logging>
+	<php>
+		<ini name="error_reporting" value="E_ALL"/>
+		<ini name="display_errors" value="On"/>
+		<ini name="display_startup_errors" value="On"/>
+		<get name="test-get-name" value="test-get-value"/>
+		<post name="test-post-name" value="test-post-value"/>
+	</php>
+</phpunit>
