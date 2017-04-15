@@ -3,6 +3,7 @@
 namespace Tests\core\Update;
 
 
+use ManiaControl\Files\BackupUtil;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Update\UpdateData;
@@ -116,6 +117,14 @@ final class UpdateManagerTest extends \PHPUnit_Framework_TestCase {
 		//Check if UpdateFileName got Deleted
 		$updateFileName = $tempFolder . basename($updateData->url);
 		$this->assertFileNotExists($updateFileName);
+
+		//Check Backup
+		$backupFolder = MANIACONTROL_PATH . 'backup' . DIRECTORY_SEPARATOR;
+		$backupFileName = $backupFolder . 'backup_' . ManiaControl::VERSION . '_' . date('y-m-d_H-i') . '.zip';
+		$this->assertFileExists($backupFileName);
+
+		//Remove Backup Again
+		unlink($backupFileName);
 
 		$fileName = $this->getBuildDateFileName();
 		$this->assertStringEqualsFile($fileName, $updateData->releaseDate);

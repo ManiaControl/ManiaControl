@@ -24,7 +24,13 @@ abstract class BackupUtil {
 		if (!$backupFolder) {
 			return false;
 		}
-		$backupFileName = $backupFolder . 'backup_' . ManiaControl::VERSION . '_' . date('y-m-d_H-i') . '_' . time() . '.zip';
+
+		$time = date('y-m-d_H-i-s');
+		if(defined('PHP_UNIT_TEST')){
+			$time = date('y-m-d_H-i');
+		}
+
+		$backupFileName = $backupFolder . 'backup_' . ManiaControl::VERSION . '_' . $time . '.zip';
 		$backupZip      = new \ZipArchive();
 		if ($backupZip->open($backupFileName, \ZipArchive::CREATE) !== true) {
 			Logger::logError("Couldn't create backup zip!");
