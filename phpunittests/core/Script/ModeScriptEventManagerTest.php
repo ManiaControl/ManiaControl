@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\core\script;
+namespace Tests\core\Script;
 
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\Structures\XmlRpc\AllApiVersionsStructure;
