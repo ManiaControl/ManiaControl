@@ -115,14 +115,6 @@ final class UpdateManagerTest extends \PHPUnit_Framework_TestCase {
 
 		$maniaControl->run(5);
 
-		//Check if Tempfolder got Deleted
-		$tempFolder = MANIACONTROL_PATH . 'temp' . DIRECTORY_SEPARATOR;
-		$this->assertFileNotExists($tempFolder);
-
-		//Check if UpdateFileName got Deleted
-		$updateFileName = $tempFolder . basename($updateData->url);
-		$this->assertFileNotExists($updateFileName);
-
 		//Check Backup
 		$backupFolder = MANIACONTROL_PATH . 'backup' . DIRECTORY_SEPARATOR;
 		$backupFileName = $backupFolder . 'backup_' . ManiaControl::VERSION . '_' . date('y-m-d_H-i') . '.zip';
@@ -130,6 +122,14 @@ final class UpdateManagerTest extends \PHPUnit_Framework_TestCase {
 
 		//Remove Backup Again
 		unlink($backupFileName);
+
+		//Check if Tempfolder got Deleted
+		$tempFolder = MANIACONTROL_PATH . 'temp' . DIRECTORY_SEPARATOR;
+		$this->assertFileNotExists($tempFolder);
+
+		//Check if UpdateFileName got Deleted
+		$updateFileName = $tempFolder . basename($updateData->url);
+		$this->assertFileNotExists($updateFileName);
 
 		$fileName = $this->getBuildDateFileName();
 		$this->assertStringEqualsFile($fileName, $updateData->releaseDate);
