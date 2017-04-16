@@ -169,7 +169,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			throw new \Exception("No Dedimania Code Specified, check the settings!");
 		}
 
-		$this->request = AsynchronousFileReader::newRequestTest(self::DEDIMANIA_URL);
+		//$this->request = AsynchronousFileReader::newRequestTest(self::DEDIMANIA_URL);
 
 
 		$this->dedimaniaData = new DedimaniaData($serverInfo->login, $dedimaniaCode, $serverInfo->path, $packMask, $serverVersion);

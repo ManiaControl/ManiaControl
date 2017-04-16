@@ -39,16 +39,6 @@ class AsynchronousFileReader implements UsageInformationAble {
 		$this->maniaControl = $maniaControl;
 	}
 
-	public static function newRequestTest($url) {
-		$request = new Request($url);
-		$request->getOptions()->set(CURLOPT_TIMEOUT, 60)->set(CURLOPT_HEADER, false)// don't display response header
-		        ->set(CURLOPT_CRLF, true)// linux line feed
-		        ->set(CURLOPT_ENCODING, '')// accept encoding
-		        ->set(CURLOPT_USERAGENT, 'ManiaControl v' . ManiaControl::VERSION)// user-agent
-		        ->set(CURLOPT_RETURNTRANSFER, true); // return instead of output content
-		return $request;
-	}
-
 	/**
 	 * Append available Data of active Requests
 	 */
