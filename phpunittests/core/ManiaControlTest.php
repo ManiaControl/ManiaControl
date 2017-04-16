@@ -2,6 +2,13 @@
 
 use ManiaControl\ManiaControl;
 
+/**
+ * PHP Unit Test for Mania Control Class
+ *
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014-2017 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ */
 class ManiaControlTest extends PHPUnit_Framework_TestCase {
 	public function testRun(){
 		$maniaControl = new ManiaControl();
@@ -9,6 +16,7 @@ class ManiaControlTest extends PHPUnit_Framework_TestCase {
 
 		sleep(15);
 
+		$this->assertNotNull($maniaControl->getBillManager());
 		//$this->l
 		//$this->assertNull($maniaControl);
 	}

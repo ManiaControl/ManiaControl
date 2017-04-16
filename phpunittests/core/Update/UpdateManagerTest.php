@@ -2,13 +2,18 @@
 
 namespace Tests\core\Update;
 
-
-use ManiaControl\Files\BackupUtil;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Update\UpdateData;
 use ManiaControl\Update\UpdateManager;
 
+/**
+ * PHP Unit Test for Update Manager Class
+ *
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014-2017 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ */
 final class UpdateManagerTest extends \PHPUnit_Framework_TestCase {
 
 	private function getBuildDateFileName() {

@@ -33,7 +33,7 @@ class CallbackHelpStructure extends DocumentationStructure {
 	 * @api
 	 * @return mixed
 	 */
-	public function getMethodName() {
+	public function getCallbackName() {
 		return $this->callbackName;
 	}
 

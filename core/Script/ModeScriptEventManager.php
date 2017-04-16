@@ -3,6 +3,7 @@
 namespace ManiaControl\Script;
 
 use ManiaControl\Callbacks\Callbacks;
+use ManiaControl\Callbacks\Structures\XmlRpc\CallbackListStructure;
 use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
@@ -38,6 +39,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.EnableCallbacks', array('true'));
 
 		$this->setApiVersion(self::API_VERSION);
+		$this->unBlockAllCallbacks();
 	}
 
 	/**
@@ -80,7 +82,18 @@ class ModeScriptEventManager implements UsageInformationAble {
 	}
 
 	/**
-	 * Provide a Array of Callbacks you want to Block
+	 * UnBlocks All Callbacks
+	 *
+	 * @api
+	 */
+	public function unBlockAllCallbacks() {
+		$this->getListOfDisabledCallbacks()->setCallable(function (CallbackListStructure $structure) {
+			$this->unBlockCallbacks($structure->getCallbacks());
+		});
+	}
+
+	/**
+	 * Provide a Array of Callbacks you want to UnBlock
 	 *
 	 * @api
 	 * @param array $callbackNames
@@ -325,7 +338,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 * @param $y
 	 * @param $z
 	 */
-	public function suegeSetProgressionUIPosition($x, $y, $z) {
+	public function siegeSetProgressionUIPosition($x, $y, $z) {
 		$this->maniaControl->getClient()->triggerModeScriptEvent('Shootmania.Siege.SetProgressionUIPosition', array(strval(floatval($x)), strval(floatval($y)), strval(floatval($z))));
 	}
 

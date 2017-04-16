@@ -589,7 +589,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 			$this->getChat()->sendInformation('ManiaControl v' . self::VERSION . ' successfully started!');
 
 			$this->startTime = time();
-			
+
 			// Main loop
 			while (!$this->requestQuitMessage) {
 				$this->loop();
@@ -613,8 +613,9 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 
 	/**
 	 * Connect to ManiaPlanet server
+	 * Public only for PHPUnit Tests
 	 */
-	private function connect() {
+	public function connect() {
 		// Load remote client
 		$serverConfig = $this->getServer()->loadConfig();
 
