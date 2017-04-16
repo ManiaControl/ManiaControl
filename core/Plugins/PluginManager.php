@@ -121,8 +121,8 @@ class PluginManager {
 			return false;
 		}
 
-		$reflector = new ReflectionClass($pluginClass);
-		$className = $pluginClass;
+		$reflector      = new ReflectionClass($pluginClass);
+		$className      = $pluginClass;
 		$splitNameSpace = explode('\\', $pluginClass);
 		if (is_array($splitNameSpace)) {
 			$className = end($splitNameSpace);
@@ -297,7 +297,7 @@ class PluginManager {
 		}
 		$pluginFiles = scandir($directory);
 		foreach ($pluginFiles as $pluginFile) {
-			if (substr($pluginFile, 0, 1) === '.') {
+			if (FileUtil::isHiddenFile($pluginFile)) {
 				continue;
 			}
 

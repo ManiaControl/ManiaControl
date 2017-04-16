@@ -26,7 +26,7 @@ abstract class BackupUtil {
 		}
 
 		$time = date('y-m-d_H-i-s');
-		if(defined('PHP_UNIT_TEST')){
+		if (defined('PHP_UNIT_TEST')) {
 			$time = date('y-m-d_H-i');
 		}
 
@@ -82,7 +82,7 @@ abstract class BackupUtil {
 		}
 		$useBaseFileNames = !empty($baseFileNames);
 		while (false !== ($file = readdir($folderHandle))) {
-			if (substr($file, 0, 1) === '.') {
+			if (FileUtil::isHiddenFile($file)) {
 				// Skip such .files
 				continue;
 			}

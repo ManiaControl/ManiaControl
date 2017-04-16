@@ -4,7 +4,6 @@ namespace ManiaControl\Files;
 
 use ManiaControl\Logger;
 use ManiaControl\Utils\Formatter;
-use ManiaControl\Utils\SystemUtil;
 use ManiaControl\Utils\WebReader;
 
 /**
@@ -131,7 +130,7 @@ abstract class FileUtil {
 		foreach ($directories as $directory) {
 			$dir = new \RecursiveDirectoryIterator(MANIACONTROL_PATH . $directory);
 			foreach (new \RecursiveIteratorIterator($dir) as $fileName => $file) {
-				if (substr($fileName, 0, 1) === '.') {
+				if (self::isHiddenFile($fileName)) {
 					continue;
 				}
 				if (!is_writable($fileName)) {
@@ -226,5 +225,15 @@ abstract class FileUtil {
 		$className = str_replace('.php', '', $className);
 
 		return $className;
+	}
+
+	/**
+	 * Checks if a File is Hidden
+	 *
+	 * @param $fileName
+	 * @return bool
+	 */
+	public static function isHiddenFile($fileName) {
+		return (substr($fileName, 0, 1) === '.');
 	}
 }

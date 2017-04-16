@@ -11,6 +11,7 @@ use FML\Controls\Quads\Quad_UIConstruction_Buttons;
 use FML\Controls\Quads\Quad_UIConstructionBullet_Buttons;
 use FML\ManiaLink;
 use FML\Script\Features\Paging;
+use ManiaControl\Files\FileUtil;
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
@@ -246,7 +247,7 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 		$mapFiles = array();
 		$dirFiles = scandir($directory);
 		foreach ($dirFiles as $fileName) {
-			if (substr($fileName, 0, 1) === '.') {
+			if (FileUtil::isHiddenFile($fileName)) {
 				continue;
 			}
 			$fullFileName = $directory . $fileName;

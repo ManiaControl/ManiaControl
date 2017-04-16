@@ -30,7 +30,7 @@ abstract class WebReader {
 		}
 		return $response;
 	}
-	
+
 	/**
 	 * Create a new cURL Request for the given URL
 	 *
