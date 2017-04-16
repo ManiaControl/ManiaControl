@@ -30,18 +30,7 @@ abstract class WebReader {
 		}
 		return $response;
 	}
-
-	/**
-	 * @deprecated
-	 * @see WebReader::getUrl()
-	 */
-	public static function loadUrl($url, callable $function = null) {
-		if ($function) {
-			return static::getUrl($url, $function);
-		}
-		return static::getUrl($url);
-	}
-
+	
 	/**
 	 * Create a new cURL Request for the given URL
 	 *
