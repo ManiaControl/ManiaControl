@@ -116,7 +116,7 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 			$itemQuad = new Quad_Icons128x32_1();
 			$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ManiaLinkSwitch);
 			$itemQuad->setAction(self::ACTION_SET_PAUSE);
-			$this->maniaControl->getActionsMenu()->addAdminMenuItem($itemQuad, 13, 'Pause the current game');
+			$this->maniaControl->getActionsMenu()->addAdminMenuItem($itemQuad, 32, 'Pause the current game');
 		}
 
 	}
@@ -132,13 +132,13 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 			$itemQuad = new Quad_BgRaceScore2();
 			$itemQuad->setSubStyle($itemQuad::SUBSTYLE_SendScore);
 			$itemQuad->setAction(self::ACTION_EXTEND_WARMUP);
-			$this->maniaControl->getActionsMenu()->addMenuItem($itemQuad, false, 14, 'Extend Warmup');
+			$this->maniaControl->getActionsMenu()->addMenuItem($itemQuad, false, 22, 'Extend Warmup');
 
 			// Stop WarmUp menu item
 			$itemQuad = new Quad_Icons64x64_1();
 			$itemQuad->setSubStyle($itemQuad::SUBSTYLE_ArrowGreen);
 			$itemQuad->setAction(self::ACTION_END_WARMUP);
-			$this->maniaControl->getActionsMenu()->addMenuItem($itemQuad, false, 15, 'End Warmup');
+			$this->maniaControl->getActionsMenu()->addMenuItem($itemQuad, false, 24, 'End Warmup');
 		} else {
 			$this->maniaControl->getActionsMenu()->removeMenuItem(14, false);
 			$this->maniaControl->getActionsMenu()->removeMenuItem(15, false);

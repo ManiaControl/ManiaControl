@@ -43,8 +43,6 @@ class ScriptManager implements UsageInformationAble {
 
 	/**
 	 * Enable script callbacks
-	 *
-	 * @param bool $enable
 	 * @return bool
 	 */
 	public function enableScriptCallbacks() {

@@ -239,7 +239,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$labelLine->setY(-7);
 		$labelLine->render();
 
-		$searchFrame = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultMapSearch(self::ACTION_SEARCH_MAP_NAME,self::ACTION_SEARCH_AUTHOR);
+		$searchFrame = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultMapSearch(self::ACTION_SEARCH_MAP_NAME, self::ACTION_SEARCH_AUTHOR);
 		$headFrame->addChild($searchFrame);
 
 		// Predefine description Label
@@ -739,7 +739,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 * @internal
 	 */
 	public function searchByMapName(array $callback) {
-		$login = $callback[1][1];
+		$login  = $callback[1][1];
 		$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
 
 		$searchString = $callback[1][3][0]['Value'];
@@ -755,7 +755,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	 * @internal
 	 */
 	public function searchByAuthor(array $callback) {
-		$login = $callback[1][1];
+		$login  = $callback[1][1];
 		$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
 
 		$searchString = $callback[1][3][0]['Value'];
