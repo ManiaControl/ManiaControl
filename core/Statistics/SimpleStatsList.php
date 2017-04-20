@@ -10,6 +10,7 @@ use FML\Controls\Quads\Quad_BgsPlayerCard;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Controls\Quads\Quad_UIConstruction_Buttons;
 use FML\ManiaLink;
+use FML\Script\Features\Paging;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
@@ -35,6 +36,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 	 */
 	const ACTION_OPEN_STATSLIST = 'SimpleStatsList.OpenStatsList';
 	const ACTION_SORT_STATS     = 'SimpleStatsList.SortStats';
+	const MAX_PLAYERS_PER_PAGE  = 15;
 
 	/*
 	 * Private properties
@@ -129,6 +131,10 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		$width     = $this->statsWidth + 60;
 		//TODO handle size when stats are empty
 
+		$script = $maniaLink->getScript();
+		$paging = new Paging();
+		$script->addFeature($paging);
+
 		// Main frame
 		$frame = new Frame();
 		$maniaLink->addChild($frame);
@@ -196,23 +202,29 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		// define standard properties
 		$index = 1;
 		$posY  -= 10;
+		$pageFrame = null;
 
 		if (!isset($statRankings[$order])) {
 			return;
 		}
 
 		foreach ($statRankings[$order] as $playerId => $value) {
+			if ($index % self::MAX_PLAYERS_PER_PAGE === 1) {
+				$pageFrame = new Frame();
+				$frame->addChild($pageFrame);
+				$pageFrame->setZ(1);
+
+				$paging->addPageControl($pageFrame);
+				$posY = $height / 2 - 10;
+			}
+
 			$listPlayer = $this->maniaControl->getPlayerManager()->getPlayerByIndex($playerId);
 			if (!$listPlayer) {
 				continue;
 			}
-			if ($index === 15) {
-				break;
-			}
 
 			$playerFrame = new Frame();
-			$frame->addChild($playerFrame);
-			$playerFrame->setZ(1);
+			$pageFrame->addChild($playerFrame);
 
 			// Show current Player Arrow
 			if ($playerId == $player->index) {
@@ -262,6 +274,22 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 			$index++;
 			$posY -= 4;
 		}
+
+		$pagerSize = 6.;
+		$pagerPrev = new Quad_Icons64x64_1();
+		$frame->addChild($pagerPrev);
+		$pagerPrev->setPosition($width * 0.42, $height * -0.44, 2)->setSize($pagerSize, $pagerSize)->setSubStyle($pagerPrev::SUBSTYLE_ArrowPrev);
+
+		$pagerNext = new Quad_Icons64x64_1();
+		$frame->addChild($pagerNext);
+		$pagerNext->setPosition($width * 0.45, $height * -0.44, 2)->setSize($pagerSize, $pagerSize)->setSubStyle($pagerNext::SUBSTYLE_ArrowNext);
+
+		$pageCountLabel = new Label_Text();
+		$frame->addChild($pageCountLabel);
+		$pageCountLabel->setHorizontalAlign($pageCountLabel::RIGHT)->setPosition($width * 0.40, $height * -0.44, 1)->setStyle($pageCountLabel::STYLE_TextTitle1)->setTextSize(1.3);
+
+		$paging->addButtonControl($pagerNext)->addButtonControl($pagerPrev)->setLabel($pageCountLabel);
+
 
 		$this->maniaControl->getManialinkManager()->displayWidget($maniaLink, $player, 'SimpleStatsList');
 	}
