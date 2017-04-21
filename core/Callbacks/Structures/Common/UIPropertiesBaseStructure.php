@@ -24,8 +24,7 @@ class UIPropertiesBaseStructure extends BaseResponseStructure {
 	 */
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
-
-		$this->time             = $this->getPlainJsonObject()->time;
+		
 		$this->uiPropertiesXML  = $data[1];
 		$this->uiPropertiesJson = $data[2];
 	}
