@@ -24,7 +24,7 @@ class UIPropertiesBaseStructure extends BaseResponseStructure {
 	 */
 	public function __construct(ManiaControl $maniaControl, $data) {
 		parent::__construct($maniaControl, $data);
-		
+
 		$this->uiPropertiesXML  = $data[1];
 		$this->uiPropertiesJson = $data[2];
 	}
@@ -54,5 +54,14 @@ class UIPropertiesBaseStructure extends BaseResponseStructure {
 	 */
 	public function getUiPropertiesObject() {
 		return json_decode($this->uiPropertiesJson);
+	}
+
+	/**
+	 * Gets the UI Properties as JSON Decoded Array
+	 *
+	 * @return mixed
+	 */
+	public function getUiPropertiesArray() {
+		return json_decode($this->uiPropertiesJson, true);
 	}
 }

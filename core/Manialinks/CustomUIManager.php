@@ -4,6 +4,8 @@ namespace ManiaControl\Manialinks;
 
 use FML\CustomUI;
 use ManiaControl\Callbacks\CallbackListener;
+use ManiaControl\Callbacks\Callbacks;
+use ManiaControl\Callbacks\Structures\Common\UIPropertiesBaseStructure;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
@@ -20,7 +22,7 @@ use ManiaControl\Players\PlayerManager;
  */
 class CustomUIManager implements CallbackListener, TimerListener, UsageInformationAble {
 	use UsageInformationTrait;
-	
+
 	/*
 	 * Constants
 	 */
@@ -36,6 +38,13 @@ class CustomUIManager implements CallbackListener, TimerListener, UsageInformati
 	private $updateManialink = false;
 
 	/**
+	 * ShootMania UI Properties
+	 *
+	 * @var \ManiaControl\Callbacks\Structures\Common\UIPropertiesBaseStructure
+	 */
+	private $shootManiaUIProperties;
+
+	/**
 	 * Create a custom UI manager instance
 	 *
 	 * @param ManiaControl $maniaControl
@@ -47,6 +56,36 @@ class CustomUIManager implements CallbackListener, TimerListener, UsageInformati
 		// Callbacks
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerJoined');
 		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'handle1Second', 1000);
+
+
+		//Initilize on Init the Properties
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::AFTERINIT, $this, function () {
+			$this->maniaControl->getModeScriptEventManager()->getShootmaniaUIProperties();
+		});
+
+		//Update the Structure if its Changed
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::SM_UIPROPERTIES, $this, function (UIPropertiesBaseStructure $structure) {
+			$this->shootManiaUIProperties = $structure;
+
+			//var_dump("UI_PROP");
+			//var_dump($structure->getUiPropertiesXML());
+		});
+	}
+
+	/**
+	 * Enable the Notices
+	 */
+	public function enableNotices() { //TODO what happens if you set severall at once, than you propably mistakly use the old JSON, so there is the need to update internal json
+		$xml = str_replace("<notices visible=\"false\" />", "<notices visible=\"true\" />", $this->shootManiaUIProperties->getUiPropertiesXML());
+		$this->maniaControl->getModeScriptEventManager()->setShootmaniaUIProperties($xml);
+	}
+
+	/**
+	 * Disables the Notices
+	 */
+	public function disableNotices() {
+		$xml = str_replace("<notices visible=\"true\" />", "<notices visible=\"false\" />", $this->shootManiaUIProperties->getUiPropertiesXML());
+		$this->maniaControl->getModeScriptEventManager()->setShootmaniaUIProperties($xml);
 	}
 
 	/**
@@ -98,6 +137,8 @@ class CustomUIManager implements CallbackListener, TimerListener, UsageInformati
 	/**
 	 * Set Showing of Notices
 	 *
+	 * @see \ManiaControl\Manialinks\CustomUIManager::enableNotices()
+	 * @deprecated
 	 * @param bool $visible
 	 */
 	public function setNoticeVisible($visible) {
@@ -173,5 +214,14 @@ class CustomUIManager implements CallbackListener, TimerListener, UsageInformati
 	public function setGlobalVisible($visible) {
 		$this->customUI->setGlobalVisible($visible);
 		$this->updateManialink = true;
+	}
+
+	/**
+	 * Get the Shootmania UI Properties
+	 *
+	 * @return \ManiaControl\Callbacks\Structures\Common\UIPropertiesBaseStructure
+	 */
+	public function getShootManiaUIProperties() {
+		return $this->shootManiaUIProperties;
 	}
 }

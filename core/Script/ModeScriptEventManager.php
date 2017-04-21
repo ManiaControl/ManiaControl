@@ -372,9 +372,11 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 *
 	 * @api
 	 * @param string Json-Encoded Xml UI Property String
+	 * @return \ManiaControl\Script\InvokeScriptCallback You can directly set a callable on it via setCallable() to get the updated Properties
 	 */
 	public function setShootmaniaUIProperties($properties) {
-		$this->maniaControl->getClient()->triggerModeScriptEvent(' Shootmania.UI.SetProperties', array($properties));
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Shootmania.UI.SetProperties', array($properties));
+		return $this->getShootmaniaUIProperties();
 	}
 
 	/**
@@ -428,9 +430,11 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 *
 	 * @api
 	 * @param string Json-Encoded Xml UI Property String
+	 * @return \ManiaControl\Script\InvokeScriptCallback You can directly set a callable on it via setCallable() to get the updated Properties
 	 */
 	public function setTrackmaniaUIProperties($properties) {
 		$this->maniaControl->getClient()->triggerModeScriptEvent('Trackmania.UI.GetProperties', array($properties));
+		return $this->getTrackmaniaUIProperties();
 	}
 
 	/**
