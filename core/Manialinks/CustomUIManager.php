@@ -7,6 +7,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\Structures\Common\UIPropertiesBaseStructure;
 use ManiaControl\Callbacks\TimerListener;
+use ManiaControl\Commands\CommandListener;
 use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
@@ -20,7 +21,7 @@ use ManiaControl\Players\PlayerManager;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class CustomUIManager implements CallbackListener, TimerListener, UsageInformationAble {
+class CustomUIManager implements CallbackListener, TimerListener, UsageInformationAble, CommandListener {
 	use UsageInformationTrait;
 
 	/*
@@ -66,10 +67,9 @@ class CustomUIManager implements CallbackListener, TimerListener, UsageInformati
 		//Update the Structure if its Changed
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::SM_UIPROPERTIES, $this, function (UIPropertiesBaseStructure $structure) {
 			$this->shootManiaUIProperties = $structure;
-
-			//var_dump("UI_PROP");
-			//var_dump($structure->getUiPropertiesXML());
 		});
+
+
 	}
 
 	/**

@@ -50,6 +50,7 @@ class Database implements TimerListener {
 		if ($connectError = $this->getMysqli()->connect_error) {
 			$message = "Couldn't connect to Database: '{$connectError}'";
 			$this->maniaControl->quit($message, true);
+			return;
 		}
 		$this->getMysqli()->set_charset("utf8");
 
