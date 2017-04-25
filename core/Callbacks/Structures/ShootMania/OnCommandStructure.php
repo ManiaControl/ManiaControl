@@ -2,6 +2,8 @@
 
 namespace ManiaControl\Callbacks\Structures\ShootMania;
 
+use ManiaControl\Callbacks\Structures\Common\CommonCommandStructure;
+
 
 /**
  * Structure Class for the OnCommand Structure Callback

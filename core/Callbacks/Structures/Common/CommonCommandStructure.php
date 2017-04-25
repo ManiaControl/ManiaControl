@@ -1,6 +1,6 @@
 <?php
 
-namespace ManiaControl\Callbacks\Structures\ShootMania;
+namespace ManiaControl\Callbacks\Structures\Common;
 
 
 use ManiaControl\Callbacks\Structures\Common\BaseStructure;

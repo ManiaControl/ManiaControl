@@ -3,10 +3,8 @@
 namespace ManiaControl\Callbacks\Structures\TrackMania;
 
 
-use ManiaControl\Callbacks\Structures\Common\BaseStructure;
-use ManiaControl\Callbacks\Structures\Common\BaseTimeStructure;
-use ManiaControl\Callbacks\Structures\ShootMania\CommonCommandStructure;
-use ManiaControl\ManiaControl;
+use ManiaControl\Callbacks\Structures\Common\CommonCommandStructure;
+
 /**
  * Structure Class for the OnCommand Structure Callback
  *
