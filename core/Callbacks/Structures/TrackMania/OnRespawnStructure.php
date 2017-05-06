@@ -37,7 +37,7 @@ class OnRespawnStructure extends BasePlayerTimeStructure {
 
 		$jsonObj = $this->getPlainJsonObject();
 
-		$this->numberOfRespawns = (int) $jsonObj->numberOfRespawns;
+		$this->numberOfRespawns = (int) $jsonObj->nbrespawns;
 		$this->raceTime         = (int) $jsonObj->racetime;
 		$this->lapTime          = (int) $jsonObj->laptime;
 		$this->stuntsScore      = $jsonObj->stuntsscore;
