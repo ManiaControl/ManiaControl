@@ -4,9 +4,12 @@ namespace ManiaControl\Script;
 
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\Structures\XmlRpc\CallbackListStructure;
+use ManiaControl\Callbacks\Structures\XmlRpc\DocumentationStructure;
+use ManiaControl\Callbacks\Structures\XmlRpc\MethodListStructure;
 use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
+use ManiaControl\Players\Player;
 
 /**
  * Manager for Mode Script Events
@@ -49,6 +52,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.EnableCallbacks', array('false'));
 	}
 
+
 	/**
 	 * Request a list of all available callbacks. This method will trigger the "XmlRpc.CallbacksList" callback.
 	 *
@@ -59,6 +63,17 @@ class ModeScriptEventManager implements UsageInformationAble {
 		$responseId = $this->generateResponseId();
 		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.GetCallbacksList', array($responseId));
 		return new InvokeScriptCallback($this->maniaControl, Callbacks::XMLRPC_CALLBACKSLIST, $responseId);
+	}
+
+	/**
+	 * Prints the List of XMLRPC Callbacks in the Console
+	 *
+	 * @api
+	 */
+	public function printCallbacksList() {
+		$this->getCallbacksList()->setCallable(function (CallbackListStructure $structure) {
+			var_dump($structure->getCallbacks());
+		});
 	}
 
 	/**
@@ -163,6 +178,17 @@ class ModeScriptEventManager implements UsageInformationAble {
 	}
 
 	/**
+	 * Prints the List of XMLRPC Methods in the Console
+	 *
+	 * @api
+	 */
+	public function printMethodsList() {
+		$this->getMethodsList()->setCallable(function (MethodListStructure $structure) {
+			var_dump($structure->getMethods());
+		});
+	}
+
+	/**
 	 * Sets the Api Version
 	 *
 	 * @param string $version
@@ -209,6 +235,17 @@ class ModeScriptEventManager implements UsageInformationAble {
 	}
 
 	/**
+	 *  Printes the XMLRPC Documentation in the Console
+	 *
+	 * @api
+	 */
+	public function printDocumentation() {
+		$this->getDocumentation()->setCallable(function (DocumentationStructure $structure) {
+			var_dump($structure->getDocumentation());
+		});
+	}
+
+	/**
 	 * Gets a List of All Api Version
 	 *
 	 * @api
@@ -220,6 +257,27 @@ class ModeScriptEventManager implements UsageInformationAble {
 		return new InvokeScriptCallback($this->maniaControl, Callbacks::XMLRPC_ALLAPIVERSIONS, $responseId);
 	}
 
+	/**
+	 * Hides the Scoreboard on Pressing Alt
+	 *
+	 * @api
+	 * @param \ManiaControl\Players\Player $player
+	 */
+	public function hideScoreBoardOnAlt(Player $player) {
+		$login = Player::parseLogin($player);
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.UI.SetAltScoresTableVisibility', array($login, "False"));
+	}
+
+	/**
+	 * Displays the Scoreboard on Pressing Alt
+	 *
+	 * @api
+	 * @param \ManiaControl\Players\Player $player
+	 */
+	public function displayScoreBoardOnAlt(Player $player) {
+		$login = Player::parseLogin($player);
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.UI.SetAltScoresTableVisibility', array($login, "True"));
+	}
 
 	/**
 	 * Extend the duration of any ongoing warmup.

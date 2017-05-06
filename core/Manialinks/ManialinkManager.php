@@ -14,7 +14,6 @@ use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use Maniaplanet\DedicatedServer\Xmlrpc\FaultException;
-use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
 use Maniaplanet\DedicatedServer\Xmlrpc\MessageException;
 use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
 
@@ -274,22 +273,6 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener,
 	}
 
 	/**
-	 * Disable the alt menu for the player
-	 *
-	 * @param mixed $player
-	 * @return bool
-	 */
-	public function disableAltMenu($player) {
-		$login = Player::parseLogin($player);
-		try {
-			$success = $this->maniaControl->getClient()->triggerModeScriptEvent('LibXmlRpc_DisableAltMenu', $login);
-		} catch (GameModeException $e) {
-			return false;
-		}
-		return $success;
-	}
-
-	/**
 	 * Closes a widget via the callback
 	 *
 	 * @param array  $callback
@@ -338,19 +321,22 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener,
 	/**
 	 * Enable the alt menu for the player
 	 *
+	 * @api
 	 * @param mixed $player
-	 * @return bool
 	 */
 	public function enableAltMenu($player) {
-		$login = Player::parseLogin($player);
-		try {
-			$success = $this->maniaControl->getClient()->triggerModeScriptEvent('LibXmlRpc_EnableAltMenu', $login);
-		} catch (GameModeException $e) {
-			return false;
-		}
-		return $success;
+		$this->maniaControl->getModeScriptEventManager()->displayScoreBoardOnAlt($player);
 	}
 
+	/**
+	 * Disable the alt menu for the player
+	 *
+	 * @api
+	 * @param mixed $player
+	 */
+	public function disableAltMenu($player) {
+		$this->maniaControl->getModeScriptEventManager()->hideScoreBoardOnAlt($player);
+	}
 
 	/**
 	 * Adds a line of labels
