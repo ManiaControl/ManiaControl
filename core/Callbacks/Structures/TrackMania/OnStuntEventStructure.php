@@ -15,7 +15,6 @@ use ManiaControl\ManiaControl;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class OnStuntEventStructure extends BasePlayerTimeStructure {
-	private $numberOfRespawns;
 	private $raceTime;
 	private $lapTime;
 	private $stuntsScore;
@@ -39,7 +38,6 @@ class OnStuntEventStructure extends BasePlayerTimeStructure {
 
 		$jsonObj = $this->getPlainJsonObject();
 
-		$this->numberOfRespawns = (int) $jsonObj->numberOfRespawns;
 		$this->raceTime         = (int) $jsonObj->racetime;
 		$this->lapTime          = (int) $jsonObj->laptime;
 		$this->stuntsScore      = $jsonObj->stuntsscore;
@@ -76,15 +74,7 @@ class OnStuntEventStructure extends BasePlayerTimeStructure {
 	public function getStuntsScore() {
 		return $this->stuntsScore;
 	}
-
-	/**
-	 * @api
-	 * @return int
-	 */
-	public function getNumberOfRespawns() {
-		return $this->numberOfRespawns;
-	}
-
+	
 	/**
 	 * @api
 	 * @return mixed
