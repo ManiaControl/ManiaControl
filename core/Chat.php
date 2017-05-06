@@ -22,11 +22,12 @@ use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
  */
 class Chat implements CallbackListener, CommunicationListener, UsageInformationAble {
 	use UsageInformationTrait;
-	
+
 	/*
 	 * Constants
 	 */
-	const SETTING_PREFIX             = 'Messages Prefix';
+	const SETTING_PUBLIC_PREFIX      = 'Public Messages Prefix';
+	const SETTING_PRIVATE_PREFIX     = 'Privat Messages Prefix';
 	const SETTING_FORMAT_INFORMATION = 'Information Format';
 	const SETTING_FORMAT_SUCCESS     = 'Success Format';
 	const SETTING_FORMAT_ERROR       = 'Error Format';
@@ -48,7 +49,8 @@ class Chat implements CallbackListener, CommunicationListener, UsageInformationA
 		$this->maniaControl = $maniaControl;
 
 		// Settings
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_PREFIX, '» ');
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_PUBLIC_PREFIX, '» ');
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_PRIVATE_PREFIX, '»» ');
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_FORMAT_INFORMATION, '$fff');
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_FORMAT_SUCCESS, '$0f0');
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_FORMAT_ERROR, '$f30');
@@ -119,11 +121,10 @@ class Chat implements CallbackListener, CommunicationListener, UsageInformationA
 			return $prefixParam;
 		}
 		if ($prefixParam === true) {
-			$prefix = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_PREFIX);
 			if ($login) {
-				// Private - Doubled default prefix
-				$prefix .= $prefix;
-				// TODO: validate whether to use specific private & public prefixes instead of just doubling a default one
+				$prefix = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_PRIVATE_PREFIX);
+			} else {
+				$prefix = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_PUBLIC_PREFIX);
 			}
 			return $prefix;
 		}
