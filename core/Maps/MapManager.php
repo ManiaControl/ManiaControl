@@ -1013,6 +1013,11 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 	private function searchMaps($searchString, $searchBy = self::SEARCH_BY_MAP_NAME) {
 		$result       = array();
 		$searchString = strtolower($searchString);
+
+		if($searchString == ''){
+			return $result;
+		}
+
 		foreach ($this->maps as $map) {
 			switch ($searchBy) {
 				case self::SEARCH_BY_MAP_NAME:

@@ -74,7 +74,7 @@ class OnStuntEventStructure extends BasePlayerTimeStructure {
 	public function getStuntsScore() {
 		return $this->stuntsScore;
 	}
-	
+
 	/**
 	 * @api
 	 * @return mixed
