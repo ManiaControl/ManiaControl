@@ -54,6 +54,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	const ACTION_PAGING_CHUNKS       = 'MapList.PagingChunk.';
 	const ACTION_SEARCH_MAP_NAME     = 'MapList.SearchMapName';
 	const ACTION_SEARCH_AUTHOR       = 'MapList.SearchAuthor';
+	const ACTION_RESET               = 'MapList.ResetMapList';
 	const MAX_MAPS_PER_PAGE          = 13;
 	const MAX_PAGES_PER_CHUNK        = 2;
 	const DEFAULT_KARMA_PLUGIN       = 'MCTeam\KarmaPlugin';
@@ -88,6 +89,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_CLEAR_MAPQUEUE, $this, 'clearMapQueue');
 		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_SEARCH_MAP_NAME, $this, 'searchByMapName');
 		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_SEARCH_AUTHOR, $this, 'searchByAuthor');
+		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_RESET, $this, 'resetMapList');
 
 	}
 
@@ -239,7 +241,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$labelLine->setY(-7);
 		$labelLine->render();
 
-		$searchFrame = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultMapSearch(self::ACTION_SEARCH_MAP_NAME, self::ACTION_SEARCH_AUTHOR);
+		$searchFrame = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultMapSearch(self::ACTION_SEARCH_MAP_NAME, self::ACTION_SEARCH_AUTHOR, self::ACTION_RESET);
 		$headFrame->addChild($searchFrame);
 
 		// Predefine description Label
@@ -733,6 +735,18 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	}
 
 	/**
+	 * Resets the Maplist to the original view, clears previous search results
+	 *
+	 * @param array $callback
+	 * @internal
+	 */
+	public function resetMapList(array $callback) {
+		$login  = $callback[1][1];
+		$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
+		$this->showMapList($player);
+	}
+
+	/**
 	 * Listener for search button
 	 *
 	 * @param array $callback
@@ -743,9 +757,14 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
 
 		$searchString = $callback[1][3][0]['Value'];
-		$maps         = $this->maniaControl->getMapManager()->searchMapsByMapName($searchString);
 
+		if ($searchString) {
+			$maps = $this->maniaControl->getMapManager()->searchMapsByMapName($searchString);
+		} else {
+			$maps = null;
+		}
 		$this->showMapList($player, $maps);
+
 	}
 
 	/**

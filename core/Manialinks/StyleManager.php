@@ -12,6 +12,7 @@ use FML\Controls\Quads\Quad_BgRaceScore2;
 use FML\Controls\Quads\Quad_Bgs1InRace;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
 use FML\Controls\Quads\Quad_Icons64x64_1;
+use FML\Controls\Quads\Quad_UIConstruction_Buttons;
 use FML\Script\Features\Paging;
 use FML\Script\Script;
 use ManiaControl\General\UsageInformationAble;
@@ -128,7 +129,7 @@ class StyleManager implements UsageInformationAble {
 	 * @param string $actionAuthorSearch
 	 * @return \FML\Controls\Frame
 	 */
-	public function getDefaultMapSearch($actionMapNameSearch, $actionAuthorSearch){
+	public function getDefaultMapSearch($actionMapNameSearch, $actionAuthorSearch, $actionReset = null) {
 		$width = $this->getListWidgetsWidth();
 
 		$frame = new Frame();
@@ -148,6 +149,17 @@ class StyleManager implements UsageInformationAble {
 		$entry->setTextSize(1);
 		$entry->setSize($width * 0.25, 4);
 		$entry->setName('SearchString');
+
+		if ($actionReset) {
+			$quad = new Quad_Icons64x64_1();;
+			$frame->addChild($quad);
+			$quad->setSubStyle($quad::SUBSTYLE_QuitRace);
+			$quad->setColorize('aaa');
+			$quad->setSize(5, 5);
+			$quad->setPosition(-$width / 2 + 15 + $width * 0.25 - 2, 0);
+			$quad->setZ(1);
+			$quad->setAction($actionReset);
+}
 
 		//Search for Map-Name
 		$label = new Label_Button();
