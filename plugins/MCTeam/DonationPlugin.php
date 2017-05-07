@@ -10,6 +10,7 @@ use FML\Controls\Quads\Quad_BgRaceScore2;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
 use FML\ManiaLink;
 use FML\Script\Features\Paging;
+use ManiaControl\Admin\ActionsMenu;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Bills\BillManager;
 use ManiaControl\Callbacks\CallbackListener;
@@ -116,9 +117,16 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		// Define player stats
 		$this->maniaControl->getStatisticManager()->defineStatMetaData(self::STAT_PLAYER_DONATIONS);
 
+		$actionsPosX = $this->maniaControl->getSettingManager()->getSettingValue($this->maniaControl->getActionsMenu(), ActionsMenu::SETTING_MENU_POSX);
+		$actionsPosY = $this->maniaControl->getSettingManager()->getSettingValue($this->maniaControl->getActionsMenu(), ActionsMenu::SETTING_MENU_POSY);
+		$iconSize    = $this->maniaControl->getSettingManager()->getSettingValue($this->maniaControl->getActionsMenu(), ActionsMenu::SETTING_MENU_ITEMSIZE);
+
+		$itemMarginFactorY = 1.2;
+		$posY = $actionsPosY - 3 * ($iconSize * $itemMarginFactorY);
+
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_DONATE_WIDGET_ACTIVATED, true);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_DONATE_WIDGET_POSX, 156.);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_DONATE_WIDGET_POSY, -31.4);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_DONATE_WIDGET_POSX, $actionsPosX);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_DONATE_WIDGET_POSY, $posY);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_DONATE_WIDGET_WIDTH, 6);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_DONATE_WIDGET_HEIGHT, 6);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_DONATION_VALUES, "20,50,100,500,1000,2000");
@@ -191,7 +199,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		// Values Menu
 		$popoutFrame = new Frame();
 		$frame->addChild($popoutFrame);
-		$popoutFrame->setPosition(- $itemSize * 0.5, 0);
+		$popoutFrame->setPosition(-$itemSize * 0.5, 0);
 		$popoutFrame->setHorizontalAlign($popoutFrame::RIGHT);
 		$popoutFrame->setVisible(false);
 
@@ -210,7 +218,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$descriptionLabel->setVisible(true);
 
 		// Add items
-		$posX     = -2;
+		$posX = -2;
 		foreach (array_reverse($valueArray) as $value) {
 			$label = new Label_Text();
 			$popoutFrame->addChild($label);
@@ -226,7 +234,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 			$posX -= strlen($value) * 1.6 + 2.5;
 		}
 
-		$descriptionFrame->setPosition( $posX  - $width + $itemMarginFactorX, 0);
+		$descriptionFrame->setPosition($posX - $width + $itemMarginFactorX, 0);
 
 		//Popout background
 		$quad = new Quad();

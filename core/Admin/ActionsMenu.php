@@ -17,6 +17,8 @@ use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
+use ManiaControl\Settings\Setting;
+use ManiaControl\Settings\SettingManager;
 
 /**
  * Class managing Actions Menus
@@ -65,6 +67,8 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::AFTERINIT, $this, 'handleAfterInit');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerJoined');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(AuthenticationManager::CB_AUTH_LEVEL_CHANGED, $this, 'handlePlayerJoined');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(SettingManager::CB_SETTING_CHANGED, $this, 'handleSettingChanged');
+
 	}
 
 	/**
@@ -328,5 +332,18 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 	public function handlePlayerJoined(Player $player) {
 		$maniaLink = $this->buildMenuIconsManialink($player);
 		$this->maniaControl->getManialinkManager()->sendManialink($maniaLink, $player);
+	}
+
+	/**
+	 * Handle Setting Changed Callback
+	 *
+	 * @param Setting $setting
+	 */
+	public function handleSettingChanged(Setting $setting) {
+		if (!$setting->belongsToClass($this)) {
+			return;
+		}
+
+		$this->rebuildAndShowMenu();
 	}
 }

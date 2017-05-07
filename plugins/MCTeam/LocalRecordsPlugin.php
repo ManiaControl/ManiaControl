@@ -38,7 +38,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 	 * Constants
 	 */
 	const ID                          = 7;
-	const VERSION                     = 0.2;
+	const VERSION                     = 0.3;
 	const NAME                        = 'Local Records Plugin';
 	const AUTHOR                      = 'MCTeam';
 	const MLID_RECORDS                = 'ml_local_records';
@@ -352,6 +352,9 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 				}
 				break;
 			}
+			default:
+				$this->updateManialink = true;
+				break;
 		}
 	}
 
@@ -592,7 +595,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 				$pageFrame = new Frame();
 				$frame->addChild($pageFrame);
 				$posY = $height / 2 - 10;
-				$paging->addPage($pageFrame);
+				$paging->addPageControl($pageFrame);
 			}
 
 			$recordFrame = new Frame();

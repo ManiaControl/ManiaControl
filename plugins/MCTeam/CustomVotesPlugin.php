@@ -15,6 +15,7 @@ use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Controls\Quads\Quad_UIConstruction_Buttons;
 use FML\ManiaLink;
 use FML\Script\Features\KeyAction;
+use ManiaControl\Admin\ActionsMenu;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
@@ -29,6 +30,8 @@ use ManiaControl\Plugins\Plugin;
 use ManiaControl\Script\ScriptManager;
 use ManiaControl\Server\Commands;
 use ManiaControl\Server\Server;
+use ManiaControl\Settings\Setting;
+use ManiaControl\Settings\SettingManager;
 use ManiaControl\Utils\ColorUtil;
 use Maniaplanet\DedicatedServer\Structures\VoteRatio;
 use Maniaplanet\DedicatedServer\Xmlrpc\ChangeInProgressException;
@@ -47,7 +50,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 * Constants
 	 */
 	const PLUGIN_ID      = 5;
-	const PLUGIN_VERSION = 0.1;
+	const PLUGIN_VERSION = 0.2;
 	const PLUGIN_NAME    = 'CustomVotesPlugin';
 	const PLUGIN_AUTHOR  = 'kremsy';
 
@@ -148,10 +151,18 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Server::CB_TEAM_MODE_CHANGED, $this, 'constructMenu');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(ScriptManager::CB_PAUSE_STATUS_CHANGED, $this, 'constructMenu');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(SettingManager::CB_SETTING_CHANGED, $this, 'handleSettingChanged');
+
+		$actionsPosX = $this->maniaControl->getSettingManager()->getSettingValue($this->maniaControl->getActionsMenu(), ActionsMenu::SETTING_MENU_POSX);
+		$actionsPosY = $this->maniaControl->getSettingManager()->getSettingValue($this->maniaControl->getActionsMenu(), ActionsMenu::SETTING_MENU_POSY);
+		$iconSize    = $this->maniaControl->getSettingManager()->getSettingValue($this->maniaControl->getActionsMenu(), ActionsMenu::SETTING_MENU_ITEMSIZE);
+
+		$itemMarginFactorY = 1.2;
+		$posY = $actionsPosY - 2 * ($iconSize * $itemMarginFactorY);
 
 		// Settings
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_VOTE_ICON_POSX, 156.);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_VOTE_ICON_POSY, -38.6);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_VOTE_ICON_POSX, $actionsPosX);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_VOTE_ICON_POSY, $posY);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_VOTE_ICON_WIDTH, 6);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_VOTE_ICON_HEIGHT, 6);
 
@@ -793,6 +804,19 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 
 		// Send manialink
 		$this->maniaControl->getManialinkManager()->sendManialink($maniaLink);
+	}
+
+	/**
+	 * Handle Setting Changed Callback
+	 *
+	 * @param Setting $setting
+	 */
+	public function handleSettingChanged(Setting $setting) {
+		if (!$setting->belongsToClass($this)) {
+			return;
+		}
+
+		$this->constructMenu();
 	}
 }
 
