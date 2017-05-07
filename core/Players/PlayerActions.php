@@ -485,17 +485,19 @@ class PlayerActions implements EchoListener, CommunicationListener, UsageInforma
 		$frame     = new Frame();
 		$maniaLink->addChild($frame);
 		$frame->setPosition(0, 10);
+		$frame->setZ(ManialinkManager::MAIN_MANIALINK_Z_VALUE);
 
 		// Background
 		$backgroundQuad = new Quad();
 		$frame->addChild($backgroundQuad);
 		$backgroundQuad->setSize($width, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
+		$backgroundQuad->setZ(-1);
 
 		// Close Quad (X)
 		$closeQuad = new Quad_Icons64x64_1();
 		$frame->addChild($closeQuad);
-		$closeQuad->setPosition($width * 0.473, $height * 0.457, 3);
+		$closeQuad->setPosition($width / 2 - 3, $height / 2 - 3, 3);
 		$closeQuad->setSize(6, 6);
 		$closeQuad->setSubStyle($closeQuad::SUBSTYLE_QuitRace);
 		$closeQuad->setAction(ManialinkManager::ACTION_CLOSEWIDGET);

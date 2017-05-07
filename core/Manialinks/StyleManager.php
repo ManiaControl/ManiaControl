@@ -244,7 +244,7 @@ class StyleManager implements UsageInformationAble {
 		// Add Close Quad (X)
 		$closeQuad = new Quad_Icons64x64_1();
 		$frame->addChild($closeQuad);
-		$closeQuad->setPosition($width * 0.483, $height * 0.467, 3)->setSize(6, 6)->setSubStyle($closeQuad::SUBSTYLE_QuitRace)->setAction(ManialinkManager::ACTION_CLOSEWIDGET);
+		$closeQuad->setPosition($width / 2 - 3, $height / 2 - 3, 3)->setSize(6, 6)->setSubStyle($closeQuad::SUBSTYLE_QuitRace)->setAction(ManialinkManager::ACTION_CLOSEWIDGET);
 
 		if ($script) {
 			$pagerSize = 6.;
