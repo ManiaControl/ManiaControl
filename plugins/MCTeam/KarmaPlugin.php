@@ -419,7 +419,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 				if ($data->data->message === 'invalid session') {
 					unset($this->mxKarma['session']);
 				} else {
-					$this->maniaControl->getErrorHandler()->triggerDebugNotice('fetch error ' . $data->data->message . self::MX_KARMA_GET_MAP_RATING . $this->mxKarma['session']);
+					$this->maniaControl->getErrorHandler()->triggerDebugNotice('fetch error ' . $data->data->message . self::MX_KARMA_GET_MAP_RATING);
 				}
 			}
 		});
@@ -524,7 +524,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 				if ($data->data->message === "invalid session") {
 					unset($this->mxKarma['session']);
 				} else {
-					$this->maniaControl->getErrorHandler()->triggerDebugNotice('saving error ' . $data->data->message . self::MX_KARMA_SAVE_VOTES . $this->mxKarma['session']);
+					$this->maniaControl->getErrorHandler()->triggerDebugNotice('saving error ' . $data->data->message . self::MX_KARMA_SAVE_VOTES);
 				}
 			}
 		});
