@@ -12,7 +12,7 @@ use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
-use ManiaControl\Callbacks\Models\RecordCallback;
+use ManiaControl\Callbacks\Structures\TrackMania\OnWayPointEventStructure;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\Logger;
@@ -60,9 +60,9 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 	 * Private properties
 	 */
 	/** @var ManiaControl $maniaControl */
-	private $maniaControl = null;
+	private $maniaControl    = null;
 	private $updateManialink = false;
-	private $checkpoints = array();
+	private $checkpoints     = array();
 
 	/**
 	 * @see \ManiaControl\Plugins\Plugin::prepare()
@@ -135,9 +135,10 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
 
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
-		$this->maniaControl->getCallbackManager()->registerCallbackListener(RecordCallback::CHECKPOINT, $this, 'handleCheckpointCallback');
-		$this->maniaControl->getCallbackManager()->registerCallbackListener(RecordCallback::LAPFINISH, $this, 'handleLapFinishCallback');
-		$this->maniaControl->getCallbackManager()->registerCallbackListener(RecordCallback::FINISH, $this, 'handleFinishCallback');
+
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::TM_ONWAYPOINT, $this, 'handleCheckpointCallback');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::TM_ONFINISHLINE, $this, 'handleFinishCallback');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::TM_ONLAPFINISH, $this, 'handleFinishCallback');
 
 		$this->maniaControl->getCommandManager()->registerCommandListener(array('recs', 'records'), $this, 'showRecordsList', false, 'Shows a list of Local Records on the current map.');
 		$this->maniaControl->getCommandManager()->registerCommandListener('delrec', $this, 'deleteRecord', true, 'Removes a record from the database.');
@@ -197,8 +198,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		}
 
 		$this->updateManialink = false;
-		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_ENABLE)
-		) {
+		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_ENABLE)) {
 			$manialink = $this->buildManialink();
 			$this->maniaControl->getManialinkManager()->sendManialink($manialink);
 		}
@@ -343,8 +343,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		}
 
 		switch ($setting->setting) {
-			case self::SETTING_WIDGET_ENABLE:
-			{
+			case self::SETTING_WIDGET_ENABLE: {
 				if ($setting->value) {
 					$this->updateManialink = true;
 				} else {
@@ -363,23 +362,12 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 	 *
 	 * @param RecordCallback $callback
 	 */
-	public function handleCheckpointCallback(RecordCallback $callback) {
-		if ($callback->isLegacyCallback) {
-			return;
+	public function handleCheckpointCallback(OnWayPointEventStructure $structure) {
+		$playerLogin = $structure->getPlayer()->login;
+		if (!isset($this->checkpoints[$playerLogin])) {
+			$this->checkpoints[$playerLogin] = array();
 		}
-		if (!isset($this->checkpoints[$callback->login])) {
-			$this->checkpoints[$callback->login] = array();
-		}
-		$this->checkpoints[$callback->login][$callback->lapCheckpoint] = $callback->lapTime;
-	}
-
-	/**
-	 * Handle LapFinish Callback
-	 *
-	 * @param RecordCallback $callback
-	 */
-	public function handleLapFinishCallback(RecordCallback $callback) {
-		$this->handleFinishCallback($callback);
+		$this->checkpoints[$playerLogin][$structure->getCheckPointInLap()] = $structure->getLapTime();
 	}
 
 	/**
@@ -387,31 +375,30 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 	 *
 	 * @param RecordCallback $callback
 	 */
-	public function handleFinishCallback(RecordCallback $callback) {
-		if ($callback->isLegacyCallback) {
-			return;
-		}
-		if ($callback->time <= 0) {
+	public function handleFinishCallback(OnWayPointEventStructure $structure) {
+		if ($structure->getRaceTime() <= 0) {
 			// Invalid time
 			return;
 		}
 
 		$map = $this->maniaControl->getMapManager()->getCurrentMap();
 
-		$checkpointsString                   = $this->getCheckpoints($callback->player->login);
-		$this->checkpoints[$callback->login] = array();
+		$player = $structure->getPlayer();
+
+		$checkpointsString                 = $this->getCheckpoints($player->login);
+		$this->checkpoints[$player->login] = array();
 
 		// Check old record of the player
-		$oldRecord = $this->getLocalRecord($map, $callback->player);
+		$oldRecord = $this->getLocalRecord($map, $player);
 		if ($oldRecord) {
-			if ($oldRecord->time < $callback->time) {
+			if ($oldRecord->time < $structure->getRaceTime()) {
 				// Not improved
 				return;
 			}
-			if ($oldRecord->time == $callback->time) {
+			if ($oldRecord->time == $structure->getRaceTime()) {
 				// Same time
 				// TODO: respect notify-settings
-				$message = '$<$fff' . $callback->player->nickname . '$> equalized his/her $<$ff0' . $oldRecord->rank . '.$> Local Record: $<$fff' . Formatter::formatTime($oldRecord->time) . '$>!';
+				$message = '$<$fff' . $player->nickname . '$> equalized his/her $<$ff0' . $oldRecord->rank . '.$> Local Record: $<$fff' . Formatter::formatTime($oldRecord->time) . '$>!';
 				$this->maniaControl->getChat()->sendInformation('$3c0' . $message);
 				return;
 			}
@@ -426,8 +413,8 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 				`checkpoints`
 				) VALUES (
 				{$map->index},
-				{$callback->player->index},
-				{$callback->time},
+				{$player->index},
+				{$structure->getRaceTime()},
 				'{$checkpointsString}'
 				) ON DUPLICATE KEY UPDATE
 				`time` = VALUES(`time`),
@@ -440,7 +427,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$this->updateManialink = true;
 
 		// Announce record
-		$newRecord    = $this->getLocalRecord($map, $callback->player);
+		$newRecord    = $this->getLocalRecord($map, $player);
 		$improvedRank = (!$oldRecord || $newRecord->rank < $oldRecord->rank);
 
 		$notifyOnlyDriver      = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_NOTIFY_ONLY_DRIVER);
@@ -450,7 +437,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		if ($notifyOnlyDriver) {
 			$message .= 'You';
 		} else {
-			$message .= '$<$fff' . $callback->player->nickname . '$>';
+			$message .= '$<$fff' . $player->nickname . '$>';
 		}
 		$message .= ' ' . ($improvedRank ? 'gained' : 'improved') . ' the';
 		$message .= ' $<$ff0' . $newRecord->rank . '.$> Local Record:';
@@ -461,11 +448,11 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 				$message .= '$<$ff0' . $oldRecord->rank . '.$> ';
 			}
 			$timeDiff = $oldRecord->time - $newRecord->time;
-			$message .= '$<$fff-' . Formatter::formatTime($timeDiff) . '$>)';
+			$message  .= '$<$fff-' . Formatter::formatTime($timeDiff) . '$>)';
 		}
 
 		if ($notifyOnlyDriver) {
-			$this->maniaControl->getChat()->sendInformation($message, $callback->player);
+			$this->maniaControl->getChat()->sendInformation($message, $player);
 		} else if (!$notifyOnlyBestRecords || $newRecord->rank <= $notifyOnlyBestRecords) {
 			$this->maniaControl->getChat()->sendInformation($message);
 		}
@@ -632,8 +619,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 	 * @param Player $player
 	 */
 	public function deleteRecord(array $chat, Player $player) {
-		if (!$this->maniaControl->getAuthenticationManager()->checkRight($player, AuthenticationManager::AUTH_LEVEL_MASTERADMIN)
-		) {
+		if (!$this->maniaControl->getAuthenticationManager()->checkRight($player, AuthenticationManager::AUTH_LEVEL_MASTERADMIN)) {
 			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
@@ -644,7 +630,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 			return;
 		}
 
-		$recordId   = (int)$commandParts[1];
+		$recordId   = (int) $commandParts[1];
 		$currentMap = $this->maniaControl->getMapManager()->getCurrentMap();
 		$records    = $this->getLocalRecords($currentMap);
 		if (count($records) < $recordId) {

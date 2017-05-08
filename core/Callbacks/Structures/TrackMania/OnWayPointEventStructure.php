@@ -3,7 +3,6 @@
 namespace ManiaControl\Callbacks\Structures\TrackMania;
 
 
-use ManiaControl\Callbacks\Models\RecordCallback;
 use ManiaControl\Callbacks\Structures\Common\BasePlayerTimeStructure;
 use ManiaControl\ManiaControl;
 use ManiaControl\Utils\Formatter;
@@ -27,6 +26,7 @@ class OnWayPointEventStructure extends BasePlayerTimeStructure {
 	private $blockId;
 	private $speed;
 	private $distance;
+	private $lapNumber;
 
 	/**
 	 * OnWayPointEventStructure constructor.
@@ -42,36 +42,16 @@ class OnWayPointEventStructure extends BasePlayerTimeStructure {
 		$this->stuntsScore      = $this->getPlainJsonObject()->stuntsscore;
 		$this->checkPointInRace = (int) $this->getPlainJsonObject()->checkpointinrace;
 		$this->checkPointInLap  = (int) $this->getPlainJsonObject()->checkpointinlap;
-		$this->isEndRace        = $this->getPlainJsonObject()->isendrace;
-		$this->isEndLap         = $this->getPlainJsonObject()->isendlap;
+		$this->isEndRace        = Formatter::parseBoolean($this->getPlainJsonObject()->isendrace);
+		$this->isEndLap         = Formatter::parseBoolean($this->getPlainJsonObject()->isendlap);
 		$this->blockId          = $this->getPlainJsonObject()->blockid;
 		$this->speed            = $this->getPlainJsonObject()->speed;
 		$this->distance         = $this->getPlainJsonObject()->distance;
 
-		// Build callback //TODO remove the old lagacy stuff and update the uses to the new Structure
-		$wayPointCallback              = new RecordCallback();
-		$wayPointCallback->rawCallback = $data;
-		$wayPointCallback->setPlayer($this->getPlayer());
-		$wayPointCallback->blockId       = $this->blockId;
-		$wayPointCallback->time          = $this->raceTime;
-		$wayPointCallback->checkpoint    = $this->checkPointInRace;
-		$wayPointCallback->isEndRace     = Formatter::parseBoolean($this->isEndRace);
-		$wayPointCallback->lapTime       = $this->lapTime;
-		$wayPointCallback->lapCheckpoint = $this->checkPointInLap;
-		$wayPointCallback->lap           = 0;
-		$wayPointCallback->isEndLap      = Formatter::parseBoolean($this->isEndLap);
-		if ($wayPointCallback->checkpoint > 0) {
-			$currentMap            = $this->maniaControl->getMapManager()->getCurrentMap();
-			$wayPointCallback->lap += $wayPointCallback->checkpoint / $currentMap->nbCheckpoints;
+		if ($this->checkPointInRace > 0) {
+			$currentMap      = $this->maniaControl->getMapManager()->getCurrentMap();
+			$this->lapNumber = intval($this->checkPointInRace / $currentMap->nbCheckpoints);
 		}
-		if ($wayPointCallback->isEndRace) {
-			$wayPointCallback->name = $wayPointCallback::FINISH;
-		} else if ($wayPointCallback->isEndLap) {
-			$wayPointCallback->name = $wayPointCallback::LAPFINISH;
-		} else {
-			$wayPointCallback->name = $wayPointCallback::CHECKPOINT;
-		}
-		$this->maniaControl->getCallbackManager()->triggerCallback($wayPointCallback);
 	}
 
 	/**
@@ -152,6 +132,15 @@ class OnWayPointEventStructure extends BasePlayerTimeStructure {
 	 */
 	public function getDistance() {
 		return $this->distance;
+	}
+
+	/**
+	 * Gets the Current Lap Number
+	 *
+	 * @return float|int
+	 */
+	public function getLapNumber() {
+		return $this->lapNumber;
 	}
 
 }

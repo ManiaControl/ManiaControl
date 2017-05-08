@@ -1,6 +1,5 @@
 <?php
 
-// 22-3-2017 Added/Fixed TM Callback for WayPoint // Need to Add better checks eventually
 namespace ManiaControl\Callbacks;
 
 /**
@@ -148,189 +147,14 @@ interface Callbacks {
 	const TM_UIPROPERTIES      = 'Trackmania.UI.Properties';
 	const TM_POINTSREPARTITION = 'Trackmania.PointsRepartition';
 
+	//ManiaControl Specific TM Callbacks
+	const TM_ONFINISHLINE = "ManiaControl.Trackmania.Event.OnFinishLine";
+	const TM_ONLAPFINISH  = "ManiaControl.Trackmania.Event.OnLapFinish";
+
 	//ManiaControl Callbacks
 	/** BeginMap Callback: Map */
 	const BEGINMAP = 'Callbacks.BeginMap';
 	/** EndMap Callback: Map*/
 	const ENDMAP = 'Callbacks.EndMap';
-
-	//OLD Callbacks
-	/** BeginMatch Callback: MatchNumber
-	 *
-	 * @deprecated
-	 */
-	const BEGINMATCH = 'Callbacks.BeginMatch';
-	/** LoadingMap Callback: MapNumber
-	 *
-	 * @deprecated
-	 */
-	const LOADINGMAP = 'Callbacks.LoadingMap';
-
-	/** BeginSubMatch Callback: SubmatchNumber
-	 *
-	 * @deprecated
-	 */
-	const BEGINSUBMATCH = 'Callbacks.BeginSubmatch';
-	/** BeginRound Callback: RoundNumber
-	 *
-	 * @deprecated
-	 */
-	const BEGINROUND = 'Callbacks.BeginRound';
-	/** BeginTurn Callback: TurnNumber
-	 *
-	 * @deprecated
-	 */
-	const BEGINTURN = 'Callbacks.BeginTurn';
-	/** BeginTurnStop Callback: TurnNumber
-	 *
-	 * @deprecated
-	 */
-	const BEGINTURNSTOP = 'Callbacks.BeginTurnStop';
-	/** BeginPlaying Callback
-	 *
-	 * @deprecated
-	 */
-	const BEGINPLAYING = 'Callbacks.BeginPlaying';
-	/** EndPlaying Callback
-	 *
-	 * @deprecated
-	 */
-	const ENDPLAYING = 'Callbacks.EndPlaying';
-	/** EndTurn Callback: TurnNumber
-	 *
-	 * @deprecated
-	 */
-	const ENDTURN = 'Callbacks.EndTurn';
-	/** EndTurnStop Callback: TurnNumber
-	 *
-	 * @deprecated
-	 */
-	const ENDTURNSTOP = 'Callbacks.EndTurnStop';
-	/** EndRound Callback: RoundNumber
-	 *
-	 * @deprecated
-	 */
-	const ENDROUND = 'Callbacks.EndRound';
-	/** EndRound Callback: RoundNumber
-	 *
-	 * @deprecated
-	 */
-	const ENDROUNDSTOP = 'Callbacks.EndRoundStop';
-	/** EndSubmatch Callback: SubmatchNumber
-	 *
-	 * @deprecated
-	 */
-	const ENDSUBMATCH = 'Callbacks.EndSubmatch';
-
-	/** BeginPodium Callback
-	 *
-	 * @deprecated
-	 */
-	const BEGINPODIUM = 'Callbacks.BeginPodium';
-	/** EndPodium Callback
-	 *
-	 * @deprecated
-	 */
-	const ENDPODIUM = 'Callbacks.EndPodium';
-	/** UnloadingMap Callback
-	 *
-	 * @deprecated
-	 */
-	const UNLOADINGMAP = 'Callbacks.UnloadingMap';
-	/** EndMatch Callback: MatchNumber
-	 *
-	 * @deprecated
-	 */
-	const ENDMATCH = 'Callbacks.EndMatch';
-
-	/** BeginWarmup Callback
-	 *
-	 * @deprecated
-	 */
-	const BEGINWARMUP = 'Callbacks.BeginWarmUp';
-	/** EndWarmup Callback
-	 *
-	 * @deprecated
-	 */
-	const ENDWARMUP = 'Callbacks.EndWarmUp';
-
-	/** Scores Callback (returned after LibXmlRpc_PlayerRanking): Scores
-	 *
-	 * @deprecated
-	 */
-	const SCORESREADY = 'Callbacks.ScoresReady';
-
-	/** Scores Callback (returned after LibXmlRpc_PlayerRanking in SM, or LibXmlRpc_TeamsScores in Trackmania): Scores
-	 *
-	 * @deprecated
-	 */
-	const SCORES = 'Callbacks.Scores';
-
-	/** Rankings Callback
-	 *
-	 * @deprecated
-	 */
-	const RANKINGS = 'Callbacks.Rankings';
-
-	/** PlayerRanking Callback, returned after LibXmlRpc_PlayerRanking
-	 * try to avoid to use this, just use the Get function of the RankingsManager instead
-	 * param1 Player $player
-	 * param2 int $rank
-	 * param3 int $currentPoints
-	 * param4 int AFKStatus
-	 *
-	 * @deprecated
-	 */
-	const PLAYERRANKING = 'Callbacks.PlayerRanking';
-
-	/*
-	 * ShootMania Callbacks
-	 */
-	/** RankingsUpdated Callback: SortedRankings
-	 *
-	 * @deprecated
-	 */
-	const RANKINGSUPDATED = 'Callbacks.RankingsUpdated';
-
-	/** Returns the AFKStatus of an Player, returned after  param1 Scores
-	 *
-	 * @deprecated
-	 */
-	const AFKSTATUS = 'Callbacks.AfkStatus';
-
-	/** OnPlayerRequestRespawn Callback: Player
-	 *
-	 * @deprecated
-	 */
-	const ONPLAYERREQUESTRESPAWN = 'Callbacks.OnPlayerRequestRespawn';
-
-	/*
-	 * TrackMania Callbacks
-	 */
-	/** OnStartLine Callback
-	 *
-	 * @deprecated
-	 */
-	const ONSTARTLINE = 'Callbacks.StartLine';
-	/** OnWayPoint Callback
-	 *
-	 * @deprecated
-	 */
-	const ONWAYPOINT = 'Callbacks.WayPoint';
-	/** OnGiveUp Callback
-	 *
-	 * @deprecated
-	 */
-	const ONGIVEUP = 'Callbacks.GiveUp';
-	/** OnRespawn Callback
-	 *
-	 * @deprecated
-	 */
-	const ONRESPAWN = 'Callbacks.Respawn';
-	/** OnStunt Callback
-	 *
-	 * @deprecated
-	 */
-	const ONSTUNT = 'Callbacks.Stunt';
 
 }

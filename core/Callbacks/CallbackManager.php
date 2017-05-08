@@ -2,7 +2,6 @@
 
 namespace ManiaControl\Callbacks;
 
-use ManiaControl\Callbacks\Models\BaseCallback;
 use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
@@ -16,7 +15,7 @@ use ManiaControl\ManiaControl;
  */
 class CallbackManager implements UsageInformationAble {
 	use UsageInformationTrait;
-	
+
 	/*
 	 * Constants
 	 */
@@ -276,22 +275,16 @@ class CallbackManager implements UsageInformationAble {
 	/**
 	 * Trigger a specific Callback
 	 *
-	 * @param mixed $callback
+	 * @param mixed $callbackName
 	 */
-	public function triggerCallback($callback) {
-		if ($callback instanceof BaseCallback) {
-			$callbackName = $callback->name;
-		} else {
-			$callbackName = $callback;
-		}
+	public function triggerCallback($callbackName) {
+
 		if (!$this->callbackListeningExists($callbackName)) {
 			return;
 		}
 
 		$params = func_get_args();
-		if (!($callback instanceof BaseCallback)) {
-			$params = array_slice($params, 1, null, true);
-		}
+		$params = array_slice($params, 1, null, true);
 
 		foreach ($this->callbackListenings[$callbackName] as $listening) {
 			/** @var Listening $listening */

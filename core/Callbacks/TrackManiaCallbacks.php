@@ -2,7 +2,6 @@
 
 namespace ManiaControl\Callbacks;
 
-use ManiaControl\Callbacks\Models\RecordCallback;
 use ManiaControl\Callbacks\Structures\Common\BasePlayerTimeStructure;
 use ManiaControl\Callbacks\Structures\Common\UIPropertiesBaseStructure;
 use ManiaControl\Callbacks\Structures\TrackMania\OnCommandStructure;
@@ -15,7 +14,6 @@ use ManiaControl\Callbacks\Structures\TrackMania\OnStuntEventStructure;
 use ManiaControl\Callbacks\Structures\TrackMania\OnWarmupStartEndRoundStructure;
 use ManiaControl\Callbacks\Structures\TrackMania\OnWayPointEventStructure;
 use ManiaControl\ManiaControl;
-use ManiaControl\Utils\Formatter;
 
 /**
  * Class handling and parsing TrackMania Callbacks
@@ -75,7 +73,9 @@ class TrackManiaCallbacks implements CallbackListener {
 				$this->maniaControl->getCallbackManager()->triggerCallback($name, new BasePlayerTimeStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::TM_ONWAYPOINT:
-				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnWayPointEventStructure($this->maniaControl, $data));
+				$this->handleWayPointCallback(new OnWayPointEventStructure($this->maniaControl, $data));
+
+				//$this->maniaControl->getCallbackManager()->triggerCallback($name, $wayPointStructure);
 				break;
 			case Callbacks::TM_ONRESPAWN:
 				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnRespawnStructure($this->maniaControl, $data));
@@ -100,106 +100,18 @@ class TrackManiaCallbacks implements CallbackListener {
 		}
 	}
 
-
 	/**
-	 * Handle OnWayPoint Callback
+	 * Trigger the three different Types of Callbacks
 	 *
-	 * @param array $callback
+	 * @param \ManiaControl\Callbacks\Structures\TrackMania\OnWayPointEventStructure $structure
 	 */
-	public function handleOnWayPointCallback(array $callback) {
-		$login  = $callback[0];
-		$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
-		if (!$player) {
-			return;
-		}
-
-		// Build callback
-		$wayPointCallback              = new RecordCallback();
-		$wayPointCallback->rawCallback = $callback;
-		$wayPointCallback->setPlayer($player);
-		$wayPointCallback->blockId       = $callback[1];
-		$wayPointCallback->time          = (int) $callback[2];
-		$wayPointCallback->checkpoint    = (int) $callback[3];
-		$wayPointCallback->isEndRace     = Formatter::parseBoolean($callback[4]);
-		$wayPointCallback->lapTime       = (int) $callback[5];
-		$wayPointCallback->lapCheckpoint = (int) $callback[6];
-		$wayPointCallback->lap           = 0;
-		$wayPointCallback->isEndLap      = Formatter::parseBoolean($callback[7]);
-
-		if ($wayPointCallback->checkpoint > 0) {
-			$currentMap            = $this->maniaControl->getMapManager()->getCurrentMap();
-			$wayPointCallback->lap += $wayPointCallback->checkpoint / $currentMap->nbCheckpoints;
-		}
-
-		if ($wayPointCallback->isEndRace) {
-			$wayPointCallback->name = $wayPointCallback::FINISH;
-		} else if ($wayPointCallback->isEndLap) {
-			$wayPointCallback->name = $wayPointCallback::LAPFINISH;
+	private function handleWayPointCallback(OnWayPointEventStructure $structure) {
+		if ($structure->getIsEndRace()) {
+			$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::TM_ONFINISHLINE, $structure);
+		} else if ($structure->getIsEndLap()) {
+			$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::TM_ONLAPFINISH, $structure);
 		} else {
-			$wayPointCallback->name = $wayPointCallback::CHECKPOINT;
+			$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::TM_ONWAYPOINT, $structure);
 		}
-
-		$this->maniaControl->getCallbackManager()->triggerCallback($wayPointCallback);
-	}
-
-	/**
-	 * Handle Hard-Coded Player Checkpoint Callback
-	 *
-	 * @param array $callback
-	 */
-	public function handlePlayerCheckpointCallback(array $callback) {
-		$data   = $callback[1];
-		$login  = $data[1];
-		$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
-		if (!$player) {
-			return;
-		}
-
-		// Build checkpoint callback
-		$checkpointCallback                   = new RecordCallback();
-		$checkpointCallback->isLegacyCallback = true;
-		$checkpointCallback->rawCallback      = $callback;
-		$checkpointCallback->setPlayer($player);
-		$checkpointCallback->time          = (int) $data[2];
-		$checkpointCallback->lap           = (int) $data[3];
-		$checkpointCallback->checkpoint    = (int) $data[4];
-		$checkpointCallback->lapCheckpoint = $checkpointCallback->checkpoint;
-
-		if ($checkpointCallback->lap > 0) {
-			$currentMap                        = $this->maniaControl->getMapManager()->getCurrentMap();
-			$checkpointCallback->lapCheckpoint -= $checkpointCallback->lap * $currentMap->nbCheckpoints;
-		}
-
-		if ($checkpointCallback->lapCheckpoint === 0) {
-			$checkpointCallback->name = $checkpointCallback::LAPFINISH;
-		} else {
-			$checkpointCallback->name = $checkpointCallback::CHECKPOINT;
-		}
-
-		$this->maniaControl->getCallbackManager()->triggerCallback($checkpointCallback);
-	}
-
-	/**
-	 * Handle Hard-Coded Player Finish Callback
-	 *
-	 * @param array $callback
-	 */
-	public function handlePlayerFinishCallback(array $callback) {
-		$data   = $callback[1];
-		$login  = $data[1];
-		$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
-		if (!$player) {
-			return;
-		}
-
-		// Build finish callback
-		$finishCallback                   = new RecordCallback();
-		$finishCallback->name             = $finishCallback::FINISH;
-		$finishCallback->isLegacyCallback = true;
-		$finishCallback->rawCallback      = $callback;
-		$finishCallback->setPlayer($player);
-		$finishCallback->time = (int) $data[2];
-
-		$this->maniaControl->getCallbackManager()->triggerCallback($finishCallback);
 	}
 }
