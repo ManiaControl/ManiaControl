@@ -17,6 +17,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
+use ManiaControl\Manialinks\LabelLine;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
@@ -490,8 +491,14 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$headFrame = new Frame();
 		$frame->addChild($headFrame);
 		$headFrame->setY($posY - 5);
-		$array = array('$oId' => $posX + 5, '$oNickname' => $posX + 18, '$oLogin' => $posX + 70, '$oDonated planets' => $posX + 110);
-		$this->maniaControl->getManialinkManager()->labelLine($headFrame, $array);
+
+		$labelLine = new LabelLine($headFrame);
+		$labelLine->setPrefix('$o');
+		$labelLine->addLabelEntryText('Id',$posX + 5);
+		$labelLine->addLabelEntryText('Nickname', $posX + 18);
+		$labelLine->addLabelEntryText('Login',$posX + 70);
+		$labelLine->addLabelEntryText('Donated planets', $posX + 110);
+		$labelLine->render();
 
 		$index     = 1;
 		$posY      = $posY - 10;
@@ -502,7 +509,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 				$pageFrame = new Frame();
 				$frame->addChild($pageFrame);
 				$posY = $height / 2 - 10;
-				$paging->addPage($pageFrame);
+				$paging->addPageControl($pageFrame);
 			}
 
 			$playerFrame = new Frame();
@@ -514,14 +521,17 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 				$playerFrame->addChild($lineQuad);
 				$lineQuad->setSize($width, 4);
 				$lineQuad->setSubStyle($lineQuad::SUBSTYLE_BgPlayerCardBig);
-				$lineQuad->setZ(0.001);
+				$lineQuad->setZ(-0.001);
 			}
 
 			$donatingPlayer = $this->maniaControl->getPlayerManager()->getPlayerByIndex($playerIndex);
 
-			$positions = array($posX + 5, $posX + 18, $posX + 70, $posX + 110);
-			$texts     = array($index, $donatingPlayer->nickname, $donatingPlayer->login, $donations);
-			$this->maniaControl->getManialinkManager()->labelLine($playerFrame, array($positions, $texts));
+			$labelLine = new LabelLine($playerFrame);
+			$labelLine->addLabelEntryText($index, $posX + 5, 13);
+			$labelLine->addLabelEntryText($donatingPlayer->nickname,$posX + 18, 52);
+			$labelLine->addLabelEntryText($donatingPlayer->login,$posX + 70, 40);
+			$labelLine->addLabelEntryText($donations,$posX + 110, $width / 2 - ($posX + 110));
+			$labelLine->render();
 
 			$posY -= 4;
 			$index++;
