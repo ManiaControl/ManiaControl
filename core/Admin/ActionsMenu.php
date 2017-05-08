@@ -62,7 +62,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 		// Settings
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MENU_POSX, 156.);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MENU_POSY_SHOOTMANIA, -37.);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MENU_POSY_TRACKMANIA, -17.);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MENU_POSY_TRACKMANIA, 17.);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MENU_ITEMSIZE, 6.);
 
 		// Callbacks
