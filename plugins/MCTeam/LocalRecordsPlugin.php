@@ -17,6 +17,7 @@ use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
+use ManiaControl\Manialinks\LabelLine;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Maps\Map;
 use ManiaControl\Players\Player;
@@ -570,8 +571,13 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$headFrame = new Frame();
 		$frame->addChild($headFrame);
 		$headFrame->setY($posY - 5);
-		$array = array('Rank' => $posX + 5, 'Nickname' => $posX + 18, 'Login' => $posX + 70, 'Time' => $posX + 101);
-		$this->maniaControl->getManialinkManager()->labelLine($headFrame, $array);
+
+		$labelLine = new LabelLine($headFrame);
+		$labelLine->addLabelEntryText('Rank',$posX + 5);
+		$labelLine->addLabelEntryText('Nickname',$posX + 18);
+		$labelLine->addLabelEntryText('Login',$posX + 70);
+		$labelLine->addLabelEntryText('Time', $posX + 101);
+		$labelLine->render();
 
 		$index     = 0;
 		$posY      = $height / 2 - 10;
@@ -588,19 +594,24 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 			$recordFrame = new Frame();
 			$pageFrame->addChild($recordFrame);
 
-			if ($index % 2 !== 0) {
+			if ($index % 2 === 0) {
 				$lineQuad = new Quad_BgsPlayerCard();
 				$recordFrame->addChild($lineQuad);
 				$lineQuad->setSize($width, 4);
 				$lineQuad->setSubStyle($lineQuad::SUBSTYLE_BgPlayerCardBig);
-				$lineQuad->setZ(0.001);
+				$lineQuad->setZ(-0.001);
 			}
 
 			if (strlen($listRecord->nickname) < 2) {
 				$listRecord->nickname = $listRecord->login;
 			}
-			$array = array($listRecord->rank => $posX + 5, '$fff' . $listRecord->nickname => $posX + 18, $listRecord->login => $posX + 70, Formatter::formatTime($listRecord->time) => $posX + 101);
-			$this->maniaControl->getManialinkManager()->labelLine($recordFrame, $array);
+
+			$labelLine = new LabelLine($recordFrame);
+			$labelLine->addLabelEntryText($listRecord->rank,$posX + 5, 13);
+			$labelLine->addLabelEntryText('$fff' . $listRecord->nickname,$posX + 18, 52);
+			$labelLine->addLabelEntryText($listRecord->login,$posX + 70,31);
+			$labelLine->addLabelEntryText(Formatter::formatTime($listRecord->time),$posX + 101, $width / 2 - ($posX + 110));
+			$labelLine->render();
 
 			$recordFrame->setY($posY);
 
