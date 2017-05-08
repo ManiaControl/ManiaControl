@@ -2,6 +2,8 @@
 
 namespace ManiaControl\Callbacks\Models;
 
+use ManiaControl\Players\Player;
+
 /**
  * Base Model Class for Callbacks
  *
@@ -22,9 +24,10 @@ class RecordCallback extends BaseCallback {
 	 * Public Properties
 	 */
 	public $time = null;
+	/** @var Player $player */
 	public $player = null;
 	public $racetime = null;
-	public $laptime = null;
+	public $lapTime = null;
 	public $stuntsscore = null;
 	public $checkpointinrace = null;
 	public $checkpointinlap = null;
