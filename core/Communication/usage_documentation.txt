@@ -24,8 +24,8 @@ Sample ManiaControl Implementation (for ManiaControl to ManiaControl connections
 
 	//Callee Side
 	$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::GET_SERVER_CHAT, $this, function ($data) {
-    	return new CommunicationAnswer($this->chatBuffer);
-    });
+   	   return new CommunicationAnswer($this->chatBuffer);
+  	});
 ##php code end
 
 Sample Web Implementation (to call ManiaControl from a website)
