@@ -14,11 +14,18 @@ Sample ManiaControl Implementation (for ManiaControl to ManiaControl connections
 
 ##php code begin
 	//This Sample shows just the Implementation of the Method GET_SERVER_CHAT
+
+	//Caller Side
 	$communication = $this->maniaControl->getCommunicationManager()->createCommunication(IP/Domain, PORT, 'YOUR_PASSWORD');
 	$communication->call(function($data){
 		//$data includes the data sent by the Website / other Controller
-	   return new CommunicationAnswer($this->chatBuffer);
+	   return new CommunicationAnswer($data); //send data back
 	}, CommunicationMethods::GET_SERVER_CHAT);
+
+	//Callee Side
+	$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::GET_SERVER_CHAT, $this, function ($data) {
+    	return new CommunicationAnswer($this->chatBuffer);
+    });
 ##php code end
 
 Sample Web Implementation (to call ManiaControl from a website)
