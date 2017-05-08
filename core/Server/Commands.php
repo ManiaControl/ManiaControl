@@ -9,6 +9,7 @@ use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\Structures\Common\StatusCallbackStructure;
+use ManiaControl\Callbacks\Structures\TrackMania\OnPointsRepartitionStructure;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\Logger;
@@ -28,17 +29,18 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 	/*
 	 * Constants
 	 */
-	const ACTION_SET_PAUSE                         = 'ServerCommands.SetPause';
-	const ACTION_EXTEND_WARMUP                     = 'ServerCommands.ExtendWarmup';
-	const ACTION_END_WARMUP                        = 'ServerCommands.EndWarmup';
-	const ACTION_CANCEL_VOTE                       = 'ServerCommands.CancelVote';
-	const CB_VOTE_CANCELLED                        = 'ServerCommands.VoteCancelled';
-	const SETTING_PERMISSION_CANCEL_VOTE           = 'Cancel Vote';
-	const SETTING_PERMISSION_SET_PAUSE             = 'Set Pause';
-	const SETTING_PERMISSION_HANDLE_WARMUP         = 'Handle Warmup';
-	const SETTING_PERMISSION_SHOW_SYSTEMINFO       = 'Show SystemInfo';
-	const SETTING_PERMISSION_SHUTDOWN_SERVER       = 'Shutdown Server';
-	const SETTING_PERMISSION_CHANGE_SERVERSETTINGS = 'Change ServerSettings';
+	const ACTION_SET_PAUSE                                = 'ServerCommands.SetPause';
+	const ACTION_EXTEND_WARMUP                            = 'ServerCommands.ExtendWarmup';
+	const ACTION_END_WARMUP                               = 'ServerCommands.EndWarmup';
+	const ACTION_CANCEL_VOTE                              = 'ServerCommands.CancelVote';
+	const CB_VOTE_CANCELLED                               = 'ServerCommands.VoteCancelled';
+	const SETTING_PERMISSION_CANCEL_VOTE                  = 'Cancel Vote';
+	const SETTING_PERMISSION_SET_PAUSE                    = 'Set Pause';
+	const SETTING_PERMISSION_HANDLE_WARMUP                = 'Handle Warmup';
+	const SETTING_PERMISSION_SHOW_SYSTEMINFO              = 'Show SystemInfo';
+	const SETTING_PERMISSION_SHUTDOWN_SERVER              = 'Shutdown Server';
+	const SETTING_PERMISSION_CHANGE_SERVERSETTINGS        = 'Change ServerSettings';
+	const SETTING_PERMISSION_TM_HANDLE_POINTS_REPARTITION = 'Handle Points Repartion Settings';
 
 	/*
 	 * Private properties
@@ -95,6 +97,13 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 
 		$this->updateCancelVoteMenuItem();
 		$this->updateWarmUpMenuItems();
+
+		if ($this->maniaControl->getMapManager()->getCurrentMap()->getGame() === 'tm') {
+			$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_TM_HANDLE_POINTS_REPARTITION, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
+
+			$this->maniaControl->getCommandManager()->registerCommandListener('setpointsrepartition', $this, 'commandSetPointsRepartition', true, 'Gets the Rounds Point Repartition.');
+			$this->maniaControl->getCommandManager()->registerCommandListener('getpointsrepartition', $this, 'commandGetPointsRepartition', true, 'Sets the Rounds Point Repartition.');
+		}
 	}
 
 	/**
@@ -120,6 +129,7 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 		}
 
 	}
+
 
 	/**
 	 * Handle the WarmupStatus Callback, and removes or adds the Menu Items for extending / Stopping warmup
@@ -444,5 +454,55 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 
 		$this->maniaControl->getClient()->setMaxSpectators($amount);
 		$this->maniaControl->getChat()->sendSuccess("Changed max spectators to: {$amount}", $player);
+	}
+
+	/**
+	 * Handle //setpointsrepartition command
+	 *
+	 * @param array                        $chatCallback
+	 * @param \ManiaControl\Players\Player $player
+	 */
+	public function commandSetPointsRepartition(array $chatCallback, Player $player) {
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_TM_HANDLE_POINTS_REPARTITION)) {
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
+			return;
+		}
+
+		// Check for delayed shutdown
+		$params = explode(' ', $chatCallback[1][2]);
+		if (count($params) >= 1) {
+			$pointString = $params[1];
+			$pointArray  = explode(',', $pointString);
+			$this->maniaControl->getModeScriptEventManager()->setTrackmaniaPointsRepartition($pointArray);
+			$this->maniaControl->getChat()->sendInformation('Points Repartition Changed!');
+			$this->commandGetPointsRepartition($chatCallback, $player);
+		} else {
+			$this->maniaControl->getChat()->sendError('You must provide a point Repartition in the following form: 10,8,6,4,3 !');
+		}
+
+	}
+
+	/**
+	 * Handle //getpointsrepartition command
+	 *
+	 * @param array                        $chatCallback
+	 * @param \ManiaControl\Players\Player $player
+	 */
+	public function commandGetPointsRepartition(array $chatCallback, Player $player) {
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_TM_HANDLE_POINTS_REPARTITION)) {
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
+			return;
+		}
+
+		$this->maniaControl->getModeScriptEventManager()->getTrackmaniaPointsRepartition()->setCallable(function (OnPointsRepartitionStructure $structure) {
+			$pointRepartitionString = "";
+			foreach ($structure->getPointsRepartition() as $points) {
+				$pointRepartitionString .= $points . ',';
+			}
+			$pointRepartitionString = substr($pointRepartitionString, 0, -1);
+
+			$this->maniaControl->getChat()->sendInformation('Current Points Repartition: ' . $pointRepartitionString);
+		});
+
 	}
 }

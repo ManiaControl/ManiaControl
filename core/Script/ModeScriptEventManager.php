@@ -468,7 +468,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 * @param array String Array of Points
 	 */
 	public function setTrackmaniaPointsRepartition($pointArray) {
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Trackmania.GetPointsRepartition', array($pointArray));
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Trackmania.SetPointsRepartition', $pointArray);
 	}
 
 	/**
