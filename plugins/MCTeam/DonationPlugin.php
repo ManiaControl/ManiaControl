@@ -118,7 +118,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$this->maniaControl->getStatisticManager()->defineStatMetaData(self::STAT_PLAYER_DONATIONS);
 
 		$actionsPosX = $this->maniaControl->getSettingManager()->getSettingValue($this->maniaControl->getActionsMenu(), ActionsMenu::SETTING_MENU_POSX);
-		$actionsPosY = $this->maniaControl->getSettingManager()->getSettingValue($this->maniaControl->getActionsMenu(), ActionsMenu::SETTING_MENU_POSY);
+		$actionsPosY = $this->maniaControl->getActionsMenu()->getActionsMenuY();
 		$iconSize    = $this->maniaControl->getSettingManager()->getSettingValue($this->maniaControl->getActionsMenu(), ActionsMenu::SETTING_MENU_ITEMSIZE);
 
 		$itemMarginFactorY = 1.2;
@@ -159,16 +159,11 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$width             = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_DONATE_WIDGET_WIDTH);
 		$height            = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_DONATE_WIDGET_HEIGHT);
 		$values            = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_DONATION_VALUES);
-		$shootManiaOffset  = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultIconOffsetSM();
 		$quadStyle         = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadStyle();
 		$quadSubstyle      = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadSubstyle();
 		$itemMarginFactorX = 1.3;
 		$itemMarginFactorY = 1.2;
 
-		//If game is shootmania lower the icons position by 20
-		if ($this->maniaControl->getMapManager()->getCurrentMap()->getGame() === 'sm') {
-			$posY -= $shootManiaOffset;
-		}
 
 		$itemSize = $width;
 

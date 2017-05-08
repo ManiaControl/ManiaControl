@@ -34,12 +34,13 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 	/*
 	 * Constants
 	 */
-	const MLID_MENU               = 'ActionsMenu.MLID';
-	const SETTING_MENU_POSX       = 'Menu Position: X';
-	const SETTING_MENU_POSY       = 'Menu Position: Y';
-	const SETTING_MENU_ITEMSIZE   = 'Menu Item Size';
-	const ACTION_OPEN_ADMIN_MENU  = 'ActionsMenu.OpenAdminMenu';
-	const ACTION_OPEN_PLAYER_MENU = 'ActionsMenu.OpenPlayerMenu';
+	const MLID_MENU                    = 'ActionsMenu.MLID';
+	const SETTING_MENU_POSX            = 'Menu Position: X';
+	const SETTING_MENU_POSY_SHOOTMANIA = 'Shootmania Menu Position: Y';
+	const SETTING_MENU_POSY_TRACKMANIA = 'Trackmania Menu Position: Y';
+	const SETTING_MENU_ITEMSIZE        = 'Menu Item Size';
+	const ACTION_OPEN_ADMIN_MENU       = 'ActionsMenu.OpenAdminMenu';
+	const ACTION_OPEN_PLAYER_MENU      = 'ActionsMenu.OpenPlayerMenu';
 
 	/*
 	 * Private properties
@@ -60,7 +61,8 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 
 		// Settings
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MENU_POSX, 156.);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MENU_POSY, -17.);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MENU_POSY_SHOOTMANIA, -37.);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MENU_POSY_TRACKMANIA, -17.);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MENU_ITEMSIZE, 6.);
 
 		// Callbacks
@@ -129,21 +131,16 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 	 */
 	private function buildMenuIconsManialink(Player $player) {
 		$posX              = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MENU_POSX);
-		$posY              = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MENU_POSY);
 		$itemSize          = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MENU_ITEMSIZE);
-		$shootManiaOffset  = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultIconOffsetSM();
 		$quadStyle         = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadStyle();
 		$quadSubstyle      = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadSubstyle();
 		$itemMarginFactorX = 1.3;
 		$itemMarginFactorY = 1.2;
 
-		// If game is shootmania lower the icons position by 20
-		if ($this->maniaControl->getMapManager()->getCurrentMap()->getGame() === 'sm') {
-			$posY -= $shootManiaOffset;
-		}
+		$posY = $this->getActionsMenuY();
 
 		$maniaLink = new ManiaLink(self::MLID_MENU);
-		$frame = new Frame();
+		$frame     = new Frame();
 		$maniaLink->addChild($frame);
 		$frame->setZ(ManialinkManager::MAIN_MANIALINK_Z_VALUE);
 
@@ -345,5 +342,19 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 		}
 
 		$this->rebuildAndShowMenu();
+	}
+
+	/**
+	 * Get the Y value of the Actionsmenu (dependent on game)
+	 *
+	 * @return mixed
+	 */
+	public function getActionsMenuY() {
+		if ($this->maniaControl->getMapManager()->getCurrentMap()->getGame() === 'sm') {
+			$posY = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MENU_POSY_SHOOTMANIA);
+		} else {
+			$posY = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MENU_POSY_TRACKMANIA);
+		}
+		return $posY;
 	}
 }

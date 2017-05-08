@@ -41,7 +41,6 @@ class StyleManager implements UsageInformationAble {
 	const SETTING_LIST_WIDGETS_WIDTH           = 'List Widgets Width';
 	const SETTING_LIST_WIDGETS_HEIGHT          = 'List Widgets Height';
 
-	const SETTING_ICON_DEFAULT_OFFSET_SM = 'Default Icon Offset in ShootMania';
 
 	/*
 	 * Private properties
@@ -67,16 +66,6 @@ class StyleManager implements UsageInformationAble {
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAIN_WIDGET_DEFAULT_SUBSTYLE, Quad_BgRaceScore2::SUBSTYLE_HandleSelectable);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_LIST_WIDGETS_WIDTH, 150.);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_LIST_WIDGETS_HEIGHT, 80.);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_ICON_DEFAULT_OFFSET_SM, 20.);
-	}
-
-	/**
-	 * Get the default Icon Offset for shootmania
-	 *
-	 * @return float
-	 */
-	public function getDefaultIconOffsetSM() {
-		return $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_ICON_DEFAULT_OFFSET_SM);
 	}
 
 	/**

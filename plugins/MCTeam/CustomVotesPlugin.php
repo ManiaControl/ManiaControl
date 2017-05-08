@@ -154,11 +154,11 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(SettingManager::CB_SETTING_CHANGED, $this, 'handleSettingChanged');
 
 		$actionsPosX = $this->maniaControl->getSettingManager()->getSettingValue($this->maniaControl->getActionsMenu(), ActionsMenu::SETTING_MENU_POSX);
-		$actionsPosY = $this->maniaControl->getSettingManager()->getSettingValue($this->maniaControl->getActionsMenu(), ActionsMenu::SETTING_MENU_POSY);
+		$actionsPosY = $this->maniaControl->getActionsMenu()->getActionsMenuY();
 		$iconSize    = $this->maniaControl->getSettingManager()->getSettingValue($this->maniaControl->getActionsMenu(), ActionsMenu::SETTING_MENU_ITEMSIZE);
 
 		$itemMarginFactorY = 1.2;
-		$posY = $actionsPosY - 2 * ($iconSize * $itemMarginFactorY);
+		$posY              = $actionsPosY - 2 * ($iconSize * $itemMarginFactorY);
 
 		// Settings
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_VOTE_ICON_POSX, $actionsPosX);
@@ -286,16 +286,10 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$posY              = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_VOTE_ICON_POSY);
 		$width             = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_VOTE_ICON_WIDTH);
 		$height            = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_VOTE_ICON_HEIGHT);
-		$shootManiaOffset  = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultIconOffsetSM();
 		$quadStyle         = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadStyle();
 		$quadSubstyle      = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadSubstyle();
 		$itemMarginFactorX = 1.3;
 		$itemMarginFactorY = 1.2;
-
-		//If game is shootmania lower the icons position by 20
-		if ($this->maniaControl->getMapManager()->getCurrentMap()->getGame() === 'sm') {
-			$posY -= $shootManiaOffset;
-		}
 
 		$itemSize = $width;
 

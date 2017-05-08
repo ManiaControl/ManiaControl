@@ -151,13 +151,13 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 					$installButton = new Label_Button();
 					$pluginFrame->addChild($installButton);
 					$installButton->setHorizontalAlign($installButton::RIGHT)->setX($width * 0.47)->setStyle($installButton::STYLE_CardButtonSmall)->setText('Install')->setTranslate(true)->setAction(self::ACTION_PREFIX_INSTALL_PLUGIN . $plugin->id);
-				}
 
-				if ($plugin->currentVersion->verified > 0) {
-					// Suggested quad
-					$suggestedQuad = new Quad_Icons64x64_1();
-					$pluginFrame->addChild($suggestedQuad);
-					$suggestedQuad->setPosition($width * 0.45, $entryHeight * 0.12, 2)->setSize(4, 4)->setSubStyle($suggestedQuad::SUBSTYLE_StateSuggested);
+					if ($plugin->currentVersion->verified > 0) {
+						// Suggested quad
+						$suggestedQuad = new Quad_Icons64x64_1();
+						$pluginFrame->addChild($suggestedQuad);
+						$suggestedQuad->setPosition($width * 0.45, $entryHeight * 0.12, 2)->setSize(4, 4)->setSubStyle($suggestedQuad::SUBSTYLE_StateSuggested);
+					}
 				}
 
 				$posY -= $entryHeight;
