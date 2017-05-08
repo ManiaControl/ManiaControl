@@ -479,8 +479,8 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 */
 	public function getTrackmaniaUIProperties() {
 		$responseId = $this->generateResponseId();
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Trackmania.UI.SetProperties', array($responseId));
-		return new InvokeScriptCallback($this->maniaControl, Callbacks::TM_SCORES, $responseId);
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Trackmania.UI.GetProperties', array($responseId));
+		return new InvokeScriptCallback($this->maniaControl, Callbacks::TM_UIPROPERTIES, $responseId);
 	}
 
 	/**
@@ -491,7 +491,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 * @return \ManiaControl\Script\InvokeScriptCallback You can directly set a callable on it via setCallable() to get the updated Properties
 	 */
 	public function setTrackmaniaUIProperties($properties) {
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Trackmania.UI.GetProperties', array($properties));
+		$this->maniaControl->getClient()->triggerModeScriptEvent('Trackmania.UI.SetProperties', array($properties));
 		return $this->getTrackmaniaUIProperties();
 	}
 

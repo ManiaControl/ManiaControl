@@ -11,6 +11,7 @@ use FML\ManiaLink;
 use FML\Script\Script;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\Callbacks;
+use ManiaControl\Callbacks\Structures\Common\UIPropertiesBaseStructure;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\IconManager;
@@ -123,9 +124,6 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	public function load(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		// Set CustomUI Setting
-		$this->maniaControl->getManialinkManager()->getCustomUIManager()->setChallengeInfoVisible(false);
-
 		// Callbacks
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::BEGINMAP, $this, 'handleOnBeginMap');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::ENDMAP, $this, 'handleOnEndMap');
@@ -160,6 +158,16 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_CLOCK_WIDGET_HEIGHT, 5.5);
 
 		$this->displayWidgets();
+
+
+		// Set CustomUI Setting
+		$this->maniaControl->getManialinkManager()->getCustomUIManager()->setChallengeInfoVisible(false);
+
+		//TrackMania
+		$this->maniaControl->getModeScriptEventManager()->getTrackmaniaUIProperties()->setCallable(function (UIPropertiesBaseStructure $structure) {
+			$xml = str_replace("<map_info visible=\"true\"", "<map_info visible=\"false\"", $structure->getUiPropertiesXML());
+			$this->maniaControl->getModeScriptEventManager()->setTrackmaniaUIProperties($xml);
+		});
 
 		return true;
 	}
@@ -382,6 +390,15 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$this->closeWidget(self::MLID_SERVERINFO_WIDGET);
 		$this->closeWidget(self::MLID_MAP_WIDGET);
 		$this->closeWidget(self::MLID_NEXTMAP_WIDGET);
+
+		// Set CustomUI Setting
+		$this->maniaControl->getManialinkManager()->getCustomUIManager()->setChallengeInfoVisible(true);
+
+		//TrackMania
+		$this->maniaControl->getModeScriptEventManager()->getTrackmaniaUIProperties()->setCallable(function (UIPropertiesBaseStructure $structure) {
+			$xml = str_replace("<map_info visible=\"false\"", "<map_info visible=\"true\"", $structure->getUiPropertiesXML());
+			$this->maniaControl->getModeScriptEventManager()->setTrackmaniaUIProperties($xml);
+		});
 	}
 
 	/**
