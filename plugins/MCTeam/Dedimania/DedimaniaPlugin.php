@@ -306,7 +306,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			$data = $this->decode($data);
 
 			//Data[0][0] can be false in error case like map has no checkpoints
-			if (!is_array($data) || empty($data) || $data[0][0] == false) {
+			if (!is_array($data) || empty($data) || !isset($data[0]) || !isset($data[0][0]) || $data[0][0] == false) {
 				return;
 			}
 

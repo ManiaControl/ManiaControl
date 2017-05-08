@@ -474,10 +474,10 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 			$pointString = $params[1];
 			$pointArray  = explode(',', $pointString);
 			$this->maniaControl->getModeScriptEventManager()->setTrackmaniaPointsRepartition($pointArray);
-			$this->maniaControl->getChat()->sendInformation('Points Repartition Changed!', $player);
+			$this->maniaControl->getChat()->sendInformation('Points Distribution Changed!', $player);
 			$this->commandGetPointsRepartition($chatCallback, $player);
 		} else {
-			$this->maniaControl->getChat()->sendError('You must provide a point Repartition in the following form: 10,8,6,4,3 !', $player);
+			$this->maniaControl->getChat()->sendError('You must provide a point Distribution in the following form: 10,8,6,4,3 !', $player);
 		}
 
 	}
@@ -501,7 +501,7 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 			}
 			$pointRepartitionString = substr($pointRepartitionString, 0, -1);
 
-			$this->maniaControl->getChat()->sendInformation('Current Points Repartition: ' . $pointRepartitionString, $player);
+			$this->maniaControl->getChat()->sendInformation('Current Points Distribution: ' . $pointRepartitionString, $player);
 		});
 
 	}
