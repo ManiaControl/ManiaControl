@@ -723,7 +723,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * Handle EndMap Callback
 	 */
 	public function handleMapEnd() {
-		if (!isset($this->dedimaniaData) || !$this->dedimaniaData->records) {
+		if (!isset($this->dedimaniaData) || !isset($this->dedimaniaData->records)) {
 			return;
 		}
 
