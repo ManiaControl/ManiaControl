@@ -930,7 +930,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 					$improvement = 'gained the';
 				} else {
 					// Only improved time
-					$improvement = 'improved his/her';
+					$improvement = 'improved the';
 				}
 				$message = '$390$<$fff' . $player->nickname . '$> ' . $improvement . ' $<$ff0' . $newRecord->rank . '.$> Dedimania Record: $<$fff' . Formatter::formatTime($newRecord->best) . '$>';
 				if (!$oldRecord->nullRecord) {

@@ -124,7 +124,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_LINEHEIGHT, 4.);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_ENABLE, true);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_NOTIFY_ONLY_DRIVER, false);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_NOTIFY_BEST_RECORDS, -1);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_NOTIFY_BEST_RECORDS, 10);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_ADJUST_OUTER_BORDER, false);
 
 		// Callbacks
@@ -399,7 +399,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 			if ($oldRecord->time == $structure->getRaceTime()) {
 				// Same time
 				// TODO: respect notify-settings
-				$message = '$<$fff' . $player->nickname . '$> equalized his/her $<$ff0' . $oldRecord->rank . '.$> Local Record: $<$fff' . Formatter::formatTime($oldRecord->time) . '$>!';
+				$message = '$<$fff' . $player->nickname . '$> equalized the $<$ff0' . $oldRecord->rank . '.$> Local Record: $<$fff' . Formatter::formatTime($oldRecord->time) . '$>!';
 				$this->maniaControl->getChat()->sendInformation('$3c0' . $message);
 				return;
 			}
