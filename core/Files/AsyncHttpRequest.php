@@ -34,6 +34,7 @@ class AsyncHttpRequest implements UsageInformationAble {
 	private $content;
 	private $compression = false;
 	private $contentType = 'text/xml; charset=UTF-8;';
+	private $timeout     = 60;
 	private $headers     = array();
 
 	public function __construct($maniaControl, $url) {
@@ -45,11 +46,12 @@ class AsyncHttpRequest implements UsageInformationAble {
 	 * Create a new cURL Request for the given URL
 	 *
 	 * @param string $url
-	 * @return Request
+	 * @param int    $timeout
+	 * @return \cURL\Request
 	 */
-	private function newRequest($url) {
+	private function newRequest($url, $timeout) {
 		$request = new Request($url);
-		$request->getOptions()->set(CURLOPT_TIMEOUT, 60)->set(CURLOPT_HEADER, false)// don't display response header
+		$request->getOptions()->set(CURLOPT_TIMEOUT, $timeout)->set(CURLOPT_HEADER, false)// don't display response header
 		        ->set(CURLOPT_CRLF, true)// linux line feed
 		        ->set(CURLOPT_ENCODING, '')// accept encoding
 		        ->set(CURLOPT_USERAGENT, 'ManiaControl v' . ManiaControl::VERSION)// user-agent
@@ -71,7 +73,7 @@ class AsyncHttpRequest implements UsageInformationAble {
 			array_push($this->headers, 'Connection: Keep-Alive');
 		}
 
-		$request = $this->newRequest($this->url);
+		$request = $this->newRequest($this->url, $this->timeout);
 		$request->getOptions()->set(CURLOPT_AUTOREFERER, true)// accept link reference
 		        ->set(CURLOPT_HTTPHEADER, $this->headers); // headers
 
@@ -94,7 +96,7 @@ class AsyncHttpRequest implements UsageInformationAble {
 		}
 
 
-		$request = $this->newRequest($this->url);
+		$request = $this->newRequest($this->url, $this->timeout);
 		$request->getOptions()->set(CURLOPT_POST, true)// post method
 		        ->set(CURLOPT_POSTFIELDS, $content)// post content field
 		        ->set(CURLOPT_HTTPHEADER, $this->headers) // headers
@@ -207,5 +209,23 @@ class AsyncHttpRequest implements UsageInformationAble {
 	public function setContentType($contentType) {
 		$this->contentType = $contentType;
 		return $this;
+	}
+
+	/**
+	 * Gets the Timeout Time
+	 *
+	 * @return int
+	 */
+	public function getTimeout() {
+		return $this->timeout;
+	}
+
+	/**
+	 * Sets the Timeout Time
+	 *
+	 * @param int $timeout
+	 */
+	public function setTimeout($timeout) {
+		$this->timeout = $timeout;
 	}
 }

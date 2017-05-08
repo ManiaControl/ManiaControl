@@ -40,7 +40,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	const NAME                            = 'Dedimania Plugin';
 	const MLID_DEDIMANIA                  = 'Dedimania.ManialinkId';
 	const XMLRPC_MULTICALL                = 'system.multicall';
-	const DEDIMANIA_URL                   = 'http://dedimania.net:8081/Dedimania';
+	const DEDIMANIA_URL                   = 'http://dedimania.net:8082/Dedimania';
 	const DEDIMANIA_OPEN_SESSION          = 'dedimania.OpenSession';
 	const DEDIMANIA_CHECK_SESSION         = 'dedimania.CheckSession';
 	const DEDIMANIA_GET_RECORDS           = 'dedimania.GetChallengeRecords';
@@ -152,7 +152,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(RecordCallback::FINISH, $this, 'handleFinishCallback');
 
 		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'updateEverySecond', 1000);
-		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'handleEveryMinute', 1000 * 60);
+		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'handleEveryHalfMinute', 1000 * 30);
 		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'updatePlayerList', 1000 * 60 * 3);
 
 		$this->maniaControl->getCommandManager()->registerCommandListener(array('dedirecs', 'dedirecords'), $this, 'showDediRecordsList', false, 'Shows a list of Dedimania records of the current map.');
@@ -198,7 +198,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			Logger::log("Try to connect on Dedimania");
 
 			if (!$data || $error) {
-				Logger::logError("Dedimania Error: '{$error}'");
+				Logger::logError("Dedimania Error while opening session: '{$error}'");
 			}
 
 			$data = $this->decode($data);
@@ -233,6 +233,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 		$asyncHttpRequest->setContent($content);
 		$asyncHttpRequest->setCompression(true);
+		$asyncHttpRequest->setTimeout(500);
 		$asyncHttpRequest->postData();
 	}
 
@@ -299,7 +300,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, self::DEDIMANIA_URL);
 		$asyncHttpRequest->setCallable(function ($data, $error) {
 			if ($error) {
-				Logger::logError('Dedimania Error: ' . $error);
+				Logger::logError('Dedimania Error while fetching records: ' . $error);
 			}
 
 			$data = $this->decode($data);
@@ -344,6 +345,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 		$asyncHttpRequest->setContent($content);
 		$asyncHttpRequest->setCompression(true);
+		$asyncHttpRequest->setTimeout(500);
 		$asyncHttpRequest->postData();
 
 		return true;
@@ -561,7 +563,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	/**
 	 * Handle 1 Minute Callback
 	 */
-	public function handleEveryMinute() {
+	public function handleEveryHalfMinute() {
 		if (!$this->init) {
 			return;
 		}
@@ -583,13 +585,17 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, self::DEDIMANIA_URL);
 		$asyncHttpRequest->setCallable(function ($data, $error) {
 			if ($error) {
-				Logger::logError("Dedimania Error: " . $error);
+				//Reopen session in Timeout case
+				$this->openDedimaniaSession();
+				//Logger::logError("Dedimania Error while checking session: " . $error);
 			}
 
 			$data = $this->decode($data);
 			if (!is_array($data) || empty($data)) {
 				return;
 			}
+			//var_dump("SESSION CHECK");
+			//var_dump($data);
 
 			$methodResponse = $data[0];
 			if (xmlrpc_is_fault($methodResponse)) {
@@ -611,6 +617,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		});
 		$asyncHttpRequest->setContent($content);
 		$asyncHttpRequest->setCompression(true);
+		$asyncHttpRequest->setTimeout(500);
 		$asyncHttpRequest->postData();
 	}
 
@@ -631,7 +638,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, self::DEDIMANIA_URL);
 		$asyncHttpRequest->setCallable(function ($data, $error) use (&$player) {
 			if ($error) {
-				Logger::logError("Dedimania Error: " . $error);
+				Logger::logError("Dedimania Error while player connect: " . $error);
 			}
 
 			$data = $this->decode($data);
@@ -658,10 +665,11 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 				$manialink = $this->buildManialink();
 				$this->maniaControl->getManialinkManager()->sendManialink($manialink, $player->login);
 			}
-		}, $content, true);
+		});
 
 		$asyncHttpRequest->setContent($content);
 		$asyncHttpRequest->setCompression(true);
+		$asyncHttpRequest->setTimeout(500);
 		$asyncHttpRequest->postData();
 	}
 
@@ -683,7 +691,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, self::DEDIMANIA_URL);
 		$asyncHttpRequest->setCallable(function ($data, $error) {
 			if ($error) {
-				Logger::logError("Dedimania Error: " . $error);
+				Logger::logError("Dedimania Error while player disconnect: " . $error);
 			}
 
 			$data = $this->decode($data);
@@ -699,6 +707,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 		$asyncHttpRequest->setContent($content);
 		$asyncHttpRequest->setCompression(true);
+		$asyncHttpRequest->setTimeout(500);
 		$asyncHttpRequest->postData();
 	}
 
@@ -761,7 +770,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, self::DEDIMANIA_URL);
 		$asyncHttpRequest->setCallable(function ($data, $error) {
 			if ($error) {
-				Logger::logError("Dedimania Error: " . $error);
+				Logger::logError("Dedimania Error while submitting times: " . $error);
 			}
 
 			if (self::DEDIMANIA_DEBUG) {
@@ -794,6 +803,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		});
 		$asyncHttpRequest->setContent($content);
 		$asyncHttpRequest->setCompression(false);
+		$asyncHttpRequest->setTimeout(500);
 		$asyncHttpRequest->postData();
 	}
 
@@ -815,7 +825,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, self::DEDIMANIA_URL);
 		$asyncHttpRequest->setCallable(function ($data, $error) {
 			if ($error) {
-				Logger::logError("Dedimania Error: " . $error);
+				Logger::logError("Dedimania Error while update playerlist: " . $error);
 			}
 
 			$data = $this->decode($data);
@@ -831,6 +841,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 		$asyncHttpRequest->setContent($content);
 		$asyncHttpRequest->setCompression(true);
+		$asyncHttpRequest->setTimeout(500);
 		$asyncHttpRequest->postData();
 	}
 
@@ -995,8 +1006,6 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		}
 		return $string;
 	}
-
-	//TODO some bug if no dedimania time is existing
 
 	/**
 	 * Inserts the given new Dedimania record at the proper position
