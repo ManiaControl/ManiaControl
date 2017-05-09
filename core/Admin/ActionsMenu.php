@@ -124,7 +124,6 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 			$this->maniaControl->getManialinkManager()->sendManialink($manialink, $admins);
 		}
 
-
 		//Send Menu to Players - Players with No Admin Permisssions
 		$players = $this->maniaControl->getAuthenticationManager()->getConnectedPlayers();
 		if (!empty($players)) {
@@ -337,7 +336,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 	 * @param Player $player
 	 */
 	public function handlePlayerJoined(Player $player) {
-		if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
+		if ($this->maniaControl->getAuthenticationManager()->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
 			$maniaLink = $this->buildMenuIconsManialink(true);
 		} else {
 			$maniaLink = $this->buildMenuIconsManialink(false);
