@@ -241,28 +241,25 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener,
 				return $this->maniaControl->getClient()->sendDisplayManialinkPage(null, $manialinkText, $timeout, $hideOnClick);
 			}
 			if (is_string($logins)) {
-				$success = $this->maniaControl->getClient()->sendDisplayManialinkPage($logins, $manialinkText, $timeout, $hideOnClick);
-				return $success;
+				return $this->maniaControl->getClient()->sendDisplayManialinkPage($logins, $manialinkText, $timeout, $hideOnClick);
 			}
 			if ($logins instanceof Player) {
-				$success = $this->maniaControl->getClient()->sendDisplayManialinkPage($logins->login, $manialinkText, $timeout, $hideOnClick);
-				return $success;
+				return $this->maniaControl->getClient()->sendDisplayManialinkPage($logins->login, $manialinkText, $timeout, $hideOnClick);
 			}
 			if (is_array($logins)) {
-				$success = true;
+				$loginList = array();
 				foreach ($logins as $login) {
-					$subSuccess = $this->sendManialink($manialinkText, $login, $timeout, $hideOnClick);
-					if (!$subSuccess) {
-						$success = false;
+					if($login instanceof Player){
+						$loginList[] = $login->login;
+					}else{
+						$loginList[] = $login;
 					}
 				}
-				return $success;
+				return $this->maniaControl->getClient()->sendDisplayManialinkPage(implode(',', $loginList), $manialinkText, $timeout, $hideOnClick);
 			}
 		} catch (UnknownPlayerException $e) {
 			return false;
 		} catch (FaultException $e) {
-			//TODO added 17.01.2015, remove later:
-			$this->maniaControl->getErrorHandler()->triggerDebugNotice("Fault Exception: ManiaLink Manager, Message: " . $e->getMessage());
 			return false;
 		} catch (MessageException $e) {
 			//TODO verify why this can happen

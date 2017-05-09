@@ -116,20 +116,30 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 		if (!$this->initCompleted) {
 			return;
 		}
-		$players = $this->maniaControl->getPlayerManager()->getPlayers();
-		foreach ($players as $player) {
-			$manialink = $this->buildMenuIconsManialink($player);
-			$this->maniaControl->getManialinkManager()->sendManialink($manialink, $player->login);
+
+		//Send Menu to Admins
+		$admins = $this->maniaControl->getAuthenticationManager()->getConnectedAdmins(AuthenticationManager::AUTH_LEVEL_MODERATOR);
+		if (!empty($admins)) {
+			$manialink = $this->buildMenuIconsManialink(true);
+			$this->maniaControl->getManialinkManager()->sendManialink($manialink, $admins);
+		}
+
+
+		//Send Menu to Players - Players with No Admin Permisssions
+		$players = $this->maniaControl->getAuthenticationManager()->getConnectedPlayers();
+		if (!empty($players)) {
+			$manialink = $this->buildMenuIconsManialink(false);
+			$this->maniaControl->getManialinkManager()->sendManialink($manialink, $players);
 		}
 	}
 
 	/**
 	 * Builds the Manialink
 	 *
-	 * @param Player $player
+	 * @param $admin
 	 * @return ManiaLink
 	 */
-	private function buildMenuIconsManialink(Player $player) {
+	private function buildMenuIconsManialink($admin = false) {
 		$posX              = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MENU_POSX);
 		$itemSize          = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MENU_ITEMSIZE);
 		$quadStyle         = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadStyle();
@@ -147,7 +157,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 		/*
 		 * Admin Menu
 		 */
-		if ($this->maniaControl->getAuthenticationManager()->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
+		if ($admin) {
 			// Admin Menu Icon Frame
 			$iconFrame = new Frame();
 			$frame->addChild($iconFrame);
@@ -327,7 +337,12 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 	 * @param Player $player
 	 */
 	public function handlePlayerJoined(Player $player) {
-		$maniaLink = $this->buildMenuIconsManialink($player);
+		if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
+			$maniaLink = $this->buildMenuIconsManialink(true);
+		} else {
+			$maniaLink = $this->buildMenuIconsManialink(false);
+		}
+		
 		$this->maniaControl->getManialinkManager()->sendManialink($maniaLink, $player);
 	}
 

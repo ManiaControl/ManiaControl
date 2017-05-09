@@ -846,17 +846,12 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 				$karmaLabel->setText('-');
 			}
 
-			// Loop players
-			foreach ($players as $login => $player) {
-				// Get player vote
-				// TODO: show the player his own vote in some way
-				// $vote = $this->getPlayerVote($player, $map);
-				// $votesFrame = $this->manialink->votesFrame;
-				// $votesFrame->removeChildren();
 
-				// Send manialink
-				$this->maniaControl->getManialinkManager()->sendManialink($this->manialink, $login);
-			}
+			$this->maniaControl->getManialinkManager()->sendManialink($this->manialink, $players);
+			// TODO: show the player his own vote in some way
+			// $vote = $this->getPlayerVote($player, $map);
+			// $votesFrame = $this->manialink->votesFrame;
+			// $votesFrame->removeChildren();
 		}
 	}
 
