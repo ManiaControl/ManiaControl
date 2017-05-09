@@ -33,8 +33,8 @@ class OnShotDenyStructure extends BaseTimeStructure {
 		parent::__construct($maniaControl, $data);
 
 		$jsonObj             = $this->getPlainJsonObject();
-		$this->shooterWeapon = $jsonObj->victim;
-		$this->victimWeapon  = $jsonObj->damage;
+		$this->shooterWeapon = $jsonObj->shooterweapon;
+		$this->victimWeapon  = $jsonObj->victimweapon;
 
 		$this->shooter = $this->maniaControl->getPlayerManager()->getPlayer($this->getPlainJsonObject()->shooter);
 		$this->victim  = $this->maniaControl->getPlayerManager()->getPlayer($this->getPlainJsonObject()->victim);
