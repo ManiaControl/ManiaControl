@@ -288,24 +288,6 @@ class AuthenticationManager implements CallbackListener, EchoListener, Communica
 	}
 
 	/**
-	 * Get all connected Players with less permission than the given Auth Level
-	 *
-	 * @api
-	 * @param int $authLevel
-	 * @return Player[]
-	 */
-	public function getConnectedPlayers($authLevel = self::AUTH_LEVEL_MODERATOR) {
-		$players     = $this->maniaControl->getPlayerManager()->getPlayers();
-		$playerArray = array();
-		foreach ($players as $player) {
-			if (!self::checkRight($player, $authLevel)) {
-				array_push($playerArray, $player);
-			}
-		}
-		return $playerArray;
-	}
-
-	/**
 	 * Check whether the Player has enough Rights
 	 *
 	 * @api

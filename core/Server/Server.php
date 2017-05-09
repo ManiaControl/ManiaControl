@@ -333,9 +333,8 @@ class Server implements CallbackListener, CommandListener, UsageInformationAble 
 		try {
 			$replay = $this->maniaControl->getClient()->getValidationReplay($login);
 		} catch (Exception $e) {
-			// TODO temp added 19.04.2014
 			$this->maniaControl->getErrorHandler()->triggerDebugNotice("Exception line 330 Server.php" . $e->getMessage());
-			trigger_error("Couldn't get validation replay of '{$login}'. " . $e->getMessage());
+			Logger::logError("Couldn't get validation replay of '{$login}'. " .  $e->getMessage());
 			return null;
 		}
 		return $replay;
