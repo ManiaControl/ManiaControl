@@ -40,8 +40,8 @@ class OnCaptureStructure extends BaseStructure {
 
 		$this->landMark = new Landmark();
 		$this->landMark->setTag($jsonObj->landmark->tag);
-		$this->landMark->setOrder($jsonObj->landmark->tag);
-		$this->landMark->setId($jsonObj->landmark->tag);
+		$this->landMark->setOrder($jsonObj->landmark->order);
+		$this->landMark->setId($jsonObj->landmark->id);
 
 		$position = new Position();
 		$position->setX($jsonObj->landmark->position->x);
