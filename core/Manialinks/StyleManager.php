@@ -111,11 +111,13 @@ class StyleManager implements UsageInformationAble {
 		return $descriptionLabel;
 	}
 
+
 	/**
 	 * Gets the default buttons and textbox for a map search
 	 *
-	 * @param string $actionMapNameSearch
-	 * @param string $actionAuthorSearch
+	 * @param      $actionMapNameSearch
+	 * @param      $actionAuthorSearch
+	 * @param null $actionReset
 	 * @return \FML\Controls\Frame
 	 */
 	public function getDefaultMapSearch($actionMapNameSearch, $actionAuthorSearch, $actionReset = null) {
@@ -229,13 +231,7 @@ class StyleManager implements UsageInformationAble {
 
 		// mainframe
 		$frame = new Frame();
-		$frame->setSize($width, $height)->setZ(ManialinkManager::MAIN_MANIALINK_Z_VALUE); //TODO place before scoreboards
-
-		//TODO remove: (just temporary fix for tm bug)
-		if ($this->maniaControl->getMapManager()->getCurrentMap()->getGame() === 'tm') {
-			$frame->setSize($width, $height)->setZ(32);
-		}
-
+		$frame->setSize($width, $height)->setZ(ManialinkManager::MAIN_MANIALINK_Z_VALUE);
 
 		// Background Quad
 		$backgroundQuad = new Quad();

@@ -199,12 +199,12 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		$headFrame->setY($posY - 12);
 
 		$labelLine = new LabelLine($headFrame);
-		$labelLine->addLabelEntryText('Id', $posX + 3.5, 9);
-		$labelLine->addLabelEntryText('Name', $posX + 12.5, 38.5);
-		$labelLine->addLabelEntryText('Author', $posX + 59, 44);
-		$labelLine->addLabelEntryText('Type', $posX + 103, 15);
-		$labelLine->addLabelEntryText('Mood', $posX + 118, 12);
-		$labelLine->addLabelEntryText('Last Update', $posX + 130, $width - ($posX + 130));
+		$labelLine->addLabelEntryText('Id', $posX + 3.5, 8);
+		$labelLine->addLabelEntryText('Name', $posX + 12.5, 37.5);
+		$labelLine->addLabelEntryText('Author', $posX + 59, 43);
+		$labelLine->addLabelEntryText('Type', $posX + 103, 14);
+		$labelLine->addLabelEntryText('Mood', $posX + 118, 11);
+		$labelLine->addLabelEntryText('Last Update', $posX + 130, $width - ($posX + 131));
 
 		$labelLine->render();
 

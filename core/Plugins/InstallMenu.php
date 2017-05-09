@@ -97,6 +97,7 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 			$pagerNext = clone $pagerPrev;
 			$frame->addChild($pagerNext);
 			$pagerNext->setX($width * 0.45);
+			$pagerNext->setSubStyle($pagerPrev::SUBSTYLE_ArrowNext);
 
 			$pageCountLabel = new Label_Text();
 			$frame->addChild($pageCountLabel);
