@@ -60,7 +60,7 @@ class AuthenticationManager implements CallbackListener, EchoListener, Communica
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		$this->authCommands = new AuthCommands($maniaControl);
-
+		
 		// Callbacks
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::ONINIT, $this, 'handleOnInit');
 
@@ -285,6 +285,24 @@ class AuthenticationManager implements CallbackListener, EchoListener, Communica
 			}
 		}
 		return $admins;
+	}
+
+	/**
+	 * Get all connected Players with less permission than the given Auth Level
+	 *
+	 * @api
+	 * @param int $authLevel
+	 * @return Player[]
+	 */
+	public function getConnectedPlayers($authLevel = self::AUTH_LEVEL_MODERATOR) {
+		$players     = $this->maniaControl->getPlayerManager()->getPlayers();
+		$playerArray = array();
+		foreach ($players as $player) {
+			if (!self::checkRight($player, $authLevel)) {
+				array_push($playerArray, $player);
+			}
+		}
+		return $playerArray;
 	}
 
 	/**
