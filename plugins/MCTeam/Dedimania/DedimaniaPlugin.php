@@ -581,7 +581,6 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 		$content = $this->encode_request(self::DEDIMANIA_CHECK_SESSION, array($this->dedimaniaData->sessionId));
 
-		//$this->maniaControl->fileReader->postDataTest($this->request, self::DEDIMANIA_URL, function ($data, $error) {
 		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, self::DEDIMANIA_URL);
 		$asyncHttpRequest->setCallable(function ($data, $error) {
 			if ($error) {
@@ -638,7 +637,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, self::DEDIMANIA_URL);
 		$asyncHttpRequest->setCallable(function ($data, $error) use (&$player) {
 			if ($error) {
-				Logger::logError("Dedimania Error while player connect: " . $error);
+				$this->openDedimaniaSession();
 			}
 
 			$data = $this->decode($data);
@@ -690,7 +689,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, self::DEDIMANIA_URL);
 		$asyncHttpRequest->setCallable(function ($data, $error) {
 			if ($error) {
-				Logger::logError("Dedimania Error while player disconnect: " . $error);
+				$this->openDedimaniaSession();
 			}
 
 			$data = $this->decode($data);
@@ -731,6 +730,9 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		if ($this->maniaControl->getMapManager()->getCurrentMap()->nbCheckpoints < 2) {
 			return;
 		}
+
+		//Make Sure Dedimania Session is okay
+		$this->checkDedimaniaSession();
 
 		// Send dedimania records
 		$gameMode = $this->getGameModeString();
