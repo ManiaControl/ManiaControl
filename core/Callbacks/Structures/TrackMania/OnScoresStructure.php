@@ -4,7 +4,6 @@ namespace ManiaControl\Callbacks\Structures\TrackMania;
 
 use ManiaControl\Callbacks\Structures\Common\CommonScoresStructure;
 use ManiaControl\Callbacks\Structures\TrackMania\Models\PlayerScore;
-use ManiaControl\Callbacks\Structures\TrackMania\Models\TeamScore;
 use ManiaControl\ManiaControl;
 
 /**
@@ -27,22 +26,25 @@ class OnScoresStructure extends CommonScoresStructure {
 		parent::__construct($maniaControl, $data);
 
 		$jsonObj = $this->getPlainJsonObject();
-		
-		foreach ($jsonObj->players as $jsonPlayer) {
-			$playerScore = new PlayerScore();
-			$playerScore->setPlayer($this->maniaControl->getPlayerManager()->getPlayer($jsonPlayer->login));
-			$playerScore->setRank($jsonPlayer->rank);
-			$playerScore->setRoundPoints($jsonPlayer->roundpoints);
-			$playerScore->setMapPoints($jsonPlayer->mappoints);
-			$playerScore->setBestRaceTime($jsonPlayer->bestracetime);
-			$playerScore->setBestLapTime($jsonPlayer->bestlaptime);
-			$playerScore->setStuntScore($jsonPlayer->stuntsscore);
-			$playerScore->setBestRaceRespawns($jsonPlayer->bestracerespawns);
-			$playerScore->setBestRaceCheckpoints($jsonPlayer->bestracecheckpoints);
-			$playerScore->setBestLapRespawns($jsonPlayer->bestlaprespawns);
-			$playerScore->setBestLapCheckpoints($jsonPlayer->bestlapcheckpoints);
 
-			$this->playerScores[$jsonPlayer->login] = $playerScore;
+		foreach ($jsonObj->players as $jsonPlayer) {
+			$player = $this->maniaControl->getPlayerManager()->getPlayer($jsonPlayer->login);
+			if ($player) {
+				$playerScore = new PlayerScore();
+				$playerScore->setPlayer($this->maniaControl->getPlayerManager()->getPlayer($jsonPlayer->login));
+				$playerScore->setRank($jsonPlayer->rank);
+				$playerScore->setRoundPoints($jsonPlayer->roundpoints);
+				$playerScore->setMapPoints($jsonPlayer->mappoints);
+				$playerScore->setBestRaceTime($jsonPlayer->bestracetime);
+				$playerScore->setBestLapTime($jsonPlayer->bestlaptime);
+				$playerScore->setStuntScore($jsonPlayer->stuntsscore);
+				$playerScore->setBestRaceRespawns($jsonPlayer->bestracerespawns);
+				$playerScore->setBestRaceCheckpoints($jsonPlayer->bestracecheckpoints);
+				$playerScore->setBestLapRespawns($jsonPlayer->bestlaprespawns);
+				$playerScore->setBestLapCheckpoints($jsonPlayer->bestlapcheckpoints);
+
+				$this->playerScores[$jsonPlayer->login] = $playerScore;
+			}
 		}
 	}
 }

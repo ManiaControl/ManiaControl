@@ -30,15 +30,18 @@ class OnScoresStructure extends CommonScoresStructure {
 		$jsonObj = $this->getPlainJsonObject();
 
 		foreach ($jsonObj->players as $jsonPlayer) {
-			$playerScore = new PlayerScore();
-			$playerScore->setPlayer($this->maniaControl->getPlayerManager()->getPlayer($jsonPlayer->login));
-			$playerScore->setRank($jsonPlayer->rank);
-			$playerScore->setRoundPoints($jsonPlayer->roundpoints);
-			$playerScore->setMapPoints($jsonPlayer->mappoints);
-			$playerScore->setMatchPoints($jsonPlayer->matchpoints);
+			$player = $this->maniaControl->getPlayerManager()->getPlayer($jsonPlayer->login);
+			if($player){
+				$playerScore = new PlayerScore();
+				$playerScore->setPlayer($this->maniaControl->getPlayerManager()->getPlayer($jsonPlayer->login));
 
-			$this->playerScores[$jsonPlayer->login] = $playerScore;
+				$playerScore->setRank($jsonPlayer->rank);
+				$playerScore->setRoundPoints($jsonPlayer->roundpoints);
+				$playerScore->setMapPoints($jsonPlayer->mappoints);
+				$playerScore->setMatchPoints($jsonPlayer->matchpoints);
+
+				$this->playerScores[$jsonPlayer->login] = $playerScore;
+			}
 		}
-
 	}
 }
