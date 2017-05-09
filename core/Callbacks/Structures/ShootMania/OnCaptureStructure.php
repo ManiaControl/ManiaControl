@@ -38,17 +38,19 @@ class OnCaptureStructure extends BaseStructure {
 		$this->time        = $jsonObj->time;
 		$this->playerArray = $jsonObj->players;
 
-		$this->landMark = new Landmark();
-		$this->landMark->setTag($jsonObj->landmark->tag);
-		$this->landMark->setOrder($jsonObj->landmark->order);
-		$this->landMark->setId($jsonObj->landmark->id);
+		if (property_exists($jsonObj, 'landmark')) {
+			$this->landMark = new Landmark();
+			$this->landMark->setTag($jsonObj->landmark->tag);
+			$this->landMark->setOrder($jsonObj->landmark->order);
+			$this->landMark->setId($jsonObj->landmark->id);
 
-		$position = new Position();
-		$position->setX($jsonObj->landmark->position->x);
-		$position->setY($jsonObj->landmark->position->y);
-		$position->setZ($jsonObj->landmark->position->z);
+			$position = new Position();
+			$position->setX($jsonObj->landmark->position->x);
+			$position->setY($jsonObj->landmark->position->y);
+			$position->setZ($jsonObj->landmark->position->z);
 
-		$this->landMark->setPosition($position);
+			$this->landMark->setPosition($position);
+		}
 	}
 
 	/**
