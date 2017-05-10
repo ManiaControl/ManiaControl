@@ -38,7 +38,8 @@ class OnCaptureStructure extends BaseStructure {
 		$this->time        = $jsonObj->time;
 		$this->playerArray = $jsonObj->players;
 
-		if (property_exists($jsonObj, 'landmark')) {
+		//TODO Verify why it doesnt work for siege
+		/*if (property_exists($jsonObj, 'landmark')) {
 			$this->landMark = new Landmark();
 			$this->landMark->setTag($jsonObj->landmark->tag);
 			$this->landMark->setOrder($jsonObj->landmark->order);
@@ -50,7 +51,7 @@ class OnCaptureStructure extends BaseStructure {
 			$position->setZ($jsonObj->landmark->position->z);
 
 			$this->landMark->setPosition($position);
-		}
+		}*/
 	}
 
 	/**
