@@ -242,7 +242,7 @@ class CallbackManager implements UsageInformationAble {
 		}
 
 		$fullTime = microtime(true) - $startTime;
-		if ($fullTime > 1) {
+		if ($fullTime > 3) {
 			$this->maniaControl->getErrorHandler()->triggerDebugNotice(json_encode(array("Long Loop Detected: " . $fullTime , $timings)));
 		}
 	}
