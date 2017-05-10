@@ -519,7 +519,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 				$pageFrame = new Frame();
 				$frame->addChild($pageFrame);
 				$posY = $height / 2 - 10;
-				$paging->addPage($pageFrame);
+				$paging->addPageControl($pageFrame);
 			}
 
 			$playerFrame = new Frame();

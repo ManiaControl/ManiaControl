@@ -620,7 +620,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		}
 
 		// Render and display xml
-		$this->maniaControl->getManialinkManager()->displayWidget($maniaLink, $player, 'PlayerList');
+		$this->maniaControl->getManialinkManager()->displayWidget($maniaLink, $player, 'LocalRecords');
 	}
 
 	/**
