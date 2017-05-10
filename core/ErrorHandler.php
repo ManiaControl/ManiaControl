@@ -22,6 +22,7 @@ class ErrorHandler {
 	const MC_DEBUG_NOTICE              = 'ManiaControl.DebugNotice';
 	const SETTING_RESTART_ON_EXCEPTION = 'Automatically restart on Exceptions';
 	const LOG_SUPPRESSED_ERRORS        = false;
+	const LONG_LOOP_REPORT_TIME        = 5;
 
 	/*
 	 * Private properties
