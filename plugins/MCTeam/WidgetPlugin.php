@@ -75,7 +75,8 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	 * Private properties
 	 */
 	/** @var ManiaControl $maniaControl */
-	private $maniaControl = null;
+	private $maniaControl         = null;
+	private $lastWidgetUpdateTime = 0;
 
 	/**
 	 * @see \ManiaControl\Plugins\Plugin::prepare()
@@ -555,7 +556,12 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	 */
 	public function updateWidgets() {
 		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SERVERINFO_WIDGET_ACTIVATED)) {
-			$this->displayServerInfoWidget();
+			$time = time();
+			//Update Max once per second
+			if ($this->lastWidgetUpdateTime < ($time - 1)) {
+				$this->displayServerInfoWidget();
+				$this->lastWidgetUpdateTime = $time;
+			}
 		}
 	}
 }
