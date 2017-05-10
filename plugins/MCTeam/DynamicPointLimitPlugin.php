@@ -26,7 +26,7 @@ class DynamicPointLimitPlugin implements CallbackListener, CommandListener, Plug
 	 * Constants
 	 */
 	const ID      = 21;
-	const VERSION = 0.3;
+	const VERSION = 0.4;
 	const NAME    = 'Dynamic Point Limit Plugin';
 	const AUTHOR  = 'MCTeam';
 
@@ -110,7 +110,7 @@ class DynamicPointLimitPlugin implements CallbackListener, CommandListener, Plug
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECT, $this, 'updatePointLimit');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(PlayerManager::CB_PLAYERINFOCHANGED, $this, 'handlePlayerInfoChangedCallback');
 
-		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::BEGINROUND, $this, 'updatePointLimit');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::MP_STARTROUNDSTART, $this, 'updatePointLimit');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::BEGINMAP, $this, 'handleBeginMap');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(SettingManager::CB_SETTING_CHANGED, $this, 'handleSettingChangedCallback');
 
