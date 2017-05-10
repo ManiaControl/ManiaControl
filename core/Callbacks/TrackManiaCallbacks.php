@@ -51,7 +51,7 @@ class TrackManiaCallbacks implements CallbackListener {
 	 */
 	public function handleScriptCallbacks($name, $data) {
 		if (!$this->maniaControl->getCallbackManager()->callbackListeningExists($name)) {
-			//return; //Leave that disabled while testing/implementing Callbacks
+			return; //Leave that disabled while testing/implementing Callbacks
 		}
 		switch ($name) {
 			case Callbacks::TM_SCORES:

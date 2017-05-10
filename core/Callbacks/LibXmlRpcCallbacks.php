@@ -55,7 +55,7 @@ class LibXmlRpcCallbacks implements CallbackListener {
 	 */
 	public function handleScriptCallback($name, $data) {
 		if (!$this->maniaControl->getCallbackManager()->callbackListeningExists($name)) {
-			//return; //Leave that disabled while testing/implementing Callbacks
+			return; //Leave that disabled while testing/implementing Callbacks
 		}
 		switch ($name) {
 			//New callbacks

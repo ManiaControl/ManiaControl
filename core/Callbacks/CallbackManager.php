@@ -4,6 +4,7 @@ namespace ManiaControl\Callbacks;
 
 use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
+use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 
 /**
@@ -230,9 +231,19 @@ class CallbackManager implements UsageInformationAble {
 		}
 
 		// Handle callbacks
+		$timings = array();
+		$startTime = microtime(true);
 		$callbacks = $this->maniaControl->getClient()->executeCallbacks();
+		$timings["executeCallbacks"] = microtime(true) - $startTime;
+
 		foreach ($callbacks as $callback) {
+			$time1 = microtime(true);
 			$this->handleCallback($callback);
+			$timings[$callback[0]] = microtime(true) - $time1;
+		}
+
+		if($fulltime = ((microtime(true) - $startTime) > 1)){
+			$this->maniaControl->getErrorHandler()->triggerDebugNotice(json_encode(array("Long Loop Detected: " .$fulltime, $timings)));
 		}
 	}
 

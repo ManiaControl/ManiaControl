@@ -73,7 +73,7 @@ class ShootManiaCallbacks implements CallbackListener {
 	 */
 	public function handleScriptCallbacks($name, $data) {
 		if (!$this->maniaControl->getCallbackManager()->callbackListeningExists($name)) {
-			//return; //Leave that disabled while testing/implementing Callbacks
+			return; //Leave that disabled while testing/implementing Callbacks
 		}
 		switch ($name) {
 			//MP4 New Callbacks
