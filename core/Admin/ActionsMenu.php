@@ -15,6 +15,7 @@ use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
+use ManiaControl\Manialinks\SidebarMenuManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Settings\Setting;
@@ -41,6 +42,8 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 	const SETTING_MENU_ITEMSIZE        = 'Menu Item Size';
 	const ACTION_OPEN_ADMIN_MENU       = 'ActionsMenu.OpenAdminMenu';
 	const ACTION_OPEN_PLAYER_MENU      = 'ActionsMenu.OpenPlayerMenu';
+	const ADMIN_MENU_ID                = 'ActionsMenu.AdminMenu';
+	const PLAYER_MENU_ID               = 'ActionsMenu.PlayerMenu';
 
 	/*
 	 * Private properties
@@ -71,6 +74,8 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(AuthenticationManager::CB_AUTH_LEVEL_CHANGED, $this, 'handlePlayerJoined');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(SettingManager::CB_SETTING_CHANGED, $this, 'handleSettingChanged');
 
+		$this->maniaControl->getManialinkManager()->getSidebarMenuManager()->addMenuEntry(SidebarMenuManager::ORDER_ADMIN_MENU, self::ADMIN_MENU_ID);
+		$this->maniaControl->getManialinkManager()->getSidebarMenuManager()->addMenuEntry(SidebarMenuManager::ORDER_PLAYER_MENU, self::PLAYER_MENU_ID);
 	}
 
 	/**
@@ -135,18 +140,17 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 	/**
 	 * Builds the Manialink
 	 *
-	 * @param $admin
+	 * @param Player $player
 	 * @return ManiaLink
 	 */
 	private function buildMenuIconsManialink($admin = false) {
-		$posX              = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MENU_POSX);
+		$adminPos          = $this->maniaControl->getManialinkManager()->getSidebarMenuManager()->getEntryPosition(self::ADMIN_MENU_ID);
+		$playerPos         = $this->maniaControl->getManialinkManager()->getSidebarMenuManager()->getEntryPosition(self::PLAYER_MENU_ID);
 		$itemSize          = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MENU_ITEMSIZE);
 		$quadStyle         = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadStyle();
 		$quadSubstyle      = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadSubstyle();
 		$itemMarginFactorX = 1.3;
 		$itemMarginFactorY = 1.2;
-
-		$posY = $this->getActionsMenuY();
 
 		$maniaLink = new ManiaLink(self::MLID_MENU);
 		$frame     = new Frame();
@@ -160,7 +164,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 			// Admin Menu Icon Frame
 			$iconFrame = new Frame();
 			$frame->addChild($iconFrame);
-			$iconFrame->setPosition($posX, $posY);
+			$iconFrame->setPosition($adminPos['x'], $adminPos['y']);
 
 			$backgroundQuad = new Quad();
 			$iconFrame->addChild($backgroundQuad);
@@ -175,7 +179,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 			// Admin Menu Description
 			$descriptionLabel = new Label();
 			$frame->addChild($descriptionLabel);
-			$descriptionLabel->setPosition($posX - count($this->adminMenuItems) * $itemSize * 1.05 - 5, $posY);
+			$descriptionLabel->setPosition($adminPos['x'] - count($this->adminMenuItems) * $itemSize * 1.05 - 5, $adminPos['y']);
 			$descriptionLabel->setAlign($descriptionLabel::RIGHT, $descriptionLabel::TOP);
 			$descriptionLabel->setSize(40, 4);
 			$descriptionLabel->setTextSize(1.4);
@@ -184,7 +188,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 			// Admin Menu
 			$popoutFrame = new Frame();
 			$frame->addChild($popoutFrame);
-			$popoutFrame->setPosition($posX - $itemSize * 0.5, $posY);
+			$popoutFrame->setPosition($adminPos['x'] - $itemSize * 0.5, $adminPos['y']);
 			$popoutFrame->setHorizontalAlign($popoutFrame::RIGHT);
 			$popoutFrame->setVisible(false);
 
@@ -223,7 +227,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 		// Player Menu Icon Frame
 		$iconFrame = new Frame();
 		$frame->addChild($iconFrame);
-		$iconFrame->setPosition($posX, $posY - $itemSize * $itemMarginFactorY);
+		$iconFrame->setPosition($playerPos['x'], $playerPos['y']);
 
 		$backgroundQuad = new Quad();
 		$iconFrame->addChild($backgroundQuad);
@@ -238,7 +242,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 		// Player Menu Description
 		$descriptionLabel = new Label();
 		$frame->addChild($descriptionLabel);
-		$descriptionLabel->setPosition($posX - count($this->playerMenuItems) * $itemSize * 1.05 - 5, $posY - $itemSize * $itemMarginFactorY);
+		$descriptionLabel->setPosition($playerPos['x'] - count($this->playerMenuItems) * $itemSize * 1.05 - 5, $playerPos['y']);
 		$descriptionLabel->setAlign($descriptionLabel::RIGHT, $descriptionLabel::TOP);
 		$descriptionLabel->setSize(40, 4);
 		$descriptionLabel->setTextSize(1.4);
@@ -247,7 +251,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 		// Player Menu
 		$popoutFrame = new Frame();
 		$frame->addChild($popoutFrame);
-		$popoutFrame->setPosition($posX - $itemSize * 0.5, $posY - $itemSize * $itemMarginFactorY);
+		$popoutFrame->setPosition($playerPos['x'] - $itemSize * 0.5, $playerPos['y']);
 		$popoutFrame->setHorizontalAlign($popoutFrame::RIGHT);
 		$popoutFrame->setVisible(false);
 
@@ -336,12 +340,7 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 	 * @param Player $player
 	 */
 	public function handlePlayerJoined(Player $player) {
-		if ($this->maniaControl->getAuthenticationManager()->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
-			$maniaLink = $this->buildMenuIconsManialink(true);
-		} else {
-			$maniaLink = $this->buildMenuIconsManialink(false);
-		}
-		
+		$maniaLink = $this->buildMenuIconsManialink($player);
 		$this->maniaControl->getManialinkManager()->sendManialink($maniaLink, $player);
 	}
 
@@ -356,19 +355,5 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 		}
 
 		$this->rebuildAndShowMenu();
-	}
-
-	/**
-	 * Get the Y value of the Actionsmenu (dependent on game)
-	 *
-	 * @return mixed
-	 */
-	public function getActionsMenuY() {
-		if ($this->maniaControl->getMapManager()->getCurrentMap()->getGame() === 'sm') {
-			$posY = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MENU_POSY_SHOOTMANIA);
-		} else {
-			$posY = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MENU_POSY_TRACKMANIA);
-		}
-		return $posY;
 	}
 }

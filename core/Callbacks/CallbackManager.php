@@ -235,7 +235,6 @@ class CallbackManager implements UsageInformationAble {
 		$startTime                   = microtime(true);
 		$callbacks                   = $this->maniaControl->getClient()->executeCallbacks();
 		$timings["executeCallbacks"] = microtime(true) - $startTime;
-
 		foreach ($callbacks as $key => $callback) {
 			$time1 = microtime(true);
 			$this->handleCallback($callback);

@@ -19,6 +19,7 @@ use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\LabelLine;
 use ManiaControl\Manialinks\ManialinkManager;
+use ManiaControl\Manialinks\SidebarMenuManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
@@ -41,14 +42,11 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	const SETTING_ANNOUNCE_SERVER_DONATION = 'Enable Server-Donation Announcements';
 	const STAT_PLAYER_DONATIONS            = 'Donated Planets';
 	const ACTION_DONATE_VALUE              = 'Donate.DonateValue';
+	const DONATIONPLUGIN_MENU_ID           = 'DonationPlugin.MenuId';
 
 	// DonateWidget Properties
 	const MLID_DONATE_WIDGET              = 'DonationPlugin.DonateWidget';
 	const SETTING_DONATE_WIDGET_ACTIVATED = 'Donate-Widget Activated';
-	const SETTING_DONATE_WIDGET_POSX      = 'Donate-Widget-Position: X';
-	const SETTING_DONATE_WIDGET_POSY      = 'Donate-Widget-Position: Y';
-	const SETTING_DONATE_WIDGET_WIDTH     = 'Donate-Widget-Size: Width';
-	const SETTING_DONATE_WIDGET_HEIGHT    = 'Donate-Widget-Size: Height';
 	const SETTING_DONATION_VALUES         = 'Donation Values';
 	const SETTING_MIN_AMOUNT_SHOWN        = 'Minimum Donation amount to get shown';
 
@@ -118,18 +116,9 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		// Define player stats
 		$this->maniaControl->getStatisticManager()->defineStatMetaData(self::STAT_PLAYER_DONATIONS);
 
-		$actionsPosX = $this->maniaControl->getSettingManager()->getSettingValue($this->maniaControl->getActionsMenu(), ActionsMenu::SETTING_MENU_POSX);
-		$actionsPosY = $this->maniaControl->getActionsMenu()->getActionsMenuY();
-		$iconSize    = $this->maniaControl->getSettingManager()->getSettingValue($this->maniaControl->getActionsMenu(), ActionsMenu::SETTING_MENU_ITEMSIZE);
-
-		$itemMarginFactorY = 1.2;
-		$posY = $actionsPosY - 3 * ($iconSize * $itemMarginFactorY);
+		$this->maniaControl->getManialinkManager()->getSidebarMenuManager()->addMenuEntry(SidebarMenuManager::ORDER_PLAYER_MENU + 10, self::DONATIONPLUGIN_MENU_ID);
 
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_DONATE_WIDGET_ACTIVATED, true);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_DONATE_WIDGET_POSX, $actionsPosX);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_DONATE_WIDGET_POSY, $posY);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_DONATE_WIDGET_WIDTH, 6);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_DONATE_WIDGET_HEIGHT, 6);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_DONATION_VALUES, "20,50,100,500,1000,2000");
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MIN_AMOUNT_SHOWN, 100);
 
@@ -155,10 +144,8 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 * @param string $login
 	 */
 	public function displayDonateWidget($login = null) {
-		$posX              = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_DONATE_WIDGET_POSX);
-		$posY              = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_DONATE_WIDGET_POSY);
-		$width             = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_DONATE_WIDGET_WIDTH);
-		$height            = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_DONATE_WIDGET_HEIGHT);
+		$pos               = $this->maniaControl->getManialinkManager()->getSidebarMenuManager()->getEntryPosition(self::DONATIONPLUGIN_MENU_ID);
+		$itemSize          = $this->maniaControl->getSettingManager()->getSettingValue(SidebarMenuManager::class, SidebarMenuManager::SETTING_MENU_ITEMSIZE);
 		$values            = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_DONATION_VALUES);
 		$quadStyle         = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadStyle();
 		$quadSubstyle      = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadSubstyle();
@@ -166,19 +153,17 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		$itemMarginFactorY = 1.2;
 
 
-		$itemSize = $width;
-
 		$maniaLink = new ManiaLink(self::MLID_DONATE_WIDGET);
 
 		// Donate Menu Icon Frame
 		$frame = new Frame();
 		$maniaLink->addChild($frame);
-		$frame->setPosition($posX, $posY);
+		$frame->setPosition($pos['x'], $pos['y']);
 		$frame->setZ(ManialinkManager::MAIN_MANIALINK_Z_VALUE);
 
 		$backgroundQuad = new Quad();
 		$frame->addChild($backgroundQuad);
-		$backgroundQuad->setSize($width * $itemMarginFactorX, $height * $itemMarginFactorY);
+		$backgroundQuad->setSize($itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 
 		$iconFrame = new Frame();
@@ -230,7 +215,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 			$posX -= strlen($value) * 1.6 + 2.5;
 		}
 
-		$descriptionFrame->setPosition($posX - $width + $itemMarginFactorX, 0);
+		$descriptionFrame->setPosition($posX - $itemSize + $itemMarginFactorX, 0);
 
 		//Popout background
 		$quad = new Quad();
@@ -494,9 +479,9 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 
 		$labelLine = new LabelLine($headFrame);
 		$labelLine->setPrefix('$o');
-		$labelLine->addLabelEntryText('Id',$posX + 5);
+		$labelLine->addLabelEntryText('Id', $posX + 5);
 		$labelLine->addLabelEntryText('Nickname', $posX + 18);
-		$labelLine->addLabelEntryText('Login',$posX + 70);
+		$labelLine->addLabelEntryText('Login', $posX + 70);
 		$labelLine->addLabelEntryText('Donated planets', $posX + 110);
 		$labelLine->render();
 
@@ -528,9 +513,9 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 
 			$labelLine = new LabelLine($playerFrame);
 			$labelLine->addLabelEntryText($index, $posX + 5, 13);
-			$labelLine->addLabelEntryText($donatingPlayer->nickname,$posX + 18, 52);
-			$labelLine->addLabelEntryText($donatingPlayer->login,$posX + 70, 40);
-			$labelLine->addLabelEntryText($donations,$posX + 110, $width / 2 - ($posX + 110));
+			$labelLine->addLabelEntryText($donatingPlayer->nickname, $posX + 18, 52);
+			$labelLine->addLabelEntryText($donatingPlayer->login, $posX + 70, 40);
+			$labelLine->addLabelEntryText($donations, $posX + 110, $width / 2 - ($posX + 110));
 			$labelLine->render();
 
 			$posY -= 4;

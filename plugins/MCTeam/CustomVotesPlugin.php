@@ -24,6 +24,7 @@ use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
+use ManiaControl\Manialinks\SidebarMenuManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
@@ -54,11 +55,6 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	const PLUGIN_NAME    = 'CustomVotesPlugin';
 	const PLUGIN_AUTHOR  = 'kremsy';
 
-	const SETTING_VOTE_ICON_POSX   = 'Vote-Icon-Position: X';
-	const SETTING_VOTE_ICON_POSY   = 'Vote-Icon-Position: Y';
-	const SETTING_VOTE_ICON_WIDTH  = 'Vote-Icon-Size: Width';
-	const SETTING_VOTE_ICON_HEIGHT = 'Vote-Icon-Size: Height';
-
 	const SETTING_WIDGET_POSX                = 'Widget-Position: X';
 	const SETTING_WIDGET_POSY                = 'Widget-Position: Y';
 	const SETTING_WIDGET_WIDTH               = 'Widget-Size: Width';
@@ -69,9 +65,9 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	const SETTING_SPECTATOR_ALLOW_VOTE       = 'Allow Spectators to vote';
 	const SETTING_SPECTATOR_ALLOW_START_VOTE = 'Allow Spectators to start a vote';
 
-	const MLID_WIDGET = 'CustomVotesPlugin.WidgetId';
-	const MLID_ICON   = 'CustomVotesPlugin.IconWidgetId';
-
+	const MLID_WIDGET         = 'CustomVotesPlugin.WidgetId';
+	const MLID_ICON           = 'CustomVotesPlugin.IconWidgetId';
+	const CUSTOMVOTES_MENU_ID = 'CustomVotesPlugin.MenuId';
 
 	const ACTION_POSITIVE_VOTE = 'CustomVotesPlugin.PositiveVote';
 	const ACTION_NEGATIVE_VOTE = 'CustomVotesPlugin.NegativeVote';
@@ -153,19 +149,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(ScriptManager::CB_PAUSE_STATUS_CHANGED, $this, 'constructMenu');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(SettingManager::CB_SETTING_CHANGED, $this, 'handleSettingChanged');
 
-		$actionsPosX = $this->maniaControl->getSettingManager()->getSettingValue($this->maniaControl->getActionsMenu(), ActionsMenu::SETTING_MENU_POSX);
-		$actionsPosY = $this->maniaControl->getActionsMenu()->getActionsMenuY();
-		$iconSize    = $this->maniaControl->getSettingManager()->getSettingValue($this->maniaControl->getActionsMenu(), ActionsMenu::SETTING_MENU_ITEMSIZE);
-
-		$itemMarginFactorY = 1.2;
-		$posY              = $actionsPosY - 2 * ($iconSize * $itemMarginFactorY);
-
 		// Settings
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_VOTE_ICON_POSX, $actionsPosX);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_VOTE_ICON_POSY, $posY);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_VOTE_ICON_WIDTH, 6);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_VOTE_ICON_HEIGHT, 6);
-
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_POSX, -80); //160 -15
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_POSY, 80); //-15
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_WIDTH, 50); //30
@@ -176,6 +160,8 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_SPECTATOR_ALLOW_VOTE, false);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_SPECTATOR_ALLOW_START_VOTE, true);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_VOTE_TIME, 40);
+
+		$this->maniaControl->getManialinkManager()->getSidebarMenuManager()->addMenuEntry(SidebarMenuManager::ORDER_PLAYER_MENU + 5, self::CUSTOMVOTES_MENU_ID);
 
 		//Define Votes
 		$this->defineVote("teambalance", "Vote for Team Balance");
@@ -282,10 +268,8 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 	 * @param bool $login
 	 */
 	private function showIcon($login = false) {
-		$posX              = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_VOTE_ICON_POSX);
-		$posY              = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_VOTE_ICON_POSY);
-		$width             = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_VOTE_ICON_WIDTH);
-		$height            = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_VOTE_ICON_HEIGHT);
+		$pos               = $this->maniaControl->getManialinkManager()->getSidebarMenuManager()->getEntryPosition(self::CUSTOMVOTES_MENU_ID);
+		$width             = $this->maniaControl->getSettingManager()->getSettingValue(SidebarMenuManager::class, SidebarMenuManager::SETTING_MENU_ITEMSIZE);
 		$quadStyle         = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadStyle();
 		$quadSubstyle      = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadSubstyle();
 		$itemMarginFactorX = 1.3;
@@ -298,12 +282,12 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		//Custom Vote Menu Iconsframe
 		$frame = new Frame();
 		$maniaLink->addChild($frame);
-		$frame->setPosition($posX, $posY);
+		$frame->setPosition($pos['x'], $pos['y']);
 		$frame->setZ(ManialinkManager::MAIN_MANIALINK_Z_VALUE);
 
 		$backgroundQuad = new Quad();
 		$frame->addChild($backgroundQuad);
-		$backgroundQuad->setSize($width * $itemMarginFactorX, $height * $itemMarginFactorY);
+		$backgroundQuad->setSize($width * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 
 		$iconFrame = new Frame();
@@ -319,7 +303,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		$menuEntries      = count($this->voteMenuItems);
 		$descriptionFrame = new Frame();
 		$maniaLink->addChild($descriptionFrame);
-		$descriptionFrame->setPosition($posX - $menuEntries * $itemSize * 1.05 - 5, $posY);
+		$descriptionFrame->setPosition($pos['x'] - $menuEntries * $itemSize * 1.05 - 5, $pos['y']);
 
 		$descriptionLabel = new Label();
 		$descriptionFrame->addChild($descriptionLabel);
@@ -331,7 +315,7 @@ class CustomVotesPlugin implements CommandListener, CallbackListener, ManialinkP
 		//Popout Frame
 		$popoutFrame = new Frame();
 		$maniaLink->addChild($popoutFrame);
-		$popoutFrame->setPosition($posX - $itemSize * 0.5, $posY);
+		$popoutFrame->setPosition($pos['x'] - $itemSize * 0.5, $pos['y']);
 		$popoutFrame->setHorizontalAlign($popoutFrame::RIGHT);
 		$popoutFrame->setSize(4 * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
 		$popoutFrame->setVisible(false);

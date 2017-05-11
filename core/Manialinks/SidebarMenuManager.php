@@ -1,23 +1,15 @@
 <?php
 
-namespace ManiaControl\Manialinks\SidebarMenu;
+namespace ManiaControl\Manialinks;
 
-use FML\Controls\Frame;
-use FML\Controls\Quad;
-use FML\Controls\Quads\Quad_UIConstruction_Buttons;
-use FML\ManiaLink;
+use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
-use ManiaControl\Manialinks\ManialinkManager;
 
 
-class SidebarMenuManager implements UsageInformationAble {
+class SidebarMenuManager implements UsageInformationAble, CallbackListener {
 	use UsageInformationTrait;
-
-	const SIDEBAR_MANIALINK_ID = 'SidebarMenuManager.SidebarMenu';
-	const ADMIN_MENU_ORDER     = 10;
-	const PLAYER_MENU_ORDER    = 20;
 
 	/* Settings */
 	const SETTING_SIDEBAR_POSX            = 'Sidebar X Position';
@@ -25,9 +17,13 @@ class SidebarMenuManager implements UsageInformationAble {
 	const SETTING_SIDEBAR_POSY_TRACKMANIA = 'Sidebar Y Position (Trackmania)';
 	const SETTING_MENU_ITEMSIZE           = 'Size of menu items';
 
+	const ORDER_ADMIN_MENU  = 10;
+	const ORDER_PLAYER_MENU = 20;
+
 	/* @var $maniaControl ManiaControl */
 	private $maniaControl;
 	private $menuEntries = array();
+	private $yPositions  = array();
 
 	function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
@@ -35,72 +31,86 @@ class SidebarMenuManager implements UsageInformationAble {
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_SIDEBAR_POSY_SHOOTMANIA, -37);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_SIDEBAR_POSY_TRACKMANIA, 17);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MENU_ITEMSIZE, 6);
-
 	}
 
-	public function addMenuEntry(SidebarMenuEntry $entry, $order) {
-		if (isset($this->menuEntries[$order])) {
-			$this->addMenuEntry($entry, $order + 1);
-		}
-		array_push($menuEntries, $entry);
-		ksort($this->menuEntries);
-		$this->updateManiaLink();
-	}
+	/**
+	 * Returns array('x' => xPosition, 'y' => yPosition) of the Sidebar
+	 *
+	 * @return array
+	 * @api
+	 */
+	public function getSidebarPosition() {
+		$posX = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SIDEBAR_POSX);
 
-	private function itemsBeforeAdmin() {
-		$count = 0;
-		foreach ($this->menuEntries as $key => $entry) {
-			if ($key < self::ADMIN_MENU_ORDER) {
-				$count++;
-			}
-		}
-		return $count;
-	}
-
-
-	private function updateManiaLink() {
-		$itemSize = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MENU_ITEMSIZE);
-		$posX     = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SIDEBAR_POSX);
 		if ($this->maniaControl->getMapManager()->getCurrentMap()->getGame() === 'sm') {
 			$posY = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SIDEBAR_POSY_SHOOTMANIA);
 		} else {
 			$posY = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SIDEBAR_POSY_TRACKMANIA);
 		}
-		$quadStyle         = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadStyle();
-		$quadSubstyle      = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadSubstyle();
-		$itemMarginFactorX = 1.3;
-		$itemMarginFactorY = 1.2;
 
-		//Calculate X relative to AdminMenu
-		$posX -= $itemSize * 1.05 * $this->itemsBeforeAdmin();
+		return array('x' => $posX, 'y' => $posY);
+	}
 
-		$maniaLink = new ManiaLink(self::SIDEBAR_MANIALINK_ID);
-		$frame     = new Frame();
-		$maniaLink->addChild($frame);
-		$frame->setZ(ManialinkManager::MAIN_MANIALINK_Z_VALUE);
-		$frame->setPosition($posX, $posY);
+	/**
+	 * Returns array('x' => xPosition, 'y' => yPosition) of a menu item of the sidebar
+	 *
+	 * @param string $id
+	 * @return array|null
+	 */
+	public function getEntryPosition($id) {
+		$itemSize = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MENU_ITEMSIZE);
+		$pos      = $this->getSidebarPosition();
+		$posX     = $pos['x'];
+		$posY     = $pos['y'];
 
-		$posX = 0;
-		/** @var SidebarMenuEntry $entry */
-		foreach ($this->menuEntries as $entry) {
-			$iconFrame = new Frame();
-			$frame->addChild($iconFrame);
-			$iconFrame->setX($posX);
-
-			$background = new Quad();
-			$frame->addChild($background);
-			$background->setStyles($quadStyle, $quadSubstyle);
-			$background->setSize($itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
-
-			$icon = $entry->getIcon();
-			$frame->addChild($icon);
-			if($entry->getDescription()){
-				
-			}
+		if (isset($this->yPositions[$id])) {
+			return array('x' => $posX, 'y' => $this->yPositions[$id]);
 		}
 
+		foreach ($this->menuEntries as $entry) {
+			if ($entry == $id) {
+				$this->yPositions[$id] = $posY;
+				return array('x' => $posX, 'y' => $posY);
+			}
+			$posY -= $itemSize * 1.05;
+		}
 
-		$this->maniaControl->getManialinkManager()->sendManialink($maniaLink);
+		$this->maniaControl->getErrorHandler()->triggerDebugNotice('SidebarMenuEntry id:' . $id . ' not found');
+		return null;
+	}
+
+	/**
+	 * Registers an Entry to the SidebarMenu
+	 * Get the associated position with getEntryPosition($id)
+	 *
+	 * @param int    $order
+	 * @param string $id
+	 * @api
+	 */
+	public function addMenuEntry($order, $id) {
+		if (isset($this->menuEntries[$order])) {
+			if ($this->menuEntries[$order] != $id) {
+				$this->addMenuEntry($order + 1, $id);
+			}
+		}
+		$this->menuEntries[$order] = $id;
+		ksort($this->menuEntries);
+		$this->yPositions = array();
+	}
+
+
+	/**
+	 * Deletes an Entry from the SidebarMenu
+	 *
+	 * @param string $id
+	 */
+	public function deleteMenuEntry($id) {
+		foreach ($this->menuEntries as $k => $entry) {
+			if ($entry == $id) {
+				array_splice($this->menuEntries, $k, 1);
+				$this->yPositions = array();
+			}
+		}
 	}
 
 }

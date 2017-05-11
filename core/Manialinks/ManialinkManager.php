@@ -52,6 +52,9 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener,
 	/** @var IconManager $iconManager */
 	private $iconManager = null;
 
+	/** @var SidebarMenuManager $sidebarMenuManager */
+	private $sidebarMenuManager = null;
+
 	// TODO: use listening class
 	private $pageAnswerListeners     = array();
 	private $pageAnswerRegexListener = array();
@@ -65,9 +68,10 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener,
 		$this->maniaControl = $maniaControl;
 
 		// Children
-		$this->styleManager    = new StyleManager($maniaControl);
-		$this->customUIManager = new CustomUIManager($maniaControl);
-		$this->iconManager     = new IconManager($maniaControl);
+		$this->styleManager       = new StyleManager($maniaControl);
+		$this->customUIManager    = new CustomUIManager($maniaControl);
+		$this->iconManager        = new IconManager($maniaControl);
+		$this->sidebarMenuManager = new SidebarMenuManager($maniaControl);
 
 		// Callbacks
 		$this->registerManialinkPageAnswerListener(self::ACTION_CLOSEWIDGET, $this, 'closeWidgetCallback');
@@ -212,7 +216,6 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener,
 		$this->sendManialink($maniaLink, $player);
 
 		if ($widgetName) {
-			// TODO make check by manialinkId, getter is needed to avoid uses on non main widgets
 			$this->disableAltMenu($player);
 			// Trigger callback
 			$player = $this->maniaControl->getPlayerManager()->getPlayer($player);
@@ -249,9 +252,9 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener,
 			if (is_array($logins)) {
 				$loginList = array();
 				foreach ($logins as $login) {
-					if($login instanceof Player){
+					if ($login instanceof Player) {
 						$loginList[] = $login->login;
-					}else{
+					} else {
 						$loginList[] = $login;
 					}
 				}
@@ -387,5 +390,12 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener,
 		$labelLine->render();
 
 		return $labelLine->getEntries();
+	}
+
+	/**
+	 * @return SidebarMenuManager
+	 */
+	public function getSidebarMenuManager() {
+		return $this->sidebarMenuManager;
 	}
 }
