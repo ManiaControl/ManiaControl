@@ -361,10 +361,10 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 	/**
 	 * Handle Checkpoint Callback
 	 *
-	 * @param RecordCallback $callback
+	 * @param OnWayPointEventStructure $callback
 	 */
 	public function handleCheckpointCallback(OnWayPointEventStructure $structure) {
-		$playerLogin = $structure->getPlayer()->login;
+		$playerLogin = $structure->getLogin();
 		if (!isset($this->checkpoints[$playerLogin])) {
 			$this->checkpoints[$playerLogin] = array();
 		}
@@ -374,7 +374,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 	/**
 	 * Handle Finish Callback
 	 *
-	 * @param RecordCallback $callback
+	 * @param \ManiaControl\Callbacks\Structures\TrackMania\OnWayPointEventStructure $structure
 	 */
 	public function handleFinishCallback(OnWayPointEventStructure $structure) {
 		if ($structure->getRaceTime() <= 0) {
