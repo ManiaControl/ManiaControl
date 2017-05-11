@@ -232,10 +232,18 @@ class CallbackManager implements UsageInformationAble {
 		}
 
 		// Handle callbacks
-		$timings                     = array();
-		$startTime                   = microtime(true);
-		$callbacks                   = $this->maniaControl->getClient()->executeCallbacks();
+		$timings   = array();
+		$startTime = microtime(true);
+
+		try {
+			$callbacks = $this->maniaControl->getClient()->executeCallbacks();
+		} catch (ParseException $e) {
+			//TODO remove later, its for the wrong XML encoding of nadeo
+			return;
+		}
+
 		$timings["executeCallbacks"] = microtime(true) - $startTime;
+
 		foreach ($callbacks as $key => $callback) {
 			$time1 = microtime(true);
 			$this->handleCallback($callback);
@@ -299,12 +307,8 @@ class CallbackManager implements UsageInformationAble {
 		$params = array_slice($params, 1, null, true);
 
 		foreach ($this->callbackListenings[$callbackName] as $listening) {
-			try {
-				/** @var Listening $listening */
-				$listening->triggerCallbackWithParams($params);
-			} catch (ParseException $e) {
-				//TODO remove later, its for the wrong XML encoding of nadeo
-			}
+			/** @var Listening $listening */
+			$listening->triggerCallbackWithParams($params);
 		}
 	}
 

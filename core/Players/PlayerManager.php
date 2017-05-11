@@ -16,6 +16,7 @@ use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Statistics\StatisticManager;
 use ManiaControl\Utils\Formatter;
+use Maniaplanet\DedicatedServer\Xmlrpc\ParseException;
 use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
 
 /**
@@ -220,7 +221,13 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 	 */
 	public function onInit() {
 		// Add all players
-		$players = $this->maniaControl->getClient()->getPlayerList(300, 0, 2);
+		try {
+			$players = $this->maniaControl->getClient()->getPlayerList(300, 0, 2);
+		} catch (ParseException $e) {
+			//TODO remove later, its for the wrong XML encoding of nadeo
+			return;
+		}
+
 		foreach ($players as $playerItem) {
 			if ($playerItem->playerId <= 0) {
 				continue;
@@ -329,6 +336,10 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 
 			$this->addPlayer($player);
 		} catch (UnknownPlayerException $e) {
+		} catch (ParseException $e) {
+			$this->maniaControl->getClient()->kick($login, "\$f00You have an unallowed character in your nickname, please remove it!");
+			Logger::logError("Player With unallowed nickname joined and got kicked, login: " . $login);
+			//TODO remove later
 		}
 	}
 
