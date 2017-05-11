@@ -6,6 +6,7 @@ use ManiaControl\ErrorHandler;
 use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
+use Maniaplanet\DedicatedServer\Xmlrpc\ParseException;
 
 /**
  * Class for managing Server and ManiaControl Callbacks
@@ -298,8 +299,12 @@ class CallbackManager implements UsageInformationAble {
 		$params = array_slice($params, 1, null, true);
 
 		foreach ($this->callbackListenings[$callbackName] as $listening) {
-			/** @var Listening $listening */
-			$listening->triggerCallbackWithParams($params);
+			try {
+				/** @var Listening $listening */
+				$listening->triggerCallbackWithParams($params);
+			} catch (ParseException $e) {
+				//TODO remove later, its for the wrong XML encoding of nadeo
+			}
 		}
 	}
 
