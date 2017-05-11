@@ -341,8 +341,14 @@ class ActionsMenu implements SidebarMenuEntryRenderable, CallbackListener, Mania
 	 * @param Player $player
 	 */
 	public function handlePlayerJoined(Player $player) {
-		$maniaLink = $this->buildMenuIconsManialink($player);
+		if ($this->maniaControl->getAuthenticationManager()->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
+			$maniaLink = $this->buildMenuIconsManialink(true);
+		} else {
+			$maniaLink = $this->buildMenuIconsManialink(false);
+		}
+
 		$this->maniaControl->getManialinkManager()->sendManialink($maniaLink, $player);
+
 	}
 
 	/**
