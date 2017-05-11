@@ -802,7 +802,7 @@ class CustomVotesPlugin implements SidebarMenuEntryRenderable, CommandListener, 
 	/**
 	 *  Call here the function which updates the MenuIcon Manialink
 	 */
-	public function renderMenuIcon() {
+	public function renderMenuEntry() {
 		$this->showIcon();
 	}
 }

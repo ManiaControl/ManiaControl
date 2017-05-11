@@ -117,7 +117,7 @@ class SidebarMenuManager implements UsageInformationAble, CallbackListener {
 
 		$registered = false;
 		foreach ($this->registeredClasses as $class) {
-			$class->renderMenuIcon();
+			$class->renderMenuEntry();
 			if ($class == $render) {
 				$registered = true;
 			}
@@ -125,7 +125,7 @@ class SidebarMenuManager implements UsageInformationAble, CallbackListener {
 
 		if (!$registered) {
 			array_push($this->registeredClasses, $render);
-			$render->renderMenuIcon();
+			$render->renderMenuEntry();
 		}
 
 		return true;

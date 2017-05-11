@@ -532,7 +532,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin, Sideb
 		$this->maniaControl->getManialinkManager()->displayWidget($maniaLink, $player, 'TopDons');
 	}
 
-	public function renderMenuIcon() {
+	public function renderMenuEntry() {
 		$this->displayDonateWidget();
 	}
 }
