@@ -871,7 +871,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			return;
 		}
 
-		$login = $structure->getPlayer()->login;
+		$login = $structure->getLogin();
 		if (!isset($this->checkpoints[$login])) {
 			$this->checkpoints[$login] = array();
 		}
