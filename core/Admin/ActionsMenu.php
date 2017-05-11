@@ -15,6 +15,7 @@ use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
+use ManiaControl\Manialinks\SidebarMenuEntryRenderable;
 use ManiaControl\Manialinks\SidebarMenuManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
@@ -29,7 +30,7 @@ use ManiaControl\Settings\SettingManager;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, UsageInformationAble {
+class ActionsMenu implements SidebarMenuEntryRenderable, CallbackListener, ManialinkPageAnswerListener, UsageInformationAble {
 	use UsageInformationTrait;
 
 	/*
@@ -74,8 +75,8 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(AuthenticationManager::CB_AUTH_LEVEL_CHANGED, $this, 'handlePlayerJoined');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(SettingManager::CB_SETTING_CHANGED, $this, 'handleSettingChanged');
 
-		$this->maniaControl->getManialinkManager()->getSidebarMenuManager()->addMenuEntry(SidebarMenuManager::ORDER_ADMIN_MENU, self::ADMIN_MENU_ID);
-		$this->maniaControl->getManialinkManager()->getSidebarMenuManager()->addMenuEntry(SidebarMenuManager::ORDER_PLAYER_MENU, self::PLAYER_MENU_ID);
+		$this->maniaControl->getManialinkManager()->getSidebarMenuManager()->addMenuEntry($this,SidebarMenuManager::ORDER_ADMIN_MENU, self::ADMIN_MENU_ID);
+		$this->maniaControl->getManialinkManager()->getSidebarMenuManager()->addMenuEntry($this,SidebarMenuManager::ORDER_PLAYER_MENU, self::PLAYER_MENU_ID);
 	}
 
 	/**
@@ -354,6 +355,13 @@ class ActionsMenu implements CallbackListener, ManialinkPageAnswerListener, Usag
 			return;
 		}
 
+		$this->rebuildAndShowMenu();
+	}
+
+	/**
+	 *  Call here the function which updates the MenuIcon Manialink
+	 */
+	public function renderMenuIcon() {
 		$this->rebuildAndShowMenu();
 	}
 }

@@ -19,6 +19,7 @@ use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\LabelLine;
 use ManiaControl\Manialinks\ManialinkManager;
+use ManiaControl\Manialinks\SidebarMenuEntryRenderable;
 use ManiaControl\Manialinks\SidebarMenuManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
@@ -31,7 +32,7 @@ use ManiaControl\Plugins\Plugin;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class DonationPlugin implements CallbackListener, CommandListener, Plugin {
+class DonationPlugin implements CallbackListener, CommandListener, Plugin, SidebarMenuEntryRenderable {
 	/*
 	 * Constants
 	 */
@@ -116,7 +117,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 		// Define player stats
 		$this->maniaControl->getStatisticManager()->defineStatMetaData(self::STAT_PLAYER_DONATIONS);
 
-		$this->maniaControl->getManialinkManager()->getSidebarMenuManager()->addMenuEntry(SidebarMenuManager::ORDER_PLAYER_MENU + 10, self::DONATIONPLUGIN_MENU_ID);
+		$this->maniaControl->getManialinkManager()->getSidebarMenuManager()->addMenuEntry($this,SidebarMenuManager::ORDER_PLAYER_MENU, self::DONATIONPLUGIN_MENU_ID);
 
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_DONATE_WIDGET_ACTIVATED, true);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_DONATION_VALUES, "20,50,100,500,1000,2000");
@@ -233,6 +234,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 	 */
 	public function unload() {
 		$this->maniaControl->getManialinkManager()->hideManialink(self::MLID_DONATE_WIDGET);
+		$this->maniaControl->getManialinkManager()->getSidebarMenuManager()->deleteMenuEntry($this,self::DONATIONPLUGIN_MENU_ID,true);
 	}
 
 	/**
@@ -528,5 +530,9 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin {
 
 		// Render and display xml
 		$this->maniaControl->getManialinkManager()->displayWidget($maniaLink, $player, 'TopDons');
+	}
+
+	public function renderMenuIcon() {
+		$this->displayDonateWidget();
 	}
 }

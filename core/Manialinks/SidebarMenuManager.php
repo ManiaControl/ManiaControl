@@ -7,7 +7,14 @@ use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
 
-
+/**
+ * Class managing the Sidebar icons
+ *
+ * @api
+ * @author    ManiaControl Team <mail@maniacontrol.com>
+ * @copyright 2014-2017 ManiaControl Team
+ * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
+ */
 class SidebarMenuManager implements UsageInformationAble, CallbackListener {
 	use UsageInformationTrait;
 
@@ -22,10 +29,16 @@ class SidebarMenuManager implements UsageInformationAble, CallbackListener {
 
 	/* @var $maniaControl ManiaControl */
 	private $maniaControl;
-	private $menuEntries = array();
-	private $yPositions  = array();
+	private $menuEntries       = array();
+	private $yPositions        = array();
+	private $registeredClasses = array();
 
-	function __construct(ManiaControl $maniaControl) {
+	/**
+	 * SidebarMenuManager constructor.
+	 *
+	 * @param \ManiaControl\ManiaControl $maniaControl
+	 */
+	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_SIDEBAR_POSX, 156);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_SIDEBAR_POSY_SHOOTMANIA, -37);
@@ -56,6 +69,7 @@ class SidebarMenuManager implements UsageInformationAble, CallbackListener {
 	 *
 	 * @param string $id
 	 * @return array|null
+	 * @api
 	 */
 	public function getEntryPosition($id) {
 		$itemSize = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MENU_ITEMSIZE);
@@ -79,36 +93,64 @@ class SidebarMenuManager implements UsageInformationAble, CallbackListener {
 		return null;
 	}
 
+
 	/**
 	 * Registers an Entry to the SidebarMenu
 	 * Get the associated position with getEntryPosition($id)
 	 *
-	 * @param int    $order
-	 * @param string $id
+	 * @param SidebarMenuEntryRenderable $render
+	 * @param                                                     $order
+	 * @param                                                     $id
+	 * @return bool
 	 * @api
 	 */
-	public function addMenuEntry($order, $id) {
+	public function addMenuEntry(SidebarMenuEntryRenderable $render, $order, $id) {
 		if (isset($this->menuEntries[$order])) {
 			if ($this->menuEntries[$order] != $id) {
-				$this->addMenuEntry($order + 1, $id);
+				return $this->addMenuEntry($render, $order + 1, $id);
 			}
 		}
 		$this->menuEntries[$order] = $id;
+		$this->yPositions          = array();
 		ksort($this->menuEntries);
-		$this->yPositions = array();
+
+
+		$registered = false;
+		foreach ($this->registeredClasses as $class) {
+			$class->renderMenuIcon();
+			if ($class == $render) {
+				$registered = true;
+			}
+		}
+
+		if (!$registered) {
+			array_push($this->registeredClasses, $render);
+			$render->renderMenuIcon();
+		}
+
+		return true;
 	}
 
 
 	/**
-	 * Deletes an Entry from the SidebarMenu
-	 *
-	 * @param string $id
+	 * @param \ManiaControl\Manialinks\SidebarMenuEntryRenderable $render
+	 * @param                                                     $id
+	 * @param bool                                                $unregisterClass
+	 * @api
 	 */
-	public function deleteMenuEntry($id) {
+	public function deleteMenuEntry(SidebarMenuEntryRenderable $render, $id, $unregisterClass = false) {
 		foreach ($this->menuEntries as $k => $entry) {
 			if ($entry == $id) {
 				array_splice($this->menuEntries, $k, 1);
 				$this->yPositions = array();
+			}
+		}
+
+		if($unregisterClass){
+			foreach($this->registeredClasses as $k => $class){
+				if($class == $render){
+					array_splice($this->registeredClasses, $k, 1);
+				}
 			}
 		}
 	}
