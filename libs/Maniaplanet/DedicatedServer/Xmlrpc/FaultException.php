@@ -22,6 +22,7 @@ class FaultException extends Exception {
 			case 'No map currently loaded.':
 			case 'No replay to save':
 			case 'Internal error.':
+			case 'Unable to retrieve validation data. ':
 				return new UnavailableFeatureException($faultString, $faultCode);
 			case 'You must enable the callbacks to be able to do chat routing.':
 			case 'Chat routing not enabled.':

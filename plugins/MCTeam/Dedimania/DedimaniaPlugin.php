@@ -22,6 +22,7 @@ use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
 use ManiaControl\Utils\Formatter;
+use Maniaplanet\DedicatedServer\Xmlrpc\UnavailableFeatureException;
 
 /**
  * ManiaControl Dedimania Plugin
@@ -1096,10 +1097,16 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 */
 	private function setRecordReplays(RecordData &$record) {
 		// Set validation replay
-		$validationReplay = $this->maniaControl->getServer()->getValidationReplay($record->login);
-		if ($validationReplay) {
-			$record->vReplay = $validationReplay;
+		try{
+			$validationReplay = $this->maniaControl->getServer()->getValidationReplay($record->login);
+			if ($validationReplay) {
+				$record->vReplay = $validationReplay;
+			}
+
+		}catch (UnavailableFeatureException $e){
+			Logger::logError("Unable to get Validation Replay from the Server");
 		}
+
 
 		// Set ghost replay
 		if ($record->rank <= 1) {
