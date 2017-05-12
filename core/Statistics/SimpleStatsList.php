@@ -15,6 +15,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Commands\CommandListener;
+use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\LabelLine;
 use ManiaControl\Manialinks\ManialinkManager;
@@ -178,6 +179,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		// Headline
 		$posX         = $xStart + 55;
 		$statRankings = array();
+
 		foreach ($this->statArray as $key => $stat) {
 			$ranking = $this->maniaControl->getStatisticManager()->getStatsRanking($stat["Name"]);
 			if (!empty($ranking)) {
@@ -208,6 +210,8 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 			return;
 		}
 
+
+$i = 0;
 		foreach ($statRankings[$order] as $playerId => $value) {
 			if ($index % self::MAX_PLAYERS_PER_PAGE === 1) {
 				$pageFrame = new Frame();
@@ -237,6 +241,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 
 			$labelLine = new LabelLine($playerFrame);
 			$posX      = $xStart + 55;
+
 			foreach ($this->statArray as $stat) {
 				$statValue = 0;
 				if (isset($statRankings[$stat['Name']][$playerId])) {
@@ -251,10 +256,11 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 				$label = new Label_Text();
 				$label->setX($posX);
 				$label->setText(strval($statValue));
-				$label->addTooltipLabelFeature($descriptionLabel, '$o ' . $stat['Name']);
+				//$label->addTooltipLabelFeature($descriptionLabel, '$o ' . $stat['Name']);
 				$labelLine->addLabel($label);
 
 				$posX += $stat['Width'];
+
 			}
 
 			$labelLine->addLabelEntryText($index, $xStart + 5, 9);
@@ -273,6 +279,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 
 			$index++;
 			$posY -= 4;
+
 		}
 
 		$pagerSize = 6.;
@@ -289,7 +296,6 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		$pageCountLabel->setHorizontalAlign($pageCountLabel::RIGHT)->setPosition($width * 0.40, $height * -0.44, 1)->setStyle($pageCountLabel::STYLE_TextTitle1)->setTextSize(1.3);
 
 		$paging->addButtonControl($pagerNext)->addButtonControl($pagerPrev)->setLabel($pageCountLabel);
-
 
 		$this->maniaControl->getManialinkManager()->displayWidget($maniaLink, $player, 'SimpleStatsList');
 	}

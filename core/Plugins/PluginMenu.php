@@ -346,17 +346,17 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 	 * @param array $callback
 	 */
 	public function handleManialinkPageAnswer(array $callback) {
-		$login  = $callback[1][1];
-		$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
-		if (!$player) {
-			return;
-		}
-
 		$actionId = $callback[1][2];
 		$enable   = (strpos($actionId, self::ACTION_PREFIX_ENABLEPLUGIN) === 0);
 		$disable  = (strpos($actionId, self::ACTION_PREFIX_DISABLEPLUGIN) === 0);
 		$settings = (strpos($actionId, self::ACTION_PREFIX_SETTINGS) === 0);
 		if (!$enable && !$disable && !$settings) {
+			return;
+		}
+
+		$login  = $callback[1][1];
+		$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
+		if (!$player) {
 			return;
 		}
 

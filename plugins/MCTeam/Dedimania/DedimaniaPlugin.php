@@ -1127,7 +1127,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 */
 	public function handleManialinkPageAnswer(array $callback) {
 		$actionId = $callback[1][2];
-
+		//TODO use manialinkpageanswerlistener
 		$login  = $callback[1][1];
 		$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
 

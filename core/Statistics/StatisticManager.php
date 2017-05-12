@@ -198,12 +198,13 @@ class StatisticManager implements UsageInformationAble {
 	 * @param string $statName
 	 * @param        $serverIndex
 	 * @param        $minValue
+	 * @param        $limit
 	 * @internal param $orderedBy
 	 * @return array
 	 */
-	public function getStatsRanking($statName = '', $serverIndex = -1, $minValue = -1) {
+	public function getStatsRanking($statName = '', $serverIndex = -1, $minValue = -1, $limit = 500) {
 		if (isset($this->specialStats[$statName])) {
-			return $this->getStatsRankingOfSpecialStat($statName, $serverIndex);
+			return $this->getStatsRankingOfSpecialStat($statName, $serverIndex, $limit);
 		}
 
 		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
@@ -214,7 +215,13 @@ class StatisticManager implements UsageInformationAble {
 		if ($minValue >= 0) {
 			$query .= "AND `value` >= {$minValue} ";
 		}
-		$query .= "ORDER BY `value` DESC;";
+		$query .= "ORDER BY `value` DESC";
+
+		if ($limit > 0) {
+			$query .= " LIMIT 500";
+		}
+
+		$query .= ";";
 
 		$result = $mysqli->query($query);
 		if (!$result) {
@@ -245,15 +252,16 @@ class StatisticManager implements UsageInformationAble {
 	 *
 	 * @api
 	 * @param string $statName
-	 * @param        $serverIndex
+	 * @param int    $serverIndex
+	 * @param int    $limit
 	 * @return array
 	 */
-	public function getStatsRankingOfSpecialStat($statName = '', $serverIndex = -1) {
+	public function getStatsRankingOfSpecialStat($statName = '', $serverIndex = -1, $limit = 500) {
 		$statsArray = array();
 		switch ($statName) {
 			case self::SPECIAL_STAT_KD_RATIO:
-				$kills  = $this->getStatsRanking(StatisticCollector::STAT_ON_KILL, $serverIndex);
-				$deaths = $this->getStatsRanking(StatisticCollector::STAT_ON_DEATH, $serverIndex);
+				$kills  = $this->getStatsRanking(StatisticCollector::STAT_ON_KILL, $serverIndex, $limit);
+				$deaths = $this->getStatsRanking(StatisticCollector::STAT_ON_DEATH, $serverIndex, $limit);
 				if (!$kills || !$deaths) {
 					return array();
 				}
@@ -266,8 +274,8 @@ class StatisticManager implements UsageInformationAble {
 				arsort($statsArray);
 				break;
 			case self::SPECIAL_STAT_HITS_PH:
-				$hits  = $this->getStatsRanking(StatisticCollector::STAT_ON_HIT, $serverIndex);
-				$times = $this->getStatsRanking(StatisticCollector::STAT_PLAYTIME, $serverIndex);
+				$hits  = $this->getStatsRanking(StatisticCollector::STAT_ON_HIT, $serverIndex, $limit);
+				$times = $this->getStatsRanking(StatisticCollector::STAT_PLAYTIME, $serverIndex, $limit);
 				if (!$hits || !$times) {
 					return array();
 				}
@@ -280,8 +288,8 @@ class StatisticManager implements UsageInformationAble {
 				arsort($statsArray);
 				break;
 			case self::SPECIAL_STAT_ARROW_ACC:
-				$hits  = $this->getStatsRanking(StatisticCollector::STAT_ARROW_HIT, $serverIndex);
-				$shots = $this->getStatsRanking(StatisticCollector::STAT_ARROW_SHOT, $serverIndex);
+				$hits  = $this->getStatsRanking(StatisticCollector::STAT_ARROW_HIT, $serverIndex, $limit);
+				$shots = $this->getStatsRanking(StatisticCollector::STAT_ARROW_SHOT, $serverIndex, $limit);
 				if (!$hits || !$shots) {
 					return array();
 				}
@@ -294,8 +302,8 @@ class StatisticManager implements UsageInformationAble {
 				arsort($statsArray);
 				break;
 			case self::SPECIAL_STAT_LASER_ACC:
-				$hits  = $this->getStatsRanking(StatisticCollector::STAT_LASER_HIT, $serverIndex);
-				$shots = $this->getStatsRanking(StatisticCollector::STAT_LASER_SHOT, $serverIndex);
+				$hits  = $this->getStatsRanking(StatisticCollector::STAT_LASER_HIT, $serverIndex, $limit);
+				$shots = $this->getStatsRanking(StatisticCollector::STAT_LASER_SHOT, $serverIndex, $limit);
 				if (!$hits || !$shots) {
 					return array();
 				}
@@ -308,8 +316,8 @@ class StatisticManager implements UsageInformationAble {
 				arsort($statsArray);
 				break;
 			case self::SPECIAL_STAT_ROCKET_ACC:
-				$hits  = $this->getStatsRanking(StatisticCollector::STAT_ROCKET_HIT, $serverIndex);
-				$shots = $this->getStatsRanking(StatisticCollector::STAT_ROCKET_SHOT, $serverIndex);
+				$hits  = $this->getStatsRanking(StatisticCollector::STAT_ROCKET_HIT, $serverIndex, $limit);
+				$shots = $this->getStatsRanking(StatisticCollector::STAT_ROCKET_SHOT, $serverIndex, $limit);
 				if (!$hits || !$shots) {
 					return array();
 				}
@@ -322,8 +330,8 @@ class StatisticManager implements UsageInformationAble {
 				arsort($statsArray);
 				break;
 			case self::SPECIAL_STAT_NUCLEUS_ACC:
-				$hits  = $this->getStatsRanking(StatisticCollector::STAT_NUCLEUS_HIT, $serverIndex);
-				$shots = $this->getStatsRanking(StatisticCollector::STAT_NUCLEUS_SHOT, $serverIndex);
+				$hits  = $this->getStatsRanking(StatisticCollector::STAT_NUCLEUS_HIT, $serverIndex, $limit);
+				$shots = $this->getStatsRanking(StatisticCollector::STAT_NUCLEUS_SHOT, $serverIndex, $limit);
 				if (!$hits || !$shots) {
 					return array();
 				}
