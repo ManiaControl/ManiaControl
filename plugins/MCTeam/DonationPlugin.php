@@ -146,7 +146,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin, Sideb
 	 */
 	public function displayDonateWidget($login = null) {
 		$pos               = $this->maniaControl->getManialinkManager()->getSidebarMenuManager()->getEntryPosition(self::DONATIONPLUGIN_MENU_ID);
-		$itemSize          = $this->maniaControl->getSettingManager()->getSettingValue(SidebarMenuManager::class, SidebarMenuManager::SETTING_MENU_ITEMSIZE);
+		$itemSize          = $this->maniaControl->getSettingManager()->getSettingValue($this->maniaControl->getManialinkManager()->getSidebarMenuManager(), SidebarMenuManager::SETTING_MENU_ITEMSIZE);
 		$values            = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_DONATION_VALUES);
 		$quadStyle         = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadStyle();
 		$quadSubstyle      = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadSubstyle();

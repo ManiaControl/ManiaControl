@@ -270,7 +270,7 @@ class CustomVotesPlugin implements SidebarMenuEntryRenderable, CommandListener, 
 	 */
 	private function showIcon($login = false) {
 		$pos               = $this->maniaControl->getManialinkManager()->getSidebarMenuManager()->getEntryPosition(self::CUSTOMVOTES_MENU_ID);
-		$width             = $this->maniaControl->getSettingManager()->getSettingValue(SidebarMenuManager::class, SidebarMenuManager::SETTING_MENU_ITEMSIZE);
+		$width             = $this->maniaControl->getSettingManager()->getSettingValue($this->maniaControl->getManialinkManager()->getSidebarMenuManager(), SidebarMenuManager::SETTING_MENU_ITEMSIZE);
 		$quadStyle         = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadStyle();
 		$quadSubstyle      = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadSubstyle();
 		$itemMarginFactorX = 1.3;
