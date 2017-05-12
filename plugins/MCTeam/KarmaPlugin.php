@@ -11,7 +11,6 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\TimerListener;
-use ManiaControl\Files\AsynchronousFileReader;
 use ManiaControl\Files\AsyncHttpRequest;
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
@@ -271,7 +270,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			} else {
 				Logger::logError("Error while authenticating on Mania-Exchange Karma");
 				// TODO remove temp trigger
-				$this->maniaControl->getErrorHandler()->triggerDebugNotice('auth error', $data->data->message);
+				$this->maniaControl->getErrorHandler()->triggerDebugNotice('auth error ' . $data->data->message);
 				$this->mxKarma['connectionInProgress'] = false;
 			}
 		});
@@ -781,7 +780,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			case self::SETTING_WIDGET_ENABLE: {
 				if ($setting->value) {
 					$this->updateManialink = true;
-					$this->handle1Second(time());
+					$this->handle1Second();
 				} else {
 					$this->updateManialink = false;
 					$this->maniaControl->getManialinkManager()->hideManialink(self::MLID_KARMA);

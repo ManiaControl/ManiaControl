@@ -426,6 +426,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 			if ($player->isFakePlayer()) {
 				continue;
 			}
+			//TODO combine the following to message to one (saves half of calls)
 			$this->showRank($player);
 			$this->showNextRank($player);
 		}
