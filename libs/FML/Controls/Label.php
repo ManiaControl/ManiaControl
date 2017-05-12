@@ -65,7 +65,7 @@ class Label extends Control implements Actionable, Linkable, NewLineable, MultiL
     /**
      * @var int $actionKey Action key
      */
-    protected $actionKey = -1;
+    protected $actionKey = null;
 
     /**
      * @var string $url Url
@@ -651,7 +651,7 @@ class Label extends Control implements Actionable, Linkable, NewLineable, MultiL
         if ($this->action) {
             $domElement->setAttribute("action", $this->action);
         }
-        if ($this->actionKey >= 0) {
+        if ($this->actionKey) {
             $domElement->setAttribute("actionkey", $this->actionKey);
         }
         if ($this->url) {

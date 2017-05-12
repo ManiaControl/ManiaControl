@@ -15,7 +15,7 @@ namespace ManiaControl\Manialinks;
 interface SidebarMenuEntryRenderable {
 
 	/**
-	 *  Call here the function which updates the MenuIcon Manialink
+	 *  Call here the function which updates the MenuIcon ManiaLink
 	 */
 	public function renderMenuEntry();
 }

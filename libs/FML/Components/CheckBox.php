@@ -13,7 +13,6 @@ use FML\Types\ScriptFeatureable;
 /**
  * CheckBox Component
  *
- * @uses      Quad
  * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2017 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
@@ -74,6 +73,8 @@ class CheckBox implements Renderable, ScriptFeatureable
     public function setName($name)
     {
         $this->name = (string)$name;
+        $this->getEntry()
+             ->setName($this->name);
         return $this;
     }
 
@@ -221,6 +222,7 @@ class CheckBox implements Renderable, ScriptFeatureable
      *
      * @param Entry $entry Hidden Entry
      * @return static
+     * @deprecated
      */
     public function setEntry(Entry $entry)
     {
@@ -236,9 +238,11 @@ class CheckBox implements Renderable, ScriptFeatureable
     protected function createEntry()
     {
         $entry = new Entry();
-        $entry->setVisible(false)
-              ->setName($this->name);
-        $this->setEntry($entry);
+        $entry->setVisible(false);
+        if ($this->name) {
+            $entry->setName($this->name);
+        }
+        $this->feature->setEntry($entry);
         return $entry;
     }
 
@@ -247,7 +251,7 @@ class CheckBox implements Renderable, ScriptFeatureable
      */
     public function getScriptFeatures()
     {
-        return ScriptFeature::collect($this->feature, $this->getQuad(), $this->feature->getEntry());
+        return ScriptFeature::collect($this->feature, $this->getQuad(), $this->getEntry());
     }
 
     /**

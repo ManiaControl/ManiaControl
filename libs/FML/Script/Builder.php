@@ -146,7 +146,7 @@ abstract class Builder
      * @param bool  $associative (optional) Whether the array should be associative
      * @return string
      */
-    public static function getArray(array $array, $associative = false)
+    public static function getArray(array $array, $associative = true)
     {
         $arrayText = "[";
         $index     = 0;
@@ -179,6 +179,9 @@ abstract class Builder
         }
         if (is_bool($value)) {
             return static::getBoolean($value);
+        }
+        if (is_array($value)) {
+            return static::getArray($value);
         }
         return $value;
     }
