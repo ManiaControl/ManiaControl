@@ -179,7 +179,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	private function displayWidgets() {
 		// Display Map Widget
 		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MAP_WIDGET_ACTIVATED)) {
-			$this->maniaControl->getClient()->triggerModeScriptEvent("Siege_SetProgressionLayerPosition", array("160.", "-67.", "0."));
+			$this->maniaControl->getModeScriptEventManager()->setSiegeProgressionUIPosition("160.", "-67.", "0.");
 			$this->displayMapWidget();
 		}
 		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_CLOCK_WIDGET_ACTIVATED)) {
@@ -385,7 +385,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	 */
 	public function unload() {
 		//Restore Siege Progression Layer
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Siege_SetProgressionLayerPosition', array("160.", "90.", "0."));
+		$this->maniaControl->getModeScriptEventManager()->setSiegeProgressionUIPosition("160.", "90.", "0.");
 
 		$this->closeWidget(self::MLID_CLOCK_WIDGET);
 		$this->closeWidget(self::MLID_SERVERINFO_WIDGET);

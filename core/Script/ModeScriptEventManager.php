@@ -384,7 +384,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 * @param $y
 	 * @param $z
 	 */
-	public function comboSetTimerPosition($x, $y, $z) {
+	public function setComboTimerPosition($x, $y, $z) {
 		$this->maniaControl->getClient()->triggerModeScriptEvent('Shootmania.Combo.SetTimersPosition', array(strval(floatval($x)), strval(floatval($y)), strval(floatval($z))));
 	}
 
@@ -396,7 +396,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 * @param $y
 	 * @param $z
 	 */
-	public function siegeSetProgressionUIPosition($x, $y, $z) {
+	public function setSiegeProgressionUIPosition($x, $y, $z) {
 		$this->maniaControl->getClient()->triggerModeScriptEvent('Shootmania.Siege.SetProgressionUIPosition', array(strval(floatval($x)), strval(floatval($y)), strval(floatval($z))));
 	}
 
