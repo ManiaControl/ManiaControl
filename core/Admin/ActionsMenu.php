@@ -141,8 +141,8 @@ class ActionsMenu implements SidebarMenuEntryRenderable, CallbackListener, Mania
 	/**
 	 * Builds the Manialink
 	 *
-	 * @param Player $player
-	 * @return ManiaLink
+	 * @param bool $admin
+	 * @return \FML\ManiaLink
 	 */
 	private function buildMenuIconsManialink($admin = false) {
 		$adminPos          = $this->maniaControl->getManialinkManager()->getSidebarMenuManager()->getEntryPosition(self::ADMIN_MENU_ID);
@@ -165,7 +165,7 @@ class ActionsMenu implements SidebarMenuEntryRenderable, CallbackListener, Mania
 			// Admin Menu Icon Frame
 			$iconFrame = new Frame();
 			$frame->addChild($iconFrame);
-			$iconFrame->setPosition($adminPos['x'], $adminPos['y']);
+			$iconFrame->setPosition($adminPos->getX(), $adminPos->getY());
 
 			$backgroundQuad = new Quad();
 			$iconFrame->addChild($backgroundQuad);
@@ -180,7 +180,7 @@ class ActionsMenu implements SidebarMenuEntryRenderable, CallbackListener, Mania
 			// Admin Menu Description
 			$descriptionLabel = new Label();
 			$frame->addChild($descriptionLabel);
-			$descriptionLabel->setPosition($adminPos['x'] - count($this->adminMenuItems) * $itemSize * 1.05 - 5, $adminPos['y']);
+			$descriptionLabel->setPosition($adminPos->getX() - count($this->adminMenuItems) * $itemSize * 1.05 - 5, $adminPos->getY());
 			$descriptionLabel->setAlign($descriptionLabel::RIGHT, $descriptionLabel::TOP);
 			$descriptionLabel->setSize(40, 4);
 			$descriptionLabel->setTextSize(1.4);
@@ -189,7 +189,7 @@ class ActionsMenu implements SidebarMenuEntryRenderable, CallbackListener, Mania
 			// Admin Menu
 			$popoutFrame = new Frame();
 			$frame->addChild($popoutFrame);
-			$popoutFrame->setPosition($adminPos['x'] - $itemSize * 0.5, $adminPos['y']);
+			$popoutFrame->setPosition($adminPos->getX() - $itemSize * 0.5, $adminPos->getY());
 			$popoutFrame->setHorizontalAlign($popoutFrame::RIGHT);
 			$popoutFrame->setVisible(false);
 
@@ -228,7 +228,7 @@ class ActionsMenu implements SidebarMenuEntryRenderable, CallbackListener, Mania
 		// Player Menu Icon Frame
 		$iconFrame = new Frame();
 		$frame->addChild($iconFrame);
-		$iconFrame->setPosition($playerPos['x'], $playerPos['y']);
+		$iconFrame->setPosition($playerPos->getX(), $playerPos->getY());
 
 		$backgroundQuad = new Quad();
 		$iconFrame->addChild($backgroundQuad);
@@ -243,7 +243,7 @@ class ActionsMenu implements SidebarMenuEntryRenderable, CallbackListener, Mania
 		// Player Menu Description
 		$descriptionLabel = new Label();
 		$frame->addChild($descriptionLabel);
-		$descriptionLabel->setPosition($playerPos['x'] - count($this->playerMenuItems) * $itemSize * 1.05 - 5, $playerPos['y']);
+		$descriptionLabel->setPosition($playerPos->getX() - count($this->playerMenuItems) * $itemSize * 1.05 - 5, $playerPos->getY());
 		$descriptionLabel->setAlign($descriptionLabel::RIGHT, $descriptionLabel::TOP);
 		$descriptionLabel->setSize(40, 4);
 		$descriptionLabel->setTextSize(1.4);
@@ -252,7 +252,7 @@ class ActionsMenu implements SidebarMenuEntryRenderable, CallbackListener, Mania
 		// Player Menu
 		$popoutFrame = new Frame();
 		$frame->addChild($popoutFrame);
-		$popoutFrame->setPosition($playerPos['x'] - $itemSize * 0.5, $playerPos['y']);
+		$popoutFrame->setPosition($playerPos->getX() - $itemSize * 0.5, $playerPos->getY());
 		$popoutFrame->setHorizontalAlign($popoutFrame::RIGHT);
 		$popoutFrame->setVisible(false);
 

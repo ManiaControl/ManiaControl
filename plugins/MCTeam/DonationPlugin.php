@@ -159,7 +159,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin, Sideb
 		// Donate Menu Icon Frame
 		$frame = new Frame();
 		$maniaLink->addChild($frame);
-		$frame->setPosition($pos['x'], $pos['y']);
+		$frame->setPosition($pos->getX(), $pos->getY());
 		$frame->setZ(ManialinkManager::MAIN_MANIALINK_Z_VALUE);
 
 		$backgroundQuad = new Quad();

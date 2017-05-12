@@ -283,7 +283,7 @@ class CustomVotesPlugin implements SidebarMenuEntryRenderable, CommandListener, 
 		//Custom Vote Menu Iconsframe
 		$frame = new Frame();
 		$maniaLink->addChild($frame);
-		$frame->setPosition($pos['x'], $pos['y']);
+		$frame->setPosition($pos->getX(), $pos->getY());
 		$frame->setZ(ManialinkManager::MAIN_MANIALINK_Z_VALUE);
 
 		$backgroundQuad = new Quad();
@@ -304,7 +304,7 @@ class CustomVotesPlugin implements SidebarMenuEntryRenderable, CommandListener, 
 		$menuEntries      = count($this->voteMenuItems);
 		$descriptionFrame = new Frame();
 		$maniaLink->addChild($descriptionFrame);
-		$descriptionFrame->setPosition($pos['x'] - $menuEntries * $itemSize * 1.05 - 5, $pos['y']);
+		$descriptionFrame->setPosition($pos->getX() - $menuEntries * $itemSize * 1.05 - 5, $pos->getY());
 
 		$descriptionLabel = new Label();
 		$descriptionFrame->addChild($descriptionLabel);
@@ -316,7 +316,7 @@ class CustomVotesPlugin implements SidebarMenuEntryRenderable, CommandListener, 
 		//Popout Frame
 		$popoutFrame = new Frame();
 		$maniaLink->addChild($popoutFrame);
-		$popoutFrame->setPosition($pos['x'] - $itemSize * 0.5, $pos['y']);
+		$popoutFrame->setPosition($pos->getX() - $itemSize * 0.5, $pos->getY());
 		$popoutFrame->setHorizontalAlign($popoutFrame::RIGHT);
 		$popoutFrame->setSize(4 * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
 		$popoutFrame->setVisible(false);
@@ -349,7 +349,6 @@ class CustomVotesPlugin implements SidebarMenuEntryRenderable, CommandListener, 
 				}
 			}
 		}
-
 
 		// Send manialink
 		$this->maniaControl->getManialinkManager()->sendManialink($maniaLink, $login);

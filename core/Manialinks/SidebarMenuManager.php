@@ -3,6 +3,7 @@
 namespace ManiaControl\Manialinks;
 
 use ManiaControl\Callbacks\CallbackListener;
+use ManiaControl\Callbacks\Structures\ShootMania\Models\Position;
 use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
@@ -47,9 +48,9 @@ class SidebarMenuManager implements UsageInformationAble, CallbackListener {
 	}
 
 	/**
-	 * Returns array('x' => xPosition, 'y' => yPosition) of the Sidebar
+	 * Returns Position of the Sidebar (PositionObject with x and y)
 	 *
-	 * @return array
+	 * @return Position
 	 * @api
 	 */
 	public function getSidebarPosition() {
@@ -61,32 +62,36 @@ class SidebarMenuManager implements UsageInformationAble, CallbackListener {
 			$posY = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SIDEBAR_POSY_TRACKMANIA);
 		}
 
-		return array('x' => $posX, 'y' => $posY);
+		$pos = new Position();
+		$pos->setX($posX);
+		$pos->setY($posY);
+
+		return $pos;
 	}
 
 	/**
-	 * Returns array('x' => xPosition, 'y' => yPosition) of a menu item of the sidebar
+	 * Returns PositionObject of a menu item of the sidebar, or null if it's not found
 	 *
 	 * @param string $id
-	 * @return array|null
+	 * @return Position|null
 	 * @api
 	 */
 	public function getEntryPosition($id) {
-		$itemSize = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MENU_ITEMSIZE);
-		$pos      = $this->getSidebarPosition();
-		$posX     = $pos['x'];
-		$posY     = $pos['y'];
+		$itemSize         = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MENU_ITEMSIZE);
+		$itemMarginFactor = 1.2;
+		$pos              = $this->getSidebarPosition();
 
 		if (isset($this->yPositions[$id])) {
-			return array('x' => $posX, 'y' => $this->yPositions[$id]);
+			$pos->setY($this->yPositions[$id]);
+			return $pos;
 		}
 
 		foreach ($this->menuEntries as $entry) {
 			if ($entry == $id) {
-				$this->yPositions[$id] = $posY;
-				return array('x' => $posX, 'y' => $posY);
+				$this->yPositions[$id] = $pos->getY();
+				return $pos;
 			}
-			$posY -= $itemSize * 1.05;
+			$pos->setY($pos->getY() - $itemSize * $itemMarginFactor);
 		}
 
 		$this->maniaControl->getErrorHandler()->triggerDebugNotice('SidebarMenuEntry id:' . $id . ' not found');
@@ -98,7 +103,7 @@ class SidebarMenuManager implements UsageInformationAble, CallbackListener {
 	 * Registers an Entry to the SidebarMenu
 	 * Get the associated position with getEntryPosition($id)
 	 *
-	 * @param SidebarMenuEntryRenderable $render
+	 * @param SidebarMenuEntryRenderable                          $render
 	 * @param                                                     $order
 	 * @param                                                     $id
 	 * @return bool
@@ -133,7 +138,7 @@ class SidebarMenuManager implements UsageInformationAble, CallbackListener {
 
 
 	/**
-	 * @param \ManiaControl\Manialinks\SidebarMenuEntryRenderable $render
+	 * @param SidebarMenuEntryRenderable                          $render
 	 * @param                                                     $id
 	 * @param bool                                                $unregisterClass
 	 * @api
@@ -146,13 +151,15 @@ class SidebarMenuManager implements UsageInformationAble, CallbackListener {
 			}
 		}
 
-		if($unregisterClass){
-			foreach($this->registeredClasses as $k => $class){
-				if($class == $render){
+			foreach ($this->registeredClasses as $k => $class) {
+				if ($class == $render && $unregisterClass) {
 					array_splice($this->registeredClasses, $k, 1);
+				}else{
+					$class->renderMenuEntry();
 				}
 			}
-		}
+
+
 	}
 
 }
