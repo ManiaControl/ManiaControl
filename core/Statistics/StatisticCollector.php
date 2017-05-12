@@ -304,7 +304,10 @@ class StatisticCollector implements CallbackListener { //TODO remove old callbac
 
 		$durationTime = ($structure->getTime() - $this->startPlayLoopTime) / 1000;
 
-		$this->maniaControl->getStatisticManager()->insertStat(self::STAT_PLAYTIME, $structure->getPlayer(), $this->maniaControl->getServer()->index, $durationTime);
+		//TODO reverify why player can be 0
+		if($structure->getPlayer()){
+			$this->maniaControl->getStatisticManager()->insertStat(self::STAT_PLAYTIME, $structure->getPlayer(), $this->maniaControl->getServer()->index, $durationTime);
+		}
 	}
 
 
