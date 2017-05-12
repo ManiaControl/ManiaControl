@@ -202,7 +202,7 @@ class StatisticManager implements UsageInformationAble {
 	 * @internal param $orderedBy
 	 * @return array
 	 */
-	public function getStatsRanking($statName = '', $serverIndex = -1, $minValue = -1, $limit = 500) {
+	public function getStatsRanking($statName = '', $serverIndex = -1, $minValue = -1, $limit = 200) {
 		if (isset($this->specialStats[$statName])) {
 			return $this->getStatsRankingOfSpecialStat($statName, $serverIndex, $limit);
 		}
@@ -218,7 +218,7 @@ class StatisticManager implements UsageInformationAble {
 		$query .= "ORDER BY `value` DESC";
 
 		if ($limit > 0) {
-			$query .= " LIMIT 500";
+			$query .= " LIMIT " . $limit;
 		}
 
 		$query .= ";";
@@ -256,7 +256,7 @@ class StatisticManager implements UsageInformationAble {
 	 * @param int    $limit
 	 * @return array
 	 */
-	public function getStatsRankingOfSpecialStat($statName = '', $serverIndex = -1, $limit = 500) {
+	public function getStatsRankingOfSpecialStat($statName = '', $serverIndex = -1, $limit = 200) {
 		$statsArray = array();
 		switch ($statName) {
 			case self::SPECIAL_STAT_KD_RATIO:

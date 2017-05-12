@@ -73,10 +73,11 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_Stats);
 		$itemQuad->setAction(self::ACTION_OPEN_STATSLIST);
 		$this->maniaControl->getActionsMenu()->addMenuItem($itemQuad, true, 14, 'Open Statistics');
-
+		//TODO Chunking
+		
 		//TODO settings if a stat get shown
 		$this->registerStat(PlayerManager::STAT_SERVERTIME, 10, "ST", 20, StatisticManager::STAT_TYPE_TIME);
-		$this->registerStat(StatisticCollector::STAT_ON_HIT, 20, "H");
+		$this->registerStat(StatisticCollector::STAT_ARROW_HIT, 20, "H");
 		$this->registerStat(StatisticCollector::STAT_ON_NEARMISS, 30, "NM");
 		$this->registerStat(StatisticCollector::STAT_ON_KILL, 40, "K");
 		$this->registerStat(StatisticCollector::STAT_ON_DEATH, 50, "D");
@@ -128,6 +129,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		$quadSubstyle = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultMainWindowSubStyle();
 
 
+		$order = StatisticCollector::STAT_ARROW_HIT;
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$width     = $this->statsWidth + 60;
 		//TODO handle size when stats are empty
@@ -211,7 +213,6 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		}
 
 
-$i = 0;
 		foreach ($statRankings[$order] as $playerId => $value) {
 			if ($index % self::MAX_PLAYERS_PER_PAGE === 1) {
 				$pageFrame = new Frame();
@@ -264,7 +265,7 @@ $i = 0;
 			}
 
 			$labelLine->addLabelEntryText($index, $xStart + 5, 9);
-			$labelLine->addLabelEntryText($listPlayer->nickname, $xStart + 14, 41);
+			$labelLine->addLabelEntryText($listPlayer->login, $xStart + 14, 41);
 			$labelLine->render();
 
 			$playerFrame->setY($posY);
