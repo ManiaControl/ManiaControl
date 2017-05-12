@@ -85,6 +85,7 @@ class ManiaExchangeMapSearch implements UsageInformationAble {
 	private $ghostBlocks       = null;
 	private $embeddedObjects   = null;
 	private $key               = null;
+	private $mp4               = null;
 
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
@@ -105,19 +106,20 @@ class ManiaExchangeMapSearch implements UsageInformationAble {
 
 		$this->url = 'https://' . $this->titlePrefix . '.mania-exchange.com/tracksearch2/search?api=on';
 
-		if ($key = $this->maniaControl->getSettingManager()->getSettingValue($this->maniaControl->getMapManager()->getMXManager(), ManiaExchangeManager::SETTING_MX_KEY)) {
+		/*if ($key = $this->maniaControl->getSettingManager()->getSettingValue($this->maniaControl->getMapManager()->getMXManager(), ManiaExchangeManager::SETTING_MX_KEY)) {
 			$this->url .= "&key=" . $key;
-		}
+		}*/
 
 
 		//Set some defaults:
 		$this->mapLimit      = 100;
 		$this->priorityOrder = self::SEARCH_ORDER_UPDATED_NEWEST;
+		$this->mp4 = true;
 
 		//Set Min Exe Build Default for games which are not Trackmania
-		if ($this->titlePrefix !== "tm") {
+		/*if ($this->titlePrefix !== "tm") {
 			$this->minExeBuild = ManiaExchangeManager::MIN_EXE_BUILD;
-		}
+		}*/
 
 		//Set MapTypes
 		try {
@@ -221,6 +223,9 @@ class ManiaExchangeMapSearch implements UsageInformationAble {
 		}
 		if (isset($this->key)) {
 			$parameters .= "&key=" . $this->key;
+		}
+		if (isset($this->mp4)){
+			$parameters .= "&mp4=" .  $this->mp4;
 		}
 
 		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, $this->url . $parameters);

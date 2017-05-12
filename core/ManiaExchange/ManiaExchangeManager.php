@@ -64,7 +64,7 @@ class ManiaExchangeManager implements UsageInformationAble {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MX_KEY, "");
+		//$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MX_KEY, "");
 	}
 
 	/**
@@ -166,9 +166,9 @@ class ManiaExchangeManager implements UsageInformationAble {
 		// compile search URL
 		$url = "https://api.mania-exchange.com/{$titlePrefix}/maps/?ids={$string}";
 
-		if ($key = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MX_KEY)) {
+		/*if ($key = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MX_KEY)) {
 			$url .= "&key=" . $key;
-		}
+		}*/
 
 		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, $url);
 		$asyncHttpRequest->setContentType(AsyncHttpRequest::CONTENT_TYPE_JSON);
@@ -267,9 +267,9 @@ class ManiaExchangeManager implements UsageInformationAble {
 		// compile search URL
 		$url = 'https://api.mania-exchange.com/' . $titlePrefix . '/maps/?ids=' . $mapId;
 
-		if ($key = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MX_KEY)) {
+		/*if ($key = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MX_KEY)) {
 			$url .= "&key=" . $key;
-		}
+		}*/
 
 		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, $url);
 		$asyncHttpRequest->setContentType(AsyncHttpRequest::CONTENT_TYPE_JSON);
