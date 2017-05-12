@@ -146,14 +146,14 @@ class SidebarMenuManager implements UsageInformationAble, CallbackListener {
 	public function deleteMenuEntry(SidebarMenuEntryRenderable $render, $id, $unregisterClass = false) {
 		foreach ($this->menuEntries as $k => $entry) {
 			if ($entry == $id) {
-				array_splice($this->menuEntries, $k, 1);
+				unset($this->menuEntries[$k]);
 				$this->yPositions = array();
 			}
 		}
 
 			foreach ($this->registeredClasses as $k => $class) {
 				if ($class == $render && $unregisterClass) {
-					array_splice($this->registeredClasses, $k, 1);
+					unset($this->registeredClasses[$k]);
 				}else{
 					$class->renderMenuEntry();
 				}
