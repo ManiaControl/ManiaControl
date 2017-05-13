@@ -386,6 +386,10 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 
 		$player = $structure->getPlayer();
 
+		if(!$player){ //TODO verify why this can happen
+			return;
+		}
+
 		$checkpointsString                 = $this->getCheckpoints($player->login);
 		$this->checkpoints[$player->login] = array();
 
