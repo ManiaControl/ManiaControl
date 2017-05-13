@@ -114,7 +114,7 @@ class ManiaExchangeMapSearch implements UsageInformationAble {
 		//Set some defaults:
 		$this->mapLimit      = 100;
 		$this->priorityOrder = self::SEARCH_ORDER_UPDATED_NEWEST;
-		$this->mp4 = true;
+		$this->mp4           = true;
 
 		//Set Min Exe Build Default for games which are not Trackmania
 		/*if ($this->titlePrefix !== "tm") {
@@ -224,8 +224,8 @@ class ManiaExchangeMapSearch implements UsageInformationAble {
 		if (isset($this->key)) {
 			$parameters .= "&key=" . $this->key;
 		}
-		if (isset($this->mp4)){
-			$parameters .= "&mp4=" .  $this->mp4;
+		if (isset($this->mp4)) {
+			$parameters .= "&mp4=" . $this->mp4;
 		}
 
 		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, $this->url . $parameters);
@@ -278,6 +278,8 @@ class ManiaExchangeMapSearch implements UsageInformationAble {
 				return 2;
 			case 'TMValley':
 				return 3;
+			case 'TMLagoon':
+				return 4;
 			default:
 				return -1;
 		}

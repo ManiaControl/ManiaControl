@@ -325,23 +325,4 @@ class ManiaExchangeManager implements UsageInformationAble {
 
 		$mapSearch->fetchMapsAsync($function);
 	}
-
-	/**
-	 * Get the Current Environment by String
-	 *
-	 * @param string $env
-	 * @return int
-	 */
-	private function getEnvironment($env) {
-		switch ($env) {
-			case 'TMCanyon':
-				return 1;
-			case 'TMStadium':
-				return 2;
-			case 'TMValley':
-				return 3;
-			default:
-				return -1;
-		}
-	}
 }
