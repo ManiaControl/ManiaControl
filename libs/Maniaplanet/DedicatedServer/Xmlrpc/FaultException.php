@@ -92,6 +92,7 @@ class FaultException extends Exception {
 			case 'The playlist file does not exist.':
 			case 'Invalid url or file.':
 			case 'Invalid url.':
+			case 'No map to export in playlist.':
 				return new FileException($faultString, $faultCode);
 		}
 		if (preg_match('~^Unknown setting \'.*\'\.$~iu', $faultString)) {
