@@ -1098,6 +1098,11 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	private function setRecordReplays(RecordData &$record) {
 		// Set validation replay
 		try{
+			//TODO verify why it can be that login is not set
+			if(!$record->login){
+				return;
+			}
+
 			$validationReplay = $this->maniaControl->getServer()->getValidationReplay($record->login);
 			if ($validationReplay) {
 				$record->vReplay = $validationReplay;
