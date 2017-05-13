@@ -93,7 +93,13 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_HANDLE_WARMUP, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 
 		//Triggers a WarmUp Status Callback
-		$this->maniaControl->getModeScriptEventManager()->getWarmupStatus();
+		try{
+			$this->maniaControl->getModeScriptEventManager()->getWarmupStatus();
+		}catch(GameModeException $e){
+			$this->maniaControl->getChat()->sendErrorToAdmins("Not in script mode");
+			Logger::logError("Not in Script mode");
+		}
+
 
 		$this->updateCancelVoteMenuItem();
 		$this->updateWarmUpMenuItems();
