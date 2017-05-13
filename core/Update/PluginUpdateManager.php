@@ -426,8 +426,8 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 		}
 		$pluginUpdateData = new PluginUpdateData($pluginVersion);
 		$version          = $pluginClass::getVersion();
-
-		if ($pluginUpdateData->isNewerThan($version) && $pluginUpdateData->minManiaControlVersion >= ManiaControl::VERSION) {
+		
+		if ($pluginUpdateData->isNewerThan($version) && ($pluginUpdateData->maxManiaControlVersion == -1 || $pluginUpdateData->maxManiaControlVersion >= ManiaControl::VERSION)) {
 			return $pluginUpdateData;
 		}
 		return false;
