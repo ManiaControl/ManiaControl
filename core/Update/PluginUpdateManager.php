@@ -250,7 +250,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 		}
 
 		if ($pluginUpdateData->maxManiaControlVersion != -1 && ManiaControl::VERSION > $pluginUpdateData->maxManiaControlVersion) {
-			$message = "Your ManiaControl Version v" . ManiaControl::VERSION . " is too new for this Plugin (max Version of the Plugin: ' . {$pluginUpdateData->minManiaControlVersion}!";
+			$message = "Your ManiaControl Version v" . ManiaControl::VERSION . " is too new for this Plugin (max Version of the Plugin: ' . {$pluginUpdateData->maxManiaControlVersion}!";
 			if ($player) {
 				$this->maniaControl->getChat()->sendError($message, $player);
 			}
@@ -426,7 +426,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 		}
 		$pluginUpdateData = new PluginUpdateData($pluginVersion);
 		$version          = $pluginClass::getVersion();
-		
+
 		if ($pluginUpdateData->isNewerThan($version) && ($pluginUpdateData->maxManiaControlVersion == -1 || $pluginUpdateData->maxManiaControlVersion >= ManiaControl::VERSION)) {
 			return $pluginUpdateData;
 		}
