@@ -6,6 +6,9 @@ use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
+use ManiaControl\Communication\CommunicationAnswer;
+use ManiaControl\Communication\CommunicationListener;
+use ManiaControl\Communication\CommunicationMethods;
 use ManiaControl\Files\AsyncHttpRequest;
 use ManiaControl\Files\BackupUtil;
 use ManiaControl\Files\FileUtil;
@@ -21,7 +24,7 @@ use ManiaControl\Players\PlayerManager;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class UpdateManager implements CallbackListener, CommandListener, TimerListener {
+class UpdateManager implements CallbackListener, CommandListener, TimerListener, CommunicationListener {
 	/*
 	 * Constants
 	 */
@@ -80,6 +83,12 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 
 		// Children
 		$this->pluginUpdateManager = new PluginUpdateManager($maniaControl);
+
+		// Communication Methods
+		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::UPDATE_MANIA_CONTROL_CORE, $this, function ($data) {
+			$this->checkAndHandleCoreUpdate();
+			return new CommunicationAnswer();
+		});
 	}
 
 	/**
@@ -502,13 +511,26 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener 
 			return;
 		}
 
+		$this->checkAndHandleCoreUpdate($player);
+	}
+
+	/**
+	 * Handle CoreUpdate Asnyc
+	 *
+	 * @param null $player
+	 */
+	private function checkAndHandleCoreUpdate($player = null) {
 		$this->checkCoreUpdateAsync(function (UpdateData $updateData = null) use (&$player) {
 			if (!$updateData) {
-				$this->maniaControl->getChat()->sendError('Update is currently not possible!', $player);
+				if ($player) {
+					$this->maniaControl->getChat()->sendError('Update is currently not possible!', $player);
+				}
 				return;
 			}
 			if (!$this->checkUpdateDataBuildVersion($updateData)) {
-				$this->maniaControl->getChat()->sendError("The Next ManiaControl Update requires a newer Dedicated Server Version!", $player);
+				if ($player) {
+					$this->maniaControl->getChat()->sendError("The Next ManiaControl Update requires a newer Dedicated Server Version!", $player);
+				}
 				return;
 			}
 

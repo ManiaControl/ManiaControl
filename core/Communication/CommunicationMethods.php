@@ -16,6 +16,9 @@ interface CommunicationMethods {
 	 */
 	const RESTART_MANIA_CONTROL = "ManiaControl.Restart";
 
+	/** Update the ManiaControl Core */
+	const UPDATE_MANIA_CONTROL_CORE = "UpdateManager.CoreUpdate";
+
 	/** Grands an Authentication Level on a Player
 	 *   Required Parameters
 	 *      - login (login of the player)
