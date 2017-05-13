@@ -8,8 +8,10 @@ use ManiaControl\Callbacks\Structures\XmlRpc\DocumentationStructure;
 use ManiaControl\Callbacks\Structures\XmlRpc\MethodListStructure;
 use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
+use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
+use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
 
 /**
  * Manager for Mode Script Events
@@ -39,7 +41,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 * Enables XmlRpc Callbacks
 	 */
 	public function enableCallbacks() {
-		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.EnableCallbacks', array('true'));
+		$this->triggerModeScriptEvent('XmlRpc.EnableCallbacks', array('true'));
 
 		$this->setApiVersion(self::API_VERSION);
 		$this->unBlockAllCallbacks();
@@ -49,7 +51,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 * Disables XmlRpc Callbacks
 	 */
 	public function disableCallbacks() {
-		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.EnableCallbacks', array('false'));
+		$this->triggerModeScriptEvent('XmlRpc.EnableCallbacks', array('false'));
 	}
 
 
@@ -61,7 +63,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 */
 	public function getCallbacksList() {
 		$responseId = $this->generateResponseId();
-		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.GetCallbacksList', array($responseId));
+		$this->triggerModeScriptEvent('XmlRpc.GetCallbacksList', array($responseId));
 		return new InvokeScriptCallback($this->maniaControl, Callbacks::XMLRPC_CALLBACKSLIST, $responseId);
 	}
 
@@ -83,7 +85,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 * @param array $callbackNames
 	 */
 	public function blockCallbacks($callbackNames) {
-		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.BlockCallbacks', $callbackNames);
+		$this->triggerModeScriptEvent('XmlRpc.BlockCallbacks', $callbackNames);
 	}
 
 	/**
@@ -114,7 +116,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 * @param array $callbackNames
 	 */
 	public function unBlockCallbacks($callbackNames) {
-		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.UnblockCallbacks', $callbackNames);
+		$this->triggerModeScriptEvent('XmlRpc.UnblockCallbacks', $callbackNames);
 	}
 
 	/**
@@ -135,7 +137,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 */
 	public function getListOfEnabledCallbacks() {
 		$responseId = $this->generateResponseId();
-		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.GetCallbacksList_Enabled', array($responseId));
+		$this->triggerModeScriptEvent('XmlRpc.GetCallbacksList_Enabled', array($responseId));
 		return new InvokeScriptCallback($this->maniaControl, Callbacks::XMLRPC_ENABLEDCALLBACKS, $responseId);
 	}
 
@@ -147,7 +149,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 */
 	public function getListOfDisabledCallbacks() {
 		$responseId = $this->generateResponseId();
-		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.GetCallbacksList_Disabled', array($responseId));
+		$this->triggerModeScriptEvent('XmlRpc.GetCallbacksList_Disabled', array($responseId));
 		return new InvokeScriptCallback($this->maniaControl, Callbacks::XMLRPC_DISABLEDCALLBACKS, $responseId);
 	}
 
@@ -160,7 +162,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 */
 	public function getCallbackHelp($callbackName) {
 		$responseId = $this->generateResponseId();
-		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.GetCallbackHelp', array($callbackName, $responseId));
+		$this->triggerModeScriptEvent('XmlRpc.GetCallbackHelp', array($callbackName, $responseId));
 		return new InvokeScriptCallback($this->maniaControl, Callbacks::XMLRPC_CALLBACKHELP, $responseId);
 	}
 
@@ -173,7 +175,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 */
 	public function getMethodsList() {
 		$responseId = $this->generateResponseId();
-		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.GetMethodsList', array($responseId));
+		$this->triggerModeScriptEvent('XmlRpc.GetMethodsList', array($responseId));
 		return new InvokeScriptCallback($this->maniaControl, Callbacks::XMLRPC_METHODSLIST, $responseId);
 	}
 
@@ -194,7 +196,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 * @param string $version
 	 */
 	public function setApiVersion($version = self::API_VERSION) {
-		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.SetApiVersion', array($version));
+		$this->triggerModeScriptEvent('XmlRpc.SetApiVersion', array($version));
 	}
 
 	/**
@@ -205,7 +207,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 */
 	public function getApiVersion() {
 		$responseId = $this->generateResponseId();
-		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.GetApiVersion', array($responseId));
+		$this->triggerModeScriptEvent('XmlRpc.GetApiVersion', array($responseId));
 		return new InvokeScriptCallback($this->maniaControl, Callbacks::XMLRPC_APIVERSION, $responseId);
 	}
 
@@ -218,7 +220,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 */
 	public function getMethodHelp($methodName) {
 		$responseId = $this->generateResponseId();
-		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.GetMethodHelp', array($methodName, $responseId));
+		$this->triggerModeScriptEvent('XmlRpc.GetMethodHelp', array($methodName, $responseId));
 		return new InvokeScriptCallback($this->maniaControl, Callbacks::XMLRPC_METHODHELP, $responseId);
 	}
 
@@ -230,7 +232,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 */
 	public function getDocumentation() {
 		$responseId = $this->generateResponseId();
-		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.GetDocumentation', array($responseId));
+		$this->triggerModeScriptEvent('XmlRpc.GetDocumentation', array($responseId));
 		return new InvokeScriptCallback($this->maniaControl, Callbacks::XMLRPC_DOCUMENTATION, $responseId);
 	}
 
@@ -253,7 +255,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 */
 	public function getAllApiVersions() {
 		$responseId = $this->generateResponseId();
-		$this->maniaControl->getClient()->triggerModeScriptEvent('XmlRpc.GetAllApiVersions', array($responseId));
+		$this->triggerModeScriptEvent('XmlRpc.GetAllApiVersions', array($responseId));
 		return new InvokeScriptCallback($this->maniaControl, Callbacks::XMLRPC_ALLAPIVERSIONS, $responseId);
 	}
 
@@ -265,7 +267,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 */
 	public function hideScoreBoardOnAlt(Player $player) {
 		$login = Player::parseLogin($player);
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.UI.SetAltScoresTableVisibility', array($login, "False"));
+		$this->triggerModeScriptEvent('Maniaplanet.UI.SetAltScoresTableVisibility', array($login, "False"));
 	}
 
 	/**
@@ -276,7 +278,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 */
 	public function displayScoreBoardOnAlt(Player $player) {
 		$login = Player::parseLogin($player);
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.UI.SetAltScoresTableVisibility', array($login, "True"));
+		$this->triggerModeScriptEvent('Maniaplanet.UI.SetAltScoresTableVisibility', array($login, "True"));
 	}
 
 	/**
@@ -286,7 +288,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 * @param $seconds < the duration of the extension in seconds.
 	 */
 	public function extendManiaPlanetWarmup($seconds) {
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.WarmUp.Extend', array(strval($seconds * 1000)));
+		$this->triggerModeScriptEvent('Maniaplanet.WarmUp.Extend', array(strval($seconds * 1000)));
 	}
 
 	/**
@@ -295,7 +297,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 * @api
 	 */
 	public function stopManiaPlanetWarmup() {
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.WarmUp.Stop');
+		$this->triggerModeScriptEvent('Maniaplanet.WarmUp.Stop');
 	}
 
 	/**
@@ -304,7 +306,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 * @param int $time Timer before the end of the warmup when all players are ready. Use a negative value to prevent the warmup from ending even if all players are ready.
 	 */
 	public function blockEndWarmUp($time = -1) {
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.WarmUp.BlockEndWarmUp', array("True", strval($time)));
+		$this->triggerModeScriptEvent('Maniaplanet.WarmUp.BlockEndWarmUp', array("True", strval($time)));
 	}
 
 	/**
@@ -313,7 +315,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 * @param int $time Timer before the end of the warmup when all players are ready. Use a negative value to prevent the warmup from ending even if all players are ready.
 	 */
 	public function unBlockEndWarmUp($time = -1) {
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.WarmUp.BlockEndWarmUp', array("False", strval($time)));
+		$this->triggerModeScriptEvent('Maniaplanet.WarmUp.BlockEndWarmUp', array("False", strval($time)));
 	}
 
 	/**
@@ -324,7 +326,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 */
 	public function getWarmupStatus() {
 		$responseId = $this->generateResponseId();
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.WarmUp.GetStatus', array($responseId));
+		$this->triggerModeScriptEvent('Maniaplanet.WarmUp.GetStatus', array($responseId));
 		return new InvokeScriptCallback($this->maniaControl, Callbacks::MP_WARMUP_STATUS, $responseId);
 	}
 
@@ -336,7 +338,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 */
 	public function getPauseStatus() {
 		$responseId = $this->generateResponseId();
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.Pause.GetStatus', array($responseId));
+		$this->triggerModeScriptEvent('Maniaplanet.Pause.GetStatus', array($responseId));
 		return new InvokeScriptCallback($this->maniaControl, Callbacks::MP_PAUSE_STATUS, $responseId);
 	}
 
@@ -348,7 +350,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 */
 	public function startPause() {
 		$responseId = $this->generateResponseId();
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.Pause.SetActive', array("True", $responseId));
+		$this->triggerModeScriptEvent('Maniaplanet.Pause.SetActive', array("True", $responseId));
 		return new InvokeScriptCallback($this->maniaControl, Callbacks::MP_PAUSE_STATUS, $responseId);
 	}
 
@@ -360,7 +362,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 */
 	public function endPause() {
 		$responseId = $this->generateResponseId();
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.Pause.SetActive', array("False", $responseId));
+		$this->triggerModeScriptEvent('Maniaplanet.Pause.SetActive', array("False", $responseId));
 		return new InvokeScriptCallback($this->maniaControl, Callbacks::MP_PAUSE_STATUS, $responseId);
 	}
 
@@ -372,7 +374,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 */
 	public function isTeamMode() {
 		$responseId = $this->generateResponseId();
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Maniaplanet.Mode.GetUseTeams', array($responseId));
+		$this->triggerModeScriptEvent('Maniaplanet.Mode.GetUseTeams', array($responseId));
 		return new InvokeScriptCallback($this->maniaControl, Callbacks::MP_USES_TEAMMODE, $responseId);
 	}
 
@@ -385,7 +387,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 * @param $z
 	 */
 	public function setComboTimerPosition($x, $y, $z) {
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Shootmania.Combo.SetTimersPosition', array(strval(floatval($x)), strval(floatval($y)), strval(floatval($z))));
+		$this->triggerModeScriptEvent('Shootmania.Combo.SetTimersPosition', array(strval(floatval($x)), strval(floatval($y)), strval(floatval($z))));
 	}
 
 	/**
@@ -397,7 +399,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 * @param $z
 	 */
 	public function setSiegeProgressionUIPosition($x, $y, $z) {
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Shootmania.Siege.SetProgressionUIPosition', array(strval(floatval($x)), strval(floatval($y)), strval(floatval($z))));
+		$this->triggerModeScriptEvent('Shootmania.Siege.SetProgressionUIPosition', array(strval(floatval($x)), strval(floatval($y)), strval(floatval($z))));
 	}
 
 
@@ -409,7 +411,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 */
 	public function getShootmaniaScores() {
 		$responseId = $this->generateResponseId();
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Shootmania.GetScores', array($responseId));
+		$this->triggerModeScriptEvent('Shootmania.GetScores', array($responseId));
 		return new InvokeScriptCallback($this->maniaControl, Callbacks::SM_SCORES, $responseId);
 	}
 
@@ -421,7 +423,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 */
 	public function getShootmaniaUIProperties() {
 		$responseId = $this->generateResponseId();
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Shootmania.UI.GetProperties', array($responseId));
+		$this->triggerModeScriptEvent('Shootmania.UI.GetProperties', array($responseId));
 		return new InvokeScriptCallback($this->maniaControl, Callbacks::SM_UIPROPERTIES, $responseId);
 	}
 
@@ -433,7 +435,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 * @return \ManiaControl\Script\InvokeScriptCallback You can directly set a callable on it via setCallable() to get the updated Properties
 	 */
 	public function setShootmaniaUIProperties($properties) {
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Shootmania.UI.SetProperties', array($properties));
+		$this->triggerModeScriptEvent('Shootmania.UI.SetProperties', array($properties));
 		return $this->getShootmaniaUIProperties();
 	}
 
@@ -445,7 +447,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 */
 	public function getTrackmaniaScores() {
 		$responseId = $this->generateResponseId();
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Trackmania.GetScores', array($responseId));
+		$this->triggerModeScriptEvent('Trackmania.GetScores', array($responseId));
 		return new InvokeScriptCallback($this->maniaControl, Callbacks::TM_SCORES, $responseId);
 	}
 
@@ -457,7 +459,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 */
 	public function getTrackmaniaPointsRepartition() {
 		$responseId = $this->generateResponseId();
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Trackmania.GetPointsRepartition', array($responseId));
+		$this->triggerModeScriptEvent('Trackmania.GetPointsRepartition', array($responseId));
 		return new InvokeScriptCallback($this->maniaControl, Callbacks::TM_POINTSREPARTITION, $responseId);
 	}
 
@@ -468,7 +470,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 * @param array String Array of Points
 	 */
 	public function setTrackmaniaPointsRepartition($pointArray) {
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Trackmania.SetPointsRepartition', $pointArray);
+		$this->triggerModeScriptEvent('Trackmania.SetPointsRepartition', $pointArray);
 	}
 
 	/**
@@ -479,7 +481,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 */
 	public function getTrackmaniaUIProperties() {
 		$responseId = $this->generateResponseId();
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Trackmania.UI.GetProperties', array($responseId));
+		$this->triggerModeScriptEvent('Trackmania.UI.GetProperties', array($responseId));
 		return new InvokeScriptCallback($this->maniaControl, Callbacks::TM_UIPROPERTIES, $responseId);
 	}
 
@@ -491,7 +493,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 * @return \ManiaControl\Script\InvokeScriptCallback You can directly set a callable on it via setCallable() to get the updated Properties
 	 */
 	public function setTrackmaniaUIProperties($properties) {
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Trackmania.UI.SetProperties', array($properties));
+		$this->triggerModeScriptEvent('Trackmania.UI.SetProperties', array($properties));
 		return $this->getTrackmaniaUIProperties();
 	}
 
@@ -501,7 +503,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 * @api
 	 */
 	public function stopTrackmaniaWarmup() {
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Trackmania.WarmUp.Stop');
+		$this->triggerModeScriptEvent('Trackmania.WarmUp.Stop');
 	}
 
 	/**
@@ -510,7 +512,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 * @api
 	 */
 	public function stopTrackmaniaRound() {
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Trackmania.WarmUp.StopRound');
+		$this->triggerModeScriptEvent('Trackmania.WarmUp.StopRound');
 	}
 
 
@@ -520,7 +522,25 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 * @api
 	 */
 	public function forceTrackmaniaRoundEnd() {
-		$this->maniaControl->getClient()->triggerModeScriptEvent('Trackmania.ForceEndRound');
+		$this->triggerModeScriptEvent('Trackmania.ForceEndRound');
+	}
+
+	/**
+	 * Triggers a ModeScript Event
+	 *
+	 * @api
+	 * @param        $eventName
+	 * @param string $data
+	 */
+	public function triggerModeScriptEvent($eventName, $data = '') {
+		try {
+			$this->maniaControl->getClient()->triggerModeScriptEvent($eventName, $data);
+		} catch (GameModeException $e) {
+			if ($e->getMessage() != 'Not in script mode.') {
+				throw $e;
+			}
+			Logger::logWarning($eventName . " can't be triggered because you are not in Scriptmode, start your server in Scriptmode!");
+		}
 	}
 
 	/**

@@ -421,9 +421,10 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 		$response      = WebReader::getUrl($url);
 		$dataJson      = $response->getContent();
 		$pluginVersion = json_decode($dataJson);
-		if (!$pluginVersion) {
+		if (!$pluginVersion || !property_exists($pluginVersion, 'id')) {
 			return false;
 		}
+
 		$pluginUpdateData = new PluginUpdateData($pluginVersion);
 		$version          = $pluginClass::getVersion();
 
