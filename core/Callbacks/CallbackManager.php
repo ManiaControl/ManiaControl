@@ -5,6 +5,7 @@ namespace ManiaControl\Callbacks;
 use ManiaControl\ErrorHandler;
 use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
+use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use Maniaplanet\DedicatedServer\Xmlrpc\ParseException;
 
@@ -239,6 +240,7 @@ class CallbackManager implements UsageInformationAble {
 			$callbacks = $this->maniaControl->getClient()->executeCallbacks();
 		} catch (ParseException $e) {
 			//TODO remove later, its for the wrong XML encoding of nadeo
+			Logger::logError("Parse Exception");
 			return;
 		}
 
