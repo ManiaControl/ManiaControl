@@ -11,6 +11,7 @@ use ManiaControl\Files\FileUtil;
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
+use ManiaControl\Update\PluginUpdateManager;
 use ManiaControl\Utils\ClassUtil;
 use ReflectionClass;
 
@@ -128,7 +129,17 @@ class PluginManager {
 			$className = end($splitNameSpace);
 		}
 		if (FileUtil::getFileName($reflector->getFileName()) != $className) {
-			Logger::logError("Plugin ClassName does not match FileName; Plugin: " . $className);
+			$updateAvailable = PluginUpdateManager::getPluginUpdate($pluginClass, true);
+			Logger::logError("FileName does not match Plugin ClassName; Plugin: " . $className);
+
+			if ($updateAvailable) {
+				//Update Is available, plugin will be deleted
+				unlink($reflector->getFileName());
+				$message = "There is a new version of " . $className . " available, restart ManiaControl and install the new version after from the Install Plugins Menu!";
+				Logger::log($message);
+				Logger::log("File " . $className . " will be deleted!");
+				//TODO maybe a better solution, throw exception here and do stuff automatically
+			}
 			return false;
 		}
 

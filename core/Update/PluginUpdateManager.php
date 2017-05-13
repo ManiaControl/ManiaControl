@@ -257,7 +257,7 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 			Logger::logError($message);
 			return;
 		}
-		
+
 		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, $pluginUpdateData->url);
 		$asyncHttpRequest->setCallable(function ($updateFileContent, $error) use (
 			&$pluginUpdateData, &$player, &$update
@@ -322,8 +322,9 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 
 			if (!$update) {
 				$newPluginClasses = $this->maniaControl->getPluginManager()->loadPlugins();
+
 				if (empty($newPluginClasses)) {
-					$message = "Loading fresh installed Plugin '{$pluginUpdateData->pluginName}' failed!";
+					$message = "Loading fresh installed Plugin '{$pluginUpdateData->pluginName}' failed, try to restart ManiaControl!";
 					if ($player) {
 						$this->maniaControl->getChat()->sendError($message, $player);
 					}
@@ -405,10 +406,15 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 	 * Check given Plugin Class for Update
 	 *
 	 * @param string $pluginClass
+	 * @param bool   $skipPluginClassFetch
 	 * @return mixed
-	 */
-	public function getPluginUpdate($pluginClass) {
-		$pluginClass = PluginManager::getPluginClass($pluginClass);
+	 **/
+	public static function getPluginUpdate($pluginClass, $skipPluginClassFetch = false) {
+		if (!$skipPluginClassFetch) {
+			//Used to avoid recursion in the isPluginClass Method
+			$pluginClass = PluginManager::getPluginClass($pluginClass);
+		}
+
 		/** @var Plugin $pluginClass */
 		$pluginId      = $pluginClass::getId();
 		$url           = ManiaControl::URL_WEBSERVICE . 'plugins/' . $pluginId;
@@ -420,7 +426,8 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 		}
 		$pluginUpdateData = new PluginUpdateData($pluginVersion);
 		$version          = $pluginClass::getVersion();
-		if ($pluginUpdateData->isNewerThan($version)) {
+
+		if ($pluginUpdateData->isNewerThan($version) && $pluginUpdateData->minManiaControlVersion >= ManiaControl::VERSION) {
 			return $pluginUpdateData;
 		}
 		return false;
