@@ -508,7 +508,7 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 
 		try {
 			$offset = 0;
-			while ($this->maniaControl->getClient()) {
+			while ($this->maniaControl->getClient() && $offset < 5000) {
 				$maps = $this->maniaControl->getClient()->getMapList(150, $offset);
 
 				foreach ($maps as $rpcMap) {
@@ -524,6 +524,7 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 
 				$offset += 150;
 			}
+
 		} catch (IndexOutOfBoundException $e) {
 		}
 

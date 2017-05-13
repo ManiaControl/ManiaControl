@@ -578,6 +578,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 
 			// Load plugins
 			$this->getPluginManager()->loadPlugins();
+
 			$this->getUpdateManager()->getPluginUpdateManager()->checkPluginsUpdate();
 
 			// AfterInit callback
