@@ -7,7 +7,9 @@ use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
+use Maniaplanet\DedicatedServer\Xmlrpc\FaultException;
 use Maniaplanet\DedicatedServer\Xmlrpc\ParseException;
+use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
 
 /**
  * Class for managing Server and ManiaControl Callbacks
@@ -253,7 +255,13 @@ class CallbackManager implements UsageInformationAble {
 		}
 
 		//Execute Multicalls
-		$this->maniaControl->getClient()->executeMulticall();
+		try {
+			$this->maniaControl->getClient()->executeMulticall();
+		} catch (UnknownPlayerException $e) {
+		} catch (FaultException $e) {
+			$this->maniaControl->getErrorHandler()->triggerDebugNotice("Exception while executing Multicalls " . $e->getMessage());
+		}
+
 
 		$fullTime = microtime(true) - $startTime;
 
