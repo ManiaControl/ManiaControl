@@ -19,7 +19,7 @@ define('LOG_NAME_USE_PID', true); // Use current process id as suffix for log fi
 define('MANIACONTROL_PATH', __DIR__ . DIRECTORY_SEPARATOR);
 
 // Set process settings
-ini_set('memory_limit', '64M');
+ini_set('memory_limit', '128M');
 if (!ini_get('date.timezone') && function_exists('date_default_timezone_set')) {
 	date_default_timezone_set('UTC');
 }
