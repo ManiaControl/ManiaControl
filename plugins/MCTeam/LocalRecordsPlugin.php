@@ -552,7 +552,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$height = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsHeight();
 
 		// get PlayerList
-		$records = $this->getLocalRecords($this->maniaControl->getMapManager()->getCurrentMap());
+		$records = $this->getLocalRecords($this->maniaControl->getMapManager()->getCurrentMap(),200);
 
 		// create manialink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
