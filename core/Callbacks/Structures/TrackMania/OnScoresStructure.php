@@ -27,7 +27,6 @@ class OnScoresStructure extends CommonScoresStructure {
 		parent::__construct($maniaControl, $data);
 
 		$jsonObj = $this->getPlainJsonObject();
-		var_dump($jsonObj);
 		foreach ($jsonObj->players as $jsonPlayer) {
 			$player = $this->maniaControl->getPlayerManager()->getPlayer($jsonPlayer->login);
 			if ($player) {
