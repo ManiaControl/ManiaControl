@@ -37,7 +37,11 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 	 */
 	const ACTION_OPEN_STATSLIST = 'SimpleStatsList.OpenStatsList';
 	const ACTION_SORT_STATS     = 'SimpleStatsList.SortStats';
+	const ACTION_PAGING_CHUNKS  = 'SimpleStatsList.PagingChunk';
 	const MAX_PLAYERS_PER_PAGE  = 15;
+	const MAX_PAGES_PER_CHUNK   = 2;
+	const CACHE_CURRENT_PAGE    = 'SimpleStatsList.CurrentPage';
+
 
 	/*
 	 * Private properties
@@ -74,7 +78,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		$itemQuad->setAction(self::ACTION_OPEN_STATSLIST);
 		$this->maniaControl->getActionsMenu()->addMenuItem($itemQuad, true, 14, 'Open Statistics');
 		//TODO Chunking
-		
+
 		//TODO settings if a stat get shown
 		$this->registerStat(PlayerManager::STAT_SERVERTIME, 10, "ST", 20, StatisticManager::STAT_TYPE_TIME);
 		$this->registerStat(StatisticCollector::STAT_ARROW_HIT, 20, "H");
@@ -123,13 +127,22 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 	 * @param Player $player
 	 * @param string $order
 	 */
-	public function showStatsList(Player $player, $order = PlayerManager::STAT_SERVERTIME) {
+	public function showStatsList(Player $player, $order = PlayerManager::STAT_SERVERTIME, $pageIndex = -1) {
 		$height       = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsHeight();
 		$quadStyle    = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultMainWindowStyle();
 		$quadSubstyle = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultMainWindowSubStyle();
 
+		if ($pageIndex < 0) {
+			$pageIndex = (int) $player->getCache($this, self::CACHE_CURRENT_PAGE);
+		}
+		$player->setCache($this, self::CACHE_CURRENT_PAGE, $pageIndex);
 
-		$order = StatisticCollector::STAT_ARROW_HIT;
+		$totalPlayersCount = $this->maniaControl->getStatisticManager()->getTotalStatsPlayerCount(-1);
+		$chunkIndex        = $this->getChunkIndexFromPageNumber($pageIndex, $totalPlayersCount);
+		$playerBeginIndex  = $this->getChunkStatsBeginIndex($chunkIndex);
+
+		$pagesCount = ceil($totalPlayersCount / self::MAX_PLAYERS_PER_PAGE);
+
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$width     = $this->statsWidth + 60;
 		//TODO handle size when stats are empty
@@ -137,6 +150,10 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		$script = $maniaLink->getScript();
 		$paging = new Paging();
 		$script->addFeature($paging);
+		$paging->setCustomMaxPageNumber($pagesCount);
+		$paging->setChunkActionAppendsPageNumber(true);
+		$paging->setChunkActions(self::ACTION_PAGING_CHUNKS);
+		$paging->setStartPageNumber($pageIndex + 1);
 
 		// Main frame
 		$frame = new Frame();
@@ -182,8 +199,9 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		$posX         = $xStart + 55;
 		$statRankings = array();
 
+
 		foreach ($this->statArray as $key => $stat) {
-			$ranking = $this->maniaControl->getStatisticManager()->getStatsRanking($stat["Name"]);
+			$ranking = $this->maniaControl->getStatisticManager()->getStatsRanking($stat["Name"], -1, -1, 20000);
 			if (!empty($ranking)) {
 				$statRankings[$stat["Name"]] = $ranking;
 
@@ -204,22 +222,26 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 
 
 		// define standard properties
-		$index = 1;
-		$posY  -= 10;
-		$pageFrame = null;
+		$index       = 1;
+		$posY        -= 10;
+		$pageFrame   = null;
+		$playerIndex = 1 + $playerBeginIndex;
 
 		if (!isset($statRankings[$order])) {
 			return;
 		}
 
-
+		//Slice Array to chunk length
+		$statRankings[$order] = array_slice($statRankings{$order}, $playerBeginIndex, self::MAX_PAGES_PER_CHUNK * self::MAX_PLAYERS_PER_PAGE, true);
+		$pageNumber           = 1 + $chunkIndex * self::MAX_PAGES_PER_CHUNK;
 		foreach ($statRankings[$order] as $playerId => $value) {
 			if ($index % self::MAX_PLAYERS_PER_PAGE === 1) {
 				$pageFrame = new Frame();
 				$frame->addChild($pageFrame);
 				$pageFrame->setZ(1);
 
-				$paging->addPageControl($pageFrame);
+				$paging->addPageControl($pageFrame, $pageNumber);
+				$pageNumber++;
 				$posY = $height / 2 - 10;
 			}
 
@@ -264,7 +286,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 
 			}
 
-			$labelLine->addLabelEntryText($index, $xStart + 5, 9);
+			$labelLine->addLabelEntryText($playerIndex, $xStart + 5, 9);
 			$labelLine->addLabelEntryText($listPlayer->login, $xStart + 14, 41);
 			$labelLine->render();
 
@@ -279,6 +301,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 			}
 
 			$index++;
+			$playerIndex++;
 			$posY -= 4;
 
 		}
@@ -301,6 +324,31 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		$this->maniaControl->getManialinkManager()->displayWidget($maniaLink, $player, 'SimpleStatsList');
 	}
 
+
+	/**
+	 * Get the Chunk Index with the given Page Index
+	 *
+	 * @param int $pageIndex
+	 * @return int
+	 */
+	private function getChunkIndexFromPageNumber($pageIndex, $totalPlayersCount) {
+		$pagesCount = ceil($totalPlayersCount / self::MAX_PLAYERS_PER_PAGE);
+		if ($pageIndex > $pagesCount - 1) {
+			$pageIndex = $pagesCount - 1;
+		}
+		return floor($pageIndex / self::MAX_PAGES_PER_CHUNK);
+	}
+
+	/**
+	 * Calculate the First Player Index to show for the given Chunk
+	 *
+	 * @param int $chunkIndex
+	 * @return int
+	 */
+	private function getChunkStatsBeginIndex($chunkIndex) {
+		return $chunkIndex * self::MAX_PAGES_PER_CHUNK * self::MAX_PLAYERS_PER_PAGE;
+	}
+
 	/**
 	 * Called on ManialinkPageAnswer
 	 *
@@ -309,18 +357,24 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 	public function handleManialinkPageAnswer(array $callback) {
 		$actionId    = $callback[1][2];
 		$actionArray = explode('.', $actionId, 3);
-		if (count($actionArray) <= 2) {
+		if (count($actionArray) < 2) {
 			return;
 		}
 
 		$action = $actionArray[0] . '.' . $actionArray[1];
 
+		$playerLogin = $callback[1][1];
+		$player      = $this->maniaControl->getPlayerManager()->getPlayer($playerLogin);
 		switch ($action) {
 			case self::ACTION_SORT_STATS:
-				$playerLogin = $callback[1][1];
-				$player      = $this->maniaControl->getPlayerManager()->getPlayer($playerLogin);
 				$this->showStatsList($player, $actionArray[2]);
 				break;
+			default:
+				if (substr($actionId, 0, strlen(self::ACTION_PAGING_CHUNKS)) === self::ACTION_PAGING_CHUNKS) {
+					// Paging chunks
+					$neededPage = (int) substr($actionId, strlen(self::ACTION_PAGING_CHUNKS));
+					$this->showStatsList($player, PlayerManager::STAT_SERVERTIME, $neededPage - 1);
+				}
 		}
 	}
 }

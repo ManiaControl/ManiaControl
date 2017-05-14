@@ -55,9 +55,12 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 	const ACTION_REVOKE_RIGHTS        = 'PlayerList.RevokeRights';
 	const ACTION_OPEN_PLAYER_DETAILED = 'PlayerList.OpenPlayerDetailed';
 	const ACTION_SPECTATE_PLAYER      = 'PlayerList.SpectatePlayer';
+	const ACTION_PAGING_CHUNKS        = 'PlayerList.PagingChunks';
+	const CACHE_CURRENT_PAGE          = 'PlayerList.CurrentPage';
 	const DEFAULT_CUSTOM_VOTE_PLUGIN  = 'MCTeam\CustomVotesPlugin';
 	const SHOWN_MAIN_WINDOW           = -1;
 	const MAX_PLAYERS_PER_PAGE        = 15;
+	const MAX_PAGES_PER_CHUNK         = 2;
 
 	/*
 	 * Private properties
@@ -135,18 +138,33 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 	 *
 	 * @param Player $player
 	 */
-	public function showPlayerList(Player $player) {
+	public function showPlayerList(Player $player, $pageIndex = -1) {
 		$width  = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsWidth();
 		$height = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsHeight();
 
 		// get PlayerList
 		$players = $this->maniaControl->getPlayerManager()->getPlayers();
 
+		if ($pageIndex < 0) {
+			$pageIndex = (int) $player->getCache($this, self::CACHE_CURRENT_PAGE);
+		}
+		$player->setCache($this, self::CACHE_CURRENT_PAGE, $pageIndex);
+
+		$totalPlayersCount = count($players);
+		$chunkIndex        = $this->getChunkIndexFromPageNumber($pageIndex, $totalPlayersCount);
+		$playerBeginIndex  = $this->getChunkStatsBeginIndex($chunkIndex);
+
+		$pagesCount = ceil($totalPlayersCount / self::MAX_PLAYERS_PER_PAGE);
+
 		//create manialink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$script    = $maniaLink->getScript();
 		$paging    = new Paging();
 		$script->addFeature($paging);
+		$paging->setCustomMaxPageNumber($pagesCount);
+		$paging->setChunkActionAppendsPageNumber(true);
+		$paging->setChunkActions(self::ACTION_PAGING_CHUNKS);
+		$paging->setStartPageNumber($pageIndex + 1);
 
 		// Main frame
 		$frame = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultListFrame($script, $paging);
@@ -179,16 +197,22 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$labelLine->render();
 
 
-		$index     = 1;
-		$posY      = $height / 2 - 10;
-		$pageFrame = null;
+		$index       = 1;
+		$posY        = $height / 2 - 10;
+		$pageFrame   = null;
+		$playerIndex = 1 + $playerBeginIndex;
+
+		//Slice Array to chunk length
+		$players    = array_slice($players, $playerBeginIndex, self::MAX_PAGES_PER_CHUNK * self::MAX_PLAYERS_PER_PAGE, true);
+		$pageNumber = 1 + $chunkIndex * self::MAX_PAGES_PER_CHUNK;
 
 		foreach ($players as $listPlayer) {
 			if ($index % self::MAX_PLAYERS_PER_PAGE === 1) {
 				$pageFrame = new Frame();
 				$frame->addChild($pageFrame);
 
-				$paging->addPageControl($pageFrame);
+				$paging->addPageControl($pageFrame, $pageNumber);
+				$pageNumber++;
 				$posY = $height / 2 - 10;
 			}
 
@@ -205,7 +229,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 			}
 			$labelLine = new LabelLine($playerFrame);
 
-			$labelLine->addLabelEntryText($index, $posX + 5, 13);
+			$labelLine->addLabelEntryText($playerIndex, $posX + 5, 13);
 			$labelLine->addLabelEntryText($listPlayer->nickname, $posX + 18, 43);
 			$labelLine->addLabelEntryText($listPlayer->login, $posX + 70, 26);
 			$labelLine->addLabelEntryText($path, $posX + 101, 27);
@@ -404,6 +428,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 
 			$posY -= 4;
 			$index++;
+			$playerIndex++;
 		}
 
 		// Show advanced window
@@ -617,6 +642,30 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 	}
 
 	/**
+	 * Get the Chunk Index with the given Page Index
+	 *
+	 * @param int $pageIndex
+	 * @return int
+	 */
+	private function getChunkIndexFromPageNumber($pageIndex, $totalPlayersCount) {
+		$pagesCount = ceil($totalPlayersCount / self::MAX_PLAYERS_PER_PAGE);
+		if ($pageIndex > $pagesCount - 1) {
+			$pageIndex = $pagesCount - 1;
+		}
+		return floor($pageIndex / self::MAX_PAGES_PER_CHUNK);
+	}
+
+	/**
+	 * Calculate the First Player Index to show for the given Chunk
+	 *
+	 * @param int $chunkIndex
+	 * @return int
+	 */
+	private function getChunkStatsBeginIndex($chunkIndex) {
+		return $chunkIndex * self::MAX_PAGES_PER_CHUNK * self::MAX_PLAYERS_PER_PAGE;
+	}
+
+	/**
 	 * Called on ManialinkPageAnswer
 	 *
 	 * @param array $callback
@@ -624,119 +673,127 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 	public function handleManialinkPageAnswer(array $callback) {
 		$actionId    = $callback[1][2];
 		$actionArray = explode('.', $actionId, 3);
-		if (count($actionArray) <= 2) {
-			return;
-		}
-
 		$action      = $actionArray[0] . '.' . $actionArray[1];
-		$adminLogin  = $callback[1][1];
-		$targetLogin = $actionArray[2];
+		if (count($actionArray) > 2) {
 
-		switch ($action) {
-			case self::ACTION_SPECTATE_PLAYER:
-				try {
-					$this->maniaControl->getClient()->forceSpectator($adminLogin, PlayerActions::SPECTATOR_BUT_KEEP_SELECTABLE);
-					$this->maniaControl->getClient()->forceSpectatorTarget($adminLogin, $targetLogin, 1);
-				} catch (PlayerStateException $e) {
-				} catch (UnknownPlayerException $e) {
-				}
-				break;
-			case self::ACTION_OPEN_PLAYER_DETAILED:
-				$player = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
-				$this->maniaControl->getPlayerManager()->getPlayerDetailed()->showPlayerDetailed($player, $targetLogin);
-				unset($this->playersListShown[$player->login]);
-				break;
-			case self::ACTION_FORCE_BLUE:
-				$this->maniaControl->getPlayerManager()->getPlayerActions()->forcePlayerToTeam($adminLogin, $targetLogin, PlayerActions::TEAM_BLUE);
-				break;
-			case self::ACTION_FORCE_RED:
-				$this->maniaControl->getPlayerManager()->getPlayerActions()->forcePlayerToTeam($adminLogin, $targetLogin, PlayerActions::TEAM_RED);
-				break;
-			case self::ACTION_FORCE_SPEC:
-				$this->maniaControl->getPlayerManager()->getPlayerActions()->forcePlayerToSpectator($adminLogin, $targetLogin, PlayerActions::SPECTATOR_BUT_KEEP_SELECTABLE);
-				break;
-			case self::ACTION_FORCE_PLAY:
-				$this->maniaControl->getPlayerManager()->getPlayerActions()->forcePlayerToPlay($adminLogin, $targetLogin);
-				break;
-			case self::ACTION_MUTE_PLAYER:
-				$this->maniaControl->getPlayerManager()->getPlayerActions()->mutePlayer($adminLogin, $targetLogin);
-				$this->showPlayerList($this->maniaControl->getPlayerManager()->getPlayer($adminLogin));
-				break;
-			case self::ACTION_UNMUTE_PLAYER:
-				$this->maniaControl->getPlayerManager()->getPlayerActions()->unMutePlayer($adminLogin, $targetLogin);
-				$this->showPlayerList($this->maniaControl->getPlayerManager()->getPlayer($adminLogin));
-				break;
-			case self::ACTION_WARN_PLAYER:
-				$this->maniaControl->getPlayerManager()->getPlayerActions()->warnPlayer($adminLogin, $targetLogin);
-				break;
-			case self::ACTION_KICK_PLAYER:
-				$this->maniaControl->getPlayerManager()->getPlayerActions()->kickPlayer($adminLogin, $targetLogin);
-				break;
-			case self::ACTION_BAN_PLAYER:
-				$this->maniaControl->getPlayerManager()->getPlayerActions()->banPlayer($adminLogin, $targetLogin);
-				break;
-			case self::ACTION_PLAYER_ADV:
-				$admin = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
-				$this->advancedPlayerWidget($admin, $targetLogin);
-				break;
-			case self::ACTION_ADD_AS_MASTER:
-				$this->maniaControl->getPlayerManager()->getPlayerActions()->grandAuthLevel($adminLogin, $targetLogin, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
-				break;
-			case self::ACTION_ADD_AS_ADMIN:
-				$this->maniaControl->getPlayerManager()->getPlayerActions()->grandAuthLevel($adminLogin, $targetLogin, AuthenticationManager::AUTH_LEVEL_ADMIN);
-				break;
-			case self::ACTION_ADD_AS_MOD:
-				$this->maniaControl->getPlayerManager()->getPlayerActions()->grandAuthLevel($adminLogin, $targetLogin, AuthenticationManager::AUTH_LEVEL_MODERATOR);
-				break;
-			case self::ACTION_REVOKE_RIGHTS:
-				$this->maniaControl->getPlayerManager()->getPlayerActions()->revokeAuthLevel($adminLogin, $targetLogin);
-				break;
-			case self::ACTION_FORCE_SPEC_VOTE:
-				/** @var $votesPlugin CustomVotesPlugin */
-				$votesPlugin = $this->maniaControl->getPluginManager()->getPlugin(self::DEFAULT_CUSTOM_VOTE_PLUGIN);
+			$adminLogin  = $callback[1][1];
+			$targetLogin = $actionArray[2];
 
-				$admin  = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
-				$target = $this->maniaControl->getPlayerManager()->getPlayer($targetLogin);
-
-				$startMessage = $admin->getEscapedNickname() . '$s started a vote to force $<' . $target->nickname . '$> into spectator!';
-
-				$votesPlugin->defineVote('forcespec', 'Force ' . $target->getEscapedNickname() . ' Spec', true, $startMessage);
-
-				$votesPlugin->startVote($admin, 'forcespec', function ($result) use (&$votesPlugin, &$target) {
-					$this->maniaControl->getChat()->sendInformation('$sVote successful -> Player ' . $target->getEscapedNickname() . ' forced to Spectator!');
-					$votesPlugin->undefineVote('forcespec');
-
+			switch ($action) {
+				case self::ACTION_SPECTATE_PLAYER:
 					try {
-						$this->maniaControl->getClient()->forceSpectator($target->login, PlayerActions::SPECTATOR_BUT_KEEP_SELECTABLE);
-						$this->maniaControl->getClient()->spectatorReleasePlayerSlot($target->login);
+						$this->maniaControl->getClient()->forceSpectator($adminLogin, PlayerActions::SPECTATOR_BUT_KEEP_SELECTABLE);
+						$this->maniaControl->getClient()->forceSpectatorTarget($adminLogin, $targetLogin, 1);
 					} catch (PlayerStateException $e) {
 					} catch (UnknownPlayerException $e) {
 					}
-				});
-				break;
-			case self::ACTION_KICK_PLAYER_VOTE:
-				/** @var $votesPlugin CustomVotesPlugin */
-				$votesPlugin = $this->maniaControl->getPluginManager()->getPlugin(self::DEFAULT_CUSTOM_VOTE_PLUGIN);
+					break;
+				case self::ACTION_OPEN_PLAYER_DETAILED:
+					$player = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
+					$this->maniaControl->getPlayerManager()->getPlayerDetailed()->showPlayerDetailed($player, $targetLogin);
+					unset($this->playersListShown[$player->login]);
+					break;
+				case self::ACTION_FORCE_BLUE:
+					$this->maniaControl->getPlayerManager()->getPlayerActions()->forcePlayerToTeam($adminLogin, $targetLogin, PlayerActions::TEAM_BLUE);
+					break;
+				case self::ACTION_FORCE_RED:
+					$this->maniaControl->getPlayerManager()->getPlayerActions()->forcePlayerToTeam($adminLogin, $targetLogin, PlayerActions::TEAM_RED);
+					break;
+				case self::ACTION_FORCE_SPEC:
+					$this->maniaControl->getPlayerManager()->getPlayerActions()->forcePlayerToSpectator($adminLogin, $targetLogin, PlayerActions::SPECTATOR_BUT_KEEP_SELECTABLE);
+					break;
+				case self::ACTION_FORCE_PLAY:
+					$this->maniaControl->getPlayerManager()->getPlayerActions()->forcePlayerToPlay($adminLogin, $targetLogin);
+					break;
+				case self::ACTION_MUTE_PLAYER:
+					$this->maniaControl->getPlayerManager()->getPlayerActions()->mutePlayer($adminLogin, $targetLogin);
+					$this->showPlayerList($this->maniaControl->getPlayerManager()->getPlayer($adminLogin));
+					break;
+				case self::ACTION_UNMUTE_PLAYER:
+					$this->maniaControl->getPlayerManager()->getPlayerActions()->unMutePlayer($adminLogin, $targetLogin);
+					$this->showPlayerList($this->maniaControl->getPlayerManager()->getPlayer($adminLogin));
+					break;
+				case self::ACTION_WARN_PLAYER:
+					$this->maniaControl->getPlayerManager()->getPlayerActions()->warnPlayer($adminLogin, $targetLogin);
+					break;
+				case self::ACTION_KICK_PLAYER:
+					$this->maniaControl->getPlayerManager()->getPlayerActions()->kickPlayer($adminLogin, $targetLogin);
+					break;
+				case self::ACTION_BAN_PLAYER:
+					$this->maniaControl->getPlayerManager()->getPlayerActions()->banPlayer($adminLogin, $targetLogin);
+					break;
+				case self::ACTION_PLAYER_ADV:
+					$admin = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
+					$this->advancedPlayerWidget($admin, $targetLogin);
+					break;
+				case self::ACTION_ADD_AS_MASTER:
+					$this->maniaControl->getPlayerManager()->getPlayerActions()->grandAuthLevel($adminLogin, $targetLogin, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
+					break;
+				case self::ACTION_ADD_AS_ADMIN:
+					$this->maniaControl->getPlayerManager()->getPlayerActions()->grandAuthLevel($adminLogin, $targetLogin, AuthenticationManager::AUTH_LEVEL_ADMIN);
+					break;
+				case self::ACTION_ADD_AS_MOD:
+					$this->maniaControl->getPlayerManager()->getPlayerActions()->grandAuthLevel($adminLogin, $targetLogin, AuthenticationManager::AUTH_LEVEL_MODERATOR);
+					break;
+				case self::ACTION_REVOKE_RIGHTS:
+					$this->maniaControl->getPlayerManager()->getPlayerActions()->revokeAuthLevel($adminLogin, $targetLogin);
+					break;
+				case self::ACTION_FORCE_SPEC_VOTE:
+					/** @var $votesPlugin CustomVotesPlugin */
+					$votesPlugin = $this->maniaControl->getPluginManager()->getPlugin(self::DEFAULT_CUSTOM_VOTE_PLUGIN);
 
-				$admin  = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
-				$target = $this->maniaControl->getPlayerManager()->getPlayer($targetLogin);
+					$admin  = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
+					$target = $this->maniaControl->getPlayerManager()->getPlayer($targetLogin);
 
-				$startMessage = $admin->getEscapedNickname() . '$s started a vote to kick $<' . $target->nickname . '$>!';
+					$startMessage = $admin->getEscapedNickname() . '$s started a vote to force $<' . $target->nickname . '$> into spectator!';
+
+					$votesPlugin->defineVote('forcespec', 'Force ' . $target->getEscapedNickname() . ' Spec', true, $startMessage);
+
+					$votesPlugin->startVote($admin, 'forcespec', function ($result) use (&$votesPlugin, &$target) {
+						$this->maniaControl->getChat()->sendInformation('$sVote successful -> Player ' . $target->getEscapedNickname() . ' forced to Spectator!');
+						$votesPlugin->undefineVote('forcespec');
+
+						try {
+							$this->maniaControl->getClient()->forceSpectator($target->login, PlayerActions::SPECTATOR_BUT_KEEP_SELECTABLE);
+							$this->maniaControl->getClient()->spectatorReleasePlayerSlot($target->login);
+						} catch (PlayerStateException $e) {
+						} catch (UnknownPlayerException $e) {
+						}
+					});
+					break;
+				case self::ACTION_KICK_PLAYER_VOTE:
+					/** @var $votesPlugin CustomVotesPlugin */
+					$votesPlugin = $this->maniaControl->getPluginManager()->getPlugin(self::DEFAULT_CUSTOM_VOTE_PLUGIN);
+
+					$admin  = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
+					$target = $this->maniaControl->getPlayerManager()->getPlayer($targetLogin);
+
+					$startMessage = $admin->getEscapedNickname() . '$s started a vote to kick $<' . $target->nickname . '$>!';
 
 
-				$votesPlugin->defineVote('kick', 'Kick ' . $target->getEscapedNickname(), true, $startMessage);
+					$votesPlugin->defineVote('kick', 'Kick ' . $target->getEscapedNickname(), true, $startMessage);
 
-				$votesPlugin->startVote($admin, 'kick', function ($result) use (&$votesPlugin, &$target) {
-					$this->maniaControl->getChat()->sendInformation('$sVote successful -> ' . $target->getEscapedNickname() . ' got Kicked!');
-					$votesPlugin->undefineVote('kick');
+					$votesPlugin->startVote($admin, 'kick', function ($result) use (&$votesPlugin, &$target) {
+						$this->maniaControl->getChat()->sendInformation('$sVote successful -> ' . $target->getEscapedNickname() . ' got Kicked!');
+						$votesPlugin->undefineVote('kick');
 
-					$message = '$39F You got kicked due to a Public Vote!$z ';
-					try {
-						$this->maniaControl->getClient()->kick($target->login, $message);
-					} catch (UnknownPlayerException $e) {
-					}
-				});
-				break;
+						$message = '$39F You got kicked due to a Public Vote!$z ';
+						try {
+							$this->maniaControl->getClient()->kick($target->login, $message);
+						} catch (UnknownPlayerException $e) {
+						}
+					});
+					break;
+			}
+		} else if (count($actionArray) == 2) {
+			$playerLogin = $callback[1][1];
+			$player      = $this->maniaControl->getPlayerManager()->getPlayer($playerLogin);
+			if (substr($action, 0, strlen(self::ACTION_PAGING_CHUNKS)) === self::ACTION_PAGING_CHUNKS) {
+				// Paging chunks
+				$neededPage = (int) substr($action, strlen(self::ACTION_PAGING_CHUNKS));
+				$this->showPlayerList($player, $neededPage - 1);
+			}
+
 		}
 	}
 

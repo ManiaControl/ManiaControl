@@ -6,6 +6,7 @@ use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
+use ManiaControl\Players\PlayerManager;
 
 /**
  * Statistic Manager Class
@@ -345,6 +346,16 @@ class StatisticManager implements UsageInformationAble {
 				break;
 		}
 		return $statsArray;
+	}
+
+	/**
+	 * Returns the total amount of players who were on the server once
+	 *
+	 * @param $serverIndex
+	 * @return int
+	 */
+	public function getTotalStatsPlayerCount($serverIndex){
+		return count($this->getStatsRanking(PlayerManager::STAT_SERVERTIME,$serverIndex,-1,20000));
 	}
 
 	/**
