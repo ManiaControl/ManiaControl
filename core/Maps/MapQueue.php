@@ -60,7 +60,7 @@ class MapQueue implements CallbackListener, CommandListener, UsageInformationAbl
 		$this->maniaControl = $maniaControl;
 
 		// Callbacks
-		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::ENDMAP, $this, 'endMap');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::MP_PODIUMSTART, $this, 'endMap');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::BEGINMAP, $this, 'beginMap');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::AFTERINIT, $this, 'handleAfterInit');
 
@@ -353,9 +353,9 @@ class MapQueue implements CallbackListener, CommandListener, UsageInformationAbl
 	/**
 	 * Called on endmap
 	 *
-	 * @param Map $map
+	 * @internal
 	 */
-	public function endMap(Map $map = null) {
+	public function endMap() {
 		//Don't queue next map (for example on skip to map)
 		if ($this->nextNoQueue) {
 			$this->nextNoQueue = false;
