@@ -778,7 +778,11 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
 
 		$searchString = $callback[1][3][0]['Value'];
-		$maps         = $this->maniaControl->getMapManager()->searchMapsByAuthor($searchString);
+		if ($searchString) {
+			$maps = $this->maniaControl->getMapManager()->searchMapsByAuthor($searchString);
+		} else {
+			$maps = null;
+		}
 
 		$this->showMapList($player, $maps);
 	}

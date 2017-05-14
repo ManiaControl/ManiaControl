@@ -35,6 +35,7 @@ class OnScoresStructure extends CommonScoresStructure {
 				$playerScore->setRank($jsonPlayer->rank);
 				$playerScore->setRoundPoints($jsonPlayer->roundpoints);
 				$playerScore->setMapPoints($jsonPlayer->mappoints);
+				$playerScore->setMatchPoints($jsonPlayer->matchpoints);
 				$playerScore->setBestRaceTime($jsonPlayer->bestracetime);
 				$playerScore->setBestLapTime($jsonPlayer->bestlaptime);
 				$playerScore->setStuntScore($jsonPlayer->stuntsscore);
