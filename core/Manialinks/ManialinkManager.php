@@ -241,13 +241,13 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener,
 
 		try {
 			if (!$logins) {
-				return $this->maniaControl->getClient()->sendDisplayManialinkPage(null, $manialinkText, $timeout, $hideOnClick);
+				return $this->maniaControl->getClient()->sendDisplayManialinkPage(null, $manialinkText, $timeout, $hideOnClick, true);
 			}
 			if (is_string($logins)) {
-				return $this->maniaControl->getClient()->sendDisplayManialinkPage($logins, $manialinkText, $timeout, $hideOnClick);
+				return $this->maniaControl->getClient()->sendDisplayManialinkPage($logins, $manialinkText, $timeout, $hideOnClick, true);
 			}
 			if ($logins instanceof Player) {
-				return $this->maniaControl->getClient()->sendDisplayManialinkPage($logins->login, $manialinkText, $timeout, $hideOnClick);
+				return $this->maniaControl->getClient()->sendDisplayManialinkPage($logins->login, $manialinkText, $timeout, $hideOnClick, true);
 			}
 			if (is_array($logins)) {
 				$loginList = array();
@@ -258,7 +258,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener,
 						$loginList[] = $login;
 					}
 				}
-				return $this->maniaControl->getClient()->sendDisplayManialinkPage(implode(',', $loginList), $manialinkText, $timeout, $hideOnClick);
+				return $this->maniaControl->getClient()->sendDisplayManialinkPage(implode(',', $loginList), $manialinkText, $timeout, $hideOnClick, true);
 			}
 		} catch (UnknownPlayerException $e) {
 			return false;

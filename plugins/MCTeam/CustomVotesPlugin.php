@@ -185,7 +185,7 @@ class CustomVotesPlugin implements SidebarMenuEntryRenderable, CommandListener, 
 		$ratioArray[] = new VoteRatio(VoteRatio::COMMAND_TEAM_BALANCE, -1.);
 		$ratioArray[] = new VoteRatio(VoteRatio::COMMAND_NEXT_MAP, -1.);
 
-		$this->maniaControl->getClient()->setCallVoteRatios($ratioArray, false);
+		$this->maniaControl->getClient()->setCallVoteRatios($ratioArray, false, true);
 
 		$this->constructMenu();
 		return true;

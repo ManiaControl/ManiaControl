@@ -410,7 +410,7 @@ class MapQueue implements CallbackListener, CommandListener, UsageInformationAbl
 		}
 
 		try {
-			$this->maniaControl->getClient()->setNextMapIdent($map->uid);
+			$this->maniaControl->getClient()->setNextMapIdent($map->uid, true);
 		} catch (NextMapException $e) {
 		} catch (NotInListException $e) {
 		}

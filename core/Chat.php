@@ -72,12 +72,11 @@ class Chat implements CallbackListener, CommunicationListener, UsageInformationA
 	 * @param string      $message
 	 * @param string      $login
 	 * @param string|bool $prefix
-	 * @param bool        $multiCall
 	 * @return bool
 	 */
-	public function sendInformation($message, $login = null, $prefix = true, $multiCall = false) {
+	public function sendInformation($message, $login = null, $prefix = true) {
 		$format = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_FORMAT_INFORMATION);
-		return $this->sendChat($format . $message, $login, $prefix, $multiCall);
+		return $this->sendChat($format . $message, $login, $prefix);
 	}
 
 	/**
@@ -86,10 +85,9 @@ class Chat implements CallbackListener, CommunicationListener, UsageInformationA
 	 * @param string      $message
 	 * @param string      $login
 	 * @param string|bool $prefix
-	 * @param bool        $multiCall
 	 * @return bool
 	 */
-	public function sendChat($message, $login = null, $prefix = true, $multiCall = false) {
+	public function sendChat($message, $login = null, $prefix = true) {
 		if (!$this->maniaControl->getClient()) {
 			return false;
 		}
@@ -102,13 +100,13 @@ class Chat implements CallbackListener, CommunicationListener, UsageInformationA
 				$login = Player::parseLogin($login);
 			}
 			try {
-				return $this->maniaControl->getClient()->chatSendServerMessage($chatMessage, $login, $multiCall);
+				return $this->maniaControl->getClient()->chatSendServerMessage($chatMessage, $login, true);
 			} catch (UnknownPlayerException $e) {
 				return false;
 			}
 		}
 
-		return $this->maniaControl->getClient()->chatSendServerMessage($chatMessage, null, $multiCall);
+		return $this->maniaControl->getClient()->chatSendServerMessage($chatMessage, null, true);
 	}
 
 	/**

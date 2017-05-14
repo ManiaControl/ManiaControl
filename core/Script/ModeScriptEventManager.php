@@ -533,14 +533,14 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 * @param string $data
 	 */
 	public function triggerModeScriptEvent($eventName, $data = '') {
-		try {
-			$this->maniaControl->getClient()->triggerModeScriptEvent($eventName, $data);
-		} catch (GameModeException $e) {
-			if ($e->getMessage() != 'Not in script mode.') {
-				throw $e;
+		$this->maniaControl->getClient()->triggerModeScriptEvent($eventName, $data, function ($exception) use ($eventName) {
+			if ($exception instanceof GameModeException) {
+				if ($exception->getMessage() != 'Not in script mode.') {
+					throw $exception;
+				}
+				Logger::logWarning($eventName . " can't be triggered because you are not in Scriptmode, start your server in Scriptmode!");
 			}
-			Logger::logWarning($eventName . " can't be triggered because you are not in Scriptmode, start your server in Scriptmode!");
-		}
+		});
 	}
 
 	/**

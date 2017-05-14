@@ -290,9 +290,8 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 	 * Shows the serverRank to a certain Player
 	 *
 	 * @param Player $player
-	 * @param        $multiCall
 	 */
-	public function showRank(Player $player, $multiCall = false) {
+	public function showRank(Player $player) {
 		$rankObj = $this->getRank($player);
 
 		$type = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_RANKING_TYPE);
@@ -326,7 +325,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 					$message    = '$0f3 You need $<$fff' . $minRecords . '$> Records on this server before receiving a rank...';
 			}
 		}
-		$this->maniaControl->getChat()->sendChat($message, $player, $multiCall);
+		$this->maniaControl->getChat()->sendChat($message, $player);
 	}
 
 	/**
@@ -360,10 +359,9 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 	 * Show which Player is next ranked to you
 	 *
 	 * @param Player $player
-	 * @param bool   $multiCall
 	 * @return bool
 	 */
-	public function showNextRank(Player $player, $multiCall = false) {
+	public function showNextRank(Player $player) {
 		$rankObject = $this->getRank($player);
 		if (!$rankObject) {
 			return false;
@@ -382,7 +380,7 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 		} else {
 			$message = '$0f3No better ranked player.';
 		}
-		$this->maniaControl->getChat()->sendChat($message, $player, $multiCall);
+		$this->maniaControl->getChat()->sendChat($message, $player);
 
 		return true;
 	}
@@ -429,12 +427,9 @@ class ServerRankingPlugin implements Plugin, CallbackListener, CommandListener {
 				continue;
 			}
 			//TODO combine the following to message to one (saves half of calls)
-			$this->showRank($player, true);
-			$this->showNextRank($player, true);
+			$this->showRank($player);
+			$this->showNextRank($player);
 		}
-
-		//Execute as a MultiCall
-		$this->maniaControl->getClient()->executeMulticall();
 
 		// Trigger callback
 		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_RANK_BUILT);

@@ -252,10 +252,19 @@ class CallbackManager implements UsageInformationAble {
 			$timings[$key] = array($callback[0], microtime(true) - $time1);
 		}
 
+		//Execute Multicalls
+		$this->maniaControl->getClient()->executeMulticall();
+
 		$fullTime = microtime(true) - $startTime;
+
 		if ($fullTime > ErrorHandler::LONG_LOOP_REPORT_TIME) {
 			$this->maniaControl->getErrorHandler()->triggerDebugNotice(json_encode(array("Long Loop Detected: " . $fullTime, $timings)));
 		}
+
+
+
+
+
 	}
 
 	/**
