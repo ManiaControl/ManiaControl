@@ -107,8 +107,8 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 		if ($this->maniaControl->getMapManager()->getCurrentMap()->getGame() === 'tm') {
 			$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_TM_HANDLE_POINTS_REPARTITION, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
 
-			$this->maniaControl->getCommandManager()->registerCommandListener('setpointsdistribution', $this, 'commandSetPointsRepartition', true, 'Gets the Rounds Point Repartition.');
-			$this->maniaControl->getCommandManager()->registerCommandListener('getpointsdistribution', $this, 'commandGetPointsRepartition', true, 'Sets the Rounds Point Repartition.');
+			$this->maniaControl->getCommandManager()->registerCommandListener('setpointsdistribution', $this, 'commandSetPointsRepartition', true, 'Sets the Rounds Point Repartition.');
+			$this->maniaControl->getCommandManager()->registerCommandListener('getpointsdistribution', $this, 'commandGetPointsRepartition', true, 'Gets the Rounds Point Repartition.');
 		}
 	}
 

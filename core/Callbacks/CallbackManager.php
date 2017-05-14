@@ -260,11 +260,6 @@ class CallbackManager implements UsageInformationAble {
 		if ($fullTime > ErrorHandler::LONG_LOOP_REPORT_TIME) {
 			$this->maniaControl->getErrorHandler()->triggerDebugNotice(json_encode(array("Long Loop Detected: " . $fullTime, $timings)));
 		}
-
-
-
-
-
 	}
 
 	/**
