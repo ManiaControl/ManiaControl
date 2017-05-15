@@ -1115,7 +1115,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 		// Set ghost replay
 		if ($record->rank <= 1) {
-			$dataDirectory = $this->maniaControl->getServer()->getDirectory()->getGameDataFolder();
+			$dataDirectory = $this->maniaControl->getServer()->getDirectory()->getUserDataFolder();
 			if (!isset($this->dedimaniaData->directoryAccessChecked)) {
 				$access = $this->maniaControl->getServer()->checkAccess($dataDirectory);
 				if (!$access) {

@@ -347,7 +347,7 @@ class Server implements CallbackListener, CommandListener, UsageInformationAble 
 	 * @return string
 	 */
 	public function getGhostReplay($login) {
-		$dataDir = $this->getDirectory()->getGameDataFolder();
+		$dataDir = $this->getDirectory()->getUserDataFolder();
 		if (!$this->checkAccess($dataDir)) {
 			return null;
 		}

@@ -78,16 +78,34 @@ class Directory implements CallbackListener, UsageInformationAble {
 	 * @return string
 	 */
 	public function getLogsFolder() {
-		return $this->getGameDataFolder() . '..' . DIRECTORY_SEPARATOR . 'Logs' . DIRECTORY_SEPARATOR;
+		return $this->getUserDataFolder() . '..' . DIRECTORY_SEPARATOR . 'Logs' . DIRECTORY_SEPARATOR;
 	}
 
 	/**
-	 * Retrieve the Game Data Folder Path
+	 * Retrieve the GameData Folder Path
 	 *
 	 * @return string
 	 */
-	public function getGameDataFolder() {
+	public function getGameDataFolder(){
+		return $this->getUserDataFolder() . '..' . DIRECTORY_SEPARATOR . 'GameData' . DIRECTORY_SEPARATOR;
+	}
+
+	/**
+	 * Retrieve the User Data Folder Path
+	 *
+	 * @return string
+	 */
+	public function getUserDataFolder() {
 		return $this->maniaControl->getClient()->gameDataDirectory();
+	}
+
+	/**
+	 * Retrieve the Scripts Folder Path
+	 *
+	 * @return string
+	 */
+	public function getScriptsFolder(){
+		return $this->getGameDataFolder() . 'Scripts'  . DIRECTORY_SEPARATOR;
 	}
 
 	/**
@@ -103,6 +121,6 @@ class Directory implements CallbackListener, UsageInformationAble {
 	 * @return string
 	 */
 	public function getCacheFolder() {
-		return $this->getGameDataFolder() . '..' . DIRECTORY_SEPARATOR . 'CommonData' . DIRECTORY_SEPARATOR . 'Cache' . DIRECTORY_SEPARATOR;
+		return $this->getUserDataFolder() . '..' . DIRECTORY_SEPARATOR . 'CommonData' . DIRECTORY_SEPARATOR . 'Cache' . DIRECTORY_SEPARATOR;
 	}
 }

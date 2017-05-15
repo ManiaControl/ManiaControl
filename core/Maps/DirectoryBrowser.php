@@ -112,7 +112,7 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 						$isInMapsFolder = ($mapsDir === $folderDir);
 						break;
 					case 'UserData':
-						$dataDir   = dirname($this->maniaControl->getServer()->getDirectory()->getGameDataFolder());
+						$dataDir   = dirname($this->maniaControl->getServer()->getDirectory()->getUserDataFolder());
 						$folderDir = dirname($folderPath);
 						if ($dataDir === $folderDir) {
 							// Prevent navigation out of maps directory
@@ -152,7 +152,7 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 
 		$directoryLabel = new Label_Text();
 		$frame->addChild($directoryLabel);
-		$dataFolder    = $this->maniaControl->getServer()->getDirectory()->getGameDataFolder();
+		$dataFolder    = $this->maniaControl->getServer()->getDirectory()->getUserDataFolder();
 		$directoryText = substr($folderPath, strlen($dataFolder));
 		$directoryLabel->setPosition($width * -0.41, $height * 0.45)->setSize($width * 0.85, 4)->setHorizontalAlign($directoryLabel::LEFT)->setText($directoryText)->setTextSize(2);
 
