@@ -39,7 +39,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 	const ACTION_SORT_STATS     = 'SimpleStatsList.SortStats';
 	const ACTION_PAGING_CHUNKS  = 'SimpleStatsList.PagingChunk';
 	const MAX_PLAYERS_PER_PAGE  = 15;
-	const MAX_PAGES_PER_CHUNK   = 2;
+	const MAX_PAGES_PER_CHUNK   = 10;
 	const CACHE_CURRENT_PAGE    = 'SimpleStatsList.CurrentPage';
 
 
@@ -131,17 +131,22 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		$height       = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsHeight();
 		$quadStyle    = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultMainWindowStyle();
 		$quadSubstyle = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultMainWindowSubStyle();
+		$limit        = 2000;
 
 		if ($pageIndex < 0) {
 			$pageIndex = (int) $player->getCache($this, self::CACHE_CURRENT_PAGE);
 		}
+
 		$player->setCache($this, self::CACHE_CURRENT_PAGE, $pageIndex);
 
 		$totalPlayersCount = $this->maniaControl->getStatisticManager()->getTotalStatsPlayerCount(-1);
-		$chunkIndex        = $this->getChunkIndexFromPageNumber($pageIndex, $totalPlayersCount);
-		$playerBeginIndex  = $this->getChunkStatsBeginIndex($chunkIndex);
+		if ($totalPlayersCount > $limit) {
+			$totalPlayersCount = $limit;
+		}
 
-		$pagesCount = ceil($totalPlayersCount / self::MAX_PLAYERS_PER_PAGE);
+		$chunkIndex       = $this->getChunkIndexFromPageNumber($pageIndex, $totalPlayersCount);
+		$playerBeginIndex = $this->getChunkStatsBeginIndex($chunkIndex);
+		$pagesCount       = ceil($totalPlayersCount / self::MAX_PLAYERS_PER_PAGE);
 
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$width     = $this->statsWidth + 60;
@@ -201,7 +206,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 
 
 		foreach ($this->statArray as $key => $stat) {
-			$ranking = $this->maniaControl->getStatisticManager()->getStatsRanking($stat["Name"], -1, -1, 20000);
+			$ranking = $this->maniaControl->getStatisticManager()->getStatsRanking($stat["Name"], -1, -1, $limit);
 			if (!empty($ranking)) {
 				$statRankings[$stat["Name"]] = $ranking;
 
@@ -287,7 +292,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 			}
 
 			$labelLine->addLabelEntryText($playerIndex, $xStart + 5, 9);
-			$labelLine->addLabelEntryText($listPlayer->login, $xStart + 14, 41);
+			$labelLine->addLabelEntryText($listPlayer->nickname, $xStart + 14, 41);
 			$labelLine->render();
 
 			$playerFrame->setY($posY);
@@ -368,6 +373,10 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		switch ($action) {
 			case self::ACTION_SORT_STATS:
 				$this->showStatsList($player, $actionArray[2]);
+				$player->destroyCache($this, self::CACHE_CURRENT_PAGE);
+				break;
+			case ManialinkManager::ACTION_CLOSEWIDGET:
+				$player->destroyCache($this, self::CACHE_CURRENT_PAGE);
 				break;
 			default:
 				if (substr($actionId, 0, strlen(self::ACTION_PAGING_CHUNKS)) === self::ACTION_PAGING_CHUNKS) {

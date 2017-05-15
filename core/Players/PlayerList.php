@@ -60,7 +60,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 	const DEFAULT_CUSTOM_VOTE_PLUGIN  = 'MCTeam\CustomVotesPlugin';
 	const SHOWN_MAIN_WINDOW           = -1;
 	const MAX_PLAYERS_PER_PAGE        = 15;
-	const MAX_PAGES_PER_CHUNK         = 2;
+	const MAX_PAGES_PER_CHUNK         = 10;
 
 	/*
 	 * Private properties
@@ -119,6 +119,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 	 * @param Player $player
 	 */
 	public function closeWidget(Player $player) {
+		$player->destroyCache($this, self::CACHE_CURRENT_PAGE);
 		unset($this->playersListShown[$player->login]);
 	}
 

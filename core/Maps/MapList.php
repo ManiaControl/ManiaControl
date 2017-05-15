@@ -56,7 +56,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	const ACTION_SEARCH_AUTHOR       = 'MapList.SearchAuthor';
 	const ACTION_RESET               = 'MapList.ResetMapList';
 	const MAX_MAPS_PER_PAGE          = 13;
-	const MAX_PAGES_PER_CHUNK        = 2;
+	const MAX_PAGES_PER_CHUNK        = 10;
 	const DEFAULT_KARMA_PLUGIN       = 'MCTeam\KarmaPlugin';
 	const DEFAULT_CUSTOM_VOTE_PLUGIN = 'MCTeam\CustomVotesPlugin';
 	const CACHE_CURRENT_PAGE         = 'CurrentPage';
