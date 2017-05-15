@@ -298,6 +298,7 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 */
 	public function stopManiaPlanetWarmup() {
 		$this->triggerModeScriptEvent('Maniaplanet.WarmUp.Stop');
+		$this->triggerModeScriptEvent('Maniaplanet.WarmUp.ForceStop');
 	}
 
 	/**
