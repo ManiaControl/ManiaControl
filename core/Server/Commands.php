@@ -522,7 +522,7 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 	 * @param \ManiaControl\Players\Player $player
 	 */
 	public function commandTrackManiaEndRound(array $chatCallback, Player $player) {
-		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_TM_HANDLE_POINTS_REPARTITION)) {
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_END_ROUND)) {
 			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
