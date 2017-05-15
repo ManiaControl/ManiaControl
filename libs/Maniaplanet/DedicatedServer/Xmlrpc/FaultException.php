@@ -66,7 +66,7 @@ class FaultException extends Exception {
 			case 'Map lightmap is not up to date.':
 			case 'Map lightmap is not up to date. (will still load for now)':
 			case 'The map doesn\'t match the server packmask.':
-			case 'The map environment is not available on the server (doesn\'t match the server packmask). ':
+			case 'The map environment is not available on the server (doesn\'t match the server packmask).':
 				return new InvalidMapException($faultString, $faultCode);
 			case 'Ladder mode unknown.':
 			case 'You cannot change the max players count: AllowSpectatorRelays is activated.':
