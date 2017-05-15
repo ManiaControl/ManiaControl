@@ -2,6 +2,7 @@
 
 namespace ManiaControl\Players;
 
+use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\General\Dumpable;
 use ManiaControl\General\DumpTrait;
 use ManiaControl\General\UsageInformationAble;
@@ -92,6 +93,7 @@ class Player implements Dumpable, UsageInformationAble {
 	/**
 	 * Get the Login of the Player
 	 *
+	 * @api
 	 * @param mixed $player
 	 * @return string
 	 */
@@ -105,6 +107,7 @@ class Player implements Dumpable, UsageInformationAble {
 	/**
 	 * Get the Escaped Nickname
 	 *
+	 * @api
 	 * @return string
 	 */
 	public function getEscapedNickname() {
@@ -186,6 +189,7 @@ class Player implements Dumpable, UsageInformationAble {
 	/**
 	 * Check if player is not a real player
 	 *
+	 * @api
 	 * @return bool
 	 */
 	public function isFakePlayer() {
@@ -195,6 +199,7 @@ class Player implements Dumpable, UsageInformationAble {
 	/**
 	 * Get province
 	 *
+	 * @api
 	 * @return string
 	 */
 	public function getProvince() {
@@ -204,6 +209,7 @@ class Player implements Dumpable, UsageInformationAble {
 	/**
 	 * Get the specified Part of the Path
 	 *
+	 * @api
 	 * @param int $partNumber
 	 * @return string
 	 */
@@ -220,6 +226,7 @@ class Player implements Dumpable, UsageInformationAble {
 	/**
 	 * Get Country
 	 *
+	 * @api
 	 * @return string
 	 */
 	public function getCountry() {
@@ -229,6 +236,7 @@ class Player implements Dumpable, UsageInformationAble {
 	/**
 	 * Get Continent
 	 *
+	 * @api
 	 * @return string
 	 */
 	public function getContinent() {
@@ -270,6 +278,7 @@ class Player implements Dumpable, UsageInformationAble {
 	/**
 	 * Get the Cache with the given Name
 	 *
+	 * @api
 	 * @param        $object
 	 * @param string $cacheName
 	 * @return mixed
@@ -285,6 +294,7 @@ class Player implements Dumpable, UsageInformationAble {
 	/**
 	 * Set the Cache Data for the given Name
 	 *
+	 * @api
 	 * @param mixed  $object
 	 * @param string $cacheName
 	 * @param mixed  $data
@@ -297,6 +307,7 @@ class Player implements Dumpable, UsageInformationAble {
 	/**
 	 * Destroy a Cache
 	 *
+	 * @api
 	 * @param mixed  $object
 	 * @param string $cacheName
 	 */
@@ -315,6 +326,7 @@ class Player implements Dumpable, UsageInformationAble {
 	/**
 	 * Gets the Player Data
 	 *
+	 * @api
 	 * @param mixed  $object
 	 * @param string $dataName
 	 * @param int    $serverIndex
@@ -327,6 +339,7 @@ class Player implements Dumpable, UsageInformationAble {
 	/**
 	 * Sets the Player Data and stores it in the Database
 	 *
+	 * @api
 	 * @param mixed  $object
 	 * @param string $dataName
 	 * @param mixed  $value
@@ -340,6 +353,7 @@ class Player implements Dumpable, UsageInformationAble {
 	/*
 	 * Check if a Player is muted
 	 *
+	 * @api
 	 * @return bool
 	 */
 	public function isMuted() {
@@ -353,7 +367,28 @@ class Player implements Dumpable, UsageInformationAble {
 	}
 
 	/**
+	 * Gets the Auth Level Name of a Player
+	 *
+	 * @api
+	 * @return string
+	 */
+	public function getAuthLevelName(){
+		return AuthenticationManager::getAuthLevelName($this->authLevel);
+	}
+
+	/**
+	 * Gets the Auth Level Abbreviation of a Player
+	 *
+	 * @api
+	 * @return string
+	 */
+	public function getAuthLevelAbbreviation(){
+		return AuthenticationManager::getAuthLevelAbbreviation($this->authLevel);
+	}
+
+	/**
 	 * Var_Dump the Players Cache
+	 * @api
 	 */
 	public function dumpCache() {
 		var_dump($this->cache);

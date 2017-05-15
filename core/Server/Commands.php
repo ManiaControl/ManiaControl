@@ -41,6 +41,7 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 	const SETTING_PERMISSION_SHUTDOWN_SERVER              = 'Shutdown Server';
 	const SETTING_PERMISSION_CHANGE_SERVERSETTINGS        = 'Change ServerSettings';
 	const SETTING_PERMISSION_TM_HANDLE_POINTS_REPARTITION = 'Handle Points Distribution Settings';
+	const SETTING_PERMISSION_END_ROUND                    = 'Force end of current Trackmania Round';
 
 	/*
 	 * Private properties
@@ -93,9 +94,9 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_HANDLE_WARMUP, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 
 		//Triggers a WarmUp Status Callback
-		try{
+		try {
 			$this->maniaControl->getModeScriptEventManager()->getWarmupStatus();
-		}catch(GameModeException $e){
+		} catch (GameModeException $e) {
 			$this->maniaControl->getChat()->sendErrorToAdmins("Not in script mode");
 			Logger::logError("Not in Script mode");
 		}
@@ -106,9 +107,12 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 
 		if ($this->maniaControl->getMapManager()->getCurrentMap()->getGame() === 'tm') {
 			$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_TM_HANDLE_POINTS_REPARTITION, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
+			$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_END_ROUND, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 
 			$this->maniaControl->getCommandManager()->registerCommandListener('setpointsdistribution', $this, 'commandSetPointsRepartition', true, 'Sets the Rounds Point Repartition.');
 			$this->maniaControl->getCommandManager()->registerCommandListener('getpointsdistribution', $this, 'commandGetPointsRepartition', true, 'Gets the Rounds Point Repartition.');
+
+			$this->maniaControl->getCommandManager()->registerCommandListener(array('endround', 'end'), $this, 'commandTrackManiaEndRound', true, 'Ends the Current Round.');
 		}
 	}
 
@@ -500,7 +504,7 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 			return;
 		}
 
-		$this->maniaControl->getModeScriptEventManager()->getTrackmaniaPointsRepartition()->setCallable(function (OnPointsRepartitionStructure $structure) use ($player){
+		$this->maniaControl->getModeScriptEventManager()->getTrackmaniaPointsRepartition()->setCallable(function (OnPointsRepartitionStructure $structure) use ($player) {
 			$pointRepartitionString = "";
 			foreach ($structure->getPointsRepartition() as $points) {
 				$pointRepartitionString .= $points . ',';
@@ -509,6 +513,21 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 
 			$this->maniaControl->getChat()->sendInformation('Current Points Distribution: ' . $pointRepartitionString, $player);
 		});
+	}
 
+	/**
+	 * Handle //endround command
+	 *
+	 * @param array                        $chatCallback
+	 * @param \ManiaControl\Players\Player $player
+	 */
+	public function commandTrackManiaEndRound(array $chatCallback, Player $player) {
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_TM_HANDLE_POINTS_REPARTITION)) {
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
+			return;
+		}
+
+		$this->maniaControl->getModeScriptEventManager()->forceTrackmaniaRoundEnd();
+		$this->maniaControl->getChat()->sendSuccess($player->getEscapedNickname() . ' forced end of the Round!');
 	}
 }
