@@ -429,16 +429,17 @@ class AuthenticationManager implements CallbackListener, EchoListener, Communica
 	 * @param int    $authLevelNeeded
 	 */
 	public function definePermissionLevel($rightName, $authLevelNeeded) {
-		$this->maniaControl->getSettingManager()->initSetting($this, $rightName, $this->getPermissionLevelNameArray($authLevelNeeded));
+		$this->maniaControl->getSettingManager()->initSetting($this, $rightName, self::getPermissionLevelNameArray($authLevelNeeded));
 	}
 
 	/**
 	 * Get the PermissionLevelNameArray
 	 *
+	 * @api
 	 * @param $authLevelNeeded
 	 * @return array[]
 	 */
-	private function getPermissionLevelNameArray($authLevelNeeded) {
+	public static function getPermissionLevelNameArray($authLevelNeeded) {
 		switch ($authLevelNeeded) {
 			case self::AUTH_LEVEL_MODERATOR:
 				return array(self::AUTH_NAME_MODERATOR, self::AUTH_NAME_ADMIN, self::AUTH_NAME_SUPERADMIN, self::AUTH_NAME_MASTERADMIN);

@@ -475,6 +475,31 @@ class ModeScriptEventManager implements UsageInformationAble {
 	}
 
 	/**
+	 * Sets the Trackmania Player Points
+	 *
+	 * @param \ManiaControl\Players\Player $player
+	 * @param string|int                   $roundPoints //< The round points, use an empty string to not update.
+	 * @param string|int                   $mapPoints   //< The map points, use an empty string to not update.
+	 * @param string|int                   $matchPoints //< The match points, use an empty string to not update.
+	 */
+	public function setTrackmaniaPlayerPoints(Player $player, $roundPoints = "", $mapPoints = "", $matchPoints = "") {
+		$login = Player::parseLogin($player);
+		$this->triggerModeScriptEvent('Trackmania.SetPlayerPoints', array($login, strval($roundPoints), strval($mapPoints), strval($matchPoints)));
+	}
+
+	/**
+	 * Sets the Trackmania Team Points
+	 *
+	 * @param int        $teamId //< Id of the team t. Can be 1 or 2.
+	 * @param string|int $roundPoints
+	 * @param string|int $mapPoints
+	 * @param string|int $matchPoints
+	 */
+	public function setTrackmaniaTeamPoints($teamId, $roundPoints = "", $mapPoints = "", $matchPoints = "") {
+		$this->triggerModeScriptEvent('Trackmania.SetTeamPoints', array(strval($teamId), strval($roundPoints), strval($mapPoints), strval($matchPoints)));
+	}
+
+	/**
 	 * Request the current ui properties. This method will trigger the "Shootmania.UIProperties" callback.
 	 *
 	 * @api
