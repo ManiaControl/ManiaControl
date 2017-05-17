@@ -61,12 +61,21 @@ class SidebarMenuManager implements UsageInformationAble, CallbackListener {
 		} else {
 			$posY = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SIDEBAR_POSY_TRACKMANIA);
 		}
-
 		$pos = new Position();
 		$pos->setX($posX);
 		$pos->setY($posY);
 
 		return $pos;
+	}
+
+	private function getElementCountbeforeAdminMenu(){
+		$count = 0;
+		foreach($this->menuEntries as $k => $entry){
+			if($k < SidebarMenuManager::ORDER_ADMIN_MENU){
+				$count++;
+			}
+		}
+		return $count;
 	}
 
 	/**
@@ -80,6 +89,10 @@ class SidebarMenuManager implements UsageInformationAble, CallbackListener {
 		$itemSize         = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MENU_ITEMSIZE);
 		$itemMarginFactor = 1.2;
 		$pos              = $this->getSidebarPosition();
+
+		$count = $this->getElementCountbeforeAdminMenu();
+		$pos->setY($pos->getY() + $itemSize * $itemMarginFactor * $count);
+
 
 		if (isset($this->yPositions[$id])) {
 			$pos->setY($this->yPositions[$id]);

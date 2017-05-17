@@ -60,7 +60,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 	const DEFAULT_CUSTOM_VOTE_PLUGIN  = 'MCTeam\CustomVotesPlugin';
 	const SHOWN_MAIN_WINDOW           = -1;
 	const MAX_PLAYERS_PER_PAGE        = 15;
-	const MAX_PAGES_PER_CHUNK         = 10;
+	const MAX_PAGES_PER_CHUNK         = 2;
 
 	/*
 	 * Private properties
@@ -674,7 +674,11 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 	public function handleManialinkPageAnswer(array $callback) {
 		$actionId    = $callback[1][2];
 		$actionArray = explode('.', $actionId, 3);
+		if(count($actionArray) < 2){
+			return;
+		}
 		$action      = $actionArray[0] . '.' . $actionArray[1];
+
 		if (count($actionArray) > 2) {
 
 			$adminLogin  = $callback[1][1];

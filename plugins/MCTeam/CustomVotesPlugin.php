@@ -162,7 +162,7 @@ class CustomVotesPlugin implements SidebarMenuEntryRenderable, CommandListener, 
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_SPECTATOR_ALLOW_START_VOTE, true);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_VOTE_TIME, 40);
 
-		$this->maniaControl->getManialinkManager()->getSidebarMenuManager()->addMenuEntry($this,SidebarMenuManager::ORDER_PLAYER_MENU + 5, self::CUSTOMVOTES_MENU_ID);
+		$this->maniaControl->getManialinkManager()->getSidebarMenuManager()->addMenuEntry($this, SidebarMenuManager::ORDER_PLAYER_MENU + 5, self::CUSTOMVOTES_MENU_ID);
 
 		//Define Votes
 		$this->defineVote("teambalance", "Vote for Team Balance");
@@ -317,6 +317,7 @@ class CustomVotesPlugin implements SidebarMenuEntryRenderable, CommandListener, 
 		$popoutFrame = new Frame();
 		$maniaLink->addChild($popoutFrame);
 		$popoutFrame->setPosition($pos->getX() - $itemSize * 0.5, $pos->getY());
+		$popoutFrame->setZ(ManialinkManager::MAIN_MANIALINK_Z_VALUE);
 		$popoutFrame->setHorizontalAlign($popoutFrame::RIGHT);
 		$popoutFrame->setSize(4 * $itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
 		$popoutFrame->setVisible(false);
@@ -371,7 +372,7 @@ class CustomVotesPlugin implements SidebarMenuEntryRenderable, CommandListener, 
 
 		$this->destroyVote();
 		$this->maniaControl->getManialinkManager()->hideManialink(self::MLID_ICON);
-		$this->maniaControl->getManialinkManager()->getSidebarMenuManager()->deleteMenuEntry($this,self::CUSTOMVOTES_MENU_ID,true);
+		$this->maniaControl->getManialinkManager()->getSidebarMenuManager()->deleteMenuEntry($this, self::CUSTOMVOTES_MENU_ID, true);
 	}
 
 	/**
@@ -708,7 +709,7 @@ class CustomVotesPlugin implements SidebarMenuEntryRenderable, CommandListener, 
 		$frame->addChild($timeGauge);
 		$timeGauge->setY(1.5);
 		$timeGauge->setSize($width * 0.95, 6);
-		$timeGauge->setDrawBg(false);
+		$timeGauge->setDrawBlockBackground(false);
 		if (!$timeUntilExpire) {
 			$timeUntilExpire = 1;
 		}
@@ -731,10 +732,11 @@ class CustomVotesPlugin implements SidebarMenuEntryRenderable, CommandListener, 
 		$frame->addChild($voteGauge);
 		$voteGauge->setY(-4);
 		$voteGauge->setSize($width * 0.65, 12);
-		$voteGauge->setDrawBg(false);
+		$voteGauge->setDrawBlockBackground(false);
 		$voteGauge->setRatio($votePercentage + 0.10 - $votePercentage * 0.10);
 		$gaugeColor = ColorUtil::floatToStatusColor($votePercentage);
 		$voteGauge->setColor($gaugeColor . '6');
+		$voteGauge->setZ(-0.1);
 
 		$posY      = -4.4;
 		$voteLabel = new Label();

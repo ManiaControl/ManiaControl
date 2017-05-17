@@ -311,7 +311,7 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 				$entry->setStyle(Label_Text::STYLE_TextValueSmall)->setX($width * 0.23)->setTextSize(1)->setSize($width * 0.48, $optionHeight * 0.9)->setName(self::ACTION_PREFIX_OPTION . $name)->setDefault($value);
 
 				if ($name === 'Comment') {
-					$entry->setSize($width * 0.48, $optionHeight * 3. + $optionHeight * 0.9)->setAutoNewLine(true);
+					$entry->setSize($width * 0.48, $optionHeight * 3. + $optionHeight * 0.9)->setAutoNewLine(true)->setVerticalAlign($entry::TOP)->setY($optionHeight * 1.5 + 2.5);
 					$optionsFrame->setY($posY - $optionHeight * 1.5);
 					$posY -= $optionHeight * 3.;
 					$index += 3;
