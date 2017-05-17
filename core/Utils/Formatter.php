@@ -184,8 +184,8 @@ abstract class Formatter implements UsageInformationAble {
 		                 'Sri Lanka'                => 'SRI', 'Sudan' => 'SUD', 'Suriname' => 'SUR', 'Swaziland' => 'SWZ', 'Sweden' => 'SWE', 'Switzerland' => 'SUI', 'Syria' => 'SYR',
 		                 'Taiwan'                   => 'TWN', 'Tajikistan' => 'TJK', 'Tanzania' => 'TAN', 'Thailand' => 'THA', 'Togo' => 'TOG', 'Tonga' => 'TGA', 'Trinidad and Tobago' => 'TRI',
 		                 'Tunisia'                  => 'TUN', 'Turkey' => 'TUR', 'Turkmenistan' => 'TKM', 'Tuvalu' => 'TUV', 'Uganda' => 'UGA', 'Ukraine' => 'UKR', 'United Arab Emirates' => 'UAE',
-		                 'United Kingdom'           => 'GBR', 'United States of America' => 'USA', 'Uruguay' => 'URU', 'Uzbekistan' => 'UZB', 'Vanuatu' => 'VAN', 'Venezuela' => 'VEN',
-		                 'Vietnam'                  => 'VIE', 'Yemen' => 'YEM', 'Zambia' => 'ZAM', 'Zimbabwe' => 'ZIM');
+		                 'United Kingdom'           => 'GBR', 'United States of America' => 'USA', 'United States' => 'USA', 'Uruguay' => 'URU', 'Uzbekistan' => 'UZB', 'Vanuatu' => 'VAN',
+		                 'Venezuela'                => 'VEN', 'Vietnam' => 'VIE', 'Yemen' => 'YEM', 'Zambia' => 'ZAM', 'Zimbabwe' => 'ZIM');
 		if (array_key_exists($country, $nations)) {
 			return $nations[$country];
 		}
