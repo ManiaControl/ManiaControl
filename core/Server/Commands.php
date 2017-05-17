@@ -40,7 +40,6 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 	const SETTING_PERMISSION_SHOW_SYSTEMINFO              = 'Show SystemInfo';
 	const SETTING_PERMISSION_SHUTDOWN_SERVER              = 'Shutdown Server';
 	const SETTING_PERMISSION_CHANGE_SERVERSETTINGS        = 'Change ServerSettings';
-	const SETTING_PERMISSION_END_ROUND                    = 'Force end of current Trackmania Round';
 
 	/*
 	 * Private properties
@@ -103,11 +102,6 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 
 		$this->updateCancelVoteMenuItem();
 		$this->updateWarmUpMenuItems();
-
-		if ($this->maniaControl->getMapManager()->getCurrentMap()->getGame() === 'tm') {
-			$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_END_ROUND, AuthenticationManager::AUTH_LEVEL_MODERATOR);
-			$this->maniaControl->getCommandManager()->registerCommandListener(array('endround', 'end'), $this, 'commandTrackManiaEndRound', true, 'Ends the Current Round.');
-		}
 	}
 
 	/**
@@ -458,21 +452,5 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 
 		$this->maniaControl->getClient()->setMaxSpectators($amount);
 		$this->maniaControl->getChat()->sendSuccess("Changed max spectators to: {$amount}", $player);
-	}
-
-	/**
-	 * Handle //endround command
-	 *
-	 * @param array                        $chatCallback
-	 * @param \ManiaControl\Players\Player $player
-	 */
-	public function commandTrackManiaEndRound(array $chatCallback, Player $player) {
-		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_END_ROUND)) {
-			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
-			return;
-		}
-
-		$this->maniaControl->getModeScriptEventManager()->forceTrackmaniaRoundEnd();
-		$this->maniaControl->getChat()->sendSuccess($player->getEscapedNickname() . ' forced end of the Round!');
 	}
 }

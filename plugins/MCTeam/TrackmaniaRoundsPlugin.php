@@ -10,7 +10,7 @@ use ManiaControl\Players\Player;
 use ManiaControl\Plugins\Plugin;
 
 /**
- * ManiaControl ServerRanking Plugin
+ * ManiaControl Trackmania Rounds Plugin
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
@@ -27,7 +27,8 @@ class TrackmaniaRoundsPlugin implements Plugin, CommandListener {
 
 	const MAX_POINT_DISTRIBUTIONS = 8;
 
-	const SETTING_PERMISSION_TM_HANDLE_POINTS_REPARTITION = 'Handle Points Distribution Settings';
+	const SETTING_PERMISSION_TM_HANDLE_POINTS_REPARTITION = 'Permission handle Points Distribution Settings';
+	const SETTING_PERMISSION_END_ROUND                    = 'Permission Force end of current Trackmania Round';
 	const SETTING_POINT_DISTRIBUTION_NAME                 = 'Server Distribution Name ';
 	const SETTING_POINT_DISTRIBUTION_VALUE                = 'Server Distribution Value ';
 
@@ -52,6 +53,7 @@ class TrackmaniaRoundsPlugin implements Plugin, CommandListener {
 
 		//Authentication Permission Level
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_PERMISSION_TM_HANDLE_POINTS_REPARTITION, AuthenticationManager::getPermissionLevelNameArray(AuthenticationManager::AUTH_LEVEL_ADMIN));
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_PERMISSION_END_ROUND, AuthenticationManager::getPermissionLevelNameArray(AuthenticationManager::AUTH_LEVEL_MODERATOR));
 
 		//Settings
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_POINT_DISTRIBUTION_NAME . 1, "motogp");
@@ -62,11 +64,14 @@ class TrackmaniaRoundsPlugin implements Plugin, CommandListener {
 			$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_POINT_DISTRIBUTION_VALUE . $i, "");
 		}
 
+
 		// Commands
 		$this->maniaControl->getCommandManager()->registerCommandListener(array('setrpoints',
 		                                                                        'setpointsdistribution'), $this, 'commandSetPointsRepartition', true, 'Sets the Rounds Point Repartition.');
 		$this->maniaControl->getCommandManager()->registerCommandListener(array('getrpoints',
 		                                                                        'getpointsdistribution'), $this, 'commandGetPointsRepartition', true, 'Gets the Rounds Point Repartition.');
+		$this->maniaControl->getCommandManager()->registerCommandListener(array('endround', 'end'), $this, 'commandTrackManiaEndRound', true, 'Ends the Current Round.');
+
 	}
 
 	/**
@@ -131,6 +136,23 @@ class TrackmaniaRoundsPlugin implements Plugin, CommandListener {
 
 			$this->maniaControl->getChat()->sendInformation('Current Points Distribution: ' . $pointRepartitionString, $player);
 		});
+	}
+
+	/**
+	 * Handle //endround command
+	 *
+	 * @param array                        $chatCallback
+	 * @param \ManiaControl\Players\Player $player
+	 */
+	public function commandTrackManiaEndRound(array $chatCallback, Player $player) {
+		$permission = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_PERMISSION_END_ROUND);
+		if (!AuthenticationManager::checkRight($player, $permission)) {
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
+			return;
+		}
+
+		$this->maniaControl->getModeScriptEventManager()->forceTrackmaniaRoundEnd();
+		$this->maniaControl->getChat()->sendSuccess($player->getEscapedNickname() . ' forced end of the Round!');
 	}
 
 	/**

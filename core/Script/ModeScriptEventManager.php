@@ -23,7 +23,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
 class ModeScriptEventManager implements UsageInformationAble {
 	use UsageInformationTrait;
 
-	const API_VERSION = "2.0.0";
+	const API_VERSION = "2.1.0";
 
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl;
