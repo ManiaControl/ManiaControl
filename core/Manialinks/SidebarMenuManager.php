@@ -68,7 +68,13 @@ class SidebarMenuManager implements UsageInformationAble, CallbackListener {
 		return $pos;
 	}
 
-	private function getElementCountbeforeAdminMenu(){
+	/**
+	 * Returns the number of elements above the admin menu
+	 * Used to make the y-value setting of the sidebar relative to the admin menu
+	 *
+	 * @return int
+	 */
+	private function getElementCountBeforeAdminMenu(){
 		$count = 0;
 		foreach($this->menuEntries as $k => $entry){
 			if($k < SidebarMenuManager::ORDER_ADMIN_MENU){
@@ -90,7 +96,7 @@ class SidebarMenuManager implements UsageInformationAble, CallbackListener {
 		$itemMarginFactor = 1.2;
 		$pos              = $this->getSidebarPosition();
 
-		$count = $this->getElementCountbeforeAdminMenu();
+		$count = $this->getElementCountBeforeAdminMenu();
 		$pos->setY($pos->getY() + $itemSize * $itemMarginFactor * $count);
 
 
