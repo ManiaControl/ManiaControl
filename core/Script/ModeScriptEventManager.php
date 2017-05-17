@@ -556,9 +556,9 @@ class ModeScriptEventManager implements UsageInformationAble {
 	 *
 	 * @api
 	 * @param        $eventName
-	 * @param string $data
+	 * @param array  $data
 	 */
-	public function triggerModeScriptEvent($eventName, $data = '') {
+	public function triggerModeScriptEvent($eventName, $data = array()) {
 		$this->maniaControl->getClient()->triggerModeScriptEvent($eventName, $data, function ($exception) use ($eventName) {
 			if ($exception instanceof GameModeException) {
 				if ($exception->getMessage() != 'Not in script mode.') {
