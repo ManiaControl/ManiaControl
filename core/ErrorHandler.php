@@ -2,6 +2,7 @@
 
 namespace ManiaControl;
 
+use ManiaControl\Files\AsyncHttpRequest;
 use ManiaControl\Plugins\PluginManager;
 use ManiaControl\Update\UpdateManager;
 use ManiaControl\Utils\Formatter;
@@ -160,14 +161,35 @@ class ErrorHandler {
 			$json = json_encode(Formatter::utf8($report));
 			$info = base64_encode($json);
 
-			$url      = ManiaControl::URL_WEBSERVICE . 'errorreport?error=' . urlencode($info);
-			$response = WebReader::getUrl($url);
-			$content  = $response->getContent();
-			$success  = json_decode($content);
-			if ($success) {
-				Logger::log('Error-Report successful!');
+			$url = ManiaControl::URL_WEBSERVICE . 'errorreport?error=' . urlencode($info);
+
+			if ($isFatalError) {
+				$response = WebReader::getUrl($url);
+				$content  = $response->getContent();
+				$success  = json_decode($content);
+				if ($success) {
+					Logger::log('Error-Report successful!');
+				} else {
+					Logger::log('Error-Report failed! ' . print_r($content, true));
+				}
 			} else {
-				Logger::log('Error-Report failed! ' . print_r($content, true));
+				//Async Report
+				$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, $url);
+				$asyncHttpRequest->setContentType(AsyncHttpRequest::CONTENT_TYPE_JSON);
+				$asyncHttpRequest->setCallable(function ($json, $error) {
+					if ($error) {
+						Logger::logError("Error while Sending Error Report");
+						return;
+					}
+					$success = json_decode($json);
+					if ($success) {
+						Logger::log('Error-Report successful!');
+					} else {
+						Logger::log('Error-Report failed! ' . print_r($json, true));
+					}
+				});
+
+				$asyncHttpRequest->getData();
 			}
 		}
 
