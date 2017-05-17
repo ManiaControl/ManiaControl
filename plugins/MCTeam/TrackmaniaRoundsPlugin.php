@@ -106,12 +106,11 @@ class TrackmaniaRoundsPlugin implements Plugin, CommandListener {
 			}
 
 			$this->maniaControl->getModeScriptEventManager()->setTrackmaniaPointsRepartition($pointArray);
-			$this->maniaControl->getChat()->sendInformation('Points Distribution Changed!', $player);
+			$this->maniaControl->getChat()->sendSuccess($player->getEscapedNickname() . ' chaned the Points Distribution to ' . $pointString . "!");
 			$this->commandGetPointsRepartition($chatCallback, $player);
 		} else {
 			$this->maniaControl->getChat()->sendError('You must provide a point Distribution in the following form: 10,8,6,4,3 !', $player);
 		}
-
 	}
 
 	/**
@@ -128,12 +127,7 @@ class TrackmaniaRoundsPlugin implements Plugin, CommandListener {
 		}
 
 		$this->maniaControl->getModeScriptEventManager()->getTrackmaniaPointsRepartition()->setCallable(function (OnPointsRepartitionStructure $structure) use ($player) {
-			$pointRepartitionString = "";
-			foreach ($structure->getPointsRepartition() as $points) {
-				$pointRepartitionString .= $points . ',';
-			}
-			$pointRepartitionString = substr($pointRepartitionString, 0, -1);
-
+			$pointRepartitionString = implode(",", $structure->getPointsRepartition());
 			$this->maniaControl->getChat()->sendInformation('Current Points Distribution: ' . $pointRepartitionString, $player);
 		});
 	}
