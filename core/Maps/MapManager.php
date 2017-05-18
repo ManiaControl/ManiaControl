@@ -23,6 +23,7 @@ use ManiaControl\Utils\Formatter;
 use Maniaplanet\DedicatedServer\InvalidArgumentException;
 use Maniaplanet\DedicatedServer\Xmlrpc\AlreadyInListException;
 use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
+use Maniaplanet\DedicatedServer\Xmlrpc\FaultException;
 use Maniaplanet\DedicatedServer\Xmlrpc\FileException;
 use Maniaplanet\DedicatedServer\Xmlrpc\IndexOutOfBoundException;
 use Maniaplanet\DedicatedServer\Xmlrpc\InvalidMapException;
@@ -436,6 +437,9 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 			$this->maniaControl->getChat()->sendException($exception, $login);
 			return;
 		} catch (FileException $exception) {
+			$this->maniaControl->getChat()->sendException($exception, $login);
+			return;
+		}catch (FaultException $exception){
 			$this->maniaControl->getChat()->sendException($exception, $login);
 			return;
 		}
