@@ -5,7 +5,9 @@ namespace MCTeam;
 use FML\Controls\Frame;
 use FML\Controls\Label;
 use FML\Controls\Quad;
+use FML\Controls\Quads\Quad_Bgs1InRace;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
+use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\ManiaLink;
 use FML\Script\Features\Paging;
 use ManiaControl\Admin\AuthenticationManager;
@@ -38,24 +40,26 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 	/*
 	 * Constants
 	 */
-	const ID                          = 7;
-	const VERSION                     = 0.3;
-	const NAME                        = 'Local Records Plugin';
-	const AUTHOR                      = 'MCTeam';
-	const MLID_RECORDS                = 'ml_local_records';
-	const TABLE_RECORDS               = 'mc_localrecords';
-	const SETTING_WIDGET_TITLE        = 'Widget Title';
-	const SETTING_WIDGET_POSX         = 'Widget Position: X';
-	const SETTING_WIDGET_POSY         = 'Widget Position: Y';
-	const SETTING_WIDGET_WIDTH        = 'Widget Width';
-	const SETTING_WIDGET_LINESCOUNT   = 'Widget Displayed Lines Count';
-	const SETTING_WIDGET_LINEHEIGHT   = 'Widget Line Height';
-	const SETTING_WIDGET_ENABLE       = 'Enable Local Records Widget';
-	const SETTING_NOTIFY_ONLY_DRIVER  = 'Notify only the Driver on New Records';
-	const SETTING_NOTIFY_BEST_RECORDS = 'Notify Publicly only for the X Best Records';
-	const SETTING_ADJUST_OUTER_BORDER = 'Adjust outer Border to Number of actual Records';
-	const CB_LOCALRECORDS_CHANGED     = 'LocalRecords.Changed';
-	const ACTION_SHOW_RECORDSLIST     = 'LocalRecords.ShowRecordsList';
+	const ID                           = 7;
+	const VERSION                      = 0.3;
+	const NAME                         = 'Local Records Plugin';
+	const AUTHOR                       = 'MCTeam';
+	const MLID_RECORDS                 = 'ml_local_records';
+	const TABLE_RECORDS                = 'mc_localrecords';
+	const SETTING_WIDGET_TITLE         = 'Widget Title';
+	const SETTING_WIDGET_POSX          = 'Widget Position: X';
+	const SETTING_WIDGET_POSY          = 'Widget Position: Y';
+	const SETTING_WIDGET_WIDTH         = 'Widget Width';
+	const SETTING_WIDGET_LINESCOUNT    = 'Widget Displayed Lines Count';
+	const SETTING_WIDGET_LINEHEIGHT    = 'Widget Line Height';
+	const SETTING_WIDGET_ENABLE        = 'Enable Local Records Widget';
+	const SETTING_NOTIFY_ONLY_DRIVER   = 'Notify only the Driver on New Records';
+	const SETTING_NOTIFY_BEST_RECORDS  = 'Notify Publicly only for the X Best Records';
+	const SETTING_ADJUST_OUTER_BORDER  = 'Adjust outer Border to Number of actual Records';
+	const SETTING_RECORDS_BEFORE_AFTER = 'Number of Records displayed before and after a player';
+	const CB_LOCALRECORDS_CHANGED      = 'LocalRecords.Changed';
+	const ACTION_SHOW_RECORDSLIST      = 'LocalRecords.ShowRecordsList';
+
 
 	/*
 	 * Private properties
@@ -126,6 +130,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_NOTIFY_ONLY_DRIVER, false);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_NOTIFY_BEST_RECORDS, 10);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_ADJUST_OUTER_BORDER, false);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_RECORDS_BEFORE_AFTER, 2);
 
 		// Callbacks
 		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'handle1Second', 1000);
@@ -200,41 +205,46 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 
 		$this->updateManialink = false;
 		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_ENABLE)) {
-			$manialink = $this->buildManialink();
-			$this->maniaControl->getManialinkManager()->sendManialink($manialink);
+			$this->sendWidgetManiaLink();
 		}
 	}
 
 	/**
-	 * Build the local records manialink
+	 * Build the local records widget ManiaLink and send it to the players
 	 *
 	 * @return string
 	 */
-	private function buildManialink() {
+	private function sendWidgetManiaLink() {
 		$map = $this->maniaControl->getMapManager()->getCurrentMap();
 		if (!$map) {
 			return null;
 		}
 
-		$title        = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_TITLE);
-		$posX         = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_POSX);
-		$posY         = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_POSY);
-		$width        = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_WIDTH);
-		$lines        = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_LINESCOUNT);
-		$lineHeight   = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_LINEHEIGHT);
-		$labelStyle   = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultLabelStyle();
-		$quadStyle    = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadStyle();
-		$quadSubstyle = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadSubstyle();
+		$title              = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_TITLE);
+		$posX               = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_POSX);
+		$posY               = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_POSY);
+		$width              = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_WIDTH);
+		$lines              = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_LINESCOUNT);
+		$lineHeight         = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_LINEHEIGHT);
+		$recordsBeforeAfter = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_RECORDS_BEFORE_AFTER);
+		$labelStyle         = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultLabelStyle();
+		$quadStyle          = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadStyle();
+		$quadSubstyle       = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadSubstyle();
 
-		$records = $this->getLocalRecords($map);
+		$records = $this->getLocalRecords($map, 1000);
 		if (!is_array($records)) {
 			Logger::logError("Couldn't fetch player records.");
 			return null;
 		}
 
-		$manialink = new ManiaLink(self::MLID_RECORDS);
+		$playerRecords = array();
+		foreach ($records as $index => $record) {
+			$playerRecords[$record->playerIndex] = $index;
+		}
+
+		$maniaLink = new ManiaLink(self::MLID_RECORDS);
 		$frame     = new Frame();
-		$manialink->addChild($frame);
+		$maniaLink->addChild($frame);
 		$frame->setPosition($posX, $posY);
 
 		$backgroundQuad = new Quad();
@@ -255,60 +265,129 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$titleLabel->setText($title);
 		$titleLabel->setTranslate(true);
 
-		// Times
+		$preGeneratedRecordsFrame = $this->generateRecordsFrame($records, $lines - 2 * $recordsBeforeAfter - 1);
+
+		$players         = $this->maniaControl->getPlayerManager()->getPlayers();
+		$topRecordsCount = $lines - $recordsBeforeAfter * 2 - 1;
+
+
+		foreach ($players as $player) {
+			if (isset($playerRecords[$player->index]) && $playerRecords[$player->index] >= $topRecordsCount) {
+				$frame->addChild($preGeneratedRecordsFrame);
+
+				$y = -8 - $topRecordsCount * $lineHeight;
+				$playerIndex = $playerRecords[$player->index];
+
+				//Line separator
+				$quad = new Quad();
+				$frame->addChild($quad);
+				$quad->setStyles(Quad_Bgs1InRace::STYLE,Quad_Bgs1InRace::SUBSTYLE_BgCardList);
+				$quad->setSize($width,0.4);
+				$quad->setY($y + $lineHeight / 2);
+
+				//Generate the Records around a player and display below topRecords
+				for ($i = $playerIndex - $recordsBeforeAfter; $i <= $playerIndex + $recordsBeforeAfter; $i++) {
+					$recordFrame = $this->generateRecordLineFrame($records[$i],$player);
+					$recordFrame->setY($y);
+					$frame->addChild($recordFrame);
+					$y -= $lineHeight;
+				}
+
+			} else {
+				$frame->addChild($this->generateRecordsFrame($records, $lines, $player));
+			}
+
+			$this->maniaControl->getManialinkManager()->sendManialink($maniaLink, $player);
+		}
+	}
+
+	/**
+	 * Returns a Frame with one line of the Record
+	 *
+	 * @param                                   $record
+	 * @param \ManiaControl\Players\Player|null $player
+	 * @return \FML\Controls\Frame
+	 */
+	private function generateRecordLineFrame($record, Player $player = null) {
+		$width      = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_WIDTH);
+		$lineHeight = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_LINEHEIGHT);
+
+		$recordFrame = new Frame();
+
+		$rankLabel = new Label();
+		$recordFrame->addChild($rankLabel);
+		$rankLabel->setHorizontalAlign($rankLabel::LEFT);
+		$rankLabel->setX($width * -0.47);
+		$rankLabel->setSize($width * 0.06, $lineHeight);
+		$rankLabel->setTextSize(1);
+		$rankLabel->setTextPrefix('$o');
+		$rankLabel->setText($record->rank);
+		$rankLabel->setTextEmboss(true);
+
+		$nameLabel = new Label();
+		$recordFrame->addChild($nameLabel);
+		$nameLabel->setHorizontalAlign($nameLabel::LEFT);
+		$nameLabel->setX($width * -0.4);
+		$nameLabel->setSize($width * 0.6, $lineHeight);
+		$nameLabel->setTextSize(1);
+		$nameLabel->setText($record->nickname);
+		$nameLabel->setTextEmboss(true);
+
+		$timeLabel = new Label();
+		$recordFrame->addChild($timeLabel);
+		$timeLabel->setHorizontalAlign($timeLabel::RIGHT);
+		$timeLabel->setX($width * 0.47);
+		$timeLabel->setSize($width * 0.25, $lineHeight);
+		$timeLabel->setTextSize(1);
+		$timeLabel->setText(Formatter::formatTime($record->time));
+		$timeLabel->setTextEmboss(true);
+
+		if ($player && $player->index == $record->playerIndex) {
+			$quad = new Quad();
+			$recordFrame->addChild($quad);
+			$quad->setStyles(Quad_Bgs1InRace::STYLE,Quad_Bgs1InRace::SUBSTYLE_BgCardList);
+			$quad->setSize($width,$lineHeight);
+		}
+
+		return $recordFrame;
+	}
+
+	/**
+	 * Returns a Frame with Records to a given limit
+	 *
+	 * @param                                   $records
+	 * @param                                   $limit
+	 * @param \ManiaControl\Players\Player|null $player
+	 * @return \FML\Controls\Frame
+	 */
+	private function generateRecordsFrame($records, $limit, Player $player = null) {
+		$lineHeight = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_LINEHEIGHT);
+
+		$frame = new Frame();
+
 		foreach ($records as $index => $record) {
-			if ($index >= $lines) {
+			if ($index >= $limit) {
 				break;
 			}
 
 			$y = -8. - $index * $lineHeight;
 
-			$recordFrame = new Frame();
+			$recordFrame = $this->generateRecordLineFrame($record, $player);
 			$frame->addChild($recordFrame);
 			$recordFrame->setPosition(0, $y);
 
-			/*
-			 * $backgroundQuad = new Quad(); $recordFrame->addChild($backgroundQuad); $backgroundQuad->setSize($width * 1.04, $lineHeight * 1.4); $backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-			 */
-
-			$rankLabel = new Label();
-			$recordFrame->addChild($rankLabel);
-			$rankLabel->setHorizontalAlign($rankLabel::LEFT);
-			$rankLabel->setX($width * -0.47);
-			$rankLabel->setSize($width * 0.06, $lineHeight);
-			$rankLabel->setTextSize(1);
-			$rankLabel->setTextPrefix('$o');
-			$rankLabel->setText($record->rank);
-			$rankLabel->setTextEmboss(true);
-
-			$nameLabel = new Label();
-			$recordFrame->addChild($nameLabel);
-			$nameLabel->setHorizontalAlign($nameLabel::LEFT);
-			$nameLabel->setX($width * -0.4);
-			$nameLabel->setSize($width * 0.6, $lineHeight);
-			$nameLabel->setTextSize(1);
-			$nameLabel->setText($record->nickname);
-			$nameLabel->setTextEmboss(true);
-
-			$timeLabel = new Label();
-			$recordFrame->addChild($timeLabel);
-			$timeLabel->setHorizontalAlign($timeLabel::RIGHT);
-			$timeLabel->setX($width * 0.47);
-			$timeLabel->setSize($width * 0.25, $lineHeight);
-			$timeLabel->setTextSize(1);
-			$timeLabel->setText(Formatter::formatTime($record->time));
-			$timeLabel->setTextEmboss(true);
 		}
 
-		return $manialink;
+		return $frame;
 	}
+
 
 	/**
 	 * Fetch local records for the given map
 	 *
-	 * @param Map $map
-	 * @param int $limit
-	 * @return array
+	 * @param \ManiaControl\Maps\Map $map
+	 * @param int                    $limit
+	 * @return array|null
 	 */
 	public function getLocalRecords(Map $map, $limit = -1) {
 		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
@@ -386,7 +465,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 
 		$player = $structure->getPlayer();
 
-		if(!$player){ //TODO verify why this can happen
+		if (!$player) { //TODO verify why this can happen
 			return;
 		}
 
@@ -552,7 +631,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$height = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsHeight();
 
 		// get PlayerList
-		$records = $this->getLocalRecords($this->maniaControl->getMapManager()->getCurrentMap(),200);
+		$records = $this->getLocalRecords($this->maniaControl->getMapManager()->getCurrentMap(), 200);
 
 		// create manialink
 		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
@@ -578,9 +657,9 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$headFrame->setY($posY - 5);
 
 		$labelLine = new LabelLine($headFrame);
-		$labelLine->addLabelEntryText('Rank',$posX + 5);
-		$labelLine->addLabelEntryText('Nickname',$posX + 18);
-		$labelLine->addLabelEntryText('Login',$posX + 70);
+		$labelLine->addLabelEntryText('Rank', $posX + 5);
+		$labelLine->addLabelEntryText('Nickname', $posX + 18);
+		$labelLine->addLabelEntryText('Login', $posX + 70);
 		$labelLine->addLabelEntryText('Time', $posX + 101);
 		$labelLine->render();
 
@@ -607,15 +686,23 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 				$lineQuad->setZ(-0.001);
 			}
 
+			if ($listRecord->login === $player->login) {
+				$currentQuad = new Quad_Icons64x64_1();
+				$recordFrame->addChild($currentQuad);
+				$currentQuad->setX($posX + 3.5);
+				$currentQuad->setSize(4, 4);
+				$currentQuad->setSubStyle($currentQuad::SUBSTYLE_ArrowBlue);
+			}
+
 			if (strlen($listRecord->nickname) < 2) {
 				$listRecord->nickname = $listRecord->login;
 			}
 
 			$labelLine = new LabelLine($recordFrame);
-			$labelLine->addLabelEntryText($listRecord->rank,$posX + 5, 13);
-			$labelLine->addLabelEntryText('$fff' . $listRecord->nickname,$posX + 18, 52);
-			$labelLine->addLabelEntryText($listRecord->login,$posX + 70,31);
-			$labelLine->addLabelEntryText(Formatter::formatTime($listRecord->time),$posX + 101, $width / 2 - ($posX + 110));
+			$labelLine->addLabelEntryText($listRecord->rank, $posX + 5, 13);
+			$labelLine->addLabelEntryText('$fff' . $listRecord->nickname, $posX + 18, 52);
+			$labelLine->addLabelEntryText($listRecord->login, $posX + 70, 31);
+			$labelLine->addLabelEntryText(Formatter::formatTime($listRecord->time), $posX + 101, $width / 2 - ($posX + 110));
 			$labelLine->render();
 
 			$recordFrame->setY($posY);

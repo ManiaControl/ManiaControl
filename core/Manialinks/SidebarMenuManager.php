@@ -122,11 +122,11 @@ class SidebarMenuManager implements UsageInformationAble, CallbackListener {
 	 * Registers an Entry to the SidebarMenu
 	 * Get the associated position with getEntryPosition($id)
 	 *
+	 * @api
 	 * @param SidebarMenuEntryRenderable                          $render
 	 * @param                                                     $order
 	 * @param                                                     $id
 	 * @return bool
-	 * @api
 	 */
 	public function addMenuEntry(SidebarMenuEntryRenderable $render, $order, $id) {
 		if (isset($this->menuEntries[$order])) {
@@ -157,10 +157,10 @@ class SidebarMenuManager implements UsageInformationAble, CallbackListener {
 
 
 	/**
+	 * @api
 	 * @param SidebarMenuEntryRenderable                          $render
 	 * @param                                                     $id
 	 * @param bool                                                $unregisterClass
-	 * @api
 	 */
 	public function deleteMenuEntry(SidebarMenuEntryRenderable $render, $id, $unregisterClass = false) {
 		foreach ($this->menuEntries as $k => $entry) {
