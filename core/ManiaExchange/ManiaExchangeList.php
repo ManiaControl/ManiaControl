@@ -129,7 +129,6 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 				}
 			}
 		}
-
 		$this->getMXMapsAndShowList($player, $author, $environment, $searchString);
 	}
 
@@ -142,6 +141,17 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 	 * @param string                       $searchString
 	 */
 	private function getMXMapsAndShowList(Player $player, $author = '', $environment = '', $searchString = '') {
+		//TODO do more clean solution
+		if($environment == ""){
+			$titleId           = $this->maniaControl->getServer()->titleId;
+			//Set Environments on Trackmania
+			$game      = explode('@', $titleId);
+			$envNumber = ManiaExchangeMapSearch::getEnvironment($game[0]); //TODO enviroment as constant
+			if ($envNumber > -1) {
+				$environment = $envNumber;
+			}
+		}
+
 		//Search the Maps
 		$mxSearch = new ManiaExchangeMapSearch($this->maniaControl);
 		$mxSearch->setAuthorName($author);

@@ -100,8 +100,6 @@ class ManiaExchangeMapSearch implements UsageInformationAble {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-
-		$titleId           = $this->maniaControl->getServer()->titleId;
 		$this->titlePrefix = $this->maniaControl->getMapManager()->getCurrentMap()->getGame();
 
 		$this->url = 'https://' . $this->titlePrefix . '.mania-exchange.com/tracksearch2/search?api=on';
@@ -129,12 +127,6 @@ class ManiaExchangeMapSearch implements UsageInformationAble {
 		} catch (GameModeException $e) {
 		}
 
-		//Set Environments on Trackmania
-		$game      = explode('@', $titleId);
-		$envNumber = $this->getEnvironment($game[0]); //TODO enviroment as constant
-		if ($envNumber > -1) {
-			$this->environments = $envNumber;
-		}
 	}
 
 	/**
@@ -186,7 +178,7 @@ class ManiaExchangeMapSearch implements UsageInformationAble {
 			$parameters .= "&secord=" . $this->secondaryOrder;
 		}
 		if ($this->environments) {
-			$parameters .= "&environemtns=" . $this->environments;
+			$parameters .= "&environments=" . $this->environments;
 		}
 		if ($this->vehicles) {
 			$parameters .= "&vehicles=" . $this->vehicles;
@@ -270,7 +262,7 @@ class ManiaExchangeMapSearch implements UsageInformationAble {
 	 * @param string $env
 	 * @return int
 	 */
-	private function getEnvironment($env) {
+	public static function getEnvironment($env) {
 		switch ($env) {
 			case 'TMCanyon':
 				return 1;
