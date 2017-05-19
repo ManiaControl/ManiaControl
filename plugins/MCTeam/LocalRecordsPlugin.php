@@ -21,6 +21,7 @@ use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\LabelLine;
 use ManiaControl\Manialinks\ManialinkManager;
+use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Maps\Map;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
@@ -36,12 +37,12 @@ use ManiaControl\Utils\Formatter;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerListener, Plugin {
+class LocalRecordsPlugin implements ManialinkPageAnswerListener,CallbackListener, CommandListener, TimerListener, Plugin {
 	/*
 	 * Constants
 	 */
 	const ID                           = 7;
-	const VERSION                      = 0.3;
+	const VERSION                      = 0.4;
 	const NAME                         = 'Local Records Plugin';
 	const AUTHOR                       = 'MCTeam';
 	const MLID_RECORDS                 = 'ml_local_records';
@@ -148,6 +149,8 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 
 		$this->maniaControl->getCommandManager()->registerCommandListener(array('recs', 'records'), $this, 'showRecordsList', false, 'Shows a list of Local Records on the current map.');
 		$this->maniaControl->getCommandManager()->registerCommandListener('delrec', $this, 'deleteRecord', true, 'Removes a record from the database.');
+
+		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_SHOW_RECORDSLIST,$this,'handleShowRecordsList');
 
 		$this->updateManialink = true;
 
@@ -265,29 +268,28 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		$titleLabel->setText($title);
 		$titleLabel->setTranslate(true);
 
-		$preGeneratedRecordsFrame = $this->generateRecordsFrame($records, $lines - 2 * $recordsBeforeAfter - 1);
+		$topRecordsCount          = $lines - $recordsBeforeAfter * 2 - 1;
+		$preGeneratedRecordsFrame = $this->generateRecordsFrame($records, $topRecordsCount);
 
-		$players         = $this->maniaControl->getPlayerManager()->getPlayers();
-		$topRecordsCount = $lines - $recordsBeforeAfter * 2 - 1;
-
+		$players = $this->maniaControl->getPlayerManager()->getPlayers();
 
 		foreach ($players as $player) {
 			if (isset($playerRecords[$player->index]) && $playerRecords[$player->index] >= $topRecordsCount) {
 				$frame->addChild($preGeneratedRecordsFrame);
 
-				$y = -8 - $topRecordsCount * $lineHeight;
+				$y           = -8 - $topRecordsCount * $lineHeight;
 				$playerIndex = $playerRecords[$player->index];
 
 				//Line separator
 				$quad = new Quad();
 				$frame->addChild($quad);
-				$quad->setStyles(Quad_Bgs1InRace::STYLE,Quad_Bgs1InRace::SUBSTYLE_BgCardList);
-				$quad->setSize($width,0.4);
+				$quad->setStyles(Quad_Bgs1InRace::STYLE, Quad_Bgs1InRace::SUBSTYLE_BgCardList);
+				$quad->setSize($width, 0.4);
 				$quad->setY($y + $lineHeight / 2);
 
 				//Generate the Records around a player and display below topRecords
 				for ($i = $playerIndex - $recordsBeforeAfter; $i <= $playerIndex + $recordsBeforeAfter; $i++) {
-					$recordFrame = $this->generateRecordLineFrame($records[$i],$player);
+					$recordFrame = $this->generateRecordLineFrame($records[$i], $player);
 					$recordFrame->setY($y);
 					$frame->addChild($recordFrame);
 					$y -= $lineHeight;
@@ -345,8 +347,8 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 		if ($player && $player->index == $record->playerIndex) {
 			$quad = new Quad();
 			$recordFrame->addChild($quad);
-			$quad->setStyles(Quad_Bgs1InRace::STYLE,Quad_Bgs1InRace::SUBSTYLE_BgCardList);
-			$quad->setSize($width,$lineHeight);
+			$quad->setStyles(Quad_Bgs1InRace::STYLE, Quad_Bgs1InRace::SUBSTYLE_BgCardList);
+			$quad->setSize($width, $lineHeight);
 		}
 
 		return $recordFrame;
@@ -415,6 +417,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 	/**
 	 * Handle Setting Changed Callback
 	 *
+	 * @internal
 	 * @param Setting $setting
 	 */
 	public function handleSettingChanged(Setting $setting) {
@@ -440,6 +443,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 	/**
 	 * Handle Checkpoint Callback
 	 *
+	 * @internal
 	 * @param OnWayPointEventStructure $callback
 	 */
 	public function handleCheckpointCallback(OnWayPointEventStructure $structure) {
@@ -453,6 +457,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 	/**
 	 * Handle Finish Callback
 	 *
+	 * @internal
 	 * @param \ManiaControl\Callbacks\Structures\TrackMania\OnWayPointEventStructure $structure
 	 */
 	public function handleFinishCallback(OnWayPointEventStructure $structure) {
@@ -469,7 +474,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 			return;
 		}
 
-		$checkpointsString                 = $this->getCheckpoints($player->login);
+		$checkpointsString                 = $this->getCheckpointmas($player->login);
 		$this->checkpoints[$player->login] = array();
 
 		// Check old record of the player
@@ -591,6 +596,7 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 
 	/**
 	 * Handle Player Connect Callback
+	 * @internal
 	 */
 	public function handlePlayerConnect() {
 		$this->updateManialink = true;
@@ -598,26 +604,22 @@ class LocalRecordsPlugin implements CallbackListener, CommandListener, TimerList
 
 	/**
 	 * Handle Begin Map Callback
+	 * @internal
 	 */
 	public function handleMapBegin() {
 		$this->updateManialink = true;
 	}
 
+
 	/**
-	 * Handle PlayerManialinkPageAnswer callback
+	 * Handle the ManiaLink answer of the showRecordsList action
 	 *
-	 * @param array $callback
+	 * @internal
+	 * @param array                        $callback
+	 * @param \ManiaControl\Players\Player $player
 	 */
-	public function handleManialinkPageAnswer(array $callback) {
-		$actionId = $callback[1][2];
-
-		//TODO manialinkpageanswerlsitener
-		$login  = $callback[1][1];
-		$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
-
-		if ($actionId === self::ACTION_SHOW_RECORDSLIST) {
-			$this->showRecordsList(array(), $player);
-		}
+	public function handleShowRecordsList(array $callback, Player $player){
+		$this->showRecordsList(array(), $player);
 	}
 
 	/**

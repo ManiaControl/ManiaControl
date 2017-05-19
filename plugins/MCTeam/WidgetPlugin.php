@@ -334,7 +334,6 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$label->setTextSize(1.3);
 		$label->setText(Formatter::stripDirtyCodes($serverName));
 		$label->setTextColor('fff');
-		//$label->setAutoNewLine(true);
 
 		// Player Quad / Label
 		$label = new Label_Text();
@@ -345,6 +344,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$label->setScale(0.8);
 		$label->setText($playerCount . " / " . $maxPlayers['NextValue']);
 		$label->setTextColor('fff');
+		$label->setWidth($width / 2 - 8);
 
 		$quad = new Quad_Icons128x128_1();
 		$frame->addChild($quad);
@@ -355,17 +355,18 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		// Spectator Quad / Label
 		$label = new Label_Text();
 		$frame->addChild($label);
-		$label->setPosition(2, -1.5, 0.2);
+		$label->setPosition(3, -1.5, 0.2);
 		$label->setHorizontalAlign($label::LEFT);
 		$label->setTextSize(1);
 		$label->setScale(0.8);
 		$label->setText($spectatorCount . " / " . $maxSpectators['NextValue']);
 		$label->setTextColor('fff');
+		$label->setWidth($width / 2 - 8);
 
 		$quad = new Quad_Icons64x64_1();
 		$frame->addChild($quad);
 		$quad->setSubStyle($quad::SUBSTYLE_Camera);
-		$quad->setPosition(0, -1.6, 0.2);
+		$quad->setPosition(1, -1.6, 0.2);
 		$quad->setSize(3.3, 2.5);
 
 		// Favorite quad
