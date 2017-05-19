@@ -10,8 +10,8 @@ use ManiaControl\Players\Player;
 
 /**
  * ManiaControl Dedimania Webhandler Class for Dedimania Plugin
- *
  * Notice its not completely finished yet
+ *
  * @author    ManiaControl Team <mail@maniacontrol.com>
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
@@ -279,7 +279,7 @@ class DedimaniaWebHandler {
 			// Called method response
 			if (!$methodResponse[0]) {
 				Logger::logError("Records Plugin: Submitting dedimania records failed.");
-			}else{
+			} else {
 				Logger::log("Dedimania Times succesfully submitted");
 			}
 

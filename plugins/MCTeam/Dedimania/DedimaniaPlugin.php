@@ -14,8 +14,6 @@ use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\Structures\TrackMania\OnWayPointEventStructure;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
-use ManiaControl\Files\AsyncHttpRequest;
-use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Players\Player;
@@ -34,23 +32,23 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	/*
 	 * Constants
 	 */
-	const ID                              = 8;
-	const VERSION                         = 0.2;
-	const AUTHOR                          = 'MCTeam';
-	const NAME                            = 'Dedimania Plugin';
-	const MLID_DEDIMANIA                  = 'Dedimania.ManialinkId';
+	const ID             = 8;
+	const VERSION        = 0.2;
+	const AUTHOR         = 'MCTeam';
+	const NAME           = 'Dedimania Plugin';
+	const MLID_DEDIMANIA = 'Dedimania.ManialinkId';
 
-	const SETTING_WIDGET_ENABLE           = 'Enable Dedimania Widget';
-	const SETTING_WIDGET_TITLE            = 'Widget Title';
-	const SETTING_WIDGET_POSX             = 'Widget Position: X';
-	const SETTING_WIDGET_POSY             = 'Widget Position: Y';
-	const SETTING_WIDGET_WIDTH            = 'Widget Width';
-	const SETTING_WIDGET_LINE_COUNT       = 'Widget Displayed Lines Count';
-	const SETTING_WIDGET_LINE_HEIGHT      = 'Widget Line Height';
-	const SETTING_DEDIMANIA_CODE          = '$l[http://dedimania.net/tm2stats/?do=register]Dedimania Code for ';
-	const CB_DEDIMANIA_CHANGED            = 'Dedimania.Changed';
-	const CB_DEDIMANIA_UPDATED            = 'Dedimania.Updated';
-	const ACTION_SHOW_DEDIRECORDSLIST     = 'Dedimania.ShowDediRecordsList';
+	const SETTING_WIDGET_ENABLE       = 'Enable Dedimania Widget';
+	const SETTING_WIDGET_TITLE        = 'Widget Title';
+	const SETTING_WIDGET_POSX         = 'Widget Position: X';
+	const SETTING_WIDGET_POSY         = 'Widget Position: Y';
+	const SETTING_WIDGET_WIDTH        = 'Widget Width';
+	const SETTING_WIDGET_LINE_COUNT   = 'Widget Displayed Lines Count';
+	const SETTING_WIDGET_LINE_HEIGHT  = 'Widget Line Height';
+	const SETTING_DEDIMANIA_CODE      = '$l[http://dedimania.net/tm2stats/?do=register]Dedimania Code for ';
+	const CB_DEDIMANIA_CHANGED        = 'Dedimania.Changed';
+	const CB_DEDIMANIA_UPDATED        = 'Dedimania.Updated';
+	const ACTION_SHOW_DEDIRECORDSLIST = 'Dedimania.ShowDediRecordsList';
 
 	/*
 	 * Private properties
@@ -58,7 +56,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
 
-	private $checkpoints     = array();
+	private $checkpoints = array();
 
 	/** @var \MCTeam\Dedimania\DedimaniaWebHandler $webHandler */
 	private $webHandler = null;
@@ -526,7 +524,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$validationReplay = $this->maniaControl->getServer()->getValidationReplay($record->login);
 		if ($validationReplay) {
 			$record->vReplay = $validationReplay;
-		}else{
+		} else {
 			return;
 		}
 
