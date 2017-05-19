@@ -746,6 +746,12 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			if (!$record->newRecord) {
 				continue;
 			}
+
+			if(!$record->vReplay){
+				Logger::log("Ignore time for " . $record->login . " no validation replay found");
+				continue;
+			}
+
 			array_push($times, array('Login' => $record->login, 'Best' => $record->best, 'Checks' => $record->checkpoints));
 			if (!isset($replays['VReplay'])) {
 				$replays['VReplay'] = $record->vReplay;
