@@ -106,7 +106,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$this->addMenu($this->maniaControlSettings);
 
 		// Chat commands
-		$this->maniaControl->getCommandManager()->registerCommandListener('config', $this, 'handleConfigCommand', true, 'Loads Config panel.');
+		$this->maniaControl->getCommandManager()->registerCommandListener(array('settings', 'config'), $this, 'handleConfigCommand', true, 'Loads Config panel.');
 	}
 
 	/**
