@@ -37,7 +37,7 @@ use ManiaControl\Utils\Formatter;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class LocalRecordsPlugin implements ManialinkPageAnswerListener,CallbackListener, CommandListener, TimerListener, Plugin {
+class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListener, CommandListener, TimerListener, Plugin {
 	/*
 	 * Constants
 	 */
@@ -149,7 +149,7 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener,CallbackListener
 		$this->maniaControl->getCommandManager()->registerCommandListener(array('recs', 'records'), $this, 'showRecordsList', false, 'Shows a list of Local Records on the current map.');
 		$this->maniaControl->getCommandManager()->registerCommandListener('delrec', $this, 'deleteRecord', true, 'Removes a record from the database.');
 
-		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_SHOW_RECORDSLIST,$this,'handleShowRecordsList');
+		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_SHOW_RECORDSLIST, $this, 'handleShowRecordsList');
 
 		$this->updateManialink = true;
 
@@ -244,9 +244,7 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener,CallbackListener
 			$playerRecords[$record->playerIndex] = $index;
 		}
 
-		$maniaLink = new ManiaLink(self::MLID_RECORDS);
-		$frame     = new Frame();
-		$maniaLink->addChild($frame);
+		$frame = new Frame();
 		$frame->setPosition($posX, $posY);
 
 		$backgroundQuad = new Quad();
@@ -273,15 +271,22 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener,CallbackListener
 		$players = $this->maniaControl->getPlayerManager()->getPlayers();
 
 		foreach ($players as $player) {
+			$maniaLink = new ManiaLink(self::MLID_RECORDS);
+			$maniaLink->addChild($frame);
+
+			$listFrame = new Frame();
+			$maniaLink->addChild($listFrame);
+			$listFrame->setPosition($posX, $posY);
+
 			if (isset($playerRecords[$player->index]) && $playerRecords[$player->index] >= $topRecordsCount) {
-				$frame->addChild($preGeneratedRecordsFrame);
+				$listFrame->addChild($preGeneratedRecordsFrame);
 
 				$y           = -8 - $topRecordsCount * $lineHeight;
 				$playerIndex = $playerRecords[$player->index];
 
 				//Line separator
 				$quad = new Quad();
-				$frame->addChild($quad);
+				$listFrame->addChild($quad);
 				$quad->setStyles(Quad_Bgs1InRace::STYLE, Quad_Bgs1InRace::SUBSTYLE_BgCardList);
 				$quad->setSize($width, 0.4);
 				$quad->setY($y + $lineHeight / 2);
@@ -290,12 +295,12 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener,CallbackListener
 				for ($i = $playerIndex - $recordsBeforeAfter; $i <= $playerIndex + $recordsBeforeAfter; $i++) {
 					$recordFrame = $this->generateRecordLineFrame($records[$i], $player);
 					$recordFrame->setY($y);
-					$frame->addChild($recordFrame);
+					$listFrame->addChild($recordFrame);
 					$y -= $lineHeight;
 				}
 
 			} else {
-				$frame->addChild($this->generateRecordsFrame($records, $lines, $player));
+				$listFrame->addChild($this->generateRecordsFrame($records, $lines, $player));
 			}
 
 			$this->maniaControl->getManialinkManager()->sendManialink($maniaLink, $player);
@@ -595,6 +600,7 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener,CallbackListener
 
 	/**
 	 * Handle Player Connect Callback
+	 *
 	 * @internal
 	 */
 	public function handlePlayerConnect() {
@@ -603,6 +609,7 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener,CallbackListener
 
 	/**
 	 * Handle Begin Map Callback
+	 *
 	 * @internal
 	 */
 	public function handleMapBegin() {
@@ -617,7 +624,7 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener,CallbackListener
 	 * @param array                        $callback
 	 * @param \ManiaControl\Players\Player $player
 	 */
-	public function handleShowRecordsList(array $callback, Player $player){
+	public function handleShowRecordsList(array $callback, Player $player) {
 		$this->showRecordsList(array(), $player);
 	}
 
