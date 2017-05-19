@@ -68,6 +68,17 @@ class DedimaniaData {
 	}
 
 	/**
+	 * Update the Record Ranks
+	 */
+	public function updateRanks() {
+		$rank = 1;
+		foreach ($this->records as $record) {
+			$record->rank = $rank;
+			$rank++;
+		}
+	}
+
+	/**
 	 * Build the Data Array
 	 *
 	 * @return array
@@ -90,6 +101,31 @@ class DedimaniaData {
 	 */
 	public function getRecordCount() {
 		return count($this->records);
+	}
+
+	/**
+	 * Checks if a Record is in the array
+	 *
+	 * @return bool
+	 */
+	public function recordsExisting() {
+		return $this->getRecordCount() > 0;
+	}
+
+	/**
+	 * Unsets all existing Records
+	 */
+	public function unsetRecords() {
+		unset($this->records);
+	}
+
+	/**
+	 * Deletes a Record by its Index
+	 *
+	 * @param $index
+	 */
+	public function deleteRecordByIndex($index) {
+		unset($this->records[$index]);
 	}
 
 	/**
