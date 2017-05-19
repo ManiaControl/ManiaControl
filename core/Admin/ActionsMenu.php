@@ -15,7 +15,7 @@ use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
-use ManiaControl\Manialinks\SidebarMenuEntryRenderable;
+use ManiaControl\Manialinks\SidebarMenuEntryListener;
 use ManiaControl\Manialinks\SidebarMenuManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
@@ -30,7 +30,7 @@ use ManiaControl\Settings\SettingManager;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class ActionsMenu implements SidebarMenuEntryRenderable, CallbackListener, ManialinkPageAnswerListener, UsageInformationAble {
+class ActionsMenu implements SidebarMenuEntryListener, CallbackListener, ManialinkPageAnswerListener, UsageInformationAble {
 	use UsageInformationTrait;
 
 	/*
@@ -45,6 +45,8 @@ class ActionsMenu implements SidebarMenuEntryRenderable, CallbackListener, Mania
 	const ACTION_OPEN_PLAYER_MENU      = 'ActionsMenu.OpenPlayerMenu';
 	const ADMIN_MENU_ID                = 'ActionsMenu.AdminMenu';
 	const PLAYER_MENU_ID               = 'ActionsMenu.PlayerMenu';
+	const MLID_ADMIN_MENU              = 'ActionsMenu.AdminMenuMLID';
+	const MLID_PLAYER_MENU             = 'ActionsMenu.PlayerMenuMLID';
 
 	/*
 	 * Private properties
@@ -75,8 +77,20 @@ class ActionsMenu implements SidebarMenuEntryRenderable, CallbackListener, Mania
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(AuthenticationManager::CB_AUTH_LEVEL_CHANGED, $this, 'handlePlayerJoined');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(SettingManager::CB_SETTING_CHANGED, $this, 'handleSettingChanged');
 
-		$this->maniaControl->getManialinkManager()->getSidebarMenuManager()->addMenuEntry($this,SidebarMenuManager::ORDER_ADMIN_MENU, self::ADMIN_MENU_ID);
-		$this->maniaControl->getManialinkManager()->getSidebarMenuManager()->addMenuEntry($this,SidebarMenuManager::ORDER_PLAYER_MENU, self::PLAYER_MENU_ID);
+	}
+
+	/**
+	 * Handle ManiaControl AfterInit callback
+	 *
+	 * @internal
+	 */
+	public function handleAfterInit() {
+		$this->initCompleted = true;
+
+		$this->maniaControl->getManialinkManager()->getSidebarMenuManager()->addMenuEntry(SidebarMenuManager::ORDER_ADMIN_MENU, self::ADMIN_MENU_ID, $this, 'rebuildAndShowAdminMenu');
+		$this->maniaControl->getManialinkManager()->getSidebarMenuManager()->addMenuEntry(SidebarMenuManager::ORDER_PLAYER_MENU, self::PLAYER_MENU_ID, $this, 'rebuildAndShowPlayerMenu');
+
+		$this->rebuildAndShowMenu();
 	}
 
 	/**
@@ -124,104 +138,49 @@ class ActionsMenu implements SidebarMenuEntryRenderable, CallbackListener, Mania
 		}
 
 		//Send Menu to Admins
-		$admins = $this->maniaControl->getAuthenticationManager()->getConnectedAdmins(AuthenticationManager::AUTH_LEVEL_MODERATOR);
-		if (!empty($admins)) {
-			$manialink = $this->buildMenuIconsManialink(true);
-			$this->maniaControl->getManialinkManager()->sendManialink($manialink, $admins);
-		}
+		$this->rebuildAndShowAdminMenu();
 
 		//Send Menu to Players - Players with No Admin Permisssions
-		$players = $this->maniaControl->getAuthenticationManager()->getConnectedPlayers();
+		$this->rebuildAndShowPlayerMenu();
+	}
+
+
+	/**
+	 * @internal
+	 */
+	public function rebuildAndShowAdminMenu() {
+		$admins = $this->maniaControl->getAuthenticationManager()->getConnectedAdmins(AuthenticationManager::AUTH_LEVEL_MODERATOR);
+		if (!empty($admins)) {
+			$manialink = $this->buildAdminMenuManiaLink();
+			$this->maniaControl->getManialinkManager()->sendManialink($manialink, $admins);
+		}
+	}
+
+
+	/**
+	 * @internal
+	 */
+	public function rebuildAndShowPlayerMenu() {
+		$players = $this->maniaControl->getPlayerManager()->getPlayers();
 		if (!empty($players)) {
-			$manialink = $this->buildMenuIconsManialink(false);
+			$manialink = $this->buildPlayerMenuManiaLink();
 			$this->maniaControl->getManialinkManager()->sendManialink($manialink, $players);
 		}
 	}
 
-	/**
-	 * Builds the Manialink
-	 *
-	 * @param bool $admin
-	 * @return \FML\ManiaLink
-	 */
-	private function buildMenuIconsManialink($admin = false) {
-		$adminPos          = $this->maniaControl->getManialinkManager()->getSidebarMenuManager()->getEntryPosition(self::ADMIN_MENU_ID);
-		$playerPos         = $this->maniaControl->getManialinkManager()->getSidebarMenuManager()->getEntryPosition(self::PLAYER_MENU_ID);
+	private function buildPlayerMenuManiaLink() {
 		$itemSize          = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MENU_ITEMSIZE);
 		$quadStyle         = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadStyle();
 		$quadSubstyle      = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadSubstyle();
 		$itemMarginFactorX = 1.3;
 		$itemMarginFactorY = 1.2;
 
-		$maniaLink = new ManiaLink(self::MLID_MENU);
+		$maniaLink = new ManiaLink(self::MLID_PLAYER_MENU);
 		$frame     = new Frame();
 		$maniaLink->addChild($frame);
 		$frame->setZ(ManialinkManager::MAIN_MANIALINK_Z_VALUE);
 
-		/*
-		 * Admin Menu
-		 */
-		if ($admin) {
-			// Admin Menu Icon Frame
-			$iconFrame = new Frame();
-			$frame->addChild($iconFrame);
-			$iconFrame->setPosition($adminPos->getX(), $adminPos->getY());
-
-			$backgroundQuad = new Quad();
-			$iconFrame->addChild($backgroundQuad);
-			$backgroundQuad->setSize($itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
-			$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-
-			$itemQuad = new Quad_Icons64x64_1();
-			$iconFrame->addChild($itemQuad);
-			$itemQuad->setSubStyle($itemQuad::SUBSTYLE_IconServers);
-			$itemQuad->setSize($itemSize, $itemSize);
-
-			// Admin Menu Description
-			$descriptionLabel = new Label();
-			$frame->addChild($descriptionLabel);
-			$descriptionLabel->setPosition($adminPos->getX() - count($this->adminMenuItems) * $itemSize * 1.05 - 5, $adminPos->getY());
-			$descriptionLabel->setAlign($descriptionLabel::RIGHT, $descriptionLabel::TOP);
-			$descriptionLabel->setSize(40, 4);
-			$descriptionLabel->setTextSize(1.4);
-			$descriptionLabel->setTextColor('fff');
-
-			// Admin Menu
-			$popoutFrame = new Frame();
-			$frame->addChild($popoutFrame);
-			$popoutFrame->setPosition($adminPos->getX() - $itemSize * 0.5, $adminPos->getY());
-			$popoutFrame->setHorizontalAlign($popoutFrame::RIGHT);
-			$popoutFrame->setVisible(false);
-
-			$backgroundQuad = new Quad();
-			$popoutFrame->addChild($backgroundQuad);
-			$backgroundQuad->setHorizontalAlign($backgroundQuad::RIGHT);
-			$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
-			$backgroundQuad->setSize(count($this->adminMenuItems) * $itemSize * 1.05 + 2, $itemSize * $itemMarginFactorY);
-
-			$itemQuad->addToggleFeature($popoutFrame);
-
-			// Add items
-			$itemPosX = -1;
-			foreach ($this->adminMenuItems as $menuItems) {
-				foreach ($menuItems as $menuItem) {
-					$menuQuad = $menuItem[0];
-					/** @var Quad $menuQuad */
-					$popoutFrame->addChild($menuQuad);
-					$menuQuad->setSize($itemSize, $itemSize);
-					$menuQuad->setX($itemPosX);
-					$menuQuad->setHorizontalAlign($menuQuad::RIGHT);
-					$itemPosX -= $itemSize * 1.05;
-
-					if ($menuItem[1]) {
-						$menuQuad->removeAllScriptFeatures();
-						$description = '$s' . $menuItem[1];
-						$menuQuad->addTooltipLabelFeature($descriptionLabel, $description);
-					}
-				}
-			}
-		}
-
+		$playerPos = $this->maniaControl->getManialinkManager()->getSidebarMenuManager()->getEntryPosition(self::PLAYER_MENU_ID);
 		/*
 		 * Player Menu
 		 */
@@ -287,6 +246,82 @@ class ActionsMenu implements SidebarMenuEntryRenderable, CallbackListener, Mania
 		return $maniaLink;
 	}
 
+	private function buildAdminMenuManiaLink() {
+		$itemSize          = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MENU_ITEMSIZE);
+		$quadStyle         = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadStyle();
+		$quadSubstyle      = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadSubstyle();
+		$itemMarginFactorX = 1.3;
+		$itemMarginFactorY = 1.2;
+
+		$maniaLink = new ManiaLink(self::MLID_ADMIN_MENU);
+		$frame     = new Frame();
+		$maniaLink->addChild($frame);
+		$frame->setZ(ManialinkManager::MAIN_MANIALINK_Z_VALUE);
+
+		$adminPos = $this->maniaControl->getManialinkManager()->getSidebarMenuManager()->getEntryPosition(self::ADMIN_MENU_ID);
+
+		// Admin Menu Icon Frame
+		$iconFrame = new Frame();
+		$frame->addChild($iconFrame);
+		$iconFrame->setPosition($adminPos->getX(), $adminPos->getY());
+
+		$backgroundQuad = new Quad();
+		$iconFrame->addChild($backgroundQuad);
+		$backgroundQuad->setSize($itemSize * $itemMarginFactorX, $itemSize * $itemMarginFactorY);
+		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
+
+		$itemQuad = new Quad_Icons64x64_1();
+		$iconFrame->addChild($itemQuad);
+		$itemQuad->setSubStyle($itemQuad::SUBSTYLE_IconServers);
+		$itemQuad->setSize($itemSize, $itemSize);
+
+		// Admin Menu Description
+		$descriptionLabel = new Label();
+		$frame->addChild($descriptionLabel);
+		$descriptionLabel->setPosition($adminPos->getX() - count($this->adminMenuItems) * $itemSize * 1.05 - 5, $adminPos->getY());
+		$descriptionLabel->setAlign($descriptionLabel::RIGHT, $descriptionLabel::TOP);
+		$descriptionLabel->setSize(40, 4);
+		$descriptionLabel->setTextSize(1.4);
+		$descriptionLabel->setTextColor('fff');
+
+		// Admin Menu
+		$popoutFrame = new Frame();
+		$frame->addChild($popoutFrame);
+		$popoutFrame->setPosition($adminPos->getX() - $itemSize * 0.5, $adminPos->getY());
+		$popoutFrame->setHorizontalAlign($popoutFrame::RIGHT);
+		$popoutFrame->setVisible(false);
+
+		$backgroundQuad = new Quad();
+		$popoutFrame->addChild($backgroundQuad);
+		$backgroundQuad->setHorizontalAlign($backgroundQuad::RIGHT);
+		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
+		$backgroundQuad->setSize(count($this->adminMenuItems) * $itemSize * 1.05 + 2, $itemSize * $itemMarginFactorY);
+
+		$itemQuad->addToggleFeature($popoutFrame);
+
+		// Add items
+		$itemPosX = -1;
+		foreach ($this->adminMenuItems as $menuItems) {
+			foreach ($menuItems as $menuItem) {
+				$menuQuad = $menuItem[0];
+				/** @var Quad $menuQuad */
+				$popoutFrame->addChild($menuQuad);
+				$menuQuad->setSize($itemSize, $itemSize);
+				$menuQuad->setX($itemPosX);
+				$menuQuad->setHorizontalAlign($menuQuad::RIGHT);
+				$itemPosX -= $itemSize * 1.05;
+
+				if ($menuItem[1]) {
+					$menuQuad->removeAllScriptFeatures();
+					$description = '$s' . $menuItem[1];
+					$menuQuad->addTooltipLabelFeature($descriptionLabel, $description);
+				}
+			}
+		}
+
+		return $maniaLink;
+	}
+
 	/**
 	 * Add a new Admin Menu Item
 	 *
@@ -325,16 +360,6 @@ class ActionsMenu implements SidebarMenuEntryRenderable, CallbackListener, Mania
 	}
 
 	/**
-	 * Handle ManiaControl AfterInit callback
-	 *
-	 * @internal
-	 */
-	public function handleAfterInit() {
-		$this->initCompleted = true;
-		$this->rebuildAndShowMenu();
-	}
-
-	/**
 	 * Handle PlayerJoined callback
 	 *
 	 * @internal
@@ -342,11 +367,11 @@ class ActionsMenu implements SidebarMenuEntryRenderable, CallbackListener, Mania
 	 */
 	public function handlePlayerJoined(Player $player) {
 		if ($this->maniaControl->getAuthenticationManager()->checkRight($player, AuthenticationManager::AUTH_LEVEL_MODERATOR)) {
-			$maniaLink = $this->buildMenuIconsManialink(true);
-		} else {
-			$maniaLink = $this->buildMenuIconsManialink(false);
+			$maniaLink = $this->buildAdminMenuManiaLink();
+			$this->maniaControl->getManialinkManager()->sendManialink($maniaLink, $player);
 		}
 
+		$maniaLink = $this->buildPlayerMenuManiaLink();
 		$this->maniaControl->getManialinkManager()->sendManialink($maniaLink, $player);
 
 	}

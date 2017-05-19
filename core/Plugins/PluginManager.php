@@ -11,6 +11,7 @@ use ManiaControl\Files\FileUtil;
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
+use ManiaControl\Manialinks\SidebarMenuEntryListener;
 use ManiaControl\Update\PluginUpdateManager;
 use ManiaControl\Utils\ClassUtil;
 use ReflectionClass;
@@ -185,6 +186,9 @@ class PluginManager {
 		}
 		if ($plugin instanceof TimerListener) {
 			$this->maniaControl->getTimerManager()->unregisterTimerListenings($plugin);
+		}
+		if($plugin instanceof SidebarMenuEntryListener){
+			$this->maniaControl->getManialinkManager()->getSidebarMenuManager()->deleteMenuEntries($plugin);
 		}
 
 		$this->savePluginStatus($pluginClass, false);

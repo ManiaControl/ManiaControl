@@ -24,7 +24,7 @@ use ManiaControl\Commands\CommandListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
-use ManiaControl\Manialinks\SidebarMenuEntryRenderable;
+use ManiaControl\Manialinks\SidebarMenuEntryListener;
 use ManiaControl\Manialinks\SidebarMenuManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
@@ -47,7 +47,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class CustomVotesPlugin implements SidebarMenuEntryRenderable, CommandListener, CallbackListener, ManialinkPageAnswerListener, TimerListener, Plugin {
+class CustomVotesPlugin implements SidebarMenuEntryListener, CommandListener, CallbackListener, ManialinkPageAnswerListener, TimerListener, Plugin {
 	/*
 	 * Constants
 	 */
@@ -162,8 +162,7 @@ class CustomVotesPlugin implements SidebarMenuEntryRenderable, CommandListener, 
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_SPECTATOR_ALLOW_START_VOTE, true);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_VOTE_TIME, 40);
 
-		$this->maniaControl->getManialinkManager()->getSidebarMenuManager()->addMenuEntry($this, SidebarMenuManager::ORDER_PLAYER_MENU + 5, self::CUSTOMVOTES_MENU_ID);
-
+		$this->maniaControl->getManialinkManager()->getSidebarMenuManager()->addMenuEntry(SidebarMenuManager::ORDER_PLAYER_MENU + 5, self::CUSTOMVOTES_MENU_ID,$this,'showIcon');
 		//Define Votes
 		$this->defineVote("teambalance", "Vote for Team Balance");
 		$this->defineVote("skipmap", "Vote for Skip Map")->setStopCallback(Callbacks::ENDMAP);
@@ -268,7 +267,7 @@ class CustomVotesPlugin implements SidebarMenuEntryRenderable, CommandListener, 
 	 *
 	 * @param bool $login
 	 */
-	private function showIcon($login = false) {
+	public function showIcon($login = false) {
 		$pos               = $this->maniaControl->getManialinkManager()->getSidebarMenuManager()->getEntryPosition(self::CUSTOMVOTES_MENU_ID);
 		$width             = $this->maniaControl->getSettingManager()->getSettingValue($this->maniaControl->getManialinkManager()->getSidebarMenuManager(), SidebarMenuManager::SETTING_MENU_ITEMSIZE);
 		$quadStyle         = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadStyle();
@@ -372,7 +371,6 @@ class CustomVotesPlugin implements SidebarMenuEntryRenderable, CommandListener, 
 
 		$this->destroyVote();
 		$this->maniaControl->getManialinkManager()->hideManialink(self::MLID_ICON);
-		$this->maniaControl->getManialinkManager()->getSidebarMenuManager()->deleteMenuEntry($this, self::CUSTOMVOTES_MENU_ID, true);
 	}
 
 	/**
@@ -798,13 +796,6 @@ class CustomVotesPlugin implements SidebarMenuEntryRenderable, CommandListener, 
 		}
 
 		$this->constructMenu();
-	}
-
-	/**
-	 *  Call here the function which updates the MenuIcon Manialink
-	 */
-	public function renderMenuEntry() {
-		$this->showIcon();
 	}
 }
 

@@ -564,12 +564,23 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 	}
 
 	/**
-	 * Get all Players
+	 * Get all Players with or without spectators
 	 *
 	 * @api
-	 * @return Player[]
+	 * @param bool $withoutSpectators
+	 * @return \ManiaControl\Players\Player[]
 	 */
-	public function getPlayers() {
+	public function getPlayers($withoutSpectators = false) {
+		if($withoutSpectators){
+			$players = array();
+			foreach($this->players as $player){
+				if(!$player->isSpectator){
+					$players[] = $players;
+				}
+			}
+
+			return $players;
+		}
 		return $this->players;
 	}
 

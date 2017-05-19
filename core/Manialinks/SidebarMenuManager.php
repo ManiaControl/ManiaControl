@@ -28,11 +28,10 @@ class SidebarMenuManager implements UsageInformationAble, CallbackListener {
 	const ORDER_ADMIN_MENU  = 10;
 	const ORDER_PLAYER_MENU = 20;
 
-	/* @var $maniaControl ManiaControl */
+	/** @var ManiaControl $maniaControl */
 	private $maniaControl;
-	private $menuEntries       = array();
-	private $yPositions        = array();
-	private $registeredClasses = array();
+	/** @var \ManiaControl\Manialinks\SidebarMenuEntry[] $menuEntries */
+	private $menuEntries = array();
 
 	/**
 	 * SidebarMenuManager constructor.
@@ -74,10 +73,10 @@ class SidebarMenuManager implements UsageInformationAble, CallbackListener {
 	 *
 	 * @return int
 	 */
-	private function getElementCountBeforeAdminMenu(){
+	private function getElementCountBeforeAdminMenu() {
 		$count = 0;
-		foreach($this->menuEntries as $k => $entry){
-			if($k < SidebarMenuManager::ORDER_ADMIN_MENU){
+		foreach ($this->menuEntries as $k => $entry) {
+			if ($k < SidebarMenuManager::ORDER_ADMIN_MENU) {
 				$count++;
 			}
 		}
@@ -87,9 +86,9 @@ class SidebarMenuManager implements UsageInformationAble, CallbackListener {
 	/**
 	 * Returns PositionObject of a menu item of the sidebar, or null if it's not found
 	 *
+	 * @api
 	 * @param string $id
 	 * @return Position|null
-	 * @api
 	 */
 	public function getEntryPosition($id) {
 		$itemSize         = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MENU_ITEMSIZE);
@@ -99,15 +98,8 @@ class SidebarMenuManager implements UsageInformationAble, CallbackListener {
 		$count = $this->getElementCountBeforeAdminMenu();
 		$pos->setY($pos->getY() + $itemSize * $itemMarginFactor * $count);
 
-
-		if (isset($this->yPositions[$id])) {
-			$pos->setY($this->yPositions[$id]);
-			return $pos;
-		}
-
 		foreach ($this->menuEntries as $entry) {
-			if ($entry == $id) {
-				$this->yPositions[$id] = $pos->getY();
+			if ($entry->getId() == $id) {
 				return $pos;
 			}
 			$pos->setY($pos->getY() - $itemSize * $itemMarginFactor);
@@ -123,62 +115,73 @@ class SidebarMenuManager implements UsageInformationAble, CallbackListener {
 	 * Get the associated position with getEntryPosition($id)
 	 *
 	 * @api
-	 * @param SidebarMenuEntryRenderable                          $render
-	 * @param                                                     $order
-	 * @param                                                     $id
+	 * @param                                                   $order
+	 * @param                                                   $id
+	 * @param \ManiaControl\Manialinks\SidebarMenuEntryListener $listener
+	 * @param                                                   $renderMethod
 	 * @return bool
 	 */
-	public function addMenuEntry(SidebarMenuEntryRenderable $render, $order, $id) {
+	public function addMenuEntry($order, $id, SidebarMenuEntryListener $listener, $renderMethod) {
+		if ((!is_string($renderMethod) || !method_exists($listener, $renderMethod)) && !is_callable($renderMethod)) {
+			trigger_error("Given Listener (" . get_class($listener) . ") can't handle Timer Callback (No Method '{$renderMethod}')!");
+			return false;
+		}
+
 		if (isset($this->menuEntries[$order])) {
-			if ($this->menuEntries[$order] != $id) {
-				return $this->addMenuEntry($render, $order + 1, $id);
+			if ($this->menuEntries[$order]->getId() != $id) {
+				return $this->addMenuEntry($order + 1, $id, $listener, $renderMethod);
 			}
 		}
-		$this->menuEntries[$order] = $id;
-		$this->yPositions          = array();
+
+		$entry = new SidebarMenuEntry($listener, $renderMethod);
+		$entry->setId($id);
+
+		$this->menuEntries[$order] = $entry;
 		ksort($this->menuEntries);
 
-
-		$registered = false;
-		foreach ($this->registeredClasses as $class) {
-			$class->renderMenuEntry();
-			if ($class == $render) {
-				$registered = true;
-			}
-		}
-
-		if (!$registered) {
-			array_push($this->registeredClasses, $render);
-			$render->renderMenuEntry();
-		}
+		$this->updateMenuEntries();
 
 		return true;
+	}
+
+	/**
+	 * Call all user functions
+	 */
+	private function updateMenuEntries() {
+		foreach ($this->menuEntries as $listening) {
+
+			// Call the User Function
+			$listening->triggerCallback();
+		}
 	}
 
 
 	/**
 	 * @api
-	 * @param SidebarMenuEntryRenderable                          $render
+	 * @param SidebarMenuEntryListener                            $listener
 	 * @param                                                     $id
-	 * @param bool                                                $unregisterClass
 	 */
-	public function deleteMenuEntry(SidebarMenuEntryRenderable $render, $id, $unregisterClass = false) {
+	public function deleteMenuEntry(SidebarMenuEntryListener $listener, $id) {
 		foreach ($this->menuEntries as $k => $entry) {
-			if ($entry == $id) {
+			if ($entry->getId() == $id) {
 				unset($this->menuEntries[$k]);
-				$this->yPositions = array();
+			}
+		}
+		$this->updateMenuEntries();
+	}
+
+	/**
+	 * @api
+	 * @param \ManiaControl\Manialinks\SidebarMenuEntryListener $listener
+	 */
+	public function deleteMenuEntries(SidebarMenuEntryListener $listener) {
+		foreach ($this->menuEntries as $k => $entry) {
+			if ($entry->listener == $listener) {
+				unset($this->menuEntries[$k]);
 			}
 		}
 
-			foreach ($this->registeredClasses as $k => $class) {
-				if ($class == $render && $unregisterClass) {
-					unset($this->registeredClasses[$k]);
-				}else{
-					$class->renderMenuEntry();
-				}
-			}
-
-
+		$this->updateMenuEntries();
 	}
 
 }

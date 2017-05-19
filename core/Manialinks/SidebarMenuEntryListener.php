@@ -12,10 +12,5 @@ namespace ManiaControl\Manialinks;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 
-interface SidebarMenuEntryRenderable {
-
-	/**
-	 *  Call here the function which updates the MenuIcon ManiaLink
-	 */
-	public function renderMenuEntry();
+interface SidebarMenuEntryListener {
 }
