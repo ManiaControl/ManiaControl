@@ -474,7 +474,7 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener,CallbackListener
 			return;
 		}
 
-		$checkpointsString                 = $this->getCheckpointmas($player->login);
+		$checkpointsString                 = $this->getCheckpoints($player->login);
 		$this->checkpoints[$player->login] = array();
 
 		// Check old record of the player
