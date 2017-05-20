@@ -49,7 +49,7 @@ class DedimaniaWebHandler {
 
 		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, self::DEDIMANIA_URL);
 		$asyncHttpRequest->setCallable(function ($data, $error) use ($updateRecords) {
-			Logger::log("Try to connect on Dedimania");
+			Logger::logInfo("Try to connect on Dedimania");
 
 			if (!$data || $error) {
 				Logger::logError("Dedimania Error while opening session: '{$error}' Line 42");
@@ -69,7 +69,7 @@ class DedimaniaWebHandler {
 			$responseData                   = $methodResponse[0];
 			$this->dedimaniaData->sessionId = $responseData['SessionId'];
 			if ($this->dedimaniaData->sessionId) {
-				Logger::log("Dedimania connection successfully established.");
+				Logger::logInfo("Dedimania connection successfully established.");
 
 				if ($updateRecords) {
 					$this->fetchDedimaniaRecords();
@@ -146,7 +146,7 @@ class DedimaniaWebHandler {
 				$this->dedimaniaData->records[$key] = new RecordData($record);
 			}
 
-			Logger::log(count($this->dedimaniaData->records) . " Dedimania Records Fetched succesfully!");
+			Logger::logInfo(count($this->dedimaniaData->records) . " Dedimania Records Fetched succesfully!");
 
 			$this->maniaLinkNeedsUpdate = true;
 			$this->maniaControl->getCallbackManager()->triggerCallback(DedimaniaPlugin::CB_DEDIMANIA_UPDATED, $this->dedimaniaData->records); //TODO
@@ -233,7 +233,7 @@ class DedimaniaWebHandler {
 			}
 
 			if (!$record->vReplay) {
-				Logger::log("Ignore time for " . $record->login . " no validation replay found");
+				Logger::logInfo("Ignore time for " . $record->login . " no validation replay found");
 				continue;
 			}
 
@@ -256,7 +256,7 @@ class DedimaniaWebHandler {
 		$data    = array($this->dedimaniaData->sessionId, $this->getMapInfo(), $gameMode, $times, $replays);
 		$content = $this->encodeRequest(self::DEDIMANIA_SET_CHALLENGE_TIMES, $data);
 
-		Logger::log("Dedimania Submitting Map Times at End-Map Start");
+		Logger::logInfo("Dedimania Submitting Map Times at End-Map Start");
 
 
 		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, self::DEDIMANIA_URL);
@@ -280,7 +280,7 @@ class DedimaniaWebHandler {
 			if (!$methodResponse[0]) {
 				Logger::logError("Records Plugin: Submitting dedimania records failed.");
 			} else {
-				Logger::log("Dedimania Times succesfully submitted");
+				Logger::logInfo("Dedimania Times succesfully submitted");
 			}
 
 		});
@@ -332,7 +332,7 @@ class DedimaniaWebHandler {
 				$this->fetchDedimaniaRecords(true);
 			}
 
-			Logger::log("Dedimania Player added " . $dediPlayer->login);
+			Logger::logInfo("Dedimania Player added " . $dediPlayer->login);
 
 			$this->maniaLinkNeedsUpdate = true; //TODO handle update for only one player instead of everyone as soon splitted
 		});
@@ -376,7 +376,7 @@ class DedimaniaWebHandler {
 				$this->handleXmlRpcFault($methodResponse, self::DEDIMANIA_PLAYERDISCONNECT);
 			}
 
-			Logger::log("Debug: Dedimania Player left");
+			Logger::logInfo("Debug: Dedimania Player removed");
 		});
 
 		$asyncHttpRequest->setContent($content);
@@ -420,7 +420,7 @@ class DedimaniaWebHandler {
 				$this->handleXmlRpcFault($methodResponse, self::DEDIMANIA_UPDATE_SERVER_PLAYERS);
 			}
 
-			Logger::log("Dedimania Playerlist Updated");
+			Logger::logInfo("Dedimania Playerlist Updated");
 		});
 
 		$asyncHttpRequest->setContent($content);
