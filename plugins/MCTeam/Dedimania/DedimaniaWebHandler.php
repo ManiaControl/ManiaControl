@@ -44,7 +44,7 @@ class DedimaniaWebHandler {
 	 *
 	 * @param bool $updateRecords
 	 */
-	public function openDedimaniaSession($updateRecords = true) {
+	public function openDedimaniaSession($updateRecords = false) {
 		$content = $this->encodeRequest(self::DEDIMANIA_OPEN_SESSION, array($this->dedimaniaData->toArray()));
 
 		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, self::DEDIMANIA_URL);

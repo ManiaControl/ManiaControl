@@ -336,7 +336,7 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 		$nameLabel = new Label();
 		$recordFrame->addChild($nameLabel);
 		$nameLabel->setHorizontalAlign($nameLabel::LEFT);
-		$nameLabel->setX($width * -0.4);
+		$nameLabel->setX($width * -0.36);
 		$nameLabel->setSize($width * 0.6, $lineHeight);
 		$nameLabel->setTextSize(1);
 		$nameLabel->setText($record->nickname);
