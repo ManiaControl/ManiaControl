@@ -53,7 +53,6 @@ class DedimaniaWebHandler {
 
 			if (!$data || $error) {
 				Logger::logError("Dedimania Error while opening session: '{$error}' Line 42");
-				var_dump($data);
 			}
 
 			$data = $this->decode($data);
@@ -188,6 +187,7 @@ class DedimaniaWebHandler {
 			$methodResponse = $data[0];
 			if (xmlrpc_is_fault($methodResponse)) {
 				$this->handleXmlRpcFault($methodResponse, self::DEDIMANIA_CHECK_SESSION);
+				$this->openDedimaniaSession();
 				return;
 			}
 

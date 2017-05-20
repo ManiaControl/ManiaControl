@@ -233,12 +233,13 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 		$quadStyle          = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadStyle();
 		$quadSubstyle       = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadSubstyle();
 
-		$records = $this->getLocalRecords($map, 1000);
+		$records = $this->getLocalRecords($map, 1000); //TODO limit setting
 		if (!is_array($records)) {
 			Logger::logError("Couldn't fetch player records.");
 			return null;
 		}
 
+		//TODO maybe only store if player is connected
 		$playerRecords = array();
 		foreach ($records as $index => $record) {
 			$playerRecords[$record->playerIndex] = $index;
