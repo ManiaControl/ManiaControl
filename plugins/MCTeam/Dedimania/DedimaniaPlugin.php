@@ -238,8 +238,6 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 */
 	public function handleEveryHalfMinute() {
 		if ($this->webHandler->getDedimaniaData()->sessionId == "") {
-			var_dump("Debug test Dedimania 2, will be removed soon!"); //TODO
-			var_dump($this->webHandler->getDedimaniaData()->sessionId);
 			return;
 		}
 		$this->webHandler->checkDedimaniaSession();
@@ -307,7 +305,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	/**
 	 * Handle Finish Callback
 	 *
-	 * @param OnWayPointEventStructure $callback
+	 * @param \ManiaControl\Callbacks\Structures\TrackMania\OnWayPointEventStructure $structure
 	 */
 	public function handleFinishCallback(OnWayPointEventStructure $structure) {
 		if ($structure->getRaceTime() <= 0) {

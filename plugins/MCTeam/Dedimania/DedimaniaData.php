@@ -116,7 +116,7 @@ class DedimaniaData {
 	 * Unsets all existing Records
 	 */
 	public function unsetRecords() {
-		unset($this->records);
+		$this->records = array();
 	}
 
 	/**
