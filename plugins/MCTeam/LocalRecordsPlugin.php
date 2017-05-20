@@ -303,7 +303,7 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 				}
 
 			} else {
-				$listFrame->addChild($this->generateRecordsFrame($records, $lines, $player));
+				$listFrame->addChild($this->generateRecordsFrame($records, $lines, $player)); //TODO Collect all players with this case and send a common manialink to save resources
 			}
 
 			$this->maniaControl->getManialinkManager()->sendManialink($maniaLink, $player);
