@@ -293,10 +293,12 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 
 				//Generate the Records around a player and display below topRecords
 				for ($i = $playerIndex - $recordsBeforeAfter; $i <= $playerIndex + $recordsBeforeAfter; $i++) {
-					$recordFrame = $this->generateRecordLineFrame($records[$i], $player);
-					$recordFrame->setY($y);
-					$listFrame->addChild($recordFrame);
-					$y -= $lineHeight;
+					if(array_key_exists($i, $records)){ //If there are no records behind you
+						$recordFrame = $this->generateRecordLineFrame($records[$i], $player);
+						$recordFrame->setY($y);
+						$listFrame->addChild($recordFrame);
+						$y -= $lineHeight;
+					}
 				}
 
 			} else {
