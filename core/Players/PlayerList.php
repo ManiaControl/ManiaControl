@@ -22,6 +22,7 @@ use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Utils\Formatter;
 use Maniaplanet\DedicatedServer\Xmlrpc\PlayerStateException;
+use Maniaplanet\DedicatedServer\Xmlrpc\ServerOptionsException;
 use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
 use MCTeam\CustomVotesPlugin;
 
@@ -691,6 +692,8 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 						$this->maniaControl->getClient()->forceSpectatorTarget($adminLogin, $targetLogin, 1);
 					} catch (PlayerStateException $e) {
 					} catch (UnknownPlayerException $e) {
+					} catch(ServerOptionsException $e){
+						//too many Spectators
 					}
 					break;
 				case self::ACTION_OPEN_PLAYER_DETAILED:
