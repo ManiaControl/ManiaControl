@@ -29,6 +29,7 @@ use ManiaControl\Plugins\Plugin;
 use ManiaControl\Settings\Setting;
 use ManiaControl\Settings\SettingManager;
 use ManiaControl\Utils\Formatter;
+use MCTeam\Common\RecordWidget;
 
 /**
  * ManiaControl Local Records Plugin
@@ -66,7 +67,9 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 	 * Private properties
 	 */
 	/** @var ManiaControl $maniaControl */
-	private $maniaControl    = null;
+	private $maniaControl = null;
+	/** @var \MCTeam\Common\RecordWidget $recordWidget */
+	private $recordWidget    = null;
 	private $updateManialink = false;
 	private $checkpoints     = array();
 
@@ -119,6 +122,8 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 	public function load(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 		$this->initTables();
+
+		$this->recordWidget = new RecordWidget($this->maniaControl);
 
 		// Settings
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_TITLE, 'Local Records');
@@ -266,12 +271,16 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 		$titleLabel->setText($title);
 		$titleLabel->setTranslate(true);
 
-		$topRecordsCount          = $lines - $recordsBeforeAfter * 2 - 1;
-		$preGeneratedRecordsFrame = $this->generateRecordsFrame($records, $topRecordsCount);
+		$topRecordsCount                    = $lines - $recordsBeforeAfter * 2 - 1;
+		$preGeneratedTopRecordsFrame        = $this->recordWidget->generateRecordsFrame($records, $topRecordsCount);
+		$preGeneratedRecordsFrameWithRecord = $this->recordWidget->generateRecordsFrame($records, $lines - 1);
 
-		$players = $this->maniaControl->getPlayerManager()->getPlayers();
+		$players              = $this->maniaControl->getPlayerManager()->getPlayers();
+		$playersWithoutRecord = array();
 
 		foreach ($players as $player) {
+			$sendManiaLink = true;
+
 			$maniaLink = new ManiaLink(self::MLID_RECORDS);
 			$maniaLink->addChild($frame);
 
@@ -280,116 +289,68 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 			$listFrame->setPosition($posX, $posY);
 
 			if (isset($playerRecords[$player->index]) && $playerRecords[$player->index] >= $topRecordsCount) {
-				$listFrame->addChild($preGeneratedRecordsFrame);
+				$listFrame->addChild($preGeneratedTopRecordsFrame);
 
 				$y           = -8 - $topRecordsCount * $lineHeight;
 				$playerIndex = $playerRecords[$player->index];
 
 				//Line separator
-				$quad = new Quad();
+				$quad = $this->recordWidget->getLineSeparatorQuad($width);
 				$listFrame->addChild($quad);
-				$quad->setStyles(Quad_Bgs1InRace::STYLE, Quad_Bgs1InRace::SUBSTYLE_BgCardList);
-				$quad->setSize($width, 0.4);
 				$quad->setY($y + $lineHeight / 2);
 
 				//Generate the Records around a player and display below topRecords
 				for ($i = $playerIndex - $recordsBeforeAfter; $i <= $playerIndex + $recordsBeforeAfter; $i++) {
-					if(array_key_exists($i, $records)){ //If there are no records behind you
-						$recordFrame = $this->generateRecordLineFrame($records[$i], $player);
+					if (array_key_exists($i, $records)) { //If there are no records behind you
+						$recordFrame = $this->recordWidget->generateRecordLineFrame($records[$i], $player);
 						$recordFrame->setY($y);
 						$listFrame->addChild($recordFrame);
 						$y -= $lineHeight;
 					}
 				}
 
+			} else if (isset($playerRecords[$player->index]) && $playerRecords[$player->index] < $topRecordsCount) {
+				$playersWithoutRecord[] = $player;
+				$sendManiaLink          = false;
 			} else {
-				$listFrame->addChild($this->generateRecordsFrame($records, $lines, $player)); //TODO Collect all players with this case and send a common manialink to save resources
+				if ($record = $this->getLocalRecord($map, $player)) {
+					$record->nickname = $player->nickname;
+					$recordFrame      = $preGeneratedRecordsFrameWithRecord;
+					$listFrame->addChild($recordFrame);
+
+					$y = -8 - ($lines - 1) * $lineHeight;
+
+					//Line separator
+					$quad = $this->recordWidget->getLineSeparatorQuad($width);
+					$listFrame->addChild($quad);
+					$quad->setY($y + $lineHeight / 2);
+
+					$frame = $this->recordWidget->generateRecordLineFrame($record, $player);
+					$listFrame->addChild($frame);
+					$frame->setY($y);
+
+				} else {
+					$playersWithoutRecord[] = $player;
+					$sendManiaLink          = false;
+				}
 			}
 
-			$this->maniaControl->getManialinkManager()->sendManialink($maniaLink, $player);
-		}
-	}
-
-	/**
-	 * Returns a Frame with one line of the Record
-	 *
-	 * @param                                   $record
-	 * @param \ManiaControl\Players\Player|null $player
-	 * @return \FML\Controls\Frame
-	 */
-	private function generateRecordLineFrame($record, Player $player = null) {
-		$width      = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_WIDTH);
-		$lineHeight = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_LINEHEIGHT);
-
-		$recordFrame = new Frame();
-
-		$rankLabel = new Label();
-		$recordFrame->addChild($rankLabel);
-		$rankLabel->setHorizontalAlign($rankLabel::LEFT);
-		$rankLabel->setX($width * -0.49);
-		$rankLabel->setSize($width * 0.09, $lineHeight);
-		$rankLabel->setTextSize(1);
-		$rankLabel->setTextPrefix('$o');
-		$rankLabel->setText($record->rank);
-		$rankLabel->setTextEmboss(true);
-
-		$nameLabel = new Label();
-		$recordFrame->addChild($nameLabel);
-		$nameLabel->setHorizontalAlign($nameLabel::LEFT);
-		$nameLabel->setX($width * -0.39);
-		$nameLabel->setSize($width * 0.6, $lineHeight);
-		$nameLabel->setTextSize(1);
-		$nameLabel->setText($record->nickname);
-		$nameLabel->setTextEmboss(true);
-
-		$timeLabel = new Label();
-		$recordFrame->addChild($timeLabel);
-		$timeLabel->setHorizontalAlign($timeLabel::RIGHT);
-		$timeLabel->setX($width * 0.49);
-		$timeLabel->setSize($width * 0.27, $lineHeight);
-		$timeLabel->setTextSize(1);
-		$timeLabel->setText(Formatter::formatTime($record->time));
-		$timeLabel->setTextEmboss(true);
-
-		if ($player && $player->index == $record->playerIndex) {
-			$quad = new Quad();
-			$recordFrame->addChild($quad);
-			$quad->setStyles(Quad_Bgs1InRace::STYLE, Quad_Bgs1InRace::SUBSTYLE_BgCardList);
-			$quad->setSize($width, $lineHeight);
-		}
-
-		return $recordFrame;
-	}
-
-	/**
-	 * Returns a Frame with Records to a given limit
-	 *
-	 * @param                                   $records
-	 * @param                                   $limit
-	 * @param \ManiaControl\Players\Player|null $player
-	 * @return \FML\Controls\Frame
-	 */
-	private function generateRecordsFrame($records, $limit, Player $player = null) {
-		$lineHeight = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_LINEHEIGHT);
-
-		$frame = new Frame();
-
-		foreach ($records as $index => $record) {
-			if ($index >= $limit) {
-				break;
+			if ($sendManiaLink) {
+				$this->maniaControl->getManialinkManager()->sendManialink($maniaLink, $player);
 			}
-
-			$y = -8. - $index * $lineHeight;
-
-			$recordFrame = $this->generateRecordLineFrame($record, $player);
-			$frame->addChild($recordFrame);
-			$recordFrame->setPosition(0, $y);
-
 		}
 
-		return $frame;
-	}
+		if ($playersWithoutRecord) {
+			$maniaLink = new ManiaLink(self::MLID_RECORDS);
+			$maniaLink->addChild($frame);
 
+			$listFrame = $this->recordWidget->generateRecordsFrame($records, $lines);
+			$maniaLink->addChild($listFrame);
+			$listFrame->setPosition($posX, $posY);
+
+			$this->maniaControl->getManialinkManager()->sendManialink($maniaLink, $playersWithoutRecord);
+		}
+	}
 
 	/**
 	 * Fetch local records for the given map
@@ -442,7 +403,7 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 				break;
 			}
 			default:
-				$this->updateManialink = true;
+				$this->updateRecordWidget();
 				break;
 		}
 	}
@@ -764,5 +725,17 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 
 		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_LOCALRECORDS_CHANGED, null);
 		$this->maniaControl->getChat()->sendInformation('Record no. $<$fff' . $recordId . '$> has been removed!');
+	}
+
+	/**
+	 *  Update the RecordWidget variables
+	 */
+	private function updateRecordWidget() {
+		$width              = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_WIDTH);
+		$lineHeight         = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_LINEHEIGHT);
+
+		$this->recordWidget->setWidth($width);
+		$this->recordWidget->setLineHeight($lineHeight);
+		$this->updateManialink = true;
 	}
 }

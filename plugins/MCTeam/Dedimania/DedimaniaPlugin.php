@@ -19,7 +19,10 @@ use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
+use ManiaControl\Settings\Setting;
+use ManiaControl\Settings\SettingManager;
 use ManiaControl\Utils\Formatter;
+use MCTeam\Common\RecordWidget;
 
 /**
  * ManiaControl Dedimania Plugin
@@ -55,6 +58,9 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 */
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
+
+	/** @var \MCTeam\Common\RecordWidget $recordWidget */
+	private $recordWidget = null;
 
 	private $checkpoints = array();
 
@@ -100,6 +106,8 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::TM_ONWAYPOINT, $this, 'handleCheckpointCallback');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::TM_ONFINISHLINE, $this, 'handleFinishCallback');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::TM_ONLAPFINISH, $this, 'handleFinishCallback');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(SettingManager::CB_SETTING_CHANGED, $this, 'handleSettingChanged');
+
 
 		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'updateEverySecond', 1000);
 		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'handleEveryHalfMinute', 1000 * 30);
@@ -129,6 +137,8 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$this->webHandler = new DedimaniaWebHandler($this->maniaControl);
 		$this->webHandler->setDedimaniaData($dedimaniaData);
 		$this->webHandler->openDedimaniaSession(true);
+
+		$this->recordWidget = new RecordWidget($this->maniaControl);
 	}
 
 
@@ -174,6 +184,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$height = 7. + $lines * $lineHeight;
 		$backgroundQuad->setSize($width * 1.05, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
+		$backgroundQuad->setAction(self::ACTION_SHOW_DEDIRECORDSLIST);
 
 		$titleLabel = new Label();
 		$frame->addChild($titleLabel);
@@ -184,54 +195,8 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$titleLabel->setText($title);
 		$titleLabel->setTranslate(true);
 
-		foreach ($records as $index => $record) {
-			/** @var RecordData $record */
-			if ($index >= $lines) {
-				break;
-			}
-
-			$y = -8. - $index * $lineHeight;
-
-			$recordFrame = new Frame();
-			$frame->addChild($recordFrame);
-			$recordFrame->setPosition(0, $y);
-
-			/*$backgroundQuad = new Quad();
-			$recordFrame->addChild($backgroundQuad);
-			$backgroundQuad->setSize($width * 1.04, $lineHeight * 1.4);
-			$backgroundQuad->setStyles($quadStyle, $quadSubstyle);*/
-
-			//Rank
-			$rankLabel = new Label();
-			$recordFrame->addChild($rankLabel);
-			$rankLabel->setHorizontalAlign($rankLabel::LEFT);
-			$rankLabel->setX($width * -0.47);
-			$rankLabel->setSize($width * 0.06, $lineHeight);
-			$rankLabel->setTextSize(1);
-			$rankLabel->setTextPrefix('$o');
-			$rankLabel->setText($record->rank);
-			$rankLabel->setTextEmboss(true);
-
-			//Name
-			$nameLabel = new Label();
-			$recordFrame->addChild($nameLabel);
-			$nameLabel->setHorizontalAlign($nameLabel::LEFT);
-			$nameLabel->setX($width * -0.4);
-			$nameLabel->setSize($width * 0.6, $lineHeight);
-			$nameLabel->setTextSize(1);
-			$nameLabel->setText($record->nickName);
-			$nameLabel->setTextEmboss(true);
-
-			//Time
-			$timeLabel = new Label();
-			$recordFrame->addChild($timeLabel);
-			$timeLabel->setHorizontalAlign($timeLabel::RIGHT);
-			$timeLabel->setX($width * 0.47);
-			$timeLabel->setSize($width * 0.25, $lineHeight);
-			$timeLabel->setTextSize(1);
-			$timeLabel->setText(Formatter::formatTime($record->best));
-			$timeLabel->setTextEmboss(true);
-		}
+		$recordsFrame = $this->recordWidget->generateRecordsFrame($records,$lines);
+		$frame->addChild($recordsFrame);
 
 		$this->maniaControl->getManialinkManager()->sendManialink($manialink);
 	}
@@ -626,13 +591,13 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 				$recordFrame->addChild($lineQuad);
 				$lineQuad->setSize($width, 4);
 				$lineQuad->setSubStyle($lineQuad::SUBSTYLE_BgPlayerCardBig);
-				$lineQuad->setZ(0.001);
+				$lineQuad->setZ(-0.001);
 			}
 
-			if (strlen($listRecord->nickName) < 2) {
-				$listRecord->nickName = $listRecord->login;
+			if (strlen($listRecord->nickname) < 2) {
+				$listRecord->nickname = $listRecord->login;
 			}
-			$array = array($listRecord->rank => $posX + 5, '$fff' . $listRecord->nickName => $posX + 18, $listRecord->login => $posX + 70, Formatter::formatTime($listRecord->best) => $posX + 101);
+			$array = array($listRecord->rank => $posX + 5, '$fff' . $listRecord->nickname => $posX + 18, $listRecord->login => $posX + 70, Formatter::formatTime($listRecord->best) => $posX + 101);
 			$this->maniaControl->getManialinkManager()->labelLine($recordFrame, $array);
 
 			$recordFrame->setY($posY);
@@ -652,6 +617,26 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 */
 	public function getDedimaniaRecords() {
 		return $this->webHandler->getDedimaniaData()->records;
+	}
+
+	/**
+	 *  Update the RecordWidget variables
+	 */
+	private function updateRecordWidget() {
+		$width              = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_WIDTH);
+		$lineHeight         = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_LINE_HEIGHT);
+
+		$this->recordWidget->setWidth($width);
+		$this->recordWidget->setLineHeight($lineHeight);
+
+		$this->webHandler->maniaLinkUpdateNeeded();
+	}
+
+	public function handleSettingChanged(Setting $setting){
+		if (!$setting->belongsToClass($this)) {
+			return;
+		}
+		$this->updateRecordWidget();
 	}
 
 	/**

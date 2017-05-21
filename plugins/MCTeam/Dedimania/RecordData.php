@@ -17,7 +17,7 @@ class RecordData {
 	 */
 	public $nullRecord = false;
 	public $login = '';
-	public $nickName = '';
+	public $nickname = '';
 	public $best = -1;
 	public $rank = -1;
 	public $maxRank = -1;
@@ -38,7 +38,7 @@ class RecordData {
 		}
 
 		$this->login       = $record['Login'];
-		$this->nickName    = Formatter::stripDirtyCodes($record['NickName']);
+		$this->nickname    = Formatter::stripDirtyCodes($record['NickName']);
 		$this->best        = $record['Best'];
 		$this->rank        = $record['Rank'];
 		$this->maxRank     = $record['MaxRank'];
@@ -54,10 +54,10 @@ class RecordData {
 	 * @param int    $checkpoints
 	 * @param bool   $newRecord
 	 */
-	public function constructNewRecord($login, $nickName, $best, $checkpoints, $newRecord = false) {
+	public function constructNewRecord($login, $nickname, $best, $checkpoints, $newRecord = false) {
 		$this->nullRecord  = false;
 		$this->login       = $login;
-		$this->nickName    = $nickName;
+		$this->nickname    = $nickname;
 		$this->best        = $best;
 		$this->checkpoints = $checkpoints;
 		$this->newRecord   = $newRecord;
