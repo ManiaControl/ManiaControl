@@ -279,6 +279,7 @@ class DedimaniaWebHandler {
 			// Called method response
 			if (!$methodResponse[0]) {
 				Logger::logError("Records Plugin: Submitting dedimania records failed.");
+				Logger::logError(json_encode($data));
 			} else {
 				Logger::logInfo("Dedimania Times succesfully submitted");
 			}
