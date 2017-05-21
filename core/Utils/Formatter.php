@@ -88,7 +88,20 @@ abstract class Formatter implements UsageInformationAble {
 	 * @return string
 	 */
 	public static function formatTimeH($seconds) {
-		return gmdate('H:i:s', $seconds);
+		$hrs  = floor($seconds / 3600);
+		$mins = intval(($seconds / 60) % 60);
+		$sec  = intval($seconds % 60);
+
+		$hrs = str_pad($hrs, 2, '0', STR_PAD_LEFT);
+		$mins = str_pad($mins, 2, '0', STR_PAD_LEFT);
+		$sec = str_pad($sec, 2, '0', STR_PAD_LEFT);
+
+		$str = '';
+		$str .= $hrs . ':';
+		$str  .= $mins . ':';
+		$str .= $sec;
+
+		return $str;
 	}
 
 	/**

@@ -326,8 +326,8 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 		$rankLabel = new Label();
 		$recordFrame->addChild($rankLabel);
 		$rankLabel->setHorizontalAlign($rankLabel::LEFT);
-		$rankLabel->setX($width * -0.47);
-		$rankLabel->setSize($width * 0.06, $lineHeight);
+		$rankLabel->setX($width * -0.49);
+		$rankLabel->setSize($width * 0.09, $lineHeight);
 		$rankLabel->setTextSize(1);
 		$rankLabel->setTextPrefix('$o');
 		$rankLabel->setText($record->rank);
@@ -336,7 +336,7 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 		$nameLabel = new Label();
 		$recordFrame->addChild($nameLabel);
 		$nameLabel->setHorizontalAlign($nameLabel::LEFT);
-		$nameLabel->setX($width * -0.36);
+		$nameLabel->setX($width * -0.39);
 		$nameLabel->setSize($width * 0.6, $lineHeight);
 		$nameLabel->setTextSize(1);
 		$nameLabel->setText($record->nickname);
@@ -345,8 +345,8 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 		$timeLabel = new Label();
 		$recordFrame->addChild($timeLabel);
 		$timeLabel->setHorizontalAlign($timeLabel::RIGHT);
-		$timeLabel->setX($width * 0.47);
-		$timeLabel->setSize($width * 0.25, $lineHeight);
+		$timeLabel->setX($width * 0.49);
+		$timeLabel->setSize($width * 0.27, $lineHeight);
 		$timeLabel->setTextSize(1);
 		$timeLabel->setText(Formatter::formatTime($record->time));
 		$timeLabel->setTextEmboss(true);
@@ -468,7 +468,7 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 	 * @param \ManiaControl\Callbacks\Structures\TrackMania\OnWayPointEventStructure $structure
 	 */
 	public function handleFinishCallback(OnWayPointEventStructure $structure) {
-		if ($structure->getRaceTime() <= 0) {
+		if ($structure->getLapTime() <= 0) {
 			// Invalid time
 			return;
 		}
@@ -487,11 +487,11 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 		// Check old record of the player
 		$oldRecord = $this->getLocalRecord($map, $player);
 		if ($oldRecord) {
-			if ($oldRecord->time < $structure->getRaceTime()) {
+			if ($oldRecord->time < $structure->getLapTime()) {
 				// Not improved
 				return;
 			}
-			if ($oldRecord->time == $structure->getRaceTime()) {
+			if ($oldRecord->time == $structure->getLapTime()) {
 				// Same time
 				// TODO: respect notify-settings
 				$message = '$<$fff' . $player->nickname . '$> equalized the $<$ff0' . $oldRecord->rank . '.$> Local Record: $<$fff' . Formatter::formatTime($oldRecord->time) . '$>!';
@@ -510,7 +510,7 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 				) VALUES (
 				{$map->index},
 				{$player->index},
-				{$structure->getRaceTime()},
+				{$structure->getLapTime()},
 				'{$checkpointsString}'
 				) ON DUPLICATE KEY UPDATE
 				`time` = VALUES(`time`),
