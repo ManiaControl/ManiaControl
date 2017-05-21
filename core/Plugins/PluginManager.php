@@ -6,6 +6,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\EchoListener;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
+use ManiaControl\Communication\CommunicationListener;
 use ManiaControl\Files\AsyncHttpRequest;
 use ManiaControl\Files\FileUtil;
 use ManiaControl\Logger;
@@ -189,6 +190,9 @@ class PluginManager {
 		}
 		if($plugin instanceof SidebarMenuEntryListener){
 			$this->maniaControl->getManialinkManager()->getSidebarMenuManager()->deleteMenuEntries($plugin);
+		}
+		if($plugin instanceof CommunicationListener){
+			$this->maniaControl->getCommunicationManager()->unregisterCommunicationListener($plugin);
 		}
 
 		$this->savePluginStatus($pluginClass, false);

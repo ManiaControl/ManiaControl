@@ -112,20 +112,20 @@ class CommunicationManager implements CallbackListener, UsageInformationAble {
 	/**
 	 * Register a new Communication Listener
 	 *
-	 * @param string                $callbackName
+	 * @param string                $communicationName
 	 * @param CommunicationListener $listener
 	 * @param string                $method
 	 * @return bool
 	 */
-	public function registerCommunicationListener($echoName, CommunicationListener $listener, $method) {
+	public function registerCommunicationListener($communicationName, CommunicationListener $listener, $method) {
 		if (!Listening::checkValidCallback($listener, $method)) {
 			$listenerClass = get_class($listener);
-			trigger_error("Given Listener '{$listenerClass}' can't handle Callback '{$echoName}': No callable Method '{$method}'!");
+			trigger_error("Given Listener '{$listenerClass}' can't handle Callback '{$communicationName}': No callable Method '{$method}'!");
 			return false;
 		}
 
-		if (!array_key_exists($echoName, $this->communicationListenings)) {
-			$this->communicationListenings[$echoName] = new Listening($listener, $method);
+		if (!array_key_exists($communicationName, $this->communicationListenings)) {
+			$this->communicationListenings[$communicationName] = new Listening($listener, $method);
 		} else {
 			//TODO say which is already listening and other stuff
 			trigger_error("Only one Listener can listen on a specific Communication Message");
@@ -173,10 +173,10 @@ class CommunicationManager implements CallbackListener, UsageInformationAble {
 	 */
 	private function removeCommunicationListener(array &$listeningsArray, CommunicationListener $listener) {
 		$removed = false;
-		foreach ($listeningsArray as &$listening) {
-			if ($listening->listener === $listener) {
-				unset($listening);
-				$removed = true;
+
+		foreach ($listeningsArray as $key => &$listening) {
+			if($listening->listener === $listener){
+				unset($listeningsArray[$key]);
 			}
 		}
 		return $removed;

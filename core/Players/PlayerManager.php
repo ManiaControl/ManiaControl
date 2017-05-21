@@ -589,7 +589,7 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 			$players = array();
 			foreach ($this->players as $player) {
 				if (!$player->isSpectator) {
-					$players[] = $players;
+					$players[] = $player;
 				}
 			}
 
