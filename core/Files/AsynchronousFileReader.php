@@ -3,6 +3,7 @@
 namespace ManiaControl\Files;
 
 use cURL\Request;
+use cURL\RequestsQueue;
 use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
 use ManiaControl\ManiaControl;
@@ -27,8 +28,9 @@ class AsynchronousFileReader implements UsageInformationAble {
 	 */
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
-	/** @var Request[] $requests */
-	private $requests = array();
+
+	/** @var \cURL\RequestsQueue|null $requestQueue */
+	private $requestQueue = null;
 
 	/**
 	 * Construct a new Asynchronous File Reader Instance
@@ -37,19 +39,22 @@ class AsynchronousFileReader implements UsageInformationAble {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
+		$this->requestQueue = new RequestsQueue();
 	}
 
 	/**
 	 * Append available Data of active Requests
 	 */
 	public function appendData() {
-		foreach ($this->requests as $key => $request) {
-			if ($request->socketPerform()) {
-				$request->socketSelect();
-			} else {
-				unset($this->requests[$key]);
+		do {
+			if (($count = $this->requestQueue->count()) == 0) {
+				break;
 			}
-		}
+
+			if ($this->requestQueue->socketPerform()) {
+				$this->requestQueue->socketSelect();
+			}
+		} while ($count != $this->requestQueue->count());
 	}
 
 	/**
@@ -91,6 +96,6 @@ class AsynchronousFileReader implements UsageInformationAble {
 	 * @param Request $request
 	 */
 	public function addRequest(Request $request) {
-		array_push($this->requests, $request);
+		$request->attachTo($this->requestQueue);
 	}
 }

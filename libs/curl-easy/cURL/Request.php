@@ -34,18 +34,6 @@ class Request extends EventDispatcher implements RequestInterface
     }
     
     /**
-     * Closes cURL resource and frees the memory.
-     * It is neccessary when you make a lot of requests
-     * and you want to avoid fill up the memory.
-     */
-    public function __destruct()
-    {
-        if (isset($this->ch)) {
-            curl_close($this->ch);
-        }
-    }
-    
-    /**
      * Get the cURL\Options instance
      * Creates empty one if does not exist
      *
@@ -61,7 +49,7 @@ class Request extends EventDispatcher implements RequestInterface
     
     /**
      * Sets Options
-     * 
+     *
      * @param Options $options Options
      * @return void
      */
@@ -69,6 +57,17 @@ class Request extends EventDispatcher implements RequestInterface
     {
         $this->options = $options;
     }
+
+	/**
+	 * Closes cURL resource and frees the memory.
+	 * It is neccessary when you make a lot of requests
+	 * and you want to avoid fill up the memory.
+	 */
+	public function __destruct() {
+		if (isset($this->ch)) {
+			curl_close($this->ch);
+		}
+	}
     
     /**
      * Returns cURL raw resource
@@ -115,6 +114,20 @@ class Request extends EventDispatcher implements RequestInterface
         }
         return $response;
     }
+
+	/**
+	 * Binds the request to a given RequestQueue.
+	 *
+	 * @param \cURL\RequestsQueue $requestsQueue
+	 * @throws \cURL\Exception
+	 */
+	public function attachTo(RequestsQueue $requestsQueue) {
+		if (isset($this->queue)) {
+			throw new Exception('Already bound to a RequestQueue.');
+		}
+		$this->queue = $requestsQueue;
+		$this->queue->attach($this);
+	}
 
     /**
      * Creates new RequestsQueue with single Request attached to it
