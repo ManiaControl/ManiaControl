@@ -119,6 +119,9 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			throw new \Exception("No Dedimania Code Specified, check the settings!");
 		}
 
+		if ($this->maniaControl->getMapManager()->getCurrentMap()->getGame() !== 'tm') {
+			throw new \Exception("This Plugin is only for Trackmania!");
+		}
 
 		$dedimaniaData = new DedimaniaData($serverInfo->login, $dedimaniaCode, $serverInfo->path, $packMask, $serverVersion);
 
