@@ -33,9 +33,11 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 	/*
 	 * Constants
 	 */
-	const CB_PLAYERCONNECT                      = 'PlayerManagerCallback.PlayerConnect';
-	const CB_PLAYERDISCONNECT                   = 'PlayerManagerCallback.PlayerDisconnect';
+	const CB_PLAYERCONNECT    = 'PlayerManagerCallback.PlayerConnect';
+	const CB_PLAYERDISCONNECT = 'PlayerManagerCallback.PlayerDisconnect';
+	/** @use CB_PlayerInfosChanged in favour to avoid multiple triggers at once */
 	const CB_PLAYERINFOCHANGED                  = 'PlayerManagerCallback.PlayerInfoChanged';
+	const CB_PLAYERINFOSCHANGED                 = 'PlayerManagerCallback.PlayerInfosChanged';
 	const CB_SERVER_EMPTY                       = 'PlayerManagerCallback.ServerEmpty';
 	const TABLE_PLAYERS                         = 'mc_players';
 	const SETTING_JOIN_LEAVE_MESSAGES           = 'Enable Join & Leave Messages';
@@ -69,6 +71,8 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 
 	/** @var AdminLists $adminLists */
 	private $adminLists = null;
+
+	private $playerInfosChangedTime = 0;
 
 	/**
 	 * Construct a new Player Manager
@@ -505,6 +509,16 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 
 		// Trigger own callback
 		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_PLAYERINFOCHANGED, $player);
+
+		//Avoid Multiple Triggers
+		if ((microtime(true) - 0.5) > $this->playerInfosChangedTime) {
+			//Delay Callback by a short Time (200ms) to be sure that different changes get submitted the same time
+			$this->maniaControl->getTimerManager()->registerOneTimeListening($this, function () {
+				$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_PLAYERINFOSCHANGED);
+			}, 200);
+		}
+
+		$this->playerInfosChangedTime = microtime(true);
 	}
 
 	/**
@@ -571,10 +585,10 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 	 * @return \ManiaControl\Players\Player[]
 	 */
 	public function getPlayers($withoutSpectators = false) {
-		if($withoutSpectators){
+		if ($withoutSpectators) {
 			$players = array();
-			foreach($this->players as $player){
-				if(!$player->isSpectator){
+			foreach ($this->players as $player) {
+				if (!$player->isSpectator) {
 					$players[] = $players;
 				}
 			}

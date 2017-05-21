@@ -130,7 +130,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::MP_PODIUMSTART, $this, 'handleOnEndMap');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECT, $this, 'updateWidgets');
-		$this->maniaControl->getCallbackManager()->registerCallbackListener(PlayerManager::CB_PLAYERINFOCHANGED, $this, 'updateWidgets');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(PlayerManager::CB_PLAYERINFOSCHANGED, $this, 'updateWidgets');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(SettingManager::CB_SETTING_CHANGED, $this, 'updateSettings');
 
 		// Settings
@@ -559,6 +559,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SERVERINFO_WIDGET_ACTIVATED)) {
 			$time = time();
 			//Update Max once per second
+			//TODO the one time can be removed due the new PlayerInfosChanged Callback
 			if ($this->lastWidgetUpdateTime < ($time - 1)) {
 				$this->displayServerInfoWidget();
 				$this->lastWidgetUpdateTime = $time;
