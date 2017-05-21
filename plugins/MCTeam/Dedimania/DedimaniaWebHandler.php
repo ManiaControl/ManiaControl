@@ -237,6 +237,8 @@ class DedimaniaWebHandler {
 				continue;
 			}
 
+			//TODO check number of checkpoints
+
 			array_push($times, array('Login' => $record->login, 'Best' => $record->best, 'Checks' => $record->checkpoints));
 			if (!isset($replays['VReplay'])) {
 				$replays['VReplay'] = $record->vReplay;
