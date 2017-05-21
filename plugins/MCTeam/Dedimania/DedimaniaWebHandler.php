@@ -232,7 +232,7 @@ class DedimaniaWebHandler {
 				continue;
 			}
 
-			if (!$record->vReplay) {
+			if ($record->vReplay == '' || !$record->vReplay) {
 				Logger::logInfo("Ignore time for " . $record->login . " no validation replay found");
 				continue;
 			}
