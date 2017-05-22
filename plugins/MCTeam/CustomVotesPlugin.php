@@ -702,12 +702,13 @@ class CustomVotesPlugin implements SidebarMenuEntryListener, CommandListener, Ca
 		$label->setTextColor('F80');
 		$label->setText('$sStarted by ' . $this->currentVote->voter->nickname);
 
+
 		//Time Gauge
 		$timeGauge = new Gauge();
 		$frame->addChild($timeGauge);
 		$timeGauge->setY(1.5);
 		$timeGauge->setSize($width * 0.95, 6);
-		$timeGauge->setDrawBlockBackground(false);
+		$timeGauge->setDrawBackground(false);
 		if (!$timeUntilExpire) {
 			$timeUntilExpire = 1;
 		}
@@ -730,7 +731,7 @@ class CustomVotesPlugin implements SidebarMenuEntryListener, CommandListener, Ca
 		$frame->addChild($voteGauge);
 		$voteGauge->setY(-4);
 		$voteGauge->setSize($width * 0.65, 12);
-		$voteGauge->setDrawBlockBackground(false);
+		$voteGauge->setDrawBackground(false);
 		$voteGauge->setRatio($votePercentage + 0.10 - $votePercentage * 0.10);
 		$gaugeColor = ColorUtil::floatToStatusColor($votePercentage);
 		$voteGauge->setColor($gaugeColor . '6');
