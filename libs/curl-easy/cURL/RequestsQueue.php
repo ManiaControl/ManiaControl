@@ -217,12 +217,4 @@ class RequestsQueue extends EventDispatcher implements RequestsQueueInterface, \
 		}
 		return curl_multi_select($this->mh, $timeout) !== -1;
 	}
-
-	/**
-	 * @param $option
-	 * @param $value
-	 */
-	public function setOption($option, $value) {
-		curl_multi_setopt($this->mh, $option, $value);
-	}
 }

@@ -19,11 +19,6 @@ class Request extends EventDispatcher implements RequestInterface
      * @var Options Object containing options for current request
      */
     protected $options = null;
-
-	/**
-	 * @var bool Whether requests to the target host should be serialized or not.
-	 */
-    protected $serializeRequests = false;
     
     /**
      * Create new cURL handle
@@ -126,31 +121,12 @@ class Request extends EventDispatcher implements RequestInterface
 	 * @param \cURL\RequestsQueue $requestsQueue
 	 * @throws \cURL\Exception
 	 */
-	public function attachTo(RequestsQueue $requestsQueue)
-	{
+	public function attachTo(RequestsQueue $requestsQueue) {
 		if (isset($this->queue)) {
 			throw new Exception('Already bound to a RequestQueue.');
 		}
 		$this->queue = $requestsQueue;
 		$this->queue->attach($this);
-	}
-
-	/**
-	 * Whether to serialize requests to the same host or not.
-	 *
-	 * @param bool $serialize
-	 */
-	public function setSerialize($serialize = true)
-	{
-		$this->serializeRequests = $serialize;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function getSerialize()
-	{
-		return $this->serializeRequests;
 	}
 
     /**
