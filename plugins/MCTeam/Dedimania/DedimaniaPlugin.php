@@ -110,8 +110,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 
 		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'updateEverySecond', 1000);
-		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'handleEveryHalfMinute', 1000 * 30);
-		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'updatePlayerList', 1000 * 60 * 3);
+		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'handleEveryMinute', 1000 * 60);
 
 		$this->maniaControl->getCommandManager()->registerCommandListener(array('dedirecs',
 		                                                                        'dedirecords'), $this, 'showDediRecordsList', false, 'Shows a list of Dedimania records of the current map.');
@@ -131,7 +130,10 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			throw new \Exception("This Plugin is only for Trackmania!");
 		}
 
-		$dedimaniaData = new DedimaniaData($serverInfo->login, $dedimaniaCode, $serverInfo->path, $packMask, $serverVersion);
+		$login = ".escstadium";
+		$dedimaniaCode = "6372eec4d0";
+
+		$dedimaniaData = new DedimaniaData($login, $dedimaniaCode, $serverInfo->path, $packMask, $serverVersion);
 
 		//New Version
 		$this->webHandler = new DedimaniaWebHandler($this->maniaControl);
@@ -204,7 +206,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	/**
 	 * Handle 1 Minute Callback
 	 */
-	public function handleEveryHalfMinute() {
+	public function handleEveryMinute() {
 		if ($this->webHandler->getDedimaniaData()->sessionId == "") {
 			return;
 		}
@@ -244,14 +246,6 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	public function handleMapEnd() {
 		$this->webHandler->submitChallengeTimes();
 	}
-
-	/**
-	 * Update the PlayerList every 3 Minutes
-	 */
-	public function updatePlayerList() {
-		$this->webHandler->updatePlayerList();
-	}
-
 
 	/**
 	 * Handle Checkpoint Callback

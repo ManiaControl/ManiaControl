@@ -3,6 +3,7 @@
 namespace MCTeam\Dedimania;
 
 
+use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Files\AsyncHttpRequest;
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
@@ -16,7 +17,7 @@ use ManiaControl\Players\Player;
  * @copyright 2014-2017 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class DedimaniaWebHandler {
+class DedimaniaWebHandler implements TimerListener {
 	const XMLRPC_MULTICALL                = 'system.multicall';
 	const DEDIMANIA_URL                   = 'http://dedimania.net:8082/Dedimania';
 	const DEDIMANIA_OPEN_SESSION          = 'dedimania.OpenSession';
@@ -47,10 +48,9 @@ class DedimaniaWebHandler {
 	public function openDedimaniaSession($updateRecords = false) {
 		$content = $this->encodeRequest(self::DEDIMANIA_OPEN_SESSION, array($this->dedimaniaData->toArray()));
 
+		Logger::logInfo("Try to connect on Dedimania");
 		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, self::DEDIMANIA_URL);
 		$asyncHttpRequest->setCallable(function ($data, $error) use ($updateRecords) {
-			Logger::logInfo("Try to connect on Dedimania");
-
 			if (!$data || $error) {
 				Logger::logError("Dedimania Error while opening session: '{$error}' Line 42");
 			}
@@ -99,7 +99,7 @@ class DedimaniaWebHandler {
 
 		// Reset records
 		if ($reset) {
-			$this->dedimaniaData->records = array();
+			$this->dedimaniaData->unsetRecords();
 		}
 
 		$serverInfo = $this->getServerInfo();
@@ -150,6 +150,11 @@ class DedimaniaWebHandler {
 
 			$this->maniaLinkNeedsUpdate = true;
 			$this->maniaControl->getCallbackManager()->triggerCallback(DedimaniaPlugin::CB_DEDIMANIA_UPDATED, $this->dedimaniaData->records); //TODO
+
+			//3 Minutes
+			$this->maniaControl->getTimerManager()->registerOneTimeListening($this, function () {
+				$this->updatePlayerList();
+			}, 1000 * 60 * 3);
 		});
 
 		$asyncHttpRequest->setContent($content);
@@ -187,6 +192,7 @@ class DedimaniaWebHandler {
 			$methodResponse = $data[0];
 			if (xmlrpc_is_fault($methodResponse)) {
 				$this->handleXmlRpcFault($methodResponse, self::DEDIMANIA_CHECK_SESSION);
+				Logger::logError("Dedimania Check Session failed, opening a new Session!");
 				$this->openDedimaniaSession();
 				return;
 			}
@@ -194,6 +200,7 @@ class DedimaniaWebHandler {
 			$responseData = $methodResponse[0];
 			if (is_bool($responseData)) {
 				if (!$responseData) {
+					Logger::logError("Dedimania Check Session failed, opening a new Session!");
 					$this->openDedimaniaSession();
 				}
 			}
@@ -265,6 +272,7 @@ class DedimaniaWebHandler {
 		$asyncHttpRequest->setCallable(function ($data, $error) {
 			if ($error) {
 				Logger::logError("Dedimania Error while submitting times: " . $error);
+				return;
 			}
 
 			$data = $this->decode($data);
@@ -310,9 +318,8 @@ class DedimaniaWebHandler {
 		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, self::DEDIMANIA_URL);
 		$asyncHttpRequest->setCallable(function ($data, $error) use (&$player) {
 			if ($error) {
-				$this->openDedimaniaSession(); //TODO Verify why?
-				var_dump($data);
-				var_dump("Dedimania test3");
+				$this->checkDedimaniaSession(); //TODO Verify why?
+				return;
 			}
 
 			$data = $this->decode($data);
@@ -364,9 +371,8 @@ class DedimaniaWebHandler {
 		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, self::DEDIMANIA_URL);
 		$asyncHttpRequest->setCallable(function ($data, $error) {
 			if ($error) {
-				$this->openDedimaniaSession();
-				var_dump($data);
-				var_dump("Dedimania test4");
+				$this->checkDedimaniaSession();
+				return;
 			}
 
 			$data = $this->decode($data);
@@ -408,9 +414,8 @@ class DedimaniaWebHandler {
 		$asyncHttpRequest->setCallable(function ($data, $error) {
 			if ($error) {
 				Logger::logError("Dedimania Error while update playerlist: " . $error);
-				var_dump($data);
-				var_dump("test4");
-
+				$this->checkDedimaniaSession();
+				return;
 			}
 
 			$data = $this->decode($data);
@@ -422,6 +427,7 @@ class DedimaniaWebHandler {
 			if (xmlrpc_is_fault($methodResponse)) {
 				$this->handleXmlRpcFault($methodResponse, self::DEDIMANIA_UPDATE_SERVER_PLAYERS);
 			}
+
 
 			Logger::logInfo("Dedimania Playerlist Updated");
 		});
