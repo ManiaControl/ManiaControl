@@ -55,6 +55,10 @@ class DedimaniaData {
 		$this->serverBuild   = $serverVersion->build;
 	}
 
+	public function sessionIdSet(){
+		return $this->sessionId != '';
+	}
+
 	/**
 	 * Sort the Records
 	 */

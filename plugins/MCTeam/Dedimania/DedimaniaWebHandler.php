@@ -93,7 +93,7 @@ class DedimaniaWebHandler implements TimerListener {
 	 * @return bool
 	 */
 	public function fetchDedimaniaRecords($reset = true) {
-		if (!isset($this->dedimaniaData) || !$this->dedimaniaData->sessionId) {
+		if (!isset($this->dedimaniaData) || !$this->dedimaniaData->sessionIdSet()) {
 			return false;
 		}
 
@@ -169,7 +169,7 @@ class DedimaniaWebHandler implements TimerListener {
 	 * Checks If a Dedimania Session exists, if not create a new oen
 	 */
 	public function checkDedimaniaSession() { //TODO complete check and refactor
-		if (!$this->dedimaniaData->sessionId) {
+		if (!$this->dedimaniaData->sessionIdSet()) {
 			$this->openDedimaniaSession();
 			return;
 		}
@@ -215,6 +215,10 @@ class DedimaniaWebHandler implements TimerListener {
 	 * Handle EndMap Callback
 	 */
 	public function submitChallengeTimes() {
+		if (!$this->dedimaniaData->sessionIdSet()) {
+			return;
+		}
+
 		if (!$this->getDedimaniaData()->recordsExisting()) {
 			return;
 		}
@@ -307,7 +311,7 @@ class DedimaniaWebHandler implements TimerListener {
 	 * @param Player $player
 	 */
 	public function handlePlayerConnect(Player $player) {
-		if (!isset($this->dedimaniaData)) {
+		if (!isset($this->dedimaniaData) || !$this->dedimaniaData->sessionIdSet()) {
 			return;
 		}
 
@@ -359,9 +363,10 @@ class DedimaniaWebHandler implements TimerListener {
 	 * @param Player $player
 	 */
 	public function handlePlayerDisconnect(Player $player) { //TODO move into webhandler
-		if (!isset($this->dedimaniaData)) {
+		if (!isset($this->dedimaniaData) || !$this->dedimaniaData->sessionIdSet()) {
 			return;
 		}
+
 		$this->dedimaniaData->removePlayer($player->login);
 
 		// Send Dedimania request
@@ -402,7 +407,7 @@ class DedimaniaWebHandler implements TimerListener {
 		$serverInfo = $this->getServerInfo();
 		$playerList = $this->getPlayerList();
 		$votesInfo  = $this->getVotesInfo();
-		if (!$serverInfo || !$votesInfo || !$playerList || !isset($this->dedimaniaData) || !$this->dedimaniaData->sessionId) {
+		if (!$serverInfo || !$votesInfo || !$playerList || !isset($this->dedimaniaData) || !$this->dedimaniaData->sessionIdSet()) {
 			return;
 		}
 
