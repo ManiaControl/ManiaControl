@@ -227,10 +227,7 @@ class DedimaniaWebHandler implements TimerListener {
 		if ($this->maniaControl->getMapManager()->getCurrentMap()->nbCheckpoints < 2) {
 			return;
 		}
-
-		//Make Sure Dedimania Session is okay
-		$this->checkDedimaniaSession(); //TODO needed?
-
+		
 		// Send dedimania records
 		$gameMode = $this->getGameModeString();
 		$times    = array();
