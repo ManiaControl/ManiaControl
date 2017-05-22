@@ -130,10 +130,8 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			throw new \Exception("This Plugin is only for Trackmania!");
 		}
 
-		$login = ".escstadium";
-		$dedimaniaCode = "6372eec4d0";
 
-		$dedimaniaData = new DedimaniaData($login, $dedimaniaCode, $serverInfo->path, $packMask, $serverVersion);
+		$dedimaniaData = new DedimaniaData($serverInfo->login, $dedimaniaCode, $serverInfo->path, $packMask, $serverVersion);
 
 		//New Version
 		$this->webHandler = new DedimaniaWebHandler($this->maniaControl);
