@@ -28,7 +28,7 @@ class RecordWidget {
 	 *
 	 * @param \ManiaControl\ManiaControl $maniaControl
 	 */
-	function __construct(ManiaControl $maniaControl) {
+	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 	}
 
@@ -40,12 +40,12 @@ class RecordWidget {
 	 * @return \FML\Controls\Frame
 	 */
 	public function generateRecordLineFrame($record, Player $player = null) {
-		$width      = $this->width;
-		$lineHeight = $this->lineHeight;
+		$width           = $this->width;
+		$lineHeight      = $this->lineHeight;
+		$largeNumberDiff = 0;
 
 		$recordFrame = new Frame();
 
-		$largeNumberDiff = 0;
 		if ($record->rank > 999) {
 			$largeNumberDiff = 0.03;
 		}
