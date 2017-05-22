@@ -170,6 +170,23 @@ class PluginManager {
 		$plugin = $this->activePlugins[$pluginClass];
 		unset($this->activePlugins[$pluginClass]);
 
+		if ($plugin) {
+			$this->unloadPlugin($plugin);
+		}
+
+		$this->savePluginStatus($pluginClass, false);
+
+		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_PLUGIN_UNLOADED, $pluginClass, $plugin);
+
+		return true;
+	}
+
+	/**
+	 * Unload the Plugin and all its Features
+	 *
+	 * @param \ManiaControl\Plugins\Plugin $plugin
+	 */
+	private function unloadPlugin(Plugin $plugin) {
 		$plugin->unload();
 
 		if ($plugin instanceof EchoListener) {
@@ -188,18 +205,12 @@ class PluginManager {
 		if ($plugin instanceof TimerListener) {
 			$this->maniaControl->getTimerManager()->unregisterTimerListenings($plugin);
 		}
-		if($plugin instanceof SidebarMenuEntryListener){
+		if ($plugin instanceof SidebarMenuEntryListener) {
 			$this->maniaControl->getManialinkManager()->getSidebarMenuManager()->deleteMenuEntries($plugin);
 		}
-		if($plugin instanceof CommunicationListener){
+		if ($plugin instanceof CommunicationListener) {
 			$this->maniaControl->getCommunicationManager()->unregisterCommunicationListener($plugin);
 		}
-
-		$this->savePluginStatus($pluginClass, false);
-
-		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_PLUGIN_UNLOADED, $pluginClass, $plugin);
-
-		return true;
 	}
 
 	/**
@@ -431,6 +442,9 @@ class PluginManager {
 		try {
 			$plugin->load($this->maniaControl);
 		} catch (\Exception $e) {
+			//Unload the Plugin and all its features
+			$this->unloadPlugin($plugin);
+
 			$message = "Error during Plugin Activation of '{$pluginClass}': '{$e->getMessage()}'";
 			$this->maniaControl->getChat()->sendError($message, $adminLogin);
 			Logger::logError($message);
