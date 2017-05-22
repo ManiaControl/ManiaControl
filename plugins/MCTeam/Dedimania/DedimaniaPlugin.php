@@ -49,6 +49,9 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	const SETTING_WIDGET_LINE_COUNT   = 'Widget Displayed Lines Count';
 	const SETTING_WIDGET_LINE_HEIGHT  = 'Widget Line Height';
 	const SETTING_DEDIMANIA_CODE      = '$l[http://dedimania.net/tm2stats/?do=register]Dedimania Code for ';
+	const SETTING_NOTIFY_BEST_RECORDS = 'Notify Publicly only for the X Best Records';
+	const SETTING_MAX_RECORDS         = 'Max Records, only increase if you bought a rank update from Dedimania!';
+
 	const CB_DEDIMANIA_CHANGED        = 'Dedimania.Changed';
 	const CB_DEDIMANIA_UPDATED        = 'Dedimania.Updated';
 	const ACTION_SHOW_DEDIRECORDSLIST = 'Dedimania.ShowDediRecordsList';
@@ -96,6 +99,8 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_WIDTH, 40);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_LINE_HEIGHT, 4);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_LINE_COUNT, 12);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_NOTIFY_BEST_RECORDS, 30);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAX_RECORDS, 30);
 
 		// Callbacks
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::BEGINMAP, $this, 'handleBeginMap');
@@ -131,7 +136,10 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		}
 
 
+		$maxRecords = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MAX_RECORDS);
+
 		$dedimaniaData = new DedimaniaData($serverInfo->login, $dedimaniaCode, $serverInfo->path, $packMask, $serverVersion);
+		$dedimaniaData->serverMaxRank = $maxRecords;
 
 		//New Version
 		$this->webHandler = new DedimaniaWebHandler($this->maniaControl);
@@ -195,7 +203,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$titleLabel->setText($title);
 		$titleLabel->setTranslate(true);
 
-		$recordsFrame = $this->recordWidget->generateRecordsFrame($records,$lines);
+		$recordsFrame = $this->recordWidget->generateRecordsFrame($records, $lines);
 		$frame->addChild($recordsFrame);
 
 		$this->maniaControl->getManialinkManager()->sendManialink($manialink);
@@ -306,6 +314,8 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 				$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_DEDIMANIA_CHANGED, $newRecord);
 
+				$notifyOnlyBestRecords = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_NOTIFY_BEST_RECORDS);
+
 				// Announce record
 				if ($oldRecord->nullRecord || $newRecord->rank < $oldRecord->rank) {
 					// Gained rank
@@ -314,11 +324,24 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 					// Only improved time
 					$improvement = 'improved the';
 				}
-				$message = '$390$<$fff' . $player->nickname . '$> ' . $improvement . ' $<$ff0' . $newRecord->rank . '.$> Dedimania Record: $<$fff' . Formatter::formatTime($newRecord->best) . '$>';
+
+				if ($newRecord->rank <= $notifyOnlyBestRecords) {
+					$notifyName = $player->nickname;
+				} else {
+					$notifyName = 'You';
+				}
+
+
+				$message = '$390$<$fff' . $notifyName . '$> ' . $improvement . ' $<$ff0' . $newRecord->rank . '.$> Dedimania Record: $<$fff' . Formatter::formatTime($newRecord->best) . '$>';
 				if (!$oldRecord->nullRecord) {
 					$message .= ' ($<$ff0' . $oldRecord->rank . '.$> $<$fff-' . Formatter::formatTime(($oldRecord->best - $structure->getLapTime())) . '$>)';
 				}
-				$this->maniaControl->getChat()->sendInformation($message . '!');
+
+				if ($newRecord->rank <= $notifyOnlyBestRecords) {
+					$this->maniaControl->getChat()->sendInformation($message . '!');
+				} else {
+					$this->maniaControl->getChat()->sendInformation($message . '!', $player);
+				}
 
 				$this->webHandler->maniaLinkUpdateNeeded();
 			}
@@ -615,8 +638,8 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 *  Update the RecordWidget variables
 	 */
 	private function updateRecordWidget() {
-		$width              = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_WIDTH);
-		$lineHeight         = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_LINE_HEIGHT);
+		$width      = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_WIDTH);
+		$lineHeight = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_LINE_HEIGHT);
 
 		$this->recordWidget->setWidth($width);
 		$this->recordWidget->setLineHeight($lineHeight);
@@ -624,7 +647,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$this->webHandler->maniaLinkUpdateNeeded();
 	}
 
-	public function handleSettingChanged(Setting $setting){
+	public function handleSettingChanged(Setting $setting) {
 		if (!$setting->belongsToClass($this)) {
 			return;
 		}
