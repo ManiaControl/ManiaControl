@@ -325,9 +325,9 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 					$listFrame->addChild($quad);
 					$quad->setY($y + $lineHeight / 2);
 
-					$frame = $this->recordWidget->generateRecordLineFrame($record, $player);
-					$listFrame->addChild($frame);
-					$frame->setY($y);
+					$recordFrame = $this->recordWidget->generateRecordLineFrame($record, $player);
+					$listFrame->addChild($recordFrame);
+					$recordFrame->setY($y);
 
 				} else {
 					$playersWithoutRecord[] = $player;
