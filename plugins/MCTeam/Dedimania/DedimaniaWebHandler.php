@@ -114,12 +114,21 @@ class DedimaniaWebHandler implements TimerListener {
 		$data    = array($this->dedimaniaData->sessionId, $mapInfo, $gameMode, $serverInfo, $playerInfo);
 		$content = $this->encodeRequest(self::DEDIMANIA_GET_RECORDS, $data);
 
+		Logger::logInfo("Try to fetch Dedimania Records");
+
 		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, self::DEDIMANIA_URL);
 		$asyncHttpRequest->setCallable(function ($data, $error) {
+			if (!$data || $error) {
+				Logger::logError("Dedimania Error while fetching records '{$error}'");
+				return;
+			}
+
 			$data = $this->decode($data);
 
 			//Data[0][0] can be false in error case like map has no checkpoints
 			if (!is_array($data) || empty($data) || !isset($data[0]) || !isset($data[0][0]) || $data[0][0] == false) {
+				Logger::logError("Dedimania Get Records, invalid response or no checkpoints");
+				Logger::log(json_encode($data));
 				return;
 			}
 
