@@ -99,6 +99,7 @@ class Map implements Dumpable, UsageInformationAble {
 			case 'Canyon':
 			case 'Stadium':
 			case 'Valley':
+			case 'Lagoon':
 				return 'tm';
 		}
 		return null;
