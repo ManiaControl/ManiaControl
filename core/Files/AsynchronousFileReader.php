@@ -23,6 +23,9 @@ class AsynchronousFileReader implements UsageInformationAble {
 	 */
 	const CONTENT_TYPE_JSON = 'application/json';
 
+	const QUEUE_NONSERIALIZING = 0;
+	const QUEUE_SERIALIZING = 1;
+
 	/*
 	 * Private properties
 	 */
@@ -30,7 +33,7 @@ class AsynchronousFileReader implements UsageInformationAble {
 	private $maniaControl = null;
 
 	/** @var \cURL\RequestsQueue|null $requestQueue */
-	private $requestQueue = null;
+	private $requestQueue = array(null, null);
 
 	/**
 	 * Construct a new Asynchronous File Reader Instance
@@ -39,22 +42,30 @@ class AsynchronousFileReader implements UsageInformationAble {
 	 */
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
-		$this->requestQueue = new RequestsQueue();
+
+		// Queue for non-serializing requests (parallel is preferred)
+		$this->requestQueue[self::QUEUE_NONSERIALIZING] = new RequestsQueue();
+
+		// Queue for per host serialized requests
+		$this->requestQueue[self::QUEUE_SERIALIZING] = new RequestsQueue();
+		$this->requestQueue[self::QUEUE_SERIALIZING]->setOption(CURLMOPT_MAX_HOST_CONNECTIONS, 1);
 	}
 
 	/**
 	 * Append available Data of active Requests
 	 */
 	public function appendData() {
-		do {
-			if (($count = $this->requestQueue->count()) == 0) {
-				break;
-			}
+		foreach ($this->requestQueue as &$queue) {
+			do {
+				if (($count = $queue->count()) == 0) {
+					break;
+				}
 
-			if ($this->requestQueue->socketPerform()) {
-				$this->requestQueue->socketSelect();
-			}
-		} while ($count != $this->requestQueue->count());
+				if ($queue->socketPerform()) {
+					$queue->socketSelect();
+				}
+			} while ($count != $queue->count());
+		}
 	}
 
 	/**
@@ -96,6 +107,10 @@ class AsynchronousFileReader implements UsageInformationAble {
 	 * @param Request $request
 	 */
 	public function addRequest(Request $request) {
-		$request->attachTo($this->requestQueue);
+		$queueId = $request->getSerialize()
+			? self::QUEUE_SERIALIZING
+			: self::QUEUE_NONSERIALIZING;
+		$queue = $this->requestQueue[$queueId];
+		$request->attachTo($queue);
 	}
 }

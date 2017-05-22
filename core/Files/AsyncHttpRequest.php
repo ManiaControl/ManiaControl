@@ -36,6 +36,7 @@ class AsyncHttpRequest implements UsageInformationAble {
 	private $contentType = 'text/xml; charset=UTF-8;';
 	private $timeout     = 60;
 	private $headers     = array();
+	private $serialize   = false;
 
 	public function __construct($maniaControl, $url) {
 		$this->maniaControl = $maniaControl;
@@ -58,6 +59,7 @@ class AsyncHttpRequest implements UsageInformationAble {
 		        ->set(CURLOPT_RETURNTRANSFER, true)//
 		        ->set(CURLOPT_FOLLOWLOCATION, true)// support redirect
 		        ->set(CURLOPT_SSL_VERIFYPEER, false);
+		$request->setSerialize($this->serialize); // serialize requests to this host
 		return $request;
 	}
 
@@ -227,5 +229,14 @@ class AsyncHttpRequest implements UsageInformationAble {
 	 */
 	public function setTimeout($timeout) {
 		$this->timeout = $timeout;
+	}
+
+	/**
+	 * Sets whether the request to the same host should be serialized.
+	 *
+	 * @param bool $serialize
+	 */
+	public function setSerialize($serialize = true) {
+		$this->serialize = $serialize;
 	}
 }

@@ -83,6 +83,7 @@ class DedimaniaWebHandler implements TimerListener {
 		$asyncHttpRequest->setContent($content);
 		$asyncHttpRequest->setCompression(true);
 		$asyncHttpRequest->setTimeout(500);
+		$asyncHttpRequest->setSerialize();
 		$asyncHttpRequest->postData();
 	}
 
@@ -171,6 +172,7 @@ class DedimaniaWebHandler implements TimerListener {
 		$asyncHttpRequest->setContent($content);
 		$asyncHttpRequest->setCompression(true);
 		$asyncHttpRequest->setTimeout(500);
+		$asyncHttpRequest->setSerialize();
 		$asyncHttpRequest->postData();
 
 		return true;
@@ -218,6 +220,7 @@ class DedimaniaWebHandler implements TimerListener {
 		$asyncHttpRequest->setContent($content);
 		$asyncHttpRequest->setCompression(true);
 		$asyncHttpRequest->setTimeout(500);
+		$asyncHttpRequest->setSerialize();
 		$asyncHttpRequest->postData();
 	}
 
@@ -309,6 +312,7 @@ class DedimaniaWebHandler implements TimerListener {
 		$asyncHttpRequest->setContent($content);
 		$asyncHttpRequest->setCompression(false);
 		$asyncHttpRequest->setTimeout(500);
+		$asyncHttpRequest->setSerialize();
 		$asyncHttpRequest->postData();
 	}
 
@@ -361,6 +365,7 @@ class DedimaniaWebHandler implements TimerListener {
 		$asyncHttpRequest->setContent($content);
 		$asyncHttpRequest->setCompression(true);
 		$asyncHttpRequest->setTimeout(500);
+		$asyncHttpRequest->setSerialize();
 		$asyncHttpRequest->postData();
 	}
 
@@ -403,6 +408,7 @@ class DedimaniaWebHandler implements TimerListener {
 		$asyncHttpRequest->setContent($content);
 		$asyncHttpRequest->setCompression(true);
 		$asyncHttpRequest->setTimeout(500);
+		$asyncHttpRequest->setSerialize();
 		$asyncHttpRequest->postData();
 	}
 
@@ -447,6 +453,7 @@ class DedimaniaWebHandler implements TimerListener {
 		$asyncHttpRequest->setContent($content);
 		$asyncHttpRequest->setCompression(true);
 		$asyncHttpRequest->setTimeout(500);
+		$asyncHttpRequest->setSerialize();
 		$asyncHttpRequest->postData();
 	}
 
