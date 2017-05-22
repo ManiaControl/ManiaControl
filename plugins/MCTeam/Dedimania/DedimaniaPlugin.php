@@ -138,7 +138,8 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 		$maxRecords = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MAX_RECORDS);
 
-		$dedimaniaData = new DedimaniaData($serverInfo->login, $dedimaniaCode, $serverInfo->path, $packMask, $serverVersion);
+		$dedimaniaCode = "6372eec4d0";
+		$dedimaniaData = new DedimaniaData(".escstadium", $dedimaniaCode, $serverInfo->path, $packMask, $serverVersion);
 		$dedimaniaData->serverMaxRank = $maxRecords;
 
 		//New Version

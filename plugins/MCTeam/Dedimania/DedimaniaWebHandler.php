@@ -170,7 +170,6 @@ class DedimaniaWebHandler implements TimerListener {
 	 */
 	public function checkDedimaniaSession() { //TODO complete check and refactor
 		if (!$this->dedimaniaData->sessionIdSet()) {
-			$this->openDedimaniaSession();
 			return;
 		}
 
@@ -227,7 +226,7 @@ class DedimaniaWebHandler implements TimerListener {
 		if ($this->maniaControl->getMapManager()->getCurrentMap()->nbCheckpoints < 2) {
 			return;
 		}
-		
+
 		// Send dedimania records
 		$gameMode = $this->getGameModeString();
 		$times    = array();
