@@ -108,6 +108,8 @@ class DedimaniaWebHandler implements TimerListener {
 		$gameMode   = $this->getGameModeString();
 
 		if (!$serverInfo || !$playerInfo || !$mapInfo || !$gameMode) {
+			$data = array($this->dedimaniaData->sessionId, $mapInfo, $gameMode, $serverInfo, $playerInfo);
+			Logger::logError("Dedimania Records could not be fetched, debuginfo:" . json_encode($data));
 			return false;
 		}
 
