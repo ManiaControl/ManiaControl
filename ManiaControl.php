@@ -42,7 +42,6 @@ if($devMode === "true"){
 	define('DEV_MODE', false); // Development mode to not send error reports etc.
 }
 
-
 if(DEV_MODE){
 	\ManiaControl\Logger::log('Starting ManiaControl with activated Development Mode...');
 }else{
