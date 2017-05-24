@@ -72,11 +72,12 @@ class Chat implements CallbackListener, CommunicationListener, UsageInformationA
 	 * @param string      $message
 	 * @param string      $login
 	 * @param string|bool $prefix
+	 * @param bool        $multiCall
 	 * @return bool
 	 */
-	public function sendInformation($message, $login = null, $prefix = true) {
+	public function sendInformation($message, $login = null, $prefix = true, $multiCall = true) {
 		$format = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_FORMAT_INFORMATION);
-		return $this->sendChat($format . $message, $login, $prefix);
+		return $this->sendChat($format . $message, $login, $prefix, $multiCall);
 	}
 
 	/**
@@ -85,9 +86,10 @@ class Chat implements CallbackListener, CommunicationListener, UsageInformationA
 	 * @param string      $message
 	 * @param string      $login
 	 * @param string|bool $prefix
+	 * @param bool        $multiCall
 	 * @return bool
 	 */
-	public function sendChat($message, $login = null, $prefix = true) {
+	public function sendChat($message, $login = null, $prefix = true, $multiCall = true) {
 		if (!$this->maniaControl->getClient()) {
 			return false;
 		}
@@ -100,13 +102,13 @@ class Chat implements CallbackListener, CommunicationListener, UsageInformationA
 				$login = Player::parseLogin($login);
 			}
 			try {
-				return $this->maniaControl->getClient()->chatSendServerMessage($chatMessage, $login, true);
+				return $this->maniaControl->getClient()->chatSendServerMessage($chatMessage, $login, $multiCall);
 			} catch (UnknownPlayerException $e) {
 				return false;
 			}
 		}
 
-		return $this->maniaControl->getClient()->chatSendServerMessage($chatMessage, null, true);
+		return $this->maniaControl->getClient()->chatSendServerMessage($chatMessage, null, $multiCall);
 	}
 
 	/**
@@ -252,7 +254,7 @@ class Chat implements CallbackListener, CommunicationListener, UsageInformationA
 	 * Handles SendChat Communication Request
 	 *
 	 * @param $data
-	 * @return array
+	 * @return CommunicationAnswer
 	 */
 	public function communcationSendChat($data) {
 		if (!is_object($data) || !property_exists($data, "message")) {

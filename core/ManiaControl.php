@@ -221,8 +221,9 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 			$this->getTimerManager()->registerOneTimeListening($this, function () use ($data) {
 				if (is_object($data) && property_exists($data, "message")) {
 					$this->restart($data->message);
+				} else {
+					$this->restart();
 				}
-				$this->restart();
 			}, 3000);
 			return new CommunicationAnswer();
 		});
@@ -514,7 +515,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 
 		// Announce restart
 		try {
-			$this->getChat()->sendInformation('Restarting ManiaControl...');
+			$this->getChat()->sendInformation('Restarting ManiaControl...', null, true, false);
 		} catch (TransportException $e) {
 		}
 		Logger::log('Restarting ManiaControl... ' . $message);
