@@ -11,7 +11,6 @@
 error_reporting(E_ALL);
 
 // Run configuration
-define('DEV_MODE', false); // Development mode to not send error reports etc.
 define('LOG_NAME_USE_DATE', true); // Use current date as suffix for log file name in logs folder
 define('LOG_NAME_USE_PID', true); // Use current process id as suffix for log file name in logs folder
 
@@ -34,7 +33,21 @@ require_once MANIACONTROL_PATH . 'core' . DIRECTORY_SEPARATOR . 'AutoLoader.php'
 // Setup Logger
 \ManiaControl\Logger::setup();
 
-\ManiaControl\Logger::log('Starting ManiaControl...');
+
+$devMode = \ManiaControl\Utils\CommandLineHelper::getParameter('-dev');
+
+if($devMode === "true"){
+	define('DEV_MODE', true); // Development mode to not send error reports etc.
+}else{
+	define('DEV_MODE', false); // Development mode to not send error reports etc.
+}
+
+
+if(DEV_MODE){
+	\ManiaControl\Logger::log('Starting ManiaControl with activated Development Mode...');
+}else{
+	\ManiaControl\Logger::log('Starting ManiaControl...');
+}
 
 // Check requirements
 \ManiaControl\Utils\SystemUtil::checkRequirements();
