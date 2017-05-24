@@ -54,6 +54,7 @@ class DedimaniaWebHandler implements TimerListener {
 			if (!$data || $error) {
 				Logger::logError("Dedimania Error while opening session: '{$error}' Line 42");
 			}
+			
 
 			$data = $this->decode($data);
 			if (!is_array($data) || empty($data)) {

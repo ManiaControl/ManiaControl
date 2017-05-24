@@ -332,7 +332,7 @@ class Server implements CallbackListener, CommandListener, UsageInformationAble 
 		$login = Player::parseLogin($login);
 		try {
 			$replay = $this->maniaControl->getClient()->getValidationReplay($login);
-		} catch (Exception $e) {
+		} catch (Exception $e) { //UnavailableFeature Exception
 			$this->maniaControl->getErrorHandler()->triggerDebugNotice("Exception line 330 Server.php" . $e->getMessage());
 			Logger::logError("Couldn't get validation replay of '{$login}'. " .  $e->getMessage());
 			return null;

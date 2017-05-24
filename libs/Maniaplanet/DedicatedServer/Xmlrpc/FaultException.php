@@ -23,6 +23,7 @@ class FaultException extends Exception {
 			case 'No replay to save':
 			case 'Internal error.':
 			case 'Unable to retrieve validation data. ':
+			case 'No new replay.':
 				return new UnavailableFeatureException($faultString, $faultCode);
 			case 'You must enable the callbacks to be able to do chat routing.':
 			case 'Chat routing not enabled.':
