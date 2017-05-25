@@ -39,7 +39,7 @@ interface CommunicationMethods {
 
 	/** Set Server Options
 	 *   Required Parameter
-	 *    - scriptSettings (array(optionName1 => value1, optionName2 => value2...))
+	 *    - serverOptions (array(optionName1 => value1, optionName2 => value2...))
 	 */
 	const SET_SERVER_OPTIONS = "ServerOptions.SetServerOptions";
 
@@ -96,15 +96,15 @@ interface CommunicationMethods {
 	const UPDATE_MAP = "MapManager.UpdateMap";
 
 	/** Gets the current Map
-	 *  Required Parameters
-	 *   - mxId (integer)
-	 *   OR
-	 *   - mapUid (string)
+	 *  no Parameters
 	 */
 	const GET_CURRENT_MAP = "MapManager.GetCurrentMap";
 
 	/** Gets the specific Map
-	 *  no Parameters
+	 *  Required Parameters
+	 *   - mxId (integer)
+	 *   OR
+	 *   - mapUid (string)
 	 */
 	const GET_MAP = "MapManager.GetMap";
 
