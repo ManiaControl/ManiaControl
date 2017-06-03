@@ -445,6 +445,9 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 		$checkpointsString                 = $this->getCheckpoints($player->login);
 		$this->checkpoints[$player->login] = array();
 
+		$notifyOnlyDriver      = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_NOTIFY_ONLY_DRIVER);
+		$notifyOnlyBestRecords = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_NOTIFY_BEST_RECORDS);
+
 		// Check old record of the player
 		$oldRecord = $this->getLocalRecord($map, $player);
 		if ($oldRecord) {
@@ -454,9 +457,21 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 			}
 			if ($oldRecord->time == $structure->getLapTime()) {
 				// Same time
-				// TODO: respect notify-settings
-				$message = '$<$fff' . $player->nickname . '$> equalized the $<$ff0' . $oldRecord->rank . '.$> Local Record: $<$fff' . Formatter::formatTime($oldRecord->time) . '$>!';
-				$this->maniaControl->getChat()->sendInformation('$3c0' . $message);
+				$message = '$3c0';
+				if ($notifyOnlyDriver) {
+					$message .= 'You';
+				} else {
+					$message .= '$<$fff' . $player->nickname . '$>';
+				}
+
+				$message .= ' equalized the $<$ff0' . $oldRecord->rank . '.$> Local Record:';
+				$message .= ' $<$fff' . Formatter::formatTime($oldRecord->time) . '$>!';
+
+				if ($notifyOnlyDriver) {
+					$this->maniaControl->getChat()->sendInformation($message, $player);
+				} else if (!$notifyOnlyBestRecords || $oldRecord->rank <= $notifyOnlyBestRecords) {
+					$this->maniaControl->getChat()->sendInformation($message);
+				}
 				return;
 			}
 		}
@@ -487,8 +502,7 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 		$newRecord    = $this->getLocalRecord($map, $player);
 		$improvedRank = (!$oldRecord || $newRecord->rank < $oldRecord->rank);
 
-		$notifyOnlyDriver      = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_NOTIFY_ONLY_DRIVER);
-		$notifyOnlyBestRecords = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_NOTIFY_BEST_RECORDS);
+
 
 		$message = '$3c0';
 		if ($notifyOnlyDriver) {
