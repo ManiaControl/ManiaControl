@@ -197,6 +197,7 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 
 	/**
 	 * Handle ManiaControl After Init
+	 * @internal
 	 */
 	public function handleAfterInit() {
 		$this->updateManialink = true;
@@ -204,6 +205,7 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 
 	/**
 	 * Handle 1 Second Callback
+	 * @internal
 	 */
 	public function handle1Second() {
 		if (!$this->updateManialink) {
@@ -355,6 +357,7 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 	/**
 	 * Fetch local records for the given map
 	 *
+	 * @api
 	 * @param \ManiaControl\Maps\Map $map
 	 * @param int                    $limit
 	 * @return array|null
@@ -532,12 +535,13 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 	}
 
 	/**
-	 * Get current checkpoint string for dedimania record
+	 * Get current checkpoint string for local record
 	 *
+	 * @api
 	 * @param string $login
 	 * @return string
 	 */
-	private function getCheckpoints($login) {
+	public function getCheckpoints($login) {
 		if (!$login || !isset($this->checkpoints[$login])) {
 			return null;
 		}
@@ -555,11 +559,12 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 	/**
 	 * Retrieve the local record for the given map and login
 	 *
+	 * @api
 	 * @param Map    $map
 	 * @param Player $player
 	 * @return mixed
 	 */
-	private function getLocalRecord(Map $map, Player $player) {
+	public function getLocalRecord(Map $map, Player $player) {
 		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
 		$query  = "SELECT records.* FROM (
 					SELECT recs.*, @rank := @rank + 1 as `rank` FROM `" . self::TABLE_RECORDS . "` recs, (SELECT @rank := 0) ra
@@ -609,6 +614,7 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 	/**
 	 * Shows a ManiaLink list with the local records.
 	 *
+	 * @api
 	 * @param array  $chat
 	 * @param Player $player
 	 */
@@ -704,6 +710,7 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 	/**
 	 * Delete a Player's record
 	 *
+	 * @internal
 	 * @param array  $chat
 	 * @param Player $player
 	 */
