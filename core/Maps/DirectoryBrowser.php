@@ -367,6 +367,8 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 		$this->maniaControl->getMapManager()->getMXManager()->fetchManiaExchangeMapInformation($map);
 
 		$map->lastUpdate = time();
+		//Update Map Timestamp in Database
+		$this->maniaControl->getMapManager()->updateMapTimestamp($map->uid);
 
 		// Message
 		$message = $player->getEscapedNickname() . ' added ' . $map->getEscapedName() . '!';

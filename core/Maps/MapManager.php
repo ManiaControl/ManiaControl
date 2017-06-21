@@ -215,12 +215,13 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 	 * @param string $uid
 	 * @return bool
 	 */
-	private function updateMapTimestamp($uid) {
+	public function updateMapTimestamp($uid) {
 		$mysqli       = $this->maniaControl->getDatabase()->getMysqli();
+		//TODO mxid was set to 0, verify what for
 		$mapQuery     = "UPDATE `" . self::TABLE_MAPS . "` SET
-				mxid = 0,
-				changed = NOW()
-				WHERE 'uid' = ?";
+				`changed` = NOW()
+				WHERE `uid` LIKE ?";
+
 		$mapStatement = $mysqli->prepare($mapQuery);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error);
@@ -471,7 +472,11 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 			$this->maniaControl->getChat()->sendError('Server Error!', $login);
 			return;
 		}
+
 		$map->lastUpdate = time();
+		//Update TimeStamp in Database
+		$this->updateMapTimestamp($mapInfo->uid);
+
 
 		//TODO messages for communication
 		if ($login) {
