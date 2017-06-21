@@ -34,13 +34,14 @@ https://www.maniacontrol.com
 ## REQUIREMENTS:
 - MySQL Database
 - PHP 5.4+
-- Needed extensions (on ManiaControl startup you will see if you have them activated):
+- Needed extensions (on ManiaControl startup you will see if you have them installed and activated):
 	- php_mysqli
 	- php_curl
 	- php_xmlrpc (TM only, recommended for SM)
 	- php_zlib
 	- php_zip
-
+	- php_mbstring
+	
 ### How to report bugs or request features?:
 - Write a mail to bugs(at)maniacontrol(dot)com
 - Open an issue on GitHub.com/ManiaControl/ManiaControl

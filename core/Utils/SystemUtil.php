@@ -97,6 +97,16 @@ class SystemUtil {
 			Logger::log($message . 'FOUND!');
 		}
 
+		// Check for MBString
+		$message = 'Checking for installed mbstring ... ';
+		if (!extension_loaded('mbstring')) {
+			Logger::log($message . 'NOT FOUND!');
+			Logger::log(" -- You don't have mbstring installed! Check: http://php.net/manual/en/mbstring.setup.php");
+			$success = false;
+		} else {
+			Logger::log($message . 'FOUND!');
+		}
+
 		if (!$success) {
 			// Missing requirements
 			self::quit();
