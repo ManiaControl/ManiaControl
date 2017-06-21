@@ -6,7 +6,10 @@ use ManiaControl\Callbacks\Structures\Common\BasePlayerTimeStructure;
 use ManiaControl\Callbacks\Structures\Common\UIPropertiesBaseStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnActionCustomEventStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnActionEvent;
+use ManiaControl\Callbacks\Structures\ShootMania\OnAFKProperties;
+use ManiaControl\Callbacks\Structures\ShootMania\OnAFKPropertiesStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnArmorEmptyStructure;
+use ManiaControl\Callbacks\Structures\ShootMania\OnBasePlayerObjectTimeStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnCaptureStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnCommandStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnDefaultEventStructure;
@@ -17,9 +20,9 @@ use ManiaControl\Callbacks\Structures\ShootMania\OnJoustReloadStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnJoustRoundResultsStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnJoustSelectedPlayersStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnNearMissStructure;
-use ManiaControl\Callbacks\Structures\ShootMania\OnBasePlayerObjectTimeStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnPlayerRequestActionChange;
 use ManiaControl\Callbacks\Structures\ShootMania\OnPlayerRequestRespawnStructure;
+use ManiaControl\Callbacks\Structures\ShootMania\OnPlayersAFKStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnPlayerTriggersSectorStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnRoyalPlayerSpawnStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\OnRoyalPointsStructure;
@@ -155,6 +158,12 @@ class ShootManiaCallbacks implements CallbackListener {
 				break;
 			case Callbacks::SM_ROYAL_ROUNDWINNER:
 				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnRoyalRoundWinnerStructure($this->maniaControl, $data));
+				break;
+			case Callbacks::SM_AFKPROPERTIES:
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnAFKPropertiesStructure($this->maniaControl, $data));
+				break;
+			case Callbacks::SM_PLAYERSAFK:
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnPlayersAFKStructure($this->maniaControl, $data));
 				break;
 		}
 	}

@@ -23,7 +23,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
 class ModeScriptEventManager implements UsageInformationAble {
 	use UsageInformationTrait;
 
-	const API_VERSION = "2.1.0";
+	const API_VERSION = "2.2.0";
 
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl;
@@ -414,6 +414,31 @@ class ModeScriptEventManager implements UsageInformationAble {
 		$responseId = $this->generateResponseId();
 		$this->triggerModeScriptEvent('Shootmania.GetScores', array($responseId));
 		return new InvokeScriptCallback($this->maniaControl, Callbacks::SM_SCORES, $responseId);
+	}
+
+	/**
+	 * Request the current properties of the AFK libraries.
+	 *
+	 * @api
+	 * @return \ManiaControl\Script\InvokeScriptCallback You can directly set a callable on it via setCallable()
+	 */
+	public function getShootmaniaAFKProperties() {
+		$responseId = $this->generateResponseId();
+		$this->triggerModeScriptEvent(' Shootmania.AFK.GetProperties', array($responseId));
+		return new InvokeScriptCallback($this->maniaControl, Callbacks::SM_AFKPROPERTIES, $responseId);
+	}
+
+	/**
+	 * Set the properties of the AFK library.
+	 *
+	 * @api
+	 * @param int $idleTimeLimit
+	 * @param int $spawnTimeLimit
+	 * @param int $checkInterval
+	 * @param int $forceSpec
+	 */
+	public function setShootmaniaAFKProperties($idleTimeLimit, $spawnTimeLimit, $checkInterval, $forceSpec) {
+		$this->triggerModeScriptEvent('Shootmania.AFK.SetProperties', array(strval($idleTimeLimit), strval($spawnTimeLimit), strval($checkInterval), strval($forceSpec)));
 	}
 
 	/**

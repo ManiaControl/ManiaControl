@@ -84,6 +84,9 @@ interface Callbacks {
 	const SM_ONFALLDAMAGE   = "Shootmania.Event.OnFallDamage";
 	const SM_ONCOMMAND      = "Shootmania.Event.OnCommand";
 
+	const SM_PLAYERSAFK    = "Shootmania.AFK.IsAfk";
+	const SM_AFKPROPERTIES = "Shootmania.AFK.GetProperties";
+
 	/**
 	 * Use the PlayerManager Callback in favour of this
 	 *
