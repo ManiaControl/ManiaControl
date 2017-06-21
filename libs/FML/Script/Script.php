@@ -265,14 +265,14 @@ class Script
      */
     protected function getHeaderComment()
     {
-        $headerComment = '/****************************************************
-*		FancyManiaLinks';
+        $headerComment = '/**************************************************
+*     FancyManiaLinks';
         if (defined('FML_VERSION')) {
             $headerComment .= ' v' . FML_VERSION;
         }
-        $headerComment .= ' by steeffeen	 		*
-*	http://github.com/steeffeen/FancyManiaLinks		*
-****************************************************/
+        $headerComment .= ' by steeffeen     *
+*   http://github.com/steeffeen/FancyManiaLinks   *
+**************************************************/
 
 ';
         return $headerComment;
@@ -349,6 +349,7 @@ main() {
 				}
 				case CMlEvent::Type::MouseClick: {
 					+++' . ScriptLabel::MOUSECLICK . '+++
+					+++' . ScriptLabel::MOUSECLICK2 . '+++
 				}
 				case CMlEvent::Type::MouseOut: {
 					+++' . ScriptLabel::MOUSEOUT . '+++

@@ -98,7 +98,7 @@ class Quad extends Control implements Actionable, BackgroundColorable, BgColorab
     /**
      * @var int $actionKey Action key
      */
-    protected $actionKey = -1;
+    protected $actionKey = null;
 
     /**
      * @var string $url Link url
@@ -676,6 +676,8 @@ class Quad extends Control implements Actionable, BackgroundColorable, BgColorab
      * @api
      * @param CheckBoxDesign $checkBoxDesign CheckBox Design
      * @return static
+     * @deprecated Use CheckBoxDesign::applyToQuad()
+     * @see        CheckBoxDesign::applyToQuad()
      */
     public function applyCheckBoxDesign(CheckBoxDesign $checkBoxDesign)
     {

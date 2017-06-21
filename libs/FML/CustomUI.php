@@ -53,7 +53,7 @@ class CustomUI
     protected $scoretableVisible = null;
 
     /**
-     * Create a new CustomUI
+     * Create a new Custom UI
      *
      * @api
      * @return static
@@ -256,7 +256,7 @@ class CustomUI
     }
 
     /**
-     * Render the CustomUI standalone
+     * Render the Custom UI standalone
      *
      * @return \DOMDocument
      */
@@ -272,9 +272,9 @@ class CustomUI
     }
 
     /**
-     * Render the CustomUI
+     * Render the Custom UI
      *
-     * @param \DOMDocument $domDocument DOMDocument for which the CustomUI should be rendered
+     * @param \DOMDocument $domDocument DOMDocument for which the Custom UI should be rendered
      * @return \DOMElement
      */
     public function render(\DOMDocument $domDocument)
@@ -307,7 +307,7 @@ class CustomUI
     }
 
     /**
-     * Get associative array of all CustomUI settings
+     * Get associative array of all Custom UI settings
      *
      * @return array
      */

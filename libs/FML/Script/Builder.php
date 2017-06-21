@@ -70,6 +70,30 @@ abstract class Builder
     }
 
     /**
+     * Get the 'Text' string representation of the given value
+     *
+     * @api
+     * @param string $value String value to convert to a ManiaScript 'Text'
+     * @return string
+     */
+    public static function getText($value)
+    {
+        return '"' . (string)$value . '"';
+    }
+
+    /**
+     * Get the 'Integer' string representation of the given value
+     *
+     * @api
+     * @param int $value Int value to convert to a ManiaScript 'Integer'
+     * @return string
+     */
+    public static function getInteger($value)
+    {
+        return (string)(int)$value;
+    }
+
+    /**
      * Get the 'Real' string representation of the given value
      *
      * @api
@@ -146,7 +170,7 @@ abstract class Builder
      * @param bool  $associative (optional) Whether the array should be associative
      * @return string
      */
-    public static function getArray(array $array, $associative = false)
+    public static function getArray(array $array, $associative = true)
     {
         $arrayText = "[";
         $index     = 0;
@@ -179,6 +203,9 @@ abstract class Builder
         }
         if (is_bool($value)) {
             return static::getBoolean($value);
+        }
+        if (is_array($value)) {
+            return static::getArray($value);
         }
         return $value;
     }

@@ -233,6 +233,13 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener,
 	 * @return bool
 	 */
 	public function sendManialink($manialinkText, $logins = null, $timeout = 0, $hideOnClick = false) {
+		//Add Toggle Feature
+		if($manialinkText instanceof ManiaLink){
+			/*$toggleInterfaceF9 = new \FML\Script\Features\ToggleInterface("F9");
+			$manialinkText->getScript()
+			          ->addFeature($toggleInterfaceF9); (not working yet) */
+		}
+
 		$manialinkText = (string) $manialinkText;
 
 		if (!$manialinkText) {

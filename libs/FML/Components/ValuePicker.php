@@ -13,7 +13,6 @@ use FML\Types\ScriptFeatureable;
 /**
  * ValuePicker Component
  *
- * @uses      Entry
  * @author    steeffeen <mail@steeffeen.com>
  * @copyright FancyManiaLinks Copyright © 2017 Steffen Schröder
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3

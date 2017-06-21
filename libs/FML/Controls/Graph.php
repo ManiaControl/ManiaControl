@@ -3,8 +3,8 @@
 namespace FML\Controls;
 
 use FML\Script\Features\GraphCurve;
-
-// TODO: check CoordsMin & CoordsMax properties of CMlGraph
+use FML\Script\Features\GraphSettings;
+use FML\Script\Features\ScriptFeature;
 
 /**
  * Graph Control
@@ -18,9 +18,40 @@ class Graph extends Control
 {
 
     /**
+     * @var GraphSettings $graphSettings Graph settings
+     */
+    protected $graphSettings = null;
+
+    /**
      * @var GraphCurve[] $curves Curves
      */
     protected $curves = array();
+
+    /**
+     * Get the graph settings
+     *
+     * @api
+     * @return GraphSettings
+     */
+    public function getSettings()
+    {
+        if (!$this->graphSettings) {
+            $this->createSettings();
+        }
+        return $this->graphSettings;
+    }
+
+    /**
+     * Create new graph settings
+     *
+     * @return GraphSettings
+     */
+    protected function createSettings()
+    {
+        $this->graphSettings = new GraphSettings($this);
+        $this->addScriptFeature($this->graphSettings);
+        return $this->graphSettings;
+    }
 
     /**
      * Get curves

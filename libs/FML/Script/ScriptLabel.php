@@ -21,6 +21,7 @@ class ScriptLabel
     const ENTRYSUBMIT = 'FML_EntrySubmit';
     const KEYPRESS    = 'FML_KeyPress';
     const MOUSECLICK  = 'FML_MouseClick';
+    const MOUSECLICK2 = 'FML_MouseClick2';
     const MOUSEOUT    = 'FML_MouseOut';
     const MOUSEOVER   = 'FML_MouseOver';
 

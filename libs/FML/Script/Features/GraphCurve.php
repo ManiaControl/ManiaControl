@@ -45,7 +45,7 @@ class GraphCurve extends ScriptFeature
     /**
      * @var float $width Width
      */
-    protected $width = -1.;
+    protected $width = null;
 
     /**
      * Construct a new Graph Curve
@@ -275,26 +275,26 @@ if (Graph != Null) {
     declare GraphCurve <=> Graph.AddCurve();
 ";
         foreach ($this->points as $point) {
-            $pointVec2 = Builder::getVec2($point);
+            $pointVec2  = Builder::getVec2($point);
             $scriptText .= "
-GraphCurve.Points.add({$pointVec2});";
+    GraphCurve.Points.add({$pointVec2});";
         }
         if ($this->sortPoints) {
             $scriptText .= "
-GraphCurve.SortPoints();";
+    GraphCurve.SortPoints();";
         }
         if ($this->color) {
-            $colorVec3 = Builder::getVec3($this->color);
+            $colorVec3  = Builder::getVec3($this->color);
             $scriptText .= "
-GraphCurve.Color = {$colorVec3};";
+    GraphCurve.Color = {$colorVec3};";
         }
         if ($this->style) {
             $scriptText .= "
-GraphCurve.Style = {$this->style};";
+    GraphCurve.Style = {$this->style};";
         }
-        if ($this->width > 0) {
+        if ($this->width) {
             $scriptText .= "
-GraphCurve.Width = {$this->width};";
+    GraphCurve.Width = {$this->width};";
         }
         return $scriptText . "
 }";

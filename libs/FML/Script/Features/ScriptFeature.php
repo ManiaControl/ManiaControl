@@ -25,10 +25,38 @@ abstract class ScriptFeature
         $params         = func_get_args();
         $scriptFeatures = array();
         foreach ($params as $object) {
-            if ($object instanceof ScriptFeatureable) {
-                $scriptFeatures = array_merge($scriptFeatures, $object->getScriptFeatures());
-            } else if ($object instanceof ScriptFeature) {
-                array_push($scriptFeatures, $object);
+            if ($object instanceof ScriptFeature) {
+                $scriptFeatures = static::addScriptFeature($scriptFeatures, $object);
+            } else if ($object instanceof ScriptFeatureable) {
+                $scriptFeatures = static::addScriptFeature($scriptFeatures, $object->getScriptFeatures());
+            } else if (is_array($object)) {
+                foreach ($object as $subObject) {
+                    $scriptFeatures = static::addScriptFeature($scriptFeatures, static::collect($subObject));
+                }
+            }
+        }
+        return $scriptFeatures;
+    }
+
+    /**
+     * Add one or more Script Features to an Array of Features if they are not already contained
+     *
+     * @param array $scriptFeatures
+     * @param ScriptFeature||ScriptFeature[] $newScriptFeatures
+     * @return array
+     */
+    public static function addScriptFeature(array $scriptFeatures, $newScriptFeatures)
+    {
+        if (!$newScriptFeatures) {
+            return $scriptFeatures;
+        }
+        if ($newScriptFeatures instanceof ScriptFeature) {
+            if (!in_array($newScriptFeatures, $scriptFeatures, true)) {
+                array_push($scriptFeatures, $newScriptFeatures);
+            }
+        } else if (is_array($newScriptFeatures)) {
+            foreach ($newScriptFeatures as $newScriptFeature) {
+                $scriptFeatures = static::addScriptFeature($scriptFeatures, $newScriptFeature);
             }
         }
         return $scriptFeatures;

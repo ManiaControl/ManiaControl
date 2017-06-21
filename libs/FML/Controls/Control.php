@@ -68,9 +68,19 @@ abstract class Control implements Identifiable, Renderable, ScriptFeatureable
     protected $height = 0.;
 
     /**
+     * @var string $defaultHorizontalAlign Default horizontal alignment
+     */
+    static protected $defaultHorizontalAlign = self::CENTER;
+
+    /**
      * @var string $horizontalAlign Horizontal alignment
      */
     protected $horizontalAlign = self::CENTER;
+
+    /**
+     * @var string $defaultVerticalAlign Default vertical alignment
+     */
+    static protected $defaultVerticalAlign = self::CENTER2;
 
     /**
      * @var string $verticalAlign Vertical alignment
@@ -130,6 +140,8 @@ abstract class Control implements Identifiable, Renderable, ScriptFeatureable
         if ($controlId) {
             $this->setId($controlId);
         }
+        $this->setHorizontalAlign(static::$defaultHorizontalAlign);
+        $this->setVerticalAlign(static::$defaultVerticalAlign);
     }
 
     /**
@@ -311,6 +323,17 @@ abstract class Control implements Identifiable, Renderable, ScriptFeatureable
     }
 
     /**
+     * Get the default horizontal alignment
+     *
+     * @api
+     * @return string
+     */
+    public static function getDefaultHorizontalAlign()
+    {
+        return static::$defaultHorizontalAlign;
+    }
+
+    /**
      * Get the horizontal alignment
      *
      * @api
@@ -319,6 +342,17 @@ abstract class Control implements Identifiable, Renderable, ScriptFeatureable
     public function getHorizontalAlign()
     {
         return $this->horizontalAlign;
+    }
+
+    /**
+     * Set the default horizontal alignment
+     *
+     * @api
+     * @param string $defaultHorizontalAlignment Default horizontal alignment
+     */
+    public static function setDefaultHorizontalAlign($defaultHorizontalAlignment)
+    {
+        static::$defaultHorizontalAlign = (string)$defaultHorizontalAlignment;
     }
 
     /**
@@ -349,6 +383,17 @@ abstract class Control implements Identifiable, Renderable, ScriptFeatureable
     }
 
     /**
+     * Get the default vertical alignment
+     *
+     * @api
+     * @return string
+     */
+    public static function getDefaultVerticalAlign()
+    {
+        return static::$defaultVerticalAlign;
+    }
+
+    /**
      * Get the vertical alignment
      *
      * @api
@@ -357,6 +402,17 @@ abstract class Control implements Identifiable, Renderable, ScriptFeatureable
     public function getVerticalAlign()
     {
         return $this->verticalAlign;
+    }
+
+    /**
+     * Set the default vertical alignment
+     *
+     * @api
+     * @param string $defaultVerticalAlignment Default vertical alignment
+     */
+    public static function setDefaultVerticalAlign($defaultVerticalAlignment)
+    {
+        static::$defaultVerticalAlign = (string)$defaultVerticalAlignment;
     }
 
     /**
@@ -401,6 +457,17 @@ abstract class Control implements Identifiable, Renderable, ScriptFeatureable
     }
 
     /**
+     * Center the default alignment
+     *
+     * @api
+     */
+    public static function centerDefaultAlign()
+    {
+        static::$defaultHorizontalAlign = static::CENTER;
+        static::$defaultVerticalAlign   = static::CENTER2;
+    }
+
+    /**
      * Center the alignment
      *
      * @api
@@ -422,6 +489,17 @@ abstract class Control implements Identifiable, Renderable, ScriptFeatureable
     public function resetAlign()
     {
         return $this->clearAlign();
+    }
+
+    /**
+     * Clear the default alignment
+     *
+     * @api
+     */
+    public static function clearDefaultAlign()
+    {
+        static::$defaultHorizontalAlign = null;
+        static::$defaultVerticalAlign   = null;
     }
 
     /**

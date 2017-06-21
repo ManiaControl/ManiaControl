@@ -219,7 +219,7 @@ class ValuePickerFeature extends ScriptFeature
     {
         return "
 Void " . self::FUNCTION_UPDATE_PICKER_VALUE . "(CMlLabel _Label) {
-	declare " . self::VAR_PICKER_VALUES . " as Values for _Label = Text[];
+	declare " . self::VAR_PICKER_VALUES . " as Values for _Label = Text[Integer];
 	declare NewValueIndex = -1;
 	if (Values.exists(_Label.Value)) {
 		declare ValueIndex = Values.keyof(_Label.Value);
@@ -264,11 +264,11 @@ Void " . self::FUNCTION_UPDATE_PICKER_VALUE . "(CMlLabel _Label) {
 
         return "
 declare Label_Picker <=> (Page.GetFirstChild(\"{$labelId}\") as CMlLabel);
-declare Text[] " . self::VAR_PICKER_VALUES . " as Values for Label_Picker;
+declare " . self::VAR_PICKER_VALUES . " as Values for Label_Picker = Text[Integer];
 Values = {$values};
-declare Text " . self::VAR_PICKER_DEFAULT_VALUE . " as Default for Label_Picker;
+declare " . self::VAR_PICKER_DEFAULT_VALUE . " as Default for Label_Picker = \"\";
 Default = {$default};
-declare Text " . self::VAR_PICKER_ENTRY_ID . " as EntryId for Label_Picker;
+declare " . self::VAR_PICKER_ENTRY_ID . " as EntryId for Label_Picker = \"\";
 EntryId = \"{$entryId}\";
 " . self::FUNCTION_UPDATE_PICKER_VALUE . "(Label_Picker);
 ";
