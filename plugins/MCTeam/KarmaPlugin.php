@@ -270,7 +270,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			} else {
 				Logger::logError("Error while authenticating on Mania-Exchange Karma");
 				// TODO remove temp trigger
-				$this->maniaControl->getErrorHandler()->triggerDebugNotice('auth error ' . $data->data->message);
+				$this->maniaControl->getErrorHandler()->triggerDebugNotice('auth error ' . json_encode($data->data->message));
 				$this->mxKarma['connectionInProgress'] = false;
 			}
 		});
@@ -418,7 +418,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 				if ($data->data->message === 'invalid session') {
 					unset($this->mxKarma['session']);
 				} else {
-					$this->maniaControl->getErrorHandler()->triggerDebugNotice('fetch error ' . $data->data->message . self::MX_KARMA_GET_MAP_RATING);
+					$this->maniaControl->getErrorHandler()->triggerDebugNotice('fetch error ' . json_encode($data->data->message . self::MX_KARMA_GET_MAP_RATING));
 				}
 			}
 		});
@@ -523,7 +523,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 				if ($data->data->message === "invalid session") {
 					unset($this->mxKarma['session']);
 				} else {
-					$this->maniaControl->getErrorHandler()->triggerDebugNotice('saving error ' . $data->data->message . self::MX_KARMA_SAVE_VOTES);
+					$this->maniaControl->getErrorHandler()->triggerDebugNotice('saving error ' . json_encode($data->data->message . self::MX_KARMA_SAVE_VOTES));
 				}
 			}
 		});
