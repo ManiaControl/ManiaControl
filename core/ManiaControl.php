@@ -52,7 +52,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 	/*
 	 * Constants
 	 */
-	const VERSION                     = '0.222';
+	const VERSION                     = '0.223';
 	const API_VERSION                 = '2013-04-16';
 	const MIN_DEDIVERSION             = '2017-05-03_21_00';
 	const SCRIPT_TIMEOUT              = 40;
@@ -694,6 +694,9 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 	private function loop() {
 		$loopStart = microtime(true);
 
+		//Trigger a Callback on entering the Loop
+		$this->getCallbackManager()->triggerCallback(Callbacks::PRELOOP, $loopStart);
+
 		// Extend script timeout
 		if (!defined('PHP_UNIT_TEST')) {
 			set_time_limit(self::SCRIPT_TIMEOUT);
@@ -712,6 +715,9 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 		if ($sleepTime > 0) {
 			usleep($sleepTime);
 		}
+
+		//Trigger a Callback after the Loop
+		$this->getCallbackManager()->triggerCallback(Callbacks::AFTERLOOP, $loopDuration);
 	}
 
 	/**

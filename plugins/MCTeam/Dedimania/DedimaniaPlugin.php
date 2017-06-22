@@ -36,7 +36,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * Constants
 	 */
 	const ID             = 8;
-	const VERSION        = 0.2;
+	const VERSION        = 0.3;
 	const AUTHOR         = 'MCTeam';
 	const NAME           = 'Dedimania Plugin';
 	const MLID_DEDIMANIA = 'Dedimania.ManialinkId';
@@ -112,7 +112,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::TM_ONFINISHLINE, $this, 'handleFinishCallback');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::TM_ONLAPFINISH, $this, 'handleFinishCallback');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(SettingManager::CB_SETTING_CHANGED, $this, 'handleSettingChanged');
-
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::AFTERLOOP, $this, 'handleAfterLoop');
 
 		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'updateEverySecond', 1000);
 		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'handleEveryMinute', 1000 * 60);
@@ -152,6 +152,8 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 	/**
 	 * Handle 1 Second Callback
+	 *
+	 * @internal
 	 */
 	public function updateEverySecond() {
 		if (!$this->webHandler->doesManiaLinkNeedUpdate()) {
@@ -211,6 +213,8 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 	/**
 	 * Handle 1 Minute Callback
+	 *
+	 * @internal
 	 */
 	public function handleEveryMinute() {
 		if ($this->webHandler->getDedimaniaData()->sessionId == "") {
@@ -222,6 +226,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	/**
 	 * Handle PlayerConnect callback
 	 *
+	 * @internal
 	 * @param Player $player
 	 */
 	public function handlePlayerConnect(Player $player) {
@@ -231,6 +236,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	/**
 	 * Handle Player Disconnect Callback
 	 *
+	 * @internal
 	 * @param Player $player
 	 */
 	public function handlePlayerDisconnect(Player $player) {
@@ -239,6 +245,8 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 	/**
 	 * Handle Begin Map Callback
+	 *
+	 * @internal
 	 */
 	public function handleBeginMap() {
 		$this->webHandler->getDedimaniaData()->unsetRecords();
@@ -248,6 +256,8 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 	/**
 	 * Handle EndMap Callback
+	 *
+	 * @internal
 	 */
 	public function handleMapEnd() {
 		$this->webHandler->submitChallengeTimes();
@@ -256,6 +266,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	/**
 	 * Handle Checkpoint Callback
 	 *
+	 * @internal
 	 * @param OnWayPointEventStructure $callback
 	 */
 	public function handleCheckpointCallback(OnWayPointEventStructure $structure) {
@@ -273,6 +284,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	/**
 	 * Handle Finish Callback
 	 *
+	 * @internal
 	 * @param \ManiaControl\Callbacks\Structures\TrackMania\OnWayPointEventStructure $structure
 	 */
 	public function handleFinishCallback(OnWayPointEventStructure $structure) {
@@ -531,6 +543,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	/**
 	 * Handle PlayerManialinkPageAnswer callback
 	 *
+	 * @internal
 	 * @param array $callback
 	 */
 	public function handleManialinkPageAnswer(array $callback) {
@@ -545,8 +558,18 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	}
 
 	/**
+	 * Process Dedimania Webreqests at end of Loop
+	 *
+	 * @internal
+	 */
+	public function handleAfterLoop(){
+		$this->webHandler->callDedimania();
+	}
+
+	/**
 	 * Shows a ManiaLink list with the local records.
 	 *
+	 * @api
 	 * @param array  $chat
 	 * @param Player $player
 	 */
@@ -628,6 +651,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	/**
 	 * Function to retrieve the dedimania records on the current map
 	 *
+	 * @api
 	 * @return RecordData[]
 	 */
 	public function getDedimaniaRecords() {
@@ -636,6 +660,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 	/**
 	 *  Update the RecordWidget variables
+	 *
 	 */
 	private function updateRecordWidget() {
 		$width      = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_WIDTH);
@@ -647,12 +672,19 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$this->webHandler->maniaLinkUpdateNeeded();
 	}
 
+	/**
+	 * Handle settings Changed
+	 *
+	 * @internal
+	 * @param \ManiaControl\Settings\Setting $setting
+	 */
 	public function handleSettingChanged(Setting $setting) {
 		if (!$setting->belongsToClass($this)) {
 			return;
 		}
 		$this->updateRecordWidget();
 	}
+
 
 	/**
 	 * @see \ManiaControl\Plugins\Plugin::unload()

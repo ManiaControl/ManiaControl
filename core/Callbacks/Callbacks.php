@@ -17,6 +17,8 @@ interface Callbacks {
 	const AFTERINIT  = 'Callbacks.AfterInit';
 	const ONSHUTDOWN = 'Callbacks.OnShutdown';
 	const ONRESTART  = 'Callbacks.OnRestart';
+	const PRELOOP    = 'Callbacks.PreLoop';
+	const AFTERLOOP  = 'Callbacks.AfterLoop';
 
 	/** Script Callback: CallbackName, CallbackData */
 	const SCRIPTCALLBACK = 'Callbacks.ScriptCallback';
