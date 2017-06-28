@@ -269,8 +269,14 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 				$this->activateSession($mxKarmaCode);
 			} else {
 				Logger::logError("Error while authenticating on Mania-Exchange Karma");
-				// TODO remove temp trigger
-				$this->maniaControl->getErrorHandler()->triggerDebugNotice('auth error ' . json_encode($data->data->message));
+
+				if($data->data->message == "invalid server"){
+					Logger::log("You need to get a Karma Key from MX with registering your server");
+				}else{
+					// TODO remove temp trigger
+					$this->maniaControl->getErrorHandler()->triggerDebugNotice('auth error ' . json_encode($data->data->message));
+				}
+
 				$this->mxKarma['connectionInProgress'] = false;
 			}
 		});
