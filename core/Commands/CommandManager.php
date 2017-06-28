@@ -65,7 +65,7 @@ class CommandManager implements CallbackListener, UsageInformationAble {
 	 * @param string          $description
 	 * @return bool
 	 */
-	public function registerCommandListener($commandName, CommandListener $listener, $method, $adminCommand = false, $description = null) {
+	public function registerCommandListener($commandName, CommandListener $listener, $method, $adminCommand = false, $description = "No Description.") {
 		if (is_array($commandName)) {
 			$success = false;
 			foreach ($commandName as $command) {
