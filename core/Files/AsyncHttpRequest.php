@@ -89,9 +89,10 @@ class AsyncHttpRequest implements UsageInformationAble {
 		array_push($this->headers, 'Keep-Alive: timeout=600, max=2000');
 		array_push($this->headers, 'Connection: Keep-Alive');
 
-		$content = str_replace(array("\r", "\n"), '', $this->content);
+		//$content = str_replace(array("\r", "\n"), '', $this->content);
+		$content = $this->content;
 		if ($this->compression) {
-			$content = zlib_encode($content, 31);
+			$content = zlib_encode($this->content, ZLIB_ENCODING_GZIP);
 			array_push($this->headers, 'Content-Encoding: gzip');
 		}
 

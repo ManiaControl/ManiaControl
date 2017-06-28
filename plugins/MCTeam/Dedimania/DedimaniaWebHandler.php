@@ -262,18 +262,23 @@ class DedimaniaWebHandler implements TimerListener {
 
 		$this->addRequest(self::DEDIMANIA_WARNINGSANDTTR2, array());
 
-		$content = xmlrpc_encode_request(self::XMLRPC_MULTICALL, array($this->requests), array('encoding' => 'UTF-8', 'escaping' => 'markup'));
-
+		$content = xmlrpc_encode_request(self::XMLRPC_MULTICALL, array($this->requests), array('encoding' => 'UTF-8', 'escaping' => 'markup', 'verbosity' => 'no_white_space'));
 
 		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, self::DEDIMANIA_URL);
-		$asyncHttpRequest->setCallable(function ($data, $error) {
+		$asyncHttpRequest->setCallable(function ($answerData, $error) {
 			if ($error) {
-				Logger::logError("Dedimania Error while update playerlist: " . $error);
+				Logger::logError("Dedimania Error while Request: " . $error);
 				$this->checkDedimaniaSession();
 				return;
 			}
 
-			$data = $this->decode($data);
+			$data = $this->decode($answerData);
+			if(!$data){
+				//TODO just Temporary
+				var_dump("Dedimania Debug:");
+				var_dump($answerData);
+			}
+
 			if (!is_array($data) || empty($data) || !isset($data[0]) || !isset($data[0][0]) || $data[0][0] == false) {
 				return;
 			}
@@ -357,7 +362,8 @@ class DedimaniaWebHandler implements TimerListener {
 		});
 
 		$asyncHttpRequest->setContent($content);
-		$asyncHttpRequest->setCompression(true);
+		//$asyncHttpRequest->setCompression(true);
+		//FIXME setChallengeTime Compressed gives Dedimania Error 400
 		$asyncHttpRequest->setTimeout(500);
 		$asyncHttpRequest->postData();
 
