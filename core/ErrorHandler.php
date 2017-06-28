@@ -137,11 +137,15 @@ class ErrorHandler {
 						$isPluginError = true;
 					}
 				}
+
+				$report['PluginId']      = $pluginId;
+				$report['PluginVersion'] = PluginManager::getPluginVersion($sourceClass);
 			}
 
 			if ($traceString) {
 				$report['Backtrace'] = $traceString;
 			}
+
 			$report['OperatingSystem'] = php_uname();
 			$report['PHPVersion']      = phpversion();
 
@@ -476,6 +480,7 @@ class ErrorHandler {
 			$report['FileLine']        = self::stripBaseDir($exception->getFile()) . ': ' . $exception->getLine();
 			$report['SourceClass']     = $sourceClass;
 			$report['PluginId']        = PluginManager::getPluginId($sourceClass);
+			$report['PluginVersion']   = PluginManager::getPluginVersion($sourceClass);
 			$report['Backtrace']       = $traceString;
 			$report['OperatingSystem'] = php_uname();
 			$report['PHPVersion']      = phpversion();

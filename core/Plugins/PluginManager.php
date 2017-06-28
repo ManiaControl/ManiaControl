@@ -94,6 +94,7 @@ class PluginManager {
 	/**
 	 * Get the Plugin Id if the given Class is a Plugin
 	 *
+	 * @api
 	 * @param string $pluginClass
 	 * @return int
 	 */
@@ -106,8 +107,25 @@ class PluginManager {
 	}
 
 	/**
+	 * Get the Plugin version if a given Class is a Plugin
+	 *
+	 * @api
+	 * @param $pluginClass
+	 * @return null|int
+	 */
+	public static function getPluginVersion($pluginClass) {
+		if (self::isPluginClass($pluginClass)) {
+			/** @var Plugin $pluginClass */
+			return $pluginClass::getVersion();
+		}
+		return null;
+	}
+
+
+	/**
 	 * Check if the given class implements the plugin interface
 	 *
+	 * @api
 	 * @param string $pluginClass
 	 * @return bool
 	 */
@@ -216,6 +234,7 @@ class PluginManager {
 	/**
 	 * Get the Class of the Plugin
 	 *
+	 * @api
 	 * @param mixed $pluginClass
 	 * @return string
 	 */
@@ -230,6 +249,7 @@ class PluginManager {
 	/**
 	 * Check if the Plugin is currently running
 	 *
+	 * @api
 	 * @param string $pluginClass
 	 * @return bool
 	 */
