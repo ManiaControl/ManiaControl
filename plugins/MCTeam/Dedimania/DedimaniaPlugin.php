@@ -135,7 +135,6 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 			throw new \Exception("This Plugin is only for Trackmania!");
 		}
 
-
 		$maxRecords = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MAX_RECORDS);
 
 		$dedimaniaData = new DedimaniaData($serverInfo->login, $dedimaniaCode, $serverInfo->path, $packMask, $serverVersion);
@@ -249,6 +248,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * @internal
 	 */
 	public function handleBeginMap() {
+		$this->checkpoints = null;
 		$this->webHandler->getDedimaniaData()->unsetRecords();
 		$this->webHandler->maniaLinkUpdateNeeded();
 		$this->webHandler->fetchDedimaniaRecords(true);
