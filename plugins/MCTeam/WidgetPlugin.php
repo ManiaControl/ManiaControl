@@ -9,9 +9,9 @@ use FML\Controls\Quads\Quad_Icons128x128_1;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\ManiaLink;
 use FML\Script\Script;
+use FML\XmlRpc\TMUIProperties;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\Callbacks;
-use ManiaControl\Callbacks\Structures\Common\UIPropertiesBaseStructure;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\IconManager;
@@ -70,6 +70,10 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	const SETTING_SERVERINFO_WIDGET_POSY      = 'ServerInfo-Widget-Position: Y';
 	const SETTING_SERVERINFO_WIDGET_WIDTH     = 'ServerInfo-Widget-Size: Width';
 	const SETTING_SERVERINFO_WIDGET_HEIGHT    = 'ServerInfo-Widget-Size: Height';
+
+	// Nadeo Widget Properties
+	const SETTING_TM_LIVE_INFO_WIDGET_POSX = "Nadeo LiveInfo-Widget-Position: X";
+	const SETTING_TM_LIVE_INFO_WIDGET_POSY = "Nadeo LiveInfo-Widget-Position: Y";
 
 	/*
 	 * Private properties
@@ -158,17 +162,24 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_CLOCK_WIDGET_WIDTH, 10);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_CLOCK_WIDGET_HEIGHT, 5.5);
 
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_TM_LIVE_INFO_WIDGET_POSX, -122);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_TM_LIVE_INFO_WIDGET_POSY, 84);
+
+
 		$this->displayWidgets();
 
 
 		// Set CustomUI Setting
-		$this->maniaControl->getManialinkManager()->getCustomUIManager()->setChallengeInfoVisible(false);
+		$this->maniaControl->getManialinkManager()->getCustomUIManager()->setChallengeInfoVisible(false); //TODO verify if still needed
 
-		//TrackMania
-		$this->maniaControl->getModeScriptEventManager()->getTrackmaniaUIProperties()->setCallable(function (UIPropertiesBaseStructure $structure) {
-			$xml = str_replace("<map_info visible=\"true\"", "<map_info visible=\"false\"", $structure->getUiPropertiesXML());
-			$this->maniaControl->getModeScriptEventManager()->setTrackmaniaUIProperties($xml);
-		});
+		//Trackmania Nadeo Widgets
+		$uiProperties = new TMUIProperties();
+		//Map Info Widget
+		$uiProperties->setMapInfoVisible(false);
+		$livePosX = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_TM_LIVE_INFO_WIDGET_POSX);
+		$livePosY = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_TM_LIVE_INFO_WIDGET_POSY);
+		$uiProperties->setLiveInfoPosition($livePosX, $livePosY, 5);
+		$this->maniaControl->getModeScriptEventManager()->setTrackmaniaUIProperties((string) $uiProperties);
 
 		return true;
 	}
@@ -394,13 +405,12 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$this->closeWidget(self::MLID_NEXTMAP_WIDGET);
 
 		// Set CustomUI Setting
-		$this->maniaControl->getManialinkManager()->getCustomUIManager()->setChallengeInfoVisible(true);
+		$this->maniaControl->getManialinkManager()->getCustomUIManager()->setChallengeInfoVisible(true); //TODO verify if still needed
 
 		//TrackMania
-		$this->maniaControl->getModeScriptEventManager()->getTrackmaniaUIProperties()->setCallable(function (UIPropertiesBaseStructure $structure) {
-			$xml = str_replace("<map_info visible=\"false\"", "<map_info visible=\"true\"", $structure->getUiPropertiesXML());
-			$this->maniaControl->getModeScriptEventManager()->setTrackmaniaUIProperties($xml);
-		});
+		$uiProperties = new TMUIProperties();
+		$uiProperties->setMapInfoVisible(true);
+		$this->maniaControl->getModeScriptEventManager()->setTrackmaniaUIProperties((string) $uiProperties);
 	}
 
 	/**
@@ -549,6 +559,16 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	public function updateSettings(Setting $setting) {
 		if ($setting->belongsToClass($this)) {
 			$this->displayWIdgets();
+
+			//Update Nadeo Live Info Widget
+			if ($setting->setting == self::SETTING_TM_LIVE_INFO_WIDGET_POSX || $setting->setting == self::SETTING_TM_LIVE_INFO_WIDGET_POSY) {
+				$uiProperties = new TMUIProperties();
+				$livePosX     = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_TM_LIVE_INFO_WIDGET_POSX);
+				$livePosY     = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_TM_LIVE_INFO_WIDGET_POSY);
+				$uiProperties->setLiveInfoPosition($livePosX, $livePosY, 5);
+				$this->maniaControl->getModeScriptEventManager()->setTrackmaniaUIProperties((string) $uiProperties);
+
+			}
 		}
 	}
 
