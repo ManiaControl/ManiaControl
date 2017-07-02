@@ -72,9 +72,10 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	const SETTING_SERVERINFO_WIDGET_HEIGHT    = 'ServerInfo-Widget-Size: Height';
 
 	// Nadeo Widget Properties
-	const SETTING_TM_LIVE_INFO_WIDGET_POSX = "Nadeo LiveInfo-Widget-Position: X";
-	const SETTING_TM_LIVE_INFO_WIDGET_POSY = "Nadeo LiveInfo-Widget-Position: Y";
-
+	const SETTING_TM_LIVE_INFO_WIDGET_POSX   = "Nadeo LiveInfo-Widget-Position: X";
+	const SETTING_TM_LIVE_INFO_WIDGET_POSY   = "Nadeo LiveInfo-Widget-Position: Y";
+	const SETTING_TM_ROUND_SCORE_WIDGET_POSX = "Nadeo RoundScore-Widget-Position: X";
+	const SETTING_TM_ROUND_SCORE_WIDGET_POSY = "Nadeo RoundScore-Widget-Position: Y";
 	/*
 	 * Private properties
 	 */
@@ -164,6 +165,8 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_TM_LIVE_INFO_WIDGET_POSX, -122);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_TM_LIVE_INFO_WIDGET_POSY, 84);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_TM_ROUND_SCORE_WIDGET_POSX, 104);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_TM_ROUND_SCORE_WIDGET_POSY, 65);
 
 
 		$this->displayWidgets();
@@ -179,6 +182,12 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$livePosX = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_TM_LIVE_INFO_WIDGET_POSX);
 		$livePosY = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_TM_LIVE_INFO_WIDGET_POSY);
 		$uiProperties->setLiveInfoPosition($livePosX, $livePosY, 5);
+
+		//Rounds Scoretable
+		$roundScorePosX = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_TM_ROUND_SCORE_WIDGET_POSX);
+		$roundScorePosY = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_TM_ROUND_SCORE_WIDGET_POSY);
+		$uiProperties->setRoundScoresPosition($roundScorePosX, $roundScorePosY, 5);
+
 		$this->maniaControl->getModeScriptEventManager()->setTrackmaniaUIProperties((string) $uiProperties);
 
 		return true;
@@ -407,9 +416,11 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		// Set CustomUI Setting
 		$this->maniaControl->getManialinkManager()->getCustomUIManager()->setChallengeInfoVisible(true); //TODO verify if still needed
 
-		//TrackMania
+		//TrackMania (Set Back Nadeo Defaults)
 		$uiProperties = new TMUIProperties();
 		$uiProperties->setMapInfoVisible(true);
+		$uiProperties->setLiveInfoPosition(-159, 84, 5);
+		$uiProperties->setRoundScoresPosition(-158.5, 40, 5);
 		$this->maniaControl->getModeScriptEventManager()->setTrackmaniaUIProperties((string) $uiProperties);
 	}
 
@@ -560,14 +571,19 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		if ($setting->belongsToClass($this)) {
 			$this->displayWIdgets();
 
-			//Update Nadeo Live Info Widget
+			//Update Nadeo Default Widgets
 			if ($setting->setting == self::SETTING_TM_LIVE_INFO_WIDGET_POSX || $setting->setting == self::SETTING_TM_LIVE_INFO_WIDGET_POSY) {
 				$uiProperties = new TMUIProperties();
 				$livePosX     = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_TM_LIVE_INFO_WIDGET_POSX);
 				$livePosY     = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_TM_LIVE_INFO_WIDGET_POSY);
 				$uiProperties->setLiveInfoPosition($livePosX, $livePosY, 5);
 				$this->maniaControl->getModeScriptEventManager()->setTrackmaniaUIProperties((string) $uiProperties);
-
+			} elseif ($setting->setting == self::SETTING_TM_ROUND_SCORE_WIDGET_POSX || $setting->setting == self::SETTING_TM_ROUND_SCORE_WIDGET_POSY) {
+				$uiProperties = new TMUIProperties();
+				$roundScoreX  = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_TM_ROUND_SCORE_WIDGET_POSX);
+				$roundScoreY  = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_TM_ROUND_SCORE_WIDGET_POSY);
+				$uiProperties->setLiveInfoPosition($roundScoreX, $roundScoreY, 5);
+				$this->maniaControl->getModeScriptEventManager()->setTrackmaniaUIProperties((string) $uiProperties);
 			}
 		}
 	}
