@@ -37,9 +37,14 @@ class ManiaLink
     protected $maniaLinkId = null;
 
     /**
+     * @var int $defaultVersion Default ManiaLink version
+     */
+    static protected $defaultVersion = self::VERSION_1;
+
+    /**
      * @var int $version ManiaLink version
      */
-    protected $version = 0;
+    protected $version = self::VERSION_1;
 
     /**
      * @var string $name ManiaLink name
@@ -91,7 +96,7 @@ class ManiaLink
      * @param Renderable[] $children    (optional) Children
      * @return static
      */
-    public static function create($maniaLinkId = null, $version = ManiaLink::VERSION_1, $name = null, array $children = null)
+    public static function create($maniaLinkId = null, $version = null, $name = null, array $children = null)
     {
         return new static($maniaLinkId, $version, $name, $children);
     }
@@ -105,18 +110,20 @@ class ManiaLink
      * @param string       $name        (optional) Name
      * @param Renderable[] $children    (optional) Children
      */
-    public function __construct($maniaLinkId = null, $version = ManiaLink::VERSION_3, $name = null, array $children = null)
+    public function __construct($maniaLinkId = null, $version = null, $name = null, array $children = null)
     {
         if (is_string($version) && (!$name || is_array($name)) && !$children) {
-            // backwards-compatibility (version has been introduced later)
+            // backwards-compatibility (version has been introduced later, if it's a string it's supposed to be the name)
             $children = $name;
             $name     = $version;
-            $version  = ManiaLink::VERSION_3;
+            $version  = null;
         }
         if ($maniaLinkId) {
             $this->setId($maniaLinkId);
         }
-        if ($version) {
+        if ($version === null) {
+            $this->setVersion(static::$defaultVersion);
+        } else {
             $this->setVersion($version);
         }
         if ($name) {
@@ -155,6 +162,17 @@ class ManiaLink
     }
 
     /**
+     * Get the default version
+     *
+     * @api
+     * @return int
+     */
+    public static function getDefaultVersion()
+    {
+        return static::$defaultVersion;
+    }
+
+    /**
      * Get the version
      *
      * @api
@@ -163,6 +181,17 @@ class ManiaLink
     public function getVersion()
     {
         return $this->version;
+    }
+
+    /**
+     * Set the default version
+     *
+     * @api
+     * @param int $defaultVersion Default ManiaLink version
+     */
+    public static function setDefaultVersion($defaultVersion)
+    {
+        static::$defaultVersion = (int)$defaultVersion;
     }
 
     /**

@@ -76,6 +76,9 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener,
 		// Callbacks
 		$this->registerManialinkPageAnswerListener(self::ACTION_CLOSEWIDGET, $this, 'closeWidgetCallback');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
+
+		//Set ManiaLink version 3 as Default Version in FML
+		ManiaLink::setDefaultVersion(ManiaLink::VERSION_3);
 	}
 
 	/**
