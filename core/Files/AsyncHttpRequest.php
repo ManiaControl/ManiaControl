@@ -92,10 +92,9 @@ class AsyncHttpRequest implements UsageInformationAble {
 		array_push($this->headers, 'Expect:');
 		array_push($this->headers, 'Accept-Charset: utf-8');
 
-		//$content = str_replace(array("\r", "\n"), '', $this->content);
 		$content = $this->content;
 		if ($this->compression) {
-			$content = zlib_encode($this->content, ZLIB_ENCODING_GZIP);
+			$content = gzencode($this->content);
 			array_push($this->headers, 'Content-Encoding: gzip');
 		}
 
