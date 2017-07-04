@@ -72,6 +72,7 @@ class AsyncHttpRequest implements UsageInformationAble {
 			array_push($this->headers, 'Keep-Alive: ' . $keepAlive);
 			array_push($this->headers, 'Connection: Keep-Alive');
 		}
+		array_push($this->headers, 'Accept-Charset: utf-8');
 
 		$request = $this->newRequest($this->url, $this->timeout);
 		$request->getOptions()->set(CURLOPT_AUTOREFERER, true)// accept link reference
@@ -88,6 +89,8 @@ class AsyncHttpRequest implements UsageInformationAble {
 		array_push($this->headers, 'Content-Type: ' . $this->contentType);
 		array_push($this->headers, 'Keep-Alive: timeout=600, max=2000');
 		array_push($this->headers, 'Connection: Keep-Alive');
+		array_push($this->headers, 'Expect:');
+		array_push($this->headers, 'Accept-Charset: utf-8');
 
 		//$content = str_replace(array("\r", "\n"), '', $this->content);
 		$content = $this->content;
