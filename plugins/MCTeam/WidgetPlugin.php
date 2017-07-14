@@ -188,6 +188,9 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$roundScorePosY = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_TM_ROUND_SCORE_WIDGET_POSY);
 		$uiProperties->setRoundScoresPosition($roundScorePosX, $roundScorePosY, 5);
 
+		//MultiLap and Chase Info Widget top Right
+		$uiProperties->setMultiLapInfoPosition(140, 65, 5);
+
 		$this->maniaControl->getModeScriptEventManager()->setTrackmaniaUIProperties((string) $uiProperties);
 
 		return true;
@@ -421,6 +424,8 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$uiProperties->setMapInfoVisible(true);
 		$uiProperties->setLiveInfoPosition(-159, 84, 5);
 		$uiProperties->setRoundScoresPosition(-158.5, 40, 5);
+		$uiProperties->setMultiLapInfoPosition(140, 84, 5);
+
 		$this->maniaControl->getModeScriptEventManager()->setTrackmaniaUIProperties((string) $uiProperties);
 	}
 
