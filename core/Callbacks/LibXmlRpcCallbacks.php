@@ -54,6 +54,23 @@ class LibXmlRpcCallbacks implements CallbackListener {
 	 * @param mixed  $data
 	 */
 	public function handleScriptCallback($name, $data) {
+		//Internal Callbacks always triggered
+		switch($name){
+			case 'Maniaplanet.StartMap_Start': //Use the MapManager Callback
+				//No use for this Implementation right now (as the MapManager Callback should be used
+				break;
+			case 'Maniaplanet.StartMap_End': //Use the MapManager Callback
+				$jsonData = json_decode($data[0]);
+				$this->maniaControl->getMapManager()->handleScriptBeginMap($jsonData->map->uid, $jsonData->restarted);
+				break;
+			case 'Maniaplanet.EndMap_Start':
+				//no need for this implementation, callback handled by Map Manager
+				break;
+			case 'Maniaplanet.EndMap_End': //Use the MapManager Callback
+				$this->maniaControl->getMapManager()->handleScriptEndMap(); //Verify if better here or at EndMap_End
+				break;
+		}
+
 		if (!$this->maniaControl->getCallbackManager()->callbackListeningExists($name)) {
 			return; //Leave that disabled while testing/implementing Callbacks
 		}
@@ -97,20 +114,6 @@ class LibXmlRpcCallbacks implements CallbackListener {
 			case Callbacks::MP_ENDMATCHSTART:
 			case Callbacks::MP_ENDMATCHEND:
 				$this->maniaControl->getCallbackManager()->triggerCallback($name, new StartEndStructure($this->maniaControl, $data));
-				break;
-			case 'Maniaplanet.StartMap_Start': //Use the MapManager Callback
-				//No use for this Implementation right now (as the MapManager Callback should be used
-				break;
-			case 'Maniaplanet.StartMap_End': //Use the MapManager Callback
-				$jsonData = json_decode($data[0]);
-				$this->maniaControl->getMapManager()->handleScriptBeginMap($jsonData->map->uid, $jsonData->restarted);
-				//TODO Test if json is correctly parsed
-				break;
-			case 'Maniaplanet.EndMap_Start':
-				//no need for this implementation, callback handled by Map Manager
-				break;
-			case 'Maniaplanet.EndMap_End': //Use the MapManager Callback
-				$this->maniaControl->getMapManager()->handleScriptEndMap(); //Verify if better here or at EndMap_End
 				break;
 			case Callbacks::MP_STARTSERVERSTART:
 			case Callbacks::MP_STARTSERVEREND:
