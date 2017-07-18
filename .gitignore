@@ -1,7 +1,8 @@
 .idea
 *.iml
-
 /configs/server.xml
 /logs/
 /ManiaControl.log
 /ManiaControl.pid
+!/.idea/encodings.xml
+!/.idea/codeStyleSettings.xml
