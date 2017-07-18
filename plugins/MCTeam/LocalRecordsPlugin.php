@@ -5,14 +5,12 @@ namespace MCTeam;
 use FML\Controls\Frame;
 use FML\Controls\Label;
 use FML\Controls\Quad;
-use FML\Controls\Quads\Quad_Bgs1InRace;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\ManiaLink;
 use FML\Script\Features\Paging;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
-use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\Structures\TrackMania\OnWayPointEventStructure;
 use ManiaControl\Callbacks\TimerListener;
@@ -43,11 +41,12 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 	 * Constants
 	 */
 	const ID                           = 7;
-	const VERSION                      = 0.4;
+	const VERSION                      = 0.5;
 	const NAME                         = 'Local Records Plugin';
 	const AUTHOR                       = 'MCTeam';
 	const MLID_RECORDS                 = 'ml_local_records';
 	const TABLE_RECORDS                = 'mc_localrecords';
+	const SETTING_MULTILAP_SAVE_SINGLE = 'Save every Lap as Record in Multilap';
 	const SETTING_WIDGET_TITLE         = 'Widget Title';
 	const SETTING_WIDGET_POSX          = 'Widget Position: X';
 	const SETTING_WIDGET_POSY          = 'Widget Position: Y';
@@ -72,6 +71,7 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 	private $recordWidget    = null;
 	private $updateManialink = false;
 	private $checkpoints     = array();
+	private $scriptName      = 'TimeAttack';
 
 	/**
 	 * @see \ManiaControl\Plugins\Plugin::prepare()
@@ -137,9 +137,11 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_NOTIFY_BEST_RECORDS, 10);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_ADJUST_OUTER_BORDER, false);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_RECORDS_BEFORE_AFTER, 2);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MULTILAP_SAVE_SINGLE, false);
 
 		// Callbacks
 		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'handle1Second', 1000);
+		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'handle1Minute', 60000);
 
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::AFTERINIT, $this, 'handleAfterInit');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::BEGINMAP, $this, 'handleMapBegin');
@@ -149,7 +151,7 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::TM_ONWAYPOINT, $this, 'handleCheckpointCallback');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::TM_ONFINISHLINE, $this, 'handleFinishCallback');
-		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::TM_ONLAPFINISH, $this, 'handleFinishCallback');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::TM_ONLAPFINISH, $this, 'handleFinishLapCallback');
 
 		$this->maniaControl->getCommandManager()->registerCommandListener(array('recs', 'records'), $this, 'showRecordsList', false, 'Shows a list of Local Records on the current map.');
 		$this->maniaControl->getCommandManager()->registerCommandListener('delrec', $this, 'deleteRecord', true, 'Removes a record from the database.');
@@ -197,6 +199,7 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 
 	/**
 	 * Handle ManiaControl After Init
+	 *
 	 * @internal
 	 */
 	public function handleAfterInit() {
@@ -205,6 +208,7 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 
 	/**
 	 * Handle 1 Second Callback
+	 *
 	 * @internal
 	 */
 	public function handle1Second() {
@@ -216,6 +220,15 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_ENABLE)) {
 			$this->sendWidgetManiaLink();
 		}
+	}
+
+	/** Fetch the Current Scriptname every Minute
+	 *
+	 * @internal
+	 */
+	public function handle1Minute() {
+		$scriptNameResponse = $this->maniaControl->getClient()->getScriptName();
+		$this->scriptName   = str_replace('.Script.txt', '', $scriptNameResponse['CurrentValue']);
 	}
 
 	/**
@@ -415,7 +428,7 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 	 * Handle Checkpoint Callback
 	 *
 	 * @internal
-	 * @param OnWayPointEventStructure $callback
+	 * @param \ManiaControl\Callbacks\Structures\TrackMania\OnWayPointEventStructure $structure
 	 */
 	public function handleCheckpointCallback(OnWayPointEventStructure $structure) {
 		$playerLogin = $structure->getLogin();
@@ -425,6 +438,25 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 		$this->checkpoints[$playerLogin][$structure->getCheckPointInLap()] = $structure->getLapTime();
 	}
 
+
+	/**
+	 * Handle End of Lap Callback
+	 *
+	 * @internal
+	 * @param \ManiaControl\Callbacks\Structures\TrackMania\OnWayPointEventStructure $structure
+	 */
+	public function handleFinishLapCallback(OnWayPointEventStructure $structure) {
+
+		$multiLapSaveSingle = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MULTILAP_SAVE_SINGLE);
+
+		if ($this->scriptName != "TimeAttack" && !$multiLapSaveSingle) {
+			//Do Nothing on Finishing a Single Lap
+		} else {
+			//Save on every pass through of a Lap
+			$this->saveRecord($structure, $structure->getLapTime());
+		}
+	}
+
 	/**
 	 * Handle Finish Callback
 	 *
@@ -432,7 +464,12 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 	 * @param \ManiaControl\Callbacks\Structures\TrackMania\OnWayPointEventStructure $structure
 	 */
 	public function handleFinishCallback(OnWayPointEventStructure $structure) {
-		if ($structure->getLapTime() <= 0) {
+		$this->saveRecord($structure, $structure->getRaceTime());;
+	}
+
+
+	private function saveRecord(OnWayPointEventStructure $structure, $time) {
+		if ($time <= 0) {
 			// Invalid time
 			return;
 		}
@@ -454,11 +491,11 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 		// Check old record of the player
 		$oldRecord = $this->getLocalRecord($map, $player);
 		if ($oldRecord) {
-			if ($oldRecord->time < $structure->getLapTime()) {
+			if ($oldRecord->time < $time) {
 				// Not improved
 				return;
 			}
-			if ($oldRecord->time == $structure->getLapTime()) {
+			if ($oldRecord->time == $time) {
 				// Same time
 				$message = '$3c0';
 				if ($notifyOnlyDriver) {
@@ -489,7 +526,7 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 				) VALUES (
 				{$map->index},
 				{$player->index},
-				{$structure->getLapTime()},
+				{$time},
 				'{$checkpointsString}'
 				) ON DUPLICATE KEY UPDATE
 				`time` = VALUES(`time`),
@@ -504,7 +541,6 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 		// Announce record
 		$newRecord    = $this->getLocalRecord($map, $player);
 		$improvedRank = (!$oldRecord || $newRecord->rank < $oldRecord->rank);
-
 
 
 		$message = '$3c0';
@@ -533,6 +569,7 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 
 		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_LOCALRECORDS_CHANGED, $newRecord);
 	}
+
 
 	/**
 	 * Get current checkpoint string for local record
@@ -752,8 +789,8 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 	 *  Update the RecordWidget variables
 	 */
 	private function updateRecordWidget() {
-		$width              = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_WIDTH);
-		$lineHeight         = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_LINEHEIGHT);
+		$width      = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_WIDTH);
+		$lineHeight = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_LINEHEIGHT);
 
 		$this->recordWidget->setWidth($width);
 		$this->recordWidget->setLineHeight($lineHeight);

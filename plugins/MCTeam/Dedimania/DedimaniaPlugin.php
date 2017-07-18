@@ -36,7 +36,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * Constants
 	 */
 	const ID             = 8;
-	const VERSION        = 0.5;
+	const VERSION        = 0.6;
 	const AUTHOR         = 'MCTeam';
 	const NAME           = 'Dedimania Plugin';
 	const MLID_DEDIMANIA = 'Dedimania.ManialinkId';
@@ -110,7 +110,6 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECT, $this, 'handlePlayerDisconnect');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::TM_ONWAYPOINT, $this, 'handleCheckpointCallback');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::TM_ONFINISHLINE, $this, 'handleFinishCallback');
-		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::TM_ONLAPFINISH, $this, 'handleFinishCallback');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(SettingManager::CB_SETTING_CHANGED, $this, 'handleSettingChanged');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::AFTERLOOP, $this, 'handleAfterLoop');
 
@@ -270,15 +269,16 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * @param OnWayPointEventStructure $callback
 	 */
 	public function handleCheckpointCallback(OnWayPointEventStructure $structure) {
-		if (!$structure->getLapTime()) {
+		if (!$structure->getRaceTime()) {
 			return;
 		}
 
+		//TODO in Dedimania There is a small Bug somewhere with the amount of Checkpoints
 		$login = $structure->getLogin();
 		if (!isset($this->checkpoints[$login])) {
 			$this->checkpoints[$login] = array();
 		}
-		$this->checkpoints[$login][$structure->getCheckPointInLap()] = $structure->getLapTime();
+		$this->checkpoints[$login][$structure->getCheckPointInRace()] = $structure->getRaceTime();
 	}
 
 	/**
@@ -305,14 +305,14 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$player = $structure->getPlayer();
 
 		$oldRecord = $this->getDedimaniaRecord($player->login);
-		if ($oldRecord->nullRecord || $oldRecord && $oldRecord->best > $structure->getLapTime()) {
+		if ($oldRecord->nullRecord || $oldRecord && $oldRecord->best > $structure->getRaceTime()) {
 			// Save time
 			$newRecord = new RecordData(null);
 
 			$checkPoints = $this->getCheckpoints($player->login);
-			$checkPoints = $checkPoints . "," . $structure->getLapTime();
+			$checkPoints = $checkPoints . "," . $structure->getRaceTime();
 
-			$newRecord->constructNewRecord($player->login, $player->nickname, $structure->getLapTime(), $checkPoints, true);
+			$newRecord->constructNewRecord($player->login, $player->nickname, $structure->getRaceTime(), $checkPoints, true);
 
 			if ($this->insertDedimaniaRecord($newRecord, $oldRecord)) {
 				// Get newly saved record
@@ -346,7 +346,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 				$message = '$390$<$fff' . $notifyName . '$> ' . $improvement . ' $<$ff0' . $newRecord->rank . '.$> Dedimania Record: $<$fff' . Formatter::formatTime($newRecord->best) . '$>';
 				if (!$oldRecord->nullRecord) {
-					$message .= ' ($<$ff0' . $oldRecord->rank . '.$> $<$fff-' . Formatter::formatTime(($oldRecord->best - $structure->getLapTime())) . '$>)';
+					$message .= ' ($<$ff0' . $oldRecord->rank . '.$> $<$fff-' . Formatter::formatTime(($oldRecord->best - $structure->getRaceTime())) . '$>)';
 				}
 
 				if ($newRecord->rank <= $notifyOnlyBestRecords) {

@@ -266,8 +266,7 @@ class DedimaniaWebHandler implements TimerListener {
 
 		$this->addRequest(self::DEDIMANIA_WARNINGSANDTTR2, array());
 
-		$content = xmlrpc_encode_request(self::XMLRPC_MULTICALL, array($this->requests), array('encoding'  => 'UTF-8', 'escaping' => 'markup',
-		                                                                                       'verbosity' => 'no_white_space'));
+		$content = xmlrpc_encode_request(self::XMLRPC_MULTICALL, array($this->requests), array('encoding' => 'UTF-8', 'escaping' => 'markup', 'verbosity' => 'no_white_space'));
 
 
 		$asyncHttpRequest = new AsyncHttpRequest($this->maniaControl, self::DEDIMANIA_URL);
@@ -383,8 +382,7 @@ class DedimaniaWebHandler implements TimerListener {
 	 */
 	private function encodeRequest($method, $params) {
 		$paramArray = array(array('methodName' => $method, 'params' => $params), array('methodName' => self::DEDIMANIA_WARNINGSANDTTR2, 'params' => array()));
-		return xmlrpc_encode_request(self::XMLRPC_MULTICALL, array($paramArray), array('encoding'  => 'UTF-8', 'escaping' => 'markup',
-		                                                                               'verbosity' => 'no_white_space'));
+		return xmlrpc_encode_request(self::XMLRPC_MULTICALL, array($paramArray), array('encoding' => 'UTF-8', 'escaping' => 'markup', 'verbosity' => 'no_white_space'));
 	}
 
 	/**
@@ -487,6 +485,7 @@ class DedimaniaWebHandler implements TimerListener {
 					case 'Rounds':
 					case 'Cup':
 					case 'Team':
+					case 'Chase':
 						return 'Rounds';
 					case 'TimeAttack':
 					case 'Laps':
