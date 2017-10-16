@@ -21,7 +21,7 @@ class TrackmaniaRoundsPlugin implements Plugin, CommandListener {
 	 * Constants
 	 */
 	const PLUGIN_ID      = 6;
-	const PLUGIN_VERSION = 0.1;
+	const PLUGIN_VERSION = 0.11;
 	const PLUGIN_NAME    = 'Trackmania Rounds Plugin';
 	const PLUGIN_AUTHOR  = 'MCTeam';
 
@@ -82,7 +82,7 @@ class TrackmaniaRoundsPlugin implements Plugin, CommandListener {
 	 */
 	public function commandSetPointsRepartition(array $chatCallback, Player $player) {
 		$permission = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_PERMISSION_TM_HANDLE_POINTS_REPARTITION);
-		if (!AuthenticationManager::checkRight($player, $permission)) {
+		if (!AuthenticationManager::checkRight($player, AuthenticationManager::getAuthLevel($permission))) {
 			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
@@ -121,7 +121,7 @@ class TrackmaniaRoundsPlugin implements Plugin, CommandListener {
 	 */
 	public function commandGetPointsRepartition(array $chatCallback, Player $player) {
 		$permission = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_PERMISSION_TM_HANDLE_POINTS_REPARTITION);
-		if (!AuthenticationManager::checkRight($player, $permission)) {
+		if (!AuthenticationManager::checkRight($player, AuthenticationManager::getAuthLevel($permission))) {
 			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
@@ -140,7 +140,7 @@ class TrackmaniaRoundsPlugin implements Plugin, CommandListener {
 	 */
 	public function commandTrackManiaEndRound(array $chatCallback, Player $player) {
 		$permission = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_PERMISSION_END_ROUND);
-		if (!AuthenticationManager::checkRight($player, $permission)) {
+		if (!AuthenticationManager::checkRight($player, AuthenticationManager::getAuthLevel($permission))) {
 			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
