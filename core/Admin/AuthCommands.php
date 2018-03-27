@@ -12,7 +12,7 @@ use ManiaControl\Players\Player;
  * Class offering Commands to grant Authorizations to Players
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2017 ManiaControl Team
+ * @copyright 2014-2018 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class AuthCommands implements CommandListener, UsageInformationAble {
