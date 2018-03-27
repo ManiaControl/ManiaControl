@@ -23,7 +23,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
 class ModeScriptEventManager implements UsageInformationAble {
 	use UsageInformationTrait;
 
-	const API_VERSION = "2.3.0";
+	const API_VERSION = "2.5.0";
 
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl;
@@ -279,6 +279,26 @@ class ModeScriptEventManager implements UsageInformationAble {
 	public function displayScoreBoardOnAlt(Player $player) {
 		$login = Player::parseLogin($player);
 		$this->triggerModeScriptEvent('Maniaplanet.UI.SetAltScoresTableVisibility', array($login, "True"));
+	}
+
+	/**
+	 * Hides the Scoreboard
+	 *
+	 * @param \ManiaControl\Players\Player $player
+	 */
+	public function hideScoreBoard(Player $player) {
+		$login = Player::parseLogin($player);
+		$this->triggerModeScriptEvent('Maniaplanet.UI.SetScoresTableVisibility', array($login, "False"));
+	}
+
+	/**
+	 * Displays the Scoreboard
+	 *
+	 * @param \ManiaControl\Players\Player $player
+	 */
+	public function displayScoreBoard(Player $player) {
+		$login = Player::parseLogin($player);
+		$this->triggerModeScriptEvent('Maniaplanet.UI.SetScoresTableVisibility', array($login, "True"));
 	}
 
 	/**

@@ -4,7 +4,6 @@ namespace ManiaControl\Callbacks\Structures\TrackMania;
 
 use ManiaControl\Callbacks\Structures\Common\CommonScoresStructure;
 use ManiaControl\Callbacks\Structures\TrackMania\Models\PlayerScore;
-use ManiaControl\Callbacks\Structures\TrackMania\Models\TeamScore;
 use ManiaControl\ManiaControl;
 
 /**
@@ -43,6 +42,22 @@ class OnScoresStructure extends CommonScoresStructure {
 				$playerScore->setBestRaceCheckpoints($jsonPlayer->bestracecheckpoints);
 				$playerScore->setBestLapRespawns($jsonPlayer->bestlaprespawns);
 				$playerScore->setBestLapCheckpoints($jsonPlayer->bestlapcheckpoints);
+				//New attributes in 2.5.0
+				if (property_exists($jsonPlayer, 'prevracetime')) {
+					$playerScore->setPrevRaceTime($jsonPlayer->prevracetime);
+				}
+
+				if (property_exists($jsonPlayer, 'prevracerespawns')) {
+					$playerScore->setPrevRaceRespawns($jsonPlayer->prevracerespawns);
+				}
+
+				if (property_exists($jsonPlayer, 'prevracecheckpoints')) {
+					$playerScore->setPrevRaceCheckpoints($jsonPlayer->prevracecheckpoints);
+				}
+
+				if (property_exists($jsonPlayer, 'prevstuntsscore')) {
+					$playerScore->setPrevStuntsScore($jsonPlayer->prevstuntsscore);
+				}
 
 				$this->playerScores[$jsonPlayer->login] = $playerScore;
 			}

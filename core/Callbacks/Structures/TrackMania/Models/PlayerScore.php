@@ -23,6 +23,10 @@ class PlayerScore extends CommonPlayerScore {
 	private $bestRaceCheckpoints;
 	private $bestLapRespawns;
 	private $bestLapCheckpoints;
+	private $prevRaceTime;
+	private $prevRaceRespawns;
+	private $prevRaceCheckpoints;
+	private $prevStuntsScore;
 
 	/**
 	 * Returns the Rank
@@ -140,6 +144,7 @@ class PlayerScore extends CommonPlayerScore {
 	}
 
 	/**
+	 * @api
 	 * @param mixed $bestLapRespawns
 	 */
 	public function setBestLapRespawns($bestLapRespawns) {
@@ -160,6 +165,70 @@ class PlayerScore extends CommonPlayerScore {
 	 */
 	public function setBestLapCheckpoints($bestLapCheckpoints) {
 		$this->bestLapCheckpoints = $bestLapCheckpoints;
+	}
+
+	/**
+	 * @api
+	 * @return mixed
+	 */
+	public function getPrevRaceTime() {
+		return $this->prevRaceTime;
+	}
+
+	/**
+	 * @api
+	 * @param mixed $prevRaceTime
+	 */
+	public function setPrevRaceTime($prevRaceTime) {
+		$this->prevRaceTime = $prevRaceTime;
+	}
+
+	/**
+	 * @api
+	 * @return mixed
+	 */
+	public function getPrevRaceRespawns() {
+		return $this->prevRaceRespawns;
+	}
+
+	/**
+	 * @api
+	 * @param mixed $prevRaceRespawns
+	 */
+	public function setPrevRaceRespawns($prevRaceRespawns) {
+		$this->prevRaceRespawns = $prevRaceRespawns;
+	}
+
+	/**
+	 * @api
+	 * @return mixed
+	 */
+	public function getPrevRaceCheckpoints() {
+		return $this->prevRaceCheckpoints;
+	}
+
+	/**
+	 * @api
+	 * @param mixed $prevRaceCheckpoints
+	 */
+	public function setPrevRaceCheckpoints($prevRaceCheckpoints) {
+		$this->prevRaceCheckpoints = $prevRaceCheckpoints;
+	}
+
+	/**
+	 * @api
+	 * @return mixed
+	 */
+	public function getPrevStuntsScore() {
+		return $this->prevStuntsScore;
+	}
+
+	/**
+	 * @api
+	 * @param mixed $prevStuntsScore
+	 */
+	public function setPrevStuntsScore($prevStuntsScore) {
+		$this->prevStuntsScore = $prevStuntsScore;
 	}
 
 
