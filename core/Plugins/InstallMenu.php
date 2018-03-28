@@ -11,6 +11,7 @@ use FML\Script\Features\Paging;
 use FML\Script\Script;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Configurator\ConfiguratorMenu;
+use ManiaControl\Files\AsyncHttpRequest;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
@@ -30,6 +31,7 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 	const SETTING_PERMISSION_INSTALL_PLUGINS = 'Install Plugins';
 	const ACTION_PREFIX_INSTALL_PLUGIN       = 'PluginInstallMenu.Install.';
 	const ACTION_REFRESH_LIST                = 'PluginInstallMenu.RefreshList';
+	const SETTING_GAME_ONLY                  = 'Display only Plugins eligible for your game';
 
 	/*
 	 * Private properties
@@ -48,6 +50,9 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 		// Permissions
 		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_INSTALL_PLUGINS, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
 
+		//Settings
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_GAME_ONLY, true);
+
 		// Callbacks
 		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_REFRESH_LIST, $this, 'handleRefreshListAction');
 	}
@@ -63,6 +68,9 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 	 * @see \ManiaControl\Configurator\ConfiguratorMenu::getMenu()
 	 */
 	public function getMenu($width, $height, Script $script, Player $player) {
+
+		$gameOnly = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_GAME_ONLY);
+
 		$paging = new Paging();
 		$script->addFeature($paging);
 		$frame = new Frame();
@@ -73,7 +81,11 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 		$posY        = 0.;
 		$pageFrame   = null;
 
-		$url        = ManiaControl::URL_WEBSERVICE . 'plugins';
+		$url = ManiaControl::URL_WEBSERVICE . 'plugins';
+		if ($gameOnly) {
+			$game = $this->maniaControl->getMapManager()->getCurrentMap()->getGame();
+			$url  .= '?game=' . $game;
+		}
 		$response   = WebReader::getUrl($url); //TODO async webrequest
 		$dataJson   = $response->getContent();
 		$pluginList = json_decode($dataJson);
