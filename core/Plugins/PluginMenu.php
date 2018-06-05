@@ -360,6 +360,12 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			return;
 		}
 
+		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_CHANGE_PLUGIN_SETTINGS))
+		{
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
+			return;
+		}
+
 		if ($enable) {
 			$pluginClass = substr($actionId, strlen(self::ACTION_PREFIX_ENABLEPLUGIN));
 			/** @var Plugin $pluginClass */
