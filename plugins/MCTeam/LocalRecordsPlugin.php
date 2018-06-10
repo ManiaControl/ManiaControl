@@ -174,19 +174,13 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 				`playerIndex` int(11) NOT NULL,
 				`time` int(11) NOT NULL,
 				`changed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+				`checkpoints` text NOT NULL,
 				PRIMARY KEY (`index`),
 				UNIQUE KEY `player_map_record` (`mapIndex`,`playerIndex`)
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;";
 		$mysqli->query($query);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error, E_USER_ERROR);
-		}
-
-		$mysqli->query("ALTER TABLE `" . self::TABLE_RECORDS . "` ADD `checkpoints` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL");
-		if ($mysqli->error) {
-			if (!strstr($mysqli->error, 'Duplicate')) {
-				trigger_error($mysqli->error, E_USER_ERROR);
-			}
 		}
 	}
 
