@@ -464,7 +464,15 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 	 * @param \ManiaControl\Callbacks\Structures\TrackMania\OnWayPointEventStructure $structure
 	 */
 	public function handleFinishCallback(OnWayPointEventStructure $structure) {
-		$this->saveRecord($structure, $structure->getRaceTime());;
+		$multiLapSaveSingle = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MULTILAP_SAVE_SINGLE);
+
+		if ($this->scriptName != "TimeAttack" && $multiLapSaveSingle) {
+			//Save last lap time only
+			$this->saveRecord($structure, $structure->getLapTime());
+		} else {
+			//Save full race time
+			$this->saveRecord($structure, $structure->getRaceTime());
+		}
 	}
 
 
