@@ -25,6 +25,7 @@ class RecordData {
 	public $newRecord = false;
 	public $vReplay = '';
 	public $top1GReplay = '';
+	public $allCheckpoints = '';
 
 	/**
 	 * Construct a Record by a given Record Array
@@ -54,12 +55,13 @@ class RecordData {
 	 * @param int    $checkpoints
 	 * @param bool   $newRecord
 	 */
-	public function constructNewRecord($login, $nickname, $best, $checkpoints, $newRecord = false) {
+	public function constructNewRecord($login, $nickname, $best, $checkpoints, $newRecord = false, $allCPs = '') {
 		$this->nullRecord  = false;
 		$this->login       = $login;
 		$this->nickname    = $nickname;
 		$this->best        = $best;
 		$this->checkpoints = $checkpoints;
 		$this->newRecord   = $newRecord;
+		$this->allCheckpoints = $allCPs;
 	}
 }

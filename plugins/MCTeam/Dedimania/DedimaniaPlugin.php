@@ -66,6 +66,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	private $recordWidget = null;
 
 	private $checkpoints = array();
+	private $allCheckpoints = array();
 
 	/** @var \MCTeam\Dedimania\DedimaniaWebHandler $webHandler */
 	private $webHandler = null;
@@ -249,6 +250,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 */
 	public function handleBeginMap() {
 		$this->checkpoints = null;
+		$this->allCheckpoints = null;
 		$this->webHandler->getDedimaniaData()->unsetRecords();
 		$this->webHandler->maniaLinkUpdateNeeded();
 		$this->webHandler->fetchDedimaniaRecords(true);
@@ -278,7 +280,12 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		if (!isset($this->checkpoints[$login])) {
 			$this->checkpoints[$login] = array();
 		}
+		if (!isset($this->allCheckpoints[$login])) {
+			$this->allCheckpoints[$login] = array();
+		}
+
 		$this->checkpoints[$login][$structure->getCheckPointInLap()] = $structure->getLapTime();
+		$this->allCheckpoints[$login][$structure->getCheckPointInRace()] = $structure->getRaceTime();
 	}
 
 	/**
@@ -304,15 +311,18 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 		$player = $structure->getPlayer();
 
+		$this->checkpoints[$player->login][$structure->getCheckPointInLap()] = $structure->getLapTime();
+		$this->allCheckpoints[$player->login][$structure->getCheckPointInRace()] = $structure->getRaceTime();
+
 		$oldRecord = $this->getDedimaniaRecord($player->login);
 		if ($oldRecord->nullRecord || $oldRecord && $oldRecord->best > $structure->getLapTime()) {
 			// Save time
 			$newRecord = new RecordData(null);
 
 			$checkPoints = $this->getCheckpoints($player->login);
-			$checkPoints = $checkPoints . "," . $structure->getLapTime();
+			$allCPs = $this->getAllCheckpoints($player->login);
 
-			$newRecord->constructNewRecord($player->login, $player->nickname, $structure->getLapTime(), $checkPoints, true);
+			$newRecord->constructNewRecord($player->login, $player->nickname, $structure->getLapTime(), $checkPoints, true, $allCPs);
 
 			if ($this->insertDedimaniaRecord($newRecord, $oldRecord)) {
 				// Get newly saved record
@@ -393,6 +403,27 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$count  = count($this->checkpoints[$login]);
 		foreach ($this->checkpoints[$login] as $index => $check) {
 			$string .= $check;
+			if ($index < $count - 1) {
+				$string .= ',';
+			}
+		}
+		return $string;
+	}
+
+	/**
+	 * Get total checkpoint string for dedimania record
+	 *
+	 * @param string $login
+	 * @return string
+	 */
+	private function getAllCheckpoints($login) {
+		if (!$login || !isset($this->allCheckpoints[$login])) {
+			return null;
+		}
+		$string = '';
+		$count  = count($this->allCheckpoints[$login]);
+		foreach ($this->allCheckpoints[$login] as $index => $check) {
+			$string .= strval($check);
 			if ($index < $count - 1) {
 				$string .= ',';
 			}
