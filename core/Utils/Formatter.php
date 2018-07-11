@@ -183,7 +183,7 @@ abstract class Formatter implements UsageInformationAble {
 		                 'Greece'                   => 'GRE', 'Grenada' => 'GRN', 'Guam' => 'GUM', 'Guatemala' => 'GUA', 'Guinea' => 'GUI', 'Guinea-Bissau' => 'GBS', 'Guyana' => 'GUY',
 		                 'Haiti'                    => 'HAI', 'Honduras' => 'HON', 'Hong Kong' => 'HKG', 'Hungary' => 'HUN', 'Iceland' => 'ISL', 'India' => 'IND', 'Indonesia' => 'INA',
 		                 'Iran'                     => 'IRI', 'Iraq' => 'IRQ', 'Ireland' => 'IRL', 'Israel' => 'ISR', 'Italy' => 'ITA', 'Ivory Coast' => 'CIV', 'Jamaica' => 'JAM', 'Japan' => 'JPN',
-		                 'Jordan'                   => 'JOR', 'Kazakhstan' => 'KAZ', 'Kenya' => 'KEN', 'Kiribati' => 'KIR', 'Korea' => 'KOR', 'Kuwait' => 'KUW', 'Kyrgyzstan' => 'KGZ', 'Laos' => 'LAO',
+		                 'Jordan'                   => 'JOR', 'Kazakhstan' => 'KAZ', 'Kenya' => 'KEN', 'Kiribati' => 'KIR', 'South Korea' => 'KOR', 'Korea' => 'KOR', 'Kuwait' => 'KUW', 'Kyrgyzstan' => 'KGZ', 'Laos' => 'LAO',
 		                 'Latvia'                   => 'LAT', 'Lebanon' => 'LIB', 'Lesotho' => 'LES', 'Liberia' => 'LBR', 'Libya' => 'LBA', 'Liechtenstein' => 'LIE', 'Lithuania' => 'LTU',
 		                 'Luxembourg'               => 'LUX', 'Macedonia' => 'MKD', 'Malawi' => 'MAW', 'Malaysia' => 'MAS', 'Mali' => 'MLI', 'Malta' => 'MLT', 'Mauritania' => 'MTN',
 		                 'Mauritius'                => 'MRI', 'Mexico' => 'MEX', 'Moldova' => 'MDA', 'Monaco' => 'MON', 'Mongolia' => 'MGL', 'Montenegro' => 'MNE', 'Morocco' => 'MAR',
@@ -198,7 +198,7 @@ abstract class Formatter implements UsageInformationAble {
 		                 'Taiwan'                   => 'TWN', 'Tajikistan' => 'TJK', 'Tanzania' => 'TAN', 'Thailand' => 'THA', 'Togo' => 'TOG', 'Tonga' => 'TGA', 'Trinidad and Tobago' => 'TRI',
 		                 'Tunisia'                  => 'TUN', 'Turkey' => 'TUR', 'Turkmenistan' => 'TKM', 'Tuvalu' => 'TUV', 'Uganda' => 'UGA', 'Ukraine' => 'UKR', 'United Arab Emirates' => 'UAE',
 		                 'United Kingdom'           => 'GBR', 'United States of America' => 'USA', 'United States' => 'USA', 'Uruguay' => 'URU', 'Uzbekistan' => 'UZB', 'Vanuatu' => 'VAN',
-		                 'Venezuela'                => 'VEN', 'Vietnam' => 'VIE', 'Yemen' => 'YEM', 'Zambia' => 'ZAM', 'Zimbabwe' => 'ZIM');
+		                 'Venezuela'                => 'VEN', 'Vietnam' => 'VIE', 'Yemen' => 'YEM', 'Zambia' => 'ZAM', 'Zimbabwe' => 'ZIM', 'Vatican City' => 'VAT', 'Bosnia and Herzegovina' => 'BIH', 'Saint Lucia' => 'LCA');
 		if (array_key_exists($country, $nations)) {
 			return $nations[$country];
 		}
