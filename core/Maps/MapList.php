@@ -31,7 +31,6 @@ use Maniaplanet\DedicatedServer\Xmlrpc\NextMapException;
 use Maniaplanet\DedicatedServer\Xmlrpc\NotInListException;
 use MCTeam\CustomVotesPlugin;
 use MCTeam\KarmaPlugin;
-use MCTeam\LocalRecordsPlugin;
 
 /**
  * MapList Widget Class
@@ -44,25 +43,24 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	/*
 	 * Constants
 	 */
-	const ACTION_UPDATE_MAP            = 'MapList.UpdateMap';
-	const ACTION_REMOVE_MAP            = 'MapList.RemoveMap';
-	const ACTION_SWITCH_MAP            = 'MapList.SwitchMap';
-	const ACTION_START_SWITCH_VOTE     = 'MapList.StartMapSwitchVote';
-	const ACTION_QUEUED_MAP            = 'MapList.QueueMap';
-	const ACTION_UNQUEUE_MAP           = 'MapList.UnQueueMap';
-	const ACTION_CHECK_UPDATE          = 'MapList.CheckUpdate';
-	const ACTION_CLEAR_MAPQUEUE        = 'MapList.ClearMapQueue';
-	const ACTION_PAGING_CHUNKS         = 'MapList.PagingChunk.';
-	const ACTION_SEARCH_MAP_NAME       = 'MapList.SearchMapName';
-	const ACTION_SEARCH_AUTHOR         = 'MapList.SearchAuthor';
-	const ACTION_RESET                 = 'MapList.ResetMapList';
-	const MAX_MAPS_PER_PAGE            = 13;
-	const MAX_PAGES_PER_CHUNK          = 2;
-	const DEFAULT_KARMA_PLUGIN         = 'MCTeam\KarmaPlugin';
-	const DEFAULT_CUSTOM_VOTE_PLUGIN   = 'MCTeam\CustomVotesPlugin';
-	const DEFAULT_LOCAL_RECORDS_PLUGIN = 'MCTeam\LocalRecordsPlugin';
-	const CACHE_CURRENT_PAGE           = 'CurrentPage';
-	const WIDGET_NAME                  = 'MapList';
+	const ACTION_UPDATE_MAP          = 'MapList.UpdateMap';
+	const ACTION_REMOVE_MAP          = 'MapList.RemoveMap';
+	const ACTION_SWITCH_MAP          = 'MapList.SwitchMap';
+	const ACTION_START_SWITCH_VOTE   = 'MapList.StartMapSwitchVote';
+	const ACTION_QUEUED_MAP          = 'MapList.QueueMap';
+	const ACTION_UNQUEUE_MAP         = 'MapList.UnQueueMap';
+	const ACTION_CHECK_UPDATE        = 'MapList.CheckUpdate';
+	const ACTION_CLEAR_MAPQUEUE      = 'MapList.ClearMapQueue';
+	const ACTION_PAGING_CHUNKS       = 'MapList.PagingChunk.';
+	const ACTION_SEARCH_MAP_NAME     = 'MapList.SearchMapName';
+	const ACTION_SEARCH_AUTHOR       = 'MapList.SearchAuthor';
+	const ACTION_RESET               = 'MapList.ResetMapList';
+	const MAX_MAPS_PER_PAGE          = 13;
+	const MAX_PAGES_PER_CHUNK        = 2;
+	const DEFAULT_KARMA_PLUGIN       = 'MCTeam\KarmaPlugin';
+	const DEFAULT_CUSTOM_VOTE_PLUGIN = 'MCTeam\CustomVotesPlugin';
+	const CACHE_CURRENT_PAGE         = 'CurrentPage';
+	const WIDGET_NAME                = 'MapList';
 
 	/*
 	 * Private properties
@@ -234,16 +232,11 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$headFrame->setY($height / 2 - 5);
 		$posX = -$width / 2;
 
-		$localRecordsPlugin = $this->maniaControl->getPluginManager()->getPlugin(self::DEFAULT_LOCAL_RECORDS_PLUGIN);
-
 		$labelLine = new LabelLine($headFrame);
 		$labelLine->addLabelEntryText('Id', $posX + 5);
 		$labelLine->addLabelEntryText('Mx Id', $posX + 10);
-		if ($localRecordsPlugin) {
-			$labelLine->addLabelEntryText('Rank', $posX + 20);
-		}
-		$labelLine->addLabelEntryText('Map Name', $posX + 30);
-		$labelLine->addLabelEntryText('Author', $posX + 78);
+		$labelLine->addLabelEntryText('Map Name', $posX + 20);
+		$labelLine->addLabelEntryText('Author', $posX + 68);
 		$labelLine->addLabelEntryText('Actions', $width / 2 - 16);
 		$labelLine->setY(-7);
 		$labelLine->render();
@@ -258,7 +251,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$queuedMaps = $this->maniaControl->getMapManager()->getMapQueue()->getQueuedMapsRanking();
 		/** @var KarmaPlugin $karmaPlugin */
 		$karmaPlugin = $this->maniaControl->getPluginManager()->getPlugin(self::DEFAULT_KARMA_PLUGIN);
-
 
 		$pageNumber = 1 + $chunkIndex * self::MAX_PAGES_PER_CHUNK;
 		$paging->setStartPageNumber($pageIndex + 1);
@@ -345,24 +337,12 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$labelLine = new LabelLine($mapFrame);
 			$labelLine->addLabelEntryText($mapListId, $posX + 5, 5);
 			$labelLine->addLabelEntryText($mxId, $posX + 10, 10);
-			
-			// Map rank
-			if ($localRecordsPlugin) {
-				$record = $localRecordsPlugin->getLocalRecord($map, $player);
-				$playerCurrentRank = '-';
-				if ($record) {
-					$playerCurrentRank = strval($record->rank);
-				}
-				$labelLine->addLabelEntryText($playerCurrentRank, $posX + 22, 22);
-			}
-			
-			// Map Name
-			$labelLine->addLabelEntryText(Formatter::stripDirtyCodes($map->name), $posX + 30, 42);
+			$labelLine->addLabelEntryText(Formatter::stripDirtyCodes($map->name), $posX + 20, 42);
 
 			$label = new Label_Text();
 			$mapFrame->addChild($label);
 			$label->setText($map->authorNick);
-			$label->setX($posX + 78);
+			$label->setX($posX + 68);
 			$label->setSize(47, 0);
 			$label->setAction(MapCommands::ACTION_SHOW_AUTHOR . $map->authorLogin);
 			$description = 'Click to checkout all maps by $<' . $map->authorLogin . '$>!';
