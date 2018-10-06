@@ -18,6 +18,7 @@ use ManiaControl\Manialinks\ManialinkManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
 use ManiaControl\Server\ServerOptionsMenu;
+use ManiaControl\Server\ServerUIPropertiesMenu;
 use ManiaControl\Server\VoteRatiosMenu;
 
 /**
@@ -51,6 +52,8 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	private $maniaControl = null;
 	/** @var ServerOptionsMenu $serverOptionsMenu */
 	private $serverOptionsMenu = null;
+	/** @var ServerUIPropertiesMenu $serverUIPropertiesMenu */
+	private $serverUIPropertiesMenu = null;
 	/** @var ScriptSettings $scriptSettings */
 	private $scriptSettings = null;
 	/** @var VoteRatiosMenu $voteRatiosMenu */
@@ -92,6 +95,10 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		// Create server options menu
 		$this->serverOptionsMenu = new ServerOptionsMenu($maniaControl);
 		$this->addMenu($this->serverOptionsMenu);
+
+		// Create server UI properties menu
+		$this->serverUIPropertiesMenu = new ServerUIPropertiesMenu($maniaControl);
+		$this->addMenu($this->serverUIPropertiesMenu);
 
 		// Create script settings
 		$this->scriptSettings = new ScriptSettings($maniaControl);
