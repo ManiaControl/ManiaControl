@@ -32,7 +32,7 @@ class DedimaniaData {
 	/** @var DedimaniaPlayer[] $players */
 	public $players                = array();
 	public $directoryAccessChecked = false;
-	public $serverMaxRank          = 15;
+	public $serverMaxRank          = 30;
 
 	/**
 	 * Construct a new Dedimania Data Model
