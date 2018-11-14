@@ -66,10 +66,14 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	private $recordWidget = null;
 
 	private $checkpoints = array();
+	private $allCheckpoints = array();
 
 	/** @var \MCTeam\Dedimania\DedimaniaWebHandler $webHandler */
 	private $webHandler = null;
 
+	private $isMultilap = false;
+	private $isRounds = false;
+	
 	/**
 	 * @see \ManiaControl\Plugins\Plugin::prepare()
 	 */
@@ -146,6 +150,16 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$this->webHandler->openDedimaniaSession(true);
 
 		$this->recordWidget = new RecordWidget($this->maniaControl);
+		
+		if ($this->maniaControl->getServer()->getGameMode() == 0)
+		{
+			$gameMode = $this->maniaControl->getClient()->getScriptName()['CurrentValue'];
+			$this->isMultilap = ($gameMode == 'Laps.Script.txt' || $this->maniaControl->getMapManager()->getCurrentMap()->nbLaps > 0);
+			$this->isRounds = ($gameMode == 'Rounds.Script.txt');			
+		} else {
+			$this->isMultilap = ($this->maniaControl->getServer()->getGameMode(true) == 'Laps' || $this->maniaControl->getMapManager()->getCurrentMap()->nbLaps > 0);
+			$this->isRounds = ($this->maniaControl->getServer()->getGameMode(true) == 'Rounds');
+		}
 	}
 
 
@@ -249,6 +263,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 */
 	public function handleBeginMap() {
 		$this->checkpoints = null;
+		$this->allCheckpoints = null;
 		$this->webHandler->getDedimaniaData()->unsetRecords();
 		$this->webHandler->maniaLinkUpdateNeeded();
 		$this->webHandler->fetchDedimaniaRecords(true);
@@ -278,7 +293,12 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		if (!isset($this->checkpoints[$login])) {
 			$this->checkpoints[$login] = array();
 		}
+		if (!isset($this->allCheckpoints[$login])) {
+			$this->allCheckpoints[$login] = array();
+		}
+
 		$this->checkpoints[$login][$structure->getCheckPointInLap()] = $structure->getLapTime();
+		$this->allCheckpoints[$login][$structure->getCheckPointInRace()] = $structure->getRaceTime();
 	}
 
 	/**
@@ -304,15 +324,30 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 		$player = $structure->getPlayer();
 
+		$this->checkpoints[$player->login][$structure->getCheckPointInLap()] = $structure->getLapTime();
+		$this->allCheckpoints[$player->login][$structure->getCheckPointInRace()] = $structure->getRaceTime();
+		
+		$recTime = $structure->getLapTime();
+		if ($this->isMultilap && $this->isRounds) {
+			$recTime = $structure->getRaceTime();
+			if (!$structure->getIsEndRace()) {
+				return;
+			}
+		}
+
 		$oldRecord = $this->getDedimaniaRecord($player->login);
-		if ($oldRecord->nullRecord || $oldRecord && $oldRecord->best > $structure->getLapTime()) {
+		if ($oldRecord->nullRecord || $oldRecord && $oldRecord->best > $recTime) {
 			// Save time
 			$newRecord = new RecordData(null);
 
 			$checkPoints = $this->getCheckpoints($player->login);
-			$checkPoints = $checkPoints . "," . $structure->getLapTime();
+			$allCPs = $this->getAllCheckpoints($player->login);
 
-			$newRecord->constructNewRecord($player->login, $player->nickname, $structure->getLapTime(), $checkPoints, true);
+			if ($this->isMultilap && $this->isRounds) {
+				$newRecord->constructNewRecord($player->login, $player->nickname, $recTime, $allCPs, true, $allCPs);				
+			} else {
+				$newRecord->constructNewRecord($player->login, $player->nickname, $recTime, $checkPoints, true, $allCPs);				
+			}
 
 			if ($this->insertDedimaniaRecord($newRecord, $oldRecord)) {
 				// Get newly saved record
@@ -346,7 +381,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 				$message = '$390$<$fff' . $notifyName . '$> ' . $improvement . ' $<$ff0' . $newRecord->rank . '.$> Dedimania Record: $<$fff' . Formatter::formatTime($newRecord->best) . '$>';
 				if (!$oldRecord->nullRecord) {
-					$message .= ' ($<$ff0' . $oldRecord->rank . '.$> $<$fff-' . Formatter::formatTime(($oldRecord->best - $structure->getLapTime())) . '$>)';
+					$message .= ' ($<$ff0' . $oldRecord->rank . '.$> $<$fff-' . Formatter::formatTime(($oldRecord->best - $recTime)) . '$>)';
 				}
 
 				if ($newRecord->rank <= $notifyOnlyBestRecords) {
@@ -393,6 +428,27 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$count  = count($this->checkpoints[$login]);
 		foreach ($this->checkpoints[$login] as $index => $check) {
 			$string .= $check;
+			if ($index < $count - 1) {
+				$string .= ',';
+			}
+		}
+		return $string;
+	}
+
+	/**
+	 * Get total checkpoint string for dedimania record
+	 *
+	 * @param string $login
+	 * @return string
+	 */
+	private function getAllCheckpoints($login) {
+		if (!$login || !isset($this->allCheckpoints[$login])) {
+			return null;
+		}
+		$string = '';
+		$count  = count($this->allCheckpoints[$login]);
+		foreach ($this->allCheckpoints[$login] as $index => $check) {
+			$string .= strval($check);
 			if ($index < $count - 1) {
 				$string .= ',';
 			}

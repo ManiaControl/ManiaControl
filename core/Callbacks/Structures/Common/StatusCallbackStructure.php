@@ -27,7 +27,9 @@ class StatusCallbackStructure extends BaseResponseStructure {
 		parent::__construct($maniaControl, $data);
 
 		$this->active    = $this->getPlainJsonObject()->active;
-		$this->available = $this->getPlainJsonObject()->available;
+		if(property_exists($this->getPlainJsonObject(), "available")){
+			$this->available = $this->getPlainJsonObject()->available;
+		}
 	}
 
 	/**

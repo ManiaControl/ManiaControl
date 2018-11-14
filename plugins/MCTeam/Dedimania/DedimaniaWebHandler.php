@@ -183,8 +183,7 @@ class DedimaniaWebHandler implements TimerListener {
 			}
 
 			if (!isset($replays['VReplayChecks'])) {
-				$replays['VReplayChecks'] = '';
-				// TODO: VReplayChecks
+				$replays['VReplayChecks'] = $record->allCheckpoints;
 			}
 			if (!isset($replays['Top1GReplay'])) {
 				$replays['Top1GReplay'] = $record->top1GReplay;
@@ -192,6 +191,7 @@ class DedimaniaWebHandler implements TimerListener {
 		}
 
 		xmlrpc_set_type($replays['VReplay'], 'base64');
+		xmlrpc_set_type($replays['VReplayChecks'], 'base64');
 		xmlrpc_set_type($replays['Top1GReplay'], 'base64');
 
 		$data = array($this->dedimaniaData->sessionId, $this->getMapInfo(), $gameMode, $times, $replays);

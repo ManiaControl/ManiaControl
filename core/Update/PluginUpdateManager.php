@@ -240,6 +240,12 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 	 * @param bool             $update
 	 */
 	private function installPlugin(PluginUpdateData $pluginUpdateData, Player $player = null, $update = false) {
+		if ($player && !$this->maniaControl->getAuthenticationManager()->checkPermission($player, InstallMenu::SETTING_PERMISSION_INSTALL_PLUGINS))
+		{
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
+			return;
+		}
+		
 		if (ManiaControl::VERSION < $pluginUpdateData->minManiaControlVersion) {
 			$message = "Your ManiaControl Version v" . ManiaControl::VERSION . " is too old for this Plugin (min Required Version): ' . {$pluginUpdateData->minManiaControlVersion}!";
 			if ($player) {
