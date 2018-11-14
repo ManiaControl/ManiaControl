@@ -179,9 +179,9 @@ class CallbackManager implements UsageInformationAble {
 	private function removeCallbackListener(array &$listeningsArray, CallbackListener $listener) {
 		$removed = false;
 		foreach ($listeningsArray as &$listenings) {
-			foreach ($listenings as $key => &$listening) {
+			foreach ($listenings as $i => $listening) {
 				if ($listening->listener === $listener) {
-					unset($listenings[$key]);
+					array_splice($listenings, $i, 1);
 					$removed = true;
 				}
 			}
@@ -198,10 +198,10 @@ class CallbackManager implements UsageInformationAble {
 	 */
 	public function unregisterCallbackListening($callbackName, CallbackListener $listener) {
 		$removed = false;
-		foreach ($this->callbackListenings as &$listenings) {
-			foreach ($listenings as $key => &$listening) {
-				if ($key === $callbackName && $listening->listener === $listener) {
-					unset($listenings[$key]);
+		foreach ($this->callbackListenings as $callbackKey => &$listenings) {
+			foreach ($listenings as $i => $listening) {
+				if ($callbackKey === $callbackName && $listening->listener === $listener) {
+					array_splice($listenings, $i, 1);
 					$removed = true;
 				}
 			}
