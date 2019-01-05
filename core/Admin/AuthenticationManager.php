@@ -21,7 +21,7 @@ use ManiaControl\Settings\Setting;
  *
  * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2018 ManiaControl Team
+ * @copyright 2014-2019 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class AuthenticationManager implements CallbackListener, EchoListener, CommunicationListener, UsageInformationAble {
