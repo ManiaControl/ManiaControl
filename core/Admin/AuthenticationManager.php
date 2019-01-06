@@ -391,6 +391,8 @@ class AuthenticationManager implements CallbackListener, EchoListener, Communica
 		$player->authLevel = $authLevel;
 		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_AUTH_LEVEL_CHANGED, $player);
 
+		$this->maniaControl->getActionsMenu()->rebuildAndShowAdminMenu();
+
 		return true;
 	}
 

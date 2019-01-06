@@ -149,6 +149,8 @@ class ActionsMenu implements SidebarMenuEntryListener, CallbackListener, Maniali
 	 * @internal
 	 */
 	public function rebuildAndShowAdminMenu() {
+		$this->maniaControl->getManialinkManager()->hideManialink(self::MLID_ADMIN_MENU);
+
 		$admins = $this->maniaControl->getAuthenticationManager()->getConnectedAdmins(AuthenticationManager::AUTH_LEVEL_MODERATOR);
 		if (!empty($admins)) {
 			$manialink = $this->buildAdminMenuManiaLink();
@@ -161,6 +163,8 @@ class ActionsMenu implements SidebarMenuEntryListener, CallbackListener, Maniali
 	 * @internal
 	 */
 	public function rebuildAndShowPlayerMenu() {
+		$this->maniaControl->getManialinkManager()->hideManialink(self::MLID_PLAYER_MENU);
+
 		$players = $this->maniaControl->getPlayerManager()->getPlayers();
 		if (!empty($players)) {
 			$manialink = $this->buildPlayerMenuManiaLink();
