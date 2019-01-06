@@ -197,7 +197,7 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$quadSubstyle = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MENU_SUBSTYLE);
 
 		$menuListWidth  = $menuWidth * 0.3;
-		$menuItemHeight = 10.;
+		$menuItemHeight = 9.;
 		$subMenuWidth   = $menuWidth - $menuListWidth;
 		$subMenuHeight  = $menuHeight;
 
