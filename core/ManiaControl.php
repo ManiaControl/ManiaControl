@@ -43,7 +43,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\TransportException;
  * ManiaControl Server Controller for ManiaPlanet Server
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2018 ManiaControl Team
+ * @copyright 2014-2019 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ManiaControl implements CallbackListener, CommandListener, TimerListener, CommunicationListener, UsageInformationAble {
@@ -52,7 +52,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 	/*
 	 * Constants
 	 */
-	const VERSION                     = '0.231';
+	const VERSION                     = '0.232';
 	const API_VERSION                 = '2013-04-16';
 	const MIN_DEDIVERSION             = '2017-05-03_21_00';
 	const SCRIPT_TIMEOUT              = 40;

@@ -28,7 +28,7 @@ use ManiaControl\Utils\Formatter;
  * Simple Stats List Class
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2018 ManiaControl Team
+ * @copyright 2014-2019 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, CommandListener {

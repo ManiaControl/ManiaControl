@@ -21,7 +21,7 @@ use ManiaControl\Players\PlayerManager;
  * Manager checking for ManiaControl Core Updates
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2018 ManiaControl Team
+ * @copyright 2014-2019 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class UpdateManager implements CallbackListener, CommandListener, TimerListener, CommunicationListener {
