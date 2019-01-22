@@ -477,13 +477,6 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$player->setCache($mapListObject, MapList::CACHE_LAST_SORT_ORDER, $best);
 
 			$displayMxKarma = $this->maniaControl->getSettingManager()->getSettingValue($karmaPlugin, $karmaPlugin::SETTING_WIDGET_DISPLAY_MX);
-			//Sort by Mx Karma in Maplist
-			if ($displayMxKarma) { //TODO
-
-				//Sort by Local Karma in Maplist
-			} else {
-
-			}
 
 			if (!$maps) {
 				$maps    = $this->maniaControl->getMapManager()->getMaps();
@@ -492,7 +485,11 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			foreach ($maps as $map) {
 				if ($map instanceof Map) {
 					if ($this->maniaControl->getSettingManager()->getSettingValue($karmaPlugin, $karmaPlugin::SETTING_NEWKARMA) == true) {
-						$karma      = $karmaPlugin->getMapKarma($map);
+						if ($displayMxKarma && $map->mx) {
+							$karma = $map->mx->ratingVoteAverage / 100;
+						} else {
+							$karma = $karmaPlugin->getMapKarma($map);
+						}
 						$map->karma = round($karma * 100.);
 					} else {
 						$votes = $karmaPlugin->getMapVotes($map);
