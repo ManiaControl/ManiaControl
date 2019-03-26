@@ -236,4 +236,27 @@ abstract class FileUtil {
 	public static function isHiddenFile($fileName) {
 		return (substr($fileName, 0, 1) === '.');
 	}
+
+	/**
+	 * Shortens a path.
+	 * Opposed to realpath, it follows symbolic links.
+	 *
+	 * @param string $path
+	 * @return string
+	 */
+	public static function shortenPath(string $path) {
+        $path = str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $path);
+        $parts = array_filter(explode(DIRECTORY_SEPARATOR, $path), 'strlen');
+        $absolutes = array();
+        foreach ($parts as $part) {
+            if ('.' === $part)
+            	continue;
+
+            if ('..' === $part)
+                array_pop($absolutes);
+            else
+                array_push($absolutes, $part);
+        }
+        return implode(DIRECTORY_SEPARATOR, $absolutes);
+	}
 }
