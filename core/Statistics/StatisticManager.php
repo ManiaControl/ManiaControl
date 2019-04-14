@@ -268,7 +268,7 @@ class StatisticManager implements UsageInformationAble {
 				}
 				foreach ($deaths as $key => $death) {
 					if (!$death || !isset($kills[$key])) {
-						break;
+						continue;
 					}
 					$statsArray[$key] = intval($kills[$key]) / intval($death);
 				}
@@ -282,7 +282,7 @@ class StatisticManager implements UsageInformationAble {
 				}
 				foreach ($times as $key => $time) {
 					if (!$time || !isset($hits[$key])) {
-                        break;
+                        continue;
 					}
 					$statsArray[$key] = intval($hits[$key]) / (intval($time) / 3600);
 				}
@@ -296,7 +296,7 @@ class StatisticManager implements UsageInformationAble {
 				}
 				foreach ($shots as $key => $shot) {
 					if (!$shot || !isset($hits[$key])) {
-                        break;
+                        continue;
 					}
 					$statsArray[$key] = intval($hits[$key]) / (intval($shot));
 				}
@@ -310,7 +310,7 @@ class StatisticManager implements UsageInformationAble {
 				}
 				foreach ($shots as $key => $shot) {
 					if (!$shot || !isset($hits[$key])) {
-                        break;
+                        continue;
 					}
 					$statsArray[$key] = intval($hits[$key]) / (intval($shot));
 				}
@@ -324,7 +324,7 @@ class StatisticManager implements UsageInformationAble {
 				}
 				foreach ($shots as $key => $shot) {
 					if (!$shot || !isset($hits[$key])) {
-                        break;
+                        continue;
 					}
 					$statsArray[$key] = intval($hits[$key]) / (intval($shot));
 				}
@@ -338,7 +338,7 @@ class StatisticManager implements UsageInformationAble {
 				}
 				foreach ($shots as $key => $shot) {
 					if (!$shot || !isset($hits[$key])) {
-                        break;
+                        continue;
 					}
 					$statsArray[$key] = intval($hits[$key]) / (intval($shot));
 				}
