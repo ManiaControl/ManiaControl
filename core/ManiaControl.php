@@ -8,6 +8,7 @@ use ManiaControl\Bills\BillManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
+use ManiaControl\Callbacks\CallQueueManager;
 use ManiaControl\Callbacks\EchoManager;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Callbacks\TimerManager;
@@ -84,6 +85,10 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 	 * @see getCallbackManager()
 	 */
 	private $callbackManager = null;
+	/** @var CallQueueManager $callQueueManager
+	 * @see getCallQueueManager()
+	 */
+	private $callQueueManager = null;
 	/** @var Chat $chat
 	 * @see getChat()
 	 */
@@ -180,6 +185,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 
 		// Load ManiaControl Modules
 		$this->callbackManager        = new CallbackManager($this);
+		$this->callQueueManager       = new CallQueueManager($this);
 		$this->modeScriptEventManager = new ModeScriptEventManager($this);
 		$this->echoManager            = new EchoManager($this);
 		$this->communicationManager   = new CommunicationManager($this);
@@ -296,6 +302,15 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 	 */
 	public function getCallbackManager() {
 		return $this->callbackManager;
+	}
+
+	/**
+	 * Return the call queue manager
+	 *
+	 * @return CallQueueManager
+	 */
+	public function getCallQueueManager() {
+		return $this->callQueueManager;
 	}
 
 	/**
@@ -704,6 +719,9 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 
 		// Manage callbacks
 		$this->getCallbackManager()->manageCallbacks();
+
+		// Manage queued calls
+		$this->getCallQueueManager()->manageCallQueue();
 
 		// Manage async file reader
 		$this->getFileReader()->appendData();
