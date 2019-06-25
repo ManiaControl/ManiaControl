@@ -282,7 +282,7 @@ class StatisticManager implements UsageInformationAble {
 				}
 				foreach ($times as $key => $time) {
 					if (!$time || !isset($hits[$key])) {
-						continue;
+                        continue;
 					}
 					$statsArray[$key] = intval($hits[$key]) / (intval($time) / 3600);
 				}
@@ -296,7 +296,7 @@ class StatisticManager implements UsageInformationAble {
 				}
 				foreach ($shots as $key => $shot) {
 					if (!$shot || !isset($hits[$key])) {
-						continue;
+                        continue;
 					}
 					$statsArray[$key] = intval($hits[$key]) / (intval($shot));
 				}
@@ -310,7 +310,7 @@ class StatisticManager implements UsageInformationAble {
 				}
 				foreach ($shots as $key => $shot) {
 					if (!$shot || !isset($hits[$key])) {
-						continue;
+                        continue;
 					}
 					$statsArray[$key] = intval($hits[$key]) / (intval($shot));
 				}
@@ -324,7 +324,7 @@ class StatisticManager implements UsageInformationAble {
 				}
 				foreach ($shots as $key => $shot) {
 					if (!$shot || !isset($hits[$key])) {
-						continue;
+                        continue;
 					}
 					$statsArray[$key] = intval($hits[$key]) / (intval($shot));
 				}
@@ -338,7 +338,7 @@ class StatisticManager implements UsageInformationAble {
 				}
 				foreach ($shots as $key => $shot) {
 					if (!$shot || !isset($hits[$key])) {
-						continue;
+                        continue;
 					}
 					$statsArray[$key] = intval($hits[$key]) / (intval($shot));
 				}
@@ -392,67 +392,67 @@ class StatisticManager implements UsageInformationAble {
 			switch ($stat->name) {
 				case self::SPECIAL_STAT_KD_RATIO:
 					if (!isset($playerStats[StatisticCollector::STAT_ON_KILL]) || !isset($playerStats[StatisticCollector::STAT_ON_DEATH])) {
-						continue;
+						break;
 					}
 					$kills  = intval($playerStats[StatisticCollector::STAT_ON_KILL][1]);
 					$deaths = intval($playerStats[StatisticCollector::STAT_ON_DEATH][1]);
 					if (!$deaths) {
-						continue;
+                        break;
 					}
 					$playerStats[$stat->name] = array($stat, $kills / $deaths);
 					break;
 				case self::SPECIAL_STAT_HITS_PH:
 					if (!isset($playerStats[StatisticCollector::STAT_PLAYTIME]) || !isset($playerStats[StatisticCollector::STAT_ON_HIT])) {
-						continue;
+                        break;
 					}
 					$hits = intval($playerStats[StatisticCollector::STAT_ON_HIT][1]);
 					$time = intval($playerStats[StatisticCollector::STAT_PLAYTIME][1]);
 					if (!$time) {
-						continue;
+                        break;
 					}
 					$playerStats[$stat->name] = array($stat, $hits / ($time / 3600));
 					break;
 				case self::SPECIAL_STAT_ARROW_ACC:
 					if (!isset($playerStats[StatisticCollector::STAT_ARROW_HIT]) || !isset($playerStats[StatisticCollector::STAT_ARROW_SHOT])) {
-						continue;
+                        break;
 					}
 					$hits  = intval($playerStats[StatisticCollector::STAT_ARROW_HIT][1]);
 					$shots = intval($playerStats[StatisticCollector::STAT_ARROW_SHOT][1]);
 					if (!$shots) {
-						continue;
+                        break;
 					}
 					$playerStats[$stat->name] = array($stat, $hits / $shots);
 					break;
 				case self::SPECIAL_STAT_LASER_ACC:
 					if (!isset($playerStats[StatisticCollector::STAT_LASER_HIT]) || !isset($playerStats[StatisticCollector::STAT_LASER_SHOT])) {
-						continue;
+                        break;
 					}
 					$hits  = intval($playerStats[StatisticCollector::STAT_LASER_HIT][1]);
 					$shots = intval($playerStats[StatisticCollector::STAT_LASER_SHOT][1]);
 					if (!$shots) {
-						continue;
+                        break;
 					}
 					$playerStats[$stat->name] = array($stat, $hits / $shots);
 					break;
 				case self::SPECIAL_STAT_ROCKET_ACC:
 					if (!isset($playerStats[StatisticCollector::STAT_ROCKET_HIT]) || !isset($playerStats[StatisticCollector::STAT_ROCKET_SHOT])) {
-						continue;
+                        break;
 					}
 					$hits  = intval($playerStats[StatisticCollector::STAT_ROCKET_HIT][1]);
 					$shots = intval($playerStats[StatisticCollector::STAT_ROCKET_SHOT][1]);
 					if (!$shots) {
-						continue;
+                        break;
 					}
 					$playerStats[$stat->name] = array($stat, $hits / $shots);
 					break;
 				case self::SPECIAL_STAT_NUCLEUS_ACC:
 					if (!isset($playerStats[StatisticCollector::STAT_NUCLEUS_HIT]) || !isset($playerStats[StatisticCollector::STAT_NUCLEUS_SHOT])) {
-						continue;
+                        break;
 					}
 					$hits  = intval($playerStats[StatisticCollector::STAT_NUCLEUS_HIT][1]);
 					$shots = intval($playerStats[StatisticCollector::STAT_NUCLEUS_SHOT][1]);
 					if (!$shots) {
-						continue;
+                        break;
 					}
 					$playerStats[$stat->name] = array($stat, (float) ($hits / $shots));
 					break;
