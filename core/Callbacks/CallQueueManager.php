@@ -41,34 +41,47 @@ class CallQueueManager implements UsageInformationAble {
 	 * @param mixed             $errorMethod
 	 * @return bool
 	 */
-	public function registerListening(CallQueueListener $listener, $methods, $errorMethod) {
+	public function registerListening(CallQueueListener $listener, $methods, $errorMethod, bool $important = false) {
 		if (!CallQueueListening::checkValidCallback($listener, $errorMethod)) {
 			trigger_error("Given Listener (" . get_class($listener) . ") can't handle Queue Call Callback (No Error Method '{$errorMethod}')!");
 			return false;
 		}
 
-		if (is_string($methods)) {
+		if (!is_array($methods)) {
 			$methods = array($methods);
 		}
-
-		assert(is_array($methods));
 
 		foreach ($methods as $method) {
 			if (!CallQueueListening::checkValidCallback($listener, $method)) {
 				trigger_error("Given Listener (" . get_class($listener) . ") can't handle Queue Call Callback (No Method '{$method}')!");
 				return false;
 			}
+		}
 
+		foreach ($methods as $method) {
 			// Build Call Queue Listening
 			$listening = new CallQueueListening($listener, $method, $errorMethod);
-			$this->addListening($listening);
+			if ($important) {
+				$this->addImportantListening($listening);
+			} else {
+				$this->addListening($listening);
+			}
 		}
 
 		return true;
 	}
 
 	/**
-	 * Add a Listening to the current List of managed queue calls
+	 * Adds an important Listening to the current list of managed queue calls at the front
+	 *
+	 * @param CallQueueListening $queueListening
+	 */
+	public function addImportantListening(CallQueueListening $queueListening) {
+		array_unshift($this->queueListenings, $queueListening);
+	}
+
+	/**
+	 * Adds a Listening to the current list of managed queue calls at the end
 	 *
 	 * @param CallQueueListening $queueListening
 	 */
