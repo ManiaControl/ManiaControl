@@ -21,7 +21,7 @@ class TrackmaniaRoundsPlugin implements Plugin, CommandListener {
 	 * Constants
 	 */
 	const PLUGIN_ID      = 6;
-	const PLUGIN_VERSION = 0.11;
+	const PLUGIN_VERSION = 0.12;
 	const PLUGIN_NAME    = 'Trackmania Rounds Plugin';
 	const PLUGIN_AUTHOR  = 'MCTeam';
 
@@ -71,6 +71,7 @@ class TrackmaniaRoundsPlugin implements Plugin, CommandListener {
 		$this->maniaControl->getCommandManager()->registerCommandListener(array('getrpoints',
 		                                                                        'getpointsdistribution'), $this, 'commandGetPointsRepartition', true, 'Gets the Rounds Point Repartition.');
 		$this->maniaControl->getCommandManager()->registerCommandListener(array('endround', 'end'), $this, 'commandTrackManiaEndRound', true, 'Ends the Current Round.');
+		$this->maniaControl->getCommandManager()->registerCommandListener('endwu', $this, 'commandTrackManiaEndWarmUp', true, 'Ends the Current WarmUp.');
 
 	}
 
@@ -149,6 +150,25 @@ class TrackmaniaRoundsPlugin implements Plugin, CommandListener {
 		$this->maniaControl->getChat()->sendSuccess($player->getEscapedNickname() . ' forced end of the Round!');
 	}
 
+    /**
+     * Handle //endwu command
+     *
+     * @param array                        $chatCallback
+     * @param \ManiaControl\Players\Player $player
+     */
+    public function commandTrackManiaEndWarmUp(array $chatCallback, Player $player) {
+        $permission = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_PERMISSION_END_ROUND);
+        if (!AuthenticationManager::checkRight($player, AuthenticationManager::getAuthLevel($permission))) {
+            $this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
+            return;
+        }
+
+        try {
+            $this->maniaControl->getModeScriptEventManager()->triggerModeScriptEvent("Trackmania.WarmUp.ForceStop");
+        } catch (\Throwable $e) {
+        }
+        $this->maniaControl->getChat()->sendSuccess($player->getEscapedNickname() . ' forced end of the WarmUp!');
+    }
 	/**
 	 * @see \ManiaControl\Plugins\Plugin::getId()
 	 */
