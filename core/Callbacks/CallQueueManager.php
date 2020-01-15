@@ -41,8 +41,8 @@ class CallQueueManager implements UsageInformationAble {
 	 * @param mixed             $errorMethod
 	 * @return bool
 	 */
-	public function registerListening(CallQueueListener $listener, $methods, $errorMethod, bool $important = false) {
-		if (!CallQueueListening::checkValidCallback($listener, $errorMethod)) {
+	public function registerListening(CallQueueListener $listener, $methods, $errorMethod = null, bool $important = false) {
+		if ($errorMethod != null && !CallQueueListening::checkValidCallback($listener, $errorMethod)) {
 			trigger_error("Given Listener (" . get_class($listener) . ") can't handle Queue Call Callback (No Error Method '{$errorMethod}')!");
 			return false;
 		}

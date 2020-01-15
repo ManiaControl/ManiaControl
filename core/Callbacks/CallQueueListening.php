@@ -26,7 +26,9 @@ class CallQueueListening extends Listening implements UsageInformationAble {
 	 */
 	public function __construct(CallQueueListener $listener, $method, $errorMethod) {
 		parent::__construct($listener, $method);
-		$this->errorMethod = array($listener, $errorMethod);
+		if ($errorMethod != null) {
+			$this->errorMethod = array($listener, $errorMethod);
+		}
 	}
 
 	/**
@@ -36,7 +38,10 @@ class CallQueueListening extends Listening implements UsageInformationAble {
 	public function triggerCallback() {
 		$params = func_get_args();
 		if ($this->triggerCallbackWithParams($params, false) === false) {
-			call_user_func($this->errorMethod, $this->method);
+			if ($this->$errorMethod != null) {
+				call_user_func($this->errorMethod, $this->method);
+			}
+
 			return false;
 		}
 
@@ -52,7 +57,10 @@ class CallQueueListening extends Listening implements UsageInformationAble {
 	public function triggerCallbackWithParams(array $params, bool $callErrorMethod = true) {
 		$result = call_user_func_array($this->getUserFunction(), $params);
 		if ($callErrorMethod && $result === false) {
-			call_user_func($this->errorMethod, $this->getUserFunction());
+			if ($this->errorMethod != null) {
+				call_user_func($this->errorMethod, $this->getUserFunction());
+			}
+
 			return false;
 		}
 
