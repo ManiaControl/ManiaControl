@@ -43,7 +43,7 @@ abstract class Formatter implements UsageInformationAble {
 		$seconds      -= ($hours * 60 + $minutes) * 60;
 		$format       = ($hours > 0 ? $hours . ':' : '');
 		$format       .= ($hours > 0 && $minutes < 10 ? '0' : '') . $minutes . ':';
-		$format       .= ($seconds < 10 ? '0' : '') . $seconds . ':';
+		$format       .= ($seconds < 10 ? '0' : '') . $seconds . '.';
 		$format       .= ($milliseconds < 100 ? '0' : '') . ($milliseconds < 10 ? '0' : '') . $milliseconds;
 		return $format;
 	}
