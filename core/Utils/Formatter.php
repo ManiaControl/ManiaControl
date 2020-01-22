@@ -10,7 +10,7 @@ use ManiaControl\Logger;
  * Class offering Methods to format Texts and Values
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 abstract class Formatter implements UsageInformationAble {

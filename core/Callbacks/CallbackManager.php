@@ -15,7 +15,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
  * Class for managing Server and ManiaControl Callbacks
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class CallbackManager implements UsageInformationAble {

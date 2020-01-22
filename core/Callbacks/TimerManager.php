@@ -10,7 +10,7 @@ use ManiaControl\ManiaControl;
  * Class for managing Timed Callbacks
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class TimerManager implements UsageInformationAble {

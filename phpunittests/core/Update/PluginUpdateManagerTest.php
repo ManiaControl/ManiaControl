@@ -9,7 +9,7 @@ use ManiaControl\Utils\WebReader;
  * PHP Unit Test for Plugin Update Manager Class
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2018 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class PluginUpdateManagerTest extends \PHPUnit_Framework_TestCase {
