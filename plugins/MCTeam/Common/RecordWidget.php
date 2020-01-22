@@ -14,7 +14,7 @@ use ManiaControl\Utils\Formatter;
  * ManiaControl Local Records Plugin
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2018 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class RecordWidget {
@@ -49,7 +49,12 @@ class RecordWidget {
 		if ($record->rank > 999) {
 			$largeNumberDiff = 0.03;
 		}
-
+        if ($record->rank > 9999) {
+            $largeNumberDiff = 0.06;
+        }
+        if ($record->rank > 99999) {
+            $largeNumberDiff = 0.09;
+        }
 		$rankLabel = new Label();
 		$recordFrame->addChild($rankLabel);
 		$rankLabel->setHorizontalAlign($rankLabel::LEFT);
