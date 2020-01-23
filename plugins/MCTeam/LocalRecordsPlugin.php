@@ -40,28 +40,29 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 	/*
 	 * Constants
 	 */
-	const ID                                = 7;
-	const VERSION                           = 0.7;
-	const NAME                              = 'Local Records Plugin';
-	const AUTHOR                            = 'MCTeam';
-	const MLID_RECORDS                      = 'ml_local_records';
-	const TABLE_RECORDS                     = 'mc_localrecords';
-	const PERMISSION_DELETE_ANY_RECORD      = 'Permission remove any record';
-	const PERMISSION_DELETE_PERSONAL_RECORD = 'Permission remove personal record';
-	const SETTING_MULTILAP_SAVE_SINGLE      = 'Save every Lap as Record in Multilap';
-	const SETTING_WIDGET_TITLE              = 'Widget Title';
-	const SETTING_WIDGET_POSX               = 'Widget Position: X';
-	const SETTING_WIDGET_POSY               = 'Widget Position: Y';
-	const SETTING_WIDGET_WIDTH              = 'Widget Width';
-	const SETTING_WIDGET_LINESCOUNT         = 'Widget Displayed Lines Count';
-	const SETTING_WIDGET_LINEHEIGHT         = 'Widget Line Height';
-	const SETTING_WIDGET_ENABLE             = 'Enable Local Records Widget';
-	const SETTING_NOTIFY_ONLY_DRIVER        = 'Notify only the Driver on New Records';
-	const SETTING_NOTIFY_BEST_RECORDS       = 'Notify Publicly only for the X Best Records';
-	const SETTING_ADJUST_OUTER_BORDER       = 'Adjust outer Border to Number of actual Records';
-	const SETTING_RECORDS_BEFORE_AFTER      = 'Number of Records displayed before and after a player';
-	const CB_LOCALRECORDS_CHANGED           = 'LocalRecords.Changed';
-	const ACTION_SHOW_RECORDSLIST           = 'LocalRecords.ShowRecordsList';
+	const ID                                  = 7;
+	const VERSION                             = 0.8;
+	const NAME                                = 'Local Records Plugin';
+	const AUTHOR                              = 'MCTeam';
+	const MLID_RECORDS                        = 'ml_local_records';
+	const TABLE_RECORDS                       = 'mc_localrecords';
+	const PERMISSION_DELETE_ANY_RECORD        = 'Permission remove any record';
+	const PERMISSION_DELETE_PERSONAL_RECORD   = 'Permission remove personal record';
+	const SETTING_MULTILAP_SAVE_SINGLE        = 'Save every Lap as Record in Multilap';
+	const SETTING_WIDGET_TITLE                = 'Widget Title';
+	const SETTING_WIDGET_POSX                 = 'Widget Position: X';
+	const SETTING_WIDGET_POSY                 = 'Widget Position: Y';
+	const SETTING_WIDGET_WIDTH                = 'Widget Width';
+	const SETTING_WIDGET_LINESCOUNT           = 'Widget Displayed Lines Count';
+	const SETTING_WIDGET_LINEHEIGHT           = 'Widget Line Height';
+	const SETTING_WIDGET_ENABLE               = 'Enable Local Records Widget';
+	const SETTING_NOTIFICATION_MESSAGE_PREFIX = 'Notification Message Prefix';
+	const SETTING_NOTIFY_BEST_RECORDS_PRIVATE = 'Notify privately for the X Best Records';
+	const SETTING_NOTIFY_BEST_RECORDS_PUBLIC  = 'Notify publicly for the X Best Records';
+	const SETTING_ADJUST_OUTER_BORDER         = 'Adjust outer Border to Number of actual Records';
+	const SETTING_RECORDS_BEFORE_AFTER        = 'Number of Records displayed before and after a player';
+	const CB_LOCALRECORDS_CHANGED             = 'LocalRecords.Changed';
+	const ACTION_SHOW_RECORDSLIST             = 'LocalRecords.ShowRecordsList';
 
 
 	/*
@@ -152,8 +153,9 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_LINESCOUNT, 15);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_LINEHEIGHT, 4.);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_ENABLE, true);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_NOTIFY_ONLY_DRIVER, false);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_NOTIFY_BEST_RECORDS, 10);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_NOTIFICATION_MESSAGE_PREFIX, '$3c0');
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_NOTIFY_BEST_RECORDS_PRIVATE, 100);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_NOTIFY_BEST_RECORDS_PUBLIC, 10);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_ADJUST_OUTER_BORDER, false);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_RECORDS_BEFORE_AFTER, 2);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MULTILAP_SAVE_SINGLE, false);
@@ -513,8 +515,9 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 		$checkpointsString                 = $this->getCheckpoints($player->login);
 		$this->checkpoints[$player->login] = array();
 
-		$notifyOnlyDriver      = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_NOTIFY_ONLY_DRIVER);
-		$notifyOnlyBestRecords = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_NOTIFY_BEST_RECORDS);
+		$message           = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_NOTIFICATION_MESSAGE_PREFIX);
+		$notifyPrivatelyAt = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_NOTIFY_BEST_RECORDS_PRIVATE);
+		$notifyPubliclyAt  = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_NOTIFY_BEST_RECORDS_PUBLIC);
 
 		// Check old record of the player
 		$oldRecord = $this->getLocalRecord($map, $player);
@@ -522,23 +525,20 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 			if ($oldRecord->time < $time) {
 				// Not improved
 				return;
-			}
-			if ($oldRecord->time == $time) {
+			} else if ($oldRecord->time == $time) {
 				// Same time
-				$message = '$3c0';
-				if ($notifyOnlyDriver) {
+				if ($notifyPubliclyAt < $oldRecord->rank && $oldRecord->rank <= $notifyPrivatelyAt) {
 					$message .= 'You';
 				} else {
 					$message .= '$<$fff' . $player->nickname . '$>';
 				}
-
 				$message .= ' equalized the $<$ff0' . $oldRecord->rank . '.$> Local Record:';
 				$message .= ' $<$fff' . Formatter::formatTime($oldRecord->time) . '$>!';
 
-				if ($notifyOnlyDriver) {
-					$this->maniaControl->getChat()->sendInformation($message, $player);
-				} else if (!$notifyOnlyBestRecords || $oldRecord->rank <= $notifyOnlyBestRecords) {
+				if ($oldRecord->rank <= $notifyPubliclyAt) {
 					$this->maniaControl->getChat()->sendInformation($message);
+				} else if ($oldRecord->rank <= $notifyPrivatelyAt) {
+					$this->maniaControl->getChat()->sendInformation($message, $player);
 				}
 				return;
 			}
@@ -568,16 +568,14 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 
 		// Announce record
 		$newRecord    = $this->getLocalRecord($map, $player);
-		$improvedRank = (!$oldRecord || $newRecord->rank < $oldRecord->rank);
+		$improvedRank = ($oldRecord && $newRecord->rank >= $oldRecord->rank);
 
-
-		$message = '$3c0';
-		if ($notifyOnlyDriver) {
+		if ($notifyPubliclyAt < $newRecord->rank && $newRecord->rank <= $notifyPrivatelyAt) {
 			$message .= 'You';
 		} else {
 			$message .= '$<$fff' . $player->nickname . '$>';
 		}
-		$message .= ' ' . ($improvedRank ? 'gained' : 'improved') . ' the';
+		$message .= ' ' . ($improvedRank ? 'improved' : 'gained') . ' the';
 		$message .= ' $<$ff0' . $newRecord->rank . '.$> Local Record:';
 		$message .= ' $<$fff' . Formatter::formatTime($newRecord->time) . '$>!';
 		if ($oldRecord) {
@@ -589,10 +587,10 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 			$message  .= '$<$fff-' . Formatter::formatTime($timeDiff) . '$>)';
 		}
 
-		if ($notifyOnlyDriver) {
-			$this->maniaControl->getChat()->sendInformation($message, $player);
-		} else if (!$notifyOnlyBestRecords || $newRecord->rank <= $notifyOnlyBestRecords) {
+		if ($newRecord->rank <= $notifyPubliclyAt) {
 			$this->maniaControl->getChat()->sendInformation($message);
+		} else if ($newRecord->rank <= $notifyPrivatelyAt) {
+			$this->maniaControl->getChat()->sendInformation($message, $player);
 		}
 
 		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_LOCALRECORDS_CHANGED, $newRecord);
