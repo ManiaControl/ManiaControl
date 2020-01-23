@@ -41,11 +41,12 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 	 * Constants
 	 */
 	const ID                                = 7;
-	const VERSION                           = 0.6;
+	const VERSION                           = 0.7;
 	const NAME                              = 'Local Records Plugin';
 	const AUTHOR                            = 'MCTeam';
 	const MLID_RECORDS                      = 'ml_local_records';
 	const TABLE_RECORDS                     = 'mc_localrecords';
+	const PERMISSION_DELETE_ANY_RECORD      = 'Permission remove any record';
 	const PERMISSION_DELETE_PERSONAL_RECORD = 'Permission remove personal record';
 	const SETTING_MULTILAP_SAVE_SINGLE      = 'Save every Lap as Record in Multilap';
 	const SETTING_WIDGET_TITLE              = 'Widget Title';
@@ -129,6 +130,14 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 		// Settings
 		$this->maniaControl->getSettingManager()->initSetting(
 			$this,
+			self::PERMISSION_DELETE_ANY_RECORD,
+			AuthenticationManager::getPermissionLevelNameArray(
+				AuthenticationManager::AUTH_LEVEL_SUPERADMIN,
+				AuthenticationManager::AUTH_LEVEL_MODERATOR
+			)
+		);
+		$this->maniaControl->getSettingManager()->initSetting(
+			$this,
 			self::PERMISSION_DELETE_PERSONAL_RECORD,
 			AuthenticationManager::getPermissionLevelNameArray(
 				AuthenticationManager::AUTH_LEVEL_ADMIN,
@@ -165,7 +174,7 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 
 		$this->maniaControl->getCommandManager()->registerCommandListener(array('recs', 'records'), $this, 'showRecordsList', false, 'Shows a list of Local Records on the current map.');
 		$this->maniaControl->getCommandManager()->registerCommandListener('delrec', $this, 'deletePersonalRecord', false, 'Removes your record from the database.');
-		$this->maniaControl->getCommandManager()->registerCommandListener('delrec', $this, 'deleteRecord', true, 'Removes a record from the database.');
+		$this->maniaControl->getCommandManager()->registerCommandListener('delrec', $this, 'deleteAnyRecord', true, 'Removes any record from the database.');
 
 		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_SHOW_RECORDSLIST, $this, 'handleShowRecordsList');
 
@@ -764,6 +773,52 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 	}
 
 	/**
+	 * Delete any record
+	 *
+	 * @internal
+	 * @param array  $chat
+	 * @param Player $player
+	 */
+	public function deleteAnyRecord(array $chat, Player $player) {
+		$permissionSetting = $this->maniaControl->getSettingManager()->getSettingObject($this, self::PERMISSION_DELETE_ANY_RECORD);
+		if (!$this->maniaControl->getAuthenticationManager()->checkRight($player, $permissionSetting)) {
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
+			return;
+		}
+
+		$commandParts = explode(' ', $chat[1][2]);
+		if (count($commandParts) < 2 || strlen($commandParts[1]) == 0) {
+			$this->maniaControl->getChat()->sendUsageInfo('Missing Record ID! (Example: //delrec 3)', $player);
+			return;
+		}
+
+		$recordRank   = (int) $commandParts[1];
+		$currentMap = $this->maniaControl->getMapManager()->getCurrentMap();
+		$records    = $this->getLocalRecords($currentMap);
+		if ($recordRank <= 0 || count($records) < $recordRank) {
+			$this->maniaControl->getChat()->sendError('Cannot remove record $<$fff' . $recordRank . '$>!', $player);
+			return;
+		}
+
+		assert($recordRank == $records[$recordRank-1]->rank);
+		$playerIndex = $records[$recordRank-1]->playerIndex;
+		$playerNick  = $records[$recordRank-1]->nickname;
+
+		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
+		$query  = "DELETE FROM `" . self::TABLE_RECORDS . "`
+				WHERE `mapIndex` = {$currentMap->index}
+				AND `playerIndex` = {$playerIndex};";
+		$mysqli->query($query);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error);
+			return;
+		}
+
+		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_LOCALRECORDS_CHANGED, null);
+		$this->maniaControl->getChat()->sendSuccess('Record no. $<$fff' . $recordRank . '$> by $<$fff' . $playerNick . '$> has been removed!');
+	}
+
+	/**
 	 * Delete the personal record
 	 *
 	 * @internal
@@ -804,51 +859,6 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 
 		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_LOCALRECORDS_CHANGED, null);
 		$this->maniaControl->getChat()->sendSuccess('$<$fff'.$player->getEscapedNickname().'$> removed his personal record!');
-	}
-
-	/**
-	 * Delete a Player's record
-	 *
-	 * @internal
-	 * @param array  $chat
-	 * @param Player $player
-	 */
-	public function deleteRecord(array $chat, Player $player) {
-		if (!$this->maniaControl->getAuthenticationManager()->checkRight($player, AuthenticationManager::AUTH_LEVEL_MASTERADMIN)) {
-			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
-			return;
-		}
-
-		$commandParts = explode(' ', $chat[1][2]);
-		if (count($commandParts) < 2 || strlen($commandParts[1]) == 0) {
-			$this->maniaControl->getChat()->sendUsageInfo('Missing Record ID! (Example: //delrec 3)', $player);
-			return;
-		}
-
-		$recordRank   = (int) $commandParts[1];
-		$currentMap = $this->maniaControl->getMapManager()->getCurrentMap();
-		$records    = $this->getLocalRecords($currentMap);
-		if ($recordRank <= 0 || count($records) < $recordRank) {
-			$this->maniaControl->getChat()->sendError('Cannot remove record $<$fff' . $recordRank . '$>!', $player);
-			return;
-		}
-
-		assert($recordRank == $records[$recordRank-1]->rank);
-		$playerIndex = $records[$recordRank-1]->playerIndex;
-		$playerNick  = $records[$recordRank-1]->nickname;
-
-		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
-		$query  = "DELETE FROM `" . self::TABLE_RECORDS . "`
-				WHERE `mapIndex` = {$currentMap->index}
-				AND `playerIndex` = {$playerIndex};";
-		$mysqli->query($query);
-		if ($mysqli->error) {
-			trigger_error($mysqli->error);
-			return;
-		}
-
-		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_LOCALRECORDS_CHANGED, null);
-		$this->maniaControl->getChat()->sendSuccess('Record no. $<$fff' . $recordRank . '$> by $<$fff' . $playerNick . '$> has been removed!');
 	}
 
 	/**
