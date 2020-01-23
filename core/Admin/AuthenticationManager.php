@@ -316,6 +316,10 @@ class AuthenticationManager implements CallbackListener, EchoListener, Communica
 	public static function checkRight(Player $player, $neededAuthLevel) {
 		if ($neededAuthLevel instanceof Setting) {
 			$neededAuthLevel = $neededAuthLevel->value;
+			// string of value picker
+			if (is_string($neededAuthLevel)) {
+				$neededAuthLevel = self::getAuthLevel($neededAuthLevel);
+			}
 		}
 		return ($player->authLevel >= $neededAuthLevel);
 	}
@@ -439,19 +443,70 @@ class AuthenticationManager implements CallbackListener, EchoListener, Communica
 	 *
 	 * @api
 	 * @param $authLevelNeeded
+	 * @param $authLevelsAllowed
 	 * @return array[]
 	 */
-	public static function getPermissionLevelNameArray($authLevelNeeded) {
-		switch ($authLevelNeeded) {
+	public static function getPermissionLevelNameArray($authLevelNeeded, $authLevelsAllowed = self::AUTH_LEVEL_MODERATOR) {
+		assert($authLevelNeeded >= $authLevelsAllowed);
+
+		switch ($authLevelsAllowed) {
+			case self::AUTH_LEVEL_PLAYER:
+				switch ($authLevelNeeded) {
+					case self::AUTH_LEVEL_PLAYER:
+						return array(self::AUTH_NAME_PLAYER, self::AUTH_NAME_MODERATOR, self::AUTH_NAME_ADMIN, self::AUTH_NAME_SUPERADMIN, self::AUTH_NAME_MASTERADMIN);
+					case self::AUTH_LEVEL_MODERATOR:
+						return array(self::AUTH_NAME_MODERATOR, self::AUTH_NAME_ADMIN, self::AUTH_NAME_SUPERADMIN, self::AUTH_NAME_MASTERADMIN, self::AUTH_NAME_PLAYER);
+					case self::AUTH_LEVEL_ADMIN:
+						return array(self::AUTH_NAME_ADMIN, self::AUTH_NAME_SUPERADMIN, self::AUTH_NAME_MASTERADMIN, self::AUTH_NAME_PLAYER, self::AUTH_NAME_MODERATOR);
+					case self::AUTH_LEVEL_SUPERADMIN:
+						return array(self::AUTH_NAME_SUPERADMIN, self::AUTH_NAME_MASTERADMIN, self::AUTH_NAME_PLAYER, self::AUTH_NAME_MODERATOR, self::AUTH_NAME_ADMIN);
+					case self::AUTH_LEVEL_MASTERADMIN:
+						return array(self::AUTH_NAME_MASTERADMIN, self::AUTH_NAME_PLAYER, self::AUTH_NAME_MODERATOR, self::AUTH_NAME_ADMIN, self::AUTH_NAME_SUPERADMIN);
+				}
+			break;
+
 			case self::AUTH_LEVEL_MODERATOR:
-				return array(self::AUTH_NAME_MODERATOR, self::AUTH_NAME_ADMIN, self::AUTH_NAME_SUPERADMIN, self::AUTH_NAME_MASTERADMIN);
+				switch ($authLevelNeeded) {
+					case self::AUTH_LEVEL_MODERATOR:
+						return array(self::AUTH_NAME_MODERATOR, self::AUTH_NAME_ADMIN, self::AUTH_NAME_SUPERADMIN, self::AUTH_NAME_MASTERADMIN);
+					case self::AUTH_LEVEL_ADMIN:
+						return array(self::AUTH_NAME_ADMIN, self::AUTH_NAME_SUPERADMIN, self::AUTH_NAME_MASTERADMIN, self::AUTH_NAME_MODERATOR);
+					case self::AUTH_LEVEL_SUPERADMIN:
+						return array(self::AUTH_NAME_SUPERADMIN, self::AUTH_NAME_MASTERADMIN, self::AUTH_NAME_MODERATOR, self::AUTH_NAME_ADMIN);
+					case self::AUTH_LEVEL_MASTERADMIN:
+						return array(self::AUTH_NAME_MASTERADMIN, self::AUTH_NAME_MODERATOR, self::AUTH_NAME_ADMIN, self::AUTH_NAME_SUPERADMIN);
+				}
+			break;
+
 			case self::AUTH_LEVEL_ADMIN:
-				return array(self::AUTH_NAME_ADMIN, self::AUTH_NAME_SUPERADMIN, self::AUTH_NAME_MASTERADMIN, self::AUTH_NAME_MODERATOR);
+				switch ($authLevelNeeded) {
+					case self::AUTH_LEVEL_ADMIN:
+						return array(self::AUTH_NAME_ADMIN, self::AUTH_NAME_SUPERADMIN, self::AUTH_NAME_MASTERADMIN);
+					case self::AUTH_LEVEL_SUPERADMIN:
+						return array(self::AUTH_NAME_SUPERADMIN, self::AUTH_NAME_MASTERADMIN, self::AUTH_NAME_ADMIN);
+					case self::AUTH_LEVEL_MASTERADMIN:
+						return array(self::AUTH_NAME_MASTERADMIN, self::AUTH_NAME_ADMIN, self::AUTH_NAME_SUPERADMIN);
+				}
+			break;
+
 			case self::AUTH_LEVEL_SUPERADMIN:
-				return array(self::AUTH_NAME_SUPERADMIN, self::AUTH_NAME_MASTERADMIN, self::AUTH_NAME_MODERATOR, self::AUTH_NAME_ADMIN);
+				switch ($authLevelNeeded) {
+					case self::AUTH_LEVEL_SUPERADMIN:
+						return array(self::AUTH_NAME_SUPERADMIN, self::AUTH_NAME_MASTERADMIN);
+					case self::AUTH_LEVEL_MASTERADMIN:
+						return array(self::AUTH_NAME_MASTERADMIN, self::AUTH_NAME_SUPERADMIN);
+				}
+			break;
+
+			// just for completeness, should not be used this way
 			case self::AUTH_LEVEL_MASTERADMIN:
-				return array(self::AUTH_NAME_MASTERADMIN, self::AUTH_NAME_MODERATOR, self::AUTH_NAME_ADMIN, self::AUTH_NAME_SUPERADMIN);
+				switch ($authLevelNeeded) {
+					case self::AUTH_LEVEL_MASTERADMIN:
+						return array(self::AUTH_NAME_MASTERADMIN);
+				}
+			break;
 		}
+
 		return array("-");
 	}
 }

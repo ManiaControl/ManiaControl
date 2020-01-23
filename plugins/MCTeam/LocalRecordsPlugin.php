@@ -40,26 +40,27 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 	/*
 	 * Constants
 	 */
-	const ID                           = 7;
-	const VERSION                      = 0.5;
-	const NAME                         = 'Local Records Plugin';
-	const AUTHOR                       = 'MCTeam';
-	const MLID_RECORDS                 = 'ml_local_records';
-	const TABLE_RECORDS                = 'mc_localrecords';
-	const SETTING_MULTILAP_SAVE_SINGLE = 'Save every Lap as Record in Multilap';
-	const SETTING_WIDGET_TITLE         = 'Widget Title';
-	const SETTING_WIDGET_POSX          = 'Widget Position: X';
-	const SETTING_WIDGET_POSY          = 'Widget Position: Y';
-	const SETTING_WIDGET_WIDTH         = 'Widget Width';
-	const SETTING_WIDGET_LINESCOUNT    = 'Widget Displayed Lines Count';
-	const SETTING_WIDGET_LINEHEIGHT    = 'Widget Line Height';
-	const SETTING_WIDGET_ENABLE        = 'Enable Local Records Widget';
-	const SETTING_NOTIFY_ONLY_DRIVER   = 'Notify only the Driver on New Records';
-	const SETTING_NOTIFY_BEST_RECORDS  = 'Notify Publicly only for the X Best Records';
-	const SETTING_ADJUST_OUTER_BORDER  = 'Adjust outer Border to Number of actual Records';
-	const SETTING_RECORDS_BEFORE_AFTER = 'Number of Records displayed before and after a player';
-	const CB_LOCALRECORDS_CHANGED      = 'LocalRecords.Changed';
-	const ACTION_SHOW_RECORDSLIST      = 'LocalRecords.ShowRecordsList';
+	const ID                                = 7;
+	const VERSION                           = 0.5;
+	const NAME                              = 'Local Records Plugin';
+	const AUTHOR                            = 'MCTeam';
+	const MLID_RECORDS                      = 'ml_local_records';
+	const TABLE_RECORDS                     = 'mc_localrecords';
+	const PERMISSION_DELETE_PERSONAL_RECORD = 'Permission remove personal record';
+	const SETTING_MULTILAP_SAVE_SINGLE      = 'Save every Lap as Record in Multilap';
+	const SETTING_WIDGET_TITLE              = 'Widget Title';
+	const SETTING_WIDGET_POSX               = 'Widget Position: X';
+	const SETTING_WIDGET_POSY               = 'Widget Position: Y';
+	const SETTING_WIDGET_WIDTH              = 'Widget Width';
+	const SETTING_WIDGET_LINESCOUNT         = 'Widget Displayed Lines Count';
+	const SETTING_WIDGET_LINEHEIGHT         = 'Widget Line Height';
+	const SETTING_WIDGET_ENABLE             = 'Enable Local Records Widget';
+	const SETTING_NOTIFY_ONLY_DRIVER        = 'Notify only the Driver on New Records';
+	const SETTING_NOTIFY_BEST_RECORDS       = 'Notify Publicly only for the X Best Records';
+	const SETTING_ADJUST_OUTER_BORDER       = 'Adjust outer Border to Number of actual Records';
+	const SETTING_RECORDS_BEFORE_AFTER      = 'Number of Records displayed before and after a player';
+	const CB_LOCALRECORDS_CHANGED           = 'LocalRecords.Changed';
+	const ACTION_SHOW_RECORDSLIST           = 'LocalRecords.ShowRecordsList';
 
 
 	/*
@@ -126,6 +127,15 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 		$this->recordWidget = new RecordWidget($this->maniaControl);
 
 		// Settings
+		$this->maniaControl->getSettingManager()->initSetting(
+			$this,
+			self::PERMISSION_DELETE_PERSONAL_RECORD,
+			AuthenticationManager::getPermissionLevelNameArray(
+				AuthenticationManager::AUTH_LEVEL_ADMIN,
+				AuthenticationManager::AUTH_LEVEL_PLAYER
+			)
+		);
+
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_TITLE, 'Local Records');
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_POSX, -139.);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_POSY, 75);
@@ -154,6 +164,7 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::TM_ONLAPFINISH, $this, 'handleFinishLapCallback');
 
 		$this->maniaControl->getCommandManager()->registerCommandListener(array('recs', 'records'), $this, 'showRecordsList', false, 'Shows a list of Local Records on the current map.');
+		$this->maniaControl->getCommandManager()->registerCommandListener('delrec', $this, 'deletePersonalRecord', false, 'Removes your record from the database.');
 		$this->maniaControl->getCommandManager()->registerCommandListener('delrec', $this, 'deleteRecord', true, 'Removes a record from the database.');
 
 		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_SHOW_RECORDSLIST, $this, 'handleShowRecordsList');
@@ -753,29 +764,31 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 	}
 
 	/**
-	 * Delete a Player's record
+	 * Delete the personal record
 	 *
 	 * @internal
 	 * @param array  $chat
 	 * @param Player $player
 	 */
-	public function deleteRecord(array $chat, Player $player) {
-		if (!$this->maniaControl->getAuthenticationManager()->checkRight($player, AuthenticationManager::AUTH_LEVEL_MASTERADMIN)) {
+	public function deletePersonalRecord(array $chat, Player $player) {
+		$permissionSetting = $this->maniaControl->getSettingManager()->getSettingObject($this, self::PERMISSION_DELETE_PERSONAL_RECORD);
+		if (!$this->maniaControl->getAuthenticationManager()->checkRight($player, $permissionSetting)) {
 			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
 
-		$commandParts = explode(' ', $chat[1][2]);
-		if (count($commandParts) < 2) {
-			$this->maniaControl->getChat()->sendUsageInfo('Missing Record ID! (Example: //delrec 3)', $player);
-			return;
-		}
-
-		$recordId   = (int) $commandParts[1];
 		$currentMap = $this->maniaControl->getMapManager()->getCurrentMap();
 		$records    = $this->getLocalRecords($currentMap);
-		if (count($records) < $recordId) {
-			$this->maniaControl->getChat()->sendError('Cannot remove record $<$fff' . $recordId . '$>!', $player);
+		$hasRecord  = true;
+		foreach ($records as $record) {
+			if ($record->login === $player->login) {
+				$hasRecord = true;
+				break;
+			}
+		}
+
+		if (!$hasRecord) {
+			$this->maniaControl->getChat()->sendError('You have no personal record to remove!', $player);
 			return;
 		}
 
@@ -790,7 +803,52 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 		}
 
 		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_LOCALRECORDS_CHANGED, null);
-		$this->maniaControl->getChat()->sendInformation('Record no. $<$fff' . $recordId . '$> has been removed!');
+		$this->maniaControl->getChat()->sendSuccess('$<$fff'.$player->getEscapedNickname().'$> removed his personal record!');
+	}
+
+	/**
+	 * Delete a Player's record
+	 *
+	 * @internal
+	 * @param array  $chat
+	 * @param Player $player
+	 */
+	public function deleteRecord(array $chat, Player $player) {
+		if (!$this->maniaControl->getAuthenticationManager()->checkRight($player, AuthenticationManager::AUTH_LEVEL_MASTERADMIN)) {
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
+			return;
+		}
+
+		$commandParts = explode(' ', $chat[1][2]);
+		if (count($commandParts) < 2 || strlen($commandParts[1]) == 0) {
+			$this->maniaControl->getChat()->sendUsageInfo('Missing Record ID! (Example: //delrec 3)', $player);
+			return;
+		}
+
+		$recordRank   = (int) $commandParts[1];
+		$currentMap = $this->maniaControl->getMapManager()->getCurrentMap();
+		$records    = $this->getLocalRecords($currentMap);
+		if ($recordRank <= 0 || count($records) < $recordRank) {
+			$this->maniaControl->getChat()->sendError('Cannot remove record $<$fff' . $recordRank . '$>!', $player);
+			return;
+		}
+
+		assert($recordRank == $records[$recordRank-1]->rank);
+		$playerIndex = $records[$recordRank-1]->playerIndex;
+		$playerNick  = $records[$recordRank-1]->nickname;
+
+		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
+		$query  = "DELETE FROM `" . self::TABLE_RECORDS . "`
+				WHERE `mapIndex` = {$currentMap->index}
+				AND `playerIndex` = {$playerIndex};";
+		$mysqli->query($query);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error);
+			return;
+		}
+
+		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_LOCALRECORDS_CHANGED, null);
+		$this->maniaControl->getChat()->sendSuccess('Record no. $<$fff' . $recordRank . '$> by $<$fff' . $playerNick . '$> has been removed!');
 	}
 
 	/**
