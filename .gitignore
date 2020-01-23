@@ -6,4 +6,4 @@
 /ManiaControl.log
 /ManiaControl.pid
 /plugins/
-!/plugins/MCTeam/*
+!/plugins/MCTeam/**
