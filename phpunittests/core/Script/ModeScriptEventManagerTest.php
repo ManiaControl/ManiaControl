@@ -17,7 +17,7 @@ use ManiaControl\Script\ModeScriptEventManager;
  * PHP Unit Test for Mode Script Event Manager Class
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2018 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ModeScriptEventManagerTest extends \PHPUnit_Framework_TestCase {
