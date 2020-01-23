@@ -1,4 +1,6 @@
-*.iml
+.*
+!/.git
+!/.gitignore
 /configs/server.xml
 /logs/
 /ManiaControl.log
