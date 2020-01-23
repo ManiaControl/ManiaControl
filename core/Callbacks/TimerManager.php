@@ -76,6 +76,24 @@ class TimerManager implements UsageInformationAble {
 	}
 
 	/**
+	 * Update the deltaTime of a Timer Listening
+	 * 
+	 * @param TimerListener   $listener
+	 * @param string|callable $method
+	 * @param float           $milliSeconds
+	 */
+	public function updateTimerListening(TimerListener $listener, $method, $milliSeconds) {
+		$updated = false;
+		foreach ($this->timerListenings as $key => &$listening) {
+			if ($listening->listener === $listener && $listening->method === $method) {
+				$listening->setDeltaTime($milliSeconds);
+				$updated = true;
+			}
+		}
+		return $updated;
+	}
+
+	/**
 	 * Unregister a Timer Listening
 	 *
 	 * @param TimerListener $listener
