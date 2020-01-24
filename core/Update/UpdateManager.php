@@ -458,13 +458,14 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener,
 		$this->checkAutoUpdate();
 	}
 
-    public function handleSettingChanged(Setting $setting) {
-        if (!$setting->setting != self::SETTING_UPDATECHECK_INTERVAL)
+	public function handleSettingChanged(Setting $setting) {
+		if (!$setting->setting != self::SETTING_UPDATECHECK_INTERVAL) {
 			return;
+		}
 		
 		$updateInterval = $setting->value;
 		$this->maniaControl->getTimerManager()->updateTimerListening($this, 'hourlyUpdateCheck', 1000 * 60 * 60, $updateInterval);
-    }
+	}
 
 	/**
 	 * Handle //checkupdate command
