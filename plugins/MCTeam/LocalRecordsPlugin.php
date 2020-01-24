@@ -129,21 +129,17 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 		$this->recordWidget = new RecordWidget($this->maniaControl);
 
 		// Settings
-		$this->maniaControl->getSettingManager()->initSetting(
+		$this->maniaControl->getAuthenticationManager()->definePluginPermissionLevel(
 			$this,
 			self::PERMISSION_DELETE_ANY_RECORD,
-			AuthenticationManager::getPermissionLevelNameArray(
-				AuthenticationManager::AUTH_LEVEL_SUPERADMIN,
-				AuthenticationManager::AUTH_LEVEL_MODERATOR
-			)
+			AuthenticationManager::AUTH_LEVEL_SUPERADMIN,
+			AuthenticationManager::AUTH_LEVEL_MODERATOR
 		);
-		$this->maniaControl->getSettingManager()->initSetting(
+		$this->maniaControl->getAuthenticationManager()->definePluginPermissionLevel(
 			$this,
 			self::PERMISSION_DELETE_PERSONAL_RECORD,
-			AuthenticationManager::getPermissionLevelNameArray(
-				AuthenticationManager::AUTH_LEVEL_ADMIN,
-				AuthenticationManager::AUTH_LEVEL_PLAYER
-			)
+			AuthenticationManager::AUTH_LEVEL_ADMIN,
+			AuthenticationManager::AUTH_LEVEL_PLAYER
 		);
 
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_TITLE, 'Local Records');
@@ -778,8 +774,7 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 	 * @param Player $player
 	 */
 	public function deleteAnyRecord(array $chat, Player $player) {
-		$permissionSetting = $this->maniaControl->getSettingManager()->getSettingObject($this, self::PERMISSION_DELETE_ANY_RECORD);
-		if (!$this->maniaControl->getAuthenticationManager()->checkRight($player, $permissionSetting)) {
+		if (!$this->maniaControl->getAuthenticationManager()->checkPluginPermission($this, $player, self::PERMISSION_DELETE_ANY_RECORD)) {
 			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
@@ -824,8 +819,7 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 	 * @param Player $player
 	 */
 	public function deletePersonalRecord(array $chat, Player $player) {
-		$permissionSetting = $this->maniaControl->getSettingManager()->getSettingObject($this, self::PERMISSION_DELETE_PERSONAL_RECORD);
-		if (!$this->maniaControl->getAuthenticationManager()->checkRight($player, $permissionSetting)) {
+		if (!$this->maniaControl->getAuthenticationManager()->checkPluginPermission($this, $player, self::PERMISSION_DELETE_PERSONAL_RECORD)) {
 			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}

@@ -14,6 +14,7 @@ use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
+use ManiaControl\Plugins\Plugin;
 use ManiaControl\Settings\Setting;
 
 /**
@@ -133,8 +134,10 @@ class AuthenticationManager implements CallbackListener, EchoListener, Communica
 				return self::AUTH_NAME_ADMIN;
 			case self::AUTH_LEVEL_MODERATOR:
 				return self::AUTH_NAME_MODERATOR;
+			case self::AUTH_LEVEL_PLAYER:
+				return self::AUTH_NAME_PLAYER;
 		}
-		return self::AUTH_NAME_PLAYER;
+		return '-';
 	}
 
 	/**
@@ -172,8 +175,10 @@ class AuthenticationManager implements CallbackListener, EchoListener, Communica
 				return self::AUTH_LEVEL_ADMIN;
 			case self::AUTH_NAME_MODERATOR:
 				return self::AUTH_LEVEL_MODERATOR;
+			case self::AUTH_NAME_PLAYER:
+				return self::AUTH_LEVEL_PLAYER;
 		}
-		return self::AUTH_LEVEL_PLAYER;
+		return -1;
 	}
 
 	/**
@@ -316,10 +321,6 @@ class AuthenticationManager implements CallbackListener, EchoListener, Communica
 	public static function checkRight(Player $player, $neededAuthLevel) {
 		if ($neededAuthLevel instanceof Setting) {
 			$neededAuthLevel = $neededAuthLevel->value;
-			// string of value picker
-			if (is_string($neededAuthLevel)) {
-				$neededAuthLevel = self::getAuthLevel($neededAuthLevel);
-			}
 		}
 		return ($player->authLevel >= $neededAuthLevel);
 	}
@@ -424,7 +425,21 @@ class AuthenticationManager implements CallbackListener, EchoListener, Communica
 	 */
 	public function checkPermission(Player $player, $rightName) {
 		$right = $this->maniaControl->getSettingManager()->getSettingValue($this, $rightName);
-		return $this->checkRight($player, $this->getAuthLevel($right));
+		return self::checkRight($player, self::getAuthLevel($right));
+	}
+
+	/**
+	 * Checks the permission by a right name
+	 *
+	 * @api
+	 * @param Plugin $plugin
+	 * @param Player $player
+	 * @param        $rightName
+	 * @return bool
+	 */
+	public function checkPluginPermission(Plugin $plugin, Player $player, $rightName) {
+		$right = $this->maniaControl->getSettingManager()->getSettingValue($plugin, $rightName);
+		return self::checkRight($player, self::getAuthLevel($right));
 	}
 
 	/**
@@ -433,9 +448,23 @@ class AuthenticationManager implements CallbackListener, EchoListener, Communica
 	 * @api
 	 * @param string $rightName
 	 * @param int    $authLevelNeeded
+	 * @param string $authLevelsAllowed
 	 */
-	public function definePermissionLevel($rightName, $authLevelNeeded) {
-		$this->maniaControl->getSettingManager()->initSetting($this, $rightName, self::getPermissionLevelNameArray($authLevelNeeded));
+	public function definePermissionLevel($rightName, $authLevelNeeded, $authLevelsAllowed = self::AUTH_LEVEL_MODERATOR) {
+		$this->maniaControl->getSettingManager()->initSetting($this, $rightName, self::getPermissionLevelNameArray($authLevelNeeded, $authLevelsAllowed));
+	}
+
+	/**
+	 * Define a Minimum Right Level needed for an Action
+	 *
+	 * @api
+	 * @param Plugin $plugin
+	 * @param string $rightName
+	 * @param int    $authLevelNeeded
+	 * @param string $authLevelsAllowed
+	 */
+	public function definePluginPermissionLevel(Plugin $plugin, $rightName, $authLevelNeeded, $authLevelsAllowed = self::AUTH_LEVEL_MODERATOR) {
+		$this->maniaControl->getSettingManager()->initSetting($plugin, $rightName, self::getPermissionLevelNameArray($authLevelNeeded, $authLevelsAllowed));
 	}
 
 	/**
