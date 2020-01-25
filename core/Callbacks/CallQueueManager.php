@@ -90,6 +90,22 @@ class CallQueueManager implements UsageInformationAble {
 	}
 
 	/**
+	 * Checks, if one specific listening already has been queued for a call.
+	 * Can only check for named functions.
+	 * @param CallQueueListener $listener
+	 * @param string            $method
+	 * @return bool
+	 */
+	public function hasListening(CallQueueListener $listener, string $method) {
+		foreach ($this->queueListenings as $listening) {
+			if ($listening->listener === $listener && $listening->method === $method) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Manage one of the queued calls
 	 */
 	public function manageCallQueue() {
