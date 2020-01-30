@@ -64,6 +64,7 @@ class TimerListening extends Listening implements UsageInformationAble {
 	 */
 	public function setDeltaTime($milliSeconds) {
 		$this->deltaTime = $milliSeconds / 1000.;
+		$this->lastTrigger = null;
 	}
 
 	/**
