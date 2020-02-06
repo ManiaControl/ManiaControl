@@ -12,6 +12,7 @@ use FML\Script\Features\Paging;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\Callbacks;
+use ManiaControl\Callbacks\CallQueueListener;
 use ManiaControl\Callbacks\Structures\TrackMania\OnWayPointEventStructure;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
@@ -36,7 +37,7 @@ use MCTeam\Common\RecordWidget;
  * @copyright 2014-2019 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListener, CommandListener, TimerListener, Plugin {
+class LocalRecordsPlugin implements CallbackListener, CallQueueListener, CommandListener, ManialinkPageAnswerListener, TimerListener, Plugin {
 	/*
 	 * Constants
 	 */
@@ -532,9 +533,19 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 				$message .= ' $<$fff' . Formatter::formatTime($oldRecord->time) . '$>!';
 
 				if ($oldRecord->rank <= $notifyPubliclyAt) {
-					$this->maniaControl->getChat()->sendInformation($message);
+					$this->maniaControl->getCallQueueManager()->registerListening(
+						$this,
+						function () use ($message) {
+							$this->maniaControl->getChat()->sendInformation($message);
+						}
+					);
 				} else if ($oldRecord->rank <= $notifyPrivatelyAt) {
-					$this->maniaControl->getChat()->sendInformation($message, $player);
+					$this->maniaControl->getCallQueueManager()->registerListening(
+						$this,
+						function () use ($message, $player) {
+							$this->maniaControl->getChat()->sendInformation($message, $player);
+						}
+					);
 				}
 				return;
 			}
@@ -584,9 +595,19 @@ class LocalRecordsPlugin implements ManialinkPageAnswerListener, CallbackListene
 		}
 
 		if ($newRecord->rank <= $notifyPubliclyAt) {
-			$this->maniaControl->getChat()->sendInformation($message);
+			$this->maniaControl->getCallQueueManager()->registerListening(
+				$this,
+				function () use ($message) {
+					$this->maniaControl->getChat()->sendInformation($message);
+				}
+			);
 		} else if ($newRecord->rank <= $notifyPrivatelyAt) {
-			$this->maniaControl->getChat()->sendInformation($message, $player);
+			$this->maniaControl->getCallQueueManager()->registerListening(
+				$this,
+				function () use ($message, $player) {
+					$this->maniaControl->getChat()->sendInformation($message, $player);
+				}
+			);
 		}
 
 		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_LOCALRECORDS_CHANGED, $newRecord);
