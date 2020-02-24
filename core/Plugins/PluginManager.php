@@ -563,6 +563,14 @@ class PluginManager {
 
 	/**
 	 * @internal
+	 * @return \ManiaControl\Plugins\PluginMenu
+	 */
+	public function getPluginMenu() {
+		return $this->pluginMenu;
+	}
+
+	/**
+	 * @internal
 	 * @return \ManiaControl\Plugins\InstallMenu
 	 */
 	public function getPluginInstallMenu() {

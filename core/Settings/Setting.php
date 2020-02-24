@@ -111,7 +111,7 @@ class Setting implements UsageInformationAble {
 		if (is_int($value)) {
 			return self::TYPE_INT;
 		}
-		if (is_real($value)) {
+		if (is_float($value)) {
 			return self::TYPE_REAL;
 		}
 		if (is_bool($value)) {

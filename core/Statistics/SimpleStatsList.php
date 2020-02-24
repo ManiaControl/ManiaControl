@@ -237,7 +237,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		}
 
 		//Slice Array to chunk length
-		$statRankings[$order] = array_slice($statRankings{$order}, $playerBeginIndex, self::MAX_PAGES_PER_CHUNK * self::MAX_PLAYERS_PER_PAGE, true);
+		$statRankings[$order] = array_slice($statRankings[$order], $playerBeginIndex, self::MAX_PAGES_PER_CHUNK * self::MAX_PLAYERS_PER_PAGE, true);
 		$pageNumber           = 1 + $chunkIndex * self::MAX_PAGES_PER_CHUNK;
 		foreach ($statRankings[$order] as $playerId => $value) {
 			if ($index % self::MAX_PLAYERS_PER_PAGE === 1) {
