@@ -1,6 +1,7 @@
 .*
 !/.git
 !/.gitignore
+!/.idea
 /configs/server.xml
 /logs/
 /ManiaControl.log
