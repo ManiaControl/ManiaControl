@@ -20,7 +20,7 @@ abstract class DataUtil {
 	 * @param  string $root
 	 * @return string
 	 */
-	public static function buildXmlStandaloneFromArray(array $a, string $root = '') {
+	public static function buildXmlStandaloneFromArray(array $a, $root = '') {
 		$domDocument                = new \DOMDocument("1.0", "utf-8");
 		$domDocument->xmlStandalone = true;
 
@@ -70,7 +70,7 @@ abstract class DataUtil {
 	 * @param bool  $recurse
 	 * @return array
 	 */
-	public static function implodePositions(array $a, bool $recurse = true) {
+	public static function implodePositions(array $a, $recurse = true) {
 		$result = array();
 		foreach ($a as $key => $value) {
 			if (is_array($value)) {
@@ -95,7 +95,7 @@ abstract class DataUtil {
 	 * @param string $prefix (used for recursion)
 	 * @return array
 	 */
-	public static function flattenArray(array $a, string $delimiter = '.', string $prefix = '') {
+	public static function flattenArray(array $a, $delimiter = '.', $prefix = '') {
 		$result = array();
 		foreach ($a as $key => $value)
 		{
@@ -121,7 +121,7 @@ abstract class DataUtil {
 	 * @param string $delimiter
 	 * @return array
 	 */
-	public static function unflattenArray(array $a, string $delimiter = '.') {
+	public static function unflattenArray(array $a, $delimiter = '.') {
 		$result = array();
 		foreach ($a as $key => $value) {
 			if (!is_string($key)) {

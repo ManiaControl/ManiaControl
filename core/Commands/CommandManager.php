@@ -127,7 +127,7 @@ class CommandManager implements CallbackListener, UsageInformationAble {
 	 * @param bool            $adminCommand
 	 * @param CommandListener $listener
 	 */
-	public function disableCommand($commandName, bool $adminCommand, CommandListener $listener) {
+	public function disableCommand($commandName, $adminCommand, CommandListener $listener) {
 		if (is_array($commandName)) {
 			foreach ($commandName as $command) {
 				$this->disableCommand($command, $adminCommand, $listener);
@@ -163,7 +163,7 @@ class CommandManager implements CallbackListener, UsageInformationAble {
 	 * @param bool            $adminCommand
 	 * @param CommandListener $listener
 	 */
-	public function enableCommand($commandName, bool $adminCommand, CommandListener $listener) {
+	public function enableCommand($commandName, $adminCommand, CommandListener $listener) {
 		if (is_array($commandName)) {
 			foreach ($commandName as $command) {
 				$this->enableCommand($command, $adminCommand, $listener);
@@ -198,7 +198,7 @@ class CommandManager implements CallbackListener, UsageInformationAble {
 	 * @param bool  $adminCommand
 	 * @return bool|array
 	 */
-	public function isCommandEnabled($commandName, bool $adminCommand) {
+	public function isCommandEnabled($commandName, $adminCommand) {
 		if (is_array($commandName)) {
 			$results = array();
 			foreach ($commandName as $command) {

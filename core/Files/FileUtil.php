@@ -244,7 +244,7 @@ abstract class FileUtil {
 	 * @param string $path
 	 * @return string
 	 */
-	public static function shortenPath(string $path) {
+	public static function shortenPath($path) {
 		$root = substr($path, 0, 1) === '/';
 		$path = str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $path);
 		$parts = array_filter(explode(DIRECTORY_SEPARATOR, $path), 'strlen');
