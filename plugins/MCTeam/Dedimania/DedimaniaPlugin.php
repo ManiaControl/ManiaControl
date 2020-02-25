@@ -372,6 +372,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 					$improvement = 'improved the';
 				}
 
+				$notifyName = '';
 				$notifyOnlyBestRecordsPrivate = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_NOTIFY_BEST_RECORDS_PRIVATE);
 				$notifyOnlyBestRecordsPublic = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_NOTIFY_BEST_RECORDS_PUBLIC);
 				if ($newRecord->rank <= $notifyOnlyBestRecordsPublic) {
