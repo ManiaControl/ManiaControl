@@ -187,7 +187,7 @@ class PlayerDataManager implements UsageInformationAble {
 		if (is_int($param)) {
 			return self::TYPE_INT;
 		}
-		if (is_real($param)) {
+		if (is_float($param)) {
 			return self::TYPE_REAL;
 		}
 		if (is_bool($param)) {
