@@ -253,8 +253,8 @@ class ErrorHandler {
 	 * @return bool
 	 */
 	private static function isUserErrorNumber($errorNumber) {
-		return ($errorNumber & E_USER_ERROR || $errorNumber & E_USER_WARNING || $errorNumber & E_USER_NOTICE
-		        || $errorNumber & E_USER_DEPRECATED);
+		$userError = (E_USER_ERROR | E_USER_WARNING | E_USER_NOTICE | E_USER_DEPRECATED);
+		return is_int($errorNumber) && ($errorNumber & $userError);
 	}
 
 	/**
@@ -265,7 +265,7 @@ class ErrorHandler {
 	 */
 	public static function isFatalError($errorNumber) {
 		$fatalError = (E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR);
-		return ($errorNumber & $fatalError);
+		return is_int($errorNumber) && ($errorNumber & $fatalError);
 	}
 
 	/**
