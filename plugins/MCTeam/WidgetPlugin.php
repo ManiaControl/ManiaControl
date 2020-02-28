@@ -6,6 +6,7 @@ use FML\Controls\Frame;
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_Icons128x128_1;
+use FML\Controls\Quads\Quad_Icons128x32_1;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\ManiaLink;
 use FML\Script\Script;
@@ -35,17 +36,21 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	 * Constants
 	 */
 	const PLUGIN_ID      = 1;
-	const PLUGIN_VERSION = 0.1;
+	const PLUGIN_VERSION = 0.11;
 	const PLUGIN_NAME    = 'WidgetPlugin';
-	const PLUGIN_AUTHOR  = 'kremsy';
+	const PLUGIN_AUTHOR  = 'kremsy, axelalex2';
 
 	// MapWidget Properties
-	const MLID_MAP_WIDGET              = 'WidgetPlugin.MapWidget';
-	const SETTING_MAP_WIDGET_ACTIVATED = 'Map-Widget Activated';
-	const SETTING_MAP_WIDGET_POSX      = 'Map-Widget-Position: X';
-	const SETTING_MAP_WIDGET_POSY      = 'Map-Widget-Position: Y';
-	const SETTING_MAP_WIDGET_WIDTH     = 'Map-Widget-Size: Width';
-	const SETTING_MAP_WIDGET_HEIGHT    = 'Map-Widget-Size: Height';
+	const MLID_MAP_WIDGET                = 'WidgetPlugin.MapWidget';
+	const SETTING_MAP_WIDGET_ACTIVATED   = 'Map-Widget Activated';
+	const SETTING_MAP_WIDGET_POSX        = 'Map-Widget-Position: X';
+	const SETTING_MAP_WIDGET_POSY        = 'Map-Widget-Position: Y';
+	const SETTING_MAP_WIDGET_HEIGHT      = 'Map-Widget-Size: Height';
+	const SETTING_MAP_WIDGET_WIDTH       = 'Map-Widget-Size: Width';
+	const SETTING_MAP_WIDGET_TIME_AUTHOR = 'Map-Widget-Time: Show Author';
+	const SETTING_MAP_WIDGET_TIME_GOLD   = 'Map-Widget-Time: Show Gold';
+	const SETTING_MAP_WIDGET_TIME_SILVER = 'Map-Widget-Time: Show Silver';
+	const SETTING_MAP_WIDGET_TIME_BRONZE = 'Map-Widget-Time: Show Bronze';
 
 	// ClockWidget Properties
 	const MLID_CLOCK_WIDGET              = 'WidgetPlugin.ClockWidget';
@@ -141,9 +146,13 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		// Settings
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED, true);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAP_WIDGET_POSX, 160 - 20);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAP_WIDGET_POSY, 90 - 4.5);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAP_WIDGET_POSY, 90 - 6);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAP_WIDGET_HEIGHT, 12.);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAP_WIDGET_WIDTH, 40);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAP_WIDGET_HEIGHT, 9.);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAP_WIDGET_TIME_AUTHOR, false);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAP_WIDGET_TIME_GOLD, false);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAP_WIDGET_TIME_SILVER, false);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAP_WIDGET_TIME_BRONZE, false);
 
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_SERVERINFO_WIDGET_ACTIVATED, true);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_SERVERINFO_WIDGET_POSX, -160 + 17.5);
@@ -159,7 +168,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_CLOCK_WIDGET_ACTIVATED, true);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_CLOCK_WIDGET_POSX, 160 - 5);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_CLOCK_WIDGET_POSY, 90 - 11);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_CLOCK_WIDGET_POSY, 90 - 14);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_CLOCK_WIDGET_WIDTH, 10);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_CLOCK_WIDGET_HEIGHT, 5.5);
 
@@ -247,7 +256,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 
 		$label = new Label_Text();
 		$frame->addChild($label);
-		$label->setPosition(0, 1.5, 0.2);
+		$label->setPosition(0, $height/2 - 3, 0.2);
 		$label->setTextSize(1.3);
 		$label->setText(Formatter::stripDirtyCodes($map->name));
 		$label->setTextColor('fff');
@@ -255,20 +264,56 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 
 		$label = new Label_Text();
 		$frame->addChild($label);
-		$label->setPosition(0, -1.4, 0.2);
+		$label->setPosition(0, $height/2 - 6, 0.2);
 		$label->setTextSize(1);
 		$label->setScale(0.8);
 		$label->setText($map->authorLogin);
 		$label->setTextColor('fff');
 		$label->setSize($width - 5, $height);
 
+		$displayTimeAuthor = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MAP_WIDGET_TIME_AUTHOR);
+		$displayTimeGold   = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MAP_WIDGET_TIME_GOLD  );
+		$displayTimeSilver = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MAP_WIDGET_TIME_SILVER);
+		$displayTimeBronze = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MAP_WIDGET_TIME_BRONZE);
+		if ($displayTimeAuthor || $displayTimeGold || $displayTimeSilver || $displayTimeBronze) {
+			$times = array();
+			if ($displayTimeAuthor && $map->authorTime > 0) {
+				array_push($times, '$8b4' . Formatter::formatTime($map->authorTime));
+			}
+			if ($displayTimeGold && $map->goldTime > 0) {
+				array_push($times, '$dc5' . Formatter::formatTime($map->goldTime));
+			}
+			if ($displayTimeSilver && $map->silverTime > 0) {
+				array_push($times, '$aaa' . Formatter::formatTime($map->silverTime));
+			}
+			if ($displayTimeBronze && $map->bronzeTime > 0) {
+				array_push($times, '$c95' . Formatter::formatTime($map->bronzeTime));
+			}
+			$times = '$s' . implode('$s$fff // $s', $times);
+
+			$quad = new Quad_Icons128x32_1();
+			$frame->addChild($quad);
+			$quad->setPosition(-$width/2 + 3, -3, -0.5);
+			$quad->setSize(3.5, 3.5);
+			$quad->setSubStyle($quad::SUBSTYLE_RT_TimeAttack);
+
+			$label = new Label_Text();
+			$frame->addChild($label);
+			$label->setPosition(0, -3, 0.2);
+			$label->setScale(0.8);
+			$label->setSize($width - 5, $height);
+			$label->setText($times);
+			$label->setTextColor('fff');
+			$label->setTextSize(1);
+		}
+
 		if (isset($map->mx->pageurl)) {
 			$quad = new Quad();
 			$frame->addChild($quad);
 			$quad->setImageFocusUrl($this->maniaControl->getManialinkManager()->getIconManager()->getIcon(IconManager::MX_ICON_MOVER));
 			$quad->setImageUrl($this->maniaControl->getManialinkManager()->getIconManager()->getIcon(IconManager::MX_ICON));
-			$quad->setPosition(-$width / 2 + 4, -1.5, -0.5);
-			$quad->setSize(4, 4);
+			$quad->setPosition($width/2 - 3, -3, -0.5);
+			$quad->setSize(3.5, 3.5);
 			$quad->setUrl($map->mx->pageurl);
 		}
 
