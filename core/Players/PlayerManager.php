@@ -3,6 +3,7 @@
 namespace ManiaControl\Players;
 
 use ManiaControl\Admin\AdminLists;
+use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
@@ -374,10 +375,13 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 		$logMessage = "Player left: {$player->login} / {$player->nickname} Playtime: {$played}";
 		Logger::logInfo($logMessage, true);
 
-		if (!$player->isSpectator && $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_JOIN_LEAVE_MESSAGES) && !$player->isFakePlayer()
+		if (!$player->isSpectator && $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_JOIN_LEAVE_MESSAGES)
 		    || $player->isSpectator && $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_JOIN_LEAVE_MESSAGES_SPECTATOR)
 		) {
-			$this->maniaControl->getChat()->sendChat('$0f0$<$fff' . $player->nickname . '$> has left the game');
+			$color = $this->maniaControl->getChat()->getColorByPlayer($player);
+			$authname = AuthenticationManager::getAuthLevelName($player->authLevel);
+			$nickname = $player->getEscapedNickname();
+			$this->maniaControl->getChat()->sendChat("{$color}{$authname} {$nickname} has left after \$fff{$played}!");
 		}
 
 		//Destroys stored PlayerData, after all Disconnect Callbacks got Handled
@@ -484,20 +488,22 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 
 		//Check if Player finished joining the game
 		if ($player->hasJoinedGame && !$prevJoinState) {
+			$color = $this->maniaControl->getChat()->getColorByPlayer($player);
+			$authname = AuthenticationManager::getAuthLevelName($player->authLevel);
+			$nickname = $player->getEscapedNickname();
+			$nation = '$<$fff' . $player->getCountry() . '$>';
 
 			if (!$player->isSpectator && $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_JOIN_LEAVE_MESSAGES) && !$player->isFakePlayer()) {
-				$string      = array(0 => '$0f0Player', 1 => '$0f0Moderator', 2 => '$0f0Admin', 3 => '$0f0SuperAdmin', 4 => '$0f0MasterAdmin');
-				$chatMessage = '$0f0' . $string[$player->authLevel] . ' $<$fff' . $player->nickname . '$> Nation: $<$fff' . $player->getCountry() . '$> joined!';
+				$chatMessage = "{$color}{$authname} {$nickname} Nation: {$nation} joined!";
 				$this->maniaControl->getChat()->sendChat($chatMessage);
 			} else if ($player->isSpectator && $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_JOIN_LEAVE_MESSAGES_SPECTATOR)) {
-				$string      = array(0 => '$0f0Player', 1 => '$0f0Moderator', 2 => '$0f0Admin', 3 => '$0f0SuperAdmin', 4 => '$0f0MasterAdmin');
-				$chatMessage = '$0f0' . $string[$player->authLevel] . ' $<$fff' . $player->nickname . '$> Nation: $<$fff' . $player->getCountry() . '$> joined as Spectator!';
+				$chatMessage = "{$color}{$authname} {$nickname} Nation: {$nation} joined as Spectator!";
 				$this->maniaControl->getChat()->sendChat($chatMessage);
 			}
 
 			$this->maniaControl->getChat()->sendInformation('This server uses ManiaControl v' . ManiaControl::VERSION . '!', $player->login);
 
-			$logMessage = "Player joined: {$player->login} / {$player->nickname} Nation: " . $player->getCountry() . " IP: {$player->ipAddress}";
+			$logMessage = "Player joined: {$player->login} / {$player->nickname} Nation: {$nation} IP: {$player->ipAddress}";
 			Logger::logInfo($logMessage, true);
 
 			// Increment the Player Join Count
