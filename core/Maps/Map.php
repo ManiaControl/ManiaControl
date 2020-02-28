@@ -33,6 +33,8 @@ class Map implements Dumpable, UsageInformationAble {
 	public $environment   = null;
 	public $authorTime    = -1;
 	public $goldTime      = -1;
+	public $silverTime    = -1;
+	public $bronzeTime    = -1;
 	public $copperPrice   = -1;
 	public $mapType       = null;
 	public $mapStyle      = null;
@@ -69,6 +71,8 @@ class Map implements Dumpable, UsageInformationAble {
 		$this->environment   = $mpMap->environnement;
 		$this->authorTime    = $mpMap->authorTime;
 		$this->goldTime      = $mpMap->goldTime;
+		$this->silverTime    = $mpMap->silverTime;
+		$this->bronzeTime    = $mpMap->bronzeTime;
 		$this->copperPrice   = $mpMap->copperPrice;
 		$this->mapType       = $mpMap->mapType;
 		$this->mapStyle      = $mpMap->mapStyle;

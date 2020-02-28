@@ -681,6 +681,10 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 
 		if (array_key_exists($rpcMap->uId, $this->maps)) {
 			$this->currentMap                = $this->maps[$rpcMap->uId];
+			$this->currentMap->authorTime    = $rpcMap->authorTime;
+			$this->currentMap->goldTime      = $rpcMap->goldTime;
+			$this->currentMap->silverTime    = $rpcMap->silverTime;
+			$this->currentMap->bronzeTime    = $rpcMap->bronzeTime;
 			$this->currentMap->nbCheckpoints = $rpcMap->nbCheckpoints;
 			$this->currentMap->nbLaps        = $rpcMap->nbLaps;
 			return $this->currentMap;
@@ -835,6 +839,10 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 			$this->currentMap = $this->maps[$uid];
 			if (!$this->currentMap->nbCheckpoints || !$this->currentMap->nbLaps) {
 				$rpcMap                          = $this->maniaControl->getClient()->getCurrentMapInfo();
+				$this->currentMap->authorTime    = $rpcMap->authorTime;
+				$this->currentMap->goldTime      = $rpcMap->goldTime;
+				$this->currentMap->silverTime    = $rpcMap->silverTime;
+				$this->currentMap->bronzeTime    = $rpcMap->bronzeTime;
 				$this->currentMap->nbLaps        = $rpcMap->nbLaps;
 				$this->currentMap->nbCheckpoints = $rpcMap->nbCheckpoints;
 			}
