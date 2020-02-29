@@ -38,7 +38,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	const PLUGIN_ID      = 1;
 	const PLUGIN_VERSION = 0.11;
 	const PLUGIN_NAME    = 'WidgetPlugin';
-	const PLUGIN_AUTHOR  = 'kremsy, axelalex2';
+	const PLUGIN_AUTHOR  = 'MCTeam';
 
 	// MapWidget Properties
 	const MLID_MAP_WIDGET                = 'WidgetPlugin.MapWidget';
@@ -293,7 +293,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 
 			$quad = new Quad_Icons128x32_1();
 			$frame->addChild($quad);
-			$quad->setPosition(-$width/2 + 3, -3, -0.5);
+			$quad->setPosition(-$width/2 + 3, -$height/2 + 3, -0.5);
 			$quad->setSize(3.5, 3.5);
 			$quad->setSubStyle($quad::SUBSTYLE_RT_TimeAttack);
 
@@ -312,7 +312,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 			$frame->addChild($quad);
 			$quad->setImageFocusUrl($this->maniaControl->getManialinkManager()->getIconManager()->getIcon(IconManager::MX_ICON_MOVER));
 			$quad->setImageUrl($this->maniaControl->getManialinkManager()->getIconManager()->getIcon(IconManager::MX_ICON));
-			$quad->setPosition($width/2 - 3, -3, -0.5);
+			$quad->setPosition($width/2 - 3, -$height/2 + 3, -0.5);
 			$quad->setSize(3.5, 3.5);
 			$quad->setUrl($map->mx->pageurl);
 		}
