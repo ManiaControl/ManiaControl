@@ -41,6 +41,7 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 	const CB_PLAYERINFOSCHANGED                 = 'PlayerManagerCallback.PlayerInfosChanged';
 	const CB_SERVER_EMPTY                       = 'PlayerManagerCallback.ServerEmpty';
 	const TABLE_PLAYERS                         = 'mc_players';
+	const SETTING_JOIN_LEAVE_COLORING           = 'Enable Join & Leave Coloring';
 	const SETTING_JOIN_LEAVE_MESSAGES           = 'Enable Join & Leave Messages';
 	const SETTING_JOIN_LEAVE_MESSAGES_SPECTATOR = 'Enable Join & Leave Messages for Spectators';
 	const STAT_JOIN_COUNT                       = 'Joins';
@@ -92,6 +93,7 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 		$this->adminLists        = new AdminLists($maniaControl);
 
 		// Settings
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_JOIN_LEAVE_COLORING, false);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES, true);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_JOIN_LEAVE_MESSAGES_SPECTATOR, true);
 
@@ -378,7 +380,10 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 		if (!$player->isSpectator && $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_JOIN_LEAVE_MESSAGES)
 		    || $player->isSpectator && $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_JOIN_LEAVE_MESSAGES_SPECTATOR)
 		) {
-			$color = $this->maniaControl->getChat()->getColorByPlayer($player);
+			$color = '$0f0';
+			if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_JOIN_LEAVE_COLORING)) {
+				$color = $this->maniaControl->getColorManager()->getColorByPlayer($player);
+			}
 			$authname = AuthenticationManager::getAuthLevelName($player->authLevel);
 			$nickname = $player->getEscapedNickname();
 			$this->maniaControl->getChat()->sendChat("{$color}{$authname} {$nickname} has left after \$fff{$played}!");
@@ -488,7 +493,10 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 
 		//Check if Player finished joining the game
 		if ($player->hasJoinedGame && !$prevJoinState) {
-			$color = $this->maniaControl->getChat()->getColorByPlayer($player);
+			$color = '$0f0';
+			if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_JOIN_LEAVE_COLORING)) {
+				$color = $this->maniaControl->getColorManager()->getColorByPlayer($player);
+			}
 			$authname = AuthenticationManager::getAuthLevelName($player->authLevel);
 			$nickname = $player->getEscapedNickname();
 			$nation = '$<$fff' . $player->getCountry() . '$>';

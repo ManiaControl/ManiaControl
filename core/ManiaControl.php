@@ -4,6 +4,7 @@ namespace ManiaControl;
 
 use ManiaControl\Admin\ActionsMenu;
 use ManiaControl\Admin\AuthenticationManager;
+use ManiaControl\Admin\ColorManager;
 use ManiaControl\Bills\BillManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
@@ -93,6 +94,10 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 	 * @see getChat()
 	 */
 	private $chat = null;
+	/** @var ColorManager $colorManager
+	 * @see getColorManager()
+	 */
+	private $colorManager = null;
 	/** @var \SimpleXMLElement $config
 	 * @see getConfig()
 	 */
@@ -202,6 +207,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 		$this->server                 = new Server($this);
 		$this->authenticationManager  = new AuthenticationManager($this);
 		$this->playerManager          = new PlayerManager($this);
+		$this->colorManager           = new ColorManager($this);
 		$this->mapManager             = new MapManager($this);
 		$this->configurator           = new Configurator($this);
 		$this->pluginManager          = new PluginManager($this);
@@ -449,6 +455,15 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 	 */
 	public function getPlayerManager() {
 		return $this->playerManager;
+	}
+
+	/**
+	 * Return the color manager
+	 *
+	 * @return ColorManager
+	 */
+	public function getColorManager() {
+		return $this->colorManager;
 	}
 
 	/**
