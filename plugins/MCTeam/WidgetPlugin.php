@@ -146,8 +146,8 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		// Settings
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED, true);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAP_WIDGET_POSX, 160 - 20);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAP_WIDGET_POSY, 90 - 6);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAP_WIDGET_HEIGHT, 12.);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAP_WIDGET_POSY, 90 - 4.5);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAP_WIDGET_HEIGHT, 9.);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAP_WIDGET_WIDTH, 40);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAP_WIDGET_TIME_AUTHOR, false);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAP_WIDGET_TIME_GOLD, false);
@@ -168,7 +168,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_CLOCK_WIDGET_ACTIVATED, true);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_CLOCK_WIDGET_POSX, 160 - 5);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_CLOCK_WIDGET_POSY, 90 - 14);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_CLOCK_WIDGET_POSY, 90 - 11);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_CLOCK_WIDGET_WIDTH, 10);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_CLOCK_WIDGET_HEIGHT, 5.5);
 
