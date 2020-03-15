@@ -402,7 +402,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener,
 			// Set the build date
 			$this->setBuildDate($updateData->releaseDate);
 
-			$message = 'Update finished!';
+			$message = 'Update finished! See what we updated with $<$fff//chatlog$>!';
 			if ($player) {
 				$this->maniaControl->getChat()->sendSuccess($message, $player);
 			}

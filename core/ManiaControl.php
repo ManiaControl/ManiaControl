@@ -34,6 +34,7 @@ use ManiaControl\Script\ModeScriptEventManager;
 use ManiaControl\Server\Server;
 use ManiaControl\Settings\SettingManager;
 use ManiaControl\Statistics\StatisticManager;
+use ManiaControl\Update\ChangeLog;
 use ManiaControl\Update\UpdateManager;
 use ManiaControl\Utils\CommandLineHelper;
 use ManiaControl\Utils\SystemUtil;
@@ -94,6 +95,10 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 	 * @see getChat()
 	 */
 	private $chat = null;
+	/** @var ChangeLog $changeLog
+	 * @see getChangeLog()
+	 */
+	private $changeLog = null;
 	/** @var ColorManager $colorManager
 	 * @see getColorManager()
 	 */
@@ -212,6 +217,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 		$this->configurator           = new Configurator($this);
 		$this->pluginManager          = new PluginManager($this);
 		$this->updateManager          = new UpdateManager($this);
+		$this->changeLog              = new ChangeLog($this);
 
 		$this->getErrorHandler()->init();
 
@@ -344,6 +350,15 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 	 */
 	public function getChat() {
 		return $this->chat;
+	}
+
+	/**
+	 * Return the changelog
+	 *
+	 * @return ChangeLog
+	 */
+	public function getChangeLog() {
+		return $this->changeLog;
 	}
 
 	/**
