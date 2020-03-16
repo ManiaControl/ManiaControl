@@ -153,8 +153,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 		$this->recordWidget = new RecordWidget($this->maniaControl);
 		
-		if ($this->maniaControl->getServer()->getGameMode() == 0)
-		{
+		if ($this->maniaControl->getServer()->getGameMode() == 0) {
 			$gameMode = $this->maniaControl->getClient()->getScriptName()['CurrentValue'];
 			$this->isMultilap = ($gameMode == 'Laps.Script.txt' || $this->maniaControl->getMapManager()->getCurrentMap()->nbLaps > 0);
 			$this->isRounds = ($gameMode == 'Rounds.Script.txt');			
@@ -178,6 +177,8 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_ENABLE)) {
 			$this->sendManialink();
+		} else {
+			$this->maniaControl->getManialinkManager()->hideManialink(self::MLID_DEDIMANIA);
 		}
 	}
 
@@ -748,6 +749,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * @see \ManiaControl\Plugins\Plugin::unload()
 	 */
 	public function unload() {
+		$this->maniaControl->getManialinkManager()->hideManialink(self::MLID_DEDIMANIA);
 	}
 
 	/**
