@@ -24,6 +24,8 @@ use ManiaControl\Manialinks\SidebarMenuManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
+use ManiaControl\Settings\Setting;
+use ManiaControl\Settings\SettingManager;
 
 /**
  * ManiaControl Donation Plugin
@@ -37,7 +39,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin, Sideb
 	 * Constants
 	 */
 	const ID                               = 3;
-	const VERSION                          = 0.1;
+	const VERSION                          = 0.11;
 	const AUTHOR                           = 'MCTeam';
 	const NAME                             = 'Donation Plugin';
 	const SETTING_ANNOUNCE_SERVER_DONATION = 'Enable Server-Donation Announcements';
@@ -113,6 +115,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin, Sideb
 		// Register for callbacks
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(SettingManager::CB_SETTING_CHANGED, $this, 'handleSettingChanged');
 
 		// Define player stats
 		$this->maniaControl->getStatisticManager()->defineStatMetaData(self::STAT_PLAYER_DONATIONS);
@@ -137,6 +140,8 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin, Sideb
 	public function displayWidget() {
 		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_DONATE_WIDGET_ACTIVATED)) {
 			$this->displayDonateWidget();
+		} else {
+			$this->maniaControl->getManialinkManager()->hideManialink(self::MLID_DONATE_WIDGET);
 		}
 	}
 
@@ -235,6 +240,20 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin, Sideb
 	 */
 	public function unload() {
 		$this->maniaControl->getManialinkManager()->hideManialink(self::MLID_DONATE_WIDGET);
+	}
+
+	/**
+	 * Handle Setting Changed Callback
+	 *
+	 * @internal
+	 * @param Setting $setting
+	 */
+	public function handleSettingChanged(Setting $setting) {
+		if (!$setting->belongsToClass($this)) {
+			return;
+		}
+
+		$this->displayWidget();
 	}
 
 	/**

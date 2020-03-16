@@ -36,7 +36,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	 * Constants
 	 */
 	const PLUGIN_ID      = 1;
-	const PLUGIN_VERSION = 0.11;
+	const PLUGIN_VERSION = 0.12;
 	const PLUGIN_NAME    = 'WidgetPlugin';
 	const PLUGIN_AUTHOR  = 'MCTeam';
 
@@ -213,12 +213,20 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MAP_WIDGET_ACTIVATED)) {
 			$this->maniaControl->getModeScriptEventManager()->setSiegeProgressionUIPosition("160.", "-67.", "0.");
 			$this->displayMapWidget();
+		} else {
+			$this->closeWidget(self::MLID_MAP_WIDGET);
 		}
+
 		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_CLOCK_WIDGET_ACTIVATED)) {
 			$this->displayClockWidget();
+		} else {
+			$this->closeWidget(self::MLID_CLOCK_WIDGET);
 		}
+
 		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SERVERINFO_WIDGET_ACTIVATED)) {
 			$this->displayServerInfoWidget();
+		} else {
+			$this->closeWidget(self::MLID_SERVERINFO_WIDGET);
 		}
 	}
 
@@ -619,7 +627,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	 */
 	public function updateSettings(Setting $setting) {
 		if ($setting->belongsToClass($this)) {
-			$this->displayWIdgets();
+			$this->displayWidgets();
 
 			//Update Nadeo Default Widgets
 			if ($setting->setting == self::SETTING_TM_LIVE_INFO_WIDGET_POSX || $setting->setting == self::SETTING_TM_LIVE_INFO_WIDGET_POSY) {
