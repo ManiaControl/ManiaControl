@@ -34,7 +34,7 @@ use MCTeam\Common\RecordWidget;
  * ManiaControl Local Records Plugin
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class LocalRecordsPlugin implements CallbackListener, CallQueueListener, CommandListener, ManialinkPageAnswerListener, TimerListener, Plugin {

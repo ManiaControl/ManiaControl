@@ -16,6 +16,7 @@ use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
+use Maniaplanet\DedicatedServer\Xmlrpc\FaultException;
 use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
 
 /**
@@ -225,7 +226,7 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 		try {
 			$this->maniaControl->getClient()->sendModeScriptCommands(array('Command_ForceWarmUp' => true));
 			$this->maniaControl->getChat()->sendInformation($player->getEscapedNickname() . ' paused the Game!');
-		} catch (GameModeException $e) {
+		} catch (GameModeException | FaultException $e) {
 		}
 
 		try {
@@ -235,7 +236,7 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 
 			//Especially for chase, force end of the round to reach a draw
 			$this->maniaControl->getClient()->sendModeScriptCommands(array('Command_ForceEndRound' => true));
-		} catch (GameModeException $ex) {
+		} catch (GameModeException | FaultException $ex) {
 		}
 
 		//TODO verify if not everything is replaced through the new pause

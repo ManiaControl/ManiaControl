@@ -37,6 +37,7 @@ use ManiaControl\Settings\SettingManager;
 use ManiaControl\Utils\ColorUtil;
 use Maniaplanet\DedicatedServer\Structures\VoteRatio;
 use Maniaplanet\DedicatedServer\Xmlrpc\ChangeInProgressException;
+use Maniaplanet\DedicatedServer\Xmlrpc\FaultException;
 use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
 
 
@@ -524,7 +525,7 @@ class CustomVotesPlugin implements SidebarMenuEntryListener, CommandListener, Ca
 						//Gamemodes like Elite, Speedball
 						$this->maniaControl->getClient()->sendModeScriptCommands(array('Command_ForceWarmUp' => true));
 						$this->maniaControl->getChat()->sendInformation('$f8fVote to $fffpause the current Game$f8f has been successful!');
-					} catch (GameModeException $ex) {
+					} catch (GameModeException | FaultException $ex) {
 					}
 
 					//TODO verify if not everything is replaced through the new pause
