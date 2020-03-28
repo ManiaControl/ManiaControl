@@ -226,7 +226,7 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 		try {
 			$this->maniaControl->getClient()->sendModeScriptCommands(array('Command_ForceWarmUp' => true));
 			$this->maniaControl->getChat()->sendInformation($player->getEscapedNickname() . ' paused the Game!');
-		} catch (GameModeException | FaultException $e) {
+		} catch (GameModeException $e) {
 		}
 
 		try {
@@ -242,7 +242,6 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 		//TODO verify if not everything is replaced through the new pause
 		$this->maniaControl->getModeScriptEventManager()->startPause();
 		$this->maniaControl->getChat()->sendInformation('$f8fVote to $fffpause the current Game$f8f has been successful!');
-
 	}
 
 	/**

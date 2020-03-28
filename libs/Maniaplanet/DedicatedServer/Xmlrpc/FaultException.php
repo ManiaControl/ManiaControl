@@ -96,6 +96,9 @@ class FaultException extends Exception {
 			case 'No map to export in playlist.':
 				return new FileException($faultString, $faultCode);
 		}
+		if (preg_match('~^Unknown command \'.*\'\.$~iu', $faultString)) {
+			return new GameModeException($faultString, $faultCode);
+		}
 		if (preg_match('~^Unknown setting \'.*\'\.$~iu', $faultString)) {
 			return new GameModeException($faultString, $faultCode);
 		}

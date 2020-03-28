@@ -525,7 +525,7 @@ class CustomVotesPlugin implements SidebarMenuEntryListener, CommandListener, Ca
 						//Gamemodes like Elite, Speedball
 						$this->maniaControl->getClient()->sendModeScriptCommands(array('Command_ForceWarmUp' => true));
 						$this->maniaControl->getChat()->sendInformation('$f8fVote to $fffpause the current Game$f8f has been successful!');
-					} catch (GameModeException | FaultException $ex) {
+					} catch (GameModeException $ex) {
 					}
 
 					//TODO verify if not everything is replaced through the new pause
