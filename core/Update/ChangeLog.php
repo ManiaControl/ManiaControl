@@ -84,6 +84,7 @@ class ChangeLog implements CommandListener {
 
 		$posX = -0.45*$width;
 		$initialPosY = 0.4*$height - 5;
+		$posY = $initialPosY;
 
 		$changelog = $this->getChangeLogArray();
 		if (empty($changelog)) {

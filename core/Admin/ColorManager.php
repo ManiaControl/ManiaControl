@@ -72,7 +72,7 @@ class ColorManager implements UsageInformationAble {
 	 * @return string
 	 */
 	public function getColorByName($authName) {
-		switch ($authLevel) {
+		switch ($authName) {
 			case AuthenticationManager::AUTH_NAME_PLAYER:
 				return $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_COLOR_PLAYER);
 			case AuthenticationManager::AUTH_NAME_MODERATOR:
