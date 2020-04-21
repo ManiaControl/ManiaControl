@@ -236,7 +236,7 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 
 			//Especially for chase, force end of the round to reach a draw
 			$this->maniaControl->getClient()->sendModeScriptCommands(array('Command_ForceEndRound' => true));
-		} catch (GameModeException | FaultException $ex) {
+		} catch (GameModeException $e) {
 		}
 
 		//TODO verify if not everything is replaced through the new pause
