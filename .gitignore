@@ -2,7 +2,8 @@
 !/.git
 !/.gitignore
 !/.idea
-/configs/server.xml
+/configs/*
+!/configs/server.default.xml
 /logs/
 /ManiaControl.log
 /ManiaControl.pid
