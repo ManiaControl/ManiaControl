@@ -107,7 +107,7 @@ class MapActions implements CommunicationListener, UsageInformationAble {
 		//TODO message
 
 		// Force an EndMap on the MapQueue to set the next Map
-		$this->maniaControl->getMapManager()->getMapQueue()->endMap(null);
+		$this->maniaControl->getMapManager()->getMapQueue()->endMap();
 
 		// Ignore EndMap on MapQueue
 		$this->maniaControl->getMapManager()->getMapQueue()->dontQueueNextMapChange();
