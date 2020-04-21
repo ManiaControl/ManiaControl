@@ -57,10 +57,8 @@ class ChangeLog implements CommandListener {
 	 */
 	public function handle_ChangeLog(array $chatCallback, Player $player) {
 		// Build Manialink
-		$height       = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsHeight();
-		$width        = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsWidth();
-		$quadStyle    = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultMainWindowStyle();
-		$quadSubstyle = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultMainWindowSubStyle();
+		$height = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsHeight();
+		$width  = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsWidth();
 
 		$manialink = new ManiaLink(ManialinkManager::MAIN_MLID);
 		$script    = $manialink->getScript();
