@@ -225,7 +225,7 @@ abstract class Formatter implements UsageInformationAble {
 	 * Make sure the given Text is encoded in UTF-8
 	 *
 	 * @param string $text
-	 * @return string
+	 * @return array|string
 	 */
 	public static function utf8($text) {
 		if (is_array($text)) {

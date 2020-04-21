@@ -5,7 +5,7 @@ namespace ManiaControl\Callbacks\Structures\ShootMania;
 
 use ManiaControl\Callbacks\Structures\Common\CommonScoresStructure;
 use ManiaControl\Callbacks\Structures\ShootMania\Models\PlayerScore;
-use ManiaControl\Callbacks\Structures\ShootMania\Models\TeamScore;
+
 use ManiaControl\ManiaControl;
 
 

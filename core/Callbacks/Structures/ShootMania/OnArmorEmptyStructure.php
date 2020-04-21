@@ -2,7 +2,7 @@
 
 namespace ManiaControl\Callbacks\Structures\ShootMania;
 
-use ManiaControl\ManiaControl;
+
 
 /**
  * Structure Class for the OnArmorEmpty Structure Callback

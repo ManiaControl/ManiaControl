@@ -3,7 +3,7 @@
 namespace ManiaControl\Statistics;
 
 use FML\Controls\Frame;
-use FML\Controls\Label;
+
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
@@ -15,7 +15,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Commands\CommandListener;
-use ManiaControl\Logger;
+
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\LabelLine;
 use ManiaControl\Manialinks\ManialinkManager;

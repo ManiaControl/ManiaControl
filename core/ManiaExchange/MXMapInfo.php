@@ -28,7 +28,7 @@ class MXMapInfo {
 	 *
 	 * @param String $prefix MX URL prefix
 	 * @param        $mx
-	 * @return MXMapInfo
+	 * @return \ManiaControl\ManiaExchange\MXMapInfo|void
 	 */
 	public function __construct($prefix, $mx) {
 		$this->prefix = $prefix;

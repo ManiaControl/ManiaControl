@@ -3,8 +3,8 @@
 namespace ManiaControl\Callbacks\Structures\ShootMania;
 
 
-use ManiaControl\Callbacks\Structures\Common\BaseStructure;
-use ManiaControl\ManiaControl;
+
+
 
 /**
  * Structure Class for the Default Event Structure Callback

@@ -3,8 +3,6 @@
 namespace ManiaControl\Callbacks\Structures\Common;
 
 
-use ManiaControl\Callbacks\Structures\Common\BaseStructure;
-use ManiaControl\Callbacks\Structures\Common\BaseTimeStructure;
 use ManiaControl\ManiaControl;
 
 /**

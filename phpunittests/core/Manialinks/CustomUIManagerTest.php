@@ -1,7 +1,5 @@
 <?php
 
-use ManiaControl\ManiaControl;
-
 /**
  * PHP Unit Test for Custom UI Manager
  *

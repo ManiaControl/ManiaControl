@@ -3,10 +3,10 @@
 namespace ManiaControl\Callbacks\Structures\TrackMania;
 
 
-use ManiaControl\Callbacks\Structures\Common\BaseStructure;
-use ManiaControl\Callbacks\Structures\Common\BaseTimeStructure;
+
+
 use ManiaControl\Callbacks\Structures\ShootMania\CommonDefaultEventStructure;
-use ManiaControl\ManiaControl;
+
 
 /**
  * Structure Class for the Default Event Structure Callback

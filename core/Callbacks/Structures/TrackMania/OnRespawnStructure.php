@@ -6,7 +6,7 @@ namespace ManiaControl\Callbacks\Structures\TrackMania;
 use ManiaControl\Callbacks\Models\RecordCallback;
 use ManiaControl\Callbacks\Structures\Common\BasePlayerTimeStructure;
 use ManiaControl\ManiaControl;
-use ManiaControl\Utils\Formatter;
+
 
 /**
  * Structure Class for the On Respawn Structure Callback

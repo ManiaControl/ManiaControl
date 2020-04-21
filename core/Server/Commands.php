@@ -9,14 +9,12 @@ use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\Structures\Common\StatusCallbackStructure;
-use ManiaControl\Callbacks\Structures\TrackMania\OnPointsRepartitionStructure;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
-use Maniaplanet\DedicatedServer\Xmlrpc\FaultException;
 use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
 
 /**
@@ -30,17 +28,17 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 	/*
 	 * Constants
 	 */
-	const ACTION_SET_PAUSE                                = 'ServerCommands.SetPause';
-	const ACTION_EXTEND_WARMUP                            = 'ServerCommands.ExtendWarmup';
-	const ACTION_END_WARMUP                               = 'ServerCommands.EndWarmup';
-	const ACTION_CANCEL_VOTE                              = 'ServerCommands.CancelVote';
-	const CB_VOTE_CANCELLED                               = 'ServerCommands.VoteCancelled';
-	const SETTING_PERMISSION_CANCEL_VOTE                  = 'Cancel Vote';
-	const SETTING_PERMISSION_SET_PAUSE                    = 'Set Pause';
-	const SETTING_PERMISSION_HANDLE_WARMUP                = 'Handle Warmup';
-	const SETTING_PERMISSION_SHOW_SYSTEMINFO              = 'Show SystemInfo';
-	const SETTING_PERMISSION_SHUTDOWN_SERVER              = 'Shutdown Server';
-	const SETTING_PERMISSION_CHANGE_SERVERSETTINGS        = 'Change ServerSettings';
+	const ACTION_SET_PAUSE                         = 'ServerCommands.SetPause';
+	const ACTION_EXTEND_WARMUP                     = 'ServerCommands.ExtendWarmup';
+	const ACTION_END_WARMUP                        = 'ServerCommands.EndWarmup';
+	const ACTION_CANCEL_VOTE                       = 'ServerCommands.CancelVote';
+	const CB_VOTE_CANCELLED                        = 'ServerCommands.VoteCancelled';
+	const SETTING_PERMISSION_CANCEL_VOTE           = 'Cancel Vote';
+	const SETTING_PERMISSION_SET_PAUSE             = 'Set Pause';
+	const SETTING_PERMISSION_HANDLE_WARMUP         = 'Handle Warmup';
+	const SETTING_PERMISSION_SHOW_SYSTEMINFO       = 'Show SystemInfo';
+	const SETTING_PERMISSION_SHUTDOWN_SERVER       = 'Shutdown Server';
+	const SETTING_PERMISSION_CHANGE_SERVERSETTINGS = 'Change ServerSettings';
 
 	/*
 	 * Private properties

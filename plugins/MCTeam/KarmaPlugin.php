@@ -736,7 +736,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	 * Get all players votes
 	 *
 	 * @param Map $map
-	 * @return array
+	 * @return array|bool
 	 */
 	public function getMapPlayerVotes(Map $map) {
 		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
@@ -893,7 +893,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	 * Get the current Votes for the Map
 	 *
 	 * @param Map $map
-	 * @return array
+	 * @return array|bool
 	 */
 	public function getMapVotes(Map $map) {
 		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
