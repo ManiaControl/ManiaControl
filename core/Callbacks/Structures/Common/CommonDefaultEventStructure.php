@@ -3,7 +3,6 @@
 namespace ManiaControl\Callbacks\Structures\ShootMania;
 
 
-use ManiaControl\Callbacks\Structures\Common\BaseStructure;
 use ManiaControl\Callbacks\Structures\Common\BaseTimeStructure;
 use ManiaControl\ManiaControl;
 

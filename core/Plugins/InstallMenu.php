@@ -11,7 +11,6 @@ use FML\Script\Features\Paging;
 use FML\Script\Script;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Configurator\ConfiguratorMenu;
-use ManiaControl\Files\AsyncHttpRequest;
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;

@@ -3,7 +3,7 @@
 namespace ManiaControl\Callbacks\Structures\ShootMania;
 
 
-use ManiaControl\ManiaControl;
+
 
 /**
  * Structure Class for the OnNearMiss Structure Callback

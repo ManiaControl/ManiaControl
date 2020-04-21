@@ -4,9 +4,7 @@ namespace ManiaControl\Callbacks\Structures\ShootMania;
 
 
 use ManiaControl\Callbacks\Structures\Common\BasePlayerTimeStructure;
-use ManiaControl\Callbacks\Structures\Common\BaseStructure;
-use ManiaControl\ManiaControl;
-use ManiaControl\Players\Player;
+
 
 /**
  * Structure Class for the OnPlayerRequestRespawnStructure Structure Callback

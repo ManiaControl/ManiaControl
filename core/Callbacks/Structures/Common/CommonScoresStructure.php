@@ -5,8 +5,6 @@ namespace ManiaControl\Callbacks\Structures\Common;
 
 use ManiaControl\Callbacks\Structures\Common\Models\CommonPlayerScore;
 use ManiaControl\Callbacks\Structures\ShootMania\Models\TeamScore;
-use ManiaControl\General\JsonSerializable;
-use ManiaControl\General\JsonSerializeTrait;
 use ManiaControl\ManiaControl;
 
 /**
