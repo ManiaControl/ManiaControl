@@ -10,11 +10,11 @@ namespace ManiaControl\Communication;
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 interface CommunicationMethods {
-	/** Restarts Mania Control
+	/** Reboots Mania Control
 	 *   Optional Params
 	 *      - message
 	 */
-	const RESTART_MANIA_CONTROL = "ManiaControl.Restart";
+	const REBOOT_MANIA_CONTROL = "ManiaControl.Reboot";
 
 	/** Update the ManiaControl Core */
 	const UPDATE_MANIA_CONTROL_CORE = "UpdateManager.CoreUpdate";

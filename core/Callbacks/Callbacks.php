@@ -16,7 +16,9 @@ interface Callbacks {
 	const ONINIT     = 'Callbacks.OnInit';
 	const AFTERINIT  = 'Callbacks.AfterInit';
 	const ONSHUTDOWN = 'Callbacks.OnShutdown';
+	/** @deprecated */
 	const ONRESTART  = 'Callbacks.OnRestart';
+	const ONREBOOT   = 'Callbacks.OnReboot';
 	const PRELOOP    = 'Callbacks.PreLoop';
 	const AFTERLOOP  = 'Callbacks.AfterLoop';
 

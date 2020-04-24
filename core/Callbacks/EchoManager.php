@@ -143,8 +143,9 @@ class EchoManager implements CallbackListener, EchoListener, UsageInformationAbl
 		}
 
 		switch ($name) {
-			case 'ManiaControl.Restart':
-				$this->maniaControl->restart($message);
+			case Callbacks::ONRESTART:
+			case Callbacks::ONREBOOT:
+				$this->maniaControl->reboot($message);
 				break;
 			default:
 				$this->triggerEchoCallback($name, $message);

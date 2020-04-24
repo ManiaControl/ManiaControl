@@ -408,7 +408,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener,
 			}
 			Logger::log($message);
 
-			$this->maniaControl->restart();
+			$this->maniaControl->reboot();
 		});
 
 		$asyncHttpRequest->getData();

@@ -199,7 +199,7 @@ class ErrorHandler {
 
 		if ($isFatalError) {
 			if ($isPluginError) {
-				$this->maniaControl->restart();
+				$this->maniaControl->reboot();
 			} else {
 				$this->maniaControl->quit('Quitting ManiaControl after Fatal Error.');
 			}
@@ -513,7 +513,7 @@ class ErrorHandler {
 
 		if ($shutdown) {
 			if ($this->shouldRestart()) {
-				$this->maniaControl->restart();
+				$this->maniaControl->reboot();
 			}
 			try {
 				$this->maniaControl->quit('Quitting ManiaControl after Exception.');

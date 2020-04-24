@@ -61,7 +61,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 	const SCRIPT_TIMEOUT              = 40;
 	const URL_WEBSERVICE              = 'https://ws.maniacontrol.com/';
 	const SETTING_PERMISSION_SHUTDOWN = 'Shutdown ManiaControl';
-	const SETTING_PERMISSION_RESTART  = 'Restart ManiaControl';
+	const SETTING_PERMISSION_REBOOT   = 'Reboot ManiaControl';
 
 	/*
 	 * Public properties
@@ -223,24 +223,24 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 
 		// Permissions
 		$this->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_SHUTDOWN, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
-		$this->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_RESTART, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
+		$this->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_REBOOT, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
 
 		// Commands
 		$this->getCommandManager()->registerCommandListener('version', $this, 'commandVersion', false, 'Shows ManiaControl version.');
-		$this->getCommandManager()->registerCommandListener('restart', $this, 'commandRestart', true, 'Restarts ManiaControl.');
+		$this->getCommandManager()->registerCommandListener('reboot', $this, 'commandReboot', true, 'Reboots ManiaControl.');
 		$this->getCommandManager()->registerCommandListener('shutdown', $this, 'commandShutdown', true, 'Shuts ManiaControl down.');
 
 		// Check connection every 30 seconds
 		$this->getTimerManager()->registerTimerListening($this, 'checkConnection', 1000 * 30);
 
 		// Communication Methods
-		$this->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::RESTART_MANIA_CONTROL, $this, function ($data) {
+		$this->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::REBOOT_MANIA_CONTROL, $this, function ($data) {
 			//Delay Shutdown to send answer first
 			$this->getTimerManager()->registerOneTimeListening($this, function () use ($data) {
 				if (is_object($data) && property_exists($data, "message")) {
-					$this->restart($data->message);
+					$this->reboot($data->message);
 				} else {
-					$this->restart();
+					$this->reboot();
 				}
 			}, 3000);
 			return new CommunicationAnswer();
@@ -536,42 +536,42 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 	}
 
 	/**
-	 * Handle Restart AdminCommand
+	 * Handle Reboot AdminCommand
 	 *
 	 * @param array  $chatCallback
 	 * @param Player $player
 	 */
-	public function commandRestart(array $chatCallback, Player $player) {
-		if (!$this->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_RESTART)) {
+	public function commandReboot(array $chatCallback, Player $player) {
+		if (!$this->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_REBOOT)) {
 			$this->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
-		$this->restart("ManiaControl Restart requested by '{$player->login}'!");
+		$this->reboot("ManiaControl Reboot requested by '{$player->login}'!");
 	}
 
 	/**
-	 * Restart ManiaControl
+	 * Reboot ManiaControl
 	 *
 	 * @param string $message
 	 */
-	public function restart($message = null) {
-		// Trigger callback on Restart
-		$this->getCallbackManager()->triggerCallback(Callbacks::ONRESTART);
+	public function reboot($message = null) {
+		// Trigger callback on Reboot
+		$this->getCallbackManager()->triggerCallback(Callbacks::ONREBOOT);
 
-		// Announce restart
+		// Announce reboot
 		try {
-			$this->getChat()->sendInformation('Restarting ManiaControl...', null, true, false);
+			$this->getChat()->sendInformation('Rebooting ManiaControl...', null, true, false);
 		} catch (TransportException $e) {
 		}
-		Logger::log('Restarting ManiaControl... ' . $message);
+		Logger::log('Rebooting ManiaControl... ' . $message);
 
 		// Start new instance
 		if (!defined('PHP_UNIT_TEST')) {
-			SystemUtil::restart();
+			SystemUtil::reboot();
 		}
 
 		// Quit old instance
-		$this->quit('Quitting ManiaControl to restart.');
+		$this->quit('Quitting ManiaControl to reboot.');
 	}
 
 	/**
