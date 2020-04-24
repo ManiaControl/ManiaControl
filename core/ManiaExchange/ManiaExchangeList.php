@@ -294,31 +294,13 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 			}
 
 			//Map Karma
-			$karma     = $map->ratingVoteAverage / 100;
-			$voteCount = $map->ratingVoteCount;
-			if (is_numeric($karma) && $voteCount > 0) {
-				$karmaGauge = new Gauge();
-				$mapFrame->addChild($karmaGauge);
-				$karmaGauge->setZ(-0.05);
-				$karmaGauge->setX($posX + 87);
-				$karmaGauge->setY(0.2);
-				$karmaGauge->setSize(20, 10);
-				$karmaGauge->setDrawBackground(false);
-				$karma = floatval($karma);
-				$karmaGauge->setRatio($karma + 0.15 - $karma * 0.15);
-				$karmaColor = ColorUtil::floatToStatusColor($karma);
-				$karmaGauge->setColor($karmaColor . '9');
-
-				$karmaLabel = new Label();
-				$mapFrame->addChild($karmaLabel);
-				$karmaLabel->setZ(1);
-				$karmaLabel->setX($posX + 87);
-				$karmaLabel->setSize(20 * 0.9, 5);
-				$karmaLabel->setY(-0.2);
-				$karmaLabel->setTextSize(0.9);
-				$karmaLabel->setTextColor('000');
-				$karmaLabel->setText('  ' . round($karma * 100.) . '% (' . $voteCount . ')');
-			}
+			$karmaGauge = $this->maniaControl->getManialinkManager()->getElementBuilder()->buildKarmaGauge(
+				$map,
+				20,
+				10
+			);
+			$mapFrame->addChild($karmaGauge);
+			$karmaGauge->setX($posX + 87);
 
 
 			$posY -= 4;

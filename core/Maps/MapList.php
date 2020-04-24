@@ -57,7 +57,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	const ACTION_RESET               = 'MapList.ResetMapList';
 	const MAX_MAPS_PER_PAGE          = 13;
 	const MAX_PAGES_PER_CHUNK        = 2;
-	const DEFAULT_KARMA_PLUGIN       = 'MCTeam\KarmaPlugin';
 	const DEFAULT_CUSTOM_VOTE_PLUGIN = 'MCTeam\CustomVotesPlugin';
 	const CACHE_CURRENT_PAGE         = 'CurrentPage';
 	const WIDGET_NAME                = 'MapList';
@@ -249,8 +248,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$frame->addChild($descriptionLabel);
 
 		$queuedMaps = $this->maniaControl->getMapManager()->getMapQueue()->getQueuedMapsRanking();
-		/** @var KarmaPlugin $karmaPlugin */
-		$karmaPlugin = $this->maniaControl->getPluginManager()->getPlugin(self::DEFAULT_KARMA_PLUGIN);
 
 		$pageNumber = 1 + $chunkIndex * self::MAX_PAGES_PER_CHUNK;
 		$paging->setStartPageNumber($pageIndex + 1);
@@ -460,63 +457,14 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			}
 
 			// Display Karma bar
-			if ($karmaPlugin) {
-				$displayMxKarma = $this->maniaControl->getSettingManager()->getSettingValue($karmaPlugin, $karmaPlugin::SETTING_WIDGET_DISPLAY_MX);
-
-				//Display Mx Karma
-				if ($displayMxKarma && $map->mx) {
-					$karma = $map->mx->ratingVoteAverage / 100;
-					$votes = array("count" => $map->mx->ratingVoteCount);
-
-					//Display Local Karma
-				} else {
-					$karma = $karmaPlugin->getMapKarma($map);
-					$votes = $karmaPlugin->getMapVotes($map);
-				}
-
-				if (is_numeric($karma) && $votes['count'] > 0) {
-					if ($this->maniaControl->getSettingManager()->getSettingValue($karmaPlugin, $karmaPlugin::SETTING_NEWKARMA)) {
-						$karmaText = '  ' . round($karma * 100.) . '% (' . $votes['count'] . ')';
-					} else {
-						$min  = 0;
-						$plus = 0;
-						foreach ($votes as $vote) {
-							if (isset($vote->vote)) {
-								if ($vote->vote !== 0.5) {
-									if ($vote->vote < 0.5) {
-										$min = $min + $vote->count;
-									} else {
-										$plus = $plus + $vote->count;
-									}
-								}
-							}
-						}
-						$endKarma  = $plus - $min;
-						$karmaText = '  ' . $endKarma . ' (' . $votes['count'] . 'x / ' . round($karma * 100.) . '%)';
-					}
-
-					$karmaGauge = new Gauge();
-					$mapFrame->addChild($karmaGauge);
-					$karmaGauge->setZ(0.2);
-					$karmaGauge->setX($posX + 120);
-					$karmaGauge->setY(0.2);
-					$karmaGauge->setSize(20, 10);
-					$karmaGauge->setDrawBackground(false);
-					$karma = floatval($karma);
-					$karmaGauge->setRatio($karma + 0.15 - $karma * 0.15);
-					$karmaColor = ColorUtil::floatToStatusColor($karma);
-					$karmaGauge->setColor($karmaColor . '9');
-
-					$karmaLabel = new Label();
-					$mapFrame->addChild($karmaLabel);
-					$karmaLabel->setZ(2);
-					$karmaLabel->setX($posX + 120);
-					$karmaLabel->setSize(20 * 0.9, 5);
-					$karmaLabel->setY(-0.2);
-					$karmaLabel->setTextSize(0.9);
-					$karmaLabel->setTextColor('000');
-					$karmaLabel->setText($karmaText);
-				}
+			$karmaGauge = $this->maniaControl->getManialinkManager()->getElementBuilder()->buildKarmaGauge(
+				$map,
+				20,
+				10
+			);
+			if ($karmaGauge) {
+				$mapFrame->addChild($karmaGauge);
+				$karmaGauge->setX($posX + 120);
 			}
 
 			$posY -= 4;

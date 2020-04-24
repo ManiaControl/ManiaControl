@@ -142,7 +142,7 @@ class StyleManager implements UsageInformationAble {
 		$entry->setName('SearchString');
 
 		if ($actionReset) {
-			$quad = new Quad_Icons64x64_1();;
+			$quad = new Quad_Icons64x64_1();
 			$frame->addChild($quad);
 			$quad->setSubStyle($quad::SUBSTYLE_QuitRace);
 			$quad->setColorize('aaa');
@@ -150,7 +150,7 @@ class StyleManager implements UsageInformationAble {
 			$quad->setPosition(-$width / 2 + 15 + $width * 0.25 - 2, 0);
 			$quad->setZ(1);
 			$quad->setAction($actionReset);
-}
+		}
 
 		//Search for Map-Name
 		$label = new Label_Button();

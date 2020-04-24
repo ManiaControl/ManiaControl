@@ -1,3 +1,8 @@
+###v0.253###
+#Changes
+- //restart got replaced by //reboot
+- Unified Creations of a Karma-Gauge in new Manialinks\ElementBuilder
+
 ###v0.252###
 #Additions
 - Ingame-Changelog

@@ -55,6 +55,9 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener,
 	/** @var SidebarMenuManager $sidebarMenuManager */
 	private $sidebarMenuManager = null;
 
+	/** @var ElementBuilder $elementBuilder */
+	private $elementBuilder = null;
+
 	// TODO: use listening class
 	private $pageAnswerListeners     = array();
 	private $pageAnswerRegexListener = array();
@@ -72,6 +75,7 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener,
 		$this->customUIManager    = new CustomUIManager($maniaControl);
 		$this->iconManager        = new IconManager($maniaControl);
 		$this->sidebarMenuManager = new SidebarMenuManager($maniaControl);
+		$this->elementBuilder     = new ElementBuilder($maniaControl);
 
 		// Callbacks
 		$this->registerManialinkPageAnswerListener(self::ACTION_CLOSEWIDGET, $this, 'closeWidgetCallback');
@@ -131,6 +135,15 @@ class ManialinkManager implements ManialinkPageAnswerListener, CallbackListener,
 	 */
 	public function getIconManager() {
 		return $this->iconManager;
+	}
+
+	/**
+	 * Return the element builder
+	 * 
+	 * @return ElementBuilder
+	 */
+	public function getElementBuilder() {
+		return $this->elementBuilder;
 	}
 
 	/**
