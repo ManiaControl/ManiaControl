@@ -165,6 +165,21 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 			}
 			$this->showManiaExchangeList($maps, $player);
 		});
+
+		// show temporary list to wait for Async
+		$labelStyle = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultLabelStyle();
+
+		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
+		$frame = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultListFrame();
+		$maniaLink->addChild($frame);
+
+		$loadingLabel = new Label_Text();
+		$frame->addChild($loadingLabel);
+		$loadingLabel->setStyle($labelStyle);
+		$loadingLabel->setText('Loading maps, please wait ...');
+		$loadingLabel->setTextSize(2);
+
+		$this->maniaControl->getManialinkManager()->sendManialink($maniaLink, $player);
 	}
 
 
