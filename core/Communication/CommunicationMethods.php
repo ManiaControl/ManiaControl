@@ -15,6 +15,8 @@ interface CommunicationMethods {
 	 *      - message
 	 */
 	const REBOOT_MANIA_CONTROL = "ManiaControl.Reboot";
+	/** @deprecated */
+	const RESTART_MANIA_CONTROL = "ManiaControl.Restart";
 
 	/** Update the ManiaControl Core */
 	const UPDATE_MANIA_CONTROL_CORE = "UpdateManager.CoreUpdate";

@@ -228,6 +228,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 		// Commands
 		$this->getCommandManager()->registerCommandListener('version', $this, 'commandVersion', false, 'Shows ManiaControl version.');
 		$this->getCommandManager()->registerCommandListener('reboot', $this, 'commandReboot', true, 'Reboots ManiaControl.');
+		$this->getCommandManager()->registerCommandListener('restart', $this, 'commandRestart', true, 'Restarts ManiaControl.');
 		$this->getCommandManager()->registerCommandListener('shutdown', $this, 'commandShutdown', true, 'Shuts ManiaControl down.');
 
 		// Check connection every 30 seconds
@@ -547,6 +548,30 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 			return;
 		}
 		$this->reboot("ManiaControl Reboot requested by '{$player->login}'!");
+	}
+
+	/**
+	 * Handle Restart AdminCommand
+	 *
+	 * @param array  $chatCallback
+	 * @param Player $player
+	 */
+	public function commandRestart(array $chatCallback, Player $player) {
+		if (!$this->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_REBOOT)) {
+			$this->getAuthenticationManager()->sendNotAllowed($player);
+			return;
+		}
+		$this->getChat->sendError('The command //restart got disabled, reboot ManiaControl with //reboot instead', $player);
+	}
+
+	/**
+	 * @deprecated
+	 * Restart ManiaControl
+	 *
+	 * @param string $message
+	 */
+	public function restart($message = null) {
+		$this->reboot($message);
 	}
 
 	/**

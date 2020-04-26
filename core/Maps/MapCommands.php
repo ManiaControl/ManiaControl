@@ -51,7 +51,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 
 		// Admin commands
 		$this->maniaControl->getCommandManager()->registerCommandListener(array('nextmap', 'next', 'skip'), $this, 'command_NextMap', true, 'Skips to the next map.');
-		$this->maniaControl->getCommandManager()->registerCommandListener(array('restartmap', 'resmap', 'restart', 'res'), $this, 'command_RestartMap', true, 'Restarts the current map.');
+		$this->maniaControl->getCommandManager()->registerCommandListener(array('restartmap', 'resmap', 'res'), $this, 'command_RestartMap', true, 'Restarts the current map.');
 		$this->maniaControl->getCommandManager()->registerCommandListener(array('replaymap', 'replay'), $this, 'command_ReplayMap', true, 'Replays the current map (after the end of the map).');
 		$this->maniaControl->getCommandManager()->registerCommandListener(array('addmap', 'add'), $this, 'command_AddMap', true, 'Adds map from ManiaExchange.');
 		$this->maniaControl->getCommandManager()->registerCommandListener(array('removemap', 'removethis'), $this, 'command_RemoveMap', true, 'Removes the current map.');
