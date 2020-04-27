@@ -31,6 +31,8 @@ class CallbackManager implements UsageInformationAble {
 	const CB_MP_ENDMATCH                  = 'ManiaPlanet.EndMatch';
 	const CB_MP_BEGINMAP                  = 'ManiaPlanet.BeginMap';
 	const CB_MP_ENDMAP                    = 'ManiaPlanet.EndMap';
+	const CB_MP_BEGINROUND                = 'ManiaPlanet.BeginRound';
+	const CB_MP_ENDROUND                  = 'ManiaPlanet.EndRound';
 	const CB_MP_MAPLISTMODIFIED           = 'ManiaPlanet.MapListModified';
 	const CB_MP_ECHO                      = 'ManiaPlanet.Echo';
 	const CB_MP_BILLUPDATED               = 'ManiaPlanet.BillUpdated';
