@@ -45,12 +45,25 @@ interface CommunicationMethods {
 	 */
 	const SET_SERVER_OPTIONS = "ServerOptions.SetServerOptions";
 
-	/** Provides the ModeScriptSettings
+	/** Provides the GameModeSettings
+	 *  no Parameters
+	 */
+	const GET_GAMEMODE_SETTINGS = "GameModeSettings.GetGameModeSettings";
+
+	/** Set GameModeSettings
+	 *   Required Parameter
+	 *    - gameModeSettings (array(settingName1 => value1, settingName2 => value2...))
+	 */
+	const SET_GAMEMODE_SETTINGS = "GameModeSettings.SetGameModeSettings";
+
+	/** @deprecated
+	 *  Provides the ModeScriptSettings
 	 *  no Parameters
 	 */
 	const GET_SCRIPT_SETTINGS = "ScriptSettings.GetScriptSettings";
 
-	/** Set ModeScriptSettings
+	/** @deprecated
+	 *  Set ModeScriptSettings
 	 *   Required Parameter
 	 *    - scriptSettings (array(settingName1 => value1, settingName2 => value2...))
 	 */
